@@ -71,7 +71,8 @@ public class BuildParameters
         var target = context.Argument("target", "Default");
         var buildSystem = context.BuildSystem();
 
-        var dockerCliPlatform = context.GetDockerCliPlatform();
+        var isReleasingCI = buildSystem.IsRunningOnAzurePipelines || buildSystem.IsRunningOnAzurePipelinesHosted || buildSystem.IsRunningOnGitHubActions;
+        var dockerCliPlatform = isReleasingCI ? context.GetDockerCliPlatform() : "";
 
         return new BuildParameters {
             Target        = target,
@@ -97,7 +98,7 @@ public class BuildParameters
             IsRunningOnAzurePipeline = buildSystem.IsRunningOnAzurePipelines || buildSystem.IsRunningOnAzurePipelinesHosted,
             IsRunningOnGitHubActions = buildSystem.IsRunningOnGitHubActions,
 
-            IsReleasingCI = buildSystem.IsRunningOnAzurePipelines || buildSystem.IsRunningOnAzurePipelinesHosted || buildSystem.IsRunningOnGitHubActions,
+            IsReleasingCI = isReleasingCI,
 
             IsDockerForWindows = dockerCliPlatform == "windows",
             IsDockerForLinux   = dockerCliPlatform == "linux",
