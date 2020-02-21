@@ -176,18 +176,12 @@ string[] GetDockerTags(DockerImage dockerImage, BuildParameters parameters) {
 
 static string GetDockerCliPlatform(this ICakeContext context)
 {
-    var buildSystem = context.BuildSystem();
-    var ciSupportsDockerBuild = buildSystem.IsRunningOnAzurePipelines || buildSystem.IsRunningOnAzurePipelinesHosted || buildSystem.IsRunningOnGitHubActions;
-
-    if (ciSupportsDockerBuild && context.Environment.Platform.Family != PlatformFamily.OSX || buildSystem.IsLocalBuild)
-    {
-        try {
-            var toolPath = context.FindToolInPath(context.IsRunningOnUnix() ? "docker" : "docker.exe");
-            return toolPath == null ? "" : context.DockerCustomCommand("info --format '{{.OSType}}'").First().Replace("'", "");
-        }
-        catch (Exception) {
-            context.Warning("Docker is installed but the daemon not running");
-        }
+    try {
+        var toolPath = context.FindToolInPath(context.IsRunningOnUnix() ? "docker" : "docker.exe");
+        return toolPath == null ? "" : context.DockerCustomCommand("info --format '{{.OSType}}'").First().Replace("'", "");
+    }
+    catch (Exception) {
+        context.Warning("Docker is installed but the daemon not running");
     }
     return "";
 }
