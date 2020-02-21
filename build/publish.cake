@@ -105,32 +105,42 @@ Task("Publish-NuGet-Internal")
                 ApiKey = apiKey,
                 Source = apiUrl
             });
+        }
+    }
 
-            // Push the package to GitHub Packages
-            if (parameters.IsRunningOnGitHubActions) {
-                var token = parameters.Credentials.GitHub.Token;
-                if(string.IsNullOrEmpty(token)) {
-                    throw new InvalidOperationException("Could not resolve Github token.");
-                }
-                var userName = parameters.Credentials.GitHub.UserName;
-                if(string.IsNullOrEmpty(userName)) {
-                    throw new InvalidOperationException("Could not resolve Github userName.");
-                }
+    // Push the package to GitHub Packages
+    if (parameters.IsRunningOnGitHubActions)
+    {
+        Information("Publishing nuget to GitHub Packages");
 
-                var source = $"https://nuget.pkg.github.com/{BuildParameters.MainRepoOwner}/index.json";
+        var token = parameters.Credentials.GitHub.Token;
+        if(string.IsNullOrEmpty(token)) {
+            throw new InvalidOperationException("Could not resolve Github token.");
+        }
+        var userName = parameters.Credentials.GitHub.UserName;
+        if(string.IsNullOrEmpty(userName)) {
+            throw new InvalidOperationException("Could not resolve Github userName.");
+        }
 
-                var nugetSourceSettings = new NuGetSourcesSettings
-                {
-                    UserName = parameters.Credentials.GitHub.UserName,
-                    Password = token
-                };
+        var source = $"https://nuget.pkg.github.com/{BuildParameters.MainRepoOwner}/index.json";
 
-                Information("Adding NuGet source with user/pass...");
-                NuGetAddSource("GitHub", source, nugetSourceSettings);
-                NuGetPush(package.PackagePath, new NuGetPushSettings
-                {
-                    Source = source
-                });
+        var nugetSourceSettings = new NuGetSourcesSettings
+        {
+            UserName = userName,
+            Password = token
+        };
+
+        Information("Adding NuGet source with user/pass...");
+        NuGetAddSource("GitHub", source, nugetSourceSettings);
+
+        foreach(var package in parameters.Packages.Nuget)
+        {
+            if (FileExists(package.PackagePath))
+            {
+                    NuGetPush(package.PackagePath, new NuGetPushSettings
+                    {
+                        Source = source
+                    });
             }
         }
     }
