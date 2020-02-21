@@ -61,5 +61,7 @@ namespace GitVersion.BuildServers
 
             return base.GetCurrentBranch(usingDynamicRepos);
         }
+
+        public override bool PreventFetch() => false;
     }
 }
