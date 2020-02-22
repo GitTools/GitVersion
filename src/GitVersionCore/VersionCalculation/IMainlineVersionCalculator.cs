@@ -1,5 +1,3 @@
-using GitVersion.VersionCalculation.BaseVersionCalculators;
-
 namespace GitVersion.VersionCalculation
 {
     public interface IMainlineVersionCalculator

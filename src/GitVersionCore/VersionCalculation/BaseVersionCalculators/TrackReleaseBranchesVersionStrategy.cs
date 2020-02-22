@@ -5,7 +5,7 @@ using LibGit2Sharp;
 using GitVersion.Extensions;
 using GitVersion.Logging;
 
-namespace GitVersion.VersionCalculation.BaseVersionCalculators
+namespace GitVersion.VersionCalculation
 {
     /// <summary>
     /// Active only when the branch is marked as IsDevelop.

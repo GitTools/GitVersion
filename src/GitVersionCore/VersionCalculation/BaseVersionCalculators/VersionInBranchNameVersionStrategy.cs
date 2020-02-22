@@ -4,7 +4,7 @@ using LibGit2Sharp;
 using GitVersion.Configuration;
 using GitVersion.Extensions;
 
-namespace GitVersion.VersionCalculation.BaseVersionCalculators
+namespace GitVersion.VersionCalculation
 {
     /// <summary>
     /// Version is extracted from the name of the branch.

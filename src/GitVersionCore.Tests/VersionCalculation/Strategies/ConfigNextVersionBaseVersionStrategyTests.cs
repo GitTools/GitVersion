@@ -1,7 +1,6 @@
 using System.Linq;
 using GitVersion.Configuration;
 using GitVersion.VersionCalculation;
-using GitVersion.VersionCalculation.BaseVersionCalculators;
 using GitVersionCore.Tests.Helpers;
 using NUnit.Framework;
 using Shouldly;

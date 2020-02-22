@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using GitVersion.VersionCalculation.BaseVersionCalculators;
+using GitVersion.VersionCalculation;
 
 namespace GitVersion.VersionFilters
 {

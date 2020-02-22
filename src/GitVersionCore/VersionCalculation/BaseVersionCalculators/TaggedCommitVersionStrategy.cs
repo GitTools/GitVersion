@@ -5,7 +5,7 @@ using LibGit2Sharp;
 using GitVersion.Extensions;
 using GitVersion.Logging;
 
-namespace GitVersion.VersionCalculation.BaseVersionCalculators
+namespace GitVersion.VersionCalculation
 {
     /// <summary>
     /// Version is extracted from all tags on the branch which are valid, and not newer than the current commit.
