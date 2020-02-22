@@ -5,7 +5,6 @@ using GitVersion;
 using GitVersion.Configuration;
 using GitVersion.Logging;
 using GitVersion.VersionCalculation;
-using GitVersion.VersionCalculation.BaseVersionCalculators;
 using GitVersionCore.Tests.Helpers;
 using LibGit2Sharp;
 using NUnit.Framework;
