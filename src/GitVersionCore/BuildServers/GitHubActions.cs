@@ -42,26 +42,9 @@ namespace GitVersion.BuildServers
 
         public override string GetCurrentBranch(bool usingDynamicRepos)
         {
-            // GITHUB_REF
-            // The branch or tag ref that triggered the workflow.
-            // For example, refs/heads/feature-branch-1. If neither a branch or
-            // tag is available for the event type, the variable will not exist.
-
-            var value = Environment.GetEnvironmentVariable("GITHUB_REF");
-            if (!string.IsNullOrWhiteSpace(value))
-            {
-                const string refsHeads = "refs/heads/";
-
-                if (value.StartsWith(refsHeads))
-                {
-                    value = value.Substring(refsHeads.Length);
-                    return value;
-                }
-            }
-
-            return base.GetCurrentBranch(usingDynamicRepos);
+            return Environment.GetEnvironmentVariable("GITHUB_REF");
         }
 
-        public override bool PreventFetch() => false;
+        public override bool PreventFetch() => true;
     }
 }
