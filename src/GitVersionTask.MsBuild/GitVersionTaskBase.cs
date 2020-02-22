@@ -21,7 +21,7 @@ namespace GitVersion.MSBuildTask
         public ITaskHost HostObject { get; set; }
         public TaskLoggingHelper Log { get; }
 
-        public abstract bool Execute();       
+        public abstract bool Execute();
 
     }
 }
