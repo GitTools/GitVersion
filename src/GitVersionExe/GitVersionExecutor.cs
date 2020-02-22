@@ -73,12 +73,12 @@ namespace GitVersion
                 if (arguments.Diag)
                 {
                     arguments.NoCache = true;
-                    arguments.Output = OutputType.BuildServer;
+                    arguments.Output.Add(OutputType.BuildServer);
                 }
 
                 if (!string.IsNullOrEmpty(arguments.Proj) || !string.IsNullOrEmpty(arguments.Exec))
                 {
-                    arguments.Output = OutputType.BuildServer;
+                    arguments.Output.Add(OutputType.BuildServer);
                 }
 
                 var buildServer = buildServerResolver.Resolve();
@@ -154,7 +154,7 @@ namespace GitVersion
 
         private static void ConfigureLogging(Arguments arguments, ILog log)
         {
-            if (arguments.Output == OutputType.BuildServer || arguments.LogFilePath == "console" || arguments.Init)
+            if (arguments.Output.Contains(OutputType.BuildServer) || arguments.LogFilePath == "console" || arguments.Init)
             {
                 log.AddLogAppender(new ConsoleAppender());
             }

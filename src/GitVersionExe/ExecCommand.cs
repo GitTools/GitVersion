@@ -40,32 +40,32 @@ namespace GitVersion
 
             var arguments = options.Value;
 
-            switch (arguments.Output)
+            if (arguments.Output.Contains(OutputType.BuildServer))
             {
-                case OutputType.BuildServer:
-                    var buildServer = buildServerResolver.Resolve();
-                    buildServer?.WriteIntegration(Console.WriteLine, variables);
+                var buildServer = buildServerResolver.Resolve();
+                buildServer?.WriteIntegration(Console.WriteLine, variables);
+            }
+            if (arguments.Output.Contains(OutputType.Json))
+            {
+                switch (arguments.ShowVariable)
+                {
+                    case null:
+                        Console.WriteLine(variables.ToString());
+                        break;
 
-                    break;
-                case OutputType.Json:
-                    switch (arguments.ShowVariable)
-                    {
-                        case null:
-                            Console.WriteLine(variables.ToString());
-                            break;
+                    default:
+                        if (!variables.TryGetValue(arguments.ShowVariable, out var part))
+                        {
+                            throw new WarningException($"'{arguments.ShowVariable}' variable does not exist");
+                        }
 
-                        default:
-                            if (!variables.TryGetValue(arguments.ShowVariable, out var part))
-                            {
-                                throw new WarningException($"'{arguments.ShowVariable}' variable does not exist");
-                            }
-                            Console.WriteLine(part);
-                            break;
-                    }
-
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
+                        Console.WriteLine(part);
+                        break;
+                }
+            }
+            else
+            {
+                throw new ArgumentOutOfRangeException();
             }
 
             if (arguments.UpdateWixVersionFile)
