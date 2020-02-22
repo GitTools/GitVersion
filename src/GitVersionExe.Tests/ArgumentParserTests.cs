@@ -135,28 +135,36 @@ namespace GitVersionExe.Tests
         public void OutputDefaultsToJson()
         {
             var arguments = argumentParser.ParseArguments("targetDirectoryPath");
-            arguments.Output.ShouldBe(OutputType.Json);
+            arguments.Output.ShouldContain(OutputType.Json);
         }
 
         [Test]
         public void OutputJsonCanBeParsed()
         {
             var arguments = argumentParser.ParseArguments("targetDirectoryPath -output json");
-            arguments.Output.ShouldBe(OutputType.Json);
+            arguments.Output.ShouldContain(OutputType.Json);
         }
 
         [Test]
         public void OutputBuildserverCanBeParsed()
         {
             var arguments = argumentParser.ParseArguments("targetDirectoryPath -output buildserver");
-            arguments.Output.ShouldBe(OutputType.BuildServer);
+            arguments.Output.ShouldContain(OutputType.BuildServer);
+        }
+
+        [Test]
+        public void OutputBuildserverAndJsonCanBeParsed()
+        {
+            var arguments = argumentParser.ParseArguments("targetDirectoryPath -output buildserver -output json");
+            arguments.Output.ShouldContain(OutputType.BuildServer);
+            arguments.Output.ShouldContain(OutputType.Json);
         }
 
         [Test]
         public void MultipleArgsAndFlag()
         {
             var arguments = argumentParser.ParseArguments("targetDirectoryPath -output buildserver -updateAssemblyInfo");
-            arguments.Output.ShouldBe(OutputType.BuildServer);
+            arguments.Output.ShouldContain(OutputType.BuildServer);
         }
 
         [Test]

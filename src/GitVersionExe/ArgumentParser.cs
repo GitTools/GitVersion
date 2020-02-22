@@ -269,7 +269,7 @@ namespace GitVersion
                         throw new WarningException($"Value '{value}' cannot be parsed as output type, please use 'json' or 'buildserver'");
                     }
 
-                    arguments.Output = outputType;
+                    arguments.Output.Add(outputType);
                     continue;
                 }
 

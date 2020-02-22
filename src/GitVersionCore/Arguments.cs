@@ -8,6 +8,10 @@ namespace GitVersion
 {
     public class Arguments
     {
+        public Arguments()
+        {
+            Output.Add(OutputType.Json);
+        }
         public AuthenticationInfo Authentication;
 
         public Config OverrideConfig;
@@ -44,7 +48,7 @@ namespace GitVersion
         public bool NoCache;
         public bool NoNormalize;
 
-        public OutputType Output = OutputType.Json;
+        public ISet<OutputType> Output = new HashSet<OutputType>();
         public Verbosity Verbosity = Verbosity.Normal;
 
         public bool UpdateAssemblyInfo;
