@@ -3,12 +3,15 @@ using GitVersion.Exceptions;
 using GitVersion.Extensions;
 using GitVersion.Logging;
 using GitVersion.MSBuildTask.Tasks;
+using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
 namespace GitVersion.MSBuildTask
 {
+
+
     public static class GitVersionTasks
     {
         public static bool GetVersion(GetVersion task) => ExecuteGitVersionTask(task, executor => executor.GetVersion(task));
@@ -44,7 +47,7 @@ namespace GitVersion.MSBuildTask
             return !taskLog.HasLoggedErrors;
         }
 
-        private static void Configure(IServiceProvider sp, Task task)
+        private static void Configure(IServiceProvider sp, GitVersionTaskBase task)
         {
             var log = sp.GetService<ILog>();
             var buildServerResolver = sp.GetService<IBuildServerResolver>();
@@ -76,5 +79,6 @@ namespace GitVersion.MSBuildTask
 
             return sp;
         }
+
     }
 }
