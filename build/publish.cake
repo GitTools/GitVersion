@@ -132,16 +132,15 @@ Task("Publish-NuGet-Internal")
 
         Information("Adding NuGet source with user/pass...");
         NuGetAddSource("GitHub", source, nugetSourceSettings);
-        Information("Adding NuGet source with user/pass after");
 
         foreach(var package in parameters.Packages.Nuget)
         {
             if (FileExists(package.PackagePath))
             {
-                // NuGetPush(package.PackagePath, new NuGetPushSettings
-                // {
-                //     Source = source
-                // });
+                NuGetPush(package.PackagePath, new NuGetPushSettings
+                {
+                    Source = source
+                });
             }
         }
     }
