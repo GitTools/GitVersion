@@ -5,6 +5,7 @@ using GitVersion.Cache;
 using GitVersion.Logging;
 using Microsoft.Extensions.Options;
 using GitVersion.Extensions;
+using GitVersion.VersionCalculation;
 
 namespace GitVersion
 {
@@ -14,21 +15,21 @@ namespace GitVersion
         private readonly IConfigProvider configProvider;
         private readonly IBuildServerResolver buildServerResolver;
         private readonly IGitVersionCache gitVersionCache;
-        private readonly IGitVersionFinder gitVersionFinder;
+        private readonly INextVersionCalculator nextVersionCalculator;
         private readonly IGitPreparer gitPreparer;
         private readonly IVariableProvider variableProvider;
         private readonly IOptions<Arguments> options;
         private readonly IGitVersionCacheKeyFactory cacheKeyFactory;
 
         public GitVersionCalculator(ILog log, IConfigProvider configProvider, IBuildServerResolver buildServerResolver,
-            IGitVersionCache gitVersionCache, IGitVersionFinder gitVersionFinder, IGitPreparer gitPreparer, IVariableProvider variableProvider,
+            IGitVersionCache gitVersionCache, INextVersionCalculator nextVersionCalculator, IGitPreparer gitPreparer, IVariableProvider variableProvider,
             IOptions<Arguments> options, IGitVersionCacheKeyFactory cacheKeyFactory)
         {
             this.log = log ?? throw new ArgumentNullException(nameof(log));
             this.configProvider = configProvider ?? throw new ArgumentNullException(nameof(configProvider));
             this.buildServerResolver = buildServerResolver ?? throw new ArgumentNullException(nameof(buildServerResolver));
             this.gitVersionCache = gitVersionCache ?? throw new ArgumentNullException(nameof(gitVersionCache));
-            this.gitVersionFinder = gitVersionFinder ?? throw new ArgumentNullException(nameof(gitVersionFinder));
+            this.nextVersionCalculator = nextVersionCalculator ?? throw new ArgumentNullException(nameof(nextVersionCalculator));
             this.gitPreparer = gitPreparer ?? throw new ArgumentNullException(nameof(gitPreparer));
             this.variableProvider = variableProvider ?? throw new ArgumentNullException(nameof(variableProvider));
             this.options = options ?? throw new ArgumentNullException(nameof(options));
@@ -106,7 +107,7 @@ namespace GitVersion
             return gitPreparer.GetDotGitDirectory().WithRepository(repo =>
             {
                 var gitVersionContext = new GitVersionContext(repo, log, targetBranch, configuration, commitId: commitId);
-                var semanticVersion = gitVersionFinder.FindVersion(gitVersionContext);
+                var semanticVersion = nextVersionCalculator.FindVersion(gitVersionContext);
 
                 return variableProvider.GetVariablesFor(semanticVersion, gitVersionContext.Configuration, gitVersionContext.IsCurrentCommitTagged);
             });
