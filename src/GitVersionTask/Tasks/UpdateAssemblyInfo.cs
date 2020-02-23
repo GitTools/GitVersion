@@ -2,7 +2,7 @@ using Microsoft.Build.Framework;
 
 namespace GitVersion.MSBuildTask.Tasks
 {
-    public class UpdateAssemblyInfo : GitVersionTaskBase
+    public class UpdateAssemblyInfo : GitVersionTaskBase<UpdateAssemblyInfo>
     {
         [Required]
         public string ProjectFile { get; set; }
@@ -19,6 +19,8 @@ namespace GitVersion.MSBuildTask.Tasks
         [Output]
         public string AssemblyInfoTempFilePath { get; set; }
 
-        public override bool Execute() => TaskProxy.UpdateAssemblyInfo(this);
+        public override IAssemblyProvider GetAssemblyProvider() => AssemblyProvider.Instance;
+
+        protected override void ExecuteAction(IGitVersionTaskExecutor executor) => executor.UpdateAssemblyInfo(this);
     }
 }

@@ -1,5 +1,6 @@
 // This code originally copied from https://raw.githubusercontent.com/dotnet/sourcelink/master/src/Microsoft.Build.Tasks.Git/GitLoaderContext.cs
 #if !NETFRAMEWORK
+using Microsoft.DotNet.PlatformAbstractions;
 using System;
 using System.IO;
 using System.Linq;
@@ -7,22 +8,22 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Runtime.Loader;
 
-namespace GitVersion.MSBuildTask.LibGit2Sharp
+namespace GitVersion.MSBuildTask
 {
-    public sealed class GitLoaderContext : AssemblyLoadContext
+    public sealed class GitVersionAssemblyLoadContext : AssemblyLoadContext
     {
         private readonly string[] assemblies;
-        public static GitLoaderContext Instance { get; private set; }
+        public static GitVersionAssemblyLoadContext Instance { get; private set; }
 
-        private GitLoaderContext(string[] assemblies) => this.assemblies = assemblies;
+        private GitVersionAssemblyLoadContext(string[] assemblies) => this.assemblies = assemblies;
 
-        public static void Init(params string[] assemblies) => Instance = new GitLoaderContext(assemblies);
+        public static void Init(params string[] assemblies) => Instance = new GitVersionAssemblyLoadContext(assemblies);
 
         protected override Assembly Load(AssemblyName assemblyName)
         {
             if (assemblies.Contains(assemblyName.Name))
             {
-                var path = Path.Combine(Path.GetDirectoryName(typeof(GitLoaderContext).Assembly.Location), assemblyName.Name + ".dll");
+                var path = Path.Combine(Path.GetDirectoryName(typeof(GitVersionAssemblyLoadContext).Assembly.Location), assemblyName.Name + ".dll");
                 return LoadFromAssemblyPath(path);
             }
 
@@ -58,7 +59,7 @@ namespace GitVersion.MSBuildTask.LibGit2Sharp
 
         private static string GetNativeLibraryDirectory()
         {
-            var dir = Path.GetDirectoryName(typeof(GitLoaderContext).Assembly.Location);
+            var dir = Path.GetDirectoryName(typeof(GitVersionAssemblyLoadContext).Assembly.Location);
             return Path.Combine(dir, "runtimes", RuntimeIdMap.GetNativeLibraryDirectoryName(), "native");
         }
 

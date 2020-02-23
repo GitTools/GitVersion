@@ -2,7 +2,7 @@ using Microsoft.Build.Framework;
 
 namespace GitVersion.MSBuildTask.Tasks
 {
-    public class GetVersion : GitVersionTaskBase
+    public class GetVersion : GitVersionTaskBase<GetVersion>
     {
         [Output]
         public string Major { get; set; }
@@ -94,6 +94,8 @@ namespace GitVersion.MSBuildTask.Tasks
         [Output]
         public string CommitsSinceVersionSourcePadded { get; set; }
 
-        public override bool Execute() => TaskProxy.GetVersion(this);
+        public override IAssemblyProvider GetAssemblyProvider() => AssemblyProvider.Instance;
+      
+        protected override void ExecuteAction(IGitVersionTaskExecutor executor) => executor.GetVersion(this);
     }
 }

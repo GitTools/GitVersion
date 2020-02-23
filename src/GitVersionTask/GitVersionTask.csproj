@@ -1,7 +1,8 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFrameworks>net472;netcoreapp2.1;netcoreapp3.1</TargetFrameworks>
+        <!--full framework needed, as we cross compile for full .NET and dotnetcore, dotnet core uses the netstandard version.-->
+        <TargetFrameworks>net472;netstandard2.0;</TargetFrameworks>
 
         <PackageId>GitVersionTask</PackageId>
         <Title>GitVersionTask</Title>
@@ -11,11 +12,27 @@
         <DevelopmentDependency>true</DevelopmentDependency>
 
         <LangVersion>8.0</LangVersion>
+        <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    </PropertyGroup>
+    
+    <!--<PropertyGroup Condition="'$(TargetFramework)' == 'netcoreapp2.1' OR '$(TargetFramework)' == 'netcoreapp3.1' ">
+    Condition="$(DefineConstants.Contains(UseSystemRuntimeLoader))"
+        <DefineConstants>UseSystemRuntimeLoader</DefineConstants>
+    </PropertyGroup>-->
+
+    <PropertyGroup Condition="'$(TargetFramework)' == 'netstandard2.0' ">
+        <!--Otherwise dependencies like Microsoft.Extensions.DependencyInjection won't be found by the task.-->
+        <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+        <DefineConstants>UseSystemRuntimeLoader</DefineConstants>
     </PropertyGroup>
 
+
     <ItemGroup>
-        <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="3.1.2" PrivateAssets="All" />
-        <PackageReference Include="LibGit2Sharp" Version="$(PackageVersion_LibGit2Sharp)" PrivateAssets="All" />
+        <PackageReference Condition="$(DefineConstants.Contains(UseSystemRuntimeLoader))" Include="System.Runtime.Loader" Version="4.3.0" PrivateAssets="All" />
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="3.1.2">
+            <Private>True</Private>
+        </PackageReference>
+        <PackageReference Include="LibGit2Sharp" Version="$(PackageVersion_LibGit2Sharp)" PrivateAssets="All"/>
     </ItemGroup>
 
     <ItemGroup>

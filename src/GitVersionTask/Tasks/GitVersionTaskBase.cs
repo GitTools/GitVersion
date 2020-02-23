@@ -4,34 +4,45 @@ using GitVersion.Extensions;
 using GitVersion.Logging;
 using GitVersion.MSBuildTask.Tasks;
 using Microsoft.Build.Framework;
-using Microsoft.Build.Utilities;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
 namespace GitVersion.MSBuildTask
 {
-
-
-    public static class GitVersionTasks
+    public abstract class GitVersionTaskBase<TTask> : ProxiedTask<TTask>
+         where TTask : GitVersionTaskBase<TTask>
     {
-        public static bool GetVersion(GetVersion task) => ExecuteGitVersionTask(task, executor => executor.GetVersion(task));
-
-        public static bool UpdateAssemblyInfo(UpdateAssemblyInfo task) => ExecuteGitVersionTask(task, executor => executor.UpdateAssemblyInfo(task));
-
-        public static bool GenerateGitVersionInformation(GenerateGitVersionInformation task) => ExecuteGitVersionTask(task, executor => executor.GenerateGitVersionInformation(task));
-
-        public static bool WriteVersionInfoToBuildLog(WriteVersionInfoToBuildLog task) => ExecuteGitVersionTask(task, executor => executor.WriteVersionInfoToBuildLog(task));
-
-        private static bool ExecuteGitVersionTask<T>(T task, Action<IGitVersionTaskExecutor> action)
-            where T : GitVersionTaskBase
+        protected GitVersionTaskBase()
         {
-            var taskLog = task.Log;
+            this.Log = new TaskLoggingHelper(this);
+        }
+
+        [Required]
+        public string SolutionDirectory { get; set; }
+
+        public string ConfigFilePath { get; set; }
+
+        public bool NoFetch { get; set; }
+
+        public bool NoNormalize { get; set; }
+        public TaskLoggingHelper Log { get; }
+
+        public override bool OnProxyExecute()
+        {
+            return ExecuteGitVersionTask();
+        }
+
+        protected abstract void ExecuteAction(IGitVersionTaskExecutor executor);
+       
+        private bool ExecuteGitVersionTask()
+        {
+            var taskLog = this.Log;
             try
             {
-                var sp = BuildServiceProvider(task);
+                var sp = BuildServiceProvider();
                 var gitVersionTaskExecutor = sp.GetService<IGitVersionTaskExecutor>();
 
-                action(gitVersionTaskExecutor);
+                ExecuteAction(gitVersionTaskExecutor);
             }
             catch (WarningException errorException)
             {
@@ -47,27 +58,27 @@ namespace GitVersion.MSBuildTask
             return !taskLog.HasLoggedErrors;
         }
 
-        private static void Configure(IServiceProvider sp, GitVersionTaskBase task)
+        private void Configure(IServiceProvider sp)
         {
             var log = sp.GetService<ILog>();
             var buildServerResolver = sp.GetService<IBuildServerResolver>();
             var arguments = sp.GetService<IOptions<Arguments>>().Value;
 
-            log.AddLogAppender(new MsBuildAppender(task.Log));
+            log.AddLogAppender(new MsBuildAppender(this.Log));
             var buildServer = buildServerResolver.Resolve();
             arguments.NoFetch = arguments.NoFetch || buildServer != null && buildServer.PreventFetch();
         }
 
-        private static IServiceProvider BuildServiceProvider(GitVersionTaskBase task)
+        private IServiceProvider BuildServiceProvider()
         {
             var services = new ServiceCollection();
 
             var arguments = new Arguments
             {
-                TargetPath = task.SolutionDirectory,
-                ConfigFile = task.ConfigFilePath,
-                NoFetch = task.NoFetch,
-                NoNormalize = task.NoNormalize
+                TargetPath = SolutionDirectory,
+                ConfigFile = ConfigFilePath,
+                NoFetch = NoFetch,
+                NoNormalize = NoNormalize
             };
 
             services.AddSingleton(_ => Options.Create(arguments));
@@ -75,10 +86,11 @@ namespace GitVersion.MSBuildTask
             services.AddModule(new GitVersionCoreModule());
 
             var sp = services.BuildServiceProvider();
-            Configure(sp, task);
+            Configure(sp);
 
             return sp;
         }
+
 
     }
 }

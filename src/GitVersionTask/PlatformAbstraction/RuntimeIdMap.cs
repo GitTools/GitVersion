@@ -3,7 +3,7 @@
 using System;
 using System.Diagnostics;
 
-namespace GitVersion.MSBuildTask.LibGit2Sharp
+namespace Microsoft.DotNet.PlatformAbstractions
 {
     internal static class RuntimeIdMap
     {

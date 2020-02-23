@@ -2,7 +2,7 @@ using Microsoft.Build.Framework;
 
 namespace GitVersion.MSBuildTask.Tasks
 {
-    public class GenerateGitVersionInformation : GitVersionTaskBase
+    public class GenerateGitVersionInformation : GitVersionTaskBase<GenerateGitVersionInformation>
     {
         [Required]
         public string ProjectFile { get; set; }
@@ -15,7 +15,8 @@ namespace GitVersion.MSBuildTask.Tasks
 
         [Output]
         public string GitVersionInformationFilePath { get; set; }
+        public override IAssemblyProvider GetAssemblyProvider() => AssemblyProvider.Instance;
 
-        public override bool Execute() => TaskProxy.GenerateGitVersionInformation(this);
+        protected override void ExecuteAction(IGitVersionTaskExecutor executor) => executor.GenerateGitVersionInformation(this);
     }
 }
