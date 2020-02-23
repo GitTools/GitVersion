@@ -11,6 +11,8 @@ namespace GitVersion.MSBuildTask
     /// <remarks>In an effort to remove dependency on MsBuild utilities assembly, in order to fix https://github.com/GitTools/GitVersion/issues/2125</remarks>
     public class TaskLoggingHelper
     {
+        private ITask _taskInstance;
+        private IBuildEngine _buildEngine;
 
         /// <summary>
         /// public constructor
@@ -32,10 +34,9 @@ namespace GitVersion.MSBuildTask
         public TaskLoggingHelper(IBuildEngine buildEngine, string taskName)
         {
             TaskName = taskName;
-            BuildEngine = buildEngine;
+            _buildEngine = buildEngine;
         }
 
-        private ITask _taskInstance;
 
         /// <summary>
         /// Gets the name of the parent task.
@@ -43,7 +44,25 @@ namespace GitVersion.MSBuildTask
         /// <value>Task name string.</value>
         protected string TaskName { get; }
 
-        public IBuildEngine BuildEngine { get; set; }
+        /// <summary>
+        /// Shortcut property for getting our build engine - we retrieve it from the task instance
+        /// </summary>
+        protected IBuildEngine BuildEngine
+        {
+            get
+            {
+                // If the task instance does not equal null then use its build engine because 
+                // the task instances build engine can be changed for example during tests. This changing of the engine on the same task object is not expected to happen
+                // during normal operation.
+                if (_taskInstance != null)
+                {
+                    return _taskInstance.BuildEngine;
+                }
+
+                return _buildEngine;
+            }
+        }
+
         public bool HasLoggedErrors { get; private set; }
 
         private void EnsureBuildEngineInitialised()
