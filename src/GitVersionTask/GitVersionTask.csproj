@@ -1,8 +1,8 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
         <!--full framework needed, as we cross compile for full .NET and dotnetcore, dotnet core uses the netstandard version.-->
-        <TargetFrameworks>net472;netstandard2.0;</TargetFrameworks>
+        <TargetFrameworks>net472;netcoreapp2.1;</TargetFrameworks>
 
         <PackageId>GitVersionTask</PackageId>
         <Title>GitVersionTask</Title>
