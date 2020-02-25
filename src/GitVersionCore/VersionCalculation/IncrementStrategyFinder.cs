@@ -2,7 +2,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
-using GitVersion.VersionCalculation.BaseVersionCalculators;
+using GitVersion.VersionCalculation;
 using LibGit2Sharp;
 using GitVersion.Configuration;
 using GitVersion.Extensions;

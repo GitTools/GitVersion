@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace GitVersion.VersionCalculation.BaseVersionCalculators
+namespace GitVersion.VersionCalculation
 {
     /// <summary>
     /// Version is from NextVersion (the configuration value), unless the current commit is tagged.

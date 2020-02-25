@@ -1,4 +1,4 @@
-using GitVersion.VersionCalculation.BaseVersionCalculators;
+using GitVersion.VersionCalculation;
 using GitVersion.VersionFilters;
 using NUnit.Framework;
 using Shouldly;

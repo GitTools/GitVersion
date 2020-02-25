@@ -28,11 +28,12 @@ namespace GitVersionCore.Tests.VersionCalculation
                 services.AddSingleton<IMetaDataCalculator>(new TestMetaDataCalculator(semanticVersionBuildMetaData));
             });
 
-            var nextVersionCalculator = sp.GetService<INextVersionCalculator>();
+            var nextVersionCalculator = sp.GetService<INextVersionCalculator>() as NextVersionCalculator;
+            nextVersionCalculator.ShouldNotBeNull();
 
             var context = new GitVersionContextBuilder().WithConfig(new Config()).Build();
 
-            var version = nextVersionCalculator.FindVersion(context);
+            var version = nextVersionCalculator.FindVersionInternal(context);
 
             version.ToString().ShouldBe("1.0.1");
         }
@@ -47,11 +48,12 @@ namespace GitVersionCore.Tests.VersionCalculation
                 services.AddSingleton<IMetaDataCalculator>(new TestMetaDataCalculator(semanticVersionBuildMetaData));
             });
 
-            var nextVersionCalculator = sp.GetService<INextVersionCalculator>();
+            var nextVersionCalculator = sp.GetService<INextVersionCalculator>() as NextVersionCalculator;
 
+            nextVersionCalculator.ShouldNotBeNull();
             var context = new GitVersionContextBuilder().WithConfig(new Config()).Build();
 
-            var version = nextVersionCalculator.FindVersion(context);
+            var version = nextVersionCalculator.FindVersionInternal(context);
 
             version.ToString().ShouldBe("1.0.0");
         }
@@ -67,13 +69,14 @@ namespace GitVersionCore.Tests.VersionCalculation
                 services.AddSingleton<IMetaDataCalculator>(new TestMetaDataCalculator(semanticVersionBuildMetaData));
             });
 
-            var nextVersionCalculator = sp.GetService<INextVersionCalculator>();
+            var nextVersionCalculator = sp.GetService<INextVersionCalculator>() as NextVersionCalculator;
+            nextVersionCalculator.ShouldNotBeNull();
 
             var context = new GitVersionContextBuilder()
                 .WithDevelopBranch()
                 .Build();
 
-            var version = nextVersionCalculator.FindVersion(context);
+            var version = nextVersionCalculator.FindVersionInternal(context);
 
             version.ToString("f").ShouldBe("1.0.0-alpha.1+2");
         }

@@ -1,5 +1,5 @@
 using System;
-using GitVersion.VersionCalculation.BaseVersionCalculators;
+using GitVersion.VersionCalculation;
 using GitVersion.Extensions;
 
 namespace GitVersion.VersionFilters
