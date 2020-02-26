@@ -65,7 +65,6 @@ namespace GitVersionCore.Tests
         }
 
         [Test]
-        [Platform(Exclude = "Linux,Unix")]
         public void DoNotThrowWhenWorkingAndRepoPathsAreSame_WithDifferentCasing()
         {
             workingPath = DefaultRepoPath.ToLower();

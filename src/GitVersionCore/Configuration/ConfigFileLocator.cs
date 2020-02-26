@@ -1,18 +1,15 @@
 using System;
 using System.IO;
-using GitVersion.Logging;
 
 namespace GitVersion.Configuration
 {
     public abstract class ConfigFileLocator : IConfigFileLocator
     {
         protected readonly IFileSystem FileSystem;
-        protected readonly ILog Log;
 
-        protected ConfigFileLocator(IFileSystem fileSystem, ILog log)
+        protected ConfigFileLocator(IFileSystem fileSystem)
         {
             FileSystem = fileSystem ?? throw new ArgumentNullException(nameof(fileSystem));
-            Log = log ?? throw new ArgumentNullException(nameof(log));
         }
 
         public abstract bool HasConfigFileAt(string workingDirectory);
@@ -26,12 +23,7 @@ namespace GitVersion.Configuration
             var workingDirectory = gitPreparer.GetWorkingDirectory();
             var projectRootDirectory = gitPreparer.GetProjectRootDirectory();
 
-            if (HasConfigFileAt(workingDirectory))
-            {
-                return GetConfigFilePath(workingDirectory);
-            }
-
-            return GetConfigFilePath(projectRootDirectory);
+            return GetConfigFilePath(HasConfigFileAt(workingDirectory) ? workingDirectory : projectRootDirectory);
         }
 
         public Config ReadConfig(string workingDirectory)
