@@ -9,8 +9,7 @@ namespace GitVersionCore.Tests.Helpers
 {
     public class TestFileSystem : IFileSystem
     {
-        private static IEqualityComparer<string> fileSystemCasingComparer = System.Environment.OSVersion.Platform == PlatformID.Unix ? StringComparer.Ordinal : StringComparer.OrdinalIgnoreCase;
-        private readonly Dictionary<string, byte[]> fileSystem = new Dictionary<string, byte[]>(fileSystemCasingComparer);
+        private readonly Dictionary<string, byte[]> fileSystem = new Dictionary<string, byte[]>(StringComparerUtils.OsDependentComparer);
 
         public void Copy(string @from, string to, bool overwrite)
         {
@@ -122,7 +121,10 @@ namespace GitVersionCore.Tests.Helpers
 
         public bool PathsEqual(string path, string otherPath)
         {
-            return path == otherPath;
+            return string.Equals(
+                Path.GetFullPath(path).TrimEnd('\\').TrimEnd('/'),
+                Path.GetFullPath(otherPath).TrimEnd('\\').TrimEnd('/'),
+                StringComparerUtils.OsDependentComparison);
         }
     }
 }

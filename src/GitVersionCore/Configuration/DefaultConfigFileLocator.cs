@@ -1,12 +1,11 @@
 using System.IO;
 using GitVersion.Exceptions;
-using GitVersion.Logging;
 
 namespace GitVersion.Configuration
 {
     public class DefaultConfigFileLocator : ConfigFileLocator
     {
-        public DefaultConfigFileLocator(IFileSystem fileSystem, ILog log) : base(fileSystem, log)
+        public DefaultConfigFileLocator(IFileSystem fileSystem) : base(fileSystem)
         {
         }
 

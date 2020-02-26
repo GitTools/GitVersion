@@ -1,11 +1,9 @@
-using System;
 using System.IO;
 using NUnit.Framework;
 using Shouldly;
 using GitVersion.Configuration;
 using GitVersion.Exceptions;
 using GitVersion;
-using GitVersion.Logging;
 using GitVersionCore.Tests.Helpers;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
@@ -22,6 +20,7 @@ namespace GitVersionCore.Tests
         private string workingPath;
         private IFileSystem fileSystem;
         private IConfigProvider configurationProvider;
+        private IConfigFileLocator configFileLocator;
 
         [SetUp]
         public void Setup()
@@ -37,6 +36,7 @@ namespace GitVersionCore.Tests
 
             fileSystem = sp.GetService<IFileSystem>();
             configurationProvider = sp.GetService<IConfigProvider>();
+            configFileLocator = sp.GetService<IConfigFileLocator>();
 
             ShouldlyConfiguration.ShouldMatchApprovedDefaults.LocateTestMethodUsingAttribute<TestAttribute>();
         }
@@ -49,10 +49,7 @@ namespace GitVersionCore.Tests
 
             var exception = Should.Throw<WarningException>(() =>
             {
-                WithDefaultConfigFileLocator(configFileLocator =>
-                {
-                    configFileLocator.Verify(workingPath, repoPath);
-                });
+                configFileLocator.Verify(workingPath, repoPath);
             });
 
             var expecedMessage = $"Ambiguous config file selection from '{workingDirectoryConfigFilePath}' and '{repositoryConfigFilePath}'";
@@ -64,12 +61,7 @@ namespace GitVersionCore.Tests
         {
             SetupConfigFileContent(string.Empty, DefaultConfigFileLocator.DefaultFileName, repoPath);
 
-            var output = WithDefaultConfigFileLocator(configFileLocator =>
-            {
-                configurationProvider.Provide(repoPath);
-            });
-
-            output.Length.ShouldBe(0);
+            Should.NotThrow(() => { configurationProvider.Provide(repoPath); });
         }
 
         private string SetupConfigFileContent(string text, string fileName, string path)
@@ -78,20 +70,6 @@ namespace GitVersionCore.Tests
             fileSystem.WriteAllText(fullPath, text);
 
             return fullPath;
-        }
-
-        private string WithDefaultConfigFileLocator(Action<IConfigFileLocator> action)
-        {
-            var stringLogger = string.Empty;
-            void Action(string info) => stringLogger = info;
-
-            var logAppender = new TestLogAppender(Action);
-            var log = new Log(logAppender);
-
-            var configFileLocator = new DefaultConfigFileLocator(fileSystem, log);
-            action(configFileLocator);
-
-            return stringLogger;
         }
     }
 }
