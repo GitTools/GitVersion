@@ -136,6 +136,20 @@ namespace GitVersionCore.Tests
             stringLogger.Length.ShouldBe(0);
         }
 
+        [Test]
+        public void ThrowsExceptionOnCustomYmlFileDoesNotExist()
+        {
+            var sp = GetServiceProvider(arguments);
+            configFileLocator = sp.GetService<IConfigFileLocator>();
+
+            var exception = Should.Throw<WarningException>(() => { configFileLocator.Verify(workingPath, repoPath); });
+
+            var workingPathFileConfig = Path.Combine(workingPath, arguments.ConfigFile);
+            var repoPathFileConfig = Path.Combine(repoPath, arguments.ConfigFile);
+            var expectedMessage = $"The configuration file was not found at '{workingPathFileConfig}' or '{repoPathFileConfig}'";
+            exception.Message.ShouldBe(expectedMessage);
+        }
+
         private string SetupConfigFileContent(string text, string fileName = null, string path = null)
         {
             if (string.IsNullOrEmpty(fileName)) fileName = ((NamedConfigFileLocator)configFileLocator).FilePath;

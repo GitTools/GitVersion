@@ -46,6 +46,11 @@ namespace GitVersion.Configuration
             {
                 throw new WarningException($"Ambiguous config file selection from '{workingConfigFile}' and '{projectRootConfigFile}'");
             }
+
+            if (!hasConfigInProjectRootDirectory && !hasConfigInWorkingDirectory)
+            {
+                throw new WarningException($"The configuration file was not found at '{workingConfigFile}' or '{projectRootConfigFile}'");
+            }
         }
     }
 }
