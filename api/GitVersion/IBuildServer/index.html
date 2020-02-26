@@ -138,6 +138,20 @@
 			<li class="header">Namespace</li>
 		<li><a href="/api/GitVersion">GitVersion</a></li>
 		<li role="separator" class="divider"></li>
+			<li class="header">Interface Types</li>
+				<li><a href="/api/GitVersion/IArgumentParser">IArgumentParser</a></li>
+				<li class="selected"><a href="/api/GitVersion/IBuildServer">IBuildServer</a></li>
+				<li><a href="/api/GitVersion/IBuildServerResolver">IBuildServerResolver</a></li>
+				<li><a href="/api/GitVersion/IEnvironment">IEnvironment</a></li>
+				<li><a href="/api/GitVersion/IExecCommand">IExecCommand</a></li>
+				<li><a href="/api/GitVersion/IFileSystem">IFileSystem</a></li>
+				<li><a href="/api/GitVersion/IGitPreparer">IGitPreparer</a></li>
+				<li><a href="/api/GitVersion/IGitVersionCalculator">I<wbr>Git<wbr>Version<wbr>Calculator</a></li>
+				<li><a href="/api/GitVersion/IGitVersionExecutor">IGitVersionExecutor</a></li>
+				<li><a href="/api/GitVersion/IGitVersionModule">IGitVersionModule</a></li>
+				<li><a href="/api/GitVersion/IHelpWriter">IHelpWriter</a></li>
+				<li><a href="/api/GitVersion/IThreadSleep">IThreadSleep</a></li>
+				<li><a href="/api/GitVersion/IVersionWriter">IVersionWriter</a></li>
 			<li class="header">Class Types</li>
 				<li><a href="/api/GitVersion/ArgumentParser">ArgumentParser</a></li>
 				<li><a href="/api/GitVersion/Arguments">Arguments</a></li>
@@ -154,7 +168,7 @@
 				<li><a href="/api/GitVersion/GitVersionCoreModule">GitVersionCoreModule</a></li>
 				<li><a href="/api/GitVersion/GitVersionExecutor">GitVersionExecutor</a></li>
 				<li><a href="/api/GitVersion/GitVersionExeModule">GitVersionExeModule</a></li>
-				<li><a href="/api/GitVersion/GitVersionFinder">GitVersionFinder</a></li>
+				<li><a href="/api/GitVersion/GitVersionModule">GitVersionModule</a></li>
 				<li><a href="/api/GitVersion/HelpWriter">HelpWriter</a></li>
 				<li><a href="/api/GitVersion/IncrementStrategyExtensions">Increment<wbr>Strategy<wbr>Extensions</a></li>
 				<li><a href="/api/GitVersion/IncrementStrategyFinder">Increment<wbr>Strategy<wbr>Finder</a></li>
@@ -165,27 +179,12 @@
 				<li><a href="/api/GitVersion/SemanticVersionFormatValues">Semantic<wbr>Version<wbr>Format<wbr>Values</a></li>
 				<li><a href="/api/GitVersion/SemanticVersionPreReleaseTag">Semantic<wbr>Version<wbr>Pre<wbr>Release<wbr>Tag</a></li>
 				<li><a href="/api/GitVersion/VersionWriter">VersionWriter</a></li>
-			<li class="header">Interface Types</li>
-				<li><a href="/api/GitVersion/IArgumentParser">IArgumentParser</a></li>
-				<li class="selected"><a href="/api/GitVersion/IBuildServer">IBuildServer</a></li>
-				<li><a href="/api/GitVersion/IBuildServerResolver">IBuildServerResolver</a></li>
-				<li><a href="/api/GitVersion/IEnvironment">IEnvironment</a></li>
-				<li><a href="/api/GitVersion/IExecCommand">IExecCommand</a></li>
-				<li><a href="/api/GitVersion/IFileSystem">IFileSystem</a></li>
-				<li><a href="/api/GitVersion/IGitPreparer">IGitPreparer</a></li>
-				<li><a href="/api/GitVersion/IGitVersionCalculator">I<wbr>Git<wbr>Version<wbr>Calculator</a></li>
-				<li><a href="/api/GitVersion/IGitVersionExecutor">IGitVersionExecutor</a></li>
-				<li><a href="/api/GitVersion/IGitVersionFinder">IGitVersionFinder</a></li>
-				<li><a href="/api/GitVersion/IGitVersionModule">IGitVersionModule</a></li>
-				<li><a href="/api/GitVersion/IHelpWriter">IHelpWriter</a></li>
-				<li><a href="/api/GitVersion/IThreadSleep">IThreadSleep</a></li>
-				<li><a href="/api/GitVersion/IVersionWriter">IVersionWriter</a></li>
+			<li class="header">Struct Types</li>
+				<li><a href="/api/GitVersion/BranchCommit">BranchCommit</a></li>
 			<li class="header">Enum Types</li>
 				<li><a href="/api/GitVersion/CommitMessageIncrementMode">Commit<wbr>Message<wbr>Increment<wbr>Mode</a></li>
 				<li><a href="/api/GitVersion/IncrementStrategy">IncrementStrategy</a></li>
 				<li><a href="/api/GitVersion/VersionField">VersionField</a></li>
-			<li class="header">Struct Types</li>
-				<li><a href="/api/GitVersion/BranchCommit">BranchCommit</a></li>
 
 
                     </ul>
@@ -221,19 +220,19 @@
 								<dt>Implementing Types</dt>
 								<dd>
 									<ul class="list-unstyled">
-											<li><a href="/api/GitVersion.BuildServers/MyGet">MyGet</a></li>								
-											<li><a href="/api/GitVersion.BuildServers/EnvRun">EnvRun</a></li>								
-											<li><a href="/api/GitVersion.BuildServers/GitHubActions">GitHubActions</a></li>								
 											<li><a href="/api/GitVersion.BuildServers/TeamCity">TeamCity</a></li>								
-											<li><a href="/api/GitVersion.BuildServers/AppVeyor">AppVeyor</a></li>								
-											<li><a href="/api/GitVersion.BuildServers/GitLabCi">GitLabCi</a></li>								
-											<li><a href="/api/GitVersion.BuildServers/Jenkins">Jenkins</a></li>								
-											<li><a href="/api/GitVersion.BuildServers/AzurePipelines">AzurePipelines</a></li>								
-											<li><a href="/api/GitVersion.BuildServers/CodeBuild">CodeBuild</a></li>								
-											<li><a href="/api/GitVersion.BuildServers/TravisCi">TravisCi</a></li>								
-											<li><a href="/api/GitVersion/BuildServerBase">BuildServerBase</a></li>								
 											<li><a href="/api/GitVersion.BuildServers/ContinuaCi">ContinuaCi</a></li>								
+											<li><a href="/api/GitVersion/BuildServerBase">BuildServerBase</a></li>								
+											<li><a href="/api/GitVersion.BuildServers/TravisCi">TravisCi</a></li>								
+											<li><a href="/api/GitVersion.BuildServers/MyGet">MyGet</a></li>								
+											<li><a href="/api/GitVersion.BuildServers/AppVeyor">AppVeyor</a></li>								
 											<li><a href="/api/GitVersion.BuildServers/Drone">Drone</a></li>								
+											<li><a href="/api/GitVersion.BuildServers/EnvRun">EnvRun</a></li>								
+											<li><a href="/api/GitVersion.BuildServers/GitLabCi">GitLabCi</a></li>								
+											<li><a href="/api/GitVersion.BuildServers/AzurePipelines">AzurePipelines</a></li>								
+											<li><a href="/api/GitVersion.BuildServers/Jenkins">Jenkins</a></li>								
+											<li><a href="/api/GitVersion.BuildServers/CodeBuild">CodeBuild</a></li>								
+											<li><a href="/api/GitVersion.BuildServers/GitHubActions">GitHubActions</a></li>								
 									</ul>
 								</dd>				
 						</dl>
@@ -243,32 +242,32 @@
 							graph BT
 	Type["IBuildServer"]
 class Type type-node
-	Implementing0["MyGet"]-.-&gt;Type
-	click Implementing0 "/api/GitVersion.BuildServers/MyGet"
-	Implementing1["EnvRun"]-.-&gt;Type
-	click Implementing1 "/api/GitVersion.BuildServers/EnvRun"
-	Implementing2["GitHubActions"]-.-&gt;Type
-	click Implementing2 "/api/GitVersion.BuildServers/GitHubActions"
-	Implementing3["TeamCity"]-.-&gt;Type
-	click Implementing3 "/api/GitVersion.BuildServers/TeamCity"
-	Implementing4["AppVeyor"]-.-&gt;Type
-	click Implementing4 "/api/GitVersion.BuildServers/AppVeyor"
-	Implementing5["GitLabCi"]-.-&gt;Type
-	click Implementing5 "/api/GitVersion.BuildServers/GitLabCi"
-	Implementing6["Jenkins"]-.-&gt;Type
-	click Implementing6 "/api/GitVersion.BuildServers/Jenkins"
-	Implementing7["AzurePipelines"]-.-&gt;Type
-	click Implementing7 "/api/GitVersion.BuildServers/AzurePipelines"
-	Implementing8["CodeBuild"]-.-&gt;Type
-	click Implementing8 "/api/GitVersion.BuildServers/CodeBuild"
-	Implementing9["TravisCi"]-.-&gt;Type
-	click Implementing9 "/api/GitVersion.BuildServers/TravisCi"
-	Implementing10["BuildServerBase"]-.-&gt;Type
-	click Implementing10 "/api/GitVersion/BuildServerBase"
-	Implementing11["ContinuaCi"]-.-&gt;Type
-	click Implementing11 "/api/GitVersion.BuildServers/ContinuaCi"
-	Implementing12["Drone"]-.-&gt;Type
-	click Implementing12 "/api/GitVersion.BuildServers/Drone"
+	Implementing0["TeamCity"]-.-&gt;Type
+	click Implementing0 "/api/GitVersion.BuildServers/TeamCity"
+	Implementing1["ContinuaCi"]-.-&gt;Type
+	click Implementing1 "/api/GitVersion.BuildServers/ContinuaCi"
+	Implementing2["BuildServerBase"]-.-&gt;Type
+	click Implementing2 "/api/GitVersion/BuildServerBase"
+	Implementing3["TravisCi"]-.-&gt;Type
+	click Implementing3 "/api/GitVersion.BuildServers/TravisCi"
+	Implementing4["MyGet"]-.-&gt;Type
+	click Implementing4 "/api/GitVersion.BuildServers/MyGet"
+	Implementing5["AppVeyor"]-.-&gt;Type
+	click Implementing5 "/api/GitVersion.BuildServers/AppVeyor"
+	Implementing6["Drone"]-.-&gt;Type
+	click Implementing6 "/api/GitVersion.BuildServers/Drone"
+	Implementing7["EnvRun"]-.-&gt;Type
+	click Implementing7 "/api/GitVersion.BuildServers/EnvRun"
+	Implementing8["GitLabCi"]-.-&gt;Type
+	click Implementing8 "/api/GitVersion.BuildServers/GitLabCi"
+	Implementing9["AzurePipelines"]-.-&gt;Type
+	click Implementing9 "/api/GitVersion.BuildServers/AzurePipelines"
+	Implementing10["Jenkins"]-.-&gt;Type
+	click Implementing10 "/api/GitVersion.BuildServers/Jenkins"
+	Implementing11["CodeBuild"]-.-&gt;Type
+	click Implementing11 "/api/GitVersion.BuildServers/CodeBuild"
+	Implementing12["GitHubActions"]-.-&gt;Type
+	click Implementing12 "/api/GitVersion.BuildServers/GitHubActions"
 
 						</div>
 					</div>

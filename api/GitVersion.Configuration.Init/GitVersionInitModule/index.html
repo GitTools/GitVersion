@@ -183,6 +183,7 @@
 								<dd>
 									<ul class="list-unstyled">										
 											<li>object</li>								
+											<li><a href="/api/GitVersion/GitVersionModule">GitVersionModule</a></li>								
 									</ul>
 								</dd>				
 							
@@ -192,7 +193,9 @@
 					<div class="col-md-6">
 						<div class="mermaid">
 							graph BT
-	Type--&gt;Base0["object"]
+	Type--&gt;Base0["GitVersionModule"]
+	click Base0 "/api/GitVersion/GitVersionModule"
+	Base0--&gt;Base1["object"]
 	Type-.-&gt;Interface0["IGitVersionModule"]
 	click Interface0 "/api/GitVersion/IGitVersionModule"
 	Type["GitVersionInitModule"]
@@ -205,7 +208,7 @@ class Type type-node
 		</div>
 
 	<h1 id="Syntax">Syntax</h1>
-	<pre><code>public class GitVersionInitModule : IGitVersionModule</code></pre>
+	<pre><code>public class GitVersionInitModule : GitVersionModule, IGitVersionModule</code></pre>
 
 
 
@@ -229,6 +232,15 @@ class Type type-node
 							</tr>
 						</thead>
 							<tbody><tr>
+								<td><a href="/api/GitVersion/GitVersionModule/DC79FD1B">FindAllDerivedTypes<wbr>&lt;T&gt;<wbr><wbr>(Assembly)<wbr></a></td>
+								<td>IEnumerable<wbr>&lt;Type&gt;<wbr></td>
+								<td>
+									<div></div>
+											<div><small><em>Inherited from <a href="/api/GitVersion/GitVersionModule">GitVersionModule</a></em></small></div>
+											<div><small><em>static</em></small></div>
+								</td>
+							</tr>
+							<tr>
 								<td><a href="/api/GitVersion.Configuration.Init/GitVersionInitModule/C7F4BC83">RegisterTypes<wbr>(IServiceCollection)<wbr></a></td>
 								<td>void</td>
 								<td>

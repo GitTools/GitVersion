@@ -231,7 +231,7 @@ GitVersion.yaml file</li>
 (e.g., <code>Merge 'release/3.0.0' into 'master'</code> will return <code>3.0.0</code>)</li>
 <li><code>FallbackBaseVersionStrategy</code> - Always returns 0.1.0 for new repositories</li>
 </ul>
-<p>Each strategy needs to return an instance of <code><a href="/api/GitVersion.VersionCalculation.BaseVersionCalculators/BaseVersion">BaseVersion</a></code> which has the
+<p>Each strategy needs to return an instance of <code><a href="/api/GitVersion.VersionCalculation/BaseVersion">BaseVersion</a></code> which has the
 following properties:</p>
 <ul>
 <li><code>Source</code> - Description of the source (e.g., <code>Merge message 'Merge 'release/3.0.0' into 'master'</code>)</li>
