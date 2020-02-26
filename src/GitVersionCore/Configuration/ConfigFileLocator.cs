@@ -41,7 +41,6 @@ namespace GitVersion.Configuration
             if (FileSystem.Exists(configFilePath))
             {
                 var readAllText = FileSystem.ReadAllText(configFilePath);
-                LegacyConfigNotifier.Notify(new StringReader(readAllText));
                 return ConfigSerializer.Read(new StringReader(readAllText));
             }
 
