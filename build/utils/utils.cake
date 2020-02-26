@@ -121,6 +121,24 @@ GitVersion GetVersion(BuildParameters parameters)
     return gitVersion;
 }
 
+void ValidateVersion(BuildParameters parameters)
+{
+    var gitVersionTool = GetFiles($"artifacts/**/bin/{parameters.CoreFxVersion31}/GitVersion.dll").FirstOrDefault();
+    IEnumerable<string> output;
+    var fullFxResult = StartProcess(
+        "dotnet",
+        new ProcessSettings {
+            Arguments = $"\"{gitVersionTool}\" -version",
+            RedirectStandardOutput = true,
+        },
+        out output
+    );
+
+    var outputStr = string.Concat(output);
+
+    Assert.Equal(parameters.Version.SemVersion, outputStr);
+}
+
 void RunGitVersionOnCI(BuildParameters parameters)
 {
     // set the CI build version number with GitVersion
