@@ -8,10 +8,6 @@ namespace GitVersion
 {
     public class Arguments
     {
-        public Arguments()
-        {
-            Output.Add(OutputType.Json);
-        }
         public AuthenticationInfo Authentication;
 
         public Config OverrideConfig;

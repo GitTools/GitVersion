@@ -63,10 +63,6 @@ namespace GitVersion
                         break;
                 }
             }
-            else
-            {
-                throw new ArgumentOutOfRangeException();
-            }
 
             if (arguments.UpdateWixVersionFile)
             {
