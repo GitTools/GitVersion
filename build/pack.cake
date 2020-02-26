@@ -21,11 +21,18 @@ Task("Build")
     RunGitVersionOnCI(parameters);
 });
 
+Task("Validate-Version")
+    .IsDependentOn("Build")
+    .Does<BuildParameters>((parameters) =>
+{
+    ValidateVersion(parameters);
+});
+
 #endregion
 
 #region Pack
 Task("Pack-Prepare")
-    .IsDependentOn("Build")
+    .IsDependentOn("Validate-Version")
     .Does<BuildParameters>((parameters) =>
 {
     // publish single file for all native runtimes (self contained)
