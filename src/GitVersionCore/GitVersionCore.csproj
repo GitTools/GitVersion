@@ -3,7 +3,6 @@
     <PropertyGroup>
         <TargetFrameworks>netstandard2.0</TargetFrameworks>
         <RootNamespace>GitVersion</RootNamespace>
-        <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
         <DocumentationFile>bin\$(Configuration)\GitVersionCore.xml</DocumentationFile>
         <NoWarn>1591</NoWarn>
 

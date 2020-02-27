@@ -84,7 +84,6 @@ public static List<string> ExecGitCmd(this ICakeContext context, string cmd)
     return redirectedOutput.ToList();
 }
 
-
 DirectoryPath HomePath()
 {
     return IsRunningOnWindows()
@@ -129,7 +128,6 @@ void RunGitVersionOnCI(BuildParameters parameters)
     {
         var settings = new GitVersionSettings
         {
-            UpdateAssemblyInfo = true,
             LogFilePath = "console",
             OutputType = GitVersionOutput.BuildServer
         };

@@ -5,7 +5,6 @@
         <RootNamespace>GitVersion</RootNamespace>
         <AssemblyName>GitVersion</AssemblyName>
         <TargetFrameworks>netcoreapp2.1;netcoreapp3.1</TargetFrameworks>
-        <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
         <PlatformTarget>AnyCPU</PlatformTarget>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <DocumentationFile>bin\$(Configuration)\GitVersion.xml</DocumentationFile>
