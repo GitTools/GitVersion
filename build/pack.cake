@@ -7,7 +7,6 @@ Task("Clean")
 
     CleanDirectories("./src/**/bin/" + parameters.Configuration);
     CleanDirectories("./src/**/obj");
-    DeleteFiles("src/GitVersionRubyGem/*.gem");
 
     CleanDirectories(parameters.Paths.Directories.ToClean);
 });
@@ -69,11 +68,6 @@ Task("Pack-Prepare")
     var sourceDir = parameters.Paths.Directories.Native.Combine(parameters.NativeRuntimes[PlatformFamily.Windows]);
     var sourceFiles = GetFiles(sourceDir + "/*.*");
 
-    // RubyGem
-    var gemDir = new DirectoryPath("./src/GitVersionRubyGem/bin");
-    EnsureDirectoryExists(gemDir);
-    CopyFiles(sourceFiles, gemDir);
-
     // Cmdline and Portable
     var cmdlineDir = parameters.Paths.Directories.ArtifactsBinCmdline.Combine("tools");
     var portableDir = parameters.Paths.Directories.ArtifactsBinPortable.Combine("tools");
@@ -85,26 +79,6 @@ Task("Pack-Prepare")
 
     sourceFiles += GetFiles("./nuspec/*.ps1") + GetFiles("./nuspec/*.txt");
     CopyFiles(sourceFiles, portableDir);
-});
-
-Task("Pack-Gem")
-    .IsDependentOn("Pack-Prepare")
-    .Does<BuildParameters>((parameters) =>
-{
-    var workDir = "./src/GitVersionRubyGem";
-
-    var gemspecFile = new FilePath(workDir + "/gitversion.gemspec");
-    // update version number
-    ReplaceTextInFile(gemspecFile, "$version$", parameters.Version.GemVersion);
-
-    var toolPath = Context.FindToolInPath(IsRunningOnWindows() ? "gem.cmd" : "gem");
-    GemBuild(gemspecFile, new Cake.Gem.Build.GemBuildSettings()
-    {
-        WorkingDirectory = workDir,
-        ToolPath = toolPath
-    });
-
-    CopyFiles(workDir + "/*.gem", parameters.Paths.Directories.BuildArtifact);
 });
 
 Task("Pack-Nuget")

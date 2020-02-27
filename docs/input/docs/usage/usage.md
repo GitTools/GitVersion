@@ -12,7 +12,6 @@ running on one. The exe offers more options and works for not just .net projects
 - [Using the Command Line tool](command-line)
 - [Using the MSBuild Task](msbuild-task)
 - [Using the NuGet Library package](nuget-library)
-- [Using the Ruby Gem](gem)
 
  There exist also wrappers around the [Command Line tool](command-line) for
  several build servers. See [Build server support](../build-server-support/build-server-support)

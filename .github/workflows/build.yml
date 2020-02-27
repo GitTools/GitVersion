@@ -13,7 +13,6 @@ env:
   ENABLED_MULTI_STAGE_BUILD: true
   ENABLED_UNIT_TESTS: true
   ENABLED_PUBLISH_DOCKER: true
-  ENABLED_PUBLISH_GEM: true
   ENABLED_PUBLISH_NUGET: true
   ENABLED_PUBLISH_CHOCOLATEY: true
 
@@ -165,7 +164,7 @@ jobs:
     runs-on: windows-latest
     strategy:
       matrix:
-        taskName: [CI, NuGet, Chocolatey, Gem, Documentation]
+        taskName: [CI, NuGet, Chocolatey, Documentation]
       fail-fast: false
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -174,7 +173,6 @@ jobs:
       NUGET_API_URL: ${{ secrets.NUGET_API_URL }}
       CHOCOLATEY_API_KEY: ${{ secrets.CHOCOLATEY_API_KEY }}
       CHOCOLATEY_API_URL: ${{ secrets.CHOCOLATEY_API_URL }}
-      RUBY_GEM_API_KEY: ${{ secrets.RUBY_GEM_API_KEY }}
     steps:
       - uses: actions/checkout@v2
       - name: Fetch all history for all tags and branches

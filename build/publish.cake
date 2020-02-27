@@ -49,34 +49,6 @@ Task("Publish-AzurePipeline")
     publishingError = true;
 });
 
-Task("Publish-Gem-Internal")
-    .WithCriteria<BuildParameters>((context, parameters) => parameters.EnabledPublishGem,  "Publish-Gem was disabled.")
-    .WithCriteria<BuildParameters>((context, parameters) => parameters.IsRunningOnWindows, "Publish-Gem works only on Windows agents.")
-    .WithCriteria<BuildParameters>((context, parameters) => parameters.IsReleasingCI,      "Publish-Gem works only on Releasing CI.")
-    .WithCriteria<BuildParameters>((context, parameters) => parameters.IsStableRelease() || parameters.IsPreRelease(), "Publish-Gem works only for releases.")
-    .IsDependentOnWhen("Pack-Gem", singleStageRun)
-    .Does<BuildParameters>((parameters) =>
-{
-    var apiKey = parameters.Credentials.RubyGem.ApiKey;
-    if(string.IsNullOrEmpty(apiKey)) {
-        throw new InvalidOperationException("Could not resolve Ruby Gem Api key.");
-    }
-
-    SetRubyGemPushApiKey(apiKey);
-
-    var toolPath = Context.FindToolInPath(IsRunningOnWindows() ? "gem.cmd" : "gem");
-    GemPush(parameters.Paths.Files.GemOutputFilePath, new Cake.Gem.Push.GemPushSettings()
-    {
-        ToolPath = toolPath,
-    });
-})
-.OnError(exception =>
-{
-    Information("Publish-Gem Task failed, but continuing with next Task...");
-    Error(exception.Dump());
-    publishingError = true;
-});
-
 Task("Publish-NuGet-Internal")
     .WithCriteria<BuildParameters>((context, parameters) => parameters.EnabledPublishNuget, "Publish-NuGet was disabled.")
     .WithCriteria<BuildParameters>((context, parameters) => parameters.IsRunningOnWindows,  "Publish-NuGet works only on Windows agents.")

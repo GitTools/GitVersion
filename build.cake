@@ -6,7 +6,6 @@
 #addin "nuget:?package=Cake.Compression&version=0.2.4"
 #addin "nuget:?package=Cake.Coverlet&version=2.4.2"
 #addin "nuget:?package=Cake.Docker&version=0.11.0"
-#addin "nuget:?package=Cake.Gem&version=0.8.1"
 #addin "nuget:?package=Cake.Git&version=0.21.0"
 #addin "nuget:?package=Cake.Gitter&version=0.11.1"
 #addin "nuget:?package=Cake.Incubator&version=5.1.0"
@@ -118,7 +117,6 @@ Teardown<BuildParameters>((context, parameters) =>
 //////////////////////////////////////////////////////////////////////
 
 Task("Pack")
-    .IsDependentOn("Pack-Gem")
     .IsDependentOn("Pack-Nuget")
     .IsDependentOn("Pack-Chocolatey")
     .IsDependentOn("Zip-Files")
@@ -149,16 +147,6 @@ Task("Test")
 Task("Publish-CI")
     .IsDependentOn("Publish-AppVeyor")
     .IsDependentOn("Publish-AzurePipeline")
-    .Finally(() =>
-{
-    if (publishingError)
-    {
-        throw new Exception("An error occurred during the publishing of GitVersion.");
-    }
-});
-
-Task("Publish-Gem")
-    .IsDependentOn("Publish-Gem-Internal")
     .Finally(() =>
 {
     if (publishingError)
@@ -202,7 +190,6 @@ Task("Publish")
     .IsDependentOn("Publish-AzurePipeline")
     .IsDependentOn("Publish-NuGet-Internal")
     .IsDependentOn("Publish-Chocolatey-Internal")
-    .IsDependentOn("Publish-Gem-Internal")
     .IsDependentOn("Publish-Documentation-Internal")
     .Finally(() =>
 {

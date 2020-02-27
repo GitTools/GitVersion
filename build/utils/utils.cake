@@ -99,17 +99,6 @@ void ReplaceTextInFile(FilePath filePath, string oldValue, string newValue, bool
     System.IO.File.WriteAllText(file, System.IO.File.ReadAllText(file).Replace(oldValue, newValue));
 }
 
-void SetRubyGemPushApiKey(string apiKey)
-{
-    // it's a hack, creating a credentials file to be able to push the gem
-    var workDir = "./src/GitVersionRubyGem";
-    var gemHomeDir = HomePath().Combine(".gem");
-    var credentialFile = new FilePath(workDir + "/credentials");
-    EnsureDirectoryExists(gemHomeDir);
-    ReplaceTextInFile(credentialFile, "$api_key$", apiKey, true);
-    CopyFileToDirectory(credentialFile, gemHomeDir);
-}
-
 GitVersion GetVersion(BuildParameters parameters)
 {
     var gitversionFilePath = $"artifacts/gitversion.json";
