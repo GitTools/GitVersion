@@ -136,7 +136,7 @@ void ValidateVersion(BuildParameters parameters)
 
     var outputStr = string.Concat(output);
 
-    Assert.Equal(parameters.Version.SemVersion, outputStr);
+    Assert.Equal(parameters.Version.GitVersion.InformationalVersion, outputStr);
 }
 
 void RunGitVersionOnCI(BuildParameters parameters)

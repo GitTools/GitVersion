@@ -102,6 +102,10 @@ Task("Pack-Nuget")
                 Version = parameters.Version.NugetVersion,
                 NoPackageAnalysis = true,
                 OutputDirectory = parameters.Paths.Directories.NugetRoot,
+                Repository = new NuGetRepository {
+                    Branch = parameters.Version.GitVersion.BranchName,
+                    Commit = parameters.Version.GitVersion.Sha
+                },
                 Files = GetFiles(artifactPath + "/**/*.*")
                         .Select(file => new NuSpecContent { Source = file.FullPath, Target = file.FullPath.Replace(artifactPath, "") })
                         .Concat(
