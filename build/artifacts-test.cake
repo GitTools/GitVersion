@@ -6,6 +6,10 @@ Task("Artifacts-Prepare")
     .IsDependentOnWhen("Pack-Nuget", singleStageRun)
     .Does<BuildParameters>((parameters) =>
 {
+    foreach(var dockerImage in parameters.Docker.Images)
+    {
+        DockerPullImage(dockerImage, parameters);
+    }
 });
 
 Task("Artifacts-DotnetTool-Test")
@@ -19,10 +23,7 @@ Task("Artifacts-DotnetTool-Test")
 
     foreach(var dockerImage in parameters.Docker.Images)
     {
-        var cmd = $"$result = dotnet tool install GitVersion.Tool --version {version} --tool-path {rootPrefix}/gitversion --add-source {rootPrefix}/nuget | out-null; ";
-        cmd += "if($LASTEXITCODE -eq 0) { ";
-        cmd += $"{rootPrefix}/gitversion/dotnet-gitversion {rootPrefix}/repo /showvariable FullSemver;";
-        cmd += "} else { echo $result }";
+        var cmd = $"-file {rootPrefix}/scripts/Test-DotnetGlobalTool.ps1 -version {version} -repoPath {rootPrefix}/repo -nugetPath {rootPrefix}/nuget -toolPath {rootPrefix}/gitversion";
 
         DockerTestArtifact(dockerImage, parameters, cmd);
     }
@@ -40,10 +41,8 @@ Task("Artifacts-MsBuild-Test")
     foreach(var dockerImage in parameters.Docker.Images)
     {
         var (os, distro, targetframework) = dockerImage;
-        var cmd = $"$result = dotnet build {rootPrefix}/repo/test --source {rootPrefix}/nuget --source https://api.nuget.org/v3/index.json -p:GitVersionTaskVersion={version} -p:TargetFramework={targetframework} *>&1; ";
-        cmd += "if($LASTEXITCODE -eq 0) { ";
-        cmd += $"dotnet {rootPrefix}/repo/test/build/corefx/{targetframework}/TestRepo.dll;";
-        cmd += "} else { echo $result }";
+
+        var cmd = $"-file {rootPrefix}/scripts/Test-MsBuild.ps1 -version {version} -repoPath {rootPrefix}/repo/test -nugetPath {rootPrefix}/nuget -targetframework {targetframework}";
 
         DockerTestArtifact(dockerImage, parameters, cmd);
     }

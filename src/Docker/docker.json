@@ -17,10 +17,10 @@
     },
     "windows": {
         "2.1": [
-            "nanoserver-1809"
+            "nanoserver"
         ],
         "3.1": [
-            "nanoserver-1809"
+            "nanoserver"
         ]
     }
 }

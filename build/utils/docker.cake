@@ -99,12 +99,17 @@ void DockerTestArtifact(DockerImage dockerImage, BuildParameters parameters, str
     var (os, distro, targetframework) = dockerImage;
     var tag = $"gittools/build-images:{distro}-sdk-{targetframework.Replace("netcoreapp", "")}";
 
-    cmd = "-Command " + cmd; // powershell 7 needs a -Command parameter
-
     Information("Docker tag: {0}", tag);
-    Information("Docker cmd: {0}", cmd);
+    Information("Docker cmd: pwsh {0}", cmd);
 
     DockerTestRun(settings, parameters, tag, "pwsh", cmd);
+}
+
+void DockerPullImage(DockerImage dockerImage, BuildParameters parameters)
+{
+    var (os, distro, targetframework) = dockerImage;
+    var tag = $"gittools/build-images:{distro}-sdk-{targetframework.Replace("netcoreapp", "")}";
+    DockerPull(tag);
 }
 
 DockerContainerRunSettings GetDockerRunSettings(BuildParameters parameters)
@@ -116,7 +121,8 @@ DockerContainerRunSettings GetDockerRunSettings(BuildParameters parameters)
         Volume = new[]
         {
             $"{currentDir}:{parameters.DockerRootPrefix}/repo",
-            $"{currentDir}/artifacts/v{parameters.Version.SemVersion}/nuget:{parameters.DockerRootPrefix}/nuget"
+            $"{currentDir}/artifacts/v{parameters.Version.SemVersion}/nuget:{parameters.DockerRootPrefix}/nuget",
+            $"{currentDir}/test-scripts:{parameters.DockerRootPrefix}/scripts"
         }
     };
 
