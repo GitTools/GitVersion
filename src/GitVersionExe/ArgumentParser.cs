@@ -238,8 +238,8 @@ namespace GitVersion
 
                     if (versionVariable == null)
                     {
-                        var messageFormat = "{0} requires a valid version variable.  Available variables are:\n{1}";
-                        var message = string.Format(messageFormat, name, string.Join(", ", VersionVariables.AvailableVariables.Select(x => string.Concat("'", x, "'"))));
+                        var message = $"{name} requires a valid version variable. Available variables are:{System.Environment.NewLine}" +
+                            string.Join(", ", VersionVariables.AvailableVariables.Select(x => string.Concat("'", x, "'")));
                         throw new WarningException(message);
                     }
 

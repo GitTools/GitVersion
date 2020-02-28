@@ -29,7 +29,7 @@ namespace GitVersion.Logging
 
         private void WriteLogEntry(LogLevel level, string str)
         {
-            var contents = $"{DateTime.Now:yyyy-MM-dd HH:mm:ss}\t\t{str}\r\n";
+            var contents = $"{DateTime.Now:yyyy-MM-dd HH:mm:ss}\t\t{str}{System.Environment.NewLine}";
             switch (level)
             {
                 case LogLevel.None:

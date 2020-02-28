@@ -118,13 +118,13 @@ namespace GitVersion
             }
             catch (WarningException exception)
             {
-                var error = $"An error occurred:\r\n{exception.Message}";
+                var error = $"An error occurred:{System.Environment.NewLine}{exception.Message}";
                 log.Warning(error);
                 return 1;
             }
             catch (Exception exception)
             {
-                var error = $"An unexpected error occurred:\r\n{exception}";
+                var error = $"An unexpected error occurred:{System.Environment.NewLine}{exception}";
                 log.Error(error);
 
                 if (arguments == null) return 1;
