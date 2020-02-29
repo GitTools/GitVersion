@@ -149,7 +149,9 @@ namespace GitVersion
                 if (name.IsSwitch("exec"))
                 {
                     EnsureArgumentValueCount(values);
+#pragma warning disable CS0612 // Type or member is obsolete
                     arguments.Exec = value;
+#pragma warning restore CS0612 // Type or member is obsolete
                     continue;
                 }
 
@@ -157,21 +159,27 @@ namespace GitVersion
                 if (name.IsSwitch("execargs"))
                 {
                     EnsureArgumentValueCount(values);
+#pragma warning disable CS0612 // Type or member is obsolete
                     arguments.ExecArgs = value;
+#pragma warning restore CS0612 // Type or member is obsolete
                     continue;
                 }
 
                 if (name.IsSwitch("proj"))
                 {
                     EnsureArgumentValueCount(values);
+#pragma warning disable CS0612 // Type or member is obsolete
                     arguments.Proj = value;
+#pragma warning restore CS0612 // Type or member is obsolete
                     continue;
                 }
 
                 if (name.IsSwitch("projargs"))
                 {
                     EnsureArgumentValueCount(values);
+#pragma warning disable CS0612 // Type or member is obsolete
                     arguments.ProjArgs = value;
+#pragma warning restore CS0612 // Type or member is obsolete
                     continue;
                 }
 

@@ -76,7 +76,9 @@ namespace GitVersion
                     arguments.Output.Add(OutputType.BuildServer);
                 }
 
+#pragma warning disable CS0612 // Type or member is obsolete
                 if (!string.IsNullOrEmpty(arguments.Proj) || !string.IsNullOrEmpty(arguments.Exec))
+#pragma warning restore CS0612 // Type or member is obsolete
                 {
                     arguments.Output.Add(OutputType.BuildServer);
                 }

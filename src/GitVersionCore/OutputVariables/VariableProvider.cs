@@ -154,7 +154,9 @@ namespace GitVersion.OutputVariables
 
         private void WarnIfUsingObsoleteFormatValues(string formatString)
         {
+#pragma warning disable CS0618 // Type or member is obsolete
             var obsoletePropertyName = nameof(SemanticVersionFormatValues.DefaultInformationalVersion);
+#pragma warning restore CS0618 // Type or member is obsolete
             if (formatString.Contains($"{{{obsoletePropertyName}}}"))
             {
                 log.Write(LogLevel.Warn, $"Use format variable '{nameof(SemanticVersionFormatValues.InformationalVersion)}' instead of '{obsoletePropertyName}' which is obsolete and will be removed in a future release.");
