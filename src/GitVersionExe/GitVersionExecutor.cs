@@ -131,7 +131,6 @@ namespace GitVersion
 
                 if (arguments == null) return 1;
 
-                log.Info(string.Empty);
                 log.Info("Attempting to show the current git graph (please include in issue): ");
                 log.Info("Showing max of 100 commits");
 
