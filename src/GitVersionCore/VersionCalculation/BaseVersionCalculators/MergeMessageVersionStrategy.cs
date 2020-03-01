@@ -42,7 +42,9 @@ namespace GitVersion.VersionCalculation
                         };
                     }
                     return Enumerable.Empty<BaseVersion>();
-                }).ToList();
+                })
+                .Take(2)
+                .ToList();
             return baseVersions;
         }
 
