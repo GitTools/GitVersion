@@ -16,8 +16,8 @@ steps:
   displayName: Cache dotnet locally
 - ${{ if eq(parameters.includeArtifacts, true) }}:
   - task: DownloadPipelineArtifact@2
-    displayName: 'Download pipeline artifacts'
+    displayName: 'Download artifacts folder'
     inputs:
       source: current
-      path: $(Build.SourcesDirectory)
+      path: $(Build.SourcesDirectory)/artifacts
       artifact: storage
