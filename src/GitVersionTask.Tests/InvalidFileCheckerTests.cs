@@ -99,6 +99,21 @@ using System.Reflection;
         }
 
         [Test]
+        public void VerifyCommentWithNoNewLineAtEndWorksCSharp([Values("AssemblyVersion", "AssemblyFileVersion", "AssemblyInformationalVersion")]string attribute)
+        {
+            using (var writer = File.CreateText(Path.Combine(projectDirectory, "AssemblyInfo.cs")))
+            {
+                writer.Write(@"
+using System;
+using System.Reflection;
+
+//[assembly: {0}(""1.0.0.0"")]", attribute);
+            }
+
+            FileHelper.CheckForInvalidFiles(new ITaskItem[] { new MockTaskItem { ItemSpec = "AssemblyInfo.cs" } }, projectFile);
+        }
+
+        [Test]
         public void VerifyStringWorksCSharp([Values("AssemblyVersion", "AssemblyFileVersion", "AssemblyInformationalVersion")]string attribute)
         {
             using (var writer = File.CreateText(Path.Combine(projectDirectory, "AssemblyInfo.cs")))
@@ -181,6 +196,21 @@ Imports System.Reflection
 
 '<Assembly: {0}(""1.0.0.0"")>
 ", attribute);
+            }
+
+            FileHelper.CheckForInvalidFiles(new ITaskItem[] { new MockTaskItem { ItemSpec = "AssemblyInfo.vb" } }, projectFile);
+        }
+
+        [Test]
+        public void VerifyCommentWithNoNewLineAtEndWorksVisualBasic([Values("AssemblyVersion", "AssemblyFileVersion", "AssemblyInformationalVersion")]string attribute)
+        {
+            using (var writer = File.CreateText(Path.Combine(projectDirectory, "AssemblyInfo.vb")))
+            {
+                writer.Write(@"
+Imports System
+Imports System.Reflection
+
+'<Assembly: {0}(""1.0.0.0"")>", attribute);
             }
 
             FileHelper.CheckForInvalidFiles(new ITaskItem[] { new MockTaskItem { ItemSpec = "AssemblyInfo.vb" } }, projectFile);
