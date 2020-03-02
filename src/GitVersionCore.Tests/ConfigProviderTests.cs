@@ -43,34 +43,6 @@ namespace GitVersionCore.Tests
         }
 
         [Test]
-        public void CanReadOldDocument()
-        {
-            const string text = @"
-assemblyVersioningScheme: MajorMinor
-develop-branch-tag: alpha
-release-branch-tag: rc
-branches:
-    master:
-        mode: ContinuousDeployment
-    dev(elop)?(ment)?$:
-        mode: ContinuousDeployment
-        tag: dev
-    release[/-]:
-       mode: continuousDeployment
-       tag: rc
-";
-            SetupConfigFileContent(text);
-            var error = Should.Throw<OldConfigurationException>(() => configProvider.Provide(repoPath));
-            error.Message.ShouldContainWithoutWhitespace(@"GitVersion configuration file contains old configuration, please fix the following errors:
-GitVersion branch configs no longer are keyed by regexes, update:
-    dev(elop)?(ment)?$  -> develop
-    release[/-]         -> release
-assemblyVersioningScheme has been replaced by assembly-versioning-scheme
-develop-branch-tag has been replaced by branch specific configuration.See http://gitversion.readthedocs.org/en/latest/configuration/#branch-configuration
-release-branch-tag has been replaced by branch specific configuration.See http://gitversion.readthedocs.org/en/latest/configuration/#branch-configuration");
-        }
-
-        [Test]
         public void OverwritesDefaultsWithProvidedConfig()
         {
             var defaultConfig = configProvider.Provide(repoPath);
@@ -124,8 +96,8 @@ branches:
         tag: bugfix";
             SetupConfigFileContent(text);
             var ex = Should.Throw<GitVersionConfigurationException>(() => configProvider.Provide(repoPath));
-            ex.Message.ShouldBe("Branch configuration 'bug' is missing required configuration 'regex'\n\n" +
-                                "See http://gitversion.readthedocs.io/en/latest/configuration/ for more info");
+            ex.Message.ShouldBe($"Branch configuration 'bug' is missing required configuration 'regex'{System.Environment.NewLine}" +
+                                "See https://gitversion.net/docs/configuration/ for more info");
         }
 
         [Test]
@@ -139,8 +111,8 @@ branches:
         tag: bugfix";
             SetupConfigFileContent(text);
             var ex = Should.Throw<GitVersionConfigurationException>(() => configProvider.Provide(repoPath));
-            ex.Message.ShouldBe("Branch configuration 'bug' is missing required configuration 'source-branches'\n\n" +
-                                "See http://gitversion.readthedocs.io/en/latest/configuration/ for more info");
+            ex.Message.ShouldBe($"Branch configuration 'bug' is missing required configuration 'source-branches'{System.Environment.NewLine}" +
+                                "See https://gitversion.net/docs/configuration/ for more info");
         }
 
         [Test]

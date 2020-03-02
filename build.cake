@@ -6,7 +6,6 @@
 #addin "nuget:?package=Cake.Compression&version=0.2.4"
 #addin "nuget:?package=Cake.Coverlet&version=2.4.2"
 #addin "nuget:?package=Cake.Docker&version=0.11.0"
-#addin "nuget:?package=Cake.Gem&version=0.8.1"
 #addin "nuget:?package=Cake.Git&version=0.21.0"
 #addin "nuget:?package=Cake.Gitter&version=0.11.1"
 #addin "nuget:?package=Cake.Incubator&version=5.1.0"
@@ -20,7 +19,7 @@
 
 // Install tools.
 #tool "nuget:?package=NUnit.ConsoleRunner&version=3.10.0"
-#tool "nuget:?package=nuget.commandline&version=5.3.0"
+#tool "nuget:?package=nuget.commandline&version=5.4.0"
 #tool "nuget:?package=KuduSync.NET&version=1.5.2"
 
 // Install .NET Core Global tools.
@@ -36,9 +35,10 @@
 #load "./build/test.cake"
 #load "./build/pack.cake"
 #load "./build/artifacts-test.cake"
-#load "./build/docker.cake"
+#load "./build/docker-build.cake"
 #load "./build/publish.cake"
-#load "./build/wyam.cake"
+#load "./build/release.cake"
+#load "./build/docs.cake"
 
 using Xunit;
 using System.Diagnostics;
@@ -65,6 +65,12 @@ Setup<BuildParameters>(context =>
             Information("Increasing verbosity to diagnostic.");
             context.Log.Verbosity = Verbosity.Diagnostic;
         }
+
+        if (parameters.IsLocalBuild)             Information("Building locally");
+        if (parameters.IsRunningOnAppVeyor)      Information("Building on AppVeyor");
+        if (parameters.IsRunningOnTravis)        Information("Building on Travis");
+        if (parameters.IsRunningOnAzurePipeline) Information("Building on AzurePipeline");
+        if (parameters.IsRunningOnGitHubActions) Information("Building on GitHubActions");
 
         Information("Building version {0} of GitVersion ({1}, {2})",
             parameters.Version.SemVersion,
@@ -111,7 +117,6 @@ Teardown<BuildParameters>((context, parameters) =>
 //////////////////////////////////////////////////////////////////////
 
 Task("Pack")
-    .IsDependentOn("Pack-Gem")
     .IsDependentOn("Pack-Nuget")
     .IsDependentOn("Pack-Chocolatey")
     .IsDependentOn("Zip-Files")
@@ -142,16 +147,6 @@ Task("Test")
 Task("Publish-CI")
     .IsDependentOn("Publish-AppVeyor")
     .IsDependentOn("Publish-AzurePipeline")
-    .Finally(() =>
-{
-    if (publishingError)
-    {
-        throw new Exception("An error occurred during the publishing of GitVersion.");
-    }
-});
-
-Task("Publish-Gem")
-    .IsDependentOn("Publish-Gem-Internal")
     .Finally(() =>
 {
     if (publishingError)
@@ -195,7 +190,6 @@ Task("Publish")
     .IsDependentOn("Publish-AzurePipeline")
     .IsDependentOn("Publish-NuGet-Internal")
     .IsDependentOn("Publish-Chocolatey-Internal")
-    .IsDependentOn("Publish-Gem-Internal")
     .IsDependentOn("Publish-Documentation-Internal")
     .Finally(() =>
 {

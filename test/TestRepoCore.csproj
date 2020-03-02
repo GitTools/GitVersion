@@ -15,6 +15,7 @@
   </Target>
 
   <ItemGroup>
+	<PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.0" />
     <PackageReference Include="GitVersionTask" Version="$(GitVersionTaskVersion)">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>

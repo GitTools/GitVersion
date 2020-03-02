@@ -1,7 +1,6 @@
 using System;
 using System.IO;
 using GitVersion.Exceptions;
-using GitVersion.Logging;
 using Microsoft.Extensions.Options;
 
 namespace GitVersion.Configuration
@@ -10,7 +9,7 @@ namespace GitVersion.Configuration
     {
         private readonly IOptions<Arguments> options;
 
-        public NamedConfigFileLocator(IFileSystem fileSystem, ILog log, IOptions<Arguments> options) : base(fileSystem, log)
+        public NamedConfigFileLocator(IFileSystem fileSystem, IOptions<Arguments> options) : base(fileSystem)
         {
             this.options = options ?? throw new ArgumentNullException(nameof(options));
         }
@@ -36,15 +35,16 @@ namespace GitVersion.Configuration
             var workingConfigFile = GetConfigFilePath(workingDirectory);
             var projectRootConfigFile = GetConfigFilePath(projectRootDirectory);
 
-            var fileSystemCasingComparer = System.Environment.OSVersion.Platform == PlatformID.Unix ? StringComparison.Ordinal : StringComparison.OrdinalIgnoreCase;
-            if (Path.GetFullPath(workingConfigFile).Equals(Path.GetFullPath(projectRootConfigFile), fileSystemCasingComparer))
-                return;
-
             var hasConfigInWorkingDirectory = FileSystem.Exists(workingConfigFile);
             var hasConfigInProjectRootDirectory = FileSystem.Exists(projectRootConfigFile);
             if (hasConfigInProjectRootDirectory && hasConfigInWorkingDirectory)
             {
                 throw new WarningException($"Ambiguous config file selection from '{workingConfigFile}' and '{projectRootConfigFile}'");
+            }
+
+            if (!hasConfigInProjectRootDirectory && !hasConfigInWorkingDirectory)
+            {
+                throw new WarningException($"The configuration file was not found at '{workingConfigFile}' or '{projectRootConfigFile}'");
             }
         }
     }

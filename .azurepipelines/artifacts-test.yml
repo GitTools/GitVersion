@@ -1,6 +1,8 @@
 parameters:
-  name: ''
-  vmImage: ''
+- name: name  # defaults for any parameters that aren't specified
+  default: ''
+- name: vmImage
+  default: ''
 
 jobs:
 - job: Artifacts_Test_${{ parameters.name }}
@@ -12,11 +14,7 @@ jobs:
     matrix: $[ dependencies['Generator'].outputs['Map_${{ parameters.name }}.dockerConfigs'] ]
   steps:
   - template: common-steps.yml
-  - task: DownloadPipelineArtifact@2
-    displayName: 'Download pipeline artifacts'
-    inputs:
-      source: current
-      path: $(Build.SourcesDirectory)
-      artifact: storage
-  - script: dotnet cake build.cake --bootstrap && dotnet cake build.cake --target=Artifacts-Test --docker_distro=$(DISTRO) --docker_dotnetversion=$(DOTNET_VERSION)
+    parameters:
+      includeArtifacts: true
+  - pwsh: ./build.ps1 -target Artifacts-Test -DockerDistro $(DISTRO) -DockerDotnetVersion $(DOTNET_VERSION)
     displayName: '[Docker Test Artifacts]'

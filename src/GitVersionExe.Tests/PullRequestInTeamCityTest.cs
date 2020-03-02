@@ -1,5 +1,7 @@
 using System;
+using System.Collections.Generic;
 using GitTools.Testing;
+using GitVersion.BuildServers;
 using LibGit2Sharp;
 using NUnit.Framework;
 using Shouldly;
@@ -41,7 +43,8 @@ namespace GitVersionExe.Tests
                 Commands.Checkout(fixture.Repository, mergeCommitSha);
             }
 
-            var result = GitVersionHelper.ExecuteIn(fixture.RepositoryPath, isTeamCity: true);
+            var env = new KeyValuePair<string, string>(TeamCity.EnvironmentVariableName, "8.0.0");
+            var result = GitVersionHelper.ExecuteIn(fixture.RepositoryPath, environments: env);
 
             result.ExitCode.ShouldBe(0);
             result.OutputVariables.FullSemVer.ShouldBe("1.0.4-PullRequest0005.3");

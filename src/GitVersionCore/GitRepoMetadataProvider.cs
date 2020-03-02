@@ -218,8 +218,8 @@ namespace GitVersion
                 if (possibleBranches.Count > 1)
                 {
                     var first = possibleBranches.First();
-                    log.Info($"Multiple source branches have been found, picking the first one ({first.Branch.FriendlyName}).\n" +
-                        "This may result in incorrect commit counting.\nOptions were:\n " +
+                    log.Info($"Multiple source branches have been found, picking the first one ({first.Branch.FriendlyName}).{System.Environment.NewLine}" +
+                        $"This may result in incorrect commit counting.{System.Environment.NewLine}Options were:{System.Environment.NewLine}" +
                         string.Join(", ", possibleBranches.Select(b => b.Branch.FriendlyName)));
                     return first;
                 }

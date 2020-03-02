@@ -27,16 +27,20 @@ public class BuildCredentials
 
 public class GitHubCredentials
 {
+    public string UserName { get; private set; }
     public string Token { get; private set; }
 
-    public GitHubCredentials(string token)
+    public GitHubCredentials(string userName, string token)
     {
+        UserName = userName;
         Token = token;
     }
 
     public static GitHubCredentials GetGitHubCredentials(ICakeContext context)
     {
-        return new GitHubCredentials(context.EnvironmentVariable("GITHUB_TOKEN"));
+        return new GitHubCredentials(
+            context.EnvironmentVariable("GITHUB_USERNAME"),
+            context.EnvironmentVariable("GITHUB_TOKEN"));
     }
 }
 

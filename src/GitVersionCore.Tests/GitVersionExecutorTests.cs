@@ -297,7 +297,7 @@ namespace GitVersionCore.Tests
             versionVariables = gitVersionCalculator.CalculateVersionVariables();
             versionVariables.AssemblySemVer.ShouldBe("4.10.3.0");
 
-            var configPath = Path.Combine(fixture.RepositoryPath, "GitVersionConfig.yaml");
+            var configPath = Path.Combine(fixture.RepositoryPath, DefaultConfigFileLocator.DefaultFileName);
             fileSystem.WriteAllText(configPath, "next-version: 5.0");
 
             versionVariables = gitVersionCalculator.CalculateVersionVariables();

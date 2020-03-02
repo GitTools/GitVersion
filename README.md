@@ -9,6 +9,7 @@ works out the [semantic version][semver] of the commit being built.
 [![Gitter][gitter-badge]][gitter]
 [![Build status][appveyor-badge]][appveyor]
 [![Build status][azure-pipeline-badge]][azure-pipeline]
+[![Build status][github-actions-badge]][github-actions]
 [![codecov][codecov-badge]][codecov]
 <!-- [![Build status][github-actions-badge]][github-actions] -->
 
@@ -19,7 +20,6 @@ works out the [semantic version][semver] of the commit being built.
 |                    **GitVersionTask** |                            [![NuGet][gvt-badge]][gvt]              |                            [![NuGet][gvt-pre-badge]][gvt]                  |
 |            **GitVersion.CommandLine** |                           [![NuGet][gvcl-badge]][gvcl]             |                           [![NuGet][gvcl-pre-badge]][gvcl]                 |
 |                   **GitVersion.Tool** |                           [![NuGet][gvgt-badge]][gvgt]             |                           [![NuGet][gvgt-pre-badge]][gvgt]                 |
-|                               **Gem** |                              [![Gem][gem-badge]][gem]              |                                     -                                      |
 |                          **Homebrew** |                        [![homebrew][brew-badge]][brew]             |                                     -                                      |
 |                            **Docker** |               [![Docker Pulls][dockerhub-badge]][dockerhub]        |                                     -                                      |
 |               **Azure Pipeline Task** | [![Azure Pipeline Task][az-pipeline-task-badge]][az-pipeline-task] |                                     -                                      |
@@ -68,7 +68,7 @@ from The Noun Project.
 [azure-pipeline]:                  https://dev.azure.com/GitTools/GitVersion/_build/latest?definitionId=1
 [azure-pipeline-badge]:            https://dev.azure.com/GitTools/GitVersion/_apis/build/status/GitTools.GitVersion
 [github-actions]:                  https://github.com/GitTools/GitVersion/actions
-[github-actions-badge]:            https://github.com/GitTools/GitVersion/workflows/CI/badge.svg
+[github-actions-badge]:            https://github.com/GitTools/GitVersion/workflows/Build/badge.svg
 [travis]:                          https://travis-ci.org/GitTools/GitVersion
 [travis-badge]:                    https://travis-ci.org/GitTools/GitVersion.svg?branch=master
 [codecov]:                         https://codecov.io/gh/GitTools/GitVersion
@@ -88,8 +88,6 @@ from The Noun Project.
 [gvgt]:                            https://www.nuget.org/packages/GitVersion.Tool
 [gvgt-badge]:                      https://img.shields.io/nuget/v/GitVersion.Tool.svg?logo=nuget
 [gvgt-pre-badge]:                  https://img.shields.io/nuget/vpre/GitVersion.Tool.svg?logo=nuget
-[gem-badge]:                       https://img.shields.io/gem/v/gitversion.svg?logo=ruby
-[gem]:                             https://rubygems.org/gems/gitversion
 [brew]:                            http://brew.sh/
 [brew-badge]:                      https://img.shields.io/homebrew/v/gitversion.svg?logo=homebrew
 [dockerhub]:                       https://hub.docker.com/r/gittools/gitversion/

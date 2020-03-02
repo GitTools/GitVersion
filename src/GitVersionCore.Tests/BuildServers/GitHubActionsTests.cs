@@ -58,31 +58,42 @@ namespace GitVersionCore.Tests.BuildServers
         }
 
         [Test]
-        public void GetCurrentBranchShouldGetBranchIfSet()
+        public void GetCurrentBranchShouldHandleBranches()
         {
             // Arrange
-            const string expected = "actionsBranch";
-
-            environment.SetEnvironmentVariable("GITHUB_REF", $"refs/heads/{expected}");
+            environment.SetEnvironmentVariable("GITHUB_REF", "refs/heads/master");
 
             // Act
             var result = buildServer.GetCurrentBranch(false);
 
             // Assert
-            result.ShouldBe(expected);
+            result.ShouldBe("refs/heads/master");
         }
 
         [Test]
-        public void GetCurrentBranchShouldNotMatchTag()
+        public void GetCurrentBranchShouldHandleTags()
         {
             // Arrange
-            environment.SetEnvironmentVariable("GITHUB_REF", $"refs/tags/v1.0.0");
+            environment.SetEnvironmentVariable("GITHUB_REF", "refs/tags/1.0.0");
 
             // Act
             var result = buildServer.GetCurrentBranch(false);
 
             // Assert
-            result.ShouldBeNull();
+            result.ShouldBe("refs/tags/1.0.0");
+        }
+
+        [Test]
+        public void GetCurrentBranchShouldHandlePullRequests()
+        {
+            // Arrange
+            environment.SetEnvironmentVariable("GITHUB_REF", "refs/pull/1/merge");
+
+            // Act
+            var result = buildServer.GetCurrentBranch(false);
+
+            // Assert
+            result.ShouldBe("refs/pull/1/merge");
         }
 
         [TestCase("Something", "1.0.0",

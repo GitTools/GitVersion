@@ -156,4 +156,9 @@ public class DockerImage
         distro = Distro;
         targetFramework = TargetFramework;
     }
+
+    public override string ToString()
+    {
+        return $"OS: {OS}, Distro: {Distro}, TargetFramework: {TargetFramework}";
+    }
 }

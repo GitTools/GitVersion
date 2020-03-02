@@ -34,10 +34,13 @@ namespace GitVersion
         {
             if (commandLineArguments.Length == 0)
             {
-                return new Arguments
+                var args = new Arguments
                 {
                     TargetPath = System.Environment.CurrentDirectory,
                 };
+
+                args.Output.Add(OutputType.Json);
+                return args;
             }
 
             var firstArgument = commandLineArguments.First();
@@ -146,7 +149,9 @@ namespace GitVersion
                 if (name.IsSwitch("exec"))
                 {
                     EnsureArgumentValueCount(values);
+#pragma warning disable CS0612 // Type or member is obsolete
                     arguments.Exec = value;
+#pragma warning restore CS0612 // Type or member is obsolete
                     continue;
                 }
 
@@ -154,21 +159,27 @@ namespace GitVersion
                 if (name.IsSwitch("execargs"))
                 {
                     EnsureArgumentValueCount(values);
+#pragma warning disable CS0612 // Type or member is obsolete
                     arguments.ExecArgs = value;
+#pragma warning restore CS0612 // Type or member is obsolete
                     continue;
                 }
 
                 if (name.IsSwitch("proj"))
                 {
                     EnsureArgumentValueCount(values);
+#pragma warning disable CS0612 // Type or member is obsolete
                     arguments.Proj = value;
+#pragma warning restore CS0612 // Type or member is obsolete
                     continue;
                 }
 
                 if (name.IsSwitch("projargs"))
                 {
                     EnsureArgumentValueCount(values);
+#pragma warning disable CS0612 // Type or member is obsolete
                     arguments.ProjArgs = value;
+#pragma warning restore CS0612 // Type or member is obsolete
                     continue;
                 }
 
@@ -235,8 +246,8 @@ namespace GitVersion
 
                     if (versionVariable == null)
                     {
-                        var messageFormat = "{0} requires a valid version variable.  Available variables are:\n{1}";
-                        var message = string.Format(messageFormat, name, string.Join(", ", VersionVariables.AvailableVariables.Select(x => string.Concat("'", x, "'"))));
+                        var message = $"{name} requires a valid version variable. Available variables are:{System.Environment.NewLine}" +
+                            string.Join(", ", VersionVariables.AvailableVariables.Select(x => string.Concat("'", x, "'")));
                         throw new WarningException(message);
                     }
 
@@ -264,12 +275,16 @@ namespace GitVersion
 
                 if (name.IsSwitch("output"))
                 {
-                    if (!Enum.TryParse(value, true, out OutputType outputType))
+                    foreach (var v in values)
                     {
-                        throw new WarningException($"Value '{value}' cannot be parsed as output type, please use 'json' or 'buildserver'");
+                        if (!Enum.TryParse(v, true, out OutputType outputType))
+                        {
+                            throw new WarningException($"Value '{value}' cannot be parsed as output type, please use 'json' or 'buildserver'");
+                        }
+
+                        arguments.Output.Add(outputType);
                     }
 
-                    arguments.Output = outputType;
                     continue;
                 }
 
@@ -394,6 +409,11 @@ namespace GitVersion
                 }
 
                 throw new WarningException(couldNotParseMessage);
+            }
+
+            if (arguments.Output.Count == 0)
+            {
+                arguments.Output.Add(OutputType.Json);
             }
 
             if (arguments.TargetPath == null)

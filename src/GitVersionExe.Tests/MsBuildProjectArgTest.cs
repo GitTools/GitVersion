@@ -8,6 +8,17 @@ namespace GitVersionExe.Tests
     [TestFixture]
     public class MsBuildProjectArgTest
     {
+        public const string TestProject = @"
+<Project Sdk=""Microsoft.NET.Sdk"">
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+  <Target Name=""OutputResults"">
+    <Message Text=""GitVersion_FullSemVer: $(GitVersion_FullSemVer)"" Importance=""High""/>
+  </Target>
+</Project>
+";
+
         [Test]
         public void RunsMsBuildProvideViaCommandLineArg()
         {
@@ -17,13 +28,7 @@ namespace GitVersionExe.Tests
 
             var buildFile = Path.Combine(fixture.RepositoryPath, "RunsMsBuildProvideViaCommandLineArg.proj");
             File.Delete(buildFile);
-            const string buildFileContent = @"<?xml version=""1.0"" encoding=""utf-8""?>
-<Project ToolsVersion=""4.0"" xmlns=""http://schemas.microsoft.com/developer/msbuild/2003"">
-  <Target Name=""OutputResults"">
-    <Message Text=""GitVersion_FullSemVer: $(GitVersion_FullSemVer)""/>
-  </Target>
-</Project>";
-            File.WriteAllText(buildFile, buildFileContent);
+            File.WriteAllText(buildFile, TestProject);
             var result = GitVersionHelper.ExecuteIn(fixture.RepositoryPath, projectFile: "RunsMsBuildProvideViaCommandLineArg.proj", projectArgs: "/target:OutputResults");
 
             result.ExitCode.ShouldBe(0);

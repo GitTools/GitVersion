@@ -22,7 +22,6 @@ namespace GitVersion
         private readonly ILog log;
         private readonly IGitVersionCalculator gitVersionCalculator;
         private readonly IOptions<Arguments> options;
-        public static readonly string BuildTool = GetMsBuildToolPath();
 
         public ExecCommand(IFileSystem fileSystem, IBuildServerResolver buildServerResolver, ILog log, IGitVersionCalculator gitVersionCalculator, IOptions<Arguments> options)
         {
@@ -41,32 +40,28 @@ namespace GitVersion
 
             var arguments = options.Value;
 
-            switch (arguments.Output)
+            if (arguments.Output.Contains(OutputType.BuildServer))
             {
-                case OutputType.BuildServer:
-                    var buildServer = buildServerResolver.Resolve();
-                    buildServer?.WriteIntegration(Console.WriteLine, variables);
+                var buildServer = buildServerResolver.Resolve();
+                buildServer?.WriteIntegration(Console.WriteLine, variables);
+            }
+            if (arguments.Output.Contains(OutputType.Json))
+            {
+                switch (arguments.ShowVariable)
+                {
+                    case null:
+                        Console.WriteLine(variables.ToString());
+                        break;
 
-                    break;
-                case OutputType.Json:
-                    switch (arguments.ShowVariable)
-                    {
-                        case null:
-                            Console.WriteLine(variables.ToString());
-                            break;
+                    default:
+                        if (!variables.TryGetValue(arguments.ShowVariable, out var part))
+                        {
+                            throw new WarningException($"'{arguments.ShowVariable}' variable does not exist");
+                        }
 
-                        default:
-                            if (!variables.TryGetValue(arguments.ShowVariable, out var part))
-                            {
-                                throw new WarningException($"'{arguments.ShowVariable}' variable does not exist");
-                            }
-                            Console.WriteLine(part);
-                            break;
-                    }
-
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
+                        Console.WriteLine(part);
+                        break;
+                }
             }
 
             if (arguments.UpdateWixVersionFile)
@@ -79,59 +74,28 @@ namespace GitVersion
             if (arguments.UpdateAssemblyInfo)
             {
                 assemblyInfoUpdater.Update();
-            }
-
-            var execRun = RunExecCommandIfNeeded(arguments, arguments.TargetPath, variables, log);
-            var msbuildRun = RunMsBuildIfNeeded(arguments, arguments.TargetPath, variables, log);
-
-            if (!execRun && !msbuildRun)
-            {
                 assemblyInfoUpdater.CommitChanges();
-                //TODO Put warning back
-                //if (!context.CurrentBuildServer.IsRunningInBuildAgent())
-                //{
-                //    Console.WriteLine("WARNING: Not running in build server and /ProjectFile or /Exec arguments not passed");
-                //    Console.WriteLine();
-                //    Console.WriteLine("Run GitVersion.exe /? for help");
-                //}
             }
-        }
 
-        private static string GetMsBuildToolPath()
-        {
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-            {
-                return @"c:\Windows\Microsoft.NET\Framework\v4.0.30319\msbuild.exe";
-            }
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
-            {
-                return "/usr/bin/msbuild";
-            }
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
-            {
-                return "/Library/Frameworks/Mono.framework/Versions/Current/Commands/msbuild";
-            }
-            throw new Exception("MsBuild not found");
+            RunExecCommandIfNeeded(arguments, arguments.TargetPath, variables, log);
+            RunMsBuildIfNeeded(arguments, arguments.TargetPath, variables, log);
         }
 
         private static bool RunMsBuildIfNeeded(Arguments args, string workingDirectory, VersionVariables variables, ILog log)
         {
+#pragma warning disable CS0612 // Type or member is obsolete
             if (string.IsNullOrEmpty(args.Proj)) return false;
 
-            log.Info($"Launching build tool {BuildTool} \"{args.Proj}\" {args.ProjArgs}");
-            var results = ProcessHelper.Run(
-                m => log.Info(m), m => log.Error(m),
-                null, BuildTool, $"\"{args.Proj}\" {args.ProjArgs}", workingDirectory,
-                GetEnvironmentalVariables(variables));
+            args.Exec = "dotnet";
+            args.ExecArgs = $"msbuild \"{args.Proj}\" {args.ProjArgs}";
+#pragma warning restore CS0612 // Type or member is obsolete
 
-            if (results != 0)
-                throw new WarningException("MSBuild execution failed, non-zero return code");
-
-            return true;
+            return RunExecCommandIfNeeded(args, workingDirectory, variables, log);
         }
 
         private static bool RunExecCommandIfNeeded(Arguments args, string workingDirectory, VersionVariables variables, ILog log)
         {
+#pragma warning disable CS0612 // Type or member is obsolete
             if (string.IsNullOrEmpty(args.Exec)) return false;
 
             log.Info($"Launching {args.Exec} {args.ExecArgs}");
@@ -142,6 +106,7 @@ namespace GitVersion
 
             if (results != 0)
                 throw new WarningException($"Execution of {args.Exec} failed, non-zero return code");
+#pragma warning restore CS0612 // Type or member is obsolete
 
             return true;
         }

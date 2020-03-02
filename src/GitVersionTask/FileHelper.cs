@@ -97,6 +97,8 @@ namespace GitVersion.MSBuildTask
             var combine = Path.Combine(Path.GetDirectoryName(projectFile), compileFile);
             var allText = File.ReadAllText(combine);
 
+            allText += System.Environment.NewLine; // Always add a new line, this handles the case for when a file ends with the EOF marker and no new line. If you don't have this newline, the regex will match commented out Assembly*Version tags on the last line.
+
             var blockComments = @"/\*(.*?)\*/";
             var lineComments = @"//(.*?)\r?\n";
             var strings = @"""((\\[^\n]|[^""\n])*)""";
@@ -122,6 +124,8 @@ Assembly(File|Informational)?Version    # The attribute AssemblyVersion, Assembl
         {
             var combine = Path.Combine(Path.GetDirectoryName(projectFile), compileFile);
             var allText = File.ReadAllText(combine);
+
+            allText += System.Environment.NewLine; // Always add a new line, this handles the case for when a file ends with the EOF marker and no new line. If you don't have this newline, the regex will match commented out Assembly*Version tags on the last line.
 
             var lineComments = @"'(.*?)\r?\n";
             var strings = @"""((\\[^\n]|[^""\n])*)""";

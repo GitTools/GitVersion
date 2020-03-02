@@ -81,14 +81,14 @@ string DockerRunImage(DockerContainerRunSettings settings, string image, string 
     }
 
     var result = runner.RunWithResult("run", settings ?? new DockerContainerRunSettings(), r => r.ToArray(), arguments.ToArray());
-    Information("Output : " + result);
     return string.Join("\n", result);
 }
 
 void DockerTestRun(DockerContainerRunSettings settings, BuildParameters parameters, string image, string command, params string[] args)
 {
     Information($"Testing image: {image}");
-    var output = DockerRun(settings, image, command, args);
+    var output = DockerRunImage(settings, image, command, args);
+    Information("Output : " + output);
 
     Assert.Equal(parameters.Version.GitVersion.FullSemVer, output);
 }
@@ -98,12 +98,18 @@ void DockerTestArtifact(DockerImage dockerImage, BuildParameters parameters, str
     var settings = GetDockerRunSettings(parameters);
     var (os, distro, targetframework) = dockerImage;
     var tag = $"gittools/build-images:{distro}-sdk-{targetframework.Replace("netcoreapp", "")}";
-    Information("Docker tag: {0}", tag);
-    Information("Docker cmd: {0}", cmd);
 
-    cmd = "-Command " + cmd; // powershell 7 needs a -Command parameter
+    Information("Docker tag: {0}", tag);
+    Information("Docker cmd: pwsh {0}", cmd);
 
     DockerTestRun(settings, parameters, tag, "pwsh", cmd);
+}
+
+void DockerPullImage(DockerImage dockerImage, BuildParameters parameters)
+{
+    var (os, distro, targetframework) = dockerImage;
+    var tag = $"gittools/build-images:{distro}-sdk-{targetframework.Replace("netcoreapp", "")}";
+    DockerPull(tag);
 }
 
 DockerContainerRunSettings GetDockerRunSettings(BuildParameters parameters)
@@ -115,7 +121,8 @@ DockerContainerRunSettings GetDockerRunSettings(BuildParameters parameters)
         Volume = new[]
         {
             $"{currentDir}:{parameters.DockerRootPrefix}/repo",
-            $"{currentDir}/artifacts/v{parameters.Version.SemVersion}/nuget:{parameters.DockerRootPrefix}/nuget"
+            $"{currentDir}/artifacts/v{parameters.Version.SemVersion}/nuget:{parameters.DockerRootPrefix}/nuget",
+            $"{currentDir}/test-scripts:{parameters.DockerRootPrefix}/scripts"
         }
     };
 
@@ -124,6 +131,13 @@ DockerContainerRunSettings GetDockerRunSettings(BuildParameters parameters)
         {
             "TF_BUILD=true",
             $"BUILD_SOURCEBRANCH={Context.EnvironmentVariable("BUILD_SOURCEBRANCH")}"
+        };
+    }
+    if (parameters.IsRunningOnGitHubActions) {
+        settings.Env = new[]
+        {
+            "GITHUB_ACTIONS=true",
+            $"GITHUB_REF={Context.EnvironmentVariable("GITHUB_REF")}"
         };
     }
 
@@ -174,6 +188,6 @@ static string GetDockerCliPlatform(this ICakeContext context)
     }
     catch (Exception) {
         context.Warning("Docker is installed but the daemon not running");
-        return "";
     }
+    return "";
 }

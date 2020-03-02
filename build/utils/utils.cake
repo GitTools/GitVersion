@@ -25,6 +25,10 @@ public static bool IsOnMainRepo(this ICakeContext context)
     {
         repositoryName = buildSystem.TFBuild.Environment.Repository.RepoName;
     }
+    else if (buildSystem.IsRunningOnGitHubActions)
+    {
+        repositoryName = buildSystem.GitHubActions.Environment.Workflow.Repository;
+    }
 
     context.Information("Repository Name: {0}" , repositoryName);
 
@@ -47,6 +51,10 @@ public static bool IsOnMainBranch(this ICakeContext context)
     {
         repositoryBranch = buildSystem.TFBuild.Environment.Repository.SourceBranchName;
     }
+    else if (buildSystem.IsRunningOnGitHubActions)
+    {
+        repositoryBranch = buildSystem.GitHubActions.Environment.Workflow.Ref.Replace("refs/heads/", "");
+    }
 
     context.Information("Repository Branch: {0}" , repositoryBranch);
 
@@ -60,7 +68,6 @@ public static bool IsBuildTagged(this ICakeContext context)
 
     return isTagged;
 }
-
 
 public static bool IsEnabled(this ICakeContext context, string envVar, bool nullOrEmptyAsEnabled = true)
 {
@@ -77,7 +84,6 @@ public static List<string> ExecGitCmd(this ICakeContext context, string cmd)
     return redirectedOutput.ToList();
 }
 
-
 DirectoryPath HomePath()
 {
     return IsRunningOnWindows()
@@ -90,17 +96,6 @@ void ReplaceTextInFile(FilePath filePath, string oldValue, string newValue, bool
     Information("Replacing {0} with {1} in {2}", oldValue, !encrypt ? newValue : "******", filePath);
     var file = filePath.FullPath.ToString();
     System.IO.File.WriteAllText(file, System.IO.File.ReadAllText(file).Replace(oldValue, newValue));
-}
-
-void SetRubyGemPushApiKey(string apiKey)
-{
-    // it's a hack, creating a credentials file to be able to push the gem
-    var workDir = "./src/GitVersionRubyGem";
-    var gemHomeDir = HomePath().Combine(".gem");
-    var credentialFile = new FilePath(workDir + "/credentials");
-    EnsureDirectoryExists(gemHomeDir);
-    ReplaceTextInFile(credentialFile, "$api_key$", apiKey, true);
-    CopyFileToDirectory(credentialFile, gemHomeDir);
 }
 
 GitVersion GetVersion(BuildParameters parameters)
@@ -126,6 +121,24 @@ GitVersion GetVersion(BuildParameters parameters)
     return gitVersion;
 }
 
+void ValidateVersion(BuildParameters parameters)
+{
+    var gitVersionTool = GetFiles($"artifacts/**/bin/{parameters.CoreFxVersion31}/GitVersion.dll").FirstOrDefault();
+    IEnumerable<string> output;
+    var fullFxResult = StartProcess(
+        "dotnet",
+        new ProcessSettings {
+            Arguments = $"\"{gitVersionTool}\" -version",
+            RedirectStandardOutput = true,
+        },
+        out output
+    );
+
+    var outputStr = string.Concat(output);
+
+    Assert.Equal(parameters.Version.GitVersion.InformationalVersion, outputStr);
+}
+
 void RunGitVersionOnCI(BuildParameters parameters)
 {
     // set the CI build version number with GitVersion
@@ -133,7 +146,6 @@ void RunGitVersionOnCI(BuildParameters parameters)
     {
         var settings = new GitVersionSettings
         {
-            UpdateAssemblyInfo = true,
             LogFilePath = "console",
             OutputType = GitVersionOutput.BuildServer
         };

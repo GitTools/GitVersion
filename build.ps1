@@ -65,7 +65,7 @@ $PSScriptRoot = Split-Path $MyInvocation.MyCommand.Path -Parent
 foreach($line in Get-Content (Join-Path $PSScriptRoot 'build.config'))
 {
   if ($line -like 'DOTNET_VERSION=*') {
-      $DotNetVersion = $line.SubString(15).Split(',')
+      $DotNetVersion = $line.SubString("DOTNET_VERSION=".Length).Split(',')
   }
 }
 
@@ -119,13 +119,17 @@ Function Install-Dotnet($DotNetVersion)
 {
     if ($IsMacOS -or $IsLinux) {
         $ScriptPath = Join-Path $InstallPath 'dotnet-install.sh'
-        (New-Object System.Net.WebClient).DownloadFile($DotNetUnixInstallerUri, $ScriptPath);
+        if (!(Test-Path $ScriptPath)) {
+            (New-Object System.Net.WebClient).DownloadFile($DotNetUnixInstallerUri, $ScriptPath);
+        }
 
         & bash $ScriptPath --version "$DotNetVersion" --install-dir "$InstallPath" --channel "$DotNetChannel" --no-path
     }
     else {
         $ScriptPath = Join-Path $InstallPath 'dotnet-install.ps1'
-        (New-Object System.Net.WebClient).DownloadFile($DotNetInstallerUri, $ScriptPath);
+        if (!(Test-Path $ScriptPath)) {
+            (New-Object System.Net.WebClient).DownloadFile($DotNetInstallerUri, $ScriptPath);
+        }
 
         & $ScriptPath -Channel $DotNetChannel -Version $DotNetVersion -InstallDir $InstallPath;
     }

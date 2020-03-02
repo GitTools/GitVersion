@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Runtime.InteropServices;
 using System.Text;
 using GitVersion.Helpers;
 using LibGit2Sharp;
@@ -112,8 +111,6 @@ namespace GitVersion.Extensions
 
         public static void DumpGraph(string workingDirectory, Action<string> writer = null, int? maxCommits = null)
         {
-            if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) return;
-
             var output = new StringBuilder();
             try
             {

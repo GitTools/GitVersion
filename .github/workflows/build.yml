@@ -1,0 +1,230 @@
+name: Build
+
+on:
+  push:
+    branches:
+    - master
+  pull_request:
+    branches:
+    - master
+
+env:
+  DOTNET_ROLL_FORWARD_ON_NO_CANDIDATE_FX: 2
+  ENABLED_MULTI_STAGE_BUILD: true
+  ENABLED_UNIT_TESTS: true
+  ENABLED_PUBLISH_DOCKER: true
+  ENABLED_PUBLISH_NUGET: true
+  ENABLED_PUBLISH_CHOCOLATEY: true
+
+jobs:
+  build:
+    name: Build
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [windows-latest, ubuntu-latest, macos-latest]
+      fail-fast: false
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Fetch all history for all tags and branches
+      run: |
+        git fetch --prune --unshallow
+    - name: Cache tools
+      id: cache-tools
+      uses: actions/cache@v1
+      with:
+        path: tools
+        key: ${{ runner.os }}-tools-${{ hashFiles('build.cake') }}
+    - name: Cache dotnet
+      id: cache-dotnet
+      uses: actions/cache@v1
+      with:
+        path: .dotnet
+        key: ${{ runner.os }}-dotnet-${{ hashFiles('build.config') }}
+    - name: '[Cake build & pack]'
+      shell: pwsh
+      run: ./build.ps1 -target Pack
+    - uses: actions/upload-artifact@v1
+      if: matrix.os == 'windows-latest'
+      with:
+        name: storage
+        path: ${{ github.workspace }}/artifacts
+      name: 'Upload Package'
+
+  test:
+    name: Unit Test
+    runs-on: ${{ matrix.os }}
+    env:
+      CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+    strategy:
+      matrix:
+        os: [windows-latest, ubuntu-latest, macos-latest]
+      fail-fast: false
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Fetch all history for all tags and branches
+      run: |
+        git fetch --prune --unshallow
+    - name: Cache tools
+      id: cache-tools
+      uses: actions/cache@v1
+      with:
+        path: tools
+        key: ${{ runner.os }}-tools-${{ hashFiles('build.cake') }}
+    - name: Cache dotnet
+      id: cache-dotnet
+      uses: actions/cache@v1
+      with:
+        path: .dotnet
+        key: ${{ runner.os }}-dotnet-${{ hashFiles('build.config') }}
+    - name: '[Run Test]'
+      shell: pwsh
+      run: ./build.ps1 -target Test
+
+  artifact_test:
+    name: Artifacts Test
+    needs: [build, test]
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+          os: [linux]
+          targetFramework: [2.1, 3.1]
+          distro: [centos-7, debian-9, fedora-30, ubuntu-16.04, ubuntu-18.04]
+      fail-fast: false
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Fetch all history for all tags and branches
+      run: |
+        git fetch --prune --unshallow
+    - name: Cache tools
+      id: cache-tools
+      uses: actions/cache@v1
+      with:
+        path: tools
+        key: ${{ runner.os }}-tools-${{ hashFiles('build.cake') }}
+    - name: Cache dotnet
+      id: cache-dotnet
+      uses: actions/cache@v1
+      with:
+        path: .dotnet
+        key: ${{ runner.os }}-dotnet-${{ hashFiles('build.config') }}
+    - uses: actions/download-artifact@v1
+      with:
+        name: storage
+        path: ${{ github.workspace }}/artifacts
+    - name: '[Docker Test Artifacts]'
+      shell: pwsh
+      run: ./build.ps1 -target Artifacts-Test -DockerDistro ${{ matrix.distro }} -DockerDotnetVersion ${{ matrix.targetFramework }}
+
+  docker:
+    name: Docker
+    needs: [artifact_test]
+    runs-on: ubuntu-latest
+    env:
+      DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+      DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+    strategy:
+      matrix:
+          os: [linux]
+          targetFramework: [2.1, 3.1]
+          distro: [centos-7, debian-9, fedora-30, ubuntu-16.04, ubuntu-18.04]
+      fail-fast: false
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Fetch all history for all tags and branches
+      run: |
+        git fetch --prune --unshallow
+    - name: Cache tools
+      id: cache-tools
+      uses: actions/cache@v1
+      with:
+        path: tools
+        key: ${{ runner.os }}-tools-${{ hashFiles('build.cake') }}
+    - name: Cache dotnet
+      id: cache-dotnet
+      uses: actions/cache@v1
+      with:
+        path: .dotnet
+        key: ${{ runner.os }}-dotnet-${{ hashFiles('build.config') }}
+    - uses: actions/download-artifact@v1
+      with:
+        name: storage
+        path: ${{ github.workspace }}/artifacts
+    - name: '[Docker build & Test]'
+      shell: pwsh
+      run: ./build.ps1 -target Publish-DockerHub -DockerDistro ${{ matrix.distro }} -DockerDotnetVersion ${{ matrix.targetFramework }}
+
+  publish:
+    name: Publish
+    needs: [artifact_test]
+    runs-on: windows-latest
+    strategy:
+      matrix:
+        taskName: [CI, NuGet, Chocolatey, Documentation]
+      fail-fast: false
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      GITHUB_USERNAME: ${{ secrets.GITHUB_USERNAME }}
+      NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
+      NUGET_API_URL: ${{ secrets.NUGET_API_URL }}
+      CHOCOLATEY_API_KEY: ${{ secrets.CHOCOLATEY_API_KEY }}
+      CHOCOLATEY_API_URL: ${{ secrets.CHOCOLATEY_API_URL }}
+    steps:
+      - uses: actions/checkout@v2
+      - name: Fetch all history for all tags and branches
+        run: |
+          git fetch --prune --unshallow
+      - name: Cache tools
+        id: cache-tools
+        uses: actions/cache@v1
+        with:
+          path: tools
+          key: ${{ runner.os }}-tools-${{ hashFiles('build.cake') }}
+      - name: Cache dotnet
+        id: cache-dotnet
+        uses: actions/cache@v1
+        with:
+          path: .dotnet
+          key: ${{ runner.os }}-dotnet-${{ hashFiles('build.config') }}
+      - uses: actions/download-artifact@v1
+        with:
+          name: storage
+          path: ${{ github.workspace }}/artifacts
+      - name: '[Publish]'
+        shell: pwsh
+        run: ./build.ps1 -target Publish-${{ matrix.taskName }}
+
+  release:
+    name: Release
+    needs: [docker, publish]
+    runs-on: windows-latest
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - uses: actions/checkout@v2
+      - name: Fetch all history for all tags and branches
+        run: |
+          git fetch --prune --unshallow
+      - name: Cache tools
+        id: cache-tools
+        uses: actions/cache@v1
+        with:
+          path: tools
+          key: ${{ runner.os }}-tools-${{ hashFiles('build.cake') }}
+      - name: Cache dotnet
+        id: cache-dotnet
+        uses: actions/cache@v1
+        with:
+          path: .dotnet
+          key: ${{ runner.os }}-dotnet-${{ hashFiles('build.config') }}
+      - uses: actions/download-artifact@v1
+        with:
+          name: storage
+          path: ${{ github.workspace }}/artifacts
+      - name: '[Release]'
+        shell: pwsh
+        run: ./build.ps1 -target Release

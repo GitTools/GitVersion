@@ -1,0 +1,19 @@
+parameters:
+- name: taskName  # defaults for any parameters that aren't specified
+  default: ''
+
+steps:
+- template: common-steps.yml
+  parameters:
+    includeArtifacts: true
+- pwsh: ./build.ps1 -target Publish-${{ parameters.taskName }}
+  displayName: '[Publish]'
+  env:
+    GITHUB_TOKEN: $(GITHUB_TOKEN)
+    NUGET_API_KEY: $(NUGET_API_KEY)
+    NUGET_API_URL: $(NUGET_API_URL)
+    CHOCOLATEY_API_KEY: $(CHOCOLATEY_API_KEY)
+    CHOCOLATEY_API_URL: $(CHOCOLATEY_API_URL)
+    ENABLED_PUBLISH_NUGET: $(ENABLED_PUBLISH_NUGET)
+    ENABLED_PUBLISH_CHOCOLATEY: $(ENABLED_PUBLISH_CHOCOLATEY)
+    DOTNET_ROLL_FORWARD_ON_NO_CANDIDATE_FX: 2

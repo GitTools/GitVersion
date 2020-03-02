@@ -36,6 +36,9 @@ public class BuildParameters
     public bool IsRunningOnAppVeyor { get; private set; }
     public bool IsRunningOnTravis { get; private set; }
     public bool IsRunningOnAzurePipeline { get; private set; }
+    public bool IsRunningOnGitHubActions { get; private set; }
+
+    public bool IsReleasingCI { get; private set; }
 
     public bool IsMainRepo { get; private set; }
     public bool IsMainBranch { get; private set; }
@@ -68,10 +71,8 @@ public class BuildParameters
         var target = context.Argument("target", "Default");
         var buildSystem = context.BuildSystem();
 
-        var dockerCliPlatform = ((buildSystem.IsRunningOnAzurePipelines || buildSystem.IsRunningOnAzurePipelinesHosted)
-                                && context.Environment.Platform.Family != PlatformFamily.OSX)
-                                || buildSystem.IsLocalBuild
-                                ? context.GetDockerCliPlatform() : "";
+        var isReleasingCI = buildSystem.IsRunningOnAzurePipelines || buildSystem.IsRunningOnAzurePipelinesHosted || buildSystem.IsRunningOnGitHubActions;
+        var dockerCliPlatform = isReleasingCI ? context.GetDockerCliPlatform() : "";
 
         return new BuildParameters {
             Target        = target,
@@ -95,6 +96,9 @@ public class BuildParameters
             IsRunningOnAppVeyor      = buildSystem.IsRunningOnAppVeyor,
             IsRunningOnTravis        = buildSystem.IsRunningOnTravisCI,
             IsRunningOnAzurePipeline = buildSystem.IsRunningOnAzurePipelines || buildSystem.IsRunningOnAzurePipelinesHosted,
+            IsRunningOnGitHubActions = buildSystem.IsRunningOnGitHubActions,
+
+            IsReleasingCI = isReleasingCI,
 
             IsDockerForWindows = dockerCliPlatform == "windows",
             IsDockerForLinux   = dockerCliPlatform == "linux",
@@ -120,7 +124,7 @@ public class BuildParameters
         Packages = BuildPackages.GetPackages(
             Paths.Directories.NugetRoot,
             Version,
-            new [] { "GitVersion.CommandLine", "GitVersionTask", "GitVersion.Tool" },
+            new [] { "GitVersion.CommandLine", "GitVersion.Core", "GitVersionTask", "GitVersion.Tool" },
             new [] { "GitVersion.Portable" });
 
         var files = Paths.Files;
@@ -153,6 +157,9 @@ public class BuildParameters
         msBuildSettings.WithProperty("AssemblyVersion", version.Version);
         msBuildSettings.WithProperty("PackageVersion", version.NugetVersion);
         msBuildSettings.WithProperty("FileVersion", version.Version);
+        msBuildSettings.WithProperty("InformationalVersion", version.GitVersion.InformationalVersion);
+        msBuildSettings.WithProperty("RepositoryBranch", version.GitVersion.BranchName);
+        msBuildSettings.WithProperty("RepositoryCommit", version.GitVersion.Sha);
         msBuildSettings.WithProperty("NoPackageAnalysis", "true");
     }
 }

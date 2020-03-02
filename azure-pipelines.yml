@@ -4,6 +4,7 @@ variables:
 
 stages:
 - stage: Build
+  displayName: 'Build'
   jobs:
   - job: Build
     strategy:
@@ -17,8 +18,9 @@ stages:
     pool:
       vmImage: $(VM_IMAGE)
     steps:
-    - template: build/stages/build.yml
+    - template: .azurepipelines/build.yml
 - stage: Test
+  displayName: 'Unit Test'
   dependsOn: []
   jobs:
   - job: Test
@@ -33,7 +35,7 @@ stages:
     pool:
       vmImage: $(VM_IMAGE)
     steps:
-    - template: build/stages/test.yml
+    - template: .azurepipelines/test.yml
 
 - stage: Artifact_Test
   displayName: 'Artifacts test'
@@ -42,31 +44,33 @@ stages:
   - Test
   condition: succeeded()
   jobs:
-  - template: build/stages/generate-job.yml
-  - template: build/stages/artifacts-test.yml
+  - template: .azurepipelines/generate-job.yml
+  - template: .azurepipelines/artifacts-test.yml
     parameters:
       name: Linux
       vmImage: 'ubuntu-latest'
-#   - template: build/stages/artifacts-test.yml
+#   - template: .azurepipelines/artifacts-test.yml
 #     parameters:
 #       name: Windows
 #       vmImage: 'windows-latest'
 
 - stage: Docker
+  displayName: 'Docker Build & Test'
   dependsOn: Artifact_Test
   condition: succeeded()
   jobs:
-  - template: build/stages/generate-job.yml
-  - template: build/stages/docker.yml
+  - template: .azurepipelines/generate-job.yml
+  - template: .azurepipelines/docker.yml
     parameters:
       name: Linux
       vmImage: 'ubuntu-latest'
-#   - template: build/stages/docker.yml
+#   - template: .azurepipelines/docker.yml
 #     parameters:
 #       name: Windows
 #       vmImage: 'windows-latest'
 
 - stage: Publish
+  displayName: 'Publish'
   dependsOn: Artifact_Test
   condition: succeeded()
   jobs:
@@ -81,16 +85,15 @@ stages:
           TASK_NAME: 'NuGet'
         Chocolatey:
          TASK_NAME: 'Chocolatey'
-        Gem:
-          TASK_NAME: 'Gem'
         Documentation:
           TASK_NAME: 'Documentation'
     steps:
-    - template: build/stages/publish.yml
+    - template: .azurepipelines/publish.yml
       parameters:
         taskName: $(TASK_NAME)
 
 - stage: Release
+  displayName: 'Release'
   dependsOn:
   - Docker
   - Publish
@@ -100,4 +103,4 @@ stages:
     pool:
       vmImage: windows-latest
     steps:
-    - template: build/stages/release.yml
+    - template: .azurepipelines/release.yml

@@ -1,0 +1,8 @@
+steps:
+- template: common-steps.yml
+  parameters:
+    includeArtifacts: true
+- pwsh: ./build.ps1 -target Release
+  displayName: '[Release]'
+  env:
+    GITHUB_TOKEN: $(GITHUB_TOKEN)

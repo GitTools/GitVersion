@@ -59,7 +59,9 @@ namespace GitVersionExe.Tests
         public void Exec()
         {
             var arguments = argumentParser.ParseArguments("-exec rake");
+#pragma warning disable CS0612 // Type or member is obsolete
             arguments.Exec.ShouldBe("rake");
+#pragma warning restore CS0612 // Type or member is obsolete
         }
 
         [Test]
@@ -72,15 +74,19 @@ namespace GitVersionExe.Tests
                 "-execargs",
                 "clean build"
             });
+#pragma warning disable CS0612 // Type or member is obsolete
             arguments.Exec.ShouldBe("rake");
             arguments.ExecArgs.ShouldBe("clean build");
+#pragma warning restore CS0612 // Type or member is obsolete
         }
 
         [Test]
         public void Msbuild()
         {
             var arguments = argumentParser.ParseArguments("-proj msbuild.proj");
+#pragma warning disable CS0612 // Type or member is obsolete
             arguments.Proj.ShouldBe("msbuild.proj");
+#pragma warning restore CS0612 // Type or member is obsolete
         }
 
         [Test]
@@ -93,8 +99,10 @@ namespace GitVersionExe.Tests
                 "-projargs",
                 "/p:Configuration=Debug /p:Platform=AnyCPU"
             });
+#pragma warning disable CS0612 // Type or member is obsolete
             arguments.Proj.ShouldBe("msbuild.proj");
             arguments.ProjArgs.ShouldBe("/p:Configuration=Debug /p:Platform=AnyCPU");
+#pragma warning restore CS0612 // Type or member is obsolete
         }
 
         [Test]
@@ -102,7 +110,9 @@ namespace GitVersionExe.Tests
         {
             var arguments = argumentParser.ParseArguments("targetDirectoryPath -exec rake");
             arguments.TargetPath.ShouldBe("targetDirectoryPath");
+#pragma warning disable CS0612 // Type or member is obsolete
             arguments.Exec.ShouldBe("rake");
+#pragma warning restore CS0612 // Type or member is obsolete
         }
 
         [Test]
@@ -135,28 +145,54 @@ namespace GitVersionExe.Tests
         public void OutputDefaultsToJson()
         {
             var arguments = argumentParser.ParseArguments("targetDirectoryPath");
-            arguments.Output.ShouldBe(OutputType.Json);
+            arguments.Output.ShouldContain(OutputType.Json);
         }
 
         [Test]
         public void OutputJsonCanBeParsed()
         {
             var arguments = argumentParser.ParseArguments("targetDirectoryPath -output json");
-            arguments.Output.ShouldBe(OutputType.Json);
+            arguments.Output.ShouldContain(OutputType.Json);
+            arguments.Output.ShouldNotContain(OutputType.BuildServer);
+        }
+
+        [Test]
+        public void MultipleOutputJsonCanBeParsed()
+        {
+            var arguments = argumentParser.ParseArguments("targetDirectoryPath -output json -output json");
+            arguments.Output.ShouldContain(OutputType.Json);
+            arguments.Output.ShouldNotContain(OutputType.BuildServer);
         }
 
         [Test]
         public void OutputBuildserverCanBeParsed()
         {
             var arguments = argumentParser.ParseArguments("targetDirectoryPath -output buildserver");
-            arguments.Output.ShouldBe(OutputType.BuildServer);
+            arguments.Output.ShouldContain(OutputType.BuildServer);
+            arguments.Output.ShouldNotContain(OutputType.Json);
+        }
+
+        [Test]
+        public void MultipleOutputBuildserverCanBeParsed()
+        {
+            var arguments = argumentParser.ParseArguments("targetDirectoryPath -output buildserver -output buildserver");
+            arguments.Output.ShouldContain(OutputType.BuildServer);
+            arguments.Output.ShouldNotContain(OutputType.Json);
+        }
+
+        [Test]
+        public void OutputBuildserverAndJsonCanBeParsed()
+        {
+            var arguments = argumentParser.ParseArguments("targetDirectoryPath -output buildserver -output json");
+            arguments.Output.ShouldContain(OutputType.BuildServer);
+            arguments.Output.ShouldContain(OutputType.Json);
         }
 
         [Test]
         public void MultipleArgsAndFlag()
         {
             var arguments = argumentParser.ParseArguments("targetDirectoryPath -output buildserver -updateAssemblyInfo");
-            arguments.Output.ShouldBe(OutputType.BuildServer);
+            arguments.Output.ShouldContain(OutputType.BuildServer);
         }
 
         [Test]
@@ -348,7 +384,9 @@ namespace GitVersionExe.Tests
         {
             var arguments = argumentParser.ParseArguments("-nofetch -proj foo.sln");
             arguments.NoFetch.ShouldBe(true);
+#pragma warning disable CS0612 // Type or member is obsolete
             arguments.Proj.ShouldBe("foo.sln");
+#pragma warning restore CS0612 // Type or member is obsolete
         }
 
         [Test]
@@ -356,7 +394,9 @@ namespace GitVersionExe.Tests
         {
             var arguments = argumentParser.ParseArguments("-nonormalize -proj foo.sln");
             arguments.NoNormalize.ShouldBe(true);
+#pragma warning disable CS0612 // Type or member is obsolete
             arguments.Proj.ShouldBe("foo.sln");
+#pragma warning restore CS0612 // Type or member is obsolete
         }
 
         [Test]
@@ -364,7 +404,9 @@ namespace GitVersionExe.Tests
         {
             var arguments = argumentParser.ParseArguments("-nocache -proj foo.sln");
             arguments.NoCache.ShouldBe(true);
+#pragma warning disable CS0612 // Type or member is obsolete
             arguments.Proj.ShouldBe("foo.sln");
+#pragma warning restore CS0612 // Type or member is obsolete
         }
 
         [TestCase("-nofetch -nonormalize -nocache")]

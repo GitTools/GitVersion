@@ -3,7 +3,7 @@ using System.Linq;
 using GitVersion.Exceptions;
 using LibGit2Sharp;
 
-namespace GitVersion.VersionCalculation.BaseVersionCalculators
+namespace GitVersion.VersionCalculation
 {
     /// <summary>
     /// Version is 0.1.0.

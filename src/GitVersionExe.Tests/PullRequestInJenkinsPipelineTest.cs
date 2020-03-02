@@ -1,5 +1,7 @@
 using System;
+using System.Collections.Generic;
 using GitTools.Testing;
+using GitVersion.BuildServers;
 using LibGit2Sharp;
 using NUnit.Framework;
 using Shouldly;
@@ -14,7 +16,6 @@ namespace GitVersionExe.Tests
         public void GivenJenkinsPipelineHasDuplicatedOriginVersionIsCalculatedProperly()
         {
             var pipelineBranch = "BRANCH_NAME";
-            var pipelineBranchOrig = Environment.GetEnvironmentVariable(pipelineBranch);
 
             using var fixture = new EmptyRepositoryFixture();
             var remoteRepositoryPath = PathHelper.GetTempPath();
@@ -43,20 +44,19 @@ namespace GitVersionExe.Tests
                 Commands.Checkout(fixture.Repository, mergeCommitSha);
             }
 
-            // Emulating Jenkins environment variable
-            Environment.SetEnvironmentVariable(pipelineBranch, "PR-5");
-            Environment.SetEnvironmentVariable("JENKINS_URL", "url");
+            var env = new[]
+            {
+                new KeyValuePair<string, string>(Jenkins.EnvironmentVariableName, "url"),
+                new KeyValuePair<string, string>(pipelineBranch, "PR-5")
+            };
 
-            var result = GitVersionHelper.ExecuteIn(fixture.RepositoryPath);
+            var result = GitVersionHelper.ExecuteIn(fixture.RepositoryPath, environments: env);
 
             result.ExitCode.ShouldBe(0);
             result.OutputVariables.FullSemVer.ShouldBe("1.0.4-PullRequest0005.3");
 
             // Cleanup repository files
             DirectoryHelper.DeleteDirectory(remoteRepositoryPath);
-
-            Environment.SetEnvironmentVariable(pipelineBranch, pipelineBranchOrig);
-            Environment.SetEnvironmentVariable("JENKINS_URL", null);
         }
     }
 }

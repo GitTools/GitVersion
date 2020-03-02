@@ -43,15 +43,17 @@ namespace GitVersionCore.Tests
                 Patch = 3,
             };
 
+#pragma warning disable CS0618 // Type or member is obsolete
             var propertyName = nameof(SemanticVersionFormatValues.DefaultInformationalVersion);
+#pragma warning restore CS0618 // Type or member is obsolete
             var config = new TestEffectiveConfiguration(assemblyInformationalFormat: $"{{{propertyName}}}");
             variableProvider.GetVariablesFor(semVer, config, false);
             logMessages.ShouldContain(message => message.Trim().StartsWith("WARN") && message.Contains(propertyName), 1, $"Expected a warning to be logged when using the variable {propertyName} in a configuration format template");
         }
 
         [Test]
-        [Category("NoMono")]
-        [Description("Won't run on Mono due to source information not being available for ShouldMatchApproved.")]
+        [Category(NoMono)]
+        [Description(NoMonoDescription)]
         public void ProvidesVariablesInContinuousDeliveryModeForPreRelease()
         {
             var semVer = new SemanticVersion
@@ -77,8 +79,8 @@ namespace GitVersionCore.Tests
         }
 
         [Test]
-        [Category("NoMono")]
-        [Description("Won't run on Mono due to source information not being available for ShouldMatchApproved.")]
+        [Category(NoMono)]
+        [Description(NoMonoDescription)]
         public void ProvidesVariablesInContinuousDeliveryModeForPreReleaseWithPadding()
         {
             var semVer = new SemanticVersion
@@ -104,8 +106,8 @@ namespace GitVersionCore.Tests
         }
 
         [Test]
-        [Category("NoMono")]
-        [Description("Won't run on Mono due to source information not being available for ShouldMatchApproved.")]
+        [Category(NoMono)]
+        [Description(NoMonoDescription)]
         public void ProvidesVariablesInContinuousDeploymentModeForPreRelease()
         {
             var semVer = new SemanticVersion
@@ -130,8 +132,8 @@ namespace GitVersionCore.Tests
         }
 
         [Test]
-        [Category("NoMono")]
-        [Description("Won't run on Mono due to source information not being available for ShouldMatchApproved.")]
+        [Category(NoMono)]
+        [Description(NoMonoDescription)]
         public void ProvidesVariablesInContinuousDeliveryModeForStable()
         {
             var semVer = new SemanticVersion
@@ -155,8 +157,8 @@ namespace GitVersionCore.Tests
         }
 
         [Test]
-        [Category("NoMono")]
-        [Description("Won't run on Mono due to source information not being available for ShouldMatchApproved.")]
+        [Category(NoMono)]
+        [Description(NoMonoDescription)]
         public void ProvidesVariablesInContinuousDeploymentModeForStable()
         {
             var semVer = new SemanticVersion
@@ -180,8 +182,8 @@ namespace GitVersionCore.Tests
         }
 
         [Test]
-        [Category("NoMono")]
-        [Description("Won't run on Mono due to source information not being available for ShouldMatchApproved.")]
+        [Category(NoMono)]
+        [Description(NoMonoDescription)]
         public void ProvidesVariablesInContinuousDeploymentModeForStableWhenCurrentCommitIsTagged()
         {
             var semVer = new SemanticVersion
@@ -253,8 +255,8 @@ namespace GitVersionCore.Tests
         }
 
         [Test]
-        [Category("NoMono")]
-        [Description("Won't run on Mono due to source information not being available for ShouldMatchApproved.")]
+        [Category(NoMono)]
+        [Description(NoMonoDescription)]
         public void ProvidesVariablesInContinuousDeliveryModeForFeatureBranch()
         {
             var semVer = new SemanticVersion
@@ -280,8 +282,8 @@ namespace GitVersionCore.Tests
         }
 
         [Test]
-        [Category("NoMono")]
-        [Description("Won't run on Mono due to source information not being available for ShouldMatchApproved.")]
+        [Category(NoMono)]
+        [Description(NoMonoDescription)]
         public void ProvidesVariablesInContinuousDeliveryModeForFeatureBranchWithCustomAssemblyInformationalFormat()
         {
             var semVer = new SemanticVersion

@@ -10,7 +10,7 @@ namespace GitVersionExe.Tests
         }
 
 
-        public ArgumentBuilder(string workingDirectory, string exec, string execArgs, string projectFile, string projectArgs, string logFile, bool isTeamCity)
+        public ArgumentBuilder(string workingDirectory, string exec, string execArgs, string projectFile, string projectArgs, string logFile)
         {
             this.workingDirectory = workingDirectory;
             this.exec = exec;
@@ -18,13 +18,11 @@ namespace GitVersionExe.Tests
             this.projectFile = projectFile;
             this.projectArgs = projectArgs;
             this.logFile = logFile;
-            this.isTeamCity = isTeamCity;
         }
 
-        public ArgumentBuilder(string workingDirectory, string additionalArguments, bool isTeamCity, string logFile)
+        public ArgumentBuilder(string workingDirectory, string additionalArguments, string logFile)
         {
             this.workingDirectory = workingDirectory;
-            this.isTeamCity = isTeamCity;
             this.additionalArguments = additionalArguments;
             this.logFile = logFile;
         }
@@ -34,9 +32,6 @@ namespace GitVersionExe.Tests
 
 
         public string LogFile => logFile;
-
-        public bool IsTeamCity => isTeamCity;
-
 
         public override string ToString()
         {
@@ -78,7 +73,6 @@ namespace GitVersionExe.Tests
         private readonly string additionalArguments;
         private readonly string exec;
         private readonly string execArgs;
-        private readonly bool isTeamCity;
         private readonly string logFile;
         private readonly string projectArgs;
         private readonly string projectFile;

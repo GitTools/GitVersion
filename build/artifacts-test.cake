@@ -2,15 +2,19 @@ singleStageRun = !IsEnabled(Context, "ENABLED_MULTI_STAGE_BUILD", false);
 
 Task("Artifacts-Prepare")
 .WithCriteria<BuildParameters>((context, parameters) => !parameters.IsRunningOnMacOS, "Artifacts-Prepare can be tested only on Windows or Linux agents.")
-    .WithCriteria<BuildParameters>((context, parameters) => parameters.IsRunningOnAzurePipeline, "Artifacts-Prepare works only on AzurePipeline.")
+    .WithCriteria<BuildParameters>((context, parameters) => parameters.IsReleasingCI, "Artifacts-Prepare works only on Releasing CI.")
     .IsDependentOnWhen("Pack-Nuget", singleStageRun)
     .Does<BuildParameters>((parameters) =>
 {
+    foreach(var dockerImage in parameters.Docker.Images)
+    {
+        DockerPullImage(dockerImage, parameters);
+    }
 });
 
 Task("Artifacts-DotnetTool-Test")
     .WithCriteria<BuildParameters>((context, parameters) => !parameters.IsRunningOnMacOS, "Artifacts-DotnetTool-Test can be tested only on Windows or Linux agents.")
-    .WithCriteria<BuildParameters>((context, parameters) => parameters.IsRunningOnAzurePipeline, "Artifacts-DotnetTool-Test works only on AzurePipeline.")
+    .WithCriteria<BuildParameters>((context, parameters) => parameters.IsReleasingCI,     "Artifacts-DotnetTool-Test works only on Releasing CI.")
     .IsDependentOn("Artifacts-Prepare")
     .Does<BuildParameters>((parameters) =>
 {
@@ -19,11 +23,7 @@ Task("Artifacts-DotnetTool-Test")
 
     foreach(var dockerImage in parameters.Docker.Images)
     {
-        var cmd = $"$result = dotnet tool install GitVersion.Tool --version {version} --tool-path {rootPrefix}/gitversion --add-source {rootPrefix}/nuget | out-null; ";
-        cmd += "if($LASTEXITCODE -eq 0) { ";
-        cmd += $"{rootPrefix}/gitversion/dotnet-gitversion {rootPrefix}/repo /showvariable FullSemver;";
-        cmd += "} else { echo $result }";
-
+        var cmd = $"-file {rootPrefix}/scripts/Test-DotnetGlobalTool.ps1 -version {version} -repoPath {rootPrefix}/repo -nugetPath {rootPrefix}/nuget -toolPath {rootPrefix}/gitversion";
 
         DockerTestArtifact(dockerImage, parameters, cmd);
     }
@@ -31,7 +31,7 @@ Task("Artifacts-DotnetTool-Test")
 
 Task("Artifacts-MsBuild-Test")
     .WithCriteria<BuildParameters>((context, parameters) => !parameters.IsRunningOnMacOS, "Artifacts-MsBuild-Test can be tested only on Windows or Linux agents.")
-    .WithCriteria<BuildParameters>((context, parameters) => parameters.IsRunningOnAzurePipeline, "Artifacts-MsBuild-Test works only on AzurePipeline.")
+    .WithCriteria<BuildParameters>((context, parameters) => parameters.IsReleasingCI,     "Artifacts-MsBuild-Test works only on Releasing CI.")
     .IsDependentOn("Artifacts-Prepare")
     .Does<BuildParameters>((parameters) =>
 {
@@ -41,10 +41,8 @@ Task("Artifacts-MsBuild-Test")
     foreach(var dockerImage in parameters.Docker.Images)
     {
         var (os, distro, targetframework) = dockerImage;
-        var cmd = $"$result = dotnet build {rootPrefix}/repo/test --source {rootPrefix}/nuget --source https://api.nuget.org/v3/index.json -p:GitVersionTaskVersion={version} -p:TargetFramework={targetframework} *>&1; ";
-        cmd += "if($LASTEXITCODE -eq 0) { ";
-        cmd += $"dotnet {rootPrefix}/repo/test/build/corefx/{targetframework}/TestRepo.dll;";
-        cmd += "} else { echo $result }";
+
+        var cmd = $"-file {rootPrefix}/scripts/Test-MsBuild.ps1 -version {version} -repoPath {rootPrefix}/repo/test -nugetPath {rootPrefix}/nuget -targetframework {targetframework}";
 
         DockerTestArtifact(dockerImage, parameters, cmd);
     }
@@ -52,6 +50,6 @@ Task("Artifacts-MsBuild-Test")
 
 Task("Artifacts-Test")
     .WithCriteria<BuildParameters>((context, parameters) => !parameters.IsRunningOnMacOS, "Artifacts-Test can be tested only on Windows or Linux agents.")
-    .WithCriteria<BuildParameters>((context, parameters) => parameters.IsRunningOnAzurePipeline, "Artifacts-Test works only on AzurePipeline.")
+    .WithCriteria<BuildParameters>((context, parameters) => parameters.IsReleasingCI,     "Artifacts-Test works only on Releasing CI.")
     .IsDependentOn("Artifacts-DotnetTool-Test")
     .IsDependentOn("Artifacts-MsBuild-Test");

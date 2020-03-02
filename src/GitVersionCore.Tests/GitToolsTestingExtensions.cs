@@ -8,6 +8,7 @@ using Shouldly;
 using GitVersion.Logging;
 using Microsoft.Extensions.Options;
 using GitVersion.Extensions;
+using GitVersion.VersionCalculation;
 using GitVersionCore.Tests.Helpers;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -29,10 +30,10 @@ namespace GitVersionCore.Tests
 
             var log = sp.GetService<ILog>();
             var variableProvider = sp.GetService<IVariableProvider>();
-            var versionFinder = sp.GetService<IGitVersionFinder>();
+            var nextVersionCalculator = sp.GetService<INextVersionCalculator>();
 
             var gitVersionContext = new GitVersionContext(repository ?? fixture.Repository, log, targetBranch, configuration, onlyTrackedBranches, commitId);
-            var executeGitVersion = versionFinder.FindVersion(gitVersionContext);
+            var executeGitVersion = nextVersionCalculator.FindVersion(gitVersionContext);
             var variables = variableProvider.GetVariablesFor(executeGitVersion, gitVersionContext.Configuration, gitVersionContext.IsCurrentCommitTagged);
 
             try
