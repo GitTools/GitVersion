@@ -1,36 +1,3 @@
-#region Build
-
-Task("Clean")
-    .Does<BuildParameters>((parameters) =>
-{
-    Information("Cleaning directories..");
-
-    CleanDirectories("./src/**/bin/" + parameters.Configuration);
-    CleanDirectories("./src/**/obj");
-
-    CleanDirectories(parameters.Paths.Directories.ToClean);
-});
-
-Task("Build")
-    .IsDependentOn("Clean")
-    .Does<BuildParameters>((parameters) =>
-{
-    Build(parameters);
-    PublishGitVersionToArtifacts(parameters);
-
-    RunGitVersionOnCI(parameters);
-});
-
-Task("Validate-Version")
-    .IsDependentOn("Build")
-    .Does<BuildParameters>((parameters) =>
-{
-    ValidateVersion(parameters);
-});
-
-#endregion
-
-#region Pack
 Task("Pack-Prepare")
     .IsDependentOn("Validate-Version")
     .Does<BuildParameters>((parameters) =>
@@ -173,4 +140,3 @@ Task("Zip-Files")
         GZipCompress(sourceDir, tarFile);
     }
 });
-#endregion

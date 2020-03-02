@@ -32,6 +32,7 @@
 #load "./build/utils/parameters.cake"
 #load "./build/utils/utils.cake"
 
+#load "./build/build.cake"
 #load "./build/test.cake"
 #load "./build/pack.cake"
 #load "./build/artifacts-test.cake"
