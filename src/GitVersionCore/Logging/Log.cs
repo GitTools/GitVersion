@@ -41,7 +41,7 @@ namespace GitVersion.Logging
                 appender.WriteTo(level, formattedString);
             }
 
-            sb.Append(formattedString);
+            sb.AppendLine(formattedString);
         }
 
         public IDisposable IndentLog(string operationDescription)

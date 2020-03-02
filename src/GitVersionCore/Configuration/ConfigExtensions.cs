@@ -88,14 +88,14 @@ namespace GitVersion.Configuration
                 var regex = branchConfig.Value.Regex;
                 if (regex == null)
                 {
-                    throw new GitVersionConfigurationException($"Branch configuration '{branchConfig.Key}' is missing required configuration 'regex'\n\n" +
+                    throw new GitVersionConfigurationException($"Branch configuration '{branchConfig.Key}' is missing required configuration 'regex'{System.Environment.NewLine}" +
                                                                "See https://gitversion.net/docs/configuration/ for more info");
                 }
 
                 var sourceBranches = branchConfig.Value.SourceBranches;
                 if (sourceBranches == null)
                 {
-                    throw new GitVersionConfigurationException($"Branch configuration '{branchConfig.Key}' is missing required configuration 'source-branches'\n\n" +
+                    throw new GitVersionConfigurationException($"Branch configuration '{branchConfig.Key}' is missing required configuration 'source-branches'{System.Environment.NewLine}" +
                                                                "See https://gitversion.net/docs/configuration/ for more info");
                 }
 
@@ -189,7 +189,7 @@ If the docs do not help you decide on the mode open an issue to discuss what you
             }
             catch (InvalidOperationException)
             {
-                var matchingConfigs = String.Concat(matches.Select(m => $"\n - {m.Key}"));
+                var matchingConfigs = String.Concat(matches.Select(m => $"{System.Environment.NewLine} - {m.Key}"));
                 var picked = matches
                     .Select(kvp => kvp.Value)
                     .First();

@@ -37,7 +37,7 @@ namespace GitVersion.Logging
 
         private static void WriteLogEntry(string logFilePath, string str)
         {
-            var contents = $"{DateTime.Now:yyyy-MM-dd HH:mm:ss}\t\t{str}\r\n";
+            var contents = $"{DateTime.Now:yyyy-MM-dd HH:mm:ss}\t\t{str}{System.Environment.NewLine}";
             File.AppendAllText(logFilePath, contents);
         }
     }

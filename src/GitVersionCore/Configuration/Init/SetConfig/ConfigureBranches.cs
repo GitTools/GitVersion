@@ -46,7 +46,7 @@ namespace GitVersion.Configuration.Init.SetConfig
             return @"Which branch would you like to configure:
 
 0) Go Back
-" + string.Join("\r\n", OrderedBranches(config).Select((c, i) => $"{i + 1}) {c.Key}"));
+" + string.Join(System.Environment.NewLine, OrderedBranches(config).Select((c, i) => $"{i + 1}) {c.Key}"));
         }
 
         private static IOrderedEnumerable<KeyValuePair<string, BranchConfig>> OrderedBranches(Config config)

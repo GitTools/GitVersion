@@ -11,7 +11,7 @@ namespace GitVersion.Configuration.Init.Wizard
 
         protected override string GetPrompt(Config config, string workingDirectory)
         {
-            return "By default GitVersion will only increment the version of the 'develop' branch every commit, all other branches will increment when tagged\r\n\r\n" +
+            return $"By default GitVersion will only increment the version of the 'develop' branch every commit, all other branches will increment when tagged{System.Environment.NewLine}{System.Environment.NewLine}" +
                 base.GetPrompt(config, workingDirectory);
         }
     }
