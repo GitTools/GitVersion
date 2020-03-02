@@ -83,16 +83,19 @@ namespace GitVersion
 
         private static bool RunMsBuildIfNeeded(Arguments args, string workingDirectory, VersionVariables variables, ILog log)
         {
+#pragma warning disable CS0612 // Type or member is obsolete
             if (string.IsNullOrEmpty(args.Proj)) return false;
 
             args.Exec = "dotnet";
             args.ExecArgs = $"msbuild \"{args.Proj}\" {args.ProjArgs}";
+#pragma warning restore CS0612 // Type or member is obsolete
 
             return RunExecCommandIfNeeded(args, workingDirectory, variables, log);
         }
 
         private static bool RunExecCommandIfNeeded(Arguments args, string workingDirectory, VersionVariables variables, ILog log)
         {
+#pragma warning disable CS0612 // Type or member is obsolete
             if (string.IsNullOrEmpty(args.Exec)) return false;
 
             log.Info($"Launching {args.Exec} {args.ExecArgs}");
@@ -103,6 +106,7 @@ namespace GitVersion
 
             if (results != 0)
                 throw new WarningException($"Execution of {args.Exec} failed, non-zero return code");
+#pragma warning restore CS0612 // Type or member is obsolete
 
             return true;
         }

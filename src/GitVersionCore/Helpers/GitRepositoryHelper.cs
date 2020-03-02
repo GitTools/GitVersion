@@ -62,7 +62,7 @@ namespace GitVersion.Helpers
                 }
 
                 log.Info($"HEAD is detached and points at commit '{headSha}'.");
-                log.Info(string.Format("Local Refs:\r\n" + string.Join(System.Environment.NewLine, repo.Refs.FromGlob("*").Select(r => $"{r.CanonicalName} ({r.TargetIdentifier})"))));
+                log.Info($"Local Refs:{System.Environment.NewLine}" + string.Join(System.Environment.NewLine, repo.Refs.FromGlob("*").Select(r => $"{r.CanonicalName} ({r.TargetIdentifier})")));
 
                 // In order to decide whether a fake branch is required or not, first check to see if any local branches have the same commit SHA of the head SHA.
                 // If they do, go ahead and checkout that branch
@@ -203,7 +203,7 @@ Please run `git {CreateGitLogArgs(100)}` and submit it along with your build log
                     GetRemoteTipsUsingUsernamePasswordCredentials(repo, remote, authentication.Username, authentication.Password))
                 .ToList();
 
-            log.Info("Remote Refs:\r\n" + string.Join(System.Environment.NewLine, remoteTips.Select(r => r.CanonicalName)));
+            log.Info($"Remote Refs:{System.Environment.NewLine}" + string.Join(System.Environment.NewLine, remoteTips.Select(r => r.CanonicalName)));
 
             var headTipSha = repo.Head.Tip.Sha;
 

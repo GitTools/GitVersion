@@ -76,7 +76,9 @@ namespace GitVersion
                     arguments.Output.Add(OutputType.BuildServer);
                 }
 
+#pragma warning disable CS0612 // Type or member is obsolete
                 if (!string.IsNullOrEmpty(arguments.Proj) || !string.IsNullOrEmpty(arguments.Exec))
+#pragma warning restore CS0612 // Type or member is obsolete
                 {
                     arguments.Output.Add(OutputType.BuildServer);
                 }
@@ -118,18 +120,17 @@ namespace GitVersion
             }
             catch (WarningException exception)
             {
-                var error = $"An error occurred:\r\n{exception.Message}";
+                var error = $"An error occurred:{System.Environment.NewLine}{exception.Message}";
                 log.Warning(error);
                 return 1;
             }
             catch (Exception exception)
             {
-                var error = $"An unexpected error occurred:\r\n{exception}";
+                var error = $"An unexpected error occurred:{System.Environment.NewLine}{exception}";
                 log.Error(error);
 
                 if (arguments == null) return 1;
 
-                log.Info(string.Empty);
                 log.Info("Attempting to show the current git graph (please include in issue): ");
                 log.Info("Showing max of 100 commits");
 

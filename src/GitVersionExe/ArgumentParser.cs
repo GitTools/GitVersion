@@ -149,7 +149,9 @@ namespace GitVersion
                 if (name.IsSwitch("exec"))
                 {
                     EnsureArgumentValueCount(values);
+#pragma warning disable CS0612 // Type or member is obsolete
                     arguments.Exec = value;
+#pragma warning restore CS0612 // Type or member is obsolete
                     continue;
                 }
 
@@ -157,21 +159,27 @@ namespace GitVersion
                 if (name.IsSwitch("execargs"))
                 {
                     EnsureArgumentValueCount(values);
+#pragma warning disable CS0612 // Type or member is obsolete
                     arguments.ExecArgs = value;
+#pragma warning restore CS0612 // Type or member is obsolete
                     continue;
                 }
 
                 if (name.IsSwitch("proj"))
                 {
                     EnsureArgumentValueCount(values);
+#pragma warning disable CS0612 // Type or member is obsolete
                     arguments.Proj = value;
+#pragma warning restore CS0612 // Type or member is obsolete
                     continue;
                 }
 
                 if (name.IsSwitch("projargs"))
                 {
                     EnsureArgumentValueCount(values);
+#pragma warning disable CS0612 // Type or member is obsolete
                     arguments.ProjArgs = value;
+#pragma warning restore CS0612 // Type or member is obsolete
                     continue;
                 }
 
@@ -238,8 +246,8 @@ namespace GitVersion
 
                     if (versionVariable == null)
                     {
-                        var messageFormat = "{0} requires a valid version variable.  Available variables are:\n{1}";
-                        var message = string.Format(messageFormat, name, string.Join(", ", VersionVariables.AvailableVariables.Select(x => string.Concat("'", x, "'"))));
+                        var message = $"{name} requires a valid version variable. Available variables are:{System.Environment.NewLine}" +
+                            string.Join(", ", VersionVariables.AvailableVariables.Select(x => string.Concat("'", x, "'")));
                         throw new WarningException(message);
                     }
 

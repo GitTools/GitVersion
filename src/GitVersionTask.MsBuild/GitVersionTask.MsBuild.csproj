@@ -8,7 +8,7 @@
 
     <ItemGroup>
         <PackageReference Include="System.Runtime.Loader" Version="4.3.0" />
-        <PackageReference Include="Microsoft.Build" Version="16.4.0" />
+        <PackageReference Include="Microsoft.Build" Version="16.4.0" NoWarn="NU1701" />
         <PackageReference Include="Microsoft.Build.Tasks.Core" Version="16.4.0" />
     </ItemGroup>
 

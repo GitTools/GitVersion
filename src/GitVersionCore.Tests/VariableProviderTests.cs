@@ -43,7 +43,9 @@ namespace GitVersionCore.Tests
                 Patch = 3,
             };
 
+#pragma warning disable CS0618 // Type or member is obsolete
             var propertyName = nameof(SemanticVersionFormatValues.DefaultInformationalVersion);
+#pragma warning restore CS0618 // Type or member is obsolete
             var config = new TestEffectiveConfiguration(assemblyInformationalFormat: $"{{{propertyName}}}");
             variableProvider.GetVariablesFor(semVer, config, false);
             logMessages.ShouldContain(message => message.Trim().StartsWith("WARN") && message.Contains(propertyName), 1, $"Expected a warning to be logged when using the variable {propertyName} in a configuration format template");
