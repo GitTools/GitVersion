@@ -92,7 +92,7 @@ namespace GitVersionExe.Tests
                 Console.WriteLine(exception);
             }
 
-            Console.WriteLine("Output from GitVersion.exe");
+            Console.WriteLine("Output from gitversion tool");
             Console.WriteLine("-------------------------------------------------------");
             Console.WriteLine(output.ToString());
             Console.WriteLine();
@@ -105,7 +105,7 @@ namespace GitVersionExe.Tests
             }
 
             var logContents = File.ReadAllText(arguments.LogFile);
-            Console.WriteLine("Log from GitVersion.exe");
+            Console.WriteLine("Log from gitversion tool");
             Console.WriteLine("-------------------------------------------------------");
             Console.WriteLine(logContents);
             Console.WriteLine();

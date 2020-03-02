@@ -14,7 +14,7 @@ namespace GitVersionCore.Tests.Helpers
         public static string GetExecutable()
         {
 #if NETFRAMEWORK
-            var executable = Path.Combine(GetExeDirectory(), "GitVersion.exe");
+            var executable = Path.Combine(GetExeDirectory(), "gitversion.exe");
 #else
             var executable = "dotnet";
 #endif
@@ -24,7 +24,7 @@ namespace GitVersionCore.Tests.Helpers
         public static string GetExecutableArgs(string args)
         {
 #if !NETFRAMEWORK
-            args = $"{Path.Combine(GetExeDirectory(), "GitVersion.dll")} {args}";
+            args = $"{Path.Combine(GetExeDirectory(), "gitversion.dll")} {args}";
 #endif
             return args;
         }

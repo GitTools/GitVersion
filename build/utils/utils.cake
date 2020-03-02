@@ -123,7 +123,7 @@ GitVersion GetVersion(BuildParameters parameters)
 
 void ValidateVersion(BuildParameters parameters)
 {
-    var gitVersionTool = GetFiles($"artifacts/**/bin/{parameters.CoreFxVersion31}/GitVersion.dll").FirstOrDefault();
+    var gitVersionTool = GetFiles($"artifacts/**/bin/{parameters.CoreFxVersion31}/gitversion.dll").FirstOrDefault();
     IEnumerable<string> output;
     var fullFxResult = StartProcess(
         "dotnet",
@@ -157,7 +157,7 @@ void RunGitVersionOnCI(BuildParameters parameters)
 
 GitVersionSettings SetGitVersionTool(GitVersionSettings settings, BuildParameters parameters, string toolPath)
 {
-    var gitversionTool = GetFiles($"{toolPath}/{parameters.CoreFxVersion31}/GitVersion.dll").FirstOrDefault();
+    var gitversionTool = GetFiles($"{toolPath}/{parameters.CoreFxVersion31}/gitversion.dll").FirstOrDefault();
 
     settings.ToolPath = Context.FindToolInPath(IsRunningOnUnix() ? "dotnet" : "dotnet.exe");
     settings.ArgumentCustomization = args => gitversionTool + " " + args.Render();

@@ -8,4 +8,4 @@ ARG contentFolder
 WORKDIR /app
 COPY $contentFolder/ ./
 
-ENTRYPOINT ["dotnet", "/app/GitVersion.dll"]
+ENTRYPOINT ["dotnet", "/app/gitversion.dll"]

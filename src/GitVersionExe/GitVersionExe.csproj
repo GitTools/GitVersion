@@ -3,7 +3,7 @@
 
         <OutputType>Exe</OutputType>
         <RootNamespace>GitVersion</RootNamespace>
-        <AssemblyName>GitVersion</AssemblyName>
+        <AssemblyName>gitversion</AssemblyName>
         <TargetFrameworks>netcoreapp2.1;netcoreapp3.1</TargetFrameworks>
         <PlatformTarget>AnyCPU</PlatformTarget>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
