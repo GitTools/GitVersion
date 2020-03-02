@@ -2,29 +2,7 @@ Task("Pack-Prepare")
     .IsDependentOn("Validate-Version")
     .Does<BuildParameters>((parameters) =>
 {
-    // publish single file for all native runtimes (self contained)
-    foreach(var runtime in parameters.NativeRuntimes)
-    {
-        var runtimeName = runtime.Value;
-
-        var settings = new DotNetCorePublishSettings
-        {
-            Framework = parameters.CoreFxVersion31,
-            Runtime = runtimeName,
-            NoRestore = false,
-            Configuration = parameters.Configuration,
-            OutputDirectory = parameters.Paths.Directories.Native.Combine(runtimeName),
-            MSBuildSettings = parameters.MSBuildSettings,
-        };
-
-        settings.ArgumentCustomization =
-            arg => arg
-            .Append("/p:PublishSingleFile=true")
-            .Append("/p:PublishTrimmed=true")
-            .Append("/p:IncludeSymbolsInSingleFile=true");
-
-        DotNetCorePublish("./src/GitVersionExe/GitVersionExe.csproj", settings);
-    }
+    PackPrepareNative(Context, parameters);
 
     var frameworks = new[] { parameters.CoreFxVersion21, parameters.FullFxVersion472 };
 
@@ -132,11 +110,46 @@ Task("Zip-Files")
     .IsDependentOn("Pack-Prepare")
     .Does<BuildParameters>((parameters) =>
 {
-    foreach(var runtime in parameters.NativeRuntimes)
-    {
-        var sourceDir = parameters.Paths.Directories.Native.Combine(runtime.Value);
-        var fileName = $"gitversion-{runtime.Key}-{parameters.Version.SemVersion}.tar.gz".ToLower();
-        var tarFile = parameters.Paths.Directories.Artifacts.CombineWithFilePath(fileName);
-        GZipCompress(sourceDir, tarFile);
-    }
+    var platform = Context.Environment.Platform.Family.ToString().ToLower();
+
+    var sourceDir = parameters.Paths.Directories.Native.Combine(platform);
+    var targetDir = parameters.Paths.Directories.ArtifactsRoot.Combine("native");
+    EnsureDirectoryExists(targetDir);
+    var fileName = $"gitversion-{platform}-{parameters.Version.SemVersion}.tar.gz".ToLower();
+    var tarFile = targetDir.CombineWithFilePath(fileName);
+    GZipCompress(sourceDir, tarFile);
 });
+
+void PackPrepareNative(ICakeContext context, BuildParameters parameters)
+{
+    // publish single file for all native runtimes (self contained)
+    var platform = Context.Environment.Platform.Family;
+    var runtime = parameters.NativeRuntimes[platform];
+    var outputPath = parameters.Paths.Directories.Native.Combine(platform.ToString().ToLower());
+
+    var settings = new DotNetCorePublishSettings
+    {
+        Framework = parameters.CoreFxVersion31,
+        Runtime = runtime,
+        NoRestore = false,
+        Configuration = parameters.Configuration,
+        OutputDirectory = outputPath,
+        MSBuildSettings = parameters.MSBuildSettings,
+    };
+
+    settings.ArgumentCustomization =
+        arg => arg
+        .Append("/p:PublishSingleFile=true")
+        .Append("/p:PublishTrimmed=true")
+        .Append("/p:IncludeSymbolsInSingleFile=true");
+
+    context.DotNetCorePublish("./src/GitVersionExe/GitVersionExe.csproj", settings);
+
+    context.Information("Validating native lib:");
+
+    var nativeExe = outputPath.CombineWithFilePath(IsRunningOnWindows() ? "gitversion.exe" : "gitversion");
+    var output = context.ExecuteCommand(nativeExe, "/showvariable FullSemver");
+    var outputStr = string.Concat(output);
+
+    Assert.Equal(parameters.Version.GitVersion.FullSemVer, outputStr);
+}

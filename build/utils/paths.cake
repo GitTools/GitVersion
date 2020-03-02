@@ -27,7 +27,8 @@ public class BuildPaths
 
         var rootDir                       = (DirectoryPath)(context.Directory("."));
         var sourceDir                     = rootDir.Combine("src");
-        var artifactsDir                  = rootDir.Combine("artifacts").Combine("v" + semVersion);
+        var artifactsRootDir              = rootDir.Combine("artifacts");
+        var artifactsDir                  = artifactsRootDir.Combine("v" + semVersion);
         var artifactsBinDir               = artifactsDir.Combine("bin");
         var artifactsBinPortableDir       = artifactsBinDir.Combine("portable");
         var artifactsBinCmdlineDir        = artifactsBinDir.Combine("cmdline");
@@ -46,6 +47,7 @@ public class BuildPaths
         var buildDirectories = new BuildDirectories(
             rootDir,
             sourceDir,
+            artifactsRootDir,
             artifactsDir,
             nativeDir,
             buildArtifactDir,
@@ -92,6 +94,7 @@ public class BuildDirectories
 {
     public DirectoryPath Root { get; private set; }
     public DirectoryPath Source { get; private set; }
+    public DirectoryPath ArtifactsRoot { get; private set; }
     public DirectoryPath Artifacts { get; private set; }
     public DirectoryPath Native { get; private set; }
     public DirectoryPath NugetRoot { get; private set; }
@@ -108,6 +111,7 @@ public class BuildDirectories
     public BuildDirectories(
         DirectoryPath rootDir,
         DirectoryPath sourceDir,
+        DirectoryPath artifactsRootDir,
         DirectoryPath artifactsDir,
         DirectoryPath nativeDir,
         DirectoryPath buildArtifactDir,
@@ -123,6 +127,7 @@ public class BuildDirectories
     {
         Root = rootDir;
         Source = sourceDir;
+        ArtifactsRoot = artifactsRootDir;
         Artifacts = artifactsDir;
         Native = nativeDir;
         BuildArtifact = buildArtifactDir;
