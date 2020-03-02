@@ -154,7 +154,7 @@ namespace GitVersionCore.Tests.VersionCalculation.Strategies
             AssertMergeMessage(message, expectedVersion, parents, config);
         }
 
-        private void AssertMergeMessage(string message, string expectedVersion, List<Commit> parents, Config config = null)
+        private void AssertMergeMessage(string message, string expectedVersion, IList<Commit> parents, Config config = null)
         {
             var commit = new MockCommit
             {

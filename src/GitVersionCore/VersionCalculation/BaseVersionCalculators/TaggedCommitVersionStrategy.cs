@@ -36,9 +36,8 @@ namespace GitVersion.VersionCalculation
                 .SelectMany(commit => { return allTags.Where(t => IsValidTag(t.Item1, commit)); })
                 .Select(t =>
                 {
-                    var commit = t.Item1.PeeledTarget() as Commit;
-                    if (commit != null)
-                        return new VersionTaggedCommit(commit, t.Item2, t.Item1.FriendlyName);
+                    if (t.Item1.PeeledTarget() is Commit)
+                        return new VersionTaggedCommit(t.Item1.PeeledTarget() as Commit, t.Item2, t.Item1.FriendlyName);
 
                     return null;
                 })

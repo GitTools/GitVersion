@@ -12,7 +12,7 @@ namespace GitVersion.VersioningModes
             return RetrieveMostRecentOptionalTagVersion(context, possibleCommits) ?? context.Configuration.Tag + ".1";
         }
 
-        private static SemanticVersionPreReleaseTag RetrieveMostRecentOptionalTagVersion(GitVersionContext context, List<Tag> applicableTagsInDescendingOrder)
+        private static SemanticVersionPreReleaseTag RetrieveMostRecentOptionalTagVersion(GitVersionContext context, IReadOnlyCollection<Tag> applicableTagsInDescendingOrder)
         {
             if (applicableTagsInDescendingOrder.Any())
             {

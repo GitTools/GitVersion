@@ -4,8 +4,8 @@ using GitVersion.OutputVariables;
 using GitVersion.Cache;
 using GitVersion.Logging;
 using Microsoft.Extensions.Options;
-using GitVersion.Extensions;
 using GitVersion.VersionCalculation;
+using LibGit2Sharp;
 
 namespace GitVersion
 {
@@ -104,13 +104,12 @@ namespace GitVersion
         {
             var configuration = configProvider.Provide(overrideConfig: overrideConfig);
 
-            return gitPreparer.GetDotGitDirectory().WithRepository(repo =>
-            {
-                var gitVersionContext = new GitVersionContext(repo, log, targetBranch, configuration, commitId: commitId);
-                var semanticVersion = nextVersionCalculator.FindVersion(gitVersionContext);
+            using var repo = new Repository(gitPreparer.GetDotGitDirectory());
 
-                return variableProvider.GetVariablesFor(semanticVersion, gitVersionContext.Configuration, gitVersionContext.IsCurrentCommitTagged);
-            });
+            var gitVersionContext = new GitVersionContext(repo, log, targetBranch, configuration, commitId: commitId);
+            var semanticVersion = nextVersionCalculator.FindVersion(gitVersionContext);
+
+            return variableProvider.GetVariablesFor(semanticVersion, gitVersionContext.Configuration, gitVersionContext.IsCurrentCommitTagged);
         }
     }
 }

@@ -6,7 +6,7 @@ using System.Security.Cryptography;
 using System.Text;
 using GitVersion.Configuration;
 using GitVersion.Logging;
-using GitVersion.Extensions;
+using LibGit2Sharp;
 
 namespace GitVersion.Cache
 {
@@ -143,17 +143,15 @@ namespace GitVersion.Cache
 
         private string GetRepositorySnapshotHash()
         {
-            var repositorySnapshot = gitPreparer.GetDotGitDirectory().WithRepository(repo =>
+            using var repo = new Repository(gitPreparer.GetDotGitDirectory());
+
+            var head = repo.Head;
+            if (head.Tip == null)
             {
-                var head = repo.Head;
-                if (head.Tip == null)
-                {
-                    return head.CanonicalName;
-                }
-                var hash = string.Join(":", head.CanonicalName, head.Tip.Sha);
-                return hash;
-            });
-            return GetHash(repositorySnapshot);
+                return head.CanonicalName;
+            }
+            var hash = string.Join(":", head.CanonicalName, head.Tip.Sha);
+            return GetHash(hash);
         }
 
         private static string GetOverrideConfigHash(Config overrideConfig)

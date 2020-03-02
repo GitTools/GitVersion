@@ -104,7 +104,7 @@ namespace GitVersion
             return CompiledRegexCache.GetOrAdd(messageRegex, pattern => new Regex(pattern, RegexOptions.Compiled | RegexOptions.IgnoreCase));
         }
 
-        private static IEnumerable<Commit> GetIntermediateCommits(IRepository repo, Commit baseCommit, Commit headCommit)
+        private static IEnumerable<Commit> GetIntermediateCommits(IRepository repo, GitObject baseCommit, Commit headCommit)
         {
             if (baseCommit == null) yield break;
 

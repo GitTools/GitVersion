@@ -445,9 +445,9 @@ namespace GitVersion
             }
         }
 
-        private static void EnsureArgumentValueCount(string[] values, int maxArguments = 1)
+        private static void EnsureArgumentValueCount(IReadOnlyList<string> values, int maxArguments = 1)
         {
-            if (values != null && values.Length > maxArguments)
+            if (values != null && values.Count > maxArguments)
             {
                 throw new WarningException($"Could not parse command line parameter '{values[1]}'.");
             }

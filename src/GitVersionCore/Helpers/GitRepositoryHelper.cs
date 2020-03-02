@@ -144,7 +144,7 @@ Please run `git {CreateGitLogArgs(100)}` and submit it along with your build log
             Commands.Fetch(repo, remote.Name, new string[0], authentication.ToFetchOptions(), null);
         }
 
-        private static void EnsureLocalBranchExistsForCurrentBranch(ILog log, Repository repo, Remote remote, string currentBranch)
+        private static void EnsureLocalBranchExistsForCurrentBranch(ILog log, IRepository repo, Remote remote, string currentBranch)
         {
             if (string.IsNullOrEmpty(currentBranch)) return;
 
@@ -180,7 +180,7 @@ Please run `git {CreateGitLogArgs(100)}` and submit it along with your build log
             Commands.Checkout(repo, localCanonicalName);
         }
 
-        private static void AddMissingRefSpecs(ILog log, Repository repo, Remote remote)
+        private static void AddMissingRefSpecs(ILog log, IRepository repo, Remote remote)
         {
             if (remote.FetchRefSpecs.Any(r => r.Source == "refs/heads/*"))
                 return;
@@ -248,7 +248,7 @@ Please run `git {CreateGitLogArgs(100)}` and submit it along with your build log
             Commands.Checkout(repo, fakeBranchName);
         }
 
-        private static IEnumerable<DirectReference> GetRemoteTipsUsingUsernamePasswordCredentials(Repository repo, Remote remote, string username, string password)
+        private static IEnumerable<DirectReference> GetRemoteTipsUsingUsernamePasswordCredentials(IRepository repo, Remote remote, string username, string password)
         {
             return repo.Network.ListReferences(remote, (url, fromUrl, types) => new UsernamePasswordCredentials
             {
@@ -257,7 +257,7 @@ Please run `git {CreateGitLogArgs(100)}` and submit it along with your build log
             }).Select(r => r.ResolveToDirectReference());
         }
 
-        private static IEnumerable<DirectReference> GetRemoteTipsForAnonymousUser(Repository repo, Remote remote)
+        private static IEnumerable<DirectReference> GetRemoteTipsForAnonymousUser(IRepository repo, Remote remote)
         {
             return repo.Network.ListReferences(remote).Select(r => r.ResolveToDirectReference());
         }
