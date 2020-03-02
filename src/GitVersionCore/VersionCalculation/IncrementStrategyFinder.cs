@@ -112,13 +112,7 @@ namespace GitVersion
 
             if (commitCache == null || commitCache.LastOrDefault() != headCommit)
             {
-                var filter = new CommitFilter
-                {
-                    IncludeReachableFrom = headCommit,
-                    SortBy = CommitSortStrategies.Topological | CommitSortStrategies.Reverse
-                };
-
-                commitCache = repo.Commits.QueryBy(filter).ToList();
+                commitCache = repo.GetCommitsReacheableFromHead(headCommit);
                 intermediateCommitCache = commitCache;
             }
 

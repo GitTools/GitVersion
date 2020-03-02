@@ -1,6 +1,6 @@
 using System.Collections.Generic;
-using System.Linq;
 using GitVersion.Exceptions;
+using GitVersion.Extensions;
 using LibGit2Sharp;
 
 namespace GitVersion.VersionCalculation
@@ -19,10 +19,8 @@ namespace GitVersion.VersionCalculation
 
             try
             {
-                baseVersionSource = context.Repository.Commits.QueryBy(new CommitFilter
-                {
-                    IncludeReachableFrom = currentBranchTip
-                }).First(c => !c.Parents.Any());
+                var contextRepository = context.Repository;
+                baseVersionSource = contextRepository.GetBaseVersionSource(currentBranchTip);
             }
             catch (NotFoundException exception)
             {

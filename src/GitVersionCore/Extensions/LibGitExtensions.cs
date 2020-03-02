@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using GitVersion.Helpers;
+using GitVersion.VersionCalculation;
 using LibGit2Sharp;
 
 namespace GitVersion.Extensions
@@ -96,6 +97,113 @@ namespace GitVersion.Extensions
         public static Branch FindBranch(this IRepository repository, string branchName)
         {
             return repository.Branches.FirstOrDefault(x => x.NameWithoutRemote() == branchName);
+        }
+
+        public static Commit GetBaseVersionSource(this IRepository repository, Commit currentBranchTip)
+        {
+            var baseVersionSource = repository.Commits.QueryBy(new CommitFilter
+            {
+                IncludeReachableFrom = currentBranchTip
+            }).First(c => !c.Parents.Any());
+            return baseVersionSource;
+        }
+
+        public static List<Commit> GetCommitsReacheableFromHead(this IRepository repository, Commit headCommit)
+        {
+            var filter = new CommitFilter
+            {
+                IncludeReachableFrom = headCommit,
+                SortBy = CommitSortStrategies.Topological | CommitSortStrategies.Reverse
+            };
+
+            var commitCache = repository.Commits.QueryBy(filter).ToList();
+            return commitCache;
+        }
+
+        public static Commit GetForwardMerge(this IRepository repository, Commit commitToFindCommonBase, Commit findMergeBase)
+        {
+            var forwardMerge = repository.Commits
+                .QueryBy(new CommitFilter
+                {
+                    IncludeReachableFrom = commitToFindCommonBase,
+                    ExcludeReachableFrom = findMergeBase
+                })
+                .FirstOrDefault(c => c.Parents.Contains(findMergeBase));
+            return forwardMerge;
+        }
+
+        public static IEnumerable<Commit> GetCommitsReacheableFrom(this IRepository repository, Commit commit, Branch branch)
+        {
+            var commits = repository.Commits.QueryBy(new CommitFilter
+            {
+                IncludeReachableFrom = branch
+            }).Where(c => c.Sha == commit.Sha);
+            return commits;
+        }
+
+        public static ICommitLog GetCommitLog(this IRepository repository, Commit baseVersionSource, Commit currentCommit)
+        {
+            var filter = new CommitFilter
+            {
+                IncludeReachableFrom = currentCommit,
+                ExcludeReachableFrom = baseVersionSource,
+                SortBy = CommitSortStrategies.Topological | CommitSortStrategies.Time
+            };
+
+            var commitLog = repository.Commits.QueryBy(filter);
+            return commitLog;
+        }
+
+        public static List<Commit> GetMainlineCommitLog(this IRepository repository, BaseVersion baseVersion, Commit mainlineTip)
+        {
+            var mainlineCommitLog = repository.Commits.QueryBy(new CommitFilter
+                {
+                    IncludeReachableFrom = mainlineTip,
+                    ExcludeReachableFrom = baseVersion.BaseVersionSource,
+                    SortBy = CommitSortStrategies.Reverse,
+                    FirstParentOnly = true
+                })
+                .ToList();
+            return mainlineCommitLog;
+        }
+
+        public static List<Commit> GetMainlineCommitLog(this IRepository repository, Commit baseVersionSource, Branch mainline)
+        {
+            var mainlineCommitLog = repository.Commits
+                .QueryBy(new CommitFilter
+                {
+                    IncludeReachableFrom = mainline.Tip,
+                    ExcludeReachableFrom = baseVersionSource,
+                    SortBy = CommitSortStrategies.Reverse,
+                    FirstParentOnly = true
+                })
+                .ToList();
+            return mainlineCommitLog;
+        }
+
+        public static bool GetMatchingCommitBranch(this IRepository repository, Commit baseVersionSource, Branch branch, Commit firstMatchingCommit)
+        {
+            var filter = new CommitFilter
+            {
+                IncludeReachableFrom = branch,
+                ExcludeReachableFrom = baseVersionSource,
+                FirstParentOnly = true,
+            };
+            var query = repository.Commits.QueryBy(filter);
+
+            return query.Contains(firstMatchingCommit);
+        }
+        public static List<Commit> GetMergeBaseCommits(this IRepository repository, Commit mergeCommit, Commit mergedHead, Commit findMergeBase)
+        {
+            var filter = new CommitFilter
+            {
+                IncludeReachableFrom = mergedHead,
+                ExcludeReachableFrom = findMergeBase
+            };
+            var query = repository.Commits.QueryBy(filter);
+
+            var commits = mergeCommit == null ? query.ToList() : new[] { mergeCommit }.Union(query).ToList();
+            return commits;
         }
 
         public static void DumpGraph(this IRepository repository, Action<string> writer = null, int? maxCommits = null)

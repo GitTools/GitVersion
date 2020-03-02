@@ -101,10 +101,7 @@ namespace GitVersion
                 {
                     log.Info($"Searching for commits reachable from '{branch.FriendlyName}'.");
 
-                    var commits = Repository.Commits.QueryBy(new CommitFilter
-                    {
-                        IncludeReachableFrom = branch
-                    }).Where(c => c.Sha == commit.Sha);
+                    var commits = Repository.GetCommitsReacheableFrom(commit, branch);
 
                     if (!commits.Any())
                     {
@@ -118,6 +115,7 @@ namespace GitVersion
             }
         }
 
+        
         /// <summary>
         /// Find the merge base of the two branches, i.e. the best common ancestor of the two branches' tips.
         /// </summary>
@@ -150,13 +148,7 @@ namespace GitVersion
                     do
                     {
                         // Now make sure that the merge base is not a forward merge
-                        forwardMerge = Repository.Commits
-                            .QueryBy(new CommitFilter
-                            {
-                                IncludeReachableFrom = commitToFindCommonBase,
-                                ExcludeReachableFrom = findMergeBase
-                            })
-                            .FirstOrDefault(c => c.Parents.Contains(findMergeBase));
+                        forwardMerge = Repository.GetForwardMerge(commitToFindCommonBase, findMergeBase);
 
                         if (forwardMerge != null)
                         {

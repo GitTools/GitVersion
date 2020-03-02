@@ -48,14 +48,7 @@ namespace GitVersion.VersionCalculation
                     log.Info($"Current branch ({context.CurrentBranch.FriendlyName}) was branch from {mergeBase}");
                 }
 
-                var mainlineCommitLog = context.Repository.Commits.QueryBy(new CommitFilter
-                {
-                    IncludeReachableFrom = mainlineTip,
-                    ExcludeReachableFrom = baseVersion.BaseVersionSource,
-                    SortBy = CommitSortStrategies.Reverse,
-                    FirstParentOnly = true
-                })
-                .ToList();
+                var mainlineCommitLog = context.Repository.GetMainlineCommitLog(baseVersion, mainlineTip);
                 var directCommits = new List<Commit>(mainlineCommitLog.Count);
 
                 // Scans commit log in reverse, aggregating merge commits
@@ -143,19 +136,7 @@ namespace GitVersion.VersionCalculation
             }
 
             // prefer a branch on which the merge base was a direct commit, if there is such a branch
-            var firstMatchingCommitBranch = possibleMainlineBranches
-                .FirstOrDefault(b =>
-                {
-                    var filter = new CommitFilter
-                    {
-                        IncludeReachableFrom = b,
-                        ExcludeReachableFrom = baseVersionSource,
-                        FirstParentOnly = true,
-                    };
-                    var query = context.Repository.Commits.QueryBy(filter);
-
-                    return query.Contains(firstMatchingCommit);
-                });
+            var firstMatchingCommitBranch = possibleMainlineBranches.FirstOrDefault(b => context.Repository.GetMatchingCommitBranch(baseVersionSource, b, firstMatchingCommit));
             if (firstMatchingCommitBranch != null)
             {
                 var message = string.Format(
@@ -208,15 +189,7 @@ namespace GitVersion.VersionCalculation
         private Commit FindMergeBaseBeforeForwardMerge(GitVersionContext context, Commit baseVersionSource, Branch mainline, out Commit mainlineTip)
         {
             var mergeBase = context.Repository.ObjectDatabase.FindMergeBase(context.CurrentCommit, mainline.Tip);
-            var mainlineCommitLog = context.Repository.Commits
-                .QueryBy(new CommitFilter
-                {
-                    IncludeReachableFrom = mainline.Tip,
-                    ExcludeReachableFrom = baseVersionSource,
-                    SortBy = CommitSortStrategies.Reverse,
-                    FirstParentOnly = true
-                })
-                .ToList();
+            var mainlineCommitLog = context.Repository.GetMainlineCommitLog(baseVersionSource, mainline);
 
             // find the mainline commit effective for versioning the current branch
             mainlineTip = GetEffectiveMainlineTip(mainlineCommitLog, mergeBase, mainline.Tip);
@@ -254,14 +227,7 @@ namespace GitVersion.VersionCalculation
         private static VersionField FindMessageIncrement(
             GitVersionContext context, Commit mergeCommit, Commit mergedHead, Commit findMergeBase, List<Commit> commitLog)
         {
-            var filter = new CommitFilter
-            {
-                IncludeReachableFrom = mergedHead,
-                ExcludeReachableFrom = findMergeBase
-            };
-            var commits = mergeCommit == null ?
-                context.Repository.Commits.QueryBy(filter).ToList() :
-                new[] { mergeCommit }.Union(context.Repository.Commits.QueryBy(filter)).ToList();
+            var commits = context.Repository.GetMergeBaseCommits(mergeCommit, mergedHead, findMergeBase);
             commitLog.RemoveAll(c => commits.Any(c1 => c1.Sha == c.Sha));
             return IncrementStrategyFinder.GetIncrementForCommits(context, commits)
                 ?? TryFindIncrementFromMergeMessage(mergeCommit, context);

@@ -17,14 +17,7 @@ namespace GitVersion.VersionCalculation
 
         public SemanticVersionBuildMetaData Create(Commit baseVersionSource, GitVersionContext context)
         {
-            var qf = new CommitFilter
-            {
-                IncludeReachableFrom = context.CurrentCommit,
-                ExcludeReachableFrom = baseVersionSource,
-                SortBy = CommitSortStrategies.Topological | CommitSortStrategies.Time
-            };
-
-            var commitLog = context.Repository.Commits.QueryBy(qf);
+            var commitLog = context.Repository.GetCommitLog(baseVersionSource, context.CurrentCommit);
             var commitsSinceTag = commitLog.Count();
             log.Info($"{commitsSinceTag} commits found between {baseVersionSource.Sha} and {context.CurrentCommit.Sha}");
 
