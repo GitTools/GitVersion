@@ -221,7 +221,7 @@ Task("Format")
 {
     var dotnetFormatExe = Context.Tools.Resolve("dotnet-format.exe");
     var args = $"--folder {parameters.Paths.Directories.Root}";
-    StartProcess(dotnetFormatExe, args);
+    Context.ExecuteCommand(dotnetFormatExe, args);
 });
 
 Task("Default")

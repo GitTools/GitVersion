@@ -76,12 +76,17 @@ public static bool IsEnabled(this ICakeContext context, string envVar, bool null
     return string.IsNullOrWhiteSpace(value) ? nullOrEmptyAsEnabled : bool.Parse(value);
 }
 
-public static List<string> ExecGitCmd(this ICakeContext context, string cmd)
+public static List<string> ExecuteCommand(this ICakeContext context, FilePath exe, string args)
 {
-    var gitPath = context.Tools.Resolve(context.IsRunningOnWindows() ? "git.exe" : "git");
-    context.StartProcess(gitPath, new ProcessSettings { Arguments = cmd, RedirectStandardOutput = true }, out var redirectedOutput);
+    context.StartProcess(exe, new ProcessSettings { Arguments = args, RedirectStandardOutput = true }, out var redirectedOutput);
 
     return redirectedOutput.ToList();
+}
+
+public static List<string> ExecGitCmd(this ICakeContext context, string cmd)
+{
+    var gitExe = context.Tools.Resolve(context.IsRunningOnWindows() ? "git.exe" : "git");
+    return context.ExecuteCommand(gitExe, cmd);
 }
 
 DirectoryPath HomePath()
@@ -124,16 +129,9 @@ GitVersion GetVersion(BuildParameters parameters)
 void ValidateVersion(BuildParameters parameters)
 {
     var gitVersionTool = GetFiles($"artifacts/**/bin/{parameters.CoreFxVersion31}/gitversion.dll").FirstOrDefault();
-    IEnumerable<string> output;
-    var fullFxResult = StartProcess(
-        "dotnet",
-        new ProcessSettings {
-            Arguments = $"\"{gitVersionTool}\" -version",
-            RedirectStandardOutput = true,
-        },
-        out output
-    );
+    var dotnetExe = Context.Tools.Resolve("dotnet");
 
+    var output = Context.ExecuteCommand("dotnet", $"\"{gitVersionTool}\" -version");
     var outputStr = string.Concat(output);
 
     Assert.Equal(parameters.Version.GitVersion.InformationalVersion, outputStr);
