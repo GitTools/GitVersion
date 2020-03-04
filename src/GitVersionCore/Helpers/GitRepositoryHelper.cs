@@ -193,7 +193,7 @@ Please run `git {CreateGitLogArgs(100)}` and submit it along with your build log
                 r => r.FetchRefSpecs.Add(allBranchesFetchRefSpec));
         }
 
-        private static void CreateFakeBranchPointingAtThePullRequestTip(ILog log, Repository repo, AuthenticationInfo authentication)
+        private static void CreateFakeBranchPointingAtThePullRequestTip(ILog log, IRepository repo, AuthenticationInfo authentication)
         {
             var remote = repo.Network.Remotes.Single();
 
@@ -262,7 +262,7 @@ Please run `git {CreateGitLogArgs(100)}` and submit it along with your build log
             return repo.Network.ListReferences(remote).Select(r => r.ResolveToDirectReference());
         }
 
-        private static void CreateOrUpdateLocalBranchesFromRemoteTrackingOnes(ILog log, Repository repo, string remoteName)
+        private static void CreateOrUpdateLocalBranchesFromRemoteTrackingOnes(ILog log, IRepository repo, string remoteName)
         {
             var prefix = $"refs/remotes/{remoteName}/";
             var remoteHeadCanonicalName = $"{prefix}HEAD";

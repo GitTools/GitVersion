@@ -50,71 +50,7 @@ namespace GitVersion
         {
             try
             {
-                if (arguments == null)
-                {
-                    helpWriter.Write();
-                    return 1;
-                }
-                var targetPath = arguments.TargetPath;
-
-                if (arguments.IsVersion)
-                {
-                    var assembly = Assembly.GetExecutingAssembly();
-                    versionWriter.Write(assembly);
-                    return 0;
-                }
-
-                if (arguments.IsHelp)
-                {
-                    helpWriter.Write();
-                    return 0;
-                }
-
-                if (arguments.Diag)
-                {
-                    arguments.NoCache = true;
-                    arguments.Output.Add(OutputType.BuildServer);
-                }
-
-#pragma warning disable CS0612 // Type or member is obsolete
-                if (!string.IsNullOrEmpty(arguments.Proj) || !string.IsNullOrEmpty(arguments.Exec))
-#pragma warning restore CS0612 // Type or member is obsolete
-                {
-                    arguments.Output.Add(OutputType.BuildServer);
-                }
-
-                var buildServer = buildServerResolver.Resolve();
-                arguments.NoFetch = arguments.NoFetch || buildServer != null && buildServer.PreventFetch();
-
-                ConfigureLogging(arguments, log);
-
-                if (arguments.Diag)
-                {
-                    log.Info("Dumping commit graph: ");
-                    LibGitExtensions.DumpGraph(targetPath, mess => log.Info(mess), 100);
-                }
-                if (!Directory.Exists(targetPath))
-                {
-                    log.Warning($"The working directory '{targetPath}' does not exist.");
-                }
-                else
-                {
-                    log.Info("Working directory: " + targetPath);
-                }
-
-                VerifyConfiguration();
-
-                if (arguments.Init)
-                {
-                    configProvider.Init(targetPath);
-                    return 0;
-                }
-                if (arguments.ShowConfig)
-                {
-                    var config = configProvider.Provide(targetPath);
-                    Console.WriteLine(config.ToString());
-                    return 0;
-                }
+                if (HandleNonMainCommand(arguments, out var exitCode)) return exitCode;
 
                 execCommand.Execute();
             }
@@ -148,9 +84,84 @@ namespace GitVersion
             return 0;
         }
 
-        private void VerifyConfiguration()
+        private bool HandleNonMainCommand(Arguments arguments, out int exitCode)
         {
+            if (arguments == null)
+            {
+                helpWriter.Write();
+                exitCode = 1;
+                return true;
+            }
+
+            var targetPath = arguments.TargetPath;
+
+            if (arguments.IsVersion)
+            {
+                var assembly = Assembly.GetExecutingAssembly();
+                versionWriter.Write(assembly);
+                exitCode = 0;
+                return true;
+            }
+
+            if (arguments.IsHelp)
+            {
+                helpWriter.Write();
+                exitCode = 0;
+                return true;
+            }
+
+            if (arguments.Diag)
+            {
+                arguments.NoCache = true;
+                arguments.Output.Add(OutputType.BuildServer);
+            }
+
+#pragma warning disable CS0612 // Type or member is obsolete
+            if (!string.IsNullOrEmpty(arguments.Proj) || !string.IsNullOrEmpty(arguments.Exec))
+#pragma warning restore CS0612 // Type or member is obsolete
+            {
+                arguments.Output.Add(OutputType.BuildServer);
+            }
+
+            var buildServer = buildServerResolver.Resolve();
+            arguments.NoFetch = arguments.NoFetch || buildServer != null && buildServer.PreventFetch();
+
+            ConfigureLogging(arguments, log);
+
+            if (arguments.Diag)
+            {
+                log.Info("Dumping commit graph: ");
+                LibGitExtensions.DumpGraph(targetPath, mess => log.Info(mess), 100);
+            }
+
+            if (!Directory.Exists(targetPath))
+            {
+                log.Warning($"The working directory '{targetPath}' does not exist.");
+            }
+            else
+            {
+                log.Info("Working directory: " + targetPath);
+            }
+
             configFileLocator.Verify(gitPreparer);
+
+            if (arguments.Init)
+            {
+                configProvider.Init(targetPath);
+                exitCode = 0;
+                return true;
+            }
+
+            if (arguments.ShowConfig)
+            {
+                var config = configProvider.Provide(targetPath);
+                Console.WriteLine(config.ToString());
+                exitCode = 0;
+                return true;
+            }
+
+            exitCode = 0;
+            return false;
         }
 
         private static void ConfigureLogging(Arguments arguments, ILog log)
