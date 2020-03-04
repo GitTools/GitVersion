@@ -8,7 +8,7 @@ param(
 $result = dotnet build $repoPath --source $nugetPath --source https://api.nuget.org/v3/index.json -p:GitVersionTaskVersion=$version -p:TargetFramework=$targetframework *>&1;
 
 if($LASTEXITCODE -eq 0) {
-    & "dotnet" $repoPath/build/corefx/$targetframework/TestRepo.dll;
+    & "dotnet" $repoPath/build/$targetframework/app.dll;
 } else {
     Write-Output $result
 }

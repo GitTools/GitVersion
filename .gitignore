@@ -124,4 +124,4 @@ src/Docker/**/content
 config.wyam.dll
 config.wyam.hash
 config.wyam.packages.xml
-/test/build
+/test/core/build
