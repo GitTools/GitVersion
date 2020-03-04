@@ -115,7 +115,7 @@ namespace GitVersion
             }
         }
 
-        
+
         /// <summary>
         /// Find the merge base of the two branches, i.e. the best common ancestor of the two branches' tips.
         /// </summary>

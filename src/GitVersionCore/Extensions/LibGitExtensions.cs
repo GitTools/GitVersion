@@ -157,12 +157,12 @@ namespace GitVersion.Extensions
         public static List<Commit> GetMainlineCommitLog(this IRepository repository, BaseVersion baseVersion, Commit mainlineTip)
         {
             var mainlineCommitLog = repository.Commits.QueryBy(new CommitFilter
-                {
-                    IncludeReachableFrom = mainlineTip,
-                    ExcludeReachableFrom = baseVersion.BaseVersionSource,
-                    SortBy = CommitSortStrategies.Reverse,
-                    FirstParentOnly = true
-                })
+            {
+                IncludeReachableFrom = mainlineTip,
+                ExcludeReachableFrom = baseVersion.BaseVersionSource,
+                SortBy = CommitSortStrategies.Reverse,
+                FirstParentOnly = true
+            })
                 .ToList();
             return mainlineCommitLog;
         }
