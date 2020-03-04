@@ -2,11 +2,11 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <AssemblyName>TestRepo</AssemblyName>
-    <RootNamespace>TestRepo</RootNamespace>
+    <AssemblyName>app</AssemblyName>
+    <RootNamespace>App</RootNamespace>
 	<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <GitVersionTaskVersion Condition=" '$(GitVersionTaskVersion)' == '' ">5.0.0-beta5.53</GitVersionTaskVersion>
-	<OutputPath>.\build\corefx\</OutputPath>
+	<OutputPath>.\build\</OutputPath>
   </PropertyGroup>
 
   <Target Name="Git" DependsOnTargets="GetVersion">

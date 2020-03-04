@@ -1,7 +1,7 @@
 using System;
 using System.Reflection;
 
-namespace TestRepo
+namespace App
 {
     class Program
     {

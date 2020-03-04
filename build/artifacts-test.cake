@@ -29,9 +29,9 @@ Task("Artifacts-DotnetTool-Test")
     }
 });
 
-Task("Artifacts-MsBuild-Test")
-    .WithCriteria<BuildParameters>((context, parameters) => !parameters.IsRunningOnMacOS, "Artifacts-MsBuild-Test can be tested only on Windows or Linux agents.")
-    .WithCriteria<BuildParameters>((context, parameters) => parameters.IsReleasingCI,     "Artifacts-MsBuild-Test works only on Releasing CI.")
+Task("Artifacts-MsBuildCore-Test")
+    .WithCriteria<BuildParameters>((context, parameters) => !parameters.IsRunningOnMacOS, "Artifacts-MsBuildCore-Test can be tested only on Windows or Linux agents.")
+    .WithCriteria<BuildParameters>((context, parameters) => parameters.IsReleasingCI,     "Artifacts-MsBuildCore-Test works only on Releasing CI.")
     .IsDependentOn("Artifacts-Prepare")
     .Does<BuildParameters>((parameters) =>
 {
@@ -42,7 +42,7 @@ Task("Artifacts-MsBuild-Test")
     {
         var (os, distro, targetframework) = dockerImage;
 
-        var cmd = $"-file {rootPrefix}/scripts/Test-MsBuild.ps1 -version {version} -repoPath {rootPrefix}/repo/test -nugetPath {rootPrefix}/nuget -targetframework {targetframework}";
+        var cmd = $"-file {rootPrefix}/scripts/Test-MsBuildCore.ps1 -version {version} -repoPath {rootPrefix}/repo/test/core -nugetPath {rootPrefix}/nuget -targetframework {targetframework}";
 
         DockerTestArtifact(dockerImage, parameters, cmd);
     }
@@ -52,4 +52,4 @@ Task("Artifacts-Test")
     .WithCriteria<BuildParameters>((context, parameters) => !parameters.IsRunningOnMacOS, "Artifacts-Test can be tested only on Windows or Linux agents.")
     .WithCriteria<BuildParameters>((context, parameters) => parameters.IsReleasingCI,     "Artifacts-Test works only on Releasing CI.")
     .IsDependentOn("Artifacts-DotnetTool-Test")
-    .IsDependentOn("Artifacts-MsBuild-Test");
+    .IsDependentOn("Artifacts-MsBuildCore-Test");
