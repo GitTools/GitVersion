@@ -148,8 +148,5 @@ void PackPrepareNative(ICakeContext context, BuildParameters parameters)
     context.Information("Validating native lib:");
 
     var nativeExe = outputPath.CombineWithFilePath(IsRunningOnWindows() ? "gitversion.exe" : "gitversion");
-    var output = context.ExecuteCommand(nativeExe, "/showvariable FullSemver");
-    var outputStr = string.Concat(output);
-
-    Assert.Equal(parameters.Version.GitVersion.FullSemVer, outputStr);
+    ValidateOutput(nativeExe.FullPath, "/showvariable FullSemver", parameters.Version.GitVersion.FullSemVer);
 }
