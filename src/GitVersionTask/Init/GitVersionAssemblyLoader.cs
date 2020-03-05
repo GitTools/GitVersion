@@ -23,7 +23,7 @@ namespace GitVersion.MSBuildTask
 
         private static Lazy<GitVersionAssemblyLoadContext> LoadContext = new Lazy<GitVersionAssemblyLoadContext>(() =>
         {
-            GitVersionAssemblyLoadContext.Init("GitVersionTask","GitVersionCore", "LibGit2Sharp", "Microsoft.Extensions.DependencyInjection");
+            GitVersionAssemblyLoadContext.Init("GitVersionCore", "LibGit2Sharp", "Microsoft.Extensions.DependencyInjection");
             return GitVersionAssemblyLoadContext.Instance;
         });
 
