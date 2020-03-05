@@ -18,6 +18,7 @@ namespace GitVersion.OutputVariables
                                 string buildMetaDataPadded,
                                 string fullBuildMetaData,
                                 string branchName,
+                                string escapedBranchName,
                                 string sha,
                                 string shortSha,
                                 string majorMinorPatch,
@@ -49,6 +50,7 @@ namespace GitVersion.OutputVariables
             BuildMetaDataPadded = buildMetaDataPadded;
             FullBuildMetaData = fullBuildMetaData;
             BranchName = branchName;
+            EscapedBranchName = escapedBranchName;
             Sha = sha;
             ShortSha = shortSha;
             MajorMinorPatch = majorMinorPatch;
@@ -94,6 +96,7 @@ namespace GitVersion.OutputVariables
         public string FullSemVer { get; private set; }
         public string InformationalVersion { get; private set; }
         public string BranchName { get; private set; }
+        public string EscapedBranchName { get; private set; }
         public string Sha { get; private set; }
         public string ShortSha { get; private set; }
         public string NuGetVersionV2 { get; private set; }
