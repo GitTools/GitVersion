@@ -129,12 +129,17 @@ GitVersion GetVersion(BuildParameters parameters)
 void ValidateVersion(BuildParameters parameters)
 {
     var gitVersionTool = GetFiles($"artifacts/**/bin/{parameters.CoreFxVersion31}/gitversion.dll").FirstOrDefault();
-    var dotnetExe = Context.Tools.Resolve("dotnet");
 
-    var output = Context.ExecuteCommand("dotnet", $"\"{gitVersionTool}\" -version");
+    ValidateOutput("dotnet", $"\"{gitVersionTool}\" -version", parameters.Version.GitVersion.InformationalVersion);
+}
+
+void ValidateOutput(string cmd, string args, string expected)
+{
+    var output = Context.ExecuteCommand(cmd, args);
     var outputStr = string.Concat(output);
+    Information(outputStr);
 
-    Assert.Equal(parameters.Version.GitVersion.InformationalVersion, outputStr);
+    Assert.Equal(expected, outputStr);
 }
 
 void RunGitVersionOnCI(BuildParameters parameters)
