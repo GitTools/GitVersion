@@ -18,3 +18,13 @@ jobs:
       includeArtifacts: true
   - pwsh: ./build.ps1 -target Artifacts-Test -DockerDistro $(DISTRO) -DockerDotnetVersion $(DOTNET_VERSION)
     displayName: '[Docker Test Artifacts]'
+- job: Artifacts_Test_MsBuild
+  displayName: Artifacts Test MsBuild (Windows)
+  pool:
+    vmImage: windows-latest
+  steps:
+  - template: common-steps.yml
+    parameters:
+      includeArtifacts: true
+  - pwsh: ./build.ps1 -target Artifacts-MsBuildFull-Test
+    displayName: '[MsBuild Test Artifacts]'
