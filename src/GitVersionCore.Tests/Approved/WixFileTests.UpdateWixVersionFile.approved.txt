@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Include xmlns="http://schemas.microsoft.com/wix/2006/wi">
   <?define AssemblySemFileVer="1.2.3.0"?>
   <?define AssemblySemVer="1.2.3.0"?>
@@ -8,6 +8,7 @@
   <?define CommitDate="2019-02-20"?>
   <?define CommitsSinceVersionSource="5"?>
   <?define CommitsSinceVersionSourcePadded="0005"?>
+  <?define EscapedBranchName="develop"?>
   <?define FullBuildMetaData="5.Branch.develop.Sha.commitSha"?>
   <?define FullSemVer="1.2.3+5"?>
   <?define InformationalVersion="1.2.3+5.Branch.develop.Sha.commitSha"?>
