@@ -16,6 +16,7 @@ namespace GitVersion.MSBuildTask.Tasks
         [Output]
         public string GitVersionInformationFilePath { get; set; }
 
-        public override bool Execute() => TaskProxy.GenerateGitVersionInformation(this);
+        protected override bool OnExecute() => TaskProxy.GenerateGitVersionInformation(this);
+
     }
 }

@@ -19,6 +19,6 @@ namespace GitVersion.MSBuildTask.Tasks
         [Output]
         public string AssemblyInfoTempFilePath { get; set; }
 
-        public override bool Execute() => TaskProxy.UpdateAssemblyInfo(this);
+        protected override bool OnExecute() => TaskProxy.UpdateAssemblyInfo(this);
     }
 }

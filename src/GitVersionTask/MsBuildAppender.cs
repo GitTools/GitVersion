@@ -1,5 +1,5 @@
 using System;
-using Microsoft.Build.Utilities;
+using GitVersionTask.MsBuild;
 
 namespace GitVersion.Logging
 {
