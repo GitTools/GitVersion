@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <RootNamespace>App</RootNamespace>
+        <AssemblyName>app</AssemblyName>
+        <OutputPath>.\build\</OutputPath>
+        <RestoreAdditionalProjectSources>
+            https://api.nuget.org/v3/index.json
+        </RestoreAdditionalProjectSources>
+    </PropertyGroup>
+    <ItemGroup>
+        <Compile Include="..\Program.cs" />
+    </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="GitVersionTask" Version="$(GitVersionTaskVersion)">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+        <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.0" />
+    </ItemGroup>
+
+</Project>

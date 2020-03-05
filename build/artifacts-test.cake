@@ -48,6 +48,55 @@ Task("Artifacts-MsBuildCore-Test")
     }
 });
 
+Task("Artifacts-MsBuildFull-Test")
+    .WithCriteria<BuildParameters>((context, parameters) => parameters.IsRunningOnWindows, "Artifacts-MsBuildFull-Test can be tested only on Windows agents.")
+    .WithCriteria<BuildParameters>((context, parameters) => parameters.IsReleasingCI,      "Artifacts-MsBuildFull-Test works only on Releasing CI.")
+    .IsDependentOnWhen("Pack-Nuget", singleStageRun)
+    .Does<BuildParameters>((parameters) =>
+{
+    var version = parameters.Version.NugetVersion;
+
+    var nugetSource = MakeAbsolute(parameters.Paths.Directories.NugetRoot).FullPath;
+
+    Information("\nTesting msbuild task with dotnet build (for .net core)\n");
+    var frameworks = new[] { parameters.CoreFxVersion21, parameters.CoreFxVersion31 };
+    foreach(var framework in frameworks)
+    {
+        var dotnetCoreMsBuildSettings = new DotNetCoreMSBuildSettings();
+        dotnetCoreMsBuildSettings.WithProperty("TargetFramework", framework);
+        dotnetCoreMsBuildSettings.WithProperty("GitVersionTaskVersion", version);
+
+        var projPath = MakeAbsolute(new DirectoryPath("./test/core"));
+
+        DotNetCoreBuild(projPath.FullPath, new DotNetCoreBuildSettings
+        {
+            Verbosity = DotNetCoreVerbosity.Minimal,
+            Configuration = parameters.Configuration,
+            MSBuildSettings = dotnetCoreMsBuildSettings,
+            ArgumentCustomization = args => args.Append($"--source {nugetSource}")
+        });
+
+        var netcoreExe = new DirectoryPath("./test/core/build").Combine(framework).CombineWithFilePath("app.dll");
+        ValidateOutput("dotnet", netcoreExe.FullPath, parameters.Version.GitVersion.FullSemVer);
+    }
+
+    Information("\nTesting msbuild task with msbuild (for full framework)\n");
+
+    var msBuildSettings = new MSBuildSettings
+    {
+        Verbosity = Verbosity.Minimal,
+        Restore = true
+    };
+
+    msBuildSettings.WithProperty("GitVersionTaskVersion", version);
+    msBuildSettings.WithProperty("RestoreSource", nugetSource);
+
+    MSBuild("./test/full", msBuildSettings);
+
+    var fullExe = new DirectoryPath("./test/full/build").CombineWithFilePath("app.exe");
+    ValidateOutput(fullExe.FullPath, null, parameters.Version.GitVersion.FullSemVer);
+});
+
 Task("Artifacts-Test")
     .WithCriteria<BuildParameters>((context, parameters) => !parameters.IsRunningOnMacOS, "Artifacts-Test can be tested only on Windows or Linux agents.")
     .WithCriteria<BuildParameters>((context, parameters) => parameters.IsReleasingCI,     "Artifacts-Test works only on Releasing CI.")
