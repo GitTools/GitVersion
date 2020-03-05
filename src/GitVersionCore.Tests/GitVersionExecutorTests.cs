@@ -125,6 +125,7 @@ namespace GitVersionCore.Tests
         FullSemVer: 4.10.3-test.19
         InformationalVersion: 4.10.3-test.19+Branch.feature/test.Sha.dd2a29aff0c948e1bdf3dabbe13e1576e70d5f9f
         BranchName: feature/test
+        EscapedBranchName: feature-test
         Sha: dd2a29aff0c948e1bdf3dabbe13e1576e70d5f9f
         ShortSha: dd2a29af
         NuGetVersionV2: 4.10.3-test0019
@@ -185,6 +186,7 @@ namespace GitVersionCore.Tests
         FullSemVer: 4.10.3-test.19
         InformationalVersion: 4.10.3-test.19+Branch.feature/test.Sha.dd2a29aff0c948e1bdf3dabbe13e1576e70d5f9f
         BranchName: feature/test
+        EscapedBranchName: feature-test
         Sha: dd2a29aff0c948e1bdf3dabbe13e1576e70d5f9f
         ShortSha: dd2a29af
         NuGetVersionV2: 4.10.3-test0019
@@ -268,6 +270,7 @@ namespace GitVersionCore.Tests
         FullSemVer: 4.10.3-test.19
         InformationalVersion: 4.10.3-test.19+Branch.feature/test.Sha.dd2a29aff0c948e1bdf3dabbe13e1576e70d5f9f
         BranchName: feature/test
+        EscapedBranchName: feature-test
         Sha: dd2a29aff0c948e1bdf3dabbe13e1576e70d5f9f
         ShortSha: dd2a29af
         NuGetVersionV2: 4.10.3-test0019
@@ -328,6 +331,7 @@ namespace GitVersionCore.Tests
         FullSemVer: 4.10.3-test.19
         InformationalVersion: 4.10.3-test.19+Branch.feature/test.Sha.dd2a29aff0c948e1bdf3dabbe13e1576e70d5f9f
         BranchName: feature/test
+        EscapedBranchName: feature-test
         Sha: dd2a29aff0c948e1bdf3dabbe13e1576e70d5f9f
         ShortSha: dd2a29af
         NuGetVersionV2: 4.10.3-test0019

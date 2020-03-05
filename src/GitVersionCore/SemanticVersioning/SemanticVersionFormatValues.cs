@@ -54,7 +54,7 @@ namespace GitVersion
 
         public string BranchName => semver.BuildMetaData.Branch;
 
-        public string EscapedBranchName => semver.BuildMetaData.Branch.RegexReplace("[^a-zA-Z0-9-]", "-");
+        public string EscapedBranchName => semver.BuildMetaData.Branch?.RegexReplace("[^a-zA-Z0-9-]", "-");
 
         public string Sha => semver.BuildMetaData.Sha;
 
