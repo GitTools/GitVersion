@@ -76,6 +76,7 @@ namespace GitVersion.OutputVariables
                 semverFormatValues.BuildMetaDataPadded,
                 semverFormatValues.FullBuildMetaData,
                 semverFormatValues.BranchName,
+                semverFormatValues.EscapedBranchName,
                 semverFormatValues.Sha,
                 semverFormatValues.ShortSha,
                 semverFormatValues.MajorMinorPatch,
