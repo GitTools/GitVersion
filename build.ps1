@@ -117,22 +117,40 @@ Function Add-PathVariable([string]$PathToAdd)
 
 Function Install-Dotnet($DotNetVersion)
 {
-    if ($IsMacOS -or $IsLinux) {
-        $ScriptPath = Join-Path $InstallPath 'dotnet-install.sh'
-        if (!(Test-Path $ScriptPath)) {
-            (New-Object System.Net.WebClient).DownloadFile($DotNetUnixInstallerUri, $ScriptPath);
-        }
+    if (!(Check-DotnetInstalled $DotNetVersion))
+    {
+        if ($IsMacOS -or $IsLinux) {
+            $ScriptPath = Join-Path $InstallPath 'dotnet-install.sh'
+            if (!(Test-Path $ScriptPath)) {
+                (New-Object System.Net.WebClient).DownloadFile($DotNetUnixInstallerUri, $ScriptPath);
+            }
 
-        & bash $ScriptPath --version "$DotNetVersion" --install-dir "$InstallPath" --channel "$DotNetChannel" --no-path
-    }
-    else {
-        $ScriptPath = Join-Path $InstallPath 'dotnet-install.ps1'
-        if (!(Test-Path $ScriptPath)) {
-            (New-Object System.Net.WebClient).DownloadFile($DotNetInstallerUri, $ScriptPath);
+            & bash $ScriptPath --version "$DotNetVersion" --install-dir "$InstallPath" --channel "$DotNetChannel" --no-path
         }
+        else {
+            $ScriptPath = Join-Path $InstallPath 'dotnet-install.ps1'
+            if (!(Test-Path $ScriptPath)) {
+                (New-Object System.Net.WebClient).DownloadFile($DotNetInstallerUri, $ScriptPath);
+            }
 
-        & $ScriptPath -Channel $DotNetChannel -Version $DotNetVersion -InstallDir $InstallPath;
+            & $ScriptPath -Channel $DotNetChannel -Version $DotNetVersion -InstallDir $InstallPath;
+        }
     }
+}
+
+Function Check-DotnetInstalled($version)
+{
+    if (Get-Command dotnet -errorAction SilentlyContinue)
+    {
+        $sdk =  dotnet --list-sdks
+        $result = $sdk | ? { $v = $_.Split(" ")[0]; $v -eq $version }
+        if ($result -ne $null)
+        {
+            Write-Host "The dotnet version $version was installed globally, not installing";
+            return $true;
+        }
+    }
+    return $false;
 }
 
 # Get .NET Core CLI path if installed.
