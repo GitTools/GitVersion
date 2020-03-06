@@ -181,6 +181,13 @@ dotnet tool restore
 # Build the argument list.
 
 $env:ENABLED_UNIT_TESTS = !$SkipUnitTest
+if ($env:ENABLED_DIAGNOSTICS -and $env:ENABLED_DIAGNOSTICS -eq $true) {
+    Write-Host "Diagnostics enabled: Yes"
+    $Verbosity = "Diagnostic"
+} else {
+    Write-Host "Diagnostics enabled: No"
+}
+
 $Arguments = @{
     target=$Target;
     configuration=$Configuration;
