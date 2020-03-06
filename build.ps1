@@ -117,8 +117,8 @@ Function Add-PathVariable([string]$PathToAdd)
 
 Function Install-Dotnet($DotNetVersion)
 {
-    if (!(Check-DotnetInstalled $DotNetVersion))
-    {
+    #if (!(Check-DotnetInstalled $DotNetVersion))
+    #{
         if ($IsMacOS -or $IsLinux) {
             $ScriptPath = Join-Path $InstallPath 'dotnet-install.sh'
             if (!(Test-Path $ScriptPath)) {
@@ -135,7 +135,7 @@ Function Install-Dotnet($DotNetVersion)
 
             & $ScriptPath -Channel $DotNetChannel -Version $DotNetVersion -InstallDir $InstallPath;
         }
-    }
+    #}
 }
 
 Function Check-DotnetInstalled($version)
