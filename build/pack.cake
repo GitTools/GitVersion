@@ -29,8 +29,14 @@ Task("Pack-Prepare")
 
     CopyFiles(sourceFiles, cmdlineDir);
 
-    sourceFiles += GetFiles("./nuspec/*.ps1") + GetFiles("./nuspec/*.txt");
+    sourceFiles = GetFiles("./nuspec/*.ps1") + GetFiles("./nuspec/*.txt");
     CopyFiles(sourceFiles, portableDir);
+
+    var psfiles = GetFiles(portableDir.CombineWithFilePath("*.ps1").FullPath);
+    foreach(var file in psfiles)
+    {
+        ReplaceTextInFile(file, "<version>", parameters.Version.NugetVersion);
+    }
 });
 
 Task("Pack-Nuget")
@@ -83,7 +89,6 @@ Task("Pack-Nuget")
 
 Task("Pack-Chocolatey")
     .WithCriteria<BuildParameters>((context, parameters) => parameters.IsRunningOnWindows,  "Pack-Chocolatey works only on Windows agents.")
-    .WithCriteria<BuildParameters>((context, parameters) => parameters.IsMainBranch && !parameters.IsPullRequest, "Pack-Chocolatey works only for main branch.")
     .IsDependentOn("Pack-Prepare")
     .Does<BuildParameters>((parameters) =>
 {

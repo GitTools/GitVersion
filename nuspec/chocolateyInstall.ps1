@@ -1,4 +1,4 @@
-$version = "5.1.3"
+$version = "<version>"
 $packageName = "GitVersion.Portable"
 $url32 = "https://www.nuget.org/api/v2/package/GitVersion.CommandLine/$version";
 
