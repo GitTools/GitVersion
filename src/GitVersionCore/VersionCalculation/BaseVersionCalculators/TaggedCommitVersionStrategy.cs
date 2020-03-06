@@ -42,7 +42,7 @@ namespace GitVersion.VersionCalculation
                     return null;
                 })
                 .Where(a => a != null)
-                .Take(2)
+                .Take(5)
                 .ToList();
 
             return tagsOnBranch.Select(t => CreateBaseVersion(context, t));

@@ -233,6 +233,34 @@ namespace GitVersionCore.Tests.IntegrationTests
         }
 
         [Test]
+        public void WhenReleaseBranchIsMergedIntoMasterHighestVersionIsTakenWithItEvenWithMoreThanTwoActiveBranches()
+        {
+            using var fixture = new EmptyRepositoryFixture();
+            fixture.Repository.MakeATaggedCommit("1.0.3");
+            fixture.Repository.MakeCommits(1);
+
+            fixture.Repository.CreateBranch("release-3.0.0");
+            fixture.Checkout("release-3.0.0");
+            fixture.Repository.MakeCommits(4);
+            fixture.Checkout("master");
+            fixture.Repository.MergeNoFF("release-3.0.0", Generate.SignatureNow());
+
+            fixture.Repository.CreateBranch("release-2.0.0");
+            fixture.Checkout("release-2.0.0");
+            fixture.Repository.MakeCommits(4);
+            fixture.Checkout("master");
+            fixture.Repository.MergeNoFF("release-2.0.0", Generate.SignatureNow());
+
+            fixture.Repository.CreateBranch("release-1.0.0");
+            fixture.Checkout("release-1.0.0");
+            fixture.Repository.MakeCommits(4);
+            fixture.Checkout("master");
+            fixture.Repository.MergeNoFF("release-1.0.0", Generate.SignatureNow());
+
+            fixture.AssertFullSemver("3.0.0+10");
+        }
+
+        [Test]
         public void WhenMergingReleaseBackToDevShouldNotResetBetaVersion()
         {
             using var fixture = new EmptyRepositoryFixture();
