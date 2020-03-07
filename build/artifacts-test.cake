@@ -23,7 +23,7 @@ Task("Artifacts-DotnetTool-Test")
 
     foreach(var dockerImage in parameters.Docker.Images)
     {
-        var cmd = $"-file {rootPrefix}/scripts/Test-DotnetGlobalTool.ps1 -version {version} -repoPath {rootPrefix}/repo -nugetPath {rootPrefix}/nuget -toolPath {rootPrefix}/gitversion";
+        var cmd = $"-file {rootPrefix}/scripts/Test-DotnetGlobalTool.ps1 -version {version} -repoPath {rootPrefix}/repo -nugetPath {rootPrefix}/nuget";
 
         DockerTestArtifact(dockerImage, parameters, cmd);
     }
