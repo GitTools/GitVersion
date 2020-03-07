@@ -57,26 +57,29 @@ Task("Publish-NuGet-Internal")
     .IsDependentOnWhen("Pack-NuGet", singleStageRun)
     .Does<BuildParameters>((parameters) =>
 {
-    var apiKey = parameters.Credentials.Nuget.ApiKey;
-    if(string.IsNullOrEmpty(apiKey)) {
-        throw new InvalidOperationException("Could not resolve NuGet API key.");
-    }
-
-    var apiUrl = parameters.Credentials.Nuget.ApiUrl;
-    if(string.IsNullOrEmpty(apiUrl)) {
-        throw new InvalidOperationException("Could not resolve NuGet API url.");
-    }
-
-    foreach(var package in parameters.Packages.Nuget)
+    if (parameters.IsStableRelease()) 
     {
-        if (FileExists(package.PackagePath))
+        var apiKey = parameters.Credentials.Nuget.ApiKey;
+        if(string.IsNullOrEmpty(apiKey)) {
+            throw new InvalidOperationException("Could not resolve NuGet API key.");
+        }
+
+        var apiUrl = parameters.Credentials.Nuget.ApiUrl;
+        if(string.IsNullOrEmpty(apiUrl)) {
+            throw new InvalidOperationException("Could not resolve NuGet API url.");
+        }
+
+        foreach(var package in parameters.Packages.Nuget)
         {
-            // Push the package to nuget.org
-            NuGetPush(package.PackagePath, new NuGetPushSettings
+            if (FileExists(package.PackagePath))
             {
-                ApiKey = apiKey,
-                Source = apiUrl
-            });
+                // Push the package to nuget.org
+                NuGetPush(package.PackagePath, new NuGetPushSettings
+                {
+                    ApiKey = apiKey,
+                    Source = apiUrl
+                });
+            }
         }
     }
 
@@ -128,7 +131,7 @@ Task("Publish-Chocolatey-Internal")
     .WithCriteria<BuildParameters>((context, parameters) => parameters.EnabledPublishChocolatey, "Publish-Chocolatey was disabled.")
     .WithCriteria<BuildParameters>((context, parameters) => parameters.IsRunningOnWindows,       "Publish-Chocolatey works only on Windows agents.")
     .WithCriteria<BuildParameters>((context, parameters) => parameters.IsReleasingCI,            "Publish-Chocolatey works only on Releasing CI.")
-    .WithCriteria<BuildParameters>((context, parameters) => parameters.IsStableRelease() || parameters.IsPreRelease(), "Publish-Chocolatey works only for releases.")
+    .WithCriteria<BuildParameters>((context, parameters) => parameters.IsStableRelease(),        "Publish-Chocolatey works only for releases.")
     .IsDependentOnWhen("Pack-Chocolatey", singleStageRun)
     .Does<BuildParameters>((parameters) =>
 {
