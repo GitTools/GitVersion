@@ -31,12 +31,6 @@ Task("Pack-Prepare")
 
     sourceFiles = GetFiles("./nuspec/*.ps1") + GetFiles("./nuspec/*.txt");
     CopyFiles(sourceFiles, portableDir);
-
-    var psfiles = GetFiles(portableDir.CombineWithFilePath("*.ps1").FullPath);
-    foreach(var file in psfiles)
-    {
-        ReplaceTextInFile(file, "<version>", parameters.Version.NugetVersion);
-    }
 });
 
 Task("Pack-Nuget")

@@ -11,7 +11,18 @@
     <projectUrl>https://github.com/GitTools/GitVersion</projectUrl>
     <iconUrl>https://raw.githubusercontent.com/GitTools/graphics/master/GitVersion/icon_100x100.png</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <description>Derives SemVer information from a repository following GitFlow or GitHubFlow.</description>
+    <description>
+Derives SemVer information from a repository following GitFlow or GitHubFlow.
+
+### Package Specific
+#### Package Parameters
+The following package parameters can be set:
+
+ * `/Version:` - determines which version of GitVersion to install - defaults to the version of the current package
+
+To pass parameters, use `--params "''"` (e.g. `choco install GitVersion.Portable [other options] --params="'/Version:value'"`).
+To have choco remember parameters on upgrade, be sure to set `choco feature enable -n=useRememberedArgumentsForUpgrades`.
+    </description>
     <tags>Git Versioning GitVersion GitFlowVersion GitFlow GitHubFlow SemVer</tags>
     <releaseNotes>https://github.com/GitTools/GitVersion/releases</releaseNotes>
   </metadata>
