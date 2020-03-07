@@ -27,11 +27,12 @@ namespace GitVersion
             {
                 var arguments = options.Value;
                 log.Verbosity = arguments.Verbosity;
-                gitVersionExecutor.Execute(arguments);
+                System.Environment.ExitCode = gitVersionExecutor.Execute(arguments);
             }
             catch (Exception exception)
             {
                 Console.Error.WriteLine(exception.Message);
+                System.Environment.ExitCode = 1;
             }
 
             applicationLifetime.StopApplication();

@@ -98,7 +98,7 @@ namespace GitVersionExe.Tests
                 args,
                 PathHelper.GetCurrentDirectory());
 
-            exitCode.ShouldBe(0);
+            exitCode.ShouldNotBe(0);
             var outputString = output.ToString();
             outputString.ShouldContain($"The working directory '{workingDirectory}' does not exist.", () => outputString);
         }
