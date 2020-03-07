@@ -1,6 +1,5 @@
 public class BuildPaths
 {
-    public BuildFiles Files { get; private set; }
     public BuildDirectories Directories { get; private set; }
 
     public static BuildPaths GetPaths(
@@ -41,7 +40,6 @@ public class BuildPaths
         var testResultsOutputDir          = artifactsDir.Combine("test-results");
 
         var releaseNotesOutputFilePath = buildArtifactDir.CombineWithFilePath("releasenotes.md");
-        var gemOutputFilePath  = buildArtifactDir.CombineWithFilePath("gitversion-" + version.GemVersion + ".gem");
 
         // Directories
         var buildDirectories = new BuildDirectories(
@@ -60,33 +58,10 @@ public class BuildPaths
             artifactsBinCoreFx30Dir,
             artifactsBinFullFx472Dir);
 
-        // Files
-        var buildFiles = new BuildFiles(
-            context,
-            releaseNotesOutputFilePath,
-            gemOutputFilePath);
-
         return new BuildPaths
         {
-            Files = buildFiles,
             Directories = buildDirectories
         };
-    }
-}
-
-public class BuildFiles
-{
-    public FilePath ReleaseNotesOutputFilePath { get; private set; }
-    public FilePath GemOutputFilePath { get; private set; }
-
-    public BuildFiles(
-        ICakeContext context,
-        FilePath releaseNotesOutputFilePath,
-        FilePath gemOutputFilePath
-        )
-    {
-        ReleaseNotesOutputFilePath = releaseNotesOutputFilePath;
-        GemOutputFilePath = gemOutputFilePath;
     }
 }
 

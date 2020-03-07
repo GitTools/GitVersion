@@ -18,7 +18,6 @@ public class BuildParameters
     public string DockerDotnetVersion { get; private set; }
 
     public bool EnabledUnitTests { get; private set; }
-    public bool EnabledPublishGem { get; private set; }
     public bool EnabledPublishNuget { get; private set; }
     public bool EnabledPublishChocolatey { get; private set; }
     public bool EnabledPublishDocker { get; private set; }
@@ -82,7 +81,6 @@ public class BuildParameters
             DockerDotnetVersion = context.Argument("docker_dotnetversion", ""),
 
             EnabledUnitTests          = context.IsEnabled("ENABLED_UNIT_TESTS"),
-            EnabledPublishGem         = context.IsEnabled("ENABLED_PUBLISH_GEM"),
             EnabledPublishNuget       = context.IsEnabled("ENABLED_PUBLISH_NUGET"),
             EnabledPublishChocolatey  = context.IsEnabled("ENABLED_PUBLISH_CHOCOLATEY"),
             EnabledPublishDocker      = context.IsEnabled("ENABLED_PUBLISH_DOCKER"),
@@ -127,10 +125,8 @@ public class BuildParameters
             new [] { "GitVersion.CommandLine", "GitVersion.Core", "GitVersionTask", "GitVersion.Tool" },
             new [] { "GitVersion.Portable" });
 
-        var files = Paths.Files;
 
         var buildArtifacts = context.GetFiles(Paths.Directories.BuildArtifact + "/*.*") + context.GetFiles(Paths.Directories.Artifacts + "/*.tar.gz");
-        buildArtifacts += files.ReleaseNotesOutputFilePath;
 
         Artifacts = BuildArtifacts.GetArtifacts(buildArtifacts.ToArray());
 
