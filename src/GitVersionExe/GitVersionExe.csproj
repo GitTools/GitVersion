@@ -25,7 +25,6 @@
     <ItemGroup Condition="'$(TargetFramework)'=='net472'">
         <PackageReference Include="JetBrains.Annotations" Version="$(PackageVersion_JetBrainsAnnotations)" />
         <PackageReference Include="LibGit2Sharp.NativeBinaries" Version="$(PackageVersion_LibGit2Sharp_NativeBinaries)" />
-        <PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="1.1.0" />
     </ItemGroup>
 
     <ItemGroup>
