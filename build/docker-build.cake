@@ -6,6 +6,11 @@ Task("Docker-Build")
     .IsDependentOnWhen("Pack-Prepare", singleStageRun)
     .Does<BuildParameters>((parameters) =>
 {
+    var workDir = DirectoryPath.FromString($"./src/Docker");
+
+    var tool = parameters.Paths.Directories.NugetRoot.CombineWithFilePath("GitVersion.Tool*");
+    CopyFiles(tool.FullPath, workDir.Combine("content"));
+
     foreach(var dockerImage in parameters.Docker.Images)
     {
         DockerBuild(dockerImage, parameters);

@@ -27,11 +27,6 @@ void DockerBuild(DockerImage dockerImage, BuildParameters parameters)
 {
     var (os, distro, targetframework) = dockerImage;
     var workDir = DirectoryPath.FromString($"./src/Docker");
-
-    var sourceDir = parameters.Paths.Directories.ArtifactsBin.Combine(targetframework);
-
-    CopyDirectory(sourceDir, workDir.Combine("content"));
-
     var tags = GetDockerTags(dockerImage, parameters);
 
     var buildSettings = new DockerImageBuildSettings
@@ -42,7 +37,6 @@ void DockerBuild(DockerImage dockerImage, BuildParameters parameters)
         BuildArg = new []
         {
             $"contentFolder=/content",
-            "DOTNET_VARIANT=runtime",
             $"DOTNET_VERSION={targetframework.Replace("netcoreapp", "")}",
             $"DISTRO={distro}"
         },
