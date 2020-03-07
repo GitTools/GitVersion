@@ -9,7 +9,9 @@ Task("Docker-Build")
     var workDir = DirectoryPath.FromString($"./src/Docker");
 
     var tool = parameters.Paths.Directories.NugetRoot.CombineWithFilePath("GitVersion.Tool*");
-    CopyFiles(tool.FullPath, workDir.Combine("content"));
+    var dest = workDir.Combine("content");
+    EnsureDirectoryExists(dest);
+    CopyFiles(tool.FullPath, dest);
 
     foreach(var dockerImage in parameters.Docker.Images)
     {

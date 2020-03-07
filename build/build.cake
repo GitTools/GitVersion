@@ -14,7 +14,6 @@ Task("Build")
     .Does<BuildParameters>((parameters) =>
 {
     Build(parameters);
-    PublishGitVersionToArtifacts(parameters);
 
     RunGitVersionOnCI(parameters);
 });

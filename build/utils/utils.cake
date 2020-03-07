@@ -113,7 +113,7 @@ GitVersion GetVersion(BuildParameters parameters)
         Build(parameters);
 
         var settings = new GitVersionSettings { OutputType = GitVersionOutput.Json };
-        SetGitVersionTool(settings, parameters, "src/GitVersionExe/**");
+        SetGitVersionTool(settings, parameters);
 
         gitVersion = GitVersion(settings);
         SerializeJsonToPrettyFile(gitversionFilePath, gitVersion);
@@ -128,9 +128,9 @@ GitVersion GetVersion(BuildParameters parameters)
 
 void ValidateVersion(BuildParameters parameters)
 {
-    var gitVersionTool = GetFiles($"artifacts/**/bin/{parameters.CoreFxVersion31}/gitversion.dll").FirstOrDefault();
+    var gitversionTool = GetGitVersionToolLocation(parameters);
 
-    ValidateOutput("dotnet", $"\"{gitVersionTool}\" -version", parameters.Version.GitVersion.InformationalVersion);
+    ValidateOutput("dotnet", $"\"{gitversionTool}\" -version", parameters.Version.GitVersion.InformationalVersion);
 }
 
 void ValidateOutput(string cmd, string args, string expected)
@@ -152,20 +152,25 @@ void RunGitVersionOnCI(BuildParameters parameters)
             LogFilePath = "console",
             OutputType = GitVersionOutput.BuildServer
         };
-        SetGitVersionTool(settings, parameters, "artifacts/**/bin");
+        SetGitVersionTool(settings, parameters);
 
         GitVersion(settings);
     }
 }
 
-GitVersionSettings SetGitVersionTool(GitVersionSettings settings, BuildParameters parameters, string toolPath)
+GitVersionSettings SetGitVersionTool(GitVersionSettings settings, BuildParameters parameters)
 {
-    var gitversionTool = GetFiles($"{toolPath}/{parameters.CoreFxVersion31}/gitversion.dll").FirstOrDefault();
+    var gitversionTool = GetGitVersionToolLocation(parameters);
 
     settings.ToolPath = Context.FindToolInPath(IsRunningOnUnix() ? "dotnet" : "dotnet.exe");
     settings.ArgumentCustomization = args => gitversionTool + " " + args.Render();
 
     return settings;
+}
+
+FilePath GetGitVersionToolLocation(BuildParameters parameters)
+{
+    return GetFiles($"src/GitVersionExe/**/{parameters.CoreFxVersion31}/gitversion.dll").SingleOrDefault();
 }
 
 void PublishGitVersionToArtifacts(BuildParameters parameters)

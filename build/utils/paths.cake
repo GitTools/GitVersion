@@ -31,9 +31,6 @@ public class BuildPaths
         var artifactsBinDir               = artifactsDir.Combine("bin");
         var artifactsBinPortableDir       = artifactsBinDir.Combine("portable");
         var artifactsBinCmdlineDir        = artifactsBinDir.Combine("cmdline");
-        var artifactsBinCoreFx21Dir       = artifactsBinDir.Combine(parameters.CoreFxVersion21);
-        var artifactsBinCoreFx30Dir       = artifactsBinDir.Combine(parameters.CoreFxVersion31);
-        var artifactsBinFullFx472Dir      = artifactsBinDir.Combine(parameters.FullFxVersion472);
         var nativeDir                     = artifactsDir.Combine("native");
         var nugetRootDir                  = artifactsDir.Combine("nuget");
         var buildArtifactDir              = artifactsDir.Combine("build-artifact");
@@ -53,10 +50,7 @@ public class BuildPaths
             nugetRootDir,
             artifactsBinDir,
             artifactsBinPortableDir,
-            artifactsBinCmdlineDir,
-            artifactsBinCoreFx21Dir,
-            artifactsBinCoreFx30Dir,
-            artifactsBinFullFx472Dir);
+            artifactsBinCmdlineDir);
 
         return new BuildPaths
         {
@@ -78,9 +72,6 @@ public class BuildDirectories
     public DirectoryPath ArtifactsBin { get; private set; }
     public DirectoryPath ArtifactsBinPortable { get; private set; }
     public DirectoryPath ArtifactsBinCmdline { get; private set; }
-    public DirectoryPath ArtifactsBinCoreFx21 { get; private set; }
-    public DirectoryPath ArtifactsBinCoreFx30 { get; private set; }
-    public DirectoryPath ArtifactsBinFullFx472 { get; private set; }
     public ICollection<DirectoryPath> ToClean { get; private set; }
 
     public BuildDirectories(
@@ -94,10 +85,7 @@ public class BuildDirectories
         DirectoryPath nugetRootDir,
         DirectoryPath artifactsBinDir,
         DirectoryPath artifactsBinPortableDir,
-        DirectoryPath artifactsBinCmdlineDir,
-        DirectoryPath artifactsBinCoreFx21Dir,
-        DirectoryPath artifactsBinCoreFx30Dir,
-        DirectoryPath artifactsBinFullFx472Dir
+        DirectoryPath artifactsBinCmdlineDir
         )
     {
         Root = rootDir;
@@ -111,9 +99,6 @@ public class BuildDirectories
         ArtifactsBin = artifactsBinDir;
         ArtifactsBinPortable = artifactsBinPortableDir;
         ArtifactsBinCmdline = artifactsBinCmdlineDir;
-        ArtifactsBinCoreFx21 = artifactsBinCoreFx21Dir;
-        ArtifactsBinCoreFx30 = artifactsBinCoreFx30Dir;
-        ArtifactsBinFullFx472 = artifactsBinFullFx472Dir;
         ToClean = new[] {
             Artifacts,
             Native,
@@ -122,10 +107,7 @@ public class BuildDirectories
             NugetRoot,
             ArtifactsBin,
             ArtifactsBinPortable,
-            ArtifactsBinCmdline,
-            ArtifactsBinCoreFx21,
-            ArtifactsBinCoreFx30,
-            ArtifactsBinFullFx472
+            ArtifactsBinCmdline
         };
     }
 }
