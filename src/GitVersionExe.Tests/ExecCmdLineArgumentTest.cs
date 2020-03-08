@@ -72,14 +72,16 @@ namespace GitVersionExe.Tests
         }
 
         [Test]
-        public void WorkingDirectoryWithoutGitFolderCrashesWithInformativeMessage()
+        public void WorkingDirectoryWithoutGitFolderFailsWithInformativeMessage()
         {
-            var results = GitVersionHelper.ExecuteIn(Environment.SystemDirectory, null, false);
-            results.Output.ShouldContain("Can't find the .git directory in");
+            var result = GitVersionHelper.ExecuteIn(Environment.SystemDirectory, null, false);
+
+            result.ExitCode.ShouldNotBe(0);
+            result.Output.ShouldContain("Can't find the .git directory in");
         }
 
         [Test]
-        public void WorkingDirectoryDoesNotExistCrashesWithInformativeMessage()
+        public void WorkingDirectoryDoesNotExistFailsWithInformativeMessage()
         {
             var workingDirectory = Path.Combine(PathHelper.GetCurrentDirectory(), Guid.NewGuid().ToString("N"));
             var executable = PathHelper.GetExecutable();
