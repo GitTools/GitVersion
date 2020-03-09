@@ -1,3 +1,14 @@
+trigger:
+  branches:
+    include:
+    - master
+    - fix/*
+    - feature/*
+pr:
+  branches:
+    include:
+    - master
+
 variables:
   DOTNET_SKIP_FIRST_TIME_EXPERIENCE: 'true'
   DOTNET_CLI_TELEMETRY_OPTOUT: 'true'
