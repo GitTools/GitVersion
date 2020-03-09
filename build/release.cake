@@ -10,17 +10,20 @@ Task("Release-Notes")
         throw new InvalidOperationException("Could not resolve Github token.");
     }
 
+    var zipFiles = GetFiles(parameters.Paths.Directories.ArtifactsRoot.Combine("native") + "/*.tar.gz").Select(x => x.ToString());
+    var assets = string.Join(",", zipFiles);
+
+    Information("zip count: " + zipFiles.Count());
+
     var repoOwner = BuildParameters.MainRepoOwner;
     var repository = BuildParameters.MainRepoName;
     GitReleaseManagerCreate(token, repoOwner, repository, new GitReleaseManagerCreateSettings {
         Milestone         = parameters.Version.Milestone,
         Name              = parameters.Version.Milestone,
-        Prerelease        = true,
+        Prerelease        = false,
         TargetCommitish   = "master"
     });
 
-    var zipFiles = GetFiles(parameters.Paths.Directories.ArtifactsRoot + "/*.tar.gz").Select(x => x.ToString());
-    var assets = string.Join(",", zipFiles);
     GitReleaseManagerAddAssets(token, repoOwner, repository, parameters.Version.Milestone, assets);
     GitReleaseManagerClose(token, repoOwner, repository, parameters.Version.Milestone);
 

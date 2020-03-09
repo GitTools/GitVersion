@@ -108,7 +108,7 @@ GitVersion GetVersion(BuildParameters parameters)
     var gitversionFilePath = $"artifacts/gitversion.json";
     var gitversionFile = GetFiles(gitversionFilePath).FirstOrDefault();
     GitVersion gitVersion = null;
-    if (gitversionFile == null)
+    if (gitversionFile == null || parameters.IsLocalBuild)
     {
         Build(parameters);
 
@@ -171,26 +171,6 @@ GitVersionSettings SetGitVersionTool(GitVersionSettings settings, BuildParameter
 FilePath GetGitVersionToolLocation(BuildParameters parameters)
 {
     return GetFiles($"src/GitVersionExe/bin/{parameters.Configuration}/{parameters.CoreFxVersion31}/gitversion.dll").SingleOrDefault();
-}
-
-void PublishGitVersionToArtifacts(BuildParameters parameters)
-{
-    var frameworks = new[] { parameters.CoreFxVersion21, parameters.CoreFxVersion31, parameters.FullFxVersion472 };
-
-    // publish Framework-dependent deployment
-    foreach(var framework in frameworks)
-    {
-        var settings = new DotNetCorePublishSettings
-        {
-            Framework = framework,
-            NoRestore = false,
-            Configuration = parameters.Configuration,
-            OutputDirectory = parameters.Paths.Directories.ArtifactsBin.Combine(framework),
-            MSBuildSettings = parameters.MSBuildSettings,
-        };
-
-        DotNetCorePublish("./src/GitVersionExe/GitVersionExe.csproj", settings);
-    }
 }
 
 void Build(BuildParameters parameters)
