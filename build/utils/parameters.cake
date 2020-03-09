@@ -21,6 +21,7 @@ public class BuildParameters
     public bool EnabledPublishNuget { get; private set; }
     public bool EnabledPublishChocolatey { get; private set; }
     public bool EnabledPublishDocker { get; private set; }
+    public bool EnabledPublishRelease { get; private set; }
 
     public bool IsRunningOnUnix { get; private set; }
     public bool IsRunningOnWindows { get; private set; }
@@ -84,6 +85,7 @@ public class BuildParameters
             EnabledPublishNuget       = context.IsEnabled("ENABLED_PUBLISH_NUGET"),
             EnabledPublishChocolatey  = context.IsEnabled("ENABLED_PUBLISH_CHOCOLATEY"),
             EnabledPublishDocker      = context.IsEnabled("ENABLED_PUBLISH_DOCKER"),
+            EnabledPublishRelease     = context.IsEnabled("ENABLED_PUBLISH_RELEASE"),
 
             IsRunningOnUnix    = context.IsRunningOnUnix(),
             IsRunningOnWindows = context.IsRunningOnWindows(),

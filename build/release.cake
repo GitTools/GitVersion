@@ -1,7 +1,8 @@
 Task("Release-Notes")
-    .WithCriteria<BuildParameters>((context, parameters) => parameters.IsRunningOnWindows, "Release notes are generated only on Windows agents.")
-    .WithCriteria<BuildParameters>((context, parameters) => parameters.IsReleasingCI,      "Release notes are generated only on Releasing CI.")
-    .WithCriteria<BuildParameters>((context, parameters) => parameters.IsStableRelease(),  "Release notes are generated only for stable releases.")
+    .WithCriteria<BuildParameters>((context, parameters) => parameters.EnabledPublishRelease, "Release-Notes was disabled.")
+    .WithCriteria<BuildParameters>((context, parameters) => parameters.IsRunningOnWindows,    "Release notes are generated only on Windows agents.")
+    .WithCriteria<BuildParameters>((context, parameters) => parameters.IsReleasingCI,         "Release notes are generated only on Releasing CI.")
+    .WithCriteria<BuildParameters>((context, parameters) => parameters.IsStableRelease(),     "Release notes are generated only for stable releases.")
     .Does<BuildParameters>((parameters) =>
 {
     var token = parameters.Credentials.GitHub.Token;

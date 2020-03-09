@@ -15,3 +15,4 @@ steps:
   displayName: '[Release]'
   env:
     GITHUB_TOKEN: $(GITHUB_TOKEN)
+    ENABLED_PUBLISH_RELEASE: $(ENABLED_PUBLISH_RELEASE)
