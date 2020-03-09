@@ -15,7 +15,7 @@
     },
     "extensions": {
         "recommendations": [
-            "ms-vscode.csharp",
+            "ms-dotnettools.csharp",
             "cake-build.cake-vscode",
             "ms-azure-devops.azure-pipelines",
             "EditorConfig.EditorConfig",
