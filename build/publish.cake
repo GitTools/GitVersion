@@ -57,7 +57,7 @@ Task("Publish-NuGet-Internal")
     .IsDependentOnWhen("Pack-NuGet", singleStageRun)
     .Does<BuildParameters>((parameters) =>
 {
-    if (parameters.IsStableRelease()) 
+    if (parameters.IsStableRelease())
     {
         var apiKey = parameters.Credentials.Nuget.ApiKey;
         if(string.IsNullOrEmpty(apiKey)) {
@@ -84,7 +84,7 @@ Task("Publish-NuGet-Internal")
     }
 
     // Push the package to GitHub Packages
-    if (parameters.IsRunningOnGitHubActions)
+    if (parameters.IsRunningOnGitHubActions && parameters.IsMainRepo && parameters.IsMainBranch)
     {
         Information("Publishing nuget to GitHub Packages");
 
