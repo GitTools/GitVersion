@@ -34,10 +34,8 @@ namespace Microsoft.DotNet.PlatformAbstractions.Native
                 {
                     return $"{osvi.dwMajorVersion}.{osvi.dwMinorVersion}.{osvi.dwBuildNumber}";
                 }
-                else
-                {
-                    return null;
-                }
+
+                return null;
             }
         }
     }

@@ -1,6 +1,5 @@
 using GitVersionTask.MsBuild;
 using Microsoft.Build.Framework;
-using Microsoft.Build.Utilities;
 
 namespace GitVersion.MSBuildTask
 {
@@ -8,7 +7,7 @@ namespace GitVersion.MSBuildTask
     {
         protected GitVersionTaskBase()
         {
-            this.Log = new TaskLoggingHelper(this);
+            Log = new TaskLoggingHelper(this);
         }
 
         [Required]

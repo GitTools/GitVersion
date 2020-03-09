@@ -3,7 +3,6 @@ using GitVersion.Exceptions;
 using GitVersion.Extensions;
 using GitVersion.Logging;
 using GitVersion.MSBuildTask.Tasks;
-using Microsoft.Build.Framework;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 

@@ -12,7 +12,7 @@ namespace GitVersion.MSBuildTask
         public static Func<UpdateAssemblyInfo, bool> UpdateAssemblyInfo;
         public static Func<WriteVersionInfoToBuildLog, bool> WriteVersionInfoToBuildLog;
 
-        public static Exception InitialiseException = null;
+        public static Exception InitialiseException;
         static TaskProxy()
         {
             try

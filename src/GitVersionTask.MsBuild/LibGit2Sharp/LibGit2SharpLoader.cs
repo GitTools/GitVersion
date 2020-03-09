@@ -1,12 +1,12 @@
 // This code originally copied and adapted from https://raw.githubusercontent.com/dotnet/sourcelink/master/src/Microsoft.Build.Tasks.Git/TaskImplementation.cs
 
+
+using System.IO;
+using System.Reflection;
 #if NET472
 using System;
 using System.Collections.Generic;
 #endif
-
-using System.IO;
-using System.Reflection;
 
 namespace GitVersion.MSBuildTask.LibGit2Sharp
 {

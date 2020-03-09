@@ -64,13 +64,11 @@ namespace Microsoft.DotNet.PlatformAbstractions.Native
                 // it is OS X 10.0
                 return "10.0";
             }
-            else
-            {
-                // Mac OS X 10.1 mapped to Darwin 5.x, and the mapping continues that way
-                // So just subtract 4 from the Darwin version.
-                // https://en.wikipedia.org/wiki/Darwin_%28operating_system%29
-                return $"10.{version.Major - 4}";
-            }
+
+            // Mac OS X 10.1 mapped to Darwin 5.x, and the mapping continues that way
+            // So just subtract 4 from the Darwin version.
+            // https://en.wikipedia.org/wiki/Darwin_%28operating_system%29
+            return $"10.{version.Major - 4}";
         }
 
         private static string GetFreeBSDVersion()

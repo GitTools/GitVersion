@@ -1,6 +1,6 @@
-using Microsoft.Build.Framework;
 using System;
 using System.Text;
+using Microsoft.Build.Framework;
 
 namespace GitVersionTask.MsBuild
 {
@@ -217,7 +217,7 @@ namespace GitVersionTask.MsBuild
 
             if (showStackTrace)
             {
-                message += System.Environment.NewLine + exception.StackTrace;
+                message += Environment.NewLine + exception.StackTrace;
             }
 
             LogWarning(message);
@@ -333,13 +333,13 @@ namespace GitVersionTask.MsBuild
 
             string message;
 
-            if (!showDetail && (System.Environment.GetEnvironmentVariable("MSBUILDDIAGNOSTICS") == null)) // This env var is also used in ToolTask
+            if (!showDetail && (Environment.GetEnvironmentVariable("MSBUILDDIAGNOSTICS") == null)) // This env var is also used in ToolTask
             {
                 message = exception.Message;
 
                 if (showStackTrace)
                 {
-                    message += System.Environment.NewLine + exception.StackTrace;
+                    message += Environment.NewLine + exception.StackTrace;
                 }
             }
             else

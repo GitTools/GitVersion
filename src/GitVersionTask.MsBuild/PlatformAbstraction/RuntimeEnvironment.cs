@@ -73,11 +73,13 @@ namespace Microsoft.DotNet.PlatformAbstractions
                 {
                     return "7";
                 }
-                else if (ver.Minor == 2)
+
+                if (ver.Minor == 2)
                 {
                     return "8";
                 }
-                else if (ver.Minor == 3)
+
+                if (ver.Minor == 3)
                 {
                     return "81";
                 }
