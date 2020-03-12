@@ -49,7 +49,8 @@ namespace GitVersionCore.Tests.BuildServers
         {
             var vsVersion = buildServer.GenerateSetParameterMessage("Foo", "0.8.0-unstable568 Branch:'develop' Sha:'ee69bff1087ebc95c6b43aa2124bd58f5722e0cb'");
 
-            vsVersion[0].ShouldBe("##vso[task.setvariable variable=GitVersion.Foo;isOutput=true]0.8.0-unstable568 Branch:'develop' Sha:'ee69bff1087ebc95c6b43aa2124bd58f5722e0cb'");
+            vsVersion.ShouldContain("##vso[task.setvariable variable=GitVersion.Foo]0.8.0-unstable568 Branch:'develop' Sha:'ee69bff1087ebc95c6b43aa2124bd58f5722e0cb'");
+            vsVersion.ShouldContain("##vso[task.setvariable variable=GitVersion.Foo;isOutput=true]0.8.0-unstable568 Branch:'develop' Sha:'ee69bff1087ebc95c6b43aa2124bd58f5722e0cb'");
         }
 
         [Test]
