@@ -8,8 +8,8 @@ namespace GitVersion.BuildServers
 {
     public sealed class CodeBuild : BuildServerBase
     {
-        public const string HeadRefEnvironmentName = "CODEBUILD_WEBHOOK_HEAD_REF";
         private string file;
+        public const string EnvironmentVariableName = "CODEBUILD_WEBHOOK_HEAD_REF";
 
         public CodeBuild(IEnvironment environment, ILog log) : base(environment, log)
         {
@@ -21,7 +21,7 @@ namespace GitVersion.BuildServers
             file = propertiesFileName;
         }
 
-        protected override string EnvironmentVariable { get; } = HeadRefEnvironmentName;
+        protected override string EnvironmentVariable { get; } = EnvironmentVariableName;
 
         public override string GenerateSetVersionMessage(VersionVariables variables)
         {
@@ -38,7 +38,7 @@ namespace GitVersion.BuildServers
 
         public override string GetCurrentBranch(bool usingDynamicRepos)
         {
-            return Environment.GetEnvironmentVariable(HeadRefEnvironmentName);
+            return Environment.GetEnvironmentVariable(EnvironmentVariableName);
         }
 
         public override void WriteIntegration(Action<string> writer, VersionVariables variables)
