@@ -87,6 +87,7 @@ variables:
 
 steps:
 - task: UseGitVersion@5
+  name: Version
   displayName: gitversion
   inputs:
     versionSpec: '5.x'
@@ -94,7 +95,7 @@ steps:
 ```
 
 You can now use the `GitVersion.SemVer` environment variable in any subsequent
-tasks to refer to the semantic version number for your build. For example, you
+tasks to refer to the semantic version number for your build. If you are using GitVersion 5.2.0+, you need to prefix the variable with the step name e.g.`Version.GitVersion.SemVer`. For example, you
 can build your dotnet core application with a semantic version number like so:
 
 ```yml
@@ -105,9 +106,15 @@ can build your dotnet core application with a semantic version number like so:
     projects: '$(solution)'
     configuration: '$(buildConfiguration)'
     versioningScheme: byEnvVar
-    versionEnvVar: 'GitVersion.SemVer'
-
+    versionEnvVar: 'Version.GitVersion.SemVer'
 ```
+or update the build number to include the semantic version like so:
+```yml
+- bash: |
+    echo "##vso[build.updatebuildnumber]$(Version.GitVersion.NugetVersionV2)-$(Build.BuildId)"
+  displayName: 'Update build number'
+```
+The rationale for including the BuildId is if the change is not semantic (i.e. ```+semver:skip```), you still get a unique build number.
 
 ## Running inside TFS
 
@@ -167,3 +174,4 @@ which might allow other possibilities to solve this issue. For details see this
 queueing the build) all tags from the repository will be fetched, even the ones
 newer than the commit.  This can lead to different version numbers while
 re-running historical builds.
+* The syntax for referencing variables only applies from GitVersion 5.1.2 onwards
