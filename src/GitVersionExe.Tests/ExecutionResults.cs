@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Newtonsoft.Json;
 using GitVersion.OutputVariables;
@@ -21,7 +22,10 @@ namespace GitVersionExe.Tests
         {
             get
             {
-                var outputVariables = JsonConvert.DeserializeObject<Dictionary<string, string>>(Output);
+                var jsonStartIndex = Output.IndexOf("{", StringComparison.Ordinal);
+                var json = Output.Substring(jsonStartIndex);
+
+                var outputVariables = JsonConvert.DeserializeObject<Dictionary<string, string>>(json);
                 return VersionVariables.FromDictionary(outputVariables);
             }
         }

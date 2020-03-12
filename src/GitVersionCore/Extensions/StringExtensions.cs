@@ -44,7 +44,7 @@ namespace GitVersion.Extensions
 
             try
             {
-                Path.GetFullPath(path);
+                _ = Path.GetFullPath(path);
             }
             catch
             {
@@ -52,7 +52,7 @@ namespace GitVersion.Extensions
 
                 try
                 {
-                    Path.GetFullPath(path);
+                    _ = Path.GetFullPath(path);
                 }
                 catch
                 {

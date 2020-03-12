@@ -33,14 +33,14 @@ namespace GitVersionCore.Tests.BuildServers
         [Test]
         public void CorrectlyIdentifiesCodeBuildPresence()
         {
-            environment.SetEnvironmentVariable(CodeBuild.HeadRefEnvironmentName, "a value");
+            environment.SetEnvironmentVariable(CodeBuild.EnvironmentVariableName, "a value");
             buildServer.CanApplyToCurrentContext().ShouldBe(true);
         }
 
         [Test]
         public void PicksUpBranchNameFromEnvironment()
         {
-            environment.SetEnvironmentVariable(CodeBuild.HeadRefEnvironmentName, "refs/heads/master");
+            environment.SetEnvironmentVariable(CodeBuild.EnvironmentVariableName, "refs/heads/master");
             buildServer.GetCurrentBranch(false).ShouldBe("refs/heads/master");
         }
 
