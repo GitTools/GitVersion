@@ -174,4 +174,3 @@ which might allow other possibilities to solve this issue. For details see this
 queueing the build) all tags from the repository will be fetched, even the ones
 newer than the commit.  This can lead to different version numbers while
 re-running historical builds.
-* The syntax for referencing variables only applies from GitVersion 5.1.2 onwards
