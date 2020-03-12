@@ -51,7 +51,7 @@ namespace GitVersionExe.Tests
             VerifyPullRequestVersionIsCalculatedProperly(pullRequestRef, env);
         }
 
-        
+
         [TestCase("refs/pull-requests/5/merge")]
         [TestCase("refs/pull/5/merge")]
         [TestCase("refs/heads/pull/5/head")]
@@ -166,7 +166,7 @@ namespace GitVersionExe.Tests
                 remoteRepository.Refs.Add(pullRequestRef, new ObjectId(mergeCommitSha));
 
                 // Checkout PR commit
-                Commands.Fetch((Repository) fixture.Repository, "origin", new string[0], new FetchOptions(), null);
+                Commands.Fetch((Repository)fixture.Repository, "origin", new string[0], new FetchOptions(), null);
                 Commands.Checkout(fixture.Repository, mergeCommitSha);
             }
 
