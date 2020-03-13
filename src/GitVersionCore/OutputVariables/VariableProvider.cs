@@ -1,12 +1,12 @@
 using System;
 using System.Text.RegularExpressions;
+using GitVersion.Configuration;
 using GitVersion.Exceptions;
 using GitVersion.Extensions;
-using GitVersion.VersionCalculation;
-using GitVersion.VersioningModes;
-using GitVersion.Configuration;
 using GitVersion.Helpers;
 using GitVersion.Logging;
+using GitVersion.VersionCalculation;
+using GitVersion.VersioningModes;
 
 namespace GitVersion.OutputVariables
 {

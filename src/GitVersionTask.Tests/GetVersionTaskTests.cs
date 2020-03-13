@@ -1,10 +1,10 @@
 using System.Linq;
+using GitVersion.MSBuildTask.Tasks;
+using GitVersion.OutputVariables;
+using GitVersionCore.Tests.Helpers;
 using Microsoft.Build.Framework;
 using NUnit.Framework;
 using Shouldly;
-using GitVersion.OutputVariables;
-using GitVersion.MSBuildTask.Tasks;
-using GitVersionCore.Tests.Helpers;
 
 namespace GitVersion.MSBuildTask.Tests
 {

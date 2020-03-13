@@ -1,7 +1,7 @@
-using NUnit.Framework;
-using GitVersion.Helpers;
 using GitVersion;
+using GitVersion.Helpers;
 using GitVersionCore.Tests.Helpers;
+using NUnit.Framework;
 
 namespace GitVersionCore.Tests
 {

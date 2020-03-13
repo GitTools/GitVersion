@@ -26,7 +26,7 @@ namespace GitVersionTask.Tests
         [Test]
         public void GetFileWriteInfoShouldCreateConstantNamedFileWhenIntermediateOutputPath()
         {
-            var fileInfo = FileHelper.GetFileWriteInfo("MyIntermediateOutputPath", "C#", "MyProject.csproj", "GeneratedVersionInformation");
+            var fileInfo = "MyIntermediateOutputPath".GetFileWriteInfo("C#", "MyProject.csproj", "GeneratedVersionInformation");
 
             Assert.That(fileInfo.WorkingDirectory, Is.EqualTo("MyIntermediateOutputPath"));
             Assert.That(fileInfo.FileName, Is.EqualTo("GeneratedVersionInformation.g.cs"));

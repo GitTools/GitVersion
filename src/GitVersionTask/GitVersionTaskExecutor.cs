@@ -3,8 +3,8 @@ using System.IO;
 using GitVersion.Extensions.GitVersionInformationResources;
 using GitVersion.Extensions.VersionAssemblyInfoResources;
 using GitVersion.Logging;
-using GitVersion.OutputFormatters;
 using GitVersion.MSBuildTask.Tasks;
+using GitVersion.OutputFormatters;
 
 namespace GitVersion.MSBuildTask
 {

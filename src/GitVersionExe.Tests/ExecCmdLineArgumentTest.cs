@@ -2,10 +2,10 @@ using System;
 using System.IO;
 using System.Text;
 using GitTools.Testing;
-using NUnit.Framework;
-using Shouldly;
 using GitVersion.Helpers;
 using GitVersionCore.Tests.Helpers;
+using NUnit.Framework;
+using Shouldly;
 
 namespace GitVersionExe.Tests
 {

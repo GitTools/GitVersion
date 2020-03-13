@@ -1,9 +1,9 @@
 using System;
 using System.Net.Http;
-using GitVersion.OutputVariables;
-using GitVersion.Logging;
 using System.Text;
 using GitVersion.Helpers;
+using GitVersion.Logging;
+using GitVersion.OutputVariables;
 
 namespace GitVersion.BuildServers
 {

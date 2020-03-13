@@ -1,17 +1,17 @@
 using System;
 using System.Collections.Generic;
 using GitTools.Testing;
+using GitVersion;
 using GitVersion.Configuration;
+using GitVersion.Extensions;
 using GitVersion.VersionCalculation;
 using GitVersion.VersioningModes;
+using GitVersionCore.Tests.Helpers;
 using GitVersionCore.Tests.Mocks;
 using LibGit2Sharp;
+using Microsoft.Extensions.DependencyInjection;
 using NUnit.Framework;
 using Shouldly;
-using GitVersion;
-using GitVersion.Extensions;
-using GitVersionCore.Tests.Helpers;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace GitVersionCore.Tests.VersionCalculation
 {
@@ -148,7 +148,7 @@ namespace GitVersionCore.Tests.VersionCalculation
                 Branches = new Dictionary<string, BranchConfig>
                 {
                     {
-                        "master", new BranchConfig()
+                        "master", new BranchConfig
                         {
                             Tag = "beta"
                         }

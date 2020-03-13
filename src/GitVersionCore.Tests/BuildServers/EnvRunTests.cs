@@ -1,10 +1,10 @@
 using System.IO;
-using NUnit.Framework;
-using Shouldly;
-using GitVersion.BuildServers;
 using GitVersion;
+using GitVersion.BuildServers;
 using GitVersionCore.Tests.Helpers;
 using Microsoft.Extensions.DependencyInjection;
+using NUnit.Framework;
+using Shouldly;
 
 namespace GitVersionCore.Tests.BuildServers
 {

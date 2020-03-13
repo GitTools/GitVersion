@@ -1,8 +1,8 @@
 using System.Collections.Generic;
 using GitTools.Testing;
-using NUnit.Framework;
 using GitVersion.Configuration;
 using GitVersionCore.Tests.Helpers;
+using NUnit.Framework;
 
 namespace GitVersionCore.Tests.IntegrationTests
 {

@@ -1,9 +1,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using GitVersion.Exceptions;
+using GitVersion.Extensions;
 using GitVersion.Logging;
 using LibGit2Sharp;
-using GitVersion.Extensions;
 
 namespace GitVersion.Helpers
 {

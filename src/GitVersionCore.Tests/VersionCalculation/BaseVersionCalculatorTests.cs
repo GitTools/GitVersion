@@ -3,16 +3,16 @@ using System.Collections.Generic;
 using GitTools.Testing;
 using GitVersion;
 using GitVersion.Configuration;
+using GitVersion.Extensions;
 using GitVersion.VersionCalculation;
 using GitVersion.VersionFilters;
+using GitVersionCore.Tests.Helpers;
 using GitVersionCore.Tests.Mocks;
 using LibGit2Sharp;
-using NUnit.Framework;
-using Shouldly;
-using GitVersion.Extensions;
-using GitVersionCore.Tests.Helpers;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using NUnit.Framework;
+using Shouldly;
 
 namespace GitVersionCore.Tests.VersionCalculation
 {
@@ -89,7 +89,8 @@ namespace GitVersionCore.Tests.VersionCalculation
         public void ShouldNotFilterVersion()
         {
             var fakeIgnoreConfig = new TestIgnoreConfig(new ExcludeSourcesContainingExclude());
-            var context = new GitVersionContextBuilder().WithConfig(new Config() { Ignore = fakeIgnoreConfig }).Build();
+            var context = new GitVersionContextBuilder().WithConfig(new Config
+            { Ignore = fakeIgnoreConfig }).Build();
             var version = new BaseVersion(context, "dummy", false, new SemanticVersion(2), new MockCommit(), null);
 
             var sp = ConfigureServices(services =>
@@ -111,7 +112,8 @@ namespace GitVersionCore.Tests.VersionCalculation
         public void ShouldFilterVersion()
         {
             var fakeIgnoreConfig = new TestIgnoreConfig(new ExcludeSourcesContainingExclude());
-            var context = new GitVersionContextBuilder().WithConfig(new Config() { Ignore = fakeIgnoreConfig }).Build();
+            var context = new GitVersionContextBuilder().WithConfig(new Config
+            { Ignore = fakeIgnoreConfig }).Build();
             var higherVersion = new BaseVersion(context, "exclude", false, new SemanticVersion(2), new MockCommit(), null);
             var lowerVersion = new BaseVersion(context, "dummy", false, new SemanticVersion(1), new MockCommit(), null);
 

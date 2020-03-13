@@ -1,8 +1,8 @@
 using System;
-using NUnit.Framework;
 using GitVersion.BuildServers;
 using GitVersionCore.Tests.Helpers;
 using Microsoft.Extensions.DependencyInjection;
+using NUnit.Framework;
 
 namespace GitVersionCore.Tests.BuildServers
 {

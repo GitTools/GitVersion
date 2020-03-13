@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
-using Microsoft.Build.Framework;
 using GitVersion.Exceptions;
+using Microsoft.Build.Framework;
 
 namespace GitVersion.MSBuildTask
 {
@@ -24,7 +24,7 @@ namespace GitVersion.MSBuildTask
 
     public static class FileHelper
     {
-        private static readonly Dictionary<string, Func<string, string, bool>> VersionAttributeFinders = new Dictionary<string, Func<string, string, bool>>()
+        private static readonly Dictionary<string, Func<string, string, bool>> VersionAttributeFinders = new Dictionary<string, Func<string, string, bool>>
         {
             { ".cs", CSharpFileContainsVersionAttribute },
             { ".vb", VisualBasicFileContainsVersionAttribute }

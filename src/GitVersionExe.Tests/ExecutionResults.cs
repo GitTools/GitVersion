@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
-using Newtonsoft.Json;
 using GitVersion.OutputVariables;
+using Newtonsoft.Json;
 
 namespace GitVersionExe.Tests
 {

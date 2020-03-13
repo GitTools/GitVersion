@@ -8,12 +8,12 @@ namespace GitVersion
 {
     public class FileSystem : IFileSystem
     {
-        public void Copy(string @from, string to, bool overwrite)
+        public void Copy(string from, string to, bool overwrite)
         {
             File.Copy(from, to, overwrite);
         }
 
-        public void Move(string @from, string to)
+        public void Move(string from, string to)
         {
             File.Move(from, to);
         }

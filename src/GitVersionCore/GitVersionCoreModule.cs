@@ -1,12 +1,12 @@
+using GitVersion.BuildServers;
 using GitVersion.Cache;
-using Microsoft.Extensions.DependencyInjection;
 using GitVersion.Configuration;
+using GitVersion.Configuration.Init;
+using GitVersion.Extensions;
 using GitVersion.Logging;
 using GitVersion.OutputVariables;
 using GitVersion.VersionCalculation;
-using GitVersion.Configuration.Init;
-using GitVersion.Extensions;
-using GitVersion.BuildServers;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace GitVersion
 {

@@ -1,12 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 using System.Linq;
+using System.Text;
+using GitVersion.Extensions;
 using GitVersion.VersioningModes;
 using YamlDotNet.Serialization;
-using GitVersion.Extensions;
-using System.IO;
-using System.Text;
 
 namespace GitVersion.Configuration
 {

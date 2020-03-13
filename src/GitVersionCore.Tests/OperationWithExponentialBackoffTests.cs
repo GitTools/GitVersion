@@ -1,13 +1,13 @@
 using System;
 using System.IO;
 using System.Threading.Tasks;
-using NUnit.Framework;
-using Shouldly;
 using GitVersion.Helpers;
 using GitVersion.Logging;
 using GitVersionCore.Tests.Helpers;
 using GitVersionCore.Tests.Mocks;
 using Microsoft.Extensions.DependencyInjection;
+using NUnit.Framework;
+using Shouldly;
 
 namespace GitVersionCore.Tests
 {

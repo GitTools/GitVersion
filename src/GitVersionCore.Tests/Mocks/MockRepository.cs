@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
 using LibGit2Sharp;
-
 using Index = LibGit2Sharp.Index;
+
 namespace GitVersionCore.Tests.Mocks
 {
     public class MockRepository : IRepository

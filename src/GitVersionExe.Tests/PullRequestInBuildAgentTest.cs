@@ -2,10 +2,10 @@ using System;
 using System.Collections.Generic;
 using GitTools.Testing;
 using GitVersion.BuildServers;
+using GitVersionCore.Tests.Helpers;
 using LibGit2Sharp;
 using NUnit.Framework;
 using Shouldly;
-using GitVersionCore.Tests.Helpers;
 
 namespace GitVersionExe.Tests
 {

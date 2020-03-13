@@ -1,10 +1,11 @@
 using GitVersion;
-using NUnit.Framework;
-using Shouldly;
 using GitVersion.Exceptions;
 using GitVersion.Logging;
 using GitVersion.OutputFormatters;
 using GitVersionCore.Tests.Helpers;
+using NUnit.Framework;
+using Shouldly;
+using Environment = System.Environment;
 
 namespace GitVersionExe.Tests
 {
@@ -23,7 +24,7 @@ namespace GitVersionExe.Tests
         public void EmptyMeansUseCurrentDirectory()
         {
             var arguments = argumentParser.ParseArguments("");
-            arguments.TargetPath.ShouldBe(System.Environment.CurrentDirectory);
+            arguments.TargetPath.ShouldBe(Environment.CurrentDirectory);
             arguments.LogFilePath.ShouldBe(null);
             arguments.IsHelp.ShouldBe(false);
         }
@@ -41,7 +42,7 @@ namespace GitVersionExe.Tests
         public void NoPathAndLogfileShouldUseCurrentDirectoryTargetDirectory()
         {
             var arguments = argumentParser.ParseArguments("-l logFilePath");
-            arguments.TargetPath.ShouldBe(System.Environment.CurrentDirectory);
+            arguments.TargetPath.ShouldBe(Environment.CurrentDirectory);
             arguments.LogFilePath.ShouldBe("logFilePath");
             arguments.IsHelp.ShouldBe(false);
         }

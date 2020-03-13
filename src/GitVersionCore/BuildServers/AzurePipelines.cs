@@ -1,9 +1,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
-using GitVersion.OutputVariables;
-using GitVersion.Logging;
 using GitVersion.Extensions;
+using GitVersion.Logging;
+using GitVersion.OutputVariables;
 
 namespace GitVersion.BuildServers
 {

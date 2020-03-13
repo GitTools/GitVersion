@@ -1,9 +1,9 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using GitVersion.Logging;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
-using GitVersion.Logging;
 
 namespace GitVersion
 {

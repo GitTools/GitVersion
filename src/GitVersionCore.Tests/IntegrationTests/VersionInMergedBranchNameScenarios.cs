@@ -1,11 +1,9 @@
 using System.Collections.Generic;
 using System.Linq;
-
 using GitTools.Testing;
 using GitVersion.Configuration;
 using GitVersionCore.Tests.Helpers;
 using LibGit2Sharp;
-
 using NUnit.Framework;
 
 namespace GitVersionCore.Tests.IntegrationTests

@@ -1,10 +1,10 @@
 using System;
-using NUnit.Framework;
-using Shouldly;
-using GitVersion.OutputVariables;
 using GitVersion;
+using GitVersion.OutputVariables;
 using GitVersionCore.Tests.Helpers;
 using Microsoft.Extensions.DependencyInjection;
+using NUnit.Framework;
+using Shouldly;
 
 namespace GitVersionCore.Tests
 {

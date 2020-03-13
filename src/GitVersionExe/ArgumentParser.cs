@@ -5,10 +5,10 @@ using System.IO;
 using System.Linq;
 using GitVersion.Configuration;
 using GitVersion.Exceptions;
-using GitVersion.Logging;
-using GitVersion.OutputVariables;
-using GitVersion.OutputFormatters;
 using GitVersion.Extensions;
+using GitVersion.Logging;
+using GitVersion.OutputFormatters;
+using GitVersion.OutputVariables;
 
 namespace GitVersion
 {

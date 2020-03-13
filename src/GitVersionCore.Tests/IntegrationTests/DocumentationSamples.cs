@@ -1,9 +1,9 @@
 using System;
 using GitTools.Testing;
-using NUnit.Framework;
-using Shouldly;
 using GitVersion.Extensions;
 using GitVersionCore.Tests.Helpers;
+using NUnit.Framework;
+using Shouldly;
 
 namespace GitVersionCore.Tests.IntegrationTests
 {

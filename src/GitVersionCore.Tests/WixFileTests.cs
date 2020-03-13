@@ -1,14 +1,14 @@
 using System;
 using System.IO;
 using System.Text;
-using GitVersion.OutputVariables;
-using NUnit.Framework;
-using Shouldly;
+using GitVersion;
 using GitVersion.Extensions;
 using GitVersion.Logging;
-using GitVersion;
+using GitVersion.OutputVariables;
 using GitVersionCore.Tests.Helpers;
 using Microsoft.Extensions.DependencyInjection;
+using NUnit.Framework;
+using Shouldly;
 
 namespace GitVersionCore.Tests
 {

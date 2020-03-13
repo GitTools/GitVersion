@@ -1,8 +1,8 @@
+using GitVersion;
+using GitVersion.Configuration;
+using GitVersionCore.Tests.Helpers;
 using NUnit.Framework;
 using Shouldly;
-using GitVersion.Configuration;
-using GitVersion;
-using GitVersionCore.Tests.Helpers;
 
 namespace GitVersionCore.Tests
 {

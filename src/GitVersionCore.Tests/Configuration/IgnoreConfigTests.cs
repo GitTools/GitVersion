@@ -1,10 +1,10 @@
 using System;
 using System.IO;
+using GitVersion.Configuration;
+using GitVersionCore.Tests.Helpers;
 using NUnit.Framework;
 using Shouldly;
 using YamlDotNet.Core;
-using GitVersion.Configuration;
-using GitVersionCore.Tests.Helpers;
 
 namespace GitVersionCore.Tests.Configuration
 {

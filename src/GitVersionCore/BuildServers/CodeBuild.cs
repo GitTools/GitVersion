@@ -1,8 +1,8 @@
 using System;
 using System.IO;
+using GitVersion.Logging;
 using GitVersion.OutputFormatters;
 using GitVersion.OutputVariables;
-using GitVersion.Logging;
 
 namespace GitVersion.BuildServers
 {

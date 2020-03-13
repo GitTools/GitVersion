@@ -1,13 +1,13 @@
 using System;
 using GitTools.Testing;
 using GitVersion;
-using LibGit2Sharp;
-using NUnit.Framework;
-using Shouldly;
 using GitVersion.Exceptions;
 using GitVersion.Helpers;
 using GitVersion.Logging;
 using GitVersionCore.Tests.Helpers;
+using LibGit2Sharp;
+using NUnit.Framework;
+using Shouldly;
 
 namespace GitVersionCore.Tests.IntegrationTests
 {

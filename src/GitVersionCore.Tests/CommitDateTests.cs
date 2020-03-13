@@ -1,12 +1,12 @@
 using System;
 using System.Linq;
 using GitVersion;
-using GitVersion.VersionFilters;
-using NUnit.Framework;
 using GitVersion.Configuration;
-using GitVersion.VersioningModes;
 using GitVersion.Extensions;
+using GitVersion.VersionFilters;
+using GitVersion.VersioningModes;
 using GitVersionCore.Tests.Helpers;
+using NUnit.Framework;
 
 namespace GitVersionCore.Tests
 {

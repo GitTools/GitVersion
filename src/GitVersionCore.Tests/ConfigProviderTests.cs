@@ -4,17 +4,18 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
-using NUnit.Framework;
-using Shouldly;
-using YamlDotNet.Serialization;
-using GitVersion.Configuration;
-using GitVersion.VersioningModes;
-using GitVersion.Extensions;
 using GitVersion;
+using GitVersion.Configuration;
+using GitVersion.Extensions;
 using GitVersion.Logging;
+using GitVersion.VersioningModes;
 using GitVersionCore.Tests.Helpers;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
+using NUnit.Framework;
+using Shouldly;
+using YamlDotNet.Serialization;
+using Environment = System.Environment;
 
 namespace GitVersionCore.Tests
 {
@@ -96,7 +97,7 @@ branches:
         tag: bugfix";
             SetupConfigFileContent(text);
             var ex = Should.Throw<GitVersionConfigurationException>(() => configProvider.Provide(repoPath));
-            ex.Message.ShouldBe($"Branch configuration 'bug' is missing required configuration 'regex'{System.Environment.NewLine}" +
+            ex.Message.ShouldBe($"Branch configuration 'bug' is missing required configuration 'regex'{Environment.NewLine}" +
                                 "See https://gitversion.net/docs/configuration/ for more info");
         }
 
@@ -111,7 +112,7 @@ branches:
         tag: bugfix";
             SetupConfigFileContent(text);
             var ex = Should.Throw<GitVersionConfigurationException>(() => configProvider.Provide(repoPath));
-            ex.Message.ShouldBe($"Branch configuration 'bug' is missing required configuration 'source-branches'{System.Environment.NewLine}" +
+            ex.Message.ShouldBe($"Branch configuration 'bug' is missing required configuration 'source-branches'{Environment.NewLine}" +
                                 "See https://gitversion.net/docs/configuration/ for more info");
         }
 

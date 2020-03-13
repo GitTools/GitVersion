@@ -2,9 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using GitVersion.Extensions;
 using GitVersion.Logging;
 using LibGit2Sharp;
-using GitVersion.Extensions;
 
 namespace GitVersion.Configuration
 {
@@ -157,14 +157,12 @@ namespace GitVersion.Configuration
                     {
                         return developOrMasterConfig;
                     }
-                    else
+
+                    log.Warning("Fallback branch wants to inherit Increment branch configuration from itself. Using patch increment instead.");
+                    return new BranchConfig(branchConfiguration)
                     {
-                        log.Warning("Fallback branch wants to inherit Increment branch configuration from itself. Using patch increment instead.");
-                        return new BranchConfig(branchConfiguration)
-                        {
-                            Increment = IncrementStrategy.Patch
-                        };
-                    }
+                        Increment = IncrementStrategy.Patch
+                    };
                 }
 
                 var inheritingBranchConfig = GetBranchConfiguration(chosenBranch, excludedInheritBranches);

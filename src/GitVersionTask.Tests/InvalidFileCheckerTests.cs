@@ -1,10 +1,10 @@
 using System;
 using System.IO;
-using Microsoft.Build.Framework;
-using NUnit.Framework;
 using GitVersion.Exceptions;
 using GitVersion.MSBuildTask.Tests.Mocks;
 using GitVersionCore.Tests.Helpers;
+using Microsoft.Build.Framework;
+using NUnit.Framework;
 
 namespace GitVersion.MSBuildTask.Tests
 {

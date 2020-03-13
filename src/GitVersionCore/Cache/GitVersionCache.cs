@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using GitVersion.Helpers;
+using GitVersion.Logging;
 using GitVersion.OutputVariables;
 using YamlDotNet.Serialization;
-using GitVersion.Logging;
 
 namespace GitVersion.Cache
 {

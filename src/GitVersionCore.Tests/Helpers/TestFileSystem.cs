@@ -11,9 +11,9 @@ namespace GitVersionCore.Tests.Helpers
     {
         private readonly Dictionary<string, byte[]> fileSystem = new Dictionary<string, byte[]>(StringComparerUtils.OsDependentComparer);
 
-        public void Copy(string @from, string to, bool overwrite)
+        public void Copy(string from, string to, bool overwrite)
         {
-            var fromPath = Path.GetFullPath(@from);
+            var fromPath = Path.GetFullPath(from);
             var toPath = Path.GetFullPath(to);
             if (fileSystem.ContainsKey(toPath))
             {
@@ -29,9 +29,9 @@ namespace GitVersionCore.Tests.Helpers
             fileSystem.Add(toPath, source);
         }
 
-        public void Move(string @from, string to)
+        public void Move(string from, string to)
         {
-            var fromPath = Path.GetFullPath(@from);
+            var fromPath = Path.GetFullPath(from);
             Copy(from, to, false);
             fileSystem.Remove(fromPath);
         }

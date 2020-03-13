@@ -14,7 +14,7 @@ namespace GitVersionExe.Tests
 
         public VersionWriterTests()
         {
-            this.versionWriter = new VersionWriter();
+            versionWriter = new VersionWriter();
         }
         [Test]
         public void WriteVersionShouldWriteFileVersionWithNoPrereleaseTag()

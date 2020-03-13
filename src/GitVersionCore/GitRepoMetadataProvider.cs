@@ -1,11 +1,11 @@
-using LibGit2Sharp;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using GitVersion.Configuration;
-using GitVersion.Logging;
 using GitVersion.Extensions;
+using GitVersion.Logging;
+using LibGit2Sharp;
 
 namespace GitVersion
 {

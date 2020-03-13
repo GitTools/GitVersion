@@ -3,8 +3,8 @@ using System.IO;
 using GitVersionCore.Tests.Helpers;
 using LibGit2Sharp;
 using Microsoft.Extensions.DependencyInjection;
-using NUnit.Framework;
 using Microsoft.Extensions.Options;
+using NUnit.Framework;
 
 namespace GitVersion.MSBuildTask.Tests
 {

@@ -3,6 +3,7 @@
 
 using System.IO;
 using System.Reflection;
+
 #if NET472
 using System;
 using System.Collections.Generic;

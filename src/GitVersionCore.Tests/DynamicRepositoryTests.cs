@@ -1,9 +1,9 @@
 using System.IO;
 using GitVersion;
-using NUnit.Framework;
 using GitVersionCore.Tests.Helpers;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
+using NUnit.Framework;
 
 namespace GitVersionCore.Tests
 {

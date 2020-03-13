@@ -2,8 +2,8 @@ using System;
 using System.IO;
 using System.Text;
 using System.Xml;
-using GitVersion.OutputVariables;
 using GitVersion.Logging;
+using GitVersion.OutputVariables;
 
 namespace GitVersion.Extensions
 {
@@ -20,7 +20,7 @@ namespace GitVersion.Extensions
             this.variables = variables;
             this.fileSystem = fileSystem ?? throw new ArgumentNullException(nameof(fileSystem));
             this.log = log ?? throw new ArgumentNullException(nameof(log));
-            this.WixVersionFile = Path.Combine(workingDirectory, WixVersionFileName);
+            WixVersionFile = Path.Combine(workingDirectory, WixVersionFileName);
         }
 
         public void Update()

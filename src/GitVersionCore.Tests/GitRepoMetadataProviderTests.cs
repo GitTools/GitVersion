@@ -2,13 +2,13 @@ using System;
 using GitTools.Testing;
 using GitVersion;
 using GitVersion.Configuration;
+using GitVersion.Extensions;
+using GitVersion.Logging;
+using GitVersionCore.Tests.Helpers;
 using GitVersionCore.Tests.IntegrationTests;
+using Microsoft.Extensions.DependencyInjection;
 using NUnit.Framework;
 using Shouldly;
-using GitVersion.Logging;
-using GitVersion.Extensions;
-using GitVersionCore.Tests.Helpers;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace GitVersionCore.Tests
 {

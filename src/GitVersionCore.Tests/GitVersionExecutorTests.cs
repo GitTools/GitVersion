@@ -3,15 +3,15 @@ using System.IO;
 using System.Text;
 using GitTools.Testing;
 using GitVersion;
-using NUnit.Framework;
-using Shouldly;
-using GitVersion.Configuration;
 using GitVersion.Cache;
-using LibGit2Sharp;
-using GitVersionCore.Tests.Helpers;
+using GitVersion.Configuration;
 using GitVersion.Logging;
+using GitVersionCore.Tests.Helpers;
+using LibGit2Sharp;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
+using NUnit.Framework;
+using Shouldly;
 using Environment = System.Environment;
 
 namespace GitVersionCore.Tests

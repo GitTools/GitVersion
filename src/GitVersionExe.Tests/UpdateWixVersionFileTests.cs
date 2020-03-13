@@ -1,11 +1,11 @@
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using NUnit.Framework;
-using GitTools.Testing;
-using System.Collections.Generic;
 using System.Xml;
-using GitVersion.OutputVariables;
+using GitTools.Testing;
 using GitVersion.Extensions;
+using GitVersion.OutputVariables;
+using NUnit.Framework;
 
 namespace GitVersionExe.Tests
 {

@@ -2,11 +2,11 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
-using GitVersion.VersioningModes;
 using GitVersion.Configuration;
 using GitVersion.Exceptions;
-using GitVersion.Logging;
 using GitVersion.Extensions;
+using GitVersion.Logging;
+using GitVersion.VersioningModes;
 
 namespace GitVersion.VersionCalculation
 {

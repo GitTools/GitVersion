@@ -1,10 +1,10 @@
+using System.Collections.Generic;
 using GitVersion;
 using GitVersion.BuildServers;
-using NUnit.Framework;
-using Shouldly;
-using System.Collections.Generic;
 using GitVersionCore.Tests.Helpers;
 using Microsoft.Extensions.DependencyInjection;
+using NUnit.Framework;
+using Shouldly;
 using Environment = System.Environment;
 
 namespace GitVersionCore.Tests.BuildServers

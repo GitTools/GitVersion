@@ -1,12 +1,12 @@
 using System.Collections.Generic;
 using GitTools.Testing;
 using GitVersion;
+using GitVersion.Configuration;
+using GitVersion.Extensions;
+using GitVersion.VersioningModes;
+using GitVersionCore.Tests.Helpers;
 using LibGit2Sharp;
 using NUnit.Framework;
-using GitVersion.Configuration;
-using GitVersion.VersioningModes;
-using GitVersion.Extensions;
-using GitVersionCore.Tests.Helpers;
 
 namespace GitVersionCore.Tests.IntegrationTests
 {
@@ -306,7 +306,7 @@ namespace GitVersionCore.Tests.IntegrationTests
                     Branches = new Dictionary<string, BranchConfig>
                     {
                         {
-                            "master", new BranchConfig()
+                            "master", new BranchConfig
                             {
                                 TracksReleaseBranches = true,
                                 Regex = "master"
@@ -337,7 +337,7 @@ namespace GitVersionCore.Tests.IntegrationTests
                     Branches = new Dictionary<string, BranchConfig>
                     {
                         {
-                            "master", new BranchConfig()
+                            "master", new BranchConfig
                             {
                                 TracksReleaseBranches = true,
                                 Regex = "master"
@@ -416,7 +416,7 @@ namespace GitVersionCore.Tests.IntegrationTests
                         Branches = new Dictionary<string, BranchConfig>
                         {
                             {
-                                "master", new BranchConfig()
+                                "master", new BranchConfig
                                 {
                                     TracksReleaseBranches = true,
                                     Regex = "master"
@@ -447,7 +447,7 @@ namespace GitVersionCore.Tests.IntegrationTests
                         Branches = new Dictionary<string, BranchConfig>
                         {
                             {
-                                "master", new BranchConfig()
+                                "master", new BranchConfig
                                 {
                                     TracksReleaseBranches = true,
                                     Regex = "master"
@@ -483,14 +483,14 @@ namespace GitVersionCore.Tests.IntegrationTests
                 Branches = new Dictionary<string, BranchConfig>
                 {
                     {
-                        "master", new BranchConfig()
+                        "master", new BranchConfig
                         {
                             Tag = "pre",
                             TracksReleaseBranches = true,
                         }
                     },
                     {
-                        "release", new BranchConfig()
+                        "release", new BranchConfig
                         {
                             IsReleaseBranch = true,
                             Tag = "rc",
@@ -521,7 +521,7 @@ namespace GitVersionCore.Tests.IntegrationTests
         [Test]
         public void ShouldHaveAGreaterSemVerAfterDevelopIsMergedIntoFeature()
         {
-            var config = new Config()
+            var config = new Config
             {
                 VersioningMode = VersioningMode.ContinuousDeployment,
                 AssemblyVersioningScheme = AssemblyVersioningScheme.Major,
@@ -533,13 +533,13 @@ namespace GitVersionCore.Tests.IntegrationTests
                 Branches = new Dictionary<string, BranchConfig>
                 {
                     {
-                        "develop", new BranchConfig()
+                        "develop", new BranchConfig
                         {
                             PreventIncrementOfMergedBranchVersion = true
                         }
                     },
                     {
-                        "feature", new BranchConfig()
+                        "feature", new BranchConfig
                         {
                             Tag = "feat-{BranchName}"
                         }

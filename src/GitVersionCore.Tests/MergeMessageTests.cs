@@ -1,10 +1,10 @@
-using GitVersion;
-using NUnit.Framework;
-using Shouldly;
 using System;
 using System.Collections.Generic;
+using GitVersion;
 using GitVersion.Configuration;
 using GitVersionCore.Tests.Helpers;
+using NUnit.Framework;
+using Shouldly;
 
 namespace GitVersionCore.Tests
 {
@@ -156,7 +156,7 @@ namespace GitVersionCore.Tests
 
 Merge in aaa/777 from release/2.2 to master
 
-* commit '750aa37753dec1a85b22cc16db851187649d9e97':", "release/2.2", "master", new SemanticVersion(2,2,0), 68  }
+* commit '750aa37753dec1a85b22cc16db851187649d9e97':", "release/2.2", "master", new SemanticVersion(2,2), 68  }
         };
 
         [TestCaseSource(nameof(BitBucketPullMergeMessagesv7))]
@@ -338,7 +338,7 @@ Merge in aaa/777 from release/2.2 to master
             sut.MergedBranch.ShouldBe(source);
             sut.IsMergedPullRequest.ShouldBeTrue();
             sut.PullRequestNumber.ShouldBe(pr);
-            sut.Version.ShouldBe(new SemanticVersion(2, 0));
+            sut.Version.ShouldBe(new SemanticVersion(2));
         }
 
         [Test]

@@ -1,6 +1,6 @@
 using System;
-using GitVersion.BuildServers;
 using GitVersion;
+using GitVersion.BuildServers;
 using GitVersionCore.Tests.Helpers;
 using Microsoft.Extensions.DependencyInjection;
 using NUnit.Framework;

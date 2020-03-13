@@ -2,15 +2,15 @@ using System;
 using GitTools.Testing;
 using GitVersion;
 using GitVersion.Configuration;
-using GitVersion.OutputVariables;
-using LibGit2Sharp;
-using Shouldly;
-using GitVersion.Logging;
-using Microsoft.Extensions.Options;
 using GitVersion.Extensions;
+using GitVersion.Logging;
+using GitVersion.OutputVariables;
 using GitVersion.VersionCalculation;
 using GitVersionCore.Tests.Helpers;
+using LibGit2Sharp;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
+using Shouldly;
 
 namespace GitVersionCore.Tests
 {

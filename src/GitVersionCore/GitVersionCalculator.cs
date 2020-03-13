@@ -1,11 +1,11 @@
 using System;
-using GitVersion.Configuration;
-using GitVersion.OutputVariables;
 using GitVersion.Cache;
+using GitVersion.Configuration;
 using GitVersion.Logging;
-using Microsoft.Extensions.Options;
+using GitVersion.OutputVariables;
 using GitVersion.VersionCalculation;
 using LibGit2Sharp;
+using Microsoft.Extensions.Options;
 
 namespace GitVersion
 {

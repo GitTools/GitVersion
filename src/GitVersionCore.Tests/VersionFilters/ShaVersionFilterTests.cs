@@ -3,9 +3,9 @@ using GitVersion;
 using GitVersion.VersionCalculation;
 using GitVersion.VersionFilters;
 using GitVersionCore.Tests.Helpers;
+using GitVersionCore.Tests.Mocks;
 using NUnit.Framework;
 using Shouldly;
-using GitVersionCore.Tests.Mocks;
 
 namespace GitVersionCore.Tests.VersionFilters
 {
