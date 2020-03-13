@@ -87,33 +87,34 @@ skip updating the `AssemblyFileVersion` while still updating the
 
 ### assembly-file-versioning-format
 
-Set this to any of the available [variables](./more-info/variables) in
-combination (but not necessary) with a process scoped environment variable. It
-overwrites the value of `assembly-file-versioning-scheme`. To reference an
-environment variable, use `env:` Example Syntax #1:
+Specifies the format of `AssemblyFileVersion` and
+overwrites the value of `assembly-file-versioning-scheme`.
 
-`'{Major}.{Minor}.{Patch}.{env:JENKINS_BUILD_NUMBER ?? fallback_string}'`.
+Expressions in curly braces reference one of the [variables](./more-info/variables)
+or a process-scoped environment variable (when prefixed with `env:`).  For example,
 
-Uses `JENKINS_BUILD_NUMBER` if available in the environment otherwise the
-`fallback_string` Example Syntax #2:
+```yaml
+# use a variable if non-null or a fallback value otherwise
+assembly-file-versioning-format: '{Major}.{Minor}.{Patch}.{WeightedPreReleaseNumber ?? 0}'
 
-`'{Major}.{Minor}.{Patch}.{env:JENKINS_BUILD_NUMBER}'`.
+# use an environment variable or raise an error if not available
+assembly-file-versioning-format: '{Major}.{Minor}.{Patch}.{env:BUILD_NUMBER}'
 
-Uses `JENKINS_BUILD_NUMBER` if available in the environment otherwise the
-parsing fails. String interpolation is supported as in
-`assembly-informational-format`
+# use an environment variable if available or a fallback value otherwise
+assembly-file-versioning-format: '{Major}.{Minor}.{Patch}.{env:BUILD_NUMBER ?? 42}'
+```
 
 ### assembly-versioning-format
 
-Follows the same semantics as `assembly-file-versioning-format` and overwrites
-the value of `assembly-versioning-scheme`.
+Specifies the format of `AssemblyVersion` and
+overwrites the value of `assembly-versioning-scheme`.
+Follows the same formatting semantics as `assembly-file-versioning-format`.
 
 ### assembly-informational-format
 
-Set this to any of the available [variables](./more-info/variables) to change the
-value of the `AssemblyInformationalVersion` attribute. Default set to
-`{InformationalVersion}`. It also supports string interpolation
-(`{MajorMinorPatch}+{BranchName}`)
+Specifies the format of `AssemblyInformationalVersion`.
+Follows the same formatting semantics as `assembly-file-versioning-format`.
+The default value is `{InformationalVersion}`.
 
 ### mode
 
