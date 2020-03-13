@@ -150,6 +150,34 @@ namespace GitVersionCore.Tests
             sut.Version.ShouldBe(expectedVersion);
         }
 
+        private static readonly object[] BitBucketPullMergeMessagesv7 =
+        {
+            new object[] { @"Pull request #68: Release/2.2
+
+Merge in aaa/777 from release/2.2 to master
+
+* commit '750aa37753dec1a85b22cc16db851187649d9e97':", "release/2.2", "master", new SemanticVersion(2,2,0), 68  }
+        };
+
+        [TestCaseSource(nameof(BitBucketPullMergeMessagesv7))]
+        public void ParsesBitBucketPullMergeMessagev7(
+            string message,
+            string expectedMergedBranch,
+            string expectedTargetBranch,
+            SemanticVersion expectedVersion,
+            int? expectedPullRequestNumber)
+        {
+            // Act
+            var sut = new MergeMessage(message, config);
+
+            // Assert
+            sut.FormatName.ShouldBe("BitBucketPullv7");
+            sut.TargetBranch.ShouldBe(expectedTargetBranch);
+            sut.MergedBranch.ShouldBe(expectedMergedBranch);
+            sut.IsMergedPullRequest.ShouldBeTrue();
+            sut.PullRequestNumber.ShouldBe(expectedPullRequestNumber);
+            sut.Version.ShouldBe(expectedVersion);
+        }
 
         private static readonly object[] SmartGitMergeMessages =
         {
