@@ -13,10 +13,14 @@ namespace GitVersionExe.Tests
     public class PullRequestInBuildAgentTest
     {
         private const string PullRequestBranchName = "PR-5";
+        private static readonly string[] PrMergeRefs =
+        {
+            "refs/pull-requests/5/merge",
+            "refs/pull/5/merge",
+            "refs/heads/pull/5/head"
+        };
 
-        [TestCase("refs/pull-requests/5/merge")]
-        [TestCase("refs/pull/5/merge")]
-        [TestCase("refs/heads/pull/5/head")]
+        [TestCaseSource(nameof(PrMergeRefs))]
         public void VerifyAzurePipelinesPullRequest(string pullRequestRef)
         {
             var env = new[]
@@ -27,9 +31,7 @@ namespace GitVersionExe.Tests
             VerifyPullRequestVersionIsCalculatedProperly(pullRequestRef, env);
         }
 
-        [TestCase("refs/pull-requests/5/merge")]
-        [TestCase("refs/pull/5/merge")]
-        [TestCase("refs/heads/pull/5/head")]
+        [TestCaseSource(nameof(PrMergeRefs))]
         public void VerifyCodeBuildPullRequest(string pullRequestRef)
         {
             var env = new[]
@@ -39,9 +41,7 @@ namespace GitVersionExe.Tests
             VerifyPullRequestVersionIsCalculatedProperly(pullRequestRef, env);
         }
 
-        [TestCase("refs/pull-requests/5/merge")]
-        [TestCase("refs/pull/5/merge")]
-        [TestCase("refs/heads/pull/5/head")]
+        [TestCaseSource(nameof(PrMergeRefs))]
         public void VerifyContinuaCIPullRequest(string pullRequestRef)
         {
             var env = new[]
@@ -52,9 +52,7 @@ namespace GitVersionExe.Tests
         }
 
 
-        [TestCase("refs/pull-requests/5/merge")]
-        [TestCase("refs/pull/5/merge")]
-        [TestCase("refs/heads/pull/5/head")]
+        [TestCaseSource(nameof(PrMergeRefs))]
         public void VerifyDronePullRequest(string pullRequestRef)
         {
             var env = new[]
@@ -65,9 +63,7 @@ namespace GitVersionExe.Tests
             VerifyPullRequestVersionIsCalculatedProperly(pullRequestRef, env);
         }
 
-        [TestCase("refs/pull-requests/5/merge")]
-        [TestCase("refs/pull/5/merge")]
-        [TestCase("refs/heads/pull/5/head")]
+        [TestCaseSource(nameof(PrMergeRefs))]
         public void VerifyGitHubActionsPullRequest(string pullRequestRef)
         {
             var env = new[]
@@ -78,9 +74,7 @@ namespace GitVersionExe.Tests
             VerifyPullRequestVersionIsCalculatedProperly(pullRequestRef, env);
         }
 
-        [TestCase("refs/pull-requests/5/merge")]
-        [TestCase("refs/pull/5/merge")]
-        [TestCase("refs/heads/pull/5/head")]
+        [TestCaseSource(nameof(PrMergeRefs))]
         public void VerifyGitLabCIPullRequest(string pullRequestRef)
         {
             var env = new[]
@@ -91,9 +85,7 @@ namespace GitVersionExe.Tests
             VerifyPullRequestVersionIsCalculatedProperly(pullRequestRef, env);
         }
 
-        [TestCase("refs/pull-requests/5/merge")]
-        [TestCase("refs/pull/5/merge")]
-        [TestCase("refs/heads/pull/5/head")]
+        [TestCaseSource(nameof(PrMergeRefs))]
         public void VerifyJenkinsPullRequest(string pullRequestRef)
         {
             var env = new[]
@@ -105,9 +97,7 @@ namespace GitVersionExe.Tests
             VerifyPullRequestVersionIsCalculatedProperly(pullRequestRef, env);
         }
 
-        [TestCase("refs/pull-requests/5/merge")]
-        [TestCase("refs/pull/5/merge")]
-        [TestCase("refs/heads/pull/5/head")]
+        [TestCaseSource(nameof(PrMergeRefs))]
         public void VerifyMyGetPullRequest(string pullRequestRef)
         {
             var env = new[]
@@ -118,9 +108,7 @@ namespace GitVersionExe.Tests
             VerifyPullRequestVersionIsCalculatedProperly(pullRequestRef, env);
         }
 
-        [TestCase("refs/pull-requests/5/merge")]
-        [TestCase("refs/pull/5/merge")]
-        [TestCase("refs/heads/pull/5/head")]
+        [TestCaseSource(nameof(PrMergeRefs))]
         public void VerifyTeamCityPullRequest(string pullRequestRef)
         {
             var env = new[]
@@ -130,9 +118,7 @@ namespace GitVersionExe.Tests
             VerifyPullRequestVersionIsCalculatedProperly(pullRequestRef, env);
         }
 
-        [TestCase("refs/pull-requests/5/merge")]
-        [TestCase("refs/pull/5/merge")]
-        [TestCase("refs/heads/pull/5/head")]
+        [TestCaseSource(nameof(PrMergeRefs))]
         public void VerifyTravisCIPullRequest(string pullRequestRef)
         {
             var env = new[]
