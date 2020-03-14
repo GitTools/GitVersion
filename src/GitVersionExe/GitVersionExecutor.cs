@@ -17,7 +17,6 @@ namespace GitVersion
         private readonly IExecCommand execCommand;
         private readonly IConfigProvider configProvider;
         private readonly IBuildServerResolver buildServerResolver;
-        private readonly IGitPreparer gitPreparer;
         private readonly IVersionWriter versionWriter;
 
         public GitVersionExecutor(ILog log, IConfigFileLocator configFileLocator, IVersionWriter versionWriter, IHelpWriter helpWriter,
@@ -30,7 +29,6 @@ namespace GitVersion
             this.execCommand = execCommand ?? throw new ArgumentNullException(nameof(execCommand));
             this.configProvider = configProvider ?? throw new ArgumentNullException(nameof(configFileLocator));
             this.buildServerResolver = buildServerResolver ?? throw new ArgumentNullException(nameof(buildServerResolver));
-            this.gitPreparer = gitPreparer;
         }
 
         public int Execute(Arguments arguments)
@@ -143,7 +141,7 @@ namespace GitVersion
                 log.Info("Working directory: " + targetPath);
             }
 
-            configFileLocator.Verify(gitPreparer);
+            configFileLocator.Verify(arguments);
 
             if (arguments.Init)
             {

@@ -5,8 +5,10 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using GitVersion.Configuration;
+using GitVersion.Extensions;
 using GitVersion.Logging;
 using LibGit2Sharp;
+using Microsoft.Extensions.Options;
 
 namespace GitVersion.Cache
 {
@@ -19,15 +21,15 @@ namespace GitVersion.Cache
     {
         private readonly IFileSystem fileSystem;
         private readonly ILog log;
-        private readonly IGitPreparer gitPreparer;
+        private readonly IOptions<Arguments> options;
         private readonly IConfigFileLocator configFileLocator;
 
-        public GitVersionCacheKeyFactory(IFileSystem fileSystem, ILog log, IGitPreparer gitPreparer, IConfigFileLocator configFileLocator)
+        public GitVersionCacheKeyFactory(IFileSystem fileSystem, ILog log, IOptions<Arguments> options, IConfigFileLocator configFileLocator)
         {
-            this.fileSystem = fileSystem;
-            this.log = log;
-            this.gitPreparer = gitPreparer;
-            this.configFileLocator = configFileLocator;
+            this.fileSystem = fileSystem ?? throw new ArgumentNullException(nameof(fileSystem));
+            this.log = log ?? throw new ArgumentNullException(nameof(log));
+            this.options = options ?? throw new ArgumentNullException(nameof(options));
+            this.configFileLocator = configFileLocator ?? throw new ArgumentNullException(nameof(configFileLocator));
         }
 
         public GitVersionCacheKey Create(Config overrideConfig)
@@ -43,7 +45,7 @@ namespace GitVersion.Cache
 
         private string GetGitSystemHash()
         {
-            var dotGitDirectory = gitPreparer.GetDotGitDirectory();
+            var dotGitDirectory = options.Value.GetDotGitDirectory();
 
             // traverse the directory and get a list of files, use that for GetHash
             var contents = CalculateDirectoryContents(Path.Combine(dotGitDirectory, "refs"));
@@ -80,13 +82,13 @@ namespace GitVersion.Cache
                     subDirs = Directory.GetDirectories(currentDir);
                 }
                 // An UnauthorizedAccessException exception will be thrown if we do not have
-                // discovery permission on a folder or file. It may or may not be acceptable 
-                // to ignore the exception and continue enumerating the remaining files and 
-                // folders. It is also possible (but unlikely) that a DirectoryNotFound exception 
+                // discovery permission on a folder or file. It may or may not be acceptable
+                // to ignore the exception and continue enumerating the remaining files and
+                // folders. It is also possible (but unlikely) that a DirectoryNotFound exception
                 // will be raised. This will happen if currentDir has been deleted by
-                // another application or thread after our call to Directory.Exists. The 
-                // choice of which exceptions to catch depends entirely on the specific task 
-                // you are intending to perform and also on how much you know with certainty 
+                // another application or thread after our call to Directory.Exists. The
+                // choice of which exceptions to catch depends entirely on the specific task
+                // you are intending to perform and also on how much you know with certainty
                 // about the systems on which this code will run.
                 catch (UnauthorizedAccessException e)
                 {
@@ -143,7 +145,7 @@ namespace GitVersion.Cache
 
         private string GetRepositorySnapshotHash()
         {
-            using var repo = new Repository(gitPreparer.GetDotGitDirectory());
+            using var repo = new Repository(options.Value.GetDotGitDirectory());
 
             var head = repo.Head;
             if (head.Tip == null)
@@ -161,7 +163,7 @@ namespace GitVersion.Cache
                 return string.Empty;
             }
 
-            // Doesn't depend on command line representation and 
+            // Doesn't depend on command line representation and
             // includes possible changes in default values of Config per se.
             var stringBuilder = new StringBuilder();
             using (var stream = new StringWriter(stringBuilder))
@@ -176,9 +178,9 @@ namespace GitVersion.Cache
 
         private string GetConfigFileHash()
         {
-            // will return the same hash even when config file will be moved 
+            // will return the same hash even when config file will be moved
             // from workingDirectory to rootProjectDirectory. It's OK. Config essentially is the same.
-            var configFilePath = configFileLocator.SelectConfigFilePath(gitPreparer);
+            var configFilePath = configFileLocator.SelectConfigFilePath(options.Value);
             if (!fileSystem.Exists(configFilePath))
             {
                 return string.Empty;

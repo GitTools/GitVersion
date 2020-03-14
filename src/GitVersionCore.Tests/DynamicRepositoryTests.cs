@@ -63,7 +63,7 @@ namespace GitVersionCore.Tests
             var arguments = new Arguments
             {
                 TargetUrl = url,
-                DynamicRepositoryLocation = dynamicDirectory,
+                DynamicRepositoryClonePath = dynamicDirectory,
                 TargetBranch = targetBranch,
                 NoFetch = false,
                 TargetPath = workingDirectory,

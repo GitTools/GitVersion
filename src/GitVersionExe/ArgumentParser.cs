@@ -105,7 +105,7 @@ namespace GitVersion
                 if (name.IsSwitch("dynamicRepoLocation"))
                 {
                     EnsureArgumentValueCount(values);
-                    arguments.DynamicRepositoryLocation = value;
+                    arguments.DynamicRepositoryClonePath = value;
                     continue;
                 }
 

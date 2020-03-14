@@ -20,7 +20,7 @@ namespace GitVersionCore.Tests
 
         static GitToolsTestingExtensions() => sp = ConfigureService();
 
-        public static VersionVariables GetVersion(this RepositoryFixtureBase fixture, Config configuration = null, IRepository repository = null, string commitId = null, bool onlyTrackedBranches = true, string targetBranch = null)
+        public static VersionVariables GetVersion(this RepositoryFixtureBase fixture, Config configuration = null, IRepository repository = null, string commitId = null, bool onlyTrackedBranches = true, string branch = null)
         {
             if (configuration == null)
             {
@@ -32,12 +32,14 @@ namespace GitVersionCore.Tests
             var variableProvider = sp.GetService<IVariableProvider>();
             var nextVersionCalculator = sp.GetService<INextVersionCalculator>();
 
-            var gitVersionContext = new GitVersionContext(repository ?? fixture.Repository, log, targetBranch, configuration, onlyTrackedBranches, commitId);
-            var executeGitVersion = nextVersionCalculator.FindVersion(gitVersionContext);
-            var variables = variableProvider.GetVariablesFor(executeGitVersion, gitVersionContext.Configuration, gitVersionContext.IsCurrentCommitTagged);
-
+            repository ??= fixture.Repository;
+            var targetBranch = repository.GetTargetBranch(branch);
+            var gitVersionContext = new GitVersionContext(repository, log, targetBranch, configuration, onlyTrackedBranches, commitId);
             try
             {
+                var executeGitVersion = nextVersionCalculator.FindVersion(gitVersionContext);
+                var variables = variableProvider.GetVariablesFor(executeGitVersion, gitVersionContext.Configuration, gitVersionContext.IsCurrentCommitTagged);
+
                 return variables;
             }
             catch (Exception)
@@ -92,7 +94,7 @@ namespace GitVersionCore.Tests
             });
 
             var gitPreparer = serviceProvider.GetService<IGitPreparer>() as GitPreparer;
-            gitPreparer?.Prepare(true, null);
+            gitPreparer?.PrepareInternal(true, null);
         }
 
         private static IServiceProvider ConfigureService(Action<IServiceCollection> servicesOverrides = null)

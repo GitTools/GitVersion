@@ -21,24 +21,31 @@ namespace GitVersionExe.Tests
         {
             var lookup = new Dictionary<string, string>
             {
-                { "TargetUrl", "/url" },
-                { "Init", "init" },
-                { "TargetBranch", "/b" },
-                { "LogFilePath" , "/l" },
-                { "DynamicRepositoryLocation" , "/dynamicRepoLocation" },
-                { "IsHelp", "/?" },
-                { "IsVersion", "/version" },
-                { "UpdateWixVersionFile", "/updatewixversionfile" },
-                { "ConfigFile", "/config" },
+                { nameof(Arguments.TargetUrl), "/url" },
+                { nameof(Arguments.Init), "init" },
+                { nameof(Arguments.TargetBranch), "/b" },
+                { nameof(Arguments.LogFilePath) , "/l" },
+                { nameof(Arguments.DynamicRepositoryClonePath), "/dynamicRepoLocation" },
+                { nameof(Arguments.IsHelp), "/?" },
+                { nameof(Arguments.IsVersion), "/version" },
+                { nameof(Arguments.UpdateWixVersionFile), "/updatewixversionfile" },
+                { nameof(Arguments.ConfigFile), "/config" },
             };
             string helpText = null;
 
             helpWriter.WriteTo(s => helpText = s);
 
+            var ignored = new[]
+            {
+                nameof(Arguments.Authentication),
+                nameof(Arguments.CommitId),
+                nameof(Arguments.DynamicGitRepositoryPath),
+                nameof(Arguments.HasOverrideConfig)
+            };
             typeof(Arguments).GetFields()
                 .Select(p => p.Name)
                 .Where(p => IsNotInHelp(lookup, p, helpText))
-                .Except(new[] { "Authentication", "CommitId", "HasOverrideConfig" })
+                .Except(ignored)
                 .ShouldBeEmpty();
         }
 

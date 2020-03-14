@@ -1,6 +1,7 @@
 using System;
 using GitVersion.Cache;
 using GitVersion.Configuration;
+using GitVersion.Extensions;
 using GitVersion.Logging;
 using GitVersion.OutputVariables;
 using GitVersion.VersionCalculation;
@@ -15,7 +16,6 @@ namespace GitVersion
         private readonly IConfigProvider configProvider;
         private readonly IGitVersionCache gitVersionCache;
         private readonly INextVersionCalculator nextVersionCalculator;
-        private readonly IGitPreparer gitPreparer;
         private readonly IVariableProvider variableProvider;
         private readonly IOptions<Arguments> options;
         private readonly IGitVersionCacheKeyFactory cacheKeyFactory;
@@ -28,7 +28,6 @@ namespace GitVersion
             this.configProvider = configProvider ?? throw new ArgumentNullException(nameof(configProvider));
             this.gitVersionCache = gitVersionCache ?? throw new ArgumentNullException(nameof(gitVersionCache));
             this.nextVersionCalculator = nextVersionCalculator ?? throw new ArgumentNullException(nameof(nextVersionCalculator));
-            this.gitPreparer = gitPreparer ?? throw new ArgumentNullException(nameof(gitPreparer));
             this.variableProvider = variableProvider ?? throw new ArgumentNullException(nameof(variableProvider));
             this.options = options ?? throw new ArgumentNullException(nameof(options));
             this.cacheKeyFactory = cacheKeyFactory ?? throw new ArgumentNullException(nameof(cacheKeyFactory));
@@ -36,43 +35,35 @@ namespace GitVersion
 
         public VersionVariables CalculateVersionVariables()
         {
-            //gitPreparer.Prepare();
             var arguments = options.Value;
 
-            return GetCachedGitVersionInfo(arguments.TargetBranch, arguments.CommitId, arguments.OverrideConfig, arguments.NoCache);
-        }
+            var cacheKey = cacheKeyFactory.Create(arguments.OverrideConfig);
+            var versionVariables = arguments.NoCache ? default : gitVersionCache.LoadVersionVariablesFromDiskCache(cacheKey);
 
-        private VersionVariables GetCachedGitVersionInfo(string targetBranch, string commitId, Config overrideConfig, bool noCache)
-        {
-            var cacheKey = cacheKeyFactory.Create(overrideConfig);
-            var versionVariables = noCache ? default : gitVersionCache.LoadVersionVariablesFromDiskCache(cacheKey);
-            if (versionVariables == null)
+            if (versionVariables != null) return versionVariables;
+
+            versionVariables = ExecuteInternal(arguments);
+
+            if (arguments.NoCache) return versionVariables;
+            try
             {
-                versionVariables = ExecuteInternal(targetBranch, commitId, overrideConfig);
-
-                if (!noCache)
-                {
-                    try
-                    {
-                        gitVersionCache.WriteVariablesToDiskCache(cacheKey, versionVariables);
-                    }
-                    catch (AggregateException e)
-                    {
-                        log.Warning($"One or more exceptions during cache write:{System.Environment.NewLine}{e}");
-                    }
-                }
+                gitVersionCache.WriteVariablesToDiskCache(cacheKey, versionVariables);
+            }
+            catch (AggregateException e)
+            {
+                log.Warning($"One or more exceptions during cache write:{System.Environment.NewLine}{e}");
             }
 
             return versionVariables;
         }
 
-        private VersionVariables ExecuteInternal(string targetBranch, string commitId, Config overrideConfig)
+        private VersionVariables ExecuteInternal(Arguments arguments)
         {
-            var configuration = configProvider.Provide(overrideConfig: overrideConfig);
+            var configuration = configProvider.Provide(overrideConfig: arguments.OverrideConfig);
 
-            using var repo = new Repository(gitPreparer.GetDotGitDirectory());
-
-            var gitVersionContext = new GitVersionContext(repo, log, targetBranch, configuration, commitId: commitId);
+            using var repo = new Repository(arguments.GetDotGitDirectory());
+            var targetBranch = repo.GetTargetBranch(arguments.TargetBranch);
+            var gitVersionContext = new GitVersionContext(repo, log, targetBranch, configuration, commitId: arguments.CommitId);
             var semanticVersion = nextVersionCalculator.FindVersion(gitVersionContext);
 
             return variableProvider.GetVariablesFor(semanticVersion, gitVersionContext.Configuration, gitVersionContext.IsCurrentCommitTagged);

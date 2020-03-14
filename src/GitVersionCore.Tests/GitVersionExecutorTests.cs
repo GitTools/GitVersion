@@ -5,6 +5,7 @@ using GitTools.Testing;
 using GitVersion;
 using GitVersion.Cache;
 using GitVersion.Configuration;
+using GitVersion.Extensions;
 using GitVersion.Logging;
 using GitVersionCore.Tests.Helpers;
 using LibGit2Sharp;
@@ -43,10 +44,10 @@ namespace GitVersionCore.Tests
 
             var preparer = sp.GetService<IGitPreparer>() as GitPreparer;
 
-            preparer?.Prepare(true, targetBranch);
+            preparer?.PrepareInternal(true, targetBranch);
             var cacheKeyFactory = sp.GetService<IGitVersionCacheKeyFactory>();
             var cacheKey1 = cacheKeyFactory.Create(null);
-            preparer?.Prepare(true, targetBranch);
+            preparer?.PrepareInternal(true, targetBranch);
             var cacheKey2 = cacheKeyFactory.Create(null);
 
             cacheKey2.Value.ShouldBe(cacheKey1.Value);
@@ -402,9 +403,7 @@ namespace GitVersionCore.Tests
 
                 sp = GetServiceProvider(arguments);
 
-                var preparer = sp.GetService<IGitPreparer>();
-
-                preparer.GetProjectRootDirectory().TrimEnd('/', '\\').ShouldBe(worktreePath);
+                arguments.GetProjectRootDirectory().TrimEnd('/', '\\').ShouldBe(worktreePath);
             }
             finally
             {
@@ -426,9 +425,8 @@ namespace GitVersionCore.Tests
 
             sp = GetServiceProvider(arguments);
 
-            var preparer = sp.GetService<IGitPreparer>();
             var expectedPath = fixture.RepositoryPath.TrimEnd('/', '\\');
-            preparer.GetProjectRootDirectory().TrimEnd('/', '\\').ShouldBe(expectedPath);
+            arguments.GetProjectRootDirectory().TrimEnd('/', '\\').ShouldBe(expectedPath);
         }
 
         [Test]
@@ -461,9 +459,8 @@ namespace GitVersionCore.Tests
 
             sp = GetServiceProvider(arguments);
 
-            var preparer = sp.GetService<IGitPreparer>();
             var expectedPath = Path.Combine(fixture.RepositoryPath, ".git");
-            preparer.GetDotGitDirectory().ShouldBe(expectedPath);
+            arguments.GetDotGitDirectory().ShouldBe(expectedPath);
         }
 
         [Test]
@@ -491,9 +488,8 @@ namespace GitVersionCore.Tests
 
                 sp = GetServiceProvider(arguments);
 
-                var preparer = sp.GetService<IGitPreparer>();
                 var expectedPath = Path.Combine(fixture.RepositoryPath, ".git");
-                preparer.GetDotGitDirectory().ShouldBe(expectedPath);
+                arguments.GetDotGitDirectory().ShouldBe(expectedPath);
             }
             finally
             {
