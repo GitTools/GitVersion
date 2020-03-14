@@ -1,3 +1,4 @@
+using System;
 using GitVersion;
 using GitVersion.Helpers;
 using GitVersionCore.Tests.Helpers;
@@ -6,7 +7,6 @@ using NUnit.Framework;
 namespace GitVersionCore.Tests
 {
     [TestFixture]
-
     public class StringFormatWithExtensionTests
     {
         private IEnvironment environment;
@@ -70,7 +70,7 @@ namespace GitVersionCore.Tests
         }
 
         [Test]
-        public void FormatWithUnsetEnvVarTokenWithFallback()
+        public void FormatWithUnsetEnvVarToken_WithFallback()
         {
             environment.SetEnvironmentVariable("GIT_VERSION_UNSET_TEST_VAR", null);
             var propertyObject = new { };
@@ -78,6 +78,15 @@ namespace GitVersionCore.Tests
             var expected = "fallback";
             var actual = target.FormatWith(propertyObject, environment);
             Assert.AreEqual(expected, actual);
+        }
+
+        [Test]
+        public void FormatWithUnsetEnvVarToken_WithoutFallback()
+        {
+            environment.SetEnvironmentVariable("GIT_VERSION_UNSET_TEST_VAR", null);
+            var propertyObject = new { };
+            var target = "{env:GIT_VERSION_UNSET_TEST_VAR}";
+            Assert.Throws<ArgumentException>(() => target.FormatWith(propertyObject, environment));
         }
 
         [Test]
@@ -132,6 +141,115 @@ namespace GitVersionCore.Tests
             var expected = "Some Value and fallback";
             var actual = target.FormatWith(propertyObject, environment);
             Assert.AreEqual(expected, actual);
+        }
+
+        [Test]
+        public void FormatEnvVar_WithFallback_QuotedAndEmpty()
+        {
+            environment.SetEnvironmentVariable("ENV_VAR", null);
+            var propertyObject = new { };
+            var target = "{env:ENV_VAR ?? \"\"}";
+            var actual = target.FormatWith(propertyObject, environment);
+            Assert.That(actual, Is.EqualTo(""));
+        }
+
+        [Test]
+        public void FormatProperty_String()
+        {
+            var propertyObject = new { Property = "Value" };
+            var target = "{Property}";
+            var actual = target.FormatWith(propertyObject, environment);
+            Assert.That(actual, Is.EqualTo("Value"));
+        }
+
+        [Test]
+        public void FormatProperty_Integer()
+        {
+            var propertyObject = new { Property = 42 };
+            var target = "{Property}";
+            var actual = target.FormatWith(propertyObject, environment);
+            Assert.That(actual, Is.EqualTo("42"));
+        }
+
+        [Test]
+        public void FormatProperty_NullObject()
+        {
+            var propertyObject = new { Property = (object)null };
+            var target = "{Property}";
+            var actual = target.FormatWith(propertyObject, environment);
+            Assert.That(actual, Is.EqualTo(""));
+        }
+
+        [Test]
+        public void FormatProperty_NullInteger()
+        {
+            var propertyObject = new { Property = (int?)null };
+            var target = "{Property}";
+            var actual = target.FormatWith(propertyObject, environment);
+            Assert.That(actual, Is.EqualTo(""));
+        }
+
+        [Test]
+        public void FormatProperty_String_WithFallback()
+        {
+            var propertyObject = new { Property = "Value" };
+            var target = "{Property ?? fallback}";
+            var actual = target.FormatWith(propertyObject, environment);
+            Assert.That(actual, Is.EqualTo("Value"));
+        }
+
+        [Test]
+        public void FormatProperty_Integer_WithFallback()
+        {
+            var propertyObject = new { Property = 42 };
+            var target = "{Property ?? fallback}";
+            var actual = target.FormatWith(propertyObject, environment);
+            Assert.That(actual, Is.EqualTo("42"));
+        }
+
+        [Test]
+        public void FormatProperty_NullObject_WithFallback()
+        {
+            var propertyObject = new { Property = (object)null };
+            var target = "{Property ?? fallback}";
+            var actual = target.FormatWith(propertyObject, environment);
+            Assert.That(actual, Is.EqualTo("fallback"));
+        }
+
+        [Test]
+        public void FormatProperty_NullInteger_WithFallback()
+        {
+            var propertyObject = new { Property = (int?)null };
+            var target = "{Property ?? fallback}";
+            var actual = target.FormatWith(propertyObject, environment);
+            Assert.That(actual, Is.EqualTo("fallback"));
+        }
+
+        [Test]
+        public void FormatProperty_NullObject_WithFallback_Quoted()
+        {
+            var propertyObject = new { Property = (object)null };
+            var target = "{Property ?? \"fallback\"}";
+            var actual = target.FormatWith(propertyObject, environment);
+            Assert.That(actual, Is.EqualTo("fallback"));
+        }
+
+        [Test]
+        public void FormatProperty_NullObject_WithFallback_QuotedAndPadded()
+        {
+            var propertyObject = new { Property = (object)null };
+            var target = "{Property ?? \" fallback \"}";
+            var actual = target.FormatWith(propertyObject, environment);
+            Assert.That(actual, Is.EqualTo(" fallback "));
+        }
+
+        [Test]
+        public void FormatProperty_NullObject_WithFallback_QuotedAndEmpty()
+        {
+            var propertyObject = new { Property = (object)null };
+            var target = "{Property ?? \"\"}";
+            var actual = target.FormatWith(propertyObject, environment);
+            Assert.That(actual, Is.EqualTo(""));
         }
     }
 }
