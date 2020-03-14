@@ -20,8 +20,8 @@ namespace GitVersion
         private readonly IOptions<Arguments> options;
         private readonly IGitVersionCacheKeyFactory cacheKeyFactory;
 
-        public GitVersionCalculator(ILog log, IConfigProvider configProvider, IBuildServerResolver buildServerResolver,
-            IGitVersionCache gitVersionCache, INextVersionCalculator nextVersionCalculator, IGitPreparer gitPreparer, IVariableProvider variableProvider,
+        public GitVersionCalculator(ILog log, IConfigProvider configProvider,
+            IGitVersionCache gitVersionCache, INextVersionCalculator nextVersionCalculator, IVariableProvider variableProvider,
             IOptions<Arguments> options, IGitVersionCacheKeyFactory cacheKeyFactory)
         {
             this.log = log ?? throw new ArgumentNullException(nameof(log));
