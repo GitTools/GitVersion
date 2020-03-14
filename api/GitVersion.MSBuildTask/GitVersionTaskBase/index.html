@@ -75,7 +75,9 @@
                 <section class="infobar" data-spy="affix" data-offset-top="60" data-offset-bottom="200"> 
                     	
 	<div id="infobar-headings"><h6>On This Page</h6><p><a href="#Syntax">Syntax</a></p>
+<p><a href="#Constructors">Constructors</a></p>
 <p><a href="#Properties">Properties</a></p>
+<p><a href="#Methods">Methods</a></p>
 <p><a href="#ExtensionMethods">Extension Methods</a></p>
 <hr class="infobar-hidden">
 </div>
@@ -180,17 +182,17 @@
 								<dt>Base Types</dt>
 								<dd>
 									<ul class="list-unstyled">										
-											<li>Task</li>								
+											<li>ITask</li>								
 									</ul>
 								</dd>				
 							
 								<dt>Derived Types</dt>
 								<dd>
 									<ul class="list-unstyled">
-											<li><a href="/api/GitVersion.MSBuildTask.Tasks/WriteVersionInfoToBuildLog">Write<wbr>Version<wbr>Info<wbr>To<wbr>Build<wbr>Log</a></li>								
-											<li><a href="/api/GitVersion.MSBuildTask.Tasks/GenerateGitVersionInformation">Generate<wbr>Git<wbr>Version<wbr>Information</a></li>								
-											<li><a href="/api/GitVersion.MSBuildTask.Tasks/GetVersion">GetVersion</a></li>								
 											<li><a href="/api/GitVersion.MSBuildTask.Tasks/UpdateAssemblyInfo">UpdateAssemblyInfo</a></li>								
+											<li><a href="/api/GitVersion.MSBuildTask.Tasks/GetVersion">GetVersion</a></li>								
+											<li><a href="/api/GitVersion.MSBuildTask.Tasks/GenerateGitVersionInformation">Generate<wbr>Git<wbr>Version<wbr>Information</a></li>								
+											<li><a href="/api/GitVersion.MSBuildTask.Tasks/WriteVersionInfoToBuildLog">Write<wbr>Version<wbr>Info<wbr>To<wbr>Build<wbr>Log</a></li>								
 									</ul>
 								</dd>			
 							
@@ -199,17 +201,17 @@
 					<div class="col-md-6">
 						<div class="mermaid">
 							graph BT
-	Type--&gt;Base0["Task"]
+	Type--&gt;Base0["ITask"]
 	Type["GitVersionTaskBase"]
 class Type type-node
-	Derived0["WriteVersionInfoToBuildLog"]--&gt;Type
-	click Derived0 "/api/GitVersion.MSBuildTask.Tasks/WriteVersionInfoToBuildLog"
-	Derived1["GenerateGitVersionInformation"]--&gt;Type
-	click Derived1 "/api/GitVersion.MSBuildTask.Tasks/GenerateGitVersionInformation"
-	Derived2["GetVersion"]--&gt;Type
-	click Derived2 "/api/GitVersion.MSBuildTask.Tasks/GetVersion"
-	Derived3["UpdateAssemblyInfo"]--&gt;Type
-	click Derived3 "/api/GitVersion.MSBuildTask.Tasks/UpdateAssemblyInfo"
+	Derived0["UpdateAssemblyInfo"]--&gt;Type
+	click Derived0 "/api/GitVersion.MSBuildTask.Tasks/UpdateAssemblyInfo"
+	Derived1["GetVersion"]--&gt;Type
+	click Derived1 "/api/GitVersion.MSBuildTask.Tasks/GetVersion"
+	Derived2["GenerateGitVersionInformation"]--&gt;Type
+	click Derived2 "/api/GitVersion.MSBuildTask.Tasks/GenerateGitVersionInformation"
+	Derived3["WriteVersionInfoToBuildLog"]--&gt;Type
+	click Derived3 "/api/GitVersion.MSBuildTask.Tasks/WriteVersionInfoToBuildLog"
 
 						</div>
 					</div>
@@ -218,7 +220,7 @@ class Type type-node
 		</div>
 
 	<h1 id="Syntax">Syntax</h1>
-	<pre><code>public abstract class GitVersionTaskBase : Task</code></pre>
+	<pre><code>public abstract class GitVersionTaskBase : ITask</code></pre>
 
 
 
@@ -226,6 +228,24 @@ class Type type-node
 
 
 
+			<h1 id="Constructors">Constructors</h1>
+			<div class="box">
+				<div class="box-body no-padding table-responsive">
+					<table class="table table-striped table-hover two-cols">
+						<thead>
+							<tr>
+								<th>Name</th>
+									<th>Summary</th>
+							</tr>
+						</thead>
+							<tbody><tr>
+								<td><a href="/api/GitVersion.MSBuildTask/GitVersionTaskBase/59437423">GitVersionTaskBase<wbr>()<wbr></a></td>
+									<td></td>
+							</tr>
+					</tbody></table>
+				</div>
+			</div>
+		
 
 
 
@@ -241,8 +261,29 @@ class Type type-node
 							</tr>
 						</thead>
 							<tbody><tr>
+								<td><a href="/api/GitVersion.MSBuildTask/GitVersionTaskBase/5BC2AD45">BuildEngine</a></td>
+								<td>IBuildEngine</td>
+								<td>
+									<div></div>
+								</td>
+							</tr>
+							<tr>
 								<td><a href="/api/GitVersion.MSBuildTask/GitVersionTaskBase/8B9DF1C9">ConfigFilePath</a></td>
 								<td>string</td>
+								<td>
+									<div></div>
+								</td>
+							</tr>
+							<tr>
+								<td><a href="/api/GitVersion.MSBuildTask/GitVersionTaskBase/2AAD937F">HostObject</a></td>
+								<td>ITaskHost</td>
+								<td>
+									<div></div>
+								</td>
+							</tr>
+							<tr>
+								<td><a href="/api/GitVersion.MSBuildTask/GitVersionTaskBase/AAFDEE86">Log</a></td>
+								<td><a href="/api/GitVersionTask.MsBuild/TaskLoggingHelper">TaskLoggingHelper</a></td>
 								<td>
 									<div></div>
 								</td>
@@ -273,6 +314,35 @@ class Type type-node
 			</div>
 		
 
+			<h1 id="Methods">Methods</h1>
+			<div class="box">
+				<div class="box-body no-padding table-responsive">
+					<table class="table table-striped table-hover three-cols">
+						<thead>
+							<tr>
+								<th>Name</th>
+								<th>Value</th>
+								<th>Summary</th>
+							</tr>
+						</thead>
+							<tbody><tr>
+								<td><a href="/api/GitVersion.MSBuildTask/GitVersionTaskBase/11729020">Execute<wbr>()<wbr></a></td>
+								<td>bool</td>
+								<td>
+									<div></div>
+								</td>
+							</tr>
+							<tr>
+								<td><a href="/api/GitVersion.MSBuildTask/GitVersionTaskBase/680ADEE2">OnExecute<wbr>()<wbr></a></td>
+								<td>bool</td>
+								<td>
+									<div></div>
+								</td>
+							</tr>
+					</tbody></table>
+				</div>
+			</div>
+		
 
 
 			<h1 id="ExtensionMethods">Extension Methods</h1>

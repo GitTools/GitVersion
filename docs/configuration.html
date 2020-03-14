@@ -257,25 +257,27 @@ skip updating the <code>AssemblyFileVersion</code> while still updating the
 <code>AssemblyVersion</code> and <code>AssemblyInformationVersion</code> attributes. Valid values:
 <code>MajorMinorPatchTag</code>, <code>MajorMinorPatch</code>, <code>MajorMinor</code>, <code>Major</code>, <code>None</code>.</p>
 <h3 id="assembly-file-versioning-format">assembly-file-versioning-format</h3>
-<p>Set this to any of the available <a href="./more-info/variables">variables</a> in
-combination (but not necessary) with a process scoped environment variable. It
-overwrites the value of <code>assembly-file-versioning-scheme</code>. To reference an
-environment variable, use <code>env:</code> Example Syntax #1:</p>
-<p><code>'{Major}.{Minor}.{Patch}.{env:JENKINS_BUILD_NUMBER ?? fallback_string}'</code>.</p>
-<p>Uses <code>JENKINS_BUILD_NUMBER</code> if available in the environment otherwise the
-<code>fallback_string</code> Example Syntax #2:</p>
-<p><code>'{Major}.{Minor}.{Patch}.{env:JENKINS_BUILD_NUMBER}'</code>.</p>
-<p>Uses <code>JENKINS_BUILD_NUMBER</code> if available in the environment otherwise the
-parsing fails. String interpolation is supported as in
-<code>assembly-informational-format</code></p>
+<p>Specifies the format of <code>AssemblyFileVersion</code> and
+overwrites the value of <code>assembly-file-versioning-scheme</code>.</p>
+<p>Expressions in curly braces reference one of the <a href="./more-info/variables">variables</a>
+or a process-scoped environment variable (when prefixed with <code>env:</code>).  For example,</p>
+<pre><code class="language-yaml"># use a variable if non-null or a fallback value otherwise
+assembly-file-versioning-format: '{Major}.{Minor}.{Patch}.{WeightedPreReleaseNumber ?? 0}'
+
+# use an environment variable or raise an error if not available
+assembly-file-versioning-format: '{Major}.{Minor}.{Patch}.{env:BUILD_NUMBER}'
+
+# use an environment variable if available or a fallback value otherwise
+assembly-file-versioning-format: '{Major}.{Minor}.{Patch}.{env:BUILD_NUMBER ?? 42}'
+</code></pre>
 <h3 id="assembly-versioning-format">assembly-versioning-format</h3>
-<p>Follows the same semantics as <code>assembly-file-versioning-format</code> and overwrites
-the value of <code>assembly-versioning-scheme</code>.</p>
+<p>Specifies the format of <code>AssemblyVersion</code> and
+overwrites the value of <code>assembly-versioning-scheme</code>.
+Follows the same formatting semantics as <code>assembly-file-versioning-format</code>.</p>
 <h3 id="assembly-informational-format">assembly-informational-format</h3>
-<p>Set this to any of the available <a href="./more-info/variables">variables</a> to change the
-value of the <code>AssemblyInformationalVersion</code> attribute. Default set to
-<code>{InformationalVersion}</code>. It also supports string interpolation
-(<code>{MajorMinorPatch}+{BranchName}</code>)</p>
+<p>Specifies the format of <code>AssemblyInformationalVersion</code>.
+Follows the same formatting semantics as <code>assembly-file-versioning-format</code>.
+The default value is <code>{InformationalVersion}</code>.</p>
 <h3 id="mode">mode</h3>
 <p>Sets the <code>mode</code> of how GitVersion should create a new version. Read more at
 <a href="./reference/versioning-modes">versioning modes</a>.</p>

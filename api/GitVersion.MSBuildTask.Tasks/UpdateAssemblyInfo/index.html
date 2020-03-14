@@ -177,7 +177,7 @@
 								<dt>Base Types</dt>
 								<dd>
 									<ul class="list-unstyled">										
-											<li>Task</li>								
+											<li>ITask</li>								
 											<li><a href="/api/GitVersion.MSBuildTask/GitVersionTaskBase">GitVersionTaskBase</a></li>								
 									</ul>
 								</dd>				
@@ -190,7 +190,7 @@
 							graph BT
 	Type--&gt;Base0["GitVersionTaskBase"]
 	click Base0 "/api/GitVersion.MSBuildTask/GitVersionTaskBase"
-	Base0--&gt;Base1["Task"]
+	Base0--&gt;Base1["ITask"]
 	Type["UpdateAssemblyInfo"]
 class Type type-node
 
@@ -231,6 +231,14 @@ class Type type-node
 								</td>
 							</tr>
 							<tr>
+								<td><a href="/api/GitVersion.MSBuildTask/GitVersionTaskBase/5BC2AD45">BuildEngine</a></td>
+								<td>IBuildEngine</td>
+								<td>
+									<div></div>
+											<div><small><em>Inherited from <a href="/api/GitVersion.MSBuildTask/GitVersionTaskBase">GitVersionTaskBase</a></em></small></div>
+								</td>
+							</tr>
+							<tr>
 								<td><a href="/api/GitVersion.MSBuildTask.Tasks/UpdateAssemblyInfo/14746BA0">CompileFiles</a></td>
 								<td>ITaskItem[]</td>
 								<td>
@@ -240,6 +248,14 @@ class Type type-node
 							<tr>
 								<td><a href="/api/GitVersion.MSBuildTask/GitVersionTaskBase/8B9DF1C9">ConfigFilePath</a></td>
 								<td>string</td>
+								<td>
+									<div></div>
+											<div><small><em>Inherited from <a href="/api/GitVersion.MSBuildTask/GitVersionTaskBase">GitVersionTaskBase</a></em></small></div>
+								</td>
+							</tr>
+							<tr>
+								<td><a href="/api/GitVersion.MSBuildTask/GitVersionTaskBase/2AAD937F">HostObject</a></td>
+								<td>ITaskHost</td>
 								<td>
 									<div></div>
 											<div><small><em>Inherited from <a href="/api/GitVersion.MSBuildTask/GitVersionTaskBase">GitVersionTaskBase</a></em></small></div>
@@ -257,6 +273,14 @@ class Type type-node
 								<td>string</td>
 								<td>
 									<div></div>
+								</td>
+							</tr>
+							<tr>
+								<td><a href="/api/GitVersion.MSBuildTask/GitVersionTaskBase/AAFDEE86">Log</a></td>
+								<td><a href="/api/GitVersionTask.MsBuild/TaskLoggingHelper">TaskLoggingHelper</a></td>
+								<td>
+									<div></div>
+											<div><small><em>Inherited from <a href="/api/GitVersion.MSBuildTask/GitVersionTaskBase">GitVersionTaskBase</a></em></small></div>
 								</td>
 							</tr>
 							<tr>
@@ -307,7 +331,15 @@ class Type type-node
 							</tr>
 						</thead>
 							<tbody><tr>
-								<td><a href="/api/GitVersion.MSBuildTask.Tasks/UpdateAssemblyInfo/510B2783">Execute<wbr>()<wbr></a></td>
+								<td><a href="/api/GitVersion.MSBuildTask/GitVersionTaskBase/11729020">Execute<wbr>()<wbr></a></td>
+								<td>bool</td>
+								<td>
+									<div></div>
+											<div><small><em>Inherited from <a href="/api/GitVersion.MSBuildTask/GitVersionTaskBase">GitVersionTaskBase</a></em></small></div>
+								</td>
+							</tr>
+							<tr>
+								<td><a href="/api/GitVersion.MSBuildTask.Tasks/UpdateAssemblyInfo/422F7E3B">OnExecute<wbr>()<wbr></a></td>
 								<td>bool</td>
 								<td>
 									<div></div>

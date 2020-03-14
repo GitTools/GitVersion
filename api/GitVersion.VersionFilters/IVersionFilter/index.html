@@ -178,8 +178,8 @@
 								<dt>Implementing Types</dt>
 								<dd>
 									<ul class="list-unstyled">
-											<li><a href="/api/GitVersion.VersionFilters/MinDateVersionFilter">MinDateVersionFilter</a></li>								
 											<li><a href="/api/GitVersion.VersionFilters/ShaVersionFilter">ShaVersionFilter</a></li>								
+											<li><a href="/api/GitVersion.VersionFilters/MinDateVersionFilter">MinDateVersionFilter</a></li>								
 									</ul>
 								</dd>				
 						</dl>
@@ -189,10 +189,10 @@
 							graph BT
 	Type["IVersionFilter"]
 class Type type-node
-	Implementing0["MinDateVersionFilter"]-.-&gt;Type
-	click Implementing0 "/api/GitVersion.VersionFilters/MinDateVersionFilter"
-	Implementing1["ShaVersionFilter"]-.-&gt;Type
-	click Implementing1 "/api/GitVersion.VersionFilters/ShaVersionFilter"
+	Implementing0["ShaVersionFilter"]-.-&gt;Type
+	click Implementing0 "/api/GitVersion.VersionFilters/ShaVersionFilter"
+	Implementing1["MinDateVersionFilter"]-.-&gt;Type
+	click Implementing1 "/api/GitVersion.VersionFilters/MinDateVersionFilter"
 
 						</div>
 					</div>

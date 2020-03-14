@@ -207,8 +207,8 @@
 								<dt>Derived Types</dt>
 								<dd>
 									<ul class="list-unstyled">
-											<li><a href="/api/GitVersion.Configuration/NamedConfigFileLocator">Named<wbr>Config<wbr>File<wbr>Locator</a></li>								
 											<li><a href="/api/GitVersion.Configuration/DefaultConfigFileLocator">Default<wbr>Config<wbr>File<wbr>Locator</a></li>								
+											<li><a href="/api/GitVersion.Configuration/NamedConfigFileLocator">Named<wbr>Config<wbr>File<wbr>Locator</a></li>								
 									</ul>
 								</dd>			
 							
@@ -222,10 +222,10 @@
 	click Interface0 "/api/GitVersion.Configuration/IConfigFileLocator"
 	Type["ConfigFileLocator"]
 class Type type-node
-	Derived0["NamedConfigFileLocator"]--&gt;Type
-	click Derived0 "/api/GitVersion.Configuration/NamedConfigFileLocator"
-	Derived1["DefaultConfigFileLocator"]--&gt;Type
-	click Derived1 "/api/GitVersion.Configuration/DefaultConfigFileLocator"
+	Derived0["DefaultConfigFileLocator"]--&gt;Type
+	click Derived0 "/api/GitVersion.Configuration/DefaultConfigFileLocator"
+	Derived1["NamedConfigFileLocator"]--&gt;Type
+	click Derived1 "/api/GitVersion.Configuration/NamedConfigFileLocator"
 
 						</div>
 					</div>
@@ -319,14 +319,14 @@ class Type type-node
 								</td>
 							</tr>
 							<tr>
-								<td><a href="/api/GitVersion.Configuration/ConfigFileLocator/99E5967F">SelectConfigFilePath<wbr>(IGitPreparer)<wbr></a></td>
+								<td><a href="/api/GitVersion.Configuration/ConfigFileLocator/569E25D2">SelectConfigFilePath<wbr>(Arguments)<wbr></a></td>
 								<td>string</td>
 								<td>
 									<div></div>
 								</td>
 							</tr>
 							<tr>
-								<td><a href="/api/GitVersion.Configuration/ConfigFileLocator/6C960120">Verify<wbr>(IGitPreparer)<wbr></a></td>
+								<td><a href="/api/GitVersion.Configuration/ConfigFileLocator/2FCA4E78">Verify<wbr>(Arguments)<wbr></a></td>
 								<td>void</td>
 								<td>
 									<div></div>
