@@ -20,14 +20,16 @@ namespace GitVersion
         private readonly IFileSystem fileSystem;
         private readonly IBuildServerResolver buildServerResolver;
         private readonly ILog log;
+        private readonly IGitPreparer gitPreparer;
         private readonly IGitVersionCalculator gitVersionCalculator;
         private readonly IOptions<Arguments> options;
 
-        public ExecCommand(IFileSystem fileSystem, IBuildServerResolver buildServerResolver, ILog log, IGitVersionCalculator gitVersionCalculator, IOptions<Arguments> options)
+        public ExecCommand(IFileSystem fileSystem, IBuildServerResolver buildServerResolver, ILog log, IGitPreparer gitPreparer, IGitVersionCalculator gitVersionCalculator, IOptions<Arguments> options)
         {
             this.fileSystem = fileSystem ?? throw new ArgumentNullException(nameof(fileSystem));
             this.buildServerResolver = buildServerResolver ?? throw new ArgumentNullException(nameof(buildServerResolver));
             this.log = log ?? throw new ArgumentNullException(nameof(log));
+            this.gitPreparer = gitPreparer ?? throw new ArgumentNullException(nameof(gitPreparer));
             this.gitVersionCalculator = gitVersionCalculator ?? throw new ArgumentNullException(nameof(gitVersionCalculator));
             this.options = options ?? throw new ArgumentNullException(nameof(options));
         }
@@ -36,6 +38,7 @@ namespace GitVersion
         {
             log.Info($"Running on {(RunningOnUnix ? "Unix" : "Windows")}.");
 
+            gitPreparer.Prepare();
             var variables = gitVersionCalculator.CalculateVersionVariables();
 
             var arguments = options.Value;

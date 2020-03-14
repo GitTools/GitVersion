@@ -13,6 +13,7 @@ namespace GitVersion
         private readonly ILog log;
         private readonly IEnvironment environment;
         private readonly IOptions<Arguments> options;
+        private readonly IBuildServerResolver buildServerResolver;
 
         private const string DefaultRemoteName = "origin";
         private string dotGitDirectory;
@@ -29,11 +30,36 @@ namespace GitVersion
         private bool IsDynamicGitRepository => !string.IsNullOrWhiteSpace(DynamicGitRepositoryPath);
         private string DynamicGitRepositoryPath;
 
-        public GitPreparer(ILog log, IEnvironment environment, IOptions<Arguments> options)
+        public GitPreparer(ILog log, IEnvironment environment, IOptions<Arguments> options, IBuildServerResolver buildServerResolver)
         {
             this.log = log ?? throw new ArgumentNullException(nameof(log));
             this.environment = environment ?? throw new ArgumentNullException(nameof(environment));
             this.options = options ?? throw new ArgumentNullException(nameof(options));
+            this.buildServerResolver = buildServerResolver ?? throw new ArgumentNullException(nameof(buildServerResolver));
+        }
+
+        public void Prepare()
+        {
+            var arguments = options.Value;
+            var buildServer = buildServerResolver.Resolve();
+
+            // Normalize if we are running on build server
+            var normalizeGitDirectory = !arguments.NoNormalize && buildServer != null;
+            var shouldCleanUpRemotes = buildServer != null && buildServer.ShouldCleanUpRemotes();
+
+            var currentBranch = ResolveCurrentBranch(buildServer, arguments.TargetBranch, !string.IsNullOrWhiteSpace(arguments.DynamicRepositoryLocation));
+
+            Prepare(normalizeGitDirectory, currentBranch, shouldCleanUpRemotes);
+
+            var dotGitDirectory = GetDotGitDirectory();
+            var projectRoot = GetProjectRootDirectory();
+
+            log.Info($"Project root is: {projectRoot}");
+            log.Info($"DotGit directory is: {dotGitDirectory}");
+            if (string.IsNullOrEmpty(dotGitDirectory) || string.IsNullOrEmpty(projectRoot))
+            {
+                throw new Exception($"Failed to prepare or find the .git directory in path '{arguments.TargetPath}'.");
+            }
         }
 
         public void Prepare(bool normalizeGitDirectory, string currentBranch, bool shouldCleanUpRemotes = false)
@@ -77,7 +103,7 @@ namespace GitVersion
                 : gitDirectory;
         }
 
-        public string GetProjectRootDirectoryInternal()
+        private string GetProjectRootDirectoryInternal()
         {
             log.Info($"IsDynamicGitRepository: {IsDynamicGitRepository}");
             if (IsDynamicGitRepository)
@@ -95,6 +121,19 @@ namespace GitVersion
             var result = repo.Info.WorkingDirectory;
             log.Info($"Returning Project Root from DotGitDirectory: {dotGitDirectory} - {result}");
             return result;
+        }
+
+        private string ResolveCurrentBranch(IBuildServer buildServer, string targetBranch, bool isDynamicRepository)
+        {
+            if (buildServer == null)
+            {
+                return targetBranch;
+            }
+
+            var currentBranch = buildServer.GetCurrentBranch(isDynamicRepository) ?? targetBranch;
+            log.Info("Branch from build environment: " + currentBranch);
+
+            return currentBranch;
         }
 
         private void CleanupDuplicateOrigin()

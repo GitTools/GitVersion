@@ -91,8 +91,8 @@ namespace GitVersionCore.Tests
                 services.AddSingleton(options);
             });
 
-            var gitPreparer = serviceProvider.GetService<IGitPreparer>();
-            gitPreparer.Prepare(true, null);
+            var gitPreparer = serviceProvider.GetService<IGitPreparer>() as GitPreparer;
+            gitPreparer?.Prepare(true, null);
         }
 
         private static IServiceProvider ConfigureService(Action<IServiceCollection> servicesOverrides = null)

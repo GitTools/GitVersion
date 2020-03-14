@@ -13,7 +13,6 @@ namespace GitVersion
     {
         private readonly ILog log;
         private readonly IConfigProvider configProvider;
-        private readonly IBuildServerResolver buildServerResolver;
         private readonly IGitVersionCache gitVersionCache;
         private readonly INextVersionCalculator nextVersionCalculator;
         private readonly IGitPreparer gitPreparer;
@@ -27,7 +26,6 @@ namespace GitVersion
         {
             this.log = log ?? throw new ArgumentNullException(nameof(log));
             this.configProvider = configProvider ?? throw new ArgumentNullException(nameof(configProvider));
-            this.buildServerResolver = buildServerResolver ?? throw new ArgumentNullException(nameof(buildServerResolver));
             this.gitVersionCache = gitVersionCache ?? throw new ArgumentNullException(nameof(gitVersionCache));
             this.nextVersionCalculator = nextVersionCalculator ?? throw new ArgumentNullException(nameof(nextVersionCalculator));
             this.gitPreparer = gitPreparer ?? throw new ArgumentNullException(nameof(gitPreparer));
@@ -38,42 +36,10 @@ namespace GitVersion
 
         public VersionVariables CalculateVersionVariables()
         {
+            //gitPreparer.Prepare();
             var arguments = options.Value;
-            var buildServer = buildServerResolver.Resolve();
-
-            // Normalize if we are running on build server
-            var normalizeGitDirectory = !arguments.NoNormalize && buildServer != null;
-            var shouldCleanUpRemotes = buildServer != null && buildServer.ShouldCleanUpRemotes();
-
-            var currentBranch = ResolveCurrentBranch(buildServer, arguments.TargetBranch, !string.IsNullOrWhiteSpace(arguments.DynamicRepositoryLocation));
-
-            gitPreparer.Prepare(normalizeGitDirectory, currentBranch, shouldCleanUpRemotes);
-
-            var dotGitDirectory = gitPreparer.GetDotGitDirectory();
-            var projectRoot = gitPreparer.GetProjectRootDirectory();
-
-            log.Info($"Project root is: {projectRoot}");
-            log.Info($"DotGit directory is: {dotGitDirectory}");
-            if (string.IsNullOrEmpty(dotGitDirectory) || string.IsNullOrEmpty(projectRoot))
-            {
-                // TODO Link to wiki article
-                throw new Exception($"Failed to prepare or find the .git directory in path '{arguments.TargetPath}'.");
-            }
 
             return GetCachedGitVersionInfo(arguments.TargetBranch, arguments.CommitId, arguments.OverrideConfig, arguments.NoCache);
-        }
-
-        private string ResolveCurrentBranch(IBuildServer buildServer, string targetBranch, bool isDynamicRepository)
-        {
-            if (buildServer == null)
-            {
-                return targetBranch;
-            }
-
-            var currentBranch = buildServer.GetCurrentBranch(isDynamicRepository) ?? targetBranch;
-            log.Info("Branch from build environment: " + currentBranch);
-
-            return currentBranch;
         }
 
         private VersionVariables GetCachedGitVersionInfo(string targetBranch, string commitId, Config overrideConfig, bool noCache)
