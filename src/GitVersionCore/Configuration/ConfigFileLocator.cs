@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using GitVersion.Extensions;
 
 namespace GitVersion.Configuration
 {
@@ -18,10 +19,10 @@ namespace GitVersion.Configuration
 
         public abstract void Verify(string workingDirectory, string projectRootDirectory);
 
-        public string SelectConfigFilePath(IGitPreparer gitPreparer)
+        public string SelectConfigFilePath(Arguments arguments)
         {
-            var workingDirectory = gitPreparer.GetWorkingDirectory();
-            var projectRootDirectory = gitPreparer.GetProjectRootDirectory();
+            var workingDirectory = arguments.GetWorkingDirectory();
+            var projectRootDirectory = arguments.GetProjectRootDirectory();
 
             return GetConfigFilePath(HasConfigFileAt(workingDirectory) ? workingDirectory : projectRootDirectory);
         }
@@ -39,17 +40,17 @@ namespace GitVersion.Configuration
             return new Config();
         }
 
-        public void Verify(IGitPreparer gitPreparer)
+        public void Verify(Arguments arguments)
         {
-            if (!string.IsNullOrWhiteSpace(gitPreparer.GetTargetUrl()))
+            if (!string.IsNullOrWhiteSpace(arguments.GetTargetUrl()))
             {
                 // Assuming this is a dynamic repository. At this stage it's unsure whether we have
                 // any .git info so we need to skip verification
                 return;
             }
 
-            var workingDirectory = gitPreparer.GetWorkingDirectory();
-            var projectRootDirectory = gitPreparer.GetProjectRootDirectory();
+            var workingDirectory = arguments.GetWorkingDirectory();
+            var projectRootDirectory = arguments.GetProjectRootDirectory();
 
             Verify(workingDirectory, projectRootDirectory);
         }

@@ -1,7 +1,9 @@
+using GitVersion.OutputVariables;
+
 namespace GitVersion
 {
     public interface IExecCommand
     {
-        void Execute();
+        void Execute(VersionVariables variables);
     }
 }

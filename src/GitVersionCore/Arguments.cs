@@ -19,7 +19,8 @@ namespace GitVersion
         public string TargetUrl;
         public string TargetBranch;
         public string CommitId;
-        public string DynamicRepositoryLocation;
+        public string DynamicRepositoryClonePath;
+        public string DynamicGitRepositoryPath;
 
         public bool Init;
         public bool Diag;
@@ -50,6 +51,7 @@ namespace GitVersion
         public bool UpdateAssemblyInfo;
         public ISet<string> UpdateAssemblyInfoFileName = new HashSet<string>();
         public bool EnsureAssemblyInfo;
+
         public void AddAssemblyInfoFileName(string fileName)
         {
             UpdateAssemblyInfoFileName.Add(fileName);

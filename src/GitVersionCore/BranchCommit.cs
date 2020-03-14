@@ -5,7 +5,7 @@ namespace GitVersion
     /// <summary>
     /// A commit, together with the branch to which the commit belongs.
     /// </summary>
-    public struct BranchCommit
+    public readonly struct BranchCommit
     {
         public static readonly BranchCommit Empty = new BranchCommit();
 
@@ -18,7 +18,7 @@ namespace GitVersion
         public Branch Branch { get; }
         public Commit Commit { get; }
 
-        public bool Equals(BranchCommit other)
+        private bool Equals(BranchCommit other)
         {
             return Equals(Branch, other.Branch) && Equals(Commit, other.Commit);
         }

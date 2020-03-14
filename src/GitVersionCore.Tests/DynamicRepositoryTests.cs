@@ -63,7 +63,7 @@ namespace GitVersionCore.Tests
             var arguments = new Arguments
             {
                 TargetUrl = url,
-                DynamicRepositoryLocation = dynamicDirectory,
+                DynamicRepositoryClonePath = dynamicDirectory,
                 TargetBranch = targetBranch,
                 NoFetch = false,
                 TargetPath = workingDirectory,
@@ -79,9 +79,10 @@ namespace GitVersionCore.Tests
                 services.AddSingleton(options);
             });
 
-
+            var gitPreparer = sp.GetService<IGitPreparer>();
             var gitVersionCalculator = sp.GetService<IGitVersionCalculator>();
 
+            gitPreparer.Prepare();
             var versionVariables = gitVersionCalculator.CalculateVersionVariables();
 
             Assert.AreEqual(expectedFullSemVer, versionVariables.FullSemVer);

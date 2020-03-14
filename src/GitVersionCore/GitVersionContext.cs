@@ -14,11 +14,6 @@ namespace GitVersion
     {
         private readonly ILog log;
 
-        public GitVersionContext(IRepository repository, ILog log, string targetBranch, Config configuration, bool onlyTrackedBranches = false, string commitId = null)
-             : this(repository, log, GetTargetBranch(repository, targetBranch), configuration, onlyTrackedBranches, commitId)
-        {
-        }
-
         public GitVersionContext(IRepository repository, ILog log, Branch currentBranch, Config configuration, bool onlyTrackedBranches = false, string commitId = null)
         {
             this.log = log;
@@ -157,35 +152,6 @@ namespace GitVersion
                 currentBranchConfig.IsReleaseBranch.Value,
                 commitDateFormat,
                 preReleaseWeight);
-        }
-
-        private static Branch GetTargetBranch(IRepository repository, string targetBranch)
-        {
-            // By default, we assume HEAD is pointing to the desired branch
-            var desiredBranch = repository.Head;
-
-            // Make sure the desired branch has been specified
-            if (!string.IsNullOrEmpty(targetBranch))
-            {
-                // There are some edge cases where HEAD is not pointing to the desired branch.
-                // Therefore it's important to verify if 'currentBranch' is indeed the desired branch.
-
-                // CanonicalName can be "refs/heads/develop", so we need to check for "/{TargetBranch}" as well
-                if (!desiredBranch.CanonicalName.IsBranch(targetBranch))
-                {
-                    // In the case where HEAD is not the desired branch, try to find the branch with matching name
-                    desiredBranch = repository?.Branches?
-                        .SingleOrDefault(b =>
-                            b.CanonicalName == targetBranch ||
-                            b.FriendlyName == targetBranch ||
-                            b.NameWithoutRemote() == targetBranch);
-
-                    // Failsafe in case the specified branch is invalid
-                    desiredBranch ??= repository.Head;
-                }
-            }
-
-            return desiredBranch;
         }
     }
 }

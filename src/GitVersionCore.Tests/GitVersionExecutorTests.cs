@@ -5,6 +5,7 @@ using GitTools.Testing;
 using GitVersion;
 using GitVersion.Cache;
 using GitVersion.Configuration;
+using GitVersion.Extensions;
 using GitVersion.Logging;
 using GitVersionCore.Tests.Helpers;
 using LibGit2Sharp;
@@ -23,6 +24,7 @@ namespace GitVersionCore.Tests
         private IFileSystem fileSystem;
         private ILog log;
         private IGitVersionCache gitVersionCache;
+        private IGitPreparer gitPreparer;
         private IServiceProvider sp;
 
         [Test]
@@ -40,12 +42,12 @@ namespace GitVersionCore.Tests
 
             sp = GetServiceProvider(arguments);
 
-            var gitPreparer = sp.GetService<IGitPreparer>();
+            var preparer = sp.GetService<IGitPreparer>() as GitPreparer;
 
-            gitPreparer.Prepare(true, targetBranch);
+            preparer?.PrepareInternal(true, targetBranch);
             var cacheKeyFactory = sp.GetService<IGitVersionCacheKeyFactory>();
             var cacheKey1 = cacheKeyFactory.Create(null);
-            gitPreparer.Prepare(true, targetBranch);
+            preparer?.PrepareInternal(true, targetBranch);
             var cacheKey2 = cacheKeyFactory.Create(null);
 
             cacheKey2.Value.ShouldBe(cacheKey1.Value);
@@ -240,7 +242,7 @@ namespace GitVersionCore.Tests
             var gitVersionCalculator = GetGitVersionCalculator(arguments, log);
 
             fixture.Repository.MakeACommit();
-            _ = gitVersionCalculator.CalculateVersionVariables();
+            gitVersionCalculator.CalculateVersionVariables();
 
             var logsMessages = stringBuilder.ToString();
             logsMessages.ShouldContain("yml not found", () => logsMessages);
@@ -401,9 +403,7 @@ namespace GitVersionCore.Tests
 
                 sp = GetServiceProvider(arguments);
 
-                var gitPreparer = sp.GetService<IGitPreparer>();
-
-                gitPreparer.GetProjectRootDirectoryInternal().TrimEnd('/', '\\').ShouldBe(worktreePath);
+                arguments.GetProjectRootDirectory().TrimEnd('/', '\\').ShouldBe(worktreePath);
             }
             finally
             {
@@ -425,9 +425,8 @@ namespace GitVersionCore.Tests
 
             sp = GetServiceProvider(arguments);
 
-            var gitPreparer = sp.GetService<IGitPreparer>();
             var expectedPath = fixture.RepositoryPath.TrimEnd('/', '\\');
-            gitPreparer.GetProjectRootDirectoryInternal().TrimEnd('/', '\\').ShouldBe(expectedPath);
+            arguments.GetProjectRootDirectory().TrimEnd('/', '\\').ShouldBe(expectedPath);
         }
 
         [Test]
@@ -442,7 +441,7 @@ namespace GitVersionCore.Tests
             };
 
             var gitVersionCalculator = GetGitVersionCalculator(arguments);
-
+            gitPreparer.Prepare();
             gitVersionCalculator.CalculateVersionVariables();
         }
 
@@ -460,9 +459,8 @@ namespace GitVersionCore.Tests
 
             sp = GetServiceProvider(arguments);
 
-            var gitPreparer = sp.GetService<IGitPreparer>();
             var expectedPath = Path.Combine(fixture.RepositoryPath, ".git");
-            gitPreparer.GetDotGitDirectory().ShouldBe(expectedPath);
+            arguments.GetDotGitDirectory().ShouldBe(expectedPath);
         }
 
         [Test]
@@ -490,9 +488,8 @@ namespace GitVersionCore.Tests
 
                 sp = GetServiceProvider(arguments);
 
-                var gitPreparer = sp.GetService<IGitPreparer>();
                 var expectedPath = Path.Combine(fixture.RepositoryPath, ".git");
-                gitPreparer.GetDotGitDirectory().ShouldBe(expectedPath);
+                arguments.GetDotGitDirectory().ShouldBe(expectedPath);
             }
             finally
             {
@@ -507,6 +504,7 @@ namespace GitVersionCore.Tests
             fileSystem = sp.GetService<IFileSystem>();
             log = sp.GetService<ILog>();
             gitVersionCache = sp.GetService<IGitVersionCache>();
+            gitPreparer = sp.GetService<IGitPreparer>();
 
             return sp.GetService<IGitVersionCalculator>();
         }

@@ -18,19 +18,24 @@ namespace GitVersion
         private readonly IConfigProvider configProvider;
         private readonly IBuildServerResolver buildServerResolver;
         private readonly IGitPreparer gitPreparer;
+        private readonly IGitVersionCalculator gitVersionCalculator;
         private readonly IVersionWriter versionWriter;
 
-        public GitVersionExecutor(ILog log, IConfigFileLocator configFileLocator, IVersionWriter versionWriter, IHelpWriter helpWriter,
-            IExecCommand execCommand, IConfigProvider configProvider, IBuildServerResolver buildServerResolver, IGitPreparer gitPreparer)
+        public GitVersionExecutor(ILog log, IConfigFileLocator configFileLocator, IConfigProvider configProvider,
+            IBuildServerResolver buildServerResolver, IGitPreparer gitPreparer, IGitVersionCalculator gitVersionCalculator,
+            IVersionWriter versionWriter, IHelpWriter helpWriter, IExecCommand execCommand)
         {
             this.log = log ?? throw new ArgumentNullException(nameof(log));
             this.configFileLocator = configFileLocator ?? throw new ArgumentNullException(nameof(configFileLocator));
+            this.configProvider = configProvider ?? throw new ArgumentNullException(nameof(configFileLocator));
+
+            this.buildServerResolver = buildServerResolver ?? throw new ArgumentNullException(nameof(buildServerResolver));
+            this.gitPreparer = gitPreparer ?? throw new ArgumentNullException(nameof(gitPreparer));
+            this.gitVersionCalculator = gitVersionCalculator ?? throw new ArgumentNullException(nameof(gitVersionCalculator));
+
             this.versionWriter = versionWriter ?? throw new ArgumentNullException(nameof(versionWriter));
             this.helpWriter = helpWriter ?? throw new ArgumentNullException(nameof(helpWriter));
             this.execCommand = execCommand ?? throw new ArgumentNullException(nameof(execCommand));
-            this.configProvider = configProvider ?? throw new ArgumentNullException(nameof(configFileLocator));
-            this.buildServerResolver = buildServerResolver ?? throw new ArgumentNullException(nameof(buildServerResolver));
-            this.gitPreparer = gitPreparer;
         }
 
         public int Execute(Arguments arguments)
@@ -52,7 +57,9 @@ namespace GitVersion
             {
                 if (HandleNonMainCommand(arguments, out var exitCode)) return exitCode;
 
-                execCommand.Execute();
+                gitPreparer.Prepare();
+                var variables = gitVersionCalculator.CalculateVersionVariables();
+                execCommand.Execute(variables);
             }
             catch (WarningException exception)
             {
@@ -143,7 +150,7 @@ namespace GitVersion
                 log.Info("Working directory: " + targetPath);
             }
 
-            configFileLocator.Verify(gitPreparer);
+            configFileLocator.Verify(arguments);
 
             if (arguments.Init)
             {

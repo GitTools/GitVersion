@@ -332,7 +332,7 @@ namespace GitVersionExe.Tests
         public void DynamicRepoLocation()
         {
             var arguments = argumentParser.ParseArguments("-dynamicRepoLocation c:\\foo\\");
-            arguments.DynamicRepositoryLocation.ShouldBe("c:\\foo\\");
+            arguments.DynamicRepositoryClonePath.ShouldBe("c:\\foo\\");
         }
 
         [Test]

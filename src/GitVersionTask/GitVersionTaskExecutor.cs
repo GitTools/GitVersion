@@ -5,6 +5,7 @@ using GitVersion.Extensions.VersionAssemblyInfoResources;
 using GitVersion.Logging;
 using GitVersion.MSBuildTask.Tasks;
 using GitVersion.OutputFormatters;
+using GitVersion.OutputVariables;
 
 namespace GitVersion.MSBuildTask
 {
@@ -13,19 +14,19 @@ namespace GitVersion.MSBuildTask
         private readonly IFileSystem fileSystem;
         private readonly ILog log;
         private readonly IBuildServerResolver buildServerResolver;
-        private readonly IGitVersionCalculator gitVersionCalculator;
+        private VersionVariables versionVariables;
 
-        public GitVersionTaskExecutor(IFileSystem fileSystem, ILog log, IBuildServerResolver buildServerResolver, IGitVersionCalculator gitVersionCalculator)
+        public GitVersionTaskExecutor(IFileSystem fileSystem, ILog log, IBuildServerResolver buildServerResolver, IGitVersionCalculator gitVersionCalculator, IGitPreparer preparer)
         {
             this.fileSystem = fileSystem ?? throw new ArgumentNullException(nameof(fileSystem));
             this.log = log ?? throw new ArgumentNullException(nameof(log));
             this.buildServerResolver = buildServerResolver ?? throw new ArgumentNullException(nameof(buildServerResolver));
-            this.gitVersionCalculator = gitVersionCalculator ?? throw new ArgumentNullException(nameof(gitVersionCalculator));
+            preparer.Prepare();
+            versionVariables = gitVersionCalculator.CalculateVersionVariables();
         }
 
         public void GetVersion(GetVersion task)
         {
-            var versionVariables = gitVersionCalculator.CalculateVersionVariables();
             var outputType = typeof(GetVersion);
             foreach (var variable in versionVariables)
             {
@@ -38,7 +39,6 @@ namespace GitVersion.MSBuildTask
             FileHelper.DeleteTempFiles();
             FileHelper.CheckForInvalidFiles(task.CompileFiles, task.ProjectFile);
 
-            var versionVariables = gitVersionCalculator.CalculateVersionVariables();
             var fileWriteInfo = task.IntermediateOutputPath.GetFileWriteInfo(task.Language, task.ProjectFile, "AssemblyInfo");
 
             task.AssemblyInfoTempFilePath = Path.Combine(fileWriteInfo.WorkingDirectory, fileWriteInfo.FileName);
@@ -50,7 +50,6 @@ namespace GitVersion.MSBuildTask
 
         public void GenerateGitVersionInformation(GenerateGitVersionInformation task)
         {
-            var versionVariables = gitVersionCalculator.CalculateVersionVariables();
             var fileWriteInfo = task.IntermediateOutputPath.GetFileWriteInfo(task.Language, task.ProjectFile, "GitVersionInformation");
 
             task.GitVersionInformationFilePath = Path.Combine(fileWriteInfo.WorkingDirectory, fileWriteInfo.FileName);
@@ -62,17 +61,15 @@ namespace GitVersion.MSBuildTask
         {
             var logger = task.Log;
 
-            var versionVariables = gitVersionCalculator.CalculateVersionVariables();
             var buildServer = buildServerResolver.Resolve();
-            if (buildServer != null)
+            if (buildServer == null) return;
+
+            logger.LogMessage($"Executing GenerateSetVersionMessage for '{buildServer.GetType().Name}'.");
+            logger.LogMessage(buildServer.GenerateSetVersionMessage(versionVariables));
+            logger.LogMessage($"Executing GenerateBuildLogOutput for '{buildServer.GetType().Name}'.");
+            foreach (var buildParameter in BuildOutputFormatter.GenerateBuildLogOutput(buildServer, versionVariables))
             {
-                logger.LogMessage($"Executing GenerateSetVersionMessage for '{buildServer.GetType().Name}'.");
-                logger.LogMessage(buildServer.GenerateSetVersionMessage(versionVariables));
-                logger.LogMessage($"Executing GenerateBuildLogOutput for '{buildServer.GetType().Name}'.");
-                foreach (var buildParameter in BuildOutputFormatter.GenerateBuildLogOutput(buildServer, versionVariables))
-                {
-                    logger.LogMessage(buildParameter);
-                }
+                logger.LogMessage(buildParameter);
             }
         }
     }

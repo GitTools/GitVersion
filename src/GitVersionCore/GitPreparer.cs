@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Linq;
+using GitVersion.Extensions;
 using GitVersion.Helpers;
 using GitVersion.Logging;
 using LibGit2Sharp;
@@ -13,30 +14,43 @@ namespace GitVersion
         private readonly ILog log;
         private readonly IEnvironment environment;
         private readonly IOptions<Arguments> options;
+        private readonly IBuildServerResolver buildServerResolver;
 
         private const string DefaultRemoteName = "origin";
-        private string dotGitDirectory;
-        private string projectRootDirectory;
 
-        public string GetTargetUrl() => options.Value.TargetUrl;
-
-        public string GetWorkingDirectory() => options.Value.TargetPath.TrimEnd('/', '\\');
-
-        public string GetDotGitDirectory() => dotGitDirectory ??= GetDotGitDirectoryInternal();
-
-        public string GetProjectRootDirectory() => projectRootDirectory ??= GetProjectRootDirectoryInternal();
-
-        private bool IsDynamicGitRepository => !string.IsNullOrWhiteSpace(DynamicGitRepositoryPath);
-        private string DynamicGitRepositoryPath;
-
-        public GitPreparer(ILog log, IEnvironment environment, IOptions<Arguments> options)
+        public GitPreparer(ILog log, IEnvironment environment, IOptions<Arguments> options, IBuildServerResolver buildServerResolver)
         {
             this.log = log ?? throw new ArgumentNullException(nameof(log));
             this.environment = environment ?? throw new ArgumentNullException(nameof(environment));
             this.options = options ?? throw new ArgumentNullException(nameof(options));
+            this.buildServerResolver = buildServerResolver ?? throw new ArgumentNullException(nameof(buildServerResolver));
         }
 
-        public void Prepare(bool normalizeGitDirectory, string currentBranch, bool shouldCleanUpRemotes = false)
+        public void Prepare()
+        {
+            var arguments = options.Value;
+            var buildServer = buildServerResolver.Resolve();
+
+            // Normalize if we are running on build server
+            var normalizeGitDirectory = !arguments.NoNormalize && buildServer != null;
+            var shouldCleanUpRemotes = buildServer != null && buildServer.ShouldCleanUpRemotes();
+
+            var currentBranch = ResolveCurrentBranch(buildServer, arguments.TargetBranch, !string.IsNullOrWhiteSpace(arguments.DynamicRepositoryClonePath));
+
+            PrepareInternal(normalizeGitDirectory, currentBranch, shouldCleanUpRemotes);
+
+            var dotGitDirectory = arguments.GetDotGitDirectory();
+            var projectRoot = arguments.GetProjectRootDirectory();
+
+            log.Info($"Project root is: {projectRoot}");
+            log.Info($"DotGit directory is: {dotGitDirectory}");
+            if (string.IsNullOrEmpty(dotGitDirectory) || string.IsNullOrEmpty(projectRoot))
+            {
+                throw new Exception($"Failed to prepare or find the .git directory in path '{arguments.TargetPath}'.");
+            }
+        }
+
+        public void PrepareInternal(bool normalizeGitDirectory, string currentBranch, bool shouldCleanUpRemotes = false)
         {
             var arguments = options.Value;
             var authentication = new AuthenticationInfo
@@ -44,11 +58,11 @@ namespace GitVersion
                 Username = arguments.Authentication?.Username,
                 Password = arguments.Authentication?.Password
             };
-            if (!string.IsNullOrWhiteSpace(GetTargetUrl()))
+            if (!string.IsNullOrWhiteSpace(options.Value.GetTargetUrl()))
             {
-                var tempRepositoryPath = CalculateTemporaryRepositoryPath(GetTargetUrl(), arguments.DynamicRepositoryLocation);
+                var tempRepositoryPath = CalculateTemporaryRepositoryPath(options.Value.GetTargetUrl(), arguments.DynamicRepositoryClonePath);
 
-                DynamicGitRepositoryPath = CreateDynamicRepository(tempRepositoryPath, authentication, GetTargetUrl(), currentBranch);
+                arguments.DynamicGitRepositoryPath = CreateDynamicRepository(tempRepositoryPath, authentication, options.Value.GetTargetUrl(), currentBranch);
             }
             else
             {
@@ -59,49 +73,29 @@ namespace GitVersion
                         CleanupDuplicateOrigin();
                     }
 
-                    NormalizeGitDirectory(authentication, currentBranch, GetDotGitDirectoryInternal(), IsDynamicGitRepository);
+                    NormalizeGitDirectory(authentication, currentBranch, options.Value.GetDotGitDirectory(), options.Value.IsDynamicGitRepository());
                 }
             }
         }
 
-        private string GetDotGitDirectoryInternal()
+        private string ResolveCurrentBranch(IBuildServer buildServer, string targetBranch, bool isDynamicRepository)
         {
-            var gitDirectory = IsDynamicGitRepository ? DynamicGitRepositoryPath : Repository.Discover(GetWorkingDirectory());
-
-            gitDirectory = gitDirectory?.TrimEnd('/', '\\');
-            if (string.IsNullOrEmpty(gitDirectory))
-                throw new DirectoryNotFoundException("Can't find the .git directory in " + gitDirectory);
-
-            return gitDirectory.Contains(Path.Combine(".git", "worktrees"))
-                ? Directory.GetParent(Directory.GetParent(gitDirectory).FullName).FullName
-                : gitDirectory;
-        }
-
-        public string GetProjectRootDirectoryInternal()
-        {
-            log.Info($"IsDynamicGitRepository: {IsDynamicGitRepository}");
-            if (IsDynamicGitRepository)
+            if (buildServer == null)
             {
-                log.Info($"Returning Project Root as {GetWorkingDirectory()}");
-                return GetWorkingDirectory();
+                return targetBranch;
             }
 
-            var dotGitDirectory = Repository.Discover(GetWorkingDirectory());
+            var currentBranch = buildServer.GetCurrentBranch(isDynamicRepository) ?? targetBranch;
+            log.Info("Branch from build environment: " + currentBranch);
 
-            if (string.IsNullOrEmpty(dotGitDirectory))
-                throw new DirectoryNotFoundException($"Can't find the .git directory in {dotGitDirectory}");
-
-            using var repo = new Repository(dotGitDirectory);
-            var result = repo.Info.WorkingDirectory;
-            log.Info($"Returning Project Root from DotGitDirectory: {dotGitDirectory} - {result}");
-            return result;
+            return currentBranch;
         }
 
         private void CleanupDuplicateOrigin()
         {
             var remoteToKeep = DefaultRemoteName;
 
-            using var repo = new Repository(GetDotGitDirectoryInternal());
+            using var repo = new Repository(options.Value.GetDotGitDirectory());
 
             // check that we have a remote that matches defaultRemoteName if not take the first remote
             if (!repo.Network.Remotes.Any(remote => remote.Name.Equals(DefaultRemoteName, StringComparison.InvariantCultureIgnoreCase)))
@@ -121,26 +115,23 @@ namespace GitVersion
             }
         }
 
-        private static string CalculateTemporaryRepositoryPath(string targetUrl, string dynamicRepositoryLocation)
+        private static string CalculateTemporaryRepositoryPath(string targetUrl, string dynamicRepositoryClonePath)
         {
-            var userTemp = dynamicRepositoryLocation ?? Path.GetTempPath();
+            var userTemp = dynamicRepositoryClonePath ?? Path.GetTempPath();
             var repositoryName = targetUrl.Split('/', '\\').Last().Replace(".git", string.Empty);
             var possiblePath = Path.Combine(userTemp, repositoryName);
 
             // Verify that the existing directory is ok for us to use
-            if (Directory.Exists(possiblePath))
+            if (Directory.Exists(possiblePath) && !GitRepoHasMatchingRemote(possiblePath, targetUrl))
             {
-                if (!GitRepoHasMatchingRemote(possiblePath, targetUrl))
+                var i = 1;
+                var originalPath = possiblePath;
+                bool possiblePathExists;
+                do
                 {
-                    var i = 1;
-                    var originalPath = possiblePath;
-                    bool possiblePathExists;
-                    do
-                    {
-                        possiblePath = string.Concat(originalPath, "_", i++.ToString());
-                        possiblePathExists = Directory.Exists(possiblePath);
-                    } while (possiblePathExists && !GitRepoHasMatchingRemote(possiblePath, targetUrl));
-                }
+                    possiblePath = string.Concat(originalPath, "_", i++.ToString());
+                    possiblePathExists = Directory.Exists(possiblePath);
+                } while (possiblePathExists && !GitRepoHasMatchingRemote(possiblePath, targetUrl));
             }
 
             return possiblePath;
