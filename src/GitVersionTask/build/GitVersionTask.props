@@ -19,12 +19,8 @@
 
         <!-- Property that enables UpdateAssemblyInfo. Default to off for SDK builds -->
         <UpdateAssemblyInfo Condition=" '$(DisableGitVersionTask)' == 'true' ">false</UpdateAssemblyInfo>
+        <UpdateAssemblyInfo Condition=" '$(UsingMicrosoftNETSdk)' == 'true' ">false</UpdateAssemblyInfo>
         <UpdateAssemblyInfo Condition=" '$(UpdateAssemblyInfo)' == '' ">true</UpdateAssemblyInfo>
-
-        <GenerateAssemblyFileVersionAttribute Condition=" '$(UpdateAssemblyInfo)' == 'true' ">false</GenerateAssemblyFileVersionAttribute>
-        <GenerateAssemblyVersionAttribute Condition=" '$(UpdateAssemblyInfo)' == 'true' ">false</GenerateAssemblyVersionAttribute>
-        <GenerateAssemblyInformationalVersionAttribute Condition=" '$(UpdateAssemblyInfo)' == 'true' ">false</GenerateAssemblyInformationalVersionAttribute>
-
 
         <!-- Property that enables GenerateGitVersionInformation -->
         <GenerateGitVersionInformation Condition=" '$(DisableGitVersionTask)' == 'true' ">false</GenerateGitVersionInformation>
