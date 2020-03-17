@@ -24,7 +24,7 @@
 
 // Install .NET Core Global tools.
 #tool "dotnet:?package=Codecov.Tool&version=1.7.2"
-#tool "dotnet:?package=GitReleaseManager.Tool&version=0.10.3"
+#tool "dotnet:?package=GitReleaseManager.Tool&version=0.11.0"
 #tool "dotnet:?package=Wyam.Tool&version=2.2.9"
 #tool "dotnet:?package=dotnet-format&version=3.2.107702"
 
