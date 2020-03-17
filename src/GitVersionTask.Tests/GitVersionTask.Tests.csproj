@@ -6,7 +6,6 @@
 
     <Import Project="..\test.props" />
     <ItemGroup>
-        <PackageReference Include="Microsoft.Build.Tasks.Core" Version="16.4.0" />
         <PackageReference Include="LibGit2Sharp" Version="$(PackageVersion_LibGit2Sharp)" />
         <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="$(PackageVersion_MicrosoftExtensions)" />
     </ItemGroup>
