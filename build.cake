@@ -13,20 +13,20 @@
 #addin "nuget:?package=Cake.Kudu&version=0.10.1"
 #addin "nuget:?package=Cake.Wyam&version=2.2.9"
 
-#addin "nuget:?package=Newtonsoft.Json&version=12.0.2"
+#addin "nuget:?package=Newtonsoft.Json&version=12.0.3"
 #addin "nuget:?package=SharpZipLib&version=1.2.0"
 #addin "nuget:?package=xunit.assert&version=2.4.1"
 
 // Install tools.
-#tool "nuget:?package=NUnit.ConsoleRunner&version=3.10.0"
+#tool "nuget:?package=NUnit.ConsoleRunner&version=3.11.1"
 #tool "nuget:?package=nuget.commandline&version=5.4.0"
-#tool "nuget:?package=KuduSync.NET&version=1.5.2"
+#tool "nuget:?package=KuduSync.NET&version=1.5.3"
 
 // Install .NET Core Global tools.
-#tool "dotnet:?package=Codecov.Tool&version=1.7.2"
+#tool "dotnet:?package=Codecov.Tool&version=1.10.0"
+#tool "dotnet:?package=dotnet-format&version=3.3.111304"
 #tool "dotnet:?package=GitReleaseManager.Tool&version=0.11.0"
 #tool "dotnet:?package=Wyam.Tool&version=2.2.9"
-#tool "dotnet:?package=dotnet-format&version=3.2.107702"
 
 // Load other scripts.
 #load "./build/utils/parameters.cake"
