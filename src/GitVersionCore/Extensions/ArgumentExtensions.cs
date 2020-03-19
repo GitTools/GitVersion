@@ -26,12 +26,7 @@ namespace GitVersion.Extensions
 
         public static string GetProjectRootDirectory(this Arguments arguments)
         {
-            if (arguments.IsDynamicGitRepository())
-            {
-                return arguments.GetWorkingDirectory();
-            }
-
-            var dotGitDirectory = Repository.Discover(arguments.GetWorkingDirectory());
+            var dotGitDirectory = Repository.Discover(arguments.IsDynamicGitRepository() ? arguments.DynamicGitRepositoryPath : arguments.GetWorkingDirectory());
 
             if (string.IsNullOrEmpty(dotGitDirectory))
                 throw new DirectoryNotFoundException($"Can't find the .git directory in {dotGitDirectory}");
