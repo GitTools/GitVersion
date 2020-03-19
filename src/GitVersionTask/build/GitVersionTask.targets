@@ -41,6 +41,27 @@
 
     </Target>
 
+    <!-- System.Web publishing: The targets below are used when 'UseMerge' has been set 'True' in the publish profile -->
+    <Target Name="UpdateAspNetPublishPipelineTargetsForGitAssemblyInfo" BeforeTargets="AspNetPreCompile" Condition="'$(GenerateAspNetAssemblyInfo)' == 'True'">
+        <PropertyGroup>
+            <GenerateAssemblyInfoDependsOn>SetGitAssemblyInfoForAspNetPublishPipeline;$(GenerateAssemblyInfoDependsOn)</GenerateAssemblyInfoDependsOn>
+        </PropertyGroup>
+    </Target>
+
+    <Target Name="SetGitAssemblyInfoForAspNetPublishPipeline" DependsOnTargets="GetVersion">
+        <ItemGroup>
+            <AssemblyAttributes Include="AssemblyVersionAttribute">
+                <Value>$(GitVersion_AssemblySemVer)</Value>
+            </AssemblyAttributes>
+            <AssemblyAttributes Include="AssemblyInformationalVersionAttribute">
+                <Value>$(GitVersion_InformationalVersion)</Value>
+            </AssemblyAttributes>
+            <AssemblyAttributes Include="AssemblyFileVersionAttribute">
+                <Value>$(GitVersion_AssemblySemFileVer)</Value>
+            </AssemblyAttributes>
+        </ItemGroup>
+    </Target>
+
     <Target Name="GenerateGitVersionInformation" BeforeTargets="CoreCompile" Condition="$(GenerateGitVersionInformation) == 'true'">
 
         <GenerateGitVersionInformation SolutionDirectory="$(GitVersionPath)"

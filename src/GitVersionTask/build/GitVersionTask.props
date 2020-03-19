@@ -22,6 +22,9 @@
         <UpdateAssemblyInfo Condition=" '$(UsingMicrosoftNETSdk)' == 'true' ">false</UpdateAssemblyInfo>
         <UpdateAssemblyInfo Condition=" '$(UpdateAssemblyInfo)' == '' ">true</UpdateAssemblyInfo>
 
+        <!-- Property that enables Assembly Info generation for System.Web projects -->
+        <GenerateAspNetAssemblyInfo Condition=" '$(GenerateAspNetAssemblyInfo)' == '' ">True</GenerateAspNetAssemblyInfo>
+
         <!-- Property that enables GenerateGitVersionInformation -->
         <GenerateGitVersionInformation Condition=" '$(DisableGitVersionTask)' == 'true' ">false</GenerateGitVersionInformation>
         <GenerateGitVersionInformation Condition=" '$(GenerateGitVersionInformation)' == '' ">true</GenerateGitVersionInformation>
