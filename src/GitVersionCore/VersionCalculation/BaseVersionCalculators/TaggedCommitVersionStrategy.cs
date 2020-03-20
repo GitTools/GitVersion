@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using GitVersion.Common;
 using GitVersion.Extensions;
-using GitVersion.Logging;
 using LibGit2Sharp;
 
 namespace GitVersion.VersionCalculation
@@ -14,11 +14,11 @@ namespace GitVersion.VersionCalculation
     /// </summary>
     public class TaggedCommitVersionStrategy : IVersionStrategy
     {
-        private readonly ILog log;
+        private readonly IGitRepoMetadataProvider gitRepoMetadataProvider;
 
-        public TaggedCommitVersionStrategy(ILog log)
+        public TaggedCommitVersionStrategy(IGitRepoMetadataProvider gitRepoMetadataProvider)
         {
-            this.log = log ?? throw new ArgumentNullException(nameof(log));
+            this.gitRepoMetadataProvider = gitRepoMetadataProvider ?? throw new ArgumentNullException(nameof(gitRepoMetadataProvider));
         }
 
         public virtual IEnumerable<BaseVersion> GetVersions(GitVersionContext context)
@@ -28,8 +28,7 @@ namespace GitVersion.VersionCalculation
 
         public IEnumerable<BaseVersion> GetTaggedVersions(GitVersionContext context, Branch currentBranch, DateTimeOffset? olderThan)
         {
-            var gitRepoMetadataProvider = new GitRepoMetadataProvider(context.Repository, log, context.FullConfiguration);
-            var allTags = gitRepoMetadataProvider.GetValidVersionTags(context.Repository, context.Configuration.GitTagPrefix, olderThan);
+            var allTags = gitRepoMetadataProvider.GetValidVersionTags(context.Configuration.GitTagPrefix, olderThan);
 
             var tagsOnBranch = currentBranch
                 .Commits

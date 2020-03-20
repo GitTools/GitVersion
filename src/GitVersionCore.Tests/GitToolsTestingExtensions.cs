@@ -3,7 +3,6 @@ using GitTools.Testing;
 using GitVersion;
 using GitVersion.Configuration;
 using GitVersion.Extensions;
-using GitVersion.Logging;
 using GitVersion.OutputVariables;
 using GitVersion.VersionCalculation;
 using GitVersionCore.Tests.Helpers;
@@ -16,10 +15,6 @@ namespace GitVersionCore.Tests
 {
     public static class GitToolsTestingExtensions
     {
-        private static readonly IServiceProvider sp;
-
-        static GitToolsTestingExtensions() => sp = ConfigureService();
-
         public static VersionVariables GetVersion(this RepositoryFixtureBase fixture, Config configuration = null, IRepository repository = null, string commitId = null, bool onlyTrackedBranches = true, string branch = null)
         {
             if (configuration == null)
@@ -28,24 +23,33 @@ namespace GitVersionCore.Tests
                 configuration.Reset();
             }
 
-            var log = sp.GetService<ILog>();
+            var options = Options.Create(new Arguments { OverrideConfig = configuration });
+
+            var sp = ConfigureServices(services =>
+            {
+                services.AddSingleton(options);
+            });
+
             var variableProvider = sp.GetService<IVariableProvider>();
             var nextVersionCalculator = sp.GetService<INextVersionCalculator>();
+            var gitVersionContextFactory = sp.GetService<IGitVersionContextFactory>();
 
             repository ??= fixture.Repository;
             var targetBranch = repository.GetTargetBranch(branch);
-            var gitVersionContext = new GitVersionContext(repository, log, targetBranch, configuration, onlyTrackedBranches, commitId);
+
+            var context = gitVersionContextFactory.Create(repository, targetBranch, commitId, onlyTrackedBranches);
+
             try
             {
-                var executeGitVersion = nextVersionCalculator.FindVersion(gitVersionContext);
-                var variables = variableProvider.GetVariablesFor(executeGitVersion, gitVersionContext.Configuration, gitVersionContext.IsCurrentCommitTagged);
+                var executeGitVersion = nextVersionCalculator.FindVersion(context);
+                var variables = variableProvider.GetVariablesFor(executeGitVersion, context.Configuration, context.IsCurrentCommitTagged);
 
                 return variables;
             }
             catch (Exception)
             {
                 Console.WriteLine("Test failing, dumping repository graph");
-                gitVersionContext.Repository.DumpGraph();
+                context.Repository.DumpGraph();
                 throw;
             }
         }
@@ -88,7 +92,7 @@ namespace GitVersionCore.Tests
             };
             var options = Options.Create(arguments);
 
-            var serviceProvider = ConfigureService(services =>
+            var serviceProvider = ConfigureServices(services =>
             {
                 services.AddSingleton(options);
             });
@@ -97,7 +101,7 @@ namespace GitVersionCore.Tests
             gitPreparer?.PrepareInternal(true, null);
         }
 
-        private static IServiceProvider ConfigureService(Action<IServiceCollection> servicesOverrides = null)
+        private static IServiceProvider ConfigureServices(Action<IServiceCollection> servicesOverrides = null)
         {
             var services = new ServiceCollection()
                 .AddModule(new GitVersionCoreTestModule());

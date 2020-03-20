@@ -61,19 +61,19 @@ namespace GitVersionCore.Tests.VersionCalculation
         public void AppliesBranchPreReleaseTag()
         {
             var semanticVersionBuildMetaData = new SemanticVersionBuildMetaData("ef7d0d7e1e700f1c7c9fa01ea6791bb778a5c37c", 2, "develop", "b1a34edbd80e141f7cc046c074f109be7d022074", "b1a34e", DateTimeOffset.Now);
+            var contextBuilder = new GitVersionContextBuilder();
 
-            var sp = ConfigureServices(services =>
-            {
-                services.AddSingleton<IBaseVersionCalculator>(new TestBaseVersionCalculator(false, new SemanticVersion(1), new MockCommit()));
-                services.AddSingleton<IMetaDataCalculator>(new TestMetaDataCalculator(semanticVersionBuildMetaData));
-            });
-
-            var nextVersionCalculator = sp.GetService<INextVersionCalculator>() as NextVersionCalculator;
-            nextVersionCalculator.ShouldNotBeNull();
-
-            var context = new GitVersionContextBuilder()
+            var context = contextBuilder
+                .OverrideServices(services =>
+                {
+                    services.AddSingleton<IBaseVersionCalculator>(new TestBaseVersionCalculator(false, new SemanticVersion(1), new MockCommit()));
+                    services.AddSingleton<IMetaDataCalculator>(new TestMetaDataCalculator(semanticVersionBuildMetaData));
+                })
                 .WithDevelopBranch()
                 .Build();
+
+            var nextVersionCalculator = contextBuilder.ServicesProvider.GetService<INextVersionCalculator>() as NextVersionCalculator;
+            nextVersionCalculator.ShouldNotBeNull();
 
             var version = nextVersionCalculator.FindVersionInternal(context);
 

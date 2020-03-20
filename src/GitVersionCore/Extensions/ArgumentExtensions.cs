@@ -5,7 +5,7 @@ namespace GitVersion.Extensions
 {
     public static class ArgumentExtensions
     {
-        public static string GetWorkingDirectory(this Arguments arguments) => arguments.TargetPath?.TrimEnd('/', '\\') ?? string.Empty;
+        public static string GetWorkingDirectory(this Arguments arguments) => arguments.TargetPath?.TrimEnd('/', '\\') ?? ".";
 
         public static bool IsDynamicGitRepository(this Arguments arguments) => !string.IsNullOrWhiteSpace(arguments.DynamicGitRepositoryPath);
 

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using GitVersion.Common;
 using GitVersion.Configuration;
 using GitVersion.Extensions;
 using LibGit2Sharp;
@@ -13,6 +14,13 @@ namespace GitVersion.VersionCalculation
     /// </summary>
     public class VersionInBranchNameVersionStrategy : IVersionStrategy
     {
+        private IGitRepoMetadataProvider gitRepoMetadataProvider;
+
+        public VersionInBranchNameVersionStrategy(IGitRepoMetadataProvider gitRepoMetadataProvider)
+        {
+            this.gitRepoMetadataProvider = gitRepoMetadataProvider ?? throw new ArgumentNullException(nameof(gitRepoMetadataProvider));
+        }
+
         public virtual IEnumerable<BaseVersion> GetVersions(GitVersionContext context)
         {
             var currentBranch = context.CurrentBranch;
@@ -31,7 +39,7 @@ namespace GitVersion.VersionCalculation
             var versionInBranch = GetVersionInBranch(branchName, tagPrefixRegex);
             if (versionInBranch != null)
             {
-                var commitBranchWasBranchedFrom = context.RepositoryMetadataProvider.FindCommitBranchWasBranchedFrom(currentBranch);
+                var commitBranchWasBranchedFrom = gitRepoMetadataProvider.FindCommitBranchWasBranchedFrom(currentBranch, context.FullConfiguration);
                 var branchNameOverride = branchName.RegexReplace("[-/]" + versionInBranch.Item1, string.Empty);
                 yield return new BaseVersion(context, "Version in branch name", false, versionInBranch.Item2, commitBranchWasBranchedFrom.Commit, branchNameOverride);
             }

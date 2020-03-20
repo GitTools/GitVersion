@@ -1,5 +1,6 @@
 using GitVersion.BuildServers;
 using GitVersion.Cache;
+using GitVersion.Common;
 using GitVersion.Configuration;
 using GitVersion.Configuration.Init;
 using GitVersion.Extensions;
@@ -19,7 +20,10 @@ namespace GitVersion
             services.AddSingleton<ILog, Log>();
             services.AddSingleton<IConsole, ConsoleAdapter>();
             services.AddSingleton<IGitVersionCache, GitVersionCache>();
+
             services.AddSingleton<IGitVersionCacheKeyFactory, GitVersionCacheKeyFactory>();
+            services.AddSingleton<IGitVersionContextFactory, GitVersionContextFactory>();
+            services.AddSingleton<IConfigFileLocatorFactory, ConfigFileLocatorFactory>();
 
             services.AddSingleton<IConfigProvider, ConfigProvider>();
             services.AddSingleton<IVariableProvider, VariableProvider>();
@@ -29,10 +33,11 @@ namespace GitVersion
             services.AddSingleton<IMainlineVersionCalculator, MainlineVersionCalculator>();
             services.AddSingleton<INextVersionCalculator, NextVersionCalculator>();
             services.AddSingleton<IGitVersionCalculator, GitVersionCalculator>();
+            services.AddSingleton<IBranchConfigurationCalculator, BranchConfigurationCalculator>();
 
             services.AddSingleton<IBuildServerResolver, BuildServerResolver>();
             services.AddSingleton<IGitPreparer, GitPreparer>();
-            services.AddSingleton<IConfigFileLocatorFactory, ConfigFileLocatorFactory>();
+            services.AddSingleton<IGitRepoMetadataProvider, GitRepoMetadataProvider>();
 
             services.AddSingleton(sp => sp.GetService<IConfigFileLocatorFactory>().Create());
 

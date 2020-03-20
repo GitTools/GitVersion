@@ -1,7 +1,6 @@
 using System;
 using GitTools.Testing;
 using GitVersion;
-using GitVersion.Configuration;
 using GitVersion.Extensions;
 using GitVersion.Logging;
 using GitVersionCore.Tests.Helpers;
@@ -16,13 +15,11 @@ namespace GitVersionCore.Tests
     public class GitRepoMetadataProviderTests : TestBase
     {
         private readonly ILog log;
-        private readonly Config configuration;
 
         public GitRepoMetadataProviderTests()
         {
             var sp = ConfigureServices();
             log = sp.GetService<ILog>();
-            configuration = new Config();
         }
 
         [Test]
@@ -30,7 +27,7 @@ namespace GitVersionCore.Tests
         {
             //*9dfb8b4 49 minutes ago(develop)
             //*54f21b2 53 minutes ago
-            //    |\  
+            //    |\
             //    | | *a219831 51 minutes ago(HEAD -> release-2.0.0)
             //    | |/
             //    | *4441531 54 minutes ago
@@ -61,16 +58,17 @@ namespace GitVersionCore.Tests
             // Make new commit on develop
             fixture.Checkout("develop");
 
-            // Checkout to release (no new commits) 
+            // Checkout to release (no new commits)
             fixture.Checkout("release-2.0.0");
 
             var develop = fixture.Repository.FindBranch("develop");
             var release = fixture.Repository.FindBranch("release-2.0.0");
-            var releaseBranchMergeBase = new GitRepoMetadataProvider(fixture.Repository, log, configuration)
-                .FindMergeBase(release, develop);
+            var gitRepoMetadataProvider = new GitRepoMetadataProvider(log);
+            gitRepoMetadataProvider.WithData(fixture.Repository);
 
-            var developMergeBase = new GitRepoMetadataProvider(fixture.Repository, log, configuration)
-                .FindMergeBase(develop, release);
+            var releaseBranchMergeBase = gitRepoMetadataProvider.FindMergeBase(release, develop);
+
+            var developMergeBase = gitRepoMetadataProvider.FindMergeBase(develop, release);
 
             fixture.Repository.DumpGraph(Console.WriteLine);
 
@@ -83,7 +81,7 @@ namespace GitVersionCore.Tests
         {
             //*9dfb8b4 49 minutes ago(develop)
             //*54f21b2 53 minutes ago
-            //    |\  
+            //    |\
             //    | | *a219831 51 minutes ago(HEAD -> release-2.0.0)
             //    | |/
             //    | *4441531 54 minutes ago
@@ -113,19 +111,20 @@ namespace GitVersionCore.Tests
 
             // Make new commit on develop
             fixture.Checkout("develop");
-            // Checkout to release (no new commits) 
+            // Checkout to release (no new commits)
             fixture.MakeACommit("develop after merge");
 
-            // Checkout to release (no new commits) 
+            // Checkout to release (no new commits)
             fixture.Checkout("release-2.0.0");
 
             var develop = fixture.Repository.FindBranch("develop");
             var release = fixture.Repository.FindBranch("release-2.0.0");
-            var releaseBranchMergeBase = new GitRepoMetadataProvider(fixture.Repository, log, configuration)
-                .FindMergeBase(release, develop);
+            var gitRepoMetadataProvider = new GitRepoMetadataProvider(log);
+            gitRepoMetadataProvider.WithData(fixture.Repository);
 
-            var developMergeBase = new GitRepoMetadataProvider(fixture.Repository, log, configuration)
-                .FindMergeBase(develop, release);
+            var releaseBranchMergeBase = gitRepoMetadataProvider.FindMergeBase(release, develop);
+
+            var developMergeBase = gitRepoMetadataProvider.FindMergeBase(develop, release);
 
             fixture.Repository.DumpGraph(Console.WriteLine);
 
@@ -137,13 +136,13 @@ namespace GitVersionCore.Tests
         public void FindsCorrectMergeBaseForMultipleForwardMerges()
         {
             //*403b294 44 minutes ago(develop)
-            //|\  
+            //|\
             //| *306b243 45 minutes ago(HEAD -> release-2.0.0)
             //| *4cf5969 47 minutes ago
             //| *4814083 51 minutes ago
             //* | cddd3cc 49 minutes ago
             //* | 2b2b52a 53 minutes ago
-            //|\ \  
+            //|\ \
             //| |/
             //| *8113776 54 minutes ago
             //| *3c0235e 56 minutes ago
@@ -172,12 +171,12 @@ namespace GitVersionCore.Tests
 
             // Make new commit on develop
             fixture.Checkout("develop");
-            // Checkout to release (no new commits) 
+            // Checkout to release (no new commits)
             fixture.Checkout("release-2.0.0");
             fixture.Checkout("develop");
             fixture.Repository.MakeACommit("develop after merge");
 
-            // Checkout to release (no new commits) 
+            // Checkout to release (no new commits)
             fixture.Checkout("release-2.0.0");
 
             // Make some new commit on release
@@ -189,17 +188,18 @@ namespace GitVersionCore.Tests
             fixture.Checkout("develop");
             fixture.MergeNoFF("release-2.0.0");
 
-            // Checkout to release (no new commits) 
+            // Checkout to release (no new commits)
             fixture.Checkout("release-2.0.0");
 
             var develop = fixture.Repository.FindBranch("develop");
             var release = fixture.Repository.FindBranch("release-2.0.0");
 
-            var releaseBranchMergeBase = new GitRepoMetadataProvider(fixture.Repository, log, configuration)
-                .FindMergeBase(release, develop);
+            var gitRepoMetadataProvider = new GitRepoMetadataProvider(log);
+            gitRepoMetadataProvider.WithData(fixture.Repository);
 
-            var developMergeBase = new GitRepoMetadataProvider(fixture.Repository, log, configuration)
-                .FindMergeBase(develop, release);
+            var releaseBranchMergeBase = gitRepoMetadataProvider.FindMergeBase(release, develop);
+
+            var developMergeBase = gitRepoMetadataProvider.FindMergeBase(develop, release);
 
             fixture.Repository.DumpGraph(Console.WriteLine);
 

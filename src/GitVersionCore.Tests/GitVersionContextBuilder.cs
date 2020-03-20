@@ -1,26 +1,38 @@
+using System;
 using GitTools.Testing;
 using GitVersion;
 using GitVersion.Configuration;
-using GitVersion.Logging;
+using GitVersion.Extensions;
+using GitVersionCore.Tests.Helpers;
 using GitVersionCore.Tests.Mocks;
 using LibGit2Sharp;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 
 namespace GitVersionCore.Tests
 {
     public class GitVersionContextBuilder
     {
         private IRepository repository;
-        private Config config;
+        private Config configuration;
+        public IServiceProvider ServicesProvider;
+        private Action<IServiceCollection> overrideServices;
 
-        public GitVersionContextBuilder WithRepository(IRepository repository)
+        public GitVersionContextBuilder WithRepository(IRepository gitRepository)
         {
-            this.repository = repository;
+            repository = gitRepository;
             return this;
         }
 
         public GitVersionContextBuilder WithConfig(Config config)
         {
-            this.config = config;
+            this.configuration = config;
+            return this;
+        }
+
+        public GitVersionContextBuilder OverrideServices(Action<IServiceCollection> overrideServices = null)
+        {
+            this.overrideServices = overrideServices;
             return this;
         }
 
@@ -43,13 +55,13 @@ namespace GitVersionCore.Tests
             return WithBranch("develop");
         }
 
-        public GitVersionContextBuilder WithBranch(string branchName)
+        private GitVersionContextBuilder WithBranch(string branchName)
         {
             repository = CreateRepository();
             return AddBranch(branchName);
         }
 
-        public GitVersionContextBuilder AddBranch(string branchName)
+        private GitVersionContextBuilder AddBranch(string branchName)
         {
             var mockBranch = new MockBranch(branchName)
             {
@@ -62,13 +74,25 @@ namespace GitVersionCore.Tests
 
         public GitVersionContext Build()
         {
-            var configuration = config ?? new Config();
-            configuration.Reset();
             var repo = repository ?? CreateRepository();
-            return new GitVersionContext(repo, new NullLog(), repo.Head, configuration);
+            var config = configuration ?? new Config();
+
+            config.Reset();
+
+            var options = Options.Create(new Arguments { OverrideConfig = config });
+
+            ServicesProvider = ConfigureServices(services =>
+            {
+                services.AddSingleton(options);
+                overrideServices?.Invoke(services);
+            });
+
+            var gitVersionContextFactory = ServicesProvider.GetService<IGitVersionContextFactory>();
+
+            return gitVersionContextFactory.Create(repo, repo.Head);
         }
 
-        private IRepository CreateRepository()
+        private static IRepository CreateRepository()
         {
             var mockBranch = new MockBranch("master") { new MockCommit { CommitterEx = Generate.SignatureNow() } };
             var mockRepository = new MockRepository
@@ -82,6 +106,16 @@ namespace GitVersionCore.Tests
             };
 
             return mockRepository;
+        }
+
+        private static IServiceProvider ConfigureServices(Action<IServiceCollection> overrideServices = null)
+        {
+            var services = new ServiceCollection()
+                .AddModule(new GitVersionCoreTestModule());
+
+            overrideServices?.Invoke(services);
+
+            return services.BuildServiceProvider();
         }
     }
 }
