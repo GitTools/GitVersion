@@ -126,3 +126,4 @@ config.wyam.hash
 config.wyam.packages.xml
 /test/core/build
 /test/full/build
+/test/systemweb/build

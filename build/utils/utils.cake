@@ -1,5 +1,7 @@
 #load "./docker.cake"
 
+using System.Reflection;
+
 public static FilePath FindToolInPath(this ICakeContext context, string tool)
 {
     var pathEnv = context.EnvironmentVariable("PATH");
@@ -140,6 +142,15 @@ void ValidateOutput(string cmd, string args, string expected)
     Information(outputStr);
 
     Assert.Equal(expected, outputStr);
+}
+
+void ValidateAssemblyVersion(string path, string expected)
+{
+    var assembly = Assembly.LoadFrom(path);
+    var versionStr = assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>().InformationalVersion;
+    Information(versionStr);
+
+    Assert.Equal(expected, versionStr);
 }
 
 void RunGitVersionOnCI(BuildParameters parameters)

@@ -48,9 +48,9 @@ Task("Artifacts-MsBuildCore-Test")
     }
 });
 
-Task("Artifacts-MsBuildFull-Test")
-    .WithCriteria<BuildParameters>((context, parameters) => parameters.IsRunningOnWindows, "Artifacts-MsBuildFull-Test can be tested only on Windows agents.")
-    .WithCriteria<BuildParameters>((context, parameters) => parameters.IsReleasingCI,      "Artifacts-MsBuildFull-Test works only on Releasing CI.")
+Task("Artifacts-MsBuildFull-Library-Test")
+    .WithCriteria<BuildParameters>((context, parameters) => parameters.IsRunningOnWindows, "Artifacts-MsBuildFull-Library-Test can be tested only on Windows agents.")
+    .WithCriteria<BuildParameters>((context, parameters) => parameters.IsReleasingCI,      "Artifacts-MsBuildFull-Library-Test works only on Releasing CI.")
     .IsDependentOnWhen("Pack-Nuget", singleStageRun)
     .Does<BuildParameters>((parameters) =>
 {
@@ -96,6 +96,42 @@ Task("Artifacts-MsBuildFull-Test")
     var fullExe = new DirectoryPath("./test/full/build").CombineWithFilePath("app.exe");
     ValidateOutput(fullExe.FullPath, null, parameters.Version.GitVersion.FullSemVer);
 });
+
+Task("Artifacts-MsBuildFull-SystemWeb-Test")
+    .WithCriteria<BuildParameters>((context, parameters) => parameters.IsRunningOnWindows, "Artifacts-MsBuildFull-SystemWeb-Test can be tested only on Windows agents.")
+    .WithCriteria<BuildParameters>((context, parameters) => parameters.IsReleasingCI,      "Artifacts-MsBuildFull-SystemWeb-Test works only on Releasing CI.")
+    .IsDependentOnWhen("Pack-Nuget", singleStageRun)
+    .Does<BuildParameters>((parameters) =>
+{
+    var version = parameters.Version.NugetVersion;
+
+    var nugetSource = MakeAbsolute(parameters.Paths.Directories.NugetRoot).FullPath;
+
+    Information("\nTesting msbuild task with msbuild (for full framework - System.Web publishing)\n");
+
+    var msBuildSettings = new MSBuildSettings
+    {
+        Verbosity = Verbosity.Minimal,
+        Restore = true
+    };
+
+    msBuildSettings.WithProperty("GitVersionTaskVersion", version);
+    msBuildSettings.WithProperty("RestoreSources", nugetSource);
+    msBuildSettings.WithProperty("DeployOnBuild", "True");
+    msBuildSettings.WithProperty("PublishProfile", "TestPublish");
+
+    MSBuild("./test/systemweb", msBuildSettings);
+
+    var mergedPrecompiledDll = new DirectoryPath("./test/systemweb/build/TestPublish/bin").CombineWithFilePath("TestPublishAssembly.dll");
+    ValidateAssemblyVersion(mergedPrecompiledDll.FullPath, parameters.Version.GitVersion.InformationalVersion);
+
+    var webProjectDll = new DirectoryPath("./test/systemweb/build/TestPublish/bin").CombineWithFilePath("test.dll");
+    ValidateAssemblyVersion(webProjectDll.FullPath, parameters.Version.GitVersion.InformationalVersion);
+});
+
+Task("Artifacts-MsBuildFull-Test")
+    .IsDependentOn("Artifacts-MsBuildFull-SystemWeb-Test")
+    .IsDependentOn("Artifacts-MsBuildFull-Library-Test");
 
 Task("Artifacts-Test")
     .WithCriteria<BuildParameters>((context, parameters) => !parameters.IsRunningOnMacOS, "Artifacts-Test can be tested only on Windows or Linux agents.")
