@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using GitVersion.Configuration;
+using GitVersion.Extensions;
 using GitVersion.Logging;
 using GitVersion.OutputFormatters;
 
@@ -8,6 +9,17 @@ namespace GitVersion
 {
     public class Arguments
     {
+        private Lazy<string> dotGitDirectory;
+        private Lazy<string> projectRootDirectory;
+        public Arguments()
+        {
+            dotGitDirectory = new Lazy<string>(this.GetDotGitDirectory);
+            projectRootDirectory = new Lazy<string>(this.GetProjectRootDirectory);
+        }
+
+        public string DotGitDirectory => dotGitDirectory.Value;
+        public string ProjectRootDirectory => projectRootDirectory.Value;
+
         public AuthenticationInfo Authentication;
 
         public Config OverrideConfig;
