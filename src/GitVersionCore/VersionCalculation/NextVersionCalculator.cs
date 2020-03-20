@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using GitVersion.Common;
 using GitVersion.Configuration;
 using GitVersion.Exceptions;
 using GitVersion.Extensions;
@@ -14,15 +15,17 @@ namespace GitVersion.VersionCalculation
         private readonly ILog log;
         private readonly IBaseVersionCalculator baseVersionCalculator;
         private readonly IMainlineVersionCalculator mainlineVersionCalculator;
+        private readonly IGitRepoMetadataProvider gitRepoMetadataProvider;
         private readonly IMetaDataCalculator metaDataCalculator;
 
-        public NextVersionCalculator(ILog log, IMetaDataCalculator metaDataCalculator, IBaseVersionCalculator baseVersionCalculator, IMainlineVersionCalculator mainlineVersionCalculator)
+        public NextVersionCalculator(ILog log, IMetaDataCalculator metaDataCalculator, IBaseVersionCalculator baseVersionCalculator, IMainlineVersionCalculator mainlineVersionCalculator, IGitRepoMetadataProvider gitRepoMetadataProvider)
         {
             this.log = log ?? throw new ArgumentNullException(nameof(log));
             this.metaDataCalculator = metaDataCalculator ?? throw new ArgumentNullException(nameof(metaDataCalculator));
 
             this.baseVersionCalculator = baseVersionCalculator ?? throw new ArgumentNullException(nameof(baseVersionCalculator));
             this.mainlineVersionCalculator = mainlineVersionCalculator ?? throw new ArgumentNullException(nameof(mainlineVersionCalculator));
+            this.gitRepoMetadataProvider = gitRepoMetadataProvider ?? throw new ArgumentNullException(nameof(gitRepoMetadataProvider));
         }
 
         public SemanticVersion FindVersion(GitVersionContext context)
@@ -130,7 +133,7 @@ namespace GitVersion.VersionCalculation
 
             int? number = null;
 
-            var lastTag = context.RepositoryMetadataProvider
+            var lastTag = gitRepoMetadataProvider
                 .GetVersionTagsOnBranch(context.CurrentBranch, context.Configuration.GitTagPrefix)
                 .FirstOrDefault(v => v.PreReleaseTag.Name == tagToUse);
 

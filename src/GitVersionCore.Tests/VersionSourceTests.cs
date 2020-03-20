@@ -1,11 +1,11 @@
 using GitTools.Testing;
 using GitVersion;
 using GitVersion.Configuration;
-using GitVersion.Logging;
 using GitVersion.VersionCalculation;
 using GitVersionCore.Tests.Helpers;
 using LibGit2Sharp;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using NUnit.Framework;
 using Shouldly;
 
@@ -14,23 +14,27 @@ namespace GitVersionCore.Tests
     [TestFixture]
     public class VersionSourceTests : TestBase
     {
-        private ILog log;
         private INextVersionCalculator nextVersionCalculator;
+        private IGitVersionContextFactory gitVersionContextFactory;
 
         [SetUp]
         public void SetUp()
         {
-            var sp = ConfigureServices();
+            var config = new Config().ApplyDefaults();
+            var options = Options.Create(new Arguments { OverrideConfig = config });
 
-            log = sp.GetService<ILog>();
+            var sp = ConfigureServices(services =>
+            {
+                services.AddSingleton(options);
+            });
+
             nextVersionCalculator = sp.GetService<INextVersionCalculator>();
+            gitVersionContextFactory = sp.GetService<IGitVersionContextFactory>();
         }
 
         [Test]
         public void VersionSourceSha()
         {
-            var config = new Config().ApplyDefaults();
-
             using var fixture = new EmptyRepositoryFixture();
             var initialCommit = fixture.Repository.MakeACommit();
             Commands.Checkout(fixture.Repository, fixture.Repository.CreateBranch("develop"));
@@ -39,7 +43,7 @@ namespace GitVersionCore.Tests
             Commands.Checkout(fixture.Repository, featureBranch);
             _ = fixture.Repository.MakeACommit();
 
-            var context = new GitVersionContext(fixture.Repository, log, fixture.Repository.Head, config);
+            var context = gitVersionContextFactory.Create(fixture.Repository, fixture.Repository.Head);
             var version = nextVersionCalculator.FindVersion(context);
 
             version.BuildMetaData.VersionSourceSha.ShouldBe(initialCommit.Sha);
@@ -49,12 +53,10 @@ namespace GitVersionCore.Tests
         [Test]
         public void VersionSourceShaOneCommit()
         {
-            var config = new Config().ApplyDefaults();
-
             using var fixture = new EmptyRepositoryFixture();
             var initialCommit = fixture.Repository.MakeACommit();
 
-            var context = new GitVersionContext(fixture.Repository, log, fixture.Repository.Head, config);
+            var context = gitVersionContextFactory.Create(fixture.Repository, fixture.Repository.Head);
             var version = nextVersionCalculator.FindVersion(context);
 
             version.BuildMetaData.VersionSourceSha.ShouldBe(initialCommit.Sha);
@@ -64,8 +66,6 @@ namespace GitVersionCore.Tests
         [Test]
         public void VersionSourceShaUsingTag()
         {
-            var config = new Config().ApplyDefaults();
-
             using var fixture = new EmptyRepositoryFixture();
             _ = fixture.Repository.MakeACommit();
             Commands.Checkout(fixture.Repository, fixture.Repository.CreateBranch("develop"));
@@ -75,7 +75,7 @@ namespace GitVersionCore.Tests
             Commands.Checkout(fixture.Repository, featureBranch);
             _ = fixture.Repository.MakeACommit();
 
-            var context = new GitVersionContext(fixture.Repository, log, fixture.Repository.Head, config);
+            var context = gitVersionContextFactory.Create(fixture.Repository, fixture.Repository.Head);
             var version = nextVersionCalculator.FindVersion(context);
 
             version.BuildMetaData.VersionSourceSha.ShouldBe(secondCommit.Sha);

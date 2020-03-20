@@ -9,6 +9,7 @@ using GitVersionCore.Tests.Helpers;
 using GitVersionCore.Tests.Mocks;
 using LibGit2Sharp;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using NUnit.Framework;
 using Shouldly;
 
@@ -16,14 +17,6 @@ namespace GitVersionCore.Tests
 {
     public class GitVersionContextTests : TestBase
     {
-        private ILog log;
-
-        public GitVersionContextTests()
-        {
-            var sp = ConfigureServices();
-            log = sp.GetService<ILog>();
-        }
-
         [Test]
         [Theory]
         public void CanInheritVersioningMode(VersioningMode mode)
@@ -43,7 +36,8 @@ namespace GitVersionCore.Tests
                 }
             };
 
-            var context = new GitVersionContext(mockRepository, log, mockBranch, config);
+            var gitVersionContextFactory = GetGitVersionContextFactory(config);
+            var context = gitVersionContextFactory.Create(mockRepository, mockBranch);
             context.Configuration.VersioningMode.ShouldBe(mode);
         }
 
@@ -68,7 +62,8 @@ namespace GitVersionCore.Tests
             fixture.BranchTo(dummyBranchName);
             fixture.MakeACommit();
 
-            var context = new GitVersionContext(fixture.Repository, log, fixture.Repository.Branches[dummyBranchName], config);
+            var gitVersionContextFactory = GetGitVersionContextFactory(config);
+            var context = gitVersionContextFactory.Create(fixture.Repository, fixture.Repository.Branches[dummyBranchName]);
             context.Configuration.Increment.ShouldBe(alternateExpected ?? increment);
         }
 
@@ -99,22 +94,34 @@ namespace GitVersionCore.Tests
                     develop
                 }
             };
-            var context = new GitVersionContext(mockRepository, log, develop, config);
+
+            var gitVersionContextFactory = GetGitVersionContextFactory(config);
+            var context = gitVersionContextFactory.Create(mockRepository, develop);
             context.Configuration.Tag.ShouldBe("alpha");
         }
 
         [Test]
         public void UsesFirstBranchConfigWhenMultipleMatch()
         {
+            var branchConfig = new BranchConfig
+            {
+                VersioningMode = VersioningMode.Mainline,
+                Increment = IncrementStrategy.None,
+                PreventIncrementOfMergedBranchVersion = false,
+                TrackMergeTarget = false,
+                TracksReleaseBranches = false,
+                IsReleaseBranch = false,
+                SourceBranches = new List<string>()
+            };
             var config = new Config
             {
                 VersioningMode = VersioningMode.ContinuousDelivery,
                 Branches =
                 {
-                    { "release/latest", new BranchConfig { Increment = IncrementStrategy.None, Regex = "release/latest", SourceBranches = new List<string>() } },
-                    { "release", new BranchConfig { Increment = IncrementStrategy.Patch, Regex = "releases?[/-]", SourceBranches = new List<string>() } }
+                    { "release/latest", new BranchConfig(branchConfig) { Increment = IncrementStrategy.None, Regex = "release/latest" } },
+                    { "release", new BranchConfig(branchConfig) { Increment = IncrementStrategy.Patch, Regex = "releases?[/-]" } }
                 }
-            }.ApplyDefaults();
+            };
 
             var releaseLatestBranch = new MockBranch("release/latest") { new MockCommit { CommitterEx = Generate.SignatureNow() } };
             var releaseVersionBranch = new MockBranch("release/1.0.0") { new MockCommit { CommitterEx = Generate.SignatureNow() } };
@@ -128,10 +135,11 @@ namespace GitVersionCore.Tests
                 }
             };
 
-            var latestContext = new GitVersionContext(mockRepository, log, releaseLatestBranch, config);
+            var gitVersionContextFactory = GetGitVersionContextFactory(config);
+            var latestContext = gitVersionContextFactory.Create(mockRepository, releaseLatestBranch);
             latestContext.Configuration.Increment.ShouldBe(IncrementStrategy.None);
 
-            var versionContext = new GitVersionContext(mockRepository, log, releaseVersionBranch, config);
+            var versionContext = gitVersionContextFactory.Create(mockRepository, releaseVersionBranch);
             versionContext.Configuration.Increment.ShouldBe(IncrementStrategy.Patch);
         }
 
@@ -155,8 +163,19 @@ namespace GitVersionCore.Tests
             Commands.Checkout(repo.Repository, featureBranch);
             repo.Repository.MakeACommit();
 
-            var context = new GitVersionContext(repo.Repository, log, repo.Repository.Head, config);
+            var gitVersionContextFactory = GetGitVersionContextFactory(config);
+            var context = gitVersionContextFactory.Create(repo.Repository, repo.Repository.Head);
             context.Configuration.Increment.ShouldBe(IncrementStrategy.Major);
+        }
+
+        private static IGitVersionContextFactory GetGitVersionContextFactory(Config config = null)
+        {
+            config ??= new Config().ApplyDefaults();
+            var options = Options.Create(new Arguments { OverrideConfig = config });
+
+            var sp = ConfigureServices(services => { services.AddSingleton(options); });
+
+            return sp.GetService<IGitVersionContextFactory>();
         }
     }
 }

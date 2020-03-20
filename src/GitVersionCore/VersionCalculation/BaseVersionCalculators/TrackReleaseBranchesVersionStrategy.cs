@@ -1,8 +1,9 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using GitVersion.Common;
 using GitVersion.Extensions;
-using GitVersion.Logging;
 using LibGit2Sharp;
 
 namespace GitVersion.VersionCalculation
@@ -25,13 +26,16 @@ namespace GitVersion.VersionCalculation
     /// </summary>
     public class TrackReleaseBranchesVersionStrategy : IVersionStrategy
     {
+        private readonly IGitRepoMetadataProvider gitRepoMetadataProvider;
         private readonly VersionInBranchNameVersionStrategy releaseVersionStrategy;
         private readonly TaggedCommitVersionStrategy taggedCommitVersionStrategy;
 
-        public TrackReleaseBranchesVersionStrategy(ILog log)
+        public TrackReleaseBranchesVersionStrategy(IGitRepoMetadataProvider gitRepoMetadataProvider)
         {
-            releaseVersionStrategy = new VersionInBranchNameVersionStrategy();
-            taggedCommitVersionStrategy = new TaggedCommitVersionStrategy(log);
+            this.gitRepoMetadataProvider = gitRepoMetadataProvider ?? throw new ArgumentNullException(nameof(gitRepoMetadataProvider));
+
+            releaseVersionStrategy = new VersionInBranchNameVersionStrategy(gitRepoMetadataProvider);
+            taggedCommitVersionStrategy = new TaggedCommitVersionStrategy(gitRepoMetadataProvider);
         }
 
         public virtual IEnumerable<BaseVersion> GetVersions(GitVersionContext context)
@@ -89,7 +93,7 @@ namespace GitVersion.VersionCalculation
             var tagPrefixRegex = context.Configuration.GitTagPrefix;
 
             // Find the commit where the child branch was created.
-            var baseSource = context.RepositoryMetadataProvider.FindMergeBase(releaseBranch, context.CurrentBranch);
+            var baseSource = gitRepoMetadataProvider.FindMergeBase(releaseBranch, context.CurrentBranch);
             if (baseSource == context.CurrentCommit)
             {
                 // Ignore the branch if it has no commits.

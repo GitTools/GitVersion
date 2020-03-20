@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using GitVersion.Configuration;
 using GitVersion.Helpers;
+using GitVersion.Logging;
 using GitVersion.VersionCalculation;
 using LibGit2Sharp;
 
@@ -289,6 +291,48 @@ namespace GitVersion.Extensions
             }
 
             return desiredBranch;
+        }
+
+        public static Commit GetCurrentCommit(this IRepository repository, ILog log, Branch currentBranch, string commitId)
+        {
+            Commit currentCommit = null;
+            if (!string.IsNullOrWhiteSpace(commitId))
+            {
+                log.Info($"Searching for specific commit '{commitId}'");
+
+                var commit = repository.Commits.FirstOrDefault(c => string.Equals(c.Sha, commitId, StringComparison.OrdinalIgnoreCase));
+                if (commit != null)
+                {
+                    currentCommit = commit;
+                }
+                else
+                {
+                    log.Warning($"Commit '{commitId}' specified but not found");
+                }
+            }
+
+            if (currentCommit == null)
+            {
+                log.Info("Using latest commit on specified branch");
+                currentCommit = currentBranch.Tip;
+            }
+
+            return currentCommit;
+
+        }
+
+        public static SemanticVersion GetCurrentCommitTaggedVersion(this IRepository repository, GitObject commit, EffectiveConfiguration config)
+        {
+            return repository.Tags
+                .SelectMany(t =>
+                {
+                    if (t.PeeledTarget() == commit && SemanticVersion.TryParse(t.FriendlyName, config.GitTagPrefix, out var version))
+                        return new[] {
+                            version
+                        };
+                    return new SemanticVersion[0];
+                })
+                .Max();
         }
     }
 }

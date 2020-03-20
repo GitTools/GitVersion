@@ -1,6 +1,5 @@
 using System;
 using GitVersion.Cache;
-using GitVersion.Configuration;
 using GitVersion.Extensions;
 using GitVersion.Logging;
 using GitVersion.OutputVariables;
@@ -13,24 +12,23 @@ namespace GitVersion
     public class GitVersionCalculator : IGitVersionCalculator
     {
         private readonly ILog log;
-        private readonly IConfigProvider configProvider;
         private readonly IGitVersionCache gitVersionCache;
         private readonly INextVersionCalculator nextVersionCalculator;
         private readonly IVariableProvider variableProvider;
         private readonly IOptions<Arguments> options;
         private readonly IGitVersionCacheKeyFactory cacheKeyFactory;
+        private readonly IGitVersionContextFactory contextFactory;
 
-        public GitVersionCalculator(ILog log, IConfigProvider configProvider,
-            IGitVersionCache gitVersionCache, INextVersionCalculator nextVersionCalculator, IVariableProvider variableProvider,
-            IOptions<Arguments> options, IGitVersionCacheKeyFactory cacheKeyFactory)
+        public GitVersionCalculator(ILog log, IGitVersionCache gitVersionCache, INextVersionCalculator nextVersionCalculator, IVariableProvider variableProvider,
+            IOptions<Arguments> options, IGitVersionCacheKeyFactory cacheKeyFactory, IGitVersionContextFactory contextFactory)
         {
             this.log = log ?? throw new ArgumentNullException(nameof(log));
-            this.configProvider = configProvider ?? throw new ArgumentNullException(nameof(configProvider));
             this.gitVersionCache = gitVersionCache ?? throw new ArgumentNullException(nameof(gitVersionCache));
             this.nextVersionCalculator = nextVersionCalculator ?? throw new ArgumentNullException(nameof(nextVersionCalculator));
             this.variableProvider = variableProvider ?? throw new ArgumentNullException(nameof(variableProvider));
             this.options = options ?? throw new ArgumentNullException(nameof(options));
             this.cacheKeyFactory = cacheKeyFactory ?? throw new ArgumentNullException(nameof(cacheKeyFactory));
+            this.contextFactory = contextFactory ?? throw new ArgumentNullException(nameof(contextFactory));
         }
 
         public VersionVariables CalculateVersionVariables()
@@ -59,11 +57,9 @@ namespace GitVersion
 
         private VersionVariables ExecuteInternal(Arguments arguments)
         {
-            var configuration = configProvider.Provide(overrideConfig: arguments.OverrideConfig);
-
             using var repo = new Repository(arguments.DotGitDirectory);
             var targetBranch = repo.GetTargetBranch(arguments.TargetBranch);
-            var gitVersionContext = new GitVersionContext(repo, log, targetBranch, configuration, commitId: arguments.CommitId);
+            var gitVersionContext = contextFactory.Create(repo, targetBranch, arguments.CommitId);
             var semanticVersion = nextVersionCalculator.FindVersion(gitVersionContext);
 
             return variableProvider.GetVariablesFor(semanticVersion, gitVersionContext.Configuration, gitVersionContext.IsCurrentCommitTagged);

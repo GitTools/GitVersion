@@ -171,6 +171,13 @@ If the docs do not help you decide on the mode open an issue to discuss what you
 
         public static void ApplyOverridesTo(this Config config, Config overrideConfig)
         {
+            config.Branches.Clear();
+            config.Ignore = overrideConfig.Ignore;
+            config.Branches = overrideConfig.Branches;
+            config.Increment = overrideConfig.Increment;
+            config.NextVersion = overrideConfig.NextVersion;
+            config.VersioningMode = overrideConfig.VersioningMode;
+            config.AssemblyFileVersioningFormat = overrideConfig.AssemblyFileVersioningFormat;
             config.TagPrefix = string.IsNullOrWhiteSpace(overrideConfig.TagPrefix) ? config.TagPrefix : overrideConfig.TagPrefix;
         }
 
@@ -189,7 +196,7 @@ If the docs do not help you decide on the mode open an issue to discuss what you
             }
             catch (InvalidOperationException)
             {
-                var matchingConfigs = String.Concat(matches.Select(m => $"{System.Environment.NewLine} - {m.Key}"));
+                var matchingConfigs = string.Concat(matches.Select(m => $"{System.Environment.NewLine} - {m.Key}"));
                 var picked = matches
                     .Select(kvp => kvp.Value)
                     .First();
@@ -204,6 +211,77 @@ If the docs do not help you decide on the mode open an issue to discuss what you
         }
 
         public static bool IsReleaseBranch(this Config config, string branchName) => config.GetConfigForBranch(branchName)?.IsReleaseBranch ?? false;
+
+        public static EffectiveConfiguration CalculateEffectiveConfiguration(this Config configuration, BranchConfig currentBranchConfig)
+        {
+            var name = currentBranchConfig.Name;
+            if (!currentBranchConfig.VersioningMode.HasValue)
+                throw new Exception($"Configuration value for 'Versioning mode' for branch {name} has no value. (this should not happen, please report an issue)");
+            if (!currentBranchConfig.Increment.HasValue)
+                throw new Exception($"Configuration value for 'Increment' for branch {name} has no value. (this should not happen, please report an issue)");
+            if (!currentBranchConfig.PreventIncrementOfMergedBranchVersion.HasValue)
+                throw new Exception($"Configuration value for 'PreventIncrementOfMergedBranchVersion' for branch {name} has no value. (this should not happen, please report an issue)");
+            if (!currentBranchConfig.TrackMergeTarget.HasValue)
+                throw new Exception($"Configuration value for 'TrackMergeTarget' for branch {name} has no value. (this should not happen, please report an issue)");
+            if (!currentBranchConfig.TracksReleaseBranches.HasValue)
+                throw new Exception($"Configuration value for 'TracksReleaseBranches' for branch {name} has no value. (this should not happen, please report an issue)");
+            if (!currentBranchConfig.IsReleaseBranch.HasValue)
+                throw new Exception($"Configuration value for 'IsReleaseBranch' for branch {name} has no value. (this should not happen, please report an issue)");
+
+            if (!configuration.AssemblyVersioningScheme.HasValue)
+                throw new Exception("Configuration value for 'AssemblyVersioningScheme' has no value. (this should not happen, please report an issue)");
+            if (!configuration.AssemblyFileVersioningScheme.HasValue)
+                throw new Exception("Configuration value for 'AssemblyFileVersioningScheme' has no value. (this should not happen, please report an issue)");
+            if (!configuration.CommitMessageIncrementing.HasValue)
+                throw new Exception("Configuration value for 'CommitMessageIncrementing' has no value. (this should not happen, please report an issue)");
+            if (!configuration.LegacySemVerPadding.HasValue)
+                throw new Exception("Configuration value for 'LegacySemVerPadding' has no value. (this should not happen, please report an issue)");
+            if (!configuration.BuildMetaDataPadding.HasValue)
+                throw new Exception("Configuration value for 'BuildMetaDataPadding' has no value. (this should not happen, please report an issue)");
+            if (!configuration.CommitsSinceVersionSourcePadding.HasValue)
+                throw new Exception("Configuration value for 'CommitsSinceVersionSourcePadding' has no value. (this should not happen, please report an issue)");
+
+            var versioningMode = currentBranchConfig.VersioningMode.Value;
+            var tag = currentBranchConfig.Tag;
+            var tagNumberPattern = currentBranchConfig.TagNumberPattern;
+            var incrementStrategy = currentBranchConfig.Increment.Value;
+            var preventIncrementForMergedBranchVersion = currentBranchConfig.PreventIncrementOfMergedBranchVersion.Value;
+            var trackMergeTarget = currentBranchConfig.TrackMergeTarget.Value;
+            var preReleaseWeight = currentBranchConfig.PreReleaseWeight ?? 0;
+
+            var nextVersion = configuration.NextVersion;
+            var assemblyVersioningScheme = configuration.AssemblyVersioningScheme.Value;
+            var assemblyFileVersioningScheme = configuration.AssemblyFileVersioningScheme.Value;
+            var assemblyInformationalFormat = configuration.AssemblyInformationalFormat;
+            var assemblyVersioningFormat = configuration.AssemblyVersioningFormat;
+            var assemblyFileVersioningFormat = configuration.AssemblyFileVersioningFormat;
+            var gitTagPrefix = configuration.TagPrefix;
+            var majorMessage = configuration.MajorVersionBumpMessage;
+            var minorMessage = configuration.MinorVersionBumpMessage;
+            var patchMessage = configuration.PatchVersionBumpMessage;
+            var noBumpMessage = configuration.NoBumpMessage;
+            var commitDateFormat = configuration.CommitDateFormat;
+
+            var commitMessageVersionBump = currentBranchConfig.CommitMessageIncrementing ?? configuration.CommitMessageIncrementing.Value;
+
+            return new EffectiveConfiguration(
+                assemblyVersioningScheme, assemblyFileVersioningScheme, assemblyInformationalFormat, assemblyVersioningFormat, assemblyFileVersioningFormat, versioningMode, gitTagPrefix,
+                tag, nextVersion, incrementStrategy,
+                currentBranchConfig.Regex,
+                preventIncrementForMergedBranchVersion,
+                tagNumberPattern, configuration.ContinuousDeploymentFallbackTag,
+                trackMergeTarget,
+                majorMessage, minorMessage, patchMessage, noBumpMessage,
+                commitMessageVersionBump,
+                configuration.LegacySemVerPadding.Value,
+                configuration.BuildMetaDataPadding.Value,
+                configuration.CommitsSinceVersionSourcePadding.Value,
+                configuration.Ignore.ToFilters(),
+                currentBranchConfig.TracksReleaseBranches.Value,
+                currentBranchConfig.IsReleaseBranch.Value,
+                commitDateFormat,
+                preReleaseWeight);
+        }
 
         private static BranchConfig GetOrCreateBranchDefaults(this Config config, string branchKey)
         {

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using GitVersion.Common;
 using GitVersion.Configuration;
 using GitVersion.Extensions;
 using GitVersion.Logging;
@@ -9,27 +10,27 @@ using LibGit2Sharp;
 
 namespace GitVersion
 {
-    public class GitRepoMetadataProvider
+    public class GitRepoMetadataProvider : IGitRepoMetadataProvider
     {
-        private readonly Dictionary<Branch, List<BranchCommit>> mergeBaseCommitsCache;
-        private readonly Dictionary<Tuple<Branch, Branch>, MergeBaseData> mergeBaseCache;
-        private readonly Dictionary<Branch, List<SemanticVersion>> semanticVersionTagsOnBranchCache;
-        private IRepository Repository { get; }
+        private readonly Dictionary<Branch, List<BranchCommit>> mergeBaseCommitsCache = new Dictionary<Branch, List<BranchCommit>>();
+        private readonly Dictionary<Tuple<Branch, Branch>, MergeBaseData> mergeBaseCache = new Dictionary<Tuple<Branch, Branch>, MergeBaseData>();
+        private readonly Dictionary<Branch, List<SemanticVersion>> semanticVersionTagsOnBranchCache = new Dictionary<Branch, List<SemanticVersion>>();
         private const string MissingTipFormat = "{0} has no tip. Please see http://example.com/docs for information on how to fix this.";
-        private readonly ILog log;
-        private readonly Config configuration;
 
-        public GitRepoMetadataProvider(IRepository repository, ILog log, Config configuration)
+        private readonly ILog log;
+        private IRepository repository;
+
+        public GitRepoMetadataProvider(ILog log)
         {
-            mergeBaseCache = new Dictionary<Tuple<Branch, Branch>, MergeBaseData>();
-            mergeBaseCommitsCache = new Dictionary<Branch, List<BranchCommit>>();
-            semanticVersionTagsOnBranchCache = new Dictionary<Branch, List<SemanticVersion>>();
-            Repository = repository;
             this.log = log;
-            this.configuration = configuration;
         }
 
-        public IEnumerable<Tuple<Tag, SemanticVersion>> GetValidVersionTags(IRepository repository, string tagPrefixRegex, DateTimeOffset? olderThan = null)
+        public void WithData(IRepository repo)
+        {
+            repository = repo;
+        }
+
+        public IEnumerable<Tuple<Tag, SemanticVersion>> GetValidVersionTags(string tagPrefixRegex, DateTimeOffset? olderThan = null)
         {
             var tags = new List<Tuple<Tag, SemanticVersion>>();
 
@@ -57,7 +58,7 @@ namespace GitVersion
 
             using (log.IndentLog($"Getting version tags from branch '{branch.CanonicalName}'."))
             {
-                var tags = GetValidVersionTags(Repository, tagPrefixRegex);
+                var tags = GetValidVersionTags(tagPrefixRegex);
 
                 var versionTags = branch.Commits.SelectMany(c => tags.Where(t => c.Sha == t.Item1.Target.Sha).Select(t => t.Item2)).ToList();
 
@@ -67,7 +68,7 @@ namespace GitVersion
         }
 
         // TODO Should we cache this?
-        public IEnumerable<Branch> GetBranchesContainingCommit(Commit commit, IList<Branch> branches, bool onlyTrackedBranches)
+        public IEnumerable<Branch> GetBranchesContainingCommit(Commit commit, IEnumerable<Branch> branches, bool onlyTrackedBranches)
         {
             if (commit == null)
             {
@@ -79,7 +80,8 @@ namespace GitVersion
                 var directBranchHasBeenFound = false;
                 log.Info("Trying to find direct branches.");
                 // TODO: It looks wasteful looping through the branches twice. Can't these loops be merged somehow? @asbjornu
-                foreach (var branch in branches)
+                var branchList = branches as Branch[] ?? branches.ToArray();
+                foreach (var branch in branchList)
                 {
                     if (branch.Tip != null && branch.Tip.Sha != commit.Sha || ((onlyTrackedBranches && branch.IsTracking) || !onlyTrackedBranches))
                     {
@@ -97,11 +99,11 @@ namespace GitVersion
                 }
 
                 log.Info($"No direct branches found, searching through {(onlyTrackedBranches ? "tracked" : "all")} branches.");
-                foreach (var branch in branches.Where(b => (onlyTrackedBranches && b.IsTracking) || !onlyTrackedBranches))
+                foreach (var branch in branchList.Where(b => (onlyTrackedBranches && b.IsTracking) || !onlyTrackedBranches))
                 {
                     log.Info($"Searching for commits reachable from '{branch.FriendlyName}'.");
 
-                    var commits = Repository.GetCommitsReacheableFrom(commit, branch);
+                    var commits = repository.GetCommitsReacheableFrom(commit, branch);
 
                     if (!commits.Any())
                     {
@@ -139,7 +141,7 @@ namespace GitVersion
                     commitToFindCommonBase = otherBranch.Tip.Parents.First();
                 }
 
-                var findMergeBase = Repository.ObjectDatabase.FindMergeBase(commit, commitToFindCommonBase);
+                var findMergeBase = repository.ObjectDatabase.FindMergeBase(commit, commitToFindCommonBase);
                 if (findMergeBase != null)
                 {
                     log.Info($"Found merge base of {findMergeBase.Sha}");
@@ -148,14 +150,14 @@ namespace GitVersion
                     do
                     {
                         // Now make sure that the merge base is not a forward merge
-                        forwardMerge = Repository.GetForwardMerge(commitToFindCommonBase, findMergeBase);
+                        forwardMerge = repository.GetForwardMerge(commitToFindCommonBase, findMergeBase);
 
                         if (forwardMerge != null)
                         {
                             // TODO Fix the logging up in this section
                             var second = forwardMerge.Parents.First();
                             log.Debug("Second " + second.Sha);
-                            var mergeBase = Repository.ObjectDatabase.FindMergeBase(commit, second);
+                            var mergeBase = repository.ObjectDatabase.FindMergeBase(commit, second);
                             if (mergeBase == null)
                             {
                                 log.Warning("Could not find mergbase for " + commit);
@@ -177,7 +179,7 @@ namespace GitVersion
                 }
 
                 // Store in cache.
-                mergeBaseCache.Add(key, new MergeBaseData(branch, otherBranch, Repository, findMergeBase));
+                mergeBaseCache.Add(key, new MergeBaseData(findMergeBase));
 
                 log.Info($"Merge base of {branch.FriendlyName}' and '{otherBranch.FriendlyName} is {findMergeBase}");
                 return findMergeBase;
@@ -188,7 +190,7 @@ namespace GitVersion
         /// Find the commit where the given branch was branched from another branch.
         /// If there are multiple such commits and branches, tries to guess based on commit histories.
         /// </summary>
-        public BranchCommit FindCommitBranchWasBranchedFrom(Branch branch, params Branch[] excludedBranches)
+        public BranchCommit FindCommitBranchWasBranchedFrom(Branch branch, Config configuration, params Branch[] excludedBranches)
         {
             if (branch == null)
             {
@@ -203,7 +205,7 @@ namespace GitVersion
                     return BranchCommit.Empty;
                 }
 
-                var possibleBranches = GetMergeCommitsForBranch(branch, excludedBranches)
+                var possibleBranches = GetMergeCommitsForBranch(branch, configuration, excludedBranches)
                     .Where(b => !branch.IsSameBranch(b.Branch))
                     .ToList();
 
@@ -220,7 +222,7 @@ namespace GitVersion
             }
         }
 
-        private List<BranchCommit> GetMergeCommitsForBranch(Branch branch, Branch[] excludedBranches)
+        private IEnumerable<BranchCommit> GetMergeCommitsForBranch(Branch branch, Config configuration, IEnumerable<Branch> excludedBranches)
         {
             if (mergeBaseCommitsCache.ContainsKey(branch))
             {
@@ -232,7 +234,7 @@ namespace GitVersion
             var regexesToCheck = currentBranchConfig == null
                 ? new[] { ".*" } // Match anything if we can't find a branch config
                 : currentBranchConfig.SourceBranches.Select(sb => configuration.Branches[sb].Regex);
-            var branchMergeBases = Repository.Branches
+            var branchMergeBases = repository.Branches
                 .ExcludingBranches(excludedBranches)
                 .Where(b =>
                 {
@@ -262,17 +264,10 @@ namespace GitVersion
 
         private class MergeBaseData
         {
-            public Branch Branch { get; }
-            public Branch OtherBranch { get; }
-            public IRepository Repository { get; }
-
             public Commit MergeBase { get; }
 
-            public MergeBaseData(Branch branch, Branch otherBranch, IRepository repository, Commit mergeBase)
+            public MergeBaseData(Commit mergeBase)
             {
-                Branch = branch;
-                OtherBranch = otherBranch;
-                Repository = repository;
                 MergeBase = mergeBase;
             }
         }

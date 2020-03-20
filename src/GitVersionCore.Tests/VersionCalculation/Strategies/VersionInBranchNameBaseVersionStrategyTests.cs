@@ -2,11 +2,13 @@ using System.Collections.Generic;
 using System.Linq;
 using GitTools.Testing;
 using GitVersion;
+using GitVersion.Common;
 using GitVersion.Configuration;
-using GitVersion.Logging;
 using GitVersion.VersionCalculation;
 using GitVersionCore.Tests.Helpers;
 using LibGit2Sharp;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using NUnit.Framework;
 using Shouldly;
 
@@ -15,16 +17,7 @@ namespace GitVersionCore.Tests.VersionCalculation.Strategies
     [TestFixture]
     public class VersionInBranchNameBaseVersionStrategyTests : TestBase
     {
-        private readonly ILog log;
-        private readonly IVersionStrategy strategy;
-        private readonly Config configuration;
-
-        public VersionInBranchNameBaseVersionStrategyTests()
-        {
-            log = new NullLog();
-            strategy = new VersionInBranchNameVersionStrategy();
-            configuration = new Config().ApplyDefaults();
-        }
+        private IVersionStrategy strategy;
 
         [TestCase("release-2.0.0", "2.0.0")]
         [TestCase("release/3.0.0", "3.0.0")]
@@ -34,8 +27,9 @@ namespace GitVersionCore.Tests.VersionCalculation.Strategies
             fixture.Repository.MakeACommit();
             var branch = fixture.Repository.CreateBranch(branchName);
 
-            var gitVersionContext = new GitVersionContext(fixture.Repository, log, branch, configuration);
-            var baseVersion = strategy.GetVersions(gitVersionContext).Single();
+            var gitVersionContextFactory = GetGitVersionContextFactory();
+            var context = gitVersionContextFactory.Create(fixture.Repository, branch);
+            var baseVersion = strategy.GetVersions(context).Single();
 
             baseVersion.SemanticVersion.ToString().ShouldBe(expectedBaseVersion);
         }
@@ -50,8 +44,9 @@ namespace GitVersionCore.Tests.VersionCalculation.Strategies
             fixture.Repository.MakeACommit();
             var branch = fixture.Repository.CreateBranch(branchName);
 
-            var gitVersionContext = new GitVersionContext(fixture.Repository, log, branch, configuration);
-            var baseVersions = strategy.GetVersions(gitVersionContext);
+            var gitVersionContextFactory = GetGitVersionContextFactory();
+            var context = gitVersionContextFactory.Create(fixture.Repository, branch);
+            var baseVersions = strategy.GetVersions(context);
 
             baseVersions.ShouldBeEmpty();
         }
@@ -64,10 +59,13 @@ namespace GitVersionCore.Tests.VersionCalculation.Strategies
             fixture.Repository.MakeACommit();
             var branch = fixture.Repository.CreateBranch(branchName);
             var branchConfigs = new Dictionary<string, BranchConfig> { { "support", new BranchConfig { IsReleaseBranch = true } } };
-            configuration.Branches = branchConfigs;
 
-            var gitVersionContext = new GitVersionContext(fixture.Repository, log, branch, configuration);
-            var baseVersion = strategy.GetVersions(gitVersionContext).Single();
+            var config = new Config().ApplyDefaults();
+            config.Branches = branchConfigs;
+            var gitVersionContextFactory = GetGitVersionContextFactory(config);
+
+            var context = gitVersionContextFactory.Create(fixture.Repository, branch);
+            var baseVersion = strategy.GetVersions(context).Single();
 
             baseVersion.SemanticVersion.ToString().ShouldBe(expectedBaseVersion);
         }
@@ -84,10 +82,22 @@ namespace GitVersionCore.Tests.VersionCalculation.Strategies
             Commands.Fetch((Repository)fixture.LocalRepositoryFixture.Repository, fixture.LocalRepositoryFixture.Repository.Network.Remotes.First().Name, new string[0], new FetchOptions(), null);
             fixture.LocalRepositoryFixture.Checkout($"origin/{branchName}");
 
-            var gitVersionContext = new GitVersionContext(fixture.Repository, log, branch, configuration);
-            var baseVersion = strategy.GetVersions(gitVersionContext).Single();
+            var gitVersionContextFactory = GetGitVersionContextFactory();
+            var context = gitVersionContextFactory.Create(fixture.Repository, branch);
+            var baseVersion = strategy.GetVersions(context).Single();
 
             baseVersion.SemanticVersion.ToString().ShouldBe(expectedBaseVersion);
+        }
+
+        private IGitVersionContextFactory GetGitVersionContextFactory(Config config = null)
+        {
+            config ??= new Config().ApplyDefaults();
+            var options = Options.Create(new Arguments { OverrideConfig = config });
+
+            var sp = ConfigureServices(services => { services.AddSingleton(options); });
+            var gitRepoMetadataProvider = sp.GetService<IGitRepoMetadataProvider>();
+            strategy = new VersionInBranchNameVersionStrategy(gitRepoMetadataProvider);
+            return sp.GetService<IGitVersionContextFactory>();
         }
     }
 }
