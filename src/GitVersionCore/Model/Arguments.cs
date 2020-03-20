@@ -9,14 +9,17 @@ namespace GitVersion
 {
     public class Arguments
     {
+        private Lazy<string> workingDirectory;
         private Lazy<string> dotGitDirectory;
         private Lazy<string> projectRootDirectory;
         public Arguments()
         {
+            workingDirectory = new Lazy<string>(this.GetWorkingDirectory);
             dotGitDirectory = new Lazy<string>(this.GetDotGitDirectory);
             projectRootDirectory = new Lazy<string>(this.GetProjectRootDirectory);
         }
 
+        public string WorkingDirectory => workingDirectory.Value;
         public string DotGitDirectory => dotGitDirectory.Value;
         public string ProjectRootDirectory => projectRootDirectory.Value;
 

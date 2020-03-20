@@ -5,7 +5,6 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using GitVersion.Configuration;
-using GitVersion.Extensions;
 using GitVersion.Logging;
 using LibGit2Sharp;
 using Microsoft.Extensions.Options;
@@ -45,7 +44,7 @@ namespace GitVersion.Cache
 
         private string GetGitSystemHash()
         {
-            var dotGitDirectory = options.Value.GetDotGitDirectory();
+            var dotGitDirectory = options.Value.DotGitDirectory;
 
             // traverse the directory and get a list of files, use that for GetHash
             var contents = CalculateDirectoryContents(Path.Combine(dotGitDirectory, "refs"));
@@ -145,7 +144,7 @@ namespace GitVersion.Cache
 
         private string GetRepositorySnapshotHash()
         {
-            using var repo = new Repository(options.Value.GetDotGitDirectory());
+            using var repo = new Repository(options.Value.DotGitDirectory);
 
             var head = repo.Head;
             if (head.Tip == null)

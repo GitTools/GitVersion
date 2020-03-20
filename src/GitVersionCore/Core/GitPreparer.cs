@@ -39,8 +39,8 @@ namespace GitVersion
 
             PrepareInternal(normalizeGitDirectory, currentBranch, shouldCleanUpRemotes);
 
-            var dotGitDirectory = arguments.GetDotGitDirectory();
-            var projectRoot = arguments.GetProjectRootDirectory();
+            var dotGitDirectory = arguments.DotGitDirectory;
+            var projectRoot = arguments.ProjectRootDirectory;
 
             log.Info($"Project root is: {projectRoot}");
             log.Info($"DotGit directory is: {dotGitDirectory}");
@@ -58,11 +58,11 @@ namespace GitVersion
                 Username = arguments.Authentication?.Username,
                 Password = arguments.Authentication?.Password
             };
-            if (!string.IsNullOrWhiteSpace(options.Value.GetTargetUrl()))
+            if (!string.IsNullOrWhiteSpace(options.Value.TargetUrl))
             {
-                var tempRepositoryPath = CalculateTemporaryRepositoryPath(options.Value.GetTargetUrl(), arguments.DynamicRepositoryClonePath);
+                var tempRepositoryPath = CalculateTemporaryRepositoryPath(options.Value.TargetUrl, arguments.DynamicRepositoryClonePath);
 
-                arguments.DynamicGitRepositoryPath = CreateDynamicRepository(tempRepositoryPath, authentication, options.Value.GetTargetUrl(), currentBranch);
+                arguments.DynamicGitRepositoryPath = CreateDynamicRepository(tempRepositoryPath, authentication, options.Value.TargetUrl, currentBranch);
             }
             else
             {
@@ -73,7 +73,7 @@ namespace GitVersion
                         CleanupDuplicateOrigin();
                     }
 
-                    NormalizeGitDirectory(authentication, currentBranch, options.Value.GetDotGitDirectory(), options.Value.IsDynamicGitRepository());
+                    NormalizeGitDirectory(authentication, currentBranch, options.Value.DotGitDirectory, options.Value.IsDynamicGitRepository());
                 }
             }
         }
@@ -95,7 +95,7 @@ namespace GitVersion
         {
             var remoteToKeep = DefaultRemoteName;
 
-            using var repo = new Repository(options.Value.GetDotGitDirectory());
+            using var repo = new Repository(options.Value.DotGitDirectory);
 
             // check that we have a remote that matches defaultRemoteName if not take the first remote
             if (!repo.Network.Remotes.Any(remote => remote.Name.Equals(DefaultRemoteName, StringComparison.InvariantCultureIgnoreCase)))

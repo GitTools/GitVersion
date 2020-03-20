@@ -5,15 +5,13 @@ namespace GitVersion.Extensions
 {
     public static class ArgumentExtensions
     {
-        public static string GetTargetUrl(this Arguments arguments) => arguments.TargetUrl;
-
-        public static string GetWorkingDirectory(this Arguments arguments) => arguments.TargetPath.TrimEnd('/', '\\');
+        public static string GetWorkingDirectory(this Arguments arguments) => arguments.TargetPath?.TrimEnd('/', '\\') ?? string.Empty;
 
         public static bool IsDynamicGitRepository(this Arguments arguments) => !string.IsNullOrWhiteSpace(arguments.DynamicGitRepositoryPath);
 
         public static string GetDotGitDirectory(this Arguments arguments)
         {
-            var gitDirectory = arguments.IsDynamicGitRepository() ? arguments.DynamicGitRepositoryPath : Repository.Discover(arguments.GetWorkingDirectory());
+            var gitDirectory = arguments.IsDynamicGitRepository() ? arguments.DynamicGitRepositoryPath : Repository.Discover(arguments.WorkingDirectory);
 
             gitDirectory = gitDirectory?.TrimEnd('/', '\\');
             if (string.IsNullOrEmpty(gitDirectory))
@@ -28,17 +26,16 @@ namespace GitVersion.Extensions
         {
             if (arguments.IsDynamicGitRepository())
             {
-                return arguments.GetWorkingDirectory();
+                return arguments.WorkingDirectory;
             }
 
-            var dotGitDirectory = Repository.Discover(arguments.GetWorkingDirectory());
+            var dotGitDirectory = Repository.Discover(arguments.WorkingDirectory);
 
             if (string.IsNullOrEmpty(dotGitDirectory))
                 throw new DirectoryNotFoundException($"Can't find the .git directory in {dotGitDirectory}");
 
             using var repo = new Repository(dotGitDirectory);
-            var result = repo.Info.WorkingDirectory;
-            return result;
+            return repo.Info.WorkingDirectory;
         }
     }
 }

@@ -5,7 +5,6 @@ using GitTools.Testing;
 using GitVersion;
 using GitVersion.Cache;
 using GitVersion.Configuration;
-using GitVersion.Extensions;
 using GitVersion.Logging;
 using GitVersionCore.Tests.Helpers;
 using LibGit2Sharp;
@@ -403,7 +402,7 @@ namespace GitVersionCore.Tests
 
                 sp = GetServiceProvider(arguments);
 
-                arguments.GetProjectRootDirectory().TrimEnd('/', '\\').ShouldBe(worktreePath);
+                arguments.ProjectRootDirectory.TrimEnd('/', '\\').ShouldBe(worktreePath);
             }
             finally
             {
@@ -426,7 +425,7 @@ namespace GitVersionCore.Tests
             sp = GetServiceProvider(arguments);
 
             var expectedPath = fixture.RepositoryPath.TrimEnd('/', '\\');
-            arguments.GetProjectRootDirectory().TrimEnd('/', '\\').ShouldBe(expectedPath);
+            arguments.ProjectRootDirectory.TrimEnd('/', '\\').ShouldBe(expectedPath);
         }
 
         [Test]
@@ -460,7 +459,7 @@ namespace GitVersionCore.Tests
             sp = GetServiceProvider(arguments);
 
             var expectedPath = Path.Combine(fixture.RepositoryPath, ".git");
-            arguments.GetDotGitDirectory().ShouldBe(expectedPath);
+            arguments.DotGitDirectory.ShouldBe(expectedPath);
         }
 
         [Test]
@@ -489,7 +488,7 @@ namespace GitVersionCore.Tests
                 sp = GetServiceProvider(arguments);
 
                 var expectedPath = Path.Combine(fixture.RepositoryPath, ".git");
-                arguments.GetDotGitDirectory().ShouldBe(expectedPath);
+                arguments.DotGitDirectory.ShouldBe(expectedPath);
             }
             finally
             {

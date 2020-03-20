@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using GitVersion.Extensions;
 using GitVersion.Helpers;
 using GitVersion.Logging;
 using GitVersion.OutputVariables;
@@ -54,7 +53,7 @@ namespace GitVersion.Cache
 
         public string GetCacheDirectory()
         {
-            var gitDir = options.Value.GetDotGitDirectory();
+            var gitDir = options.Value.DotGitDirectory;
             var cacheDir = Path.Combine(gitDir, "gitversion_cache");
             return cacheDir;
         }

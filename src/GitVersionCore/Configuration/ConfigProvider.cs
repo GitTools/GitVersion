@@ -1,7 +1,6 @@
 using System;
 using System.IO;
 using GitVersion.Configuration.Init.Wizard;
-using GitVersion.Extensions;
 using GitVersion.Logging;
 using Microsoft.Extensions.Options;
 
@@ -26,8 +25,8 @@ namespace GitVersion.Configuration
 
         public Config Provide(bool applyDefaults = true, Config overrideConfig = null)
         {
-            var workingDirectory = options.Value.GetWorkingDirectory();
-            var projectRootDirectory = options.Value.GetProjectRootDirectory();
+            var workingDirectory = options.Value.WorkingDirectory;
+            var projectRootDirectory = options.Value.ProjectRootDirectory;
 
             var rootDirectory = configFileLocator.HasConfigFileAt(workingDirectory) ? workingDirectory : projectRootDirectory;
             return Provide(rootDirectory, applyDefaults, overrideConfig);

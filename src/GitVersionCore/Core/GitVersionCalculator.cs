@@ -61,7 +61,7 @@ namespace GitVersion
         {
             var configuration = configProvider.Provide(overrideConfig: arguments.OverrideConfig);
 
-            using var repo = new Repository(arguments.GetDotGitDirectory());
+            using var repo = new Repository(arguments.DotGitDirectory);
             var targetBranch = repo.GetTargetBranch(arguments.TargetBranch);
             var gitVersionContext = new GitVersionContext(repo, log, targetBranch, configuration, commitId: arguments.CommitId);
             var semanticVersion = nextVersionCalculator.FindVersion(gitVersionContext);

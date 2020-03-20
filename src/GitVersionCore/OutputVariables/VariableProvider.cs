@@ -16,11 +16,11 @@ namespace GitVersion.OutputVariables
         private readonly IEnvironment environment;
         private readonly ILog log;
 
-        public VariableProvider(INextVersionCalculator nextVersionCalculator, IEnvironment environment, ILog log = default)
+        public VariableProvider(INextVersionCalculator nextVersionCalculator, IEnvironment environment, ILog log)
         {
             this.nextVersionCalculator = nextVersionCalculator ?? throw new ArgumentNullException(nameof(nextVersionCalculator));
-            this.environment = environment;
-            this.log = log ?? new NullLog();
+            this.environment = environment ?? throw new ArgumentNullException(nameof(environment));
+            this.log = log ?? throw new ArgumentNullException(nameof(log));
         }
 
         public VersionVariables GetVariablesFor(SemanticVersion semanticVersion, EffectiveConfiguration config, bool isCurrentCommitTagged)
@@ -59,14 +59,11 @@ namespace GitVersion.OutputVariables
 
             var semverFormatValues = new SemanticVersionFormatValues(semanticVersion, config);
 
-            var informationalVersion = CheckAndFormatString(config.AssemblyInformationalFormat, semverFormatValues,
-                environment, semverFormatValues.InformationalVersion, "AssemblyInformationalVersion");
+            var informationalVersion = CheckAndFormatString(config.AssemblyInformationalFormat, semverFormatValues, semverFormatValues.InformationalVersion, "AssemblyInformationalVersion");
 
-            var assemblyFileSemVer = CheckAndFormatString(config.AssemblyFileVersioningFormat, semverFormatValues,
-                environment, semverFormatValues.AssemblyFileSemVer, "AssemblyFileVersioningFormat");
+            var assemblyFileSemVer = CheckAndFormatString(config.AssemblyFileVersioningFormat, semverFormatValues, semverFormatValues.AssemblyFileSemVer, "AssemblyFileVersioningFormat");
 
-            var assemblySemVer = CheckAndFormatString(config.AssemblyVersioningFormat, semverFormatValues,
-                environment, semverFormatValues.AssemblySemVer, "AssemblyVersioningFormat");
+            var assemblySemVer = CheckAndFormatString(config.AssemblyVersioningFormat, semverFormatValues, semverFormatValues.AssemblySemVer, "AssemblyVersioningFormat");
 
             var variables = new VersionVariables(
                 semverFormatValues.Major,
@@ -128,7 +125,7 @@ namespace GitVersion.OutputVariables
             }
         }
 
-        private string CheckAndFormatString<T>(string formatString, T source, IEnvironment environment, string defaultValue, string formatVarName)
+        private string CheckAndFormatString<T>(string formatString, T source, string defaultValue, string formatVarName)
         {
             string formattedString;
 
