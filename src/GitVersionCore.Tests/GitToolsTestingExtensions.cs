@@ -42,7 +42,7 @@ namespace GitVersionCore.Tests
 
             try
             {
-                var executeGitVersion = nextVersionCalculator.FindVersion(context);
+                var executeGitVersion = nextVersionCalculator.FindVersion();
                 var variables = variableProvider.GetVariablesFor(executeGitVersion, context.Configuration, context.IsCurrentCommitTagged);
 
                 return variables;

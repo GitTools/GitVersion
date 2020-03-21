@@ -62,7 +62,7 @@ namespace GitVersion
             gitVersionContextFactory.Init(repo, targetBranch, arguments.CommitId);
             var context = gitVersionContextFactory.Context;
 
-            var semanticVersion = nextVersionCalculator.FindVersion(context);
+            var semanticVersion = nextVersionCalculator.FindVersion();
 
             return variableProvider.GetVariablesFor(semanticVersion, context.Configuration, context.IsCurrentCommitTagged);
         }

@@ -16,7 +16,7 @@ namespace GitVersion
         private readonly IGitRepoMetadataProvider gitRepoMetadataProvider;
         private readonly IBranchConfigurationCalculator branchConfigurationCalculator;
         private readonly IOptions<Arguments> options;
-        public GitVersionContext Context { get; set; }
+        public GitVersionContext Context { get; private set; }
 
         public GitVersionContextFactory(ILog log, IConfigProvider configProvider, IGitRepoMetadataProvider gitRepoMetadataProvider, IBranchConfigurationCalculator branchConfigurationCalculator, IOptions<Arguments> options)
         {

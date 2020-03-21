@@ -44,9 +44,8 @@ namespace GitVersionCore.Tests
             _ = fixture.Repository.MakeACommit();
 
             gitVersionContextFactory.Init(fixture.Repository, fixture.Repository.Head);
-            var context = gitVersionContextFactory.Context;
 
-            var version = nextVersionCalculator.FindVersion(context);
+            var version = nextVersionCalculator.FindVersion();
 
             version.BuildMetaData.VersionSourceSha.ShouldBe(initialCommit.Sha);
             version.BuildMetaData.CommitsSinceVersionSource.ShouldBe(2);
@@ -59,9 +58,8 @@ namespace GitVersionCore.Tests
             var initialCommit = fixture.Repository.MakeACommit();
 
             gitVersionContextFactory.Init(fixture.Repository, fixture.Repository.Head);
-            var context = gitVersionContextFactory.Context;
 
-            var version = nextVersionCalculator.FindVersion(context);
+            var version = nextVersionCalculator.FindVersion();
 
             version.BuildMetaData.VersionSourceSha.ShouldBe(initialCommit.Sha);
             version.BuildMetaData.CommitsSinceVersionSource.ShouldBe(0);
@@ -80,9 +78,8 @@ namespace GitVersionCore.Tests
             _ = fixture.Repository.MakeACommit();
 
             gitVersionContextFactory.Init(fixture.Repository, fixture.Repository.Head);
-            var context = gitVersionContextFactory.Context;
 
-            var version = nextVersionCalculator.FindVersion(context);
+            var version = nextVersionCalculator.FindVersion();
 
             version.BuildMetaData.VersionSourceSha.ShouldBe(secondCommit.Sha);
             version.BuildMetaData.CommitsSinceVersionSource.ShouldBe(1);

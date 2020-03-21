@@ -14,18 +14,23 @@ namespace GitVersion.VersionCalculation
         private readonly IBaseVersionCalculator baseVersionCalculator;
         private readonly IMainlineVersionCalculator mainlineVersionCalculator;
         private readonly IGitRepoMetadataProvider gitRepoMetadataProvider;
+        private readonly IGitVersionContextFactory gitVersionContextFactory;
 
-        public NextVersionCalculator(ILog log, IBaseVersionCalculator baseVersionCalculator, IMainlineVersionCalculator mainlineVersionCalculator, IGitRepoMetadataProvider gitRepoMetadataProvider)
+        public NextVersionCalculator(ILog log, IBaseVersionCalculator baseVersionCalculator,
+            IMainlineVersionCalculator mainlineVersionCalculator, IGitRepoMetadataProvider gitRepoMetadataProvider,
+            IGitVersionContextFactory gitVersionContextFactory)
         {
             this.log = log ?? throw new ArgumentNullException(nameof(log));
 
             this.baseVersionCalculator = baseVersionCalculator ?? throw new ArgumentNullException(nameof(baseVersionCalculator));
             this.mainlineVersionCalculator = mainlineVersionCalculator ?? throw new ArgumentNullException(nameof(mainlineVersionCalculator));
             this.gitRepoMetadataProvider = gitRepoMetadataProvider ?? throw new ArgumentNullException(nameof(gitRepoMetadataProvider));
+            this.gitVersionContextFactory = gitVersionContextFactory ?? throw new ArgumentNullException(nameof(gitRepoMetadataProvider));
         }
 
-        public SemanticVersion FindVersion(GitVersionContext context)
+        public SemanticVersion FindVersion()
         {
+            var context = gitVersionContextFactory.Context;
             log.Info($"Running against branch: {context.CurrentBranch.FriendlyName} ({(context.CurrentCommit == null ? "-" : context.CurrentCommit.Sha)})");
             if (context.IsCurrentCommitTagged)
             {
@@ -43,7 +48,7 @@ namespace GitVersion.VersionCalculation
             return FindVersionInternal(context);
         }
 
-        public SemanticVersion FindVersionInternal(GitVersionContext context)
+        internal SemanticVersion FindVersionInternal(GitVersionContext context)
         {
             SemanticVersion taggedSemanticVersion = null;
 
