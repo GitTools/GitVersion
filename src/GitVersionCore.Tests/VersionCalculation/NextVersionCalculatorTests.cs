@@ -23,7 +23,7 @@ namespace GitVersionCore.Tests.VersionCalculation
 
             var contextBuilder = new GitVersionContextBuilder();
 
-            var context = contextBuilder
+            contextBuilder
                 .OverrideServices(services =>
                 {
                     services.AddSingleton<IBaseVersionCalculator>(new TestBaseVersionCalculator(true, new SemanticVersion(1), new MockCommit()));
@@ -35,7 +35,7 @@ namespace GitVersionCore.Tests.VersionCalculation
             var nextVersionCalculator = contextBuilder.ServicesProvider.GetService<INextVersionCalculator>() as NextVersionCalculator;
             nextVersionCalculator.ShouldNotBeNull();
 
-            var version = nextVersionCalculator.FindVersionInternal(context);
+            var version = nextVersionCalculator.FindVersionInternal();
 
             version.ToString().ShouldBe("1.0.1");
         }
@@ -47,7 +47,7 @@ namespace GitVersionCore.Tests.VersionCalculation
 
             var contextBuilder = new GitVersionContextBuilder();
 
-            var context = contextBuilder
+            contextBuilder
                 .OverrideServices(services =>
                 {
                     services.AddSingleton<IBaseVersionCalculator>(new TestBaseVersionCalculator(false, new SemanticVersion(1), new MockCommit()));
@@ -60,7 +60,7 @@ namespace GitVersionCore.Tests.VersionCalculation
 
             nextVersionCalculator.ShouldNotBeNull();
 
-            var version = nextVersionCalculator.FindVersionInternal(context);
+            var version = nextVersionCalculator.FindVersionInternal();
 
             version.ToString().ShouldBe("1.0.0");
         }
@@ -71,7 +71,7 @@ namespace GitVersionCore.Tests.VersionCalculation
             var semanticVersionBuildMetaData = new SemanticVersionBuildMetaData("ef7d0d7e1e700f1c7c9fa01ea6791bb778a5c37c", 2, "develop", "b1a34edbd80e141f7cc046c074f109be7d022074", "b1a34e", DateTimeOffset.Now);
             var contextBuilder = new GitVersionContextBuilder();
 
-            var context = contextBuilder
+            contextBuilder
                 .OverrideServices(services =>
                 {
                     services.AddSingleton<IBaseVersionCalculator>(new TestBaseVersionCalculator(false, new SemanticVersion(1), new MockCommit()));
@@ -83,7 +83,7 @@ namespace GitVersionCore.Tests.VersionCalculation
             var nextVersionCalculator = contextBuilder.ServicesProvider.GetService<INextVersionCalculator>() as NextVersionCalculator;
             nextVersionCalculator.ShouldNotBeNull();
 
-            var version = nextVersionCalculator.FindVersionInternal(context);
+            var version = nextVersionCalculator.FindVersionInternal();
 
             version.ToString("f").ShouldBe("1.0.0-alpha.1+2");
         }

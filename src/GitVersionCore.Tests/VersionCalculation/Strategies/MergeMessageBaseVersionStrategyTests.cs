@@ -8,6 +8,7 @@ using GitVersionCore.Tests.Helpers;
 using GitVersionCore.Tests.Mocks;
 using LibGit2Sharp;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using NUnit.Framework;
 using Shouldly;
 
@@ -31,8 +32,8 @@ namespace GitVersionCore.Tests.VersionCalculation.Strategies
             });
             contextBuilder.Build();
             var log = contextBuilder.ServicesProvider.GetService<ILog>();
-            var contextFactory = contextBuilder.ServicesProvider.GetService<IGitVersionContextFactory>();
-            var strategy = new MergeMessageVersionStrategy(log, contextFactory);
+            var options = contextBuilder.ServicesProvider.GetService<IOptions<GitVersionContext>>();
+            var strategy = new MergeMessageVersionStrategy(log, options);
 
             var baseVersion = strategy.GetVersions().Single();
 
@@ -170,8 +171,8 @@ namespace GitVersionCore.Tests.VersionCalculation.Strategies
                 });
             contextBuilder.Build();
             var log = contextBuilder.ServicesProvider.GetService<ILog>();
-            var contextFactory = contextBuilder.ServicesProvider.GetService<IGitVersionContextFactory>();
-            var strategy = new MergeMessageVersionStrategy(log, contextFactory);
+            var options = contextBuilder.ServicesProvider.GetService<IOptions<GitVersionContext>>();
+            var strategy = new MergeMessageVersionStrategy(log, options);
 
             var baseVersion = strategy.GetVersions().SingleOrDefault();
 

@@ -4,6 +4,7 @@ using GitVersion.Common;
 using GitVersion.Configuration;
 using GitVersion.Extensions;
 using LibGit2Sharp;
+using Microsoft.Extensions.Options;
 
 namespace GitVersion.VersionCalculation
 {
@@ -16,23 +17,21 @@ namespace GitVersion.VersionCalculation
     {
         private IGitRepoMetadataProvider gitRepoMetadataProvider;
 
-        public VersionInBranchNameVersionStrategy(IGitRepoMetadataProvider gitRepoMetadataProvider, IGitVersionContextFactory gitVersionContextFactory) : base(gitVersionContextFactory)
+        public VersionInBranchNameVersionStrategy(IGitRepoMetadataProvider gitRepoMetadataProvider, IOptions<GitVersionContext> versionContext) : base(versionContext)
         {
             this.gitRepoMetadataProvider = gitRepoMetadataProvider ?? throw new ArgumentNullException(nameof(gitRepoMetadataProvider));
         }
 
         public override IEnumerable<BaseVersion> GetVersions()
         {
-            var context = ContextFactory.Context;
-            var currentBranch = context.CurrentBranch;
-            var tagPrefixRegex = context.Configuration.GitTagPrefix;
+            var currentBranch = Context.CurrentBranch;
+            var tagPrefixRegex = Context.Configuration.GitTagPrefix;
             return GetVersions(tagPrefixRegex, currentBranch);
         }
 
         internal IEnumerable<BaseVersion> GetVersions(string tagPrefixRegex, Branch currentBranch)
         {
-            var context = ContextFactory.Context;
-            if (!context.FullConfiguration.IsReleaseBranch(currentBranch.NameWithoutOrigin()))
+            if (!Context.FullConfiguration.IsReleaseBranch(currentBranch.NameWithoutOrigin()))
             {
                 yield break;
             }
@@ -41,7 +40,7 @@ namespace GitVersion.VersionCalculation
             var versionInBranch = GetVersionInBranch(branchName, tagPrefixRegex);
             if (versionInBranch != null)
             {
-                var commitBranchWasBranchedFrom = gitRepoMetadataProvider.FindCommitBranchWasBranchedFrom(currentBranch, context.FullConfiguration);
+                var commitBranchWasBranchedFrom = gitRepoMetadataProvider.FindCommitBranchWasBranchedFrom(currentBranch, Context.FullConfiguration);
                 var branchNameOverride = branchName.RegexReplace("[-/]" + versionInBranch.Item1, string.Empty);
                 yield return new BaseVersion("Version in branch name", false, versionInBranch.Item2, commitBranchWasBranchedFrom.Commit, branchNameOverride);
             }

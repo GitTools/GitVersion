@@ -1,10 +1,8 @@
 using System;
-using GitVersion.Extensions;
 using GitVersion.Logging;
 using GitVersion.OutputVariables;
 using GitVersion.VersionCalculation;
 using GitVersion.VersionCalculation.Cache;
-using LibGit2Sharp;
 using Microsoft.Extensions.Options;
 
 namespace GitVersion
@@ -17,10 +15,10 @@ namespace GitVersion
         private readonly IVariableProvider variableProvider;
         private readonly IOptions<Arguments> options;
         private readonly IGitVersionCacheKeyFactory cacheKeyFactory;
-        private readonly IGitVersionContextFactory gitVersionContextFactory;
+        private readonly GitVersionContext context;
 
         public GitVersionCalculator(ILog log, IGitVersionCache gitVersionCache, INextVersionCalculator nextVersionCalculator, IVariableProvider variableProvider,
-            IOptions<Arguments> options, IGitVersionCacheKeyFactory cacheKeyFactory, IGitVersionContextFactory contextFactory)
+            IOptions<Arguments> options, IGitVersionCacheKeyFactory cacheKeyFactory, IOptions<GitVersionContext> versionContext)
         {
             this.log = log ?? throw new ArgumentNullException(nameof(log));
             this.gitVersionCache = gitVersionCache ?? throw new ArgumentNullException(nameof(gitVersionCache));
@@ -28,7 +26,7 @@ namespace GitVersion
             this.variableProvider = variableProvider ?? throw new ArgumentNullException(nameof(variableProvider));
             this.options = options ?? throw new ArgumentNullException(nameof(options));
             this.cacheKeyFactory = cacheKeyFactory ?? throw new ArgumentNullException(nameof(cacheKeyFactory));
-            this.gitVersionContextFactory = contextFactory ?? throw new ArgumentNullException(nameof(contextFactory));
+            context = versionContext.Value;
         }
 
         public VersionVariables CalculateVersionVariables()
@@ -40,7 +38,7 @@ namespace GitVersion
 
             if (versionVariables != null) return versionVariables;
 
-            versionVariables = ExecuteInternal(arguments);
+            versionVariables = ExecuteInternal();
 
             if (arguments.NoCache) return versionVariables;
             try
@@ -55,15 +53,9 @@ namespace GitVersion
             return versionVariables;
         }
 
-        private VersionVariables ExecuteInternal(Arguments arguments)
+        private VersionVariables ExecuteInternal()
         {
-            using var repo = new Repository(arguments.DotGitDirectory);
-            var targetBranch = repo.GetTargetBranch(arguments.TargetBranch);
-            gitVersionContextFactory.Init(repo, targetBranch, arguments.CommitId);
-            var context = gitVersionContextFactory.Context;
-
             var semanticVersion = nextVersionCalculator.FindVersion();
-
             return variableProvider.GetVariablesFor(semanticVersion, context.Configuration, context.IsCurrentCommitTagged);
         }
     }

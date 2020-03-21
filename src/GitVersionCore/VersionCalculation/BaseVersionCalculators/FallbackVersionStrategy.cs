@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using GitVersion.Extensions;
 using LibGit2Sharp;
+using Microsoft.Extensions.Options;
 
 namespace GitVersion.VersionCalculation
 {
@@ -11,18 +12,17 @@ namespace GitVersion.VersionCalculation
     /// </summary>
     public class FallbackVersionStrategy : VersionStrategyBase
     {
-        public FallbackVersionStrategy(IGitVersionContextFactory gitVersionContextFactory) : base(gitVersionContextFactory)
+        public FallbackVersionStrategy(IOptions<GitVersionContext> versionContext) : base(versionContext)
         {
         }
         public override IEnumerable<BaseVersion> GetVersions()
         {
-            var context = ContextFactory.Context;
             Commit baseVersionSource;
-            var currentBranchTip = context.CurrentBranch.Tip;
+            var currentBranchTip = Context.CurrentBranch.Tip;
 
             try
             {
-                var contextRepository = context.Repository;
+                var contextRepository = Context.Repository;
                 baseVersionSource = contextRepository.GetBaseVersionSource(currentBranchTip);
             }
             catch (NotFoundException exception)

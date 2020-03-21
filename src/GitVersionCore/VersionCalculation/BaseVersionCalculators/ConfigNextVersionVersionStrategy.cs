@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Microsoft.Extensions.Options;
 
 namespace GitVersion.VersionCalculation
 {
@@ -9,16 +10,15 @@ namespace GitVersion.VersionCalculation
     /// </summary>
     public class ConfigNextVersionVersionStrategy : VersionStrategyBase
     {
-        public ConfigNextVersionVersionStrategy(IGitVersionContextFactory gitVersionContextFactory) : base(gitVersionContextFactory)
+        public ConfigNextVersionVersionStrategy(IOptions<GitVersionContext> versionContext) : base(versionContext)
         {
         }
 
         public override IEnumerable<BaseVersion> GetVersions()
         {
-            var context = ContextFactory.Context;
-            if (string.IsNullOrEmpty(context.Configuration.NextVersion) || context.IsCurrentCommitTagged)
+            if (string.IsNullOrEmpty(Context.Configuration.NextVersion) || Context.IsCurrentCommitTagged)
                 yield break;
-            var semanticVersion = SemanticVersion.Parse(context.Configuration.NextVersion, context.Configuration.GitTagPrefix);
+            var semanticVersion = SemanticVersion.Parse(Context.Configuration.NextVersion, Context.Configuration.GitTagPrefix);
             yield return new BaseVersion("NextVersion in GitVersion configuration file", false, semanticVersion, null, null);
         }
     }
