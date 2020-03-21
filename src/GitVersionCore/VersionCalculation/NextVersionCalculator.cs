@@ -51,7 +51,7 @@ namespace GitVersion.VersionCalculation
             if (context.IsCurrentCommitTagged)
             {
                 // Will always be 0, don't bother with the +0 on tags
-                var semanticVersionBuildMetaData = mainlineVersionCalculator.CreateVersionBuildMetaData(context.CurrentCommit, context);
+                var semanticVersionBuildMetaData = mainlineVersionCalculator.CreateVersionBuildMetaData(context.CurrentCommit);
                 semanticVersionBuildMetaData.CommitsSinceTag = null;
 
                 var semanticVersion = new SemanticVersion(context.CurrentCommitTaggedVersion)
@@ -65,12 +65,12 @@ namespace GitVersion.VersionCalculation
             SemanticVersion semver;
             if (context.Configuration.VersioningMode == VersioningMode.Mainline)
             {
-                semver = mainlineVersionCalculator.FindMainlineModeVersion(baseVersion, context);
+                semver = mainlineVersionCalculator.FindMainlineModeVersion(baseVersion);
             }
             else
             {
                 semver = PerformIncrement(context, baseVersion);
-                semver.BuildMetaData = mainlineVersionCalculator.CreateVersionBuildMetaData(baseVersion.BaseVersionSource, context);
+                semver.BuildMetaData = mainlineVersionCalculator.CreateVersionBuildMetaData(baseVersion.BaseVersionSource);
             }
 
             var hasPreReleaseTag = semver.PreReleaseTag.HasTag();
