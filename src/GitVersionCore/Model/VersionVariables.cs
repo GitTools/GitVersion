@@ -76,36 +76,36 @@ namespace GitVersion.OutputVariables
             CommitsSinceVersionSourcePadded = commitsSinceVersionSourcePadded;
         }
 
-        public string Major { get; private set; }
-        public string Minor { get; private set; }
-        public string Patch { get; private set; }
-        public string PreReleaseTag { get; private set; }
-        public string PreReleaseTagWithDash { get; private set; }
-        public string PreReleaseLabel { get; private set; }
-        public string PreReleaseNumber { get; private set; }
-        public string WeightedPreReleaseNumber { get; private set; }
-        public string BuildMetaData { get; private set; }
-        public string BuildMetaDataPadded { get; private set; }
-        public string FullBuildMetaData { get; private set; }
-        public string MajorMinorPatch { get; private set; }
-        public string SemVer { get; private set; }
-        public string LegacySemVer { get; private set; }
-        public string LegacySemVerPadded { get; private set; }
-        public string AssemblySemVer { get; private set; }
-        public string AssemblySemFileVer { get; private set; }
-        public string FullSemVer { get; private set; }
-        public string InformationalVersion { get; private set; }
-        public string BranchName { get; private set; }
-        public string EscapedBranchName { get; private set; }
-        public string Sha { get; private set; }
-        public string ShortSha { get; private set; }
-        public string NuGetVersionV2 { get; private set; }
-        public string NuGetVersion { get; private set; }
-        public string NuGetPreReleaseTagV2 { get; private set; }
-        public string NuGetPreReleaseTag { get; private set; }
-        public string VersionSourceSha { get; private set; }
-        public string CommitsSinceVersionSource { get; private set; }
-        public string CommitsSinceVersionSourcePadded { get; private set; }
+        public string Major { get; }
+        public string Minor { get; }
+        public string Patch { get; }
+        public string PreReleaseTag { get; }
+        public string PreReleaseTagWithDash { get; }
+        public string PreReleaseLabel { get; }
+        public string PreReleaseNumber { get; }
+        public string WeightedPreReleaseNumber { get; }
+        public string BuildMetaData { get; }
+        public string BuildMetaDataPadded { get; }
+        public string FullBuildMetaData { get; }
+        public string MajorMinorPatch { get; }
+        public string SemVer { get; }
+        public string LegacySemVer { get; }
+        public string LegacySemVerPadded { get; }
+        public string AssemblySemVer { get; }
+        public string AssemblySemFileVer { get; }
+        public string FullSemVer { get; }
+        public string InformationalVersion { get; }
+        public string BranchName { get; }
+        public string EscapedBranchName { get; }
+        public string Sha { get; }
+        public string ShortSha { get; }
+        public string NuGetVersionV2 { get; }
+        public string NuGetVersion { get; }
+        public string NuGetPreReleaseTagV2 { get; }
+        public string NuGetPreReleaseTag { get; }
+        public string VersionSourceSha { get; }
+        public string CommitsSinceVersionSource { get; }
+        public string CommitsSinceVersionSourcePadded { get; }
 
         [ReflectionIgnore]
         public static IEnumerable<string> AvailableVariables
@@ -173,7 +173,7 @@ namespace GitVersion.OutputVariables
             return false;
         }
 
-        public bool ContainsKey(string variable)
+        private static bool ContainsKey(string variable)
         {
             return typeof(VersionVariables).GetProperty(variable) != null;
         }
