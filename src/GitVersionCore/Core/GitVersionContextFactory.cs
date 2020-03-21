@@ -16,6 +16,7 @@ namespace GitVersion
         private readonly IGitRepoMetadataProvider gitRepoMetadataProvider;
         private readonly IBranchConfigurationCalculator branchConfigurationCalculator;
         private readonly IOptions<Arguments> options;
+        public GitVersionContext Context { get; set; }
 
         public GitVersionContextFactory(ILog log, IConfigProvider configProvider, IGitRepoMetadataProvider gitRepoMetadataProvider, IBranchConfigurationCalculator branchConfigurationCalculator, IOptions<Arguments> options)
         {
@@ -26,7 +27,7 @@ namespace GitVersion
             this.options = options ?? throw new ArgumentNullException(nameof(options));
         }
 
-        public GitVersionContext Create(IRepository repository, Branch currentBranch, string commitId = null, bool onlyTrackedBranches = false)
+        public void Init(IRepository repository, Branch currentBranch, string commitId = null, bool onlyTrackedBranches = false)
         {
             if (currentBranch == null)
                 throw new InvalidOperationException("Need a branch to operate on");
@@ -44,7 +45,7 @@ namespace GitVersion
 
             var currentBranchConfig = branchConfigurationCalculator.GetBranchConfiguration(repository, currentBranch, currentCommit, configuration);
 
-            return new GitVersionContext(repository, currentBranch, currentCommit, currentBranchConfig, configuration);
+            Context = new GitVersionContext(repository, currentBranch, currentCommit, currentBranchConfig, configuration);
         }
     }
 }

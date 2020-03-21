@@ -89,7 +89,8 @@ namespace GitVersionCore.Tests
 
             var gitVersionContextFactory = ServicesProvider.GetService<IGitVersionContextFactory>();
 
-            return gitVersionContextFactory.Create(repo, repo.Head);
+            gitVersionContextFactory.Init(repo, repo.Head);
+            return gitVersionContextFactory.Context;
         }
 
         private static IRepository CreateRepository()

@@ -61,7 +61,7 @@ namespace GitVersion.VersionCalculation
                 taggedSemanticVersion = semanticVersion;
             }
 
-            var baseVersion = baseVersionCalculator.GetBaseVersion(context);
+            var baseVersion = baseVersionCalculator.GetBaseVersion();
             SemanticVersion semver;
             if (context.Configuration.VersioningMode == VersioningMode.Mainline)
             {

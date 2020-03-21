@@ -9,16 +9,19 @@ namespace GitVersion.VersionCalculation
     public class BaseVersionCalculator : IBaseVersionCalculator
     {
         private readonly ILog log;
+        private readonly IGitVersionContextFactory gitVersionContextFactory;
         private readonly IVersionStrategy[] strategies;
 
-        public BaseVersionCalculator(ILog log, IEnumerable<IVersionStrategy> strategies)
+        public BaseVersionCalculator(ILog log, IGitVersionContextFactory gitVersionContextFactory, IEnumerable<IVersionStrategy> strategies)
         {
             this.log = log ?? throw new ArgumentNullException(nameof(log));
+            this.gitVersionContextFactory = gitVersionContextFactory ?? throw new ArgumentNullException(nameof(gitVersionContextFactory));
             this.strategies = strategies?.ToArray() ?? Array.Empty<IVersionStrategy>();
         }
 
-        public BaseVersion GetBaseVersion(GitVersionContext context)
+        public BaseVersion GetBaseVersion()
         {
+            var context = gitVersionContextFactory.Context;
             using (log.IndentLog("Calculating base versions"))
             {
                 var baseVersions = strategies
@@ -42,7 +45,7 @@ namespace GitVersion.VersionCalculation
                     })
                     .Select(v => new Versions
                     {
-                        IncrementedVersion = MaybeIncrement(context, v),
+                        IncrementedVersion = v.MaybeIncrement(context),
                         Version = v
                     })
                     .ToList();
@@ -75,7 +78,7 @@ namespace GitVersion.VersionCalculation
                     throw new Exception("Base version should not be null");
 
                 var calculatedBase = new BaseVersion(
-                    context, maxVersion.Version.Source, maxVersion.Version.ShouldIncrement, maxVersion.Version.SemanticVersion,
+                    maxVersion.Version.Source, maxVersion.Version.ShouldIncrement, maxVersion.Version.SemanticVersion,
                     baseVersionWithOldestSource.BaseVersionSource, maxVersion.Version.BranchNameOverride);
 
                 log.Info($"Base version used: {calculatedBase}");
@@ -84,19 +87,8 @@ namespace GitVersion.VersionCalculation
             }
         }
 
-        public static SemanticVersion MaybeIncrement(GitVersionContext context, BaseVersion version)
-        {
-            var increment = IncrementStrategyFinder.DetermineIncrementedField(context, version);
-            if (increment != null)
-            {
-                return version.SemanticVersion.IncrementVersion(increment.Value);
-            }
-
-            return version.SemanticVersion;
-        }
-
-        private void FixTheBaseVersionSourceOfMergeMessageStrategyIfReleaseBranchWasMergedAndDeleted(
-            GitVersionContext context, List<Versions> baseVersions)
+        private static void FixTheBaseVersionSourceOfMergeMessageStrategyIfReleaseBranchWasMergedAndDeleted(
+            GitVersionContext context, IEnumerable<Versions> baseVersions)
         {
             if (!ReleaseBranchExistsInRepo(context))
             {
@@ -109,7 +101,6 @@ namespace GitVersion.VersionCalculation
                     {
                         var parents = baseVersion.Version.BaseVersionSource.Parents.ToList();
                         baseVersion.Version = new BaseVersion(
-                            context,
                             baseVersion.Version.Source,
                             baseVersion.Version.ShouldIncrement,
                             baseVersion.Version.SemanticVersion,
@@ -120,7 +111,7 @@ namespace GitVersion.VersionCalculation
             }
         }
 
-        private bool ReleaseBranchExistsInRepo(GitVersionContext context)
+        private static bool ReleaseBranchExistsInRepo(GitVersionContext context)
         {
             var releaseBranchConfig = context.FullConfiguration.Branches
                 .Where(b => b.Value.IsReleaseBranch == true)
