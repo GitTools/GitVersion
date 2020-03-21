@@ -1,7 +1,6 @@
 using System;
 using System.IO;
 using System.Linq;
-using System.Text.RegularExpressions;
 using GitVersion.Common;
 using GitVersion.Configuration;
 using GitVersion.Exceptions;
@@ -45,20 +44,6 @@ namespace GitVersion.VersionCalculation
             }
 
             return FindVersionInternal(context);
-        }
-
-        private static void EnsureHeadIsNotDetached(GitVersionContext context)
-        {
-            if (!context.CurrentBranch.IsDetachedHead())
-            {
-                return;
-            }
-
-            var message = string.Format(
-                "It looks like the branch being examined is a detached Head pointing to commit '{0}'. " +
-                "Without a proper branch name GitVersion cannot determine the build version.",
-                context.CurrentCommit.Id.ToString(7));
-            throw new WarningException(message);
         }
 
         public SemanticVersion FindVersionInternal(GitVersionContext context)
@@ -129,7 +114,7 @@ namespace GitVersion.VersionCalculation
 
         private void UpdatePreReleaseTag(GitVersionContext context, SemanticVersion semanticVersion, string branchNameOverride)
         {
-            var tagToUse = GetBranchSpecificTag(context.Configuration, context.CurrentBranch.FriendlyName, branchNameOverride);
+            var tagToUse = context.Configuration.GetBranchSpecificTag(log, context.CurrentBranch.FriendlyName, branchNameOverride);
 
             int? number = null;
 
@@ -152,27 +137,18 @@ namespace GitVersion.VersionCalculation
             semanticVersion.PreReleaseTag = new SemanticVersionPreReleaseTag(tagToUse, number);
         }
 
-        public string GetBranchSpecificTag(EffectiveConfiguration configuration, string branchFriendlyName, string branchNameOverride)
+        private static void EnsureHeadIsNotDetached(GitVersionContext context)
         {
-            var tagToUse = configuration.Tag;
-            if (tagToUse == "useBranchName")
+            if (!context.CurrentBranch.IsDetachedHead())
             {
-                tagToUse = "{BranchName}";
+                return;
             }
-            if (tagToUse.Contains("{BranchName}"))
-            {
-                log.Info("Using branch name to calculate version tag");
 
-                var branchName = branchNameOverride ?? branchFriendlyName;
-                if (!string.IsNullOrWhiteSpace(configuration.BranchPrefixToTrim))
-                {
-                    branchName = branchName.RegexReplace(configuration.BranchPrefixToTrim, string.Empty, RegexOptions.IgnoreCase);
-                }
-                branchName = branchName.RegexReplace("[^a-zA-Z0-9-]", "-");
-
-                tagToUse = tagToUse.Replace("{BranchName}", branchName);
-            }
-            return tagToUse;
+            var message = string.Format(
+                "It looks like the branch being examined is a detached Head pointing to commit '{0}'. " +
+                "Without a proper branch name GitVersion cannot determine the build version.",
+                context.CurrentCommit.Id.ToString(7));
+            throw new WarningException(message);
         }
 
         private static bool MajorMinorPatchEqual(SemanticVersion lastTag, SemanticVersion baseVersion)
