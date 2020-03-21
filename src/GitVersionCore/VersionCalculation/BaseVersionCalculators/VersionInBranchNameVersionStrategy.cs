@@ -12,16 +12,16 @@ namespace GitVersion.VersionCalculation
     /// BaseVersionSource is the commit where the branch was branched from its parent.
     /// Does not increment.
     /// </summary>
-    public class VersionInBranchNameVersionStrategy : IVersionStrategy
+    public class VersionInBranchNameVersionStrategy : VersionStrategyBase
     {
         private IGitRepoMetadataProvider gitRepoMetadataProvider;
 
-        public VersionInBranchNameVersionStrategy(IGitRepoMetadataProvider gitRepoMetadataProvider)
+        public VersionInBranchNameVersionStrategy(IGitRepoMetadataProvider gitRepoMetadataProvider, IGitVersionContextFactory gitVersionContextFactory) : base(gitVersionContextFactory)
         {
             this.gitRepoMetadataProvider = gitRepoMetadataProvider ?? throw new ArgumentNullException(nameof(gitRepoMetadataProvider));
         }
 
-        public virtual IEnumerable<BaseVersion> GetVersions(GitVersionContext context)
+        public override IEnumerable<BaseVersion> GetVersions(GitVersionContext context)
         {
             var currentBranch = context.CurrentBranch;
             var tagPrefixRegex = context.Configuration.GitTagPrefix;

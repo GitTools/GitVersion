@@ -243,8 +243,7 @@ namespace GitVersion.VersionCalculation
             return mainlineVersion;
         }
 
-        private static VersionField FindMessageIncrement(
-            GitVersionContext context, Commit mergeCommit, Commit mergedHead, Commit findMergeBase, List<Commit> commitLog)
+        private static VersionField FindMessageIncrement(GitVersionContext context, Commit mergeCommit, Commit mergedHead, Commit findMergeBase, List<Commit> commitLog)
         {
             var commits = context.Repository.GetMergeBaseCommits(mergeCommit, mergedHead, findMergeBase);
             commitLog.RemoveAll(c => commits.Any(c1 => c1.Sha == c.Sha));

@@ -9,9 +9,12 @@ namespace GitVersion.VersionCalculation
     /// BaseVersionSource is the "root" commit reachable from the current commit.
     /// Does not increment.
     /// </summary>
-    public class FallbackVersionStrategy : IVersionStrategy
+    public class FallbackVersionStrategy : VersionStrategyBase
     {
-        public virtual IEnumerable<BaseVersion> GetVersions(GitVersionContext context)
+        public FallbackVersionStrategy(IGitVersionContextFactory gitVersionContextFactory) : base(gitVersionContextFactory)
+        {
+        }
+        public override IEnumerable<BaseVersion> GetVersions(GitVersionContext context)
         {
             Commit baseVersionSource;
             var currentBranchTip = context.CurrentBranch.Tip;
