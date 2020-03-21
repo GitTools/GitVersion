@@ -2,7 +2,6 @@ using System;
 using System.IO;
 using System.Reflection;
 using GitVersion.Configuration;
-using GitVersion.Exceptions;
 using GitVersion.Extensions;
 using GitVersion.Logging;
 using GitVersion.Model;

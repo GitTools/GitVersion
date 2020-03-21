@@ -1,6 +1,5 @@
 using System;
 using System.IO;
-using GitVersion.Exceptions;
 using Microsoft.Extensions.Options;
 
 namespace GitVersion.Configuration

@@ -1,7 +1,6 @@
 using System;
 using GitTools.Testing;
 using GitVersion;
-using GitVersion.Exceptions;
 using GitVersion.Helpers;
 using GitVersion.Logging;
 using GitVersionCore.Tests.Helpers;

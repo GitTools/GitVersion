@@ -1,6 +1,6 @@
 using System;
 
-namespace GitVersion.Exceptions
+namespace GitVersion
 {
     [Serializable]
     public class GitToolsException : Exception

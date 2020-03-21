@@ -1,5 +1,4 @@
 using System;
-using GitVersion.Exceptions;
 using GitVersion.Extensions;
 using GitVersion.Logging;
 using GitVersion.MSBuildTask.Tasks;

@@ -1,7 +1,6 @@
 using System;
 using GitVersion;
 using GitVersion.VersionCalculation;
-using GitVersion.VersionFilters;
 using GitVersionCore.Tests.Helpers;
 using GitVersionCore.Tests.Mocks;
 using NUnit.Framework;

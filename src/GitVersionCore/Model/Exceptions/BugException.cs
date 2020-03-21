@@ -1,6 +1,6 @@
 using System;
 
-namespace GitVersion.Exceptions
+namespace GitVersion
 {
     public class BugException : Exception
     {

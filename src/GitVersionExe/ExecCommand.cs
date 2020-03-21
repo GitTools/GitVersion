@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
-using GitVersion.Exceptions;
 using GitVersion.Extensions;
 using GitVersion.Extensions.VersionAssemblyInfoResources;
 using GitVersion.Helpers;

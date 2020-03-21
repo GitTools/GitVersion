@@ -2,13 +2,14 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using GitVersion.Cache;
 using GitVersion.Helpers;
 using GitVersion.Logging;
 using GitVersion.OutputVariables;
 using Microsoft.Extensions.Options;
 using YamlDotNet.Serialization;
 
-namespace GitVersion.Cache
+namespace GitVersion.VersionCalculation.Cache
 {
     public class GitVersionCache : IGitVersionCache
     {

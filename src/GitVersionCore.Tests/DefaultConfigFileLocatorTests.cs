@@ -1,7 +1,6 @@
 using System.IO;
 using GitVersion;
 using GitVersion.Configuration;
-using GitVersion.Exceptions;
 using GitVersionCore.Tests.Helpers;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;

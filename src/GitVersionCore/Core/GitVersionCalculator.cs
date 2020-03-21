@@ -1,9 +1,9 @@
 using System;
-using GitVersion.Cache;
 using GitVersion.Extensions;
 using GitVersion.Logging;
 using GitVersion.OutputVariables;
 using GitVersion.VersionCalculation;
+using GitVersion.VersionCalculation.Cache;
 using LibGit2Sharp;
 using Microsoft.Extensions.Options;
 

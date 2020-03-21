@@ -1,7 +1,6 @@
 using System;
 using System.Text.RegularExpressions;
 using GitVersion.Configuration;
-using GitVersion.Exceptions;
 using GitVersion.Extensions;
 using GitVersion.Helpers;
 using GitVersion.Logging;

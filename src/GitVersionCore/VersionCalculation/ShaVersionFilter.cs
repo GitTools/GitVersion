@@ -1,9 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using GitVersion.VersionCalculation;
 
-namespace GitVersion.VersionFilters
+namespace GitVersion.VersionCalculation
 {
     public class ShaVersionFilter : IVersionFilter
     {

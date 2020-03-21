@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using GitVersion.Exceptions;
 using GitVersion.Extensions;
 using LibGit2Sharp;
 

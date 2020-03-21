@@ -1,5 +1,4 @@
 using GitVersion;
-using GitVersion.Exceptions;
 using GitVersion.Logging;
 using GitVersion.Model;
 using GitVersionCore.Tests.Helpers;

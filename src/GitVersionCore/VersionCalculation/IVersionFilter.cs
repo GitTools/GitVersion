@@ -1,6 +1,4 @@
-using GitVersion.VersionCalculation;
-
-namespace GitVersion.VersionFilters
+namespace GitVersion.VersionCalculation
 {
     public interface IVersionFilter
     {
