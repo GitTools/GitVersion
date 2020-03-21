@@ -4,6 +4,7 @@ namespace GitVersion
 {
     public interface IGitVersionContextFactory
     {
-        GitVersionContext Create(IRepository repository, Branch currentBranch, string commitId = null, bool onlyTrackedBranches = false);
+        void Init(IRepository repository, Branch currentBranch, string commitId = null, bool onlyTrackedBranches = false);
+        GitVersionContext Context { get; set; }
     }
 }

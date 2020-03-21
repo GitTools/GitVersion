@@ -37,7 +37,8 @@ namespace GitVersionCore.Tests
             repository ??= fixture.Repository;
             var targetBranch = repository.GetTargetBranch(branch);
 
-            var context = gitVersionContextFactory.Create(repository, targetBranch, commitId, onlyTrackedBranches);
+            gitVersionContextFactory.Init(repository, targetBranch, commitId, onlyTrackedBranches);
+            var context = gitVersionContextFactory.Context;
 
             try
             {

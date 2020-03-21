@@ -17,7 +17,7 @@ namespace GitVersion
         private readonly IVariableProvider variableProvider;
         private readonly IOptions<Arguments> options;
         private readonly IGitVersionCacheKeyFactory cacheKeyFactory;
-        private readonly IGitVersionContextFactory contextFactory;
+        private readonly IGitVersionContextFactory gitVersionContextFactory;
 
         public GitVersionCalculator(ILog log, IGitVersionCache gitVersionCache, INextVersionCalculator nextVersionCalculator, IVariableProvider variableProvider,
             IOptions<Arguments> options, IGitVersionCacheKeyFactory cacheKeyFactory, IGitVersionContextFactory contextFactory)
@@ -28,7 +28,7 @@ namespace GitVersion
             this.variableProvider = variableProvider ?? throw new ArgumentNullException(nameof(variableProvider));
             this.options = options ?? throw new ArgumentNullException(nameof(options));
             this.cacheKeyFactory = cacheKeyFactory ?? throw new ArgumentNullException(nameof(cacheKeyFactory));
-            this.contextFactory = contextFactory ?? throw new ArgumentNullException(nameof(contextFactory));
+            this.gitVersionContextFactory = contextFactory ?? throw new ArgumentNullException(nameof(contextFactory));
         }
 
         public VersionVariables CalculateVersionVariables()
@@ -59,10 +59,12 @@ namespace GitVersion
         {
             using var repo = new Repository(arguments.DotGitDirectory);
             var targetBranch = repo.GetTargetBranch(arguments.TargetBranch);
-            var gitVersionContext = contextFactory.Create(repo, targetBranch, arguments.CommitId);
-            var semanticVersion = nextVersionCalculator.FindVersion(gitVersionContext);
+            gitVersionContextFactory.Init(repo, targetBranch, arguments.CommitId);
+            var context = gitVersionContextFactory.Context;
 
-            return variableProvider.GetVariablesFor(semanticVersion, gitVersionContext.Configuration, gitVersionContext.IsCurrentCommitTagged);
+            var semanticVersion = nextVersionCalculator.FindVersion(context);
+
+            return variableProvider.GetVariablesFor(semanticVersion, context.Configuration, context.IsCurrentCommitTagged);
         }
     }
 }
