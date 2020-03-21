@@ -5,14 +5,11 @@ namespace GitVersion.VersionCalculation
     public interface IVersionStrategy
     {
         /// <summary>
-        /// Calculates the <see cref="T:GitVersion.VersionCalculation.BaseVersionCalculators.BaseVersion" /> values for the given <paramref name="context" />.
+        /// Calculates the <see cref="T:GitVersion.VersionCalculation.BaseVersionCalculators.BaseVersion" /> values.
         /// </summary>
-        /// <param name="context">
-        /// The context for calculating the <see cref="T:GitVersion.VersionCalculation.BaseVersionCalculators.BaseVersion" />.
-        /// </param>
         /// <returns>
         /// An <see cref="T:System.Collections.Generic.IEnumerable`1" /> of the base version values found by the strategy.
         /// </returns>
-        IEnumerable<BaseVersion> GetVersions(GitVersionContext context);
+        IEnumerable<BaseVersion> GetVersions();
     }
 }

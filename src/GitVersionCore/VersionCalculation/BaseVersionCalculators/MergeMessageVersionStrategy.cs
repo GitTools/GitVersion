@@ -23,8 +23,9 @@ namespace GitVersion.VersionCalculation
             this.log = log ?? throw new ArgumentNullException(nameof(log));
         }
 
-        public override IEnumerable<BaseVersion> GetVersions(GitVersionContext context)
+        public override IEnumerable<BaseVersion> GetVersions()
         {
+            var context = ContextFactory.Context;
             var commitsPriorToThan = context.CurrentBranch
                 .CommitsPriorToThan(context.CurrentCommit.When());
             var baseVersions = commitsPriorToThan

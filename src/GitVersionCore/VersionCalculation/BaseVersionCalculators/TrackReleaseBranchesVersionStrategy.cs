@@ -38,8 +38,9 @@ namespace GitVersion.VersionCalculation
             taggedCommitVersionStrategy = new TaggedCommitVersionStrategy(gitRepoMetadataProvider, gitVersionContextFactory);
         }
 
-        public override IEnumerable<BaseVersion> GetVersions(GitVersionContext context)
+        public override IEnumerable<BaseVersion> GetVersions()
         {
+            var context = ContextFactory.Context;
             if (context.Configuration.TracksReleaseBranches)
             {
                 return ReleaseBranchBaseVersions(context).Union(MasterTagsVersions(context));
@@ -53,7 +54,7 @@ namespace GitVersion.VersionCalculation
             var master = context.Repository.FindBranch("master");
             if (master != null)
             {
-                return taggedCommitVersionStrategy.GetTaggedVersions(context, master, null);
+                return taggedCommitVersionStrategy.GetTaggedVersions(master, null);
             }
 
             return new BaseVersion[0];
@@ -100,7 +101,7 @@ namespace GitVersion.VersionCalculation
             }
 
             return releaseVersionStrategy
-                .GetVersions(context, tagPrefixRegex, releaseBranch)
+                .GetVersions(tagPrefixRegex, releaseBranch)
                 .Select(b => new BaseVersion(b.Source, true, b.SemanticVersion, baseSource, b.BranchNameOverride));
         }
     }

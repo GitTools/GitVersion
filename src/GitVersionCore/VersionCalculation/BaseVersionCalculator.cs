@@ -22,10 +22,11 @@ namespace GitVersion.VersionCalculation
         public BaseVersion GetBaseVersion()
         {
             var context = gitVersionContextFactory.Context;
+
             using (log.IndentLog("Calculating base versions"))
             {
                 var baseVersions = strategies
-                    .SelectMany(s => s.GetVersions(context))
+                    .SelectMany(s => s.GetVersions())
                     .Where(v =>
                     {
                         if (v == null) return false;

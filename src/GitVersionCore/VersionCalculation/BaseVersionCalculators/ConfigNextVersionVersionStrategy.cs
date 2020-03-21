@@ -13,8 +13,9 @@ namespace GitVersion.VersionCalculation
         {
         }
 
-        public override IEnumerable<BaseVersion> GetVersions(GitVersionContext context)
+        public override IEnumerable<BaseVersion> GetVersions()
         {
+            var context = ContextFactory.Context;
             if (string.IsNullOrEmpty(context.Configuration.NextVersion) || context.IsCurrentCommitTagged)
                 yield break;
             var semanticVersion = SemanticVersion.Parse(context.Configuration.NextVersion, context.Configuration.GitTagPrefix);
