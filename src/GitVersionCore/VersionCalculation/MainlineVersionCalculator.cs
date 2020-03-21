@@ -12,14 +12,17 @@ namespace GitVersion.VersionCalculation
     internal class MainlineVersionCalculator : IMainlineVersionCalculator
     {
         private readonly ILog log;
+        private readonly IGitVersionContextFactory gitVersionContextFactory;
 
-        public MainlineVersionCalculator(ILog log)
+        public MainlineVersionCalculator(ILog log, IGitVersionContextFactory gitVersionContextFactory)
         {
             this.log = log ?? throw new ArgumentNullException(nameof(log));
+            this.gitVersionContextFactory = gitVersionContextFactory ?? throw new ArgumentNullException(nameof(gitVersionContextFactory));
         }
 
-        public SemanticVersion FindMainlineModeVersion(BaseVersion baseVersion, GitVersionContext context)
+        public SemanticVersion FindMainlineModeVersion(BaseVersion baseVersion)
         {
+            var context = gitVersionContextFactory.Context;
             if (baseVersion.SemanticVersion.PreReleaseTag.HasTag())
             {
                 throw new NotSupportedException("Mainline development mode doesn't yet support pre-release tags on master");
@@ -61,7 +64,7 @@ namespace GitVersion.VersionCalculation
 
                 // This will increment for any direct commits on mainline
                 mainlineVersion = IncrementForEachCommit(context, directCommits, mainlineVersion, mainline);
-                mainlineVersion.BuildMetaData = CreateVersionBuildMetaData(mergeBase, context);
+                mainlineVersion.BuildMetaData = CreateVersionBuildMetaData(mergeBase);
 
                 // branches other than master always get a bump for the act of branching
                 if (context.CurrentBranch.FriendlyName != "master")
@@ -76,8 +79,10 @@ namespace GitVersion.VersionCalculation
             }
         }
 
-        public SemanticVersionBuildMetaData CreateVersionBuildMetaData(Commit baseVersionSource, GitVersionContext context)
+        public SemanticVersionBuildMetaData CreateVersionBuildMetaData(Commit baseVersionSource)
         {
+            var context = gitVersionContextFactory.Context;
+
             var commitLog = context.Repository.GetCommitLog(baseVersionSource, context.CurrentCommit);
             var commitsSinceTag = commitLog.Count();
             log.Info($"{commitsSinceTag} commits found between {baseVersionSource.Sha} and {context.CurrentCommit.Sha}");
