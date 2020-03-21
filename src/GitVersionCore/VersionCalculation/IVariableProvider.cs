@@ -1,6 +1,7 @@
 using GitVersion.Configuration;
+using GitVersion.OutputVariables;
 
-namespace GitVersion.OutputVariables
+namespace GitVersion.VersionCalculation
 {
     public interface IVariableProvider
     {

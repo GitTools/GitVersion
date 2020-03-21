@@ -4,7 +4,7 @@ using System.Text;
 using GitVersion;
 using GitVersion.Extensions;
 using GitVersion.Logging;
-using GitVersion.OutputVariables;
+using GitVersion.VersionCalculation;
 using GitVersionCore.Tests.Helpers;
 using Microsoft.Extensions.DependencyInjection;
 using NUnit.Framework;

@@ -5,7 +5,6 @@ using GitVersion.Configuration;
 using GitVersion.Configuration.Init;
 using GitVersion.Extensions;
 using GitVersion.Logging;
-using GitVersion.OutputVariables;
 using GitVersion.VersionCalculation;
 using Microsoft.Extensions.DependencyInjection;
 
