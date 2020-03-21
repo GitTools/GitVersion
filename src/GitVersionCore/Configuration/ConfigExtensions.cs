@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using GitVersion.Extensions;
+using GitVersion.Logging;
 using GitVersion.VersionCalculation;
 
 namespace GitVersion.Configuration
@@ -281,6 +282,29 @@ If the docs do not help you decide on the mode open an issue to discuss what you
                 currentBranchConfig.IsReleaseBranch.Value,
                 commitDateFormat,
                 preReleaseWeight);
+        }
+
+        public static string GetBranchSpecificTag(this EffectiveConfiguration configuration, ILog log, string branchFriendlyName, string branchNameOverride)
+        {
+            var tagToUse = configuration.Tag;
+            if (tagToUse == "useBranchName")
+            {
+                tagToUse = "{BranchName}";
+            }
+            if (tagToUse.Contains("{BranchName}"))
+            {
+                log.Info("Using branch name to calculate version tag");
+
+                var branchName = branchNameOverride ?? branchFriendlyName;
+                if (!string.IsNullOrWhiteSpace(configuration.BranchPrefixToTrim))
+                {
+                    branchName = branchName.RegexReplace(configuration.BranchPrefixToTrim, string.Empty, RegexOptions.IgnoreCase);
+                }
+                branchName = branchName.RegexReplace("[^a-zA-Z0-9-]", "-");
+
+                tagToUse = tagToUse.Replace("{BranchName}", branchName);
+            }
+            return tagToUse;
         }
 
         private static BranchConfig GetOrCreateBranchDefaults(this Config config, string branchKey)
