@@ -2,7 +2,7 @@ using System;
 using System.IO;
 using GitVersion;
 using GitVersion.Extensions.GitVersionInformationResources;
-using GitVersion.OutputVariables;
+using GitVersion.VersionCalculation;
 using GitVersionCore.Tests.Helpers;
 using Microsoft.Extensions.DependencyInjection;
 using NUnit.Framework;
