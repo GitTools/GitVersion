@@ -1,11 +1,11 @@
 using GitVersion.BuildServers;
-using GitVersion.Cache;
 using GitVersion.Common;
 using GitVersion.Configuration;
 using GitVersion.Configuration.Init;
 using GitVersion.Extensions;
 using GitVersion.Logging;
 using GitVersion.VersionCalculation;
+using GitVersion.VersionCalculation.Cache;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace GitVersion

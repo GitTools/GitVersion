@@ -3,7 +3,6 @@ using System.IO;
 using System.Linq;
 using GitVersion.Common;
 using GitVersion.Configuration;
-using GitVersion.Exceptions;
 using GitVersion.Extensions;
 using GitVersion.Logging;
 

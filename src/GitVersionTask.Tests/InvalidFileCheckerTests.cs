@@ -1,6 +1,5 @@
 using System;
 using System.IO;
-using GitVersion.Exceptions;
 using GitVersion.MSBuildTask.Tests.Mocks;
 using GitVersionCore.Tests.Helpers;
 using Microsoft.Build.Framework;

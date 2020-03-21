@@ -1,8 +1,7 @@
 using System;
 using GitVersion.Extensions;
-using GitVersion.VersionCalculation;
 
-namespace GitVersion.VersionFilters
+namespace GitVersion.VersionCalculation
 {
     public class MinDateVersionFilter : IVersionFilter
     {

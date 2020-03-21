@@ -4,18 +4,14 @@ using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
+using GitVersion.Cache;
 using GitVersion.Configuration;
 using GitVersion.Logging;
 using LibGit2Sharp;
 using Microsoft.Extensions.Options;
 
-namespace GitVersion.Cache
+namespace GitVersion.VersionCalculation.Cache
 {
-    public interface IGitVersionCacheKeyFactory
-    {
-        GitVersionCacheKey Create(Config overrideConfig);
-    }
-
     public class GitVersionCacheKeyFactory : IGitVersionCacheKeyFactory
     {
         private readonly IFileSystem fileSystem;

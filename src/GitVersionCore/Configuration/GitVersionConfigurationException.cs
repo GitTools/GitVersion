@@ -1,5 +1,4 @@
 using System;
-using GitVersion.Exceptions;
 
 namespace GitVersion.Configuration
 {
