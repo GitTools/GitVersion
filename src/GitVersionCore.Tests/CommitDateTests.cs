@@ -3,8 +3,8 @@ using System.Linq;
 using GitVersion;
 using GitVersion.Configuration;
 using GitVersion.Extensions;
+using GitVersion.VersionCalculation;
 using GitVersion.VersionFilters;
-using GitVersion.VersioningModes;
 using GitVersionCore.Tests.Helpers;
 using NUnit.Framework;
 

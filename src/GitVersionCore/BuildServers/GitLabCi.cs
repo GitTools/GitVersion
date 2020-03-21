@@ -1,7 +1,6 @@
 using System;
 using System.IO;
 using GitVersion.Logging;
-using GitVersion.OutputFormatters;
 using GitVersion.OutputVariables;
 
 namespace GitVersion.BuildServers
@@ -53,7 +52,7 @@ namespace GitVersion.BuildServers
 
         private void WriteVariablesFile(VersionVariables variables)
         {
-            File.WriteAllLines(file, BuildOutputFormatter.GenerateBuildLogOutput(this, variables));
+            File.WriteAllLines(file, GenerateBuildLogOutput(variables));
         }
     }
 }

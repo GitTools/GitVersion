@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using GitVersion.OutputVariables;
 
 namespace GitVersion
@@ -15,5 +16,6 @@ namespace GitVersion
         /// </summary>
         bool PreventFetch();
         bool ShouldCleanUpRemotes();
+        IEnumerable<string> GenerateBuildLogOutput(VersionVariables variables);
     }
 }

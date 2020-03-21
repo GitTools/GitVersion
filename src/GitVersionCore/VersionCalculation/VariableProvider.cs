@@ -6,7 +6,6 @@ using GitVersion.Extensions;
 using GitVersion.Helpers;
 using GitVersion.Logging;
 using GitVersion.VersionCalculation;
-using GitVersion.VersioningModes;
 
 namespace GitVersion.OutputVariables
 {

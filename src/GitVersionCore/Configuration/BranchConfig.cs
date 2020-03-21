@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using GitVersion.VersioningModes;
+using GitVersion.VersionCalculation;
 using YamlDotNet.Serialization;
 
 namespace GitVersion.Configuration

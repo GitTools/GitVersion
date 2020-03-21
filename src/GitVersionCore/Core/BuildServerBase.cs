@@ -1,6 +1,6 @@
 using System;
+using System.Collections.Generic;
 using GitVersion.Logging;
-using GitVersion.OutputFormatters;
 using GitVersion.OutputVariables;
 
 namespace GitVersion
@@ -43,10 +43,22 @@ namespace GitVersion
             writer($"Executing GenerateSetVersionMessage for '{GetType().Name}'.");
             writer(GenerateSetVersionMessage(variables));
             writer($"Executing GenerateBuildLogOutput for '{GetType().Name}'.");
-            foreach (var buildParameter in BuildOutputFormatter.GenerateBuildLogOutput(this, variables))
+            foreach (var buildParameter in GenerateBuildLogOutput(variables))
             {
                 writer(buildParameter);
             }
+        }
+
+        public IEnumerable<string> GenerateBuildLogOutput(VersionVariables variables)
+        {
+            var output = new List<string>();
+
+            foreach (var variable in variables)
+            {
+                output.AddRange(GenerateSetParameterMessage(variable.Key, variable.Value));
+            }
+
+            return output;
         }
 
         public virtual bool ShouldCleanUpRemotes()

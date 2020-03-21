@@ -1,7 +1,6 @@
 using System;
 using System.IO;
 using GitVersion.Logging;
-using GitVersion.OutputFormatters;
 using GitVersion.OutputVariables;
 
 namespace GitVersion.BuildServers
@@ -45,7 +44,7 @@ namespace GitVersion.BuildServers
         {
             base.WriteIntegration(writer, variables);
             writer($"Outputting variables to '{file}' ... ");
-            File.WriteAllLines(file, BuildOutputFormatter.GenerateBuildLogOutput(this, variables));
+            File.WriteAllLines(file, GenerateBuildLogOutput(variables));
         }
 
         public override bool PreventFetch() => true;

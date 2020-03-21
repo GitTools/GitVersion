@@ -1,6 +1,6 @@
 using GitTools.Testing;
 using GitVersion.Configuration;
-using GitVersion.VersioningModes;
+using GitVersion.VersionCalculation;
 using GitVersionCore.Tests.Helpers;
 using LibGit2Sharp;
 using NUnit.Framework;

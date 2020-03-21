@@ -8,7 +8,7 @@ using GitVersion;
 using GitVersion.Configuration;
 using GitVersion.Extensions;
 using GitVersion.Logging;
-using GitVersion.VersioningModes;
+using GitVersion.VersionCalculation;
 using GitVersionCore.Tests.Helpers;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;

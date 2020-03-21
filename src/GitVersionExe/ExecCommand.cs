@@ -7,7 +7,7 @@ using GitVersion.Extensions;
 using GitVersion.Extensions.VersionAssemblyInfoResources;
 using GitVersion.Helpers;
 using GitVersion.Logging;
-using GitVersion.OutputFormatters;
+using GitVersion.Model;
 using GitVersion.OutputVariables;
 using Microsoft.Extensions.Options;
 

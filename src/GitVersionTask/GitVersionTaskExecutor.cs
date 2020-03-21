@@ -4,7 +4,6 @@ using GitVersion.Extensions.GitVersionInformationResources;
 using GitVersion.Extensions.VersionAssemblyInfoResources;
 using GitVersion.Logging;
 using GitVersion.MSBuildTask.Tasks;
-using GitVersion.OutputFormatters;
 using GitVersion.OutputVariables;
 
 namespace GitVersion.MSBuildTask
@@ -67,7 +66,7 @@ namespace GitVersion.MSBuildTask
             logger.LogMessage($"Executing GenerateSetVersionMessage for '{buildServer.GetType().Name}'.");
             logger.LogMessage(buildServer.GenerateSetVersionMessage(versionVariables));
             logger.LogMessage($"Executing GenerateBuildLogOutput for '{buildServer.GetType().Name}'.");
-            foreach (var buildParameter in BuildOutputFormatter.GenerateBuildLogOutput(buildServer, versionVariables))
+            foreach (var buildParameter in buildServer.GenerateBuildLogOutput(versionVariables))
             {
                 logger.LogMessage(buildParameter);
             }

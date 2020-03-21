@@ -1,4 +1,4 @@
-namespace GitVersion.OutputFormatters
+namespace GitVersion.Model
 {
     public enum OutputType
     {

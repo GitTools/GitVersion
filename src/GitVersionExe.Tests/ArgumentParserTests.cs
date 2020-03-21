@@ -1,7 +1,7 @@
 using GitVersion;
 using GitVersion.Exceptions;
 using GitVersion.Logging;
-using GitVersion.OutputFormatters;
+using GitVersion.Model;
 using GitVersionCore.Tests.Helpers;
 using NUnit.Framework;
 using Shouldly;

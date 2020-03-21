@@ -6,7 +6,7 @@ namespace GitVersion
 {
     public class SemanticVersion : IFormattable, IComparable<SemanticVersion>
     {
-        public static SemanticVersion Empty = new SemanticVersion();
+        private static SemanticVersion Empty = new SemanticVersion();
 
         private static readonly Regex ParseSemVer = new Regex(
             @"^(?<SemVer>(?<Major>\d+)(\.(?<Minor>\d+))(\.(?<Patch>\d+))?)(\.(?<FourthPart>\d+))?(-(?<Tag>[^\+]*))?(\+(?<BuildMetaData>.*))?$",

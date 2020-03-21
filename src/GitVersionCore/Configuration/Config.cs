@@ -5,7 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using GitVersion.Extensions;
-using GitVersion.VersioningModes;
+using GitVersion.VersionCalculation;
 using YamlDotNet.Serialization;
 
 namespace GitVersion.Configuration
