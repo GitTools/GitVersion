@@ -29,13 +29,12 @@ namespace GitVersionCore.Tests.VersionCalculation.Strategies
                     ParentsEx = GetParents(true)
                 } }
             });
-            var context = contextBuilder.Build();
-
+            contextBuilder.Build();
             var log = contextBuilder.ServicesProvider.GetService<ILog>();
             var contextFactory = contextBuilder.ServicesProvider.GetService<IGitVersionContextFactory>();
             var strategy = new MergeMessageVersionStrategy(log, contextFactory);
 
-            var baseVersion = strategy.GetVersions(context).Single();
+            var baseVersion = strategy.GetVersions().Single();
 
             baseVersion.ShouldIncrement.ShouldBe(false);
         }
@@ -169,13 +168,12 @@ namespace GitVersionCore.Tests.VersionCalculation.Strategies
                         new MockCommit()
                     }
                 });
-            var context = contextBuilder.Build();
-
+            contextBuilder.Build();
             var log = contextBuilder.ServicesProvider.GetService<ILog>();
             var contextFactory = contextBuilder.ServicesProvider.GetService<IGitVersionContextFactory>();
             var strategy = new MergeMessageVersionStrategy(log, contextFactory);
 
-            var baseVersion = strategy.GetVersions(context).SingleOrDefault();
+            var baseVersion = strategy.GetVersions().SingleOrDefault();
 
             if (expectedVersion == null)
             {

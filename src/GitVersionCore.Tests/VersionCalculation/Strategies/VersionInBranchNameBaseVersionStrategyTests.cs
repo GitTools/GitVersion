@@ -29,8 +29,7 @@ namespace GitVersionCore.Tests.VersionCalculation.Strategies
 
             var gitVersionContextFactory = GetGitVersionContextFactory();
             gitVersionContextFactory.Init(fixture.Repository, branch);
-            var context = gitVersionContextFactory.Context;
-            var baseVersion = strategy.GetVersions(context).Single();
+            var baseVersion = strategy.GetVersions().Single();
 
             baseVersion.SemanticVersion.ToString().ShouldBe(expectedBaseVersion);
         }
@@ -47,8 +46,7 @@ namespace GitVersionCore.Tests.VersionCalculation.Strategies
 
             var gitVersionContextFactory = GetGitVersionContextFactory();
             gitVersionContextFactory.Init(fixture.Repository, branch);
-            var context = gitVersionContextFactory.Context;
-            var baseVersions = strategy.GetVersions(context);
+            var baseVersions = strategy.GetVersions();
 
             baseVersions.ShouldBeEmpty();
         }
@@ -67,8 +65,7 @@ namespace GitVersionCore.Tests.VersionCalculation.Strategies
             var gitVersionContextFactory = GetGitVersionContextFactory(config);
 
             gitVersionContextFactory.Init(fixture.Repository, branch);
-            var context = gitVersionContextFactory.Context;
-            var baseVersion = strategy.GetVersions(context).Single();
+            var baseVersion = strategy.GetVersions().Single();
 
             baseVersion.SemanticVersion.ToString().ShouldBe(expectedBaseVersion);
         }
@@ -87,8 +84,7 @@ namespace GitVersionCore.Tests.VersionCalculation.Strategies
 
             var gitVersionContextFactory = GetGitVersionContextFactory();
             gitVersionContextFactory.Init(fixture.Repository, branch);
-            var context = gitVersionContextFactory.Context;
-            var baseVersion = strategy.GetVersions(context).Single();
+            var baseVersion = strategy.GetVersions().Single();
 
             baseVersion.SemanticVersion.ToString().ShouldBe(expectedBaseVersion);
         }

@@ -9,8 +9,11 @@ namespace GitVersion.VersionCalculation
 
         public VersionStrategyBase(IGitVersionContextFactory gitVersionContextFactory)
         {
-            this.ContextFactory = gitVersionContextFactory ?? throw new ArgumentNullException(nameof(gitVersionContextFactory));
+            ContextFactory = gitVersionContextFactory ?? throw new ArgumentNullException(nameof(gitVersionContextFactory));
         }
-        public virtual IEnumerable<BaseVersion> GetVersions(GitVersionContext context) => throw new NotImplementedException();
+        public virtual IEnumerable<BaseVersion> GetVersions()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

@@ -14,8 +14,9 @@ namespace GitVersion.VersionCalculation
         public FallbackVersionStrategy(IGitVersionContextFactory gitVersionContextFactory) : base(gitVersionContextFactory)
         {
         }
-        public override IEnumerable<BaseVersion> GetVersions(GitVersionContext context)
+        public override IEnumerable<BaseVersion> GetVersions()
         {
+            var context = ContextFactory.Context;
             Commit baseVersionSource;
             var currentBranchTip = context.CurrentBranch.Tip;
 

@@ -182,7 +182,7 @@ namespace GitVersionCore.Tests.VersionCalculation
                 this.when = when == null ? null : new MockCommit { CommitterEx = Generate.Signature(when.Value) };
             }
 
-            public IEnumerable<BaseVersion> GetVersions(GitVersionContext context)
+            public IEnumerable<BaseVersion> GetVersions()
             {
                 yield return new BaseVersion("Source 1", false, new SemanticVersion(1), when, null);
             }
@@ -197,7 +197,7 @@ namespace GitVersionCore.Tests.VersionCalculation
                 this.when = when == null ? null : new MockCommit { CommitterEx = Generate.Signature(when.Value) };
             }
 
-            public IEnumerable<BaseVersion> GetVersions(GitVersionContext context)
+            public IEnumerable<BaseVersion> GetVersions()
             {
                 yield return new BaseVersion("Source 2", true, new SemanticVersion(2), when, null);
             }
@@ -212,7 +212,7 @@ namespace GitVersionCore.Tests.VersionCalculation
                 this.versions = versions;
             }
 
-            public IEnumerable<BaseVersion> GetVersions(GitVersionContext context)
+            public IEnumerable<BaseVersion> GetVersions()
             {
                 return versions;
             }

@@ -21,15 +21,17 @@ namespace GitVersion.VersionCalculation
             this.gitRepoMetadataProvider = gitRepoMetadataProvider ?? throw new ArgumentNullException(nameof(gitRepoMetadataProvider));
         }
 
-        public override IEnumerable<BaseVersion> GetVersions(GitVersionContext context)
+        public override IEnumerable<BaseVersion> GetVersions()
         {
+            var context = ContextFactory.Context;
             var currentBranch = context.CurrentBranch;
             var tagPrefixRegex = context.Configuration.GitTagPrefix;
-            return GetVersions(context, tagPrefixRegex, currentBranch);
+            return GetVersions(tagPrefixRegex, currentBranch);
         }
 
-        public IEnumerable<BaseVersion> GetVersions(GitVersionContext context, string tagPrefixRegex, Branch currentBranch)
+        internal IEnumerable<BaseVersion> GetVersions(string tagPrefixRegex, Branch currentBranch)
         {
+            var context = ContextFactory.Context;
             if (!context.FullConfiguration.IsReleaseBranch(currentBranch.NameWithoutOrigin()))
             {
                 yield break;

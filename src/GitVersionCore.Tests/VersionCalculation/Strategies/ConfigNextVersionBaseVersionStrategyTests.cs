@@ -44,12 +44,11 @@ namespace GitVersionCore.Tests.VersionCalculation.Strategies
                 contextBuilder = contextBuilder.WithConfig(config);
             }
 
-            var gitVersionContext = contextBuilder.Build();
-
+            contextBuilder.Build();
             var contextFactory = contextBuilder.ServicesProvider.GetService<IGitVersionContextFactory>();
             var strategy = new ConfigNextVersionVersionStrategy(contextFactory);
 
-            return strategy.GetVersions(gitVersionContext).SingleOrDefault();
+            return strategy.GetVersions().SingleOrDefault();
         }
     }
 }
