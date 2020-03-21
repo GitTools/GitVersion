@@ -34,12 +34,12 @@ use dynamic repositories.
 ### Agent checkout
 
 For GitVersion to pick up pull requests properly you need to promote the
-`%teamcity.build.vcs.branch.{configurationid}%` variable to an environment
+`%teamcity.build.vcs.branch.{vcsid}%` variable to an environment
 variable called `Git_Branch`
 
 Just go to your build configuration, Parameters, click Add, Name should be
 `env.Git_Branch`, value should be `%teamcity.build.vcs.branch.{vcsid}%` where
-vcsid is your VCS root id. You should get auto completion for this.
+`{vcsid}` is your VCS root id. You should get auto completion for this.
 
 For GitVersion to work with any mode requiring other than the currently built
 branch to calculate the version number, you need to set the configuration
