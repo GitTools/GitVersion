@@ -24,21 +24,21 @@ namespace GitVersion.VersionCalculation
     /// Increments if the tag is not the current commit (same as base strategy).
     /// </para>
     /// </summary>
-    public class TrackReleaseBranchesVersionStrategy : IVersionStrategy
+    public class TrackReleaseBranchesVersionStrategy : VersionStrategyBase
     {
         private readonly IGitRepoMetadataProvider gitRepoMetadataProvider;
         private readonly VersionInBranchNameVersionStrategy releaseVersionStrategy;
         private readonly TaggedCommitVersionStrategy taggedCommitVersionStrategy;
 
-        public TrackReleaseBranchesVersionStrategy(IGitRepoMetadataProvider gitRepoMetadataProvider)
+        public TrackReleaseBranchesVersionStrategy(IGitRepoMetadataProvider gitRepoMetadataProvider, IGitVersionContextFactory gitVersionContextFactory) : base(gitVersionContextFactory)
         {
             this.gitRepoMetadataProvider = gitRepoMetadataProvider ?? throw new ArgumentNullException(nameof(gitRepoMetadataProvider));
 
-            releaseVersionStrategy = new VersionInBranchNameVersionStrategy(gitRepoMetadataProvider);
-            taggedCommitVersionStrategy = new TaggedCommitVersionStrategy(gitRepoMetadataProvider);
+            releaseVersionStrategy = new VersionInBranchNameVersionStrategy(gitRepoMetadataProvider, gitVersionContextFactory);
+            taggedCommitVersionStrategy = new TaggedCommitVersionStrategy(gitRepoMetadataProvider, gitVersionContextFactory);
         }
 
-        public virtual IEnumerable<BaseVersion> GetVersions(GitVersionContext context)
+        public override IEnumerable<BaseVersion> GetVersions(GitVersionContext context)
         {
             if (context.Configuration.TracksReleaseBranches)
             {

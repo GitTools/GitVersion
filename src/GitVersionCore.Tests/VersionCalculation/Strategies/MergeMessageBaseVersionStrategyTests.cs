@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using GitVersion;
 using GitVersion.Configuration;
 using GitVersion.Logging;
 using GitVersion.VersionCalculation;
@@ -15,28 +16,24 @@ namespace GitVersionCore.Tests.VersionCalculation.Strategies
     [TestFixture]
     public class MergeMessageBaseVersionStrategyTests : TestBase
     {
-        private readonly ILog log;
-
-        public MergeMessageBaseVersionStrategyTests()
-        {
-            var sp = ConfigureServices();
-            log = sp.GetService<ILog>();
-        }
-
         [Test]
         public void ShouldNotAllowIncrementOfVersion()
         {
             // When a branch is merged in you want to start building stable packages of that version
             // So we shouldn't bump the version
-            var context = new GitVersionContextBuilder().WithRepository(new MockRepository
+            var contextBuilder = new GitVersionContextBuilder().WithRepository(new MockRepository
             {
                 Head = new MockBranch("master") { new MockCommit
                 {
                     MessageEx = "Merge branch 'release-0.1.5'",
                     ParentsEx = GetParents(true)
                 } }
-            }).Build();
-            var strategy = new MergeMessageVersionStrategy(log);
+            });
+            var context = contextBuilder.Build();
+
+            var log = contextBuilder.ServicesProvider.GetService<ILog>();
+            var contextFactory = contextBuilder.ServicesProvider.GetService<IGitVersionContextFactory>();
+            var strategy = new MergeMessageVersionStrategy(log, contextFactory);
 
             var baseVersion = strategy.GetVersions(context).Single();
 
@@ -162,7 +159,7 @@ namespace GitVersionCore.Tests.VersionCalculation.Strategies
                 ParentsEx = parents
             };
 
-            var context = new GitVersionContextBuilder()
+            var contextBuilder = new GitVersionContextBuilder()
                 .WithConfig(config ?? new Config())
                 .WithRepository(new MockRepository
                 {
@@ -171,9 +168,12 @@ namespace GitVersionCore.Tests.VersionCalculation.Strategies
                         commit,
                         new MockCommit()
                     }
-                })
-                .Build();
-            var strategy = new MergeMessageVersionStrategy(log);
+                });
+            var context = contextBuilder.Build();
+
+            var log = contextBuilder.ServicesProvider.GetService<ILog>();
+            var contextFactory = contextBuilder.ServicesProvider.GetService<IGitVersionContextFactory>();
+            var strategy = new MergeMessageVersionStrategy(log, contextFactory);
 
             var baseVersion = strategy.GetVersions(context).SingleOrDefault();
 

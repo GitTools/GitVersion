@@ -87,8 +87,7 @@ namespace GitVersion.VersionCalculation
             }
         }
 
-        private static void FixTheBaseVersionSourceOfMergeMessageStrategyIfReleaseBranchWasMergedAndDeleted(
-            GitVersionContext context, IEnumerable<Versions> baseVersions)
+        private static void FixTheBaseVersionSourceOfMergeMessageStrategyIfReleaseBranchWasMergedAndDeleted(GitVersionContext context, IEnumerable<Versions> baseVersions)
         {
             if (!ReleaseBranchExistsInRepo(context))
             {

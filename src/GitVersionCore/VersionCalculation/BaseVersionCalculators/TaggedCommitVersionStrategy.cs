@@ -12,16 +12,16 @@ namespace GitVersion.VersionCalculation
     /// BaseVersionSource is the tag's commit.
     /// Increments if the tag is not the current commit.
     /// </summary>
-    public class TaggedCommitVersionStrategy : IVersionStrategy
+    public class TaggedCommitVersionStrategy : VersionStrategyBase
     {
         private readonly IGitRepoMetadataProvider gitRepoMetadataProvider;
 
-        public TaggedCommitVersionStrategy(IGitRepoMetadataProvider gitRepoMetadataProvider)
+        public TaggedCommitVersionStrategy(IGitRepoMetadataProvider gitRepoMetadataProvider, IGitVersionContextFactory gitVersionContextFactory) : base(gitVersionContextFactory)
         {
             this.gitRepoMetadataProvider = gitRepoMetadataProvider ?? throw new ArgumentNullException(nameof(gitRepoMetadataProvider));
         }
 
-        public virtual IEnumerable<BaseVersion> GetVersions(GitVersionContext context)
+        public override IEnumerable<BaseVersion> GetVersions(GitVersionContext context)
         {
             return GetTaggedVersions(context, context.CurrentBranch, context.CurrentCommit.When());
         }

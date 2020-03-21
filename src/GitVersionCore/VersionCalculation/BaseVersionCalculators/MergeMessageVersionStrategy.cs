@@ -14,16 +14,16 @@ namespace GitVersion.VersionCalculation
     /// BaseVersionSource is the commit where the message was found.
     /// Increments if PreventIncrementForMergedBranchVersion (from the branch config) is false.
     /// </summary>
-    public class MergeMessageVersionStrategy : IVersionStrategy
+    public class MergeMessageVersionStrategy : VersionStrategyBase
     {
         private readonly ILog log;
 
-        public MergeMessageVersionStrategy(ILog log)
+        public MergeMessageVersionStrategy(ILog log, IGitVersionContextFactory gitVersionContextFactory) : base(gitVersionContextFactory)
         {
             this.log = log ?? throw new ArgumentNullException(nameof(log));
         }
 
-        public virtual IEnumerable<BaseVersion> GetVersions(GitVersionContext context)
+        public override IEnumerable<BaseVersion> GetVersions(GitVersionContext context)
         {
             var commitsPriorToThan = context.CurrentBranch
                 .CommitsPriorToThan(context.CurrentCommit.When());
