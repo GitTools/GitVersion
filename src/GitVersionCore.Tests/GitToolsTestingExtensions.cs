@@ -23,7 +23,9 @@ namespace GitVersionCore.Tests
                 configuration.Reset();
             }
 
-            var options = Options.Create(new Arguments { OverrideConfig = configuration });
+            repository ??= fixture.Repository;
+
+            var options = Options.Create(new Arguments { OverrideConfig = configuration, TargetPath = repository.GetRepositoryDirectory() });
 
             var sp = ConfigureServices(services =>
             {
@@ -32,13 +34,9 @@ namespace GitVersionCore.Tests
 
             var variableProvider = sp.GetService<IVariableProvider>();
             var nextVersionCalculator = sp.GetService<INextVersionCalculator>();
-            var gitVersionContextFactory = sp.GetService<IGitVersionContextFactory>();
+            var contextOptions = sp.GetService<IOptions<GitVersionContext>>();
 
-            repository ??= fixture.Repository;
-            var targetBranch = repository.GetTargetBranch(branch);
-
-            gitVersionContextFactory.Init(repository, targetBranch, commitId, onlyTrackedBranches);
-            var context = gitVersionContextFactory.Context;
+            var context = contextOptions.Value;
 
             try
             {

@@ -7,6 +7,7 @@ using GitVersion.Logging;
 using GitVersion.VersionCalculation;
 using GitVersion.VersionCalculation.Cache;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 
 namespace GitVersion
 {
@@ -38,6 +39,13 @@ namespace GitVersion
             services.AddSingleton<IGitRepoMetadataProvider, GitRepoMetadataProvider>();
 
             services.AddSingleton(sp => sp.GetService<IConfigFileLocatorFactory>().Create());
+
+            services.AddSingleton(sp =>
+            {
+                var options = sp.GetService<IOptions<Arguments>>();
+                var contextFactory = sp.GetService<IGitVersionContextFactory>();
+                return Options.Create(contextFactory.Create(options.Value));
+            });
 
             services.AddModule(new BuildServerModule());
             services.AddModule(new GitVersionInitModule());

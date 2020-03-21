@@ -36,8 +36,7 @@ namespace GitVersionCore.Tests
             };
 
             var gitVersionContextFactory = GetGitVersionContextFactory(config);
-            gitVersionContextFactory.Init(mockRepository, mockBranch);
-            var context = gitVersionContextFactory.Context;
+            var context = gitVersionContextFactory.Init(mockRepository, mockBranch);
 
             context.Configuration.VersioningMode.ShouldBe(mode);
         }
@@ -64,8 +63,7 @@ namespace GitVersionCore.Tests
             fixture.MakeACommit();
 
             var gitVersionContextFactory = GetGitVersionContextFactory(config);
-            gitVersionContextFactory.Init(fixture.Repository, fixture.Repository.Branches[dummyBranchName]);
-            var context = gitVersionContextFactory.Context;
+            var context = gitVersionContextFactory.Init(fixture.Repository, fixture.Repository.Branches[dummyBranchName]);
 
             context.Configuration.Increment.ShouldBe(alternateExpected ?? increment);
         }
@@ -99,8 +97,7 @@ namespace GitVersionCore.Tests
             };
 
             var gitVersionContextFactory = GetGitVersionContextFactory(config);
-            gitVersionContextFactory.Init(mockRepository, develop);
-            var context = gitVersionContextFactory.Context;
+            var context = gitVersionContextFactory.Init(mockRepository, develop);
 
             context.Configuration.Tag.ShouldBe("alpha");
         }
@@ -141,13 +138,11 @@ namespace GitVersionCore.Tests
             };
 
             var gitVersionContextFactory = GetGitVersionContextFactory(config);
-            gitVersionContextFactory.Init(mockRepository, releaseLatestBranch);
-            var latestContext = gitVersionContextFactory.Context;
+            var latestContext = gitVersionContextFactory.Init(mockRepository, releaseLatestBranch);
 
             latestContext.Configuration.Increment.ShouldBe(IncrementStrategy.None);
 
-            gitVersionContextFactory.Init(mockRepository, releaseVersionBranch);
-            var versionContext = gitVersionContextFactory.Context;
+            var versionContext = gitVersionContextFactory.Init(mockRepository, releaseVersionBranch);
             versionContext.Configuration.Increment.ShouldBe(IncrementStrategy.Patch);
         }
 
@@ -172,8 +167,7 @@ namespace GitVersionCore.Tests
             repo.Repository.MakeACommit();
 
             var gitVersionContextFactory = GetGitVersionContextFactory(config);
-            gitVersionContextFactory.Init(repo.Repository, repo.Repository.Head);
-            var context = gitVersionContextFactory.Context;
+            var context = gitVersionContextFactory.Init(repo.Repository, repo.Repository.Head);
 
             context.Configuration.Increment.ShouldBe(IncrementStrategy.Major);
         }

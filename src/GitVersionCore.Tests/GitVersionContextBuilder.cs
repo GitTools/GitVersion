@@ -30,9 +30,9 @@ namespace GitVersionCore.Tests
             return this;
         }
 
-        public GitVersionContextBuilder OverrideServices(Action<IServiceCollection> overrideServices = null)
+        public GitVersionContextBuilder OverrideServices(Action<IServiceCollection> overrides = null)
         {
-            this.overrideServices = overrideServices;
+            this.overrideServices = overrides;
             return this;
         }
 
@@ -79,18 +79,15 @@ namespace GitVersionCore.Tests
 
             config.Reset();
 
-            var options = Options.Create(new Arguments { OverrideConfig = config });
+            var options = Options.Create(new Arguments { OverrideConfig = config, TargetPath = repo.GetRepositoryDirectory() });
 
             ServicesProvider = ConfigureServices(services =>
             {
                 services.AddSingleton(options);
                 overrideServices?.Invoke(services);
             });
-
-            var gitVersionContextFactory = ServicesProvider.GetService<IGitVersionContextFactory>();
-
-            gitVersionContextFactory.Init(repo, repo.Head);
-            return gitVersionContextFactory.Context;
+            var context = ServicesProvider.GetService<IOptions<GitVersionContext>>().Value;
+            return context;
         }
 
         private static IRepository CreateRepository()

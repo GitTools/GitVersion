@@ -118,8 +118,7 @@ namespace GitVersion.Extensions
                 SortBy = CommitSortStrategies.Topological | CommitSortStrategies.Reverse
             };
 
-            var commitCache = repository.Commits.QueryBy(filter).ToList();
-            return commitCache;
+            return repository.Commits.QueryBy(filter).ToList();
         }
 
         public static Commit GetForwardMerge(this IRepository repository, Commit commitToFindCommonBase, Commit findMergeBase)

@@ -5,6 +5,7 @@ using System.Text.RegularExpressions;
 using GitVersion.Common;
 using GitVersion.Extensions;
 using LibGit2Sharp;
+using Microsoft.Extensions.Options;
 
 namespace GitVersion.VersionCalculation
 {
@@ -30,20 +31,19 @@ namespace GitVersion.VersionCalculation
         private readonly VersionInBranchNameVersionStrategy releaseVersionStrategy;
         private readonly TaggedCommitVersionStrategy taggedCommitVersionStrategy;
 
-        public TrackReleaseBranchesVersionStrategy(IGitRepoMetadataProvider gitRepoMetadataProvider, IGitVersionContextFactory gitVersionContextFactory) : base(gitVersionContextFactory)
+        public TrackReleaseBranchesVersionStrategy(IGitRepoMetadataProvider gitRepoMetadataProvider, IOptions<GitVersionContext> versionContext) : base(versionContext)
         {
             this.gitRepoMetadataProvider = gitRepoMetadataProvider ?? throw new ArgumentNullException(nameof(gitRepoMetadataProvider));
 
-            releaseVersionStrategy = new VersionInBranchNameVersionStrategy(gitRepoMetadataProvider, gitVersionContextFactory);
-            taggedCommitVersionStrategy = new TaggedCommitVersionStrategy(gitRepoMetadataProvider, gitVersionContextFactory);
+            releaseVersionStrategy = new VersionInBranchNameVersionStrategy(gitRepoMetadataProvider, versionContext);
+            taggedCommitVersionStrategy = new TaggedCommitVersionStrategy(gitRepoMetadataProvider, versionContext);
         }
 
         public override IEnumerable<BaseVersion> GetVersions()
         {
-            var context = ContextFactory.Context;
-            if (context.Configuration.TracksReleaseBranches)
+            if (Context.Configuration.TracksReleaseBranches)
             {
-                return ReleaseBranchBaseVersions(context).Union(MasterTagsVersions(context));
+                return ReleaseBranchBaseVersions(Context).Union(MasterTagsVersions(Context));
             }
 
             return new BaseVersion[0];

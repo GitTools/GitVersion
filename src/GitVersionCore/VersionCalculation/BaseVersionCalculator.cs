@@ -3,26 +3,25 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using GitVersion.Logging;
+using Microsoft.Extensions.Options;
 
 namespace GitVersion.VersionCalculation
 {
     public class BaseVersionCalculator : IBaseVersionCalculator
     {
         private readonly ILog log;
-        private readonly IGitVersionContextFactory gitVersionContextFactory;
+        private readonly GitVersionContext context;
         private readonly IVersionStrategy[] strategies;
 
-        public BaseVersionCalculator(ILog log, IGitVersionContextFactory gitVersionContextFactory, IEnumerable<IVersionStrategy> strategies)
+        public BaseVersionCalculator(ILog log, IOptions<GitVersionContext> versionContext, IEnumerable<IVersionStrategy> strategies)
         {
             this.log = log ?? throw new ArgumentNullException(nameof(log));
-            this.gitVersionContextFactory = gitVersionContextFactory ?? throw new ArgumentNullException(nameof(gitVersionContextFactory));
             this.strategies = strategies?.ToArray() ?? Array.Empty<IVersionStrategy>();
+            context = versionContext.Value;
         }
 
         public BaseVersion GetBaseVersion()
         {
-            var context = gitVersionContextFactory.Context;
-
             using (log.IndentLog("Calculating base versions"))
             {
                 var baseVersions = strategies

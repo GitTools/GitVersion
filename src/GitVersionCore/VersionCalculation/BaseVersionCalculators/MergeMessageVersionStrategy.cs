@@ -6,6 +6,7 @@ using GitVersion.Configuration;
 using GitVersion.Extensions;
 using GitVersion.Logging;
 using LibGit2Sharp;
+using Microsoft.Extensions.Options;
 
 namespace GitVersion.VersionCalculation
 {
@@ -18,25 +19,24 @@ namespace GitVersion.VersionCalculation
     {
         private readonly ILog log;
 
-        public MergeMessageVersionStrategy(ILog log, IGitVersionContextFactory gitVersionContextFactory) : base(gitVersionContextFactory)
+        public MergeMessageVersionStrategy(ILog log, IOptions<GitVersionContext> versionContext) : base(versionContext)
         {
             this.log = log ?? throw new ArgumentNullException(nameof(log));
         }
 
         public override IEnumerable<BaseVersion> GetVersions()
         {
-            var context = ContextFactory.Context;
-            var commitsPriorToThan = context.CurrentBranch
-                .CommitsPriorToThan(context.CurrentCommit.When());
+            var commitsPriorToThan = Context.CurrentBranch
+                .CommitsPriorToThan(Context.CurrentCommit.When());
             var baseVersions = commitsPriorToThan
                 .SelectMany(c =>
                 {
-                    if (TryParse(c, context, out var mergeMessage) &&
+                    if (TryParse(c, Context, out var mergeMessage) &&
                         mergeMessage.Version != null &&
-                        context.FullConfiguration.IsReleaseBranch(TrimRemote(mergeMessage.MergedBranch)))
+                        Context.FullConfiguration.IsReleaseBranch(TrimRemote(mergeMessage.MergedBranch)))
                     {
-                        log.Info($"Found commit [{context.CurrentCommit.Sha}] matching merge message format: {mergeMessage.FormatName}");
-                        var shouldIncrement = !context.Configuration.PreventIncrementForMergedBranchVersion;
+                        log.Info($"Found commit [{Context.CurrentCommit.Sha}] matching merge message format: {mergeMessage.FormatName}");
+                        var shouldIncrement = !Context.Configuration.PreventIncrementForMergedBranchVersion;
                         return new[]
                         {
                             new BaseVersion($"{MergeMessageStrategyPrefix} '{c.Message.Trim()}'", shouldIncrement, mergeMessage.Version, c, null)

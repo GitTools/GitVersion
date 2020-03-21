@@ -4,6 +4,7 @@ using System.Linq;
 using GitVersion.Common;
 using GitVersion.Extensions;
 using LibGit2Sharp;
+using Microsoft.Extensions.Options;
 
 namespace GitVersion.VersionCalculation
 {
@@ -16,21 +17,19 @@ namespace GitVersion.VersionCalculation
     {
         private readonly IGitRepoMetadataProvider gitRepoMetadataProvider;
 
-        public TaggedCommitVersionStrategy(IGitRepoMetadataProvider gitRepoMetadataProvider, IGitVersionContextFactory gitVersionContextFactory) : base(gitVersionContextFactory)
+        public TaggedCommitVersionStrategy(IGitRepoMetadataProvider gitRepoMetadataProvider, IOptions<GitVersionContext> versionContext) : base(versionContext)
         {
             this.gitRepoMetadataProvider = gitRepoMetadataProvider ?? throw new ArgumentNullException(nameof(gitRepoMetadataProvider));
         }
 
         public override IEnumerable<BaseVersion> GetVersions()
         {
-            var context = ContextFactory.Context;
-            return GetTaggedVersions(context.CurrentBranch, context.CurrentCommit.When());
+            return GetTaggedVersions(Context.CurrentBranch, Context.CurrentCommit.When());
         }
 
         internal IEnumerable<BaseVersion> GetTaggedVersions(Branch currentBranch, DateTimeOffset? olderThan)
         {
-            var context = ContextFactory.Context;
-            var allTags = gitRepoMetadataProvider.GetValidVersionTags(context.Configuration.GitTagPrefix, olderThan);
+            var allTags = gitRepoMetadataProvider.GetValidVersionTags(Context.Configuration.GitTagPrefix, olderThan);
 
             var tagsOnBranch = currentBranch
                 .Commits
@@ -46,7 +45,7 @@ namespace GitVersion.VersionCalculation
                 .Take(5)
                 .ToList();
 
-            return tagsOnBranch.Select(t => CreateBaseVersion(context, t));
+            return tagsOnBranch.Select(t => CreateBaseVersion(Context, t));
         }
 
         private BaseVersion CreateBaseVersion(GitVersionContext context, VersionTaggedCommit version)
