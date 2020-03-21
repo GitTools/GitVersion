@@ -21,16 +21,19 @@ namespace GitVersionCore.Tests.VersionCalculation
         {
             var semanticVersionBuildMetaData = new SemanticVersionBuildMetaData("ef7d0d7e1e700f1c7c9fa01ea6791bb778a5c37c", 1, "master", "b1a34edbd80e141f7cc046c074f109be7d022074", "b1a34e", DateTimeOffset.Now);
 
-            var sp = ConfigureServices(services =>
-            {
-                services.AddSingleton<IBaseVersionCalculator>(new TestBaseVersionCalculator(true, new SemanticVersion(1), new MockCommit()));
-                services.AddSingleton<IMainlineVersionCalculator>(new TestMainlineVersionCalculator(semanticVersionBuildMetaData));
-            });
+            var contextBuilder = new GitVersionContextBuilder();
 
-            var nextVersionCalculator = sp.GetService<INextVersionCalculator>() as NextVersionCalculator;
+            var context = contextBuilder
+                .OverrideServices(services =>
+                {
+                    services.AddSingleton<IBaseVersionCalculator>(new TestBaseVersionCalculator(true, new SemanticVersion(1), new MockCommit()));
+                    services.AddSingleton<IMainlineVersionCalculator>(new TestMainlineVersionCalculator(semanticVersionBuildMetaData));
+                })
+                .WithConfig(new Config())
+                .Build();
+
+            var nextVersionCalculator = contextBuilder.ServicesProvider.GetService<INextVersionCalculator>() as NextVersionCalculator;
             nextVersionCalculator.ShouldNotBeNull();
-
-            var context = new GitVersionContextBuilder().WithConfig(new Config()).Build();
 
             var version = nextVersionCalculator.FindVersionInternal(context);
 
@@ -41,16 +44,21 @@ namespace GitVersionCore.Tests.VersionCalculation
         public void DoesNotIncrementWhenBaseVersionSaysNotTo()
         {
             var semanticVersionBuildMetaData = new SemanticVersionBuildMetaData("ef7d0d7e1e700f1c7c9fa01ea6791bb778a5c37c", 1, "master", "b1a34edbd80e141f7cc046c074f109be7d022074", "b1a34e", DateTimeOffset.Now);
-            var sp = ConfigureServices(services =>
-            {
-                services.AddSingleton<IBaseVersionCalculator>(new TestBaseVersionCalculator(false, new SemanticVersion(1), new MockCommit()));
-                services.AddSingleton<IMainlineVersionCalculator>(new TestMainlineVersionCalculator(semanticVersionBuildMetaData));
-            });
 
-            var nextVersionCalculator = sp.GetService<INextVersionCalculator>() as NextVersionCalculator;
+            var contextBuilder = new GitVersionContextBuilder();
+
+            var context = contextBuilder
+                .OverrideServices(services =>
+                {
+                    services.AddSingleton<IBaseVersionCalculator>(new TestBaseVersionCalculator(false, new SemanticVersion(1), new MockCommit()));
+                    services.AddSingleton<IMainlineVersionCalculator>(new TestMainlineVersionCalculator(semanticVersionBuildMetaData));
+                })
+                .WithConfig(new Config())
+                .Build();
+
+            var nextVersionCalculator = contextBuilder.ServicesProvider.GetService<INextVersionCalculator>() as NextVersionCalculator;
 
             nextVersionCalculator.ShouldNotBeNull();
-            var context = new GitVersionContextBuilder().WithConfig(new Config()).Build();
 
             var version = nextVersionCalculator.FindVersionInternal(context);
 
