@@ -15,12 +15,10 @@ namespace GitVersion.VersionCalculation
         private readonly IBaseVersionCalculator baseVersionCalculator;
         private readonly IMainlineVersionCalculator mainlineVersionCalculator;
         private readonly IGitRepoMetadataProvider gitRepoMetadataProvider;
-        private readonly IMetaDataCalculator metaDataCalculator;
 
-        public NextVersionCalculator(ILog log, IMetaDataCalculator metaDataCalculator, IBaseVersionCalculator baseVersionCalculator, IMainlineVersionCalculator mainlineVersionCalculator, IGitRepoMetadataProvider gitRepoMetadataProvider)
+        public NextVersionCalculator(ILog log, IBaseVersionCalculator baseVersionCalculator, IMainlineVersionCalculator mainlineVersionCalculator, IGitRepoMetadataProvider gitRepoMetadataProvider)
         {
             this.log = log ?? throw new ArgumentNullException(nameof(log));
-            this.metaDataCalculator = metaDataCalculator ?? throw new ArgumentNullException(nameof(metaDataCalculator));
 
             this.baseVersionCalculator = baseVersionCalculator ?? throw new ArgumentNullException(nameof(baseVersionCalculator));
             this.mainlineVersionCalculator = mainlineVersionCalculator ?? throw new ArgumentNullException(nameof(mainlineVersionCalculator));
@@ -53,7 +51,7 @@ namespace GitVersion.VersionCalculation
             if (context.IsCurrentCommitTagged)
             {
                 // Will always be 0, don't bother with the +0 on tags
-                var semanticVersionBuildMetaData = metaDataCalculator.Create(context.CurrentCommit, context);
+                var semanticVersionBuildMetaData = mainlineVersionCalculator.CreateVersionBuildMetaData(context.CurrentCommit, context);
                 semanticVersionBuildMetaData.CommitsSinceTag = null;
 
                 var semanticVersion = new SemanticVersion(context.CurrentCommitTaggedVersion)
@@ -72,7 +70,7 @@ namespace GitVersion.VersionCalculation
             else
             {
                 semver = PerformIncrement(context, baseVersion);
-                semver.BuildMetaData = metaDataCalculator.Create(baseVersion.BaseVersionSource, context);
+                semver.BuildMetaData = mainlineVersionCalculator.CreateVersionBuildMetaData(baseVersion.BaseVersionSource, context);
             }
 
             var hasPreReleaseTag = semver.PreReleaseTag.HasTag();

@@ -28,7 +28,6 @@ namespace GitVersion
             services.AddSingleton<IConfigProvider, ConfigProvider>();
             services.AddSingleton<IVariableProvider, VariableProvider>();
 
-            services.AddSingleton<IMetaDataCalculator, MetaDataCalculator>();
             services.AddSingleton<IBaseVersionCalculator, BaseVersionCalculator>();
             services.AddSingleton<IMainlineVersionCalculator, MainlineVersionCalculator>();
             services.AddSingleton<INextVersionCalculator, NextVersionCalculator>();
