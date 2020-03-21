@@ -24,7 +24,7 @@ namespace GitVersionCore.Tests.VersionCalculation
             var sp = ConfigureServices(services =>
             {
                 services.AddSingleton<IBaseVersionCalculator>(new TestBaseVersionCalculator(true, new SemanticVersion(1), new MockCommit()));
-                services.AddSingleton<IMetaDataCalculator>(new TestMetaDataCalculator(semanticVersionBuildMetaData));
+                services.AddSingleton<IMainlineVersionCalculator>(new TestMainlineVersionCalculator(semanticVersionBuildMetaData));
             });
 
             var nextVersionCalculator = sp.GetService<INextVersionCalculator>() as NextVersionCalculator;
@@ -44,7 +44,7 @@ namespace GitVersionCore.Tests.VersionCalculation
             var sp = ConfigureServices(services =>
             {
                 services.AddSingleton<IBaseVersionCalculator>(new TestBaseVersionCalculator(false, new SemanticVersion(1), new MockCommit()));
-                services.AddSingleton<IMetaDataCalculator>(new TestMetaDataCalculator(semanticVersionBuildMetaData));
+                services.AddSingleton<IMainlineVersionCalculator>(new TestMainlineVersionCalculator(semanticVersionBuildMetaData));
             });
 
             var nextVersionCalculator = sp.GetService<INextVersionCalculator>() as NextVersionCalculator;
@@ -67,7 +67,7 @@ namespace GitVersionCore.Tests.VersionCalculation
                 .OverrideServices(services =>
                 {
                     services.AddSingleton<IBaseVersionCalculator>(new TestBaseVersionCalculator(false, new SemanticVersion(1), new MockCommit()));
-                    services.AddSingleton<IMetaDataCalculator>(new TestMetaDataCalculator(semanticVersionBuildMetaData));
+                    services.AddSingleton<IMainlineVersionCalculator>(new TestMainlineVersionCalculator(semanticVersionBuildMetaData));
                 })
                 .WithDevelopBranch()
                 .Build();

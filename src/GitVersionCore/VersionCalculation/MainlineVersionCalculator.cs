@@ -11,12 +11,10 @@ namespace GitVersion.VersionCalculation
 {
     internal class MainlineVersionCalculator : IMainlineVersionCalculator
     {
-        private readonly IMetaDataCalculator metaDataCalculator;
         private readonly ILog log;
 
-        public MainlineVersionCalculator(ILog log, IMetaDataCalculator metaDataCalculator)
+        public MainlineVersionCalculator(ILog log)
         {
-            this.metaDataCalculator = metaDataCalculator ?? throw new ArgumentNullException(nameof(metaDataCalculator));
             this.log = log ?? throw new ArgumentNullException(nameof(log));
         }
 
@@ -35,7 +33,7 @@ namespace GitVersion.VersionCalculation
                 //          * feature/foo
                 //         / |
                 // master *  *
-                // 
+                //
 
                 var mergeBase = baseVersion.BaseVersionSource;
                 var mainline = GetMainline(context, baseVersion.BaseVersionSource);
@@ -63,7 +61,7 @@ namespace GitVersion.VersionCalculation
 
                 // This will increment for any direct commits on mainline
                 mainlineVersion = IncrementForEachCommit(context, directCommits, mainlineVersion, mainline);
-                mainlineVersion.BuildMetaData = metaDataCalculator.Create(mergeBase, context);
+                mainlineVersion.BuildMetaData = CreateVersionBuildMetaData(mergeBase, context);
 
                 // branches other than master always get a bump for the act of branching
                 if (context.CurrentBranch.FriendlyName != "master")
@@ -76,6 +74,22 @@ namespace GitVersion.VersionCalculation
 
                 return mainlineVersion;
             }
+        }
+
+        public SemanticVersionBuildMetaData CreateVersionBuildMetaData(Commit baseVersionSource, GitVersionContext context)
+        {
+            var commitLog = context.Repository.GetCommitLog(baseVersionSource, context.CurrentCommit);
+            var commitsSinceTag = commitLog.Count();
+            log.Info($"{commitsSinceTag} commits found between {baseVersionSource.Sha} and {context.CurrentCommit.Sha}");
+
+            var shortSha = context.Repository.ObjectDatabase.ShortenObjectId(context.CurrentCommit);
+            return new SemanticVersionBuildMetaData(
+                baseVersionSource.Sha,
+                commitsSinceTag,
+                context.CurrentBranch.FriendlyName,
+                context.CurrentCommit.Sha,
+                shortSha,
+                context.CurrentCommit.When());
         }
 
         private SemanticVersion AggregateMergeCommitIncrement(GitVersionContext context, Commit commit, List<Commit> directCommits, SemanticVersion mainlineVersion, Branch mainline)
