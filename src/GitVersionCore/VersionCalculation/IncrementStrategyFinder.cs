@@ -29,9 +29,9 @@ namespace GitVersion
         private static readonly Regex DefaultPatchPatternRegex = new Regex(DefaultPatchPattern, RegexOptions.Compiled | RegexOptions.IgnoreCase);
         private static readonly Regex DefaultNoBumpPatternRegex = new Regex(DefaultNoBumpPattern, RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
-        public static VersionField? DetermineIncrementedField(GitVersionContext context, BaseVersion baseVersion)
+        public static VersionField? DetermineIncrementedField(IRepository repository, GitVersionContext context, BaseVersion baseVersion)
         {
-            var commitMessageIncrement = FindCommitMessageIncrement(context, baseVersion);
+            var commitMessageIncrement = FindCommitMessageIncrement(repository, context, baseVersion);
             var defaultIncrement = context.Configuration.Increment.ToVersionField();
 
             // use the default branch config increment strategy if there are no commit message overrides
@@ -56,14 +56,14 @@ namespace GitVersion
             return commitMessageIncrement;
         }
 
-        private static VersionField? FindCommitMessageIncrement(GitVersionContext context, BaseVersion baseVersion)
+        private static VersionField? FindCommitMessageIncrement(IRepository repository, GitVersionContext context, BaseVersion baseVersion)
         {
             if (context.Configuration.CommitMessageIncrementing == CommitMessageIncrementMode.Disabled)
             {
                 return null;
             }
 
-            var commits = GetIntermediateCommits(context.Repository, baseVersion.BaseVersionSource, context.CurrentCommit);
+            var commits = GetIntermediateCommits(repository, baseVersion.BaseVersionSource, context.CurrentCommit);
 
             if (context.Configuration.CommitMessageIncrementing == CommitMessageIncrementMode.MergeMessageOnly)
             {

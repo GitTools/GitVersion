@@ -5,6 +5,7 @@ using GitVersion.Common;
 using GitVersion.Configuration;
 using GitVersion.Extensions;
 using GitVersion.Logging;
+using LibGit2Sharp;
 using Microsoft.Extensions.Options;
 
 namespace GitVersion.VersionCalculation
@@ -15,15 +16,18 @@ namespace GitVersion.VersionCalculation
         private readonly IBaseVersionCalculator baseVersionCalculator;
         private readonly IMainlineVersionCalculator mainlineVersionCalculator;
         private readonly IGitRepoMetadataProvider gitRepoMetadataProvider;
+        private readonly IRepository repository;
         private readonly GitVersionContext context;
 
         public NextVersionCalculator(ILog log, IBaseVersionCalculator baseVersionCalculator,
-            IMainlineVersionCalculator mainlineVersionCalculator, IGitRepoMetadataProvider gitRepoMetadataProvider, IOptions<GitVersionContext> versionContext)
+            IMainlineVersionCalculator mainlineVersionCalculator, IGitRepoMetadataProvider gitRepoMetadataProvider,
+            IOptions<GitVersionContext> versionContext, IRepository repository)
         {
             this.log = log ?? throw new ArgumentNullException(nameof(log));
             this.baseVersionCalculator = baseVersionCalculator ?? throw new ArgumentNullException(nameof(baseVersionCalculator));
             this.mainlineVersionCalculator = mainlineVersionCalculator ?? throw new ArgumentNullException(nameof(mainlineVersionCalculator));
             this.gitRepoMetadataProvider = gitRepoMetadataProvider ?? throw new ArgumentNullException(nameof(gitRepoMetadataProvider));
+            this.repository = repository ?? throw new ArgumentNullException(nameof(repository));
 
             context = versionContext.Value;
         }
@@ -38,7 +42,7 @@ namespace GitVersion.VersionCalculation
             }
             EnsureHeadIsNotDetached(context);
 
-            var filePath = Path.Combine(context.Repository.GetRepositoryDirectory(), "NextVersion.txt");
+            var filePath = Path.Combine(repository.GetRepositoryDirectory(), "NextVersion.txt");
             if (File.Exists(filePath))
             {
                 throw new WarningException("NextVersion.txt has been deprecated. See http://gitversion.readthedocs.org/en/latest/configuration/ for replacement");
@@ -104,7 +108,7 @@ namespace GitVersion.VersionCalculation
         private SemanticVersion PerformIncrement(BaseVersion baseVersion)
         {
             var semver = baseVersion.SemanticVersion;
-            var increment = IncrementStrategyFinder.DetermineIncrementedField(context, baseVersion);
+            var increment = IncrementStrategyFinder.DetermineIncrementedField(repository, context, baseVersion);
             if (increment != null)
             {
                 semver = semver.IncrementVersion(increment.Value);

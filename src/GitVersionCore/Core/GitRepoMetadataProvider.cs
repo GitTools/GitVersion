@@ -20,14 +20,10 @@ namespace GitVersion
         private readonly ILog log;
         private IRepository repository;
 
-        public GitRepoMetadataProvider(ILog log)
+        public GitRepoMetadataProvider(ILog log, IRepository repository)
         {
-            this.log = log;
-        }
-
-        public void WithData(IRepository repo)
-        {
-            repository = repo;
+            this.log = log ?? throw new ArgumentNullException(nameof(log));
+            this.repository = repository ?? throw new ArgumentNullException(nameof(log));
         }
 
         public IEnumerable<Tuple<Tag, SemanticVersion>> GetValidVersionTags(string tagPrefixRegex, DateTimeOffset? olderThan = null)

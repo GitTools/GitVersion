@@ -21,7 +21,5 @@ namespace GitVersion.Common
         /// If there are multiple such commits and branches, tries to guess based on commit histories.
         /// </summary>
         BranchCommit FindCommitBranchWasBranchedFrom(Branch branch, Config configuration, params Branch[] excludedBranches);
-
-        void WithData(IRepository repo);
     }
 }

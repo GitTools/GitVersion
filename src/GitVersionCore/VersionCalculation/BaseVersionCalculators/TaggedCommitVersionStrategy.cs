@@ -17,7 +17,7 @@ namespace GitVersion.VersionCalculation
     {
         private readonly IGitRepoMetadataProvider gitRepoMetadataProvider;
 
-        public TaggedCommitVersionStrategy(IGitRepoMetadataProvider gitRepoMetadataProvider, IOptions<GitVersionContext> versionContext) : base(versionContext)
+        public TaggedCommitVersionStrategy(IGitRepoMetadataProvider gitRepoMetadataProvider, IRepository repository, IOptions<GitVersionContext> versionContext) : base(repository, versionContext)
         {
             this.gitRepoMetadataProvider = gitRepoMetadataProvider ?? throw new ArgumentNullException(nameof(gitRepoMetadataProvider));
         }

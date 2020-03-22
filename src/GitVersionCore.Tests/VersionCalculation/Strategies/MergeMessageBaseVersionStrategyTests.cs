@@ -33,7 +33,8 @@ namespace GitVersionCore.Tests.VersionCalculation.Strategies
             contextBuilder.Build();
             var log = contextBuilder.ServicesProvider.GetService<ILog>();
             var options = contextBuilder.ServicesProvider.GetService<IOptions<GitVersionContext>>();
-            var strategy = new MergeMessageVersionStrategy(log, options);
+            var repository = contextBuilder.ServicesProvider.GetService<IRepository>();
+            var strategy = new MergeMessageVersionStrategy(log, repository, options);
 
             var baseVersion = strategy.GetVersions().Single();
 
@@ -172,7 +173,8 @@ namespace GitVersionCore.Tests.VersionCalculation.Strategies
             contextBuilder.Build();
             var log = contextBuilder.ServicesProvider.GetService<ILog>();
             var options = contextBuilder.ServicesProvider.GetService<IOptions<GitVersionContext>>();
-            var strategy = new MergeMessageVersionStrategy(log, options);
+            var repository = contextBuilder.ServicesProvider.GetService<IRepository>();
+            var strategy = new MergeMessageVersionStrategy(log, repository, options);
 
             var baseVersion = strategy.GetVersions().SingleOrDefault();
 

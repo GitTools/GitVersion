@@ -6,6 +6,7 @@ using GitVersion.Extensions;
 using GitVersion.Logging;
 using GitVersion.VersionCalculation;
 using GitVersion.VersionCalculation.Cache;
+using LibGit2Sharp;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
@@ -40,11 +41,18 @@ namespace GitVersion
 
             services.AddSingleton(sp => sp.GetService<IConfigFileLocatorFactory>().Create());
 
+            services.AddSingleton<IRepository>(sp =>
+            {
+                var options = sp.GetService<IOptions<Arguments>>();
+                return new Repository(options.Value.DotGitDirectory);
+            });
+
             services.AddSingleton(sp =>
             {
                 var options = sp.GetService<IOptions<Arguments>>();
+                var repository = sp.GetService<IRepository>();
                 var contextFactory = sp.GetService<IGitVersionContextFactory>();
-                return Options.Create(contextFactory.Create(options.Value));
+                return Options.Create(contextFactory.Create(options.Value, repository));
             });
 
             services.AddModule(new BuildServerModule());

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using GitVersion.Logging;
+using LibGit2Sharp;
 using Microsoft.Extensions.Options;
 
 namespace GitVersion.VersionCalculation
@@ -10,12 +11,14 @@ namespace GitVersion.VersionCalculation
     public class BaseVersionCalculator : IBaseVersionCalculator
     {
         private readonly ILog log;
+        private readonly IRepository repository;
         private readonly GitVersionContext context;
         private readonly IVersionStrategy[] strategies;
 
-        public BaseVersionCalculator(ILog log, IOptions<GitVersionContext> versionContext, IEnumerable<IVersionStrategy> strategies)
+        public BaseVersionCalculator(ILog log, IRepository repository, IOptions<GitVersionContext> versionContext, IEnumerable<IVersionStrategy> strategies)
         {
             this.log = log ?? throw new ArgumentNullException(nameof(log));
+            this.repository = repository ?? throw new ArgumentNullException(nameof(repository));
             this.strategies = strategies?.ToArray() ?? Array.Empty<IVersionStrategy>();
             context = versionContext.Value;
         }
@@ -45,13 +48,12 @@ namespace GitVersion.VersionCalculation
                     })
                     .Select(v => new Versions
                     {
-                        IncrementedVersion = v.MaybeIncrement(context),
+                        IncrementedVersion = v.MaybeIncrement(repository, context),
                         Version = v
                     })
                     .ToList();
 
-                FixTheBaseVersionSourceOfMergeMessageStrategyIfReleaseBranchWasMergedAndDeleted
-                    (context, baseVersions);
+                FixTheBaseVersionSourceOfMergeMessageStrategyIfReleaseBranchWasMergedAndDeleted(repository, context, baseVersions);
                 var maxVersion = baseVersions.Aggregate((v1, v2) => v1.IncrementedVersion > v2.IncrementedVersion ? v1 : v2);
                 var matchingVersionsOnceIncremented = baseVersions
                     .Where(b => b.Version.BaseVersionSource != null && b.IncrementedVersion == maxVersion.IncrementedVersion)
@@ -87,9 +89,9 @@ namespace GitVersion.VersionCalculation
             }
         }
 
-        private static void FixTheBaseVersionSourceOfMergeMessageStrategyIfReleaseBranchWasMergedAndDeleted(GitVersionContext context, IEnumerable<Versions> baseVersions)
+        private static void FixTheBaseVersionSourceOfMergeMessageStrategyIfReleaseBranchWasMergedAndDeleted(IRepository repository, GitVersionContext context, IEnumerable<Versions> baseVersions)
         {
-            if (!ReleaseBranchExistsInRepo(context))
+            if (!ReleaseBranchExistsInRepo(repository, context))
             {
                 foreach (var baseVersion in baseVersions)
                 {
@@ -103,19 +105,19 @@ namespace GitVersion.VersionCalculation
                             baseVersion.Version.Source,
                             baseVersion.Version.ShouldIncrement,
                             baseVersion.Version.SemanticVersion,
-                            context.Repository.ObjectDatabase.FindMergeBase(parents[0], parents[1]),
+                            repository.ObjectDatabase.FindMergeBase(parents[0], parents[1]),
                             baseVersion.Version.BranchNameOverride);
                     }
                 }
             }
         }
 
-        private static bool ReleaseBranchExistsInRepo(GitVersionContext context)
+        private static bool ReleaseBranchExistsInRepo(IRepository repository, GitVersionContext context)
         {
             var releaseBranchConfig = context.FullConfiguration.Branches
                 .Where(b => b.Value.IsReleaseBranch == true)
                 .ToList();
-            var releaseBranches = context.Repository.Branches
+            var releaseBranches = repository.Branches
                     .Where(b => releaseBranchConfig.Any(c => Regex.IsMatch(b.FriendlyName, c.Value.Regex)));
             return releaseBranches.Any();
         }
