@@ -97,7 +97,8 @@ namespace GitVersionCore.Tests.VersionCalculation.Strategies
             var sp = ConfigureServices(services => { services.AddSingleton(options); });
             var gitRepoMetadataProvider = sp.GetService<IGitRepoMetadataProvider>();
             var contextOptions = sp.GetService<IOptions<GitVersionContext>>();
-            strategy = new VersionInBranchNameVersionStrategy(gitRepoMetadataProvider, contextOptions);
+            var repository = sp.GetService<IRepository>();
+            strategy = new VersionInBranchNameVersionStrategy(gitRepoMetadataProvider, repository, contextOptions);
             return sp.GetService<IGitVersionContextFactory>();
         }
     }

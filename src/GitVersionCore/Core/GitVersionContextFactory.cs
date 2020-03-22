@@ -26,9 +26,8 @@ namespace GitVersion
             this.options = options ?? throw new ArgumentNullException(nameof(options));
         }
 
-        public GitVersionContext Create(Arguments arguments)
+        public GitVersionContext Create(Arguments arguments, IRepository repository)
         {
-            using var repository = new Repository(arguments.DotGitDirectory);
             var targetBranch = repository.GetTargetBranch(arguments.TargetBranch);
             return Init(repository, targetBranch, arguments.CommitId);
         }
@@ -39,7 +38,6 @@ namespace GitVersion
                 throw new InvalidOperationException("Need a branch to operate on");
 
             var configuration = configProvider.Provide(overrideConfig: options.Value.OverrideConfig);
-            gitRepoMetadataProvider.WithData(repository);
 
             var currentCommit = repository.GetCurrentCommit(log, currentBranch, commitId);
 

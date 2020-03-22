@@ -48,7 +48,7 @@ namespace GitVersionCore.Tests
             catch (Exception)
             {
                 Console.WriteLine("Test failing, dumping repository graph");
-                context.Repository.DumpGraph();
+                repository.DumpGraph();
                 throw;
             }
         }

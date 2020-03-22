@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using LibGit2Sharp;
 using Microsoft.Extensions.Options;
 
 namespace GitVersion.VersionCalculation
@@ -10,7 +11,7 @@ namespace GitVersion.VersionCalculation
     /// </summary>
     public class ConfigNextVersionVersionStrategy : VersionStrategyBase
     {
-        public ConfigNextVersionVersionStrategy(IOptions<GitVersionContext> versionContext) : base(versionContext)
+        public ConfigNextVersionVersionStrategy(IRepository repository, IOptions<GitVersionContext> versionContext) : base(repository, versionContext)
         {
         }
 

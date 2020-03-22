@@ -92,12 +92,10 @@ namespace GitVersion.Configuration
                 }
                 else
                 {
-                    var branches = repoMetadataProvider
-                        .GetBranchesContainingCommit(branchPoint.Commit, branchesToEvaluate, false).ToList();
+                    var branches = repoMetadataProvider.GetBranchesContainingCommit(branchPoint.Commit, branchesToEvaluate, false).ToList();
                     if (branches.Count > 1)
                     {
-                        var currentTipBranches = repoMetadataProvider
-                            .GetBranchesContainingCommit(currentCommit, branchesToEvaluate, false).ToList();
+                        var currentTipBranches = repoMetadataProvider.GetBranchesContainingCommit(currentCommit, branchesToEvaluate, false).ToList();
                         possibleParents = branches.Except(currentTipBranches).ToList();
                     }
                     else
