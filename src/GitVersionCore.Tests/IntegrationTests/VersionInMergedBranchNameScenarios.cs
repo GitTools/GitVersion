@@ -41,7 +41,7 @@ namespace GitVersionCore.Tests.IntegrationTests
             using var fixture = new BaseGitFlowRepositoryFixture("1.0.0");
             fixture.CreateAndMergeBranchIntoDevelop("support/2.0.0");
 
-            fixture.AssertFullSemver(config, "2.1.0-alpha.2");
+            fixture.AssertFullSemver("2.1.0-alpha.2", config);
         }
 
         [Test]

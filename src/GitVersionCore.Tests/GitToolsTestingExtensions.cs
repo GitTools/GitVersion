@@ -25,7 +25,14 @@ namespace GitVersionCore.Tests
 
             repository ??= fixture.Repository;
 
-            var options = Options.Create(new Arguments { OverrideConfig = configuration, TargetPath = repository.GetRepositoryDirectory() });
+            var options = Options.Create(new Arguments
+            {
+                OverrideConfig = configuration,
+                TargetPath = repository.GetRepositoryDirectory(),
+                TargetBranch = branch,
+                CommitId = commitId,
+                OnlyTrackedBranches = onlyTrackedBranches
+            });
 
             var sp = ConfigureServices(services =>
             {
@@ -53,13 +60,9 @@ namespace GitVersionCore.Tests
             }
         }
 
-        public static void AssertFullSemver(this RepositoryFixtureBase fixture, string fullSemver, IRepository repository = null, string commitId = null, bool onlyTrackedBranches = true, string targetBranch = null)
+        public static void AssertFullSemver(this RepositoryFixtureBase fixture, string fullSemver, Config configuration = null, IRepository repository = null, string commitId = null, bool onlyTrackedBranches = true, string targetBranch = null)
         {
-            fixture.AssertFullSemver(new Config(), fullSemver, repository, commitId, onlyTrackedBranches, targetBranch);
-        }
-
-        public static void AssertFullSemver(this RepositoryFixtureBase fixture, Config configuration, string fullSemver, IRepository repository = null, string commitId = null, bool onlyTrackedBranches = true, string targetBranch = null)
-        {
+            configuration ??= new Config();
             configuration.Reset();
             Console.WriteLine("---------");
 

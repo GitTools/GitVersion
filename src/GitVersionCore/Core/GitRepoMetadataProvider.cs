@@ -66,6 +66,8 @@ namespace GitVersion
         // TODO Should we cache this?
         public IEnumerable<Branch> GetBranchesContainingCommit(Commit commit, IEnumerable<Branch> branches, bool onlyTrackedBranches)
         {
+            static bool IncludeTrackedBranches(Branch branch, bool includeOnlyTracked) => includeOnlyTracked && branch.IsTracking || !includeOnlyTracked;
+
             if (commit == null)
             {
                 throw new ArgumentNullException(nameof(commit));
@@ -79,7 +81,7 @@ namespace GitVersion
                 var branchList = branches as Branch[] ?? branches.ToArray();
                 foreach (var branch in branchList)
                 {
-                    if (branch.Tip != null && branch.Tip.Sha != commit.Sha || ((onlyTrackedBranches && branch.IsTracking) || !onlyTrackedBranches))
+                    if (branch.Tip != null && branch.Tip.Sha != commit.Sha || IncludeTrackedBranches(branch, onlyTrackedBranches))
                     {
                         continue;
                     }
@@ -95,7 +97,7 @@ namespace GitVersion
                 }
 
                 log.Info($"No direct branches found, searching through {(onlyTrackedBranches ? "tracked" : "all")} branches.");
-                foreach (var branch in branchList.Where(b => (onlyTrackedBranches && b.IsTracking) || !onlyTrackedBranches))
+                foreach (var branch in branchList.Where(b => IncludeTrackedBranches(b, onlyTrackedBranches)))
                 {
                     log.Info($"Searching for commits reachable from '{branch.FriendlyName}'.");
 

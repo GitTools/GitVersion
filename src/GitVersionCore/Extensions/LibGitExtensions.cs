@@ -278,7 +278,7 @@ namespace GitVersion.Extensions
                 if (!desiredBranch.CanonicalName.IsBranch(targetBranch))
                 {
                     // In the case where HEAD is not the desired branch, try to find the branch with matching name
-                    desiredBranch = repository?.Branches?
+                    desiredBranch = repository.Branches?
                         .SingleOrDefault(b =>
                             b.CanonicalName == targetBranch ||
                             b.FriendlyName == targetBranch ||

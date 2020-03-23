@@ -28,7 +28,7 @@ namespace GitVersionCore.Tests.IntegrationTests
             using var fixture = new EmptyRepositoryFixture();
             fixture.Repository.MakeATaggedCommit("1.0.0");
             fixture.Repository.MakeCommits(2);
-            fixture.AssertFullSemver(config, "1.0.1+2");
+            fixture.AssertFullSemver("1.0.1+2", config);
         }
 
         [Test]
@@ -49,7 +49,7 @@ namespace GitVersionCore.Tests.IntegrationTests
             using var fixture = new EmptyRepositoryFixture();
             fixture.Repository.MakeATaggedCommit("1.0.0");
             fixture.Repository.MakeCommits(2);
-            fixture.AssertFullSemver(config, "1.0.1-ci.2");
+            fixture.AssertFullSemver("1.0.1-ci.2", config);
         }
 
         [Test]
@@ -106,7 +106,7 @@ namespace GitVersionCore.Tests.IntegrationTests
             fixture.Repository.MakeATaggedCommit(taggedVersion);
             fixture.Repository.MakeCommits(5);
 
-            fixture.AssertFullSemver(config, "1.1.0+5");
+            fixture.AssertFullSemver("1.1.0+5", config);
         }
 
         [Test]
@@ -116,7 +116,7 @@ namespace GitVersionCore.Tests.IntegrationTests
             const string taggedVersion = "1.0.3";
             fixture.Repository.MakeATaggedCommit(taggedVersion);
 
-            fixture.AssertFullSemver(new Config { NextVersion = "1.1.0" }, "1.0.3");
+            fixture.AssertFullSemver("1.0.3", new Config { NextVersion = "1.1.0" });
         }
 
         [Test]
@@ -148,7 +148,7 @@ namespace GitVersionCore.Tests.IntegrationTests
             fixture.Repository.MakeATaggedCommit(taggedVersion);
             fixture.Repository.MakeCommits(5);
 
-            fixture.AssertFullSemver(new Config { NextVersion = "1.0.0" }, "1.1.1+5");
+            fixture.AssertFullSemver("1.1.1+5", new Config { NextVersion = "1.0.0" });
         }
 
         [Test]
@@ -158,7 +158,7 @@ namespace GitVersionCore.Tests.IntegrationTests
             const string taggedVersion = "1.1.0";
             fixture.Repository.MakeATaggedCommit(taggedVersion);
 
-            fixture.AssertFullSemver(new Config { NextVersion = "1.0.0" }, "1.1.0");
+            fixture.AssertFullSemver("1.1.0", new Config { NextVersion = "1.0.0" });
         }
 
         [Test]
@@ -169,7 +169,7 @@ namespace GitVersionCore.Tests.IntegrationTests
             fixture.Repository.MakeATaggedCommit(taggedVersion);
             fixture.Repository.MakeCommits(5);
 
-            fixture.AssertFullSemver(new Config { TagPrefix = "version-" }, "1.0.4+5");
+            fixture.AssertFullSemver("1.0.4+5", new Config { TagPrefix = "version-" });
         }
 
         [Test]
@@ -181,13 +181,13 @@ namespace GitVersionCore.Tests.IntegrationTests
             fixture.Repository.MakeATaggedCommit(taggedVersion);
             fixture.Repository.MakeCommits(5);
 
-            fixture.AssertFullSemver(config, "1.0.4+5");
+            fixture.AssertFullSemver("1.0.4+5", config);
 
             taggedVersion = "version-1.0.5";
             fixture.Repository.MakeATaggedCommit(taggedVersion);
             fixture.Repository.MakeCommits(5);
 
-            fixture.AssertFullSemver(config, "1.0.6+5");
+            fixture.AssertFullSemver("1.0.6+5", config);
         }
 
         [Test]
@@ -199,12 +199,12 @@ namespace GitVersionCore.Tests.IntegrationTests
             fixture.Repository.MakeATaggedCommit(taggedVersion);
             fixture.Repository.MakeCommits(5);
 
-            fixture.AssertFullSemver(config, "0.1.0+5");    //Fallback version + 5 commits since tag
+            fixture.AssertFullSemver("0.1.0+5", config);    //Fallback version + 5 commits since tag
 
             taggedVersion = "bad/1.0.3";
             fixture.Repository.MakeATaggedCommit(taggedVersion);
 
-            fixture.AssertFullSemver(config, "0.1.0+6");   //Fallback version + 6 commits since tag
+            fixture.AssertFullSemver("0.1.0+6", config);   //Fallback version + 6 commits since tag
         }
     }
 }

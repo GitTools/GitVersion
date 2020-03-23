@@ -14,22 +14,18 @@ namespace GitVersionCore.Tests
     [TestFixture]
     public class VersionSourceTests : TestBase
     {
-        private INextVersionCalculator nextVersionCalculator;
-        private IGitVersionContextFactory gitVersionContextFactory;
-
-        [SetUp]
-        public void SetUp()
+        private static INextVersionCalculator GetNextVersionCalculator(IRepository repository, string branch)
         {
             var config = new Config().ApplyDefaults();
-            var options = Options.Create(new Arguments { OverrideConfig = config });
+            var options = Options.Create(new Arguments { OverrideConfig = config, TargetBranch = branch });
 
             var sp = ConfigureServices(services =>
             {
                 services.AddSingleton(options);
+                services.AddSingleton(repository);
             });
 
-            nextVersionCalculator = sp.GetService<INextVersionCalculator>();
-            gitVersionContextFactory = sp.GetService<IGitVersionContextFactory>();
+            return sp.GetService<INextVersionCalculator>();
         }
 
         [Test]
@@ -43,7 +39,7 @@ namespace GitVersionCore.Tests
             Commands.Checkout(fixture.Repository, featureBranch);
             _ = fixture.Repository.MakeACommit();
 
-            gitVersionContextFactory.Init(fixture.Repository, fixture.Repository.Head);
+            var nextVersionCalculator = GetNextVersionCalculator(fixture.Repository, fixture.Repository.Head.CanonicalName);
 
             var version = nextVersionCalculator.FindVersion();
 
@@ -57,7 +53,7 @@ namespace GitVersionCore.Tests
             using var fixture = new EmptyRepositoryFixture();
             var initialCommit = fixture.Repository.MakeACommit();
 
-            gitVersionContextFactory.Init(fixture.Repository, fixture.Repository.Head);
+            var nextVersionCalculator = GetNextVersionCalculator(fixture.Repository, fixture.Repository.Head.CanonicalName);
 
             var version = nextVersionCalculator.FindVersion();
 
@@ -77,7 +73,7 @@ namespace GitVersionCore.Tests
             Commands.Checkout(fixture.Repository, featureBranch);
             _ = fixture.Repository.MakeACommit();
 
-            gitVersionContextFactory.Init(fixture.Repository, fixture.Repository.Head);
+            var nextVersionCalculator = GetNextVersionCalculator(fixture.Repository, fixture.Repository.Head.CanonicalName);
 
             var version = nextVersionCalculator.FindVersion();
 

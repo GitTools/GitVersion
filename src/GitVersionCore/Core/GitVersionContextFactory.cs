@@ -29,10 +29,10 @@ namespace GitVersion
         public GitVersionContext Create(Arguments arguments, IRepository repository)
         {
             var targetBranch = repository.GetTargetBranch(arguments.TargetBranch);
-            return Init(repository, targetBranch, arguments.CommitId);
+            return Init(repository, targetBranch, arguments.CommitId, arguments.OnlyTrackedBranches);
         }
 
-        public GitVersionContext Init(IRepository repository, Branch currentBranch, string commitId = null, bool onlyTrackedBranches = false)
+        private GitVersionContext Init(IRepository repository, Branch currentBranch, string commitId = null, bool onlyTrackedBranches = false)
         {
             if (currentBranch == null)
                 throw new InvalidOperationException("Need a branch to operate on");

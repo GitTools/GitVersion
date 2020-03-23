@@ -114,7 +114,7 @@ namespace GitVersionCore.Tests.VersionCalculation
             fixture.BranchTo("custom/foo");
             fixture.MakeACommit();
 
-            fixture.AssertFullSemver(config, "1.0.0-foo.1+2");
+            fixture.AssertFullSemver("1.0.0-foo.1+2", config);
         }
 
         [Test]
@@ -143,7 +143,7 @@ namespace GitVersionCore.Tests.VersionCalculation
             fixture.BranchTo("custom/foo");
             fixture.MakeACommit();
 
-            fixture.AssertFullSemver(config, "1.0.0-alpha.foo.1+2");
+            fixture.AssertFullSemver("1.0.0-alpha.foo.1+2", config);
         }
 
         [Test]
@@ -171,12 +171,12 @@ namespace GitVersionCore.Tests.VersionCalculation
             fixture.Repository.MakeATaggedCommit("0.1.0-test.1");
             fixture.Repository.MakeACommit();
 
-            fixture.AssertFullSemver(config, "0.1.0-test.2+2");
+            fixture.AssertFullSemver("0.1.0-test.2+2", config);
 
             Commands.Checkout(fixture.Repository, "master");
             fixture.Repository.Merge(fixture.Repository.FindBranch("feature/test"), Generate.SignatureNow());
 
-            fixture.AssertFullSemver(config, "0.1.0-beta.1+2");
+            fixture.AssertFullSemver("0.1.0-beta.1+2", config);
         }
     }
 }

@@ -9,7 +9,6 @@ namespace GitVersionExe.Tests
             this.workingDirectory = workingDirectory;
         }
 
-
         public ArgumentBuilder(string workingDirectory, string exec, string execArgs, string projectFile, string projectArgs, string logFile)
         {
             this.workingDirectory = workingDirectory;
@@ -27,9 +26,7 @@ namespace GitVersionExe.Tests
             this.logFile = logFile;
         }
 
-
         public string WorkingDirectory => workingDirectory;
-
 
         public string LogFile => logFile;
 
@@ -68,7 +65,6 @@ namespace GitVersionExe.Tests
 
             return arguments.ToString();
         }
-
 
         private readonly string additionalArguments;
         private readonly string exec;

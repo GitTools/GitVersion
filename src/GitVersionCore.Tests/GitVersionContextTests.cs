@@ -1,4 +1,3 @@
-
 using System.Collections.Generic;
 using GitTools.Testing;
 using GitVersion;
@@ -26,17 +25,18 @@ namespace GitVersionCore.Tests
             };
             config.Reset();
 
-            var mockBranch = new MockBranch("master") { new MockCommit { CommitterEx = Generate.SignatureNow() } };
+            var branchName = "master";
+            var mockBranch = new MockBranch(branchName) { new MockCommit { CommitterEx = Generate.SignatureNow() } };
             var mockRepository = new MockRepository
             {
+                Head = mockBranch,
                 Branches = new MockBranchCollection
                 {
                     mockBranch
                 }
             };
 
-            var gitVersionContextFactory = GetGitVersionContextFactory(config);
-            var context = gitVersionContextFactory.Init(mockRepository, mockBranch);
+            var context = GetGitVersionContext(mockRepository, branchName, config);
 
             context.Configuration.VersioningMode.ShouldBe(mode);
         }
@@ -62,8 +62,7 @@ namespace GitVersionCore.Tests
             fixture.BranchTo(dummyBranchName);
             fixture.MakeACommit();
 
-            var gitVersionContextFactory = GetGitVersionContextFactory(config);
-            var context = gitVersionContextFactory.Init(fixture.Repository, fixture.Repository.Branches[dummyBranchName]);
+            var context = GetGitVersionContext(fixture.Repository, dummyBranchName, config);
 
             context.Configuration.Increment.ShouldBe(alternateExpected ?? increment);
         }
@@ -71,13 +70,14 @@ namespace GitVersionCore.Tests
         [Test]
         public void UsesBranchSpecificConfigOverTopLevelDefaults()
         {
+            var branchName = "develop";
             var config = new Config
             {
                 VersioningMode = VersioningMode.ContinuousDelivery,
                 Branches =
                 {
                     {
-                        "develop", new BranchConfig
+                        branchName, new BranchConfig
                         {
                             VersioningMode = VersioningMode.ContinuousDeployment,
                             Tag = "alpha"
@@ -86,9 +86,10 @@ namespace GitVersionCore.Tests
                 }
             };
             config.Reset();
-            var develop = new MockBranch("develop") { new MockCommit { CommitterEx = Generate.SignatureNow() } };
+            var develop = new MockBranch(branchName) { new MockCommit { CommitterEx = Generate.SignatureNow() } };
             var mockRepository = new MockRepository
             {
+                Head = develop,
                 Branches = new MockBranchCollection
                 {
                     new MockBranch("master") { new MockCommit { CommitterEx = Generate.SignatureNow() } },
@@ -96,8 +97,7 @@ namespace GitVersionCore.Tests
                 }
             };
 
-            var gitVersionContextFactory = GetGitVersionContextFactory(config);
-            var context = gitVersionContextFactory.Init(mockRepository, develop);
+            var context = GetGitVersionContext(mockRepository, branchName, config);
 
             context.Configuration.Tag.ShouldBe("alpha");
         }
@@ -134,15 +134,15 @@ namespace GitVersionCore.Tests
                 {
                     releaseLatestBranch,
                     releaseVersionBranch
-                }
+                },
+                Head = releaseLatestBranch
             };
 
-            var gitVersionContextFactory = GetGitVersionContextFactory(config);
-            var latestContext = gitVersionContextFactory.Init(mockRepository, releaseLatestBranch);
-
+            var latestContext = GetGitVersionContext(mockRepository, releaseLatestBranch.CanonicalName, config);
             latestContext.Configuration.Increment.ShouldBe(IncrementStrategy.None);
 
-            var versionContext = gitVersionContextFactory.Init(mockRepository, releaseVersionBranch);
+            mockRepository.Head = releaseVersionBranch;
+            var versionContext = GetGitVersionContext(mockRepository, releaseVersionBranch.CanonicalName, config);
             versionContext.Configuration.Increment.ShouldBe(IncrementStrategy.Patch);
         }
 
@@ -166,18 +166,35 @@ namespace GitVersionCore.Tests
             Commands.Checkout(repo.Repository, featureBranch);
             repo.Repository.MakeACommit();
 
-            var gitVersionContextFactory = GetGitVersionContextFactory(config);
-            var context = gitVersionContextFactory.Init(repo.Repository, repo.Repository.Head);
+            var context = GetGitVersionContext(repo.Repository, "develop", config);
 
             context.Configuration.Increment.ShouldBe(IncrementStrategy.Major);
         }
 
-        private static IGitVersionContextFactory GetGitVersionContextFactory(Config config = null)
+        private static GitVersionContext GetGitVersionContext(IRepository repository, string branch, Config config = null)
+        {
+            config ??= new Config().ApplyDefaults();
+            var options = Options.Create(new Arguments { OverrideConfig = config, TargetBranch = branch });
+
+            var sp = ConfigureServices(services =>
+            {
+                services.AddSingleton(options);
+                services.AddSingleton(repository);
+            });
+
+            return sp.GetService<IOptions<GitVersionContext>>().Value;
+        }
+
+        private static IGitVersionContextFactory GetGitVersionContextFactory(IRepository repository, Config config = null)
         {
             config ??= new Config().ApplyDefaults();
             var options = Options.Create(new Arguments { OverrideConfig = config });
 
-            var sp = ConfigureServices(services => { services.AddSingleton(options); });
+            var sp = ConfigureServices(services =>
+            {
+                services.AddSingleton(options);
+                services.AddSingleton(repository);
+            });
 
             return sp.GetService<IGitVersionContextFactory>();
         }
