@@ -16,11 +16,11 @@ namespace GitVersion
         private readonly IExecCommand execCommand;
         private readonly IConfigProvider configProvider;
         private readonly IBuildServerResolver buildServerResolver;
-        private readonly IGitVersionCalculator gitVersionCalculator;
+        private readonly IGitVersionTool gitVersionTool;
         private readonly IVersionWriter versionWriter;
 
         public GitVersionExecutor(ILog log, IConfigFileLocator configFileLocator, IConfigProvider configProvider,
-            IBuildServerResolver buildServerResolver, IGitVersionCalculator gitVersionCalculator,
+            IBuildServerResolver buildServerResolver, IGitVersionTool gitVersionTool,
             IVersionWriter versionWriter, IHelpWriter helpWriter, IExecCommand execCommand)
         {
             this.log = log ?? throw new ArgumentNullException(nameof(log));
@@ -28,10 +28,11 @@ namespace GitVersion
             this.configProvider = configProvider ?? throw new ArgumentNullException(nameof(configFileLocator));
 
             this.buildServerResolver = buildServerResolver ?? throw new ArgumentNullException(nameof(buildServerResolver));
-            this.gitVersionCalculator = gitVersionCalculator ?? throw new ArgumentNullException(nameof(gitVersionCalculator));
+            this.gitVersionTool = gitVersionTool ?? throw new ArgumentNullException(nameof(gitVersionTool));
 
             this.versionWriter = versionWriter ?? throw new ArgumentNullException(nameof(versionWriter));
             this.helpWriter = helpWriter ?? throw new ArgumentNullException(nameof(helpWriter));
+
             this.execCommand = execCommand ?? throw new ArgumentNullException(nameof(execCommand));
         }
 
@@ -54,7 +55,12 @@ namespace GitVersion
             {
                 if (HandleNonMainCommand(arguments, out var exitCode)) return exitCode;
 
-                var variables = gitVersionCalculator.CalculateVersionVariables();
+                var variables = gitVersionTool.CalculateVersionVariables();
+
+                gitVersionTool.OutputVariables(variables, Console.WriteLine);
+                gitVersionTool.UpdateAssemblyInfo(variables);
+                gitVersionTool.UpdateWixVersionFile(variables);
+
                 execCommand.Execute(variables);
             }
             catch (WarningException exception)

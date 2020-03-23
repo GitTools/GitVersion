@@ -41,7 +41,7 @@ namespace GitVersion.MSBuildTask.Tests
                     services.AddSingleton(options);
                 });
 
-                var gitVersionCalculator = sp.GetService<IGitVersionCalculator>();
+                var gitVersionCalculator = sp.GetService<IGitVersionTool>();
 
                 gitVersionCalculator.CalculateVersionVariables();
             }
@@ -69,7 +69,7 @@ namespace GitVersion.MSBuildTask.Tests
                     services.AddSingleton(options);
                 });
 
-                var gitVersionCalculator = sp.GetService<IGitVersionCalculator>();
+                var gitVersionCalculator = sp.GetService<IGitVersionTool>();
 
                 gitVersionCalculator.CalculateVersionVariables();
             }

@@ -3,24 +3,11 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using GitVersion.Extensions.GitVersionInformationResources;
 using Microsoft.Build.Framework;
 
 namespace GitVersion.MSBuildTask
 {
-    public sealed class FileWriteInfo
-    {
-        public FileWriteInfo(string workingDirectory, string fileName, string fileExtension)
-        {
-            WorkingDirectory = workingDirectory;
-            FileName = fileName;
-            FileExtension = fileExtension;
-        }
-
-        public string WorkingDirectory { get; }
-        public string FileName { get; }
-        public string FileExtension { get; }
-    }
-
     public static class FileHelper
     {
         private static readonly Dictionary<string, Func<string, string, bool>> VersionAttributeFinders = new Dictionary<string, Func<string, string, bool>>

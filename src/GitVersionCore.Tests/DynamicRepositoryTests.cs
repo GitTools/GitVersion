@@ -82,7 +82,7 @@ namespace GitVersionCore.Tests
             var gitPreparer = sp.GetService<IGitPreparer>();
             gitPreparer.Prepare();
 
-            var gitVersionCalculator = sp.GetService<IGitVersionCalculator>();
+            var gitVersionCalculator = sp.GetService<IGitVersionTool>();
 
             var versionVariables = gitVersionCalculator.CalculateVersionVariables();
 

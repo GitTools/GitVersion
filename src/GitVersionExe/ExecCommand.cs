@@ -1,12 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.InteropServices;
-using GitVersion.Extensions;
-using GitVersion.Extensions.VersionAssemblyInfoResources;
 using GitVersion.Helpers;
 using GitVersion.Logging;
-using GitVersion.Model;
 using GitVersion.OutputVariables;
 using Microsoft.Extensions.Options;
 
@@ -14,63 +10,19 @@ namespace GitVersion
 {
     public class ExecCommand : IExecCommand
     {
-        private static readonly bool RunningOnUnix = !RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
 
-        private readonly IFileSystem fileSystem;
-        private readonly IBuildServerResolver buildServerResolver;
         private readonly ILog log;
         private readonly IOptions<Arguments> options;
 
-        public ExecCommand(IFileSystem fileSystem, IBuildServerResolver buildServerResolver, ILog log, IOptions<Arguments> options)
+        public ExecCommand(ILog log, IOptions<Arguments> options)
         {
-            this.fileSystem = fileSystem ?? throw new ArgumentNullException(nameof(fileSystem));
-            this.buildServerResolver = buildServerResolver ?? throw new ArgumentNullException(nameof(buildServerResolver));
             this.log = log ?? throw new ArgumentNullException(nameof(log));
             this.options = options ?? throw new ArgumentNullException(nameof(options));
         }
 
         public void Execute(VersionVariables variables)
         {
-            log.Info($"Running on {(RunningOnUnix ? "Unix" : "Windows")}.");
-
             var arguments = options.Value;
-
-            if (arguments.Output.Contains(OutputType.BuildServer))
-            {
-                var buildServer = buildServerResolver.Resolve();
-                buildServer?.WriteIntegration(Console.WriteLine, variables);
-            }
-            if (arguments.Output.Contains(OutputType.Json))
-            {
-                switch (arguments.ShowVariable)
-                {
-                    case null:
-                        Console.WriteLine(variables.ToString());
-                        break;
-
-                    default:
-                        if (!variables.TryGetValue(arguments.ShowVariable, out var part))
-                        {
-                            throw new WarningException($"'{arguments.ShowVariable}' variable does not exist");
-                        }
-
-                        Console.WriteLine(part);
-                        break;
-                }
-            }
-
-            if (arguments.UpdateWixVersionFile)
-            {
-                using var wixVersionFileUpdater = new WixVersionFileUpdater(arguments.TargetPath, variables, fileSystem, log);
-                wixVersionFileUpdater.Update();
-            }
-
-            using var assemblyInfoUpdater = new AssemblyInfoFileUpdater(arguments.UpdateAssemblyInfoFileName, arguments.TargetPath, variables, fileSystem, log, arguments.EnsureAssemblyInfo);
-            if (arguments.UpdateAssemblyInfo)
-            {
-                assemblyInfoUpdater.Update();
-                assemblyInfoUpdater.CommitChanges();
-            }
 
             RunExecCommandIfNeeded(arguments, arguments.TargetPath, variables, log);
             RunMsBuildIfNeeded(arguments, arguments.TargetPath, variables, log);

@@ -62,10 +62,11 @@ namespace GitVersion.MSBuildTask
                 TargetPath = task.SolutionDirectory,
                 ConfigFile = task.ConfigFilePath,
                 NoFetch = task.NoFetch,
-                NoNormalize = task.NoNormalize
+                NoNormalize = task.NoNormalize,
+                EnsureAssemblyInfo = true
             };
 
-            services.AddSingleton(_ => Options.Create(arguments));
+            services.AddSingleton(Options.Create(arguments));
             services.AddSingleton<IGitVersionTaskExecutor, GitVersionTaskExecutor>();
             services.AddModule(new GitVersionCoreModule());
 

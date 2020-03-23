@@ -36,11 +36,13 @@ namespace GitVersion.Extensions.VersionAssemblyInfoResources
 
         public AssemblyInfoFileUpdater(ISet<string> assemblyInfoFileNames, string workingDirectory, VersionVariables variables, IFileSystem fileSystem, ILog log, bool ensureAssemblyInfo)
         {
+            this.fileSystem = fileSystem;
+            this.log = log;
+
             this.assemblyInfoFileNames = assemblyInfoFileNames;
             this.workingDirectory = workingDirectory;
             this.variables = variables;
-            this.fileSystem = fileSystem;
-            this.log = log;
+
             this.ensureAssemblyInfo = ensureAssemblyInfo;
 
             templateManager = new TemplateManager(TemplateType.VersionAssemblyInfoResources);
@@ -50,7 +52,7 @@ namespace GitVersion.Extensions.VersionAssemblyInfoResources
         {
             log.Info("Updating assembly info files");
 
-            var assemblyInfoFiles = GetAssemblyInfoFiles(workingDirectory, assemblyInfoFileNames, fileSystem, ensureAssemblyInfo).ToList();
+            var assemblyInfoFiles = GetAssemblyInfoFiles().ToList();
             log.Info($"Found {assemblyInfoFiles.Count} files");
 
             var assemblyVersion = variables.AssemblySemVer;
@@ -140,7 +142,7 @@ namespace GitVersion.Extensions.VersionAssemblyInfoResources
             return inputString;
         }
 
-        private IEnumerable<FileInfo> GetAssemblyInfoFiles(string workingDirectory, ISet<string> assemblyInfoFileNames, IFileSystem fileSystem, bool ensureAssemblyInfo)
+        private IEnumerable<FileInfo> GetAssemblyInfoFiles()
         {
             if (assemblyInfoFileNames != null && assemblyInfoFileNames.Any(x => !string.IsNullOrWhiteSpace(x)))
             {
@@ -148,7 +150,7 @@ namespace GitVersion.Extensions.VersionAssemblyInfoResources
                 {
                     var fullPath = Path.Combine(workingDirectory, item);
 
-                    if (EnsureVersionAssemblyInfoFile(ensureAssemblyInfo, fileSystem, fullPath))
+                    if (EnsureVersionAssemblyInfoFile(fullPath))
                     {
                         yield return new FileInfo(fullPath);
                     }
@@ -168,8 +170,9 @@ namespace GitVersion.Extensions.VersionAssemblyInfoResources
             }
         }
 
-        private bool EnsureVersionAssemblyInfoFile(bool ensureAssemblyInfo, IFileSystem fileSystem, string fullPath)
+        private bool EnsureVersionAssemblyInfoFile(string fullPath)
         {
+            fullPath = fullPath ?? throw new ArgumentNullException(nameof(fullPath));
             if (fileSystem.Exists(fullPath))
             {
                 return true;
