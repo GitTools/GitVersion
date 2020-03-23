@@ -16,9 +16,11 @@ namespace GitVersion
     {
         public void RegisterTypes(IServiceCollection services)
         {
+            services.AddSingleton<ILog, Log>();
             services.AddSingleton<IFileSystem, FileSystem>();
             services.AddSingleton<IEnvironment, Environment>();
-            services.AddSingleton<ILog, Log>();
+            services.AddSingleton<IRepository, GitRepository>();
+
             services.AddSingleton<IConsole, ConsoleAdapter>();
             services.AddSingleton<IGitVersionCache, GitVersionCache>();
 
@@ -40,12 +42,6 @@ namespace GitVersion
             services.AddSingleton<IGitRepoMetadataProvider, GitRepoMetadataProvider>();
 
             services.AddSingleton(sp => sp.GetService<IConfigFileLocatorFactory>().Create());
-
-            services.AddSingleton<IRepository>(sp =>
-            {
-                var options = sp.GetService<IOptions<Arguments>>();
-                return new Repository(options.Value.DotGitDirectory);
-            });
 
             services.AddSingleton(sp =>
             {

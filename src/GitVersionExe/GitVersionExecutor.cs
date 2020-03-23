@@ -16,12 +16,11 @@ namespace GitVersion
         private readonly IExecCommand execCommand;
         private readonly IConfigProvider configProvider;
         private readonly IBuildServerResolver buildServerResolver;
-        private readonly IGitPreparer gitPreparer;
         private readonly IGitVersionCalculator gitVersionCalculator;
         private readonly IVersionWriter versionWriter;
 
         public GitVersionExecutor(ILog log, IConfigFileLocator configFileLocator, IConfigProvider configProvider,
-            IBuildServerResolver buildServerResolver, IGitPreparer gitPreparer, IGitVersionCalculator gitVersionCalculator,
+            IBuildServerResolver buildServerResolver, IGitVersionCalculator gitVersionCalculator,
             IVersionWriter versionWriter, IHelpWriter helpWriter, IExecCommand execCommand)
         {
             this.log = log ?? throw new ArgumentNullException(nameof(log));
@@ -29,7 +28,6 @@ namespace GitVersion
             this.configProvider = configProvider ?? throw new ArgumentNullException(nameof(configFileLocator));
 
             this.buildServerResolver = buildServerResolver ?? throw new ArgumentNullException(nameof(buildServerResolver));
-            this.gitPreparer = gitPreparer ?? throw new ArgumentNullException(nameof(gitPreparer));
             this.gitVersionCalculator = gitVersionCalculator ?? throw new ArgumentNullException(nameof(gitVersionCalculator));
 
             this.versionWriter = versionWriter ?? throw new ArgumentNullException(nameof(versionWriter));
@@ -56,7 +54,6 @@ namespace GitVersion
             {
                 if (HandleNonMainCommand(arguments, out var exitCode)) return exitCode;
 
-                gitPreparer.Prepare();
                 var variables = gitVersionCalculator.CalculateVersionVariables();
                 execCommand.Execute(variables);
             }
