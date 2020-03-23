@@ -66,7 +66,7 @@ namespace GitVersionCore.Tests
             {
                 sp = GetServiceProvider(arguments);
 
-                _ = sp.GetService<IGitPreparer>();
+                sp.GetService<IGitPreparer>();
             });
         }
 
@@ -240,9 +240,9 @@ namespace GitVersionCore.Tests
 
             var arguments = new Arguments { TargetPath = fixture.RepositoryPath };
 
-            var gitVersionCalculator = GetGitVersionCalculator(arguments, log);
-
             fixture.Repository.MakeACommit();
+            var gitVersionCalculator = GetGitVersionCalculator(arguments, log, fixture.Repository);
+
             gitVersionCalculator.CalculateVersionVariables();
 
             var logsMessages = stringBuilder.ToString();
@@ -290,9 +290,9 @@ namespace GitVersionCore.Tests
 
             var arguments = new Arguments { TargetPath = fixture.RepositoryPath };
 
-            var gitVersionCalculator = GetGitVersionCalculator(arguments);
-
             fixture.Repository.MakeACommit();
+
+            var gitVersionCalculator = GetGitVersionCalculator(arguments);
             var versionVariables = gitVersionCalculator.CalculateVersionVariables();
 
             versionVariables.AssemblySemVer.ShouldBe("0.1.0.0");
@@ -305,6 +305,8 @@ namespace GitVersionCore.Tests
 
             var configPath = Path.Combine(fixture.RepositoryPath, DefaultConfigFileLocator.DefaultFileName);
             fileSystem.WriteAllText(configPath, "next-version: 5.0");
+
+            gitVersionCalculator = GetGitVersionCalculator(arguments, fs: fileSystem);
 
             versionVariables = gitVersionCalculator.CalculateVersionVariables();
             versionVariables.AssemblySemVer.ShouldBe("5.0.0.0");
@@ -351,9 +353,9 @@ namespace GitVersionCore.Tests
 
             var arguments = new Arguments { TargetPath = fixture.RepositoryPath };
 
+            fixture.Repository.MakeACommit();
             var gitVersionCalculator = GetGitVersionCalculator(arguments);
 
-            fixture.Repository.MakeACommit();
             var versionVariables = gitVersionCalculator.CalculateVersionVariables();
 
             versionVariables.AssemblySemVer.ShouldBe("0.1.0.0");
@@ -373,9 +375,12 @@ namespace GitVersionCore.Tests
         {
             var arguments = new Arguments { TargetPath = Environment.SystemDirectory };
 
-            var gitVersionCalculator = GetGitVersionCalculator(arguments);
 
-            var exception = Assert.Throws<DirectoryNotFoundException>(() => gitVersionCalculator.CalculateVersionVariables());
+            var exception = Assert.Throws<DirectoryNotFoundException>(() =>
+            {
+                var gitVersionCalculator = GetGitVersionCalculator(arguments);
+                gitVersionCalculator.CalculateVersionVariables();
+            });
             exception.Message.ShouldContain("Can't find the .git directory in");
         }
 
@@ -434,6 +439,8 @@ namespace GitVersionCore.Tests
         public void DynamicRepositoriesShouldNotErrorWithFailedToFindGitDirectory()
         {
             using var fixture = new EmptyRepositoryFixture();
+            fixture.Repository.MakeACommit();
+
             var arguments = new Arguments
             {
                 TargetPath = fixture.RepositoryPath,
@@ -441,7 +448,7 @@ namespace GitVersionCore.Tests
                 TargetBranch = "refs/head/master"
             };
 
-            var gitVersionCalculator = GetGitVersionCalculator(arguments);
+            var gitVersionCalculator = GetGitVersionCalculator(arguments, repository: fixture.Repository);
             gitPreparer.Prepare();
             gitVersionCalculator.CalculateVersionVariables();
         }
@@ -498,9 +505,9 @@ namespace GitVersionCore.Tests
             }
         }
 
-        private IGitVersionCalculator GetGitVersionCalculator(Arguments arguments, ILog logger = null)
+        private IGitVersionCalculator GetGitVersionCalculator(Arguments arguments, ILog logger = null, IRepository repository = null, IFileSystem fs = null)
         {
-            sp = GetServiceProvider(arguments, logger);
+            sp = GetServiceProvider(arguments, logger, repository, fs);
 
             fileSystem = sp.GetService<IFileSystem>();
             log = sp.GetService<ILog>();
@@ -510,11 +517,13 @@ namespace GitVersionCore.Tests
             return sp.GetService<IGitVersionCalculator>();
         }
 
-        private static IServiceProvider GetServiceProvider(Arguments arguments, ILog log = null)
+        private static IServiceProvider GetServiceProvider(Arguments arguments, ILog log = null, IRepository repository = null, IFileSystem fileSystem = null)
         {
             return ConfigureServices(services =>
             {
                 if (log != null) services.AddSingleton(log);
+                if (fileSystem != null) services.AddSingleton(fileSystem);
+                if (repository != null) services.AddSingleton(repository);
                 services.AddSingleton(Options.Create(arguments));
             });
         }

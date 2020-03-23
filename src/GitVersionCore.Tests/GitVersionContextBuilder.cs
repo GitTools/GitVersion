@@ -72,22 +72,21 @@ namespace GitVersionCore.Tests
             return this;
         }
 
-        public GitVersionContext Build()
+        public void Build()
         {
             var repo = repository ?? CreateRepository();
             var config = configuration ?? new Config();
 
             config.Reset();
 
-            var options = Options.Create(new Arguments { OverrideConfig = config, TargetPath = repo.GetRepositoryDirectory() });
+            var options = Options.Create(new Arguments { OverrideConfig = config });
 
             ServicesProvider = ConfigureServices(services =>
             {
                 services.AddSingleton(options);
+                services.AddSingleton(repo);
                 overrideServices?.Invoke(services);
             });
-            var context = ServicesProvider.GetService<IOptions<GitVersionContext>>().Value;
-            return context;
         }
 
         private static IRepository CreateRepository()

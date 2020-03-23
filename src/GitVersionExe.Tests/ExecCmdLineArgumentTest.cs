@@ -74,7 +74,7 @@ namespace GitVersionExe.Tests
         [Test]
         public void WorkingDirectoryWithoutGitFolderFailsWithInformativeMessage()
         {
-            var result = GitVersionHelper.ExecuteIn(Environment.SystemDirectory, null, false);
+            var result = GitVersionHelper.ExecuteIn(Environment.SystemDirectory, arguments: null, logToFile: false);
 
             result.ExitCode.ShouldNotBe(0);
             result.Output.ShouldContain("Can't find the .git directory in");

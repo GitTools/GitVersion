@@ -40,7 +40,7 @@ namespace GitVersionCore.Tests.IntegrationTests
             using var fixture = new BaseGitFlowRepositoryFixture("1.0.0");
             fixture.BranchTo("support/2.0.0");
 
-            fixture.AssertFullSemver(config, "2.0.0+1");
+            fixture.AssertFullSemver("2.0.0+1", config);
         }
 
         [Test]

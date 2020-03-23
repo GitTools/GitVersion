@@ -124,11 +124,9 @@ namespace GitVersion.Configuration
 
                 // If we fail to inherit it is probably because the branch has been merged and we can't do much. So we will fall back to develop's config
                 // if develop exists and master if not
-                string errorMessage;
-                if (possibleParents.Count == 0)
-                    errorMessage = "Failed to inherit Increment branch configuration, no branches found.";
-                else
-                    errorMessage = "Failed to inherit Increment branch configuration, ended up with: " + string.Join(", ", possibleParents.Select(p => p.FriendlyName));
+                var errorMessage = possibleParents.Count == 0
+                    ? "Failed to inherit Increment branch configuration, no branches found."
+                    : "Failed to inherit Increment branch configuration, ended up with: " + string.Join(", ", possibleParents.Select(p => p.FriendlyName));
 
                 var developBranchRegex = configuration.Branches[Config.DevelopBranchKey].Regex;
                 var masterBranchRegex = configuration.Branches[Config.MasterBranchKey].Regex;

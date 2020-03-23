@@ -40,7 +40,8 @@ namespace GitVersionExe.Tests
                 nameof(Arguments.Authentication),
                 nameof(Arguments.CommitId),
                 nameof(Arguments.DynamicGitRepositoryPath),
-                nameof(Arguments.HasOverrideConfig)
+                nameof(Arguments.HasOverrideConfig),
+                nameof(Arguments.OnlyTrackedBranches)
             };
             typeof(Arguments).GetFields()
                 .Select(p => p.Name)

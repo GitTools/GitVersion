@@ -59,6 +59,7 @@ namespace GitVersion
         public bool NoFetch;
         public bool NoCache;
         public bool NoNormalize;
+        public bool OnlyTrackedBranches = false;
 
         public ISet<OutputType> Output = new HashSet<OutputType>();
         public Verbosity Verbosity = Verbosity.Normal;

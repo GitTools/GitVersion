@@ -72,7 +72,7 @@ namespace GitVersionCore.Tests.IntegrationTests
             fixture.Repository.MakeATaggedCommit("1.0.0");
             Commands.Checkout(fixture.Repository, fixture.Repository.CreateBranch("develop"));
             fixture.Repository.MakeACommit();
-            fixture.AssertFullSemver(config, "1.1.0-alpha.1");
+            fixture.AssertFullSemver("1.1.0-alpha.1", config);
         }
 
         [Test]
@@ -130,7 +130,7 @@ namespace GitVersionCore.Tests.IntegrationTests
             fixture.Repository.MakeATaggedCommit("1.0.0");
             Commands.Checkout(fixture.Repository, fixture.Repository.CreateBranch("develop"));
             fixture.Repository.MakeATaggedCommit("1.1.0-alpha7");
-            fixture.AssertFullSemver(config, "1.1.0-alpha.7");
+            fixture.AssertFullSemver("1.1.0-alpha.7", config);
         }
 
         [Test]
@@ -240,7 +240,7 @@ namespace GitVersionCore.Tests.IntegrationTests
             fixture.Repository.Branches.Remove("release/1.2.0");
 
             var expectedFullSemVer = "1.3.0-alpha.9";
-            fixture.AssertFullSemver(config, expectedFullSemVer);
+            fixture.AssertFullSemver(expectedFullSemVer, config);
         }
 
         [Test]
@@ -272,7 +272,7 @@ namespace GitVersionCore.Tests.IntegrationTests
             fixture.Repository.Branches.Remove("release/1.2.0");
 
             var expectedFullSemVer = "1.3.0-alpha.5";
-            fixture.AssertFullSemver(config, expectedFullSemVer);
+            fixture.AssertFullSemver(expectedFullSemVer, config);
         }
 
         [Test]

@@ -17,7 +17,7 @@ namespace GitVersion
 
         public ArgumentParser(IEnvironment environment)
         {
-            this.environment = environment;
+            this.environment = environment ?? throw new ArgumentNullException(nameof(environment));
         }
 
         public Arguments ParseArguments(string commandLineArguments)
@@ -98,6 +98,10 @@ namespace GitVersion
                 {
                     EnsureArgumentValueCount(values);
                     arguments.TargetPath = value;
+                    if (!Directory.Exists(value))
+                    {
+                        Console.WriteLine($"The working directory '{value}' does not exist.");
+                    }
                     continue;
                 }
 
