@@ -1,6 +1,5 @@
 using System;
 using System.IO;
-using GitVersion.Extensions.GitVersionInformationResources;
 using GitVersion.Extensions.VersionAssemblyInfoResources;
 using GitVersion.Logging;
 using GitVersion.MSBuildTask.Tasks;
@@ -12,15 +11,15 @@ namespace GitVersion.MSBuildTask
     {
         private readonly IFileSystem fileSystem;
         private readonly ILog log;
-        private readonly IBuildServerResolver buildServerResolver;
+        private readonly IGitVersionTool gitVersionTool;
         private VersionVariables versionVariables;
 
-        public GitVersionTaskExecutor(IFileSystem fileSystem, ILog log, IBuildServerResolver buildServerResolver, IGitVersionCalculator gitVersionCalculator)
+        public GitVersionTaskExecutor(IFileSystem fileSystem, ILog log, IGitVersionTool gitVersionTool)
         {
-            this.fileSystem = fileSystem ?? throw new ArgumentNullException(nameof(fileSystem));
-            this.log = log ?? throw new ArgumentNullException(nameof(log));
-            this.buildServerResolver = buildServerResolver ?? throw new ArgumentNullException(nameof(buildServerResolver));
-            versionVariables = gitVersionCalculator.CalculateVersionVariables();
+            this.fileSystem = fileSystem;
+            this.log = log;
+            this.gitVersionTool = gitVersionTool ?? throw new ArgumentNullException(nameof(gitVersionTool));
+            versionVariables = gitVersionTool.CalculateVersionVariables();
         }
 
         public void GetVersion(GetVersion task)
@@ -44,31 +43,21 @@ namespace GitVersion.MSBuildTask
             using var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(fileWriteInfo.FileName, fileWriteInfo.WorkingDirectory, versionVariables, fileSystem, log, true);
             assemblyInfoFileUpdater.Update();
             assemblyInfoFileUpdater.CommitChanges();
+
+            // gitVersionTool.UpdateAssemblyInfo(versionVariables);
         }
 
         public void GenerateGitVersionInformation(GenerateGitVersionInformation task)
         {
             var fileWriteInfo = task.IntermediateOutputPath.GetFileWriteInfo(task.Language, task.ProjectFile, "GitVersionInformation");
-
             task.GitVersionInformationFilePath = Path.Combine(fileWriteInfo.WorkingDirectory, fileWriteInfo.FileName);
-            var generator = new GitVersionInformationGenerator(fileWriteInfo.FileName, fileWriteInfo.WorkingDirectory, versionVariables, fileSystem);
-            generator.Generate();
+
+            gitVersionTool.GenerateGitVersionInformation(versionVariables, fileWriteInfo);
         }
 
         public void WriteVersionInfoToBuildLog(WriteVersionInfoToBuildLog task)
         {
-            var logger = task.Log;
-
-            var buildServer = buildServerResolver.Resolve();
-            if (buildServer == null) return;
-
-            logger.LogMessage($"Executing GenerateSetVersionMessage for '{buildServer.GetType().Name}'.");
-            logger.LogMessage(buildServer.GenerateSetVersionMessage(versionVariables));
-            logger.LogMessage($"Executing GenerateBuildLogOutput for '{buildServer.GetType().Name}'.");
-            foreach (var buildParameter in buildServer.GenerateBuildLogOutput(versionVariables))
-            {
-                logger.LogMessage(buildParameter);
-            }
+            gitVersionTool.OutputVariables(versionVariables, m => task.Log.LogMessage(m));
         }
     }
 }

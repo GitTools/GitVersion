@@ -47,9 +47,9 @@ namespace GitVersionCore.Tests
             var variableProvider = sp.GetService<IVariableProvider>();
 
             var variables = variableProvider.GetVariablesFor(semanticVersion, new TestEffectiveConfiguration(), false);
-            var generator = new GitVersionInformationGenerator(fileName, directory, variables, fileSystem);
+            var generator = new GitVersionInformationGenerator(fileSystem);
 
-            generator.Generate();
+            generator.Generate(variables, new FileWriteInfo(directory, fileName, fileExtension));
 
             fileSystem.ReadAllText(fullPath).ShouldMatchApproved(c => c.SubFolder(Path.Combine("Approved", fileExtension)));
         }

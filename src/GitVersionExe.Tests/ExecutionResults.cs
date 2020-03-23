@@ -23,7 +23,8 @@ namespace GitVersionExe.Tests
             get
             {
                 var jsonStartIndex = Output.IndexOf("{", StringComparison.Ordinal);
-                var json = Output.Substring(jsonStartIndex);
+                var jsonEndIndex = Output.IndexOf("}", StringComparison.Ordinal);
+                var json = Output.Substring(jsonStartIndex, jsonEndIndex - jsonStartIndex + 1);
 
                 var outputVariables = JsonConvert.DeserializeObject<Dictionary<string, string>>(json);
                 return VersionVariables.FromDictionary(outputVariables);

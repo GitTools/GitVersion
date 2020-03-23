@@ -34,11 +34,13 @@ namespace GitVersion
             services.AddSingleton<IBaseVersionCalculator, BaseVersionCalculator>();
             services.AddSingleton<IMainlineVersionCalculator, MainlineVersionCalculator>();
             services.AddSingleton<INextVersionCalculator, NextVersionCalculator>();
-            services.AddSingleton<IGitVersionCalculator, GitVersionCalculator>();
+            services.AddSingleton<IGitVersionTool, GitVersionTool>();
             services.AddSingleton<IBranchConfigurationCalculator, BranchConfigurationCalculator>();
 
             services.AddSingleton<IBuildServerResolver, BuildServerResolver>();
             services.AddSingleton<IGitPreparer, GitPreparer>();
+            services.AddSingleton<IGitRepoMetadataProvider, GitRepoMetadataProvider>();
+
             services.AddSingleton<IGitRepoMetadataProvider, GitRepoMetadataProvider>();
 
             services.AddSingleton(sp => sp.GetService<IConfigFileLocatorFactory>().Create());

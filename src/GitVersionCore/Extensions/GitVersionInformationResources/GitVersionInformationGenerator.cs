@@ -1,30 +1,40 @@
+using System;
 using System.IO;
 using System.Linq;
 using GitVersion.OutputVariables;
 
 namespace GitVersion.Extensions.GitVersionInformationResources
 {
+    public sealed class FileWriteInfo
+    {
+        public FileWriteInfo(string workingDirectory, string fileName, string fileExtension)
+        {
+            WorkingDirectory = workingDirectory;
+            FileName = fileName;
+            FileExtension = fileExtension;
+        }
+
+        public string WorkingDirectory { get; }
+        public string FileName { get; }
+        public string FileExtension { get; }
+    }
+
+
     public class GitVersionInformationGenerator
     {
-        private readonly string fileName;
-        private readonly string directory;
-        private readonly VersionVariables variables;
         private readonly IFileSystem fileSystem;
-
         private readonly TemplateManager templateManager;
 
-        public GitVersionInformationGenerator(string fileName, string directory, VersionVariables variables, IFileSystem fileSystem)
+        public GitVersionInformationGenerator(IFileSystem fileSystem)
         {
-            this.fileName = fileName;
-            this.directory = directory;
-            this.variables = variables;
-            this.fileSystem = fileSystem;
-
+            this.fileSystem = fileSystem ?? throw new ArgumentNullException(nameof(fileSystem));
             templateManager = new TemplateManager(TemplateType.GitVersionInformationResources);
         }
 
-        public void Generate()
+        public void Generate(VersionVariables variables, FileWriteInfo writeInfo)
         {
+            var fileName = writeInfo.FileName;
+            var directory = writeInfo.WorkingDirectory;
             var filePath = Path.Combine(directory, fileName);
 
             string originalFileContents = null;
