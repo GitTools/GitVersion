@@ -15,12 +15,11 @@ namespace GitVersion.MSBuildTask
         private readonly IBuildServerResolver buildServerResolver;
         private VersionVariables versionVariables;
 
-        public GitVersionTaskExecutor(IFileSystem fileSystem, ILog log, IBuildServerResolver buildServerResolver, IGitVersionCalculator gitVersionCalculator, IGitPreparer preparer)
+        public GitVersionTaskExecutor(IFileSystem fileSystem, ILog log, IBuildServerResolver buildServerResolver, IGitVersionCalculator gitVersionCalculator)
         {
             this.fileSystem = fileSystem ?? throw new ArgumentNullException(nameof(fileSystem));
             this.log = log ?? throw new ArgumentNullException(nameof(log));
             this.buildServerResolver = buildServerResolver ?? throw new ArgumentNullException(nameof(buildServerResolver));
-            preparer.Prepare();
             versionVariables = gitVersionCalculator.CalculateVersionVariables();
         }
 
