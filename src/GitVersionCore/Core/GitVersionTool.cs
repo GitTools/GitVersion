@@ -14,26 +14,35 @@ namespace GitVersion
     public class GitVersionTool : IGitVersionTool
     {
         private readonly ILog log;
+        private readonly IFileSystem fileSystem;
         private readonly IGitVersionCache gitVersionCache;
         private readonly INextVersionCalculator nextVersionCalculator;
         private readonly IVariableProvider variableProvider;
         private readonly IGitVersionCacheKeyFactory cacheKeyFactory;
-        private readonly IFileSystem fileSystem;
+        private readonly IWixVersionFileUpdater wixVersionFileUpdater;
+        private readonly IGitVersionInformationGenerator gitVersionInformationGenerator;
+
         private readonly IOptions<Arguments> options;
         private readonly GitVersionContext context;
+
         private readonly IBuildServer buildServer;
 
-        public GitVersionTool(ILog log, IGitVersionCache gitVersionCache, INextVersionCalculator nextVersionCalculator, IVariableProvider variableProvider,
-            IGitVersionCacheKeyFactory cacheKeyFactory, IBuildServerResolver buildServerResolver, IFileSystem fileSystem,
+        public GitVersionTool(ILog log, IFileSystem fileSystem, IGitVersionCache gitVersionCache, INextVersionCalculator nextVersionCalculator, IVariableProvider variableProvider,
+            IGitVersionCacheKeyFactory cacheKeyFactory, IBuildServerResolver buildServerResolver,
+            IWixVersionFileUpdater wixVersionFileUpdater, IGitVersionInformationGenerator gitVersionInformationGenerator,
             IOptions<Arguments> options, IOptions<GitVersionContext> versionContext)
         {
             this.log = log ?? throw new ArgumentNullException(nameof(log));
+            this.fileSystem = fileSystem ?? throw new ArgumentNullException(nameof(fileSystem));
             this.gitVersionCache = gitVersionCache ?? throw new ArgumentNullException(nameof(gitVersionCache));
             this.nextVersionCalculator = nextVersionCalculator ?? throw new ArgumentNullException(nameof(nextVersionCalculator));
             this.variableProvider = variableProvider ?? throw new ArgumentNullException(nameof(variableProvider));
             this.options = options ?? throw new ArgumentNullException(nameof(options));
             this.cacheKeyFactory = cacheKeyFactory ?? throw new ArgumentNullException(nameof(cacheKeyFactory));
-            this.fileSystem = fileSystem ?? throw new ArgumentNullException(nameof(fileSystem));
+
+            this.wixVersionFileUpdater = wixVersionFileUpdater ?? throw new ArgumentNullException(nameof(wixVersionFileUpdater));
+            this.gitVersionInformationGenerator = gitVersionInformationGenerator ?? throw new ArgumentNullException(nameof(gitVersionInformationGenerator));
+
             context = versionContext.Value;
             buildServer = buildServerResolver.Resolve();
         }
@@ -107,15 +116,16 @@ namespace GitVersion
 
             if (arguments.UpdateWixVersionFile)
             {
-                using var wixVersionFileUpdater = new WixVersionFileUpdater(arguments.TargetPath, variables, fileSystem, log);
-                wixVersionFileUpdater.Update();
+                using (wixVersionFileUpdater)
+                {
+                    wixVersionFileUpdater.Update(variables, arguments.TargetPath);
+                }
             }
         }
 
         public void GenerateGitVersionInformation(VersionVariables variables, FileWriteInfo fileWriteInfo)
         {
-            var generator = new GitVersionInformationGenerator(fileSystem);
-            generator.Generate(variables, fileWriteInfo);
+            gitVersionInformationGenerator.Generate(variables, fileWriteInfo);
         }
 
         private VersionVariables ExecuteInternal()
