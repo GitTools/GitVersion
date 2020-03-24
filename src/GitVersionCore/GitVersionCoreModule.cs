@@ -3,6 +3,7 @@ using GitVersion.Common;
 using GitVersion.Configuration;
 using GitVersion.Configuration.Init;
 using GitVersion.Extensions;
+using GitVersion.Extensions.GitVersionInformationResources;
 using GitVersion.Logging;
 using GitVersion.VersionCalculation;
 using GitVersion.VersionCalculation.Cache;
@@ -41,7 +42,8 @@ namespace GitVersion
             services.AddSingleton<IGitPreparer, GitPreparer>();
             services.AddSingleton<IGitRepoMetadataProvider, GitRepoMetadataProvider>();
 
-            services.AddSingleton<IGitRepoMetadataProvider, GitRepoMetadataProvider>();
+            services.AddSingleton<IGitVersionInformationGenerator, GitVersionInformationGenerator>();
+            services.AddSingleton<IWixVersionFileUpdater, WixVersionFileUpdater>();
 
             services.AddSingleton(sp => sp.GetService<IConfigFileLocatorFactory>().Create());
 

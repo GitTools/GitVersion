@@ -56,12 +56,14 @@ namespace GitVersionCore.Tests
 
             var fileSystem = sp.GetService<IFileSystem>();
             var variableProvider = sp.GetService<IVariableProvider>();
-            var vars = variableProvider.GetVariablesFor(semVer, config, false);
+            var versionVariables = variableProvider.GetVariablesFor(semVer, config, false);
 
-            using var wixVersionFileUpdater = new WixVersionFileUpdater(workingDir, vars, fileSystem, log);
-            wixVersionFileUpdater.Update();
-            fileSystem.ReadAllText(wixVersionFileUpdater.WixVersionFile).
-                ShouldMatchApproved(c => c.SubFolder(Path.Combine("Approved")));
+            using var wixVersionFileUpdater = sp.GetService<IWixVersionFileUpdater>();
+
+            var file = wixVersionFileUpdater.Update(versionVariables, workingDir);
+            fileSystem
+                .ReadAllText(file)
+                .ShouldMatchApproved(c => c.SubFolder(Path.Combine("Approved")));
         }
     }
 }

@@ -20,7 +20,12 @@ namespace GitVersion.Extensions.GitVersionInformationResources
     }
 
 
-    public class GitVersionInformationGenerator
+    public interface IGitVersionInformationGenerator
+    {
+        void Generate(VersionVariables variables, FileWriteInfo writeInfo);
+    }
+
+    public class GitVersionInformationGenerator : IGitVersionInformationGenerator
     {
         private readonly IFileSystem fileSystem;
         private readonly TemplateManager templateManager;
