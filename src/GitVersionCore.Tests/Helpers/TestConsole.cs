@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using GitVersion.Configuration;
 using GitVersion.Logging;
 
 namespace GitVersionCore.Tests.Helpers

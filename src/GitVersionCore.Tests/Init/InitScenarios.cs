@@ -2,6 +2,7 @@ using System.IO;
 using System.Runtime.InteropServices;
 using GitVersion;
 using GitVersion.Configuration;
+using GitVersion.Logging;
 using GitVersionCore.Tests.Helpers;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;

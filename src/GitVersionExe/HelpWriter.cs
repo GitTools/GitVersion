@@ -1,6 +1,6 @@
 using System;
 using System.Reflection;
-using GitVersion.Configuration;
+using GitVersion.Logging;
 
 namespace GitVersion
 {

@@ -1,7 +1,7 @@
 using System;
 using System.Linq;
 using System.Reflection;
-using GitVersion.Configuration;
+using GitVersion.Logging;
 
 namespace GitVersion
 {

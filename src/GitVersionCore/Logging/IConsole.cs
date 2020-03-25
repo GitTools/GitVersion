@@ -1,6 +1,6 @@
 using System;
 
-namespace GitVersion.Configuration
+namespace GitVersion.Logging
 {
     public interface IConsole
     {

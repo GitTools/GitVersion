@@ -1,7 +1,6 @@
 using System;
-using GitVersion.Logging;
 
-namespace GitVersion.Configuration
+namespace GitVersion.Logging
 {
     internal class ConsoleAdapter : IConsole
     {

@@ -1,6 +1,5 @@
 using System;
 using System.Linq;
-using GitVersion.Configuration;
 using GitVersion.Extensions;
 using GitVersion.Extensions.GitVersionInformationResources;
 using GitVersion.Extensions.VersionAssemblyInfoResources;
