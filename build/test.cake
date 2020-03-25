@@ -33,7 +33,7 @@ Task("UnitTest")
 
                 var coverletSettings = new CoverletSettings {
                     CollectCoverage = true,
-                    CoverletOutputFormat = CoverletOutputFormat.opencover,
+                    CoverletOutputFormat = CoverletOutputFormat.cobertura,
                     CoverletOutputDirectory = testResultsPath,
                     CoverletOutputName = $"{projectName}.coverage.xml"
                 };
@@ -70,6 +70,7 @@ Task("UnitTest")
         if (testResultsFiles.Any()) {
             var data = new TFBuildPublishTestResultsData {
                 TestResultsFiles = testResultsFiles.ToArray(),
+                Platform = Context.Environment.Platform.Family.ToString(),
                 TestRunner = TFTestRunnerType.NUnit
             };
             TFBuild.Commands.PublishTestResults(data);
@@ -84,7 +85,7 @@ Task("Publish-Coverage")
     .IsDependentOn("UnitTest")
     .Does<BuildParameters>((parameters) =>
 {
-    var coverageFiles = GetFiles(parameters.Paths.Directories.TestResultsOutput + "/*.coverage.xml");
+    var coverageFiles = GetFiles(parameters.Paths.Directories.TestResultsOutput + "/*.coverage.*.xml");
 
     var token = parameters.Credentials.CodeCov.Token;
     if(string.IsNullOrEmpty(token)) {
