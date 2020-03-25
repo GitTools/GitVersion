@@ -5,7 +5,6 @@ public class BuildCredentials
     public DockerHubCredentials Docker { get; private set; }
     public NugetCredentials Nuget { get; private set; }
     public ChocolateyCredentials Chocolatey { get; private set; }
-    public TfxCredentials Tfx { get; private set; }
     public CodeCovCredentials CodeCov { get; private set; }
 
     public static BuildCredentials GetCredentials(ICakeContext context)
@@ -17,7 +16,6 @@ public class BuildCredentials
             Docker     = DockerHubCredentials.GetDockerHubCredentials(context),
             Nuget      = NugetCredentials.GetNugetCredentials(context),
             Chocolatey = ChocolateyCredentials.GetChocolateyCredentials(context),
-            Tfx        = TfxCredentials.GetTfxCredentials(context),
             CodeCov    = CodeCovCredentials.GetCodeCovCredentials(context),
         };
     }
@@ -116,21 +114,6 @@ public class ChocolateyCredentials
         return new ChocolateyCredentials(
             context.EnvironmentVariable("CHOCOLATEY_API_KEY"),
             context.EnvironmentVariable("CHOCOLATEY_API_URL"));
-    }
-}
-
-public class TfxCredentials
-{
-    public string Token { get; private set; }
-
-    public TfxCredentials(string token)
-    {
-        Token = token;
-    }
-
-    public static TfxCredentials GetTfxCredentials(ICakeContext context)
-    {
-        return new TfxCredentials(context.EnvironmentVariable("TFX_TOKEN"));
     }
 }
 
