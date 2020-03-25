@@ -2,6 +2,7 @@ using GitVersion;
 using GitVersion.Logging;
 using GitVersion.Model;
 using GitVersionCore.Tests.Helpers;
+using Microsoft.Extensions.DependencyInjection;
 using NUnit.Framework;
 using Shouldly;
 using Environment = System.Environment;
@@ -9,14 +10,18 @@ using Environment = System.Environment;
 namespace GitVersionExe.Tests
 {
     [TestFixture]
-    public class ArgumentParserTests
+    public class ArgumentParserTests : TestBase
     {
         private IArgumentParser argumentParser;
 
         [SetUp]
         public void SetUp()
         {
-            argumentParser = new ArgumentParser(new TestEnvironment());
+            var sp = ConfigureServices(services =>
+            {
+                services.AddSingleton<IArgumentParser, ArgumentParser>();
+            });
+            argumentParser = sp.GetService<IArgumentParser>();
         }
 
         [Test]

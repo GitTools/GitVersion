@@ -14,10 +14,12 @@ namespace GitVersion
     public class ArgumentParser : IArgumentParser
     {
         private readonly IEnvironment environment;
+        private readonly IBuildServerResolver buildServerResolver;
 
-        public ArgumentParser(IEnvironment environment)
+        public ArgumentParser(IEnvironment environment, IBuildServerResolver buildServerResolver)
         {
             this.environment = environment ?? throw new ArgumentNullException(nameof(environment));
+            this.buildServerResolver = buildServerResolver ?? throw new ArgumentNullException(nameof(buildServerResolver));
         }
 
         public Arguments ParseArguments(string commandLineArguments)
@@ -158,7 +160,6 @@ namespace GitVersion
                     continue;
                 }
 
-
                 if (name.IsSwitch("execargs"))
                 {
                     EnsureArgumentValueCount(values);
@@ -185,7 +186,6 @@ namespace GitVersion
 #pragma warning restore CS0612 // Type or member is obsolete
                     continue;
                 }
-
 
                 if (name.IsSwitch("diag"))
                 {
@@ -305,17 +305,10 @@ namespace GitVersion
 
                 if (name.IsSwitch("ensureassemblyinfo"))
                 {
-                    if (value.IsTrue())
-                    {
-                        arguments.EnsureAssemblyInfo = true;
-                    }
-                    else if (value.IsFalse())
+                    arguments.EnsureAssemblyInfo = true;
+                    if (value.IsFalse())
                     {
                         arguments.EnsureAssemblyInfo = false;
-                    }
-                    else
-                    {
-                        arguments.EnsureAssemblyInfo = true;
                     }
 
                     if (arguments.UpdateAssemblyInfoFileName.Count > 1 && arguments.EnsureAssemblyInfo)
@@ -427,6 +420,9 @@ namespace GitVersion
                     ? System.Environment.CurrentDirectory
                     : firstArgument;
             }
+
+            var buildServer = buildServerResolver.Resolve();
+            arguments.NoFetch = arguments.NoFetch || buildServer != null && buildServer.PreventFetch();
 
             return arguments;
         }

@@ -8,12 +8,6 @@ using GitVersion.OutputVariables;
 
 namespace GitVersion.Extensions.VersionAssemblyInfoResources
 {
-    public interface IAssemblyInfoFileUpdater : IDisposable
-    {
-        void Update(VersionVariables variables, bool ensureAssemblyInfo, string workingDirectory, params string[] assemblyInfo);
-        void CommitChanges();
-    }
-
     public class AssemblyInfoFileUpdater : IAssemblyInfoFileUpdater
     {
         private readonly List<Action> restoreBackupTasks = new List<Action>();
