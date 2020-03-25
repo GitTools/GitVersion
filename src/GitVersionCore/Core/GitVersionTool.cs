@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using GitVersion.Extensions;
 using GitVersion.Extensions.GitVersionInformationResources;
 using GitVersion.Extensions.VersionAssemblyInfoResources;
@@ -14,26 +15,25 @@ namespace GitVersion
     public class GitVersionTool : IGitVersionTool
     {
         private readonly ILog log;
-        private readonly IFileSystem fileSystem;
         private readonly IGitVersionCache gitVersionCache;
         private readonly INextVersionCalculator nextVersionCalculator;
         private readonly IVariableProvider variableProvider;
         private readonly IGitVersionCacheKeyFactory cacheKeyFactory;
         private readonly IWixVersionFileUpdater wixVersionFileUpdater;
         private readonly IGitVersionInformationGenerator gitVersionInformationGenerator;
+        private readonly IAssemblyInfoFileUpdater assemblyInfoFileUpdater;
 
         private readonly IOptions<Arguments> options;
         private readonly GitVersionContext context;
 
         private readonly IBuildServer buildServer;
 
-        public GitVersionTool(ILog log, IFileSystem fileSystem, IGitVersionCache gitVersionCache, INextVersionCalculator nextVersionCalculator, IVariableProvider variableProvider,
+        public GitVersionTool(ILog log, IGitVersionCache gitVersionCache, INextVersionCalculator nextVersionCalculator, IVariableProvider variableProvider,
             IGitVersionCacheKeyFactory cacheKeyFactory, IBuildServerResolver buildServerResolver,
-            IWixVersionFileUpdater wixVersionFileUpdater, IGitVersionInformationGenerator gitVersionInformationGenerator,
+            IWixVersionFileUpdater wixVersionFileUpdater, IGitVersionInformationGenerator gitVersionInformationGenerator, IAssemblyInfoFileUpdater assemblyInfoFileUpdater,
             IOptions<Arguments> options, IOptions<GitVersionContext> versionContext)
         {
             this.log = log ?? throw new ArgumentNullException(nameof(log));
-            this.fileSystem = fileSystem ?? throw new ArgumentNullException(nameof(fileSystem));
             this.gitVersionCache = gitVersionCache ?? throw new ArgumentNullException(nameof(gitVersionCache));
             this.nextVersionCalculator = nextVersionCalculator ?? throw new ArgumentNullException(nameof(nextVersionCalculator));
             this.variableProvider = variableProvider ?? throw new ArgumentNullException(nameof(variableProvider));
@@ -42,6 +42,7 @@ namespace GitVersion
 
             this.wixVersionFileUpdater = wixVersionFileUpdater ?? throw new ArgumentNullException(nameof(wixVersionFileUpdater));
             this.gitVersionInformationGenerator = gitVersionInformationGenerator ?? throw new ArgumentNullException(nameof(gitVersionInformationGenerator));
+            this.assemblyInfoFileUpdater = assemblyInfoFileUpdater ?? throw new ArgumentNullException(nameof(gitVersionInformationGenerator));
 
             context = versionContext.Value;
             buildServer = buildServerResolver.Resolve();
@@ -104,9 +105,11 @@ namespace GitVersion
 
             if (arguments.UpdateAssemblyInfo)
             {
-                using var assemblyInfoUpdater = new AssemblyInfoFileUpdater(arguments.UpdateAssemblyInfoFileName, arguments.TargetPath, variables, fileSystem, log, arguments.EnsureAssemblyInfo);
-                assemblyInfoUpdater.Update();
-                assemblyInfoUpdater.CommitChanges();
+                using (assemblyInfoFileUpdater)
+                {
+                    assemblyInfoFileUpdater.Update(variables, arguments.EnsureAssemblyInfo, arguments.TargetPath, arguments.UpdateAssemblyInfoFileName.ToArray());
+                    assemblyInfoFileUpdater.CommitChanges();
+                }
             }
         }
 

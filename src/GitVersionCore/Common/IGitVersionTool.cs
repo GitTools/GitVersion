@@ -1,5 +1,4 @@
 using System;
-using GitVersion.Extensions.GitVersionInformationResources;
 using GitVersion.OutputVariables;
 
 namespace GitVersion

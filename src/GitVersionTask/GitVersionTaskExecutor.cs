@@ -1,24 +1,21 @@
 using System;
 using System.IO;
-using GitVersion.Extensions.VersionAssemblyInfoResources;
-using GitVersion.Logging;
 using GitVersion.MSBuildTask.Tasks;
 using GitVersion.OutputVariables;
+using Microsoft.Extensions.Options;
 
 namespace GitVersion.MSBuildTask
 {
     public class GitVersionTaskExecutor : IGitVersionTaskExecutor
     {
-        private readonly IFileSystem fileSystem;
-        private readonly ILog log;
         private readonly IGitVersionTool gitVersionTool;
+        private readonly IOptions<Arguments> options;
         private VersionVariables versionVariables;
 
-        public GitVersionTaskExecutor(IFileSystem fileSystem, ILog log, IGitVersionTool gitVersionTool)
+        public GitVersionTaskExecutor(IGitVersionTool gitVersionTool, IOptions<Arguments> options)
         {
-            this.fileSystem = fileSystem;
-            this.log = log;
             this.gitVersionTool = gitVersionTool ?? throw new ArgumentNullException(nameof(gitVersionTool));
+            this.options = options ?? throw new ArgumentNullException(nameof(options));
             versionVariables = gitVersionTool.CalculateVersionVariables();
         }
 
@@ -40,11 +37,12 @@ namespace GitVersion.MSBuildTask
 
             task.AssemblyInfoTempFilePath = Path.Combine(fileWriteInfo.WorkingDirectory, fileWriteInfo.FileName);
 
-            using var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(fileWriteInfo.FileName, fileWriteInfo.WorkingDirectory, versionVariables, fileSystem, log, true);
-            assemblyInfoFileUpdater.Update();
-            assemblyInfoFileUpdater.CommitChanges();
-
-            // gitVersionTool.UpdateAssemblyInfo(versionVariables);
+            var arguments = options.Value;
+            arguments.UpdateAssemblyInfo = true;
+            arguments.EnsureAssemblyInfo = true;
+            arguments.TargetPath = fileWriteInfo.WorkingDirectory;
+            arguments.AddAssemblyInfoFileName(fileWriteInfo.FileName);
+            gitVersionTool.UpdateAssemblyInfo(versionVariables);
         }
 
         public void GenerateGitVersionInformation(GenerateGitVersionInformation task)
