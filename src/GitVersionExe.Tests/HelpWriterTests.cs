@@ -1,19 +1,25 @@
 using System.Collections.Generic;
 using System.Linq;
 using GitVersion;
+using GitVersion.Extensions;
+using GitVersionCore.Tests.Helpers;
+using Microsoft.Extensions.DependencyInjection;
 using NUnit.Framework;
 using Shouldly;
 
 namespace GitVersionExe.Tests
 {
-    public class HelpWriterTests
+    public class HelpWriterTests : TestBase
     {
         private readonly IHelpWriter helpWriter;
 
         public HelpWriterTests()
         {
-            var versionWriter = new VersionWriter();
-            helpWriter = new HelpWriter(versionWriter);
+            var sp = ConfigureServices(services =>
+            {
+                services.AddModule(new GitVersionExeModule());
+            });
+            helpWriter = sp.GetService<IHelpWriter>();
         }
 
         [Test]

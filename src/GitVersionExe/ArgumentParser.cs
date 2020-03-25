@@ -15,11 +15,13 @@ namespace GitVersion
     {
         private readonly IEnvironment environment;
         private readonly IBuildServerResolver buildServerResolver;
+        private readonly IConsole console;
 
-        public ArgumentParser(IEnvironment environment, IBuildServerResolver buildServerResolver)
+        public ArgumentParser(IEnvironment environment, IBuildServerResolver buildServerResolver, IConsole console)
         {
             this.environment = environment ?? throw new ArgumentNullException(nameof(environment));
             this.buildServerResolver = buildServerResolver ?? throw new ArgumentNullException(nameof(buildServerResolver));
+            this.console = console ?? throw new ArgumentNullException(nameof(console));
         }
 
         public Arguments ParseArguments(string commandLineArguments)
@@ -102,7 +104,7 @@ namespace GitVersion
                     arguments.TargetPath = value;
                     if (!Directory.Exists(value))
                     {
-                        Console.WriteLine($"The working directory '{value}' does not exist.");
+                        console.WriteLine($"The working directory '{value}' does not exist.");
                     }
                     continue;
                 }

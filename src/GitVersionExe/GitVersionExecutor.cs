@@ -11,6 +11,7 @@ namespace GitVersion
     public class GitVersionExecutor : IGitVersionExecutor
     {
         private readonly ILog log;
+        private readonly IConsole console;
         private readonly IConfigFileLocator configFileLocator;
         private readonly IHelpWriter helpWriter;
         private readonly IExecCommand execCommand;
@@ -18,10 +19,12 @@ namespace GitVersion
         private readonly IGitVersionTool gitVersionTool;
         private readonly IVersionWriter versionWriter;
 
-        public GitVersionExecutor(ILog log, IConfigFileLocator configFileLocator, IConfigProvider configProvider, IGitVersionTool gitVersionTool,
+        public GitVersionExecutor(ILog log, IConsole console,
+            IConfigFileLocator configFileLocator, IConfigProvider configProvider, IGitVersionTool gitVersionTool,
             IVersionWriter versionWriter, IHelpWriter helpWriter, IExecCommand execCommand)
         {
             this.log = log ?? throw new ArgumentNullException(nameof(log));
+            this.console = console ?? throw new ArgumentNullException(nameof(console));
             this.configFileLocator = configFileLocator ?? throw new ArgumentNullException(nameof(configFileLocator));
             this.configProvider = configProvider ?? throw new ArgumentNullException(nameof(configFileLocator));
 
@@ -43,7 +46,7 @@ namespace GitVersion
             if (exitCode != 0)
             {
                 // Dump log to console if we fail to complete successfully
-                Console.Write(log.ToString());
+                console.Write(log.ToString());
             }
 
             return exitCode;
@@ -55,7 +58,7 @@ namespace GitVersion
             {
                 var variables = gitVersionTool.CalculateVersionVariables();
 
-                gitVersionTool.OutputVariables(variables, Console.WriteLine);
+                gitVersionTool.OutputVariables(variables, console.WriteLine);
                 gitVersionTool.UpdateAssemblyInfo(variables);
                 gitVersionTool.UpdateWixVersionFile(variables);
 
@@ -159,7 +162,7 @@ namespace GitVersion
             if (arguments.ShowConfig)
             {
                 var config = configProvider.Provide(targetPath);
-                Console.WriteLine(config.ToString());
+                console.WriteLine(config.ToString());
                 exitCode = 0;
                 return true;
             }

@@ -59,9 +59,8 @@ namespace GitVersion.Configuration.Init.Wizard
             Console.WriteLine();
             using (Console.UseColor(ConsoleColor.Red))
             {
-
+                Console.WriteLine("Invalid response!");
             }
-            Console.WriteLine("Invalid response!");
             steps.Enqueue(this);
         }
 

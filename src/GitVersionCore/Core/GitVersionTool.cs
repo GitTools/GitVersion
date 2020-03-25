@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using GitVersion.Configuration;
 using GitVersion.Extensions;
 using GitVersion.Extensions.GitVersionInformationResources;
 using GitVersion.Extensions.VersionAssemblyInfoResources;
@@ -18,6 +19,7 @@ namespace GitVersion
         private readonly IGitVersionCache gitVersionCache;
         private readonly INextVersionCalculator nextVersionCalculator;
         private readonly IVariableProvider variableProvider;
+        private readonly IConsole console;
         private readonly IGitVersionCacheKeyFactory cacheKeyFactory;
         private readonly IWixVersionFileUpdater wixVersionFileUpdater;
         private readonly IGitVersionInformationGenerator gitVersionInformationGenerator;
@@ -28,12 +30,13 @@ namespace GitVersion
 
         private readonly IBuildServer buildServer;
 
-        public GitVersionTool(ILog log, INextVersionCalculator nextVersionCalculator, IVariableProvider variableProvider,
+        public GitVersionTool(ILog log, INextVersionCalculator nextVersionCalculator, IVariableProvider variableProvider, IConsole console,
             IGitVersionCache gitVersionCache, IGitVersionCacheKeyFactory cacheKeyFactory, IBuildServerResolver buildServerResolver,
             IWixVersionFileUpdater wixVersionFileUpdater, IGitVersionInformationGenerator gitVersionInformationGenerator, IAssemblyInfoFileUpdater assemblyInfoFileUpdater,
             IOptions<Arguments> options, IOptions<GitVersionContext> versionContext)
         {
             this.log = log ?? throw new ArgumentNullException(nameof(log));
+            this.console = console ?? throw new ArgumentNullException(nameof(console));
 
             this.nextVersionCalculator = nextVersionCalculator ?? throw new ArgumentNullException(nameof(nextVersionCalculator));
             this.variableProvider = variableProvider ?? throw new ArgumentNullException(nameof(variableProvider));
@@ -87,7 +90,7 @@ namespace GitVersion
                 switch (arguments.ShowVariable)
                 {
                     case null:
-                        Console.WriteLine(variables.ToString());
+                        console.WriteLine(variables.ToString());
                         break;
 
                     default:
@@ -96,7 +99,7 @@ namespace GitVersion
                             throw new WarningException($"'{arguments.ShowVariable}' variable does not exist");
                         }
 
-                        Console.WriteLine(part);
+                        console.WriteLine(part);
                         break;
                 }
             }
