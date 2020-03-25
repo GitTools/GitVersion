@@ -4,6 +4,7 @@ using GitVersion.Configuration;
 using GitVersion.Configuration.Init;
 using GitVersion.Extensions;
 using GitVersion.Extensions.GitVersionInformationResources;
+using GitVersion.Extensions.VersionAssemblyInfoResources;
 using GitVersion.Logging;
 using GitVersion.VersionCalculation;
 using GitVersion.VersionCalculation.Cache;
@@ -44,6 +45,7 @@ namespace GitVersion
 
             services.AddSingleton<IGitVersionInformationGenerator, GitVersionInformationGenerator>();
             services.AddSingleton<IWixVersionFileUpdater, WixVersionFileUpdater>();
+            services.AddSingleton<IAssemblyInfoFileUpdater, AssemblyInfoFileUpdater>();
 
             services.AddSingleton(sp => sp.GetService<IConfigFileLocatorFactory>().Create());
 
