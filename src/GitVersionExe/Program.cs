@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using GitVersion.Extensions;
 using Microsoft.Extensions.Configuration;
@@ -9,12 +10,24 @@ namespace GitVersion
 {
     internal class Program
     {
-        private static async Task Main(string[] args)
+        private readonly Action<IServiceCollection> overrides;
+
+        internal Program(Action<IServiceCollection> overrides = null)
         {
-            await CreateHostBuilder(args).Build().RunAsync();
+            this.overrides = overrides;
         }
 
-        private static IHostBuilder CreateHostBuilder(string[] args) =>
+        private static async Task Main(string[] args)
+        {
+            await new Program().RunAsync(args);
+        }
+
+        internal Task RunAsync(string[] args)
+        {
+            return CreateHostBuilder(args).Build().RunAsync();
+        }
+
+        private IHostBuilder CreateHostBuilder(string[] args) =>
             new HostBuilder()
                 .ConfigureAppConfiguration((hostContext, configApp) =>
                 {
@@ -27,6 +40,7 @@ namespace GitVersion
 
                     services.AddSingleton(sp => Options.Create(sp.GetService<IArgumentParser>().ParseArguments(args)));
 
+                    overrides?.Invoke(services);
                     services.AddHostedService<GitVersionApp>();
                 })
                 .UseConsoleLifetime();

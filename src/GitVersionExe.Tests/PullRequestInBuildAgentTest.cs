@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using GitTools.Testing;
 using GitVersion.BuildServers;
 using GitVersionCore.Tests.Helpers;
@@ -22,72 +23,72 @@ namespace GitVersionExe.Tests
         };
 
         [TestCaseSource(nameof(PrMergeRefs))]
-        public void VerifyAzurePipelinesPullRequest(string pullRequestRef)
+        public async Task VerifyAzurePipelinesPullRequest(string pullRequestRef)
         {
             var env = new Dictionary<string, string>
             {
                 { AzurePipelines.EnvironmentVariableName, "true" },
                 { "BUILD_SOURCEBRANCH", PullRequestBranchName }
             };
-            VerifyPullRequestVersionIsCalculatedProperly(pullRequestRef, env);
+            await VerifyPullRequestVersionIsCalculatedProperly(pullRequestRef, env);
         }
 
         [TestCaseSource(nameof(PrMergeRefs))]
-        public void VerifyCodeBuildPullRequest(string pullRequestRef)
+        public async Task VerifyCodeBuildPullRequest(string pullRequestRef)
         {
             var env = new Dictionary<string, string>
             {
                 { CodeBuild.EnvironmentVariableName, PullRequestBranchName },
             };
-            VerifyPullRequestVersionIsCalculatedProperly(pullRequestRef, env);
+            await VerifyPullRequestVersionIsCalculatedProperly(pullRequestRef, env);
         }
 
         [TestCaseSource(nameof(PrMergeRefs))]
-        public void VerifyContinuaCIPullRequest(string pullRequestRef)
+        public async Task VerifyContinuaCIPullRequest(string pullRequestRef)
         {
             var env = new Dictionary<string, string>
             {
                 { ContinuaCi.EnvironmentVariableName, "true" },
             };
-            VerifyPullRequestVersionIsCalculatedProperly(pullRequestRef, env);
+            await VerifyPullRequestVersionIsCalculatedProperly(pullRequestRef, env);
         }
 
 
         [TestCaseSource(nameof(PrMergeRefs))]
-        public void VerifyDronePullRequest(string pullRequestRef)
+        public async Task VerifyDronePullRequest(string pullRequestRef)
         {
             var env = new Dictionary<string, string>
             {
                 { Drone.EnvironmentVariableName, "true" },
                 { "DRONE_PULL_REQUEST", PullRequestBranchName },
             };
-            VerifyPullRequestVersionIsCalculatedProperly(pullRequestRef, env);
+            await VerifyPullRequestVersionIsCalculatedProperly(pullRequestRef, env);
         }
 
         [TestCaseSource(nameof(PrMergeRefs))]
-        public void VerifyGitHubActionsPullRequest(string pullRequestRef)
+        public async Task VerifyGitHubActionsPullRequest(string pullRequestRef)
         {
             var env = new Dictionary<string, string>
             {
                 { GitHubActions.EnvironmentVariableName, "true" },
                 { "GITHUB_REF", PullRequestBranchName },
             };
-            VerifyPullRequestVersionIsCalculatedProperly(pullRequestRef, env);
+            await VerifyPullRequestVersionIsCalculatedProperly(pullRequestRef, env);
         }
 
         [TestCaseSource(nameof(PrMergeRefs))]
-        public void VerifyGitLabCIPullRequest(string pullRequestRef)
+        public async Task VerifyGitLabCIPullRequest(string pullRequestRef)
         {
             var env = new Dictionary<string, string>
             {
                 { GitLabCi.EnvironmentVariableName, "true" },
                 { "CI_COMMIT_REF_NAME", PullRequestBranchName },
             };
-            VerifyPullRequestVersionIsCalculatedProperly(pullRequestRef, env);
+            await VerifyPullRequestVersionIsCalculatedProperly(pullRequestRef, env);
         }
 
         [TestCaseSource(nameof(PrMergeRefs))]
-        public void VerifyJenkinsPullRequest(string pullRequestRef)
+        public async Task VerifyJenkinsPullRequest(string pullRequestRef)
         {
             var env = new Dictionary<string, string>
             {
@@ -96,42 +97,42 @@ namespace GitVersionExe.Tests
                 "BRANCH_NAME", PullRequestBranchName }
             };
 
-            VerifyPullRequestVersionIsCalculatedProperly(pullRequestRef, env);
+            await VerifyPullRequestVersionIsCalculatedProperly(pullRequestRef, env);
         }
 
         [TestCaseSource(nameof(PrMergeRefs))]
-        public void VerifyMyGetPullRequest(string pullRequestRef)
+        public async Task VerifyMyGetPullRequest(string pullRequestRef)
         {
             var env = new Dictionary<string, string>
             {
                 { MyGet.EnvironmentVariableName, "MyGet" },
             };
 
-            VerifyPullRequestVersionIsCalculatedProperly(pullRequestRef, env);
+            await VerifyPullRequestVersionIsCalculatedProperly(pullRequestRef, env);
         }
 
         [TestCaseSource(nameof(PrMergeRefs))]
-        public void VerifyTeamCityPullRequest(string pullRequestRef)
+        public async Task VerifyTeamCityPullRequest(string pullRequestRef)
         {
             var env = new Dictionary<string, string>
             {
                 { TeamCity.EnvironmentVariableName, "8.0.0" },
             };
-            VerifyPullRequestVersionIsCalculatedProperly(pullRequestRef, env);
+            await VerifyPullRequestVersionIsCalculatedProperly(pullRequestRef, env);
         }
 
         [TestCaseSource(nameof(PrMergeRefs))]
-        public void VerifyTravisCIPullRequest(string pullRequestRef)
+        public async Task VerifyTravisCIPullRequest(string pullRequestRef)
         {
             var env = new Dictionary<string, string>
             {
                 { TravisCi.EnvironmentVariableName, "true" },
                 {  "CI", "true" },
             };
-            VerifyPullRequestVersionIsCalculatedProperly(pullRequestRef, env);
+            await VerifyPullRequestVersionIsCalculatedProperly(pullRequestRef, env);
         }
 
-        private static void VerifyPullRequestVersionIsCalculatedProperly(string pullRequestRef, Dictionary<string, string> env)
+        private static async Task VerifyPullRequestVersionIsCalculatedProperly(string pullRequestRef, Dictionary<string, string> env)
         {
             using var fixture = new EmptyRepositoryFixture();
             var remoteRepositoryPath = PathHelper.GetTempPath();
@@ -158,7 +159,10 @@ namespace GitVersionExe.Tests
                 Commands.Checkout(fixture.Repository, mergeCommitSha);
             }
 
-            var result = GitVersionHelper.ExecuteIn(fixture.RepositoryPath, environments: env.ToArray());
+            var programFixture = new ProgramFixture(fixture.RepositoryPath);
+            programFixture.WithEnv(env.ToArray());
+
+            var result = await programFixture.Run();
 
             result.ExitCode.ShouldBe(0);
             result.OutputVariables.FullSemVer.ShouldBe("1.0.4-PullRequest0005.3");

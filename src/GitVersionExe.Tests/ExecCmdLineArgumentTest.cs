@@ -89,9 +89,6 @@ namespace GitVersionExe.Tests
             var output = new StringBuilder();
             var args = PathHelper.GetExecutableArgs($" /targetpath {workingDirectory} ");
 
-            Console.WriteLine("Executing: {0} {1}", executable, args);
-            Console.WriteLine();
-
             var exitCode = ProcessHelper.Run(
                 s => output.AppendLine(s),
                 s => output.AppendLine(s),
