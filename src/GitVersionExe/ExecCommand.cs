@@ -10,7 +10,6 @@ namespace GitVersion
 {
     public class ExecCommand : IExecCommand
     {
-
         private readonly ILog log;
         private readonly IOptions<Arguments> options;
 

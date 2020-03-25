@@ -28,21 +28,24 @@ namespace GitVersion
 
         private readonly IBuildServer buildServer;
 
-        public GitVersionTool(ILog log, IGitVersionCache gitVersionCache, INextVersionCalculator nextVersionCalculator, IVariableProvider variableProvider,
-            IGitVersionCacheKeyFactory cacheKeyFactory, IBuildServerResolver buildServerResolver,
+        public GitVersionTool(ILog log, INextVersionCalculator nextVersionCalculator, IVariableProvider variableProvider,
+            IGitVersionCache gitVersionCache, IGitVersionCacheKeyFactory cacheKeyFactory, IBuildServerResolver buildServerResolver,
             IWixVersionFileUpdater wixVersionFileUpdater, IGitVersionInformationGenerator gitVersionInformationGenerator, IAssemblyInfoFileUpdater assemblyInfoFileUpdater,
             IOptions<Arguments> options, IOptions<GitVersionContext> versionContext)
         {
             this.log = log ?? throw new ArgumentNullException(nameof(log));
-            this.gitVersionCache = gitVersionCache ?? throw new ArgumentNullException(nameof(gitVersionCache));
+
             this.nextVersionCalculator = nextVersionCalculator ?? throw new ArgumentNullException(nameof(nextVersionCalculator));
             this.variableProvider = variableProvider ?? throw new ArgumentNullException(nameof(variableProvider));
-            this.options = options ?? throw new ArgumentNullException(nameof(options));
+
             this.cacheKeyFactory = cacheKeyFactory ?? throw new ArgumentNullException(nameof(cacheKeyFactory));
+            this.gitVersionCache = gitVersionCache ?? throw new ArgumentNullException(nameof(gitVersionCache));
 
             this.wixVersionFileUpdater = wixVersionFileUpdater ?? throw new ArgumentNullException(nameof(wixVersionFileUpdater));
             this.gitVersionInformationGenerator = gitVersionInformationGenerator ?? throw new ArgumentNullException(nameof(gitVersionInformationGenerator));
             this.assemblyInfoFileUpdater = assemblyInfoFileUpdater ?? throw new ArgumentNullException(nameof(gitVersionInformationGenerator));
+
+            this.options = options ?? throw new ArgumentNullException(nameof(options));
 
             context = versionContext.Value;
             buildServer = buildServerResolver.Resolve();

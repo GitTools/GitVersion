@@ -15,19 +15,16 @@ namespace GitVersion
         private readonly IHelpWriter helpWriter;
         private readonly IExecCommand execCommand;
         private readonly IConfigProvider configProvider;
-        private readonly IBuildServerResolver buildServerResolver;
         private readonly IGitVersionTool gitVersionTool;
         private readonly IVersionWriter versionWriter;
 
-        public GitVersionExecutor(ILog log, IConfigFileLocator configFileLocator, IConfigProvider configProvider,
-            IBuildServerResolver buildServerResolver, IGitVersionTool gitVersionTool,
+        public GitVersionExecutor(ILog log, IConfigFileLocator configFileLocator, IConfigProvider configProvider, IGitVersionTool gitVersionTool,
             IVersionWriter versionWriter, IHelpWriter helpWriter, IExecCommand execCommand)
         {
             this.log = log ?? throw new ArgumentNullException(nameof(log));
             this.configFileLocator = configFileLocator ?? throw new ArgumentNullException(nameof(configFileLocator));
             this.configProvider = configProvider ?? throw new ArgumentNullException(nameof(configFileLocator));
 
-            this.buildServerResolver = buildServerResolver ?? throw new ArgumentNullException(nameof(buildServerResolver));
             this.gitVersionTool = gitVersionTool ?? throw new ArgumentNullException(nameof(gitVersionTool));
 
             this.versionWriter = versionWriter ?? throw new ArgumentNullException(nameof(versionWriter));
@@ -38,7 +35,10 @@ namespace GitVersion
 
         public int Execute(Arguments arguments)
         {
-            var exitCode = VerifyArgumentsAndRun(arguments);
+            if (!HandleNonMainCommand(arguments, out var exitCode))
+            {
+                exitCode = RunGitVersionTool(arguments);
+            }
 
             if (exitCode != 0)
             {
@@ -49,12 +49,10 @@ namespace GitVersion
             return exitCode;
         }
 
-        private int VerifyArgumentsAndRun(Arguments arguments)
+        private int RunGitVersionTool(Arguments arguments)
         {
             try
             {
-                if (HandleNonMainCommand(arguments, out var exitCode)) return exitCode;
-
                 var variables = gitVersionTool.CalculateVersionVariables();
 
                 gitVersionTool.OutputVariables(variables, Console.WriteLine);
@@ -131,9 +129,6 @@ namespace GitVersion
             {
                 arguments.Output.Add(OutputType.BuildServer);
             }
-
-            var buildServer = buildServerResolver.Resolve();
-            arguments.NoFetch = arguments.NoFetch || buildServer != null && buildServer.PreventFetch();
 
             ConfigureLogging(arguments, log);
 

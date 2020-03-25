@@ -14,9 +14,9 @@ namespace GitVersionExe.Tests
             Log = logContents;
         }
 
-        public int ExitCode { get; private set; }
-        public string Output { get; private set; }
-        public string Log { get; private set; }
+        public int ExitCode { get; }
+        public string Output { get; }
+        public string Log { get; }
 
         public virtual VersionVariables OutputVariables
         {
