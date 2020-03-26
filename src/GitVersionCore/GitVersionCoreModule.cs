@@ -52,9 +52,8 @@ namespace GitVersion
             services.AddSingleton(sp =>
             {
                 var options = sp.GetService<IOptions<Arguments>>();
-                var repository = sp.GetService<IRepository>();
                 var contextFactory = sp.GetService<IGitVersionContextFactory>();
-                return Options.Create(contextFactory.Create(options.Value, repository));
+                return Options.Create(contextFactory.Create(options.Value));
             });
 
             services.AddModule(new BuildServerModule());

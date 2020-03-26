@@ -1,5 +1,3 @@
-using GitVersion.Configuration;
-using GitVersion.Extensions;
 using GitVersion.Model.Configuration;
 using LibGit2Sharp;
 
@@ -25,15 +23,16 @@ namespace GitVersion
         {
         }
 
-        public GitVersionContext(IRepository repository, Branch currentBranch, Commit currentCommit, BranchConfig currentBranchConfig, Config configuration)
+        public GitVersionContext(Branch currentBranch, Commit currentCommit,
+            Config configuration, EffectiveConfiguration effectiveConfiguration, SemanticVersion currentCommitTaggedVersion)
         {
             CurrentCommit = currentCommit;
             CurrentBranch = currentBranch;
 
             FullConfiguration = configuration;
-            Configuration = configuration.CalculateEffectiveConfiguration(currentBranchConfig);
+            Configuration = effectiveConfiguration;
 
-            CurrentCommitTaggedVersion = repository.GetCurrentCommitTaggedVersion(currentCommit, Configuration);
+            CurrentCommitTaggedVersion = currentCommitTaggedVersion;
         }
     }
 }
