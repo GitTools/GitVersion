@@ -7,6 +7,7 @@ using System.Text;
 using GitVersion.Cache;
 using GitVersion.Configuration;
 using GitVersion.Logging;
+using GitVersion.Model.Configuration;
 using LibGit2Sharp;
 using Microsoft.Extensions.Options;
 

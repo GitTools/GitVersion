@@ -1,3 +1,5 @@
+using GitVersion.Model.Configuration;
+
 namespace GitVersion.Configuration.Init.Wizard
 {
     public interface IConfigInitWizard

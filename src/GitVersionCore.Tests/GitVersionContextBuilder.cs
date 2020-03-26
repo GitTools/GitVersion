@@ -3,6 +3,7 @@ using GitTools.Testing;
 using GitVersion;
 using GitVersion.Configuration;
 using GitVersion.Extensions;
+using GitVersion.Model.Configuration;
 using GitVersionCore.Tests.Helpers;
 using GitVersionCore.Tests.Mocks;
 using LibGit2Sharp;

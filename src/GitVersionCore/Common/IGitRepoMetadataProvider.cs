@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using GitVersion.Configuration;
+using GitVersion.Model.Configuration;
 using LibGit2Sharp;
 
 namespace GitVersion.Common

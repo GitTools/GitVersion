@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.IO;
 using System.Linq;
-using GitVersion.Configuration;
 using GitVersion.Extensions;
 using GitVersion.Logging;
 using GitVersion.Model;
+using GitVersion.Model.Configuration;
 using GitVersion.OutputVariables;
 
 namespace GitVersion

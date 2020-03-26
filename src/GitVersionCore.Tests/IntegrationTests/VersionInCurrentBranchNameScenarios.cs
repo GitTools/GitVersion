@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using GitTools.Testing;
-using GitVersion.Configuration;
+using GitVersion.Model.Configuration;
 using GitVersionCore.Tests.Helpers;
 using LibGit2Sharp;
 using NUnit.Framework;

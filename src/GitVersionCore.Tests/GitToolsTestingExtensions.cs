@@ -3,6 +3,7 @@ using GitTools.Testing;
 using GitVersion;
 using GitVersion.Configuration;
 using GitVersion.Extensions;
+using GitVersion.Model.Configuration;
 using GitVersion.OutputVariables;
 using GitVersion.VersionCalculation;
 using GitVersionCore.Tests.Helpers;

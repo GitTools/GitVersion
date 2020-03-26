@@ -1,8 +1,8 @@
 using System.Collections.Generic;
 using GitTools.Testing;
 using GitVersion;
-using GitVersion.Configuration;
 using GitVersion.Extensions;
+using GitVersion.Model.Configuration;
 using GitVersion.VersionCalculation;
 using GitVersionCore.Tests.Helpers;
 using LibGit2Sharp;

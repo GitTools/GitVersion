@@ -1,4 +1,5 @@
 using System.IO;
+using GitVersion.Model.Configuration;
 using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
 

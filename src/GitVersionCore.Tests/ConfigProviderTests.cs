@@ -8,6 +8,7 @@ using GitVersion;
 using GitVersion.Configuration;
 using GitVersion.Extensions;
 using GitVersion.Logging;
+using GitVersion.Model.Configuration;
 using GitVersion.VersionCalculation;
 using GitVersionCore.Tests.Helpers;
 using Microsoft.Extensions.DependencyInjection;
@@ -96,7 +97,7 @@ branches:
     bug:
         tag: bugfix";
             SetupConfigFileContent(text);
-            var ex = Should.Throw<GitVersionConfigurationException>(() => configProvider.Provide(repoPath));
+            var ex = Should.Throw<ConfigurationException>(() => configProvider.Provide(repoPath));
             ex.Message.ShouldBe($"Branch configuration 'bug' is missing required configuration 'regex'{Environment.NewLine}" +
                                 "See https://gitversion.net/docs/configuration/ for more info");
         }
@@ -111,7 +112,7 @@ branches:
         regex: 'bug[/-]'
         tag: bugfix";
             SetupConfigFileContent(text);
-            var ex = Should.Throw<GitVersionConfigurationException>(() => configProvider.Provide(repoPath));
+            var ex = Should.Throw<ConfigurationException>(() => configProvider.Provide(repoPath));
             ex.Message.ShouldBe($"Branch configuration 'bug' is missing required configuration 'source-branches'{Environment.NewLine}" +
                                 "See https://gitversion.net/docs/configuration/ for more info");
         }

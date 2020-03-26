@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using GitVersion.Extensions;
 using GitVersion.Logging;
+using GitVersion.Model.Configuration;
 using GitVersion.VersionCalculation;
 
 namespace GitVersion.Configuration
@@ -89,14 +90,14 @@ namespace GitVersion.Configuration
                 var regex = branchConfig.Value.Regex;
                 if (regex == null)
                 {
-                    throw new GitVersionConfigurationException($"Branch configuration '{branchConfig.Key}' is missing required configuration 'regex'{System.Environment.NewLine}" +
+                    throw new ConfigurationException($"Branch configuration '{branchConfig.Key}' is missing required configuration 'regex'{System.Environment.NewLine}" +
                                                                "See https://gitversion.net/docs/configuration/ for more info");
                 }
 
                 var sourceBranches = branchConfig.Value.SourceBranches;
                 if (sourceBranches == null)
                 {
-                    throw new GitVersionConfigurationException($"Branch configuration '{branchConfig.Key}' is missing required configuration 'source-branches'{System.Environment.NewLine}" +
+                    throw new ConfigurationException($"Branch configuration '{branchConfig.Key}' is missing required configuration 'source-branches'{System.Environment.NewLine}" +
                                                                "See https://gitversion.net/docs/configuration/ for more info");
                 }
 
@@ -162,7 +163,7 @@ namespace GitVersion.Configuration
             // Verify no branches are set to mainline mode
             if (readConfig.Branches.Any(b => b.Value.VersioningMode == VersioningMode.Mainline))
             {
-                throw new GitVersionConfigurationException(@"Mainline mode only works at the repository level, a single branch cannot be put into mainline mode
+                throw new ConfigurationException(@"Mainline mode only works at the repository level, a single branch cannot be put into mainline mode
 
 This is because mainline mode treats your entire git repository as an event source with each merge into the 'mainline' incrementing the version.
 

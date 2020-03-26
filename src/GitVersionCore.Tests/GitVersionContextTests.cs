@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using GitTools.Testing;
 using GitVersion;
 using GitVersion.Configuration;
+using GitVersion.Model.Configuration;
 using GitVersion.VersionCalculation;
 using GitVersionCore.Tests.Helpers;
 using GitVersionCore.Tests.Mocks;

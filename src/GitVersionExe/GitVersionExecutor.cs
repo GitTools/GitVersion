@@ -103,7 +103,6 @@ namespace GitVersion
                 return true;
             }
 
-            var targetPath = arguments.TargetPath;
 
             if (arguments.IsVersion)
             {
@@ -135,6 +134,7 @@ namespace GitVersion
 
             ConfigureLogging(arguments, log);
 
+            var targetPath = arguments.TargetPath;
             if (arguments.Diag)
             {
                 log.Info("Dumping commit graph: ");

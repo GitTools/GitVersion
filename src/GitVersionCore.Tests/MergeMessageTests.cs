@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using GitVersion;
-using GitVersion.Configuration;
+using GitVersion.Model.Configuration;
 using GitVersionCore.Tests.Helpers;
 using NUnit.Framework;
 using Shouldly;

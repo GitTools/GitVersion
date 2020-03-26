@@ -4,6 +4,7 @@ using GitTools.Testing;
 using GitVersion;
 using GitVersion.Common;
 using GitVersion.Configuration;
+using GitVersion.Model.Configuration;
 using GitVersion.VersionCalculation;
 using GitVersionCore.Tests.Helpers;
 using LibGit2Sharp;

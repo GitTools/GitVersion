@@ -2,7 +2,7 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using GitVersion.Configuration;
+using GitVersion.Model.Configuration;
 using GitVersion.OutputVariables;
 using GitVersionCore.Tests.Helpers;
 using NUnit.Framework;

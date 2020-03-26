@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
-using GitVersion.Configuration;
 using GitVersion.Extensions;
 using GitVersion.Logging;
 using GitVersion.Model;
+using GitVersion.Model.Configuration;
 
 namespace GitVersion
 {

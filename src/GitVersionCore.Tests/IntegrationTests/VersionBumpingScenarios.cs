@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using GitTools.Testing;
-using GitVersion.Configuration;
+using GitVersion.Model.Configuration;
 using GitVersionCore.Tests.Helpers;
 using NUnit.Framework;
 

@@ -1,8 +1,8 @@
 using System;
 using System.Linq;
 using GitVersion;
-using GitVersion.Configuration;
 using GitVersion.Extensions;
+using GitVersion.Model.Configuration;
 using GitVersion.VersionCalculation;
 using GitVersionCore.Tests.Helpers;
 using NUnit.Framework;

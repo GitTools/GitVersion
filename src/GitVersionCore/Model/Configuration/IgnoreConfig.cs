@@ -4,7 +4,7 @@ using System.Linq;
 using GitVersion.VersionCalculation;
 using YamlDotNet.Serialization;
 
-namespace GitVersion.Configuration
+namespace GitVersion.Model.Configuration
 {
     public class IgnoreConfig
     {
