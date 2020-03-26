@@ -96,7 +96,7 @@ namespace GitVersionCore.Tests.VersionCalculation.Strategies
             });
             var gitRepoMetadataProvider = sp.GetService<IGitRepoMetadataProvider>();
             var contextOptions = sp.GetService<IOptions<GitVersionContext>>();
-            return new VersionInBranchNameVersionStrategy(gitRepoMetadataProvider, repository, contextOptions);
+            return new VersionInBranchNameVersionStrategy(gitRepoMetadataProvider, contextOptions);
         }
     }
 }

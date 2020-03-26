@@ -30,29 +30,31 @@ namespace GitVersion.VersionCalculation
         private readonly IGitRepoMetadataProvider gitRepoMetadataProvider;
         private readonly VersionInBranchNameVersionStrategy releaseVersionStrategy;
         private readonly TaggedCommitVersionStrategy taggedCommitVersionStrategy;
+        private readonly IRepository repository;
 
         public TrackReleaseBranchesVersionStrategy(IGitRepoMetadataProvider gitRepoMetadataProvider, IRepository repository, IOptions<GitVersionContext> versionContext)
-            : base(repository, versionContext)
+            : base(versionContext)
         {
             this.gitRepoMetadataProvider = gitRepoMetadataProvider ?? throw new ArgumentNullException(nameof(gitRepoMetadataProvider));
+            this.repository = repository?? throw new ArgumentNullException(nameof(repository));
 
-            releaseVersionStrategy = new VersionInBranchNameVersionStrategy(gitRepoMetadataProvider, repository, versionContext);
-            taggedCommitVersionStrategy = new TaggedCommitVersionStrategy(gitRepoMetadataProvider, repository, versionContext);
+            releaseVersionStrategy = new VersionInBranchNameVersionStrategy(gitRepoMetadataProvider, versionContext);
+            taggedCommitVersionStrategy = new TaggedCommitVersionStrategy(gitRepoMetadataProvider, versionContext);
         }
 
         public override IEnumerable<BaseVersion> GetVersions()
         {
             if (Context.Configuration.TracksReleaseBranches)
             {
-                return ReleaseBranchBaseVersions(Context).Union(MasterTagsVersions(Context));
+                return ReleaseBranchBaseVersions(Context).Union(MasterTagsVersions());
             }
 
             return new BaseVersion[0];
         }
 
-        private IEnumerable<BaseVersion> MasterTagsVersions(GitVersionContext context)
+        private IEnumerable<BaseVersion> MasterTagsVersions()
         {
-            var master = Repository.FindBranch("master");
+            var master = repository.FindBranch("master");
             if (master != null)
             {
                 return taggedCommitVersionStrategy.GetTaggedVersions(master, null);
@@ -68,7 +70,7 @@ namespace GitVersion.VersionCalculation
                 .ToList();
             if (releaseBranchConfig.Any())
             {
-                var releaseBranches = Repository.Branches
+                var releaseBranches = repository.Branches
                     .Where(b => releaseBranchConfig.Any(c => Regex.IsMatch(b.FriendlyName, c.Value.Regex)));
 
                 return releaseBranches

@@ -49,7 +49,7 @@ namespace GitVersion
                 currentBranch = branchForCommit ?? currentBranch;
             }
 
-            var currentBranchConfig = branchConfigurationCalculator.GetBranchConfiguration(repository, currentBranch, currentCommit, configuration);
+            var currentBranchConfig = branchConfigurationCalculator.GetBranchConfiguration(currentBranch, currentCommit, configuration);
             var effectiveConfiguration = configuration.CalculateEffectiveConfiguration(currentBranchConfig);
             var currentCommitTaggedVersion = repository.GetCurrentCommitTaggedVersion(currentCommit, effectiveConfiguration);
 

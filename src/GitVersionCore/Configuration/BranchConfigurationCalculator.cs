@@ -15,18 +15,20 @@ namespace GitVersion.Configuration
         private const string FallbackConfigName = "Fallback";
 
         private readonly ILog log;
+        private readonly IRepository repository;
         private readonly IGitRepoMetadataProvider repoMetadataProvider;
 
-        public BranchConfigurationCalculator(ILog log, IGitRepoMetadataProvider repoMetadataProvider)
+        public BranchConfigurationCalculator(ILog log, IRepository repository, IGitRepoMetadataProvider repoMetadataProvider)
         {
             this.log = log ?? throw new ArgumentNullException(nameof(log));
+            this.repository = repository?? throw new ArgumentNullException(nameof(repository));
             this.repoMetadataProvider = repoMetadataProvider ?? throw new ArgumentNullException(nameof(repoMetadataProvider));
         }
 
         /// <summary>
         /// Gets the <see cref="BranchConfig"/> for the current commit.
         /// </summary>
-        public BranchConfig GetBranchConfiguration(IRepository repository, Branch targetBranch, Commit currentCommit, Config configuration, IList<Branch> excludedInheritBranches = null)
+        public BranchConfig GetBranchConfiguration(Branch targetBranch, Commit currentCommit, Config configuration, IList<Branch> excludedInheritBranches = null)
         {
             var matchingBranches = configuration.GetConfigForBranch(targetBranch.NameWithoutRemote());
 
@@ -40,7 +42,7 @@ namespace GitVersion.Configuration
 
             if (matchingBranches.Increment == IncrementStrategy.Inherit)
             {
-                matchingBranches = InheritBranchConfiguration(repository, targetBranch, matchingBranches, currentCommit, configuration, excludedInheritBranches);
+                matchingBranches = InheritBranchConfiguration(targetBranch, matchingBranches, currentCommit, configuration, excludedInheritBranches);
                 if (matchingBranches.Name == FallbackConfigName && matchingBranches.Increment == IncrementStrategy.Inherit)
                 {
                     // We tried, and failed to inherit, just fall back to patch
@@ -52,7 +54,7 @@ namespace GitVersion.Configuration
         }
 
         // TODO I think we need to take a fresh approach to this.. it's getting really complex with heaps of edge cases
-        private BranchConfig InheritBranchConfiguration(IRepository repository, Branch targetBranch, BranchConfig branchConfiguration, Commit currentCommit, Config configuration, IList<Branch> excludedInheritBranches)
+        private BranchConfig InheritBranchConfiguration(Branch targetBranch, BranchConfig branchConfiguration, Commit currentCommit, Config configuration, IList<Branch> excludedInheritBranches)
         {
             using (log.IndentLog("Attempting to inherit branch configuration from parent branch"))
             {
@@ -61,7 +63,7 @@ namespace GitVersion.Configuration
                 var parentCount = currentCommit.Parents.Count();
                 if (parentCount == 2)
                 {
-                    excludedBranches = CalculateWhenMultipleParents(repository, currentCommit, ref targetBranch, excludedBranches);
+                    excludedBranches = CalculateWhenMultipleParents(currentCommit, ref targetBranch, excludedBranches);
                 }
 
                 if (excludedInheritBranches == null)
@@ -109,7 +111,7 @@ namespace GitVersion.Configuration
 
                 if (possibleParents.Count == 1)
                 {
-                    var branchConfig = GetBranchConfiguration(repository, possibleParents[0], currentCommit, configuration, excludedInheritBranches);
+                    var branchConfig = GetBranchConfiguration(possibleParents[0], currentCommit, configuration, excludedInheritBranches);
                     // If we have resolved a fallback config we should not return that we have got config
                     if (branchConfig.Name != FallbackConfigName)
                     {
@@ -162,7 +164,7 @@ namespace GitVersion.Configuration
                     };
                 }
 
-                var inheritingBranchConfig = GetBranchConfiguration(repository, chosenBranch, currentCommit, configuration, excludedInheritBranches);
+                var inheritingBranchConfig = GetBranchConfiguration(chosenBranch, currentCommit, configuration, excludedInheritBranches);
                 var configIncrement = inheritingBranchConfig.Increment;
                 if (inheritingBranchConfig.Name == FallbackConfigName && configIncrement == IncrementStrategy.Inherit)
                 {
@@ -179,7 +181,7 @@ namespace GitVersion.Configuration
             }
         }
 
-        private Branch[] CalculateWhenMultipleParents(IRepository repository, Commit currentCommit, ref Branch currentBranch, Branch[] excludedBranches)
+        private Branch[] CalculateWhenMultipleParents(Commit currentCommit, ref Branch currentBranch, Branch[] excludedBranches)
         {
             var parents = currentCommit.Parents.ToArray();
             var branches = repository.Branches.Where(b => !b.IsRemote && b.Tip == parents[1]).ToList();

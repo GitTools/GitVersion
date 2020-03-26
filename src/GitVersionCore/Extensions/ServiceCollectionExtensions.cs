@@ -1,3 +1,5 @@
+using System;
+using System.Linq;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace GitVersion.Extensions
@@ -8,6 +10,11 @@ namespace GitVersion.Extensions
         {
             gitVersionModule.RegisterTypes(serviceCollection);
             return serviceCollection;
+        }
+
+        public static TService GetServiceForType<TService, TType>(this IServiceProvider serviceProvider)
+        {
+            return serviceProvider.GetServices<TService>().SingleOrDefault(t => t.GetType() == typeof(TType));
         }
     }
 }

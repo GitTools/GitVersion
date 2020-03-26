@@ -23,12 +23,6 @@ namespace GitVersion.VersionCalculation
 
         public string BranchNameOverride { get; }
 
-        public SemanticVersion MaybeIncrement(IRepository repository, GitVersionContext context)
-        {
-            var increment = IncrementStrategyFinder.DetermineIncrementedField(repository, context, this);
-            return increment != null ? SemanticVersion.IncrementVersion(increment.Value) : SemanticVersion;
-        }
-
         public override string ToString()
         {
             var externalSource = BaseVersionSource == null ? "External Source" : BaseVersionSource.Sha;

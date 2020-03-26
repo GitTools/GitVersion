@@ -17,7 +17,7 @@ namespace GitVersion.VersionCalculation
     {
         private IGitRepoMetadataProvider gitRepoMetadataProvider;
 
-        public VersionInBranchNameVersionStrategy(IGitRepoMetadataProvider gitRepoMetadataProvider, IRepository repository, IOptions<GitVersionContext> versionContext) : base(repository, versionContext)
+        public VersionInBranchNameVersionStrategy(IGitRepoMetadataProvider gitRepoMetadataProvider, IOptions<GitVersionContext> versionContext) : base(versionContext)
         {
             this.gitRepoMetadataProvider = gitRepoMetadataProvider ?? throw new ArgumentNullException(nameof(gitRepoMetadataProvider));
         }

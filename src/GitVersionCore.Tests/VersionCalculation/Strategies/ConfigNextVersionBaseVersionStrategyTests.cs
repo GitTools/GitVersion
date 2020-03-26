@@ -1,11 +1,8 @@
 using System.Linq;
-using GitVersion;
+using GitVersion.Extensions;
 using GitVersion.Model.Configuration;
 using GitVersion.VersionCalculation;
 using GitVersionCore.Tests.Helpers;
-using LibGit2Sharp;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
 using NUnit.Framework;
 using Shouldly;
 
@@ -47,9 +44,7 @@ namespace GitVersionCore.Tests.VersionCalculation.Strategies
             }
 
             contextBuilder.Build();
-            var options = contextBuilder.ServicesProvider.GetService<IOptions<GitVersionContext>>();
-            var repository = contextBuilder.ServicesProvider.GetService<IRepository>();
-            var strategy = new ConfigNextVersionVersionStrategy(repository, options);
+            var strategy = contextBuilder.ServicesProvider.GetServiceForType<IVersionStrategy, ConfigNextVersionVersionStrategy>();
 
             return strategy.GetVersions().SingleOrDefault();
         }

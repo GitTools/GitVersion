@@ -48,12 +48,12 @@ namespace GitVersion.VersionCalculation
                     })
                     .Select(v => new Versions
                     {
-                        IncrementedVersion = v.MaybeIncrement(repository, context),
+                        IncrementedVersion = MaybeIncrement(v),
                         Version = v
                     })
                     .ToList();
 
-                FixTheBaseVersionSourceOfMergeMessageStrategyIfReleaseBranchWasMergedAndDeleted(repository, context, baseVersions);
+                FixTheBaseVersionSourceOfMergeMessageStrategyIfReleaseBranchWasMergedAndDeleted(baseVersions);
                 var maxVersion = baseVersions.Aggregate((v1, v2) => v1.IncrementedVersion > v2.IncrementedVersion ? v1 : v2);
                 var matchingVersionsOnceIncremented = baseVersions
                     .Where(b => b.Version.BaseVersionSource != null && b.IncrementedVersion == maxVersion.IncrementedVersion)
@@ -89,9 +89,9 @@ namespace GitVersion.VersionCalculation
             }
         }
 
-        private static void FixTheBaseVersionSourceOfMergeMessageStrategyIfReleaseBranchWasMergedAndDeleted(IRepository repository, GitVersionContext context, IEnumerable<Versions> baseVersions)
+        private void FixTheBaseVersionSourceOfMergeMessageStrategyIfReleaseBranchWasMergedAndDeleted(IEnumerable<Versions> baseVersions)
         {
-            if (!ReleaseBranchExistsInRepo(repository, context))
+            if (!ReleaseBranchExistsInRepo())
             {
                 foreach (var baseVersion in baseVersions)
                 {
@@ -112,7 +112,13 @@ namespace GitVersion.VersionCalculation
             }
         }
 
-        private static bool ReleaseBranchExistsInRepo(IRepository repository, GitVersionContext context)
+        public SemanticVersion MaybeIncrement(BaseVersion baseVersion)
+        {
+            var increment = IncrementStrategyFinder.DetermineIncrementedField(repository, context, baseVersion);
+            return increment != null ? baseVersion.SemanticVersion.IncrementVersion(increment.Value) : baseVersion.SemanticVersion;
+        }
+
+        private bool ReleaseBranchExistsInRepo()
         {
             var releaseBranchConfig = context.FullConfiguration.Branches
                 .Where(b => b.Value.IsReleaseBranch == true)

@@ -12,8 +12,11 @@ namespace GitVersion.VersionCalculation
     /// </summary>
     public class FallbackVersionStrategy : VersionStrategyBase
     {
-        public FallbackVersionStrategy(IRepository repository, IOptions<GitVersionContext> versionContext) : base(repository, versionContext)
+        private readonly IRepository repository;
+
+        public FallbackVersionStrategy(IRepository repository, IOptions<GitVersionContext> versionContext) : base(versionContext)
         {
+            this.repository = repository;
         }
         public override IEnumerable<BaseVersion> GetVersions()
         {
@@ -22,7 +25,7 @@ namespace GitVersion.VersionCalculation
 
             try
             {
-                baseVersionSource = Repository.GetBaseVersionSource(currentBranchTip);
+                baseVersionSource = repository.GetBaseVersionSource(currentBranchTip);
             }
             catch (NotFoundException exception)
             {

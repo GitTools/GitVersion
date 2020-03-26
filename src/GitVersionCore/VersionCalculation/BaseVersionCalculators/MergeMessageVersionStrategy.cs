@@ -19,7 +19,7 @@ namespace GitVersion.VersionCalculation
     {
         private readonly ILog log;
 
-        public MergeMessageVersionStrategy(ILog log, IRepository repository, IOptions<GitVersionContext> versionContext) : base(repository, versionContext)
+        public MergeMessageVersionStrategy(ILog log, IOptions<GitVersionContext> versionContext) : base(versionContext)
         {
             this.log = log ?? throw new ArgumentNullException(nameof(log));
         }

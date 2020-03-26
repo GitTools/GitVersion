@@ -185,19 +185,5 @@ namespace GitVersionCore.Tests
 
             return sp.GetService<IOptions<GitVersionContext>>().Value;
         }
-
-        private static IGitVersionContextFactory GetGitVersionContextFactory(IRepository repository, Config config = null)
-        {
-            config ??= new Config().ApplyDefaults();
-            var options = Options.Create(new Arguments { OverrideConfig = config });
-
-            var sp = ConfigureServices(services =>
-            {
-                services.AddSingleton(options);
-                services.AddSingleton(repository);
-            });
-
-            return sp.GetService<IGitVersionContextFactory>();
-        }
     }
 }
