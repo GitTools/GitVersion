@@ -1,12 +1,8 @@
 using GitTools.Testing;
-using GitVersion;
-using GitVersion.Configuration;
-using GitVersion.Model.Configuration;
 using GitVersion.VersionCalculation;
 using GitVersionCore.Tests.Helpers;
 using LibGit2Sharp;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
 using NUnit.Framework;
 using Shouldly;
 
@@ -70,15 +66,7 @@ namespace GitVersionCore.Tests
 
         private static INextVersionCalculator GetNextVersionCalculator(IRepository repository, string branch)
         {
-            var config = new Config().ApplyDefaults();
-            var options = Options.Create(new Arguments { OverrideConfig = config, TargetBranch = branch });
-
-            var sp = ConfigureServices(services =>
-            {
-                services.AddSingleton(options);
-                services.AddSingleton(repository);
-            });
-
+            var sp = BuildServiceProvider(repository, branch);
             return sp.GetService<INextVersionCalculator>();
         }
     }

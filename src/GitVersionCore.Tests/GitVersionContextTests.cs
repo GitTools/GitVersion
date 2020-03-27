@@ -174,15 +174,7 @@ namespace GitVersionCore.Tests
 
         private static GitVersionContext GetGitVersionContext(IRepository repository, string branch, Config config = null)
         {
-            config ??= new Config().ApplyDefaults();
-            var options = Options.Create(new Arguments { OverrideConfig = config, TargetBranch = branch });
-
-            var sp = ConfigureServices(services =>
-            {
-                services.AddSingleton(options);
-                services.AddSingleton(repository);
-            });
-
+            var sp = BuildServiceProvider(repository, branch, config);
             return sp.GetService<IOptions<GitVersionContext>>().Value;
         }
     }

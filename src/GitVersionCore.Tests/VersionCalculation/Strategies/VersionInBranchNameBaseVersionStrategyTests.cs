@@ -1,15 +1,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using GitTools.Testing;
-using GitVersion;
 using GitVersion.Configuration;
 using GitVersion.Extensions;
 using GitVersion.Model.Configuration;
 using GitVersion.VersionCalculation;
 using GitVersionCore.Tests.Helpers;
 using LibGit2Sharp;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
 using NUnit.Framework;
 using Shouldly;
 
@@ -84,16 +81,9 @@ namespace GitVersionCore.Tests.VersionCalculation.Strategies
             baseVersion.SemanticVersion.ToString().ShouldBe(expectedBaseVersion);
         }
 
-        private IVersionStrategy GetVersionStrategy(IRepository repository, string branch, Config config = null)
+        private static IVersionStrategy GetVersionStrategy(IRepository repository, string branch, Config config = null)
         {
-            config ??= new Config().ApplyDefaults();
-            var options = Options.Create(new Arguments { OverrideConfig = config, TargetBranch = branch });
-
-            var sp = ConfigureServices(services =>
-            {
-                services.AddSingleton(repository);
-                services.AddSingleton(options);
-            });
+            var sp = BuildServiceProvider(repository, branch, config);
             return sp.GetServiceForType<IVersionStrategy, VersionInBranchNameVersionStrategy>();
         }
     }
