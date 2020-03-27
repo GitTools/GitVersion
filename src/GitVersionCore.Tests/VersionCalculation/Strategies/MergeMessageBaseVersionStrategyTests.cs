@@ -165,7 +165,7 @@ namespace GitVersionCore.Tests.VersionCalculation.Strategies
                     }
                 });
             contextBuilder.Build();
-            var strategy = contextBuilder.ServicesProvider.GetServiceForType<IVersionStrategy,MergeMessageVersionStrategy>();
+            var strategy = contextBuilder.ServicesProvider.GetServiceForType<IVersionStrategy, MergeMessageVersionStrategy>();
 
             var baseVersion = strategy.GetVersions().SingleOrDefault();
 

@@ -36,7 +36,7 @@ namespace GitVersion.VersionCalculation
             : base(versionContext)
         {
             this.gitRepoMetadataProvider = gitRepoMetadataProvider ?? throw new ArgumentNullException(nameof(gitRepoMetadataProvider));
-            this.repository = repository?? throw new ArgumentNullException(nameof(repository));
+            this.repository = repository ?? throw new ArgumentNullException(nameof(repository));
 
             releaseVersionStrategy = new VersionInBranchNameVersionStrategy(gitRepoMetadataProvider, versionContext);
             taggedCommitVersionStrategy = new TaggedCommitVersionStrategy(gitRepoMetadataProvider, versionContext);

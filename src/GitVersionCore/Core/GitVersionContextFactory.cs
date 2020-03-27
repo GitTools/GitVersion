@@ -21,7 +21,7 @@ namespace GitVersion
         public GitVersionContextFactory(ILog log, IRepository repository, IConfigProvider configProvider, IGitRepoMetadataProvider gitRepoMetadataProvider, IBranchConfigurationCalculator branchConfigurationCalculator, IOptions<Arguments> options)
         {
             this.log = log ?? throw new ArgumentNullException(nameof(log));
-            this.repository = repository?? throw new ArgumentNullException(nameof(repository));
+            this.repository = repository ?? throw new ArgumentNullException(nameof(repository));
             this.configProvider = configProvider ?? throw new ArgumentNullException(nameof(configProvider));
             this.gitRepoMetadataProvider = gitRepoMetadataProvider ?? throw new ArgumentNullException(nameof(gitRepoMetadataProvider));
             this.branchConfigurationCalculator = branchConfigurationCalculator ?? throw new ArgumentNullException(nameof(branchConfigurationCalculator));

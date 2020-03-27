@@ -21,7 +21,7 @@ namespace GitVersion.Configuration
         public BranchConfigurationCalculator(ILog log, IRepository repository, IGitRepoMetadataProvider repoMetadataProvider)
         {
             this.log = log ?? throw new ArgumentNullException(nameof(log));
-            this.repository = repository?? throw new ArgumentNullException(nameof(repository));
+            this.repository = repository ?? throw new ArgumentNullException(nameof(repository));
             this.repoMetadataProvider = repoMetadataProvider ?? throw new ArgumentNullException(nameof(repoMetadataProvider));
         }
 

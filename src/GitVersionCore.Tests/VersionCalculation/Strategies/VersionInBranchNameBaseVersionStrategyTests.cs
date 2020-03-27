@@ -2,8 +2,8 @@ using System.Collections.Generic;
 using System.Linq;
 using GitTools.Testing;
 using GitVersion;
-using GitVersion.Common;
 using GitVersion.Configuration;
+using GitVersion.Extensions;
 using GitVersion.Model.Configuration;
 using GitVersion.VersionCalculation;
 using GitVersionCore.Tests.Helpers;
@@ -94,9 +94,7 @@ namespace GitVersionCore.Tests.VersionCalculation.Strategies
                 services.AddSingleton(repository);
                 services.AddSingleton(options);
             });
-            var gitRepoMetadataProvider = sp.GetService<IGitRepoMetadataProvider>();
-            var contextOptions = sp.GetService<IOptions<GitVersionContext>>();
-            return new VersionInBranchNameVersionStrategy(gitRepoMetadataProvider, contextOptions);
+            return sp.GetServiceForType<IVersionStrategy, VersionInBranchNameVersionStrategy>();
         }
     }
 }

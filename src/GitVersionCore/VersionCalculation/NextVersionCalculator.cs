@@ -1,5 +1,4 @@
 using System;
-using System.IO;
 using System.Linq;
 using GitVersion.Common;
 using GitVersion.Configuration;
@@ -42,17 +41,6 @@ namespace GitVersion.VersionCalculation
             }
             EnsureHeadIsNotDetached(context);
 
-            var filePath = Path.Combine(repository.GetRepositoryDirectory(), "NextVersion.txt");
-            if (File.Exists(filePath))
-            {
-                throw new WarningException("NextVersion.txt has been deprecated. See http://gitversion.readthedocs.org/en/latest/configuration/ for replacement");
-            }
-
-            return FindVersionInternal();
-        }
-
-        internal SemanticVersion FindVersionInternal()
-        {
             SemanticVersion taggedSemanticVersion = null;
 
             if (context.IsCurrentCommitTagged)

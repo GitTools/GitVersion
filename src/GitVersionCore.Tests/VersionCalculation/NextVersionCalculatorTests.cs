@@ -32,10 +32,10 @@ namespace GitVersionCore.Tests.VersionCalculation
                 .WithConfig(new Config())
                 .Build();
 
-            var nextVersionCalculator = contextBuilder.ServicesProvider.GetService<INextVersionCalculator>() as NextVersionCalculator;
+            var nextVersionCalculator = contextBuilder.ServicesProvider.GetService<INextVersionCalculator>();
             nextVersionCalculator.ShouldNotBeNull();
 
-            var version = nextVersionCalculator.FindVersionInternal();
+            var version = nextVersionCalculator.FindVersion();
 
             version.ToString().ShouldBe("1.0.1");
         }
@@ -56,11 +56,11 @@ namespace GitVersionCore.Tests.VersionCalculation
                 .WithConfig(new Config())
                 .Build();
 
-            var nextVersionCalculator = contextBuilder.ServicesProvider.GetService<INextVersionCalculator>() as NextVersionCalculator;
+            var nextVersionCalculator = contextBuilder.ServicesProvider.GetService<INextVersionCalculator>();
 
             nextVersionCalculator.ShouldNotBeNull();
 
-            var version = nextVersionCalculator.FindVersionInternal();
+            var version = nextVersionCalculator.FindVersion();
 
             version.ToString().ShouldBe("1.0.0");
         }
@@ -80,10 +80,10 @@ namespace GitVersionCore.Tests.VersionCalculation
                 .WithDevelopBranch()
                 .Build();
 
-            var nextVersionCalculator = contextBuilder.ServicesProvider.GetService<INextVersionCalculator>() as NextVersionCalculator;
+            var nextVersionCalculator = contextBuilder.ServicesProvider.GetService<INextVersionCalculator>();
             nextVersionCalculator.ShouldNotBeNull();
 
-            var version = nextVersionCalculator.FindVersionInternal();
+            var version = nextVersionCalculator.FindVersion();
 
             version.ToString("f").ShouldBe("1.0.0-alpha.1+2");
         }

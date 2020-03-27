@@ -15,20 +15,6 @@ namespace GitVersionCore.Tests
     [TestFixture]
     public class VersionSourceTests : TestBase
     {
-        private static INextVersionCalculator GetNextVersionCalculator(IRepository repository, string branch)
-        {
-            var config = new Config().ApplyDefaults();
-            var options = Options.Create(new Arguments { OverrideConfig = config, TargetBranch = branch });
-
-            var sp = ConfigureServices(services =>
-            {
-                services.AddSingleton(options);
-                services.AddSingleton(repository);
-            });
-
-            return sp.GetService<INextVersionCalculator>();
-        }
-
         [Test]
         public void VersionSourceSha()
         {
@@ -80,6 +66,20 @@ namespace GitVersionCore.Tests
 
             version.BuildMetaData.VersionSourceSha.ShouldBe(secondCommit.Sha);
             version.BuildMetaData.CommitsSinceVersionSource.ShouldBe(1);
+        }
+
+        private static INextVersionCalculator GetNextVersionCalculator(IRepository repository, string branch)
+        {
+            var config = new Config().ApplyDefaults();
+            var options = Options.Create(new Arguments { OverrideConfig = config, TargetBranch = branch });
+
+            var sp = ConfigureServices(services =>
+            {
+                services.AddSingleton(options);
+                services.AddSingleton(repository);
+            });
+
+            return sp.GetService<INextVersionCalculator>();
         }
     }
 }
