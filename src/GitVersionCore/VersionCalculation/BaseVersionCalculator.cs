@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text.RegularExpressions;
+using GitVersion.Common;
+using GitVersion.Configuration;
 using GitVersion.Logging;
-using LibGit2Sharp;
 using Microsoft.Extensions.Options;
 
 namespace GitVersion.VersionCalculation
@@ -11,14 +11,14 @@ namespace GitVersion.VersionCalculation
     public class BaseVersionCalculator : IBaseVersionCalculator
     {
         private readonly ILog log;
-        private readonly IRepository repository;
+        private readonly IRepositoryMetadataProvider repositoryMetadataProvider;
         private readonly GitVersionContext context;
         private readonly IVersionStrategy[] strategies;
 
-        public BaseVersionCalculator(ILog log, IRepository repository, IOptions<GitVersionContext> versionContext, IEnumerable<IVersionStrategy> strategies)
+        public BaseVersionCalculator(ILog log, IRepositoryMetadataProvider repository, IOptions<GitVersionContext> versionContext, IEnumerable<IVersionStrategy> strategies)
         {
             this.log = log ?? throw new ArgumentNullException(nameof(log));
-            this.repository = repository ?? throw new ArgumentNullException(nameof(repository));
+            this.repositoryMetadataProvider = repository ?? throw new ArgumentNullException(nameof(repository));
             this.strategies = strategies?.ToArray() ?? Array.Empty<IVersionStrategy>();
             context = versionContext.Value;
         }
@@ -48,7 +48,7 @@ namespace GitVersion.VersionCalculation
                     })
                     .Select(v => new Versions
                     {
-                        IncrementedVersion = MaybeIncrement(v),
+                        IncrementedVersion = repositoryMetadataProvider.MaybeIncrement(v, context),
                         Version = v
                     })
                     .ToList();
@@ -105,26 +105,19 @@ namespace GitVersion.VersionCalculation
                             baseVersion.Version.Source,
                             baseVersion.Version.ShouldIncrement,
                             baseVersion.Version.SemanticVersion,
-                            repository.ObjectDatabase.FindMergeBase(parents[0], parents[1]),
+                            repositoryMetadataProvider.FindMergeBase(parents[0], parents[1]),
                             baseVersion.Version.BranchNameOverride);
                     }
                 }
             }
         }
 
-        public SemanticVersion MaybeIncrement(BaseVersion baseVersion)
-        {
-            var increment = IncrementStrategyFinder.DetermineIncrementedField(repository, context, baseVersion);
-            return increment != null ? baseVersion.SemanticVersion.IncrementVersion(increment.Value) : baseVersion.SemanticVersion;
-        }
+
 
         private bool ReleaseBranchExistsInRepo()
         {
-            var releaseBranchConfig = context.FullConfiguration.Branches
-                .Where(b => b.Value.IsReleaseBranch == true)
-                .ToList();
-            var releaseBranches = repository.Branches
-                    .Where(b => releaseBranchConfig.Any(c => Regex.IsMatch(b.FriendlyName, c.Value.Regex)));
+            var releaseBranchConfig = context.FullConfiguration.GetReleaseBranchConfig();
+            var releaseBranches = repositoryMetadataProvider.GetReleaseBranches(releaseBranchConfig);
             return releaseBranches.Any();
         }
 

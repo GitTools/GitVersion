@@ -122,7 +122,7 @@ namespace GitVersion
 
             if (commitCache == null || commitCache.LastOrDefault() != headCommit)
             {
-                commitCache = repo.GetCommitsReacheableFromHead(headCommit);
+                commitCache = GetCommitsReacheableFromHead(repo, headCommit);
                 intermediateCommitCache = commitCache;
             }
 
@@ -143,6 +143,17 @@ namespace GitVersion
             if (patchRegex.IsMatch(message)) return VersionField.Patch;
             if (none.IsMatch(message)) return VersionField.None;
             return null;
+        }
+
+        private static List<Commit> GetCommitsReacheableFromHead(IRepository repository, Commit headCommit)
+        {
+            var filter = new CommitFilter
+            {
+                IncludeReachableFrom = headCommit,
+                SortBy = CommitSortStrategies.Topological | CommitSortStrategies.Reverse
+            };
+
+            return repository.Commits.QueryBy(filter).ToList();
         }
     }
 }

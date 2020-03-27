@@ -308,6 +308,13 @@ If the docs do not help you decide on the mode open an issue to discuss what you
             return tagToUse;
         }
 
+        public static List<KeyValuePair<string, BranchConfig>> GetReleaseBranchConfig(this Config configuration)
+        {
+            return configuration.Branches
+                .Where(b => b.Value.IsReleaseBranch == true)
+                .ToList();
+        }
+
         private static BranchConfig GetOrCreateBranchDefaults(this Config config, string branchKey)
         {
             if (!config.Branches.ContainsKey(branchKey))

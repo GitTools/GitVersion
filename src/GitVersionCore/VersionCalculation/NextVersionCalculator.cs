@@ -4,7 +4,6 @@ using GitVersion.Common;
 using GitVersion.Configuration;
 using GitVersion.Extensions;
 using GitVersion.Logging;
-using LibGit2Sharp;
 using Microsoft.Extensions.Options;
 
 namespace GitVersion.VersionCalculation
@@ -15,18 +14,16 @@ namespace GitVersion.VersionCalculation
         private readonly IBaseVersionCalculator baseVersionCalculator;
         private readonly IMainlineVersionCalculator mainlineVersionCalculator;
         private readonly IRepositoryMetadataProvider repositoryMetadataProvider;
-        private readonly IRepository repository;
         private readonly GitVersionContext context;
 
         public NextVersionCalculator(ILog log, IBaseVersionCalculator baseVersionCalculator,
             IMainlineVersionCalculator mainlineVersionCalculator, IRepositoryMetadataProvider repositoryMetadataProvider,
-            IOptions<GitVersionContext> versionContext, IRepository repository)
+            IOptions<GitVersionContext> versionContext)
         {
             this.log = log ?? throw new ArgumentNullException(nameof(log));
             this.baseVersionCalculator = baseVersionCalculator ?? throw new ArgumentNullException(nameof(baseVersionCalculator));
             this.mainlineVersionCalculator = mainlineVersionCalculator ?? throw new ArgumentNullException(nameof(mainlineVersionCalculator));
             this.repositoryMetadataProvider = repositoryMetadataProvider ?? throw new ArgumentNullException(nameof(repositoryMetadataProvider));
-            this.repository = repository ?? throw new ArgumentNullException(nameof(repository));
 
             context = versionContext.Value;
         }
@@ -96,7 +93,7 @@ namespace GitVersion.VersionCalculation
         private SemanticVersion PerformIncrement(BaseVersion baseVersion)
         {
             var semver = baseVersion.SemanticVersion;
-            var increment = IncrementStrategyFinder.DetermineIncrementedField(repository, context, baseVersion);
+            var increment = repositoryMetadataProvider.DetermineIncrementedField(baseVersion, context);
             if (increment != null)
             {
                 semver = semver.IncrementVersion(increment.Value);
@@ -104,6 +101,8 @@ namespace GitVersion.VersionCalculation
             else log.Info("Skipping version increment");
             return semver;
         }
+
+
 
         private void UpdatePreReleaseTag(SemanticVersion semanticVersion, string branchNameOverride)
         {
@@ -122,10 +121,7 @@ namespace GitVersion.VersionCalculation
                 number = lastTag.PreReleaseTag.Number + 1;
             }
 
-            if (number == null)
-            {
-                number = 1;
-            }
+            number ??= 1;
 
             semanticVersion.PreReleaseTag = new SemanticVersionPreReleaseTag(tagToUse, number);
         }
