@@ -15,11 +15,11 @@ namespace GitVersion.VersionCalculation
     /// </summary>
     public class TaggedCommitVersionStrategy : VersionStrategyBase
     {
-        private readonly IGitRepoMetadataProvider gitRepoMetadataProvider;
+        private readonly IRepositoryMetadataProvider repositoryMetadataProvider;
 
-        public TaggedCommitVersionStrategy(IGitRepoMetadataProvider gitRepoMetadataProvider, IOptions<GitVersionContext> versionContext) : base(versionContext)
+        public TaggedCommitVersionStrategy(IRepositoryMetadataProvider repositoryMetadataProvider, IOptions<GitVersionContext> versionContext) : base(versionContext)
         {
-            this.gitRepoMetadataProvider = gitRepoMetadataProvider ?? throw new ArgumentNullException(nameof(gitRepoMetadataProvider));
+            this.repositoryMetadataProvider = repositoryMetadataProvider ?? throw new ArgumentNullException(nameof(repositoryMetadataProvider));
         }
 
         public override IEnumerable<BaseVersion> GetVersions()
@@ -29,7 +29,7 @@ namespace GitVersion.VersionCalculation
 
         internal IEnumerable<BaseVersion> GetTaggedVersions(Branch currentBranch, DateTimeOffset? olderThan)
         {
-            var allTags = gitRepoMetadataProvider.GetValidVersionTags(Context.Configuration.GitTagPrefix, olderThan);
+            var allTags = repositoryMetadataProvider.GetValidVersionTags(Context.Configuration.GitTagPrefix, olderThan);
 
             var tagsOnBranch = currentBranch
                 .Commits

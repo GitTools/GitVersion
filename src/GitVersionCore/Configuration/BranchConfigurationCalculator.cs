@@ -16,13 +16,13 @@ namespace GitVersion.Configuration
 
         private readonly ILog log;
         private readonly IRepository repository;
-        private readonly IGitRepoMetadataProvider repoMetadataProvider;
+        private readonly IRepositoryMetadataProvider repositoryMetadataProvider;
 
-        public BranchConfigurationCalculator(ILog log, IRepository repository, IGitRepoMetadataProvider repoMetadataProvider)
+        public BranchConfigurationCalculator(ILog log, IRepository repository, IRepositoryMetadataProvider repositoryMetadataProvider)
         {
             this.log = log ?? throw new ArgumentNullException(nameof(log));
             this.repository = repository ?? throw new ArgumentNullException(nameof(repository));
-            this.repoMetadataProvider = repoMetadataProvider ?? throw new ArgumentNullException(nameof(repoMetadataProvider));
+            this.repositoryMetadataProvider = repositoryMetadataProvider ?? throw new ArgumentNullException(nameof(repositoryMetadataProvider));
         }
 
         /// <summary>
@@ -82,12 +82,12 @@ namespace GitVersion.Configuration
                 }
                 var branchesToEvaluate = repository.Branches.ExcludingBranches(excludedInheritBranches).ToList();
 
-                var branchPoint = repoMetadataProvider
+                var branchPoint = repositoryMetadataProvider
                     .FindCommitBranchWasBranchedFrom(targetBranch, configuration, excludedInheritBranches.ToArray());
                 List<Branch> possibleParents;
                 if (branchPoint == BranchCommit.Empty)
                 {
-                    possibleParents = repoMetadataProvider.GetBranchesContainingCommit(targetBranch.Tip, branchesToEvaluate, false)
+                    possibleParents = repositoryMetadataProvider.GetBranchesContainingCommit(targetBranch.Tip, branchesToEvaluate, false)
                         // It fails to inherit Increment branch configuration if more than 1 parent;
                         // therefore no point to get more than 2 parents
                         .Take(2)
@@ -95,10 +95,10 @@ namespace GitVersion.Configuration
                 }
                 else
                 {
-                    var branches = repoMetadataProvider.GetBranchesContainingCommit(branchPoint.Commit, branchesToEvaluate, false).ToList();
+                    var branches = repositoryMetadataProvider.GetBranchesContainingCommit(branchPoint.Commit, branchesToEvaluate, false).ToList();
                     if (branches.Count > 1)
                     {
-                        var currentTipBranches = repoMetadataProvider.GetBranchesContainingCommit(currentCommit, branchesToEvaluate, false).ToList();
+                        var currentTipBranches = repositoryMetadataProvider.GetBranchesContainingCommit(currentCommit, branchesToEvaluate, false).ToList();
                         possibleParents = branches.Except(currentTipBranches).ToList();
                     }
                     else

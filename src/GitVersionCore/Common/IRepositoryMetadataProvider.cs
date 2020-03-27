@@ -5,7 +5,7 @@ using LibGit2Sharp;
 
 namespace GitVersion.Common
 {
-    public interface IGitRepoMetadataProvider
+    public interface IRepositoryMetadataProvider
     {
         IEnumerable<Tuple<Tag, SemanticVersion>> GetValidVersionTags(string tagPrefixRegex, DateTimeOffset? olderThan = null);
         IEnumerable<SemanticVersion> GetVersionTagsOnBranch(Branch branch, string tagPrefixRegex);

@@ -27,19 +27,19 @@ namespace GitVersion.VersionCalculation
     /// </summary>
     public class TrackReleaseBranchesVersionStrategy : VersionStrategyBase
     {
-        private readonly IGitRepoMetadataProvider gitRepoMetadataProvider;
+        private readonly IRepositoryMetadataProvider repositoryMetadataProvider;
         private readonly VersionInBranchNameVersionStrategy releaseVersionStrategy;
         private readonly TaggedCommitVersionStrategy taggedCommitVersionStrategy;
         private readonly IRepository repository;
 
-        public TrackReleaseBranchesVersionStrategy(IGitRepoMetadataProvider gitRepoMetadataProvider, IRepository repository, IOptions<GitVersionContext> versionContext)
+        public TrackReleaseBranchesVersionStrategy(IRepositoryMetadataProvider repositoryMetadataProvider, IRepository repository, IOptions<GitVersionContext> versionContext)
             : base(versionContext)
         {
-            this.gitRepoMetadataProvider = gitRepoMetadataProvider ?? throw new ArgumentNullException(nameof(gitRepoMetadataProvider));
+            this.repositoryMetadataProvider = repositoryMetadataProvider ?? throw new ArgumentNullException(nameof(repositoryMetadataProvider));
             this.repository = repository ?? throw new ArgumentNullException(nameof(repository));
 
-            releaseVersionStrategy = new VersionInBranchNameVersionStrategy(gitRepoMetadataProvider, versionContext);
-            taggedCommitVersionStrategy = new TaggedCommitVersionStrategy(gitRepoMetadataProvider, versionContext);
+            releaseVersionStrategy = new VersionInBranchNameVersionStrategy(repositoryMetadataProvider, versionContext);
+            taggedCommitVersionStrategy = new TaggedCommitVersionStrategy(repositoryMetadataProvider, versionContext);
         }
 
         public override IEnumerable<BaseVersion> GetVersions()
@@ -96,7 +96,7 @@ namespace GitVersion.VersionCalculation
             var tagPrefixRegex = context.Configuration.GitTagPrefix;
 
             // Find the commit where the child branch was created.
-            var baseSource = gitRepoMetadataProvider.FindMergeBase(releaseBranch, context.CurrentBranch);
+            var baseSource = repositoryMetadataProvider.FindMergeBase(releaseBranch, context.CurrentBranch);
             if (baseSource == context.CurrentCommit)
             {
                 // Ignore the branch if it has no commits.

@@ -14,16 +14,16 @@ namespace GitVersion
         private readonly ILog log;
         private readonly IRepository repository;
         private readonly IConfigProvider configProvider;
-        private readonly IGitRepoMetadataProvider gitRepoMetadataProvider;
+        private readonly IRepositoryMetadataProvider repositoryMetadataProvider;
         private readonly IBranchConfigurationCalculator branchConfigurationCalculator;
         private readonly IOptions<Arguments> options;
 
-        public GitVersionContextFactory(ILog log, IRepository repository, IConfigProvider configProvider, IGitRepoMetadataProvider gitRepoMetadataProvider, IBranchConfigurationCalculator branchConfigurationCalculator, IOptions<Arguments> options)
+        public GitVersionContextFactory(ILog log, IRepository repository, IConfigProvider configProvider, IRepositoryMetadataProvider repositoryMetadataProvider, IBranchConfigurationCalculator branchConfigurationCalculator, IOptions<Arguments> options)
         {
             this.log = log ?? throw new ArgumentNullException(nameof(log));
             this.repository = repository ?? throw new ArgumentNullException(nameof(repository));
             this.configProvider = configProvider ?? throw new ArgumentNullException(nameof(configProvider));
-            this.gitRepoMetadataProvider = gitRepoMetadataProvider ?? throw new ArgumentNullException(nameof(gitRepoMetadataProvider));
+            this.repositoryMetadataProvider = repositoryMetadataProvider ?? throw new ArgumentNullException(nameof(repositoryMetadataProvider));
             this.branchConfigurationCalculator = branchConfigurationCalculator ?? throw new ArgumentNullException(nameof(branchConfigurationCalculator));
             this.options = options ?? throw new ArgumentNullException(nameof(options));
         }
@@ -45,7 +45,7 @@ namespace GitVersion
 
             if (currentBranch.IsDetachedHead())
             {
-                var branchForCommit = gitRepoMetadataProvider.GetBranchesContainingCommit(currentCommit, repository.Branches.ToList(), onlyTrackedBranches).OnlyOrDefault();
+                var branchForCommit = repositoryMetadataProvider.GetBranchesContainingCommit(currentCommit, repository.Branches.ToList(), onlyTrackedBranches).OnlyOrDefault();
                 currentBranch = branchForCommit ?? currentBranch;
             }
 

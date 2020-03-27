@@ -11,7 +11,7 @@ using LibGit2Sharp;
 
 namespace GitVersion
 {
-    public class GitRepoMetadataProvider : IGitRepoMetadataProvider
+    public class RepositoryMetadataProvider : IRepositoryMetadataProvider
     {
         private readonly Dictionary<Branch, List<BranchCommit>> mergeBaseCommitsCache = new Dictionary<Branch, List<BranchCommit>>();
         private readonly Dictionary<Tuple<Branch, Branch>, MergeBaseData> mergeBaseCache = new Dictionary<Tuple<Branch, Branch>, MergeBaseData>();
@@ -21,7 +21,7 @@ namespace GitVersion
         private readonly ILog log;
         private IRepository repository;
 
-        public GitRepoMetadataProvider(ILog log, IRepository repository)
+        public RepositoryMetadataProvider(ILog log, IRepository repository)
         {
             this.log = log ?? throw new ArgumentNullException(nameof(log));
             this.repository = repository ?? throw new ArgumentNullException(nameof(log));

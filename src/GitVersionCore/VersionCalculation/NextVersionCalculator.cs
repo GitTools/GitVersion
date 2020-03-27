@@ -14,18 +14,18 @@ namespace GitVersion.VersionCalculation
         private readonly ILog log;
         private readonly IBaseVersionCalculator baseVersionCalculator;
         private readonly IMainlineVersionCalculator mainlineVersionCalculator;
-        private readonly IGitRepoMetadataProvider gitRepoMetadataProvider;
+        private readonly IRepositoryMetadataProvider repositoryMetadataProvider;
         private readonly IRepository repository;
         private readonly GitVersionContext context;
 
         public NextVersionCalculator(ILog log, IBaseVersionCalculator baseVersionCalculator,
-            IMainlineVersionCalculator mainlineVersionCalculator, IGitRepoMetadataProvider gitRepoMetadataProvider,
+            IMainlineVersionCalculator mainlineVersionCalculator, IRepositoryMetadataProvider repositoryMetadataProvider,
             IOptions<GitVersionContext> versionContext, IRepository repository)
         {
             this.log = log ?? throw new ArgumentNullException(nameof(log));
             this.baseVersionCalculator = baseVersionCalculator ?? throw new ArgumentNullException(nameof(baseVersionCalculator));
             this.mainlineVersionCalculator = mainlineVersionCalculator ?? throw new ArgumentNullException(nameof(mainlineVersionCalculator));
-            this.gitRepoMetadataProvider = gitRepoMetadataProvider ?? throw new ArgumentNullException(nameof(gitRepoMetadataProvider));
+            this.repositoryMetadataProvider = repositoryMetadataProvider ?? throw new ArgumentNullException(nameof(repositoryMetadataProvider));
             this.repository = repository ?? throw new ArgumentNullException(nameof(repository));
 
             context = versionContext.Value;
@@ -111,7 +111,7 @@ namespace GitVersion.VersionCalculation
 
             int? number = null;
 
-            var lastTag = gitRepoMetadataProvider
+            var lastTag = repositoryMetadataProvider
                 .GetVersionTagsOnBranch(context.CurrentBranch, context.Configuration.GitTagPrefix)
                 .FirstOrDefault(v => v.PreReleaseTag.Name == tagToUse);
 

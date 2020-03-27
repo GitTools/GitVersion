@@ -15,11 +15,11 @@ namespace GitVersion.VersionCalculation
     /// </summary>
     public class VersionInBranchNameVersionStrategy : VersionStrategyBase
     {
-        private IGitRepoMetadataProvider gitRepoMetadataProvider;
+        private IRepositoryMetadataProvider repositoryMetadataProvider;
 
-        public VersionInBranchNameVersionStrategy(IGitRepoMetadataProvider gitRepoMetadataProvider, IOptions<GitVersionContext> versionContext) : base(versionContext)
+        public VersionInBranchNameVersionStrategy(IRepositoryMetadataProvider repositoryMetadataProvider, IOptions<GitVersionContext> versionContext) : base(versionContext)
         {
-            this.gitRepoMetadataProvider = gitRepoMetadataProvider ?? throw new ArgumentNullException(nameof(gitRepoMetadataProvider));
+            this.repositoryMetadataProvider = repositoryMetadataProvider ?? throw new ArgumentNullException(nameof(repositoryMetadataProvider));
         }
 
         public override IEnumerable<BaseVersion> GetVersions()
@@ -40,7 +40,7 @@ namespace GitVersion.VersionCalculation
             var versionInBranch = GetVersionInBranch(branchName, tagPrefixRegex);
             if (versionInBranch != null)
             {
-                var commitBranchWasBranchedFrom = gitRepoMetadataProvider.FindCommitBranchWasBranchedFrom(currentBranch, Context.FullConfiguration);
+                var commitBranchWasBranchedFrom = repositoryMetadataProvider.FindCommitBranchWasBranchedFrom(currentBranch, Context.FullConfiguration);
                 var branchNameOverride = branchName.RegexReplace("[-/]" + versionInBranch.Item1, string.Empty);
                 yield return new BaseVersion("Version in branch name", false, versionInBranch.Item2, commitBranchWasBranchedFrom.Commit, branchNameOverride);
             }

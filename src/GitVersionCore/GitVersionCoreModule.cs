@@ -41,7 +41,7 @@ namespace GitVersion
 
             services.AddSingleton<IBuildServerResolver, BuildServerResolver>();
             services.AddSingleton<IGitPreparer, GitPreparer>();
-            services.AddSingleton<IGitRepoMetadataProvider, GitRepoMetadataProvider>();
+            services.AddSingleton<IRepositoryMetadataProvider, RepositoryMetadataProvider>();
 
             services.AddSingleton<IGitVersionInformationGenerator, GitVersionInformationGenerator>();
             services.AddSingleton<IWixVersionFileUpdater, WixVersionFileUpdater>();
