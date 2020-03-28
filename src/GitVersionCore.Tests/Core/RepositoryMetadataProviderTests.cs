@@ -12,11 +12,11 @@ using Shouldly;
 namespace GitVersionCore.Tests
 {
     [TestFixture]
-    public class GitRepoMetadataProviderTests : TestBase
+    public class RepositoryMetadataProviderTests : TestBase
     {
         private readonly ILog log;
 
-        public GitRepoMetadataProviderTests()
+        public RepositoryMetadataProviderTests()
         {
             var sp = ConfigureServices();
             log = sp.GetService<ILog>();

@@ -1,12 +1,13 @@
 using System;
 using System.IO;
+using GitVersion;
 using GitVersionCore.Tests.Helpers;
 using LibGit2Sharp;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using NUnit.Framework;
 
-namespace GitVersion.MSBuildTask.Tests
+namespace GitVersionCore.Tests
 {
 
     [TestFixture]

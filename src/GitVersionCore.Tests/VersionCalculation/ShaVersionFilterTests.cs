@@ -6,27 +6,32 @@ using GitVersionCore.Tests.Mocks;
 using NUnit.Framework;
 using Shouldly;
 
-namespace GitVersionCore.Tests.VersionFilters
+namespace GitVersionCore.Tests
 {
     [TestFixture]
-    public class MinDateVersionFilterTests : TestBase
+    public class ShaVersionFilterTests : TestBase
     {
         [Test]
         public void VerifyNullGuard()
         {
-            var dummy = DateTimeOffset.UtcNow.AddSeconds(1.0);
-            var sut = new MinDateVersionFilter(dummy);
+            Should.Throw<ArgumentNullException>(() => new ShaVersionFilter(null));
+        }
+
+        [Test]
+        public void VerifyNullGuard2()
+        {
+            var commit = new MockCommit();
+            var sut = new ShaVersionFilter(new[] { commit.Sha });
 
             Should.Throw<ArgumentNullException>(() => sut.Exclude(null, out _));
         }
 
         [Test]
-        public void WhenCommitShouldExcludeWithReason()
+        public void WhenShaMatchShouldExcludeWithReason()
         {
-            var commit = new MockCommit(); //when = UtcNow
+            var commit = new MockCommit();
             var version = new BaseVersion("dummy", false, new SemanticVersion(1), commit, string.Empty);
-            var futureDate = DateTimeOffset.UtcNow.AddYears(1);
-            var sut = new MinDateVersionFilter(futureDate);
+            var sut = new ShaVersionFilter(new[] { commit.Sha });
 
             sut.Exclude(version, out var reason).ShouldBeTrue();
             reason.ShouldNotBeNullOrWhiteSpace();
@@ -35,10 +40,9 @@ namespace GitVersionCore.Tests.VersionFilters
         [Test]
         public void WhenShaMismatchShouldNotExclude()
         {
-            var commit = new MockCommit(); //when = UtcNow
+            var commit = new MockCommit();
             var version = new BaseVersion("dummy", false, new SemanticVersion(1), commit, string.Empty);
-            var pastDate = DateTimeOffset.UtcNow.AddYears(-1);
-            var sut = new MinDateVersionFilter(pastDate);
+            var sut = new ShaVersionFilter(new[] { "mismatched" });
 
             sut.Exclude(version, out var reason).ShouldBeFalse();
             reason.ShouldBeNull();
@@ -48,8 +52,7 @@ namespace GitVersionCore.Tests.VersionFilters
         public void ExcludeShouldAcceptVersionWithNullCommit()
         {
             var version = new BaseVersion("dummy", false, new SemanticVersion(1), null, string.Empty);
-            var futureDate = DateTimeOffset.UtcNow.AddYears(1);
-            var sut = new MinDateVersionFilter(futureDate);
+            var sut = new ShaVersionFilter(new[] { "mismatched" });
 
             sut.Exclude(version, out var reason).ShouldBeFalse();
             reason.ShouldBeNull();
