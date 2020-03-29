@@ -283,7 +283,7 @@ namespace GitVersionCore.Tests
         [Test]
         [Category(NoMono)]
         [Description(NoMonoDescription)]
-        public void ProvidesVariablesInContinuousDeliveryModeForFeatureBranchWithCustomAssemblyInformationalFormat()
+        public void ProvidesVariablesInContinuousDeliveryModeForFeatureBranchWithCustomAssemblyInfoFormat()
         {
             var semVer = new SemanticVersion
             {

@@ -423,7 +423,7 @@ namespace GitVersionCore.Tests
         [TestCase("vb", "<Assembly: AssemblyFileVersion(\"1.0.0.0\")>")]
         [Category(NoMono)]
         [Description(NoMonoDescription)]
-        public void ShouldNotAddAssemblyInformationalVersionWhenUpdatingAssemblyVersionFileWhenVersionSchemeIsNone(string fileExtension, string assemblyFileContent)
+        public void ShouldNotAddAssemblyInformationalVersionWhenVersionSchemeIsNone(string fileExtension, string assemblyFileContent)
         {
             var workingDir = Path.GetTempPath();
             var assemblyInfoFile = "AssemblyInfo." + fileExtension;
