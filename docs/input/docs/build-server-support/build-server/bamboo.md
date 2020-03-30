@@ -10,9 +10,10 @@ using the [.NET Core GitVersion global tool](https://www.nuget.org/packages/GitV
 
 ## Example
 
-### Task: Script
+The first script can be run on a Linux build host, the second script can be run on
+a Windows build host using Powershell. The build only needs one of the two.
 
-This script can be run on a Linux build host.
+### Task: Script
 
 **Script body**
 
@@ -24,8 +25,6 @@ sed -i '1d;26d;s/  //;s/"//g;s/,//;s/:/=/' gitversion.txt
 ### Task: Script
 
 **Script body**
-
-This script can be run on a Windows build host using Powershell.
 
 ```powershell
 (dotnet gitversion | ConvertFrom-Json).PSObject.Properties | ForEach-Object { Write-Output "$($_.Name)=$($_.Value)" } | Out-File -Encoding UTF8 -FilePath gitversion.txt
