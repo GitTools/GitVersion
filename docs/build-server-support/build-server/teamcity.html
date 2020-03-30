@@ -220,11 +220,11 @@ GitVersion meta-runner available which makes it easy to use GitVersion.</p>
 use dynamic repositories.</p>
 <h3 id="agent-checkout">Agent checkout</h3>
 <p>For GitVersion to pick up pull requests properly you need to promote the
-<code>%teamcity.build.vcs.branch.{configurationid}%</code> variable to an environment
+<code>%teamcity.build.vcs.branch.{vcsid}%</code> variable to an environment
 variable called <code>Git_Branch</code></p>
 <p>Just go to your build configuration, Parameters, click Add, Name should be
 <code>env.Git_Branch</code>, value should be <code>%teamcity.build.vcs.branch.{vcsid}%</code> where
-vcsid is your VCS root id. You should get auto completion for this.</p>
+<code>{vcsid}</code> is your VCS root id. You should get auto completion for this.</p>
 <p>For GitVersion to work with any mode requiring other than the currently built
 branch to calculate the version number, you need to set the configuration
 parameter <a href="https://www.jetbrains.com/help/teamcity/git.html#Git-GeneralSettings"><code>teamcity.git.fetchAllHeads = true</code> in TeamCity</a>,

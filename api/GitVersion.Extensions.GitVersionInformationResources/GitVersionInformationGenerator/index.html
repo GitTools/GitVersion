@@ -141,6 +141,8 @@
 		<li role="separator" class="divider"></li>
 			<li class="header">Class Types</li>
 				<li class="selected"><a href="/api/GitVersion.Extensions.GitVersionInformationResources/GitVersionInformationGenerator">Git<wbr>Version<wbr>Information<wbr>Generator</a></li>
+			<li class="header">Interface Types</li>
+				<li><a href="/api/GitVersion.Extensions.GitVersionInformationResources/IGitVersionInformationGenerator">I<wbr>Git<wbr>Version<wbr>Information<wbr>Generator</a></li>
 
 
                     </ul>
@@ -170,6 +172,12 @@
 								<dt>Namespace</dt>
 								<dd><a href="/api/GitVersion.Extensions.GitVersionInformationResources">GitVersion<wbr>.Extensions<wbr>.<wbr>Git<wbr>Version<wbr>Information<wbr>Resources</a></dd>
 											
+								<dt>Interfaces</dt>
+								<dd>
+									<ul class="list-unstyled">
+											<li><a href="/api/GitVersion.Extensions.GitVersionInformationResources/IGitVersionInformationGenerator">I<wbr>Git<wbr>Version<wbr>Information<wbr>Generator</a></li>								
+									</ul>
+								</dd>
 							
 								<dt>Base Types</dt>
 								<dd>
@@ -185,6 +193,8 @@
 						<div class="mermaid">
 							graph BT
 	Type--&gt;Base0["object"]
+	Type-.-&gt;Interface0["IGitVersionInformationGenerator"]
+	click Interface0 "/api/GitVersion.Extensions.GitVersionInformationResources/IGitVersionInformationGenerator"
 	Type["GitVersionInformationGenerator"]
 class Type type-node
 
@@ -195,7 +205,7 @@ class Type type-node
 		</div>
 
 	<h1 id="Syntax">Syntax</h1>
-	<pre><code>public class GitVersionInformationGenerator</code></pre>
+	<pre><code>public class GitVersionInformationGenerator : IGitVersionInformationGenerator</code></pre>
 
 
 
@@ -214,7 +224,7 @@ class Type type-node
 							</tr>
 						</thead>
 							<tbody><tr>
-								<td><a href="/api/GitVersion.Extensions.GitVersionInformationResources/GitVersionInformationGenerator/C854DB1D">Git<wbr>Version<wbr>Information<wbr>Generator<wbr>(string, <wbr>string, <wbr>VersionVariables, <wbr>IFileSystem)<wbr></a></td>
+								<td><a href="/api/GitVersion.Extensions.GitVersionInformationResources/GitVersionInformationGenerator/CFDFA47C">Git<wbr>Version<wbr>Information<wbr>Generator<wbr>(IFileSystem)<wbr></a></td>
 									<td></td>
 							</tr>
 					</tbody></table>
@@ -237,7 +247,7 @@ class Type type-node
 							</tr>
 						</thead>
 							<tbody><tr>
-								<td><a href="/api/GitVersion.Extensions.GitVersionInformationResources/GitVersionInformationGenerator/C8E3B7D7">Generate<wbr>()<wbr></a></td>
+								<td><a href="/api/GitVersion.Extensions.GitVersionInformationResources/GitVersionInformationGenerator/C2C26B36">Generate<wbr>(VersionVariables, <wbr>FileWriteInfo)<wbr></a></td>
 								<td>void</td>
 								<td>
 									<div></div>

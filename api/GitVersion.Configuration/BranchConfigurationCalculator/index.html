@@ -76,7 +76,6 @@
                     	
 	<div id="infobar-headings"><h6>On This Page</h6><p><a href="#Syntax">Syntax</a></p>
 <p><a href="#Constructors">Constructors</a></p>
-<p><a href="#fields">Fields</a></p>
 <p><a href="#Methods">Methods</a></p>
 <p><a href="#ExtensionMethods">Extension Methods</a></p>
 <hr class="infobar-hidden">
@@ -140,27 +139,21 @@
 			<li class="header">Namespace</li>
 		<li><a href="/api/GitVersion.Configuration">GitVersion<wbr>.Configuration</a></li>
 		<li role="separator" class="divider"></li>
-			<li class="header">Class Types</li>
-				<li><a href="/api/GitVersion.Configuration/BranchConfig">BranchConfig</a></li>
-				<li class="selected"><a href="/api/GitVersion.Configuration/BranchConfigurationCalculator">Branch<wbr>Configuration<wbr>Calculator</a></li>
-				<li><a href="/api/GitVersion.Configuration/Config">Config</a></li>
-				<li><a href="/api/GitVersion.Configuration/ConfigExtensions">ConfigExtensions</a></li>
-				<li><a href="/api/GitVersion.Configuration/ConfigFileLocator">ConfigFileLocator</a></li>
-				<li><a href="/api/GitVersion.Configuration/ConfigFileLocatorFactory">Config<wbr>File<wbr>Locator<wbr>Factory</a></li>
-				<li><a href="/api/GitVersion.Configuration/ConfigProvider">ConfigProvider</a></li>
-				<li><a href="/api/GitVersion.Configuration/ConfigSerializer">ConfigSerializer</a></li>
-				<li><a href="/api/GitVersion.Configuration/DefaultConfigFileLocator">Default<wbr>Config<wbr>File<wbr>Locator</a></li>
-				<li><a href="/api/GitVersion.Configuration/EffectiveConfiguration">Effective<wbr>Configuration</a></li>
-				<li><a href="/api/GitVersion.Configuration/GitVersionConfigurationException">Git<wbr>Version<wbr>Configuration<wbr>Exception</a></li>
-				<li><a href="/api/GitVersion.Configuration/IgnoreConfig">IgnoreConfig</a></li>
-				<li><a href="/api/GitVersion.Configuration/NamedConfigFileLocator">Named<wbr>Config<wbr>File<wbr>Locator</a></li>
-				<li><a href="/api/GitVersion.Configuration/OldConfigurationException">Old<wbr>Configuration<wbr>Exception</a></li>
 			<li class="header">Interface Types</li>
 				<li><a href="/api/GitVersion.Configuration/IBranchConfigurationCalculator">I<wbr>Branch<wbr>Configuration<wbr>Calculator</a></li>
 				<li><a href="/api/GitVersion.Configuration/IConfigFileLocator">IConfigFileLocator</a></li>
 				<li><a href="/api/GitVersion.Configuration/IConfigFileLocatorFactory">I<wbr>Config<wbr>File<wbr>Locator<wbr>Factory</a></li>
 				<li><a href="/api/GitVersion.Configuration/IConfigProvider">IConfigProvider</a></li>
-				<li><a href="/api/GitVersion.Configuration/IConsole">IConsole</a></li>
+			<li class="header">Class Types</li>
+				<li class="selected"><a href="/api/GitVersion.Configuration/BranchConfigurationCalculator">Branch<wbr>Configuration<wbr>Calculator</a></li>
+				<li><a href="/api/GitVersion.Configuration/ConfigExtensions">ConfigExtensions</a></li>
+				<li><a href="/api/GitVersion.Configuration/ConfigFileLocator">ConfigFileLocator</a></li>
+				<li><a href="/api/GitVersion.Configuration/ConfigFileLocatorFactory">Config<wbr>File<wbr>Locator<wbr>Factory</a></li>
+				<li><a href="/api/GitVersion.Configuration/ConfigProvider">ConfigProvider</a></li>
+				<li><a href="/api/GitVersion.Configuration/ConfigSerializer">ConfigSerializer</a></li>
+				<li><a href="/api/GitVersion.Configuration/ConfigurationException">Configuration<wbr>Exception</a></li>
+				<li><a href="/api/GitVersion.Configuration/DefaultConfigFileLocator">Default<wbr>Config<wbr>File<wbr>Locator</a></li>
+				<li><a href="/api/GitVersion.Configuration/NamedConfigFileLocator">Named<wbr>Config<wbr>File<wbr>Locator</a></li>
 
 
                     </ul>
@@ -242,7 +235,7 @@ class Type type-node
 							</tr>
 						</thead>
 							<tbody><tr>
-								<td><a href="/api/GitVersion.Configuration/BranchConfigurationCalculator/6A384767">Branch<wbr>Configuration<wbr>Calculator<wbr>(ILog, <wbr>GitVersionContext)<wbr></a></td>
+								<td><a href="/api/GitVersion.Configuration/BranchConfigurationCalculator/EA040B39">Branch<wbr>Configuration<wbr>Calculator<wbr>(ILog, <wbr>I<wbr>Repository<wbr>Metadata<wbr>Provider)<wbr></a></td>
 									<td></td>
 							</tr>
 					</tbody></table>
@@ -251,29 +244,6 @@ class Type type-node
 		
 
 
-			<h1 id="fields">Fields</h1>
-			<div class="box">
-				<div class="box-body no-padding table-responsive">
-					<table class="table table-striped table-hover three-cols">
-						<thead>
-							<tr>
-								<th>Name</th>
-								<th>Constant Value</th>
-								<th>Summary</th>
-							</tr>
-						</thead>
-							<tbody><tr>
-								<td><a href="/api/GitVersion.Configuration/BranchConfigurationCalculator/B443F970">FallbackConfigName</a></td>
-								<td></td>
-								<td>
-									<div></div>
-											<div><small><em>static</em></small></div>
-								</td>
-							</tr>
-					</tbody></table>
-				</div>
-			</div>
-		
 
 
 			<h1 id="Methods">Methods</h1>
@@ -288,11 +258,11 @@ class Type type-node
 							</tr>
 						</thead>
 							<tbody><tr>
-								<td><a href="/api/GitVersion.Configuration/BranchConfigurationCalculator/1604AB24">Get<wbr>Branch<wbr>Configuration<wbr>(Branch, <wbr>IList<wbr>&lt;Branch&gt;<wbr>)<wbr></a></td>
-								<td><a href="/api/GitVersion.Configuration/BranchConfig">BranchConfig</a></td>
+								<td><a href="/api/GitVersion.Configuration/BranchConfigurationCalculator/45A8BB71">Get<wbr>Branch<wbr>Configuration<wbr>(Branch, <wbr>Commit, <wbr>Config, <wbr>IList<wbr>&lt;Branch&gt;<wbr>)<wbr></a></td>
+								<td><a href="/api/GitVersion.Model.Configuration/BranchConfig">BranchConfig</a></td>
 								<td>
 									<div>
-    Gets the <code class="cs"><a href="/api/GitVersion.Configuration/BranchConfig">BranchConfig</a></code> for the current commit.
+    Gets the <code class="cs"><a href="/api/GitVersion.Model.Configuration/BranchConfig">BranchConfig</a></code> for the current commit.
     </div>
 								</td>
 							</tr>

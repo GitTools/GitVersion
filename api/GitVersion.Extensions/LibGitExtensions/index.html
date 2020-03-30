@@ -145,12 +145,15 @@
 				<li class="selected"><a href="/api/GitVersion.Extensions/LibGitExtensions">LibGitExtensions</a></li>
 				<li><a href="/api/GitVersion.Extensions/ObjectExtensions">ObjectExtensions</a></li>
 				<li><a href="/api/GitVersion.Extensions/ReadEmbeddedResourceExtensions">Read<wbr>Embedded<wbr>Resource<wbr>Extensions</a></li>
+				<li><a href="/api/GitVersion.Extensions/RepositoryExtensions">RepositoryExtensions</a></li>
 				<li><a href="/api/GitVersion.Extensions/ServiceCollectionExtensions">Service<wbr>Collection<wbr>Extensions</a></li>
 				<li><a href="/api/GitVersion.Extensions/StringExtensions">StringExtensions</a></li>
 				<li><a href="/api/GitVersion.Extensions/WixVersionFileUpdater">Wix<wbr>Version<wbr>File<wbr>Updater</a></li>
 			<li class="header">Enum Types</li>
 				<li><a href="/api/GitVersion.Extensions/AssemblyFileVersioningScheme">Assembly<wbr>File<wbr>Versioning<wbr>Scheme</a></li>
 				<li><a href="/api/GitVersion.Extensions/AssemblyVersioningScheme">Assembly<wbr>Versioning<wbr>Scheme</a></li>
+			<li class="header">Interface Types</li>
+				<li><a href="/api/GitVersion.Extensions/IWixVersionFileUpdater">I<wbr>Wix<wbr>Version<wbr>File<wbr>Updater</a></li>
 
 
                     </ul>
@@ -237,14 +240,6 @@ class Type type-node
 								</td>
 							</tr>
 							<tr>
-								<td><a href="/api/GitVersion.Extensions/LibGitExtensions/83209F7E">DumpGraph<wbr>(IRepository, <wbr>Action<wbr>&lt;string&gt;<wbr>, <wbr>int?)<wbr></a></td>
-								<td>void</td>
-								<td>
-									<div></div>
-											<div><small><em>static</em></small></div>
-								</td>
-							</tr>
-							<tr>
 								<td><a href="/api/GitVersion.Extensions/LibGitExtensions/00DD6141">DumpGraph<wbr>(string, <wbr>Action<wbr>&lt;string&gt;<wbr>, <wbr>int?)<wbr></a></td>
 								<td>void</td>
 								<td>
@@ -269,102 +264,6 @@ class Type type-node
 									<div>
     Exclude the given branches (by value equality according to friendly name).
     </div>
-											<div><small><em>static</em></small></div>
-								</td>
-							</tr>
-							<tr>
-								<td><a href="/api/GitVersion.Extensions/LibGitExtensions/68F63837">FindBranch<wbr>(IRepository, <wbr>string)<wbr></a></td>
-								<td>Branch</td>
-								<td>
-									<div></div>
-											<div><small><em>static</em></small></div>
-								</td>
-							</tr>
-							<tr>
-								<td><a href="/api/GitVersion.Extensions/LibGitExtensions/DD93C8D8">GetBaseVersionSource<wbr>(IRepository, <wbr>Commit)<wbr></a></td>
-								<td>Commit</td>
-								<td>
-									<div></div>
-											<div><small><em>static</em></small></div>
-								</td>
-							</tr>
-							<tr>
-								<td><a href="/api/GitVersion.Extensions/LibGitExtensions/75CD4581">GetCommitLog<wbr>(IRepository, <wbr>Commit, <wbr>Commit)<wbr></a></td>
-								<td>ICommitLog</td>
-								<td>
-									<div></div>
-											<div><small><em>static</em></small></div>
-								</td>
-							</tr>
-							<tr>
-								<td><a href="/api/GitVersion.Extensions/LibGitExtensions/45B9271C">Get<wbr>Commits<wbr>Reacheable<wbr>From<wbr>(IRepository, <wbr>Commit, <wbr>Branch)<wbr></a></td>
-								<td>IEnumerable<wbr>&lt;Commit&gt;<wbr></td>
-								<td>
-									<div></div>
-											<div><small><em>static</em></small></div>
-								</td>
-							</tr>
-							<tr>
-								<td><a href="/api/GitVersion.Extensions/LibGitExtensions/B944712D">Get<wbr>Commits<wbr>Reacheable<wbr>From<wbr>Head<wbr>(IRepository, <wbr>Commit)<wbr></a></td>
-								<td>List<wbr>&lt;Commit&gt;<wbr></td>
-								<td>
-									<div></div>
-											<div><small><em>static</em></small></div>
-								</td>
-							</tr>
-							<tr>
-								<td><a href="/api/GitVersion.Extensions/LibGitExtensions/18DEAA10">GetForwardMerge<wbr>(IRepository, <wbr>Commit, <wbr>Commit)<wbr></a></td>
-								<td>Commit</td>
-								<td>
-									<div></div>
-											<div><small><em>static</em></small></div>
-								</td>
-							</tr>
-							<tr>
-								<td><a href="/api/GitVersion.Extensions/LibGitExtensions/91357C5B">GetMainlineCommitLog<wbr>(IRepository, <wbr>BaseVersion, <wbr>Commit)<wbr></a></td>
-								<td>List<wbr>&lt;Commit&gt;<wbr></td>
-								<td>
-									<div></div>
-											<div><small><em>static</em></small></div>
-								</td>
-							</tr>
-							<tr>
-								<td><a href="/api/GitVersion.Extensions/LibGitExtensions/A49E59AD">GetMainlineCommitLog<wbr>(IRepository, <wbr>Commit, <wbr>Branch)<wbr></a></td>
-								<td>List<wbr>&lt;Commit&gt;<wbr></td>
-								<td>
-									<div></div>
-											<div><small><em>static</em></small></div>
-								</td>
-							</tr>
-							<tr>
-								<td><a href="/api/GitVersion.Extensions/LibGitExtensions/868BBEEC">Get<wbr>Matching<wbr>Commit<wbr>Branch<wbr>(IRepository, <wbr>Commit, <wbr>Branch, <wbr>Commit)<wbr></a></td>
-								<td>bool</td>
-								<td>
-									<div></div>
-											<div><small><em>static</em></small></div>
-								</td>
-							</tr>
-							<tr>
-								<td><a href="/api/GitVersion.Extensions/LibGitExtensions/B038F7FB">GetMergeBaseCommits<wbr>(IRepository, <wbr>Commit, <wbr>Commit, <wbr>Commit)<wbr></a></td>
-								<td>List<wbr>&lt;Commit&gt;<wbr></td>
-								<td>
-									<div></div>
-											<div><small><em>static</em></small></div>
-								</td>
-							</tr>
-							<tr>
-								<td><a href="/api/GitVersion.Extensions/LibGitExtensions/3C75D7E7">Get<wbr>Repository<wbr>Directory<wbr>(IRepository, <wbr>bool)<wbr></a></td>
-								<td>string</td>
-								<td>
-									<div></div>
-											<div><small><em>static</em></small></div>
-								</td>
-							</tr>
-							<tr>
-								<td><a href="/api/GitVersion.Extensions/LibGitExtensions/170FEB40">GetTargetBranch<wbr>(IRepository, <wbr>string)<wbr></a></td>
-								<td>Branch</td>
-								<td>
-									<div></div>
 											<div><small><em>static</em></small></div>
 								</td>
 							</tr>

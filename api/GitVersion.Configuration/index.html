@@ -74,8 +74,8 @@
             <aside class="main-sidebar ">
                 <section class="infobar" data-spy="affix" data-offset-top="60" data-offset-bottom="200"> 
                     	
-	<div id="infobar-headings"><h6>On This Page</h6><p><a href="#ClassTypes">Class Types</a></p>
-<p><a href="#InterfaceTypes">Interface Types</a></p>
+	<div id="infobar-headings"><h6>On This Page</h6><p><a href="#InterfaceTypes">Interface Types</a></p>
+<p><a href="#ClassTypes">Class Types</a></p>
 <p><a href="#Namespaces">Namespaces</a></p>
 <hr class="infobar-hidden">
 </div>
@@ -142,6 +142,7 @@
 				<ul class="treeview-menu">
 						<li><a href="/api/GitVersion.BuildServers">GitVersion<wbr>.BuildServers</a></li>
 			<li><a href="/api/GitVersion.Cache">GitVersion<wbr>.Cache</a></li>
+			<li><a href="/api/GitVersion.Common">GitVersion<wbr>.Common</a></li>
 
 				<li class="treeview active selected">
 				<a href="/api/GitVersion.Configuration">GitVersion<wbr>.Configuration</a> <a href="#" class="expand"></a>
@@ -152,8 +153,7 @@
 				<ul class="treeview-menu">
 						<li><a href="/api/GitVersion.Configuration.Init.SetConfig">GitVersion<wbr>.Configuration<wbr>.Init<wbr>.SetConfig</a></li>
 			<li><a href="/api/GitVersion.Configuration.Init.Wizard">GitVersion<wbr>.Configuration<wbr>.Init<wbr>.Wizard</a></li>
-</ul></li></ul></li>			<li><a href="/api/GitVersion.Exceptions">GitVersion<wbr>.Exceptions</a></li>
-
+</ul></li></ul></li>
 				<li class="treeview">
 				<a href="/api/GitVersion.Extensions">GitVersion<wbr>.Extensions</a> <a href="#" class="expand"></a>
 				<ul class="treeview-menu">
@@ -163,16 +163,22 @@
 			<li><a href="/api/GitVersion.Logging">GitVersion<wbr>.Logging</a></li>
 
 				<li class="treeview">
+				<a href="/api/GitVersion.Model">GitVersion<wbr>.Model</a> <a href="#" class="expand"></a>
+				<ul class="treeview-menu">
+						<li><a href="/api/GitVersion.Model.Configuration">GitVersion<wbr>.Model<wbr>.Configuration</a></li>
+</ul></li>
+				<li class="treeview">
 				<a href="/api/GitVersion.MSBuildTask">GitVersion<wbr>.MSBuildTask</a> <a href="#" class="expand"></a>
 				<ul class="treeview-menu">
 						<li><a href="/api/GitVersion.MSBuildTask.LibGit2Sharp">GitVersion<wbr>.MSBuildTask<wbr>.LibGit2Sharp</a></li>
 			<li><a href="/api/GitVersion.MSBuildTask.Tasks">GitVersion<wbr>.MSBuildTask<wbr>.Tasks</a></li>
-</ul></li>			<li><a href="/api/GitVersion.OutputFormatters">GitVersion<wbr>.OutputFormatters</a></li>
-			<li><a href="/api/GitVersion.OutputVariables">GitVersion<wbr>.OutputVariables</a></li>
-			<li><a href="/api/GitVersion.VersionCalculation">GitVersion<wbr>.VersionCalculation</a></li>
-			<li><a href="/api/GitVersion.VersionFilters">GitVersion<wbr>.VersionFilters</a></li>
-			<li><a href="/api/GitVersion.VersioningModes">GitVersion<wbr>.VersioningModes</a></li>
-</ul></li>
+</ul></li>			<li><a href="/api/GitVersion.OutputVariables">GitVersion<wbr>.OutputVariables</a></li>
+
+				<li class="treeview">
+				<a href="/api/GitVersion.VersionCalculation">GitVersion<wbr>.VersionCalculation</a> <a href="#" class="expand"></a>
+				<ul class="treeview-menu">
+						<li><a href="/api/GitVersion.VersionCalculation.Cache">GitVersion<wbr>.VersionCalculation<wbr>.Cache</a></li>
+</ul></li></ul></li>
 				<li class="treeview">
 				<a href="/api/GitVersionTask">GitVersionTask</a> <a href="#" class="expand"></a>
 				<ul class="treeview-menu">
@@ -208,79 +214,6 @@
 	
 
 
-			<h1 id="ClassTypes">Class Types</h1>
-			<div class="box">
-				<div class="box-body no-padding table-responsive">
-					<table class="table table-striped table-hover two-cols">
-						<thead>
-							<tr>
-								<th>Class</th>
-									<th>Summary</th>
-							</tr>
-						</thead>
-							<tbody><tr>
-								<td><a href="/api/GitVersion.Configuration/BranchConfig">BranchConfig</a></td>
-									<td></td>
-							</tr>
-							<tr>
-								<td><a href="/api/GitVersion.Configuration/BranchConfigurationCalculator">Branch<wbr>Configuration<wbr>Calculator</a></td>
-									<td></td>
-							</tr>
-							<tr>
-								<td><a href="/api/GitVersion.Configuration/Config">Config</a></td>
-									<td></td>
-							</tr>
-							<tr>
-								<td><a href="/api/GitVersion.Configuration/ConfigExtensions">ConfigExtensions</a></td>
-									<td></td>
-							</tr>
-							<tr>
-								<td><a href="/api/GitVersion.Configuration/ConfigFileLocator">ConfigFileLocator</a></td>
-									<td></td>
-							</tr>
-							<tr>
-								<td><a href="/api/GitVersion.Configuration/ConfigFileLocatorFactory">Config<wbr>File<wbr>Locator<wbr>Factory</a></td>
-									<td></td>
-							</tr>
-							<tr>
-								<td><a href="/api/GitVersion.Configuration/ConfigProvider">ConfigProvider</a></td>
-									<td></td>
-							</tr>
-							<tr>
-								<td><a href="/api/GitVersion.Configuration/ConfigSerializer">ConfigSerializer</a></td>
-									<td></td>
-							</tr>
-							<tr>
-								<td><a href="/api/GitVersion.Configuration/DefaultConfigFileLocator">Default<wbr>Config<wbr>File<wbr>Locator</a></td>
-									<td></td>
-							</tr>
-							<tr>
-								<td><a href="/api/GitVersion.Configuration/EffectiveConfiguration">Effective<wbr>Configuration</a></td>
-									<td>
-    Configuration can be applied to different things, effective configuration is the result after applying the appropriate configuration
-    </td>
-							</tr>
-							<tr>
-								<td><a href="/api/GitVersion.Configuration/GitVersionConfigurationException">Git<wbr>Version<wbr>Configuration<wbr>Exception</a></td>
-									<td></td>
-							</tr>
-							<tr>
-								<td><a href="/api/GitVersion.Configuration/IgnoreConfig">IgnoreConfig</a></td>
-									<td></td>
-							</tr>
-							<tr>
-								<td><a href="/api/GitVersion.Configuration/NamedConfigFileLocator">Named<wbr>Config<wbr>File<wbr>Locator</a></td>
-									<td></td>
-							</tr>
-							<tr>
-								<td><a href="/api/GitVersion.Configuration/OldConfigurationException">Old<wbr>Configuration<wbr>Exception</a></td>
-									<td></td>
-							</tr>
-					</tbody></table>
-				</div>
-			</div>
-		
-
 			<h1 id="InterfaceTypes">Interface Types</h1>
 			<div class="box">
 				<div class="box-body no-padding table-responsive">
@@ -307,8 +240,55 @@
 								<td><a href="/api/GitVersion.Configuration/IConfigProvider">IConfigProvider</a></td>
 									<td></td>
 							</tr>
+					</tbody></table>
+				</div>
+			</div>
+		
+
+			<h1 id="ClassTypes">Class Types</h1>
+			<div class="box">
+				<div class="box-body no-padding table-responsive">
+					<table class="table table-striped table-hover two-cols">
+						<thead>
 							<tr>
-								<td><a href="/api/GitVersion.Configuration/IConsole">IConsole</a></td>
+								<th>Class</th>
+									<th>Summary</th>
+							</tr>
+						</thead>
+							<tbody><tr>
+								<td><a href="/api/GitVersion.Configuration/BranchConfigurationCalculator">Branch<wbr>Configuration<wbr>Calculator</a></td>
+									<td></td>
+							</tr>
+							<tr>
+								<td><a href="/api/GitVersion.Configuration/ConfigExtensions">ConfigExtensions</a></td>
+									<td></td>
+							</tr>
+							<tr>
+								<td><a href="/api/GitVersion.Configuration/ConfigFileLocator">ConfigFileLocator</a></td>
+									<td></td>
+							</tr>
+							<tr>
+								<td><a href="/api/GitVersion.Configuration/ConfigFileLocatorFactory">Config<wbr>File<wbr>Locator<wbr>Factory</a></td>
+									<td></td>
+							</tr>
+							<tr>
+								<td><a href="/api/GitVersion.Configuration/ConfigProvider">ConfigProvider</a></td>
+									<td></td>
+							</tr>
+							<tr>
+								<td><a href="/api/GitVersion.Configuration/ConfigSerializer">ConfigSerializer</a></td>
+									<td></td>
+							</tr>
+							<tr>
+								<td><a href="/api/GitVersion.Configuration/ConfigurationException">Configuration<wbr>Exception</a></td>
+									<td></td>
+							</tr>
+							<tr>
+								<td><a href="/api/GitVersion.Configuration/DefaultConfigFileLocator">Default<wbr>Config<wbr>File<wbr>Locator</a></td>
+									<td></td>
+							</tr>
+							<tr>
+								<td><a href="/api/GitVersion.Configuration/NamedConfigFileLocator">Named<wbr>Config<wbr>File<wbr>Locator</a></td>
 									<td></td>
 							</tr>
 					</tbody></table>

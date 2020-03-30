@@ -140,7 +140,8 @@
 		<li><a href="/api/GitVersion/GitVersionContext">GitVersionContext</a></li>
 		<li role="separator" class="divider"></li>
 			<li class="header">Constructors</li>
-				<li><a href="/api/GitVersion/GitVersionContext/4589E592">GitVersionContext<wbr>(IRepository, <wbr>ILog, <wbr>Branch, <wbr>Config, <wbr>bool, <wbr>string)<wbr></a></li>
+				<li><a href="/api/GitVersion/GitVersionContext/FC47AE22">GitVersionContext<wbr>()<wbr></a></li>
+				<li><a href="/api/GitVersion/GitVersionContext/25C969C3">GitVersionContext<wbr>(Branch, <wbr>Commit, <wbr>Config, <wbr>Effective<wbr>Configuration, <wbr>SemanticVersion)<wbr></a></li>
 			<li class="header">Property Members</li>
 				<li class="selected"><a href="/api/GitVersion/GitVersionContext/85AD27EB">Configuration</a></li>
 				<li><a href="/api/GitVersion/GitVersionContext/E38DC9DC">CurrentBranch</a></li>
@@ -148,9 +149,6 @@
 				<li><a href="/api/GitVersion/GitVersionContext/DF677C7F">Current<wbr>Commit<wbr>Tagged<wbr>Version</a></li>
 				<li><a href="/api/GitVersion/GitVersionContext/1AFCF448">FullConfiguration</a></li>
 				<li><a href="/api/GitVersion/GitVersionContext/BD1F424D">Is<wbr>Current<wbr>Commit<wbr>Tagged</a></li>
-				<li><a href="/api/GitVersion/GitVersionContext/35E8712F">OnlyTrackedBranches</a></li>
-				<li><a href="/api/GitVersion/GitVersionContext/4950F092">Repository</a></li>
-				<li><a href="/api/GitVersion/GitVersionContext/052D05FA">Repository<wbr>Metadata<wbr>Provider</a></li>
 
 
                     </ul>
@@ -187,7 +185,7 @@
 		</div>
 
 	<h1 id="Syntax">Syntax</h1>
-	<pre><code>public EffectiveConfiguration Configuration { get; private set; }</code></pre>
+	<pre><code>public EffectiveConfiguration Configuration { get; }</code></pre>
 
 
 
@@ -204,7 +202,7 @@
 					</tr>
 				</thead>
 				<tbody><tr>
-					<td><a href="/api/GitVersion.Configuration/EffectiveConfiguration">Effective<wbr>Configuration</a></td>
+					<td><a href="/api/GitVersion.Model.Configuration/EffectiveConfiguration">Effective<wbr>Configuration</a></td>
 					<td></td>
 				</tr>
 			</tbody></table>

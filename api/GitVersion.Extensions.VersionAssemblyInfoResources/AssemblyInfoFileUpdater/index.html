@@ -141,6 +141,8 @@
 		<li role="separator" class="divider"></li>
 			<li class="header">Class Types</li>
 				<li class="selected"><a href="/api/GitVersion.Extensions.VersionAssemblyInfoResources/AssemblyInfoFileUpdater">Assembly<wbr>Info<wbr>File<wbr>Updater</a></li>
+			<li class="header">Interface Types</li>
+				<li><a href="/api/GitVersion.Extensions.VersionAssemblyInfoResources/IAssemblyInfoFileUpdater">I<wbr>Assembly<wbr>Info<wbr>File<wbr>Updater</a></li>
 
 
                     </ul>
@@ -173,6 +175,7 @@
 								<dt>Interfaces</dt>
 								<dd>
 									<ul class="list-unstyled">
+											<li><a href="/api/GitVersion.Extensions.VersionAssemblyInfoResources/IAssemblyInfoFileUpdater">I<wbr>Assembly<wbr>Info<wbr>File<wbr>Updater</a></li>								
 											<li>IDisposable</li>								
 									</ul>
 								</dd>
@@ -191,7 +194,9 @@
 						<div class="mermaid">
 							graph BT
 	Type--&gt;Base0["object"]
-	Type-.-&gt;Interface0["IDisposable"]
+	Type-.-&gt;Interface0["IAssemblyInfoFileUpdater"]
+	click Interface0 "/api/GitVersion.Extensions.VersionAssemblyInfoResources/IAssemblyInfoFileUpdater"
+	Type-.-&gt;Interface1["IDisposable"]
 	Type["AssemblyInfoFileUpdater"]
 class Type type-node
 
@@ -202,7 +207,7 @@ class Type type-node
 		</div>
 
 	<h1 id="Syntax">Syntax</h1>
-	<pre><code>public class AssemblyInfoFileUpdater : IDisposable</code></pre>
+	<pre><code>public class AssemblyInfoFileUpdater : IAssemblyInfoFileUpdater, IDisposable</code></pre>
 
 
 
@@ -221,11 +226,7 @@ class Type type-node
 							</tr>
 						</thead>
 							<tbody><tr>
-								<td><a href="/api/GitVersion.Extensions.VersionAssemblyInfoResources/AssemblyInfoFileUpdater/0AC7015B">Assembly<wbr>Info<wbr>File<wbr>Updater<wbr>(ISet<wbr>&lt;string&gt;<wbr>, <wbr>string, <wbr>VersionVariables, <wbr>IFileSystem, <wbr>ILog, <wbr>bool)<wbr></a></td>
-									<td></td>
-							</tr>
-							<tr>
-								<td><a href="/api/GitVersion.Extensions.VersionAssemblyInfoResources/AssemblyInfoFileUpdater/AEC9AFEF">Assembly<wbr>Info<wbr>File<wbr>Updater<wbr>(string, <wbr>string, <wbr>VersionVariables, <wbr>IFileSystem, <wbr>ILog, <wbr>bool)<wbr></a></td>
+								<td><a href="/api/GitVersion.Extensions.VersionAssemblyInfoResources/AssemblyInfoFileUpdater/0309B33E">Assembly<wbr>Info<wbr>File<wbr>Updater<wbr>(ILog, <wbr>IFileSystem)<wbr></a></td>
 									<td></td>
 							</tr>
 					</tbody></table>
@@ -262,7 +263,7 @@ class Type type-node
 								</td>
 							</tr>
 							<tr>
-								<td><a href="/api/GitVersion.Extensions.VersionAssemblyInfoResources/AssemblyInfoFileUpdater/D6977AFC">Update<wbr>()<wbr></a></td>
+								<td><a href="/api/GitVersion.Extensions.VersionAssemblyInfoResources/AssemblyInfoFileUpdater/FE095689">Update<wbr>(VersionVariables, <wbr>bool, <wbr>string, <wbr>string[])<wbr></a></td>
 								<td>void</td>
 								<td>
 									<div></div>
