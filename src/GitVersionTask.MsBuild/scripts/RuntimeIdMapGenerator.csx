@@ -14,11 +14,13 @@ using Newtonsoft.Json.Linq;
 var availableRids = new[]
 {
     "alpine-x64",
+    "alpine.3.9-x64",
     "debian.9-x64",
     "fedora-x64",
     "linux-x64",
     "osx",
     "rhel-x64",
+    "ubuntu.18.04-x64",
     "win-x64",
     "win-x86",
 };
