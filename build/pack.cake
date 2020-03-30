@@ -82,7 +82,7 @@ Task("Pack-Nuget")
 });
 
 Task("Pack-Chocolatey")
-    .WithCriteria<BuildParameters>((context, parameters) => parameters.IsRunningOnWindows,  "Pack-Chocolatey works only on Windows agents.")
+    .WithCriteria<BuildParameters>((context, parameters) => parameters.IsRunningOnWindows, "Pack-Chocolatey works only on Windows agents.")
     .WithCriteria<BuildParameters>((context, parameters) => parameters.IsMainBranch && !parameters.IsPullRequest, "Pack-Chocolatey works only for main branch.")
     .IsDependentOn("Pack-Prepare")
     .Does<BuildParameters>((parameters) =>
@@ -110,43 +110,52 @@ Task("Zip-Files")
     .IsDependentOn("Pack-Prepare")
     .Does<BuildParameters>((parameters) =>
 {
-    var platform = Context.Environment.Platform.Family.ToString().ToLower();
+    var platform = Context.Environment.Platform.Family;
+    var runtimes = parameters.NativeRuntimes[platform];
 
-    var sourceDir = parameters.Paths.Directories.Native.Combine(platform);
-    var targetDir = parameters.Paths.Directories.ArtifactsRoot.Combine("native");
-    EnsureDirectoryExists(targetDir);
-    var fileName = $"gitversion-{platform}-{parameters.Version.SemVersion}.tar.gz".ToLower();
-    var tarFile = targetDir.CombineWithFilePath(fileName);
-    GZipCompress(sourceDir, tarFile);
+    foreach (var runtime in runtimes)
+    {
+        var sourceDir = parameters.Paths.Directories.Native.Combine(platform.ToString().ToLower()).Combine(runtime);
+        var targetDir = parameters.Paths.Directories.ArtifactsRoot.Combine("native");
+        EnsureDirectoryExists(targetDir);
+        var fileName = $"gitversion-{runtime}-{parameters.Version.SemVersion}.tar.gz".ToLower();
+        var tarFile = targetDir.CombineWithFilePath(fileName);
+        GZipCompress(sourceDir, tarFile);
+    }
 });
 
 void PackPrepareNative(ICakeContext context, BuildParameters parameters)
 {
     // publish single file for all native runtimes (self contained)
     var platform = Context.Environment.Platform.Family;
-    var runtime = parameters.NativeRuntimes[platform];
-    var outputPath = parameters.Paths.Directories.Native.Combine(platform.ToString().ToLower());
+    var runtimes = parameters.NativeRuntimes[platform];
 
-    var settings = new DotNetCorePublishSettings
+    foreach (var runtime in runtimes)
     {
-        Framework = parameters.CoreFxVersion31,
-        Runtime = runtime,
-        NoRestore = false,
-        Configuration = parameters.Configuration,
-        OutputDirectory = outputPath,
-        MSBuildSettings = parameters.MSBuildSettings,
-    };
+        var outputPath = parameters.Paths.Directories.Native.Combine(platform.ToString().ToLower()).Combine(runtime);
 
-    settings.ArgumentCustomization =
-        arg => arg
-        .Append("/p:PublishSingleFile=true")
-        .Append("/p:PublishTrimmed=true")
-        .Append("/p:IncludeSymbolsInSingleFile=true");
+        var settings = new DotNetCorePublishSettings
+        {
+            Framework = parameters.CoreFxVersion31,
+            Runtime = runtime,
+            NoRestore = false,
+            Configuration = parameters.Configuration,
+            OutputDirectory = outputPath,
+            MSBuildSettings = parameters.MSBuildSettings,
+        };
 
-    context.DotNetCorePublish("./src/GitVersionExe/GitVersionExe.csproj", settings);
+        settings.ArgumentCustomization =
+            arg => arg
+            .Append("/p:PublishSingleFile=true")
+            .Append("/p:PublishTrimmed=true")
+            .Append("/p:IncludeSymbolsInSingleFile=true");
 
-    context.Information("Validating native lib:");
+        context.DotNetCorePublish("./src/GitVersionExe/GitVersionExe.csproj", settings);
 
-    var nativeExe = outputPath.CombineWithFilePath(IsRunningOnWindows() ? "gitversion.exe" : "gitversion");
-    ValidateOutput(nativeExe.FullPath, "/showvariable FullSemver", parameters.Version.GitVersion.FullSemVer);
+        context.Information("Validating native lib:");
+
+        var nativeExe = outputPath.CombineWithFilePath(IsRunningOnWindows() ? "gitversion.exe" : "gitversion");
+        ValidateOutput(nativeExe.FullPath, "/showvariable FullSemver", parameters.Version.GitVersion.FullSemVer);
+    }
+
 }

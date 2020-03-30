@@ -54,7 +54,7 @@ public class BuildParameters
     public BuildArtifacts Artifacts { get; private set; }
     public DockerImages Docker { get; private set; }
     public Dictionary<string, DirectoryPath> PackagesBuildMap { get; private set; }
-    public Dictionary<PlatformFamily, string> NativeRuntimes { get; private set; }
+    public Dictionary<PlatformFamily, string[]> NativeRuntimes { get; private set; }
 
     public bool IsStableRelease() => !IsLocalBuild && IsMainRepo && IsMainBranch && !IsPullRequest && IsTagged;
     public bool IsPreRelease()    => !IsLocalBuild && IsMainRepo && IsMainBranch && !IsPullRequest && !IsTagged;
@@ -138,11 +138,11 @@ public class BuildParameters
             ["GitVersion.Portable"] = Paths.Directories.ArtifactsBinPortable,
         };
 
-        NativeRuntimes = new Dictionary<PlatformFamily, string>
+        NativeRuntimes = new Dictionary<PlatformFamily, string[]>
         {
-            [PlatformFamily.Windows] = "win-x64",
-            [PlatformFamily.Linux]   = "linux-x64",
-            [PlatformFamily.OSX]     = "osx-x64",
+            [PlatformFamily.Windows] = new[] { "win-x64", "win-x86" },
+            [PlatformFamily.Linux]   = new[] { "linux-x64" },
+            [PlatformFamily.OSX]     = new[] { "osx-x64" },
         };
 
         Credentials = BuildCredentials.GetCredentials(context);

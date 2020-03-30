@@ -1,18 +1,18 @@
 {
     "linux": {
         "2.1": [
-            "centos-7",
-            "debian-9",
-            "fedora-30",
-            "ubuntu-16.04",
-            "ubuntu-18.04"
+            "centos.7-x64",
+            "debian.9-x64",
+            "fedora.30-x64",
+            "ubuntu.16.04-x64",
+            "ubuntu.18.04-x64"
         ],
         "3.1": [
-            "centos-7",
-            "debian-9",
-            "fedora-30",
-            "ubuntu-16.04",
-            "ubuntu-18.04"
+            "centos.7-x64",
+            "debian.9-x64",
+            "fedora.30-x64",
+            "ubuntu.16.04-x64",
+            "ubuntu.18.04-x64"
         ]
     },
     "windows": {
