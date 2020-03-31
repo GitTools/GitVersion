@@ -2,10 +2,11 @@ namespace GitVersion.Logging
 {
     public enum LogLevel
     {
-        None,
+        Fatal,
         Error,
         Warn,
         Info,
+        Verbose,
         Debug
     }
 }

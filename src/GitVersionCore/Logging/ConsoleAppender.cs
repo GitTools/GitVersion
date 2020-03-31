@@ -23,11 +23,11 @@ namespace GitVersion.Logging
                     Console.BackgroundColor = backgroundColor;
                     Console.ForegroundColor = foregroundColor;
 
-                    if (level == LogLevel.Error)
+                    if (level == LogLevel.Error || level == LogLevel.Fatal)
                     {
                         Console.Error.Write(message);
                     }
-                    else if (level != LogLevel.None)
+                    else
                     {
                         Console.Write(message);
                     }
@@ -35,11 +35,11 @@ namespace GitVersion.Logging
                 finally
                 {
                     Console.ResetColor();
-                    if (level == LogLevel.Error)
+                    if (level == LogLevel.Error || level == LogLevel.Fatal)
                     {
                         Console.Error.WriteLine();
                     }
-                    else if (level != LogLevel.None)
+                    else
                     {
                         Console.WriteLine();
                     }

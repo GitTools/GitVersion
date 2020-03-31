@@ -36,6 +36,7 @@ namespace GitVersionExe.Tests
                 { nameof(Arguments.IsVersion), "/version" },
                 { nameof(Arguments.UpdateWixVersionFile), "/updatewixversionfile" },
                 { nameof(Arguments.ConfigFile), "/config" },
+                { nameof(Arguments.Verbosity), "/verbosity" },
             };
             string helpText = null;
 

@@ -80,8 +80,9 @@ GitVersion [path]
     /execargs       Arguments for the executable specified by /exec
     /proj           Build a msbuild file, GitVersion variables will be passed as msbuild properties
     /projargs       Additional arguments to pass to msbuild
-    /verbosity      Set Verbosity level (debug, info, warn, error, none). Default is info
-
+    /verbosity      Specifies the amount of information to be displayed.
+                    (Quiet, Minimal, Normal, Verbose, Diagnostic)
+                    Default is Normal
 
 gitversion init     Configuration utility for gitversion
 ";

@@ -65,6 +65,26 @@ namespace GitVersion.Logging
             log?.Write(verbosity, LogLevel.Info, logAction);
         }
 
+        public static void Verbose(this ILog log, string format, params object[] args)
+        {
+            log?.Write(LogLevel.Verbose, format, args);
+        }
+
+        public static void Verbose(this ILog log, Verbosity verbosity, string format, params object[] args)
+        {
+            log?.Write(verbosity, LogLevel.Verbose, format, args);
+        }
+
+        public static void Verbose(this ILog log, LogAction logAction)
+        {
+            log?.Write(LogLevel.Verbose, logAction);
+        }
+
+        public static void Verbose(this ILog log, Verbosity verbosity, LogAction logAction)
+        {
+            log?.Write(verbosity, LogLevel.Verbose, logAction);
+        }
+
         public static void Error(this ILog log, string format, params object[] args)
         {
             log?.Write(LogLevel.Error, format, args);
@@ -168,10 +188,12 @@ namespace GitVersion.Logging
 
         private static readonly IDictionary<LogLevel, Verbosity> VerbosityMaps = new Dictionary<LogLevel, Verbosity>
         {
+            { LogLevel.Verbose, Verbosity.Verbose },
             { LogLevel.Debug, Verbosity.Diagnostic },
             { LogLevel.Info, Verbosity.Normal },
             { LogLevel.Warn, Verbosity.Minimal },
             { LogLevel.Error, Verbosity.Quiet },
+            { LogLevel.Fatal, Verbosity.Quiet },
         };
     }
 }

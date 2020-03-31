@@ -24,14 +24,11 @@ namespace GitVersion.Logging
         {
             try
             {
-                if (level != LogLevel.None)
-                {
-                    WriteLogEntry(filePath, message);
-                }
+                WriteLogEntry(filePath, message);
             }
             catch (Exception)
             {
-                // 
+                //
             }
         }
 

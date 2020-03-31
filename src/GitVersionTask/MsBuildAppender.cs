@@ -16,14 +16,11 @@ namespace GitVersion.Logging
         {
             try
             {
-                if (level != LogLevel.None)
-                {
-                    WriteLogEntry(level, message);
-                }
+                WriteLogEntry(level, message);
             }
             catch (Exception)
             {
-                // 
+                //
             }
         }
 
@@ -32,8 +29,7 @@ namespace GitVersion.Logging
             var contents = $"{DateTime.Now:yyyy-MM-dd HH:mm:ss}\t\t{str}{System.Environment.NewLine}";
             switch (level)
             {
-                case LogLevel.None:
-                    break;
+                case LogLevel.Fatal:
                 case LogLevel.Error:
                     taskLog.LogError(contents);
                     break;
@@ -41,6 +37,7 @@ namespace GitVersion.Logging
                     taskLog.LogWarning(contents);
                     break;
                 case LogLevel.Info:
+                case LogLevel.Verbose:
                 case LogLevel.Debug:
                     taskLog.LogMessage(contents);
                     break;

@@ -365,7 +365,7 @@ namespace GitVersion
 
                 if (name.IsSwitch("verbosity"))
                 {
-                    // first try the old version
+                    // first try the old version, this check will be removed in version 6.0.0, making it a breaking change
                     if (Enum.TryParse(value, true, out LogLevel logLevel))
                     {
                         arguments.Verbosity = LogExtensions.GetVerbosityForLevel(logLevel);
