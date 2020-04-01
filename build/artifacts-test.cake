@@ -3,6 +3,7 @@ singleStageRun = !IsEnabled(Context, "ENABLED_MULTI_STAGE_BUILD", false);
 Task("Artifacts-Prepare")
 .WithCriteria<BuildParameters>((context, parameters) => !parameters.IsRunningOnMacOS, "Artifacts-Prepare can be tested only on Windows or Linux agents.")
     .WithCriteria<BuildParameters>((context, parameters) => parameters.IsReleasingCI, "Artifacts-Prepare works only on Releasing CI.")
+    .IsDependentOnWhen("Zip-Files", singleStageRun)
     .IsDependentOnWhen("Pack-Nuget", singleStageRun)
     .Does<BuildParameters>((parameters) =>
 {
@@ -32,7 +33,6 @@ Task("Artifacts-DotnetTool-Test")
 Task("Artifacts-Native-Test")
     .WithCriteria<BuildParameters>((context, parameters) => parameters.IsRunningOnLinux, "Artifacts-Native-Test can be tested only on Linux agents.")
     .WithCriteria<BuildParameters>((context, parameters) => parameters.IsReleasingCI,    "Artifacts-Native-Test works only on Releasing CI.")
-    .IsDependentOn("Zip-Files")
     .IsDependentOn("Artifacts-Prepare")
     .Does<BuildParameters>((parameters) =>
 {
