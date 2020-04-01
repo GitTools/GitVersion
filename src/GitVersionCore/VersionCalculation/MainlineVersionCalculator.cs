@@ -6,7 +6,6 @@ using GitVersion.Configuration;
 using GitVersion.Extensions;
 using GitVersion.Logging;
 using LibGit2Sharp;
-using Microsoft.Extensions.Options;
 
 namespace GitVersion.VersionCalculation
 {
@@ -14,13 +13,14 @@ namespace GitVersion.VersionCalculation
     {
         private readonly ILog log;
         private readonly IRepositoryMetadataProvider repositoryMetadataProvider;
-        private readonly GitVersionContext context;
+        private readonly Lazy<GitVersionContext> versionContext;
+        private GitVersionContext context => versionContext.Value;
 
-        public MainlineVersionCalculator(ILog log, IRepositoryMetadataProvider repositoryMetadataProvider, IOptions<GitVersionContext> versionContext)
+        public MainlineVersionCalculator(ILog log, IRepositoryMetadataProvider repositoryMetadataProvider, Lazy<GitVersionContext> versionContext)
         {
             this.log = log ?? throw new ArgumentNullException(nameof(log));
             this.repositoryMetadataProvider = repositoryMetadataProvider ?? throw new ArgumentNullException(nameof(repositoryMetadataProvider));
-            context = versionContext.Value;
+            this.versionContext = versionContext ?? throw new ArgumentNullException(nameof(versionContext));
         }
 
         public SemanticVersion FindMainlineModeVersion(BaseVersion baseVersion)

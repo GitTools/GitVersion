@@ -42,7 +42,7 @@ namespace GitVersionCore.Tests
 
             var variableProvider = sp.GetService<IVariableProvider>();
             var nextVersionCalculator = sp.GetService<INextVersionCalculator>();
-            var contextOptions = sp.GetService<IOptions<GitVersionContext>>();
+            var contextOptions = sp.GetService<Lazy<GitVersionContext>>();
 
             var context = contextOptions.Value;
 

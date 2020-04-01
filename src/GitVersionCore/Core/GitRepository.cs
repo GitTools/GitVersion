@@ -23,7 +23,10 @@ namespace GitVersion
 
         public void Dispose()
         {
-            repositoryInstance.Dispose();
+            if (repositoryLazy.IsValueCreated)
+            {
+                repositoryInstance.Dispose();
+            }
         }
 
         public void Checkout(Tree tree, IEnumerable<string> paths, CheckoutOptions opts)

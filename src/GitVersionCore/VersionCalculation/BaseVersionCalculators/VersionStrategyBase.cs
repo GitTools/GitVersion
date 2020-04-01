@@ -1,16 +1,16 @@
 using System;
 using System.Collections.Generic;
-using Microsoft.Extensions.Options;
 
 namespace GitVersion.VersionCalculation
 {
     public class VersionStrategyBase : IVersionStrategy
     {
-        protected readonly GitVersionContext Context;
+        private readonly Lazy<GitVersionContext> versionContext;
+        protected GitVersionContext Context => versionContext.Value;
 
-        protected VersionStrategyBase(IOptions<GitVersionContext> versionContext)
+        protected VersionStrategyBase(Lazy<GitVersionContext> versionContext)
         {
-            Context = versionContext.Value;
+            this.versionContext = versionContext ?? throw new ArgumentNullException(nameof(versionContext));
         }
         public virtual IEnumerable<BaseVersion> GetVersions()
         {

@@ -25,14 +25,15 @@ namespace GitVersion
         private readonly IAssemblyInfoFileUpdater assemblyInfoFileUpdater;
 
         private readonly IOptions<Arguments> options;
-        private readonly GitVersionContext context;
+        private readonly Lazy<GitVersionContext> versionContext;
+        private GitVersionContext context => versionContext.Value;
 
         private readonly IBuildServer buildServer;
 
         public GitVersionTool(ILog log, INextVersionCalculator nextVersionCalculator, IVariableProvider variableProvider, IConsole console,
             IGitVersionCache gitVersionCache, IGitVersionCacheKeyFactory cacheKeyFactory, IBuildServerResolver buildServerResolver,
             IWixVersionFileUpdater wixVersionFileUpdater, IGitVersionInformationGenerator gitVersionInformationGenerator, IAssemblyInfoFileUpdater assemblyInfoFileUpdater,
-            IOptions<Arguments> options, IOptions<GitVersionContext> versionContext)
+            IOptions<Arguments> options, Lazy<GitVersionContext> versionContext)
         {
             this.log = log ?? throw new ArgumentNullException(nameof(log));
             this.console = console ?? throw new ArgumentNullException(nameof(console));
@@ -48,8 +49,8 @@ namespace GitVersion
             this.assemblyInfoFileUpdater = assemblyInfoFileUpdater ?? throw new ArgumentNullException(nameof(gitVersionInformationGenerator));
 
             this.options = options ?? throw new ArgumentNullException(nameof(options));
+            this.versionContext = versionContext ?? throw new ArgumentNullException(nameof(versionContext));
 
-            context = versionContext.Value;
             buildServer = buildServerResolver.Resolve();
         }
 

@@ -1,7 +1,7 @@
+using System;
 using System.Collections.Generic;
 using GitVersion.Common;
 using LibGit2Sharp;
-using Microsoft.Extensions.Options;
 
 namespace GitVersion.VersionCalculation
 {
@@ -14,7 +14,7 @@ namespace GitVersion.VersionCalculation
     {
         private readonly IRepositoryMetadataProvider repositoryMetadataProvider;
 
-        public FallbackVersionStrategy(IRepositoryMetadataProvider repositoryMetadataProvider, IOptions<GitVersionContext> versionContext) : base(versionContext)
+        public FallbackVersionStrategy(IRepositoryMetadataProvider repositoryMetadataProvider, Lazy<GitVersionContext> versionContext) : base(versionContext)
         {
             this.repositoryMetadataProvider = repositoryMetadataProvider;
         }

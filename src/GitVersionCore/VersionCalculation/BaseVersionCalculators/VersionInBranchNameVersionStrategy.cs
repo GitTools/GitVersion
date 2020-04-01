@@ -4,7 +4,6 @@ using GitVersion.Common;
 using GitVersion.Configuration;
 using GitVersion.Extensions;
 using LibGit2Sharp;
-using Microsoft.Extensions.Options;
 
 namespace GitVersion.VersionCalculation
 {
@@ -17,7 +16,7 @@ namespace GitVersion.VersionCalculation
     {
         private IRepositoryMetadataProvider repositoryMetadataProvider;
 
-        public VersionInBranchNameVersionStrategy(IRepositoryMetadataProvider repositoryMetadataProvider, IOptions<GitVersionContext> versionContext) : base(versionContext)
+        public VersionInBranchNameVersionStrategy(IRepositoryMetadataProvider repositoryMetadataProvider, Lazy<GitVersionContext> versionContext) : base(versionContext)
         {
             this.repositoryMetadataProvider = repositoryMetadataProvider ?? throw new ArgumentNullException(nameof(repositoryMetadataProvider));
         }

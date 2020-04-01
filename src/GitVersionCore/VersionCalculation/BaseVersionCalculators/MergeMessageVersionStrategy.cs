@@ -6,7 +6,6 @@ using GitVersion.Configuration;
 using GitVersion.Extensions;
 using GitVersion.Logging;
 using LibGit2Sharp;
-using Microsoft.Extensions.Options;
 
 namespace GitVersion.VersionCalculation
 {
@@ -19,7 +18,7 @@ namespace GitVersion.VersionCalculation
     {
         private readonly ILog log;
 
-        public MergeMessageVersionStrategy(ILog log, IOptions<GitVersionContext> versionContext) : base(versionContext)
+        public MergeMessageVersionStrategy(ILog log, Lazy<GitVersionContext> versionContext) : base(versionContext)
         {
             this.log = log ?? throw new ArgumentNullException(nameof(log));
         }

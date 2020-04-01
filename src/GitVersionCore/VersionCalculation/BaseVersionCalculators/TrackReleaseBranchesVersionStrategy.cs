@@ -4,7 +4,6 @@ using System.Linq;
 using GitVersion.Common;
 using GitVersion.Configuration;
 using LibGit2Sharp;
-using Microsoft.Extensions.Options;
 
 namespace GitVersion.VersionCalculation
 {
@@ -30,7 +29,7 @@ namespace GitVersion.VersionCalculation
         private readonly VersionInBranchNameVersionStrategy releaseVersionStrategy;
         private readonly TaggedCommitVersionStrategy taggedCommitVersionStrategy;
 
-        public TrackReleaseBranchesVersionStrategy(IRepositoryMetadataProvider repositoryMetadataProvider, IOptions<GitVersionContext> versionContext)
+        public TrackReleaseBranchesVersionStrategy(IRepositoryMetadataProvider repositoryMetadataProvider, Lazy<GitVersionContext> versionContext)
             : base(versionContext)
         {
             this.repositoryMetadataProvider = repositoryMetadataProvider ?? throw new ArgumentNullException(nameof(repositoryMetadataProvider));

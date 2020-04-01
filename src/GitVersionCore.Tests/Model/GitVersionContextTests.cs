@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using GitTools.Testing;
 using GitVersion;
@@ -8,7 +9,6 @@ using GitVersionCore.Tests.Helpers;
 using GitVersionCore.Tests.Mocks;
 using LibGit2Sharp;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
 using NUnit.Framework;
 using Shouldly;
 
@@ -175,7 +175,7 @@ namespace GitVersionCore.Tests
         private static GitVersionContext GetGitVersionContext(IRepository repository, string branch, Config config = null)
         {
             var sp = BuildServiceProvider(repository, branch, config);
-            return sp.GetService<IOptions<GitVersionContext>>().Value;
+            return sp.GetService<Lazy<GitVersionContext>>().Value;
         }
     }
 }

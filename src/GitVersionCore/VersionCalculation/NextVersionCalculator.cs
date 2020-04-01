@@ -4,7 +4,6 @@ using GitVersion.Common;
 using GitVersion.Configuration;
 using GitVersion.Extensions;
 using GitVersion.Logging;
-using Microsoft.Extensions.Options;
 
 namespace GitVersion.VersionCalculation
 {
@@ -14,18 +13,18 @@ namespace GitVersion.VersionCalculation
         private readonly IBaseVersionCalculator baseVersionCalculator;
         private readonly IMainlineVersionCalculator mainlineVersionCalculator;
         private readonly IRepositoryMetadataProvider repositoryMetadataProvider;
-        private readonly GitVersionContext context;
+        private readonly Lazy<GitVersionContext> versionContext;
+        private GitVersionContext context => versionContext.Value;
 
         public NextVersionCalculator(ILog log, IBaseVersionCalculator baseVersionCalculator,
             IMainlineVersionCalculator mainlineVersionCalculator, IRepositoryMetadataProvider repositoryMetadataProvider,
-            IOptions<GitVersionContext> versionContext)
+            Lazy<GitVersionContext> versionContext)
         {
             this.log = log ?? throw new ArgumentNullException(nameof(log));
             this.baseVersionCalculator = baseVersionCalculator ?? throw new ArgumentNullException(nameof(baseVersionCalculator));
             this.mainlineVersionCalculator = mainlineVersionCalculator ?? throw new ArgumentNullException(nameof(mainlineVersionCalculator));
             this.repositoryMetadataProvider = repositoryMetadataProvider ?? throw new ArgumentNullException(nameof(repositoryMetadataProvider));
-
-            context = versionContext.Value;
+            this.versionContext = versionContext ?? throw new ArgumentNullException(nameof(versionContext));
         }
 
         public SemanticVersion FindVersion()
@@ -101,8 +100,6 @@ namespace GitVersion.VersionCalculation
             else log.Info("Skipping version increment");
             return semver;
         }
-
-
 
         private void UpdatePreReleaseTag(SemanticVersion semanticVersion, string branchNameOverride)
         {
