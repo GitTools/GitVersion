@@ -132,33 +132,40 @@ void PackPrepareNative(ICakeContext context, BuildParameters parameters)
 
     foreach (var runtime in runtimes)
     {
-        var outputPath = parameters.Paths.Directories.Native.Combine(platform.ToString().ToLower()).Combine(runtime);
-
-        var settings = new DotNetCorePublishSettings
-        {
-            Framework = parameters.CoreFxVersion31,
-            Runtime = runtime,
-            NoRestore = false,
-            Configuration = parameters.Configuration,
-            OutputDirectory = outputPath,
-            MSBuildSettings = parameters.MSBuildSettings,
-        };
-
-        settings.ArgumentCustomization =
-            arg => arg
-            .Append("/p:PublishSingleFile=true")
-            .Append("/p:PublishTrimmed=true")
-            .Append("/p:IncludeSymbolsInSingleFile=true");
-
-        context.DotNetCorePublish("./src/GitVersionExe/GitVersionExe.csproj", settings);
-
-        context.Information("Validating native lib:");
+        var outputPath = PackPrepareNative(context, parameters, runtime);
 
         // testing windows and macos artifacts, ther linux is tested with docker
         if (platform != PlatformFamily.Linux)
         {
+            context.Information("Validating native lib:");
             var nativeExe = outputPath.CombineWithFilePath(IsRunningOnWindows() ? "gitversion.exe" : "gitversion");
             ValidateOutput(nativeExe.FullPath, "/showvariable FullSemver", parameters.Version.GitVersion.FullSemVer);
         }
     }
+}
+
+DirectoryPath PackPrepareNative(ICakeContext context, BuildParameters parameters, string runtime)
+{
+    var platform = Context.Environment.Platform.Family;
+    var outputPath = parameters.Paths.Directories.Native.Combine(platform.ToString().ToLower()).Combine(runtime);
+
+    var settings = new DotNetCorePublishSettings
+    {
+        Framework = parameters.CoreFxVersion31,
+        Runtime = runtime,
+        NoRestore = false,
+        Configuration = parameters.Configuration,
+        OutputDirectory = outputPath,
+        MSBuildSettings = parameters.MSBuildSettings,
+    };
+
+    settings.ArgumentCustomization =
+        arg => arg
+        .Append("/p:PublishSingleFile=true")
+        .Append("/p:PublishTrimmed=true")
+        .Append("/p:IncludeSymbolsInSingleFile=true");
+
+    context.DotNetCorePublish("./src/GitVersionExe/GitVersionExe.csproj", settings);
+
+    return outputPath;
 }

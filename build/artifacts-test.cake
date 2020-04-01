@@ -42,6 +42,8 @@ Task("Artifacts-Native-Test")
     {
         var (os, distro, targetframework) = dockerImage;
 
+        PackPrepareNative(Context, parameters, distro);
+
         var cmd = $"-file {rootPrefix}/scripts/Test-Native.ps1 -repoPath {rootPrefix}/repo -runtime {distro}";
 
         DockerTestArtifact(dockerImage, parameters, cmd);
