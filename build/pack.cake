@@ -154,8 +154,11 @@ void PackPrepareNative(ICakeContext context, BuildParameters parameters)
 
         context.Information("Validating native lib:");
 
-        var nativeExe = outputPath.CombineWithFilePath(IsRunningOnWindows() ? "gitversion.exe" : "gitversion");
-        ValidateOutput(nativeExe.FullPath, "/showvariable FullSemver", parameters.Version.GitVersion.FullSemVer);
+        // testing windows and macos artifacts, ther linux is tested with docker
+        if (platform != PlatformFamily.Linux)
+        {
+            var nativeExe = outputPath.CombineWithFilePath(IsRunningOnWindows() ? "gitversion.exe" : "gitversion");
+            ValidateOutput(nativeExe.FullPath, "/showvariable FullSemver", parameters.Version.GitVersion.FullSemVer);
+        }
     }
-
 }
