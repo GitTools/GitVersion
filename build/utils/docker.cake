@@ -109,16 +109,14 @@ void DockerPullImage(DockerImage dockerImage, BuildParameters parameters)
 DockerContainerRunSettings GetDockerRunSettings(BuildParameters parameters)
 {
     var currentDir = MakeAbsolute(Directory("."));
-    var root = parameters.DockerRootPrefix;
     var settings = new DockerContainerRunSettings
     {
         Rm = true,
         Volume = new[]
         {
-            $"{currentDir}:{root}/repo",
-            $"{currentDir}/test-scripts:{root}/scripts",
-            $"{currentDir}/artifacts/v{parameters.Version.SemVersion}/nuget:{root}/nuget",
-            $"{currentDir}/artifacts/v{parameters.Version.SemVersion}/native/linux:{root}/native",
+            $"{currentDir}:{parameters.DockerRootPrefix}/repo",
+            $"{currentDir}/artifacts/v{parameters.Version.SemVersion}/nuget:{parameters.DockerRootPrefix}/nuget",
+            $"{currentDir}/test-scripts:{parameters.DockerRootPrefix}/scripts"
         }
     };
 
