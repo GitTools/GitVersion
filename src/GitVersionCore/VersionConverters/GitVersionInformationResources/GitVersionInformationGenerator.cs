@@ -3,7 +3,7 @@ using System.IO;
 using System.Linq;
 using GitVersion.OutputVariables;
 
-namespace GitVersion.Extensions.GitVersionInformationResources
+namespace GitVersion.VersionConverters.GitVersionInformationResources
 {
     public class GitVersionInformationGenerator : IGitVersionInformationGenerator
     {

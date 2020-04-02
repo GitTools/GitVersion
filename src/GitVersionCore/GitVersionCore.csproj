@@ -28,17 +28,17 @@
     </ItemGroup>
 
     <ItemGroup>
-        <Compile Remove="Extensions\GitVersionInformationResources\AddFormats\**\*.*" />
-        <Compile Remove="Extensions\GitVersionInformationResources\Templates\**\*.*" />
-        <Compile Remove="Extensions\VersionAssemblyInfoResources\AddFormats\**\*.*" />
-        <Compile Remove="Extensions\VersionAssemblyInfoResources\Templates\**\*.*" />
+        <Compile Remove="VersionConverters\GitVersionInformationResources\AddFormats\**\*.*" />
+        <Compile Remove="VersionConverters\GitVersionInformationResources\Templates\**\*.*" />
+        <Compile Remove="VersionConverters\VersionAssemblyInfoResources\AddFormats\**\*.*" />
+        <Compile Remove="VersionConverters\VersionAssemblyInfoResources\Templates\**\*.*" />
     </ItemGroup>
 
     <ItemGroup>
-        <EmbeddedResource Include="Extensions\GitVersionInformationResources\AddFormats\**\*.*" />
-        <EmbeddedResource Include="Extensions\GitVersionInformationResources\Templates\**\*.*" />
-        <EmbeddedResource Include="Extensions\VersionAssemblyInfoResources\AddFormats\**\*.*" />
-        <EmbeddedResource Include="Extensions\VersionAssemblyInfoResources\Templates\**\*.*" />
+        <EmbeddedResource Include="VersionConverters\GitVersionInformationResources\AddFormats\**\*.*" />
+        <EmbeddedResource Include="VersionConverters\GitVersionInformationResources\Templates\**\*.*" />
+        <EmbeddedResource Include="VersionConverters\VersionAssemblyInfoResources\AddFormats\**\*.*" />
+        <EmbeddedResource Include="VersionConverters\VersionAssemblyInfoResources\Templates\**\*.*" />
     </ItemGroup>
 
 </Project>

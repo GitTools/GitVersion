@@ -5,7 +5,7 @@ using System.Xml;
 using GitVersion.Logging;
 using GitVersion.OutputVariables;
 
-namespace GitVersion.Extensions
+namespace GitVersion.VersionConverters.WixUpdater
 {
     public class WixVersionFileUpdater : IWixVersionFileUpdater
     {

@@ -1,7 +1,7 @@
 using System;
 using GitVersion.OutputVariables;
 
-namespace GitVersion.Extensions.VersionAssemblyInfoResources
+namespace GitVersion.VersionConverters.VersionAssemblyInfoResources
 {
     public interface IAssemblyInfoFileUpdater : IDisposable
     {

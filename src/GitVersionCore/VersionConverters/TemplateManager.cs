@@ -2,8 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using GitVersion.Extensions;
 
-namespace GitVersion.Extensions
+namespace GitVersion.VersionConverters
 {
     internal enum TemplateType
     {

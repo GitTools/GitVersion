@@ -1,7 +1,7 @@
 using System;
 using GitVersion.OutputVariables;
 
-namespace GitVersion.Extensions
+namespace GitVersion.VersionConverters.WixUpdater
 {
     public interface IWixVersionFileUpdater : IDisposable
     {

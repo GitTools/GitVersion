@@ -2,11 +2,27 @@ using System;
 
 namespace GitVersion.Extensions
 {
-    public static class AssemblyVersionsGenerator
+    public enum AssemblyFileVersioningScheme
     {
-        public static string GetAssemblyVersion(
-            this SemanticVersion sv,
-            AssemblyVersioningScheme scheme)
+        MajorMinorPatchTag,
+        MajorMinorPatch,
+        MajorMinor,
+        Major,
+        None
+    }
+
+    public enum AssemblyVersioningScheme
+    {
+        MajorMinorPatchTag,
+        MajorMinorPatch,
+        MajorMinor,
+        Major,
+        None
+    }
+
+    public static class AssemblyVersionsGeneratorExtensions
+    {
+        public static string GetAssemblyVersion(this SemanticVersion sv, AssemblyVersioningScheme scheme)
         {
             return scheme switch
             {
@@ -19,9 +35,7 @@ namespace GitVersion.Extensions
             };
         }
 
-        public static string GetAssemblyFileVersion(
-        this SemanticVersion sv,
-        AssemblyFileVersioningScheme scheme)
+        public static string GetAssemblyFileVersion(this SemanticVersion sv, AssemblyFileVersioningScheme scheme)
         {
             return scheme switch
             {

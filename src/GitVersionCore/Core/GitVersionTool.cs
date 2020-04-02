@@ -1,13 +1,13 @@
 using System;
 using System.Linq;
-using GitVersion.Extensions;
-using GitVersion.Extensions.GitVersionInformationResources;
-using GitVersion.Extensions.VersionAssemblyInfoResources;
 using GitVersion.Logging;
 using GitVersion.Model;
 using GitVersion.OutputVariables;
 using GitVersion.VersionCalculation;
 using GitVersion.VersionCalculation.Cache;
+using GitVersion.VersionConverters.GitVersionInformationResources;
+using GitVersion.VersionConverters.VersionAssemblyInfoResources;
+using GitVersion.VersionConverters.WixUpdater;
 using Microsoft.Extensions.Options;
 
 namespace GitVersion

@@ -3,8 +3,8 @@ using System.IO;
 using System.Linq;
 using System.Xml;
 using GitTools.Testing;
-using GitVersion.Extensions;
 using GitVersion.OutputVariables;
+using GitVersion.VersionConverters.WixUpdater;
 using NUnit.Framework;
 
 namespace GitVersionExe.Tests

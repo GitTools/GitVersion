@@ -1,6 +1,6 @@
 using GitVersion.OutputVariables;
 
-namespace GitVersion.Extensions.GitVersionInformationResources
+namespace GitVersion.VersionConverters.GitVersionInformationResources
 {
     public interface IGitVersionInformationGenerator
     {
