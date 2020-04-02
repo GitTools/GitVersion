@@ -1,8 +1,11 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using GitTools.Testing;
+using GitVersion.BuildServers;
 using GitVersionCore.Tests.Helpers;
 using GitVersionTask.Tests.Helpers;
 using LibGit2Sharp;
+using Microsoft.Build.Framework;
 
 namespace GitVersion.MSBuildTask.Tests
 {
@@ -29,6 +32,24 @@ namespace GitVersion.MSBuildTask.Tests
             fixture.LocalRepositoryFixture.Repository.Branches.Remove("master");
             fixture.InitializeRepo();
             return fixture;
+        }
+
+        protected static MsBuildExecutionResult<T> ExecuteMsBuildTask<T>(T task) where T : ITask
+        {
+            var msbuildFixture = new MsBuildFixture();
+            return msbuildFixture.Execute(task);
+        }
+
+        protected static MsBuildExecutionResult<T> ExecuteMsBuildTaskInBuildServer<T>(T task) where T : ITask
+        {
+            var env = new Dictionary<string, string>
+            {
+                { AzurePipelines.EnvironmentVariableName, "true" }
+            };
+
+            var msbuildFixture = new MsBuildFixture();
+            msbuildFixture.WithEnv(env.ToArray());
+            return msbuildFixture.Execute(task);
         }
     }
 }
