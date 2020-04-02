@@ -5,6 +5,9 @@ namespace GitVersion.MSBuildTask
 {
     public abstract class GitVersionTaskBase : ITask
     {
+        public IBuildEngine BuildEngine { get; set; }
+        public ITaskHost HostObject { get; set; }
+
         protected GitVersionTaskBase()
         {
             Log = new TaskLoggingHelper(this);
@@ -18,8 +21,6 @@ namespace GitVersion.MSBuildTask
         public bool NoFetch { get; set; }
 
         public bool NoNormalize { get; set; }
-        public IBuildEngine BuildEngine { get; set; }
-        public ITaskHost HostObject { get; set; }
 
         public TaskLoggingHelper Log { get; }
 
@@ -34,6 +35,5 @@ namespace GitVersion.MSBuildTask
         }
 
         protected abstract bool OnExecute();
-
     }
 }

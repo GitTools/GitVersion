@@ -33,7 +33,6 @@ namespace GitVersion.MSBuildTask
             {
                 InitialiseException = e;
             }
-
         }
 
         private static Func<T, bool> GetMethod<T>(TypeInfo type, string name) => (Func<T, bool>)type.GetDeclaredMethod(name).CreateDelegate(typeof(Func<T, bool>));

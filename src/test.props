@@ -5,16 +5,18 @@
 
     <ItemGroup>
         <PackageReference Include="Microsoft.NET.Test.Sdk" Version="$(PackageVersion_MicrosoftTestSdk)" />
-        <PackageReference Include="JetBrains.Annotations" Version="$(PackageVersion_JetBrainsAnnotations)"></PackageReference>
-        <PackageReference Include="Newtonsoft.Json" Version="$(PackageVersion_NewtonsoftJson)"></PackageReference>
-        <PackageReference Include="NSubstitute" Version="$(PackageVersion_NSubstitute)"></PackageReference>
+        <PackageReference Include="JetBrains.Annotations" Version="$(PackageVersion_JetBrainsAnnotations)" />
+        <PackageReference Include="Newtonsoft.Json" Version="$(PackageVersion_NewtonsoftJson)" />
+        <PackageReference Include="NSubstitute" Version="$(PackageVersion_NSubstitute)" />
         <PackageReference Include="coverlet.msbuild" Version="$(PackageVersion_CoverletMsBuild)">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
         </PackageReference>
-        <PackageReference Include="NUnit" Version="$(PackageVersion_NUnit)"></PackageReference>
-        <PackageReference Include="NUnit3TestAdapter" Version="$(PackageVersion_NUnit3TestAdapter)"></PackageReference>
+        <PackageReference Include="NUnit" Version="$(PackageVersion_NUnit)" />
+        <PackageReference Include="NUnit3TestAdapter" Version="$(PackageVersion_NUnit3TestAdapter)" />
         <PackageReference Include="NunitXml.TestLogger" Version="$(PackageVersion_NunitXmlTestLogger)" />
-        <PackageReference Include="Shouldly" Version="$(PackageVersion_Shouldly)"></PackageReference>
+        <PackageReference Include="Shouldly" Version="$(PackageVersion_Shouldly)" />
+        <PackageReference Include="GitTools.Testing" Version="$(PackageVersion_GitToolsTesting)" />
+
     </ItemGroup>
 </Project>

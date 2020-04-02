@@ -10,12 +10,12 @@
         <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="$(PackageVersion_MicrosoftExtensions)" />
     </ItemGroup>
     <ItemGroup>
-        <Content Include="Approved\**\*.txt" />
-    </ItemGroup>
-    <ItemGroup>
-      <Compile Remove="Common\**" />
-      <EmbeddedResource Remove="Common\**" />
-      <None Remove="Common\**" />
+      <Compile Update="MsBuildExecutionResult.cs">
+        <Link>Helpers\MsBuildExecutionResult.cs</Link>
+      </Compile>
+      <Compile Update="MsBuildHelper.cs">
+        <Link>Helpers\MsBuildHelper.cs</Link>
+      </Compile>
     </ItemGroup>
     <ItemGroup>
       <Compile Include="..\GitVersionCore.Tests\Helpers\DirectoryHelper.cs" Link="Helpers\DirectoryHelper.cs" />
