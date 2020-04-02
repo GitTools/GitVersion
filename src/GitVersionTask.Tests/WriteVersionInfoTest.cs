@@ -3,40 +3,25 @@ using System.Linq;
 using GitTools.Testing;
 using GitVersion.BuildServers;
 using GitVersion.MSBuildTask.Tasks;
-using GitVersion.OutputVariables;
 using GitVersionCore.Tests.Helpers;
 using GitVersionTask.Tests.Helpers;
 using LibGit2Sharp;
-using Microsoft.Build.Framework;
 using NUnit.Framework;
 using Shouldly;
 
 namespace GitVersion.MSBuildTask.Tests
 {
     [TestFixture]
-    public class GetVersionTaskTests : TestBase
+    public class WriteVersionInfoTest : TestBase
     {
         [Test]
-        public void OutputsShouldMatchVariableProvider()
-        {
-            var taskProperties = typeof(GetVersion)
-                .GetProperties()
-                .Where(p => p.GetCustomAttributes(typeof(OutputAttribute), false).Any())
-                .Select(p => p.Name);
-
-            var variablesProperties = VersionVariables.AvailableVariables;
-
-            taskProperties.ShouldBe(variablesProperties, ignoreOrder: true);
-        }
-
-        [Test]
-        public void GetVersionTaskShouldReturnVersionOutputVariables()
+        public void WriteVersionInfoTaskShouldNotLogOutputVariablesToBuildOutputIfNotRunningInBuildServer()
         {
             using var fixture = new EmptyRepositoryFixture();
             fixture.MakeATaggedCommit("1.2.3");
             fixture.MakeACommit();
 
-            var task = new GetVersion
+            var task = new WriteVersionInfoToBuildLog
             {
                 SolutionDirectory = fixture.RepositoryPath,
             };
@@ -46,11 +31,11 @@ namespace GitVersion.MSBuildTask.Tests
 
             result.Success.ShouldBe(true);
             result.Errors.ShouldBe(0);
-            result.Task.FullSemVer.ShouldBe("1.2.4+1");
+            result.Log.ShouldNotContain("##vso[task.setvariable variable=GitVersion.FullSemVer]");
         }
 
         [Test]
-        public void GetVersionTaskShouldReturnVersionOutputVariablesForBuildServer()
+        public void WriteVersionInfoTaskShouldLogOutputVariablesToBuildOutput()
         {
             using var fixture = new RemoteRepositoryFixture();
             fixture.Repository.MakeACommit();
@@ -63,7 +48,7 @@ namespace GitVersion.MSBuildTask.Tests
             fixture.LocalRepositoryFixture.Repository.Branches.Remove("master");
             fixture.InitializeRepo();
 
-            var task = new GetVersion
+            var task = new WriteVersionInfoToBuildLog
             {
                 SolutionDirectory = fixture.LocalRepositoryFixture.RepositoryPath,
             };
@@ -79,7 +64,8 @@ namespace GitVersion.MSBuildTask.Tests
 
             result.Success.ShouldBe(true);
             result.Errors.ShouldBe(0);
-            result.Task.FullSemVer.ShouldBe("1.0.1+1");
+
+            result.Log.ShouldContain("##vso[task.setvariable variable=GitVersion.FullSemVer]1.0.1+1");
         }
     }
 }

@@ -1,6 +1,7 @@
 using System;
 using GitVersion.Extensions;
 using GitVersion.Logging;
+using GitVersion.Model;
 using GitVersion.MSBuildTask.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
@@ -50,6 +51,11 @@ namespace GitVersion.MSBuildTask
 
             log.AddLogAppender(new MsBuildAppender(task.Log));
             var buildServer = buildServerResolver.Resolve();
+
+            if (buildServer != null)
+            {
+                arguments.Output.Add(OutputType.BuildServer);
+            }
             arguments.NoFetch = arguments.NoFetch || buildServer != null && buildServer.PreventFetch();
         }
 
@@ -64,6 +70,8 @@ namespace GitVersion.MSBuildTask
                 NoFetch = task.NoFetch,
                 NoNormalize = task.NoNormalize
             };
+
+            arguments.Output.Add(OutputType.BuildServer);
 
             services.AddSingleton(Options.Create(arguments));
             services.AddSingleton<IGitVersionTaskExecutor, GitVersionTaskExecutor>();
