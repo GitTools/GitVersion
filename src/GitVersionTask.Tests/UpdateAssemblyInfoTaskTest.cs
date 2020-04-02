@@ -1,39 +1,26 @@
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using GitVersion.BuildServers;
 using GitVersion.MSBuildTask.Tasks;
-using GitVersion.OutputVariables;
 using GitVersionTask.Tests.Helpers;
-using Microsoft.Build.Framework;
 using NUnit.Framework;
 using Shouldly;
 
 namespace GitVersion.MSBuildTask.Tests
 {
     [TestFixture]
-    public class GetVersionTaskTests : TestTaskBase
+    public class UpdateAssemblyInfoTaskTest : TestTaskBase
     {
         [Test]
-        public void OutputsShouldMatchVariableProvider()
-        {
-            var taskProperties = typeof(GetVersion)
-                .GetProperties()
-                .Where(p => p.GetCustomAttributes(typeof(OutputAttribute), false).Any())
-                .Select(p => p.Name);
-
-            var variablesProperties = VersionVariables.AvailableVariables;
-
-            taskProperties.ShouldBe(variablesProperties, ignoreOrder: true);
-        }
-
-        [Test]
-        public void GetVersionTaskShouldReturnVersionOutputVariables()
+        public void UpdateAssemblyInfoTaskShouldCreateFile()
         {
             using var fixture = CreateLocalRepositoryFixture();
 
-            var task = new GetVersion
+            var task = new UpdateAssemblyInfo
             {
                 SolutionDirectory = fixture.RepositoryPath,
+                ProjectFile = fixture.RepositoryPath,
             };
 
             var msbuildFixture = new MsBuildFixture();
@@ -41,17 +28,21 @@ namespace GitVersion.MSBuildTask.Tests
 
             result.Success.ShouldBe(true);
             result.Errors.ShouldBe(0);
-            result.Task.FullSemVer.ShouldBe("1.2.4+1");
+            result.Task.AssemblyInfoTempFilePath.ShouldNotBeNull();
+
+            var fileContent = File.ReadAllText(result.Task.AssemblyInfoTempFilePath);
+            fileContent.ShouldContain(@"[assembly: AssemblyVersion(""1.2.4.0"")]");
         }
 
         [Test]
-        public void GetVersionTaskShouldReturnVersionOutputVariablesForBuildServer()
+        public void UpdateAssemblyInfoTaskShouldCreateFileWhenRunningInBuildServer()
         {
             using var fixture = CreateRemoteRepositoryFixture();
 
-            var task = new GetVersion
+            var task = new UpdateAssemblyInfo
             {
                 SolutionDirectory = fixture.LocalRepositoryFixture.RepositoryPath,
+                ProjectFile = fixture.LocalRepositoryFixture.RepositoryPath,
             };
 
             var env = new Dictionary<string, string>
@@ -65,7 +56,10 @@ namespace GitVersion.MSBuildTask.Tests
 
             result.Success.ShouldBe(true);
             result.Errors.ShouldBe(0);
-            result.Task.FullSemVer.ShouldBe("1.0.1+1");
+            result.Task.AssemblyInfoTempFilePath.ShouldNotBeNull();
+
+            var fileContent = File.ReadAllText(result.Task.AssemblyInfoTempFilePath);
+            fileContent.ShouldContain(@"[assembly: AssemblyVersion(""1.0.1.0"")]");
         }
     }
 }

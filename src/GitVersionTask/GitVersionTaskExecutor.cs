@@ -31,7 +31,7 @@ namespace GitVersion.MSBuildTask
         public void UpdateAssemblyInfo(UpdateAssemblyInfo task)
         {
             FileHelper.DeleteTempFiles();
-            FileHelper.CheckForInvalidFiles(task.CompileFiles, task.ProjectFile);
+            if (task.CompileFiles != null) FileHelper.CheckForInvalidFiles(task.CompileFiles, task.ProjectFile);
 
             var fileWriteInfo = task.IntermediateOutputPath.GetFileWriteInfo(task.Language, task.ProjectFile, "AssemblyInfo");
 

@@ -14,7 +14,7 @@ namespace GitVersion.MSBuildTask.Tasks
         public ITaskItem[] CompileFiles { get; set; }
 
         [Required]
-        public string Language { get; set; }
+        public string Language { get; set; } = "C#";
 
         [Output]
         public string AssemblyInfoTempFilePath { get; set; }

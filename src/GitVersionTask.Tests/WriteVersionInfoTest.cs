@@ -1,25 +1,20 @@
 using System.Collections.Generic;
 using System.Linq;
-using GitTools.Testing;
 using GitVersion.BuildServers;
 using GitVersion.MSBuildTask.Tasks;
-using GitVersionCore.Tests.Helpers;
 using GitVersionTask.Tests.Helpers;
-using LibGit2Sharp;
 using NUnit.Framework;
 using Shouldly;
 
 namespace GitVersion.MSBuildTask.Tests
 {
     [TestFixture]
-    public class WriteVersionInfoTest : TestBase
+    public class WriteVersionInfoTest : TestTaskBase
     {
         [Test]
         public void WriteVersionInfoTaskShouldNotLogOutputVariablesToBuildOutputIfNotRunningInBuildServer()
         {
-            using var fixture = new EmptyRepositoryFixture();
-            fixture.MakeATaggedCommit("1.2.3");
-            fixture.MakeACommit();
+            using var fixture = CreateLocalRepositoryFixture();
 
             var task = new WriteVersionInfoToBuildLog
             {
@@ -37,16 +32,7 @@ namespace GitVersion.MSBuildTask.Tests
         [Test]
         public void WriteVersionInfoTaskShouldLogOutputVariablesToBuildOutput()
         {
-            using var fixture = new RemoteRepositoryFixture();
-            fixture.Repository.MakeACommit();
-            fixture.Repository.MakeATaggedCommit("1.0.0");
-            fixture.Repository.MakeACommit();
-            fixture.Repository.CreateBranch("develop");
-
-            Commands.Fetch((Repository)fixture.LocalRepositoryFixture.Repository, fixture.LocalRepositoryFixture.Repository.Network.Remotes.First().Name, new string[0], new FetchOptions(), null);
-            Commands.Checkout(fixture.LocalRepositoryFixture.Repository, fixture.Repository.Head.Tip);
-            fixture.LocalRepositoryFixture.Repository.Branches.Remove("master");
-            fixture.InitializeRepo();
+            using var fixture = CreateRemoteRepositoryFixture();
 
             var task = new WriteVersionInfoToBuildLog
             {
