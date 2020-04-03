@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using GitTools.Testing;
 using GitVersion;
 using GitVersion.Extensions;
