@@ -18,7 +18,7 @@ namespace GitVersion.MSBuildTask
             try
             {
 #if !NETFRAMEWORK
-                GitLoaderContext.Init("GitVersionCore", "LibGit2Sharp");
+                GitLoaderContext.Init();
 #endif
                 LibGit2SharpLoader.LoadAssembly("GitVersionTask");
 
