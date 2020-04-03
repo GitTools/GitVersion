@@ -26,7 +26,7 @@ namespace GitVersion.MSBuildTask.LibGit2Sharp
                 return LoadFromAssemblyPath(path);
             }
 
-            return Default.LoadFromAssemblyName(assemblyName);
+            return null;
         }
 
         protected override IntPtr LoadUnmanagedDll(string unmanagedDllName)
