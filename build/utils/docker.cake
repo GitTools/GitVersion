@@ -126,7 +126,6 @@ DockerContainerRunSettings GetDockerRunSettings(BuildParameters parameters)
         settings.Env = new[]
         {
             "TF_BUILD=true",
-            "MSBUILDSINGLELOADCONTEXT=1",
             $"BUILD_SOURCEBRANCH={Context.EnvironmentVariable("BUILD_SOURCEBRANCH")}"
         };
     }
@@ -134,7 +133,6 @@ DockerContainerRunSettings GetDockerRunSettings(BuildParameters parameters)
         settings.Env = new[]
         {
             "GITHUB_ACTIONS=true",
-            "MSBUILDSINGLELOADCONTEXT=1",
             $"GITHUB_REF={Context.EnvironmentVariable("GITHUB_REF")}"
         };
     }
