@@ -18,7 +18,7 @@ namespace GitVersion.MSBuildTask
             try
             {
 #if !NETFRAMEWORK
-                GitLoaderContext.Init();
+                GitLoaderContext.Init(typeof(TaskProxy).Assembly);
 #endif
                 LibGit2SharpLoader.LoadAssembly("GitVersionTask");
 
