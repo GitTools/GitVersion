@@ -11,12 +11,20 @@ namespace GitVersion.MSBuildTask.LibGit2Sharp
 {
     public sealed class GitLoaderContext : AssemblyLoadContext
     {
+        private readonly Assembly entryPointAssembly;
         public static GitLoaderContext Instance { get; private set; }
 
-        public static void Init() => Instance = new GitLoaderContext();
+        private GitLoaderContext(Assembly entryPointAssembly) => this.entryPointAssembly = entryPointAssembly;
+
+        public static void Init(Assembly entryPointAssembly) => Instance = new GitLoaderContext(entryPointAssembly);
 
         protected override Assembly Load(AssemblyName assemblyName)
         {
+            if (assemblyName.Name == entryPointAssembly.GetName().Name)
+            {
+                return entryPointAssembly;
+            }
+
             var path = Path.Combine(Path.GetDirectoryName(typeof(GitLoaderContext).Assembly.Location), assemblyName.Name + ".dll");
 
             if (File.Exists(path))
