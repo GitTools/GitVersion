@@ -6,7 +6,7 @@ using System.Text.RegularExpressions;
 using GitVersion.Logging;
 using GitVersion.OutputVariables;
 
-namespace GitVersion.VersionConverters.VersionAssemblyInfoResources
+namespace GitVersion.VersionConverters.AssemblyInfo
 {
     public class AssemblyInfoFileUpdater : IAssemblyInfoFileUpdater
     {
@@ -34,10 +34,10 @@ namespace GitVersion.VersionConverters.VersionAssemblyInfoResources
         {
             this.fileSystem = fileSystem;
             this.log = log;
-            templateManager = new TemplateManager(TemplateType.VersionAssemblyInfoResources);
+            templateManager = new TemplateManager(TemplateType.AssemblyInfo);
         }
 
-        public void Update(VersionVariables variables, bool ensureAssemblyInfo, string workingDirectory, params string[] assemblyInfo)
+        public void Execute(VersionVariables variables, bool ensureAssemblyInfo, string workingDirectory, params string[] assemblyInfo)
         {
             var assemblyInfoFileNames = new HashSet<string>(assemblyInfo);
             log.Info("Updating assembly info files");
@@ -102,6 +102,7 @@ namespace GitVersion.VersionConverters.VersionAssemblyInfoResources
                     fileSystem.WriteAllText(localAssemblyInfo, fileContents);
                 }
             }
+            CommitChanges();
         }
 
         public void Dispose()
@@ -115,7 +116,7 @@ namespace GitVersion.VersionConverters.VersionAssemblyInfoResources
             restoreBackupTasks.Clear();
         }
 
-        public void CommitChanges()
+        private void CommitChanges()
         {
             foreach (var cleanupBackupTask in cleanupBackupTasks)
             {

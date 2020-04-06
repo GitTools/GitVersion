@@ -20,7 +20,7 @@ namespace GitVersion.VersionConverters.WixUpdater
             this.log = log ?? throw new ArgumentNullException(nameof(log));
         }
 
-        public string Update(VersionVariables variables, string workingDirectory)
+        public string Execute(VersionVariables variables, string workingDirectory)
         {
             wixVersionFile = Path.Combine(workingDirectory, WixVersionFileName);
             log.Info("Updating GitVersion_WixVersion.wxi");

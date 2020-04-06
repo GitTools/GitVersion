@@ -3,20 +3,20 @@ using System.IO;
 using System.Linq;
 using GitVersion.OutputVariables;
 
-namespace GitVersion.VersionConverters.GitVersionInformationResources
+namespace GitVersion.VersionConverters.GitVersionInfo
 {
-    public class GitVersionInformationGenerator : IGitVersionInformationGenerator
+    public class GitVersionInfoGenerator : IGitVersionInfoGenerator
     {
         private readonly IFileSystem fileSystem;
         private readonly TemplateManager templateManager;
 
-        public GitVersionInformationGenerator(IFileSystem fileSystem)
+        public GitVersionInfoGenerator(IFileSystem fileSystem)
         {
             this.fileSystem = fileSystem ?? throw new ArgumentNullException(nameof(fileSystem));
-            templateManager = new TemplateManager(TemplateType.GitVersionInformationResources);
+            templateManager = new TemplateManager(TemplateType.GitVersionInfo);
         }
 
-        public void Generate(VersionVariables variables, FileWriteInfo writeInfo)
+        public void Execute(VersionVariables variables, FileWriteInfo writeInfo)
         {
             var fileName = writeInfo.FileName;
             var directory = writeInfo.WorkingDirectory;
@@ -41,6 +41,10 @@ namespace GitVersion.VersionConverters.GitVersionInformationResources
             {
                 fileSystem.WriteAllText(filePath, fileContents);
             }
+        }
+
+        public void Dispose()
+        {
         }
     }
 }

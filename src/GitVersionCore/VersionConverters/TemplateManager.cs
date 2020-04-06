@@ -8,8 +8,8 @@ namespace GitVersion.VersionConverters
 {
     internal enum TemplateType
     {
-        VersionAssemblyInfoResources,
-        GitVersionInformationResources
+        AssemblyInfo,
+        GitVersionInfo
     }
 
     internal class TemplateManager

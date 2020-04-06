@@ -7,8 +7,9 @@ using GitVersion.Extensions;
 using GitVersion.Logging;
 using GitVersion.VersionCalculation;
 using GitVersion.VersionCalculation.Cache;
-using GitVersion.VersionConverters.GitVersionInformationResources;
-using GitVersion.VersionConverters.VersionAssemblyInfoResources;
+using GitVersion.VersionConverters.AssemblyInfo;
+using GitVersion.VersionConverters.GitVersionInfo;
+using GitVersion.VersionConverters.OutputGenerator;
 using GitVersion.VersionConverters.WixUpdater;
 using LibGit2Sharp;
 using Microsoft.Extensions.DependencyInjection;
@@ -45,7 +46,8 @@ namespace GitVersion
             services.AddSingleton<IGitPreparer, GitPreparer>();
             services.AddSingleton<IRepositoryMetadataProvider, RepositoryMetadataProvider>();
 
-            services.AddSingleton<IGitVersionInformationGenerator, GitVersionInformationGenerator>();
+            services.AddSingleton<IOutputGenerator, OutputGenerator>();
+            services.AddSingleton<IGitVersionInfoGenerator, GitVersionInfoGenerator>();
             services.AddSingleton<IWixVersionFileUpdater, WixVersionFileUpdater>();
             services.AddSingleton<IAssemblyInfoFileUpdater, AssemblyInfoFileUpdater>();
 

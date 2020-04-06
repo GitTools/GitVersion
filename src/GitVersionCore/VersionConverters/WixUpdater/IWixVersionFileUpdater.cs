@@ -5,6 +5,6 @@ namespace GitVersion.VersionConverters.WixUpdater
 {
     public interface IWixVersionFileUpdater : IDisposable
     {
-        string Update(VersionVariables variables, string workingDirectory);
+        string Execute(VersionVariables variables, string workingDirectory);
     }
 }

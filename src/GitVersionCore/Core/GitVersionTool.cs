@@ -1,12 +1,12 @@
 using System;
 using System.Linq;
 using GitVersion.Logging;
-using GitVersion.Model;
 using GitVersion.OutputVariables;
 using GitVersion.VersionCalculation;
 using GitVersion.VersionCalculation.Cache;
-using GitVersion.VersionConverters.GitVersionInformationResources;
-using GitVersion.VersionConverters.VersionAssemblyInfoResources;
+using GitVersion.VersionConverters.AssemblyInfo;
+using GitVersion.VersionConverters.GitVersionInfo;
+using GitVersion.VersionConverters.OutputGenerator;
 using GitVersion.VersionConverters.WixUpdater;
 using Microsoft.Extensions.Options;
 
@@ -18,25 +18,23 @@ namespace GitVersion
         private readonly IGitVersionCache gitVersionCache;
         private readonly INextVersionCalculator nextVersionCalculator;
         private readonly IVariableProvider variableProvider;
-        private readonly IConsole console;
         private readonly IGitVersionCacheKeyFactory cacheKeyFactory;
+        private readonly IOutputGenerator outputGenerator;
         private readonly IWixVersionFileUpdater wixVersionFileUpdater;
-        private readonly IGitVersionInformationGenerator gitVersionInformationGenerator;
+        private readonly IGitVersionInfoGenerator gitVersionInfoGenerator;
         private readonly IAssemblyInfoFileUpdater assemblyInfoFileUpdater;
 
         private readonly IOptions<Arguments> options;
         private readonly Lazy<GitVersionContext> versionContext;
         private GitVersionContext context => versionContext.Value;
 
-        private readonly IBuildServer buildServer;
 
-        public GitVersionTool(ILog log, INextVersionCalculator nextVersionCalculator, IVariableProvider variableProvider, IConsole console,
-            IGitVersionCache gitVersionCache, IGitVersionCacheKeyFactory cacheKeyFactory, IBuildServerResolver buildServerResolver,
-            IWixVersionFileUpdater wixVersionFileUpdater, IGitVersionInformationGenerator gitVersionInformationGenerator, IAssemblyInfoFileUpdater assemblyInfoFileUpdater,
+        public GitVersionTool(ILog log, INextVersionCalculator nextVersionCalculator, IVariableProvider variableProvider,
+            IGitVersionCache gitVersionCache, IGitVersionCacheKeyFactory cacheKeyFactory,
+            IOutputGenerator outputGenerator, IWixVersionFileUpdater wixVersionFileUpdater, IGitVersionInfoGenerator gitVersionInfoGenerator, IAssemblyInfoFileUpdater assemblyInfoFileUpdater,
             IOptions<Arguments> options, Lazy<GitVersionContext> versionContext)
         {
             this.log = log ?? throw new ArgumentNullException(nameof(log));
-            this.console = console ?? throw new ArgumentNullException(nameof(console));
 
             this.nextVersionCalculator = nextVersionCalculator ?? throw new ArgumentNullException(nameof(nextVersionCalculator));
             this.variableProvider = variableProvider ?? throw new ArgumentNullException(nameof(variableProvider));
@@ -44,14 +42,13 @@ namespace GitVersion
             this.cacheKeyFactory = cacheKeyFactory ?? throw new ArgumentNullException(nameof(cacheKeyFactory));
             this.gitVersionCache = gitVersionCache ?? throw new ArgumentNullException(nameof(gitVersionCache));
 
+            this.outputGenerator = outputGenerator ?? throw new ArgumentNullException(nameof(outputGenerator));
             this.wixVersionFileUpdater = wixVersionFileUpdater ?? throw new ArgumentNullException(nameof(wixVersionFileUpdater));
-            this.gitVersionInformationGenerator = gitVersionInformationGenerator ?? throw new ArgumentNullException(nameof(gitVersionInformationGenerator));
-            this.assemblyInfoFileUpdater = assemblyInfoFileUpdater ?? throw new ArgumentNullException(nameof(gitVersionInformationGenerator));
+            this.gitVersionInfoGenerator = gitVersionInfoGenerator ?? throw new ArgumentNullException(nameof(gitVersionInfoGenerator));
+            this.assemblyInfoFileUpdater = assemblyInfoFileUpdater ?? throw new ArgumentNullException(nameof(gitVersionInfoGenerator));
 
             this.options = options ?? throw new ArgumentNullException(nameof(options));
             this.versionContext = versionContext ?? throw new ArgumentNullException(nameof(versionContext));
-
-            buildServer = buildServerResolver.Resolve();
         }
 
         public VersionVariables CalculateVersionVariables()
@@ -63,7 +60,8 @@ namespace GitVersion
 
             if (versionVariables != null) return versionVariables;
 
-            versionVariables = ExecuteInternal();
+            var semanticVersion = nextVersionCalculator.FindVersion();
+            versionVariables = variableProvider.GetVariablesFor(semanticVersion, context.Configuration, context.IsCurrentCommitTagged);
 
             if (arguments.NoCache) return versionVariables;
             try
@@ -80,28 +78,9 @@ namespace GitVersion
 
         public void OutputVariables(VersionVariables variables, Action<string> writter)
         {
-            var arguments = options.Value;
-            if (arguments.Output.Contains(OutputType.BuildServer))
+            using (outputGenerator)
             {
-                buildServer?.WriteIntegration(writter, variables);
-            }
-            if (arguments.Output.Contains(OutputType.Json))
-            {
-                switch (arguments.ShowVariable)
-                {
-                    case null:
-                        console.WriteLine(variables.ToString());
-                        break;
-
-                    default:
-                        if (!variables.TryGetValue(arguments.ShowVariable, out var part))
-                        {
-                            throw new WarningException($"'{arguments.ShowVariable}' variable does not exist");
-                        }
-
-                        console.WriteLine(part);
-                        break;
-                }
+                outputGenerator.Execute(variables, writter);
             }
         }
 
@@ -113,8 +92,7 @@ namespace GitVersion
             {
                 using (assemblyInfoFileUpdater)
                 {
-                    assemblyInfoFileUpdater.Update(variables, arguments.EnsureAssemblyInfo, arguments.TargetPath, arguments.UpdateAssemblyInfoFileName.ToArray());
-                    assemblyInfoFileUpdater.CommitChanges();
+                    assemblyInfoFileUpdater.Execute(variables, arguments.EnsureAssemblyInfo, arguments.TargetPath, arguments.UpdateAssemblyInfoFileName.ToArray());
                 }
             }
         }
@@ -127,20 +105,17 @@ namespace GitVersion
             {
                 using (wixVersionFileUpdater)
                 {
-                    wixVersionFileUpdater.Update(variables, arguments.TargetPath);
+                    wixVersionFileUpdater.Execute(variables, arguments.TargetPath);
                 }
             }
         }
 
         public void GenerateGitVersionInformation(VersionVariables variables, FileWriteInfo fileWriteInfo)
         {
-            gitVersionInformationGenerator.Generate(variables, fileWriteInfo);
-        }
-
-        private VersionVariables ExecuteInternal()
-        {
-            var semanticVersion = nextVersionCalculator.FindVersion();
-            return variableProvider.GetVariablesFor(semanticVersion, context.Configuration, context.IsCurrentCommitTagged);
+            using (gitVersionInfoGenerator)
+            {
+                gitVersionInfoGenerator.Execute(variables, fileWriteInfo);
+            }
         }
     }
 }

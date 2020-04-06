@@ -2,7 +2,7 @@ using System;
 using System.IO;
 using GitVersion;
 using GitVersion.VersionCalculation;
-using GitVersion.VersionConverters.GitVersionInformationResources;
+using GitVersion.VersionConverters.GitVersionInfo;
 using GitVersionCore.Tests.Helpers;
 using Microsoft.Extensions.DependencyInjection;
 using NUnit.Framework;
@@ -12,7 +12,7 @@ namespace GitVersionCore.Tests
 {
     [TestFixture]
     [Parallelizable(ParallelScope.None)]
-    public class GitVersionInformationGeneratorTests : TestBase
+    public class GitVersionInfoGeneratorTests : TestBase
     {
         [SetUp]
         public void Setup()
@@ -47,9 +47,9 @@ namespace GitVersionCore.Tests
             var variableProvider = sp.GetService<IVariableProvider>();
 
             var variables = variableProvider.GetVariablesFor(semanticVersion, new TestEffectiveConfiguration(), false);
-            var generator = new GitVersionInformationGenerator(fileSystem);
+            using var generator = new GitVersionInfoGenerator(fileSystem);
 
-            generator.Generate(variables, new FileWriteInfo(directory, fileName, fileExtension));
+            generator.Execute(variables, new FileWriteInfo(directory, fileName, fileExtension));
 
             fileSystem.ReadAllText(fullPath).ShouldMatchApproved(c => c.SubFolder(Path.Combine("Approved", fileExtension)));
         }

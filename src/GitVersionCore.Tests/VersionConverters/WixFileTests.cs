@@ -60,7 +60,7 @@ namespace GitVersionCore.Tests
 
             using var wixVersionFileUpdater = sp.GetService<IWixVersionFileUpdater>();
 
-            var file = wixVersionFileUpdater.Update(versionVariables, workingDir);
+            var file = wixVersionFileUpdater.Execute(versionVariables, workingDir);
             fileSystem
                 .ReadAllText(file)
                 .ShouldMatchApproved(c => c.SubFolder(Path.Combine("Approved")));
