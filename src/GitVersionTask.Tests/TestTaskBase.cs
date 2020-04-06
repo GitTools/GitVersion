@@ -44,7 +44,8 @@ namespace GitVersion.MSBuildTask.Tests
         {
             var env = new Dictionary<string, string>
             {
-                { AzurePipelines.EnvironmentVariableName, "true" }
+                { AzurePipelines.EnvironmentVariableName, "true" },
+                { "BUILD_SOURCEBRANCH", null }
             };
 
             var msbuildFixture = new MsBuildFixture();
