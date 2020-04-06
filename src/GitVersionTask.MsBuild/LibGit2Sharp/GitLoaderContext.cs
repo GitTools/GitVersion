@@ -19,12 +19,21 @@ namespace GitVersion.MSBuildTask.LibGit2Sharp
 
         protected override Assembly Load(AssemblyName assemblyName)
         {
-            if (assemblyName.Name == entryPointAssembly.GetName().Name)
+            string simpleName = assemblyName.Name;
+
+            if (simpleName == entryPointAssembly.GetName().Name)
             {
                 return entryPointAssembly;
             }
 
-            var path = Path.Combine(Path.GetDirectoryName(typeof(GitLoaderContext).Assembly.Location), assemblyName.Name + ".dll");
+            if (simpleName == "Microsoft.Build.Framework")
+            {
+                // Delegate loading MSBuild types up to an ALC that should already have them
+                // once we've gotten this far
+                return null;
+            }
+
+            var path = Path.Combine(Path.GetDirectoryName(typeof(GitLoaderContext).Assembly.Location), simpleName + ".dll");
 
             if (File.Exists(path))
             {
