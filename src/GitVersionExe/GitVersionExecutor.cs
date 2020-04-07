@@ -58,7 +58,7 @@ namespace GitVersion
             {
                 var variables = gitVersionTool.CalculateVersionVariables();
 
-                gitVersionTool.OutputVariables(variables, console.WriteLine);
+                gitVersionTool.OutputVariables(variables);
                 gitVersionTool.UpdateAssemblyInfo(variables);
                 gitVersionTool.UpdateWixVersionFile(variables);
 

@@ -74,8 +74,10 @@ namespace GitVersion.MSBuildTask
             arguments.Output.Add(OutputType.BuildServer);
 
             services.AddSingleton(Options.Create(arguments));
-            services.AddSingleton<IGitVersionTaskExecutor, GitVersionTaskExecutor>();
             services.AddModule(new GitVersionCoreModule());
+            services.AddModule(new GitVersionTaskModule());
+
+            services.AddSingleton<IConsole>(new MsBuildAdapter(task.Log));
 
             var sp = services.BuildServiceProvider();
             Configure(sp, task);

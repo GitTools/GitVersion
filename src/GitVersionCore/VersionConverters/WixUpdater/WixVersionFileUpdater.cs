@@ -7,6 +7,9 @@ using GitVersion.OutputVariables;
 
 namespace GitVersion.VersionConverters.WixUpdater
 {
+    public interface IWixVersionFileUpdater : IVersionConverter<WixVersionContext>
+    {
+    }
     public class WixVersionFileUpdater : IWixVersionFileUpdater
     {
         private readonly IFileSystem fileSystem;
@@ -20,9 +23,9 @@ namespace GitVersion.VersionConverters.WixUpdater
             this.log = log ?? throw new ArgumentNullException(nameof(log));
         }
 
-        public string Execute(VersionVariables variables, string workingDirectory)
+        public void Execute(VersionVariables variables, WixVersionContext context)
         {
-            wixVersionFile = Path.Combine(workingDirectory, WixVersionFileName);
+            wixVersionFile = Path.Combine(context.WorkingDirectory, WixVersionFileName);
             log.Info("Updating GitVersion_WixVersion.wxi");
 
             var doc = new XmlDocument();
@@ -34,8 +37,6 @@ namespace GitVersion.VersionConverters.WixUpdater
 
             using var fs = fileSystem.OpenWrite(wixVersionFile);
             doc.Save(fs);
-
-            return wixVersionFile;
         }
 
         private static string GetWixFormatFromVersionVariables(VersionVariables variables)

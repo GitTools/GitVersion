@@ -34,7 +34,6 @@ namespace GitVersion.MSBuildTask
             if (task.CompileFiles != null) FileHelper.CheckForInvalidFiles(task.CompileFiles, task.ProjectFile);
 
             var fileWriteInfo = task.IntermediateOutputPath.GetFileWriteInfo(task.Language, task.ProjectFile, "AssemblyInfo");
-
             task.AssemblyInfoTempFilePath = Path.Combine(fileWriteInfo.WorkingDirectory, fileWriteInfo.FileName);
 
             var arguments = options.Value;
@@ -50,12 +49,15 @@ namespace GitVersion.MSBuildTask
             var fileWriteInfo = task.IntermediateOutputPath.GetFileWriteInfo(task.Language, task.ProjectFile, "GitVersionInformation");
             task.GitVersionInformationFilePath = Path.Combine(fileWriteInfo.WorkingDirectory, fileWriteInfo.FileName);
 
+            var arguments = options.Value;
+            arguments.TargetPath = fileWriteInfo.WorkingDirectory;
+
             gitVersionTool.GenerateGitVersionInformation(versionVariables, fileWriteInfo);
         }
 
         public void WriteVersionInfoToBuildLog(WriteVersionInfoToBuildLog task)
         {
-            gitVersionTool.OutputVariables(versionVariables, m => task.Log.LogMessage(m));
+            gitVersionTool.OutputVariables(versionVariables);
         }
     }
 }

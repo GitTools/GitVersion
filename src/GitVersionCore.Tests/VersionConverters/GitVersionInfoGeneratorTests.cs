@@ -49,7 +49,7 @@ namespace GitVersionCore.Tests
             var variables = variableProvider.GetVariablesFor(semanticVersion, new TestEffectiveConfiguration(), false);
             using var generator = new GitVersionInfoGenerator(fileSystem);
 
-            generator.Execute(variables, new FileWriteInfo(directory, fileName, fileExtension));
+            generator.Execute(variables, new GitVersionInfoContext(directory, fileName, fileExtension));
 
             fileSystem.ReadAllText(fullPath).ShouldMatchApproved(c => c.SubFolder(Path.Combine("Approved", fileExtension)));
         }

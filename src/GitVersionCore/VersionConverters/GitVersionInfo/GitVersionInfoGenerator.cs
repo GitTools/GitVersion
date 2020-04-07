@@ -5,6 +5,10 @@ using GitVersion.OutputVariables;
 
 namespace GitVersion.VersionConverters.GitVersionInfo
 {
+    public interface IGitVersionInfoGenerator : IVersionConverter<GitVersionInfoContext>
+    {
+    }
+
     public class GitVersionInfoGenerator : IGitVersionInfoGenerator
     {
         private readonly IFileSystem fileSystem;
@@ -16,10 +20,10 @@ namespace GitVersion.VersionConverters.GitVersionInfo
             templateManager = new TemplateManager(TemplateType.GitVersionInfo);
         }
 
-        public void Execute(VersionVariables variables, FileWriteInfo writeInfo)
+        public void Execute(VersionVariables variables, GitVersionInfoContext context)
         {
-            var fileName = writeInfo.FileName;
-            var directory = writeInfo.WorkingDirectory;
+            var fileName = context.FileName;
+            var directory = context.WorkingDirectory;
             var filePath = Path.Combine(directory, fileName);
 
             string originalFileContents = null;

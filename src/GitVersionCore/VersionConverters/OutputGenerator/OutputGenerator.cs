@@ -6,6 +6,10 @@ using Microsoft.Extensions.Options;
 
 namespace GitVersion.VersionConverters.OutputGenerator
 {
+    public interface IOutputGenerator : IVersionConverter<OutputContext>
+    {
+    }
+
     public class OutputGenerator : IOutputGenerator
     {
         private readonly IConsole console;
@@ -19,12 +23,12 @@ namespace GitVersion.VersionConverters.OutputGenerator
             buildServer = buildServerResolver.Resolve();
         }
 
-        public void Execute(VersionVariables variables, Action<string> writter)
+        public void Execute(VersionVariables variables, OutputContext context)
         {
             var arguments = options.Value;
             if (arguments.Output.Contains(OutputType.BuildServer))
             {
-                buildServer?.WriteIntegration(writter, variables);
+                buildServer?.WriteIntegration(console.Write, variables);
             }
             if (arguments.Output.Contains(OutputType.Json))
             {

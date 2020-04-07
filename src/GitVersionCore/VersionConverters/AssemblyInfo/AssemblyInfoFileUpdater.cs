@@ -8,6 +8,10 @@ using GitVersion.OutputVariables;
 
 namespace GitVersion.VersionConverters.AssemblyInfo
 {
+    public interface IAssemblyInfoFileUpdater : IVersionConverter<AssemblyInfoContext>
+    {
+    }
+
     public class AssemblyInfoFileUpdater : IAssemblyInfoFileUpdater
     {
         private readonly List<Action> restoreBackupTasks = new List<Action>();
@@ -37,12 +41,12 @@ namespace GitVersion.VersionConverters.AssemblyInfo
             templateManager = new TemplateManager(TemplateType.AssemblyInfo);
         }
 
-        public void Execute(VersionVariables variables, bool ensureAssemblyInfo, string workingDirectory, params string[] assemblyInfo)
+        public void Execute(VersionVariables variables, AssemblyInfoContext context)
         {
-            var assemblyInfoFileNames = new HashSet<string>(assemblyInfo);
+            var assemblyInfoFileNames = new HashSet<string>(context.AssemblyInfoFiles);
             log.Info("Updating assembly info files");
 
-            var assemblyInfoFiles = GetAssemblyInfoFiles(workingDirectory, assemblyInfoFileNames, ensureAssemblyInfo).ToList();
+            var assemblyInfoFiles = GetAssemblyInfoFiles(context.WorkingDirectory, assemblyInfoFileNames, context.EnsureAssemblyInfo).ToList();
             log.Info($"Found {assemblyInfoFiles.Count} files");
 
             var assemblyVersion = variables.AssemblySemVer;

@@ -1,4 +1,3 @@
-using System;
 using GitVersion.OutputVariables;
 
 namespace GitVersion
@@ -6,7 +5,7 @@ namespace GitVersion
     public interface IGitVersionTool
     {
         VersionVariables CalculateVersionVariables();
-        void OutputVariables(VersionVariables variables, Action<string> writter);
+        void OutputVariables(VersionVariables variables);
         void UpdateAssemblyInfo(VersionVariables variables);
         void UpdateWixVersionFile(VersionVariables variables);
         void GenerateGitVersionInformation(VersionVariables variables, FileWriteInfo fileWriteInfo);

@@ -76,11 +76,13 @@ namespace GitVersion
             return versionVariables;
         }
 
-        public void OutputVariables(VersionVariables variables, Action<string> writter)
+        public void OutputVariables(VersionVariables variables)
         {
+            var arguments = options.Value;
+
             using (outputGenerator)
             {
-                outputGenerator.Execute(variables, writter);
+                outputGenerator.Execute(variables, new OutputContext(arguments.TargetPath));
             }
         }
 
@@ -92,7 +94,7 @@ namespace GitVersion
             {
                 using (assemblyInfoFileUpdater)
                 {
-                    assemblyInfoFileUpdater.Execute(variables, arguments.EnsureAssemblyInfo, arguments.TargetPath, arguments.UpdateAssemblyInfoFileName.ToArray());
+                    assemblyInfoFileUpdater.Execute(variables, new AssemblyInfoContext(arguments.TargetPath, arguments.EnsureAssemblyInfo, arguments.UpdateAssemblyInfoFileName.ToArray()));
                 }
             }
         }
@@ -105,16 +107,18 @@ namespace GitVersion
             {
                 using (wixVersionFileUpdater)
                 {
-                    wixVersionFileUpdater.Execute(variables, arguments.TargetPath);
+                    wixVersionFileUpdater.Execute(variables, new WixVersionContext(arguments.TargetPath));
                 }
             }
         }
 
         public void GenerateGitVersionInformation(VersionVariables variables, FileWriteInfo fileWriteInfo)
         {
+            var arguments = options.Value;
+
             using (gitVersionInfoGenerator)
             {
-                gitVersionInfoGenerator.Execute(variables, fileWriteInfo);
+                gitVersionInfoGenerator.Execute(variables, new GitVersionInfoContext(arguments.TargetPath, fileWriteInfo.FileName, fileWriteInfo.FileExtension));
             }
         }
     }
