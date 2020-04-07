@@ -1,4 +1,4 @@
-﻿namespace GitVersion.VersionConverters.AssemblyInfo
+namespace GitVersion.VersionConverters.AssemblyInfo
 {
     public readonly struct AssemblyInfoContext : IConverterContext
     {

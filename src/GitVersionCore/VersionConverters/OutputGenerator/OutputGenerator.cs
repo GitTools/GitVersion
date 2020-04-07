@@ -28,7 +28,7 @@ namespace GitVersion.VersionConverters.OutputGenerator
             var arguments = options.Value;
             if (arguments.Output.Contains(OutputType.BuildServer))
             {
-                buildServer?.WriteIntegration(console.Write, variables);
+                buildServer?.WriteIntegration(console.WriteLine, variables);
             }
             if (arguments.Output.Contains(OutputType.Json))
             {

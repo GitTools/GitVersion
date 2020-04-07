@@ -1,4 +1,4 @@
-﻿namespace GitVersion.VersionConverters.WixUpdater
+namespace GitVersion.VersionConverters.WixUpdater
 {
     public readonly struct WixVersionContext : IConverterContext
     {

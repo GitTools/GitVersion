@@ -1,4 +1,4 @@
-﻿namespace GitVersion.VersionConverters
+namespace GitVersion.VersionConverters
 {
     public interface IConverterContext
     {
