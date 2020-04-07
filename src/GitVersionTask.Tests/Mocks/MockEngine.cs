@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Text;
 using GitVersionTask.Tests.Helpers;
@@ -8,8 +9,9 @@ using Shouldly;
 
 namespace GitVersionTask.Tests
 {
-    internal sealed class MockEngine : IBuildEngine3
+    internal sealed class MockEngine : IBuildEngine4
     {
+        private readonly ConcurrentDictionary<object, object> _objectCache = new ConcurrentDictionary<object, object>();
         private StringBuilder _log = new StringBuilder();
 
         internal MessageImportance MinimumMessageImportance { get; set; } = MessageImportance.Low;
@@ -108,6 +110,23 @@ namespace GitVersionTask.Tests
 
         public void Reacquire()
         {
+        }
+
+        public object GetRegisteredTaskObject(object key, RegisteredTaskObjectLifetime lifetime)
+        {
+            _objectCache.TryGetValue(key, out var obj);
+            return obj;
+        }
+
+        public void RegisterTaskObject(object key, object obj, RegisteredTaskObjectLifetime lifetime, bool allowEarlyCollection)
+        {
+            _objectCache[key] = obj;
+        }
+
+        public object UnregisterTaskObject(object key, RegisteredTaskObjectLifetime lifetime)
+        {
+            _objectCache.TryRemove(key, out var obj);
+            return obj;
         }
     }
 }
