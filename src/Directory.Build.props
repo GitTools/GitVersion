@@ -26,7 +26,7 @@
 
         <PackageVersion_MicrosoftTestSdk>16.5.0</PackageVersion_MicrosoftTestSdk>
         <PackageVersion_NSubstitute>4.2.1</PackageVersion_NSubstitute>
-        <PackageVersion_CoverletMsBuild>2.8.0</PackageVersion_CoverletMsBuild>
+        <PackageVersion_CoverletMsBuild>2.8.1</PackageVersion_CoverletMsBuild>
         <PackageVersion_NUnit>3.12.0</PackageVersion_NUnit>
         <PackageVersion_GitToolsTesting>1.2.0</PackageVersion_GitToolsTesting>
         <PackageVersion_NUnit3TestAdapter>3.16.1</PackageVersion_NUnit3TestAdapter>
