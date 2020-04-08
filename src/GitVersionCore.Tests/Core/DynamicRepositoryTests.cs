@@ -69,7 +69,7 @@ namespace GitVersionCore.Tests
                     TargetBranch = targetBranch,
                     CommitId = commitId,
                 },
-                NoFetch = false,
+                Settings = { NoFetch = false },
                 WorkingDirectory = workingDirectory,
             };
             var options = Options.Create(gitVersionOptions);

@@ -121,7 +121,7 @@ namespace GitVersion
 
             if (gitVersionOptions.Diag)
             {
-                gitVersionOptions.NoCache = true;
+                gitVersionOptions.Settings.NoCache = true;
                 gitVersionOptions.Output.Add(OutputType.BuildServer);
             }
 

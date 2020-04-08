@@ -20,6 +20,7 @@ namespace GitVersion
             ConfigInfo = new ConfigInfo();
             WixInfo = new WixInfo();
             RepositoryInfo = new RepositoryInfo();
+            Settings = new Settings();
         }
 
         private string workingDirectory;
@@ -37,16 +38,12 @@ namespace GitVersion
         public ConfigInfo ConfigInfo { get; }
         public RepositoryInfo RepositoryInfo { get; }
         public WixInfo WixInfo { get; }
+        public Settings Settings { get; }
 
         public bool Init;
         public bool Diag;
         public bool IsVersion;
         public bool IsHelp;
-
-        public bool NoFetch;
-        public bool NoCache;
-        public bool NoNormalize;
-        public bool OnlyTrackedBranches = false;
 
         public string LogFilePath;
         public string ShowVariable;

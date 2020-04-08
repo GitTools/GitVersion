@@ -56,7 +56,7 @@ namespace GitVersion.MSBuildTask
             {
                 gitVersionOptions.Output.Add(OutputType.BuildServer);
             }
-            gitVersionOptions.NoFetch = gitVersionOptions.NoFetch || buildServer != null && buildServer.PreventFetch();
+            gitVersionOptions.Settings.NoFetch = gitVersionOptions.Settings.NoFetch || buildServer != null && buildServer.PreventFetch();
         }
 
         private static IServiceProvider BuildServiceProvider(GitVersionTaskBase task)
@@ -67,8 +67,11 @@ namespace GitVersion.MSBuildTask
             {
                 WorkingDirectory = task.SolutionDirectory,
                 ConfigInfo = { ConfigFile = task.ConfigFilePath },
-                NoFetch = task.NoFetch,
-                NoNormalize = task.NoNormalize
+                Settings =
+                {
+                    NoFetch = task.NoFetch,
+                    NoNormalize = task.NoNormalize
+                }
             };
 
             gitVersionOptions.Output.Add(OutputType.BuildServer);

@@ -32,7 +32,7 @@ namespace GitVersion
             var buildServer = buildServerResolver.Resolve();
 
             // Normalize if we are running on build server
-            var normalizeGitDirectory = !gitVersionOptions.NoNormalize && buildServer != null;
+            var normalizeGitDirectory = !gitVersionOptions.Settings.NoNormalize && buildServer != null;
             var shouldCleanUpRemotes = buildServer != null && buildServer.ShouldCleanUpRemotes();
 
             var currentBranch = ResolveCurrentBranch(buildServer, gitVersionOptions.RepositoryInfo.TargetBranch, !string.IsNullOrWhiteSpace(gitVersionOptions.RepositoryInfo.DynamicRepositoryClonePath));
@@ -178,7 +178,7 @@ namespace GitVersion
             using (log.IndentLog($"Normalizing git directory for branch '{targetBranch}'"))
             {
                 // Normalize (download branches) before using the branch
-                GitRepositoryHelper.NormalizeGitDirectory(log, environment, gitDirectory, auth, options.Value.NoFetch, targetBranch, isDynamicRepository);
+                GitRepositoryHelper.NormalizeGitDirectory(log, environment, gitDirectory, auth, options.Value.Settings.NoFetch, targetBranch, isDynamicRepository);
             }
         }
 

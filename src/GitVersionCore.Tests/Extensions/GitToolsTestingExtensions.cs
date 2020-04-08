@@ -35,7 +35,7 @@ namespace GitVersionCore.Tests
                     TargetBranch = branch,
                     CommitId = commitId,
                 },
-                OnlyTrackedBranches = onlyTrackedBranches
+                Settings = { OnlyTrackedBranches = onlyTrackedBranches }
             });
 
             var sp = ConfigureServices(services =>

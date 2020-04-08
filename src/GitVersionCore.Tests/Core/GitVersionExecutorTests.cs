@@ -366,7 +366,7 @@ namespace GitVersionCore.Tests
             versionVariables = gitVersionCalculator.CalculateVersionVariables();
             versionVariables.AssemblySemVer.ShouldBe("4.10.3.0");
 
-            gitVersionOptions.NoCache = true;
+            gitVersionOptions.Settings.NoCache = true;
             versionVariables = gitVersionCalculator.CalculateVersionVariables();
             versionVariables.AssemblySemVer.ShouldBe("0.1.0.0");
         }

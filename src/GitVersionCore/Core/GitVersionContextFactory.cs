@@ -25,7 +25,7 @@ namespace GitVersion
         public GitVersionContext Create(GitVersionOptions gitVersionOptions)
         {
             var targetBranch = repositoryMetadataProvider.GetTargetBranch(gitVersionOptions.RepositoryInfo.TargetBranch);
-            return Init(targetBranch, gitVersionOptions.RepositoryInfo.CommitId, gitVersionOptions.OnlyTrackedBranches);
+            return Init(targetBranch, gitVersionOptions.RepositoryInfo.CommitId, gitVersionOptions.Settings.OnlyTrackedBranches);
         }
 
         private GitVersionContext Init(Branch currentBranch, string commitId = null, bool onlyTrackedBranches = false)

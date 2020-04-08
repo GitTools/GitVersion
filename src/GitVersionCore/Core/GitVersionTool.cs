@@ -56,14 +56,14 @@ namespace GitVersion
             var gitVersionOptions = options.Value;
 
             var cacheKey = cacheKeyFactory.Create(gitVersionOptions.ConfigInfo.OverrideConfig);
-            var versionVariables = gitVersionOptions.NoCache ? default : gitVersionCache.LoadVersionVariablesFromDiskCache(cacheKey);
+            var versionVariables = gitVersionOptions.Settings.NoCache ? default : gitVersionCache.LoadVersionVariablesFromDiskCache(cacheKey);
 
             if (versionVariables != null) return versionVariables;
 
             var semanticVersion = nextVersionCalculator.FindVersion();
             versionVariables = variableProvider.GetVariablesFor(semanticVersion, context.Configuration, context.IsCurrentCommitTagged);
 
-            if (gitVersionOptions.NoCache) return versionVariables;
+            if (gitVersionOptions.Settings.NoCache) return versionVariables;
             try
             {
                 gitVersionCache.WriteVariablesToDiskCache(cacheKey, versionVariables);

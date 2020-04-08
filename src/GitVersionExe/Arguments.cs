@@ -85,6 +85,13 @@ namespace GitVersion
                     DynamicRepositoryClonePath = DynamicRepositoryClonePath,
                 },
 
+                Settings =
+                {
+                    NoFetch = NoFetch,
+                    NoCache = NoCache,
+                    NoNormalize = NoNormalize,
+                },
+
                 WixInfo =
                 {
                     ShouldUpdate = UpdateWixVersionFile,
@@ -94,10 +101,6 @@ namespace GitVersion
                 Diag = Diag,
                 IsVersion = IsVersion,
                 IsHelp = IsHelp,
-
-                NoFetch = NoFetch,
-                NoCache = NoCache,
-                NoNormalize = NoNormalize,
 
                 LogFilePath = LogFilePath,
                 ShowVariable = ShowVariable,
