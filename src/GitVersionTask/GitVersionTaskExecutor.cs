@@ -37,10 +37,10 @@ namespace GitVersion.MSBuildTask
             task.AssemblyInfoTempFilePath = Path.Combine(fileWriteInfo.WorkingDirectory, fileWriteInfo.FileName);
 
             var gitVersionOptions = options.Value;
-            gitVersionOptions.AssemblyInfo.UpdateAssemblyInfo = true;
+            gitVersionOptions.AssemblyInfo.ShouldUpdate = true;
             gitVersionOptions.AssemblyInfo.EnsureAssemblyInfo = true;
             gitVersionOptions.WorkingDirectory = fileWriteInfo.WorkingDirectory;
-            gitVersionOptions.AssemblyInfo.AssemblyInfoFiles.Add(fileWriteInfo.FileName);
+            gitVersionOptions.AssemblyInfo.Files.Add(fileWriteInfo.FileName);
             gitVersionTool.UpdateAssemblyInfo(versionVariables);
         }
 

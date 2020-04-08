@@ -16,6 +16,8 @@ namespace GitVersion
 
         public string TargetPath;
 
+        public bool UpdateWixVersionFile;
+
         public string TargetUrl;
         public string TargetBranch;
         public string CommitId;
@@ -25,8 +27,19 @@ namespace GitVersion
         public bool Diag;
         public bool IsVersion;
         public bool IsHelp;
+
+        public bool NoFetch;
+        public bool NoCache;
+        public bool NoNormalize;
+
         public string LogFilePath;
         public string ShowVariable;
+        public ISet<OutputType> Output = new HashSet<OutputType>();
+        public Verbosity Verbosity = Verbosity.Normal;
+
+        public bool UpdateAssemblyInfo;
+        public ISet<string> UpdateAssemblyInfoFileName = new HashSet<string>();
+        public bool EnsureAssemblyInfo;
 
         [Obsolete]
         public string Proj;
@@ -37,24 +50,6 @@ namespace GitVersion
         [Obsolete]
         public string ExecArgs;
 
-        public bool UpdateWixVersionFile;
-
-        public bool NoFetch;
-        public bool NoCache;
-        public bool NoNormalize;
-
-        public ISet<OutputType> Output = new HashSet<OutputType>();
-        public Verbosity Verbosity = Verbosity.Normal;
-
-        public bool UpdateAssemblyInfo;
-        public ISet<string> UpdateAssemblyInfoFileName = new HashSet<string>();
-        public bool EnsureAssemblyInfo;
-
-        public void AddAssemblyInfoFileName(string fileName)
-        {
-            UpdateAssemblyInfoFileName.Add(fileName);
-        }
-
         public GitVersionOptions ToOptions()
         {
             return new GitVersionOptions
@@ -63,9 +58,9 @@ namespace GitVersion
 
                 AssemblyInfo =
                 {
-                    UpdateAssemblyInfo = UpdateAssemblyInfo,
+                    ShouldUpdate = UpdateAssemblyInfo,
                     EnsureAssemblyInfo = EnsureAssemblyInfo,
-                    AssemblyInfoFiles = UpdateAssemblyInfoFileName,
+                    Files = UpdateAssemblyInfoFileName,
                 },
 
                 Authentication =
@@ -92,7 +87,7 @@ namespace GitVersion
 
                 WixInfo =
                 {
-                    UpdateWixVersionFile = UpdateWixVersionFile,
+                    ShouldUpdate = UpdateWixVersionFile,
                 },
 
                 Init = Init,

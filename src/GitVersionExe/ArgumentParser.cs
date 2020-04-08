@@ -212,13 +212,13 @@ namespace GitVersion
                         arguments.UpdateAssemblyInfo = true;
                         foreach (var v in values)
                         {
-                            arguments.AddAssemblyInfoFileName(v);
+                            arguments.UpdateAssemblyInfoFileName.Add(v);
                         }
                     }
                     else if (!value.IsSwitchArgument())
                     {
                         arguments.UpdateAssemblyInfo = true;
-                        arguments.AddAssemblyInfoFileName(value);
+                        arguments.UpdateAssemblyInfoFileName.Add(value);
                     }
                     else
                     {

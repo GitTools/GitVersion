@@ -4,8 +4,8 @@ namespace GitVersion
 {
     public class AssemblyInfo
     {
-        public bool UpdateAssemblyInfo;
-        public ISet<string> AssemblyInfoFiles = new HashSet<string>();
+        public bool ShouldUpdate;
         public bool EnsureAssemblyInfo;
+        public ISet<string> Files = new HashSet<string>();
     }
 }

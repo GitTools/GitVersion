@@ -90,11 +90,11 @@ namespace GitVersion
         {
             var gitVersionOptions = options.Value;
 
-            if (gitVersionOptions.AssemblyInfo.UpdateAssemblyInfo)
+            if (gitVersionOptions.AssemblyInfo.ShouldUpdate)
             {
                 using (assemblyInfoFileUpdater)
                 {
-                    assemblyInfoFileUpdater.Execute(variables, new AssemblyInfoContext(gitVersionOptions.WorkingDirectory, gitVersionOptions.AssemblyInfo.EnsureAssemblyInfo, gitVersionOptions.AssemblyInfo.AssemblyInfoFiles.ToArray()));
+                    assemblyInfoFileUpdater.Execute(variables, new AssemblyInfoContext(gitVersionOptions.WorkingDirectory, gitVersionOptions.AssemblyInfo.EnsureAssemblyInfo, gitVersionOptions.AssemblyInfo.Files.ToArray()));
                 }
             }
         }
@@ -103,7 +103,7 @@ namespace GitVersion
         {
             var gitVersionOptions = options.Value;
 
-            if (gitVersionOptions.WixInfo.UpdateWixVersionFile)
+            if (gitVersionOptions.WixInfo.ShouldUpdate)
             {
                 using (wixVersionFileUpdater)
                 {
