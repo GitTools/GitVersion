@@ -34,13 +34,13 @@ namespace GitVersionCore.Tests
             var targetUrl = "https://github.com/GitTools/GitVersion.git";
             var targetBranch = "refs/head/master";
 
-            var arguments = new Arguments
+            var gitVersionOptions = new GitVersionOptions
             {
-                TargetUrl = targetUrl,
-                TargetPath = fixture.RepositoryPath
+                RepositoryInfo = { TargetUrl = targetUrl },
+                WorkingDirectory = fixture.RepositoryPath
             };
 
-            sp = GetServiceProvider(arguments);
+            sp = GetServiceProvider(gitVersionOptions);
 
             var preparer = sp.GetService<IGitPreparer>() as GitPreparer;
 
@@ -58,14 +58,14 @@ namespace GitVersionCore.Tests
         {
             var targetUrl = "https://github.com/GitTools/GitVersion.git";
 
-            var arguments = new Arguments
+            var gitVersionOptions = new GitVersionOptions
             {
-                TargetUrl = targetUrl,
-                TargetPath = null
+                RepositoryInfo = { TargetUrl = targetUrl },
+                WorkingDirectory = null
             };
             Should.NotThrow(() =>
             {
-                sp = GetServiceProvider(arguments);
+                sp = GetServiceProvider(gitVersionOptions);
 
                 sp.GetService<IGitPreparer>();
             });
@@ -87,13 +87,13 @@ namespace GitVersionCore.Tests
 
                 var targetUrl = "https://github.com/GitTools/GitVersion.git";
 
-                var arguments = new Arguments
+                var gitVersionOptions = new GitVersionOptions
                 {
-                    TargetUrl = targetUrl,
-                    TargetPath = worktreePath
+                    RepositoryInfo = { TargetUrl = targetUrl },
+                    WorkingDirectory = worktreePath
                 };
 
-                sp = GetServiceProvider(arguments);
+                sp = GetServiceProvider(gitVersionOptions);
                 var cacheKey = sp.GetService<IGitVersionCacheKeyFactory>().Create(null);
                 cacheKey.Value.ShouldNotBeEmpty();
             }
@@ -149,9 +149,9 @@ namespace GitVersionCore.Tests
             using var fixture = new EmptyRepositoryFixture();
             fixture.Repository.MakeACommit();
 
-            var arguments = new Arguments { TargetPath = fixture.RepositoryPath };
+            var gitVersionOptions = new GitVersionOptions { WorkingDirectory = fixture.RepositoryPath };
 
-            var gitVersionCalculator = GetGitVersionCalculator(arguments, log);
+            var gitVersionCalculator = GetGitVersionCalculator(gitVersionOptions, log);
 
             var versionVariables = gitVersionCalculator.CalculateVersionVariables();
             versionVariables.AssemblySemVer.ShouldBe("0.1.0.0");
@@ -203,8 +203,8 @@ namespace GitVersionCore.Tests
             using var fixture = new EmptyRepositoryFixture();
             fixture.Repository.MakeACommit();
 
-            var arguments = new Arguments { TargetPath = fixture.RepositoryPath };
-            var gitVersionCalculator = GetGitVersionCalculator(arguments, log);
+            var gitVersionOptions = new GitVersionOptions { WorkingDirectory = fixture.RepositoryPath };
+            var gitVersionCalculator = GetGitVersionCalculator(gitVersionOptions, log);
 
             var versionVariables = gitVersionCalculator.CalculateVersionVariables();
             versionVariables.AssemblySemVer.ShouldBe("0.1.0.0");
@@ -217,9 +217,9 @@ namespace GitVersionCore.Tests
 
             var config = new Config { TagPrefix = "prefix" };
             config.Reset();
-            arguments = new Arguments { TargetPath = fixture.RepositoryPath, OverrideConfig = config };
+            gitVersionOptions = new GitVersionOptions { WorkingDirectory = fixture.RepositoryPath, ConfigInfo = { OverrideConfig = config } };
 
-            gitVersionCalculator = GetGitVersionCalculator(arguments);
+            gitVersionCalculator = GetGitVersionCalculator(gitVersionOptions);
             versionVariables = gitVersionCalculator.CalculateVersionVariables();
 
             versionVariables.AssemblySemVer.ShouldBe("0.1.0.0");
@@ -239,10 +239,10 @@ namespace GitVersionCore.Tests
 
             using var fixture = new EmptyRepositoryFixture();
 
-            var arguments = new Arguments { TargetPath = fixture.RepositoryPath };
+            var gitVersionOptions = new GitVersionOptions { WorkingDirectory = fixture.RepositoryPath };
 
             fixture.Repository.MakeACommit();
-            var gitVersionCalculator = GetGitVersionCalculator(arguments, log, fixture.Repository);
+            var gitVersionCalculator = GetGitVersionCalculator(gitVersionOptions, log, fixture.Repository);
 
             gitVersionCalculator.CalculateVersionVariables();
 
@@ -289,11 +289,11 @@ namespace GitVersionCore.Tests
 
             using var fixture = new EmptyRepositoryFixture();
 
-            var arguments = new Arguments { TargetPath = fixture.RepositoryPath };
+            var gitVersionOptions = new GitVersionOptions { WorkingDirectory = fixture.RepositoryPath };
 
             fixture.Repository.MakeACommit();
 
-            var gitVersionCalculator = GetGitVersionCalculator(arguments);
+            var gitVersionCalculator = GetGitVersionCalculator(gitVersionOptions);
             var versionVariables = gitVersionCalculator.CalculateVersionVariables();
 
             versionVariables.AssemblySemVer.ShouldBe("0.1.0.0");
@@ -307,7 +307,7 @@ namespace GitVersionCore.Tests
             var configPath = Path.Combine(fixture.RepositoryPath, DefaultConfigFileLocator.DefaultFileName);
             fileSystem.WriteAllText(configPath, "next-version: 5.0");
 
-            gitVersionCalculator = GetGitVersionCalculator(arguments, fs: fileSystem);
+            gitVersionCalculator = GetGitVersionCalculator(gitVersionOptions, fs: fileSystem);
 
             versionVariables = gitVersionCalculator.CalculateVersionVariables();
             versionVariables.AssemblySemVer.ShouldBe("5.0.0.0");
@@ -352,10 +352,10 @@ namespace GitVersionCore.Tests
 
             using var fixture = new EmptyRepositoryFixture();
 
-            var arguments = new Arguments { TargetPath = fixture.RepositoryPath };
+            var gitVersionOptions = new GitVersionOptions { WorkingDirectory = fixture.RepositoryPath };
 
             fixture.Repository.MakeACommit();
-            var gitVersionCalculator = GetGitVersionCalculator(arguments);
+            var gitVersionCalculator = GetGitVersionCalculator(gitVersionOptions);
 
             var versionVariables = gitVersionCalculator.CalculateVersionVariables();
 
@@ -366,7 +366,7 @@ namespace GitVersionCore.Tests
             versionVariables = gitVersionCalculator.CalculateVersionVariables();
             versionVariables.AssemblySemVer.ShouldBe("4.10.3.0");
 
-            arguments.NoCache = true;
+            gitVersionOptions.NoCache = true;
             versionVariables = gitVersionCalculator.CalculateVersionVariables();
             versionVariables.AssemblySemVer.ShouldBe("0.1.0.0");
         }
@@ -374,12 +374,11 @@ namespace GitVersionCore.Tests
         [Test]
         public void WorkingDirectoryWithoutGit()
         {
-            var arguments = new Arguments { TargetPath = Environment.SystemDirectory };
-
+            var gitVersionOptions = new GitVersionOptions { WorkingDirectory = Environment.SystemDirectory };
 
             var exception = Assert.Throws<DirectoryNotFoundException>(() =>
             {
-                var gitVersionCalculator = GetGitVersionCalculator(arguments);
+                var gitVersionCalculator = GetGitVersionCalculator(gitVersionOptions);
                 gitVersionCalculator.CalculateVersionVariables();
             });
             exception.Message.ShouldContain("Can't find the .git directory in");
@@ -402,15 +401,15 @@ namespace GitVersionCore.Tests
 
                 var targetUrl = "https://github.com/GitTools/GitVersion.git";
 
-                var arguments = new Arguments
+                var gitVersionOptions = new GitVersionOptions
                 {
-                    TargetUrl = targetUrl,
-                    TargetPath = worktreePath
+                    RepositoryInfo = { TargetUrl = targetUrl },
+                    WorkingDirectory = worktreePath
                 };
 
-                sp = GetServiceProvider(arguments);
+                sp = GetServiceProvider(gitVersionOptions);
 
-                arguments.ProjectRootDirectory.TrimEnd('/', '\\').ShouldBe(worktreePath);
+                gitVersionOptions.ProjectRootDirectory.TrimEnd('/', '\\').ShouldBe(worktreePath);
             }
             finally
             {
@@ -424,16 +423,16 @@ namespace GitVersionCore.Tests
             using var fixture = new EmptyRepositoryFixture();
             var targetUrl = "https://github.com/GitTools/GitVersion.git";
 
-            var arguments = new Arguments
+            var gitVersionOptions = new GitVersionOptions
             {
-                TargetUrl = targetUrl,
-                TargetPath = fixture.RepositoryPath
+                RepositoryInfo = { TargetUrl = targetUrl },
+                WorkingDirectory = fixture.RepositoryPath
             };
 
-            sp = GetServiceProvider(arguments);
+            sp = GetServiceProvider(gitVersionOptions);
 
             var expectedPath = fixture.RepositoryPath.TrimEnd('/', '\\');
-            arguments.ProjectRootDirectory.TrimEnd('/', '\\').ShouldBe(expectedPath);
+            gitVersionOptions.ProjectRootDirectory.TrimEnd('/', '\\').ShouldBe(expectedPath);
         }
 
         [Test]
@@ -442,14 +441,17 @@ namespace GitVersionCore.Tests
             using var fixture = new EmptyRepositoryFixture();
             fixture.Repository.MakeACommit();
 
-            var arguments = new Arguments
+            var gitVersionOptions = new GitVersionOptions
             {
-                TargetPath = fixture.RepositoryPath,
-                TargetUrl = "https://github.com/GitTools/GitVersion.git",
-                TargetBranch = "refs/head/master"
+                WorkingDirectory = fixture.RepositoryPath,
+                RepositoryInfo =
+                {
+                    TargetUrl = "https://github.com/GitTools/GitVersion.git",
+                    TargetBranch = "refs/head/master"
+                }
             };
 
-            var gitVersionCalculator = GetGitVersionCalculator(arguments, repository: fixture.Repository);
+            var gitVersionCalculator = GetGitVersionCalculator(gitVersionOptions, repository: fixture.Repository);
             gitPreparer.Prepare();
             gitVersionCalculator.CalculateVersionVariables();
         }
@@ -460,16 +462,16 @@ namespace GitVersionCore.Tests
             using var fixture = new EmptyRepositoryFixture();
             var targetUrl = "https://github.com/GitTools/GitVersion.git";
 
-            var arguments = new Arguments
+            var gitVersionOptions = new GitVersionOptions
             {
-                TargetUrl = targetUrl,
-                TargetPath = fixture.RepositoryPath
+                RepositoryInfo = { TargetUrl = targetUrl },
+                WorkingDirectory = fixture.RepositoryPath
             };
 
-            sp = GetServiceProvider(arguments);
+            sp = GetServiceProvider(gitVersionOptions);
 
             var expectedPath = Path.Combine(fixture.RepositoryPath, ".git");
-            arguments.DotGitDirectory.ShouldBe(expectedPath);
+            gitVersionOptions.DotGitDirectory.ShouldBe(expectedPath);
         }
 
         [Test]
@@ -489,16 +491,16 @@ namespace GitVersionCore.Tests
 
                 var targetUrl = "https://github.com/GitTools/GitVersion.git";
 
-                var arguments = new Arguments
+                var gitVersionOptions = new GitVersionOptions
                 {
-                    TargetUrl = targetUrl,
-                    TargetPath = worktreePath
+                    RepositoryInfo = { TargetUrl = targetUrl },
+                    WorkingDirectory = worktreePath
                 };
 
-                sp = GetServiceProvider(arguments);
+                sp = GetServiceProvider(gitVersionOptions);
 
                 var expectedPath = Path.Combine(fixture.RepositoryPath, ".git");
-                arguments.DotGitDirectory.ShouldBe(expectedPath);
+                gitVersionOptions.DotGitDirectory.ShouldBe(expectedPath);
             }
             finally
             {
@@ -506,9 +508,9 @@ namespace GitVersionCore.Tests
             }
         }
 
-        private IGitVersionTool GetGitVersionCalculator(Arguments arguments, ILog logger = null, IRepository repository = null, IFileSystem fs = null)
+        private IGitVersionTool GetGitVersionCalculator(GitVersionOptions gitVersionOptions, ILog logger = null, IRepository repository = null, IFileSystem fs = null)
         {
-            sp = GetServiceProvider(arguments, logger, repository, fs);
+            sp = GetServiceProvider(gitVersionOptions, logger, repository, fs);
 
             fileSystem = sp.GetService<IFileSystem>();
             log = sp.GetService<ILog>();
@@ -518,14 +520,14 @@ namespace GitVersionCore.Tests
             return sp.GetService<IGitVersionTool>();
         }
 
-        private static IServiceProvider GetServiceProvider(Arguments arguments, ILog log = null, IRepository repository = null, IFileSystem fileSystem = null)
+        private static IServiceProvider GetServiceProvider(GitVersionOptions gitVersionOptions, ILog log = null, IRepository repository = null, IFileSystem fileSystem = null)
         {
             return ConfigureServices(services =>
             {
                 if (log != null) services.AddSingleton(log);
                 if (fileSystem != null) services.AddSingleton(fileSystem);
                 if (repository != null) services.AddSingleton(repository);
-                services.AddSingleton(Options.Create(arguments));
+                services.AddSingleton(Options.Create(gitVersionOptions));
             });
         }
     }

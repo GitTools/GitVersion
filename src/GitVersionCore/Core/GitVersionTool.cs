@@ -24,7 +24,7 @@ namespace GitVersion
         private readonly IGitVersionInfoGenerator gitVersionInfoGenerator;
         private readonly IAssemblyInfoFileUpdater assemblyInfoFileUpdater;
 
-        private readonly IOptions<Arguments> options;
+        private readonly IOptions<GitVersionOptions> options;
         private readonly Lazy<GitVersionContext> versionContext;
         private GitVersionContext context => versionContext.Value;
 
@@ -32,7 +32,7 @@ namespace GitVersion
         public GitVersionTool(ILog log, INextVersionCalculator nextVersionCalculator, IVariableProvider variableProvider,
             IGitVersionCache gitVersionCache, IGitVersionCacheKeyFactory cacheKeyFactory,
             IOutputGenerator outputGenerator, IWixVersionFileUpdater wixVersionFileUpdater, IGitVersionInfoGenerator gitVersionInfoGenerator, IAssemblyInfoFileUpdater assemblyInfoFileUpdater,
-            IOptions<Arguments> options, Lazy<GitVersionContext> versionContext)
+            IOptions<GitVersionOptions> options, Lazy<GitVersionContext> versionContext)
         {
             this.log = log ?? throw new ArgumentNullException(nameof(log));
 
@@ -53,17 +53,17 @@ namespace GitVersion
 
         public VersionVariables CalculateVersionVariables()
         {
-            var arguments = options.Value;
+            var gitVersionOptions = options.Value;
 
-            var cacheKey = cacheKeyFactory.Create(arguments.OverrideConfig);
-            var versionVariables = arguments.NoCache ? default : gitVersionCache.LoadVersionVariablesFromDiskCache(cacheKey);
+            var cacheKey = cacheKeyFactory.Create(gitVersionOptions.ConfigInfo.OverrideConfig);
+            var versionVariables = gitVersionOptions.NoCache ? default : gitVersionCache.LoadVersionVariablesFromDiskCache(cacheKey);
 
             if (versionVariables != null) return versionVariables;
 
             var semanticVersion = nextVersionCalculator.FindVersion();
             versionVariables = variableProvider.GetVariablesFor(semanticVersion, context.Configuration, context.IsCurrentCommitTagged);
 
-            if (arguments.NoCache) return versionVariables;
+            if (gitVersionOptions.NoCache) return versionVariables;
             try
             {
                 gitVersionCache.WriteVariablesToDiskCache(cacheKey, versionVariables);
@@ -78,47 +78,47 @@ namespace GitVersion
 
         public void OutputVariables(VersionVariables variables)
         {
-            var arguments = options.Value;
+            var gitVersionOptions = options.Value;
 
             using (outputGenerator)
             {
-                outputGenerator.Execute(variables, new OutputContext(arguments.TargetPath));
+                outputGenerator.Execute(variables, new OutputContext(gitVersionOptions.WorkingDirectory));
             }
         }
 
         public void UpdateAssemblyInfo(VersionVariables variables)
         {
-            var arguments = options.Value;
+            var gitVersionOptions = options.Value;
 
-            if (arguments.UpdateAssemblyInfo)
+            if (gitVersionOptions.AssemblyInfo.UpdateAssemblyInfo)
             {
                 using (assemblyInfoFileUpdater)
                 {
-                    assemblyInfoFileUpdater.Execute(variables, new AssemblyInfoContext(arguments.TargetPath, arguments.EnsureAssemblyInfo, arguments.UpdateAssemblyInfoFileName.ToArray()));
+                    assemblyInfoFileUpdater.Execute(variables, new AssemblyInfoContext(gitVersionOptions.WorkingDirectory, gitVersionOptions.AssemblyInfo.EnsureAssemblyInfo, gitVersionOptions.AssemblyInfo.AssemblyInfoFiles.ToArray()));
                 }
             }
         }
 
         public void UpdateWixVersionFile(VersionVariables variables)
         {
-            var arguments = options.Value;
+            var gitVersionOptions = options.Value;
 
-            if (arguments.UpdateWixVersionFile)
+            if (gitVersionOptions.WixInfo.UpdateWixVersionFile)
             {
                 using (wixVersionFileUpdater)
                 {
-                    wixVersionFileUpdater.Execute(variables, new WixVersionContext(arguments.TargetPath));
+                    wixVersionFileUpdater.Execute(variables, new WixVersionContext(gitVersionOptions.WorkingDirectory));
                 }
             }
         }
 
         public void GenerateGitVersionInformation(VersionVariables variables, FileWriteInfo fileWriteInfo)
         {
-            var arguments = options.Value;
+            var gitVersionOptions = options.Value;
 
             using (gitVersionInfoGenerator)
             {
-                gitVersionInfoGenerator.Execute(variables, new GitVersionInfoContext(arguments.TargetPath, fileWriteInfo.FileName, fileWriteInfo.FileExtension));
+                gitVersionInfoGenerator.Execute(variables, new GitVersionInfoContext(gitVersionOptions.WorkingDirectory, fileWriteInfo.FileName, fileWriteInfo.FileExtension));
             }
         }
     }

@@ -60,16 +60,19 @@ namespace GitVersionCore.Tests
             var root = Path.Combine(workDirectory, name);
             var dynamicDirectory = Path.Combine(root, "D"); // dynamic, keeping directory as short as possible
             var workingDirectory = Path.Combine(root, "W"); // working, keeping directory as short as possible
-            var arguments = new Arguments
+            var gitVersionOptions = new GitVersionOptions
             {
-                TargetUrl = url,
-                DynamicRepositoryClonePath = dynamicDirectory,
-                TargetBranch = targetBranch,
+                RepositoryInfo =
+                {
+                    TargetUrl = url,
+                    DynamicRepositoryClonePath = dynamicDirectory,
+                    TargetBranch = targetBranch,
+                    CommitId = commitId,
+                },
                 NoFetch = false,
-                TargetPath = workingDirectory,
-                CommitId = commitId
+                WorkingDirectory = workingDirectory,
             };
-            var options = Options.Create(arguments);
+            var options = Options.Create(gitVersionOptions);
 
             Directory.CreateDirectory(dynamicDirectory);
             Directory.CreateDirectory(workingDirectory);

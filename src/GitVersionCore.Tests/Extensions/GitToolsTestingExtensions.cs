@@ -26,12 +26,15 @@ namespace GitVersionCore.Tests
 
             repository ??= fixture.Repository;
 
-            var options = Options.Create(new Arguments
+            var options = Options.Create(new GitVersionOptions
             {
-                OverrideConfig = configuration,
-                TargetPath = repository.GetRepositoryDirectory(),
-                TargetBranch = branch,
-                CommitId = commitId,
+                WorkingDirectory = repository.GetRepositoryDirectory(),
+                ConfigInfo = { OverrideConfig = configuration },
+                RepositoryInfo =
+                {
+                    TargetBranch = branch,
+                    CommitId = commitId,
+                },
                 OnlyTrackedBranches = onlyTrackedBranches
             });
 
@@ -88,12 +91,11 @@ namespace GitVersionCore.Tests
         /// </summary>
         public static void InitializeRepo(this RemoteRepositoryFixture fixture)
         {
-            var arguments = new Arguments
+            var gitVersionOptions = new GitVersionOptions
             {
-                Authentication = new AuthenticationInfo(),
-                TargetPath = fixture.LocalRepositoryFixture.RepositoryPath
+                WorkingDirectory = fixture.LocalRepositoryFixture.RepositoryPath
             };
-            var options = Options.Create(arguments);
+            var options = Options.Create(gitVersionOptions);
 
             var serviceProvider = ConfigureServices(services =>
             {

@@ -77,7 +77,7 @@ GitVersion [path]
 
 # Execute build args
     /exec           Executes target executable making GitVersion variables available as environmental variables
-    /execargs       Arguments for the executable specified by /exec
+    /execargs       GitVersionOptions for the executable specified by /exec
     /proj           Build a msbuild file, GitVersion variables will be passed as msbuild properties
     /projargs       Additional arguments to pass to msbuild
     /verbosity      Specifies the amount of information to be displayed.

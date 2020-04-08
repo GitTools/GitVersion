@@ -13,12 +13,12 @@ namespace GitVersion
     {
         private readonly ILog log;
         private readonly IEnvironment environment;
-        private readonly IOptions<Arguments> options;
+        private readonly IOptions<GitVersionOptions> options;
         private readonly IBuildServerResolver buildServerResolver;
 
         private const string DefaultRemoteName = "origin";
 
-        public GitPreparer(ILog log, IEnvironment environment, IOptions<Arguments> options, IBuildServerResolver buildServerResolver)
+        public GitPreparer(ILog log, IEnvironment environment, IOptions<GitVersionOptions> options, IBuildServerResolver buildServerResolver)
         {
             this.log = log ?? throw new ArgumentNullException(nameof(log));
             this.environment = environment ?? throw new ArgumentNullException(nameof(environment));
@@ -28,41 +28,41 @@ namespace GitVersion
 
         public void Prepare()
         {
-            var arguments = options.Value;
+            var gitVersionOptions = options.Value;
             var buildServer = buildServerResolver.Resolve();
 
             // Normalize if we are running on build server
-            var normalizeGitDirectory = !arguments.NoNormalize && buildServer != null;
+            var normalizeGitDirectory = !gitVersionOptions.NoNormalize && buildServer != null;
             var shouldCleanUpRemotes = buildServer != null && buildServer.ShouldCleanUpRemotes();
 
-            var currentBranch = ResolveCurrentBranch(buildServer, arguments.TargetBranch, !string.IsNullOrWhiteSpace(arguments.DynamicRepositoryClonePath));
+            var currentBranch = ResolveCurrentBranch(buildServer, gitVersionOptions.RepositoryInfo.TargetBranch, !string.IsNullOrWhiteSpace(gitVersionOptions.RepositoryInfo.DynamicRepositoryClonePath));
 
             PrepareInternal(normalizeGitDirectory, currentBranch, shouldCleanUpRemotes);
 
-            var dotGitDirectory = arguments.DotGitDirectory;
-            var projectRoot = arguments.ProjectRootDirectory;
+            var dotGitDirectory = gitVersionOptions.DotGitDirectory;
+            var projectRoot = gitVersionOptions.ProjectRootDirectory;
 
             log.Info($"Project root is: {projectRoot}");
             log.Info($"DotGit directory is: {dotGitDirectory}");
             if (string.IsNullOrEmpty(dotGitDirectory) || string.IsNullOrEmpty(projectRoot))
             {
-                throw new Exception($"Failed to prepare or find the .git directory in path '{arguments.TargetPath}'.");
+                throw new Exception($"Failed to prepare or find the .git directory in path '{gitVersionOptions.WorkingDirectory}'.");
             }
         }
 
         public void PrepareInternal(bool normalizeGitDirectory, string currentBranch, bool shouldCleanUpRemotes = false)
         {
-            var arguments = options.Value;
+            var gitVersionOptions = options.Value;
             var authentication = new AuthenticationInfo
             {
-                Username = arguments.Authentication?.Username,
-                Password = arguments.Authentication?.Password
+                Username = gitVersionOptions.Authentication?.Username,
+                Password = gitVersionOptions.Authentication?.Password
             };
-            if (!string.IsNullOrWhiteSpace(options.Value.TargetUrl))
+            if (!string.IsNullOrWhiteSpace(options.Value.RepositoryInfo.TargetUrl))
             {
-                var tempRepositoryPath = CalculateTemporaryRepositoryPath(options.Value.TargetUrl, arguments.DynamicRepositoryClonePath);
+                var tempRepositoryPath = CalculateTemporaryRepositoryPath(options.Value.RepositoryInfo.TargetUrl, gitVersionOptions.RepositoryInfo.DynamicRepositoryClonePath);
 
-                arguments.DynamicGitRepositoryPath = CreateDynamicRepository(tempRepositoryPath, authentication, options.Value.TargetUrl, currentBranch);
+                gitVersionOptions.RepositoryInfo.DynamicGitRepositoryPath = CreateDynamicRepository(tempRepositoryPath, authentication, options.Value.RepositoryInfo.TargetUrl, currentBranch);
             }
             else
             {

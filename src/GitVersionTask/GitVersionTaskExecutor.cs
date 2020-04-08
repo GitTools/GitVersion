@@ -9,10 +9,10 @@ namespace GitVersion.MSBuildTask
     public class GitVersionTaskExecutor : IGitVersionTaskExecutor
     {
         private readonly IGitVersionTool gitVersionTool;
-        private readonly IOptions<Arguments> options;
+        private readonly IOptions<GitVersionOptions> options;
         private VersionVariables versionVariables;
 
-        public GitVersionTaskExecutor(IGitVersionTool gitVersionTool, IOptions<Arguments> options)
+        public GitVersionTaskExecutor(IGitVersionTool gitVersionTool, IOptions<GitVersionOptions> options)
         {
             this.gitVersionTool = gitVersionTool ?? throw new ArgumentNullException(nameof(gitVersionTool));
             this.options = options ?? throw new ArgumentNullException(nameof(options));
@@ -36,11 +36,11 @@ namespace GitVersion.MSBuildTask
             var fileWriteInfo = task.IntermediateOutputPath.GetFileWriteInfo(task.Language, task.ProjectFile, "AssemblyInfo");
             task.AssemblyInfoTempFilePath = Path.Combine(fileWriteInfo.WorkingDirectory, fileWriteInfo.FileName);
 
-            var arguments = options.Value;
-            arguments.UpdateAssemblyInfo = true;
-            arguments.EnsureAssemblyInfo = true;
-            arguments.TargetPath = fileWriteInfo.WorkingDirectory;
-            arguments.AddAssemblyInfoFileName(fileWriteInfo.FileName);
+            var gitVersionOptions = options.Value;
+            gitVersionOptions.AssemblyInfo.UpdateAssemblyInfo = true;
+            gitVersionOptions.AssemblyInfo.EnsureAssemblyInfo = true;
+            gitVersionOptions.WorkingDirectory = fileWriteInfo.WorkingDirectory;
+            gitVersionOptions.AssemblyInfo.AssemblyInfoFiles.Add(fileWriteInfo.FileName);
             gitVersionTool.UpdateAssemblyInfo(versionVariables);
         }
 
@@ -49,8 +49,8 @@ namespace GitVersion.MSBuildTask
             var fileWriteInfo = task.IntermediateOutputPath.GetFileWriteInfo(task.Language, task.ProjectFile, "GitVersionInformation");
             task.GitVersionInformationFilePath = Path.Combine(fileWriteInfo.WorkingDirectory, fileWriteInfo.FileName);
 
-            var arguments = options.Value;
-            arguments.TargetPath = fileWriteInfo.WorkingDirectory;
+            var gitVersionOptions = options.Value;
+            gitVersionOptions.WorkingDirectory = fileWriteInfo.WorkingDirectory;
 
             gitVersionTool.GenerateGitVersionInformation(versionVariables, fileWriteInfo);
         }

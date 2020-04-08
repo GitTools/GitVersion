@@ -276,7 +276,6 @@ namespace GitVersionExe.Tests
         public void OverrideconfigWithNoOptions()
         {
             var arguments = argumentParser.ParseArguments("/overrideconfig");
-            arguments.HasOverrideConfig.ShouldBe(false);
             arguments.OverrideConfig.ShouldBeNull();
         }
 
@@ -284,7 +283,6 @@ namespace GitVersionExe.Tests
         public void OverrideconfigWithSingleTagprefixOption()
         {
             var arguments = argumentParser.ParseArguments("/overrideconfig tag-prefix=sample");
-            arguments.HasOverrideConfig.ShouldBe(true);
             arguments.OverrideConfig.TagPrefix.ShouldBe("sample");
         }
 

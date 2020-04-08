@@ -12,9 +12,9 @@ namespace GitVersion
         private readonly IConfigProvider configProvider;
         private readonly IRepositoryMetadataProvider repositoryMetadataProvider;
         private readonly IBranchConfigurationCalculator branchConfigurationCalculator;
-        private readonly IOptions<Arguments> options;
+        private readonly IOptions<GitVersionOptions> options;
 
-        public GitVersionContextFactory(IConfigProvider configProvider, IRepositoryMetadataProvider repositoryMetadataProvider, IBranchConfigurationCalculator branchConfigurationCalculator, IOptions<Arguments> options)
+        public GitVersionContextFactory(IConfigProvider configProvider, IRepositoryMetadataProvider repositoryMetadataProvider, IBranchConfigurationCalculator branchConfigurationCalculator, IOptions<GitVersionOptions> options)
         {
             this.configProvider = configProvider ?? throw new ArgumentNullException(nameof(configProvider));
             this.repositoryMetadataProvider = repositoryMetadataProvider ?? throw new ArgumentNullException(nameof(repositoryMetadataProvider));
@@ -22,10 +22,10 @@ namespace GitVersion
             this.options = options ?? throw new ArgumentNullException(nameof(options));
         }
 
-        public GitVersionContext Create(Arguments arguments)
+        public GitVersionContext Create(GitVersionOptions gitVersionOptions)
         {
-            var targetBranch = repositoryMetadataProvider.GetTargetBranch(arguments.TargetBranch);
-            return Init(targetBranch, arguments.CommitId, arguments.OnlyTrackedBranches);
+            var targetBranch = repositoryMetadataProvider.GetTargetBranch(gitVersionOptions.RepositoryInfo.TargetBranch);
+            return Init(targetBranch, gitVersionOptions.RepositoryInfo.CommitId, gitVersionOptions.OnlyTrackedBranches);
         }
 
         private GitVersionContext Init(Branch currentBranch, string commitId = null, bool onlyTrackedBranches = false)
@@ -33,7 +33,7 @@ namespace GitVersion
             if (currentBranch == null)
                 throw new InvalidOperationException("Need a branch to operate on");
 
-            var configuration = configProvider.Provide(overrideConfig: options.Value.OverrideConfig);
+            var configuration = configProvider.Provide(overrideConfig: options.Value.ConfigInfo.OverrideConfig);
 
             var currentCommit = repositoryMetadataProvider.GetCurrentCommit(currentBranch, commitId);
 

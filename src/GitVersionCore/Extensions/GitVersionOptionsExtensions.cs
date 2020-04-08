@@ -3,15 +3,13 @@ using LibGit2Sharp;
 
 namespace GitVersion.Extensions
 {
-    public static class ArgumentExtensions
+    public static class GitVersionOptionsExtensions
     {
-        public static string GetWorkingDirectory(this Arguments arguments) => arguments.TargetPath?.TrimEnd('/', '\\') ?? ".";
+        public static bool IsDynamicGitRepository(this GitVersionOptions gitVersionOptions) => !string.IsNullOrWhiteSpace(gitVersionOptions.RepositoryInfo.DynamicGitRepositoryPath);
 
-        public static bool IsDynamicGitRepository(this Arguments arguments) => !string.IsNullOrWhiteSpace(arguments.DynamicGitRepositoryPath);
-
-        public static string GetDotGitDirectory(this Arguments arguments)
+        public static string GetDotGitDirectory(this GitVersionOptions gitVersionOptions)
         {
-            var gitDirectory = arguments.IsDynamicGitRepository() ? arguments.DynamicGitRepositoryPath : Repository.Discover(arguments.WorkingDirectory);
+            var gitDirectory = gitVersionOptions.IsDynamicGitRepository() ? gitVersionOptions.RepositoryInfo.DynamicGitRepositoryPath : Repository.Discover(gitVersionOptions.WorkingDirectory);
 
             gitDirectory = gitDirectory?.TrimEnd('/', '\\');
             if (string.IsNullOrEmpty(gitDirectory))
@@ -22,14 +20,14 @@ namespace GitVersion.Extensions
                 : gitDirectory;
         }
 
-        public static string GetProjectRootDirectory(this Arguments arguments)
+        public static string GetProjectRootDirectory(this GitVersionOptions gitVersionOptions)
         {
-            if (arguments.IsDynamicGitRepository())
+            if (gitVersionOptions.IsDynamicGitRepository())
             {
-                return arguments.WorkingDirectory;
+                return gitVersionOptions.WorkingDirectory;
             }
 
-            var dotGitDirectory = Repository.Discover(arguments.WorkingDirectory);
+            var dotGitDirectory = Repository.Discover(gitVersionOptions.WorkingDirectory);
 
             if (string.IsNullOrEmpty(dotGitDirectory))
                 throw new DirectoryNotFoundException($"Can't find the .git directory in {dotGitDirectory}");

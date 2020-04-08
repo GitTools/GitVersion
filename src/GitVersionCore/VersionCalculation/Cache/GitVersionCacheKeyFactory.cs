@@ -17,10 +17,10 @@ namespace GitVersion.VersionCalculation.Cache
     {
         private readonly IFileSystem fileSystem;
         private readonly ILog log;
-        private readonly IOptions<Arguments> options;
+        private readonly IOptions<GitVersionOptions> options;
         private readonly IConfigFileLocator configFileLocator;
 
-        public GitVersionCacheKeyFactory(IFileSystem fileSystem, ILog log, IOptions<Arguments> options, IConfigFileLocator configFileLocator)
+        public GitVersionCacheKeyFactory(IFileSystem fileSystem, ILog log, IOptions<GitVersionOptions> options, IConfigFileLocator configFileLocator)
         {
             this.fileSystem = fileSystem ?? throw new ArgumentNullException(nameof(fileSystem));
             this.log = log ?? throw new ArgumentNullException(nameof(log));

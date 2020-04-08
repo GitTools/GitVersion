@@ -26,7 +26,7 @@ namespace GitVersionCore.Tests
         {
             repoPath = DefaultRepoPath;
             workingPath = DefaultWorkingPath;
-            var options = Options.Create(new Arguments { TargetPath = repoPath });
+            var options = Options.Create(new GitVersionOptions { WorkingDirectory = repoPath });
 
             var sp = ConfigureServices(services =>
             {

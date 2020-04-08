@@ -35,7 +35,7 @@ namespace GitVersionCore.Tests
         {
             try
             {
-                var options = Options.Create(new Arguments { TargetPath = workDirectory, NoFetch = true });
+                var options = Options.Create(new GitVersionOptions { WorkingDirectory = workDirectory, NoFetch = true });
 
                 var sp = ConfigureServices(services =>
                 {
@@ -63,7 +63,7 @@ namespace GitVersionCore.Tests
 
             try
             {
-                var options = Options.Create(new Arguments { TargetPath = childDir, NoFetch = true });
+                var options = Options.Create(new GitVersionOptions { WorkingDirectory = childDir, NoFetch = true });
 
                 var sp = ConfigureServices(services =>
                 {

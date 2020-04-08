@@ -11,9 +11,9 @@ namespace GitVersion
     public class ExecCommand : IExecCommand
     {
         private readonly ILog log;
-        private readonly IOptions<Arguments> options;
+        private readonly IOptions<GitVersionOptions> options;
 
-        public ExecCommand(ILog log, IOptions<Arguments> options)
+        public ExecCommand(ILog log, IOptions<GitVersionOptions> options)
         {
             this.log = log ?? throw new ArgumentNullException(nameof(log));
             this.options = options ?? throw new ArgumentNullException(nameof(options));
@@ -21,13 +21,13 @@ namespace GitVersion
 
         public void Execute(VersionVariables variables)
         {
-            var arguments = options.Value;
+            var gitVersionOptions = options.Value;
 
-            RunExecCommandIfNeeded(arguments, arguments.TargetPath, variables, log);
-            RunMsBuildIfNeeded(arguments, arguments.TargetPath, variables, log);
+            RunExecCommandIfNeeded(gitVersionOptions, gitVersionOptions.WorkingDirectory, variables, log);
+            RunMsBuildIfNeeded(gitVersionOptions, gitVersionOptions.WorkingDirectory, variables, log);
         }
 
-        private static bool RunMsBuildIfNeeded(Arguments args, string workingDirectory, VersionVariables variables, ILog log)
+        private static bool RunMsBuildIfNeeded(GitVersionOptions args, string workingDirectory, VersionVariables variables, ILog log)
         {
 #pragma warning disable CS0612 // Type or member is obsolete
             if (string.IsNullOrEmpty(args.Proj)) return false;
@@ -39,7 +39,7 @@ namespace GitVersion
             return RunExecCommandIfNeeded(args, workingDirectory, variables, log);
         }
 
-        private static bool RunExecCommandIfNeeded(Arguments args, string workingDirectory, VersionVariables variables, ILog log)
+        private static bool RunExecCommandIfNeeded(GitVersionOptions args, string workingDirectory, VersionVariables variables, ILog log)
         {
 #pragma warning disable CS0612 // Type or member is obsolete
             if (string.IsNullOrEmpty(args.Exec)) return false;

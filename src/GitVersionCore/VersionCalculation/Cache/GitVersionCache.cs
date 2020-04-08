@@ -15,9 +15,9 @@ namespace GitVersion.VersionCalculation.Cache
     {
         private readonly IFileSystem fileSystem;
         private readonly ILog log;
-        private readonly IOptions<Arguments> options;
+        private readonly IOptions<GitVersionOptions> options;
 
-        public GitVersionCache(IFileSystem fileSystem, ILog log, IOptions<Arguments> options)
+        public GitVersionCache(IFileSystem fileSystem, ILog log, IOptions<GitVersionOptions> options)
         {
             this.fileSystem = fileSystem ?? throw new ArgumentNullException(nameof(fileSystem));
             this.log = log ?? throw new ArgumentNullException(nameof(log));

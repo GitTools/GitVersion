@@ -37,6 +37,7 @@ namespace GitVersionExe.Tests
                 { nameof(Arguments.UpdateWixVersionFile), "/updatewixversionfile" },
                 { nameof(Arguments.ConfigFile), "/config" },
                 { nameof(Arguments.Verbosity), "/verbosity" },
+                { nameof(Arguments.CommitId), "/c" },
             };
             string helpText = null;
 
@@ -45,10 +46,6 @@ namespace GitVersionExe.Tests
             var ignored = new[]
             {
                 nameof(Arguments.Authentication),
-                nameof(Arguments.CommitId),
-                nameof(Arguments.DynamicGitRepositoryPath),
-                nameof(Arguments.HasOverrideConfig),
-                nameof(Arguments.OnlyTrackedBranches)
             };
             typeof(Arguments).GetFields()
                 .Select(p => p.Name)

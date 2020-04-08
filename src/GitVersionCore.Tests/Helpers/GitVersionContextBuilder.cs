@@ -80,7 +80,7 @@ namespace GitVersionCore.Tests
 
             config.Reset();
 
-            var options = Options.Create(new Arguments { OverrideConfig = config });
+            var options = Options.Create(new GitVersionOptions { ConfigInfo = { OverrideConfig = config } });
 
             ServicesProvider = ConfigureServices(services =>
             {

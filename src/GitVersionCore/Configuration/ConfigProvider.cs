@@ -12,10 +12,10 @@ namespace GitVersion.Configuration
         private readonly IFileSystem fileSystem;
         private readonly ILog log;
         private readonly IConfigFileLocator configFileLocator;
-        private readonly IOptions<Arguments> options;
+        private readonly IOptions<GitVersionOptions> options;
         private readonly IConfigInitWizard configInitWizard;
 
-        public ConfigProvider(IFileSystem fileSystem, ILog log, IConfigFileLocator configFileLocator, IOptions<Arguments> options, IConfigInitWizard configInitWizard)
+        public ConfigProvider(IFileSystem fileSystem, ILog log, IConfigFileLocator configFileLocator, IOptions<GitVersionOptions> options, IConfigInitWizard configInitWizard)
         {
             this.fileSystem = fileSystem ?? throw new ArgumentNullException(nameof(fileSystem));
             this.log = log ?? throw new ArgumentNullException(nameof(log));

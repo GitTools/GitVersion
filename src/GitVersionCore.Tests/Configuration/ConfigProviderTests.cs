@@ -33,7 +33,7 @@ namespace GitVersionCore.Tests
         public void Setup()
         {
             repoPath = DefaultRepoPath;
-            var options = Options.Create(new Arguments { TargetPath = repoPath });
+            var options = Options.Create(new GitVersionOptions { WorkingDirectory = repoPath });
             var sp = ConfigureServices(services =>
             {
                 services.AddSingleton(options);
@@ -264,7 +264,7 @@ branches: {}";
             var logAppender = new TestLogAppender(Action);
             var log = new Log(logAppender);
 
-            var options = Options.Create(new Arguments { TargetPath = repoPath });
+            var options = Options.Create(new GitVersionOptions { WorkingDirectory = repoPath });
             var sp = ConfigureServices(services =>
             {
                 services.AddSingleton(options);

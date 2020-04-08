@@ -133,7 +133,6 @@ namespace GitVersion
                 if (name.IsSwitch("u"))
                 {
                     EnsureArgumentValueCount(values);
-                    if (arguments.Authentication == null) arguments.Authentication = new AuthenticationInfo();
                     arguments.Authentication.Username = value;
                     continue;
                 }
@@ -141,7 +140,6 @@ namespace GitVersion
                 if (name.IsSwitch("p"))
                 {
                     EnsureArgumentValueCount(values);
-                    if (arguments.Authentication == null) arguments.Authentication = new AuthenticationInfo();
                     arguments.Authentication.Password = value;
                     continue;
                 }
@@ -329,7 +327,6 @@ namespace GitVersion
                         continue;
                     }
 
-                    arguments.HasOverrideConfig = true;
                     arguments.OverrideConfig = new Config();
 
                     if (keyValueOptions.Length > 1)
@@ -434,14 +431,12 @@ namespace GitVersion
             var username = environment.GetEnvironmentVariable("GITVERSION_REMOTE_USERNAME");
             if (!string.IsNullOrWhiteSpace(username))
             {
-                if (arguments.Authentication == null) arguments.Authentication = new AuthenticationInfo();
                 arguments.Authentication.Username = username;
             }
 
             var password = environment.GetEnvironmentVariable("GITVERSION_REMOTE_PASSWORD");
             if (!string.IsNullOrWhiteSpace(password))
             {
-                if (arguments.Authentication == null) arguments.Authentication = new AuthenticationInfo();
                 arguments.Authentication.Username = password;
             }
         }

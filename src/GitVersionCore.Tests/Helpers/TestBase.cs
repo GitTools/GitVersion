@@ -27,7 +27,11 @@ namespace GitVersionCore.Tests.Helpers
         protected static IServiceProvider BuildServiceProvider(IRepository repository, string branch, Config config = null)
         {
             config ??= new Config().ApplyDefaults();
-            var options = Options.Create(new Arguments { OverrideConfig = config, TargetBranch = branch });
+            var options = Options.Create(new GitVersionOptions
+            {
+                ConfigInfo = { OverrideConfig = config },
+                RepositoryInfo = { TargetBranch = branch }
+            });
 
             var sp = ConfigureServices(services =>
             {

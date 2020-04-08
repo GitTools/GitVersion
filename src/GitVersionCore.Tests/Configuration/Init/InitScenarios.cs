@@ -26,7 +26,7 @@ namespace GitVersionCore.Tests.Init
         public void CanSetNextVersion()
         {
             var workingDirectory = RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? "c:\\proj" : "/proj";
-            var options = Options.Create(new Arguments { TargetPath = workingDirectory });
+            var options = Options.Create(new GitVersionOptions { WorkingDirectory = workingDirectory });
 
             var sp = ConfigureServices(services =>
             {

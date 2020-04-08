@@ -2,6 +2,6 @@ namespace GitVersion
 {
     public interface IGitVersionContextFactory
     {
-        GitVersionContext Create(Arguments arguments);
+        GitVersionContext Create(GitVersionOptions gitVersionOptions);
     }
 }

@@ -15,12 +15,11 @@ namespace GitVersionTask.Tests.Helpers
         /// </summary>
         public static void InitializeRepo(this RemoteRepositoryFixture fixture)
         {
-            var arguments = new Arguments
+            var gitVersionOptions = new GitVersionOptions
             {
-                Authentication = new AuthenticationInfo(),
-                TargetPath = fixture.LocalRepositoryFixture.RepositoryPath
+                WorkingDirectory = fixture.LocalRepositoryFixture.RepositoryPath
             };
-            var options = Options.Create(arguments);
+            var options = Options.Create(gitVersionOptions);
 
             var serviceProvider = ConfigureServices(services =>
             {

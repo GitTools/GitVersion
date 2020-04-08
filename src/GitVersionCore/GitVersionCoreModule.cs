@@ -55,7 +55,7 @@ namespace GitVersion
 
             services.AddSingleton(sp =>
             {
-                var options = sp.GetService<IOptions<Arguments>>();
+                var options = sp.GetService<IOptions<GitVersionOptions>>();
                 var contextFactory = sp.GetService<IGitVersionContextFactory>();
                 return new Lazy<GitVersionContext>(() => contextFactory.Create(options.Value));
             });

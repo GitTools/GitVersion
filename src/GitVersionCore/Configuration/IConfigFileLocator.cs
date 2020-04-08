@@ -6,9 +6,9 @@ namespace GitVersion.Configuration
     {
         bool HasConfigFileAt(string workingDirectory);
         string GetConfigFilePath(string workingDirectory);
-        void Verify(Arguments arguments);
+        void Verify(GitVersionOptions gitVersionOptions);
         void Verify(string workingDirectory, string projectRootDirectory);
-        string SelectConfigFilePath(Arguments arguments);
+        string SelectConfigFilePath(GitVersionOptions gitVersionOptions);
         Config ReadConfig(string workingDirectory);
     }
 }

@@ -47,33 +47,33 @@ namespace GitVersion.MSBuildTask
         {
             var log = sp.GetService<ILog>();
             var buildServerResolver = sp.GetService<IBuildServerResolver>();
-            var arguments = sp.GetService<IOptions<Arguments>>().Value;
+            var gitVersionOptions = sp.GetService<IOptions<GitVersionOptions>>().Value;
 
             log.AddLogAppender(new MsBuildAppender(task.Log));
             var buildServer = buildServerResolver.Resolve();
 
             if (buildServer != null)
             {
-                arguments.Output.Add(OutputType.BuildServer);
+                gitVersionOptions.Output.Add(OutputType.BuildServer);
             }
-            arguments.NoFetch = arguments.NoFetch || buildServer != null && buildServer.PreventFetch();
+            gitVersionOptions.NoFetch = gitVersionOptions.NoFetch || buildServer != null && buildServer.PreventFetch();
         }
 
         private static IServiceProvider BuildServiceProvider(GitVersionTaskBase task)
         {
             var services = new ServiceCollection();
 
-            var arguments = new Arguments
+            var gitVersionOptions = new GitVersionOptions
             {
-                TargetPath = task.SolutionDirectory,
-                ConfigFile = task.ConfigFilePath,
+                WorkingDirectory = task.SolutionDirectory,
+                ConfigInfo = { ConfigFile = task.ConfigFilePath },
                 NoFetch = task.NoFetch,
                 NoNormalize = task.NoNormalize
             };
 
-            arguments.Output.Add(OutputType.BuildServer);
+            gitVersionOptions.Output.Add(OutputType.BuildServer);
 
-            services.AddSingleton(Options.Create(arguments));
+            services.AddSingleton(Options.Create(gitVersionOptions));
             services.AddModule(new GitVersionCoreModule());
             services.AddModule(new GitVersionTaskModule());
 

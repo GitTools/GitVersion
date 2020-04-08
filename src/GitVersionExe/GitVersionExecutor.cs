@@ -36,11 +36,11 @@ namespace GitVersion
             this.execCommand = execCommand ?? throw new ArgumentNullException(nameof(execCommand));
         }
 
-        public int Execute(Arguments arguments)
+        public int Execute(GitVersionOptions gitVersionOptions)
         {
-            if (!HandleNonMainCommand(arguments, out var exitCode))
+            if (!HandleNonMainCommand(gitVersionOptions, out var exitCode))
             {
-                exitCode = RunGitVersionTool(arguments);
+                exitCode = RunGitVersionTool(gitVersionOptions);
             }
 
             if (exitCode != 0)
@@ -52,7 +52,7 @@ namespace GitVersion
             return exitCode;
         }
 
-        private int RunGitVersionTool(Arguments arguments)
+        private int RunGitVersionTool(GitVersionOptions gitVersionOptions)
         {
             try
             {
@@ -75,14 +75,14 @@ namespace GitVersion
                 var error = $"An unexpected error occurred:{System.Environment.NewLine}{exception}";
                 log.Error(error);
 
-                if (arguments == null) return 1;
+                if (gitVersionOptions == null) return 1;
 
                 log.Info("Attempting to show the current git graph (please include in issue): ");
                 log.Info("Showing max of 100 commits");
 
                 try
                 {
-                    LibGitExtensions.DumpGraph(arguments.TargetPath, mess => log.Info(mess), 100);
+                    LibGitExtensions.DumpGraph(gitVersionOptions.WorkingDirectory, mess => log.Info(mess), 100);
                 }
                 catch (Exception dumpGraphException)
                 {
@@ -94,9 +94,9 @@ namespace GitVersion
             return 0;
         }
 
-        private bool HandleNonMainCommand(Arguments arguments, out int exitCode)
+        private bool HandleNonMainCommand(GitVersionOptions gitVersionOptions, out int exitCode)
         {
-            if (arguments == null)
+            if (gitVersionOptions == null)
             {
                 helpWriter.Write();
                 exitCode = 1;
@@ -104,7 +104,7 @@ namespace GitVersion
             }
 
 
-            if (arguments.IsVersion)
+            if (gitVersionOptions.IsVersion)
             {
                 var assembly = Assembly.GetExecutingAssembly();
                 versionWriter.Write(assembly);
@@ -112,56 +112,56 @@ namespace GitVersion
                 return true;
             }
 
-            if (arguments.IsHelp)
+            if (gitVersionOptions.IsHelp)
             {
                 helpWriter.Write();
                 exitCode = 0;
                 return true;
             }
 
-            if (arguments.Diag)
+            if (gitVersionOptions.Diag)
             {
-                arguments.NoCache = true;
-                arguments.Output.Add(OutputType.BuildServer);
+                gitVersionOptions.NoCache = true;
+                gitVersionOptions.Output.Add(OutputType.BuildServer);
             }
 
 #pragma warning disable CS0612 // Type or member is obsolete
-            if (!string.IsNullOrEmpty(arguments.Proj) || !string.IsNullOrEmpty(arguments.Exec))
+            if (!string.IsNullOrEmpty(gitVersionOptions.Proj) || !string.IsNullOrEmpty(gitVersionOptions.Exec))
 #pragma warning restore CS0612 // Type or member is obsolete
             {
-                arguments.Output.Add(OutputType.BuildServer);
+                gitVersionOptions.Output.Add(OutputType.BuildServer);
             }
 
-            ConfigureLogging(arguments, log);
+            ConfigureLogging(gitVersionOptions, log);
 
-            var targetPath = arguments.TargetPath;
-            if (arguments.Diag)
+            var workingDirectory = gitVersionOptions.WorkingDirectory;
+            if (gitVersionOptions.Diag)
             {
                 log.Info("Dumping commit graph: ");
-                LibGitExtensions.DumpGraph(targetPath, mess => log.Info(mess), 100);
+                LibGitExtensions.DumpGraph(workingDirectory, mess => log.Info(mess), 100);
             }
 
-            if (!Directory.Exists(targetPath))
+            if (!Directory.Exists(workingDirectory))
             {
-                log.Warning($"The working directory '{targetPath}' does not exist.");
+                log.Warning($"The working directory '{workingDirectory}' does not exist.");
             }
             else
             {
-                log.Info("Working directory: " + targetPath);
+                log.Info("Working directory: " + workingDirectory);
             }
 
-            configFileLocator.Verify(arguments);
+            configFileLocator.Verify(gitVersionOptions);
 
-            if (arguments.Init)
+            if (gitVersionOptions.Init)
             {
-                configProvider.Init(targetPath);
+                configProvider.Init(workingDirectory);
                 exitCode = 0;
                 return true;
             }
 
-            if (arguments.ShowConfig)
+            if (gitVersionOptions.ConfigInfo.ShowConfig)
             {
-                var config = configProvider.Provide(targetPath);
+                var config = configProvider.Provide(workingDirectory);
                 console.WriteLine(config.ToString());
                 exitCode = 0;
                 return true;
@@ -171,16 +171,16 @@ namespace GitVersion
             return false;
         }
 
-        private static void ConfigureLogging(Arguments arguments, ILog log)
+        private static void ConfigureLogging(GitVersionOptions gitVersionOptions, ILog log)
         {
-            if (arguments.Output.Contains(OutputType.BuildServer) || arguments.LogFilePath == "console" || arguments.Init)
+            if (gitVersionOptions.Output.Contains(OutputType.BuildServer) || gitVersionOptions.LogFilePath == "console" || gitVersionOptions.Init)
             {
                 log.AddLogAppender(new ConsoleAppender());
             }
 
-            if (arguments.LogFilePath != null && arguments.LogFilePath != "console")
+            if (gitVersionOptions.LogFilePath != null && gitVersionOptions.LogFilePath != "console")
             {
-                log.AddLogAppender(new FileAppender(arguments.LogFilePath));
+                log.AddLogAppender(new FileAppender(gitVersionOptions.LogFilePath));
             }
         }
     }

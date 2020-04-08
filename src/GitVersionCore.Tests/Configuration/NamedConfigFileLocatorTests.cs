@@ -21,12 +21,12 @@ namespace GitVersionCore.Tests
         private string workingPath;
         private IFileSystem fileSystem;
         private IConfigFileLocator configFileLocator;
-        private Arguments arguments;
+        private GitVersionOptions gitVersionOptions;
 
         [SetUp]
         public void Setup()
         {
-            arguments = new Arguments { ConfigFile = "my-config.yaml" };
+            gitVersionOptions = new GitVersionOptions { ConfigInfo = { ConfigFile = "my-config.yaml" } };
             repoPath = DefaultRepoPath;
             workingPath = DefaultWorkingPath;
 
@@ -36,7 +36,7 @@ namespace GitVersionCore.Tests
         [Test]
         public void ThrowsExceptionOnAmbiguousConfigFileLocation()
         {
-            var sp = GetServiceProvider(arguments);
+            var sp = GetServiceProvider(gitVersionOptions);
             configFileLocator = sp.GetService<IConfigFileLocator>();
             fileSystem = sp.GetService<IFileSystem>();
 
@@ -54,7 +54,7 @@ namespace GitVersionCore.Tests
         {
             workingPath = DefaultRepoPath;
 
-            var sp = GetServiceProvider(arguments);
+            var sp = GetServiceProvider(gitVersionOptions);
             configFileLocator = sp.GetService<IConfigFileLocator>();
             fileSystem = sp.GetService<IFileSystem>();
 
@@ -68,7 +68,7 @@ namespace GitVersionCore.Tests
         {
             workingPath = DefaultRepoPath.ToLower();
 
-            var sp = GetServiceProvider(arguments);
+            var sp = GetServiceProvider(gitVersionOptions);
             configFileLocator = sp.GetService<IConfigFileLocator>();
             fileSystem = sp.GetService<IFileSystem>();
 
@@ -82,8 +82,8 @@ namespace GitVersionCore.Tests
         {
             workingPath = DefaultRepoPath;
 
-            arguments = new Arguments { ConfigFile = "./src/my-config.yaml" };
-            var sp = GetServiceProvider(arguments);
+            gitVersionOptions = new GitVersionOptions { ConfigInfo = { ConfigFile = "./src/my-config.yaml" } };
+            var sp = GetServiceProvider(gitVersionOptions);
             configFileLocator = sp.GetService<IConfigFileLocator>();
             fileSystem = sp.GetService<IFileSystem>();
 
@@ -101,7 +101,7 @@ namespace GitVersionCore.Tests
             var logAppender = new TestLogAppender(Action);
             var log = new Log(logAppender);
 
-            var sp = GetServiceProvider(arguments, log);
+            var sp = GetServiceProvider(gitVersionOptions, log);
             configFileLocator = sp.GetService<IConfigFileLocator>();
             fileSystem = sp.GetService<IFileSystem>();
 
@@ -122,7 +122,7 @@ namespace GitVersionCore.Tests
             var logAppender = new TestLogAppender(Action);
             var log = new Log(logAppender);
 
-            var sp = GetServiceProvider(arguments, log);
+            var sp = GetServiceProvider(gitVersionOptions, log);
             configFileLocator = sp.GetService<IConfigFileLocator>();
             fileSystem = sp.GetService<IFileSystem>();
 
@@ -137,13 +137,13 @@ namespace GitVersionCore.Tests
         [Test]
         public void ThrowsExceptionOnCustomYmlFileDoesNotExist()
         {
-            var sp = GetServiceProvider(arguments);
+            var sp = GetServiceProvider(gitVersionOptions);
             configFileLocator = sp.GetService<IConfigFileLocator>();
 
             var exception = Should.Throw<WarningException>(() => { configFileLocator.Verify(workingPath, repoPath); });
 
-            var workingPathFileConfig = Path.Combine(workingPath, arguments.ConfigFile);
-            var repoPathFileConfig = Path.Combine(repoPath, arguments.ConfigFile);
+            var workingPathFileConfig = Path.Combine(workingPath, gitVersionOptions.ConfigInfo.ConfigFile);
+            var repoPathFileConfig = Path.Combine(repoPath, gitVersionOptions.ConfigInfo.ConfigFile);
             var expectedMessage = $"The configuration file was not found at '{workingPathFileConfig}' or '{repoPathFileConfig}'";
             exception.Message.ShouldBe(expectedMessage);
         }
@@ -158,12 +158,12 @@ namespace GitVersionCore.Tests
             return filePath;
         }
 
-        private static IServiceProvider GetServiceProvider(Arguments arguments, ILog log = null)
+        private static IServiceProvider GetServiceProvider(GitVersionOptions gitVersionOptions, ILog log = null)
         {
             return ConfigureServices(services =>
             {
                 if (log != null) services.AddSingleton(log);
-                services.AddSingleton(Options.Create(arguments));
+                services.AddSingleton(Options.Create(gitVersionOptions));
             });
         }
     }
