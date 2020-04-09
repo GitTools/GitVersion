@@ -18,6 +18,7 @@ namespace GitVersion
         private readonly IGitVersionCache gitVersionCache;
         private readonly INextVersionCalculator nextVersionCalculator;
         private readonly IVariableProvider variableProvider;
+        private readonly IGitPreparer gitPreparer;
         private readonly IGitVersionCacheKeyFactory cacheKeyFactory;
         private readonly IOutputGenerator outputGenerator;
         private readonly IWixVersionFileUpdater wixVersionFileUpdater;
@@ -28,8 +29,7 @@ namespace GitVersion
         private readonly Lazy<GitVersionContext> versionContext;
         private GitVersionContext context => versionContext.Value;
 
-
-        public GitVersionTool(ILog log, INextVersionCalculator nextVersionCalculator, IVariableProvider variableProvider,
+        public GitVersionTool(ILog log, INextVersionCalculator nextVersionCalculator, IVariableProvider variableProvider, IGitPreparer gitPreparer,
             IGitVersionCache gitVersionCache, IGitVersionCacheKeyFactory cacheKeyFactory,
             IOutputGenerator outputGenerator, IWixVersionFileUpdater wixVersionFileUpdater, IGitVersionInfoGenerator gitVersionInfoGenerator, IAssemblyInfoFileUpdater assemblyInfoFileUpdater,
             IOptions<GitVersionOptions> options, Lazy<GitVersionContext> versionContext)
@@ -38,6 +38,7 @@ namespace GitVersion
 
             this.nextVersionCalculator = nextVersionCalculator ?? throw new ArgumentNullException(nameof(nextVersionCalculator));
             this.variableProvider = variableProvider ?? throw new ArgumentNullException(nameof(variableProvider));
+            this.gitPreparer = gitPreparer?? throw new ArgumentNullException(nameof(gitPreparer));
 
             this.cacheKeyFactory = cacheKeyFactory ?? throw new ArgumentNullException(nameof(cacheKeyFactory));
             this.gitVersionCache = gitVersionCache ?? throw new ArgumentNullException(nameof(gitVersionCache));
@@ -53,6 +54,8 @@ namespace GitVersion
 
         public VersionVariables CalculateVersionVariables()
         {
+            gitPreparer.Prepare(); //we need to prepare the repository before using it for version calculation
+
             var gitVersionOptions = options.Value;
 
             var cacheKey = cacheKeyFactory.Create(gitVersionOptions.ConfigInfo.OverrideConfig);

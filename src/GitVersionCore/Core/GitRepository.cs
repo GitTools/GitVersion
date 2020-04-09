@@ -10,15 +10,9 @@ namespace GitVersion
         private Lazy<IRepository> repositoryLazy;
         private IRepository repositoryInstance => repositoryLazy.Value;
 
-        public GitRepository(IOptions<GitVersionOptions> options, IGitPreparer preparer)
+        public GitRepository(IOptions<GitVersionOptions> options)
         {
-            repositoryLazy = new Lazy<IRepository>(() => InitRepository(options, preparer));
-        }
-
-        private static IRepository InitRepository(IOptions<GitVersionOptions> options, IGitPreparer preparer)
-        {
-            preparer.Prepare(); //we need to prepare the repository before using it for version calculation
-            return new Repository(options.Value.DotGitDirectory);
+            repositoryLazy = new Lazy<IRepository>(() => new Repository(options.Value.DotGitDirectory));
         }
 
         public void Dispose()

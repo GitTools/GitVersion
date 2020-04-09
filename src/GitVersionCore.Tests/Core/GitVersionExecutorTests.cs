@@ -3,6 +3,7 @@ using System.IO;
 using System.Text;
 using GitTools.Testing;
 using GitVersion;
+using GitVersion.BuildAgents;
 using GitVersion.Configuration;
 using GitVersion.Logging;
 using GitVersion.Model.Configuration;
@@ -36,18 +37,23 @@ namespace GitVersionCore.Tests
 
             var gitVersionOptions = new GitVersionOptions
             {
-                RepositoryInfo = { TargetUrl = targetUrl },
-                WorkingDirectory = fixture.RepositoryPath
+                RepositoryInfo = { TargetUrl = targetUrl, TargetBranch = targetBranch },
+                WorkingDirectory = fixture.RepositoryPath,
+                Settings = { NoNormalize = false }
             };
 
-            sp = GetServiceProvider(gitVersionOptions);
+            var environment = new TestEnvironment();
+            environment.SetEnvironmentVariable(AzurePipelines.EnvironmentVariableName, "true");
 
-            var preparer = sp.GetService<IGitPreparer>() as GitPreparer;
+            sp = GetServiceProvider(gitVersionOptions, environment:environment);
 
-            preparer?.PrepareInternal(true, targetBranch);
+            var preparer = sp.GetService<IGitPreparer>();
+
+            preparer.Prepare();
             var cacheKeyFactory = sp.GetService<IGitVersionCacheKeyFactory>();
             var cacheKey1 = cacheKeyFactory.Create(null);
-            preparer?.PrepareInternal(true, targetBranch);
+            preparer.Prepare();
+
             var cacheKey2 = cacheKeyFactory.Create(null);
 
             cacheKey2.Value.ShouldBe(cacheKey1.Value);
@@ -89,11 +95,14 @@ namespace GitVersionCore.Tests
 
                 var gitVersionOptions = new GitVersionOptions
                 {
-                    RepositoryInfo = { TargetUrl = targetUrl },
+                    RepositoryInfo = { TargetUrl = targetUrl, TargetBranch = "master"},
                     WorkingDirectory = worktreePath
                 };
 
                 sp = GetServiceProvider(gitVersionOptions);
+
+                var preparer = sp.GetService<IGitPreparer>();
+                preparer.Prepare();
                 var cacheKey = sp.GetService<IGitVersionCacheKeyFactory>().Create(null);
                 cacheKey.Value.ShouldNotBeEmpty();
             }
@@ -460,11 +469,9 @@ namespace GitVersionCore.Tests
         public void GetDotGitDirectoryNoWorktree()
         {
             using var fixture = new EmptyRepositoryFixture();
-            var targetUrl = "https://github.com/GitTools/GitVersion.git";
 
             var gitVersionOptions = new GitVersionOptions
             {
-                RepositoryInfo = { TargetUrl = targetUrl },
                 WorkingDirectory = fixture.RepositoryPath
             };
 
@@ -489,11 +496,8 @@ namespace GitVersionCore.Tests
                 var repo = new Repository(fixture.RepositoryPath);
                 repo.Worktrees.Add("worktree", worktreePath, false);
 
-                var targetUrl = "https://github.com/GitTools/GitVersion.git";
-
                 var gitVersionOptions = new GitVersionOptions
                 {
-                    RepositoryInfo = { TargetUrl = targetUrl },
                     WorkingDirectory = worktreePath
                 };
 
@@ -520,13 +524,14 @@ namespace GitVersionCore.Tests
             return sp.GetService<IGitVersionTool>();
         }
 
-        private static IServiceProvider GetServiceProvider(GitVersionOptions gitVersionOptions, ILog log = null, IRepository repository = null, IFileSystem fileSystem = null)
+        private static IServiceProvider GetServiceProvider(GitVersionOptions gitVersionOptions, ILog log = null, IRepository repository = null, IFileSystem fileSystem = null, IEnvironment environment = null)
         {
             return ConfigureServices(services =>
             {
                 if (log != null) services.AddSingleton(log);
                 if (fileSystem != null) services.AddSingleton(fileSystem);
                 if (repository != null) services.AddSingleton(repository);
+                if (environment != null) services.AddSingleton(environment);
                 services.AddSingleton(Options.Create(gitVersionOptions));
             });
         }

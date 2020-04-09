@@ -6,6 +6,5 @@ namespace GitVersion
         public string TargetBranch;
         public string CommitId;
         public string DynamicRepositoryClonePath;
-        public string DynamicGitRepositoryPath;
     }
 }

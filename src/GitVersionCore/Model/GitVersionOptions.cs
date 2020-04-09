@@ -10,10 +10,13 @@ namespace GitVersion
     {
         private Lazy<string> dotGitDirectory;
         private Lazy<string> projectRootDirectory;
+        private Lazy<string> dynamicGitRepositoryPath;
+
         public GitVersionOptions()
         {
             dotGitDirectory = new Lazy<string>(this.GetDotGitDirectory);
             projectRootDirectory = new Lazy<string>(this.GetProjectRootDirectory);
+            dynamicGitRepositoryPath = new Lazy<string>(this.GetDynamicGitRepositoryPath);
         }
 
         private string workingDirectory;
@@ -25,6 +28,7 @@ namespace GitVersion
 
         public string DotGitDirectory => dotGitDirectory.Value;
         public string ProjectRootDirectory => projectRootDirectory.Value;
+        public string DynamicGitRepositoryPath => dynamicGitRepositoryPath.Value;
 
         public AssemblyInfo AssemblyInfo { get; } = new AssemblyInfo();
         public AuthenticationInfo Authentication { get; } = new AuthenticationInfo();

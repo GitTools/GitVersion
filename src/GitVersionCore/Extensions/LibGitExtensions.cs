@@ -88,7 +88,7 @@ namespace GitVersion.Extensions
                     e => output.AppendLineFormat("ERROR: {0}", e),
                     null,
                     "git",
-                    GitRepositoryHelper.CreateGitLogArgs(maxCommits),
+                    CreateGitLogArgs(maxCommits),
                     workingDirectory);
             }
             catch (FileNotFoundException exception)
@@ -115,7 +115,7 @@ namespace GitVersion.Extensions
         public static bool IsBranch(this string branchName, string branchNameToCompareAgainst)
         {
             // "develop" == "develop"
-            if (string.Equals(branchName, branchNameToCompareAgainst, StringComparison.OrdinalIgnoreCase))
+            if (String.Equals(branchName, branchNameToCompareAgainst, StringComparison.OrdinalIgnoreCase))
             {
                 return true;
             }
@@ -127,6 +127,11 @@ namespace GitVersion.Extensions
             }
 
             return false;
+        }
+
+        public static string CreateGitLogArgs(int? maxCommits)
+        {
+            return @"log --graph --format=""%h %cr %d"" --decorate --date=relative --all --remotes=*" + (maxCommits != null ? $" -n {maxCommits}" : null);
         }
     }
 }

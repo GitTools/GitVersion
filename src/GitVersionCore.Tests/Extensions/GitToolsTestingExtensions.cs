@@ -1,6 +1,7 @@
 using System;
 using GitTools.Testing;
 using GitVersion;
+using GitVersion.BuildAgents;
 using GitVersion.Configuration;
 using GitVersion.Extensions;
 using GitVersion.Model.Configuration;
@@ -97,13 +98,17 @@ namespace GitVersionCore.Tests
             };
             var options = Options.Create(gitVersionOptions);
 
+            var environment = new TestEnvironment();
+            environment.SetEnvironmentVariable(AzurePipelines.EnvironmentVariableName, "true");
+
             var serviceProvider = ConfigureServices(services =>
             {
                 services.AddSingleton(options);
+                services.AddSingleton(environment);
             });
 
-            var gitPreparer = serviceProvider.GetService<IGitPreparer>() as GitPreparer;
-            gitPreparer?.PrepareInternal(true, null);
+            var gitPreparer = serviceProvider.GetService<IGitPreparer>();
+            gitPreparer.Prepare();
         }
 
         private static IServiceProvider ConfigureServices(Action<IServiceCollection> servicesOverrides = null)

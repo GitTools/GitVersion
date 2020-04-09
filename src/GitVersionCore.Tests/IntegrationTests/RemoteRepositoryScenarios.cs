@@ -1,10 +1,11 @@
 using System;
 using GitTools.Testing;
 using GitVersion;
-using GitVersion.Helpers;
-using GitVersion.Logging;
+using GitVersion.BuildAgents;
 using GitVersionCore.Tests.Helpers;
 using LibGit2Sharp;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using NUnit.Framework;
 using Shouldly;
 
@@ -24,6 +25,7 @@ namespace GitVersionCore.Tests.IntegrationTests
         [Test]
         public void GivenARemoteGitRepositoryWithCommitsAndBranchesThenClonedLocalShouldMatchRemoteVersion()
         {
+            var targetBranch = "release-1.0";
             using var fixture = new RemoteRepositoryFixture(
                 path =>
                 {
@@ -34,14 +36,41 @@ namespace GitVersionCore.Tests.IntegrationTests
                     repo.MakeCommits(5);
 
                     repo.CreateBranch("develop");
-                    repo.CreateBranch("release-1.0");
+                    repo.CreateBranch(targetBranch);
 
-                    Commands.Checkout(repo, "release-1.0");
+                    Commands.Checkout(repo, targetBranch);
                     repo.MakeCommits(5);
 
                     return repo;
                 });
-            GitRepositoryHelper.NormalizeGitDirectory(new NullLog(), new TestEnvironment(), fixture.LocalRepositoryFixture.RepositoryPath, new AuthenticationInfo(), noFetch: false, currentBranch: string.Empty, isDynamicRepository: true);
+
+            var gitVersionOptions = new GitVersionOptions
+            {
+                WorkingDirectory = fixture.LocalRepositoryFixture.RepositoryPath,
+                RepositoryInfo =
+                {
+                    TargetBranch = targetBranch
+                },
+
+                Settings =
+                {
+                    NoNormalize = false,
+                    NoFetch = false
+                }
+            };
+            var options = Options.Create(gitVersionOptions);
+            var environment = new TestEnvironment();
+            environment.SetEnvironmentVariable(AzurePipelines.EnvironmentVariableName, "true");
+
+            var sp = ConfigureServices(services =>
+            {
+                services.AddSingleton(options);
+                services.AddSingleton<IEnvironment>(environment);
+            });
+
+            var gitPreparer = sp.GetService<IGitPreparer>();
+
+            gitPreparer.Prepare();
 
             fixture.AssertFullSemver("1.0.0-beta.1+5");
             fixture.AssertFullSemver("1.0.0-beta.1+5", repository: fixture.LocalRepositoryFixture.Repository);
