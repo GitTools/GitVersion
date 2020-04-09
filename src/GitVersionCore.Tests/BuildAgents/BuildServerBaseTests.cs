@@ -9,7 +9,7 @@ using Microsoft.Extensions.DependencyInjection;
 using NUnit.Framework;
 using Shouldly;
 
-namespace GitVersionCore.Tests.BuildServers
+namespace GitVersionCore.Tests.BuildAgents
 {
     [TestFixture]
     public class BuildServerBaseTests : TestBase
@@ -22,7 +22,7 @@ namespace GitVersionCore.Tests.BuildServers
         {
             sp = ConfigureServices(services =>
             {
-                services.AddSingleton<BuildServer>();
+                services.AddSingleton<BuildAgent>();
             });
             buildServer = sp.GetService<IVariableProvider>();
         }
@@ -46,17 +46,17 @@ namespace GitVersionCore.Tests.BuildServers
             var config = new TestEffectiveConfiguration();
 
             var variables = this.buildServer.GetVariablesFor(semanticVersion, config, false);
-            var buildServer = sp.GetService<BuildServer>();
+            var buildServer = sp.GetService<BuildAgent>();
             buildServer.WriteIntegration(writes.Add, variables);
 
             writes[1].ShouldBe("1.2.3-beta.1+5");
         }
 
-        private class BuildServer : BuildServerBase
+        private class BuildAgent : BuildAgentBase
         {
             protected override string EnvironmentVariable { get; }
 
-            public BuildServer(IEnvironment environment, ILog log) : base(environment, log)
+            public BuildAgent(IEnvironment environment, ILog log) : base(environment, log)
             {
             }
 

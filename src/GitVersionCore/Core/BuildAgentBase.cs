@@ -5,12 +5,12 @@ using GitVersion.OutputVariables;
 
 namespace GitVersion
 {
-    public abstract class BuildServerBase : IBuildServer
+    public abstract class BuildAgentBase : ICurrentBuildAgent
     {
         protected readonly ILog Log;
         protected IEnvironment Environment { get; }
 
-        protected BuildServerBase(IEnvironment environment, ILog log)
+        protected BuildAgentBase(IEnvironment environment, ILog log)
         {
             Log = log;
             Environment = environment;
@@ -18,20 +18,15 @@ namespace GitVersion
 
         protected abstract string EnvironmentVariable { get; }
 
-        public virtual bool CanApplyToCurrentContext()
-        {
-            return !string.IsNullOrEmpty(Environment.GetEnvironmentVariable(EnvironmentVariable));
-        }
-
         public abstract string GenerateSetVersionMessage(VersionVariables variables);
         public abstract string[] GenerateSetParameterMessage(string name, string value);
 
-        public virtual string GetCurrentBranch(bool usingDynamicRepos)
-        {
-            return null;
-        }
+        public virtual bool CanApplyToCurrentContext() => !string.IsNullOrEmpty(Environment.GetEnvironmentVariable(EnvironmentVariable));
+
+        public virtual string GetCurrentBranch(bool usingDynamicRepos) => null;
 
         public virtual bool PreventFetch() => true;
+        public virtual bool ShouldCleanUpRemotes() => false;
 
         public virtual void WriteIntegration(Action<string> writer, VersionVariables variables)
         {
@@ -49,7 +44,7 @@ namespace GitVersion
             }
         }
 
-        public IEnumerable<string> GenerateBuildLogOutput(VersionVariables variables)
+        protected IEnumerable<string> GenerateBuildLogOutput(VersionVariables variables)
         {
             var output = new List<string>();
 
@@ -59,11 +54,6 @@ namespace GitVersion
             }
 
             return output;
-        }
-
-        public virtual bool ShouldCleanUpRemotes()
-        {
-            return false;
         }
     }
 }

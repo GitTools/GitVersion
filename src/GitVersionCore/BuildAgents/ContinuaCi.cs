@@ -1,9 +1,9 @@
 using GitVersion.Logging;
 using GitVersion.OutputVariables;
 
-namespace GitVersion.BuildServers
+namespace GitVersion.BuildAgents
 {
-    public class ContinuaCi : BuildServerBase
+    public class ContinuaCi : BuildAgentBase
     {
         public ContinuaCi(IEnvironment environment, ILog log) : base(environment, log)
         {

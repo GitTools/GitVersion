@@ -2,9 +2,9 @@ using System;
 using GitVersion.Logging;
 using GitVersion.OutputVariables;
 
-namespace GitVersion.BuildServers
+namespace GitVersion.BuildAgents
 {
-    public class Drone : BuildServerBase
+    public class Drone : BuildAgentBase
     {
         public Drone(IEnvironment environment, ILog log) : base(environment, log)
         {

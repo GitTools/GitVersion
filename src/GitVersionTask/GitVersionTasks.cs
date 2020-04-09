@@ -46,17 +46,16 @@ namespace GitVersion.MSBuildTask
         private static void Configure(IServiceProvider sp, GitVersionTaskBase task)
         {
             var log = sp.GetService<ILog>();
-            var buildServerResolver = sp.GetService<IBuildServerResolver>();
+            var buildAgent = sp.GetService<ICurrentBuildAgent>();
             var gitVersionOptions = sp.GetService<IOptions<GitVersionOptions>>().Value;
 
             log.AddLogAppender(new MsBuildAppender(task.Log));
-            var buildServer = buildServerResolver.Resolve();
 
-            if (buildServer != null)
+            if (buildAgent != null)
             {
                 gitVersionOptions.Output.Add(OutputType.BuildServer);
             }
-            gitVersionOptions.Settings.NoFetch = gitVersionOptions.Settings.NoFetch || buildServer != null && buildServer.PreventFetch();
+            gitVersionOptions.Settings.NoFetch = gitVersionOptions.Settings.NoFetch || buildAgent != null && buildAgent.PreventFetch();
         }
 
         private static IServiceProvider BuildServiceProvider(GitVersionTaskBase task)

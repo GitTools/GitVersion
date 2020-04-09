@@ -1,5 +1,5 @@
 using System;
-using GitVersion.BuildServers;
+using GitVersion.BuildAgents;
 using GitVersion.Common;
 using GitVersion.Configuration;
 using GitVersion.Configuration.Init;
@@ -42,7 +42,7 @@ namespace GitVersion
             services.AddSingleton<IGitVersionTool, GitVersionTool>();
             services.AddSingleton<IBranchConfigurationCalculator, BranchConfigurationCalculator>();
 
-            services.AddSingleton<IBuildServerResolver, BuildServerResolver>();
+            services.AddSingleton<IBuildAgentResolver, BuildAgentResolver>();
             services.AddSingleton<IGitPreparer, GitPreparer>();
             services.AddSingleton<IRepositoryMetadataProvider, RepositoryMetadataProvider>();
 
@@ -60,7 +60,10 @@ namespace GitVersion
                 return new Lazy<GitVersionContext>(() => contextFactory.Create(options.Value));
             });
 
+
             services.AddModule(new BuildServerModule());
+            services.AddSingleton(sp => sp.GetService<IBuildAgentResolver>().Resolve());
+
             services.AddModule(new GitVersionInitModule());
             services.AddModule(new VersionStrategyModule());
         }

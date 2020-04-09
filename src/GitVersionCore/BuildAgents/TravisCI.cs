@@ -1,9 +1,9 @@
 using GitVersion.Logging;
 using GitVersion.OutputVariables;
 
-namespace GitVersion.BuildServers
+namespace GitVersion.BuildAgents
 {
-    public class TravisCi : BuildServerBase
+    public class TravisCi : BuildAgentBase
     {
         public TravisCi(IEnvironment environment, ILog log) : base(environment, log)
         {

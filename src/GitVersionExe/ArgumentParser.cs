@@ -14,14 +14,14 @@ namespace GitVersion
     public class ArgumentParser : IArgumentParser
     {
         private readonly IEnvironment environment;
-        private readonly IBuildServerResolver buildServerResolver;
+        private readonly ICurrentBuildAgent buildAgent;
         private readonly IConsole console;
 
-        public ArgumentParser(IEnvironment environment, IBuildServerResolver buildServerResolver, IConsole console)
+        public ArgumentParser(IEnvironment environment, ICurrentBuildAgent buildAgent, IConsole console)
         {
             this.environment = environment ?? throw new ArgumentNullException(nameof(environment));
-            this.buildServerResolver = buildServerResolver ?? throw new ArgumentNullException(nameof(buildServerResolver));
             this.console = console ?? throw new ArgumentNullException(nameof(console));
+            this.buildAgent = buildAgent;
         }
 
         public Arguments ParseArguments(string commandLineArguments)
@@ -420,8 +420,7 @@ namespace GitVersion
                     : firstArgument;
             }
 
-            var buildServer = buildServerResolver.Resolve();
-            arguments.NoFetch = arguments.NoFetch || buildServer != null && buildServer.PreventFetch();
+            arguments.NoFetch = arguments.NoFetch || buildAgent != null && buildAgent.PreventFetch();
 
             return arguments;
         }

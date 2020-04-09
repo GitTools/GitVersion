@@ -1,10 +1,10 @@
 using System;
-using GitVersion.BuildServers;
+using GitVersion.BuildAgents;
 using GitVersionCore.Tests.Helpers;
 using Microsoft.Extensions.DependencyInjection;
 using NUnit.Framework;
 
-namespace GitVersionCore.Tests.BuildServers
+namespace GitVersionCore.Tests.BuildAgents
 {
     [TestFixture]
     public class ContinuaCiTests : TestBase

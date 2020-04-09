@@ -1,9 +1,9 @@
 using GitVersion.Logging;
 using GitVersion.OutputVariables;
 
-namespace GitVersion.BuildServers
+namespace GitVersion.BuildAgents
 {
-    public class GitHubActions : BuildServerBase
+    public class GitHubActions : BuildAgentBase
     {
         // https://help.github.com/en/actions/automating-your-workflow-with-github-actions/using-environment-variables#default-environment-variables
 

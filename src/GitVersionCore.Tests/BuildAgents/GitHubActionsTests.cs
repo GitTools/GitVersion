@@ -1,13 +1,13 @@
 using System.Collections.Generic;
 using GitVersion;
-using GitVersion.BuildServers;
+using GitVersion.BuildAgents;
 using GitVersionCore.Tests.Helpers;
 using Microsoft.Extensions.DependencyInjection;
 using NUnit.Framework;
 using Shouldly;
 using Environment = System.Environment;
 
-namespace GitVersionCore.Tests.BuildServers
+namespace GitVersionCore.Tests.BuildAgents
 {
 
     [TestFixture]

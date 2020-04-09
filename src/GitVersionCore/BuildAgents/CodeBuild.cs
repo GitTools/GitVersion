@@ -3,9 +3,9 @@ using System.IO;
 using GitVersion.Logging;
 using GitVersion.OutputVariables;
 
-namespace GitVersion.BuildServers
+namespace GitVersion.BuildAgents
 {
-    public sealed class CodeBuild : BuildServerBase
+    public sealed class CodeBuild : BuildAgentBase
     {
         private string file;
         public const string EnvironmentVariableName = "CODEBUILD_WEBHOOK_HEAD_REF";

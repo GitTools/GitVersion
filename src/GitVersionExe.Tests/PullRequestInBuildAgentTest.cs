@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using GitTools.Testing;
-using GitVersion.BuildServers;
+using GitVersion.BuildAgents;
 using GitVersionCore.Tests.Helpers;
 using LibGit2Sharp;
 using NUnit.Framework;

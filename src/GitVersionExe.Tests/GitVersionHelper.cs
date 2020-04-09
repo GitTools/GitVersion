@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using GitVersion.BuildServers;
+using GitVersion.BuildAgents;
 using GitVersion.Helpers;
 using GitVersionCore.Tests.Helpers;
 

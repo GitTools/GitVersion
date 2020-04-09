@@ -3,14 +3,14 @@ using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using GitVersion;
-using GitVersion.BuildServers;
+using GitVersion.BuildAgents;
 using GitVersion.VersionCalculation;
 using GitVersionCore.Tests.Helpers;
 using Microsoft.Extensions.DependencyInjection;
 using NUnit.Framework;
 using Shouldly;
 
-namespace GitVersionCore.Tests.BuildServers
+namespace GitVersionCore.Tests.BuildAgents
 {
     [TestFixture]
     public class JenkinsTests : TestBase

@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using GitTools.Testing;
-using GitVersion.BuildServers;
+using GitVersion.BuildAgents;
 using NUnit.Framework;
 using Shouldly;
 

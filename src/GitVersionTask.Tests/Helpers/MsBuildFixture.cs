@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using GitVersion.BuildServers;
+using GitVersion.BuildAgents;
 using Microsoft.Build.Framework;
 
 namespace GitVersionTask.Tests.Helpers

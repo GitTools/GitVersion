@@ -13,28 +13,27 @@ namespace GitVersion
         private readonly ILog log;
         private readonly IEnvironment environment;
         private readonly IOptions<GitVersionOptions> options;
-        private readonly IBuildServerResolver buildServerResolver;
+        private readonly ICurrentBuildAgent buildAgent;
 
         private const string DefaultRemoteName = "origin";
 
-        public GitPreparer(ILog log, IEnvironment environment, IOptions<GitVersionOptions> options, IBuildServerResolver buildServerResolver)
+        public GitPreparer(ILog log, IEnvironment environment, IOptions<GitVersionOptions> options, ICurrentBuildAgent buildAgent)
         {
             this.log = log ?? throw new ArgumentNullException(nameof(log));
             this.environment = environment ?? throw new ArgumentNullException(nameof(environment));
             this.options = options ?? throw new ArgumentNullException(nameof(options));
-            this.buildServerResolver = buildServerResolver ?? throw new ArgumentNullException(nameof(buildServerResolver));
+            this.buildAgent = buildAgent;
         }
 
         public void Prepare()
         {
             var gitVersionOptions = options.Value;
-            var buildServer = buildServerResolver.Resolve();
 
             // Normalize if we are running on build server
-            var normalizeGitDirectory = !gitVersionOptions.Settings.NoNormalize && buildServer != null;
-            var shouldCleanUpRemotes = buildServer != null && buildServer.ShouldCleanUpRemotes();
+            var normalizeGitDirectory = !gitVersionOptions.Settings.NoNormalize && buildAgent != null;
+            var shouldCleanUpRemotes = buildAgent != null && buildAgent.ShouldCleanUpRemotes();
 
-            var currentBranch = ResolveCurrentBranch(buildServer, gitVersionOptions.RepositoryInfo.TargetBranch, !string.IsNullOrWhiteSpace(gitVersionOptions.RepositoryInfo.DynamicRepositoryClonePath));
+            var currentBranch = ResolveCurrentBranch(gitVersionOptions.RepositoryInfo.TargetBranch, !string.IsNullOrWhiteSpace(gitVersionOptions.RepositoryInfo.DynamicRepositoryClonePath));
 
             PrepareInternal(normalizeGitDirectory, currentBranch, shouldCleanUpRemotes);
 
@@ -77,14 +76,14 @@ namespace GitVersion
             }
         }
 
-        private string ResolveCurrentBranch(IBuildServer buildServer, string targetBranch, bool isDynamicRepository)
+        private string ResolveCurrentBranch(string targetBranch, bool isDynamicRepository)
         {
-            if (buildServer == null)
+            if (buildAgent == null)
             {
                 return targetBranch;
             }
 
-            var currentBranch = buildServer.GetCurrentBranch(isDynamicRepository) ?? targetBranch;
+            var currentBranch = buildAgent.GetCurrentBranch(isDynamicRepository) ?? targetBranch;
             log.Info("Branch from build environment: " + currentBranch);
 
             return currentBranch;

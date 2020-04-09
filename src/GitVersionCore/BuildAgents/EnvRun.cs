@@ -2,9 +2,9 @@ using System.IO;
 using GitVersion.Logging;
 using GitVersion.OutputVariables;
 
-namespace GitVersion.BuildServers
+namespace GitVersion.BuildAgents
 {
-    public class EnvRun : BuildServerBase
+    public class EnvRun : BuildAgentBase
     {
         public EnvRun(IEnvironment environment, ILog log) : base(environment, log)
         {

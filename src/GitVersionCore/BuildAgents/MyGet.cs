@@ -4,9 +4,9 @@ using GitVersion.Helpers;
 using GitVersion.Logging;
 using GitVersion.OutputVariables;
 
-namespace GitVersion.BuildServers
+namespace GitVersion.BuildAgents
 {
-    public class MyGet : BuildServerBase
+    public class MyGet : BuildAgentBase
     {
         public MyGet(IEnvironment environment, ILog log) : base(environment, log)
         {

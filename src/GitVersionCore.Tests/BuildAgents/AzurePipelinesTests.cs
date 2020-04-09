@@ -1,11 +1,11 @@
 using GitVersion;
-using GitVersion.BuildServers;
+using GitVersion.BuildAgents;
 using GitVersionCore.Tests.Helpers;
 using Microsoft.Extensions.DependencyInjection;
 using NUnit.Framework;
 using Shouldly;
 
-namespace GitVersionCore.Tests.BuildServers
+namespace GitVersionCore.Tests.BuildAgents
 {
     [TestFixture]
     public class AzurePipelinesTests : TestBase

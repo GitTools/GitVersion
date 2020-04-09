@@ -1,17 +1,17 @@
 using System.Reflection;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace GitVersion.BuildServers
+namespace GitVersion.BuildAgents
 {
     public class BuildServerModule : GitVersionModule
     {
         public override void RegisterTypes(IServiceCollection services)
         {
-            var buildServers = FindAllDerivedTypes<BuildServerBase>(Assembly.GetAssembly(GetType()));
+            var buildAgents = FindAllDerivedTypes<BuildAgentBase>(Assembly.GetAssembly(GetType()));
 
-            foreach (var buildServer in buildServers)
+            foreach (var buildAgent in buildAgents)
             {
-                services.AddSingleton(typeof(IBuildServer), buildServer);
+                services.AddSingleton(typeof(IBuildAgent), buildAgent);
             }
         }
     }

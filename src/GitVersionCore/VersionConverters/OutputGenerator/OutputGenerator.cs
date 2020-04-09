@@ -14,13 +14,13 @@ namespace GitVersion.VersionConverters.OutputGenerator
     {
         private readonly IConsole console;
         private readonly IOptions<GitVersionOptions> options;
-        private readonly IBuildServer buildServer;
+        private readonly ICurrentBuildAgent buildAgent;
 
-        public OutputGenerator(IBuildServerResolver buildServerResolver, IConsole console, IOptions<GitVersionOptions> options)
+        public OutputGenerator(ICurrentBuildAgent buildAgent, IConsole console, IOptions<GitVersionOptions> options)
         {
             this.console = console ?? throw new ArgumentNullException(nameof(console));
             this.options = options ?? throw new ArgumentNullException(nameof(options));
-            buildServer = buildServerResolver.Resolve();
+            this.buildAgent = buildAgent;
         }
 
         public void Execute(VersionVariables variables, OutputContext context)
@@ -28,7 +28,7 @@ namespace GitVersion.VersionConverters.OutputGenerator
             var gitVersionOptions = options.Value;
             if (gitVersionOptions.Output.Contains(OutputType.BuildServer))
             {
-                buildServer?.WriteIntegration(console.WriteLine, variables);
+                buildAgent?.WriteIntegration(console.WriteLine, variables);
             }
             if (gitVersionOptions.Output.Contains(OutputType.Json))
             {
