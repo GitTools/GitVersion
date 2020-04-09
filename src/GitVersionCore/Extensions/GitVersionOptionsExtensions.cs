@@ -5,24 +5,26 @@ namespace GitVersion.Extensions
 {
     public static class GitVersionOptionsExtensions
     {
-        public static bool IsDynamicGitRepository(this GitVersionOptions gitVersionOptions) => !string.IsNullOrWhiteSpace(gitVersionOptions.RepositoryInfo.DynamicGitRepositoryPath);
+        private static bool IsDynamicGitRepository(GitVersionOptions gitVersionOptions) => !string.IsNullOrWhiteSpace(gitVersionOptions.RepositoryInfo.DynamicGitRepositoryPath);
 
         public static string GetDotGitDirectory(this GitVersionOptions gitVersionOptions)
         {
-            var gitDirectory = gitVersionOptions.IsDynamicGitRepository() ? gitVersionOptions.RepositoryInfo.DynamicGitRepositoryPath : Repository.Discover(gitVersionOptions.WorkingDirectory);
+            var dotGitDirectory = IsDynamicGitRepository(gitVersionOptions)
+                ? gitVersionOptions.RepositoryInfo.DynamicGitRepositoryPath
+                : Repository.Discover(gitVersionOptions.WorkingDirectory);
 
-            gitDirectory = gitDirectory?.TrimEnd('/', '\\');
-            if (string.IsNullOrEmpty(gitDirectory))
-                throw new DirectoryNotFoundException("Can't find the .git directory in " + gitDirectory);
+            dotGitDirectory = dotGitDirectory?.TrimEnd('/', '\\');
+            if (string.IsNullOrEmpty(dotGitDirectory))
+                throw new DirectoryNotFoundException($"Can't find the .git directory in {dotGitDirectory}");
 
-            return gitDirectory.Contains(Path.Combine(".git", "worktrees"))
-                ? Directory.GetParent(Directory.GetParent(gitDirectory).FullName).FullName
-                : gitDirectory;
+            return dotGitDirectory.Contains(Path.Combine(".git", "worktrees"))
+                ? Directory.GetParent(Directory.GetParent(dotGitDirectory).FullName).FullName
+                : dotGitDirectory;
         }
 
         public static string GetProjectRootDirectory(this GitVersionOptions gitVersionOptions)
         {
-            if (gitVersionOptions.IsDynamicGitRepository())
+            if (IsDynamicGitRepository(gitVersionOptions))
             {
                 return gitVersionOptions.WorkingDirectory;
             }

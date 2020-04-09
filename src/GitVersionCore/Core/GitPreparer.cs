@@ -1,7 +1,6 @@
 using System;
 using System.IO;
 using System.Linq;
-using GitVersion.Extensions;
 using GitVersion.Helpers;
 using GitVersion.Logging;
 using LibGit2Sharp;
@@ -58,11 +57,11 @@ namespace GitVersion
                 Username = gitVersionOptions.Authentication?.Username,
                 Password = gitVersionOptions.Authentication?.Password
             };
-            if (!string.IsNullOrWhiteSpace(options.Value.RepositoryInfo.TargetUrl))
+            if (!string.IsNullOrWhiteSpace(gitVersionOptions.RepositoryInfo.TargetUrl))
             {
-                var tempRepositoryPath = CalculateTemporaryRepositoryPath(options.Value.RepositoryInfo.TargetUrl, gitVersionOptions.RepositoryInfo.DynamicRepositoryClonePath);
+                var tempRepositoryPath = CalculateTemporaryRepositoryPath(gitVersionOptions.RepositoryInfo.TargetUrl, gitVersionOptions.RepositoryInfo.DynamicRepositoryClonePath);
 
-                gitVersionOptions.RepositoryInfo.DynamicGitRepositoryPath = CreateDynamicRepository(tempRepositoryPath, authentication, options.Value.RepositoryInfo.TargetUrl, currentBranch);
+                gitVersionOptions.RepositoryInfo.DynamicGitRepositoryPath = CreateDynamicRepository(tempRepositoryPath, authentication, gitVersionOptions.RepositoryInfo.TargetUrl, currentBranch);
             }
             else
             {
@@ -73,7 +72,7 @@ namespace GitVersion
                         CleanupDuplicateOrigin();
                     }
 
-                    NormalizeGitDirectory(authentication, currentBranch, options.Value.DotGitDirectory, options.Value.IsDynamicGitRepository());
+                    NormalizeGitDirectory(authentication, currentBranch, gitVersionOptions.DotGitDirectory, false);
                 }
             }
         }

@@ -14,13 +14,6 @@ namespace GitVersion
         {
             dotGitDirectory = new Lazy<string>(this.GetDotGitDirectory);
             projectRootDirectory = new Lazy<string>(this.GetProjectRootDirectory);
-
-            AssemblyInfo = new AssemblyInfo();
-            Authentication = new AuthenticationInfo();
-            ConfigInfo = new ConfigInfo();
-            WixInfo = new WixInfo();
-            RepositoryInfo = new RepositoryInfo();
-            Settings = new Settings();
         }
 
         private string workingDirectory;
@@ -33,12 +26,12 @@ namespace GitVersion
         public string DotGitDirectory => dotGitDirectory.Value;
         public string ProjectRootDirectory => projectRootDirectory.Value;
 
-        public AssemblyInfo AssemblyInfo { get; }
-        public AuthenticationInfo Authentication { get; }
-        public ConfigInfo ConfigInfo { get; }
-        public RepositoryInfo RepositoryInfo { get; }
-        public WixInfo WixInfo { get; }
-        public Settings Settings { get; }
+        public AssemblyInfo AssemblyInfo { get; } = new AssemblyInfo();
+        public AuthenticationInfo Authentication { get; } = new AuthenticationInfo();
+        public ConfigInfo ConfigInfo { get; } = new ConfigInfo();
+        public RepositoryInfo RepositoryInfo { get; } = new RepositoryInfo();
+        public WixInfo WixInfo { get; } = new WixInfo();
+        public Settings Settings { get; } = new Settings();
 
         public bool Init;
         public bool Diag;

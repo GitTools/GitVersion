@@ -26,8 +26,9 @@ namespace GitVersion.Configuration
 
         public Config Provide(bool applyDefaults = true, Config overrideConfig = null)
         {
-            var workingDirectory = options.Value.WorkingDirectory;
-            var projectRootDirectory = options.Value.ProjectRootDirectory;
+            var gitVersionOptions = options.Value;
+            var workingDirectory = gitVersionOptions.WorkingDirectory;
+            var projectRootDirectory = gitVersionOptions.ProjectRootDirectory;
 
             var rootDirectory = configFileLocator.HasConfigFileAt(workingDirectory) ? workingDirectory : projectRootDirectory;
             return Provide(rootDirectory, applyDefaults, overrideConfig);
