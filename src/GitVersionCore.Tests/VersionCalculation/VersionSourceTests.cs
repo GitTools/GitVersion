@@ -22,7 +22,7 @@ namespace GitVersionCore.Tests
             Commands.Checkout(fixture.Repository, featureBranch);
             _ = fixture.Repository.MakeACommit();
 
-            var nextVersionCalculator = GetNextVersionCalculator(fixture.Repository, fixture.Repository.Head.CanonicalName);
+            var nextVersionCalculator = GetNextVersionCalculator(fixture);
 
             var version = nextVersionCalculator.FindVersion();
 
@@ -36,7 +36,7 @@ namespace GitVersionCore.Tests
             using var fixture = new EmptyRepositoryFixture();
             var initialCommit = fixture.Repository.MakeACommit();
 
-            var nextVersionCalculator = GetNextVersionCalculator(fixture.Repository, fixture.Repository.Head.CanonicalName);
+            var nextVersionCalculator = GetNextVersionCalculator(fixture);
 
             var version = nextVersionCalculator.FindVersion();
 
@@ -56,7 +56,7 @@ namespace GitVersionCore.Tests
             Commands.Checkout(fixture.Repository, featureBranch);
             _ = fixture.Repository.MakeACommit();
 
-            var nextVersionCalculator = GetNextVersionCalculator(fixture.Repository, fixture.Repository.Head.CanonicalName);
+            var nextVersionCalculator = GetNextVersionCalculator(fixture);
 
             var version = nextVersionCalculator.FindVersion();
 
@@ -64,9 +64,9 @@ namespace GitVersionCore.Tests
             version.BuildMetaData.CommitsSinceVersionSource.ShouldBe(1);
         }
 
-        private static INextVersionCalculator GetNextVersionCalculator(IRepository repository, string branch)
+        private static INextVersionCalculator GetNextVersionCalculator(RepositoryFixtureBase fixture)
         {
-            var sp = BuildServiceProvider(repository, branch);
+            var sp = BuildServiceProvider(fixture.RepositoryPath, fixture.Repository, fixture.Repository.Head.CanonicalName);
             return sp.GetService<INextVersionCalculator>();
         }
     }

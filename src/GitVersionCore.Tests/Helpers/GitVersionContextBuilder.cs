@@ -27,13 +27,13 @@ namespace GitVersionCore.Tests
 
         public GitVersionContextBuilder WithConfig(Config config)
         {
-            this.configuration = config;
+            configuration = config;
             return this;
         }
 
         public GitVersionContextBuilder OverrideServices(Action<IServiceCollection> overrides = null)
         {
-            this.overrideServices = overrides;
+            overrideServices = overrides;
             return this;
         }
 
@@ -80,7 +80,11 @@ namespace GitVersionCore.Tests
 
             config.Reset();
 
-            var options = Options.Create(new GitVersionOptions { ConfigInfo = { OverrideConfig = config } });
+            var options = Options.Create(new GitVersionOptions
+            {
+                WorkingDirectory = new EmptyRepositoryFixture().RepositoryPath,
+                ConfigInfo = { OverrideConfig = config }
+            });
 
             ServicesProvider = ConfigureServices(services =>
             {

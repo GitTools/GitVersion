@@ -19,12 +19,7 @@ namespace GitVersion
             dynamicGitRepositoryPath = new Lazy<string>(this.GetDynamicGitRepositoryPath);
         }
 
-        private string workingDirectory;
-        public string WorkingDirectory
-        {
-            get => workingDirectory?.TrimEnd('/', '\\') ?? ".";
-            set => workingDirectory = value;
-        }
+        public string WorkingDirectory { get; set; }
 
         public string DotGitDirectory => dotGitDirectory.Value;
         public string ProjectRootDirectory => projectRootDirectory.Value;

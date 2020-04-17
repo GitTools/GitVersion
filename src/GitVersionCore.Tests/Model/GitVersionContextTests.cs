@@ -9,6 +9,7 @@ using GitVersionCore.Tests.Helpers;
 using GitVersionCore.Tests.Mocks;
 using LibGit2Sharp;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using NUnit.Framework;
 using Shouldly;
 
@@ -20,6 +21,8 @@ namespace GitVersionCore.Tests
         [Theory]
         public void CanInheritVersioningMode(VersioningMode mode)
         {
+            using var fixture = new EmptyRepositoryFixture();
+
             var config = new Config
             {
                 VersioningMode = mode
@@ -37,7 +40,7 @@ namespace GitVersionCore.Tests
                 }
             };
 
-            var context = GetGitVersionContext(mockRepository, branchName, config);
+            var context = GetGitVersionContext(fixture.RepositoryPath, mockRepository, branchName, config);
 
             context.Configuration.VersioningMode.ShouldBe(mode);
         }
@@ -63,7 +66,7 @@ namespace GitVersionCore.Tests
             fixture.BranchTo(dummyBranchName);
             fixture.MakeACommit();
 
-            var context = GetGitVersionContext(fixture.Repository, dummyBranchName, config);
+            var context = GetGitVersionContext(fixture.RepositoryPath, fixture.Repository, dummyBranchName, config);
 
             context.Configuration.Increment.ShouldBe(alternateExpected ?? increment);
         }
@@ -71,6 +74,8 @@ namespace GitVersionCore.Tests
         [Test]
         public void UsesBranchSpecificConfigOverTopLevelDefaults()
         {
+            using var fixture = new EmptyRepositoryFixture();
+
             var branchName = "develop";
             var config = new Config
             {
@@ -98,7 +103,7 @@ namespace GitVersionCore.Tests
                 }
             };
 
-            var context = GetGitVersionContext(mockRepository, branchName, config);
+            var context = GetGitVersionContext(fixture.RepositoryPath, mockRepository, branchName, config);
 
             context.Configuration.Tag.ShouldBe("alpha");
         }
@@ -106,6 +111,8 @@ namespace GitVersionCore.Tests
         [Test]
         public void UsesFirstBranchConfigWhenMultipleMatch()
         {
+            using var fixture = new EmptyRepositoryFixture();
+
             var branchConfig = new BranchConfig
             {
                 VersioningMode = VersioningMode.Mainline,
@@ -139,11 +146,11 @@ namespace GitVersionCore.Tests
                 Head = releaseLatestBranch
             };
 
-            var latestContext = GetGitVersionContext(mockRepository, releaseLatestBranch.CanonicalName, config);
+            var latestContext = GetGitVersionContext(fixture.RepositoryPath, mockRepository, releaseLatestBranch.CanonicalName, config);
             latestContext.Configuration.Increment.ShouldBe(IncrementStrategy.None);
 
             mockRepository.Head = releaseVersionBranch;
-            var versionContext = GetGitVersionContext(mockRepository, releaseVersionBranch.CanonicalName, config);
+            var versionContext = GetGitVersionContext(fixture.RepositoryPath, mockRepository, releaseVersionBranch.CanonicalName, config);
             versionContext.Configuration.Increment.ShouldBe(IncrementStrategy.Patch);
         }
 
@@ -159,22 +166,34 @@ namespace GitVersionCore.Tests
                 }
             }.ApplyDefaults();
 
-            using var repo = new EmptyRepositoryFixture();
-            repo.Repository.MakeACommit();
-            Commands.Checkout(repo.Repository, repo.Repository.CreateBranch("develop"));
-            repo.Repository.MakeACommit();
-            var featureBranch = repo.Repository.CreateBranch("feature/foo");
-            Commands.Checkout(repo.Repository, featureBranch);
-            repo.Repository.MakeACommit();
+            using var fixture = new EmptyRepositoryFixture();
+            fixture.Repository.MakeACommit();
+            Commands.Checkout(fixture.Repository, fixture.Repository.CreateBranch("develop"));
+            fixture.Repository.MakeACommit();
+            var featureBranch = fixture.Repository.CreateBranch("feature/foo");
+            Commands.Checkout(fixture.Repository, featureBranch);
+            fixture.Repository.MakeACommit();
 
-            var context = GetGitVersionContext(repo.Repository, "develop", config);
+            var context = GetGitVersionContext(fixture.RepositoryPath, fixture.Repository, "develop", config);
 
             context.Configuration.Increment.ShouldBe(IncrementStrategy.Major);
         }
 
-        private static GitVersionContext GetGitVersionContext(IRepository repository, string branch, Config config = null)
+        private static GitVersionContext GetGitVersionContext(string workingDirectory, IRepository repository, string branch, Config config = null)
         {
-            var sp = BuildServiceProvider(repository, branch, config);
+            var options = Options.Create(new GitVersionOptions
+            {
+                WorkingDirectory = workingDirectory,
+                RepositoryInfo = { TargetBranch = branch },
+                ConfigInfo = { OverrideConfig = config }
+            });
+
+            var sp = ConfigureServices(services =>
+            {
+                services.AddSingleton(options);
+                services.AddSingleton(repository);
+            });
+
             return sp.GetService<Lazy<GitVersionContext>>().Value;
         }
     }

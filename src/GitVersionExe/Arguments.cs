@@ -54,7 +54,7 @@ namespace GitVersion
         {
             return new GitVersionOptions
             {
-                WorkingDirectory = TargetPath,
+                WorkingDirectory = TargetPath.TrimEnd('/', '\\'),
 
                 AssemblyInfo =
                 {

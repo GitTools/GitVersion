@@ -15,10 +15,10 @@ namespace GitVersion.VersionCalculation
         private readonly Lazy<GitVersionContext> versionContext;
         private GitVersionContext context => versionContext.Value;
 
-        public BaseVersionCalculator(ILog log, IRepositoryMetadataProvider repository, Lazy<GitVersionContext> versionContext, IEnumerable<IVersionStrategy> strategies)
+        public BaseVersionCalculator(ILog log, IRepositoryMetadataProvider repositoryMetadataProvider, Lazy<GitVersionContext> versionContext, IEnumerable<IVersionStrategy> strategies)
         {
             this.log = log ?? throw new ArgumentNullException(nameof(log));
-            this.repositoryMetadataProvider = repository ?? throw new ArgumentNullException(nameof(repository));
+            this.repositoryMetadataProvider = repositoryMetadataProvider ?? throw new ArgumentNullException(nameof(repositoryMetadataProvider));
             this.strategies = strategies?.ToArray() ?? Array.Empty<IVersionStrategy>();
             this.versionContext = versionContext ?? throw new ArgumentNullException(nameof(versionContext));
         }
