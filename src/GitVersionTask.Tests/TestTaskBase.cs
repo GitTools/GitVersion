@@ -2,11 +2,12 @@ using System.Collections.Generic;
 using System.Linq;
 using GitTools.Testing;
 using GitVersion.BuildAgents;
+using GitVersion.MSBuildTask;
 using GitVersionCore.Tests.Helpers;
 using GitVersionTask.Tests.Helpers;
 using LibGit2Sharp;
 
-namespace GitVersion.MSBuildTask.Tests
+namespace GitVersionTask.Tests
 {
     public class TestTaskBase : TestBase
     {
@@ -16,21 +17,21 @@ namespace GitVersion.MSBuildTask.Tests
             { "BUILD_SOURCEBRANCH", null }
         };
 
-        protected static MsBuildExecutionResult<T> ExecuteMsBuildTask<T>(T task) where T : GitVersionTaskBase
+        protected static MsBuildTaskFixtureResult<T> ExecuteMsBuildTask<T>(T task) where T : GitVersionTaskBase
         {
-            using var fixture = CreateLocalRepositoryFixture();
+            var fixture = CreateLocalRepositoryFixture();
             task.SolutionDirectory = fixture.RepositoryPath;
 
-            var msbuildFixture = new MsBuildFixture();
+            var msbuildFixture = new MsBuildTaskFixture(fixture);
             return msbuildFixture.Execute(task);
         }
 
-        protected static MsBuildExecutionResult<T> ExecuteMsBuildTaskInBuildServer<T>(T task) where T : GitVersionTaskBase
+        protected static MsBuildTaskFixtureResult<T> ExecuteMsBuildTaskInBuildServer<T>(T task) where T : GitVersionTaskBase
         {
-            using var fixture = CreateRemoteRepositoryFixture();
+            var fixture = CreateRemoteRepositoryFixture();
             task.SolutionDirectory = fixture.LocalRepositoryFixture.RepositoryPath;
 
-            var msbuildFixture = new MsBuildFixture();
+            var msbuildFixture = new MsBuildTaskFixture(fixture);
             msbuildFixture.WithEnv(env.ToArray());
             return msbuildFixture.Execute(task);
         }

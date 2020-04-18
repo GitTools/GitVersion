@@ -47,7 +47,7 @@ namespace GitVersionCore.Tests
             var variableProvider = sp.GetService<IVariableProvider>();
 
             var variables = variableProvider.GetVariablesFor(semanticVersion, new TestEffectiveConfiguration(), false);
-            using var generator = new GitVersionInfoGenerator(fileSystem);
+            using var generator = sp.GetService<IGitVersionInfoGenerator>();
 
             generator.Execute(variables, new GitVersionInfoContext(directory, fileName, fileExtension));
 

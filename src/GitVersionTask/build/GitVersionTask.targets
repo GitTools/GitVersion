@@ -30,11 +30,11 @@
 
         <ItemGroup Condition="'$(Language)' == 'F#'">
             <CompileBefore Include="$(AssemblyInfoTempFilePath)" />
-            <FileWrites Include="$(AssemblyInfoTempFilePath)" />
-            <_GeneratedCodeFiles Include="$(AssemblyInfoTempFilePath)" />
         </ItemGroup>
         <ItemGroup Condition="'$(Language)' != 'F#'">
             <Compile Include="$(AssemblyInfoTempFilePath)" />
+        </ItemGroup>
+        <ItemGroup>
             <FileWrites Include="$(AssemblyInfoTempFilePath)" />
             <_GeneratedCodeFiles Include="$(AssemblyInfoTempFilePath)" />
         </ItemGroup>
@@ -56,11 +56,11 @@
 
         <ItemGroup Condition="'$(Language)' == 'F#'">
             <CompileBefore Include="$(GitVersionInformationFilePath)" />
-            <FileWrites Include="$(GitVersionInformationFilePath)" />
-            <_GeneratedCodeFiles Include="$(GitVersionInformationFilePath)" />
         </ItemGroup>
         <ItemGroup Condition="'$(Language)' != 'F#'">
             <Compile Include="$(GitVersionInformationFilePath)" />
+        </ItemGroup>
+        <ItemGroup>
             <FileWrites Include="$(GitVersionInformationFilePath)" />
             <_GeneratedCodeFiles Include="$(GitVersionInformationFilePath)" />
         </ItemGroup>

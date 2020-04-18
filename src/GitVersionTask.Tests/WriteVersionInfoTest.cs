@@ -2,7 +2,7 @@ using GitVersion.MSBuildTask.Tasks;
 using NUnit.Framework;
 using Shouldly;
 
-namespace GitVersion.MSBuildTask.Tests
+namespace GitVersionTask.Tests
 {
     [TestFixture]
     public class WriteVersionInfoTest : TestTaskBase
@@ -12,7 +12,7 @@ namespace GitVersion.MSBuildTask.Tests
         {
             var task = new WriteVersionInfoToBuildLog();
 
-            var result = ExecuteMsBuildTask(task);
+            using var result = ExecuteMsBuildTask(task);
 
             result.Success.ShouldBe(true);
             result.Errors.ShouldBe(0);
@@ -24,11 +24,10 @@ namespace GitVersion.MSBuildTask.Tests
         {
             var task = new WriteVersionInfoToBuildLog();
 
-            var result = ExecuteMsBuildTaskInBuildServer(task);
+            using var result = ExecuteMsBuildTaskInBuildServer(task);
 
             result.Success.ShouldBe(true);
             result.Errors.ShouldBe(0);
-
             result.Log.ShouldContain("##vso[task.setvariable variable=GitVersion.FullSemVer]1.0.1+1");
         }
     }
