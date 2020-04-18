@@ -38,7 +38,7 @@ namespace GitVersion
 
             this.nextVersionCalculator = nextVersionCalculator ?? throw new ArgumentNullException(nameof(nextVersionCalculator));
             this.variableProvider = variableProvider ?? throw new ArgumentNullException(nameof(variableProvider));
-            this.gitPreparer = gitPreparer?? throw new ArgumentNullException(nameof(gitPreparer));
+            this.gitPreparer = gitPreparer ?? throw new ArgumentNullException(nameof(gitPreparer));
 
             this.cacheKeyFactory = cacheKeyFactory ?? throw new ArgumentNullException(nameof(cacheKeyFactory));
             this.gitVersionCache = gitVersionCache ?? throw new ArgumentNullException(nameof(gitVersionCache));

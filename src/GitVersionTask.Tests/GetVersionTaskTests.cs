@@ -26,34 +26,32 @@ namespace GitVersion.MSBuildTask.Tests
         [Test]
         public void GetVersionTaskShouldReturnVersionOutputVariables()
         {
-            using var fixture = CreateLocalRepositoryFixture();
-
-            var task = new GetVersion
-            {
-                SolutionDirectory = fixture.RepositoryPath,
-            };
+            var task = new GetVersion();
 
             var result = ExecuteMsBuildTask(task);
 
             result.Success.ShouldBe(true);
             result.Errors.ShouldBe(0);
+            result.Task.Major.ShouldBe("1");
+            result.Task.Minor.ShouldBe("2");
+            result.Task.Patch.ShouldBe("4");
+            result.Task.MajorMinorPatch.ShouldBe("1.2.4");
             result.Task.FullSemVer.ShouldBe("1.2.4+1");
         }
 
         [Test]
         public void GetVersionTaskShouldReturnVersionOutputVariablesForBuildServer()
         {
-            using var fixture = CreateRemoteRepositoryFixture();
-
-            var task = new GetVersion
-            {
-                SolutionDirectory = fixture.LocalRepositoryFixture.RepositoryPath,
-            };
+            var task = new GetVersion();
 
             var result = ExecuteMsBuildTaskInBuildServer(task);
 
             result.Success.ShouldBe(true);
             result.Errors.ShouldBe(0);
+            result.Task.Major.ShouldBe("1");
+            result.Task.Minor.ShouldBe("0");
+            result.Task.Patch.ShouldBe("1");
+            result.Task.MajorMinorPatch.ShouldBe("1.0.1");
             result.Task.FullSemVer.ShouldBe("1.0.1+1");
         }
     }

@@ -11,13 +11,7 @@ namespace GitVersion.MSBuildTask.Tests
         [Test]
         public void GenerateGitVersionInformationTaskShouldCreateFile()
         {
-            using var fixture = CreateLocalRepositoryFixture();
-
-            var task = new GenerateGitVersionInformation
-            {
-                SolutionDirectory = fixture.RepositoryPath,
-                ProjectFile = fixture.RepositoryPath,
-            };
+            var task = new GenerateGitVersionInformation();
 
             var result = ExecuteMsBuildTask(task);
 
@@ -30,15 +24,9 @@ namespace GitVersion.MSBuildTask.Tests
         }
 
         [Test]
-        public void GenerateGitVersionInformationTaskShouldCreateFileWhenRunningInBuildServer()
+        public void GenerateGitVersionInformationTaskShouldCreateFileInBuildServer()
         {
-            using var fixture = CreateRemoteRepositoryFixture();
-
-            var task = new GenerateGitVersionInformation
-            {
-                SolutionDirectory = fixture.LocalRepositoryFixture.RepositoryPath,
-                ProjectFile = fixture.LocalRepositoryFixture.RepositoryPath,
-            };
+            var task = new GenerateGitVersionInformation();
 
             var result = ExecuteMsBuildTaskInBuildServer(task);
 

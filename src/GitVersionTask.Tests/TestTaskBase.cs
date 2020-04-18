@@ -5,13 +5,37 @@ using GitVersion.BuildAgents;
 using GitVersionCore.Tests.Helpers;
 using GitVersionTask.Tests.Helpers;
 using LibGit2Sharp;
-using Microsoft.Build.Framework;
 
 namespace GitVersion.MSBuildTask.Tests
 {
     public class TestTaskBase : TestBase
     {
-        protected static EmptyRepositoryFixture CreateLocalRepositoryFixture()
+        private static IDictionary<string, string> env = new Dictionary<string, string>
+        {
+            { AzurePipelines.EnvironmentVariableName, "true" },
+            { "BUILD_SOURCEBRANCH", null }
+        };
+
+        protected static MsBuildExecutionResult<T> ExecuteMsBuildTask<T>(T task) where T : GitVersionTaskBase
+        {
+            using var fixture = CreateLocalRepositoryFixture();
+            task.SolutionDirectory = fixture.RepositoryPath;
+
+            var msbuildFixture = new MsBuildFixture();
+            return msbuildFixture.Execute(task);
+        }
+
+        protected static MsBuildExecutionResult<T> ExecuteMsBuildTaskInBuildServer<T>(T task) where T : GitVersionTaskBase
+        {
+            using var fixture = CreateRemoteRepositoryFixture();
+            task.SolutionDirectory = fixture.LocalRepositoryFixture.RepositoryPath;
+
+            var msbuildFixture = new MsBuildFixture();
+            msbuildFixture.WithEnv(env.ToArray());
+            return msbuildFixture.Execute(task);
+        }
+
+        private static EmptyRepositoryFixture CreateLocalRepositoryFixture()
         {
             var fixture = new EmptyRepositoryFixture();
             fixture.MakeATaggedCommit("1.2.3");
@@ -19,7 +43,7 @@ namespace GitVersion.MSBuildTask.Tests
             return fixture;
         }
 
-        protected static RemoteRepositoryFixture CreateRemoteRepositoryFixture()
+        private static RemoteRepositoryFixture CreateRemoteRepositoryFixture()
         {
             var fixture = new RemoteRepositoryFixture();
             fixture.Repository.MakeACommit();
@@ -32,25 +56,6 @@ namespace GitVersion.MSBuildTask.Tests
             fixture.LocalRepositoryFixture.Repository.Branches.Remove("master");
             fixture.InitializeRepo();
             return fixture;
-        }
-
-        protected static MsBuildExecutionResult<T> ExecuteMsBuildTask<T>(T task) where T : ITask
-        {
-            var msbuildFixture = new MsBuildFixture();
-            return msbuildFixture.Execute(task);
-        }
-
-        protected static MsBuildExecutionResult<T> ExecuteMsBuildTaskInBuildServer<T>(T task) where T : ITask
-        {
-            var env = new Dictionary<string, string>
-            {
-                { AzurePipelines.EnvironmentVariableName, "true" },
-                { "BUILD_SOURCEBRANCH", null }
-            };
-
-            var msbuildFixture = new MsBuildFixture();
-            msbuildFixture.WithEnv(env.ToArray());
-            return msbuildFixture.Execute(task);
         }
     }
 }

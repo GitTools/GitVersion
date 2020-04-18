@@ -45,7 +45,7 @@ namespace GitVersionCore.Tests
             var environment = new TestEnvironment();
             environment.SetEnvironmentVariable(AzurePipelines.EnvironmentVariableName, "true");
 
-            sp = GetServiceProvider(gitVersionOptions, environment:environment);
+            sp = GetServiceProvider(gitVersionOptions, environment: environment);
 
             var preparer = sp.GetService<IGitPreparer>();
 
@@ -95,7 +95,7 @@ namespace GitVersionCore.Tests
 
                 var gitVersionOptions = new GitVersionOptions
                 {
-                    RepositoryInfo = { TargetUrl = targetUrl, TargetBranch = "master"},
+                    RepositoryInfo = { TargetUrl = targetUrl, TargetBranch = "master" },
                     WorkingDirectory = worktreePath
                 };
 

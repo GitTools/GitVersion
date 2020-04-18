@@ -11,13 +11,7 @@ namespace GitVersion.MSBuildTask.Tests
         [Test]
         public void UpdateAssemblyInfoTaskShouldCreateFile()
         {
-            using var fixture = CreateLocalRepositoryFixture();
-
-            var task = new UpdateAssemblyInfo
-            {
-                SolutionDirectory = fixture.RepositoryPath,
-                ProjectFile = fixture.RepositoryPath,
-            };
+            var task = new UpdateAssemblyInfo();
 
             var result = ExecuteMsBuildTask(task);
 
@@ -30,15 +24,9 @@ namespace GitVersion.MSBuildTask.Tests
         }
 
         [Test]
-        public void UpdateAssemblyInfoTaskShouldCreateFileWhenRunningInBuildServer()
+        public void UpdateAssemblyInfoTaskShouldCreateFileInBuildServer()
         {
-            using var fixture = CreateRemoteRepositoryFixture();
-
-            var task = new UpdateAssemblyInfo
-            {
-                SolutionDirectory = fixture.LocalRepositoryFixture.RepositoryPath,
-                ProjectFile = fixture.LocalRepositoryFixture.RepositoryPath,
-            };
+            var task = new UpdateAssemblyInfo();
 
             var result = ExecuteMsBuildTaskInBuildServer(task);
 

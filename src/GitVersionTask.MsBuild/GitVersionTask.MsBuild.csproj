@@ -5,10 +5,10 @@
         <LangVersion>8.0</LangVersion>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     </PropertyGroup>
-   
+
     <ItemGroup>
         <PackageReference Condition="'$(TargetFramework)' == 'netstandard2.0'" Include="System.Runtime.Loader" Version="4.3.0" PrivateAssets="All" />
-        <PackageReference Include="Microsoft.Build.Framework" Version="16.5.0" />
+        <PackageReference Include="Microsoft.Build.Framework" Version="$(PackageVersion_MsBuild)" />
     </ItemGroup>
 
     <ItemGroup>

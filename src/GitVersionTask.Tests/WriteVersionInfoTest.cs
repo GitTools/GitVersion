@@ -8,14 +8,9 @@ namespace GitVersion.MSBuildTask.Tests
     public class WriteVersionInfoTest : TestTaskBase
     {
         [Test]
-        public void WriteVersionInfoTaskShouldNotLogOutputVariablesToBuildOutputIfNotRunningInBuildServer()
+        public void WriteVersionInfoTaskShouldNotLogOutputVariablesToBuildOutput()
         {
-            using var fixture = CreateLocalRepositoryFixture();
-
-            var task = new WriteVersionInfoToBuildLog
-            {
-                SolutionDirectory = fixture.RepositoryPath,
-            };
+            var task = new WriteVersionInfoToBuildLog();
 
             var result = ExecuteMsBuildTask(task);
 
@@ -25,14 +20,9 @@ namespace GitVersion.MSBuildTask.Tests
         }
 
         [Test]
-        public void WriteVersionInfoTaskShouldLogOutputVariablesToBuildOutput()
+        public void WriteVersionInfoTaskShouldLogOutputVariablesToBuildOutputInBuildServer()
         {
-            using var fixture = CreateRemoteRepositoryFixture();
-
-            var task = new WriteVersionInfoToBuildLog
-            {
-                SolutionDirectory = fixture.LocalRepositoryFixture.RepositoryPath,
-            };
+            var task = new WriteVersionInfoToBuildLog();
 
             var result = ExecuteMsBuildTaskInBuildServer(task);
 
