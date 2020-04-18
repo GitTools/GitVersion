@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using GitTools.Testing;
@@ -6,6 +7,7 @@ using GitVersion.MSBuildTask;
 using GitVersionCore.Tests.Helpers;
 using GitVersionTask.Tests.Helpers;
 using LibGit2Sharp;
+using Microsoft.Build.Utilities.ProjectCreation;
 
 namespace GitVersionTask.Tests
 {
@@ -26,6 +28,17 @@ namespace GitVersionTask.Tests
             return msbuildFixture.Execute(task);
         }
 
+        protected static MsBuildExeFixtureResult ExecuteMsBuildExe(Action<ProjectCreator> extendProject)
+        {
+            var fixture = CreateLocalRepositoryFixture();
+
+            var msbuildFixture = new MsBuildExeFixture(fixture, fixture.RepositoryPath);
+
+            msbuildFixture.CreateTestProject(extendProject);
+
+            return msbuildFixture.Execute();
+        }
+
         protected static MsBuildTaskFixtureResult<T> ExecuteMsBuildTaskInBuildServer<T>(T task) where T : GitVersionTaskBase
         {
             var fixture = CreateRemoteRepositoryFixture();
@@ -34,6 +47,18 @@ namespace GitVersionTask.Tests
             var msbuildFixture = new MsBuildTaskFixture(fixture);
             msbuildFixture.WithEnv(env.ToArray());
             return msbuildFixture.Execute(task);
+        }
+
+        protected static MsBuildExeFixtureResult ExecuteMsBuildExeInBuildServer(Action<ProjectCreator> extendProject)
+        {
+            var fixture = CreateRemoteRepositoryFixture();
+
+            var msbuildFixture = new MsBuildExeFixture(fixture, fixture.LocalRepositoryFixture.RepositoryPath);
+
+            msbuildFixture.CreateTestProject(extendProject);
+            msbuildFixture.WithEnv(env.ToArray());
+
+            return msbuildFixture.Execute();
         }
 
         private static EmptyRepositoryFixture CreateLocalRepositoryFixture()
