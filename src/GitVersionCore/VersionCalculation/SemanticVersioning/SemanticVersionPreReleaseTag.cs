@@ -168,7 +168,7 @@ namespace GitVersion
 
             return format switch
             {
-                "t" => (Number.HasValue ? $"{Name}.{Number}" : Name),
+                "t" => (Number.HasValue ? string.IsNullOrEmpty(Name) ? $"{Number}" : $"{Name}.{Number}" : Name),
                 "l" => (Number.HasValue ? FormatLegacy(GetLegacyName(), Number.Value.ToString()) : FormatLegacy(GetLegacyName())),
                 _ => throw new ArgumentException("Unknown format", nameof(format))
             };
@@ -176,7 +176,7 @@ namespace GitVersion
 
         private string FormatLegacy(string tag, string number = "")
         {
-            var tagEndsWithANumber = char.IsNumber(tag.Last());
+            var tagEndsWithANumber = char.IsNumber(tag.LastOrDefault());
             if (tagEndsWithANumber && number.Length > 0)
                 number = "-" + number;
 
@@ -194,7 +194,7 @@ namespace GitVersion
 
         public bool HasTag()
         {
-            return !string.IsNullOrEmpty(Name);
+            return !string.IsNullOrEmpty(Name) || Number.HasValue;
         }
     }
 }
