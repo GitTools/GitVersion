@@ -12,7 +12,7 @@ namespace GitVersionTask.Tests.Helpers
         {
             this.fixture = fixture;
         }
-        public AnalyzerResults MsBuild { get; set; }
+        public IAnalyzerResults MsBuild { get; set; }
         public string Output { get; set; }
         public string ProjectPath { get; set; }
         public void Dispose()
