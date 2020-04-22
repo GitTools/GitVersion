@@ -2,7 +2,7 @@ using System.Collections.Generic;
 
 namespace GitVersion
 {
-    public class AssemblyInfo
+    public class AssemblyInfoData
     {
         public bool ShouldUpdate;
         public bool EnsureAssemblyInfo;

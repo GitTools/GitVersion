@@ -25,7 +25,7 @@ namespace GitVersion
         public string ProjectRootDirectory => projectRootDirectory.Value;
         public string DynamicGitRepositoryPath => dynamicGitRepositoryPath.Value;
 
-        public AssemblyInfo AssemblyInfo { get; } = new AssemblyInfo();
+        public AssemblyInfoData AssemblyInfo { get; } = new AssemblyInfoData();
         public AuthenticationInfo Authentication { get; } = new AuthenticationInfo();
         public ConfigInfo ConfigInfo { get; } = new ConfigInfo();
         public RepositoryInfo RepositoryInfo { get; } = new RepositoryInfo();

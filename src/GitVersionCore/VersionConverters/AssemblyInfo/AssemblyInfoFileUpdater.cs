@@ -43,10 +43,8 @@ namespace GitVersion.VersionConverters.AssemblyInfo
 
         public void Execute(VersionVariables variables, AssemblyInfoContext context)
         {
-            var assemblyInfoFileNames = new HashSet<string>(context.AssemblyInfoFiles);
+            var assemblyInfoFiles = GetAssemblyInfoFiles(context).ToList();
             log.Info("Updating assembly info files");
-
-            var assemblyInfoFiles = GetAssemblyInfoFiles(context.WorkingDirectory, assemblyInfoFileNames, context.EnsureAssemblyInfo).ToList();
             log.Info($"Found {assemblyInfoFiles.Count} files");
 
             var assemblyVersion = variables.AssemblySemVer;
@@ -159,9 +157,13 @@ namespace GitVersion.VersionConverters.AssemblyInfo
             return inputString;
         }
 
-        private IEnumerable<FileInfo> GetAssemblyInfoFiles(string workingDirectory, ISet<string> assemblyInfoFileNames, bool ensureAssemblyInfo)
+        private IEnumerable<FileInfo> GetAssemblyInfoFiles(AssemblyInfoContext context)
         {
-            if (assemblyInfoFileNames != null && assemblyInfoFileNames.Any(x => !string.IsNullOrWhiteSpace(x)))
+            var workingDirectory = context.WorkingDirectory;
+            var ensureAssemblyInfo = context.EnsureAssemblyInfo;
+            var assemblyInfoFileNames = new HashSet<string>(context.AssemblyInfoFiles);
+
+            if (assemblyInfoFileNames.Any(x => !string.IsNullOrWhiteSpace(x)))
             {
                 foreach (var item in assemblyInfoFileNames)
                 {
