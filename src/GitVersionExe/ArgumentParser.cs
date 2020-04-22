@@ -440,7 +440,10 @@ namespace GitVersion
             else if (!value.IsSwitchArgument())
             {
                 arguments.UpdateAssemblyInfo = true;
-                arguments.UpdateAssemblyInfoFileName.Add(value);
+                if (value != null)
+                {
+                    arguments.UpdateAssemblyInfoFileName.Add(value);
+                }
             }
             else
             {
