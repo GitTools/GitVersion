@@ -196,7 +196,7 @@ namespace GitVersion.Extensions
             return repository.Network.ListReferences(remote, (url, fromUrl, types) => new UsernamePasswordCredentials
             {
                 Username = username,
-                Password = password
+                Password = password ?? string.Empty
             }).Select(r => r.ResolveToDirectReference());
         }
 
