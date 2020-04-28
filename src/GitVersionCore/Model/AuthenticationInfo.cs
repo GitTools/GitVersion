@@ -17,7 +17,7 @@ namespace GitVersion
                 fetchOptions.CredentialsProvider = (url, user, types) => new UsernamePasswordCredentials
                 {
                     Username = Username,
-                    Password = Password
+                    Password = Password ?? string.Empty
                 };
             }
 
