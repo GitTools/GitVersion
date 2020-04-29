@@ -116,7 +116,5 @@ namespace GitVersion
                 ExecArgs = ExecArgs,
             };
         }
-
-
     }
 }

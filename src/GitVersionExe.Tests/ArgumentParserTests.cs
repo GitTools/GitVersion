@@ -19,7 +19,12 @@ namespace GitVersionExe.Tests
         [SetUp]
         public void SetUp()
         {
-            argumentParser = GetArgumentParser();
+            var sp = ConfigureServices(services =>
+            {
+                services.AddSingleton<IArgumentParser, ArgumentParser>();
+                services.AddSingleton<IGlobbingResolver, GlobbingResolver>();
+            });
+            argumentParser = sp.GetService<IArgumentParser>();
         }
 
         [Test]
@@ -285,6 +290,30 @@ namespace GitVersionExe.Tests
         }
 
         [Test]
+        public void UpdateAssemblyInfoWithMultipleFilenamesMatchingGlobbing()
+        {
+            using var repo = new EmptyRepositoryFixture();
+
+            var assemblyFile1 = Path.Combine(repo.RepositoryPath, "CommonAssemblyInfo.cs");
+            using var file = File.Create(assemblyFile1);
+
+            var assemblyFile2 = Path.Combine(repo.RepositoryPath, "VersionAssemblyInfo.cs");
+            using var file2 = File.Create(assemblyFile2);
+
+            var subdir = Path.Combine(repo.RepositoryPath, "subdir");
+            Directory.CreateDirectory(subdir);
+            var assemblyFile3 = Path.Combine(subdir, "LocalAssemblyInfo.cs");
+            using var file3 = File.Create(assemblyFile3);
+
+            var arguments = argumentParser.ParseArguments($"-targetpath {repo.RepositoryPath} -updateAssemblyInfo **/*AssemblyInfo.cs");
+            arguments.UpdateAssemblyInfo.ShouldBe(true);
+            arguments.UpdateAssemblyInfoFileName.Count.ShouldBe(3);
+            arguments.UpdateAssemblyInfoFileName.ShouldContain(x => Path.GetFileName(x).Equals("CommonAssemblyInfo.cs"));
+            arguments.UpdateAssemblyInfoFileName.ShouldContain(x => Path.GetFileName(x).Equals("VersionAssemblyInfo.cs"));
+            arguments.UpdateAssemblyInfoFileName.ShouldContain(x => Path.GetFileName(x).Equals("LocalAssemblyInfo.cs"));
+        }
+
+        [Test]
         public void UpdateAssemblyInfoWithRelativeFilename()
         {
             using var repo = new EmptyRepositoryFixture();
@@ -486,23 +515,6 @@ namespace GitVersionExe.Tests
                 var arguments = argumentParser.ParseArguments(command);
                 arguments.Verbosity.ShouldBe(expectedVerbosity);
             }
-        }
-
-        private static IArgumentParser GetArgumentParser(IGlobbingResolver globbingResolver = null)
-        {
-            var sp = ConfigureServices(services =>
-            {
-                services.AddSingleton<IArgumentParser, ArgumentParser>();
-                if (globbingResolver != null)
-                {
-                    services.AddSingleton(globbingResolver);
-                }
-                else
-                {
-                    services.AddSingleton<IGlobbingResolver, GlobbingResolver>();
-                }
-            });
-            return sp.GetService<IArgumentParser>();
         }
     }
 }
