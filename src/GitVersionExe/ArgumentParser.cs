@@ -16,11 +16,13 @@ namespace GitVersion
         private readonly IEnvironment environment;
         private readonly ICurrentBuildAgent buildAgent;
         private readonly IConsole console;
+        private readonly IGlobbingResolver globbingResolver;
 
-        public ArgumentParser(IEnvironment environment, ICurrentBuildAgent buildAgent, IConsole console)
+        public ArgumentParser(IEnvironment environment, ICurrentBuildAgent buildAgent, IConsole console, IGlobbingResolver globbingResolver)
         {
             this.environment = environment ?? throw new ArgumentNullException(nameof(environment));
             this.console = console ?? throw new ArgumentNullException(nameof(console));
+            this.globbingResolver = globbingResolver ?? throw new ArgumentNullException(nameof(globbingResolver));
             this.buildAgent = buildAgent;
         }
 
@@ -87,6 +89,8 @@ namespace GitVersion
                 ? System.Environment.CurrentDirectory
                 : firstArgument;
 
+            arguments.TargetPath = arguments.TargetPath.TrimEnd('/', '\\');
+            arguments.UpdateAssemblyInfoFileName = ResolveFiles(arguments.TargetPath, arguments.UpdateAssemblyInfoFileName).ToHashSet();
             arguments.NoFetch = arguments.NoFetch || buildAgent != null && buildAgent.PreventFetch();
 
             return arguments;
@@ -234,7 +238,6 @@ namespace GitVersion
             if (name.IsSwitch("showConfig"))
             {
                 ParseShowConfig(value, arguments);
-
                 return;
             }
 
@@ -309,6 +312,21 @@ namespace GitVersion
             }
 
             throw new WarningException(couldNotParseMessage);
+        }
+
+        private void AddAuthentication(Arguments arguments)
+        {
+            var username = environment.GetEnvironmentVariable("GITVERSION_REMOTE_USERNAME");
+            if (!string.IsNullOrWhiteSpace(username))
+            {
+                arguments.Authentication.Username = username;
+            }
+
+            var password = environment.GetEnvironmentVariable("GITVERSION_REMOTE_PASSWORD");
+            if (!string.IsNullOrWhiteSpace(password))
+            {
+                arguments.Authentication.Username = password;
+            }
         }
 
         private static void ParseShowConfig(string value, Arguments arguments)
@@ -456,18 +474,18 @@ namespace GitVersion
             }
         }
 
-        private void AddAuthentication(Arguments arguments)
+        private IEnumerable<string> ResolveFiles(string workingDirectory, ISet<string> assemblyInfoFiles)
         {
-            var username = environment.GetEnvironmentVariable("GITVERSION_REMOTE_USERNAME");
-            if (!string.IsNullOrWhiteSpace(username))
-            {
-                arguments.Authentication.Username = username;
-            }
+            if (assemblyInfoFiles == null) yield break;
 
-            var password = environment.GetEnvironmentVariable("GITVERSION_REMOTE_PASSWORD");
-            if (!string.IsNullOrWhiteSpace(password))
+            foreach (var file in assemblyInfoFiles)
             {
-                arguments.Authentication.Username = password;
+                var paths = globbingResolver.Resolve(workingDirectory, file);
+
+                foreach (var path in paths)
+                {
+                    yield return Path.GetFullPath(Path.Combine(workingDirectory, path));
+                }
             }
         }
 

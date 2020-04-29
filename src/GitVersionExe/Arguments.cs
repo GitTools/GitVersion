@@ -1,12 +1,8 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 using GitVersion.Logging;
 using GitVersion.Model;
 using GitVersion.Model.Configuration;
-using Microsoft.Extensions.FileSystemGlobbing;
-using Microsoft.Extensions.FileSystemGlobbing.Abstractions;
 
 namespace GitVersion
 {
@@ -66,7 +62,7 @@ namespace GitVersion
                 {
                     ShouldUpdate = UpdateAssemblyInfo,
                     EnsureAssemblyInfo = EnsureAssemblyInfo,
-                    Files = ResolveFiles(workingDirectory).ToHashSet()
+                    Files = UpdateAssemblyInfoFileName
                 },
 
                 Authentication =
@@ -121,21 +117,6 @@ namespace GitVersion
             };
         }
 
-        private IEnumerable<string> ResolveFiles(string workingDirectory)
-        {
-            if (UpdateAssemblyInfoFileName == null) yield break;
-            var matcher = new Matcher(StringComparison.OrdinalIgnoreCase);
 
-            foreach (var file in UpdateAssemblyInfoFileName)
-            {
-                matcher.AddInclude(file);
-                var results = matcher.Execute(new DirectoryInfoWrapper(new DirectoryInfo(workingDirectory)));
-
-                foreach (var result in results.Files)
-                {
-                    yield return Path.GetFullPath(Path.Combine(workingDirectory, result.Path));
-                }
-            }
-        }
     }
 }
