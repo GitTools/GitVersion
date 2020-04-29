@@ -78,7 +78,7 @@ namespace GitVersionCore.Tests.IntegrationTests
             Commands.Checkout(fixture.Repository, fixture.Repository.CreateBranch("main"));
             fixture.Repository.Branches.Remove(fixture.Repository.Branches["master"]);
 
-            fixture.AssertFullSemver("0.1.0+0", config);
+            fixture.AssertFullSemver("0.1.0-1+0", config);
         }
 
         [Test]

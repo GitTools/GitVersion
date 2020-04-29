@@ -25,10 +25,12 @@ namespace GitVersion
         {
             Name = preReleaseTag.Name;
             Number = preReleaseTag.Number;
+            PromotedFromCommits = preReleaseTag.PromotedFromCommits;
         }
 
         public string Name { get; set; }
         public int? Number { get; set; }
+        public bool PromotedFromCommits { get; set; }
 
         public override bool Equals(object obj)
         {
@@ -188,13 +190,17 @@ namespace GitVersion
 
         private string GetLegacyName()
         {
+            if (string.IsNullOrEmpty(Name))
+            {
+                return string.Empty;
+            }
             var firstPart = Name.Split('_')[0];
             return firstPart.Replace(".", string.Empty);
         }
 
         public bool HasTag()
         {
-            return !string.IsNullOrEmpty(Name) || Number.HasValue;
+            return !string.IsNullOrEmpty(Name) || (Number.HasValue && !PromotedFromCommits);
         }
     }
 }
