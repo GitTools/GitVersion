@@ -116,6 +116,7 @@ namespace GitVersion.VersionCalculation
                 else
                 {
                     semanticVersion.PreReleaseTag.Number = semanticVersion.BuildMetaData.CommitsSinceTag;
+                    semanticVersion.PreReleaseTag.PromotedFromCommits = true;
                 }
                 semanticVersion.BuildMetaData.CommitsSinceVersionSource = semanticVersion.BuildMetaData.CommitsSinceTag.Value;
                 semanticVersion.BuildMetaData.CommitsSinceTag = null; // why is this set to null ?

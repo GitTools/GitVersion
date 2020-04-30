@@ -25,10 +25,12 @@ namespace GitVersion
         {
             Name = preReleaseTag.Name;
             Number = preReleaseTag.Number;
+            PromotedFromCommits = preReleaseTag.PromotedFromCommits;
         }
 
         public string Name { get; set; }
         public int? Number { get; set; }
+        public bool PromotedFromCommits { get; set; }
 
         public override bool Equals(object obj)
         {
@@ -168,7 +170,7 @@ namespace GitVersion
 
             return format switch
             {
-                "t" => (Number.HasValue ? $"{Name}.{Number}" : Name),
+                "t" => (Number.HasValue ? string.IsNullOrEmpty(Name) ? $"{Number}" : $"{Name}.{Number}" : Name),
                 "l" => (Number.HasValue ? FormatLegacy(GetLegacyName(), Number.Value.ToString()) : FormatLegacy(GetLegacyName())),
                 _ => throw new ArgumentException("Unknown format", nameof(format))
             };
@@ -176,7 +178,7 @@ namespace GitVersion
 
         private string FormatLegacy(string tag, string number = "")
         {
-            var tagEndsWithANumber = char.IsNumber(tag.Last());
+            var tagEndsWithANumber = char.IsNumber(tag.LastOrDefault());
             if (tagEndsWithANumber && number.Length > 0)
                 number = "-" + number;
 
@@ -188,13 +190,17 @@ namespace GitVersion
 
         private string GetLegacyName()
         {
+            if (string.IsNullOrEmpty(Name))
+            {
+                return string.Empty;
+            }
             var firstPart = Name.Split('_')[0];
             return firstPart.Replace(".", string.Empty);
         }
 
         public bool HasTag()
         {
-            return !string.IsNullOrEmpty(Name);
+            return !string.IsNullOrEmpty(Name) || (Number.HasValue && !PromotedFromCommits);
         }
     }
 }

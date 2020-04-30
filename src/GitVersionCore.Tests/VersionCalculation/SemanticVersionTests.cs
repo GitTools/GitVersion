@@ -20,6 +20,7 @@ namespace GitVersionCore.Tests
         [TestCase("1.2-alpha4", 1, 2, 0, "alpha", 4, null, null, null, null, "1.2.0-alpha.4", null)]
         [TestCase("1.2.3-rc", 1, 2, 3, "rc", null, null, null, null, null, null, null)]
         [TestCase("1.2.3-rc3", 1, 2, 3, "rc", 3, null, null, null, null, "1.2.3-rc.3", null)]
+        [TestCase("1.2.3-3", 1, 2, 3, "", 3, null, null, null, null, "1.2.3-3", null)]
         [TestCase("1.2.3-RC3", 1, 2, 3, "RC", 3, null, null, null, null, "1.2.3-RC.3", null)]
         [TestCase("1.2.3-rc3.1", 1, 2, 3, "rc3", 1, null, null, null, null, "1.2.3-rc3.1", null)]
         [TestCase("01.02.03-rc03", 1, 2, 3, "rc", 3, null, null, null, null, "1.2.3-rc.3", null)]
@@ -119,6 +120,21 @@ namespace GitVersionCore.Tests
                 }
             };
             Assert.AreEqual("1.2.3-beta.4", fullSemVer.ToString("s"));
+            var fullSemVerNoPreReleaseName = new SemanticVersion
+            {
+                Major = 1,
+                Minor = 2,
+                Patch = 3,
+                PreReleaseTag = new SemanticVersionPreReleaseTag("", 4),
+                BuildMetaData = new SemanticVersionBuildMetaData
+                {
+                    Sha = "theSha",
+                    Branch = "TheBranch",
+                    CommitsSinceTag = 5,
+                    OtherMetaData = "TheOtherMetaData"
+                }
+            };
+            Assert.AreEqual("1.2.3-4", fullSemVerNoPreReleaseName.ToString("s"));
         }
         [Test]
         public void ToStringLTests()
@@ -183,6 +199,21 @@ namespace GitVersionCore.Tests
                 }
             };
             Assert.AreEqual("1.2.3-beta.4", fullSemVer.ToString());
+            var fullSemVerNoPreReleaseName = new SemanticVersion
+            {
+                Major = 1,
+                Minor = 2,
+                Patch = 3,
+                PreReleaseTag = new SemanticVersionPreReleaseTag("", 4),
+                BuildMetaData = new SemanticVersionBuildMetaData
+                {
+                    Sha = "theSha",
+                    Branch = "TheBranch",
+                    CommitsSinceTag = 5,
+                    OtherMetaData = "TheOtherMetaData"
+                }
+            };
+            Assert.AreEqual("1.2.3-4", fullSemVerNoPreReleaseName.ToString());
         }
         [Test]
         public void ToStringFTests()

@@ -85,6 +85,19 @@ namespace GitVersionCore.Tests.IntegrationTests
         }
 
         [Test]
+        public void CanTakePreReleaseVersionFromReleasesBranchWithNumericPreReleaseTag()
+        {
+            using var fixture = new EmptyRepositoryFixture();
+            fixture.Repository.MakeCommits(5);
+            fixture.Repository.CreateBranch("releases/2.0.0");
+            fixture.Checkout("releases/2.0.0");
+            fixture.Repository.ApplyTag("v2.0.0-1");
+
+            var variables = fixture.GetVersion();
+            Assert.AreEqual("2.0.0-1", variables.FullSemVer);
+        }
+
+        [Test]
         public void ReleaseBranchWithNextVersionSetInConfig()
         {
             var config = new Config
