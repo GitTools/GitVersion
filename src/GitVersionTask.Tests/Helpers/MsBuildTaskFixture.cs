@@ -1,21 +1,29 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using GitTools.Testing;
 using GitVersion.BuildAgents;
+using GitVersionTask.Tests.Mocks;
 using Microsoft.Build.Framework;
 
 namespace GitVersionTask.Tests.Helpers
 {
-    public class MsBuildFixture
+    public class MsBuildTaskFixture
     {
+        private readonly RepositoryFixtureBase fixture;
         private KeyValuePair<string, string>[] environmentVariables;
+
+        public MsBuildTaskFixture(RepositoryFixtureBase fixture)
+        {
+            this.fixture = fixture;
+        }
 
         public void WithEnv(params KeyValuePair<string, string>[] envs)
         {
             environmentVariables = envs;
         }
 
-        public MsBuildExecutionResult<T> Execute<T>(T task) where T : ITask
+        public MsBuildTaskFixtureResult<T> Execute<T>(T task) where T : ITask
         {
             return UsingEnv(() =>
             {
@@ -25,7 +33,7 @@ namespace GitVersionTask.Tests.Helpers
 
                 var result = task.Execute();
 
-                return new MsBuildExecutionResult<T>
+                return new MsBuildTaskFixtureResult<T>(fixture)
                 {
                     Success = result,
                     Task = task,

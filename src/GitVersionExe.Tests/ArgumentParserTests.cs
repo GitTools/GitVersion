@@ -1,3 +1,5 @@
+using System.IO;
+using GitTools.Testing;
 using GitVersion;
 using GitVersion.Logging;
 using GitVersion.Model;
@@ -20,6 +22,7 @@ namespace GitVersionExe.Tests
             var sp = ConfigureServices(services =>
             {
                 services.AddSingleton<IArgumentParser, ArgumentParser>();
+                services.AddSingleton<IGlobbingResolver, GlobbingResolver>();
             });
             argumentParser = sp.GetService<IArgumentParser>();
         }
@@ -257,19 +260,74 @@ namespace GitVersionExe.Tests
         [Test]
         public void UpdateAssemblyInfoWithFilename()
         {
-            var arguments = argumentParser.ParseArguments("-updateAssemblyInfo CommonAssemblyInfo.cs");
+            using var repo = new EmptyRepositoryFixture();
+
+            var assemblyFile = Path.Combine(repo.RepositoryPath, "CommonAssemblyInfo.cs");
+            using var file = File.Create(assemblyFile);
+
+            var arguments = argumentParser.ParseArguments($"-targetpath {repo.RepositoryPath} -updateAssemblyInfo CommonAssemblyInfo.cs");
             arguments.UpdateAssemblyInfo.ShouldBe(true);
-            arguments.UpdateAssemblyInfoFileName.ShouldContain("CommonAssemblyInfo.cs");
+            arguments.UpdateAssemblyInfoFileName.Count.ShouldBe(1);
+            arguments.UpdateAssemblyInfoFileName.ShouldContain(x => Path.GetFileName(x).Equals("CommonAssemblyInfo.cs"));
         }
 
         [Test]
         public void UpdateAssemblyInfoWithMultipleFilenames()
         {
-            var arguments = argumentParser.ParseArguments("-updateAssemblyInfo CommonAssemblyInfo.cs VersionAssemblyInfo.cs");
+            using var repo = new EmptyRepositoryFixture();
+
+            var assemblyFile1 = Path.Combine(repo.RepositoryPath, "CommonAssemblyInfo.cs");
+            using var file = File.Create(assemblyFile1);
+
+            var assemblyFile2 = Path.Combine(repo.RepositoryPath, "VersionAssemblyInfo.cs");
+            using var file2 = File.Create(assemblyFile2);
+
+            var arguments = argumentParser.ParseArguments($"-targetpath {repo.RepositoryPath} -updateAssemblyInfo CommonAssemblyInfo.cs VersionAssemblyInfo.cs");
             arguments.UpdateAssemblyInfo.ShouldBe(true);
             arguments.UpdateAssemblyInfoFileName.Count.ShouldBe(2);
-            arguments.UpdateAssemblyInfoFileName.ShouldContain("CommonAssemblyInfo.cs");
-            arguments.UpdateAssemblyInfoFileName.ShouldContain("VersionAssemblyInfo.cs");
+            arguments.UpdateAssemblyInfoFileName.ShouldContain(x => Path.GetFileName(x).Equals("CommonAssemblyInfo.cs"));
+            arguments.UpdateAssemblyInfoFileName.ShouldContain(x => Path.GetFileName(x).Equals("VersionAssemblyInfo.cs"));
+        }
+
+        [Test]
+        public void UpdateAssemblyInfoWithMultipleFilenamesMatchingGlobbing()
+        {
+            using var repo = new EmptyRepositoryFixture();
+
+            var assemblyFile1 = Path.Combine(repo.RepositoryPath, "CommonAssemblyInfo.cs");
+            using var file = File.Create(assemblyFile1);
+
+            var assemblyFile2 = Path.Combine(repo.RepositoryPath, "VersionAssemblyInfo.cs");
+            using var file2 = File.Create(assemblyFile2);
+
+            var subdir = Path.Combine(repo.RepositoryPath, "subdir");
+            Directory.CreateDirectory(subdir);
+            var assemblyFile3 = Path.Combine(subdir, "LocalAssemblyInfo.cs");
+            using var file3 = File.Create(assemblyFile3);
+
+            var arguments = argumentParser.ParseArguments($"-targetpath {repo.RepositoryPath} -updateAssemblyInfo **/*AssemblyInfo.cs");
+            arguments.UpdateAssemblyInfo.ShouldBe(true);
+            arguments.UpdateAssemblyInfoFileName.Count.ShouldBe(3);
+            arguments.UpdateAssemblyInfoFileName.ShouldContain(x => Path.GetFileName(x).Equals("CommonAssemblyInfo.cs"));
+            arguments.UpdateAssemblyInfoFileName.ShouldContain(x => Path.GetFileName(x).Equals("VersionAssemblyInfo.cs"));
+            arguments.UpdateAssemblyInfoFileName.ShouldContain(x => Path.GetFileName(x).Equals("LocalAssemblyInfo.cs"));
+        }
+
+        [Test]
+        public void UpdateAssemblyInfoWithRelativeFilename()
+        {
+            using var repo = new EmptyRepositoryFixture();
+
+            var assemblyFile = Path.Combine(repo.RepositoryPath, "CommonAssemblyInfo.cs");
+            using var file = File.Create(assemblyFile);
+
+            var targetPath = Path.Combine(repo.RepositoryPath, "subdir1", "subdir2");
+            Directory.CreateDirectory(targetPath);
+
+            var arguments = argumentParser.ParseArguments($"-targetpath {targetPath} -updateAssemblyInfo ..\\..\\CommonAssemblyInfo.cs");
+            arguments.UpdateAssemblyInfo.ShouldBe(true);
+            arguments.UpdateAssemblyInfoFileName.Count.ShouldBe(1);
+            arguments.UpdateAssemblyInfoFileName.ShouldContain(x => Path.GetFileName(x).Equals("CommonAssemblyInfo.cs"));
         }
 
         [Test]
@@ -299,14 +357,6 @@ namespace GitVersionExe.Tests
         {
             var exception = Assert.Throws<WarningException>(() => argumentParser.ParseArguments($"/overrideconfig {options}"));
             exception.Message.ShouldContain("Could not parse /overrideconfig option");
-        }
-
-        [Test]
-        public void UpdateAssemblyInfoWithRelativeFilename()
-        {
-            var arguments = argumentParser.ParseArguments("-updateAssemblyInfo ..\\..\\CommonAssemblyInfo.cs");
-            arguments.UpdateAssemblyInfo.ShouldBe(true);
-            arguments.UpdateAssemblyInfoFileName.ShouldContain("..\\..\\CommonAssemblyInfo.cs");
         }
 
         [Test]

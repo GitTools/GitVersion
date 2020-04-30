@@ -149,14 +149,14 @@ namespace GitVersion
 
             if (auth != null)
             {
-                if (!string.IsNullOrWhiteSpace(auth.Username) && !string.IsNullOrWhiteSpace(auth.Password))
+                if (!string.IsNullOrWhiteSpace(auth.Username))
                 {
                     log.Info($"Setting up credentials using name '{auth.Username}'");
 
                     credentials = new UsernamePasswordCredentials
                     {
                         Username = auth.Username,
-                        Password = auth.Password
+                        Password = auth.Password ?? string.Empty
                     };
                 }
             }

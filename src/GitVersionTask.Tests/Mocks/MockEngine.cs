@@ -7,7 +7,7 @@ using GitVersionTask.Tests.Helpers;
 using Microsoft.Build.Framework;
 using Shouldly;
 
-namespace GitVersionTask.Tests
+namespace GitVersionTask.Tests.Mocks
 {
     internal sealed class MockEngine : IBuildEngine4
     {
