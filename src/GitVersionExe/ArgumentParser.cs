@@ -50,6 +50,15 @@ namespace GitVersion
 
             var firstArgument = commandLineArguments.First();
 
+            if (firstArgument.IsInit())
+            {
+                return new Arguments
+                {
+                    TargetPath = System.Environment.CurrentDirectory,
+                    Init = true,
+                };
+            }
+
             if (firstArgument.IsHelp())
             {
                 return new Arguments
@@ -58,12 +67,12 @@ namespace GitVersion
                 };
             }
 
-            if (firstArgument.IsInit())
+            if (firstArgument.IsSwitch("version"))
             {
                 return new Arguments
                 {
                     TargetPath = System.Environment.CurrentDirectory,
-                    Init = true,
+                    IsVersion = true,
                 };
             }
 
@@ -75,7 +84,7 @@ namespace GitVersion
 
             for (var i = 0; i < switchesAndValues.AllKeys.Length; i++)
             {
-                ParseArguments(arguments, switchesAndValues, i);
+                ParseSwitchArguments(arguments, switchesAndValues, i);
             }
 
             if (arguments.Output.Count == 0)
@@ -96,33 +105,49 @@ namespace GitVersion
             return arguments;
         }
 
-        private void ParseArguments(Arguments arguments, NameValueCollection switchesAndValues, int i)
+        private void ParseSwitchArguments(Arguments arguments, NameValueCollection switchesAndValues, int i)
         {
             var name = switchesAndValues.AllKeys[i];
             var values = switchesAndValues.GetValues(name);
             var value = values?.FirstOrDefault();
 
-            if (name.IsSwitch("version"))
+            if (ParseSwitches(arguments, name, values, value)) return;
+
+            ParseTargetPath(arguments, name, values, value, i == 0);
+        }
+
+        private void AddAuthentication(Arguments arguments)
+        {
+            var username = environment.GetEnvironmentVariable("GITVERSION_REMOTE_USERNAME");
+            if (!string.IsNullOrWhiteSpace(username))
             {
-                EnsureArgumentValueCount(values);
-                arguments.IsVersion = true;
-                return;
+                arguments.Authentication.Username = username;
             }
 
-            if (name.IsSwitch("l"))
+            var password = environment.GetEnvironmentVariable("GITVERSION_REMOTE_PASSWORD");
+            if (!string.IsNullOrWhiteSpace(password))
             {
-                EnsureArgumentValueCount(values);
-                arguments.LogFilePath = value;
-                return;
+                arguments.Authentication.Username = password;
             }
+        }
 
-            if (name.IsSwitch("config"))
+        private IEnumerable<string> ResolveFiles(string workingDirectory, ISet<string> assemblyInfoFiles)
+        {
+            if (assemblyInfoFiles == null) yield break;
+
+            foreach (var file in assemblyInfoFiles)
             {
-                EnsureArgumentValueCount(values);
-                arguments.ConfigFile = value;
-                return;
-            }
+                var paths = globbingResolver.Resolve(workingDirectory, file);
 
+                foreach (var path in paths)
+                {
+                    yield return Path.GetFullPath(Path.Combine(workingDirectory, path));
+                }
+            }
+        }
+
+        private void ParseTargetPath(Arguments arguments, string name, string[] values, string value, bool parseEnded)
+        {
             if (name.IsSwitch("targetpath"))
             {
                 EnsureArgumentValueCount(values);
@@ -135,164 +160,10 @@ namespace GitVersion
                 return;
             }
 
-            if (name.IsSwitch("dynamicRepoLocation"))
-            {
-                EnsureArgumentValueCount(values);
-                arguments.DynamicRepositoryClonePath = value;
-                return;
-            }
-
-            if (name.IsSwitch("url"))
-            {
-                EnsureArgumentValueCount(values);
-                arguments.TargetUrl = value;
-                return;
-            }
-
-            if (name.IsSwitch("b"))
-            {
-                EnsureArgumentValueCount(values);
-                arguments.TargetBranch = value;
-                return;
-            }
-
-            if (name.IsSwitch("u"))
-            {
-                EnsureArgumentValueCount(values);
-                arguments.Authentication.Username = value;
-                return;
-            }
-
-            if (name.IsSwitch("p"))
-            {
-                EnsureArgumentValueCount(values);
-                arguments.Authentication.Password = value;
-                return;
-            }
-
-            if (name.IsSwitch("c"))
-            {
-                EnsureArgumentValueCount(values);
-                arguments.CommitId = value;
-                return;
-            }
-
-            if (name.IsSwitch("exec"))
-            {
-                EnsureArgumentValueCount(values);
-#pragma warning disable CS0612 // Type or member is obsolete
-                arguments.Exec = value;
-#pragma warning restore CS0612 // Type or member is obsolete
-                return;
-            }
-
-            if (name.IsSwitch("execargs"))
-            {
-                EnsureArgumentValueCount(values);
-#pragma warning disable CS0612 // Type or member is obsolete
-                arguments.ExecArgs = value;
-#pragma warning restore CS0612 // Type or member is obsolete
-                return;
-            }
-
-            if (name.IsSwitch("proj"))
-            {
-                EnsureArgumentValueCount(values);
-#pragma warning disable CS0612 // Type or member is obsolete
-                arguments.Proj = value;
-#pragma warning restore CS0612 // Type or member is obsolete
-                return;
-            }
-
-            if (name.IsSwitch("projargs"))
-            {
-                EnsureArgumentValueCount(values);
-#pragma warning disable CS0612 // Type or member is obsolete
-                arguments.ProjArgs = value;
-#pragma warning restore CS0612 // Type or member is obsolete
-                return;
-            }
-
-            if (name.IsSwitch("diag"))
-            {
-                if (value == null || value.IsTrue())
-                {
-                    arguments.Diag = true;
-                }
-
-                return;
-            }
-
-            if (name.IsSwitch("updateAssemblyInfo"))
-            {
-                ParseUpdateAssemblyInfo(arguments, value, values);
-                return;
-            }
-
-            if (name.IsSwitch("v") || name.IsSwitch("showvariable"))
-            {
-                ParseShowVariable(value, name, arguments);
-                return;
-            }
-
-            if (name.IsSwitch("showConfig"))
-            {
-                ParseShowConfig(value, arguments);
-                return;
-            }
-
-            if (name.IsSwitch("output"))
-            {
-                ParseOutput(values, arguments);
-                return;
-            }
-
-            if (name.IsSwitch("nofetch"))
-            {
-                arguments.NoFetch = true;
-                return;
-            }
-
-            if (name.IsSwitch("nonormalize"))
-            {
-                arguments.NoNormalize = true;
-                return;
-            }
-
-            if (name.IsSwitch("ensureassemblyinfo"))
-            {
-                ParseEnsureAssemblyInfo(arguments, value);
-                return;
-            }
-
-            if (name.IsSwitch("overrideconfig"))
-            {
-                ParseOverrideConfig(arguments, value);
-                return;
-            }
-
-            if (name.IsSwitch("nocache"))
-            {
-                arguments.NoCache = true;
-                return;
-            }
-
-            if (name.IsSwitch("verbosity"))
-            {
-                ParseVerbosity(value, arguments);
-                return;
-            }
-
-            if (name.IsSwitch("updatewixversionfile"))
-            {
-                arguments.UpdateWixVersionFile = true;
-                return;
-            }
-
             var couldNotParseMessage = $"Could not parse command line parameter '{name}'.";
 
             // If we've reached through all argument switches without a match, we can relatively safely assume that the first argument isn't a switch, but the target path.
-            if (i == 0)
+            if (parseEnded)
             {
                 if (name.StartsWith("/"))
                 {
@@ -314,38 +185,201 @@ namespace GitVersion
             throw new WarningException(couldNotParseMessage);
         }
 
-        private void AddAuthentication(Arguments arguments)
+        private static bool ParseSwitches(Arguments arguments, string name, string[] values, string value)
         {
-            var username = environment.GetEnvironmentVariable("GITVERSION_REMOTE_USERNAME");
-            if (!string.IsNullOrWhiteSpace(username))
+            if (name.IsSwitch("l"))
             {
-                arguments.Authentication.Username = username;
+                EnsureArgumentValueCount(values);
+                arguments.LogFilePath = value;
+                return true;
             }
 
-            var password = environment.GetEnvironmentVariable("GITVERSION_REMOTE_PASSWORD");
-            if (!string.IsNullOrWhiteSpace(password))
+            if (ParseConfigArguments(arguments, name, values, value)) return true;
+
+            if (ParseRemoteArguments(arguments, name, values, value)) return true;
+
+            if (ParseExecArguments(arguments, name, values, value)) return true;
+
+            if (name.IsSwitch("updateAssemblyInfo"))
             {
-                arguments.Authentication.Username = password;
+                ParseUpdateAssemblyInfo(arguments, value, values);
+                return true;
             }
+
+            if (name.IsSwitch("ensureassemblyinfo"))
+            {
+                ParseEnsureAssemblyInfo(arguments, value);
+                return true;
+            }
+
+            if (name.IsSwitch("v") || name.IsSwitch("showvariable"))
+            {
+                ParseShowVariable(arguments, value, name);
+                return true;
+            }
+
+            if (name.IsSwitch("output"))
+            {
+                ParseOutput(arguments, values);
+                return true;
+            }
+
+            if (name.IsSwitch("nofetch"))
+            {
+                arguments.NoFetch = true;
+                return true;
+            }
+
+            if (name.IsSwitch("nonormalize"))
+            {
+                arguments.NoNormalize = true;
+                return true;
+            }
+
+            if (name.IsSwitch("nocache"))
+            {
+                arguments.NoCache = true;
+                return true;
+            }
+
+            if (name.IsSwitch("verbosity"))
+            {
+                ParseVerbosity(arguments, value);
+                return true;
+            }
+
+            if (name.IsSwitch("updatewixversionfile"))
+            {
+                arguments.UpdateWixVersionFile = true;
+                return true;
+            }
+
+            return false;
         }
 
-        private static void ParseShowConfig(string value, Arguments arguments)
+        private static bool ParseConfigArguments(Arguments arguments, string name, string[] values, string value)
         {
-            if (value.IsTrue())
+            if (name.IsSwitch("config"))
             {
-                arguments.ShowConfig = true;
+                EnsureArgumentValueCount(values);
+                arguments.ConfigFile = value;
+                return true;
             }
-            else if (value.IsFalse())
+
+            if (name.IsSwitch("overrideconfig"))
             {
-                arguments.ShowConfig = false;
+                ParseOverrideConfig(arguments, value);
+                return true;
             }
-            else
+
+            if (name.IsSwitch("showConfig"))
             {
-                arguments.ShowConfig = true;
+                arguments.ShowConfig = value.IsTrue() || !value.IsFalse();
+                return true;
             }
+
+            return false;
         }
 
-        private static void ParseShowVariable(string value, string name, Arguments arguments)
+        private static bool ParseExecArguments(Arguments arguments, string name, string[] values, string value)
+        {
+            if (name.IsSwitch("exec"))
+            {
+                EnsureArgumentValueCount(values);
+#pragma warning disable CS0612 // Type or member is obsolete
+                arguments.Exec = value;
+#pragma warning restore CS0612 // Type or member is obsolete
+                return true;
+            }
+
+            if (name.IsSwitch("execargs"))
+            {
+                EnsureArgumentValueCount(values);
+#pragma warning disable CS0612 // Type or member is obsolete
+                arguments.ExecArgs = value;
+#pragma warning restore CS0612 // Type or member is obsolete
+                return true;
+            }
+
+            if (name.IsSwitch("proj"))
+            {
+                EnsureArgumentValueCount(values);
+#pragma warning disable CS0612 // Type or member is obsolete
+                arguments.Proj = value;
+#pragma warning restore CS0612 // Type or member is obsolete
+                return true;
+            }
+
+            if (name.IsSwitch("projargs"))
+            {
+                EnsureArgumentValueCount(values);
+#pragma warning disable CS0612 // Type or member is obsolete
+                arguments.ProjArgs = value;
+#pragma warning restore CS0612 // Type or member is obsolete
+                return true;
+            }
+
+            if (name.IsSwitch("diag"))
+            {
+                if (value == null || value.IsTrue())
+                {
+                    arguments.Diag = true;
+                }
+
+                return true;
+            }
+
+            return false;
+        }
+
+        private static bool ParseRemoteArguments(Arguments arguments, string name, string[] values, string value)
+        {
+            if (name.IsSwitch("dynamicRepoLocation"))
+            {
+                EnsureArgumentValueCount(values);
+                arguments.DynamicRepositoryClonePath = value;
+                return true;
+            }
+
+            if (name.IsSwitch("url"))
+            {
+                EnsureArgumentValueCount(values);
+                arguments.TargetUrl = value;
+                return true;
+            }
+
+            if (name.IsSwitch("u"))
+            {
+                EnsureArgumentValueCount(values);
+                arguments.Authentication.Username = value;
+                return true;
+            }
+
+            if (name.IsSwitch("p"))
+            {
+                EnsureArgumentValueCount(values);
+                arguments.Authentication.Password = value;
+                return true;
+            }
+
+            if (name.IsSwitch("c"))
+            {
+                EnsureArgumentValueCount(values);
+                arguments.CommitId = value;
+                return true;
+            }
+
+            if (name.IsSwitch("b"))
+            {
+                EnsureArgumentValueCount(values);
+                arguments.TargetBranch = value;
+                return true;
+            }
+
+            return false;
+        }
+
+        private static void ParseShowVariable(Arguments arguments, string value, string name)
         {
             string versionVariable = null;
 
@@ -378,7 +412,7 @@ namespace GitVersion
             }
         }
 
-        private static void ParseOutput(string[] values, Arguments arguments)
+        private static void ParseOutput(Arguments arguments, string[] values)
         {
             foreach (var v in values)
             {
@@ -391,7 +425,7 @@ namespace GitVersion
             }
         }
 
-        private static void ParseVerbosity(string value, Arguments arguments)
+        private static void ParseVerbosity(Arguments arguments, string value)
         {
             // first try the old version, this check will be removed in version 6.0.0, making it a breaking change
             if (Enum.TryParse(value, true, out LogLevel logLevel))
@@ -471,21 +505,6 @@ namespace GitVersion
             if (arguments.UpdateAssemblyInfoFileName.Count > 1 && arguments.EnsureAssemblyInfo)
             {
                 throw new WarningException("Can't specify multiple assembly info files when using -ensureassemblyinfo switch, either use a single assembly info file or do not specify -ensureassemblyinfo and create assembly info files manually");
-            }
-        }
-
-        private IEnumerable<string> ResolveFiles(string workingDirectory, ISet<string> assemblyInfoFiles)
-        {
-            if (assemblyInfoFiles == null) yield break;
-
-            foreach (var file in assemblyInfoFiles)
-            {
-                var paths = globbingResolver.Resolve(workingDirectory, file);
-
-                foreach (var path in paths)
-                {
-                    yield return Path.GetFullPath(Path.Combine(workingDirectory, path));
-                }
             }
         }
 
