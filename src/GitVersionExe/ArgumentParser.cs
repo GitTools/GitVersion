@@ -225,11 +225,6 @@ namespace GitVersion
                 return;
             }
 
-            if (name.IsSwitch("assemblyversionformat"))
-            {
-                throw new WarningException("assemblyversionformat switch removed, use AssemblyVersioningScheme configuration value instead");
-            }
-
             if (name.IsSwitch("v") || name.IsSwitch("showvariable"))
             {
                 ParseShowVariable(value, name, arguments);
