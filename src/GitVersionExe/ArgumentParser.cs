@@ -63,6 +63,7 @@ namespace GitVersion
             {
                 return new Arguments
                 {
+                    TargetPath = System.Environment.CurrentDirectory,
                     IsHelp = true,
                 };
             }
