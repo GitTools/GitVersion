@@ -52,7 +52,7 @@ namespace GitVersion
 
         public GitVersionOptions ToOptions()
         {
-            var workingDirectory = TargetPath.TrimEnd('/', '\\');
+            var workingDirectory = TargetPath?.TrimEnd('/', '\\');
 
             return new GitVersionOptions
             {

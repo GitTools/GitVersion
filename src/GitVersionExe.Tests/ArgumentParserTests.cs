@@ -55,12 +55,21 @@ namespace GitVersionExe.Tests
         }
 
         [Test]
-        public void HMeansIsHelp()
+        public void HelpSwitchTest()
         {
             var arguments = argumentParser.ParseArguments("-h");
             Assert.IsNull(arguments.TargetPath);
             Assert.IsNull(arguments.LogFilePath);
             arguments.IsHelp.ShouldBe(true);
+        }
+
+        [Test]
+        public void VersionSwitchTest()
+        {
+            var arguments = argumentParser.ParseArguments("-version");
+            Assert.IsNull(arguments.TargetPath);
+            Assert.IsNull(arguments.LogFilePath);
+            arguments.IsVersion.ShouldBe(true);
         }
 
         [Test]
