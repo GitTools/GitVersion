@@ -155,7 +155,7 @@ namespace GitVersionExe.Tests
         public void UnknownOutputShouldThrow()
         {
             var exception = Assert.Throws<WarningException>(() => argumentParser.ParseArguments("targetDirectoryPath -output invalid_value"));
-            exception.Message.ShouldBe("Value 'invalid_value' cannot be parsed as output type, please use 'json' or 'buildserver'");
+            exception.Message.ShouldBe("Value 'invalid_value' cannot be parsed as output type, please use 'json', 'file' or 'buildserver'");
         }
 
         [Test]
@@ -163,6 +163,8 @@ namespace GitVersionExe.Tests
         {
             var arguments = argumentParser.ParseArguments("targetDirectoryPath");
             arguments.Output.ShouldContain(OutputType.Json);
+            arguments.Output.ShouldNotContain(OutputType.BuildServer);
+            arguments.Output.ShouldNotContain(OutputType.File);
         }
 
         [Test]
@@ -171,6 +173,7 @@ namespace GitVersionExe.Tests
             var arguments = argumentParser.ParseArguments("targetDirectoryPath -output json");
             arguments.Output.ShouldContain(OutputType.Json);
             arguments.Output.ShouldNotContain(OutputType.BuildServer);
+            arguments.Output.ShouldNotContain(OutputType.File);
         }
 
         [Test]
@@ -179,6 +182,7 @@ namespace GitVersionExe.Tests
             var arguments = argumentParser.ParseArguments("targetDirectoryPath -output json -output json");
             arguments.Output.ShouldContain(OutputType.Json);
             arguments.Output.ShouldNotContain(OutputType.BuildServer);
+            arguments.Output.ShouldNotContain(OutputType.File);
         }
 
         [Test]
@@ -187,6 +191,7 @@ namespace GitVersionExe.Tests
             var arguments = argumentParser.ParseArguments("targetDirectoryPath -output buildserver");
             arguments.Output.ShouldContain(OutputType.BuildServer);
             arguments.Output.ShouldNotContain(OutputType.Json);
+            arguments.Output.ShouldNotContain(OutputType.File);
         }
 
         [Test]
@@ -194,6 +199,25 @@ namespace GitVersionExe.Tests
         {
             var arguments = argumentParser.ParseArguments("targetDirectoryPath -output buildserver -output buildserver");
             arguments.Output.ShouldContain(OutputType.BuildServer);
+            arguments.Output.ShouldNotContain(OutputType.Json);
+            arguments.Output.ShouldNotContain(OutputType.File);
+        }
+
+        [Test]
+        public void OutputFileCanBeParsed()
+        {
+            var arguments = argumentParser.ParseArguments("targetDirectoryPath -output file");
+            arguments.Output.ShouldContain(OutputType.File);
+            arguments.Output.ShouldNotContain(OutputType.BuildServer);
+            arguments.Output.ShouldNotContain(OutputType.Json);
+        }
+
+        [Test]
+        public void MultipleOutputFileCanBeParsed()
+        {
+            var arguments = argumentParser.ParseArguments("targetDirectoryPath -output file -output file");
+            arguments.Output.ShouldContain(OutputType.File);
+            arguments.Output.ShouldNotContain(OutputType.BuildServer);
             arguments.Output.ShouldNotContain(OutputType.Json);
         }
 
@@ -203,6 +227,16 @@ namespace GitVersionExe.Tests
             var arguments = argumentParser.ParseArguments("targetDirectoryPath -output buildserver -output json");
             arguments.Output.ShouldContain(OutputType.BuildServer);
             arguments.Output.ShouldContain(OutputType.Json);
+            arguments.Output.ShouldNotContain(OutputType.File);
+        }
+
+        [Test]
+        public void OutputBuildserverAndJsonAndFileCanBeParsed()
+        {
+            var arguments = argumentParser.ParseArguments("targetDirectoryPath -output buildserver -output json -output file");
+            arguments.Output.ShouldContain(OutputType.BuildServer);
+            arguments.Output.ShouldContain(OutputType.Json);
+            arguments.Output.ShouldContain(OutputType.File);
         }
 
         [Test]
@@ -210,6 +244,16 @@ namespace GitVersionExe.Tests
         {
             var arguments = argumentParser.ParseArguments("targetDirectoryPath -output buildserver -updateAssemblyInfo");
             arguments.Output.ShouldContain(OutputType.BuildServer);
+        }
+
+        [TestCase("-output file", "GitVersion.json")]
+        [TestCase("-output file -outputfile version.json", "version.json")]
+        public void OutputFileArgumentCanBeParsed(string args, string outputFile)
+        {
+            var arguments = argumentParser.ParseArguments(args);
+
+            arguments.Output.ShouldContain(OutputType.File);
+            arguments.OutputFile.ShouldBe(outputFile);
         }
 
         [Test]
