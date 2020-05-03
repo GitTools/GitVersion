@@ -85,7 +85,7 @@ namespace GitVersion
 
             using (outputGenerator)
             {
-                outputGenerator.Execute(variables, new OutputContext(gitVersionOptions.WorkingDirectory));
+                outputGenerator.Execute(variables, new OutputContext(gitVersionOptions.WorkingDirectory, gitVersionOptions.OutputFile));
             }
         }
 

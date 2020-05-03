@@ -223,6 +223,13 @@ namespace GitVersion
                 return true;
             }
 
+            if (name.IsSwitch("outputfile"))
+            {
+                EnsureArgumentValueCount(values);
+                arguments.OutputFile = value;
+                return true;
+            }
+
             if (name.IsSwitch("nofetch"))
             {
                 arguments.NoFetch = true;
@@ -417,7 +424,7 @@ namespace GitVersion
             {
                 if (!Enum.TryParse(v, true, out OutputType outputType))
                 {
-                    throw new WarningException($"Value '{v}' cannot be parsed as output type, please use 'json' or 'buildserver'");
+                    throw new WarningException($"Value '{v}' cannot be parsed as output type, please use 'json', 'file' or 'buildserver'");
                 }
 
                 arguments.Output.Add(outputType);

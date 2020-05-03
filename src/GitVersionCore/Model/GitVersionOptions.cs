@@ -39,6 +39,7 @@ namespace GitVersion
 
         public string LogFilePath;
         public string ShowVariable;
+        public string OutputFile;
         public ISet<OutputType> Output = new HashSet<OutputType>();
         public Verbosity Verbosity = Verbosity.Normal;
 
