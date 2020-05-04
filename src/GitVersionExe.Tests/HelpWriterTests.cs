@@ -31,6 +31,7 @@ namespace GitVersionExe.Tests
                 { nameof(Arguments.Init), "init" },
                 { nameof(Arguments.TargetBranch), "/b" },
                 { nameof(Arguments.LogFilePath) , "/l" },
+                { nameof(Arguments.OutputFile) , "/outputfile" },
                 { nameof(Arguments.DynamicRepositoryClonePath), "/dynamicRepoLocation" },
                 { nameof(Arguments.IsHelp), "/?" },
                 { nameof(Arguments.IsVersion), "/version" },

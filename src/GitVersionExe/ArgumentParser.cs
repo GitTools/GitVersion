@@ -17,6 +17,7 @@ namespace GitVersion
         private readonly ICurrentBuildAgent buildAgent;
         private readonly IConsole console;
         private readonly IGlobbingResolver globbingResolver;
+        private const string defaultOutputFileName = "GitVersion.json";
 
         public ArgumentParser(IEnvironment environment, ICurrentBuildAgent buildAgent, IConsole console, IGlobbingResolver globbingResolver)
         {
@@ -89,6 +90,11 @@ namespace GitVersion
             if (arguments.Output.Count == 0)
             {
                 arguments.Output.Add(OutputType.Json);
+            }
+
+            if (arguments.Output.Contains(OutputType.File) && arguments.OutputFile == null)
+            {
+                arguments.OutputFile = defaultOutputFileName;
             }
 
             // If the first argument is a switch, it should already have been consumed in the above loop,
@@ -220,6 +226,13 @@ namespace GitVersion
             if (name.IsSwitch("output"))
             {
                 ParseOutput(arguments, values);
+                return true;
+            }
+
+            if (name.IsSwitch("outputfile"))
+            {
+                EnsureArgumentValueCount(values);
+                arguments.OutputFile = value;
                 return true;
             }
 
@@ -417,7 +430,7 @@ namespace GitVersion
             {
                 if (!Enum.TryParse(v, true, out OutputType outputType))
                 {
-                    throw new WarningException($"Value '{v}' cannot be parsed as output type, please use 'json' or 'buildserver'");
+                    throw new WarningException($"Value '{v}' cannot be parsed as output type, please use 'json', 'file' or 'buildserver'");
                 }
 
                 arguments.Output.Add(outputType);

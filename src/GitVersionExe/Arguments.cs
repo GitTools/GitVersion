@@ -34,6 +34,7 @@ namespace GitVersion
 
         public string LogFilePath;
         public string ShowVariable;
+        public string OutputFile;
         public ISet<OutputType> Output = new HashSet<OutputType>();
         public Verbosity Verbosity = Verbosity.Normal;
 
@@ -108,6 +109,7 @@ namespace GitVersion
                 ShowVariable = ShowVariable,
                 Verbosity = Verbosity,
                 Output = Output,
+                OutputFile = OutputFile,
 
                 // TODO obsolete to be removed in version 6.0.0
                 Proj = Proj,

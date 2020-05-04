@@ -13,12 +13,14 @@ namespace GitVersion.VersionConverters.OutputGenerator
     public class OutputGenerator : IOutputGenerator
     {
         private readonly IConsole console;
+        private readonly IFileSystem fileSystem;
         private readonly IOptions<GitVersionOptions> options;
         private readonly ICurrentBuildAgent buildAgent;
 
-        public OutputGenerator(ICurrentBuildAgent buildAgent, IConsole console, IOptions<GitVersionOptions> options)
+        public OutputGenerator(ICurrentBuildAgent buildAgent, IConsole console, IFileSystem fileSystem, IOptions<GitVersionOptions> options)
         {
             this.console = console ?? throw new ArgumentNullException(nameof(console));
+            this.fileSystem = fileSystem ?? throw new ArgumentNullException(nameof(fileSystem));
             this.options = options ?? throw new ArgumentNullException(nameof(options));
             this.buildAgent = buildAgent;
         }
@@ -29,6 +31,10 @@ namespace GitVersion.VersionConverters.OutputGenerator
             if (gitVersionOptions.Output.Contains(OutputType.BuildServer))
             {
                 buildAgent?.WriteIntegration(console.WriteLine, variables);
+            }
+            if (gitVersionOptions.Output.Contains(OutputType.File))
+            {
+                fileSystem.WriteAllText(context.OutputFile, variables.ToString());
             }
             if (gitVersionOptions.Output.Contains(OutputType.Json))
             {
