@@ -17,7 +17,7 @@ Task("Pack-Prepare")
         });
     }
 
-    var sourceDir = parameters.Paths.Directories.Native.Combine(PlatformFamily.Windows.ToString());
+    var sourceDir = parameters.Paths.Directories.Native.Combine(PlatformFamily.Windows.ToString()).Combine("win-x64");
     var sourceFiles = GetFiles(sourceDir + "/*.*");
 
     // Cmdline and Portable
