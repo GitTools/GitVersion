@@ -17,8 +17,9 @@
 
     </PropertyGroup>
     <PropertyGroup>
-        <PackageVersion_LibGit2Sharp>0.26.2</PackageVersion_LibGit2Sharp>
-        <PackageVersion_LibGit2Sharp_NativeBinaries>2.0.306</PackageVersion_LibGit2Sharp_NativeBinaries>
+        <PackageVersion_LibGit2Sharp>0.27.0-preview-0034</PackageVersion_LibGit2Sharp>
+        <PackageVersion_LibGit2Sharp_NativeBinaries>2.0.298</PackageVersion_LibGit2Sharp_NativeBinaries>
+
         <PackageVersion_JetBrainsAnnotations>2020.1.0</PackageVersion_JetBrainsAnnotations>
         <PackageVersion_YamlDotNet>8.1.1</PackageVersion_YamlDotNet>
         <PackageVersion_NewtonsoftJson>12.0.3</PackageVersion_NewtonsoftJson>
@@ -37,7 +38,10 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <None Include="../../docs/input/docs/img/package_icon.png" Pack="true" PackagePath="/" />
+        <None Include="../../docs/input/docs/img/package_icon.png">
+            <Pack>true</Pack>
+            <PackagePath>/</PackagePath>
+        </None>
     </ItemGroup>
 
     <ItemGroup Condition=" '$(TargetFramework)' == 'net472' ">
