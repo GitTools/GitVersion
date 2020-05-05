@@ -213,6 +213,10 @@ Sets the format which will be used to format the `CommitDate` output variable.
 
 The header for ignore configuration.
 
+### update-build-number
+
+Configures GitVersion to update the build number or not when running on a build server.
+
 #### sha
 
 A sequence of SHAs to be excluded from the version calculations. Useful when
