@@ -12,12 +12,14 @@ namespace GitVersion.VersionConverters.WixUpdater
     }
     public class WixVersionFileUpdater : IWixVersionFileUpdater
     {
+        private readonly IFileSystem fileSystem;
         private readonly ILog log;
         private string wixVersionFile;
         public const string WixVersionFileName = "GitVersion_WixVersion.wxi";
 
-        public WixVersionFileUpdater(ILog log)
+        public WixVersionFileUpdater(IFileSystem fileSystem, ILog log)
         {
+            this.fileSystem = fileSystem ?? throw new ArgumentNullException(nameof(fileSystem));
             this.log = log ?? throw new ArgumentNullException(nameof(log));
         }
 
@@ -33,7 +35,9 @@ namespace GitVersion.VersionConverters.WixUpdater
             var root = doc.DocumentElement;
             doc.InsertBefore(xmlDecl, root);
 
-            doc.Save(wixVersionFile);
+            fileSystem.Delete(wixVersionFile);
+            using var fs = fileSystem.OpenWrite(wixVersionFile);
+            doc.Save(fs);
         }
 
         private static string GetWixFormatFromVersionVariables(VersionVariables variables)
