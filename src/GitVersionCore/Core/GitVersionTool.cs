@@ -93,13 +93,14 @@ namespace GitVersion
         {
             var gitVersionOptions = options.Value;
 
-            if (gitVersionOptions.AssemblyInfo.ShouldUpdate)
-            {
-                using (assemblyInfoFileUpdater)
-                {
-                    assemblyInfoFileUpdater.Execute(variables, new AssemblyInfoContext(gitVersionOptions.WorkingDirectory, gitVersionOptions.AssemblyInfo.EnsureAssemblyInfo, gitVersionOptions.AssemblyInfo.Files.ToArray()));
-                }
-            }
+            throw new NotImplementedException();
+            //if (gitVersionOptions.AssemblyInfo.ShouldUpdate)
+            //{
+            //    using (assemblyInfoFileUpdater)
+            //    {
+            //        assemblyInfoFileUpdater.Execute(variables, new AssemblyInfoContext(gitVersionOptions.WorkingDirectory, gitVersionOptions.AssemblyInfo.EnsureAssemblyInfo, gitVersionOptions.AssemblyInfo.Files.ToArray()));
+            //    }
+            //}
         }
 
         public void UpdateWixVersionFile(VersionVariables variables)

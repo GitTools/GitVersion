@@ -9,9 +9,7 @@ namespace GitVersion.Extensions
     {
         public static string GetDotGitDirectory(this GitVersionOptions gitVersionOptions)
         {
-            var dotGitDirectory = !string.IsNullOrWhiteSpace(gitVersionOptions.DynamicGitRepositoryPath)
-                ? gitVersionOptions.DynamicGitRepositoryPath
-                : Repository.Discover(gitVersionOptions.WorkingDirectory);
+            var dotGitDirectory = Repository.Discover(gitVersionOptions.WorkingDirectory);
 
             dotGitDirectory = dotGitDirectory?.TrimEnd('/', '\\');
             if (string.IsNullOrEmpty(dotGitDirectory))
@@ -22,20 +20,11 @@ namespace GitVersion.Extensions
                 : dotGitDirectory;
         }
 
-        public static string GetProjectRootDirectory(this GitVersionOptions gitVersionOptions)
+        public static string GetRepositoryWorkingDirectory(this GitVersionOptions gitVersionOptions)
         {
-            if (!string.IsNullOrWhiteSpace(gitVersionOptions.DynamicGitRepositoryPath))
-            {
-                return gitVersionOptions.WorkingDirectory;
-            }
-
-            var dotGitDirectory = Repository.Discover(gitVersionOptions.WorkingDirectory);
-
-            if (string.IsNullOrEmpty(dotGitDirectory))
-                throw new DirectoryNotFoundException($"Can't find the .git directory in {dotGitDirectory}");
-
-            using var repository = new Repository(dotGitDirectory);
-            return repository.Info.WorkingDirectory;
+            //return gitVersionOptions.WorkingDirectory;
+            using var repository = new Repository(gitVersionOptions.DotGitDirectory);
+            return repository.Info.WorkingDirectory;          
         }
 
         public static string GetDynamicGitRepositoryPath(this GitVersionOptions gitVersionOptions)

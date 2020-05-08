@@ -24,7 +24,6 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\GitVersionTask.MsBuild\GitVersionTask.MsBuild.csproj" PrivateAssets="All" />
         <ProjectReference Include="..\GitVersionCore\GitVersionCore.csproj" PrivateAssets="All" />
     </ItemGroup>
 

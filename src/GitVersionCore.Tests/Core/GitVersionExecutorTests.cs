@@ -418,7 +418,7 @@ namespace GitVersionCore.Tests
 
                 sp = GetServiceProvider(gitVersionOptions);
 
-                gitVersionOptions.ProjectRootDirectory.TrimEnd('/', '\\').ShouldBe(worktreePath);
+                gitVersionOptions.GitRepositoryWorkingDirectory.TrimEnd('/', '\\').ShouldBe(worktreePath);
             }
             finally
             {
@@ -441,7 +441,7 @@ namespace GitVersionCore.Tests
             sp = GetServiceProvider(gitVersionOptions);
 
             var expectedPath = fixture.RepositoryPath.TrimEnd('/', '\\');
-            gitVersionOptions.ProjectRootDirectory.TrimEnd('/', '\\').ShouldBe(expectedPath);
+            gitVersionOptions.GitRepositoryWorkingDirectory.TrimEnd('/', '\\').ShouldBe(expectedPath);
         }
 
         [Test]

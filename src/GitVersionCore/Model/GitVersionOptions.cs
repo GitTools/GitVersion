@@ -9,23 +9,23 @@ namespace GitVersion
     public class GitVersionOptions
     {
         private Lazy<string> dotGitDirectory;
-        private Lazy<string> projectRootDirectory;
-        private Lazy<string> dynamicGitRepositoryPath;
+        private Lazy<string> gitRepositoryWorkingDirectory;
 
         public GitVersionOptions()
         {
+            WorkingDirectory = System.Environment.CurrentDirectory;
             dotGitDirectory = new Lazy<string>(this.GetDotGitDirectory);
-            projectRootDirectory = new Lazy<string>(this.GetProjectRootDirectory);
-            dynamicGitRepositoryPath = new Lazy<string>(this.GetDynamicGitRepositoryPath);
+            gitRepositoryWorkingDirectory = new Lazy<string>(this.GetRepositoryWorkingDirectory);
         }
 
+        public string[] Args { get; set; }
         public string WorkingDirectory { get; set; }
-
         public string DotGitDirectory => dotGitDirectory.Value;
-        public string ProjectRootDirectory => projectRootDirectory.Value;
-        public string DynamicGitRepositoryPath => dynamicGitRepositoryPath.Value;
+        public string GitRepositoryWorkingDirectory => gitRepositoryWorkingDirectory.Value;
+        public bool LogToConsole { get; set; } = false;
+        public string LogFilePath;
 
-        public AssemblyInfoData AssemblyInfo { get; } = new AssemblyInfoData();
+        //public AssemblyInfoData AssemblyInfo { get; } = new AssemblyInfoData();
         public AuthenticationInfo Authentication { get; } = new AuthenticationInfo();
         public ConfigInfo ConfigInfo { get; } = new ConfigInfo();
         public RepositoryInfo RepositoryInfo { get; } = new RepositoryInfo();
@@ -37,19 +37,10 @@ namespace GitVersion
         public bool IsVersion;
         public bool IsHelp;
 
-        public string LogFilePath;
         public string ShowVariable;
         public string OutputFile;
         public ISet<OutputType> Output = new HashSet<OutputType>();
         public Verbosity Verbosity = Verbosity.Normal;
 
-        [Obsolete]
-        public string Proj;
-        [Obsolete]
-        public string ProjArgs;
-        [Obsolete]
-        public string Exec;
-        [Obsolete]
-        public string ExecArgs;
     }
 }

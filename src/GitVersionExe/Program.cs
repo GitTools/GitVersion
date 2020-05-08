@@ -1,4 +1,8 @@
 using System;
+using System.CommandLine;
+using System.CommandLine.Invocation;
+using System.IO.IsolatedStorage;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using GitVersion.Extensions;
 using Microsoft.Extensions.Configuration;
@@ -38,16 +42,33 @@ namespace GitVersion
                     services.AddModule(new GitVersionCoreModule());
                     services.AddModule(new GitVersionExeModule());
 
-                    services.AddSingleton(sp =>
-                    {
-                        var arguments = sp.GetService<IArgumentParser>().ParseArguments(args);
-                        var gitVersionOptions = arguments.ToOptions();
-                        return Options.Create(gitVersionOptions);
-                    });
+                    // return Options.Create(gitVersionOptions);
+
+                    //services.AddSingleton(sp =>
+                    //{
+                    //    var arguments = sp.GetService<IArgumentParser>().ParseArguments(args);
+                    //    var gitVersionOptions = arguments.ToOptions();
+
+                    //});                
+                    services.AddOptions<GitVersionOptions>()
+                            .PostConfigure(a => a.Args = args);
+
+                    services.AddSingleton<GitVersionRootCommand>();
+                    services.AddSingleton<CalculateCommand>();
+                    //services.AddSingleton(sp =>
+                    //{                       
+                    //    return BuildCommand(sp);
+                    //});
 
                     overrides?.Invoke(services);
                     services.AddHostedService<GitVersionApp>();
                 })
                 .UseConsoleLifetime();
+
+        //private static RootCommand BuildCommand(IServiceProvider serviceProvider)
+        //{
+        //    var rootCommand = ActivatorUtilities.GetServiceOrCreateInstance<GitVersionRootCommand>(serviceProvider);
+        //    return rootCommand;
+        //}
     }
 }

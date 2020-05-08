@@ -14,7 +14,11 @@ namespace GitVersion
         private readonly ILog log;
         private readonly IOptions<GitVersionOptions> options;
 
-        public GitVersionApp(IHostApplicationLifetime applicationLifetime, IGitVersionExecutor gitVersionExecutor, ILog log, IOptions<GitVersionOptions> options)
+        public GitVersionApp(
+            IHostApplicationLifetime applicationLifetime,
+            IGitVersionExecutor gitVersionExecutor,
+            ILog log,
+            IOptions<GitVersionOptions> options)
         {
             this.options = options ?? throw new ArgumentNullException(nameof(options));
             this.applicationLifetime = applicationLifetime ?? throw new ArgumentNullException(nameof(applicationLifetime));

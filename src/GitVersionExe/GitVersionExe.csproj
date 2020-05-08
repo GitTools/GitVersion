@@ -28,8 +28,16 @@
     </ItemGroup>
 
     <ItemGroup>
+      <Compile Remove="ArgumentParser.cs" />
+      <Compile Remove="Arguments.cs" />
+      <Compile Remove="ExecCommand.cs" />
+      <Compile Remove="IExecCommand.cs" />
+    </ItemGroup>
+
+    <ItemGroup>
       <PackageReference Include="Microsoft.Extensions.Hosting" Version="$(PackageVersion_MicrosoftExtensions)" />
       <PackageReference Include="Microsoft.Extensions.FileSystemGlobbing" Version="$(PackageVersion_MicrosoftExtensions)" />
+      <PackageReference Include="System.CommandLine" Version="2.0.0-beta1.20253.1" />
     </ItemGroup>
 
     <ItemGroup>

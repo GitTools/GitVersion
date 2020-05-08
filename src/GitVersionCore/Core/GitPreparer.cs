@@ -35,11 +35,9 @@ namespace GitVersion
             var currentBranch = ResolveCurrentBranch();
 
             var dotGitDirectory = gitVersionOptions.DotGitDirectory;
-            var projectRoot = gitVersionOptions.ProjectRootDirectory;
 
-            log.Info($"Project root is: {projectRoot}");
             log.Info($"DotGit directory is: {dotGitDirectory}");
-            if (string.IsNullOrEmpty(dotGitDirectory) || string.IsNullOrEmpty(projectRoot))
+            if (string.IsNullOrEmpty(dotGitDirectory))
             {
                 throw new Exception($"Failed to prepare or find the .git directory in path '{gitVersionOptions.WorkingDirectory}'.");
             }
@@ -50,22 +48,17 @@ namespace GitVersion
         private void PrepareInternal(bool normalizeGitDirectory, string currentBranch, bool shouldCleanUpRemotes = false)
         {
             var gitVersionOptions = options.Value;
-            if (!string.IsNullOrWhiteSpace(gitVersionOptions.RepositoryInfo.TargetUrl))
-            {
-                CreateDynamicRepository(currentBranch);
-            }
-            else
-            {
-                if (normalizeGitDirectory)
-                {
-                    if (shouldCleanUpRemotes)
-                    {
-                        CleanupDuplicateOrigin();
-                    }
 
-                    NormalizeGitDirectory(currentBranch, gitVersionOptions.DotGitDirectory, false);
+            if (normalizeGitDirectory)
+            {
+                if (shouldCleanUpRemotes)
+                {
+                    CleanupDuplicateOrigin();
                 }
+
+                NormalizeGitDirectory(currentBranch, gitVersionOptions.DotGitDirectory, false);
             }
+
         }
 
         private string ResolveCurrentBranch()
@@ -108,90 +101,12 @@ namespace GitVersion
             }
         }
 
-        private void CreateDynamicRepository(string targetBranch)
-        {
-            var gitVersionOptions = options.Value;
-            if (string.IsNullOrWhiteSpace(targetBranch))
-            {
-                throw new Exception("Dynamic Git repositories must have a target branch (/b)");
-            }
-
-            var repositoryInfo = gitVersionOptions.RepositoryInfo;
-            var gitDirectory = gitVersionOptions.DynamicGitRepositoryPath;
-
-            using (log.IndentLog($"Creating dynamic repository at '{gitDirectory}'"))
-            {
-                var authentication = gitVersionOptions.Authentication;
-                if (!Directory.Exists(gitDirectory))
-                {
-                    CloneRepository(repositoryInfo.TargetUrl, gitDirectory, authentication);
-                }
-                else
-                {
-                    log.Info("Git repository already exists");
-                }
-                NormalizeGitDirectory(targetBranch, gitDirectory, true);
-            }
-        }
-
         private void NormalizeGitDirectory(string targetBranch, string gitDirectory, bool isDynamicRepository)
         {
             using (log.IndentLog($"Normalizing git directory for branch '{targetBranch}'"))
             {
                 // Normalize (download branches) before using the branch
                 NormalizeGitDirectory(gitDirectory, options.Value.Settings.NoFetch, targetBranch, isDynamicRepository);
-            }
-        }
-
-        private void CloneRepository(string repositoryUrl, string gitDirectory, AuthenticationInfo auth)
-        {
-            Credentials credentials = null;
-
-            if (auth != null)
-            {
-                if (!string.IsNullOrWhiteSpace(auth.Username))
-                {
-                    log.Info($"Setting up credentials using name '{auth.Username}'");
-
-                    credentials = new UsernamePasswordCredentials
-                    {
-                        Username = auth.Username,
-                        Password = auth.Password ?? string.Empty
-                    };
-                }
-            }
-
-            try
-            {
-                using (log.IndentLog($"Cloning repository from url '{repositoryUrl}'"))
-                {
-                    var cloneOptions = new CloneOptions
-                    {
-                        Checkout = false,
-                        CredentialsProvider = (url, usernameFromUrl, types) => credentials
-                    };
-
-                    var returnedPath = Repository.Clone(repositoryUrl, gitDirectory, cloneOptions);
-                    log.Info($"Returned path after repository clone: {returnedPath}");
-                }
-            }
-            catch (LibGit2SharpException ex)
-            {
-                var message = ex.Message;
-                if (message.Contains("401"))
-                {
-                    throw new Exception("Unauthorized: Incorrect username/password");
-                }
-                if (message.Contains("403"))
-                {
-                    throw new Exception("Forbidden: Possibly Incorrect username/password");
-                }
-                if (message.Contains("404"))
-                {
-                    throw new Exception("Not found: The repository was not found");
-                }
-
-                throw new Exception("There was an unknown problem with the Git repository you provided", ex);
             }
         }
 

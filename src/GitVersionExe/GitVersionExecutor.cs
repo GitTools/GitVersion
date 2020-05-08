@@ -1,4 +1,5 @@
 using System;
+using System.CommandLine;
 using System.IO;
 using System.Reflection;
 using GitVersion.Configuration;
@@ -11,24 +12,25 @@ namespace GitVersion
     public class GitVersionExecutor : IGitVersionExecutor
     {
         private readonly ILog log;
-        private readonly IConsole console;
+        private readonly Logging.IConsole console;
         private readonly IConfigFileLocator configFileLocator;
         private readonly IHelpWriter helpWriter;
-        private readonly IExecCommand execCommand;
+        private readonly GitVersionRootCommand execCommand;
         private readonly IConfigProvider configProvider;
-        private readonly IGitVersionTool gitVersionTool;
         private readonly IVersionWriter versionWriter;
 
-        public GitVersionExecutor(ILog log, IConsole console,
-            IConfigFileLocator configFileLocator, IConfigProvider configProvider, IGitVersionTool gitVersionTool,
-            IVersionWriter versionWriter, IHelpWriter helpWriter, IExecCommand execCommand)
+        public GitVersionExecutor(ILog log,
+            Logging.IConsole console,
+            IConfigFileLocator configFileLocator,
+            IConfigProvider configProvider,
+            IVersionWriter versionWriter,
+            IHelpWriter helpWriter,
+            GitVersionRootCommand execCommand)
         {
             this.log = log ?? throw new ArgumentNullException(nameof(log));
             this.console = console ?? throw new ArgumentNullException(nameof(console));
             this.configFileLocator = configFileLocator ?? throw new ArgumentNullException(nameof(configFileLocator));
             this.configProvider = configProvider ?? throw new ArgumentNullException(nameof(configFileLocator));
-
-            this.gitVersionTool = gitVersionTool ?? throw new ArgumentNullException(nameof(gitVersionTool));
 
             this.versionWriter = versionWriter ?? throw new ArgumentNullException(nameof(versionWriter));
             this.helpWriter = helpWriter ?? throw new ArgumentNullException(nameof(helpWriter));
@@ -36,12 +38,12 @@ namespace GitVersion
             this.execCommand = execCommand ?? throw new ArgumentNullException(nameof(execCommand));
         }
 
-        public int Execute(GitVersionOptions gitVersionOptions)
+        public int Execute(GitVersionOptions options)
         {
-            if (!HandleNonMainCommand(gitVersionOptions, out var exitCode))
-            {
-                exitCode = RunGitVersionTool(gitVersionOptions);
-            }
+            //if (!HandleNonMainCommand(gitVersionOptions, out var exitCode))
+            //{
+            int exitCode = RunGitVersionCommand(options);
+            //  }
 
             if (exitCode != 0)
             {
@@ -52,17 +54,14 @@ namespace GitVersion
             return exitCode;
         }
 
-        private int RunGitVersionTool(GitVersionOptions gitVersionOptions)
+        private int RunGitVersionCommand(GitVersionOptions gitVersionOptions)
         {
             try
             {
-                var variables = gitVersionTool.CalculateVersionVariables();
-
-                gitVersionTool.OutputVariables(variables);
-                gitVersionTool.UpdateAssemblyInfo(variables);
-                gitVersionTool.UpdateWixVersionFile(variables);
-
-                execCommand.Execute(variables);
+                //gitVersionTool.OutputVariables(variables);
+                //gitVersionTool.UpdateAssemblyInfo(variables);
+                //gitVersionTool.UpdateWixVersionFile(variables);
+                return execCommand.InvokeAsync(gitVersionOptions.Args).Result;
             }
             catch (WarningException exception)
             {
@@ -91,9 +90,9 @@ namespace GitVersion
                 return 1;
             }
 
-            return 0;
         }
 
+        [Obsolete("Refactor these into commands")]
         private bool HandleNonMainCommand(GitVersionOptions gitVersionOptions, out int exitCode)
         {
             if (gitVersionOptions == null)
@@ -125,12 +124,8 @@ namespace GitVersion
                 gitVersionOptions.Output.Add(OutputType.BuildServer);
             }
 
-#pragma warning disable CS0612 // Type or member is obsolete
-            if (!string.IsNullOrEmpty(gitVersionOptions.Proj) || !string.IsNullOrEmpty(gitVersionOptions.Exec))
-#pragma warning restore CS0612 // Type or member is obsolete
-            {
-                gitVersionOptions.Output.Add(OutputType.BuildServer);
-            }
+            gitVersionOptions.Output.Add(OutputType.BuildServer);
+
 
             ConfigureLogging(gitVersionOptions, log);
 
@@ -173,12 +168,13 @@ namespace GitVersion
 
         private static void ConfigureLogging(GitVersionOptions gitVersionOptions, ILog log)
         {
-            if (gitVersionOptions.Output.Contains(OutputType.BuildServer) || gitVersionOptions.LogFilePath == "console" || gitVersionOptions.Init)
+            // Could always log to console unless by default.
+            // We can log variables within a control statement when log output to console is enabled.
+            if (gitVersionOptions.LogToConsole)
             {
                 log.AddLogAppender(new ConsoleAppender());
             }
-
-            if (gitVersionOptions.LogFilePath != null && gitVersionOptions.LogFilePath != "console")
+            else if (gitVersionOptions.LogFilePath != null && gitVersionOptions.LogFilePath != "console")
             {
                 log.AddLogAppender(new FileAppender(gitVersionOptions.LogFilePath));
             }

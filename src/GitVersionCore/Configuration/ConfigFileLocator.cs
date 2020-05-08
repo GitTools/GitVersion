@@ -22,7 +22,7 @@ namespace GitVersion.Configuration
         public string SelectConfigFilePath(GitVersionOptions gitVersionOptions)
         {
             var workingDirectory = gitVersionOptions.WorkingDirectory;
-            var projectRootDirectory = gitVersionOptions.ProjectRootDirectory;
+            var projectRootDirectory = gitVersionOptions.GitRepositoryWorkingDirectory;
 
             return GetConfigFilePath(HasConfigFileAt(workingDirectory) ? workingDirectory : projectRootDirectory);
         }
@@ -50,7 +50,7 @@ namespace GitVersion.Configuration
             }
 
             var workingDirectory = gitVersionOptions.WorkingDirectory;
-            var projectRootDirectory = gitVersionOptions.ProjectRootDirectory;
+            var projectRootDirectory = gitVersionOptions.GitRepositoryWorkingDirectory;
 
             Verify(workingDirectory, projectRootDirectory);
         }
