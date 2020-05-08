@@ -35,6 +35,7 @@ namespace GitVersion.VersionConverters.WixUpdater
             var root = doc.DocumentElement;
             doc.InsertBefore(xmlDecl, root);
 
+            fileSystem.Delete(wixVersionFile);
             using var fs = fileSystem.OpenWrite(wixVersionFile);
             doc.Save(fs);
         }
