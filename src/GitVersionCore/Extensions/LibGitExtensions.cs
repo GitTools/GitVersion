@@ -38,7 +38,7 @@ namespace GitVersion.Extensions
             var otherBranchFriendlyName = otherBranch.NameWithoutRemote();
             var branchFriendlyName = branch.NameWithoutRemote();
 
-            return otherBranchFriendlyName == branchFriendlyName;
+            return otherBranchFriendlyName.IsEquivalentTo(branchFriendlyName);
         }
 
         /// <summary>

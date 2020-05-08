@@ -41,7 +41,7 @@ namespace GitVersion.Configuration
             if (matchingBranches.Increment == IncrementStrategy.Inherit)
             {
                 matchingBranches = InheritBranchConfiguration(targetBranch, matchingBranches, currentCommit, configuration, excludedInheritBranches);
-                if (matchingBranches.Name == FallbackConfigName && matchingBranches.Increment == IncrementStrategy.Inherit)
+                if (matchingBranches.Name.IsEquivalentTo(FallbackConfigName) && matchingBranches.Increment == IncrementStrategy.Inherit)
                 {
                     // We tried, and failed to inherit, just fall back to patch
                     matchingBranches.Increment = IncrementStrategy.Patch;
@@ -152,7 +152,7 @@ namespace GitVersion.Configuration
 
                 var inheritingBranchConfig = GetBranchConfiguration(chosenBranch, currentCommit, configuration, excludedInheritBranches);
                 var configIncrement = inheritingBranchConfig.Increment;
-                if (inheritingBranchConfig.Name == FallbackConfigName && configIncrement == IncrementStrategy.Inherit)
+                if (inheritingBranchConfig.Name.IsEquivalentTo(FallbackConfigName) && configIncrement == IncrementStrategy.Inherit)
                 {
                     log.Warning("Fallback config inherits by default, dropping to patch increment");
                     configIncrement = IncrementStrategy.Patch;

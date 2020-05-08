@@ -68,7 +68,7 @@ namespace GitVersion.Extensions
 
             var repoTipId = repoTip.Id;
 
-            if (repo.Branches.All(b => b.CanonicalName != localCanonicalName))
+            if (repo.Branches.All(b => !b.CanonicalName.IsEquivalentTo(localCanonicalName)))
             {
                 log.Info(isBranch ? $"Creating local branch {localCanonicalName}"
                     : $"Creating local branch {localCanonicalName} pointing at {repoTipId}");
@@ -156,17 +156,20 @@ namespace GitVersion.Extensions
         {
             var prefix = $"refs/remotes/{remoteName}/";
             var remoteHeadCanonicalName = $"{prefix}HEAD";
+            var remoteTrackingReferences = repo.Refs
+                .FromGlob(prefix + "*")
+                .Where(r => !r.CanonicalName.IsEquivalentTo(remoteHeadCanonicalName));
 
-            foreach (var remoteTrackingReference in repo.Refs.FromGlob(prefix + "*").Where(r => r.CanonicalName != remoteHeadCanonicalName))
+            foreach (var remoteTrackingReference in remoteTrackingReferences)
             {
                 var remoteTrackingReferenceName = remoteTrackingReference.CanonicalName;
                 var branchName = remoteTrackingReferenceName.Substring(prefix.Length);
                 var localCanonicalName = "refs/heads/" + branchName;
 
                 // We do not want to touch our current branch
-                if (branchName == repo.Head.FriendlyName) continue;
+                if (branchName.IsEquivalentTo(repo.Head.FriendlyName)) continue;
 
-                if (repo.Refs.Any(x => x.CanonicalName == localCanonicalName))
+                if (repo.Refs.Any(x => x.CanonicalName.IsEquivalentTo(localCanonicalName)))
                 {
                     var localRef = repo.Refs[localCanonicalName];
                     var remotedirectReference = remoteTrackingReference.ResolveToDirectReference();
