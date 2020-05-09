@@ -29,6 +29,54 @@ Task("Artifacts-DotnetTool-Test")
     }
 });
 
+Task("Artifacts-Commandline-Test")
+    .WithCriteria<BuildParameters>((context, parameters) => parameters.IsRunningOnWindows, "Artifacts-Commandline-Test can be tested only on Windows agents.")
+    .WithCriteria<BuildParameters>((context, parameters) => parameters.IsReleasingCI,      "Artifacts-Commandline-Test works only on Releasing CI.")
+    .IsDependentOnWhen("Pack-Nuget", singleStageRun)
+    .Does<BuildParameters>((parameters) =>
+{
+    NuGetInstall("GitVersion.Commandline", new NuGetInstallSettings {
+        Source = new string[] { MakeAbsolute(parameters.Paths.Directories.NugetRoot).FullPath },
+        ExcludeVersion  = true,
+        Prerelease = true,
+        OutputDirectory = parameters.Paths.Directories.ArtifactsRoot
+    });
+
+    var settings = new GitVersionSettings
+    {
+        OutputType = GitVersionOutput.Json,
+        ToolPath = parameters.Paths.Directories.ArtifactsRoot.Combine("GitVersion.Commandline/tools").CombineWithFilePath("gitversion.exe").FullPath
+    };
+    var gitVersion = GitVersion(settings);
+
+    Assert.Equal(parameters.Version.GitVersion.FullSemVer, gitVersion.FullSemVer);
+});
+
+Task("Artifacts-Portable-Test")
+    .WithCriteria<BuildParameters>((context, parameters) => parameters.IsRunningOnWindows, "Artifacts-Portable-Test can be tested only on Windows agents.")
+    .WithCriteria<BuildParameters>((context, parameters) => parameters.IsReleasingCI,      "Artifacts-Portable-Test works only on Releasing CI.")
+    .IsDependentOnWhen("Pack-Chocolatey", singleStageRun)
+    .Does<BuildParameters>((parameters) =>
+{
+    if (parameters.IsMainBranch && !parameters.IsPullRequest) {
+        NuGetInstall("GitVersion.Portable", new NuGetInstallSettings {
+            Source = new string[] { MakeAbsolute(parameters.Paths.Directories.NugetRoot).FullPath },
+            ExcludeVersion  = true,
+            Prerelease = true,
+            OutputDirectory = parameters.Paths.Directories.ArtifactsRoot
+        });
+
+        var settings = new GitVersionSettings
+        {
+            OutputType = GitVersionOutput.Json,
+            ToolPath = parameters.Paths.Directories.ArtifactsRoot.Combine("GitVersion.Portable/tools").CombineWithFilePath("gitversion.exe").FullPath
+        };
+        var gitVersion = GitVersion(settings);
+
+        Assert.Equal(parameters.Version.GitVersion.FullSemVer, gitVersion.FullSemVer);
+    }
+});
+
 Task("Artifacts-Native-Test")
     .WithCriteria<BuildParameters>((context, parameters) => parameters.IsRunningOnLinux, "Artifacts-Native-Test can be tested only on Linux agents.")
     .WithCriteria<BuildParameters>((context, parameters) => parameters.IsReleasingCI,    "Artifacts-Native-Test works only on Releasing CI.")
