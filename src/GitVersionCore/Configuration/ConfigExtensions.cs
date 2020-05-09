@@ -270,7 +270,6 @@ If the docs do not help you decide on the mode open an issue to discuss what you
             var tagPreReleaseWeight = configuration.TagPreReleaseWeight;
 
             var commitMessageVersionBump = currentBranchConfig.CommitMessageIncrementing ?? configuration.CommitMessageIncrementing.Value;
-            
             return new EffectiveConfiguration(
                 assemblyVersioningScheme, assemblyFileVersioningScheme, assemblyInformationalFormat, assemblyVersioningFormat, assemblyFileVersioningFormat, versioningMode, gitTagPrefix,
                 tag, nextVersion, incrementStrategy,
