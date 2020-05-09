@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.CommandLine" Version="2.0.0-beta1.20253.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\GitVersionCore\GitVersionCore.csproj" />
+  </ItemGroup>
+
+</Project>
