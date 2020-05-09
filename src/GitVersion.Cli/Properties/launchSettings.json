@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "GitVersion.Cli": {
+      "commandName": "Project",
+      "commandLineArgs": "calculate --log-to File c:/temp/foo.txt"
+    }
+  }
+}

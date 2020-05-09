@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using GitVersion.Logging;
+using GitVersion.Model.Configuration;
 using GitVersion.OutputVariables;
 using GitVersion.VersionCalculation;
 using GitVersion.VersionCalculation.Cache;
@@ -52,21 +53,22 @@ namespace GitVersion
             this.versionContext = versionContext ?? throw new ArgumentNullException(nameof(versionContext));
         }
 
-        public VersionVariables CalculateVersionVariables()
+
+        public VersionVariables CalculateVersionVariables(bool? noCache, Config overrideConfig = null)
         {
             gitPreparer.Prepare(); //we need to prepare the repository before using it for version calculation
 
-            var gitVersionOptions = options.Value;
+            //var gitVersionOptions = options.Value;
 
-            var cacheKey = cacheKeyFactory.Create(gitVersionOptions.ConfigInfo.OverrideConfig);
-            var versionVariables = gitVersionOptions.Settings.NoCache ? default : gitVersionCache.LoadVersionVariablesFromDiskCache(cacheKey);
+            var cacheKey = cacheKeyFactory.Create(overrideConfig);
+            var versionVariables = noCache ?? false ? default : gitVersionCache.LoadVersionVariablesFromDiskCache(cacheKey);
 
             if (versionVariables != null) return versionVariables;
 
             var semanticVersion = nextVersionCalculator.FindVersion();
             versionVariables = variableProvider.GetVariablesFor(semanticVersion, context.Configuration, context.IsCurrentCommitTagged);
 
-            if (gitVersionOptions.Settings.NoCache) return versionVariables;
+            if (noCache ?? false) return versionVariables;
             try
             {
                 gitVersionCache.WriteVariablesToDiskCache(cacheKey, versionVariables);
@@ -77,6 +79,13 @@ namespace GitVersion
             }
 
             return versionVariables;
+        }
+
+        [Obsolete("Use version that doesn't rely on GitVersionOptions")]
+        public VersionVariables CalculateVersionVariables()
+        {
+            var gitVersionOptions = options.Value;
+            return CalculateVersionVariables(gitVersionOptions.Settings.NoCache, gitVersionOptions.ConfigInfo.OverrideConfig);
         }
 
         public void OutputVariables(VersionVariables variables)
