@@ -53,6 +53,8 @@ namespace GitVersion
                     services.AddOptions<GitVersionOptions>()
                             .PostConfigure(a => a.Args = args);
 
+                    services.AddSingleton<GitVersionCommandExecutor>();
+
                     services.AddSingleton<GitVersionRootCommand>();
                     services.AddSingleton<CalculateCommand>();
                     //services.AddSingleton(sp =>

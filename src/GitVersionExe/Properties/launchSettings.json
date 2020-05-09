@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "GitVersionExe": {
+      "commandName": "Project",
+      "commandLineArgs": "calculate --logging-method Console"
+    }
+  }
+}

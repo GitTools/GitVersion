@@ -1,4 +1,5 @@
-using Microsoft.Extensions.Options;
+using GitVersion.Extensions;
+using GitVersion.Logging;
 using System;
 using System.CommandLine;
 using System.CommandLine.Invocation;
@@ -6,30 +7,39 @@ using System.Threading.Tasks;
 
 namespace GitVersion
 {
+
     public class CalculateCommand : Command
     {
-        private readonly IGitVersionTool gitversionTool;
         private readonly Logging.IConsole console;
+        private readonly IGitVersionTool gitversionTool;
+        private readonly GitVersionCommandExecutor executor;
 
-        public CalculateCommand(IGitVersionTool gitversionTool, Logging.IConsole console) : base("calculate", "Calculates version information from your git repository")
+        public CalculateCommand(Logging.IConsole console, IGitVersionTool gitversionTool, GitVersionCommandExecutor executor) : base("calculate", "Calculates version information from your git repository")
         {
-            this.gitversionTool = gitversionTool;
             this.console = console;
+            this.gitversionTool = gitversionTool;
+            this.executor = executor;            
             this.AddOption(new Option<bool>(
             "--normalize",
             "Attempt to mutate your git repository so gitversion has enough information (local branches, commit history etc) to calculate."));
-            this.Handler = CommandHandler.Create<bool?>(ExecuteAsync);            
-        }
+            this.Handler = CommandHandler.Create<GlobalCommandOptions, bool?>(ExecuteAsync);
+        }      
 
-        private async Task ExecuteAsync(bool? normalize)
+        private async Task<int> ExecuteAsync(GlobalCommandOptions globalOptions, bool? normalize)
         {
-            if (normalize ?? false)
+            // The executor wraps execution of the command logic inside somethng that
+            // will do error handling according to the old behaviour.
+            return await executor.Execute(globalOptions, async () =>
             {
-                await Normalize();
-            }
+                if (normalize ?? false)
+                {
+                    await Normalize();
+                }
 
-            var variables = this.gitversionTool.CalculateVersionVariables();
-            console.WriteLine(variables.ToString());
+                var variables = this.gitversionTool.CalculateVersionVariables();
+                console.WriteLine(variables.ToString());
+                return 0;
+            });               
         }
 
         private Task Normalize()

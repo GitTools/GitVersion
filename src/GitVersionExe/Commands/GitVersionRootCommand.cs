@@ -1,19 +1,19 @@
-using Microsoft.Extensions.Options;
 using System.CommandLine;
 
 namespace GitVersion
 {
     public class GitVersionRootCommand : RootCommand
     {
-        public GitVersionRootCommand(CalculateCommand calculateCommand, IOptions<GitVersionOptions> globalOptions) : base("Versioning for your git repository, solved!")
+        public GitVersionRootCommand(CalculateCommand calculateCommand) : base("Versioning for your git repository, solved!")
         {
-            // this.AddGlobalOption()
-            //this.AddGlobalOption(new Option("--target-path") { Argument = new Argument<LoggingMethod>() });
-            //this.AddGlobalOption(new Option("--logging-method") { Argument = new Argument<LoggingMethod>() });
-            GlobalOptions = globalOptions.Value;
-            this.AddCommand(calculateCommand);
-        }
+            var loggingMethodOptions = new Option("--logging-method") { Argument = new Argument<LoggingMethod>() };
+            this.AddGlobalOption(loggingMethodOptions);
 
-        public GitVersionOptions GlobalOptions { get; }
+            var logFileOption = new Option("--logfilepath") { Argument = new Argument<string> { } };
+            logFileOption.Required = false;
+            this.AddGlobalOption(logFileOption);
+
+            this.AddCommand(calculateCommand);
+        }      
     }
 }

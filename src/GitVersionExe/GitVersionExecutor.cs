@@ -1,6 +1,7 @@
 using System;
 using System.CommandLine;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using GitVersion.Configuration;
 using GitVersion.Extensions;
@@ -19,7 +20,8 @@ namespace GitVersion
         private readonly IConfigProvider configProvider;
         private readonly IVersionWriter versionWriter;
 
-        public GitVersionExecutor(ILog log,
+        public GitVersionExecutor(
+            ILog log,
             Logging.IConsole console,
             IConfigFileLocator configFileLocator,
             IConfigProvider configProvider,
@@ -170,6 +172,7 @@ namespace GitVersion
         {
             // Could always log to console unless by default.
             // We can log variables within a control statement when log output to console is enabled.
+            //if(execCommand.Options.Contains())
             if (gitVersionOptions.LogToConsole)
             {
                 log.AddLogAppender(new ConsoleAppender());
