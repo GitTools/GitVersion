@@ -58,7 +58,7 @@ namespace GitVersion.BuildAgents
             return IsPipelineAsCode();
         }
 
-        public override void WriteIntegration(Action<string> writer, VersionVariables variables)
+        public override void WriteIntegration(Action<string> writer, VersionVariables variables, bool updateBuildNumber = true)
         {
             base.WriteIntegration(writer, variables);
             writer($"Outputting variables to '{file}' ... ");

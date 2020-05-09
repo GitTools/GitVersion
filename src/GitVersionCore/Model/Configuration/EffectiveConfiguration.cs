@@ -120,7 +120,7 @@ namespace GitVersion.Model.Configuration
         public IEnumerable<IVersionFilter> VersionFilters { get; private set; }
 
         public string CommitDateFormat { get; private set; }
-        
+
         public bool UpdateBuildNumber { get; private set; }
 
         public int PreReleaseWeight { get; private set; }

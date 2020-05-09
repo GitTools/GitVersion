@@ -149,6 +149,23 @@ namespace GitVersionCore.Tests.BuildAgents
         }
 
         [Test]
+        public void ShouldNotWriteIntegration()
+        {
+            // Arrange
+            var vars = new TestableVersionVariables("1.0.0");
+
+            var list = new List<string>();
+
+            // Assert
+            environment.GetEnvironmentVariable("GitVersion_Major").ShouldBeNullOrWhiteSpace();
+
+            // Act
+            buildServer.WriteIntegration(s => { list.Add(s); }, vars, false);
+
+            list.ShouldBeEmpty();
+        }
+
+        [Test]
         public void GetEmptyGenerateSetVersionMessage()
         {
             // Arrange
