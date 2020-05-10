@@ -236,9 +236,9 @@ namespace GitVersion
                 return true;
             }
 
-            if (name.IsSwitch("targetprojectfiles"))
+            if (name.IsSwitch("updateprojectfiles"))
             {
-                arguments.TargetProjectFiles = true;
+                arguments.UpdateProjectFiles = true;
                 return true;
             }
 
