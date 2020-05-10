@@ -33,40 +33,41 @@ namespace GitVersion.VersionConverters.AssemblyInfo
         public void Execute(VersionVariables variables, AssemblyInfoContext context)
         {
             if (context.EnsureAssemblyInfo)
-                throw new WarningException($"Configuration setting {nameof(context.EnsureAssemblyInfo)} is not valid when updating .csproj files!");
+                throw new WarningException($"Configuration setting {nameof(context.EnsureAssemblyInfo)} is not valid when updating project files!");
 
-            var csProjFilesToUpdate = GetCsProjFiles(context).ToList();
+            var projectFilesToUpdate = GetProjectFiles(context).ToList();
 
             var assemblyVersion = variables.AssemblySemVer;
             var assemblyInfoVersion = variables.InformationalVersion;
             var assemblyFileVersion = variables.AssemblySemFileVer;
 
-            foreach (var csProjFile in csProjFilesToUpdate)
+            foreach (var projectFile in projectFilesToUpdate)
             {
-                var localCsProjFile = csProjFile.FullName;
+                var localProjectFile = projectFile.FullName;
 
-                var originalFileContents = fileSystem.ReadAllText(localCsProjFile);
+                var originalFileContents = fileSystem.ReadAllText(localProjectFile);
                 var fileXml = XElement.Parse(originalFileContents);
 
                 if (!CanUpdateProjectFile(fileXml))
                 {
+                    log.Warning($"Unable to update file: {localProjectFile}");
                     continue;
                 }
 
-                var backupCsProjFile = localCsProjFile + ".bak";
-                fileSystem.Copy(localCsProjFile, backupCsProjFile, true);
+                var backupProjectFile = localProjectFile + ".bak";
+                fileSystem.Copy(localProjectFile, backupProjectFile, true);
 
                 restoreBackupTasks.Add(() =>
                 {
-                    if (fileSystem.Exists(localCsProjFile))
+                    if (fileSystem.Exists(localProjectFile))
                     {
-                        fileSystem.Delete(localCsProjFile);
+                        fileSystem.Delete(localProjectFile);
                     }
 
-                    fileSystem.Move(backupCsProjFile, localCsProjFile);
+                    fileSystem.Move(backupProjectFile, localProjectFile);
                 });
 
-                cleanupBackupTasks.Add(() => fileSystem.Delete(backupCsProjFile));
+                cleanupBackupTasks.Add(() => fileSystem.Delete(backupProjectFile));
 
                 if (!string.IsNullOrWhiteSpace(assemblyVersion))
                 {
@@ -86,49 +87,49 @@ namespace GitVersion.VersionConverters.AssemblyInfo
                 var outputXmlString = fileXml.ToString();
                 if (originalFileContents != outputXmlString)
                 {
-                    fileSystem.WriteAllText(localCsProjFile, outputXmlString);
+                    fileSystem.WriteAllText(localProjectFile, outputXmlString);
                 }
             }
 
             CommitChanges();
         }
 
-        internal bool CanUpdateProjectFile(XElement csProjRoot)
+        internal bool CanUpdateProjectFile(XElement xmlRoot)
         {
-            if (csProjRoot.Name != "Project")
+            if (xmlRoot.Name != "Project")
             {
-                log.Warning($"Invalid project file specified, root element must be <Project> -- skipping");
+                log.Warning($"Invalid project file specified, root element must be <Project>.");
                 return false;
             }
 
             var supportedSdk = "Microsoft.NET.Sdk";
-            var sdkAttribute = csProjRoot.Attribute("Sdk");
+            var sdkAttribute = xmlRoot.Attribute("Sdk");
             if (sdkAttribute == null || sdkAttribute.Value != supportedSdk)
             {
-                log.Warning($"Specified project file Sdk ({sdkAttribute?.Value} is not supported, please ensure the project sdk is {supportedSdk} -- skipping");
+                log.Warning($"Specified project file Sdk ({sdkAttribute?.Value}) is not supported, please ensure the project sdk is {supportedSdk}.");
                 return false;
             }
 
-            var propertyGroups = csProjRoot.Descendants("PropertyGroup").ToList();
+            var propertyGroups = xmlRoot.Descendants("PropertyGroup").ToList();
             if (!propertyGroups.Any())
             {
-                log.Warning("Unable to locate any <PropertyGroup> elements in specified project file. Are you sure it is in a correct format? -- skipping");
+                log.Warning("Unable to locate any <PropertyGroup> elements in specified project file. Are you sure it is in a correct format?");
                 return false;
             }
 
             var lastGenerateAssemblyInfoElement = propertyGroups.SelectMany(s => s.Elements("GenerateAssemblyInfo")).LastOrDefault();
             if (lastGenerateAssemblyInfoElement != null && (bool) lastGenerateAssemblyInfoElement == false)
             {
-                log.Warning($"Project file specifies <GenerateAssemblyInfo>false</GenerateAssemblyInfo>: versions set in this project file will not affect the output artifacts -- skipping");
+                log.Warning($"Project file specifies <GenerateAssemblyInfo>false</GenerateAssemblyInfo>: versions set in this project file will not affect the output artifacts.");
                 return false;
             }
 
             return true;
         }
 
-        internal void UpdateProjectVersionElement(XElement csProjRoot, string versionElement, string versionValue)
+        internal void UpdateProjectVersionElement(XElement xmlRoot, string versionElement, string versionValue)
         {
-            var propertyGroups = csProjRoot.Descendants("PropertyGroup").ToList();
+            var propertyGroups = xmlRoot.Descendants("PropertyGroup").ToList();
 
             var propertyGroupToModify = propertyGroups.LastOrDefault(l => l.Element(versionElement) != null)
                 ?? propertyGroups.First();
@@ -166,7 +167,7 @@ namespace GitVersion.VersionConverters.AssemblyInfo
             restoreBackupTasks.Clear();
         }
 
-        private IEnumerable<FileInfo> GetCsProjFiles(AssemblyInfoContext context)
+        private IEnumerable<FileInfo> GetProjectFiles(AssemblyInfoContext context)
         {
             var workingDirectory = context.WorkingDirectory;
             var assemblyInfoFileNames = new HashSet<string>(context.AssemblyInfoFiles);
