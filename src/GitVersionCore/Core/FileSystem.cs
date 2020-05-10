@@ -46,9 +46,9 @@ namespace GitVersion
             File.WriteAllText(file, fileContents, encoding);
         }
 
-        public IEnumerable<string> DirectoryGetFiles(string directory, string searchPattern, SearchOption searchOption)
+        public IEnumerable<string> DirectoryEnumerateFiles(string directory, string searchPattern, SearchOption searchOption)
         {
-            return Directory.GetFiles(directory, searchPattern, searchOption);
+            return Directory.EnumerateFiles(directory, searchPattern, searchOption);
         }
 
         public Stream OpenWrite(string path)

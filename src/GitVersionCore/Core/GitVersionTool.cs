@@ -4,6 +4,7 @@ using GitVersion.Logging;
 using GitVersion.OutputVariables;
 using GitVersion.VersionCalculation;
 using GitVersion.VersionCalculation.Cache;
+using GitVersion.VersionConverters;
 using GitVersion.VersionConverters.AssemblyInfo;
 using GitVersion.VersionConverters.GitVersionInfo;
 using GitVersion.VersionConverters.OutputGenerator;
@@ -24,6 +25,7 @@ namespace GitVersion
         private readonly IWixVersionFileUpdater wixVersionFileUpdater;
         private readonly IGitVersionInfoGenerator gitVersionInfoGenerator;
         private readonly IAssemblyInfoFileUpdater assemblyInfoFileUpdater;
+        private readonly IProjectFileUpdater projectFileUpdater;
 
         private readonly IOptions<GitVersionOptions> options;
         private readonly Lazy<GitVersionContext> versionContext;
@@ -32,7 +34,7 @@ namespace GitVersion
         public GitVersionTool(ILog log, INextVersionCalculator nextVersionCalculator, IVariableProvider variableProvider, IGitPreparer gitPreparer,
             IGitVersionCache gitVersionCache, IGitVersionCacheKeyFactory cacheKeyFactory,
             IOutputGenerator outputGenerator, IWixVersionFileUpdater wixVersionFileUpdater, IGitVersionInfoGenerator gitVersionInfoGenerator, IAssemblyInfoFileUpdater assemblyInfoFileUpdater,
-            IOptions<GitVersionOptions> options, Lazy<GitVersionContext> versionContext)
+            IOptions<GitVersionOptions> options, Lazy<GitVersionContext> versionContext, IProjectFileUpdater projectFileUpdater)
         {
             this.log = log ?? throw new ArgumentNullException(nameof(log));
 
@@ -50,6 +52,7 @@ namespace GitVersion
 
             this.options = options ?? throw new ArgumentNullException(nameof(options));
             this.versionContext = versionContext ?? throw new ArgumentNullException(nameof(versionContext));
+            this.projectFileUpdater = projectFileUpdater;
         }
 
         public VersionVariables CalculateVersionVariables()
@@ -95,9 +98,20 @@ namespace GitVersion
 
             if (gitVersionOptions.AssemblyInfo.ShouldUpdate)
             {
-                using (assemblyInfoFileUpdater)
+                var assemblyInfoContext = new AssemblyInfoContext(gitVersionOptions.WorkingDirectory, gitVersionOptions.AssemblyInfo.EnsureAssemblyInfo, gitVersionOptions.AssemblyInfo.Files.ToArray());
+                if (gitVersionOptions.AssemblyInfo.IsTargetingProjectFiles)
                 {
-                    assemblyInfoFileUpdater.Execute(variables, new AssemblyInfoContext(gitVersionOptions.WorkingDirectory, gitVersionOptions.AssemblyInfo.EnsureAssemblyInfo, gitVersionOptions.AssemblyInfo.Files.ToArray()));
+                    using (projectFileUpdater)
+                    {
+                        projectFileUpdater.Execute(variables, assemblyInfoContext);
+                    }
+                }
+                else
+                {
+                    using (assemblyInfoFileUpdater)
+                    {
+                        assemblyInfoFileUpdater.Execute(variables, assemblyInfoContext);
+                    }
                 }
             }
         }

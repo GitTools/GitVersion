@@ -236,6 +236,12 @@ namespace GitVersion
                 return true;
             }
 
+            if (name.IsSwitch("targetprojectfiles"))
+            {
+                arguments.TargetProjectFiles = true;
+                return true;
+            }
+
             if (name.IsSwitch("nofetch"))
             {
                 arguments.NoFetch = true;
