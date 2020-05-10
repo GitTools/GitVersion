@@ -53,6 +53,9 @@ GitVersion [path]
  # AssemblyInfo updating
     /updateassemblyinfo
                     Will recursively search for all 'AssemblyInfo.cs' files in the git repo and update them
+    /targetprojectfiles
+                    Will target project files (cs/fs/vbproj files) to update instead of AssemblyInfo class files,
+                    Note: This is only compatible with the newer Sdk projects
     /updateassemblyinfofilename
                     Specify name of AssemblyInfo file. Can also /updateAssemblyInfo GlobalAssemblyInfo.cs as a shorthand
     /ensureassemblyinfo
