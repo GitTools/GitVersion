@@ -35,14 +35,15 @@ namespace GitVersionCore.Tests.Helpers
             IEnumerable<IVersionFilter> versionFilters = null,
             bool tracksReleaseBranches = false,
             bool isRelease = false,
-            string commitDateFormat = "yyyy-MM-dd") :
+            string commitDateFormat = "yyyy-MM-dd",
+            bool updateBuildNumber = false) :
             base(assemblyVersioningScheme, assemblyFileVersioningScheme, assemblyInformationalFormat, assemblyVersioningFormat, assemblyFileVersioningFormat, versioningMode, gitTagPrefix, tag, nextVersion, IncrementStrategy.Patch,
                     branchPrefixToTrim, preventIncrementForMergedBranchVersion, tagNumberPattern, continuousDeploymentFallbackTag,
                     trackMergeTarget,
                     majorMessage, minorMessage, patchMessage, noBumpMessage,
                     commitMessageMode, legacySemVerPadding, buildMetaDataPadding, commitsSinceVersionSourcePadding,
                     versionFilters ?? Enumerable.Empty<IVersionFilter>(),
-                    tracksReleaseBranches, isRelease, commitDateFormat, 0)
+                    tracksReleaseBranches, isRelease, commitDateFormat, updateBuildNumber, 0)
         {
         }
     }

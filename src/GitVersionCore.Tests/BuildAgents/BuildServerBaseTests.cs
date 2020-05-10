@@ -50,6 +50,10 @@ namespace GitVersionCore.Tests.BuildAgents
             buildServer.WriteIntegration(writes.Add, variables);
 
             writes[1].ShouldBe("1.2.3-beta.1+5");
+
+            writes = new List<string>();
+            buildServer.WriteIntegration(writes.Add, variables, false);
+            writes.ShouldBeEmpty();
         }
 
         private class BuildAgent : BuildAgentBase

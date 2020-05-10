@@ -15,13 +15,15 @@ namespace GitVersion.VersionConverters.OutputGenerator
         private readonly IConsole console;
         private readonly IFileSystem fileSystem;
         private readonly IOptions<GitVersionOptions> options;
+        private readonly Lazy<GitVersionContext> versionContext;
         private readonly ICurrentBuildAgent buildAgent;
 
-        public OutputGenerator(ICurrentBuildAgent buildAgent, IConsole console, IFileSystem fileSystem, IOptions<GitVersionOptions> options)
+        public OutputGenerator(ICurrentBuildAgent buildAgent, IConsole console, IFileSystem fileSystem, IOptions<GitVersionOptions> options, Lazy<GitVersionContext> versionContext)
         {
             this.console = console ?? throw new ArgumentNullException(nameof(console));
             this.fileSystem = fileSystem ?? throw new ArgumentNullException(nameof(fileSystem));
             this.options = options ?? throw new ArgumentNullException(nameof(options));
+            this.versionContext = versionContext;
             this.buildAgent = buildAgent;
         }
 
@@ -30,7 +32,7 @@ namespace GitVersion.VersionConverters.OutputGenerator
             var gitVersionOptions = options.Value;
             if (gitVersionOptions.Output.Contains(OutputType.BuildServer))
             {
-                buildAgent?.WriteIntegration(console.WriteLine, variables);
+                buildAgent?.WriteIntegration(console.WriteLine, variables, versionContext.Value.Configuration.UpdateBuildNumber);
             }
             if (gitVersionOptions.Output.Contains(OutputType.File))
             {

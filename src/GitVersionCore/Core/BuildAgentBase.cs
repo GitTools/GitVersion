@@ -28,9 +28,9 @@ namespace GitVersion
         public virtual bool PreventFetch() => true;
         public virtual bool ShouldCleanUpRemotes() => false;
 
-        public virtual void WriteIntegration(Action<string> writer, VersionVariables variables)
+        public virtual void WriteIntegration(Action<string> writer, VersionVariables variables, bool updateBuildNumber = true)
         {
-            if (writer == null)
+            if (writer == null || !updateBuildNumber)
             {
                 return;
             }

@@ -36,6 +36,7 @@ namespace GitVersion.Configuration
             config.BuildMetaDataPadding ??= 4;
             config.CommitsSinceVersionSourcePadding ??= 4;
             config.CommitDateFormat ??= "yyyy-MM-dd";
+            config.UpdateBuildNumber ??= true;
 
             var configBranches = config.Branches.ToList();
 
@@ -263,6 +264,7 @@ If the docs do not help you decide on the mode open an issue to discuss what you
             var patchMessage = configuration.PatchVersionBumpMessage;
             var noBumpMessage = configuration.NoBumpMessage;
             var commitDateFormat = configuration.CommitDateFormat;
+            var updateBuildNumber = configuration.UpdateBuildNumber ?? true;
 
             var commitMessageVersionBump = currentBranchConfig.CommitMessageIncrementing ?? configuration.CommitMessageIncrementing.Value;
 
@@ -282,6 +284,7 @@ If the docs do not help you decide on the mode open an issue to discuss what you
                 currentBranchConfig.TracksReleaseBranches.Value,
                 currentBranchConfig.IsReleaseBranch.Value,
                 commitDateFormat,
+                updateBuildNumber,
                 preReleaseWeight);
         }
 

@@ -129,5 +129,10 @@ namespace GitVersion.Extensions
         {
             return Regex.Replace(input, pattern, replace, options);
         }
+
+        public static bool IsEquivalentTo(this string self, string other)
+        {
+            return String.Equals(self, other, StringComparison.OrdinalIgnoreCase);
+        }
     }
 }

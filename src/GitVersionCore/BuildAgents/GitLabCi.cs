@@ -43,7 +43,7 @@ namespace GitVersion.BuildAgents
 
         public override bool PreventFetch() => true;
 
-        public override void WriteIntegration(Action<string> writer, VersionVariables variables)
+        public override void WriteIntegration(Action<string> writer, VersionVariables variables, bool updateBuildNumber = true)
         {
             base.WriteIntegration(writer, variables);
             writer($"Outputting variables to '{file}' ... ");
