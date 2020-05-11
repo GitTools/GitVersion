@@ -30,5 +30,5 @@
   <?define Sha="commitSha"?>
   <?define ShortSha="commitShortSha"?>
   <?define VersionSourceSha="versionSourceSha"?>
-  <?define WeightedPreReleaseNumber=""?>
+  <?define WeightedPreReleaseNumber="0"?>
 </Include>

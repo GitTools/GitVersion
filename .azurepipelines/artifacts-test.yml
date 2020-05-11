@@ -1,23 +1,17 @@
-parameters:
-- name: name  # defaults for any parameters that aren't specified
-  default: ''
-- name: vmImage
-  default: ''
-
 jobs:
-- job: Artifacts_Test_${{ parameters.name }}
-  displayName: 'Artifacts Test ${{ parameters.name }}'
-  pool:
-    vmImage: ${{ parameters.vmImage }}
-  dependsOn: Generator
-  strategy:
-    matrix: $[ dependencies['Generator'].outputs['Map_${{ parameters.name }}.dockerConfigs'] ]
-  steps:
-  - template: common-steps.yml
-    parameters:
-      includeArtifacts: true
-  - pwsh: ./build.ps1 -target Artifacts-Test -DockerDistro $(DISTRO) -DockerDotnetVersion $(DOTNET_VERSION)
-    displayName: '[Docker Test Artifacts]'
+- ${{ each distro in parameters.distros }}:
+    - ${{ each dotnetVersion in parameters.dotnetVersions }}:
+      - job:
+        condition: or( ne('${{ distro }}', 'alpine.3.10-x64'), ne('${{ dotnetVersion }}', '3.1'))
+        displayName: 'Artifacts Test ${{ distro }} ${{ dotnetVersion }} (${{ parameters.name }})'
+        pool:
+          vmImage: ${{ parameters.vmImage }}
+        steps:
+        - template: common-steps.yml
+          parameters:
+            includeArtifacts: true
+        - pwsh: ./build.ps1 -target Artifacts-Test -DockerDistro ${{ distro }} -DockerDotnetVersion ${{ dotnetVersion }}
+          displayName: '[Docker Test Artifacts ${{ distro }}_${{ dotnetVersion }}]'
 - job: Artifacts_Test_MsBuild
   displayName: Artifacts Test MsBuild (Windows)
   pool:

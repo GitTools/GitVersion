@@ -37,6 +37,7 @@ namespace GitVersion.Configuration
             config.CommitsSinceVersionSourcePadding ??= 4;
             config.CommitDateFormat ??= "yyyy-MM-dd";
             config.UpdateBuildNumber ??= true;
+            config.TagPreReleaseWeight ??= DefaultTagPreReleaseWeight;
 
             var configBranches = config.Branches.ToList();
 
@@ -128,6 +129,7 @@ namespace GitVersion.Configuration
                 { Config.MasterBranchRegex, 55000 }
             };
         private const IncrementStrategy DefaultIncrementStrategy = IncrementStrategy.Inherit;
+        private const int DefaultTagPreReleaseWeight = 60000;
 
         public static void ApplyBranchDefaults(this Config config,
             BranchConfig branchConfig,
@@ -182,6 +184,7 @@ If the docs do not help you decide on the mode open an issue to discuss what you
             config.VersioningMode = overrideConfig.VersioningMode;
             config.AssemblyFileVersioningFormat = overrideConfig.AssemblyFileVersioningFormat;
             config.TagPrefix = string.IsNullOrWhiteSpace(overrideConfig.TagPrefix) ? config.TagPrefix : overrideConfig.TagPrefix;
+            config.TagPreReleaseWeight = overrideConfig.TagPreReleaseWeight;
         }
 
         public static BranchConfig GetConfigForBranch(this Config config, string branchName)
@@ -265,9 +268,9 @@ If the docs do not help you decide on the mode open an issue to discuss what you
             var noBumpMessage = configuration.NoBumpMessage;
             var commitDateFormat = configuration.CommitDateFormat;
             var updateBuildNumber = configuration.UpdateBuildNumber ?? true;
+            var tagPreReleaseWeight = configuration.TagPreReleaseWeight ?? DefaultTagPreReleaseWeight;
 
             var commitMessageVersionBump = currentBranchConfig.CommitMessageIncrementing ?? configuration.CommitMessageIncrementing.Value;
-
             return new EffectiveConfiguration(
                 assemblyVersioningScheme, assemblyFileVersioningScheme, assemblyInformationalFormat, assemblyVersioningFormat, assemblyFileVersioningFormat, versioningMode, gitTagPrefix,
                 tag, nextVersion, incrementStrategy,
@@ -285,7 +288,8 @@ If the docs do not help you decide on the mode open an issue to discuss what you
                 currentBranchConfig.IsReleaseBranch.Value,
                 commitDateFormat,
                 updateBuildNumber,
-                preReleaseWeight);
+                preReleaseWeight,
+                tagPreReleaseWeight);
         }
 
         public static string GetBranchSpecificTag(this EffectiveConfiguration configuration, ILog log, string branchFriendlyName, string branchNameOverride)

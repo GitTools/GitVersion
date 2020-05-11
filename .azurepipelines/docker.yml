@@ -1,24 +1,17 @@
-parameters:
-- name: name  # defaults for any parameters that aren't specified
-  default: ''
-- name: vmImage
-  default: ''
-
 jobs:
-- job: Docker_${{ parameters.name }}
-  displayName: 'Docker ${{ parameters.name }}'
-  pool:
-    vmImage: ${{ parameters.vmImage }}
-  dependsOn: Generator
-  strategy:
-    matrix: $[ dependencies['Generator'].outputs['Map_${{ parameters.name }}.dockerConfigs'] ]
-  steps:
-  - template: common-steps.yml
-    parameters:
-      includeArtifacts: true
-  - pwsh: ./build.ps1 -target Publish-DockerHub -DockerDistro $(DISTRO) -DockerDotnetVersion $(DOTNET_VERSION)
-    displayName: '[Docker build & Test]'
-    env:
-      DOCKER_USERNAME: $(DOCKER_USERNAME)
-      DOCKER_PASSWORD: $(DOCKER_PASSWORD)
-      ENABLED_PUBLISH_DOCKER: $(ENABLED_PUBLISH_DOCKER)
+- ${{ each distro in parameters.distros }}:
+    - ${{ each dotnetVersion in parameters.dotnetVersions }}:
+      - job:
+        displayName: 'Docker ${{ distro }} ${{ dotnetVersion }} (${{ parameters.name }})'
+        pool:
+          vmImage: ${{ parameters.vmImage }}
+        steps:
+        - template: common-steps.yml
+          parameters:
+            includeArtifacts: true
+        - pwsh: ./build.ps1 -target Publish-DockerHub -DockerDistro ${{ distro }} -DockerDotnetVersion ${{ dotnetVersion }}
+          displayName: '[Docker build & Test ${{ distro }} ${{ dotnetVersion }}]'
+          env:
+            DOCKER_USERNAME: $(DOCKER_USERNAME)
+            DOCKER_PASSWORD: $(DOCKER_PASSWORD)
+            ENABLED_PUBLISH_DOCKER: $(ENABLED_PUBLISH_DOCKER)

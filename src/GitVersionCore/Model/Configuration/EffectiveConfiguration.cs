@@ -35,7 +35,8 @@ namespace GitVersion.Model.Configuration
             bool isCurrentBranchRelease,
             string commitDateFormat,
             bool updateBuildNumber,
-            int preReleaseWeight)
+            int preReleaseWeight,
+            int tagPreReleaseWeight)
         {
             AssemblyVersioningScheme = assemblyVersioningScheme;
             AssemblyFileVersioningScheme = assemblyFileVersioningScheme;
@@ -66,6 +67,7 @@ namespace GitVersion.Model.Configuration
             CommitDateFormat = commitDateFormat;
             UpdateBuildNumber = updateBuildNumber;
             PreReleaseWeight = preReleaseWeight;
+            TagPreReleaseWeight = tagPreReleaseWeight;
         }
 
         public bool TracksReleaseBranches { get; private set; }
@@ -124,5 +126,7 @@ namespace GitVersion.Model.Configuration
         public bool UpdateBuildNumber { get; private set; }
 
         public int PreReleaseWeight { get; private set; }
+
+        public int TagPreReleaseWeight { get; private set; }
     }
 }
