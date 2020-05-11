@@ -202,7 +202,7 @@ namespace GitVersion
         private void NormalizeGitDirectory(string gitDirectory, bool noFetch, string currentBranch, bool isDynamicRepository)
         {
             var authentication = options.Value.Authentication;
-            using var repository = new Repository(gitDirectory);
+            using var repository = new GitRepository(() => gitDirectory);
             // Need to ensure the HEAD does not move, this is essentially a BugCheck
             var expectedSha = repository.Head.Tip.Sha;
             var expectedBranchName = repository.Head.CanonicalName;
@@ -221,7 +221,7 @@ namespace GitVersion
                 else
                 {
                     log.Info($"Fetching from remote '{remote.Name}' using the following refspecs: {string.Join(", ", remote.FetchRefSpecs.Select(r => r.Specification))}.");
-                    Commands.Fetch(repository, remote.Name, new string[0], authentication.ToFetchOptions(), null);
+                    repository.Commands.Fetch(remote.Name, new string[0], authentication.ToFetchOptions(), null);
                 }
 
                 repository.EnsureLocalBranchExistsForCurrentBranch(log, remote, currentBranch);
@@ -262,7 +262,7 @@ namespace GitVersion
                 if (matchingCurrentBranch != null)
                 {
                     log.Info($"Checking out local branch '{currentBranch}'.");
-                    Commands.Checkout(repository, matchingCurrentBranch);
+                    repository.Commands.Checkout(matchingCurrentBranch);
                 }
                 else if (localBranchesWhereCommitShaIsHead.Count > 1)
                 {
@@ -271,11 +271,11 @@ namespace GitVersion
                     const string moveBranchMsg = "Move one of the branches along a commit to remove warning";
 
                     log.Warning($"Found more than one local branch pointing at the commit '{headSha}' ({csvNames}).");
-                    var master = localBranchesWhereCommitShaIsHead.SingleOrDefault(n => n.FriendlyName == "master");
+                    var master = localBranchesWhereCommitShaIsHead.SingleOrDefault(n => n.FriendlyName.IsEquivalentTo("master"));
                     if (master != null)
                     {
                         log.Warning("Because one of the branches is 'master', will build master." + moveBranchMsg);
-                        Commands.Checkout(repository, master);
+                        repository.Commands.Checkout(master);
                     }
                     else
                     {
@@ -284,7 +284,7 @@ namespace GitVersion
                         {
                             var branchWithoutSeparator = branchesWithoutSeparators[0];
                             log.Warning($"Choosing {branchWithoutSeparator.CanonicalName} as it is the only branch without / or - in it. " + moveBranchMsg);
-                            Commands.Checkout(repository, branchWithoutSeparator);
+                            repository.Commands.Checkout(branchWithoutSeparator);
                         }
                         else
                         {
@@ -300,7 +300,7 @@ namespace GitVersion
                 else
                 {
                     log.Info($"Checking out local branch 'refs/heads/{localBranchesWhereCommitShaIsHead[0].FriendlyName}'.");
-                    Commands.Checkout(repository, repository.Branches[localBranchesWhereCommitShaIsHead[0].FriendlyName]);
+                    repository.Commands.Checkout(repository.Branches[localBranchesWhereCommitShaIsHead[0].FriendlyName]);
                 }
             }
             finally
