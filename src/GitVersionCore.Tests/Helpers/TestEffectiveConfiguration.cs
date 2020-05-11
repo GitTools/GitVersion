@@ -43,7 +43,7 @@ namespace GitVersionCore.Tests.Helpers
                     majorMessage, minorMessage, patchMessage, noBumpMessage,
                     commitMessageMode, legacySemVerPadding, buildMetaDataPadding, commitsSinceVersionSourcePadding,
                     versionFilters ?? Enumerable.Empty<IVersionFilter>(),
-                    tracksReleaseBranches, isRelease, commitDateFormat, updateBuildNumber, 0)
+                    tracksReleaseBranches, isRelease, commitDateFormat, updateBuildNumber, 0, 0)
         {
         }
     }
