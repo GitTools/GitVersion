@@ -320,8 +320,8 @@ namespace GitVersionExe.Tests
 
             var arguments = argumentParser.ParseArguments($"-targetpath {repo.RepositoryPath} -updateAssemblyInfo CommonAssemblyInfo.cs");
             arguments.UpdateAssemblyInfo.ShouldBe(true);
-            arguments.UpdateFileNames.Count.ShouldBe(1);
-            arguments.UpdateFileNames.ShouldContain(x => Path.GetFileName(x).Equals("CommonAssemblyInfo.cs"));
+            arguments.UpdateAssemblyInfoFileName.Count.ShouldBe(1);
+            arguments.UpdateAssemblyInfoFileName.ShouldContain(x => Path.GetFileName(x).Equals("CommonAssemblyInfo.cs"));
         }
 
         [Test]
@@ -337,9 +337,9 @@ namespace GitVersionExe.Tests
 
             var arguments = argumentParser.ParseArguments($"-targetpath {repo.RepositoryPath} -updateAssemblyInfo CommonAssemblyInfo.cs VersionAssemblyInfo.cs");
             arguments.UpdateAssemblyInfo.ShouldBe(true);
-            arguments.UpdateFileNames.Count.ShouldBe(2);
-            arguments.UpdateFileNames.ShouldContain(x => Path.GetFileName(x).Equals("CommonAssemblyInfo.cs"));
-            arguments.UpdateFileNames.ShouldContain(x => Path.GetFileName(x).Equals("VersionAssemblyInfo.cs"));
+            arguments.UpdateAssemblyInfoFileName.Count.ShouldBe(2);
+            arguments.UpdateAssemblyInfoFileName.ShouldContain(x => Path.GetFileName(x).Equals("CommonAssemblyInfo.cs"));
+            arguments.UpdateAssemblyInfoFileName.ShouldContain(x => Path.GetFileName(x).Equals("VersionAssemblyInfo.cs"));
         }
 
         [Test]
@@ -360,10 +360,10 @@ namespace GitVersionExe.Tests
 
             var arguments = argumentParser.ParseArguments($"-targetpath {repo.RepositoryPath} -updateAssemblyInfo **/*AssemblyInfo.cs");
             arguments.UpdateAssemblyInfo.ShouldBe(true);
-            arguments.UpdateFileNames.Count.ShouldBe(3);
-            arguments.UpdateFileNames.ShouldContain(x => Path.GetFileName(x).Equals("CommonAssemblyInfo.cs"));
-            arguments.UpdateFileNames.ShouldContain(x => Path.GetFileName(x).Equals("VersionAssemblyInfo.cs"));
-            arguments.UpdateFileNames.ShouldContain(x => Path.GetFileName(x).Equals("LocalAssemblyInfo.cs"));
+            arguments.UpdateAssemblyInfoFileName.Count.ShouldBe(3);
+            arguments.UpdateAssemblyInfoFileName.ShouldContain(x => Path.GetFileName(x).Equals("CommonAssemblyInfo.cs"));
+            arguments.UpdateAssemblyInfoFileName.ShouldContain(x => Path.GetFileName(x).Equals("VersionAssemblyInfo.cs"));
+            arguments.UpdateAssemblyInfoFileName.ShouldContain(x => Path.GetFileName(x).Equals("LocalAssemblyInfo.cs"));
         }
 
         [Test]
@@ -379,8 +379,8 @@ namespace GitVersionExe.Tests
 
             var arguments = argumentParser.ParseArguments($"-targetpath {targetPath} -updateAssemblyInfo ..\\..\\CommonAssemblyInfo.cs");
             arguments.UpdateAssemblyInfo.ShouldBe(true);
-            arguments.UpdateFileNames.Count.ShouldBe(1);
-            arguments.UpdateFileNames.ShouldContain(x => Path.GetFileName(x).Equals("CommonAssemblyInfo.cs"));
+            arguments.UpdateAssemblyInfoFileName.Count.ShouldBe(1);
+            arguments.UpdateAssemblyInfoFileName.ShouldContain(x => Path.GetFileName(x).Equals("CommonAssemblyInfo.cs"));
         }
 
         [Test]

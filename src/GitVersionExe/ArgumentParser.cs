@@ -104,7 +104,7 @@ namespace GitVersion
                 : firstArgument;
 
             arguments.TargetPath = arguments.TargetPath.TrimEnd('/', '\\');
-            arguments.UpdateFileNames = ResolveFiles(arguments.TargetPath, arguments.UpdateFileNames).ToHashSet();
+            arguments.UpdateAssemblyInfoFileName = ResolveFiles(arguments.TargetPath, arguments.UpdateAssemblyInfoFileName).ToHashSet();
             arguments.NoFetch = arguments.NoFetch || buildAgent != null && buildAgent.PreventFetch();
 
             return arguments;
@@ -424,7 +424,7 @@ namespace GitVersion
                 arguments.EnsureAssemblyInfo = false;
             }
 
-            if (arguments.UpdateFileNames.Count > 1 && arguments.EnsureAssemblyInfo)
+            if (arguments.UpdateAssemblyInfoFileName.Count > 1 && arguments.EnsureAssemblyInfo)
             {
                 throw new WarningException("Can't specify multiple assembly info files when using /ensureassemblyinfo switch, either use a single assembly info file or do not specify /ensureassemblyinfo and create assembly info files manually");
             }
@@ -504,7 +504,7 @@ namespace GitVersion
                 arguments.UpdateAssemblyInfo = true;
                 foreach (var v in values)
                 {
-                    arguments.UpdateFileNames.Add(v);
+                    arguments.UpdateAssemblyInfoFileName.Add(v);
                 }
             }
             else if (!value.IsSwitchArgument())
@@ -512,7 +512,7 @@ namespace GitVersion
                 arguments.UpdateAssemblyInfo = true;
                 if (value != null)
                 {
-                    arguments.UpdateFileNames.Add(value);
+                    arguments.UpdateAssemblyInfoFileName.Add(value);
                 }
             }
             else
@@ -524,7 +524,7 @@ namespace GitVersion
             {
                 throw new WarningException("Cannot specify both updateprojectfiles and updateassemblyinfo in the same run. Please rerun GitVersion with only one parameter");
             }
-            if (arguments.UpdateFileNames.Count > 1 && arguments.EnsureAssemblyInfo)
+            if (arguments.UpdateAssemblyInfoFileName.Count > 1 && arguments.EnsureAssemblyInfo)
             {
                 throw new WarningException("Can't specify multiple assembly info files when using -ensureassemblyinfo switch, either use a single assembly info file or do not specify -ensureassemblyinfo and create assembly info files manually");
             }
@@ -545,7 +545,7 @@ namespace GitVersion
                 arguments.UpdateProjectFiles = true;
                 foreach (var v in values)
                 {
-                    arguments.UpdateFileNames.Add(v);
+                    arguments.UpdateAssemblyInfoFileName.Add(v);
                 }
             }
             else if (!value.IsSwitchArgument())
@@ -553,7 +553,7 @@ namespace GitVersion
                 arguments.UpdateProjectFiles = true;
                 if (value != null)
                 {
-                    arguments.UpdateFileNames.Add(value);
+                    arguments.UpdateAssemblyInfoFileName.Add(value);
                 }
             }
             else

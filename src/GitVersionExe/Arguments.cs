@@ -41,7 +41,7 @@ namespace GitVersion
         public bool UpdateProjectFiles;
         public bool UpdateAssemblyInfo;
         public bool EnsureAssemblyInfo;
-        public ISet<string> UpdateFileNames = new HashSet<string>();
+        public ISet<string> UpdateAssemblyInfoFileName = new HashSet<string>();
 
         [Obsolete]
         public string Proj;
@@ -65,7 +65,7 @@ namespace GitVersion
                     UpdateProjectFiles = UpdateProjectFiles,
                     UpdateAssemblyInfo = UpdateAssemblyInfo,
                     EnsureAssemblyInfo = EnsureAssemblyInfo,
-                    Files = UpdateFileNames
+                    Files = UpdateAssemblyInfoFileName
                 },
 
                 Authentication =
