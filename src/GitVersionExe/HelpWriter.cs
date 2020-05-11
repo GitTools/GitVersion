@@ -56,10 +56,10 @@ GitVersion [path]
     /updateprojectfiles
                     Will recursively search for all project files (.csproj/.vbproj/.fsproj) files in the git repo and update them
                     Note: This is only compatible with the newer Sdk projects
-    /updatefilenames
-                    Specify name(s) of files to update. If updating assemblyinfo these should be AssemblyInfo class files,
-                    otherwise these should be your xml project files.
-                    Note: Can also /updateAssemblyInfo GlobalAssemblyInfo.cs as a shorthand
+    /updateassemblyinfofilename
+                    Specify name of AssemblyInfo file. Can also /updateAssemblyInfo GlobalAssemblyInfo.cs as a shorthand
+    /updateprojectfilename
+                    Specify name of Project file. Can also /updateProjectInfo Project.csproj as a shorthand
     /ensureassemblyinfo
                     If the assembly info file specified with /updateassemblyinfo or /updateassemblyinfofilename is not found,
                     it be created with these attributes: AssemblyFileVersion, AssemblyVersion and AssemblyInformationalVersion
