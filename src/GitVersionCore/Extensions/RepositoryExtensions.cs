@@ -36,11 +36,25 @@ namespace GitVersion.Extensions
 
         public static void EnsureLocalBranchExistsForCurrentBranch(this IRepository repo, ILog log, Remote remote, string currentBranch)
         {
+            if (log is null)
+            {
+                throw new ArgumentNullException(nameof(log));
+            }
+
+            if (remote is null)
+            {
+                throw new ArgumentNullException(nameof(remote));
+            }
+
             if (string.IsNullOrEmpty(currentBranch)) return;
 
             var isRef = currentBranch.Contains("refs");
             var isBranch = currentBranch.Contains("refs/heads");
-            var localCanonicalName = !isRef ? "refs/heads/" + currentBranch : isBranch ? currentBranch : currentBranch.Replace("refs/", "refs/heads/");
+            var localCanonicalName = !isRef
+                ? "refs/heads/" + currentBranch
+                : isBranch
+                    ? currentBranch
+                    : currentBranch.Replace("refs/", "refs/heads/");
 
             var repoTip = repo.Head.Tip;
 
