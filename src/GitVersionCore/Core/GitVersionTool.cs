@@ -102,7 +102,8 @@ namespace GitVersion
                 {
                     projectFileUpdater.Execute(variables, assemblyInfoContext);
                 }
-            } else if (gitVersionOptions.AssemblyInfo.UpdateAssemblyInfo)
+            }
+            else if (gitVersionOptions.AssemblyInfo.UpdateAssemblyInfo)
             {
                 using (assemblyInfoFileUpdater)
                 {
