@@ -77,7 +77,7 @@
 	<div id="infobar-headings"><h6>On This Page</h6><p><a href="#Summary">Summary</a></p>
 <p><a href="#Syntax">Syntax</a></p>
 <p><a href="#Constructors">Constructors</a></p>
-<p><a href="#fields">Fields</a></p>
+<p><a href="#Properties">Properties</a></p>
 <p><a href="#Methods">Methods</a></p>
 <p><a href="#ExtensionMethods">Extension Methods</a></p>
 <hr class="infobar-hidden">
@@ -141,6 +141,13 @@
 			<li class="header">Namespace</li>
 		<li><a href="/api/GitVersion.VersionCalculation">GitVersion<wbr>.VersionCalculation</a></li>
 		<li role="separator" class="divider"></li>
+			<li class="header">Interface Types</li>
+				<li><a href="/api/GitVersion.VersionCalculation/IBaseVersionCalculator">I<wbr>Base<wbr>Version<wbr>Calculator</a></li>
+				<li><a href="/api/GitVersion.VersionCalculation/IMainlineVersionCalculator">I<wbr>Mainline<wbr>Version<wbr>Calculator</a></li>
+				<li><a href="/api/GitVersion.VersionCalculation/INextVersionCalculator">I<wbr>Next<wbr>Version<wbr>Calculator</a></li>
+				<li><a href="/api/GitVersion.VersionCalculation/IVariableProvider">IVariableProvider</a></li>
+				<li><a href="/api/GitVersion.VersionCalculation/IVersionFilter">IVersionFilter</a></li>
+				<li><a href="/api/GitVersion.VersionCalculation/IVersionStrategy">IVersionStrategy</a></li>
 			<li class="header">Class Types</li>
 				<li><a href="/api/GitVersion.VersionCalculation/BaseVersion">BaseVersion</a></li>
 				<li><a href="/api/GitVersion.VersionCalculation/BaseVersionCalculator">Base<wbr>Version<wbr>Calculator</a></li>
@@ -156,13 +163,6 @@
 				<li><a href="/api/GitVersion.VersionCalculation/VersionInBranchNameVersionStrategy">Version<wbr>In<wbr>Branch<wbr>Name<wbr>Version<wbr>Strategy</a></li>
 				<li><a href="/api/GitVersion.VersionCalculation/VersionStrategyBase">VersionStrategyBase</a></li>
 				<li><a href="/api/GitVersion.VersionCalculation/VersionStrategyModule">Version<wbr>Strategy<wbr>Module</a></li>
-			<li class="header">Interface Types</li>
-				<li><a href="/api/GitVersion.VersionCalculation/IBaseVersionCalculator">I<wbr>Base<wbr>Version<wbr>Calculator</a></li>
-				<li><a href="/api/GitVersion.VersionCalculation/IMainlineVersionCalculator">I<wbr>Mainline<wbr>Version<wbr>Calculator</a></li>
-				<li><a href="/api/GitVersion.VersionCalculation/INextVersionCalculator">I<wbr>Next<wbr>Version<wbr>Calculator</a></li>
-				<li><a href="/api/GitVersion.VersionCalculation/IVariableProvider">IVariableProvider</a></li>
-				<li><a href="/api/GitVersion.VersionCalculation/IVersionFilter">IVersionFilter</a></li>
-				<li><a href="/api/GitVersion.VersionCalculation/IVersionStrategy">IVersionStrategy</a></li>
 			<li class="header">Enum Types</li>
 				<li><a href="/api/GitVersion.VersionCalculation/VersioningMode">VersioningMode</a></li>
 
@@ -255,7 +255,7 @@ class Type type-node
 							</tr>
 						</thead>
 							<tbody><tr>
-								<td><a href="/api/GitVersion.VersionCalculation/TaggedCommitVersionStrategy/A5273978">Tagged<wbr>Commit<wbr>Version<wbr>Strategy<wbr>(<wbr>I<wbr>Repository<wbr>Metadata<wbr>Provider, <wbr>IOptions<wbr>&lt;<wbr>Git<wbr>Version<wbr>Context&gt;<wbr>)<wbr></a></td>
+								<td><a href="/api/GitVersion.VersionCalculation/TaggedCommitVersionStrategy/4ED66C49">Tagged<wbr>Commit<wbr>Version<wbr>Strategy<wbr>(<wbr>I<wbr>Repository<wbr>Metadata<wbr>Provider, <wbr>Lazy<wbr>&lt;<wbr>Git<wbr>Version<wbr>Context&gt;<wbr>)<wbr></a></td>
 									<td></td>
 							</tr>
 					</tbody></table>
@@ -264,20 +264,21 @@ class Type type-node
 		
 
 
-			<h1 id="fields">Fields</h1>
+
+			<h1 id="Properties">Properties</h1>
 			<div class="box">
 				<div class="box-body no-padding table-responsive">
 					<table class="table table-striped table-hover three-cols">
 						<thead>
 							<tr>
 								<th>Name</th>
-								<th>Constant Value</th>
+								<th>Value</th>
 								<th>Summary</th>
 							</tr>
 						</thead>
 							<tbody><tr>
-								<td><a href="/api/GitVersion.VersionCalculation/VersionStrategyBase/4073AF59">Context</a></td>
-								<td></td>
+								<td><a href="/api/GitVersion.VersionCalculation/VersionStrategyBase/722903D7">Context</a></td>
+								<td><a href="/api/GitVersion/GitVersionContext">GitVersionContext</a></td>
 								<td>
 									<div></div>
 											<div><small><em>Inherited from <a href="/api/GitVersion.VersionCalculation/VersionStrategyBase">VersionStrategyBase</a></em></small></div>
@@ -287,7 +288,6 @@ class Type type-node
 				</div>
 			</div>
 		
-
 
 			<h1 id="Methods">Methods</h1>
 			<div class="box">

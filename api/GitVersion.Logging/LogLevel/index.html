@@ -138,9 +138,10 @@
 			<li class="header">Namespace</li>
 		<li><a href="/api/GitVersion.Logging">GitVersion<wbr>.Logging</a></li>
 		<li role="separator" class="divider"></li>
-			<li class="header">Enum Types</li>
-				<li class="selected"><a href="/api/GitVersion.Logging/LogLevel">LogLevel</a></li>
-				<li><a href="/api/GitVersion.Logging/Verbosity">Verbosity</a></li>
+			<li class="header">Interface Types</li>
+				<li><a href="/api/GitVersion.Logging/IConsole">IConsole</a></li>
+				<li><a href="/api/GitVersion.Logging/ILog">ILog</a></li>
+				<li><a href="/api/GitVersion.Logging/ILogAppender">ILogAppender</a></li>
 			<li class="header">Class Types</li>
 				<li><a href="/api/GitVersion.Logging/ConsoleAppender">ConsoleAppender</a></li>
 				<li><a href="/api/GitVersion.Logging/Disposable">Disposable</a></li>
@@ -150,10 +151,9 @@
 				<li><a href="/api/GitVersion.Logging/MsBuildAppender">MsBuildAppender</a></li>
 				<li><a href="/api/GitVersion.Logging/NullLog">NullLog</a></li>
 				<li><a href="/api/GitVersion.Logging/TestConsoleAdapter">TestConsoleAdapter</a></li>
-			<li class="header">Interface Types</li>
-				<li><a href="/api/GitVersion.Logging/IConsole">IConsole</a></li>
-				<li><a href="/api/GitVersion.Logging/ILog">ILog</a></li>
-				<li><a href="/api/GitVersion.Logging/ILogAppender">ILogAppender</a></li>
+			<li class="header">Enum Types</li>
+				<li class="selected"><a href="/api/GitVersion.Logging/LogLevel">LogLevel</a></li>
+				<li><a href="/api/GitVersion.Logging/Verbosity">Verbosity</a></li>
 			<li class="header">Delegate Types</li>
 				<li><a href="/api/GitVersion.Logging/LogAction">LogAction</a></li>
 				<li><a href="/api/GitVersion.Logging/LogActionEntry">LogActionEntry</a></li>
@@ -249,7 +249,7 @@ class Type type-node
 						</thead>
 							<tbody><tr>
 								<td><a href="/api/GitVersion.Logging/LogLevel/2AF70B3F">Debug</a></td>
-								<td>4</td>
+								<td>5</td>
 								<td>
 									<div></div>
 											<div><small><em>static</em></small></div>
@@ -264,6 +264,14 @@ class Type type-node
 								</td>
 							</tr>
 							<tr>
+								<td><a href="/api/GitVersion.Logging/LogLevel/02E27E6B">Fatal</a></td>
+								<td>0</td>
+								<td>
+									<div></div>
+											<div><small><em>static</em></small></div>
+								</td>
+							</tr>
+							<tr>
 								<td><a href="/api/GitVersion.Logging/LogLevel/A58CAAD6">Info</a></td>
 								<td>3</td>
 								<td>
@@ -272,8 +280,8 @@ class Type type-node
 								</td>
 							</tr>
 							<tr>
-								<td><a href="/api/GitVersion.Logging/LogLevel/3DBDB362">None</a></td>
-								<td>0</td>
+								<td><a href="/api/GitVersion.Logging/LogLevel/7A1DDD67">Verbose</a></td>
+								<td>4</td>
 								<td>
 									<div></div>
 											<div><small><em>static</em></small></div>

@@ -333,6 +333,8 @@ Default <code>\+semver:\s?(none|skip)</code>, which will match occurrences of <c
 <code>CommitsSinceVersionSourcePadded</code> <a href="./more-info/variables">variable</a>. Is default
 set to <code>4</code>, which will pad the <code>CommitsSinceVersionSource</code> value of <code>1</code> to
 <code>0001</code>.</p>
+<h3 id="tag-pre-release-weight">tag-pre-release-weight</h3>
+<p>The pre-release weight in case of tagged commits. If the value is not set in the configuration, a default weight of 60000 is used instead. If the <code>WeightedPreReleaseNumber</code> <a href="./more-info/variables">variable</a> is 0 and this parameter is set, its value is used. This helps if your branching model is GitFlow and the last release build, which is often tagged, can utilise this parameter to produce a monotonically increasing build number.</p>
 <h3 id="commit-message-incrementing">commit-message-incrementing</h3>
 <p>Sets whether it should be possible to increment the version with special syntax
 in the commit message. See the <code>*-version-bump-message</code> options above for
@@ -341,6 +343,8 @@ details on the syntax. Default set to <code>Enabled</code>; set to <code>Disable
 <p>Sets the format which will be used to format the <code>CommitDate</code> output variable.</p>
 <h3 id="ignore">ignore</h3>
 <p>The header for ignore configuration.</p>
+<h3 id="update-build-number">update-build-number</h3>
+<p>Configures GitVersion to update the build number or not when running on a build server.</p>
 <h4 id="sha">sha</h4>
 <p>A sequence of SHAs to be excluded from the version calculations. Useful when
 there is a rogue commit in history yielding a bad version. You can use either
