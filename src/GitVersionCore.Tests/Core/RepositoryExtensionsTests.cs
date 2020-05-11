@@ -8,6 +8,7 @@ using System.Linq;
 using NSubstitute;
 using System;
 using System.Collections.Generic;
+using GitVersion;
 
 namespace GitVersionCore.Tests
 {
@@ -17,14 +18,22 @@ namespace GitVersionCore.Tests
         [Test]
         public void EnsureLocalBranchExistsForCurrentBranch_CaseInsensitivelyMatchesBranches()
         {
-            ILog log = Substitute.For<ILog>();
-            var repository = Substitute.For<IRepository>();
-            var remote = ConstructRemote(repository);
+            var log = Substitute.For<ILog>();
+            var repository = MockRepository();
+            var remote = MockRemote(repository);
 
             repository.EnsureLocalBranchExistsForCurrentBranch(log, remote, "refs/heads/featurE/feat-test");
         }
 
-        private Remote ConstructRemote(IRepository repository)
+        private IGitRepository MockRepository()
+        {
+            var repository = Substitute.For<IGitRepository>();
+            var commands = Substitute.For<IGitRepositoryCommands>();
+            repository.Commands.Returns(commands);
+            return repository;
+        }
+
+        private Remote MockRemote(IGitRepository repository)
         {
             var branches = new TestableBranchCollection(repository);
             var tipId = new ObjectId("c6d8764d20ff16c0df14c73680e52b255b608926");
@@ -157,7 +166,7 @@ namespace GitVersionCore.Tests
 
             public override Reference Add(string name, string canonicalRefNameOrObjectish)
             {
-                return this.reference = new TestableReference(canonicalRefNameOrObjectish);;
+                return this.reference = new TestableReference(canonicalRefNameOrObjectish);
             }
 
             public override Reference UpdateTarget(Reference directRef, ObjectId targetId)

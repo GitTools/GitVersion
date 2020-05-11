@@ -34,7 +34,7 @@ namespace GitVersion.Extensions
             LibGitExtensions.DumpGraph(repository.Info.Path, writer, maxCommits);
         }
 
-        public static void EnsureLocalBranchExistsForCurrentBranch(this IRepository repo, ILog log, Remote remote, string currentBranch)
+        public static void EnsureLocalBranchExistsForCurrentBranch(this IGitRepository repo, ILog log, Remote remote, string currentBranch)
         {
             if (log is null)
             {
@@ -78,10 +78,11 @@ namespace GitVersion.Extensions
             {
                 log.Info(isBranch ? $"Updating local branch {localCanonicalName} to point at {repoTip.Sha}"
                     : $"Updating local branch {localCanonicalName} to match ref {currentBranch}");
-                repo.Refs.UpdateTarget(repo.Refs[localCanonicalName], repoTipId);
+                var localRef = repo.Refs[localCanonicalName];
+                repo.Refs.UpdateTarget(localRef, repoTipId);
             }
 
-            Commands.Checkout(repo, localCanonicalName);
+            repo.Commands.Checkout(localCanonicalName);
         }
 
         public static void AddMissingRefSpecs(this IRepository repo, ILog log, Remote remote)
@@ -97,7 +98,7 @@ namespace GitVersion.Extensions
                 r => r.FetchRefSpecs.Add(allBranchesFetchRefSpec));
         }
 
-        public static void CreateFakeBranchPointingAtThePullRequestTip(this IRepository repo, ILog log, AuthenticationInfo authentication)
+        public static void CreateFakeBranchPointingAtThePullRequestTip(this IGitRepository repo, ILog log, AuthenticationInfo authentication)
         {
             var remote = repo.Network.Remotes.Single();
 
@@ -133,7 +134,7 @@ namespace GitVersion.Extensions
             if (canonicalName.StartsWith("refs/tags"))
             {
                 log.Info($"Checking out tag '{canonicalName}'");
-                Commands.Checkout(repo, reference.Target.Sha);
+                repo.Commands.Checkout(reference.Target.Sha);
                 return;
             }
 
@@ -149,7 +150,7 @@ namespace GitVersion.Extensions
             repo.Refs.Add(fakeBranchName, new ObjectId(headTipSha));
 
             log.Info($"Checking local branch '{fakeBranchName}' out.");
-            Commands.Checkout(repo, fakeBranchName);
+            repo.Commands.Checkout(fakeBranchName);
         }
 
         public static void CreateOrUpdateLocalBranchesFromRemoteTrackingOnes(this IRepository repo, ILog log, string remoteName)
