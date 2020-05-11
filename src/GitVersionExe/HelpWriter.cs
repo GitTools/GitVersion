@@ -58,8 +58,6 @@ GitVersion [path]
                     Note: This is only compatible with the newer Sdk projects
     /updateassemblyinfofilename
                     Specify name of AssemblyInfo file. Can also /updateAssemblyInfo GlobalAssemblyInfo.cs as a shorthand
-    /updateprojectfilename
-                    Specify name of Project file. Can also /updateProjectInfo Project.csproj as a shorthand
     /ensureassemblyinfo
                     If the assembly info file specified with /updateassemblyinfo or /updateassemblyinfofilename is not found,
                     it be created with these attributes: AssemblyFileVersion, AssemblyVersion and AssemblyInformationalVersion
