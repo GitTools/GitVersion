@@ -11,7 +11,7 @@ namespace GitVersionCore.Tests.IntegrationTests
     class VersionInTagScenarios
     {
         [Test]
-        public void TagPreReleaseWeightIsNotConfigured_HeadIsATaggedCommit_WeightedPreReleaseNumberShouldBeZero()
+        public void TagPreReleaseWeightIsNotConfigured_HeadIsATaggedCommit_WeightedPreReleaseNumberShouldBeTheDefaultValue()
         {
             // Arrange
             var config = new Config()
@@ -26,7 +26,7 @@ namespace GitVersionCore.Tests.IntegrationTests
             var version = fixture.GetVersion(config);
 
             // Assert
-            version.AssemblySemFileVer.ShouldBe("1.1.0.0");
+            version.AssemblySemFileVer.ShouldBe("1.1.0.60000");
         }
 
         [Test]
@@ -36,7 +36,7 @@ namespace GitVersionCore.Tests.IntegrationTests
             var config = new Config()
             {
                 AssemblyFileVersioningFormat = "{Major}.{Minor}.{Patch}.{WeightedPreReleaseNumber}",
-                TagPreReleaseWeight = 60000
+                TagPreReleaseWeight = 65535
             };
             config.ApplyDefaults();
 
@@ -46,7 +46,7 @@ namespace GitVersionCore.Tests.IntegrationTests
             var version = fixture.GetVersion(config);
 
             // Assert
-            version.AssemblySemFileVer.ShouldBe("1.1.0.60000");
+            version.AssemblySemFileVer.ShouldBe("1.1.0.65535");
         }
 
         [Test]
@@ -56,7 +56,7 @@ namespace GitVersionCore.Tests.IntegrationTests
             var config = new Config()
             {
                 AssemblyFileVersioningFormat = "{Major}.{Minor}.{Patch}.{WeightedPreReleaseNumber}",
-                TagPreReleaseWeight = 60000,
+                TagPreReleaseWeight = 65535,
                 VersioningMode = VersioningMode.ContinuousDeployment
             };
             config.ApplyDefaults();
@@ -74,11 +74,11 @@ namespace GitVersionCore.Tests.IntegrationTests
             var version = fixture.GetVersion(config);
 
             // Assert
-            version.AssemblySemFileVer.ShouldBe("1.1.0.60000");
+            version.AssemblySemFileVer.ShouldBe("1.1.0.65535");
         }
 
         [Test]
-        public void TagPreReleaseWeightIsNotConfigured_GitFlowReleaseIsFinished_WeightedPreReleaseNumberShouldBeZero()
+        public void TagPreReleaseWeightIsNotConfigured_GitFlowReleaseIsFinished_WeightedPreReleaseNumberShouldBeTheDefaultValue()
         {
             // Arrange
             var config = new Config()
@@ -101,7 +101,7 @@ namespace GitVersionCore.Tests.IntegrationTests
             var version = fixture.GetVersion(config);
 
             // Assert
-            version.AssemblySemFileVer.ShouldBe("1.1.0.0");
+            version.AssemblySemFileVer.ShouldBe("1.1.0.60000");
         }
     }
 }

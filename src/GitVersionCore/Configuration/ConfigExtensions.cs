@@ -37,7 +37,7 @@ namespace GitVersion.Configuration
             config.CommitsSinceVersionSourcePadding ??= 4;
             config.CommitDateFormat ??= "yyyy-MM-dd";
             config.UpdateBuildNumber ??= true;
-            config.TagPreReleaseWeight ??= 0;
+            config.TagPreReleaseWeight ??= DefaultTagPreReleaseWeight;
 
             var configBranches = config.Branches.ToList();
 
@@ -129,6 +129,7 @@ namespace GitVersion.Configuration
                 { Config.MasterBranchRegex, 55000 }
             };
         private const IncrementStrategy DefaultIncrementStrategy = IncrementStrategy.Inherit;
+        private const int DefaultTagPreReleaseWeight = 60000;
 
         public static void ApplyBranchDefaults(this Config config,
             BranchConfig branchConfig,
@@ -267,7 +268,7 @@ If the docs do not help you decide on the mode open an issue to discuss what you
             var noBumpMessage = configuration.NoBumpMessage;
             var commitDateFormat = configuration.CommitDateFormat;
             var updateBuildNumber = configuration.UpdateBuildNumber ?? true;
-            var tagPreReleaseWeight = configuration.TagPreReleaseWeight;
+            var tagPreReleaseWeight = configuration.TagPreReleaseWeight ?? DefaultTagPreReleaseWeight;
 
             var commitMessageVersionBump = currentBranchConfig.CommitMessageIncrementing ?? configuration.CommitMessageIncrementing.Value;
             return new EffectiveConfiguration(
@@ -288,7 +289,7 @@ If the docs do not help you decide on the mode open an issue to discuss what you
                 commitDateFormat,
                 updateBuildNumber,
                 preReleaseWeight,
-                tagPreReleaseWeight.HasValue ? tagPreReleaseWeight.Value : 0);
+                tagPreReleaseWeight);
         }
 
         public static string GetBranchSpecificTag(this EffectiveConfiguration configuration, ILog log, string branchFriendlyName, string branchNameOverride)

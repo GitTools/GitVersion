@@ -201,7 +201,7 @@ set to `4`, which will pad the `CommitsSinceVersionSource` value of `1` to
 
 ### tag-pre-release-weight
 
-The pre-release weight in case of tagged commits. If the value is not set in the configuration, a default weight of 0 is used instead. If the `WeightedPreReleaseNumber` [variable](./more-info/variables) is 0 and this parameter is set, its value is used. This helps if your branching model is GitFlow and the last release build, which is often tagged, can utilise this parameter to produce a monotonically increasing build number.
+The pre-release weight in case of tagged commits. If the value is not set in the configuration, a default weight of 60000 is used instead. If the `WeightedPreReleaseNumber` [variable](./more-info/variables) is 0 and this parameter is set, its value is used. This helps if your branching model is GitFlow and the last release build, which is often tagged, can utilise this parameter to produce a monotonically increasing build number.
  
 ### commit-message-incrementing
 
