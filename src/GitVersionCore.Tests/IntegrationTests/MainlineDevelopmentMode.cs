@@ -135,7 +135,7 @@ namespace GitVersionCore.Tests.IntegrationTests
             fixture.AssertFullSemver("1.0.2", config);
 
             fixture.BranchTo("support/1.0", "support10");
-            fixture.AssertFullSemver("1.0.3", config);
+            fixture.AssertFullSemver("1.0.2", config);
 
             // Move master on
             fixture.Checkout("master");
@@ -144,9 +144,9 @@ namespace GitVersionCore.Tests.IntegrationTests
 
             // Continue on support/1.0
             fixture.Checkout("support/1.0");
+            fixture.MakeACommit(); // 1.0.3
             fixture.MakeACommit(); // 1.0.4
-            fixture.MakeACommit(); // 1.0.5
-            fixture.AssertFullSemver("1.0.5", config);
+            fixture.AssertFullSemver("1.0.4", config);
             fixture.BranchTo("feature/foo", "foo");
             fixture.AssertFullSemver("1.0.5-foo.0", config);
             fixture.MakeACommit();
@@ -203,7 +203,7 @@ namespace GitVersionCore.Tests.IntegrationTests
             fixture.MakeACommit();
             fixture.AssertFullSemver("1.1.2", config);
             fixture.Checkout("support/1.0");
-            fixture.AssertFullSemver("1.0.4", config);
+            fixture.AssertFullSemver("1.0.3", config);
 
             fixture.BranchTo("feature/foo", "foo");
             fixture.MakeACommit();
