@@ -5,14 +5,20 @@ using Microsoft.Extensions.Options;
 
 namespace GitVersion
 {
-    public class GitRepository : IRepository
+    public class GitRepository : IGitRepository
     {
         private Lazy<IRepository> repositoryLazy;
         private IRepository repositoryInstance => repositoryLazy.Value;
 
         public GitRepository(IOptions<GitVersionOptions> options)
+            : this(() => options.Value.DotGitDirectory)
         {
-            repositoryLazy = new Lazy<IRepository>(() => new Repository(options.Value.DotGitDirectory));
+        }
+
+        public GitRepository(Func<string> getDotGitDirectory)
+        {
+            repositoryLazy = new Lazy<IRepository>(() => new Repository(getDotGitDirectory()));
+            Commands = new GitRepositoryCommands(repositoryLazy);
         }
 
         public void Dispose()
@@ -161,5 +167,7 @@ namespace GitVersion
         public Network Network => repositoryInstance.Network;
 
         public StashCollection Stashes => repositoryInstance.Stashes;
+
+        public IGitRepositoryCommands Commands { get; }
     }
 }

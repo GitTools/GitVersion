@@ -184,9 +184,9 @@ namespace GitVersion
                     // In the case where HEAD is not the desired branch, try to find the branch with matching name
                     desiredBranch = repository.Branches?
                         .SingleOrDefault(b =>
-                            b.CanonicalName == targetBranch ||
-                            b.FriendlyName == targetBranch ||
-                            b.NameWithoutRemote() == targetBranch);
+                            b.CanonicalName.IsEquivalentTo(targetBranch) ||
+                            b.FriendlyName.IsEquivalentTo(targetBranch) ||
+                            b.NameWithoutRemote().IsEquivalentTo(targetBranch));
 
                     // Failsafe in case the specified branch is invalid
                     desiredBranch ??= repository.Head;
