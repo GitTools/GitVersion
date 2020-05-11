@@ -4,7 +4,6 @@ using GitVersion.Logging;
 using GitVersion.OutputVariables;
 using GitVersion.VersionCalculation;
 using GitVersion.VersionCalculation.Cache;
-using GitVersion.VersionConverters;
 using GitVersion.VersionConverters.AssemblyInfo;
 using GitVersion.VersionConverters.GitVersionInfo;
 using GitVersion.VersionConverters.OutputGenerator;
@@ -95,23 +94,19 @@ namespace GitVersion
         public void UpdateAssemblyInfo(VersionVariables variables)
         {
             var gitVersionOptions = options.Value;
+            var assemblyInfoContext = new AssemblyInfoContext(gitVersionOptions.WorkingDirectory, gitVersionOptions.AssemblyInfo.EnsureAssemblyInfo, gitVersionOptions.AssemblyInfo.Files.ToArray());
 
-            if (gitVersionOptions.AssemblyInfo.ShouldUpdate)
+            if (gitVersionOptions.AssemblyInfo.UpdateProjectFiles)
             {
-                var assemblyInfoContext = new AssemblyInfoContext(gitVersionOptions.WorkingDirectory, gitVersionOptions.AssemblyInfo.EnsureAssemblyInfo, gitVersionOptions.AssemblyInfo.Files.ToArray());
-                if (gitVersionOptions.AssemblyInfo.IsTargetingProjectFiles)
+                using (projectFileUpdater)
                 {
-                    using (projectFileUpdater)
-                    {
-                        projectFileUpdater.Execute(variables, assemblyInfoContext);
-                    }
+                    projectFileUpdater.Execute(variables, assemblyInfoContext);
                 }
-                else
+            } else if (gitVersionOptions.AssemblyInfo.UpdateAssemblyInfo)
+            {
+                using (assemblyInfoFileUpdater)
                 {
-                    using (assemblyInfoFileUpdater)
-                    {
-                        assemblyInfoFileUpdater.Execute(variables, assemblyInfoContext);
-                    }
+                    assemblyInfoFileUpdater.Execute(variables, assemblyInfoContext);
                 }
             }
         }
