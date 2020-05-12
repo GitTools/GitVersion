@@ -320,7 +320,7 @@ namespace GitVersionExe.Tests
             exception.Message.ShouldBe("Can't specify multiple assembly info files when using /ensureassemblyinfo switch, either use a single assembly info file or do not specify /ensureassemblyinfo and create assembly info files manually");
         }
 
-        [TestCase("-updateProjectFiles Assembly.csproj Assembly1.csproj -ensureassemblyinfo")]
+        [TestCase("-updateProjectFiles Assembly.csproj -ensureassemblyinfo")]
         public void UpdateProjectInfoWithEnsureAssemblyInfoProtected(string command)
         {
             var exception = Assert.Throws<WarningException>(() => argumentParser.ParseArguments(command));

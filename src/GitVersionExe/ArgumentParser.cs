@@ -424,6 +424,11 @@ namespace GitVersion
                 arguments.EnsureAssemblyInfo = false;
             }
 
+            if (arguments.UpdateProjectFiles)
+            {
+                throw new WarningException("Cannot specify -ensureassemblyinfo with updateprojectfiles: please ensure your project file exists before attempting to update it");
+            }
+
             if (arguments.UpdateAssemblyInfoFileName.Count > 1 && arguments.EnsureAssemblyInfo)
             {
                 throw new WarningException("Can't specify multiple assembly info files when using /ensureassemblyinfo switch, either use a single assembly info file or do not specify /ensureassemblyinfo and create assembly info files manually");
