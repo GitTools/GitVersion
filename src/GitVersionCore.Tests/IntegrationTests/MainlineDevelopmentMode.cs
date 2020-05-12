@@ -21,6 +21,24 @@ namespace GitVersionCore.Tests.IntegrationTests
         };
 
         [Test]
+        public void VerifyNonMasterMainlineVersionIdenticalAsMaster()
+        {
+            using var fixture = new EmptyRepositoryFixture();
+            fixture.Repository.MakeACommit("1");
+
+            fixture.BranchTo("feature/foo", "foo");
+            fixture.MakeACommit("2 +semver: major");
+            fixture.Checkout("master");
+            fixture.MergeNoFF("feature/foo");
+
+            fixture.AssertFullSemver("1.0.0", config);
+
+            fixture.BranchTo("support/1.0", "support");
+
+            fixture.AssertFullSemver("1.0.0", config);
+        }
+
+        [Test]
         public void MergedFeatureBranchesToMasterImpliesRelease()
         {
             using var fixture = new EmptyRepositoryFixture();
