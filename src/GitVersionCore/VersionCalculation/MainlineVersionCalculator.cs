@@ -69,7 +69,7 @@ namespace GitVersion.VersionCalculation
                 mainlineVersion.BuildMetaData = CreateVersionBuildMetaData(mergeBase);
 
                 // branches other than master always get a bump for the act of branching
-                if (context.CurrentBranch.FriendlyName != "master")
+                if (!context.CurrentBranch.IsSameBranch(mainline))
                 {
                     var branchIncrement = FindMessageIncrement(null, context.CurrentCommit, mergeBase, mainlineCommitLog);
                     log.Info($"Performing {branchIncrement} increment for current branch ");
