@@ -2,7 +2,6 @@ jobs:
 - ${{ each distro in parameters.distros }}:
     - ${{ each dotnetVersion in parameters.dotnetVersions }}:
       - job:
-        condition: or( ne('${{ distro }}', 'alpine.3.10-x64'), ne('${{ dotnetVersion }}', '3.1'))
         displayName: 'Artifacts Test ${{ distro }} ${{ dotnetVersion }} (${{ parameters.name }})'
         pool:
           vmImage: ${{ parameters.vmImage }}
