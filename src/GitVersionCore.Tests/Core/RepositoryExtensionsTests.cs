@@ -1,10 +1,8 @@
-using GitTools.Testing;
 using GitVersion.Logging;
 using GitVersion.Extensions;
 using GitVersionCore.Tests.Helpers;
 using LibGit2Sharp;
 using NUnit.Framework;
-using System.Linq;
 using NSubstitute;
 using System;
 using System.Collections.Generic;
@@ -41,7 +39,7 @@ namespace GitVersionCore.Tests
             var head = branches.Add("refs/heads/feature/feat-test", tip);
             var remote = new TesatbleRemote("origin");
             var references = new TestableReferenceCollection();
-            var reference = references.Add("develop", "refs/heads/develop");
+            _ = references.Add("develop", "refs/heads/develop");
 
             repository.Refs.Returns(references);
             repository.Head.Returns(head);

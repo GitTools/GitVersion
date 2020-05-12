@@ -104,7 +104,8 @@ namespace GitVersion
                 : firstArgument;
 
             arguments.TargetPath = arguments.TargetPath.TrimEnd('/', '\\');
-            arguments.UpdateAssemblyInfoFileName = ResolveFiles(arguments.TargetPath, arguments.UpdateAssemblyInfoFileName).ToHashSet();
+
+            if (!arguments.EnsureAssemblyInfo) arguments.UpdateAssemblyInfoFileName = ResolveFiles(arguments.TargetPath, arguments.UpdateAssemblyInfoFileName).ToHashSet();
             arguments.NoFetch = arguments.NoFetch || buildAgent != null && buildAgent.PreventFetch();
 
             return arguments;
