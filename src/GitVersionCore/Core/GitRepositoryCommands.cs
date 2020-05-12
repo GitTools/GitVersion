@@ -15,7 +15,7 @@ namespace GitVersion
 
         public GitRepositoryCommands(Lazy<IRepository> lazyRepository)
         {
-            this.lazyRepository = lazyRepository ?? throw new System.ArgumentNullException(nameof(lazyRepository));
+            this.lazyRepository = lazyRepository ?? throw new ArgumentNullException(nameof(lazyRepository));
         }
 
         public Branch Checkout(string committishOrBranchSpec)
