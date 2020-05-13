@@ -13,7 +13,7 @@ namespace GitVersion
         string ReadAllText(string path);
         void WriteAllText(string file, string fileContents);
         void WriteAllText(string file, string fileContents, Encoding encoding);
-        IEnumerable<string> DirectoryGetFiles(string directory, string searchPattern, SearchOption searchOption);
+        IEnumerable<string> DirectoryEnumerateFiles(string directory, string searchPattern, SearchOption searchOption);
         Stream OpenWrite(string path);
         Stream OpenRead(string path);
         void CreateDirectory(string path);

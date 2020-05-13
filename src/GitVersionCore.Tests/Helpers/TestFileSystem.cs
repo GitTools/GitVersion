@@ -73,7 +73,7 @@ namespace GitVersionCore.Tests.Helpers
             fileSystem[path] = encoding.GetBytes(fileContents);
         }
 
-        public IEnumerable<string> DirectoryGetFiles(string directory, string searchPattern, SearchOption searchOption)
+        public IEnumerable<string> DirectoryEnumerateFiles(string directory, string searchPattern, SearchOption searchOption)
         {
             throw new NotImplementedException();
         }

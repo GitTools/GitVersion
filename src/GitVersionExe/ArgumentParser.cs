@@ -206,6 +206,12 @@ namespace GitVersion
 
             if (ParseExecArguments(arguments, name, values, value)) return true;
 
+            if (name.IsSwitch("updateprojectfiles"))
+            {
+                ParseUpdateProjectInfo(arguments, value, values);
+                return true;
+            }
+
             if (name.IsSwitch("updateAssemblyInfo"))
             {
                 ParseUpdateAssemblyInfo(arguments, value, values);
@@ -419,6 +425,11 @@ namespace GitVersion
                 arguments.EnsureAssemblyInfo = false;
             }
 
+            if (arguments.UpdateProjectFiles)
+            {
+                throw new WarningException("Cannot specify -ensureassemblyinfo with updateprojectfiles: please ensure your project file exists before attempting to update it");
+            }
+
             if (arguments.UpdateAssemblyInfoFileName.Count > 1 && arguments.EnsureAssemblyInfo)
             {
                 throw new WarningException("Can't specify multiple assembly info files when using /ensureassemblyinfo switch, either use a single assembly info file or do not specify /ensureassemblyinfo and create assembly info files manually");
@@ -515,9 +526,54 @@ namespace GitVersion
                 arguments.UpdateAssemblyInfo = true;
             }
 
+            if (arguments.UpdateProjectFiles)
+            {
+                throw new WarningException("Cannot specify both updateprojectfiles and updateassemblyinfo in the same run. Please rerun GitVersion with only one parameter");
+            }
             if (arguments.UpdateAssemblyInfoFileName.Count > 1 && arguments.EnsureAssemblyInfo)
             {
                 throw new WarningException("Can't specify multiple assembly info files when using -ensureassemblyinfo switch, either use a single assembly info file or do not specify -ensureassemblyinfo and create assembly info files manually");
+            }
+        }
+
+        private static void ParseUpdateProjectInfo(Arguments arguments, string value, string[] values)
+        {
+            if (value.IsTrue())
+            {
+                arguments.UpdateProjectFiles = true;
+            }
+            else if (value.IsFalse())
+            {
+                arguments.UpdateProjectFiles = false;
+            }
+            else if (values != null && values.Length > 1)
+            {
+                arguments.UpdateProjectFiles = true;
+                foreach (var v in values)
+                {
+                    arguments.UpdateAssemblyInfoFileName.Add(v);
+                }
+            }
+            else if (!value.IsSwitchArgument())
+            {
+                arguments.UpdateProjectFiles = true;
+                if (value != null)
+                {
+                    arguments.UpdateAssemblyInfoFileName.Add(value);
+                }
+            }
+            else
+            {
+                arguments.UpdateProjectFiles = true;
+            }
+
+            if (arguments.UpdateAssemblyInfo)
+            {
+                throw new WarningException("Cannot specify both updateassemblyinfo and updateprojectfiles in the same run. Please rerun GitVersion with only one parameter");
+            }
+            if (arguments.EnsureAssemblyInfo)
+            {
+                throw new WarningException("Cannot specify -ensureassemblyinfo with updateprojectfiles: please ensure your project file exists before attempting to update it");
             }
         }
 

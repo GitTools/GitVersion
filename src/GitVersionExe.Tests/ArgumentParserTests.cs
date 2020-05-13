@@ -295,6 +295,16 @@ namespace GitVersionExe.Tests
             arguments.UpdateAssemblyInfo.ShouldBe(true);
         }
 
+        [TestCase("-updateProjectFiles assemblyInfo.csproj")]
+        [TestCase("-updateProjectFiles assemblyInfo.csproj")]
+        [TestCase("-updateProjectFiles assemblyInfo.csproj otherAssemblyInfo.fsproj")]
+        [TestCase("-updateProjectFiles")]
+        public void UpdateProjectTrue(string command)
+        {
+            var arguments = argumentParser.ParseArguments(command);
+            arguments.UpdateProjectFiles.ShouldBe(true);
+        }
+
         [TestCase("-updateAssemblyInfo false")]
         [TestCase("-updateAssemblyInfo 0")]
         public void UpdateAssemblyInfoFalse(string command)
@@ -308,6 +318,13 @@ namespace GitVersionExe.Tests
         {
             var exception = Assert.Throws<WarningException>(() => argumentParser.ParseArguments(command));
             exception.Message.ShouldBe("Can't specify multiple assembly info files when using /ensureassemblyinfo switch, either use a single assembly info file or do not specify /ensureassemblyinfo and create assembly info files manually");
+        }
+
+        [TestCase("-updateProjectFiles Assembly.csproj -ensureassemblyinfo")]
+        public void UpdateProjectInfoWithEnsureAssemblyInfoProtected(string command)
+        {
+            var exception = Assert.Throws<WarningException>(() => argumentParser.ParseArguments(command));
+            exception.Message.ShouldBe("Cannot specify -ensureassemblyinfo with updateprojectfiles: please ensure your project file exists before attempting to update it");
         }
 
         [Test]
@@ -340,6 +357,24 @@ namespace GitVersionExe.Tests
             arguments.UpdateAssemblyInfoFileName.Count.ShouldBe(2);
             arguments.UpdateAssemblyInfoFileName.ShouldContain(x => Path.GetFileName(x).Equals("CommonAssemblyInfo.cs"));
             arguments.UpdateAssemblyInfoFileName.ShouldContain(x => Path.GetFileName(x).Equals("VersionAssemblyInfo.cs"));
+        }
+
+        [Test]
+        public void UpdateProjectFilesWithMultipleFilenames()
+        {
+            using var repo = new EmptyRepositoryFixture();
+
+            var assemblyFile1 = Path.Combine(repo.RepositoryPath, "CommonAssemblyInfo.csproj");
+            using var file = File.Create(assemblyFile1);
+
+            var assemblyFile2 = Path.Combine(repo.RepositoryPath, "VersionAssemblyInfo.csproj");
+            using var file2 = File.Create(assemblyFile2);
+
+            var arguments = argumentParser.ParseArguments($"-targetpath {repo.RepositoryPath} -updateProjectFiles CommonAssemblyInfo.csproj VersionAssemblyInfo.csproj");
+            arguments.UpdateProjectFiles.ShouldBe(true);
+            arguments.UpdateAssemblyInfoFileName.Count.ShouldBe(2);
+            arguments.UpdateAssemblyInfoFileName.ShouldContain(x => Path.GetFileName(x).Equals("CommonAssemblyInfo.csproj"));
+            arguments.UpdateAssemblyInfoFileName.ShouldContain(x => Path.GetFileName(x).Equals("VersionAssemblyInfo.csproj"));
         }
 
         [Test]

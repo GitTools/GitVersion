@@ -50,6 +50,7 @@ namespace GitVersion
             services.AddSingleton<IGitVersionInfoGenerator, GitVersionInfoGenerator>();
             services.AddSingleton<IWixVersionFileUpdater, WixVersionFileUpdater>();
             services.AddSingleton<IAssemblyInfoFileUpdater, AssemblyInfoFileUpdater>();
+            services.AddSingleton<IProjectFileUpdater, ProjectFileUpdater>();
 
             services.AddSingleton(sp => sp.GetService<IConfigFileLocatorFactory>().Create());
 

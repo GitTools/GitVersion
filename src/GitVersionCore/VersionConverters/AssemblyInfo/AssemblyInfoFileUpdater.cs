@@ -177,7 +177,7 @@ namespace GitVersion.VersionConverters.AssemblyInfo
             }
             else
             {
-                foreach (var item in fileSystem.DirectoryGetFiles(workingDirectory, "AssemblyInfo.*", SearchOption.AllDirectories))
+                foreach (var item in fileSystem.DirectoryEnumerateFiles(workingDirectory, "AssemblyInfo.*", SearchOption.AllDirectories))
                 {
                     var assemblyInfoFile = new FileInfo(item);
 

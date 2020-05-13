@@ -38,9 +38,10 @@ namespace GitVersion
         public ISet<OutputType> Output = new HashSet<OutputType>();
         public Verbosity Verbosity = Verbosity.Normal;
 
+        public bool UpdateProjectFiles;
         public bool UpdateAssemblyInfo;
-        public ISet<string> UpdateAssemblyInfoFileName = new HashSet<string>();
         public bool EnsureAssemblyInfo;
+        public ISet<string> UpdateAssemblyInfoFileName = new HashSet<string>();
 
         [Obsolete]
         public string Proj;
@@ -61,7 +62,8 @@ namespace GitVersion
 
                 AssemblyInfo =
                 {
-                    ShouldUpdate = UpdateAssemblyInfo,
+                    UpdateProjectFiles = UpdateProjectFiles,
+                    UpdateAssemblyInfo = UpdateAssemblyInfo,
                     EnsureAssemblyInfo = EnsureAssemblyInfo,
                     Files = UpdateAssemblyInfoFileName
                 },
