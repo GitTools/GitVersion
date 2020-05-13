@@ -14,6 +14,7 @@ namespace GitVersionExe.Tests
     [TestFixture]
     public class ArgumentParserTests : TestBase
     {
+        private IEnvironment environment;
         private IArgumentParser argumentParser;
 
         [SetUp]
@@ -24,6 +25,7 @@ namespace GitVersionExe.Tests
                 services.AddSingleton<IArgumentParser, ArgumentParser>();
                 services.AddSingleton<IGlobbingResolver, GlobbingResolver>();
             });
+            environment = sp.GetService<IEnvironment>();
             argumentParser = sp.GetService<IArgumentParser>();
         }
 
@@ -603,6 +605,38 @@ namespace GitVersionExe.Tests
                 var arguments = argumentParser.ParseArguments(command);
                 arguments.Verbosity.ShouldBe(expectedVerbosity);
             }
+        }
+
+        [Test]
+        public void EmptyArgumentsRemoteUsernameDefinedSetsUsername()
+        {
+            environment.SetEnvironmentVariable("GITVERSION_REMOTE_USERNAME", "value");
+            var arguments = argumentParser.ParseArguments(string.Empty);
+            arguments.Authentication.Username.ShouldBe("value");
+        }
+
+        [Test]
+        public void EmptyArgumentsRemotePasswordDefinedSetsPassword()
+        {
+            environment.SetEnvironmentVariable("GITVERSION_REMOTE_PASSWORD", "value");
+            var arguments = argumentParser.ParseArguments(string.Empty);
+            arguments.Authentication.Password.ShouldBe("value");
+        }
+
+        [Test]
+        public void ArbitraryArgumentsRemoteUsernameDefinedSetsUsername()
+        {
+            environment.SetEnvironmentVariable("GITVERSION_REMOTE_USERNAME", "value");
+            var arguments = argumentParser.ParseArguments("-nocache");
+            arguments.Authentication.Username.ShouldBe("value");
+        }
+
+        [Test]
+        public void ArbitraryArgumentsRemotePasswordDefinedSetsPassword()
+        {
+            environment.SetEnvironmentVariable("GITVERSION_REMOTE_PASSWORD", "value");
+            var arguments = argumentParser.ParseArguments("-nocache");
+            arguments.Authentication.Password.ShouldBe("value");
         }
     }
 }
