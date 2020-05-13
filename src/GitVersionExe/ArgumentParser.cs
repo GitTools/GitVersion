@@ -46,6 +46,9 @@ namespace GitVersion
                 };
 
                 args.Output.Add(OutputType.Json);
+
+                AddAuthentication(args);
+
                 return args;
             }
 
@@ -133,7 +136,7 @@ namespace GitVersion
             var password = environment.GetEnvironmentVariable("GITVERSION_REMOTE_PASSWORD");
             if (!string.IsNullOrWhiteSpace(password))
             {
-                arguments.Authentication.Username = password;
+                arguments.Authentication.Password = password;
             }
         }
 
