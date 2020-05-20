@@ -24,6 +24,14 @@
 
         <!-- Property that enables GenerateGitVersionInformation -->
         <GenerateGitVersionInformation Condition=" '$(DisableGitVersionTask)' == 'true' ">false</GenerateGitVersionInformation>
+        <!--
+          During XAML's "GenerateTemporaryTargetAssembly" a new project file is generated and compiled
+          which already contains the "GeneratedCodeFiles", i.e. GitVersionInformation.g.cs.
+          Then, when GenerateGitVersionInformation is called in this temp-build, the file is added another time, which results in an error at CSC.
+          Here we try to detect this situation and prevent GenerateGitVersionInformation from running.
+          (The global property "_TargetAssemblyProjectName" is injected by XAML's above-mentioned task)
+        -->
+        <GenerateGitVersionInformation Condition=" '$(GenerateGitVersionInformation)' == '' And '$(_TargetAssemblyProjectName)' != '' ">false</GenerateGitVersionInformation>
         <GenerateGitVersionInformation Condition=" '$(GenerateGitVersionInformation)' == '' ">true</GenerateGitVersionInformation>
 
         <!-- Property that enables GetVersion -->
