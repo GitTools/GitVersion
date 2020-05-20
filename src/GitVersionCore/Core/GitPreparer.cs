@@ -88,7 +88,8 @@ namespace GitVersion
         {
             var remoteToKeep = DefaultRemoteName;
 
-            using var repo = new Repository(options.Value.DotGitDirectory);
+            var isDynamicRepo = !string.IsNullOrWhiteSpace(options.Value.DynamicGitRepositoryPath);
+            using var repo = new Repository(isDynamicRepo ? options.Value.DotGitDirectory : options.Value.ProjectRootDirectory);
 
             // check that we have a remote that matches defaultRemoteName if not take the first remote
             if (!repo.Network.Remotes.Any(remote => remote.Name.Equals(DefaultRemoteName, StringComparison.InvariantCultureIgnoreCase)))

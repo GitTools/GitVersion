@@ -29,7 +29,7 @@ namespace GitVersionCore.Tests
 
             var options = Options.Create(new GitVersionOptions
             {
-                WorkingDirectory = repository.GetRepositoryDirectory(),
+                WorkingDirectory = repository.Info.WorkingDirectory,
                 ConfigInfo = { OverrideConfig = configuration },
                 RepositoryInfo =
                 {
