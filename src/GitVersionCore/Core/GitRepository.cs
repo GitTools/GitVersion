@@ -11,11 +11,7 @@ namespace GitVersion
         private IRepository repositoryInstance => repositoryLazy.Value;
 
         public GitRepository(IOptions<GitVersionOptions> options)
-            : this(() =>
-            {
-                var isDynamicRepo = !string.IsNullOrWhiteSpace(options.Value.DynamicGitRepositoryPath);
-                return isDynamicRepo ? options.Value.DotGitDirectory : options.Value.ProjectRootDirectory;
-            })
+            : this(() => options.Value.GitRootPath)
         {
         }
 

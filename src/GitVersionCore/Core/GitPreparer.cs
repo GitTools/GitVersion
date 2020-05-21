@@ -87,9 +87,7 @@ namespace GitVersion
         private void CleanupDuplicateOrigin()
         {
             var remoteToKeep = DefaultRemoteName;
-
-            var isDynamicRepo = !string.IsNullOrWhiteSpace(options.Value.DynamicGitRepositoryPath);
-            using var repo = new Repository(isDynamicRepo ? options.Value.DotGitDirectory : options.Value.ProjectRootDirectory);
+            using var repo = new Repository(options.Value.GitRootPath);
 
             // check that we have a remote that matches defaultRemoteName if not take the first remote
             if (!repo.Network.Remotes.Any(remote => remote.Name.Equals(DefaultRemoteName, StringComparison.InvariantCultureIgnoreCase)))
