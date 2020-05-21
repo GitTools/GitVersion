@@ -391,7 +391,7 @@ namespace GitVersionCore.Tests
                 var gitVersionCalculator = GetGitVersionCalculator(gitVersionOptions);
                 gitVersionCalculator.CalculateVersionVariables();
             });
-            exception.Message.ShouldContain("Can't find the .git directory in");
+            exception.Message.ShouldContain("Cannot find the .git directory");
         }
 
         [Test]
