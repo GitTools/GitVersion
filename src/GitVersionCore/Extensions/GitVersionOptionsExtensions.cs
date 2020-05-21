@@ -38,6 +38,14 @@ namespace GitVersion.Extensions
             return repository.Info.WorkingDirectory;
         }
 
+        public static string GetGitRootPath(this GitVersionOptions options)
+        {
+            var isDynamicRepo = !string.IsNullOrWhiteSpace(options.DynamicGitRepositoryPath);
+            var rootDirectory = isDynamicRepo ? options.DotGitDirectory : options.ProjectRootDirectory;
+
+            return rootDirectory;
+        }
+
         public static string GetDynamicGitRepositoryPath(this GitVersionOptions gitVersionOptions)
         {
             if (string.IsNullOrWhiteSpace(gitVersionOptions.RepositoryInfo.TargetUrl)) return null;

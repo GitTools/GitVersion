@@ -141,8 +141,7 @@ namespace GitVersion.VersionCalculation.Cache
 
         private string GetRepositorySnapshotHash()
         {
-            var isDynamicRepo = !string.IsNullOrWhiteSpace(options.Value.DynamicGitRepositoryPath);
-            using var repo = new Repository(isDynamicRepo ? options.Value.DotGitDirectory : options.Value.ProjectRootDirectory);
+            using var repo = new Repository(options.Value.GitRootPath);
 
             var head = repo.Head;
             if (head.Tip == null)
