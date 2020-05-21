@@ -395,6 +395,21 @@ namespace GitVersionCore.Tests
         }
 
         [Test]
+        public void WorkingDirectoryWithoutCommits()
+        {
+            using var fixture = new EmptyRepositoryFixture();
+
+            var gitVersionOptions = new GitVersionOptions { WorkingDirectory = fixture.RepositoryPath };
+
+            var exception = Assert.Throws<GitVersionException>(() =>
+            {
+                var gitVersionCalculator = GetGitVersionCalculator(gitVersionOptions);
+                gitVersionCalculator.CalculateVersionVariables();
+            });
+            exception.Message.ShouldContain("No commits found on the current branch.");
+        }
+
+        [Test]
         [Category("NoMono")]
         [Description("LibGit2Sharp fails when running under Mono")]
         public void GetProjectRootDirectoryWorkingDirectoryWithWorktree()

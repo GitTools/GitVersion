@@ -81,6 +81,17 @@ namespace GitVersionExe.Tests
         }
 
         [Test]
+        public void WorkingDirectoryWithoutCommitsFailsWithInformativeMessage()
+        {
+            using var fixture = new EmptyRepositoryFixture();
+
+            var result = GitVersionHelper.ExecuteIn(fixture.RepositoryPath, arguments: null, logToFile: false);
+
+            result.ExitCode.ShouldNotBe(0);
+            result.Output.ShouldContain("No commits found on the current branch.");
+        }
+
+        [Test]
         public void WorkingDirectoryDoesNotExistFailsWithInformativeMessage()
         {
             var workingDirectory = Path.Combine(PathHelper.GetCurrentDirectory(), Guid.NewGuid().ToString("N"));
