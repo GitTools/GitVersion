@@ -22,6 +22,10 @@ namespace GitVersion.VersionCalculation
         {
             Commit baseVersionSource;
             var currentBranchTip = Context.CurrentBranch.Tip;
+            if (currentBranchTip == null)
+            {
+                throw new GitVersionException("No commits found on the current branch.");
+            }
 
             try
             {
