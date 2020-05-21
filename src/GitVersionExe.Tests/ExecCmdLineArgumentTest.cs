@@ -77,7 +77,7 @@ namespace GitVersionExe.Tests
             var result = GitVersionHelper.ExecuteIn(Environment.SystemDirectory, arguments: null, logToFile: false);
 
             result.ExitCode.ShouldNotBe(0);
-            result.Output.ShouldContain("Can't find the .git directory in");
+            result.Output.ShouldContain("Cannot find the .git directory");
         }
 
         [Test]

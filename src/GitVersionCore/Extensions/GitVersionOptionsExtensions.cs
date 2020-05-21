@@ -15,7 +15,7 @@ namespace GitVersion.Extensions
 
             dotGitDirectory = dotGitDirectory?.TrimEnd('/', '\\');
             if (string.IsNullOrEmpty(dotGitDirectory))
-                throw new DirectoryNotFoundException($"Can't find the .git directory in {dotGitDirectory}");
+                throw new DirectoryNotFoundException("Cannot find the .git directory");
 
             return dotGitDirectory.Contains(Path.Combine(".git", "worktrees"))
                 ? Directory.GetParent(Directory.GetParent(dotGitDirectory).FullName).FullName
@@ -32,7 +32,7 @@ namespace GitVersion.Extensions
             var dotGitDirectory = Repository.Discover(gitVersionOptions.WorkingDirectory);
 
             if (string.IsNullOrEmpty(dotGitDirectory))
-                throw new DirectoryNotFoundException($"Can't find the .git directory in {dotGitDirectory}");
+                throw new DirectoryNotFoundException("Cannot find the .git directory");
 
             using var repository = new Repository(dotGitDirectory);
             return repository.Info.WorkingDirectory;
