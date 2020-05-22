@@ -14,25 +14,6 @@ namespace GitVersionExe.Tests
     public class ExecCmdLineArgumentTest
     {
         [Test]
-        public void RunExecViaCommandLine()
-        {
-            using var fixture = new EmptyRepositoryFixture();
-            fixture.MakeATaggedCommit("1.2.3");
-            fixture.MakeACommit();
-
-            var buildFile = Path.Combine(fixture.RepositoryPath, "RunExecViaCommandLine.csproj");
-            File.Delete(buildFile);
-
-            File.WriteAllText(buildFile, MsBuildProjectArgTest.TestProject);
-            var exec = "dotnet";
-            var execArgs = "msbuild RunExecViaCommandLine.csproj /target:OutputResults";
-            var result = GitVersionHelper.ExecuteIn(fixture.RepositoryPath, exec, execArgs);
-
-            result.ExitCode.ShouldBe(0, result.Log);
-            result.Log.ShouldContain("GitVersion_FullSemVer: 1.2.4+1");
-        }
-
-        [Test]
         public void InvalidArgumentsExitCodeShouldNotBeZero()
         {
             using var fixture = new EmptyRepositoryFixture();
