@@ -6,7 +6,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="shortcut icon" href="/assets/img/favicon.ico" type="image/x-icon">
         <link rel="icon" href="/assets/img/favicon.ico" type="image/x-icon">
-        <title>GitVersion - API - GitVersionTool.GitVersionTool(ILog, INextVersionCalculator, IVariableProvider, IGitPreparer, IGitVersionCache, IGitVersionCacheKeyFactory, IOutputGenerator, IWixVersionFileUpdater, IGitVersionInfoGenerator, IAssemblyInfoFileUpdater, IOptions&lt;GitVersionOptions&gt;, Lazy&lt;GitVersionContext&gt;) Constructor</title>
+        <title>GitVersion - API - ProjectFileUpdater Class</title>
         <link href="/assets/css/highlight.css" rel="stylesheet">
         <link href="/assets/css/bootstrap/bootstrap.css" rel="stylesheet">
         <link href="/assets/css/adminlte/AdminLTE.css" rel="stylesheet">
@@ -75,8 +75,9 @@
                 <section class="infobar" data-spy="affix" data-offset-top="60" data-offset-bottom="200"> 
                     	
 	<div id="infobar-headings"><h6>On This Page</h6><p><a href="#Syntax">Syntax</a></p>
-<p><a href="#Parameters">Parameters</a></p>
-<p><a href="#ReturnValue">Return Value</a></p>
+<p><a href="#Constructors">Constructors</a></p>
+<p><a href="#Methods">Methods</a></p>
+<p><a href="#ExtensionMethods">Extension Methods</a></p>
 <hr class="infobar-hidden">
 </div>
 
@@ -136,18 +137,16 @@
                     <ul class="sidebar-menu">
                         
 			<li class="header">Namespace</li>
-		<li><a href="/api/GitVersion">GitVersion</a></li>
-		<li class="header">Type</li>
-		<li><a href="/api/GitVersion/GitVersionTool">GitVersionTool</a></li>
+		<li><a href="/api/GitVersion.VersionConverters.AssemblyInfo">GitVersion<wbr>.VersionConverters<wbr>.AssemblyInfo</a></li>
 		<li role="separator" class="divider"></li>
-			<li class="header">Constructors</li>
-				<li class="selected"><a href="/api/GitVersion/GitVersionTool/6C06D10D">GitVersionTool<wbr>(ILog, <wbr>I<wbr>Next<wbr>Version<wbr>Calculator, <wbr>IVariableProvider, <wbr>IGitPreparer, <wbr>IGitVersionCache, <wbr>I<wbr>Git<wbr>Version<wbr>Cache<wbr>Key<wbr>Factory, <wbr>IOutputGenerator, <wbr>I<wbr>Wix<wbr>Version<wbr>File<wbr>Updater, <wbr>I<wbr>Git<wbr>Version<wbr>Info<wbr>Generator, <wbr>I<wbr>Assembly<wbr>Info<wbr>File<wbr>Updater, <wbr>IOptions<wbr>&lt;<wbr>Git<wbr>Version<wbr>Options&gt;<wbr>, <wbr>Lazy<wbr>&lt;<wbr>Git<wbr>Version<wbr>Context&gt;<wbr>)<wbr></a></li>
-			<li class="header">Method Members</li>
-				<li><a href="/api/GitVersion/GitVersionTool/91C6D547">Calculate<wbr>Version<wbr>Variables<wbr>()<wbr></a></li>
-				<li><a href="/api/GitVersion/GitVersionTool/2DD37FC2">Generate<wbr>Git<wbr>Version<wbr>Information<wbr>(VersionVariables, <wbr>FileWriteInfo)<wbr></a></li>
-				<li><a href="/api/GitVersion/GitVersionTool/ED343CBD">OutputVariables<wbr>(VersionVariables)<wbr></a></li>
-				<li><a href="/api/GitVersion/GitVersionTool/72D0C96A">UpdateAssemblyInfo<wbr>(VersionVariables)<wbr></a></li>
-				<li><a href="/api/GitVersion/GitVersionTool/12B16EB0">UpdateWixVersionFile<wbr>(VersionVariables)<wbr></a></li>
+			<li class="header">Interface Types</li>
+				<li><a href="/api/GitVersion.VersionConverters.AssemblyInfo/IAssemblyInfoFileUpdater">I<wbr>Assembly<wbr>Info<wbr>File<wbr>Updater</a></li>
+				<li><a href="/api/GitVersion.VersionConverters.AssemblyInfo/IProjectFileUpdater">IProjectFileUpdater</a></li>
+			<li class="header">Class Types</li>
+				<li><a href="/api/GitVersion.VersionConverters.AssemblyInfo/AssemblyInfoFileUpdater">Assembly<wbr>Info<wbr>File<wbr>Updater</a></li>
+				<li class="selected"><a href="/api/GitVersion.VersionConverters.AssemblyInfo/ProjectFileUpdater">ProjectFileUpdater</a></li>
+			<li class="header">Struct Types</li>
+				<li><a href="/api/GitVersion.VersionConverters.AssemblyInfo/AssemblyInfoContext">AssemblyInfoContext</a></li>
 
 
                     </ul>
@@ -162,127 +161,143 @@
 
 
 <section class="content-header">
-			<h3><a href="/api/GitVersion/GitVersionTool">GitVersionTool</a>.</h3>
-	<h1>GitVersionTool<wbr>(ILog, <wbr>I<wbr>Next<wbr>Version<wbr>Calculator, <wbr>IVariableProvider, <wbr>IGitPreparer, <wbr>IGitVersionCache, <wbr>I<wbr>Git<wbr>Version<wbr>Cache<wbr>Key<wbr>Factory, <wbr>IOutputGenerator, <wbr>I<wbr>Wix<wbr>Version<wbr>File<wbr>Updater, <wbr>I<wbr>Git<wbr>Version<wbr>Info<wbr>Generator, <wbr>I<wbr>Assembly<wbr>Info<wbr>File<wbr>Updater, <wbr>IOptions<wbr>&lt;<wbr>Git<wbr>Version<wbr>Options&gt;<wbr>, <wbr>Lazy<wbr>&lt;<wbr>Git<wbr>Version<wbr>Context&gt;<wbr>)<wbr> <small>Constructor</small></h1>
+	<h1>ProjectFileUpdater <small>Class</small></h1>
 </section>
 <section class="content">
 	
 	
 	
 		<div class="panel panel-default">
-  			<div class="panel-body">	
-				<dl class="dl-horizontal">	
-						
-						<dt>Namespace</dt>
-						<dd><a href="/api/GitVersion">GitVersion</a></dd>
-					
-						<dt>Containing Type</dt>
-						<dd><a href="/api/GitVersion/GitVersionTool">GitVersionTool</a></dd>		
-					
-				</dl>
+  			<div class="panel-body">
+				<div class="row">
+					<div class="col-md-6">
+						<dl class="dl-horizontal">		
+
+								<dt>Namespace</dt>
+								<dd><a href="/api/GitVersion.VersionConverters.AssemblyInfo">GitVersion<wbr>.VersionConverters<wbr>.AssemblyInfo</a></dd>
+											
+								<dt>Interfaces</dt>
+								<dd>
+									<ul class="list-unstyled">
+											<li><a href="/api/GitVersion.VersionConverters.AssemblyInfo/IProjectFileUpdater">IProjectFileUpdater</a></li>								
+											<li><a href="/api/GitVersion.VersionConverters/IVersionConverter_1">IVersionConverter</a><wbr>&lt;<a href="/api/GitVersion.VersionConverters.AssemblyInfo/AssemblyInfoContext">AssemblyInfoContext</a>&gt;<wbr></li>								
+											<li>IDisposable</li>								
+									</ul>
+								</dd>
+							
+								<dt>Base Types</dt>
+								<dd>
+									<ul class="list-unstyled">										
+											<li>object</li>								
+									</ul>
+								</dd>				
+							
+							
+						</dl>
+					</div>		
+					<div class="col-md-6">
+						<div class="mermaid">
+							graph BT
+	Type--&gt;Base0["object"]
+	Type-.-&gt;Interface0["IProjectFileUpdater"]
+	click Interface0 "/api/GitVersion.VersionConverters.AssemblyInfo/IProjectFileUpdater"
+	Type-.-&gt;Interface1["IVersionConverter&lt;AssemblyInfoContext&gt;"]
+	Type-.-&gt;Interface2["IDisposable"]
+	Type["ProjectFileUpdater"]
+class Type type-node
+
+						</div>
+					</div>
+				</div>
   			</div>
 		</div>
 
 	<h1 id="Syntax">Syntax</h1>
-	<pre><code>public GitVersionTool(ILog log, INextVersionCalculator nextVersionCalculator, IVariableProvider variableProvider, IGitPreparer gitPreparer, IGitVersionCache gitVersionCache, IGitVersionCacheKeyFactory cacheKeyFactory, IOutputGenerator outputGenerator, IWixVersionFileUpdater wixVersionFileUpdater, IGitVersionInfoGenerator gitVersionInfoGenerator, IAssemblyInfoFileUpdater assemblyInfoFileUpdater, IOptions&lt;GitVersionOptions&gt; options, Lazy&lt;GitVersionContext&gt; versionContext)</code></pre>
+	<pre><code>public class ProjectFileUpdater : IProjectFileUpdater, IVersionConverter&lt;AssemblyInfoContext&gt;, 
+    IDisposable</code></pre>
 
 
 
 
 
-	<h1 id="Parameters">Parameters</h1>
-	<div class="box">
-		<div class="box-body no-padding table-responsive">
-			<table class="table table-striped table-hover three-cols">
-				<thead>
-					<tr>
-						<th>Name</th>
-						<th>Type</th>
-						<th>Description</th>
-					</tr>
-				</thead>
-					<tbody><tr>
-						<td>log</td>
-						<td><a href="/api/GitVersion.Logging/ILog">ILog</a></td>
-						<td></td>
-					</tr>
-					<tr>
-						<td>nextVersionCalculator</td>
-						<td><a href="/api/GitVersion.VersionCalculation/INextVersionCalculator">I<wbr>Next<wbr>Version<wbr>Calculator</a></td>
-						<td></td>
-					</tr>
-					<tr>
-						<td>variableProvider</td>
-						<td><a href="/api/GitVersion.VersionCalculation/IVariableProvider">IVariableProvider</a></td>
-						<td></td>
-					</tr>
-					<tr>
-						<td>gitPreparer</td>
-						<td><a href="/api/GitVersion/IGitPreparer">IGitPreparer</a></td>
-						<td></td>
-					</tr>
-					<tr>
-						<td>gitVersionCache</td>
-						<td><a href="/api/GitVersion.VersionCalculation.Cache/IGitVersionCache">IGitVersionCache</a></td>
-						<td></td>
-					</tr>
-					<tr>
-						<td>cacheKeyFactory</td>
-						<td><a href="/api/GitVersion.VersionCalculation.Cache/IGitVersionCacheKeyFactory">I<wbr>Git<wbr>Version<wbr>Cache<wbr>Key<wbr>Factory</a></td>
-						<td></td>
-					</tr>
-					<tr>
-						<td>outputGenerator</td>
-						<td><a href="/api/GitVersion.VersionConverters.OutputGenerator/IOutputGenerator">IOutputGenerator</a></td>
-						<td></td>
-					</tr>
-					<tr>
-						<td>wixVersionFileUpdater</td>
-						<td><a href="/api/GitVersion.VersionConverters.WixUpdater/IWixVersionFileUpdater">I<wbr>Wix<wbr>Version<wbr>File<wbr>Updater</a></td>
-						<td></td>
-					</tr>
-					<tr>
-						<td>gitVersionInfoGenerator</td>
-						<td><a href="/api/GitVersion.VersionConverters.GitVersionInfo/IGitVersionInfoGenerator">I<wbr>Git<wbr>Version<wbr>Info<wbr>Generator</a></td>
-						<td></td>
-					</tr>
-					<tr>
-						<td>assemblyInfoFileUpdater</td>
-						<td><a href="/api/GitVersion.VersionConverters.AssemblyInfo/IAssemblyInfoFileUpdater">I<wbr>Assembly<wbr>Info<wbr>File<wbr>Updater</a></td>
-						<td></td>
-					</tr>
-					<tr>
-						<td>options</td>
-						<td>IOptions<wbr>&lt;<a href="/api/GitVersion/GitVersionOptions">GitVersionOptions</a>&gt;<wbr></td>
-						<td></td>
-					</tr>
-					<tr>
-						<td>versionContext</td>
-						<td>Lazy<wbr>&lt;<a href="/api/GitVersion/GitVersionContext">GitVersionContext</a>&gt;<wbr></td>
-						<td></td>
-					</tr>
-			</tbody></table>
-		</div>
-	</div>	
 
-	<h1 id="ReturnValue">Return Value</h1>
-	<div class="box">
-		<div class="box-body no-padding table-responsive">
-			<table class="table table-striped table-hover two-cols">
-				<thead>
-					<tr>
-						<th>Type</th>
-						<th>Description</th>
-					</tr>
-				</thead>
-				<tbody><tr>
-					<td>void</td>
-					<td></td>
-				</tr>
-			</tbody></table>
-		</div>
-	</div>	
 
+			<h1 id="Constructors">Constructors</h1>
+			<div class="box">
+				<div class="box-body no-padding table-responsive">
+					<table class="table table-striped table-hover two-cols">
+						<thead>
+							<tr>
+								<th>Name</th>
+									<th>Summary</th>
+							</tr>
+						</thead>
+							<tbody><tr>
+								<td><a href="/api/GitVersion.VersionConverters.AssemblyInfo/ProjectFileUpdater/39FEA9A4">ProjectFileUpdater<wbr>(ILog, <wbr>IFileSystem)<wbr></a></td>
+									<td></td>
+							</tr>
+					</tbody></table>
+				</div>
+			</div>
+		
+
+
+
+
+			<h1 id="Methods">Methods</h1>
+			<div class="box">
+				<div class="box-body no-padding table-responsive">
+					<table class="table table-striped table-hover three-cols">
+						<thead>
+							<tr>
+								<th>Name</th>
+								<th>Value</th>
+								<th>Summary</th>
+							</tr>
+						</thead>
+							<tbody><tr>
+								<td><a href="/api/GitVersion.VersionConverters.AssemblyInfo/ProjectFileUpdater/378D8E0B">Dispose<wbr>()<wbr></a></td>
+								<td>void</td>
+								<td>
+									<div></div>
+								</td>
+							</tr>
+							<tr>
+								<td><a href="/api/GitVersion.VersionConverters.AssemblyInfo/ProjectFileUpdater/C1FED24C">Execute<wbr>(VersionVariables, <wbr>AssemblyInfoContext)<wbr></a></td>
+								<td>void</td>
+								<td>
+									<div></div>
+								</td>
+							</tr>
+					</tbody></table>
+				</div>
+			</div>
+		
+
+
+			<h1 id="ExtensionMethods">Extension Methods</h1>
+			<div class="box">
+				<div class="box-body no-padding table-responsive">
+					<table class="table table-striped table-hover three-cols">
+						<thead>
+							<tr>
+								<th>Name</th>
+								<th>Value</th>
+								<th>Summary</th>
+							</tr>
+						</thead>
+							<tbody><tr>
+								<td><a href="/api/GitVersion.Extensions/ObjectExtensions/F42B194D">GetProperties<wbr>()<wbr></a></td>
+								<td>IEnumerable<wbr>&lt;KeyValuePair<wbr>&lt;string, <wbr>string&gt;<wbr>&gt;<wbr></td>
+								<td>
+									<div></div>
+										<div><small><em>From <a href="/api/GitVersion.Extensions/ObjectExtensions">ObjectExtensions</a></em></small></div>
+								</td>
+							</tr>
+					</tbody></table>
+				</div>
+			</div>
+		
 
 	
 </section>
