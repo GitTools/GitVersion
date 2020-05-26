@@ -11,11 +11,11 @@ This guide assumes a few variables are present in the configuration. Note that
 this example uses `Catel` as repository name, but it should be replaced by the
 name of the repository where GitVersion is running against.
 
-* RepositoryBranchName => $Source.Catel.BranchName$
-* RepositoryCommitId => $Source.Catel.LatestChangeset.Id$
+* RepositoryBranchName => \$Source.Catel.BranchName\$
+* RepositoryCommitId => \$Source.Catel.LatestChangeset.Id\$
 * RepositoryName => Catel
-* RepositoryName => $Source.Catel.Path$
-* RepositoryUrl => $Source.Catel.Url$
+* RepositoryName => \$Source.Catel.Path\$
+* RepositoryUrl => \$Source.Catel.Url\$
 
 It also requires a few variables which will automatically be filled by
 GitVersion. The example below are just a few, any of the GitVersion variables
