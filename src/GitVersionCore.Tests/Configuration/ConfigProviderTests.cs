@@ -352,5 +352,108 @@ branches:
             config.Branches["feature"].SourceBranches.ShouldBe(
                 new List<string> { "develop", "master", "release", "feature", "support", "hotfix" });
         }
+
+        [Test]
+        public void ShouldNotOverrideAnythingWhenOverrideConfigIsEmpty()
+        {
+            const string text = @"
+next-version: 1.2.3
+tag-prefix: custom-tag-prefix-from-yml";
+            SetupConfigFileContent(text);
+
+            var expectedConfig = configProvider.Provide(repoPath, overrideConfig: null);
+            var overridenConfig = configProvider.Provide(repoPath, overrideConfig: new Config());
+
+            overridenConfig.AssemblyVersioningScheme.ShouldBe(expectedConfig.AssemblyVersioningScheme);
+            overridenConfig.AssemblyFileVersioningScheme.ShouldBe(expectedConfig.AssemblyFileVersioningScheme);
+            overridenConfig.AssemblyInformationalFormat.ShouldBe(expectedConfig.AssemblyInformationalFormat);
+            overridenConfig.AssemblyVersioningFormat.ShouldBe(expectedConfig.AssemblyVersioningFormat);
+            overridenConfig.AssemblyFileVersioningFormat.ShouldBe(expectedConfig.AssemblyFileVersioningFormat);
+            overridenConfig.VersioningMode.ShouldBe(expectedConfig.VersioningMode);
+            overridenConfig.TagPrefix.ShouldBe(expectedConfig.TagPrefix);
+            overridenConfig.ContinuousDeploymentFallbackTag.ShouldBe(expectedConfig.ContinuousDeploymentFallbackTag);
+            overridenConfig.NextVersion.ShouldBe(expectedConfig.NextVersion);
+            overridenConfig.MajorVersionBumpMessage.ShouldBe(expectedConfig.MajorVersionBumpMessage);
+            overridenConfig.MinorVersionBumpMessage.ShouldBe(expectedConfig.MinorVersionBumpMessage);
+            overridenConfig.PatchVersionBumpMessage.ShouldBe(expectedConfig.PatchVersionBumpMessage);
+            overridenConfig.NoBumpMessage.ShouldBe(expectedConfig.NoBumpMessage);
+            overridenConfig.LegacySemVerPadding.ShouldBe(expectedConfig.LegacySemVerPadding);
+            overridenConfig.BuildMetaDataPadding.ShouldBe(expectedConfig.BuildMetaDataPadding);
+            overridenConfig.CommitsSinceVersionSourcePadding.ShouldBe(expectedConfig.CommitsSinceVersionSourcePadding);
+            overridenConfig.TagPreReleaseWeight.ShouldBe(expectedConfig.TagPreReleaseWeight);
+            overridenConfig.CommitMessageIncrementing.ShouldBe(expectedConfig.CommitMessageIncrementing);
+            overridenConfig.Increment.ShouldBe(expectedConfig.Increment);
+            overridenConfig.CommitDateFormat.ShouldBe(expectedConfig.CommitDateFormat);
+            overridenConfig.MergeMessageFormats.ShouldBe(expectedConfig.MergeMessageFormats);
+            overridenConfig.UpdateBuildNumber.ShouldBe(expectedConfig.UpdateBuildNumber);
+
+            overridenConfig.Ignore.ShouldBeEquivalentTo(expectedConfig.Ignore);
+
+            overridenConfig.Branches.Keys.ShouldBe(expectedConfig.Branches.Keys);
+
+            foreach (var branch in overridenConfig.Branches.Keys)
+            {
+                overridenConfig.Branches[branch].ShouldBeEquivalentTo(expectedConfig.Branches[branch]);
+            }
+        }
+
+        [Test]
+        public void ShouldUseDefaultTagPrefixWhenNotSetInConfigFile()
+        {
+            const string text = "";
+            SetupConfigFileContent(text);
+            var config = configProvider.Provide(repoPath);
+
+            config.TagPrefix.ShouldBe("[vV]");
+        }
+
+        [Test]
+        public void ShouldUseTagPrefixFromConfigFileWhenProvided()
+        {
+            const string text = "tag-prefix: custom-tag-prefix-from-yml";
+            SetupConfigFileContent(text);
+            var config = configProvider.Provide(repoPath);
+
+            config.TagPrefix.ShouldBe("custom-tag-prefix-from-yml");
+        }
+
+        [Test]
+        public void ShouldOverrideTagPrefixWithOverrideConfigValue([Values] bool tagPrefixSetAtYmlFile)
+        {
+            var text = tagPrefixSetAtYmlFile ? "tag-prefix: custom-tag-prefix-from-yml" : "";
+            SetupConfigFileContent(text);
+            var config = configProvider.Provide(repoPath, overrideConfig: new Config
+                                                                          {
+                                                                              TagPrefix = "tag-prefix-from-override-config"
+                                                                          });
+
+            config.TagPrefix.ShouldBe("tag-prefix-from-override-config");
+        }
+
+        [Test]
+        public void ShouldNotOverrideDefaultTagPrefixWhenNotSetInOverrideConfig([Values(null, "", " ")] string overridenTagPrefix)
+        {
+            const string text = "";
+            SetupConfigFileContent(text);
+            var config = configProvider.Provide(repoPath, overrideConfig: new Config
+                                                                          {
+                                                                              TagPrefix = overridenTagPrefix
+                                                                          });
+
+            config.TagPrefix.ShouldBe("[vV]");
+        }
+
+        [Test]
+        public void ShouldNotOverrideTagPrefixFromConfigFileWhenNotSetInOverrideConfig([Values(null, "", " ")] string overridenTagPrefix)
+        {
+            const string text = "tag-prefix: custom-tag-prefix-from-yml";
+            SetupConfigFileContent(text);
+            var config = configProvider.Provide(repoPath, overrideConfig: new Config
+                                                                          {
+                                                                              TagPrefix = overridenTagPrefix
+                                                                          });
+
+            config.TagPrefix.ShouldBe("custom-tag-prefix-from-yml");
+        }
     }
 }
