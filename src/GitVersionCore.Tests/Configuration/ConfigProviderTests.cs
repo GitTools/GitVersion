@@ -422,10 +422,7 @@ tag-prefix: custom-tag-prefix-from-yml";
         {
             var text = tagPrefixSetAtYmlFile ? "tag-prefix: custom-tag-prefix-from-yml" : "";
             SetupConfigFileContent(text);
-            var config = configProvider.Provide(repoPath, overrideConfig: new Config
-                                                                          {
-                                                                              TagPrefix = "tag-prefix-from-override-config"
-                                                                          });
+            var config = configProvider.Provide(repoPath, overrideConfig: new Config { TagPrefix = "tag-prefix-from-override-config" });
 
             config.TagPrefix.ShouldBe("tag-prefix-from-override-config");
         }
@@ -435,10 +432,7 @@ tag-prefix: custom-tag-prefix-from-yml";
         {
             const string text = "";
             SetupConfigFileContent(text);
-            var config = configProvider.Provide(repoPath, overrideConfig: new Config
-                                                                          {
-                                                                              TagPrefix = overridenTagPrefix
-                                                                          });
+            var config = configProvider.Provide(repoPath, overrideConfig: new Config { TagPrefix = overridenTagPrefix });
 
             config.TagPrefix.ShouldBe("[vV]");
         }
@@ -448,10 +442,7 @@ tag-prefix: custom-tag-prefix-from-yml";
         {
             const string text = "tag-prefix: custom-tag-prefix-from-yml";
             SetupConfigFileContent(text);
-            var config = configProvider.Provide(repoPath, overrideConfig: new Config
-                                                                          {
-                                                                              TagPrefix = overridenTagPrefix
-                                                                          });
+            var config = configProvider.Provide(repoPath, overrideConfig: new Config { TagPrefix = overridenTagPrefix });
 
             config.TagPrefix.ShouldBe("custom-tag-prefix-from-yml");
         }
