@@ -53,6 +53,25 @@ namespace GitVersionCore.Tests
         }
 
         [TestCase(@"
+<Project Sdk=""Microsoft.NET.Sdk.Web"">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+</Project>
+")]
+        [Category(NoMono)]
+        [Description(NoMonoDescription)]
+        public void CanUpdateProjectFileWithStandardWebProjectFileXml(string xml)
+        {
+            using var projectFileUpdater = new ProjectFileUpdater(log, fileSystem);
+
+            var canUpdate = projectFileUpdater.CanUpdateProjectFile(XElement.Parse(xml));
+
+            canUpdate.ShouldBe(true);
+        }
+
+        [TestCase(@"
 <Project Sdk=""SomeOtherProject.Sdk"">
   <PropertyGroup>
     <OutputType>Exe</OutputType>

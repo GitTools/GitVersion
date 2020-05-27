@@ -102,11 +102,12 @@ namespace GitVersion.VersionConverters.AssemblyInfo
                 return false;
             }
 
-            var supportedSdk = "Microsoft.NET.Sdk";
+            var supportedSdks = new[] { "Microsoft.NET.Sdk", "Microsoft.NET.Sdk.Web" };
             var sdkAttribute = xmlRoot.Attribute("Sdk");
-            if (sdkAttribute == null || sdkAttribute.Value != supportedSdk)
+            if (sdkAttribute == null || !supportedSdks.Contains(sdkAttribute.Value))
             {
-                log.Warning($"Specified project file Sdk ({sdkAttribute?.Value}) is not supported, please ensure the project sdk is {supportedSdk}.");
+                var supportedSdkString = string.Join("|", supportedSdks);
+                log.Warning($"Specified project file Sdk ({sdkAttribute?.Value}) is not supported, please ensure the project sdk is of the following: {supportedSdkString}.");
                 return false;
             }
 
