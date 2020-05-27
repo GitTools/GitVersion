@@ -176,15 +176,7 @@ If the docs do not help you decide on the mode open an issue to discuss what you
 
         public static void ApplyOverridesTo(this Config config, Config overrideConfig)
         {
-            config.Branches.Clear();
-            config.Ignore = overrideConfig.Ignore;
-            config.Branches = overrideConfig.Branches;
-            config.Increment = overrideConfig.Increment;
-            config.NextVersion = overrideConfig.NextVersion;
-            config.VersioningMode = overrideConfig.VersioningMode;
-            config.AssemblyFileVersioningFormat = overrideConfig.AssemblyFileVersioningFormat;
             config.TagPrefix = string.IsNullOrWhiteSpace(overrideConfig.TagPrefix) ? config.TagPrefix : overrideConfig.TagPrefix;
-            config.TagPreReleaseWeight = overrideConfig.TagPreReleaseWeight;
         }
 
         public static BranchConfig GetConfigForBranch(this Config config, string branchName)
