@@ -11,7 +11,8 @@ assignees: ''
 A clear and concise description of what the bug is or a link to it
 
 ## Test code
-```
+
+```csharp
 using var fixture = new EmptyRepositoryFixture();
 fixture.Repository.MakeACommit();
 fixture.BranchTo("develop");
