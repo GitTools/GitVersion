@@ -188,8 +188,8 @@
 								<dt>Implementing Types</dt>
 								<dd>
 									<ul class="list-unstyled">
-											<li><a href="/api/GitVersion.Configuration/ConfigFileLocator">ConfigFileLocator</a></li>								
 											<li><a href="/api/GitVersion.Configuration/NamedConfigFileLocator">Named<wbr>Config<wbr>File<wbr>Locator</a></li>								
+											<li><a href="/api/GitVersion.Configuration/ConfigFileLocator">ConfigFileLocator</a></li>								
 											<li><a href="/api/GitVersion.Configuration/DefaultConfigFileLocator">Default<wbr>Config<wbr>File<wbr>Locator</a></li>								
 									</ul>
 								</dd>				
@@ -200,10 +200,10 @@
 							graph BT
 	Type["IConfigFileLocator"]
 class Type type-node
-	Implementing0["ConfigFileLocator"]-.-&gt;Type
-	click Implementing0 "/api/GitVersion.Configuration/ConfigFileLocator"
-	Implementing1["NamedConfigFileLocator"]-.-&gt;Type
-	click Implementing1 "/api/GitVersion.Configuration/NamedConfigFileLocator"
+	Implementing0["NamedConfigFileLocator"]-.-&gt;Type
+	click Implementing0 "/api/GitVersion.Configuration/NamedConfigFileLocator"
+	Implementing1["ConfigFileLocator"]-.-&gt;Type
+	click Implementing1 "/api/GitVersion.Configuration/ConfigFileLocator"
 	Implementing2["DefaultConfigFileLocator"]-.-&gt;Type
 	click Implementing2 "/api/GitVersion.Configuration/DefaultConfigFileLocator"
 

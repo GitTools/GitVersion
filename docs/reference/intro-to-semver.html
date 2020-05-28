@@ -205,11 +205,11 @@
 <li><code>{major}</code> is only incremented if the release has breaking changes (includes bug fixes which have breaking behavioural changes</li>
 <li><code>{minor}</code> is incremented if the release has new non-breaking features</li>
 <li><code>{patch}</code> is incremented if the release only contains non-breaking bug fixes</li>
-<li><code>{tag}</code> is optional and denotes a pre-release of the version preceeding</li>
+<li><code>{tag}</code> is optional and denotes a pre-release of the version preceding</li>
 <li><code>{buildmetadata}</code> is optional and contains additional information about the version, but <strong>does not affect</strong> the semantic version preceding it.</li>
 </ul>
 <p>Only one number should be incremented per release, and all lower parts should be reset to 0 (if <code>{major}</code> is incremented, then <code>{minor}</code> and <code>{patch}</code> should become 0).</p>
-<p>For a more complete explaination check out <a href="http://semver.org">semver.org</a> which is the official spec. Remember this is a brief introduction and does not cover all parts of semantic versioning, just the important parts to get started.</p>
+<p>For a more complete explanation check out <a href="http://semver.org">semver.org</a> which is the official spec. Remember this is a brief introduction and does not cover all parts of semantic versioning, just the important parts to get started.</p>
 <h2 id="semver-in-gitversion">SemVer in GitVersion</h2>
 <p>GitVersion makes it easy to follow semantic versioning in your library by automatically calculating the next semantic version which your library/application is likely to use. In <a href="https://www.atlassian.com/git/tutorials/comparing-workflows/gitflow-workflow/">GitFlow</a> the develop branch will bump the <em>minor</em> when master is tagged, while <a href="https://guides.github.com/introduction/flow/">GitHubFlow</a> will bump the <em>patch</em>.</p>
 <p>Because one size does not always fit all, GitVersion provides many <a href="../more-info/variables">Variables</a> for you to use which contain different variations of the version. For example SemVer will be in the format <code>{major}.{minor}.{patch}-{tag}</code>, but <code>FullSemVer</code> will also include build metadata: <code>{major}.{minor}.{patch}-{tag}+{buildmetadata}</code></p>

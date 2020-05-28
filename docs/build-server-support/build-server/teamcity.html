@@ -252,7 +252,7 @@ as msbuild/environmental variables to other build steps</li>
 to the project called <code>GitVersion.NuGetVersion</code>. If many of your projects uses
 git-flow and SemVer you can add the parameter to the "root-project"
 (TeamCity 8.x+). You need a dummy param because GitVersion creates the variables
-at runtime, and you cannot reference a paramter which is not available
+at runtime, and you cannot reference a parameter which is not available
 statically. GitVersion will overwrite the dummy value</li>
 <li>Then setup you nuget pack build set the "version" to <code>%GitVersion.NuGetVersion%</code></li>
 <li>If you do your pack in a build script then you can just use environmental
