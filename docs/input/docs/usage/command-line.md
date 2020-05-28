@@ -85,7 +85,7 @@ This can be done for *.cs, *.vb and *.fs files.
 
 When requesting that GitVersion generate an assembly info file you are limited
 to only specifying a single `<filename>` within the `/updateassemblyinfo`
-switch, this is to prevent the creation of mulitple assembly info files with the
+switch, this is to prevent the creation of multiple assembly info files with the
 same assembly version attributes.  If this occurs your build will fail.
 
 ### Example: When AssemblyInfo.cs does not exist
