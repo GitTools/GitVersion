@@ -32,7 +32,7 @@ namespace GitVersionCore.Tests.IntegrationTests
         [Test]
         public void TakesVersionFromNameOfBranchThatIsReleaseByConfig()
         {
-            var config = new Config
+            var config = new TestableConfig
             {
                 Branches = new Dictionary<string, BranchConfig> { { "support", new BranchConfig { IsReleaseBranch = true } } }
             };

@@ -428,21 +428,21 @@ tag-prefix: custom-tag-prefix-from-yml";
         }
 
         [Test]
-        public void ShouldNotOverrideDefaultTagPrefixWhenNotSetInOverrideConfig([Values(null, "", " ")] string overridenTagPrefix)
+        public void ShouldNotOverrideDefaultTagPrefixWhenNotSetInOverrideConfig()
         {
             const string text = "";
             SetupConfigFileContent(text);
-            var config = configProvider.Provide(repoPath, overrideConfig: new Config { TagPrefix = overridenTagPrefix });
+            var config = configProvider.Provide(repoPath, overrideConfig: new Config { TagPrefix = null });
 
             config.TagPrefix.ShouldBe("[vV]");
         }
 
         [Test]
-        public void ShouldNotOverrideTagPrefixFromConfigFileWhenNotSetInOverrideConfig([Values(null, "", " ")] string overridenTagPrefix)
+        public void ShouldNotOverrideTagPrefixFromConfigFileWhenNotSetInOverrideConfig()
         {
             const string text = "tag-prefix: custom-tag-prefix-from-yml";
             SetupConfigFileContent(text);
-            var config = configProvider.Provide(repoPath, overrideConfig: new Config { TagPrefix = overridenTagPrefix });
+            var config = configProvider.Provide(repoPath, overrideConfig: new Config { TagPrefix = null });
 
             config.TagPrefix.ShouldBe("custom-tag-prefix-from-yml");
         }

@@ -29,7 +29,7 @@ namespace GitVersionCore.Tests.VersionCalculation
                     services.AddSingleton<IBaseVersionCalculator>(new TestBaseVersionCalculator(true, new SemanticVersion(1), new MockCommit()));
                     services.AddSingleton<IMainlineVersionCalculator>(new TestMainlineVersionCalculator(semanticVersionBuildMetaData));
                 })
-                .WithConfig(new Config())
+                .WithConfig(new TestableConfig())
                 .Build();
 
             var nextVersionCalculator = contextBuilder.ServicesProvider.GetService<INextVersionCalculator>();
@@ -53,7 +53,7 @@ namespace GitVersionCore.Tests.VersionCalculation
                     services.AddSingleton<IBaseVersionCalculator>(new TestBaseVersionCalculator(false, new SemanticVersion(1), new MockCommit()));
                     services.AddSingleton<IMainlineVersionCalculator>(new TestMainlineVersionCalculator(semanticVersionBuildMetaData));
                 })
-                .WithConfig(new Config())
+                .WithConfig(new TestableConfig())
                 .Build();
 
             var nextVersionCalculator = contextBuilder.ServicesProvider.GetService<INextVersionCalculator>();
@@ -91,7 +91,7 @@ namespace GitVersionCore.Tests.VersionCalculation
         [Test]
         public void PreReleaseTagCanUseBranchName()
         {
-            var config = new Config
+            var config = new TestableConfig
             {
                 NextVersion = "1.0.0",
                 Branches = new Dictionary<string, BranchConfig>
@@ -120,7 +120,7 @@ namespace GitVersionCore.Tests.VersionCalculation
         [Test]
         public void PreReleaseTagCanUseBranchNameVariable()
         {
-            var config = new Config
+            var config = new TestableConfig
             {
                 NextVersion = "1.0.0",
                 Branches = new Dictionary<string, BranchConfig>
@@ -149,7 +149,7 @@ namespace GitVersionCore.Tests.VersionCalculation
         [Test]
         public void PreReleaseNumberShouldBeScopeToPreReleaseLabelInContinuousDelivery()
         {
-            var config = new Config
+            var config = new TestableConfig
             {
                 VersioningMode = VersioningMode.ContinuousDelivery,
                 Branches = new Dictionary<string, BranchConfig>

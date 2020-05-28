@@ -60,7 +60,7 @@ namespace GitVersionCore.Tests.IntegrationTests
         [Test]
         public void AllowHavingMainInsteadOfMaster()
         {
-            var config = new Config();
+            var config = new TestableConfig();
             config.Branches.Add("master", new BranchConfig
             {
                 Regex = "main",

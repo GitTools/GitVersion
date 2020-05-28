@@ -13,7 +13,7 @@ namespace GitVersionCore.Tests.IntegrationTests
         [Test]
         public void CanHandleContinuousDelivery()
         {
-            var config = new Config
+            var config = new TestableConfig
             {
                 Branches =
                 {
@@ -34,7 +34,7 @@ namespace GitVersionCore.Tests.IntegrationTests
         [Test]
         public void CanHandleContinuousDeployment()
         {
-            var config = new Config
+            var config = new TestableConfig
             {
                 Branches =
                 {
@@ -100,7 +100,7 @@ namespace GitVersionCore.Tests.IntegrationTests
         public void GivenARepositoryWithTagAndNextVersionInConfigVersionShouldMatchVersionTxtFile()
         {
             const string expectedNextVersion = "1.1.0";
-            var config = new Config { NextVersion = expectedNextVersion };
+            var config = new TestableConfig { NextVersion = expectedNextVersion };
             using var fixture = new EmptyRepositoryFixture();
             const string taggedVersion = "1.0.3";
             fixture.Repository.MakeATaggedCommit(taggedVersion);
@@ -116,7 +116,7 @@ namespace GitVersionCore.Tests.IntegrationTests
             const string taggedVersion = "1.0.3";
             fixture.Repository.MakeATaggedCommit(taggedVersion);
 
-            fixture.AssertFullSemver("1.0.3", new Config { NextVersion = "1.1.0" });
+            fixture.AssertFullSemver("1.0.3", new TestableConfig { NextVersion = "1.1.0" });
         }
 
         [Test]
@@ -148,7 +148,7 @@ namespace GitVersionCore.Tests.IntegrationTests
             fixture.Repository.MakeATaggedCommit(taggedVersion);
             fixture.Repository.MakeCommits(5);
 
-            fixture.AssertFullSemver("1.1.1+5", new Config { NextVersion = "1.0.0" });
+            fixture.AssertFullSemver("1.1.1+5", new TestableConfig { NextVersion = "1.0.0" });
         }
 
         [Test]
@@ -158,7 +158,7 @@ namespace GitVersionCore.Tests.IntegrationTests
             const string taggedVersion = "1.1.0";
             fixture.Repository.MakeATaggedCommit(taggedVersion);
 
-            fixture.AssertFullSemver("1.1.0", new Config { NextVersion = "1.0.0" });
+            fixture.AssertFullSemver("1.1.0", new TestableConfig { NextVersion = "1.0.0" });
         }
 
         [Test]
@@ -169,13 +169,13 @@ namespace GitVersionCore.Tests.IntegrationTests
             fixture.Repository.MakeATaggedCommit(taggedVersion);
             fixture.Repository.MakeCommits(5);
 
-            fixture.AssertFullSemver("1.0.4+5", new Config { TagPrefix = "version-" });
+            fixture.AssertFullSemver("1.0.4+5", new TestableConfig { TagPrefix = "version-" });
         }
 
         [Test]
         public void CanSpecifyTagPrefixesAsRegex()
         {
-            var config = new Config { TagPrefix = "version-|[vV]" };
+            var config = new TestableConfig { TagPrefix = "version-|[vV]" };
             using var fixture = new EmptyRepositoryFixture();
             var taggedVersion = "v1.0.3";
             fixture.Repository.MakeATaggedCommit(taggedVersion);
@@ -193,7 +193,7 @@ namespace GitVersionCore.Tests.IntegrationTests
         [Test]
         public void AreTagsNotAdheringToTagPrefixIgnored()
         {
-            var config = new Config { TagPrefix = "" };
+            var config = new TestableConfig { TagPrefix = "" };
             using var fixture = new EmptyRepositoryFixture();
             var taggedVersion = "version-1.0.3";
             fixture.Repository.MakeATaggedCommit(taggedVersion);

@@ -174,11 +174,6 @@ If the docs do not help you decide on the mode open an issue to discuss what you
             }
         }
 
-        public static void ApplyOverridesTo(this Config config, Config overrideConfig)
-        {
-            config.TagPrefix = string.IsNullOrWhiteSpace(overrideConfig.TagPrefix) ? config.TagPrefix : overrideConfig.TagPrefix;
-        }
-
         public static BranchConfig GetConfigForBranch(this Config config, string branchName)
         {
             if (branchName == null) throw new ArgumentNullException(nameof(branchName));
