@@ -41,7 +41,7 @@ namespace GitVersion.Configuration
 
             if (applyDefaults)
             {
-                readConfig.Reset();
+                readConfig = readConfig.ApplyDefaults();
             }
 
             if (overrideConfig != null)

@@ -569,13 +569,13 @@ namespace GitVersionCore.Tests.IntegrationTests
                         }
                     }
                 }
-            };
+            }.ApplyDefaults();
             using var fixture = new EmptyRepositoryFixture();
             fixture.Repository.MakeATaggedCommit("1.0.3");
             fixture.Repository.MakeCommits(5);
             fixture.Repository.CreateBranch("release-2.0.0");
             fixture.Checkout("release-2.0.0");
-            config.Reset();
+
             var variables = fixture.GetVersion(config);
             Assert.AreEqual(variables.AssemblySemFileVer, "2.0.0.1001");
         }
@@ -586,13 +586,13 @@ namespace GitVersionCore.Tests.IntegrationTests
             var config = new TestableConfig
             {
                 AssemblyFileVersioningFormat = "{Major}.{Minor}.{Patch}.{WeightedPreReleaseNumber}",
-            };
+            }.ApplyDefaults();
+
             using var fixture = new EmptyRepositoryFixture();
             fixture.Repository.MakeATaggedCommit("1.0.3");
             fixture.Repository.MakeCommits(5);
             fixture.Repository.CreateBranch("release-2.0.0");
             fixture.Checkout("release-2.0.0");
-            config.Reset();
             var variables = fixture.GetVersion(config);
             Assert.AreEqual(variables.AssemblySemFileVer, "2.0.0.30001");
         }

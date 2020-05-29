@@ -52,8 +52,8 @@ namespace GitVersion.Configuration.Init.SetConfig
 
         private static IOrderedEnumerable<KeyValuePair<string, BranchConfig>> OrderedBranches(Config config)
         {
-            var defaultConfig = new Config();
-            defaultConfig.Reset();
+            var defaultConfig = new Config().ApplyDefaults();
+
             var defaultConfigurationBranches = defaultConfig.Branches
                 .Where(k => !config.Branches.ContainsKey(k.Key))
                 // Return an empty branch config
