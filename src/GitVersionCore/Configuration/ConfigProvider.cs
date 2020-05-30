@@ -39,8 +39,16 @@ namespace GitVersion.Configuration
             var readConfig = configFileLocator.ReadConfig(workingDirectory);
             readConfig.Verify();
 
-            if (applyDefaults) readConfig.Reset();
-            if (null != overrideConfig) readConfig.ApplyOverridesTo(overrideConfig);
+            if (applyDefaults)
+            {
+                readConfig.Reset();
+            }
+
+            if (overrideConfig != null)
+            {
+                overrideConfig.MergeTo(readConfig);
+            }
+
             return readConfig;
         }
 

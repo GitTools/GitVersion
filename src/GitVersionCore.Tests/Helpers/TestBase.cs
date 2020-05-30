@@ -26,7 +26,7 @@ namespace GitVersionCore.Tests.Helpers
 
         protected static IServiceProvider BuildServiceProvider(string workingDirectory, IRepository repository, string branch, Config config = null)
         {
-            config ??= new Config().ApplyDefaults();
+            config ??= new TestableConfig().ApplyDefaults();
             var options = Options.Create(new GitVersionOptions
             {
                 WorkingDirectory = workingDirectory,

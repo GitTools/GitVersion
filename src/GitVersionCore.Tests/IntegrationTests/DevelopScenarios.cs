@@ -55,7 +55,7 @@ namespace GitVersionCore.Tests.IntegrationTests
         [Test]
         public void CanChangeDevelopTagViaConfig()
         {
-            var config = new Config
+            var config = new TestableConfig
             {
                 Branches =
                 {
@@ -115,7 +115,7 @@ namespace GitVersionCore.Tests.IntegrationTests
         [Test]
         public void CanHandleContinuousDelivery()
         {
-            var config = new Config
+            var config = new TestableConfig
             {
                 Branches =
                 {
@@ -205,7 +205,7 @@ namespace GitVersionCore.Tests.IntegrationTests
         [Test]
         public void CommitsSinceVersionSourceShouldNotGoDownUponGitFlowReleaseFinish()
         {
-            var config = new Config
+            var config = new TestableConfig
             {
                 VersioningMode = VersioningMode.ContinuousDeployment
             };
@@ -246,7 +246,7 @@ namespace GitVersionCore.Tests.IntegrationTests
         [Test]
         public void CommitsSinceVersionSourceShouldNotGoDownUponMergingFeatureOnlyToDevelop()
         {
-            var config = new Config
+            var config = new TestableConfig
             {
                 VersioningMode = VersioningMode.ContinuousDeployment
             };

@@ -11,7 +11,7 @@ namespace GitVersionCore.Tests
     [TestFixture]
     public class MergeMessageTests : TestBase
     {
-        private readonly Config config = new Config { TagPrefix = "[vV]" };
+        private readonly Config config = new TestableConfig { TagPrefix = "[vV]" };
 
         [Test]
         public void NullMessageStringThrows()
@@ -42,7 +42,7 @@ namespace GitVersionCore.Tests
         {
             // Arrange
             var message = "Updated some code.";
-            var config = new Config { TagPrefix = prefix };
+            var config = new TestableConfig { TagPrefix = prefix };
 
             // Act
             var sut = new MergeMessage(message, config);
