@@ -14,7 +14,7 @@
 
     </Target>
 
-    <Target Name="UpdateAssemblyInfo" BeforeTargets="CoreCompile" Condition="$(UpdateAssemblyInfo) == 'true'">
+    <Target Name="UpdateAssemblyInfo" BeforeTargets="BeforeCompile;CoreCompile" Condition="$(UpdateAssemblyInfo) == 'true'">
 
         <UpdateAssemblyInfo SolutionDirectory="$(GitVersionPath)"
                             ConfigFilePath="$(GitVersionConfig)"
@@ -41,7 +41,7 @@
 
     </Target>
 
-    <Target Name="GenerateGitVersionInformation" BeforeTargets="CoreCompile" Condition="$(GenerateGitVersionInformation) == 'true'">
+    <Target Name="GenerateGitVersionInformation" BeforeTargets="BeforeCompile;CoreCompile" Condition="$(GenerateGitVersionInformation) == 'true'">
 
         <GenerateGitVersionInformation SolutionDirectory="$(GitVersionPath)"
                                        ConfigFilePath="$(GitVersionConfig)"
