@@ -139,7 +139,7 @@ namespace GitVersionCore.Tests.VersionCalculation.Strategies
         [TestCase("Merge branch 'release/2.0.0'", null, "2.0.0")]
         public void TakesVersionFromMergeOfConfiguredReleaseBranch(string message, string releaseBranch, string expectedVersion)
         {
-            var config = new Config();
+            var config = new TestableConfig();
             if (releaseBranch != null) config.Branches[releaseBranch] = new BranchConfig { IsReleaseBranch = true };
             var parents = GetParents(true);
 
@@ -155,7 +155,7 @@ namespace GitVersionCore.Tests.VersionCalculation.Strategies
             };
 
             var contextBuilder = new GitVersionContextBuilder()
-                .WithConfig(config ?? new Config())
+                .WithConfig(config ?? new TestableConfig())
                 .WithRepository(new MockRepository
                 {
                     Head = new MockBranch("master")

@@ -41,7 +41,7 @@ namespace GitVersionCore.Tests.IntegrationTests
         [Test]
         public void BranchCreatedAfterFastForwardMergeShouldInheritCorrectly()
         {
-            var config = new Config
+            var config = new TestableConfig
             {
                 Branches =
                 {
@@ -169,14 +169,14 @@ namespace GitVersionCore.Tests.IntegrationTests
             Commands.Checkout(fixture.Repository, "feature/longrunning");
             fixture.Repository.Merge(fixture.Repository.Branches["develop"], Generate.SignatureNow());
 
-            var configuration = new Config { VersioningMode = VersioningMode.ContinuousDeployment };
+            var configuration = new TestableConfig { VersioningMode = VersioningMode.ContinuousDeployment };
             fixture.AssertFullSemver("1.2.0-longrunning.2", configuration);
         }
 
         [Test]
         public void CanUseBranchNameOffAReleaseBranch()
         {
-            var config = new Config
+            var config = new TestableConfig
             {
                 Branches =
                 {
@@ -201,7 +201,7 @@ namespace GitVersionCore.Tests.IntegrationTests
         [TestCase("alpha.{BranchName}", "JIRA-123", "alpha.JIRA-123")]
         public void ShouldUseConfiguredTag(string tag, string featureName, string preReleaseTagName)
         {
-            var config = new Config
+            var config = new TestableConfig
             {
                 Branches =
                 {
@@ -301,7 +301,7 @@ namespace GitVersionCore.Tests.IntegrationTests
             [Test]
             public void ShouldPickUpVersionFromMasterAfterReleaseBranchCreated()
             {
-                var config = new Config
+                var config = new TestableConfig
                 {
                     Branches = new Dictionary<string, BranchConfig>
                     {
@@ -332,7 +332,7 @@ namespace GitVersionCore.Tests.IntegrationTests
             [Test]
             public void ShouldPickUpVersionFromMasterAfterReleaseBranchMergedBack()
             {
-                var config = new Config
+                var config = new TestableConfig
                 {
                     Branches = new Dictionary<string, BranchConfig>
                     {
@@ -411,7 +411,7 @@ namespace GitVersionCore.Tests.IntegrationTests
                 [Test]
                 public void ShouldPickUpVersionFromMasterAfterReleaseBranchCreated()
                 {
-                    var config = new Config
+                    var config = new TestableConfig
                     {
                         Branches = new Dictionary<string, BranchConfig>
                         {
@@ -442,7 +442,7 @@ namespace GitVersionCore.Tests.IntegrationTests
                 [Test]
                 public void ShouldPickUpVersionFromMasterAfterReleaseBranchMergedBack()
                 {
-                    var config = new Config
+                    var config = new TestableConfig
                     {
                         Branches = new Dictionary<string, BranchConfig>
                         {
@@ -477,7 +477,7 @@ namespace GitVersionCore.Tests.IntegrationTests
         [Test]
         public void PickUpVersionFromMasterMarkedWithIsTracksReleaseBranches()
         {
-            var config = new Config
+            var config = new TestableConfig
             {
                 VersioningMode = VersioningMode.ContinuousDelivery,
                 Branches = new Dictionary<string, BranchConfig>
@@ -521,7 +521,7 @@ namespace GitVersionCore.Tests.IntegrationTests
         [Test]
         public void ShouldHaveAGreaterSemVerAfterDevelopIsMergedIntoFeature()
         {
-            var config = new Config
+            var config = new TestableConfig
             {
                 VersioningMode = VersioningMode.ContinuousDeployment,
                 AssemblyVersioningScheme = AssemblyVersioningScheme.Major,

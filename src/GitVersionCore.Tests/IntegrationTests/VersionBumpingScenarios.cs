@@ -12,7 +12,7 @@ namespace GitVersionCore.Tests.IntegrationTests
         [Test]
         public void AppliedPrereleaseTagCausesBump()
         {
-            var configuration = new Config
+            var configuration = new TestableConfig
             {
                 Branches =
                 {

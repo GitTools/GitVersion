@@ -76,7 +76,7 @@ namespace GitVersionCore.Tests
         public void Build()
         {
             var repo = repository ?? CreateRepository();
-            var config = configuration ?? new Config();
+            var config = configuration ?? new TestableConfig();
 
             config.Reset();
 

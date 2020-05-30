@@ -100,7 +100,7 @@ namespace GitVersionCore.Tests.IntegrationTests
         [Test]
         public void ReleaseBranchWithNextVersionSetInConfig()
         {
-            var config = new Config
+            var config = new TestableConfig
             {
                 NextVersion = "2.0.0"
             };
@@ -116,7 +116,7 @@ namespace GitVersionCore.Tests.IntegrationTests
         [Test]
         public void CanTakeVersionFromReleaseBranchWithTagOverridden()
         {
-            var config = new Config
+            var config = new TestableConfig
             {
                 Branches =
                 {
@@ -313,7 +313,7 @@ namespace GitVersionCore.Tests.IntegrationTests
         [Test]
         public void HotfixOffReleaseBranchShouldNotResetCount()
         {
-            var config = new Config
+            var config = new TestableConfig
             {
                 VersioningMode = VersioningMode.ContinuousDeployment
             };
@@ -350,7 +350,7 @@ namespace GitVersionCore.Tests.IntegrationTests
         [Test]
         public void MergeOnReleaseBranchShouldNotResetCount()
         {
-            var config = new Config
+            var config = new TestableConfig
             {
                 AssemblyVersioningScheme = AssemblyVersioningScheme.MajorMinorPatchTag,
                 VersioningMode = VersioningMode.ContinuousDeployment,
@@ -380,7 +380,7 @@ namespace GitVersionCore.Tests.IntegrationTests
         [Test]
         public void CommitOnDevelopAfterReleaseBranchMergeToDevelopShouldNotResetCount()
         {
-            var config = new Config
+            var config = new TestableConfig
             {
                 VersioningMode = VersioningMode.ContinuousDeployment
             };
@@ -436,7 +436,7 @@ namespace GitVersionCore.Tests.IntegrationTests
         [Test]
         public void CommitBeetweenMergeReleaseToDevelopShouldNotResetCount()
         {
-            var config = new Config
+            var config = new TestableConfig
             {
                 VersioningMode = VersioningMode.ContinuousDeployment
             };
@@ -511,7 +511,7 @@ namespace GitVersionCore.Tests.IntegrationTests
         [Test]
         public void FeatureFromReleaseBranchShouldNotResetCount()
         {
-            var config = new Config
+            var config = new TestableConfig
             {
                 VersioningMode = VersioningMode.ContinuousDeployment
             };
@@ -558,7 +558,7 @@ namespace GitVersionCore.Tests.IntegrationTests
         [Test]
         public void AssemblySemFileVerShouldBeWeightedByPreReleaseWeight()
         {
-            var config = new Config
+            var config = new TestableConfig
             {
                 AssemblyFileVersioningFormat = "{Major}.{Minor}.{Patch}.{WeightedPreReleaseNumber}",
                 Branches =
@@ -583,7 +583,7 @@ namespace GitVersionCore.Tests.IntegrationTests
         [Test]
         public void AssemblySemFileVerShouldBeWeightedByDefaultPreReleaseWeight()
         {
-            var config = new Config
+            var config = new TestableConfig
             {
                 AssemblyFileVersioningFormat = "{Major}.{Minor}.{Patch}.{WeightedPreReleaseNumber}",
             };
@@ -603,7 +603,7 @@ namespace GitVersionCore.Tests.IntegrationTests
         [Test]
         public void FeatureOnReleaseFeatureBranchDeleted()
         {
-            var config = new Config
+            var config = new TestableConfig
             {
                 AssemblyVersioningScheme = AssemblyVersioningScheme.MajorMinorPatchTag,
                 VersioningMode = VersioningMode.ContinuousDeployment
@@ -638,7 +638,7 @@ namespace GitVersionCore.Tests.IntegrationTests
         [Test]
         public void FeatureOnReleaseFeatureBranchNotDeleted()
         {
-            var config = new Config
+            var config = new TestableConfig
             {
                 AssemblyVersioningScheme = AssemblyVersioningScheme.MajorMinorPatchTag,
                 VersioningMode = VersioningMode.ContinuousDeployment

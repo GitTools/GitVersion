@@ -23,7 +23,7 @@ namespace GitVersionCore.Tests
         {
             using var fixture = new EmptyRepositoryFixture();
 
-            var config = new Config
+            var config = new TestableConfig
             {
                 VersioningMode = mode
             };
@@ -55,7 +55,7 @@ namespace GitVersionCore.Tests
             // Dummy branch name to make sure that no default config exists.
             const string dummyBranchName = "dummy";
 
-            var config = new Config
+            var config = new TestableConfig
             {
                 Increment = increment
             };
@@ -77,7 +77,7 @@ namespace GitVersionCore.Tests
             using var fixture = new EmptyRepositoryFixture();
 
             var branchName = "develop";
-            var config = new Config
+            var config = new TestableConfig
             {
                 VersioningMode = VersioningMode.ContinuousDelivery,
                 Branches =
@@ -123,7 +123,7 @@ namespace GitVersionCore.Tests
                 IsReleaseBranch = false,
                 SourceBranches = new List<string>()
             };
-            var config = new Config
+            var config = new TestableConfig
             {
                 VersioningMode = VersioningMode.ContinuousDelivery,
                 Branches =
@@ -157,7 +157,7 @@ namespace GitVersionCore.Tests
         [Test]
         public void CanFindParentBranchForInheritingIncrementStrategy()
         {
-            var config = new Config
+            var config = new TestableConfig
             {
                 Branches =
                 {

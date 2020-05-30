@@ -124,6 +124,13 @@ namespace GitVersion.Model.Configuration
         [YamlMember(Alias = "update-build-number")]
         public bool? UpdateBuildNumber { get; set; }
 
+        public virtual void MergeTo(Config targetConfig)
+        {
+            if (targetConfig == null) throw new ArgumentNullException(nameof(targetConfig));
+
+            targetConfig.TagPrefix = this.TagPrefix ?? targetConfig.TagPrefix;
+        }
+
         public override string ToString()
         {
             var stringBuilder = new StringBuilder();
