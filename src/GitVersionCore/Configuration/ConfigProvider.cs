@@ -24,44 +24,28 @@ namespace GitVersion.Configuration
             this.configInitWizard = configInitWizard ?? throw new ArgumentNullException(nameof(this.configInitWizard));
         }
 
-        public Config Provide(bool applyDefaults = true, Config overrideConfig = null)
+        public Config Provide(Config overrideConfig = null)
         {
             var gitVersionOptions = options.Value;
             var workingDirectory = gitVersionOptions.WorkingDirectory;
             var projectRootDirectory = gitVersionOptions.ProjectRootDirectory;
 
             var rootDirectory = configFileLocator.HasConfigFileAt(workingDirectory) ? workingDirectory : projectRootDirectory;
-            return Provide(rootDirectory, applyDefaults, overrideConfig);
+            return Provide(rootDirectory, overrideConfig);
         }
 
-        public Config Provide(string workingDirectory, bool applyDefaults = true, Config overrideConfig = null)
+        public Config Provide(string workingDirectory, Config overrideConfig = null)
         {
-            var readConfig = configFileLocator.ReadConfig(workingDirectory);
-            readConfig.Verify();
-
-            if (applyDefaults)
-            {
-                var defaultConfig = DefaultConfigProvider.CreateDefaultConfig();
-                readConfig = defaultConfig.Apply(readConfig);
-            }
-
-            if (overrideConfig != null)
-            {
-                readConfig.Apply(overrideConfig);
-            }
-
-            if (applyDefaults) // TODO: backward compatible, but do we really need this check?
-            {
-                readConfig.FinalizeConfig();
-            }
-
-            return readConfig;
+            return DefaultConfigProvider.CreateDefaultConfig()
+                                        .Apply(configFileLocator.ReadConfig(workingDirectory))
+                                        .Apply(overrideConfig ?? new Config())
+                                        .FinalizeConfig();
         }
 
         public void Init(string workingDirectory)
         {
             var configFilePath = configFileLocator.GetConfigFilePath(workingDirectory);
-            var currentConfiguration = Provide(workingDirectory, false);
+            var currentConfiguration = configFileLocator.ReadConfig(workingDirectory);
 
             var config = configInitWizard.Run(currentConfiguration, workingDirectory);
             if (config == null) return;

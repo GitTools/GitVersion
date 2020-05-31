@@ -5,25 +5,11 @@ using System.Text.RegularExpressions;
 using GitVersion.Extensions;
 using GitVersion.Logging;
 using GitVersion.Model.Configuration;
-using GitVersion.VersionCalculation;
 
 namespace GitVersion.Configuration
 {
     public static class ConfigExtensions
     {
-        public static void Verify(this Config readConfig)
-        {
-            // Verify no branches are set to mainline mode
-            if (readConfig.Branches.Any(b => b.Value.VersioningMode == VersioningMode.Mainline))
-            {
-                throw new ConfigurationException(@"Mainline mode only works at the repository level, a single branch cannot be put into mainline mode
-
-This is because mainline mode treats your entire git repository as an event source with each merge into the 'mainline' incrementing the version.
-
-If the docs do not help you decide on the mode open an issue to discuss what you are trying to do.");
-            }
-        }
-
         public static BranchConfig GetConfigForBranch(this Config config, string branchName)
         {
             if (branchName == null) throw new ArgumentNullException(nameof(branchName));
