@@ -41,12 +41,18 @@ namespace GitVersion.Configuration
 
             if (applyDefaults)
             {
-                readConfig = readConfig.ApplyDefaults();
+                var defaultConfig = DefaultConfigProvider.CreateDefaultConfig();
+                readConfig = defaultConfig.Apply(readConfig);
             }
 
             if (overrideConfig != null)
             {
-                overrideConfig.MergeTo(readConfig);
+                readConfig.Apply(overrideConfig);
+            }
+
+            if (applyDefaults) // TODO: backward compatible, but do we really need this check?
+            {
+                readConfig.FinalizeConfig();
             }
 
             return readConfig;

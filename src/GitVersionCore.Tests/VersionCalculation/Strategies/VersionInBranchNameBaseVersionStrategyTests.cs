@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using System.Linq;
 using GitTools.Testing;
 using GitVersion.Configuration;
@@ -52,10 +51,14 @@ namespace GitVersionCore.Tests.VersionCalculation.Strategies
             using var fixture = new EmptyRepositoryFixture();
             fixture.Repository.MakeACommit();
             fixture.Repository.CreateBranch(branchName);
-            var branchConfigs = new Dictionary<string, BranchConfig> { { "support", new BranchConfig { IsReleaseBranch = true } } };
 
-            var config = new TestableConfig().ApplyDefaults();
-            config.Branches = branchConfigs;
+            var config = DefaultConfigProvider.CreateDefaultConfig()
+                                              .Apply(new Config
+                                                     {
+                                                         Branches = { { "support", new BranchConfig { IsReleaseBranch = true } } }
+                                                     })
+                                              .FinalizeConfig();
+
             var strategy = GetVersionStrategy(fixture.RepositoryPath, fixture.Repository, branchName, config);
 
             var baseVersion = strategy.GetVersions().Single();

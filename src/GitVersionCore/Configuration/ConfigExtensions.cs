@@ -11,12 +11,6 @@ namespace GitVersion.Configuration
 {
     public static class ConfigExtensions
     {
-        public static Config ApplyDefaults(this Config config)
-        {
-            DefaultConfigProvider.Reset(config);
-            return config;
-        }
-
         public static void Verify(this Config readConfig)
         {
             // Verify no branches are set to mainline mode

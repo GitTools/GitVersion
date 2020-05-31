@@ -21,7 +21,7 @@ namespace GitVersionCore.Tests
         {
             if (configuration == null)
             {
-                configuration = new TestableConfig().ApplyDefaults();
+                configuration = DefaultConfigProvider.CreateDefaultConfig();
             }
 
             repository ??= fixture.Repository;
@@ -66,8 +66,8 @@ namespace GitVersionCore.Tests
 
         public static void AssertFullSemver(this RepositoryFixtureBase fixture, string fullSemver, Config configuration = null, IRepository repository = null, string commitId = null, bool onlyTrackedBranches = true, string targetBranch = null)
         {
-            configuration ??= new TestableConfig();
-            configuration = configuration.ApplyDefaults();
+            configuration ??= new Config();
+            configuration = DefaultConfigProvider.CreateDefaultConfig().Apply(configuration).FinalizeConfig();
             Console.WriteLine("---------");
 
             try

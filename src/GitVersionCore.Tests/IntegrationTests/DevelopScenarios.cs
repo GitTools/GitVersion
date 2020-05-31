@@ -55,15 +55,16 @@ namespace GitVersionCore.Tests.IntegrationTests
         [Test]
         public void CanChangeDevelopTagViaConfig()
         {
-            var config = new TestableConfig
+            var config = new Config
             {
                 Branches =
                 {
                     {
-                        "develop", new BranchConfig
+                        "develop",
+                        new BranchConfig
                         {
                             Tag = "alpha",
-                            SourceBranches = new List<string>()
+                            SourceBranches = new HashSet<string>()
                         }
                     }
                 }
@@ -115,17 +116,18 @@ namespace GitVersionCore.Tests.IntegrationTests
         [Test]
         public void CanHandleContinuousDelivery()
         {
-            var config = new TestableConfig
-            {
-                Branches =
-                {
-                    {"develop", new BranchConfig
-                        {
-                            VersioningMode = VersioningMode.ContinuousDelivery
-                        }
-                    }
-                }
-            };
+            var config = new Config
+                         {
+                             Branches =
+                             {
+                                 {
+                                     "develop", new BranchConfig
+                                                {
+                                                    VersioningMode = VersioningMode.ContinuousDelivery
+                                                }
+                                 }
+                             }
+                         };
             using var fixture = new EmptyRepositoryFixture();
             fixture.Repository.MakeATaggedCommit("1.0.0");
             Commands.Checkout(fixture.Repository, fixture.Repository.CreateBranch("develop"));
@@ -205,7 +207,7 @@ namespace GitVersionCore.Tests.IntegrationTests
         [Test]
         public void CommitsSinceVersionSourceShouldNotGoDownUponGitFlowReleaseFinish()
         {
-            var config = new TestableConfig
+            var config = new Config
             {
                 VersioningMode = VersioningMode.ContinuousDeployment
             };
@@ -246,7 +248,7 @@ namespace GitVersionCore.Tests.IntegrationTests
         [Test]
         public void CommitsSinceVersionSourceShouldNotGoDownUponMergingFeatureOnlyToDevelop()
         {
-            var config = new TestableConfig
+            var config = new Config
             {
                 VersioningMode = VersioningMode.ContinuousDeployment
             };
