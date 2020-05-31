@@ -117,17 +117,9 @@ namespace GitVersionCore.Tests.IntegrationTests
         public void CanHandleContinuousDelivery()
         {
             var config = new Config
-                         {
-                             Branches =
-                             {
-                                 {
-                                     "develop", new BranchConfig
-                                                {
-                                                    VersioningMode = VersioningMode.ContinuousDelivery
-                                                }
-                                 }
-                             }
-                         };
+            {
+                Branches = { { "develop", new BranchConfig { VersioningMode = VersioningMode.ContinuousDelivery } } }
+            };
             using var fixture = new EmptyRepositoryFixture();
             fixture.Repository.MakeATaggedCommit("1.0.0");
             Commands.Checkout(fixture.Repository, fixture.Repository.CreateBranch("develop"));

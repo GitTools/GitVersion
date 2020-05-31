@@ -104,28 +104,28 @@ namespace GitVersion.Model.Configuration
         {
             if (targetConfig == null) throw new ArgumentNullException(nameof(targetConfig));
 
-            targetConfig.AssemblyVersioningScheme         = this.AssemblyVersioningScheme         ?? targetConfig.AssemblyVersioningScheme;
-            targetConfig.AssemblyFileVersioningScheme     = this.AssemblyFileVersioningScheme     ?? targetConfig.AssemblyFileVersioningScheme;
-            targetConfig.AssemblyInformationalFormat      = this.AssemblyInformationalFormat      ?? targetConfig.AssemblyInformationalFormat;
-            targetConfig.AssemblyVersioningFormat         = this.AssemblyVersioningFormat         ?? targetConfig.AssemblyVersioningFormat;
-            targetConfig.AssemblyFileVersioningFormat     = this.AssemblyFileVersioningFormat     ?? targetConfig.AssemblyFileVersioningFormat;
-            targetConfig.VersioningMode                   = this.VersioningMode                   ?? targetConfig.VersioningMode;
-            targetConfig.TagPrefix                        = this.TagPrefix                        ?? targetConfig.TagPrefix;
-            targetConfig.ContinuousDeploymentFallbackTag  = this.ContinuousDeploymentFallbackTag  ?? targetConfig.ContinuousDeploymentFallbackTag;
-            targetConfig.NextVersion                      = this.NextVersion                      ?? targetConfig.NextVersion;
-            targetConfig.MajorVersionBumpMessage          = this.MajorVersionBumpMessage          ?? targetConfig.MajorVersionBumpMessage;
-            targetConfig.MinorVersionBumpMessage          = this.MinorVersionBumpMessage          ?? targetConfig.MinorVersionBumpMessage;
-            targetConfig.PatchVersionBumpMessage          = this.PatchVersionBumpMessage          ?? targetConfig.PatchVersionBumpMessage;
-            targetConfig.NoBumpMessage                    = this.NoBumpMessage                    ?? targetConfig.NoBumpMessage;
-            targetConfig.LegacySemVerPadding              = this.LegacySemVerPadding              ?? targetConfig.LegacySemVerPadding;
-            targetConfig.BuildMetaDataPadding             = this.BuildMetaDataPadding             ?? targetConfig.BuildMetaDataPadding;
+            targetConfig.AssemblyVersioningScheme = this.AssemblyVersioningScheme ?? targetConfig.AssemblyVersioningScheme;
+            targetConfig.AssemblyFileVersioningScheme = this.AssemblyFileVersioningScheme ?? targetConfig.AssemblyFileVersioningScheme;
+            targetConfig.AssemblyInformationalFormat = this.AssemblyInformationalFormat ?? targetConfig.AssemblyInformationalFormat;
+            targetConfig.AssemblyVersioningFormat = this.AssemblyVersioningFormat ?? targetConfig.AssemblyVersioningFormat;
+            targetConfig.AssemblyFileVersioningFormat = this.AssemblyFileVersioningFormat ?? targetConfig.AssemblyFileVersioningFormat;
+            targetConfig.VersioningMode = this.VersioningMode ?? targetConfig.VersioningMode;
+            targetConfig.TagPrefix = this.TagPrefix ?? targetConfig.TagPrefix;
+            targetConfig.ContinuousDeploymentFallbackTag = this.ContinuousDeploymentFallbackTag ?? targetConfig.ContinuousDeploymentFallbackTag;
+            targetConfig.NextVersion = this.NextVersion ?? targetConfig.NextVersion;
+            targetConfig.MajorVersionBumpMessage = this.MajorVersionBumpMessage ?? targetConfig.MajorVersionBumpMessage;
+            targetConfig.MinorVersionBumpMessage = this.MinorVersionBumpMessage ?? targetConfig.MinorVersionBumpMessage;
+            targetConfig.PatchVersionBumpMessage = this.PatchVersionBumpMessage ?? targetConfig.PatchVersionBumpMessage;
+            targetConfig.NoBumpMessage = this.NoBumpMessage ?? targetConfig.NoBumpMessage;
+            targetConfig.LegacySemVerPadding = this.LegacySemVerPadding ?? targetConfig.LegacySemVerPadding;
+            targetConfig.BuildMetaDataPadding = this.BuildMetaDataPadding ?? targetConfig.BuildMetaDataPadding;
             targetConfig.CommitsSinceVersionSourcePadding = this.CommitsSinceVersionSourcePadding ?? targetConfig.CommitsSinceVersionSourcePadding;
-            targetConfig.TagPreReleaseWeight              = this.TagPreReleaseWeight              ?? targetConfig.TagPreReleaseWeight;
-            targetConfig.CommitMessageIncrementing        = this.CommitMessageIncrementing        ?? targetConfig.CommitMessageIncrementing;
-            targetConfig.Increment                        = this.Increment                        ?? targetConfig.Increment;
-            targetConfig.CommitDateFormat                 = this.CommitDateFormat                 ?? targetConfig.CommitDateFormat;
-            targetConfig.MergeMessageFormats              = this.MergeMessageFormats              ?? targetConfig.MergeMessageFormats;
-            targetConfig.UpdateBuildNumber                = this.UpdateBuildNumber                ?? targetConfig.UpdateBuildNumber;
+            targetConfig.TagPreReleaseWeight = this.TagPreReleaseWeight ?? targetConfig.TagPreReleaseWeight;
+            targetConfig.CommitMessageIncrementing = this.CommitMessageIncrementing ?? targetConfig.CommitMessageIncrementing;
+            targetConfig.Increment = this.Increment ?? targetConfig.Increment;
+            targetConfig.CommitDateFormat = this.CommitDateFormat ?? targetConfig.CommitDateFormat;
+            targetConfig.MergeMessageFormats = this.MergeMessageFormats ?? targetConfig.MergeMessageFormats;
+            targetConfig.UpdateBuildNumber = this.UpdateBuildNumber ?? targetConfig.UpdateBuildNumber;
 
             if (this.Ignore != null && !this.Ignore.IsEmpty)
             {

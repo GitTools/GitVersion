@@ -53,10 +53,7 @@ namespace GitVersionCore.Tests.VersionCalculation.Strategies
             fixture.Repository.CreateBranch(branchName);
 
             var config = DefaultConfigProvider.CreateDefaultConfig()
-                                              .Apply(new Config
-                                                     {
-                                                         Branches = { { "support", new BranchConfig { IsReleaseBranch = true } } }
-                                                     })
+                                              .Apply(new Config { Branches = { { "support", new BranchConfig { IsReleaseBranch = true } } } })
                                               .FinalizeConfig();
 
             var strategy = GetVersionStrategy(fixture.RepositoryPath, fixture.Repository, branchName, config);

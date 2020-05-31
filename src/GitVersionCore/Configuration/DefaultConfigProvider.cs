@@ -12,24 +12,24 @@ namespace GitVersion.Configuration
         public static Config CreateDefaultConfig()
         {
             var config = new Config
-                         {
-                             AssemblyVersioningScheme = AssemblyVersioningScheme.MajorMinorPatch,
-                             AssemblyFileVersioningScheme = AssemblyFileVersioningScheme.MajorMinorPatch,
-                             TagPrefix = Config.DefaultTagPrefix,
-                             VersioningMode = VersioningMode.ContinuousDelivery,
-                             ContinuousDeploymentFallbackTag = "ci",
-                             MajorVersionBumpMessage = IncrementStrategyFinder.DefaultMajorPattern,
-                             MinorVersionBumpMessage = IncrementStrategyFinder.DefaultMinorPattern,
-                             PatchVersionBumpMessage = IncrementStrategyFinder.DefaultPatchPattern,
-                             NoBumpMessage = IncrementStrategyFinder.DefaultNoBumpPattern,
-                             CommitMessageIncrementing = CommitMessageIncrementMode.Enabled,
-                             LegacySemVerPadding = 4,
-                             BuildMetaDataPadding = 4,
-                             CommitsSinceVersionSourcePadding = 4,
-                             CommitDateFormat = "yyyy-MM-dd",
-                             UpdateBuildNumber = true,
-                             TagPreReleaseWeight = DefaultTagPreReleaseWeight
-                         };
+            {
+                AssemblyVersioningScheme = AssemblyVersioningScheme.MajorMinorPatch,
+                AssemblyFileVersioningScheme = AssemblyFileVersioningScheme.MajorMinorPatch,
+                TagPrefix = Config.DefaultTagPrefix,
+                VersioningMode = VersioningMode.ContinuousDelivery,
+                ContinuousDeploymentFallbackTag = "ci",
+                MajorVersionBumpMessage = IncrementStrategyFinder.DefaultMajorPattern,
+                MinorVersionBumpMessage = IncrementStrategyFinder.DefaultMinorPattern,
+                PatchVersionBumpMessage = IncrementStrategyFinder.DefaultPatchPattern,
+                NoBumpMessage = IncrementStrategyFinder.DefaultNoBumpPattern,
+                CommitMessageIncrementing = CommitMessageIncrementMode.Enabled,
+                LegacySemVerPadding = 4,
+                BuildMetaDataPadding = 4,
+                CommitsSinceVersionSourcePadding = 4,
+                CommitDateFormat = "yyyy-MM-dd",
+                UpdateBuildNumber = true,
+                TagPreReleaseWeight = DefaultTagPreReleaseWeight
+            };
 
             AddBranchConfig(Config.DevelopBranchKey,
                             new BranchConfig
@@ -120,15 +120,15 @@ namespace GitVersion.Configuration
         public static BranchConfig CreateDefaultBranchConfig(string name)
         {
             return new BranchConfig
-                   {
-                       Name = name,
-                       Tag = "useBranchName",
-                       PreventIncrementOfMergedBranchVersion = false,
-                       TrackMergeTarget = false,
-                       TracksReleaseBranches = false,
-                       IsReleaseBranch = false,
-                       IsMainline = false,
-                   };
+            {
+                Name = name,
+                Tag = "useBranchName",
+                PreventIncrementOfMergedBranchVersion = false,
+                TrackMergeTarget = false,
+                TracksReleaseBranches = false,
+                IsReleaseBranch = false,
+                IsMainline = false,
+            };
         }
     }
 }

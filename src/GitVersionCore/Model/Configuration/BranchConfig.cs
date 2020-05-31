@@ -89,20 +89,20 @@ namespace GitVersion.Model.Configuration
         {
             if (targetConfig == null) throw new ArgumentNullException(nameof(targetConfig));
 
-            targetConfig.VersioningMode                        = this.VersioningMode                        ?? targetConfig.VersioningMode;
-            targetConfig.Tag                                   = this.Tag                                   ?? targetConfig.Tag;
-            targetConfig.Increment                             = this.Increment                             ?? targetConfig.Increment;
+            targetConfig.VersioningMode = this.VersioningMode ?? targetConfig.VersioningMode;
+            targetConfig.Tag = this.Tag ?? targetConfig.Tag;
+            targetConfig.Increment = this.Increment ?? targetConfig.Increment;
             targetConfig.PreventIncrementOfMergedBranchVersion = this.PreventIncrementOfMergedBranchVersion ?? targetConfig.PreventIncrementOfMergedBranchVersion;
-            targetConfig.TagNumberPattern                      = this.TagNumberPattern                      ?? targetConfig.TagNumberPattern;
-            targetConfig.TrackMergeTarget                      = this.TrackMergeTarget                      ?? targetConfig.TrackMergeTarget;
-            targetConfig.CommitMessageIncrementing             = this.CommitMessageIncrementing             ?? targetConfig.CommitMessageIncrementing;
-            targetConfig.Regex                                 = this.Regex                                 ?? targetConfig.Regex;
-            targetConfig.SourceBranches                        = this.SourceBranches                        ?? targetConfig.SourceBranches;
-            targetConfig.IsSourceBranchFor                     = this.IsSourceBranchFor                     ?? targetConfig.IsSourceBranchFor;
-            targetConfig.TracksReleaseBranches                 = this.TracksReleaseBranches                 ?? targetConfig.TracksReleaseBranches;
-            targetConfig.IsReleaseBranch                       = this.IsReleaseBranch                       ?? targetConfig.IsReleaseBranch;
-            targetConfig.IsMainline                            = this.IsMainline                            ?? targetConfig.IsMainline;
-            targetConfig.PreReleaseWeight                      = this.PreReleaseWeight                      ?? targetConfig.PreReleaseWeight;
+            targetConfig.TagNumberPattern = this.TagNumberPattern ?? targetConfig.TagNumberPattern;
+            targetConfig.TrackMergeTarget = this.TrackMergeTarget ?? targetConfig.TrackMergeTarget;
+            targetConfig.CommitMessageIncrementing = this.CommitMessageIncrementing ?? targetConfig.CommitMessageIncrementing;
+            targetConfig.Regex = this.Regex ?? targetConfig.Regex;
+            targetConfig.SourceBranches = this.SourceBranches ?? targetConfig.SourceBranches;
+            targetConfig.IsSourceBranchFor = this.IsSourceBranchFor ?? targetConfig.IsSourceBranchFor;
+            targetConfig.TracksReleaseBranches = this.TracksReleaseBranches ?? targetConfig.TracksReleaseBranches;
+            targetConfig.IsReleaseBranch = this.IsReleaseBranch ?? targetConfig.IsReleaseBranch;
+            targetConfig.IsMainline = this.IsMainline ?? targetConfig.IsMainline;
+            targetConfig.PreReleaseWeight = this.PreReleaseWeight ?? targetConfig.PreReleaseWeight;
         }
 
         public BranchConfig Apply([NotNull] BranchConfig overrides)

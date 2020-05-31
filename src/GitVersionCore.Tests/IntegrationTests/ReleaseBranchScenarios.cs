@@ -560,18 +560,18 @@ namespace GitVersionCore.Tests.IntegrationTests
         {
             var config = DefaultConfigProvider.CreateDefaultConfig()
                                               .Apply(new Config
-                                                     {
-                                                         AssemblyFileVersioningFormat = "{Major}.{Minor}.{Patch}.{WeightedPreReleaseNumber}",
-                                                         Branches =
-                                                         {
-                                                             {
-                                                                 "release", new BranchConfig
-                                                                            {
-                                                                                PreReleaseWeight = 1000
-                                                                            }
-                                                             }
-                                                         }
-                                                     })
+                                              {
+                                                  AssemblyFileVersioningFormat = "{Major}.{Minor}.{Patch}.{WeightedPreReleaseNumber}",
+                                                  Branches =
+                                                  {
+                                                      {
+                                                          "release", new BranchConfig
+                                                                     {
+                                                                         PreReleaseWeight = 1000
+                                                                     }
+                                                      }
+                                                  }
+                                              })
                                               .FinalizeConfig();
             using var fixture = new EmptyRepositoryFixture();
             fixture.Repository.MakeATaggedCommit("1.0.3");
@@ -588,9 +588,9 @@ namespace GitVersionCore.Tests.IntegrationTests
         {
             var config = DefaultConfigProvider.CreateDefaultConfig()
                                               .Apply(new Config
-                                                     {
-                                                         AssemblyFileVersioningFormat = "{Major}.{Minor}.{Patch}.{WeightedPreReleaseNumber}",
-                                                     })
+                                              {
+                                                  AssemblyFileVersioningFormat = "{Major}.{Minor}.{Patch}.{WeightedPreReleaseNumber}",
+                                              })
                                               .FinalizeConfig();
 
             using var fixture = new EmptyRepositoryFixture();

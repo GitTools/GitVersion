@@ -36,11 +36,11 @@ namespace GitVersion.Configuration
 
                 matchingBranches = DefaultConfigProvider.CreateDefaultBranchConfig(FallbackConfigName)
                                                         .Apply(new BranchConfig
-                                                               {
-                                                                   Regex = "",
-                                                                   VersioningMode = configuration.VersioningMode,
-                                                                   Increment = configuration.Increment ?? IncrementStrategy.Inherit,
-                                                               });
+                                                        {
+                                                            Regex = "",
+                                                            VersioningMode = configuration.VersioningMode,
+                                                            Increment = configuration.Increment ?? IncrementStrategy.Inherit,
+                                                        });
             }
 
             if (matchingBranches.Increment == IncrementStrategy.Inherit)
