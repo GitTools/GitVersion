@@ -9,6 +9,7 @@
 '------------------------------------------------------------------------------
 
 <Global.System.Runtime.CompilerServices.CompilerGenerated()>
+<Global.System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage()>
 NotInheritable Class GitVersionInformation
     Private Sub New()
     End Sub
