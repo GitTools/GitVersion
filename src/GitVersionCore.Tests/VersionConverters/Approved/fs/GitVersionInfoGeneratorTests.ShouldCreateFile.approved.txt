@@ -10,6 +10,7 @@
 
 [<AbstractClass; Sealed>]
 [<global.System.Runtime.CompilerServices.CompilerGenerated>]
+[<global.System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage>]
 module GitVersionInformation
     let Major = "1"
     let Minor = "2"
