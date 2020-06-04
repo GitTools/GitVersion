@@ -1,12 +1,12 @@
-using GitVersion.Logging;
-using GitVersion.Extensions;
-using GitVersionCore.Tests.Helpers;
-using LibGit2Sharp;
-using NUnit.Framework;
-using NSubstitute;
 using System;
 using System.Collections.Generic;
 using GitVersion;
+using GitVersion.Extensions;
+using GitVersion.Logging;
+using GitVersionCore.Tests.Helpers;
+using LibGit2Sharp;
+using NSubstitute;
+using NUnit.Framework;
 
 namespace GitVersionCore.Tests
 {
