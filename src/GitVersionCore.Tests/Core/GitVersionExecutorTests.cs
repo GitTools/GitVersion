@@ -225,7 +225,7 @@ namespace GitVersionCore.Tests
 
             var cacheDirectoryTimestamp = fileSystem.GetLastDirectoryWrite(cacheDirectory);
 
-            var config = DefaultConfigProvider.CreateDefaultConfig().Apply(new Config { TagPrefix = "prefix" }).FinalizeConfig();
+            var config = new ConfigurationBuilder().Add(new Config { TagPrefix = "prefix" }).Build();
             gitVersionOptions = new GitVersionOptions { WorkingDirectory = fixture.RepositoryPath, ConfigInfo = { OverrideConfig = config } };
 
             gitVersionCalculator = GetGitVersionCalculator(gitVersionOptions);

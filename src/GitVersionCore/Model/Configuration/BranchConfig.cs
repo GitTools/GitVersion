@@ -112,5 +112,19 @@ namespace GitVersion.Model.Configuration
             overrides.MergeTo(this);
             return this;
         }
+
+        public static BranchConfig CreateDefaultBranchConfig(string name)
+        {
+            return new BranchConfig
+            {
+                Name = name,
+                Tag = "useBranchName",
+                PreventIncrementOfMergedBranchVersion = false,
+                TrackMergeTarget = false,
+                TracksReleaseBranches = false,
+                IsReleaseBranch = false,
+                IsMainline = false,
+            };
+        }
     }
 }

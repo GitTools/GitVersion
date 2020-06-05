@@ -52,9 +52,9 @@ namespace GitVersionCore.Tests.VersionCalculation.Strategies
             fixture.Repository.MakeACommit();
             fixture.Repository.CreateBranch(branchName);
 
-            var config = DefaultConfigProvider.CreateDefaultConfig()
-                                              .Apply(new Config { Branches = { { "support", new BranchConfig { IsReleaseBranch = true } } } })
-                                              .FinalizeConfig();
+            var config = new ConfigurationBuilder()
+                         .Add(new Config { Branches = { { "support", new BranchConfig { IsReleaseBranch = true } } } })
+                         .Build();
 
             var strategy = GetVersionStrategy(fixture.RepositoryPath, fixture.Repository, branchName, config);
 

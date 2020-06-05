@@ -6,7 +6,6 @@ using System.Text;
 using GitVersion.Configuration;
 using GitVersion.Extensions;
 using GitVersion.VersionCalculation;
-using JetBrains.Annotations;
 using YamlDotNet.Serialization;
 
 namespace GitVersion.Model.Configuration
@@ -100,133 +99,6 @@ namespace GitVersion.Model.Configuration
         [YamlMember(Alias = "update-build-number")]
         public bool? UpdateBuildNumber { get; set; }
 
-        public virtual void MergeTo([NotNull] Config targetConfig)
-        {
-            if (targetConfig == null) throw new ArgumentNullException(nameof(targetConfig));
-
-            targetConfig.AssemblyVersioningScheme = this.AssemblyVersioningScheme ?? targetConfig.AssemblyVersioningScheme;
-            targetConfig.AssemblyFileVersioningScheme = this.AssemblyFileVersioningScheme ?? targetConfig.AssemblyFileVersioningScheme;
-            targetConfig.AssemblyInformationalFormat = this.AssemblyInformationalFormat ?? targetConfig.AssemblyInformationalFormat;
-            targetConfig.AssemblyVersioningFormat = this.AssemblyVersioningFormat ?? targetConfig.AssemblyVersioningFormat;
-            targetConfig.AssemblyFileVersioningFormat = this.AssemblyFileVersioningFormat ?? targetConfig.AssemblyFileVersioningFormat;
-            targetConfig.VersioningMode = this.VersioningMode ?? targetConfig.VersioningMode;
-            targetConfig.TagPrefix = this.TagPrefix ?? targetConfig.TagPrefix;
-            targetConfig.ContinuousDeploymentFallbackTag = this.ContinuousDeploymentFallbackTag ?? targetConfig.ContinuousDeploymentFallbackTag;
-            targetConfig.NextVersion = this.NextVersion ?? targetConfig.NextVersion;
-            targetConfig.MajorVersionBumpMessage = this.MajorVersionBumpMessage ?? targetConfig.MajorVersionBumpMessage;
-            targetConfig.MinorVersionBumpMessage = this.MinorVersionBumpMessage ?? targetConfig.MinorVersionBumpMessage;
-            targetConfig.PatchVersionBumpMessage = this.PatchVersionBumpMessage ?? targetConfig.PatchVersionBumpMessage;
-            targetConfig.NoBumpMessage = this.NoBumpMessage ?? targetConfig.NoBumpMessage;
-            targetConfig.LegacySemVerPadding = this.LegacySemVerPadding ?? targetConfig.LegacySemVerPadding;
-            targetConfig.BuildMetaDataPadding = this.BuildMetaDataPadding ?? targetConfig.BuildMetaDataPadding;
-            targetConfig.CommitsSinceVersionSourcePadding = this.CommitsSinceVersionSourcePadding ?? targetConfig.CommitsSinceVersionSourcePadding;
-            targetConfig.TagPreReleaseWeight = this.TagPreReleaseWeight ?? targetConfig.TagPreReleaseWeight;
-            targetConfig.CommitMessageIncrementing = this.CommitMessageIncrementing ?? targetConfig.CommitMessageIncrementing;
-            targetConfig.Increment = this.Increment ?? targetConfig.Increment;
-            targetConfig.CommitDateFormat = this.CommitDateFormat ?? targetConfig.CommitDateFormat;
-            targetConfig.MergeMessageFormats = this.MergeMessageFormats ?? targetConfig.MergeMessageFormats;
-            targetConfig.UpdateBuildNumber = this.UpdateBuildNumber ?? targetConfig.UpdateBuildNumber;
-
-            if (this.Ignore != null && !this.Ignore.IsEmpty)
-            {
-                targetConfig.Ignore = this.Ignore;
-            }
-
-            if (this.Branches != null && this.Branches.Count > 0)
-            {
-                // We can't just add new configs to the targetConfig.Branches, and have to create a new dictionary.
-                // The reason is that GitVersion 5.3.x (and earlier) merges default configs into overrides. The new approach is opposite: we merge overrides into default config.
-                // The important difference of these approaches is the order of branches in a dictionary (we should not rely on Dictionary's implementation details, but we already did that):
-                // Old approach: { new-branch-1, new-branch-2, default-branch-1, default-branch-2, ... }
-                // New approach: { default-branch-1, default-branch-2, ..., new-branch-1, new-branch-2 }
-                // In case when several branch configurations match the current branch (by regex), we choose the first one.
-                // So we have to add new branches to the beginning of a dictionary to preserve 5.3.x behavior.
-
-                var newBranches = new Dictionary<string, BranchConfig>();
-
-                var targetConfigBranches = targetConfig.Branches;
-
-                foreach (var (key, source) in this.Branches)
-                {
-                    if (!targetConfigBranches.TryGetValue(key, out var target))
-                    {
-                        target = DefaultConfigProvider.CreateDefaultBranchConfig(key);
-                    }
-
-                    source.MergeTo(target);
-                    newBranches[key] = target;
-                }
-
-                foreach (var (key, branchConfig) in targetConfigBranches)
-                {
-                    if (!newBranches.ContainsKey(key))
-                    {
-                        newBranches[key] = branchConfig;
-                    }
-                }
-
-                targetConfig.Branches = newBranches;
-            }
-        }
-
-        public Config FinalizeConfig()
-        {
-            Ignore ??= new IgnoreConfig();
-
-            foreach (var (name, branchConfig) in Branches)
-            {
-                branchConfig.Increment ??= Increment ?? IncrementStrategy.Inherit;
-
-                if (branchConfig.VersioningMode == null)
-                {
-                    if (name == DevelopBranchKey)
-                    {
-                        branchConfig.VersioningMode = VersioningMode == VersionCalculation.VersioningMode.Mainline
-                                                          ? VersionCalculation.VersioningMode.Mainline
-                                                          : VersionCalculation.VersioningMode.ContinuousDeployment;
-                    }
-                    else
-                    {
-                        branchConfig.VersioningMode = VersioningMode;
-                    }
-                }
-
-                if (branchConfig.IsSourceBranchFor != null)
-                {
-                    foreach (var targetBranchName in branchConfig.IsSourceBranchFor)
-                    {
-                        var targetBranchConfig = Branches[targetBranchName];
-                        targetBranchConfig.SourceBranches ??= new HashSet<string>();
-                        targetBranchConfig.SourceBranches.Add(name);
-                    }
-                }
-            }
-
-            ValidateConfiguration();
-
-            return this;
-        }
-
-        public void ValidateConfiguration()
-        {
-            foreach (var (name, branchConfig) in this.Branches)
-            {
-                var regex = branchConfig.Regex;
-                if (regex == null)
-                {
-                    throw new ConfigurationException($"Branch configuration '{name}' is missing required configuration 'regex'{System.Environment.NewLine}" +
-                                                     "See https://gitversion.net/docs/configuration/ for more info");
-                }
-
-                var sourceBranches = branchConfig.SourceBranches;
-                if (sourceBranches == null)
-                {
-                    throw new ConfigurationException($"Branch configuration '{name}' is missing required configuration 'source-branches'{System.Environment.NewLine}" +
-                                                     "See https://gitversion.net/docs/configuration/ for more info");
-                }
-            }
-        }
-
         public override string ToString()
         {
             var stringBuilder = new StringBuilder();
@@ -251,13 +123,5 @@ namespace GitVersion.Model.Configuration
         public const string HotfixBranchKey = "hotfix";
         public const string SupportBranchKey = "support";
         public const string DevelopBranchKey = "develop";
-
-        public Config Apply([NotNull] Config overrides)
-        {
-            if (overrides == null) throw new ArgumentNullException(nameof(overrides));
-
-            overrides.MergeTo(this);
-            return this;
-        }
     }
 }

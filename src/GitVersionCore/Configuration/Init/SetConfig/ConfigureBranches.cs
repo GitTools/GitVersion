@@ -52,7 +52,7 @@ namespace GitVersion.Configuration.Init.SetConfig
 
         private static IOrderedEnumerable<KeyValuePair<string, BranchConfig>> OrderedBranches(Config config)
         {
-            var defaultConfig = DefaultConfigProvider.CreateDefaultConfig();
+            var defaultConfig = new ConfigurationBuilder().Build();
 
             var defaultConfigurationBranches = defaultConfig.Branches
                 .Where(k => !config.Branches.ContainsKey(k.Key))

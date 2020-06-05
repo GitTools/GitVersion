@@ -36,10 +36,10 @@ namespace GitVersion.Configuration
 
         public Config Provide(string workingDirectory, Config overrideConfig = null)
         {
-            return DefaultConfigProvider.CreateDefaultConfig()
-                                        .Apply(configFileLocator.ReadConfig(workingDirectory))
-                                        .Apply(overrideConfig ?? new Config())
-                                        .FinalizeConfig();
+            return new ConfigurationBuilder()
+                   .Add(configFileLocator.ReadConfig(workingDirectory))
+                   .Add(overrideConfig ?? new Config())
+                   .Build();
         }
 
         public void Init(string workingDirectory)

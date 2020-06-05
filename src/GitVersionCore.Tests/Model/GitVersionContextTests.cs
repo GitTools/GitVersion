@@ -23,12 +23,9 @@ namespace GitVersionCore.Tests
         {
             using var fixture = new EmptyRepositoryFixture();
 
-            var config = DefaultConfigProvider.CreateDefaultConfig()
-                                              .Apply(new Config
-                                              {
-                                                  VersioningMode = mode
-                                              })
-                                              .FinalizeConfig();
+            var config = new ConfigurationBuilder()
+                         .Add(new Config { VersioningMode = mode })
+                         .Build();
 
             var branchName = "master";
             var mockBranch = new MockBranch(branchName) { new MockCommit { CommitterEx = Generate.SignatureNow() } };
@@ -56,9 +53,9 @@ namespace GitVersionCore.Tests
             // Dummy branch name to make sure that no default config exists.
             const string dummyBranchName = "dummy";
 
-            var config = DefaultConfigProvider.CreateDefaultConfig()
-                                              .Apply(new Config { Increment = increment })
-                                              .FinalizeConfig();
+            var config = new ConfigurationBuilder()
+                                              .Add(new Config { Increment = increment })
+                                              .Build();
 
             using var fixture = new EmptyRepositoryFixture();
             fixture.MakeACommit();
@@ -76,22 +73,22 @@ namespace GitVersionCore.Tests
             using var fixture = new EmptyRepositoryFixture();
 
             var branchName = "develop";
-            var config = DefaultConfigProvider.CreateDefaultConfig()
-                                              .Apply(new Config
-                                              {
-                                                  VersioningMode = VersioningMode.ContinuousDelivery,
-                                                  Branches =
-                                                  {
+            var config = new ConfigurationBuilder()
+                         .Add(new Config
+                         {
+                             VersioningMode = VersioningMode.ContinuousDelivery,
+                             Branches =
+                                  {
+                                      {
+                                          branchName, new BranchConfig
                                                       {
-                                                          branchName, new BranchConfig
-                                                                      {
-                                                                          VersioningMode = VersioningMode.ContinuousDeployment,
-                                                                          Tag = "alpha"
-                                                                      }
+                                                          VersioningMode = VersioningMode.ContinuousDeployment,
+                                                          Tag = "alpha"
                                                       }
-                                                  }
-                                              })
-                                              .FinalizeConfig();
+                                      }
+                                  }
+                         })
+                         .Build();
 
             var develop = new MockBranch(branchName) { new MockCommit { CommitterEx = Generate.SignatureNow() } };
             var mockRepository = new MockRepository
@@ -124,17 +121,17 @@ namespace GitVersionCore.Tests
                 IsReleaseBranch = false,
                 SourceBranches = new HashSet<string>()
             };
-            var config = DefaultConfigProvider.CreateDefaultConfig()
-                                              .Apply(new Config
-                                              {
-                                                  VersioningMode = VersioningMode.ContinuousDelivery,
-                                                  Branches =
-                                                  {
-                                                      { "release/latest", new BranchConfig(branchConfig) { Increment = IncrementStrategy.None, Regex = "release/latest" } },
-                                                      { "release", new BranchConfig(branchConfig) { Increment = IncrementStrategy.Patch, Regex = "releases?[/-]" } }
-                                                  }
-                                              })
-                                              .FinalizeConfig();
+            var config = new ConfigurationBuilder()
+                         .Add(new Config
+                         {
+                             VersioningMode = VersioningMode.ContinuousDelivery,
+                             Branches =
+                                  {
+                                      { "release/latest", new BranchConfig(branchConfig) { Increment = IncrementStrategy.None, Regex = "release/latest" } },
+                                      { "release", new BranchConfig(branchConfig) { Increment = IncrementStrategy.Patch, Regex = "releases?[/-]" } }
+                                  }
+                         })
+                         .Build();
 
             var releaseLatestBranch = new MockBranch("release/latest") { new MockCommit { CommitterEx = Generate.SignatureNow() } };
             var releaseVersionBranch = new MockBranch("release/1.0.0") { new MockCommit { CommitterEx = Generate.SignatureNow() } };
@@ -160,16 +157,16 @@ namespace GitVersionCore.Tests
         [Test]
         public void CanFindParentBranchForInheritingIncrementStrategy()
         {
-            var config = DefaultConfigProvider.CreateDefaultConfig()
-                                              .Apply(new Config
-                                              {
-                                                  Branches =
-                                                  {
-                                                      { "develop", new BranchConfig { Increment = IncrementStrategy.Major } },
-                                                      { "feature", new BranchConfig { Increment = IncrementStrategy.Inherit } }
-                                                  }
-                                              })
-                                              .FinalizeConfig();
+            var config = new ConfigurationBuilder()
+                         .Add(new Config
+                         {
+                             Branches =
+                                  {
+                                      { "develop", new BranchConfig { Increment = IncrementStrategy.Major } },
+                                      { "feature", new BranchConfig { Increment = IncrementStrategy.Inherit } }
+                                  }
+                         })
+                         .Build();
 
             using var fixture = new EmptyRepositoryFixture();
             fixture.Repository.MakeACommit();

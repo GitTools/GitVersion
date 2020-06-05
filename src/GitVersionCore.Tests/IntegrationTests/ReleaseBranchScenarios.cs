@@ -558,21 +558,21 @@ namespace GitVersionCore.Tests.IntegrationTests
         [Test]
         public void AssemblySemFileVerShouldBeWeightedByPreReleaseWeight()
         {
-            var config = DefaultConfigProvider.CreateDefaultConfig()
-                                              .Apply(new Config
-                                              {
-                                                  AssemblyFileVersioningFormat = "{Major}.{Minor}.{Patch}.{WeightedPreReleaseNumber}",
-                                                  Branches =
-                                                  {
-                                                      {
-                                                          "release", new BranchConfig
-                                                                     {
-                                                                         PreReleaseWeight = 1000
-                                                                     }
-                                                      }
-                                                  }
-                                              })
-                                              .FinalizeConfig();
+            var config = new ConfigurationBuilder()
+                         .Add(new Config
+                         {
+                             AssemblyFileVersioningFormat = "{Major}.{Minor}.{Patch}.{WeightedPreReleaseNumber}",
+                             Branches =
+                                    {
+                                        {
+                                            "release", new BranchConfig
+                                                       {
+                                                           PreReleaseWeight = 1000
+                                                       }
+                                        }
+                                    }
+                         })
+                         .Build();
             using var fixture = new EmptyRepositoryFixture();
             fixture.Repository.MakeATaggedCommit("1.0.3");
             fixture.Repository.MakeCommits(5);
@@ -586,12 +586,12 @@ namespace GitVersionCore.Tests.IntegrationTests
         [Test]
         public void AssemblySemFileVerShouldBeWeightedByDefaultPreReleaseWeight()
         {
-            var config = DefaultConfigProvider.CreateDefaultConfig()
-                                              .Apply(new Config
-                                              {
-                                                  AssemblyFileVersioningFormat = "{Major}.{Minor}.{Patch}.{WeightedPreReleaseNumber}",
-                                              })
-                                              .FinalizeConfig();
+            var config = new ConfigurationBuilder()
+                         .Add(new Config
+                         {
+                             AssemblyFileVersioningFormat = "{Major}.{Minor}.{Patch}.{WeightedPreReleaseNumber}",
+                         })
+                         .Build();
 
             using var fixture = new EmptyRepositoryFixture();
             fixture.Repository.MakeATaggedCommit("1.0.3");
