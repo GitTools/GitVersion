@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
-using System.Linq;
 using System.Text;
 using GitVersion.Configuration;
 using GitVersion.Extensions;
@@ -13,11 +12,11 @@ namespace GitVersion.Model.Configuration
 {
     public class Config
     {
-        private readonly Dictionary<string, BranchConfig> branches = new Dictionary<string, BranchConfig>();
         private string nextVersion;
 
         public Config()
         {
+            Branches = new Dictionary<string, BranchConfig>();
             Ignore = new IgnoreConfig();
         }
 
@@ -83,31 +82,7 @@ namespace GitVersion.Model.Configuration
         public CommitMessageIncrementMode? CommitMessageIncrementing { get; set; }
 
         [YamlMember(Alias = "branches")]
-        public Dictionary<string, BranchConfig> Branches
-        {
-            get => branches;
-            set
-            {
-                value.ToList().ForEach(_ =>
-                {
-                    if (!branches.ContainsKey(_.Key))
-                        branches.Add(_.Key, new BranchConfig { Name = _.Key });
-
-                    branches[_.Key] = MergeObjects(branches[_.Key], _.Value);
-                });
-            }
-        }
-
-        private static T MergeObjects<T>(T target, T source)
-        {
-            typeof(T).GetProperties()
-                .Where(prop => prop.CanRead && prop.CanWrite)
-                .Select(_ => new { prop = _, value = _.GetValue(source, null) })
-                .Where(_ => _.value != null)
-                .ToList()
-                .ForEach(_ => _.prop.SetValue(target, _.value, null));
-            return target;
-        }
+        public Dictionary<string, BranchConfig> Branches { get; set; }
 
         [YamlMember(Alias = "ignore")]
         public IgnoreConfig Ignore { get; set; }
@@ -123,13 +98,6 @@ namespace GitVersion.Model.Configuration
 
         [YamlMember(Alias = "update-build-number")]
         public bool? UpdateBuildNumber { get; set; }
-
-        public virtual void MergeTo(Config targetConfig)
-        {
-            if (targetConfig == null) throw new ArgumentNullException(nameof(targetConfig));
-
-            targetConfig.TagPrefix = this.TagPrefix ?? targetConfig.TagPrefix;
-        }
 
         public override string ToString()
         {

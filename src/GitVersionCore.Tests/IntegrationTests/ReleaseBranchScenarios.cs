@@ -100,7 +100,7 @@ namespace GitVersionCore.Tests.IntegrationTests
         [Test]
         public void ReleaseBranchWithNextVersionSetInConfig()
         {
-            var config = new TestableConfig
+            var config = new Config
             {
                 NextVersion = "2.0.0"
             };
@@ -116,7 +116,7 @@ namespace GitVersionCore.Tests.IntegrationTests
         [Test]
         public void CanTakeVersionFromReleaseBranchWithTagOverridden()
         {
-            var config = new TestableConfig
+            var config = new Config
             {
                 Branches =
                 {
@@ -313,7 +313,7 @@ namespace GitVersionCore.Tests.IntegrationTests
         [Test]
         public void HotfixOffReleaseBranchShouldNotResetCount()
         {
-            var config = new TestableConfig
+            var config = new Config
             {
                 VersioningMode = VersioningMode.ContinuousDeployment
             };
@@ -350,7 +350,7 @@ namespace GitVersionCore.Tests.IntegrationTests
         [Test]
         public void MergeOnReleaseBranchShouldNotResetCount()
         {
-            var config = new TestableConfig
+            var config = new Config
             {
                 AssemblyVersioningScheme = AssemblyVersioningScheme.MajorMinorPatchTag,
                 VersioningMode = VersioningMode.ContinuousDeployment,
@@ -380,7 +380,7 @@ namespace GitVersionCore.Tests.IntegrationTests
         [Test]
         public void CommitOnDevelopAfterReleaseBranchMergeToDevelopShouldNotResetCount()
         {
-            var config = new TestableConfig
+            var config = new Config
             {
                 VersioningMode = VersioningMode.ContinuousDeployment
             };
@@ -436,7 +436,7 @@ namespace GitVersionCore.Tests.IntegrationTests
         [Test]
         public void CommitBeetweenMergeReleaseToDevelopShouldNotResetCount()
         {
-            var config = new TestableConfig
+            var config = new Config
             {
                 VersioningMode = VersioningMode.ContinuousDeployment
             };
@@ -511,7 +511,7 @@ namespace GitVersionCore.Tests.IntegrationTests
         [Test]
         public void FeatureFromReleaseBranchShouldNotResetCount()
         {
-            var config = new TestableConfig
+            var config = new Config
             {
                 VersioningMode = VersioningMode.ContinuousDeployment
             };
@@ -558,24 +558,27 @@ namespace GitVersionCore.Tests.IntegrationTests
         [Test]
         public void AssemblySemFileVerShouldBeWeightedByPreReleaseWeight()
         {
-            var config = new TestableConfig
-            {
-                AssemblyFileVersioningFormat = "{Major}.{Minor}.{Patch}.{WeightedPreReleaseNumber}",
-                Branches =
-                {
-                    { "release", new BranchConfig
-                        {
-                            PreReleaseWeight = 1000
-                        }
-                    }
-                }
-            };
+            var config = new ConfigurationBuilder()
+                         .Add(new Config
+                         {
+                             AssemblyFileVersioningFormat = "{Major}.{Minor}.{Patch}.{WeightedPreReleaseNumber}",
+                             Branches =
+                                    {
+                                        {
+                                            "release", new BranchConfig
+                                                       {
+                                                           PreReleaseWeight = 1000
+                                                       }
+                                        }
+                                    }
+                         })
+                         .Build();
             using var fixture = new EmptyRepositoryFixture();
             fixture.Repository.MakeATaggedCommit("1.0.3");
             fixture.Repository.MakeCommits(5);
             fixture.Repository.CreateBranch("release-2.0.0");
             fixture.Checkout("release-2.0.0");
-            config.Reset();
+
             var variables = fixture.GetVersion(config);
             Assert.AreEqual(variables.AssemblySemFileVer, "2.0.0.1001");
         }
@@ -583,16 +586,18 @@ namespace GitVersionCore.Tests.IntegrationTests
         [Test]
         public void AssemblySemFileVerShouldBeWeightedByDefaultPreReleaseWeight()
         {
-            var config = new TestableConfig
-            {
-                AssemblyFileVersioningFormat = "{Major}.{Minor}.{Patch}.{WeightedPreReleaseNumber}",
-            };
+            var config = new ConfigurationBuilder()
+                         .Add(new Config
+                         {
+                             AssemblyFileVersioningFormat = "{Major}.{Minor}.{Patch}.{WeightedPreReleaseNumber}",
+                         })
+                         .Build();
+
             using var fixture = new EmptyRepositoryFixture();
             fixture.Repository.MakeATaggedCommit("1.0.3");
             fixture.Repository.MakeCommits(5);
             fixture.Repository.CreateBranch("release-2.0.0");
             fixture.Checkout("release-2.0.0");
-            config.Reset();
             var variables = fixture.GetVersion(config);
             Assert.AreEqual(variables.AssemblySemFileVer, "2.0.0.30001");
         }
@@ -603,7 +608,7 @@ namespace GitVersionCore.Tests.IntegrationTests
         [Test]
         public void FeatureOnReleaseFeatureBranchDeleted()
         {
-            var config = new TestableConfig
+            var config = new Config
             {
                 AssemblyVersioningScheme = AssemblyVersioningScheme.MajorMinorPatchTag,
                 VersioningMode = VersioningMode.ContinuousDeployment
@@ -638,7 +643,7 @@ namespace GitVersionCore.Tests.IntegrationTests
         [Test]
         public void FeatureOnReleaseFeatureBranchNotDeleted()
         {
-            var config = new TestableConfig
+            var config = new Config
             {
                 AssemblyVersioningScheme = AssemblyVersioningScheme.MajorMinorPatchTag,
                 VersioningMode = VersioningMode.ContinuousDeployment

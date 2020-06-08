@@ -29,7 +29,7 @@ namespace GitVersionCore.Tests.VersionCalculation
                     services.AddSingleton<IBaseVersionCalculator>(new TestBaseVersionCalculator(true, new SemanticVersion(1), new MockCommit()));
                     services.AddSingleton<IMainlineVersionCalculator>(new TestMainlineVersionCalculator(semanticVersionBuildMetaData));
                 })
-                .WithConfig(new TestableConfig())
+                .WithConfig(new Config())
                 .Build();
 
             var nextVersionCalculator = contextBuilder.ServicesProvider.GetService<INextVersionCalculator>();
@@ -53,7 +53,7 @@ namespace GitVersionCore.Tests.VersionCalculation
                     services.AddSingleton<IBaseVersionCalculator>(new TestBaseVersionCalculator(false, new SemanticVersion(1), new MockCommit()));
                     services.AddSingleton<IMainlineVersionCalculator>(new TestMainlineVersionCalculator(semanticVersionBuildMetaData));
                 })
-                .WithConfig(new TestableConfig())
+                .WithConfig(new Config())
                 .Build();
 
             var nextVersionCalculator = contextBuilder.ServicesProvider.GetService<INextVersionCalculator>();
@@ -91,7 +91,7 @@ namespace GitVersionCore.Tests.VersionCalculation
         [Test]
         public void PreReleaseTagCanUseBranchName()
         {
-            var config = new TestableConfig
+            var config = new Config
             {
                 NextVersion = "1.0.0",
                 Branches = new Dictionary<string, BranchConfig>
@@ -101,7 +101,7 @@ namespace GitVersionCore.Tests.VersionCalculation
                         {
                             Regex = "custom/",
                             Tag = "useBranchName",
-                            SourceBranches = new List<string>()
+                            SourceBranches = new HashSet<string>()
                         }
                     }
                 }
@@ -120,7 +120,7 @@ namespace GitVersionCore.Tests.VersionCalculation
         [Test]
         public void PreReleaseTagCanUseBranchNameVariable()
         {
-            var config = new TestableConfig
+            var config = new Config
             {
                 NextVersion = "1.0.0",
                 Branches = new Dictionary<string, BranchConfig>
@@ -130,7 +130,7 @@ namespace GitVersionCore.Tests.VersionCalculation
                         {
                             Regex = "custom/",
                             Tag = "alpha.{BranchName}",
-                            SourceBranches = new List<string>()
+                            SourceBranches = new HashSet<string>()
                         }
                     }
                 }
@@ -149,7 +149,7 @@ namespace GitVersionCore.Tests.VersionCalculation
         [Test]
         public void PreReleaseNumberShouldBeScopeToPreReleaseLabelInContinuousDelivery()
         {
-            var config = new TestableConfig
+            var config = new Config
             {
                 VersioningMode = VersioningMode.ContinuousDelivery,
                 Branches = new Dictionary<string, BranchConfig>

@@ -1,5 +1,7 @@
+using System;
 using System.Collections.Generic;
 using GitVersion.VersionCalculation;
+using JetBrains.Annotations;
 using YamlDotNet.Serialization;
 
 namespace GitVersion.Model.Configuration
@@ -60,10 +62,10 @@ namespace GitVersion.Model.Configuration
         public string Regex { get; set; }
 
         [YamlMember(Alias = "source-branches")]
-        public List<string> SourceBranches { get; set; }
+        public HashSet<string> SourceBranches { get; set; }
 
         [YamlMember(Alias = "is-source-branch-for")]
-        public string[] IsSourceBranchFor { get; set; }
+        public HashSet<string> IsSourceBranchFor { get; set; }
 
         [YamlMember(Alias = "tracks-release-branches")]
         public bool? TracksReleaseBranches { get; set; }
@@ -82,5 +84,47 @@ namespace GitVersion.Model.Configuration
         /// </summary>
         [YamlIgnore]
         public string Name { get; set; }
+
+        public void MergeTo([NotNull] BranchConfig targetConfig)
+        {
+            if (targetConfig == null) throw new ArgumentNullException(nameof(targetConfig));
+
+            targetConfig.VersioningMode = this.VersioningMode ?? targetConfig.VersioningMode;
+            targetConfig.Tag = this.Tag ?? targetConfig.Tag;
+            targetConfig.Increment = this.Increment ?? targetConfig.Increment;
+            targetConfig.PreventIncrementOfMergedBranchVersion = this.PreventIncrementOfMergedBranchVersion ?? targetConfig.PreventIncrementOfMergedBranchVersion;
+            targetConfig.TagNumberPattern = this.TagNumberPattern ?? targetConfig.TagNumberPattern;
+            targetConfig.TrackMergeTarget = this.TrackMergeTarget ?? targetConfig.TrackMergeTarget;
+            targetConfig.CommitMessageIncrementing = this.CommitMessageIncrementing ?? targetConfig.CommitMessageIncrementing;
+            targetConfig.Regex = this.Regex ?? targetConfig.Regex;
+            targetConfig.SourceBranches = this.SourceBranches ?? targetConfig.SourceBranches;
+            targetConfig.IsSourceBranchFor = this.IsSourceBranchFor ?? targetConfig.IsSourceBranchFor;
+            targetConfig.TracksReleaseBranches = this.TracksReleaseBranches ?? targetConfig.TracksReleaseBranches;
+            targetConfig.IsReleaseBranch = this.IsReleaseBranch ?? targetConfig.IsReleaseBranch;
+            targetConfig.IsMainline = this.IsMainline ?? targetConfig.IsMainline;
+            targetConfig.PreReleaseWeight = this.PreReleaseWeight ?? targetConfig.PreReleaseWeight;
+        }
+
+        public BranchConfig Apply([NotNull] BranchConfig overrides)
+        {
+            if (overrides == null) throw new ArgumentNullException(nameof(overrides));
+
+            overrides.MergeTo(this);
+            return this;
+        }
+
+        public static BranchConfig CreateDefaultBranchConfig(string name)
+        {
+            return new BranchConfig
+            {
+                Name = name,
+                Tag = "useBranchName",
+                PreventIncrementOfMergedBranchVersion = false,
+                TrackMergeTarget = false,
+                TracksReleaseBranches = false,
+                IsReleaseBranch = false,
+                IsMainline = false,
+            };
+        }
     }
 }

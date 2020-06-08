@@ -92,7 +92,7 @@ namespace GitVersionCore.Tests.VersionCalculation
             var versionCalculator = GetBaseVersionCalculator(contextBuilder =>
             {
                 contextBuilder
-                    .WithConfig(new TestableConfig { Ignore = fakeIgnoreConfig })
+                    .WithConfig(new Config { Ignore = fakeIgnoreConfig })
                     .OverrideServices(services =>
                     {
                         services.RemoveAll<IVersionStrategy>();
@@ -118,7 +118,7 @@ namespace GitVersionCore.Tests.VersionCalculation
             var versionCalculator = GetBaseVersionCalculator(contextBuilder =>
             {
                 contextBuilder
-                    .WithConfig(new TestableConfig { Ignore = fakeIgnoreConfig })
+                    .WithConfig(new Config { Ignore = fakeIgnoreConfig })
                     .OverrideServices(services =>
                     {
                         services.RemoveAll<IVersionStrategy>();
@@ -146,6 +146,8 @@ namespace GitVersionCore.Tests.VersionCalculation
         private class TestIgnoreConfig : IgnoreConfig
         {
             private readonly IVersionFilter filter;
+
+            public override bool IsEmpty => false;
 
             public TestIgnoreConfig(IVersionFilter filter)
             {

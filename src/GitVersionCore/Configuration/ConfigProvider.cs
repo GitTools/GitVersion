@@ -24,38 +24,28 @@ namespace GitVersion.Configuration
             this.configInitWizard = configInitWizard ?? throw new ArgumentNullException(nameof(this.configInitWizard));
         }
 
-        public Config Provide(bool applyDefaults = true, Config overrideConfig = null)
+        public Config Provide(Config overrideConfig = null)
         {
             var gitVersionOptions = options.Value;
             var workingDirectory = gitVersionOptions.WorkingDirectory;
             var projectRootDirectory = gitVersionOptions.ProjectRootDirectory;
 
             var rootDirectory = configFileLocator.HasConfigFileAt(workingDirectory) ? workingDirectory : projectRootDirectory;
-            return Provide(rootDirectory, applyDefaults, overrideConfig);
+            return Provide(rootDirectory, overrideConfig);
         }
 
-        public Config Provide(string workingDirectory, bool applyDefaults = true, Config overrideConfig = null)
+        public Config Provide(string workingDirectory, Config overrideConfig = null)
         {
-            var readConfig = configFileLocator.ReadConfig(workingDirectory);
-            readConfig.Verify();
-
-            if (applyDefaults)
-            {
-                readConfig.Reset();
-            }
-
-            if (overrideConfig != null)
-            {
-                overrideConfig.MergeTo(readConfig);
-            }
-
-            return readConfig;
+            return new ConfigurationBuilder()
+                   .Add(configFileLocator.ReadConfig(workingDirectory))
+                   .Add(overrideConfig ?? new Config())
+                   .Build();
         }
 
         public void Init(string workingDirectory)
         {
             var configFilePath = configFileLocator.GetConfigFilePath(workingDirectory);
-            var currentConfiguration = Provide(workingDirectory, false);
+            var currentConfiguration = configFileLocator.ReadConfig(workingDirectory);
 
             var config = configInitWizard.Run(currentConfiguration, workingDirectory);
             if (config == null) return;

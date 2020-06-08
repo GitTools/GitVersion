@@ -7,6 +7,7 @@ using GitVersion;
 using GitVersion.BuildAgents;
 using GitVersion.Configuration;
 using GitVersion.Logging;
+using GitVersion.Model.Configuration;
 using GitVersion.VersionCalculation.Cache;
 using GitVersionCore.Tests.Helpers;
 using LibGit2Sharp;
@@ -224,8 +225,7 @@ namespace GitVersionCore.Tests
 
             var cacheDirectoryTimestamp = fileSystem.GetLastDirectoryWrite(cacheDirectory);
 
-            var config = new TestableConfig { TagPrefix = "prefix" };
-            config.Reset();
+            var config = new ConfigurationBuilder().Add(new Config { TagPrefix = "prefix" }).Build();
             gitVersionOptions = new GitVersionOptions { WorkingDirectory = fixture.RepositoryPath, ConfigInfo = { OverrideConfig = config } };
 
             gitVersionCalculator = GetGitVersionCalculator(gitVersionOptions);

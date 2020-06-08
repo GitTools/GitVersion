@@ -34,8 +34,13 @@ namespace GitVersion.Configuration
             {
                 log.Info($"No branch configuration found for branch {targetBranch.FriendlyName}, falling back to default configuration");
 
-                matchingBranches = new BranchConfig { Name = FallbackConfigName };
-                configuration.ApplyBranchDefaults(matchingBranches, "", new List<string>());
+                matchingBranches = BranchConfig.CreateDefaultBranchConfig(FallbackConfigName)
+                                               .Apply(new BranchConfig
+                                               {
+                                                   Regex = "",
+                                                   VersioningMode = configuration.VersioningMode,
+                                                   Increment = configuration.Increment ?? IncrementStrategy.Inherit,
+                                               });
             }
 
             if (matchingBranches.Increment == IncrementStrategy.Inherit)
