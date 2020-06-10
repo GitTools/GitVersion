@@ -1,7 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
         <TargetFrameworks>net472;netcoreapp2.1;netcoreapp3.1</TargetFrameworks>
-        <LangVersion>8.0</LangVersion>
 
         <IsTestProject>true</IsTestProject>
     </PropertyGroup>
@@ -15,9 +14,6 @@
     </ItemGroup>
     <ItemGroup>
         <None Include="TestBuildFile.proj" />
-    </ItemGroup>
-    <ItemGroup>
-        <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
     </ItemGroup>
     <ItemGroup>
         <Content Include="Approved\**\*.approved.txt" />

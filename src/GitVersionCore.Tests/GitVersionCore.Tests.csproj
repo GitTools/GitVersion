@@ -6,7 +6,6 @@
         <DebugType>full</DebugType>
         <Optimize>false</Optimize>
         <DebugSymbols>true</DebugSymbols>
-        <LangVersion>8.0</LangVersion>
 
         <IsTestProject>true</IsTestProject>
     </PropertyGroup>
@@ -23,9 +22,6 @@
     <ItemGroup>
         <Content Include="VersionCalculation\Approved\**\*.approved.txt" />
         <Content Include="VersionConverters\Approved\**\*.approved.txt" />
-    </ItemGroup>
-    <ItemGroup>
-        <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
     </ItemGroup>
 
 </Project>

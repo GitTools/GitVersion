@@ -1,7 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
         <TargetFrameworks>net472;netcoreapp2.1;netcoreapp3.1</TargetFrameworks>
-        <LangVersion>8.0</LangVersion>
 
         <IsTestProject>true</IsTestProject>
     </PropertyGroup>
@@ -13,12 +12,8 @@
         <PackageReference Include="MSBuild.ProjectCreation" Version="1.4.2" />
     </ItemGroup>
     <ItemGroup>
-      <Compile Update="MsBuildExecutionResult.cs">
-        <Link>Helpers\MsBuildExecutionResult.cs</Link>
-      </Compile>
-      <Compile Update="MsBuildHelper.cs">
-        <Link>Helpers\MsBuildHelper.cs</Link>
-      </Compile>
+      <Compile Update="MsBuildExecutionResult.cs" Link="Helpers\MsBuildExecutionResult.cs" />
+      <Compile Update="MsBuildHelper.cs" Link="Helpers\MsBuildHelper.cs" />
     </ItemGroup>
     <ItemGroup>
       <Compile Include="..\GitVersionCore.Tests\Helpers\DirectoryHelper.cs" Link="Helpers\DirectoryHelper.cs" />
@@ -35,9 +30,6 @@
       <ProjectReference Include="..\GitVersionCore\GitVersionCore.csproj" />
       <ProjectReference Include="..\GitVersionTask.MsBuild\GitVersionTask.MsBuild.csproj" />
       <ProjectReference Include="..\GitVersionTask\GitVersionTask.csproj" />
-    </ItemGroup>
-    <ItemGroup>
-        <Service Include="{82a7f48d-3b50-4b1e-b82e-3ada8210c358}" />
     </ItemGroup>
 
 </Project>
