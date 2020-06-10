@@ -14,14 +14,13 @@ namespace GitVersion
         private readonly IConsole console;
         private readonly IConfigFileLocator configFileLocator;
         private readonly IHelpWriter helpWriter;
-        private readonly IExecCommand execCommand;
         private readonly IConfigProvider configProvider;
         private readonly IGitVersionTool gitVersionTool;
         private readonly IVersionWriter versionWriter;
 
         public GitVersionExecutor(ILog log, IConsole console,
             IConfigFileLocator configFileLocator, IConfigProvider configProvider, IGitVersionTool gitVersionTool,
-            IVersionWriter versionWriter, IHelpWriter helpWriter, IExecCommand execCommand)
+            IVersionWriter versionWriter, IHelpWriter helpWriter)
         {
             this.log = log ?? throw new ArgumentNullException(nameof(log));
             this.console = console ?? throw new ArgumentNullException(nameof(console));
@@ -32,8 +31,6 @@ namespace GitVersion
 
             this.versionWriter = versionWriter ?? throw new ArgumentNullException(nameof(versionWriter));
             this.helpWriter = helpWriter ?? throw new ArgumentNullException(nameof(helpWriter));
-
-            this.execCommand = execCommand ?? throw new ArgumentNullException(nameof(execCommand));
         }
 
         public int Execute(GitVersionOptions gitVersionOptions)
@@ -61,8 +58,6 @@ namespace GitVersion
                 gitVersionTool.OutputVariables(variables);
                 gitVersionTool.UpdateAssemblyInfo(variables);
                 gitVersionTool.UpdateWixVersionFile(variables);
-
-                execCommand.Execute(variables);
             }
             catch (WarningException exception)
             {

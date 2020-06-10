@@ -117,7 +117,7 @@ Task("Artifacts-MsBuildCore-Test")
             continue;
         }
 
-        var cmd = $"-file {rootPrefix}/scripts/Test-MsBuildCore.ps1 -version {version} -repoPath {rootPrefix}/repo/test/core -nugetPath {rootPrefix}/nuget -targetframework {targetframework}";
+        var cmd = $"-file {rootPrefix}/scripts/Test-MsBuildCore.ps1 -version {version} -repoPath {rootPrefix}/repo/tests/integration/core -nugetPath {rootPrefix}/nuget -targetframework {targetframework}";
 
         DockerTestArtifact(dockerImage, parameters, cmd);
     }
@@ -141,7 +141,7 @@ Task("Artifacts-MsBuildFull-Test")
         dotnetCoreMsBuildSettings.WithProperty("TargetFramework", framework);
         dotnetCoreMsBuildSettings.WithProperty("GitVersionTaskVersion", version);
 
-        var projPath = MakeAbsolute(new DirectoryPath("./test/core"));
+        var projPath = MakeAbsolute(new DirectoryPath("./tests/integration/core"));
 
         DotNetCoreBuild(projPath.FullPath, new DotNetCoreBuildSettings
         {
@@ -151,7 +151,7 @@ Task("Artifacts-MsBuildFull-Test")
             ArgumentCustomization = args => args.Append($"--source {nugetSource}")
         });
 
-        var netcoreExe = new DirectoryPath("./test/core/build").Combine(framework).CombineWithFilePath("app.dll");
+        var netcoreExe = new DirectoryPath("./tests/integration/core/build").Combine(framework).CombineWithFilePath("app.dll");
         ValidateOutput("dotnet", netcoreExe.FullPath, parameters.Version.GitVersion.FullSemVer);
     }
 
@@ -166,9 +166,9 @@ Task("Artifacts-MsBuildFull-Test")
     msBuildSettings.WithProperty("GitVersionTaskVersion", version);
     msBuildSettings.WithProperty("RestoreSource", nugetSource);
 
-    MSBuild("./test/full", msBuildSettings);
+    MSBuild("./tests/integration/full", msBuildSettings);
 
-    var fullExe = new DirectoryPath("./test/full/build").CombineWithFilePath("app.exe");
+    var fullExe = new DirectoryPath("./tests/integration/full/build").CombineWithFilePath("app.exe");
     ValidateOutput(fullExe.FullPath, null, parameters.Version.GitVersion.FullSemVer);
 });
 

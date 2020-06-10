@@ -9,8 +9,6 @@
         <Description>Stamps an assembly with git information based on SemVer.</Description>
         <IncludeBuildOutput>false</IncludeBuildOutput>
         <DevelopmentDependency>true</DevelopmentDependency>
-
-        <LangVersion>8.0</LangVersion>
     </PropertyGroup>
 
     <ItemGroup>
