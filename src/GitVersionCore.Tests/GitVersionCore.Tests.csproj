@@ -7,9 +7,10 @@
         <Optimize>false</Optimize>
         <DebugSymbols>true</DebugSymbols>
         <LangVersion>8.0</LangVersion>
+
+        <IsTestProject>true</IsTestProject>
     </PropertyGroup>
 
-    <Import Project="..\test.props" />
     <ItemGroup>
         <PackageReference Include="FluentDateTime" Version="2.0.0" />
         <PackageReference Include="LibGit2Sharp.NativeBinaries" Version="$(PackageVersion_LibGit2Sharp_NativeBinaries)" />
