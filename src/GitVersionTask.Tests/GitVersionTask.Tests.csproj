@@ -9,7 +9,6 @@
         <PackageReference Include="Buildalyzer" Version="3.0.0" />
         <PackageReference Include="LibGit2Sharp" Version="$(PackageVersion_LibGit2Sharp)" />
         <PackageReference Include="Microsoft.Build" Version="$(PackageVersion_MsBuild)" />
-        <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="$(PackageVersion_MicrosoftExtensions)" />
         <PackageReference Include="MSBuild.ProjectCreation" Version="1.4.2" />
     </ItemGroup>
     <ItemGroup>

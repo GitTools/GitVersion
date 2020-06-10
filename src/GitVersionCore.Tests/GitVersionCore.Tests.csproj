@@ -13,7 +13,6 @@
     <ItemGroup>
         <PackageReference Include="FluentDateTime" Version="2.0.0" />
         <PackageReference Include="LibGit2Sharp.NativeBinaries" Version="$(PackageVersion_LibGit2Sharp_NativeBinaries)" />
-        <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="$(PackageVersion_MicrosoftExtensions)" />
         <PackageReference Include="Microsoft.Extensions.Options" Version="$(PackageVersion_MicrosoftExtensions)" />
         <PackageReference Include="YamlDotNet" Version="$(PackageVersion_YamlDotNet)" />
     </ItemGroup>
@@ -21,41 +20,8 @@
         <ProjectReference Include="..\GitVersionCore\GitVersionCore.csproj" />
     </ItemGroup>
     <ItemGroup>
-        <Content Include="Approved\**\*.approved.txt" />
-        <Content Include="VersionCalculation\Approved\JsonVersionBuilderTests.Json.approved.txt" />
-        <Content Include="VersionCalculation\Approved\VariableProviderTests.ProvidesVariablesInContinuousDeliveryModeForFeatureBranch.approved.txt" />
-        <Content Include="VersionCalculation\Approved\VariableProviderTests.ProvidesVariablesInContinuousDeliveryModeForFeatureBranchWithCustomAssemblyInfoFormat.approved.txt" />
-        <Content Include="VersionCalculation\Approved\VariableProviderTests.ProvidesVariablesInContinuousDeliveryModeForPreRelease.approved.txt" />
-        <Content Include="VersionCalculation\Approved\VariableProviderTests.ProvidesVariablesInContinuousDeliveryModeForPreReleaseWithPadding.approved.txt" />
-        <Content Include="VersionCalculation\Approved\VariableProviderTests.ProvidesVariablesInContinuousDeliveryModeForStable.approved.txt" />
-        <Content Include="VersionCalculation\Approved\VariableProviderTests.ProvidesVariablesInContinuousDeploymentModeForPreRelease.approved.txt" />
-        <Content Include="VersionCalculation\Approved\VariableProviderTests.ProvidesVariablesInContinuousDeploymentModeForStable.approved.txt" />
-        <Content Include="VersionCalculation\Approved\VariableProviderTests.ProvidesVariablesInContinuousDeploymentModeForStableWhenCurrentCommitIsTagged.approved.txt" />
-        <Content Include="VersionConverters\Approved\cs\AssemblyInfoFileUpdaterTests.Issue1183ShouldAddFSharpAssemblyInformationalVersionBesideOtherAttributes.approved.txt" />
-        <Content Include="VersionConverters\Approved\cs\AssemblyInfoFileUpdaterTests.ShouldAddAssemblyInformationalVersionWhenUpdatingAssemblyVersionFile.approved.txt" />
-        <Content Include="VersionConverters\Approved\cs\AssemblyInfoFileUpdaterTests.ShouldCreateAssemblyInfoFileAtPathWhenNotExistsAndEnsureAssemblyInfo.approved.txt" />
-        <Content Include="VersionConverters\Approved\cs\AssemblyInfoFileUpdaterTests.ShouldCreateAssemblyInfoFilesAtPathWhenNotExistsAndEnsureAssemblyInfo.approved.txt" />
-        <Content Include="VersionConverters\Approved\cs\AssemblyInfoFileUpdaterTests.ShouldCreateAssemblyInfoFileWhenNotExistsAndEnsureAssemblyInfo.approved.txt" />
-        <Content Include="VersionConverters\Approved\cs\AssemblyInfoFileUpdaterTests.ShouldNotAddAssemblyInformationalVersionWhenVersionSchemeIsNone.approved.txt" />
-        <Content Include="VersionConverters\Approved\cs\AssemblyInfoFileUpdaterTests.ShouldNotReplaceAssemblyVersionWhenVersionSchemeIsNone.approved.txt" />
-        <Content Include="VersionConverters\Approved\cs\GitVersionInfoGeneratorTests.ShouldCreateFile.approved.txt" />
-        <Content Include="VersionConverters\Approved\fs\AssemblyInfoFileUpdaterTests.Issue1183ShouldAddFSharpAssemblyInformationalVersionBesideOtherAttributes.approved.txt" />
-        <Content Include="VersionConverters\Approved\fs\AssemblyInfoFileUpdaterTests.ShouldAddAssemblyInformationalVersionWhenUpdatingAssemblyVersionFile.approved.txt" />
-        <Content Include="VersionConverters\Approved\fs\AssemblyInfoFileUpdaterTests.ShouldCreateAssemblyInfoFileAtPathWhenNotExistsAndEnsureAssemblyInfo.approved.txt" />
-        <Content Include="VersionConverters\Approved\fs\AssemblyInfoFileUpdaterTests.ShouldCreateAssemblyInfoFilesAtPathWhenNotExistsAndEnsureAssemblyInfo.approved.txt" />
-        <Content Include="VersionConverters\Approved\fs\AssemblyInfoFileUpdaterTests.ShouldCreateAssemblyInfoFileWhenNotExistsAndEnsureAssemblyInfo.approved.txt" />
-        <Content Include="VersionConverters\Approved\fs\AssemblyInfoFileUpdaterTests.ShouldNotAddAssemblyInformationalVersionWhenVersionSchemeIsNone.approved.txt" />
-        <Content Include="VersionConverters\Approved\fs\AssemblyInfoFileUpdaterTests.ShouldNotReplaceAssemblyVersionWhenVersionSchemeIsNone.approved.txt" />
-        <Content Include="VersionConverters\Approved\fs\GitVersionInfoGeneratorTests.ShouldCreateFile.approved.txt" />
-        <Content Include="VersionConverters\Approved\vb\AssemblyInfoFileUpdaterTests.Issue1183ShouldAddFSharpAssemblyInformationalVersionBesideOtherAttributes.approved.txt" />
-        <Content Include="VersionConverters\Approved\vb\AssemblyInfoFileUpdaterTests.ShouldAddAssemblyInformationalVersionWhenUpdatingAssemblyVersionFile.approved.txt" />
-        <Content Include="VersionConverters\Approved\vb\AssemblyInfoFileUpdaterTests.ShouldCreateAssemblyInfoFileAtPathWhenNotExistsAndEnsureAssemblyInfo.approved.txt" />
-        <Content Include="VersionConverters\Approved\vb\AssemblyInfoFileUpdaterTests.ShouldCreateAssemblyInfoFilesAtPathWhenNotExistsAndEnsureAssemblyInfo.approved.txt" />
-        <Content Include="VersionConverters\Approved\vb\AssemblyInfoFileUpdaterTests.ShouldCreateAssemblyInfoFileWhenNotExistsAndEnsureAssemblyInfo.approved.txt" />
-        <Content Include="VersionConverters\Approved\vb\AssemblyInfoFileUpdaterTests.ShouldNotAddAssemblyInformationalVersionWhenVersionSchemeIsNone.approved.txt" />
-        <Content Include="VersionConverters\Approved\vb\AssemblyInfoFileUpdaterTests.ShouldNotReplaceAssemblyVersionWhenVersionSchemeIsNone.approved.txt" />
-        <Content Include="VersionConverters\Approved\vb\GitVersionInfoGeneratorTests.ShouldCreateFile.approved.txt" />
-        <Content Include="VersionConverters\Approved\WixFileTests.UpdateWixVersionFile.approved.txt" />
+        <Content Include="VersionCalculation\Approved\**\*.approved.txt" />
+        <Content Include="VersionConverters\Approved\**\*.approved.txt" />
     </ItemGroup>
     <ItemGroup>
         <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
