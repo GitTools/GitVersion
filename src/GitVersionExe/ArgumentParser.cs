@@ -207,7 +207,15 @@ namespace GitVersion
 
             if (ParseRemoteArguments(arguments, name, values, value)) return true;
 
-            if (ParseExecArguments(arguments, name, values, value)) return true;
+            if (name.IsSwitch("diag"))
+            {
+                if (value == null || value.IsTrue())
+                {
+                    arguments.Diag = true;
+                }
+
+                return true;
+            }
 
             if (name.IsSwitch("updateprojectfiles"))
             {
@@ -297,57 +305,6 @@ namespace GitVersion
             if (name.IsSwitch("showConfig"))
             {
                 arguments.ShowConfig = value.IsTrue() || !value.IsFalse();
-                return true;
-            }
-
-            return false;
-        }
-
-        private static bool ParseExecArguments(Arguments arguments, string name, string[] values, string value)
-        {
-            if (name.IsSwitch("exec"))
-            {
-                EnsureArgumentValueCount(values);
-#pragma warning disable CS0612 // Type or member is obsolete
-                arguments.Exec = value;
-#pragma warning restore CS0612 // Type or member is obsolete
-                return true;
-            }
-
-            if (name.IsSwitch("execargs"))
-            {
-                EnsureArgumentValueCount(values);
-#pragma warning disable CS0612 // Type or member is obsolete
-                arguments.ExecArgs = value;
-#pragma warning restore CS0612 // Type or member is obsolete
-                return true;
-            }
-
-            if (name.IsSwitch("proj"))
-            {
-                EnsureArgumentValueCount(values);
-#pragma warning disable CS0612 // Type or member is obsolete
-                arguments.Proj = value;
-#pragma warning restore CS0612 // Type or member is obsolete
-                return true;
-            }
-
-            if (name.IsSwitch("projargs"))
-            {
-                EnsureArgumentValueCount(values);
-#pragma warning disable CS0612 // Type or member is obsolete
-                arguments.ProjArgs = value;
-#pragma warning restore CS0612 // Type or member is obsolete
-                return true;
-            }
-
-            if (name.IsSwitch("diag"))
-            {
-                if (value == null || value.IsTrue())
-                {
-                    arguments.Diag = true;
-                }
-
                 return true;
             }
 

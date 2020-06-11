@@ -1,7 +1,7 @@
 using GitTools.Testing;
 using GitVersion.Configuration;
+using GitVersion.Model.Configuration;
 using GitVersion.VersionCalculation;
-using GitVersionCore.Tests.Helpers;
 using NUnit.Framework;
 using Shouldly;
 
@@ -14,11 +14,12 @@ namespace GitVersionCore.Tests.IntegrationTests
         public void TagPreReleaseWeightIsNotConfigured_HeadIsATaggedCommit_WeightedPreReleaseNumberShouldBeTheDefaultValue()
         {
             // Arrange
-            var config = new TestableConfig()
-            {
-                AssemblyFileVersioningFormat = "{Major}.{Minor}.{Patch}.{WeightedPreReleaseNumber}",
-            };
-            config.ApplyDefaults();
+            var config = new ConfigurationBuilder()
+                         .Add(new Config
+                         {
+                             AssemblyFileVersioningFormat = "{Major}.{Minor}.{Patch}.{WeightedPreReleaseNumber}",
+                         })
+                         .Build();
 
             // Act
             using var fixture = new BaseGitFlowRepositoryFixture("1.0.0");
@@ -33,12 +34,13 @@ namespace GitVersionCore.Tests.IntegrationTests
         public void TagPreReleaseWeightIsConfigured_HeadIsATaggedCommit_WeightedPreReleaseNumberShouldBeTheSameAsTheTagPreReleaseWeight()
         {
             // Arrange
-            var config = new TestableConfig()
-            {
-                AssemblyFileVersioningFormat = "{Major}.{Minor}.{Patch}.{WeightedPreReleaseNumber}",
-                TagPreReleaseWeight = 65535
-            };
-            config.ApplyDefaults();
+            var config = new ConfigurationBuilder()
+                         .Add(new Config
+                         {
+                             AssemblyFileVersioningFormat = "{Major}.{Minor}.{Patch}.{WeightedPreReleaseNumber}",
+                             TagPreReleaseWeight = 65535
+                         })
+                         .Build();
 
             // Act
             using var fixture = new BaseGitFlowRepositoryFixture("1.0.0");
@@ -53,13 +55,14 @@ namespace GitVersionCore.Tests.IntegrationTests
         public void TagPreReleaseWeightIsConfigured_GitFlowReleaseIsFinished_WeightedPreReleaseNumberShouldBeTheSameAsTheTagPreReleaseWeight()
         {
             // Arrange
-            var config = new TestableConfig()
-            {
-                AssemblyFileVersioningFormat = "{Major}.{Minor}.{Patch}.{WeightedPreReleaseNumber}",
-                TagPreReleaseWeight = 65535,
-                VersioningMode = VersioningMode.ContinuousDeployment
-            };
-            config.ApplyDefaults();
+            var config = new ConfigurationBuilder()
+                         .Add(new Config
+                         {
+                             AssemblyFileVersioningFormat = "{Major}.{Minor}.{Patch}.{WeightedPreReleaseNumber}",
+                             TagPreReleaseWeight = 65535,
+                             VersioningMode = VersioningMode.ContinuousDeployment
+                         })
+                         .Build();
 
             // Act
             using var fixture = new BaseGitFlowRepositoryFixture("1.0.0");
@@ -81,12 +84,13 @@ namespace GitVersionCore.Tests.IntegrationTests
         public void TagPreReleaseWeightIsNotConfigured_GitFlowReleaseIsFinished_WeightedPreReleaseNumberShouldBeTheDefaultValue()
         {
             // Arrange
-            var config = new TestableConfig()
-            {
-                AssemblyFileVersioningFormat = "{Major}.{Minor}.{Patch}.{WeightedPreReleaseNumber}",
-                VersioningMode = VersioningMode.ContinuousDeployment
-            };
-            config.ApplyDefaults();
+            var config = new ConfigurationBuilder()
+                         .Add(new Config
+                         {
+                             AssemblyFileVersioningFormat = "{Major}.{Minor}.{Patch}.{WeightedPreReleaseNumber}",
+                             VersioningMode = VersioningMode.ContinuousDeployment
+                         })
+                         .Build();
 
             // Act
             using var fixture = new BaseGitFlowRepositoryFixture("1.0.0");

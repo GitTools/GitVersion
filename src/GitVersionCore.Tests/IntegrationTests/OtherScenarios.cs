@@ -60,7 +60,7 @@ namespace GitVersionCore.Tests.IntegrationTests
         [Test]
         public void AllowHavingMainInsteadOfMaster()
         {
-            var config = new TestableConfig();
+            var config = new Config();
             config.Branches.Add("master", new BranchConfig
             {
                 Regex = "main",
@@ -69,7 +69,7 @@ namespace GitVersionCore.Tests.IntegrationTests
                 Increment = IncrementStrategy.Patch,
                 PreventIncrementOfMergedBranchVersion = true,
                 TrackMergeTarget = false,
-                SourceBranches = new List<string>()
+                SourceBranches = new HashSet<string>()
             });
 
             using var fixture = new EmptyRepositoryFixture();

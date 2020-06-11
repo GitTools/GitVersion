@@ -1,8 +1,8 @@
+using System.IO;
 using GitTools.Testing;
+using GitVersionCore.Tests.Helpers;
 using LibGit2Sharp;
 using NUnit.Framework;
-using System.IO;
-using GitVersionCore.Tests.Helpers;
 
 namespace GitVersionCore.Tests.IntegrationTests
 {

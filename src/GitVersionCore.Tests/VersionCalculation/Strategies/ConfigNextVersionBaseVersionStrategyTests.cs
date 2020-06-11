@@ -25,7 +25,7 @@ namespace GitVersionCore.Tests.VersionCalculation.Strategies
         [TestCase("2.12.654651698", "2.12.654651698")]
         public void ConfigNextVersionTest(string nextVersion, string expectedVersion)
         {
-            var baseVersion = GetBaseVersion(new TestableConfig
+            var baseVersion = GetBaseVersion(new Config
             {
                 NextVersion = nextVersion
             });

@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using GitVersion.Logging;
 using GitVersion.Model;
@@ -42,15 +41,6 @@ namespace GitVersion
         public bool UpdateAssemblyInfo;
         public bool EnsureAssemblyInfo;
         public ISet<string> UpdateAssemblyInfoFileName = new HashSet<string>();
-
-        [Obsolete]
-        public string Proj;
-        [Obsolete]
-        public string ProjArgs;
-        [Obsolete]
-        public string Exec;
-        [Obsolete]
-        public string ExecArgs;
 
         public GitVersionOptions ToOptions()
         {
@@ -111,13 +101,7 @@ namespace GitVersion
                 ShowVariable = ShowVariable,
                 Verbosity = Verbosity,
                 Output = Output,
-                OutputFile = OutputFile,
-
-                // TODO obsolete to be removed in version 6.0.0
-                Proj = Proj,
-                ProjArgs = ProjArgs,
-                Exec = Exec,
-                ExecArgs = ExecArgs,
+                OutputFile = OutputFile
             };
         }
     }

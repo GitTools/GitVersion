@@ -1,6 +1,7 @@
 using System.Linq;
 using GitTools.Testing;
 using GitVersion.Extensions;
+using GitVersion.Model.Configuration;
 using GitVersion.VersionCalculation;
 using GitVersionCore.Tests.Helpers;
 using LibGit2Sharp;
@@ -127,7 +128,7 @@ namespace GitVersionCore.Tests.IntegrationTests
         [Test]
         public void FeatureOnHotfixFeatureBranchDeleted()
         {
-            var config = new TestableConfig
+            var config = new Config
             {
                 AssemblyVersioningScheme = AssemblyVersioningScheme.MajorMinorPatchTag,
                 VersioningMode = VersioningMode.ContinuousDeployment
@@ -180,7 +181,7 @@ namespace GitVersionCore.Tests.IntegrationTests
         [Test]
         public void FeatureOnHotfixFeatureBranchNotDeleted()
         {
-            var config = new TestableConfig
+            var config = new Config
             {
                 AssemblyVersioningScheme = AssemblyVersioningScheme.MajorMinorPatchTag,
                 VersioningMode = VersioningMode.ContinuousDeployment

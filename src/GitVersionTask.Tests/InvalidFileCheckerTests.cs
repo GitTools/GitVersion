@@ -49,7 +49,7 @@ using System.Reflection;
         }
 
         [Test]
-        public void VerifyAttributeFoundCSharp([Values("AssemblyVersion", "AssemblyFileVersion", "AssemblyInformationalVersion", "System.Reflection.AssemblyVersion")]string attribute)
+        public void VerifyAttributeFoundCSharp([Values("AssemblyVersion", "AssemblyFileVersion", "AssemblyInformationalVersion", "System.Reflection.AssemblyVersion")] string attribute)
         {
             using (var writer = File.CreateText(Path.Combine(projectDirectory, "AssemblyInfo.cs")))
             {
@@ -66,7 +66,7 @@ using System.Reflection;
         }
 
         [Test]
-        public void VerifyUnformattedAttributeFoundCSharp([Values("AssemblyVersion", "AssemblyFileVersion", "AssemblyInformationalVersion", "System . Reflection   .   AssemblyVersion")]string attribute)
+        public void VerifyUnformattedAttributeFoundCSharp([Values("AssemblyVersion", "AssemblyFileVersion", "AssemblyInformationalVersion", "System . Reflection   .   AssemblyVersion")] string attribute)
         {
             using (var writer = File.CreateText(Path.Combine(projectDirectory, "AssemblyInfo.cs")))
             {
@@ -84,7 +84,7 @@ using System.Reflection;
         }
 
         [Test]
-        public void VerifyCommentWorksCSharp([Values("AssemblyVersion", "AssemblyFileVersion", "AssemblyInformationalVersion")]string attribute)
+        public void VerifyCommentWorksCSharp([Values("AssemblyVersion", "AssemblyFileVersion", "AssemblyInformationalVersion")] string attribute)
         {
             using (var writer = File.CreateText(Path.Combine(projectDirectory, "AssemblyInfo.cs")))
             {
@@ -100,7 +100,7 @@ using System.Reflection;
         }
 
         [Test]
-        public void VerifyCommentWithNoNewLineAtEndWorksCSharp([Values("AssemblyVersion", "AssemblyFileVersion", "AssemblyInformationalVersion")]string attribute)
+        public void VerifyCommentWithNoNewLineAtEndWorksCSharp([Values("AssemblyVersion", "AssemblyFileVersion", "AssemblyInformationalVersion")] string attribute)
         {
             using (var writer = File.CreateText(Path.Combine(projectDirectory, "AssemblyInfo.cs")))
             {
@@ -115,7 +115,7 @@ using System.Reflection;
         }
 
         [Test]
-        public void VerifyStringWorksCSharp([Values("AssemblyVersion", "AssemblyFileVersion", "AssemblyInformationalVersion")]string attribute)
+        public void VerifyStringWorksCSharp([Values("AssemblyVersion", "AssemblyFileVersion", "AssemblyInformationalVersion")] string attribute)
         {
             using (var writer = File.CreateText(Path.Combine(projectDirectory, "AssemblyInfo.cs")))
             {
@@ -134,7 +134,7 @@ public class Temp
         }
 
         [Test]
-        public void VerifyIdentifierWorksCSharp([Values("AssemblyVersion", "AssemblyFileVersion", "AssemblyInformationalVersion")]string attribute)
+        public void VerifyIdentifierWorksCSharp([Values("AssemblyVersion", "AssemblyFileVersion", "AssemblyInformationalVersion")] string attribute)
         {
             using (var writer = File.CreateText(Path.Combine(projectDirectory, "AssemblyInfo.cs")))
             {
@@ -152,7 +152,7 @@ public class {0}
         }
 
         [Test]
-        public void VerifyAttributeFoundVisualBasic([Values("AssemblyVersion", "AssemblyFileVersion", "AssemblyInformationalVersion", "System.Reflection.AssemblyVersion")]string attribute)
+        public void VerifyAttributeFoundVisualBasic([Values("AssemblyVersion", "AssemblyFileVersion", "AssemblyInformationalVersion", "System.Reflection.AssemblyVersion")] string attribute)
         {
             using (var writer = File.CreateText(Path.Combine(projectDirectory, "AssemblyInfo.vb")))
             {
@@ -169,7 +169,7 @@ Imports System.Reflection
         }
 
         [Test]
-        public void VerifyUnformattedAttributeFoundVisualBasic([Values("AssemblyVersion", "AssemblyFileVersion", "AssemblyInformationalVersion", "System . Reflection   .   AssemblyVersion")]string attribute)
+        public void VerifyUnformattedAttributeFoundVisualBasic([Values("AssemblyVersion", "AssemblyFileVersion", "AssemblyInformationalVersion", "System . Reflection   .   AssemblyVersion")] string attribute)
         {
             using (var writer = File.CreateText(Path.Combine(projectDirectory, "AssemblyInfo.vb")))
             {
@@ -187,7 +187,7 @@ Imports System.Reflection
         }
 
         [Test]
-        public void VerifyCommentWorksVisualBasic([Values("AssemblyVersion", "AssemblyFileVersion", "AssemblyInformationalVersion")]string attribute)
+        public void VerifyCommentWorksVisualBasic([Values("AssemblyVersion", "AssemblyFileVersion", "AssemblyInformationalVersion")] string attribute)
         {
             using (var writer = File.CreateText(Path.Combine(projectDirectory, "AssemblyInfo.vb")))
             {
@@ -203,7 +203,7 @@ Imports System.Reflection
         }
 
         [Test]
-        public void VerifyCommentWithNoNewLineAtEndWorksVisualBasic([Values("AssemblyVersion", "AssemblyFileVersion", "AssemblyInformationalVersion")]string attribute)
+        public void VerifyCommentWithNoNewLineAtEndWorksVisualBasic([Values("AssemblyVersion", "AssemblyFileVersion", "AssemblyInformationalVersion")] string attribute)
         {
             using (var writer = File.CreateText(Path.Combine(projectDirectory, "AssemblyInfo.vb")))
             {
@@ -218,7 +218,7 @@ Imports System.Reflection
         }
 
         [Test]
-        public void VerifyStringWorksVisualBasic([Values("AssemblyVersion", "AssemblyFileVersion", "AssemblyInformationalVersion")]string attribute)
+        public void VerifyStringWorksVisualBasic([Values("AssemblyVersion", "AssemblyFileVersion", "AssemblyInformationalVersion")] string attribute)
         {
             using (var writer = File.CreateText(Path.Combine(projectDirectory, "AssemblyInfo.vb")))
             {
@@ -236,7 +236,7 @@ End Class
         }
 
         [Test]
-        public void VerifyIdentifierWorksVisualBasic([Values("AssemblyVersion", "AssemblyFileVersion", "AssemblyInformationalVersion")]string attribute)
+        public void VerifyIdentifierWorksVisualBasic([Values("AssemblyVersion", "AssemblyFileVersion", "AssemblyInformationalVersion")] string attribute)
         {
             using (var writer = File.CreateText(Path.Combine(projectDirectory, "AssemblyInfo.vb")))
             {

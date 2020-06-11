@@ -15,7 +15,7 @@ namespace GitVersionCore.Tests.IntegrationTests
 {
     public class MainlineDevelopmentMode : TestBase
     {
-        private readonly Config config = new TestableConfig
+        private readonly Config config = new Config
         {
             VersioningMode = VersioningMode.Mainline
         };
@@ -397,7 +397,7 @@ namespace GitVersionCore.Tests.IntegrationTests
         [Test]
         public void MergingFeatureBranchThatIncrementsMinorNumberIncrementsMinorVersionOfMaster()
         {
-            var currentConfig = new TestableConfig
+            var currentConfig = new Config
             {
                 VersioningMode = VersioningMode.Mainline,
                 Branches = new Dictionary<string, BranchConfig>
@@ -430,7 +430,7 @@ namespace GitVersionCore.Tests.IntegrationTests
         [Test]
         public void VerifyIncrementConfigIsHonoured()
         {
-            var minorIncrementConfig = new TestableConfig
+            var minorIncrementConfig = new Config
             {
                 VersioningMode = VersioningMode.Mainline,
                 Increment = IncrementStrategy.Minor,

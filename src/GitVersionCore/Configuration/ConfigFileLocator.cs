@@ -1,6 +1,8 @@
 using System;
 using System.IO;
+using System.Linq;
 using GitVersion.Model.Configuration;
+using GitVersion.VersionCalculation;
 
 namespace GitVersion.Configuration
 {
@@ -34,10 +36,27 @@ namespace GitVersion.Configuration
             if (FileSystem.Exists(configFilePath))
             {
                 var readAllText = FileSystem.ReadAllText(configFilePath);
-                return ConfigSerializer.Read(new StringReader(readAllText));
+                var readConfig = ConfigSerializer.Read(new StringReader(readAllText));
+
+                VerifyReadConfig(readConfig);
+
+                return readConfig;
             }
 
             return new Config();
+        }
+
+        public static void VerifyReadConfig(Config config)
+        {
+            // Verify no branches are set to mainline mode
+            if (config.Branches.Any(b => b.Value.VersioningMode == VersioningMode.Mainline))
+            {
+                throw new ConfigurationException(@"Mainline mode only works at the repository level, a single branch cannot be put into mainline mode
+
+This is because mainline mode treats your entire git repository as an event source with each merge into the 'mainline' incrementing the version.
+
+If the docs do not help you decide on the mode open an issue to discuss what you are trying to do.");
+            }
         }
 
         public void Verify(GitVersionOptions gitVersionOptions)
