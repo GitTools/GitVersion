@@ -30,11 +30,13 @@ namespace GitVersion.VersionCalculation
                 var baseVersions = strategies
                     .SelectMany(s =>
                     {
+                        if (s is FallbackVersionStrategy)
+                            return s.GetVersions();
+
                         return s.GetVersions()
                             .Where(v =>
                             {
                                 if (v == null) return false;
-                                if (s is FallbackVersionStrategy) return true;
 
                                 log.Info(v.ToString());
 
