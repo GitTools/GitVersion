@@ -8,8 +8,10 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
+namespace global
+
 [<AbstractClass; Sealed>]
 [<global.System.Runtime.CompilerServices.CompilerGenerated>]
 [<global.System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage>]
-module GitVersionInformation
+type GitVersionInformation =
 {0}

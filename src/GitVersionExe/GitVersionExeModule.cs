@@ -12,8 +12,6 @@ namespace GitVersion
             services.AddSingleton<IHelpWriter, HelpWriter>();
             services.AddSingleton<IVersionWriter, VersionWriter>();
             services.AddSingleton<IGitVersionExecutor, GitVersionExecutor>();
-
-            services.AddTransient<IExecCommand, ExecCommand>();
         }
     }
 }

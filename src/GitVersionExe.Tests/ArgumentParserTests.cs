@@ -75,66 +75,6 @@ namespace GitVersionExe.Tests
         }
 
         [Test]
-        public void Exec()
-        {
-            var arguments = argumentParser.ParseArguments("-exec rake");
-#pragma warning disable CS0612 // Type or member is obsolete
-            arguments.Exec.ShouldBe("rake");
-#pragma warning restore CS0612 // Type or member is obsolete
-        }
-
-        [Test]
-        public void ExecWithArgs()
-        {
-            var arguments = argumentParser.ParseArguments(new[]
-            {
-                "-exec",
-                "rake",
-                "-execargs",
-                "clean build"
-            });
-#pragma warning disable CS0612 // Type or member is obsolete
-            arguments.Exec.ShouldBe("rake");
-            arguments.ExecArgs.ShouldBe("clean build");
-#pragma warning restore CS0612 // Type or member is obsolete
-        }
-
-        [Test]
-        public void Msbuild()
-        {
-            var arguments = argumentParser.ParseArguments("-proj msbuild.proj");
-#pragma warning disable CS0612 // Type or member is obsolete
-            arguments.Proj.ShouldBe("msbuild.proj");
-#pragma warning restore CS0612 // Type or member is obsolete
-        }
-
-        [Test]
-        public void MsbuildWithArgs()
-        {
-            var arguments = argumentParser.ParseArguments(new[]
-            {
-                "-proj",
-                "msbuild.proj",
-                "-projargs",
-                "/p:Configuration=Debug /p:Platform=AnyCPU"
-            });
-#pragma warning disable CS0612 // Type or member is obsolete
-            arguments.Proj.ShouldBe("msbuild.proj");
-            arguments.ProjArgs.ShouldBe("/p:Configuration=Debug /p:Platform=AnyCPU");
-#pragma warning restore CS0612 // Type or member is obsolete
-        }
-
-        [Test]
-        public void ExecwithTargetdirectory()
-        {
-            var arguments = argumentParser.ParseArguments("targetDirectoryPath -exec rake");
-            arguments.TargetPath.ShouldBe("targetDirectoryPath");
-#pragma warning disable CS0612 // Type or member is obsolete
-            arguments.Exec.ShouldBe("rake");
-#pragma warning restore CS0612 // Type or member is obsolete
-        }
-
-        [Test]
         public void TargetDirectoryAndLogFilePathCanBeParsed()
         {
             var arguments = argumentParser.ParseArguments("targetDirectoryPath -l logFilePath");
@@ -286,7 +226,6 @@ namespace GitVersionExe.Tests
         [TestCase("-updateAssemblyInfo true")]
         [TestCase("-updateAssemblyInfo 1")]
         [TestCase("-updateAssemblyInfo")]
-        [TestCase("-updateAssemblyInfo -proj foo.sln")]
         [TestCase("-updateAssemblyInfo assemblyInfo.cs")]
         [TestCase("-updateAssemblyInfo assemblyInfo.cs -ensureassemblyinfo")]
         [TestCase("-updateAssemblyInfo assemblyInfo.cs otherAssemblyInfo.cs")]
@@ -480,7 +419,7 @@ namespace GitVersionExe.Tests
         [Test]
         public void CanLogToConsole()
         {
-            var arguments = argumentParser.ParseArguments("-l console -proj foo.sln");
+            var arguments = argumentParser.ParseArguments("-l console");
             arguments.LogFilePath.ShouldBe("console");
         }
 
@@ -520,36 +459,6 @@ namespace GitVersionExe.Tests
             var arguments = argumentParser.ParseArguments("targetpath -nocache");
             arguments.TargetPath.ShouldBe("targetpath");
             arguments.NoCache.ShouldBe(true);
-        }
-
-        [Test]
-        public void OtherArgumentsCanBeParsedAfterNofetch()
-        {
-            var arguments = argumentParser.ParseArguments("-nofetch -proj foo.sln");
-            arguments.NoFetch.ShouldBe(true);
-#pragma warning disable CS0612 // Type or member is obsolete
-            arguments.Proj.ShouldBe("foo.sln");
-#pragma warning restore CS0612 // Type or member is obsolete
-        }
-
-        [Test]
-        public void OtherArgumentsCanBeParsedAfterNonormalize()
-        {
-            var arguments = argumentParser.ParseArguments("-nonormalize -proj foo.sln");
-            arguments.NoNormalize.ShouldBe(true);
-#pragma warning disable CS0612 // Type or member is obsolete
-            arguments.Proj.ShouldBe("foo.sln");
-#pragma warning restore CS0612 // Type or member is obsolete
-        }
-
-        [Test]
-        public void OtherArgumentsCanBeParsedAfterNocache()
-        {
-            var arguments = argumentParser.ParseArguments("-nocache -proj foo.sln");
-            arguments.NoCache.ShouldBe(true);
-#pragma warning disable CS0612 // Type or member is obsolete
-            arguments.Proj.ShouldBe("foo.sln");
-#pragma warning restore CS0612 // Type or member is obsolete
         }
 
         [TestCase("-nofetch -nonormalize -nocache")]

@@ -1,7 +1,8 @@
 using System;
 using System.Text;
+using GitVersion.Logging;
 
-namespace GitVersion.Logging
+namespace GitVersionExe.Tests
 {
     public class TestConsoleAdapter : IConsole
     {
