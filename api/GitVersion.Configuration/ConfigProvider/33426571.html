@@ -6,7 +6,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="shortcut icon" href="/assets/img/favicon.ico" type="image/x-icon">
         <link rel="icon" href="/assets/img/favicon.ico" type="image/x-icon">
-        <title>GitVersion - API - TestConsoleAdapter.ReadLine() Method</title>
+        <title>GitVersion - API - ConfigProvider.Provide(string, Config) Method</title>
         <link href="/assets/css/highlight.css" rel="stylesheet">
         <link href="/assets/css/bootstrap/bootstrap.css" rel="stylesheet">
         <link href="/assets/css/adminlte/AdminLTE.css" rel="stylesheet">
@@ -75,6 +75,7 @@
                 <section class="infobar" data-spy="affix" data-offset-top="60" data-offset-bottom="200"> 
                     	
 	<div id="infobar-headings"><h6>On This Page</h6><p><a href="#Syntax">Syntax</a></p>
+<p><a href="#Parameters">Parameters</a></p>
 <p><a href="#ReturnValue">Return Value</a></p>
 <hr class="infobar-hidden">
 </div>
@@ -135,19 +136,16 @@
                     <ul class="sidebar-menu">
                         
 			<li class="header">Namespace</li>
-		<li><a href="/api/GitVersion.Logging">GitVersion<wbr>.Logging</a></li>
+		<li><a href="/api/GitVersion.Configuration">GitVersion<wbr>.Configuration</a></li>
 		<li class="header">Type</li>
-		<li><a href="/api/GitVersion.Logging/TestConsoleAdapter">TestConsoleAdapter</a></li>
+		<li><a href="/api/GitVersion.Configuration/ConfigProvider">ConfigProvider</a></li>
 		<li role="separator" class="divider"></li>
 			<li class="header">Constructors</li>
-				<li><a href="/api/GitVersion.Logging/TestConsoleAdapter/01897320">TestConsoleAdapter<wbr>(StringBuilder)<wbr></a></li>
+				<li><a href="/api/GitVersion.Configuration/ConfigProvider/520CE48A">ConfigProvider<wbr>(IFileSystem, <wbr>ILog, <wbr>IConfigFileLocator, <wbr>IOptions<wbr>&lt;<wbr>Git<wbr>Version<wbr>Options&gt;<wbr>, <wbr>IConfigInitWizard)<wbr></a></li>
 			<li class="header">Method Members</li>
-				<li class="selected"><a href="/api/GitVersion.Logging/TestConsoleAdapter/009E2CA4">ReadLine<wbr>()<wbr></a></li>
-				<li><a href="/api/GitVersion.Logging/TestConsoleAdapter/53179B11">ToString<wbr>()<wbr></a></li>
-				<li><a href="/api/GitVersion.Logging/TestConsoleAdapter/0BB28332">UseColor<wbr>(ConsoleColor)<wbr></a></li>
-				<li><a href="/api/GitVersion.Logging/TestConsoleAdapter/7F1A7AE3">Write<wbr>(string)<wbr></a></li>
-				<li><a href="/api/GitVersion.Logging/TestConsoleAdapter/85FD2F98">WriteLine<wbr>(string)<wbr></a></li>
-				<li><a href="/api/GitVersion.Logging/TestConsoleAdapter/72BA285E">WriteLine<wbr>()<wbr></a></li>
+				<li><a href="/api/GitVersion.Configuration/ConfigProvider/819C42FD">Init<wbr>(string)<wbr></a></li>
+				<li><a href="/api/GitVersion.Configuration/ConfigProvider/3585600E">Provide<wbr>(Config)<wbr></a></li>
+				<li class="selected"><a href="/api/GitVersion.Configuration/ConfigProvider/33426571">Provide<wbr>(string, <wbr>Config)<wbr></a></li>
 
 
                     </ul>
@@ -162,8 +160,8 @@
 
 
 <section class="content-header">
-			<h3><a href="/api/GitVersion.Logging/TestConsoleAdapter">TestConsoleAdapter</a>.</h3>
-	<h1>ReadLine<wbr>()<wbr> <small>Method</small></h1>
+			<h3><a href="/api/GitVersion.Configuration/ConfigProvider">ConfigProvider</a>.</h3>
+	<h1>Provide<wbr>(string, <wbr>Config)<wbr> <small>Method</small></h1>
 </section>
 <section class="content">
 	
@@ -174,22 +172,46 @@
 				<dl class="dl-horizontal">	
 						
 						<dt>Namespace</dt>
-						<dd><a href="/api/GitVersion.Logging">GitVersion<wbr>.Logging</a></dd>
+						<dd><a href="/api/GitVersion.Configuration">GitVersion<wbr>.Configuration</a></dd>
 					
 						<dt>Containing Type</dt>
-						<dd><a href="/api/GitVersion.Logging/TestConsoleAdapter">TestConsoleAdapter</a></dd>		
+						<dd><a href="/api/GitVersion.Configuration/ConfigProvider">ConfigProvider</a></dd>		
 					
 				</dl>
   			</div>
 		</div>
 
 	<h1 id="Syntax">Syntax</h1>
-	<pre><code>public string ReadLine()</code></pre>
+	<pre><code>public Config Provide(string workingDirectory, Config overrideConfig = null)</code></pre>
 
 
 
 
 
+	<h1 id="Parameters">Parameters</h1>
+	<div class="box">
+		<div class="box-body no-padding table-responsive">
+			<table class="table table-striped table-hover three-cols">
+				<thead>
+					<tr>
+						<th>Name</th>
+						<th>Type</th>
+						<th>Description</th>
+					</tr>
+				</thead>
+					<tbody><tr>
+						<td>workingDirectory</td>
+						<td>string</td>
+						<td></td>
+					</tr>
+					<tr>
+						<td>overrideConfig</td>
+						<td><a href="/api/GitVersion.Model.Configuration/Config">Config</a></td>
+						<td></td>
+					</tr>
+			</tbody></table>
+		</div>
+	</div>	
 
 	<h1 id="ReturnValue">Return Value</h1>
 	<div class="box">
@@ -202,7 +224,7 @@
 					</tr>
 				</thead>
 				<tbody><tr>
-					<td>string</td>
+					<td><a href="/api/GitVersion.Model.Configuration/Config">Config</a></td>
 					<td></td>
 				</tr>
 			</tbody></table>

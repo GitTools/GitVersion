@@ -159,6 +159,10 @@
 				<li><a href="/api/GitVersion.Model.Configuration/BranchConfig/82CE14B2">TrackMergeTarget</a></li>
 				<li><a href="/api/GitVersion.Model.Configuration/BranchConfig/940E205E">Tracks<wbr>Release<wbr>Branches</a></li>
 				<li><a href="/api/GitVersion.Model.Configuration/BranchConfig/382E1AF9">VersioningMode</a></li>
+			<li class="header">Method Members</li>
+				<li><a href="/api/GitVersion.Model.Configuration/BranchConfig/62F84B46">Apply<wbr>(BranchConfig)<wbr></a></li>
+				<li><a href="/api/GitVersion.Model.Configuration/BranchConfig/DF0DB7C0">Create<wbr>Default<wbr>Branch<wbr>Config<wbr>(string)<wbr></a></li>
+				<li><a href="/api/GitVersion.Model.Configuration/BranchConfig/4513139F">MergeTo<wbr>(BranchConfig)<wbr></a></li>
 
 
                     </ul>
@@ -196,7 +200,7 @@
 
 	<h1 id="Syntax">Syntax</h1>
 	<pre><code>[YamlMember(Alias = "is-source-branch-for")]
-public string[] IsSourceBranchFor { get; set; }</code></pre>
+public HashSet&lt;string&gt; IsSourceBranchFor { get; set; }</code></pre>
 
 
 
@@ -230,7 +234,7 @@ public string[] IsSourceBranchFor { get; set; }</code></pre>
 					</tr>
 				</thead>
 				<tbody><tr>
-					<td>string[]</td>
+					<td>HashSet<wbr>&lt;string&gt;<wbr></td>
 					<td></td>
 				</tr>
 			</tbody></table>

@@ -6,7 +6,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="shortcut icon" href="/assets/img/favicon.ico" type="image/x-icon">
         <link rel="icon" href="/assets/img/favicon.ico" type="image/x-icon">
-        <title>GitVersion - API - ConfigExtensions.Verify(Config) Method</title>
+        <title>GitVersion - API - BranchConfig.Apply(BranchConfig) Method</title>
         <link href="/assets/css/highlight.css" rel="stylesheet">
         <link href="/assets/css/bootstrap/bootstrap.css" rel="stylesheet">
         <link href="/assets/css/adminlte/AdminLTE.css" rel="stylesheet">
@@ -136,21 +136,33 @@
                     <ul class="sidebar-menu">
                         
 			<li class="header">Namespace</li>
-		<li><a href="/api/GitVersion.Configuration">GitVersion<wbr>.Configuration</a></li>
+		<li><a href="/api/GitVersion.Model.Configuration">GitVersion<wbr>.Model<wbr>.Configuration</a></li>
 		<li class="header">Type</li>
-		<li><a href="/api/GitVersion.Configuration/ConfigExtensions">ConfigExtensions</a></li>
+		<li><a href="/api/GitVersion.Model.Configuration/BranchConfig">BranchConfig</a></li>
 		<li role="separator" class="divider"></li>
+			<li class="header">Constructors</li>
+				<li><a href="/api/GitVersion.Model.Configuration/BranchConfig/5650EA95">BranchConfig<wbr>()<wbr></a></li>
+				<li><a href="/api/GitVersion.Model.Configuration/BranchConfig/76192D26">BranchConfig<wbr>(BranchConfig)<wbr></a></li>
+			<li class="header">Property Members</li>
+				<li><a href="/api/GitVersion.Model.Configuration/BranchConfig/CCF6774A">Commit<wbr>Message<wbr>Incrementing</a></li>
+				<li><a href="/api/GitVersion.Model.Configuration/BranchConfig/48345C1D">Increment</a></li>
+				<li><a href="/api/GitVersion.Model.Configuration/BranchConfig/A2A58D88">IsMainline</a></li>
+				<li><a href="/api/GitVersion.Model.Configuration/BranchConfig/44E8E3FE">IsReleaseBranch</a></li>
+				<li><a href="/api/GitVersion.Model.Configuration/BranchConfig/B82A0EAC">IsSourceBranchFor</a></li>
+				<li><a href="/api/GitVersion.Model.Configuration/BranchConfig/8F0389C6">Name</a></li>
+				<li><a href="/api/GitVersion.Model.Configuration/BranchConfig/65815B27">PreReleaseWeight</a></li>
+				<li><a href="/api/GitVersion.Model.Configuration/BranchConfig/9126B36E">Prevent<wbr>Increment<wbr>Of<wbr>Merged<wbr>Branch<wbr>Version</a></li>
+				<li><a href="/api/GitVersion.Model.Configuration/BranchConfig/3369F8D6">Regex</a></li>
+				<li><a href="/api/GitVersion.Model.Configuration/BranchConfig/7A2FD7EF">SourceBranches</a></li>
+				<li><a href="/api/GitVersion.Model.Configuration/BranchConfig/C182D47B">Tag</a></li>
+				<li><a href="/api/GitVersion.Model.Configuration/BranchConfig/7513EA4E">TagNumberPattern</a></li>
+				<li><a href="/api/GitVersion.Model.Configuration/BranchConfig/82CE14B2">TrackMergeTarget</a></li>
+				<li><a href="/api/GitVersion.Model.Configuration/BranchConfig/940E205E">Tracks<wbr>Release<wbr>Branches</a></li>
+				<li><a href="/api/GitVersion.Model.Configuration/BranchConfig/382E1AF9">VersioningMode</a></li>
 			<li class="header">Method Members</li>
-				<li><a href="/api/GitVersion.Configuration/ConfigExtensions/409CBBDD">ApplyBranchDefaults<wbr>(Config, <wbr>BranchConfig, <wbr>string, <wbr>List<wbr>&lt;string&gt;<wbr>, <wbr>string, <wbr>IncrementStrategy?, <wbr>bool, <wbr>VersioningMode?, <wbr>bool, <wbr>string, <wbr>bool, <wbr>bool, <wbr>bool)<wbr></a></li>
-				<li><a href="/api/GitVersion.Configuration/ConfigExtensions/68CEE715">ApplyDefaults<wbr>(Config)<wbr></a></li>
-				<li><a href="/api/GitVersion.Configuration/ConfigExtensions/8D083423">ApplyOverridesTo<wbr>(Config, <wbr>Config)<wbr></a></li>
-				<li><a href="/api/GitVersion.Configuration/ConfigExtensions/37A4608C">Calculate<wbr>Effective<wbr>Configuration<wbr>(Config, <wbr>BranchConfig)<wbr></a></li>
-				<li><a href="/api/GitVersion.Configuration/ConfigExtensions/80BE60D2">GetBranchSpecificTag<wbr>(<wbr>Effective<wbr>Configuration, <wbr>ILog, <wbr>string, <wbr>string)<wbr></a></li>
-				<li><a href="/api/GitVersion.Configuration/ConfigExtensions/969A1286">GetConfigForBranch<wbr>(Config, <wbr>string)<wbr></a></li>
-				<li><a href="/api/GitVersion.Configuration/ConfigExtensions/3630161D">Get<wbr>Release<wbr>Branch<wbr>Config<wbr>(Config)<wbr></a></li>
-				<li><a href="/api/GitVersion.Configuration/ConfigExtensions/EFAD333F">IsReleaseBranch<wbr>(Config, <wbr>string)<wbr></a></li>
-				<li><a href="/api/GitVersion.Configuration/ConfigExtensions/1B668447">Reset<wbr>(Config)<wbr></a></li>
-				<li class="selected"><a href="/api/GitVersion.Configuration/ConfigExtensions/EAB04846">Verify<wbr>(Config)<wbr></a></li>
+				<li class="selected"><a href="/api/GitVersion.Model.Configuration/BranchConfig/62F84B46">Apply<wbr>(BranchConfig)<wbr></a></li>
+				<li><a href="/api/GitVersion.Model.Configuration/BranchConfig/DF0DB7C0">Create<wbr>Default<wbr>Branch<wbr>Config<wbr>(string)<wbr></a></li>
+				<li><a href="/api/GitVersion.Model.Configuration/BranchConfig/4513139F">MergeTo<wbr>(BranchConfig)<wbr></a></li>
 
 
                     </ul>
@@ -165,8 +177,8 @@
 
 
 <section class="content-header">
-			<h3><a href="/api/GitVersion.Configuration/ConfigExtensions">ConfigExtensions</a>.</h3>
-	<h1>Verify<wbr>(Config)<wbr> <small>Method</small></h1>
+			<h3><a href="/api/GitVersion.Model.Configuration/BranchConfig">BranchConfig</a>.</h3>
+	<h1>Apply<wbr>(BranchConfig)<wbr> <small>Method</small></h1>
 </section>
 <section class="content">
 	
@@ -177,17 +189,17 @@
 				<dl class="dl-horizontal">	
 						
 						<dt>Namespace</dt>
-						<dd><a href="/api/GitVersion.Configuration">GitVersion<wbr>.Configuration</a></dd>
+						<dd><a href="/api/GitVersion.Model.Configuration">GitVersion<wbr>.Model<wbr>.Configuration</a></dd>
 					
 						<dt>Containing Type</dt>
-						<dd><a href="/api/GitVersion.Configuration/ConfigExtensions">ConfigExtensions</a></dd>		
+						<dd><a href="/api/GitVersion.Model.Configuration/BranchConfig">BranchConfig</a></dd>		
 					
 				</dl>
   			</div>
 		</div>
 
 	<h1 id="Syntax">Syntax</h1>
-	<pre><code>public static void Verify(this Config readConfig)</code></pre>
+	<pre><code>public BranchConfig Apply(BranchConfig overrides)</code></pre>
 
 
 
@@ -205,8 +217,8 @@
 					</tr>
 				</thead>
 					<tbody><tr>
-						<td>readConfig</td>
-						<td><a href="/api/GitVersion.Model.Configuration/Config">Config</a></td>
+						<td>overrides</td>
+						<td><a href="/api/GitVersion.Model.Configuration/BranchConfig">BranchConfig</a></td>
 						<td></td>
 					</tr>
 			</tbody></table>
@@ -224,7 +236,7 @@
 					</tr>
 				</thead>
 				<tbody><tr>
-					<td>void</td>
+					<td><a href="/api/GitVersion.Model.Configuration/BranchConfig">BranchConfig</a></td>
 					<td></td>
 				</tr>
 			</tbody></table>

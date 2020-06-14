@@ -6,7 +6,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="shortcut icon" href="/assets/img/favicon.ico" type="image/x-icon">
         <link rel="icon" href="/assets/img/favicon.ico" type="image/x-icon">
-        <title>GitVersion - API - GitVersionExecutor.GitVersionExecutor(ILog, IConsole, IConfigFileLocator, IConfigProvider, IGitVersionTool, IVersionWriter, IHelpWriter, IExecCommand) Constructor</title>
+        <title>GitVersion - API - ConfigFileLocator.VerifyReadConfig(Config) Method</title>
         <link href="/assets/css/highlight.css" rel="stylesheet">
         <link href="/assets/css/bootstrap/bootstrap.css" rel="stylesheet">
         <link href="/assets/css/adminlte/AdminLTE.css" rel="stylesheet">
@@ -136,14 +136,22 @@
                     <ul class="sidebar-menu">
                         
 			<li class="header">Namespace</li>
-		<li><a href="/api/GitVersion">GitVersion</a></li>
+		<li><a href="/api/GitVersion.Configuration">GitVersion<wbr>.Configuration</a></li>
 		<li class="header">Type</li>
-		<li><a href="/api/GitVersion/GitVersionExecutor">GitVersionExecutor</a></li>
+		<li><a href="/api/GitVersion.Configuration/ConfigFileLocator">ConfigFileLocator</a></li>
 		<li role="separator" class="divider"></li>
 			<li class="header">Constructors</li>
-				<li class="selected"><a href="/api/GitVersion/GitVersionExecutor/11EE86A8">GitVersionExecutor<wbr>(ILog, <wbr>IConsole, <wbr>IConfigFileLocator, <wbr>IConfigProvider, <wbr>IGitVersionTool, <wbr>IVersionWriter, <wbr>IHelpWriter, <wbr>IExecCommand)<wbr></a></li>
+				<li><a href="/api/GitVersion.Configuration/ConfigFileLocator/A0A06FD7">ConfigFileLocator<wbr>(IFileSystem)<wbr></a></li>
+			<li class="header">Field Members</li>
+				<li><a href="/api/GitVersion.Configuration/ConfigFileLocator/3C6FD824">FileSystem</a></li>
 			<li class="header">Method Members</li>
-				<li><a href="/api/GitVersion/GitVersionExecutor/AA0B3482">Execute<wbr>(GitVersionOptions)<wbr></a></li>
+				<li><a href="/api/GitVersion.Configuration/ConfigFileLocator/00FE6BE7">GetConfigFilePath<wbr>(string)<wbr></a></li>
+				<li><a href="/api/GitVersion.Configuration/ConfigFileLocator/196729AC">HasConfigFileAt<wbr>(string)<wbr></a></li>
+				<li><a href="/api/GitVersion.Configuration/ConfigFileLocator/A5AC3CD3">ReadConfig<wbr>(string)<wbr></a></li>
+				<li><a href="/api/GitVersion.Configuration/ConfigFileLocator/F94249E2">SelectConfigFilePath<wbr>(GitVersionOptions)<wbr></a></li>
+				<li><a href="/api/GitVersion.Configuration/ConfigFileLocator/D9B93822">Verify<wbr>(string, <wbr>string)<wbr></a></li>
+				<li><a href="/api/GitVersion.Configuration/ConfigFileLocator/487D68DE">Verify<wbr>(GitVersionOptions)<wbr></a></li>
+				<li class="selected"><a href="/api/GitVersion.Configuration/ConfigFileLocator/9EA79CA4">VerifyReadConfig<wbr>(Config)<wbr></a></li>
 
 
                     </ul>
@@ -158,8 +166,8 @@
 
 
 <section class="content-header">
-			<h3><a href="/api/GitVersion/GitVersionExecutor">GitVersionExecutor</a>.</h3>
-	<h1>GitVersionExecutor<wbr>(ILog, <wbr>IConsole, <wbr>IConfigFileLocator, <wbr>IConfigProvider, <wbr>IGitVersionTool, <wbr>IVersionWriter, <wbr>IHelpWriter, <wbr>IExecCommand)<wbr> <small>Constructor</small></h1>
+			<h3><a href="/api/GitVersion.Configuration/ConfigFileLocator">ConfigFileLocator</a>.</h3>
+	<h1>VerifyReadConfig<wbr>(Config)<wbr> <small>Method</small></h1>
 </section>
 <section class="content">
 	
@@ -170,17 +178,17 @@
 				<dl class="dl-horizontal">	
 						
 						<dt>Namespace</dt>
-						<dd><a href="/api/GitVersion">GitVersion</a></dd>
+						<dd><a href="/api/GitVersion.Configuration">GitVersion<wbr>.Configuration</a></dd>
 					
 						<dt>Containing Type</dt>
-						<dd><a href="/api/GitVersion/GitVersionExecutor">GitVersionExecutor</a></dd>		
+						<dd><a href="/api/GitVersion.Configuration/ConfigFileLocator">ConfigFileLocator</a></dd>		
 					
 				</dl>
   			</div>
 		</div>
 
 	<h1 id="Syntax">Syntax</h1>
-	<pre><code>public GitVersionExecutor(ILog log, IConsole console, IConfigFileLocator configFileLocator, IConfigProvider configProvider, IGitVersionTool gitVersionTool, IVersionWriter versionWriter, IHelpWriter helpWriter, IExecCommand execCommand)</code></pre>
+	<pre><code>public static void VerifyReadConfig(Config config)</code></pre>
 
 
 
@@ -198,43 +206,8 @@
 					</tr>
 				</thead>
 					<tbody><tr>
-						<td>log</td>
-						<td><a href="/api/GitVersion.Logging/ILog">ILog</a></td>
-						<td></td>
-					</tr>
-					<tr>
-						<td>console</td>
-						<td><a href="/api/GitVersion.Logging/IConsole">IConsole</a></td>
-						<td></td>
-					</tr>
-					<tr>
-						<td>configFileLocator</td>
-						<td><a href="/api/GitVersion.Configuration/IConfigFileLocator">IConfigFileLocator</a></td>
-						<td></td>
-					</tr>
-					<tr>
-						<td>configProvider</td>
-						<td><a href="/api/GitVersion.Configuration/IConfigProvider">IConfigProvider</a></td>
-						<td></td>
-					</tr>
-					<tr>
-						<td>gitVersionTool</td>
-						<td><a href="/api/GitVersion/IGitVersionTool">IGitVersionTool</a></td>
-						<td></td>
-					</tr>
-					<tr>
-						<td>versionWriter</td>
-						<td><a href="/api/GitVersion/IVersionWriter">IVersionWriter</a></td>
-						<td></td>
-					</tr>
-					<tr>
-						<td>helpWriter</td>
-						<td><a href="/api/GitVersion/IHelpWriter">IHelpWriter</a></td>
-						<td></td>
-					</tr>
-					<tr>
-						<td>execCommand</td>
-						<td><a href="/api/GitVersion/IExecCommand">IExecCommand</a></td>
+						<td>config</td>
+						<td><a href="/api/GitVersion.Model.Configuration/Config">Config</a></td>
 						<td></td>
 					</tr>
 			</tbody></table>

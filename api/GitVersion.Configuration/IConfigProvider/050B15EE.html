@@ -6,7 +6,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="shortcut icon" href="/assets/img/favicon.ico" type="image/x-icon">
         <link rel="icon" href="/assets/img/favicon.ico" type="image/x-icon">
-        <title>GitVersion - API - TestConsoleAdapter.UseColor(ConsoleColor) Method</title>
+        <title>GitVersion - API - IConfigProvider.Provide(string, Config) Method</title>
         <link href="/assets/css/highlight.css" rel="stylesheet">
         <link href="/assets/css/bootstrap/bootstrap.css" rel="stylesheet">
         <link href="/assets/css/adminlte/AdminLTE.css" rel="stylesheet">
@@ -136,19 +136,14 @@
                     <ul class="sidebar-menu">
                         
 			<li class="header">Namespace</li>
-		<li><a href="/api/GitVersion.Logging">GitVersion<wbr>.Logging</a></li>
+		<li><a href="/api/GitVersion.Configuration">GitVersion<wbr>.Configuration</a></li>
 		<li class="header">Type</li>
-		<li><a href="/api/GitVersion.Logging/TestConsoleAdapter">TestConsoleAdapter</a></li>
+		<li><a href="/api/GitVersion.Configuration/IConfigProvider">IConfigProvider</a></li>
 		<li role="separator" class="divider"></li>
-			<li class="header">Constructors</li>
-				<li><a href="/api/GitVersion.Logging/TestConsoleAdapter/01897320">TestConsoleAdapter<wbr>(StringBuilder)<wbr></a></li>
 			<li class="header">Method Members</li>
-				<li><a href="/api/GitVersion.Logging/TestConsoleAdapter/009E2CA4">ReadLine<wbr>()<wbr></a></li>
-				<li><a href="/api/GitVersion.Logging/TestConsoleAdapter/53179B11">ToString<wbr>()<wbr></a></li>
-				<li class="selected"><a href="/api/GitVersion.Logging/TestConsoleAdapter/0BB28332">UseColor<wbr>(ConsoleColor)<wbr></a></li>
-				<li><a href="/api/GitVersion.Logging/TestConsoleAdapter/7F1A7AE3">Write<wbr>(string)<wbr></a></li>
-				<li><a href="/api/GitVersion.Logging/TestConsoleAdapter/85FD2F98">WriteLine<wbr>(string)<wbr></a></li>
-				<li><a href="/api/GitVersion.Logging/TestConsoleAdapter/72BA285E">WriteLine<wbr>()<wbr></a></li>
+				<li><a href="/api/GitVersion.Configuration/IConfigProvider/999746E1">Init<wbr>(string)<wbr></a></li>
+				<li><a href="/api/GitVersion.Configuration/IConfigProvider/89AF350A">Provide<wbr>(Config)<wbr></a></li>
+				<li class="selected"><a href="/api/GitVersion.Configuration/IConfigProvider/050B15EE">Provide<wbr>(string, <wbr>Config)<wbr></a></li>
 
 
                     </ul>
@@ -163,8 +158,8 @@
 
 
 <section class="content-header">
-			<h3><a href="/api/GitVersion.Logging/TestConsoleAdapter">TestConsoleAdapter</a>.</h3>
-	<h1>UseColor<wbr>(ConsoleColor)<wbr> <small>Method</small></h1>
+			<h3><a href="/api/GitVersion.Configuration/IConfigProvider">IConfigProvider</a>.</h3>
+	<h1>Provide<wbr>(string, <wbr>Config)<wbr> <small>Method</small></h1>
 </section>
 <section class="content">
 	
@@ -175,17 +170,17 @@
 				<dl class="dl-horizontal">	
 						
 						<dt>Namespace</dt>
-						<dd><a href="/api/GitVersion.Logging">GitVersion<wbr>.Logging</a></dd>
+						<dd><a href="/api/GitVersion.Configuration">GitVersion<wbr>.Configuration</a></dd>
 					
 						<dt>Containing Type</dt>
-						<dd><a href="/api/GitVersion.Logging/TestConsoleAdapter">TestConsoleAdapter</a></dd>		
+						<dd><a href="/api/GitVersion.Configuration/IConfigProvider">IConfigProvider</a></dd>		
 					
 				</dl>
   			</div>
 		</div>
 
 	<h1 id="Syntax">Syntax</h1>
-	<pre><code>public IDisposable UseColor(ConsoleColor consoleColor)</code></pre>
+	<pre><code>Config Provide(string workingDirectory, Config overrideConfig = null)</code></pre>
 
 
 
@@ -203,8 +198,13 @@
 					</tr>
 				</thead>
 					<tbody><tr>
-						<td>consoleColor</td>
-						<td>ConsoleColor</td>
+						<td>workingDirectory</td>
+						<td>string</td>
+						<td></td>
+					</tr>
+					<tr>
+						<td>overrideConfig</td>
+						<td><a href="/api/GitVersion.Model.Configuration/Config">Config</a></td>
 						<td></td>
 					</tr>
 			</tbody></table>
@@ -222,7 +222,7 @@
 					</tr>
 				</thead>
 				<tbody><tr>
-					<td>IDisposable</td>
+					<td><a href="/api/GitVersion.Model.Configuration/Config">Config</a></td>
 					<td></td>
 				</tr>
 			</tbody></table>
