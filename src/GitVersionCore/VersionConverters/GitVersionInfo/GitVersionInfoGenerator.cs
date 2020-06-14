@@ -36,8 +36,9 @@ namespace GitVersion.VersionConverters.GitVersionInfo
             var fileExtension = Path.GetExtension(filePath);
             var template = templateManager.GetTemplateFor(fileExtension);
             var addFormat = templateManager.GetAddFormatFor(fileExtension);
+            var indentation = GetIndentation(fileExtension);
 
-            var members = string.Join(System.Environment.NewLine, variables.Select(v => string.Format("    " + addFormat, v.Key, v.Value)));
+            var members = string.Join(System.Environment.NewLine, variables.Select(v => string.Format(indentation + addFormat, v.Key, v.Value)));
 
             var fileContents = string.Format(template, members);
 
@@ -49,6 +50,15 @@ namespace GitVersion.VersionConverters.GitVersionInfo
 
         public void Dispose()
         {
+        }
+
+        // Because The VB-generated class is included in a namespace declaration,
+        // the properties must be offsetted by 2 tabs.
+        // Whereas in the C# and F# cases, 1 tab is enough.
+        private static string GetIndentation(string fileExtension)
+        {
+            var tabs = fileExtension.ToLowerInvariant().EndsWith("vb") ? 2 : 1;
+            return new string(' ', tabs * 4);
         }
     }
 }

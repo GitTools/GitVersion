@@ -8,10 +8,14 @@
 ' </auto-generated>
 '------------------------------------------------------------------------------
 
-<Global.System.Runtime.CompilerServices.CompilerGenerated()>
-<Global.System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage()>
-NotInheritable Class GitVersionInformation
-    Private Sub New()
-    End Sub
+Namespace Global
+
+    <Global.System.Runtime.CompilerServices.CompilerGenerated()>
+    <Global.System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage()>
+    NotInheritable Class GitVersionInformation
+        Private Sub New()
+        End Sub
 {0}
-End Class
+    End Class
+
+End Namespace
