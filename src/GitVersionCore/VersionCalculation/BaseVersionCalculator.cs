@@ -28,23 +28,29 @@ namespace GitVersion.VersionCalculation
             using (log.IndentLog("Calculating base versions"))
             {
                 var baseVersions = strategies
-                    .SelectMany(s => s.GetVersions())
-                    .Where(v =>
+                    .SelectMany(s =>
                     {
-                        if (v == null) return false;
+                        if (s is FallbackVersionStrategy)
+                            return s.GetVersions();
 
-                        log.Info(v.ToString());
-
-                        foreach (var filter in context.Configuration.VersionFilters)
-                        {
-                            if (filter.Exclude(v, out var reason))
+                        return s.GetVersions()
+                            .Where(v =>
                             {
-                                log.Info(reason);
-                                return false;
-                            }
-                        }
+                                if (v == null) return false;
 
-                        return true;
+                                log.Info(v.ToString());
+
+                                foreach (var filter in context.Configuration.VersionFilters)
+                                {
+                                    if (filter.Exclude(v, out var reason))
+                                    {
+                                        log.Info(reason);
+                                        return false;
+                                    }
+                                }
+
+                                return true;
+                            });
                     })
                     .Select(v => new Versions
                     {
