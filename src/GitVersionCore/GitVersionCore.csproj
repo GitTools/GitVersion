@@ -14,15 +14,13 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <PackageReference Include="System.Net.Requests" Version="4.3.0" />
+
         <PackageReference Include="LibGit2Sharp" Version="$(PackageVersion_LibGit2Sharp)" />
         <PackageReference Include="JetBrains.Annotations" Version="$(PackageVersion_JetBrainsAnnotations)" PrivateAssets="All" />
         <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="$(PackageVersion_MicrosoftExtensions)" />
         <PackageReference Include="Microsoft.Extensions.Options" Version="$(PackageVersion_MicrosoftExtensions)" />
         <PackageReference Include="YamlDotNet" Version="$(PackageVersion_YamlDotNet)" />
-    </ItemGroup>
-
-    <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
-        <PackageReference Include="System.Net.Requests" Version="4.3.0" />
     </ItemGroup>
 
     <ItemGroup>
