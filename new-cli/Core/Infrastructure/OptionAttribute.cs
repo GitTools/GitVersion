@@ -19,10 +19,4 @@ namespace Core
             Description = description;
         }
     }
-
-    public class GitVersionCommand<T>
-    {
-        public string[] Aliases { get; }
-        public string Description { get; }
-    }
 }

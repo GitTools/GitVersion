@@ -2,19 +2,18 @@
 using System.CommandLine;
 using System.CommandLine.Builder;
 using System.CommandLine.Parsing;
-using System.IO;
 using System.Threading.Tasks;
+using Core;
 
 namespace Cli
 {
     internal class GitVersionApp : RootCommand
     {
-        public GitVersionApp(IEnumerable<Command> commands)
+        public GitVersionApp(IEnumerable<ICommandHandler> commandHandlers)
         {
-            AddGlobalOption(new Option<FileInfo>(new[] { "--log-file", "-l" }, "The log file"));
-
-            foreach (var command in commands)
+            foreach (var commandHandler in commandHandlers)
             {
+                var command = commandHandler.GetCommand();
                 AddCommand(command);
             }
         }

@@ -1,5 +1,4 @@
-﻿using System.CommandLine;
-using Core;
+﻿using Core;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Calculate
@@ -8,7 +7,7 @@ namespace Calculate
     {
         public void RegisterTypes(IServiceCollection services)
         {
-            services.AddSingleton<Command, CalculateCommand>();
+            services.AddSingleton<ICommandHandler, CalculateCommandHandler>();
         }
     }
 }

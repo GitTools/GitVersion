@@ -1,5 +1,4 @@
-﻿using System.CommandLine;
-using Core;
+﻿using Core;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Output
@@ -8,9 +7,10 @@ namespace Output
     {
         public void RegisterTypes(IServiceCollection services)
         {
-            services.AddSingleton<Command, OutputCommand>();
-            services.AddSingleton<BaseOutputCommand, OutputAssemblyInfoCommand>();
-            services.AddSingleton<BaseOutputCommand, OutputProjectCommand>();
+            services.AddSingleton<ICommandHandler, OutputCommandHandler>();
+            services.AddSingleton<IOutputCommandHandler, OutputAssemblyInfoCommandHandler>();
+            services.AddSingleton<IOutputCommandHandler, OutputProjectCommandHandler>();
+            services.AddSingleton<IOutputCommandHandler, OutputWixCommandHandler>();
         }
     }
 }
