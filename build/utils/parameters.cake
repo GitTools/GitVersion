@@ -12,7 +12,7 @@ public class BuildParameters
     public const string MainRepoName = "GitVersion";
     public string CoreFxVersion21 { get; private set; }  = "netcoreapp2.1";
     public string CoreFxVersion31 { get; private set; }  = "netcoreapp3.1";
-    public string FullFxVersion472 { get; private set; } = "net472";
+    public string FullFxVersion48 { get; private set; }  = "net48";
 
     public string DockerDistro { get; private set; }
     public string DockerDotnetVersion { get; private set; }
