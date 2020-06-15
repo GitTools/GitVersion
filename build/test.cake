@@ -5,7 +5,7 @@ Task("UnitTest")
     .IsDependentOn("Build")
     .Does<BuildParameters>((parameters) =>
 {
-    var frameworks = new[] { parameters.CoreFxVersion31, parameters.FullFxVersion472 };
+    var frameworks = new[] { parameters.CoreFxVersion31, parameters.FullFxVersion48 };
     var testResultsPath = parameters.Paths.Directories.TestResultsOutput;
 
     foreach(var framework in frameworks)
@@ -39,7 +39,7 @@ Task("UnitTest")
                     Exclude = new List<string> { "[GitVersion*.Tests]*", "[GitVersionTask.MsBuild]*" }
                 };
 
-                if (IsRunningOnUnix() && string.Equals(framework, parameters.FullFxVersion472))
+                if (IsRunningOnUnix() && string.Equals(framework, parameters.FullFxVersion48))
                 {
                     settings.Filter = "TestCategory!=NoMono";
                 }
