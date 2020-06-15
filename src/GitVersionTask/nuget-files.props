@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
     <PropertyGroup>
-        <FullPublishTask>bin/$(Configuration)/net48</FullPublishTask>
+        <FullPublishTask>bin/$(Configuration)/net472</FullPublishTask>
         <CorePublishTask>bin/$(Configuration)/netcoreapp2.1/publish</CorePublishTask>
-        <FullTarget>tools/net48</FullTarget>
+        <FullTarget>tools/net472</FullTarget>
         <CoreTarget>tools/netstandard2.0</CoreTarget>
     </PropertyGroup>
     <ItemGroup>

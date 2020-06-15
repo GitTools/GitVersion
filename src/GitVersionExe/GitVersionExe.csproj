@@ -12,7 +12,7 @@
     </PropertyGroup>
 
     <PropertyGroup Condition=" '$(PackAsTool)' != 'true'">
-        <TargetFrameworks>net48;$(TargetFrameworks);</TargetFrameworks>
+        <TargetFrameworks>net472;$(TargetFrameworks);</TargetFrameworks>
     </PropertyGroup>
 
     <PropertyGroup Condition=" '$(PackAsTool)' == 'true' ">
@@ -21,7 +21,7 @@
         <PackageDescription>Derives SemVer information from a repository following GitFlow or GitHubFlow. This is the .NET Core Global Tool allowing usage of GitVersion from command line.</PackageDescription>
     </PropertyGroup>
 
-    <ItemGroup Condition="'$(TargetFramework)'=='net48'">
+    <ItemGroup Condition="'$(TargetFramework)'=='net472'">
         <PackageReference Include="JetBrains.Annotations" Version="$(PackageVersion_JetBrainsAnnotations)" />
         <PackageReference Include="LibGit2Sharp.NativeBinaries" Version="$(PackageVersion_LibGit2Sharp_NativeBinaries)" />
     </ItemGroup>

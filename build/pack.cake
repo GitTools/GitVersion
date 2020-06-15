@@ -4,7 +4,7 @@ Task("Pack-Prepare")
 {
     PackPrepareNative(Context, parameters);
 
-    var frameworks = new[] { parameters.CoreFxVersion21, parameters.FullFxVersion48 };
+    var frameworks = new[] { parameters.CoreFxVersion21, parameters.FullFxVersion472 };
 
     // MsBuild Task
     foreach(var framework in frameworks)

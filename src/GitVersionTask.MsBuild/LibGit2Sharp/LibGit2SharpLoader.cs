@@ -4,7 +4,7 @@
 using System.IO;
 using System.Reflection;
 
-#if NETFRAMEWORK
+#if NET472
 using System;
 using System.Collections.Generic;
 #endif

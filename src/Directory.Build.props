@@ -66,7 +66,7 @@
         </None>
     </ItemGroup>
 
-    <ItemGroup Condition=" '$(TargetFramework)' == 'net48' ">
+    <ItemGroup Condition=" '$(TargetFramework)' == 'net472' ">
         <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.0" PrivateAssets="All" />
     </ItemGroup>
 </Project>

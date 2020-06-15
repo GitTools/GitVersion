@@ -67,7 +67,7 @@ namespace GitVersionTask.Tests.Helpers
             var project = RuntimeFramework.CurrentFramework.Runtime switch
             {
                 RuntimeType.NetCore => ProjectCreator.Templates.SdkCsproj(ProjectPath),
-                RuntimeType.Net => ProjectCreator.Templates.LegacyCsproj(ProjectPath, defaultTargets: null, targetFrameworkVersion: "v4.8", toolsVersion: "15.0"),
+                RuntimeType.Net => ProjectCreator.Templates.LegacyCsproj(ProjectPath, defaultTargets: null, targetFrameworkVersion: "v4.7.2", toolsVersion: "15.0"),
                 _ => null
             };
 

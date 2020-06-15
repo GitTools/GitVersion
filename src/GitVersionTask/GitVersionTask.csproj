@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFrameworks>net48;netcoreapp2.1</TargetFrameworks>
+        <TargetFrameworks>net472;netcoreapp2.1</TargetFrameworks>
 
         <PackageId>GitVersionTask</PackageId>
         <Title>GitVersionTask</Title>
