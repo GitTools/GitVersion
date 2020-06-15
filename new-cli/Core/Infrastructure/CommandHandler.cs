@@ -6,11 +6,8 @@ namespace Core
 {
     public abstract class CommandHandler<T> : ICommandHandler<T>
     {
-        public abstract Task<int> InvokeAsync(T options);
+        public virtual Task<int> InvokeAsync(T options) => Task.FromResult(0);
 
-        public virtual IEnumerable<ICommandHandler> GetSubCommands()
-        {
-            return Enumerable.Empty<ICommandHandler>();
-        }
+        public virtual IEnumerable<ICommandHandler> GetSubCommands() => Enumerable.Empty<ICommandHandler>();
     }
 }

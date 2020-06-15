@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Threading.Tasks;
 using Core;
 
 namespace Output
@@ -13,14 +12,6 @@ namespace Output
             this.commandHandlers = commandHandlers;
         }
 
-        public override Task<int> InvokeAsync(OutputOptions options)
-        {
-            return Task.FromResult(0);
-        }
-
-        public override IEnumerable<ICommandHandler> GetSubCommands()
-        {
-            return commandHandlers;
-        }
+        public override IEnumerable<ICommandHandler> GetSubCommands() => commandHandlers;
     }
 }

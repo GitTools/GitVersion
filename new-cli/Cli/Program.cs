@@ -2,7 +2,6 @@
 using System.Threading.Tasks;
 using Calculate;
 using Core;
-using Microsoft.Extensions.DependencyInjection;
 using Output;
 
 namespace Cli
@@ -11,13 +10,12 @@ namespace Cli
     {
         private static async Task<int> Main(string[] args)
         {
-            //NewMethod();
-            await using var serviceProvider = new ServiceCollection()
+            using var serviceProvider  = new ContainerRegistrar()
                 .AddSingleton<GitVersionApp>()
                 .AddSingleton<IService, Service>()
-                .AddModule(new CalculateModule()) // dynamically load the modules (maybe using Assembly.Load)
-                .AddModule(new OutputModule())
-                .BuildServiceProvider();
+                .RegisterModule(new CalculateModule())
+                .RegisterModule(new OutputModule())
+                .Build();
 
             var app = serviceProvider.GetService<GitVersionApp>();
 

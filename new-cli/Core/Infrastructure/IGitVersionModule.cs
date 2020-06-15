@@ -1,9 +1,7 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-
-namespace Core
+﻿namespace Core
 {
     public interface IGitVersionModule
     {
-        void RegisterTypes(IServiceCollection services);
+        void RegisterTypes(IContainerRegistrar services);
     }
 }

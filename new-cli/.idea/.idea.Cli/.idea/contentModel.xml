@@ -44,6 +44,7 @@
           <e p="CommandAttribute.cs" t="Include" />
           <e p="CommandHandler.cs" t="Include" />
           <e p="ICommandHandler.cs" t="Include" />
+          <e p="IContainerRegistrar.cs" t="Include" />
           <e p="IGitVersionModule.cs" t="Include" />
           <e p="OptionAttribute.cs" t="Include" />
         </e>

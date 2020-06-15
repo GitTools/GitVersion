@@ -1,20 +1,12 @@
-﻿using System;
-using System.Linq;
-using Microsoft.Extensions.DependencyInjection;
-
-namespace Core
+﻿namespace Core
 {
     public static class ServiceCollectionExtensions
     {
-        public static IServiceCollection AddModule(this IServiceCollection serviceCollection, IGitVersionModule gitVersionModule)
+        public static IContainerRegistrar RegisterModule(this IContainerRegistrar serviceCollection,
+            IGitVersionModule gitVersionModule)
         {
             gitVersionModule.RegisterTypes(serviceCollection);
             return serviceCollection;
-        }
-
-        public static TService GetServiceForType<TService, TType>(this IServiceProvider serviceProvider)
-        {
-            return serviceProvider.GetServices<TService>().SingleOrDefault(t => t.GetType() == typeof(TType));
         }
     }
 }

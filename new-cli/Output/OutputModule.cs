@@ -1,11 +1,10 @@
 ﻿using Core;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace Output
 {
     public class OutputModule : IGitVersionModule
     {
-        public void RegisterTypes(IServiceCollection services)
+        public void RegisterTypes(IContainerRegistrar services)
         {
             services.AddSingleton<ICommandHandler, OutputCommandHandler>();
             services.AddSingleton<IOutputCommandHandler, OutputAssemblyInfoCommandHandler>();
