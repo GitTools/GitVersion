@@ -27,6 +27,7 @@ namespace Cli
 
                 var option = new Option(optionAttribute.Aliases, optionAttribute.Description)
                 {
+                    Required = optionAttribute.Required,
                     Argument = new Argument { ArgumentType = propertyInfo.PropertyType }
                 };
                 command.AddOption(option);

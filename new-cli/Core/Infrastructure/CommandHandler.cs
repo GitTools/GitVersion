@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace Core
 {
-    public abstract class CommandHandler<T> : ICommandHandler<T>
+    public abstract class CommandHandler<T> : ICommandHandler
     {
         public virtual Task<int> InvokeAsync(T options) => Task.FromResult(0);
 
