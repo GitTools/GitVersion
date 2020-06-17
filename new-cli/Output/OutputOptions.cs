@@ -1,4 +1,5 @@
-﻿using System.IO;
+using System;
+using System.IO;
 using Core;
 
 namespace Output
@@ -6,6 +7,8 @@ namespace Output
     [Command("output", "Outputs the version object.")]
     public class OutputOptions : GitVersionOptions
     {
+        public Lazy<string> VersionInfo { get; set; } = new Lazy<string>(() => Console.IsInputRedirected ? Console.ReadLine() : null);
+
         [Option("--input-file", "The input version file")]
         public FileInfo InputFile { get; set; }
         
