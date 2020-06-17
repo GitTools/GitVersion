@@ -32,8 +32,9 @@ namespace Cli
                 };
                 command.AddOption(option);
             }
-            var methodInfo = handlerType.GetMethod("InvokeAsync", new []{ commandType });
-            command.Handler = CommandHandler.Create(methodInfo, commandHandler);
+            
+            var handlerMethod = handlerType.GetMethod(nameof(CommandHandler<int>.InvokeAsync), new []{ commandType });
+            command.Handler = CommandHandler.Create(handlerMethod, commandHandler);
 
             foreach (var subCommandHandler in commandHandler.GetSubCommands())
             {

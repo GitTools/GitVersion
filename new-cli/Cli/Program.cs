@@ -20,7 +20,11 @@ namespace Cli
             var app = serviceProvider.GetService<GitVersionApp>();
 
             var result = await app.RunAsync(args);
-            Console.ReadKey();
+
+            if (!Console.IsInputRedirected)
+            {
+                Console.ReadKey();
+            }
 
             return result;
         }
