@@ -1,9 +1,12 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Core
 {
     public interface ICommandHandler
     {
-        IEnumerable<ICommandHandler> GetSubCommands();
+        Task<int> InvokeAsync(object options);
+
+        IEnumerable<ICommandHandler> SubCommands();
     }
 }

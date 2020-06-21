@@ -12,6 +12,6 @@ namespace Output
             this.commandHandlers = commandHandlers;
         }
 
-        public override IEnumerable<ICommandHandler> GetSubCommands() => commandHandlers;
+        public override IEnumerable<ICommandHandler> SubCommands() => commandHandlers;
     }
 }

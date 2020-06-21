@@ -8,6 +8,8 @@ namespace Core
     {
         public virtual Task<int> InvokeAsync(T options) => Task.FromResult(0);
 
-        public virtual IEnumerable<ICommandHandler> GetSubCommands() => Enumerable.Empty<ICommandHandler>();
+        public Task<int> InvokeAsync(object options) => InvokeAsync((T) options);
+
+        public virtual IEnumerable<ICommandHandler> SubCommands() => Enumerable.Empty<ICommandHandler>();
     }
 }

@@ -16,7 +16,7 @@ namespace Cli
         {
             foreach (var commandHandler in commandHandlers)
             {
-                var command = GetCommand(commandHandler);
+                var command = CreateCommand(commandHandler);
                 AddCommand(command);
             }
         }
@@ -29,18 +29,18 @@ namespace Cli
                 .InvokeAsync(args);
         }
 
-        private static Command GetCommand(ICommandHandler commandHandler)
+        private static Command CreateCommand(ICommandHandler commandHandler)
         {
             const BindingFlags declaredOnly = BindingFlags.Public | BindingFlags.Instance;
 
             var handlerType = commandHandler.GetType();
-            var commandType = handlerType.BaseType?.GenericTypeArguments[0];
-            var commandAttribute = commandType?.GetCustomAttribute<CommandAttribute>();
+            var commandOptionsType = handlerType.BaseType?.GenericTypeArguments[0];
+            var commandAttribute = commandOptionsType?.GetCustomAttribute<CommandAttribute>();
 
             if (commandAttribute == null) return null;
 
             var command = new Command(commandAttribute.Name, commandAttribute.Description);
-            var propertyInfos = commandType.GetProperties(declaredOnly);
+            var propertyInfos = commandOptionsType.GetProperties(declaredOnly);
             foreach (var propertyInfo in propertyInfos)
             {
                 var optionAttribute = propertyInfo.GetCustomAttribute<OptionAttribute>();
@@ -54,12 +54,12 @@ namespace Cli
                 command.AddOption(option);
             }
             
-            var handlerMethod = handlerType.GetMethod(nameof(CommandHandler<int>.InvokeAsync), new [] { commandType });
+            var handlerMethod = handlerType.GetMethod(nameof(commandHandler.InvokeAsync), new [] { commandOptionsType });
             command.Handler = CommandHandler.Create(handlerMethod, commandHandler);
 
-            foreach (var subCommandHandler in commandHandler.GetSubCommands())
+            foreach (var subCommandHandler in commandHandler.SubCommands())
             {
-                var subCommand = GetCommand(subCommandHandler);
+                var subCommand = CreateCommand(subCommandHandler);
                 command.AddCommand(subCommand);
             }
 
