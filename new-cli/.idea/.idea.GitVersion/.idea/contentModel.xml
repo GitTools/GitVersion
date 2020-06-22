@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ContentModelStore">
+    <e p="C:\Users\artur.stolear\AppData\Local\JetBrains\Rider2020.2\extResources" t="IncludeRecursive" />
+    <e p="C:\Users\artur.stolear\AppData\Local\JetBrains\Rider2020.2\resharper-host\Local\Transient\ReSharperHost\v202\SolutionCaches\_GitVersion.1626542563.00" t="ExcludeRecursive" />
+    <e p="C:\Users\artur.stolear\RiderProjects\GitVersion" t="IncludeFlat">
+      <e p="GitVersion.Calculate" t="IncludeRecursive">
+        <e p="bin" t="ExcludeRecursive" />
+        <e p="CalculateCommandHandler.cs" t="Include" />
+        <e p="CalculateModule.cs" t="Include" />
+        <e p="CalculateOptions.cs" t="Include" />
+        <e p="GitVersion.Calculate.csproj" t="IncludeRecursive" />
+        <e p="obj" t="ExcludeRecursive">
+          <e p="Debug" t="Include">
+            <e p="netstandard2.0" t="Include">
+              <e p="GitVersion.Calculate.AssemblyInfo.cs" t="Include" />
+            </e>
+          </e>
+        </e>
+      </e>
+      <e p="GitVersion.Cli" t="IncludeRecursive">
+        <e p="bin" t="ExcludeRecursive" />
+        <e p="Container.cs" t="Include" />
+        <e p="ContainerRegistrar.cs" t="Include" />
+        <e p="Extensions" t="Include">
+          <e p="ServiceCollectionExtensions.cs" t="Include" />
+        </e>
+        <e p="GitVersion.Cli.csproj" t="IncludeRecursive" />
+        <e p="GitVersionApp.cs" t="Include" />
+        <e p="obj" t="ExcludeRecursive">
+          <e p="Debug" t="Include">
+            <e p="netcoreapp3.1" t="Include">
+              <e p="GitVersion.Cli.AssemblyInfo.cs" t="Include" />
+            </e>
+          </e>
+        </e>
+        <e p="Program.cs" t="Include" />
+      </e>
+      <e p="GitVersion.Core" t="IncludeRecursive">
+        <e p="bin" t="ExcludeRecursive" />
+        <e p="CoreModule.cs" t="Include" />
+        <e p="GitVersion.Core.csproj" t="IncludeRecursive" />
+        <e p="GitVersionOptions.cs" t="Include" />
+        <e p="Infrastructure" t="Include">
+          <e p="CommandAttribute.cs" t="Include" />
+          <e p="CommandHandler.cs" t="Include" />
+          <e p="ICommandHandler.cs" t="Include" />
+          <e p="IContainer.cs" t="Include" />
+          <e p="IContainerRegistrar.cs" t="Include" />
+          <e p="IGitVersionModule.cs" t="Include" />
+          <e p="IRootCommandHandler.cs" t="Include" />
+          <e p="OptionAttribute.cs" t="Include" />
+        </e>
+        <e p="IService.cs" t="Include" />
+        <e p="obj" t="ExcludeRecursive">
+          <e p="Debug" t="Include">
+            <e p="netstandard2.0" t="Include">
+              <e p="GitVersion.Core.AssemblyInfo.cs" t="Include" />
+            </e>
+          </e>
+        </e>
+        <e p="Service.cs" t="Include" />
+      </e>
+      <e p="GitVersion.Output" t="IncludeRecursive">
+        <e p="AssemblyInfo" t="Include">
+          <e p="OutputAssemblyInfoCommandHandler.cs" t="Include" />
+          <e p="OutputAssemblyInfoOptions.cs" t="Include" />
+        </e>
+        <e p="bin" t="ExcludeRecursive" />
+        <e p="GitVersion.Output.csproj" t="IncludeRecursive" />
+        <e p="IOutputCommandHandler.cs" t="Include" />
+        <e p="obj" t="ExcludeRecursive">
+          <e p="Debug" t="Include">
+            <e p="netstandard2.0" t="Include">
+              <e p="GitVersion.Output.AssemblyInfo.cs" t="Include" />
+            </e>
+          </e>
+        </e>
+        <e p="OutputCommandHandler.cs" t="Include" />
+        <e p="OutputModule.cs" t="Include" />
+        <e p="OutputOptions.cs" t="Include" />
+        <e p="Project" t="Include">
+          <e p="OutputProjectCommandHandler.cs" t="Include" />
+          <e p="OutputProjectOptions.cs" t="Include" />
+        </e>
+        <e p="Wix" t="Include">
+          <e p="OutputWixCommandHandler.cs" t="Include" />
+          <e p="OutputWixOptions.cs" t="Include" />
+        </e>
+      </e>
+      <e p="GitVersion.sln" t="IncludeFlat" />
+      <e p="packages" t="ExcludeRecursive" />
+    </e>
+  </component>
+</project>

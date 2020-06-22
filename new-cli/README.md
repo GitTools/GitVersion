@@ -1,1 +1,1 @@
-Cli
+GitVersion
