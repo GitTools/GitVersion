@@ -5,7 +5,7 @@ namespace Core
 {
     public interface ICommandHandler
     {
-        Task<int> InvokeAsync(object options);
+        Task<int> InvokeAsync(GitVersionOptions options);
 
         IEnumerable<ICommandHandler> SubCommands();
     }
