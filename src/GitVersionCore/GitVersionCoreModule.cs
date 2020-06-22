@@ -1,9 +1,12 @@
 using System;
+using System.IO;
 using GitVersion.BuildAgents;
 using GitVersion.Common;
 using GitVersion.Configuration;
 using GitVersion.Configuration.Init;
 using GitVersion.Extensions;
+using GitVersion.Helpers;
+using GitVersion.Helpers.Abstractions;
 using GitVersion.Logging;
 using GitVersion.VersionCalculation;
 using GitVersion.VersionCalculation.Cache;
@@ -28,6 +31,15 @@ namespace GitVersion
 
             services.AddSingleton<IConsole, ConsoleAdapter>();
             services.AddSingleton<IGitVersionCache, GitVersionCache>();
+
+            services.AddSingleton<IFileLock>((serviceProvider) => {
+                var gitVersionCache = serviceProvider.GetRequiredService<IGitVersionCache>();
+                var cacheDirectory = gitVersionCache.GetCacheDirectory();
+                var lockFilePath = Path.Combine(cacheDirectory, GitVersionCoreDefaults.LockFileNameWithExtensions);
+                var fileStream = LockFile.WaitUntilAcquired(lockFilePath, GitVersionCoreDefaults.LockTimeoutInMilliseconds);
+                var fileLock = new FileLock(fileStream);
+                return fileLock;
+            });
 
             services.AddSingleton<IGitVersionCacheKeyFactory, GitVersionCacheKeyFactory>();
             services.AddSingleton<IGitVersionContextFactory, GitVersionContextFactory>();
