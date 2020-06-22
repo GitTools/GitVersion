@@ -3,7 +3,7 @@ using Core;
 
 namespace Output
 {
-    public class OutputCommandHandler : CommandHandler<OutputOptions>
+    public class OutputCommandHandler : CommandHandler<OutputOptions>, IRootCommandHandler
     {
         private readonly IEnumerable<IOutputCommandHandler> commandHandlers;
 

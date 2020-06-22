@@ -4,7 +4,7 @@ using Core;
 
 namespace Calculate
 {
-    public class CalculateCommandHandler : CommandHandler<CalculateOptions>
+    public class CalculateCommandHandler : CommandHandler<CalculateOptions>, IRootCommandHandler
     {
         private readonly IService service;
 

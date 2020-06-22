@@ -6,7 +6,7 @@ namespace Calculate
     {
         public void RegisterTypes(IContainerRegistrar services)
         {
-            services.AddSingleton<ICommandHandler, CalculateCommandHandler>();
+            services.AddSingleton<IRootCommandHandler, CalculateCommandHandler>();
         }
     }
 }

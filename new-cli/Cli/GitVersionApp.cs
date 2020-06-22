@@ -12,7 +12,7 @@ namespace Cli
 {
     internal class GitVersionApp : RootCommand
     {
-        public GitVersionApp(IEnumerable<ICommandHandler> commandHandlers)
+        public GitVersionApp(IEnumerable<IRootCommandHandler> commandHandlers)
         {
             foreach (var commandHandler in commandHandlers)
             {
