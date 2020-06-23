@@ -241,8 +241,6 @@ namespace GitVersionCore.Tests.IntegrationTests
 
             fixture.Repository.CreateBranch("hotfix/4.21.1");
             Commands.Checkout(fixture.Repository, "hotfix/4.21.1");
-            fixture.Repository.MakeACommit("hotfix test");
-
             fixture.AssertFullSemver("4.21.1-beta.1+0");
         }
 
