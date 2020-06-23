@@ -1,10 +1,8 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
 
-namespace GitVersion
+
+namespace GitVersion.FileLocking
 {
-    public static class GitVersionCoreDefaults
+    public static class FileLockerDefaults
     {
         public const int LockTimeoutInMilliseconds = 1000 * 15;
         public const string LockFileNameWithExtensions = "GitVersion.lock";

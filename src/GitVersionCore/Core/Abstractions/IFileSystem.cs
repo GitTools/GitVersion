@@ -14,6 +14,7 @@ namespace GitVersion
         void WriteAllText(string file, string fileContents);
         void WriteAllText(string file, string fileContents, Encoding encoding);
         IEnumerable<string> DirectoryEnumerateFiles(string directory, string searchPattern, SearchOption searchOption);
+        FileStream Open(string path, FileMode mode, FileAccess access, FileShare share);
         Stream OpenWrite(string path);
         Stream OpenRead(string path);
         void CreateDirectory(string path);

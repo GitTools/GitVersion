@@ -51,6 +51,11 @@ namespace GitVersion
             return Directory.EnumerateFiles(directory, searchPattern, searchOption);
         }
 
+        public FileStream Open(string path, FileMode mode, FileAccess access, FileShare share)
+        {
+            return File.Open(path, mode, access, share);
+        }
+
         public Stream OpenWrite(string path)
         {
             return File.OpenWrite(path);

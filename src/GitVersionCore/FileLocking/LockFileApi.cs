@@ -19,22 +19,29 @@ FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
 COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER 
 IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN 
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
- */
+*/
 using System;
 using System.IO;
 using System.Threading;
 
-namespace GitVersion.Helpers
+namespace GitVersion.FileLocking
 {
     /// <summary>
     /// This helper class can lock files.
     /// </summary>
-    public static class LockFile
+    public class LockFileApi : ILockFileApi
     {
         public const FileMode DefaultFileMode = FileMode.OpenOrCreate;
         public const FileAccess DefaultFileAccess = FileAccess.ReadWrite;
         public const FileShare DefaultFileShare = FileShare.None;
         public const int DefaultTimeoutInMilliseconds = Timeout.Infinite;
+
+        private readonly IFileSystem fileSystem;
+
+        public LockFileApi(IFileSystem fileSystem)
+        {
+            this.fileSystem = fileSystem;
+        }
 
         /// <summary>
         /// Try to acquire lock on file but only as long the file stream is opened.
@@ -45,16 +52,24 @@ namespace GitVersion.Helpers
         /// <param name="fileAccess">The file access when opening file.</param>
         /// <param name="fileShare">The file share when opening file</param>
         /// <returns>If true the lock acquirement was successful.</returns>
-        public static bool TryAcquire(string filePath, out FileStream? fileStream, FileMode fileMode = DefaultFileMode,
+        public bool TryAcquire(string filePath, out FileStream? fileStream, FileMode fileMode = DefaultFileMode,
             FileAccess fileAccess = DefaultFileAccess, FileShare fileShare = DefaultFileShare)
         {
             filePath = filePath ?? throw new ArgumentNullException(nameof(filePath));
 
             try
             {
-                fileStream = File.Open(filePath, fileMode, fileAccess, fileShare);
+                fileStream = fileSystem.Open(filePath, fileMode, fileAccess, fileShare);
+                // Add UNIX support (reference https://github.com/dotnet/coreclr/pull/8233).
+                fileStream.Lock(0, 0);
                 return true;
             }
+            // The IOException does specify that the file could not been accessed because 
+            // it was partially locked. All other exception have to be handled by consumer.
+            // 
+            // See references:
+            // https://docs.microsoft.com/en-US/dotnet/api/system.io.file.open?view=netcore-3.1 (exceptions)
+            // https://docs.microsoft.com/en-US/dotnet/api/system.io.filestream.lock?view=netcore-3.1#exceptions
             catch (Exception error) when (error.GetType() == typeof(IOException))
             {
                 fileStream = null;
@@ -70,7 +85,7 @@ namespace GitVersion.Helpers
         /// <param name="fileAccess">The file access when opening file.</param>
         /// <param name="fileShare">The file share when opening file</param>
         /// <returns>If not null the lock acquirement was successful.</returns>
-        public static FileStream? TryAcquire(string filePath, FileMode fileMode = DefaultFileMode,
+        public FileStream? TryAcquire(string filePath, FileMode fileMode = DefaultFileMode,
             FileAccess fileAccess = DefaultFileAccess, FileShare fileShare = DefaultFileShare)
         {
             TryAcquire(filePath, out var fileStream, fileMode: fileMode,
@@ -79,12 +94,13 @@ namespace GitVersion.Helpers
             return fileStream;
         }
 
-        private static bool waitUntilAcquired(string filePath, out FileStream? fileStream, FileMode fileMode,
+        private bool waitUntilAcquired(string filePath, out FileStream? fileStream, FileMode fileMode,
             FileAccess fileAccess, FileShare fileShare, int timeoutInMilliseconds, bool throwOnTimeout)
         {
             FileStream spinningFileStream = null;
 
-            var spinHasBeenFinished = SpinWait.SpinUntil(() => {
+            var spinHasBeenFinished = SpinWait.SpinUntil(() =>
+            {
                 return TryAcquire(filePath, out spinningFileStream, fileMode: fileMode, fileAccess: fileAccess, fileShare: fileShare);
             }, timeoutInMilliseconds);
 
@@ -97,7 +113,7 @@ namespace GitVersion.Helpers
             {
                 if (throwOnTimeout)
                 {
-                    throw new TimeoutException($"Waiting until file got acquired failed.");
+                    throw new TimeoutException($"Acquiring file lock failed due to timeout.");
                 }
 
                 fileStream = null;
@@ -105,7 +121,7 @@ namespace GitVersion.Helpers
             }
         }
 
-        private static FileStream? waitUntilAcquired(string filePath, FileMode fileMode,
+        private FileStream? waitUntilAcquired(string filePath, FileMode fileMode,
             FileAccess fileAccess, FileShare fileShare, int timeoutInMilliseconds, bool noThrowOnTimeout)
         {
             waitUntilAcquired(filePath, out var fileStream, fileMode, fileAccess, fileShare, timeoutInMilliseconds, !noThrowOnTimeout);
@@ -120,8 +136,9 @@ namespace GitVersion.Helpers
         /// <param name="fileMode">The file mode when opening file.</param>
         /// <param name="fileAccess">The file access when opening file.</param>
         /// <param name="fileShare">The file share when opening file</param>
+        /// <param name="throwOnTimeout">Enable throw when exception occured due due to timeout.</param>
         /// <returns>If true the lock acquirement was successful.</returns>
-        public static bool WaitUntilAcquired(string filePath, out FileStream? fileStream, FileMode fileMode = DefaultFileMode,
+        public bool WaitUntilAcquired(string filePath, out FileStream? fileStream, FileMode fileMode = DefaultFileMode,
             FileAccess fileAccess = DefaultFileAccess, FileShare fileShare = DefaultFileShare, bool throwOnTimeout = false)
         {
             var timeoutInMilliseconds = DefaultTimeoutInMilliseconds;
@@ -135,8 +152,9 @@ namespace GitVersion.Helpers
         /// <param name="fileMode">The file mode when opening file.</param>
         /// <param name="fileAccess">The file access when opening file.</param>
         /// <param name="fileShare">The file share when opening file</param>
+        /// <param name="noThrowOnTimeout">Disable throw when exception occured due due to timeout.</param>
         /// <returns>If not null the lock acquirement was successful.</returns>
-        public static FileStream? WaitUntilAcquired(string filePath, FileMode fileMode = DefaultFileMode,
+        public FileStream? WaitUntilAcquired(string filePath, FileMode fileMode = DefaultFileMode,
             FileAccess fileAccess = DefaultFileAccess, FileShare fileShare = DefaultFileShare, bool noThrowOnTimeout = false)
         {
             var timeoutInMilliseconds = DefaultTimeoutInMilliseconds;
@@ -152,8 +170,9 @@ namespace GitVersion.Helpers
         /// <param name="fileMode">The file mode when opening file.</param>
         /// <param name="fileAccess">The file access when opening file.</param>
         /// <param name="fileShare">The file share when opening file</param>
+        /// <param name="throwOnTimeout">Enable throw when exception occured due due to timeout.</param>
         /// <returns>If true the lock acquirement was successful.</returns>
-        public static bool WaitUntilAcquired(string filePath, int timeoutInMilliseconds, out FileStream? fileStream, FileMode fileMode = DefaultFileMode,
+        public bool WaitUntilAcquired(string filePath, int timeoutInMilliseconds, out FileStream? fileStream, FileMode fileMode = DefaultFileMode,
             FileAccess fileAccess = DefaultFileAccess, FileShare fileShare = DefaultFileShare, bool throwOnTimeout = false) =>
             waitUntilAcquired(filePath, out fileStream, fileMode, fileAccess, fileShare, timeoutInMilliseconds, throwOnTimeout);
 
@@ -162,12 +181,12 @@ namespace GitVersion.Helpers
         /// </summary>
         /// <param name="filePath">The path to file that get locked.</param>
         /// <param name="timeoutInMilliseconds">The timeout in milliseconds.</param>
-        /// <param name="fileStream">The locked file as file stream.</param>
         /// <param name="fileMode">The file mode when opening file.</param>
         /// <param name="fileAccess">The file access when opening file.</param>
         /// <param name="fileShare">The file share when opening file</param>
+        /// <param name="noThrowOnTimeout">Disable throw when exception occured due due to timeout.</param>
         /// <returns>If not null the lock acquirement was successful.</returns>
-        public static FileStream? WaitUntilAcquired(string filePath, int timeoutInMilliseconds, FileMode fileMode = DefaultFileMode,
+        public FileStream? WaitUntilAcquired(string filePath, int timeoutInMilliseconds, FileMode fileMode = DefaultFileMode,
             FileAccess fileAccess = DefaultFileAccess, FileShare fileShare = DefaultFileShare, bool noThrowOnTimeout = false) =>
             waitUntilAcquired(filePath, fileMode, fileAccess, fileShare, timeoutInMilliseconds, noThrowOnTimeout);
 
@@ -180,8 +199,9 @@ namespace GitVersion.Helpers
         /// <param name="fileMode">The file mode when opening file.</param>
         /// <param name="fileAccess">The file access when opening file.</param>
         /// <param name="fileShare">The file share when opening file</param>
+        /// <param name="throwOnTimeout">Enable throw when exception occured due due to timeout.</param>
         /// <returns>If true the lock acquirement was successful.</returns>
-        public static bool WaitUntilAcquired(string filePath, TimeSpan timeout, out FileStream? fileStream, FileMode fileMode = DefaultFileMode,
+        public bool WaitUntilAcquired(string filePath, TimeSpan timeout, out FileStream? fileStream, FileMode fileMode = DefaultFileMode,
             FileAccess fileAccess = DefaultFileAccess, FileShare fileShare = DefaultFileShare, bool throwOnTimeout = false)
         {
             var timeoutInMilliseconds = Convert.ToInt32(timeout.TotalMilliseconds);
@@ -193,12 +213,12 @@ namespace GitVersion.Helpers
         /// </summary>
         /// <param name="filePath">The path to file that get locked.</param>
         /// <param name="timeout">The timeout specified as <see cref="TimeSpan"/>.</param>
-        /// <param name="fileStream">The locked file as file stream.</param>
         /// <param name="fileMode">The file mode when opening file.</param>
         /// <param name="fileAccess">The file access when opening file.</param>
         /// <param name="fileShare">The file share when opening file</param>
+        /// <param name="noThrowOnTimeout">Disable throw when exception occured due due to timeout.</param>
         /// <returns>If ont null lock acquirement was successful.</returns>
-        public static FileStream? WaitUntilAcquired(string filePath, TimeSpan timeout, FileMode fileMode = DefaultFileMode,
+        public FileStream? WaitUntilAcquired(string filePath, TimeSpan timeout, FileMode fileMode = DefaultFileMode,
             FileAccess fileAccess = DefaultFileAccess, FileShare fileShare = DefaultFileShare, bool noThrowOnTimeout = false)
         {
             var timeoutInMilliseconds = Convert.ToInt32(timeout.TotalMilliseconds);

@@ -5,8 +5,9 @@ using GitVersion.Common;
 using GitVersion.Configuration;
 using GitVersion.Configuration.Init;
 using GitVersion.Extensions;
+using GitVersion.FileLocking;
+using GitVersion.FileLocking.Abstractions;
 using GitVersion.Helpers;
-using GitVersion.Helpers.Abstractions;
 using GitVersion.Logging;
 using GitVersion.VersionCalculation;
 using GitVersion.VersionCalculation.Cache;
@@ -32,14 +33,26 @@ namespace GitVersion
             services.AddSingleton<IConsole, ConsoleAdapter>();
             services.AddSingleton<IGitVersionCache, GitVersionCache>();
 
-            services.AddSingleton<IFileLock>((serviceProvider) => {
+
+            services.AddSingleton<ILockFileApi, LockFileApi>();
+
+            services.AddSingleton<IFileLocker, FileLocker>((serviceProvider) =>
+            {
+                var lockFileApi = serviceProvider.GetRequiredService<ILockFileApi>();
                 var gitVersionCache = serviceProvider.GetRequiredService<IGitVersionCache>();
                 var cacheDirectory = gitVersionCache.GetCacheDirectory();
-                var lockFilePath = Path.Combine(cacheDirectory, GitVersionCoreDefaults.LockFileNameWithExtensions);
-                var fileStream = LockFile.WaitUntilAcquired(lockFilePath, GitVersionCoreDefaults.LockTimeoutInMilliseconds);
-                var fileLock = new FileLock(fileStream);
+                var lockFilePath = Path.Combine(cacheDirectory, FileLockerDefaults.LockFileNameWithExtensions);
+                return new FileLocker(lockFileApi, lockFilePath);
+            });
+
+            services.AddSingleton<IFileLock>((serviceProvider) =>
+            {
+                var fileLocker = serviceProvider.GetRequiredService<IFileLocker>();
+                var fileLockUse = fileLocker.WaitUntilAcquired();
+                var fileLock = new FileLock(fileLockUse);
                 return fileLock;
             });
+
 
             services.AddSingleton<IGitVersionCacheKeyFactory, GitVersionCacheKeyFactory>();
             services.AddSingleton<IGitVersionContextFactory, GitVersionContextFactory>();
