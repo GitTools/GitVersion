@@ -227,5 +227,24 @@ namespace GitVersionCore.Tests.IntegrationTests
             fixture.AssertFullSemver("4.5.1-beta.2", config);
         }
 
+        [Test]
+        public void IsVersionTakenFromHotfixBranchName()
+        {
+            using var fixture = new BaseGitFlowRepositoryFixture("4.20.4");
+
+            Commands.Checkout(fixture.Repository, "develop");
+            fixture.AssertFullSemver("4.21.0-alpha.1");
+
+            fixture.Repository.CreateBranch("release/4.21.1");
+            Commands.Checkout(fixture.Repository, "release/4.21.1");
+            fixture.AssertFullSemver("4.21.1-beta.1+0");
+
+            fixture.Repository.CreateBranch("hotfix/4.21.1");
+            Commands.Checkout(fixture.Repository, "hotfix/4.21.1");
+            fixture.Repository.MakeACommit("hotfix test");
+
+            fixture.AssertFullSemver("4.21.1-beta.1+0");
+        }
+
     }
 }
