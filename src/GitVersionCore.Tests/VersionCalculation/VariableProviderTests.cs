@@ -306,5 +306,17 @@ namespace GitVersionCore.Tests
 
             vars.ToString().ShouldMatchApproved(c => c.SubFolder("Approved"));
         }
+        
+        [Test]
+        public void ProvidesVariableshWithCustomAssemblyInfoFormatSupportingAnySpecialCharcter()
+        {
+            var semVer = new SemanticVersion();
+            var textWithSpecialCharacters = @"+ -=#![]^&@$%:<>/\-çñáÁ统";
+            var config = new TestEffectiveConfiguration(assemblyInformationalFormat: $"Special characters: {textWithSpecialCharacters}");
+
+            var vars = variableProvider.GetVariablesFor(semVer, config, false);
+
+            vars.InformationalVersion.ShouldContain(textWithSpecialCharacters);
+        }
     }
 }

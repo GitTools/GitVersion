@@ -17,7 +17,7 @@
   "AssemblySemVer":"1.2.3.0",
   "AssemblySemFileVer":"1.2.3.0",
   "FullSemVer":"1.2.3+5",
-  "InformationalVersion":"1.2.3+5.Branch.feature-123.Sha.commitShortSha",
+  "InformationalVersion":"1.2.3+5.Branch.feature/123.Sha.commitShortSha",
   "BranchName":"feature/123",
   "EscapedBranchName":"feature-123",
   "Sha":"commitSha",
