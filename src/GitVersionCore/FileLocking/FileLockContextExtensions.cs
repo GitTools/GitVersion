@@ -22,9 +22,12 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 namespace GitVersion.FileLocking
 {
+
+#nullable enable
+
     internal static class FileLockContextExtensions
     {
-        public static bool IsErroneous(this FileLockContext fileLockContext)
+        public static bool IsErroneous(this FileLockContext? fileLockContext)
         {
             if (fileLockContext?.Error is null)
                 return false;

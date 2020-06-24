@@ -26,6 +26,9 @@ using System.Threading;
 
 namespace GitVersion.FileLocking
 {
+
+#nullable enable
+
     /// <summary>
     /// This helper class can lock files.
     /// </summary>
@@ -97,7 +100,7 @@ namespace GitVersion.FileLocking
         private bool waitUntilAcquired(string filePath, out FileStream? fileStream, FileMode fileMode,
             FileAccess fileAccess, FileShare fileShare, int timeoutInMilliseconds, bool throwOnTimeout)
         {
-            FileStream spinningFileStream = null;
+            FileStream? spinningFileStream = null;
 
             var spinHasBeenFinished = SpinWait.SpinUntil(() =>
             {
