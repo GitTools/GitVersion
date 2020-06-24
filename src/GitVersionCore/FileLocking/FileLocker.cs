@@ -29,6 +29,9 @@ using System.Threading;
 
 namespace GitVersion.FileLocking
 {
+
+#nullable enable
+
     /// <summary>
     /// Provides a file locker that is thread-safe and supports nesting.
     /// </summary>
@@ -60,7 +63,7 @@ namespace GitVersion.FileLocking
 
         public string FilePath { get; }
 
-        public FileStream FileStream =>
+        public FileStream? FileStream =>
             fileLockerState?.FileStream;
 
         /// <summary>
@@ -81,7 +84,7 @@ namespace GitVersion.FileLocking
         /// Zero represents the number where no lock is in place.
         /// </summary>
         private int locksInUse = 0;
-        private FileLockContext fileLockerState;
+        private FileLockContext? fileLockerState;
         private object decreaseLockUseLocker;
         private readonly ILockFileApi lockFileApi;
 
@@ -89,7 +92,7 @@ namespace GitVersion.FileLocking
             FileShare fileShare = LockFileApi.DefaultFileShare)
         {
             decreaseLockUseLocker = new object();
-            this.lockFileApi = lockFileApi;
+            this.lockFileApi = lockFileApi ?? throw new ArgumentNullException(nameof(lockFileApi));
             FilePath = filePath;
             FileMode = fileMode;
             FileAccess = fileAccess;
@@ -132,7 +135,7 @@ namespace GitVersion.FileLocking
                     if (EnableConcurrentRethrow)
                     {
                         Trace.WriteLine($"{CurrentThreadWithLockIdPrefix(lockId)} Error from previous lock will be rethrown.", TraceCategory);
-                        throw currentFileLockerState.Error;
+                        throw currentFileLockerState!.Error!;
                     }
 
                     // Imagine stair steps where each stair step is Lock():
@@ -143,7 +146,7 @@ namespace GitVersion.FileLocking
                     // We want Lock #1 and Lock #2 to retry their Lock():
                     //  Thread #1 Lock #1 -> Incremented to 2. Lock was successful.
                     //   Thread #2 Lock #2 -> Incremented to 3. Lock was successful.
-                    currentFileLockerState.ErrorUnlockDone.WaitOne();
+                    currentFileLockerState!.ErrorUnlockDone!.WaitOne();
                     Trace.WriteLine($"{CurrentThreadWithLockIdPrefix(lockId)} Retry lock due to previously failed lock.", TraceCategory);
                     continue;
                 }
@@ -169,35 +172,28 @@ namespace GitVersion.FileLocking
                         try
                         {
                             var fileStream = lockFileApi.WaitUntilAcquired(FilePath, TimeoutInMilliseconds, fileMode: FileMode,
-                                    fileAccess: FileAccess, fileShare: FileShare);
+                                    fileAccess: FileAccess, fileShare: FileShare)!;
 
-                            currentFileLockerState = new FileLockContext(this, decreaseLockUseLocker)
-                            {
-                                FileStream = fileStream
-                            };
+                            currentFileLockerState = new FileLockContext(this, decreaseLockUseLocker, fileStream);
 
                             fileLockerState = currentFileLockerState;
                             Trace.WriteLine($"{CurrentThreadWithLockIdPrefix(lockId)} File {FilePath} locked by file locker.", TraceCategory);
                         }
                         catch (Exception error)
                         {
-                            currentFileLockerState = new FileLockContext(this, decreaseLockUseLocker)
-                            {
-                                Error = error,
-                                ErrorUnlockDone = new ManualResetEvent(false)
-                            };
-
+                            var errorUnlockDone = new ManualResetEvent(false);
+                            currentFileLockerState = new FileLockContext(this, decreaseLockUseLocker, error, errorUnlockDone);
                             fileLockerState = currentFileLockerState;
                             Unlock(lockId);
                             // After we processed Unlock(), we can surpass these locks 
                             // who could be dependent on state assigment of this Lock().
-                            currentFileLockerState.ErrorUnlockDone.Set();
+                            currentFileLockerState.ErrorUnlockDone!.Set();
                             throw;
                         }
                     }
                     else
                     {
-                        Trace.WriteLine($"{CurrentThreadWithLockIdPrefix(lockId)} File {FilePath} locked {desiredLocksInUse} time(s) concurrently by file locker. {fileStreamHasBeenLockedString(currentFileLockerState.FileStream!)}", TraceCategory);
+                        Trace.WriteLine($"{CurrentThreadWithLockIdPrefix(lockId)} File {FilePath} locked {desiredLocksInUse} time(s) concurrently by file locker. {fileStreamHasBeenLockedString(currentFileLockerState!.FileStream!)}", TraceCategory);
                     }
                 }
 
@@ -251,8 +247,8 @@ namespace GitVersion.FileLocking
             if (0 == desiredLocksInUse)
             {
                 // 1. wait for file stream assignment,
-                FileLockContext nullState = null;
-                FileLockContext nonNullState = null;
+                FileLockContext? nullState = null;
+                FileLockContext nonNullState = null!;
 
                 while (true)
                 {
@@ -279,7 +275,7 @@ namespace GitVersion.FileLocking
                     }
                     else
                     {
-                        nonNullState = nullState;
+                        nonNullState = nullState!;
                     }
                 }
 
