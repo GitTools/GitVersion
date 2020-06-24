@@ -78,6 +78,11 @@ namespace GitVersionCore.Tests.Helpers
             throw new NotImplementedException();
         }
 
+        public FileStream Open(string path, FileMode mode, FileAccess access, FileShare share)
+        {
+            return new FileStream(path, mode, access, share);
+        }
+
         public Stream OpenWrite(string path)
         {
             return new TestStream(path, this);
