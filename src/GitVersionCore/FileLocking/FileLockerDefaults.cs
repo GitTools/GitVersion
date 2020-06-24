@@ -4,7 +4,8 @@ namespace GitVersion.FileLocking
 {
     public static class FileLockerDefaults
     {
-        public const int LockTimeoutInMilliseconds = 1000 * 15;
+        // Represents 90 seconds.
+        public const int LockTimeoutInMilliseconds = 1000 * 90;
         public const string LockFileNameWithExtensions = "GitVersion.lock";
     }
 }
