@@ -42,6 +42,7 @@ next-version: 1.0
 assembly-versioning-scheme: MajorMinorPatch
 assembly-file-versioning-scheme: MajorMinorPatchTag
 assembly-informational-format: '{InformationalVersion}'
+assembly-informational-is-semver: true
 mode: ContinuousDelivery
 increment: Inherit
 continuous-delivery-fallback-tag: ci
@@ -115,6 +116,13 @@ Follows the same formatting semantics as `assembly-file-versioning-format`.
 Specifies the format of `AssemblyInformationalVersion`.
 Follows the same formatting semantics as `assembly-file-versioning-format`.
 The default value is `{InformationalVersion}`.
+
+### assembly-informational-is-semver
+
+Controls whether `assembly-file-versioning-format` should follow semantic version allowed char-set or not.
+If set to `true` it will replace any special characters by a dash `-`.
+If set to `false` it will allow any special characters (unicode characters, spaces and symbols like `#@!?[]()$=-`).
+The default value is `true`.
 
 ### mode
 

@@ -184,7 +184,8 @@ namespace GitVersion.Configuration
                 CommitsSinceVersionSourcePadding = 4,
                 CommitDateFormat = "yyyy-MM-dd",
                 UpdateBuildNumber = true,
-                TagPreReleaseWeight = DefaultTagPreReleaseWeight
+                TagPreReleaseWeight = DefaultTagPreReleaseWeight,
+                AssemblyInformationalIsSemVer = true
             };
 
             AddBranchConfig(Config.DevelopBranchKey,

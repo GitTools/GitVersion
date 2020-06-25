@@ -13,6 +13,7 @@ namespace GitVersion.Model.Configuration
             AssemblyVersioningScheme assemblyVersioningScheme,
             AssemblyFileVersioningScheme assemblyFileVersioningScheme,
             string assemblyInformationalFormat,
+            bool assemblyInformationalIsSemver,
             string assemblyVersioningFormat,
             string assemblyFileVersioningFormat,
             VersioningMode versioningMode, string gitTagPrefix,
@@ -36,11 +37,13 @@ namespace GitVersion.Model.Configuration
             string commitDateFormat,
             bool updateBuildNumber,
             int preReleaseWeight,
-            int tagPreReleaseWeight)
+            int tagPreReleaseWeight
+            )
         {
             AssemblyVersioningScheme = assemblyVersioningScheme;
             AssemblyFileVersioningScheme = assemblyFileVersioningScheme;
             AssemblyInformationalFormat = assemblyInformationalFormat;
+            AssemblyInformationalIsSemver = assemblyInformationalIsSemver;
             AssemblyVersioningFormat = assemblyVersioningFormat;
             AssemblyFileVersioningFormat = assemblyFileVersioningFormat;
             VersioningMode = versioningMode;
@@ -78,6 +81,7 @@ namespace GitVersion.Model.Configuration
         public AssemblyVersioningScheme AssemblyVersioningScheme { get; private set; }
         public AssemblyFileVersioningScheme AssemblyFileVersioningScheme { get; private set; }
         public string AssemblyInformationalFormat { get; private set; }
+        public bool AssemblyInformationalIsSemver { get; private set; }
         public string AssemblyVersioningFormat { get; private set; }
         public string AssemblyFileVersioningFormat { get; private set; }
 

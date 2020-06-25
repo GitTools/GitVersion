@@ -84,6 +84,7 @@ namespace GitVersion.Configuration
             var assemblyVersioningScheme = configuration.AssemblyVersioningScheme.Value;
             var assemblyFileVersioningScheme = configuration.AssemblyFileVersioningScheme.Value;
             var assemblyInformationalFormat = configuration.AssemblyInformationalFormat;
+            var assemblyInformationalIsSemver = configuration.AssemblyInformationalIsSemVer;
             var assemblyVersioningFormat = configuration.AssemblyVersioningFormat;
             var assemblyFileVersioningFormat = configuration.AssemblyFileVersioningFormat;
             var gitTagPrefix = configuration.TagPrefix;
@@ -97,7 +98,9 @@ namespace GitVersion.Configuration
 
             var commitMessageVersionBump = currentBranchConfig.CommitMessageIncrementing ?? configuration.CommitMessageIncrementing.Value;
             return new EffectiveConfiguration(
-                assemblyVersioningScheme, assemblyFileVersioningScheme, assemblyInformationalFormat, assemblyVersioningFormat, assemblyFileVersioningFormat, versioningMode, gitTagPrefix,
+                assemblyVersioningScheme, assemblyFileVersioningScheme,
+                assemblyInformationalFormat, assemblyInformationalIsSemver,
+                assemblyVersioningFormat, assemblyFileVersioningFormat, versioningMode, gitTagPrefix,
                 tag, nextVersion, incrementStrategy,
                 currentBranchConfig.Regex,
                 preventIncrementForMergedBranchVersion,

@@ -36,8 +36,10 @@ namespace GitVersionCore.Tests.Helpers
             bool tracksReleaseBranches = false,
             bool isRelease = false,
             string commitDateFormat = "yyyy-MM-dd",
-            bool updateBuildNumber = false) :
-            base(assemblyVersioningScheme, assemblyFileVersioningScheme, assemblyInformationalFormat, assemblyVersioningFormat, assemblyFileVersioningFormat, versioningMode, gitTagPrefix, tag, nextVersion, IncrementStrategy.Patch,
+            bool updateBuildNumber = false,
+            bool assemblyInformationalIsSemver = true
+            ) :
+            base(assemblyVersioningScheme, assemblyFileVersioningScheme, assemblyInformationalFormat, assemblyInformationalIsSemver, assemblyVersioningFormat, assemblyFileVersioningFormat, versioningMode, gitTagPrefix, tag, nextVersion, IncrementStrategy.Patch,
                     branchPrefixToTrim, preventIncrementForMergedBranchVersion, tagNumberPattern, continuousDeploymentFallbackTag,
                     trackMergeTarget,
                     majorMessage, minorMessage, patchMessage, noBumpMessage,

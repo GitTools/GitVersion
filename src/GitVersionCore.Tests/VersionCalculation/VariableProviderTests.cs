@@ -312,7 +312,10 @@ namespace GitVersionCore.Tests
         {
             var semVer = new SemanticVersion();
             var textWithSpecialCharacters = @"+ -=#![]^&@$%:<>/\-çñáÁ统";
-            var config = new TestEffectiveConfiguration(assemblyInformationalFormat: $"Special characters: {textWithSpecialCharacters}");
+            var config = new TestEffectiveConfiguration(
+                assemblyInformationalFormat: $"Special characters: {textWithSpecialCharacters}",
+                assemblyInformationalIsSemver: false
+            );
 
             var vars = variableProvider.GetVariablesFor(semVer, config, false);
 
