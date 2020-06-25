@@ -1,8 +1,10 @@
 using System;
+using GitVersion.Core.Abstractions;
 using GitVersion.Extensions;
 using GitVersion.Logging;
 using GitVersion.Model;
 using GitVersion.MSBuildTask.Tasks;
+using GitVersionTask;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
@@ -24,7 +26,7 @@ namespace GitVersion.MSBuildTask
             var taskLog = task.Log;
             try
             {
-                var sp = BuildServiceProvider(task);
+                using var sp = BuildServiceProvider(task);
                 var gitVersionTaskExecutor = sp.GetService<IGitVersionTaskExecutor>();
 
                 action(gitVersionTaskExecutor);
@@ -58,7 +60,7 @@ namespace GitVersion.MSBuildTask
             gitVersionOptions.Settings.NoFetch = gitVersionOptions.Settings.NoFetch || buildAgent != null && buildAgent.PreventFetch();
         }
 
-        private static IServiceProvider BuildServiceProvider(GitVersionTaskBase task)
+        private static IDisposableServiceProvider BuildServiceProvider(GitVersionTaskBase task)
         {
             var services = new ServiceCollection();
 
@@ -84,7 +86,8 @@ namespace GitVersion.MSBuildTask
             var sp = services.BuildServiceProvider();
             Configure(sp, task);
 
-            return sp;
+            var gitVersionServiceProder = new GitVersionServiceProvider(sp);
+            return gitVersionServiceProder;
         }
     }
 }
