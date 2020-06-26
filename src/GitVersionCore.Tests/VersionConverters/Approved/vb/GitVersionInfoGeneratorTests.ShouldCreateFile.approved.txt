@@ -8,6 +8,22 @@
 ' </auto-generated>
 '------------------------------------------------------------------------------
 
+#If NET20 OrElse NET35 OrElse NETCOREAPP1_0 OrElse NETCOREAPP1_1 OrElse NETSTANDARD1_0 OrElse NETSTANDARD1_1 OrElse NETSTANDARD1_2 OrElse NETSTANDARD1_3 OrElse NETSTANDARD1_4 OrElse NETSTANDARD1_5 OrElse NETSTANDARD1_6 Then
+Namespace Global.System.Diagnostics.CodeAnalysis
+    <Global.System.AttributeUsage(
+        Global.System.AttributeTargets.Assembly Or
+        Global.System.AttributeTargets.Class Or
+        Global.System.AttributeTargets.Struct Or
+        Global.System.AttributeTargets.Constructor Or
+        Global.System.AttributeTargets.Method Or
+        Global.System.AttributeTargets.Property Or
+        Global.System.AttributeTargets.Event, Inherited:=False, AllowMultiple:=False)>
+    Friend NotInheritable Class ExcludeFromCodeCoverageAttribute
+        Inherits Global.System.Attribute
+    End Class
+End Namespace
+#End If
+
 Namespace Global
 
     <Global.System.Runtime.CompilerServices.CompilerGenerated()>
