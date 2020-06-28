@@ -6,8 +6,6 @@ using GitVersion.Configuration;
 using GitVersion.Configuration.Init;
 using GitVersion.Extensions;
 using GitVersion.FileLocking;
-using GitVersion.FileLocking.Abstractions;
-using GitVersion.Helpers;
 using GitVersion.Logging;
 using GitVersion.VersionCalculation;
 using GitVersion.VersionCalculation.Cache;

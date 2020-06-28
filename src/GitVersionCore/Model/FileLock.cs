@@ -1,5 +1,4 @@
 using GitVersion.FileLocking;
-using GitVersion.FileLocking.Abstractions;
 using System;
 using System.IO;
 
