@@ -3,7 +3,7 @@ using GitVersion.FileLocking.Abstractions;
 using System;
 using System.IO;
 
-namespace GitVersion.Helpers
+namespace GitVersion
 {
     public class FileLock : IFileLock
     {
