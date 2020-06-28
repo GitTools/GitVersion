@@ -1,6 +1,6 @@
 using System;
 
-namespace GitVersion.FileLocking.Abstractions
+namespace GitVersion.FileLocking
 {
     public interface IFileLock : IDisposable
     { }
