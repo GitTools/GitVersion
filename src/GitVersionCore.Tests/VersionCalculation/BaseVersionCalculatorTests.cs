@@ -2,38 +2,37 @@ using System;
 using System.Collections.Generic;
 using GitTools.Testing;
 using GitVersion;
-using GitVersion.Configuration;
+using GitVersion.Extensions;
+using GitVersion.Model.Configuration;
 using GitVersion.VersionCalculation;
-using GitVersion.VersionCalculation.BaseVersionCalculators;
-using GitVersion.VersionFilters;
+using GitVersionCore.Tests.Helpers;
 using GitVersionCore.Tests.Mocks;
 using LibGit2Sharp;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using NUnit.Framework;
 using Shouldly;
-using GitVersion.Logging;
-using GitVersion.Extensions;
 
 namespace GitVersionCore.Tests.VersionCalculation
 {
     [TestFixture]
     public class BaseVersionCalculatorTests : TestBase
     {
-        private readonly ILog log;
-
-        public BaseVersionCalculatorTests()
-        {
-            log = new NullLog();
-        }
         [Test]
         public void ChoosesHighestVersionReturnedFromStrategies()
         {
-            var context = new GitVersionContextBuilder().Build();
             var dateTimeOffset = DateTimeOffset.Now;
+            var versionCalculator = GetBaseVersionCalculator(contextBuilder =>
+            {
+                contextBuilder.OverrideServices(services =>
+                {
+                    services.RemoveAll<IVersionStrategy>();
+                    services.AddSingleton<IVersionStrategy>(new V1Strategy(DateTimeOffset.Now));
+                    services.AddSingleton<IVersionStrategy>(new V2Strategy(dateTimeOffset));
+                });
+            });
 
-            var versionStrategies = new IVersionStrategy[] { new V1Strategy(DateTimeOffset.Now), new V2Strategy(dateTimeOffset) };
-            var sut = new BaseVersionCalculator(log, versionStrategies);
-
-            var baseVersion = sut.GetBaseVersion(context);
+            var baseVersion = versionCalculator.GetBaseVersion();
 
             baseVersion.SemanticVersion.ToString().ShouldBe("2.0.0");
             baseVersion.ShouldIncrement.ShouldBe(true);
@@ -43,13 +42,19 @@ namespace GitVersionCore.Tests.VersionCalculation
         [Test]
         public void UsesWhenFromNextBestMatchIfHighestDoesntHaveWhen()
         {
-            var context = new GitVersionContextBuilder().Build();
             var when = DateTimeOffset.Now;
 
-            var versionStrategies = new IVersionStrategy[] { new V1Strategy(when), new V2Strategy(null) };
-            var sut = new BaseVersionCalculator(log, versionStrategies);
+            var versionCalculator = GetBaseVersionCalculator(contextBuilder =>
+            {
+                contextBuilder.OverrideServices(services =>
+                {
+                    services.RemoveAll<IVersionStrategy>();
+                    services.AddSingleton<IVersionStrategy>(new V1Strategy(when));
+                    services.AddSingleton<IVersionStrategy>(new V2Strategy(null));
+                });
+            });
 
-            var baseVersion = sut.GetBaseVersion(context);
+            var baseVersion = versionCalculator.GetBaseVersion();
 
             baseVersion.SemanticVersion.ToString().ShouldBe("2.0.0");
             baseVersion.ShouldIncrement.ShouldBe(true);
@@ -59,60 +64,43 @@ namespace GitVersionCore.Tests.VersionCalculation
         [Test]
         public void UsesWhenFromNextBestMatchIfHighestDoesntHaveWhenReversedOrder()
         {
-            var context = new GitVersionContextBuilder().Build();
             var when = DateTimeOffset.Now;
 
-            var versionStrategies = new IVersionStrategy[] { new V1Strategy(null), new V2Strategy(when) };
-            var sut = new BaseVersionCalculator(log, versionStrategies);
+            var versionCalculator = GetBaseVersionCalculator(contextBuilder =>
+            {
+                contextBuilder.OverrideServices(services =>
+                {
+                    services.RemoveAll<IVersionStrategy>();
+                    services.AddSingleton<IVersionStrategy>(new V1Strategy(null));
+                    services.AddSingleton<IVersionStrategy>(new V2Strategy(when));
+                });
+            });
 
-            var baseVersion = sut.GetBaseVersion(context);
+            var baseVersion = versionCalculator.GetBaseVersion();
 
             baseVersion.SemanticVersion.ToString().ShouldBe("2.0.0");
             baseVersion.ShouldIncrement.ShouldBe(true);
             baseVersion.BaseVersionSource.When().ShouldBe(when);
         }
 
-        private class V1Strategy : IVersionStrategy
-        {
-            private readonly Commit when;
-
-            public V1Strategy(DateTimeOffset? when)
-            {
-                this.when = when == null ? null : new MockCommit { CommitterEx = Generate.Signature(when.Value) };
-            }
-
-            public virtual IEnumerable<BaseVersion> GetVersions(GitVersionContext context)
-            {
-                yield return new BaseVersion(context, "Source 1", false, new SemanticVersion(1), when, null);
-            }
-        }
-
-        private class V2Strategy : IVersionStrategy
-        {
-            private readonly Commit when;
-
-            public V2Strategy(DateTimeOffset? when)
-            {
-                this.when = when == null ? null : new MockCommit { CommitterEx = Generate.Signature(when.Value) };
-            }
-
-            public virtual IEnumerable<BaseVersion> GetVersions(GitVersionContext context)
-            {
-                yield return new BaseVersion(context, "Source 2", true, new SemanticVersion(2), when, null);
-            }
-        }
-
         [Test]
         public void ShouldNotFilterVersion()
         {
             var fakeIgnoreConfig = new TestIgnoreConfig(new ExcludeSourcesContainingExclude());
-            var context = new GitVersionContextBuilder().WithConfig(new Config() { Ignore = fakeIgnoreConfig }).Build();
-            var version = new BaseVersion(context, "dummy", false, new SemanticVersion(2), new MockCommit(), null);
+            var version = new BaseVersion("dummy", false, new SemanticVersion(2), new MockCommit(), null);
 
-            var versionStrategies = new IVersionStrategy[] { new TestVersionStrategy(version) };
-            var sut = new BaseVersionCalculator(log, versionStrategies);
+            var versionCalculator = GetBaseVersionCalculator(contextBuilder =>
+            {
+                contextBuilder
+                    .WithConfig(new Config { Ignore = fakeIgnoreConfig })
+                    .OverrideServices(services =>
+                    {
+                        services.RemoveAll<IVersionStrategy>();
+                        services.AddSingleton<IVersionStrategy>(new TestVersionStrategy(version));
+                    });
+            });
 
-            var baseVersion = sut.GetBaseVersion(context);
+            var baseVersion = versionCalculator.GetBaseVersion();
 
             baseVersion.Source.ShouldBe(version.Source);
             baseVersion.ShouldIncrement.ShouldBe(version.ShouldIncrement);
@@ -123,14 +111,21 @@ namespace GitVersionCore.Tests.VersionCalculation
         public void ShouldFilterVersion()
         {
             var fakeIgnoreConfig = new TestIgnoreConfig(new ExcludeSourcesContainingExclude());
-            var context = new GitVersionContextBuilder().WithConfig(new Config() { Ignore = fakeIgnoreConfig }).Build();
-            var higherVersion = new BaseVersion(context, "exclude", false, new SemanticVersion(2), new MockCommit(), null);
-            var lowerVersion = new BaseVersion(context, "dummy", false, new SemanticVersion(1), new MockCommit(), null);
 
-            var versionStrategies = new IVersionStrategy[] { new TestVersionStrategy(higherVersion, lowerVersion) };
-            var sut = new BaseVersionCalculator(log, versionStrategies);
+            var higherVersion = new BaseVersion("exclude", false, new SemanticVersion(2), new MockCommit(), null);
+            var lowerVersion = new BaseVersion("dummy", false, new SemanticVersion(1), new MockCommit(), null);
 
-            var baseVersion = sut.GetBaseVersion(context);
+            var versionCalculator = GetBaseVersionCalculator(contextBuilder =>
+            {
+                contextBuilder
+                    .WithConfig(new Config { Ignore = fakeIgnoreConfig })
+                    .OverrideServices(services =>
+                    {
+                        services.RemoveAll<IVersionStrategy>();
+                        services.AddSingleton<IVersionStrategy>(new TestVersionStrategy(higherVersion, lowerVersion));
+                    });
+            });
+            var baseVersion = versionCalculator.GetBaseVersion();
 
             baseVersion.Source.ShouldNotBe(higherVersion.Source);
             baseVersion.SemanticVersion.ShouldNotBe(higherVersion.SemanticVersion);
@@ -138,9 +133,21 @@ namespace GitVersionCore.Tests.VersionCalculation
             baseVersion.SemanticVersion.ShouldBe(lowerVersion.SemanticVersion);
         }
 
+        private static IBaseVersionCalculator GetBaseVersionCalculator(Action<GitVersionContextBuilder> contextBuilderAction)
+        {
+            var contextBuilder = new GitVersionContextBuilder();
+            contextBuilderAction?.Invoke(contextBuilder);
+
+            contextBuilder.Build();
+
+            return contextBuilder.ServicesProvider.GetService<IBaseVersionCalculator>();
+        }
+
         private class TestIgnoreConfig : IgnoreConfig
         {
             private readonly IVersionFilter filter;
+
+            public override bool IsEmpty => false;
 
             public TestIgnoreConfig(IVersionFilter filter)
             {
@@ -168,7 +175,37 @@ namespace GitVersionCore.Tests.VersionCalculation
             }
         }
 
-        private class TestVersionStrategy : IVersionStrategy
+        private sealed class V1Strategy : IVersionStrategy
+        {
+            private readonly Commit when;
+
+            public V1Strategy(DateTimeOffset? when)
+            {
+                this.when = when == null ? null : new MockCommit { CommitterEx = Generate.Signature(when.Value) };
+            }
+
+            public IEnumerable<BaseVersion> GetVersions()
+            {
+                yield return new BaseVersion("Source 1", false, new SemanticVersion(1), when, null);
+            }
+        }
+
+        private sealed class V2Strategy : IVersionStrategy
+        {
+            private readonly Commit when;
+
+            public V2Strategy(DateTimeOffset? when)
+            {
+                this.when = when == null ? null : new MockCommit { CommitterEx = Generate.Signature(when.Value) };
+            }
+
+            public IEnumerable<BaseVersion> GetVersions()
+            {
+                yield return new BaseVersion("Source 2", true, new SemanticVersion(2), when, null);
+            }
+        }
+
+        private sealed class TestVersionStrategy : IVersionStrategy
         {
             private readonly IEnumerable<BaseVersion> versions;
 
@@ -177,7 +214,7 @@ namespace GitVersionCore.Tests.VersionCalculation
                 this.versions = versions;
             }
 
-            public virtual IEnumerable<BaseVersion> GetVersions(GitVersionContext context)
+            public IEnumerable<BaseVersion> GetVersions()
             {
                 return versions;
             }

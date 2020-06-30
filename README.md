@@ -6,24 +6,23 @@
 Versioning when using git, solved. GitVersion looks at your git history and
 works out the [semantic version][semver] of the commit being built.
 
-[![Gitter][gitter-badge]][gitter]
 [![Build status][appveyor-badge]][appveyor]
 [![Build status][azure-pipeline-badge]][azure-pipeline]
-[![codecov][codecov-badge]][codecov]
-<!-- [![Build status][github-actions-badge]][github-actions] -->
+[![Build status][github-actions-badge]][github-actions]
 
-|                                       |                Stable                                              |                                Pre-release                                 |
-| ------------------------------------: | :----------------------------------------------------------------: | :------------------------------------------------------------------------: |
-|                    **GitHub Release** |                [![GitHub release][gh-rel-badge]][gh-rel]           |                                     -                                      |
-|               **GitVersion.Portable** |                     [![Chocolatey][choco-badge]][choco]            |                     [![Chocolatey][choco-pre-badge]][choco]                |
-|                    **GitVersionTask** |                            [![NuGet][gvt-badge]][gvt]              |                            [![NuGet][gvt-pre-badge]][gvt]                  |
-|            **GitVersion.CommandLine** |                           [![NuGet][gvcl-badge]][gvcl]             |                           [![NuGet][gvcl-pre-badge]][gvcl]                 |
-|                   **GitVersion.Tool** |                           [![NuGet][gvgt-badge]][gvgt]             |                           [![NuGet][gvgt-pre-badge]][gvgt]                 |
-|                               **Gem** |                              [![Gem][gem-badge]][gem]              |                                     -                                      |
-|                          **Homebrew** |                        [![homebrew][brew-badge]][brew]             |                                     -                                      |
-|                            **Docker** |               [![Docker Pulls][dockerhub-badge]][dockerhub]        |                                     -                                      |
-|               **Azure Pipeline Task** | [![Azure Pipeline Task][az-pipeline-task-badge]][az-pipeline-task] |                                     -                                      |
-|                     **Github Action** |             [![Github Action][gh-actions-badge]][gh-actions]       |                                     -                                      |
+[![codecov][codecov-badge]][codecov]
+[![Gitter][gitter-badge]][gitter]
+
+| Artifact                   |                Stable                                              |
+| :------------------------- | :----------------------------------------------------------------- |
+| **GitHub Release**         |                [![GitHub release][gh-rel-badge]][gh-rel]           |
+| **GitVersion.Portable**    |                     [![Chocolatey][choco-badge]][choco]            |
+| **GitVersion.Tool**        |                           [![NuGet][gvgt-badge]][gvgt]             |
+| **GitVersion.CommandLine** |                           [![NuGet][gvcl-badge]][gvcl]             |
+| **GitVersionTask**         |                            [![NuGet][gvt-badge]][gvt]              |
+| **Azure Pipeline Task**    | [![Azure Pipeline Task][az-pipeline-task-badge]][az-pipeline-task] |
+| **Github Action**          |             [![Github Action][gh-actions-badge]][gh-actions]       |
+| **Docker**                 |               [![Docker Pulls][dockerhub-badge]][dockerhub]        |
 
 ## Compatibility
 
@@ -68,7 +67,7 @@ from The Noun Project.
 [azure-pipeline]:                  https://dev.azure.com/GitTools/GitVersion/_build/latest?definitionId=1
 [azure-pipeline-badge]:            https://dev.azure.com/GitTools/GitVersion/_apis/build/status/GitTools.GitVersion
 [github-actions]:                  https://github.com/GitTools/GitVersion/actions
-[github-actions-badge]:            https://github.com/GitTools/GitVersion/workflows/CI/badge.svg
+[github-actions-badge]:            https://github.com/GitTools/GitVersion/workflows/Build/badge.svg
 [travis]:                          https://travis-ci.org/GitTools/GitVersion
 [travis-badge]:                    https://travis-ci.org/GitTools/GitVersion.svg?branch=master
 [codecov]:                         https://codecov.io/gh/GitTools/GitVersion
@@ -78,18 +77,12 @@ from The Noun Project.
 [gh-rel-badge]:                    https://img.shields.io/github/release/gittools/gitversion.svg?logo=github
 [choco]:                           https://chocolatey.org/packages/GitVersion.Portable
 [choco-badge]:                     https://img.shields.io/chocolatey/v/gitversion.portable.svg?logo=nuget
-[choco-pre-badge]:                 https://img.shields.io/chocolatey/vpre/gitversion.portable.svg?logo=nuget
 [gvt]:                             https://www.nuget.org/packages/GitVersionTask
 [gvt-badge]:                       https://img.shields.io/nuget/v/GitVersionTask.svg?logo=nuget
-[gvt-pre-badge]:                   https://img.shields.io/nuget/vpre/GitVersionTask.svg?logo=nuget
 [gvcl]:                            https://www.nuget.org/packages/GitVersion.CommandLine
 [gvcl-badge]:                      https://img.shields.io/nuget/v/GitVersion.CommandLine.svg?logo=nuget
-[gvcl-pre-badge]:                  https://img.shields.io/nuget/vpre/GitVersion.CommandLine.svg?logo=nuget
 [gvgt]:                            https://www.nuget.org/packages/GitVersion.Tool
 [gvgt-badge]:                      https://img.shields.io/nuget/v/GitVersion.Tool.svg?logo=nuget
-[gvgt-pre-badge]:                  https://img.shields.io/nuget/vpre/GitVersion.Tool.svg?logo=nuget
-[gem-badge]:                       https://img.shields.io/gem/v/gitversion.svg?logo=ruby
-[gem]:                             https://rubygems.org/gems/gitversion
 [brew]:                            http://brew.sh/
 [brew-badge]:                      https://img.shields.io/homebrew/v/gitversion.svg?logo=homebrew
 [dockerhub]:                       https://hub.docker.com/r/gittools/gitversion/

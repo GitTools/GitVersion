@@ -11,11 +11,12 @@ namespace GitVersion.MSBuildTask.Tasks
         public string IntermediateOutputPath { get; set; }
 
         [Required]
-        public string Language { get; set; }
+        public string Language { get; set; } = "C#";
 
         [Output]
         public string GitVersionInformationFilePath { get; set; }
 
-        public override bool Execute() => TaskProxy.GenerateGitVersionInformation(this);
+        protected override bool OnExecute() => TaskProxy.GenerateGitVersionInformation(this);
+
     }
 }

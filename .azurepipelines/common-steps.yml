@@ -1,0 +1,23 @@
+parameters:
+- name: includeArtifacts
+  type: boolean
+  default: false
+
+steps:
+- task: Cache@2
+  inputs:
+    key: 'v1-tools | "$(Agent.OS)" | build.cake'
+    path: tools
+  displayName: Cache Cake tools
+- task: Cache@2
+  inputs:
+    key: 'v1-dotnet | "$(Agent.OS)" | build.config'
+    path: .dotnet
+  displayName: Cache dotnet locally
+- ${{ if eq(parameters.includeArtifacts, true) }}:
+  - task: DownloadPipelineArtifact@2
+    displayName: 'Download artifacts folder'
+    inputs:
+      source: current
+      path: $(Build.SourcesDirectory)/artifacts
+      artifact: storage

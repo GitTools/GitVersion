@@ -1,41 +1,41 @@
 using System;
 using System.Collections.Generic;
 using GitTools.Testing;
-using GitVersion.Configuration;
-using GitVersion.VersionCalculation;
-using GitVersion.VersioningModes;
-using GitVersionCore.Tests.Mocks;
-using LibGit2Sharp;
-using NUnit.Framework;
-using Shouldly;
-using GitVersion.Logging;
 using GitVersion;
 using GitVersion.Extensions;
+using GitVersion.Model.Configuration;
+using GitVersion.VersionCalculation;
+using GitVersionCore.Tests.Helpers;
+using GitVersionCore.Tests.Mocks;
+using LibGit2Sharp;
+using Microsoft.Extensions.DependencyInjection;
+using NUnit.Framework;
+using Shouldly;
 
 namespace GitVersionCore.Tests.VersionCalculation
 {
     public class NextVersionCalculatorTests : TestBase
     {
-        private readonly ILog log;
-        private IMainlineVersionCalculator mainlineVersionCalculator;
-
-        public NextVersionCalculatorTests()
-        {
-            var metaDataCalculator = new MetaDataCalculator();
-
-            log = new NullLog();
-            mainlineVersionCalculator = new MainlineVersionCalculator(log, metaDataCalculator);
-        }
         [Test]
         public void ShouldIncrementVersionBasedOnConfig()
         {
-            var baseCalculator = new TestBaseVersionCalculator(true, new SemanticVersion(1), new MockCommit());
             var semanticVersionBuildMetaData = new SemanticVersionBuildMetaData("ef7d0d7e1e700f1c7c9fa01ea6791bb778a5c37c", 1, "master", "b1a34edbd80e141f7cc046c074f109be7d022074", "b1a34e", DateTimeOffset.Now);
-            var sut = new NextVersionCalculator(log, new TestMetaDataCalculator(semanticVersionBuildMetaData), baseCalculator, mainlineVersionCalculator);
-            var config = new Config();
-            var context = new GitVersionContextBuilder().WithConfig(config).Build();
 
-            var version = sut.FindVersion(context);
+            var contextBuilder = new GitVersionContextBuilder();
+
+            contextBuilder
+                .OverrideServices(services =>
+                {
+                    services.AddSingleton<IBaseVersionCalculator>(new TestBaseVersionCalculator(true, new SemanticVersion(1), new MockCommit()));
+                    services.AddSingleton<IMainlineVersionCalculator>(new TestMainlineVersionCalculator(semanticVersionBuildMetaData));
+                })
+                .WithConfig(new Config())
+                .Build();
+
+            var nextVersionCalculator = contextBuilder.ServicesProvider.GetService<INextVersionCalculator>();
+            nextVersionCalculator.ShouldNotBeNull();
+
+            var version = nextVersionCalculator.FindVersion();
 
             version.ToString().ShouldBe("1.0.1");
         }
@@ -43,13 +43,24 @@ namespace GitVersionCore.Tests.VersionCalculation
         [Test]
         public void DoesNotIncrementWhenBaseVersionSaysNotTo()
         {
-            var baseCalculator = new TestBaseVersionCalculator(false, new SemanticVersion(1), new MockCommit());
             var semanticVersionBuildMetaData = new SemanticVersionBuildMetaData("ef7d0d7e1e700f1c7c9fa01ea6791bb778a5c37c", 1, "master", "b1a34edbd80e141f7cc046c074f109be7d022074", "b1a34e", DateTimeOffset.Now);
-            var sut = new NextVersionCalculator(log, new TestMetaDataCalculator(semanticVersionBuildMetaData), baseCalculator, mainlineVersionCalculator);
-            var config = new Config();
-            var context = new GitVersionContextBuilder().WithConfig(config).Build();
 
-            var version = sut.FindVersion(context);
+            var contextBuilder = new GitVersionContextBuilder();
+
+            contextBuilder
+                .OverrideServices(services =>
+                {
+                    services.AddSingleton<IBaseVersionCalculator>(new TestBaseVersionCalculator(false, new SemanticVersion(1), new MockCommit()));
+                    services.AddSingleton<IMainlineVersionCalculator>(new TestMainlineVersionCalculator(semanticVersionBuildMetaData));
+                })
+                .WithConfig(new Config())
+                .Build();
+
+            var nextVersionCalculator = contextBuilder.ServicesProvider.GetService<INextVersionCalculator>();
+
+            nextVersionCalculator.ShouldNotBeNull();
+
+            var version = nextVersionCalculator.FindVersion();
 
             version.ToString().ShouldBe("1.0.0");
         }
@@ -57,14 +68,22 @@ namespace GitVersionCore.Tests.VersionCalculation
         [Test]
         public void AppliesBranchPreReleaseTag()
         {
-            var baseCalculator = new TestBaseVersionCalculator(false, new SemanticVersion(1), new MockCommit());
             var semanticVersionBuildMetaData = new SemanticVersionBuildMetaData("ef7d0d7e1e700f1c7c9fa01ea6791bb778a5c37c", 2, "develop", "b1a34edbd80e141f7cc046c074f109be7d022074", "b1a34e", DateTimeOffset.Now);
-            var sut = new NextVersionCalculator(log, new TestMetaDataCalculator(semanticVersionBuildMetaData), baseCalculator, mainlineVersionCalculator);
-            var context = new GitVersionContextBuilder()
+            var contextBuilder = new GitVersionContextBuilder();
+
+            contextBuilder
+                .OverrideServices(services =>
+                {
+                    services.AddSingleton<IBaseVersionCalculator>(new TestBaseVersionCalculator(false, new SemanticVersion(1), new MockCommit()));
+                    services.AddSingleton<IMainlineVersionCalculator>(new TestMainlineVersionCalculator(semanticVersionBuildMetaData));
+                })
                 .WithDevelopBranch()
                 .Build();
 
-            var version = sut.FindVersion(context);
+            var nextVersionCalculator = contextBuilder.ServicesProvider.GetService<INextVersionCalculator>();
+            nextVersionCalculator.ShouldNotBeNull();
+
+            var version = nextVersionCalculator.FindVersion();
 
             version.ToString("f").ShouldBe("1.0.0-alpha.1+2");
         }
@@ -82,7 +101,7 @@ namespace GitVersionCore.Tests.VersionCalculation
                         {
                             Regex = "custom/",
                             Tag = "useBranchName",
-                            SourceBranches = new List<string>()
+                            SourceBranches = new HashSet<string>()
                         }
                     }
                 }
@@ -95,7 +114,7 @@ namespace GitVersionCore.Tests.VersionCalculation
             fixture.BranchTo("custom/foo");
             fixture.MakeACommit();
 
-            fixture.AssertFullSemver(config, "1.0.0-foo.1+2");
+            fixture.AssertFullSemver("1.0.0-foo.1+2", config);
         }
 
         [Test]
@@ -111,7 +130,7 @@ namespace GitVersionCore.Tests.VersionCalculation
                         {
                             Regex = "custom/",
                             Tag = "alpha.{BranchName}",
-                            SourceBranches = new List<string>()
+                            SourceBranches = new HashSet<string>()
                         }
                     }
                 }
@@ -124,7 +143,7 @@ namespace GitVersionCore.Tests.VersionCalculation
             fixture.BranchTo("custom/foo");
             fixture.MakeACommit();
 
-            fixture.AssertFullSemver(config, "1.0.0-alpha.foo.1+2");
+            fixture.AssertFullSemver("1.0.0-alpha.foo.1+2", config);
         }
 
         [Test]
@@ -136,7 +155,7 @@ namespace GitVersionCore.Tests.VersionCalculation
                 Branches = new Dictionary<string, BranchConfig>
                 {
                     {
-                        "master", new BranchConfig()
+                        "master", new BranchConfig
                         {
                             Tag = "beta"
                         }
@@ -152,12 +171,12 @@ namespace GitVersionCore.Tests.VersionCalculation
             fixture.Repository.MakeATaggedCommit("0.1.0-test.1");
             fixture.Repository.MakeACommit();
 
-            fixture.AssertFullSemver(config, "0.1.0-test.2+2");
+            fixture.AssertFullSemver("0.1.0-test.2+2", config);
 
             Commands.Checkout(fixture.Repository, "master");
             fixture.Repository.Merge(fixture.Repository.FindBranch("feature/test"), Generate.SignatureNow());
 
-            fixture.AssertFullSemver(config, "0.1.0-beta.1+2");
+            fixture.AssertFullSemver("0.1.0-beta.1+2", config);
         }
     }
 }

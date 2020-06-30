@@ -1,7 +1,9 @@
 using System.Collections.Generic;
 using System.Linq;
-using GitVersion.Configuration;
-using GitVersion.VersionCalculation.BaseVersionCalculators;
+using GitVersion.Extensions;
+using GitVersion.Model.Configuration;
+using GitVersion.VersionCalculation;
+using GitVersionCore.Tests.Helpers;
 using GitVersionCore.Tests.Mocks;
 using LibGit2Sharp;
 using NUnit.Framework;
@@ -17,17 +19,18 @@ namespace GitVersionCore.Tests.VersionCalculation.Strategies
         {
             // When a branch is merged in you want to start building stable packages of that version
             // So we shouldn't bump the version
-            var context = new GitVersionContextBuilder().WithRepository(new MockRepository
+            var contextBuilder = new GitVersionContextBuilder().WithRepository(new MockRepository
             {
                 Head = new MockBranch("master") { new MockCommit
                 {
                     MessageEx = "Merge branch 'release-0.1.5'",
                     ParentsEx = GetParents(true)
                 } }
-            }).Build();
-            var sut = new MergeMessageVersionStrategy();
+            });
+            contextBuilder.Build();
+            var strategy = contextBuilder.ServicesProvider.GetServiceForType<IVersionStrategy, MergeMessageVersionStrategy>();
 
-            var baseVersion = sut.GetVersions(context).Single();
+            var baseVersion = strategy.GetVersions().Single();
 
             baseVersion.ShouldIncrement.ShouldBe(false);
         }
@@ -129,7 +132,7 @@ namespace GitVersionCore.Tests.VersionCalculation.Strategies
             var parents = GetParents(true);
 
             AssertMergeMessage(commitMessage, null, parents);
-        } 
+        }
 
         [TestCase("Merge branch 'support/0.2.0'", "support", "0.2.0")]
         [TestCase("Merge branch 'support/0.2.0'", null, null)]
@@ -143,7 +146,7 @@ namespace GitVersionCore.Tests.VersionCalculation.Strategies
             AssertMergeMessage(message, expectedVersion, parents, config);
         }
 
-        private static void AssertMergeMessage(string message, string expectedVersion, List<Commit> parents, Config config = null)
+        private void AssertMergeMessage(string message, string expectedVersion, IList<Commit> parents, Config config = null)
         {
             var commit = new MockCommit
             {
@@ -151,7 +154,7 @@ namespace GitVersionCore.Tests.VersionCalculation.Strategies
                 ParentsEx = parents
             };
 
-            var context = new GitVersionContextBuilder()
+            var contextBuilder = new GitVersionContextBuilder()
                 .WithConfig(config ?? new Config())
                 .WithRepository(new MockRepository
                 {
@@ -160,11 +163,11 @@ namespace GitVersionCore.Tests.VersionCalculation.Strategies
                         commit,
                         new MockCommit()
                     }
-                })
-                .Build();
-            var sut = new MergeMessageVersionStrategy();
+                });
+            contextBuilder.Build();
+            var strategy = contextBuilder.ServicesProvider.GetServiceForType<IVersionStrategy, MergeMessageVersionStrategy>();
 
-            var baseVersion = sut.GetVersions(context).SingleOrDefault();
+            var baseVersion = strategy.GetVersions().SingleOrDefault();
 
             if (expectedVersion == null)
             {
@@ -182,15 +185,16 @@ namespace GitVersionCore.Tests.VersionCalculation.Strategies
             if (isMergeCommit)
             {
                 return new List<Commit>
+                {
+                    null,
+                    null
+                };
+            }
+
+            return new List<Commit>
             {
-                null,
                 null
             };
-            }
-            return new List<Commit>
-        {
-            null
-        };
         }
     }
 }

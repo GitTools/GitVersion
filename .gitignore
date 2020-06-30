@@ -117,11 +117,6 @@ releaseArtifacts
 artifacts
 src/Docker/**/content
 
-src/GitVersionRubyGem/*.gem
-src/GitVersionRubyGem/bin/lib
-src/GitVersionRubyGem/bin/GitVersion.exe
-src/GitVersionRubyGem/bin/LibGit2Sharp.dll.config
-
 !**/*.cake
 .DS_Store
 
@@ -129,3 +124,5 @@ src/GitVersionRubyGem/bin/LibGit2Sharp.dll.config
 config.wyam.dll
 config.wyam.hash
 config.wyam.packages.xml
+/tests/integration/core/build
+/tests/integration/full/build

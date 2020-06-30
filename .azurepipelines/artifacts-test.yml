@@ -1,0 +1,43 @@
+jobs:
+- ${{ each distro in parameters.distros }}:
+    - ${{ each dotnetVersion in parameters.dotnetVersions }}:
+      - job:
+        displayName: 'Artifacts Test ${{ distro }} ${{ dotnetVersion }} (${{ parameters.name }})'
+        pool:
+          vmImage: ${{ parameters.vmImage }}
+        steps:
+        - template: common-steps.yml
+          parameters:
+            includeArtifacts: true
+        - pwsh: ./build.ps1 -target Artifacts-Test -DockerDistro ${{ distro }} -DockerDotnetVersion ${{ dotnetVersion }}
+          displayName: '[Docker Test Artifacts ${{ distro }}_${{ dotnetVersion }}]'
+- job: Artifacts_Test_MsBuild
+  displayName: Artifacts Test MsBuild (Windows)
+  pool:
+    vmImage: windows-latest
+  steps:
+  - template: common-steps.yml
+    parameters:
+      includeArtifacts: true
+  - pwsh: ./build.ps1 -target Artifacts-MsBuildFull-Test
+    displayName: '[MsBuild Test Artifacts]'
+- job: Artifacts_Test_Commandline
+  displayName: Artifacts Test Commandline (Windows)
+  pool:
+    vmImage: windows-latest
+  steps:
+  - template: common-steps.yml
+    parameters:
+      includeArtifacts: true
+  - pwsh: ./build.ps1 -target Artifacts-Commandline-Test
+    displayName: '[Commandline Test Artifacts]'
+- job: Artifacts_Test_Portable
+  displayName: Artifacts Test Portable (Windows)
+  pool:
+    vmImage: windows-latest
+  steps:
+  - template: common-steps.yml
+    parameters:
+      includeArtifacts: true
+  - pwsh: ./build.ps1 -target Artifacts-Portable-Test
+    displayName: '[Portable Test Artifacts]'

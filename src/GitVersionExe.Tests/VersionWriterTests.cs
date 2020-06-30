@@ -2,19 +2,27 @@ using System;
 using System.IO;
 using System.Reflection;
 using GitVersion;
+using GitVersion.Extensions;
+using GitVersionCore.Tests.Helpers;
+using Microsoft.Extensions.DependencyInjection;
 using Mono.Cecil;
 using NUnit.Framework;
 
 namespace GitVersionExe.Tests
 {
     [TestFixture]
-    public class VersionWriterTests
+    public class VersionWriterTests : TestBase
     {
         private readonly IVersionWriter versionWriter;
 
         public VersionWriterTests()
         {
-            this.versionWriter = new VersionWriter();
+            var sp = ConfigureServices(services =>
+            {
+                services.AddModule(new GitVersionExeModule());
+            });
+
+            versionWriter = sp.GetService<IVersionWriter>();
         }
         [Test]
         public void WriteVersionShouldWriteFileVersionWithNoPrereleaseTag()

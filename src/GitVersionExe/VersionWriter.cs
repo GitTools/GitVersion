@@ -1,14 +1,21 @@
 using System;
 using System.Linq;
 using System.Reflection;
+using GitVersion.Logging;
 
 namespace GitVersion
 {
     public class VersionWriter : IVersionWriter
     {
+        private readonly IConsole console;
+
+        public VersionWriter(IConsole console)
+        {
+            this.console = console ?? throw new ArgumentNullException(nameof(console));
+        }
         public void Write(Assembly assembly)
         {
-            WriteTo(assembly, Console.WriteLine);
+            WriteTo(assembly, console.WriteLine);
         }
 
         public void WriteTo(Assembly assembly, Action<string> writeAction)

@@ -1,4 +1,5 @@
 using GitTools.Testing;
+using GitVersionCore.Tests.Helpers;
 using LibGit2Sharp;
 using NUnit.Framework;
 using Shouldly;

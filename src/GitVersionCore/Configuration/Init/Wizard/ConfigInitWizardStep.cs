@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using GitVersion.Logging;
+using GitVersion.Model.Configuration;
 
 namespace GitVersion.Configuration.Init.Wizard
 {
@@ -59,9 +60,8 @@ namespace GitVersion.Configuration.Init.Wizard
             Console.WriteLine();
             using (Console.UseColor(ConsoleColor.Red))
             {
-
+                Console.WriteLine("Invalid response!");
             }
-            Console.WriteLine("Invalid response!");
             steps.Enqueue(this);
         }
 

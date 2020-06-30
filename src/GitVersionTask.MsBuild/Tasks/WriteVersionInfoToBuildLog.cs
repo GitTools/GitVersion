@@ -2,6 +2,6 @@ namespace GitVersion.MSBuildTask.Tasks
 {
     public class WriteVersionInfoToBuildLog : GitVersionTaskBase
     {
-        public override bool Execute() => TaskProxy.WriteVersionInfoToBuildLog(this);
+        protected override bool OnExecute() => TaskProxy.WriteVersionInfoToBuildLog(this);
     }
 }

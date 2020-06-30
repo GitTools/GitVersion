@@ -1,5 +1,6 @@
 using GitVersion.Configuration.Init.SetConfig;
 using GitVersion.Logging;
+using GitVersion.Model.Configuration;
 
 namespace GitVersion.Configuration.Init.Wizard
 {
@@ -11,7 +12,7 @@ namespace GitVersion.Configuration.Init.Wizard
 
         protected override string GetPrompt(Config config, string workingDirectory)
         {
-            return "By default GitVersion will only increment the version when tagged\r\n\r\n" + base.GetPrompt(config, workingDirectory);
+            return $"By default GitVersion will only increment the version when tagged{System.Environment.NewLine}{System.Environment.NewLine}" + base.GetPrompt(config, workingDirectory);
         }
     }
 }

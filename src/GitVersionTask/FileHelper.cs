@@ -4,27 +4,12 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Microsoft.Build.Framework;
-using GitVersion.Exceptions;
 
 namespace GitVersion.MSBuildTask
 {
-    public sealed class FileWriteInfo
-    {
-        public FileWriteInfo(string workingDirectory, string fileName, string fileExtension)
-        {
-            WorkingDirectory = workingDirectory;
-            FileName = fileName;
-            FileExtension = fileExtension;
-        }
-
-        public string WorkingDirectory { get; }
-        public string FileName { get; }
-        public string FileExtension { get; }
-    }
-
     public static class FileHelper
     {
-        private static readonly Dictionary<string, Func<string, string, bool>> VersionAttributeFinders = new Dictionary<string, Func<string, string, bool>>()
+        private static readonly Dictionary<string, Func<string, string, bool>> VersionAttributeFinders = new Dictionary<string, Func<string, string, bool>>
         {
             { ".cs", CSharpFileContainsVersionAttribute },
             { ".vb", VisualBasicFileContainsVersionAttribute }
@@ -97,6 +82,8 @@ namespace GitVersion.MSBuildTask
             var combine = Path.Combine(Path.GetDirectoryName(projectFile), compileFile);
             var allText = File.ReadAllText(combine);
 
+            allText += System.Environment.NewLine; // Always add a new line, this handles the case for when a file ends with the EOF marker and no new line. If you don't have this newline, the regex will match commented out Assembly*Version tags on the last line.
+
             var blockComments = @"/\*(.*?)\*/";
             var lineComments = @"//(.*?)\r?\n";
             var strings = @"""((\\[^\n]|[^""\n])*)""";
@@ -122,6 +109,8 @@ Assembly(File|Informational)?Version    # The attribute AssemblyVersion, Assembl
         {
             var combine = Path.Combine(Path.GetDirectoryName(projectFile), compileFile);
             var allText = File.ReadAllText(combine);
+
+            allText += System.Environment.NewLine; // Always add a new line, this handles the case for when a file ends with the EOF marker and no new line. If you don't have this newline, the regex will match commented out Assembly*Version tags on the last line.
 
             var lineComments = @"'(.*?)\r?\n";
             var strings = @"""((\\[^\n]|[^""\n])*)""";
@@ -156,12 +145,12 @@ Assembly(File|Informational)?Version    # The attribute AssemblyVersion, Assembl
 
             if (intermediateOutputPath == null)
             {
-                fileName = $"{outputFileName}.g.{fileExtension}";
+                fileName = $"{outputFileName}_{Path.GetFileNameWithoutExtension(projectFile)}_{Path.GetRandomFileName()}.g.{fileExtension}";
                 workingDirectory = TempPath;
             }
             else
             {
-                fileName = $"{outputFileName}_{Path.GetFileNameWithoutExtension(projectFile)}_{Path.GetRandomFileName()}.g.{fileExtension}";
+                fileName = $"{outputFileName}.g.{fileExtension}";
                 workingDirectory = intermediateOutputPath;
             }
             return new FileWriteInfo(workingDirectory, fileName, fileExtension);

@@ -1,13 +1,12 @@
 <Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
-        <TargetFrameworks>net472;netcoreapp2.1;netcoreapp3.1</TargetFrameworks>
-        <LangVersion>8.0</LangVersion>
+        <TargetFrameworks>net48;netcoreapp2.1;netcoreapp3.1</TargetFrameworks>
+
+        <IsTestProject>true</IsTestProject>
     </PropertyGroup>
 
-    <Import Project="..\test.props" />
     <ItemGroup>
-        <PackageReference Include="GitTools.Testing" Version="1.2.0"></PackageReference>
-        <PackageReference Include="Mono.Cecil" Version="0.11.1"></PackageReference>
+        <PackageReference Include="Mono.Cecil" Version="0.11.2" />
     </ItemGroup>
     <ItemGroup>
         <ProjectReference Include="..\GitVersionCore\GitVersionCore.csproj" />
@@ -17,10 +16,18 @@
         <None Include="TestBuildFile.proj" />
     </ItemGroup>
     <ItemGroup>
-        <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
+        <Content Include="Approved\**\*.approved.txt" />
     </ItemGroup>
     <ItemGroup>
-        <Content Include="Approved\**\*.approved.txt" />
+      <Compile Include="..\GitVersionCore.Tests\Helpers\DirectoryHelper.cs" Link="Helpers\DirectoryHelper.cs" />
+      <Compile Include="..\GitVersionCore.Tests\Helpers\PathHelper.cs" Link="Helpers\PathHelper.cs" />
+      <Compile Include="..\GitVersionCore.Tests\Helpers\TestEffectiveConfiguration.cs" Link="Helpers\TestEffectiveConfiguration.cs" />
+      <Compile Include="..\GitVersionCore.Tests\Helpers\TestEnvironment.cs" Link="Helpers\TestEnvironment.cs" />
+      <Compile Include="..\GitVersionCore.Tests\Helpers\TestFileSystem.cs" Link="Helpers\TestFileSystem.cs" />
+      <Compile Include="..\GitVersionCore.Tests\Helpers\TestLogAppender.cs" Link="Helpers\TestLogAppender.cs" />
+      <Compile Include="..\GitVersionCore.Tests\Helpers\TestStream.cs" Link="Helpers\TestStream.cs" />
+      <Compile Include="..\GitVersionCore.Tests\Helpers\TestBase.cs" Link="Helpers\TestBase.cs" />
+      <Compile Include="..\GitVersionCore.Tests\Helpers\GitVersionCoreTestModule.cs" Link="Helpers\GitVersionCoreTestModule.cs" />
     </ItemGroup>
 
 </Project>

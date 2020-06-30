@@ -12,19 +12,27 @@ namespace GitVersion.MSBuildTask
         public static Func<UpdateAssemblyInfo, bool> UpdateAssemblyInfo;
         public static Func<WriteVersionInfoToBuildLog, bool> WriteVersionInfoToBuildLog;
 
+        public static Exception InitialiseException;
         static TaskProxy()
         {
+            try
+            {
 #if !NETFRAMEWORK
-            GitLoaderContext.Init("GitVersionCore", "LibGit2Sharp");
+                GitLoaderContext.Init(typeof(TaskProxy).Assembly);
 #endif
-            LibGit2SharpLoader.LoadAssembly("GitVersionTask");
+                LibGit2SharpLoader.LoadAssembly("GitVersionTask");
 
-            var type = LibGit2SharpLoader.Instance.Assembly.GetType("GitVersion.MSBuildTask.GitVersionTasks", throwOnError: true).GetTypeInfo();
+                var type = LibGit2SharpLoader.Instance.Assembly.GetType("GitVersion.MSBuildTask.GitVersionTasks", throwOnError: true).GetTypeInfo();
 
-            GetVersion                    = GetMethod<GetVersion>(type, nameof(GetVersion));
-            GenerateGitVersionInformation = GetMethod<GenerateGitVersionInformation>(type, nameof(GenerateGitVersionInformation));
-            UpdateAssemblyInfo            = GetMethod<UpdateAssemblyInfo>(type, nameof(UpdateAssemblyInfo));
-            WriteVersionInfoToBuildLog    = GetMethod<WriteVersionInfoToBuildLog>(type, nameof(WriteVersionInfoToBuildLog));
+                GetVersion = GetMethod<GetVersion>(type, nameof(GetVersion));
+                GenerateGitVersionInformation = GetMethod<GenerateGitVersionInformation>(type, nameof(GenerateGitVersionInformation));
+                UpdateAssemblyInfo = GetMethod<UpdateAssemblyInfo>(type, nameof(UpdateAssemblyInfo));
+                WriteVersionInfoToBuildLog = GetMethod<WriteVersionInfoToBuildLog>(type, nameof(WriteVersionInfoToBuildLog));
+            }
+            catch (Exception e)
+            {
+                InitialiseException = e;
+            }
         }
 
         private static Func<T, bool> GetMethod<T>(TypeInfo type, string name) => (Func<T, bool>)type.GetDeclaredMethod(name).CreateDelegate(typeof(Func<T, bool>));

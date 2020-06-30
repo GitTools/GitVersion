@@ -1,0 +1,17 @@
+jobs:
+- ${{ each distro in parameters.distros }}:
+    - ${{ each dotnetVersion in parameters.dotnetVersions }}:
+      - job:
+        displayName: 'Docker ${{ distro }} ${{ dotnetVersion }} (${{ parameters.name }})'
+        pool:
+          vmImage: ${{ parameters.vmImage }}
+        steps:
+        - template: common-steps.yml
+          parameters:
+            includeArtifacts: true
+        - pwsh: ./build.ps1 -target Publish-DockerHub -DockerDistro ${{ distro }} -DockerDotnetVersion ${{ dotnetVersion }}
+          displayName: '[Docker build & Test ${{ distro }} ${{ dotnetVersion }}]'
+          env:
+            DOCKER_USERNAME: $(DOCKER_USERNAME)
+            DOCKER_PASSWORD: $(DOCKER_PASSWORD)
+            ENABLED_PUBLISH_DOCKER: $(ENABLED_PUBLISH_DOCKER)

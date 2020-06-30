@@ -3,6 +3,7 @@ using GitVersion.Configuration.Init.BuildServer;
 using GitVersion.Configuration.Init.SetConfig;
 using GitVersion.Configuration.Init.Wizard;
 using GitVersion.Logging;
+using GitVersion.Model.Configuration;
 
 namespace GitVersion.Configuration.Init
 {

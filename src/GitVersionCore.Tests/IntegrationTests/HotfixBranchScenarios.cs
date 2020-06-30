@@ -1,10 +1,11 @@
-﻿using System.Linq;
+using System.Linq;
 using GitTools.Testing;
+using GitVersion.Extensions;
+using GitVersion.Model.Configuration;
+using GitVersion.VersionCalculation;
+using GitVersionCore.Tests.Helpers;
 using LibGit2Sharp;
 using NUnit.Framework;
-using GitVersion.Configuration;
-using GitVersion.VersioningModes;
-using GitVersion.Extensions;
 
 namespace GitVersionCore.Tests.IntegrationTests
 {
@@ -82,7 +83,7 @@ namespace GitVersionCore.Tests.IntegrationTests
             // Merge hotfix branch to support
             Commands.Checkout(fixture.Repository, "master");
             var tag = fixture.Repository.Tags.Single(t => t.FriendlyName == "1.1.0");
-            var supportBranch = fixture.Repository.CreateBranch("support-1.1", (Commit) tag.Target);
+            var supportBranch = fixture.Repository.CreateBranch("support-1.1", (Commit)tag.Target);
             Commands.Checkout(fixture.Repository, supportBranch);
             fixture.AssertFullSemver("1.1.0");
 
@@ -147,7 +148,7 @@ namespace GitVersionCore.Tests.IntegrationTests
             // create release branch
             fixture.Repository.CreateBranch(release450);
             Commands.Checkout(fixture.Repository, release450);
-            fixture.AssertFullSemver(config, "4.5.0-beta.0");
+            fixture.AssertFullSemver("4.5.0-beta.0", config);
             fixture.Repository.MakeACommit("blabla");
             Commands.Checkout(fixture.Repository, "develop");
             fixture.Repository.MergeNoFF(release450, Generate.SignatureNow());
@@ -158,7 +159,7 @@ namespace GitVersionCore.Tests.IntegrationTests
             fixture.Repository.CreateBranch(support45);
             Commands.Checkout(fixture.Repository, support45);
             fixture.Repository.ApplyTag(tag450);
-            fixture.AssertFullSemver(config, "4.5.0");
+            fixture.AssertFullSemver("4.5.0", config);
 
             // create hotfix branch
             fixture.Repository.CreateBranch(hotfix451);
@@ -171,7 +172,7 @@ namespace GitVersionCore.Tests.IntegrationTests
             Commands.Checkout(fixture.Repository, hotfix451);
             fixture.Repository.MergeNoFF(featureBranch, Generate.SignatureNow()); // commit 2
             fixture.Repository.Branches.Remove(featureBranch);
-            fixture.AssertFullSemver(config, "4.5.1-beta.2");
+            fixture.AssertFullSemver("4.5.1-beta.2", config);
         }
 
         /// <summary>
@@ -200,7 +201,7 @@ namespace GitVersionCore.Tests.IntegrationTests
             // create release branch
             fixture.Repository.CreateBranch(release450);
             Commands.Checkout(fixture.Repository, release450);
-            fixture.AssertFullSemver(config, "4.5.0-beta.0");
+            fixture.AssertFullSemver("4.5.0-beta.0", config);
             fixture.Repository.MakeACommit("blabla");
             Commands.Checkout(fixture.Repository, "develop");
             fixture.Repository.MergeNoFF(release450, Generate.SignatureNow());
@@ -211,7 +212,7 @@ namespace GitVersionCore.Tests.IntegrationTests
             fixture.Repository.CreateBranch(support45);
             Commands.Checkout(fixture.Repository, support45);
             fixture.Repository.ApplyTag(tag450);
-            fixture.AssertFullSemver(config, "4.5.0");
+            fixture.AssertFullSemver("4.5.0", config);
 
             // create hotfix branch
             fixture.Repository.CreateBranch(hotfix451);
@@ -223,7 +224,7 @@ namespace GitVersionCore.Tests.IntegrationTests
             fixture.Repository.MakeACommit("blabla"); // commit 1
             Commands.Checkout(fixture.Repository, hotfix451);
             fixture.Repository.MergeNoFF(featureBranch, Generate.SignatureNow()); // commit 2
-            fixture.AssertFullSemver(config, "4.5.1-beta.2");
+            fixture.AssertFullSemver("4.5.1-beta.2", config);
         }
 
     }

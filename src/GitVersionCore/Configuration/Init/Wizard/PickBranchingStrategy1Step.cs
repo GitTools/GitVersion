@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using GitVersion.Logging;
+using GitVersion.Model.Configuration;
 
 namespace GitVersion.Configuration.Init.Wizard
 {

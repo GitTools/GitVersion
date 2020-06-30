@@ -1,8 +1,9 @@
 using System;
 using GitTools.Testing;
+using GitVersion.Extensions;
+using GitVersionCore.Tests.Helpers;
 using NUnit.Framework;
 using Shouldly;
-using GitVersion.Extensions;
 
 namespace GitVersionCore.Tests.IntegrationTests
 {
@@ -396,7 +397,7 @@ namespace GitVersionCore.Tests.IntegrationTests
             fixture.MergeNoFF("release/2.0.0");
             fixture.SequenceDiagram.Destroy("release/2.0.0");
             fixture.SequenceDiagram.NoteOver("Release branches are deleted once merged", "release/2.0.0");
-            
+
             fixture.AssertFullSemver("2.0.0+0");
             fixture.ApplyTag("2.0.0");
             fixture.AssertFullSemver("2.0.0");

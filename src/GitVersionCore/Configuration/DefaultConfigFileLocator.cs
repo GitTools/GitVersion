@@ -1,30 +1,19 @@
 using System.IO;
-using GitVersion.Exceptions;
-using GitVersion.Logging;
 
 namespace GitVersion.Configuration
 {
     public class DefaultConfigFileLocator : ConfigFileLocator
     {
-        public DefaultConfigFileLocator(IFileSystem fileSystem, ILog log) : base(fileSystem, log)
+        public DefaultConfigFileLocator(IFileSystem fileSystem) : base(fileSystem)
         {
-            
         }
 
         public const string DefaultFileName = "GitVersion.yml";
-
-        public const string ObsoleteFileName = "GitVersionConfig.yaml";
 
         public override bool HasConfigFileAt(string workingDirectory)
         {
             var defaultConfigFilePath = Path.Combine(workingDirectory, DefaultFileName);
             if (FileSystem.Exists(defaultConfigFilePath))
-            {
-                return true;
-            }
-
-            var deprecatedConfigFilePath = Path.Combine(workingDirectory, ObsoleteFileName);
-            if (FileSystem.Exists(deprecatedConfigFilePath))
             {
                 return true;
             }
@@ -40,12 +29,6 @@ namespace GitVersion.Configuration
                 return ymlPath;
             }
 
-            var deprecatedPath = Path.Combine(workingDirectory, ObsoleteFileName);
-            if (FileSystem.Exists(deprecatedPath))
-            {
-                return deprecatedPath;
-            }
-
             return ymlPath;
         }
 
@@ -53,12 +36,8 @@ namespace GitVersion.Configuration
         {
             if (FileSystem.PathsEqual(workingDirectory, projectRootDirectory))
             {
-                WarnAboutObsoleteConfigFile(workingDirectory);
                 return;
             }
-
-            WarnAboutObsoleteConfigFile(workingDirectory);
-            WarnAboutObsoleteConfigFile(projectRootDirectory);
 
             WarnAboutAmbiguousConfigFileSelection(workingDirectory, projectRootDirectory);
         }
@@ -75,25 +54,5 @@ namespace GitVersion.Configuration
                 throw new WarningException($"Ambiguous config file selection from '{workingConfigFile}' and '{projectRootConfigFile}'");
             }
         }
-
-        private void WarnAboutObsoleteConfigFile(string workingDirectory)
-        {
-            var deprecatedConfigFilePath = Path.Combine(workingDirectory, ObsoleteFileName);
-            if (!FileSystem.Exists(deprecatedConfigFilePath))
-            {
-                return;
-            }
-
-            var defaultConfigFilePath = Path.Combine(workingDirectory, DefaultFileName);
-            if (FileSystem.Exists(defaultConfigFilePath))
-            {
-                Log.Warning(string.Format("Ambiguous config files at '{0}': '{1}' (deprecated) and '{2}'. Will be used '{2}'", workingDirectory, ObsoleteFileName, DefaultFileName));
-                return;
-            }
-
-            Log.Warning($"'{deprecatedConfigFilePath}' is deprecated, use '{DefaultFileName}' instead.");
-        }
-
     }
-
 }

@@ -1,8 +1,9 @@
-﻿using System.IO;
+using System.IO;
 using System.Text;
+using GitVersion;
+using GitVersionCore.Tests.Helpers;
 using NUnit.Framework;
 using Shouldly;
-using GitVersion;
 
 namespace GitVersionCore.Tests.IntegrationTests
 {

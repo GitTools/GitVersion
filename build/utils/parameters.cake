@@ -12,16 +12,16 @@ public class BuildParameters
     public const string MainRepoName = "GitVersion";
     public string CoreFxVersion21 { get; private set; }  = "netcoreapp2.1";
     public string CoreFxVersion31 { get; private set; }  = "netcoreapp3.1";
-    public string FullFxVersion472 { get; private set; } = "net472";
+    public string FullFxVersion48 { get; private set; }  = "net48";
 
     public string DockerDistro { get; private set; }
     public string DockerDotnetVersion { get; private set; }
 
     public bool EnabledUnitTests { get; private set; }
-    public bool EnabledPublishGem { get; private set; }
     public bool EnabledPublishNuget { get; private set; }
     public bool EnabledPublishChocolatey { get; private set; }
     public bool EnabledPublishDocker { get; private set; }
+    public bool EnabledPublishRelease { get; private set; }
 
     public bool IsRunningOnUnix { get; private set; }
     public bool IsRunningOnWindows { get; private set; }
@@ -36,6 +36,9 @@ public class BuildParameters
     public bool IsRunningOnAppVeyor { get; private set; }
     public bool IsRunningOnTravis { get; private set; }
     public bool IsRunningOnAzurePipeline { get; private set; }
+    public bool IsRunningOnGitHubActions { get; private set; }
+
+    public bool IsReleasingCI { get; private set; }
 
     public bool IsMainRepo { get; private set; }
     public bool IsMainBranch { get; private set; }
@@ -51,7 +54,7 @@ public class BuildParameters
     public BuildArtifacts Artifacts { get; private set; }
     public DockerImages Docker { get; private set; }
     public Dictionary<string, DirectoryPath> PackagesBuildMap { get; private set; }
-    public Dictionary<PlatformFamily, string> NativeRuntimes { get; private set; }
+    public Dictionary<PlatformFamily, string[]> NativeRuntimes { get; private set; }
 
     public bool IsStableRelease() => !IsLocalBuild && IsMainRepo && IsMainBranch && !IsPullRequest && IsTagged;
     public bool IsPreRelease()    => !IsLocalBuild && IsMainRepo && IsMainBranch && !IsPullRequest && !IsTagged;
@@ -68,10 +71,8 @@ public class BuildParameters
         var target = context.Argument("target", "Default");
         var buildSystem = context.BuildSystem();
 
-        var dockerCliPlatform = ((buildSystem.IsRunningOnAzurePipelines || buildSystem.IsRunningOnAzurePipelinesHosted)
-                                && context.Environment.Platform.Family != PlatformFamily.OSX)
-                                || buildSystem.IsLocalBuild
-                                ? context.GetDockerCliPlatform() : "";
+        var isReleasingCI = buildSystem.IsRunningOnAzurePipelines || buildSystem.IsRunningOnAzurePipelinesHosted || buildSystem.IsRunningOnGitHubActions;
+        var dockerCliPlatform = isReleasingCI ? context.GetDockerCliPlatform() : "";
 
         return new BuildParameters {
             Target        = target,
@@ -81,10 +82,10 @@ public class BuildParameters
             DockerDotnetVersion = context.Argument("docker_dotnetversion", ""),
 
             EnabledUnitTests          = context.IsEnabled("ENABLED_UNIT_TESTS"),
-            EnabledPublishGem         = context.IsEnabled("ENABLED_PUBLISH_GEM"),
             EnabledPublishNuget       = context.IsEnabled("ENABLED_PUBLISH_NUGET"),
             EnabledPublishChocolatey  = context.IsEnabled("ENABLED_PUBLISH_CHOCOLATEY"),
             EnabledPublishDocker      = context.IsEnabled("ENABLED_PUBLISH_DOCKER"),
+            EnabledPublishRelease     = context.IsEnabled("ENABLED_PUBLISH_RELEASE"),
 
             IsRunningOnUnix    = context.IsRunningOnUnix(),
             IsRunningOnWindows = context.IsRunningOnWindows(),
@@ -95,6 +96,9 @@ public class BuildParameters
             IsRunningOnAppVeyor      = buildSystem.IsRunningOnAppVeyor,
             IsRunningOnTravis        = buildSystem.IsRunningOnTravisCI,
             IsRunningOnAzurePipeline = buildSystem.IsRunningOnAzurePipelines || buildSystem.IsRunningOnAzurePipelinesHosted,
+            IsRunningOnGitHubActions = buildSystem.IsRunningOnGitHubActions,
+
+            IsReleasingCI = isReleasingCI,
 
             IsDockerForWindows = dockerCliPlatform == "windows",
             IsDockerForLinux   = dockerCliPlatform == "linux",
@@ -105,7 +109,7 @@ public class BuildParameters
             IsMainBranch  = context.IsOnMainBranch(),
             IsTagged      = context.IsBuildTagged(),
 
-            MSBuildSettings = GetMsBuildSettings(context)
+            MSBuildSettings = new DotNetCoreMSBuildSettings()
         };
     }
 
@@ -120,13 +124,11 @@ public class BuildParameters
         Packages = BuildPackages.GetPackages(
             Paths.Directories.NugetRoot,
             Version,
-            new [] { "GitVersion.CommandLine", "GitVersionTask", "GitVersion.Tool" },
+            new [] { "GitVersion.CommandLine", "GitVersion.Core", "GitVersionTask", "GitVersion.Tool" },
             new [] { "GitVersion.Portable" });
 
-        var files = Paths.Files;
 
         var buildArtifacts = context.GetFiles(Paths.Directories.BuildArtifact + "/*.*") + context.GetFiles(Paths.Directories.Artifacts + "/*.tar.gz");
-        buildArtifacts += files.ReleaseNotesOutputFilePath;
 
         Artifacts = BuildArtifacts.GetArtifacts(buildArtifacts.ToArray());
 
@@ -136,40 +138,15 @@ public class BuildParameters
             ["GitVersion.Portable"] = Paths.Directories.ArtifactsBinPortable,
         };
 
-        NativeRuntimes = new Dictionary<PlatformFamily, string>
+        NativeRuntimes = new Dictionary<PlatformFamily, string[]>
         {
-            [PlatformFamily.Windows] = "win-x64",
-            [PlatformFamily.Linux]   = "linux-x64",
-            [PlatformFamily.OSX]     = "osx-x64",
+            [PlatformFamily.Windows] = new[] { "win-x64", "win-x86" },
+            [PlatformFamily.Linux]   = new[] { "alpine.3.10-x64", "debian.9-x64", "centos.7-x64", "fedora.30-x64", "ubuntu.16.04-x64", "ubuntu.18.04-x64" },
+            [PlatformFamily.OSX]     = new[] { "osx-x64" },
         };
 
         Credentials = BuildCredentials.GetCredentials(context);
         SetMSBuildSettingsVersion(MSBuildSettings, Version);
-    }
-
-    private static DotNetCoreMSBuildSettings GetMsBuildSettings(ICakeContext context)
-    {
-        var msBuildSettings = new DotNetCoreMSBuildSettings();
-        if(!context.IsRunningOnWindows())
-        {
-            var frameworkPathOverride = context.Environment.Runtime.IsCoreClr
-                                        ?   new []{
-                                                new DirectoryPath("/Library/Frameworks/Mono.framework/Versions/Current/lib/mono"),
-                                                new DirectoryPath("/usr/lib/mono"),
-                                                new DirectoryPath("/usr/local/lib/mono")
-                                            }
-                                            .Select(directory =>directory.Combine("4.5"))
-                                            .FirstOrDefault(directory => context.DirectoryExists(directory))
-                                            ?.FullPath + "/"
-                                        : new FilePath(typeof(object).Assembly.Location).GetDirectory().FullPath + "/";
-
-            // Use FrameworkPathOverride when not running on Windows.
-            context.Information("Build will use FrameworkPathOverride={0} since not building on Windows.", frameworkPathOverride);
-            msBuildSettings.WithProperty("FrameworkPathOverride", frameworkPathOverride);
-            msBuildSettings.WithProperty("POSIX", "true");
-        }
-
-        return msBuildSettings;
     }
 
     private void SetMSBuildSettingsVersion(DotNetCoreMSBuildSettings msBuildSettings, BuildVersion version)
@@ -178,6 +155,9 @@ public class BuildParameters
         msBuildSettings.WithProperty("AssemblyVersion", version.Version);
         msBuildSettings.WithProperty("PackageVersion", version.NugetVersion);
         msBuildSettings.WithProperty("FileVersion", version.Version);
+        msBuildSettings.WithProperty("InformationalVersion", version.GitVersion.InformationalVersion);
+        msBuildSettings.WithProperty("RepositoryBranch", version.GitVersion.BranchName);
+        msBuildSettings.WithProperty("RepositoryCommit", version.GitVersion.Sha);
         msBuildSettings.WithProperty("NoPackageAnalysis", "true");
     }
 }

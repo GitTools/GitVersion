@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using GitVersion.Configuration.Init.Wizard;
 using GitVersion.Logging;
+using GitVersion.Model.Configuration;
 
 namespace GitVersion.Configuration.Init.SetConfig
 {
@@ -28,7 +29,7 @@ namespace GitVersion.Configuration.Init.SetConfig
                     var branchConfig = foundBranch.Value;
                     if (branchConfig == null)
                     {
-                        branchConfig = new BranchConfig {Name = foundBranch.Key};
+                        branchConfig = new BranchConfig { Name = foundBranch.Key };
                         config.Branches.Add(foundBranch.Key, branchConfig);
                     }
                     steps.Enqueue(StepFactory.CreateStep<ConfigureBranch>().WithData(foundBranch.Key, branchConfig));
@@ -46,13 +47,13 @@ namespace GitVersion.Configuration.Init.SetConfig
             return @"Which branch would you like to configure:
 
 0) Go Back
-" + string.Join("\r\n", OrderedBranches(config).Select((c, i) => $"{i + 1}) {c.Key}"));
+" + string.Join(System.Environment.NewLine, OrderedBranches(config).Select((c, i) => $"{i + 1}) {c.Key}"));
         }
 
         private static IOrderedEnumerable<KeyValuePair<string, BranchConfig>> OrderedBranches(Config config)
         {
-            var defaultConfig = new Config();
-            defaultConfig.Reset();
+            var defaultConfig = new ConfigurationBuilder().Build();
+
             var defaultConfigurationBranches = defaultConfig.Branches
                 .Where(k => !config.Branches.ContainsKey(k.Key))
                 // Return an empty branch config

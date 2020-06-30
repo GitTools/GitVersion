@@ -1,28 +1,36 @@
 using System;
 using System.Collections.Generic;
-using LibGit2Sharp;
+using GitVersion.Common;
 using GitVersion.Configuration;
 using GitVersion.Extensions;
+using LibGit2Sharp;
 
-namespace GitVersion.VersionCalculation.BaseVersionCalculators
+namespace GitVersion.VersionCalculation
 {
     /// <summary>
     /// Version is extracted from the name of the branch.
     /// BaseVersionSource is the commit where the branch was branched from its parent.
     /// Does not increment.
     /// </summary>
-    public class VersionInBranchNameVersionStrategy : IVersionStrategy
+    public class VersionInBranchNameVersionStrategy : VersionStrategyBase
     {
-        public virtual IEnumerable<BaseVersion> GetVersions(GitVersionContext context)
+        private IRepositoryMetadataProvider repositoryMetadataProvider;
+
+        public VersionInBranchNameVersionStrategy(IRepositoryMetadataProvider repositoryMetadataProvider, Lazy<GitVersionContext> versionContext) : base(versionContext)
         {
-            var currentBranch = context.CurrentBranch;
-            var tagPrefixRegex = context.Configuration.GitTagPrefix;
-            return GetVersions(context, tagPrefixRegex, currentBranch);
+            this.repositoryMetadataProvider = repositoryMetadataProvider ?? throw new ArgumentNullException(nameof(repositoryMetadataProvider));
         }
 
-        public IEnumerable<BaseVersion> GetVersions(GitVersionContext context, string tagPrefixRegex, Branch currentBranch)
+        public override IEnumerable<BaseVersion> GetVersions()
         {
-            if (!context.FullConfiguration.IsReleaseBranch(currentBranch.NameWithoutOrigin()))
+            var currentBranch = Context.CurrentBranch;
+            var tagPrefixRegex = Context.Configuration.GitTagPrefix;
+            return GetVersions(tagPrefixRegex, currentBranch);
+        }
+
+        internal IEnumerable<BaseVersion> GetVersions(string tagPrefixRegex, Branch currentBranch)
+        {
+            if (!Context.FullConfiguration.IsReleaseBranch(currentBranch.NameWithoutOrigin()))
             {
                 yield break;
             }
@@ -31,9 +39,9 @@ namespace GitVersion.VersionCalculation.BaseVersionCalculators
             var versionInBranch = GetVersionInBranch(branchName, tagPrefixRegex);
             if (versionInBranch != null)
             {
-                var commitBranchWasBranchedFrom = context.RepositoryMetadataProvider.FindCommitBranchWasBranchedFrom(currentBranch);
+                var commitBranchWasBranchedFrom = repositoryMetadataProvider.FindCommitBranchWasBranchedFrom(currentBranch, Context.FullConfiguration);
                 var branchNameOverride = branchName.RegexReplace("[-/]" + versionInBranch.Item1, string.Empty);
-                yield return new BaseVersion(context, "Version in branch name", false, versionInBranch.Item2, commitBranchWasBranchedFrom.Commit, branchNameOverride);
+                yield return new BaseVersion("Version in branch name", false, versionInBranch.Item2, commitBranchWasBranchedFrom.Commit, branchNameOverride);
             }
         }
 

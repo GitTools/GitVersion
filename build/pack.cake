@@ -1,59 +1,10 @@
-#region Build
-
-Task("Clean")
-    .Does<BuildParameters>((parameters) =>
-{
-    Information("Cleaning directories..");
-
-    CleanDirectories("./src/**/bin/" + parameters.Configuration);
-    CleanDirectories("./src/**/obj");
-    DeleteFiles("src/GitVersionRubyGem/*.gem");
-
-    CleanDirectories(parameters.Paths.Directories.ToClean);
-});
-
-Task("Build")
-    .IsDependentOn("Clean")
-    .Does<BuildParameters>((parameters) =>
-{
-    Build(parameters);
-    PublishGitVersionToArtifacts(parameters);
-
-    RunGitVersionOnCI(parameters);
-});
-
-#endregion
-
-#region Pack
 Task("Pack-Prepare")
-    .IsDependentOn("Build")
+    .IsDependentOn("Validate-Version")
     .Does<BuildParameters>((parameters) =>
 {
-    // publish single file for all native runtimes (self contained)
-    foreach(var runtime in parameters.NativeRuntimes)
-    {
-        var runtimeName = runtime.Value;
+    PackPrepareNative(Context, parameters);
 
-        var settings = new DotNetCorePublishSettings
-        {
-            Framework = parameters.CoreFxVersion31,
-            Runtime = runtimeName,
-            NoRestore = false,
-            Configuration = parameters.Configuration,
-            OutputDirectory = parameters.Paths.Directories.Native.Combine(runtimeName),
-            MSBuildSettings = parameters.MSBuildSettings,
-        };
-
-        settings.ArgumentCustomization =
-            arg => arg
-            .Append("/p:PublishSingleFile=true")
-            .Append("/p:PublishTrimmed=true")
-            .Append("/p:IncludeSymbolsInSingleFile=true");
-
-        DotNetCorePublish("./src/GitVersionExe/GitVersionExe.csproj", settings);
-    }
-
-    var frameworks = new[] { parameters.CoreFxVersion21, parameters.FullFxVersion472 };
+    var frameworks = new[] { parameters.CoreFxVersion21, parameters.FullFxVersion48 };
 
     // MsBuild Task
     foreach(var framework in frameworks)
@@ -66,13 +17,8 @@ Task("Pack-Prepare")
         });
     }
 
-    var sourceDir = parameters.Paths.Directories.Native.Combine(parameters.NativeRuntimes[PlatformFamily.Windows]);
+    var sourceDir = parameters.Paths.Directories.Native.Combine(PlatformFamily.Windows.ToString()).Combine("win-x64");
     var sourceFiles = GetFiles(sourceDir + "/*.*");
-
-    // RubyGem
-    var gemDir = new DirectoryPath("./src/GitVersionRubyGem/bin");
-    EnsureDirectoryExists(gemDir);
-    CopyFiles(sourceFiles, gemDir);
 
     // Cmdline and Portable
     var cmdlineDir = parameters.Paths.Directories.ArtifactsBinCmdline.Combine("tools");
@@ -87,26 +33,6 @@ Task("Pack-Prepare")
     CopyFiles(sourceFiles, portableDir);
 });
 
-Task("Pack-Gem")
-    .IsDependentOn("Pack-Prepare")
-    .Does<BuildParameters>((parameters) =>
-{
-    var workDir = "./src/GitVersionRubyGem";
-
-    var gemspecFile = new FilePath(workDir + "/gitversion.gemspec");
-    // update version number
-    ReplaceTextInFile(gemspecFile, "$version$", parameters.Version.GemVersion);
-
-    var toolPath = Context.FindToolInPath(IsRunningOnWindows() ? "gem.cmd" : "gem");
-    GemBuild(gemspecFile, new Cake.Gem.Build.GemBuildSettings()
-    {
-        WorkingDirectory = workDir,
-        ToolPath = toolPath
-    });
-
-    CopyFiles(workDir + "/*.gem", parameters.Paths.Directories.BuildArtifact);
-});
-
 Task("Pack-Nuget")
     .IsDependentOn("Pack-Prepare")
     .Does<BuildParameters>((parameters) =>
@@ -115,14 +41,22 @@ Task("Pack-Nuget")
     {
         if (FileExists(package.NuspecPath)) {
             var artifactPath = MakeAbsolute(parameters.PackagesBuildMap[package.Id]).FullPath;
-
             var nugetSettings = new NuGetPackSettings
             {
+                // KeepTemporaryNuSpecFile = true,
                 Version = parameters.Version.NugetVersion,
                 NoPackageAnalysis = true,
                 OutputDirectory = parameters.Paths.Directories.NugetRoot,
+                Repository = new NuGetRepository {
+                    Branch = parameters.Version.GitVersion.BranchName,
+                    Commit = parameters.Version.GitVersion.Sha
+                },
                 Files = GetFiles(artifactPath + "/**/*.*")
                         .Select(file => new NuSpecContent { Source = file.FullPath, Target = file.FullPath.Replace(artifactPath, "") })
+                        .Concat(
+                            GetFiles("docs/**/package_icon.png")
+                            .Select(file => new NuSpecContent { Source = file.FullPath, Target = "package_icon.png" })
+                        )
                         .ToArray()
             };
 
@@ -137,15 +71,18 @@ Task("Pack-Nuget")
         MSBuildSettings = parameters.MSBuildSettings
     };
 
-    // GitVersionTask, & global tool
-    DotNetCorePack("./src/GitVersionTask", settings);
-
+    // GitVersionTask, global tool & core
     settings.ArgumentCustomization = arg => arg.Append("/p:PackAsTool=true");
     DotNetCorePack("./src/GitVersionExe/GitVersionExe.csproj", settings);
+
+    settings.ArgumentCustomization = null;
+    DotNetCorePack("./src/GitVersionTask", settings);
+
+    DotNetCorePack("./src/GitVersionCore", settings);
 });
 
 Task("Pack-Chocolatey")
-    .WithCriteria<BuildParameters>((context, parameters) => parameters.IsRunningOnWindows,  "Pack-Chocolatey works only on Windows agents.")
+    .WithCriteria<BuildParameters>((context, parameters) => parameters.IsRunningOnWindows, "Pack-Chocolatey works only on Windows agents.")
     .WithCriteria<BuildParameters>((context, parameters) => parameters.IsMainBranch && !parameters.IsPullRequest, "Pack-Chocolatey works only for main branch.")
     .IsDependentOn("Pack-Prepare")
     .Does<BuildParameters>((parameters) =>
@@ -173,12 +110,62 @@ Task("Zip-Files")
     .IsDependentOn("Pack-Prepare")
     .Does<BuildParameters>((parameters) =>
 {
-    foreach(var runtime in parameters.NativeRuntimes)
+    var platform = Context.Environment.Platform.Family;
+    var runtimes = parameters.NativeRuntimes[platform];
+
+    foreach (var runtime in runtimes)
     {
-        var sourceDir = parameters.Paths.Directories.Native.Combine(runtime.Value);
-        var fileName = $"gitversion-{runtime.Key}-{parameters.Version.SemVersion}.tar.gz".ToLower();
-        var tarFile = parameters.Paths.Directories.Artifacts.CombineWithFilePath(fileName);
+        var sourceDir = parameters.Paths.Directories.Native.Combine(platform.ToString().ToLower()).Combine(runtime);
+        var targetDir = parameters.Paths.Directories.ArtifactsRoot.Combine("native");
+        EnsureDirectoryExists(targetDir);
+        var fileName = $"gitversion-{runtime}-{parameters.Version.SemVersion}.tar.gz".ToLower();
+        var tarFile = targetDir.CombineWithFilePath(fileName);
         GZipCompress(sourceDir, tarFile);
     }
 });
-#endregion
+
+void PackPrepareNative(ICakeContext context, BuildParameters parameters)
+{
+    // publish single file for all native runtimes (self contained)
+    var platform = Context.Environment.Platform.Family;
+    var runtimes = parameters.NativeRuntimes[platform];
+
+    foreach (var runtime in runtimes)
+    {
+        var outputPath = PackPrepareNative(context, parameters, runtime);
+
+        // testing windows and macos artifacts, ther linux is tested with docker
+        if (platform != PlatformFamily.Linux)
+        {
+            context.Information("Validating native lib:");
+            var nativeExe = outputPath.CombineWithFilePath(IsRunningOnWindows() ? "gitversion.exe" : "gitversion");
+            ValidateOutput(nativeExe.FullPath, "/showvariable FullSemver", parameters.Version.GitVersion.FullSemVer);
+        }
+    }
+}
+
+DirectoryPath PackPrepareNative(ICakeContext context, BuildParameters parameters, string runtime)
+{
+    var platform = Context.Environment.Platform.Family;
+    var outputPath = parameters.Paths.Directories.Native.Combine(platform.ToString().ToLower()).Combine(runtime);
+
+    var settings = new DotNetCorePublishSettings
+    {
+        Framework = parameters.CoreFxVersion31,
+        Runtime = runtime,
+        NoRestore = false,
+        Configuration = parameters.Configuration,
+        OutputDirectory = outputPath,
+        MSBuildSettings = parameters.MSBuildSettings,
+    };
+
+    settings.ArgumentCustomization =
+        arg => arg
+        .Append("/p:PublishSingleFile=true")
+        .Append("/p:PublishTrimmed=true")
+        .Append("/p:IncludeSymbolsInSingleFile=true");
+
+    context.DotNetCorePublish("./src/GitVersionExe/GitVersionExe.csproj", settings);
+
+    return outputPath;
+}

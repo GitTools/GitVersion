@@ -1,12 +1,13 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using GitVersion.Model.Configuration;
+using GitVersion.OutputVariables;
+using GitVersionCore.Tests.Helpers;
 using NUnit.Framework;
 using Shouldly;
 using YamlDotNet.Serialization;
-using GitVersion.Configuration;
-using GitVersion.OutputVariables;
 
 namespace GitVersionCore.Tests
 {

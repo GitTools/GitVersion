@@ -16,9 +16,7 @@ version only increases after you release, this directly conflicts with the
 concept of published CI builds. When you release the next version of your
 library/app/website/whatever you should only increment major/minor or patch then
 reset all lower parts to 0, for instance given 1.0.0, the next release should be
-either `2.0.0`, `1.1.0` or `1.0.1`. Bumping one of the version components by
-more than 1 in a single release means you will have gaps in your version number,
-which defeats the purpose of SemVer.
+either `2.0.0`, `1.1.0` or `1.0.1`.
 
 Because of this, GitVersion works out what the next SemVer of your app is on
 each commit. When you are ready to release you simply deploy the latest built

@@ -1,0 +1,20 @@
+name: Release
+on:
+  release:
+    types: [published]
+
+jobs:
+  callBuildFlow:
+    name: Trigger Build flow
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: octokit/request-action@v2.x
+        name: "Trigger Build flow"
+        with:
+          route: POST /repos/:repository/dispatches
+          repository: ${{ github.repository }}
+          mediaType: '{"previews": ["everest"]}'
+          event_type: release
+        env:
+          GITHUB_TOKEN: ${{ secrets.RELEASE_GITHUB_TOKEN }}

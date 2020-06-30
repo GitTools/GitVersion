@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
     <PropertyGroup>
-        <GitVersionAssemblyFile Condition="$(GitVersionAssemblyFile) == '' And '$(MSBuildRuntimeType)' != 'Core'">$(MSBuildThisFileDirectory)..\tools\net472\GitVersionTask.MsBuild.dll</GitVersionAssemblyFile>
+        <GitVersionAssemblyFile Condition="$(GitVersionAssemblyFile) == '' And '$(MSBuildRuntimeType)' != 'Core'">$(MSBuildThisFileDirectory)..\tools\net48\GitVersionTask.MsBuild.dll</GitVersionAssemblyFile>
         <GitVersionAssemblyFile Condition="$(GitVersionAssemblyFile) == '' And '$(MSBuildRuntimeType)' == 'Core'">$(MSBuildThisFileDirectory)..\tools\netstandard2.0\GitVersionTask.MsBuild.dll</GitVersionAssemblyFile>
 
         <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">$(MSBuildProjectDirectory)\..\</SolutionDir>
@@ -19,15 +19,19 @@
 
         <!-- Property that enables UpdateAssemblyInfo. Default to off for SDK builds -->
         <UpdateAssemblyInfo Condition=" '$(DisableGitVersionTask)' == 'true' ">false</UpdateAssemblyInfo>
+        <UpdateAssemblyInfo Condition=" '$(UsingMicrosoftNETSdk)' == 'true' ">false</UpdateAssemblyInfo>
         <UpdateAssemblyInfo Condition=" '$(UpdateAssemblyInfo)' == '' ">true</UpdateAssemblyInfo>
-
-        <GenerateAssemblyFileVersionAttribute Condition=" '$(UpdateAssemblyInfo)' == 'true' ">false</GenerateAssemblyFileVersionAttribute>
-        <GenerateAssemblyVersionAttribute Condition=" '$(UpdateAssemblyInfo)' == 'true' ">false</GenerateAssemblyVersionAttribute>
-        <GenerateAssemblyInformationalVersionAttribute Condition=" '$(UpdateAssemblyInfo)' == 'true' ">false</GenerateAssemblyInformationalVersionAttribute>
-
 
         <!-- Property that enables GenerateGitVersionInformation -->
         <GenerateGitVersionInformation Condition=" '$(DisableGitVersionTask)' == 'true' ">false</GenerateGitVersionInformation>
+        <!--
+          During XAML's "GenerateTemporaryTargetAssembly" a new project file is generated and compiled
+          which already contains the "GeneratedCodeFiles", i.e. GitVersionInformation.g.cs.
+          Then, when GenerateGitVersionInformation is called in this temp-build, the file is added another time, which results in an error at CSC.
+          Here we try to detect this situation and prevent GenerateGitVersionInformation from running.
+          (The global property "_TargetAssemblyProjectName" is injected by XAML's above-mentioned task)
+        -->
+        <GenerateGitVersionInformation Condition=" '$(GenerateGitVersionInformation)' == '' And '$(_TargetAssemblyProjectName)' != '' ">false</GenerateGitVersionInformation>
         <GenerateGitVersionInformation Condition=" '$(GenerateGitVersionInformation)' == '' ">true</GenerateGitVersionInformation>
 
         <!-- Property that enables GetVersion -->
@@ -40,7 +44,7 @@
           Ensure GetVersion runs prior to XAML's Markup Compiler in order to have the assembly version available.
           Otherwise the generated resource URI's are ambiguous when multiple versions are loaded simultaneously (i.e. in plugins)
         -->
-        <MarkupCompilePass1DependsOn>$(MarkupCompilePass1DependsOn);GetVersion</MarkupCompilePass1DependsOn>
+        <MarkupCompilePass1DependsOn>$(MarkupCompilePass1DependsOn);GetVersion;UpdateAssemblyInfo;GenerateGitVersionInformation</MarkupCompilePass1DependsOn>
         <GetPackageVersionDependsOn>$(GetPackageVersionDependsOn);GetVersion</GetPackageVersionDependsOn>
 
         <!-- Property that enables setting of Version -->

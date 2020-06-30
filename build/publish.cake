@@ -1,38 +1,6 @@
 singleStageRun = !IsEnabled(Context, "ENABLED_MULTI_STAGE_BUILD", false);
 
 #region Publish
-
-Task("Release-Notes")
-    .WithCriteria<BuildParameters>((context, parameters) => parameters.IsRunningOnWindows,       "Release notes are generated only on Windows agents.")
-    .WithCriteria<BuildParameters>((context, parameters) => parameters.IsRunningOnAzurePipeline, "Release notes are generated only on AzurePipeline.")
-    .WithCriteria<BuildParameters>((context, parameters) => parameters.IsStableRelease(),        "Release notes are generated only for stable releases.")
-    .Does<BuildParameters>((parameters) =>
-{
-    var token = parameters.Credentials.GitHub.Token;
-    if(string.IsNullOrEmpty(token)) {
-        throw new InvalidOperationException("Could not resolve Github token.");
-    }
-
-    var repoOwner = "gittools";
-    var repository = "gitversion";
-    GitReleaseManagerCreate(token, repoOwner, repository, new GitReleaseManagerCreateSettings {
-        Milestone         = parameters.Version.Milestone,
-        Name              = parameters.Version.Milestone,
-        Prerelease        = true,
-        TargetCommitish   = "master"
-    });
-
-    var zipFiles = GetFiles(parameters.Paths.Directories.Artifacts + "/*.tar.gz").Select(x => x.ToString());
-    var assets = string.Join(",", zipFiles);
-    GitReleaseManagerAddAssets(token, repoOwner, repository, parameters.Version.Milestone, assets);
-    GitReleaseManagerClose(token, repoOwner, repository, parameters.Version.Milestone);
-
-}).ReportError(exception =>
-{
-    Error(exception.Dump());
-});
-
-
 Task("Publish-AppVeyor")
     .WithCriteria<BuildParameters>((context, parameters) => parameters.IsRunningOnWindows,  "Publish-AppVeyor works only on Windows agents.")
     .WithCriteria<BuildParameters>((context, parameters) => parameters.IsRunningOnAppVeyor, "Publish-AppVeyor works only on AppVeyor.")
@@ -58,9 +26,9 @@ Task("Publish-AppVeyor")
 });
 
 Task("Publish-AzurePipeline")
-    .WithCriteria<BuildParameters>((context, parameters) => parameters.IsRunningOnWindows,       "Publish-AzurePipeline works only on Windows agents.")
-    .WithCriteria<BuildParameters>((context, parameters) => parameters.IsRunningOnAzurePipeline, "Publish-AzurePipeline works only on AzurePipeline.")
-    .WithCriteria<BuildParameters>((context, parameters) => !parameters.IsPullRequest,           "Publish-AzurePipeline works only for non-PR commits.")
+    .WithCriteria<BuildParameters>((context, parameters) => parameters.IsRunningOnWindows, "Publish-AzurePipeline works only on Windows agents.")
+    .WithCriteria<BuildParameters>((context, parameters) => parameters.IsReleasingCI,      "Publish-AzurePipeline works only on Releasing CI.")
+    .WithCriteria<BuildParameters>((context, parameters) => !parameters.IsPullRequest,     "Publish-AzurePipeline works only for non-PR commits.")
     .IsDependentOnWhen("UnitTest", singleStageRun)
     .IsDependentOnWhen("Pack", singleStageRun)
     .Does<BuildParameters>((parameters) =>
@@ -81,62 +49,74 @@ Task("Publish-AzurePipeline")
     publishingError = true;
 });
 
-Task("Publish-Gem")
-    .WithCriteria<BuildParameters>((context, parameters) => parameters.EnabledPublishGem,        "Publish-Gem was disabled.")
-    .WithCriteria<BuildParameters>((context, parameters) => parameters.IsRunningOnWindows,       "Publish-Gem works only on Windows agents.")
-    .WithCriteria<BuildParameters>((context, parameters) => parameters.IsRunningOnAzurePipeline, "Publish-Gem works only on AzurePipeline.")
-    .WithCriteria<BuildParameters>((context, parameters) => parameters.IsStableRelease() || parameters.IsPreRelease(), "Publish-Gem works only for releases.")
-    .IsDependentOnWhen("Pack-Gem", singleStageRun)
-    .Does<BuildParameters>((parameters) =>
-{
-    var apiKey = parameters.Credentials.RubyGem.ApiKey;
-    if(string.IsNullOrEmpty(apiKey)) {
-        throw new InvalidOperationException("Could not resolve Ruby Gem Api key.");
-    }
-
-    SetRubyGemPushApiKey(apiKey);
-
-    var toolPath = Context.FindToolInPath(IsRunningOnWindows() ? "gem.cmd" : "gem");
-    GemPush(parameters.Paths.Files.GemOutputFilePath, new Cake.Gem.Push.GemPushSettings()
-    {
-        ToolPath = toolPath,
-    });
-})
-.OnError(exception =>
-{
-    Information("Publish-Gem Task failed, but continuing with next Task...");
-    Error(exception.Dump());
-    publishingError = true;
-});
-
-Task("Publish-NuGet")
-    .WithCriteria<BuildParameters>((context, parameters) => parameters.EnabledPublishNuget,      "Publish-NuGet was disabled.")
-    .WithCriteria<BuildParameters>((context, parameters) => parameters.IsRunningOnWindows,       "Publish-NuGet works only on Windows agents.")
-    .WithCriteria<BuildParameters>((context, parameters) => parameters.IsRunningOnAzurePipeline, "Publish-NuGet works only on AzurePipeline.")
+Task("Publish-NuGet-Internal")
+    .WithCriteria<BuildParameters>((context, parameters) => parameters.EnabledPublishNuget, "Publish-NuGet was disabled.")
+    .WithCriteria<BuildParameters>((context, parameters) => parameters.IsRunningOnWindows,  "Publish-NuGet works only on Windows agents.")
+    .WithCriteria<BuildParameters>((context, parameters) => parameters.IsReleasingCI,       "Publish-NuGet works only on Releasing CI.")
     .WithCriteria<BuildParameters>((context, parameters) => parameters.IsStableRelease() || parameters.IsPreRelease(), "Publish-NuGet works only for releases.")
     .IsDependentOnWhen("Pack-NuGet", singleStageRun)
     .Does<BuildParameters>((parameters) =>
 {
-    var apiKey = parameters.Credentials.Nuget.ApiKey;
-    if(string.IsNullOrEmpty(apiKey)) {
-        throw new InvalidOperationException("Could not resolve NuGet API key.");
-    }
-
-    var apiUrl = parameters.Credentials.Nuget.ApiUrl;
-    if(string.IsNullOrEmpty(apiUrl)) {
-        throw new InvalidOperationException("Could not resolve NuGet API url.");
-    }
-
-    foreach(var package in parameters.Packages.Nuget)
+    if (parameters.IsStableRelease())
     {
-        if (FileExists(package.PackagePath))
+        var apiKey = parameters.Credentials.Nuget.ApiKey;
+        if(string.IsNullOrEmpty(apiKey)) {
+            throw new InvalidOperationException("Could not resolve NuGet API key.");
+        }
+
+        var apiUrl = parameters.Credentials.Nuget.ApiUrl;
+        if(string.IsNullOrEmpty(apiUrl)) {
+            throw new InvalidOperationException("Could not resolve NuGet API url.");
+        }
+
+        foreach(var package in parameters.Packages.Nuget)
         {
-            // Push the package.
-            NuGetPush(package.PackagePath, new NuGetPushSettings
+            if (FileExists(package.PackagePath))
             {
-                ApiKey = apiKey,
-                Source = apiUrl
-            });
+                // Push the package to nuget.org
+                NuGetPush(package.PackagePath, new NuGetPushSettings
+                {
+                    ApiKey = apiKey,
+                    Source = apiUrl
+                });
+            }
+        }
+    }
+
+    // Push the package to GitHub Packages
+    if (parameters.IsRunningOnGitHubActions && parameters.IsMainRepo && parameters.IsMainBranch)
+    {
+        Information("Publishing nuget to GitHub Packages");
+
+        var token = parameters.Credentials.GitHub.Token;
+        if(string.IsNullOrEmpty(token)) {
+            throw new InvalidOperationException("Could not resolve Github token.");
+        }
+        var userName = parameters.Credentials.GitHub.UserName;
+        if(string.IsNullOrEmpty(userName)) {
+            throw new InvalidOperationException("Could not resolve Github userName.");
+        }
+
+        var source = $"https://nuget.pkg.github.com/{BuildParameters.MainRepoOwner}/index.json";
+
+        var nugetSourceSettings = new NuGetSourcesSettings
+        {
+            UserName = userName,
+            Password = token
+        };
+
+        Information("Adding NuGet source with user/pass...");
+        NuGetAddSource("GitHub", source, nugetSourceSettings);
+
+        foreach(var package in parameters.Packages.Nuget)
+        {
+            if (FileExists(package.PackagePath))
+            {
+                NuGetPush(package.PackagePath, new NuGetPushSettings
+                {
+                    Source = source
+                });
+            }
         }
     }
 })
@@ -147,11 +127,11 @@ Task("Publish-NuGet")
     publishingError = true;
 });
 
-Task("Publish-Chocolatey")
+Task("Publish-Chocolatey-Internal")
     .WithCriteria<BuildParameters>((context, parameters) => parameters.EnabledPublishChocolatey, "Publish-Chocolatey was disabled.")
     .WithCriteria<BuildParameters>((context, parameters) => parameters.IsRunningOnWindows,       "Publish-Chocolatey works only on Windows agents.")
-    .WithCriteria<BuildParameters>((context, parameters) => parameters.IsRunningOnAzurePipeline, "Publish-Chocolatey works only on AzurePipeline.")
-    .WithCriteria<BuildParameters>((context, parameters) => parameters.IsStableRelease() || parameters.IsPreRelease(), "Publish-Chocolatey works only for releases.")
+    .WithCriteria<BuildParameters>((context, parameters) => parameters.IsReleasingCI,            "Publish-Chocolatey works only on Releasing CI.")
+    .WithCriteria<BuildParameters>((context, parameters) => parameters.IsStableRelease(),        "Publish-Chocolatey works only for releases.")
     .IsDependentOnWhen("Pack-Chocolatey", singleStageRun)
     .Does<BuildParameters>((parameters) =>
 {
@@ -169,13 +149,20 @@ Task("Publish-Chocolatey")
     {
         if (FileExists(package.PackagePath))
         {
-            // Push the package.
-            ChocolateyPush(package.PackagePath, new ChocolateyPushSettings
+            try
             {
-                ApiKey = apiKey,
-                Source = apiUrl,
-                Force = true
-            });
+                // Push the package.
+                ChocolateyPush(package.PackagePath, new ChocolateyPushSettings
+                {
+                    ApiKey = apiKey,
+                    Source = apiUrl,
+                    Force = true
+                });
+            }
+            catch (System.Exception)
+            {
+                // chocolatey sometimes fails with an error, even if the package gets pushed
+            }
         }
     }
 })

@@ -5,7 +5,7 @@ Task("UnitTest")
     .IsDependentOn("Build")
     .Does<BuildParameters>((parameters) =>
 {
-    var frameworks = new[] { parameters.CoreFxVersion21, parameters.CoreFxVersion31, parameters.FullFxVersion472 };
+    var frameworks = new[] { parameters.CoreFxVersion31, parameters.FullFxVersion48 };
     var testResultsPath = parameters.Paths.Directories.TestResultsOutput;
 
     foreach(var framework in frameworks)
@@ -33,12 +33,13 @@ Task("UnitTest")
 
                 var coverletSettings = new CoverletSettings {
                     CollectCoverage = true,
-                    CoverletOutputFormat = CoverletOutputFormat.opencover,
+                    CoverletOutputFormat = CoverletOutputFormat.cobertura,
                     CoverletOutputDirectory = testResultsPath,
-                    CoverletOutputName = $"{projectName}.coverage.xml"
+                    CoverletOutputName = $"{projectName}.coverage.xml",
+                    Exclude = new List<string> { "[GitVersion*.Tests]*", "[GitVersionTask.MsBuild]*" }
                 };
 
-                if (IsRunningOnUnix() && string.Equals(framework, parameters.FullFxVersion472))
+                if (IsRunningOnUnix() && string.Equals(framework, parameters.FullFxVersion48))
                 {
                     settings.Filter = "TestCategory!=NoMono";
                 }
@@ -70,6 +71,7 @@ Task("UnitTest")
         if (testResultsFiles.Any()) {
             var data = new TFBuildPublishTestResultsData {
                 TestResultsFiles = testResultsFiles.ToArray(),
+                Platform = Context.Environment.Platform.Family.ToString(),
                 TestRunner = TFTestRunnerType.NUnit
             };
             TFBuild.Commands.PublishTestResults(data);
@@ -78,13 +80,13 @@ Task("UnitTest")
 });
 
 Task("Publish-Coverage")
-    .WithCriteria<BuildParameters>((context, parameters) => parameters.IsRunningOnWindows,       "Publish-Coverage works only on Windows agents.")
-    .WithCriteria<BuildParameters>((context, parameters) => parameters.IsRunningOnAzurePipeline, "Publish-Coverage works only on AzurePipeline.")
+    .WithCriteria<BuildParameters>((context, parameters) => parameters.IsRunningOnWindows, "Publish-Coverage works only on Windows agents.")
+    .WithCriteria<BuildParameters>((context, parameters) => parameters.IsReleasingCI,      "Publish-Coverage works only on Releasing CI.")
     .WithCriteria<BuildParameters>((context, parameters) => parameters.IsStableRelease() || parameters.IsPreRelease(), "Publish-Coverage works only for releases.")
     .IsDependentOn("UnitTest")
     .Does<BuildParameters>((parameters) =>
 {
-    var coverageFiles = GetFiles(parameters.Paths.Directories.TestResultsOutput + "/*.coverage.xml");
+    var coverageFiles = GetFiles(parameters.Paths.Directories.TestResultsOutput + "/*.coverage.*.xml");
 
     var token = parameters.Credentials.CodeCov.Token;
     if(string.IsNullOrEmpty(token)) {

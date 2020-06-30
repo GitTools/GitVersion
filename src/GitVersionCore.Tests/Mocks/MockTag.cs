@@ -14,7 +14,7 @@ namespace GitVersionCore.Tests.Mocks
 
         public MockTag() { }
 
-        public MockTag(string name, Commit target)
+        public MockTag(string name, GitObject target)
         {
             NameEx = name;
             TargetEx = target;

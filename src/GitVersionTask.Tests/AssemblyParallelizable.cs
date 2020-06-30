@@ -1,3 +1,3 @@
-﻿using NUnit.Framework;
+using NUnit.Framework;
 
-[assembly: Parallelizable(ParallelScope.Fixtures)]
+[assembly: Parallelizable(ParallelScope.Default)]

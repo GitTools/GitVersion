@@ -2,11 +2,10 @@ using System;
 using System.IO;
 using System.Text;
 using GitTools.Testing;
-using GitVersion;
+using GitVersion.Helpers;
+using GitVersionCore.Tests.Helpers;
 using NUnit.Framework;
 using Shouldly;
-using GitVersion.Helpers;
-using GitVersionExe.Tests.Helpers;
 
 namespace GitVersionExe.Tests
 {
@@ -14,29 +13,6 @@ namespace GitVersionExe.Tests
     [Parallelizable(ParallelScope.None)]
     public class ExecCmdLineArgumentTest
     {
-        [Test]
-        public void RunExecViaCommandLine()
-        {
-            using var fixture = new EmptyRepositoryFixture();
-            fixture.MakeATaggedCommit("1.2.3");
-            fixture.MakeACommit();
-
-            var buildFile = Path.Combine(fixture.RepositoryPath, "RunExecViaCommandLine.csproj");
-            File.Delete(buildFile);
-            const string buildFileContent = @"<?xml version=""1.0"" encoding=""utf-8""?>
-<Project ToolsVersion=""4.0"" xmlns=""http://schemas.microsoft.com/developer/msbuild/2003"">
-  <Target Name=""OutputResults"">
-    <Message Text=""GitVersion_FullSemVer: $(GitVersion_FullSemVer)""/>
-  </Target>
-</Project>";
-            File.WriteAllText(buildFile, buildFileContent);
-            var result = GitVersionHelper.ExecuteIn(fixture.RepositoryPath, ExecCommand.BuildTool, "RunExecViaCommandLine.csproj /target:OutputResults");
-
-            result.ExitCode.ShouldBe(0, result.Log);
-            result.Log.ShouldContain("GitVersion_FullSemVer: 1.2.4+1");
-        }
-
-
         [Test]
         public void InvalidArgumentsExitCodeShouldNotBeZero()
         {
@@ -77,23 +53,33 @@ namespace GitVersionExe.Tests
         }
 
         [Test]
-        public void WorkingDirectoryWithoutGitFolderCrashesWithInformativeMessage()
+        public void WorkingDirectoryWithoutGitFolderFailsWithInformativeMessage()
         {
-            var results = GitVersionHelper.ExecuteIn(System.Environment.SystemDirectory, null, isTeamCity: false, logToFile: false);
-            results.Output.ShouldContain("Can't find the .git directory in");
+            var result = GitVersionHelper.ExecuteIn(Environment.SystemDirectory, arguments: null, logToFile: false);
+
+            result.ExitCode.ShouldNotBe(0);
+            result.Output.ShouldContain("Cannot find the .git directory");
         }
 
         [Test]
-        public void WorkingDirectoryDoesNotExistCrashesWithInformativeMessage()
+        public void WorkingDirectoryWithoutCommitsFailsWithInformativeMessage()
+        {
+            using var fixture = new EmptyRepositoryFixture();
+
+            var result = GitVersionHelper.ExecuteIn(fixture.RepositoryPath, arguments: null, logToFile: false);
+
+            result.ExitCode.ShouldNotBe(0);
+            result.Output.ShouldContain("No commits found on the current branch.");
+        }
+
+        [Test]
+        public void WorkingDirectoryDoesNotExistFailsWithInformativeMessage()
         {
             var workingDirectory = Path.Combine(PathHelper.GetCurrentDirectory(), Guid.NewGuid().ToString("N"));
             var executable = PathHelper.GetExecutable();
 
             var output = new StringBuilder();
             var args = PathHelper.GetExecutableArgs($" /targetpath {workingDirectory} ");
-
-            Console.WriteLine("Executing: {0} {1}", executable, args);
-            Console.WriteLine();
 
             var exitCode = ProcessHelper.Run(
                 s => output.AppendLine(s),
@@ -103,7 +89,7 @@ namespace GitVersionExe.Tests
                 args,
                 PathHelper.GetCurrentDirectory());
 
-            exitCode.ShouldBe(0);
+            exitCode.ShouldNotBe(0);
             var outputString = output.ToString();
             outputString.ShouldContain($"The working directory '{workingDirectory}' does not exist.", () => outputString);
         }

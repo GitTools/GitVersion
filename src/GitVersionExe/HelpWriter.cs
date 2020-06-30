@@ -1,20 +1,23 @@
 using System;
 using System.Reflection;
+using GitVersion.Logging;
 
 namespace GitVersion
 {
     public class HelpWriter : IHelpWriter
     {
         private readonly IVersionWriter versionWriter;
+        private readonly IConsole console;
 
-        public HelpWriter(IVersionWriter versionWriter)
+        public HelpWriter(IVersionWriter versionWriter, IConsole console)
         {
             this.versionWriter = versionWriter ?? throw new ArgumentNullException(nameof(versionWriter));
+            this.console = console ?? throw new ArgumentNullException(nameof(console));
         }
 
         public void Write()
         {
-            WriteTo(Console.WriteLine);
+            WriteTo(console.WriteLine);
         }
 
         public void WriteTo(Action<string> writeAction)
@@ -35,8 +38,9 @@ GitVersion [path]
     /h or /?        Shows Help
 
     /targetpath     Same as 'path', but not positional
-    /output         Determines the output to the console. Can be either 'json' or 'buildserver', will default to 'json'.
-    /showvariable   Used in conjuntion with /output json, will output just a particular variable. 
+    /output         Determines the output to the console. Can be either 'json', 'file' or 'buildserver', will default to 'json'.
+    /outputfile     Path to output file. It is used in combination with /output 'file'.
+    /showvariable   Used in conjuntion with /output json, will output just a particular variable.
                     eg /output json /showvariable SemVer - will output `1.2.3+beta.4`
     /l              Path to logfile.
     /config         Path to config file (defaults to GitVersion.yml)
@@ -44,18 +48,21 @@ GitVersion [path]
     /overrideconfig Overrides GitVersion config values inline (semicolon-separated key value pairs e.g. /overrideconfig tag-prefix=Foo)
                     Currently supported config overrides: tag-prefix
     /nocache        Bypasses the cache, result will not be written to the cache.
-    /nonormalize    Disables normalize step on a build server. 
+    /nonormalize    Disables normalize step on a build server.
 
  # AssemblyInfo updating
     /updateassemblyinfo
                     Will recursively search for all 'AssemblyInfo.cs' files in the git repo and update them
+    /updateprojectfiles
+                    Will recursively search for all project files (.csproj/.vbproj/.fsproj) files in the git repo and update them
+                    Note: This is only compatible with the newer Sdk projects
     /updateassemblyinfofilename
                     Specify name of AssemblyInfo file. Can also /updateAssemblyInfo GlobalAssemblyInfo.cs as a shorthand
     /ensureassemblyinfo
-                    If the assembly info file specified with /updateassemblyinfo or /updateassemblyinfofilename is not found, 
+                    If the assembly info file specified with /updateassemblyinfo or /updateassemblyinfofilename is not found,
                     it be created with these attributes: AssemblyFileVersion, AssemblyVersion and AssemblyInformationalVersion
-                    ---        
-                    Supports writing version info for: C#, F#, VB    
+                    ---
+                    Supports writing version info for: C#, F#, VB
 
     # Create or update Wix version file
     /updatewixversionfile
@@ -71,14 +78,15 @@ GitVersion [path]
     /dynamicRepoLocation
                     By default dynamic repositories will be cloned to %tmp%. Use this switch to override
     /nofetch        Disables 'git fetch' during version calculation. Might cause GitVersion to not calculate your version as expected.
-    
+
 # Execute build args
     /exec           Executes target executable making GitVersion variables available as environmental variables
-    /execargs       Arguments for the executable specified by /exec
+    /execargs       GitVersionOptions for the executable specified by /exec
     /proj           Build a msbuild file, GitVersion variables will be passed as msbuild properties
     /projargs       Additional arguments to pass to msbuild
-    /verbosity      Set Verbosity level (debug, info, warn, error, none). Default is info
-
+    /verbosity      Specifies the amount of information to be displayed.
+                    (Quiet, Minimal, Normal, Verbose, Diagnostic)
+                    Default is Normal
 
 gitversion init     Configuration utility for gitversion
 ";

@@ -1,31 +1,27 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFrameworks>net472;netcoreapp2.1;netcoreapp3.1</TargetFrameworks>
+        <TargetFrameworks>net48;netcoreapp2.1;netcoreapp3.1</TargetFrameworks>
 
         <DebugType>full</DebugType>
         <Optimize>false</Optimize>
         <DebugSymbols>true</DebugSymbols>
-        <LangVersion>8.0</LangVersion>
+
+        <IsTestProject>true</IsTestProject>
     </PropertyGroup>
 
-    <Import Project="..\test.props" />
     <ItemGroup>
         <PackageReference Include="FluentDateTime" Version="2.0.0" />
-        <PackageReference Include="GitTools.Testing" Version="1.2.0" />
         <PackageReference Include="LibGit2Sharp.NativeBinaries" Version="$(PackageVersion_LibGit2Sharp_NativeBinaries)" />
-        <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="3.0.1" />
-        <PackageReference Include="Microsoft.Extensions.Options" Version="3.0.1" />
+        <PackageReference Include="Microsoft.Extensions.Options" Version="$(PackageVersion_MicrosoftExtensions)" />
         <PackageReference Include="YamlDotNet" Version="$(PackageVersion_YamlDotNet)" />
     </ItemGroup>
     <ItemGroup>
         <ProjectReference Include="..\GitVersionCore\GitVersionCore.csproj" />
     </ItemGroup>
     <ItemGroup>
-        <Content Include="Approved\**\*.approved.txt" />
-    </ItemGroup>
-    <ItemGroup>
-        <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
+        <Content Include="VersionCalculation\Approved\**\*.approved.txt" />
+        <Content Include="VersionConverters\Approved\**\*.approved.txt" />
     </ItemGroup>
 
 </Project>

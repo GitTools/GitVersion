@@ -2,32 +2,45 @@
 #if !NETFRAMEWORK
 using System;
 using System.IO;
-using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Runtime.Loader;
-using RuntimeEnvironment = Microsoft.DotNet.PlatformAbstractions.RuntimeEnvironment;
 
 namespace GitVersion.MSBuildTask.LibGit2Sharp
 {
     public sealed class GitLoaderContext : AssemblyLoadContext
     {
-        private readonly string[] assemblies;
+        private readonly Assembly entryPointAssembly;
         public static GitLoaderContext Instance { get; private set; }
 
-        private GitLoaderContext(string[] assemblies) => this.assemblies = assemblies;
+        private GitLoaderContext(Assembly entryPointAssembly) => this.entryPointAssembly = entryPointAssembly;
 
-        public static void Init(params string[] assemblies) => Instance = new GitLoaderContext(assemblies);
+        public static void Init(Assembly entryPointAssembly) => Instance = new GitLoaderContext(entryPointAssembly);
 
         protected override Assembly Load(AssemblyName assemblyName)
         {
-            if (assemblies.Contains(assemblyName.Name))
+            string simpleName = assemblyName.Name;
+
+            if (simpleName == entryPointAssembly.GetName().Name)
             {
-                var path = Path.Combine(Path.GetDirectoryName(typeof(GitLoaderContext).Assembly.Location), assemblyName.Name + ".dll");
+                return entryPointAssembly;
+            }
+
+            if (simpleName == "Microsoft.Build.Framework")
+            {
+                // Delegate loading MSBuild types up to an ALC that should already have them
+                // once we've gotten this far
+                return null;
+            }
+
+            var path = Path.Combine(Path.GetDirectoryName(typeof(GitLoaderContext).Assembly.Location), simpleName + ".dll");
+
+            if (File.Exists(path))
+            {
                 return LoadFromAssemblyPath(path);
             }
 
-            return Default.LoadFromAssemblyName(assemblyName);
+            return null;
         }
 
         protected override IntPtr LoadUnmanagedDll(string unmanagedDllName)
@@ -60,7 +73,7 @@ namespace GitVersion.MSBuildTask.LibGit2Sharp
         private static string GetNativeLibraryDirectory()
         {
             var dir = Path.GetDirectoryName(typeof(GitLoaderContext).Assembly.Location);
-            return Path.Combine(dir, "runtimes", RuntimeIdMap.GetNativeLibraryDirectoryName(RuntimeEnvironment.GetRuntimeIdentifier()), "native");
+            return Path.Combine(dir, "runtimes", RuntimeIdMap.GetNativeLibraryDirectoryName(), "native");
         }
 
         private static string GetNativeLibraryExtension()

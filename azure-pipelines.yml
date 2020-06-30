@@ -1,7 +1,21 @@
-variables: { DOTNET_SKIP_FIRST_TIME_EXPERIENCE: 'true', DOTNET_CLI_TELEMETRY_OPTOUT: 'true' }
+trigger:
+  branches:
+    include:
+    - master
+    - fix/*
+    - feature/*
+pr:
+  branches:
+    include:
+    - master
+
+variables:
+  DOTNET_SKIP_FIRST_TIME_EXPERIENCE: 'true'
+  DOTNET_CLI_TELEMETRY_OPTOUT: 'true'
 
 stages:
 - stage: Build
+  displayName: 'Build'
   jobs:
   - job: Build
     strategy:
@@ -15,8 +29,9 @@ stages:
     pool:
       vmImage: $(VM_IMAGE)
     steps:
-    - template: build/stages/build.yml
+    - template: .azurepipelines/build.yml
 - stage: Test
+  displayName: 'Unit Test'
   dependsOn: []
   jobs:
   - job: Test
@@ -31,7 +46,7 @@ stages:
     pool:
       vmImage: $(VM_IMAGE)
     steps:
-    - template: build/stages/test.yml
+    - template: .azurepipelines/test.yml
 
 - stage: Artifact_Test
   displayName: 'Artifacts test'
@@ -40,41 +55,50 @@ stages:
   - Test
   condition: succeeded()
   jobs:
-  - template: build/stages/generate-job.yml
-  - template: build/stages/artifacts-test.yml
+  - template: .azurepipelines/artifacts-test.yml
     parameters:
       name: Linux
       vmImage: 'ubuntu-latest'
-#   - template: build/stages/artifacts-test.yml
-#     parameters:
-#       name: Windows
-#       vmImage: 'windows-latest'
+      distros: [ 'alpine.3.10-x64', 'centos.7-x64', 'debian.9-x64', 'fedora.30-x64', 'ubuntu.16.04-x64', 'ubuntu.18.04-x64' ]
+      dotnetVersions: [ '2.1', '3.1' ]
 
 - stage: Docker
+  displayName: 'Docker Build & Test'
   dependsOn: Artifact_Test
   condition: succeeded()
   jobs:
-  - template: build/stages/generate-job.yml
-  - template: build/stages/docker.yml
+  - template: .azurepipelines/docker.yml
     parameters:
       name: Linux
       vmImage: 'ubuntu-latest'
-#   - template: build/stages/docker.yml
-#     parameters:
-#       name: Windows
-#       vmImage: 'windows-latest'
+      distros: [ 'alpine.3.10-x64', 'centos.7-x64', 'debian.9-x64', 'fedora.30-x64', 'ubuntu.16.04-x64', 'ubuntu.18.04-x64' ]
+      dotnetVersions: [ '2.1', '3.1' ]
 
 - stage: Publish
+  displayName: 'Publish'
   dependsOn: Artifact_Test
   condition: succeeded()
   jobs:
   - job: Publish
     pool:
       vmImage: windows-latest
+    strategy:
+      matrix:
+        CI:
+          TASK_NAME: 'CI'
+        NuGet:
+          TASK_NAME: 'NuGet'
+        Chocolatey:
+         TASK_NAME: 'Chocolatey'
+        Documentation:
+          TASK_NAME: 'Documentation'
     steps:
-    - template: build/stages/publish.yml
+    - template: .azurepipelines/publish.yml
+      parameters:
+        taskName: $(TASK_NAME)
 
 - stage: Release
+  displayName: 'Release'
   dependsOn:
   - Docker
   - Publish
@@ -84,4 +108,4 @@ stages:
     pool:
       vmImage: windows-latest
     steps:
-    - template: build/stages/release.yml
+    - template: .azurepipelines/release.yml

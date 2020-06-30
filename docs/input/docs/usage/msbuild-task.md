@@ -84,34 +84,41 @@ appended to it.
 #### Other injected Variables
 
 All other [variables](../more-info/variables) will be injected into an
-internal static class:
+internal static class part of the global namespace similar to this:
 
 ```csharp
-namespace AssemblyName
+[CompilerGenerated]
+internal static class GitVersionInformation
 {
-    [CompilerGenerated]
-    internal static class GitVersionInformation
-    {
-        public static string Major = "1";
-        public static string Minor = "1";
-        public static string Patch = "0";
-        ...All other variables
-    }
+    public static string Major = "1";
+    public static string Minor = "1";
+    public static string Patch = "0";
+    ...All other variables
 }
 ```
 
 ### Accessing injected Variables
 
+**NB: depending on the source language of the assembly, the injected variables may be exposed either as fields or as properties. The examples below take care of this.**
+
 #### All variables
 
 ```csharp
 var assemblyName = assembly.GetName().Name;
-var gitVersionInformationType = assembly.GetType(assemblyName + ".GitVersionInformation");
+var gitVersionInformationType = assembly.GetType("GitVersionInformation");
 var fields = gitVersionInformationType.GetFields();
 
 foreach (var field in fields)
 {
     Trace.WriteLine(string.Format("{0}: {1}", field.Name, field.GetValue(null)));
+}
+
+// The GitVersionInformation class generated from a F# project exposes properties
+var properties = gitVersionInformationType.GetProperties();
+
+foreach (var property in properties)
+{
+    Trace.WriteLine(string.Format("{0}: {1}", property.Name, property.GetGetMethod(true).Invoke(null, null)));
 }
 ```
 
@@ -119,9 +126,21 @@ foreach (var field in fields)
 
 ```csharp
 var assemblyName = assembly.GetName().Name;
-var gitVersionInformationType = assembly.GetType(assemblyName + ".GitVersionInformation");
+var gitVersionInformationType = assembly.GetType("GitVersionInformation");
 var versionField = gitVersionInformationType.GetField("Major");
-Trace.WriteLine(versionField.GetValue(null));
+if (versionField != null)
+{
+    Trace.WriteLine(versionField.GetValue(null));
+}
+else
+{
+    // The GitVersionInformation class generated from a F# project exposes properties
+    var versionProperty = gitVersionInformationType.GetProperty("Major");
+    if (versionProperty != null)
+    {
+        Trace.WriteLine(versionProperty.GetGetMethod(true).Invoke(null, null));
+    }
+}
 ```
 
 ### Populate some MSBuild properties with version metadata

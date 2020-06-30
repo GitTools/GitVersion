@@ -1,4 +1,5 @@
 using GitVersion.Logging;
+using GitVersion.Model.Configuration;
 
 namespace GitVersion.Configuration.Init.Wizard
 {
@@ -10,7 +11,7 @@ namespace GitVersion.Configuration.Init.Wizard
 
         protected override string GetPrompt(Config config, string workingDirectory)
         {
-            return "Questions are all done, you can now edit GitVersion's configuration further\r\n" + base.GetPrompt(config, workingDirectory);
+            return $"Questions are all done, you can now edit GitVersion's configuration further{System.Environment.NewLine}" + base.GetPrompt(config, workingDirectory);
         }
     }
 }

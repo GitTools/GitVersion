@@ -1,11 +1,13 @@
 using System;
 using System.IO;
+using GitVersion;
+using GitVersion.MSBuildTask;
+using GitVersionCore.Tests.Helpers;
+using GitVersionTask.Tests.Mocks;
 using Microsoft.Build.Framework;
 using NUnit.Framework;
-using GitVersion.Exceptions;
-using GitVersion.MSBuildTask.Tests.Mocks;
 
-namespace GitVersion.MSBuildTask.Tests
+namespace GitVersionTask.Tests
 {
     [TestFixture]
     public class InvalidFileCheckerTests : TestBase
@@ -47,7 +49,7 @@ using System.Reflection;
         }
 
         [Test]
-        public void VerifyAttributeFoundCSharp([Values("AssemblyVersion", "AssemblyFileVersion", "AssemblyInformationalVersion", "System.Reflection.AssemblyVersion")]string attribute)
+        public void VerifyAttributeFoundCSharp([Values("AssemblyVersion", "AssemblyFileVersion", "AssemblyInformationalVersion", "System.Reflection.AssemblyVersion")] string attribute)
         {
             using (var writer = File.CreateText(Path.Combine(projectDirectory, "AssemblyInfo.cs")))
             {
@@ -64,7 +66,7 @@ using System.Reflection;
         }
 
         [Test]
-        public void VerifyUnformattedAttributeFoundCSharp([Values("AssemblyVersion", "AssemblyFileVersion", "AssemblyInformationalVersion", "System . Reflection   .   AssemblyVersion")]string attribute)
+        public void VerifyUnformattedAttributeFoundCSharp([Values("AssemblyVersion", "AssemblyFileVersion", "AssemblyInformationalVersion", "System . Reflection   .   AssemblyVersion")] string attribute)
         {
             using (var writer = File.CreateText(Path.Combine(projectDirectory, "AssemblyInfo.cs")))
             {
@@ -82,7 +84,7 @@ using System.Reflection;
         }
 
         [Test]
-        public void VerifyCommentWorksCSharp([Values("AssemblyVersion", "AssemblyFileVersion", "AssemblyInformationalVersion")]string attribute)
+        public void VerifyCommentWorksCSharp([Values("AssemblyVersion", "AssemblyFileVersion", "AssemblyInformationalVersion")] string attribute)
         {
             using (var writer = File.CreateText(Path.Combine(projectDirectory, "AssemblyInfo.cs")))
             {
@@ -98,7 +100,22 @@ using System.Reflection;
         }
 
         [Test]
-        public void VerifyStringWorksCSharp([Values("AssemblyVersion", "AssemblyFileVersion", "AssemblyInformationalVersion")]string attribute)
+        public void VerifyCommentWithNoNewLineAtEndWorksCSharp([Values("AssemblyVersion", "AssemblyFileVersion", "AssemblyInformationalVersion")] string attribute)
+        {
+            using (var writer = File.CreateText(Path.Combine(projectDirectory, "AssemblyInfo.cs")))
+            {
+                writer.Write(@"
+using System;
+using System.Reflection;
+
+//[assembly: {0}(""1.0.0.0"")]", attribute);
+            }
+
+            FileHelper.CheckForInvalidFiles(new ITaskItem[] { new MockTaskItem { ItemSpec = "AssemblyInfo.cs" } }, projectFile);
+        }
+
+        [Test]
+        public void VerifyStringWorksCSharp([Values("AssemblyVersion", "AssemblyFileVersion", "AssemblyInformationalVersion")] string attribute)
         {
             using (var writer = File.CreateText(Path.Combine(projectDirectory, "AssemblyInfo.cs")))
             {
@@ -117,7 +134,7 @@ public class Temp
         }
 
         [Test]
-        public void VerifyIdentifierWorksCSharp([Values("AssemblyVersion", "AssemblyFileVersion", "AssemblyInformationalVersion")]string attribute)
+        public void VerifyIdentifierWorksCSharp([Values("AssemblyVersion", "AssemblyFileVersion", "AssemblyInformationalVersion")] string attribute)
         {
             using (var writer = File.CreateText(Path.Combine(projectDirectory, "AssemblyInfo.cs")))
             {
@@ -135,7 +152,7 @@ public class {0}
         }
 
         [Test]
-        public void VerifyAttributeFoundVisualBasic([Values("AssemblyVersion", "AssemblyFileVersion", "AssemblyInformationalVersion", "System.Reflection.AssemblyVersion")]string attribute)
+        public void VerifyAttributeFoundVisualBasic([Values("AssemblyVersion", "AssemblyFileVersion", "AssemblyInformationalVersion", "System.Reflection.AssemblyVersion")] string attribute)
         {
             using (var writer = File.CreateText(Path.Combine(projectDirectory, "AssemblyInfo.vb")))
             {
@@ -152,7 +169,7 @@ Imports System.Reflection
         }
 
         [Test]
-        public void VerifyUnformattedAttributeFoundVisualBasic([Values("AssemblyVersion", "AssemblyFileVersion", "AssemblyInformationalVersion", "System . Reflection   .   AssemblyVersion")]string attribute)
+        public void VerifyUnformattedAttributeFoundVisualBasic([Values("AssemblyVersion", "AssemblyFileVersion", "AssemblyInformationalVersion", "System . Reflection   .   AssemblyVersion")] string attribute)
         {
             using (var writer = File.CreateText(Path.Combine(projectDirectory, "AssemblyInfo.vb")))
             {
@@ -170,7 +187,7 @@ Imports System.Reflection
         }
 
         [Test]
-        public void VerifyCommentWorksVisualBasic([Values("AssemblyVersion", "AssemblyFileVersion", "AssemblyInformationalVersion")]string attribute)
+        public void VerifyCommentWorksVisualBasic([Values("AssemblyVersion", "AssemblyFileVersion", "AssemblyInformationalVersion")] string attribute)
         {
             using (var writer = File.CreateText(Path.Combine(projectDirectory, "AssemblyInfo.vb")))
             {
@@ -186,7 +203,22 @@ Imports System.Reflection
         }
 
         [Test]
-        public void VerifyStringWorksVisualBasic([Values("AssemblyVersion", "AssemblyFileVersion", "AssemblyInformationalVersion")]string attribute)
+        public void VerifyCommentWithNoNewLineAtEndWorksVisualBasic([Values("AssemblyVersion", "AssemblyFileVersion", "AssemblyInformationalVersion")] string attribute)
+        {
+            using (var writer = File.CreateText(Path.Combine(projectDirectory, "AssemblyInfo.vb")))
+            {
+                writer.Write(@"
+Imports System
+Imports System.Reflection
+
+'<Assembly: {0}(""1.0.0.0"")>", attribute);
+            }
+
+            FileHelper.CheckForInvalidFiles(new ITaskItem[] { new MockTaskItem { ItemSpec = "AssemblyInfo.vb" } }, projectFile);
+        }
+
+        [Test]
+        public void VerifyStringWorksVisualBasic([Values("AssemblyVersion", "AssemblyFileVersion", "AssemblyInformationalVersion")] string attribute)
         {
             using (var writer = File.CreateText(Path.Combine(projectDirectory, "AssemblyInfo.vb")))
             {
@@ -204,7 +236,7 @@ End Class
         }
 
         [Test]
-        public void VerifyIdentifierWorksVisualBasic([Values("AssemblyVersion", "AssemblyFileVersion", "AssemblyInformationalVersion")]string attribute)
+        public void VerifyIdentifierWorksVisualBasic([Values("AssemblyVersion", "AssemblyFileVersion", "AssemblyInformationalVersion")] string attribute)
         {
             using (var writer = File.CreateText(Path.Combine(projectDirectory, "AssemblyInfo.vb")))
             {

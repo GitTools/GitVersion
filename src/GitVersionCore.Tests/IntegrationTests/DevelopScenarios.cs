@@ -1,9 +1,10 @@
 using System.Collections.Generic;
 using GitTools.Testing;
+using GitVersion.Model.Configuration;
+using GitVersion.VersionCalculation;
+using GitVersionCore.Tests.Helpers;
 using LibGit2Sharp;
 using NUnit.Framework;
-using GitVersion.Configuration;
-using GitVersion.VersioningModes;
 
 namespace GitVersionCore.Tests.IntegrationTests
 {
@@ -59,10 +60,11 @@ namespace GitVersionCore.Tests.IntegrationTests
                 Branches =
                 {
                     {
-                        "develop", new BranchConfig
+                        "develop",
+                        new BranchConfig
                         {
                             Tag = "alpha",
-                            SourceBranches = new List<string>()
+                            SourceBranches = new HashSet<string>()
                         }
                     }
                 }
@@ -71,7 +73,7 @@ namespace GitVersionCore.Tests.IntegrationTests
             fixture.Repository.MakeATaggedCommit("1.0.0");
             Commands.Checkout(fixture.Repository, fixture.Repository.CreateBranch("develop"));
             fixture.Repository.MakeACommit();
-            fixture.AssertFullSemver(config, "1.1.0-alpha.1");
+            fixture.AssertFullSemver("1.1.0-alpha.1", config);
         }
 
         [Test]
@@ -116,20 +118,13 @@ namespace GitVersionCore.Tests.IntegrationTests
         {
             var config = new Config
             {
-                Branches =
-                {
-                    {"develop", new BranchConfig
-                        {
-                            VersioningMode = VersioningMode.ContinuousDelivery
-                        }
-                    }
-                }
+                Branches = { { "develop", new BranchConfig { VersioningMode = VersioningMode.ContinuousDelivery } } }
             };
             using var fixture = new EmptyRepositoryFixture();
             fixture.Repository.MakeATaggedCommit("1.0.0");
             Commands.Checkout(fixture.Repository, fixture.Repository.CreateBranch("develop"));
             fixture.Repository.MakeATaggedCommit("1.1.0-alpha7");
-            fixture.AssertFullSemver(config, "1.1.0-alpha.7");
+            fixture.AssertFullSemver("1.1.0-alpha.7", config);
         }
 
         [Test]
@@ -142,7 +137,7 @@ namespace GitVersionCore.Tests.IntegrationTests
             var commit = fixture.Repository.Head.Tip;
             fixture.Repository.MakeACommit();
             Commands.Checkout(fixture.Repository, commit);
-            fixture.AssertFullSemver("1.1.0-alpha.1");
+            fixture.AssertFullSemver("1.1.0-alpha.1", onlyTrackedBranches: false);
         }
 
         [Test]
@@ -239,7 +234,7 @@ namespace GitVersionCore.Tests.IntegrationTests
             fixture.Repository.Branches.Remove("release/1.2.0");
 
             var expectedFullSemVer = "1.3.0-alpha.9";
-            fixture.AssertFullSemver(config, expectedFullSemVer);
+            fixture.AssertFullSemver(expectedFullSemVer, config);
         }
 
         [Test]
@@ -271,7 +266,7 @@ namespace GitVersionCore.Tests.IntegrationTests
             fixture.Repository.Branches.Remove("release/1.2.0");
 
             var expectedFullSemVer = "1.3.0-alpha.5";
-            fixture.AssertFullSemver(config, expectedFullSemVer);
+            fixture.AssertFullSemver(expectedFullSemVer, config);
         }
 
         [Test]

@@ -1,0 +1,18 @@
+parameters:
+  oses: ['windows', 'ubuntu', 'macos']
+steps:
+- template: common-steps.yml
+  parameters:
+    includeArtifacts: true
+- ${{ each os in parameters.oses }}:
+  - task: DownloadPipelineArtifact@2
+    displayName: 'Download ${{os}} native folder'
+    inputs:
+      source: current
+      path: $(Build.SourcesDirectory)/artifacts/native
+      artifact: storage-${{os}}-latest
+- pwsh: ./build.ps1 -target Release
+  displayName: '[Release]'
+  env:
+    GITHUB_TOKEN: $(GITHUB_TOKEN)
+    ENABLED_PUBLISH_RELEASE: $(ENABLED_PUBLISH_RELEASE)

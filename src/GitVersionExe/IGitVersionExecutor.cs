@@ -2,6 +2,6 @@ namespace GitVersion
 {
     public interface IGitVersionExecutor
     {
-        int Execute(Arguments arguments);
+        int Execute(GitVersionOptions gitVersionOptions);
     }
 }

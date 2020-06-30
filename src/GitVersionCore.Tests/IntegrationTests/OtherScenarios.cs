@@ -1,11 +1,12 @@
+using System.Collections.Generic;
 using System.Linq;
 using GitTools.Testing;
+using GitVersion;
+using GitVersion.Model.Configuration;
+using GitVersion.VersionCalculation;
+using GitVersionCore.Tests.Helpers;
 using LibGit2Sharp;
 using NUnit.Framework;
-using System.Collections.Generic;
-using GitVersion;
-using GitVersion.Configuration;
-using GitVersion.VersioningModes;
 
 namespace GitVersionCore.Tests.IntegrationTests
 {
@@ -68,7 +69,7 @@ namespace GitVersionCore.Tests.IntegrationTests
                 Increment = IncrementStrategy.Patch,
                 PreventIncrementOfMergedBranchVersion = true,
                 TrackMergeTarget = false,
-                SourceBranches = new List<string>()
+                SourceBranches = new HashSet<string>()
             });
 
             using var fixture = new EmptyRepositoryFixture();
@@ -77,7 +78,7 @@ namespace GitVersionCore.Tests.IntegrationTests
             Commands.Checkout(fixture.Repository, fixture.Repository.CreateBranch("main"));
             fixture.Repository.Branches.Remove(fixture.Repository.Branches["master"]);
 
-            fixture.AssertFullSemver(config, "0.1.0+0");
+            fixture.AssertFullSemver("0.1.0-1+0", config);
         }
 
         [Test]

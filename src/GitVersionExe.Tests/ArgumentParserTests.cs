@@ -1,29 +1,39 @@
+using System.IO;
+using GitTools.Testing;
 using GitVersion;
+using GitVersion.Logging;
+using GitVersion.Model;
+using GitVersionCore.Tests.Helpers;
+using Microsoft.Extensions.DependencyInjection;
 using NUnit.Framework;
 using Shouldly;
-using GitVersion.Exceptions;
-using GitVersion.Logging;
-using GitVersion.OutputFormatters;
-using GitVersionExe.Tests.Helpers;
+using Environment = System.Environment;
 
 namespace GitVersionExe.Tests
 {
     [TestFixture]
-    public class ArgumentParserTests
+    public class ArgumentParserTests : TestBase
     {
+        private IEnvironment environment;
         private IArgumentParser argumentParser;
 
         [SetUp]
         public void SetUp()
         {
-            argumentParser = new ArgumentParser(new TestEnvironment());
+            var sp = ConfigureServices(services =>
+            {
+                services.AddSingleton<IArgumentParser, ArgumentParser>();
+                services.AddSingleton<IGlobbingResolver, GlobbingResolver>();
+            });
+            environment = sp.GetService<IEnvironment>();
+            argumentParser = sp.GetService<IArgumentParser>();
         }
 
         [Test]
         public void EmptyMeansUseCurrentDirectory()
         {
             var arguments = argumentParser.ParseArguments("");
-            arguments.TargetPath.ShouldBe(System.Environment.CurrentDirectory);
+            arguments.TargetPath.ShouldBe(Environment.CurrentDirectory);
             arguments.LogFilePath.ShouldBe(null);
             arguments.IsHelp.ShouldBe(false);
         }
@@ -41,13 +51,13 @@ namespace GitVersionExe.Tests
         public void NoPathAndLogfileShouldUseCurrentDirectoryTargetDirectory()
         {
             var arguments = argumentParser.ParseArguments("-l logFilePath");
-            arguments.TargetPath.ShouldBe(System.Environment.CurrentDirectory);
+            arguments.TargetPath.ShouldBe(Environment.CurrentDirectory);
             arguments.LogFilePath.ShouldBe("logFilePath");
             arguments.IsHelp.ShouldBe(false);
         }
 
         [Test]
-        public void HMeansIsHelp()
+        public void HelpSwitchTest()
         {
             var arguments = argumentParser.ParseArguments("-h");
             Assert.IsNull(arguments.TargetPath);
@@ -56,53 +66,12 @@ namespace GitVersionExe.Tests
         }
 
         [Test]
-        public void Exec()
+        public void VersionSwitchTest()
         {
-            var arguments = argumentParser.ParseArguments("-exec rake");
-            arguments.Exec.ShouldBe("rake");
-        }
-
-        [Test]
-        public void ExecWithArgs()
-        {
-            var arguments = argumentParser.ParseArguments(new []
-            {
-                "-exec",
-                "rake",
-                "-execargs",
-                "clean build"
-            });
-            arguments.Exec.ShouldBe("rake");
-            arguments.ExecArgs.ShouldBe("clean build");
-        }
-
-        [Test]
-        public void Msbuild()
-        {
-            var arguments = argumentParser.ParseArguments("-proj msbuild.proj");
-            arguments.Proj.ShouldBe("msbuild.proj");
-        }
-
-        [Test]
-        public void MsbuildWithArgs()
-        {
-            var arguments = argumentParser.ParseArguments(new []
-            {
-                "-proj",
-                "msbuild.proj",
-                "-projargs",
-                "/p:Configuration=Debug /p:Platform=AnyCPU"
-            });
-            arguments.Proj.ShouldBe("msbuild.proj");
-            arguments.ProjArgs.ShouldBe("/p:Configuration=Debug /p:Platform=AnyCPU");
-        }
-
-        [Test]
-        public void ExecwithTargetdirectory()
-        {
-            var arguments = argumentParser.ParseArguments("targetDirectoryPath -exec rake");
-            arguments.TargetPath.ShouldBe("targetDirectoryPath");
-            arguments.Exec.ShouldBe("rake");
+            var arguments = argumentParser.ParseArguments("-version");
+            Assert.IsNull(arguments.TargetPath);
+            Assert.IsNull(arguments.LogFilePath);
+            arguments.IsVersion.ShouldBe(true);
         }
 
         [Test]
@@ -128,35 +97,105 @@ namespace GitVersionExe.Tests
         public void UnknownOutputShouldThrow()
         {
             var exception = Assert.Throws<WarningException>(() => argumentParser.ParseArguments("targetDirectoryPath -output invalid_value"));
-            exception.Message.ShouldBe("Value 'invalid_value' cannot be parsed as output type, please use 'json' or 'buildserver'");
+            exception.Message.ShouldBe("Value 'invalid_value' cannot be parsed as output type, please use 'json', 'file' or 'buildserver'");
         }
 
         [Test]
         public void OutputDefaultsToJson()
         {
             var arguments = argumentParser.ParseArguments("targetDirectoryPath");
-            arguments.Output.ShouldBe(OutputType.Json);
+            arguments.Output.ShouldContain(OutputType.Json);
+            arguments.Output.ShouldNotContain(OutputType.BuildServer);
+            arguments.Output.ShouldNotContain(OutputType.File);
         }
 
         [Test]
         public void OutputJsonCanBeParsed()
         {
             var arguments = argumentParser.ParseArguments("targetDirectoryPath -output json");
-            arguments.Output.ShouldBe(OutputType.Json);
+            arguments.Output.ShouldContain(OutputType.Json);
+            arguments.Output.ShouldNotContain(OutputType.BuildServer);
+            arguments.Output.ShouldNotContain(OutputType.File);
+        }
+
+        [Test]
+        public void MultipleOutputJsonCanBeParsed()
+        {
+            var arguments = argumentParser.ParseArguments("targetDirectoryPath -output json -output json");
+            arguments.Output.ShouldContain(OutputType.Json);
+            arguments.Output.ShouldNotContain(OutputType.BuildServer);
+            arguments.Output.ShouldNotContain(OutputType.File);
         }
 
         [Test]
         public void OutputBuildserverCanBeParsed()
         {
             var arguments = argumentParser.ParseArguments("targetDirectoryPath -output buildserver");
-            arguments.Output.ShouldBe(OutputType.BuildServer);
+            arguments.Output.ShouldContain(OutputType.BuildServer);
+            arguments.Output.ShouldNotContain(OutputType.Json);
+            arguments.Output.ShouldNotContain(OutputType.File);
+        }
+
+        [Test]
+        public void MultipleOutputBuildserverCanBeParsed()
+        {
+            var arguments = argumentParser.ParseArguments("targetDirectoryPath -output buildserver -output buildserver");
+            arguments.Output.ShouldContain(OutputType.BuildServer);
+            arguments.Output.ShouldNotContain(OutputType.Json);
+            arguments.Output.ShouldNotContain(OutputType.File);
+        }
+
+        [Test]
+        public void OutputFileCanBeParsed()
+        {
+            var arguments = argumentParser.ParseArguments("targetDirectoryPath -output file");
+            arguments.Output.ShouldContain(OutputType.File);
+            arguments.Output.ShouldNotContain(OutputType.BuildServer);
+            arguments.Output.ShouldNotContain(OutputType.Json);
+        }
+
+        [Test]
+        public void MultipleOutputFileCanBeParsed()
+        {
+            var arguments = argumentParser.ParseArguments("targetDirectoryPath -output file -output file");
+            arguments.Output.ShouldContain(OutputType.File);
+            arguments.Output.ShouldNotContain(OutputType.BuildServer);
+            arguments.Output.ShouldNotContain(OutputType.Json);
+        }
+
+        [Test]
+        public void OutputBuildserverAndJsonCanBeParsed()
+        {
+            var arguments = argumentParser.ParseArguments("targetDirectoryPath -output buildserver -output json");
+            arguments.Output.ShouldContain(OutputType.BuildServer);
+            arguments.Output.ShouldContain(OutputType.Json);
+            arguments.Output.ShouldNotContain(OutputType.File);
+        }
+
+        [Test]
+        public void OutputBuildserverAndJsonAndFileCanBeParsed()
+        {
+            var arguments = argumentParser.ParseArguments("targetDirectoryPath -output buildserver -output json -output file");
+            arguments.Output.ShouldContain(OutputType.BuildServer);
+            arguments.Output.ShouldContain(OutputType.Json);
+            arguments.Output.ShouldContain(OutputType.File);
         }
 
         [Test]
         public void MultipleArgsAndFlag()
         {
             var arguments = argumentParser.ParseArguments("targetDirectoryPath -output buildserver -updateAssemblyInfo");
-            arguments.Output.ShouldBe(OutputType.BuildServer);
+            arguments.Output.ShouldContain(OutputType.BuildServer);
+        }
+
+        [TestCase("-output file", "GitVersion.json")]
+        [TestCase("-output file -outputfile version.json", "version.json")]
+        public void OutputFileArgumentCanBeParsed(string args, string outputFile)
+        {
+            var arguments = argumentParser.ParseArguments(args);
+
+            arguments.Output.ShouldContain(OutputType.File);
+            arguments.OutputFile.ShouldBe(outputFile);
         }
 
         [Test]
@@ -187,7 +226,6 @@ namespace GitVersionExe.Tests
         [TestCase("-updateAssemblyInfo true")]
         [TestCase("-updateAssemblyInfo 1")]
         [TestCase("-updateAssemblyInfo")]
-        [TestCase("-updateAssemblyInfo -proj foo.sln")]
         [TestCase("-updateAssemblyInfo assemblyInfo.cs")]
         [TestCase("-updateAssemblyInfo assemblyInfo.cs -ensureassemblyinfo")]
         [TestCase("-updateAssemblyInfo assemblyInfo.cs otherAssemblyInfo.cs")]
@@ -196,6 +234,16 @@ namespace GitVersionExe.Tests
         {
             var arguments = argumentParser.ParseArguments(command);
             arguments.UpdateAssemblyInfo.ShouldBe(true);
+        }
+
+        [TestCase("-updateProjectFiles assemblyInfo.csproj")]
+        [TestCase("-updateProjectFiles assemblyInfo.csproj")]
+        [TestCase("-updateProjectFiles assemblyInfo.csproj otherAssemblyInfo.fsproj")]
+        [TestCase("-updateProjectFiles")]
+        public void UpdateProjectTrue(string command)
+        {
+            var arguments = argumentParser.ParseArguments(command);
+            arguments.UpdateProjectFiles.ShouldBe(true);
         }
 
         [TestCase("-updateAssemblyInfo false")]
@@ -213,29 +261,108 @@ namespace GitVersionExe.Tests
             exception.Message.ShouldBe("Can't specify multiple assembly info files when using /ensureassemblyinfo switch, either use a single assembly info file or do not specify /ensureassemblyinfo and create assembly info files manually");
         }
 
+        [TestCase("-updateProjectFiles Assembly.csproj -ensureassemblyinfo")]
+        public void UpdateProjectInfoWithEnsureAssemblyInfoProtected(string command)
+        {
+            var exception = Assert.Throws<WarningException>(() => argumentParser.ParseArguments(command));
+            exception.Message.ShouldBe("Cannot specify -ensureassemblyinfo with updateprojectfiles: please ensure your project file exists before attempting to update it");
+        }
+
         [Test]
         public void UpdateAssemblyInfoWithFilename()
         {
-            var arguments = argumentParser.ParseArguments("-updateAssemblyInfo CommonAssemblyInfo.cs");
+            using var repo = new EmptyRepositoryFixture();
+
+            var assemblyFile = Path.Combine(repo.RepositoryPath, "CommonAssemblyInfo.cs");
+            using var file = File.Create(assemblyFile);
+
+            var arguments = argumentParser.ParseArguments($"-targetpath {repo.RepositoryPath} -updateAssemblyInfo CommonAssemblyInfo.cs");
             arguments.UpdateAssemblyInfo.ShouldBe(true);
-            arguments.UpdateAssemblyInfoFileName.ShouldContain("CommonAssemblyInfo.cs");
+            arguments.UpdateAssemblyInfoFileName.Count.ShouldBe(1);
+            arguments.UpdateAssemblyInfoFileName.ShouldContain(x => Path.GetFileName(x).Equals("CommonAssemblyInfo.cs"));
         }
 
         [Test]
         public void UpdateAssemblyInfoWithMultipleFilenames()
         {
-            var arguments = argumentParser.ParseArguments("-updateAssemblyInfo CommonAssemblyInfo.cs VersionAssemblyInfo.cs");
+            using var repo = new EmptyRepositoryFixture();
+
+            var assemblyFile1 = Path.Combine(repo.RepositoryPath, "CommonAssemblyInfo.cs");
+            using var file = File.Create(assemblyFile1);
+
+            var assemblyFile2 = Path.Combine(repo.RepositoryPath, "VersionAssemblyInfo.cs");
+            using var file2 = File.Create(assemblyFile2);
+
+            var arguments = argumentParser.ParseArguments($"-targetpath {repo.RepositoryPath} -updateAssemblyInfo CommonAssemblyInfo.cs VersionAssemblyInfo.cs");
             arguments.UpdateAssemblyInfo.ShouldBe(true);
             arguments.UpdateAssemblyInfoFileName.Count.ShouldBe(2);
-            arguments.UpdateAssemblyInfoFileName.ShouldContain("CommonAssemblyInfo.cs");
-            arguments.UpdateAssemblyInfoFileName.ShouldContain("VersionAssemblyInfo.cs");
+            arguments.UpdateAssemblyInfoFileName.ShouldContain(x => Path.GetFileName(x).Equals("CommonAssemblyInfo.cs"));
+            arguments.UpdateAssemblyInfoFileName.ShouldContain(x => Path.GetFileName(x).Equals("VersionAssemblyInfo.cs"));
+        }
+
+        [Test]
+        public void UpdateProjectFilesWithMultipleFilenames()
+        {
+            using var repo = new EmptyRepositoryFixture();
+
+            var assemblyFile1 = Path.Combine(repo.RepositoryPath, "CommonAssemblyInfo.csproj");
+            using var file = File.Create(assemblyFile1);
+
+            var assemblyFile2 = Path.Combine(repo.RepositoryPath, "VersionAssemblyInfo.csproj");
+            using var file2 = File.Create(assemblyFile2);
+
+            var arguments = argumentParser.ParseArguments($"-targetpath {repo.RepositoryPath} -updateProjectFiles CommonAssemblyInfo.csproj VersionAssemblyInfo.csproj");
+            arguments.UpdateProjectFiles.ShouldBe(true);
+            arguments.UpdateAssemblyInfoFileName.Count.ShouldBe(2);
+            arguments.UpdateAssemblyInfoFileName.ShouldContain(x => Path.GetFileName(x).Equals("CommonAssemblyInfo.csproj"));
+            arguments.UpdateAssemblyInfoFileName.ShouldContain(x => Path.GetFileName(x).Equals("VersionAssemblyInfo.csproj"));
+        }
+
+        [Test]
+        public void UpdateAssemblyInfoWithMultipleFilenamesMatchingGlobbing()
+        {
+            using var repo = new EmptyRepositoryFixture();
+
+            var assemblyFile1 = Path.Combine(repo.RepositoryPath, "CommonAssemblyInfo.cs");
+            using var file = File.Create(assemblyFile1);
+
+            var assemblyFile2 = Path.Combine(repo.RepositoryPath, "VersionAssemblyInfo.cs");
+            using var file2 = File.Create(assemblyFile2);
+
+            var subdir = Path.Combine(repo.RepositoryPath, "subdir");
+            Directory.CreateDirectory(subdir);
+            var assemblyFile3 = Path.Combine(subdir, "LocalAssemblyInfo.cs");
+            using var file3 = File.Create(assemblyFile3);
+
+            var arguments = argumentParser.ParseArguments($"-targetpath {repo.RepositoryPath} -updateAssemblyInfo **/*AssemblyInfo.cs");
+            arguments.UpdateAssemblyInfo.ShouldBe(true);
+            arguments.UpdateAssemblyInfoFileName.Count.ShouldBe(3);
+            arguments.UpdateAssemblyInfoFileName.ShouldContain(x => Path.GetFileName(x).Equals("CommonAssemblyInfo.cs"));
+            arguments.UpdateAssemblyInfoFileName.ShouldContain(x => Path.GetFileName(x).Equals("VersionAssemblyInfo.cs"));
+            arguments.UpdateAssemblyInfoFileName.ShouldContain(x => Path.GetFileName(x).Equals("LocalAssemblyInfo.cs"));
+        }
+
+        [Test]
+        public void UpdateAssemblyInfoWithRelativeFilename()
+        {
+            using var repo = new EmptyRepositoryFixture();
+
+            var assemblyFile = Path.Combine(repo.RepositoryPath, "CommonAssemblyInfo.cs");
+            using var file = File.Create(assemblyFile);
+
+            var targetPath = Path.Combine(repo.RepositoryPath, "subdir1", "subdir2");
+            Directory.CreateDirectory(targetPath);
+
+            var arguments = argumentParser.ParseArguments($"-targetpath {targetPath} -updateAssemblyInfo ..\\..\\CommonAssemblyInfo.cs");
+            arguments.UpdateAssemblyInfo.ShouldBe(true);
+            arguments.UpdateAssemblyInfoFileName.Count.ShouldBe(1);
+            arguments.UpdateAssemblyInfoFileName.ShouldContain(x => Path.GetFileName(x).Equals("CommonAssemblyInfo.cs"));
         }
 
         [Test]
         public void OverrideconfigWithNoOptions()
         {
             var arguments = argumentParser.ParseArguments("/overrideconfig");
-            arguments.HasOverrideConfig.ShouldBe(false);
             arguments.OverrideConfig.ShouldBeNull();
         }
 
@@ -243,7 +370,6 @@ namespace GitVersionExe.Tests
         public void OverrideconfigWithSingleTagprefixOption()
         {
             var arguments = argumentParser.ParseArguments("/overrideconfig tag-prefix=sample");
-            arguments.HasOverrideConfig.ShouldBe(true);
             arguments.OverrideConfig.TagPrefix.ShouldBe("sample");
         }
 
@@ -260,14 +386,6 @@ namespace GitVersionExe.Tests
         {
             var exception = Assert.Throws<WarningException>(() => argumentParser.ParseArguments($"/overrideconfig {options}"));
             exception.Message.ShouldContain("Could not parse /overrideconfig option");
-        }
-
-        [Test]
-        public void UpdateAssemblyInfoWithRelativeFilename()
-        {
-            var arguments = argumentParser.ParseArguments("-updateAssemblyInfo ..\\..\\CommonAssemblyInfo.cs");
-            arguments.UpdateAssemblyInfo.ShouldBe(true);
-            arguments.UpdateAssemblyInfoFileName.ShouldContain("..\\..\\CommonAssemblyInfo.cs");
         }
 
         [Test]
@@ -295,13 +413,13 @@ namespace GitVersionExe.Tests
         public void DynamicRepoLocation()
         {
             var arguments = argumentParser.ParseArguments("-dynamicRepoLocation c:\\foo\\");
-            arguments.DynamicRepositoryLocation.ShouldBe("c:\\foo\\");
+            arguments.DynamicRepositoryClonePath.ShouldBe("c:\\foo\\");
         }
 
         [Test]
         public void CanLogToConsole()
         {
-            var arguments = argumentParser.ParseArguments("-l console -proj foo.sln");
+            var arguments = argumentParser.ParseArguments("-l console");
             arguments.LogFilePath.ShouldBe("console");
         }
 
@@ -328,11 +446,33 @@ namespace GitVersionExe.Tests
         }
 
         [Test]
-        public void OtherArgumentsCanBeParsedAfterNofetch()
+        public void OtherArgumentsCanBeParsedBeforeNonormalize()
         {
-            var arguments = argumentParser.ParseArguments("-nofetch -proj foo.sln");
+            var arguments = argumentParser.ParseArguments("targetpath -nonormalize");
+            arguments.TargetPath.ShouldBe("targetpath");
+            arguments.NoNormalize.ShouldBe(true);
+        }
+
+        [Test]
+        public void OtherArgumentsCanBeParsedBeforeNocache()
+        {
+            var arguments = argumentParser.ParseArguments("targetpath -nocache");
+            arguments.TargetPath.ShouldBe("targetpath");
+            arguments.NoCache.ShouldBe(true);
+        }
+
+        [TestCase("-nofetch -nonormalize -nocache")]
+        [TestCase("-nofetch -nocache -nonormalize")]
+        [TestCase("-nocache -nofetch -nonormalize")]
+        [TestCase("-nocache -nonormalize -nofetch")]
+        [TestCase("-nonormalize -nocache -nofetch")]
+        [TestCase("-nonormalize -nofetch -nocache")]
+        public void SeveralSwitchesCanBeParsed(string commandLineArgs)
+        {
+            var arguments = argumentParser.ParseArguments(commandLineArgs);
+            arguments.NoCache.ShouldBe(true);
+            arguments.NoNormalize.ShouldBe(true);
             arguments.NoFetch.ShouldBe(true);
-            arguments.Proj.ShouldBe("foo.sln");
         }
 
         [Test]
@@ -374,6 +514,38 @@ namespace GitVersionExe.Tests
                 var arguments = argumentParser.ParseArguments(command);
                 arguments.Verbosity.ShouldBe(expectedVerbosity);
             }
+        }
+
+        [Test]
+        public void EmptyArgumentsRemoteUsernameDefinedSetsUsername()
+        {
+            environment.SetEnvironmentVariable("GITVERSION_REMOTE_USERNAME", "value");
+            var arguments = argumentParser.ParseArguments(string.Empty);
+            arguments.Authentication.Username.ShouldBe("value");
+        }
+
+        [Test]
+        public void EmptyArgumentsRemotePasswordDefinedSetsPassword()
+        {
+            environment.SetEnvironmentVariable("GITVERSION_REMOTE_PASSWORD", "value");
+            var arguments = argumentParser.ParseArguments(string.Empty);
+            arguments.Authentication.Password.ShouldBe("value");
+        }
+
+        [Test]
+        public void ArbitraryArgumentsRemoteUsernameDefinedSetsUsername()
+        {
+            environment.SetEnvironmentVariable("GITVERSION_REMOTE_USERNAME", "value");
+            var arguments = argumentParser.ParseArguments("-nocache");
+            arguments.Authentication.Username.ShouldBe("value");
+        }
+
+        [Test]
+        public void ArbitraryArgumentsRemotePasswordDefinedSetsPassword()
+        {
+            environment.SetEnvironmentVariable("GITVERSION_REMOTE_PASSWORD", "value");
+            var arguments = argumentParser.ParseArguments("-nocache");
+            arguments.Authentication.Password.ShouldBe("value");
         }
     }
 }

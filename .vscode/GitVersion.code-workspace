@@ -1,0 +1,25 @@
+{
+	"folders": [
+		{
+			"path": ".."
+		}
+    ],
+    "settings": {
+        "editor.fontFamily": "'Cascadia Code', Consolas, 'Courier New', monospace",
+        "editor.rulers": [90],
+        "cSpell.words": [
+            "commiting",
+            "gittools",
+            "gitversion"
+        ],
+    },
+    "extensions": {
+        "recommendations": [
+            "ms-dotnettools.csharp",
+            "cake-build.cake-vscode",
+            "ms-azure-devops.azure-pipelines",
+            "EditorConfig.EditorConfig",
+            "streetsidesoftware.code-spell-checker"
+        ]
+    }
+}

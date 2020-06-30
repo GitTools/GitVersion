@@ -1,10 +1,9 @@
 using System.Collections.Generic;
 using System.Linq;
-
 using GitTools.Testing;
-using GitVersion.Configuration;
+using GitVersion.Model.Configuration;
+using GitVersionCore.Tests.Helpers;
 using LibGit2Sharp;
-
 using NUnit.Framework;
 
 namespace GitVersionCore.Tests.IntegrationTests
@@ -42,7 +41,7 @@ namespace GitVersionCore.Tests.IntegrationTests
             using var fixture = new BaseGitFlowRepositoryFixture("1.0.0");
             fixture.CreateAndMergeBranchIntoDevelop("support/2.0.0");
 
-            fixture.AssertFullSemver(config, "2.1.0-alpha.2");
+            fixture.AssertFullSemver("2.1.0-alpha.2", config);
         }
 
         [Test]

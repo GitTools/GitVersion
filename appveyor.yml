@@ -3,11 +3,6 @@ image: Visual Studio 2019
 assembly_info:
   patch: false
 
-configuration:
-  - Debug
-install:
-  - set PATH=C:\Ruby25-x64\bin;%PATH%
-
 build_script:
   - pwsh: ./build.ps1 -script build.cake -target Default
 

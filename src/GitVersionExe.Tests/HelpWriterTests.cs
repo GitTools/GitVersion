@@ -1,19 +1,25 @@
 using System.Collections.Generic;
 using System.Linq;
 using GitVersion;
+using GitVersion.Extensions;
+using GitVersionCore.Tests.Helpers;
+using Microsoft.Extensions.DependencyInjection;
 using NUnit.Framework;
 using Shouldly;
 
 namespace GitVersionExe.Tests
 {
-    public class HelpWriterTests
+    public class HelpWriterTests : TestBase
     {
         private readonly IHelpWriter helpWriter;
 
         public HelpWriterTests()
         {
-            var versionWriter = new VersionWriter();
-            helpWriter = new HelpWriter(versionWriter);
+            var sp = ConfigureServices(services =>
+            {
+                services.AddModule(new GitVersionExeModule());
+            });
+            helpWriter = sp.GetService<IHelpWriter>();
         }
 
         [Test]
@@ -21,28 +27,35 @@ namespace GitVersionExe.Tests
         {
             var lookup = new Dictionary<string, string>
             {
-                { "TargetUrl", "/url" },
-                { "Init", "init" },
-                { "TargetBranch", "/b" },
-                { "LogFilePath" , "/l" },
-                { "DynamicRepositoryLocation" , "/dynamicRepoLocation" },
-                { "IsHelp", "/?" },
-                { "IsVersion", "/version" },
-                { "UpdateWixVersionFile", "/updatewixversionfile" },
-                { "ConfigFile", "/config" },
+                { nameof(Arguments.TargetUrl), "/url" },
+                { nameof(Arguments.Init), "init" },
+                { nameof(Arguments.TargetBranch), "/b" },
+                { nameof(Arguments.LogFilePath) , "/l" },
+                { nameof(Arguments.OutputFile) , "/outputfile" },
+                { nameof(Arguments.DynamicRepositoryClonePath), "/dynamicRepoLocation" },
+                { nameof(Arguments.IsHelp), "/?" },
+                { nameof(Arguments.IsVersion), "/version" },
+                { nameof(Arguments.UpdateWixVersionFile), "/updatewixversionfile" },
+                { nameof(Arguments.ConfigFile), "/config" },
+                { nameof(Arguments.Verbosity), "/verbosity" },
+                { nameof(Arguments.CommitId), "/c" },
             };
             string helpText = null;
 
             helpWriter.WriteTo(s => helpText = s);
 
+            var ignored = new[]
+            {
+                nameof(Arguments.Authentication),
+            };
             typeof(Arguments).GetFields()
                 .Select(p => p.Name)
                 .Where(p => IsNotInHelp(lookup, p, helpText))
-                .Except(new[] { "Authentication", "CommitId", "HasOverrideConfig" })
+                .Except(ignored)
                 .ShouldBeEmpty();
         }
 
-        private static bool IsNotInHelp(Dictionary<string, string> lookup, string propertyName, string helpText)
+        private static bool IsNotInHelp(IReadOnlyDictionary<string, string> lookup, string propertyName, string helpText)
         {
             if (lookup.ContainsKey(propertyName))
                 return !helpText.Contains(lookup[propertyName]);

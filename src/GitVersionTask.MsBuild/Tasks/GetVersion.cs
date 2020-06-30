@@ -65,6 +65,9 @@ namespace GitVersion.MSBuildTask.Tasks
         public string BranchName { get; set; }
 
         [Output]
+        public string EscapedBranchName { get; set; }
+
+        [Output]
         public string Sha { get; set; }
 
         [Output]
@@ -94,6 +97,6 @@ namespace GitVersion.MSBuildTask.Tasks
         [Output]
         public string CommitsSinceVersionSourcePadded { get; set; }
 
-        public override bool Execute() => TaskProxy.GetVersion(this);
+        protected override bool OnExecute() => TaskProxy.GetVersion(this);
     }
 }

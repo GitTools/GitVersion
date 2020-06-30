@@ -1,7 +1,5 @@
 using GitVersion;
-using GitVersion.Logging;
 using GitVersion.VersionCalculation;
-using GitVersion.VersionCalculation.BaseVersionCalculators;
 using LibGit2Sharp;
 
 namespace GitVersionCore.Tests.VersionCalculation
@@ -19,25 +17,9 @@ namespace GitVersionCore.Tests.VersionCalculation
             this.shouldIncrement = shouldIncrement;
         }
 
-        public BaseVersion GetBaseVersion(GitVersionContext context)
+        public BaseVersion GetBaseVersion()
         {
-            return new BaseVersion(context, "Test source", shouldIncrement, semanticVersion, source, null);
-        }
-    }
-
-    public class TestBaseVersionStrategiesCalculator : BaseVersionCalculator
-    {
-        private static readonly IVersionStrategy[] VersionStrategies = new IVersionStrategy[]
-        {
-            new FallbackVersionStrategy(),
-            new ConfigNextVersionVersionStrategy(),
-            new TaggedCommitVersionStrategy(),
-            new MergeMessageVersionStrategy(),
-            new VersionInBranchNameVersionStrategy(),
-            new TrackReleaseBranchesVersionStrategy()
-        };
-        public TestBaseVersionStrategiesCalculator(ILog log) : base(log, VersionStrategies)
-        {
+            return new BaseVersion("Test source", shouldIncrement, semanticVersion, source, null);
         }
     }
 }

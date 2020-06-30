@@ -87,33 +87,34 @@ skip updating the `AssemblyFileVersion` while still updating the
 
 ### assembly-file-versioning-format
 
-Set this to any of the available [variables](./more-info/variables) in
-combination (but not necessary) with a process scoped environment variable. It
-overwrites the value of `assembly-file-versioning-scheme`. To reference an
-environment variable, use `env:` Example Syntax #1:
+Specifies the format of `AssemblyFileVersion` and
+overwrites the value of `assembly-file-versioning-scheme`.
 
-`'{Major}.{Minor}.{Patch}.{env:JENKINS_BUILD_NUMBER ?? fallback_string}'`.
+Expressions in curly braces reference one of the [variables](./more-info/variables)
+or a process-scoped environment variable (when prefixed with `env:`).  For example,
 
-Uses `JENKINS_BUILD_NUMBER` if available in the environment otherwise the
-`fallback_string` Example Syntax #2:
+```yaml
+# use a variable if non-null or a fallback value otherwise
+assembly-file-versioning-format: '{Major}.{Minor}.{Patch}.{WeightedPreReleaseNumber ?? 0}'
 
-`'{Major}.{Minor}.{Patch}.{env:JENKINS_BUILD_NUMBER}'`.
+# use an environment variable or raise an error if not available
+assembly-file-versioning-format: '{Major}.{Minor}.{Patch}.{env:BUILD_NUMBER}'
 
-Uses `JENKINS_BUILD_NUMBER` if available in the environment otherwise the
-parsing fails. String interpolation is supported as in
-`assembly-informational-format`
+# use an environment variable if available or a fallback value otherwise
+assembly-file-versioning-format: '{Major}.{Minor}.{Patch}.{env:BUILD_NUMBER ?? 42}'
+```
 
 ### assembly-versioning-format
 
-Follows the same semantics as `assembly-file-versioning-format` and overwrites
-the value of `assembly-versioning-scheme`.
+Specifies the format of `AssemblyVersion` and
+overwrites the value of `assembly-versioning-scheme`.
+Follows the same formatting semantics as `assembly-file-versioning-format`.
 
 ### assembly-informational-format
 
-Set this to any of the available [variables](./more-info/variables) to change the
-value of the `AssemblyInformationalVersion` attribute. Default set to
-`{InformationalVersion}`. It also supports string interpolation
-(`{MajorMinorPatch}+{BranchName}`)
+Specifies the format of `AssemblyInformationalVersion`.
+Follows the same formatting semantics as `assembly-file-versioning-format`.
+The default value is `{InformationalVersion}`.
 
 ### mode
 
@@ -136,6 +137,18 @@ and [tracks-release-branches](#tracks-release-branches).
 When using `mode: ContinuousDeployment`, the value specified in
 `continuous-delivery-fallback-tag` will be used as the pre-release tag for
 branches which do not have one specified. Default set to `ci`.
+
+Just to clarify: For a build name without `...-ci-<buildnumber>` or in other
+words without a `PreReleaseTag` (ergo `"PreReleaseTag":""` in GitVersion's JSON output)
+at the end you would need to set `continuous-delivery-fallback-tag` to an empty string (`''`):
+
+```yaml
+mode: ContinuousDeployment
+continuous-delivery-fallback-tag: ''
+...
+```
+
+Doing so can be helpful if you use your `master` branch as a `release` branch.
 
 ### tag-prefix
 
@@ -186,6 +199,10 @@ The number of characters to pad `CommitsSinceVersionSource` to in the
 set to `4`, which will pad the `CommitsSinceVersionSource` value of `1` to
 `0001`.
 
+### tag-pre-release-weight
+
+The pre-release weight in case of tagged commits. If the value is not set in the configuration, a default weight of 60000 is used instead. If the `WeightedPreReleaseNumber` [variable](./more-info/variables) is 0 and this parameter is set, its value is used. This helps if your branching model is GitFlow and the last release build, which is often tagged, can utilise this parameter to produce a monotonically increasing build number.
+ 
 ### commit-message-incrementing
 
 Sets whether it should be possible to increment the version with special syntax
@@ -199,6 +216,10 @@ Sets the format which will be used to format the `CommitDate` output variable.
 ### ignore
 
 The header for ignore configuration.
+
+### update-build-number
+
+Configures GitVersion to update the build number or not when running on a build server.
 
 #### sha
 

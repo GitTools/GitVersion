@@ -5,8 +5,6 @@ public class BuildCredentials
     public DockerHubCredentials Docker { get; private set; }
     public NugetCredentials Nuget { get; private set; }
     public ChocolateyCredentials Chocolatey { get; private set; }
-    public TfxCredentials Tfx { get; private set; }
-    public RubyGemCredentials RubyGem { get; private set; }
     public CodeCovCredentials CodeCov { get; private set; }
 
     public static BuildCredentials GetCredentials(ICakeContext context)
@@ -18,8 +16,6 @@ public class BuildCredentials
             Docker     = DockerHubCredentials.GetDockerHubCredentials(context),
             Nuget      = NugetCredentials.GetNugetCredentials(context),
             Chocolatey = ChocolateyCredentials.GetChocolateyCredentials(context),
-            Tfx        = TfxCredentials.GetTfxCredentials(context),
-            RubyGem    = RubyGemCredentials.GetRubyGemCredentials(context),
             CodeCov    = CodeCovCredentials.GetCodeCovCredentials(context),
         };
     }
@@ -28,13 +24,11 @@ public class BuildCredentials
 public class GitHubCredentials
 {
     public string UserName { get; private set; }
-    public string Password { get; private set; }
     public string Token { get; private set; }
 
-    public GitHubCredentials(string userName, string password, string token)
+    public GitHubCredentials(string userName, string token)
     {
         UserName = userName;
-        Password = password;
         Token = token;
     }
 
@@ -42,7 +36,6 @@ public class GitHubCredentials
     {
         return new GitHubCredentials(
             context.EnvironmentVariable("GITHUB_USERNAME"),
-            context.EnvironmentVariable("GITHUB_PASSWORD"),
             context.EnvironmentVariable("GITHUB_TOKEN"));
     }
 }
@@ -121,36 +114,6 @@ public class ChocolateyCredentials
         return new ChocolateyCredentials(
             context.EnvironmentVariable("CHOCOLATEY_API_KEY"),
             context.EnvironmentVariable("CHOCOLATEY_API_URL"));
-    }
-}
-
-public class TfxCredentials
-{
-    public string Token { get; private set; }
-
-    public TfxCredentials(string token)
-    {
-        Token = token;
-    }
-
-    public static TfxCredentials GetTfxCredentials(ICakeContext context)
-    {
-        return new TfxCredentials(context.EnvironmentVariable("TFX_TOKEN"));
-    }
-}
-
-public class RubyGemCredentials
-{
-    public string ApiKey { get; private set; }
-
-    public RubyGemCredentials(string apiKey)
-    {
-        ApiKey = apiKey;
-    }
-
-    public static RubyGemCredentials GetRubyGemCredentials(ICakeContext context)
-    {
-        return new RubyGemCredentials(context.EnvironmentVariable("RUBY_GEM_API_KEY"));
     }
 }
 

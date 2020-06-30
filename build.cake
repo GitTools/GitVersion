@@ -2,44 +2,44 @@
 #module nuget:?package=Cake.DotNetTool.Module&version=0.4.0
 
 // Install addins.
-#addin "nuget:?package=Cake.Codecov&version=0.7.0"
+#addin "nuget:?package=Cake.Codecov&version=0.8.0"
 #addin "nuget:?package=Cake.Compression&version=0.2.4"
-#addin "nuget:?package=Cake.Coverlet&version=2.3.4"
-#addin "nuget:?package=Cake.Docker&version=0.10.1"
-#addin "nuget:?package=Cake.Gem&version=0.8.1"
+#addin "nuget:?package=Cake.Coverlet&version=2.4.2"
+#addin "nuget:?package=Cake.Docker&version=0.11.0"
 #addin "nuget:?package=Cake.Git&version=0.21.0"
 #addin "nuget:?package=Cake.Gitter&version=0.11.1"
 #addin "nuget:?package=Cake.Incubator&version=5.1.0"
 #addin "nuget:?package=Cake.Json&version=4.0.0"
 #addin "nuget:?package=Cake.Kudu&version=0.10.1"
-#addin "nuget:?package=Cake.Npm&version=0.17.0"
-#addin "nuget:?package=Cake.Tfx&version=0.9.1"
 #addin "nuget:?package=Cake.Wyam&version=2.2.9"
 
-#addin "nuget:?package=Newtonsoft.Json&version=12.0.2"
+#addin "nuget:?package=Newtonsoft.Json&version=12.0.3"
 #addin "nuget:?package=SharpZipLib&version=1.2.0"
 #addin "nuget:?package=xunit.assert&version=2.4.1"
 
 // Install tools.
-#tool "nuget:?package=NUnit.ConsoleRunner&version=3.10.0"
-#tool "nuget:?package=nuget.commandline&version=5.2.0"
-#tool "nuget:?package=Wyam&version=2.2.9"
-#tool "nuget:?package=KuduSync.NET&version=1.5.2"
+#tool "nuget:?package=NUnit.ConsoleRunner&version=3.11.1"
+#tool "nuget:?package=nuget.commandline&version=5.4.0"
+#tool "nuget:?package=KuduSync.NET&version=1.5.3"
 
 // Install .NET Core Global tools.
-#tool "dotnet:?package=Codecov.Tool&version=1.7.2"
-#tool "dotnet:?package=GitReleaseManager.Tool&version=0.9.0"
+#tool "dotnet:?package=Codecov.Tool&version=1.10.0"
+#tool "dotnet:?package=dotnet-format&version=3.3.111304"
+#tool "dotnet:?package=GitReleaseManager.Tool&version=0.11.0"
+#tool "dotnet:?package=Wyam.Tool&version=2.2.9"
 
 // Load other scripts.
 #load "./build/utils/parameters.cake"
 #load "./build/utils/utils.cake"
 
+#load "./build/build.cake"
 #load "./build/test.cake"
 #load "./build/pack.cake"
 #load "./build/artifacts-test.cake"
-#load "./build/docker.cake"
+#load "./build/docker-build.cake"
 #load "./build/publish.cake"
-#load "./build/wyam.cake"
+#load "./build/release.cake"
+#load "./build/docs.cake"
 
 using Xunit;
 using System.Diagnostics;
@@ -66,6 +66,12 @@ Setup<BuildParameters>(context =>
             Information("Increasing verbosity to diagnostic.");
             context.Log.Verbosity = Verbosity.Diagnostic;
         }
+
+        if (parameters.IsLocalBuild)             Information("Building locally");
+        if (parameters.IsRunningOnAppVeyor)      Information("Building on AppVeyor");
+        if (parameters.IsRunningOnTravis)        Information("Building on Travis");
+        if (parameters.IsRunningOnAzurePipeline) Information("Building on AzurePipeline");
+        if (parameters.IsRunningOnGitHubActions) Information("Building on GitHubActions");
 
         Information("Building version {0} of GitVersion ({1}, {2})",
             parameters.Version.SemVersion,
@@ -112,7 +118,6 @@ Teardown<BuildParameters>((context, parameters) =>
 //////////////////////////////////////////////////////////////////////
 
 Task("Pack")
-    .IsDependentOn("Pack-Gem")
     .IsDependentOn("Pack-Nuget")
     .IsDependentOn("Pack-Chocolatey")
     .IsDependentOn("Zip-Files")
@@ -140,13 +145,53 @@ Task("Test")
 {
 });
 
+Task("Publish-CI")
+    .IsDependentOn("Publish-AppVeyor")
+    .IsDependentOn("Publish-AzurePipeline")
+    .Finally(() =>
+{
+    if (publishingError)
+    {
+        throw new Exception("An error occurred during the publishing of GitVersion.");
+    }
+});
+
+Task("Publish-NuGet")
+    .IsDependentOn("Publish-NuGet-Internal")
+    .Finally(() =>
+{
+    if (publishingError)
+    {
+        throw new Exception("An error occurred during the publishing of GitVersion.");
+    }
+});
+
+Task("Publish-Chocolatey")
+    .IsDependentOn("Publish-Chocolatey-Internal")
+    .Finally(() =>
+{
+    if (publishingError)
+    {
+        throw new Exception("An error occurred during the publishing of GitVersion.");
+    }
+});
+
+Task("Publish-Documentation")
+    .IsDependentOn("Publish-Documentation-Internal")
+    .Finally(() =>
+{
+    if (publishingError)
+    {
+        throw new Exception("An error occurred during the publishing of GitVersion.");
+    }
+});
+
 Task("Publish")
     .IsDependentOn("Publish-AppVeyor")
     .IsDependentOn("Publish-AzurePipeline")
-    .IsDependentOn("Publish-NuGet")
-    .IsDependentOn("Publish-Chocolatey")
-    .IsDependentOn("Publish-Gem")
-    .IsDependentOn("Publish-Documentation")
+    .IsDependentOn("Publish-NuGet-Internal")
+    .IsDependentOn("Publish-Chocolatey-Internal")
+    .IsDependentOn("Publish-Documentation-Internal")
     .Finally(() =>
 {
     if (publishingError)
@@ -169,6 +214,14 @@ Task("Release")
     .IsDependentOn("Release-Notes")
     .Finally(() =>
 {
+});
+
+Task("Format")
+    .Does<BuildParameters>((parameters) =>
+{
+    var dotnetFormatExe = Context.Tools.Resolve("dotnet-format.exe");
+    var args = $"--folder {parameters.Paths.Directories.Root}";
+    Context.ExecuteCommand(dotnetFormatExe, args);
 });
 
 Task("Default")

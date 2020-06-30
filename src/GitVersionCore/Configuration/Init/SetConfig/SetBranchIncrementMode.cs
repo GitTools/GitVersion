@@ -1,7 +1,8 @@
 using System.Collections.Generic;
 using GitVersion.Configuration.Init.Wizard;
-using GitVersion.VersioningModes;
 using GitVersion.Logging;
+using GitVersion.Model.Configuration;
+using GitVersion.VersionCalculation;
 
 namespace GitVersion.Configuration.Init.SetConfig
 {

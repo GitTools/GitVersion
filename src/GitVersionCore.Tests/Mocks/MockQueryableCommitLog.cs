@@ -35,7 +35,7 @@ namespace GitVersionCore.Tests.Mocks
         {
             throw new NotImplementedException();
         }
-    
+
         public Commit FindMergeBase(Commit first, Commit second)
         {
             return null;

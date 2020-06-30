@@ -14,7 +14,7 @@ namespace GitVersion.Logging
         private readonly StringBuilder sb;
         private string indent = string.Empty;
 
-        public Log(): this(Array.Empty<ILogAppender>())
+        public Log() : this(Array.Empty<ILogAppender>())
         {
         }
 
@@ -41,7 +41,7 @@ namespace GitVersion.Logging
                 appender.WriteTo(level, formattedString);
             }
 
-            sb.Append(formattedString);
+            sb.AppendLine(formattedString);
         }
 
         public IDisposable IndentLog(string operationDescription)

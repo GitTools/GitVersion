@@ -1,18 +1,18 @@
 using System;
 using System.IO;
-using GitVersion.Logging;
+using System.Linq;
+using GitVersion.Model.Configuration;
+using GitVersion.VersionCalculation;
 
 namespace GitVersion.Configuration
 {
     public abstract class ConfigFileLocator : IConfigFileLocator
     {
         protected readonly IFileSystem FileSystem;
-        protected readonly ILog Log;
 
-        protected ConfigFileLocator(IFileSystem fileSystem, ILog log)
+        protected ConfigFileLocator(IFileSystem fileSystem)
         {
             FileSystem = fileSystem ?? throw new ArgumentNullException(nameof(fileSystem));
-            Log = log ?? throw new ArgumentNullException(nameof(log));
         }
 
         public abstract bool HasConfigFileAt(string workingDirectory);
@@ -21,17 +21,12 @@ namespace GitVersion.Configuration
 
         public abstract void Verify(string workingDirectory, string projectRootDirectory);
 
-        public string SelectConfigFilePath(IGitPreparer gitPreparer)
+        public string SelectConfigFilePath(GitVersionOptions gitVersionOptions)
         {
-            var workingDirectory = gitPreparer.GetWorkingDirectory();
-            var projectRootDirectory = gitPreparer.GetProjectRootDirectory();
+            var workingDirectory = gitVersionOptions.WorkingDirectory;
+            var projectRootDirectory = gitVersionOptions.ProjectRootDirectory;
 
-            if (HasConfigFileAt(workingDirectory))
-            {
-                return GetConfigFilePath(workingDirectory);
-            }
-
-            return GetConfigFilePath(projectRootDirectory);
+            return GetConfigFilePath(HasConfigFileAt(workingDirectory) ? workingDirectory : projectRootDirectory);
         }
 
         public Config ReadConfig(string workingDirectory)
@@ -41,24 +36,40 @@ namespace GitVersion.Configuration
             if (FileSystem.Exists(configFilePath))
             {
                 var readAllText = FileSystem.ReadAllText(configFilePath);
-                LegacyConfigNotifier.Notify(new StringReader(readAllText));
-                return ConfigSerialiser.Read(new StringReader(readAllText));
+                var readConfig = ConfigSerializer.Read(new StringReader(readAllText));
+
+                VerifyReadConfig(readConfig);
+
+                return readConfig;
             }
 
             return new Config();
         }
 
-        public void Verify(IGitPreparer gitPreparer)
+        public static void VerifyReadConfig(Config config)
         {
-            if (!string.IsNullOrWhiteSpace(gitPreparer.GetTargetUrl()))
+            // Verify no branches are set to mainline mode
+            if (config.Branches.Any(b => b.Value.VersioningMode == VersioningMode.Mainline))
+            {
+                throw new ConfigurationException(@"Mainline mode only works at the repository level, a single branch cannot be put into mainline mode
+
+This is because mainline mode treats your entire git repository as an event source with each merge into the 'mainline' incrementing the version.
+
+If the docs do not help you decide on the mode open an issue to discuss what you are trying to do.");
+            }
+        }
+
+        public void Verify(GitVersionOptions gitVersionOptions)
+        {
+            if (!string.IsNullOrWhiteSpace(gitVersionOptions.RepositoryInfo.TargetUrl))
             {
                 // Assuming this is a dynamic repository. At this stage it's unsure whether we have
                 // any .git info so we need to skip verification
                 return;
             }
 
-            var workingDirectory = gitPreparer.GetWorkingDirectory();
-            var projectRootDirectory = gitPreparer.GetProjectRootDirectory();
+            var workingDirectory = gitVersionOptions.WorkingDirectory;
+            var projectRootDirectory = gitVersionOptions.ProjectRootDirectory;
 
             Verify(workingDirectory, projectRootDirectory);
         }

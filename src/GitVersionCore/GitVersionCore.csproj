@@ -1,47 +1,36 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFrameworks>netstandard2.0</TargetFrameworks>
+        <TargetFramework>netstandard2.0</TargetFramework>
         <RootNamespace>GitVersion</RootNamespace>
-        <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
         <DocumentationFile>bin\$(Configuration)\GitVersionCore.xml</DocumentationFile>
         <NoWarn>1591</NoWarn>
 
-        <PackageId>GitVersionCore</PackageId>
+        <PackageId>GitVersion.Core</PackageId>
         <Title>GitVersion</Title>
         <Description>Derives SemVer information from a repository following GitFlow or GitHubFlow. This is the Core library which both GitVersion cli and Task use allowing programatic usage of GitVersion.</Description>
 
         <Product>$(AssemblyName)</Product>
-
-        <LangVersion>8</LangVersion>
     </PropertyGroup>
 
     <ItemGroup>
+        <PackageReference Include="System.Net.Requests" Version="4.3.0" />
+
         <PackageReference Include="LibGit2Sharp" Version="$(PackageVersion_LibGit2Sharp)" />
         <PackageReference Include="JetBrains.Annotations" Version="$(PackageVersion_JetBrainsAnnotations)" PrivateAssets="All" />
-        <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="3.0.1" />
-        <PackageReference Include="Microsoft.Extensions.Options" Version="3.0.1" />
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="$(PackageVersion_MicrosoftExtensions)" />
+        <PackageReference Include="Microsoft.Extensions.Options" Version="$(PackageVersion_MicrosoftExtensions)" />
         <PackageReference Include="YamlDotNet" Version="$(PackageVersion_YamlDotNet)" />
     </ItemGroup>
 
-    <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
-        <PackageReference Include="Newtonsoft.Json" Version="$(PackageVersion_NewtonsoftJson)" />
-        <PackageReference Include="System.Net.Requests" Version="4.3.0" />
-        <PackageReference Include="System.Reflection.TypeExtensions" Version="4.6.0" />
+    <ItemGroup>
+        <Compile Remove="VersionConverters\*\AddFormats\**\*.*" />
+        <Compile Remove="VersionConverters\*\Templates\**\*.*" />
     </ItemGroup>
 
     <ItemGroup>
-        <Compile Remove="Extensions\GitVersionInformationResources\AddFormats\**\*.*" />
-        <Compile Remove="Extensions\GitVersionInformationResources\Templates\**\*.*" />
-        <Compile Remove="Extensions\VersionAssemblyInfoResources\AddFormats\**\*.*" />
-        <Compile Remove="Extensions\VersionAssemblyInfoResources\Templates\**\*.*" />
-    </ItemGroup>
-
-    <ItemGroup>
-        <EmbeddedResource Include="Extensions\GitVersionInformationResources\AddFormats\**\*.*" />
-        <EmbeddedResource Include="Extensions\GitVersionInformationResources\Templates\**\*.*" />
-        <EmbeddedResource Include="Extensions\VersionAssemblyInfoResources\AddFormats\**\*.*" />
-        <EmbeddedResource Include="Extensions\VersionAssemblyInfoResources\Templates\**\*.*" />
+        <EmbeddedResource Include="VersionConverters\*\AddFormats\**\*.*" />
+        <EmbeddedResource Include="VersionConverters\*\Templates\**\*.*" />
     </ItemGroup>
 
 </Project>

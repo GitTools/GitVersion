@@ -1,8 +1,8 @@
-﻿using System;
+using System;
 using System.Collections;
 using Microsoft.Build.Framework;
 
-namespace GitVersion.MSBuildTask.Tests.Mocks
+namespace GitVersionTask.Tests.Mocks
 {
     internal class MockTaskItem : ITaskItem
     {

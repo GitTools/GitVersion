@@ -1,15 +1,12 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
 using GitVersion.Configuration.Init.Wizard;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace GitVersion.Configuration.Init
 {
-    public class GitVersionInitModule : IGitVersionModule
+    public class GitVersionInitModule : GitVersionModule
     {
-        public void RegisterTypes(IServiceCollection services)
+        public override void RegisterTypes(IServiceCollection services)
         {
             services.AddTransient<IConfigInitWizard, ConfigInitWizard>();
             services.AddTransient<IConfigInitStepFactory, ConfigInitStepFactory>();
@@ -21,11 +18,5 @@ namespace GitVersion.Configuration.Init
                 services.AddTransient(step);
             }
         }
-
-        private static IEnumerable<Type> FindAllDerivedTypes<T>(Assembly assembly)
-        {
-            var derivedType = typeof(T);
-            return assembly.GetTypes().Where(t => t != derivedType && derivedType.IsAssignableFrom(t));
-        } 
     }
 }

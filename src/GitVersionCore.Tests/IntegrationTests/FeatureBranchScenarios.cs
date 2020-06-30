@@ -1,11 +1,12 @@
 using System.Collections.Generic;
 using GitTools.Testing;
 using GitVersion;
+using GitVersion.Extensions;
+using GitVersion.Model.Configuration;
+using GitVersion.VersionCalculation;
+using GitVersionCore.Tests.Helpers;
 using LibGit2Sharp;
 using NUnit.Framework;
-using GitVersion.Configuration;
-using GitVersion.VersioningModes;
-using GitVersion.Extensions;
 
 namespace GitVersionCore.Tests.IntegrationTests
 {
@@ -50,8 +51,8 @@ namespace GitVersionCore.Tests.IntegrationTests
                         {
                             Increment = IncrementStrategy.Minor,
                             Regex = "unstable",
-                            SourceBranches = new List<string>(),
-                            IsSourceBranchFor = new [] { "feature" }
+                            SourceBranches = new HashSet<string>(),
+                            IsSourceBranchFor = new HashSet<string> { "feature" }
                         }
                     }
                 }
@@ -76,7 +77,7 @@ namespace GitVersionCore.Tests.IntegrationTests
             Commands.Checkout(fixture.Repository, "feature/JIRA-124");
             fixture.Repository.MakeCommits(1);
 
-            fixture.AssertFullSemver(config, "1.1.0-JIRA-124.1+2");
+            fixture.AssertFullSemver("1.1.0-JIRA-124.1+2", config);
         }
 
         [Test]
@@ -169,7 +170,7 @@ namespace GitVersionCore.Tests.IntegrationTests
             fixture.Repository.Merge(fixture.Repository.Branches["develop"], Generate.SignatureNow());
 
             var configuration = new Config { VersioningMode = VersioningMode.ContinuousDeployment };
-            fixture.AssertFullSemver(configuration, "1.2.0-longrunning.2");
+            fixture.AssertFullSemver("1.2.0-longrunning.2", configuration);
         }
 
         [Test]
@@ -192,7 +193,7 @@ namespace GitVersionCore.Tests.IntegrationTests
             fixture.BranchTo("feature/PROJ-1");
             fixture.MakeACommit();
 
-            fixture.AssertFullSemver(config, "0.3.0-PROJ-1.1+2");
+            fixture.AssertFullSemver("0.3.0-PROJ-1.1+2", config);
         }
 
         [TestCase("alpha", "JIRA-123", "alpha")]
@@ -216,7 +217,7 @@ namespace GitVersionCore.Tests.IntegrationTests
             fixture.Repository.MakeCommits(5);
 
             var expectedFullSemVer = $"1.0.1-{preReleaseTagName}.1+5";
-            fixture.AssertFullSemver(config, expectedFullSemVer);
+            fixture.AssertFullSemver(expectedFullSemVer, config);
         }
 
         [Test]
@@ -305,7 +306,7 @@ namespace GitVersionCore.Tests.IntegrationTests
                     Branches = new Dictionary<string, BranchConfig>
                     {
                         {
-                            "master", new BranchConfig()
+                            "master", new BranchConfig
                             {
                                 TracksReleaseBranches = true,
                                 Regex = "master"
@@ -321,11 +322,11 @@ namespace GitVersionCore.Tests.IntegrationTests
                 fixture.MakeACommit();
                 fixture.Checkout("master");
                 fixture.MakeACommit();
-                fixture.AssertFullSemver(config, "1.0.1+1");
+                fixture.AssertFullSemver("1.0.1+1", config);
 
                 // create a feature branch from master and verify the version
                 fixture.BranchTo("feature/test");
-                fixture.AssertFullSemver(config, "1.0.1-test.1+1");
+                fixture.AssertFullSemver("1.0.1-test.1+1", config);
             }
 
             [Test]
@@ -336,7 +337,7 @@ namespace GitVersionCore.Tests.IntegrationTests
                     Branches = new Dictionary<string, BranchConfig>
                     {
                         {
-                            "master", new BranchConfig()
+                            "master", new BranchConfig
                             {
                                 TracksReleaseBranches = true,
                                 Regex = "master"
@@ -354,11 +355,11 @@ namespace GitVersionCore.Tests.IntegrationTests
                 // merge release into master
                 fixture.Checkout("master");
                 fixture.MergeNoFF("release/1.0");
-                fixture.AssertFullSemver(config, "1.0.1+2");
+                fixture.AssertFullSemver("1.0.1+2", config);
 
                 // create a feature branch from master and verify the version
                 fixture.BranchTo("feature/test");
-                fixture.AssertFullSemver(config, "1.0.1-test.1+2");
+                fixture.AssertFullSemver("1.0.1-test.1+2", config);
             }
         }
 
@@ -415,7 +416,7 @@ namespace GitVersionCore.Tests.IntegrationTests
                         Branches = new Dictionary<string, BranchConfig>
                         {
                             {
-                                "master", new BranchConfig()
+                                "master", new BranchConfig
                                 {
                                     TracksReleaseBranches = true,
                                     Regex = "master"
@@ -431,11 +432,11 @@ namespace GitVersionCore.Tests.IntegrationTests
                     fixture.MakeACommit();
                     fixture.Checkout("master");
                     fixture.MakeACommit();
-                    fixture.AssertFullSemver(config, "1.0.1+1");
+                    fixture.AssertFullSemver("1.0.1+1", config);
 
                     // create a misnamed feature branch (i.e. it uses the default config) from master and verify the version
                     fixture.BranchTo("misnamed");
-                    fixture.AssertFullSemver(config, "1.0.1-misnamed.1+1");
+                    fixture.AssertFullSemver("1.0.1-misnamed.1+1", config);
                 }
 
                 [Test]
@@ -446,7 +447,7 @@ namespace GitVersionCore.Tests.IntegrationTests
                         Branches = new Dictionary<string, BranchConfig>
                         {
                             {
-                                "master", new BranchConfig()
+                                "master", new BranchConfig
                                 {
                                     TracksReleaseBranches = true,
                                     Regex = "master"
@@ -464,11 +465,11 @@ namespace GitVersionCore.Tests.IntegrationTests
                     // merge release into master
                     fixture.Checkout("master");
                     fixture.MergeNoFF("release/1.0");
-                    fixture.AssertFullSemver(config, "1.0.1+2");
+                    fixture.AssertFullSemver("1.0.1+2", config);
 
                     // create a misnamed feature branch (i.e. it uses the default config) from master and verify the version
                     fixture.BranchTo("misnamed");
-                    fixture.AssertFullSemver(config, "1.0.1-misnamed.1+2");
+                    fixture.AssertFullSemver("1.0.1-misnamed.1+2", config);
                 }
             }
         }
@@ -482,14 +483,14 @@ namespace GitVersionCore.Tests.IntegrationTests
                 Branches = new Dictionary<string, BranchConfig>
                 {
                     {
-                        "master", new BranchConfig()
+                        "master", new BranchConfig
                         {
                             Tag = "pre",
                             TracksReleaseBranches = true,
                         }
                     },
                     {
-                        "release", new BranchConfig()
+                        "release", new BranchConfig
                         {
                             IsReleaseBranch = true,
                             Tag = "rc",
@@ -505,22 +506,22 @@ namespace GitVersionCore.Tests.IntegrationTests
             fixture.BranchTo("release/0.10.0");
             fixture.MakeACommit();
             fixture.MakeACommit();
-            fixture.AssertFullSemver(config, "0.10.0-rc.1+2");
+            fixture.AssertFullSemver("0.10.0-rc.1+2", config);
 
             // switch to master and verify the version
             fixture.Checkout("master");
             fixture.MakeACommit();
-            fixture.AssertFullSemver(config, "0.10.1-pre.1+1");
+            fixture.AssertFullSemver("0.10.1-pre.1+1", config);
 
             // create a feature branch from master and verify the version
             fixture.BranchTo("MyFeatureD");
-            fixture.AssertFullSemver(config, "0.10.1-MyFeatureD.1+1");
+            fixture.AssertFullSemver("0.10.1-MyFeatureD.1+1", config);
         }
 
         [Test]
         public void ShouldHaveAGreaterSemVerAfterDevelopIsMergedIntoFeature()
         {
-            var config = new Config()
+            var config = new Config
             {
                 VersioningMode = VersioningMode.ContinuousDeployment,
                 AssemblyVersioningScheme = AssemblyVersioningScheme.Major,
@@ -532,13 +533,13 @@ namespace GitVersionCore.Tests.IntegrationTests
                 Branches = new Dictionary<string, BranchConfig>
                 {
                     {
-                        "develop", new BranchConfig()
+                        "develop", new BranchConfig
                         {
                             PreventIncrementOfMergedBranchVersion = true
                         }
                     },
                     {
-                        "feature", new BranchConfig()
+                        "feature", new BranchConfig
                         {
                             Tag = "feat-{BranchName}"
                         }
@@ -557,7 +558,7 @@ namespace GitVersionCore.Tests.IntegrationTests
             fixture.MakeACommit();
             fixture.Checkout("feature/featX");
             fixture.MergeNoFF("develop");
-            fixture.AssertFullSemver(config, "16.24.0-feat-featX.4");
+            fixture.AssertFullSemver("16.24.0-feat-featX.4", config);
         }
     }
 }

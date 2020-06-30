@@ -14,7 +14,7 @@
 
     </Target>
 
-    <Target Name="UpdateAssemblyInfo" BeforeTargets="CoreCompile" Condition="$(UpdateAssemblyInfo) == 'true'">
+    <Target Name="UpdateAssemblyInfo" BeforeTargets="BeforeCompile;CoreCompile" Condition="$(UpdateAssemblyInfo) == 'true'">
 
         <UpdateAssemblyInfo SolutionDirectory="$(GitVersionPath)"
                             ConfigFilePath="$(GitVersionConfig)"
@@ -34,10 +34,14 @@
         <ItemGroup Condition="'$(Language)' != 'F#'">
             <Compile Include="$(AssemblyInfoTempFilePath)" />
         </ItemGroup>
+        <ItemGroup>
+            <FileWrites Include="$(AssemblyInfoTempFilePath)" />
+            <_GeneratedCodeFiles Include="$(AssemblyInfoTempFilePath)" />
+        </ItemGroup>
 
     </Target>
 
-    <Target Name="GenerateGitVersionInformation" BeforeTargets="CoreCompile" Condition="$(GenerateGitVersionInformation) == 'true'">
+    <Target Name="GenerateGitVersionInformation" BeforeTargets="BeforeCompile;CoreCompile" Condition="$(GenerateGitVersionInformation) == 'true'">
 
         <GenerateGitVersionInformation SolutionDirectory="$(GitVersionPath)"
                                        ConfigFilePath="$(GitVersionConfig)"
@@ -52,11 +56,13 @@
 
         <ItemGroup Condition="'$(Language)' == 'F#'">
             <CompileBefore Include="$(GitVersionInformationFilePath)" />
-            <FileWrites Include="$(GitVersionInformationFilePath)" />
         </ItemGroup>
         <ItemGroup Condition="'$(Language)' != 'F#'">
             <Compile Include="$(GitVersionInformationFilePath)" />
+        </ItemGroup>
+        <ItemGroup>
             <FileWrites Include="$(GitVersionInformationFilePath)" />
+            <_GeneratedCodeFiles Include="$(GitVersionInformationFilePath)" />
         </ItemGroup>
     </Target>
 

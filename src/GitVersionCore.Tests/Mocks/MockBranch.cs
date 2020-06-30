@@ -15,7 +15,7 @@ namespace GitVersionCore.Tests.Mocks
         public MockBranch(string friendlyName, string canonicalName)
         {
             this.friendlyName = friendlyName;
-            this.CanonicalName = canonicalName;
+            CanonicalName = canonicalName;
         }
 
         public MockBranch()

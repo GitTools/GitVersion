@@ -1,8 +1,7 @@
 **/*
 
-!artifacts/*/bin/netcoreapp2.1
-!artifacts/*/bin/netcoreapp3.1
-!artifacts/*/build-artifact
+artifacts/build-artifact
+artifacts/test-results
 !artifacts/*/nuget
 
 !artifacts/*/*.tar.gz

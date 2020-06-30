@@ -1,0 +1,11 @@
+steps:
+- template: common-steps.yml
+- pwsh: ./build.ps1 -target Pack
+  displayName: '[Cake build & pack]'
+- publish: $(System.DefaultWorkingDirectory)/artifacts
+  displayName: 'Upload artifacts folder'
+  condition: and(succeeded(), eq( variables['Agent.OS'], 'Windows_NT' ))
+  artifact: storage
+- publish: $(System.DefaultWorkingDirectory)/artifacts/native
+  displayName: 'Upload native folder'
+  artifact: storage-$(VM_IMAGE)

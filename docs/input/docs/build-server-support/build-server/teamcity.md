@@ -34,12 +34,12 @@ use dynamic repositories.
 ### Agent checkout
 
 For GitVersion to pick up pull requests properly you need to promote the
-`%teamcity.build.vcs.branch.{configurationid}%` variable to an environment
+`%teamcity.build.vcs.branch.{vcsid}%` variable to an environment
 variable called `Git_Branch`
 
 Just go to your build configuration, Parameters, click Add, Name should be
 `env.Git_Branch`, value should be `%teamcity.build.vcs.branch.{vcsid}%` where
-vcsid is your VCS root id. You should get auto completion for this.
+`{vcsid}` is your VCS root id. You should get auto completion for this.
 
 For GitVersion to work with any mode requiring other than the currently built
 branch to calculate the version number, you need to set the configuration
@@ -73,7 +73,7 @@ as msbuild/environmental variables to other build steps
 to the project called `GitVersion.NuGetVersion`. If many of your projects uses
 git-flow and SemVer you can add the parameter to the "root-project"
 (TeamCity 8.x+). You need a dummy param because GitVersion creates the variables
-at runtime, and you cannot reference a paramter which is not available
+at runtime, and you cannot reference a parameter which is not available
 statically. GitVersion will overwrite the dummy value
 * Then setup you nuget pack build set the "version" to `%GitVersion.NuGetVersion%`
 * If you do your pack in a build script then you can just use environmental

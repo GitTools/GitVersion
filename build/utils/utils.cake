@@ -25,6 +25,10 @@ public static bool IsOnMainRepo(this ICakeContext context)
     {
         repositoryName = buildSystem.TFBuild.Environment.Repository.RepoName;
     }
+    else if (buildSystem.IsRunningOnGitHubActions)
+    {
+        repositoryName = buildSystem.GitHubActions.Environment.Workflow.Repository;
+    }
 
     context.Information("Repository Name: {0}" , repositoryName);
 
@@ -45,7 +49,11 @@ public static bool IsOnMainBranch(this ICakeContext context)
     }
     else if (buildSystem.IsRunningOnAzurePipelines || buildSystem.IsRunningOnAzurePipelinesHosted)
     {
-        repositoryBranch = buildSystem.TFBuild.Environment.Repository.Branch;
+        repositoryBranch = buildSystem.TFBuild.Environment.Repository.SourceBranchName;
+    }
+    else if (buildSystem.IsRunningOnGitHubActions)
+    {
+        repositoryBranch = buildSystem.GitHubActions.Environment.Workflow.Ref.Replace("refs/heads/", "");
     }
 
     context.Information("Repository Branch: {0}" , repositoryBranch);
@@ -61,7 +69,6 @@ public static bool IsBuildTagged(this ICakeContext context)
     return isTagged;
 }
 
-
 public static bool IsEnabled(this ICakeContext context, string envVar, bool nullOrEmptyAsEnabled = true)
 {
     var value = context.EnvironmentVariable(envVar);
@@ -69,14 +76,18 @@ public static bool IsEnabled(this ICakeContext context, string envVar, bool null
     return string.IsNullOrWhiteSpace(value) ? nullOrEmptyAsEnabled : bool.Parse(value);
 }
 
-public static List<string> ExecGitCmd(this ICakeContext context, string cmd)
+public static List<string> ExecuteCommand(this ICakeContext context, FilePath exe, string args)
 {
-    var gitPath = context.Tools.Resolve(context.IsRunningOnWindows() ? "git.exe" : "git");
-    context.StartProcess(gitPath, new ProcessSettings { Arguments = cmd, RedirectStandardOutput = true }, out var redirectedOutput);
+    context.StartProcess(exe, new ProcessSettings { Arguments = args, RedirectStandardOutput = true }, out var redirectedOutput);
 
     return redirectedOutput.ToList();
 }
 
+public static List<string> ExecGitCmd(this ICakeContext context, string cmd)
+{
+    var gitExe = context.Tools.Resolve(context.IsRunningOnWindows() ? "git.exe" : "git");
+    return context.ExecuteCommand(gitExe, cmd);
+}
 
 DirectoryPath HomePath()
 {
@@ -92,28 +103,17 @@ void ReplaceTextInFile(FilePath filePath, string oldValue, string newValue, bool
     System.IO.File.WriteAllText(file, System.IO.File.ReadAllText(file).Replace(oldValue, newValue));
 }
 
-void SetRubyGemPushApiKey(string apiKey)
-{
-    // it's a hack, creating a credentials file to be able to push the gem
-    var workDir = "./src/GitVersionRubyGem";
-    var gemHomeDir = HomePath().Combine(".gem");
-    var credentialFile = new FilePath(workDir + "/credentials");
-    EnsureDirectoryExists(gemHomeDir);
-    ReplaceTextInFile(credentialFile, "$api_key$", apiKey, true);
-    CopyFileToDirectory(credentialFile, gemHomeDir);
-}
-
 GitVersion GetVersion(BuildParameters parameters)
 {
     var gitversionFilePath = $"artifacts/gitversion.json";
     var gitversionFile = GetFiles(gitversionFilePath).FirstOrDefault();
     GitVersion gitVersion = null;
-    if (gitversionFile == null)
+    if (gitversionFile == null || parameters.IsLocalBuild)
     {
         Build(parameters);
 
         var settings = new GitVersionSettings { OutputType = GitVersionOutput.Json };
-        SetGitVersionTool(settings, parameters, "src/GitVersionExe/**");
+        SetGitVersionTool(settings, parameters);
 
         gitVersion = GitVersion(settings);
         SerializeJsonToPrettyFile(gitversionFilePath, gitVersion);
@@ -126,6 +126,22 @@ GitVersion GetVersion(BuildParameters parameters)
     return gitVersion;
 }
 
+void ValidateVersion(BuildParameters parameters)
+{
+    var gitversionTool = GetGitVersionToolLocation(parameters);
+
+    ValidateOutput("dotnet", $"\"{gitversionTool}\" -version", parameters.Version.GitVersion.InformationalVersion);
+}
+
+void ValidateOutput(string cmd, string args, string expected)
+{
+    var output = Context.ExecuteCommand(cmd, args);
+    var outputStr = string.Concat(output);
+    Information(outputStr);
+
+    Assert.Equal(expected, outputStr);
+}
+
 void RunGitVersionOnCI(BuildParameters parameters)
 {
     // set the CI build version number with GitVersion
@@ -133,19 +149,18 @@ void RunGitVersionOnCI(BuildParameters parameters)
     {
         var settings = new GitVersionSettings
         {
-            UpdateAssemblyInfo = true,
             LogFilePath = "console",
             OutputType = GitVersionOutput.BuildServer
         };
-        SetGitVersionTool(settings, parameters, "artifacts/**/bin");
+        SetGitVersionTool(settings, parameters);
 
         GitVersion(settings);
     }
 }
 
-GitVersionSettings SetGitVersionTool(GitVersionSettings settings, BuildParameters parameters, string toolPath)
+GitVersionSettings SetGitVersionTool(GitVersionSettings settings, BuildParameters parameters)
 {
-    var gitversionTool = GetFiles($"{toolPath}/{parameters.CoreFxVersion31}/GitVersion.dll").FirstOrDefault();
+    var gitversionTool = GetGitVersionToolLocation(parameters);
 
     settings.ToolPath = Context.FindToolInPath(IsRunningOnUnix() ? "dotnet" : "dotnet.exe");
     settings.ArgumentCustomization = args => gitversionTool + " " + args.Render();
@@ -153,24 +168,9 @@ GitVersionSettings SetGitVersionTool(GitVersionSettings settings, BuildParameter
     return settings;
 }
 
-void PublishGitVersionToArtifacts(BuildParameters parameters)
+FilePath GetGitVersionToolLocation(BuildParameters parameters)
 {
-    var frameworks = new[] { parameters.CoreFxVersion21, parameters.CoreFxVersion31, parameters.FullFxVersion472 };
-
-    // publish Framework-dependent deployment
-    foreach(var framework in frameworks)
-    {
-        var settings = new DotNetCorePublishSettings
-        {
-            Framework = framework,
-            NoRestore = false,
-            Configuration = parameters.Configuration,
-            OutputDirectory = parameters.Paths.Directories.ArtifactsBin.Combine(framework),
-            MSBuildSettings = parameters.MSBuildSettings,
-        };
-
-        DotNetCorePublish("./src/GitVersionExe/GitVersionExe.csproj", settings);
-    }
+    return GetFiles($"src/GitVersionExe/bin/{parameters.Configuration}/{parameters.CoreFxVersion31}/gitversion.dll").SingleOrDefault();
 }
 
 void Build(BuildParameters parameters)

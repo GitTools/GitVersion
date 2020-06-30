@@ -31,12 +31,12 @@ namespace GitVersion.Extensions
         {
             return Trues.Contains(value, StringComparer.OrdinalIgnoreCase);
         }
-        
+
         public static bool IsFalse(this string value)
         {
             return Falses.Contains(value, StringComparer.OrdinalIgnoreCase);
         }
-        
+
         public static bool IsValidPath(this string path)
         {
             if (path == null)
@@ -44,7 +44,7 @@ namespace GitVersion.Extensions
 
             try
             {
-                Path.GetFullPath(path);
+                _ = Path.GetFullPath(path);
             }
             catch
             {
@@ -52,7 +52,7 @@ namespace GitVersion.Extensions
 
                 try
                 {
-                    Path.GetFullPath(path);
+                    _ = Path.GetFullPath(path);
                 }
                 catch
                 {
@@ -105,7 +105,9 @@ namespace GitVersion.Extensions
                 "init",
                 "updateassemblyinfo",
                 "ensureassemblyinfo",
-                "nofetch"
+                "nofetch",
+                "nonormalize",
+                "nocache",
             };
 
             var argumentMightRequireValue = !booleanArguments.Contains(argument.Substring(1), StringComparer.OrdinalIgnoreCase);
@@ -113,7 +115,7 @@ namespace GitVersion.Extensions
             // If this is the first argument that might be a target path, the argument starts with slash and we're on an OS that supports paths with slashes, the argument does not require a value.
             if (argumentMightRequireValue && argumentIndex == 0 && argument.StartsWith("/") && Path.DirectorySeparatorChar == '/' && argument.IsValidPath())
                 return false;
-            
+
             return argumentMightRequireValue;
         }
 
@@ -126,6 +128,11 @@ namespace GitVersion.Extensions
         public static string RegexReplace(this string input, string pattern, string replace, RegexOptions options = RegexOptions.None)
         {
             return Regex.Replace(input, pattern, replace, options);
+        }
+
+        public static bool IsEquivalentTo(this string self, string other)
+        {
+            return String.Equals(self, other, StringComparison.OrdinalIgnoreCase);
         }
     }
 }

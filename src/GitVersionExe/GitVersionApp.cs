@@ -1,9 +1,9 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using GitVersion.Logging;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
-using GitVersion.Logging;
 
 namespace GitVersion
 {
@@ -12,9 +12,9 @@ namespace GitVersion
         private readonly IHostApplicationLifetime applicationLifetime;
         private readonly IGitVersionExecutor gitVersionExecutor;
         private readonly ILog log;
-        private readonly IOptions<Arguments> options;
+        private readonly IOptions<GitVersionOptions> options;
 
-        public GitVersionApp(IHostApplicationLifetime applicationLifetime, IGitVersionExecutor gitVersionExecutor, ILog log, IOptions<Arguments> options)
+        public GitVersionApp(IHostApplicationLifetime applicationLifetime, IGitVersionExecutor gitVersionExecutor, ILog log, IOptions<GitVersionOptions> options)
         {
             this.options = options ?? throw new ArgumentNullException(nameof(options));
             this.applicationLifetime = applicationLifetime ?? throw new ArgumentNullException(nameof(applicationLifetime));
@@ -25,13 +25,14 @@ namespace GitVersion
         {
             try
             {
-                var arguments = options.Value;
-                log.Verbosity = arguments.Verbosity;
-                gitVersionExecutor.Execute(arguments);
+                var gitVersionOptions = options.Value;
+                log.Verbosity = gitVersionOptions.Verbosity;
+                System.Environment.ExitCode = gitVersionExecutor.Execute(gitVersionOptions);
             }
             catch (Exception exception)
             {
                 Console.Error.WriteLine(exception.Message);
+                System.Environment.ExitCode = 1;
             }
 
             applicationLifetime.StopApplication();

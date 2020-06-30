@@ -1,40 +1,50 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
-using LibGit2Sharp;
-using GitVersion.Logging;
 using GitVersion.Configuration;
 using GitVersion.Extensions;
+using GitVersion.Logging;
+using LibGit2Sharp;
 
-namespace GitVersion.VersionCalculation.BaseVersionCalculators
+namespace GitVersion.VersionCalculation
 {
     /// <summary>
     /// Version is extracted from older commits's merge messages.
     /// BaseVersionSource is the commit where the message was found.
     /// Increments if PreventIncrementForMergedBranchVersion (from the branch config) is false.
     /// </summary>
-    public class MergeMessageVersionStrategy : IVersionStrategy
+    public class MergeMessageVersionStrategy : VersionStrategyBase
     {
-        public virtual IEnumerable<BaseVersion> GetVersions(GitVersionContext context)
+        private readonly ILog log;
+
+        public MergeMessageVersionStrategy(ILog log, Lazy<GitVersionContext> versionContext) : base(versionContext)
         {
-            var commitsPriorToThan = context.CurrentBranch
-                .CommitsPriorToThan(context.CurrentCommit.When());
+            this.log = log ?? throw new ArgumentNullException(nameof(log));
+        }
+
+        public override IEnumerable<BaseVersion> GetVersions()
+        {
+            var commitsPriorToThan = Context.CurrentBranch
+                .CommitsPriorToThan(Context.CurrentCommit.When());
             var baseVersions = commitsPriorToThan
                 .SelectMany(c =>
                 {
-                    if (TryParse(c, context, out var mergeMessage) &&
+                    if (TryParse(c, Context, out var mergeMessage) &&
                         mergeMessage.Version != null &&
-                        context.FullConfiguration.IsReleaseBranch(TrimRemote(mergeMessage.MergedBranch)))
+                        Context.FullConfiguration.IsReleaseBranch(TrimRemote(mergeMessage.MergedBranch)))
                     {
-                        context.Log.Info($"Found commit [{context.CurrentCommit.Sha}] matching merge message format: {mergeMessage.FormatName}");
-                        var shouldIncrement = !context.Configuration.PreventIncrementForMergedBranchVersion;
+                        log.Info($"Found commit [{Context.CurrentCommit.Sha}] matching merge message format: {mergeMessage.FormatName}");
+                        var shouldIncrement = !Context.Configuration.PreventIncrementForMergedBranchVersion;
                         return new[]
                         {
-                            new BaseVersion(context, $"{MergeMessageStrategyPrefix} '{c.Message.Trim()}'", shouldIncrement, mergeMessage.Version, c, null)
+                            new BaseVersion($"{MergeMessageStrategyPrefix} '{c.Message.Trim()}'", shouldIncrement, mergeMessage.Version, c, null)
                         };
                     }
                     return Enumerable.Empty<BaseVersion>();
-                }).ToList();
+                })
+                .Take(5)
+                .ToList();
             return baseVersions;
         }
 

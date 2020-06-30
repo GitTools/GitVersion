@@ -1,49 +1,56 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using LibGit2Sharp;
+using GitVersion.Common;
 using GitVersion.Extensions;
+using LibGit2Sharp;
 
-namespace GitVersion.VersionCalculation.BaseVersionCalculators
+namespace GitVersion.VersionCalculation
 {
     /// <summary>
     /// Version is extracted from all tags on the branch which are valid, and not newer than the current commit.
     /// BaseVersionSource is the tag's commit.
     /// Increments if the tag is not the current commit.
     /// </summary>
-    public class TaggedCommitVersionStrategy : IVersionStrategy
+    public class TaggedCommitVersionStrategy : VersionStrategyBase
     {
-        public virtual IEnumerable<BaseVersion> GetVersions(GitVersionContext context)
+        private readonly IRepositoryMetadataProvider repositoryMetadataProvider;
+
+        public TaggedCommitVersionStrategy(IRepositoryMetadataProvider repositoryMetadataProvider, Lazy<GitVersionContext> versionContext) : base(versionContext)
         {
-            return GetTaggedVersions(context, context.CurrentBranch, context.CurrentCommit.When());
+            this.repositoryMetadataProvider = repositoryMetadataProvider ?? throw new ArgumentNullException(nameof(repositoryMetadataProvider));
         }
 
-        public IEnumerable<BaseVersion> GetTaggedVersions(GitVersionContext context, Branch currentBranch, DateTimeOffset? olderThan)
+        public override IEnumerable<BaseVersion> GetVersions()
         {
-            var gitRepoMetadataProvider = new GitRepoMetadataProvider(context.Repository, context.Log, context.FullConfiguration);
-            var allTags = gitRepoMetadataProvider.GetValidVersionTags(context.Repository, context.Configuration.GitTagPrefix, olderThan); 
-                
+            return GetTaggedVersions(Context.CurrentBranch, Context.CurrentCommit.When());
+        }
+
+        internal IEnumerable<BaseVersion> GetTaggedVersions(Branch currentBranch, DateTimeOffset? olderThan)
+        {
+            var allTags = repositoryMetadataProvider.GetValidVersionTags(Context.Configuration.GitTagPrefix, olderThan);
+
             var tagsOnBranch = currentBranch
                 .Commits
                 .SelectMany(commit => { return allTags.Where(t => IsValidTag(t.Item1, commit)); })
                 .Select(t =>
                 {
-                    var commit = t.Item1.PeeledTarget() as Commit;
-                    if (commit != null)
-                        return new VersionTaggedCommit(commit, t.Item2, t.Item1.FriendlyName);
+                    if (t.Item1.PeeledTarget() is Commit)
+                        return new VersionTaggedCommit(t.Item1.PeeledTarget() as Commit, t.Item2, t.Item1.FriendlyName);
 
                     return null;
                 })
                 .Where(a => a != null)
+                .Take(5)
                 .ToList();
 
-            return tagsOnBranch.Select(t => CreateBaseVersion(context, t));
+            return tagsOnBranch.Select(t => CreateBaseVersion(Context, t));
         }
 
         private BaseVersion CreateBaseVersion(GitVersionContext context, VersionTaggedCommit version)
         {
             var shouldUpdateVersion = version.Commit.Sha != context.CurrentCommit.Sha;
-            var baseVersion = new BaseVersion(context, FormatSource(version), shouldUpdateVersion, version.SemVer, version.Commit, null);
+            var baseVersion = new BaseVersion(FormatSource(version), shouldUpdateVersion, version.SemVer, version.Commit, null);
             return baseVersion;
         }
 
