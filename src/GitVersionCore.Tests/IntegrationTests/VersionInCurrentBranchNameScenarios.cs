@@ -21,12 +21,34 @@ namespace GitVersionCore.Tests.IntegrationTests
         }
 
         [Test]
+        public void TakesVersionFromNameOfHotfixBranch()
+        {
+            using var fixture = new BaseGitFlowRepositoryFixture("1.0.0");
+            fixture.BranchTo("hotfix/1.1.1");
+
+            fixture.AssertFullSemver("1.1.1-beta.1+0");
+        }
+
+        [Test]
         public void DoesNotTakeVersionFromNameOfNonReleaseBranch()
         {
             using var fixture = new BaseGitFlowRepositoryFixture("1.0.0");
             fixture.BranchTo("feature/upgrade-power-level-to-9000.0.1");
 
             fixture.AssertFullSemver("1.1.0-upgrade-power-level-to-9000-0-1.1+1");
+        }
+
+        [Test]
+        public void DoesNotTakeVersionFromHotfixWhenIsReleaseIsOverriden()
+        {
+            var config = new Config
+            {
+                Branches = new Dictionary<string, BranchConfig> { { "hotfix", new BranchConfig { IsReleaseBranch = false } } }
+            };
+
+            using var fixture = new BaseGitFlowRepositoryFixture("1.0.0");
+            fixture.BranchTo("hotfix/2.0.0");
+            fixture.AssertFullSemver("1.0.1-beta.1+1", config);
         }
 
         [Test]

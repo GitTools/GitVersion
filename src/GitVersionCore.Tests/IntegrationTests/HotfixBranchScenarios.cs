@@ -63,7 +63,7 @@ namespace GitVersionCore.Tests.IntegrationTests
 
             // create hotfix branch
             Commands.Checkout(fixture.Repository, fixture.Repository.CreateBranch("hotfixes/1.1.1"));
-            fixture.AssertFullSemver("1.1.0"); // We are still on a tagged commit
+            fixture.AssertFullSemver("1.1.1-beta.1+0"); // We are still on a tagged commit
             fixture.Repository.MakeACommit();
 
             fixture.AssertFullSemver("1.1.1-beta.1+1");
@@ -89,7 +89,7 @@ namespace GitVersionCore.Tests.IntegrationTests
 
             // create hotfix branch
             Commands.Checkout(fixture.Repository, fixture.Repository.CreateBranch("hotfix-1.1.1"));
-            fixture.AssertFullSemver("1.1.0"); // We are still on a tagged commit
+            fixture.AssertFullSemver("1.1.1-beta.1+0"); // Version in branch name takes precedence over Tag
             fixture.Repository.MakeACommit();
 
             fixture.AssertFullSemver("1.1.1-beta.1+1");
@@ -225,6 +225,24 @@ namespace GitVersionCore.Tests.IntegrationTests
             Commands.Checkout(fixture.Repository, hotfix451);
             fixture.Repository.MergeNoFF(featureBranch, Generate.SignatureNow()); // commit 2
             fixture.AssertFullSemver("4.5.1-beta.2", config);
+        }
+
+        [Test]
+        public void IsVersionTakenFromHotfixBranchName()
+        {
+            using var fixture = new BaseGitFlowRepositoryFixture("4.20.4");
+            Commands.Checkout(fixture.Repository, "develop");
+            fixture.AssertFullSemver("4.21.0-alpha.1");
+            fixture.Repository.CreateBranch("release/4.21.1");
+            Commands.Checkout(fixture.Repository, "release/4.21.1");
+            fixture.AssertFullSemver("4.21.1-beta.1+0");
+
+            fixture.Repository.CreateBranch("hotfix/4.21.1");
+            Commands.Checkout(fixture.Repository, "hotfix/4.21.1");
+            fixture.AssertFullSemver("4.21.1-beta.1+0");
+
+            fixture.Repository.MakeACommit("hotfix test");
+            fixture.AssertFullSemver("4.21.1-beta.1+1");
         }
 
     }

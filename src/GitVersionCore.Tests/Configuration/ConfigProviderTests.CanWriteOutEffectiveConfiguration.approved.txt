@@ -104,7 +104,7 @@ branches:
     - master
     - support
     tracks-release-branches: false
-    is-release-branch: false
+    is-release-branch: true
     is-mainline: false
     pre-release-weight: 30000
   support:

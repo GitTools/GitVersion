@@ -21,14 +21,24 @@ namespace GitVersionCore.Tests.IntegrationTests
         }
 
         [Test]
+        public void TakesVersionFromNameOfHotfixBranch()
+        {
+            using var fixture = new BaseGitFlowRepositoryFixture("1.0.0");
+            fixture.CreateAndMergeBranchIntoDevelop("hotfix/downgrade-some-lib-to-3.2.1-to-avoid-breaking-changes");
+
+            fixture.AssertFullSemver("3.3.0-alpha.2");
+        }
+
+        [Test]
         public void DoesNotTakeVersionFromNameOfNonReleaseBranch()
         {
             using var fixture = new BaseGitFlowRepositoryFixture("1.0.0");
             fixture.CreateAndMergeBranchIntoDevelop("pull-request/improved-by-upgrading-some-lib-to-4.5.6");
-            fixture.CreateAndMergeBranchIntoDevelop("hotfix/downgrade-some-lib-to-3.2.1-to-avoid-breaking-changes");
 
-            fixture.AssertFullSemver("1.1.0-alpha.5");
+            fixture.AssertFullSemver("1.1.0-alpha.3");
         }
+
+      
 
         [Test]
         public void TakesVersionFromNameOfBranchThatIsReleaseByConfig()

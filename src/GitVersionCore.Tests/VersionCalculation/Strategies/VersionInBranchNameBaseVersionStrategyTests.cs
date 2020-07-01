@@ -28,10 +28,10 @@ namespace GitVersionCore.Tests.VersionCalculation.Strategies
             baseVersion.SemanticVersion.ToString().ShouldBe(expectedBaseVersion);
         }
 
-        [TestCase("hotfix-2.0.0")]
-        [TestCase("hotfix/2.0.0")]
+        [TestCase("fix-2.0.0")]
+        [TestCase("feature/2.0.0")]
         [TestCase("custom/JIRA-123")]
-        [TestCase("hotfix/downgrade-to-gitversion-3.6.5-to-fix-miscalculated-version")]
+        [TestCase("support/downgrade-to-gitversion-3.6.5-to-fix-miscalculated-version")]
         public void ShouldNotTakeVersionFromNameOfNonReleaseBranch(string branchName)
         {
             using var fixture = new EmptyRepositoryFixture();
