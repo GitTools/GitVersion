@@ -328,7 +328,7 @@ branches:
     prevent-increment-of-merged-branch-version: false
     track-merge-target: false
     tracks-release-branches: false
-    is-release-branch: false
+    is-release-branch: true
   support:
     regex: ^support[/-]
     mode: ContinuousDelivery
@@ -350,7 +350,7 @@ branches:
 ```
 
 If you don't specify the regex the inbuilt for that branch config will be used
-(recommended)
+(recommended).
 
 We don't envision many people needing to change most of these configuration
 values, but here they are if you need to:

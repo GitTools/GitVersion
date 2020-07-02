@@ -63,7 +63,7 @@ namespace GitVersionCore.Tests.IntegrationTests
 
             // create hotfix branch
             Commands.Checkout(fixture.Repository, fixture.Repository.CreateBranch("hotfixes/1.1.1"));
-            fixture.AssertFullSemver("1.1.1-beta.1+0"); // We are still on a tagged commit
+            fixture.AssertFullSemver("1.1.1-beta.1+0"); // Version in branch name takes precedence over Tag if it's greater
             fixture.Repository.MakeACommit();
 
             fixture.AssertFullSemver("1.1.1-beta.1+1");
@@ -89,7 +89,7 @@ namespace GitVersionCore.Tests.IntegrationTests
 
             // create hotfix branch
             Commands.Checkout(fixture.Repository, fixture.Repository.CreateBranch("hotfix-1.1.1"));
-            fixture.AssertFullSemver("1.1.1-beta.1+0"); // Version in branch name takes precedence over Tag
+            fixture.AssertFullSemver("1.1.1-beta.1+0"); // Version in branch name takes precedence over Tag if it's greater
             fixture.Repository.MakeACommit();
 
             fixture.AssertFullSemver("1.1.1-beta.1+1");
