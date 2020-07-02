@@ -38,8 +38,6 @@ namespace GitVersionCore.Tests.IntegrationTests
             fixture.AssertFullSemver("1.1.0-alpha.3");
         }
 
-      
-
         [Test]
         public void TakesVersionFromNameOfBranchThatIsReleaseByConfig()
         {
