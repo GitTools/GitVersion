@@ -42,28 +42,28 @@ gitversion calculate --override-config tag-prefix=foo
 gitversion calculate --no-cache
 
 # Read version variables from stdin and write to globbed AssemblyInfo.cs files
-cat gitversion.json | gitversion output --type assemblyinfo --path ./**/AssemblyInfo.cs
+cat gitversion.json | gitversion output assemblyinfo --path ./**/AssemblyInfo.cs
 
 # Read version variables from stdin and write to globbed .csproj files
-cat gitversion.json | gitversion output --type projectfiles --path ./**/*.csproj
+cat gitversion.json | gitversion output projectfiles --path ./**/*.csproj
 
 # Read version variables from stdin and write to an auto-detected build server. Without an `--in` argument, stdin is the default input.
-cat gitversion.json | gitversion output --type buildserver
+cat gitversion.json | gitversion output buildserver
 
 # Read version variables from stdin and write to Jenkins.
-cat gitversion.json | gitversion output --type buildserver --buildserver Jenkins
+cat gitversion.json | gitversion output buildserver --buildserver Jenkins
 
 # Read version variables from stdin and write to globbed .wxi files.
-cat gitversion.json | gitversion output --type wix --path ./**/*.wxi
+cat gitversion.json | gitversion output wix --path ./**/*.wxi
 
 # Read version variables from stdin and output them to environment variables
-cat gitversion.json | gitversion output --type environment
+cat gitversion.json | gitversion output environment
 
 # Read version variables from stdin and output only the `FullSemVer` property to stdout.
-cat gitversion.json | gitversion output --property FullSemVer 
+cat gitversion.json | gitversion output FullSemVer 
 
 # Pipe the output of calculate to gitversion output
-gitversion calculate | gitversion output --type assemblyinfo --path ./**/AssemblyInfo.cs
+gitversion calculate | gitversion output assemblyinfo --path ./**/AssemblyInfo.cs
 
 #NOTES [diag] can be used only with calculate command
 ```
