@@ -1,0 +1,356 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="BranchesTreeState">
+    <expand>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="LOCAL_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+    </expand>
+    <select />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="cd53ee91-35cd-4fdb-bd4a-b6dd54f1a0df" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/GitVersion.Config/ConfigCommandHandler.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/GitVersion.Config/ConfigModule.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/GitVersion.Config/ConfigOptions.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/GitVersion.Config/GitVersion.Config.csproj" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/GitVersion.Config/IConfigCommandHandler.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/GitVersion.Config/Init/ConfigInitCommandHandler.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/GitVersion.Config/Init/ConfigInitOptions.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/GitVersion.Config/Show/ConfigInitCommandHandler.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/GitVersion.Config/Show/ConfigShowOptions.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/GitVersion.Normalize/GitVersion.Normalize.csproj" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/GitVersion.Normalize/NormalizeCommandHandler.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/GitVersion.Normalize/NormalizeModule.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/GitVersion.Normalize/NormalizeOptions.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/command.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.GitVersion/.idea/contentModel.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.GitVersion/.idea/contentModel.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/GitVersion.Cli/GitVersion.Cli.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/GitVersion.Cli/GitVersion.Cli.csproj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/GitVersion.Cli/Program.cs" beforeDir="false" afterPath="$PROJECT_DIR$/GitVersion.Cli/Program.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/GitVersion.sln" beforeDir="false" afterPath="$PROJECT_DIR$/GitVersion.sln" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="HighlightingSettingsPerFile">
+    <setting file="file://$PROJECT_DIR$/GitVersion.Config/Show/ConfigInitCommandHandler.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/GitVersion.Output/Wix/OutputWixOptions.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/GitVersion.Output/Project/OutputProjectOptions.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/GitVersion.Output/AssemblyInfo/OutputAssemblyInfoOptions.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/GitVersion.Output/AssemblyInfo/OutputAssemblyInfoCommandHandler.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/GitVersion.Calculate/CalculateCommandHandler.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/GitVersion.Cli/Program.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/GitVersion.Output/OutputOptions.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/GitVersion.Config/ConfigCommandHandler.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/GitVersion.Config/ConfigModule.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/GitVersion.Output/IOutputCommandHandler.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/GitVersion.Config/ConfigOptions.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/GitVersion.Output/OutputCommandHandler.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/GitVersion.Cli/Extensions/ServiceCollectionExtensions.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/GitVersion.Normalize/NormalizeCommandHandler.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/GitVersion.Normalize/NormalizeModule.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/GitVersion.Normalize/NormalizeOptions.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/GitVersion.Config/IConfigCommandHandler.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/GitVersion.Config/Init/ConfigInitOptions.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/GitVersion.Config/Show/ConfigShowOptions.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/GitVersion.Config/Init/ConfigInitCommandHandler.cs" root0="FORCE_HIGHLIGHTING" />
+  </component>
+  <component name="IdeDocumentHistory">
+    <option name="CHANGED_PATHS">
+      <list>
+        <option value="$PROJECT_DIR$/GitVersion.Normalize/Class1.cs" />
+        <option value="$PROJECT_DIR$/GitVersion.Config/Class1.cs" />
+        <option value="$PROJECT_DIR$/GitVersion.Config/CalculateCommandHandler.cs" />
+        <option value="$PROJECT_DIR$/GitVersion.Config/CalculateOptions.cs" />
+        <option value="$PROJECT_DIR$/GitVersion.Config/CalculateModule.cs" />
+        <option value="$PROJECT_DIR$/GitVersion.Normalize/ConfigCommandHandler.cs" />
+        <option value="$PROJECT_DIR$/GitVersion.Normalize/ConfigOptions.cs" />
+        <option value="$PROJECT_DIR$/GitVersion.Normalize/NormalizeCommandHandler.cs" />
+        <option value="$PROJECT_DIR$/GitVersion.Normalize/ConfigModule.cs" />
+        <option value="$PROJECT_DIR$/GitVersion.Normalize/NormalizeModule.cs" />
+        <option value="$PROJECT_DIR$/GitVersion.Cli/Program.cs" />
+        <option value="$PROJECT_DIR$/GitVersion.Normalize/NormalizeOptions.cs" />
+        <option value="$PROJECT_DIR$/GitVersion.Config/ConfigOptions.cs" />
+        <option value="$PROJECT_DIR$/GitVersion.Config/IConfigCommandHandler.cs" />
+        <option value="$PROJECT_DIR$/GitVersion.Config/Init/ConfigOptions.cs" />
+        <option value="$PROJECT_DIR$/GitVersion.Config/Init/ShowOptions.cs" />
+        <option value="$PROJECT_DIR$/GitVersion.Config/Show/ShowOptions.cs" />
+        <option value="$PROJECT_DIR$/GitVersion.Config/Init/InitOptions.cs" />
+        <option value="$PROJECT_DIR$/GitVersion.Config/Init/OutputAssemblyInfoCommandHandler.cs" />
+        <option value="$PROJECT_DIR$/GitVersion.Config/Show/ConfigShowOptions.cs" />
+        <option value="$PROJECT_DIR$/GitVersion.Config/Show/ConfigInitCommandHandler.cs" />
+        <option value="$PROJECT_DIR$/GitVersion.Config/Init/ConfigInitCommandHandler.cs" />
+        <option value="$PROJECT_DIR$/GitVersion.Config/ConfigCommandHandler.cs" />
+      </list>
+    </option>
+  </component>
+  <component name="ProjectId" id="1e7MEwCI2LVA1hNItjZKc28mLCN" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="DebuggerViewTab_PTCS_FirstProportionKey" value="0.35005066" />
+    <property name="DebuggerViewTab_PTCS_LastProportionKey" value="0.29989868" />
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="node.js.detected.package.eslint" value="true" />
+    <property name="node.js.path.for.package.eslint" value="project" />
+    <property name="node.js.path.for.package.tslint" value="project" />
+    <property name="node.js.selected.package.eslint" value="(autodetect)" />
+    <property name="node.js.selected.package.tslint" value="(autodetect)" />
+  </component>
+  <component name="RunManager" selected=".NET Project.Config Help">
+    <configuration name="Config Help" type="DotNetProject" factoryName=".NET Project">
+      <option name="EXE_PATH" value="$PROJECT_DIR$/GitVersion.Cli/bin/Debug/netcoreapp3.1/GitVersion.Cli.dll" />
+      <option name="PROGRAM_PARAMETERS" value="config --help" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/GitVersion.Cli/bin/Debug/netcoreapp3.1" />
+      <option name="PASS_PARENT_ENVS" value="1" />
+      <option name="USE_EXTERNAL_CONSOLE" value="1" />
+      <option name="USE_MONO" value="0" />
+      <option name="RUNTIME_ARGUMENTS" value="" />
+      <option name="PROJECT_PATH" value="$PROJECT_DIR$/GitVersion.Cli/GitVersion.Cli.csproj" />
+      <option name="PROJECT_EXE_PATH_TRACKING" value="1" />
+      <option name="PROJECT_ARGUMENTS_TRACKING" value="1" />
+      <option name="PROJECT_WORKING_DIRECTORY_TRACKING" value="1" />
+      <option name="PROJECT_KIND" value="DotNetCore" />
+      <option name="PROJECT_TFM" value=".NETCoreApp,Version=v3.1" />
+      <method v="2">
+        <option name="Build" />
+      </method>
+    </configuration>
+    <configuration name="Config Init" type="DotNetProject" factoryName=".NET Project">
+      <option name="EXE_PATH" value="$PROJECT_DIR$/GitVersion.Cli/bin/Debug/netcoreapp3.1/GitVersion.Cli.dll" />
+      <option name="PROGRAM_PARAMETERS" value="config init" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/GitVersion.Cli/bin/Debug/netcoreapp3.1" />
+      <option name="PASS_PARENT_ENVS" value="1" />
+      <option name="USE_EXTERNAL_CONSOLE" value="1" />
+      <option name="USE_MONO" value="0" />
+      <option name="RUNTIME_ARGUMENTS" value="" />
+      <option name="PROJECT_PATH" value="$PROJECT_DIR$/GitVersion.Cli/GitVersion.Cli.csproj" />
+      <option name="PROJECT_EXE_PATH_TRACKING" value="1" />
+      <option name="PROJECT_ARGUMENTS_TRACKING" value="1" />
+      <option name="PROJECT_WORKING_DIRECTORY_TRACKING" value="1" />
+      <option name="PROJECT_KIND" value="DotNetCore" />
+      <option name="PROJECT_TFM" value=".NETCoreApp,Version=v3.1" />
+      <method v="2">
+        <option name="Build" />
+      </method>
+    </configuration>
+    <configuration name="Config Show" type="DotNetProject" factoryName=".NET Project">
+      <option name="EXE_PATH" value="$PROJECT_DIR$/GitVersion.Cli/bin/Debug/netcoreapp3.1/GitVersion.Cli.dll" />
+      <option name="PROGRAM_PARAMETERS" value="config show" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/GitVersion.Cli/bin/Debug/netcoreapp3.1" />
+      <option name="PASS_PARENT_ENVS" value="1" />
+      <option name="USE_EXTERNAL_CONSOLE" value="1" />
+      <option name="USE_MONO" value="0" />
+      <option name="RUNTIME_ARGUMENTS" value="" />
+      <option name="PROJECT_PATH" value="$PROJECT_DIR$/GitVersion.Cli/GitVersion.Cli.csproj" />
+      <option name="PROJECT_EXE_PATH_TRACKING" value="1" />
+      <option name="PROJECT_ARGUMENTS_TRACKING" value="1" />
+      <option name="PROJECT_WORKING_DIRECTORY_TRACKING" value="1" />
+      <option name="PROJECT_KIND" value="DotNetCore" />
+      <option name="PROJECT_TFM" value=".NETCoreApp,Version=v3.1" />
+      <method v="2">
+        <option name="Build" />
+      </method>
+    </configuration>
+    <configuration name="Normalize" type="DotNetProject" factoryName=".NET Project">
+      <option name="EXE_PATH" value="$PROJECT_DIR$/GitVersion.Cli/bin/Debug/netcoreapp3.1/GitVersion.Cli.dll" />
+      <option name="PROGRAM_PARAMETERS" value="normalize" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/GitVersion.Cli/bin/Debug/netcoreapp3.1" />
+      <option name="PASS_PARENT_ENVS" value="1" />
+      <option name="USE_EXTERNAL_CONSOLE" value="1" />
+      <option name="USE_MONO" value="0" />
+      <option name="RUNTIME_ARGUMENTS" value="" />
+      <option name="PROJECT_PATH" value="$PROJECT_DIR$/GitVersion.Cli/GitVersion.Cli.csproj" />
+      <option name="PROJECT_EXE_PATH_TRACKING" value="1" />
+      <option name="PROJECT_ARGUMENTS_TRACKING" value="1" />
+      <option name="PROJECT_WORKING_DIRECTORY_TRACKING" value="1" />
+      <option name="PROJECT_KIND" value="DotNetCore" />
+      <option name="PROJECT_TFM" value=".NETCoreApp,Version=v3.1" />
+      <method v="2">
+        <option name="Build" />
+      </method>
+    </configuration>
+    <configuration name="Output Project" type="DotNetProject" factoryName=".NET Project">
+      <option name="EXE_PATH" value="$PROJECT_DIR$/GitVersion.Cli/bin/Debug/netcoreapp3.1/GitVersion.Cli.dll" />
+      <option name="PROGRAM_PARAMETERS" value="output -l c:\log.txt --output-dir C:\Projects\OSS\GitTools\GitVersion --input-file version.json project --project-file project.csproj" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/GitVersion.Cli/bin/Debug/netcoreapp3.1" />
+      <option name="PASS_PARENT_ENVS" value="1" />
+      <option name="USE_EXTERNAL_CONSOLE" value="1" />
+      <option name="USE_MONO" value="0" />
+      <option name="RUNTIME_ARGUMENTS" value="" />
+      <option name="PROJECT_PATH" value="$PROJECT_DIR$/GitVersion.Cli/GitVersion.Cli.csproj" />
+      <option name="PROJECT_EXE_PATH_TRACKING" value="1" />
+      <option name="PROJECT_ARGUMENTS_TRACKING" value="1" />
+      <option name="PROJECT_WORKING_DIRECTORY_TRACKING" value="1" />
+      <option name="PROJECT_KIND" value="DotNetCore" />
+      <option name="PROJECT_TFM" value=".NETCoreApp,Version=v3.1" />
+      <method v="2">
+        <option name="Build" />
+      </method>
+    </configuration>
+    <configuration name="Output Wix" type="DotNetProject" factoryName=".NET Project">
+      <option name="EXE_PATH" value="$PROJECT_DIR$/GitVersion.Cli/bin/Debug/netcoreapp3.1/GitVersion.Cli.dll" />
+      <option name="PROGRAM_PARAMETERS" value="output -l c:\log.txt --output-dir C:\Projects\OSS\GitTools\GitVersion --input-file version.json wix --wix-file project.wix" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/GitVersion.Cli/bin/Debug/netcoreapp3.1" />
+      <option name="PASS_PARENT_ENVS" value="1" />
+      <option name="USE_EXTERNAL_CONSOLE" value="1" />
+      <option name="USE_MONO" value="0" />
+      <option name="RUNTIME_ARGUMENTS" value="" />
+      <option name="PROJECT_PATH" value="$PROJECT_DIR$/GitVersion.Cli/GitVersion.Cli.csproj" />
+      <option name="PROJECT_EXE_PATH_TRACKING" value="1" />
+      <option name="PROJECT_ARGUMENTS_TRACKING" value="1" />
+      <option name="PROJECT_WORKING_DIRECTORY_TRACKING" value="1" />
+      <option name="PROJECT_KIND" value="DotNetCore" />
+      <option name="PROJECT_TFM" value=".NETCoreApp,Version=v3.1" />
+      <method v="2">
+        <option name="Build" />
+      </method>
+    </configuration>
+    <list>
+      <item itemvalue=".NET Project.Help" />
+      <item itemvalue=".NET Project.Version" />
+      <item itemvalue=".NET Project.Output AssemblyInfo" />
+      <item itemvalue=".NET Project.Output Wix" />
+      <item itemvalue=".NET Project.Output Project" />
+      <item itemvalue=".NET Project.Output Help" />
+      <item itemvalue=".NET Project.Config Help" />
+      <item itemvalue=".NET Project.Config Init" />
+      <item itemvalue=".NET Project.Config Show" />
+      <item itemvalue=".NET Project.Normalize" />
+      <item itemvalue=".NET Project.Calculate" />
+    </list>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="cd53ee91-35cd-4fdb-bd4a-b6dd54f1a0df" name="Default Changelist" comment="" />
+      <created>1593668070591</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1593668070591</updated>
+      <workItem from="1593668078563" duration="2549000" />
+      <workItem from="1594042928280" duration="4907000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="UnityProjectConfiguration" hasMinimizedUI="false" />
+  <component name="UnityUnitTestConfiguration" currentTestLauncher="EditMode" />
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+    <option name="oldMeFiltersMigrated" value="true" />
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="479" y="246" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1594051462543">
+      <screen x="0" y="30" width="2048" height="1122" />
+    </state>
+    <state x="479" y="246" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.30.2048.1122@0.30.2048.1122" timestamp="1594051462543" />
+    <state width="2005" height="407" key="GridCell.Tab.0.bottom" timestamp="1594050018345">
+      <screen x="0" y="30" width="2048" height="1122" />
+    </state>
+    <state width="2005" height="407" key="GridCell.Tab.0.bottom/0.30.2048.1122@0.30.2048.1122" timestamp="1594050018345" />
+    <state width="2005" height="407" key="GridCell.Tab.0.center" timestamp="1594050018345">
+      <screen x="0" y="30" width="2048" height="1122" />
+    </state>
+    <state width="2005" height="407" key="GridCell.Tab.0.center/0.30.2048.1122@0.30.2048.1122" timestamp="1594050018345" />
+    <state width="2005" height="407" key="GridCell.Tab.0.left" timestamp="1594050018344">
+      <screen x="0" y="30" width="2048" height="1122" />
+    </state>
+    <state width="2005" height="407" key="GridCell.Tab.0.left/0.30.2048.1122@0.30.2048.1122" timestamp="1594050018344" />
+    <state width="2005" height="407" key="GridCell.Tab.0.right" timestamp="1594050018345">
+      <screen x="0" y="30" width="2048" height="1122" />
+    </state>
+    <state width="2005" height="407" key="GridCell.Tab.0.right/0.30.2048.1122@0.30.2048.1122" timestamp="1594050018345" />
+    <state width="2005" height="407" key="GridCell.Tab.1.bottom" timestamp="1593506054817">
+      <screen x="0" y="30" width="2048" height="1122" />
+    </state>
+    <state width="2005" height="407" key="GridCell.Tab.1.bottom/0.30.2048.1122@0.30.2048.1122" timestamp="1593506054817" />
+    <state width="2005" height="407" key="GridCell.Tab.1.center" timestamp="1593506054817">
+      <screen x="0" y="30" width="2048" height="1122" />
+    </state>
+    <state width="2005" height="407" key="GridCell.Tab.1.center/0.30.2048.1122@0.30.2048.1122" timestamp="1593506054817" />
+    <state width="2005" height="407" key="GridCell.Tab.1.left" timestamp="1593506054817">
+      <screen x="0" y="30" width="2048" height="1122" />
+    </state>
+    <state width="2005" height="407" key="GridCell.Tab.1.left/0.30.2048.1122@0.30.2048.1122" timestamp="1593506054817" />
+    <state width="2005" height="407" key="GridCell.Tab.1.right" timestamp="1593506054817">
+      <screen x="0" y="30" width="2048" height="1122" />
+    </state>
+    <state width="2005" height="407" key="GridCell.Tab.1.right/0.30.2048.1122@0.30.2048.1122" timestamp="1593506054817" />
+    <state width="2005" height="407" key="GridCell.Tab.2.bottom" timestamp="1593506054817">
+      <screen x="0" y="30" width="2048" height="1122" />
+    </state>
+    <state width="2005" height="407" key="GridCell.Tab.2.bottom/0.30.2048.1122@0.30.2048.1122" timestamp="1593506054817" />
+    <state width="2005" height="407" key="GridCell.Tab.2.center" timestamp="1593506054817">
+      <screen x="0" y="30" width="2048" height="1122" />
+    </state>
+    <state width="2005" height="407" key="GridCell.Tab.2.center/0.30.2048.1122@0.30.2048.1122" timestamp="1593506054817" />
+    <state width="2005" height="407" key="GridCell.Tab.2.left" timestamp="1593506054817">
+      <screen x="0" y="30" width="2048" height="1122" />
+    </state>
+    <state width="2005" height="407" key="GridCell.Tab.2.left/0.30.2048.1122@0.30.2048.1122" timestamp="1593506054817" />
+    <state width="2005" height="407" key="GridCell.Tab.2.right" timestamp="1593506054817">
+      <screen x="0" y="30" width="2048" height="1122" />
+    </state>
+    <state width="2005" height="407" key="GridCell.Tab.2.right/0.30.2048.1122@0.30.2048.1122" timestamp="1593506054817" />
+    <state width="2005" height="407" key="GridCell.Tab.3.bottom" timestamp="1593506054818">
+      <screen x="0" y="30" width="2048" height="1122" />
+    </state>
+    <state width="2005" height="407" key="GridCell.Tab.3.bottom/0.30.2048.1122@0.30.2048.1122" timestamp="1593506054818" />
+    <state width="2005" height="407" key="GridCell.Tab.3.center" timestamp="1593506054817">
+      <screen x="0" y="30" width="2048" height="1122" />
+    </state>
+    <state width="2005" height="407" key="GridCell.Tab.3.center/0.30.2048.1122@0.30.2048.1122" timestamp="1593506054817" />
+    <state width="2005" height="407" key="GridCell.Tab.3.left" timestamp="1593506054817">
+      <screen x="0" y="30" width="2048" height="1122" />
+    </state>
+    <state width="2005" height="407" key="GridCell.Tab.3.left/0.30.2048.1122@0.30.2048.1122" timestamp="1593506054817" />
+    <state width="2005" height="407" key="GridCell.Tab.3.right" timestamp="1593506054818">
+      <screen x="0" y="30" width="2048" height="1122" />
+    </state>
+    <state width="2005" height="407" key="GridCell.Tab.3.right/0.30.2048.1122@0.30.2048.1122" timestamp="1593506054818" />
+    <state width="2005" height="407" key="GridCell.Tab.4.bottom" timestamp="1593506054818">
+      <screen x="0" y="30" width="2048" height="1122" />
+    </state>
+    <state width="2005" height="407" key="GridCell.Tab.4.bottom/0.30.2048.1122@0.30.2048.1122" timestamp="1593506054818" />
+    <state width="2005" height="407" key="GridCell.Tab.4.center" timestamp="1593506054818">
+      <screen x="0" y="30" width="2048" height="1122" />
+    </state>
+    <state width="2005" height="407" key="GridCell.Tab.4.center/0.30.2048.1122@0.30.2048.1122" timestamp="1593506054818" />
+    <state width="2005" height="407" key="GridCell.Tab.4.left" timestamp="1593506054818">
+      <screen x="0" y="30" width="2048" height="1122" />
+    </state>
+    <state width="2005" height="407" key="GridCell.Tab.4.left/0.30.2048.1122@0.30.2048.1122" timestamp="1593506054818" />
+    <state width="2005" height="407" key="GridCell.Tab.4.right" timestamp="1593506054818">
+      <screen x="0" y="30" width="2048" height="1122" />
+    </state>
+    <state width="2005" height="407" key="GridCell.Tab.4.right/0.30.2048.1122@0.30.2048.1122" timestamp="1593506054818" />
+    <state x="617" y="323" key="Rider.ProjectTemplateDialog.Size" timestamp="1594048223551">
+      <screen x="0" y="30" width="2048" height="1122" />
+    </state>
+    <state x="617" y="323" key="Rider.ProjectTemplateDialog.Size/0.30.2048.1122@0.30.2048.1122" timestamp="1594048223551" />
+  </component>
+</project>

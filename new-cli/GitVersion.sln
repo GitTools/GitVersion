@@ -8,6 +8,17 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GitVersion.Calculate", "Git
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GitVersion.Output", "GitVersion.Output\GitVersion.Output.csproj", "{9543A475-06BA-4C8D-A3CE-E2792FE663DA}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "GitVersion", "GitVersion", "{610883EF-A96B-4A86-8A3F-1F1601FFDC7D}"
+ProjectSection(SolutionItems) = preProject
+	command.md = command.md
+EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GitVersion.Normalize", "GitVersion.Normalize\GitVersion.Normalize.csproj", "{45776CC1-7FDA-4299-86A7-9F11E7855CE4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GitVersion.Config", "GitVersion.Config\GitVersion.Config.csproj", "{2127F18A-F52B-4024-A0FD-B4D9F75FD85F}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Plugins", "Plugins", "{511CE16D-A65E-48F4-9A95-BB521A9048AF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -30,5 +41,19 @@ Global
 		{9543A475-06BA-4C8D-A3CE-E2792FE663DA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9543A475-06BA-4C8D-A3CE-E2792FE663DA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9543A475-06BA-4C8D-A3CE-E2792FE663DA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{45776CC1-7FDA-4299-86A7-9F11E7855CE4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{45776CC1-7FDA-4299-86A7-9F11E7855CE4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{45776CC1-7FDA-4299-86A7-9F11E7855CE4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{45776CC1-7FDA-4299-86A7-9F11E7855CE4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2127F18A-F52B-4024-A0FD-B4D9F75FD85F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2127F18A-F52B-4024-A0FD-B4D9F75FD85F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2127F18A-F52B-4024-A0FD-B4D9F75FD85F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2127F18A-F52B-4024-A0FD-B4D9F75FD85F}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{8F6D4830-B870-4365-9662-457F1A13894B} = {511CE16D-A65E-48F4-9A95-BB521A9048AF}
+		{2127F18A-F52B-4024-A0FD-B4D9F75FD85F} = {511CE16D-A65E-48F4-9A95-BB521A9048AF}
+		{45776CC1-7FDA-4299-86A7-9F11E7855CE4} = {511CE16D-A65E-48F4-9A95-BB521A9048AF}
+		{9543A475-06BA-4C8D-A3CE-E2792FE663DA} = {511CE16D-A65E-48F4-9A95-BB521A9048AF}
 	EndGlobalSection
 EndGlobal

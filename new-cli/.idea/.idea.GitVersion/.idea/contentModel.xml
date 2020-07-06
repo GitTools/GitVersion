@@ -4,6 +4,8 @@
     <e p="C:\Users\artur.stolear\AppData\Local\JetBrains\Rider2020.2\extResources" t="IncludeRecursive" />
     <e p="C:\Users\artur.stolear\AppData\Local\JetBrains\Rider2020.2\resharper-host\Local\Transient\ReSharperHost\v202\SolutionCaches\_GitVersion.1626542563.00" t="ExcludeRecursive" />
     <e p="C:\Users\artur.stolear\RiderProjects\GitVersion" t="IncludeFlat">
+      <e p="command.md" t="Include" />
+      <e p="GitVersion" t="Include" />
       <e p="GitVersion.Calculate" t="IncludeRecursive">
         <e p="bin" t="ExcludeRecursive" />
         <e p="CalculateCommandHandler.cs" t="Include" />
@@ -36,6 +38,29 @@
         </e>
         <e p="Program.cs" t="Include" />
       </e>
+      <e p="GitVersion.Config" t="IncludeRecursive">
+        <e p="bin" t="ExcludeRecursive" />
+        <e p="ConfigCommandHandler.cs" t="Include" />
+        <e p="ConfigModule.cs" t="Include" />
+        <e p="ConfigOptions.cs" t="Include" />
+        <e p="GitVersion.Config.csproj" t="IncludeRecursive" />
+        <e p="IConfigCommandHandler.cs" t="Include" />
+        <e p="Init" t="Include">
+          <e p="ConfigInitCommandHandler.cs" t="Include" />
+          <e p="ConfigInitOptions.cs" t="Include" />
+        </e>
+        <e p="obj" t="ExcludeRecursive">
+          <e p="Debug" t="Include">
+            <e p="netstandard2.0" t="Include">
+              <e p="GitVersion.Config.AssemblyInfo.cs" t="Include" />
+            </e>
+          </e>
+        </e>
+        <e p="Show" t="Include">
+          <e p="ConfigInitCommandHandler.cs" t="Include" />
+          <e p="ConfigShowOptions.cs" t="Include" />
+        </e>
+      </e>
       <e p="GitVersion.Core" t="IncludeRecursive">
         <e p="bin" t="ExcludeRecursive" />
         <e p="CoreModule.cs" t="Include" />
@@ -60,6 +85,20 @@
           </e>
         </e>
         <e p="Service.cs" t="Include" />
+      </e>
+      <e p="GitVersion.Normalize" t="IncludeRecursive">
+        <e p="bin" t="ExcludeRecursive" />
+        <e p="GitVersion.Normalize.csproj" t="IncludeRecursive" />
+        <e p="NormalizeCommandHandler.cs" t="Include" />
+        <e p="NormalizeModule.cs" t="Include" />
+        <e p="NormalizeOptions.cs" t="Include" />
+        <e p="obj" t="ExcludeRecursive">
+          <e p="Debug" t="Include">
+            <e p="netstandard2.0" t="Include">
+              <e p="GitVersion.Normalize.AssemblyInfo.cs" t="Include" />
+            </e>
+          </e>
+        </e>
       </e>
       <e p="GitVersion.Output" t="IncludeRecursive">
         <e p="AssemblyInfo" t="Include">
@@ -90,6 +129,7 @@
       </e>
       <e p="GitVersion.sln" t="IncludeFlat" />
       <e p="packages" t="ExcludeRecursive" />
+      <e p="Plugins" t="Include" />
     </e>
   </component>
 </project>
