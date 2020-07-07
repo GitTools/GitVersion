@@ -118,6 +118,21 @@ branches:
         }
 
         [Test]
+        public void SourceBranchesShouldExist()
+        {
+            const string text = @"
+branches:
+    bug:
+        regex: 'bug[/-]'
+        tag: bugfix
+        source-branches: [notconfigured]";
+            SetupConfigFileContent(text);
+            var ex = Should.Throw<ConfigurationException>(() => configProvider.Provide(repoPath));
+            ex.Message.ShouldBe($"Branch configuration 'bug' defines these 'source-branches' that are not configured: '[notconfigured]'{Environment.NewLine}" +
+                                "See https://gitversion.net/docs/configuration/ for more info");
+        }
+
+        [Test]
         public void CanProvideConfigForNewBranch()
         {
             const string text = @"
