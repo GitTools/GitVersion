@@ -164,7 +164,7 @@ namespace GitVersion.Configuration
                     throw new ConfigurationException($"Branch configuration '{name}' is missing required configuration 'source-branches'{System.Environment.NewLine}" + "See https://gitversion.net/docs/configuration/ for more info");
                 }
 
-                var missingSourceBranches = sourceBranches.Where(sb => config.GetConfigForBranch(sb) == null).ToArray();
+                var missingSourceBranches = sourceBranches.Where(sb => !config.Branches.ContainsKey(sb)).ToArray();
                 if (missingSourceBranches.Any())
                     throw new ConfigurationException($"Branch configuration '{name}' defines these 'source-branches' that are not configured: '[{string.Join(",", missingSourceBranches)}]'{System.Environment.NewLine}" + "See https://gitversion.net/docs/configuration/ for more info");
             }
