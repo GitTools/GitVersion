@@ -1,3 +1,10 @@
+## v5.0.0
+
+- Version numbers in branches other than `release` branches are no longer
+  considered as a version source by default. Implemented in [#1541][pr-1541].
+- [#1581][pr-1581] folds `GitTools.Core` back into GitVersion to make
+  maintaining GitVersion easier.
+
 ## v4.0.0
 
 ### Git Flow Changes
@@ -36,3 +43,5 @@ work for you
 - GitVersionTask's `ReleaseDateAttribute` no longer exists
 
 [gitflow]: https://gitversion.net/docs/git-branching-strategies/gitflow-examples_complete
+[pr-1541]: https://github.com/GitTools/GitVersion/pull/1541
+[pr-1581]: https://github.com/GitTools/GitVersion/pull/1581
