@@ -11,6 +11,7 @@ work for you
 
 ### Configuration Changes
 
+- `GitVersionConfig.yaml` is deprecated in favor of `GitVersion.yml`.
 - Regular expressions are no longer used as keys in branch config
     - We have named branches, and introduced a `regex` config which you can
       override.
