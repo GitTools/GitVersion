@@ -144,7 +144,7 @@ namespace GitVersionCore.Tests.VersionCalculation
             fixture.BranchTo("custom/foo");
             fixture.MakeACommit();
 
-            fixture.AssertFullSemver("1.0.0-foo.1.2", config);
+            fixture.AssertFullSemver("1.0.0-foo.2", config);
         }
 
         [Test]
