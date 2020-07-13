@@ -172,7 +172,7 @@ namespace GitVersionCore.Tests.VersionCalculation
             fixture.BranchTo("foo");
             fixture.MakeACommit();
             fixture.Checkout("master");
-            fixture.Merge("foo");
+            fixture.MergeNoFF("foo");
 
             fixture.AssertFullSemver("1.0.0", config);
         }
