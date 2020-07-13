@@ -118,33 +118,20 @@ namespace GitVersionCore.Tests.VersionCalculation
         }
 
         [Test]
-        public void PreReleaseTagCanUseBranchNameMainline()
+        public void PreReleaseVersionMainline()
         {
             var config = new Config
             {
                 VersioningMode = VersioningMode.Mainline,
-                NextVersion = "1.0.0",
-                Branches = new Dictionary<string, BranchConfig>
-                {
-                    {
-                        "custom", new BranchConfig
-                        {
-                            Regex = "custom/",
-                            Tag = "useBranchName",
-                            SourceBranches = new HashSet<string>()
-                        }
-                    }
-                }
+                NextVersion = "1.0.0"
             };
 
             using var fixture = new EmptyRepositoryFixture();
             fixture.MakeACommit();
-            fixture.BranchTo("develop");
-            fixture.MakeACommit();
-            fixture.BranchTo("custom/foo");
+            fixture.BranchTo("foo");
             fixture.MakeACommit();
 
-            fixture.AssertFullSemver("1.0.0-foo.2", config);
+            fixture.AssertFullSemver("1.0.0-foo.1", config);
         }
 
         [Test]
@@ -153,18 +140,7 @@ namespace GitVersionCore.Tests.VersionCalculation
             var config = new Config
             {
                 VersioningMode = VersioningMode.Mainline,
-                NextVersion = "1.0.0",
-                Branches = new Dictionary<string, BranchConfig>
-                {
-                    {
-                        "custom", new BranchConfig
-                        {
-                            Regex = "custom/",
-                            Tag = "useBranchName",
-                            SourceBranches = new HashSet<string>()
-                        }
-                    }
-                }
+                NextVersion = "1.0.0"
             };
 
             using var fixture = new EmptyRepositoryFixture();
