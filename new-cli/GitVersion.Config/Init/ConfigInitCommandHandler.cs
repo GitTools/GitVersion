@@ -7,17 +7,19 @@ namespace GitVersion.Config.Init
 {
     public class ConfigInitCommandHandler : CommandHandler<ConfigInitOptions>, IConfigCommandHandler
     {
+        private readonly ILogger logger;
         private readonly IService service;
 
-        public ConfigInitCommandHandler(IService service)
+        public ConfigInitCommandHandler(ILogger logger, IService service)
         {
+            this.logger = logger;
             this.service = service;
         }
 
         public override Task<int> InvokeAsync(ConfigInitOptions options)
         {
             var value = service.Call();
-            Console.WriteLine($"Command : 'config init', LogFile : '{options.LogFile}', WorkDir : '{options.WorkDir}' ");
+            logger.LogInformation($"Command : 'config init', LogFile : '{options.LogFile}', WorkDir : '{options.WorkDir}' ");
             return Task.FromResult(value);
         }
     }

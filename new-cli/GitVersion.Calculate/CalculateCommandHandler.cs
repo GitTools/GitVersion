@@ -7,17 +7,19 @@ namespace GitVersion.Calculate
 {
     public class CalculateCommandHandler : CommandHandler<CalculateOptions>, IRootCommandHandler
     {
+        private readonly ILogger logger;
         private readonly IService service;
 
-        public CalculateCommandHandler(IService service)
+        public CalculateCommandHandler(ILogger logger, IService service)
         {
+            this.logger = logger;
             this.service = service;
         }
 
         public override Task<int> InvokeAsync(CalculateOptions options)
         {
             var value = service.Call();
-            Console.WriteLine($"Command : 'calculate', LogFile : '{options.LogFile}', WorkDir : '{options.WorkDir}' ");
+            logger.LogInformation($"Command : 'calculate', LogFile : '{options.LogFile}', WorkDir : '{options.WorkDir}' ");
             return Task.FromResult(value);
         }
     }

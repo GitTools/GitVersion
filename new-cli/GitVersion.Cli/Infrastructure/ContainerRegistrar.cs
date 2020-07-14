@@ -1,18 +1,19 @@
 ﻿using System;
 using GitVersion.Core.Infrastructure;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
-namespace GitVersion.Cli
+namespace GitVersion.Cli.Infrastructure
 {
     public class ContainerRegistrar : IContainerRegistrar
     {
-        private readonly ServiceCollection serviceCollection = new ServiceCollection();
+        private readonly ServiceCollection services = new ServiceCollection();
 
         public IContainerRegistrar AddSingleton<TService, TImplementation>()
             where TService : class
             where TImplementation : class, TService
         {
-            serviceCollection.AddSingleton<TService, TImplementation>();
+            services.AddSingleton<TService, TImplementation>();
             return this;
         }
         
@@ -23,7 +24,7 @@ namespace GitVersion.Cli
         public IContainerRegistrar AddSingleton<TService>(Func<IServiceProvider, TService> implementationFactory)
             where TService : class
         {
-            serviceCollection.AddSingleton(typeof(TService), implementationFactory);
+            services.AddSingleton(typeof(TService), implementationFactory);
             return this;
         }
 
@@ -31,21 +32,27 @@ namespace GitVersion.Cli
             where TService : class
             where TImplementation : class, TService
         {
-            serviceCollection.AddTransient<TService, TImplementation>();
+            services.AddTransient<TService, TImplementation>();
             return this;
         }
 
         public IContainerRegistrar AddTransient<TService>(Func<IServiceProvider, TService> implementationFactory) 
             where TService : class
         {
-            serviceCollection.AddTransient(typeof(TService), implementationFactory);
+            services.AddTransient(typeof(TService), implementationFactory);
             return this;
         }
 
         public IContainerRegistrar AddTransient<TService>()
             where TService : class
             => AddTransient<TService, TService>();
+        
+        public IContainerRegistrar AddConsoleLogging()
+        {
+            services.AddLogging(builder => builder.AddConsole());
+            return this;
+        }
 
-        public IContainer Build() => new Container(serviceCollection.BuildServiceProvider());
+        public IContainer Build() => new Container(services.BuildServiceProvider());
     }
 }

@@ -2,7 +2,7 @@
 using GitVersion.Core.Infrastructure;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace GitVersion.Cli
+namespace GitVersion.Cli.Infrastructure
 {
     public class Container : IContainer
     {

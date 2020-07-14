@@ -7,17 +7,19 @@ namespace GitVersion.Normalize
 {
     public class NormalizeCommandHandler : CommandHandler<NormalizeOptions>, IRootCommandHandler
     {
+        private readonly ILogger logger;
         private readonly IService service;
 
-        public NormalizeCommandHandler(IService service)
+        public NormalizeCommandHandler(ILogger logger, IService service)
         {
+            this.logger = logger;
             this.service = service;
         }
 
         public override Task<int> InvokeAsync(NormalizeOptions options)
         {
             var value = service.Call();
-            Console.WriteLine($"Command : 'normalize', LogFile : '{options.LogFile}', WorkDir : '{options.WorkDir}' ");
+            logger.LogInformation($"Command : 'normalize', LogFile : '{options.LogFile}', WorkDir : '{options.WorkDir}' ");
             return Task.FromResult(value);
         }
     }

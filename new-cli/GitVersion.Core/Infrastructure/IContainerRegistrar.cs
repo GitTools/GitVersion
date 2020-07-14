@@ -15,6 +15,8 @@ namespace GitVersion.Core.Infrastructure
         IContainerRegistrar AddTransient<TService, TImplementation>() where TService : class where TImplementation : class, TService;
 
         IContainerRegistrar AddTransient<TService>(Func<IServiceProvider, TService> implementationFactory) where TService : class;
+        
+        IContainerRegistrar AddConsoleLogging();
 
         IContainer Build();
     }

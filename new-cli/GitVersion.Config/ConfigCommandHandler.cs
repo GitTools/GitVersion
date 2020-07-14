@@ -7,12 +7,8 @@ namespace GitVersion.Config
     {
         private readonly IEnumerable<IConfigCommandHandler> commandHandlers;
 
+        public ConfigCommandHandler(IEnumerable<IConfigCommandHandler> commandHandlers) => this.commandHandlers = commandHandlers;
 
-        public ConfigCommandHandler(IEnumerable<IConfigCommandHandler> commandHandlers)
-        {
-            this.commandHandlers = commandHandlers;
-        }
-        
         public override IEnumerable<ICommandHandler> SubCommands() => commandHandlers;
     }
 }
