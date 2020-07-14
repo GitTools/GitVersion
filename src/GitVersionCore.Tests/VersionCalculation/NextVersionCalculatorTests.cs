@@ -118,6 +118,42 @@ namespace GitVersionCore.Tests.VersionCalculation
         }
 
         [Test]
+        public void PreReleaseVersionMainline()
+        {
+            var config = new Config
+            {
+                VersioningMode = VersioningMode.Mainline,
+                NextVersion = "1.0.0"
+            };
+
+            using var fixture = new EmptyRepositoryFixture();
+            fixture.MakeACommit();
+            fixture.BranchTo("foo");
+            fixture.MakeACommit();
+
+            fixture.AssertFullSemver("1.0.0-foo.1", config);
+        }
+
+        [Test]
+        public void MergeIntoMainline()
+        {
+            var config = new Config
+            {
+                VersioningMode = VersioningMode.Mainline,
+                NextVersion = "1.0.0"
+            };
+
+            using var fixture = new EmptyRepositoryFixture();
+            fixture.MakeACommit();
+            fixture.BranchTo("foo");
+            fixture.MakeACommit();
+            fixture.Checkout("master");
+            fixture.MergeNoFF("foo");
+
+            fixture.AssertFullSemver("1.0.0", config);
+        }
+
+        [Test]
         public void PreReleaseTagCanUseBranchNameVariable()
         {
             var config = new Config

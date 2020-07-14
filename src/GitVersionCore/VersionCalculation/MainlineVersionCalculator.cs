@@ -54,22 +54,25 @@ namespace GitVersion.VersionCalculation
                 var mainlineCommitLog = repositoryMetadataProvider.GetMainlineCommitLog(baseVersion.BaseVersionSource, mainlineTip);
                 var directCommits = new List<Commit>(mainlineCommitLog.Count);
 
-                // Scans commit log in reverse, aggregating merge commits
-                foreach (var commit in mainlineCommitLog)
+                if (string.IsNullOrEmpty(context.Configuration.NextVersion))
                 {
-                    directCommits.Add(commit);
-                    if (commit.Parents.Count() > 1)
+                    // Scans commit log in reverse, aggregating merge commits
+                    foreach (var commit in mainlineCommitLog)
                     {
-                        mainlineVersion = AggregateMergeCommitIncrement(commit, directCommits, mainlineVersion, mainline);
+                        directCommits.Add(commit);
+                        if (commit.Parents.Count() > 1)
+                        {
+                            mainlineVersion = AggregateMergeCommitIncrement(commit, directCommits, mainlineVersion, mainline);
+                        }
                     }
-                }
 
-                // This will increment for any direct commits on mainline
-                mainlineVersion = IncrementForEachCommit(directCommits, mainlineVersion, mainline);
+                    // This will increment for any direct commits on mainline
+                    mainlineVersion = IncrementForEachCommit(directCommits, mainlineVersion, mainline);
+                }
                 mainlineVersion.BuildMetaData = CreateVersionBuildMetaData(mergeBase);
 
                 // branches other than master always get a bump for the act of branching
-                if (!context.CurrentBranch.IsSameBranch(mainline))
+                if ((!context.CurrentBranch.IsSameBranch(mainline)) && (string.IsNullOrEmpty(context.Configuration.NextVersion)))
                 {
                     var branchIncrement = FindMessageIncrement(null, context.CurrentCommit, mergeBase, mainlineCommitLog);
                     log.Info($"Performing {branchIncrement} increment for current branch ");
