@@ -1,10 +1,10 @@
+using GitVersion.Logging;
+using GitVersion.OutputVariables;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Xml.Linq;
-using GitVersion.Logging;
-using GitVersion.OutputVariables;
 
 namespace GitVersion.VersionConverters.AssemblyInfo
 {
@@ -17,6 +17,7 @@ namespace GitVersion.VersionConverters.AssemblyInfo
         internal const string AssemblyVersionElement = "AssemblyVersion";
         internal const string FileVersionElement = "FileVersion";
         internal const string InformationalVersionElement = "InformationalVersion";
+        internal const string VersionElement = "Version";
 
         private readonly List<Action> restoreBackupTasks = new List<Action>();
         private readonly List<Action> cleanupBackupTasks = new List<Action>();
@@ -40,6 +41,7 @@ namespace GitVersion.VersionConverters.AssemblyInfo
             var assemblyVersion = variables.AssemblySemVer;
             var assemblyInfoVersion = variables.InformationalVersion;
             var assemblyFileVersion = variables.AssemblySemFileVer;
+            var packageVersion = variables.NuGetVersionV2;
 
             foreach (var projectFile in projectFilesToUpdate)
             {
@@ -82,6 +84,11 @@ namespace GitVersion.VersionConverters.AssemblyInfo
                 if (!string.IsNullOrWhiteSpace(assemblyInfoVersion))
                 {
                     UpdateProjectVersionElement(fileXml, InformationalVersionElement, assemblyInfoVersion);
+                }
+
+                if (!string.IsNullOrWhiteSpace(packageVersion))
+                {
+                    UpdateProjectVersionElement(fileXml, VersionElement, packageVersion);
                 }
 
                 var outputXmlString = fileXml.ToString();
