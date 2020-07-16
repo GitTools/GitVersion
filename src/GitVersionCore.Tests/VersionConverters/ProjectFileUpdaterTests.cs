@@ -1,6 +1,3 @@
-using System;
-using System.IO;
-using System.Xml.Linq;
 using GitVersion;
 using GitVersion.Extensions;
 using GitVersion.Logging;
@@ -12,6 +9,9 @@ using Microsoft.Extensions.DependencyInjection;
 using NSubstitute;
 using NUnit.Framework;
 using Shouldly;
+using System;
+using System.IO;
+using System.Xml.Linq;
 
 namespace GitVersionCore.Tests
 {
@@ -298,6 +298,7 @@ namespace GitVersionCore.Tests
     <AssemblyVersion>2.3.1.0</AssemblyVersion>
     <FileVersion>2.3.1.0</FileVersion>
     <InformationalVersion>2.3.1+3.Branch.foo.Sha.hash</InformationalVersion>
+    <Version>2.3.1</Version>
   </PropertyGroup>
 </Project>";
                 var transformedXml = fs.ReadAllText(fileName);
