@@ -56,6 +56,8 @@ namespace GitVersion.VersionConverters.AssemblyInfo
                     continue;
                 }
 
+                log.Debug($"Update file: {localProjectFile}");
+
                 var backupProjectFile = localProjectFile + ".bak";
                 fileSystem.Copy(localProjectFile, backupProjectFile, true);
 
