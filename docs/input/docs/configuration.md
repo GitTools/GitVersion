@@ -283,7 +283,7 @@ upgrade.
 ```yaml
 branches:
   master:
-    regex: ^master|main$
+    regex: ^master$|^main$
     mode: ContinuousDelivery
     tag: ''
     increment: Patch
