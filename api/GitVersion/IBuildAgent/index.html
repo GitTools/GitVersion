@@ -138,6 +138,10 @@
 			<li class="header">Namespace</li>
 		<li><a href="/api/GitVersion">GitVersion</a></li>
 		<li role="separator" class="divider"></li>
+			<li class="header">Enum Types</li>
+				<li><a href="/api/GitVersion/CommitMessageIncrementMode">Commit<wbr>Message<wbr>Increment<wbr>Mode</a></li>
+				<li><a href="/api/GitVersion/IncrementStrategy">IncrementStrategy</a></li>
+				<li><a href="/api/GitVersion/VersionField">VersionField</a></li>
 			<li class="header">Class Types</li>
 				<li><a href="/api/GitVersion/ArgumentParser">ArgumentParser</a></li>
 				<li><a href="/api/GitVersion/Arguments">Arguments</a></li>
@@ -180,6 +184,8 @@
 				<li><a href="/api/GitVersion/VersionWriter">VersionWriter</a></li>
 				<li><a href="/api/GitVersion/WarningException">WarningException</a></li>
 				<li><a href="/api/GitVersion/WixInfo">WixInfo</a></li>
+			<li class="header">Struct Types</li>
+				<li><a href="/api/GitVersion/BranchCommit">BranchCommit</a></li>
 			<li class="header">Interface Types</li>
 				<li><a href="/api/GitVersion/IArgumentParser">IArgumentParser</a></li>
 				<li class="selected"><a href="/api/GitVersion/IBuildAgent">IBuildAgent</a></li>
@@ -198,12 +204,6 @@
 				<li><a href="/api/GitVersion/IHelpWriter">IHelpWriter</a></li>
 				<li><a href="/api/GitVersion/IThreadSleep">IThreadSleep</a></li>
 				<li><a href="/api/GitVersion/IVersionWriter">IVersionWriter</a></li>
-			<li class="header">Enum Types</li>
-				<li><a href="/api/GitVersion/CommitMessageIncrementMode">Commit<wbr>Message<wbr>Increment<wbr>Mode</a></li>
-				<li><a href="/api/GitVersion/IncrementStrategy">IncrementStrategy</a></li>
-				<li><a href="/api/GitVersion/VersionField">VersionField</a></li>
-			<li class="header">Struct Types</li>
-				<li><a href="/api/GitVersion/BranchCommit">BranchCommit</a></li>
 
 
                     </ul>
@@ -239,20 +239,20 @@
 								<dt>Implementing Types</dt>
 								<dd>
 									<ul class="list-unstyled">
-											<li><a href="/api/GitVersion.BuildAgents/GitHubActions">GitHubActions</a></li>								
-											<li><a href="/api/GitVersion.BuildAgents/MyGet">MyGet</a></li>								
-											<li><a href="/api/GitVersion.BuildAgents/GitLabCi">GitLabCi</a></li>								
-											<li><a href="/api/GitVersion.BuildAgents/CodeBuild">CodeBuild</a></li>								
-											<li><a href="/api/GitVersion.BuildAgents/Drone">Drone</a></li>								
-											<li><a href="/api/GitVersion/ICurrentBuildAgent">ICurrentBuildAgent</a></li>								
-											<li><a href="/api/GitVersion.BuildAgents/AzurePipelines">AzurePipelines</a></li>								
-											<li><a href="/api/GitVersion.BuildAgents/Jenkins">Jenkins</a></li>								
-											<li><a href="/api/GitVersion.BuildAgents/EnvRun">EnvRun</a></li>								
-											<li><a href="/api/GitVersion.BuildAgents/AppVeyor">AppVeyor</a></li>								
-											<li><a href="/api/GitVersion.BuildAgents/TeamCity">TeamCity</a></li>								
-											<li><a href="/api/GitVersion.BuildAgents/TravisCi">TravisCi</a></li>								
 											<li><a href="/api/GitVersion/BuildAgentBase">BuildAgentBase</a></li>								
+											<li><a href="/api/GitVersion.BuildAgents/MyGet">MyGet</a></li>								
+											<li><a href="/api/GitVersion.BuildAgents/AppVeyor">AppVeyor</a></li>								
+											<li><a href="/api/GitVersion.BuildAgents/Drone">Drone</a></li>								
+											<li><a href="/api/GitVersion.BuildAgents/GitHubActions">GitHubActions</a></li>								
+											<li><a href="/api/GitVersion.BuildAgents/AzurePipelines">AzurePipelines</a></li>								
+											<li><a href="/api/GitVersion.BuildAgents/EnvRun">EnvRun</a></li>								
+											<li><a href="/api/GitVersion.BuildAgents/Jenkins">Jenkins</a></li>								
 											<li><a href="/api/GitVersion.BuildAgents/ContinuaCi">ContinuaCi</a></li>								
+											<li><a href="/api/GitVersion.BuildAgents/GitLabCi">GitLabCi</a></li>								
+											<li><a href="/api/GitVersion/ICurrentBuildAgent">ICurrentBuildAgent</a></li>								
+											<li><a href="/api/GitVersion.BuildAgents/TravisCi">TravisCi</a></li>								
+											<li><a href="/api/GitVersion.BuildAgents/TeamCity">TeamCity</a></li>								
+											<li><a href="/api/GitVersion.BuildAgents/CodeBuild">CodeBuild</a></li>								
 									</ul>
 								</dd>				
 						</dl>
@@ -262,34 +262,34 @@
 							graph BT
 	Type["IBuildAgent"]
 class Type type-node
-	Implementing0["GitHubActions"]-.-&gt;Type
-	click Implementing0 "/api/GitVersion.BuildAgents/GitHubActions"
+	Implementing0["BuildAgentBase"]-.-&gt;Type
+	click Implementing0 "/api/GitVersion/BuildAgentBase"
 	Implementing1["MyGet"]-.-&gt;Type
 	click Implementing1 "/api/GitVersion.BuildAgents/MyGet"
-	Implementing2["GitLabCi"]-.-&gt;Type
-	click Implementing2 "/api/GitVersion.BuildAgents/GitLabCi"
-	Implementing3["CodeBuild"]-.-&gt;Type
-	click Implementing3 "/api/GitVersion.BuildAgents/CodeBuild"
-	Implementing4["Drone"]-.-&gt;Type
-	click Implementing4 "/api/GitVersion.BuildAgents/Drone"
-	Implementing5["ICurrentBuildAgent"]-.-&gt;Type
-	click Implementing5 "/api/GitVersion/ICurrentBuildAgent"
-	Implementing6["AzurePipelines"]-.-&gt;Type
-	click Implementing6 "/api/GitVersion.BuildAgents/AzurePipelines"
+	Implementing2["AppVeyor"]-.-&gt;Type
+	click Implementing2 "/api/GitVersion.BuildAgents/AppVeyor"
+	Implementing3["Drone"]-.-&gt;Type
+	click Implementing3 "/api/GitVersion.BuildAgents/Drone"
+	Implementing4["GitHubActions"]-.-&gt;Type
+	click Implementing4 "/api/GitVersion.BuildAgents/GitHubActions"
+	Implementing5["AzurePipelines"]-.-&gt;Type
+	click Implementing5 "/api/GitVersion.BuildAgents/AzurePipelines"
+	Implementing6["EnvRun"]-.-&gt;Type
+	click Implementing6 "/api/GitVersion.BuildAgents/EnvRun"
 	Implementing7["Jenkins"]-.-&gt;Type
 	click Implementing7 "/api/GitVersion.BuildAgents/Jenkins"
-	Implementing8["EnvRun"]-.-&gt;Type
-	click Implementing8 "/api/GitVersion.BuildAgents/EnvRun"
-	Implementing9["AppVeyor"]-.-&gt;Type
-	click Implementing9 "/api/GitVersion.BuildAgents/AppVeyor"
-	Implementing10["TeamCity"]-.-&gt;Type
-	click Implementing10 "/api/GitVersion.BuildAgents/TeamCity"
+	Implementing8["ContinuaCi"]-.-&gt;Type
+	click Implementing8 "/api/GitVersion.BuildAgents/ContinuaCi"
+	Implementing9["GitLabCi"]-.-&gt;Type
+	click Implementing9 "/api/GitVersion.BuildAgents/GitLabCi"
+	Implementing10["ICurrentBuildAgent"]-.-&gt;Type
+	click Implementing10 "/api/GitVersion/ICurrentBuildAgent"
 	Implementing11["TravisCi"]-.-&gt;Type
 	click Implementing11 "/api/GitVersion.BuildAgents/TravisCi"
-	Implementing12["BuildAgentBase"]-.-&gt;Type
-	click Implementing12 "/api/GitVersion/BuildAgentBase"
-	Implementing13["ContinuaCi"]-.-&gt;Type
-	click Implementing13 "/api/GitVersion.BuildAgents/ContinuaCi"
+	Implementing12["TeamCity"]-.-&gt;Type
+	click Implementing12 "/api/GitVersion.BuildAgents/TeamCity"
+	Implementing13["CodeBuild"]-.-&gt;Type
+	click Implementing13 "/api/GitVersion.BuildAgents/CodeBuild"
 
 						</div>
 					</div>
