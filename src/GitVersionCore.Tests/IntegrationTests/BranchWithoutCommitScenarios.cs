@@ -36,5 +36,34 @@ namespace GitVersionCore.Tests.IntegrationTests
 
             fixture.AssertFullSemver("1.0.0-beta.1+0");
         }
+		
+        [Test]
+        public void BetaBranchCreatedButStillOnTaggedAlphaCommitShouldCreateBetaVersion()
+        {
+            // Arrange
+            var config = new Config
+            {
+                Branches =
+                {
+                    { "release", new BranchConfig { Tag = "beta" } },
+                    { "develop", new BranchConfig { Tag = "alpha" } }
+                }
+            };
+
+            // Act
+            using var fixture = new BaseGitFlowRepositoryFixture("1.0.0");
+            fixture.Checkout("develop");
+            fixture.MakeATaggedCommit("1.1.0-alpha.1"); // assuming this has been build as 1.1.0-alpha.1
+			
+            fixture.BranchTo("release/1.1.0"); // about to be released, no additional empty commit in this scenario!
+            fixture.Checkout("release/1.1.0"); // still on the same commit, but another branch, choosing to build same code as beta now
+            
+			// Assert
+			fixture.AssertFullSemver("1.1.0-beta.1", config); //will be 1.1.0-alpha.1, should be 1.1.0-beta.1. Tag is an "alpha" tag from develop branch, only "beta" tags should count when on release branch. If no beta tag found, build new beta version on release branch.
+			
+            fixture.Checkout("develop"); // back to develop
+            fixture.AssertFullSemver("1.1.0-alpha.1", config); //will be 1.1.0-alpha.1 based on tag (as before)
+
+        }		
     }
 }
