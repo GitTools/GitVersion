@@ -72,6 +72,25 @@ namespace GitVersionCore.Tests
         }
 
         [TestCase(@"
+<Project Sdk=""Microsoft.NET.Sdk.WindowsDesktop"">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net461</TargetFramework>
+  </PropertyGroup>
+</Project>
+")]
+        [Category(NoMono)]
+        [Description(NoMonoDescription)]
+        public void CanUpdateProjectFileWithStandardDesktopProjectFileXml(string xml)
+        {
+            using var projectFileUpdater = new ProjectFileUpdater(log, fileSystem);
+
+            var canUpdate = projectFileUpdater.CanUpdateProjectFile(XElement.Parse(xml));
+
+            canUpdate.ShouldBe(true);
+        }
+
+        [TestCase(@"
 <Project Sdk=""SomeOtherProject.Sdk"">
   <PropertyGroup>
     <OutputType>Exe</OutputType>
