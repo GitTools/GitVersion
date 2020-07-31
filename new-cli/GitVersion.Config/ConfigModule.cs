@@ -1,6 +1,6 @@
 ﻿using GitVersion.Config.Init;
 using GitVersion.Config.Show;
-using GitVersion.Core.Infrastructure;
+using GitVersion.Infrastructure;
 
 namespace GitVersion.Config
 {

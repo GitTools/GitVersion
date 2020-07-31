@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace GitVersion.Core.Infrastructure
+namespace GitVersion.Infrastructure
 {
     public abstract class CommandHandler<T> : ICommandHandler where T : GitVersionOptions
     {

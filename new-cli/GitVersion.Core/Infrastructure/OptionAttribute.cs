@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace GitVersion.Core.Infrastructure
+namespace GitVersion.Infrastructure
 {
     [AttributeUsage(AttributeTargets.Property)]
     public class OptionAttribute : Attribute

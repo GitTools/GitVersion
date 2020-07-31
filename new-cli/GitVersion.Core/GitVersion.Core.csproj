@@ -1,9 +1,9 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
         <TargetFramework>netstandard2.0</TargetFramework>
         <LangVersion>8</LangVersion>
-        <RootNamespace>GitVersion.Core</RootNamespace>
+        <RootNamespace>GitVersion</RootNamespace>
     </PropertyGroup>
 
 </Project>

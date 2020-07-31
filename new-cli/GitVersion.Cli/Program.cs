@@ -5,8 +5,7 @@ using GitVersion.Calculate;
 using GitVersion.Cli.Extensions;
 using GitVersion.Cli.Infrastructure;
 using GitVersion.Config;
-using GitVersion.Core;
-using GitVersion.Core.Infrastructure;
+using GitVersion.Infrastructure;
 using GitVersion.Normalize;
 using GitVersion.Output;
 

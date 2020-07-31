@@ -2,7 +2,7 @@
 
 namespace GitVersion.Cli.Infrastructure
 {
-    public class Logger : Core.Infrastructure.ILogger
+    public class Logger : GitVersion.Infrastructure.ILogger
     {
         private readonly ILogger logger;
 

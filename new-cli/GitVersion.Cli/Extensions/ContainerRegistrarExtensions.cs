@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using GitVersion.Core.Infrastructure;
+using GitVersion.Infrastructure;
 
 namespace GitVersion.Cli.Extensions
 {

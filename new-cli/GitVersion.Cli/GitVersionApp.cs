@@ -5,8 +5,8 @@ using System.CommandLine.Invocation;
 using System.CommandLine.Parsing;
 using System.Reflection;
 using System.Threading.Tasks;
-using GitVersion.Core.Infrastructure;
-using ICommandHandler = GitVersion.Core.Infrastructure.ICommandHandler;
+using GitVersion.Infrastructure;
+using ICommandHandler = GitVersion.Infrastructure.ICommandHandler;
 
 namespace GitVersion.Cli
 {

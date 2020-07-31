@@ -1,7 +1,7 @@
 ﻿using System.IO;
-using GitVersion.Core.Infrastructure;
+using GitVersion.Infrastructure;
 
-namespace GitVersion.Core
+namespace GitVersion
 {
     public class GitVersionOptions
     {

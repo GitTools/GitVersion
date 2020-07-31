@@ -1,5 +1,5 @@
 ﻿using System;
-using GitVersion.Core.Infrastructure;
+using GitVersion.Infrastructure;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 

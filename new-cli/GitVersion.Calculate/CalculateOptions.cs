@@ -1,6 +1,5 @@
 ﻿using System.IO;
-using GitVersion.Core;
-using GitVersion.Core.Infrastructure;
+using GitVersion.Infrastructure;
 
 namespace GitVersion.Calculate
 {

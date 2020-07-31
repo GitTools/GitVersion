@@ -1,4 +1,4 @@
-﻿using GitVersion.Core.Infrastructure;
+﻿using GitVersion.Infrastructure;
 using GitVersion.Output.AssemblyInfo;
 using GitVersion.Output.Project;
 using GitVersion.Output.Wix;

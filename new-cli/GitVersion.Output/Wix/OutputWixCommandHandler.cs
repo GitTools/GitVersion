@@ -1,7 +1,5 @@
-﻿using System;
-using System.Threading.Tasks;
-using GitVersion.Core;
-using GitVersion.Core.Infrastructure;
+﻿using System.Threading.Tasks;
+using GitVersion.Infrastructure;
 
 namespace GitVersion.Output.Wix
 {

@@ -1,4 +1,4 @@
-﻿namespace GitVersion.Core.Infrastructure
+﻿namespace GitVersion.Infrastructure
 {
     public interface IGitVersionModule
     {
