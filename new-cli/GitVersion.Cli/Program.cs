@@ -27,7 +27,7 @@ namespace GitVersion.Cli
             };
             
             var gitVersionModules = assemblies
-                .SelectMany(a => a.GetTypes().Where(t => typeof(IGitVersionModule).IsAssignableFrom(t) && !t.IsInterface))
+                .SelectMany(a => a.GetTypes().Where(TypeIsGitVersionModule))
                 .Select(t => (IGitVersionModule)Activator.CreateInstance(t))
                 .ToList();
 
@@ -43,5 +43,13 @@ namespace GitVersion.Cli
 
             return result;
         }
+        
+        private static bool TypeIsGitVersionModule(Type type)
+        {
+            return typeof(IGitVersionModule).IsAssignableFrom(type) &&
+                   !type.IsInterface &&
+                   !type.IsAbstract;
+        }
+
     }
 }
