@@ -4,7 +4,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GitVersion.Cli", "GitVersio
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GitVersion.Core", "GitVersion.Core\GitVersion.Core.csproj", "{02332393-1F38-4819-8D6F-3D1968B38919}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GitVersion.Calculate", "GitVersion.Calculate\GitVersion.Calculate.csproj", "{8F6D4830-B870-4365-9662-457F1A13894B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GitVersion.Calculation", "GitVersion.Calculation\GitVersion.Calculation.csproj", "{8F6D4830-B870-4365-9662-457F1A13894B}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GitVersion.Output", "GitVersion.Output\GitVersion.Output.csproj", "{9543A475-06BA-4C8D-A3CE-E2792FE663DA}"
 EndProject

@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
 using GitVersion.Infrastructure;
 
-namespace GitVersion.Calculate
+namespace GitVersion.Calculation
 {
     public class CalculateCommandHandler : CommandHandler<CalculateOptions>, IRootCommandHandler
     {

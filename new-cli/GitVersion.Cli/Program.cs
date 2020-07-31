@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
-using GitVersion.Calculate;
+using GitVersion.Calculation;
 using GitVersion.Cli.Extensions;
 using GitVersion.Cli.Infrastructure;
 using GitVersion.Config;
