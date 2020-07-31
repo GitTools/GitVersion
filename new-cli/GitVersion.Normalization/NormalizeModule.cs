@@ -1,6 +1,6 @@
 ﻿using GitVersion.Infrastructure;
 
-namespace GitVersion.Normalize
+namespace GitVersion.Normalization
 {
     public class NormalizeModule : IGitVersionModule
     {

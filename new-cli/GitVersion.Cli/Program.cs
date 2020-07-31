@@ -6,7 +6,7 @@ using GitVersion.Cli.Extensions;
 using GitVersion.Cli.Infrastructure;
 using GitVersion.Config;
 using GitVersion.Infrastructure;
-using GitVersion.Normalize;
+using GitVersion.Normalization;
 using GitVersion.Output;
 
 namespace GitVersion.Cli

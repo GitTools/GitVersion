@@ -13,7 +13,7 @@ ProjectSection(SolutionItems) = preProject
 	command.md = command.md
 EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GitVersion.Normalize", "GitVersion.Normalize\GitVersion.Normalize.csproj", "{45776CC1-7FDA-4299-86A7-9F11E7855CE4}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GitVersion.Normalization", "GitVersion.Normalization\GitVersion.Normalization.csproj", "{45776CC1-7FDA-4299-86A7-9F11E7855CE4}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GitVersion.Config", "GitVersion.Config\GitVersion.Config.csproj", "{2127F18A-F52B-4024-A0FD-B4D9F75FD85F}"
 EndProject

@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
 using GitVersion.Infrastructure;
 
-namespace GitVersion.Normalize
+namespace GitVersion.Normalization
 {
     public class NormalizeCommandHandler : CommandHandler<NormalizeOptions>, IRootCommandHandler
     {

@@ -16,7 +16,7 @@
     <ItemGroup>
       <ProjectReference Include="..\GitVersion.Calculation\GitVersion.Calculation.csproj" />
       <ProjectReference Include="..\GitVersion.Config\GitVersion.Config.csproj" />
-      <ProjectReference Include="..\GitVersion.Normalize\GitVersion.Normalize.csproj" />
+      <ProjectReference Include="..\GitVersion.Normalization\GitVersion.Normalization.csproj" />
       <ProjectReference Include="..\GitVersion.Output\GitVersion.Output.csproj" />
     </ItemGroup>
 
