@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
 using GitVersion.Infrastructure;
 
-namespace GitVersion.Config.Show
+namespace GitVersion.Configuration.Show
 {
     public class ConfigShowCommandHandler : CommandHandler<ConfigShowOptions>, IConfigCommandHandler
     {

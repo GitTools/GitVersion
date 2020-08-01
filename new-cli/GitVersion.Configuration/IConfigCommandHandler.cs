@@ -1,6 +1,6 @@
 ﻿using GitVersion.Infrastructure;
 
-namespace GitVersion.Config
+namespace GitVersion.Configuration
 {
     public interface IConfigCommandHandler : ICommandHandler
     {

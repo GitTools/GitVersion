@@ -1,7 +1,7 @@
 ﻿using System.IO;
 using GitVersion.Infrastructure;
 
-namespace GitVersion.Config
+namespace GitVersion.Configuration
 {
     [Command("config", "Manages the GitVersion configuration file.")]
     public class ConfigOptions : GitVersionOptions

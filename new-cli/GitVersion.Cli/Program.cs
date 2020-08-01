@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using GitVersion.Calculation;
 using GitVersion.Cli.Extensions;
 using GitVersion.Cli.Infrastructure;
-using GitVersion.Config;
+using GitVersion.Configuration;
 using GitVersion.Infrastructure;
 using GitVersion.Normalization;
 using GitVersion.Output;

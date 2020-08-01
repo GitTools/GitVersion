@@ -15,7 +15,7 @@ EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GitVersion.Normalization", "GitVersion.Normalization\GitVersion.Normalization.csproj", "{45776CC1-7FDA-4299-86A7-9F11E7855CE4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GitVersion.Config", "GitVersion.Config\GitVersion.Config.csproj", "{2127F18A-F52B-4024-A0FD-B4D9F75FD85F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GitVersion.Configuration", "GitVersion.Configuration\GitVersion.Configuration.csproj", "{2127F18A-F52B-4024-A0FD-B4D9F75FD85F}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Plugins", "Plugins", "{511CE16D-A65E-48F4-9A95-BB521A9048AF}"
 EndProject

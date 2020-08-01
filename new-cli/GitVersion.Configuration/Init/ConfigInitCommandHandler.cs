@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
 using GitVersion.Infrastructure;
 
-namespace GitVersion.Config.Init
+namespace GitVersion.Configuration.Init
 {
     public class ConfigInitCommandHandler : CommandHandler<ConfigInitOptions>, IConfigCommandHandler
     {

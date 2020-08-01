@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using GitVersion.Infrastructure;
 
-namespace GitVersion.Config
+namespace GitVersion.Configuration
 {
     public class ConfigCommandHandler : CommandHandler<ConfigOptions>, IRootCommandHandler
     {

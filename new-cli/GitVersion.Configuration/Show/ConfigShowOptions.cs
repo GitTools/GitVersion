@@ -1,6 +1,6 @@
 ﻿using GitVersion.Infrastructure;
 
-namespace GitVersion.Config.Show
+namespace GitVersion.Configuration.Show
 {
     [Command("show", "Shows the effective configuration.")]
     public class ConfigShowOptions : ConfigOptions
