@@ -184,7 +184,6 @@ namespace GitVersion.Configuration
                     currentBranch,
                     branch
                 };
-                currentBranch = branch;
             }
             else if (branches.Count > 1)
             {
