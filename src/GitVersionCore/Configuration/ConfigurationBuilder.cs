@@ -60,7 +60,7 @@ namespace GitVersion.Configuration
             targetConfig.CommitMessageIncrementing = overrideConfig.CommitMessageIncrementing ?? targetConfig.CommitMessageIncrementing;
             targetConfig.Increment = overrideConfig.Increment ?? targetConfig.Increment;
             targetConfig.CommitDateFormat = overrideConfig.CommitDateFormat ?? targetConfig.CommitDateFormat;
-            targetConfig.MergeMessageFormats = overrideConfig.MergeMessageFormats ?? targetConfig.MergeMessageFormats;
+            targetConfig.MergeMessageFormats = overrideConfig.MergeMessageFormats.Any() ? overrideConfig.MergeMessageFormats : targetConfig.MergeMessageFormats;
             targetConfig.UpdateBuildNumber = overrideConfig.UpdateBuildNumber ?? targetConfig.UpdateBuildNumber;
 
             if (overrideConfig.Ignore != null && !overrideConfig.Ignore.IsEmpty)
