@@ -181,6 +181,21 @@ namespace GitVersionCore.Tests.IntegrationTests
         }
 
         [Test]
+        public void WhenRecursiveMergeFromDevelopBranch()
+        {
+            using var fixture = new EmptyRepositoryFixture();
+            fixture.Repository.MakeATaggedCommit("1.0.0");
+            fixture.Repository.CreateBranch("feature/x");
+            fixture.Repository.MakeACommit();
+
+            Commands.Checkout(fixture.Repository, "feature/x");
+            fixture.Repository.MakeACommit();
+            fixture.Repository.MergeNoFF("master");
+
+            fixture.AssertFullSemver("1.0.1-x.1+3");
+        }
+
+        [Test]
         public void TagOnHotfixShouldNotAffectDevelop()
         {
             using var fixture = new BaseGitFlowRepositoryFixture("1.2.0");
