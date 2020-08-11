@@ -2,11 +2,11 @@
 
     <PropertyGroup>
         <TargetFramework>netstandard2.0</TargetFramework>
-        <RootNamespace>GitVersion.Normalization</RootNamespace>
+        <RootNamespace>GitVersion.Command</RootNamespace>
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\GitVersion.Common.Command\GitVersion.Common.Command.csproj" />
+      <ProjectReference Include="..\GitVersion.Common\GitVersion.Common.csproj" />
     </ItemGroup>
 
 </Project>
