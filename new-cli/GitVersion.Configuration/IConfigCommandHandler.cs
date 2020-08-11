@@ -1,4 +1,5 @@
-﻿using GitVersion.Infrastructure;
+﻿using GitVersion.Command;
+using GitVersion.Infrastructure;
 
 namespace GitVersion.Configuration
 {

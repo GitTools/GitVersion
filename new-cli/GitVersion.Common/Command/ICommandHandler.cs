@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace GitVersion.Infrastructure
+namespace GitVersion.Command
 {
     public interface ICommandHandler
     {

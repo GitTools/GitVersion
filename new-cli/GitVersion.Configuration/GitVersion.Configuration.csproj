@@ -2,10 +2,11 @@
 
     <PropertyGroup>
         <TargetFramework>netstandard2.0</TargetFramework>
+        <RootNamespace>GitVersion.Configuration</RootNamespace>
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\GitVersion.Core\GitVersion.Core.csproj" />
+      <ProjectReference Include="..\GitVersion.Common\GitVersion.Common.csproj" />
     </ItemGroup>
 
 </Project>

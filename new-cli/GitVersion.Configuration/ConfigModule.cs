@@ -1,4 +1,5 @@
-﻿using GitVersion.Configuration.Init;
+﻿using GitVersion.Command;
+using GitVersion.Configuration.Init;
 using GitVersion.Configuration.Show;
 using GitVersion.Infrastructure;
 

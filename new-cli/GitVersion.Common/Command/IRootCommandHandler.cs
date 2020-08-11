@@ -1,4 +1,4 @@
-﻿namespace GitVersion.Infrastructure
+﻿namespace GitVersion.Command
 {
     public interface IRootCommandHandler : ICommandHandler
     {

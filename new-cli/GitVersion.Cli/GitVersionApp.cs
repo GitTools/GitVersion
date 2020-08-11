@@ -5,8 +5,8 @@ using System.CommandLine.Invocation;
 using System.CommandLine.Parsing;
 using System.Reflection;
 using System.Threading.Tasks;
-using GitVersion.Infrastructure;
-using ICommandHandler = GitVersion.Infrastructure.ICommandHandler;
+using GitVersion.Command;
+using ICommandHandler = GitVersion.Command.ICommandHandler;
 
 namespace GitVersion.Cli
 {
@@ -29,7 +29,7 @@ namespace GitVersion.Cli
                 .InvokeAsync(args);
         }
 
-        private static Command CreateCommand(ICommandHandler commandHandler)
+        private static System.CommandLine.Command CreateCommand(ICommandHandler commandHandler)
         {
             const BindingFlags declaredOnly = BindingFlags.Public | BindingFlags.Instance;
 
@@ -39,7 +39,7 @@ namespace GitVersion.Cli
 
             if (commandAttribute == null) return null;
 
-            var command = new Command(commandAttribute.Name, commandAttribute.Description);
+            var command = new System.CommandLine.Command(commandAttribute.Name, commandAttribute.Description);
             var propertyInfos = commandOptionsType.GetProperties(declaredOnly);
             foreach (var propertyInfo in propertyInfos)
             {

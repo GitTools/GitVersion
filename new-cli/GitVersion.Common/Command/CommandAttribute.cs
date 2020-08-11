@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace GitVersion.Infrastructure
+namespace GitVersion.Command
 {
     [AttributeUsage(AttributeTargets.Class)]
     public class CommandAttribute : Attribute
