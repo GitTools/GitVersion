@@ -239,13 +239,13 @@
 								<dt>Implementing Types</dt>
 								<dd>
 									<ul class="list-unstyled">
-											<li><a href="/api/GitVersion.BuildAgents/BuildServerModule">BuildServerModule</a></li>								
-											<li><a href="/api/GitVersion/GitVersionCoreModule">GitVersionCoreModule</a></li>								
-											<li><a href="/api/GitVersion.Configuration.Init/GitVersionInitModule">GitVersionInitModule</a></li>								
 											<li><a href="/api/GitVersion/GitVersionExeModule">GitVersionExeModule</a></li>								
-											<li><a href="/api/GitVersion/GitVersionTaskModule">GitVersionTaskModule</a></li>								
+											<li><a href="/api/GitVersion.Configuration.Init/GitVersionInitModule">GitVersionInitModule</a></li>								
+											<li><a href="/api/GitVersion.BuildAgents/BuildServerModule">BuildServerModule</a></li>								
 											<li><a href="/api/GitVersion.VersionCalculation/VersionStrategyModule">Version<wbr>Strategy<wbr>Module</a></li>								
 											<li><a href="/api/GitVersion/GitVersionModule">GitVersionModule</a></li>								
+											<li><a href="/api/GitVersion/GitVersionCoreModule">GitVersionCoreModule</a></li>								
+											<li><a href="/api/GitVersion/GitVersionTaskModule">GitVersionTaskModule</a></li>								
 									</ul>
 								</dd>				
 						</dl>
@@ -255,20 +255,20 @@
 							graph BT
 	Type["IGitVersionModule"]
 class Type type-node
-	Implementing0["BuildServerModule"]-.-&gt;Type
-	click Implementing0 "/api/GitVersion.BuildAgents/BuildServerModule"
-	Implementing1["GitVersionCoreModule"]-.-&gt;Type
-	click Implementing1 "/api/GitVersion/GitVersionCoreModule"
-	Implementing2["GitVersionInitModule"]-.-&gt;Type
-	click Implementing2 "/api/GitVersion.Configuration.Init/GitVersionInitModule"
-	Implementing3["GitVersionExeModule"]-.-&gt;Type
-	click Implementing3 "/api/GitVersion/GitVersionExeModule"
-	Implementing4["GitVersionTaskModule"]-.-&gt;Type
-	click Implementing4 "/api/GitVersion/GitVersionTaskModule"
-	Implementing5["VersionStrategyModule"]-.-&gt;Type
-	click Implementing5 "/api/GitVersion.VersionCalculation/VersionStrategyModule"
-	Implementing6["GitVersionModule"]-.-&gt;Type
-	click Implementing6 "/api/GitVersion/GitVersionModule"
+	Implementing0["GitVersionExeModule"]-.-&gt;Type
+	click Implementing0 "/api/GitVersion/GitVersionExeModule"
+	Implementing1["GitVersionInitModule"]-.-&gt;Type
+	click Implementing1 "/api/GitVersion.Configuration.Init/GitVersionInitModule"
+	Implementing2["BuildServerModule"]-.-&gt;Type
+	click Implementing2 "/api/GitVersion.BuildAgents/BuildServerModule"
+	Implementing3["VersionStrategyModule"]-.-&gt;Type
+	click Implementing3 "/api/GitVersion.VersionCalculation/VersionStrategyModule"
+	Implementing4["GitVersionModule"]-.-&gt;Type
+	click Implementing4 "/api/GitVersion/GitVersionModule"
+	Implementing5["GitVersionCoreModule"]-.-&gt;Type
+	click Implementing5 "/api/GitVersion/GitVersionCoreModule"
+	Implementing6["GitVersionTaskModule"]-.-&gt;Type
+	click Implementing6 "/api/GitVersion/GitVersionTaskModule"
 
 						</div>
 					</div>

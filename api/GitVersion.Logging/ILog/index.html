@@ -139,13 +139,13 @@
 			<li class="header">Namespace</li>
 		<li><a href="/api/GitVersion.Logging">GitVersion<wbr>.Logging</a></li>
 		<li role="separator" class="divider"></li>
+			<li class="header">Enum Types</li>
+				<li><a href="/api/GitVersion.Logging/LogLevel">LogLevel</a></li>
+				<li><a href="/api/GitVersion.Logging/Verbosity">Verbosity</a></li>
 			<li class="header">Interface Types</li>
 				<li><a href="/api/GitVersion.Logging/IConsole">IConsole</a></li>
 				<li class="selected"><a href="/api/GitVersion.Logging/ILog">ILog</a></li>
 				<li><a href="/api/GitVersion.Logging/ILogAppender">ILogAppender</a></li>
-			<li class="header">Enum Types</li>
-				<li><a href="/api/GitVersion.Logging/LogLevel">LogLevel</a></li>
-				<li><a href="/api/GitVersion.Logging/Verbosity">Verbosity</a></li>
 			<li class="header">Class Types</li>
 				<li><a href="/api/GitVersion.Logging/ConsoleAppender">ConsoleAppender</a></li>
 				<li><a href="/api/GitVersion.Logging/Disposable">Disposable</a></li>
@@ -192,8 +192,8 @@
 								<dt>Implementing Types</dt>
 								<dd>
 									<ul class="list-unstyled">
-											<li><a href="/api/GitVersion.Logging/NullLog">NullLog</a></li>								
 											<li><a href="/api/GitVersion.Logging/Log">Log</a></li>								
+											<li><a href="/api/GitVersion.Logging/NullLog">NullLog</a></li>								
 									</ul>
 								</dd>				
 						</dl>
@@ -203,10 +203,10 @@
 							graph BT
 	Type["ILog"]
 class Type type-node
-	Implementing0["NullLog"]-.-&gt;Type
-	click Implementing0 "/api/GitVersion.Logging/NullLog"
-	Implementing1["Log"]-.-&gt;Type
-	click Implementing1 "/api/GitVersion.Logging/Log"
+	Implementing0["Log"]-.-&gt;Type
+	click Implementing0 "/api/GitVersion.Logging/Log"
+	Implementing1["NullLog"]-.-&gt;Type
+	click Implementing1 "/api/GitVersion.Logging/NullLog"
 
 						</div>
 					</div>
