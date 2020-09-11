@@ -522,6 +522,27 @@ namespace GitVersionCore.Tests.IntegrationTests
             fixture.AssertFullSemver("3.1.3", minorIncrementConfig);
             Console.WriteLine(fixture.SequenceDiagram.GetDiagram());
         }
+
+        [Test]
+        public void Issue2323()
+        {
+            using var fixture = new EmptyRepositoryFixture();
+            fixture.MakeACommit("Release v1.0.0");
+            fixture.ApplyTag("1.0");
+            fixture.AssertFullSemver("1.0.0", config);
+
+            fixture.BranchTo("release/1.1");
+            fixture.MakeACommit("New feature for upcoming v1.1");
+            fixture.AssertFullSemver("1.1.0-beta.1", config);
+
+            fixture.Checkout("master");
+            fixture.MakeACommit("Bugfix -> Release v1.0.1");
+            fixture.AssertFullSemver("1.0.1", config);
+
+            fixture.Checkout("release/1.1");
+            fixture.MakeACommit("Improve new feature for upcoming v1.1");
+            fixture.AssertFullSemver("1.1.0-beta.2", config);
+        }
     }
 
     internal static class CommitExtensions
