@@ -529,19 +529,19 @@ namespace GitVersionCore.Tests.IntegrationTests
             using var fixture = new EmptyRepositoryFixture();
             fixture.MakeACommit("Release v1.0.0");
             fixture.ApplyTag("1.0");
-            fixture.AssertFullSemver("1.0.0", config);
+            fixture.AssertFullSemver("1.0.0", config); // PASS
 
-            fixture.BranchTo("release/1.1");
+            fixture.BranchTo("release/1.1.0");
             fixture.MakeACommit("New feature for upcoming v1.1");
-            fixture.AssertFullSemver("1.1.0-beta.1", config);
+            fixture.AssertFullSemver("1.1.0-beta.1", config); // PASS
 
             fixture.Checkout("master");
             fixture.MakeACommit("Bugfix -> Release v1.0.1");
-            fixture.AssertFullSemver("1.0.1", config);
+            fixture.AssertFullSemver("1.0.1", config); // PASS
 
-            fixture.Checkout("release/1.1");
+            fixture.Checkout("release/1.1.0");
             fixture.MakeACommit("Improve new feature for upcoming v1.1");
-            fixture.AssertFullSemver("1.1.0-beta.2", config);
+            fixture.AssertFullSemver("1.1.0-beta.2", config); // FAIL: should be "1.1.0-beta.2" but was "1.1.1-beta.2"
         }
     }
 
