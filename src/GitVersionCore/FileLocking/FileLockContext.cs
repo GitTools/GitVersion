@@ -39,7 +39,8 @@ namespace GitVersion.FileLocking
 
         public void DecreaseLockUse(bool decreaseToZero, string lockId)
         {
-            if (FileStream == null) {
+            if (FileStream == null)
+            {
                 throw new InvalidOperationException("You cannot decrease lock use when no file stream has been assgined.");
             }
 
