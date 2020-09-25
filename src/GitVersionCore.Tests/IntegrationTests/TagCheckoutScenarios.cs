@@ -1,4 +1,4 @@
-﻿using GitTools.Testing;
+using GitTools.Testing;
 using NUnit.Framework;
 
 namespace GitVersionCore.Tests.IntegrationTests
