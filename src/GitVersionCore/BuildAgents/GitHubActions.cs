@@ -23,9 +23,9 @@ namespace GitVersion.BuildAgents
 
         public override string[] GenerateSetParameterMessage(string name, string value)
         {
-            // https://help.github.com/en/actions/automating-your-workflow-with-github-actions/development-tools-for-github-actions#set-an-environment-variable-set-env
+            // https://docs.github.com/en/free-pro-team@latest/actions/reference/workflow-commands-for-github-actions#environment-files
             // Example
-            // echo "::set-env name=action_state::yellow"
+            // echo "name=action_state::yellow >> $GITHUB_ENV"
 
             if (!string.IsNullOrWhiteSpace(value))
             {
@@ -33,7 +33,7 @@ namespace GitVersion.BuildAgents
 
                 return new[]
                 {
-                    $"::set-env name={key}::{value}"
+                    $"\"{key}={value}\" >> $GITHUB_ENV"
                 };
             }
 
