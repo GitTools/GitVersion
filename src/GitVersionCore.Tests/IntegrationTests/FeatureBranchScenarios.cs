@@ -92,6 +92,11 @@ namespace GitVersionCore.Tests.IntegrationTests
             fixture.Repository.MakeCommits(5);
 
             fixture.AssertFullSemver("1.1.0-JIRA-123.1+5");
+
+            Commands.Checkout(fixture.Repository, "develop");
+            fixture.Repository.MergeNoFF("feature/JIRA-123");
+
+            fixture.AssertFullSemver("1.1.0-alpha.6");
         }
 
         [Test]
@@ -104,6 +109,11 @@ namespace GitVersionCore.Tests.IntegrationTests
             fixture.Repository.MakeCommits(5);
 
             fixture.AssertFullSemver("1.0.1-JIRA-123.1+5");
+
+            Commands.Checkout(fixture.Repository, "master");
+            fixture.Repository.MergeNoFF("feature/JIRA-123");
+
+            fixture.AssertFullSemver("1.0.1+6");
         }
 
         [Test]
