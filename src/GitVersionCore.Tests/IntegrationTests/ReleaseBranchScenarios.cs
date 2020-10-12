@@ -169,6 +169,43 @@ namespace GitVersionCore.Tests.IntegrationTests
         }
 
         [Test]
+        public void WhenReleaseBranchOffDevelopIsMergedFFIntoMasterAndDevelopVersionIsTakenWithIt()
+        {
+            using var fixture = new EmptyRepositoryFixture();
+            fixture.Repository.MakeATaggedCommit("1.0.3");
+            fixture.Repository.CreateBranch("develop");
+            fixture.Repository.MakeCommits(1);
+
+            fixture.Repository.CreateBranch("release-2.0.0");
+            fixture.Checkout("release-2.0.0");
+            fixture.Repository.MakeCommits(4);
+            fixture.Checkout("master");
+            fixture.Repository.Merge("release-2.0.0", Generate.SignatureNow());
+
+            fixture.AssertFullSemver("2.0.0+0");
+        }
+
+        [Test]
+        public void WhenTaggedReleaseBranchOffDevelopIsMergedFFIntoMasterAndDevelopVersionIsTakenWithIt()
+        {
+            using var fixture = new EmptyRepositoryFixture();
+            fixture.Repository.MakeATaggedCommit("1.0.3");
+            fixture.Repository.CreateBranch("develop");
+            fixture.Repository.MakeCommits(1);
+
+            fixture.Repository.CreateBranch("release-2.0.0");
+            fixture.Checkout("release-2.0.0");
+            fixture.Repository.MakeCommits(4);
+            fixture.Repository.MakeATaggedCommit("2.0.0-beta.1+4");
+            fixture.AssertFullSemver("2.0.0-beta.1+4");
+            fixture.Checkout("master");
+            fixture.Repository.Merge("release-2.0.0", Generate.SignatureNow());
+
+            // Do not take tag into account since tag is a "beta" tag on the "release" branch but now "master" is checked out
+            fixture.AssertFullSemver("2.0.0+0");
+        }
+
+        [Test]
         public void WhenReleaseBranchOffMasterIsMergedIntoMasterVersionIsTakenWithIt()
         {
             using var fixture = new EmptyRepositoryFixture();
