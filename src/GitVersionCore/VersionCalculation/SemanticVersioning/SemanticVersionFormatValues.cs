@@ -83,7 +83,7 @@ namespace GitVersion
 
         public string CommitsSinceVersionSourcePadded => semver.BuildMetaData.CommitsSinceVersionSource.ToString(CultureInfo.InvariantCulture).PadLeft(config.CommitsSinceVersionSourcePadding, '0');
 
-        public string HasUncommitedChanges => semver.BuildMetaData.HasUncomittedChanges ? "Dirty" : null;
+        public string HasUncommittedChanges => semver.BuildMetaData.HasUncomittedChanges ? "Dirty" : null;
 
         private String GetWeightedPreReleaseNumber()
         {

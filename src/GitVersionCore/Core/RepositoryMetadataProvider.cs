@@ -500,7 +500,7 @@ namespace GitVersion
             return branchMergeBases;
         }
 
-        public bool HasUncommitedChanges()
+        public bool HasUncommittedChanges()
         {
             // check if we have a branch tip at all to behave properly with empty repos
             // => return that we have actually uncomitted changes because we are apparently

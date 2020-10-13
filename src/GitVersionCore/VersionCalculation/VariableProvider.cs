@@ -94,7 +94,7 @@ namespace GitVersion.VersionCalculation
                 semverFormatValues.VersionSourceSha,
                 semverFormatValues.CommitsSinceVersionSource,
                 semverFormatValues.CommitsSinceVersionSourcePadded,
-                semverFormatValues.HasUncommitedChanges);
+                semverFormatValues.HasUncommittedChanges);
 
             return variables;
         }
