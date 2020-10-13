@@ -1,10 +1,10 @@
+using GitVersion.Logging;
+using GitVersion.OutputVariables;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Xml.Linq;
-using GitVersion.Logging;
-using GitVersion.OutputVariables;
 
 namespace GitVersion.VersionConverters.AssemblyInfo
 {
@@ -17,6 +17,7 @@ namespace GitVersion.VersionConverters.AssemblyInfo
         internal const string AssemblyVersionElement = "AssemblyVersion";
         internal const string FileVersionElement = "FileVersion";
         internal const string InformationalVersionElement = "InformationalVersion";
+        internal const string VersionElement = "Version";
 
         private readonly List<Action> restoreBackupTasks = new List<Action>();
         private readonly List<Action> cleanupBackupTasks = new List<Action>();
@@ -40,6 +41,7 @@ namespace GitVersion.VersionConverters.AssemblyInfo
             var assemblyVersion = variables.AssemblySemVer;
             var assemblyInfoVersion = variables.InformationalVersion;
             var assemblyFileVersion = variables.AssemblySemFileVer;
+            var packageVersion = variables.NuGetVersionV2;
 
             foreach (var projectFile in projectFilesToUpdate)
             {
@@ -53,6 +55,8 @@ namespace GitVersion.VersionConverters.AssemblyInfo
                     log.Warning($"Unable to update file: {localProjectFile}");
                     continue;
                 }
+
+                log.Debug($"Update file: {localProjectFile}");
 
                 var backupProjectFile = localProjectFile + ".bak";
                 fileSystem.Copy(localProjectFile, backupProjectFile, true);
@@ -84,6 +88,11 @@ namespace GitVersion.VersionConverters.AssemblyInfo
                     UpdateProjectVersionElement(fileXml, InformationalVersionElement, assemblyInfoVersion);
                 }
 
+                if (!string.IsNullOrWhiteSpace(packageVersion))
+                {
+                    UpdateProjectVersionElement(fileXml, VersionElement, packageVersion);
+                }
+
                 var outputXmlString = fileXml.ToString();
                 if (originalFileContents != outputXmlString)
                 {
@@ -102,7 +111,7 @@ namespace GitVersion.VersionConverters.AssemblyInfo
                 return false;
             }
 
-            var supportedSdks = new[] { "Microsoft.NET.Sdk", "Microsoft.NET.Sdk.Web" };
+            var supportedSdks = new[] { "Microsoft.NET.Sdk", "Microsoft.NET.Sdk.Web", "Microsoft.NET.Sdk.WindowsDesktop" };
             var sdkAttribute = xmlRoot.Attribute("Sdk");
             if (sdkAttribute == null || !supportedSdks.Contains(sdkAttribute.Value))
             {

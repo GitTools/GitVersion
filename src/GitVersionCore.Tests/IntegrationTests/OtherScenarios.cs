@@ -1,9 +1,5 @@
-using System.Collections.Generic;
 using System.Linq;
 using GitTools.Testing;
-using GitVersion;
-using GitVersion.Model.Configuration;
-using GitVersion.VersionCalculation;
 using GitVersionCore.Tests.Helpers;
 using LibGit2Sharp;
 using NUnit.Framework;
@@ -60,25 +56,25 @@ namespace GitVersionCore.Tests.IntegrationTests
         [Test]
         public void AllowHavingMainInsteadOfMaster()
         {
-            var config = new Config();
-            config.Branches.Add("master", new BranchConfig
-            {
-                Regex = "main",
-                VersioningMode = VersioningMode.ContinuousDelivery,
-                Tag = "useBranchName",
-                Increment = IncrementStrategy.Patch,
-                PreventIncrementOfMergedBranchVersion = true,
-                TrackMergeTarget = false,
-                SourceBranches = new HashSet<string>()
-            });
-
             using var fixture = new EmptyRepositoryFixture();
             fixture.Repository.MakeACommit();
             Commands.Checkout(fixture.Repository, fixture.Repository.CreateBranch("develop"));
             Commands.Checkout(fixture.Repository, fixture.Repository.CreateBranch("main"));
             fixture.Repository.Branches.Remove(fixture.Repository.Branches["master"]);
 
-            fixture.AssertFullSemver("0.1.0-1+0", config);
+            fixture.AssertFullSemver("0.1.0+0");
+        }
+
+        [Test]
+        public void AllowHavingVariantsStartingWithMain()
+        {
+            using var fixture = new EmptyRepositoryFixture();
+            fixture.Repository.MakeACommit();
+            fixture.Repository.MakeATaggedCommit("1.0.0");
+            fixture.Repository.MakeACommit();
+            Commands.Checkout(fixture.Repository, fixture.Repository.CreateBranch("mainfix"));
+
+            fixture.AssertFullSemver("1.0.1-mainfix.1+1");
         }
 
         [Test]
