@@ -31,7 +31,7 @@ namespace GitVersionCore.Tests
             sut.TargetBranch.ShouldBeNull();
             sut.MergedBranch.ShouldBeEmpty();
             sut.IsMergedPullRequest.ShouldBeFalse();
-            sut.PullRequestNumber.ShouldBeNull();
+            sut.PullRequestNumber.ShouldBe(null);
             sut.Version.ShouldBeNull();
         }
 
@@ -51,7 +51,7 @@ namespace GitVersionCore.Tests
             sut.TargetBranch.ShouldBeNull();
             sut.MergedBranch.ShouldBeEmpty();
             sut.IsMergedPullRequest.ShouldBeFalse();
-            sut.PullRequestNumber.ShouldBeNull();
+            sut.PullRequestNumber.ShouldBe(null);
             sut.Version.ShouldBeNull();
         }
 
@@ -81,7 +81,7 @@ namespace GitVersionCore.Tests
             sut.TargetBranch.ShouldBe(expectedTargetBranch);
             sut.MergedBranch.ShouldBe(expectedMergedBranch);
             sut.IsMergedPullRequest.ShouldBeFalse();
-            sut.PullRequestNumber.ShouldBeNull();
+            sut.PullRequestNumber.ShouldBe(null);
             sut.Version.ShouldBe(expectedVersion);
         }
 
@@ -205,7 +205,7 @@ Merge in aaa/777 from release/2.2 to master
             sut.TargetBranch.ShouldBe(expectedTargetBranch);
             sut.MergedBranch.ShouldBe(expectedMergedBranch);
             sut.IsMergedPullRequest.ShouldBeFalse();
-            sut.PullRequestNumber.ShouldBeNull();
+            sut.PullRequestNumber.ShouldBe(null);
             sut.Version.ShouldBe(expectedVersion);
         }
 
@@ -235,7 +235,7 @@ Merge in aaa/777 from release/2.2 to master
             sut.TargetBranch.ShouldBe(expectedTargetBranch);
             sut.MergedBranch.ShouldBe(expectedMergedBranch);
             sut.IsMergedPullRequest.ShouldBeFalse();
-            sut.PullRequestNumber.ShouldBeNull();
+            sut.PullRequestNumber.ShouldBe(null);
             sut.Version.ShouldBe(expectedVersion);
         }
 
@@ -285,7 +285,7 @@ Merge in aaa/777 from release/2.2 to master
             sut.TargetBranch.ShouldBeNull();
             sut.MergedBranch.ShouldBeEmpty();
             sut.IsMergedPullRequest.ShouldBeFalse();
-            sut.PullRequestNumber.ShouldBeNull();
+            sut.PullRequestNumber.ShouldBe(null);
             sut.Version.ShouldBeNull();
         }
 
@@ -310,7 +310,7 @@ Merge in aaa/777 from release/2.2 to master
             sut.TargetBranch.ShouldBeNull();
             sut.MergedBranch.ShouldBeEmpty();
             sut.IsMergedPullRequest.ShouldBeFalse();
-            sut.PullRequestNumber.ShouldBeNull();
+            sut.PullRequestNumber.ShouldBe(null);
             sut.Version.ShouldBeNull();
         }
 
@@ -362,7 +362,7 @@ Merge in aaa/777 from release/2.2 to master
             sut.TargetBranch.ShouldBeNull();
             sut.MergedBranch.ShouldBe("this");
             sut.IsMergedPullRequest.ShouldBeFalse();
-            sut.PullRequestNumber.ShouldBeNull();
+            sut.PullRequestNumber.ShouldBe(null);
             sut.Version.ShouldBeNull();
         }
     }
