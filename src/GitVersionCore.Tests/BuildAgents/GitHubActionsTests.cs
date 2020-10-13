@@ -97,7 +97,7 @@ namespace GitVersionCore.Tests.BuildAgents
         }
 
         [TestCase("Something", "1.0.0",
-            "::set-env name=GitVersion_Something::1.0.0")]
+            "\"GitVersion_Something=1.0.0\" >> $GITHUB_ENV")]
         public void GetSetParameterMessage(string key, string value, string expectedResult)
         {
             // Assert
@@ -141,7 +141,7 @@ namespace GitVersionCore.Tests.BuildAgents
                 "Executing GenerateSetVersionMessage for 'GitHubActions'.",
                 "",
                 "Executing GenerateBuildLogOutput for 'GitHubActions'.",
-                "::set-env name=GitVersion_Major::1.0.0"
+                "\"GitVersion_Major=1.0.0\" >> $GITHUB_ENV"
             };
 
             string.Join(Environment.NewLine, list)

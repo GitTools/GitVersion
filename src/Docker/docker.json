@@ -1,13 +1,5 @@
 {
     "linux": {
-        "2.1": [
-            "alpine.3.10-x64",
-            "centos.7-x64",
-            "debian.9-x64",
-            "fedora.30-x64",
-            "ubuntu.16.04-x64",
-            "ubuntu.18.04-x64"
-        ],
         "3.1": [
             "alpine.3.10-x64",
             "centos.7-x64",
@@ -18,9 +10,6 @@
         ]
     },
     "windows": {
-        "2.1": [
-            "nanoserver"
-        ],
         "3.1": [
             "nanoserver"
         ]
