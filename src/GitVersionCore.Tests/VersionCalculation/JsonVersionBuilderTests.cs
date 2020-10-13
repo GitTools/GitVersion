@@ -28,7 +28,7 @@ namespace GitVersionCore.Tests
                 Minor = 2,
                 Patch = 0,
                 PreReleaseTag = "unstable4",
-                BuildMetaData = new SemanticVersionBuildMetaData("versionSourceSha", 5, "feature1", "commitSha", "commitShortSha", DateTimeOffset.Parse("2014-03-06 23:59:59Z"))
+                BuildMetaData = new SemanticVersionBuildMetaData("versionSourceSha", 5, "feature1", "commitSha", "commitShortSha", DateTimeOffset.Parse("2014-03-06 23:59:59Z"), false)
             };
 
             var config = new TestEffectiveConfiguration();

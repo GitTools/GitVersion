@@ -500,6 +500,21 @@ namespace GitVersion
             return branchMergeBases;
         }
 
+        public bool HasUncommitedChanges()
+        {
+            // check if we have a branch tip at all to behave properly with empty repos
+            // => return that we have actually uncomitted changes because we are apparently
+            // running GitVersion on something which lives inside this brand new repo _/\Ö/\_
+            if (repository.Head?.Tip == null || repository.Diff == null)
+                return true;
+
+            // gets all changes of the last commit vs Staging area and WT
+            var changes = repository.Diff.Compare<TreeChanges>(repository.Head.Tip.Tree,
+                                                  DiffTargets.Index | DiffTargets.WorkingDirectory);
+
+            return changes.Count > 0;
+        }
+
         private class MergeBaseData
         {
             public Commit MergeBase { get; }

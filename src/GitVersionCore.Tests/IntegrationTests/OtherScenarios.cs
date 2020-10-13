@@ -1,8 +1,10 @@
+using System.IO;
 using System.Linq;
 using GitTools.Testing;
 using GitVersionCore.Tests.Helpers;
 using LibGit2Sharp;
 using NUnit.Framework;
+using Shouldly;
 
 namespace GitVersionCore.Tests.IntegrationTests
 {
@@ -93,6 +95,34 @@ namespace GitVersionCore.Tests.IntegrationTests
             fixture.LocalRepositoryFixture.Repository.Branches.Remove("master");
             fixture.InitializeRepo();
             fixture.AssertFullSemver("1.1.0-alpha.1");
+        }
+
+        [TestCase(true, false)]
+        [TestCase(true, true)]
+        [TestCase(false, false)]
+        [TestCase(false, true)]
+        public void HasDirtyFlagIfUncommittedChangesAreInRepo(bool createTempFile, bool stageFile)
+        {
+            using var fixture = new EmptyRepositoryFixture();
+            fixture.Repository.MakeACommit();
+
+            if (createTempFile)
+            {
+                var tempFile = Path.GetTempFileName();
+                var repoFile = Path.Combine(fixture.RepositoryPath, Path.GetFileNameWithoutExtension(tempFile) + ".txt");
+                File.Move(tempFile, repoFile);
+                File.WriteAllText(repoFile, "Hello world");
+
+                if(stageFile)
+                    Commands.Stage(fixture.Repository, repoFile);
+            }
+
+            var version = fixture.GetVersion();
+
+            if (createTempFile)
+                version.RepositoryDirtyFlag.ShouldBe("Dirty");
+            else
+                version.RepositoryDirtyFlag.ShouldBe(null);
         }
     }
 }
