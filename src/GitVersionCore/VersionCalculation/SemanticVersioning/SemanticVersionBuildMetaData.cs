@@ -161,7 +161,7 @@ namespace GitVersion
                 semanticVersionBuildMetaData.OtherMetaData = parsed.Groups["Other"].Value.TrimStart('.');
 
             // note: not super beautiful, but it might be "good enough" for this end (?)
-            semanticVersionBuildMetaData.HasUncomittedChanges = semanticVersionBuildMetaData.OtherMetaData == "Dirty"; 
+            semanticVersionBuildMetaData.HasUncomittedChanges = semanticVersionBuildMetaData.OtherMetaData == "Dirty";
 
             return semanticVersionBuildMetaData;
         }

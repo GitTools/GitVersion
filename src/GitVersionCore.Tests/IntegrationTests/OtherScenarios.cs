@@ -113,7 +113,7 @@ namespace GitVersionCore.Tests.IntegrationTests
                 File.Move(tempFile, repoFile);
                 File.WriteAllText(repoFile, "Hello world");
 
-                if(stageFile)
+                if (stageFile)
                     Commands.Stage(fixture.Repository, repoFile);
             }
 
