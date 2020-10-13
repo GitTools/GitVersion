@@ -35,7 +35,10 @@ namespace GitVersion.VersionCalculation
                 log.Info($"Current commit is tagged with version {context.CurrentCommitTaggedVersion}, " +
                          "version calculation is for metadata only.");
             }
-            EnsureHeadIsNotDetached(context);
+            else
+            {
+                EnsureHeadIsNotDetached(context);
+            }
 
             SemanticVersion taggedSemanticVersion = null;
 
