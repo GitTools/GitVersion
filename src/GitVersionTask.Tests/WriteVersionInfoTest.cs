@@ -36,6 +36,7 @@ namespace GitVersionTask.Tests
         }
 
         [Test]
+        [Category(NoNet48)]
         [Category(NoMono)]
         public void WriteVersionInfoTaskShouldNotLogOutputVariablesToBuildOutputWhenRunWithMsBuild()
         {
@@ -55,6 +56,7 @@ namespace GitVersionTask.Tests
         }
 
         [Test]
+        [Category(NoNet48)]
         [Category(NoMono)]
         public void WriteVersionInfoTaskShouldLogOutputVariablesToBuildOutputWhenRunWithMsBuildInBuildServer()
         {
