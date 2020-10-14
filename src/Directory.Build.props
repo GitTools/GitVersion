@@ -35,7 +35,7 @@
         <PackageVersion_GitToolsTesting>1.2.0</PackageVersion_GitToolsTesting>
         <PackageVersion_NUnit3TestAdapter>3.17.0</PackageVersion_NUnit3TestAdapter>
         <PackageVersion_NunitXmlTestLogger>2.1.62</PackageVersion_NunitXmlTestLogger>
-        <PackageVersion_Shouldly>4.0.0-beta0002</PackageVersion_Shouldly>
+        <PackageVersion_Shouldly>4.0.0-beta0003</PackageVersion_Shouldly>
 
     </PropertyGroup>
 

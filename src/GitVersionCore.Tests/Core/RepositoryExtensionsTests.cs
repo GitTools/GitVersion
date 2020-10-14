@@ -52,6 +52,7 @@ namespace GitVersionCore.Tests
             private readonly IRepository repository;
             public TestableBranchCollection(IRepository repository)
             {
+                this.repository = repository;
             }
 
             IDictionary<string, Branch> branches = new Dictionary<string, Branch>();

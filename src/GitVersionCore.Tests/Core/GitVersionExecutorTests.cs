@@ -172,7 +172,7 @@ namespace GitVersionCore.Tests
 
             var logsMessages = stringBuilder.ToString();
 
-            logsMessages.ShouldContain("Deserializing version variables from cache file", () => logsMessages);
+            logsMessages.ShouldContain("Deserializing version variables from cache file", logsMessages);
         }
 
         [Test]
@@ -234,7 +234,7 @@ namespace GitVersionCore.Tests
             versionVariables.AssemblySemVer.ShouldBe("0.1.0.0");
 
             var cachedDirectoryTimestampAfter = fileSystem.GetLastDirectoryWrite(cacheDirectory);
-            cachedDirectoryTimestampAfter.ShouldBe(cacheDirectoryTimestamp, () => "Cache was updated when override config was set");
+            cachedDirectoryTimestampAfter.ShouldBe(cacheDirectoryTimestamp, "Cache was updated when override config was set");
         }
 
         [Test]
@@ -256,7 +256,7 @@ namespace GitVersionCore.Tests
             gitVersionCalculator.CalculateVersionVariables();
 
             var logsMessages = stringBuilder.ToString();
-            logsMessages.ShouldContain("yml not found", () => logsMessages);
+            logsMessages.ShouldContain("yml not found", logsMessages);
         }
 
         [Test]
