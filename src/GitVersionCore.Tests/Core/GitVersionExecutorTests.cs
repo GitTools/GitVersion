@@ -79,8 +79,8 @@ namespace GitVersionCore.Tests
         }
 
         [Test]
-        [Category("NoMono")]
-        [Description("LibGit2Sharp fails here when running under Mono")]
+        [Category(NoMono)]
+        [Description(NoMonoDescription)]
         public void CacheKeyForWorktree()
         {
             using var fixture = new EmptyRepositoryFixture();
@@ -409,8 +409,8 @@ namespace GitVersionCore.Tests
         }
 
         [Test]
-        [Category("NoMono")]
-        [Description("LibGit2Sharp fails when running under Mono")]
+        [Category(NoMono)]
+        [Description(NoMonoDescription)]
         public void GetProjectRootDirectoryWorkingDirectoryWithWorktree()
         {
             using var fixture = new EmptyRepositoryFixture();
@@ -497,8 +497,8 @@ namespace GitVersionCore.Tests
         }
 
         [Test]
-        [Category("NoMono")]
-        [Description("LibGit2Sharp fails when running under Mono")]
+        [Category(NoMono)]
+        [Description(NoMonoDescription)]
         public void GetDotGitDirectoryWorktree()
         {
             using var fixture = new EmptyRepositoryFixture();
@@ -528,8 +528,8 @@ namespace GitVersionCore.Tests
         }
 
         [Test]
-        [Category("NoMono")]
-        [Description("LibGit2Sharp fails when running under Mono")]
+        [Category(NoMono)]
+        [Description(NoMonoDescription)]
         public void CalculateVersionFromWorktreeHead()
         {
             // Setup

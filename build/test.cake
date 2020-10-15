@@ -39,11 +39,15 @@ Task("UnitTest")
                     Exclude = new List<string> { "[GitVersion*.Tests]*", "[GitVersionTask.MsBuild]*" }
                 };
 
-                if (IsRunningOnUnix() && string.Equals(framework, parameters.FullFxVersion48))
+                if (string.Equals(framework, parameters.FullFxVersion48)) 
                 {
-                    settings.Filter = "TestCategory!=NoMono";
+                    if (IsRunningOnUnix()) {
+                        settings.Filter = "TestCategory!=NoMono";
+                    } else {
+                        settings.Filter = "TestCategory!=NoNet48";
+                    }
                 }
-
+                
                 DotNetCoreTest(project.FullPath, settings, coverletSettings);
             });
         }
