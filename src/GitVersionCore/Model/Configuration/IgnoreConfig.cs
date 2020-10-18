@@ -19,7 +19,8 @@ namespace GitVersion.Model.Configuration
         [YamlMember(Alias = "sha")]
         public IEnumerable<string> ShAs { get; set; }
 
-        public virtual bool IsEmpty => Before == null && ShAs == null;
+        public virtual bool IsEmpty => Before == null
+                                       && (ShAs == null || ShAs.Any() == false);
 
         public virtual IEnumerable<IVersionFilter> ToFilters()
         {
