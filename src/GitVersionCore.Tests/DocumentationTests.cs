@@ -41,7 +41,7 @@ namespace GitVersionCore.Tests
             foreach (var configProperty in configProperties)
             {
                 var formattedConfigProperty = $"### {configProperty}";
-                configurationDocumentationFile.ShouldContain(formattedConfigProperty,
+                configurationDocumentationFile.ShouldContain(formattedConfigProperty, Case.Insensitive,
                     Environment.NewLine + configurationDocumentationFile);
             }
         }
@@ -57,7 +57,7 @@ namespace GitVersionCore.Tests
 
             foreach (var variable in variables)
             {
-                variableDocumentationFile.ShouldContain(variable,
+                variableDocumentationFile.ShouldContain(variable, Case.Insensitive,
                     Environment.NewLine + variableDocumentationFile);
             }
         }
