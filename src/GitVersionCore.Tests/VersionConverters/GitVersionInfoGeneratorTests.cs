@@ -23,8 +23,8 @@ namespace GitVersionCore.Tests
         [TestCase("cs")]
         [TestCase("fs")]
         [TestCase("vb")]
-        [Category("NoMono")]
-        [Description("Won't run on Mono due to source information not being available for ShouldMatchApproved.")]
+        [Category(NoMono)]
+        [Description(NoMonoDescription)]
         public void ShouldCreateFile(string fileExtension)
         {
             var directory = Path.GetTempPath();
