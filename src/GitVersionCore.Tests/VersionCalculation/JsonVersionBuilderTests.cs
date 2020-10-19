@@ -18,8 +18,8 @@ namespace GitVersionCore.Tests
         }
 
         [Test]
-        [Category("NoMono")]
-        [Description("Won't run on Mono due to source information not being available for ShouldMatchApproved.")]
+        [Category(NoMono)]
+        [Description(NoMonoDescription)]
         public void Json()
         {
             var semanticVersion = new SemanticVersion

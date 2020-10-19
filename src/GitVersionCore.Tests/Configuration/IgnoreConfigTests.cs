@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using GitVersion.Configuration;
+using GitVersion.Model.Configuration;
 using GitVersionCore.Tests.Helpers;
 using NUnit.Framework;
 using Shouldly;
@@ -73,6 +74,14 @@ ignore:
 
             using var reader = new StringReader(yaml);
             Should.Throw<YamlException>(() => ConfigSerializer.Read(reader));
+        }
+
+        [Test]
+        public void NewInstanceShouldBeEmpty()
+        {
+            var ignoreConfig = new IgnoreConfig();
+
+            ignoreConfig.IsEmpty.ShouldBeTrue();
         }
     }
 }
