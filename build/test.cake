@@ -73,12 +73,12 @@ Task("UnitTest")
     if (parameters.IsRunningOnAzurePipeline)
     {
         if (testResultsFiles.Any()) {
-            var data = new TFBuildPublishTestResultsData {
+            var data = new AzurePipelinesPublishTestResultsData {
                 TestResultsFiles = testResultsFiles.ToArray(),
                 Platform = Context.Environment.Platform.Family.ToString(),
-                TestRunner = TFTestRunnerType.NUnit
+                TestRunner = AzurePipelinesTestRunnerType.NUnit
             };
-            TFBuild.Commands.PublishTestResults(data);
+            AzurePipelines.Commands.PublishTestResults(data);
         }
     }
 });
