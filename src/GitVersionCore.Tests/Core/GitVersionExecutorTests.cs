@@ -172,7 +172,7 @@ namespace GitVersionCore.Tests
 
             var logsMessages = stringBuilder.ToString();
 
-            logsMessages.ShouldContain("Deserializing version variables from cache file", logsMessages);
+            logsMessages.ShouldContain("Deserializing version variables from cache file", Case.Insensitive, logsMessages);
         }
 
         [Test]
@@ -256,7 +256,7 @@ namespace GitVersionCore.Tests
             gitVersionCalculator.CalculateVersionVariables();
 
             var logsMessages = stringBuilder.ToString();
-            logsMessages.ShouldContain("yml not found", logsMessages);
+            logsMessages.ShouldContain("yml not found", Case.Insensitive, logsMessages);
         }
 
         [Test]
