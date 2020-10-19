@@ -91,7 +91,7 @@ namespace GitVersionExe.Tests
 
             exitCode.ShouldNotBe(0);
             var outputString = output.ToString();
-            outputString.ShouldContain($"The working directory '{workingDirectory}' does not exist.", () => outputString);
+            outputString.ShouldContain($"The working directory '{workingDirectory}' does not exist.", Case.Insensitive, outputString);
         }
     }
 }

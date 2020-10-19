@@ -21,8 +21,8 @@ namespace GitVersionCore.Tests.Init
         }
 
         [Test]
-        [Category("NoMono")]
-        [Description("Won't run on Mono due to source information not being available for ShouldMatchApproved.")]
+        [Category(NoMono)]
+        [Description(NoMonoDescription)]
         public void CanSetNextVersion()
         {
             var workingDirectory = RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? "c:\\proj" : "/proj";

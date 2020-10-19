@@ -39,11 +39,15 @@ Task("UnitTest")
                     Exclude = new List<string> { "[GitVersion*.Tests]*", "[GitVersionTask.MsBuild]*" }
                 };
 
-                if (IsRunningOnUnix() && string.Equals(framework, parameters.FullFxVersion48))
+                if (string.Equals(framework, parameters.FullFxVersion48)) 
                 {
-                    settings.Filter = "TestCategory!=NoMono";
+                    if (IsRunningOnUnix()) {
+                        settings.Filter = "TestCategory!=NoMono";
+                    } else {
+                        settings.Filter = "TestCategory!=NoNet48";
+                    }
                 }
-
+                
                 DotNetCoreTest(project.FullPath, settings, coverletSettings);
             });
         }
@@ -69,12 +73,12 @@ Task("UnitTest")
     if (parameters.IsRunningOnAzurePipeline)
     {
         if (testResultsFiles.Any()) {
-            var data = new TFBuildPublishTestResultsData {
+            var data = new AzurePipelinesPublishTestResultsData {
                 TestResultsFiles = testResultsFiles.ToArray(),
                 Platform = Context.Environment.Platform.Family.ToString(),
-                TestRunner = TFTestRunnerType.NUnit
+                TestRunner = AzurePipelinesTestRunnerType.NUnit
             };
-            TFBuild.Commands.PublishTestResults(data);
+            AzurePipelines.Commands.PublishTestResults(data);
         }
     }
 });
