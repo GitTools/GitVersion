@@ -45,9 +45,9 @@ namespace GitVersion.FileLocking
                 fileStream.Lock(0, 0);
                 return true;
             }
-            // The IOException does specify that the file could not been accessed because 
+            // The IOException does specify that the file could not been accessed because
             // it was partially locked. All other exception have to be handled by consumer.
-            // 
+            //
             // See references:
             // https://docs.microsoft.com/en-US/dotnet/api/system.io.file.open?view=netcore-3.1 (exceptions)
             // https://docs.microsoft.com/en-US/dotnet/api/system.io.filestream.lock?view=netcore-3.1#exceptions
@@ -81,25 +81,21 @@ namespace GitVersion.FileLocking
             FileStream? spinningFileStream = null;
 
             var spinHasBeenFinished = SpinWait.SpinUntil(() =>
-            {
-                return TryAcquire(filePath, out spinningFileStream, fileMode: fileMode, fileAccess: fileAccess, fileShare: fileShare);
-            }, timeoutInMilliseconds);
+                TryAcquire(filePath, out spinningFileStream, fileMode: fileMode, fileAccess: fileAccess, fileShare: fileShare), timeoutInMilliseconds);
 
             if (spinHasBeenFinished)
             {
                 fileStream = spinningFileStream ?? throw new ArgumentNullException(nameof(spinningFileStream));
                 return true;
             }
-            else
-            {
-                if (throwOnTimeout)
-                {
-                    throw new TimeoutException($"Acquiring file lock failed due to timeout.");
-                }
 
-                fileStream = null;
-                return false;
+            if (throwOnTimeout)
+            {
+                throw new TimeoutException($"Acquiring file lock failed due to timeout.");
             }
+
+            fileStream = null;
+            return false;
         }
 
         private FileStream? waitUntilAcquired(string filePath, FileMode fileMode,

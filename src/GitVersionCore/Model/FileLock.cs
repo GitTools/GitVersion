@@ -1,6 +1,5 @@
 using GitVersion.FileLocking;
 using System;
-using System.IO;
 
 namespace GitVersion
 {

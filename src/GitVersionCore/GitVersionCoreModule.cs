@@ -31,10 +31,9 @@ namespace GitVersion
             services.AddSingleton<IConsole, ConsoleAdapter>();
             services.AddSingleton<IGitVersionCache, GitVersionCache>();
 
-
             services.AddSingleton<ILockFileApi, LockFileApi>();
 
-            services.AddSingleton<IFileLocker, FileLocker>((serviceProvider) =>
+            services.AddSingleton<IFileLocker>(serviceProvider =>
             {
                 var lockFileApi = serviceProvider.GetRequiredService<ILockFileApi>();
                 var gitVersionCache = serviceProvider.GetRequiredService<IGitVersionCache>();
@@ -43,14 +42,12 @@ namespace GitVersion
                 return new FileLocker(lockFileApi, lockFilePath);
             });
 
-            services.AddSingleton<IFileLock>((serviceProvider) =>
+            services.AddSingleton<IFileLock>(serviceProvider =>
             {
                 var fileLocker = serviceProvider.GetRequiredService<IFileLocker>();
                 var fileLockUse = fileLocker.WaitUntilAcquired();
-                var fileLock = new FileLock(fileLockUse);
-                return fileLock;
+                return new FileLock(fileLockUse);
             });
-
 
             services.AddSingleton<IGitVersionCacheKeyFactory, GitVersionCacheKeyFactory>();
             services.AddSingleton<IGitVersionContextFactory, GitVersionContextFactory>();
