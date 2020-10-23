@@ -41,7 +41,8 @@ namespace GitVersion.OutputVariables
                                 string nugetPreReleaseTagV2,
                                 string versionSourceSha,
                                 string commitsSinceVersionSource,
-                                string commitsSinceVersionSourcePadded)
+                                string commitsSinceVersionSourcePadded,
+                                string uncommittedChanges)
         {
             Major = major;
             Minor = minor;
@@ -74,6 +75,7 @@ namespace GitVersion.OutputVariables
             VersionSourceSha = versionSourceSha;
             CommitsSinceVersionSource = commitsSinceVersionSource;
             CommitsSinceVersionSourcePadded = commitsSinceVersionSourcePadded;
+            UncommittedChanges = uncommittedChanges;
         }
 
         public string Major { get; }
@@ -106,6 +108,8 @@ namespace GitVersion.OutputVariables
         public string VersionSourceSha { get; }
         public string CommitsSinceVersionSource { get; }
         public string CommitsSinceVersionSourcePadded { get; }
+
+        public string UncommittedChanges { get; }
 
         [ReflectionIgnore]
         public static IEnumerable<string> AvailableVariables

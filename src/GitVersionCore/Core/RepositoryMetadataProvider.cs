@@ -500,6 +500,37 @@ namespace GitVersion
             return branchMergeBases;
         }
 
+        public int GetNumberOfUncommittedChanges()
+        {
+            // check if we have a branch tip at all to behave properly with empty repos
+            // => return that we have actually uncomitted changes because we are apparently
+            // running GitVersion on something which lives inside this brand new repo _/\Ö/\_
+            if (repository.Head?.Tip == null || repository.Diff == null)
+            {
+                // this is a somewhat cumbersome way of figuring out the number of changes in the repo
+                // which is more expensive than to use the Diff as it gathers more info, but
+                // we can't use the other method when we are dealing with a new/empty repo
+                try
+                {
+                    var status = repository.RetrieveStatus();
+                    return status.Untracked.Count() + status.Staged.Count();
+
+                }
+                catch (Exception)
+                {
+                    return Int32.MaxValue;  // this should be somewhat puzzling to see,
+                                            // so we may have reached our goal to show that
+                                            // that repo is really "Dirty"...
+                }
+            }
+
+            // gets all changes of the last commit vs Staging area and WT
+            var changes = repository.Diff.Compare<TreeChanges>(repository.Head.Tip.Tree,
+                                                  DiffTargets.Index | DiffTargets.WorkingDirectory);
+
+            return changes.Count;
+        }
+
         private class MergeBaseData
         {
             public Commit MergeBase { get; }

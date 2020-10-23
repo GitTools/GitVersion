@@ -19,7 +19,7 @@ namespace GitVersionCore.Tests.VersionCalculation
         [Test]
         public void ShouldIncrementVersionBasedOnConfig()
         {
-            var semanticVersionBuildMetaData = new SemanticVersionBuildMetaData("ef7d0d7e1e700f1c7c9fa01ea6791bb778a5c37c", 1, "master", "b1a34edbd80e141f7cc046c074f109be7d022074", "b1a34e", DateTimeOffset.Now);
+            var semanticVersionBuildMetaData = new SemanticVersionBuildMetaData("ef7d0d7e1e700f1c7c9fa01ea6791bb778a5c37c", 1, "master", "b1a34edbd80e141f7cc046c074f109be7d022074", "b1a34e", DateTimeOffset.Now, 0);
 
             var contextBuilder = new GitVersionContextBuilder();
 
@@ -43,7 +43,7 @@ namespace GitVersionCore.Tests.VersionCalculation
         [Test]
         public void DoesNotIncrementWhenBaseVersionSaysNotTo()
         {
-            var semanticVersionBuildMetaData = new SemanticVersionBuildMetaData("ef7d0d7e1e700f1c7c9fa01ea6791bb778a5c37c", 1, "master", "b1a34edbd80e141f7cc046c074f109be7d022074", "b1a34e", DateTimeOffset.Now);
+            var semanticVersionBuildMetaData = new SemanticVersionBuildMetaData("ef7d0d7e1e700f1c7c9fa01ea6791bb778a5c37c", 1, "master", "b1a34edbd80e141f7cc046c074f109be7d022074", "b1a34e", DateTimeOffset.Now, 0);
 
             var contextBuilder = new GitVersionContextBuilder();
 
@@ -68,7 +68,7 @@ namespace GitVersionCore.Tests.VersionCalculation
         [Test]
         public void AppliesBranchPreReleaseTag()
         {
-            var semanticVersionBuildMetaData = new SemanticVersionBuildMetaData("ef7d0d7e1e700f1c7c9fa01ea6791bb778a5c37c", 2, "develop", "b1a34edbd80e141f7cc046c074f109be7d022074", "b1a34e", DateTimeOffset.Now);
+            var semanticVersionBuildMetaData = new SemanticVersionBuildMetaData("ef7d0d7e1e700f1c7c9fa01ea6791bb778a5c37c", 2, "develop", "b1a34edbd80e141f7cc046c074f109be7d022074", "b1a34e", DateTimeOffset.Now, 0);
             var contextBuilder = new GitVersionContextBuilder();
 
             contextBuilder

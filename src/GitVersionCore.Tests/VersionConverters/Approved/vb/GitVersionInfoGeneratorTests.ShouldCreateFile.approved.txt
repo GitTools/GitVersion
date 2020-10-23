@@ -61,6 +61,7 @@ Namespace Global
         Public Shared VersionSourceSha As String = "versionSourceSha"
         Public Shared CommitsSinceVersionSource As String = "5"
         Public Shared CommitsSinceVersionSourcePadded As String = "0005"
+        Public Shared UncommittedChanges As String = "0"
         Public Shared CommitDate As String = "2014-03-06"
     End Class
 
