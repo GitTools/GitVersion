@@ -40,7 +40,7 @@ Running `GitVersion.exe` in your repo will show you what is available. For the
   "CommitsSinceVersionSource":1,
   "CommitsSinceVersionSourcePadded":"0001",
   "CommitDate":"2014-03-06",
-  "RepositoryDirtyFlag": ""
+  "UncommittedChanges": 0
 }
 ```
 

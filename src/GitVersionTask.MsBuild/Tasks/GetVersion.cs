@@ -99,7 +99,7 @@ namespace GitVersion.MSBuildTask.Tasks
 
 
         [Output]
-        public string RepositoryDirtyFlag { get; set; }
+        public string UncommittedChanges { get; set; }
 
         protected override bool OnExecute() => TaskProxy.GetVersion(this);
     }

@@ -1,3 +1,4 @@
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using GitTools.Testing;
@@ -97,23 +98,28 @@ namespace GitVersionCore.Tests.IntegrationTests
             fixture.AssertFullSemver("1.1.0-alpha.1");
         }
 
-        [TestCase(true)]
-        [TestCase(false)]
-        public void HasDirtyFlagWhenUncommittedChangesAreInRepo(bool stageFile)
+        [TestCase(true, 1)]
+        [TestCase(false, 1)]
+        [TestCase(true, 5)]
+        [TestCase(false, 5)]
+        public void HasDirtyFlagWhenUncommittedChangesAreInRepo(bool stageFile, int numberOfFiles)
         {
             using var fixture = new EmptyRepositoryFixture();
             fixture.Repository.MakeACommit();
-           
-            var tempFile = Path.GetTempFileName();
-            var repoFile = Path.Combine(fixture.RepositoryPath, Path.GetFileNameWithoutExtension(tempFile) + ".txt");
-            File.Move(tempFile, repoFile);
-            File.WriteAllText(repoFile, "Hello world");
 
-            if (stageFile)
-                Commands.Stage(fixture.Repository, repoFile);
+            for (int i = 0; i < numberOfFiles; i++)
+            {
+                var tempFile = Path.GetTempFileName();
+                var repoFile = Path.Combine(fixture.RepositoryPath, Path.GetFileNameWithoutExtension(tempFile) + ".txt");
+                File.Move(tempFile, repoFile);
+                File.WriteAllText(repoFile, $"Hello world / testfile {i}");
+
+                if (stageFile)
+                    Commands.Stage(fixture.Repository, repoFile);
+            }
 
             var version = fixture.GetVersion();
-            version.RepositoryDirtyFlag.ShouldBe("Dirty");
+            version.UncommittedChanges.ShouldBe(numberOfFiles.ToString(CultureInfo.InvariantCulture));
         }
 
         [Test]
@@ -123,7 +129,8 @@ namespace GitVersionCore.Tests.IntegrationTests
             fixture.Repository.MakeACommit();
 
             var version = fixture.GetVersion();
-            version.RepositoryDirtyFlag.ShouldBe(null);
+            var zero = 0;
+            version.UncommittedChanges.ShouldBe(zero.ToString(CultureInfo.InvariantCulture));
         }
     }
 }

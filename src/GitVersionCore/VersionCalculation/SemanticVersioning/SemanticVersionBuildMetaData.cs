@@ -21,13 +21,13 @@ namespace GitVersion
         public DateTimeOffset CommitDate;
         public string VersionSourceSha;
         public int CommitsSinceVersionSource;
-        public bool HasUncomittedChanges;
+        public int UncommittedChanges;
 
         public SemanticVersionBuildMetaData()
         {
         }
 
-        public SemanticVersionBuildMetaData(string versionSourceSha, int? commitsSinceTag, string branch, string commitSha, string commitShortSha, DateTimeOffset commitDate, bool hasUncommitedChanges, string otherMetadata = null)
+        public SemanticVersionBuildMetaData(string versionSourceSha, int? commitsSinceTag, string branch, string commitSha, string commitShortSha, DateTimeOffset commitDate, int numbeerOfUncommitedChanges, string otherMetadata = null)
         {
             Sha = commitSha;
             ShortSha = commitShortSha;
@@ -37,7 +37,7 @@ namespace GitVersion
             OtherMetaData = otherMetadata;
             VersionSourceSha = versionSourceSha;
             CommitsSinceVersionSource = commitsSinceTag ?? 0;
-            HasUncomittedChanges = hasUncommitedChanges;
+            UncommittedChanges = numbeerOfUncommitedChanges;
         }
 
         public SemanticVersionBuildMetaData(SemanticVersionBuildMetaData buildMetaData)
@@ -50,7 +50,7 @@ namespace GitVersion
             OtherMetaData = buildMetaData.OtherMetaData;
             VersionSourceSha = buildMetaData.VersionSourceSha;
             CommitsSinceVersionSource = buildMetaData.CommitsSinceVersionSource;
-            HasUncomittedChanges = buildMetaData.HasUncomittedChanges;
+            UncommittedChanges = buildMetaData.UncommittedChanges;
         }
 
         public override bool Equals(object obj)
@@ -159,9 +159,6 @@ namespace GitVersion
 
             if (parsed.Groups["Other"].Success && !string.IsNullOrEmpty(parsed.Groups["Other"].Value))
                 semanticVersionBuildMetaData.OtherMetaData = parsed.Groups["Other"].Value.TrimStart('.');
-
-            // note: not super beautiful, but it might be "good enough" for this end (?)
-            semanticVersionBuildMetaData.HasUncomittedChanges = semanticVersionBuildMetaData.OtherMetaData == "Dirty";
 
             return semanticVersionBuildMetaData;
         }

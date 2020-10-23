@@ -148,7 +148,7 @@ namespace GitVersionCore.Tests
         CommitsSinceVersionSource: 19
         CommitsSinceVersionSourcePadded: 0019
         CommitDate: 2015-11-10
-        RepositoryDirtyFlag: 
+        UncommittedChanges: 0
         ";
 
             var stringBuilder = new StringBuilder();
@@ -209,6 +209,7 @@ namespace GitVersionCore.Tests
         CommitsSinceVersionSource: 19
         CommitsSinceVersionSourcePadded: 0019
         CommitDate: 2015-11-10
+        UncommittedChanges: 0
         ";
 
             using var fixture = new EmptyRepositoryFixture();
@@ -295,7 +296,7 @@ namespace GitVersionCore.Tests
         CommitsSinceVersionSource: 19
         CommitsSinceVersionSourcePadded: 0019
         CommitDate: 2015-11-10
-        RepositoryDirtyFlag: 
+        UncommittedChanges: 0 
         ";
 
             using var fixture = new EmptyRepositoryFixture();
@@ -359,7 +360,7 @@ namespace GitVersionCore.Tests
         CommitsSinceVersionSource: 19
         CommitsSinceVersionSourcePadded: 0019
         CommitDate: 2015-11-10
-        RepositoryDirtyFlag: 
+        UncommittedChanges: 0
         ";
 
             using var fixture = new EmptyRepositoryFixture();

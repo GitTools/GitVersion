@@ -44,6 +44,6 @@ namespace GitVersion.Common
         string ShortenObjectId(GitObject commit);
         VersionField? DetermineIncrementedField(BaseVersion baseVersion, GitVersionContext context);
 
-        bool HasUncommittedChanges();
+        int GetNumberOfUncommittedChanges();
     }
 }

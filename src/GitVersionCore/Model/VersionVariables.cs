@@ -42,7 +42,7 @@ namespace GitVersion.OutputVariables
                                 string versionSourceSha,
                                 string commitsSinceVersionSource,
                                 string commitsSinceVersionSourcePadded,
-                                string repositoryDirtyFlag)
+                                string uncommittedChanges)
         {
             Major = major;
             Minor = minor;
@@ -75,7 +75,7 @@ namespace GitVersion.OutputVariables
             VersionSourceSha = versionSourceSha;
             CommitsSinceVersionSource = commitsSinceVersionSource;
             CommitsSinceVersionSourcePadded = commitsSinceVersionSourcePadded;
-            RepositoryDirtyFlag = repositoryDirtyFlag;
+            UncommittedChanges = uncommittedChanges;
         }
 
         public string Major { get; }
@@ -109,7 +109,7 @@ namespace GitVersion.OutputVariables
         public string CommitsSinceVersionSource { get; }
         public string CommitsSinceVersionSourcePadded { get; }
 
-        public string RepositoryDirtyFlag { get; }
+        public string UncommittedChanges { get; }
 
         [ReflectionIgnore]
         public static IEnumerable<string> AvailableVariables
