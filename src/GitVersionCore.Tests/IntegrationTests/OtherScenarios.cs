@@ -97,32 +97,33 @@ namespace GitVersionCore.Tests.IntegrationTests
             fixture.AssertFullSemver("1.1.0-alpha.1");
         }
 
-        [TestCase(true, false)]
-        [TestCase(true, true)]
-        [TestCase(false, false)]
-        [TestCase(false, true)]
-        public void HasDirtyFlagIfUncommittedChangesAreInRepo(bool createTempFile, bool stageFile)
+        [TestCase(true)]
+        [TestCase(false)]
+        public void HasDirtyFlagWhenUncommittedChangesAreInRepo(bool stageFile)
+        {
+            using var fixture = new EmptyRepositoryFixture();
+            fixture.Repository.MakeACommit();
+           
+            var tempFile = Path.GetTempFileName();
+            var repoFile = Path.Combine(fixture.RepositoryPath, Path.GetFileNameWithoutExtension(tempFile) + ".txt");
+            File.Move(tempFile, repoFile);
+            File.WriteAllText(repoFile, "Hello world");
+
+            if (stageFile)
+                Commands.Stage(fixture.Repository, repoFile);
+
+            var version = fixture.GetVersion();
+            version.RepositoryDirtyFlag.ShouldBe("Dirty");
+        }
+
+        [Test]
+        public void NoDirtyFlagInCleanRepository()
         {
             using var fixture = new EmptyRepositoryFixture();
             fixture.Repository.MakeACommit();
 
-            if (createTempFile)
-            {
-                var tempFile = Path.GetTempFileName();
-                var repoFile = Path.Combine(fixture.RepositoryPath, Path.GetFileNameWithoutExtension(tempFile) + ".txt");
-                File.Move(tempFile, repoFile);
-                File.WriteAllText(repoFile, "Hello world");
-
-                if (stageFile)
-                    Commands.Stage(fixture.Repository, repoFile);
-            }
-
             var version = fixture.GetVersion();
-
-            if (createTempFile)
-                version.RepositoryDirtyFlag.ShouldBe("Dirty");
-            else
-                version.RepositoryDirtyFlag.ShouldBe(null);
+            version.RepositoryDirtyFlag.ShouldBe(null);
         }
     }
 }
