@@ -516,7 +516,7 @@ namespace GitVersion
                     return status.Untracked.Count() + status.Staged.Count();
 
                 }
-                catch(Exception)
+                catch (Exception)
                 {
                     return Int32.MaxValue;  // this should be somewhat puzzling to see,
                                             // so we may have reached our goal to show that
