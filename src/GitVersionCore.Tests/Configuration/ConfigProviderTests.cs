@@ -198,8 +198,8 @@ branches:
 
         [Test]
         [MethodImpl(MethodImplOptions.NoInlining)]
-        [Category("NoMono")]
-        [Description("Won't run on Mono due to source information not being available for ShouldMatchApproved.")]
+        [Category(NoMono)]
+        [Description(NoMonoDescription)]
         public void CanWriteOutEffectiveConfiguration()
         {
             var config = configProvider.Provide(repoPath);

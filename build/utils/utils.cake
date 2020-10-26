@@ -23,7 +23,7 @@ public static bool IsOnMainRepo(this ICakeContext context)
     }
     else if (buildSystem.IsRunningOnAzurePipelines || buildSystem.IsRunningOnAzurePipelinesHosted)
     {
-        repositoryName = buildSystem.TFBuild.Environment.Repository.RepoName;
+        repositoryName = buildSystem.AzurePipelines.Environment.Repository.RepoName;
     }
     else if (buildSystem.IsRunningOnGitHubActions)
     {
@@ -49,7 +49,7 @@ public static bool IsOnMainBranch(this ICakeContext context)
     }
     else if (buildSystem.IsRunningOnAzurePipelines || buildSystem.IsRunningOnAzurePipelinesHosted)
     {
-        repositoryBranch = buildSystem.TFBuild.Environment.Repository.SourceBranchName;
+        repositoryBranch = buildSystem.AzurePipelines.Environment.Repository.SourceBranchName;
     }
     else if (buildSystem.IsRunningOnGitHubActions)
     {

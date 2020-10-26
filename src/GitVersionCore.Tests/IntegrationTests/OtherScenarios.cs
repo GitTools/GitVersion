@@ -1,12 +1,11 @@
-using System.Collections.Generic;
+using System.Globalization;
+using System.IO;
 using System.Linq;
 using GitTools.Testing;
-using GitVersion;
-using GitVersion.Model.Configuration;
-using GitVersion.VersionCalculation;
 using GitVersionCore.Tests.Helpers;
 using LibGit2Sharp;
 using NUnit.Framework;
+using Shouldly;
 
 namespace GitVersionCore.Tests.IntegrationTests
 {
@@ -97,6 +96,41 @@ namespace GitVersionCore.Tests.IntegrationTests
             fixture.LocalRepositoryFixture.Repository.Branches.Remove("master");
             fixture.InitializeRepo();
             fixture.AssertFullSemver("1.1.0-alpha.1");
+        }
+
+        [TestCase(true, 1)]
+        [TestCase(false, 1)]
+        [TestCase(true, 5)]
+        [TestCase(false, 5)]
+        public void HasDirtyFlagWhenUncommittedChangesAreInRepo(bool stageFile, int numberOfFiles)
+        {
+            using var fixture = new EmptyRepositoryFixture();
+            fixture.Repository.MakeACommit();
+
+            for (int i = 0; i < numberOfFiles; i++)
+            {
+                var tempFile = Path.GetTempFileName();
+                var repoFile = Path.Combine(fixture.RepositoryPath, Path.GetFileNameWithoutExtension(tempFile) + ".txt");
+                File.Move(tempFile, repoFile);
+                File.WriteAllText(repoFile, $"Hello world / testfile {i}");
+
+                if (stageFile)
+                    Commands.Stage(fixture.Repository, repoFile);
+            }
+
+            var version = fixture.GetVersion();
+            version.UncommittedChanges.ShouldBe(numberOfFiles.ToString(CultureInfo.InvariantCulture));
+        }
+
+        [Test]
+        public void NoDirtyFlagInCleanRepository()
+        {
+            using var fixture = new EmptyRepositoryFixture();
+            fixture.Repository.MakeACommit();
+
+            var version = fixture.GetVersion();
+            var zero = 0;
+            version.UncommittedChanges.ShouldBe(zero.ToString(CultureInfo.InvariantCulture));
         }
     }
 }

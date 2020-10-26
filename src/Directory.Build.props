@@ -26,16 +26,16 @@
         <PackageVersion_YamlDotNet>8.1.2</PackageVersion_YamlDotNet>
         <PackageVersion_NewtonsoftJson>12.0.3</PackageVersion_NewtonsoftJson>
         <PackageVersion_MicrosoftExtensions>3.0.0</PackageVersion_MicrosoftExtensions>
-        <PackageVersion_MsBuild>16.6.0</PackageVersion_MsBuild>
+        <PackageVersion_MsBuild>16.7.0</PackageVersion_MsBuild>
 
-        <PackageVersion_MicrosoftTestSdk>16.6.1</PackageVersion_MicrosoftTestSdk>
+        <PackageVersion_MicrosoftTestSdk>16.7.1</PackageVersion_MicrosoftTestSdk>
         <PackageVersion_NSubstitute>4.2.2</PackageVersion_NSubstitute>
         <PackageVersion_CoverletMsBuild>2.9.0</PackageVersion_CoverletMsBuild>
         <PackageVersion_NUnit>3.12.0</PackageVersion_NUnit>
         <PackageVersion_GitToolsTesting>1.2.0</PackageVersion_GitToolsTesting>
         <PackageVersion_NUnit3TestAdapter>3.17.0</PackageVersion_NUnit3TestAdapter>
         <PackageVersion_NunitXmlTestLogger>2.1.62</PackageVersion_NunitXmlTestLogger>
-        <PackageVersion_Shouldly>4.0.0-beta0002</PackageVersion_Shouldly>
+        <PackageVersion_Shouldly>4.0.0-beta0004</PackageVersion_Shouldly>
 
     </PropertyGroup>
 

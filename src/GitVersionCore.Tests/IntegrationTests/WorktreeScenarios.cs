@@ -12,8 +12,8 @@ namespace GitVersionCore.Tests.IntegrationTests
     {
 
         [Test]
-        [Category("NoMono")]
-        [Description("LibGit2Sharp fails here when running under Mono")]
+        [Category(NoMono)]
+        [Description(NoMonoDescription)]
         public void UseWorktreeRepositoryForVersion()
         {
             using var fixture = new EmptyRepositoryFixture();

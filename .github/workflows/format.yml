@@ -1,6 +1,15 @@
-name: Validate PR
+name: Validate Commit
 
-on: [pull_request]
+on:
+  push:
+    branches:
+    - master
+    - 'fix/*'
+    - 'feature/*'
+
+  pull_request:
+    branches:
+    - master
 
 jobs:
   format:
@@ -8,11 +17,5 @@ jobs:
     name: DotNet Format
     steps:
       - uses: actions/checkout@v2
-
-      # workaround for dotnet tools not being on path https://github.com/actions/virtual-environments/issues/213
-      - name: add .dotnet/tools to path
-        run: echo "::set-env name=PATH::${PATH}:${HOME}/.dotnet/tools"
-
       - run: dotnet tool install -g dotnet-format
-
       - run: dotnet format ./ --folder --check --exclude **/AddFormats/
