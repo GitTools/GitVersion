@@ -448,7 +448,7 @@ namespace GitVersionCore.Tests
             fileSystem = Substitute.For<IFileSystem>();
             var version = new SemanticVersion
             {
-                BuildMetaData = new SemanticVersionBuildMetaData("versionSourceHash", 3, "foo", "hash", "shortHash", DateTimeOffset.Now),
+                BuildMetaData = new SemanticVersionBuildMetaData("versionSourceHash", 3, "foo", "hash", "shortHash", DateTimeOffset.Now, 0),
                 Major = 2,
                 Minor = 3,
                 Patch = 1

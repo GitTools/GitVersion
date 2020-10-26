@@ -97,6 +97,10 @@ namespace GitVersion.MSBuildTask.Tasks
         [Output]
         public string CommitsSinceVersionSourcePadded { get; set; }
 
+
+        [Output]
+        public string UncommittedChanges { get; set; }
+
         protected override bool OnExecute() => TaskProxy.GetVersion(this);
     }
 }

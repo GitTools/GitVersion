@@ -30,7 +30,7 @@ namespace GitVersionCore.Tests
                 Minor = minor,
                 Patch = patch,
                 PreReleaseTag = tag,
-                BuildMetaData = new SemanticVersionBuildMetaData(versionSourceSha, commitsSinceTag, branchName, sha, shortSha, DateTimeOffset.MinValue),
+                BuildMetaData = new SemanticVersionBuildMetaData(versionSourceSha, commitsSinceTag, branchName, sha, shortSha, DateTimeOffset.MinValue, 0),
             };
             var informationalVersion = semanticVersion.ToString("i");
 
