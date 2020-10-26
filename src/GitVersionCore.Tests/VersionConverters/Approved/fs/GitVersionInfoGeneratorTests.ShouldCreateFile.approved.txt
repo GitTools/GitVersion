@@ -60,4 +60,5 @@ type GitVersionInformation =
     static member VersionSourceSha = "versionSourceSha"
     static member CommitsSinceVersionSource = "5"
     static member CommitsSinceVersionSourcePadded = "0005"
+    static member UncommittedChanges = "0"
     static member CommitDate = "2014-03-06"

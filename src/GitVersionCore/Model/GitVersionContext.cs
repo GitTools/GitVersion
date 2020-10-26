@@ -19,12 +19,14 @@ namespace GitVersion
         public Commit CurrentCommit { get; }
         public bool IsCurrentCommitTagged => CurrentCommitTaggedVersion != null;
 
+        public int NumberOfUncommittedChanges { get; }
+
         public GitVersionContext()
         {
         }
 
         public GitVersionContext(Branch currentBranch, Commit currentCommit,
-            Config configuration, EffectiveConfiguration effectiveConfiguration, SemanticVersion currentCommitTaggedVersion)
+            Config configuration, EffectiveConfiguration effectiveConfiguration, SemanticVersion currentCommitTaggedVersion, int numberOfUncommittedChanges)
         {
             CurrentCommit = currentCommit;
             CurrentBranch = currentBranch;
@@ -33,6 +35,8 @@ namespace GitVersion
             Configuration = effectiveConfiguration;
 
             CurrentCommitTaggedVersion = currentCommitTaggedVersion;
+
+            NumberOfUncommittedChanges = numberOfUncommittedChanges;
         }
     }
 }

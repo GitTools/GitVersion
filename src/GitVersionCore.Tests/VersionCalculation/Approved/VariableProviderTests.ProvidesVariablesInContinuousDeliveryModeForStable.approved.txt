@@ -29,5 +29,6 @@
   "VersionSourceSha":"versionSourceSha",
   "CommitsSinceVersionSource":5,
   "CommitsSinceVersionSourcePadded":"0005",
+  "UncommittedChanges":0,
   "CommitDate":"2014-03-06"
 }

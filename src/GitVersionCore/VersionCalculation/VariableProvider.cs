@@ -93,7 +93,8 @@ namespace GitVersion.VersionCalculation
                 semverFormatValues.NuGetPreReleaseTagV2,
                 semverFormatValues.VersionSourceSha,
                 semverFormatValues.CommitsSinceVersionSource,
-                semverFormatValues.CommitsSinceVersionSourcePadded);
+                semverFormatValues.CommitsSinceVersionSourcePadded,
+                semverFormatValues.UncommittedChanges);
 
             return variables;
         }
