@@ -53,6 +53,7 @@ namespace GitVersionTask.Tests
         }
 
         [Test]
+        [Category(NoNet48)]
         [Category(NoMono)]
         public void GenerateGitVersionInformationTaskShouldCreateFileWhenRunWithMsBuild()
         {
@@ -82,6 +83,7 @@ namespace GitVersionTask.Tests
         }
 
         [Test]
+        [Category(NoNet48)]
         [Category(NoMono)]
         public void GenerateGitVersionInformationTaskShouldCreateFileWhenRunWithMsBuildInBuildServer()
         {

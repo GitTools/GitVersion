@@ -14,12 +14,12 @@ namespace GitVersionCore.Tests.Helpers
             string weightedPreReleaseNumber = "", string informationalVersion = "", string commitDate = "",
             string nugetVersion = "", string nugetVersionV2 = "", string nugetPreReleaseTag = "",
             string nugetPreReleaseTagV2 = "", string versionSourceSha = "", string commitsSinceVersionSource = "",
-            string commitsSinceVersionSourcePadded = "") : base(
+            string commitsSinceVersionSourcePadded = "", string uncommittedChanges = "") : base(
                 major, minor, patch, buildMetaData, buildMetaDataPadded, fullBuildMetaData, branchName, escapedBranchName,
                 sha, shortSha, majorMinorPatch, semVer, legacySemVer, legacySemVerPadded, fullSemVer,
                 assemblySemVer, assemblySemFileVer, preReleaseTag, weightedPreReleaseNumber, preReleaseTagWithDash,
                 preReleaseLabel, preReleaseNumber, informationalVersion, commitDate, nugetVersion, nugetVersionV2,
-                nugetPreReleaseTag, nugetPreReleaseTagV2, versionSourceSha, commitsSinceVersionSource, commitsSinceVersionSourcePadded)
+                nugetPreReleaseTag, nugetPreReleaseTagV2, versionSourceSha, commitsSinceVersionSource, commitsSinceVersionSourcePadded, uncommittedChanges)
         {
         }
     }

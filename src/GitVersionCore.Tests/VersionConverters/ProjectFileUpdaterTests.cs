@@ -1,6 +1,3 @@
-using System;
-using System.IO;
-using System.Xml.Linq;
 using GitVersion;
 using GitVersion.Extensions;
 using GitVersion.Logging;
@@ -12,6 +9,9 @@ using Microsoft.Extensions.DependencyInjection;
 using NSubstitute;
 using NUnit.Framework;
 using Shouldly;
+using System;
+using System.IO;
+using System.Xml.Linq;
 
 namespace GitVersionCore.Tests
 {
@@ -63,6 +63,25 @@ namespace GitVersionCore.Tests
         [Category(NoMono)]
         [Description(NoMonoDescription)]
         public void CanUpdateProjectFileWithStandardWebProjectFileXml(string xml)
+        {
+            using var projectFileUpdater = new ProjectFileUpdater(log, fileSystem);
+
+            var canUpdate = projectFileUpdater.CanUpdateProjectFile(XElement.Parse(xml));
+
+            canUpdate.ShouldBe(true);
+        }
+
+        [TestCase(@"
+<Project Sdk=""Microsoft.NET.Sdk.WindowsDesktop"">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net461</TargetFramework>
+  </PropertyGroup>
+</Project>
+")]
+        [Category(NoMono)]
+        [Description(NoMonoDescription)]
+        public void CanUpdateProjectFileWithStandardDesktopProjectFileXml(string xml)
         {
             using var projectFileUpdater = new ProjectFileUpdater(log, fileSystem);
 
@@ -298,6 +317,7 @@ namespace GitVersionCore.Tests
     <AssemblyVersion>2.3.1.0</AssemblyVersion>
     <FileVersion>2.3.1.0</FileVersion>
     <InformationalVersion>2.3.1+3.Branch.foo.Sha.hash</InformationalVersion>
+    <Version>2.3.1</Version>
   </PropertyGroup>
 </Project>";
                 var transformedXml = fs.ReadAllText(fileName);
@@ -314,7 +334,7 @@ namespace GitVersionCore.Tests
             fileSystem = Substitute.For<IFileSystem>();
             var version = new SemanticVersion
             {
-                BuildMetaData = new SemanticVersionBuildMetaData("versionSourceHash", 3, "foo", "hash", "shortHash", DateTimeOffset.Now),
+                BuildMetaData = new SemanticVersionBuildMetaData("versionSourceHash", 3, "foo", "hash", "shortHash", DateTimeOffset.Now, 0),
                 Major = 2,
                 Minor = 3,
                 Patch = 1

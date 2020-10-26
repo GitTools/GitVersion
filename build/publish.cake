@@ -35,11 +35,11 @@ Task("Publish-AzurePipeline")
 {
     foreach(var artifact in parameters.Artifacts.All)
     {
-        if (FileExists(artifact.ArtifactPath)) { TFBuild.Commands.UploadArtifact("", artifact.ArtifactPath, "artifacts"); }
+        if (FileExists(artifact.ArtifactPath)) { AzurePipelines.Commands.UploadArtifact("", artifact.ArtifactPath, "artifacts"); }
     }
     foreach(var package in parameters.Packages.All)
     {
-        if (FileExists(package.PackagePath)) { TFBuild.Commands.UploadArtifact("", package.PackagePath, "packages"); }
+        if (FileExists(package.PackagePath)) { AzurePipelines.Commands.UploadArtifact("", package.PackagePath, "packages"); }
     }
 })
 .OnError(exception =>

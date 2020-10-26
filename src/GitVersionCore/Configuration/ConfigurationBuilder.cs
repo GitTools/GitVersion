@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using GitVersion.Extensions;
 using GitVersion.Model.Configuration;
 using GitVersion.VersionCalculation;
@@ -59,7 +60,7 @@ namespace GitVersion.Configuration
             targetConfig.CommitMessageIncrementing = overrideConfig.CommitMessageIncrementing ?? targetConfig.CommitMessageIncrementing;
             targetConfig.Increment = overrideConfig.Increment ?? targetConfig.Increment;
             targetConfig.CommitDateFormat = overrideConfig.CommitDateFormat ?? targetConfig.CommitDateFormat;
-            targetConfig.MergeMessageFormats = overrideConfig.MergeMessageFormats ?? targetConfig.MergeMessageFormats;
+            targetConfig.MergeMessageFormats = overrideConfig.MergeMessageFormats.Any() ? overrideConfig.MergeMessageFormats : targetConfig.MergeMessageFormats;
             targetConfig.UpdateBuildNumber = overrideConfig.UpdateBuildNumber ?? targetConfig.UpdateBuildNumber;
 
             if (overrideConfig.Ignore != null && !overrideConfig.Ignore.IsEmpty)
@@ -162,6 +163,10 @@ namespace GitVersion.Configuration
                 {
                     throw new ConfigurationException($"Branch configuration '{name}' is missing required configuration 'source-branches'{System.Environment.NewLine}" + "See https://gitversion.net/docs/configuration/ for more info");
                 }
+
+                var missingSourceBranches = sourceBranches.Where(sb => !config.Branches.ContainsKey(sb)).ToArray();
+                if (missingSourceBranches.Any())
+                    throw new ConfigurationException($"Branch configuration '{name}' defines these 'source-branches' that are not configured: '[{string.Join(",", missingSourceBranches)}]'{System.Environment.NewLine}" + "See https://gitversion.net/docs/configuration/ for more info");
             }
         }
 

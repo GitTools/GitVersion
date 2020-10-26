@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using GitVersion.Configuration;
+using GitVersion.Model.Configuration;
 using GitVersionCore.Tests.Helpers;
 using NUnit.Framework;
 using Shouldly;
@@ -8,6 +9,7 @@ using YamlDotNet.Core;
 
 namespace GitVersionCore.Tests.Configuration
 {
+
     [TestFixture]
     public class IgnoreConfigTests : TestBase
     {
@@ -34,7 +36,7 @@ ignore:
         {
             var yaml = @"
 ignore:
-    sha: 
+    sha:
         - b6c0c9fda88830ebcd563e500a5a7da5a1658e98
         - 6c19c7c219ecf8dbc468042baefa73a1b213e8b1
 ";
@@ -59,7 +61,7 @@ next-version: 1.0
 
             config.Ignore.ShouldNotBeNull();
             config.Ignore.ShAs.ShouldBeEmpty();
-            config.Ignore.Before.ShouldBeNull();
+            config.Ignore.Before.ShouldBe(null);
         }
 
         [Test]
@@ -72,6 +74,14 @@ ignore:
 
             using var reader = new StringReader(yaml);
             Should.Throw<YamlException>(() => ConfigSerializer.Read(reader));
+        }
+
+        [Test]
+        public void NewInstanceShouldBeEmpty()
+        {
+            var ignoreConfig = new IgnoreConfig();
+
+            ignoreConfig.IsEmpty.ShouldBeTrue();
         }
     }
 }

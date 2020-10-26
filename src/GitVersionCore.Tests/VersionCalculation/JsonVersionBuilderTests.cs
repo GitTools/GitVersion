@@ -18,8 +18,8 @@ namespace GitVersionCore.Tests
         }
 
         [Test]
-        [Category("NoMono")]
-        [Description("Won't run on Mono due to source information not being available for ShouldMatchApproved.")]
+        [Category(NoMono)]
+        [Description(NoMonoDescription)]
         public void Json()
         {
             var semanticVersion = new SemanticVersion
@@ -28,7 +28,7 @@ namespace GitVersionCore.Tests
                 Minor = 2,
                 Patch = 0,
                 PreReleaseTag = "unstable4",
-                BuildMetaData = new SemanticVersionBuildMetaData("versionSourceSha", 5, "feature1", "commitSha", "commitShortSha", DateTimeOffset.Parse("2014-03-06 23:59:59Z"))
+                BuildMetaData = new SemanticVersionBuildMetaData("versionSourceSha", 5, "feature1", "commitSha", "commitShortSha", DateTimeOffset.Parse("2014-03-06 23:59:59Z"), 0)
             };
 
             var config = new TestEffectiveConfiguration();
