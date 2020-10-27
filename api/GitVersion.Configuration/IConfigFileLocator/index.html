@@ -138,6 +138,11 @@
 			<li class="header">Namespace</li>
 		<li><a href="/api/GitVersion.Configuration">GitVersion<wbr>.Configuration</a></li>
 		<li role="separator" class="divider"></li>
+			<li class="header">Interface Types</li>
+				<li><a href="/api/GitVersion.Configuration/IBranchConfigurationCalculator">I<wbr>Branch<wbr>Configuration<wbr>Calculator</a></li>
+				<li class="selected"><a href="/api/GitVersion.Configuration/IConfigFileLocator">IConfigFileLocator</a></li>
+				<li><a href="/api/GitVersion.Configuration/IConfigFileLocatorFactory">I<wbr>Config<wbr>File<wbr>Locator<wbr>Factory</a></li>
+				<li><a href="/api/GitVersion.Configuration/IConfigProvider">IConfigProvider</a></li>
 			<li class="header">Class Types</li>
 				<li><a href="/api/GitVersion.Configuration/BranchConfigurationCalculator">Branch<wbr>Configuration<wbr>Calculator</a></li>
 				<li><a href="/api/GitVersion.Configuration/ConfigExtensions">ConfigExtensions</a></li>
@@ -149,11 +154,6 @@
 				<li><a href="/api/GitVersion.Configuration/ConfigurationException">Configuration<wbr>Exception</a></li>
 				<li><a href="/api/GitVersion.Configuration/DefaultConfigFileLocator">Default<wbr>Config<wbr>File<wbr>Locator</a></li>
 				<li><a href="/api/GitVersion.Configuration/NamedConfigFileLocator">Named<wbr>Config<wbr>File<wbr>Locator</a></li>
-			<li class="header">Interface Types</li>
-				<li><a href="/api/GitVersion.Configuration/IBranchConfigurationCalculator">I<wbr>Branch<wbr>Configuration<wbr>Calculator</a></li>
-				<li class="selected"><a href="/api/GitVersion.Configuration/IConfigFileLocator">IConfigFileLocator</a></li>
-				<li><a href="/api/GitVersion.Configuration/IConfigFileLocatorFactory">I<wbr>Config<wbr>File<wbr>Locator<wbr>Factory</a></li>
-				<li><a href="/api/GitVersion.Configuration/IConfigProvider">IConfigProvider</a></li>
 
 
                     </ul>
@@ -189,8 +189,8 @@
 								<dt>Implementing Types</dt>
 								<dd>
 									<ul class="list-unstyled">
-											<li><a href="/api/GitVersion.Configuration/NamedConfigFileLocator">Named<wbr>Config<wbr>File<wbr>Locator</a></li>								
 											<li><a href="/api/GitVersion.Configuration/DefaultConfigFileLocator">Default<wbr>Config<wbr>File<wbr>Locator</a></li>								
+											<li><a href="/api/GitVersion.Configuration/NamedConfigFileLocator">Named<wbr>Config<wbr>File<wbr>Locator</a></li>								
 											<li><a href="/api/GitVersion.Configuration/ConfigFileLocator">ConfigFileLocator</a></li>								
 									</ul>
 								</dd>				
@@ -201,10 +201,10 @@
 							graph BT
 	Type["IConfigFileLocator"]
 class Type type-node
-	Implementing0["NamedConfigFileLocator"]-.-&gt;Type
-	click Implementing0 "/api/GitVersion.Configuration/NamedConfigFileLocator"
-	Implementing1["DefaultConfigFileLocator"]-.-&gt;Type
-	click Implementing1 "/api/GitVersion.Configuration/DefaultConfigFileLocator"
+	Implementing0["DefaultConfigFileLocator"]-.-&gt;Type
+	click Implementing0 "/api/GitVersion.Configuration/DefaultConfigFileLocator"
+	Implementing1["NamedConfigFileLocator"]-.-&gt;Type
+	click Implementing1 "/api/GitVersion.Configuration/NamedConfigFileLocator"
 	Implementing2["ConfigFileLocator"]-.-&gt;Type
 	click Implementing2 "/api/GitVersion.Configuration/ConfigFileLocator"
 

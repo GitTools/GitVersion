@@ -6,7 +6,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="shortcut icon" href="/assets/img/favicon.ico" type="image/x-icon">
         <link rel="icon" href="/assets/img/favicon.ico" type="image/x-icon">
-        <title>GitVersion - API - GitVersionContext.GitVersionContext(Branch, Commit, Config, EffectiveConfiguration, SemanticVersion) Constructor</title>
+        <title>GitVersion - API - GitVersionContext.GitVersionContext(Branch, Commit, Config, EffectiveConfiguration, SemanticVersion, int) Constructor</title>
         <link href="/assets/css/highlight.css" rel="stylesheet">
         <link href="/assets/css/bootstrap/bootstrap.css" rel="stylesheet">
         <link href="/assets/css/adminlte/AdminLTE.css" rel="stylesheet">
@@ -142,7 +142,7 @@
 		<li role="separator" class="divider"></li>
 			<li class="header">Constructors</li>
 				<li><a href="/api/GitVersion/GitVersionContext/FC47AE22">GitVersionContext<wbr>()<wbr></a></li>
-				<li class="selected"><a href="/api/GitVersion/GitVersionContext/25C969C3">GitVersionContext<wbr>(Branch, <wbr>Commit, <wbr>Config, <wbr>Effective<wbr>Configuration, <wbr>SemanticVersion)<wbr></a></li>
+				<li class="selected"><a href="/api/GitVersion/GitVersionContext/8ADF2464">GitVersionContext<wbr>(Branch, <wbr>Commit, <wbr>Config, <wbr>Effective<wbr>Configuration, <wbr>SemanticVersion, <wbr>int)<wbr></a></li>
 			<li class="header">Property Members</li>
 				<li><a href="/api/GitVersion/GitVersionContext/85AD27EB">Configuration</a></li>
 				<li><a href="/api/GitVersion/GitVersionContext/E38DC9DC">CurrentBranch</a></li>
@@ -150,6 +150,7 @@
 				<li><a href="/api/GitVersion/GitVersionContext/DF677C7F">Current<wbr>Commit<wbr>Tagged<wbr>Version</a></li>
 				<li><a href="/api/GitVersion/GitVersionContext/1AFCF448">FullConfiguration</a></li>
 				<li><a href="/api/GitVersion/GitVersionContext/BD1F424D">Is<wbr>Current<wbr>Commit<wbr>Tagged</a></li>
+				<li><a href="/api/GitVersion/GitVersionContext/FBF54ECC">Number<wbr>Of<wbr>Uncommitted<wbr>Changes</a></li>
 
 
                     </ul>
@@ -165,7 +166,7 @@
 
 <section class="content-header">
 			<h3><a href="/api/GitVersion/GitVersionContext">GitVersionContext</a>.</h3>
-	<h1>GitVersionContext<wbr>(Branch, <wbr>Commit, <wbr>Config, <wbr>Effective<wbr>Configuration, <wbr>SemanticVersion)<wbr> <small>Constructor</small></h1>
+	<h1>GitVersionContext<wbr>(Branch, <wbr>Commit, <wbr>Config, <wbr>Effective<wbr>Configuration, <wbr>SemanticVersion, <wbr>int)<wbr> <small>Constructor</small></h1>
 </section>
 <section class="content">
 	
@@ -186,7 +187,7 @@
 		</div>
 
 	<h1 id="Syntax">Syntax</h1>
-	<pre><code>public GitVersionContext(Branch currentBranch, Commit currentCommit, Config configuration, EffectiveConfiguration effectiveConfiguration, SemanticVersion currentCommitTaggedVersion)</code></pre>
+	<pre><code>public GitVersionContext(Branch currentBranch, Commit currentCommit, Config configuration, EffectiveConfiguration effectiveConfiguration, SemanticVersion currentCommitTaggedVersion, int numberOfUncommittedChanges)</code></pre>
 
 
 
@@ -226,6 +227,11 @@
 					<tr>
 						<td>currentCommitTaggedVersion</td>
 						<td><a href="/api/GitVersion/SemanticVersion">SemanticVersion</a></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td>numberOfUncommittedChanges</td>
+						<td>int</td>
 						<td></td>
 					</tr>
 			</tbody></table>
