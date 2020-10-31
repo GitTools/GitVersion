@@ -7,16 +7,16 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="1.1.1" />
-      <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="5.0.0-preview.6.20305.6" />
-      <PackageReference Include="System.CommandLine" Version="2.0.0-beta1.20303.1" />
+        <PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="5.0.0-rc.2.20475.5" />
+        <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="5.0.0-rc.2.20475.5" />
+        <PackageReference Include="System.CommandLine" Version="2.0.0-beta1.20427.1" />
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\GitVersion.Calculation\GitVersion.Calculation.csproj" />
-      <ProjectReference Include="..\GitVersion.Configuration\GitVersion.Configuration.csproj" />
-      <ProjectReference Include="..\GitVersion.Normalization\GitVersion.Normalization.csproj" />
-      <ProjectReference Include="..\GitVersion.Output\GitVersion.Output.csproj" />
+        <ProjectReference Include="..\GitVersion.Calculation\GitVersion.Calculation.csproj" />
+        <ProjectReference Include="..\GitVersion.Configuration\GitVersion.Configuration.csproj" />
+        <ProjectReference Include="..\GitVersion.Normalization\GitVersion.Normalization.csproj" />
+        <ProjectReference Include="..\GitVersion.Output\GitVersion.Output.csproj" />
     </ItemGroup>
 
 </Project>

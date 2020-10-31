@@ -7,17 +7,17 @@ namespace GitVersion.Command
     {
         public string[] Aliases { get; }
         public string Description { get; }
-        public bool Required { get; }
+        public bool IsRequired { get; }
 
-        public OptionAttribute(string alias, string description = "", bool required = false)
-            : this(new[] { alias }, description, required)
+        public OptionAttribute(string alias, string description = "", bool isRequired = false)
+            : this(new[] { alias }, description, isRequired)
         {
         }
 
-        public OptionAttribute(string[] aliases, string description = "", bool required = false)
+        public OptionAttribute(string[] aliases, string description = "", bool isRequired = false)
         {
             Aliases = aliases;
-            Required = required;
+            IsRequired = isRequired;
             Description = description;
         }
     }

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.CommandLine;
 using System.CommandLine.Builder;
 using System.CommandLine.Invocation;
@@ -48,14 +49,14 @@ namespace GitVersion.Cli
 
                 var option = new Option(optionAttribute.Aliases, optionAttribute.Description)
                 {
-                    Required = optionAttribute.Required,
+                    IsRequired = optionAttribute.IsRequired,
                     Argument = new Argument { ArgumentType = propertyInfo.PropertyType }
                 };
                 command.AddOption(option);
             }
             
             var handlerMethod = handlerType.GetMethod(nameof(commandHandler.InvokeAsync), new [] { commandOptionsType });
-            command.Handler = CommandHandler.Create(handlerMethod, commandHandler);
+            command.Handler = CommandHandler.Create(handlerMethod ?? throw new InvalidOperationException(), commandHandler);
 
             foreach (var subCommandHandler in commandHandler.SubCommands())
             {
