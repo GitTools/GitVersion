@@ -10,7 +10,7 @@ namespace GitVersion.Cli.Infrastructure
 
         public Container(ServiceProvider serviceProvider) => this.serviceProvider = serviceProvider;
 
-        public T GetService<T>() => serviceProvider.GetService<T>();
+        public T? GetService<T>() => serviceProvider.GetService<T>();
 
         public object GetService(Type type) => serviceProvider.GetService(type);
 

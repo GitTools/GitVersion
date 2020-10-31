@@ -18,7 +18,7 @@ namespace GitVersion.Cli
             foreach (var commandHandler in commandHandlers)
             {
                 var command = CreateCommand(commandHandler);
-                AddCommand(command);
+                if (command != null) AddCommand(command);
             }
         }
 
@@ -30,15 +30,19 @@ namespace GitVersion.Cli
                 .InvokeAsync(args);
         }
 
-        private static System.CommandLine.Command CreateCommand(ICommandHandler commandHandler)
+        private static System.CommandLine.Command? CreateCommand(ICommandHandler commandHandler)
         {
             const BindingFlags declaredOnly = BindingFlags.Public | BindingFlags.Instance;
 
             var handlerType = commandHandler.GetType();
-            var commandOptionsType = handlerType.BaseType?.GenericTypeArguments[0];
-            var commandAttribute = commandOptionsType?.GetCustomAttribute<CommandAttribute>();
+            if (handlerType.BaseType is null)
+                return null;
 
-            if (commandAttribute == null) return null;
+            var commandOptionsType = handlerType.BaseType.GenericTypeArguments[0];
+            var commandAttribute = commandOptionsType.GetCustomAttribute<CommandAttribute>();
+
+            if (commandAttribute == null) 
+                return null;
 
             var command = new System.CommandLine.Command(commandAttribute.Name, commandAttribute.Description);
             var propertyInfos = commandOptionsType.GetProperties(declaredOnly);
@@ -54,14 +58,16 @@ namespace GitVersion.Cli
                 };
                 command.AddOption(option);
             }
-            
-            var handlerMethod = handlerType.GetMethod(nameof(commandHandler.InvokeAsync), new [] { commandOptionsType });
-            command.Handler = CommandHandler.Create(handlerMethod ?? throw new InvalidOperationException(), commandHandler);
+
+            var handlerMethod =
+                handlerType.GetMethod(nameof(commandHandler.InvokeAsync), new[] { commandOptionsType });
+            command.Handler = CommandHandler.Create(handlerMethod ?? throw new InvalidOperationException(),
+                commandHandler);
 
             foreach (var subCommandHandler in commandHandler.SubCommands())
             {
                 var subCommand = CreateCommand(subCommandHandler);
-                command.AddCommand(subCommand);
+                if (subCommand != null) command.AddCommand(subCommand);
             }
 
             return command;

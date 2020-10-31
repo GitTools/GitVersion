@@ -28,7 +28,7 @@ namespace GitVersion.Cli
             
             var gitVersionModules = assemblies
                 .SelectMany(a => a.GetTypes().Where(TypeIsGitVersionModule))
-                .Select(t => (IGitVersionModule)Activator.CreateInstance(t))
+                .Select(t => (IGitVersionModule)Activator.CreateInstance(t)!)
                 .ToList();
 
             using var serviceProvider = new ContainerRegistrar()
@@ -50,6 +50,5 @@ namespace GitVersion.Cli
                    !type.IsInterface &&
                    !type.IsAbstract;
         }
-
     }
 }

@@ -1,5 +1,4 @@
 ﻿using GitVersion.Command;
-using GitVersion.Infrastructure;
 
 namespace GitVersion.Output
 {

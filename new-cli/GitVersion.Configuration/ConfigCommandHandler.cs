@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using GitVersion.Command;
-using GitVersion.Infrastructure;
 
 namespace GitVersion.Configuration
 {

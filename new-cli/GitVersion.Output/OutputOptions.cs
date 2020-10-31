@@ -1,19 +1,18 @@
 using System;
 using System.IO;
 using GitVersion.Command;
-using GitVersion.Infrastructure;
 
 namespace GitVersion.Output
 {
     [Command("output", "Outputs the version object.")]
-    public class OutputOptions : GitVersionOptions
+    public record OutputOptions : GitVersionOptions
     {
-        public Lazy<string> VersionInfo { get; set; } = new Lazy<string>(() => Console.IsInputRedirected ? Console.ReadLine() : null);
+        public Lazy<string> VersionInfo { get; } = new Lazy<string>(() => Console.IsInputRedirected ? Console.ReadLine() : "");
 
         [Option("--input-file", "The input version file")]
-        public FileInfo InputFile { get; set; }
+        public FileInfo InputFile { get; init; } = default!;
         
         [Option("--output-dir", "The output directory with the git repository")]
-        public DirectoryInfo OutputDir { get; set; }
+        public DirectoryInfo OutputDir { get; init; } = default!;
     }
 }

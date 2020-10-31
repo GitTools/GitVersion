@@ -11,8 +11,8 @@ namespace GitVersion.Cli
         public void RegisterTypes(IContainerRegistrar services)
         {
             services.AddConsoleLogging();
-            services.AddSingleton<ILogger>(provider => new Logger(provider.GetService<ILogger<Logger>>()));
-            
+            services.AddSingleton<ILogger>(provider => new Logger(provider.GetService<ILogger<Logger>>()!));
+
             services.AddSingleton<GitVersionApp>();
         }
     }
