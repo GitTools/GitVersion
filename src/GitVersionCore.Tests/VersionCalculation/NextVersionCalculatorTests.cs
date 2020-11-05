@@ -6,6 +6,7 @@ using GitVersion.Extensions;
 using GitVersion.Model.Configuration;
 using GitVersion.VersionCalculation;
 using GitVersionCore.Tests.Helpers;
+using GitVersionCore.Tests.IntegrationTests;
 using GitVersionCore.Tests.Mocks;
 using LibGit2Sharp;
 using Microsoft.Extensions.DependencyInjection;
@@ -213,6 +214,21 @@ namespace GitVersionCore.Tests.VersionCalculation
             fixture.Repository.Merge(fixture.Repository.FindBranch("feature/test"), Generate.SignatureNow());
 
             fixture.AssertFullSemver("0.1.0-beta.1+2", config);
+        }
+
+        [Test]
+        public void GetNextVersionOnNonMainlineBranchWithoutCommitsShouldWorkNormally()
+        {
+            var config = new Config
+            {
+                VersioningMode = VersioningMode.Mainline,
+                NextVersion = "1.0.0"
+            };
+
+            using var fixture = new EmptyRepositoryFixture();
+            fixture.MakeACommit("initial commit");
+            fixture.BranchTo("feature/f1");
+            fixture.AssertFullSemver("1.0.0-f1.0", config);
         }
     }
 }
