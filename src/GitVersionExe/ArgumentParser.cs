@@ -49,6 +49,8 @@ namespace GitVersion
 
                 AddAuthentication(args);
 
+                args.NoFetch = buildAgent != null && buildAgent.PreventFetch();
+
                 return args;
             }
 
