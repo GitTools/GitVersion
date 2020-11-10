@@ -17,7 +17,7 @@
         <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="$(PackageVersion_MicrosoftExtensions)" PrivateAssets="All">
             <Publish>true</Publish>
         </PackageReference>
-        <PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="1.1.1" PrivateAssets="All">
+        <PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="5.0.0" PrivateAssets="All">
             <Publish>true</Publish>
         </PackageReference>
     </ItemGroup>
