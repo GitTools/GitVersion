@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.IO;
 using GitVersion;
 using GitVersion.BuildAgents;
 using GitVersionCore.Tests.Helpers;
@@ -15,6 +16,7 @@ namespace GitVersionCore.Tests.BuildAgents
     {
         private IEnvironment environment;
         private GitHubActions buildServer;
+        private string githubSetEnvironmentTempFilePath;
 
         [SetUp]
         public void SetUp()
@@ -26,12 +28,21 @@ namespace GitVersionCore.Tests.BuildAgents
             environment = sp.GetService<IEnvironment>();
             buildServer = sp.GetService<GitHubActions>();
             environment.SetEnvironmentVariable(GitHubActions.EnvironmentVariableName, "true");
+
+            githubSetEnvironmentTempFilePath = Path.GetTempFileName();
+            environment.SetEnvironmentVariable(GitHubActions.GitHubSetEnvTempFileEnvironmentVariableName, githubSetEnvironmentTempFilePath);
         }
 
         [TearDown]
         public void TearDown()
         {
             environment.SetEnvironmentVariable(GitHubActions.EnvironmentVariableName, null);
+            environment.SetEnvironmentVariable(GitHubActions.GitHubSetEnvTempFileEnvironmentVariableName, null);
+            if (githubSetEnvironmentTempFilePath != null && File.Exists(githubSetEnvironmentTempFilePath))
+            {
+                File.Delete(githubSetEnvironmentTempFilePath);
+                githubSetEnvironmentTempFilePath = null;
+            }
         }
 
         [Test]
@@ -97,8 +108,8 @@ namespace GitVersionCore.Tests.BuildAgents
         }
 
         [TestCase("Something", "1.0.0",
-            "\"GitVersion_Something=1.0.0\" >> $GITHUB_ENV")]
-        public void GetSetParameterMessage(string key, string value, string expectedResult)
+            "Writing \"GitVersion_Something=1.0.0\" to the file at $GITHUB_ENV", "GitVersion_Something=1.0.0")]
+        public void GetSetParameterMessage(string key, string value, string expectedResult, string expectedFileResult)
         {
             // Assert
             environment.GetEnvironmentVariable("GitVersion_Something").ShouldBeNullOrWhiteSpace();
@@ -109,6 +120,10 @@ namespace GitVersionCore.Tests.BuildAgents
             // Assert
             result.ShouldContain(s => true, 1);
             result.ShouldBeEquivalentTo(new[] { expectedResult });
+            var resultLines = File.ReadAllLines(githubSetEnvironmentTempFilePath);
+            resultLines.ShouldContain(s => true, 1);
+            resultLines.ShouldBeEquivalentTo(new[] { expectedFileResult });
+
         }
 
         [Test]
@@ -141,7 +156,7 @@ namespace GitVersionCore.Tests.BuildAgents
                 "Executing GenerateSetVersionMessage for 'GitHubActions'.",
                 "",
                 "Executing GenerateBuildLogOutput for 'GitHubActions'.",
-                "\"GitVersion_Major=1.0.0\" >> $GITHUB_ENV"
+                "Writing \"GitVersion_Major=1.0.0\" to the file at $GITHUB_ENV"
             };
 
             string.Join(Environment.NewLine, list)
