@@ -1,7 +1,6 @@
 using GitVersion.Logging;
 using GitVersion.OutputVariables;
 using System.IO;
-using System.Text;
 
 namespace GitVersion.BuildAgents
 {
@@ -11,12 +10,10 @@ namespace GitVersion.BuildAgents
 
         public GitHubActions(IEnvironment environment, ILog log) : base(environment, log)
         {
-            this.environment = environment;
         }
 
         public const string EnvironmentVariableName = "GITHUB_ACTIONS";
         public const string GitHubSetEnvTempFileEnvironmentVariableName = "GITHUB_ENV";
-        private readonly IEnvironment environment;
 
         protected override string EnvironmentVariable { get; } = EnvironmentVariableName;
 
@@ -47,7 +44,7 @@ namespace GitVersion.BuildAgents
                 return;
             }
 
-            var gitHubSetEnvFilePath = environment.GetEnvironmentVariable(GitHubSetEnvTempFileEnvironmentVariableName);
+            var gitHubSetEnvFilePath = this.Environment.GetEnvironmentVariable(GitHubSetEnvTempFileEnvironmentVariableName);
 
             if (gitHubSetEnvFilePath != null)
             {
