@@ -107,23 +107,17 @@ namespace GitVersionCore.Tests.BuildAgents
             result.ShouldBe("refs/pull/1/merge");
         }
 
-        [TestCase("Something", "1.0.0",
-            "Writing \"GitVersion_Something=1.0.0\" to the file at $GITHUB_ENV", "GitVersion_Something=1.0.0")]
-        public void GetSetParameterMessage(string key, string value, string expectedResult, string expectedFileResult)
+        [Test]
+        public void GetSetParameterMessage()
         {
             // Assert
             environment.GetEnvironmentVariable("GitVersion_Something").ShouldBeNullOrWhiteSpace();
 
             // Act
-            var result = buildServer.GenerateSetParameterMessage(key, value);
+            var result = buildServer.GenerateSetParameterMessage("GitVersion_Something", "1.0.0");
 
             // Assert
-            result.ShouldContain(s => true, 1);
-            result.ShouldBeEquivalentTo(new[] { expectedResult });
-            var resultLines = File.ReadAllLines(githubSetEnvironmentTempFilePath);
-            resultLines.ShouldContain(s => true, 1);
-            resultLines.ShouldBeEquivalentTo(new[] { expectedFileResult });
-
+            result.ShouldContain(s => true, 0);
         }
 
         [Test]
@@ -156,11 +150,20 @@ namespace GitVersionCore.Tests.BuildAgents
                 "Executing GenerateSetVersionMessage for 'GitHubActions'.",
                 "",
                 "Executing GenerateBuildLogOutput for 'GitHubActions'.",
-                "Writing \"GitVersion_Major=1.0.0\" to the file at $GITHUB_ENV"
+                "Writing version variables to $GITHUB_ENV file for 'GitHubActions'."
             };
 
             string.Join(Environment.NewLine, list)
                 .ShouldBe(string.Join(Environment.NewLine, expected));
+
+            var expectedFileContents = new List<string>
+            {
+                "GitVersion_Major=1.0.0"
+            };
+
+            var actualFileContents = File.ReadAllLines(githubSetEnvironmentTempFilePath);
+
+            actualFileContents.ShouldBe(expectedFileContents);
         }
 
         [Test]
