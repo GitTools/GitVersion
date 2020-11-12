@@ -35,6 +35,7 @@
             <Output TaskParameter="PreReleaseTag" PropertyName="GitVersion_PreReleaseTag" />
             <Output TaskParameter="PreReleaseTagWithDash" PropertyName="GitVersion_PreReleaseTagWithDash" />
             <Output TaskParameter="PreReleaseLabel" PropertyName="GitVersion_PreReleaseLabel" />
+            <Output TaskParameter="PreReleaseLabelWithDash" PropertyName="GitVersion_PreReleaseLabelWithDash" />
             <Output TaskParameter="PreReleaseNumber" PropertyName="GitVersion_PreReleaseNumber" />
             <Output TaskParameter="BuildMetaData" PropertyName="GitVersion_BuildMetaData" />
             <Output TaskParameter="BuildMetaDataPadded" PropertyName="GitVersion_BuildMetaDataPadded" />

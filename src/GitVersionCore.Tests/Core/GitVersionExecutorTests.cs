@@ -123,6 +123,7 @@ namespace GitVersionCore.Tests
         PreReleaseTag: test.19
         PreReleaseTagWithDash: -test.19
         PreReleaseLabel: test
+        PreReleaseLabelWithDash: -test
         PreReleaseNumber: 19
         WeightedPreReleaseNumber: 19
         BuildMetaData:
@@ -186,6 +187,7 @@ namespace GitVersionCore.Tests
         PreReleaseTag: test.19
         PreReleaseTagWithDash: -test.19
         PreReleaseLabel: test
+        PreReleaseLabelWithDash: -test
         PreReleaseNumber: 19
         BuildMetaData:
         BuildMetaDataPadded:
@@ -271,6 +273,7 @@ namespace GitVersionCore.Tests
         PreReleaseTag: test.19
         PreReleaseTagWithDash: -test.19
         PreReleaseLabel: test
+        PreReleaseLabelWithDash: -test
         PreReleaseNumber: 19
         WeightedPreReleaseNumber: 19
         BuildMetaData:
@@ -335,6 +338,7 @@ namespace GitVersionCore.Tests
         PreReleaseTag: test.19
         PreReleaseTagWithDash: -test.19
         PreReleaseLabel: test
+        PreReleaseLabelWithDash: -test
         PreReleaseNumber: 19
         WeightedPreReleaseNumber: 19
         BuildMetaData:

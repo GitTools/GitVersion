@@ -31,6 +31,7 @@ namespace GitVersion.OutputVariables
                                 string preReleaseTag,
                                 string preReleaseTagWithDash,
                                 string preReleaseLabel,
+                                string preReleaseLabelWithDash,
                                 string preReleaseNumber,
                                 string weightedPreReleaseNumber,
                                 string informationalVersion,
@@ -64,6 +65,7 @@ namespace GitVersion.OutputVariables
             PreReleaseTag = preReleaseTag;
             PreReleaseTagWithDash = preReleaseTagWithDash;
             PreReleaseLabel = preReleaseLabel;
+            PreReleaseLabelWithDash = preReleaseLabelWithDash;
             PreReleaseNumber = preReleaseNumber;
             WeightedPreReleaseNumber = weightedPreReleaseNumber;
             InformationalVersion = informationalVersion;
@@ -84,6 +86,7 @@ namespace GitVersion.OutputVariables
         public string PreReleaseTag { get; }
         public string PreReleaseTagWithDash { get; }
         public string PreReleaseLabel { get; }
+        public string PreReleaseLabelWithDash { get; }
         public string PreReleaseNumber { get; }
         public string WeightedPreReleaseNumber { get; }
         public string BuildMetaData { get; }
