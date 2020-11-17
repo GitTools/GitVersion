@@ -53,7 +53,7 @@ namespace GitVersionCore.Tests.BuildAgents
 
             writes = new List<string>();
             buildServer.WriteIntegration(writes.Add, variables, false);
-            writes.ShouldBeEmpty();
+            writes.ShouldNotContain(x => x.StartsWith("Executing GenerateSetVersionMessage for "));
         }
 
         private class BuildAgent : BuildAgentBase
