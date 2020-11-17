@@ -180,7 +180,7 @@ namespace GitVersionCore.Tests.BuildAgents
             // Act
             buildServer.WriteIntegration(s => { list.Add(s); }, vars, false);
 
-            list.ShouldBeEmpty();
+            list.ShouldNotContain(x => x.StartsWith("Executing GenerateSetVersionMessage for "));
         }
 
         [Test]
