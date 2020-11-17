@@ -30,13 +30,16 @@ namespace GitVersion
 
         public virtual void WriteIntegration(Action<string> writer, VersionVariables variables, bool updateBuildNumber = true)
         {
-            if (writer == null || !updateBuildNumber)
+            if (writer == null)
             {
                 return;
             }
 
-            writer($"Executing GenerateSetVersionMessage for '{GetType().Name}'.");
-            writer(GenerateSetVersionMessage(variables));
+            if (updateBuildNumber)
+            {
+                writer($"Executing GenerateSetVersionMessage for '{GetType().Name}'.");
+                writer(GenerateSetVersionMessage(variables));
+            }
             writer($"Executing GenerateBuildLogOutput for '{GetType().Name}'.");
             foreach (var buildParameter in GenerateBuildLogOutput(variables))
             {
