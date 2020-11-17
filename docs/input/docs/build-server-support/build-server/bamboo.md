@@ -19,7 +19,7 @@ a Windows build host using Powershell. The build only needs one of the two.
 
 ```bash
 ~/.dotnet/tools/dotnet-gitversion > gitversion.txt
-sed -i '1d;26d;s/  //;s/"//g;s/,//;s/:/=/' gitversion.txt
+sed -i '1d;$ d;s/  //;s/"//g;s/,//;s/:/=/' gitversion.txt
 ```
 
 ### Task: Script
