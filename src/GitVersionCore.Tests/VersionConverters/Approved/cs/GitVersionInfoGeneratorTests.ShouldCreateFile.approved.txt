@@ -58,5 +58,6 @@ static class GitVersionInformation
     public static string VersionSourceSha = "versionSourceSha";
     public static string CommitsSinceVersionSource = "5";
     public static string CommitsSinceVersionSourcePadded = "0005";
+    public static string UncommittedChanges = "0";
     public static string CommitDate = "2014-03-06";
 }

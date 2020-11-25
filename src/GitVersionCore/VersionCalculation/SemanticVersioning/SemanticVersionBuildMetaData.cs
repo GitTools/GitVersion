@@ -21,12 +21,13 @@ namespace GitVersion
         public DateTimeOffset CommitDate;
         public string VersionSourceSha;
         public int CommitsSinceVersionSource;
+        public int UncommittedChanges;
 
         public SemanticVersionBuildMetaData()
         {
         }
 
-        public SemanticVersionBuildMetaData(string versionSourceSha, int? commitsSinceTag, string branch, string commitSha, string commitShortSha, DateTimeOffset commitDate, string otherMetadata = null)
+        public SemanticVersionBuildMetaData(string versionSourceSha, int? commitsSinceTag, string branch, string commitSha, string commitShortSha, DateTimeOffset commitDate, int numbeerOfUncommitedChanges, string otherMetadata = null)
         {
             Sha = commitSha;
             ShortSha = commitShortSha;
@@ -36,6 +37,7 @@ namespace GitVersion
             OtherMetaData = otherMetadata;
             VersionSourceSha = versionSourceSha;
             CommitsSinceVersionSource = commitsSinceTag ?? 0;
+            UncommittedChanges = numbeerOfUncommitedChanges;
         }
 
         public SemanticVersionBuildMetaData(SemanticVersionBuildMetaData buildMetaData)
@@ -48,6 +50,7 @@ namespace GitVersion
             OtherMetaData = buildMetaData.OtherMetaData;
             VersionSourceSha = buildMetaData.VersionSourceSha;
             CommitsSinceVersionSource = buildMetaData.CommitsSinceVersionSource;
+            UncommittedChanges = buildMetaData.UncommittedChanges;
         }
 
         public override bool Equals(object obj)

@@ -46,8 +46,9 @@ namespace GitVersion
             var currentBranchConfig = branchConfigurationCalculator.GetBranchConfiguration(currentBranch, currentCommit, configuration);
             var effectiveConfiguration = configuration.CalculateEffectiveConfiguration(currentBranchConfig);
             var currentCommitTaggedVersion = repositoryMetadataProvider.GetCurrentCommitTaggedVersion(currentCommit, effectiveConfiguration);
+            var numberOfUncommittedChanges = repositoryMetadataProvider.GetNumberOfUncommittedChanges();
 
-            return new GitVersionContext(currentBranch, currentCommit, configuration, effectiveConfiguration, currentCommitTaggedVersion);
+            return new GitVersionContext(currentBranch, currentCommit, configuration, effectiveConfiguration, currentCommitTaggedVersion, numberOfUncommittedChanges);
         }
     }
 }

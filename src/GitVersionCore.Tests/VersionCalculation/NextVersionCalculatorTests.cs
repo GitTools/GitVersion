@@ -6,6 +6,7 @@ using GitVersion.Extensions;
 using GitVersion.Model.Configuration;
 using GitVersion.VersionCalculation;
 using GitVersionCore.Tests.Helpers;
+using GitVersionCore.Tests.IntegrationTests;
 using GitVersionCore.Tests.Mocks;
 using LibGit2Sharp;
 using Microsoft.Extensions.DependencyInjection;
@@ -19,7 +20,7 @@ namespace GitVersionCore.Tests.VersionCalculation
         [Test]
         public void ShouldIncrementVersionBasedOnConfig()
         {
-            var semanticVersionBuildMetaData = new SemanticVersionBuildMetaData("ef7d0d7e1e700f1c7c9fa01ea6791bb778a5c37c", 1, "master", "b1a34edbd80e141f7cc046c074f109be7d022074", "b1a34e", DateTimeOffset.Now);
+            var semanticVersionBuildMetaData = new SemanticVersionBuildMetaData("ef7d0d7e1e700f1c7c9fa01ea6791bb778a5c37c", 1, "master", "b1a34edbd80e141f7cc046c074f109be7d022074", "b1a34e", DateTimeOffset.Now, 0);
 
             var contextBuilder = new GitVersionContextBuilder();
 
@@ -43,7 +44,7 @@ namespace GitVersionCore.Tests.VersionCalculation
         [Test]
         public void DoesNotIncrementWhenBaseVersionSaysNotTo()
         {
-            var semanticVersionBuildMetaData = new SemanticVersionBuildMetaData("ef7d0d7e1e700f1c7c9fa01ea6791bb778a5c37c", 1, "master", "b1a34edbd80e141f7cc046c074f109be7d022074", "b1a34e", DateTimeOffset.Now);
+            var semanticVersionBuildMetaData = new SemanticVersionBuildMetaData("ef7d0d7e1e700f1c7c9fa01ea6791bb778a5c37c", 1, "master", "b1a34edbd80e141f7cc046c074f109be7d022074", "b1a34e", DateTimeOffset.Now, 0);
 
             var contextBuilder = new GitVersionContextBuilder();
 
@@ -68,7 +69,7 @@ namespace GitVersionCore.Tests.VersionCalculation
         [Test]
         public void AppliesBranchPreReleaseTag()
         {
-            var semanticVersionBuildMetaData = new SemanticVersionBuildMetaData("ef7d0d7e1e700f1c7c9fa01ea6791bb778a5c37c", 2, "develop", "b1a34edbd80e141f7cc046c074f109be7d022074", "b1a34e", DateTimeOffset.Now);
+            var semanticVersionBuildMetaData = new SemanticVersionBuildMetaData("ef7d0d7e1e700f1c7c9fa01ea6791bb778a5c37c", 2, "develop", "b1a34edbd80e141f7cc046c074f109be7d022074", "b1a34e", DateTimeOffset.Now, 0);
             var contextBuilder = new GitVersionContextBuilder();
 
             contextBuilder
@@ -213,6 +214,21 @@ namespace GitVersionCore.Tests.VersionCalculation
             fixture.Repository.Merge(fixture.Repository.FindBranch("feature/test"), Generate.SignatureNow());
 
             fixture.AssertFullSemver("0.1.0-beta.1+2", config);
+        }
+
+        [Test]
+        public void GetNextVersionOnNonMainlineBranchWithoutCommitsShouldWorkNormally()
+        {
+            var config = new Config
+            {
+                VersioningMode = VersioningMode.Mainline,
+                NextVersion = "1.0.0"
+            };
+
+            using var fixture = new EmptyRepositoryFixture();
+            fixture.MakeACommit("initial commit");
+            fixture.BranchTo("feature/f1");
+            fixture.AssertFullSemver("1.0.0-f1.0", config);
         }
     }
 }

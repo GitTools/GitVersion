@@ -30,7 +30,7 @@ namespace GitVersion.VersionCalculation
         {
             var allTags = repositoryMetadataProvider.GetValidVersionTags(Context.Configuration.GitTagPrefix, olderThan);
 
-            var tagsOnBranch = currentBranch
+            var taggedVersions = currentBranch
                 .Commits
                 .SelectMany(commit => { return allTags.Where(t => IsValidTag(t.Item1, commit)); })
                 .Select(t =>
@@ -40,11 +40,12 @@ namespace GitVersion.VersionCalculation
 
                     return null;
                 })
-                .Where(a => a != null)
-                .Take(5)
+                .Where(versionTaggedCommit => versionTaggedCommit != null)
+                .Select(versionTaggedCommit => CreateBaseVersion(Context, versionTaggedCommit))
                 .ToList();
 
-            return tagsOnBranch.Select(t => CreateBaseVersion(Context, t));
+            var taggedVersionsOnCurrentCommit = taggedVersions.Where(version => !version.ShouldIncrement).ToList();
+            return taggedVersionsOnCurrentCommit.Any() ? taggedVersionsOnCurrentCommit : taggedVersions;
         }
 
         private BaseVersion CreateBaseVersion(GitVersionContext context, VersionTaggedCommit version)
