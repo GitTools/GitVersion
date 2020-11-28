@@ -38,7 +38,7 @@ namespace GitVersionExe.Tests
         {
             var env = new Dictionary<string, string>
             {
-                { CodeBuild.EnvironmentVariableName, PullRequestBranchName },
+                { CodeBuild.WebHookEnvironmentVariableName, PullRequestBranchName },
             };
             await VerifyPullRequestVersionIsCalculatedProperly(pullRequestRef, env);
         }
