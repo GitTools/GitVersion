@@ -88,9 +88,9 @@ from The Noun Project.
 [dockerhub]:                       https://hub.docker.com/r/gittools/gitversion/
 [dockerhub-badge]:                 https://img.shields.io/docker/pulls/gittools/gitversion.svg?logo=docker
 [az-pipeline-task]:                https://marketplace.visualstudio.com/items?itemName=gittools.gittools
-[az-pipeline-task-badge]:          https://img.shields.io/badge/marketplace-gittools.gittools-blue?logo=visual-studio
-[gh-actions]:                      https://github.com/marketplace/actions/use-actions
-[gh-actions-badge]:                https://img.shields.io/badge/marketplace-use--actions-blue?logo=github
+[az-pipeline-task-badge]:          https://img.shields.io/badge/marketplace-gittools.gittools-blue?logo=azure-pipelines
+[gh-actions]:                      https://github.com/marketplace/actions/gittools
+[gh-actions-badge]:                https://img.shields.io/badge/marketplace-gittools-blue?logo=github
 [contribute]:                      https://github.com/GitTools/GitVersion/blob/master/CONTRIBUTING.md
 [why]:                             https://gitversion.net/docs/why
 [usage]:                           https://gitversion.net/docs/usage/usage

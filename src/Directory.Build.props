@@ -19,8 +19,8 @@
 
     </PropertyGroup>
     <PropertyGroup>
-        <PackageVersion_LibGit2Sharp>0.27.0-preview-0034</PackageVersion_LibGit2Sharp>
-        <PackageVersion_LibGit2Sharp_NativeBinaries>2.0.298</PackageVersion_LibGit2Sharp_NativeBinaries>
+        <PackageVersion_LibGit2Sharp>0.27.0-preview-0096</PackageVersion_LibGit2Sharp>
+        <PackageVersion_LibGit2Sharp_NativeBinaries>2.0.312</PackageVersion_LibGit2Sharp_NativeBinaries>
 
         <PackageVersion_JetBrainsAnnotations>2020.1.0</PackageVersion_JetBrainsAnnotations>
         <PackageVersion_YamlDotNet>8.1.2</PackageVersion_YamlDotNet>
@@ -35,7 +35,7 @@
         <PackageVersion_GitToolsTesting>1.2.0</PackageVersion_GitToolsTesting>
         <PackageVersion_NUnit3TestAdapter>3.17.0</PackageVersion_NUnit3TestAdapter>
         <PackageVersion_NunitXmlTestLogger>2.1.80</PackageVersion_NunitXmlTestLogger>
-        <PackageVersion_Shouldly>4.0.0</PackageVersion_Shouldly>
+        <PackageVersion_Shouldly>4.0.1</PackageVersion_Shouldly>
 
     </PropertyGroup>
 

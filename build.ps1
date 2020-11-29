@@ -197,7 +197,9 @@ $Arguments = @{
     nuget_useinprocessclient=$true;
     docker_distro=$DockerDistro;
     docker_dotnetversion=$DockerDotnetVersion;
-}.GetEnumerator() | ForEach-Object { "--{0}=`"{1}`"" -f $_.key, $_.value };
+}.GetEnumerator() | ForEach-Object { 
+    if ($_.value -ne "") { "--{0}=`"{1}`"" -f $_.key, $_.value }
+};
 
 # Start Cake
 Write-Host "Running build script..."
