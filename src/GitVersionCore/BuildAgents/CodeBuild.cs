@@ -21,7 +21,7 @@ namespace GitVersion.BuildAgents
             file = propertiesFileName;
         }
 
-        protected override string EnvironmentVariable => throw new InvalidOperationException();
+        protected override string EnvironmentVariable => throw new NotSupportedException($"Accessing {nameof(EnvironmentVariable)} is not supported as {nameof(CodeBuild)} supports two environment variables for branch names.");
 
         public override string GenerateSetVersionMessage(VersionVariables variables)
         {
