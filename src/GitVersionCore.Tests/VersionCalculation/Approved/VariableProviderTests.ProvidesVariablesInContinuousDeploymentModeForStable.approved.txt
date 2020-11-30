@@ -5,6 +5,7 @@
   "PreReleaseTag":"ci.5",
   "PreReleaseTagWithDash":"-ci.5",
   "PreReleaseLabel":"ci",
+  "PreReleaseLabelWithDash":"-ci",
   "PreReleaseNumber":5,
   "WeightedPreReleaseNumber":5,
   "BuildMetaData":"",

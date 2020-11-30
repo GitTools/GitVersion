@@ -15,6 +15,7 @@ Running `GitVersion.exe` in your repo will show you what is available. For the
   "PreReleaseTag":"beta.1",
   "PreReleaseTagWithDash":"-beta.1",
   "PreReleaseLabel":"beta",
+  "PreReleaseLabelWithDash":"-beta",
   "PreReleaseNumber":1,
   "WeightedPreReleaseNumber":1001,
   "BuildMetaData":1,

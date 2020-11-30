@@ -23,6 +23,7 @@
   <?define NuGetVersionV2="1.2.3"?>
   <?define Patch="3"?>
   <?define PreReleaseLabel=""?>
+  <?define PreReleaseLabelWithDash=""?>
   <?define PreReleaseNumber=""?>
   <?define PreReleaseTag=""?>
   <?define PreReleaseTagWithDash=""?>

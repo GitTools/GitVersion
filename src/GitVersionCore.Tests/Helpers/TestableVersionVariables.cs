@@ -10,7 +10,7 @@ namespace GitVersionCore.Tests.Helpers
             string escapedBranchName = "", string sha = "", string shortSha = "", string majorMinorPatch = "",
             string semVer = "", string legacySemVer = "", string legacySemVerPadded = "", string fullSemVer = "",
             string assemblySemVer = "", string assemblySemFileVer = "", string preReleaseTag = "",
-            string preReleaseTagWithDash = "", string preReleaseLabel = "", string preReleaseNumber = "",
+            string preReleaseTagWithDash = "", string preReleaseLabel = "", string preReleaseLabelWithDash = "", string preReleaseNumber = "",
             string weightedPreReleaseNumber = "", string informationalVersion = "", string commitDate = "",
             string nugetVersion = "", string nugetVersionV2 = "", string nugetPreReleaseTag = "",
             string nugetPreReleaseTagV2 = "", string versionSourceSha = "", string commitsSinceVersionSource = "",
@@ -18,7 +18,7 @@ namespace GitVersionCore.Tests.Helpers
                 major, minor, patch, buildMetaData, buildMetaDataPadded, fullBuildMetaData, branchName, escapedBranchName,
                 sha, shortSha, majorMinorPatch, semVer, legacySemVer, legacySemVerPadded, fullSemVer,
                 assemblySemVer, assemblySemFileVer, preReleaseTag, weightedPreReleaseNumber, preReleaseTagWithDash,
-                preReleaseLabel, preReleaseNumber, informationalVersion, commitDate, nugetVersion, nugetVersionV2,
+                preReleaseLabel, preReleaseLabelWithDash, preReleaseNumber, informationalVersion, commitDate, nugetVersion, nugetVersionV2,
                 nugetPreReleaseTag, nugetPreReleaseTagV2, versionSourceSha, commitsSinceVersionSource, commitsSinceVersionSourcePadded, uncommittedChanges)
         {
         }

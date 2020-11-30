@@ -36,6 +36,7 @@ type GitVersionInformation =
     static member PreReleaseTag = "unstable.4"
     static member PreReleaseTagWithDash = "-unstable.4"
     static member PreReleaseLabel = "unstable"
+    static member PreReleaseLabelWithDash = "-unstable"
     static member PreReleaseNumber = "4"
     static member WeightedPreReleaseNumber = "4"
     static member BuildMetaData = "5"

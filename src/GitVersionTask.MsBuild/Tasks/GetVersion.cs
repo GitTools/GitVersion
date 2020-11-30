@@ -23,6 +23,9 @@ namespace GitVersion.MSBuildTask.Tasks
         public string PreReleaseLabel { get; set; }
 
         [Output]
+        public string PreReleaseLabelWithDash { get; set; }
+
+        [Output]
         public string PreReleaseNumber { get; set; }
 
         [Output]
