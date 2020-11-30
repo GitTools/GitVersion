@@ -78,6 +78,7 @@
             <Output TaskParameter="PreReleaseTag" PropertyName="GitVersion_PreReleaseTag" />
             <Output TaskParameter="PreReleaseTagWithDash" PropertyName="GitVersion_PreReleaseTagWithDash" />
             <Output TaskParameter="PreReleaseLabel" PropertyName="GitVersion_PreReleaseLabel" />
+            <Output TaskParameter="PreReleaseLabelWithDash" PropertyName="GitVersion_PreReleaseLabelWithDash" />
             <Output TaskParameter="PreReleaseNumber" PropertyName="GitVersion_PreReleaseNumber" />
             <Output TaskParameter="WeightedPreReleaseNumber" PropertyName="GitVersion_WeightedPreReleaseNumber" />
             <Output TaskParameter="BuildMetaData" PropertyName="GitVersion_BuildMetaData" />
@@ -124,6 +125,7 @@
             <DefineConstants Condition=" '$(GitVersion_PreReleaseTag)' != '' ">GitVersion_PreReleaseTag=$(GitVersion_PreReleaseTag);$(DefineConstants)</DefineConstants>
             <DefineConstants Condition=" '$(GitVersion_PreReleaseTagWithDash)' != '' ">GitVersion_PreReleaseTagWithDash=$(GitVersion_PreReleaseTagWithDash);$(DefineConstants)</DefineConstants>
             <DefineConstants Condition=" '$(GitVersion_PreReleaseLabel)' != '' ">GitVersion_PreReleaseLabel=$(GitVersion_PreReleaseLabel);$(DefineConstants)</DefineConstants>
+            <DefineConstants Condition=" '$(GitVersion_PreReleaseLabelWithDash)' != '' ">GitVersion_PreReleaseLabelWithDash=$(GitVersion_PreReleaseLabeWithDashl);$(DefineConstants)</DefineConstants>
             <DefineConstants Condition=" '$(GitVersion_PreReleaseNumber)' != '' ">GitVersion_PreReleaseNumber=$(GitVersion_PreReleaseNumber);$(DefineConstants)</DefineConstants>
             <DefineConstants Condition=" '$(GitVersion_WeightedPreReleaseNumber)' != '' ">GitVersion_WeightedPreReleaseNumber=$(GitVersion_WeightedPreReleaseNumber);$(DefineConstants)</DefineConstants>
             <DefineConstants Condition=" '$(GitVersion_BuildMetaData)' != '' ">GitVersion_BuildMetaData=$(GitVersion_BuildMetaData);$(DefineConstants)</DefineConstants>

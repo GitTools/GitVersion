@@ -5,6 +5,7 @@
   "PreReleaseTag":"unstable.8",
   "PreReleaseTagWithDash":"-unstable.8",
   "PreReleaseLabel":"unstable",
+  "PreReleaseLabelWithDash":"-unstable",
   "PreReleaseNumber":8,
   "WeightedPreReleaseNumber":8,
   "BuildMetaData":"",

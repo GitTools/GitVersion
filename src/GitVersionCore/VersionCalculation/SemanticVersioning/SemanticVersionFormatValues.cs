@@ -28,6 +28,8 @@ namespace GitVersion
 
         public string PreReleaseLabel => semver.PreReleaseTag.HasTag() ? semver.PreReleaseTag.Name : null;
 
+        public string PreReleaseLabelWithDash => semver.PreReleaseTag.HasTag() ? "-" + semver.PreReleaseTag.Name : null;
+
         public string PreReleaseNumber => semver.PreReleaseTag.HasTag() ? semver.PreReleaseTag.Number.ToString() : null;
 
         public string WeightedPreReleaseNumber => GetWeightedPreReleaseNumber();
