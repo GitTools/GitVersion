@@ -31,16 +31,30 @@ namespace GitVersionCore.Tests.BuildAgents
         }
 
         [Test]
-        public void CorrectlyIdentifiesCodeBuildPresence()
+        public void CorrectlyIdentifiesCodeBuildPresenceFromSourceVersion()
         {
-            environment.SetEnvironmentVariable(CodeBuild.EnvironmentVariableName, "a value");
+            environment.SetEnvironmentVariable(CodeBuild.SourceVersionEnvironmentVariableName, "a value");
             buildServer.CanApplyToCurrentContext().ShouldBe(true);
         }
 
         [Test]
-        public void PicksUpBranchNameFromEnvironment()
+        public void PicksUpBranchNameFromEnvironmentFromSourceVersion()
         {
-            environment.SetEnvironmentVariable(CodeBuild.EnvironmentVariableName, "refs/heads/master");
+            environment.SetEnvironmentVariable(CodeBuild.SourceVersionEnvironmentVariableName, "refs/heads/master");
+            buildServer.GetCurrentBranch(false).ShouldBe("refs/heads/master");
+        }
+
+        [Test]
+        public void CorrectlyIdentifiesCodeBuildPresenceFromWebHook()
+        {
+            environment.SetEnvironmentVariable(CodeBuild.WebHookEnvironmentVariableName, "a value");
+            buildServer.CanApplyToCurrentContext().ShouldBe(true);
+        }
+
+        [Test]
+        public void PicksUpBranchNameFromEnvironmentFromWebHook()
+        {
+            environment.SetEnvironmentVariable(CodeBuild.WebHookEnvironmentVariableName, "refs/heads/master");
             buildServer.GetCurrentBranch(false).ShouldBe("refs/heads/master");
         }
 
