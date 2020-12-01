@@ -118,9 +118,11 @@ Task("Zip-Files")
         var sourceDir = parameters.Paths.Directories.Native.Combine(platform.ToString().ToLower()).Combine(runtime);
         var targetDir = parameters.Paths.Directories.ArtifactsRoot.Combine("native");
         EnsureDirectoryExists(targetDir);
+
         var fileName = $"gitversion-{runtime}-{parameters.Version.SemVersion}.tar.gz".ToLower();
         var tarFile = targetDir.CombineWithFilePath(fileName);
-        GZipCompress(sourceDir, tarFile);
+        var filePaths = GetFiles($"{sourceDir}/**/*");
+        GZipCompress(sourceDir, tarFile, filePaths);
     }
 });
 
