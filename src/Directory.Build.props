@@ -25,7 +25,7 @@
         <PackageVersion_JetBrainsAnnotations>2020.3.0</PackageVersion_JetBrainsAnnotations>
         <PackageVersion_YamlDotNet>8.1.2</PackageVersion_YamlDotNet>
         <PackageVersion_NewtonsoftJson>12.0.3</PackageVersion_NewtonsoftJson>
-        <PackageVersion_MicrosoftExtensions>3.0.0</PackageVersion_MicrosoftExtensions>
+        <PackageVersion_MicrosoftExtensions>5.0.0</PackageVersion_MicrosoftExtensions>
         <PackageVersion_MsBuild>16.8.0</PackageVersion_MsBuild>
 
         <PackageVersion_MicrosoftTestSdk>16.8.0</PackageVersion_MicrosoftTestSdk>
