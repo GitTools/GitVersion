@@ -7,29 +7,30 @@
         <CoreTarget>tools/netstandard2.0</CoreTarget>
     </PropertyGroup>
     <ItemGroup>
-        <None Include="build/*.*"                                            Pack="true" PackagePath="build" />
-        <None Include="buildMultiTargeting/*.*"                              Pack="true" PackagePath="buildMultiTargeting" />
+        <None Include="build/*.*"                                                Pack="true" PackagePath="build" />
+        <None Include="buildMultiTargeting/*.*"                                  Pack="true" PackagePath="buildMultiTargeting" />
 
-        <None Include="$(CorePublishTask)/runtimes/**/*.so"                  Pack="true" PackagePath="$(CoreTarget)/runtimes" />
-        <None Include="$(CorePublishTask)/runtimes/**/*.dylib"               Pack="true" PackagePath="$(CoreTarget)/runtimes" />
-        <None Include="$(CorePublishTask)/runtimes/win-x86/native/*.dll"     Pack="true" PackagePath="$(CoreTarget)/runtimes/win-x86/native" />
-        <None Include="$(CorePublishTask)/runtimes/win-x64/native/*.dll"     Pack="true" PackagePath="$(CoreTarget)/runtimes/win-x64/native" />
+        <None Include="$(CorePublishTask)/runtimes/**/*.so"                      Pack="true" PackagePath="$(CoreTarget)/runtimes" />
+        <None Include="$(CorePublishTask)/runtimes/**/*.dylib"                   Pack="true" PackagePath="$(CoreTarget)/runtimes" />
+        <None Include="$(CorePublishTask)/runtimes/win-x86/native/*.dll"         Pack="true" PackagePath="$(CoreTarget)/runtimes/win-x86/native" />
+        <None Include="$(CorePublishTask)/runtimes/win-x64/native/*.dll"         Pack="true" PackagePath="$(CoreTarget)/runtimes/win-x64/native" />
 
-        <None Include="$(CorePublishTask)/GitVersion*"                       Pack="true" PackagePath="$(CoreTarget)" />
-        <None Include="$(CorePublishTask)/LibGit2Sharp.dll"                  Pack="true" PackagePath="$(CoreTarget)" />
-        <None Include="$(CorePublishTask)/YamlDotNet.dll"                    Pack="true" PackagePath="$(CoreTarget)" />
-        <None Include="$(CorePublishTask)/Microsoft.Extensions*"             Pack="true" PackagePath="$(CoreTarget)" />
-        <None Include="$(CorePublishTask)/Microsoft.Bcl.AsyncInterfaces.dll" Pack="true" PackagePath="$(CoreTarget)" />
+        <None Include="$(CorePublishTask)/GitVersion*"                           Pack="true" PackagePath="$(CoreTarget)" />
+        <None Include="$(CorePublishTask)/LibGit2Sharp.dll"                      Pack="true" PackagePath="$(CoreTarget)" />
+        <None Include="$(CorePublishTask)/YamlDotNet.dll"                        Pack="true" PackagePath="$(CoreTarget)" />
+        <None Include="$(CorePublishTask)/Microsoft.Extensions*"                 Pack="true" PackagePath="$(CoreTarget)" />
+        <None Include="$(CorePublishTask)/Microsoft.Bcl.AsyncInterfaces.dll"     Pack="true" PackagePath="$(CoreTarget)" />
 
-        <None Include="$(FullPublishTask)/lib/linux-x64/*.so"                Pack="true" PackagePath="$(FullTarget)/lib/linux-x64" />
-        <None Include="$(FullPublishTask)/lib/osx/*.dylib"                   Pack="true" PackagePath="$(FullTarget)/lib/osx" />
-        <None Include="$(FullPublishTask)/lib/win32/**/*.dll"                Pack="true" PackagePath="$(FullTarget)/lib/win32" />
+        <None Include="$(FullPublishTask)/lib/linux-x64/*.so"                    Pack="true" PackagePath="$(FullTarget)/lib/linux-x64" />
+        <None Include="$(FullPublishTask)/lib/osx/*.dylib"                       Pack="true" PackagePath="$(FullTarget)/lib/osx" />
+        <None Include="$(FullPublishTask)/lib/win32/**/*.dll"                    Pack="true" PackagePath="$(FullTarget)/lib/win32" />
 
-        <None Include="$(FullPublishTask)/GitVersion*"                       Pack="true" PackagePath="$(FullTarget)" />
-        <None Include="$(FullPublishTask)/LibGit2Sharp.*"                    Pack="true" PackagePath="$(FullTarget)" />
-        <None Include="$(FullPublishTask)/YamlDotNet.dll"                    Pack="true" PackagePath="$(FullTarget)" />
-        <None Include="$(FullPublishTask)/Microsoft.Extensions*"             Pack="true" PackagePath="$(FullTarget)" />
-        <None Include="$(FullPublishTask)/Microsoft.Bcl.AsyncInterfaces.dll" Pack="true" PackagePath="$(FullTarget)" />
+        <None Include="$(FullPublishTask)/GitVersion*"                           Pack="true" PackagePath="$(FullTarget)" />
+        <None Include="$(FullPublishTask)/LibGit2Sharp.*"                        Pack="true" PackagePath="$(FullTarget)" />
+        <None Include="$(FullPublishTask)/YamlDotNet.dll"                        Pack="true" PackagePath="$(FullTarget)" />
+        <None Include="$(FullPublishTask)/Microsoft.Extensions*"                 Pack="true" PackagePath="$(FullTarget)" />
+        <None Include="$(FullPublishTask)/Microsoft.Bcl.AsyncInterfaces.dll"     Pack="true" PackagePath="$(FullTarget)" />
+        <None Include="$(FullPublishTask)/System.Threading.Tasks.Extensions.dll" Pack="true" PackagePath="$(FullTarget)" />
 
     </ItemGroup>
 </Project>
