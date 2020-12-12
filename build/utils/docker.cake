@@ -149,7 +149,7 @@ string[] GetDockerTags(DockerImage dockerImage, BuildParameters parameters) {
         $"{name}:{parameters.Version.SemVersion}-{os}-{distro}-{targetframework}",
     };
 
-    if (distro == "debian-9" && targetframework == parameters.CoreFxVersion21 || distro == "nanoserver-1809") {
+    if (distro == "debian-9" && targetframework == parameters.CoreFxVersion31 || distro == "nanoserver-1809") {
         tags.AddRange(new[] {
             $"{name}:{parameters.Version.Version}-{os}",
             $"{name}:{parameters.Version.SemVersion}-{os}",

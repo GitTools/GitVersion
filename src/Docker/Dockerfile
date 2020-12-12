@@ -1,5 +1,5 @@
 ARG DISTRO='debian-9'
-ARG DOTNET_VERSION='2.1'
+ARG DOTNET_VERSION='3.1'
 
 FROM gittools/build-images:$DISTRO-sdk-$DOTNET_VERSION as installer
 ARG contentFolder

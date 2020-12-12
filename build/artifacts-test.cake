@@ -134,7 +134,7 @@ Task("Artifacts-MsBuildFull-Test")
     var nugetSource = MakeAbsolute(parameters.Paths.Directories.NugetRoot).FullPath;
 
     Information("\nTesting msbuild task with dotnet build (for .net core)\n");
-    var frameworks = new[] { parameters.CoreFxVersion21, parameters.CoreFxVersion31 };
+    var frameworks = new[] { parameters.CoreFxVersion31 };
     foreach(var framework in frameworks)
     {
         var dotnetCoreMsBuildSettings = new DotNetCoreMSBuildSettings();

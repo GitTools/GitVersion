@@ -2,7 +2,7 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
     <PropertyGroup>
         <FullPublishTask>bin/$(Configuration)/net48</FullPublishTask>
-        <CorePublishTask>bin/$(Configuration)/netcoreapp2.1/publish</CorePublishTask>
+        <CorePublishTask>bin/$(Configuration)/netcoreapp3.1/publish</CorePublishTask>
         <FullTarget>tools/net48</FullTarget>
         <CoreTarget>tools/netstandard2.0</CoreTarget>
     </PropertyGroup>
