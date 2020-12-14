@@ -566,7 +566,7 @@ namespace GitVersionCore.Tests
             version.Sha.ShouldBe(commits.First().Sha);
         }
 
-        private IGitVersionTool GetGitVersionCalculator(GitVersionOptions gitVersionOptions, ILog logger = null, IRepository repository = null, IFileSystem fs = null)
+        private IGitVersionCalculateTool GetGitVersionCalculator(GitVersionOptions gitVersionOptions, ILog logger = null, IRepository repository = null, IFileSystem fs = null)
         {
             sp = GetServiceProvider(gitVersionOptions, logger, repository, fs);
 
@@ -575,7 +575,7 @@ namespace GitVersionCore.Tests
             gitVersionCache = sp.GetService<IGitVersionCache>();
             gitPreparer = sp.GetService<IGitPreparer>();
 
-            return sp.GetService<IGitVersionTool>();
+            return sp.GetService<IGitVersionCalculateTool>();
         }
 
         private static IServiceProvider GetServiceProvider(GitVersionOptions gitVersionOptions, ILog log = null, IRepository repository = null, IFileSystem fileSystem = null, IEnvironment environment = null)

@@ -39,8 +39,10 @@ namespace GitVersion
             services.AddSingleton<IBaseVersionCalculator, BaseVersionCalculator>();
             services.AddSingleton<IMainlineVersionCalculator, MainlineVersionCalculator>();
             services.AddSingleton<INextVersionCalculator, NextVersionCalculator>();
-            services.AddSingleton<IGitVersionTool, GitVersionTool>();
             services.AddSingleton<IBranchConfigurationCalculator, BranchConfigurationCalculator>();
+
+            services.AddSingleton<IGitVersionCalculateTool, GitVersionCalculateTool>();
+            services.AddSingleton<IGitVersionOutputTool, GitVersionOutputTool>();
 
             services.AddSingleton<IBuildAgentResolver, BuildAgentResolver>();
             services.AddSingleton<IGitPreparer, GitPreparer>();

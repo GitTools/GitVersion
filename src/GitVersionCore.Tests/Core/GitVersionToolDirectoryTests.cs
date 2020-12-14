@@ -42,7 +42,7 @@ namespace GitVersionCore.Tests
                     services.AddSingleton(options);
                 });
 
-                var gitVersionCalculator = sp.GetService<IGitVersionTool>();
+                var gitVersionCalculator = sp.GetService<IGitVersionCalculateTool>();
 
                 gitVersionCalculator.CalculateVersionVariables();
             }
@@ -70,7 +70,7 @@ namespace GitVersionCore.Tests
                     services.AddSingleton(options);
                 });
 
-                var gitVersionCalculator = sp.GetService<IGitVersionTool>();
+                var gitVersionCalculator = sp.GetService<IGitVersionCalculateTool>();
 
                 gitVersionCalculator.CalculateVersionVariables();
             }

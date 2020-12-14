@@ -8,15 +8,15 @@ namespace GitVersion.MSBuildTask
 {
     public class GitVersionTaskExecutor : IGitVersionTaskExecutor
     {
-        private readonly IGitVersionTool gitVersionTool;
+        private readonly IGitVersionOutputTool gitVersionOutputTool;
         private readonly IOptions<GitVersionOptions> options;
         private VersionVariables versionVariables;
 
-        public GitVersionTaskExecutor(IGitVersionTool gitVersionTool, IOptions<GitVersionOptions> options)
+        public GitVersionTaskExecutor(IGitVersionCalculateTool gitVersionCalculateTool, IGitVersionOutputTool gitVersionOutputTool, IOptions<GitVersionOptions> options)
         {
-            this.gitVersionTool = gitVersionTool ?? throw new ArgumentNullException(nameof(gitVersionTool));
+            this.gitVersionOutputTool = gitVersionOutputTool ?? throw new ArgumentNullException(nameof(gitVersionOutputTool));
             this.options = options ?? throw new ArgumentNullException(nameof(options));
-            versionVariables = gitVersionTool.CalculateVersionVariables();
+            versionVariables = gitVersionCalculateTool.CalculateVersionVariables();
         }
 
         public void GetVersion(GetVersion task)
@@ -41,7 +41,8 @@ namespace GitVersion.MSBuildTask
             gitVersionOptions.AssemblyInfo.EnsureAssemblyInfo = true;
             gitVersionOptions.WorkingDirectory = fileWriteInfo.WorkingDirectory;
             gitVersionOptions.AssemblyInfo.Files.Add(fileWriteInfo.FileName);
-            gitVersionTool.UpdateAssemblyInfo(versionVariables);
+
+            gitVersionOutputTool.UpdateAssemblyInfo(versionVariables);
         }
 
         public void GenerateGitVersionInformation(GenerateGitVersionInformation task)
@@ -52,12 +53,12 @@ namespace GitVersion.MSBuildTask
             var gitVersionOptions = options.Value;
             gitVersionOptions.WorkingDirectory = fileWriteInfo.WorkingDirectory;
 
-            gitVersionTool.GenerateGitVersionInformation(versionVariables, fileWriteInfo);
+            gitVersionOutputTool.GenerateGitVersionInformation(versionVariables, fileWriteInfo);
         }
 
         public void WriteVersionInfoToBuildLog(WriteVersionInfoToBuildLog task)
         {
-            gitVersionTool.OutputVariables(versionVariables);
+            gitVersionOutputTool.OutputVariables(versionVariables);
         }
     }
 }
