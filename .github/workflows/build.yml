@@ -96,8 +96,8 @@ jobs:
       shell: pwsh
       run: ./build.ps1 -target Test
 
-  artifact_test:
-    name: Artifacts Test
+  artifact_linux_test:
+    name: Artifacts Linux Test
     needs: [build, test]
     runs-on: ubuntu-latest
     strategy:
@@ -225,7 +225,7 @@ jobs:
 
   docker:
     name: Docker
-    needs: [artifact_test, artifact_msbuild_test, artifact_commandline_test, artifact_portable_test]
+    needs: [artifact_linux_test, artifact_msbuild_test, artifact_commandline_test, artifact_portable_test]
     runs-on: ubuntu-latest
     env:
       DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
@@ -265,7 +265,7 @@ jobs:
 
   publish:
     name: Publish
-    needs: [artifact_test]
+    needs: [artifact_linux_test]
     runs-on: windows-latest
     strategy:
       matrix:
