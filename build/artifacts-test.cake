@@ -111,12 +111,6 @@ Task("Artifacts-MsBuildCore-Test")
     {
         var (os, distro, targetframework) = dockerImage;
 
-        // TODO investigate
-        if (distro == "alpine.3.10-x64" && targetframework == "netcoreapp3.1") {
-            Information("Skipping this combination, works locally, not in CI for some reason");
-            continue;
-        }
-
         var cmd = $"-file {rootPrefix}/scripts/Test-MsBuildCore.ps1 -version {version} -repoPath {rootPrefix}/repo/tests/integration/core -nugetPath {rootPrefix}/nuget -targetframework {targetframework}";
 
         DockerTestArtifact(dockerImage, parameters, cmd);
