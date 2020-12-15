@@ -77,7 +77,7 @@ Task("Pack-Nuget")
 
     settings.ArgumentCustomization = null;
     DotNetCorePack("./src/GitVersionTask", settings);
-
+    DotNetCorePack("./src/GitVersion.MsBuild", settings);
     DotNetCorePack("./src/GitVersionCore", settings);
 });
 

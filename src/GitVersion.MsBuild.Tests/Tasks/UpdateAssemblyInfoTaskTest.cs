@@ -1,14 +1,13 @@
 using System.Collections.Generic;
 using System.IO;
-using GitVersion.MSBuildTask;
-using GitVersion.MSBuildTask.Tasks;
-using GitVersionTask.Tests.Helpers;
+using GitVersion.MsBuild.Tasks;
+using GitVersion.MsBuild.Tests.Helpers;
 using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities.ProjectCreation;
 using NUnit.Framework;
 using Shouldly;
 
-namespace GitVersionTask.Tests
+namespace GitVersion.MsBuild.Tests.Tasks
 {
     [TestFixture]
     public class UpdateAssemblyInfoTaskTest : TestTaskBase
@@ -104,8 +103,7 @@ namespace GitVersionTask.Tests
                     .Task(taskName, parameters: new Dictionary<string, string>
                     {
                         { "SolutionDirectory", "$(MSBuildProjectDirectory)" },
-                        { "NoFetch", "false" },
-                        { "NoNormalize", "false" },
+                        { "VersionFile", "$(MSBuildProjectDirectory)/gitversion.json" },
                         { "ProjectFile", "$(MSBuildProjectFullPath)" },
                         { "IntermediateOutputPath", "$(MSBuildProjectDirectory)" },
                         { "Language", "$(Language)" },

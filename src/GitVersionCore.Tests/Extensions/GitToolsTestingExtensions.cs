@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using GitTools.Testing;
 using GitVersion;
 using GitVersion.BuildAgents;
@@ -62,6 +63,15 @@ namespace GitVersionCore.Tests
                 repository.DumpGraph();
                 throw;
             }
+        }
+
+        public static void WriteVersionVariables(this RepositoryFixtureBase fixture, string versionFile)
+        {
+            var versionInfo = fixture.GetVersion();
+
+            using var stream = File.Open(versionFile, FileMode.Create, FileAccess.ReadWrite, FileShare.ReadWrite);
+            using var writer = new StreamWriter(stream);
+            writer.Write(versionInfo.ToString());
         }
 
         public static void AssertFullSemver(this RepositoryFixtureBase fixture, string fullSemver, Config configuration = null, IRepository repository = null, string commitId = null, bool onlyTrackedBranches = true, string targetBranch = null)

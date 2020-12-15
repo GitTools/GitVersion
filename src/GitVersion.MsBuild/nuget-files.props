@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+    <PropertyGroup>
+        <FullPublishTask>../GitVersionExe/bin/$(Configuration)/net48</FullPublishTask>
+        <CorePublishTask>../GitVersionExe/bin/$(Configuration)/netcoreapp3.1/publish</CorePublishTask>
+        <FullTarget>tools/net48</FullTarget>
+        <CoreTarget>tools/netstandard2.0</CoreTarget>
+    </PropertyGroup>
+    <ItemGroup>
+        <None Include="msbuild/tools/*.*"                Pack="true" PackagePath="tools" />
+        <None Include="msbuild/build/*.*"                Pack="true" PackagePath="build" />
+        <None Include="msbuild/buildMultiTargeting/*.*"  Pack="true" PackagePath="buildMultiTargeting" />
+
+        <None Include="$(CorePublishTask)/**/*"  Pack="true" PackagePath="$(CoreTarget)" />
+        <None Include="$(FullPublishTask)/**/*"  Pack="true" PackagePath="$(FullTarget)" />
+
+        <None Include="bin/$(Configuration)/net48/GitVersion.MsBuild.dll "          Pack="true" PackagePath="$(FullTarget)" />
+        <None Include="bin/$(Configuration)/netstandard2.0/GitVersion.MsBuild.dll "  Pack="true" PackagePath="$(CoreTarget)" />
+
+    </ItemGroup>
+</Project>

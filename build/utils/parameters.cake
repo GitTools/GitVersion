@@ -123,7 +123,7 @@ public class BuildParameters
         Packages = BuildPackages.GetPackages(
             Paths.Directories.NugetRoot,
             Version,
-            new [] { "GitVersion.CommandLine", "GitVersion.Core", "GitVersionTask", "GitVersion.Tool" },
+            new [] { "GitVersion.CommandLine", "GitVersion.Core", "GitVersionTask", "GitVersion.MsBuild", "GitVersion.Tool" },
             new [] { "GitVersion.Portable" });
 
 

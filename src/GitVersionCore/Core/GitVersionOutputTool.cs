@@ -1,6 +1,5 @@
 using System;
 using System.Linq;
-using GitVersion.Configuration;
 using GitVersion.OutputVariables;
 using GitVersion.VersionConverters.AssemblyInfo;
 using GitVersion.VersionConverters.GitVersionInfo;
@@ -13,20 +12,18 @@ namespace GitVersion
     public class GitVersionOutputTool : IGitVersionOutputTool
     {
         private readonly IOptions<GitVersionOptions> options;
-        private readonly IConfigProvider configProvider;
         private readonly IOutputGenerator outputGenerator;
         private readonly IWixVersionFileUpdater wixVersionFileUpdater;
         private readonly IGitVersionInfoGenerator gitVersionInfoGenerator;
         private readonly IAssemblyInfoFileUpdater assemblyInfoFileUpdater;
         private readonly IProjectFileUpdater projectFileUpdater;
 
-        public GitVersionOutputTool(IOptions<GitVersionOptions> options, IConfigProvider configProvider,
+        public GitVersionOutputTool(IOptions<GitVersionOptions> options,
             IOutputGenerator outputGenerator, IWixVersionFileUpdater wixVersionFileUpdater,
             IGitVersionInfoGenerator gitVersionInfoGenerator, IAssemblyInfoFileUpdater assemblyInfoFileUpdater,
             IProjectFileUpdater projectFileUpdater)
         {
             this.options = options ?? throw new ArgumentNullException(nameof(options));
-            this.configProvider = configProvider ?? throw new ArgumentNullException(nameof(configProvider));
 
             this.outputGenerator = outputGenerator ?? throw new ArgumentNullException(nameof(outputGenerator));
 
@@ -36,14 +33,13 @@ namespace GitVersion
             this.projectFileUpdater = projectFileUpdater ?? throw new ArgumentNullException(nameof(projectFileUpdater));
         }
 
-        public void OutputVariables(VersionVariables variables)
+        public void OutputVariables(VersionVariables variables, bool updateBuildNumber)
         {
             var gitVersionOptions = options.Value;
 
             using (outputGenerator)
             {
-                var configuration = configProvider.Provide(overrideConfig: options.Value.ConfigInfo.OverrideConfig);
-                outputGenerator.Execute(variables, new OutputContext(gitVersionOptions.WorkingDirectory, gitVersionOptions.OutputFile, configuration.UpdateBuildNumber));
+                outputGenerator.Execute(variables, new OutputContext(gitVersionOptions.WorkingDirectory, gitVersionOptions.OutputFile, updateBuildNumber));
             }
         }
 

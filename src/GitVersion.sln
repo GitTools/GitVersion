@@ -32,6 +32,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GitVersionTask", "GitVersio
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GitVersionTask.MsBuild", "GitVersionTask.MsBuild\GitVersionTask.MsBuild.csproj", "{0F1AEC4E-E81D-4F84-B2E8-3415A1A4DBF4}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GitVersion.MsBuild", "GitVersion.MsBuild\GitVersion.MsBuild.csproj", "{20D61ED7-B5BA-42CD-A05A-85EA1EEA2E2F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GitVersion.MsBuild.Tests", "GitVersion.MsBuild.Tests\GitVersion.MsBuild.Tests.csproj", "{B35EF742-95D4-4E6A-B782-BE1C3E5CF9AE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -66,6 +70,14 @@ Global
 		{0F1AEC4E-E81D-4F84-B2E8-3415A1A4DBF4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0F1AEC4E-E81D-4F84-B2E8-3415A1A4DBF4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0F1AEC4E-E81D-4F84-B2E8-3415A1A4DBF4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{20D61ED7-B5BA-42CD-A05A-85EA1EEA2E2F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{20D61ED7-B5BA-42CD-A05A-85EA1EEA2E2F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{20D61ED7-B5BA-42CD-A05A-85EA1EEA2E2F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{20D61ED7-B5BA-42CD-A05A-85EA1EEA2E2F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B35EF742-95D4-4E6A-B782-BE1C3E5CF9AE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B35EF742-95D4-4E6A-B782-BE1C3E5CF9AE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B35EF742-95D4-4E6A-B782-BE1C3E5CF9AE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B35EF742-95D4-4E6A-B782-BE1C3E5CF9AE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

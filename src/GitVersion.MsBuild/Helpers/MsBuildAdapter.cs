@@ -1,22 +1,31 @@
 using System;
+using GitVersion.Logging;
 
-namespace GitVersion.Logging
+namespace GitVersion.MsBuild
 {
-    public class ConsoleAdapter : IConsole
+    internal class MsBuildAdapter : IConsole
     {
+        private readonly TaskLoggingHelper taskLog;
+
+        public MsBuildAdapter(TaskLoggingHelper taskLog)
+        {
+            this.taskLog = taskLog;
+        }
+
         public void WriteLine(string msg)
         {
-            Console.WriteLine(msg);
+            Write(msg);
+            WriteLine();
         }
 
         public void WriteLine()
         {
-            Console.WriteLine();
+            taskLog.LogMessage("\n");
         }
 
         public void Write(string msg)
         {
-            Console.Write(msg);
+            taskLog.LogMessage(msg);
         }
 
         public string ReadLine()

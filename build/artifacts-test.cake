@@ -139,7 +139,7 @@ Task("Artifacts-MsBuildFull-Test")
     {
         var dotnetCoreMsBuildSettings = new DotNetCoreMSBuildSettings();
         dotnetCoreMsBuildSettings.WithProperty("TargetFramework", framework);
-        dotnetCoreMsBuildSettings.WithProperty("GitVersionTaskVersion", version);
+        dotnetCoreMsBuildSettings.WithProperty("GitVersionMsBuildVersion", version);
 
         var projPath = MakeAbsolute(new DirectoryPath("./tests/integration/core"));
 
@@ -163,7 +163,7 @@ Task("Artifacts-MsBuildFull-Test")
         Restore = true
     };
 
-    msBuildSettings.WithProperty("GitVersionTaskVersion", version);
+    msBuildSettings.WithProperty("GitVersionMsBuildVersion", version);
     msBuildSettings.WithProperty("RestoreSource", nugetSource);
 
     MSBuild("./tests/integration/full", msBuildSettings);

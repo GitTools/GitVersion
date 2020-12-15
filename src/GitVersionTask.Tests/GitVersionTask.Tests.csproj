@@ -12,10 +12,6 @@
         <PackageReference Include="MSBuild.ProjectCreation" Version="2.0.1" />
     </ItemGroup>
     <ItemGroup>
-      <Compile Update="MsBuildExecutionResult.cs" Link="Helpers\MsBuildExecutionResult.cs" />
-      <Compile Update="MsBuildHelper.cs" Link="Helpers\MsBuildHelper.cs" />
-    </ItemGroup>
-    <ItemGroup>
       <Compile Include="..\GitVersionCore.Tests\Helpers\DirectoryHelper.cs" Link="Helpers\DirectoryHelper.cs" />
       <Compile Include="..\GitVersionCore.Tests\Helpers\GitVersionCoreTestModule.cs" Link="Helpers\GitVersionCoreTestModule.cs" />
       <Compile Include="..\GitVersionCore.Tests\Helpers\PathHelper.cs" Link="Helpers\PathHelper.cs" />
