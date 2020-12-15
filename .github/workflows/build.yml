@@ -265,7 +265,7 @@ jobs:
 
   publish:
     name: Publish
-    needs: [artifact_linux_test]
+    needs: [artifact_linux_test, artifact_msbuild_test, artifact_commandline_test, artifact_portable_test]
     runs-on: windows-latest
     strategy:
       matrix:
