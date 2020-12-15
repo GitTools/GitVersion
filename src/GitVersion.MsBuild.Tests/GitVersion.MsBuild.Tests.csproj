@@ -18,9 +18,4 @@
       <ProjectReference Include="..\GitVersionCore.Tests\GitVersionCore.Tests.csproj" />
     </ItemGroup>
 
-    <ItemGroup>
-        <Compile Include="..\GitVersionCore.Tests\Helpers\TestBase.cs" Link="Helpers\TestBase.cs" />
-        <Compile Include="..\GitVersionCore.Tests\Helpers\TestEnvironment.cs" Link="Helpers\TestEnvironment.cs" />
-    </ItemGroup>
-
 </Project>

@@ -4,19 +4,6 @@ Task("Pack-Prepare")
 {
     PackPrepareNative(Context, parameters);
 
-    var frameworks = new[] { parameters.CoreFxVersion31, parameters.FullFxVersion48 };
-
-    // MsBuild Task
-    foreach(var framework in frameworks)
-    {
-        DotNetCorePublish("./src/GitVersionTask/GitVersionTask.csproj", new DotNetCorePublishSettings
-        {
-            Framework = framework,
-            Configuration = parameters.Configuration,
-            MSBuildSettings = parameters.MSBuildSettings
-        });
-    }
-
     var sourceDir = parameters.Paths.Directories.Native.Combine(PlatformFamily.Windows.ToString()).Combine("win-x64");
     var sourceFiles = GetFiles(sourceDir + "/*.*");
 
@@ -71,12 +58,11 @@ Task("Pack-Nuget")
         MSBuildSettings = parameters.MSBuildSettings
     };
 
-    // GitVersionTask, global tool & core
+    // GitVersion.MsBuild, global tool & core
     settings.ArgumentCustomization = arg => arg.Append("/p:PackAsTool=true");
     DotNetCorePack("./src/GitVersionExe/GitVersionExe.csproj", settings);
 
     settings.ArgumentCustomization = null;
-    DotNetCorePack("./src/GitVersionTask", settings);
     DotNetCorePack("./src/GitVersion.MsBuild", settings);
     DotNetCorePack("./src/GitVersionCore", settings);
 });

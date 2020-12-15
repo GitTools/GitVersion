@@ -36,7 +36,7 @@ Task("UnitTest")
                     CoverletOutputFormat = CoverletOutputFormat.cobertura,
                     CoverletOutputDirectory = testResultsPath,
                     CoverletOutputName = $"{projectName}.coverage.xml",
-                    Exclude = new List<string> { "[GitVersion*.Tests]*", "[GitVersionTask.MsBuild]*" }
+                    Exclude = new List<string> { "[GitVersion*.Tests]*" }
                 };
 
                 if (string.Equals(framework, parameters.FullFxVersion48)) 
