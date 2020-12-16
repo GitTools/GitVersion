@@ -28,7 +28,7 @@ Task("UnitTest")
                 if (!parameters.IsRunningOnMacOS) {
                     settings.TestAdapterPath = new DirectoryPath(".");
                     var resultsPath = MakeAbsolute(testResultsPath.CombineWithFilePath($"{projectName}.results.xml"));
-                    settings.Logger = $"nunit;LogFilePath={resultsPath}";
+                    settings.Loggers = new[] { $"nunit;LogFilePath={resultsPath}" };
                 }
 
                 var coverletSettings = new CoverletSettings {

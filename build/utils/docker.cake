@@ -38,7 +38,8 @@ void DockerBuild(DockerImage dockerImage, BuildParameters parameters)
         {
             $"contentFolder=/content",
             $"DOTNET_VERSION={targetframework.Replace("netcoreapp", "")}",
-            $"DISTRO={distro}"
+            $"DISTRO={distro}",
+            $"VERSION={parameters.Version.NugetVersion}"
         },
         // Pull = true,
         // Platform = platform // TODO this one is not supported on docker versions < 18.02
