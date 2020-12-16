@@ -4,12 +4,6 @@
     <PropertyGroup>
         <GitVersionOutputFile>$(MSBuildProjectDirectory)/gitversion.json</GitVersionOutputFile>
 
-        <GitVersionFileExe Condition="'$(MSBuildRuntimeType)' != 'Core'">$(MSBuildThisFileDirectory)net48/gitversion.exe</GitVersionFileExe>
-        <GitVersionFileExe Condition="'$(MSBuildRuntimeType)' == 'Core'">dotnet $(MSBuildThisFileDirectory)netstandard2.0/gitversion.dll</GitVersionFileExe>
-
-        <GitVersionAssemblyFile Condition="'$(MSBuildRuntimeType)' != 'Core'">$(MSBuildThisFileDirectory)net48/GitVersion.MsBuild.dll</GitVersionAssemblyFile>
-        <GitVersionAssemblyFile Condition="'$(MSBuildRuntimeType)' == 'Core'">$(MSBuildThisFileDirectory)netstandard2.0/GitVersion.MsBuild.dll</GitVersionAssemblyFile>
-
         <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">$(MSBuildProjectDirectory)/../</SolutionDir>
         <GitVersionPath Condition="'$(GitVersionPath)' == '' And '$(GitVersionUseSolutionDir)' == 'true'">$(SolutionDir)</GitVersionPath>
         <GitVersionPath Condition="'$(GitVersionPath)' == ''">$(MSBuildProjectDirectory)</GitVersionPath>
@@ -20,6 +14,16 @@
         <GitVersion_ToolArgments>-output file -outputfile $(GitVersionOutputFile)</GitVersion_ToolArgments>
         <GitVersion_ToolArgments Condition=" '$(GitVersion_NoFetchEnabled)' == 'true' ">$(GitVersion_ToolArgments) -nofecth</GitVersion_ToolArgments>
         <GitVersion_ToolArgments Condition=" '$(GitVersion_NoNormalizeEnabled)' == 'true' ">$(GitVersion_ToolArgments) -nonormalize</GitVersion_ToolArgments>
+    </PropertyGroup>
+
+    <PropertyGroup Condition="'$(MSBuildRuntimeType)' == 'Full'">
+        <GitVersionFileExe>$(MSBuildThisFileDirectory)net48/gitversion.exe</GitVersionFileExe>
+        <GitVersionAssemblyFile>$(MSBuildThisFileDirectory)net48/GitVersion.MsBuild.dll</GitVersionAssemblyFile>
+    </PropertyGroup>
+
+    <PropertyGroup Condition="'$(TargetFramework)' == 'netcoreapp3.1'">
+        <GitVersionFileExe>dotnet $(MSBuildThisFileDirectory)netcoreapp3.1/gitversion.dll</GitVersionFileExe>
+        <GitVersionAssemblyFile>$(MSBuildThisFileDirectory)netcoreapp3.1/GitVersion.MsBuild.dll</GitVersionAssemblyFile>
     </PropertyGroup>
 
     <PropertyGroup>
@@ -52,7 +56,7 @@
 
         <GenerateGitVersionWixDefines Condition=" '$(DisableGitVersionTask)' == 'true' ">false</GenerateGitVersionWixDefines>
         <GenerateGitVersionWixDefines Condition=" '$(GenerateGitVersionWixDefines)' == '' ">true</GenerateGitVersionWixDefines>
-        
+
         <!-- Property that enables setting of Version -->
         <UpdateVersionProperties Condition=" '$(DisableGitVersionTask)' == 'true' ">false</UpdateVersionProperties>
         <UpdateVersionProperties Condition=" '$(UpdateVersionProperties)' == '' ">true</UpdateVersionProperties>
