@@ -155,6 +155,29 @@ namespace GitVersionCore.Tests.VersionCalculation
         }
 
         [Test]
+        public void MergeFeatureIntoMainline()
+        {
+            var config = new Config
+            {
+                VersioningMode = VersioningMode.Mainline
+            };
+
+            using var fixture = new EmptyRepositoryFixture();
+            fixture.MakeACommit();
+            fixture.ApplyTag("1.0.0");
+            fixture.AssertFullSemver("1.0.0", config);
+
+            fixture.BranchTo("feature/foo");
+            fixture.MakeACommit();
+            fixture.AssertFullSemver("1.0.1-foo.1", config);
+            fixture.ApplyTag("1.0.1-foo.1");
+
+            fixture.Checkout("master");
+            fixture.MergeNoFF("feature/foo");
+            fixture.AssertFullSemver("1.0.1", config);
+        }
+
+        [Test]
         public void PreReleaseTagCanUseBranchNameVariable()
         {
             var config = new Config
