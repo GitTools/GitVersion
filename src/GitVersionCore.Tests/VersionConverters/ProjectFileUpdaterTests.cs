@@ -89,6 +89,24 @@ namespace GitVersionCore.Tests
 
             canUpdate.ShouldBe(true);
         }
+        
+        [TestCase(@"
+<Project Sdk=""Microsoft.NET.Sdk.Razor"">
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+</Project>
+")]
+        [Category(NoMono)]
+        [Description(NoMonoDescription)]
+        public void CanUpdateProjectFileWithRazorClassLibraryProjectFileXml(string xml)
+        {
+            using var projectFileUpdater = new ProjectFileUpdater(log, fileSystem);
+
+            var canUpdate = projectFileUpdater.CanUpdateProjectFile(XElement.Parse(xml));
+
+            canUpdate.ShouldBe(true);
+        }
 
         [TestCase(@"
 <Project Sdk=""SomeOtherProject.Sdk"">
