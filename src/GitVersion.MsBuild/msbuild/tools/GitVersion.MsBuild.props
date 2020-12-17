@@ -26,6 +26,11 @@
         <GitVersionAssemblyFile>$(MSBuildThisFileDirectory)netcoreapp3.1/GitVersion.MsBuild.dll</GitVersionAssemblyFile>
     </PropertyGroup>
 
+    <PropertyGroup Condition="'$(TargetFramework)' == 'net5.0'">
+        <GitVersionFileExe>dotnet $(MSBuildThisFileDirectory)net5.0/gitversion.dll</GitVersionFileExe>
+        <GitVersionAssemblyFile>$(MSBuildThisFileDirectory)net5.0/GitVersion.MsBuild.dll</GitVersionAssemblyFile>
+    </PropertyGroup>
+
     <PropertyGroup>
         <DisableGitVersionTask Condition=" '$(DisableGitVersionTask)' == '' ">false</DisableGitVersionTask>
 
