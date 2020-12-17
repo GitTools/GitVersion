@@ -111,7 +111,7 @@ namespace GitVersion.VersionConverters.AssemblyInfo
                 return false;
             }
 
-            var supportedSdks = new[] { "Microsoft.NET.Sdk", "Microsoft.NET.Sdk.Web", "Microsoft.NET.Sdk.WindowsDesktop" };
+            var supportedSdks = new[] { "Microsoft.NET.Sdk", "Microsoft.NET.Sdk.Web", "Microsoft.NET.Sdk.WindowsDesktop", "Microsoft.NET.Sdk.Razor" };
             var sdkAttribute = xmlRoot.Attribute("Sdk");
             if (sdkAttribute == null || !supportedSdks.Contains(sdkAttribute.Value))
             {
