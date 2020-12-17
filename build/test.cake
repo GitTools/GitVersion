@@ -5,7 +5,7 @@ Task("UnitTest")
     .IsDependentOn("Build")
     .Does<BuildParameters>((parameters) =>
 {
-    var frameworks = new[] { parameters.CoreFxVersion31, parameters.FullFxVersion48 };
+    var frameworks = new[] { parameters.CoreFxVersion31, parameters.FullFxVersion48, parameters.NetVersion50 };
     var testResultsPath = parameters.Paths.Directories.TestResultsOutput;
 
     foreach(var framework in frameworks)
@@ -39,7 +39,7 @@ Task("UnitTest")
                     Exclude = new List<string> { "[GitVersion*.Tests]*" }
                 };
 
-                if (string.Equals(framework, parameters.FullFxVersion48)) 
+                if (string.Equals(framework, parameters.FullFxVersion48))
                 {
                     if (IsRunningOnUnix()) {
                         settings.Filter = "TestCategory!=NoMono";
@@ -47,7 +47,7 @@ Task("UnitTest")
                         settings.Filter = "TestCategory!=NoNet48";
                     }
                 }
-                
+
                 DotNetCoreTest(project.FullPath, settings, coverletSettings);
             });
         }

@@ -141,7 +141,7 @@ DirectoryPath PackPrepareNative(ICakeContext context, BuildParameters parameters
 
     var settings = new DotNetCorePublishSettings
     {
-        Framework = parameters.CoreFxVersion31,
+        Framework = parameters.NetVersion50,
         Runtime = runtime,
         NoRestore = false,
         Configuration = parameters.Configuration,
@@ -151,9 +151,7 @@ DirectoryPath PackPrepareNative(ICakeContext context, BuildParameters parameters
 
     settings.ArgumentCustomization =
         arg => arg
-        .Append("/p:PublishSingleFile=true")
-        .Append("/p:PublishTrimmed=true")
-        .Append("/p:IncludeSymbolsInSingleFile=true");
+        .Append("/p:PublishSingleFile=true");
 
     context.DotNetCorePublish("./src/GitVersionExe/GitVersionExe.csproj", settings);
 
