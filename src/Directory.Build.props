@@ -14,7 +14,7 @@
         <RepositoryType>git</RepositoryType>
         <PackageReleaseNotes>https://github.com/GitTools/GitVersion/releases</PackageReleaseNotes>
         <Company>$(Authors)</Company>
-
+        <DebugType>embedded</DebugType>
         <LangVersion>8.0</LangVersion>
 
     </PropertyGroup>

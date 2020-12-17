@@ -1,19 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
     <PropertyGroup>
-        <FullPublishTask>../GitVersionExe/bin/$(Configuration)/net48</FullPublishTask>
-        <CorePublishTask>../GitVersionExe/bin/$(Configuration)/netcoreapp3.1/publish</CorePublishTask>
-        <FullTarget>tools/net48</FullTarget>
-        <CoreTarget>tools/netcoreapp3.1</CoreTarget>
+        <PublishTask_net48>../GitVersionExe/bin/$(Configuration)/net48</PublishTask_net48>
+        <PublishTask_netcore31>../GitVersionExe/bin/$(Configuration)/netcoreapp3.1/publish</PublishTask_netcore31>
+        <Target_net48>tools/net48</Target_net48>
+        <Target_netcore31>tools/netcoreapp3.1</Target_netcore31>
     </PropertyGroup>
     <ItemGroup>
         <None Include="msbuild/tools/*.*"                                        Pack="true" PackagePath="tools" />
         <None Include="msbuild/build/*.*"                                        Pack="true" PackagePath="build" />
         <None Include="msbuild/buildMultiTargeting/*.*"                          Pack="true" PackagePath="buildMultiTargeting" />
 
-        <None Include="$(CorePublishTask)/**/*"                                  Pack="true" PackagePath="$(CoreTarget)" />
-        <None Include="$(FullPublishTask)/**/*"                                  Pack="true" PackagePath="$(FullTarget)" />
-        <None Include="bin/$(Configuration)/netstandard2.0/GitVersion.MsBuild.*" Pack="true" PackagePath="$(FullTarget)" />
-        <None Include="bin/$(Configuration)/netstandard2.0/GitVersion.MsBuild.*" Pack="true" PackagePath="$(CoreTarget)" />
+        <None Include="$(PublishTask_net48)/**/*"                                Pack="true" PackagePath="$(Target_net48)" />
+        <None Include="$(PublishTask_netcore31)/**/*"                            Pack="true" PackagePath="$(Target_netcore31)" />
+
+        <None Include="bin/$(Configuration)/netstandard2.0/GitVersion.MsBuild.*" Pack="true" PackagePath="$(Target_net48)" />
+        <None Include="bin/$(Configuration)/netstandard2.0/GitVersion.MsBuild.*" Pack="true" PackagePath="$(Target_netcore31)" />
     </ItemGroup>
 </Project>
