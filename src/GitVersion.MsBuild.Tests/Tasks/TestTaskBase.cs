@@ -24,7 +24,9 @@ namespace GitVersion.MsBuild.Tests.Tasks
             task.SolutionDirectory = fixture.RepositoryPath;
 
             var msbuildFixture = new MsBuildTaskFixture(fixture);
-            return msbuildFixture.Execute(task);
+            var result = msbuildFixture.Execute(task);
+            if (result.Success == false) Console.WriteLine(result.Log);
+            return result;
         }
 
         protected static MsBuildExeFixtureResult ExecuteMsBuildExe(Action<ProjectCreator> extendProject)
@@ -35,7 +37,9 @@ namespace GitVersion.MsBuild.Tests.Tasks
 
             msbuildFixture.CreateTestProject(extendProject);
 
-            return msbuildFixture.Execute();
+            var result = msbuildFixture.Execute();
+            if (result.MsBuild.OverallSuccess == false) Console.WriteLine(result.Output);
+            return result;
         }
 
         protected static MsBuildTaskFixtureResult<T> ExecuteMsBuildTaskInBuildServer<T>(T task) where T : GitVersionTaskBase
@@ -45,7 +49,9 @@ namespace GitVersion.MsBuild.Tests.Tasks
 
             var msbuildFixture = new MsBuildTaskFixture(fixture);
             msbuildFixture.WithEnv(env.ToArray());
-            return msbuildFixture.Execute(task);
+            var result = msbuildFixture.Execute(task);
+            if (result.Success == false) Console.WriteLine(result.Log);
+            return result;
         }
 
         protected static MsBuildExeFixtureResult ExecuteMsBuildExeInBuildServer(Action<ProjectCreator> extendProject)
@@ -57,7 +63,9 @@ namespace GitVersion.MsBuild.Tests.Tasks
             msbuildFixture.CreateTestProject(extendProject);
             msbuildFixture.WithEnv(env.ToArray());
 
-            return msbuildFixture.Execute();
+            var result = msbuildFixture.Execute();
+            if (result.MsBuild.OverallSuccess == false) Console.WriteLine(result.Output);
+            return result;
         }
 
         private static EmptyRepositoryFixture CreateLocalRepositoryFixture()
