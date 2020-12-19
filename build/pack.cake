@@ -64,7 +64,7 @@ Task("Pack-Nuget")
 
     settings.ArgumentCustomization = arg => arg.Append("/p:IsPackaging=true");
     DotNetCorePack("./src/GitVersion.MsBuild", settings);
-    
+
     settings.ArgumentCustomization = null;
     DotNetCorePack("./src/GitVersionCore", settings);
 });
@@ -124,7 +124,7 @@ void PackPrepareNative(ICakeContext context, BuildParameters parameters)
     {
         var outputPath = PackPrepareNative(context, parameters, runtime);
 
-        // testing windows and macos artifacts, ther linux is tested with docker
+        // testing windows and macos artifacts, the linux is tested with docker
         if (platform != PlatformFamily.Linux)
         {
             context.Information("Validating native lib:");

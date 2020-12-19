@@ -140,7 +140,7 @@ public class BuildParameters
         NativeRuntimes = new Dictionary<PlatformFamily, string[]>
         {
             [PlatformFamily.Windows] = new[] { "win-x64", "win-x86" },
-            [PlatformFamily.Linux]   = new[] { "alpine.3.10-x64", "debian.9-x64", "centos.7-x64", "fedora.30-x64", "ubuntu.16.04-x64", "ubuntu.18.04-x64" },
+            [PlatformFamily.Linux]   = new[] { "alpine.3.12-x64", "centos.7-x64", "debian.9-x64", "debian.10-x64", "ubuntu.16.04-x64", "ubuntu.18.04-x64", "ubuntu.20.04-x64" },
             [PlatformFamily.OSX]     = new[] { "osx-x64" },
         };
 
