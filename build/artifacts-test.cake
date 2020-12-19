@@ -88,7 +88,7 @@ Task("Artifacts-Native-Test")
 
     foreach(var dockerImage in parameters.Docker.Images)
     {
-        var (os, distro, targetframework) = dockerImage;
+        var (distro, targetframework) = dockerImage;
 
         PackPrepareNative(Context, parameters, distro);
 
@@ -109,7 +109,11 @@ Task("Artifacts-MsBuildCore-Test")
 
     foreach(var dockerImage in parameters.Docker.Images)
     {
-        var (os, distro, targetframework) = dockerImage;
+        var (distro, targetframework) = dockerImage;
+
+        if (targetframework == "3.1") {
+            targetframework = $"netcoreapp{targetframework}";
+        }
 
         var cmd = $"-file {rootPrefix}/scripts/Test-MsBuildCore.ps1 -version {version} -repoPath {rootPrefix}/repo/tests/integration/core -nugetPath {rootPrefix}/nuget -targetframework {targetframework}";
 
