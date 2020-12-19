@@ -150,13 +150,13 @@ string[] GetDockerTags(DockerImage dockerImage, BuildParameters parameters) {
         $"{name}:{parameters.Version.SemVersion}-{distro}-{targetframework}",
     };
 
-    if (distro == "debian.10-x64" && targetframework == parameters.NetVersion50) {
+    if (distro == "debian.10-x64" && targetframework == "5.0") {
         tags.AddRange(new[] {
             $"{name}:{parameters.Version.Version}",
             $"{name}:{parameters.Version.SemVersion}",
 
-            $"{name}:{parameters.Version.Version}-{targetframework}",
-            $"{name}:{parameters.Version.SemVersion}-{targetframework}"
+            $"{name}:{parameters.Version.Version}-{distro}",
+            $"{name}:{parameters.Version.SemVersion}-{distro}"
         });
 
         if (parameters.IsStableRelease())
@@ -164,6 +164,7 @@ string[] GetDockerTags(DockerImage dockerImage, BuildParameters parameters) {
             tags.AddRange(new[] {
                 $"{name}:latest",
                 $"{name}:latest-{targetframework}",
+                $"{name}:latest-{distro}",
                 $"{name}:latest-{distro}-{targetframework}",
             });
         }

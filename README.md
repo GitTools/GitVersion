@@ -19,7 +19,7 @@ works out the [semantic version][semver] of the commit being built.
 | **GitVersion.Portable**    |                     [![Chocolatey][choco-badge]][choco]            |
 | **GitVersion.Tool**        |                           [![NuGet][gvgt-badge]][gvgt]             |
 | **GitVersion.CommandLine** |                           [![NuGet][gvcl-badge]][gvcl]             |
-| **GitVersionTask**         |                            [![NuGet][gvt-badge]][gvt]              |
+| **GitVersion.MsBuild**     |                            [![NuGet][gvt-badge]][gvt]              |
 | **Azure Pipeline Task**    | [![Azure Pipeline Task][az-pipeline-task-badge]][az-pipeline-task] |
 | **Github Action**          |             [![Github Action][gh-actions-badge]][gh-actions]       |
 | **Docker**                 |               [![Docker Pulls][dockerhub-badge]][dockerhub]        |
@@ -77,8 +77,8 @@ from The Noun Project.
 [gh-rel-badge]:                    https://img.shields.io/github/release/gittools/gitversion.svg?logo=github
 [choco]:                           https://chocolatey.org/packages/GitVersion.Portable
 [choco-badge]:                     https://img.shields.io/chocolatey/v/gitversion.portable.svg?logo=nuget
-[gvt]:                             https://www.nuget.org/packages/GitVersionTask
-[gvt-badge]:                       https://img.shields.io/nuget/v/GitVersionTask.svg?logo=nuget
+[gvt]:                             https://www.nuget.org/packages/GitVersion.MsBuild
+[gvt-badge]:                       https://img.shields.io/nuget/v/GitVersion.MsBuild.svg?logo=nuget
 [gvcl]:                            https://www.nuget.org/packages/GitVersion.CommandLine
 [gvcl-badge]:                      https://img.shields.io/nuget/v/GitVersion.CommandLine.svg?logo=nuget
 [gvgt]:                            https://www.nuget.org/packages/GitVersion.Tool
