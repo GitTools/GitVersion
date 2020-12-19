@@ -89,7 +89,7 @@ namespace GitVersionCore.Tests
 
             canUpdate.ShouldBe(true);
         }
-        
+
         [TestCase(@"
 <Project Sdk=""Microsoft.NET.Sdk.Razor"">
   <PropertyGroup>
