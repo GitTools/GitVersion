@@ -13,19 +13,15 @@ namespace GitVersionCore.Tests.Helpers
 
         public static string GetExecutable()
         {
-#if NETFRAMEWORK
-            var executable = Path.Combine(GetExeDirectory(), "gitversion.exe");
-#else
-            var executable = "dotnet";
-#endif
-            return executable;
+            return RuntimeHelper.IsCoreClr() ? "dotnet" : Path.Combine(GetExeDirectory(), "gitversion.exe");
         }
 
         public static string GetExecutableArgs(string args)
         {
-#if !NETFRAMEWORK
-            args = $"{Path.Combine(GetExeDirectory(), "gitversion.dll")} {args}";
-#endif
+            if (RuntimeHelper.IsCoreClr())
+            {
+                args = $"{Path.Combine(GetExeDirectory(), "gitversion.dll")} {args}";
+            }
             return args;
         }
 

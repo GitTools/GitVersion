@@ -5,10 +5,10 @@ using Buildalyzer;
 using Buildalyzer.Environment;
 using GitTools.Testing;
 using GitVersionCore.Tests;
+using GitVersionCore.Tests.Helpers;
 using Microsoft.Build.Framework;
 using Microsoft.Build.Logging;
 using Microsoft.Build.Utilities.ProjectCreation;
-using NUnit.Framework.Internal;
 using StringWriter = System.IO.StringWriter;
 
 namespace GitVersion.MsBuild.Tests.Helpers
@@ -69,12 +69,9 @@ namespace GitVersion.MsBuild.Tests.Helpers
 
         public void CreateTestProject(Action<ProjectCreator> extendProject)
         {
-            var project = RuntimeFramework.CurrentFramework.Runtime switch
-            {
-                RuntimeType.NetCore => ProjectCreator.Templates.SdkCsproj(ProjectPath),
-                RuntimeType.Net => ProjectCreator.Templates.LegacyCsproj(ProjectPath, defaultTargets: null, targetFrameworkVersion: "v4.8", toolsVersion: "15.0"),
-                _ => null
-            };
+            var project = RuntimeHelper.IsCoreClr()
+                ? ProjectCreator.Templates.SdkCsproj(ProjectPath)
+                : ProjectCreator.Templates.LegacyCsproj(ProjectPath, defaultTargets: null, targetFrameworkVersion: "v4.8", toolsVersion: "15.0");
 
             if (project == null) return;
 
