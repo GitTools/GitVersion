@@ -54,18 +54,18 @@ namespace GitVersion
             services.AddSingleton<IAssemblyInfoFileUpdater, AssemblyInfoFileUpdater>();
             services.AddSingleton<IProjectFileUpdater, ProjectFileUpdater>();
 
-            services.AddSingleton(sp => sp.GetService<IConfigFileLocatorFactory>().Create());
+            services.AddSingleton(sp => sp.GetService<IConfigFileLocatorFactory>()?.Create());
 
             services.AddSingleton(sp =>
             {
                 var options = sp.GetService<IOptions<GitVersionOptions>>();
                 var contextFactory = sp.GetService<IGitVersionContextFactory>();
-                return new Lazy<GitVersionContext>(() => contextFactory.Create(options.Value));
+                return new Lazy<GitVersionContext>(() => contextFactory?.Create(options?.Value));
             });
 
 
             services.AddModule(new BuildServerModule());
-            services.AddSingleton(sp => sp.GetService<IBuildAgentResolver>().Resolve());
+            services.AddSingleton(sp => sp.GetService<IBuildAgentResolver>()?.Resolve());
 
             services.AddModule(new GitVersionInitModule());
             services.AddModule(new VersionStrategyModule());
