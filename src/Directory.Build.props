@@ -3,17 +3,19 @@
         <BaseIntermediateOutputPath>$(MSBuildThisFileDirectory)obj\$(MSBuildProjectName)\</BaseIntermediateOutputPath>
 
         <Authors>GitTools and Contributors</Authors>
+        <Copyright>Copyright GitTools 2020.</Copyright>
+        <Company>$(Authors)</Company>
+        
         <PackageProjectUrl>https://github.com/GitTools/GitVersion</PackageProjectUrl>
         <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
         <PackageTags>Git;Versioning;GitVersion;GitFlowVersion;GitFlow;GitHubFlow;SemVer</PackageTags>
-        <Copyright>Copyright GitTools 2020.</Copyright>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <PackageIcon>package_icon.png</PackageIcon>
         <PackageReleaseNotes>https://github.com/GitTools/GitVersion/releases</PackageReleaseNotes>
+
         <RepositoryUrl>https://github.com/GitTools/GitVersion</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
-        <PackageReleaseNotes>https://github.com/GitTools/GitVersion/releases</PackageReleaseNotes>
-        <Company>$(Authors)</Company>
+
         <DebugType>embedded</DebugType>
         <LangVersion>8.0</LangVersion>
 
@@ -35,7 +37,7 @@
         <PackageVersion_GitToolsTesting>1.2.0</PackageVersion_GitToolsTesting>
         <PackageVersion_NUnit3TestAdapter>3.17.0</PackageVersion_NUnit3TestAdapter>
         <PackageVersion_NunitXmlTestLogger>2.1.80</PackageVersion_NunitXmlTestLogger>
-        <PackageVersion_Shouldly>4.0.2</PackageVersion_Shouldly>
+        <PackageVersion_Shouldly>4.0.3</PackageVersion_Shouldly>
 
     </PropertyGroup>
 

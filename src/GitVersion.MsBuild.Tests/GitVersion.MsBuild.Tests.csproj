@@ -15,7 +15,19 @@
 
     <ItemGroup>
       <ProjectReference Include="..\GitVersion.MsBuild\GitVersion.MsBuild.csproj" />
-      <ProjectReference Include="..\GitVersionCore.Tests\GitVersionCore.Tests.csproj" />
+      <ProjectReference Include="..\GitVersionCore\GitVersionCore.csproj" />
     </ItemGroup>
+    <ItemGroup>
+        <Compile Include="..\GitVersionCore.Tests\Helpers\DirectoryHelper.cs" Link="Helpers\DirectoryHelper.cs" />
+        <Compile Include="..\GitVersionCore.Tests\Helpers\GitVersionCoreTestModule.cs" Link="Helpers\GitVersionCoreTestModule.cs" />
+        <Compile Include="..\GitVersionCore.Tests\Helpers\PathHelper.cs" Link="Helpers\PathHelper.cs" />
+        <Compile Include="..\GitVersionCore.Tests\Helpers\TestBase.cs" Link="Helpers\TestBase.cs" />
+        <Compile Include="..\GitVersionCore.Tests\Helpers\TestEffectiveConfiguration.cs" Link="Helpers\TestEffectiveConfiguration.cs" />
+        <Compile Include="..\GitVersionCore.Tests\Helpers\TestEnvironment.cs" Link="Helpers\TestEnvironment.cs" />
+        <Compile Include="..\GitVersionCore.Tests\Helpers\TestFileSystem.cs" Link="Helpers\TestFileSystem.cs" />
+        <Compile Include="..\GitVersionCore.Tests\Helpers\TestLogAppender.cs" Link="Helpers\TestLogAppender.cs" />
+        <Compile Include="..\GitVersionCore.Tests\Helpers\TestStream.cs" Link="Helpers\TestStream.cs" />
 
+        <Compile Include="..\GitVersionCore.Tests\Extensions\GitToolsTestingExtensions.cs" Link="Extensions\GitToolsTestingExtensions.cs" />
+    </ItemGroup>
 </Project>

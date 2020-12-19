@@ -6,7 +6,7 @@
         <Target_net48>tools/net48</Target_net48>
         <Target_netcore31>tools/netcoreapp3.1</Target_netcore31>
     </PropertyGroup>
-    <ItemGroup>
+    <ItemGroup Condition="$(IsPackaging) != ''">
         <None Include="msbuild/tools/*.*"                                        Pack="true" PackagePath="tools" />
         <None Include="msbuild/build/*.*"                                        Pack="true" PackagePath="build" />
         <None Include="msbuild/buildMultiTargeting/*.*"                          Pack="true" PackagePath="buildMultiTargeting" />

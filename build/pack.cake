@@ -62,8 +62,10 @@ Task("Pack-Nuget")
     settings.ArgumentCustomization = arg => arg.Append("/p:PackAsTool=true");
     DotNetCorePack("./src/GitVersionExe/GitVersionExe.csproj", settings);
 
-    settings.ArgumentCustomization = null;
+    settings.ArgumentCustomization = arg => arg.Append("/p:IsPackaging=true");
     DotNetCorePack("./src/GitVersion.MsBuild", settings);
+    
+    settings.ArgumentCustomization = null;
     DotNetCorePack("./src/GitVersionCore", settings);
 });
 
