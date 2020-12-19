@@ -113,6 +113,8 @@ Task("Artifacts-MsBuildCore-Test")
 
         if (targetframework == "3.1") {
             targetframework = $"netcoreapp{targetframework}";
+        } else if (targetframework == "5.0") {
+            targetframework = $"net{targetframework}";
         }
 
         var cmd = $"-file {rootPrefix}/scripts/Test-MsBuildCore.ps1 -version {version} -repoPath {rootPrefix}/repo/tests/integration/core -nugetPath {rootPrefix}/nuget -targetframework {targetframework}";

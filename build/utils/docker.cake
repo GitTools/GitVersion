@@ -150,7 +150,7 @@ string[] GetDockerTags(DockerImage dockerImage, BuildParameters parameters) {
         $"{name}:{parameters.Version.SemVersion}-{distro}-{targetframework}",
     };
 
-    if (distro == "debian.10-x64" && targetframework == parameters.CoreFxVersion31) {
+    if (distro == "debian.10-x64" && targetframework == parameters.NetVersion50) {
         tags.AddRange(new[] {
             $"{name}:{parameters.Version.Version}",
             $"{name}:{parameters.Version.SemVersion}",

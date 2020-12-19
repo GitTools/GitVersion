@@ -100,7 +100,7 @@ public class DockerImages
 
     public static DockerImages GetDockerImages(ICakeContext context, BuildParameters parameters)
     {
-        var versions =  new[] { "3.1" };
+        var versions =  new[] { "3.1", "5.0" };
         var distros  = parameters.DockerDistros;
 
         var dockerImages =
