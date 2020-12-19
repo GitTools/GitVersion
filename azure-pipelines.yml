@@ -60,7 +60,7 @@ stages:
       name: Linux
       vmImage: 'ubuntu-latest'
       distros: [ alpine.3.12-x64, centos.7-x64, debian.9-x64, debian.10-x64, ubuntu.16.04-x64, ubuntu.18.04-x64, ubuntu.20.04-x64 ]
-      dotnetVersions: [ '3.1' ]
+      dotnetVersions: [ 3.1, 5.0 ]
 
 - stage: Artifact_Windows_Test
   displayName: 'Artifacts Windows test'
@@ -83,7 +83,7 @@ stages:
       name: Linux
       vmImage: 'ubuntu-latest'
       distros: [ alpine.3.12-x64, centos.7-x64, debian.9-x64, debian.10-x64, ubuntu.16.04-x64, ubuntu.18.04-x64, ubuntu.20.04-x64 ]
-      dotnetVersions: [ '3.1' ]
+      dotnetVersions: [ 3.1, 5.0 ]
 
 - stage: Publish
   displayName: 'Publish'
