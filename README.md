@@ -20,6 +20,7 @@ works out the [semantic version][semver] of the commit being built.
 | **GitVersion.Tool**        |                           [![NuGet][gvgt-badge]][gvgt]             |
 | **GitVersion.CommandLine** |                           [![NuGet][gvcl-badge]][gvcl]             |
 | **GitVersion.MsBuild**     |                            [![NuGet][gvt-badge]][gvt]              |
+| **Homebrew**               |                        [![homebrew][brew-badge]][brew]             |
 | **Azure Pipeline Task**    | [![Azure Pipeline Task][az-pipeline-task-badge]][az-pipeline-task] |
 | **Github Action**          |             [![Github Action][gh-actions-badge]][gh-actions]       |
 | **Docker**                 |               [![Docker Pulls][dockerhub-badge]][dockerhub]        |
