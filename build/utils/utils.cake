@@ -215,3 +215,40 @@ public static CakeTaskBuilder IsDependentOnWhen(this CakeTaskBuilder builder, st
     }
     return builder;
 }
+
+void LogGroup(string title, Action action)
+{
+    StartGroup(title);
+    action();
+    EndGroup();
+}
+T LogGroup<T>(string title, Func<T> action)
+{
+    StartGroup(title);
+    var result = action();
+    EndGroup();
+
+    return result;
+}
+void StartGroup(string title)
+{
+    var buildSystem = Context.BuildSystem();
+    var startGroup = "[group]";
+    if (buildSystem.IsRunningOnAzurePipelines || buildSystem.IsRunningOnAzurePipelinesHosted) {
+        startGroup = "##[group]";
+    } else if (buildSystem.IsRunningOnGitHubActions) {
+        startGroup = "::group::";
+    }
+    Information($"{startGroup}{title}");
+}
+void EndGroup()
+{
+    var buildSystem = Context.BuildSystem();
+    var endgroup = "[endgroup]";
+    if (buildSystem.IsRunningOnAzurePipelines || buildSystem.IsRunningOnAzurePipelinesHosted) {
+        endgroup = "##[endgroup]";
+    } else if (buildSystem.IsRunningOnGitHubActions) {
+        endgroup = "::endgroup::";
+    }
+    Information($"{endgroup}");
+}

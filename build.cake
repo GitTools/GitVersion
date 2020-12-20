@@ -54,64 +54,83 @@ bool singleStageRun = true;
 
 Setup<BuildParameters>(context =>
 {
-    try
+    return LogGroup<BuildParameters>("Cake Setup", () =>
     {
-        EnsureDirectoryExists("artifacts");
-        var parameters = BuildParameters.GetParameters(context);
-        var gitVersion = GetVersion(parameters);
-        parameters.Initialize(context, gitVersion);
+        try
+        {
+            EnsureDirectoryExists("artifacts");
+            var parameters = BuildParameters.GetParameters(context);
+            var gitVersion = GetVersion(parameters);
+            parameters.Initialize(context, gitVersion);
 
-        // Increase verbosity?
-        if (parameters.IsMainBranch && (context.Log.Verbosity != Verbosity.Diagnostic)) {
-            Information("Increasing verbosity to diagnostic.");
-            context.Log.Verbosity = Verbosity.Diagnostic;
+            // Increase verbosity?
+            if (parameters.IsMainBranch && (context.Log.Verbosity != Verbosity.Diagnostic)) {
+                Information("Increasing verbosity to diagnostic.");
+                context.Log.Verbosity = Verbosity.Diagnostic;
+            }
+
+            if (parameters.IsLocalBuild)             Information("Building locally");
+            if (parameters.IsRunningOnAppVeyor)      Information("Building on AppVeyor");
+            if (parameters.IsRunningOnTravis)        Information("Building on Travis");
+            if (parameters.IsRunningOnAzurePipeline) Information("Building on AzurePipeline");
+            if (parameters.IsRunningOnGitHubActions) Information("Building on GitHubActions");
+
+            Information("Building version {0} of GitVersion ({1}, {2})",
+                parameters.Version.SemVersion,
+                parameters.Configuration,
+                parameters.Target);
+
+            Information("Repository info : IsMainRepo {0}, IsMainBranch {1}, IsTagged: {2}, IsPullRequest: {3}",
+                parameters.IsMainRepo,
+                parameters.IsMainBranch,
+                parameters.IsTagged,
+                parameters.IsPullRequest);
+
+            return parameters;
         }
-
-        if (parameters.IsLocalBuild)             Information("Building locally");
-        if (parameters.IsRunningOnAppVeyor)      Information("Building on AppVeyor");
-        if (parameters.IsRunningOnTravis)        Information("Building on Travis");
-        if (parameters.IsRunningOnAzurePipeline) Information("Building on AzurePipeline");
-        if (parameters.IsRunningOnGitHubActions) Information("Building on GitHubActions");
-
-        Information("Building version {0} of GitVersion ({1}, {2})",
-            parameters.Version.SemVersion,
-            parameters.Configuration,
-            parameters.Target);
-
-        Information("Repository info : IsMainRepo {0}, IsMainBranch {1}, IsTagged: {2}, IsPullRequest: {3}",
-            parameters.IsMainRepo,
-            parameters.IsMainBranch,
-            parameters.IsTagged,
-            parameters.IsPullRequest);
-
-        return parameters;
-    }
-    catch (Exception exception)
-    {
-        Error(exception.Dump());
-        return null;
-    }
+        catch (Exception exception)
+        {
+            Error(exception.Dump());
+            return null;
+        }
+    });
 });
 
 Teardown<BuildParameters>((context, parameters) =>
 {
-    try
+    LogGroup("Cake Teardown", () =>
     {
-        Information("Starting Teardown...");
+        try
+        {
+            Information("Starting Teardown...");
 
-        Information("Repository info : IsMainRepo {0}, IsMainBranch {1}, IsTagged: {2}, IsPullRequest: {3}",
-            parameters.IsMainRepo,
-            parameters.IsMainBranch,
-            parameters.IsTagged,
-            parameters.IsPullRequest);
+            Information("Repository info : IsMainRepo {0}, IsMainBranch {1}, IsTagged: {2}, IsPullRequest: {3}",
+                parameters.IsMainRepo,
+                parameters.IsMainBranch,
+                parameters.IsTagged,
+                parameters.IsPullRequest);
 
-        Information("Finished running tasks.");
-    }
-    catch (Exception exception)
-    {
-        Error(exception.Dump());
-    }
+            Information("Finished running tasks.");
+        }
+        catch (Exception exception)
+        {
+            Error(exception.Dump());
+        }
+    });
 });
+
+TaskSetup(setupContext =>
+{
+    var message = string.Format("Task: {0}", setupContext.Task.Name);
+    StartGroup(message);
+});
+
+TaskTeardown(teardownContext =>
+{
+    var message = string.Format("Task: {0}", teardownContext.Task.Name);
+    EndGroup();
+});
+
 
 //////////////////////////////////////////////////////////////////////
 // TASKS
