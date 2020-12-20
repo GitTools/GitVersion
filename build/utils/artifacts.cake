@@ -29,7 +29,7 @@ public class BuildPackages
     {
         return package => new BuildPackage(
             id: package,
-            nuspecPath: string.Concat("./nuspec/", package, ".nuspec"),
+            nuspecPath: string.Concat("./build/nuspec/", package, ".nuspec"),
             packagePath: nugetRooPath.CombineWithFilePath(string.Concat(package, ".", version, ".nupkg")),
             isChocolateyPackage: isChocolateyPackage);
     }

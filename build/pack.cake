@@ -16,7 +16,7 @@ Task("Pack-Prepare")
 
     CopyFiles(sourceFiles, cmdlineDir);
 
-    sourceFiles += GetFiles("./nuspec/*.ps1") + GetFiles("./nuspec/*.txt");
+    sourceFiles += GetFiles("./build/nuspec/*.ps1") + GetFiles("./build/nuspec/*.txt");
     CopyFiles(sourceFiles, portableDir);
 });
 
