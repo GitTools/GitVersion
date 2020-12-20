@@ -47,7 +47,7 @@ Param(
     [string]$DockerDotnetVersion = "",
     [switch]$SkipUnitTest,
     [ValidateSet("Quiet", "Minimal", "Normal", "Verbose", "Diagnostic")]
-    [string]$Verbosity = "Verbose",
+    [string]$Verbosity = "Normal",
     [Alias("DryRun","Noop")]
     [switch]$WhatIf,
     [switch]$Exclusive,
@@ -170,6 +170,7 @@ $env:DOTNET_ROOT=$InstallPath
 
 $env:DOTNET_SKIP_FIRST_TIME_EXPERIENCE=1
 $env:DOTNET_CLI_TELEMETRY_OPTOUT=1
+$env:DOTNET_NOLOGO=$true
 
 # Install cake local tool
 dotnet tool restore
@@ -197,7 +198,7 @@ $Arguments = @{
     nuget_useinprocessclient=$true;
     docker_distro=$DockerDistro;
     docker_dotnetversion=$DockerDotnetVersion;
-}.GetEnumerator() | ForEach-Object { 
+}.GetEnumerator() | ForEach-Object {
     if ($_.value -ne "") { "--{0}=`"{1}`"" -f $_.key, $_.value }
 };
 
