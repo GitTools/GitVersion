@@ -16,7 +16,7 @@ public class BuildParameters
 
     public string DockerDistro { get; private set; }
     public string DockerDotnetVersion { get; private set; }
-    public string[] DockerDistros = new[] { "alpine.3.12-x64", "centos.7-x64", "debian.9-x64", "debian.10-x64", "ubuntu.16.04-x64", "ubuntu.18.04-x64", "ubuntu.20.04-x64" };
+    public string[] DockerDistros = new[] { "alpine.3.12-x64", "centos.7-x64", "debian.9-x64", "debian.10-x64", "fedora.33-x64", "ubuntu.16.04-x64", "ubuntu.18.04-x64", "ubuntu.20.04-x64" };
 
     public bool EnabledUnitTests { get; private set; }
     public bool EnabledPublishNuget { get; private set; }
