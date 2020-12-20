@@ -142,7 +142,7 @@ public class BuildParameters
         NativeRuntimes = new Dictionary<PlatformFamily, string[]>
         {
             [PlatformFamily.Windows] = new[] { "win-x64", "win-x86" },
-            [PlatformFamily.Linux]   = DockerDistros,
+            [PlatformFamily.Linux]   = new[] { "linux-x64", "linux-musl-x64" },
             [PlatformFamily.OSX]     = new[] { "osx-x64" },
         };
 

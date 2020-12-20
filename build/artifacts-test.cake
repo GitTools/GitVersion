@@ -90,9 +90,14 @@ Task("Artifacts-Native-Test")
     {
         var (distro, targetframework) = dockerImage;
 
-        PackPrepareNative(Context, parameters, distro);
+        var runtime = "linux-x64";
+        if (distro.StartsWith("alpine")) {
+            runtime = "linux-musl-x64";
+        }
 
-        var cmd = $"-file {rootPrefix}/scripts/Test-Native.ps1 -repoPath {rootPrefix}/repo -runtime {distro}";
+        PackPrepareNative(Context, parameters, runtime);
+
+        var cmd = $"-file {rootPrefix}/scripts/Test-Native.ps1 -repoPath {rootPrefix}/repo -runtime {runtime}";
 
         DockerTestArtifact(dockerImage, parameters, cmd);
     }
