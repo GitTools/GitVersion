@@ -84,7 +84,7 @@ from The Noun Project.
 [gvcl-badge]:                      https://img.shields.io/nuget/v/GitVersion.CommandLine.svg?logo=nuget
 [gvgt]:                            https://www.nuget.org/packages/GitVersion.Tool
 [gvgt-badge]:                      https://img.shields.io/nuget/v/GitVersion.Tool.svg?logo=nuget
-[brew]:                            http://brew.sh/
+[brew]:                            https://formulae.brew.sh/formula/gitversion
 [brew-badge]:                      https://img.shields.io/homebrew/v/gitversion.svg?logo=homebrew
 [dockerhub]:                       https://hub.docker.com/r/gittools/gitversion/
 [dockerhub-badge]:                 https://img.shields.io/docker/pulls/gittools/gitversion.svg?logo=docker
