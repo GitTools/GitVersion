@@ -1,4 +1,5 @@
 using Microsoft.Build.Framework;
+using Microsoft.Build.Utilities;
 
 namespace GitVersion.MsBuild
 {
