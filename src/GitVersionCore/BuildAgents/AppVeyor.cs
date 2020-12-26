@@ -3,7 +3,7 @@ using System.Net.Http;
 using System.Text;
 using GitVersion.Logging;
 using GitVersion.OutputVariables;
-using Newtonsoft.Json;
+using System.Text.Json;
 
 namespace GitVersion.BuildAgents
 {
@@ -28,7 +28,7 @@ namespace GitVersion.BuildAgents
                 version = $"{variables.FullSemVer}.build.{buildNumber}",
             };
 
-            var stringContent = new StringContent(JsonConvert.SerializeObject(body), Encoding.UTF8, "application/json");
+            var stringContent = new StringContent(JsonSerializer.Serialize(body), Encoding.UTF8, "application/json");
             var response = httpClient.PutAsync("api/build", stringContent).GetAwaiter().GetResult();
             response.EnsureSuccessStatusCode();
 
@@ -45,7 +45,7 @@ namespace GitVersion.BuildAgents
                 value = $"{value}"
             };
 
-            var stringContent = new StringContent(JsonConvert.SerializeObject(body), Encoding.UTF8, "application/json");
+            var stringContent = new StringContent(JsonSerializer.Serialize(body), Encoding.UTF8, "application/json");
             var response = httpClient.PostAsync("api/build/variables", stringContent).GetAwaiter().GetResult();
             response.EnsureSuccessStatusCode();
 
