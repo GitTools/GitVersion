@@ -1,50 +1,54 @@
 using System;
+using System.Buffers;
+using System.Buffers.Text;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using Newtonsoft.Json;
+using System.Text.Encodings.Web;
+using System.Text.Json;
+using System.Text.Json.Serialization;
+using JetBrains.Annotations;
 using YamlDotNet.Serialization;
 using static GitVersion.Extensions.ObjectExtensions;
-using JsonSerializer = GitVersion.Helpers.JsonSerializer;
 
 namespace GitVersion.OutputVariables
 {
     public class VersionVariables : IEnumerable<KeyValuePair<string, string>>
     {
         public VersionVariables(string major,
-                                string minor,
-                                string patch,
-                                string buildMetaData,
-                                string buildMetaDataPadded,
-                                string fullBuildMetaData,
-                                string branchName,
-                                string escapedBranchName,
-                                string sha,
-                                string shortSha,
-                                string majorMinorPatch,
-                                string semVer,
-                                string legacySemVer,
-                                string legacySemVerPadded,
-                                string fullSemVer,
-                                string assemblySemVer,
-                                string assemblySemFileVer,
-                                string preReleaseTag,
-                                string preReleaseTagWithDash,
-                                string preReleaseLabel,
-                                string preReleaseLabelWithDash,
-                                string preReleaseNumber,
-                                string weightedPreReleaseNumber,
-                                string informationalVersion,
-                                string commitDate,
-                                string nugetVersion,
-                                string nugetVersionV2,
-                                string nugetPreReleaseTag,
-                                string nugetPreReleaseTagV2,
-                                string versionSourceSha,
-                                string commitsSinceVersionSource,
-                                string commitsSinceVersionSourcePadded,
-                                string uncommittedChanges)
+            string minor,
+            string patch,
+            string buildMetaData,
+            string buildMetaDataPadded,
+            string fullBuildMetaData,
+            string branchName,
+            string escapedBranchName,
+            string sha,
+            string shortSha,
+            string majorMinorPatch,
+            string semVer,
+            string legacySemVer,
+            string legacySemVerPadded,
+            string fullSemVer,
+            string assemblySemVer,
+            string assemblySemFileVer,
+            string preReleaseTag,
+            string preReleaseTagWithDash,
+            string preReleaseLabel,
+            string preReleaseLabelWithDash,
+            string preReleaseNumber,
+            string weightedPreReleaseNumber,
+            string informationalVersion,
+            string commitDate,
+            string nugetVersion,
+            string nugetVersionV2,
+            string nugetPreReleaseTag,
+            string nugetPreReleaseTagV2,
+            string versionSourceSha,
+            string commitsSinceVersionSource,
+            string commitsSinceVersionSourcePadded,
+            string uncommittedChanges)
         {
             Major = major;
             Minor = minor;
@@ -161,7 +165,8 @@ namespace GitVersion.OutputVariables
 
         public static VersionVariables FromJson(string json)
         {
-            var variablePairs = JsonConvert.DeserializeObject<Dictionary<string, string>>(json);
+            var serializeOptions = JsonSerializerOptions();
+            var variablePairs = JsonSerializer.Deserialize<Dictionary<string, string>>(json, serializeOptions);
             return FromDictionary(variablePairs);
         }
 
@@ -194,7 +199,57 @@ namespace GitVersion.OutputVariables
 
         public override string ToString()
         {
-            return JsonSerializer.Serialize(this);
+            var variables = this.GetProperties().ToDictionary(x => x.Key, x => x.Value);
+            var serializeOptions = JsonSerializerOptions();
+
+            return JsonSerializer.Serialize(variables, serializeOptions);
         }
+
+        private static JsonSerializerOptions JsonSerializerOptions()
+        {
+            var serializeOptions = new JsonSerializerOptions
+            {
+                WriteIndented = true,
+                Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
+                Converters = { new GitVersionStringConverter() }
+            };
+            return serializeOptions;
+        }
+    }
+
+    public class GitVersionStringConverter : JsonConverter<string>
+    {
+        public override bool CanConvert(Type typeToConvert)
+            => typeToConvert == typeof(string);
+
+        public override string Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+        {
+            if (reader.TokenType != JsonTokenType.Number && typeToConvert == typeof(string))
+                return reader.GetString() ?? "";
+
+            var span = reader.HasValueSequence ? reader.ValueSequence.ToArray() : reader.ValueSpan;
+            if (Utf8Parser.TryParse(span, out long number, out var bytesConsumed) && span.Length == bytesConsumed)
+                return number.ToString();
+
+            var data = reader.GetString();
+
+            throw new InvalidOperationException($"'{data}' is not a correct expected value!")
+            {
+                Source = nameof(GitVersionStringConverter)
+            };
+        }
+
+        public override void Write(Utf8JsonWriter writer, [CanBeNull] string value, JsonSerializerOptions options)
+        {
+            value ??= string.Empty;
+            if (NotAPaddedNumber(value) && int.TryParse(value, out var number))
+                writer.WriteNumberValue(number);
+            else
+                writer.WriteStringValue(value);
+        }
+
+        public override bool HandleNull => true;
+
+        private static bool NotAPaddedNumber(string value) => value != null && (value == "0" || !value.StartsWith("0"));
     }
 }
