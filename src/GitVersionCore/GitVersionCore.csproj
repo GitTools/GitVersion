@@ -14,23 +14,24 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="System.Net.Requests" Version="4.3.0" />
+        <PackageReference Include="System.Net.Requests" Version="4.3.0"/>
 
-        <PackageReference Include="LibGit2Sharp" Version="$(PackageVersion_LibGit2Sharp)" />
-        <PackageReference Include="JetBrains.Annotations" Version="$(PackageVersion_JetBrainsAnnotations)" PrivateAssets="All" />
-        <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="$(PackageVersion_MicrosoftExtensions)" />
-        <PackageReference Include="Microsoft.Extensions.Options" Version="$(PackageVersion_MicrosoftExtensions)" />
-        <PackageReference Include="YamlDotNet" Version="$(PackageVersion_YamlDotNet)" />
+        <PackageReference Include="LibGit2Sharp" Version="$(PackageVersion_LibGit2Sharp)"/>
+        <PackageReference Include="Newtonsoft.Json" Version="$(PackageVersion_NewtonsoftJson)" />
+        <PackageReference Include="JetBrains.Annotations" Version="$(PackageVersion_JetBrainsAnnotations)" PrivateAssets="All"/>
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="$(PackageVersion_MicrosoftExtensions)"/>
+        <PackageReference Include="Microsoft.Extensions.Options" Version="$(PackageVersion_MicrosoftExtensions)"/>
+        <PackageReference Include="YamlDotNet" Version="$(PackageVersion_YamlDotNet)"/>
     </ItemGroup>
 
     <ItemGroup>
-        <Compile Remove="VersionConverters\*\AddFormats\**\*.*" />
-        <Compile Remove="VersionConverters\*\Templates\**\*.*" />
+        <Compile Remove="VersionConverters\*\AddFormats\**\*.*"/>
+        <Compile Remove="VersionConverters\*\Templates\**\*.*"/>
     </ItemGroup>
 
     <ItemGroup>
-        <EmbeddedResource Include="VersionConverters\*\AddFormats\**\*.*" />
-        <EmbeddedResource Include="VersionConverters\*\Templates\**\*.*" />
+        <EmbeddedResource Include="VersionConverters\*\AddFormats\**\*.*"/>
+        <EmbeddedResource Include="VersionConverters\*\Templates\**\*.*"/>
     </ItemGroup>
 
 </Project>

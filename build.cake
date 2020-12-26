@@ -239,7 +239,7 @@ Task("Format")
     .Does<BuildParameters>((parameters) =>
 {
     var dotnetFormatExe = Context.Tools.Resolve("dotnet-format.exe");
-    var args = $"--folder {parameters.Paths.Directories.Root}";
+    var args = $"{parameters.Paths.Directories.Root} --folder --exclude **/AddFormats/";
     Context.ExecuteCommand(dotnetFormatExe, args);
 });
 

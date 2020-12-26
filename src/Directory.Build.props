@@ -46,7 +46,6 @@
         <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="$(PackageVersion_MicrosoftExtensions)" />
 
         <PackageReference Include="JetBrains.Annotations" Version="$(PackageVersion_JetBrainsAnnotations)" />
-        <PackageReference Include="Newtonsoft.Json" Version="$(PackageVersion_NewtonsoftJson)" />
         <PackageReference Include="NSubstitute" Version="$(PackageVersion_NSubstitute)" />
 
         <PackageReference Include="NUnit" Version="$(PackageVersion_NUnit)" />

@@ -3,7 +3,6 @@ using System.IO;
 using GitTools.Testing;
 using GitVersion.BuildAgents;
 using GitVersion.OutputVariables;
-using Newtonsoft.Json;
 using NUnit.Framework;
 using Shouldly;
 
@@ -66,7 +65,7 @@ namespace GitVersionExe.Tests
             var filePath = Path.Combine(fixture.LocalRepositoryFixture.RepositoryPath, fileName);
             var json = File.ReadAllText(filePath);
 
-            var outputVariables = VersionVariables.FromDictionary(JsonConvert.DeserializeObject<Dictionary<string, string>>(json));
+            var outputVariables = VersionVariables.FromJson(json);
             outputVariables.ShouldNotBeNull();
             outputVariables.FullSemVer.ShouldBeEquivalentTo(version);
         }

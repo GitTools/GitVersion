@@ -7,28 +7,28 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Buildalyzer" Version="3.1.1" />
-        <PackageReference Include="LibGit2Sharp" Version="$(PackageVersion_LibGit2Sharp)" />
-        <PackageReference Include="Microsoft.Build" Version="$(PackageVersion_MsBuild)" />
-        <PackageReference Include="MSBuild.ProjectCreation" Version="2.0.1" />
+        <PackageReference Include="Buildalyzer" Version="3.1.1"/>
+        <PackageReference Include="LibGit2Sharp" Version="$(PackageVersion_LibGit2Sharp)"/>
+        <PackageReference Include="Microsoft.Build" Version="$(PackageVersion_MsBuild)"/>
+        <PackageReference Include="MSBuild.ProjectCreation" Version="2.0.1"/>
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\GitVersion.MsBuild\GitVersion.MsBuild.csproj" />
-      <ProjectReference Include="..\GitVersionCore\GitVersionCore.csproj" />
+        <ProjectReference Include="..\GitVersion.MsBuild\GitVersion.MsBuild.csproj"/>
+        <ProjectReference Include="..\GitVersionCore\GitVersionCore.csproj"/>
     </ItemGroup>
     <ItemGroup>
-        <Compile Include="..\GitVersionCore.Tests\Helpers\DirectoryHelper.cs" Link="Helpers\DirectoryHelper.cs" />
-        <Compile Include="..\GitVersionCore.Tests\Helpers\GitVersionCoreTestModule.cs" Link="Helpers\GitVersionCoreTestModule.cs" />
-        <Compile Include="..\GitVersionCore.Tests\Helpers\RuntimeHelper.cs" Link="Helpers\RuntimeHelper.cs" />
-        <Compile Include="..\GitVersionCore.Tests\Helpers\PathHelper.cs" Link="Helpers\PathHelper.cs" />
-        <Compile Include="..\GitVersionCore.Tests\Helpers\TestBase.cs" Link="Helpers\TestBase.cs" />
-        <Compile Include="..\GitVersionCore.Tests\Helpers\TestEffectiveConfiguration.cs" Link="Helpers\TestEffectiveConfiguration.cs" />
-        <Compile Include="..\GitVersionCore.Tests\Helpers\TestEnvironment.cs" Link="Helpers\TestEnvironment.cs" />
-        <Compile Include="..\GitVersionCore.Tests\Helpers\TestFileSystem.cs" Link="Helpers\TestFileSystem.cs" />
-        <Compile Include="..\GitVersionCore.Tests\Helpers\TestLogAppender.cs" Link="Helpers\TestLogAppender.cs" />
-        <Compile Include="..\GitVersionCore.Tests\Helpers\TestStream.cs" Link="Helpers\TestStream.cs" />
+        <Compile Include="..\GitVersionCore.Tests\Helpers\DirectoryHelper.cs" Link="Helpers\DirectoryHelper.cs"/>
+        <Compile Include="..\GitVersionCore.Tests\Helpers\GitVersionCoreTestModule.cs" Link="Helpers\GitVersionCoreTestModule.cs"/>
+        <Compile Include="..\GitVersionCore.Tests\Helpers\RuntimeHelper.cs" Link="Helpers\RuntimeHelper.cs"/>
+        <Compile Include="..\GitVersionCore.Tests\Helpers\PathHelper.cs" Link="Helpers\PathHelper.cs"/>
+        <Compile Include="..\GitVersionCore.Tests\Helpers\TestBase.cs" Link="Helpers\TestBase.cs"/>
+        <Compile Include="..\GitVersionCore.Tests\Helpers\TestEffectiveConfiguration.cs" Link="Helpers\TestEffectiveConfiguration.cs"/>
+        <Compile Include="..\GitVersionCore.Tests\Helpers\TestEnvironment.cs" Link="Helpers\TestEnvironment.cs"/>
+        <Compile Include="..\GitVersionCore.Tests\Helpers\TestFileSystem.cs" Link="Helpers\TestFileSystem.cs"/>
+        <Compile Include="..\GitVersionCore.Tests\Helpers\TestLogAppender.cs" Link="Helpers\TestLogAppender.cs"/>
+        <Compile Include="..\GitVersionCore.Tests\Helpers\TestStream.cs" Link="Helpers\TestStream.cs"/>
 
-        <Compile Include="..\GitVersionCore.Tests\Extensions\GitToolsTestingExtensions.cs" Link="Extensions\GitToolsTestingExtensions.cs" />
+        <Compile Include="..\GitVersionCore.Tests\Extensions\GitToolsTestingExtensions.cs" Link="Extensions\GitToolsTestingExtensions.cs"/>
     </ItemGroup>
 </Project>

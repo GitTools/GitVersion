@@ -3,9 +3,10 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using GitVersion.Helpers;
+using Newtonsoft.Json;
 using YamlDotNet.Serialization;
 using static GitVersion.Extensions.ObjectExtensions;
+using JsonSerializer = GitVersion.Helpers.JsonSerializer;
 
 namespace GitVersion.OutputVariables
 {
@@ -156,6 +157,12 @@ namespace GitVersion.OutputVariables
                 .Cast<object>()
                 .ToArray();
             return (VersionVariables)Activator.CreateInstance(type, ctorArgs);
+        }
+
+        public static VersionVariables FromJson(string json)
+        {
+            var variablePairs = JsonConvert.DeserializeObject<Dictionary<string, string>>(json);
+            return FromDictionary(variablePairs);
         }
 
         public static VersionVariables FromFile(string filePath, IFileSystem fileSystem)
