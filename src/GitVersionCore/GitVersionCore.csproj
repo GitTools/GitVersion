@@ -4,7 +4,6 @@
         <TargetFramework>netstandard2.0</TargetFramework>
         <RootNamespace>GitVersion</RootNamespace>
         <DocumentationFile>bin\$(Configuration)\GitVersionCore.xml</DocumentationFile>
-        <NoWarn>1591</NoWarn>
 
         <PackageId>GitVersion.Core</PackageId>
         <Title>GitVersion</Title>

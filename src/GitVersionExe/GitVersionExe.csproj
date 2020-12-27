@@ -8,7 +8,6 @@
         <PlatformTarget>AnyCPU</PlatformTarget>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <DocumentationFile>bin\$(Configuration)\GitVersion.xml</DocumentationFile>
-        <NoWarn>1591</NoWarn>
     </PropertyGroup>
 
     <PropertyGroup Condition=" '$(PackAsTool)' != 'true'">

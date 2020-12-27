@@ -5,7 +5,7 @@
         <Authors>GitTools and Contributors</Authors>
         <Copyright>Copyright GitTools 2020.</Copyright>
         <Company>$(Authors)</Company>
-        
+
         <PackageProjectUrl>https://github.com/GitTools/GitVersion</PackageProjectUrl>
         <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
         <PackageTags>Git;Versioning;GitVersion;GitFlowVersion;GitFlow;GitHubFlow;SemVer</PackageTags>
@@ -16,6 +16,7 @@
         <RepositoryUrl>https://github.com/GitTools/GitVersion</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
 
+        <NoWarn>1591</NoWarn>
         <DebugType>embedded</DebugType>
         <LangVersion>8.0</LangVersion>
 
@@ -52,12 +53,14 @@
         <PackageReference Include="NUnit3TestAdapter" Version="$(PackageVersion_NUnit3TestAdapter)" />
         <PackageReference Include="NunitXml.TestLogger" Version="$(PackageVersion_NunitXmlTestLogger)" />
         <PackageReference Include="Shouldly" Version="$(PackageVersion_Shouldly)" />
-        <PackageReference Include="GitTools.Testing" Version="$(PackageVersion_GitToolsTesting)" />
 
         <PackageReference Include="coverlet.msbuild" Version="$(PackageVersion_CoverletMsBuild)">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
         </PackageReference>
+
+        <ProjectReference Include="..\GitTools.Testing\GitTools.Testing.csproj" />
+
     </ItemGroup>
 
     <ItemGroup>
