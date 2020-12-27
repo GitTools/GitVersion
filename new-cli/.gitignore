@@ -1,9 +1,29 @@
-﻿[Bb]in
+﻿#################
+## Visual Studio
+#################
+
+# User-specific files
+.vs
+*.suo
+*.user
+*.userprefs
+*.sln.docstates
+*.pidb
+*.received.txt
+# Build results
+[Dd]ebug/
+[Rr]elease/
+[Bb]in
 [Oo]bj
-.idea/.idea.Cli/.idea/contentModel.xml
+################
+# Project Rider
+################
 
-.idea/.idea.Cli/.idea/workspace.xml
+.idea
+*.sln.iml
 
-.idea/.idea.GitVersion/.idea/workspace.xml
+####################
+# Visual Studio Code
+####################
 
-.idea/.idea.GitVersion/.idea/contentModel.xml
+.vscode
