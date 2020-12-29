@@ -41,7 +41,7 @@ namespace GitVersion.Cli
             var commandOptionsType = handlerType.BaseType.GenericTypeArguments[0];
             var commandAttribute = commandOptionsType.GetCustomAttribute<CommandAttribute>();
 
-            if (commandAttribute == null) 
+            if (commandAttribute == null)
                 return null;
 
             var command = new System.CommandLine.Command(commandAttribute.Name, commandAttribute.Description);
@@ -59,10 +59,8 @@ namespace GitVersion.Cli
                 command.AddOption(option);
             }
 
-            var handlerMethod =
-                handlerType.GetMethod(nameof(commandHandler.InvokeAsync), new[] { commandOptionsType });
-            command.Handler = CommandHandler.Create(handlerMethod ?? throw new InvalidOperationException(),
-                commandHandler);
+            var handlerMethod = handlerType.GetMethod(nameof(commandHandler.InvokeAsync), new[] { commandOptionsType });
+            command.Handler = CommandHandler.Create(handlerMethod ?? throw new InvalidOperationException(), commandHandler);
 
             foreach (var subCommandHandler in commandHandler.SubCommands())
             {
