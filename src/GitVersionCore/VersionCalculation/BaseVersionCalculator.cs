@@ -60,6 +60,14 @@ namespace GitVersion.VersionCalculation
                     .ToList();
 
                 FixTheBaseVersionSourceOfMergeMessageStrategyIfReleaseBranchWasMergedAndDeleted(baseVersions);
+
+                if (context.Configuration.VersioningMode == VersioningMode.Mainline)
+                {
+                    baseVersions = baseVersions
+                        .Where(b => !b.IncrementedVersion.PreReleaseTag.HasTag())
+                        .ToList();
+                }
+
                 var maxVersion = baseVersions.Aggregate((v1, v2) => v1.IncrementedVersion > v2.IncrementedVersion ? v1 : v2);
                 var matchingVersionsOnceIncremented = baseVersions
                     .Where(b => b.Version.BaseVersionSource != null && b.IncrementedVersion == maxVersion.IncrementedVersion)

@@ -133,6 +133,45 @@ namespace GitVersionCore.Tests.VersionCalculation
             baseVersion.SemanticVersion.ShouldBe(lowerVersion.SemanticVersion);
         }
 
+        [Test]
+        public void ShouldIgnorePreReleaseVersionInMainlineMode()
+        {
+            var fakeIgnoreConfig = new TestIgnoreConfig(new ExcludeSourcesContainingExclude());
+
+            var lowerVersion = new BaseVersion("dummy", false, new SemanticVersion(1), new MockCommit(), null);
+            var preReleaseVersion = new BaseVersion(
+                "prerelease",
+                false,
+                new SemanticVersion(1, 0, 1)
+                {
+                    PreReleaseTag = new SemanticVersionPreReleaseTag
+                    {
+                        Name = "alpha",
+                        Number = 1
+                    }
+                },
+                new MockCommit(),
+                null
+            );
+
+            var versionCalculator = GetBaseVersionCalculator(contextBuilder =>
+            {
+                contextBuilder
+                    .WithConfig(new Config { VersioningMode = VersioningMode.Mainline, Ignore = fakeIgnoreConfig })
+                    .OverrideServices(services =>
+                    {
+                        services.RemoveAll<IVersionStrategy>();
+                        services.AddSingleton<IVersionStrategy>(new TestVersionStrategy(preReleaseVersion, lowerVersion));
+                    });
+            });
+            var baseVersion = versionCalculator.GetBaseVersion();
+
+            baseVersion.Source.ShouldNotBe(preReleaseVersion.Source);
+            baseVersion.SemanticVersion.ShouldNotBe(preReleaseVersion.SemanticVersion);
+            baseVersion.Source.ShouldBe(lowerVersion.Source);
+            baseVersion.SemanticVersion.ShouldBe(lowerVersion.SemanticVersion);
+        }
+
         private static IBaseVersionCalculator GetBaseVersionCalculator(Action<GitVersionContextBuilder> contextBuilderAction)
         {
             var contextBuilder = new GitVersionContextBuilder();

@@ -155,6 +155,97 @@ namespace GitVersionCore.Tests.VersionCalculation
         }
 
         [Test]
+        public void MergeFeatureIntoMainline()
+        {
+            var config = new Config
+            {
+                VersioningMode = VersioningMode.Mainline
+            };
+
+            using var fixture = new EmptyRepositoryFixture();
+            fixture.MakeACommit();
+            fixture.ApplyTag("1.0.0");
+            fixture.AssertFullSemver("1.0.0", config);
+
+            fixture.BranchTo("feature/foo");
+            fixture.MakeACommit();
+            fixture.AssertFullSemver("1.0.1-foo.1", config);
+            fixture.ApplyTag("1.0.1-foo.1");
+
+            fixture.Checkout("master");
+            fixture.MergeNoFF("feature/foo");
+            fixture.AssertFullSemver("1.0.1", config);
+        }
+
+        [Test]
+        public void MergeFeatureIntoMainlineWithMinorIncrement()
+        {
+            var config = new Config
+            {
+                VersioningMode = VersioningMode.Mainline,
+                Branches = new Dictionary<string, BranchConfig>()
+                {
+                    { "feature", new BranchConfig { Increment = IncrementStrategy.Minor } }
+                },
+                Ignore = new IgnoreConfig() { ShAs = new List<string>() },
+                MergeMessageFormats = new Dictionary<string, string>()
+            };
+
+            using var fixture = new EmptyRepositoryFixture();
+            fixture.MakeACommit();
+            fixture.ApplyTag("1.0.0");
+            fixture.AssertFullSemver("1.0.0", config);
+
+            fixture.BranchTo("feature/foo");
+            fixture.MakeACommit();
+            fixture.AssertFullSemver("1.1.0-foo.1", config);
+            fixture.ApplyTag("1.1.0-foo.1");
+
+            fixture.Checkout("master");
+            fixture.MergeNoFF("feature/foo");
+            fixture.AssertFullSemver("1.1.0", config);
+        }
+
+        [Test]
+        public void MergeFeatureIntoMainlineWithMinorIncrementAndThenMergeHotfix()
+        {
+            var config = new Config
+            {
+                VersioningMode = VersioningMode.Mainline,
+                Branches = new Dictionary<string, BranchConfig>()
+                {
+                    { "feature", new BranchConfig { Increment = IncrementStrategy.Minor } }
+                },
+                Ignore = new IgnoreConfig() { ShAs = new List<string>() },
+                MergeMessageFormats = new Dictionary<string, string>()
+            };
+
+            using var fixture = new EmptyRepositoryFixture();
+            fixture.MakeACommit();
+            fixture.ApplyTag("1.0.0");
+            fixture.AssertFullSemver("1.0.0", config);
+
+            fixture.BranchTo("feature/foo");
+            fixture.MakeACommit();
+            fixture.AssertFullSemver("1.1.0-foo.1", config);
+            fixture.ApplyTag("1.1.0-foo.1");
+
+            fixture.Checkout("master");
+            fixture.MergeNoFF("feature/foo");
+            fixture.AssertFullSemver("1.1.0", config);
+            fixture.ApplyTag("1.1.0");
+
+            fixture.BranchTo("hotfix/bar");
+            fixture.MakeACommit();
+            fixture.AssertFullSemver("1.1.1-beta.1", config);
+            fixture.ApplyTag("1.1.1-beta.1");
+
+            fixture.Checkout("master");
+            fixture.MergeNoFF("hotfix/bar");
+            fixture.AssertFullSemver("1.1.1", config);
+        }
+
+        [Test]
         public void PreReleaseTagCanUseBranchNameVariable()
         {
             var config = new Config
