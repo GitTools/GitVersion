@@ -9,7 +9,7 @@ gitversion --help
 gitversion normalize 
 
 # Normalize the repository inside `./project/` to its required state:
-gitversion normalize --repository ./project/
+gitversion normalize --work-dir ./project/
 
 # Initialize GitVersion.yml
 gitversion config init
@@ -59,8 +59,11 @@ cat gitversion.json | gitversion output wix --path ./**/*.wxi
 # Read version variables from stdin and output them to environment variables
 cat gitversion.json | gitversion output environment
 
+# Read version variables from stdin and output them to environment variables
+cat gitversion.json | gitversion output environment --property FullSemVer
+
 # Read version variables from stdin and output only the `FullSemVer` property to stdout.
-cat gitversion.json | gitversion output FullSemVer 
+cat gitversion.json | gitversion output --property FullSemVer 
 
 # Pipe the output of calculate to gitversion output
 gitversion calculate | gitversion output assemblyinfo --path ./**/AssemblyInfo.cs
