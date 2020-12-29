@@ -7,7 +7,7 @@ namespace GitVersion.Output
     [Command("output", "Outputs the version object.")]
     public record OutputOptions : GitVersionOptions
     {
-        public Lazy<string> VersionInfo { get; } = new Lazy<string>(() => Console.IsInputRedirected ? Console.ReadLine() : "");
+        public Lazy<string> VersionInfo { get; } = new(() => Console.IsInputRedirected ? Console.ReadLine() : "");
 
         [Option("--input-file", "The input version file")]
         public FileInfo InputFile { get; init; } = default!;

@@ -4,10 +4,15 @@ namespace GitVersion.Command
 {
     public record GitVersionOptions
     {
-        [Option(new[] { "--log-file", "-l" }, "The log file")]
+        public const string LogFileOptionAlias1 = "--log-file";
+        public const string LogFileOptionAlias2 = "-l";
+
+        public const string WorkDirOption = "--work-dir";
+
+        [Option(new[] { LogFileOptionAlias1, LogFileOptionAlias2 }, "The log file")]
         public FileInfo? LogFile { get; init; } = default;
 
-        [Option("--work-dir", "The working directory with the git repository")]
-        public DirectoryInfo WorkDir { get; init; } = new DirectoryInfo(System.Environment.CurrentDirectory);
+        [Option(WorkDirOption, "The working directory with the git repository")]
+        public DirectoryInfo WorkDir { get; init; } = new(System.Environment.CurrentDirectory);
     }
 }

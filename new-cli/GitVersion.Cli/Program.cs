@@ -33,6 +33,7 @@ namespace GitVersion.Cli
 
             using var serviceProvider = new ContainerRegistrar()
                 .RegisterModules(gitVersionModules)
+                .AddLogging(args)
                 .Build();
 
             var app = serviceProvider.GetService<GitVersionApp>();
