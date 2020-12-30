@@ -26,7 +26,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GitVersion.Common.Command",
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "build", "build", "{55E0C81E-6149-44B1-B73E-297A1C4F9F88}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Build", "..\build\build\Build.csproj", "{2FDF8207-8B98-473E-AEE5-17B38AF4162F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Build", "..\build\Build.csproj", "{2FDF8207-8B98-473E-AEE5-17B38AF4162F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
