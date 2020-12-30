@@ -1,4 +1,7 @@
+using System.Collections.Generic;
 using GitTools.Testing;
+using GitVersion;
+using GitVersion.Model.Configuration;
 using GitVersionCore.Tests.Helpers;
 using LibGit2Sharp;
 using NUnit.Framework;
@@ -52,6 +55,73 @@ namespace GitVersionCore.Tests.IntegrationTests
 
             var version = fixture.GetVersion();
             version.SemVer.ShouldBe("1.0.0-alpha.1");
+        }
+
+        [TestCase("alpha", "JIRA-123", "alpha")]
+        [TestCase("useBranchName", "JIRA-123", "JIRA-123")]
+        [TestCase("alpha.{BranchName}", "JIRA-123", "alpha.JIRA-123")]
+        public void ShouldUseConfiguredTagWhenNotTrimmingBranchName(string tag, string branchName, string preReleaseTagName)
+        {
+            var config = new Config
+            {
+                Branches =
+                {
+                    {
+                        "other",
+                        new BranchConfig
+                        {
+                            Increment = IncrementStrategy.Patch,
+                            Regex = ".*",
+                            TrimRegex = "",
+                            SourceBranches = new HashSet<string>(),
+                            Tag = tag
+                        }
+                    }
+                }
+            };
+
+            using var fixture = new EmptyRepositoryFixture();
+            fixture.Repository.MakeATaggedCommit("1.0.0");
+            fixture.Repository.CreateBranch(branchName);
+            Commands.Checkout(fixture.Repository, branchName);
+            fixture.Repository.MakeCommits(5);
+
+            var expectedFullSemVer = $"1.0.1-{preReleaseTagName}.1+5";
+            fixture.AssertFullSemver(expectedFullSemVer, config);
+        }
+
+        [TestCase("alpha", "JIRA-123", "alpha")]
+        [TestCase("useBranchName", "JIRA-123", "JIRA-123")]
+        [TestCase("alpha.{BranchName}", "JIRA-123", "alpha.JIRA-123")]
+        public void ShouldUseConfiguredTagWithTrimmedBranchName(string tag, string name, string preReleaseTagName)
+        {
+            var config = new Config
+            {
+                Branches =
+                {
+                    {
+                        "other",
+                        new BranchConfig
+                        {
+                            Increment = IncrementStrategy.Patch,
+                            Regex = ".*",
+                            TrimRegex = "^something\\/weird(.*?)\\.and-more",
+                            SourceBranches = new HashSet<string>(),
+                            Tag = tag
+                        }
+                    }
+                }
+            };
+
+            using var fixture = new EmptyRepositoryFixture();
+            fixture.Repository.MakeATaggedCommit("1.0.0");
+            var branchName = $"something/weird{name}.and-more";
+            fixture.Repository.CreateBranch(branchName);
+            Commands.Checkout(fixture.Repository, branchName);
+            fixture.Repository.MakeCommits(5);
+
+            var expectedFullSemVer = $"1.0.1-{preReleaseTagName}.1+5";
+            fixture.AssertFullSemver(expectedFullSemVer, config);
         }
     }
 }

@@ -99,7 +99,7 @@ namespace GitVersion.Configuration
             return new EffectiveConfiguration(
                 assemblyVersioningScheme, assemblyFileVersioningScheme, assemblyInformationalFormat, assemblyVersioningFormat, assemblyFileVersioningFormat, versioningMode, gitTagPrefix,
                 tag, nextVersion, incrementStrategy,
-                currentBranchConfig.Regex,
+                currentBranchConfig.TrimRegex ?? $"{currentBranchConfig.Regex}(.*)",
                 preventIncrementForMergedBranchVersion,
                 tagNumberPattern, configuration.ContinuousDeploymentFallbackTag,
                 trackMergeTarget,
@@ -131,7 +131,7 @@ namespace GitVersion.Configuration
                 var branchName = branchNameOverride ?? branchFriendlyName;
                 if (!string.IsNullOrWhiteSpace(configuration.BranchPrefixToTrim))
                 {
-                    branchName = branchName.RegexReplace(configuration.BranchPrefixToTrim, string.Empty, RegexOptions.IgnoreCase);
+                    branchName = branchName.RegexReplace(configuration.BranchPrefixToTrim, "$1", RegexOptions.IgnoreCase);
                 }
                 branchName = branchName.RegexReplace("[^a-zA-Z0-9-]", "-");
 

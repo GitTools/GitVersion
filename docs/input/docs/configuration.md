@@ -360,6 +360,14 @@ values, but here they are if you need to:
 This is the regex which is used to match the current branch to the correct
 branch configuration.
 
+### trim-regex
+
+This regex is used to capture the name to use for the branch when calculating
+the version tag. This regex is matched on the branch name. The first capture
+group is what defines the resulting name. By default (i.e. when not set), this
+is set to extract by using `{regex}(.*)` where `{regex}` is set from
+[above](#regex).
+
 ### source-branches
 
 Because git commits only refer to parent commits (not branches) GitVersion

@@ -26,6 +26,7 @@ namespace GitVersion.Model.Configuration
             CommitMessageIncrementing = branchConfiguration.CommitMessageIncrementing;
             TracksReleaseBranches = branchConfiguration.TracksReleaseBranches;
             Regex = branchConfiguration.Regex;
+            TrimRegex = branchConfiguration.TrimRegex;
             IsReleaseBranch = branchConfiguration.IsReleaseBranch;
             IsMainline = branchConfiguration.IsMainline;
             Name = branchConfiguration.Name;
@@ -60,6 +61,9 @@ namespace GitVersion.Model.Configuration
 
         [YamlMember(Alias = "regex")]
         public string Regex { get; set; }
+
+        [YamlMember(Alias = "trim-regex")]
+        public string TrimRegex { get; set; }
 
         [YamlMember(Alias = "source-branches")]
         public HashSet<string> SourceBranches { get; set; }
@@ -97,6 +101,7 @@ namespace GitVersion.Model.Configuration
             targetConfig.TrackMergeTarget = this.TrackMergeTarget ?? targetConfig.TrackMergeTarget;
             targetConfig.CommitMessageIncrementing = this.CommitMessageIncrementing ?? targetConfig.CommitMessageIncrementing;
             targetConfig.Regex = this.Regex ?? targetConfig.Regex;
+            targetConfig.TrimRegex = this.TrimRegex ?? targetConfig.TrimRegex;
             targetConfig.SourceBranches = this.SourceBranches ?? targetConfig.SourceBranches;
             targetConfig.IsSourceBranchFor = this.IsSourceBranchFor ?? targetConfig.IsSourceBranchFor;
             targetConfig.TracksReleaseBranches = this.TracksReleaseBranches ?? targetConfig.TracksReleaseBranches;
