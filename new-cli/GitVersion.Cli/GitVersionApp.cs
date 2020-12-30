@@ -18,7 +18,8 @@ namespace GitVersion.Cli
     {
         private readonly RootCommand rootCommand;
 
-        public GitVersionApp(IEnumerable<ICommandHandler> commandHandlers) => rootCommand = MapCommands(commandHandlers);
+        public GitVersionApp(IEnumerable<ICommandHandler> commandHandlers) =>
+            rootCommand = MapCommands(commandHandlers);
 
         public Task<int> RunAsync(string[] args)
         {
@@ -27,7 +28,7 @@ namespace GitVersion.Cli
                 .Build()
                 .InvokeAsync(args);
         }
-        
+
         private static RootCommand MapCommands(IEnumerable<ICommandHandler> handlers)
         {
             var commandsMap = new Dictionary<Type, Infrastructure.Command>();

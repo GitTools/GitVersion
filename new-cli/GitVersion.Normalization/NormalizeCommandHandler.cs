@@ -18,7 +18,8 @@ namespace GitVersion.Normalization
         public override Task<int> InvokeAsync(NormalizeCommand command)
         {
             var value = service.Call();
-            logger.LogInformation($"Command : 'normalize', LogFile : '{command.LogFile}', WorkDir : '{command.WorkDir}' ");
+            logger.LogInformation(
+                $"Command : 'normalize', LogFile : '{command.LogFile}', WorkDir : '{command.WorkDir}' ");
             return Task.FromResult(value);
         }
     }

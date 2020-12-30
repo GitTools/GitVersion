@@ -18,7 +18,8 @@ namespace GitVersion.Output.Project
         public override Task<int> InvokeAsync(OutputProjectCommand command)
         {
             var value = service.Call();
-            logger.LogInformation($"Command : 'output project', LogFile : '{command.LogFile}', WorkDir : '{command.OutputDir}', InputFile: '{command.InputFile}', Project: '{command.ProjectFile}' ");
+            logger.LogInformation(
+                $"Command : 'output project', LogFile : '{command.LogFile}', WorkDir : '{command.OutputDir}', InputFile: '{command.InputFile}', Project: '{command.ProjectFile}' ");
             return Task.FromResult(value);
         }
     }

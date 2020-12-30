@@ -11,7 +11,7 @@ namespace GitVersion.Output
 
         [Option("--input-file", "The input version file")]
         public FileInfo InputFile { get; init; } = default!;
-        
+
         [Option("--output-dir", "The output directory with the git repository")]
         public DirectoryInfo OutputDir { get; init; } = default!;
     }

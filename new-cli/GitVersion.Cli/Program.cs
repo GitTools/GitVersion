@@ -15,8 +15,6 @@ namespace GitVersion.Cli
     {
         private static async Task<int> Main(string[] args)
         {
-            // await Run(args);
-            // return 0;
             // TODO: load the list of assemblies from the app working directory, later we might load from nuget
             var assemblies = new[]
             {

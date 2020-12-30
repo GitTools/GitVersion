@@ -18,7 +18,8 @@ namespace GitVersion.Configuration.Show
         public override Task<int> InvokeAsync(ConfigShowCommand command)
         {
             var value = service.Call();
-            logger.LogInformation($"Command : 'config show', LogFile : '{command.LogFile}', WorkDir : '{command.WorkDir}' ");
+            logger.LogInformation(
+                $"Command : 'config show', LogFile : '{command.LogFile}', WorkDir : '{command.WorkDir}' ");
             return Task.FromResult(value);
         }
     }

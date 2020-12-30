@@ -18,7 +18,8 @@ namespace GitVersion.Output.Wix
         public override Task<int> InvokeAsync(OutputWixCommand command)
         {
             var value = service.Call();
-            logger.LogInformation($"Command : 'output wix', LogFile : '{command.LogFile}', WorkDir : '{command.OutputDir}', InputFile: '{command.InputFile}', WixFile: '{command.WixFile}' ");
+            logger.LogInformation(
+                $"Command : 'output wix', LogFile : '{command.LogFile}', WorkDir : '{command.OutputDir}', InputFile: '{command.InputFile}', WixFile: '{command.WixFile}' ");
             return Task.FromResult(value);
         }
     }

@@ -11,7 +11,7 @@ namespace GitVersion.Cli.Extensions
             gitVersionModule.RegisterTypes(containerRegistrar);
             return containerRegistrar;
         }
-        
+
         public static IContainerRegistrar RegisterModules(this IContainerRegistrar containerRegistrar,
             IEnumerable<IGitVersionModule> gitVersionModules)
         {
@@ -19,6 +19,7 @@ namespace GitVersion.Cli.Extensions
             {
                 containerRegistrar.RegisterModule(gitVersionModule);
             }
+
             return containerRegistrar;
         }
     }

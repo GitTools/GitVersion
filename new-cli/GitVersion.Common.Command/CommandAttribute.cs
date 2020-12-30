@@ -14,7 +14,7 @@ namespace GitVersion.Command
             Name = name;
             Description = description;
         }
-        
+
         public CommandAttribute(string name, Type? parent, string? description = "")
         {
             Name = name;

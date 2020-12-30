@@ -19,7 +19,8 @@ namespace GitVersion.Output.AssemblyInfo
         {
             var value = service.Call();
             var versionInfo = command.VersionInfo.Value;
-            logger.LogInformation($"Command : 'output assemblyinfo', LogFile : '{command.LogFile}', WorkDir : '{command.OutputDir}', InputFile: '{command.InputFile}', AssemblyInfo: '{command.AssemblyinfoFile}' ");
+            logger.LogInformation(
+                $"Command : 'output assemblyinfo', LogFile : '{command.LogFile}', WorkDir : '{command.OutputDir}', InputFile: '{command.InputFile}', AssemblyInfo: '{command.AssemblyinfoFile}' ");
             logger.LogInformation($"Version info: {versionInfo}");
             return Task.FromResult(value);
         }

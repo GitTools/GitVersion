@@ -14,7 +14,7 @@ namespace GitVersion.Configuration
             this.logger = logger;
             this.service = service;
         }
-        
+
         public override Task<int> InvokeAsync(ConfigCommand command)
         {
             var value = service.Call();
