@@ -4,7 +4,7 @@ using GitVersion.Infrastructure;
 
 namespace GitVersion.Output.Wix
 {
-    public class OutputWixCommandHandler : CommandHandler<OutputWixOptions>, IOutputCommandHandler
+    public class OutputWixCommandHandler : CommandHandler<OutputWixOptions>
     {
         private readonly ILogger logger;
         private readonly IService service;

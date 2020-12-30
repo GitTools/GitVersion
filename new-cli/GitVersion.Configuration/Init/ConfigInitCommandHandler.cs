@@ -4,7 +4,7 @@ using GitVersion.Infrastructure;
 
 namespace GitVersion.Configuration.Init
 {
-    public class ConfigInitCommandHandler : CommandHandler<ConfigInitOptions>, IConfigCommandHandler
+    public class ConfigInitCommandHandler : CommandHandler<ConfigInitOptions>
     {
         private readonly ILogger logger;
         private readonly IService service;

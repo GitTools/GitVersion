@@ -2,7 +2,7 @@
 
 namespace GitVersion.Output.AssemblyInfo
 {
-    [Command("assemblyinfo", "Outputs version to assembly")]
+    [Command("assemblyinfo", typeof(OutputOptions), "Outputs version to assembly")]
     public record OutputAssemblyInfoOptions : OutputOptions
     {
         [Option("--assemblyinfo-file", "The assembly file")]

@@ -4,71 +4,72 @@ using System.CommandLine;
 using System.CommandLine.Builder;
 using System.CommandLine.Invocation;
 using System.CommandLine.Parsing;
+using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using GitVersion.Cli.Extensions;
+using GitVersion.Cli.Infrastructure;
 using GitVersion.Command;
 using ICommandHandler = GitVersion.Command.ICommandHandler;
 
 namespace GitVersion.Cli
 {
-    internal class GitVersionApp : RootCommand
+    internal class GitVersionApp
     {
-        public GitVersionApp(IEnumerable<IRootCommandHandler> commandHandlers)
-        {
-            foreach (var commandHandler in commandHandlers)
-            {
-                var command = CreateCommand(commandHandler);
-                if (command != null) AddCommand(command);
-            }
-        }
+        private readonly RootCommand rootCommand;
+
+        public GitVersionApp(IEnumerable<ICommandHandler> commandHandlers) => rootCommand = MapCommands(commandHandlers);
 
         public Task<int> RunAsync(string[] args)
         {
-            return new CommandLineBuilder(this)
+            return new CommandLineBuilder(rootCommand)
                 .UseDefaults()
                 .Build()
                 .InvokeAsync(args);
         }
-
-        private static System.CommandLine.Command? CreateCommand(ICommandHandler commandHandler)
+        
+        private static RootCommand MapCommands(IEnumerable<ICommandHandler> handlers)
         {
-            const BindingFlags declaredOnly = BindingFlags.Public | BindingFlags.Instance;
-
-            var handlerType = commandHandler.GetType();
-            if (handlerType.BaseType is null)
-                return null;
-
-            var commandOptionsType = handlerType.BaseType.GenericTypeArguments[0];
-            var commandAttribute = commandOptionsType.GetCustomAttribute<CommandAttribute>();
-
-            if (commandAttribute == null)
-                return null;
-
-            var command = new System.CommandLine.Command(commandAttribute.Name, commandAttribute.Description);
-            var propertyInfos = commandOptionsType.GetProperties(declaredOnly);
-            foreach (var propertyInfo in propertyInfos)
+            var commandsMap = new Dictionary<Type, GitVersionCommand>();
+            foreach (var handler in handlers)
             {
-                var optionAttribute = propertyInfo.GetCustomAttribute<OptionAttribute>();
-                if (optionAttribute == null) continue;
-
-                var option = new Option(optionAttribute.Aliases, optionAttribute.Description)
+                var handlerType = handler?.GetType();
+                var commandOptionsType = handlerType?.BaseType?.GenericTypeArguments[0];
+                if (commandOptionsType != null)
                 {
-                    IsRequired = optionAttribute.IsRequired,
-                    Argument = new Argument { ArgumentType = propertyInfo.PropertyType }
-                };
-                command.AddOption(option);
+                    var commandAttribute = commandOptionsType.GetCustomAttribute<CommandAttribute>();
+                    if (commandAttribute != null)
+                    {
+                        var command = new GitVersionCommand(commandAttribute.Name, commandAttribute.Description)
+                        {
+                            Parent = commandAttribute.Parent
+                        };
+                        command.AddOptions(commandOptionsType);
+
+                        var handlerMethod = handlerType?.GetMethod("InvokeAsync");
+                        command.Handler = CommandHandler.Create(handlerMethod!, handler);
+
+                        commandsMap.Add(commandOptionsType, command);
+                    }
+                }
             }
 
-            var handlerMethod = handlerType.GetMethod(nameof(commandHandler.InvokeAsync), new[] { commandOptionsType });
-            command.Handler = CommandHandler.Create(handlerMethod ?? throw new InvalidOperationException(), commandHandler);
+            var parentGroups = commandsMap.GroupBy(x => x.Value.Parent, x => x.Key).ToList();
 
-            foreach (var subCommandHandler in commandHandler.SubCommands())
+            var rootCommand = new RootCommand();
+            foreach (var parentGroup in parentGroups)
             {
-                var subCommand = CreateCommand(subCommandHandler);
-                if (subCommand != null) command.AddCommand(subCommand);
+                System.CommandLine.Command command = parentGroup.Key is null
+                    ? rootCommand
+                    : commandsMap[parentGroup.Key];
+
+                foreach (var child in parentGroup)
+                {
+                    command.AddCommand(commandsMap[child]);
+                }
             }
 
-            return command;
+            return rootCommand;
         }
     }
 }

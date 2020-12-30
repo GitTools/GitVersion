@@ -4,7 +4,7 @@ using GitVersion.Infrastructure;
 
 namespace GitVersion.Output.Project
 {
-    public class OutputProjectCommandHandler : CommandHandler<OutputProjectOptions>, IOutputCommandHandler
+    public class OutputProjectCommandHandler : CommandHandler<OutputProjectOptions>
     {
         private readonly ILogger logger;
         private readonly IService service;

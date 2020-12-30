@@ -9,9 +9,9 @@ namespace GitVersion.Configuration
     {
         public void RegisterTypes(IContainerRegistrar services)
         {
-            services.AddSingleton<IRootCommandHandler, ConfigCommandHandler>();
-            services.AddSingleton<IConfigCommandHandler, ConfigInitCommandHandler>();
-            services.AddSingleton<IConfigCommandHandler, ConfigShowCommandHandler>();
+            services.AddSingleton<ICommandHandler, ConfigCommandHandler>();
+            services.AddSingleton<ICommandHandler, ConfigInitCommandHandler>();
+            services.AddSingleton<ICommandHandler, ConfigShowCommandHandler>();
         }
     }
 }

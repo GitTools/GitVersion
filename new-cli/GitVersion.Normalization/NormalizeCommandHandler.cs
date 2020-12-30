@@ -4,7 +4,7 @@ using GitVersion.Infrastructure;
 
 namespace GitVersion.Normalization
 {
-    public class NormalizeCommandHandler : CommandHandler<NormalizeOptions>, IRootCommandHandler
+    public class NormalizeCommandHandler : CommandHandler<NormalizeOptions>
     {
         private readonly ILogger logger;
         private readonly IService service;

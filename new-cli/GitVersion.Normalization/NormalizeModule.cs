@@ -7,7 +7,7 @@ namespace GitVersion.Normalization
     {
         public void RegisterTypes(IContainerRegistrar services)
         {
-            services.AddSingleton<IRootCommandHandler, NormalizeCommandHandler>();
+            services.AddSingleton<ICommandHandler, NormalizeCommandHandler>();
         }
     }
 }

@@ -2,7 +2,7 @@
 
 namespace GitVersion.Configuration.Show
 {
-    [Command("show", "Shows the effective configuration.")]
+    [Command("show", typeof(ConfigOptions), "Shows the effective configuration.")]
     public record ConfigShowOptions : ConfigOptions
     {
     }

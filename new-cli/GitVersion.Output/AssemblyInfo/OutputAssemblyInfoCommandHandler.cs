@@ -4,7 +4,7 @@ using GitVersion.Infrastructure;
 
 namespace GitVersion.Output.AssemblyInfo
 {
-    public class OutputAssemblyInfoCommandHandler : CommandHandler<OutputAssemblyInfoOptions>, IOutputCommandHandler
+    public class OutputAssemblyInfoCommandHandler : CommandHandler<OutputAssemblyInfoOptions>
     {
         private readonly ILogger logger;
         private readonly IService service;

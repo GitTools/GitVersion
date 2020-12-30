@@ -1,14 +1,25 @@
-﻿using System.Collections.Generic;
+﻿using System.Threading.Tasks;
 using GitVersion.Command;
+using GitVersion.Infrastructure;
 
 namespace GitVersion.Configuration
 {
-    public class ConfigCommandHandler : CommandHandler<ConfigOptions>, IRootCommandHandler
+    public class ConfigCommandHandler : CommandHandler<ConfigOptions>
     {
-        private readonly IEnumerable<IConfigCommandHandler> commandHandlers;
+        private readonly ILogger logger;
+        private readonly IService service;
 
-        public ConfigCommandHandler(IEnumerable<IConfigCommandHandler> commandHandlers) => this.commandHandlers = commandHandlers;
-
-        public override IEnumerable<ICommandHandler> SubCommands() => commandHandlers;
+        public ConfigCommandHandler(ILogger logger, IService service)
+        {
+            this.logger = logger;
+            this.service = service;
+        }
+        
+        public override Task<int> InvokeAsync(ConfigOptions options)
+        {
+            var value = service.Call();
+            logger.LogInformation($"Command : 'config', LogFile : '{options.LogFile}', WorkDir : '{options.WorkDir}' ");
+            return Task.FromResult(value);
+        }
     }
 }

@@ -4,7 +4,7 @@ using GitVersion.Infrastructure;
 
 namespace GitVersion.Configuration.Show
 {
-    public class ConfigShowCommandHandler : CommandHandler<ConfigShowOptions>, IConfigCommandHandler
+    public class ConfigShowCommandHandler : CommandHandler<ConfigShowOptions>
     {
         private readonly ILogger logger;
         private readonly IService service;
