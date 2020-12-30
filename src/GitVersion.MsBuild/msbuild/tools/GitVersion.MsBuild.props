@@ -12,7 +12,7 @@
         <GitVersion_NoNormalizeEnabled Condition="$(GitVersion_NoNormalizeEnabled) == ''">false</GitVersion_NoNormalizeEnabled>
 
         <GitVersion_ToolArgments>-output file -outputfile $(GitVersionOutputFile)</GitVersion_ToolArgments>
-        <GitVersion_ToolArgments Condition=" '$(GitVersion_NoFetchEnabled)' == 'true' ">$(GitVersion_ToolArgments) -nofecth</GitVersion_ToolArgments>
+        <GitVersion_ToolArgments Condition=" '$(GitVersion_NoFetchEnabled)' == 'true' ">$(GitVersion_ToolArgments) -nofetch</GitVersion_ToolArgments>
         <GitVersion_ToolArgments Condition=" '$(GitVersion_NoNormalizeEnabled)' == 'true' ">$(GitVersion_ToolArgments) -nonormalize</GitVersion_ToolArgments>
     </PropertyGroup>
 
