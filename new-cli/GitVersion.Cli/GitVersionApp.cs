@@ -8,7 +8,6 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using GitVersion.Cli.Extensions;
-using GitVersion.Cli.Infrastructure;
 using GitVersion.Command;
 using ICommandHandler = GitVersion.Command.ICommandHandler;
 
@@ -47,7 +46,7 @@ namespace GitVersion.Cli
                         };
                         command.AddOptions(commandOptionsType);
 
-                        var handlerMethod = handlerType?.GetMethod("InvokeAsync");
+                        var handlerMethod = handlerType?.GetMethod(nameof(ICommandHandler.InvokeAsync));
                         command.Handler = CommandHandler.Create(handlerMethod!, handler);
 
                         commandsMap.Add(commandOptionsType, command);
