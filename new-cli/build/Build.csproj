@@ -3,6 +3,7 @@
     <OutputType>Exe</OutputType>
     <TargetFramework>net5.0</TargetFramework>
     <RunWorkingDirectory>$(MSBuildProjectDirectory)..</RunWorkingDirectory>
+    <Nullable>enable</Nullable>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Cake.Frosting" Version="1.0.0-rc0002" />

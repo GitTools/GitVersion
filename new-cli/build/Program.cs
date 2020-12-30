@@ -1,12 +1,8 @@
 using Cake.Frosting;
 
-public static class Program
-{
-    public static int Main(string[] args)
-    {
-        return new CakeHost()
-            .UseContext<BuildContext>()
-            .UseWorkingDirectory("../src")
-            .Run(args);
-    }
-}
+return new CakeHost()
+    .UseContext<Context>()
+    .UseLifetime<Lifetime>()
+    .UseTaskLifetime<TaskLifetime>()
+    .UseWorkingDirectory("../src")
+    .Run(args);
