@@ -5,7 +5,7 @@ using GitVersion.Command;
 namespace GitVersion.Output
 {
     [Command("output", "Outputs the version object.")]
-    public record OutputOptions : GitVersionOptions
+    public record OutputCommand : GitVersionCommand
     {
         public Lazy<string> VersionInfo { get; } = new(() => Console.IsInputRedirected ? Console.ReadLine() : "");
 

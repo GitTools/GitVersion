@@ -3,7 +3,7 @@
 namespace GitVersion.Calculation
 {
     [Command("calculate", "Calculates the version object from the git history.")]
-    public record CalculateOptions : GitVersionOptions
+    public record CalculateCommand : GitVersionCommand
     {
     }
 }

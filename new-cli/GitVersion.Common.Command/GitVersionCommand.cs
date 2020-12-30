@@ -2,7 +2,7 @@
 
 namespace GitVersion.Command
 {
-    public record GitVersionOptions
+    public record GitVersionCommand
     {
         public const string LogFileOptionAlias1 = "--log-file";
         public const string LogFileOptionAlias2 = "-l";

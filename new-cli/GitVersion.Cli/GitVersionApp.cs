@@ -30,7 +30,7 @@ namespace GitVersion.Cli
         
         private static RootCommand MapCommands(IEnumerable<ICommandHandler> handlers)
         {
-            var commandsMap = new Dictionary<Type, GitVersionCommand>();
+            var commandsMap = new Dictionary<Type, Infrastructure.Command>();
             foreach (var handler in handlers)
             {
                 var handlerType = handler?.GetType();
@@ -40,7 +40,7 @@ namespace GitVersion.Cli
                     var commandAttribute = commandOptionsType.GetCustomAttribute<CommandAttribute>();
                     if (commandAttribute != null)
                     {
-                        var command = new GitVersionCommand(commandAttribute.Name, commandAttribute.Description)
+                        var command = new Infrastructure.Command(commandAttribute.Name, commandAttribute.Description)
                         {
                             Parent = commandAttribute.Parent
                         };

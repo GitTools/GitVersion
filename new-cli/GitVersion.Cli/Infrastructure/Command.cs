@@ -2,9 +2,9 @@ using System;
 
 namespace GitVersion.Cli.Infrastructure
 {
-    public class GitVersionCommand : System.CommandLine.Command
+    public class Command : System.CommandLine.Command
     {
-        public GitVersionCommand(string name, string? description = null)
+        public Command(string name, string? description = null)
             : base(name, description)
         {
         }

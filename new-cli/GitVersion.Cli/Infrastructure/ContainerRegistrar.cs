@@ -68,7 +68,7 @@ namespace GitVersion.Cli.Infrastructure
             // We cannot use the logFile path when the logger was already created and registered in DI container
             // so we perform a pre-parse of the arguments to fetch the logFile so that we can create the logger and
             // register in the DI container
-            var option = new Option(new[] { GitVersionOptions.LogFileOptionAlias1, GitVersionOptions.LogFileOptionAlias2 })
+            var option = new Option(new[] { GitVersionCommand.LogFileOptionAlias1, GitVersionCommand.LogFileOptionAlias2 })
             {
                 Argument = new Argument()
             };

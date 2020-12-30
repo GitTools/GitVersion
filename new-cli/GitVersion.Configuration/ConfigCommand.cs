@@ -3,7 +3,7 @@
 namespace GitVersion.Configuration
 {
     [Command("config", "Manages the GitVersion configuration file.")]
-    public record ConfigOptions : GitVersionOptions
+    public record ConfigCommand : GitVersionCommand
     {
     }
 }
