@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using GitVersion.Infrastructure;
 
-namespace GitVersion.Cli.Extensions
+namespace GitVersion.Extensions
 {
     public static class ContainerRegistrarExtensions
     {

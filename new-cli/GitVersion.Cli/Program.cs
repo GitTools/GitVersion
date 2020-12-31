@@ -2,14 +2,13 @@
 using System.Linq;
 using System.Threading.Tasks;
 using GitVersion.Calculation;
-using GitVersion.Cli.Extensions;
-using GitVersion.Cli.Infrastructure;
 using GitVersion.Configuration;
+using GitVersion.Extensions;
 using GitVersion.Infrastructure;
 using GitVersion.Normalization;
 using GitVersion.Output;
 
-namespace GitVersion.Cli
+namespace GitVersion
 {
     internal static class Program
     {

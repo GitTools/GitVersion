@@ -1,6 +1,6 @@
 ﻿using GitVersion.Infrastructure;
 
-namespace GitVersion.Cli
+namespace GitVersion
 {
     public class CliModule : IGitVersionModule
     {

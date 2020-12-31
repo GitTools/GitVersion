@@ -3,13 +3,11 @@ using System.CommandLine;
 using System.CommandLine.Parsing;
 using System.IO;
 using GitVersion.Command;
-using GitVersion.Infrastructure;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Serilog;
-using ILogger = GitVersion.Infrastructure.ILogger;
 
-namespace GitVersion.Cli.Infrastructure
+namespace GitVersion.Infrastructure
 {
     public class ContainerRegistrar : IContainerRegistrar
     {

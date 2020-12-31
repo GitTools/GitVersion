@@ -1,6 +1,6 @@
 using System;
 
-namespace GitVersion.Cli.Infrastructure
+namespace GitVersion.Infrastructure
 {
     public class Command : System.CommandLine.Command
     {

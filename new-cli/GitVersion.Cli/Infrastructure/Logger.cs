@@ -1,12 +1,12 @@
 ﻿using Microsoft.Extensions.Logging;
 
-namespace GitVersion.Cli.Infrastructure
+namespace GitVersion.Infrastructure
 {
     public class Logger : GitVersion.Infrastructure.ILogger
     {
-        private readonly ILogger logger;
+        private readonly Microsoft.Extensions.Logging.ILogger logger;
 
-        public Logger(ILogger logger)
+        public Logger(Microsoft.Extensions.Logging.ILogger logger)
         {
             this.logger = logger;
         }

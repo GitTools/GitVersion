@@ -7,11 +7,11 @@ using System.CommandLine.Parsing;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using GitVersion.Cli.Extensions;
 using GitVersion.Command;
+using GitVersion.Extensions;
 using ICommandHandler = GitVersion.Command.ICommandHandler;
 
-namespace GitVersion.Cli
+namespace GitVersion
 {
     internal class GitVersionApp
     {

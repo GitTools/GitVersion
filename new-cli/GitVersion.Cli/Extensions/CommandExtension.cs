@@ -3,7 +3,7 @@ using System.CommandLine;
 using System.Reflection;
 using GitVersion.Command;
 
-namespace GitVersion.Cli.Extensions
+namespace GitVersion.Extensions
 {
     public static class CommandExtension
     {
