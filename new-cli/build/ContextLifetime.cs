@@ -1,12 +1,11 @@
 ﻿using System;
-using Build;
 using Cake.Common;
 using Cake.Common.Build;
 using Cake.Common.Diagnostics;
 using Cake.Core;
 using Cake.Frosting;
 
-public class Lifetime : FrostingLifetime<Context>
+public class ContextLifetime : FrostingLifetime<Context>
 {
     public override void Setup(Context context)
     {
@@ -14,8 +13,9 @@ public class Lifetime : FrostingLifetime<Context>
         context.Configuration = context.Argument("configuration", "Release");
         context.FormatCode = context.Argument("formatCode", false);
 
-        context.Artifacts = "./packaging/";
-        context.CodeCoverage = "./coverage-results/";
+        context.Artifacts = "../artifacts/";
+        context.Packages = context.Artifacts.Combine("packages");
+        context.CodeCoverage = context.Artifacts.Combine("coverage-results");
 
         // Build system information.
         var buildSystem = context.BuildSystem();
@@ -66,10 +66,11 @@ public class Lifetime : FrostingLifetime<Context>
         context.Information("Version suffix: {0}", context.Version.Suffix);*/
         context.Information("Configuration:  {0}", context.Configuration);
         context.Information("Target:         {0}", context.Target);
+        context.Information("IsLocalBuild:   {0}", context.IsLocalBuild);
         context.Information("AzurePipelines: {0}", context.AzurePipelines);
+        context.Information("GitHub Actions: {0}", context.GitHubActions);
         context.Information("Repository:     {0}", context.RepositoryName);
         context.Information("Branch:         {0}", context.BranchName);
-        context.Information("GitHub Actions: {0}", context.GitHubActions);
     }
 
     public override void Teardown(Context context, ITeardownContext info)

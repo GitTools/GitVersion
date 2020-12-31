@@ -2,7 +2,7 @@ using Cake.Frosting;
 
 return new CakeHost()
     .UseContext<Context>()
-    .UseLifetime<Lifetime>()
+    .UseLifetime<ContextLifetime>()
     .UseTaskLifetime<TaskLifetime>()
     .UseWorkingDirectory("../src")
     .Run(args);
