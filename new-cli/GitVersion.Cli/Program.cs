@@ -17,7 +17,7 @@ namespace GitVersion
             // TODO: load the list of assemblies from the app working directory, later we might load from nuget
             var assemblies = new[]
             {
-                typeof(CoreModule).Assembly,
+                typeof(CommonModule).Assembly,
                 typeof(NormalizeModule).Assembly,
                 typeof(CalculateModule).Assembly,
                 typeof(ConfigModule).Assembly,

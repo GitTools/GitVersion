@@ -2,7 +2,7 @@
 
 namespace GitVersion
 {
-    public class CoreModule : IGitVersionModule
+    public class CommonModule : IGitVersionModule
     {
         public void RegisterTypes(IContainerRegistrar services)
         {
