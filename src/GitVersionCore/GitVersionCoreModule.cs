@@ -11,7 +11,6 @@ using GitVersion.VersionConverters.AssemblyInfo;
 using GitVersion.VersionConverters.GitVersionInfo;
 using GitVersion.VersionConverters.OutputGenerator;
 using GitVersion.VersionConverters.WixUpdater;
-using LibGit2Sharp;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
@@ -24,7 +23,7 @@ namespace GitVersion
             services.AddSingleton<ILog, Log>();
             services.AddSingleton<IFileSystem, FileSystem>();
             services.AddSingleton<IEnvironment, Environment>();
-            services.AddSingleton<IRepository, GitRepository>();
+            services.AddSingleton<IGitRepository, GitRepository>();
 
             services.AddSingleton<IConsole, ConsoleAdapter>();
             services.AddSingleton<IGitVersionCache, GitVersionCache>();

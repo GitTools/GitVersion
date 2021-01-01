@@ -1,6 +1,5 @@
 using System;
 using GitTools.Testing;
-using GitVersion.Extensions;
 using GitVersionCore.Tests.Helpers;
 using NUnit.Framework;
 using Shouldly;

@@ -9,7 +9,7 @@ namespace GitVersion.Extensions
 {
     public static class RepositoryExtensions
     {
-        public static string GetRepositoryDirectory(this IRepository repository, bool omitGitPostFix = true)
+        public static string GetRepositoryDirectory(this IGitRepository repository, bool omitGitPostFix = true)
         {
             var gitDirectory = repository.Info.Path;
 
@@ -24,12 +24,12 @@ namespace GitVersion.Extensions
             return gitDirectory;
         }
 
-        public static Branch FindBranch(this IRepository repository, string branchName)
+        public static Branch FindBranch(this IGitRepository repository, string branchName)
         {
             return repository.Branches.FirstOrDefault(x => x.NameWithoutRemote() == branchName);
         }
 
-        public static void DumpGraph(this IRepository repository, Action<string> writer = null, int? maxCommits = null)
+        public static void DumpGraph(this IGitRepository repository, Action<string> writer = null, int? maxCommits = null)
         {
             LibGitExtensions.DumpGraph(repository.Info.Path, writer, maxCommits);
         }
@@ -85,7 +85,7 @@ namespace GitVersion.Extensions
             repo.Commands.Checkout(localCanonicalName);
         }
 
-        public static void AddMissingRefSpecs(this IRepository repo, ILog log, Remote remote)
+        public static void AddMissingRefSpecs(this IGitRepository repo, ILog log, Remote remote)
         {
             if (remote.FetchRefSpecs.Any(r => r.Source == "refs/heads/*"))
                 return;
@@ -153,7 +153,7 @@ namespace GitVersion.Extensions
             repo.Commands.Checkout(fakeBranchName);
         }
 
-        public static void CreateOrUpdateLocalBranchesFromRemoteTrackingOnes(this IRepository repo, ILog log, string remoteName)
+        public static void CreateOrUpdateLocalBranchesFromRemoteTrackingOnes(this IGitRepository repo, ILog log, string remoteName)
         {
             var prefix = $"refs/remotes/{remoteName}/";
             var remoteHeadCanonicalName = $"{prefix}HEAD";
@@ -193,7 +193,7 @@ namespace GitVersion.Extensions
             }
         }
 
-        public static Remote EnsureOnlyOneRemoteIsDefined(this IRepository repo, ILog log)
+        public static Remote EnsureOnlyOneRemoteIsDefined(this IGitRepository repo, ILog log)
         {
             var remotes = repo.Network.Remotes;
             var howMany = remotes.Count();
@@ -209,7 +209,7 @@ namespace GitVersion.Extensions
             throw new WarningException(message);
         }
 
-        private static IEnumerable<DirectReference> GetRemoteTipsUsingUsernamePasswordCredentials(this IRepository repository, Remote remote, string username, string password)
+        private static IEnumerable<DirectReference> GetRemoteTipsUsingUsernamePasswordCredentials(this IGitRepository repository, Remote remote, string username, string password)
         {
             return repository.Network.ListReferences(remote, (url, fromUrl, types) => new UsernamePasswordCredentials
             {
@@ -218,7 +218,7 @@ namespace GitVersion.Extensions
             }).Select(r => r.ResolveToDirectReference());
         }
 
-        private static IEnumerable<DirectReference> GetRemoteTipsForAnonymousUser(this IRepository repository, Remote remote)
+        private static IEnumerable<DirectReference> GetRemoteTipsForAnonymousUser(this IGitRepository repository, Remote remote)
         {
             return repository.Network.ListReferences(remote).Select(r => r.ResolveToDirectReference());
         }

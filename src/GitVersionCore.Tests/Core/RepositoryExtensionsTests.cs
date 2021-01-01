@@ -33,9 +33,9 @@ namespace GitVersionCore.Tests
 
         private Remote MockRemote(IGitRepository repository)
         {
-            var branches = new TestableBranchCollection(repository);
+            var branches = new TestableBranchCollection();
             var tipId = new ObjectId("c6d8764d20ff16c0df14c73680e52b255b608926");
-            var tip = new TestableCommit(repository, tipId);
+            var tip = new TestableCommit(tipId);
             var head = branches.Add("refs/heads/feature/feat-test", tip);
             var remote = new TesatbleRemote("origin");
             var references = new TestableReferenceCollection();
@@ -49,12 +49,6 @@ namespace GitVersionCore.Tests
 
         private class TestableBranchCollection : BranchCollection
         {
-            private readonly IRepository repository;
-            public TestableBranchCollection(IRepository repository)
-            {
-                this.repository = repository;
-            }
-
             IDictionary<string, Branch> branches = new Dictionary<string, Branch>();
 
             public override Branch this[string name] =>
@@ -72,7 +66,7 @@ namespace GitVersionCore.Tests
             public override Branch Add(string name, string committish)
             {
                 var id = new ObjectId(committish);
-                var commit = new TestableCommit(this.repository, id);
+                var commit = new TestableCommit(id);
                 return Add(name, commit);
             }
 
@@ -127,19 +121,16 @@ namespace GitVersionCore.Tests
             public override Commit Tip => this.tip;
         }
 
-        private class TestableCommit : Commit, IBelongToARepository
+        private class TestableCommit : Commit
         {
-            private IRepository repository;
             private ObjectId id;
 
-            public TestableCommit(IRepository repository, ObjectId id)
+            public TestableCommit(ObjectId id)
             {
-                this.repository = repository;
                 this.id = id;
             }
 
             public override ObjectId Id => this.id;
-            public IRepository Repository => this.repository;
         }
 
         private class TesatbleRemote : Remote

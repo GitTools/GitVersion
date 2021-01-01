@@ -3,7 +3,6 @@ using GitVersion;
 using GitVersion.Configuration;
 using GitVersion.Extensions;
 using GitVersion.Model.Configuration;
-using LibGit2Sharp;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
@@ -25,7 +24,7 @@ namespace GitVersionCore.Tests.Helpers
             return services.BuildServiceProvider();
         }
 
-        protected static IServiceProvider BuildServiceProvider(string workingDirectory, IRepository repository, string branch, Config config = null)
+        protected static IServiceProvider BuildServiceProvider(string workingDirectory, IGitRepository repository, string branch, Config config = null)
         {
             config ??= new ConfigurationBuilder().Build();
             var options = Options.Create(new GitVersionOptions

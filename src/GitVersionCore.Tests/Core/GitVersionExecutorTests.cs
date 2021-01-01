@@ -255,7 +255,7 @@ namespace GitVersionCore.Tests
             var gitVersionOptions = new GitVersionOptions { WorkingDirectory = fixture.RepositoryPath };
 
             fixture.Repository.MakeACommit();
-            var gitVersionCalculator = GetGitVersionCalculator(gitVersionOptions, log, fixture.Repository);
+            var gitVersionCalculator = GetGitVersionCalculator(gitVersionOptions, log, new GitRepository(fixture.Repository));
 
             gitVersionCalculator.CalculateVersionVariables();
 
@@ -299,7 +299,7 @@ namespace GitVersionCore.Tests
         CommitsSinceVersionSource: 19
         CommitsSinceVersionSourcePadded: 0019
         CommitDate: 2015-11-10
-        UncommittedChanges: 0 
+        UncommittedChanges: 0
         ";
 
             using var fixture = new EmptyRepositoryFixture();
@@ -483,7 +483,7 @@ namespace GitVersionCore.Tests
                 }
             };
 
-            var gitVersionCalculator = GetGitVersionCalculator(gitVersionOptions, repository: fixture.Repository);
+            var gitVersionCalculator = GetGitVersionCalculator(gitVersionOptions, repository: new GitRepository(fixture.Repository));
             gitPreparer.Prepare();
             gitVersionCalculator.CalculateVersionVariables();
         }
@@ -566,7 +566,7 @@ namespace GitVersionCore.Tests
             version.Sha.ShouldBe(commits.First().Sha);
         }
 
-        private IGitVersionCalculateTool GetGitVersionCalculator(GitVersionOptions gitVersionOptions, ILog logger = null, IRepository repository = null, IFileSystem fs = null)
+        private IGitVersionCalculateTool GetGitVersionCalculator(GitVersionOptions gitVersionOptions, ILog logger = null, IGitRepository repository = null, IFileSystem fs = null)
         {
             sp = GetServiceProvider(gitVersionOptions, logger, repository, fs);
 
@@ -578,7 +578,7 @@ namespace GitVersionCore.Tests
             return sp.GetService<IGitVersionCalculateTool>();
         }
 
-        private static IServiceProvider GetServiceProvider(GitVersionOptions gitVersionOptions, ILog log = null, IRepository repository = null, IFileSystem fileSystem = null, IEnvironment environment = null)
+        private static IServiceProvider GetServiceProvider(GitVersionOptions gitVersionOptions, ILog log = null, IGitRepository repository = null, IFileSystem fileSystem = null, IEnvironment environment = null)
         {
             return ConfigureServices(services =>
             {

@@ -1,11 +1,12 @@
 using System;
 using System.Collections.Generic;
+using GitVersion;
 using LibGit2Sharp;
 using Index = LibGit2Sharp.Index;
 
 namespace GitVersionCore.Tests.Mocks
 {
-    public class MockRepository : IRepository
+    public class MockRepository : IGitRepository
     {
         private IQueryableCommitLog commits;
 
@@ -221,5 +222,6 @@ namespace GitVersionCore.Tests.Mocks
         public Network Network { get; set; }
 
         public StashCollection Stashes => throw new NotImplementedException();
+        public IGitRepositoryCommands Commands { get; }
     }
 }

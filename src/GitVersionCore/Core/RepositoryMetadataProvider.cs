@@ -20,9 +20,9 @@ namespace GitVersion
         private const string MissingTipFormat = "{0} has no tip. Please see http://example.com/docs for information on how to fix this.";
 
         private readonly ILog log;
-        private readonly IRepository repository;
+        private readonly IGitRepository repository;
 
-        public RepositoryMetadataProvider(ILog log, IRepository repository)
+        public RepositoryMetadataProvider(ILog log, IGitRepository repository)
         {
             this.log = log ?? throw new ArgumentNullException(nameof(log));
             this.repository = repository ?? throw new ArgumentNullException(nameof(log));
