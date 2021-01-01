@@ -1,6 +1,7 @@
 using System;
 using GitVersion;
 using LibGit2Sharp;
+using Branch = GitVersion.Branch;
 using BranchCollection = GitVersion.BranchCollection;
 using ReferenceCollection = GitVersion.ReferenceCollection;
 using TagCollection = GitVersion.TagCollection;

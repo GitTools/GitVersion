@@ -422,7 +422,7 @@ namespace GitVersion
         {
             var filter = new CommitFilter
             {
-                IncludeReachableFrom = branch,
+                IncludeReachableFrom = (LibGit2Sharp.Branch)branch,
                 ExcludeReachableFrom = baseVersionSource,
                 FirstParentOnly = true,
             };
@@ -457,7 +457,7 @@ namespace GitVersion
         {
             var commits = repository.Commits.QueryBy(new CommitFilter
             {
-                IncludeReachableFrom = branch
+                IncludeReachableFrom = (LibGit2Sharp.Branch)branch
             }).Where(c => c.Sha == commit.Sha);
             return commits;
         }

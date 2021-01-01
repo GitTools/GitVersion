@@ -5,6 +5,30 @@ using LibGit2Sharp;
 
 namespace GitVersion
 {
+    public class Branch
+    {
+        private readonly LibGit2Sharp.Branch innerBranch;
+
+        private Branch(LibGit2Sharp.Branch branch)
+        {
+            innerBranch = branch;
+        }
+
+        protected Branch()
+        {
+        }
+
+        public static implicit operator LibGit2Sharp.Branch(Branch d) => d.innerBranch;
+        public static explicit operator Branch(LibGit2Sharp.Branch b) => b is null ? null : new Branch(b);
+
+        public virtual string CanonicalName => innerBranch.CanonicalName;
+        public virtual string FriendlyName => innerBranch.FriendlyName;
+        public virtual Commit Tip => innerBranch.Tip;
+        public virtual bool IsRemote => innerBranch.IsRemote;
+        public virtual ICommitLog Commits => innerBranch.Commits;
+        public virtual bool IsTracking => innerBranch.IsTracking;
+    }
+
     public class BranchCollection : IEnumerable<Branch>
     {
         private readonly LibGit2Sharp.BranchCollection innerBranchCollection;
@@ -15,20 +39,22 @@ namespace GitVersion
         }
 
         public static implicit operator LibGit2Sharp.BranchCollection(BranchCollection d) => d.innerBranchCollection;
-        public static explicit operator BranchCollection(LibGit2Sharp.BranchCollection b) => new BranchCollection(b);
+        public static explicit operator BranchCollection(LibGit2Sharp.BranchCollection b) => b is null ? null : new BranchCollection(b);
 
         public virtual IEnumerator<Branch> GetEnumerator()
         {
             foreach (var branch in innerBranchCollection)
-                yield return branch;
+                yield return (Branch)branch;
         }
 
         public virtual Branch Add(string name, Commit commit)
         {
-            return innerBranchCollection.Add(name, commit);
+            return (Branch)innerBranchCollection.Add(name, commit);
         }
+
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
-        public virtual Branch this[string friendlyName] => innerBranchCollection[friendlyName];
+        public virtual Branch this[string friendlyName] => (Branch)innerBranchCollection[friendlyName];
+
         public void Update(Branch branch, params Action<BranchUpdater>[] actions)
         {
             innerBranchCollection.Update(branch, actions);
@@ -45,13 +71,14 @@ namespace GitVersion
         }
 
         public static implicit operator LibGit2Sharp.TagCollection(TagCollection d) => d.innerTagCollection;
-        public static explicit operator TagCollection(LibGit2Sharp.TagCollection b) => new TagCollection(b);
+        public static explicit operator TagCollection(LibGit2Sharp.TagCollection b) => b is null ? null : new TagCollection(b);
 
         public virtual IEnumerator<Tag> GetEnumerator()
         {
             foreach (var branch in innerTagCollection)
                 yield return branch;
         }
+
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
         public virtual Tag this[string name] => innerTagCollection[name];
     }
@@ -66,7 +93,7 @@ namespace GitVersion
         }
 
         public static implicit operator LibGit2Sharp.ReferenceCollection(ReferenceCollection d) => d.innerReferenceCollection;
-        public static explicit operator ReferenceCollection(LibGit2Sharp.ReferenceCollection b) => new ReferenceCollection(b);
+        public static explicit operator ReferenceCollection(LibGit2Sharp.ReferenceCollection b) => b is null ? null : new ReferenceCollection(b);
 
         public IEnumerator<Reference> GetEnumerator()
         {
@@ -98,6 +125,7 @@ namespace GitVersion
         {
             return innerReferenceCollection.Log(canonicalName);
         }
+
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
         public virtual Reference this[string name] => innerReferenceCollection[name];
         public virtual Reference Head => this["HEAD"];

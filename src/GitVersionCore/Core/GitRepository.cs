@@ -34,7 +34,7 @@ namespace GitVersion
 
         public RepositoryStatus RetrieveStatus() => repositoryInstance.RetrieveStatus();
 
-        public Branch Head => repositoryInstance.Head;
+        public Branch Head => (Branch)repositoryInstance.Head;
 
         public ReferenceCollection Refs => (ReferenceCollection)repositoryInstance.Refs;
 

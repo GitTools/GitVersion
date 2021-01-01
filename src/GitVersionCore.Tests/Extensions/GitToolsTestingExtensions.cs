@@ -14,6 +14,7 @@ using LibGit2Sharp;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Shouldly;
+using Branch = GitVersion.Branch;
 
 namespace GitVersionCore.Tests
 {
