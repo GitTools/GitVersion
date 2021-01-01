@@ -34,4 +34,56 @@ namespace GitVersion
             innerBranchCollection.Update(branch, actions);
         }
     }
+
+    public class ReferenceCollection : IEnumerable<Reference>
+    {
+        private readonly LibGit2Sharp.ReferenceCollection innerReferenceCollection;
+        private ReferenceCollection(LibGit2Sharp.ReferenceCollection branchCollection) => innerReferenceCollection = branchCollection;
+
+        protected ReferenceCollection()
+        {
+        }
+
+        public static implicit operator LibGit2Sharp.ReferenceCollection(ReferenceCollection d) => d.innerReferenceCollection;
+        public static explicit operator ReferenceCollection(LibGit2Sharp.ReferenceCollection b) => new ReferenceCollection(b);
+
+        public IEnumerator<Reference> GetEnumerator()
+        {
+            foreach (var reference in innerReferenceCollection)
+                yield return reference;
+        }
+
+        public virtual Reference Add(string name, string canonicalRefNameOrObjectish)
+        {
+            return innerReferenceCollection.Add(name, canonicalRefNameOrObjectish);
+        }
+
+        public virtual DirectReference Add(string name, ObjectId targetId)
+        {
+            return innerReferenceCollection.Add(name, targetId);
+        }
+
+        public virtual DirectReference Add(string name, ObjectId targetId, bool allowOverwrite)
+        {
+            return innerReferenceCollection.Add(name, targetId, allowOverwrite);
+        }
+
+        public virtual Reference UpdateTarget(Reference directRef, ObjectId targetId)
+        {
+            return innerReferenceCollection.UpdateTarget(directRef, targetId);
+        }
+
+        public virtual ReflogCollection Log(string canonicalName)
+        {
+            return innerReferenceCollection.Log(canonicalName);
+        }
+        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+        public virtual Reference this[string name] => innerReferenceCollection[name];
+        public virtual Reference Head => this["HEAD"];
+
+        public virtual IEnumerable<Reference> FromGlob(string pattern)
+        {
+            return innerReferenceCollection.FromGlob(pattern);
+        }
+    }
 }
