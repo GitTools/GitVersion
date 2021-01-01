@@ -10,7 +10,7 @@ namespace GitVersionCore.Tests.Mocks
 {
     public class MockRepository : IGitRepository
     {
-        private IQueryableCommitLog commits;
+        private CommitCollection commits;
 
         public MockRepository()
         {
@@ -26,9 +26,9 @@ namespace GitVersionCore.Tests.Mocks
         public Branch Head { get; set; }
         public ReferenceCollection Refs { get; set; }
 
-        public IQueryableCommitLog Commits
+        public CommitCollection Commits
         {
-            get => commits ?? new MockQueryableCommitLog(Head.Commits);
+            get => commits ?? Head.Commits;
             set => commits = value;
         }
 

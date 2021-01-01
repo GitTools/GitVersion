@@ -69,6 +69,7 @@ namespace GitVersion.VersionCalculation
                     // This will increment for any direct commits on mainline
                     mainlineVersion = IncrementForEachCommit(directCommits, mainlineVersion, mainline);
                 }
+
                 mainlineVersion.BuildMetaData = CreateVersionBuildMetaData(mergeBase);
 
                 // branches other than master always get a bump for the act of branching
@@ -100,7 +101,6 @@ namespace GitVersion.VersionCalculation
                 context.CurrentCommit.When(),
                 context.NumberOfUncommittedChanges);
         }
-
 
 
         private SemanticVersion AggregateMergeCommitIncrement(Commit commit, List<Commit> directCommits, SemanticVersion mainlineVersion, Branch mainline)
@@ -230,13 +230,12 @@ namespace GitVersion.VersionCalculation
         {
             foreach (var directCommit in directCommits)
             {
-                var directCommitIncrement = IncrementStrategyFinder.GetIncrementForCommits(context, new[]
-                                            {
-                                                directCommit
-                                            }) ?? IncrementStrategyFinder.FindDefaultIncrementForBranch(context, mainline.FriendlyName);
+                var directCommitIncrement = IncrementStrategyFinder.GetIncrementForCommits(context, new[] { directCommit })
+                                            ?? FindDefaultIncrementForBranch(context, mainline.FriendlyName);
                 mainlineVersion = mainlineVersion.IncrementVersion(directCommitIncrement);
                 log.Info($"Direct commit on master {directCommit.Sha} incremented base versions {directCommitIncrement}, now {mainlineVersion}");
             }
+
             return mainlineVersion;
         }
 
@@ -245,7 +244,7 @@ namespace GitVersion.VersionCalculation
             var commits = repositoryMetadataProvider.GetMergeBaseCommits(mergeCommit, mergedHead, findMergeBase);
             commitLog.RemoveAll(c => commits.Any(c1 => c1.Sha == c.Sha));
             return IncrementStrategyFinder.GetIncrementForCommits(context, commits)
-                ?? TryFindIncrementFromMergeMessage(mergeCommit);
+                   ?? TryFindIncrementFromMergeMessage(mergeCommit);
         }
 
         private VersionField TryFindIncrementFromMergeMessage(Commit mergeCommit)
@@ -264,7 +263,19 @@ namespace GitVersion.VersionCalculation
             }
 
             // Fallback to config increment value
-            return IncrementStrategyFinder.FindDefaultIncrementForBranch(context);
+            return FindDefaultIncrementForBranch(context);
+        }
+
+        private static VersionField FindDefaultIncrementForBranch(GitVersionContext context, string branch = null)
+        {
+            var config = context.FullConfiguration.GetConfigForBranch(branch ?? context.CurrentBranch.NameWithoutRemote());
+            if (config?.Increment != null && config.Increment != IncrementStrategy.Inherit)
+            {
+                return config.Increment.Value.ToVersionField();
+            }
+
+            // Fallback to patch
+            return VersionField.Patch;
         }
 
         private static Commit GetMergedHead(Commit mergeCommit)

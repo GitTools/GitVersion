@@ -25,7 +25,7 @@ namespace GitVersion
         public virtual string FriendlyName => innerBranch.FriendlyName;
         public virtual Commit Tip => innerBranch.Tip;
         public virtual bool IsRemote => innerBranch.IsRemote;
-        public virtual ICommitLog Commits => innerBranch.Commits;
+        public virtual CommitCollection Commits => CommitCollection.FromCommitLog(innerBranch.Commits);
         public virtual bool IsTracking => innerBranch.IsTracking;
     }
 
@@ -133,6 +133,34 @@ namespace GitVersion
         public virtual IEnumerable<Reference> FromGlob(string pattern)
         {
             return innerReferenceCollection.FromGlob(pattern);
+        }
+    }
+
+    public class CommitCollection : IEnumerable<Commit>
+    {
+        private readonly ICommitLog innerCommitCollection;
+        private CommitCollection(ICommitLog branchCollection) => innerCommitCollection = branchCollection;
+
+        protected CommitCollection()
+        {
+        }
+
+        public static ICommitLog ToCommitLog(CommitCollection d) => d.innerCommitCollection;
+
+        public static CommitCollection FromCommitLog(ICommitLog b) => b is null ? null : new CommitCollection(b);
+
+        public virtual IEnumerator<Commit> GetEnumerator()
+        {
+            foreach (var branch in innerCommitCollection)
+                yield return branch;
+        }
+
+        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+
+        public virtual CommitCollection QueryBy(CommitFilter commitFilter)
+        {
+            var commitLog = ((IQueryableCommitLog) innerCommitCollection).QueryBy(commitFilter);
+            return FromCommitLog(commitLog);
         }
     }
 }

@@ -38,7 +38,7 @@ namespace GitVersion
 
         public ReferenceCollection Refs => (ReferenceCollection)repositoryInstance.Refs;
 
-        public IQueryableCommitLog Commits => repositoryInstance.Commits;
+        public CommitCollection Commits => CommitCollection.FromCommitLog(repositoryInstance.Commits);
 
         public BranchCollection Branches => (BranchCollection)repositoryInstance.Branches;
 

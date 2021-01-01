@@ -406,7 +406,7 @@ namespace GitVersion
         }
 
 
-        public ICommitLog GetCommitLog(Commit baseVersionSource, Commit currentCommit)
+        public CommitCollection GetCommitLog(Commit baseVersionSource, Commit currentCommit)
         {
             var filter = new CommitFilter
             {
@@ -415,7 +415,8 @@ namespace GitVersion
                 SortBy = CommitSortStrategies.Topological | CommitSortStrategies.Time
             };
 
-            return repository.Commits.QueryBy(filter);
+            var commits = repository.Commits;
+            return commits.QueryBy(filter);
         }
 
         public bool GetMatchingCommitBranch(Commit baseVersionSource, Branch branch, Commit firstMatchingCommit)

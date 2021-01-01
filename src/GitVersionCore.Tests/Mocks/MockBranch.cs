@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using GitVersion;
 using LibGit2Sharp;
 using Branch = GitVersion.Branch;
 
@@ -24,10 +25,10 @@ namespace GitVersionCore.Tests.Mocks
 
         }
 
-        private readonly MockCommitLog commits = new MockCommitLog();
+        private readonly MockCommitCollection commits = new MockCommitCollection();
         private readonly string friendlyName;
         public override string FriendlyName => friendlyName;
-        public override ICommitLog Commits => commits;
+        public override CommitCollection Commits => commits;
         public override Commit Tip => commits.First();
         public override bool IsTracking => true;
         public override bool IsRemote => false;

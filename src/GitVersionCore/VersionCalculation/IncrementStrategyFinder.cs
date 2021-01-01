@@ -2,8 +2,6 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
-using GitVersion.Configuration;
-using GitVersion.Extensions;
 using GitVersion.VersionCalculation;
 using LibGit2Sharp;
 
@@ -57,17 +55,7 @@ namespace GitVersion
 
             return commitMessageIncrement;
         }
-        public static VersionField FindDefaultIncrementForBranch(GitVersionContext context, string branch = null)
-        {
-            var config = context.FullConfiguration.GetConfigForBranch(branch ?? context.CurrentBranch.NameWithoutRemote());
-            if (config?.Increment != null && config.Increment != IncrementStrategy.Inherit)
-            {
-                return config.Increment.Value.ToVersionField();
-            }
 
-            // Fallback to patch
-            return VersionField.Patch;
-        }
         public static VersionField? GetIncrementForCommits(GitVersionContext context, IEnumerable<Commit> commits)
         {
             var majorRegex = TryGetRegexOrDefault(context.Configuration.MajorVersionBumpMessage, DefaultMajorPatternRegex);
