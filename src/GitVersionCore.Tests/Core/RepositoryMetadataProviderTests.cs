@@ -36,7 +36,8 @@ namespace GitVersionCore.Tests
             using var fixture = new EmptyRepositoryFixture();
             fixture.MakeACommit("initial");
             fixture.BranchTo("develop");
-            var expectedReleaseMergeBase = fixture.Repository.Head.Tip;
+            var fixtureRepository = new GitRepository(fixture.Repository);
+            var expectedReleaseMergeBase = fixtureRepository.Head.Tip;
 
             // Create release from develop
             fixture.BranchTo("release-2.0.0");
@@ -44,7 +45,7 @@ namespace GitVersionCore.Tests
             // Make some commits on release
             fixture.MakeACommit("release 1");
             fixture.MakeACommit("release 2");
-            var expectedDevelopMergeBase = fixture.Repository.Head.Tip;
+            var expectedDevelopMergeBase = fixtureRepository.Head.Tip;
 
             // First forward merge release to develop
             fixture.Checkout("develop");
@@ -60,16 +61,15 @@ namespace GitVersionCore.Tests
             // Checkout to release (no new commits)
             fixture.Checkout("release-2.0.0");
 
-            var develop = fixture.Repository.FindBranch("develop");
-            var release = fixture.Repository.FindBranch("release-2.0.0");
-            var repository = new GitRepository(() => fixture.RepositoryPath);
-            var gitRepoMetadataProvider = new RepositoryMetadataProvider(log, repository);
+            var develop = fixtureRepository.FindBranch("develop");
+            var release = fixtureRepository.FindBranch("release-2.0.0");
+            var gitRepoMetadataProvider = new RepositoryMetadataProvider(log, fixtureRepository);
 
             var releaseBranchMergeBase = gitRepoMetadataProvider.FindMergeBase(release, develop);
 
             var developMergeBase = gitRepoMetadataProvider.FindMergeBase(develop, release);
 
-            fixture.Repository.DumpGraph(Console.WriteLine);
+            fixtureRepository.DumpGraph(Console.WriteLine);
 
             releaseBranchMergeBase.ShouldBe(expectedReleaseMergeBase);
             developMergeBase.ShouldBe(expectedDevelopMergeBase);
@@ -90,7 +90,8 @@ namespace GitVersionCore.Tests
             using var fixture = new EmptyRepositoryFixture();
             fixture.MakeACommit("initial");
             fixture.BranchTo("develop");
-            var expectedReleaseMergeBase = fixture.Repository.Head.Tip;
+            var fixtureRepository = new GitRepository(fixture.Repository);
+            var expectedReleaseMergeBase = fixtureRepository.Head.Tip;
 
             // Create release from develop
             fixture.BranchTo("release-2.0.0");
@@ -98,7 +99,7 @@ namespace GitVersionCore.Tests
             // Make some commits on release
             fixture.MakeACommit("release 1");
             fixture.MakeACommit("release 2");
-            var expectedDevelopMergeBase = fixture.Repository.Head.Tip;
+            var expectedDevelopMergeBase = fixtureRepository.Head.Tip;
 
             // First forward merge release to develop
             fixture.Checkout("develop");
@@ -116,16 +117,15 @@ namespace GitVersionCore.Tests
             // Checkout to release (no new commits)
             fixture.Checkout("release-2.0.0");
 
-            var develop = fixture.Repository.FindBranch("develop");
-            var release = fixture.Repository.FindBranch("release-2.0.0");
-            var repository = new GitRepository(() => fixture.RepositoryPath);
-            var gitRepoMetadataProvider = new RepositoryMetadataProvider(log, repository);
+            var develop = fixtureRepository.FindBranch("develop");
+            var release = fixtureRepository.FindBranch("release-2.0.0");
+            var gitRepoMetadataProvider = new RepositoryMetadataProvider(log, fixtureRepository);
 
             var releaseBranchMergeBase = gitRepoMetadataProvider.FindMergeBase(release, develop);
 
             var developMergeBase = gitRepoMetadataProvider.FindMergeBase(develop, release);
 
-            fixture.Repository.DumpGraph(Console.WriteLine);
+            fixtureRepository.DumpGraph(Console.WriteLine);
 
             releaseBranchMergeBase.ShouldBe(expectedReleaseMergeBase);
             developMergeBase.ShouldBe(expectedDevelopMergeBase);
@@ -151,7 +151,8 @@ namespace GitVersionCore.Tests
             using var fixture = new EmptyRepositoryFixture();
             fixture.MakeACommit("initial");
             fixture.BranchTo("develop");
-            var expectedReleaseMergeBase = fixture.Repository.Head.Tip;
+            var fixtureRepository = new GitRepository(fixture.Repository);
+            var expectedReleaseMergeBase = fixtureRepository.Head.Tip;
 
             // Create release from develop
             fixture.BranchTo("release-2.0.0");
@@ -166,22 +167,22 @@ namespace GitVersionCore.Tests
 
             // Make some new commit on release
             fixture.Checkout("release-2.0.0");
-            fixture.Repository.MakeACommit("release 3 - after first merge");
+            fixture.MakeACommit("release 3 - after first merge");
 
             // Make new commit on develop
             fixture.Checkout("develop");
             // Checkout to release (no new commits)
             fixture.Checkout("release-2.0.0");
             fixture.Checkout("develop");
-            fixture.Repository.MakeACommit("develop after merge");
+            fixture.MakeACommit("develop after merge");
 
             // Checkout to release (no new commits)
             fixture.Checkout("release-2.0.0");
 
             // Make some new commit on release
-            fixture.Repository.MakeACommit("release 4");
-            fixture.Repository.MakeACommit("release 5");
-            var expectedDevelopMergeBase = fixture.Repository.Head.Tip;
+            fixture.MakeACommit("release 4");
+            fixture.MakeACommit("release 5");
+            var expectedDevelopMergeBase = fixtureRepository.Head.Tip;
 
             // Second merge release to develop
             fixture.Checkout("develop");
@@ -190,17 +191,16 @@ namespace GitVersionCore.Tests
             // Checkout to release (no new commits)
             fixture.Checkout("release-2.0.0");
 
-            var develop = fixture.Repository.FindBranch("develop");
-            var release = fixture.Repository.FindBranch("release-2.0.0");
+            var develop = fixtureRepository.FindBranch("develop");
+            var release = fixtureRepository.FindBranch("release-2.0.0");
 
-            var repository = new GitRepository(() => fixture.RepositoryPath);
-            var gitRepoMetadataProvider = new RepositoryMetadataProvider(log, repository);
+            var gitRepoMetadataProvider = new RepositoryMetadataProvider(log, fixtureRepository);
 
             var releaseBranchMergeBase = gitRepoMetadataProvider.FindMergeBase(release, develop);
 
             var developMergeBase = gitRepoMetadataProvider.FindMergeBase(develop, release);
 
-            fixture.Repository.DumpGraph(Console.WriteLine);
+            fixtureRepository.DumpGraph(Console.WriteLine);
 
             releaseBranchMergeBase.ShouldBe(expectedReleaseMergeBase);
             developMergeBase.ShouldBe(expectedDevelopMergeBase);

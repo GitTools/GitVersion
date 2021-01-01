@@ -18,6 +18,7 @@ namespace GitVersionCore.Tests.Mocks
         {
             throw new NotImplementedException();
         }
+
         public Branch Head { get; set; }
         public ReferenceCollection Refs { get; set; }
 
@@ -32,6 +33,7 @@ namespace GitVersionCore.Tests.Mocks
         public RepositoryInformation Info { get; set; }
         public Diff Diff { get; set; }
         public ObjectDatabase ObjectDatabase { get; set; }
+
         public Network Network { get; set; }
         public RepositoryStatus RetrieveStatus()
         {

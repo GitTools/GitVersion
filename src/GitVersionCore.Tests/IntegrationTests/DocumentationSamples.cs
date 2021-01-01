@@ -1,5 +1,6 @@
 using System;
 using GitTools.Testing;
+using GitVersion;
 using GitVersionCore.Tests.Helpers;
 using NUnit.Framework;
 using Shouldly;
@@ -401,7 +402,8 @@ namespace GitVersionCore.Tests.IntegrationTests
             fixture.ApplyTag("2.0.0");
             fixture.AssertFullSemver("2.0.0");
             fixture.MakeACommit();
-            fixture.Repository.DumpGraph();
+            var fixtureRepository = new GitRepository(fixture.Repository);
+            fixtureRepository.DumpGraph();
             fixture.AssertFullSemver("2.0.1+1");
         }
     }

@@ -9,8 +9,8 @@ namespace GitVersion
     /// </summary>
     public interface IGitRepositoryCommands
     {
-        Branch Checkout(string committishOrBranchSpec);
-        Branch Checkout(Branch branch);
+        void Checkout(string committishOrBranchSpec);
+        void Checkout(Branch branch);
         void Fetch(string remote, IEnumerable<string> refspecs, FetchOptions options, string logMessage);
     }
 }
