@@ -19,12 +19,12 @@ namespace GitVersionCore.Tests
 {
     public static class GitToolsTestingExtensions
     {
-        public static Branch FindBranch(this IRepository repository, string branchName)
+        public static Branch FindBranch(this IGitRepository repository, string branchName)
         {
             return repository.Branches.FirstOrDefault(x => x.NameWithoutRemote() == branchName);
         }
 
-        public static void DumpGraph(this IRepository repository, Action<string> writer = null, int? maxCommits = null)
+        public static void DumpGraph(this IGitRepository repository, Action<string> writer = null, int? maxCommits = null)
         {
             LibGitExtensions.DumpGraph(repository.Info.Path, writer, maxCommits);
         }
@@ -68,7 +68,7 @@ namespace GitVersionCore.Tests
             catch (Exception)
             {
                 Console.WriteLine("Test failing, dumping repository graph");
-                repository.DumpGraph();
+                new GitRepository(repository).DumpGraph();
                 throw;
             }
         }
@@ -95,7 +95,7 @@ namespace GitVersionCore.Tests
             }
             catch (Exception)
             {
-                (repository ?? fixture.Repository).DumpGraph();
+                new GitRepository(repository ?? fixture.Repository).DumpGraph();
                 throw;
             }
             if (commitId == null)

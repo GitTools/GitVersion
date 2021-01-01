@@ -4,7 +4,7 @@ using LibGit2Sharp;
 
 namespace GitVersionCore.Tests.Mocks
 {
-    public class MockBranchCollection : BranchCollection, ICollection<Branch>
+    public class MockBranchCollection : BranchCollection
     {
         public List<Branch> Branches = new List<Branch>();
 
@@ -41,10 +41,6 @@ namespace GitVersionCore.Tests.Mocks
         public override void Remove(Branch item)
         {
             Branches.Remove(item);
-        }
-        bool ICollection<Branch>.Remove(Branch item)
-        {
-            return Branches.Remove(item);
         }
 
         public int Count => Branches.Count;

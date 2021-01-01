@@ -83,7 +83,7 @@ namespace GitVersionCore.Tests
             return repository;
         }
 
-        private Remote MockRemote(IGitRepository repository)
+        private static Remote MockRemote(IGitRepository repository)
         {
             var branches = new TestableBranchCollection();
             var tipId = new ObjectId("c6d8764d20ff16c0df14c73680e52b255b608926");
@@ -104,57 +104,20 @@ namespace GitVersionCore.Tests
             IDictionary<string, Branch> branches = new Dictionary<string, Branch>();
 
             public override Branch this[string name] =>
-                this.branches.ContainsKey(name)
-                    ? this.branches[name]
+                branches.ContainsKey(name)
+                    ? branches[name]
                     : null;
 
             public override Branch Add(string name, Commit commit)
             {
                 var branch = new TestableBranch(name, commit);
-                this.branches.Add(name, branch);
+                branches.Add(name, branch);
                 return branch;
-            }
-
-            public override Branch Add(string name, string committish)
-            {
-                var id = new ObjectId(committish);
-                var commit = new TestableCommit(id);
-                return Add(name, commit);
-            }
-
-            public override Branch Add(string name, Commit commit, bool allowOverwrite)
-            {
-                return Add(name, commit);
-            }
-
-            public override Branch Add(string name, string committish, bool allowOverwrite)
-            {
-                return Add(name, committish);
             }
 
             public override IEnumerator<Branch> GetEnumerator()
             {
-                return this.branches.Values.GetEnumerator();
-            }
-
-            public override void Remove(string name)
-            {
-                this.branches.Remove(name);
-            }
-
-            public override void Remove(string name, bool isRemote)
-            {
-                this.branches.Remove(name);
-            }
-
-            public override void Remove(Branch branch)
-            {
-                this.branches.Remove(branch.CanonicalName);
-            }
-
-            public override Branch Update(Branch branch, params Action<BranchUpdater>[] actions)
-            {
-                return base.Update(branch, actions);
+                return branches.Values.GetEnumerator();
             }
         }
 
@@ -169,8 +132,8 @@ namespace GitVersionCore.Tests
                 this.canonicalName = canonicalName;
             }
 
-            public override string CanonicalName => this.canonicalName;
-            public override Commit Tip => this.tip;
+            public override string CanonicalName => canonicalName;
+            public override Commit Tip => tip;
         }
 
         private class TestableCommit : Commit
@@ -182,7 +145,7 @@ namespace GitVersionCore.Tests
                 this.id = id;
             }
 
-            public override ObjectId Id => this.id;
+            public override ObjectId Id => id;
         }
 
         private class TesatbleRemote : Remote
@@ -194,7 +157,7 @@ namespace GitVersionCore.Tests
                 this.name = name;
             }
 
-            public override string Name => this.name;
+            public override string Name => name;
         }
 
         private class TestableReferenceCollection : ReferenceCollection
@@ -208,15 +171,15 @@ namespace GitVersionCore.Tests
 
             public override Reference Add(string name, string canonicalRefNameOrObjectish)
             {
-                return this.reference = new TestableReference(canonicalRefNameOrObjectish);
+                return reference = new TestableReference(canonicalRefNameOrObjectish);
             }
 
             public override Reference UpdateTarget(Reference directRef, ObjectId targetId)
             {
-                return this.reference;
+                return reference;
             }
 
-            public override Reference this[string name] => this.reference;
+            public override Reference this[string name] => reference;
         }
 
         private class TestableReference : Reference
@@ -228,7 +191,7 @@ namespace GitVersionCore.Tests
                 this.canonicalName = canonicalName;
             }
 
-            public override string CanonicalName => this.canonicalName;
+            public override string CanonicalName => canonicalName;
 
             public override DirectReference ResolveToDirectReference()
             {

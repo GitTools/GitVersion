@@ -18,14 +18,14 @@ namespace GitVersion
             this.lazyRepository = lazyRepository ?? throw new ArgumentNullException(nameof(lazyRepository));
         }
 
-        public Branch Checkout(string committishOrBranchSpec)
+        public void Checkout(string committishOrBranchSpec)
         {
-            return Commands.Checkout(repository, committishOrBranchSpec);
+            Commands.Checkout(repository, committishOrBranchSpec);
         }
 
-        public Branch Checkout(Branch branch)
+        public void Checkout(Branch branch)
         {
-            return Commands.Checkout(repository, branch);
+            Commands.Checkout(repository, branch);
         }
 
         public void Fetch(string remote, IEnumerable<string> refspecs, FetchOptions options, string logMessage)
