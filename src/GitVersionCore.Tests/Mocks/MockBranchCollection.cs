@@ -23,23 +23,5 @@ namespace GitVersionCore.Tests.Mocks
         {
             Branches.Add(item);
         }
-
-        public void Clear()
-        {
-            Branches.Clear();
-        }
-
-        public bool Contains(Branch item)
-        {
-            return Branches.Contains(item);
-        }
-
-        public void CopyTo(Branch[] array, int arrayIndex)
-        {
-            Branches.CopyTo(array, arrayIndex);
-        }
-
-        public int Count => Branches.Count;
-        public bool IsReadOnly => false;
     }
 }

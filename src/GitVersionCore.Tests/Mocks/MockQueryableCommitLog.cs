@@ -36,16 +36,6 @@ namespace GitVersionCore.Tests.Mocks
             throw new NotImplementedException();
         }
 
-        public Commit FindMergeBase(Commit first, Commit second)
-        {
-            return null;
-        }
-
-        public Commit FindMergeBase(IEnumerable<Commit> commits, MergeBaseFindingStrategy strategy)
-        {
-            throw new NotImplementedException();
-        }
-
         public IEnumerable<LogEntry> QueryBy(string path, CommitFilter filter)
         {
             throw new NotImplementedException();
