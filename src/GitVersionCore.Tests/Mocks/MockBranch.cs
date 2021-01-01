@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using LibGit2Sharp;
+using Branch = GitVersion.Branch;
 
 namespace GitVersionCore.Tests.Mocks
 {
@@ -29,6 +30,7 @@ namespace GitVersionCore.Tests.Mocks
         public override ICommitLog Commits => commits;
         public override Commit Tip => commits.First();
         public override bool IsTracking => true;
+        public override bool IsRemote => false;
 
         public override string CanonicalName { get; }
 
