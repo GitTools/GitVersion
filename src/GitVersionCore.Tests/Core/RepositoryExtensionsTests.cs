@@ -76,7 +76,7 @@ namespace GitVersionCore.Tests
             EnsureLocalBranchExistsForCurrentBranch(repository, log, remote, "refs/heads/featurE/feat-test");
         }
 
-        private IGitRepository MockRepository()
+        private static IGitRepository MockRepository()
         {
             var repository = Substitute.For<IGitRepository>();
             var commands = Substitute.For<IGitRepositoryCommands>();

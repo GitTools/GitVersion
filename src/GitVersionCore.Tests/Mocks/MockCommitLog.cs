@@ -5,9 +5,9 @@ using LibGit2Sharp;
 
 namespace GitVersionCore.Tests.Mocks
 {
-    public class MockCommitLog : ICommitLog, ICollection<Commit>
+    public class MockCommitLog : ICommitLog
     {
-        public List<Commit> Commits = new List<Commit>();
+        private List<Commit> Commits = new List<Commit>();
 
         public IEnumerator<Commit> GetEnumerator()
         {
