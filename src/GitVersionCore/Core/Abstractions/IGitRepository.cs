@@ -7,8 +7,8 @@ namespace GitVersion
     {
         IGitRepositoryCommands Commands { get; }
         ObjectDatabase ObjectDatabase { get; }
-        IQueryableCommitLog Commits { get; }
         Branch Head { get; }
+        CommitCollection Commits { get; }
         BranchCollection Branches { get; }
         TagCollection Tags { get; }
         ReferenceCollection Refs { get; }

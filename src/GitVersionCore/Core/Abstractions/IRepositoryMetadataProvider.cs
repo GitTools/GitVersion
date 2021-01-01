@@ -39,7 +39,7 @@ namespace GitVersion.Common
         IEnumerable<SemanticVersion> GetVersionTagsOnBranch(Branch branch, string tagPrefixRegex);
         IEnumerable<Tuple<Tag, SemanticVersion>> GetValidVersionTags(string tagPrefixRegex, DateTimeOffset? olderThan = null);
 
-        ICommitLog GetCommitLog(Commit baseVersionSource, Commit currentCommit);
+        CommitCollection GetCommitLog(Commit baseVersionSource, Commit currentCommit);
         bool GetMatchingCommitBranch(Commit baseVersionSource, Branch branch, Commit firstMatchingCommit);
         string ShortenObjectId(GitObject commit);
         VersionField? DetermineIncrementedField(BaseVersion baseVersion, GitVersionContext context);

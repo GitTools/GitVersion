@@ -1,25 +1,20 @@
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using GitVersion;
 using LibGit2Sharp;
 
 namespace GitVersionCore.Tests.Mocks
 {
-    public class MockCommitLog : ICommitLog
+    public class MockCommitCollection : CommitCollection
     {
         private List<Commit> Commits = new List<Commit>();
 
-        public IEnumerator<Commit> GetEnumerator()
+        public override IEnumerator<Commit> GetEnumerator()
         {
             if (SortedBy == CommitSortStrategies.Reverse)
                 return Commits.GetEnumerator();
 
             return Enumerable.Reverse(Commits).GetEnumerator();
-        }
-
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
         }
 
         public CommitSortStrategies SortedBy { get; set; }
@@ -32,7 +27,6 @@ namespace GitVersionCore.Tests.Mocks
         {
             Commits.Clear();
         }
-
 
         public bool Contains(Commit item)
         {
@@ -52,5 +46,10 @@ namespace GitVersionCore.Tests.Mocks
         public int Count => Commits.Count;
 
         public bool IsReadOnly => false;
+
+        public override CommitCollection QueryBy(CommitFilter commitFilter)
+        {
+            return this;
+        }
     }
 }
