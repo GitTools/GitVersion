@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using LibGit2Sharp;
+using BranchCollection = GitVersion.BranchCollection;
 
 namespace GitVersionCore.Tests.Mocks
 {
@@ -36,11 +37,6 @@ namespace GitVersionCore.Tests.Mocks
         public void CopyTo(Branch[] array, int arrayIndex)
         {
             Branches.CopyTo(array, arrayIndex);
-        }
-
-        public override void Remove(Branch item)
-        {
-            Branches.Remove(item);
         }
 
         public int Count => Branches.Count;
