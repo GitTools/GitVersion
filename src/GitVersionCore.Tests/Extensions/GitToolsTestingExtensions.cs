@@ -31,10 +31,7 @@ namespace GitVersionCore.Tests
 
         public static VersionVariables GetVersion(this RepositoryFixtureBase fixture, Config configuration = null, IRepository repository = null, string commitId = null, bool onlyTrackedBranches = true, string branch = null)
         {
-            if (configuration == null)
-            {
-                configuration = new ConfigurationBuilder().Build();
-            }
+            configuration ??= new ConfigurationBuilder().Build();
 
             repository ??= fixture.Repository;
 
