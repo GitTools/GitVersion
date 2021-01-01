@@ -1,7 +1,6 @@
 using System;
 using GitTools.Testing;
 using GitVersion;
-using GitVersion.Extensions;
 using GitVersion.Logging;
 using GitVersionCore.Tests.Helpers;
 using GitVersionCore.Tests.IntegrationTests;
@@ -63,7 +62,8 @@ namespace GitVersionCore.Tests
 
             var develop = fixture.Repository.FindBranch("develop");
             var release = fixture.Repository.FindBranch("release-2.0.0");
-            var gitRepoMetadataProvider = new RepositoryMetadataProvider(log, fixture.Repository);
+            var repository = new GitRepository(() => fixture.RepositoryPath);
+            var gitRepoMetadataProvider = new RepositoryMetadataProvider(log, repository);
 
             var releaseBranchMergeBase = gitRepoMetadataProvider.FindMergeBase(release, develop);
 
@@ -118,7 +118,8 @@ namespace GitVersionCore.Tests
 
             var develop = fixture.Repository.FindBranch("develop");
             var release = fixture.Repository.FindBranch("release-2.0.0");
-            var gitRepoMetadataProvider = new RepositoryMetadataProvider(log, fixture.Repository);
+            var repository = new GitRepository(() => fixture.RepositoryPath);
+            var gitRepoMetadataProvider = new RepositoryMetadataProvider(log, repository);
 
             var releaseBranchMergeBase = gitRepoMetadataProvider.FindMergeBase(release, develop);
 
@@ -192,7 +193,8 @@ namespace GitVersionCore.Tests
             var develop = fixture.Repository.FindBranch("develop");
             var release = fixture.Repository.FindBranch("release-2.0.0");
 
-            var gitRepoMetadataProvider = new RepositoryMetadataProvider(log, fixture.Repository);
+            var repository = new GitRepository(() => fixture.RepositoryPath);
+            var gitRepoMetadataProvider = new RepositoryMetadataProvider(log, repository);
 
             var releaseBranchMergeBase = gitRepoMetadataProvider.FindMergeBase(release, develop);
 

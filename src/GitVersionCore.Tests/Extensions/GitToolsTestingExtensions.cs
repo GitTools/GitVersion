@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Linq;
 using GitTools.Testing;
 using GitVersion;
 using GitVersion.BuildAgents;
@@ -18,6 +19,16 @@ namespace GitVersionCore.Tests
 {
     public static class GitToolsTestingExtensions
     {
+        public static Branch FindBranch(this IRepository repository, string branchName)
+        {
+            return repository.Branches.FirstOrDefault(x => x.NameWithoutRemote() == branchName);
+        }
+
+        public static void DumpGraph(this IRepository repository, Action<string> writer = null, int? maxCommits = null)
+        {
+            LibGitExtensions.DumpGraph(repository.Info.Path, writer, maxCommits);
+        }
+
         public static VersionVariables GetVersion(this RepositoryFixtureBase fixture, Config configuration = null, IRepository repository = null, string commitId = null, bool onlyTrackedBranches = true, string branch = null)
         {
             if (configuration == null)

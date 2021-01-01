@@ -15,6 +15,12 @@ namespace GitVersion
         {
         }
 
+        public GitRepository(IRepository repository)
+        {
+            repositoryLazy = new Lazy<IRepository>(() => repository);
+            Commands = new GitRepositoryCommands(repositoryLazy);
+        }
+
         public GitRepository(Func<string> getGitRootDirectory)
         {
             repositoryLazy = new Lazy<IRepository>(() => new Repository(getGitRootDirectory()));

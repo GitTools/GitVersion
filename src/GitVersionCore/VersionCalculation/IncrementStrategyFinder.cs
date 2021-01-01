@@ -31,7 +31,7 @@ namespace GitVersion
         private static readonly Regex DefaultPatchPatternRegex = new Regex(DefaultPatchPattern, RegexOptions.Compiled | RegexOptions.IgnoreCase);
         private static readonly Regex DefaultNoBumpPatternRegex = new Regex(DefaultNoBumpPattern, RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
-        public static VersionField? DetermineIncrementedField(IRepository repository, GitVersionContext context, BaseVersion baseVersion)
+        public static VersionField? DetermineIncrementedField(IGitRepository repository, GitVersionContext context, BaseVersion baseVersion)
         {
             var commitMessageIncrement = FindCommitMessageIncrement(repository, context, baseVersion);
             var defaultIncrement = context.Configuration.Increment.ToVersionField();
@@ -89,7 +89,7 @@ namespace GitVersion
             return null;
         }
 
-        private static VersionField? FindCommitMessageIncrement(IRepository repository, GitVersionContext context, BaseVersion baseVersion)
+        private static VersionField? FindCommitMessageIncrement(IGitRepository repository, GitVersionContext context, BaseVersion baseVersion)
         {
             if (context.Configuration.CommitMessageIncrementing == CommitMessageIncrementMode.Disabled)
             {
@@ -114,7 +114,7 @@ namespace GitVersion
 
             return CompiledRegexCache.GetOrAdd(messageRegex, pattern => new Regex(pattern, RegexOptions.Compiled | RegexOptions.IgnoreCase));
         }
-        private static IEnumerable<Commit> GetIntermediateCommits(IRepository repo, GitObject baseCommit, Commit headCommit)
+        private static IEnumerable<Commit> GetIntermediateCommits(IGitRepository repo, GitObject baseCommit, Commit headCommit)
         {
             if (baseCommit == null) yield break;
 
@@ -145,7 +145,7 @@ namespace GitVersion
             return null;
         }
 
-        private static List<Commit> GetCommitsReacheableFromHead(IRepository repository, Commit headCommit)
+        private static List<Commit> GetCommitsReacheableFromHead(IGitRepository repository, Commit headCommit)
         {
             var filter = new CommitFilter
             {

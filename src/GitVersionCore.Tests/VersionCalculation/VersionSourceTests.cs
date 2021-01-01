@@ -1,4 +1,5 @@
 using GitTools.Testing;
+using GitVersion;
 using GitVersion.VersionCalculation;
 using GitVersionCore.Tests.Helpers;
 using LibGit2Sharp;
@@ -66,7 +67,7 @@ namespace GitVersionCore.Tests
 
         private static INextVersionCalculator GetNextVersionCalculator(RepositoryFixtureBase fixture)
         {
-            var sp = BuildServiceProvider(fixture.RepositoryPath, fixture.Repository, fixture.Repository.Head.CanonicalName);
+            var sp = BuildServiceProvider(fixture.RepositoryPath, new GitRepository(fixture.Repository), fixture.Repository.Head.CanonicalName);
             return sp.GetService<INextVersionCalculator>();
         }
     }

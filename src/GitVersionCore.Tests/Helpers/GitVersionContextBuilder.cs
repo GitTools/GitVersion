@@ -6,7 +6,6 @@ using GitVersion.Extensions;
 using GitVersion.Model.Configuration;
 using GitVersionCore.Tests.Helpers;
 using GitVersionCore.Tests.Mocks;
-using LibGit2Sharp;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
@@ -14,12 +13,12 @@ namespace GitVersionCore.Tests
 {
     public class GitVersionContextBuilder
     {
-        private IRepository repository;
+        private IGitRepository repository;
         private Config configuration;
         public IServiceProvider ServicesProvider;
         private Action<IServiceCollection> overrideServices;
 
-        public GitVersionContextBuilder WithRepository(IRepository gitRepository)
+        public GitVersionContextBuilder WithRepository(IGitRepository gitRepository)
         {
             repository = gitRepository;
             return this;
@@ -95,7 +94,7 @@ namespace GitVersionCore.Tests
             });
         }
 
-        private static IRepository CreateRepository()
+        private static IGitRepository CreateRepository()
         {
             var mockBranch = new MockBranch("master") { new MockCommit { CommitterEx = Generate.SignatureNow() } };
             var mockRepository = new MockRepository
