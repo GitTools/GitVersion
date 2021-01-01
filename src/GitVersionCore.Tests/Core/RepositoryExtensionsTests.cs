@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using GitVersion;
 using GitVersion.Extensions;
 using GitVersion.Logging;
@@ -13,6 +14,57 @@ namespace GitVersionCore.Tests
     [TestFixture]
     public class RepositoryExtensionsTests : TestBase
     {
+        private static void EnsureLocalBranchExistsForCurrentBranch(IGitRepository repo, ILog log, Remote remote, string currentBranch)
+        {
+            if (log is null)
+            {
+                throw new ArgumentNullException(nameof(log));
+            }
+
+            if (remote is null)
+            {
+                throw new ArgumentNullException(nameof(remote));
+            }
+
+            if (string.IsNullOrEmpty(currentBranch)) return;
+
+            var isRef = currentBranch.Contains("refs");
+            var isBranch = currentBranch.Contains("refs/heads");
+            var localCanonicalName = !isRef
+                ? "refs/heads/" + currentBranch
+                : isBranch
+                    ? currentBranch
+                    : currentBranch.Replace("refs/", "refs/heads/");
+
+            var repoTip = repo.Head.Tip;
+
+            // We currently have the rep.Head of the *default* branch, now we need to look up the right one
+            var originCanonicalName = $"{remote.Name}/{currentBranch}";
+            var originBranch = repo.Branches[originCanonicalName];
+            if (originBranch != null)
+            {
+                repoTip = originBranch.Tip;
+            }
+
+            var repoTipId = repoTip.Id;
+
+            if (repo.Branches.All(b => !b.CanonicalName.IsEquivalentTo(localCanonicalName)))
+            {
+                log.Info(isBranch ? $"Creating local branch {localCanonicalName}"
+                    : $"Creating local branch {localCanonicalName} pointing at {repoTipId}");
+                repo.Refs.Add(localCanonicalName, repoTipId);
+            }
+            else
+            {
+                log.Info(isBranch ? $"Updating local branch {localCanonicalName} to point at {repoTip.Sha}"
+                    : $"Updating local branch {localCanonicalName} to match ref {currentBranch}");
+                var localRef = repo.Refs[localCanonicalName];
+                repo.Refs.UpdateTarget(localRef, repoTipId);
+            }
+
+            repo.Commands.Checkout(localCanonicalName);
+        }
+
         [Test]
         public void EnsureLocalBranchExistsForCurrentBranch_CaseInsensitivelyMatchesBranches()
         {
@@ -20,7 +72,7 @@ namespace GitVersionCore.Tests
             var repository = MockRepository();
             var remote = MockRemote(repository);
 
-            repository.EnsureLocalBranchExistsForCurrentBranch(log, remote, "refs/heads/featurE/feat-test");
+            EnsureLocalBranchExistsForCurrentBranch(repository, log, remote, "refs/heads/featurE/feat-test");
         }
 
         private IGitRepository MockRepository()

@@ -200,7 +200,7 @@ namespace GitVersion
 
         public Branch FindBranch(string branchName)
         {
-            return repository.FindBranch(branchName);
+            return repository.Branches.FirstOrDefault(x => x.NameWithoutRemote() == branchName);
         }
 
         public Branch GetChosenBranch(Config configuration)
