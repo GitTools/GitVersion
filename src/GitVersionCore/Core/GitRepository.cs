@@ -40,7 +40,7 @@ namespace GitVersion
 
         public IQueryableCommitLog Commits => repositoryInstance.Commits;
 
-        public BranchCollection Branches => repositoryInstance.Branches;
+        public BranchCollection Branches => (BranchCollection)repositoryInstance.Branches;
 
         public TagCollection Tags => repositoryInstance.Tags;
 

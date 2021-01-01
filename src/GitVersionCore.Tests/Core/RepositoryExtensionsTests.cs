@@ -8,6 +8,7 @@ using GitVersionCore.Tests.Helpers;
 using LibGit2Sharp;
 using NSubstitute;
 using NUnit.Framework;
+using BranchCollection = GitVersion.BranchCollection;
 
 namespace GitVersionCore.Tests
 {
