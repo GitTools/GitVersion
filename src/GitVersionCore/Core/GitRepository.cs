@@ -42,7 +42,7 @@ namespace GitVersion
 
         public BranchCollection Branches => (BranchCollection)repositoryInstance.Branches;
 
-        public TagCollection Tags => repositoryInstance.Tags;
+        public TagCollection Tags => (TagCollection)repositoryInstance.Tags;
 
         public RepositoryInformation Info => repositoryInstance.Info;
 

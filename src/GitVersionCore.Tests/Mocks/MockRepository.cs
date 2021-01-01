@@ -3,6 +3,7 @@ using GitVersion;
 using LibGit2Sharp;
 using BranchCollection = GitVersion.BranchCollection;
 using ReferenceCollection = GitVersion.ReferenceCollection;
+using TagCollection = GitVersion.TagCollection;
 
 namespace GitVersionCore.Tests.Mocks
 {

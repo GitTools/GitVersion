@@ -35,6 +35,27 @@ namespace GitVersion
         }
     }
 
+    public class TagCollection : IEnumerable<Tag>
+    {
+        private readonly LibGit2Sharp.TagCollection innerTagCollection;
+        private TagCollection(LibGit2Sharp.TagCollection branchCollection) => innerTagCollection = branchCollection;
+
+        protected TagCollection()
+        {
+        }
+
+        public static implicit operator LibGit2Sharp.TagCollection(TagCollection d) => d.innerTagCollection;
+        public static explicit operator TagCollection(LibGit2Sharp.TagCollection b) => new TagCollection(b);
+
+        public virtual IEnumerator<Tag> GetEnumerator()
+        {
+            foreach (var branch in innerTagCollection)
+                yield return branch;
+        }
+        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+        public virtual Tag this[string name] => innerTagCollection[name];
+    }
+
     public class ReferenceCollection : IEnumerable<Reference>
     {
         private readonly LibGit2Sharp.ReferenceCollection innerReferenceCollection;
