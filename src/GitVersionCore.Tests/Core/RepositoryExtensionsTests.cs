@@ -9,6 +9,7 @@ using LibGit2Sharp;
 using NSubstitute;
 using NUnit.Framework;
 using BranchCollection = GitVersion.BranchCollection;
+using ReferenceCollection = GitVersion.ReferenceCollection;
 
 namespace GitVersionCore.Tests
 {
@@ -164,22 +165,14 @@ namespace GitVersionCore.Tests
         private class TestableReferenceCollection : ReferenceCollection
         {
             Reference reference;
-
-            public override DirectReference Add(string name, ObjectId targetId)
-            {
-                throw new InvalidOperationException("Update should be invoked when case-insensitively comparing branches.");
-            }
-
             public override Reference Add(string name, string canonicalRefNameOrObjectish)
             {
                 return reference = new TestableReference(canonicalRefNameOrObjectish);
             }
-
             public override Reference UpdateTarget(Reference directRef, ObjectId targetId)
             {
                 return reference;
             }
-
             public override Reference this[string name] => reference;
         }
 

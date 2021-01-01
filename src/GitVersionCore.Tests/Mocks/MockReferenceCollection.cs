@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using LibGit2Sharp;
+using ReferenceCollection = GitVersion.ReferenceCollection;
 
 namespace GitVersionCore.Tests.Mocks
 {
