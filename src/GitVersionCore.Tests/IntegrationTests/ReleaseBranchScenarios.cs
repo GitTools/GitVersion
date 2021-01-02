@@ -454,7 +454,7 @@ namespace GitVersionCore.Tests.IntegrationTests
             fixture.Repository.MakeACommit();
             fixture.AssertFullSemver("2.0.0-beta.2", config);
 
-            // Merge release to develop - emulate commit beetween other person release commit push and this commit merge to develop
+            // Merge release to develop - emulate commit between other person release commit push and this commit merge to develop
             Commands.Checkout(fixture.Repository, "develop");
             fixture.Repository.Merge(commit1, Generate.SignatureNow(), new MergeOptions { FastForwardStrategy = FastForwardStrategy.NoFastForward });
             fixture.Repository.MergeNoFF("release-2.0.0", Generate.SignatureNow());

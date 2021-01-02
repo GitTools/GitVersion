@@ -102,7 +102,7 @@ namespace GitVersion
 
             return CompiledRegexCache.GetOrAdd(messageRegex, pattern => new Regex(pattern, RegexOptions.Compiled | RegexOptions.IgnoreCase));
         }
-        private static IEnumerable<Commit> GetIntermediateCommits(IGitRepository repo, GitObject baseCommit, Commit headCommit)
+        private static IEnumerable<Commit> GetIntermediateCommits(IGitRepository repo, Commit baseCommit, Commit headCommit)
         {
             if (baseCommit == null) yield break;
 
@@ -110,7 +110,7 @@ namespace GitVersion
 
             if (commitCache == null || commitCache.LastOrDefault() != headCommit)
             {
-                commitCache = GetCommitsReacheableFromHead(repo, headCommit);
+                commitCache = repo.GetCommitsReacheableFromHead(headCommit);
                 intermediateCommitCache = commitCache;
             }
 
@@ -131,17 +131,6 @@ namespace GitVersion
             if (patchRegex.IsMatch(message)) return VersionField.Patch;
             if (none.IsMatch(message)) return VersionField.None;
             return null;
-        }
-
-        private static List<Commit> GetCommitsReacheableFromHead(IGitRepository repository, Commit headCommit)
-        {
-            var filter = new CommitFilter
-            {
-                IncludeReachableFrom = headCommit,
-                SortBy = CommitSortStrategies.Topological | CommitSortStrategies.Reverse
-            };
-
-            return repository.Commits.QueryBy(filter).ToList();
         }
     }
 }

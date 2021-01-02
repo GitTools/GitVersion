@@ -21,7 +21,7 @@ namespace GitVersion.Common
         Branch GetTargetBranch(string targetBranch);
         Branch FindBranch(string branchName);
         Branch GetChosenBranch(Config configuration);
-        List<Branch> GetBranchesForCommit(GitObject commit);
+        List<Branch> GetBranchesForCommit(Commit commit);
         List<Branch> GetExcludedInheritBranches(Config configuration);
         IEnumerable<Branch> GetReleaseBranches(IEnumerable<KeyValuePair<string, BranchConfig>> releaseBranchConfig);
         IEnumerable<Branch> ExcludingBranches(IEnumerable<Branch> branchesToExclude);
@@ -34,14 +34,14 @@ namespace GitVersion.Common
         /// </summary>
         BranchCommit FindCommitBranchWasBranchedFrom(Branch branch, Config configuration, params Branch[] excludedBranches);
 
-        SemanticVersion GetCurrentCommitTaggedVersion(GitObject commit, EffectiveConfiguration config);
+        SemanticVersion GetCurrentCommitTaggedVersion(Commit commit, EffectiveConfiguration config);
         SemanticVersion MaybeIncrement(BaseVersion baseVersion, GitVersionContext context);
         IEnumerable<SemanticVersion> GetVersionTagsOnBranch(Branch branch, string tagPrefixRegex);
         IEnumerable<Tuple<Tag, SemanticVersion>> GetValidVersionTags(string tagPrefixRegex, DateTimeOffset? olderThan = null);
 
         CommitCollection GetCommitLog(Commit baseVersionSource, Commit currentCommit);
         bool GetMatchingCommitBranch(Commit baseVersionSource, Branch branch, Commit firstMatchingCommit);
-        string ShortenObjectId(GitObject commit);
+        string ShortenObjectId(Commit commit);
         VersionField? DetermineIncrementedField(BaseVersion baseVersion, GitVersionContext context);
 
         int GetNumberOfUncommittedChanges();

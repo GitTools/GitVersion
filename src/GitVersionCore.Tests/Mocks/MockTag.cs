@@ -4,7 +4,6 @@ namespace GitVersionCore.Tests.Mocks
 {
     public class MockTag : Tag
     {
-
         public string NameEx;
         public override string FriendlyName => NameEx;
 
