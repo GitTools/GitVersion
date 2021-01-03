@@ -1,5 +1,3 @@
-using LibGit2Sharp;
-
 namespace GitVersion.VersionCalculation
 {
     public class BaseVersion

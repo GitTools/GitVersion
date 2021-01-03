@@ -2,8 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using GitVersion;
-using LibGit2Sharp;
 using Branch = GitVersion.Branch;
+using Commit = GitVersion.Commit;
 
 namespace GitVersionCore.Tests.Mocks
 {

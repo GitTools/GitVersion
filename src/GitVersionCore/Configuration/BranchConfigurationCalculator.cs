@@ -6,7 +6,6 @@ using GitVersion.Common;
 using GitVersion.Extensions;
 using GitVersion.Logging;
 using GitVersion.Model.Configuration;
-using LibGit2Sharp;
 
 namespace GitVersion.Configuration
 {

@@ -51,7 +51,7 @@ namespace GitVersion
                     commitToFindCommonBase = otherBranch.Tip.Parents.First();
                 }
 
-                var findMergeBase = repository.ObjectDatabase.FindMergeBase(commit, commitToFindCommonBase);
+                var findMergeBase = (Commit)repository.ObjectDatabase.FindMergeBase(commit, commitToFindCommonBase);
                 if (findMergeBase != null)
                 {
                     log.Info($"Found merge base of {findMergeBase.Sha}");
@@ -67,7 +67,7 @@ namespace GitVersion
                             // TODO Fix the logging up in this section
                             var second = forwardMerge.Parents.First();
                             log.Debug("Second " + second.Sha);
-                            var mergeBase = repository.ObjectDatabase.FindMergeBase(commit, second);
+                            var mergeBase = (Commit)repository.ObjectDatabase.FindMergeBase(commit, second);
                             if (mergeBase == null)
                             {
                                 log.Warning("Could not find mergbase for " + commit);
@@ -98,7 +98,7 @@ namespace GitVersion
 
         public Commit FindMergeBase(Commit commit, Commit mainlineTip)
         {
-            return repository.ObjectDatabase.FindMergeBase(commit, mainlineTip);
+            return (Commit)repository.ObjectDatabase.FindMergeBase(commit, mainlineTip);
         }
 
         public Commit GetCurrentCommit(Branch currentBranch, string commitId)
@@ -325,7 +325,7 @@ namespace GitVersion
             return repository.Tags
                 .SelectMany(t =>
                 {
-                    if (t.PeeledTarget() == commit && SemanticVersion.TryParse(t.FriendlyName, config.GitTagPrefix, out var version))
+                    if (t.PeeledTarget() is LibGit2Sharp.Commit targetCommit && targetCommit == commit && SemanticVersion.TryParse(t.FriendlyName, config.GitTagPrefix, out var version))
                         return new[]
                         {
                             version
@@ -366,7 +366,10 @@ namespace GitVersion
 
             foreach (var tag in repository.Tags)
             {
-                if (!(tag.PeeledTarget() is Commit commit) || (olderThan.HasValue && commit.When() > olderThan.Value))
+                if (!(tag.PeeledTarget() is LibGit2Sharp.Commit commit))
+                    continue;
+
+                if (olderThan.HasValue && ((Commit)commit).When() > olderThan.Value)
                     continue;
 
                 if (SemanticVersion.TryParse(tag.FriendlyName, tagPrefixRegex, out var semver))
