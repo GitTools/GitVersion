@@ -11,7 +11,7 @@ namespace GitVersion
             var filter = new CommitFilter
             {
                 IncludeReachableFrom = (LibGit2Sharp.Branch)branch,
-                ExcludeReachableFrom = baseVersionSource,
+                ExcludeReachableFrom = (LibGit2Sharp.Commit)baseVersionSource,
                 FirstParentOnly = true,
             };
             var commitCollection = repository.Commits.QueryBy(filter);
@@ -34,7 +34,7 @@ namespace GitVersion
         {
             var filter = new CommitFilter
             {
-                IncludeReachableFrom = headCommit,
+                IncludeReachableFrom = (LibGit2Sharp.Commit)headCommit,
                 SortBy = CommitSortStrategies.Topological | CommitSortStrategies.Reverse
             };
 
@@ -47,8 +47,8 @@ namespace GitVersion
         {
             var filter = new CommitFilter
             {
-                IncludeReachableFrom = commitToFindCommonBase,
-                ExcludeReachableFrom = findMergeBase
+                IncludeReachableFrom = (LibGit2Sharp.Commit)commitToFindCommonBase,
+                ExcludeReachableFrom = (LibGit2Sharp.Commit)findMergeBase
             };
             var commitCollection = repository.Commits.QueryBy(filter);
 
@@ -61,8 +61,8 @@ namespace GitVersion
         {
             var filter = new CommitFilter
             {
-                IncludeReachableFrom = mergedHead,
-                ExcludeReachableFrom = findMergeBase
+                IncludeReachableFrom = (LibGit2Sharp.Commit)mergedHead,
+                ExcludeReachableFrom = (LibGit2Sharp.Commit)findMergeBase
             };
             var commitCollection = repository.Commits.QueryBy(filter);
 
@@ -76,7 +76,7 @@ namespace GitVersion
         {
             var filter = new CommitFilter
             {
-                IncludeReachableFrom = currentBranchTip
+                IncludeReachableFrom = (LibGit2Sharp.Commit)currentBranchTip
             };
             var commitCollection = repository.Commits.QueryBy(filter);
 
@@ -88,8 +88,8 @@ namespace GitVersion
         {
             var filter = new CommitFilter
             {
-                IncludeReachableFrom = mainlineTip,
-                ExcludeReachableFrom = baseVersionSource,
+                IncludeReachableFrom = (LibGit2Sharp.Commit)mainlineTip,
+                ExcludeReachableFrom = (LibGit2Sharp.Commit)baseVersionSource,
                 SortBy = CommitSortStrategies.Reverse,
                 FirstParentOnly = true
             };
@@ -103,8 +103,8 @@ namespace GitVersion
         {
             var filter = new CommitFilter
             {
-                IncludeReachableFrom = currentCommit,
-                ExcludeReachableFrom = baseVersionSource,
+                IncludeReachableFrom = (LibGit2Sharp.Commit)currentCommit,
+                ExcludeReachableFrom = (LibGit2Sharp.Commit)baseVersionSource,
                 SortBy = CommitSortStrategies.Topological | CommitSortStrategies.Time
             };
 

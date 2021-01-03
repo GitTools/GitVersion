@@ -1,11 +1,11 @@
 using System.Collections.Generic;
 using System.Linq;
+using GitVersion;
 using GitVersion.Extensions;
 using GitVersion.Model.Configuration;
 using GitVersion.VersionCalculation;
 using GitVersionCore.Tests.Helpers;
 using GitVersionCore.Tests.Mocks;
-using LibGit2Sharp;
 using NUnit.Framework;
 using Shouldly;
 

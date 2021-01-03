@@ -35,8 +35,8 @@ namespace GitVersion.VersionCalculation
                 .SelectMany(commit => { return allTags.Where(t => IsValidTag(t.Item1, commit)); })
                 .Select(t =>
                 {
-                    if (t.Item1.PeeledTarget() is Commit)
-                        return new VersionTaggedCommit(t.Item1.PeeledTarget() as Commit, t.Item2, t.Item1.FriendlyName);
+                    if (t.Item1.PeeledTarget() is LibGit2Sharp.Commit commit)
+                        return new VersionTaggedCommit((Commit)commit, t.Item2, t.Item1.FriendlyName);
 
                     return null;
                 })
@@ -62,7 +62,7 @@ namespace GitVersion.VersionCalculation
 
         protected virtual bool IsValidTag(Tag tag, Commit commit)
         {
-            return tag.PeeledTarget() == commit;
+            return tag.PeeledTarget() is LibGit2Sharp.Commit targetCommit && targetCommit == commit;
         }
 
         protected class VersionTaggedCommit

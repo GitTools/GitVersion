@@ -7,11 +7,11 @@ using GitVersion.Model.Configuration;
 using GitVersion.VersionCalculation;
 using GitVersionCore.Tests.Helpers;
 using GitVersionCore.Tests.Mocks;
-using LibGit2Sharp;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using NUnit.Framework;
 using Shouldly;
+using Commit = GitVersion.Commit;
 
 namespace GitVersionCore.Tests.VersionCalculation
 {

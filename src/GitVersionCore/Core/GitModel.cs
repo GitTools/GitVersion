@@ -1,10 +1,55 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using GitVersion.Helpers;
 using LibGit2Sharp;
 
 namespace GitVersion
 {
+    public class Commit
+    {
+        private static readonly LambdaEqualityHelper<Commit> equalityHelper =
+            new LambdaEqualityHelper<Commit>(x => x.Id);
+
+        private readonly LibGit2Sharp.Commit innerCommit;
+
+        private Commit(LibGit2Sharp.Commit commit)
+        {
+            innerCommit = commit;
+        }
+
+        protected Commit()
+        {
+        }
+
+        public override bool Equals(object obj) => Equals(obj as Commit);
+        private bool Equals(Commit other) => equalityHelper.Equals(this, other);
+
+        public override int GetHashCode() => equalityHelper.GetHashCode(this);
+        public static bool operator !=(Commit left, Commit right) => !Equals(left, right);
+        public static bool operator ==(Commit left, Commit right) => Equals(left, right);
+
+        public static implicit operator LibGit2Sharp.Commit(Commit d) => d?.innerCommit;
+        public static explicit operator Commit(LibGit2Sharp.Commit b) => b is null ? null : new Commit(b);
+
+        public virtual IEnumerable<Commit> Parents
+        {
+            get
+            {
+                if (innerCommit == null) yield return null;
+                else
+                    foreach (var parent in innerCommit.Parents)
+                        yield return (Commit)parent;
+            }
+        }
+
+        public virtual string Sha => innerCommit?.Sha;
+        public virtual ObjectId Id => innerCommit?.Id;
+        public virtual Signature Committer => innerCommit?.Committer;
+        public virtual string Message => innerCommit?.Message;
+        public virtual Tree Tree => innerCommit?.Tree;
+    }
+
     public class Branch
     {
         private readonly LibGit2Sharp.Branch innerBranch;
@@ -17,13 +62,12 @@ namespace GitVersion
         protected Branch()
         {
         }
-
         public static implicit operator LibGit2Sharp.Branch(Branch d) => d?.innerBranch;
         public static explicit operator Branch(LibGit2Sharp.Branch b) => b is null ? null : new Branch(b);
 
         public virtual string CanonicalName => innerBranch?.CanonicalName;
         public virtual string FriendlyName => innerBranch?.FriendlyName;
-        public virtual Commit Tip => innerBranch?.Tip;
+        public virtual Commit Tip => (Commit)innerBranch?.Tip;
         public virtual CommitCollection Commits => CommitCollection.FromCommitLog(innerBranch?.Commits);
         public virtual bool IsRemote => innerBranch != null && innerBranch.IsRemote;
         public virtual bool IsTracking => innerBranch != null && innerBranch.IsTracking;
@@ -152,7 +196,7 @@ namespace GitVersion
         public virtual IEnumerator<Commit> GetEnumerator()
         {
             foreach (var commit in innerCollection)
-                yield return commit;
+                yield return (Commit)commit;
         }
 
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();

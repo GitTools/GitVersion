@@ -1,6 +1,6 @@
 using GitVersion;
 using GitVersion.VersionCalculation;
-using LibGit2Sharp;
+using Commit = GitVersion.Commit;
 
 namespace GitVersionCore.Tests.VersionCalculation
 {
