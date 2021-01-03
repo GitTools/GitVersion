@@ -1,6 +1,5 @@
 using System.Collections.Generic;
-using LibGit2Sharp;
-using TagCollection = GitVersion.TagCollection;
+using GitVersion;
 
 namespace GitVersionCore.Tests.Mocks
 {

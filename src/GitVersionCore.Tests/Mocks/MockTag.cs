@@ -1,4 +1,5 @@
 using LibGit2Sharp;
+using Tag = GitVersion.Tag;
 
 namespace GitVersionCore.Tests.Mocks
 {

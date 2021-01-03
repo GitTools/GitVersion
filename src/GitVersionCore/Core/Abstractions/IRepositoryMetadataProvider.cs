@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using GitVersion.Model.Configuration;
 using GitVersion.VersionCalculation;
-using LibGit2Sharp;
 
 namespace GitVersion.Common
 {
