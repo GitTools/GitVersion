@@ -1,12 +1,6 @@
 name: Homebrew
 
 on:
-  push:
-    branches:
-    - master
-    - 'fix/*'
-    - 'feature/*'
-
   repository_dispatch:
     types: [release]
 jobs:
@@ -20,5 +14,3 @@ jobs:
         token: ${{secrets.HOMEBREW_GITHUB_TOKEN}}
         # Formula name, required
         formula: gitversion
-        # Optional, will be determined automatically
-        tag: 5.6.1  
