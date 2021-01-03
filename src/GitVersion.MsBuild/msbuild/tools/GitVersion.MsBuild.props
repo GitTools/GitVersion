@@ -16,7 +16,7 @@
         <GitVersion_ToolArgments Condition=" '$(GitVersion_NoNormalizeEnabled)' == 'true' ">$(GitVersion_ToolArgments) -nonormalize</GitVersion_ToolArgments>
     </PropertyGroup>
 
-    <PropertyGroup Condition="'$(MSBuildRuntimeType)' == 'Full'">
+    <PropertyGroup Condition="'$(MSBuildRuntimeType)' == 'Full' Or '$(MSBuildRuntimeType)' == 'Mono'">
         <GitVersionFileExe>$(MSBuildThisFileDirectory)net48/gitversion.exe</GitVersionFileExe>
         <GitVersionAssemblyFile>$(MSBuildThisFileDirectory)net48/GitVersion.MsBuild.dll</GitVersionAssemblyFile>
     </PropertyGroup>
