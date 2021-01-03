@@ -3,7 +3,7 @@
         <BaseIntermediateOutputPath>$(MSBuildThisFileDirectory)obj\$(MSBuildProjectName)\</BaseIntermediateOutputPath>
 
         <Authors>GitTools and Contributors</Authors>
-        <Copyright>Copyright GitTools 2020.</Copyright>
+        <Copyright>Copyright GitTools 2021.</Copyright>
         <Company>$(Authors)</Company>
 
         <PackageProjectUrl>https://github.com/GitTools/GitVersion</PackageProjectUrl>
