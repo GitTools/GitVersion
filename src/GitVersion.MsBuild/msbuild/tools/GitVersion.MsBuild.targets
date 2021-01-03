@@ -39,13 +39,16 @@
             <Output TaskParameter="BranchName" PropertyName="GitVersion_BranchName" />
             <Output TaskParameter="EscapedBranchName" PropertyName="GitVersion_EscapedBranchName" />
             <Output TaskParameter="Sha" PropertyName="GitVersion_Sha" />
+            <Output TaskParameter="ShortSha" PropertyName="GitVersion_ShortSha" />
             <Output TaskParameter="NuGetVersionV2" PropertyName="GitVersion_NuGetVersionV2" />
             <Output TaskParameter="NuGetVersion" PropertyName="GitVersion_NuGetVersion" />
             <Output TaskParameter="NuGetPreReleaseTagV2" PropertyName="GitVersion_NuGetPreReleaseTagV2" />
             <Output TaskParameter="NuGetPreReleaseTag" PropertyName="GitVersion_NuGetPreReleaseTag" />
             <Output TaskParameter="CommitDate" PropertyName="GitVersion_CommitDate" />
+            <Output TaskParameter="VersionSourceSha" PropertyName="GitVersion_VersionSourceSha" />
             <Output TaskParameter="CommitsSinceVersionSource" PropertyName="GitVersion_CommitsSinceVersionSource" />
             <Output TaskParameter="CommitsSinceVersionSourcePadded" PropertyName="GitVersion_CommitsSinceVersionSourcePadded" />
+            <Output TaskParameter="UncommittedChanges" PropertyName="GitVersion_UncommittedChanges" />
         </GetVersion>
 
         <PropertyGroup Condition=" '$(UpdateVersionProperties)' == 'true' ">
@@ -86,13 +89,16 @@
             <DefineConstants Condition=" '$(GitVersion_BranchName)' != '' ">GitVersion_BranchName=$(GitVersion_BranchName);$(DefineConstants)</DefineConstants>
             <DefineConstants Condition=" '$(GitVersion_EscapedBranchName)' != '' ">GitVersion_EscapedBranchName=$(GitVersion_EscapedBranchName);$(DefineConstants)</DefineConstants>
             <DefineConstants Condition=" '$(GitVersion_Sha)' != '' ">GitVersion_Sha=$(GitVersion_Sha);$(DefineConstants)</DefineConstants>
+            <DefineConstants Condition=" '$(GitVersion_ShortSha)' != '' ">GitVersion_ShortSha=$(GitVersion_ShortSha);$(DefineConstants)</DefineConstants>
             <DefineConstants Condition=" '$(GitVersion_NuGetVersionV2)' != '' ">GitVersion_NuGetVersionV2=$(GitVersion_NuGetVersionV2);$(DefineConstants)</DefineConstants>
             <DefineConstants Condition=" '$(GitVersion_NuGetVersion)' != '' ">GitVersion_NuGetVersion=$(GitVersion_NuGetVersion);$(DefineConstants)</DefineConstants>
             <DefineConstants Condition=" '$(GitVersion_NuGetPreReleaseTagV2)' != '' ">GitVersion_NuGetPreReleaseTagV2=$(GitVersion_NuGetPreReleaseTagV2);$(DefineConstants)</DefineConstants>
             <DefineConstants Condition=" '$(GitVersion_NuGetPreReleaseTag)' != '' ">GitVersion_NuGetPreReleaseTag=$(GitVersion_NuGetPreReleaseTag);$(DefineConstants)</DefineConstants>
             <DefineConstants Condition=" '$(GitVersion_CommitDate)' != '' ">GitVersion_CommitDate=$(GitVersion_CommitDate);$(DefineConstants)</DefineConstants>
+            <DefineConstants Condition=" '$(GitVersion_VersionSourceSha)' != '' ">GitVersion_VersionSourceSha=$(GitVersion_VersionSourceSha);$(DefineConstants)</DefineConstants>
             <DefineConstants Condition=" '$(GitVersion_CommitsSinceVersionSource)' != '' ">GitVersion_CommitsSinceVersionSource=$(GitVersion_CommitsSinceVersionSource);$(DefineConstants)</DefineConstants>
             <DefineConstants Condition=" '$(GitVersion_CommitsSinceVersionSourcePadded)' != '' ">GitVersion_CommitsSinceVersionSourcePadded=$(GitVersion_CommitsSinceVersionSourcePadded);$(DefineConstants)</DefineConstants>
+            <DefineConstants Condition=" '$(GitVersion_UncommittedChanges)' != '' ">GitVersion_UncommittedChanges=$(GitVersion_UncommittedChanges);$(DefineConstants)</DefineConstants>
         </PropertyGroup>
 
         <!-- <Message Importance="High" Text="$(GitVersion_FullSemVer)" /> -->
