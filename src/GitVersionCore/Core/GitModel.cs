@@ -6,6 +6,24 @@ using LibGit2Sharp;
 
 namespace GitVersion
 {
+    public class Tag
+    {
+        private readonly LibGit2Sharp.Tag innerTag;
+        private Tag(LibGit2Sharp.Tag tag)
+        {
+            innerTag = tag;
+        }
+
+        protected Tag()
+        {
+        }
+        public static implicit operator LibGit2Sharp.Tag(Tag d) => d?.innerTag;
+        public static explicit operator Tag(LibGit2Sharp.Tag b) => b is null ? null : new Tag(b);
+
+        public virtual GitObject Target => innerTag?.Target;
+        public virtual string FriendlyName => innerTag?.FriendlyName;
+        public virtual TagAnnotation Annotation => innerTag?.Annotation;
+    }
     public class Commit
     {
         private static readonly LambdaEqualityHelper<Commit> equalityHelper =
@@ -119,12 +137,12 @@ namespace GitVersion
 
         public virtual IEnumerator<Tag> GetEnumerator()
         {
-            foreach (var branch in innerCollection)
-                yield return branch;
+            foreach (var tag in innerCollection)
+                yield return (Tag)tag;
         }
 
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
-        public virtual Tag this[string name] => innerCollection[name];
+        public virtual Tag this[string name] => (Tag)innerCollection[name];
     }
 
     public class ReferenceCollection : IEnumerable<Reference>
