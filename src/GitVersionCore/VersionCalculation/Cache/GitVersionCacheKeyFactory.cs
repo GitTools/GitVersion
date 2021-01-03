@@ -8,7 +8,6 @@ using GitVersion.Cache;
 using GitVersion.Configuration;
 using GitVersion.Logging;
 using GitVersion.Model.Configuration;
-using LibGit2Sharp;
 using Microsoft.Extensions.Options;
 
 namespace GitVersion.VersionCalculation.Cache
@@ -19,13 +18,17 @@ namespace GitVersion.VersionCalculation.Cache
         private readonly ILog log;
         private readonly IOptions<GitVersionOptions> options;
         private readonly IConfigFileLocator configFileLocator;
+        private readonly IGitRepository gitRepository;
 
-        public GitVersionCacheKeyFactory(IFileSystem fileSystem, ILog log, IOptions<GitVersionOptions> options, IConfigFileLocator configFileLocator)
+        public GitVersionCacheKeyFactory(IFileSystem fileSystem, ILog log,
+            IOptions<GitVersionOptions> options, IConfigFileLocator configFileLocator,
+            IGitRepository gitRepository)
         {
             this.fileSystem = fileSystem ?? throw new ArgumentNullException(nameof(fileSystem));
             this.log = log ?? throw new ArgumentNullException(nameof(log));
             this.options = options ?? throw new ArgumentNullException(nameof(options));
             this.configFileLocator = configFileLocator ?? throw new ArgumentNullException(nameof(configFileLocator));
+            this.gitRepository = gitRepository ?? throw new ArgumentNullException(nameof(gitRepository));
         }
 
         public GitVersionCacheKey Create(Config overrideConfig)
@@ -141,9 +144,7 @@ namespace GitVersion.VersionCalculation.Cache
 
         private string GetRepositorySnapshotHash()
         {
-            using var repo = new Repository(options.Value.GitRootPath);
-
-            var head = repo.Head;
+            var head = gitRepository.Head;
             if (head.Tip == null)
             {
                 return head.CanonicalName;
