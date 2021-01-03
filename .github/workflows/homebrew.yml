@@ -14,9 +14,15 @@ jobs:
     name: Bump Homebrew formula
     runs-on: ubuntu-latest
     steps:
-    - uses: mislav/bump-homebrew-formula-action@v1
+    - uses: dawidd6/action-homebrew-bump-formula@v3
       with:
-        # A PR will be sent to github.com/Homebrew/homebrew-core to update this formula:
-        formula-name: gitversion
-      env:
-        COMMITTER_TOKEN: ${{ secrets.HOMEBREW_GITHUB_TOKEN }}
+        # GitHub token, required, not the default one
+        token: ${{secrets.HOMEBREW_GITHUB_TOKEN}}
+        # Formula name, required
+        formula: gitversion 
+#     - uses: mislav/bump-homebrew-formula-action@v1
+#       with:
+#         # A PR will be sent to github.com/Homebrew/homebrew-core to update this formula:
+#         formula-name: gitversion
+#       env:
+#         COMMITTER_TOKEN: ${{ secrets.HOMEBREW_GITHUB_TOKEN }}
