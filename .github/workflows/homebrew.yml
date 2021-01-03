@@ -1,4 +1,4 @@
-name: HomeBrew
+name: Homebrew
 
 on:
   repository_dispatch:
