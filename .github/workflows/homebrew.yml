@@ -1,0 +1,16 @@
+name: HomeBrew
+
+on:
+  repository_dispatch:
+    types: [release]
+jobs:
+  homebrew:
+    name: Bump Homebrew formula
+    runs-on: macos-latest
+    steps:
+    - uses: mislav/bump-homebrew-formula-action@v1
+      with:
+      # A PR will be sent to github.com/Homebrew/homebrew-core to update this formula:
+        formula-name: gitversion
+      env:
+        COMMITTER_TOKEN: ${{ secrets.HOMEBREW_GITHUB_TOKEN }}
