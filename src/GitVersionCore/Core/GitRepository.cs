@@ -206,14 +206,14 @@ namespace GitVersion
                 var remote = remotes.Single();
                 log.Info($"One remote found ({remote.Name} -> '{remote.Url}').");
                 AddMissingRefSpecs(log, remote);
-                return remote;
+                return (Remote)remote;
             }
 
             var message = $"{howMany} remote(s) have been detected. When being run on a build server, the Git repository is expected to bear one (and no more than one) remote.";
             throw new WarningException(message);
         }
 
-        private void AddMissingRefSpecs(ILog log, Remote remote)
+        private void AddMissingRefSpecs(ILog log, LibGit2Sharp.Remote remote)
         {
             if (remote.FetchRefSpecs.Any(r => r.Source == "refs/heads/*"))
                 return;
