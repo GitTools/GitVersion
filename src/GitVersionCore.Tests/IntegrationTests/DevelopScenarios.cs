@@ -284,5 +284,50 @@ namespace GitVersionCore.Tests.IntegrationTests
 
             fixture.AssertFullSemver("1.0.0-alpha.5");
         }
+
+        [Test]
+        public void WhenPreventIncrementOfMergedBranchVersionIsSetToTrueCommitsSinceVersionSourceShouldNotGoDownWhenMergingReleaseToDevelop()
+        {
+            // Simulate the configuration used in production.
+            var config = new Config
+            {
+                VersioningMode = VersioningMode.ContinuousDeployment,
+                Branches = new Dictionary<string, BranchConfig>
+                {
+                    { "develop", new BranchConfig { PreventIncrementOfMergedBranchVersion = true } },
+                }
+            };
+
+            using var fixture = new EmptyRepositoryFixture();
+            const string ReleaseBranch = "release/1.1.0";
+            fixture.MakeACommit();
+            fixture.BranchTo("develop");
+            fixture.MakeATaggedCommit("1.0.0");
+            fixture.Repository.MakeCommits(10);
+
+            fixture.AssertFullSemver("1.1.0-alpha.10", config);
+
+            // Create a release branch and make some commits
+            fixture.BranchTo(ReleaseBranch);
+            fixture.Repository.MakeCommits(3);
+
+            // Simulate a GitFlow release finish.
+            fixture.Checkout("master");
+            fixture.MergeNoFF(ReleaseBranch);
+            fixture.ApplyTag("v1.1.0");
+            fixture.Checkout("develop");
+            // Simulate some work done on develop while the release branch was open.
+            fixture.Repository.MakeCommits(10);
+            fixture.MergeNoFF(ReleaseBranch);
+
+            // Version numbers will still be correct when the release branch is around.
+            fixture.AssertFullSemver("1.2.0-alpha.14");
+            fixture.AssertFullSemver("1.2.0-alpha.14", config);
+
+            // Removing the release branch and calculating the version with the config exhibits the problem.
+            fixture.Repository.Branches.Remove(ReleaseBranch);
+            fixture.AssertFullSemver("1.2.0-alpha.14");
+            fixture.AssertFullSemver("1.2.0-alpha.14", config);
+        }
     }
 }
