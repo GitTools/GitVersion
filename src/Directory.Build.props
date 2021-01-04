@@ -42,15 +42,11 @@
 
     </PropertyGroup>
 
-    <ItemGroup>
-        <PackageReference Include="System.Text.Json" Version="$(PackageVersion_MicrosoftJson)" />
-        <PackageReference Include="System.Text.Encodings.Web" Version="$(PackageVersion_MicrosoftJson)" />
-    </ItemGroup>
-
     <ItemGroup Condition=" '$(IsTestProject)' == 'true' ">
         <PackageReference Include="Microsoft.NET.Test.Sdk" Version="$(PackageVersion_MicrosoftTestSdk)" />
         <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="$(PackageVersion_MicrosoftExtensions)" />
-
+        <PackageReference Include="System.Text.Json" Version="$(PackageVersion_MicrosoftJson)" />
+        <PackageReference Include="System.Text.Encodings.Web" Version="$(PackageVersion_MicrosoftJson)" />
 
         <PackageReference Include="JetBrains.Annotations" Version="$(PackageVersion_JetBrainsAnnotations)" />
         <PackageReference Include="NSubstitute" Version="$(PackageVersion_NSubstitute)" />

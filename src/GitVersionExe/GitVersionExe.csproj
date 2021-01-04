@@ -26,6 +26,8 @@
     </ItemGroup>
 
     <ItemGroup>
+        <PackageReference Include="System.Text.Json" Version="$(PackageVersion_MicrosoftJson)" />
+        <PackageReference Include="System.Text.Encodings.Web" Version="$(PackageVersion_MicrosoftJson)" />
         <PackageReference Include="Microsoft.Extensions.Hosting" Version="$(PackageVersion_MicrosoftExtensions)"/>
         <PackageReference Include="Microsoft.Extensions.FileSystemGlobbing" Version="$(PackageVersion_MicrosoftExtensions)"/>
     </ItemGroup>
