@@ -189,8 +189,6 @@ namespace GitVersionCore.Tests
             }
 
             public override string CanonicalName { get; }
-
-            public override DirectReference ResolveToDirectReference() => throw new NotImplementedException();
         }
     }
 }

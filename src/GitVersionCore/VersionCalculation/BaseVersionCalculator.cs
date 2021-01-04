@@ -75,7 +75,7 @@ namespace GitVersion.VersionCalculation
                 BaseVersion baseVersionWithOldestSource;
                 if (matchingVersionsOnceIncremented.Any())
                 {
-                    var oldest = matchingVersionsOnceIncremented.Aggregate((v1, v2) => v1.Version.BaseVersionSource.Committer.When < v2.Version.BaseVersionSource.Committer.When ? v1 : v2);
+                    var oldest = matchingVersionsOnceIncremented.Aggregate((v1, v2) => v1.Version.BaseVersionSource.CommitterWhen < v2.Version.BaseVersionSource.CommitterWhen ? v1 : v2);
                     baseVersionWithOldestSource = oldest.Version;
                     maxVersion = oldest;
                     log.Info($"Found multiple base versions which will produce the same SemVer ({maxVersion.IncrementedVersion}), taking oldest source for commit counting ({baseVersionWithOldestSource.Source})");
@@ -85,7 +85,7 @@ namespace GitVersion.VersionCalculation
                     baseVersionWithOldestSource = baseVersions
                         .Where(v => v.Version.BaseVersionSource != null)
                         .OrderByDescending(v => v.IncrementedVersion)
-                        .ThenByDescending(v => v.Version.BaseVersionSource.Committer.When)
+                        .ThenByDescending(v => v.Version.BaseVersionSource.CommitterWhen)
                         .First()
                         .Version;
                 }

@@ -26,7 +26,7 @@ namespace GitVersionCore.Tests.Mocks
         public override string Message => MessageEx;
 
         public Signature CommitterEx;
-        public override Signature Committer => CommitterEx;
+        public override DateTimeOffset? CommitterWhen => CommitterEx.When;
 
         private readonly ObjectId idEx;
         public override ObjectId Id => idEx;
