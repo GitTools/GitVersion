@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using GitVersion.Common;
-using LibGit2Sharp;
 
 namespace GitVersion.VersionCalculation
 {
@@ -20,21 +19,13 @@ namespace GitVersion.VersionCalculation
         }
         public override IEnumerable<BaseVersion> GetVersions()
         {
-            Commit baseVersionSource;
             var currentBranchTip = Context.CurrentBranch.Tip;
             if (currentBranchTip == null)
             {
                 throw new GitVersionException("No commits found on the current branch.");
             }
 
-            try
-            {
-                baseVersionSource = repositoryMetadataProvider.GetBaseVersionSource(currentBranchTip);
-            }
-            catch (NotFoundException exception)
-            {
-                throw new GitVersionException($"Cannot find commit {currentBranchTip.Sha}. Please ensure that the repository is an unshallow clone with `git fetch --unshallow`.", exception);
-            }
+            var baseVersionSource = repositoryMetadataProvider.GetBaseVersionSource(currentBranchTip);
 
             yield return new BaseVersion("Fallback base version", false, new SemanticVersion(minor: 1), baseVersionSource, null);
         }

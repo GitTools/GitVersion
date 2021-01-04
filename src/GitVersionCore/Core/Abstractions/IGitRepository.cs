@@ -6,15 +6,15 @@ namespace GitVersion
     public interface IGitRepository : IDisposable
     {
         IGitRepositoryCommands Commands { get; }
-        ObjectDatabase ObjectDatabase { get; }
         Branch Head { get; }
         CommitCollection Commits { get; }
         BranchCollection Branches { get; }
         TagCollection Tags { get; }
         ReferenceCollection Refs { get; }
-        Diff Diff { get; }
         RepositoryInformation Info { get; }
         Network Network { get; }
-        RepositoryStatus RetrieveStatus();
+        int GetNumberOfUncommittedChanges();
+        Commit FindMergeBase(Commit commit, Commit otherCommit);
+        string ShortenObjectId(Commit commit);
     }
 }

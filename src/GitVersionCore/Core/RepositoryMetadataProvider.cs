@@ -8,7 +8,6 @@ using GitVersion.Extensions;
 using GitVersion.Logging;
 using GitVersion.Model.Configuration;
 using GitVersion.VersionCalculation;
-using LibGit2Sharp;
 
 namespace GitVersion
 {
@@ -51,7 +50,7 @@ namespace GitVersion
                     commitToFindCommonBase = otherBranch.Tip.Parents.First();
                 }
 
-                var findMergeBase = (Commit)repository.ObjectDatabase.FindMergeBase(commit, commitToFindCommonBase);
+                var findMergeBase = repository.FindMergeBase(commit, commitToFindCommonBase);
                 if (findMergeBase != null)
                 {
                     log.Info($"Found merge base of {findMergeBase.Sha}");
@@ -67,7 +66,7 @@ namespace GitVersion
                             // TODO Fix the logging up in this section
                             var second = forwardMerge.Parents.First();
                             log.Debug("Second " + second.Sha);
-                            var mergeBase = (Commit)repository.ObjectDatabase.FindMergeBase(commit, second);
+                            var mergeBase = repository.FindMergeBase(commit, second);
                             if (mergeBase == null)
                             {
                                 log.Warning("Could not find mergbase for " + commit);
@@ -98,7 +97,7 @@ namespace GitVersion
 
         public Commit FindMergeBase(Commit commit, Commit mainlineTip)
         {
-            return (Commit)repository.ObjectDatabase.FindMergeBase(commit, mainlineTip);
+            return repository.FindMergeBase(commit, mainlineTip);
         }
 
         public Commit GetCurrentCommit(Branch currentBranch, string commitId)
@@ -325,7 +324,8 @@ namespace GitVersion
             return repository.Tags
                 .SelectMany(t =>
                 {
-                    if (t.PeeledTarget() is LibGit2Sharp.Commit targetCommit && targetCommit == commit && SemanticVersion.TryParse(t.FriendlyName, config.GitTagPrefix, out var version))
+                    var targetCommit = t.PeeledTargetCommit();
+                    if (targetCommit != null && targetCommit == commit && SemanticVersion.TryParse(t.FriendlyName, config.GitTagPrefix, out var version))
                         return new[]
                         {
                             version
@@ -366,10 +366,12 @@ namespace GitVersion
 
             foreach (var tag in repository.Tags)
             {
-                if (!(tag.PeeledTarget() is LibGit2Sharp.Commit commit))
+                var commit = tag.PeeledTargetCommit();
+
+                if (commit == null)
                     continue;
 
-                if (olderThan.HasValue && ((Commit)commit).When() > olderThan.Value)
+                if (olderThan.HasValue && commit.When() > olderThan.Value)
                     continue;
 
                 if (SemanticVersion.TryParse(tag.FriendlyName, tagPrefixRegex, out var semver))
@@ -388,7 +390,7 @@ namespace GitVersion
 
         public string ShortenObjectId(Commit commit)
         {
-            return repository.ObjectDatabase.ShortenObjectId(commit);
+            return repository.ShortenObjectId(commit);
         }
 
         public VersionField? DetermineIncrementedField(BaseVersion baseVersion, GitVersionContext context)
@@ -440,36 +442,7 @@ namespace GitVersion
             return branchMergeBases;
         }
 
-        public int GetNumberOfUncommittedChanges()
-        {
-            // check if we have a branch tip at all to behave properly with empty repos
-            // => return that we have actually uncomitted changes because we are apparently
-            // running GitVersion on something which lives inside this brand new repo _/\Ö/\_
-            if (repository.Head?.Tip == null || repository.Diff == null)
-            {
-                // this is a somewhat cumbersome way of figuring out the number of changes in the repo
-                // which is more expensive than to use the Diff as it gathers more info, but
-                // we can't use the other method when we are dealing with a new/empty repo
-                try
-                {
-                    var status = repository.RetrieveStatus();
-                    return status.Untracked.Count() + status.Staged.Count();
-
-                }
-                catch (Exception)
-                {
-                    return Int32.MaxValue; // this should be somewhat puzzling to see,
-                    // so we may have reached our goal to show that
-                    // that repo is really "Dirty"...
-                }
-            }
-
-            // gets all changes of the last commit vs Staging area and WT
-            var changes = repository.Diff.Compare<TreeChanges>(repository.Head.Tip.Tree,
-                DiffTargets.Index | DiffTargets.WorkingDirectory);
-
-            return changes.Count;
-        }
+        public int GetNumberOfUncommittedChanges() => repository.GetNumberOfUncommittedChanges();
 
         private class MergeBaseData
         {

@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using LibGit2Sharp;
 using Microsoft.Extensions.Options;
 
@@ -32,7 +33,44 @@ namespace GitVersion
             if (repositoryLazy.IsValueCreated) repositoryInstance.Dispose();
         }
 
-        public RepositoryStatus RetrieveStatus() => repositoryInstance.RetrieveStatus();
+        public int GetNumberOfUncommittedChanges()
+        {
+            // check if we have a branch tip at all to behave properly with empty repos
+            // => return that we have actually uncomitted changes because we are apparently
+            // running GitVersion on something which lives inside this brand new repo _/\Ö/\_
+            if (repositoryInstance.Head?.Tip == null || repositoryInstance.Diff == null)
+            {
+                // this is a somewhat cumbersome way of figuring out the number of changes in the repo
+                // which is more expensive than to use the Diff as it gathers more info, but
+                // we can't use the other method when we are dealing with a new/empty repo
+                try
+                {
+                    var status = repositoryInstance.RetrieveStatus();
+                    return status.Untracked.Count() + status.Staged.Count();
+
+                }
+                catch (Exception)
+                {
+                    return Int32.MaxValue; // this should be somewhat puzzling to see,
+                    // so we may have reached our goal to show that
+                    // that repo is really "Dirty"...
+                }
+            }
+
+            // gets all changes of the last commit vs Staging area and WT
+            var changes = repositoryInstance.Diff.Compare<TreeChanges>(repositoryInstance.Head.Tip.Tree,
+                DiffTargets.Index | DiffTargets.WorkingDirectory);
+
+            return changes.Count;
+        }
+        public Commit FindMergeBase(Commit commit, Commit otherCommit)
+        {
+            return (Commit)repositoryInstance.ObjectDatabase.FindMergeBase(commit, otherCommit);
+        }
+        public string ShortenObjectId(Commit commit)
+        {
+            return repositoryInstance.ObjectDatabase.ShortenObjectId(commit);
+        }
 
         public Branch Head => (Branch)repositoryInstance.Head;
 
@@ -45,10 +83,6 @@ namespace GitVersion
         public TagCollection Tags => (TagCollection)repositoryInstance.Tags;
 
         public RepositoryInformation Info => repositoryInstance.Info;
-
-        public Diff Diff => repositoryInstance.Diff;
-
-        public ObjectDatabase ObjectDatabase => repositoryInstance.ObjectDatabase;
 
         public Network Network => repositoryInstance.Network;
     }

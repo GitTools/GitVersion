@@ -3,6 +3,7 @@ using GitVersion;
 using LibGit2Sharp;
 using Branch = GitVersion.Branch;
 using BranchCollection = GitVersion.BranchCollection;
+using Commit = GitVersion.Commit;
 using ReferenceCollection = GitVersion.ReferenceCollection;
 using TagCollection = GitVersion.TagCollection;
 
@@ -11,18 +12,13 @@ namespace GitVersionCore.Tests.Mocks
     public class MockRepository : IGitRepository
     {
         private CommitCollection commits;
+        public IGitRepositoryCommands Commands { get; }
 
         public MockRepository()
         {
             Tags = new MockTagCollection();
             Refs = new MockReferenceCollection();
         }
-
-        public void Dispose()
-        {
-            throw new NotImplementedException();
-        }
-
         public Branch Head { get; set; }
         public ReferenceCollection Refs { get; set; }
 
@@ -35,14 +31,11 @@ namespace GitVersionCore.Tests.Mocks
         public BranchCollection Branches { get; set; }
         public TagCollection Tags { get; set; }
         public RepositoryInformation Info { get; set; }
-        public Diff Diff { get; set; }
-        public ObjectDatabase ObjectDatabase { get; set; }
 
         public Network Network { get; set; }
-        public RepositoryStatus RetrieveStatus()
-        {
-            throw new NotImplementedException();
-        }
-        public IGitRepositoryCommands Commands { get; }
+        public int GetNumberOfUncommittedChanges() => 0;
+        public Commit FindMergeBase(Commit commit, Commit otherCommit) => throw new NotImplementedException();
+        public string ShortenObjectId(Commit commit) => throw new NotImplementedException();
+        public void Dispose() => throw new NotImplementedException();
     }
 }
