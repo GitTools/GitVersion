@@ -46,6 +46,35 @@ namespace GitVersion
         }
     }
 
+    public class ObjectId
+    {
+        private static readonly LambdaEqualityHelper<ObjectId> equalityHelper =
+            new LambdaEqualityHelper<ObjectId>(x => x.Sha);
+
+        private readonly LibGit2Sharp.ObjectId innerObjectId;
+        private ObjectId(LibGit2Sharp.ObjectId objectId)
+        {
+            innerObjectId = objectId;
+        }
+
+        public ObjectId(string sha)
+        {
+            innerObjectId = new LibGit2Sharp.ObjectId(sha);
+        }
+
+        public override bool Equals(object obj) => Equals(obj as ObjectId);
+        private bool Equals(ObjectId other) => equalityHelper.Equals(this, other);
+
+        public override int GetHashCode() => equalityHelper.GetHashCode(this);
+        public static bool operator !=(ObjectId left, ObjectId right) => !Equals(left, right);
+        public static bool operator ==(ObjectId left, ObjectId right) => Equals(left, right);
+        public static implicit operator LibGit2Sharp.ObjectId(ObjectId d) => d?.innerObjectId;
+        public static explicit operator ObjectId(LibGit2Sharp.ObjectId b) => b is null ? null : new ObjectId(b);
+        public string Sha => innerObjectId?.Sha;
+
+        public string ToString(int prefixLength) => innerObjectId.ToString(prefixLength);
+    }
+
     public class Tag
     {
         private readonly LibGit2Sharp.Tag innerTag;
@@ -114,7 +143,7 @@ namespace GitVersion
         }
 
         public virtual string Sha => innerCommit?.Sha;
-        public virtual ObjectId Id => innerCommit?.Id;
+        public virtual ObjectId Id => (ObjectId)innerCommit?.Id;
         public virtual DateTimeOffset? CommitterWhen => innerCommit?.Committer.When;
         public virtual string Message => innerCommit?.Message;
     }
@@ -158,7 +187,7 @@ namespace GitVersion
         public virtual string CanonicalName => innerReference.CanonicalName;
         public virtual string TargetIdentifier => innerReference.TargetIdentifier;
         public virtual string DirectReferenceTargetIdentifier => directReference.TargetIdentifier;
-        public virtual ObjectId DirectReferenceTargetId => directReference.Target.Id;
+        public virtual ObjectId DirectReferenceTargetId => (ObjectId)directReference.Target.Id;
 
         public virtual Reference ResolveToDirectReference() => (Reference)directReference;
         public static implicit operator LibGit2Sharp.Reference(Reference d) => d?.innerReference;
@@ -295,7 +324,7 @@ namespace GitVersion
         {
         }
 
-        public static CommitCollection FromCommitLog(ICommitLog b) => b is null ? null : new CommitCollection(b);
+        internal static CommitCollection FromCommitLog(ICommitLog b) => b is null ? null : new CommitCollection(b);
 
         public virtual IEnumerator<Commit> GetEnumerator()
         {
