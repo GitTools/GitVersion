@@ -427,7 +427,7 @@ namespace GitVersion
                 {
                     if (otherBranch.Tip == null)
                     {
-                        log.Warning(String.Format(MissingTipFormat, otherBranch.FriendlyName));
+                        log.Warning(string.Format(MissingTipFormat, otherBranch.FriendlyName));
                         return BranchCommit.Empty;
                     }
 

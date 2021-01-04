@@ -11,6 +11,7 @@ using NUnit.Framework;
 using Commit = GitVersion.Commit;
 using Branch = GitVersion.Branch;
 using BranchCollection = GitVersion.BranchCollection;
+using Reference = GitVersion.Reference;
 using ReferenceCollection = GitVersion.ReferenceCollection;
 using Remote = GitVersion.Remote;
 
@@ -181,19 +182,15 @@ namespace GitVersionCore.Tests
 
         private class TestableReference : Reference
         {
-            private readonly string canonicalName;
 
             public TestableReference(string canonicalName)
             {
-                this.canonicalName = canonicalName;
+                this.CanonicalName = canonicalName;
             }
 
-            public override string CanonicalName => canonicalName;
+            public override string CanonicalName { get; }
 
-            public override DirectReference ResolveToDirectReference()
-            {
-                throw new NotImplementedException();
-            }
+            public override DirectReference ResolveToDirectReference() => throw new NotImplementedException();
         }
     }
 }
