@@ -132,6 +132,26 @@ namespace GitVersion
         public virtual bool IsTracking => innerBranch != null && innerBranch.IsTracking;
     }
 
+    public class Reference
+    {
+        private readonly LibGit2Sharp.Reference innerReference;
+
+        private Reference(LibGit2Sharp.Reference reference)
+        {
+            innerReference = reference;
+        }
+
+        protected Reference()
+        {
+        }
+        public virtual string CanonicalName => innerReference.CanonicalName;
+        public string TargetIdentifier => innerReference.TargetIdentifier;
+
+        public virtual DirectReference ResolveToDirectReference() => innerReference.ResolveToDirectReference();
+        public static implicit operator LibGit2Sharp.Reference(Reference d) => d?.innerReference;
+        public static explicit operator Reference(LibGit2Sharp.Reference b) => b is null ? null : new Reference(b);
+    }
+
     public class Remote
     {
         private readonly LibGit2Sharp.Remote innerRemote;
@@ -220,12 +240,12 @@ namespace GitVersion
         public IEnumerator<Reference> GetEnumerator()
         {
             foreach (var reference in innerCollection)
-                yield return reference;
+                yield return (Reference)reference;
         }
 
         public virtual Reference Add(string name, string canonicalRefNameOrObjectish)
         {
-            return innerCollection.Add(name, canonicalRefNameOrObjectish);
+            return (Reference)innerCollection.Add(name, canonicalRefNameOrObjectish);
         }
 
         public virtual DirectReference Add(string name, ObjectId targetId)
@@ -240,7 +260,7 @@ namespace GitVersion
 
         public virtual Reference UpdateTarget(Reference directRef, ObjectId targetId)
         {
-            return innerCollection.UpdateTarget(directRef, targetId);
+            return (Reference)innerCollection.UpdateTarget(directRef, targetId);
         }
 
         public virtual ReflogCollection Log(string canonicalName)
@@ -249,12 +269,13 @@ namespace GitVersion
         }
 
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
-        public virtual Reference this[string name] => innerCollection[name];
+        public virtual Reference this[string name] => (Reference)innerCollection[name];
         public virtual Reference Head => this["HEAD"];
 
         public virtual IEnumerable<Reference> FromGlob(string pattern)
         {
-            return innerCollection.FromGlob(pattern);
+            foreach (var reference in innerCollection.FromGlob(pattern))
+                yield return (Reference)reference;
         }
     }
 
