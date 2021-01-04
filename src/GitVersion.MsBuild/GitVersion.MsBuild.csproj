@@ -14,6 +14,9 @@
 
     <ItemGroup>
         <PackageReference Include="Microsoft.Build.Utilities.Core" Version="$(PackageVersion_MsBuild)"/>
+        <PackageReference Include="Microsoft.Win32.Registry" Version="$(PackageVersion_MicrosoftExtensions)" PrivateAssets="All"/>
+        <PackageReference Include="System.Text.Json" Version="$(PackageVersion_MicrosoftJson)" PrivateAssets="All"/>
+        <PackageReference Include="System.Text.Encodings.Web" Version="$(PackageVersion_MicrosoftJson)" PrivateAssets="All"/>
         <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="$(PackageVersion_MicrosoftExtensions)" PrivateAssets="All"/>
     </ItemGroup>
 
