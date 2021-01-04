@@ -27,7 +27,7 @@ namespace GitVersionCore.Tests
 
         public static void DumpGraph(this IGitRepository repository, Action<string> writer = null, int? maxCommits = null)
         {
-            GitExtensions.DumpGraph(repository.Info.Path, writer, maxCommits);
+            GitExtensions.DumpGraph(repository.Path, writer, maxCommits);
         }
 
         public static VersionVariables GetVersion(this RepositoryFixtureBase fixture, Config configuration = null, IRepository repository = null, string commitId = null, bool onlyTrackedBranches = true, string branch = null)
