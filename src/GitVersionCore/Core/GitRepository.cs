@@ -33,6 +33,8 @@ namespace GitVersion
             if (repositoryLazy.IsValueCreated) repositoryInstance.Dispose();
         }
 
+        public string Path => repositoryInstance.Info.Path;
+        public bool IsHeadDetached => repositoryInstance.Info.IsHeadDetached;
         public int GetNumberOfUncommittedChanges()
         {
             // check if we have a branch tip at all to behave properly with empty repos
@@ -81,8 +83,6 @@ namespace GitVersion
         public BranchCollection Branches => (BranchCollection)repositoryInstance.Branches;
 
         public TagCollection Tags => (TagCollection)repositoryInstance.Tags;
-
-        public RepositoryInformation Info => repositoryInstance.Info;
 
         public Network Network => repositoryInstance.Network;
     }
