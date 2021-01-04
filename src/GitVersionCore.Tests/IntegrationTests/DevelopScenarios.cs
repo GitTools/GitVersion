@@ -324,8 +324,12 @@ namespace GitVersionCore.Tests.IntegrationTests
             fixture.AssertFullSemver("1.2.0-alpha.14");
             fixture.AssertFullSemver("1.2.0-alpha.14", config);
 
+            var versionSourceBeforeReleaseBranchIsRemoved = fixture.GetVersion(config).Sha;
+
             // Removing the release branch and calculating the version with the config exhibits the problem.
             fixture.Repository.Branches.Remove(ReleaseBranch);
+            var versionSourceAfterReleaseBranchIsRemoved = fixture.GetVersion(config).Sha;
+            Assert.AreEqual(versionSourceBeforeReleaseBranchIsRemoved, versionSourceAfterReleaseBranchIsRemoved);
             fixture.AssertFullSemver("1.2.0-alpha.14");
             fixture.AssertFullSemver("1.2.0-alpha.14", config);
         }
