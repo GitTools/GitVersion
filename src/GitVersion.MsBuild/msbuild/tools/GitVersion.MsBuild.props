@@ -2,7 +2,7 @@
 
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
     <PropertyGroup>
-        <GitVersionOutputFile>$(MSBuildProjectDirectory)/gitversion.json</GitVersionOutputFile>
+        <GitVersionOutputFile>$(BaseIntermediateOutputPath)/gitversion.json</GitVersionOutputFile>
 
         <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">$(MSBuildProjectDirectory)/../</SolutionDir>
         <GitVersionPath Condition="'$(GitVersionPath)' == '' And '$(GitVersionUseSolutionDir)' == 'true'">$(SolutionDir)</GitVersionPath>
