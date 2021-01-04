@@ -12,6 +12,7 @@ using Commit = GitVersion.Commit;
 using Branch = GitVersion.Branch;
 using BranchCollection = GitVersion.BranchCollection;
 using ReferenceCollection = GitVersion.ReferenceCollection;
+using Remote = GitVersion.Remote;
 
 namespace GitVersionCore.Tests
 {

@@ -1,7 +1,6 @@
 using System;
 using GitVersion;
 using GitVersion.Logging;
-using Remote = LibGit2Sharp.Remote;
 namespace GitVersionCore.Tests.Mocks
 {
     public class MockRepository : IGitRepository

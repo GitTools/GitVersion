@@ -1,6 +1,5 @@
 using System;
 using GitVersion.Logging;
-using LibGit2Sharp;
 
 namespace GitVersion
 {

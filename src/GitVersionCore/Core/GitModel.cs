@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using GitVersion.Helpers;
 using LibGit2Sharp;
 using LibGit2Sharp.Handlers;
@@ -129,6 +130,25 @@ namespace GitVersion
         public virtual CommitCollection Commits => CommitCollection.FromCommitLog(innerBranch?.Commits);
         public virtual bool IsRemote => innerBranch != null && innerBranch.IsRemote;
         public virtual bool IsTracking => innerBranch != null && innerBranch.IsTracking;
+    }
+
+    public class Remote
+    {
+        private readonly LibGit2Sharp.Remote innerRemote;
+
+        private Remote(LibGit2Sharp.Remote remote)
+        {
+            innerRemote = remote;
+        }
+
+        protected Remote()
+        {
+        }
+        public static implicit operator LibGit2Sharp.Remote(Remote d) => d?.innerRemote;
+        public static explicit operator Remote(LibGit2Sharp.Remote b) => b is null ? null : new Remote(b);
+        public virtual string Name => innerRemote.Name;
+        public virtual string Url => innerRemote.Url;
+        public virtual string RefSpecs => string.Join(", ", innerRemote.FetchRefSpecs.Select(r => r.Specification));
     }
 
     public class BranchCollection : IEnumerable<Branch>
