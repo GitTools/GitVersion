@@ -32,6 +32,9 @@
     </PropertyGroup>
 
     <PropertyGroup>
+        <GitVersionFileExe Condition="'$(GitVersionFileExe)' == ''">dotnet $(MSBuildThisFileDirectory)netcoreapp3.1/gitversion.dll</GitVersionFileExe>
+        <GitVersionAssemblyFile Condition="'$(GitVersionAssemblyFile)' == ''">$(MSBuildThisFileDirectory)netcoreapp3.1/GitVersion.MsBuild.dll</GitVersionAssemblyFile>
+
         <DisableGitVersionTask Condition=" '$(DisableGitVersionTask)' == '' ">false</DisableGitVersionTask>
 
         <!-- Property that enables WriteVersionInfoToBuildLog -->
