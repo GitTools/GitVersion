@@ -5,15 +5,8 @@ using GitVersion;
 using GitVersion.Extensions;
 using GitVersion.Logging;
 using GitVersionCore.Tests.Helpers;
-using LibGit2Sharp;
 using NSubstitute;
 using NUnit.Framework;
-using Commit = GitVersion.Commit;
-using Branch = GitVersion.Branch;
-using BranchCollection = GitVersion.BranchCollection;
-using Reference = GitVersion.Reference;
-using ReferenceCollection = GitVersion.ReferenceCollection;
-using Remote = GitVersion.Remote;
 
 namespace GitVersionCore.Tests
 {

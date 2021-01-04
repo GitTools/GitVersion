@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using LibGit2Sharp;
 using Commit = GitVersion.Commit;
+using ObjectId = GitVersion.ObjectId;
 
 namespace GitVersionCore.Tests.Mocks
 {
