@@ -1,7 +1,6 @@
 using System;
 using System.IO;
 using System.Linq;
-using LibGit2Sharp;
 
 namespace GitVersion.Extensions
 {
@@ -11,7 +10,7 @@ namespace GitVersion.Extensions
         {
             var dotGitDirectory = !string.IsNullOrWhiteSpace(gitVersionOptions.DynamicGitRepositoryPath)
                 ? gitVersionOptions.DynamicGitRepositoryPath
-                : Repository.Discover(gitVersionOptions.WorkingDirectory);
+                : GitRepository.Discover(gitVersionOptions.WorkingDirectory);
 
             dotGitDirectory = dotGitDirectory?.TrimEnd('/', '\\');
             if (string.IsNullOrEmpty(dotGitDirectory))
@@ -29,13 +28,13 @@ namespace GitVersion.Extensions
                 return gitVersionOptions.WorkingDirectory;
             }
 
-            var dotGitDirectory = Repository.Discover(gitVersionOptions.WorkingDirectory);
+            var dotGitDirectory = GitRepository.Discover(gitVersionOptions.WorkingDirectory);
 
             if (string.IsNullOrEmpty(dotGitDirectory))
                 throw new DirectoryNotFoundException("Cannot find the .git directory");
 
-            using var repository = new Repository(dotGitDirectory);
-            return repository.Info.WorkingDirectory;
+            using var repository = new GitRepository(dotGitDirectory);
+            return repository.WorkingDirectory;
         }
 
         public static string GetGitRootPath(this GitVersionOptions options)
@@ -71,7 +70,6 @@ namespace GitVersion.Extensions
             }
 
             var repositoryPath = Path.Combine(possiblePath, ".git");
-
             return repositoryPath;
 
         }
@@ -80,8 +78,8 @@ namespace GitVersion.Extensions
         {
             try
             {
-                using var repository = new Repository(possiblePath);
-                return repository.Network.Remotes.Any(r => r.Url == targetUrl);
+                using IGitRepository repository = new GitRepository(possiblePath);
+                return repository.GitRepoHasMatchingRemote(targetUrl);
             }
             catch (Exception)
             {
