@@ -86,25 +86,8 @@ namespace GitVersion
 
         private void CleanupDuplicateOrigin()
         {
-            var remoteToKeep = DefaultRemoteName;
-            using var repo = new Repository(options.Value.GitRootPath);
-
-            // check that we have a remote that matches defaultRemoteName if not take the first remote
-            if (!repo.Network.Remotes.Any(remote => remote.Name.Equals(DefaultRemoteName, StringComparison.InvariantCultureIgnoreCase)))
-            {
-                remoteToKeep = repo.Network.Remotes.First().Name;
-            }
-
-            var duplicateRepos = repo.Network
-                                     .Remotes
-                                     .Where(remote => !remote.Name.Equals(remoteToKeep, StringComparison.InvariantCultureIgnoreCase))
-                                     .Select(remote => remote.Name);
-
-            // remove all remotes that are considered duplicates
-            foreach (var repoName in duplicateRepos)
-            {
-                repo.Network.Remotes.Remove(repoName);
-            }
+            using IGitRepository repo = new GitRepository(options.Value.GitRootPath);
+            repo.CleanupDuplicateOrigin(DefaultRemoteName);
         }
 
         private void CreateDynamicRepository(string targetBranch)
@@ -144,53 +127,10 @@ namespace GitVersion
 
         private void CloneRepository(string repositoryUrl, string gitDirectory, AuthenticationInfo auth)
         {
-            Credentials credentials = null;
-
-            if (auth != null)
+            using (log.IndentLog($"Cloning repository from url '{repositoryUrl}'"))
             {
-                if (!string.IsNullOrWhiteSpace(auth.Username))
-                {
-                    log.Info($"Setting up credentials using name '{auth.Username}'");
-
-                    credentials = new UsernamePasswordCredentials
-                    {
-                        Username = auth.Username,
-                        Password = auth.Password ?? string.Empty
-                    };
-                }
-            }
-
-            try
-            {
-                using (log.IndentLog($"Cloning repository from url '{repositoryUrl}'"))
-                {
-                    var cloneOptions = new CloneOptions
-                    {
-                        Checkout = false,
-                        CredentialsProvider = (url, usernameFromUrl, types) => credentials
-                    };
-
-                    var returnedPath = Repository.Clone(repositoryUrl, gitDirectory, cloneOptions);
-                    log.Info($"Returned path after repository clone: {returnedPath}");
-                }
-            }
-            catch (LibGit2SharpException ex)
-            {
-                var message = ex.Message;
-                if (message.Contains("401"))
-                {
-                    throw new Exception("Unauthorized: Incorrect username/password");
-                }
-                if (message.Contains("403"))
-                {
-                    throw new Exception("Forbidden: Possibly Incorrect username/password");
-                }
-                if (message.Contains("404"))
-                {
-                    throw new Exception("Not found: The repository was not found");
-                }
-
-                throw new Exception("There was an unknown problem with the Git repository you provided", ex);
+                var returnedPath = GitRepository.Clone(repositoryUrl, gitDirectory, auth);
+                log.Info($"Returned path after repository clone: {returnedPath}");
             }
         }
 
@@ -201,7 +141,7 @@ namespace GitVersion
         private void NormalizeGitDirectory(string gitDirectory, bool noFetch, string currentBranch, bool isDynamicRepository)
         {
             var authentication = options.Value.Authentication;
-            using var repository = new GitRepository(() => gitDirectory);
+            using IGitRepository repository = new GitRepository(gitDirectory);
             // Need to ensure the HEAD does not move, this is essentially a BugCheck
             var expectedSha = repository.Head.Tip.Sha;
             var expectedBranchName = repository.Head.CanonicalName;
@@ -218,7 +158,7 @@ namespace GitVersion
                 else
                 {
                     log.Info($"Fetching from remote '{remote.Name}' using the following refspecs: {string.Join(", ", remote.FetchRefSpecs.Select(r => r.Specification))}.");
-                    repository.Commands.Fetch(remote.Name, new string[0], authentication.ToFetchOptions(), null);
+                    repository.Commands.Fetch(remote.Name, new string[0], authentication, null);
                 }
 
                 EnsureLocalBranchExistsForCurrentBranch(repository, log, remote, currentBranch);
@@ -292,7 +232,7 @@ namespace GitVersion
                 else if (localBranchesWhereCommitShaIsHead.Count == 0)
                 {
                     log.Info($"No local branch pointing at the commit '{headSha}'. Fake branch needs to be created.");
-                    repository.CreateFakeBranchPointingAtThePullRequestTip(log, authentication);
+                    repository.CreateBranchForPullRequestBranch(log, authentication);
                 }
                 else
                 {

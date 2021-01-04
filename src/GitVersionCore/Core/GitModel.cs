@@ -3,9 +3,48 @@ using System.Collections;
 using System.Collections.Generic;
 using GitVersion.Helpers;
 using LibGit2Sharp;
+using LibGit2Sharp.Handlers;
 
 namespace GitVersion
 {
+    public class AuthenticationInfo
+    {
+        public string Username { get; set; }
+        public string Password { get; set; }
+        public string Token { get; set; }
+        public CredentialsHandler CredentialsProvider()
+        {
+            if (!string.IsNullOrWhiteSpace(Username))
+            {
+                return (url, user, types) => new UsernamePasswordCredentials
+                {
+                    Username = Username,
+                    Password = Password ?? string.Empty
+                };
+            }
+            return null;
+        }
+        public FetchOptions ToFetchOptions()
+        {
+            var fetchOptions = new FetchOptions
+            {
+                CredentialsProvider = CredentialsProvider()
+            };
+
+            return fetchOptions;
+        }
+        public CloneOptions ToCloneOptions()
+        {
+            var cloneOptions = new CloneOptions
+            {
+                Checkout = false,
+                CredentialsProvider = CredentialsProvider()
+            };
+
+            return cloneOptions;
+        }
+    }
+
     public class Tag
     {
         private readonly LibGit2Sharp.Tag innerTag;
@@ -24,6 +63,7 @@ namespace GitVersion
         public virtual string FriendlyName => innerTag?.FriendlyName;
         public virtual TagAnnotation Annotation => innerTag?.Annotation;
     }
+
     public class Commit
     {
         private static readonly LambdaEqualityHelper<Commit> equalityHelper =

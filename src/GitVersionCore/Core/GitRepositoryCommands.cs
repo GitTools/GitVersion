@@ -28,9 +28,9 @@ namespace GitVersion
             Commands.Checkout(repository, branch);
         }
 
-        public void Fetch(string remote, IEnumerable<string> refspecs, FetchOptions options, string logMessage)
+        public void Fetch(string remote, IEnumerable<string> refspecs, AuthenticationInfo auth, string logMessage)
         {
-            Commands.Fetch((Repository)repository, remote, refspecs, options, logMessage);
+            Commands.Fetch((Repository)repository, remote, refspecs, auth.ToFetchOptions(), logMessage);
         }
     }
 }

@@ -4,7 +4,6 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using GitVersion.Helpers;
-using GitVersion.Logging;
 using LibGit2Sharp;
 
 namespace GitVersion.Extensions
@@ -243,104 +242,6 @@ namespace GitVersion.Extensions
             var commitCollection = repository.Commits.QueryBy(filter);
 
             return commitCollection;
-        }
-
-        public static Remote EnsureOnlyOneRemoteIsDefined(this IGitRepository repo, ILog log)
-        {
-            var remotes = repo.Network.Remotes;
-            var howMany = remotes.Count();
-
-            if (howMany == 1)
-            {
-                var remote = remotes.Single();
-                log.Info($"One remote found ({remote.Name} -> '{remote.Url}').");
-                repo.AddMissingRefSpecs(log, remote);
-                return remote;
-            }
-
-            var message = $"{howMany} remote(s) have been detected. When being run on a build server, the Git repository is expected to bear one (and no more than one) remote.";
-            throw new WarningException(message);
-        }
-
-        public static void CreateFakeBranchPointingAtThePullRequestTip(this IGitRepository repo, ILog log, AuthenticationInfo authentication)
-        {
-            var remote = repo.Network.Remotes.Single();
-
-            log.Info("Fetching remote refs to see if there is a pull request ref");
-            var remoteTips = (string.IsNullOrWhiteSpace(authentication.Username) ?
-                    repo.GetRemoteTipsForAnonymousUser(remote) :
-                    repo.GetRemoteTipsUsingUsernamePasswordCredentials(remote, authentication.Username, authentication.Password))
-                .Select(r => r.ResolveToDirectReference()).ToList();
-
-            log.Info($"Remote Refs:{System.Environment.NewLine}" + string.Join(System.Environment.NewLine, remoteTips.Select(r => r.CanonicalName)));
-
-            var headTipSha = repo.Head.Tip.Sha;
-
-            var refs = remoteTips.Where(r => r.TargetIdentifier == headTipSha).ToList();
-
-            if (refs.Count == 0)
-            {
-                var message = $"Couldn't find any remote tips from remote '{remote.Url}' pointing at the commit '{headTipSha}'.";
-                throw new WarningException(message);
-            }
-
-            if (refs.Count > 1)
-            {
-                var names = string.Join(", ", refs.Select(r => r.CanonicalName));
-                var message = $"Found more than one remote tip from remote '{remote.Url}' pointing at the commit '{headTipSha}'. Unable to determine which one to use ({names}).";
-                throw new WarningException(message);
-            }
-
-            var reference = refs[0];
-            var canonicalName = reference.CanonicalName;
-            log.Info($"Found remote tip '{canonicalName}' pointing at the commit '{headTipSha}'.");
-
-            if (canonicalName.StartsWith("refs/tags"))
-            {
-                log.Info($"Checking out tag '{canonicalName}'");
-                repo.Commands.Checkout(reference.Target.Sha);
-                return;
-            }
-
-            if (!canonicalName.StartsWith("refs/pull/") && !canonicalName.StartsWith("refs/pull-requests/"))
-            {
-                var message = $"Remote tip '{canonicalName}' from remote '{remote.Url}' doesn't look like a valid pull request.";
-                throw new WarningException(message);
-            }
-
-            var fakeBranchName = canonicalName.Replace("refs/pull/", "refs/heads/pull/").Replace("refs/pull-requests/", "refs/heads/pull-requests/");
-
-            log.Info($"Creating fake local branch '{fakeBranchName}'.");
-            repo.Refs.Add(fakeBranchName, new ObjectId(headTipSha));
-
-            log.Info($"Checking local branch '{fakeBranchName}' out.");
-            repo.Commands.Checkout(fakeBranchName);
-        }
-
-        private static IEnumerable<Reference> GetRemoteTipsUsingUsernamePasswordCredentials(this IGitRepository repository, Remote remote, string username, string password)
-        {
-            return repository.Network.ListReferences(remote, (url, fromUrl, types) => new UsernamePasswordCredentials
-            {
-                Username = username,
-                Password = password ?? string.Empty
-            });
-        }
-
-        private static IEnumerable<Reference> GetRemoteTipsForAnonymousUser(this IGitRepository repository, Remote remote)
-        {
-            return repository.Network.ListReferences(remote);
-        }
-
-        private static void AddMissingRefSpecs(this IGitRepository repo, ILog log, Remote remote)
-        {
-            if (remote.FetchRefSpecs.Any(r => r.Source == "refs/heads/*"))
-                return;
-
-            var allBranchesFetchRefSpec = $"+refs/heads/*:refs/remotes/{remote.Name}/*";
-
-            log.Info($"Adding refspec: {allBranchesFetchRefSpec}");
-
-            repo.Network.Remotes.Update(remote.Name, r => r.FetchRefSpecs.Add(allBranchesFetchRefSpec));
         }
     }
 }

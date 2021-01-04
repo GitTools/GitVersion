@@ -1,4 +1,5 @@
 using System;
+using GitVersion.Logging;
 using LibGit2Sharp;
 
 namespace GitVersion
@@ -6,6 +7,7 @@ namespace GitVersion
     public interface IGitRepository : IDisposable
     {
         string Path { get; }
+        string WorkingDirectory { get; }
         bool IsHeadDetached { get; }
         IGitRepositoryCommands Commands { get; }
         Branch Head { get; }
@@ -13,9 +15,13 @@ namespace GitVersion
         BranchCollection Branches { get; }
         TagCollection Tags { get; }
         ReferenceCollection Refs { get; }
-        Network Network { get; }
+
         int GetNumberOfUncommittedChanges();
         Commit FindMergeBase(Commit commit, Commit otherCommit);
         string ShortenObjectId(Commit commit);
+        void CreateBranchForPullRequestBranch(ILog log, AuthenticationInfo auth);
+        Remote EnsureOnlyOneRemoteIsDefined(ILog log);
+        bool GitRepoHasMatchingRemote(string targetUrl);
+        void CleanupDuplicateOrigin(string defaultRemoteName);
     }
 }
