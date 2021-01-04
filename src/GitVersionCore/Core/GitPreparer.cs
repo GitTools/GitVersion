@@ -314,7 +314,7 @@ namespace GitVersion
 
 To disable this error set an environmental variable called IGNORE_NORMALISATION_GIT_HEAD_MOVE to 1
 
-Please run `git {LibGitExtensions.CreateGitLogArgs(100)}` and submit it along with your build log (with personal info removed) in a new issue at https://github.com/GitTools/GitVersion");
+Please run `git {GitExtensions.CreateGitLogArgs(100)}` and submit it along with your build log (with personal info removed) in a new issue at https://github.com/GitTools/GitVersion");
                     }
                 }
             }

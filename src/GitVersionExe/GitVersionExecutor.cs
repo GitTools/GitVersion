@@ -82,7 +82,7 @@ namespace GitVersion
 
                 try
                 {
-                    LibGitExtensions.DumpGraph(gitVersionOptions.WorkingDirectory, mess => log.Info(mess), 100);
+                    GitExtensions.DumpGraph(gitVersionOptions.WorkingDirectory, mess => log.Info(mess), 100);
                 }
                 catch (Exception dumpGraphException)
                 {
@@ -138,7 +138,7 @@ namespace GitVersion
             if (gitVersionOptions.Diag)
             {
                 log.Info("Dumping commit graph: ");
-                LibGitExtensions.DumpGraph(workingDirectory, mess => log.Info(mess), 100);
+                GitExtensions.DumpGraph(workingDirectory, mess => log.Info(mess), 100);
             }
 
             if (!Directory.Exists(workingDirectory))
