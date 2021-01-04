@@ -353,7 +353,7 @@ namespace GitVersion
             {
                 var tags = GetValidVersionTags(tagPrefixRegex);
 
-                var versionTags = branch.Commits.SelectMany(c => tags.Where(t => c.Sha == t.Item1.Target.Sha).Select(t => t.Item2)).ToList();
+                var versionTags = branch.Commits.SelectMany(c => tags.Where(t => c.Sha == t.Item1.TargetSha).Select(t => t.Item2)).ToList();
 
                 semanticVersionTagsOnBranchCache.Add(branch, versionTags);
                 return versionTags;
@@ -435,7 +435,7 @@ namespace GitVersion
                     return new BranchCommit(findMergeBase, otherBranch);
                 })
                 .Where(b => b.Commit != null)
-                .OrderByDescending(b => b.Commit.Committer.When)
+                .OrderByDescending(b => b.Commit.CommitterWhen)
                 .ToList();
             mergeBaseCommitsCache.Add(branch, branchMergeBases);
 

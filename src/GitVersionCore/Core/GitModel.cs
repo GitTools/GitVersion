@@ -60,9 +60,20 @@ namespace GitVersion
         public static implicit operator LibGit2Sharp.Tag(Tag d) => d?.innerTag;
         public static explicit operator Tag(LibGit2Sharp.Tag b) => b is null ? null : new Tag(b);
 
-        public virtual GitObject Target => innerTag?.Target;
+        public virtual string TargetSha => innerTag?.Target.Sha;
         public virtual string FriendlyName => innerTag?.FriendlyName;
-        public virtual TagAnnotation Annotation => innerTag?.Annotation;
+
+        public Commit PeeledTargetCommit()
+        {
+            var target = innerTag.Target;
+
+            while (target is TagAnnotation annotation)
+            {
+                target = annotation.Target;
+            }
+
+            return target is LibGit2Sharp.Commit commit ? (Commit)commit : null;
+        }
     }
 
     public class Commit
@@ -104,9 +115,8 @@ namespace GitVersion
 
         public virtual string Sha => innerCommit?.Sha;
         public virtual ObjectId Id => innerCommit?.Id;
-        public virtual Signature Committer => innerCommit?.Committer;
+        public virtual DateTimeOffset? CommitterWhen => innerCommit?.Committer.When;
         public virtual string Message => innerCommit?.Message;
-        public virtual Tree Tree => innerCommit?.Tree;
     }
 
     public class Branch
@@ -135,6 +145,7 @@ namespace GitVersion
     public class Reference
     {
         private readonly LibGit2Sharp.Reference innerReference;
+        private DirectReference directReference => innerReference.ResolveToDirectReference();
 
         private Reference(LibGit2Sharp.Reference reference)
         {
@@ -145,9 +156,11 @@ namespace GitVersion
         {
         }
         public virtual string CanonicalName => innerReference.CanonicalName;
-        public string TargetIdentifier => innerReference.TargetIdentifier;
+        public virtual string TargetIdentifier => innerReference.TargetIdentifier;
+        public virtual string DirectReferenceTargetIdentifier => directReference.TargetIdentifier;
+        public virtual ObjectId DirectReferenceTargetId => directReference.Target.Id;
 
-        public virtual DirectReference ResolveToDirectReference() => innerReference.ResolveToDirectReference();
+        public virtual Reference ResolveToDirectReference() => (Reference)directReference;
         public static implicit operator LibGit2Sharp.Reference(Reference d) => d?.innerReference;
         public static explicit operator Reference(LibGit2Sharp.Reference b) => b is null ? null : new Reference(b);
     }
@@ -167,7 +180,6 @@ namespace GitVersion
         public static implicit operator LibGit2Sharp.Remote(Remote d) => d?.innerRemote;
         public static explicit operator Remote(LibGit2Sharp.Remote b) => b is null ? null : new Remote(b);
         public virtual string Name => innerRemote.Name;
-        public virtual string Url => innerRemote.Url;
         public virtual string RefSpecs => string.Join(", ", innerRemote.FetchRefSpecs.Select(r => r.Specification));
     }
 
@@ -248,24 +260,19 @@ namespace GitVersion
             return (Reference)innerCollection.Add(name, canonicalRefNameOrObjectish);
         }
 
-        public virtual DirectReference Add(string name, ObjectId targetId)
+        public virtual void Add(string name, ObjectId targetId)
         {
-            return innerCollection.Add(name, targetId);
+            innerCollection.Add(name, targetId);
         }
 
-        public virtual DirectReference Add(string name, ObjectId targetId, bool allowOverwrite)
+        public virtual void Add(string name, ObjectId targetId, bool allowOverwrite)
         {
-            return innerCollection.Add(name, targetId, allowOverwrite);
+            innerCollection.Add(name, targetId, allowOverwrite);
         }
 
         public virtual Reference UpdateTarget(Reference directRef, ObjectId targetId)
         {
             return (Reference)innerCollection.UpdateTarget(directRef, targetId);
-        }
-
-        public virtual ReflogCollection Log(string canonicalName)
-        {
-            return innerCollection.Log(canonicalName);
         }
 
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
@@ -287,8 +294,6 @@ namespace GitVersion
         protected CommitCollection()
         {
         }
-
-        public static ICommitLog ToCommitLog(CommitCollection d) => d.innerCollection;
 
         public static CommitCollection FromCommitLog(ICommitLog b) => b is null ? null : new CommitCollection(b);
 

@@ -277,20 +277,19 @@ Please run `git {GitExtensions.CreateGitLogArgs(100)}` and submit it along with 
                 if (repo.Refs.Any(x => x.CanonicalName.IsEquivalentTo(localCanonicalName)))
                 {
                     var localRef = repo.Refs[localCanonicalName];
-                    var remotedirectReference = remoteTrackingReference.ResolveToDirectReference();
-                    if (localRef.ResolveToDirectReference().TargetIdentifier == remotedirectReference.TargetIdentifier)
+                    if (localRef.DirectReferenceTargetIdentifier == remoteTrackingReference.DirectReferenceTargetIdentifier)
                     {
                         log.Info($"Skipping update of '{remoteTrackingReference.CanonicalName}' as it already matches the remote ref.");
                         continue;
                     }
-                    var remoteRefTipId = remotedirectReference.Target.Id;
+                    var remoteRefTipId = remoteTrackingReference.DirectReferenceTargetId;
                     log.Info($"Updating local ref '{localRef.CanonicalName}' to point at {remoteRefTipId}.");
                     repo.Refs.UpdateTarget(localRef, remoteRefTipId);
                     continue;
                 }
 
                 log.Info($"Creating local branch from remote tracking '{remoteTrackingReference.CanonicalName}'.");
-                repo.Refs.Add(localCanonicalName, new ObjectId(remoteTrackingReference.ResolveToDirectReference().TargetIdentifier), true);
+                repo.Refs.Add(localCanonicalName, new ObjectId(remoteTrackingReference.DirectReferenceTargetIdentifier), true);
 
                 var branch = repo.Branches[branchName];
                 repo.Branches.Update(branch, b => b.TrackedBranch = remoteTrackingReferenceName);

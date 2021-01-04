@@ -12,7 +12,7 @@ namespace GitVersion.Extensions
     {
         public static DateTimeOffset When(this Commit commit)
         {
-            return commit.Committer.When;
+            return commit.CommitterWhen.Value;
         }
 
         public static string NameWithoutRemote(this Branch branch)
@@ -56,19 +56,6 @@ namespace GitVersion.Extensions
         {
             return branches.Where(b => branchesToExclude.All(bte => !IsSameBranch(b, bte)));
         }
-
-        public static Commit PeeledTargetCommit(this Tag tag)
-        {
-            var target = tag.Target;
-
-            while (target is TagAnnotation annotation)
-            {
-                target = annotation.Target;
-            }
-
-            return target is LibGit2Sharp.Commit commit ? (Commit)commit : null;
-        }
-
         public static IEnumerable<Commit> CommitsPriorToThan(this Branch branch, DateTimeOffset olderThan)
         {
             return branch.Commits.SkipWhile(c => c.When() > olderThan);
