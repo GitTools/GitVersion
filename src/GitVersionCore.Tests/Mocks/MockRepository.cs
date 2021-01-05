@@ -8,8 +8,6 @@ namespace GitVersionCore.Tests.Mocks
     public class MockRepository : IGitRepository
     {
         private CommitCollection commits;
-        public IGitRepositoryCommands Commands { get; }
-
         public MockRepository()
         {
             Tags = new MockTagCollection();
@@ -72,6 +70,18 @@ namespace GitVersionCore.Tests.Mocks
             throw new NotImplementedException();
         }
         public CommitCollection GetCommitLog(Commit baseVersionSource, Commit currentCommit)
+        {
+            throw new NotImplementedException();
+        }
+        public void Checkout(string committishOrBranchSpec)
+        {
+            throw new NotImplementedException();
+        }
+        public void Checkout(Branch branch)
+        {
+            throw new NotImplementedException();
+        }
+        public void Fetch(string remote, IEnumerable<string> refspecs, AuthenticationInfo auth, string logMessage)
         {
             throw new NotImplementedException();
         }

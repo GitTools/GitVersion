@@ -157,7 +157,7 @@ namespace GitVersion
                 else
                 {
                     log.Info($"Fetching from remote '{remote.Name}' using the following refspecs: {remote.RefSpecs}.");
-                    repository.Commands.Fetch(remote.Name, new string[0], authentication, null);
+                    repository.Fetch(remote.Name, new string[0], authentication, null);
                 }
 
                 EnsureLocalBranchExistsForCurrentBranch(repository, log, remote, currentBranch);
@@ -198,7 +198,7 @@ namespace GitVersion
                 if (matchingCurrentBranch != null)
                 {
                     log.Info($"Checking out local branch '{currentBranch}'.");
-                    repository.Commands.Checkout(matchingCurrentBranch);
+                    repository.Checkout(matchingCurrentBranch);
                 }
                 else if (localBranchesWhereCommitShaIsHead.Count > 1)
                 {
@@ -211,7 +211,7 @@ namespace GitVersion
                     if (master != null)
                     {
                         log.Warning("Because one of the branches is 'master', will build master." + moveBranchMsg);
-                        repository.Commands.Checkout(master);
+                        repository.Checkout(master);
                     }
                     else
                     {
@@ -220,7 +220,7 @@ namespace GitVersion
                         {
                             var branchWithoutSeparator = branchesWithoutSeparators[0];
                             log.Warning($"Choosing {branchWithoutSeparator.CanonicalName} as it is the only branch without / or - in it. " + moveBranchMsg);
-                            repository.Commands.Checkout(branchWithoutSeparator);
+                            repository.Checkout(branchWithoutSeparator);
                         }
                         else
                         {
@@ -236,7 +236,7 @@ namespace GitVersion
                 else
                 {
                     log.Info($"Checking out local branch 'refs/heads/{localBranchesWhereCommitShaIsHead[0].FriendlyName}'.");
-                    repository.Commands.Checkout(repository.Branches[localBranchesWhereCommitShaIsHead[0].FriendlyName]);
+                    repository.Checkout(repository.Branches[localBranchesWhereCommitShaIsHead[0].FriendlyName]);
                 }
             }
             finally
@@ -343,7 +343,7 @@ Please run `git {GitExtensions.CreateGitLogArgs(100)}` and submit it along with 
                 repo.Refs.UpdateTarget(localRef, repoTipId);
             }
 
-            repo.Commands.Checkout(localCanonicalName);
+            repo.Checkout(localCanonicalName);
         }
     }
 }
