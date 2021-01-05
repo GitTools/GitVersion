@@ -56,6 +56,7 @@ public class BuildParameters
     public DockerImages Docker { get; private set; }
     public Dictionary<string, DirectoryPath> PackagesBuildMap { get; private set; }
     public Dictionary<PlatformFamily, string[]> NativeRuntimes { get; private set; }
+    public Dictionary<string, object> WyamAdditionalSettings { get; private set; }
 
     public bool IsStableRelease() => !IsLocalBuild && IsMainRepo && IsMainBranch && !IsPullRequest && IsTagged;
     public bool IsPreRelease()    => !IsLocalBuild && IsMainRepo && IsMainBranch && !IsPullRequest && !IsTagged;
@@ -144,6 +145,14 @@ public class BuildParameters
             [PlatformFamily.Windows] = new[] { "win-x64", "win-x86" },
             [PlatformFamily.Linux]   = new[] { "linux-x64", "linux-musl-x64" },
             [PlatformFamily.OSX]     = new[] { "osx-x64" },
+        };
+
+        WyamAdditionalSettings = new Dictionary<string, object>
+        {
+            { "BaseEditUrl", "https://github.com/gittools/GitVersion/tree/master/docs/input/" },
+            { "SourceFiles", context.MakeAbsolute(Paths.Directories.Source) + "/**/{!bin,!obj,!packages,!*.Tests,!GitTools.*,}/**/*.cs" },
+            { "Title", "GitVersion" },
+            { "IncludeGlobalNamespace", false }
         };
 
         Credentials = BuildCredentials.GetCredentials(context);

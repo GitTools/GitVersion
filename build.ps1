@@ -168,6 +168,7 @@ Remove-PathVariable "$InstallPath"
 Add-PathVariable "$InstallPath"
 $env:DOTNET_ROOT=$InstallPath
 
+$env:DOTNET_ROLL_FORWARD="major"
 $env:DOTNET_SKIP_FIRST_TIME_EXPERIENCE=1
 $env:DOTNET_CLI_TELEMETRY_OPTOUT=1
 $env:DOTNET_NOLOGO=$true
