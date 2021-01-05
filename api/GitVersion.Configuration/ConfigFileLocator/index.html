@@ -202,8 +202,8 @@
 								<dt>Derived Types</dt>
 								<dd>
 									<ul class="list-unstyled">
-											<li><a href="/api/GitVersion.Configuration/NamedConfigFileLocator">Named<wbr>Config<wbr>File<wbr>Locator</a></li>								
 											<li><a href="/api/GitVersion.Configuration/DefaultConfigFileLocator">Default<wbr>Config<wbr>File<wbr>Locator</a></li>								
+											<li><a href="/api/GitVersion.Configuration/NamedConfigFileLocator">Named<wbr>Config<wbr>File<wbr>Locator</a></li>								
 									</ul>
 								</dd>			
 							
@@ -217,10 +217,10 @@
 	click Interface0 "/api/GitVersion.Configuration/IConfigFileLocator"
 	Type["ConfigFileLocator"]
 class Type type-node
-	Derived0["NamedConfigFileLocator"]--&gt;Type
-	click Derived0 "/api/GitVersion.Configuration/NamedConfigFileLocator"
-	Derived1["DefaultConfigFileLocator"]--&gt;Type
-	click Derived1 "/api/GitVersion.Configuration/DefaultConfigFileLocator"
+	Derived0["DefaultConfigFileLocator"]--&gt;Type
+	click Derived0 "/api/GitVersion.Configuration/DefaultConfigFileLocator"
+	Derived1["NamedConfigFileLocator"]--&gt;Type
+	click Derived1 "/api/GitVersion.Configuration/NamedConfigFileLocator"
 
 						</div>
 					</div>
