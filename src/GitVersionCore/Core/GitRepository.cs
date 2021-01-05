@@ -40,7 +40,7 @@ namespace GitVersion
         {
             try
             {
-                return Repository.Clone(sourceUrl, workdirPath, auth.ToCloneOptions());
+                return Repository.Clone(sourceUrl, workdirPath, GetCloneOptions(auth));
             }
             catch (LibGit2SharpException ex)
             {
@@ -124,7 +124,7 @@ namespace GitVersion
             var remote = network.Remotes.Single();
 
             log.Info("Fetching remote refs to see if there is a pull request ref");
-            var credentialsProvider = auth.CredentialsProvider();
+            var credentialsProvider = GetCredentialsProvider(auth);
             var remoteTips = (credentialsProvider != null
                     ? network.ListReferences(remote, credentialsProvider)
                     : network.ListReferences(remote))
@@ -223,6 +223,34 @@ namespace GitVersion
             var allBranchesFetchRefSpec = $"+refs/heads/*:refs/remotes/{remote.Name}/*";
             log.Info($"Adding refspec: {allBranchesFetchRefSpec}");
             repositoryInstance.Network.Remotes.Update(remote.Name, r => r.FetchRefSpecs.Add(allBranchesFetchRefSpec));
+        }
+
+        public static FetchOptions GetFetchOptions(AuthenticationInfo auth)
+        {
+            return new FetchOptions
+            {
+                CredentialsProvider = GetCredentialsProvider(auth)
+            };
+        }
+        private static CloneOptions GetCloneOptions(AuthenticationInfo auth)
+        {
+            return new CloneOptions
+            {
+                Checkout = false,
+                CredentialsProvider = GetCredentialsProvider(auth)
+            };
+        }
+        private static CredentialsHandler GetCredentialsProvider(AuthenticationInfo auth)
+        {
+            if (!string.IsNullOrWhiteSpace(auth.Username))
+            {
+                return (url, user, types) => new UsernamePasswordCredentials
+                {
+                    Username = auth.Username,
+                    Password = auth.Password ?? string.Empty
+                };
+            }
+            return null;
         }
 
         public bool GetMatchingCommitBranch(Commit baseVersionSource, Branch branch, Commit firstMatchingCommit)

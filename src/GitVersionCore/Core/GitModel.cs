@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Linq;
 using GitVersion.Helpers;
 using LibGit2Sharp;
-using LibGit2Sharp.Handlers;
 
 namespace GitVersion
 {
@@ -13,37 +12,6 @@ namespace GitVersion
         public string Username { get; set; }
         public string Password { get; set; }
         public string Token { get; set; }
-        public CredentialsHandler CredentialsProvider()
-        {
-            if (!string.IsNullOrWhiteSpace(Username))
-            {
-                return (url, user, types) => new UsernamePasswordCredentials
-                {
-                    Username = Username,
-                    Password = Password ?? string.Empty
-                };
-            }
-            return null;
-        }
-        public FetchOptions ToFetchOptions()
-        {
-            var fetchOptions = new FetchOptions
-            {
-                CredentialsProvider = CredentialsProvider()
-            };
-
-            return fetchOptions;
-        }
-        public CloneOptions ToCloneOptions()
-        {
-            var cloneOptions = new CloneOptions
-            {
-                Checkout = false,
-                CredentialsProvider = CredentialsProvider()
-            };
-
-            return cloneOptions;
-        }
     }
 
     public class ObjectId
@@ -369,9 +337,6 @@ namespace GitVersion
         public CommitSortStrategies SortBy { get; set; }
     }
 
-    /// <summary>
-    /// Determines the sorting strategy when iterating through the commits of the repository
-    /// </summary>
     [Flags]
     public enum CommitSortStrategies
     {
