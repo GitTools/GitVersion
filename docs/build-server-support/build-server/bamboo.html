@@ -203,7 +203,7 @@ a Windows build host using Powershell. The build only needs one of the two.</p>
 <h3 id="task-script">Task: Script</h3>
 <p><strong>Script body</strong></p>
 <pre><code class="language-bash">~/.dotnet/tools/dotnet-gitversion &gt; gitversion.txt
-sed -i '1d;26d;s/  //;s/"//g;s/,//;s/:/=/' gitversion.txt
+sed -i '1d;$ d;s/  //;s/"//g;s/,//;s/:/=/' gitversion.txt
 </code></pre>
 <h3 id="task-script-1">Task: Script</h3>
 <p><strong>Script body</strong></p>
