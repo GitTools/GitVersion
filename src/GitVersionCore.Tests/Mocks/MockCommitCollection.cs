@@ -1,8 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using GitVersion;
-using LibGit2Sharp;
-using Commit = GitVersion.Commit;
 
 namespace GitVersionCore.Tests.Mocks
 {
@@ -47,6 +45,7 @@ namespace GitVersionCore.Tests.Mocks
         public int Count => Commits.Count;
 
         public bool IsReadOnly => false;
+
 
         public override CommitCollection QueryBy(CommitFilter commitFilter)
         {
