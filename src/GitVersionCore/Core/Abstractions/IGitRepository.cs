@@ -9,7 +9,6 @@ namespace GitVersion
         string Path { get; }
         string WorkingDirectory { get; }
         bool IsHeadDetached { get; }
-        IGitRepositoryCommands Commands { get; }
         Branch Head { get; }
         CommitCollection Commits { get; }
         BranchCollection Branches { get; }
@@ -31,5 +30,9 @@ namespace GitVersion
         Commit GetBaseVersionSource(Commit currentBranchTip);
         List<Commit> GetMainlineCommitLog(Commit baseVersionSource, Commit mainlineTip);
         CommitCollection GetCommitLog(Commit baseVersionSource, Commit currentCommit);
+
+        void Checkout(string committishOrBranchSpec);
+        void Checkout(Branch branch);
+        void Fetch(string remote, IEnumerable<string> refspecs, AuthenticationInfo auth, string logMessage);
     }
 }

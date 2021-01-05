@@ -10,7 +10,6 @@ namespace GitVersion
 {
     public class GitRepository : IGitRepository
     {
-        public IGitRepositoryCommands Commands { get; }
         private Lazy<IRepository> repositoryLazy;
         private IRepository repositoryInstance => repositoryLazy.Value;
 
@@ -26,13 +25,11 @@ namespace GitVersion
         internal GitRepository(IRepository repository)
         {
             repositoryLazy = new Lazy<IRepository>(() => repository);
-            Commands = new GitRepositoryCommands(repositoryLazy);
         }
 
         private GitRepository(Func<string> getGitRootDirectory)
         {
             repositoryLazy = new Lazy<IRepository>(() => new Repository(getGitRootDirectory()));
-            Commands = new GitRepositoryCommands(repositoryLazy);
         }
 
         public static string Discover(string path) => Repository.Discover(path);
@@ -156,7 +153,7 @@ namespace GitVersion
             if (canonicalName.StartsWith("refs/tags"))
             {
                 log.Info($"Checking out tag '{canonicalName}'");
-                Commands.Checkout(reference.Target.Sha);
+                Checkout(reference.Target.Sha);
                 return;
             }
 
@@ -172,7 +169,7 @@ namespace GitVersion
             Refs.Add(fakeBranchName, new ObjectId(headTipSha));
 
             log.Info($"Checking local branch '{fakeBranchName}' out.");
-            Commands.Checkout(fakeBranchName);
+            Checkout(fakeBranchName);
         }
         public bool GitRepoHasMatchingRemote(string targetUrl)
         {
@@ -361,6 +358,20 @@ namespace GitVersion
             var commitCollection = Commits.QueryBy(filter);
 
             return commitCollection;
+        }
+        public void Checkout(string committishOrBranchSpec)
+        {
+            Commands.Checkout(repositoryInstance, committishOrBranchSpec);
+        }
+
+        public void Checkout(Branch branch)
+        {
+            Commands.Checkout(repositoryInstance, branch);
+        }
+
+        public void Fetch(string remote, IEnumerable<string> refspecs, AuthenticationInfo auth, string logMessage)
+        {
+            Commands.Fetch((Repository)repositoryInstance, remote, refspecs, GitRepository.GetFetchOptions(auth), logMessage);
         }
     }
 }

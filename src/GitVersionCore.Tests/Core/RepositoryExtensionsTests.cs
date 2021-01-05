@@ -61,7 +61,7 @@ namespace GitVersionCore.Tests
                 repo.Refs.UpdateTarget(localRef, repoTipId);
             }
 
-            repo.Commands.Checkout(localCanonicalName);
+            repo.Checkout(localCanonicalName);
         }
 
         [Test]
@@ -77,8 +77,6 @@ namespace GitVersionCore.Tests
         private static IGitRepository MockRepository()
         {
             var repository = Substitute.For<IGitRepository>();
-            var commands = Substitute.For<IGitRepositoryCommands>();
-            repository.Commands.Returns(commands);
             return repository;
         }
 
