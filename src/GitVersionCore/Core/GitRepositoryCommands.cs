@@ -30,7 +30,7 @@ namespace GitVersion
 
         public void Fetch(string remote, IEnumerable<string> refspecs, AuthenticationInfo auth, string logMessage)
         {
-            Commands.Fetch((Repository)repository, remote, refspecs, auth.ToFetchOptions(), logMessage);
+            Commands.Fetch((Repository)repository, remote, refspecs, GitRepository.GetFetchOptions(auth), logMessage);
         }
     }
 }
