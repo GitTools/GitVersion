@@ -303,9 +303,7 @@ namespace GitVersionCore.Tests.IntegrationTests
             fixture.MakeACommit();
             fixture.BranchTo("develop");
             fixture.MakeATaggedCommit("1.0.0");
-            fixture.Repository.MakeCommits(10);
-
-            fixture.AssertFullSemver("1.1.0-alpha.10", config);
+            fixture.Repository.MakeCommits(1);
 
             // Create a release branch and make some commits
             fixture.BranchTo(ReleaseBranch);
@@ -317,12 +315,12 @@ namespace GitVersionCore.Tests.IntegrationTests
             fixture.ApplyTag("v1.1.0");
             fixture.Checkout("develop");
             // Simulate some work done on develop while the release branch was open.
-            fixture.Repository.MakeCommits(10);
+            fixture.Repository.MakeCommits(2);
             fixture.MergeNoFF(ReleaseBranch);
 
             // Version numbers will still be correct when the release branch is around.
-            fixture.AssertFullSemver("1.2.0-alpha.14");
-            fixture.AssertFullSemver("1.2.0-alpha.14", config);
+            fixture.AssertFullSemver("1.2.0-alpha.6");
+            fixture.AssertFullSemver("1.2.0-alpha.6", config);
 
             var versionSourceBeforeReleaseBranchIsRemoved = fixture.GetVersion(config).Sha;
 
@@ -330,8 +328,8 @@ namespace GitVersionCore.Tests.IntegrationTests
             fixture.Repository.Branches.Remove(ReleaseBranch);
             var versionSourceAfterReleaseBranchIsRemoved = fixture.GetVersion(config).Sha;
             Assert.AreEqual(versionSourceBeforeReleaseBranchIsRemoved, versionSourceAfterReleaseBranchIsRemoved);
-            fixture.AssertFullSemver("1.2.0-alpha.14");
-            fixture.AssertFullSemver("1.2.0-alpha.14", config);
+            fixture.AssertFullSemver("1.2.0-alpha.6");
+            fixture.AssertFullSemver("1.2.0-alpha.6", config);
         }
     }
 }
