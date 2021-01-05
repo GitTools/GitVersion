@@ -197,13 +197,13 @@
 								<dt>Implementing Types</dt>
 								<dd>
 									<ul class="list-unstyled">
-											<li><a href="/api/GitVersion.VersionCalculation/FallbackVersionStrategy">Fallback<wbr>Version<wbr>Strategy</a></li>								
-											<li><a href="/api/GitVersion.VersionCalculation/VersionStrategyBase">VersionStrategyBase</a></li>								
-											<li><a href="/api/GitVersion.VersionCalculation/MergeMessageVersionStrategy">Merge<wbr>Message<wbr>Version<wbr>Strategy</a></li>								
-											<li><a href="/api/GitVersion.VersionCalculation/ConfigNextVersionVersionStrategy">Config<wbr>Next<wbr>Version<wbr>Version<wbr>Strategy</a></li>								
 											<li><a href="/api/GitVersion.VersionCalculation/VersionInBranchNameVersionStrategy">Version<wbr>In<wbr>Branch<wbr>Name<wbr>Version<wbr>Strategy</a></li>								
+											<li><a href="/api/GitVersion.VersionCalculation/MergeMessageVersionStrategy">Merge<wbr>Message<wbr>Version<wbr>Strategy</a></li>								
 											<li><a href="/api/GitVersion.VersionCalculation/TrackReleaseBranchesVersionStrategy">Track<wbr>Release<wbr>Branches<wbr>Version<wbr>Strategy</a></li>								
+											<li><a href="/api/GitVersion.VersionCalculation/VersionStrategyBase">VersionStrategyBase</a></li>								
 											<li><a href="/api/GitVersion.VersionCalculation/TaggedCommitVersionStrategy">Tagged<wbr>Commit<wbr>Version<wbr>Strategy</a></li>								
+											<li><a href="/api/GitVersion.VersionCalculation/ConfigNextVersionVersionStrategy">Config<wbr>Next<wbr>Version<wbr>Version<wbr>Strategy</a></li>								
+											<li><a href="/api/GitVersion.VersionCalculation/FallbackVersionStrategy">Fallback<wbr>Version<wbr>Strategy</a></li>								
 									</ul>
 								</dd>				
 						</dl>
@@ -213,20 +213,20 @@
 							graph BT
 	Type["IVersionStrategy"]
 class Type type-node
-	Implementing0["FallbackVersionStrategy"]-.-&gt;Type
-	click Implementing0 "/api/GitVersion.VersionCalculation/FallbackVersionStrategy"
-	Implementing1["VersionStrategyBase"]-.-&gt;Type
-	click Implementing1 "/api/GitVersion.VersionCalculation/VersionStrategyBase"
-	Implementing2["MergeMessageVersionStrategy"]-.-&gt;Type
-	click Implementing2 "/api/GitVersion.VersionCalculation/MergeMessageVersionStrategy"
-	Implementing3["ConfigNextVersionVersionStrategy"]-.-&gt;Type
-	click Implementing3 "/api/GitVersion.VersionCalculation/ConfigNextVersionVersionStrategy"
-	Implementing4["VersionInBranchNameVersionStrategy"]-.-&gt;Type
-	click Implementing4 "/api/GitVersion.VersionCalculation/VersionInBranchNameVersionStrategy"
-	Implementing5["TrackReleaseBranchesVersionStrategy"]-.-&gt;Type
-	click Implementing5 "/api/GitVersion.VersionCalculation/TrackReleaseBranchesVersionStrategy"
-	Implementing6["TaggedCommitVersionStrategy"]-.-&gt;Type
-	click Implementing6 "/api/GitVersion.VersionCalculation/TaggedCommitVersionStrategy"
+	Implementing0["VersionInBranchNameVersionStrategy"]-.-&gt;Type
+	click Implementing0 "/api/GitVersion.VersionCalculation/VersionInBranchNameVersionStrategy"
+	Implementing1["MergeMessageVersionStrategy"]-.-&gt;Type
+	click Implementing1 "/api/GitVersion.VersionCalculation/MergeMessageVersionStrategy"
+	Implementing2["TrackReleaseBranchesVersionStrategy"]-.-&gt;Type
+	click Implementing2 "/api/GitVersion.VersionCalculation/TrackReleaseBranchesVersionStrategy"
+	Implementing3["VersionStrategyBase"]-.-&gt;Type
+	click Implementing3 "/api/GitVersion.VersionCalculation/VersionStrategyBase"
+	Implementing4["TaggedCommitVersionStrategy"]-.-&gt;Type
+	click Implementing4 "/api/GitVersion.VersionCalculation/TaggedCommitVersionStrategy"
+	Implementing5["ConfigNextVersionVersionStrategy"]-.-&gt;Type
+	click Implementing5 "/api/GitVersion.VersionCalculation/ConfigNextVersionVersionStrategy"
+	Implementing6["FallbackVersionStrategy"]-.-&gt;Type
+	click Implementing6 "/api/GitVersion.VersionCalculation/FallbackVersionStrategy"
 
 						</div>
 					</div>
