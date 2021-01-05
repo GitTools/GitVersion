@@ -1,7 +1,9 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using GitVersion.Logging;
 using LibGit2Sharp;
+using LibGit2Sharp.Handlers;
 using Microsoft.Extensions.Options;
 
 namespace GitVersion
@@ -221,6 +223,116 @@ namespace GitVersion
             var allBranchesFetchRefSpec = $"+refs/heads/*:refs/remotes/{remote.Name}/*";
             log.Info($"Adding refspec: {allBranchesFetchRefSpec}");
             repositoryInstance.Network.Remotes.Update(remote.Name, r => r.FetchRefSpecs.Add(allBranchesFetchRefSpec));
+        }
+
+        public bool GetMatchingCommitBranch(Commit baseVersionSource, Branch branch, Commit firstMatchingCommit)
+        {
+            var filter = new CommitFilter
+            {
+                IncludeReachableFrom = branch,
+                ExcludeReachableFrom = baseVersionSource,
+                FirstParentOnly = true,
+            };
+            var commitCollection = Commits.QueryBy(filter);
+
+            return commitCollection.Contains(firstMatchingCommit);
+        }
+        public IEnumerable<Commit> GetCommitsReacheableFrom(Commit commit, Branch branch)
+        {
+            var filter = new CommitFilter
+            {
+                IncludeReachableFrom = branch
+            };
+            var commitCollection = Commits.QueryBy(filter);
+
+            return commitCollection.Where(c => c.Sha == commit.Sha);
+        }
+        public List<Commit> GetCommitsReacheableFromHead(Commit headCommit)
+        {
+            var filter = new CommitFilter
+            {
+                IncludeReachableFrom = headCommit,
+                SortBy = CommitSortStrategies.Topological | CommitSortStrategies.Reverse
+            };
+
+            var commitCollection = Commits.QueryBy(filter);
+
+            return commitCollection.ToList();
+        }
+        public Commit GetForwardMerge(Commit commitToFindCommonBase, Commit findMergeBase)
+        {
+            var filter = new CommitFilter
+            {
+                IncludeReachableFrom = commitToFindCommonBase,
+                ExcludeReachableFrom = findMergeBase
+            };
+            var commitCollection = Commits.QueryBy(filter);
+
+            var forwardMerge = commitCollection
+                .FirstOrDefault(c => c.Parents.Contains(findMergeBase));
+            return forwardMerge;
+        }
+        public IEnumerable<Commit> GetMergeBaseCommits(Commit mergeCommit, Commit mergedHead, Commit findMergeBase)
+        {
+            var filter = new CommitFilter
+            {
+                IncludeReachableFrom = mergedHead,
+                ExcludeReachableFrom = findMergeBase
+            };
+            var commitCollection = Commits.QueryBy(filter);
+
+            var commits = mergeCommit != null
+                ? new[]
+                {
+                    mergeCommit
+                }.Union(commitCollection)
+                : commitCollection;
+            return commits.ToList();
+        }
+        public Commit GetBaseVersionSource(Commit currentBranchTip)
+        {
+            try
+            {
+                var filter = new CommitFilter
+                {
+                    IncludeReachableFrom = currentBranchTip
+                };
+                var commitCollection = Commits.QueryBy(filter);
+
+                var baseVersionSource = commitCollection.First(c => !c.Parents.Any());
+                return baseVersionSource;
+            }
+            catch (NotFoundException exception)
+            {
+                throw new GitVersionException($"Cannot find commit {currentBranchTip.Sha}. Please ensure that the repository is an unshallow clone with `git fetch --unshallow`.", exception);
+            }
+        }
+        public List<Commit> GetMainlineCommitLog(Commit baseVersionSource, Commit mainlineTip)
+        {
+            var filter = new CommitFilter
+            {
+                IncludeReachableFrom = mainlineTip,
+                ExcludeReachableFrom = baseVersionSource,
+                SortBy = CommitSortStrategies.Reverse,
+                FirstParentOnly = true
+            };
+            var commitCollection = Commits.QueryBy(filter);
+
+            var mainlineCommitLog = commitCollection.ToList();
+            return mainlineCommitLog;
+        }
+        public CommitCollection GetCommitLog(Commit baseVersionSource, Commit currentCommit)
+        {
+            var filter = new CommitFilter
+            {
+                IncludeReachableFrom = currentCommit,
+                ExcludeReachableFrom = baseVersionSource,
+                SortBy = CommitSortStrategies.Topological | CommitSortStrategies.Time
+            };
+
+            var commitCollection = Commits.QueryBy(filter);
+
+            return commitCollection;
         }
     }
 }
