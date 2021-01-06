@@ -210,12 +210,12 @@
 								<dt>Derived Types</dt>
 								<dd>
 									<ul class="list-unstyled">
-											<li><a href="/api/GitVersion.VersionCalculation/VersionInBranchNameVersionStrategy">Version<wbr>In<wbr>Branch<wbr>Name<wbr>Version<wbr>Strategy</a></li>								
+											<li><a href="/api/GitVersion.VersionCalculation/ConfigNextVersionVersionStrategy">Config<wbr>Next<wbr>Version<wbr>Version<wbr>Strategy</a></li>								
 											<li><a href="/api/GitVersion.VersionCalculation/MergeMessageVersionStrategy">Merge<wbr>Message<wbr>Version<wbr>Strategy</a></li>								
+											<li><a href="/api/GitVersion.VersionCalculation/FallbackVersionStrategy">Fallback<wbr>Version<wbr>Strategy</a></li>								
+											<li><a href="/api/GitVersion.VersionCalculation/VersionInBranchNameVersionStrategy">Version<wbr>In<wbr>Branch<wbr>Name<wbr>Version<wbr>Strategy</a></li>								
 											<li><a href="/api/GitVersion.VersionCalculation/TrackReleaseBranchesVersionStrategy">Track<wbr>Release<wbr>Branches<wbr>Version<wbr>Strategy</a></li>								
 											<li><a href="/api/GitVersion.VersionCalculation/TaggedCommitVersionStrategy">Tagged<wbr>Commit<wbr>Version<wbr>Strategy</a></li>								
-											<li><a href="/api/GitVersion.VersionCalculation/ConfigNextVersionVersionStrategy">Config<wbr>Next<wbr>Version<wbr>Version<wbr>Strategy</a></li>								
-											<li><a href="/api/GitVersion.VersionCalculation/FallbackVersionStrategy">Fallback<wbr>Version<wbr>Strategy</a></li>								
 									</ul>
 								</dd>			
 							
@@ -229,18 +229,18 @@
 	click Interface0 "/api/GitVersion.VersionCalculation/IVersionStrategy"
 	Type["VersionStrategyBase"]
 class Type type-node
-	Derived0["VersionInBranchNameVersionStrategy"]--&gt;Type
-	click Derived0 "/api/GitVersion.VersionCalculation/VersionInBranchNameVersionStrategy"
+	Derived0["ConfigNextVersionVersionStrategy"]--&gt;Type
+	click Derived0 "/api/GitVersion.VersionCalculation/ConfigNextVersionVersionStrategy"
 	Derived1["MergeMessageVersionStrategy"]--&gt;Type
 	click Derived1 "/api/GitVersion.VersionCalculation/MergeMessageVersionStrategy"
-	Derived2["TrackReleaseBranchesVersionStrategy"]--&gt;Type
-	click Derived2 "/api/GitVersion.VersionCalculation/TrackReleaseBranchesVersionStrategy"
-	Derived3["TaggedCommitVersionStrategy"]--&gt;Type
-	click Derived3 "/api/GitVersion.VersionCalculation/TaggedCommitVersionStrategy"
-	Derived4["ConfigNextVersionVersionStrategy"]--&gt;Type
-	click Derived4 "/api/GitVersion.VersionCalculation/ConfigNextVersionVersionStrategy"
-	Derived5["FallbackVersionStrategy"]--&gt;Type
-	click Derived5 "/api/GitVersion.VersionCalculation/FallbackVersionStrategy"
+	Derived2["FallbackVersionStrategy"]--&gt;Type
+	click Derived2 "/api/GitVersion.VersionCalculation/FallbackVersionStrategy"
+	Derived3["VersionInBranchNameVersionStrategy"]--&gt;Type
+	click Derived3 "/api/GitVersion.VersionCalculation/VersionInBranchNameVersionStrategy"
+	Derived4["TrackReleaseBranchesVersionStrategy"]--&gt;Type
+	click Derived4 "/api/GitVersion.VersionCalculation/TrackReleaseBranchesVersionStrategy"
+	Derived5["TaggedCommitVersionStrategy"]--&gt;Type
+	click Derived5 "/api/GitVersion.VersionCalculation/TaggedCommitVersionStrategy"
 
 						</div>
 					</div>
