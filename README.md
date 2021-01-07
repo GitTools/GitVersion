@@ -1,15 +1,11 @@
-<h1>
-    <img src="docs/input/docs/img/package_icon.svg" alt="Tree" height="100">
-    GitVersion
-</h1>
+![GitVersion – From git log to SemVer in no time][banner]
 
-Versioning when using git, solved. GitVersion looks at your git history and
-works out the [semantic version][semver] of the commit being built.
+Versioning when using Git, solved. GitVersion looks at your git history and
+works out the [Semantic Version][semver] of the commit being built.
 
 [![Build status][appveyor-badge]][appveyor]
 [![Build status][azure-pipeline-badge]][azure-pipeline]
 [![Build status][github-actions-badge]][github-actions]
-
 [![codecov][codecov-badge]][codecov]
 [![Gitter][gitter-badge]][gitter]
 
@@ -99,3 +95,4 @@ from The Noun Project.
 [faq]:                             https://gitversion.net/docs/faq
 [who]:                             https://gitversion.net/docs/who
 [gv-in-action]:                    https://raw.github.com/GitTools/GitVersion/master/docs/input/docs/img/README.png
+[banner]:                          https://github.com/GitTools/graphics/raw/master/GitVersion/banner-1280x640.png
