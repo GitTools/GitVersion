@@ -25,12 +25,6 @@ works out the [Semantic Version][semver] of the commit being built.
 
 GitVersion works on Windows, Linux, and Mac.
 
-Tip: If you get `System.TypeInitializationException: The type initializer for
-'LibGit2Sharp.Core.NativeMethods' threw an exception. --->
-System.DllNotFoundException: lib/linux/x86_64/libgit2-baa87df.so` in versions prior to 5.0.0
-
-You likely need to install `libcurl3`. Run `sudo apt-get install libcurl3`
-
 ## Quick Links
 
 - [Documentation][docs]
