@@ -2,7 +2,7 @@
 
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
     <PropertyGroup>
-        <GitVersionOutputFile>$(MSBuildProjectDirectory)/gitversion.json</GitVersionOutputFile>
+        <GitVersionOutputFile>$(BaseIntermediateOutputPath)/gitversion.json</GitVersionOutputFile>
 
         <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">$(MSBuildProjectDirectory)/../</SolutionDir>
         <GitVersionPath Condition="'$(GitVersionPath)' == '' And '$(GitVersionUseSolutionDir)' == 'true'">$(SolutionDir)</GitVersionPath>
@@ -21,14 +21,9 @@
         <GitVersionAssemblyFile>$(MSBuildThisFileDirectory)net48/GitVersion.MsBuild.dll</GitVersionAssemblyFile>
     </PropertyGroup>
 
-    <PropertyGroup Condition="'$(TargetFramework)' == 'netcoreapp3.1'">
-        <GitVersionFileExe>dotnet $(MSBuildThisFileDirectory)netcoreapp3.1/gitversion.dll</GitVersionFileExe>
-        <GitVersionAssemblyFile>$(MSBuildThisFileDirectory)netcoreapp3.1/GitVersion.MsBuild.dll</GitVersionAssemblyFile>
-    </PropertyGroup>
-
-    <PropertyGroup Condition="'$(TargetFramework)' == 'net5.0'">
-        <GitVersionFileExe>dotnet $(MSBuildThisFileDirectory)net5.0/gitversion.dll</GitVersionFileExe>
-        <GitVersionAssemblyFile>$(MSBuildThisFileDirectory)net5.0/GitVersion.MsBuild.dll</GitVersionAssemblyFile>
+    <PropertyGroup>
+        <GitVersionFileExe Condition="'$(GitVersionFileExe)' == ''">dotnet --roll-forward Major $(MSBuildThisFileDirectory)netcoreapp3.1/gitversion.dll</GitVersionFileExe>
+        <GitVersionAssemblyFile Condition="'$(GitVersionAssemblyFile)' == ''">$(MSBuildThisFileDirectory)netcoreapp3.1/GitVersion.MsBuild.dll</GitVersionAssemblyFile>
     </PropertyGroup>
 
     <PropertyGroup>
