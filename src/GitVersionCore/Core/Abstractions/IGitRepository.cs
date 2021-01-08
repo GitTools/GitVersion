@@ -19,7 +19,7 @@ namespace GitVersion
         Commit FindMergeBase(Commit commit, Commit otherCommit);
         string ShortenObjectId(Commit commit);
         void CreateBranchForPullRequestBranch(ILog log, AuthenticationInfo auth);
-        Remote EnsureOnlyOneRemoteIsDefined(ILog log);
+        IRemote EnsureOnlyOneRemoteIsDefined(ILog log);
         bool GitRepoHasMatchingRemote(string targetUrl);
         void CleanupDuplicateOrigin(string defaultRemoteName);
         bool GetMatchingCommitBranch(Commit baseVersionSource, Branch branch, Commit firstMatchingCommit);
