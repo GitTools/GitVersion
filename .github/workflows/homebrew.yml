@@ -14,3 +14,4 @@ jobs:
         token: ${{secrets.HOMEBREW_GITHUB_TOKEN}}
         # Formula name, required
         formula: gitversion
+        tag: 5.6.2 
