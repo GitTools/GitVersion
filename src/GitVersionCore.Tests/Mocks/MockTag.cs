@@ -8,15 +8,13 @@ namespace GitVersionCore.Tests.Mocks
         public string NameEx;
         public override string FriendlyName => NameEx;
 
-        public GitObject TargetEx;
         public TagAnnotation AnnotationEx;
 
         public MockTag() { }
 
-        public MockTag(string name, GitObject target)
+        public MockTag(string name)
         {
             NameEx = name;
-            TargetEx = target;
         }
     }
 }

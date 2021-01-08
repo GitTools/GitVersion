@@ -16,23 +16,23 @@ namespace GitVersion
         ReferenceCollection Refs { get; }
 
         int GetNumberOfUncommittedChanges();
-        Commit FindMergeBase(Commit commit, Commit otherCommit);
-        string ShortenObjectId(Commit commit);
+        ICommit FindMergeBase(ICommit commit, ICommit otherCommit);
+        string ShortenObjectId(ICommit commit);
 
         bool GitRepoHasMatchingRemote(string targetUrl);
         void CleanupDuplicateOrigin(string defaultRemoteName);
-        bool GetMatchingCommitBranch(Commit baseVersionSource, IBranch branch, Commit firstMatchingCommit);
-        IEnumerable<Commit> GetCommitsReacheableFrom(Commit commit, IBranch branch);
-        List<Commit> GetCommitsReacheableFromHead(Commit headCommit);
-        Commit GetForwardMerge(Commit commitToFindCommonBase, Commit findMergeBase);
-        IEnumerable<Commit> GetMergeBaseCommits(Commit mergeCommit, Commit mergedHead, Commit findMergeBase);
-        Commit GetBaseVersionSource(Commit currentBranchTip);
-        List<Commit> GetMainlineCommitLog(Commit baseVersionSource, Commit mainlineTip);
-        CommitCollection GetCommitLog(Commit baseVersionSource, Commit currentCommit);
+        bool GetMatchingCommitBranch(ICommit baseVersionSource, IBranch branch, ICommit firstMatchingCommit);
+        IEnumerable<ICommit> GetCommitsReacheableFrom(ICommit commit, IBranch branch);
+        List<ICommit> GetCommitsReacheableFromHead(ICommit headCommit);
+        ICommit GetForwardMerge(ICommit commitToFindCommonBase, ICommit findMergeBase);
+        IEnumerable<ICommit> GetMergeBaseCommits(ICommit mergeCommit, ICommit mergedHead, ICommit findMergeBase);
+        ICommit GetBaseVersionSource(ICommit currentBranchTip);
+        List<ICommit> GetMainlineCommitLog(ICommit baseVersionSource, ICommit mainlineTip);
+        CommitCollection GetCommitLog(ICommit baseVersionSource, ICommit currentCommit);
 
-        void Checkout(string committishOrBranchSpec);
+        void Checkout(string commitOrBranchSpec);
         void Checkout(IBranch branch);
-        void Fetch(string remote, IEnumerable<string> refspecs, AuthenticationInfo auth, string logMessage);
+        void Fetch(string remote, IEnumerable<string> refSpecs, AuthenticationInfo auth, string logMessage);
         void CreateBranchForPullRequestBranch(ILog log, AuthenticationInfo auth);
         IRemote EnsureOnlyOneRemoteIsDefined(ILog log);
     }

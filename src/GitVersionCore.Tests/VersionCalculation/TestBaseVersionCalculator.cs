@@ -1,6 +1,5 @@
 using GitVersion;
 using GitVersion.VersionCalculation;
-using Commit = GitVersion.Commit;
 
 namespace GitVersionCore.Tests.VersionCalculation
 {
@@ -8,9 +7,9 @@ namespace GitVersionCore.Tests.VersionCalculation
     {
         private readonly SemanticVersion semanticVersion;
         private readonly bool shouldIncrement;
-        private readonly Commit source;
+        private readonly ICommit source;
 
-        public TestBaseVersionCalculator(bool shouldIncrement, SemanticVersion semanticVersion, Commit source)
+        public TestBaseVersionCalculator(bool shouldIncrement, SemanticVersion semanticVersion, ICommit source)
         {
             this.semanticVersion = semanticVersion;
             this.source = source;

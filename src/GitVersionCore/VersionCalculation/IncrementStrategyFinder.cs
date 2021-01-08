@@ -15,7 +15,7 @@ namespace GitVersion
 
     public static class IncrementStrategyFinder
     {
-        private static List<Commit> intermediateCommitCache;
+        private static List<ICommit> intermediateCommitCache;
         public const string DefaultMajorPattern = @"\+semver:\s?(breaking|major)";
         public const string DefaultMinorPattern = @"\+semver:\s?(feature|minor)";
         public const string DefaultPatchPattern = @"\+semver:\s?(fix|patch)";
@@ -55,7 +55,7 @@ namespace GitVersion
             return commitMessageIncrement;
         }
 
-        public static VersionField? GetIncrementForCommits(GitVersionContext context, IEnumerable<Commit> commits)
+        public static VersionField? GetIncrementForCommits(GitVersionContext context, IEnumerable<ICommit> commits)
         {
             var majorRegex = TryGetRegexOrDefault(context.Configuration.MajorVersionBumpMessage, DefaultMajorPatternRegex);
             var minorRegex = TryGetRegexOrDefault(context.Configuration.MinorVersionBumpMessage, DefaultMinorPatternRegex);
@@ -101,13 +101,13 @@ namespace GitVersion
 
             return CompiledRegexCache.GetOrAdd(messageRegex, pattern => new Regex(pattern, RegexOptions.Compiled | RegexOptions.IgnoreCase));
         }
-        private static IEnumerable<Commit> GetIntermediateCommits(IGitRepository repo, Commit baseCommit, Commit headCommit)
+        private static IEnumerable<ICommit> GetIntermediateCommits(IGitRepository repo, ICommit baseCommit, ICommit headCommit)
         {
             if (baseCommit == null) yield break;
 
             var commitCache = intermediateCommitCache;
 
-            if (commitCache == null || commitCache.LastOrDefault() != headCommit)
+            if (commitCache == null || !Equals(commitCache.LastOrDefault(), headCommit))
             {
                 commitCache = repo.GetCommitsReacheableFromHead(headCommit);
                 intermediateCommitCache = commitCache;

@@ -146,7 +146,7 @@ namespace GitVersionCore.Tests.VersionCalculation.Strategies
             AssertMergeMessage(message, expectedVersion, parents, config);
         }
 
-        private void AssertMergeMessage(string message, string expectedVersion, IList<Commit> parents, Config config = null)
+        private void AssertMergeMessage(string message, string expectedVersion, IList<ICommit> parents, Config config = null)
         {
             var commit = new MockCommit
             {
@@ -180,18 +180,18 @@ namespace GitVersionCore.Tests.VersionCalculation.Strategies
             }
         }
 
-        private static List<Commit> GetParents(bool isMergeCommit)
+        private static List<ICommit> GetParents(bool isMergeCommit)
         {
             if (isMergeCommit)
             {
-                return new List<Commit>
+                return new List<ICommit>
                 {
                     null,
                     null
                 };
             }
 
-            return new List<Commit>
+            return new List<ICommit>
             {
                 null
             };

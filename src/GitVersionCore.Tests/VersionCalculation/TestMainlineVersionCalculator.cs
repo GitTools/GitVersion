@@ -1,6 +1,5 @@
 using GitVersion;
 using GitVersion.VersionCalculation;
-using Commit = GitVersion.Commit;
 
 namespace GitVersionCore.Tests.VersionCalculation
 {
@@ -18,7 +17,7 @@ namespace GitVersionCore.Tests.VersionCalculation
             throw new System.NotImplementedException();
         }
 
-        public SemanticVersionBuildMetaData CreateVersionBuildMetaData(Commit baseVersionSource)
+        public SemanticVersionBuildMetaData CreateVersionBuildMetaData(ICommit baseVersionSource)
         {
             return metaData;
         }

@@ -59,19 +59,19 @@ namespace GitVersion.VersionCalculation
             return $"Git tag '{version.Tag}'";
         }
 
-        protected virtual bool IsValidTag(ITag tag, Commit commit)
+        protected virtual bool IsValidTag(ITag tag, ICommit commit)
         {
             var targetCommit = tag.PeeledTargetCommit();
-            return targetCommit != null && targetCommit == commit;
+            return targetCommit != null && Equals(targetCommit, commit);
         }
 
         protected class VersionTaggedCommit
         {
             public string Tag;
-            public Commit Commit;
+            public ICommit Commit;
             public SemanticVersion SemVer;
 
-            public VersionTaggedCommit(Commit commit, SemanticVersion semVer, string tag)
+            public VersionTaggedCommit(ICommit commit, SemanticVersion semVer, string tag)
             {
                 Tag = tag;
                 Commit = commit;
