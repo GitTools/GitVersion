@@ -13,7 +13,7 @@ namespace GitVersionCore.Tests
     [TestFixture]
     public class RepositoryExtensionsTests : TestBase
     {
-        private static void EnsureLocalBranchExistsForCurrentBranch(IGitRepository repo, ILog log, Remote remote, string currentBranch)
+        private static void EnsureLocalBranchExistsForCurrentBranch(IGitRepository repo, ILog log, IRemote remote, string currentBranch)
         {
             if (log is null)
             {
@@ -80,7 +80,7 @@ namespace GitVersionCore.Tests
             return repository;
         }
 
-        private static Remote MockRemote(IGitRepository repository)
+        private static IRemote MockRemote(IGitRepository repository)
         {
             var branches = new TestableBranchCollection();
             var tipId = new ObjectId("c6d8764d20ff16c0df14c73680e52b255b608926");
@@ -163,16 +163,15 @@ namespace GitVersionCore.Tests
 
         private class TestableReferenceCollection : ReferenceCollection
         {
-            Reference reference;
+            private IReference reference;
             public override void Add(string name, string canonicalRefNameOrObjectish)
             {
                 reference = new TestableReference(canonicalRefNameOrObjectish);
             }
-            public override Reference UpdateTarget(Reference directRef, IObjectId targetId)
+            public override void UpdateTarget(IReference directRef, IObjectId targetId)
             {
-                return reference;
             }
-            public override Reference this[string name] => reference;
+            public override IReference this[string name] => reference;
         }
 
         private class TestableReference : Reference

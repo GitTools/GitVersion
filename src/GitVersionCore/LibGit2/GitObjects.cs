@@ -132,7 +132,7 @@ namespace GitVersion
         public virtual bool IsTracking => innerBranch != null && innerBranch.IsTracking;
     }
 
-    public class Reference
+    public class Reference : IReference
     {
         private readonly LibGit2Sharp.Reference innerReference;
         private DirectReference directReference => innerReference.ResolveToDirectReference();
@@ -150,12 +150,12 @@ namespace GitVersion
         public virtual string DirectReferenceTargetIdentifier => directReference.TargetIdentifier;
         public virtual IObjectId DirectReferenceTargetId => (ObjectId)directReference.Target.Id;
 
-        public virtual Reference ResolveToDirectReference() => (Reference)directReference;
+        public virtual IReference ResolveToDirectReference() => (Reference)directReference;
         public static implicit operator LibGit2Sharp.Reference(Reference d) => d?.innerReference;
         public static explicit operator Reference(LibGit2Sharp.Reference b) => b is null ? null : new Reference(b);
     }
 
-    public class Remote
+    public class Remote : IRemote
     {
         private readonly LibGit2Sharp.Remote innerRemote;
 
@@ -227,7 +227,7 @@ namespace GitVersion
         public virtual ITag this[string name] => (Tag)innerCollection[name];
     }
 
-    public class ReferenceCollection : IEnumerable<Reference>
+    public class ReferenceCollection : IEnumerable<IReference>
     {
         private readonly LibGit2Sharp.ReferenceCollection innerCollection;
         private ReferenceCollection(LibGit2Sharp.ReferenceCollection collection) => innerCollection = collection;
@@ -239,7 +239,7 @@ namespace GitVersion
         public static implicit operator LibGit2Sharp.ReferenceCollection(ReferenceCollection d) => d.innerCollection;
         public static explicit operator ReferenceCollection(LibGit2Sharp.ReferenceCollection b) => b is null ? null : new ReferenceCollection(b);
 
-        public IEnumerator<Reference> GetEnumerator()
+        public IEnumerator<IReference> GetEnumerator()
         {
             foreach (var reference in innerCollection)
                 yield return (Reference)reference;
@@ -265,16 +265,16 @@ namespace GitVersion
             innerCollection.Add(name, (ObjectId)targetId, allowOverwrite);
         }
 
-        public virtual Reference UpdateTarget(Reference directRef, IObjectId targetId)
+        public virtual void UpdateTarget(IReference directRef, IObjectId targetId)
         {
-            return (Reference)innerCollection.UpdateTarget(directRef, (ObjectId)targetId);
+            innerCollection.UpdateTarget((Reference)directRef, (ObjectId)targetId);
         }
 
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
-        public virtual Reference this[string name] => (Reference)innerCollection[name];
-        public virtual Reference Head => this["HEAD"];
+        public virtual IReference this[string name] => (Reference)innerCollection[name];
+        public virtual IReference Head => this["HEAD"];
 
-        public virtual IEnumerable<Reference> FromGlob(string pattern)
+        public virtual IEnumerable<IReference> FromGlob(string pattern)
         {
             foreach (var reference in innerCollection.FromGlob(pattern))
                 yield return (Reference)reference;

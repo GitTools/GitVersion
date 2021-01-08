@@ -297,7 +297,7 @@ Please run `git {GitExtensions.CreateGitLogArgs(100)}` and submit it along with 
             }
         }
 
-        private static void EnsureLocalBranchExistsForCurrentBranch(IGitRepository repo, ILog log, Remote remote, string currentBranch)
+        private static void EnsureLocalBranchExistsForCurrentBranch(IGitRepository repo, ILog log, IRemote remote, string currentBranch)
         {
             if (log is null)
             {

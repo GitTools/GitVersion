@@ -194,7 +194,7 @@ namespace GitVersion
                 repositoryInstance.Network.Remotes.Remove(repoName);
             }
         }
-        public Remote EnsureOnlyOneRemoteIsDefined(ILog log)
+        public IRemote EnsureOnlyOneRemoteIsDefined(ILog log)
         {
             var remotes = repositoryInstance.Network.Remotes;
             var howMany = remotes.Count();

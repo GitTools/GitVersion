@@ -85,7 +85,7 @@ namespace GitVersionCore.Tests.Mocks
         {
             throw new NotImplementedException();
         }
-        public Remote EnsureOnlyOneRemoteIsDefined(ILog log) => throw new NotImplementedException();
+        public IRemote EnsureOnlyOneRemoteIsDefined(ILog log) => throw new NotImplementedException();
         public void Dispose() => throw new NotImplementedException();
     }
 }
