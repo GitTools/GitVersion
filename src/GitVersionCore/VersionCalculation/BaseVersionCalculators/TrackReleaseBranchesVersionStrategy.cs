@@ -80,7 +80,7 @@ namespace GitVersion.VersionCalculation
             return new BaseVersion[0];
         }
 
-        private IEnumerable<BaseVersion> GetReleaseVersion(GitVersionContext context, Branch releaseBranch)
+        private IEnumerable<BaseVersion> GetReleaseVersion(GitVersionContext context, IBranch releaseBranch)
         {
             var tagPrefixRegex = context.Configuration.GitTagPrefix;
 

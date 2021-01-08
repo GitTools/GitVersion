@@ -8,6 +8,6 @@ namespace GitVersion.Configuration
         /// <summary>
         /// Gets the <see cref="BranchConfig"/> for the current commit.
         /// </summary>
-        BranchConfig GetBranchConfiguration(Branch targetBranch, Commit currentCommit, Config configuration, IList<Branch> excludedInheritBranches = null);
+        BranchConfig GetBranchConfiguration(IBranch targetBranch, Commit currentCommit, Config configuration, IList<IBranch> excludedInheritBranches = null);
     }
 }

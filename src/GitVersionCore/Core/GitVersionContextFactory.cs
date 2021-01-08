@@ -27,7 +27,7 @@ namespace GitVersion
             return Init(targetBranch, gitVersionOptions.RepositoryInfo.CommitId, gitVersionOptions.Settings.OnlyTrackedBranches);
         }
 
-        private GitVersionContext Init(Branch currentBranch, string commitId = null, bool onlyTrackedBranches = false)
+        private GitVersionContext Init(IBranch currentBranch, string commitId = null, bool onlyTrackedBranches = false)
         {
             if (currentBranch == null)
                 throw new InvalidOperationException("Need a branch to operate on");

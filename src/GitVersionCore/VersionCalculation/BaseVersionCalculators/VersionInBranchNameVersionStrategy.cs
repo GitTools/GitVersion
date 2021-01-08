@@ -27,7 +27,7 @@ namespace GitVersion.VersionCalculation
             return GetVersions(tagPrefixRegex, currentBranch);
         }
 
-        internal IEnumerable<BaseVersion> GetVersions(string tagPrefixRegex, Branch currentBranch)
+        internal IEnumerable<BaseVersion> GetVersions(string tagPrefixRegex, IBranch currentBranch)
         {
             if (!Context.FullConfiguration.IsReleaseBranch(currentBranch.NameWithoutOrigin()))
             {

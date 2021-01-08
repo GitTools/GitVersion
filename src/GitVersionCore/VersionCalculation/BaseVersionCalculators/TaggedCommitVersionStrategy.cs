@@ -25,7 +25,7 @@ namespace GitVersion.VersionCalculation
             return GetTaggedVersions(Context.CurrentBranch, Context.CurrentCommit.When());
         }
 
-        internal IEnumerable<BaseVersion> GetTaggedVersions(Branch currentBranch, DateTimeOffset? olderThan)
+        internal IEnumerable<BaseVersion> GetTaggedVersions(IBranch currentBranch, DateTimeOffset? olderThan)
         {
             var allTags = repositoryMetadataProvider.GetValidVersionTags(Context.Configuration.GitTagPrefix, olderThan);
 

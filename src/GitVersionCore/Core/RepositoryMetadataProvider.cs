@@ -13,9 +13,9 @@ namespace GitVersion
 {
     public class RepositoryMetadataProvider : IRepositoryMetadataProvider
     {
-        private readonly Dictionary<Branch, List<BranchCommit>> mergeBaseCommitsCache = new Dictionary<Branch, List<BranchCommit>>();
-        private readonly Dictionary<Tuple<Branch, Branch>, MergeBaseData> mergeBaseCache = new Dictionary<Tuple<Branch, Branch>, MergeBaseData>();
-        private readonly Dictionary<Branch, List<SemanticVersion>> semanticVersionTagsOnBranchCache = new Dictionary<Branch, List<SemanticVersion>>();
+        private readonly Dictionary<IBranch, List<BranchCommit>> mergeBaseCommitsCache = new Dictionary<IBranch, List<BranchCommit>>();
+        private readonly Dictionary<Tuple<IBranch, IBranch>, MergeBaseData> mergeBaseCache = new Dictionary<Tuple<IBranch, IBranch>, MergeBaseData>();
+        private readonly Dictionary<IBranch, List<SemanticVersion>> semanticVersionTagsOnBranchCache = new Dictionary<IBranch, List<SemanticVersion>>();
         private const string MissingTipFormat = "{0} has no tip. Please see http://example.com/docs for information on how to fix this.";
 
         private readonly ILog log;
@@ -30,7 +30,7 @@ namespace GitVersion
         /// <summary>
         /// Find the merge base of the two branches, i.e. the best common ancestor of the two branches' tips.
         /// </summary>
-        public Commit FindMergeBase(Branch branch, Branch otherBranch)
+        public Commit FindMergeBase(IBranch branch, IBranch otherBranch)
         {
             var key = Tuple.Create(branch, otherBranch);
 
@@ -100,7 +100,7 @@ namespace GitVersion
             return repository.FindMergeBase(commit, mainlineTip);
         }
 
-        public Commit GetCurrentCommit(Branch currentBranch, string commitId)
+        public Commit GetCurrentCommit(IBranch currentBranch, string commitId)
         {
             Commit currentCommit = null;
             if (!string.IsNullOrWhiteSpace(commitId))
@@ -139,7 +139,7 @@ namespace GitVersion
             return repository.GetMergeBaseCommits(mergeCommit, mergedHead, findMergeBase);
         }
 
-        public Branch GetTargetBranch(string targetBranch)
+        public IBranch GetTargetBranch(string targetBranch)
         {
             // By default, we assume HEAD is pointing to the desired branch
             var desiredBranch = repository.Head;
@@ -170,12 +170,12 @@ namespace GitVersion
             return desiredBranch;
         }
 
-        public Branch FindBranch(string branchName)
+        public IBranch FindBranch(string branchName)
         {
             return repository.Branches.FirstOrDefault(x => x.NameWithoutRemote() == branchName);
         }
 
-        public Branch GetChosenBranch(Config configuration)
+        public IBranch GetChosenBranch(Config configuration)
         {
             var developBranchRegex = configuration.Branches[Config.DevelopBranchKey].Regex;
             var masterBranchRegex = configuration.Branches[Config.MasterBranchKey].Regex;
@@ -187,12 +187,12 @@ namespace GitVersion
             return chosenBranch;
         }
 
-        public List<Branch> GetBranchesForCommit(Commit commit)
+        public List<IBranch> GetBranchesForCommit(Commit commit)
         {
             return repository.Branches.Where(b => !b.IsRemote && b.Tip == commit).ToList();
         }
 
-        public List<Branch> GetExcludedInheritBranches(Config configuration)
+        public List<IBranch> GetExcludedInheritBranches(Config configuration)
         {
             return repository.Branches.Where(b =>
             {
@@ -202,22 +202,22 @@ namespace GitVersion
             }).ToList();
         }
 
-        public IEnumerable<Branch> GetReleaseBranches(IEnumerable<KeyValuePair<string, BranchConfig>> releaseBranchConfig)
+        public IEnumerable<IBranch> GetReleaseBranches(IEnumerable<KeyValuePair<string, BranchConfig>> releaseBranchConfig)
         {
             return repository.Branches
                 .Where(b => releaseBranchConfig.Any(c => Regex.IsMatch(b.FriendlyName, c.Value.Regex)));
         }
 
-        public IEnumerable<Branch> ExcludingBranches(IEnumerable<Branch> branchesToExclude)
+        public IEnumerable<IBranch> ExcludingBranches(IEnumerable<IBranch> branchesToExclude)
         {
             return repository.Branches.ExcludingBranches(branchesToExclude);
         }
 
         // TODO Should we cache this?
-        public IEnumerable<Branch> GetBranchesContainingCommit(Commit commit, IEnumerable<Branch> branches = null, bool onlyTrackedBranches = false)
+        public IEnumerable<IBranch> GetBranchesContainingCommit(Commit commit, IEnumerable<IBranch> branches = null, bool onlyTrackedBranches = false)
         {
             branches ??= repository.Branches.ToList();
-            static bool IncludeTrackedBranches(Branch branch, bool includeOnlyTracked) => includeOnlyTracked && branch.IsTracking || !includeOnlyTracked;
+            static bool IncludeTrackedBranches(IBranch branch, bool includeOnlyTracked) => includeOnlyTracked && branch.IsTracking || !includeOnlyTracked;
 
             if (commit == null)
             {
@@ -266,7 +266,7 @@ namespace GitVersion
             }
         }
 
-        public Dictionary<string, List<Branch>> GetMainlineBranches(Commit commit, IEnumerable<KeyValuePair<string, BranchConfig>> mainlineBranchConfigs)
+        public Dictionary<string, List<IBranch>> GetMainlineBranches(Commit commit, IEnumerable<KeyValuePair<string, BranchConfig>> mainlineBranchConfigs)
         {
             return repository.Branches
                 .Where(b =>
@@ -287,7 +287,7 @@ namespace GitVersion
         /// Find the commit where the given branch was branched from another branch.
         /// If there are multiple such commits and branches, tries to guess based on commit histories.
         /// </summary>
-        public BranchCommit FindCommitBranchWasBranchedFrom(Branch branch, Config configuration, params Branch[] excludedBranches)
+        public BranchCommit FindCommitBranchWasBranchedFrom(IBranch branch, Config configuration, params IBranch[] excludedBranches)
         {
             if (branch == null)
             {
@@ -341,7 +341,7 @@ namespace GitVersion
             return increment != null ? baseVersion.SemanticVersion.IncrementVersion(increment.Value) : baseVersion.SemanticVersion;
         }
 
-        public IEnumerable<SemanticVersion> GetVersionTagsOnBranch(Branch branch, string tagPrefixRegex)
+        public IEnumerable<SemanticVersion> GetVersionTagsOnBranch(IBranch branch, string tagPrefixRegex)
         {
             if (semanticVersionTagsOnBranchCache.ContainsKey(branch))
             {
@@ -398,12 +398,12 @@ namespace GitVersion
             return IncrementStrategyFinder.DetermineIncrementedField(repository, context, baseVersion);
         }
 
-        public bool GetMatchingCommitBranch(Commit baseVersionSource, Branch branch, Commit firstMatchingCommit)
+        public bool GetMatchingCommitBranch(Commit baseVersionSource, IBranch branch, Commit firstMatchingCommit)
         {
             return repository.GetMatchingCommitBranch(baseVersionSource, branch, firstMatchingCommit);
         }
 
-        private IEnumerable<BranchCommit> GetMergeCommitsForBranch(Branch branch, Config configuration, IEnumerable<Branch> excludedBranches)
+        private IEnumerable<BranchCommit> GetMergeCommitsForBranch(IBranch branch, Config configuration, IEnumerable<IBranch> excludedBranches)
         {
             if (mergeBaseCommitsCache.ContainsKey(branch))
             {

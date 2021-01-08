@@ -1,25 +1,25 @@
 using System.Collections.Generic;
 using System.Linq;
-using Branch = GitVersion.Branch;
+using GitVersion;
 using BranchCollection = GitVersion.BranchCollection;
 
 namespace GitVersionCore.Tests.Mocks
 {
     public class MockBranchCollection : BranchCollection
     {
-        public List<Branch> Branches = new List<Branch>();
+        public List<IBranch> Branches = new List<IBranch>();
 
-        public override IEnumerator<Branch> GetEnumerator()
+        public override IEnumerator<IBranch> GetEnumerator()
         {
             return Branches.GetEnumerator();
         }
 
-        public override Branch this[string friendlyName]
+        public override IBranch this[string friendlyName]
         {
             get { return Branches.FirstOrDefault(x => x.FriendlyName == friendlyName); }
         }
 
-        public void Add(Branch item)
+        public void Add(IBranch item)
         {
             Branches.Add(item);
         }
