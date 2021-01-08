@@ -360,9 +360,9 @@ namespace GitVersion
             }
         }
 
-        public IEnumerable<Tuple<Tag, SemanticVersion>> GetValidVersionTags(string tagPrefixRegex, DateTimeOffset? olderThan = null)
+        public IEnumerable<Tuple<ITag, SemanticVersion>> GetValidVersionTags(string tagPrefixRegex, DateTimeOffset? olderThan = null)
         {
-            var tags = new List<Tuple<Tag, SemanticVersion>>();
+            var tags = new List<Tuple<ITag, SemanticVersion>>();
 
             foreach (var tag in repository.Tags)
             {

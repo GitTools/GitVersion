@@ -57,7 +57,7 @@ namespace GitVersion.VersionCalculation
             return $"Git tag '{version.Tag}'";
         }
 
-        protected virtual bool IsValidTag(Tag tag, Commit commit)
+        protected virtual bool IsValidTag(ITag tag, Commit commit)
         {
             var targetCommit = tag.PeeledTargetCommit();
             return targetCommit != null && targetCommit == commit;

@@ -165,7 +165,7 @@ namespace GitVersion
             var fakeBranchName = canonicalName.Replace("refs/pull/", "refs/heads/pull/").Replace("refs/pull-requests/", "refs/heads/pull-requests/");
 
             log.Info($"Creating fake local branch '{fakeBranchName}'.");
-            Refs.Add(fakeBranchName, new ObjectId(headTipSha));
+            Refs.Add(fakeBranchName, headTipSha);
 
             log.Info($"Checking local branch '{fakeBranchName}' out.");
             Checkout(fakeBranchName);
