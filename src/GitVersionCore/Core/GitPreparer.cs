@@ -290,7 +290,7 @@ Please run `git {GitExtensions.CreateGitLogArgs(100)}` and submit it along with 
                 }
 
                 log.Info($"Creating local branch from remote tracking '{remoteTrackingReference.CanonicalName}'.");
-                repo.Refs.Add(localCanonicalName, new ObjectId(remoteTrackingReference.DirectReferenceTargetIdentifier), true);
+                repo.Refs.Add(localCanonicalName, remoteTrackingReference.DirectReferenceTargetIdentifier, true);
 
                 var branch = repo.Branches[branchName];
                 repo.Branches.Update(branch, b => b.TrackedBranch = remoteTrackingReferenceName);

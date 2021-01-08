@@ -87,8 +87,12 @@ namespace GitVersionCore.Tests
             var tip = new TestableCommit(tipId);
             var head = branches.Add("refs/heads/feature/feat-test", tip);
             var remote = new TesatbleRemote("origin");
-            var references = new TestableReferenceCollection();
-            _ = references.Add("develop", "refs/heads/develop");
+            var references = new TestableReferenceCollection
+            {
+                {
+                    "develop", "refs/heads/develop"
+                }
+            };
 
             repository.Refs.Returns(references);
             repository.Head.Returns(head);
@@ -135,14 +139,14 @@ namespace GitVersionCore.Tests
 
         private class TestableCommit : Commit
         {
-            private ObjectId id;
+            private IObjectId id;
 
-            public TestableCommit(ObjectId id)
+            public TestableCommit(IObjectId id)
             {
                 this.id = id;
             }
 
-            public override ObjectId Id => id;
+            public override IObjectId Id => id;
         }
 
         private class TesatbleRemote : Remote
@@ -160,11 +164,11 @@ namespace GitVersionCore.Tests
         private class TestableReferenceCollection : ReferenceCollection
         {
             Reference reference;
-            public override Reference Add(string name, string canonicalRefNameOrObjectish)
+            public override void Add(string name, string canonicalRefNameOrObjectish)
             {
-                return reference = new TestableReference(canonicalRefNameOrObjectish);
+                reference = new TestableReference(canonicalRefNameOrObjectish);
             }
-            public override Reference UpdateTarget(Reference directRef, ObjectId targetId)
+            public override Reference UpdateTarget(Reference directRef, IObjectId targetId)
             {
                 return reference;
             }

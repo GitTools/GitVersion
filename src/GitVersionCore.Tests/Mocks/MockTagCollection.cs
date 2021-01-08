@@ -5,12 +5,12 @@ namespace GitVersionCore.Tests.Mocks
 {
     public class MockTagCollection : TagCollection
     {
-        private List<Tag> Tags = new List<Tag>();
-        public override IEnumerator<Tag> GetEnumerator()
+        private List<ITag> Tags = new List<ITag>();
+        public override IEnumerator<ITag> GetEnumerator()
         {
             return Tags.GetEnumerator();
         }
-        public void Add(Tag item)
+        public void Add(ITag item)
         {
             Tags.Add(item);
         }

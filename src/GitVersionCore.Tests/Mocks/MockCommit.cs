@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using GitVersion;
 using LibGit2Sharp;
 using Commit = GitVersion.Commit;
 using ObjectId = GitVersion.ObjectId;
@@ -13,7 +14,7 @@ namespace GitVersionCore.Tests.Mocks
         private static int commitCount = 1;
         private static DateTimeOffset when = DateTimeOffset.Now;
 
-        public MockCommit(ObjectId id = null)
+        public MockCommit(IObjectId id = null)
         {
             idEx = id ?? new ObjectId(Guid.NewGuid().ToString().Replace("-", "") + "00000000");
             MessageEx = "Commit " + commitCount++;
@@ -29,8 +30,8 @@ namespace GitVersionCore.Tests.Mocks
         public Signature CommitterEx;
         public override DateTimeOffset? CommitterWhen => CommitterEx.When;
 
-        private readonly ObjectId idEx;
-        public override ObjectId Id => idEx;
+        private readonly IObjectId idEx;
+        public override IObjectId Id => idEx;
 
         public override string Sha => idEx.Sha;
 

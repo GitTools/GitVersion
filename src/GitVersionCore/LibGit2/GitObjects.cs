@@ -7,10 +7,10 @@ using LibGit2Sharp;
 
 namespace GitVersion
 {
-    public class ObjectId
+    public class ObjectId : IObjectId
     {
-        private static readonly LambdaEqualityHelper<ObjectId> equalityHelper =
-            new LambdaEqualityHelper<ObjectId>(x => x.Sha);
+        private static readonly LambdaEqualityHelper<IObjectId> equalityHelper =
+            new LambdaEqualityHelper<IObjectId>(x => x.Sha);
 
         private readonly LibGit2Sharp.ObjectId innerObjectId;
         private ObjectId(LibGit2Sharp.ObjectId objectId)
@@ -23,8 +23,8 @@ namespace GitVersion
             innerObjectId = new LibGit2Sharp.ObjectId(sha);
         }
 
-        public override bool Equals(object obj) => Equals(obj as ObjectId);
-        private bool Equals(ObjectId other) => equalityHelper.Equals(this, other);
+        public override bool Equals(object obj) => Equals(obj as IObjectId);
+        private bool Equals(IObjectId other) => equalityHelper.Equals(this, other);
 
         public override int GetHashCode() => equalityHelper.GetHashCode(this);
         public static bool operator !=(ObjectId left, ObjectId right) => !Equals(left, right);
@@ -36,7 +36,7 @@ namespace GitVersion
         public string ToString(int prefixLength) => innerObjectId.ToString(prefixLength);
     }
 
-    public class Tag
+    public class Tag : ITag
     {
         private readonly LibGit2Sharp.Tag innerTag;
         private Tag(LibGit2Sharp.Tag tag)
@@ -104,7 +104,7 @@ namespace GitVersion
         }
 
         public virtual string Sha => innerCommit?.Sha;
-        public virtual ObjectId Id => (ObjectId)innerCommit?.Id;
+        public virtual IObjectId Id => (ObjectId)innerCommit?.Id;
         public virtual DateTimeOffset? CommitterWhen => innerCommit?.Committer.When;
         public virtual string Message => innerCommit?.Message;
     }
@@ -148,7 +148,7 @@ namespace GitVersion
         public virtual string CanonicalName => innerReference.CanonicalName;
         public virtual string TargetIdentifier => innerReference.TargetIdentifier;
         public virtual string DirectReferenceTargetIdentifier => directReference.TargetIdentifier;
-        public virtual ObjectId DirectReferenceTargetId => (ObjectId)directReference.Target.Id;
+        public virtual IObjectId DirectReferenceTargetId => (ObjectId)directReference.Target.Id;
 
         public virtual Reference ResolveToDirectReference() => (Reference)directReference;
         public static implicit operator LibGit2Sharp.Reference(Reference d) => d?.innerReference;
@@ -205,7 +205,7 @@ namespace GitVersion
         }
     }
 
-    public class TagCollection : IEnumerable<Tag>
+    public class TagCollection : IEnumerable<ITag>
     {
         private readonly LibGit2Sharp.TagCollection innerCollection;
         private TagCollection(LibGit2Sharp.TagCollection collection) => innerCollection = collection;
@@ -217,14 +217,14 @@ namespace GitVersion
         public static implicit operator LibGit2Sharp.TagCollection(TagCollection d) => d.innerCollection;
         public static explicit operator TagCollection(LibGit2Sharp.TagCollection b) => b is null ? null : new TagCollection(b);
 
-        public virtual IEnumerator<Tag> GetEnumerator()
+        public virtual IEnumerator<ITag> GetEnumerator()
         {
             foreach (var tag in innerCollection)
                 yield return (Tag)tag;
         }
 
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
-        public virtual Tag this[string name] => (Tag)innerCollection[name];
+        public virtual ITag this[string name] => (Tag)innerCollection[name];
     }
 
     public class ReferenceCollection : IEnumerable<Reference>
@@ -245,24 +245,29 @@ namespace GitVersion
                 yield return (Reference)reference;
         }
 
-        public virtual Reference Add(string name, string canonicalRefNameOrObjectish)
+        public virtual void Add(string name, string canonicalRefNameOrObjectish)
         {
-            return (Reference)innerCollection.Add(name, canonicalRefNameOrObjectish);
+            innerCollection.Add(name, canonicalRefNameOrObjectish);
         }
 
-        public virtual void Add(string name, ObjectId targetId)
+        public virtual void Add(string name, string canonicalRefNameOrObjectish, bool allowOverwrite)
         {
-            innerCollection.Add(name, targetId);
+            innerCollection.Add(name, canonicalRefNameOrObjectish, allowOverwrite);
         }
 
-        public virtual void Add(string name, ObjectId targetId, bool allowOverwrite)
+        public virtual void Add(string name, IObjectId targetId)
         {
-            innerCollection.Add(name, targetId, allowOverwrite);
+            innerCollection.Add(name, (ObjectId)targetId);
         }
 
-        public virtual Reference UpdateTarget(Reference directRef, ObjectId targetId)
+        public virtual void Add(string name, IObjectId targetId, bool allowOverwrite)
         {
-            return (Reference)innerCollection.UpdateTarget(directRef, targetId);
+            innerCollection.Add(name, (ObjectId)targetId, allowOverwrite);
+        }
+
+        public virtual Reference UpdateTarget(Reference directRef, IObjectId targetId)
+        {
+            return (Reference)innerCollection.UpdateTarget(directRef, (ObjectId)targetId);
         }
 
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
@@ -319,46 +324,5 @@ namespace GitVersion
             var commitLog = ((IQueryableCommitLog)innerCollection).QueryBy(filter);
             return FromCommitLog(commitLog);
         }
-    }
-
-    public class CommitFilter
-    {
-
-        public bool FirstParentOnly { get; set; }
-        public object IncludeReachableFrom { get; set; }
-        public object ExcludeReachableFrom { get; set; }
-        public CommitSortStrategies SortBy { get; set; }
-    }
-
-    [Flags]
-    public enum CommitSortStrategies
-    {
-        /// <summary>
-        /// Sort the commits in no particular ordering;
-        /// this sorting is arbitrary, implementation-specific
-        /// and subject to change at any time.
-        /// </summary>
-        None = 0,
-
-        /// <summary>
-        /// Sort the commits in topological order
-        /// (parents before children); this sorting mode
-        /// can be combined with time sorting.
-        /// </summary>
-        Topological = (1 << 0),
-
-        /// <summary>
-        /// Sort the commits by commit time;
-        /// this sorting mode can be combined with
-        /// topological sorting.
-        /// </summary>
-        Time = (1 << 1),
-
-        /// <summary>
-        /// Iterate through the commits in reverse
-        /// order; this sorting mode can be combined with
-        /// any of the above.
-        /// </summary>
-        Reverse = (1 << 2)
     }
 }
