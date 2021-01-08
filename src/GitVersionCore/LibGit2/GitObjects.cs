@@ -109,7 +109,7 @@ namespace GitVersion
         public virtual string Message => innerCommit?.Message;
     }
 
-    public class Branch
+    public class Branch : IBranch
     {
         private readonly LibGit2Sharp.Branch innerBranch;
 
@@ -173,7 +173,7 @@ namespace GitVersion
         public virtual string RefSpecs => string.Join(", ", innerRemote.FetchRefSpecs.Select(r => r.Specification));
     }
 
-    public class BranchCollection : IEnumerable<Branch>
+    public class BranchCollection : IEnumerable<IBranch>
     {
         private readonly LibGit2Sharp.BranchCollection innerCollection;
         private BranchCollection(LibGit2Sharp.BranchCollection collection) => innerCollection = collection;
@@ -185,23 +185,23 @@ namespace GitVersion
         public static implicit operator LibGit2Sharp.BranchCollection(BranchCollection d) => d.innerCollection;
         public static explicit operator BranchCollection(LibGit2Sharp.BranchCollection b) => b is null ? null : new BranchCollection(b);
 
-        public virtual IEnumerator<Branch> GetEnumerator()
+        public virtual IEnumerator<IBranch> GetEnumerator()
         {
             foreach (var branch in innerCollection)
                 yield return (Branch)branch;
         }
 
-        public virtual Branch Add(string name, Commit commit)
+        public virtual IBranch Add(string name, Commit commit)
         {
             return (Branch)innerCollection.Add(name, commit);
         }
 
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
-        public virtual Branch this[string friendlyName] => (Branch)innerCollection[friendlyName];
+        public virtual IBranch this[string friendlyName] => (Branch)innerCollection[friendlyName];
 
-        public void Update(Branch branch, params Action<BranchUpdater>[] actions)
+        public void Update(IBranch branch, params Action<BranchUpdater>[] actions)
         {
-            innerCollection.Update(branch, actions);
+            innerCollection.Update((Branch)branch, actions);
         }
     }
 

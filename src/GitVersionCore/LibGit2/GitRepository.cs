@@ -104,7 +104,7 @@ namespace GitVersion
             return repositoryInstance.ObjectDatabase.ShortenObjectId(commit);
         }
 
-        public Branch Head => (Branch)repositoryInstance.Head;
+        public IBranch Head => (Branch)repositoryInstance.Head;
 
         public ReferenceCollection Refs => (ReferenceCollection)repositoryInstance.Refs;
 
@@ -249,7 +249,7 @@ namespace GitVersion
             return null;
         }
 
-        public bool GetMatchingCommitBranch(Commit baseVersionSource, Branch branch, Commit firstMatchingCommit)
+        public bool GetMatchingCommitBranch(Commit baseVersionSource, IBranch branch, Commit firstMatchingCommit)
         {
             var filter = new CommitFilter
             {
@@ -261,7 +261,7 @@ namespace GitVersion
 
             return commitCollection.Contains(firstMatchingCommit);
         }
-        public IEnumerable<Commit> GetCommitsReacheableFrom(Commit commit, Branch branch)
+        public IEnumerable<Commit> GetCommitsReacheableFrom(Commit commit, IBranch branch)
         {
             var filter = new CommitFilter
             {
@@ -363,9 +363,9 @@ namespace GitVersion
             Commands.Checkout(repositoryInstance, committishOrBranchSpec);
         }
 
-        public void Checkout(Branch branch)
+        public void Checkout(IBranch branch)
         {
-            Commands.Checkout(repositoryInstance, branch);
+            Commands.Checkout(repositoryInstance, (Branch)branch);
         }
 
         public void Fetch(string remote, IEnumerable<string> refspecs, AuthenticationInfo auth, string logMessage)

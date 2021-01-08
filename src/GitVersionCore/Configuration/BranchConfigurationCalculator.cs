@@ -25,7 +25,7 @@ namespace GitVersion.Configuration
         /// <summary>
         /// Gets the <see cref="BranchConfig"/> for the current commit.
         /// </summary>
-        public BranchConfig GetBranchConfiguration(Branch targetBranch, Commit currentCommit, Config configuration, IList<Branch> excludedInheritBranches = null)
+        public BranchConfig GetBranchConfiguration(IBranch targetBranch, Commit currentCommit, Config configuration, IList<IBranch> excludedInheritBranches = null)
         {
             var matchingBranches = configuration.GetConfigForBranch(targetBranch.NameWithoutRemote());
 
@@ -56,7 +56,7 @@ namespace GitVersion.Configuration
         }
 
         // TODO I think we need to take a fresh approach to this.. it's getting really complex with heaps of edge cases
-        private BranchConfig InheritBranchConfiguration(Branch targetBranch, BranchConfig branchConfiguration, Commit currentCommit, Config configuration, IList<Branch> excludedInheritBranches)
+        private BranchConfig InheritBranchConfiguration(IBranch targetBranch, BranchConfig branchConfiguration, Commit currentCommit, Config configuration, IList<IBranch> excludedInheritBranches)
         {
             using (log.IndentLog("Attempting to inherit branch configuration from parent branch"))
             {
@@ -78,7 +78,7 @@ namespace GitVersion.Configuration
 
                 var branchPoint = repositoryMetadataProvider
                     .FindCommitBranchWasBranchedFrom(targetBranch, configuration, excludedInheritBranches.ToArray());
-                List<Branch> possibleParents;
+                List<IBranch> possibleParents;
                 if (branchPoint == BranchCommit.Empty)
                 {
                     possibleParents = repositoryMetadataProvider.GetBranchesContainingCommit(targetBranch.Tip, branchesToEvaluate)
@@ -171,7 +171,7 @@ namespace GitVersion.Configuration
             }
         }
 
-        private Branch[] CalculateWhenMultipleParents(Commit currentCommit, ref Branch currentBranch, Branch[] excludedBranches)
+        private IBranch[] CalculateWhenMultipleParents(Commit currentCommit, ref IBranch currentBranch, IBranch[] excludedBranches)
         {
             var parents = currentCommit.Parents.ToArray();
             var branches = repositoryMetadataProvider.GetBranchesForCommit(parents[1]);
@@ -209,7 +209,7 @@ namespace GitVersion.Configuration
 
 
 
-        private static BranchConfig ChooseMasterOrDevelopIncrementStrategyIfTheChosenBranchIsOneOfThem(Branch chosenBranch, BranchConfig branchConfiguration, Config config)
+        private static BranchConfig ChooseMasterOrDevelopIncrementStrategyIfTheChosenBranchIsOneOfThem(IBranch chosenBranch, BranchConfig branchConfiguration, Config config)
         {
             BranchConfig masterOrDevelopConfig = null;
             var developBranchRegex = config.Branches[Config.DevelopBranchKey].Regex;

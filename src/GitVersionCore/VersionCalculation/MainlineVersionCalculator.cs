@@ -102,7 +102,7 @@ namespace GitVersion.VersionCalculation
         }
 
 
-        private SemanticVersion AggregateMergeCommitIncrement(Commit commit, List<Commit> directCommits, SemanticVersion mainlineVersion, Branch mainline)
+        private SemanticVersion AggregateMergeCommitIncrement(Commit commit, List<Commit> directCommits, SemanticVersion mainlineVersion, IBranch mainline)
         {
             // Merge commit, process all merged commits as a batch
             var mergeCommit = commit;
@@ -121,7 +121,7 @@ namespace GitVersion.VersionCalculation
             return mainlineVersion;
         }
 
-        private Branch GetMainline(Commit baseVersionSource)
+        private IBranch GetMainline(Commit baseVersionSource)
         {
             var mainlineBranchConfigs = context.FullConfiguration.Branches.Where(b => b.Value.IsMainline == true).ToList();
             var mainlineBranches = repositoryMetadataProvider.GetMainlineBranches(context.CurrentCommit, mainlineBranchConfigs);
@@ -198,7 +198,7 @@ namespace GitVersion.VersionCalculation
         /// <param name="mainline">The mainline branch.</param>
         /// <param name="mainlineTip">The commit on mainline at which the returned merge base was fully integrated.</param>
         /// <returns>The best possible merge base between the current commit and <paramref name="mainline"/> that is not the child of a forward merge.</returns>
-        private Commit FindMergeBaseBeforeForwardMerge(Commit baseVersionSource, Branch mainline, out Commit mainlineTip)
+        private Commit FindMergeBaseBeforeForwardMerge(Commit baseVersionSource, IBranch mainline, out Commit mainlineTip)
         {
             var mergeBase = repositoryMetadataProvider.FindMergeBase(context.CurrentCommit, mainline.Tip);
             var mainlineCommitLog = repositoryMetadataProvider.GetMainlineCommitLog(baseVersionSource, mainline.Tip);
@@ -225,7 +225,7 @@ namespace GitVersion.VersionCalculation
             return mergeBase;
         }
 
-        private SemanticVersion IncrementForEachCommit(IEnumerable<Commit> directCommits, SemanticVersion mainlineVersion, Branch mainline)
+        private SemanticVersion IncrementForEachCommit(IEnumerable<Commit> directCommits, SemanticVersion mainlineVersion, IBranch mainline)
         {
             foreach (var directCommit in directCommits)
             {

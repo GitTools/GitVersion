@@ -14,13 +14,12 @@ using LibGit2Sharp;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Shouldly;
-using Branch = GitVersion.Branch;
 
 namespace GitVersionCore.Tests
 {
     public static class GitToolsTestingExtensions
     {
-        public static Branch FindBranch(this IGitRepository repository, string branchName)
+        public static IBranch FindBranch(this IGitRepository repository, string branchName)
         {
             return repository.Branches.FirstOrDefault(x => x.NameWithoutRemote() == branchName);
         }

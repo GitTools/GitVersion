@@ -13,7 +13,7 @@ namespace GitVersionCore.Tests.Mocks
             Tags = new MockTagCollection();
             Refs = new MockReferenceCollection();
         }
-        public Branch Head { get; set; }
+        public IBranch Head { get; set; }
         public ReferenceCollection Refs { get; set; }
 
         public CommitCollection Commits
@@ -33,11 +33,11 @@ namespace GitVersionCore.Tests.Mocks
         public void CreateBranchForPullRequestBranch(ILog log, AuthenticationInfo auth) => throw new NotImplementedException();
         public bool GitRepoHasMatchingRemote(string targetUrl) => throw new NotImplementedException();
         public void CleanupDuplicateOrigin(string defaultRemoteName) => throw new NotImplementedException();
-        public bool GetMatchingCommitBranch(Commit baseVersionSource, Branch branch, Commit firstMatchingCommit)
+        public bool GetMatchingCommitBranch(Commit baseVersionSource, IBranch branch, Commit firstMatchingCommit)
         {
             throw new NotImplementedException();
         }
-        public IEnumerable<Commit> GetCommitsReacheableFrom(Commit commit, Branch branch)
+        public IEnumerable<Commit> GetCommitsReacheableFrom(Commit commit, IBranch branch)
         {
             throw new NotImplementedException();
         }
@@ -77,7 +77,7 @@ namespace GitVersionCore.Tests.Mocks
         {
             throw new NotImplementedException();
         }
-        public void Checkout(Branch branch)
+        public void Checkout(IBranch branch)
         {
             throw new NotImplementedException();
         }

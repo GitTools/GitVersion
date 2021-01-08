@@ -9,7 +9,7 @@ namespace GitVersion
         string Path { get; }
         string WorkingDirectory { get; }
         bool IsHeadDetached { get; }
-        Branch Head { get; }
+        IBranch Head { get; }
         CommitCollection Commits { get; }
         BranchCollection Branches { get; }
         TagCollection Tags { get; }
@@ -18,12 +18,11 @@ namespace GitVersion
         int GetNumberOfUncommittedChanges();
         Commit FindMergeBase(Commit commit, Commit otherCommit);
         string ShortenObjectId(Commit commit);
-        void CreateBranchForPullRequestBranch(ILog log, AuthenticationInfo auth);
-        IRemote EnsureOnlyOneRemoteIsDefined(ILog log);
+
         bool GitRepoHasMatchingRemote(string targetUrl);
         void CleanupDuplicateOrigin(string defaultRemoteName);
-        bool GetMatchingCommitBranch(Commit baseVersionSource, Branch branch, Commit firstMatchingCommit);
-        IEnumerable<Commit> GetCommitsReacheableFrom(Commit commit, Branch branch);
+        bool GetMatchingCommitBranch(Commit baseVersionSource, IBranch branch, Commit firstMatchingCommit);
+        IEnumerable<Commit> GetCommitsReacheableFrom(Commit commit, IBranch branch);
         List<Commit> GetCommitsReacheableFromHead(Commit headCommit);
         Commit GetForwardMerge(Commit commitToFindCommonBase, Commit findMergeBase);
         IEnumerable<Commit> GetMergeBaseCommits(Commit mergeCommit, Commit mergedHead, Commit findMergeBase);
@@ -32,7 +31,9 @@ namespace GitVersion
         CommitCollection GetCommitLog(Commit baseVersionSource, Commit currentCommit);
 
         void Checkout(string committishOrBranchSpec);
-        void Checkout(Branch branch);
+        void Checkout(IBranch branch);
         void Fetch(string remote, IEnumerable<string> refspecs, AuthenticationInfo auth, string logMessage);
+        void CreateBranchForPullRequestBranch(ILog log, AuthenticationInfo auth);
+        IRemote EnsureOnlyOneRemoteIsDefined(ILog log);
     }
 }

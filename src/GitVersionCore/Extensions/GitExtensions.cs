@@ -14,14 +14,14 @@ namespace GitVersion.Extensions
             return commit.CommitterWhen.Value;
         }
 
-        public static string NameWithoutRemote(this Branch branch)
+        public static string NameWithoutRemote(this IBranch branch)
         {
             return branch.IsRemote
                 ? branch.FriendlyName.Substring(branch.FriendlyName.IndexOf("/", StringComparison.Ordinal) + 1)
                 : branch.FriendlyName;
         }
 
-        public static string NameWithoutOrigin(this Branch branch)
+        public static string NameWithoutOrigin(this IBranch branch)
         {
             return branch.IsRemote && branch.FriendlyName.StartsWith("origin/")
                 ? branch.FriendlyName.Substring("origin/".Length)
@@ -31,7 +31,7 @@ namespace GitVersion.Extensions
         /// <summary>
         /// Checks if the two branch objects refer to the same branch (have the same friendly name).
         /// </summary>
-        public static bool IsSameBranch(this Branch branch, Branch otherBranch)
+        public static bool IsSameBranch(this IBranch branch, IBranch otherBranch)
         {
             // For each branch, fixup the friendly name if the branch is remote.
             var otherBranchFriendlyName = otherBranch.NameWithoutRemote();
@@ -43,7 +43,7 @@ namespace GitVersion.Extensions
         /// <summary>
         /// Exclude the given branches (by value equality according to friendly name).
         /// </summary>
-        public static IEnumerable<BranchCommit> ExcludingBranches(this IEnumerable<BranchCommit> branches, IEnumerable<Branch> branchesToExclude)
+        public static IEnumerable<BranchCommit> ExcludingBranches(this IEnumerable<BranchCommit> branches, IEnumerable<IBranch> branchesToExclude)
         {
             return branches.Where(b => branchesToExclude.All(bte => !IsSameBranch(b.Branch, bte)));
         }
@@ -51,16 +51,16 @@ namespace GitVersion.Extensions
         /// <summary>
         /// Exclude the given branches (by value equality according to friendly name).
         /// </summary>
-        public static IEnumerable<Branch> ExcludingBranches(this IEnumerable<Branch> branches, IEnumerable<Branch> branchesToExclude)
+        public static IEnumerable<IBranch> ExcludingBranches(this IEnumerable<IBranch> branches, IEnumerable<IBranch> branchesToExclude)
         {
             return branches.Where(b => branchesToExclude.All(bte => !IsSameBranch(b, bte)));
         }
-        public static IEnumerable<Commit> CommitsPriorToThan(this Branch branch, DateTimeOffset olderThan)
+        public static IEnumerable<Commit> CommitsPriorToThan(this IBranch branch, DateTimeOffset olderThan)
         {
             return branch.Commits.SkipWhile(c => c.When() > olderThan);
         }
 
-        public static bool IsDetachedHead(this Branch branch)
+        public static bool IsDetachedHead(this IBranch branch)
         {
             return branch.CanonicalName.Equals("(no branch)", StringComparison.OrdinalIgnoreCase);
         }

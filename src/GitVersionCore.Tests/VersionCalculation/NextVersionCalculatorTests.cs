@@ -11,6 +11,7 @@ using LibGit2Sharp;
 using Microsoft.Extensions.DependencyInjection;
 using NUnit.Framework;
 using Shouldly;
+using Branch = GitVersion.Branch;
 
 namespace GitVersionCore.Tests.VersionCalculation
 {
@@ -301,7 +302,7 @@ namespace GitVersionCore.Tests.VersionCalculation
             fixture.AssertFullSemver("0.1.0-test.2+2", config);
 
             Commands.Checkout(fixture.Repository, "master");
-            fixture.Repository.Merge(new GitRepository(fixture.Repository).FindBranch("feature/test"), Generate.SignatureNow());
+            fixture.Repository.Merge((Branch)new GitRepository(fixture.Repository).FindBranch("feature/test"), Generate.SignatureNow());
 
             fixture.AssertFullSemver("0.1.0-beta.1+2", config);
         }
