@@ -109,7 +109,7 @@ namespace GitVersionCore.Tests
                     ? branches[name]
                     : null;
 
-            public override IBranch Add(string name, Commit commit)
+            public override IBranch Add(string name, ICommit commit)
             {
                 var branch = new TestableBranch(name, commit);
                 branches.Add(name, branch);
@@ -125,16 +125,16 @@ namespace GitVersionCore.Tests
         private class TestableBranch : Branch
         {
             private readonly string canonicalName;
-            private readonly Commit tip;
+            private readonly ICommit tip;
 
-            public TestableBranch(string canonicalName, Commit tip)
+            public TestableBranch(string canonicalName, ICommit tip)
             {
                 this.tip = tip;
                 this.canonicalName = canonicalName;
             }
 
             public override string CanonicalName => canonicalName;
-            public override Commit Tip => tip;
+            public override ICommit Tip => tip;
         }
 
         private class TestableCommit : Commit

@@ -15,7 +15,7 @@ namespace GitVersion
         public SemanticVersion CurrentCommitTaggedVersion { get; }
         public EffectiveConfiguration Configuration { get; }
         public IBranch CurrentBranch { get; }
-        public Commit CurrentCommit { get; }
+        public ICommit CurrentCommit { get; }
         public bool IsCurrentCommitTagged => CurrentCommitTaggedVersion != null;
 
         public int NumberOfUncommittedChanges { get; }
@@ -24,7 +24,7 @@ namespace GitVersion
         {
         }
 
-        public GitVersionContext(IBranch currentBranch, Commit currentCommit,
+        public GitVersionContext(IBranch currentBranch, ICommit currentCommit,
             Config configuration, EffectiveConfiguration effectiveConfiguration, SemanticVersion currentCommitTaggedVersion, int numberOfUncommittedChanges)
         {
             CurrentCommit = currentCommit;

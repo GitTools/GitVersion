@@ -18,7 +18,7 @@ namespace GitVersionCore.Tests.Mocks
         {
             idEx = id ?? new ObjectId(Guid.NewGuid().ToString().Replace("-", "") + "00000000");
             MessageEx = "Commit " + commitCount++;
-            ParentsEx = new List<Commit> { null };
+            ParentsEx = new List<ICommit> { null };
             CommitterEx = new Signature("Joe", "Joe@bloggs.net", when);
             // Make sure each commit is a different time
             when = when.AddSeconds(1);
@@ -35,8 +35,8 @@ namespace GitVersionCore.Tests.Mocks
 
         public override string Sha => idEx.Sha;
 
-        public IList<Commit> ParentsEx;
-        public override IEnumerable<Commit> Parents => ParentsEx;
+        public IList<ICommit> ParentsEx;
+        public override IEnumerable<ICommit> Parents => ParentsEx;
 
         // ReSharper disable once UnusedMember.Local
         private string DebuggerDisplay => MessageEx;

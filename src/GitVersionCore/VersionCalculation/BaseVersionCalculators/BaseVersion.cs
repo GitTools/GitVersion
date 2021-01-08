@@ -2,7 +2,7 @@ namespace GitVersion.VersionCalculation
 {
     public class BaseVersion
     {
-        public BaseVersion(string source, bool shouldIncrement, SemanticVersion semanticVersion, Commit baseVersionSource, string branchNameOverride)
+        public BaseVersion(string source, bool shouldIncrement, SemanticVersion semanticVersion, ICommit baseVersionSource, string branchNameOverride)
         {
             Source = source;
             ShouldIncrement = shouldIncrement;
@@ -17,7 +17,7 @@ namespace GitVersion.VersionCalculation
 
         public SemanticVersion SemanticVersion { get; }
 
-        public Commit BaseVersionSource { get; }
+        public ICommit BaseVersionSource { get; }
 
         public string BranchNameOverride { get; }
 

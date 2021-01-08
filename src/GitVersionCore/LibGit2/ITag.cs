@@ -4,6 +4,6 @@ namespace GitVersion
     {
         string TargetSha { get; }
         string FriendlyName { get; }
-        Commit PeeledTargetCommit();
+        ICommit PeeledTargetCommit();
     }
 }

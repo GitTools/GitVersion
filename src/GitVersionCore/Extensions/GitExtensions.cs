@@ -9,7 +9,7 @@ namespace GitVersion.Extensions
 {
     public static class GitExtensions
     {
-        public static DateTimeOffset When(this Commit commit)
+        public static DateTimeOffset When(this ICommit commit)
         {
             return commit.CommitterWhen.Value;
         }
@@ -55,7 +55,7 @@ namespace GitVersion.Extensions
         {
             return branches.Where(b => branchesToExclude.All(bte => !IsSameBranch(b, bte)));
         }
-        public static IEnumerable<Commit> CommitsPriorToThan(this IBranch branch, DateTimeOffset olderThan)
+        public static IEnumerable<ICommit> CommitsPriorToThan(this IBranch branch, DateTimeOffset olderThan)
         {
             return branch.Commits.SkipWhile(c => c.When() > olderThan);
         }

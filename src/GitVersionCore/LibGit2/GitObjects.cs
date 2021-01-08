@@ -53,7 +53,7 @@ namespace GitVersion
         public virtual string TargetSha => innerTag?.Target.Sha;
         public virtual string FriendlyName => innerTag?.FriendlyName;
 
-        public Commit PeeledTargetCommit()
+        public ICommit PeeledTargetCommit()
         {
             var target = innerTag.Target;
 
@@ -66,10 +66,10 @@ namespace GitVersion
         }
     }
 
-    public class Commit
+    public class Commit : ICommit
     {
-        private static readonly LambdaEqualityHelper<Commit> equalityHelper =
-            new LambdaEqualityHelper<Commit>(x => x.Id);
+        private static readonly LambdaEqualityHelper<ICommit> equalityHelper =
+            new LambdaEqualityHelper<ICommit>(x => x.Id);
 
         private readonly LibGit2Sharp.Commit innerCommit;
 
@@ -82,8 +82,8 @@ namespace GitVersion
         {
         }
 
-        public override bool Equals(object obj) => Equals(obj as Commit);
-        private bool Equals(Commit other) => equalityHelper.Equals(this, other);
+        public override bool Equals(object obj) => Equals(obj as ICommit);
+        private bool Equals(ICommit other) => equalityHelper.Equals(this, other);
 
         public override int GetHashCode() => equalityHelper.GetHashCode(this);
         public static bool operator !=(Commit left, Commit right) => !Equals(left, right);
@@ -92,7 +92,7 @@ namespace GitVersion
         public static implicit operator LibGit2Sharp.Commit(Commit d) => d?.innerCommit;
         public static explicit operator Commit(LibGit2Sharp.Commit b) => b is null ? null : new Commit(b);
 
-        public virtual IEnumerable<Commit> Parents
+        public virtual IEnumerable<ICommit> Parents
         {
             get
             {
@@ -126,7 +126,7 @@ namespace GitVersion
 
         public virtual string CanonicalName => innerBranch?.CanonicalName;
         public virtual string FriendlyName => innerBranch?.FriendlyName;
-        public virtual Commit Tip => (Commit)innerBranch?.Tip;
+        public virtual ICommit Tip => (Commit)innerBranch?.Tip;
         public virtual CommitCollection Commits => CommitCollection.FromCommitLog(innerBranch?.Commits);
         public virtual bool IsRemote => innerBranch != null && innerBranch.IsRemote;
         public virtual bool IsTracking => innerBranch != null && innerBranch.IsTracking;
@@ -191,9 +191,9 @@ namespace GitVersion
                 yield return (Branch)branch;
         }
 
-        public virtual IBranch Add(string name, Commit commit)
+        public virtual IBranch Add(string name, ICommit commit)
         {
-            return (Branch)innerCollection.Add(name, commit);
+            return (Branch)innerCollection.Add(name, (Commit)commit);
         }
 
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
@@ -281,7 +281,7 @@ namespace GitVersion
         }
     }
 
-    public class CommitCollection : IEnumerable<Commit>
+    public class CommitCollection : IEnumerable<ICommit>
     {
         private readonly ICommitLog innerCollection;
         private CommitCollection(ICommitLog collection) => innerCollection = collection;
@@ -292,7 +292,7 @@ namespace GitVersion
 
         internal static CommitCollection FromCommitLog(ICommitLog b) => b is null ? null : new CommitCollection(b);
 
-        public virtual IEnumerator<Commit> GetEnumerator()
+        public virtual IEnumerator<ICommit> GetEnumerator()
         {
             foreach (var commit in innerCollection)
                 yield return (Commit)commit;

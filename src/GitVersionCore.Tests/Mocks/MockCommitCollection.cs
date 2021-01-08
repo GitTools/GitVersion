@@ -6,18 +6,15 @@ namespace GitVersionCore.Tests.Mocks
 {
     public class MockCommitCollection : CommitCollection
     {
-        private List<Commit> Commits = new List<Commit>();
+        private List<ICommit> Commits = new List<ICommit>();
 
-        public override IEnumerator<Commit> GetEnumerator()
+        public override IEnumerator<ICommit> GetEnumerator()
         {
-            if (SortedBy == CommitSortStrategies.Reverse)
-                return Commits.GetEnumerator();
-
-            return Enumerable.Reverse(Commits).GetEnumerator();
+            return SortedBy == CommitSortStrategies.Reverse ? Commits.GetEnumerator() : Enumerable.Reverse(Commits).GetEnumerator();
         }
 
         public CommitSortStrategies SortedBy { get; set; }
-        public void Add(Commit item)
+        public void Add(ICommit item)
         {
             Commits.Add(item);
         }
@@ -27,17 +24,17 @@ namespace GitVersionCore.Tests.Mocks
             Commits.Clear();
         }
 
-        public bool Contains(Commit item)
+        public bool Contains(ICommit item)
         {
             return Commits.Contains(item);
         }
 
-        public void CopyTo(Commit[] array, int arrayIndex)
+        public void CopyTo(ICommit[] array, int arrayIndex)
         {
             Commits.CopyTo(array, arrayIndex);
         }
 
-        public bool Remove(Commit item)
+        public bool Remove(ICommit item)
         {
             return Commits.Remove(item);
         }

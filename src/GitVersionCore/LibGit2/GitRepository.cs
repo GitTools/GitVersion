@@ -95,13 +95,13 @@ namespace GitVersion
 
             return changes.Count;
         }
-        public Commit FindMergeBase(Commit commit, Commit otherCommit)
+        public ICommit FindMergeBase(ICommit commit, ICommit otherCommit)
         {
-            return (Commit)repositoryInstance.ObjectDatabase.FindMergeBase(commit, otherCommit);
+            return (Commit)repositoryInstance.ObjectDatabase.FindMergeBase((Commit)commit, (Commit)otherCommit);
         }
-        public string ShortenObjectId(Commit commit)
+        public string ShortenObjectId(ICommit commit)
         {
-            return repositoryInstance.ObjectDatabase.ShortenObjectId(commit);
+            return repositoryInstance.ObjectDatabase.ShortenObjectId((Commit)commit);
         }
 
         public IBranch Head => (Branch)repositoryInstance.Head;
@@ -249,7 +249,7 @@ namespace GitVersion
             return null;
         }
 
-        public bool GetMatchingCommitBranch(Commit baseVersionSource, IBranch branch, Commit firstMatchingCommit)
+        public bool GetMatchingCommitBranch(ICommit baseVersionSource, IBranch branch, ICommit firstMatchingCommit)
         {
             var filter = new CommitFilter
             {
@@ -261,7 +261,7 @@ namespace GitVersion
 
             return commitCollection.Contains(firstMatchingCommit);
         }
-        public IEnumerable<Commit> GetCommitsReacheableFrom(Commit commit, IBranch branch)
+        public IEnumerable<ICommit> GetCommitsReacheableFrom(ICommit commit, IBranch branch)
         {
             var filter = new CommitFilter
             {
@@ -271,7 +271,7 @@ namespace GitVersion
 
             return commitCollection.Where(c => c.Sha == commit.Sha);
         }
-        public List<Commit> GetCommitsReacheableFromHead(Commit headCommit)
+        public List<ICommit> GetCommitsReacheableFromHead(ICommit headCommit)
         {
             var filter = new CommitFilter
             {
@@ -283,7 +283,7 @@ namespace GitVersion
 
             return commitCollection.ToList();
         }
-        public Commit GetForwardMerge(Commit commitToFindCommonBase, Commit findMergeBase)
+        public ICommit GetForwardMerge(ICommit commitToFindCommonBase, ICommit findMergeBase)
         {
             var filter = new CommitFilter
             {
@@ -296,7 +296,7 @@ namespace GitVersion
                 .FirstOrDefault(c => c.Parents.Contains(findMergeBase));
             return forwardMerge;
         }
-        public IEnumerable<Commit> GetMergeBaseCommits(Commit mergeCommit, Commit mergedHead, Commit findMergeBase)
+        public IEnumerable<ICommit> GetMergeBaseCommits(ICommit mergeCommit, ICommit mergedHead, ICommit findMergeBase)
         {
             var filter = new CommitFilter
             {
@@ -313,7 +313,7 @@ namespace GitVersion
                 : commitCollection;
             return commits.ToList();
         }
-        public Commit GetBaseVersionSource(Commit currentBranchTip)
+        public ICommit GetBaseVersionSource(ICommit currentBranchTip)
         {
             try
             {
@@ -331,7 +331,7 @@ namespace GitVersion
                 throw new GitVersionException($"Cannot find commit {currentBranchTip.Sha}. Please ensure that the repository is an unshallow clone with `git fetch --unshallow`.", exception);
             }
         }
-        public List<Commit> GetMainlineCommitLog(Commit baseVersionSource, Commit mainlineTip)
+        public List<ICommit> GetMainlineCommitLog(ICommit baseVersionSource, ICommit mainlineTip)
         {
             var filter = new CommitFilter
             {
@@ -345,7 +345,7 @@ namespace GitVersion
             var mainlineCommitLog = commitCollection.ToList();
             return mainlineCommitLog;
         }
-        public CommitCollection GetCommitLog(Commit baseVersionSource, Commit currentCommit)
+        public CommitCollection GetCommitLog(ICommit baseVersionSource, ICommit currentCommit)
         {
             var filter = new CommitFilter
             {
@@ -358,9 +358,9 @@ namespace GitVersion
 
             return commitCollection;
         }
-        public void Checkout(string committishOrBranchSpec)
+        public void Checkout(string commitOrBranchSpec)
         {
-            Commands.Checkout(repositoryInstance, committishOrBranchSpec);
+            Commands.Checkout(repositoryInstance, commitOrBranchSpec);
         }
 
         public void Checkout(IBranch branch)
@@ -368,9 +368,9 @@ namespace GitVersion
             Commands.Checkout(repositoryInstance, (Branch)branch);
         }
 
-        public void Fetch(string remote, IEnumerable<string> refspecs, AuthenticationInfo auth, string logMessage)
+        public void Fetch(string remote, IEnumerable<string> refSpecs, AuthenticationInfo auth, string logMessage)
         {
-            Commands.Fetch((Repository)repositoryInstance, remote, refspecs, GitRepository.GetFetchOptions(auth), logMessage);
+            Commands.Fetch((Repository)repositoryInstance, remote, refSpecs, GitRepository.GetFetchOptions(auth), logMessage);
         }
     }
 }

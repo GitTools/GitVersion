@@ -25,7 +25,7 @@ namespace GitVersion.Configuration
         /// <summary>
         /// Gets the <see cref="BranchConfig"/> for the current commit.
         /// </summary>
-        public BranchConfig GetBranchConfiguration(IBranch targetBranch, Commit currentCommit, Config configuration, IList<IBranch> excludedInheritBranches = null)
+        public BranchConfig GetBranchConfiguration(IBranch targetBranch, ICommit currentCommit, Config configuration, IList<IBranch> excludedInheritBranches = null)
         {
             var matchingBranches = configuration.GetConfigForBranch(targetBranch.NameWithoutRemote());
 
@@ -56,7 +56,7 @@ namespace GitVersion.Configuration
         }
 
         // TODO I think we need to take a fresh approach to this.. it's getting really complex with heaps of edge cases
-        private BranchConfig InheritBranchConfiguration(IBranch targetBranch, BranchConfig branchConfiguration, Commit currentCommit, Config configuration, IList<IBranch> excludedInheritBranches)
+        private BranchConfig InheritBranchConfiguration(IBranch targetBranch, BranchConfig branchConfiguration, ICommit currentCommit, Config configuration, IList<IBranch> excludedInheritBranches)
         {
             using (log.IndentLog("Attempting to inherit branch configuration from parent branch"))
             {
@@ -171,7 +171,7 @@ namespace GitVersion.Configuration
             }
         }
 
-        private IBranch[] CalculateWhenMultipleParents(Commit currentCommit, ref IBranch currentBranch, IBranch[] excludedBranches)
+        private IBranch[] CalculateWhenMultipleParents(ICommit currentCommit, ref IBranch currentBranch, IBranch[] excludedBranches)
         {
             var parents = currentCommit.Parents.ToArray();
             var branches = repositoryMetadataProvider.GetBranchesForCommit(parents[1]);
