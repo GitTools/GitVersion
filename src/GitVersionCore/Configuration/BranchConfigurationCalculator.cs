@@ -68,7 +68,7 @@ namespace GitVersion.Configuration
                     excludedBranches = CalculateWhenMultipleParents(currentCommit, ref targetBranch, excludedBranches);
                 }
 
-                excludedInheritBranches ??= repositoryMetadataProvider.GetExcludedInheritBranches(configuration);
+                excludedInheritBranches ??= repositoryMetadataProvider.GetExcludedInheritBranches(configuration).ToList();
                 // Add new excluded branches.
                 foreach (var excludedBranch in excludedBranches.ExcludingBranches(excludedInheritBranches))
                 {
@@ -174,7 +174,7 @@ namespace GitVersion.Configuration
         private IBranch[] CalculateWhenMultipleParents(ICommit currentCommit, ref IBranch currentBranch, IBranch[] excludedBranches)
         {
             var parents = currentCommit.Parents.ToArray();
-            var branches = repositoryMetadataProvider.GetBranchesForCommit(parents[1]);
+            var branches = repositoryMetadataProvider.GetBranchesForCommit(parents[1]).ToList();
             if (branches.Count == 1)
             {
                 var branch = branches[0];
@@ -191,7 +191,7 @@ namespace GitVersion.Configuration
             }
             else
             {
-                var possibleTargetBranches = repositoryMetadataProvider.GetBranchesForCommit(parents[0]);
+                var possibleTargetBranches = repositoryMetadataProvider.GetBranchesForCommit(parents[0]).ToList();
                 if (possibleTargetBranches.Count > 1)
                 {
                     currentBranch = possibleTargetBranches.FirstOrDefault(b => b.NameWithoutRemote() == "master") ?? possibleTargetBranches.First();

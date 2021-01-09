@@ -102,14 +102,14 @@ namespace GitVersionCore.Tests
 
         private class TestableBranchCollection : BranchCollection
         {
-            IDictionary<string, IBranch> branches = new Dictionary<string, IBranch>();
+            private IDictionary<string, IBranch> branches = new Dictionary<string, IBranch>();
 
             public override IBranch this[string name] =>
                 branches.ContainsKey(name)
                     ? branches[name]
                     : null;
 
-            public override IBranch Add(string name, ICommit commit)
+            public IBranch Add(string name, ICommit commit)
             {
                 var branch = new TestableBranch(name, commit);
                 branches.Add(name, branch);

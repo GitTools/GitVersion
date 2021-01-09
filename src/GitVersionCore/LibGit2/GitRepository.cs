@@ -104,12 +104,12 @@ namespace GitVersion
             return repositoryInstance.ObjectDatabase.ShortenObjectId((Commit)commit);
         }
 
-        public IBranch Head => (Branch)repositoryInstance.Head;
+        public IBranch Head => new Branch(repositoryInstance.Head);
 
         public ITagCollection Tags => new TagCollection(repositoryInstance.Tags);
         public IReferenceCollection Refs => new ReferenceCollection(repositoryInstance.Refs);
 
-        public BranchCollection Branches => (BranchCollection)repositoryInstance.Branches;
+        public IBranchCollection Branches => new BranchCollection(repositoryInstance.Branches);
         public CommitCollection Commits => CommitCollection.FromCommitLog(repositoryInstance.Commits);
 
         public void CreateBranchForPullRequestBranch(ILog log, AuthenticationInfo auth)

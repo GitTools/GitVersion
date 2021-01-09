@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using GitVersion;
-using BranchCollection = GitVersion.BranchCollection;
 
 namespace GitVersionCore.Tests.Mocks
 {

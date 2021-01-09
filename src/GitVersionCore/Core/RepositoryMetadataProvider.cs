@@ -187,12 +187,12 @@ namespace GitVersion
             return chosenBranch;
         }
 
-        public List<IBranch> GetBranchesForCommit(ICommit commit)
+        public IEnumerable<IBranch> GetBranchesForCommit(ICommit commit)
         {
             return repository.Branches.Where(b => !b.IsRemote && Equals(b.Tip, commit)).ToList();
         }
 
-        public List<IBranch> GetExcludedInheritBranches(Config configuration)
+        public IEnumerable<IBranch> GetExcludedInheritBranches(Config configuration)
         {
             return repository.Branches.Where(b =>
             {

@@ -293,7 +293,7 @@ Please run `git {GitExtensions.CreateGitLogArgs(100)}` and submit it along with 
                 repo.Refs.Add(localCanonicalName, remoteTrackingReference.DirectReferenceTargetIdentifier, true);
 
                 var branch = repo.Branches[branchName];
-                repo.Branches.Update(branch, b => b.TrackedBranch = remoteTrackingReferenceName);
+                repo.Branches.UpdateTrackedBranch(branch, remoteTrackingReferenceName);
             }
         }
 
