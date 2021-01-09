@@ -25,7 +25,7 @@ namespace GitVersion
                 target = annotation.Target;
             }
 
-            return target is LibGit2Sharp.Commit commit ? (Commit)commit : null;
+            return target is LibGit2Sharp.Commit commit ? new Commit(commit) : null;
         }
     }
 }

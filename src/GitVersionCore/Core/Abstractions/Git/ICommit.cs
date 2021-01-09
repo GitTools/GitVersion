@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace GitVersion
 {
-    public interface ICommit
+    public interface ICommit : IEquatable<ICommit>
     {
         IEnumerable<ICommit> Parents { get; }
         string Sha { get; }

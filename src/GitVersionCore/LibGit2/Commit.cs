@@ -11,7 +11,7 @@ namespace GitVersion
 
         private readonly LibGit2Sharp.Commit innerObjectId;
 
-        private Commit(LibGit2Sharp.Commit objectId)
+        internal Commit(LibGit2Sharp.Commit objectId)
         {
             innerObjectId = objectId;
         }
@@ -21,14 +21,10 @@ namespace GitVersion
         }
 
         public override bool Equals(object obj) => Equals(obj as ICommit);
-        private bool Equals(ICommit other) => equalityHelper.Equals(this, other);
-
+        public bool Equals(ICommit other) => equalityHelper.Equals(this, other);
         public override int GetHashCode() => equalityHelper.GetHashCode(this);
-        public static bool operator !=(Commit left, Commit right) => !Equals(left, right);
-        public static bool operator ==(Commit left, Commit right) => Equals(left, right);
 
         public static implicit operator LibGit2Sharp.Commit(Commit d) => d?.innerObjectId;
-        public static explicit operator Commit(LibGit2Sharp.Commit b) => b is null ? null : new Commit(b);
 
         public virtual IEnumerable<ICommit> Parents
         {
@@ -37,7 +33,7 @@ namespace GitVersion
                 if (innerObjectId == null) yield return null;
                 else
                     foreach (var parent in innerObjectId.Parents)
-                        yield return (Commit)parent;
+                        yield return new Commit(parent);
             }
         }
 

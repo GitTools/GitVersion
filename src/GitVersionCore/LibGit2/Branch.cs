@@ -16,7 +16,15 @@ namespace GitVersion
 
         public virtual string CanonicalName => innerBranch?.CanonicalName;
         public virtual string FriendlyName => innerBranch?.FriendlyName;
-        public virtual ICommit Tip => (Commit)innerBranch?.Tip;
+        public virtual ICommit Tip
+        {
+            get
+            {
+                var commit = innerBranch?.Tip;
+                return commit is null ? null : new Commit(commit);
+            }
+        }
+
         public virtual ICommitCollection Commits
         {
             get

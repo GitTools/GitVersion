@@ -97,7 +97,7 @@ namespace GitVersion
         }
         public ICommit FindMergeBase(ICommit commit, ICommit otherCommit)
         {
-            return (Commit)repositoryInstance.ObjectDatabase.FindMergeBase((Commit)commit, (Commit)otherCommit);
+            return new Commit(repositoryInstance.ObjectDatabase.FindMergeBase((Commit)commit, (Commit)otherCommit));
         }
         public string ShortenObjectId(ICommit commit)
         {

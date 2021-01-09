@@ -15,7 +15,7 @@ namespace GitVersionCore.Tests.IntegrationTests
         public void ShouldFallbackToBaseVersionWhenAllCommitsAreIgnored()
         {
             using var fixture = new EmptyRepositoryFixture();
-            var commit = (Commit)fixture.Repository.MakeACommit();
+            var commit = new Commit(fixture.Repository.MakeACommit());
 
             var config = new ConfigurationBuilder()
                 .Add(new Config
