@@ -14,11 +14,13 @@ namespace GitVersion
         IBranchCollection Branches { get; }
         ICommitCollection Commits { get; }
 
+        IGitRepository CreateNew(string gitRootPath);
+
         int GetNumberOfUncommittedChanges();
         string ShortenObjectId(ICommit commit);
 
         bool GitRepoHasMatchingRemote(string targetUrl);
-        void CleanupDuplicateOrigin(string defaultRemoteName);
+        void CleanupDuplicateOrigin(string gitRootPath, string remoteName);
         bool GetMatchingCommitBranch(ICommit baseVersionSource, IBranch branch, ICommit firstMatchingCommit);
         IRemote EnsureOnlyOneRemoteIsDefined();
         ICommit FindMergeBase(ICommit commit, ICommit otherCommit);
@@ -35,5 +37,6 @@ namespace GitVersion
         void Checkout(IBranch branch);
         void Fetch(string remote, IEnumerable<string> refSpecs, AuthenticationInfo auth, string logMessage);
         void CreateBranchForPullRequestBranch(AuthenticationInfo auth);
+        string Clone(string sourceUrl, string workdirPath, AuthenticationInfo auth);
     }
 }

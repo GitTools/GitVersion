@@ -26,11 +26,15 @@ namespace GitVersionCore.Tests.Mocks
         public string Path { get; }
         public string WorkingDirectory { get; }
         public bool IsHeadDetached { get; }
+        public IGitRepository CreateNew(string gitRootPath)
+        {
+            throw new NotImplementedException();
+        }
         public int GetNumberOfUncommittedChanges() => 0;
         public ICommit FindMergeBase(ICommit commit, ICommit otherCommit) => throw new NotImplementedException();
         public string ShortenObjectId(ICommit commit) => throw new NotImplementedException();
         public bool GitRepoHasMatchingRemote(string targetUrl) => throw new NotImplementedException();
-        public void CleanupDuplicateOrigin(string defaultRemoteName) => throw new NotImplementedException();
+        public void CleanupDuplicateOrigin(string gitRootPath, string remoteName) => throw new NotImplementedException();
         public bool GetMatchingCommitBranch(ICommit baseVersionSource, IBranch branch, ICommit firstMatchingCommit)
         {
             throw new NotImplementedException();
@@ -84,6 +88,10 @@ namespace GitVersionCore.Tests.Mocks
             throw new NotImplementedException();
         }
         public void CreateBranchForPullRequestBranch(AuthenticationInfo auth)
+        {
+            throw new NotImplementedException();
+        }
+        public string Clone(string sourceUrl, string workdirPath, AuthenticationInfo auth)
         {
             throw new NotImplementedException();
         }

@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Linq;
+using GitVersion.Logging;
 using Microsoft.Extensions.Options;
 
 namespace GitVersion
@@ -86,7 +87,7 @@ namespace GitVersion
             if (string.IsNullOrEmpty(_dotGitDirectory))
                 throw new DirectoryNotFoundException("Cannot find the .git directory");
 
-            return new GitRepository(_dotGitDirectory).WorkingDirectory;
+            return new GitRepository(new NullLog(), _dotGitDirectory).WorkingDirectory;
         }
 
         private string GetGitRootPath()
@@ -101,7 +102,7 @@ namespace GitVersion
         {
             try
             {
-                return new GitRepository(possiblePath).GitRepoHasMatchingRemote(targetUrl);
+                return new GitRepository(new NullLog(), possiblePath).GitRepoHasMatchingRemote(targetUrl);
             }
             catch (Exception)
             {
