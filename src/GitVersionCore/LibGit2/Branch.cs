@@ -1,4 +1,4 @@
-﻿namespace GitVersion
+namespace GitVersion
 {
     public class Branch : IBranch
     {
@@ -17,7 +17,16 @@
         public virtual string CanonicalName => innerBranch?.CanonicalName;
         public virtual string FriendlyName => innerBranch?.FriendlyName;
         public virtual ICommit Tip => (Commit)innerBranch?.Tip;
-        public virtual CommitCollection Commits => CommitCollection.FromCommitLog(innerBranch?.Commits);
+        public virtual ICommitCollection Commits
+        {
+            get
+            {
+
+                var commits = innerBranch?.Commits;
+                return commits is null ? null : new CommitCollection(commits);
+            }
+        }
+
         public virtual bool IsRemote => innerBranch != null && innerBranch.IsRemote;
         public virtual bool IsTracking => innerBranch != null && innerBranch.IsTracking;
     }

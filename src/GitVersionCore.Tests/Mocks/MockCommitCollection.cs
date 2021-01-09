@@ -44,7 +44,7 @@ namespace GitVersionCore.Tests.Mocks
         public bool IsReadOnly => false;
 
 
-        public override CommitCollection QueryBy(CommitFilter commitFilter)
+        public override ICommitCollection QueryBy(CommitFilter commitFilter)
         {
             return this;
         }

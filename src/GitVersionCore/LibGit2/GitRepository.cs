@@ -110,7 +110,7 @@ namespace GitVersion
         public IReferenceCollection Refs => new ReferenceCollection(repositoryInstance.Refs);
 
         public IBranchCollection Branches => new BranchCollection(repositoryInstance.Branches);
-        public CommitCollection Commits => CommitCollection.FromCommitLog(repositoryInstance.Commits);
+        public ICommitCollection Commits => new CommitCollection(repositoryInstance.Commits);
 
         public void CreateBranchForPullRequestBranch(ILog log, AuthenticationInfo auth)
         {
@@ -219,7 +219,7 @@ namespace GitVersion
             repositoryInstance.Network.Remotes.Update(remote.Name, r => r.FetchRefSpecs.Add(allBranchesFetchRefSpec));
         }
 
-        public static FetchOptions GetFetchOptions(AuthenticationInfo auth)
+        private static FetchOptions GetFetchOptions(AuthenticationInfo auth)
         {
             return new FetchOptions
             {
