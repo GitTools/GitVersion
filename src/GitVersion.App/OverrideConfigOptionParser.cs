@@ -73,7 +73,7 @@ namespace GitVersion
                 else if (unwrapped.IsEnum)
                 {
                     try
-                    { 
+                    {
                         var parsedEnum = Enum.Parse(unwrapped, unwrappedText);
                         pi.SetValue(_lazyConfig.Value, parsedEnum);
                     }
