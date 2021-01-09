@@ -27,49 +27,32 @@ namespace GitVersion.VersionCalculation
         {
             using (log.IndentLog("Calculating base versions"))
             {
-                var baseVersions = strategies
-                    .SelectMany(s =>
+                var allVersions = new List<BaseVersion>();
+                foreach (var strategy in strategies)
+                {
+                    var baseVersions = GetBaseVersions(strategy).ToList();
+                    allVersions.AddRange(baseVersions);
+                }
+
+                var versions = allVersions
+                    .Select(baseVersion => new Versions
                     {
-                        if (s is FallbackVersionStrategy)
-                            return s.GetVersions();
-
-                        return s.GetVersions()
-                            .Where(v =>
-                            {
-                                if (v == null) return false;
-
-                                log.Info(v.ToString());
-
-                                foreach (var filter in context.Configuration.VersionFilters)
-                                {
-                                    if (filter.Exclude(v, out var reason))
-                                    {
-                                        log.Info(reason);
-                                        return false;
-                                    }
-                                }
-
-                                return true;
-                            });
-                    })
-                    .Select(v => new Versions
-                    {
-                        IncrementedVersion = repositoryMetadataProvider.MaybeIncrement(v, context),
-                        Version = v
+                        IncrementedVersion = repositoryMetadataProvider.MaybeIncrement(baseVersion, context),
+                        Version = baseVersion
                     })
                     .ToList();
 
-                FixTheBaseVersionSourceOfMergeMessageStrategyIfReleaseBranchWasMergedAndDeleted(baseVersions);
+                FixTheBaseVersionSourceOfMergeMessageStrategyIfReleaseBranchWasMergedAndDeleted(versions);
 
                 if (context.Configuration.VersioningMode == VersioningMode.Mainline)
                 {
-                    baseVersions = baseVersions
+                    versions = versions
                         .Where(b => !b.IncrementedVersion.PreReleaseTag.HasTag())
                         .ToList();
                 }
 
-                var maxVersion = baseVersions.Aggregate((v1, v2) => v1.IncrementedVersion > v2.IncrementedVersion ? v1 : v2);
-                var matchingVersionsOnceIncremented = baseVersions
+                var maxVersion = versions.Aggregate((v1, v2) => v1.IncrementedVersion > v2.IncrementedVersion ? v1 : v2);
+                var matchingVersionsOnceIncremented = versions
                     .Where(b => b.Version.BaseVersionSource != null && b.IncrementedVersion == maxVersion.IncrementedVersion)
                     .ToList();
                 BaseVersion baseVersionWithOldestSource;
@@ -82,7 +65,7 @@ namespace GitVersion.VersionCalculation
                 }
                 else
                 {
-                    baseVersionWithOldestSource = baseVersions
+                    baseVersionWithOldestSource = versions
                         .Where(v => v.Version.BaseVersionSource != null)
                         .OrderByDescending(v => v.IncrementedVersion)
                         .ThenByDescending(v => v.Version.BaseVersionSource.CommitterWhen)
@@ -102,31 +85,51 @@ namespace GitVersion.VersionCalculation
                 return calculatedBase;
             }
         }
-
-        private void FixTheBaseVersionSourceOfMergeMessageStrategyIfReleaseBranchWasMergedAndDeleted(IEnumerable<Versions> baseVersions)
+        private IEnumerable<BaseVersion> GetBaseVersions(IVersionStrategy strategy)
         {
-            if (!ReleaseBranchExistsInRepo())
+            foreach (var version in strategy.GetVersions())
             {
-                foreach (var baseVersion in baseVersions)
+                if (version == null) continue;
+
+                log.Info(version.ToString());
+                if (strategy is FallbackVersionStrategy || IncludeVersion(version))
                 {
-                    if (baseVersion.Version.Source.Contains(
-                        MergeMessageVersionStrategy.MergeMessageStrategyPrefix)
-                        && baseVersion.Version.Source.Contains("Merge branch")
-                        && baseVersion.Version.Source.Contains("release"))
-                    {
-                        var parents = baseVersion.Version.BaseVersionSource.Parents.ToList();
-                        baseVersion.Version = new BaseVersion(
-                            baseVersion.Version.Source,
-                            baseVersion.Version.ShouldIncrement,
-                            baseVersion.Version.SemanticVersion,
-                            repositoryMetadataProvider.FindMergeBase(parents[0], parents[1]),
-                            baseVersion.Version.BranchNameOverride);
-                    }
+                    yield return version;
                 }
             }
         }
+        private bool IncludeVersion(BaseVersion version)
+        {
+            foreach (var filter in context.Configuration.VersionFilters)
+            {
+                if (filter.Exclude(version, out var reason))
+                {
+                    log.Info(reason);
+                    return false;
+                }
+            }
+            return true;
+        }
 
-
+        private void FixTheBaseVersionSourceOfMergeMessageStrategyIfReleaseBranchWasMergedAndDeleted(IEnumerable<Versions> baseVersions)
+        {
+            if (ReleaseBranchExistsInRepo()) return;
+            foreach (var baseVersion in baseVersions)
+            {
+                if (baseVersion.Version.Source.Contains(MergeMessageVersionStrategy.MergeMessageStrategyPrefix)
+                    && baseVersion.Version.Source.Contains("Merge branch")
+                    && baseVersion.Version.Source.Contains("release"))
+                {
+                    var parents = baseVersion.Version.BaseVersionSource.Parents.ToList();
+                    baseVersion.Version = new BaseVersion(
+                        baseVersion.Version.Source,
+                        baseVersion.Version.ShouldIncrement,
+                        baseVersion.Version.SemanticVersion,
+                        repositoryMetadataProvider.FindMergeBase(parents[0], parents[1]),
+                        baseVersion.Version.BranchNameOverride);
+                }
+            }
+        }
 
         private bool ReleaseBranchExistsInRepo()
         {
