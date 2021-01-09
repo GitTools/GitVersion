@@ -15,7 +15,7 @@ namespace GitVersion
 
     public static class IncrementStrategyFinder
     {
-        private static List<ICommit> intermediateCommitCache;
+        private static IEnumerable<ICommit> intermediateCommitCache;
         public const string DefaultMajorPattern = @"\+semver:\s?(breaking|major)";
         public const string DefaultMinorPattern = @"\+semver:\s?(feature|minor)";
         public const string DefaultPatchPattern = @"\+semver:\s?(fix|patch)";
@@ -105,7 +105,7 @@ namespace GitVersion
         {
             if (baseCommit == null) yield break;
 
-            var commitCache = intermediateCommitCache;
+            IEnumerable<ICommit> commitCache = intermediateCommitCache;
 
             if (commitCache == null || !Equals(commitCache.LastOrDefault(), headCommit))
             {

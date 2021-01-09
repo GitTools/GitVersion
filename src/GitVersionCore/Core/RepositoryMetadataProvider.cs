@@ -130,7 +130,7 @@ namespace GitVersion
         {
             return repository.GetBaseVersionSource(currentBranchTip);
         }
-        public List<ICommit> GetMainlineCommitLog(ICommit baseVersionSource, ICommit mainlineTip)
+        public IEnumerable<ICommit> GetMainlineCommitLog(ICommit baseVersionSource, ICommit mainlineTip)
         {
             return repository.GetMainlineCommitLog(baseVersionSource, mainlineTip);
         }
@@ -383,7 +383,7 @@ namespace GitVersion
             return tags;
         }
 
-        public CommitCollection GetCommitLog(ICommit baseVersionSource, ICommit currentCommit)
+        public IEnumerable<ICommit> GetCommitLog(ICommit baseVersionSource, ICommit currentCommit)
         {
             return repository.GetCommitLog(baseVersionSource, currentCommit);
         }
