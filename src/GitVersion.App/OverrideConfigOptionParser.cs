@@ -15,7 +15,7 @@ namespace GitVersion
         internal ILookup<string, PropertyInfo> SupportedProperties => _lazySupportedProperties.Value;
 
         /// <summary>
-        /// Dynamically creates <see cref="ILookup{string, PropertyInfo}"/> of
+        /// Dynamically creates <see cref="System.Linq.ILookup{TKey, TElement}"/> of
         /// <see cref="Config"/> properties supported as a part of command line '/overrideconfig' option.
         /// </summary>
         /// <returns></returns>
