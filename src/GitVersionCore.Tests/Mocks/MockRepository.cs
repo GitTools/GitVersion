@@ -23,7 +23,7 @@ namespace GitVersionCore.Tests.Mocks
         }
 
         public BranchCollection Branches { get; set; }
-        public TagCollection Tags { get; set; }
+        public IEnumerable<ITag> Tags { get; set; }
         public string Path { get; }
         public string WorkingDirectory { get; }
         public bool IsHeadDetached { get; }
