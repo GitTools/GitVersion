@@ -99,9 +99,63 @@ gitversion init     Configuration utility for gitversion
 
 ## Override config
 
-`/overrideconfig [key=value]` will override appropriate key from
-`GitVersion.yml`.
+`/overrideconfig [key=value]` will override appropriate key from 'GitVersion.yml'.
 
-At the moment only `tag-prefix` option is supported. Read more about
-[Configuration](/docs/reference/configuration). It will not change config file
-`GitVersion.yml`.
+Multiple options are separated by semicolon: `key1=value1;key2=value2`.
+
+To have **space characters** as a part of `value`, `value` has be enclosed with double quotes - `key="My value"`.
+
+Double quote character inside of the double quoted `value` has to be be escaped with a backslash '\\' - `key="My \"escaped-quotes\""`.
+
+If closing double-qoute character is missing, it will be implicitily added at the very end of the command line argument - `key="My Value;key2=2(")`.
+
+Following options are supported:
+1. `assembly-file-versioning-format`
+1. `assembly-file-versioning-scheme`
+1. `assembly-informational-format`
+1. `assembly-versioning-format`
+1. `assembly-versioning-scheme`
+1. `build-metadata-padding`
+1. `commit-date-format`
+1. `commit-message-incrementing`
+1. `commits-since-version-source-padding`
+1. `continuous-delivery-fallback-tag`
+1. `increment`
+1. `legacy-semver-padding`
+1. `major-version-bump-message`
+1. `minor-version-bump-message`
+1. `mode`
+1. `next-version`
+1. `no-bump-message`
+1. `patch-version-bump-message`
+1. `tag-prefix`
+1. `tag-pre-release-weight`
+1. `update-build-number`
+
+Read more about [Configuration](docs/reference/configuration).
+
+It will not change config file 'GitVersion.yml'.
+
+### Example: How to override configuration option 'tag-prefix' to use prefix 'custom'
+
+`GitVersion.exe /output json /overrideconfig tag-prefix=custom`
+
+### Example: How to override configuration option 'assembly-versioning-format'
+
+`GitVersion.exe /output json /overrideconfig assembly-versioning-format="{Major}.{Minor}.{Patch}.{env:BUILD_NUMBER ?? 0}"`
+
+Will pickup up environment variable `BUILD_NUMBER` or fallback to zero for assembly revision number.
+
+### Example: How to override configuration option 'assembly-versioning-scheme'
+
+`GitVersion.exe /output json /overrideconfig assembly-versioning-scheme=MajorMinor`
+
+Will use only major and minor version numbers for assembly version. Assembly build and revision numbers will be 0 (e.g. `1.2.0.0`)
+
+### Example: How to override configuration option 'update-build-number'
+
+`GitVersion.exe /output json /overrideconfig update-build-number=true`
+
+### Example: How to override configuration option 'next-version'
+
+`GitVersion.exe /output json /overrideconfig next-version=6`
