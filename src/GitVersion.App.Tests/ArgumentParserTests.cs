@@ -1,8 +1,11 @@
+using System.Collections.Generic;
 using System.IO;
-using GitTools.Testing;
+using GitVersion.Core.Tests.Helpers;
+using GitVersion.Extensions;
 using GitVersion.Logging;
 using GitVersion.Model;
-using GitVersion.Core.Tests.Helpers;
+using GitVersion.Model.Configuration;
+using GitTools.Testing;
 using Microsoft.Extensions.DependencyInjection;
 using NUnit.Framework;
 using Shouldly;
@@ -364,26 +367,232 @@ namespace GitVersion.App.Tests
             arguments.OverrideConfig.ShouldBeNull();
         }
 
-        [Test]
-        public void OverrideconfigWithSingleTagprefixOption()
-        {
-            var arguments = argumentParser.ParseArguments("/overrideconfig tag-prefix=sample");
-            arguments.OverrideConfig.TagPrefix.ShouldBe("sample");
-        }
-
-        [TestCase("tag-prefix=sample;tag-prefix=other")]
-        [TestCase("tag-prefix=sample;param2=other")]
-        public void OverrideconfigWithSeveralOptions(string options)
+        [TestCaseSource(nameof(OverrideconfigWithInvalidOptionTestData))]
+        public string OverrideconfigWithInvalidOption(string options)
         {
             var exception = Assert.Throws<WarningException>(() => argumentParser.ParseArguments($"/overrideconfig {options}"));
-            exception.Message.ShouldContain("Can't specify multiple /overrideconfig options");
+            return exception.Message;
         }
 
-        [TestCase("tag-prefix=sample=asdf")]
-        public void OverrideconfigWithInvalidOption(string options)
+        private static IEnumerable<TestCaseData> OverrideconfigWithInvalidOptionTestData()
         {
-            var exception = Assert.Throws<WarningException>(() => argumentParser.ParseArguments($"/overrideconfig {options}"));
-            exception.Message.ShouldContain("Could not parse /overrideconfig option");
+            yield return new TestCaseData("tag-prefix=sample=asdf")
+            {
+                ExpectedResult = "Could not parse /overrideconfig option: tag-prefix=sample=asdf. Ensure it is in format 'key=value'."
+            };
+            yield return new TestCaseData("unknown-option=25")
+            {
+                ExpectedResult = "Could not parse /overrideconfig option: unknown-option=25. Unsuported 'key'."
+            };
+            yield return new TestCaseData("update-build-number=1")
+            {
+                ExpectedResult = "Could not parse /overrideconfig option: update-build-number=1. Ensure that 'value' is 'true' or 'false'."
+            };
+            yield return new TestCaseData("tag-pre-release-weight=invalid-value")
+            {
+                ExpectedResult = "Could not parse /overrideconfig option: tag-pre-release-weight=invalid-value. Ensure that 'value' is valid integer number."
+            };
+            yield return new TestCaseData("assembly-versioning-scheme=WrongEnumValue")
+            {
+                ExpectedResult = "Could not parse /overrideconfig option: assembly-versioning-scheme=WrongEnumValue. Ensure that 'value' is valid for specified 'key' enumeration: \r\nMajorMinorPatchTag\r\nMajorMinorPatch\r\nMajorMinor\r\nMajor\r\nNone\r\n"
+            };
+        }
+
+        [TestCaseSource(nameof(OverrideconfigWithSingleOptionTestData))]
+        public void OverrideconfigWithSingleOptions(string options, Config expected)
+        {
+            var arguments = argumentParser.ParseArguments($"/overrideconfig {options}");
+            arguments.OverrideConfig.ShouldBeEquivalentTo(expected);
+        }
+
+        private static IEnumerable<TestCaseData> OverrideconfigWithSingleOptionTestData()
+        {
+            yield return new TestCaseData(
+               "assembly-versioning-scheme=MajorMinor",
+               new Config
+               {
+                   AssemblyVersioningScheme = AssemblyVersioningScheme.MajorMinor,
+               }
+           );
+            yield return new TestCaseData(
+               "assembly-file-versioning-scheme=\"MajorMinorPatch\"",
+               new Config
+               {
+                   AssemblyFileVersioningScheme = AssemblyFileVersioningScheme.MajorMinorPatch,
+               }
+            );
+            yield return new TestCaseData(
+               "assembly-informational-format=\"{Major}.{Minor}.{Patch}.{env:CI_JOB_ID ?? 0}\"",
+               new Config
+               {
+                   AssemblyInformationalFormat = "{Major}.{Minor}.{Patch}.{env:CI_JOB_ID ?? 0}",
+               }
+            );
+            yield return new TestCaseData(
+               "assembly-versioning-format=\"{Major}.{Minor}.{Patch}.{env:CI_JOB_ID ?? 0}\"",
+               new Config
+               {
+                   AssemblyVersioningFormat = "{Major}.{Minor}.{Patch}.{env:CI_JOB_ID ?? 0}",
+               }
+            );
+            yield return new TestCaseData(
+               "assembly-file-versioning-format=\"{Major}.{Minor}.{Patch}.{env:CI_JOB_ID ?? 0}\"",
+               new Config
+               {
+                   AssemblyFileVersioningFormat = "{Major}.{Minor}.{Patch}.{env:CI_JOB_ID ?? 0}",
+               }
+            );
+            yield return new TestCaseData(
+               "mode=ContinuousDelivery",
+               new Config
+               {
+                   VersioningMode = GitVersion.VersionCalculation.VersioningMode.ContinuousDelivery
+               }
+            );
+            yield return new TestCaseData(
+               "tag-prefix=sample",
+               new Config
+               {
+                   TagPrefix = "sample"
+               }
+            );
+            yield return new TestCaseData(
+               "continuous-delivery-fallback-tag=cd-tag",
+               new Config
+               {
+                   ContinuousDeploymentFallbackTag = "cd-tag"
+               }
+            );
+            yield return new TestCaseData(
+               "next-version=1",
+               new Config
+               {
+                   NextVersion = "1"
+               }
+            );
+            yield return new TestCaseData(
+               "major-version-bump-message=\"This is major version bump message.\"",
+               new Config
+               {
+                   MajorVersionBumpMessage = "This is major version bump message."
+               }
+            );
+            yield return new TestCaseData(
+               "minor-version-bump-message=\"This is minor version bump message.\"",
+               new Config
+               {
+                   MinorVersionBumpMessage = "This is minor version bump message."
+               }
+            );
+            yield return new TestCaseData(
+               "patch-version-bump-message=\"This is patch version bump message.\"",
+               new Config
+               {
+                   PatchVersionBumpMessage = "This is patch version bump message."
+               }
+            );
+            yield return new TestCaseData(
+               "no-bump-message=\"This is no bump message.\"",
+               new Config
+               {
+                   NoBumpMessage = "This is no bump message."
+               }
+            );
+            yield return new TestCaseData(
+               "legacy-semver-padding=99",
+               new Config
+               {
+                   LegacySemVerPadding = 99
+               }
+            );
+            yield return new TestCaseData(
+               "build-metadata-padding=30",
+               new Config
+               {
+                   BuildMetaDataPadding = 30
+               }
+            );
+            yield return new TestCaseData(
+               "commits-since-version-source-padding=5",
+               new Config
+               {
+                   CommitsSinceVersionSourcePadding = 5
+               }
+            );
+            yield return new TestCaseData(
+               "tag-pre-release-weight=2",
+               new Config
+               {
+                   TagPreReleaseWeight = 2
+               }
+            );
+            yield return new TestCaseData(
+               "commit-message-incrementing=MergeMessageOnly",
+               new Config
+               {
+                   CommitMessageIncrementing = CommitMessageIncrementMode.MergeMessageOnly
+               }
+            );
+            yield return new TestCaseData(
+               "increment=Minor",
+               new Config
+               {
+                   Increment = IncrementStrategy.Minor
+               }
+            );
+            yield return new TestCaseData(
+               "commit-date-format=\"MM/dd/yyyy h:mm tt\"",
+               new Config
+               {
+                   CommitDateFormat = "MM/dd/yyyy h:mm tt"
+               }
+            );
+            yield return new TestCaseData(
+               "update-build-number=true",
+               new Config
+               {
+                   UpdateBuildNumber = true
+               }
+            );
+        }
+
+        [TestCaseSource(nameof(OverrideconfigWithMultipleOptionsTestData))]
+        public void OverrideconfigWithMultipleOptions(string options, Config expected)
+        {
+            var arguments = argumentParser.ParseArguments($"/overrideconfig {options}");
+            arguments.OverrideConfig.ShouldBeEquivalentTo(expected);
+        }
+
+        private static IEnumerable<TestCaseData> OverrideconfigWithMultipleOptionsTestData()
+        {
+            yield return new TestCaseData(
+               "tag-prefix=sample;assembly-versioning-scheme=MajorMinor",
+               new Config
+               {
+                   TagPrefix = "sample",
+                   AssemblyVersioningScheme = AssemblyVersioningScheme.MajorMinor,
+               }
+           );
+            yield return new TestCaseData(
+                "tag-prefix=sample;assembly-versioning-format=\"{Major}.{Minor}.{Patch}.{env:CI_JOB_ID ?? 0}\"",
+                new Config
+                {
+                    TagPrefix = "sample",
+                    AssemblyVersioningFormat = "{Major}.{Minor}.{Patch}.{env:CI_JOB_ID ?? 0}"
+                }
+            );
+            yield return new TestCaseData(
+                "tag-prefix=sample;assembly-versioning-format=\"{Major}.{Minor}.{Patch}.{env:CI_JOB_ID ?? 0}\";update-build-number=true;assembly-versioning-scheme=MajorMinorPatchTag;mode=ContinuousDelivery;tag-pre-release-weight=4",
+                new Config
+                {
+                    TagPrefix = "sample",
+                    AssemblyVersioningFormat = "{Major}.{Minor}.{Patch}.{env:CI_JOB_ID ?? 0}",
+                    UpdateBuildNumber = true,
+                    AssemblyVersioningScheme = AssemblyVersioningScheme.MajorMinorPatchTag,
+                    VersioningMode = GitVersion.VersionCalculation.VersioningMode.ContinuousDelivery,
+                    TagPreReleaseWeight = 4
+                }
+            );
         }
 
         [Test]
