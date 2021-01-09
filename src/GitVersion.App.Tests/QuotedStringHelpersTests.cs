@@ -21,7 +21,7 @@ namespace GitVersionExe.Tests
             };
             yield return new TestCaseData("one two three", ' ')
             {
-                ExpectedResult = new []{ "one", "two", "three" }
+                ExpectedResult = new[] { "one", "two", "three" }
             };
             yield return new TestCaseData("one \"two three\"", ' ')
             {
