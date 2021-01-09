@@ -18,7 +18,7 @@ namespace GitVersion
         public virtual string CanonicalName => innerReference.CanonicalName;
         public virtual string TargetIdentifier => innerReference.TargetIdentifier;
         public virtual string DirectReferenceTargetIdentifier => directReference.TargetIdentifier;
-        public virtual IObjectId DirectReferenceTargetId => (ObjectId)directReference.Target.Id;
+        public virtual IObjectId DirectReferenceTargetId => new ObjectId(directReference.Target.Id);
         public virtual IReference ResolveToDirectReference() => new Reference(directReference);
         public static implicit operator LibGit2Sharp.Reference(Reference d) => d?.innerReference;
     }

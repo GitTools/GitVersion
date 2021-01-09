@@ -202,7 +202,7 @@ namespace GitVersion
                 var remote = remotes.Single();
                 log.Info($"One remote found ({remote.Name} -> '{remote.Url}').");
                 AddMissingRefSpecs(log, remote);
-                return (Remote)remote;
+                return new Remote(remote);
             }
 
             var message = $"{howMany} remote(s) have been detected. When being run on a build server, the Git repository is expected to bear one (and no more than one) remote.";
