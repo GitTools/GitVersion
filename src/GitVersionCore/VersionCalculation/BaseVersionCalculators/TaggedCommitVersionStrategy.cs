@@ -29,9 +29,11 @@ namespace GitVersion.VersionCalculation
         {
             var allTags = repositoryMetadataProvider.GetValidVersionTags(Context.Configuration.GitTagPrefix, olderThan);
 
-            var taggedVersions = currentBranch
+            var taggedCommits = currentBranch
                 .Commits
-                .SelectMany(commit => { return allTags.Where(t => IsValidTag(t.Item1, commit)); })
+                .SelectMany(commit => allTags.Where(t => IsValidTag(t.Item1, commit))).ToList();
+
+            var taggedVersions = taggedCommits
                 .Select(t =>
                 {
                     var commit = t.Item1.PeeledTargetCommit();
