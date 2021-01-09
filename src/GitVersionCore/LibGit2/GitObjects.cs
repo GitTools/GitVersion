@@ -79,29 +79,6 @@ namespace GitVersion
         public virtual string Message => innerCommit?.Message;
     }
 
-    public class Branch : IBranch
-    {
-        private readonly LibGit2Sharp.Branch innerBranch;
-
-        private Branch(LibGit2Sharp.Branch branch)
-        {
-            innerBranch = branch;
-        }
-
-        protected Branch()
-        {
-        }
-        public static implicit operator LibGit2Sharp.Branch(Branch d) => d?.innerBranch;
-        public static explicit operator Branch(LibGit2Sharp.Branch b) => b is null ? null : new Branch(b);
-
-        public virtual string CanonicalName => innerBranch?.CanonicalName;
-        public virtual string FriendlyName => innerBranch?.FriendlyName;
-        public virtual ICommit Tip => (Commit)innerBranch?.Tip;
-        public virtual CommitCollection Commits => CommitCollection.FromCommitLog(innerBranch?.Commits);
-        public virtual bool IsRemote => innerBranch != null && innerBranch.IsRemote;
-        public virtual bool IsTracking => innerBranch != null && innerBranch.IsTracking;
-    }
-
     public class Remote : IRemote
     {
         private readonly LibGit2Sharp.Remote innerRemote;
@@ -118,36 +95,6 @@ namespace GitVersion
         public static explicit operator Remote(LibGit2Sharp.Remote b) => b is null ? null : new Remote(b);
         public virtual string Name => innerRemote.Name;
         public virtual string RefSpecs => string.Join(", ", innerRemote.FetchRefSpecs.Select(r => r.Specification));
-    }
-
-    public class BranchCollection : IEnumerable<IBranch>
-    {
-        private readonly LibGit2Sharp.BranchCollection innerCollection;
-        private BranchCollection(LibGit2Sharp.BranchCollection collection) => innerCollection = collection;
-
-        protected BranchCollection()
-        {
-        }
-
-        public static implicit operator LibGit2Sharp.BranchCollection(BranchCollection d) => d.innerCollection;
-        public static explicit operator BranchCollection(LibGit2Sharp.BranchCollection b) => b is null ? null : new BranchCollection(b);
-
-        public virtual IEnumerator<IBranch> GetEnumerator()
-        {
-            foreach (var branch in innerCollection)
-                yield return (Branch)branch;
-        }
-        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
-        public virtual IBranch this[string friendlyName] => (Branch)innerCollection[friendlyName];
-
-        public virtual IBranch Add(string name, ICommit commit)
-        {
-            return (Branch)innerCollection.Add(name, (Commit)commit);
-        }
-        public void Update(IBranch branch, params Action<BranchUpdater>[] actions)
-        {
-            innerCollection.Update((Branch)branch, actions);
-        }
     }
 
     public class CommitCollection : IEnumerable<ICommit>

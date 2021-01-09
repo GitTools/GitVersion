@@ -17,7 +17,7 @@ namespace GitVersionCore.Tests.Mocks
         public ITagCollection Tags { get; set; }
         public IReferenceCollection Refs { get; set; }
 
-        public BranchCollection Branches { get; set; }
+        public IBranchCollection Branches { get; set; }
         public CommitCollection Commits
         {
             get => commits ?? Head.Commits;
