@@ -4,9 +4,6 @@ using System.Linq;
 
 namespace GitVersion
 {
-    public interface ITagCollection : IEnumerable<ITag>
-    {
-    }
     public class TagCollection : ITagCollection
     {
         private readonly LibGit2Sharp.TagCollection innerCollection;
