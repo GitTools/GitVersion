@@ -13,8 +13,8 @@ namespace GitVersion
         private Lazy<IRepository> repositoryLazy;
         private IRepository repositoryInstance => repositoryLazy.Value;
 
-        public GitRepository(IGitRepositoryInfo repositoryInfo)
-            : this(() => repositoryInfo.GitRootPath)
+        public GitRepository(ILog log, IGitRepositoryInfo repositoryInfo)
+            : this(log, () => repositoryInfo.GitRootPath)
         {
         }
 
@@ -35,7 +35,7 @@ namespace GitVersion
         }
 
         public static string Discover(string path) => Repository.Discover(path);
-        public static string Clone(string sourceUrl, string workdirPath, AuthenticationInfo auth)
+        public string Clone(string sourceUrl, string workdirPath, AuthenticationInfo auth)
         {
             try
             {
@@ -68,6 +68,10 @@ namespace GitVersion
         public string Path => repositoryInstance.Info.Path;
         public string WorkingDirectory => repositoryInstance.Info.WorkingDirectory;
         public bool IsHeadDetached => repositoryInstance.Info.IsHeadDetached;
+        public IGitRepository CreateNew(string gitRootPath)
+        {
+            return new GitRepository(new NullLog(), () => gitRootPath);
+        }
         public int GetNumberOfUncommittedChanges()
         {
             // check if we have a branch tip at all to behave properly with empty repos
@@ -175,16 +179,17 @@ namespace GitVersion
         {
             return repositoryInstance.Network.Remotes.Any(r => r.Url == targetUrl);
         }
-        public void CleanupDuplicateOrigin(string defaultRemoteName)
+        public void CleanupDuplicateOrigin(string gitRootPath, string defaultRemoteName)
         {
+            var repository = new GitRepository(new NullLog(), () => gitRootPath).repositoryInstance;
             var remoteToKeep = defaultRemoteName;
             // check that we have a remote that matches defaultRemoteName if not take the first remote
-            if (!repositoryInstance.Network.Remotes.Any(remote => remote.Name.Equals(defaultRemoteName, StringComparison.InvariantCultureIgnoreCase)))
+            if (!repository.Network.Remotes.Any(remote => remote.Name.Equals(defaultRemoteName, StringComparison.InvariantCultureIgnoreCase)))
             {
-                remoteToKeep = repositoryInstance.Network.Remotes.First().Name;
+                remoteToKeep = repository.Network.Remotes.First().Name;
             }
 
-            var duplicateRepos = repositoryInstance.Network
+            var duplicateRepos = repository.Network
                 .Remotes
                 .Where(remote => !remote.Name.Equals(remoteToKeep, StringComparison.InvariantCultureIgnoreCase))
                 .Select(remote => remote.Name);
@@ -192,7 +197,7 @@ namespace GitVersion
             // remove all remotes that are considered duplicates
             foreach (var repoName in duplicateRepos)
             {
-                repositoryInstance.Network.Remotes.Remove(repoName);
+                repository.Network.Remotes.Remove(repoName);
             }
         }
         public IRemote EnsureOnlyOneRemoteIsDefined()

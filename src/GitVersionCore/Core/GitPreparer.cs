@@ -11,6 +11,7 @@ namespace GitVersion
     {
         private readonly ILog log;
         private readonly IEnvironment environment;
+        private readonly IGitRepository repository;
         private readonly IOptions<GitVersionOptions> options;
         private readonly IGitRepositoryInfo repositoryInfo;
         private readonly ICurrentBuildAgent buildAgent;
@@ -18,10 +19,11 @@ namespace GitVersion
         private const string DefaultRemoteName = "origin";
 
         public GitPreparer(ILog log, IEnvironment environment, ICurrentBuildAgent buildAgent,
-            IOptions<GitVersionOptions> options, IGitRepositoryInfo repositoryInfo)
+            IOptions<GitVersionOptions> options, IGitRepository repository, IGitRepositoryInfo repositoryInfo)
         {
             this.log = log ?? throw new ArgumentNullException(nameof(log));
             this.environment = environment ?? throw new ArgumentNullException(nameof(environment));
+            this.repository = repository ?? throw new ArgumentNullException(nameof(repository));
             this.options = options ?? throw new ArgumentNullException(nameof(options));
             this.repositoryInfo = repositoryInfo ?? throw new ArgumentNullException(nameof(repositoryInfo));
             this.buildAgent = buildAgent;
@@ -88,8 +90,7 @@ namespace GitVersion
 
         private void CleanupDuplicateOrigin()
         {
-            using IGitRepository repo = new GitRepository(log, repositoryInfo.GitRootPath);
-            repo.CleanupDuplicateOrigin(DefaultRemoteName);
+            repository.CleanupDuplicateOrigin(repositoryInfo.GitRootPath, DefaultRemoteName);
         }
 
         private void CreateDynamicRepository(string targetBranch)
@@ -130,7 +131,7 @@ namespace GitVersion
         {
             using (log.IndentLog($"Cloning repository from url '{repositoryUrl}'"))
             {
-                var returnedPath = GitRepository.Clone(repositoryUrl, gitDirectory, auth);
+                var returnedPath = repository.Clone(repositoryUrl, gitDirectory, auth);
                 log.Info($"Returned path after repository clone: {returnedPath}");
             }
         }
@@ -142,7 +143,7 @@ namespace GitVersion
         private void NormalizeGitDirectory(string gitDirectory, bool noFetch, string currentBranch, bool isDynamicRepository)
         {
             var authentication = options.Value.Authentication;
-            using var repository = new GitRepository(log, gitDirectory);
+            using var repository = this.repository.CreateNew(gitDirectory);
             // Need to ensure the HEAD does not move, this is essentially a BugCheck
             var expectedSha = repository.Head.Tip.Sha;
             var expectedBranchName = repository.Head.CanonicalName;
