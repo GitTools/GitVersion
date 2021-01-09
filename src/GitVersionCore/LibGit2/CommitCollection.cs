@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using LibGit2Sharp;
 
 namespace GitVersion
@@ -15,8 +16,7 @@ namespace GitVersion
 
         public virtual IEnumerator<ICommit> GetEnumerator()
         {
-            foreach (var commit in innerCollection)
-                yield return (Commit)commit;
+            return innerCollection.Select(commit => new Commit(commit)).GetEnumerator();
         }
 
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
