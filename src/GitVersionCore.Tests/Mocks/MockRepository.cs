@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using GitVersion;
-using GitVersion.Logging;
 namespace GitVersionCore.Tests.Mocks
 {
     public class MockRepository : IGitRepository
@@ -30,7 +29,6 @@ namespace GitVersionCore.Tests.Mocks
         public int GetNumberOfUncommittedChanges() => 0;
         public ICommit FindMergeBase(ICommit commit, ICommit otherCommit) => throw new NotImplementedException();
         public string ShortenObjectId(ICommit commit) => throw new NotImplementedException();
-        public void CreateBranchForPullRequestBranch(ILog log, AuthenticationInfo auth) => throw new NotImplementedException();
         public bool GitRepoHasMatchingRemote(string targetUrl) => throw new NotImplementedException();
         public void CleanupDuplicateOrigin(string defaultRemoteName) => throw new NotImplementedException();
         public bool GetMatchingCommitBranch(ICommit baseVersionSource, IBranch branch, ICommit firstMatchingCommit)
@@ -85,7 +83,11 @@ namespace GitVersionCore.Tests.Mocks
         {
             throw new NotImplementedException();
         }
-        public IRemote EnsureOnlyOneRemoteIsDefined(ILog log) => throw new NotImplementedException();
+        public void CreateBranchForPullRequestBranch(AuthenticationInfo auth)
+        {
+            throw new NotImplementedException();
+        }
+        public IRemote EnsureOnlyOneRemoteIsDefined() => throw new NotImplementedException();
         public void Dispose() => throw new NotImplementedException();
     }
 }
