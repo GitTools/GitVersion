@@ -14,7 +14,7 @@ namespace GitVersion.Common
         ICommit FindMergeBase(ICommit commit, ICommit mainlineTip);
         ICommit GetCurrentCommit(IBranch currentBranch, string commitId);
         ICommit GetBaseVersionSource(ICommit currentBranchTip);
-        List<ICommit> GetMainlineCommitLog(ICommit baseVersionSource, ICommit mainlineTip);
+        IEnumerable<ICommit> GetMainlineCommitLog(ICommit baseVersionSource, ICommit mainlineTip);
         IEnumerable<ICommit> GetMergeBaseCommits(ICommit mergeCommit, ICommit mergedHead, ICommit findMergeBase);
 
         IBranch GetTargetBranch(string targetBranch);
@@ -38,7 +38,7 @@ namespace GitVersion.Common
         IEnumerable<SemanticVersion> GetVersionTagsOnBranch(IBranch branch, string tagPrefixRegex);
         IEnumerable<Tuple<ITag, SemanticVersion>> GetValidVersionTags(string tagPrefixRegex, DateTimeOffset? olderThan = null);
 
-        CommitCollection GetCommitLog(ICommit baseVersionSource, ICommit currentCommit);
+        IEnumerable<ICommit> GetCommitLog(ICommit baseVersionSource, ICommit currentCommit);
         bool GetMatchingCommitBranch(ICommit baseVersionSource, IBranch branch, ICommit firstMatchingCommit);
         string ShortenObjectId(ICommit commit);
         VersionField? DetermineIncrementedField(BaseVersion baseVersion, GitVersionContext context);

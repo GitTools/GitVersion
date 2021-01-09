@@ -14,16 +14,16 @@ namespace GitVersionCore.Tests.Mocks
             Refs = new MockReferenceCollection();
         }
         public IBranch Head { get; set; }
-        public ReferenceCollection Refs { get; set; }
+        public ITagCollection Tags { get; set; }
+        public IReferenceCollection Refs { get; set; }
 
+        public BranchCollection Branches { get; set; }
         public CommitCollection Commits
         {
             get => commits ?? Head.Commits;
             set => commits = value;
         }
 
-        public BranchCollection Branches { get; set; }
-        public IEnumerable<ITag> Tags { get; set; }
         public string Path { get; }
         public string WorkingDirectory { get; }
         public bool IsHeadDetached { get; }
@@ -41,7 +41,7 @@ namespace GitVersionCore.Tests.Mocks
         {
             throw new NotImplementedException();
         }
-        public List<ICommit> GetCommitsReacheableFromHead(ICommit headCommit)
+        public IEnumerable<ICommit> GetCommitsReacheableFromHead(ICommit headCommit)
         {
             var filter = new CommitFilter
             {
@@ -65,11 +65,11 @@ namespace GitVersionCore.Tests.Mocks
         {
             throw new NotImplementedException();
         }
-        public List<ICommit> GetMainlineCommitLog(ICommit baseVersionSource, ICommit mainlineTip)
+        public IEnumerable<ICommit> GetMainlineCommitLog(ICommit baseVersionSource, ICommit mainlineTip)
         {
             throw new NotImplementedException();
         }
-        public CommitCollection GetCommitLog(ICommit baseVersionSource, ICommit currentCommit)
+        public IEnumerable<ICommit> GetCommitLog(ICommit baseVersionSource, ICommit currentCommit)
         {
             throw new NotImplementedException();
         }

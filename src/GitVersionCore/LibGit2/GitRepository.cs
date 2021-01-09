@@ -106,13 +106,11 @@ namespace GitVersion
 
         public IBranch Head => (Branch)repositoryInstance.Head;
 
-        public ReferenceCollection Refs => (ReferenceCollection)repositoryInstance.Refs;
-
-        public CommitCollection Commits => CommitCollection.FromCommitLog(repositoryInstance.Commits);
+        public ITagCollection Tags => new TagCollection(repositoryInstance.Tags);
+        public IReferenceCollection Refs => new ReferenceCollection(repositoryInstance.Refs);
 
         public BranchCollection Branches => (BranchCollection)repositoryInstance.Branches;
-
-        public IEnumerable<ITag> Tags => new TagCollection(repositoryInstance.Tags);
+        public CommitCollection Commits => CommitCollection.FromCommitLog(repositoryInstance.Commits);
 
         public void CreateBranchForPullRequestBranch(ILog log, AuthenticationInfo auth)
         {
@@ -271,7 +269,7 @@ namespace GitVersion
 
             return commitCollection.Where(c => c.Sha == commit.Sha);
         }
-        public List<ICommit> GetCommitsReacheableFromHead(ICommit headCommit)
+        public IEnumerable<ICommit> GetCommitsReacheableFromHead(ICommit headCommit)
         {
             var filter = new CommitFilter
             {
@@ -331,7 +329,7 @@ namespace GitVersion
                 throw new GitVersionException($"Cannot find commit {currentBranchTip.Sha}. Please ensure that the repository is an unshallow clone with `git fetch --unshallow`.", exception);
             }
         }
-        public List<ICommit> GetMainlineCommitLog(ICommit baseVersionSource, ICommit mainlineTip)
+        public IEnumerable<ICommit> GetMainlineCommitLog(ICommit baseVersionSource, ICommit mainlineTip)
         {
             var filter = new CommitFilter
             {
@@ -345,7 +343,7 @@ namespace GitVersion
             var mainlineCommitLog = commitCollection.ToList();
             return mainlineCommitLog;
         }
-        public CommitCollection GetCommitLog(ICommit baseVersionSource, ICommit currentCommit)
+        public IEnumerable<ICommit> GetCommitLog(ICommit baseVersionSource, ICommit currentCommit)
         {
             var filter = new CommitFilter
             {

@@ -51,7 +51,7 @@ namespace GitVersionCore.Tests
             {
                 log.Info(isBranch ? $"Creating local branch {localCanonicalName}"
                     : $"Creating local branch {localCanonicalName} pointing at {repoTipId}");
-                repo.Refs.Add(localCanonicalName, repoTipId);
+                repo.Refs.Add(localCanonicalName, repoTipId.Sha);
             }
             else
             {
@@ -164,7 +164,7 @@ namespace GitVersionCore.Tests
         private class TestableReferenceCollection : ReferenceCollection
         {
             private IReference reference;
-            public override void Add(string name, string canonicalRefNameOrObjectish)
+            public override void Add(string name, string canonicalRefNameOrObjectish, bool allowOverwrite = false)
             {
                 reference = new TestableReference(canonicalRefNameOrObjectish);
             }

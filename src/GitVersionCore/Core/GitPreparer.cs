@@ -335,7 +335,7 @@ Please run `git {GitExtensions.CreateGitLogArgs(100)}` and submit it along with 
             {
                 log.Info(isBranch ? $"Creating local branch {localCanonicalName}"
                     : $"Creating local branch {localCanonicalName} pointing at {repoTipId}");
-                repo.Refs.Add(localCanonicalName, repoTipId);
+                repo.Refs.Add(localCanonicalName, repoTipId.Sha);
             }
             else
             {

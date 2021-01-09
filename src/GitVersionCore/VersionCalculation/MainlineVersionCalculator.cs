@@ -50,7 +50,7 @@ namespace GitVersion.VersionCalculation
                     log.Info($"Current branch ({context.CurrentBranch.FriendlyName}) was branch from {mergeBase}");
                 }
 
-                var mainlineCommitLog = repositoryMetadataProvider.GetMainlineCommitLog(baseVersion.BaseVersionSource, mainlineTip);
+                var mainlineCommitLog = repositoryMetadataProvider.GetMainlineCommitLog(baseVersion.BaseVersionSource, mainlineTip).ToList();
                 var directCommits = new List<ICommit>(mainlineCommitLog.Count);
 
                 if (string.IsNullOrEmpty(context.Configuration.NextVersion))
@@ -201,7 +201,7 @@ namespace GitVersion.VersionCalculation
         private ICommit FindMergeBaseBeforeForwardMerge(ICommit baseVersionSource, IBranch mainline, out ICommit mainlineTip)
         {
             var mergeBase = repositoryMetadataProvider.FindMergeBase(context.CurrentCommit, mainline.Tip);
-            var mainlineCommitLog = repositoryMetadataProvider.GetMainlineCommitLog(baseVersionSource, mainline.Tip);
+            var mainlineCommitLog = repositoryMetadataProvider.GetMainlineCommitLog(baseVersionSource, mainline.Tip).ToList();
 
             // find the mainline commit effective for versioning the current branch
             mainlineTip = GetEffectiveMainlineTip(mainlineCommitLog, mergeBase, mainline.Tip);
