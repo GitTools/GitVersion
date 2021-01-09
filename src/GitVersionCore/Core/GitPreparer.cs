@@ -88,7 +88,7 @@ namespace GitVersion
 
         private void CleanupDuplicateOrigin()
         {
-            using IGitRepository repo = new GitRepository(repositoryInfo.GitRootPath);
+            using IGitRepository repo = new GitRepository(log, repositoryInfo.GitRootPath);
             repo.CleanupDuplicateOrigin(DefaultRemoteName);
         }
 
@@ -142,7 +142,7 @@ namespace GitVersion
         private void NormalizeGitDirectory(string gitDirectory, bool noFetch, string currentBranch, bool isDynamicRepository)
         {
             var authentication = options.Value.Authentication;
-            using IGitRepository repository = new GitRepository(log, gitDirectory);
+            using var repository = new GitRepository(log, gitDirectory);
             // Need to ensure the HEAD does not move, this is essentially a BugCheck
             var expectedSha = repository.Head.Tip.Sha;
             var expectedBranchName = repository.Head.CanonicalName;
