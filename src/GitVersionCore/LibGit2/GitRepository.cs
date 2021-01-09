@@ -9,6 +9,7 @@ namespace GitVersion
 {
     public class GitRepository : IGitRepository
     {
+        private readonly ILog log;
         private Lazy<IRepository> repositoryLazy;
         private IRepository repositoryInstance => repositoryLazy.Value;
 
@@ -16,8 +17,9 @@ namespace GitVersion
             : this(() => repositoryInfo.GitRootPath)
         {
         }
-        internal GitRepository(string gitRootDirectory)
-            : this(() => gitRootDirectory)
+
+        internal GitRepository(ILog log, string gitRootDirectory)
+            : this(log, () => gitRootDirectory)
         {
         }
 
@@ -26,8 +28,9 @@ namespace GitVersion
             repositoryLazy = new Lazy<IRepository>(() => repository);
         }
 
-        private GitRepository(Func<string> getGitRootDirectory)
+        private GitRepository(ILog log, Func<string> getGitRootDirectory)
         {
+            this.log = log ?? throw new ArgumentNullException(nameof(log));
             repositoryLazy = new Lazy<IRepository>(() => new Repository(getGitRootDirectory()));
         }
 
@@ -112,7 +115,7 @@ namespace GitVersion
         public IBranchCollection Branches => new BranchCollection(repositoryInstance.Branches);
         public ICommitCollection Commits => new CommitCollection(repositoryInstance.Commits);
 
-        public void CreateBranchForPullRequestBranch(ILog log, AuthenticationInfo auth)
+        public void CreateBranchForPullRequestBranch(AuthenticationInfo auth)
         {
             var network = repositoryInstance.Network;
             var remote = network.Remotes.Single();
@@ -192,7 +195,7 @@ namespace GitVersion
                 repositoryInstance.Network.Remotes.Remove(repoName);
             }
         }
-        public IRemote EnsureOnlyOneRemoteIsDefined(ILog log)
+        public IRemote EnsureOnlyOneRemoteIsDefined()
         {
             var remotes = repositoryInstance.Network.Remotes;
             var howMany = remotes.Count();
@@ -201,7 +204,7 @@ namespace GitVersion
             {
                 var remote = remotes.Single();
                 log.Info($"One remote found ({remote.Name} -> '{remote.Url}').");
-                AddMissingRefSpecs(log, remote);
+                AddMissingRefSpecs(remote);
                 return new Remote(remote);
             }
 
@@ -209,7 +212,7 @@ namespace GitVersion
             throw new WarningException(message);
         }
 
-        private void AddMissingRefSpecs(ILog log, LibGit2Sharp.Remote remote)
+        private void AddMissingRefSpecs(LibGit2Sharp.Remote remote)
         {
             if (remote.FetchRefSpecs.Any(r => r.Source == "refs/heads/*"))
                 return;

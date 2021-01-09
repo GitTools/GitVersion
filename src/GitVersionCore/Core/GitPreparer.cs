@@ -142,14 +142,14 @@ namespace GitVersion
         private void NormalizeGitDirectory(string gitDirectory, bool noFetch, string currentBranch, bool isDynamicRepository)
         {
             var authentication = options.Value.Authentication;
-            using IGitRepository repository = new GitRepository(gitDirectory);
+            using IGitRepository repository = new GitRepository(log, gitDirectory);
             // Need to ensure the HEAD does not move, this is essentially a BugCheck
             var expectedSha = repository.Head.Tip.Sha;
             var expectedBranchName = repository.Head.CanonicalName;
 
             try
             {
-                var remote = repository.EnsureOnlyOneRemoteIsDefined(log);
+                var remote = repository.EnsureOnlyOneRemoteIsDefined();
 
                 //If noFetch is enabled, then GitVersion will assume that the git repository is normalized before execution, so that fetching from remotes is not required.
                 if (noFetch)
@@ -233,7 +233,7 @@ namespace GitVersion
                 else if (localBranchesWhereCommitShaIsHead.Count == 0)
                 {
                     log.Info($"No local branch pointing at the commit '{headSha}'. Fake branch needs to be created.");
-                    repository.CreateBranchForPullRequestBranch(log, authentication);
+                    repository.CreateBranchForPullRequestBranch(authentication);
                 }
                 else
                 {

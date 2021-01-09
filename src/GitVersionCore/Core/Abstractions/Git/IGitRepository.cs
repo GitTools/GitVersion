@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using GitVersion.Logging;
 
 namespace GitVersion
 {
@@ -21,6 +20,7 @@ namespace GitVersion
         bool GitRepoHasMatchingRemote(string targetUrl);
         void CleanupDuplicateOrigin(string defaultRemoteName);
         bool GetMatchingCommitBranch(ICommit baseVersionSource, IBranch branch, ICommit firstMatchingCommit);
+        IRemote EnsureOnlyOneRemoteIsDefined();
         ICommit FindMergeBase(ICommit commit, ICommit otherCommit);
         ICommit GetBaseVersionSource(ICommit currentBranchTip);
         ICommit GetForwardMerge(ICommit commitToFindCommonBase, ICommit findMergeBase);
@@ -34,7 +34,6 @@ namespace GitVersion
         void Checkout(string commitOrBranchSpec);
         void Checkout(IBranch branch);
         void Fetch(string remote, IEnumerable<string> refSpecs, AuthenticationInfo auth, string logMessage);
-        void CreateBranchForPullRequestBranch(ILog log, AuthenticationInfo auth);
-        IRemote EnsureOnlyOneRemoteIsDefined(ILog log);
+        void CreateBranchForPullRequestBranch(AuthenticationInfo auth);
     }
 }
