@@ -7,7 +7,7 @@ namespace GitVersionCore.Tests.Mocks
 {
     public class MockRepository : IGitRepository
     {
-        private CommitCollection commits;
+        private ICommitCollection commits;
         public MockRepository()
         {
             Tags = new MockTagCollection();
@@ -18,7 +18,7 @@ namespace GitVersionCore.Tests.Mocks
         public IReferenceCollection Refs { get; set; }
 
         public IBranchCollection Branches { get; set; }
-        public CommitCollection Commits
+        public ICommitCollection Commits
         {
             get => commits ?? Head.Commits;
             set => commits = value;

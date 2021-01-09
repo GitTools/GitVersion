@@ -26,7 +26,7 @@ namespace GitVersionCore.Tests.Mocks
         private readonly MockCommitCollection commits = new MockCommitCollection();
         private readonly string friendlyName;
         public override string FriendlyName => friendlyName;
-        public override CommitCollection Commits => commits;
+        public override ICommitCollection Commits => commits;
         public override ICommit Tip => commits.First();
         public override bool IsTracking => true;
         public override bool IsRemote => false;

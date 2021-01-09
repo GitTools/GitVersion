@@ -13,7 +13,7 @@ namespace GitVersion
         ITagCollection Tags { get; }
         IReferenceCollection Refs { get; }
         IBranchCollection Branches { get; }
-        CommitCollection Commits { get; }
+        ICommitCollection Commits { get; }
 
         int GetNumberOfUncommittedChanges();
         string ShortenObjectId(ICommit commit);

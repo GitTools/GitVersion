@@ -7,6 +7,6 @@ namespace GitVersion
         ICommit Tip { get; }
         bool IsRemote { get; }
         bool IsTracking { get; }
-        CommitCollection Commits { get; }
+        ICommitCollection Commits { get; }
     }
 }
