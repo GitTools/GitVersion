@@ -12,7 +12,7 @@ namespace GitVersion
         IBranch Head { get; }
         CommitCollection Commits { get; }
         BranchCollection Branches { get; }
-        TagCollection Tags { get; }
+        IEnumerable<ITag> Tags { get; }
         ReferenceCollection Refs { get; }
 
         int GetNumberOfUncommittedChanges();

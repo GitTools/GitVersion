@@ -112,7 +112,7 @@ namespace GitVersion
 
         public BranchCollection Branches => (BranchCollection)repositoryInstance.Branches;
 
-        public TagCollection Tags => (TagCollection)repositoryInstance.Tags;
+        public IEnumerable<ITag> Tags => new TagCollection(repositoryInstance.Tags);
 
         public void CreateBranchForPullRequestBranch(ILog log, AuthenticationInfo auth)
         {

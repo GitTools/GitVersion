@@ -36,36 +36,6 @@ namespace GitVersion
         public string ToString(int prefixLength) => innerObjectId.ToString(prefixLength);
     }
 
-    public class Tag : ITag
-    {
-        private readonly LibGit2Sharp.Tag innerTag;
-        private Tag(LibGit2Sharp.Tag tag)
-        {
-            innerTag = tag;
-        }
-
-        protected Tag()
-        {
-        }
-        public static implicit operator LibGit2Sharp.Tag(Tag d) => d?.innerTag;
-        public static explicit operator Tag(LibGit2Sharp.Tag b) => b is null ? null : new Tag(b);
-
-        public virtual string TargetSha => innerTag?.Target.Sha;
-        public virtual string FriendlyName => innerTag?.FriendlyName;
-
-        public ICommit PeeledTargetCommit()
-        {
-            var target = innerTag.Target;
-
-            while (target is TagAnnotation annotation)
-            {
-                target = annotation.Target;
-            }
-
-            return target is LibGit2Sharp.Commit commit ? (Commit)commit : null;
-        }
-    }
-
     public class Commit : ICommit
     {
         private static readonly LambdaEqualityHelper<ICommit> equalityHelper =
@@ -190,41 +160,17 @@ namespace GitVersion
             foreach (var branch in innerCollection)
                 yield return (Branch)branch;
         }
+        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+        public virtual IBranch this[string friendlyName] => (Branch)innerCollection[friendlyName];
 
         public virtual IBranch Add(string name, ICommit commit)
         {
             return (Branch)innerCollection.Add(name, (Commit)commit);
         }
-
-        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
-        public virtual IBranch this[string friendlyName] => (Branch)innerCollection[friendlyName];
-
         public void Update(IBranch branch, params Action<BranchUpdater>[] actions)
         {
             innerCollection.Update((Branch)branch, actions);
         }
-    }
-
-    public class TagCollection : IEnumerable<ITag>
-    {
-        private readonly LibGit2Sharp.TagCollection innerCollection;
-        private TagCollection(LibGit2Sharp.TagCollection collection) => innerCollection = collection;
-
-        protected TagCollection()
-        {
-        }
-
-        public static implicit operator LibGit2Sharp.TagCollection(TagCollection d) => d.innerCollection;
-        public static explicit operator TagCollection(LibGit2Sharp.TagCollection b) => b is null ? null : new TagCollection(b);
-
-        public virtual IEnumerator<ITag> GetEnumerator()
-        {
-            foreach (var tag in innerCollection)
-                yield return (Tag)tag;
-        }
-
-        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
-        public virtual ITag this[string name] => (Tag)innerCollection[name];
     }
 
     public class ReferenceCollection : IEnumerable<IReference>
@@ -290,8 +236,6 @@ namespace GitVersion
         {
         }
 
-        internal static CommitCollection FromCommitLog(ICommitLog b) => b is null ? null : new CommitCollection(b);
-
         public virtual IEnumerator<ICommit> GetEnumerator()
         {
             foreach (var commit in innerCollection)
@@ -300,6 +244,7 @@ namespace GitVersion
 
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
+        internal static CommitCollection FromCommitLog(ICommitLog b) => b is null ? null : new CommitCollection(b);
         public virtual CommitCollection QueryBy(CommitFilter commitFilter)
         {
             static object GetReacheableFrom(object item)
