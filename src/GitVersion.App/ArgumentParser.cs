@@ -30,9 +30,7 @@ namespace GitVersion
 
         public Arguments ParseArguments(string commandLineArguments)
         {
-            var arguments = commandLineArguments
-                .Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries)
-                .ToArray();
+            var arguments = QuotedStringHelpers.SplitUnquoted(commandLineArguments, ' ');
 
             return ParseArguments(arguments);
         }
@@ -427,35 +425,35 @@ namespace GitVersion
 
         private static void ParseOverrideConfig(Arguments arguments, string value)
         {
-            var keyValueOptions = (value ?? "").Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
+            // TODO: Split valu with regex so that double quotes are taken in consideration as well as escaped double quotes.
+            var keyValueOptions = QuotedStringHelpers.SplitUnquoted(value, ';');
             if (keyValueOptions.Length == 0)
             {
                 return;
             }
 
-            arguments.OverrideConfig = new Config();
-
-            if (keyValueOptions.Length > 1)
-            {
-                throw new WarningException("Can't specify multiple /overrideconfig options: currently supported only 'tag-prefix' option");
-            }
+            var parser = new OverrideConfigOptionParser();
 
             // key=value
             foreach (var keyValueOption in keyValueOptions)
             {
-                var keyAndValue = keyValueOption.Split(new[] { '=' }, StringSplitOptions.RemoveEmptyEntries);
+                var keyAndValue = QuotedStringHelpers.SplitUnquoted(keyValueOption, '=');
                 if (keyAndValue.Length != 2)
                 {
-                    throw new WarningException($"Could not parse /overrideconfig option: {keyValueOption}. Ensure it is in format 'key=value'");
+                    throw new WarningException($"Could not parse /overrideconfig option: {keyValueOption}. Ensure it is in format 'key=value'.");
                 }
 
                 var optionKey = keyAndValue[0].ToLowerInvariant();
-                arguments.OverrideConfig.TagPrefix = optionKey switch
+                if (!parser.SupportedProperties.Contains(optionKey))
                 {
-                    "tag-prefix" => keyAndValue[1],
-                    _ => throw new WarningException($"Could not parse /overrideconfig option: {optionKey}. Currently supported only 'tag-prefix' option")
-                };
+                    throw new WarningException($"Could not parse /overrideconfig option: {keyValueOption}. Unsuported 'key'.");
+                }
+                else
+                {
+                    parser.SetValue(optionKey, keyAndValue[1]);
+                }
             }
+            arguments.OverrideConfig = parser.GetConfig();
         }
 
         private static void ParseUpdateAssemblyInfo(Arguments arguments, string value, string[] values)
