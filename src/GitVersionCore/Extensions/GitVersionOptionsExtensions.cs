@@ -6,7 +6,7 @@ namespace GitVersion.Extensions
 {
     public static class GitVersionOptionsExtensions
     {
-        public static string GetDynamicGitRepositoryPath(this GitVersionOptions gitVersionOptions)
+      public static string GetDynamicGitRepositoryPath(this GitVersionOptions gitVersionOptions)
         {
             var repositoryInfo = gitVersionOptions.RepositoryInfo;
             if (string.IsNullOrWhiteSpace(repositoryInfo.TargetUrl)) return null;
@@ -39,7 +39,7 @@ namespace GitVersion.Extensions
         {
             var dotGitDirectory = !string.IsNullOrWhiteSpace(gitVersionOptions.DynamicGitRepositoryPath)
                 ? gitVersionOptions.DynamicGitRepositoryPath
-                : GitRepository.Discover(gitVersionOptions.WorkingDirectory);
+                : GetWorkingDirectory(gitVersionOptions);
 
             dotGitDirectory = dotGitDirectory?.TrimEnd('/', '\\');
             if (string.IsNullOrEmpty(dotGitDirectory))
@@ -57,12 +57,12 @@ namespace GitVersion.Extensions
                 return gitVersionOptions.WorkingDirectory;
             }
 
-            var dotGitDirectory = GitRepository.Discover(gitVersionOptions.WorkingDirectory);
+            var dotGitDirectory = GetWorkingDirectory(gitVersionOptions);
 
             if (string.IsNullOrEmpty(dotGitDirectory))
                 throw new DirectoryNotFoundException("Cannot find the .git directory");
 
-            using var repository = new GitRepository(dotGitDirectory);
+            using var repository = CreateRepository(dotGitDirectory);
             return repository.WorkingDirectory;
         }
 
@@ -78,7 +78,7 @@ namespace GitVersion.Extensions
         {
             try
             {
-                using IGitRepository repository = new GitRepository(possiblePath);
+                using var repository = CreateRepository(possiblePath);
                 return repository.GitRepoHasMatchingRemote(targetUrl);
             }
             catch (Exception)
