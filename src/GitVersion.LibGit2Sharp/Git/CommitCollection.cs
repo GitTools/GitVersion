@@ -5,7 +5,7 @@ using LibGit2Sharp;
 
 namespace GitVersion
 {
-    public class CommitCollection : ICommitCollection
+    internal class CommitCollection : ICommitCollection
     {
         private readonly ICommitLog innerCollection;
         internal CommitCollection(ICommitLog collection) => innerCollection = collection;

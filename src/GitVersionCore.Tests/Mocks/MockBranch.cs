@@ -5,7 +5,7 @@ using GitVersion;
 
 namespace GitVersionCore.Tests.Mocks
 {
-    public class MockBranch : Branch, ICollection<ICommit>
+    internal class MockBranch : Branch, ICollection<ICommit>
     {
         public MockBranch(string friendlyName)
         {

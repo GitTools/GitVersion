@@ -1,6 +1,6 @@
 namespace GitVersion
 {
-    public class Branch : IBranch
+    internal class Branch : IBranch
     {
         private readonly LibGit2Sharp.Branch innerBranch;
 

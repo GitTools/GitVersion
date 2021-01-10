@@ -6,7 +6,7 @@ using Microsoft.Extensions.Options;
 
 namespace GitVersion
 {
-    public class GitRepositoryInfo : IGitRepositoryInfo
+    internal class GitRepositoryInfo : IGitRepositoryInfo
     {
         private readonly IOptions<GitVersionOptions> options;
         private GitVersionOptions gitVersionOptions => options.Value;

@@ -9,7 +9,7 @@ using ObjectId = GitVersion.ObjectId;
 namespace GitVersionCore.Tests.Mocks
 {
     [DebuggerDisplay("{" + nameof(DebuggerDisplay) + "}")]
-    public class MockCommit : Commit
+    internal class MockCommit : Commit
     {
         private static int commitCount = 1;
         private static DateTimeOffset when = DateTimeOffset.Now;

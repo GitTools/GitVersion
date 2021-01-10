@@ -4,7 +4,7 @@ using GitVersion;
 
 namespace GitVersionCore.Tests.Mocks
 {
-    public class MockCommitCollection : CommitCollection
+    internal class MockCommitCollection : CommitCollection
     {
         private List<ICommit> Commits = new List<ICommit>();
 

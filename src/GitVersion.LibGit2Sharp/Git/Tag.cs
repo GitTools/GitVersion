@@ -2,7 +2,7 @@ using LibGit2Sharp;
 
 namespace GitVersion
 {
-    public class Tag : ITag
+    internal class Tag : ITag
     {
         private readonly LibGit2Sharp.Tag innerTag;
         internal Tag(LibGit2Sharp.Tag tag)

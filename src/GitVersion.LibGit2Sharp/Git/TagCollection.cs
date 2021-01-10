@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace GitVersion
 {
-    public class TagCollection : ITagCollection
+    internal class TagCollection : ITagCollection
     {
         private readonly LibGit2Sharp.TagCollection innerCollection;
         internal TagCollection(LibGit2Sharp.TagCollection collection) => innerCollection = collection;
