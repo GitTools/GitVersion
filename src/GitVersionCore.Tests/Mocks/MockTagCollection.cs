@@ -3,7 +3,7 @@ using GitVersion;
 
 namespace GitVersionCore.Tests.Mocks
 {
-    public class MockTagCollection : TagCollection
+    internal class MockTagCollection : TagCollection
     {
         private List<ITag> Tags = new List<ITag>();
         public override IEnumerator<ITag> GetEnumerator()

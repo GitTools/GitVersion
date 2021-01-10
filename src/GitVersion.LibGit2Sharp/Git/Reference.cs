@@ -2,7 +2,7 @@ using LibGit2Sharp;
 
 namespace GitVersion
 {
-    public class Reference : IReference
+    internal class Reference : IReference
     {
         internal readonly LibGit2Sharp.Reference innerReference;
         private DirectReference directReference => innerReference.ResolveToDirectReference();

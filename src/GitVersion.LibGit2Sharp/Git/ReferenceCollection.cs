@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace GitVersion
 {
-    public class ReferenceCollection : IReferenceCollection
+    internal class ReferenceCollection : IReferenceCollection
     {
         private readonly LibGit2Sharp.ReferenceCollection innerCollection;
         internal ReferenceCollection(LibGit2Sharp.ReferenceCollection collection) => innerCollection = collection;

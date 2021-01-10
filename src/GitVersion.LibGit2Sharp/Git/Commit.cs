@@ -4,7 +4,7 @@ using GitVersion.Helpers;
 
 namespace GitVersion
 {
-    public class Commit : ICommit
+    internal class Commit : ICommit
     {
         private static readonly LambdaEqualityHelper<ICommit> equalityHelper =
             new LambdaEqualityHelper<ICommit>(x => x.Id);

@@ -2,7 +2,7 @@ using System.Linq;
 
 namespace GitVersion
 {
-    public class Remote : IRemote
+    internal class Remote : IRemote
     {
         private readonly LibGit2Sharp.Remote innerRemote;
 

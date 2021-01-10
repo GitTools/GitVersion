@@ -4,9 +4,9 @@ using GitVersion;
 
 namespace GitVersionCore.Tests.Mocks
 {
-    public class MockBranchCollection : BranchCollection
+    internal class MockBranchCollection : BranchCollection
     {
-        public List<IBranch> Branches = new List<IBranch>();
+        private List<IBranch> Branches = new List<IBranch>();
 
         public override IEnumerator<IBranch> GetEnumerator()
         {
