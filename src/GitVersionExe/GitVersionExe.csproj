@@ -21,18 +21,19 @@
     </PropertyGroup>
 
     <ItemGroup Condition="'$(TargetFramework)'=='net48'">
-        <PackageReference Include="JetBrains.Annotations" Version="$(PackageVersion_JetBrainsAnnotations)"/>
-        <PackageReference Include="LibGit2Sharp.NativeBinaries" Version="$(PackageVersion_LibGit2Sharp_NativeBinaries)"/>
+        <PackageReference Include="JetBrains.Annotations" Version="$(PackageVersion_JetBrainsAnnotations)" />
+        <PackageReference Include="LibGit2Sharp.NativeBinaries" Version="$(PackageVersion_LibGit2Sharp_NativeBinaries)" />
     </ItemGroup>
 
     <ItemGroup>
         <PackageReference Include="System.Text.Json" Version="$(PackageVersion_MicrosoftJson)" />
         <PackageReference Include="System.Text.Encodings.Web" Version="$(PackageVersion_MicrosoftJson)" />
-        <PackageReference Include="Microsoft.Extensions.Hosting" Version="$(PackageVersion_MicrosoftExtensions)"/>
-        <PackageReference Include="Microsoft.Extensions.FileSystemGlobbing" Version="$(PackageVersion_MicrosoftExtensions)"/>
+        <PackageReference Include="Microsoft.Extensions.Hosting" Version="$(PackageVersion_MicrosoftExtensions)" />
+        <PackageReference Include="Microsoft.Extensions.FileSystemGlobbing" Version="$(PackageVersion_MicrosoftExtensions)" />
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\GitVersionCore\GitVersionCore.csproj"/>
+        <ProjectReference Include="..\GitVersion.LibGit2Sharp\GitVersion.LibGit2Sharp.csproj" />
+        <ProjectReference Include="..\GitVersionCore\GitVersionCore.csproj" />
     </ItemGroup>
 </Project>

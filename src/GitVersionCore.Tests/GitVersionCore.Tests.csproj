@@ -17,6 +17,7 @@
         <PackageReference Include="YamlDotNet" Version="$(PackageVersion_YamlDotNet)" />
     </ItemGroup>
     <ItemGroup>
+        <ProjectReference Include="..\GitVersion.LibGit2Sharp\GitVersion.LibGit2Sharp.csproj" />
         <ProjectReference Include="..\GitVersionCore\GitVersionCore.csproj" />
     </ItemGroup>
     <ItemGroup>
