@@ -14,6 +14,7 @@ namespace GitVersion
         private readonly IConsole console;
         private readonly IConfigFileLocator configFileLocator;
         private readonly IHelpWriter helpWriter;
+        private readonly IGitRepositoryInfo repositoryInfo;
         private readonly IConfigProvider configProvider;
         private readonly IGitVersionCalculateTool gitVersionCalculateTool;
         private readonly IGitVersionOutputTool gitVersionOutputTool;
@@ -22,7 +23,7 @@ namespace GitVersion
         public GitVersionExecutor(ILog log, IConsole console,
             IConfigFileLocator configFileLocator, IConfigProvider configProvider,
             IGitVersionCalculateTool gitVersionCalculateTool, IGitVersionOutputTool gitVersionOutputTool,
-            IVersionWriter versionWriter, IHelpWriter helpWriter)
+            IVersionWriter versionWriter, IHelpWriter helpWriter, IGitRepositoryInfo repositoryInfo)
         {
             this.log = log ?? throw new ArgumentNullException(nameof(log));
             this.console = console ?? throw new ArgumentNullException(nameof(console));
@@ -34,6 +35,7 @@ namespace GitVersion
 
             this.versionWriter = versionWriter ?? throw new ArgumentNullException(nameof(versionWriter));
             this.helpWriter = helpWriter ?? throw new ArgumentNullException(nameof(helpWriter));
+            this.repositoryInfo = repositoryInfo ?? throw new ArgumentNullException(nameof(repositoryInfo));
         }
 
         public int Execute(GitVersionOptions gitVersionOptions)
@@ -143,7 +145,7 @@ namespace GitVersion
                 log.Info("Working directory: " + workingDirectory);
             }
 
-            configFileLocator.Verify(gitVersionOptions);
+            configFileLocator.Verify(gitVersionOptions, repositoryInfo);
 
             if (gitVersionOptions.Init)
             {

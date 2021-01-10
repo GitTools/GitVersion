@@ -24,6 +24,7 @@ namespace GitVersion
             services.AddSingleton<IFileSystem, FileSystem>();
             services.AddSingleton<IEnvironment, Environment>();
             services.AddSingleton<IGitRepository, GitRepository>();
+            services.AddSingleton<IGitRepositoryInfo, GitRepositoryInfo>();
 
             services.AddSingleton<IConsole, ConsoleAdapter>();
             services.AddSingleton<IGitVersionCache, GitVersionCache>();

@@ -440,8 +440,8 @@ namespace GitVersionCore.Tests
                 };
 
                 sp = GetServiceProvider(gitVersionOptions);
-
-                gitVersionOptions.ProjectRootDirectory.TrimEnd('/', '\\').ShouldBe(worktreePath);
+                var repositoryInfo = sp.GetService<IGitRepositoryInfo>();
+                repositoryInfo?.ProjectRootDirectory.TrimEnd('/', '\\').ShouldBe(worktreePath);
             }
             finally
             {
@@ -462,9 +462,10 @@ namespace GitVersionCore.Tests
             };
 
             sp = GetServiceProvider(gitVersionOptions);
+            var repositoryInfo = sp.GetService<IGitRepositoryInfo>();
 
             var expectedPath = fixture.RepositoryPath.TrimEnd('/', '\\');
-            gitVersionOptions.ProjectRootDirectory.TrimEnd('/', '\\').ShouldBe(expectedPath);
+            repositoryInfo?.ProjectRootDirectory.TrimEnd('/', '\\').ShouldBe(expectedPath);
         }
 
         [Test]
@@ -499,9 +500,10 @@ namespace GitVersionCore.Tests
             };
 
             sp = GetServiceProvider(gitVersionOptions);
+            var repositoryInfo = sp.GetService<IGitRepositoryInfo>();
 
             var expectedPath = Path.Combine(fixture.RepositoryPath, ".git");
-            gitVersionOptions.DotGitDirectory.ShouldBe(expectedPath);
+            repositoryInfo?.DotGitDirectory.ShouldBe(expectedPath);
         }
 
         [Test]
@@ -525,9 +527,10 @@ namespace GitVersionCore.Tests
                 };
 
                 sp = GetServiceProvider(gitVersionOptions);
+                var repositoryInfo = sp.GetService<IGitRepositoryInfo>();
 
                 var expectedPath = Path.Combine(fixture.RepositoryPath, ".git");
-                gitVersionOptions.DotGitDirectory.ShouldBe(expectedPath);
+                repositoryInfo?.DotGitDirectory.ShouldBe(expectedPath);
             }
             finally
             {
@@ -586,7 +589,9 @@ namespace GitVersionCore.Tests
                 if (fileSystem != null) services.AddSingleton(fileSystem);
                 if (repository != null) services.AddSingleton(repository);
                 if (environment != null) services.AddSingleton(environment);
-                services.AddSingleton(Options.Create(gitVersionOptions));
+                var options = Options.Create(gitVersionOptions);
+                services.AddSingleton(options);
+                services.AddSingleton<IGitRepositoryInfo>(new GitRepositoryInfo(options));
             });
         }
     }

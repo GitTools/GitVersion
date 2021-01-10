@@ -4,7 +4,6 @@ using System.Linq;
 using GitVersion.Logging;
 using LibGit2Sharp;
 using LibGit2Sharp.Handlers;
-using Microsoft.Extensions.Options;
 
 namespace GitVersion
 {
@@ -13,8 +12,8 @@ namespace GitVersion
         private Lazy<IRepository> repositoryLazy;
         private IRepository repositoryInstance => repositoryLazy.Value;
 
-        public GitRepository(IOptions<GitVersionOptions> options)
-            : this(() => options.Value.GitRootPath)
+        public GitRepository(IGitRepositoryInfo repositoryInfo)
+            : this(() => repositoryInfo.GitRootPath)
         {
         }
         internal GitRepository(string gitRootDirectory)

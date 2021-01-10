@@ -21,10 +21,10 @@ namespace GitVersion.Configuration
 
         public abstract void Verify(string workingDirectory, string projectRootDirectory);
 
-        public string SelectConfigFilePath(GitVersionOptions gitVersionOptions)
+        public string SelectConfigFilePath(GitVersionOptions gitVersionOptions, IGitRepositoryInfo repositoryInfo)
         {
             var workingDirectory = gitVersionOptions.WorkingDirectory;
-            var projectRootDirectory = gitVersionOptions.ProjectRootDirectory;
+            var projectRootDirectory = repositoryInfo.ProjectRootDirectory;
 
             return GetConfigFilePath(HasConfigFileAt(workingDirectory) ? workingDirectory : projectRootDirectory);
         }
@@ -59,7 +59,7 @@ If the docs do not help you decide on the mode open an issue to discuss what you
             }
         }
 
-        public void Verify(GitVersionOptions gitVersionOptions)
+        public void Verify(GitVersionOptions gitVersionOptions, IGitRepositoryInfo repositoryInfo)
         {
             if (!string.IsNullOrWhiteSpace(gitVersionOptions.RepositoryInfo.TargetUrl))
             {
@@ -69,7 +69,7 @@ If the docs do not help you decide on the mode open an issue to discuss what you
             }
 
             var workingDirectory = gitVersionOptions.WorkingDirectory;
-            var projectRootDirectory = gitVersionOptions.ProjectRootDirectory;
+            var projectRootDirectory = repositoryInfo.ProjectRootDirectory;
 
             Verify(workingDirectory, projectRootDirectory);
         }

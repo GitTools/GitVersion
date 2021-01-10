@@ -40,8 +40,8 @@ namespace GitVersion
 
                     services.AddSingleton(sp =>
                     {
-                        var arguments = sp.GetService<IArgumentParser>().ParseArguments(args);
-                        var gitVersionOptions = arguments.ToOptions();
+                        var arguments = sp.GetService<IArgumentParser>()?.ParseArguments(args);
+                        var gitVersionOptions = arguments?.ToOptions();
                         return Options.Create(gitVersionOptions);
                     });
 

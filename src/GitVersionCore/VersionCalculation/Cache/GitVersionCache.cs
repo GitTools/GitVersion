@@ -6,7 +6,6 @@ using GitVersion.Cache;
 using GitVersion.Helpers;
 using GitVersion.Logging;
 using GitVersion.OutputVariables;
-using Microsoft.Extensions.Options;
 using YamlDotNet.Serialization;
 
 namespace GitVersion.VersionCalculation.Cache
@@ -15,13 +14,13 @@ namespace GitVersion.VersionCalculation.Cache
     {
         private readonly IFileSystem fileSystem;
         private readonly ILog log;
-        private readonly IOptions<GitVersionOptions> options;
+        private readonly IGitRepositoryInfo repositoryInfo;
 
-        public GitVersionCache(IFileSystem fileSystem, ILog log, IOptions<GitVersionOptions> options)
+        public GitVersionCache(IFileSystem fileSystem, ILog log, IGitRepositoryInfo repositoryInfo)
         {
             this.fileSystem = fileSystem ?? throw new ArgumentNullException(nameof(fileSystem));
             this.log = log ?? throw new ArgumentNullException(nameof(log));
-            this.options = options ?? throw new ArgumentNullException(nameof(options));
+            this.repositoryInfo = repositoryInfo ?? throw new ArgumentNullException(nameof(repositoryInfo));
         }
 
         public void WriteVariablesToDiskCache(GitVersionCacheKey cacheKey, VersionVariables variablesFromCache)
@@ -54,7 +53,7 @@ namespace GitVersion.VersionCalculation.Cache
 
         public string GetCacheDirectory()
         {
-            var gitDir = options.Value.DotGitDirectory;
+            var gitDir = repositoryInfo.DotGitDirectory;
             return Path.Combine(gitDir, "gitversion_cache");
         }
 

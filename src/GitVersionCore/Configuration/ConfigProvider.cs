@@ -14,21 +14,24 @@ namespace GitVersion.Configuration
         private readonly IConfigFileLocator configFileLocator;
         private readonly IOptions<GitVersionOptions> options;
         private readonly IConfigInitWizard configInitWizard;
+        private readonly IGitRepositoryInfo repositoryInfo;
 
-        public ConfigProvider(IFileSystem fileSystem, ILog log, IConfigFileLocator configFileLocator, IOptions<GitVersionOptions> options, IConfigInitWizard configInitWizard)
+        public ConfigProvider(IFileSystem fileSystem, ILog log, IConfigFileLocator configFileLocator,
+            IOptions<GitVersionOptions> options, IConfigInitWizard configInitWizard, IGitRepositoryInfo repositoryInfo)
         {
             this.fileSystem = fileSystem ?? throw new ArgumentNullException(nameof(fileSystem));
             this.log = log ?? throw new ArgumentNullException(nameof(log));
             this.configFileLocator = configFileLocator ?? throw new ArgumentNullException(nameof(configFileLocator));
             this.options = options ?? throw new ArgumentNullException(nameof(options));
             this.configInitWizard = configInitWizard ?? throw new ArgumentNullException(nameof(this.configInitWizard));
+            this.repositoryInfo = repositoryInfo ?? throw new ArgumentNullException(nameof(this.repositoryInfo));
         }
 
         public Config Provide(Config overrideConfig = null)
         {
             var gitVersionOptions = options.Value;
             var workingDirectory = gitVersionOptions.WorkingDirectory;
-            var projectRootDirectory = gitVersionOptions.ProjectRootDirectory;
+            var projectRootDirectory = repositoryInfo.ProjectRootDirectory;
 
             var rootDirectory = configFileLocator.HasConfigFileAt(workingDirectory) ? workingDirectory : projectRootDirectory;
             return Provide(rootDirectory, overrideConfig);

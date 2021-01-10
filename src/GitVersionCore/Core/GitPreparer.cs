@@ -12,15 +12,18 @@ namespace GitVersion
         private readonly ILog log;
         private readonly IEnvironment environment;
         private readonly IOptions<GitVersionOptions> options;
+        private readonly IGitRepositoryInfo repositoryInfo;
         private readonly ICurrentBuildAgent buildAgent;
 
         private const string DefaultRemoteName = "origin";
 
-        public GitPreparer(ILog log, IEnvironment environment, ICurrentBuildAgent buildAgent, IOptions<GitVersionOptions> options)
+        public GitPreparer(ILog log, IEnvironment environment, ICurrentBuildAgent buildAgent,
+            IOptions<GitVersionOptions> options, IGitRepositoryInfo repositoryInfo)
         {
             this.log = log ?? throw new ArgumentNullException(nameof(log));
             this.environment = environment ?? throw new ArgumentNullException(nameof(environment));
             this.options = options ?? throw new ArgumentNullException(nameof(options));
+            this.repositoryInfo = repositoryInfo ?? throw new ArgumentNullException(nameof(repositoryInfo));
             this.buildAgent = buildAgent;
         }
 
@@ -33,8 +36,8 @@ namespace GitVersion
             var shouldCleanUpRemotes = buildAgent != null && buildAgent.ShouldCleanUpRemotes();
             var currentBranch = ResolveCurrentBranch();
 
-            var dotGitDirectory = gitVersionOptions.DotGitDirectory;
-            var projectRoot = gitVersionOptions.ProjectRootDirectory;
+            var dotGitDirectory = repositoryInfo.DotGitDirectory;
+            var projectRoot = repositoryInfo.ProjectRootDirectory;
 
             log.Info($"Project root is: {projectRoot}");
             log.Info($"DotGit directory is: {dotGitDirectory}");
@@ -62,7 +65,7 @@ namespace GitVersion
                         CleanupDuplicateOrigin();
                     }
 
-                    NormalizeGitDirectory(currentBranch, gitVersionOptions.DotGitDirectory, false);
+                    NormalizeGitDirectory(currentBranch, repositoryInfo.DotGitDirectory, false);
                 }
             }
         }
@@ -85,7 +88,7 @@ namespace GitVersion
 
         private void CleanupDuplicateOrigin()
         {
-            using IGitRepository repo = new GitRepository(options.Value.GitRootPath);
+            using IGitRepository repo = new GitRepository(repositoryInfo.GitRootPath);
             repo.CleanupDuplicateOrigin(DefaultRemoteName);
         }
 
@@ -97,15 +100,14 @@ namespace GitVersion
                 throw new Exception("Dynamic Git repositories must have a target branch (/b)");
             }
 
-            var repositoryInfo = gitVersionOptions.RepositoryInfo;
-            var gitDirectory = gitVersionOptions.DynamicGitRepositoryPath;
+            var gitDirectory = repositoryInfo.DynamicGitRepositoryPath;
 
             using (log.IndentLog($"Creating dynamic repository at '{gitDirectory}'"))
             {
                 var authentication = gitVersionOptions.Authentication;
                 if (!Directory.Exists(gitDirectory))
                 {
-                    CloneRepository(repositoryInfo.TargetUrl, gitDirectory, authentication);
+                    CloneRepository(gitVersionOptions.RepositoryInfo.TargetUrl, gitDirectory, authentication);
                 }
                 else
                 {
