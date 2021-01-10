@@ -8,7 +8,7 @@
   "PreReleaseLabelWithDash": "-unstable",
   "PreReleaseNumber": 8,
   "WeightedPreReleaseNumber": 8,
-  "BuildMetaData": "",
+  "BuildMetaData": null,
   "BuildMetaDataPadded": "",
   "FullBuildMetaData": "Branch.develop.Sha.commitSha",
   "MajorMinorPatch": "1.2.3",

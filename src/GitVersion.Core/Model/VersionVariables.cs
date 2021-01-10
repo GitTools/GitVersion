@@ -1,14 +1,11 @@
 using System;
 using System.Buffers;
-using System.Buffers.Text;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.Encodings.Web;
 using System.Text.Json;
-using System.Text.Json.Serialization;
-using JetBrains.Annotations;
 using YamlDotNet.Serialization;
 using static GitVersion.Extensions.ObjectExtensions;
 
@@ -116,8 +113,8 @@ namespace GitVersion.OutputVariables
         public string VersionSourceSha { get; }
         public string CommitsSinceVersionSource { get; }
         public string CommitsSinceVersionSourcePadded { get; }
-
         public string UncommittedChanges { get; }
+        public string CommitDate { get; set; }
 
         [ReflectionIgnore]
         public static IEnumerable<string> AvailableVariables
@@ -131,8 +128,6 @@ namespace GitVersion.OutputVariables
                     .OrderBy(a => a, StringComparer.Ordinal);
             }
         }
-
-        public string CommitDate { get; set; }
 
         [ReflectionIgnore]
         public string FileName { get; set; }
@@ -199,7 +194,14 @@ namespace GitVersion.OutputVariables
 
         public override string ToString()
         {
-            var variables = this.GetProperties().ToDictionary(x => x.Key, x => x.Value);
+            var variablesType = typeof(VersionVariablesJsonModel);
+            var variables = new VersionVariablesJsonModel();
+
+            foreach (KeyValuePair<string, string> property in this.GetProperties())
+            {
+                variablesType.GetProperty(property.Key).SetValue(variables, property.Value);
+            }
+
             var serializeOptions = JsonSerializerOptions();
 
             return JsonSerializer.Serialize(variables, serializeOptions);
@@ -211,45 +213,9 @@ namespace GitVersion.OutputVariables
             {
                 WriteIndented = true,
                 Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
-                Converters = { new GitVersionStringConverter() }
+                Converters = { new VersionVariablesJsonStringConverter() }
             };
             return serializeOptions;
         }
-    }
-
-    public class GitVersionStringConverter : JsonConverter<string>
-    {
-        public override bool CanConvert(Type typeToConvert)
-            => typeToConvert == typeof(string);
-
-        public override string Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
-        {
-            if (reader.TokenType != JsonTokenType.Number && typeToConvert == typeof(string))
-                return reader.GetString() ?? "";
-
-            var span = reader.HasValueSequence ? reader.ValueSequence.ToArray() : reader.ValueSpan;
-            if (Utf8Parser.TryParse(span, out long number, out var bytesConsumed) && span.Length == bytesConsumed)
-                return number.ToString();
-
-            var data = reader.GetString();
-
-            throw new InvalidOperationException($"'{data}' is not a correct expected value!")
-            {
-                Source = nameof(GitVersionStringConverter)
-            };
-        }
-
-        public override void Write(Utf8JsonWriter writer, [CanBeNull] string value, JsonSerializerOptions options)
-        {
-            value ??= string.Empty;
-            if (NotAPaddedNumber(value) && int.TryParse(value, out var number))
-                writer.WriteNumberValue(number);
-            else
-                writer.WriteStringValue(value);
-        }
-
-        public override bool HandleNull => true;
-
-        private static bool NotAPaddedNumber(string value) => value != null && (value == "0" || !value.StartsWith("0"));
     }
 }
