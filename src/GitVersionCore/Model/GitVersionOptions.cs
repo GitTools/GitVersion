@@ -45,14 +45,5 @@ namespace GitVersion
         public string OutputFile;
         public ISet<OutputType> Output = new HashSet<OutputType>();
         public Verbosity Verbosity = Verbosity.Normal;
-
-        [Obsolete]
-        public string Proj;
-        [Obsolete]
-        public string ProjArgs;
-        [Obsolete]
-        public string Exec;
-        [Obsolete]
-        public string ExecArgs;
     }
 }

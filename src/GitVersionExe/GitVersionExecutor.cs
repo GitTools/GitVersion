@@ -125,13 +125,6 @@ namespace GitVersion
                 gitVersionOptions.Output.Add(OutputType.BuildServer);
             }
 
-#pragma warning disable CS0612 // Type or member is obsolete
-            if (!string.IsNullOrEmpty(gitVersionOptions.Proj) || !string.IsNullOrEmpty(gitVersionOptions.Exec))
-#pragma warning restore CS0612 // Type or member is obsolete
-            {
-                gitVersionOptions.Output.Add(OutputType.BuildServer);
-            }
-
             ConfigureLogging(gitVersionOptions, log);
 
             var workingDirectory = gitVersionOptions.WorkingDirectory;
