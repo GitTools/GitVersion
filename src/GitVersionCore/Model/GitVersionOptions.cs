@@ -15,9 +15,9 @@ namespace GitVersion
 
         public GitVersionOptions()
         {
+            dynamicGitRepositoryPath = new Lazy<string>(this.GetDynamicGitRepositoryPath);
             dotGitDirectory = new Lazy<string>(this.GetDotGitDirectory);
             projectRootDirectory = new Lazy<string>(this.GetProjectRootDirectory);
-            dynamicGitRepositoryPath = new Lazy<string>(this.GetDynamicGitRepositoryPath);
             gitRootPath = new Lazy<string>(this.GetGitRootPath);
         }
 
