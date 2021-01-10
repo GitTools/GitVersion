@@ -6,7 +6,7 @@
   "PreReleaseTagWithDash": "",
   "PreReleaseLabel": "",
   "PreReleaseLabelWithDash": "",
-  "PreReleaseNumber": "",
+  "PreReleaseNumber": null,
   "WeightedPreReleaseNumber": 0,
   "BuildMetaData": 5,
   "BuildMetaDataPadded": "0005",
