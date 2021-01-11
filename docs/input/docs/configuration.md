@@ -202,7 +202,7 @@ set to `4`, which will pad the `CommitsSinceVersionSource` value of `1` to
 ### tag-pre-release-weight
 
 The pre-release weight in case of tagged commits. If the value is not set in the configuration, a default weight of 60000 is used instead. If the `WeightedPreReleaseNumber` [variable](./more-info/variables) is 0 and this parameter is set, its value is used. This helps if your branching model is GitFlow and the last release build, which is often tagged, can utilise this parameter to produce a monotonically increasing build number.
- 
+
 ### commit-message-incrementing
 
 Sets whether it should be possible to increment the version with special syntax
@@ -462,7 +462,10 @@ Same as for the [global configuration, explained above](#increment).
 
 When `release-2.0.0` is merged into master, we want master to build `2.0.0`. If
 `release-2.0.0` is merged into develop we want it to build `2.1.0`, this option
-prevents incrementing after a versioned branch is merged
+prevents incrementing after a versioned branch is merged.
+
+In a GitFlow-based repository, setting this option can have implications on the `CommitsSinceVersionSource` output variable. It can rule
+out a potentially better version source proposed by the `MergeMessageBaseVersionStrategy`. For more details and an in-depth analysis, please see the discussion [here](https://github.com/GitTools/GitVersion/pull/2506#issuecomment-754754037).
 
 ### tag-number-pattern
 
