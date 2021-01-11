@@ -329,7 +329,6 @@ namespace GitVersionCore.Tests.IntegrationTests
             fixture.AssertFullSemver("1.2.0-alpha.6");
             fixture.AssertFullSemver("1.2.0-alpha.6", config);
 
-            
             config.Branches = new Dictionary<string, BranchConfig>
             {
                 { "develop", new BranchConfig { PreventIncrementOfMergedBranchVersion = true } },
