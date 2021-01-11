@@ -286,7 +286,7 @@ namespace GitVersionCore.Tests.IntegrationTests
         }
 
         [Test]
-        public void WhenPreventIncrementOfMergedBranchVersionIsSetToFalseCommitsSinceVersionSourceShouldNotGoDownWhenMergingReleaseToDevelop()
+        public void WhenPreventIncrementOfMergedBranchVersionIsSetToFalseForDevelopCommitsSinceVersionSourceShouldNotGoDownWhenMergingReleaseToDevelop()
         {
             var config = new Config
             {
@@ -334,6 +334,70 @@ namespace GitVersionCore.Tests.IntegrationTests
                 { "develop", new BranchConfig { PreventIncrementOfMergedBranchVersion = true } },
             };
             fixture.AssertFullSemver("1.2.0-alpha.3", config);
+        }
+
+        [Test]
+        public void WhenPreventIncrementOfMergedBranchVersionIsSetToFalseForDevelopCommitsSinceVersionSourceShouldNotGoDownWhenMergingHotfixToDevelop()
+        {
+            var config = new Config
+            {
+                VersioningMode = VersioningMode.ContinuousDeployment,
+                Branches = new Dictionary<string, BranchConfig>
+                {
+                    { "develop", new BranchConfig { PreventIncrementOfMergedBranchVersion = false } },
+                    { "hotfix", new BranchConfig { PreventIncrementOfMergedBranchVersion = true, Regex = "^(origin/)?hotfix[/-]" } },
+
+                }
+            };
+
+            using var fixture = new EmptyRepositoryFixture();
+            fixture.MakeACommit();
+            fixture.BranchTo("develop");
+            fixture.MakeATaggedCommit("1.0.0");
+            fixture.Repository.MakeCommits(1);
+
+            fixture.Checkout("develop");
+            fixture.Repository.MakeCommits(3);
+            fixture.AssertFullSemver("1.1.0-alpha.4", config);
+
+            const string ReleaseBranch = "release/1.1.0";
+            Commands.Checkout(fixture.Repository, fixture.Repository.CreateBranch(ReleaseBranch));
+            fixture.Repository.MakeCommits(3);
+            fixture.AssertFullSemver("1.1.0-beta.3", config);
+
+            // Simulate a GitFlow release finish.
+            fixture.Checkout("master");
+            fixture.MergeNoFF(ReleaseBranch);
+            fixture.ApplyTag("v1.1.0");
+            fixture.Checkout("develop");
+
+            // Simulate some work done on develop while the release branch was open.
+            fixture.Repository.MakeCommits(2);
+            fixture.MergeNoFF(ReleaseBranch);
+            fixture.Repository.Branches.Remove(ReleaseBranch);
+            fixture.AssertFullSemver("1.2.0-alpha.6", config);
+
+            // Create hotfix for defects found in release/1.1.0
+            const string HotfixBranch = "hotfix/1.1.1";
+            fixture.Checkout("master");
+            Commands.Checkout(fixture.Repository, fixture.Repository.CreateBranch(HotfixBranch));
+            fixture.Repository.MakeCommits(3);
+
+            // Hotfix finish
+            fixture.Checkout("master");
+            fixture.Repository.MergeNoFF(HotfixBranch);
+            fixture.Repository.ApplyTag("v1.1.1");
+
+            // Verify develop version
+            fixture.Checkout("develop");
+            // Simulate some work done on develop while the hotfix branch was open.
+            fixture.Repository.MakeCommits(3);
+            fixture.AssertFullSemver("1.2.0-alpha.9", config);
+            fixture.Repository.MergeNoFF(HotfixBranch);
+            fixture.AssertFullSemver("1.2.0-alpha.19", config);
+
+            fixture.Repository.Branches.Remove(HotfixBranch);
+            fixture.AssertFullSemver("1.2.0-alpha.19", config);
         }
     }
 }
