@@ -286,15 +286,14 @@ namespace GitVersionCore.Tests.IntegrationTests
         }
 
         [Test]
-        public void WhenPreventIncrementOfMergedBranchVersionIsSetToTrueCommitsSinceVersionSourceShouldNotGoDownWhenMergingReleaseToDevelop()
+        public void WhenPreventIncrementOfMergedBranchVersionIsSetToFalseCommitsSinceVersionSourceShouldNotGoDownWhenMergingReleaseToDevelop()
         {
-            // Simulate the configuration used in production.
             var config = new Config
             {
                 VersioningMode = VersioningMode.ContinuousDeployment,
                 Branches = new Dictionary<string, BranchConfig>
                 {
-                    { "develop", new BranchConfig { PreventIncrementOfMergedBranchVersion = true } },
+                    { "develop", new BranchConfig { PreventIncrementOfMergedBranchVersion = false } },
                 }
             };
 
@@ -324,12 +323,18 @@ namespace GitVersionCore.Tests.IntegrationTests
 
             var versionSourceBeforeReleaseBranchIsRemoved = fixture.GetVersion(config).Sha;
 
-            // Removing the release branch and calculating the version with the config exhibits the problem.
             fixture.Repository.Branches.Remove(ReleaseBranch);
             var versionSourceAfterReleaseBranchIsRemoved = fixture.GetVersion(config).Sha;
             Assert.AreEqual(versionSourceBeforeReleaseBranchIsRemoved, versionSourceAfterReleaseBranchIsRemoved);
             fixture.AssertFullSemver("1.2.0-alpha.6");
             fixture.AssertFullSemver("1.2.0-alpha.6", config);
+
+            
+            config.Branches = new Dictionary<string, BranchConfig>
+            {
+                { "develop", new BranchConfig { PreventIncrementOfMergedBranchVersion = true } },
+            };
+            fixture.AssertFullSemver("1.2.0-alpha.3", config);
         }
     }
 }
