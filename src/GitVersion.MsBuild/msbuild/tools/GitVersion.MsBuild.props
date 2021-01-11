@@ -4,6 +4,7 @@
     <PropertyGroup>
         <GitVersionOutputFile>$(BaseIntermediateOutputPath)/gitversion.json</GitVersionOutputFile>
 
+        <Language Condition=" '$(Language)' == '' ">C#</Language>
         <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">$(MSBuildProjectDirectory)/../</SolutionDir>
         <GitVersionPath Condition="'$(GitVersionPath)' == '' And '$(GitVersionUseSolutionDir)' == 'true'">$(SolutionDir)</GitVersionPath>
         <GitVersionPath Condition="'$(GitVersionPath)' == ''">$(MSBuildProjectDirectory)</GitVersionPath>
@@ -62,6 +63,7 @@
         <UpdateVersionProperties Condition=" '$(UpdateVersionProperties)' == '' ">true</UpdateVersionProperties>
 
         <UseFullSemVerForNuGet Condition=" '$(UseFullSemVerForNuGet)' == '' ">true</UseFullSemVerForNuGet>
+
     </PropertyGroup>
 
     <PropertyGroup>
