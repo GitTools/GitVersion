@@ -21,11 +21,14 @@ namespace GitVersionCore.Tests.VersionCalculation.Strategies
             // So we shouldn't bump the version
             var contextBuilder = new GitVersionContextBuilder().WithRepository(new MockRepository
             {
-                Head = new MockBranch("master") { new MockCommit
+                Head = new MockBranch("master")
                 {
-                    MessageEx = "Merge branch 'release-0.1.5'",
-                    ParentsEx = GetParents(true)
-                } }
+                    new MockCommit
+                    {
+                        MessageEx = "Merge branch 'release-0.1.5'",
+                        ParentsEx = GetParents(true)
+                    }
+                }
             });
             contextBuilder.Build();
             var strategy = contextBuilder.ServicesProvider.GetServiceForType<IVersionStrategy, MergeMessageVersionStrategy>();
