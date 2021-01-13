@@ -210,7 +210,7 @@ namespace GitVersion
 
         public IEnumerable<IBranch> ExcludingBranches(IEnumerable<IBranch> branchesToExclude)
         {
-            return repository.Branches.ExcludingBranches(branchesToExclude);
+            return repository.Branches.ExcludeBranches(branchesToExclude);
         }
 
         // TODO Should we cache this?
