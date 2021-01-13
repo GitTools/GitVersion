@@ -36,19 +36,6 @@ namespace GitVersionCore.Tests
             return this;
         }
 
-        public GitVersionContextBuilder WithTaggedMaster()
-        {
-            repository = CreateRepository();
-            ((MockTagCollection)repository.Tags).Add(new MockTag("1.0.0"));
-            return this;
-        }
-
-        public GitVersionContextBuilder AddCommit()
-        {
-            ((MockBranch)repository.Head).Add(new MockCommit());
-            return this;
-        }
-
         public GitVersionContextBuilder WithDevelopBranch()
         {
             return WithBranch("develop");
@@ -102,7 +89,6 @@ namespace GitVersionCore.Tests
                 {
                     mockBranch
                 },
-                Tags = new MockTagCollection(),
                 Head = mockBranch
             };
 

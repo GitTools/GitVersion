@@ -1,26 +1,33 @@
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using GitVersion;
 
 namespace GitVersionCore.Tests.Mocks
 {
-    internal class MockBranchCollection : BranchCollection
+    internal class MockBranchCollection : IBranchCollection
     {
         private List<IBranch> Branches = new List<IBranch>();
 
-        public override IEnumerator<IBranch> GetEnumerator()
+        public IEnumerator<IBranch> GetEnumerator()
         {
             return Branches.GetEnumerator();
         }
 
-        public override IBranch this[string friendlyName]
+        public IBranch this[string friendlyName] => Branches.FirstOrDefault(x => x.FriendlyName == friendlyName);
+        public IEnumerable<IBranch> ExcludeBranches(IEnumerable<IBranch> branchesToExclude)
         {
-            get { return Branches.FirstOrDefault(x => x.FriendlyName == friendlyName); }
+            throw new System.NotImplementedException();
+        }
+        public void UpdateTrackedBranch(IBranch branch, string remoteTrackingReferenceName)
+        {
+            throw new System.NotImplementedException();
         }
 
         public void Add(IBranch item)
         {
             Branches.Add(item);
         }
+        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
     }
 }

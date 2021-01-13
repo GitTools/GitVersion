@@ -1,43 +1,61 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using GitVersion;
+using GitVersion.Extensions;
 
 namespace GitVersionCore.Tests.Mocks
 {
-    internal class MockBranch : Branch, ICollection<ICommit>
+    internal class MockBranch : IBranch, ICollection<ICommit>
     {
         public MockBranch(string friendlyName)
         {
             this.friendlyName = friendlyName;
             CanonicalName = friendlyName;
         }
-        public MockBranch(string friendlyName, string canonicalName)
-        {
-            this.friendlyName = friendlyName;
-            CanonicalName = canonicalName;
-        }
-
-        public MockBranch()
-        {
-
-        }
 
         private readonly MockCommitCollection commits = new MockCommitCollection();
         private readonly string friendlyName;
-        public override string FriendlyName => friendlyName;
-        public override ICommitCollection Commits => commits;
-        public override ICommit Tip => commits.First();
-        public override bool IsTracking => true;
-        public override bool IsRemote => false;
+        public string FriendlyName => friendlyName;
+        public string NameWithoutRemote =>
+            IsRemote
+                ? FriendlyName.Substring(FriendlyName.IndexOf("/", StringComparison.Ordinal) + 1)
+                : FriendlyName;
 
-        public override string CanonicalName { get; }
+        public string NameWithoutOrigin =>
+            IsRemote && FriendlyName.StartsWith("origin/")
+                ? FriendlyName.Substring("origin/".Length)
+                : FriendlyName;
+        public bool IsSameBranch(IBranch otherBranch)
+        {
+            // For each branch, fixup the friendly name if the branch is remote.
+            var otherBranchFriendlyName = otherBranch.NameWithoutRemote;
+            return otherBranchFriendlyName.IsEquivalentTo(NameWithoutRemote);
+        }
+        public bool IsDetachedHead => CanonicalName.Equals("(no branch)", StringComparison.OrdinalIgnoreCase);
+
+        public ICommitCollection Commits => commits;
+        public ICommit Tip => commits.First();
+        public bool IsTracking => true;
+        public bool IsRemote => false;
+        public bool IsReadOnly => false;
+
+        public string CanonicalName { get; }
 
         public override int GetHashCode()
         {
             return friendlyName.GetHashCode();
         }
 
+        public bool Equals(IBranch other)
+        {
+            throw new NotImplementedException();
+        }
+        public int CompareTo(IBranch other)
+        {
+            throw new NotImplementedException();
+        }
         public override bool Equals(object obj)
         {
             return ReferenceEquals(this, obj);
@@ -79,7 +97,5 @@ namespace GitVersionCore.Tests.Mocks
         }
 
         public int Count => commits.Count;
-
-        public bool IsReadOnly => false;
     }
 }

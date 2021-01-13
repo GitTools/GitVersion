@@ -2,19 +2,16 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using GitVersion;
+using NSubstitute;
+
 namespace GitVersionCore.Tests.Mocks
 {
     public class MockRepository : IGitRepository
     {
         private ICommitCollection commits;
-        public MockRepository()
-        {
-            Tags = new MockTagCollection();
-            Refs = new MockReferenceCollection();
-        }
         public IBranch Head { get; set; }
-        public ITagCollection Tags { get; set; }
-        public IReferenceCollection Refs { get; set; }
+        public ITagCollection Tags => Substitute.For<ITagCollection>();
+        public IReferenceCollection Refs => Substitute.For<IReferenceCollection>();
 
         public IBranchCollection Branches { get; set; }
         public ICommitCollection Commits

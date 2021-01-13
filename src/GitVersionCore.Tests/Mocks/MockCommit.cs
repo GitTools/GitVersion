@@ -3,20 +3,20 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using GitVersion;
 using LibGit2Sharp;
-using Commit = GitVersion.Commit;
-using ObjectId = GitVersion.ObjectId;
+using NSubstitute;
 
 namespace GitVersionCore.Tests.Mocks
 {
     [DebuggerDisplay("{" + nameof(DebuggerDisplay) + "}")]
-    internal class MockCommit : Commit
+    internal class MockCommit : ICommit
     {
         private static int commitCount = 1;
         private static DateTimeOffset when = DateTimeOffset.Now;
 
-        public MockCommit(IObjectId id = null)
+        public MockCommit()
         {
-            idEx = id ?? new ObjectId(Guid.NewGuid().ToString().Replace("-", "") + "00000000");
+            idEx = Substitute.For<IObjectId>();
+            idEx.Sha.Returns(Guid.NewGuid().ToString().Replace("-", "") + "00000000");
             MessageEx = "Commit " + commitCount++;
             ParentsEx = new List<ICommit> { null };
             CommitterEx = new Signature("Joe", "Joe@bloggs.net", when);
@@ -25,20 +25,28 @@ namespace GitVersionCore.Tests.Mocks
         }
 
         public string MessageEx;
-        public override string Message => MessageEx;
+        public string Message => MessageEx;
 
         public Signature CommitterEx;
-        public override DateTimeOffset? CommitterWhen => CommitterEx.When;
+        public DateTimeOffset? CommitterWhen => CommitterEx.When;
 
         private readonly IObjectId idEx;
-        public override IObjectId Id => idEx;
+        public IObjectId Id => idEx;
 
-        public override string Sha => idEx.Sha;
+        public string Sha => idEx.Sha;
 
         public IList<ICommit> ParentsEx;
-        public override IEnumerable<ICommit> Parents => ParentsEx;
+        public IEnumerable<ICommit> Parents => ParentsEx;
 
         // ReSharper disable once UnusedMember.Local
         private string DebuggerDisplay => MessageEx;
+        public bool Equals(ICommit other)
+        {
+            throw new NotImplementedException();
+        }
+        public int CompareTo(ICommit other)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

@@ -25,10 +25,10 @@ namespace GitVersion
         public override bool Equals(object obj) => Equals(obj as IBranch);
         public bool Equals(IBranch other) => equalityHelper.Equals(this, other);
         public override int GetHashCode() => equalityHelper.GetHashCode(this);
-        public static implicit operator LibGit2Sharp.Branch(Branch d) => d?.innerBranch;
+        public static implicit operator LibGit2Sharp.Branch(Branch d) => d.innerBranch;
 
-        public virtual string CanonicalName => innerBranch?.CanonicalName;
-        public virtual string FriendlyName => innerBranch?.FriendlyName;
+        public virtual string CanonicalName => innerBranch.CanonicalName;
+        public virtual string FriendlyName => innerBranch.FriendlyName;
 
         public string NameWithoutRemote =>
             IsRemote
@@ -44,7 +44,7 @@ namespace GitVersion
         {
             get
             {
-                var commit = innerBranch?.Tip;
+                var commit = innerBranch.Tip;
                 return commit is null ? null : new Commit(commit);
             }
         }
@@ -54,7 +54,7 @@ namespace GitVersion
             get
             {
 
-                var commits = innerBranch?.Commits;
+                var commits = innerBranch.Commits;
                 return commits is null ? null : new CommitCollection(commits);
             }
         }
@@ -70,7 +70,7 @@ namespace GitVersion
         }
         public bool IsDetachedHead => CanonicalName.Equals("(no branch)", StringComparison.OrdinalIgnoreCase);
 
-        public virtual bool IsRemote => innerBranch != null && innerBranch.IsRemote;
-        public virtual bool IsTracking => innerBranch != null && innerBranch.IsTracking;
+        public virtual bool IsRemote => innerBranch.IsRemote;
+        public virtual bool IsTracking => innerBranch.IsTracking;
     }
 }

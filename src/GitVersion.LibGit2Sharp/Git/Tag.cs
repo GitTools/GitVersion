@@ -24,9 +24,9 @@ namespace GitVersion
         public override bool Equals(object obj) => Equals(obj as ITag);
         public bool Equals(ITag other) => equalityHelper.Equals(this, other);
         public override int GetHashCode() => equalityHelper.GetHashCode(this);
-        public virtual string CanonicalName => innerTag?.CanonicalName;
-        public virtual string TargetSha => innerTag?.Target.Sha;
-        public virtual string FriendlyName => innerTag?.FriendlyName;
+        public virtual string CanonicalName => innerTag.CanonicalName;
+        public virtual string TargetSha => innerTag.Target.Sha;
+        public virtual string FriendlyName => innerTag.FriendlyName;
 
         public ICommit PeeledTargetCommit()
         {

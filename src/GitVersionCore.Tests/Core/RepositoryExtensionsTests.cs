@@ -147,6 +147,7 @@ namespace GitVersionCore.Tests
             }
 
             public override IObjectId Id => id;
+            public override string Sha => id.Sha;
         }
 
         private class TesatbleRemote : Remote

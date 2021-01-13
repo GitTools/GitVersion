@@ -23,8 +23,8 @@ namespace GitVersion
         public override bool Equals(object obj) => Equals(obj as IObjectId);
         public bool Equals(IObjectId other) => equalityHelper.Equals(this, other);
         public override int GetHashCode() => equalityHelper.GetHashCode(this);
-        public static implicit operator LibGit2Sharp.ObjectId(ObjectId d) => d?.innerObjectId;
-        public string Sha => innerObjectId?.Sha;
+        public static implicit operator LibGit2Sharp.ObjectId(ObjectId d) => d.innerObjectId;
+        public string Sha => innerObjectId.Sha;
 
         public string ToString(int prefixLength) => innerObjectId.ToString(prefixLength);
     }
