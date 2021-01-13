@@ -25,7 +25,7 @@ namespace GitVersion.VersionCalculation
         public override IEnumerable<BaseVersion> GetVersions()
         {
             var commitsPriorToThan = Context.CurrentBranch
-                .CommitsPriorToThan(Context.CurrentCommit.When());
+                .CommitsPriorToThan(Context.CurrentCommit.CommitterWhen.Value);
             var baseVersions = commitsPriorToThan
                 .SelectMany(c =>
                 {

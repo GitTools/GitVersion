@@ -128,7 +128,7 @@ namespace GitVersion.VersionCalculation
 
         private static void EnsureHeadIsNotDetached(GitVersionContext context)
         {
-            if (!context.CurrentBranch.IsDetachedHead())
+            if (!context.CurrentBranch.IsDetachedHead)
             {
                 return;
             }

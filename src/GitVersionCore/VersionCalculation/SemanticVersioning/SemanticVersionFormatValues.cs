@@ -87,7 +87,7 @@ namespace GitVersion
 
         public string UncommittedChanges => semver.BuildMetaData.UncommittedChanges.ToString(CultureInfo.InvariantCulture);
 
-        private String GetWeightedPreReleaseNumber()
+        private string GetWeightedPreReleaseNumber()
         {
             var weightedPreReleaseNumber =
                 semver.PreReleaseTag.HasTag() ? (semver.PreReleaseTag.Number + config.PreReleaseWeight).ToString() : null;

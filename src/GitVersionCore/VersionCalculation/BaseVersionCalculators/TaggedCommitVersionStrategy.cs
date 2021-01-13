@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using GitVersion.Common;
-using GitVersion.Extensions;
 
 namespace GitVersion.VersionCalculation
 {
@@ -22,7 +21,7 @@ namespace GitVersion.VersionCalculation
 
         public override IEnumerable<BaseVersion> GetVersions()
         {
-            return GetTaggedVersions(Context.CurrentBranch, Context.CurrentCommit.When());
+            return GetTaggedVersions(Context.CurrentBranch, Context.CurrentCommit.CommitterWhen);
         }
 
         internal IEnumerable<BaseVersion> GetTaggedVersions(IBranch currentBranch, DateTimeOffset? olderThan)

@@ -90,7 +90,7 @@ namespace GitVersion
                 }
                 catch (Exception)
                 {
-                    return Int32.MaxValue; // this should be somewhat puzzling to see,
+                    return int.MaxValue; // this should be somewhat puzzling to see,
                     // so we may have reached our goal to show that
                     // that repo is really "Dirty"...
                 }

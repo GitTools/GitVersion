@@ -132,7 +132,7 @@ namespace GitVersion.Extensions
 
         public static bool IsEquivalentTo(this string self, string other)
         {
-            return String.Equals(self, other, StringComparison.OrdinalIgnoreCase);
+            return string.Equals(self, other, StringComparison.OrdinalIgnoreCase);
         }
     }
 }

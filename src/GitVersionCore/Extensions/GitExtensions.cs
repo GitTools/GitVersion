@@ -9,60 +9,24 @@ namespace GitVersion.Extensions
 {
     public static class GitExtensions
     {
-        public static DateTimeOffset When(this ICommit commit)
-        {
-            return commit.CommitterWhen.Value;
-        }
-
-        public static string NameWithoutRemote(this IBranch branch)
-        {
-            return branch.IsRemote
-                ? branch.FriendlyName.Substring(branch.FriendlyName.IndexOf("/", StringComparison.Ordinal) + 1)
-                : branch.FriendlyName;
-        }
-
-        public static string NameWithoutOrigin(this IBranch branch)
-        {
-            return branch.IsRemote && branch.FriendlyName.StartsWith("origin/")
-                ? branch.FriendlyName.Substring("origin/".Length)
-                : branch.FriendlyName;
-        }
-
         /// <summary>
-        /// Checks if the two branch objects refer to the same branch (have the same friendly name).
-        /// </summary>
-        public static bool IsSameBranch(this IBranch branch, IBranch otherBranch)
-        {
-            // For each branch, fixup the friendly name if the branch is remote.
-            var otherBranchFriendlyName = otherBranch.NameWithoutRemote();
-            var branchFriendlyName = branch.NameWithoutRemote();
-
-            return otherBranchFriendlyName.IsEquivalentTo(branchFriendlyName);
-        }
-
-        /// <summary>
-        /// Exclude the given branches (by value equality according to friendly name).
+        ///     Exclude the given branches (by value equality according to friendly name).
         /// </summary>
         public static IEnumerable<BranchCommit> ExcludingBranches(this IEnumerable<BranchCommit> branches, IEnumerable<IBranch> branchesToExclude)
         {
-            return branches.Where(b => branchesToExclude.All(bte => !IsSameBranch(b.Branch, bte)));
+            return branches.Where(b => branchesToExclude.All(bte => !b.Branch.IsSameBranch(bte)));
         }
 
         /// <summary>
-        /// Exclude the given branches (by value equality according to friendly name).
+        ///     Exclude the given branches (by value equality according to friendly name).
         /// </summary>
         public static IEnumerable<IBranch> ExcludingBranches(this IEnumerable<IBranch> branches, IEnumerable<IBranch> branchesToExclude)
         {
-            return branches.Where(b => branchesToExclude.All(bte => !IsSameBranch(b, bte)));
+            return branches.Where(b => branchesToExclude.All(bte => !b.IsSameBranch(bte)));
         }
         public static IEnumerable<ICommit> CommitsPriorToThan(this IBranch branch, DateTimeOffset olderThan)
         {
-            return branch.Commits.SkipWhile(c => c.When() > olderThan);
-        }
-
-        public static bool IsDetachedHead(this IBranch branch)
-        {
-            return branch.CanonicalName.Equals("(no branch)", StringComparison.OrdinalIgnoreCase);
+            return branch.Commits.SkipWhile(c => c.CommitterWhen > olderThan);
         }
 
         public static void DumpGraph(string workingDirectory, Action<string> writer = null, int? maxCommits = null)
@@ -102,24 +66,17 @@ namespace GitVersion.Extensions
         public static bool IsBranch(this string branchName, string branchNameToCompareAgainst)
         {
             // "develop" == "develop"
-            if (String.Equals(branchName, branchNameToCompareAgainst, StringComparison.OrdinalIgnoreCase))
-            {
+            if (string.Equals(branchName, branchNameToCompareAgainst, StringComparison.OrdinalIgnoreCase))
                 return true;
-            }
 
             // "refs/head/develop" == "develop"
-            if (branchName.EndsWith($"/{branchNameToCompareAgainst}", StringComparison.OrdinalIgnoreCase))
-            {
-                return true;
-            }
+            return branchName.EndsWith($"/{branchNameToCompareAgainst}", StringComparison.OrdinalIgnoreCase);
 
-            return false;
         }
 
         public static string CreateGitLogArgs(int? maxCommits)
         {
             return @"log --graph --format=""%h %cr %d"" --decorate --date=relative --all --remotes=*" + (maxCommits != null ? $" -n {maxCommits}" : null);
         }
-
     }
 }

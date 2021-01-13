@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using GitTools.Testing;
 using GitVersion;
-using GitVersion.Extensions;
 using GitVersion.Model.Configuration;
 using GitVersion.VersionCalculation;
 using GitVersionCore.Tests.Helpers;
@@ -35,7 +34,7 @@ namespace GitVersionCore.Tests.VersionCalculation
 
             baseVersion.SemanticVersion.ToString().ShouldBe("2.0.0");
             baseVersion.ShouldIncrement.ShouldBe(true);
-            baseVersion.BaseVersionSource.When().ShouldBe(dateTimeOffset);
+            baseVersion.BaseVersionSource.CommitterWhen.ShouldBe(dateTimeOffset);
         }
 
         [Test]
@@ -57,7 +56,7 @@ namespace GitVersionCore.Tests.VersionCalculation
 
             baseVersion.SemanticVersion.ToString().ShouldBe("2.0.0");
             baseVersion.ShouldIncrement.ShouldBe(true);
-            baseVersion.BaseVersionSource.When().ShouldBe(when);
+            baseVersion.BaseVersionSource.CommitterWhen.ShouldBe(when);
         }
 
         [Test]
@@ -79,7 +78,7 @@ namespace GitVersionCore.Tests.VersionCalculation
 
             baseVersion.SemanticVersion.ToString().ShouldBe("2.0.0");
             baseVersion.ShouldIncrement.ShouldBe(true);
-            baseVersion.BaseVersionSource.When().ShouldBe(when);
+            baseVersion.BaseVersionSource.CommitterWhen.ShouldBe(when);
         }
 
         [Test]

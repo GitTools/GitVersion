@@ -1,3 +1,6 @@
+using System;
+using GitVersion.Extensions;
+
 namespace GitVersion
 {
     internal class Branch : IBranch
@@ -16,6 +19,17 @@ namespace GitVersion
 
         public virtual string CanonicalName => innerBranch?.CanonicalName;
         public virtual string FriendlyName => innerBranch?.FriendlyName;
+
+        public string NameWithoutRemote =>
+            IsRemote
+                ? FriendlyName.Substring(FriendlyName.IndexOf("/", StringComparison.Ordinal) + 1)
+                : FriendlyName;
+
+        public string NameWithoutOrigin =>
+            IsRemote && FriendlyName.StartsWith("origin/")
+                ? FriendlyName.Substring("origin/".Length)
+                : FriendlyName;
+
         public virtual ICommit Tip
         {
             get
@@ -34,6 +48,17 @@ namespace GitVersion
                 return commits is null ? null : new CommitCollection(commits);
             }
         }
+
+        /// <summary>
+        /// Checks if the two branch objects refer to the same branch (have the same friendly name).
+        /// </summary>
+        public bool IsSameBranch(IBranch otherBranch)
+        {
+            // For each branch, fixup the friendly name if the branch is remote.
+            var otherBranchFriendlyName = otherBranch.NameWithoutRemote;
+            return otherBranchFriendlyName.IsEquivalentTo(NameWithoutRemote);
+        }
+        public bool IsDetachedHead => CanonicalName.Equals("(no branch)", StringComparison.OrdinalIgnoreCase);
 
         public virtual bool IsRemote => innerBranch != null && innerBranch.IsRemote;
         public virtual bool IsTracking => innerBranch != null && innerBranch.IsTracking;

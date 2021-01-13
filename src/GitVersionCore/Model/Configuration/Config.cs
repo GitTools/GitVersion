@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
@@ -49,7 +48,7 @@ namespace GitVersion.Model.Configuration
         {
             get => nextVersion;
             set =>
-                nextVersion = Int32.TryParse(value, NumberStyles.Any, NumberFormatInfo.InvariantInfo, out var major)
+                nextVersion = int.TryParse(value, NumberStyles.Any, NumberFormatInfo.InvariantInfo, out var major)
                     ? $"{major}.0"
                     : value;
         }

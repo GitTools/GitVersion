@@ -36,7 +36,7 @@ namespace GitVersion
 
             var currentCommit = repositoryMetadataProvider.GetCurrentCommit(currentBranch, commitId);
 
-            if (currentBranch.IsDetachedHead())
+            if (currentBranch.IsDetachedHead)
             {
                 var branchForCommit = repositoryMetadataProvider.GetBranchesContainingCommit(currentCommit, onlyTrackedBranches: onlyTrackedBranches).OnlyOrDefault();
                 currentBranch = branchForCommit ?? currentBranch;
