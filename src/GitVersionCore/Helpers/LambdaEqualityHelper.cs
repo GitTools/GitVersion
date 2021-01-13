@@ -58,4 +58,5 @@ namespace GitVersion.Helpers
             return hashCode;
         }
     }
+
 }

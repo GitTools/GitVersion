@@ -1,10 +1,16 @@
 using System;
 using GitVersion.Extensions;
+using GitVersion.Helpers;
 
 namespace GitVersion
 {
     internal class Branch : IBranch
     {
+        private static readonly LambdaEqualityHelper<IBranch> equalityHelper =
+            new LambdaEqualityHelper<IBranch>(x => x.CanonicalName);
+        private static readonly LambdaKeyComparer<IBranch, string> comparerHelper =
+            new LambdaKeyComparer<IBranch, string>(x => x.CanonicalName);
+
         private readonly LibGit2Sharp.Branch innerBranch;
 
         internal Branch(LibGit2Sharp.Branch branch)
@@ -15,6 +21,10 @@ namespace GitVersion
         protected Branch()
         {
         }
+        public int CompareTo(IBranch other) => comparerHelper.Compare(this, other);
+        public override bool Equals(object obj) => Equals(obj as IBranch);
+        public bool Equals(IBranch other) => equalityHelper.Equals(this, other);
+        public override int GetHashCode() => equalityHelper.GetHashCode(this);
         public static implicit operator LibGit2Sharp.Branch(Branch d) => d?.innerBranch;
 
         public virtual string CanonicalName => innerBranch?.CanonicalName;

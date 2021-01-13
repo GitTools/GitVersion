@@ -8,6 +8,8 @@ namespace GitVersion
     {
         private static readonly LambdaEqualityHelper<ICommit> equalityHelper =
             new LambdaEqualityHelper<ICommit>(x => x.Id);
+        private static readonly LambdaKeyComparer<ICommit, string> comparerHelper =
+            new LambdaKeyComparer<ICommit, string>(x => x.Sha);
 
         private readonly LibGit2Sharp.Commit innerObjectId;
 
@@ -20,6 +22,7 @@ namespace GitVersion
         {
         }
 
+        public int CompareTo(ICommit other) => comparerHelper.Compare(this, other);
         public override bool Equals(object obj) => Equals(obj as ICommit);
         public bool Equals(ICommit other) => equalityHelper.Equals(this, other);
         public override int GetHashCode() => equalityHelper.GetHashCode(this);
@@ -51,5 +54,4 @@ namespace GitVersion
         public virtual DateTimeOffset? CommitterWhen => innerObjectId?.Committer.When;
         public virtual string Message => innerObjectId?.Message;
     }
-
 }
