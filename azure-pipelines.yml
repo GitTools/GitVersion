@@ -2,12 +2,14 @@ trigger:
   branches:
     include:
     - master
+    - main
     - fix/*
     - feature/*
 pr:
   branches:
     include:
     - master
+    - main
 
 variables:
   DOTNET_SKIP_FIRST_TIME_EXPERIENCE: 'true'
