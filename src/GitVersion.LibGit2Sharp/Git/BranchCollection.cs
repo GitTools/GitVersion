@@ -27,9 +27,9 @@ namespace GitVersion
             }
         }
 
-        public void UpdateTrackedBranch(IBranch branch, string remoteTrackingReferenceName)
-        {
+        public IEnumerable<IBranch> ExcludeBranches(IEnumerable<IBranch> branchesToExclude) =>
+            this.Where(b => branchesToExclude.All(bte => !b.IsSameBranch(bte)));
+        public void UpdateTrackedBranch(IBranch branch, string remoteTrackingReferenceName) =>
             innerCollection.Update((Branch)branch, b => b.TrackedBranch = remoteTrackingReferenceName);
-        }
     }
 }

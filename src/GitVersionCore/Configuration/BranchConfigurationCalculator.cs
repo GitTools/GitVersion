@@ -69,8 +69,10 @@ namespace GitVersion.Configuration
                 }
 
                 excludedInheritBranches ??= repositoryMetadataProvider.GetExcludedInheritBranches(configuration).ToList();
+
+                excludedBranches = excludedBranches.Where(b => excludedInheritBranches.All(bte => !b.IsSameBranch(bte))).ToArray();
                 // Add new excluded branches.
-                foreach (var excludedBranch in excludedBranches.ExcludingBranches(excludedInheritBranches))
+                foreach (var excludedBranch in excludedBranches)
                 {
                     excludedInheritBranches.Add(excludedBranch);
                 }
