@@ -1,3 +1,5 @@
+using System;
+
 namespace GitVersion
 {
     /// <summary>
@@ -9,8 +11,8 @@ namespace GitVersion
 
         public BranchCommit(ICommit commit, IBranch branch) : this()
         {
-            Branch = branch;
-            Commit = commit;
+            Branch = branch ?? throw new ArgumentNullException(nameof(branch));
+            Commit = commit ?? throw new ArgumentNullException(nameof(commit));
         }
 
         public IBranch Branch { get; }

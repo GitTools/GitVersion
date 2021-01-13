@@ -1,6 +1,8 @@
+using System;
+
 namespace GitVersion
 {
-    public interface IBranch
+    public interface IBranch : IEquatable<IBranch>, IComparable<IBranch>
     {
         string CanonicalName { get; }
         string FriendlyName { get; }

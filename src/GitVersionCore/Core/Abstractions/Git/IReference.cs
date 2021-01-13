@@ -1,6 +1,8 @@
+using System;
+
 namespace GitVersion
 {
-    public interface IReference
+    public interface IReference : IEquatable<IReference>, IComparable<IReference>
     {
         string CanonicalName { get; }
         string TargetIdentifier { get; }
