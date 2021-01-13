@@ -27,7 +27,7 @@ namespace GitVersion.Configuration
         /// </summary>
         public BranchConfig GetBranchConfiguration(IBranch targetBranch, ICommit currentCommit, Config configuration, IList<IBranch> excludedInheritBranches = null)
         {
-            var matchingBranches = configuration.GetConfigForBranch(targetBranch.NameWithoutRemote());
+            var matchingBranches = configuration.GetConfigForBranch(targetBranch.NameWithoutRemote);
 
             if (matchingBranches == null)
             {
@@ -187,14 +187,14 @@ namespace GitVersion.Configuration
             }
             else if (branches.Count > 1)
             {
-                currentBranch = branches.FirstOrDefault(b => b.NameWithoutRemote() == "master") ?? branches.First();
+                currentBranch = branches.FirstOrDefault(b => b.NameWithoutRemote == Config.MasterBranchKey) ?? branches.First();
             }
             else
             {
                 var possibleTargetBranches = repositoryMetadataProvider.GetBranchesForCommit(parents[0]).ToList();
                 if (possibleTargetBranches.Count > 1)
                 {
-                    currentBranch = possibleTargetBranches.FirstOrDefault(b => b.NameWithoutRemote() == "master") ?? possibleTargetBranches.First();
+                    currentBranch = possibleTargetBranches.FirstOrDefault(b => b.NameWithoutRemote == Config.MasterBranchKey) ?? possibleTargetBranches.First();
                 }
                 else
                 {

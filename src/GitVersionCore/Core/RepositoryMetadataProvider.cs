@@ -107,7 +107,7 @@ namespace GitVersion
             {
                 log.Info($"Searching for specific commit '{commitId}'");
 
-                var commit = repository.Commits.FirstOrDefault(c => String.Equals(c.Sha, commitId, StringComparison.OrdinalIgnoreCase));
+                var commit = repository.Commits.FirstOrDefault(c => string.Equals(c.Sha, commitId, StringComparison.OrdinalIgnoreCase));
                 if (commit != null)
                 {
                     currentCommit = commit;
@@ -145,7 +145,7 @@ namespace GitVersion
             var desiredBranch = repository.Head;
 
             // Make sure the desired branch has been specified
-            if (!String.IsNullOrEmpty(targetBranch))
+            if (!string.IsNullOrEmpty(targetBranch))
             {
                 // There are some edge cases where HEAD is not pointing to the desired branch.
                 // Therefore it's important to verify if 'currentBranch' is indeed the desired branch.
@@ -158,7 +158,7 @@ namespace GitVersion
                         .Where(b =>
                             b.CanonicalName.IsEquivalentTo(targetBranch) ||
                             b.FriendlyName.IsEquivalentTo(targetBranch) ||
-                            b.NameWithoutRemote().IsEquivalentTo(targetBranch))
+                            b.NameWithoutRemote.IsEquivalentTo(targetBranch))
                         .OrderBy(b => b.IsRemote)
                         .FirstOrDefault();
 
@@ -172,7 +172,7 @@ namespace GitVersion
 
         public IBranch FindBranch(string branchName)
         {
-            return repository.Branches.FirstOrDefault(x => x.NameWithoutRemote() == branchName);
+            return repository.Branches.FirstOrDefault(x => x.NameWithoutRemote == branchName);
         }
 
         public IBranch GetChosenBranch(Config configuration)
@@ -196,7 +196,7 @@ namespace GitVersion
         {
             return repository.Branches.Where(b =>
             {
-                var branchConfig = configuration.GetConfigForBranch(b.NameWithoutRemote());
+                var branchConfig = configuration.GetConfigForBranch(b.NameWithoutRemote);
 
                 return branchConfig == null || branchConfig.Increment == IncrementStrategy.Inherit;
             }).ToList();
@@ -298,7 +298,7 @@ namespace GitVersion
             {
                 if (branch.Tip == null)
                 {
-                    log.Warning(String.Format(MissingTipFormat, branch.FriendlyName));
+                    log.Warning(string.Format(MissingTipFormat, branch.FriendlyName));
                     return BranchCommit.Empty;
                 }
 
@@ -311,7 +311,7 @@ namespace GitVersion
                     var first = possibleBranches.First();
                     log.Info($"Multiple source branches have been found, picking the first one ({first.Branch.FriendlyName}).{System.Environment.NewLine}" +
                              $"This may result in incorrect commit counting.{System.Environment.NewLine}Options were:{System.Environment.NewLine}" +
-                             String.Join(", ", possibleBranches.Select(b => b.Branch.FriendlyName)));
+                             string.Join(", ", possibleBranches.Select(b => b.Branch.FriendlyName)));
                     return first;
                 }
 
@@ -371,7 +371,7 @@ namespace GitVersion
                 if (commit == null)
                     continue;
 
-                if (olderThan.HasValue && commit.When() > olderThan.Value)
+                if (olderThan.HasValue && commit.CommitterWhen > olderThan.Value)
                     continue;
 
                 if (SemanticVersion.TryParse(tag.FriendlyName, tagPrefixRegex, out var semver))
@@ -411,7 +411,7 @@ namespace GitVersion
                 return mergeBaseCommitsCache[branch];
             }
 
-            var currentBranchConfig = configuration.GetConfigForBranch(branch.NameWithoutRemote());
+            var currentBranchConfig = configuration.GetConfigForBranch(branch.NameWithoutRemote);
             var regexesToCheck = currentBranchConfig == null
                 ? new[] { ".*" } // Match anything if we can't find a branch config
                 : currentBranchConfig.SourceBranches.Select(sb => configuration.Branches[sb].Regex);

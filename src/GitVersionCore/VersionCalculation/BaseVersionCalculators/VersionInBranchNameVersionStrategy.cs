@@ -29,7 +29,7 @@ namespace GitVersion.VersionCalculation
 
         internal IEnumerable<BaseVersion> GetVersions(string tagPrefixRegex, IBranch currentBranch)
         {
-            if (!Context.FullConfiguration.IsReleaseBranch(currentBranch.NameWithoutOrigin()))
+            if (!Context.FullConfiguration.IsReleaseBranch(currentBranch.NameWithoutOrigin))
             {
                 yield break;
             }

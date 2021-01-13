@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using GitVersion.Common;
 using GitVersion.Configuration;
+using GitVersion.Model.Configuration;
 
 namespace GitVersion.VersionCalculation
 {
@@ -49,7 +50,7 @@ namespace GitVersion.VersionCalculation
 
         private IEnumerable<BaseVersion> MasterTagsVersions()
         {
-            var master = repositoryMetadataProvider.FindBranch("master");
+            var master = repositoryMetadataProvider.FindBranch(Config.MasterBranchKey);
             return master != null ? taggedCommitVersionStrategy.GetTaggedVersions(master, null) : new BaseVersion[0];
         }
 

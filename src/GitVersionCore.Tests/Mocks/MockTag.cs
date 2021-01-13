@@ -1,5 +1,4 @@
-using LibGit2Sharp;
-using Tag = GitVersion.Tag;
+using GitVersion;
 
 namespace GitVersionCore.Tests.Mocks
 {
@@ -7,8 +6,6 @@ namespace GitVersionCore.Tests.Mocks
     {
         public string NameEx;
         public override string FriendlyName => NameEx;
-
-        public TagAnnotation AnnotationEx;
 
         public MockTag() { }
 

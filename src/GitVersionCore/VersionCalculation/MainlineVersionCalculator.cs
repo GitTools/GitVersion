@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using GitVersion.Common;
 using GitVersion.Configuration;
-using GitVersion.Extensions;
 using GitVersion.Logging;
 
 namespace GitVersion.VersionCalculation
@@ -97,7 +96,7 @@ namespace GitVersion.VersionCalculation
                 context.CurrentBranch.FriendlyName,
                 context.CurrentCommit.Sha,
                 shortSha,
-                context.CurrentCommit.When(),
+                context.CurrentCommit.CommitterWhen.Value,
                 context.NumberOfUncommittedChanges);
         }
 
@@ -267,7 +266,7 @@ namespace GitVersion.VersionCalculation
 
         private static VersionField FindDefaultIncrementForBranch(GitVersionContext context, string branch = null)
         {
-            var config = context.FullConfiguration.GetConfigForBranch(branch ?? context.CurrentBranch.NameWithoutRemote());
+            var config = context.FullConfiguration.GetConfigForBranch(branch ?? context.CurrentBranch.NameWithoutRemote);
             if (config?.Increment != null && config.Increment != IncrementStrategy.Inherit)
             {
                 return config.Increment.Value.ToVersionField();

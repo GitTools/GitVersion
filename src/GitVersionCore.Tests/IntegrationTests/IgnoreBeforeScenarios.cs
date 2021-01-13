@@ -1,7 +1,6 @@
 using GitTools.Testing;
 using GitVersion;
 using GitVersion.Configuration;
-using GitVersion.Extensions;
 using GitVersion.Model.Configuration;
 using GitVersionCore.Tests.Helpers;
 using NUnit.Framework;
@@ -22,7 +21,7 @@ namespace GitVersionCore.Tests.IntegrationTests
                 {
                     Ignore = new IgnoreConfig
                     {
-                        Before = commit.When().AddMinutes(1)
+                        Before = commit.CommitterWhen.Value.AddMinutes(1)
                     }
                 }).Build();
 
