@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using GitTools.Testing;
 using GitVersion;
 using GitVersion.Configuration;
@@ -8,6 +10,7 @@ using GitVersionCore.Tests.Helpers;
 using GitVersionCore.Tests.Mocks;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
+using NSubstitute;
 
 namespace GitVersionCore.Tests
 {
@@ -53,7 +56,11 @@ namespace GitVersionCore.Tests
             {
                 new MockCommit()
             };
-            ((MockBranchCollection)repository.Branches).Add(mockBranch);
+
+            var branches = repository.Branches.ToList();
+            branches.Add(mockBranch);
+            repository.Branches.GetEnumerator().Returns(_ => ((IEnumerable<IBranch>)branches).GetEnumerator());
+
             ((MockRepository)repository).Head = mockBranch;
             return this;
         }
@@ -83,12 +90,11 @@ namespace GitVersionCore.Tests
         private static IGitRepository CreateRepository()
         {
             var mockBranch = new MockBranch("master") { new MockCommit { CommitterEx = Generate.SignatureNow() } };
+            var branches = Substitute.For<IBranchCollection>();
+            branches.GetEnumerator().Returns(_ => ((IEnumerable<IBranch>)new[] { mockBranch }).GetEnumerator());
             var mockRepository = new MockRepository
             {
-                Branches = new MockBranchCollection
-                {
-                    mockBranch
-                },
+                Branches = branches,
                 Head = mockBranch
             };
 

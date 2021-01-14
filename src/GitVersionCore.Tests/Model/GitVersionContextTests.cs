@@ -10,6 +10,7 @@ using GitVersionCore.Tests.Mocks;
 using LibGit2Sharp;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
+using NSubstitute;
 using NUnit.Framework;
 using Shouldly;
 
@@ -24,18 +25,19 @@ namespace GitVersionCore.Tests
             using var fixture = new EmptyRepositoryFixture();
 
             var config = new ConfigurationBuilder()
-                         .Add(new Config { VersioningMode = mode })
-                         .Build();
+                .Add(new Config { VersioningMode = mode })
+                .Build();
 
             var branchName = "master";
+
             var mockBranch = new MockBranch(branchName) { new MockCommit { CommitterEx = Generate.SignatureNow() } };
+            var branches = Substitute.For<IBranchCollection>();
+            branches.GetEnumerator().Returns(_ => ((IEnumerable<IBranch>)new[] { mockBranch }).GetEnumerator());
+
             var mockRepository = new MockRepository
             {
                 Head = mockBranch,
-                Branches = new MockBranchCollection
-                {
-                    mockBranch
-                }
+                Branches = branches
             };
 
             var context = GetGitVersionContext(fixture.RepositoryPath, mockRepository, branchName, config);
@@ -54,8 +56,8 @@ namespace GitVersionCore.Tests
             const string dummyBranchName = "dummy";
 
             var config = new ConfigurationBuilder()
-                                              .Add(new Config { Increment = increment })
-                                              .Build();
+                .Add(new Config { Increment = increment })
+                .Build();
 
             using var fixture = new EmptyRepositoryFixture();
             fixture.MakeACommit();
@@ -74,31 +76,31 @@ namespace GitVersionCore.Tests
 
             var branchName = "develop";
             var config = new ConfigurationBuilder()
-                         .Add(new Config
-                         {
-                             VersioningMode = VersioningMode.ContinuousDelivery,
-                             Branches =
-                                  {
-                                      {
-                                          branchName, new BranchConfig
-                                                      {
-                                                          VersioningMode = VersioningMode.ContinuousDeployment,
-                                                          Tag = "alpha"
-                                                      }
-                                      }
-                                  }
-                         })
-                         .Build();
+                .Add(new Config
+                {
+                    VersioningMode = VersioningMode.ContinuousDelivery,
+                    Branches =
+                    {
+                        {
+                            branchName, new BranchConfig
+                            {
+                                VersioningMode = VersioningMode.ContinuousDeployment,
+                                Tag = "alpha"
+                            }
+                        }
+                    }
+                })
+                .Build();
 
+            var master = new MockBranch("master") { new MockCommit { CommitterEx = Generate.SignatureNow() } };
             var develop = new MockBranch(branchName) { new MockCommit { CommitterEx = Generate.SignatureNow() } };
+            var branches = Substitute.For<IBranchCollection>();
+            branches.GetEnumerator().Returns(_ => ((IEnumerable<IBranch>)new[] { master, develop }).GetEnumerator());
+
             var mockRepository = new MockRepository
             {
                 Head = develop,
-                Branches = new MockBranchCollection
-                {
-                    new MockBranch("master") { new MockCommit { CommitterEx = Generate.SignatureNow() } },
-                    develop
-                }
+                Branches = branches
             };
 
             var context = GetGitVersionContext(fixture.RepositoryPath, mockRepository, branchName, config);
@@ -122,27 +124,26 @@ namespace GitVersionCore.Tests
                 SourceBranches = new HashSet<string>()
             };
             var config = new ConfigurationBuilder()
-                         .Add(new Config
-                         {
-                             VersioningMode = VersioningMode.ContinuousDelivery,
-                             Branches =
-                                  {
-                                      { "release/latest", new BranchConfig(branchConfig) { Increment = IncrementStrategy.None, Regex = "release/latest" } },
-                                      { "release", new BranchConfig(branchConfig) { Increment = IncrementStrategy.Patch, Regex = "releases?[/-]" } }
-                                  }
-                         })
-                         .Build();
+                .Add(new Config
+                {
+                    VersioningMode = VersioningMode.ContinuousDelivery,
+                    Branches =
+                    {
+                        { "release/latest", new BranchConfig(branchConfig) { Increment = IncrementStrategy.None, Regex = "release/latest" } },
+                        { "release", new BranchConfig(branchConfig) { Increment = IncrementStrategy.Patch, Regex = "releases?[/-]" } }
+                    }
+                })
+                .Build();
 
             var releaseLatestBranch = new MockBranch("release/latest") { new MockCommit { CommitterEx = Generate.SignatureNow() } };
             var releaseVersionBranch = new MockBranch("release/1.0.0") { new MockCommit { CommitterEx = Generate.SignatureNow() } };
 
+            var branches = Substitute.For<IBranchCollection>();
+            branches.GetEnumerator().Returns(_ => ((IEnumerable<IBranch>)new[] { releaseLatestBranch, releaseVersionBranch }).GetEnumerator());
+
             var mockRepository = new MockRepository
             {
-                Branches = new MockBranchCollection
-                {
-                    releaseLatestBranch,
-                    releaseVersionBranch
-                },
+                Branches = branches,
                 Head = releaseLatestBranch
             };
 
@@ -158,15 +159,15 @@ namespace GitVersionCore.Tests
         public void CanFindParentBranchForInheritingIncrementStrategy()
         {
             var config = new ConfigurationBuilder()
-                         .Add(new Config
-                         {
-                             Branches =
-                                  {
-                                      { "develop", new BranchConfig { Increment = IncrementStrategy.Major } },
-                                      { "feature", new BranchConfig { Increment = IncrementStrategy.Inherit } }
-                                  }
-                         })
-                         .Build();
+                .Add(new Config
+                {
+                    Branches =
+                    {
+                        { "develop", new BranchConfig { Increment = IncrementStrategy.Major } },
+                        { "feature", new BranchConfig { Increment = IncrementStrategy.Inherit } }
+                    }
+                })
+                .Build();
 
             using var fixture = new EmptyRepositoryFixture();
             fixture.Repository.MakeACommit();
