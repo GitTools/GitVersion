@@ -6,7 +6,7 @@
     <UsingTask TaskName="UpdateAssemblyInfo" AssemblyFile="$(GitVersionAssemblyFile)"/>
 
     <Target Name="RunGitVersion">
-        <Exec Command="$(GitVersionFileExe) $(MSBuildProjectDirectory) $(GitVersion_ToolArgments)" />
+        <Exec Command="&quot;$(GitVersionFileExe)&quot; &quot;$(MSBuildProjectDirectory)&quot; $(GitVersion_ToolArgments)" />
     </Target>
 
     <Target Name="WriteVersionInfoToBuildLog" DependsOnTargets="RunGitVersion" BeforeTargets="$(GitVersionTargetsBefore)" Condition="$(WriteVersionInfoToBuildLog) == 'true'">
