@@ -229,14 +229,14 @@ namespace GitVersion
 
         private static FetchOptions GetFetchOptions(AuthenticationInfo auth)
         {
-            return new FetchOptions
+            return new()
             {
                 CredentialsProvider = GetCredentialsProvider(auth)
             };
         }
         private static CloneOptions GetCloneOptions(AuthenticationInfo auth)
         {
-            return new CloneOptions
+            return new()
             {
                 Checkout = false,
                 CredentialsProvider = GetCredentialsProvider(auth)

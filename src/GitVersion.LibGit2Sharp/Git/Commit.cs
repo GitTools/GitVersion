@@ -6,20 +6,14 @@ namespace GitVersion
 {
     internal class Commit : ICommit
     {
-        private static readonly LambdaEqualityHelper<ICommit> equalityHelper =
-            new LambdaEqualityHelper<ICommit>(x => x.Id);
-        private static readonly LambdaKeyComparer<ICommit, string> comparerHelper =
-            new LambdaKeyComparer<ICommit, string>(x => x.Sha);
+        private static readonly LambdaEqualityHelper<ICommit> equalityHelper = new(x => x.Id);
+        private static readonly LambdaKeyComparer<ICommit, string> comparerHelper = new(x => x.Sha);
 
         private readonly LibGit2Sharp.Commit innerObjectId;
 
         internal Commit(LibGit2Sharp.Commit objectId)
         {
             innerObjectId = objectId;
-        }
-
-        protected Commit()
-        {
         }
 
         public int CompareTo(ICommit other) => comparerHelper.Compare(this, other);

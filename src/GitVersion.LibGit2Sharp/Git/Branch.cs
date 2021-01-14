@@ -6,10 +6,8 @@ namespace GitVersion
 {
     internal class Branch : IBranch
     {
-        private static readonly LambdaEqualityHelper<IBranch> equalityHelper =
-            new LambdaEqualityHelper<IBranch>(x => x.CanonicalName);
-        private static readonly LambdaKeyComparer<IBranch, string> comparerHelper =
-            new LambdaKeyComparer<IBranch, string>(x => x.CanonicalName);
+        private static readonly LambdaEqualityHelper<IBranch> equalityHelper = new(x => x.CanonicalName);
+        private static readonly LambdaKeyComparer<IBranch, string> comparerHelper = new(x => x.CanonicalName);
 
         private readonly LibGit2Sharp.Branch innerBranch;
 
@@ -18,9 +16,6 @@ namespace GitVersion
             innerBranch = branch;
         }
 
-        protected Branch()
-        {
-        }
         public int CompareTo(IBranch other) => comparerHelper.Compare(this, other);
         public override bool Equals(object obj) => Equals(obj as IBranch);
         public bool Equals(IBranch other) => equalityHelper.Equals(this, other);
@@ -53,7 +48,6 @@ namespace GitVersion
         {
             get
             {
-
                 var commits = innerBranch.Commits;
                 return commits is null ? null : new CommitCollection(commits);
             }

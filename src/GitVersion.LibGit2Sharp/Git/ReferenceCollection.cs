@@ -9,10 +9,6 @@ namespace GitVersion
         private readonly LibGit2Sharp.ReferenceCollection innerCollection;
         internal ReferenceCollection(LibGit2Sharp.ReferenceCollection collection) => innerCollection = collection;
 
-        protected ReferenceCollection()
-        {
-        }
-
         public virtual IEnumerator<IReference> GetEnumerator()
         {
             return innerCollection.Select(reference => new Reference(reference)).GetEnumerator();
