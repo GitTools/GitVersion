@@ -1,5 +1,4 @@
 using GitTools.Testing;
-using GitVersion;
 using GitVersionCore.Tests.Helpers;
 using LibGit2Sharp;
 using NUnit.Framework;
@@ -19,7 +18,7 @@ namespace GitVersionCore.Tests.IntegrationTests
 
             fixture.Repository.CreatePullRequestRef("feature/Foo", "master", normalise: true);
 
-            new GitRepository(fixture.Repository).DumpGraph();
+            fixture.Repository.DumpGraph();
             fixture.AssertFullSemver("0.1.1-PullRequest0002.2");
         }
 
@@ -35,7 +34,7 @@ namespace GitVersionCore.Tests.IntegrationTests
 
             fixture.Repository.CreatePullRequestRef("feature/Foo", "develop", 44, normalise: true);
 
-            new GitRepository(fixture.Repository).DumpGraph();
+            fixture.Repository.DumpGraph();
             fixture.AssertFullSemver("0.2.0-PullRequest0044.3");
         }
 
@@ -50,7 +49,7 @@ namespace GitVersionCore.Tests.IntegrationTests
 
             fixture.Repository.CreatePullRequestRef("feature/Foo", "master", normalise: true);
 
-            new GitRepository(fixture.Repository).DumpGraph();
+            fixture.Repository.DumpGraph();
             fixture.AssertFullSemver("0.1.1-PullRequest0002.2");
         }
 

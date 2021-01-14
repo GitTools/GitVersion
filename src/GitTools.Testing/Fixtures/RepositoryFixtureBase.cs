@@ -24,7 +24,7 @@ namespace GitTools.Testing
             Repository.Config.Set("user.email", "test@email.com");
         }
 
-        public IRepository Repository { get; private set; }
+        public IRepository Repository { get; }
 
         public string RepositoryPath
         {

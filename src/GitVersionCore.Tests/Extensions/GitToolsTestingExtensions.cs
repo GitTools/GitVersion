@@ -29,6 +29,11 @@ namespace GitVersionCore.Tests
             GitExtensions.DumpGraph(repository.Path, writer, maxCommits);
         }
 
+        public static void DumpGraph(this IRepository repository, Action<string> writer = null, int? maxCommits = null)
+        {
+            GitExtensions.DumpGraph(repository.ToGitRepository().Path, writer, maxCommits);
+        }
+
         public static VersionVariables GetVersion(this RepositoryFixtureBase fixture, Config configuration = null, IRepository repository = null, string commitId = null, bool onlyTrackedBranches = true, string branch = null)
         {
             configuration ??= new ConfigurationBuilder().Build();
@@ -56,19 +61,19 @@ namespace GitVersionCore.Tests
             var nextVersionCalculator = sp.GetService<INextVersionCalculator>();
             var contextOptions = sp.GetService<Lazy<GitVersionContext>>();
 
-            var context = contextOptions.Value;
+            var context = contextOptions!.Value;
 
             try
             {
-                var semanticVersion = nextVersionCalculator.FindVersion();
-                var variables = variableProvider.GetVariablesFor(semanticVersion, context.Configuration, context.IsCurrentCommitTagged);
+                var semanticVersion = nextVersionCalculator!.FindVersion();
+                var variables = variableProvider!.GetVariablesFor(semanticVersion, context.Configuration, context.IsCurrentCommitTagged);
 
                 return variables;
             }
             catch (Exception)
             {
                 Console.WriteLine("Test failing, dumping repository graph");
-                new GitRepository(repository).DumpGraph();
+                repository.DumpGraph();
                 throw;
             }
         }
@@ -95,7 +100,7 @@ namespace GitVersionCore.Tests
             }
             catch (Exception)
             {
-                new GitRepository(repository ?? fixture.Repository).DumpGraph();
+                (repository ?? fixture.Repository).DumpGraph();
                 throw;
             }
             if (commitId == null)
@@ -125,7 +130,7 @@ namespace GitVersionCore.Tests
             });
 
             var gitPreparer = serviceProvider.GetService<IGitPreparer>();
-            gitPreparer.Prepare();
+            gitPreparer!.Prepare();
         }
 
         private static IServiceProvider ConfigureServices(Action<IServiceCollection> servicesOverrides = null)

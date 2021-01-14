@@ -301,7 +301,7 @@ namespace GitVersionCore.Tests.VersionCalculation
             fixture.AssertFullSemver("0.1.0-test.2+2", config);
 
             Commands.Checkout(fixture.Repository, "master");
-            fixture.Repository.Merge((Branch)new GitRepository(fixture.Repository).FindBranch("feature/test"), Generate.SignatureNow());
+            fixture.Repository.Merge("feature/test", Generate.SignatureNow());
 
             fixture.AssertFullSemver("0.1.0-beta.1+2", config);
         }
