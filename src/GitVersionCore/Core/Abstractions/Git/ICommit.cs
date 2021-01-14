@@ -8,7 +8,7 @@ namespace GitVersion
         IEnumerable<ICommit> Parents { get; }
         string Sha { get; }
         IObjectId Id { get; }
-        DateTimeOffset? CommitterWhen { get; }
+        DateTimeOffset CommitterWhen { get; }
         string Message { get; }
     }
 }

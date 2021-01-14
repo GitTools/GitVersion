@@ -11,7 +11,6 @@ using LibGit2Sharp;
 using Microsoft.Extensions.DependencyInjection;
 using NUnit.Framework;
 using Shouldly;
-using Branch = GitVersion.Branch;
 
 namespace GitVersionCore.Tests.VersionCalculation
 {

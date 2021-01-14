@@ -13,7 +13,7 @@ namespace GitVersion
         {
         }
 
-        public IEnumerator<IReference> GetEnumerator()
+        public virtual IEnumerator<IReference> GetEnumerator()
         {
             return innerCollection.Select(reference => new Reference(reference)).GetEnumerator();
         }
