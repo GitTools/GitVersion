@@ -92,14 +92,14 @@ namespace GitVersionCore.Tests
 
             var branches = Substitute.For<IBranchCollection>();
             branches[branch.CanonicalName].Returns(branch);
-            branches.GetEnumerator().Returns(x => ((IEnumerable<IBranch>)new[] { branch }).GetEnumerator());
+            branches.GetEnumerator().Returns(_ => ((IEnumerable<IBranch>)new[] { branch }).GetEnumerator());
 
             var reference = Substitute.For<IReference>();
             reference.CanonicalName.Returns("refs/heads/develop");
 
             var references = Substitute.For<IReferenceCollection>();
             references["develop"].Returns(reference);
-            references.GetEnumerator().Returns(x => ((IEnumerable<IReference>)new[] { reference }).GetEnumerator());
+            references.GetEnumerator().Returns(_ => ((IEnumerable<IReference>)new[] { reference }).GetEnumerator());
 
             repository.Refs.Returns(references);
             repository.Head.Returns(branch);

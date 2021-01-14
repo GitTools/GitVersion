@@ -11,19 +11,16 @@ namespace GitVersion
 
         private readonly LibGit2Sharp.Commit innerObjectId;
 
-        internal Commit(LibGit2Sharp.Commit objectId)
-        {
-            innerObjectId = objectId;
-        }
+        internal Commit(LibGit2Sharp.Commit objectId) => innerObjectId = objectId;
 
         public int CompareTo(ICommit other) => comparerHelper.Compare(this, other);
-        public override bool Equals(object obj) => Equals(obj as ICommit);
+        public override bool Equals(object obj) => Equals((obj as ICommit)!);
         public bool Equals(ICommit other) => equalityHelper.Equals(this, other);
         public override int GetHashCode() => equalityHelper.GetHashCode(this);
 
         public static implicit operator LibGit2Sharp.Commit(Commit d) => d.innerObjectId;
 
-        public virtual IEnumerable<ICommit> Parents
+        public virtual IEnumerable<ICommit?> Parents
         {
             get
             {
@@ -36,7 +33,7 @@ namespace GitVersion
 
         public virtual string Sha => innerObjectId.Sha;
 
-        public virtual IObjectId Id
+        public virtual IObjectId? Id
         {
             get
             {

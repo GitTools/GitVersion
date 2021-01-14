@@ -30,7 +30,7 @@ namespace GitTools.Testing
         public static Commit[] MakeCommits(this IRepository repository, int numCommitsToMake)
         {
             return Enumerable.Range(1, numCommitsToMake)
-                             .Select(x => repository.MakeACommit())
+                             .Select(_ => repository.MakeACommit())
                              .ToArray();
         }
 

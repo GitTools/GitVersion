@@ -8,17 +8,14 @@ namespace GitVersion
         private static readonly LambdaKeyComparer<IObjectId, string> comparerHelper = new(x => x.Sha);
 
         private readonly LibGit2Sharp.ObjectId innerObjectId;
-        internal ObjectId(LibGit2Sharp.ObjectId objectId)
-        {
-            innerObjectId = objectId;
-        }
+        internal ObjectId(LibGit2Sharp.ObjectId objectId) => innerObjectId = objectId;
 
         public ObjectId(string sha) : this(new LibGit2Sharp.ObjectId(sha))
         {
         }
 
         public int CompareTo(IObjectId other) => comparerHelper.Compare(this, other);
-        public override bool Equals(object obj) => Equals(obj as IObjectId);
+        public override bool Equals(object obj) => Equals((obj as IObjectId)!);
         public bool Equals(IObjectId other) => equalityHelper.Equals(this, other);
         public override int GetHashCode() => equalityHelper.GetHashCode(this);
         public static implicit operator LibGit2Sharp.ObjectId(ObjectId d) => d.innerObjectId;

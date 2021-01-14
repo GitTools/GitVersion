@@ -11,13 +11,10 @@ namespace GitVersion
         internal readonly LibGit2Sharp.Reference innerReference;
         private DirectReference directReference => innerReference.ResolveToDirectReference();
 
-        internal Reference(LibGit2Sharp.Reference reference)
-        {
-            innerReference = reference;
-        }
+        internal Reference(LibGit2Sharp.Reference reference) => innerReference = reference;
 
         public int CompareTo(IReference other) => comparerHelper.Compare(this, other);
-        public override bool Equals(object obj) => Equals(obj as IReference);
+        public override bool Equals(object obj) => Equals((obj as IReference)!);
         public bool Equals(IReference other) => equalityHelper.Equals(this, other);
         public override int GetHashCode() => equalityHelper.GetHashCode(this);
 
