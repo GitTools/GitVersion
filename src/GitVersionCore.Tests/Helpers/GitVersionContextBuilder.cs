@@ -52,10 +52,7 @@ namespace GitVersionCore.Tests
 
         private GitVersionContextBuilder AddBranch(string branchName)
         {
-            var mockBranch = new MockBranch(branchName)
-            {
-                new MockCommit()
-            };
+            var mockBranch = GitToolsTestingExtensions.CreateMockBranch(branchName, new MockCommit());
 
             var branches = repository.Branches.ToList();
             branches.Add(mockBranch);
@@ -89,7 +86,8 @@ namespace GitVersionCore.Tests
 
         private static IGitRepository CreateRepository()
         {
-            var mockBranch = new MockBranch("master") { new MockCommit { CommitterEx = Generate.SignatureNow() } };
+            var mockCommit = new MockCommit { CommitterEx = Generate.SignatureNow() };
+            var mockBranch = GitToolsTestingExtensions.CreateMockBranch("master", mockCommit);
             var branches = Substitute.For<IBranchCollection>();
             branches.GetEnumerator().Returns(_ => ((IEnumerable<IBranch>)new[] { mockBranch }).GetEnumerator());
             var mockRepository = new MockRepository

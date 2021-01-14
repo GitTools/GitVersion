@@ -28,9 +28,11 @@ namespace GitVersionCore.Tests
                 .Add(new Config { VersioningMode = mode })
                 .Build();
 
-            var branchName = "master";
+            const string branchName = "master";
 
-            var mockBranch = new MockBranch(branchName) { new MockCommit { CommitterEx = Generate.SignatureNow() } };
+            var mockCommit = new MockCommit { CommitterEx = Generate.SignatureNow() };
+            var mockBranch = GitToolsTestingExtensions.CreateMockBranch(branchName, mockCommit);
+
             var branches = Substitute.For<IBranchCollection>();
             branches.GetEnumerator().Returns(_ => ((IEnumerable<IBranch>)new[] { mockBranch }).GetEnumerator());
 
@@ -74,7 +76,7 @@ namespace GitVersionCore.Tests
         {
             using var fixture = new EmptyRepositoryFixture();
 
-            var branchName = "develop";
+            const string branchName = "develop";
             var config = new ConfigurationBuilder()
                 .Add(new Config
                 {
@@ -92,8 +94,9 @@ namespace GitVersionCore.Tests
                 })
                 .Build();
 
-            var master = new MockBranch("master") { new MockCommit { CommitterEx = Generate.SignatureNow() } };
-            var develop = new MockBranch(branchName) { new MockCommit { CommitterEx = Generate.SignatureNow() } };
+            var master = GitToolsTestingExtensions.CreateMockBranch("master", new MockCommit { CommitterEx = Generate.SignatureNow() });
+            var develop = GitToolsTestingExtensions.CreateMockBranch(branchName, new MockCommit { CommitterEx = Generate.SignatureNow() });
+
             var branches = Substitute.For<IBranchCollection>();
             branches.GetEnumerator().Returns(_ => ((IEnumerable<IBranch>)new[] { master, develop }).GetEnumerator());
 
@@ -135,8 +138,8 @@ namespace GitVersionCore.Tests
                 })
                 .Build();
 
-            var releaseLatestBranch = new MockBranch("release/latest") { new MockCommit { CommitterEx = Generate.SignatureNow() } };
-            var releaseVersionBranch = new MockBranch("release/1.0.0") { new MockCommit { CommitterEx = Generate.SignatureNow() } };
+            var releaseLatestBranch = GitToolsTestingExtensions.CreateMockBranch("release/latest", new MockCommit { CommitterEx = Generate.SignatureNow() });
+            var releaseVersionBranch = GitToolsTestingExtensions.CreateMockBranch("release/1.0.0", new MockCommit { CommitterEx = Generate.SignatureNow() });
 
             var branches = Substitute.For<IBranchCollection>();
             branches.GetEnumerator().Returns(_ => ((IEnumerable<IBranch>)new[] { releaseLatestBranch, releaseVersionBranch }).GetEnumerator());
