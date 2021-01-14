@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using GitTools.Testing;
@@ -13,12 +14,32 @@ using GitVersionCore.Tests.Helpers;
 using LibGit2Sharp;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
+using NSubstitute;
 using Shouldly;
 
 namespace GitVersionCore.Tests
 {
     public static class GitToolsTestingExtensions
     {
+        public static IBranch CreateMockBranch(string name, params ICommit[] commits)
+        {
+            var branch = Substitute.For<IBranch>();
+            branch.FriendlyName.Returns(name);
+            branch.CanonicalName.Returns(name);
+            branch.NameWithoutOrigin.Returns(name);
+            branch.NameWithoutRemote.Returns(name);
+            branch.IsTracking.Returns(true);
+            branch.IsRemote.Returns(false);
+            branch.IsDetachedHead.Returns(false);
+            branch.Tip.Returns(commits.FirstOrDefault());
+
+            var commitsCollection = Substitute.For<ICommitCollection>();
+            commitsCollection.GetEnumerator().Returns(_ => ((IEnumerable<ICommit>)commits).GetEnumerator());
+            commitsCollection.GetCommitsPriorTo(Arg.Any<DateTimeOffset>()).Returns(commits);
+            branch.Commits.Returns(commitsCollection);
+            return branch;
+        }
+
         public static IBranch FindBranch(this IGitRepository repository, string branchName)
         {
             return repository.Branches.FirstOrDefault(x => x.NameWithoutRemote == branchName);

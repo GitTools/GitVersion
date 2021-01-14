@@ -6,6 +6,7 @@ using GitVersion.Model.Configuration;
 using GitVersion.VersionCalculation;
 using GitVersionCore.Tests.Helpers;
 using GitVersionCore.Tests.Mocks;
+using NSubstitute;
 using NUnit.Framework;
 using Shouldly;
 
@@ -19,17 +20,24 @@ namespace GitVersionCore.Tests.VersionCalculation.Strategies
         {
             // When a branch is merged in you want to start building stable packages of that version
             // So we shouldn't bump the version
-            var contextBuilder = new GitVersionContextBuilder().WithRepository(new MockRepository
+            var mockCommit = new MockCommit
             {
-                Head = new MockBranch("master")
-                {
-                    new MockCommit
-                    {
-                        MessageEx = "Merge branch 'release-0.1.5'",
-                        ParentsEx = GetParents(true)
-                    }
-                }
-            });
+                MessageEx = "Merge branch 'release-0.1.5'",
+                ParentsEx = GetParents(true)
+            };
+            // var mockBranch = new MockBranch("master"); mockBranch.Add(mockCommit);
+            var mockBranch = GitToolsTestingExtensions.CreateMockBranch("master", mockCommit);
+            var branches = Substitute.For<IBranchCollection>();
+            branches.GetEnumerator().Returns(_ => ((IEnumerable<IBranch>)new[] { mockBranch }).GetEnumerator());
+
+            var mockRepository = new MockRepository
+            {
+                Head = mockBranch,
+                Branches = branches,
+                Commits = mockBranch.Commits
+            };
+
+            var contextBuilder = new GitVersionContextBuilder().WithRepository(mockRepository);
             contextBuilder.Build();
             var strategy = contextBuilder.ServicesProvider.GetServiceForType<IVersionStrategy, MergeMessageVersionStrategy>();
 
@@ -157,15 +165,13 @@ namespace GitVersionCore.Tests.VersionCalculation.Strategies
                 ParentsEx = parents
             };
 
+            var mockBranch = GitToolsTestingExtensions.CreateMockBranch("master", commit, new MockCommit());
+
             var contextBuilder = new GitVersionContextBuilder()
                 .WithConfig(config ?? new Config())
                 .WithRepository(new MockRepository
                 {
-                    Head = new MockBranch("master")
-                    {
-                        commit,
-                        new MockCommit()
-                    }
+                    Head = mockBranch
                 });
             contextBuilder.Build();
             var strategy = contextBuilder.ServicesProvider.GetServiceForType<IVersionStrategy, MergeMessageVersionStrategy>();

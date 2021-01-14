@@ -23,22 +23,17 @@ namespace GitVersion
 
         public GitVersionContext Create(GitVersionOptions gitVersionOptions)
         {
-            var targetBranch = repositoryMetadataProvider.GetTargetBranch(gitVersionOptions.RepositoryInfo.TargetBranch);
-            return Init(targetBranch, gitVersionOptions.RepositoryInfo.CommitId, gitVersionOptions.Settings.OnlyTrackedBranches);
-        }
-
-        private GitVersionContext Init(IBranch currentBranch, string commitId = null, bool onlyTrackedBranches = false)
-        {
+            var currentBranch = repositoryMetadataProvider.GetTargetBranch(gitVersionOptions.RepositoryInfo.TargetBranch);
             if (currentBranch == null)
                 throw new InvalidOperationException("Need a branch to operate on");
 
             var configuration = configProvider.Provide(overrideConfig: options.Value.ConfigInfo.OverrideConfig);
 
-            var currentCommit = repositoryMetadataProvider.GetCurrentCommit(currentBranch, commitId);
+            var currentCommit = repositoryMetadataProvider.GetCurrentCommit(currentBranch, gitVersionOptions.RepositoryInfo.CommitId);
 
             if (currentBranch.IsDetachedHead)
             {
-                var branchForCommit = repositoryMetadataProvider.GetBranchesContainingCommit(currentCommit, onlyTrackedBranches: onlyTrackedBranches).OnlyOrDefault();
+                var branchForCommit = repositoryMetadataProvider.GetBranchesContainingCommit(currentCommit, onlyTrackedBranches: gitVersionOptions.Settings.OnlyTrackedBranches).OnlyOrDefault();
                 currentBranch = branchForCommit ?? currentBranch;
             }
 
