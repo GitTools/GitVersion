@@ -9,9 +9,6 @@ namespace GitVersion
         private readonly LibGit2Sharp.TagCollection innerCollection;
         internal TagCollection(LibGit2Sharp.TagCollection collection) => innerCollection = collection;
 
-        protected TagCollection()
-        {
-        }
         public virtual IEnumerator<ITag> GetEnumerator()
         {
             return innerCollection.Select(tag => new Tag(tag)).GetEnumerator();

@@ -5,10 +5,8 @@ namespace GitVersion
 {
     internal class Reference : IReference
     {
-        private static readonly LambdaEqualityHelper<IReference> equalityHelper =
-            new LambdaEqualityHelper<IReference>(x => x.CanonicalName);
-        private static readonly LambdaKeyComparer<IReference, string> comparerHelper =
-            new LambdaKeyComparer<IReference, string>(x => x.CanonicalName);
+        private static readonly LambdaEqualityHelper<IReference> equalityHelper = new(x => x.CanonicalName);
+        private static readonly LambdaKeyComparer<IReference, string> comparerHelper = new(x => x.CanonicalName);
 
         internal readonly LibGit2Sharp.Reference innerReference;
         private DirectReference directReference => innerReference.ResolveToDirectReference();
@@ -16,10 +14,6 @@ namespace GitVersion
         internal Reference(LibGit2Sharp.Reference reference)
         {
             innerReference = reference;
-        }
-
-        protected Reference()
-        {
         }
 
         public int CompareTo(IReference other) => comparerHelper.Compare(this, other);

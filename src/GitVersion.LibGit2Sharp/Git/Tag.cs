@@ -5,19 +5,13 @@ namespace GitVersion
 {
     internal class Tag : ITag
     {
-        private static readonly LambdaEqualityHelper<ITag> equalityHelper =
-            new LambdaEqualityHelper<ITag>(x => x.CanonicalName);
-        private static readonly LambdaKeyComparer<ITag, string> comparerHelper =
-            new LambdaKeyComparer<ITag, string>(x => x.CanonicalName);
+        private static readonly LambdaEqualityHelper<ITag> equalityHelper = new(x => x.CanonicalName);
+        private static readonly LambdaKeyComparer<ITag, string> comparerHelper = new(x => x.CanonicalName);
 
         private readonly LibGit2Sharp.Tag innerTag;
         internal Tag(LibGit2Sharp.Tag tag)
         {
             innerTag = tag;
-        }
-
-        protected Tag()
-        {
         }
 
         public int CompareTo(ITag other) => comparerHelper.Compare(this, other);
