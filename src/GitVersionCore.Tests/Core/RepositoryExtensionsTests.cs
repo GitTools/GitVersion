@@ -68,122 +68,43 @@ namespace GitVersionCore.Tests
         public void EnsureLocalBranchExistsForCurrentBranch_CaseInsensitivelyMatchesBranches()
         {
             var log = Substitute.For<ILog>();
-            var repository = MockRepository();
+            var repository = Substitute.For<IGitRepository>();
             var remote = MockRemote(repository);
 
             EnsureLocalBranchExistsForCurrentBranch(repository, log, remote, "refs/heads/featurE/feat-test");
         }
 
-        private static IGitRepository MockRepository()
-        {
-            var repository = Substitute.For<IGitRepository>();
-            return repository;
-        }
-
         private static IRemote MockRemote(IGitRepository repository)
         {
-            var branches = new TestableBranchCollection();
-            var tipId = new ObjectId("c6d8764d20ff16c0df14c73680e52b255b608926");
-            var tip = new TestableCommit(tipId);
-            var head = branches.Add("refs/heads/feature/feat-test", tip);
-            var remote = new TesatbleRemote("origin");
-            var references = new TestableReferenceCollection
-            {
-                {
-                    "develop", "refs/heads/develop"
-                }
-            };
+            var tipId = Substitute.For<IObjectId>();
+            tipId.Sha.Returns("c6d8764d20ff16c0df14c73680e52b255b608926");
+
+            var tip = Substitute.For<ICommit>();
+            tip.Id.Returns(tipId);
+            tip.Sha.Returns(tipId.Sha);
+
+            var remote = Substitute.For<IRemote>();
+            remote.Name.Returns("origin");
+
+            var branch = Substitute.For<IBranch>();
+            branch.Tip.Returns(tip);
+            branch.CanonicalName.Returns("refs/heads/feature/feat-test");
+
+            var branches = Substitute.For<IBranchCollection>();
+            branches[branch.CanonicalName].Returns(branch);
+            branches.GetEnumerator().Returns(x => ((IEnumerable<IBranch>)new[] { branch }).GetEnumerator());
+
+            var reference = Substitute.For<IReference>();
+            reference.CanonicalName.Returns("refs/heads/develop");
+
+            var references = Substitute.For<IReferenceCollection>();
+            references["develop"].Returns(reference);
+            references.GetEnumerator().Returns(x => ((IEnumerable<IReference>)new[] { reference }).GetEnumerator());
 
             repository.Refs.Returns(references);
-            repository.Head.Returns(head);
+            repository.Head.Returns(branch);
             repository.Branches.Returns(branches);
             return remote;
-        }
-
-        private class TestableBranchCollection : BranchCollection
-        {
-            private IDictionary<string, IBranch> branches = new Dictionary<string, IBranch>();
-
-            public override IBranch this[string name] =>
-                branches.ContainsKey(name)
-                    ? branches[name]
-                    : null;
-
-            public IBranch Add(string name, ICommit commit)
-            {
-                var branch = new TestableBranch(name, commit);
-                branches.Add(name, branch);
-                return branch;
-            }
-
-            public override IEnumerator<IBranch> GetEnumerator()
-            {
-                return branches.Values.GetEnumerator();
-            }
-        }
-
-        private class TestableBranch : Branch
-        {
-            private readonly string canonicalName;
-            private readonly ICommit tip;
-
-            public TestableBranch(string canonicalName, ICommit tip)
-            {
-                this.tip = tip;
-                this.canonicalName = canonicalName;
-            }
-
-            public override string CanonicalName => canonicalName;
-            public override ICommit Tip => tip;
-        }
-
-        private class TestableCommit : Commit
-        {
-            private IObjectId id;
-
-            public TestableCommit(IObjectId id)
-            {
-                this.id = id;
-            }
-
-            public override IObjectId Id => id;
-            public override string Sha => id.Sha;
-        }
-
-        private class TesatbleRemote : Remote
-        {
-            private string name;
-
-            public TesatbleRemote(string name)
-            {
-                this.name = name;
-            }
-
-            public override string Name => name;
-        }
-
-        private class TestableReferenceCollection : ReferenceCollection
-        {
-            private IReference reference;
-            public override void Add(string name, string canonicalRefNameOrObjectish, bool allowOverwrite = false)
-            {
-                reference = new TestableReference(canonicalRefNameOrObjectish);
-            }
-            public override void UpdateTarget(IReference directRef, IObjectId targetId)
-            {
-            }
-            public override IReference this[string name] => reference;
-        }
-
-        private class TestableReference : Reference
-        {
-
-            public TestableReference(string canonicalName)
-            {
-                this.CanonicalName = canonicalName;
-            }
-
-            public override string CanonicalName { get; }
         }
     }
 }

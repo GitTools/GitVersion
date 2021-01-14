@@ -1,8 +1,10 @@
+using System;
 using GitTools.Testing;
 using GitVersion;
 using GitVersion.Configuration;
 using GitVersion.Model.Configuration;
 using GitVersionCore.Tests.Helpers;
+using NSubstitute;
 using NUnit.Framework;
 
 namespace GitVersionCore.Tests.IntegrationTests
@@ -14,14 +16,17 @@ namespace GitVersionCore.Tests.IntegrationTests
         public void ShouldFallbackToBaseVersionWhenAllCommitsAreIgnored()
         {
             using var fixture = new EmptyRepositoryFixture();
-            var commit = new Commit(fixture.Repository.MakeACommit());
+            var objectId = fixture.Repository.MakeACommit();
+            var commit = Substitute.For<ICommit>();
+            commit.Sha.Returns(objectId.Sha);
+            commit.CommitterWhen.Returns(DateTimeOffset.Now);
 
             var config = new ConfigurationBuilder()
                 .Add(new Config
                 {
                     Ignore = new IgnoreConfig
                     {
-                        Before = commit.CommitterWhen.Value.AddMinutes(1)
+                        Before = commit.CommitterWhen.AddMinutes(1)
                     }
                 }).Build();
 

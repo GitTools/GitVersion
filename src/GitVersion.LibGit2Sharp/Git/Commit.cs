@@ -51,7 +51,7 @@ namespace GitVersion
             }
         }
 
-        public virtual DateTimeOffset? CommitterWhen => innerObjectId.Committer.When;
+        public virtual DateTimeOffset CommitterWhen => innerObjectId.Committer.When;
         public virtual string Message => innerObjectId.Message;
     }
 }

@@ -28,7 +28,7 @@ namespace GitVersionCore.Tests.Mocks
         public string Message => MessageEx;
 
         public Signature CommitterEx;
-        public DateTimeOffset? CommitterWhen => CommitterEx.When;
+        public DateTimeOffset CommitterWhen => CommitterEx.When;
 
         private readonly IObjectId idEx;
         public IObjectId Id => idEx;
