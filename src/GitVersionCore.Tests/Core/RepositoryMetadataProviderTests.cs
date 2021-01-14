@@ -36,7 +36,7 @@ namespace GitVersionCore.Tests
             using var fixture = new EmptyRepositoryFixture();
             fixture.MakeACommit("initial");
             fixture.BranchTo("develop");
-            var fixtureRepository = new GitRepository(fixture.Repository);
+            var fixtureRepository = fixture.Repository.ToGitRepository();
             var expectedReleaseMergeBase = fixtureRepository.Head.Tip;
 
             // Create release from develop
@@ -90,7 +90,7 @@ namespace GitVersionCore.Tests
             using var fixture = new EmptyRepositoryFixture();
             fixture.MakeACommit("initial");
             fixture.BranchTo("develop");
-            var fixtureRepository = new GitRepository(fixture.Repository);
+            var fixtureRepository = fixture.Repository.ToGitRepository();
             var expectedReleaseMergeBase = fixtureRepository.Head.Tip;
 
             // Create release from develop
@@ -151,7 +151,7 @@ namespace GitVersionCore.Tests
             using var fixture = new EmptyRepositoryFixture();
             fixture.MakeACommit("initial");
             fixture.BranchTo("develop");
-            var fixtureRepository = new GitRepository(fixture.Repository);
+            var fixtureRepository = fixture.Repository.ToGitRepository();
             var expectedReleaseMergeBase = fixtureRepository.Head.Tip;
 
             // Create release from develop

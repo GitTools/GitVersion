@@ -16,6 +16,7 @@ using Microsoft.Extensions.Options;
 using NUnit.Framework;
 using Shouldly;
 using Environment = System.Environment;
+using RepositoryExtensions = GitVersion.RepositoryExtensions;
 
 namespace GitVersionCore.Tests
 {
@@ -255,7 +256,7 @@ namespace GitVersionCore.Tests
             var gitVersionOptions = new GitVersionOptions { WorkingDirectory = fixture.RepositoryPath };
 
             fixture.Repository.MakeACommit();
-            var gitVersionCalculator = GetGitVersionCalculator(gitVersionOptions, log, new GitRepository(fixture.Repository));
+            var gitVersionCalculator = GetGitVersionCalculator(gitVersionOptions, log, fixture.Repository.ToGitRepository());
 
             gitVersionCalculator.CalculateVersionVariables();
 
@@ -484,7 +485,7 @@ namespace GitVersionCore.Tests
                 }
             };
 
-            var gitVersionCalculator = GetGitVersionCalculator(gitVersionOptions, repository: new GitRepository(fixture.Repository));
+            var gitVersionCalculator = GetGitVersionCalculator(gitVersionOptions, repository: fixture.Repository.ToGitRepository());
             gitPreparer.Prepare();
             gitVersionCalculator.CalculateVersionVariables();
         }
@@ -591,7 +592,7 @@ namespace GitVersionCore.Tests
                 if (environment != null) services.AddSingleton(environment);
                 var options = Options.Create(gitVersionOptions);
                 services.AddSingleton(options);
-                services.AddSingleton<IGitRepositoryInfo>(new GitRepositoryInfo(options));
+                services.AddSingleton(RepositoryExtensions.ToGitRepositoryInfo(options));
             });
         }
     }
