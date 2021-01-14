@@ -29,11 +29,11 @@ namespace GitVersion
 
         private IHostBuilder CreateHostBuilder(string[] args) =>
             new HostBuilder()
-                .ConfigureAppConfiguration((hostContext, configApp) =>
+                .ConfigureAppConfiguration((_, configApp) =>
                 {
                     configApp.AddCommandLine(args);
                 })
-                .ConfigureServices((hostContext, services) =>
+                .ConfigureServices((_, services) =>
                 {
                     services.AddModule(new GitVersionCoreModule());
                     services.AddModule(new GitVersionLibGit2SharpModule());

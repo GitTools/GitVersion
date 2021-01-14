@@ -11,13 +11,10 @@ namespace GitVersion
 
         private readonly LibGit2Sharp.Branch innerBranch;
 
-        internal Branch(LibGit2Sharp.Branch branch)
-        {
-            innerBranch = branch;
-        }
+        internal Branch(LibGit2Sharp.Branch branch) => innerBranch = branch;
 
         public int CompareTo(IBranch other) => comparerHelper.Compare(this, other);
-        public override bool Equals(object obj) => Equals(obj as IBranch);
+        public override bool Equals(object obj) => Equals((obj as IBranch)!);
         public bool Equals(IBranch other) => equalityHelper.Equals(this, other);
         public override int GetHashCode() => equalityHelper.GetHashCode(this);
         public static implicit operator LibGit2Sharp.Branch(Branch d) => d.innerBranch;
@@ -35,7 +32,7 @@ namespace GitVersion
                 ? FriendlyName.Substring("origin/".Length)
                 : FriendlyName;
 
-        public virtual ICommit Tip
+        public virtual ICommit? Tip
         {
             get
             {
@@ -44,7 +41,7 @@ namespace GitVersion
             }
         }
 
-        public virtual ICommitCollection Commits
+        public virtual ICommitCollection? Commits
         {
             get
             {

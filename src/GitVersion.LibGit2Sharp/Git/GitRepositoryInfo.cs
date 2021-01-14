@@ -11,27 +11,27 @@ namespace GitVersion
         private readonly IOptions<GitVersionOptions> options;
         private GitVersionOptions gitVersionOptions => options.Value;
 
-        private Lazy<string> dotGitDirectory;
+        private Lazy<string?> dynamicGitRepositoryPath;
+        private Lazy<string?> dotGitDirectory;
+        private Lazy<string?> gitRootPath;
         private Lazy<string> projectRootDirectory;
-        private Lazy<string> dynamicGitRepositoryPath;
-        private Lazy<string> gitRootPath;
 
         public GitRepositoryInfo(IOptions<GitVersionOptions> options)
         {
             this.options = options ?? throw new ArgumentNullException(nameof(options));
 
-            dynamicGitRepositoryPath = new Lazy<string>(GetDynamicGitRepositoryPath);
-            dotGitDirectory = new Lazy<string>(GetDotGitDirectory);
+            dynamicGitRepositoryPath = new Lazy<string?>(GetDynamicGitRepositoryPath);
+            dotGitDirectory = new Lazy<string?>(GetDotGitDirectory);
+            gitRootPath = new Lazy<string?>(GetGitRootPath);
             projectRootDirectory = new Lazy<string>(GetProjectRootDirectory);
-            gitRootPath = new Lazy<string>(GetGitRootPath);
         }
 
-        public string DotGitDirectory => dotGitDirectory.Value;
+        public string? DynamicGitRepositoryPath => dynamicGitRepositoryPath.Value;
+        public string? DotGitDirectory => dotGitDirectory.Value;
+        public string? GitRootPath => gitRootPath.Value;
         public string ProjectRootDirectory => projectRootDirectory.Value;
-        public string DynamicGitRepositoryPath => dynamicGitRepositoryPath.Value;
-        public string GitRootPath => gitRootPath.Value;
 
-        private string GetDynamicGitRepositoryPath()
+        private string? GetDynamicGitRepositoryPath()
         {
             var repositoryInfo = gitVersionOptions.RepositoryInfo;
             if (string.IsNullOrWhiteSpace(repositoryInfo.TargetUrl)) return null;
@@ -60,7 +60,7 @@ namespace GitVersion
             return repositoryPath;
         }
 
-        private string GetDotGitDirectory()
+        private string? GetDotGitDirectory()
         {
             var _dotGitDirectory = !string.IsNullOrWhiteSpace(DynamicGitRepositoryPath)
                 ? DynamicGitRepositoryPath
@@ -70,7 +70,7 @@ namespace GitVersion
             if (string.IsNullOrEmpty(_dotGitDirectory))
                 throw new DirectoryNotFoundException("Cannot find the .git directory");
 
-            return _dotGitDirectory.Contains(Path.Combine(".git", "worktrees"))
+            return _dotGitDirectory is null ? null : _dotGitDirectory.Contains(Path.Combine(".git", "worktrees"))
                 ? Directory.GetParent(Directory.GetParent(_dotGitDirectory).FullName).FullName
                 : _dotGitDirectory;
         }
@@ -90,7 +90,7 @@ namespace GitVersion
             return new GitRepository(new NullLog(), _dotGitDirectory).WorkingDirectory;
         }
 
-        private string GetGitRootPath()
+        private string? GetGitRootPath()
         {
             var isDynamicRepo = !string.IsNullOrWhiteSpace(DynamicGitRepositoryPath);
             var rootDirectory = isDynamicRepo ? DotGitDirectory : ProjectRootDirectory;

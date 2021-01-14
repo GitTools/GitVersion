@@ -121,7 +121,7 @@ namespace GitVersion.Helpers
             using var mreOut = new ManualResetEvent(false);
             using var mreErr = new ManualResetEvent(false);
             process.EnableRaisingEvents = true;
-            process.OutputDataReceived += (o, e) =>
+            process.OutputDataReceived += (_, e) =>
             {
                 // ReSharper disable once AccessToDisposedClosure
                 if (e.Data == null)
@@ -130,7 +130,7 @@ namespace GitVersion.Helpers
                     output(e.Data);
             };
             process.BeginOutputReadLine();
-            process.ErrorDataReceived += (o, e) =>
+            process.ErrorDataReceived += (_, e) =>
             {
                 // ReSharper disable once AccessToDisposedClosure
                 if (e.Data == null)

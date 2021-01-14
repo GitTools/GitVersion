@@ -10,13 +10,10 @@ namespace GitVersion
 
         private readonly LibGit2Sharp.Remote innerRemote;
 
-        internal Remote(LibGit2Sharp.Remote remote)
-        {
-            innerRemote = remote;
-        }
+        internal Remote(LibGit2Sharp.Remote remote) => innerRemote = remote;
 
         public int CompareTo(IRemote other) => comparerHelper.Compare(this, other);
-        public override bool Equals(object obj) => Equals(obj as IRemote);
+        public override bool Equals(object obj) => Equals((obj as IRemote)!);
         public bool Equals(IRemote other) => equalityHelper.Equals(this, other);
         public override int GetHashCode() => equalityHelper.GetHashCode(this);
         public virtual string Name => innerRemote.Name;

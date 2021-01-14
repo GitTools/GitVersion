@@ -25,6 +25,7 @@ namespace GitVersion
 
         internal GitRepository(IRepository repository)
         {
+            log = new NullLog();
             repositoryLazy = new Lazy<IRepository>(() => repository);
         }
 
@@ -133,7 +134,7 @@ namespace GitVersion
 
             log.Info($"Remote Refs:{System.Environment.NewLine}" + string.Join(System.Environment.NewLine, remoteTips.Select(r => r.CanonicalName)));
 
-            var headTipSha = Head.Tip.Sha;
+            var headTipSha = Head.Tip?.Sha;
 
             var refs = remoteTips.Where(r => r.TargetIdentifier == headTipSha).ToList();
 
@@ -242,11 +243,11 @@ namespace GitVersion
                 CredentialsProvider = GetCredentialsProvider(auth)
             };
         }
-        private static CredentialsHandler GetCredentialsProvider(AuthenticationInfo auth)
+        private static CredentialsHandler? GetCredentialsProvider(AuthenticationInfo auth)
         {
             if (!string.IsNullOrWhiteSpace(auth.Username))
             {
-                return (url, user, types) => new UsernamePasswordCredentials
+                return (_, _, _) => new UsernamePasswordCredentials
                 {
                     Username = auth.Username,
                     Password = auth.Password ?? string.Empty
@@ -289,7 +290,7 @@ namespace GitVersion
 
             return commitCollection.ToList();
         }
-        public ICommit GetForwardMerge(ICommit commitToFindCommonBase, ICommit findMergeBase)
+        public ICommit? GetForwardMerge(ICommit commitToFindCommonBase, ICommit findMergeBase)
         {
             var filter = new CommitFilter
             {
@@ -302,7 +303,7 @@ namespace GitVersion
                 .FirstOrDefault(c => c.Parents.Contains(findMergeBase));
             return forwardMerge;
         }
-        public IEnumerable<ICommit> GetMergeBaseCommits(ICommit mergeCommit, ICommit mergedHead, ICommit findMergeBase)
+        public IEnumerable<ICommit> GetMergeBaseCommits(ICommit? mergeCommit, ICommit mergedHead, ICommit findMergeBase)
         {
             var filter = new CommitFilter
             {
