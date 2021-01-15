@@ -5,7 +5,6 @@ using GitVersion.Extensions;
 using GitVersion.Model.Configuration;
 using GitVersion.VersionCalculation;
 using GitVersionCore.Tests.Helpers;
-using GitVersionCore.Tests.Mocks;
 using NSubstitute;
 using NUnit.Framework;
 using Shouldly;
@@ -28,12 +27,10 @@ namespace GitVersionCore.Tests.VersionCalculation.Strategies
             var branches = Substitute.For<IBranchCollection>();
             branches.GetEnumerator().Returns(_ => ((IEnumerable<IBranch>)new[] { mockBranch }).GetEnumerator());
 
-            var mockRepository = new MockRepository
-            {
-                Head = mockBranch,
-                Branches = branches,
-                Commits = mockBranch.Commits
-            };
+            var mockRepository = Substitute.For<IGitRepository>();
+            mockRepository.Head.Returns(mockBranch);
+            mockRepository.Branches.Returns(branches);
+            mockRepository.Commits.Returns(mockBranch.Commits);
 
             var contextBuilder = new GitVersionContextBuilder().WithRepository(mockRepository);
             contextBuilder.Build();
@@ -163,12 +160,13 @@ namespace GitVersionCore.Tests.VersionCalculation.Strategies
 
             var mockBranch = GitToolsTestingExtensions.CreateMockBranch("master", commit, GitToolsTestingExtensions.CreateMockCommit());
 
+            var mockRepository = Substitute.For<IGitRepository>();
+            mockRepository.Head.Returns(mockBranch);
+            mockRepository.Commits.Returns(mockBranch.Commits);
+
             var contextBuilder = new GitVersionContextBuilder()
                 .WithConfig(config ?? new Config())
-                .WithRepository(new MockRepository
-                {
-                    Head = mockBranch
-                });
+                .WithRepository(mockRepository);
             contextBuilder.Build();
             var strategy = contextBuilder.ServicesProvider.GetServiceForType<IVersionStrategy, MergeMessageVersionStrategy>();
 

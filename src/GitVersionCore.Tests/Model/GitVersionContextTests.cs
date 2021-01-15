@@ -6,7 +6,6 @@ using GitVersion.Configuration;
 using GitVersion.Model.Configuration;
 using GitVersion.VersionCalculation;
 using GitVersionCore.Tests.Helpers;
-using GitVersionCore.Tests.Mocks;
 using LibGit2Sharp;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
@@ -36,11 +35,10 @@ namespace GitVersionCore.Tests
             var branches = Substitute.For<IBranchCollection>();
             branches.GetEnumerator().Returns(_ => ((IEnumerable<IBranch>)new[] { mockBranch }).GetEnumerator());
 
-            var mockRepository = new MockRepository
-            {
-                Head = mockBranch,
-                Branches = branches
-            };
+            var mockRepository = Substitute.For<IGitRepository>();
+            mockRepository.Head.Returns(mockBranch);
+            mockRepository.Branches.Returns(branches);
+            mockRepository.Commits.Returns(mockBranch.Commits);
 
             var context = GetGitVersionContext(fixture.RepositoryPath, mockRepository, branchName, config);
 
@@ -100,11 +98,10 @@ namespace GitVersionCore.Tests
             var branches = Substitute.For<IBranchCollection>();
             branches.GetEnumerator().Returns(_ => ((IEnumerable<IBranch>)new[] { master, develop }).GetEnumerator());
 
-            var mockRepository = new MockRepository
-            {
-                Head = develop,
-                Branches = branches
-            };
+            var mockRepository = Substitute.For<IGitRepository>();
+            mockRepository.Head.Returns(develop);
+            mockRepository.Branches.Returns(branches);
+            mockRepository.Commits.Returns(develop.Commits);
 
             var context = GetGitVersionContext(fixture.RepositoryPath, mockRepository, branchName, config);
 
@@ -144,16 +141,15 @@ namespace GitVersionCore.Tests
             var branches = Substitute.For<IBranchCollection>();
             branches.GetEnumerator().Returns(_ => ((IEnumerable<IBranch>)new[] { releaseLatestBranch, releaseVersionBranch }).GetEnumerator());
 
-            var mockRepository = new MockRepository
-            {
-                Branches = branches,
-                Head = releaseLatestBranch
-            };
+            var mockRepository = Substitute.For<IGitRepository>();
+            mockRepository.Branches.Returns(branches);
+            mockRepository.Head.Returns(releaseLatestBranch);
+            mockRepository.Commits.Returns(releaseLatestBranch.Commits);
 
             var latestContext = GetGitVersionContext(fixture.RepositoryPath, mockRepository, releaseLatestBranch.CanonicalName, config);
             latestContext.Configuration.Increment.ShouldBe(IncrementStrategy.None);
 
-            mockRepository.Head = releaseVersionBranch;
+            mockRepository.Head.Returns(releaseVersionBranch);
             var versionContext = GetGitVersionContext(fixture.RepositoryPath, mockRepository, releaseVersionBranch.CanonicalName, config);
             versionContext.Configuration.Increment.ShouldBe(IncrementStrategy.Patch);
         }
