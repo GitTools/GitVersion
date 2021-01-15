@@ -76,6 +76,7 @@ namespace GitVersion.MsBuild.Tests.Helpers
                 { Jenkins.EnvironmentVariableName, null },
                 { AzurePipelines.EnvironmentVariableName, null },
                 { GitHubActions.EnvironmentVariableName, null },
+                { SpaceAutomation.EnvironmentVariableName, null },
             };
 
             SetEnvironmentVariables(environmentalVariables.ToArray());
