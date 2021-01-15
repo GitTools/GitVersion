@@ -2,7 +2,7 @@
 
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
     <PropertyGroup>
-        <GitVersionOutputFile>$(BaseIntermediateOutputPath)/gitversion.json</GitVersionOutputFile>
+        <GitVersionOutputFile>$([MSBuild]::EnsureTrailingSlash($(BaseIntermediateOutputPath)))gitversion.json</GitVersionOutputFile>
 
         <Language Condition=" '$(Language)' == '' ">C#</Language>
         <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">$(MSBuildProjectDirectory)/../</SolutionDir>
@@ -23,7 +23,7 @@
     </PropertyGroup>
 
     <PropertyGroup>
-        <GitVersionFileExe Condition="'$(GitVersionFileExe)' == ''">dotnet --roll-forward Major $(MSBuildThisFileDirectory)netcoreapp3.1/gitversion.dll</GitVersionFileExe>
+        <GitVersionFileExe Condition="'$(GitVersionFileExe)' == ''">dotnet --roll-forward Major &quot;$(MSBuildThisFileDirectory)netcoreapp3.1/gitversion.dll&quot;</GitVersionFileExe>
         <GitVersionAssemblyFile Condition="'$(GitVersionAssemblyFile)' == ''">$(MSBuildThisFileDirectory)netcoreapp3.1/GitVersion.MsBuild.dll</GitVersionAssemblyFile>
     </PropertyGroup>
 
