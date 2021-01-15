@@ -2,7 +2,6 @@ using System;
 using GitVersion;
 using GitVersion.VersionCalculation;
 using GitVersionCore.Tests.Helpers;
-using GitVersionCore.Tests.Mocks;
 using NUnit.Framework;
 using Shouldly;
 
@@ -20,7 +19,7 @@ namespace GitVersionCore.Tests
         [Test]
         public void VerifyNullGuard2()
         {
-            var commit = new MockCommit();
+            var commit = GitToolsTestingExtensions.CreateMockCommit();
             var sut = new ShaVersionFilter(new[] { commit.Sha });
 
             Should.Throw<ArgumentNullException>(() => sut.Exclude(null, out _));
@@ -29,7 +28,7 @@ namespace GitVersionCore.Tests
         [Test]
         public void WhenShaMatchShouldExcludeWithReason()
         {
-            var commit = new MockCommit();
+            var commit = GitToolsTestingExtensions.CreateMockCommit();
             var version = new BaseVersion("dummy", false, new SemanticVersion(1), commit, string.Empty);
             var sut = new ShaVersionFilter(new[] { commit.Sha });
 
@@ -40,7 +39,7 @@ namespace GitVersionCore.Tests
         [Test]
         public void WhenShaMismatchShouldNotExclude()
         {
-            var commit = new MockCommit();
+            var commit = GitToolsTestingExtensions.CreateMockCommit();
             var version = new BaseVersion("dummy", false, new SemanticVersion(1), commit, string.Empty);
             var sut = new ShaVersionFilter(new[] { "mismatched" });
 

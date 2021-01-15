@@ -6,7 +6,6 @@ using GitVersion.Model.Configuration;
 using GitVersion.VersionCalculation;
 using GitVersionCore.Tests.Helpers;
 using GitVersionCore.Tests.IntegrationTests;
-using GitVersionCore.Tests.Mocks;
 using LibGit2Sharp;
 using Microsoft.Extensions.DependencyInjection;
 using NUnit.Framework;
@@ -26,7 +25,8 @@ namespace GitVersionCore.Tests.VersionCalculation
             contextBuilder
                 .OverrideServices(services =>
                 {
-                    services.AddSingleton<IBaseVersionCalculator>(new TestBaseVersionCalculator(true, new SemanticVersion(1), new MockCommit()));
+                    var testBaseVersionCalculator = new TestBaseVersionCalculator(true, new SemanticVersion(1), GitToolsTestingExtensions.CreateMockCommit());
+                    services.AddSingleton<IBaseVersionCalculator>(testBaseVersionCalculator);
                     services.AddSingleton<IMainlineVersionCalculator>(new TestMainlineVersionCalculator(semanticVersionBuildMetaData));
                 })
                 .WithConfig(new Config())
@@ -50,7 +50,8 @@ namespace GitVersionCore.Tests.VersionCalculation
             contextBuilder
                 .OverrideServices(services =>
                 {
-                    services.AddSingleton<IBaseVersionCalculator>(new TestBaseVersionCalculator(false, new SemanticVersion(1), new MockCommit()));
+                    var testBaseVersionCalculator = new TestBaseVersionCalculator(false, new SemanticVersion(1), GitToolsTestingExtensions.CreateMockCommit());
+                    services.AddSingleton<IBaseVersionCalculator>(testBaseVersionCalculator);
                     services.AddSingleton<IMainlineVersionCalculator>(new TestMainlineVersionCalculator(semanticVersionBuildMetaData));
                 })
                 .WithConfig(new Config())
@@ -74,7 +75,8 @@ namespace GitVersionCore.Tests.VersionCalculation
             contextBuilder
                 .OverrideServices(services =>
                 {
-                    services.AddSingleton<IBaseVersionCalculator>(new TestBaseVersionCalculator(false, new SemanticVersion(1), new MockCommit()));
+                    var testBaseVersionCalculator = new TestBaseVersionCalculator(false, new SemanticVersion(1), GitToolsTestingExtensions.CreateMockCommit());
+                    services.AddSingleton<IBaseVersionCalculator>(testBaseVersionCalculator);
                     services.AddSingleton<IMainlineVersionCalculator>(new TestMainlineVersionCalculator(semanticVersionBuildMetaData));
                 })
                 .WithDevelopBranch()

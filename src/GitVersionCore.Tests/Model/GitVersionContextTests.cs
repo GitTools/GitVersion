@@ -30,7 +30,7 @@ namespace GitVersionCore.Tests
 
             const string branchName = "master";
 
-            var mockCommit = new MockCommit { CommitterEx = Generate.SignatureNow() };
+            var mockCommit = GitToolsTestingExtensions.CreateMockCommit();
             var mockBranch = GitToolsTestingExtensions.CreateMockBranch(branchName, mockCommit);
 
             var branches = Substitute.For<IBranchCollection>();
@@ -94,8 +94,8 @@ namespace GitVersionCore.Tests
                 })
                 .Build();
 
-            var master = GitToolsTestingExtensions.CreateMockBranch("master", new MockCommit { CommitterEx = Generate.SignatureNow() });
-            var develop = GitToolsTestingExtensions.CreateMockBranch(branchName, new MockCommit { CommitterEx = Generate.SignatureNow() });
+            var master = GitToolsTestingExtensions.CreateMockBranch("master", GitToolsTestingExtensions.CreateMockCommit());
+            var develop = GitToolsTestingExtensions.CreateMockBranch(branchName, GitToolsTestingExtensions.CreateMockCommit());
 
             var branches = Substitute.For<IBranchCollection>();
             branches.GetEnumerator().Returns(_ => ((IEnumerable<IBranch>)new[] { master, develop }).GetEnumerator());
@@ -138,8 +138,8 @@ namespace GitVersionCore.Tests
                 })
                 .Build();
 
-            var releaseLatestBranch = GitToolsTestingExtensions.CreateMockBranch("release/latest", new MockCommit { CommitterEx = Generate.SignatureNow() });
-            var releaseVersionBranch = GitToolsTestingExtensions.CreateMockBranch("release/1.0.0", new MockCommit { CommitterEx = Generate.SignatureNow() });
+            var releaseLatestBranch = GitToolsTestingExtensions.CreateMockBranch("release/latest", GitToolsTestingExtensions.CreateMockCommit());
+            var releaseVersionBranch = GitToolsTestingExtensions.CreateMockBranch("release/1.0.0", GitToolsTestingExtensions.CreateMockCommit());
 
             var branches = Substitute.For<IBranchCollection>();
             branches.GetEnumerator().Returns(_ => ((IEnumerable<IBranch>)new[] { releaseLatestBranch, releaseVersionBranch }).GetEnumerator());

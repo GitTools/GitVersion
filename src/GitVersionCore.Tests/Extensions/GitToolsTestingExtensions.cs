@@ -21,6 +21,22 @@ namespace GitVersionCore.Tests
 {
     public static class GitToolsTestingExtensions
     {
+        private static int commitCount = 1;
+        private static DateTimeOffset when = DateTimeOffset.Now;
+
+        public static ICommit CreateMockCommit()
+        {
+            var objectId = Substitute.For<IObjectId>();
+            objectId.Sha.Returns(Guid.NewGuid().ToString().Replace("-", "") + "00000000");
+
+            var commit = Substitute.For<ICommit>();
+            commit.Id.Returns(objectId);
+            commit.Sha.Returns(objectId.Sha);
+            commit.Message.Returns("Commit " + commitCount++);
+            commit.Parents.Returns(Enumerable.Empty<ICommit>());
+            commit.CommitterWhen.Returns(when.AddSeconds(1));
+            return commit;
+        }
         public static IBranch CreateMockBranch(string name, params ICommit[] commits)
         {
             var branch = Substitute.For<IBranch>();

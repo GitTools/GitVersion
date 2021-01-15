@@ -2,7 +2,6 @@ using System;
 using GitVersion;
 using GitVersion.VersionCalculation;
 using GitVersionCore.Tests.Helpers;
-using GitVersionCore.Tests.Mocks;
 using NUnit.Framework;
 using Shouldly;
 
@@ -23,7 +22,7 @@ namespace GitVersionCore.Tests
         [Test]
         public void WhenCommitShouldExcludeWithReason()
         {
-            var commit = new MockCommit(); //when = UtcNow
+            var commit = GitToolsTestingExtensions.CreateMockCommit();
             var version = new BaseVersion("dummy", false, new SemanticVersion(1), commit, string.Empty);
             var futureDate = DateTimeOffset.UtcNow.AddYears(1);
             var sut = new MinDateVersionFilter(futureDate);
@@ -35,7 +34,7 @@ namespace GitVersionCore.Tests
         [Test]
         public void WhenShaMismatchShouldNotExclude()
         {
-            var commit = new MockCommit(); //when = UtcNow
+            var commit = GitToolsTestingExtensions.CreateMockCommit();
             var version = new BaseVersion("dummy", false, new SemanticVersion(1), commit, string.Empty);
             var pastDate = DateTimeOffset.UtcNow.AddYears(-1);
             var sut = new MinDateVersionFilter(pastDate);
