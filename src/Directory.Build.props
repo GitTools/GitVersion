@@ -26,7 +26,7 @@
         <PackageVersion_LibGit2Sharp_NativeBinaries>2.0.312</PackageVersion_LibGit2Sharp_NativeBinaries>
 
         <PackageVersion_JetBrainsAnnotations>2020.3.0</PackageVersion_JetBrainsAnnotations>
-        <PackageVersion_YamlDotNet>8.1.2</PackageVersion_YamlDotNet>
+        <PackageVersion_YamlDotNet>9.1.4</PackageVersion_YamlDotNet>
         <PackageVersion_MicrosoftExtensions>5.0.0</PackageVersion_MicrosoftExtensions>
         <PackageVersion_MicrosoftJson>5.0.0</PackageVersion_MicrosoftJson>
         <PackageVersion_MsBuild>16.8.0</PackageVersion_MsBuild>
