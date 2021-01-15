@@ -1,13 +1,12 @@
 using System;
 using System.Collections.Generic;
-using GitTools.Testing;
 using GitVersion;
 using GitVersion.Model.Configuration;
 using GitVersion.VersionCalculation;
 using GitVersionCore.Tests.Helpers;
-using GitVersionCore.Tests.Mocks;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using NSubstitute;
 using NUnit.Framework;
 using Shouldly;
 
@@ -85,7 +84,7 @@ namespace GitVersionCore.Tests.VersionCalculation
         public void ShouldNotFilterVersion()
         {
             var fakeIgnoreConfig = new TestIgnoreConfig(new ExcludeSourcesContainingExclude());
-            var version = new BaseVersion("dummy", false, new SemanticVersion(2), new MockCommit(), null);
+            var version = new BaseVersion("dummy", false, new SemanticVersion(2), GitToolsTestingExtensions.CreateMockCommit(), null);
 
             var versionCalculator = GetBaseVersionCalculator(contextBuilder =>
             {
@@ -110,8 +109,8 @@ namespace GitVersionCore.Tests.VersionCalculation
         {
             var fakeIgnoreConfig = new TestIgnoreConfig(new ExcludeSourcesContainingExclude());
 
-            var higherVersion = new BaseVersion("exclude", false, new SemanticVersion(2), new MockCommit(), null);
-            var lowerVersion = new BaseVersion("dummy", false, new SemanticVersion(1), new MockCommit(), null);
+            var higherVersion = new BaseVersion("exclude", false, new SemanticVersion(2), GitToolsTestingExtensions.CreateMockCommit(), null);
+            var lowerVersion = new BaseVersion("dummy", false, new SemanticVersion(1), GitToolsTestingExtensions.CreateMockCommit(), null);
 
             var versionCalculator = GetBaseVersionCalculator(contextBuilder =>
             {
@@ -136,7 +135,7 @@ namespace GitVersionCore.Tests.VersionCalculation
         {
             var fakeIgnoreConfig = new TestIgnoreConfig(new ExcludeSourcesContainingExclude());
 
-            var lowerVersion = new BaseVersion("dummy", false, new SemanticVersion(1), new MockCommit(), null);
+            var lowerVersion = new BaseVersion("dummy", false, new SemanticVersion(1), GitToolsTestingExtensions.CreateMockCommit(), null);
             var preReleaseVersion = new BaseVersion(
                 "prerelease",
                 false,
@@ -148,7 +147,7 @@ namespace GitVersionCore.Tests.VersionCalculation
                         Number = 1
                     }
                 },
-                new MockCommit(),
+                GitToolsTestingExtensions.CreateMockCommit(),
                 null
             );
 
@@ -218,7 +217,15 @@ namespace GitVersionCore.Tests.VersionCalculation
 
             public V1Strategy(DateTimeOffset? when)
             {
-                this.when = when == null ? null : new MockCommit { CommitterEx = Generate.Signature(when.Value) };
+                if (when != null)
+                {
+                    this.when = GitToolsTestingExtensions.CreateMockCommit();
+                    this.when.CommitterWhen.Returns(when.Value);
+                }
+                else
+                {
+                    this.when = null;
+                }
             }
 
             public IEnumerable<BaseVersion> GetVersions()
@@ -233,7 +240,15 @@ namespace GitVersionCore.Tests.VersionCalculation
 
             public V2Strategy(DateTimeOffset? when)
             {
-                this.when = when == null ? null : new MockCommit { CommitterEx = Generate.Signature(when.Value) };
+                if (when != null)
+                {
+                    this.when = GitToolsTestingExtensions.CreateMockCommit();
+                    this.when.CommitterWhen.Returns(when.Value);
+                }
+                else
+                {
+                    this.when = null;
+                }
             }
 
             public IEnumerable<BaseVersion> GetVersions()

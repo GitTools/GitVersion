@@ -20,12 +20,10 @@ namespace GitVersionCore.Tests.VersionCalculation.Strategies
         {
             // When a branch is merged in you want to start building stable packages of that version
             // So we shouldn't bump the version
-            var mockCommit = new MockCommit
-            {
-                MessageEx = "Merge branch 'release-0.1.5'",
-                ParentsEx = GetParents(true)
-            };
-            // var mockBranch = new MockBranch("master"); mockBranch.Add(mockCommit);
+            var mockCommit = GitToolsTestingExtensions.CreateMockCommit();
+            mockCommit.Message.Returns("Merge branch 'release-0.1.5'");
+            mockCommit.Parents.Returns(GetParents(true));
+
             var mockBranch = GitToolsTestingExtensions.CreateMockBranch("master", mockCommit);
             var branches = Substitute.For<IBranchCollection>();
             branches.GetEnumerator().Returns(_ => ((IEnumerable<IBranch>)new[] { mockBranch }).GetEnumerator());
@@ -157,15 +155,13 @@ namespace GitVersionCore.Tests.VersionCalculation.Strategies
             AssertMergeMessage(message, expectedVersion, parents, config);
         }
 
-        private void AssertMergeMessage(string message, string expectedVersion, IList<ICommit> parents, Config config = null)
+        private static void AssertMergeMessage(string message, string expectedVersion, IEnumerable<ICommit> parents, Config config = null)
         {
-            var commit = new MockCommit
-            {
-                MessageEx = message,
-                ParentsEx = parents
-            };
+            var commit = GitToolsTestingExtensions.CreateMockCommit();
+            commit.Message.Returns(message);
+            commit.Parents.Returns(parents);
 
-            var mockBranch = GitToolsTestingExtensions.CreateMockBranch("master", commit, new MockCommit());
+            var mockBranch = GitToolsTestingExtensions.CreateMockBranch("master", commit, GitToolsTestingExtensions.CreateMockCommit());
 
             var contextBuilder = new GitVersionContextBuilder()
                 .WithConfig(config ?? new Config())
