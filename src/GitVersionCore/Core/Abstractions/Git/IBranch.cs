@@ -13,6 +13,5 @@ namespace GitVersion
         bool IsTracking { get; }
         bool IsDetachedHead { get; }
         ICommitCollection Commits { get; }
-        bool IsSameBranch(IBranch otherBranch);
     }
 }
