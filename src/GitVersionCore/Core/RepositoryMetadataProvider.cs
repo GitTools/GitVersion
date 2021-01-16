@@ -303,7 +303,7 @@ namespace GitVersion
                 }
 
                 var possibleBranches = GetMergeCommitsForBranch(branch, configuration, excludedBranches)
-                    .Where(b => !branch.IsSameBranch(b.Branch))
+                    .Where(b => !branch.Equals(b.Branch))
                     .ToList();
 
                 if (possibleBranches.Count > 1)

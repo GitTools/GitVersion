@@ -1,5 +1,4 @@
 using System;
-using GitVersion.Extensions;
 using GitVersion.Helpers;
 
 namespace GitVersion
@@ -50,15 +49,6 @@ namespace GitVersion
             }
         }
 
-        /// <summary>
-        /// Checks if the two branch objects refer to the same branch (have the same friendly name).
-        /// </summary>
-        public bool IsSameBranch(IBranch otherBranch)
-        {
-            // For each branch, fixup the friendly name if the branch is remote.
-            var otherBranchFriendlyName = otherBranch.NameWithoutRemote;
-            return otherBranchFriendlyName.IsEquivalentTo(NameWithoutRemote);
-        }
         public bool IsDetachedHead => CanonicalName.Equals("(no branch)", StringComparison.OrdinalIgnoreCase);
 
         public bool IsRemote => innerBranch.IsRemote;

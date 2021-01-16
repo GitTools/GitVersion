@@ -24,7 +24,7 @@ namespace GitVersion
         }
 
         public IEnumerable<IBranch> ExcludeBranches(IEnumerable<IBranch> branchesToExclude) =>
-            this.Where(b => branchesToExclude.All(bte => !b.IsSameBranch(bte)));
+            this.Where(b => branchesToExclude.All(bte => !b.Equals(bte)));
         public void UpdateTrackedBranch(IBranch branch, string remoteTrackingReferenceName) =>
             innerCollection.Update((Branch)branch, b => b.TrackedBranch = remoteTrackingReferenceName);
     }

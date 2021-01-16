@@ -70,7 +70,7 @@ namespace GitVersion.Configuration
 
                 excludedInheritBranches ??= repositoryMetadataProvider.GetExcludedInheritBranches(configuration).ToList();
 
-                excludedBranches = excludedBranches.Where(b => excludedInheritBranches.All(bte => !b.IsSameBranch(bte))).ToArray();
+                excludedBranches = excludedBranches.Where(b => excludedInheritBranches.All(bte => !b.Equals(bte))).ToArray();
                 // Add new excluded branches.
                 foreach (var excludedBranch in excludedBranches)
                 {
@@ -139,7 +139,7 @@ namespace GitVersion.Configuration
                 log.Warning(errorMessage + System.Environment.NewLine + "Falling back to " + branchName + " branch config");
 
                 // To prevent infinite loops, make sure that a new branch was chosen.
-                if (targetBranch.IsSameBranch(chosenBranch))
+                if (targetBranch.Equals(chosenBranch))
                 {
                     var developOrMasterConfig =
                         ChooseMasterOrDevelopIncrementStrategyIfTheChosenBranchIsOneOfThem(

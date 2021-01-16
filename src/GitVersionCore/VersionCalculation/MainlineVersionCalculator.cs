@@ -43,7 +43,7 @@ namespace GitVersion.VersionCalculation
                 var mainlineTip = mainline.Tip;
 
                 // when the current branch is not mainline, find the effective mainline tip for versioning the branch
-                if (!context.CurrentBranch.IsSameBranch(mainline))
+                if (!context.CurrentBranch.Equals(mainline))
                 {
                     mergeBase = FindMergeBaseBeforeForwardMerge(baseVersion.BaseVersionSource, mainline, out mainlineTip);
                     log.Info($"Current branch ({context.CurrentBranch.FriendlyName}) was branch from {mergeBase}");
@@ -71,7 +71,7 @@ namespace GitVersion.VersionCalculation
                 mainlineVersion.BuildMetaData = CreateVersionBuildMetaData(mergeBase);
 
                 // branches other than master always get a bump for the act of branching
-                if ((!context.CurrentBranch.IsSameBranch(mainline)) && (string.IsNullOrEmpty(context.Configuration.NextVersion)))
+                if ((!context.CurrentBranch.Equals(mainline)) && (string.IsNullOrEmpty(context.Configuration.NextVersion)))
                 {
                     var branchIncrement = FindMessageIncrement(null, context.CurrentCommit, mergeBase, mainlineCommitLog);
                     log.Info($"Performing {branchIncrement} increment for current branch ");
@@ -140,7 +140,7 @@ namespace GitVersion.VersionCalculation
             }
 
             // prefer current branch, if it is a mainline branch
-            if (possibleMainlineBranches.Any(context.CurrentBranch.IsSameBranch))
+            if (possibleMainlineBranches.Any(context.CurrentBranch.Equals))
             {
                 log.Info($"Choosing {context.CurrentBranch.FriendlyName} as mainline because it is the current branch");
                 return context.CurrentBranch;
