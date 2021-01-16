@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using GitVersion.Helpers;
 
 namespace GitVersion
@@ -11,7 +12,7 @@ namespace GitVersion
 
         private readonly LibGit2Sharp.Commit innerCommit;
 
-        internal Commit(LibGit2Sharp.Commit objectId) => innerCommit = objectId;
+        internal Commit(LibGit2Sharp.Commit innerCommit) => this.innerCommit = innerCommit;
 
         public int CompareTo(ICommit other) => comparerHelper.Compare(this, other);
         public override bool Equals(object obj) => Equals((obj as ICommit)!);
@@ -20,29 +21,14 @@ namespace GitVersion
 
         public static implicit operator LibGit2Sharp.Commit(Commit d) => d.innerCommit;
 
-        public IEnumerable<ICommit?> Parents
-        {
-            get
-            {
-                if (innerCommit == null) yield return null;
-                else
-                    foreach (var parent in innerCommit.Parents)
-                        yield return new Commit(parent);
-            }
-        }
+        public IEnumerable<ICommit> Parents => innerCommit.Parents.Select(parent => new Commit(parent));
 
         public string Sha => innerCommit.Sha;
 
-        public IObjectId? Id
-        {
-            get
-            {
-                var objectId = innerCommit.Id;
-                return objectId is null ? null : new ObjectId(objectId);
-            }
-        }
+        public IObjectId Id => new ObjectId(innerCommit.Id);
 
         public DateTimeOffset When => innerCommit.Committer.When;
+
         public string Message => innerCommit.Message;
     }
 }

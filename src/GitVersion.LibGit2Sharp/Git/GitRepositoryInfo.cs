@@ -62,17 +62,17 @@ namespace GitVersion
 
         private string? GetDotGitDirectory()
         {
-            var _dotGitDirectory = !string.IsNullOrWhiteSpace(DynamicGitRepositoryPath)
+            var gitDirectory = !string.IsNullOrWhiteSpace(DynamicGitRepositoryPath)
                 ? DynamicGitRepositoryPath
                 : GitRepository.Discover(gitVersionOptions.WorkingDirectory);
 
-            _dotGitDirectory = _dotGitDirectory?.TrimEnd('/', '\\');
-            if (string.IsNullOrEmpty(_dotGitDirectory))
+            gitDirectory = gitDirectory?.TrimEnd('/', '\\');
+            if (string.IsNullOrEmpty(gitDirectory))
                 throw new DirectoryNotFoundException("Cannot find the .git directory");
 
-            return _dotGitDirectory is null ? null : _dotGitDirectory.Contains(Path.Combine(".git", "worktrees"))
-                ? Directory.GetParent(Directory.GetParent(_dotGitDirectory).FullName).FullName
-                : _dotGitDirectory;
+            return gitDirectory is null ? null : gitDirectory.Contains(Path.Combine(".git", "worktrees"))
+                ? Directory.GetParent(Directory.GetParent(gitDirectory).FullName).FullName
+                : gitDirectory;
         }
 
         private string GetProjectRootDirectory()
