@@ -25,8 +25,16 @@ namespace GitVersion
         }
 
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
-        public IReference this[string name] => new Reference(innerCollection[name]);
-        public IReference Head => this["HEAD"];
+        public IReference? this[string name]
+        {
+            get
+            {
+                var branch = innerCollection[name];
+                return branch is null ? null : new Reference(branch);
+            }
+        }
+
+        public IReference? Head => this["HEAD"];
 
         public IEnumerable<IReference> FromGlob(string pattern)
         {
