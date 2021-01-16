@@ -1,6 +1,8 @@
+using System;
+
 namespace GitVersion
 {
-    public interface ITag
+    public interface ITag: IEquatable<ITag>, IComparable<ITag>
     {
         string TargetSha { get; }
         string FriendlyName { get; }
