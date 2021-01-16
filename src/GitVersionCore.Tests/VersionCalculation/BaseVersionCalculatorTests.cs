@@ -33,7 +33,7 @@ namespace GitVersionCore.Tests.VersionCalculation
 
             baseVersion.SemanticVersion.ToString().ShouldBe("2.0.0");
             baseVersion.ShouldIncrement.ShouldBe(true);
-            baseVersion.BaseVersionSource.CommitterWhen.ShouldBe(dateTimeOffset);
+            baseVersion.BaseVersionSource.When.ShouldBe(dateTimeOffset);
         }
 
         [Test]
@@ -55,7 +55,7 @@ namespace GitVersionCore.Tests.VersionCalculation
 
             baseVersion.SemanticVersion.ToString().ShouldBe("2.0.0");
             baseVersion.ShouldIncrement.ShouldBe(true);
-            baseVersion.BaseVersionSource.CommitterWhen.ShouldBe(when);
+            baseVersion.BaseVersionSource.When.ShouldBe(when);
         }
 
         [Test]
@@ -77,7 +77,7 @@ namespace GitVersionCore.Tests.VersionCalculation
 
             baseVersion.SemanticVersion.ToString().ShouldBe("2.0.0");
             baseVersion.ShouldIncrement.ShouldBe(true);
-            baseVersion.BaseVersionSource.CommitterWhen.ShouldBe(when);
+            baseVersion.BaseVersionSource.When.ShouldBe(when);
         }
 
         [Test]
@@ -220,7 +220,7 @@ namespace GitVersionCore.Tests.VersionCalculation
                 if (when != null)
                 {
                     this.when = GitToolsTestingExtensions.CreateMockCommit();
-                    this.when.CommitterWhen.Returns(when.Value);
+                    this.when.When.Returns(when.Value);
                 }
                 else
                 {
@@ -243,7 +243,7 @@ namespace GitVersionCore.Tests.VersionCalculation
                 if (when != null)
                 {
                     this.when = GitToolsTestingExtensions.CreateMockCommit();
-                    this.when.CommitterWhen.Returns(when.Value);
+                    this.when.When.Returns(when.Value);
                 }
                 else
                 {

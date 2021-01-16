@@ -19,14 +19,14 @@ namespace GitVersionCore.Tests.IntegrationTests
             var objectId = fixture.Repository.MakeACommit();
             var commit = Substitute.For<ICommit>();
             commit.Sha.Returns(objectId.Sha);
-            commit.CommitterWhen.Returns(DateTimeOffset.Now);
+            commit.When.Returns(DateTimeOffset.Now);
 
             var config = new ConfigurationBuilder()
                 .Add(new Config
                 {
                     Ignore = new IgnoreConfig
                     {
-                        Before = commit.CommitterWhen.AddMinutes(1)
+                        Before = commit.When.AddMinutes(1)
                     }
                 }).Build();
 

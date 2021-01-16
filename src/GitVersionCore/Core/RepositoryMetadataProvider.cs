@@ -371,7 +371,7 @@ namespace GitVersion
                 if (commit == null)
                     continue;
 
-                if (olderThan.HasValue && commit.CommitterWhen > olderThan.Value)
+                if (olderThan.HasValue && commit.When > olderThan.Value)
                     continue;
 
                 if (SemanticVersion.TryParse(tag.FriendlyName, tagPrefixRegex, out var semver))
@@ -435,7 +435,7 @@ namespace GitVersion
                     return new BranchCommit(findMergeBase, otherBranch);
                 })
                 .Where(b => b.Commit != null)
-                .OrderByDescending(b => b.Commit.CommitterWhen)
+                .OrderByDescending(b => b.Commit.When)
                 .ToList();
             mergeBaseCommitsCache.Add(branch, branchMergeBases);
 
