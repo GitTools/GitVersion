@@ -16,8 +16,8 @@ namespace GitVersion
         public bool Equals(ITag other) => equalityHelper.Equals(this, other);
         public override int GetHashCode() => equalityHelper.GetHashCode(this);
         public string CanonicalName => innerTag.CanonicalName;
-        public string TargetSha => innerTag.Target.Sha;
         public string FriendlyName => innerTag.FriendlyName;
+        public string TargetSha => innerTag.Target.Sha;
 
         public ICommit? PeeledTargetCommit()
         {
