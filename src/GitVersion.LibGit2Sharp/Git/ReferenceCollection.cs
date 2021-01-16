@@ -4,31 +4,31 @@ using System.Linq;
 
 namespace GitVersion
 {
-    internal class ReferenceCollection : IReferenceCollection
+    internal sealed class ReferenceCollection : IReferenceCollection
     {
         private readonly LibGit2Sharp.ReferenceCollection innerCollection;
         internal ReferenceCollection(LibGit2Sharp.ReferenceCollection collection) => innerCollection = collection;
 
-        public virtual IEnumerator<IReference> GetEnumerator()
+        public IEnumerator<IReference> GetEnumerator()
         {
             return innerCollection.Select(reference => new Reference(reference)).GetEnumerator();
         }
 
-        public virtual void Add(string name, string canonicalRefNameOrObjectish, bool allowOverwrite = false)
+        public void Add(string name, string canonicalRefNameOrObjectish, bool allowOverwrite = false)
         {
             innerCollection.Add(name, canonicalRefNameOrObjectish, allowOverwrite);
         }
 
-        public virtual void UpdateTarget(IReference directRef, IObjectId targetId)
+        public void UpdateTarget(IReference directRef, IObjectId targetId)
         {
             innerCollection.UpdateTarget((Reference)directRef, (ObjectId)targetId);
         }
 
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
-        public virtual IReference this[string name] => new Reference(innerCollection[name]);
-        public virtual IReference Head => this["HEAD"];
+        public IReference this[string name] => new Reference(innerCollection[name]);
+        public IReference Head => this["HEAD"];
 
-        public virtual IEnumerable<IReference> FromGlob(string pattern)
+        public IEnumerable<IReference> FromGlob(string pattern)
         {
             return innerCollection.FromGlob(pattern).Select(reference => new Reference(reference));
         }

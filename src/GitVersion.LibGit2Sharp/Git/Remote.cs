@@ -3,7 +3,7 @@ using GitVersion.Helpers;
 
 namespace GitVersion
 {
-    internal class Remote : IRemote
+    internal sealed class Remote : IRemote
     {
         private static readonly LambdaEqualityHelper<IRemote> equalityHelper = new(x => x.Name);
         private static readonly LambdaKeyComparer<IRemote, string> comparerHelper = new(x => x.Name);
@@ -16,7 +16,7 @@ namespace GitVersion
         public override bool Equals(object obj) => Equals((obj as IRemote)!);
         public bool Equals(IRemote other) => equalityHelper.Equals(this, other);
         public override int GetHashCode() => equalityHelper.GetHashCode(this);
-        public virtual string Name => innerRemote.Name;
-        public virtual string RefSpecs => string.Join(", ", innerRemote.FetchRefSpecs.Select(r => r.Specification));
+        public string Name => innerRemote.Name;
+        public string RefSpecs => string.Join(", ", innerRemote.FetchRefSpecs.Select(r => r.Specification));
     }
 }

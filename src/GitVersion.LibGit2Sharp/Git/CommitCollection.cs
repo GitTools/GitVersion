@@ -6,12 +6,12 @@ using LibGit2Sharp;
 
 namespace GitVersion
 {
-    internal class CommitCollection : ICommitCollection
+    internal sealed class CommitCollection : ICommitCollection
     {
         private readonly ICommitLog innerCollection;
         internal CommitCollection(ICommitLog collection) => innerCollection = collection;
 
-        public virtual IEnumerator<ICommit> GetEnumerator()
+        public IEnumerator<ICommit> GetEnumerator()
         {
             return innerCollection.Select(commit => new Commit(commit)).GetEnumerator();
         }
@@ -19,7 +19,7 @@ namespace GitVersion
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
         public IEnumerable<ICommit> GetCommitsPriorTo(DateTimeOffset olderThan) => this.SkipWhile(c => c.When > olderThan);
-        public virtual ICommitCollection QueryBy(CommitFilter commitFilter)
+        public ICommitCollection QueryBy(CommitFilter commitFilter)
         {
             static object? GetReacheableFrom(object item)
             {

@@ -3,7 +3,7 @@ using LibGit2Sharp;
 
 namespace GitVersion
 {
-    internal class Reference : IReference
+    internal sealed class Reference : IReference
     {
         private static readonly LambdaEqualityHelper<IReference> equalityHelper = new(x => x.CanonicalName);
         private static readonly LambdaKeyComparer<IReference, string> comparerHelper = new(x => x.CanonicalName);
@@ -18,11 +18,11 @@ namespace GitVersion
         public bool Equals(IReference other) => equalityHelper.Equals(this, other);
         public override int GetHashCode() => equalityHelper.GetHashCode(this);
 
-        public virtual string CanonicalName => innerReference.CanonicalName;
-        public virtual string TargetIdentifier => innerReference.TargetIdentifier;
-        public virtual string DirectReferenceTargetIdentifier => directReference.TargetIdentifier;
-        public virtual IObjectId DirectReferenceTargetId => new ObjectId(directReference.Target.Id);
-        public virtual IReference ResolveToDirectReference() => new Reference(directReference);
+        public string CanonicalName => innerReference.CanonicalName;
+        public string TargetIdentifier => innerReference.TargetIdentifier;
+        public string DirectReferenceTargetIdentifier => directReference.TargetIdentifier;
+        public IObjectId DirectReferenceTargetId => new ObjectId(directReference.Target.Id);
+        public IReference ResolveToDirectReference() => new Reference(directReference);
         public static implicit operator LibGit2Sharp.Reference(Reference d) => d.innerReference;
     }
 }

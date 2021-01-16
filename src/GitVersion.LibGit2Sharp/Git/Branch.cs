@@ -4,7 +4,7 @@ using GitVersion.Helpers;
 
 namespace GitVersion
 {
-    internal class Branch : IBranch
+    internal sealed class Branch : IBranch
     {
         private static readonly LambdaEqualityHelper<IBranch> equalityHelper = new(x => x.CanonicalName);
         private static readonly LambdaKeyComparer<IBranch, string> comparerHelper = new(x => x.CanonicalName);
@@ -19,8 +19,8 @@ namespace GitVersion
         public override int GetHashCode() => equalityHelper.GetHashCode(this);
         public static implicit operator LibGit2Sharp.Branch(Branch d) => d.innerBranch;
 
-        public virtual string CanonicalName => innerBranch.CanonicalName;
-        public virtual string FriendlyName => innerBranch.FriendlyName;
+        public string CanonicalName => innerBranch.CanonicalName;
+        public string FriendlyName => innerBranch.FriendlyName;
 
         public string NameWithoutRemote =>
             IsRemote
@@ -32,7 +32,7 @@ namespace GitVersion
                 ? FriendlyName.Substring("origin/".Length)
                 : FriendlyName;
 
-        public virtual ICommit? Tip
+        public ICommit? Tip
         {
             get
             {
@@ -41,7 +41,7 @@ namespace GitVersion
             }
         }
 
-        public virtual ICommitCollection? Commits
+        public ICommitCollection? Commits
         {
             get
             {
@@ -61,7 +61,7 @@ namespace GitVersion
         }
         public bool IsDetachedHead => CanonicalName.Equals("(no branch)", StringComparison.OrdinalIgnoreCase);
 
-        public virtual bool IsRemote => innerBranch.IsRemote;
-        public virtual bool IsTracking => innerBranch.IsTracking;
+        public bool IsRemote => innerBranch.IsRemote;
+        public bool IsTracking => innerBranch.IsTracking;
     }
 }
