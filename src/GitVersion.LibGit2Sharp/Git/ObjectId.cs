@@ -2,7 +2,7 @@ using GitVersion.Helpers;
 
 namespace GitVersion
 {
-    internal class ObjectId : IObjectId
+    internal sealed class ObjectId : IObjectId
     {
         private static readonly LambdaEqualityHelper<IObjectId> equalityHelper = new(x => x.Sha);
         private static readonly LambdaKeyComparer<IObjectId, string> comparerHelper = new(x => x.Sha);

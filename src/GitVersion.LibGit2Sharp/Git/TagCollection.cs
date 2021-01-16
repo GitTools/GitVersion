@@ -4,12 +4,12 @@ using System.Linq;
 
 namespace GitVersion
 {
-    internal class TagCollection : ITagCollection
+    internal sealed class TagCollection : ITagCollection
     {
         private readonly LibGit2Sharp.TagCollection innerCollection;
         internal TagCollection(LibGit2Sharp.TagCollection collection) => innerCollection = collection;
 
-        public virtual IEnumerator<ITag> GetEnumerator()
+        public IEnumerator<ITag> GetEnumerator()
         {
             return innerCollection.Select(tag => new Tag(tag)).GetEnumerator();
         }

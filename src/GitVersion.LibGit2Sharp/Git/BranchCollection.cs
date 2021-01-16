@@ -4,17 +4,17 @@ using System.Linq;
 
 namespace GitVersion
 {
-    internal class BranchCollection : IBranchCollection
+    internal sealed class BranchCollection : IBranchCollection
     {
         private readonly LibGit2Sharp.BranchCollection innerCollection;
         internal BranchCollection(LibGit2Sharp.BranchCollection collection) => innerCollection = collection;
 
-        public virtual IEnumerator<IBranch> GetEnumerator()
+        public IEnumerator<IBranch> GetEnumerator()
         {
             return innerCollection.Select(branch => new Branch(branch)).GetEnumerator();
         }
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
-        public virtual IBranch? this[string friendlyName]
+        public IBranch? this[string friendlyName]
         {
             get
             {

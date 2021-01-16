@@ -4,7 +4,7 @@ using GitVersion.Helpers;
 
 namespace GitVersion
 {
-    internal class Commit : ICommit
+    internal sealed class Commit : ICommit
     {
         private static readonly LambdaEqualityHelper<ICommit> equalityHelper = new(x => x.Id);
         private static readonly LambdaKeyComparer<ICommit, string> comparerHelper = new(x => x.Sha);
@@ -20,7 +20,7 @@ namespace GitVersion
 
         public static implicit operator LibGit2Sharp.Commit(Commit d) => d.innerCommit;
 
-        public virtual IEnumerable<ICommit?> Parents
+        public IEnumerable<ICommit?> Parents
         {
             get
             {
@@ -31,9 +31,9 @@ namespace GitVersion
             }
         }
 
-        public virtual string Sha => innerCommit.Sha;
+        public string Sha => innerCommit.Sha;
 
-        public virtual IObjectId? Id
+        public IObjectId? Id
         {
             get
             {
@@ -42,7 +42,7 @@ namespace GitVersion
             }
         }
 
-        public virtual DateTimeOffset When => innerCommit.Committer.When;
-        public virtual string Message => innerCommit.Message;
+        public DateTimeOffset When => innerCommit.Committer.When;
+        public string Message => innerCommit.Message;
     }
 }
