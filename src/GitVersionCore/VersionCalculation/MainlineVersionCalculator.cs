@@ -96,7 +96,7 @@ namespace GitVersion.VersionCalculation
                 context.CurrentBranch.FriendlyName,
                 context.CurrentCommit.Sha,
                 shortSha,
-                context.CurrentCommit.CommitterWhen,
+                context.CurrentCommit.When,
                 context.NumberOfUncommittedChanges);
         }
 

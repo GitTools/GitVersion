@@ -34,7 +34,7 @@ namespace GitVersionCore.Tests
             commit.Sha.Returns(objectId.Sha);
             commit.Message.Returns("Commit " + commitCount++);
             commit.Parents.Returns(Enumerable.Empty<ICommit>());
-            commit.CommitterWhen.Returns(when.AddSeconds(1));
+            commit.When.Returns(when.AddSeconds(1));
             return commit;
         }
         public static IBranch CreateMockBranch(string name, params ICommit[] commits)
