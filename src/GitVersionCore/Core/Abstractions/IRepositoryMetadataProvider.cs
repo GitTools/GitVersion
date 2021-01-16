@@ -17,7 +17,7 @@ namespace GitVersion.Common
         IEnumerable<ICommit> GetMainlineCommitLog(ICommit baseVersionSource, ICommit mainlineTip);
         IEnumerable<ICommit> GetMergeBaseCommits(ICommit mergeCommit, ICommit mergedHead, ICommit findMergeBase);
 
-        IBranch GetTargetBranch(string targetBranch);
+        IBranch GetTargetBranch(string targetBranchName);
         IBranch FindBranch(string branchName);
         IBranch GetChosenBranch(Config configuration);
         IEnumerable<IBranch> GetBranchesForCommit(ICommit commit);

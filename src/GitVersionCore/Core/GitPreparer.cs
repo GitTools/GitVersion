@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Linq;
+using GitVersion.Common;
 using GitVersion.Extensions;
 using GitVersion.Logging;
 using GitVersion.Model.Configuration;
@@ -15,18 +16,20 @@ namespace GitVersion
         private readonly IGitRepository repository;
         private readonly IOptions<GitVersionOptions> options;
         private readonly IGitRepositoryInfo repositoryInfo;
+        private readonly IRepositoryMetadataProvider repositoryMetadataProvider;
         private readonly ICurrentBuildAgent buildAgent;
 
         private const string DefaultRemoteName = "origin";
 
-        public GitPreparer(ILog log, IEnvironment environment, ICurrentBuildAgent buildAgent,
-            IOptions<GitVersionOptions> options, IGitRepository repository, IGitRepositoryInfo repositoryInfo)
+        public GitPreparer(ILog log, IEnvironment environment, ICurrentBuildAgent buildAgent, IOptions<GitVersionOptions> options,
+            IGitRepository repository, IGitRepositoryInfo repositoryInfo, IRepositoryMetadataProvider repositoryMetadataProvider)
         {
             this.log = log ?? throw new ArgumentNullException(nameof(log));
             this.environment = environment ?? throw new ArgumentNullException(nameof(environment));
             this.repository = repository ?? throw new ArgumentNullException(nameof(repository));
             this.options = options ?? throw new ArgumentNullException(nameof(options));
             this.repositoryInfo = repositoryInfo ?? throw new ArgumentNullException(nameof(repositoryInfo));
+            this.repositoryMetadataProvider = repositoryMetadataProvider ?? throw new ArgumentNullException(nameof(repositoryMetadataProvider));
             this.buildAgent = buildAgent;
         }
 
@@ -141,7 +144,7 @@ namespace GitVersion
         /// Normalization of a git directory turns all remote branches into local branches, turns pull request refs into a real branch and a few other things. This is designed to be run *only on the build server* which checks out repositories in different ways.
         /// It is not recommended to run normalization against a local repository
         /// </summary>
-        private void NormalizeGitDirectory(string gitDirectory, bool noFetch, string currentBranch, bool isDynamicRepository)
+        private void NormalizeGitDirectory(string gitDirectory, bool noFetch, string currentBranchName, bool isDynamicRepository)
         {
             var authentication = options.Value.Authentication;
             using var repository = this.repository.CreateNew(gitDirectory);
@@ -164,13 +167,15 @@ namespace GitVersion
                     repository.Fetch(remote.Name, new string[0], authentication, null);
                 }
 
-                EnsureLocalBranchExistsForCurrentBranch(repository, log, remote, currentBranch);
+                EnsureLocalBranchExistsForCurrentBranch(repository, log, remote, currentBranchName);
                 CreateOrUpdateLocalBranchesFromRemoteTrackingOnes(repository, log, remote.Name);
 
+                var currentBranch = repositoryMetadataProvider.FindBranch(currentBranchName);
                 // Bug fix for https://github.com/GitTools/GitVersion/issues/1754, head maybe have been changed
                 // if this is a dynamic repository. But only allow this in case the branches are different (branch switch)
                 if (expectedSha != repository.Head.Tip.Sha &&
-                    (isDynamicRepository || !expectedBranchName.IsBranch(currentBranch)))
+                    (isDynamicRepository || currentBranch is null
+                     || !repository.Head.Equals(currentBranch)))
                 {
                     var newExpectedSha = repository.Head.Tip.Sha;
                     var newExpectedBranchName = repository.Head.CanonicalName;
@@ -196,12 +201,12 @@ namespace GitVersion
                 // If no, go ahead and check out a new branch, using the known commit SHA as the pointer
                 var localBranchesWhereCommitShaIsHead = repository.Branches.Where(b => !b.IsRemote && b.Tip.Sha == headSha).ToList();
 
-                var matchingCurrentBranch = !string.IsNullOrEmpty(currentBranch)
-                    ? localBranchesWhereCommitShaIsHead.SingleOrDefault(b => b.CanonicalName.Replace("/heads/", "/") == currentBranch.Replace("/heads/", "/"))
+                var matchingCurrentBranch = !string.IsNullOrEmpty(currentBranchName)
+                    ? localBranchesWhereCommitShaIsHead.SingleOrDefault(b => b.CanonicalName.Replace("/heads/", "/") == currentBranchName.Replace("/heads/", "/"))
                     : null;
                 if (matchingCurrentBranch != null)
                 {
-                    log.Info($"Checking out local branch '{currentBranch}'.");
+                    log.Info($"Checking out local branch '{currentBranchName}'.");
                     repository.Checkout(matchingCurrentBranch);
                 }
                 else if (localBranchesWhereCommitShaIsHead.Count > 1)
