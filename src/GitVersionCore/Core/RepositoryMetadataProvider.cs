@@ -139,26 +139,27 @@ namespace GitVersion
             return repository.GetMergeBaseCommits(mergeCommit, mergedHead, findMergeBase);
         }
 
-        public IBranch GetTargetBranch(string targetBranch)
+        public IBranch GetTargetBranch(string targetBranchName)
         {
             // By default, we assume HEAD is pointing to the desired branch
             var desiredBranch = repository.Head;
+            var targetBranch = FindBranch(targetBranchName);
 
             // Make sure the desired branch has been specified
-            if (!string.IsNullOrEmpty(targetBranch))
+            if (!string.IsNullOrEmpty(targetBranchName))
             {
                 // There are some edge cases where HEAD is not pointing to the desired branch.
                 // Therefore it's important to verify if 'currentBranch' is indeed the desired branch.
 
                 // CanonicalName can be "refs/heads/develop", so we need to check for "/{TargetBranch}" as well
-                if (!desiredBranch.CanonicalName.IsBranch(targetBranch))
+                if (!desiredBranch.Equals(targetBranch))
                 {
                     // In the case where HEAD is not the desired branch, try to find the branch with matching name
                     desiredBranch = repository.Branches?
                         .Where(b =>
-                            b.CanonicalName.IsEquivalentTo(targetBranch) ||
-                            b.FriendlyName.IsEquivalentTo(targetBranch) ||
-                            b.NameWithoutRemote.IsEquivalentTo(targetBranch))
+                            b.CanonicalName.IsEquivalentTo(targetBranchName) ||
+                            b.FriendlyName.IsEquivalentTo(targetBranchName) ||
+                            b.NameWithoutRemote.IsEquivalentTo(targetBranchName))
                         .OrderBy(b => b.IsRemote)
                         .FirstOrDefault();
 
@@ -172,7 +173,8 @@ namespace GitVersion
 
         public IBranch FindBranch(string branchName)
         {
-            return repository.Branches.FirstOrDefault(x => x.NameWithoutRemote == branchName);
+            return repository.Branches.FirstOrDefault(x => x.CanonicalName.IsEquivalentTo(branchName)
+                                                           || x.NameWithoutRemote.IsEquivalentTo(branchName));
         }
 
         public IBranch GetChosenBranch(Config configuration)

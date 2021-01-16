@@ -41,15 +41,6 @@ namespace GitVersion.Extensions
             }
         }
 
-        public static bool IsBranch(this string branchName, string branchNameToCompare)
-        {
-            // "develop" == "develop"
-            // "refs/head/develop" == "develop"
-            return string.Equals(branchName, branchNameToCompare, StringComparison.OrdinalIgnoreCase)
-                   || branchName.EndsWith($"/{branchNameToCompare}", StringComparison.OrdinalIgnoreCase);
-
-        }
-
         public static string CreateGitLogArgs(int? maxCommits)
         {
             var commits = maxCommits != null ? $" -n {maxCommits}" : null;
