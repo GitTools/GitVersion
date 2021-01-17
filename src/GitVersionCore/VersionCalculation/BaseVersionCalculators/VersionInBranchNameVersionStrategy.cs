@@ -29,7 +29,7 @@ namespace GitVersion.VersionCalculation
 
         internal IEnumerable<BaseVersion> GetVersions(string tagPrefixRegex, IBranch currentBranch)
         {
-            if (!Context.FullConfiguration.IsReleaseBranch(currentBranch.NameWithoutOrigin))
+            if (!Context.FullConfiguration.IsReleaseBranch(NameWithoutOrigin(currentBranch)))
             {
                 yield break;
             }
@@ -44,7 +44,7 @@ namespace GitVersion.VersionCalculation
             }
         }
 
-        private Tuple<string, SemanticVersion> GetVersionInBranch(string branchName, string tagPrefixRegex)
+        private static Tuple<string, SemanticVersion> GetVersionInBranch(string branchName, string tagPrefixRegex)
         {
             var branchParts = branchName.Split('/', '-');
             foreach (var part in branchParts)
@@ -56,6 +56,13 @@ namespace GitVersion.VersionCalculation
             }
 
             return null;
+        }
+
+        private static string NameWithoutOrigin(IBranch branch)
+        {
+            return branch.IsRemote && branch.FriendlyName.StartsWith("origin/")
+                ? branch.FriendlyName.Substring("origin/".Length)
+                : branch.FriendlyName;
         }
     }
 }

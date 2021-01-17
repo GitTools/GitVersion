@@ -26,11 +26,6 @@ namespace GitVersion
                 ? FriendlyName.Substring(FriendlyName.IndexOf("/", StringComparison.Ordinal) + 1)
                 : FriendlyName;
 
-        public string NameWithoutOrigin =>
-            IsRemote && FriendlyName.StartsWith("origin/")
-                ? FriendlyName.Substring("origin/".Length)
-                : FriendlyName;
-
         public ICommit? Tip
         {
             get
