@@ -7,7 +7,6 @@ namespace GitVersion
         string CanonicalName { get; }
         string FriendlyName { get; }
         string NameWithoutRemote { get; }
-        string NameWithoutOrigin { get; }
         ICommit Tip { get; }
         bool IsRemote { get; }
         bool IsTracking { get; }

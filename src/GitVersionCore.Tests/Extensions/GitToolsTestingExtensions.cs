@@ -42,7 +42,6 @@ namespace GitVersionCore.Tests
             var branch = Substitute.For<IBranch>();
             branch.FriendlyName.Returns(name);
             branch.CanonicalName.Returns(name);
-            branch.NameWithoutOrigin.Returns(name);
             branch.NameWithoutRemote.Returns(name);
             branch.IsTracking.Returns(true);
             branch.IsRemote.Returns(false);
