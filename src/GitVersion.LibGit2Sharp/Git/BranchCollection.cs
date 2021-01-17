@@ -14,11 +14,11 @@ namespace GitVersion
             return innerCollection.Select(branch => new Branch(branch)).GetEnumerator();
         }
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
-        public IBranch? this[string friendlyName]
+        public IBranch? this[string name]
         {
             get
             {
-                var branch = innerCollection[friendlyName];
+                var branch = innerCollection[name];
                 return branch is null ? null : new Branch(branch);
             }
         }

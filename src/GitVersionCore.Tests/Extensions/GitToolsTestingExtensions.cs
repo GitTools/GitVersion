@@ -40,9 +40,7 @@ namespace GitVersionCore.Tests
         public static IBranch CreateMockBranch(string name, params ICommit[] commits)
         {
             var branch = Substitute.For<IBranch>();
-            branch.FriendlyName.Returns(name);
-            branch.CanonicalName.Returns(name);
-            branch.NameWithoutRemote.Returns(name);
+            branch.Name.Returns(new ReferenceName(name));
             branch.IsTracking.Returns(true);
             branch.IsRemote.Returns(false);
             branch.IsDetachedHead.Returns(false);
@@ -57,7 +55,7 @@ namespace GitVersionCore.Tests
 
         public static IBranch FindBranch(this IGitRepository repository, string branchName)
         {
-            return repository.Branches.FirstOrDefault(x => x.NameWithoutRemote == branchName);
+            return repository.Branches.FirstOrDefault(x => x.Name.NameWithoutRemote == branchName);
         }
 
         public static void DumpGraph(this IGitRepository repository, Action<string> writer = null, int? maxCommits = null)

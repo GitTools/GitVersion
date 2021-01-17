@@ -2,15 +2,13 @@ using System;
 
 namespace GitVersion
 {
-    public interface IBranch : IEquatable<IBranch>, IComparable<IBranch>
+    public interface IBranch : IEquatable<IBranch>, IComparable<IBranch>, INamedReference
     {
-        string CanonicalName { get; }
-        string FriendlyName { get; }
-        string NameWithoutRemote { get; }
         ICommit Tip { get; }
         bool IsRemote { get; }
         bool IsTracking { get; }
         bool IsDetachedHead { get; }
         ICommitCollection Commits { get; }
     }
+
 }

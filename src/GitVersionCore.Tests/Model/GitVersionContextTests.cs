@@ -146,11 +146,11 @@ namespace GitVersionCore.Tests
             mockRepository.Head.Returns(releaseLatestBranch);
             mockRepository.Commits.Returns(releaseLatestBranch.Commits);
 
-            var latestContext = GetGitVersionContext(fixture.RepositoryPath, mockRepository, releaseLatestBranch.CanonicalName, config);
+            var latestContext = GetGitVersionContext(fixture.RepositoryPath, mockRepository, releaseLatestBranch.Name.CanonicalName, config);
             latestContext.Configuration.Increment.ShouldBe(IncrementStrategy.None);
 
             mockRepository.Head.Returns(releaseVersionBranch);
-            var versionContext = GetGitVersionContext(fixture.RepositoryPath, mockRepository, releaseVersionBranch.CanonicalName, config);
+            var versionContext = GetGitVersionContext(fixture.RepositoryPath, mockRepository, releaseVersionBranch.Name.CanonicalName, config);
             versionContext.Configuration.Increment.ShouldBe(IncrementStrategy.Patch);
         }
 
@@ -196,7 +196,7 @@ namespace GitVersionCore.Tests
                 services.AddSingleton(repository);
             });
 
-            return sp.GetService<Lazy<GitVersionContext>>().Value;
+            return sp.GetService<Lazy<GitVersionContext>>()?.Value;
         }
     }
 }

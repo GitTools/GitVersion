@@ -5,26 +5,23 @@ namespace GitVersion
 {
     internal sealed class Branch : IBranch
     {
-        private static readonly LambdaEqualityHelper<IBranch> equalityHelper = new(x => x.CanonicalName);
-        private static readonly LambdaKeyComparer<IBranch, string> comparerHelper = new(x => x.CanonicalName);
+        private static readonly LambdaEqualityHelper<IBranch> equalityHelper = new(x => x.Name.CanonicalName);
+        private static readonly LambdaKeyComparer<IBranch, string> comparerHelper = new(x => x.Name.CanonicalName);
 
         private readonly LibGit2Sharp.Branch innerBranch;
 
-        internal Branch(LibGit2Sharp.Branch branch) => innerBranch = branch;
+        internal Branch(LibGit2Sharp.Branch branch)
+        {
+            innerBranch = branch;
+            Name = new ReferenceName(branch.CanonicalName);
+        }
+        public ReferenceName Name { get; }
 
         public int CompareTo(IBranch other) => comparerHelper.Compare(this, other);
         public override bool Equals(object obj) => Equals((obj as IBranch)!);
         public bool Equals(IBranch other) => equalityHelper.Equals(this, other);
         public override int GetHashCode() => equalityHelper.GetHashCode(this);
         public static implicit operator LibGit2Sharp.Branch(Branch d) => d.innerBranch;
-
-        public string CanonicalName => innerBranch.CanonicalName;
-        public string FriendlyName => innerBranch.FriendlyName;
-
-        public string NameWithoutRemote =>
-            IsRemote
-                ? FriendlyName.Substring(FriendlyName.IndexOf("/", StringComparison.Ordinal) + 1)
-                : FriendlyName;
 
         public ICommit? Tip
         {
@@ -44,7 +41,7 @@ namespace GitVersion
             }
         }
 
-        public bool IsDetachedHead => CanonicalName.Equals("(no branch)", StringComparison.OrdinalIgnoreCase);
+        public bool IsDetachedHead => Name.CanonicalName.Equals("(no branch)", StringComparison.OrdinalIgnoreCase);
 
         public bool IsRemote => innerBranch.IsRemote;
         public bool IsTracking => innerBranch.IsTracking;

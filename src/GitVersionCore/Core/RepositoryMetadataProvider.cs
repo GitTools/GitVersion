@@ -13,9 +13,9 @@ namespace GitVersion
 {
     public class RepositoryMetadataProvider : IRepositoryMetadataProvider
     {
-        private readonly Dictionary<IBranch, List<BranchCommit>> mergeBaseCommitsCache = new Dictionary<IBranch, List<BranchCommit>>();
-        private readonly Dictionary<Tuple<IBranch, IBranch>, MergeBaseData> mergeBaseCache = new Dictionary<Tuple<IBranch, IBranch>, MergeBaseData>();
-        private readonly Dictionary<IBranch, List<SemanticVersion>> semanticVersionTagsOnBranchCache = new Dictionary<IBranch, List<SemanticVersion>>();
+        private readonly Dictionary<IBranch, List<BranchCommit>> mergeBaseCommitsCache = new();
+        private readonly Dictionary<Tuple<IBranch, IBranch>, MergeBaseData> mergeBaseCache = new();
+        private readonly Dictionary<IBranch, List<SemanticVersion>> semanticVersionTagsOnBranchCache = new();
         private const string MissingTipFormat = "{0} has no tip. Please see http://example.com/docs for information on how to fix this.";
 
         private readonly ILog log;
@@ -36,11 +36,11 @@ namespace GitVersion
 
             if (mergeBaseCache.ContainsKey(key))
             {
-                log.Debug($"Cache hit for merge base between '{branch.FriendlyName}' and '{otherBranch.FriendlyName}'.");
+                log.Debug($"Cache hit for merge base between '{branch.Name.FriendlyName}' and '{otherBranch.Name.FriendlyName}'.");
                 return mergeBaseCache[key].MergeBase;
             }
 
-            using (log.IndentLog($"Finding merge base between '{branch.FriendlyName}' and '{otherBranch.FriendlyName}'."))
+            using (log.IndentLog($"Finding merge base between '{branch.Name.FriendlyName}' and '{otherBranch.Name.FriendlyName}'."))
             {
                 // Otherbranch tip is a forward merge
                 var commitToFindCommonBase = otherBranch.Tip;
@@ -90,7 +90,7 @@ namespace GitVersion
                 // Store in cache.
                 mergeBaseCache.Add(key, new MergeBaseData(findMergeBase));
 
-                log.Info($"Merge base of {branch.FriendlyName}' and '{otherBranch.FriendlyName} is {findMergeBase}");
+                log.Info($"Merge base of {branch.Name.FriendlyName}' and '{otherBranch.Name.FriendlyName} is {findMergeBase}");
                 return findMergeBase;
             }
         }
@@ -157,9 +157,9 @@ namespace GitVersion
                     // In the case where HEAD is not the desired branch, try to find the branch with matching name
                     desiredBranch = repository.Branches?
                         .Where(b =>
-                            b.CanonicalName.IsEquivalentTo(targetBranchName) ||
-                            b.FriendlyName.IsEquivalentTo(targetBranchName) ||
-                            b.NameWithoutRemote.IsEquivalentTo(targetBranchName))
+                            b.Name.CanonicalName.IsEquivalentTo(targetBranchName) ||
+                            b.Name.FriendlyName.IsEquivalentTo(targetBranchName) ||
+                            b.Name.NameWithoutRemote.IsEquivalentTo(targetBranchName))
                         .OrderBy(b => b.IsRemote)
                         .FirstOrDefault();
 
@@ -173,8 +173,8 @@ namespace GitVersion
 
         public IBranch FindBranch(string branchName)
         {
-            return repository.Branches.FirstOrDefault(x => x.CanonicalName.IsEquivalentTo(branchName)
-                                                           || x.NameWithoutRemote.IsEquivalentTo(branchName));
+            return repository.Branches.FirstOrDefault(x => x.Name.CanonicalName.IsEquivalentTo(branchName)
+                                                           || x.Name.NameWithoutRemote.IsEquivalentTo(branchName));
         }
 
         public IBranch GetChosenBranch(Config configuration)
@@ -183,8 +183,8 @@ namespace GitVersion
             var masterBranchRegex = configuration.Branches[Config.MasterBranchKey].Regex;
 
             var chosenBranch = repository.Branches.FirstOrDefault(b =>
-                Regex.IsMatch(b.FriendlyName, developBranchRegex, RegexOptions.IgnoreCase) ||
-                Regex.IsMatch(b.FriendlyName, masterBranchRegex, RegexOptions.IgnoreCase));
+                Regex.IsMatch(b.Name.FriendlyName, developBranchRegex, RegexOptions.IgnoreCase) ||
+                Regex.IsMatch(b.Name.FriendlyName, masterBranchRegex, RegexOptions.IgnoreCase));
 
             return chosenBranch;
         }
@@ -198,7 +198,7 @@ namespace GitVersion
         {
             return repository.Branches.Where(b =>
             {
-                var branchConfig = configuration.GetConfigForBranch(b.NameWithoutRemote);
+                var branchConfig = configuration.GetConfigForBranch(b.Name.NameWithoutRemote);
 
                 return branchConfig == null || branchConfig.Increment == IncrementStrategy.Inherit;
             }).ToList();
@@ -207,7 +207,7 @@ namespace GitVersion
         public IEnumerable<IBranch> GetReleaseBranches(IEnumerable<KeyValuePair<string, BranchConfig>> releaseBranchConfig)
         {
             return repository.Branches
-                .Where(b => releaseBranchConfig.Any(c => Regex.IsMatch(b.FriendlyName, c.Value.Regex)));
+                .Where(b => releaseBranchConfig.Any(c => Regex.IsMatch(b.Name.FriendlyName, c.Value.Regex)));
         }
 
         public IEnumerable<IBranch> ExcludingBranches(IEnumerable<IBranch> branchesToExclude)
@@ -240,7 +240,7 @@ namespace GitVersion
                     }
 
                     directBranchHasBeenFound = true;
-                    log.Info($"Direct branch found: '{branch.FriendlyName}'.");
+                    log.Info($"Direct branch found: '{branch.Name.FriendlyName}'.");
                     yield return branch;
                 }
 
@@ -252,17 +252,17 @@ namespace GitVersion
                 log.Info($"No direct branches found, searching through {(onlyTrackedBranches ? "tracked" : "all")} branches.");
                 foreach (var branch in branchList.Where(b => IncludeTrackedBranches(b, onlyTrackedBranches)))
                 {
-                    log.Info($"Searching for commits reachable from '{branch.FriendlyName}'.");
+                    log.Info($"Searching for commits reachable from '{branch.Name.FriendlyName}'.");
 
                     var commits = repository.GetCommitsReacheableFrom(commit, branch);
 
                     if (!commits.Any())
                     {
-                        log.Info($"The branch '{branch.FriendlyName}' has no matching commits.");
+                        log.Info($"The branch '{branch.Name.FriendlyName}' has no matching commits.");
                         continue;
                     }
 
-                    log.Info($"The branch '{branch.FriendlyName}' has a matching commit.");
+                    log.Info($"The branch '{branch.Name.FriendlyName}' has a matching commit.");
                     yield return branch;
                 }
             }
@@ -273,7 +273,7 @@ namespace GitVersion
             return repository.Branches
                 .Where(b =>
                 {
-                    return mainlineBranchConfigs.Any(c => Regex.IsMatch(b.FriendlyName, c.Value.Regex));
+                    return mainlineBranchConfigs.Any(c => Regex.IsMatch(b.Name.FriendlyName, c.Value.Regex));
                 })
                 .Select(b => new
                 {
@@ -296,11 +296,11 @@ namespace GitVersion
                 throw new ArgumentNullException(nameof(branch));
             }
 
-            using (log.IndentLog($"Finding branch source of '{branch.FriendlyName}'"))
+            using (log.IndentLog($"Finding branch source of '{branch.Name.FriendlyName}'"))
             {
                 if (branch.Tip == null)
                 {
-                    log.Warning(string.Format(MissingTipFormat, branch.FriendlyName));
+                    log.Warning(string.Format(MissingTipFormat, branch.Name.FriendlyName));
                     return BranchCommit.Empty;
                 }
 
@@ -311,9 +311,9 @@ namespace GitVersion
                 if (possibleBranches.Count > 1)
                 {
                     var first = possibleBranches.First();
-                    log.Info($"Multiple source branches have been found, picking the first one ({first.Branch.FriendlyName}).{System.Environment.NewLine}" +
+                    log.Info($"Multiple source branches have been found, picking the first one ({first.Branch.Name.FriendlyName}).{System.Environment.NewLine}" +
                              $"This may result in incorrect commit counting.{System.Environment.NewLine}Options were:{System.Environment.NewLine}" +
-                             string.Join(", ", possibleBranches.Select(b => b.Branch.FriendlyName)));
+                             string.Join(", ", possibleBranches.Select(b => b.Branch.Name.FriendlyName)));
                     return first;
                 }
 
@@ -327,7 +327,7 @@ namespace GitVersion
                 .SelectMany(t =>
                 {
                     var targetCommit = t.PeeledTargetCommit();
-                    if (targetCommit != null && Equals(targetCommit, commit) && SemanticVersion.TryParse(t.FriendlyName, config.GitTagPrefix, out var version))
+                    if (targetCommit != null && Equals(targetCommit, commit) && SemanticVersion.TryParse(t.Name.FriendlyName, config.GitTagPrefix, out var version))
                         return new[]
                         {
                             version
@@ -347,11 +347,11 @@ namespace GitVersion
         {
             if (semanticVersionTagsOnBranchCache.ContainsKey(branch))
             {
-                log.Debug($"Cache hit for version tags on branch '{branch.CanonicalName}");
+                log.Debug($"Cache hit for version tags on branch '{branch.Name.CanonicalName}");
                 return semanticVersionTagsOnBranchCache[branch];
             }
 
-            using (log.IndentLog($"Getting version tags from branch '{branch.CanonicalName}'."))
+            using (log.IndentLog($"Getting version tags from branch '{branch.Name.CanonicalName}'."))
             {
                 var tags = GetValidVersionTags(tagPrefixRegex);
 
@@ -376,7 +376,7 @@ namespace GitVersion
                 if (olderThan.HasValue && commit.When > olderThan.Value)
                     continue;
 
-                if (SemanticVersion.TryParse(tag.FriendlyName, tagPrefixRegex, out var semver))
+                if (SemanticVersion.TryParse(tag.Name.FriendlyName, tagPrefixRegex, out var semver))
                 {
                     tags.Add(Tuple.Create(tag, semver));
                 }
@@ -409,11 +409,11 @@ namespace GitVersion
         {
             if (mergeBaseCommitsCache.ContainsKey(branch))
             {
-                log.Debug($"Cache hit for getting merge commits for branch {branch.CanonicalName}.");
+                log.Debug($"Cache hit for getting merge commits for branch {branch.Name.CanonicalName}.");
                 return mergeBaseCommitsCache[branch];
             }
 
-            var currentBranchConfig = configuration.GetConfigForBranch(branch.NameWithoutRemote);
+            var currentBranchConfig = configuration.GetConfigForBranch(branch.Name.NameWithoutRemote);
             var regexesToCheck = currentBranchConfig == null
                 ? new[] { ".*" } // Match anything if we can't find a branch config
                 : currentBranchConfig.SourceBranches.Select(sb => configuration.Branches[sb].Regex);
@@ -421,7 +421,7 @@ namespace GitVersion
                 .Where(b =>
                 {
                     if (Equals(b, branch)) return false;
-                    var branchCanBeMergeBase = regexesToCheck.Any(regex => Regex.IsMatch(b.FriendlyName, regex));
+                    var branchCanBeMergeBase = regexesToCheck.Any(regex => Regex.IsMatch(b.Name.FriendlyName, regex));
 
                     return branchCanBeMergeBase;
                 })
@@ -429,7 +429,7 @@ namespace GitVersion
                 {
                     if (otherBranch.Tip == null)
                     {
-                        log.Warning(string.Format(MissingTipFormat, otherBranch.FriendlyName));
+                        log.Warning(string.Format(MissingTipFormat, otherBranch.Name.FriendlyName));
                         return BranchCommit.Empty;
                     }
 
