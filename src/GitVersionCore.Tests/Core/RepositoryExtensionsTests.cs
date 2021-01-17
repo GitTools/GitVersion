@@ -47,7 +47,7 @@ namespace GitVersionCore.Tests
 
             var repoTipId = repoTip.Id;
 
-            if (repo.Branches.All(b => !b.CanonicalName.IsEquivalentTo(localCanonicalName)))
+            if (repo.Branches.All(b => !b.Name.CanonicalName.IsEquivalentTo(localCanonicalName)))
             {
                 log.Info(isBranch ? $"Creating local branch {localCanonicalName}"
                     : $"Creating local branch {localCanonicalName} pointing at {repoTipId}");
@@ -88,14 +88,14 @@ namespace GitVersionCore.Tests
 
             var branch = Substitute.For<IBranch>();
             branch.Tip.Returns(tip);
-            branch.CanonicalName.Returns("refs/heads/feature/feat-test");
+            branch.Name.Returns(new ReferenceName("refs/heads/feature/feat-test"));
 
             var branches = Substitute.For<IBranchCollection>();
-            branches[branch.CanonicalName].Returns(branch);
+            branches[branch.Name.CanonicalName].Returns(branch);
             branches.GetEnumerator().Returns(_ => ((IEnumerable<IBranch>)new[] { branch }).GetEnumerator());
 
             var reference = Substitute.For<IReference>();
-            reference.CanonicalName.Returns("refs/heads/develop");
+            reference.Name.Returns(new ReferenceName("refs/heads/develop"));
 
             var references = Substitute.For<IReferenceCollection>();
             references["develop"].Returns(reference);

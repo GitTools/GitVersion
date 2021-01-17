@@ -27,11 +27,11 @@ namespace GitVersion.Configuration
         /// </summary>
         public BranchConfig GetBranchConfiguration(IBranch targetBranch, ICommit currentCommit, Config configuration, IList<IBranch> excludedInheritBranches = null)
         {
-            var matchingBranches = configuration.GetConfigForBranch(targetBranch.NameWithoutRemote);
+            var matchingBranches = configuration.GetConfigForBranch(targetBranch.Name.NameWithoutRemote);
 
             if (matchingBranches == null)
             {
-                log.Info($"No branch configuration found for branch {targetBranch.FriendlyName}, falling back to default configuration");
+                log.Info($"No branch configuration found for branch {targetBranch.Name.FriendlyName}, falling back to default configuration");
 
                 matchingBranches = BranchConfig.CreateDefaultBranchConfig(FallbackConfigName)
                                                .Apply(new BranchConfig
@@ -103,7 +103,7 @@ namespace GitVersion.Configuration
                     }
                 }
 
-                log.Info("Found possible parent branches: " + string.Join(", ", possibleParents.Select(p => p.FriendlyName)));
+                log.Info("Found possible parent branches: " + string.Join(", ", possibleParents.Select(p => p.Name.FriendlyName)));
 
                 if (possibleParents.Count == 1)
                 {
@@ -125,7 +125,7 @@ namespace GitVersion.Configuration
                 // if develop exists and master if not
                 var errorMessage = possibleParents.Count == 0
                     ? "Failed to inherit Increment branch configuration, no branches found."
-                    : "Failed to inherit Increment branch configuration, ended up with: " + string.Join(", ", possibleParents.Select(p => p.FriendlyName));
+                    : "Failed to inherit Increment branch configuration, ended up with: " + string.Join(", ", possibleParents.Select(p => p.Name.FriendlyName));
 
                 var chosenBranch = repositoryMetadataProvider.GetChosenBranch(configuration);
                 if (chosenBranch == null)
@@ -135,7 +135,7 @@ namespace GitVersion.Configuration
                     throw new InvalidOperationException("Could not find a 'develop' or 'master' branch, neither locally nor remotely.");
                 }
 
-                var branchName = chosenBranch.FriendlyName;
+                var branchName = chosenBranch.Name.FriendlyName;
                 log.Warning(errorMessage + System.Environment.NewLine + "Falling back to " + branchName + " branch config");
 
                 // To prevent infinite loops, make sure that a new branch was chosen.
@@ -189,14 +189,14 @@ namespace GitVersion.Configuration
             }
             else if (branches.Count > 1)
             {
-                currentBranch = branches.FirstOrDefault(b => b.NameWithoutRemote == Config.MasterBranchKey) ?? branches.First();
+                currentBranch = branches.FirstOrDefault(b => b.Name.NameWithoutRemote == Config.MasterBranchKey) ?? branches.First();
             }
             else
             {
                 var possibleTargetBranches = repositoryMetadataProvider.GetBranchesForCommit(parents[0]).ToList();
                 if (possibleTargetBranches.Count > 1)
                 {
-                    currentBranch = possibleTargetBranches.FirstOrDefault(b => b.NameWithoutRemote == Config.MasterBranchKey) ?? possibleTargetBranches.First();
+                    currentBranch = possibleTargetBranches.FirstOrDefault(b => b.Name.NameWithoutRemote == Config.MasterBranchKey) ?? possibleTargetBranches.First();
                 }
                 else
                 {
@@ -204,7 +204,7 @@ namespace GitVersion.Configuration
                 }
             }
 
-            log.Info("HEAD is merge commit, this is likely a pull request using " + currentBranch.FriendlyName + " as base");
+            log.Info("HEAD is merge commit, this is likely a pull request using " + currentBranch.Name.FriendlyName + " as base");
 
             return excludedBranches;
         }
@@ -216,7 +216,7 @@ namespace GitVersion.Configuration
             BranchConfig masterOrDevelopConfig = null;
             var developBranchRegex = config.Branches[Config.DevelopBranchKey].Regex;
             var masterBranchRegex = config.Branches[Config.MasterBranchKey].Regex;
-            if (Regex.IsMatch(chosenBranch.FriendlyName, developBranchRegex, RegexOptions.IgnoreCase))
+            if (Regex.IsMatch(chosenBranch.Name.FriendlyName, developBranchRegex, RegexOptions.IgnoreCase))
             {
                 // Normally we would not expect this to happen but for safety we add a check
                 if (config.Branches[Config.DevelopBranchKey].Increment !=
@@ -228,7 +228,7 @@ namespace GitVersion.Configuration
                     };
                 }
             }
-            else if (Regex.IsMatch(chosenBranch.FriendlyName, masterBranchRegex, RegexOptions.IgnoreCase))
+            else if (Regex.IsMatch(chosenBranch.Name.FriendlyName, masterBranchRegex, RegexOptions.IgnoreCase))
             {
                 // Normally we would not expect this to happen but for safety we add a check
                 if (config.Branches[Config.MasterBranchKey].Increment !=
