@@ -33,7 +33,7 @@
 
         <PackageVersion_MicrosoftTestSdk>16.8.3</PackageVersion_MicrosoftTestSdk>
         <PackageVersion_NSubstitute>4.2.2</PackageVersion_NSubstitute>
-        <PackageVersion_CoverletMsBuild>3.0.0</PackageVersion_CoverletMsBuild>
+        <PackageVersion_CoverletMsBuild>3.0.1</PackageVersion_CoverletMsBuild>
         <PackageVersion_NUnit>3.13.0</PackageVersion_NUnit>
         <PackageVersion_GitToolsTesting>1.2.0</PackageVersion_GitToolsTesting>
         <PackageVersion_NUnit3TestAdapter>3.17.0</PackageVersion_NUnit3TestAdapter>
