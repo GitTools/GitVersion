@@ -15,9 +15,10 @@ namespace GitVersion
         }
 
         public int CompareTo(IObjectId other) => comparerHelper.Compare(this, other);
-        public override bool Equals(object obj) => Equals((obj as IObjectId)!);
         public bool Equals(IObjectId other) => equalityHelper.Equals(this, other);
+        public override bool Equals(object obj) => Equals((obj as IObjectId)!);
         public override int GetHashCode() => equalityHelper.GetHashCode(this);
+        public override string ToString() => ToString(7);
         public static implicit operator LibGit2Sharp.ObjectId(ObjectId d) => d.innerObjectId;
         public string Sha => innerObjectId.Sha;
 

@@ -1,41 +1,51 @@
 using System;
+using GitVersion.Helpers;
 
 namespace GitVersion
 {
-    public class ReferenceName
+    public class ReferenceName : IEquatable<ReferenceName>, IComparable<ReferenceName>
     {
+        private static readonly LambdaEqualityHelper<ReferenceName> equalityHelper = new(x => x.Canonical);
+        private static readonly LambdaKeyComparer<ReferenceName, string> comparerHelper = new(x => x.Canonical);
+
         private const string LocalBranchPrefix = "refs/heads/";
         private const string RemoteTrackingBranchPrefix = "refs/remotes/";
         private const string TagPrefix = "refs/tags/";
 
-        public ReferenceName(string canonicalName)
+        public ReferenceName(string canonical)
         {
-            CanonicalName = canonicalName;
-            FriendlyName = Shorten();
-            NameWithoutRemote = RemoveRemote();
+            Canonical = canonical;
+            Friendly = Shorten();
+            WithoutRemote = RemoveRemote();
         }
-        public string CanonicalName { get; }
-        public string FriendlyName { get; }
-        public string NameWithoutRemote { get; }
+        public string Canonical { get; }
+        public string Friendly { get; }
+        public string WithoutRemote { get; }
+
+        public bool Equals(ReferenceName other) => equalityHelper.Equals(this, other);
+        public int CompareTo(ReferenceName other) => comparerHelper.Compare(this, other);
+        public override bool Equals(object obj) => Equals((obj as ReferenceName)!);
+        public override int GetHashCode() => equalityHelper.GetHashCode(this);
+        public override string ToString() => Friendly;
 
         private string Shorten()
         {
-            if (IsPrefixedBy(CanonicalName, LocalBranchPrefix))
-                return CanonicalName.Substring(LocalBranchPrefix.Length);
-            if (IsPrefixedBy(CanonicalName, RemoteTrackingBranchPrefix))
-                return CanonicalName.Substring(RemoteTrackingBranchPrefix.Length);
-            if (IsPrefixedBy(CanonicalName, TagPrefix))
-                return CanonicalName.Substring(TagPrefix.Length);
-            return CanonicalName;
+            if (IsPrefixedBy(Canonical, LocalBranchPrefix))
+                return Canonical.Substring(LocalBranchPrefix.Length);
+            if (IsPrefixedBy(Canonical, RemoteTrackingBranchPrefix))
+                return Canonical.Substring(RemoteTrackingBranchPrefix.Length);
+            if (IsPrefixedBy(Canonical, TagPrefix))
+                return Canonical.Substring(TagPrefix.Length);
+            return Canonical;
         }
 
         private string RemoveRemote()
         {
-            var isRemote = IsPrefixedBy(CanonicalName, RemoteTrackingBranchPrefix);
+            var isRemote = IsPrefixedBy(Canonical, RemoteTrackingBranchPrefix);
 
             return isRemote
-                ? FriendlyName.Substring(FriendlyName.IndexOf("/", StringComparison.Ordinal) + 1)
-                : FriendlyName;
+                ? Friendly.Substring(Friendly.IndexOf("/", StringComparison.Ordinal) + 1)
+                : Friendly;
         }
         private static bool IsPrefixedBy(string input, string prefix) => input.StartsWith(prefix, StringComparison.Ordinal);
     }

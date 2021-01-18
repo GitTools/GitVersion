@@ -149,9 +149,9 @@ namespace GitVersion.VersionCalculation.Cache
             var head = gitRepository.Head;
             if (head.Tip == null)
             {
-                return head.Name.CanonicalName;
+                return head.Name.Canonical;
             }
-            var hash = string.Join(":", head.Name.CanonicalName, head.Tip.Sha);
+            var hash = string.Join(":", head.Name.Canonical, head.Tip.Sha);
             return GetHash(hash);
         }
 

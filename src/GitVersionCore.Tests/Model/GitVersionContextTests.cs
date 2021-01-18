@@ -146,11 +146,11 @@ namespace GitVersionCore.Tests
             mockRepository.Head.Returns(releaseLatestBranch);
             mockRepository.Commits.Returns(releaseLatestBranch.Commits);
 
-            var latestContext = GetGitVersionContext(fixture.RepositoryPath, mockRepository, releaseLatestBranch.Name.CanonicalName, config);
+            var latestContext = GetGitVersionContext(fixture.RepositoryPath, mockRepository, releaseLatestBranch.Name.Canonical, config);
             latestContext.Configuration.Increment.ShouldBe(IncrementStrategy.None);
 
             mockRepository.Head.Returns(releaseVersionBranch);
-            var versionContext = GetGitVersionContext(fixture.RepositoryPath, mockRepository, releaseVersionBranch.Name.CanonicalName, config);
+            var versionContext = GetGitVersionContext(fixture.RepositoryPath, mockRepository, releaseVersionBranch.Name.Canonical, config);
             versionContext.Configuration.Increment.ShouldBe(IncrementStrategy.Patch);
         }
 
