@@ -335,7 +335,7 @@ namespace GitVersion
             }
             catch (NotFoundException exception)
             {
-                throw new GitVersionException($"Cannot find commit {currentBranchTip.Sha}. Please ensure that the repository is an unshallow clone with `git fetch --unshallow`.", exception);
+                throw new GitVersionException($"Cannot find commit {currentBranchTip}. Please ensure that the repository is an unshallow clone with `git fetch --unshallow`.", exception);
             }
         }
         public IEnumerable<ICommit> GetMainlineCommitLog(ICommit baseVersionSource, ICommit mainlineTip)

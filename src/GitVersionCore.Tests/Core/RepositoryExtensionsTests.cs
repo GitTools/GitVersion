@@ -55,7 +55,7 @@ namespace GitVersionCore.Tests
             }
             else
             {
-                log.Info(isBranch ? $"Updating local branch {localCanonicalName} to point at {repoTip.Sha}"
+                log.Info(isBranch ? $"Updating local branch {localCanonicalName} to point at {repoTip}"
                     : $"Updating local branch {localCanonicalName} to match ref {currentBranch}");
                 var localRef = repo.Refs[localCanonicalName];
                 repo.Refs.UpdateTarget(localRef, repoTipId);

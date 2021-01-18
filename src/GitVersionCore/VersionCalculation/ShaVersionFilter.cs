@@ -22,7 +22,7 @@ namespace GitVersion.VersionCalculation
             if (version.BaseVersionSource != null &&
                 shas.Any(sha => version.BaseVersionSource.Sha.StartsWith(sha, StringComparison.OrdinalIgnoreCase)))
             {
-                reason = $"Sha {version.BaseVersionSource.Sha} was ignored due to commit having been excluded by configuration";
+                reason = $"Sha {version.BaseVersionSource} was ignored due to commit having been excluded by configuration";
                 return true;
             }
 

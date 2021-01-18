@@ -31,7 +31,7 @@ namespace GitVersion.Configuration
 
             if (matchingBranches == null)
             {
-                log.Info($"No branch configuration found for branch {targetBranch.Name.Friendly}, falling back to default configuration");
+                log.Info($"No branch configuration found for branch {targetBranch}, falling back to default configuration");
 
                 matchingBranches = BranchConfig.CreateDefaultBranchConfig(FallbackConfigName)
                                                .Apply(new BranchConfig
@@ -103,7 +103,7 @@ namespace GitVersion.Configuration
                     }
                 }
 
-                log.Info("Found possible parent branches: " + string.Join(", ", possibleParents.Select(p => p.Name.Friendly)));
+                log.Info("Found possible parent branches: " + string.Join(", ", possibleParents.Select(p => p.ToString())));
 
                 if (possibleParents.Count == 1)
                 {
@@ -125,7 +125,7 @@ namespace GitVersion.Configuration
                 // if develop exists and master if not
                 var errorMessage = possibleParents.Count == 0
                     ? "Failed to inherit Increment branch configuration, no branches found."
-                    : "Failed to inherit Increment branch configuration, ended up with: " + string.Join(", ", possibleParents.Select(p => p.Name.Friendly));
+                    : "Failed to inherit Increment branch configuration, ended up with: " + string.Join(", ", possibleParents.Select(p => p.ToString()));
 
                 var chosenBranch = repositoryMetadataProvider.GetChosenBranch(configuration);
                 if (chosenBranch == null)
@@ -204,7 +204,7 @@ namespace GitVersion.Configuration
                 }
             }
 
-            log.Info("HEAD is merge commit, this is likely a pull request using " + currentBranch.Name.Friendly + " as base");
+            log.Info($"HEAD is merge commit, this is likely a pull request using {currentBranch} as base");
 
             return excludedBranches;
         }

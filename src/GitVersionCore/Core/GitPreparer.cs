@@ -244,7 +244,7 @@ namespace GitVersion
                 }
                 else
                 {
-                    log.Info($"Checking out local branch 'refs/heads/{localBranchesWhereCommitShaIsHead[0].Name.Friendly}'.");
+                    log.Info($"Checking out local branch 'refs/heads/{localBranchesWhereCommitShaIsHead[0]}'.");
                     repository.Checkout(repository.Branches[localBranchesWhereCommitShaIsHead[0].Name.Friendly]);
                 }
             }
@@ -346,7 +346,7 @@ Please run `git {GitExtensions.CreateGitLogArgs(100)}` and submit it along with 
             }
             else
             {
-                log.Info(isBranch ? $"Updating local branch {localCanonicalName} to point at {repoTip.Sha}"
+                log.Info(isBranch ? $"Updating local branch {localCanonicalName} to point at {repoTip}"
                     : $"Updating local branch {localCanonicalName} to match ref {currentBranch}");
                 var localRef = repo.Refs[localCanonicalName];
                 repo.Refs.UpdateTarget(localRef, repoTipId);
