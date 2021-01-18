@@ -29,7 +29,7 @@ namespace GitVersion.VersionCalculation
 
         public SemanticVersion FindVersion()
         {
-            log.Info($"Running against branch: {context.CurrentBranch.Name.FriendlyName} ({(context.CurrentCommit == null ? "-" : context.CurrentCommit.Sha)})");
+            log.Info($"Running against branch: {context.CurrentBranch.Name.Friendly} ({(context.CurrentCommit == null ? "-" : context.CurrentCommit.Sha)})");
             if (context.IsCurrentCommitTagged)
             {
                 log.Info($"Current commit is tagged with version {context.CurrentCommitTaggedVersion}, " +
@@ -106,7 +106,7 @@ namespace GitVersion.VersionCalculation
 
         private void UpdatePreReleaseTag(SemanticVersion semanticVersion, string branchNameOverride)
         {
-            var tagToUse = context.Configuration.GetBranchSpecificTag(log, context.CurrentBranch.Name.FriendlyName, branchNameOverride);
+            var tagToUse = context.Configuration.GetBranchSpecificTag(log, context.CurrentBranch.Name.Friendly, branchNameOverride);
 
             int? number = null;
 

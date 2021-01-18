@@ -5,8 +5,8 @@ namespace GitVersion
 {
     internal sealed class Reference : IReference
     {
-        private static readonly LambdaEqualityHelper<IReference> equalityHelper = new(x => x.Name.CanonicalName);
-        private static readonly LambdaKeyComparer<IReference, string> comparerHelper = new(x => x.Name.CanonicalName);
+        private static readonly LambdaEqualityHelper<IReference> equalityHelper = new(x => x.Name.Canonical);
+        private static readonly LambdaKeyComparer<IReference, string> comparerHelper = new(x => x.Name.Canonical);
 
         internal readonly LibGit2Sharp.Reference innerReference;
         private DirectReference directReference => innerReference.ResolveToDirectReference();
@@ -21,6 +21,7 @@ namespace GitVersion
         public override bool Equals(object obj) => Equals((obj as IReference)!);
         public bool Equals(IReference other) => equalityHelper.Equals(this, other);
         public override int GetHashCode() => equalityHelper.GetHashCode(this);
+        public override string ToString() => Name.ToString();
         public string TargetIdentifier => innerReference.TargetIdentifier;
         public string DirectReferenceTargetIdentifier => directReference.TargetIdentifier;
         public IObjectId DirectReferenceTargetId => new ObjectId(directReference.Target.Id);

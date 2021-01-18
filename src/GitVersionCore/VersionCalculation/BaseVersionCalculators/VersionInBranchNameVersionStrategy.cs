@@ -34,7 +34,7 @@ namespace GitVersion.VersionCalculation
                 yield break;
             }
 
-            var branchName = currentBranch.Name.FriendlyName;
+            var branchName = currentBranch.Name.Friendly;
             var versionInBranch = GetVersionInBranch(branchName, tagPrefixRegex);
             if (versionInBranch != null)
             {
@@ -60,9 +60,9 @@ namespace GitVersion.VersionCalculation
 
         private static string NameWithoutOrigin(IBranch branch)
         {
-            return branch.IsRemote && branch.Name.FriendlyName.StartsWith("origin/")
-                ? branch.Name.FriendlyName.Substring("origin/".Length)
-                : branch.Name.FriendlyName;
+            return branch.IsRemote && branch.Name.Friendly.StartsWith("origin/")
+                ? branch.Name.Friendly.Substring("origin/".Length)
+                : branch.Name.Friendly;
         }
     }
 }

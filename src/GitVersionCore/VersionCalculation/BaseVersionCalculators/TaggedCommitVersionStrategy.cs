@@ -36,7 +36,7 @@ namespace GitVersion.VersionCalculation
                 .Select(t =>
                 {
                     var commit = t.Item1.PeeledTargetCommit();
-                    return commit != null ? new VersionTaggedCommit(commit, t.Item2, t.Item1.Name.FriendlyName) : null;
+                    return commit != null ? new VersionTaggedCommit(commit, t.Item2, t.Item1.Name.Friendly) : null;
                 })
                 .Where(versionTaggedCommit => versionTaggedCommit != null)
                 .Select(versionTaggedCommit => CreateBaseVersion(Context, versionTaggedCommit))

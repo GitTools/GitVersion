@@ -55,7 +55,7 @@ namespace GitVersionCore.Tests
 
         public static IBranch FindBranch(this IGitRepository repository, string branchName)
         {
-            return repository.Branches.FirstOrDefault(x => x.Name.NameWithoutRemote == branchName);
+            return repository.Branches.FirstOrDefault(x => x.Name.WithoutRemote == branchName);
         }
 
         public static void DumpGraph(this IGitRepository repository, Action<string> writer = null, int? maxCommits = null)
