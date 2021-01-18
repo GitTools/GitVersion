@@ -46,7 +46,7 @@ namespace GitVersion.VersionCalculation
                 if (!context.CurrentBranch.Equals(mainline))
                 {
                     mergeBase = FindMergeBaseBeforeForwardMerge(baseVersion.BaseVersionSource, mainline, out mainlineTip);
-                    log.Info($"Current branch ({context.CurrentBranch.Name.Friendly}) was branch from {mergeBase}");
+                    log.Info($"Current branch ({context.CurrentBranch}) was branch from {mergeBase}");
                 }
 
                 var mainlineCommitLog = repositoryMetadataProvider.GetMainlineCommitLog(baseVersion.BaseVersionSource, mainlineTip).ToList();
@@ -87,7 +87,7 @@ namespace GitVersion.VersionCalculation
         {
             var commitLog = repositoryMetadataProvider.GetCommitLog(baseVersionSource, context.CurrentCommit);
             var commitsSinceTag = commitLog.Count();
-            log.Info($"{commitsSinceTag} commits found between {baseVersionSource.Sha} and {context.CurrentCommit.Sha}");
+            log.Info($"{commitsSinceTag} commits found between {baseVersionSource} and {context.CurrentCommit}");
 
             var shortSha = repositoryMetadataProvider.ShortenObjectId(context.CurrentCommit);
             return new SemanticVersionBuildMetaData(
@@ -116,7 +116,7 @@ namespace GitVersion.VersionCalculation
 
             // Finally increment for the branch
             mainlineVersion = mainlineVersion.IncrementVersion(findMessageIncrement);
-            log.Info($"Merge commit {mergeCommit.Sha} incremented base versions {findMessageIncrement}, now {mainlineVersion}");
+            log.Info($"Merge commit {mergeCommit} incremented base versions {findMessageIncrement}, now {mainlineVersion}");
             return mainlineVersion;
         }
 
@@ -135,14 +135,14 @@ namespace GitVersion.VersionCalculation
             if (possibleMainlineBranches.Count == 1)
             {
                 var mainlineBranch = possibleMainlineBranches[0];
-                log.Info("Mainline for current branch is " + mainlineBranch.Name.Friendly);
+                log.Info($"Mainline for current branch is {mainlineBranch}");
                 return mainlineBranch;
             }
 
             // prefer current branch, if it is a mainline branch
             if (possibleMainlineBranches.Any(context.CurrentBranch.Equals))
             {
-                log.Info($"Choosing {context.CurrentBranch.Name.Friendly} as mainline because it is the current branch");
+                log.Info($"Choosing {context.CurrentBranch} as mainline because it is the current branch");
                 return context.CurrentBranch;
             }
 
@@ -152,15 +152,15 @@ namespace GitVersion.VersionCalculation
             {
                 var message = string.Format(
                     "Choosing {0} as mainline because {1}'s merge base was a direct commit to {0}",
-                    firstMatchingCommitBranch.Name.Friendly,
-                    context.CurrentBranch.Name.Friendly);
+                    firstMatchingCommitBranch,
+                    context.CurrentBranch);
                 log.Info(message);
 
                 return firstMatchingCommitBranch;
             }
 
             var chosenMainline = possibleMainlineBranches[0];
-            log.Info($"Multiple mainlines ({string.Join(", ", possibleMainlineBranches.Select(b => b.Name.Friendly))}) have the same merge base for the current branch, choosing {chosenMainline.Name.Friendly} because we found that branch first...");
+            log.Info($"Multiple mainlines ({string.Join(", ", possibleMainlineBranches.Select(b => b))}) have the same merge base for the current branch, choosing {chosenMainline} because we found that branch first...");
             return chosenMainline;
         }
 
@@ -231,7 +231,7 @@ namespace GitVersion.VersionCalculation
                 var directCommitIncrement = IncrementStrategyFinder.GetIncrementForCommits(context, new[] { directCommit })
                                             ?? FindDefaultIncrementForBranch(context, mainline.Name.Friendly);
                 mainlineVersion = mainlineVersion.IncrementVersion(directCommitIncrement);
-                log.Info($"Direct commit on master {directCommit.Sha} incremented base versions {directCommitIncrement}, now {mainlineVersion}");
+                log.Info($"Direct commit on master {directCommit} incremented base versions {directCommitIncrement}, now {mainlineVersion}");
             }
 
             return mainlineVersion;

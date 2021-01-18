@@ -36,11 +36,11 @@ namespace GitVersion
 
             if (mergeBaseCache.ContainsKey(key))
             {
-                log.Debug($"Cache hit for merge base between '{branch.Name.Friendly}' and '{otherBranch.Name.Friendly}'.");
+                log.Debug($"Cache hit for merge base between '{branch}' and '{otherBranch}'.");
                 return mergeBaseCache[key].MergeBase;
             }
 
-            using (log.IndentLog($"Finding merge base between '{branch.Name.Friendly}' and '{otherBranch.Name.Friendly}'."))
+            using (log.IndentLog($"Finding merge base between '{branch}' and '{otherBranch}'."))
             {
                 // Otherbranch tip is a forward merge
                 var commitToFindCommonBase = otherBranch.Tip;
@@ -53,7 +53,7 @@ namespace GitVersion
                 var findMergeBase = repository.FindMergeBase(commit, commitToFindCommonBase);
                 if (findMergeBase != null)
                 {
-                    log.Info($"Found merge base of {findMergeBase.Sha}");
+                    log.Info($"Found merge base of {findMergeBase}");
                     // We do not want to include merge base commits which got forward merged into the other branch
                     ICommit forwardMerge;
                     do
@@ -65,7 +65,7 @@ namespace GitVersion
                         {
                             // TODO Fix the logging up in this section
                             var second = forwardMerge.Parents.First();
-                            log.Debug("Second " + second.Sha);
+                            log.Debug($"Second {second}");
                             var mergeBase = repository.FindMergeBase(commit, second);
                             if (mergeBase == null)
                             {
@@ -73,7 +73,7 @@ namespace GitVersion
                             }
                             else
                             {
-                                log.Debug("New Merge base " + mergeBase.Sha);
+                                log.Debug($"New Merge base {mergeBase}");
                             }
                             if (Equals(mergeBase, findMergeBase))
                             {
@@ -90,7 +90,7 @@ namespace GitVersion
                 // Store in cache.
                 mergeBaseCache.Add(key, new MergeBaseData(findMergeBase));
 
-                log.Info($"Merge base of {branch.Name.Friendly}' and '{otherBranch.Name.Friendly} is {findMergeBase}");
+                log.Info($"Merge base of {branch}' and '{otherBranch} is {findMergeBase}");
                 return findMergeBase;
             }
         }
@@ -240,7 +240,7 @@ namespace GitVersion
                     }
 
                     directBranchHasBeenFound = true;
-                    log.Info($"Direct branch found: '{branch.Name.Friendly}'.");
+                    log.Info($"Direct branch found: '{branch}'.");
                     yield return branch;
                 }
 
@@ -252,17 +252,17 @@ namespace GitVersion
                 log.Info($"No direct branches found, searching through {(onlyTrackedBranches ? "tracked" : "all")} branches.");
                 foreach (var branch in branchList.Where(b => IncludeTrackedBranches(b, onlyTrackedBranches)))
                 {
-                    log.Info($"Searching for commits reachable from '{branch.Name.Friendly}'.");
+                    log.Info($"Searching for commits reachable from '{branch}'.");
 
                     var commits = repository.GetCommitsReacheableFrom(commit, branch);
 
                     if (!commits.Any())
                     {
-                        log.Info($"The branch '{branch.Name.Friendly}' has no matching commits.");
+                        log.Info($"The branch '{branch}' has no matching commits.");
                         continue;
                     }
 
-                    log.Info($"The branch '{branch.Name.Friendly}' has a matching commit.");
+                    log.Info($"The branch '{branch}' has a matching commit.");
                     yield return branch;
                 }
             }
@@ -296,11 +296,11 @@ namespace GitVersion
                 throw new ArgumentNullException(nameof(branch));
             }
 
-            using (log.IndentLog($"Finding branch source of '{branch.Name.Friendly}'"))
+            using (log.IndentLog($"Finding branch source of '{branch}'"))
             {
                 if (branch.Tip == null)
                 {
-                    log.Warning(string.Format(MissingTipFormat, branch.Name.Friendly));
+                    log.Warning(string.Format(MissingTipFormat, branch));
                     return BranchCommit.Empty;
                 }
 
@@ -311,9 +311,9 @@ namespace GitVersion
                 if (possibleBranches.Count > 1)
                 {
                     var first = possibleBranches.First();
-                    log.Info($"Multiple source branches have been found, picking the first one ({first.Branch.Name.Friendly}).{System.Environment.NewLine}" +
+                    log.Info($"Multiple source branches have been found, picking the first one ({first.Branch}).{System.Environment.NewLine}" +
                              $"This may result in incorrect commit counting.{System.Environment.NewLine}Options were:{System.Environment.NewLine}" +
-                             string.Join(", ", possibleBranches.Select(b => b.Branch.Name.Friendly)));
+                             string.Join(", ", possibleBranches.Select(b => b.Branch.ToString())));
                     return first;
                 }
 
@@ -429,7 +429,7 @@ namespace GitVersion
                 {
                     if (otherBranch.Tip == null)
                     {
-                        log.Warning(string.Format(MissingTipFormat, otherBranch.Name.Friendly));
+                        log.Warning(string.Format(MissingTipFormat, otherBranch));
                         return BranchCommit.Empty;
                     }
 
