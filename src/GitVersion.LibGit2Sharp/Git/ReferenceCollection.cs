@@ -25,12 +25,13 @@ namespace GitVersion
         }
 
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+
         public IReference? this[string name]
         {
             get
             {
-                var branch = innerCollection[name];
-                return branch is null ? null : new Reference(branch);
+                var reference = innerCollection[name];
+                return reference is null ? null : new Reference(reference);
             }
         }
 

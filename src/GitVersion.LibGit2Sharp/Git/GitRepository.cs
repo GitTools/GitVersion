@@ -69,10 +69,7 @@ namespace GitVersion
         public string Path => repositoryInstance.Info.Path;
         public string WorkingDirectory => repositoryInstance.Info.WorkingDirectory;
         public bool IsHeadDetached => repositoryInstance.Info.IsHeadDetached;
-        public IGitRepository CreateNew(string gitRootPath)
-        {
-            return new GitRepository(new NullLog(), () => gitRootPath);
-        }
+        public IGitRepository CreateNew(string gitRootPath) => new GitRepository(new NullLog(), () => gitRootPath);
         public int GetNumberOfUncommittedChanges()
         {
             // check if we have a branch tip at all to behave properly with empty repos
@@ -116,9 +113,9 @@ namespace GitVersion
 
         public ITagCollection Tags => new TagCollection(repositoryInstance.Tags);
         public IReferenceCollection Refs => new ReferenceCollection(repositoryInstance.Refs);
-
         public IBranchCollection Branches => new BranchCollection(repositoryInstance.Branches);
         public ICommitCollection Commits => new CommitCollection(repositoryInstance.Commits);
+        public IRemoteCollection Remotes => new RemoteCollection(repositoryInstance.Network.Remotes);
 
         public void CreateBranchForPullRequestBranch(AuthenticationInfo auth)
         {
@@ -176,7 +173,7 @@ namespace GitVersion
             log.Info($"Checking local branch '{fakeBranchName}' out.");
             Checkout(fakeBranchName);
         }
-        public bool GitRepoHasMatchingRemote(string targetUrl)
+        public bool AnyMatchingRemote(string targetUrl)
         {
             return repositoryInstance.Network.Remotes.Any(r => r.Url == targetUrl);
         }
