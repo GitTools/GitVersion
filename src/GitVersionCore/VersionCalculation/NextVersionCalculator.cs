@@ -29,7 +29,7 @@ namespace GitVersion.VersionCalculation
 
         public SemanticVersion FindVersion()
         {
-            log.Info($"Running against branch: {context.CurrentBranch} ({(context.CurrentCommit != null ? context.CurrentCommit.ToString() : "-")})");
+            log.Info($"Running against branch: {context.CurrentBranch} ({context.CurrentCommit?.ToString() ?? "-"})");
             if (context.IsCurrentCommitTagged)
             {
                 log.Info($"Current commit is tagged with version {context.CurrentCommitTaggedVersion}, " +
