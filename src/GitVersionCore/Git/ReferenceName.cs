@@ -14,7 +14,7 @@ namespace GitVersion
 
         public ReferenceName(string canonical)
         {
-            Canonical = canonical;
+            Canonical = canonical ?? throw new ArgumentNullException(nameof(canonical));
             Friendly = Shorten();
             WithoutRemote = RemoveRemote();
         }

@@ -27,7 +27,7 @@ namespace GitVersionCore.Tests
         public static ICommit CreateMockCommit()
         {
             var objectId = Substitute.For<IObjectId>();
-            objectId.Sha.Returns(Guid.NewGuid().ToString().Replace("-", "") + "00000000");
+            objectId.Sha.Returns(Guid.NewGuid().ToString("n") + "00000000");
 
             var commit = Substitute.For<ICommit>();
             commit.Id.Returns(objectId);
