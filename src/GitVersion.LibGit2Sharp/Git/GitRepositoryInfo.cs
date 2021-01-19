@@ -102,7 +102,7 @@ namespace GitVersion
         {
             try
             {
-                return new GitRepository(new NullLog(), possiblePath).GitRepoHasMatchingRemote(targetUrl);
+                return new GitRepository(new NullLog(), possiblePath).AnyMatchingRemote(targetUrl);
             }
             catch (Exception)
             {

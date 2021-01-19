@@ -13,13 +13,13 @@ namespace GitVersion
         IReferenceCollection Refs { get; }
         IBranchCollection Branches { get; }
         ICommitCollection Commits { get; }
+        IRemoteCollection Remotes { get; }
 
         IGitRepository CreateNew(string gitRootPath);
 
         int GetNumberOfUncommittedChanges();
         string ShortenObjectId(ICommit commit);
 
-        bool GitRepoHasMatchingRemote(string targetUrl);
         void CleanupDuplicateOrigin(string gitRootPath, string remoteName);
         bool GetMatchingCommitBranch(ICommit baseVersionSource, IBranch branch, ICommit firstMatchingCommit);
         IRemote EnsureOnlyOneRemoteIsDefined();
