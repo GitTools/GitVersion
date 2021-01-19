@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using GitVersion;
-using GitVersion.Extensions;
 using GitVersion.Logging;
 using GitVersionCore.Tests.Helpers;
 using NSubstitute;
@@ -47,7 +46,8 @@ namespace GitVersionCore.Tests
 
             var repoTipId = repoTip.Id;
 
-            if (repo.Branches.All(b => !b.Name.Canonical.IsEquivalentTo(localCanonicalName)))
+            var referenceName = ReferenceName.Parse(localCanonicalName);
+            if (repo.Branches.All(b => !b.Name.Equals(referenceName)))
             {
                 log.Info(isBranch ? $"Creating local branch {localCanonicalName}"
                     : $"Creating local branch {localCanonicalName} pointing at {repoTipId}");

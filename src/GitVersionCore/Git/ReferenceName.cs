@@ -18,6 +18,17 @@ namespace GitVersion
             Friendly = Shorten();
             WithoutRemote = RemoveRemote();
         }
+
+        public static ReferenceName Parse(string canonicalName)
+        {
+            if (IsPrefixedBy(canonicalName, LocalBranchPrefix)
+                || IsPrefixedBy(canonicalName, RemoteTrackingBranchPrefix)
+                || IsPrefixedBy(canonicalName, TagPrefix))
+            {
+                return new ReferenceName(canonicalName);
+            }
+            throw new ArgumentException($"The {nameof(canonicalName)} is not a Canonical name");
+        }
         public string Canonical { get; }
         public string Friendly { get; }
         public string WithoutRemote { get; }
@@ -27,6 +38,13 @@ namespace GitVersion
         public override bool Equals(object obj) => Equals((obj as ReferenceName)!);
         public override int GetHashCode() => equalityHelper.GetHashCode(this);
         public override string ToString() => Friendly;
+
+        public bool EquivalentTo(string name)
+        {
+            return Canonical.Equals(name, StringComparison.OrdinalIgnoreCase)
+                   || Friendly.Equals(name, StringComparison.OrdinalIgnoreCase)
+                   || WithoutRemote.Equals(name, StringComparison.OrdinalIgnoreCase);
+        }
 
         private string Shorten()
         {

@@ -135,8 +135,7 @@ namespace GitVersion.Configuration
                     throw new InvalidOperationException("Could not find a 'develop' or 'master' branch, neither locally nor remotely.");
                 }
 
-                var branchName = chosenBranch.Name.Friendly;
-                log.Warning(errorMessage + System.Environment.NewLine + "Falling back to " + branchName + " branch config");
+                log.Warning($"{errorMessage}{System.Environment.NewLine}Falling back to {chosenBranch} branch config");
 
                 // To prevent infinite loops, make sure that a new branch was chosen.
                 if (targetBranch.Equals(chosenBranch))
