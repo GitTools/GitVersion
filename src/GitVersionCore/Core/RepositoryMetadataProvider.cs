@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using GitVersion.Common;
 using GitVersion.Configuration;
-using GitVersion.Extensions;
 using GitVersion.Logging;
 using GitVersion.Model.Configuration;
 using GitVersion.VersionCalculation;
@@ -42,7 +41,7 @@ namespace GitVersion
 
             using (log.IndentLog($"Finding merge base between '{branch}' and '{otherBranch}'."))
             {
-                // Otherbranch tip is a forward merge
+                // Other branch tip is a forward merge
                 var commitToFindCommonBase = otherBranch.Tip;
                 var commit = branch.Tip;
                 if (otherBranch.Tip.Parents.Contains(commit))
@@ -143,7 +142,6 @@ namespace GitVersion
         {
             // By default, we assume HEAD is pointing to the desired branch
             var desiredBranch = repository.Head;
-            var targetBranch = FindBranch(targetBranchName);
 
             // Make sure the desired branch has been specified
             if (!string.IsNullOrEmpty(targetBranchName))
@@ -151,15 +149,13 @@ namespace GitVersion
                 // There are some edge cases where HEAD is not pointing to the desired branch.
                 // Therefore it's important to verify if 'currentBranch' is indeed the desired branch.
 
+                var targetBranch = FindBranch(targetBranchName);
                 // CanonicalName can be "refs/heads/develop", so we need to check for "/{TargetBranch}" as well
                 if (!desiredBranch.Equals(targetBranch))
                 {
                     // In the case where HEAD is not the desired branch, try to find the branch with matching name
                     desiredBranch = repository.Branches?
-                        .Where(b =>
-                            b.Name.Canonical.IsEquivalentTo(targetBranchName) ||
-                            b.Name.Friendly.IsEquivalentTo(targetBranchName) ||
-                            b.Name.WithoutRemote.IsEquivalentTo(targetBranchName))
+                        .Where(b => b.Name.EquivalentTo(targetBranchName))
                         .OrderBy(b => b.IsRemote)
                         .FirstOrDefault();
 
@@ -171,11 +167,7 @@ namespace GitVersion
             return desiredBranch;
         }
 
-        public IBranch FindBranch(string branchName)
-        {
-            return repository.Branches.FirstOrDefault(x => x.Name.Canonical.IsEquivalentTo(branchName)
-                                                           || x.Name.WithoutRemote.IsEquivalentTo(branchName));
-        }
+        public IBranch FindBranch(string branchName) => repository.Branches.FirstOrDefault(x => x.Name.EquivalentTo(branchName));
 
         public IBranch GetChosenBranch(Config configuration)
         {

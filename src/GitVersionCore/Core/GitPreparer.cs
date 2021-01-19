@@ -216,7 +216,7 @@ namespace GitVersion
                     const string moveBranchMsg = "Move one of the branches along a commit to remove warning";
 
                     log.Warning($"Found more than one local branch pointing at the commit '{headSha}' ({csvNames}).");
-                    var master = localBranchesWhereCommitShaIsHead.SingleOrDefault(n => n.Name.Friendly.IsEquivalentTo(Config.MasterBranchKey));
+                    var master = localBranchesWhereCommitShaIsHead.SingleOrDefault(n => n.Name.EquivalentTo(Config.MasterBranchKey));
                     if (master != null)
                     {
                         log.Warning("Because one of the branches is 'master', will build master." + moveBranchMsg);
@@ -269,9 +269,10 @@ Please run `git {GitExtensions.CreateGitLogArgs(100)}` and submit it along with 
         {
             var prefix = $"refs/remotes/{remoteName}/";
             var remoteHeadCanonicalName = $"{prefix}HEAD";
+            var headReferenceName = ReferenceName.Parse(remoteHeadCanonicalName);
             var remoteTrackingReferences = repo.Refs
                 .FromGlob(prefix + "*")
-                .Where(r => !r.Name.Canonical.IsEquivalentTo(remoteHeadCanonicalName));
+                .Where(r => !r.Name.Equals(headReferenceName));
 
             foreach (var remoteTrackingReference in remoteTrackingReferences)
             {
@@ -279,10 +280,11 @@ Please run `git {GitExtensions.CreateGitLogArgs(100)}` and submit it along with 
                 var branchName = remoteTrackingReferenceName.Substring(prefix.Length);
                 var localCanonicalName = "refs/heads/" + branchName;
 
+                var referenceName = ReferenceName.Parse(localCanonicalName);
                 // We do not want to touch our current branch
-                if (branchName.IsEquivalentTo(repo.Head.Name.Friendly)) continue;
+                if (repo.Head.Name.EquivalentTo(branchName)) continue;
 
-                if (repo.Refs.Any(x => x.Name.Canonical.IsEquivalentTo(localCanonicalName)))
+                if (repo.Refs.Any(x => x.Name.Equals(referenceName)))
                 {
                     var localRef = repo.Refs[localCanonicalName];
                     if (localRef.DirectReferenceTargetIdentifier == remoteTrackingReference.DirectReferenceTargetIdentifier)
@@ -338,16 +340,17 @@ Please run `git {GitExtensions.CreateGitLogArgs(100)}` and submit it along with 
 
             var repoTipId = repoTip.Id;
 
-            if (repo.Branches.All(b => !b.Name.Canonical.IsEquivalentTo(localCanonicalName)))
+            var referenceName = ReferenceName.Parse(localCanonicalName);
+            if (repo.Branches.All(b => !b.Name.Equals(referenceName)))
             {
-                log.Info(isBranch ? $"Creating local branch {localCanonicalName}"
-                    : $"Creating local branch {localCanonicalName} pointing at {repoTipId}");
+                log.Info(isBranch ? $"Creating local branch {referenceName}"
+                    : $"Creating local branch {referenceName} pointing at {repoTipId}");
                 repo.Refs.Add(localCanonicalName, repoTipId.Sha);
             }
             else
             {
-                log.Info(isBranch ? $"Updating local branch {localCanonicalName} to point at {repoTip}"
-                    : $"Updating local branch {localCanonicalName} to match ref {currentBranch}");
+                log.Info(isBranch ? $"Updating local branch {referenceName} to point at {repoTip}"
+                    : $"Updating local branch {referenceName} to match ref {currentBranch}");
                 var localRef = repo.Refs[localCanonicalName];
                 repo.Refs.UpdateTarget(localRef, repoTipId);
             }
