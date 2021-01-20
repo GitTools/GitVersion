@@ -36,10 +36,6 @@ namespace GitVersion.Core.Tests.IntegrationTests
         [Test]
         public void CanUseCommitMessagesToBumpVersion()
         {
-            var configuration = new Config
-            {
-                VersioningMode = GitVersion.VersionCalculation.VersioningMode.Mainline
-            };
             using var fixture = new EmptyRepositoryFixture();
             fixture.Repository.MakeACommit();
             fixture.MakeATaggedCommit("1.0.0");
@@ -50,14 +46,6 @@ namespace GitVersion.Core.Tests.IntegrationTests
             fixture.Repository.MakeACommit("+semver:major");
 
             fixture.AssertFullSemver("2.0.0+2");
-
-            fixture.Repository.MakeACommit("+semver:patch");
-
-            fixture.AssertFullSemver("2.0.1", configuration);
-
-            fixture.Repository.MakeACommit("+semver:minor");
-
-            fixture.AssertFullSemver("2.1.0", configuration);
         }
 
         [Test]
