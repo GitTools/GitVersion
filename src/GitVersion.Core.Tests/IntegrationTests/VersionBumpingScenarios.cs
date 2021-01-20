@@ -53,7 +53,7 @@ namespace GitVersion.Core.Tests.IntegrationTests
 
             fixture.Repository.MakeACommit("+semver:minor");
 
-            fixture.AssertFullSemver("2.1.0+3");
+            fixture.AssertFullSemver("2.1.0+4");
         }
 
         [Test]
