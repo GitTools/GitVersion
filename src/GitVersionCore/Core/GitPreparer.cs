@@ -64,15 +64,13 @@ namespace GitVersion
             }
             else
             {
-                if (normalizeGitDirectory)
+                if (!normalizeGitDirectory) return;
+                if (shouldCleanUpRemotes)
                 {
-                    if (shouldCleanUpRemotes)
-                    {
-                        CleanupDuplicateOrigin();
-                    }
-
-                    NormalizeGitDirectory(currentBranch, repositoryInfo.DotGitDirectory, false);
+                    CleanupDuplicateOrigin();
                 }
+
+                NormalizeGitDirectory(currentBranch, false);
             }
         }
 
@@ -94,7 +92,7 @@ namespace GitVersion
 
         private void CleanupDuplicateOrigin()
         {
-            repository.CleanupDuplicateOrigin(repositoryInfo.GitRootPath, DefaultRemoteName);
+            repository.CleanupDuplicateOrigin(DefaultRemoteName);
         }
 
         private void CreateDynamicRepository(string targetBranch)
@@ -118,16 +116,16 @@ namespace GitVersion
                 {
                     log.Info("Git repository already exists");
                 }
-                NormalizeGitDirectory(targetBranch, gitDirectory, true);
+                NormalizeGitDirectory(targetBranch, true);
             }
         }
 
-        private void NormalizeGitDirectory(string targetBranch, string gitDirectory, bool isDynamicRepository)
+        private void NormalizeGitDirectory(string targetBranch, bool isDynamicRepository)
         {
             using (log.IndentLog($"Normalizing git directory for branch '{targetBranch}'"))
             {
                 // Normalize (download branches) before using the branch
-                NormalizeGitDirectory(gitDirectory, options.Value.Settings.NoFetch, targetBranch, isDynamicRepository);
+                NormalizeGitDirectory(options.Value.Settings.NoFetch, targetBranch, isDynamicRepository);
             }
         }
 
@@ -141,13 +139,14 @@ namespace GitVersion
         }
 
         /// <summary>
-        /// Normalization of a git directory turns all remote branches into local branches, turns pull request refs into a real branch and a few other things. This is designed to be run *only on the build server* which checks out repositories in different ways.
+        /// Normalization of a git directory turns all remote branches into local branches,
+        /// turns pull request refs into a real branch and a few other things.
+        /// This is designed to be run *only on the build server* which checks out repositories in different ways.
         /// It is not recommended to run normalization against a local repository
         /// </summary>
-        private void NormalizeGitDirectory(string gitDirectory, bool noFetch, string currentBranchName, bool isDynamicRepository)
+        private void NormalizeGitDirectory(bool noFetch, string currentBranchName, bool isDynamicRepository)
         {
             var authentication = options.Value.Authentication;
-            using var repository = this.repository.CreateNew(gitDirectory);
             // Need to ensure the HEAD does not move, this is essentially a BugCheck
             var expectedSha = repository.Head.Tip.Sha;
             var expectedBranchName = repository.Head.Name.Canonical;

@@ -27,7 +27,6 @@ namespace GitVersionCore.Tests
         private IFileSystem fileSystem;
         private ILog log;
         private IGitVersionCache gitVersionCache;
-        private IGitPreparer gitPreparer;
         private IServiceProvider sp;
 
         [Test]
@@ -470,27 +469,6 @@ namespace GitVersionCore.Tests
         }
 
         [Test]
-        public void DynamicRepositoriesShouldNotErrorWithFailedToFindGitDirectory()
-        {
-            using var fixture = new EmptyRepositoryFixture();
-            fixture.Repository.MakeACommit();
-
-            var gitVersionOptions = new GitVersionOptions
-            {
-                WorkingDirectory = fixture.RepositoryPath,
-                RepositoryInfo =
-                {
-                    TargetUrl = "https://github.com/GitTools/GitVersion.git",
-                    TargetBranch = "refs/head/master"
-                }
-            };
-
-            var gitVersionCalculator = GetGitVersionCalculator(gitVersionOptions, repository: fixture.Repository.ToGitRepository());
-            gitPreparer.Prepare();
-            gitVersionCalculator.CalculateVersionVariables();
-        }
-
-        [Test]
         public void GetDotGitDirectoryNoWorktree()
         {
             using var fixture = new EmptyRepositoryFixture();
@@ -577,7 +555,6 @@ namespace GitVersionCore.Tests
             fileSystem = sp.GetService<IFileSystem>();
             log = sp.GetService<ILog>();
             gitVersionCache = sp.GetService<IGitVersionCache>();
-            gitPreparer = sp.GetService<IGitPreparer>();
 
             return sp.GetService<IGitVersionCalculateTool>();
         }

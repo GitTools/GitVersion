@@ -19,5 +19,6 @@ namespace GitVersion
         public override string ToString() => Name;
         public string Name => innerRemote.Name;
         public string RefSpecs => string.Join(", ", innerRemote.FetchRefSpecs.Select(r => r.Specification));
+        public string Url => innerRemote.Url;
     }
 }

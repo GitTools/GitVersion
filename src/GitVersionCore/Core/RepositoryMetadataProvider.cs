@@ -13,7 +13,7 @@ namespace GitVersion
     public class RepositoryMetadataProvider : IRepositoryMetadataProvider
     {
         private readonly Dictionary<IBranch, List<BranchCommit>> mergeBaseCommitsCache = new();
-        private readonly Dictionary<Tuple<IBranch, IBranch>, MergeBaseData> mergeBaseCache = new();
+        private readonly Dictionary<Tuple<IBranch, IBranch>, ICommit> mergeBaseCache = new();
         private readonly Dictionary<IBranch, List<SemanticVersion>> semanticVersionTagsOnBranchCache = new();
         private const string MissingTipFormat = "{0} has no tip. Please see http://example.com/docs for information on how to fix this.";
 
@@ -36,7 +36,7 @@ namespace GitVersion
             if (mergeBaseCache.ContainsKey(key))
             {
                 log.Debug($"Cache hit for merge base between '{branch}' and '{otherBranch}'.");
-                return mergeBaseCache[key].MergeBase;
+                return mergeBaseCache[key];
             }
 
             using (log.IndentLog($"Finding merge base between '{branch}' and '{otherBranch}'."))
@@ -49,7 +49,7 @@ namespace GitVersion
                     commitToFindCommonBase = otherBranch.Tip.Parents.First();
                 }
 
-                var findMergeBase = repository.FindMergeBase(commit, commitToFindCommonBase);
+                var findMergeBase = FindMergeBase(commit, commitToFindCommonBase);
                 if (findMergeBase != null)
                 {
                     log.Info($"Found merge base of {findMergeBase}");
@@ -58,14 +58,14 @@ namespace GitVersion
                     do
                     {
                         // Now make sure that the merge base is not a forward merge
-                        forwardMerge = repository.GetForwardMerge(commitToFindCommonBase, findMergeBase);
+                        forwardMerge = GetForwardMerge(commitToFindCommonBase, findMergeBase);
 
                         if (forwardMerge != null)
                         {
                             // TODO Fix the logging up in this section
                             var second = forwardMerge.Parents.First();
                             log.Debug($"Second {second}");
-                            var mergeBase = repository.FindMergeBase(commit, second);
+                            var mergeBase = FindMergeBase(commit, second);
                             if (mergeBase == null)
                             {
                                 log.Warning("Could not find mergbase for " + commit);
@@ -87,7 +87,7 @@ namespace GitVersion
                 }
 
                 // Store in cache.
-                mergeBaseCache.Add(key, new MergeBaseData(findMergeBase));
+                mergeBaseCache.Add(key, findMergeBase);
 
                 log.Info($"Merge base of {branch}' and '{otherBranch} is {findMergeBase}");
                 return findMergeBase;
@@ -127,15 +127,49 @@ namespace GitVersion
         }
         public ICommit GetBaseVersionSource(ICommit currentBranchTip)
         {
-            return repository.GetBaseVersionSource(currentBranchTip);
+            try
+            {
+                var filter = new CommitFilter
+                {
+                    IncludeReachableFrom = currentBranchTip
+                };
+                var commitCollection = repository.Commits.QueryBy(filter);
+
+                return commitCollection.First(c => !c.Parents.Any());
+            }
+            catch (Exception exception)
+            {
+                throw new GitVersionException($"Cannot find commit {currentBranchTip}. Please ensure that the repository is an unshallow clone with `git fetch --unshallow`.", exception);
+            }
         }
         public IEnumerable<ICommit> GetMainlineCommitLog(ICommit baseVersionSource, ICommit mainlineTip)
         {
-            return repository.GetMainlineCommitLog(baseVersionSource, mainlineTip);
+            var filter = new CommitFilter
+            {
+                IncludeReachableFrom = mainlineTip,
+                ExcludeReachableFrom = baseVersionSource,
+                SortBy = CommitSortStrategies.Reverse,
+                FirstParentOnly = true
+            };
+
+            return repository.Commits.QueryBy(filter);
         }
         public IEnumerable<ICommit> GetMergeBaseCommits(ICommit mergeCommit, ICommit mergedHead, ICommit findMergeBase)
         {
-            return repository.GetMergeBaseCommits(mergeCommit, mergedHead, findMergeBase);
+            var filter = new CommitFilter
+            {
+                IncludeReachableFrom = mergedHead,
+                ExcludeReachableFrom = findMergeBase
+            };
+            var commitCollection = repository.Commits.QueryBy(filter);
+
+            var commits = mergeCommit != null
+                ? new[]
+                {
+                    mergeCommit
+                }.Union(commitCollection)
+                : commitCollection;
+            return commits;
         }
 
         public IBranch GetTargetBranch(string targetBranchName)
@@ -246,7 +280,7 @@ namespace GitVersion
                 {
                     log.Info($"Searching for commits reachable from '{branch}'.");
 
-                    var commits = repository.GetCommitsReacheableFrom(commit, branch);
+                    var commits = GetCommitsReacheableFrom(commit, branch);
 
                     if (!commits.Any())
                     {
@@ -379,7 +413,14 @@ namespace GitVersion
 
         public IEnumerable<ICommit> GetCommitLog(ICommit baseVersionSource, ICommit currentCommit)
         {
-            return repository.GetCommitLog(baseVersionSource, currentCommit);
+            var filter = new CommitFilter
+            {
+                IncludeReachableFrom = currentCommit,
+                ExcludeReachableFrom = baseVersionSource,
+                SortBy = CommitSortStrategies.Topological | CommitSortStrategies.Time
+            };
+
+            return repository.Commits.QueryBy(filter);
         }
 
         public string ShortenObjectId(ICommit commit)
@@ -394,7 +435,14 @@ namespace GitVersion
 
         public bool GetMatchingCommitBranch(ICommit baseVersionSource, IBranch branch, ICommit firstMatchingCommit)
         {
-            return repository.GetMatchingCommitBranch(baseVersionSource, branch, firstMatchingCommit);
+            var filter = new CommitFilter
+            {
+                IncludeReachableFrom = branch,
+                ExcludeReachableFrom = baseVersionSource,
+                FirstParentOnly = true,
+            };
+            var commitCollection = repository.Commits.QueryBy(filter);
+            return commitCollection.Contains(firstMatchingCommit);
         }
 
         private IEnumerable<BranchCommit> GetMergeCommitsForBranch(IBranch branch, Config configuration, IEnumerable<IBranch> excludedBranches)
@@ -436,17 +484,29 @@ namespace GitVersion
             return branchMergeBases;
         }
 
-        public int GetNumberOfUncommittedChanges() => repository.GetNumberOfUncommittedChanges();
-
-        private class MergeBaseData
+        private IEnumerable<ICommit> GetCommitsReacheableFrom(ICommit commit, IBranch branch)
         {
-            public ICommit MergeBase { get; }
-
-            public MergeBaseData(ICommit mergeBase)
+            var filter = new CommitFilter
             {
-                MergeBase = mergeBase;
-            }
-        }
-    }
+                IncludeReachableFrom = branch
+            };
+            var commitCollection = repository.Commits.QueryBy(filter);
 
+            return commitCollection.Where(c => c.Sha == commit.Sha);
+        }
+
+        private ICommit GetForwardMerge(ICommit commitToFindCommonBase, ICommit findMergeBase)
+        {
+            var filter = new CommitFilter
+            {
+                IncludeReachableFrom = commitToFindCommonBase,
+                ExcludeReachableFrom = findMergeBase
+            };
+            var commitCollection = repository.Commits.QueryBy(filter);
+
+            return commitCollection.FirstOrDefault(c => c.Parents.Contains(findMergeBase));
+        }
+
+        public int GetNumberOfUncommittedChanges() => repository.GetNumberOfUncommittedChanges();
+    }
 }

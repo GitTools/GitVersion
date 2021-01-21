@@ -6,5 +6,6 @@ namespace GitVersion
     {
         string Name { get; }
         string RefSpecs { get; }
+        string Url { get; }
     }
 }

@@ -18,8 +18,8 @@ namespace GitVersion
         {
         }
 
-        internal GitRepository(ILog log, string gitRootDirectory)
-            : this(log, () => gitRootDirectory)
+        internal GitRepository(string gitRootDirectory)
+            : this(new NullLog(), () => gitRootDirectory)
         {
         }
 
@@ -35,7 +35,6 @@ namespace GitVersion
             repositoryLazy = new Lazy<IRepository>(() => new Repository(getGitRootDirectory()));
         }
 
-        public static string Discover(string path) => Repository.Discover(path);
         public string Clone(string sourceUrl, string workdirPath, AuthenticationInfo auth)
         {
             try
@@ -69,7 +68,15 @@ namespace GitVersion
         public string Path => repositoryInstance.Info.Path;
         public string WorkingDirectory => repositoryInstance.Info.WorkingDirectory;
         public bool IsHeadDetached => repositoryInstance.Info.IsHeadDetached;
-        public IGitRepository CreateNew(string gitRootPath) => new GitRepository(new NullLog(), () => gitRootPath);
+
+        public IBranch Head => new Branch(repositoryInstance.Head);
+
+        public ITagCollection Tags => new TagCollection(repositoryInstance.Tags);
+        public IReferenceCollection Refs => new ReferenceCollection(repositoryInstance.Refs);
+        public IBranchCollection Branches => new BranchCollection(repositoryInstance.Branches);
+        public ICommitCollection Commits => new CommitCollection(repositoryInstance.Commits);
+        public IRemoteCollection Remotes => new RemoteCollection(repositoryInstance.Network.Remotes);
+
         public int GetNumberOfUncommittedChanges()
         {
             // check if we have a branch tip at all to behave properly with empty repos
@@ -84,7 +91,6 @@ namespace GitVersion
                 {
                     var status = repositoryInstance.RetrieveStatus();
                     return status.Untracked.Count() + status.Staged.Count();
-
                 }
                 catch (Exception)
                 {
@@ -102,21 +108,11 @@ namespace GitVersion
         }
         public ICommit FindMergeBase(ICommit commit, ICommit otherCommit)
         {
-            return new Commit(repositoryInstance.ObjectDatabase.FindMergeBase((Commit)commit, (Commit)otherCommit));
-        }
-        public string ShortenObjectId(ICommit commit)
-        {
-            return repositoryInstance.ObjectDatabase.ShortenObjectId((Commit)commit);
+            var mergeBase = repositoryInstance.ObjectDatabase.FindMergeBase((Commit)commit, (Commit)otherCommit);
+            return new Commit(mergeBase);
         }
 
-        public IBranch Head => new Branch(repositoryInstance.Head);
-
-        public ITagCollection Tags => new TagCollection(repositoryInstance.Tags);
-        public IReferenceCollection Refs => new ReferenceCollection(repositoryInstance.Refs);
-        public IBranchCollection Branches => new BranchCollection(repositoryInstance.Branches);
-        public ICommitCollection Commits => new CommitCollection(repositoryInstance.Commits);
-        public IRemoteCollection Remotes => new RemoteCollection(repositoryInstance.Network.Remotes);
-
+        public string ShortenObjectId(ICommit commit) => repositoryInstance.ObjectDatabase.ShortenObjectId((Commit)commit);
         public void CreateBranchForPullRequestBranch(AuthenticationInfo auth)
         {
             var network = repositoryInstance.Network;
@@ -173,21 +169,16 @@ namespace GitVersion
             log.Info($"Checking local branch '{fakeBranchName}' out.");
             Checkout(fakeBranchName);
         }
-        public bool AnyMatchingRemote(string targetUrl)
+        public void CleanupDuplicateOrigin(string defaultRemoteName)
         {
-            return repositoryInstance.Network.Remotes.Any(r => r.Url == targetUrl);
-        }
-        public void CleanupDuplicateOrigin(string gitRootPath, string defaultRemoteName)
-        {
-            var repository = new GitRepository(new NullLog(), () => gitRootPath).repositoryInstance;
             var remoteToKeep = defaultRemoteName;
             // check that we have a remote that matches defaultRemoteName if not take the first remote
-            if (!repository.Network.Remotes.Any(remote => remote.Name.Equals(defaultRemoteName, StringComparison.InvariantCultureIgnoreCase)))
+            if (!repositoryInstance.Network.Remotes.Any(remote => remote.Name.Equals(defaultRemoteName, StringComparison.InvariantCultureIgnoreCase)))
             {
-                remoteToKeep = repository.Network.Remotes.First().Name;
+                remoteToKeep = repositoryInstance.Network.Remotes.First().Name;
             }
 
-            var duplicateRepos = repository.Network
+            var duplicateRepos = repositoryInstance.Network
                 .Remotes
                 .Where(remote => !remote.Name.Equals(remoteToKeep, StringComparison.InvariantCultureIgnoreCase))
                 .Select(remote => remote.Name);
@@ -195,7 +186,7 @@ namespace GitVersion
             // remove all remotes that are considered duplicates
             foreach (var repoName in duplicateRepos)
             {
-                repository.Network.Remotes.Remove(repoName);
+                repositoryInstance.Network.Remotes.Remove(repoName);
             }
         }
         public IRemote EnsureOnlyOneRemoteIsDefined()
@@ -214,6 +205,11 @@ namespace GitVersion
             var message = $"{howMany} remote(s) have been detected. When being run on a build server, the Git repository is expected to bear one (and no more than one) remote.";
             throw new WarningException(message);
         }
+        public void Checkout(string commitOrBranchSpec) => Commands.Checkout(repositoryInstance, commitOrBranchSpec);
+        public void Checkout(IBranch branch) => Commands.Checkout(repositoryInstance, (Branch)branch);
+        public void Fetch(string remote, IEnumerable<string> refSpecs, AuthenticationInfo auth, string logMessage) =>
+            Commands.Fetch((Repository)repositoryInstance, remote, refSpecs, GetFetchOptions(auth), logMessage);
+        internal static string Discover(string path) => Repository.Discover(path);
 
         private void AddMissingRefSpecs(LibGit2Sharp.Remote remote)
         {
@@ -224,7 +220,6 @@ namespace GitVersion
             log.Info($"Adding refspec: {allBranchesFetchRefSpec}");
             repositoryInstance.Network.Remotes.Update(remote.Name, r => r.FetchRefSpecs.Add(allBranchesFetchRefSpec));
         }
-
         private static FetchOptions GetFetchOptions(AuthenticationInfo auth)
         {
             return new()
@@ -251,130 +246,6 @@ namespace GitVersion
                 };
             }
             return null;
-        }
-
-        public bool GetMatchingCommitBranch(ICommit baseVersionSource, IBranch branch, ICommit firstMatchingCommit)
-        {
-            var filter = new CommitFilter
-            {
-                IncludeReachableFrom = branch,
-                ExcludeReachableFrom = baseVersionSource,
-                FirstParentOnly = true,
-            };
-            var commitCollection = Commits.QueryBy(filter);
-
-            return commitCollection.Contains(firstMatchingCommit);
-        }
-        public IEnumerable<ICommit> GetCommitsReacheableFrom(ICommit commit, IBranch branch)
-        {
-            var filter = new CommitFilter
-            {
-                IncludeReachableFrom = branch
-            };
-            var commitCollection = Commits.QueryBy(filter);
-
-            return commitCollection.Where(c => c.Sha == commit.Sha);
-        }
-        public IEnumerable<ICommit> GetCommitsReacheableFromHead(ICommit headCommit)
-        {
-            var filter = new CommitFilter
-            {
-                IncludeReachableFrom = headCommit,
-                SortBy = CommitSortStrategies.Topological | CommitSortStrategies.Reverse
-            };
-
-            var commitCollection = Commits.QueryBy(filter);
-
-            return commitCollection.ToList();
-        }
-        public ICommit? GetForwardMerge(ICommit commitToFindCommonBase, ICommit findMergeBase)
-        {
-            var filter = new CommitFilter
-            {
-                IncludeReachableFrom = commitToFindCommonBase,
-                ExcludeReachableFrom = findMergeBase
-            };
-            var commitCollection = Commits.QueryBy(filter);
-
-            var forwardMerge = commitCollection
-                .FirstOrDefault(c => c.Parents.Contains(findMergeBase));
-            return forwardMerge;
-        }
-        public IEnumerable<ICommit> GetMergeBaseCommits(ICommit? mergeCommit, ICommit mergedHead, ICommit findMergeBase)
-        {
-            var filter = new CommitFilter
-            {
-                IncludeReachableFrom = mergedHead,
-                ExcludeReachableFrom = findMergeBase
-            };
-            var commitCollection = Commits.QueryBy(filter);
-
-            var commits = mergeCommit != null
-                ? new[]
-                {
-                    mergeCommit
-                }.Union(commitCollection)
-                : commitCollection;
-            return commits.ToList();
-        }
-        public ICommit GetBaseVersionSource(ICommit currentBranchTip)
-        {
-            try
-            {
-                var filter = new CommitFilter
-                {
-                    IncludeReachableFrom = currentBranchTip
-                };
-                var commitCollection = Commits.QueryBy(filter);
-
-                var baseVersionSource = commitCollection.First(c => !c.Parents.Any());
-                return baseVersionSource;
-            }
-            catch (NotFoundException exception)
-            {
-                throw new GitVersionException($"Cannot find commit {currentBranchTip}. Please ensure that the repository is an unshallow clone with `git fetch --unshallow`.", exception);
-            }
-        }
-        public IEnumerable<ICommit> GetMainlineCommitLog(ICommit baseVersionSource, ICommit mainlineTip)
-        {
-            var filter = new CommitFilter
-            {
-                IncludeReachableFrom = mainlineTip,
-                ExcludeReachableFrom = baseVersionSource,
-                SortBy = CommitSortStrategies.Reverse,
-                FirstParentOnly = true
-            };
-            var commitCollection = Commits.QueryBy(filter);
-
-            var mainlineCommitLog = commitCollection.ToList();
-            return mainlineCommitLog;
-        }
-        public IEnumerable<ICommit> GetCommitLog(ICommit baseVersionSource, ICommit currentCommit)
-        {
-            var filter = new CommitFilter
-            {
-                IncludeReachableFrom = currentCommit,
-                ExcludeReachableFrom = baseVersionSource,
-                SortBy = CommitSortStrategies.Topological | CommitSortStrategies.Time
-            };
-
-            var commitCollection = Commits.QueryBy(filter);
-
-            return commitCollection;
-        }
-        public void Checkout(string commitOrBranchSpec)
-        {
-            Commands.Checkout(repositoryInstance, commitOrBranchSpec);
-        }
-
-        public void Checkout(IBranch branch)
-        {
-            Commands.Checkout(repositoryInstance, (Branch)branch);
-        }
-
-        public void Fetch(string remote, IEnumerable<string> refSpecs, AuthenticationInfo auth, string logMessage)
-        {
-            Commands.Fetch((Repository)repositoryInstance, remote, refSpecs, GitRepository.GetFetchOptions(auth), logMessage);
         }
     }
 }
