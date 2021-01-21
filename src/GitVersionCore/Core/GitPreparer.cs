@@ -92,7 +92,22 @@ namespace GitVersion
 
         private void CleanupDuplicateOrigin()
         {
-            repository.CleanupDuplicateOrigin(DefaultRemoteName);
+            var remoteToKeep = DefaultRemoteName;
+            // check that we have a remote that matches defaultRemoteName if not take the first remote
+            if (!repository.Remotes.Any(remote => remote.Name.Equals(DefaultRemoteName, StringComparison.InvariantCultureIgnoreCase)))
+            {
+                remoteToKeep = repository.Remotes.First().Name;
+            }
+
+            var duplicateRemotes = repository.Remotes
+                .Where(remote => !remote.Name.Equals(remoteToKeep, StringComparison.InvariantCultureIgnoreCase))
+                .Select(remote => remote.Name);
+
+            // remove all remotes that are considered duplicates
+            foreach (var remoteName in duplicateRemotes)
+            {
+                repository.Remotes.Remove(remoteName);
+            }
         }
 
         private void CreateDynamicRepository(string targetBranch)
@@ -133,8 +148,7 @@ namespace GitVersion
         {
             using (log.IndentLog($"Cloning repository from url '{repositoryUrl}'"))
             {
-                var returnedPath = repository.Clone(repositoryUrl, gitDirectory, auth);
-                log.Info($"Returned path after repository clone: {returnedPath}");
+                repository.Clone(repositoryUrl, gitDirectory, auth);
             }
         }
 
@@ -163,7 +177,7 @@ namespace GitVersion
                 else
                 {
                     log.Info($"Fetching from remote '{remote.Name}' using the following refspecs: {remote.RefSpecs}.");
-                    repository.Fetch(remote.Name, new string[0], authentication, null);
+                    repository.Fetch(remote.Name, Enumerable.Empty<string>(), authentication, null);
                 }
 
                 EnsureLocalBranchExistsForCurrentBranch(repository, log, remote, currentBranchName);
@@ -173,8 +187,7 @@ namespace GitVersion
                 // Bug fix for https://github.com/GitTools/GitVersion/issues/1754, head maybe have been changed
                 // if this is a dynamic repository. But only allow this in case the branches are different (branch switch)
                 if (expectedSha != repository.Head.Tip.Sha &&
-                    (isDynamicRepository || currentBranch is null
-                     || !repository.Head.Equals(currentBranch)))
+                    (isDynamicRepository || currentBranch is null || !repository.Head.Equals(currentBranch)))
                 {
                     var newExpectedSha = repository.Head.Tip.Sha;
                     var newExpectedBranchName = repository.Head.Name.Canonical;
@@ -206,7 +219,7 @@ namespace GitVersion
                 if (matchingCurrentBranch != null)
                 {
                     log.Info($"Checking out local branch '{currentBranchName}'.");
-                    repository.Checkout(matchingCurrentBranch);
+                    repository.Checkout(matchingCurrentBranch.Name.Canonical);
                 }
                 else if (localBranchesWhereCommitShaIsHead.Count > 1)
                 {
@@ -219,7 +232,7 @@ namespace GitVersion
                     if (master != null)
                     {
                         log.Warning("Because one of the branches is 'master', will build master." + moveBranchMsg);
-                        repository.Checkout(master);
+                        repository.Checkout(Config.MasterBranchKey);
                     }
                     else
                     {
@@ -228,7 +241,7 @@ namespace GitVersion
                         {
                             var branchWithoutSeparator = branchesWithoutSeparators[0];
                             log.Warning($"Choosing {branchWithoutSeparator.Name.Canonical} as it is the only branch without / or - in it. " + moveBranchMsg);
-                            repository.Checkout(branchWithoutSeparator);
+                            repository.Checkout(branchWithoutSeparator.Name.Canonical);
                         }
                         else
                         {
@@ -244,7 +257,7 @@ namespace GitVersion
                 else
                 {
                     log.Info($"Checking out local branch 'refs/heads/{localBranchesWhereCommitShaIsHead[0]}'.");
-                    repository.Checkout(repository.Branches[localBranchesWhereCommitShaIsHead[0].Name.Friendly]);
+                    repository.Checkout(localBranchesWhereCommitShaIsHead[0].Name.Friendly);
                 }
             }
             finally

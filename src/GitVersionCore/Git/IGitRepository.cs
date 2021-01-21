@@ -16,16 +16,13 @@ namespace GitVersion
         IRemoteCollection Remotes { get; }
 
         int GetNumberOfUncommittedChanges();
-        string ShortenObjectId(ICommit commit);
 
-        void CleanupDuplicateOrigin(string remoteName);
         IRemote EnsureOnlyOneRemoteIsDefined();
         ICommit FindMergeBase(ICommit commit, ICommit otherCommit);
+        void CreateBranchForPullRequestBranch(AuthenticationInfo auth);
 
         void Checkout(string commitOrBranchSpec);
-        void Checkout(IBranch branch);
         void Fetch(string remote, IEnumerable<string> refSpecs, AuthenticationInfo auth, string logMessage);
-        void CreateBranchForPullRequestBranch(AuthenticationInfo auth);
-        string Clone(string sourceUrl, string workdirPath, AuthenticationInfo auth);
+        void Clone(string sourceUrl, string workdirPath, AuthenticationInfo auth);
     }
 }

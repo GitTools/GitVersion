@@ -35,11 +35,12 @@ namespace GitVersion
             repositoryLazy = new Lazy<IRepository>(() => new Repository(getGitRootDirectory()));
         }
 
-        public string Clone(string sourceUrl, string workdirPath, AuthenticationInfo auth)
+        public void Clone(string sourceUrl, string workdirPath, AuthenticationInfo auth)
         {
             try
             {
-                return Repository.Clone(sourceUrl, workdirPath, GetCloneOptions(auth));
+                var path = Repository.Clone(sourceUrl, workdirPath, GetCloneOptions(auth));
+                log.Info($"Returned path after repository clone: {path}");
             }
             catch (LibGit2SharpException ex)
             {
@@ -112,7 +113,6 @@ namespace GitVersion
             return new Commit(mergeBase);
         }
 
-        public string ShortenObjectId(ICommit commit) => repositoryInstance.ObjectDatabase.ShortenObjectId((Commit)commit);
         public void CreateBranchForPullRequestBranch(AuthenticationInfo auth)
         {
             var network = repositoryInstance.Network;
@@ -144,7 +144,7 @@ namespace GitVersion
                 throw new WarningException(message);
             }
 
-            var reference = refs[0];
+            var reference = refs.First();
             var canonicalName = reference.CanonicalName;
             log.Info($"Found remote tip '{canonicalName}' pointing at the commit '{headTipSha}'.");
 
@@ -169,26 +169,6 @@ namespace GitVersion
             log.Info($"Checking local branch '{fakeBranchName}' out.");
             Checkout(fakeBranchName);
         }
-        public void CleanupDuplicateOrigin(string defaultRemoteName)
-        {
-            var remoteToKeep = defaultRemoteName;
-            // check that we have a remote that matches defaultRemoteName if not take the first remote
-            if (!repositoryInstance.Network.Remotes.Any(remote => remote.Name.Equals(defaultRemoteName, StringComparison.InvariantCultureIgnoreCase)))
-            {
-                remoteToKeep = repositoryInstance.Network.Remotes.First().Name;
-            }
-
-            var duplicateRepos = repositoryInstance.Network
-                .Remotes
-                .Where(remote => !remote.Name.Equals(remoteToKeep, StringComparison.InvariantCultureIgnoreCase))
-                .Select(remote => remote.Name);
-
-            // remove all remotes that are considered duplicates
-            foreach (var repoName in duplicateRepos)
-            {
-                repositoryInstance.Network.Remotes.Remove(repoName);
-            }
-        }
         public IRemote EnsureOnlyOneRemoteIsDefined()
         {
             var remotes = repositoryInstance.Network.Remotes;
@@ -198,7 +178,12 @@ namespace GitVersion
             {
                 var remote = remotes.Single();
                 log.Info($"One remote found ({remote.Name} -> '{remote.Url}').");
-                AddMissingRefSpecs(remote);
+                if (remote.FetchRefSpecs.All(r => r.Source != "refs/heads/*"))
+                {
+                    var allBranchesFetchRefSpec = $"+refs/heads/*:refs/remotes/{remote.Name}/*";
+                    log.Info($"Adding refspec: {allBranchesFetchRefSpec}");
+                    repositoryInstance.Network.Remotes.Update(remote.Name, r => r.FetchRefSpecs.Add(allBranchesFetchRefSpec));
+                }
                 return new Remote(remote);
             }
 
@@ -206,20 +191,10 @@ namespace GitVersion
             throw new WarningException(message);
         }
         public void Checkout(string commitOrBranchSpec) => Commands.Checkout(repositoryInstance, commitOrBranchSpec);
-        public void Checkout(IBranch branch) => Commands.Checkout(repositoryInstance, (Branch)branch);
         public void Fetch(string remote, IEnumerable<string> refSpecs, AuthenticationInfo auth, string logMessage) =>
             Commands.Fetch((Repository)repositoryInstance, remote, refSpecs, GetFetchOptions(auth), logMessage);
         internal static string Discover(string path) => Repository.Discover(path);
 
-        private void AddMissingRefSpecs(LibGit2Sharp.Remote remote)
-        {
-            if (remote.FetchRefSpecs.Any(r => r.Source == "refs/heads/*"))
-                return;
-
-            var allBranchesFetchRefSpec = $"+refs/heads/*:refs/remotes/{remote.Name}/*";
-            log.Info($"Adding refspec: {allBranchesFetchRefSpec}");
-            repositoryInstance.Network.Remotes.Update(remote.Name, r => r.FetchRefSpecs.Add(allBranchesFetchRefSpec));
-        }
         private static FetchOptions GetFetchOptions(AuthenticationInfo auth)
         {
             return new()
