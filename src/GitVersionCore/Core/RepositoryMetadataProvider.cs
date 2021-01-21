@@ -423,11 +423,6 @@ namespace GitVersion
             return repository.Commits.QueryBy(filter);
         }
 
-        public string ShortenObjectId(ICommit commit)
-        {
-            return repository.ShortenObjectId(commit);
-        }
-
         public VersionField? DetermineIncrementedField(BaseVersion baseVersion, GitVersionContext context)
         {
             return IncrementStrategyFinder.DetermineIncrementedField(repository, context, baseVersion);

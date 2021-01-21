@@ -23,5 +23,10 @@ namespace GitVersion
                 return remote is null ? null : new Remote(remote);
             }
         }
+
+        public void Remove(string remoteName)
+        {
+            innerCollection.Remove(remoteName);
+        }
     }
 }
