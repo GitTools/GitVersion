@@ -15,23 +15,12 @@ namespace GitVersion
         ICommitCollection Commits { get; }
         IRemoteCollection Remotes { get; }
 
-        IGitRepository CreateNew(string gitRootPath);
-
         int GetNumberOfUncommittedChanges();
         string ShortenObjectId(ICommit commit);
 
-        void CleanupDuplicateOrigin(string gitRootPath, string remoteName);
-        bool GetMatchingCommitBranch(ICommit baseVersionSource, IBranch branch, ICommit firstMatchingCommit);
+        void CleanupDuplicateOrigin(string remoteName);
         IRemote EnsureOnlyOneRemoteIsDefined();
         ICommit FindMergeBase(ICommit commit, ICommit otherCommit);
-        ICommit GetBaseVersionSource(ICommit currentBranchTip);
-        ICommit GetForwardMerge(ICommit commitToFindCommonBase, ICommit findMergeBase);
-
-        IEnumerable<ICommit> GetCommitsReacheableFrom(ICommit commit, IBranch branch);
-        IEnumerable<ICommit> GetMergeBaseCommits(ICommit mergeCommit, ICommit mergedHead, ICommit findMergeBase);
-        IEnumerable<ICommit> GetMainlineCommitLog(ICommit baseVersionSource, ICommit mainlineTip);
-        IEnumerable<ICommit> GetCommitsReacheableFromHead(ICommit headCommit);
-        IEnumerable<ICommit> GetCommitLog(ICommit baseVersionSource, ICommit currentCommit);
 
         void Checkout(string commitOrBranchSpec);
         void Checkout(IBranch branch);

@@ -83,13 +83,13 @@ namespace GitVersionCore.Tests
             });
 
             var gitPreparer = sp.GetService<IGitPreparer>();
-            gitPreparer.Prepare();
+            gitPreparer?.Prepare();
 
             var gitVersionCalculator = sp.GetService<IGitVersionCalculateTool>();
 
-            var versionVariables = gitVersionCalculator.CalculateVersionVariables();
+            var versionVariables = gitVersionCalculator?.CalculateVersionVariables();
 
-            Assert.AreEqual(expectedFullSemVer, versionVariables.FullSemVer);
+            Assert.AreEqual(expectedFullSemVer, versionVariables?.FullSemVer);
         }
     }
 }
