@@ -14,8 +14,16 @@ namespace GitVersion
         {
             innerBranch = branch;
             Name = new ReferenceName(branch.CanonicalName);
+
+            var commit = innerBranch.Tip;
+            Tip = commit is null ? null : new Commit(commit);
+
+            var commits = innerBranch.Commits;
+            Commits = commits is null ? null : new CommitCollection(commits);
         }
         public ReferenceName Name { get; }
+        public ICommit? Tip { get; }
+        public ICommitCollection? Commits { get; }
 
         public int CompareTo(IBranch other) => comparerHelper.Compare(this, other);
         public bool Equals(IBranch other) => equalityHelper.Equals(this, other);
@@ -23,24 +31,6 @@ namespace GitVersion
         public override int GetHashCode() => equalityHelper.GetHashCode(this);
         public override string ToString() => Name.ToString();
         public static implicit operator LibGit2Sharp.Branch(Branch d) => d.innerBranch;
-
-        public ICommit? Tip
-        {
-            get
-            {
-                var commit = innerBranch.Tip;
-                return commit is null ? null : new Commit(commit);
-            }
-        }
-
-        public ICommitCollection? Commits
-        {
-            get
-            {
-                var commits = innerBranch.Commits;
-                return commits is null ? null : new CommitCollection(commits);
-            }
-        }
 
         public bool IsDetachedHead => Name.Canonical.Equals("(no branch)", StringComparison.OrdinalIgnoreCase);
 

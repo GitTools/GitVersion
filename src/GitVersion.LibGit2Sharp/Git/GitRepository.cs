@@ -71,7 +71,6 @@ namespace GitVersion
         public bool IsHeadDetached => repositoryInstance.Info.IsHeadDetached;
 
         public IBranch Head => new Branch(repositoryInstance.Head);
-
         public ITagCollection Tags => new TagCollection(repositoryInstance.Tags);
         public IReferenceCollection Refs => new ReferenceCollection(repositoryInstance.Refs);
         public IBranchCollection Branches => new BranchCollection(repositoryInstance.Branches);
