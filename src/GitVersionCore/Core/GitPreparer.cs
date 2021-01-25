@@ -176,7 +176,8 @@ namespace GitVersion
                 }
                 else
                 {
-                    log.Info($"Fetching from remote '{remote.Name}' using the following refspecs: {remote.RefSpecs}.");
+                    var refSpecs = string.Join(", ", remote.FetchRefSpecs.Select(r => r.Specification));
+                    log.Info($"Fetching from remote '{remote.Name}' using the following refspecs: {refSpecs}.");
                     repository.Fetch(remote.Name, Enumerable.Empty<string>(), authentication, null);
                 }
 
