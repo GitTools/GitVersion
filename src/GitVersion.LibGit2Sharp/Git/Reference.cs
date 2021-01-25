@@ -15,8 +15,10 @@ namespace GitVersion
         {
             innerReference = reference;
             Name = new ReferenceName(reference.CanonicalName);
+            DirectReferenceTargetId = new ObjectId(directReference.Target.Id);
         }
         public ReferenceName Name { get; }
+        public IObjectId DirectReferenceTargetId { get; }
         public int CompareTo(IReference other) => comparerHelper.Compare(this, other);
         public override bool Equals(object obj) => Equals((obj as IReference)!);
         public bool Equals(IReference other) => equalityHelper.Equals(this, other);
@@ -24,7 +26,6 @@ namespace GitVersion
         public override string ToString() => Name.ToString();
         public string TargetIdentifier => innerReference.TargetIdentifier;
         public string DirectReferenceTargetIdentifier => directReference.TargetIdentifier;
-        public IObjectId DirectReferenceTargetId => new ObjectId(directReference.Target.Id);
         public static implicit operator LibGit2Sharp.Reference(Reference d) => d.innerReference;
     }
 }

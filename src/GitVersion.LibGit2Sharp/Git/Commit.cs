@@ -12,7 +12,13 @@ namespace GitVersion
 
         private readonly LibGit2Sharp.Commit innerCommit;
 
-        internal Commit(LibGit2Sharp.Commit innerCommit) => this.innerCommit = innerCommit;
+        internal Commit(LibGit2Sharp.Commit innerCommit)
+        {
+            this.innerCommit = innerCommit;
+            Parents = innerCommit.Parents.Select(parent => new Commit(parent));
+            Id = new ObjectId(innerCommit.Id);
+            When = innerCommit.Committer.When;
+        }
 
         public int CompareTo(ICommit other) => comparerHelper.Compare(this, other);
         public bool Equals(ICommit other) => equalityHelper.Equals(this, other);
@@ -24,13 +30,10 @@ namespace GitVersion
         }
         public static implicit operator LibGit2Sharp.Commit(Commit d) => d.innerCommit;
 
-        public IEnumerable<ICommit> Parents => innerCommit.Parents.Select(parent => new Commit(parent));
-
+        public IEnumerable<ICommit> Parents { get; }
+        public IObjectId Id { get; }
+        public DateTimeOffset When { get; }
         public string Sha => innerCommit.Sha;
-
-        public IObjectId Id => new ObjectId(innerCommit.Id);
-
-        public DateTimeOffset When => innerCommit.Committer.When;
 
         public string Message => innerCommit.Message;
     }

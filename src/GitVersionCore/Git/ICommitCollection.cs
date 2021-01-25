@@ -6,6 +6,6 @@ namespace GitVersion
     public interface ICommitCollection : IEnumerable<ICommit>
     {
         IEnumerable<ICommit> GetCommitsPriorTo(DateTimeOffset olderThan);
-        ICommitCollection QueryBy(CommitFilter commitFilter);
+        IEnumerable<ICommit> QueryBy(CommitFilter commitFilter);
     }
 }
