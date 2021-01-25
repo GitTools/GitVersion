@@ -5,18 +5,17 @@ using GitVersion.Helpers;
 
 namespace GitVersion
 {
-    internal sealed class Commit : ICommit
+    internal sealed class Commit : GitObject, ICommit
     {
         private static readonly LambdaEqualityHelper<ICommit> equalityHelper = new(x => x.Id);
         private static readonly LambdaKeyComparer<ICommit, string> comparerHelper = new(x => x.Sha);
 
         private readonly LibGit2Sharp.Commit innerCommit;
 
-        internal Commit(LibGit2Sharp.Commit innerCommit)
+        internal Commit(LibGit2Sharp.Commit innerCommit) : base(innerCommit)
         {
             this.innerCommit = innerCommit;
             Parents = innerCommit.Parents.Select(parent => new Commit(parent));
-            Id = new ObjectId(innerCommit.Id);
             When = innerCommit.Committer.When;
         }
 
@@ -31,9 +30,7 @@ namespace GitVersion
         public static implicit operator LibGit2Sharp.Commit(Commit d) => d.innerCommit;
 
         public IEnumerable<ICommit> Parents { get; }
-        public IObjectId Id { get; }
         public DateTimeOffset When { get; }
-        public string Sha => innerCommit.Sha;
 
         public string Message => innerCommit.Message;
     }
