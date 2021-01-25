@@ -167,7 +167,7 @@ namespace GitVersion
 
             try
             {
-                var remote = repository.EnsureOnlyOneRemoteIsDefined();
+                var remote = EnsureOnlyOneRemoteIsDefined();
 
                 //If noFetch is enabled, then GitVersion will assume that the git repository is normalized before execution, so that fetching from remotes is not required.
                 if (noFetch)
@@ -276,6 +276,28 @@ Please run `git {GitExtensions.CreateGitLogArgs(100)}` and submit it along with 
                     }
                 }
             }
+        }
+
+        private IRemote EnsureOnlyOneRemoteIsDefined()
+        {
+            var remotes = repository.Remotes;
+            var howMany = remotes.Count();
+
+            if (howMany == 1)
+            {
+                var remote = remotes.Single();
+                log.Info($"One remote found ({remote.Name} -> '{remote.Url}').");
+                if (remote.FetchRefSpecs.Any(r => r.Source == "refs/heads/*"))
+                    return remote;
+
+                var allBranchesFetchRefSpec = $"+refs/heads/*:refs/remotes/{remote.Name}/*";
+                log.Info($"Adding refspec: {allBranchesFetchRefSpec}");
+                remotes.Update(remote.Name, allBranchesFetchRefSpec);
+                return remote;
+            }
+
+            var message = $"{howMany} remote(s) have been detected. When being run on a build server, the Git repository is expected to bear one (and no more than one) remote.";
+            throw new WarningException(message);
         }
 
         private static void CreateOrUpdateLocalBranchesFromRemoteTrackingOnes(IGitRepository repo, ILog log, string remoteName)

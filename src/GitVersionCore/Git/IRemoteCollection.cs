@@ -6,5 +6,6 @@ namespace GitVersion
     {
         IRemote this[string name] { get; }
         void Remove(string remoteName);
+        void Update(string remoteName, string refSpec);
     }
 }
