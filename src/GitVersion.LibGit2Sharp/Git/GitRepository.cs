@@ -35,32 +35,6 @@ namespace GitVersion
             repositoryLazy = new Lazy<IRepository>(() => new Repository(getGitRootDirectory()));
         }
 
-        public void Clone(string sourceUrl, string workdirPath, AuthenticationInfo auth)
-        {
-            try
-            {
-                var path = Repository.Clone(sourceUrl, workdirPath, GetCloneOptions(auth));
-                log.Info($"Returned path after repository clone: {path}");
-            }
-            catch (LibGit2SharpException ex)
-            {
-                var message = ex.Message;
-                if (message.Contains("401"))
-                {
-                    throw new Exception("Unauthorized: Incorrect username/password");
-                }
-                if (message.Contains("403"))
-                {
-                    throw new Exception("Forbidden: Possibly Incorrect username/password");
-                }
-                if (message.Contains("404"))
-                {
-                    throw new Exception("Not found: The repository was not found");
-                }
-
-                throw new Exception("There was an unknown problem with the Git repository you provided", ex);
-            }
-        }
         public void Dispose()
         {
             if (repositoryLazy.IsValueCreated) repositoryInstance.Dispose();
@@ -77,6 +51,11 @@ namespace GitVersion
         public ICommitCollection Commits => new CommitCollection(repositoryInstance.Commits);
         public IRemoteCollection Remotes => new RemoteCollection(repositoryInstance.Network.Remotes);
 
+        public ICommit FindMergeBase(ICommit commit, ICommit otherCommit)
+        {
+            var mergeBase = repositoryInstance.ObjectDatabase.FindMergeBase((Commit)commit, (Commit)otherCommit);
+            return new Commit(mergeBase);
+        }
         public int GetNumberOfUncommittedChanges()
         {
             // check if we have a branch tip at all to behave properly with empty repos
@@ -106,12 +85,6 @@ namespace GitVersion
 
             return changes.Count;
         }
-        public ICommit FindMergeBase(ICommit commit, ICommit otherCommit)
-        {
-            var mergeBase = repositoryInstance.ObjectDatabase.FindMergeBase((Commit)commit, (Commit)otherCommit);
-            return new Commit(mergeBase);
-        }
-
         public void CreateBranchForPullRequestBranch(AuthenticationInfo auth)
         {
             var network = repositoryInstance.Network;
@@ -151,43 +124,48 @@ namespace GitVersion
             {
                 log.Info($"Checking out tag '{canonicalName}'");
                 Checkout(reference.Target.Sha);
-                return;
             }
+            else if (canonicalName.StartsWith("refs/pull/") || canonicalName.StartsWith("refs/pull-requests/"))
+            {
+                var fakeBranchName = canonicalName.Replace("refs/pull/", "refs/heads/pull/").Replace("refs/pull-requests/", "refs/heads/pull-requests/");
 
-            if (!canonicalName.StartsWith("refs/pull/") && !canonicalName.StartsWith("refs/pull-requests/"))
+                log.Info($"Creating fake local branch '{fakeBranchName}'.");
+                Refs.Add(fakeBranchName, headTipSha);
+
+                log.Info($"Checking local branch '{fakeBranchName}' out.");
+                Checkout(fakeBranchName);
+            }
+            else
             {
                 var message = $"Remote tip '{canonicalName}' from remote '{remote.Url}' doesn't look like a valid pull request.";
                 throw new WarningException(message);
             }
-
-            var fakeBranchName = canonicalName.Replace("refs/pull/", "refs/heads/pull/").Replace("refs/pull-requests/", "refs/heads/pull-requests/");
-
-            log.Info($"Creating fake local branch '{fakeBranchName}'.");
-            Refs.Add(fakeBranchName, headTipSha);
-
-            log.Info($"Checking local branch '{fakeBranchName}' out.");
-            Checkout(fakeBranchName);
         }
-        public IRemote EnsureOnlyOneRemoteIsDefined()
+        public void Clone(string sourceUrl, string workdirPath, AuthenticationInfo auth)
         {
-            var remotes = repositoryInstance.Network.Remotes;
-            var howMany = remotes.Count();
-
-            if (howMany == 1)
+            try
             {
-                var remote = remotes.Single();
-                log.Info($"One remote found ({remote.Name} -> '{remote.Url}').");
-                if (remote.FetchRefSpecs.All(r => r.Source != "refs/heads/*"))
-                {
-                    var allBranchesFetchRefSpec = $"+refs/heads/*:refs/remotes/{remote.Name}/*";
-                    log.Info($"Adding refspec: {allBranchesFetchRefSpec}");
-                    repositoryInstance.Network.Remotes.Update(remote.Name, r => r.FetchRefSpecs.Add(allBranchesFetchRefSpec));
-                }
-                return new Remote(remote);
+                var path = Repository.Clone(sourceUrl, workdirPath, GetCloneOptions(auth));
+                log.Info($"Returned path after repository clone: {path}");
             }
+            catch (LibGit2SharpException ex)
+            {
+                var message = ex.Message;
+                if (message.Contains("401"))
+                {
+                    throw new Exception("Unauthorized: Incorrect username/password");
+                }
+                if (message.Contains("403"))
+                {
+                    throw new Exception("Forbidden: Possibly Incorrect username/password");
+                }
+                if (message.Contains("404"))
+                {
+                    throw new Exception("Not found: The repository was not found");
+                }
 
-            var message = $"{howMany} remote(s) have been detected. When being run on a build server, the Git repository is expected to bear one (and no more than one) remote.";
-            throw new WarningException(message);
+                throw new Exception("There was an unknown problem with the Git repository you provided", ex);
+            }
         }
         public void Checkout(string commitOrBranchSpec) => Commands.Checkout(repositoryInstance, commitOrBranchSpec);
         public void Fetch(string remote, IEnumerable<string> refSpecs, AuthenticationInfo auth, string logMessage) =>

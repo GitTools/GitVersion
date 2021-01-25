@@ -94,11 +94,6 @@ namespace GitVersion
             }
         }
 
-        public ICommit FindMergeBase(ICommit commit, ICommit mainlineTip)
-        {
-            return repository.FindMergeBase(commit, mainlineTip);
-        }
-
         public ICommit GetCurrentCommit(IBranch currentBranch, string commitId)
         {
             ICommit currentCommit = null;
@@ -501,6 +496,8 @@ namespace GitVersion
 
             return commitCollection.FirstOrDefault(c => c.Parents.Contains(findMergeBase));
         }
+
+        public ICommit FindMergeBase(ICommit commit, ICommit mainlineTip) => repository.FindMergeBase(commit, mainlineTip);
 
         public int GetNumberOfUncommittedChanges() => repository.GetNumberOfUncommittedChanges();
     }

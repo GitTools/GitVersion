@@ -28,5 +28,9 @@ namespace GitVersion
         {
             innerCollection.Remove(remoteName);
         }
+        public void Update(string remoteName, string refSpec)
+        {
+            innerCollection.Update(remoteName, r => r.FetchRefSpecs.Add(refSpec));
+        }
     }
 }

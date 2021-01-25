@@ -15,10 +15,8 @@ namespace GitVersion
         ICommitCollection Commits { get; }
         IRemoteCollection Remotes { get; }
 
-        int GetNumberOfUncommittedChanges();
-
-        IRemote EnsureOnlyOneRemoteIsDefined();
         ICommit FindMergeBase(ICommit commit, ICommit otherCommit);
+        int GetNumberOfUncommittedChanges();
         void CreateBranchForPullRequestBranch(AuthenticationInfo auth);
 
         void Checkout(string commitOrBranchSpec);
