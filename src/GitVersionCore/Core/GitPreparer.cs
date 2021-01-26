@@ -16,20 +16,20 @@ namespace GitVersion
         private readonly IMutatingGitRepository repository;
         private readonly IOptions<GitVersionOptions> options;
         private readonly IGitRepositoryInfo repositoryInfo;
-        private readonly IRepositoryMetadataProvider repositoryMetadataProvider;
+        private readonly IRepositoryStore repositoryStore;
         private readonly ICurrentBuildAgent buildAgent;
 
         private const string DefaultRemoteName = "origin";
 
         public GitPreparer(ILog log, IEnvironment environment, ICurrentBuildAgent buildAgent, IOptions<GitVersionOptions> options,
-            IMutatingGitRepository repository, IGitRepositoryInfo repositoryInfo, IRepositoryMetadataProvider repositoryMetadataProvider)
+            IMutatingGitRepository repository, IGitRepositoryInfo repositoryInfo, IRepositoryStore repositoryStore)
         {
             this.log = log ?? throw new ArgumentNullException(nameof(log));
             this.environment = environment ?? throw new ArgumentNullException(nameof(environment));
             this.repository = repository ?? throw new ArgumentNullException(nameof(repository));
             this.options = options ?? throw new ArgumentNullException(nameof(options));
             this.repositoryInfo = repositoryInfo ?? throw new ArgumentNullException(nameof(repositoryInfo));
-            this.repositoryMetadataProvider = repositoryMetadataProvider ?? throw new ArgumentNullException(nameof(repositoryMetadataProvider));
+            this.repositoryStore = repositoryStore ?? throw new ArgumentNullException(nameof(repositoryStore));
             this.buildAgent = buildAgent;
         }
 
@@ -184,7 +184,7 @@ namespace GitVersion
                 EnsureLocalBranchExistsForCurrentBranch(remote, currentBranchName);
                 CreateOrUpdateLocalBranchesFromRemoteTrackingOnes(remote.Name);
 
-                var currentBranch = repositoryMetadataProvider.FindBranch(currentBranchName);
+                var currentBranch = repositoryStore.FindBranch(currentBranchName);
                 // Bug fix for https://github.com/GitTools/GitVersion/issues/1754, head maybe have been changed
                 // if this is a dynamic repository. But only allow this in case the branches are different (branch switch)
                 if (expectedSha != repository.Head.Tip.Sha &&

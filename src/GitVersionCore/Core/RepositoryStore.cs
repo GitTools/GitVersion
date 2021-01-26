@@ -10,7 +10,7 @@ using GitVersion.VersionCalculation;
 
 namespace GitVersion
 {
-    public class RepositoryMetadataProvider : IRepositoryMetadataProvider
+    public class RepositoryStore : IRepositoryStore
     {
         private readonly Dictionary<IBranch, List<BranchCommit>> mergeBaseCommitsCache = new();
         private readonly Dictionary<Tuple<IBranch, IBranch>, ICommit> mergeBaseCache = new();
@@ -20,7 +20,7 @@ namespace GitVersion
         private readonly ILog log;
         private readonly IGitRepository repository;
 
-        public RepositoryMetadataProvider(ILog log, IGitRepository repository)
+        public RepositoryStore(ILog log, IGitRepository repository)
         {
             this.log = log ?? throw new ArgumentNullException(nameof(log));
             this.repository = repository ?? throw new ArgumentNullException(nameof(log));
