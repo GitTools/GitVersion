@@ -13,7 +13,7 @@ namespace GitVersion
     {
         private readonly ILog log;
         private readonly IEnvironment environment;
-        private readonly IGitRepository repository;
+        private readonly IMutatingGitRepository repository;
         private readonly IOptions<GitVersionOptions> options;
         private readonly IGitRepositoryInfo repositoryInfo;
         private readonly IRepositoryMetadataProvider repositoryMetadataProvider;
@@ -22,7 +22,7 @@ namespace GitVersion
         private const string DefaultRemoteName = "origin";
 
         public GitPreparer(ILog log, IEnvironment environment, ICurrentBuildAgent buildAgent, IOptions<GitVersionOptions> options,
-            IGitRepository repository, IGitRepositoryInfo repositoryInfo, IRepositoryMetadataProvider repositoryMetadataProvider)
+            IMutatingGitRepository repository, IGitRepositoryInfo repositoryInfo, IRepositoryMetadataProvider repositoryMetadataProvider)
         {
             this.log = log ?? throw new ArgumentNullException(nameof(log));
             this.environment = environment ?? throw new ArgumentNullException(nameof(environment));
@@ -181,8 +181,8 @@ namespace GitVersion
                     repository.Fetch(remote.Name, Enumerable.Empty<string>(), authentication, null);
                 }
 
-                EnsureLocalBranchExistsForCurrentBranch(repository, log, remote, currentBranchName);
-                CreateOrUpdateLocalBranchesFromRemoteTrackingOnes(repository, log, remote.Name);
+                EnsureLocalBranchExistsForCurrentBranch(remote, currentBranchName);
+                CreateOrUpdateLocalBranchesFromRemoteTrackingOnes(remote.Name);
 
                 var currentBranch = repositoryMetadataProvider.FindBranch(currentBranchName);
                 // Bug fix for https://github.com/GitTools/GitVersion/issues/1754, head maybe have been changed
@@ -300,12 +300,12 @@ Please run `git {GitExtensions.CreateGitLogArgs(100)}` and submit it along with 
             throw new WarningException(message);
         }
 
-        private static void CreateOrUpdateLocalBranchesFromRemoteTrackingOnes(IGitRepository repo, ILog log, string remoteName)
+        private void CreateOrUpdateLocalBranchesFromRemoteTrackingOnes(string remoteName)
         {
             var prefix = $"refs/remotes/{remoteName}/";
             var remoteHeadCanonicalName = $"{prefix}HEAD";
             var headReferenceName = ReferenceName.Parse(remoteHeadCanonicalName);
-            var remoteTrackingReferences = repo.Refs
+            var remoteTrackingReferences = repository.Refs
                 .FromGlob(prefix + "*")
                 .Where(r => !r.Name.Equals(headReferenceName));
 
@@ -317,11 +317,11 @@ Please run `git {GitExtensions.CreateGitLogArgs(100)}` and submit it along with 
 
                 var referenceName = ReferenceName.Parse(localCanonicalName);
                 // We do not want to touch our current branch
-                if (repo.Head.Name.EquivalentTo(branchName)) continue;
+                if (repository.Head.Name.EquivalentTo(branchName)) continue;
 
-                if (repo.Refs.Any(x => x.Name.Equals(referenceName)))
+                if (repository.Refs.Any(x => x.Name.Equals(referenceName)))
                 {
-                    var localRef = repo.Refs[localCanonicalName];
+                    var localRef = repository.Refs[localCanonicalName];
                     if (localRef.TargetIdentifier == remoteTrackingReference.TargetIdentifier)
                     {
                         log.Info($"Skipping update of '{remoteTrackingReference.Name.Canonical}' as it already matches the remote ref.");
@@ -329,25 +329,20 @@ Please run `git {GitExtensions.CreateGitLogArgs(100)}` and submit it along with 
                     }
                     var remoteRefTipId = remoteTrackingReference.ReferenceTargetId;
                     log.Info($"Updating local ref '{localRef.Name.Canonical}' to point at {remoteRefTipId}.");
-                    repo.Refs.UpdateTarget(localRef, remoteRefTipId);
+                    repository.Refs.UpdateTarget(localRef, remoteRefTipId);
                     continue;
                 }
 
                 log.Info($"Creating local branch from remote tracking '{remoteTrackingReference.Name.Canonical}'.");
-                repo.Refs.Add(localCanonicalName, remoteTrackingReference.TargetIdentifier, true);
+                repository.Refs.Add(localCanonicalName, remoteTrackingReference.TargetIdentifier, true);
 
-                var branch = repo.Branches[branchName];
-                repo.Branches.UpdateTrackedBranch(branch, remoteTrackingReferenceName);
+                var branch = repository.Branches[branchName];
+                repository.Branches.UpdateTrackedBranch(branch, remoteTrackingReferenceName);
             }
         }
 
-        private static void EnsureLocalBranchExistsForCurrentBranch(IGitRepository repo, ILog log, IRemote remote, string currentBranch)
+        public void EnsureLocalBranchExistsForCurrentBranch(IRemote remote, string currentBranch)
         {
-            if (log is null)
-            {
-                throw new ArgumentNullException(nameof(log));
-            }
-
             if (remote is null)
             {
                 throw new ArgumentNullException(nameof(remote));
@@ -363,11 +358,11 @@ Please run `git {GitExtensions.CreateGitLogArgs(100)}` and submit it along with 
                     ? currentBranch
                     : currentBranch.Replace("refs/", "refs/heads/");
 
-            var repoTip = repo.Head.Tip;
+            var repoTip = repository.Head.Tip;
 
             // We currently have the rep.Head of the *default* branch, now we need to look up the right one
             var originCanonicalName = $"{remote.Name}/{currentBranch}";
-            var originBranch = repo.Branches[originCanonicalName];
+            var originBranch = repository.Branches[originCanonicalName];
             if (originBranch != null)
             {
                 repoTip = originBranch.Tip;
@@ -376,21 +371,21 @@ Please run `git {GitExtensions.CreateGitLogArgs(100)}` and submit it along with 
             var repoTipId = repoTip.Id;
 
             var referenceName = ReferenceName.Parse(localCanonicalName);
-            if (repo.Branches.All(b => !b.Name.Equals(referenceName)))
+            if (repository.Branches.All(b => !b.Name.Equals(referenceName)))
             {
                 log.Info(isBranch ? $"Creating local branch {referenceName}"
                     : $"Creating local branch {referenceName} pointing at {repoTipId}");
-                repo.Refs.Add(localCanonicalName, repoTipId.Sha);
+                repository.Refs.Add(localCanonicalName, repoTipId.Sha);
             }
             else
             {
                 log.Info(isBranch ? $"Updating local branch {referenceName} to point at {repoTip}"
                     : $"Updating local branch {referenceName} to match ref {currentBranch}");
-                var localRef = repo.Refs[localCanonicalName];
-                repo.Refs.UpdateTarget(localRef, repoTipId);
+                var localRef = repository.Refs[localCanonicalName];
+                repository.Refs.UpdateTarget(localRef, repoTipId);
             }
 
-            repo.Checkout(localCanonicalName);
+            repository.Checkout(localCanonicalName);
         }
     }
 }

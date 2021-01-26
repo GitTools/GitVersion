@@ -7,7 +7,7 @@ using LibGit2Sharp.Handlers;
 
 namespace GitVersion
 {
-    internal sealed class GitRepository : IGitRepository
+    internal sealed class GitRepository : IMutatingGitRepository
     {
         private readonly ILog log;
         private Lazy<IRepository> repositoryLazy;
