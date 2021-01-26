@@ -1,9 +1,6 @@
-using System;
-using System.Collections.Generic;
-
 namespace GitVersion
 {
-    public interface IGitRepository : IDisposable
+    public interface IGitRepository
     {
         string Path { get; }
         string WorkingDirectory { get; }
@@ -17,10 +14,5 @@ namespace GitVersion
 
         ICommit FindMergeBase(ICommit commit, ICommit otherCommit);
         int GetNumberOfUncommittedChanges();
-        void CreateBranchForPullRequestBranch(AuthenticationInfo auth);
-
-        void Checkout(string commitOrBranchSpec);
-        void Fetch(string remote, IEnumerable<string> refSpecs, AuthenticationInfo auth, string logMessage);
-        void Clone(string sourceUrl, string workdirPath, AuthenticationInfo auth);
     }
 }

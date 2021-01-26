@@ -7,6 +7,7 @@ namespace GitVersion
         public void RegisterTypes(IServiceCollection services)
         {
             services.AddSingleton<IGitRepository, GitRepository>();
+            services.AddSingleton<IMutatingGitRepository, GitRepository>();
             services.AddSingleton<IGitRepositoryInfo, GitRepositoryInfo>();
         }
     }
