@@ -5,7 +5,7 @@ using GitVersion.VersionCalculation;
 
 namespace GitVersion.Common
 {
-    public interface IRepositoryMetadataProvider
+    public interface IRepositoryStore
     {
         /// <summary>
         /// Find the merge base of the two branches, i.e. the best common ancestor of the two branches' tips.

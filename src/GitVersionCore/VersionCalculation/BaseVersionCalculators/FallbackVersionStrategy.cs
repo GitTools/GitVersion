@@ -11,11 +11,11 @@ namespace GitVersion.VersionCalculation
     /// </summary>
     public class FallbackVersionStrategy : VersionStrategyBase
     {
-        private readonly IRepositoryMetadataProvider repositoryMetadataProvider;
+        private readonly IRepositoryStore repositoryStore;
 
-        public FallbackVersionStrategy(IRepositoryMetadataProvider repositoryMetadataProvider, Lazy<GitVersionContext> versionContext) : base(versionContext)
+        public FallbackVersionStrategy(IRepositoryStore repositoryStore, Lazy<GitVersionContext> versionContext) : base(versionContext)
         {
-            this.repositoryMetadataProvider = repositoryMetadataProvider;
+            this.repositoryStore = repositoryStore;
         }
         public override IEnumerable<BaseVersion> GetVersions()
         {
@@ -25,7 +25,7 @@ namespace GitVersion.VersionCalculation
                 throw new GitVersionException("No commits found on the current branch.");
             }
 
-            var baseVersionSource = repositoryMetadataProvider.GetBaseVersionSource(currentBranchTip);
+            var baseVersionSource = repositoryStore.GetBaseVersionSource(currentBranchTip);
 
             yield return new BaseVersion("Fallback base version", false, new SemanticVersion(minor: 1), baseVersionSource, null);
         }

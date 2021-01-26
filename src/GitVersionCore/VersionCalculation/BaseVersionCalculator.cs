@@ -10,15 +10,15 @@ namespace GitVersion.VersionCalculation
     public class BaseVersionCalculator : IBaseVersionCalculator
     {
         private readonly ILog log;
-        private readonly IRepositoryMetadataProvider repositoryMetadataProvider;
+        private readonly IRepositoryStore repositoryStore;
         private readonly IVersionStrategy[] strategies;
         private readonly Lazy<GitVersionContext> versionContext;
         private GitVersionContext context => versionContext.Value;
 
-        public BaseVersionCalculator(ILog log, IRepositoryMetadataProvider repositoryMetadataProvider, Lazy<GitVersionContext> versionContext, IEnumerable<IVersionStrategy> strategies)
+        public BaseVersionCalculator(ILog log, IRepositoryStore repositoryStore, Lazy<GitVersionContext> versionContext, IEnumerable<IVersionStrategy> strategies)
         {
             this.log = log ?? throw new ArgumentNullException(nameof(log));
-            this.repositoryMetadataProvider = repositoryMetadataProvider ?? throw new ArgumentNullException(nameof(repositoryMetadataProvider));
+            this.repositoryStore = repositoryStore ?? throw new ArgumentNullException(nameof(repositoryStore));
             this.strategies = strategies?.ToArray() ?? Array.Empty<IVersionStrategy>();
             this.versionContext = versionContext ?? throw new ArgumentNullException(nameof(versionContext));
         }
@@ -37,7 +37,7 @@ namespace GitVersion.VersionCalculation
                 var versions = allVersions
                     .Select(baseVersion => new Versions
                     {
-                        IncrementedVersion = repositoryMetadataProvider.MaybeIncrement(baseVersion, context),
+                        IncrementedVersion = repositoryStore.MaybeIncrement(baseVersion, context),
                         Version = baseVersion
                     })
                     .ToList();
@@ -125,7 +125,7 @@ namespace GitVersion.VersionCalculation
                         baseVersion.Version.Source,
                         baseVersion.Version.ShouldIncrement,
                         baseVersion.Version.SemanticVersion,
-                        repositoryMetadataProvider.FindMergeBase(parents[0], parents[1]),
+                        repositoryStore.FindMergeBase(parents[0], parents[1]),
                         baseVersion.Version.BranchNameOverride);
                 }
             }
@@ -134,7 +134,7 @@ namespace GitVersion.VersionCalculation
         private bool ReleaseBranchExistsInRepo()
         {
             var releaseBranchConfig = context.FullConfiguration.GetReleaseBranchConfig();
-            var releaseBranches = repositoryMetadataProvider.GetReleaseBranches(releaseBranchConfig);
+            var releaseBranches = repositoryStore.GetReleaseBranches(releaseBranchConfig);
             return releaseBranches.Any();
         }
 

@@ -25,17 +25,17 @@ namespace GitVersion.VersionCalculation
     /// </summary>
     public class TrackReleaseBranchesVersionStrategy : VersionStrategyBase
     {
-        private readonly IRepositoryMetadataProvider repositoryMetadataProvider;
+        private readonly IRepositoryStore repositoryStore;
         private readonly VersionInBranchNameVersionStrategy releaseVersionStrategy;
         private readonly TaggedCommitVersionStrategy taggedCommitVersionStrategy;
 
-        public TrackReleaseBranchesVersionStrategy(IRepositoryMetadataProvider repositoryMetadataProvider, Lazy<GitVersionContext> versionContext)
+        public TrackReleaseBranchesVersionStrategy(IRepositoryStore repositoryStore, Lazy<GitVersionContext> versionContext)
             : base(versionContext)
         {
-            this.repositoryMetadataProvider = repositoryMetadataProvider ?? throw new ArgumentNullException(nameof(repositoryMetadataProvider));
+            this.repositoryStore = repositoryStore ?? throw new ArgumentNullException(nameof(repositoryStore));
 
-            releaseVersionStrategy = new VersionInBranchNameVersionStrategy(repositoryMetadataProvider, versionContext);
-            taggedCommitVersionStrategy = new TaggedCommitVersionStrategy(repositoryMetadataProvider, versionContext);
+            releaseVersionStrategy = new VersionInBranchNameVersionStrategy(repositoryStore, versionContext);
+            taggedCommitVersionStrategy = new TaggedCommitVersionStrategy(repositoryStore, versionContext);
         }
 
         public override IEnumerable<BaseVersion> GetVersions()
@@ -50,7 +50,7 @@ namespace GitVersion.VersionCalculation
 
         private IEnumerable<BaseVersion> MasterTagsVersions()
         {
-            var master = repositoryMetadataProvider.FindBranch(Config.MasterBranchKey);
+            var master = repositoryStore.FindBranch(Config.MasterBranchKey);
             return master != null ? taggedCommitVersionStrategy.GetTaggedVersions(master, null) : new BaseVersion[0];
         }
 
@@ -61,7 +61,7 @@ namespace GitVersion.VersionCalculation
             var releaseBranchConfig = Context.FullConfiguration.GetReleaseBranchConfig();
             if (releaseBranchConfig.Any())
             {
-                var releaseBranches = repositoryMetadataProvider.GetReleaseBranches(releaseBranchConfig);
+                var releaseBranches = repositoryStore.GetReleaseBranches(releaseBranchConfig);
 
                 return releaseBranches
                     .SelectMany(b => GetReleaseVersion(Context, b))
@@ -86,7 +86,7 @@ namespace GitVersion.VersionCalculation
             var tagPrefixRegex = context.Configuration.GitTagPrefix;
 
             // Find the commit where the child branch was created.
-            var baseSource = repositoryMetadataProvider.FindMergeBase(releaseBranch, context.CurrentBranch);
+            var baseSource = repositoryStore.FindMergeBase(releaseBranch, context.CurrentBranch);
             if (Equals(baseSource, context.CurrentCommit))
             {
                 // Ignore the branch if it has no commits.

@@ -10,14 +10,14 @@ namespace GitVersion.VersionCalculation
     internal class MainlineVersionCalculator : IMainlineVersionCalculator
     {
         private readonly ILog log;
-        private readonly IRepositoryMetadataProvider repositoryMetadataProvider;
+        private readonly IRepositoryStore repositoryStore;
         private readonly Lazy<GitVersionContext> versionContext;
         private GitVersionContext context => versionContext.Value;
 
-        public MainlineVersionCalculator(ILog log, IRepositoryMetadataProvider repositoryMetadataProvider, Lazy<GitVersionContext> versionContext)
+        public MainlineVersionCalculator(ILog log, IRepositoryStore repositoryStore, Lazy<GitVersionContext> versionContext)
         {
             this.log = log ?? throw new ArgumentNullException(nameof(log));
-            this.repositoryMetadataProvider = repositoryMetadataProvider ?? throw new ArgumentNullException(nameof(repositoryMetadataProvider));
+            this.repositoryStore = repositoryStore ?? throw new ArgumentNullException(nameof(repositoryStore));
             this.versionContext = versionContext ?? throw new ArgumentNullException(nameof(versionContext));
         }
 
@@ -49,7 +49,7 @@ namespace GitVersion.VersionCalculation
                     log.Info($"Current branch ({context.CurrentBranch}) was branch from {mergeBase}");
                 }
 
-                var mainlineCommitLog = repositoryMetadataProvider.GetMainlineCommitLog(baseVersion.BaseVersionSource, mainlineTip).ToList();
+                var mainlineCommitLog = repositoryStore.GetMainlineCommitLog(baseVersion.BaseVersionSource, mainlineTip).ToList();
                 var directCommits = new List<ICommit>(mainlineCommitLog.Count);
 
                 if (string.IsNullOrEmpty(context.Configuration.NextVersion))
@@ -85,7 +85,7 @@ namespace GitVersion.VersionCalculation
 
         public SemanticVersionBuildMetaData CreateVersionBuildMetaData(ICommit baseVersionSource)
         {
-            var commitLog = repositoryMetadataProvider.GetCommitLog(baseVersionSource, context.CurrentCommit);
+            var commitLog = repositoryStore.GetCommitLog(baseVersionSource, context.CurrentCommit);
             var commitsSinceTag = commitLog.Count();
             log.Info($"{commitsSinceTag} commits found between {baseVersionSource} and {context.CurrentCommit}");
 
@@ -106,7 +106,7 @@ namespace GitVersion.VersionCalculation
             // Merge commit, process all merged commits as a batch
             var mergeCommit = commit;
             var mergedHead = GetMergedHead(mergeCommit);
-            var findMergeBase = repositoryMetadataProvider.FindMergeBase(mergeCommit.Parents.First(), mergedHead);
+            var findMergeBase = repositoryStore.FindMergeBase(mergeCommit.Parents.First(), mergedHead);
             var findMessageIncrement = FindMessageIncrement(mergeCommit, mergedHead, findMergeBase, directCommits);
 
             // If this collection is not empty there has been some direct commits against master
@@ -123,7 +123,7 @@ namespace GitVersion.VersionCalculation
         private IBranch GetMainline(ICommit baseVersionSource)
         {
             var mainlineBranchConfigs = context.FullConfiguration.Branches.Where(b => b.Value.IsMainline == true).ToList();
-            var mainlineBranches = repositoryMetadataProvider.GetMainlineBranches(context.CurrentCommit, mainlineBranchConfigs);
+            var mainlineBranches = repositoryStore.GetMainlineBranches(context.CurrentCommit, mainlineBranchConfigs);
 
             var allMainlines = mainlineBranches.Values.SelectMany(branches => branches.Select(b => b.Name.Friendly));
             log.Info("Found possible mainline branches: " + string.Join(", ", allMainlines));
@@ -147,7 +147,7 @@ namespace GitVersion.VersionCalculation
             }
 
             // prefer a branch on which the merge base was a direct commit, if there is such a branch
-            var firstMatchingCommitBranch = possibleMainlineBranches.FirstOrDefault(b => repositoryMetadataProvider.GetMatchingCommitBranch(baseVersionSource, b, firstMatchingCommit));
+            var firstMatchingCommitBranch = possibleMainlineBranches.FirstOrDefault(b => repositoryStore.GetMatchingCommitBranch(baseVersionSource, b, firstMatchingCommit));
             if (firstMatchingCommitBranch != null)
             {
                 var message = string.Format(
@@ -199,8 +199,8 @@ namespace GitVersion.VersionCalculation
         /// <returns>The best possible merge base between the current commit and <paramref name="mainline"/> that is not the child of a forward merge.</returns>
         private ICommit FindMergeBaseBeforeForwardMerge(ICommit baseVersionSource, IBranch mainline, out ICommit mainlineTip)
         {
-            var mergeBase = repositoryMetadataProvider.FindMergeBase(context.CurrentCommit, mainline.Tip);
-            var mainlineCommitLog = repositoryMetadataProvider.GetMainlineCommitLog(baseVersionSource, mainline.Tip).ToList();
+            var mergeBase = repositoryStore.FindMergeBase(context.CurrentCommit, mainline.Tip);
+            var mainlineCommitLog = repositoryStore.GetMainlineCommitLog(baseVersionSource, mainline.Tip).ToList();
 
             // find the mainline commit effective for versioning the current branch
             mainlineTip = GetEffectiveMainlineTip(mainlineCommitLog, mergeBase, mainline.Tip);
@@ -216,7 +216,7 @@ namespace GitVersion.VersionCalculation
                     log.Info(message);
 
                     // re-do mergeBase detection before the forward merge
-                    mergeBase = repositoryMetadataProvider.FindMergeBase(context.CurrentCommit, mainlineTipPrevious);
+                    mergeBase = repositoryStore.FindMergeBase(context.CurrentCommit, mainlineTipPrevious);
                     mainlineTip = GetEffectiveMainlineTip(mainlineCommitLog, mergeBase, mainlineTipPrevious);
                 }
             }
@@ -239,7 +239,7 @@ namespace GitVersion.VersionCalculation
 
         private VersionField FindMessageIncrement(ICommit mergeCommit, ICommit mergedHead, ICommit findMergeBase, List<ICommit> commitLog)
         {
-            var commits = repositoryMetadataProvider.GetMergeBaseCommits(mergeCommit, mergedHead, findMergeBase);
+            var commits = repositoryStore.GetMergeBaseCommits(mergeCommit, mergedHead, findMergeBase);
             commitLog.RemoveAll(c => commits.Any(c1 => c1.Sha == c.Sha));
             return IncrementStrategyFinder.GetIncrementForCommits(context, commits)
                    ?? TryFindIncrementFromMergeMessage(mergeCommit);

@@ -14,12 +14,12 @@ namespace GitVersion.Configuration
         private const string FallbackConfigName = "Fallback";
 
         private readonly ILog log;
-        private readonly IRepositoryMetadataProvider repositoryMetadataProvider;
+        private readonly IRepositoryStore repositoryStore;
 
-        public BranchConfigurationCalculator(ILog log, IRepositoryMetadataProvider repositoryMetadataProvider)
+        public BranchConfigurationCalculator(ILog log, IRepositoryStore repositoryStore)
         {
             this.log = log ?? throw new ArgumentNullException(nameof(log));
-            this.repositoryMetadataProvider = repositoryMetadataProvider ?? throw new ArgumentNullException(nameof(repositoryMetadataProvider));
+            this.repositoryStore = repositoryStore ?? throw new ArgumentNullException(nameof(repositoryStore));
         }
 
         /// <summary>
@@ -68,7 +68,7 @@ namespace GitVersion.Configuration
                     excludedBranches = CalculateWhenMultipleParents(currentCommit, ref targetBranch, excludedBranches);
                 }
 
-                excludedInheritBranches ??= repositoryMetadataProvider.GetExcludedInheritBranches(configuration).ToList();
+                excludedInheritBranches ??= repositoryStore.GetExcludedInheritBranches(configuration).ToList();
 
                 excludedBranches = excludedBranches.Where(b => excludedInheritBranches.All(bte => !b.Equals(bte))).ToArray();
                 // Add new excluded branches.
@@ -76,14 +76,14 @@ namespace GitVersion.Configuration
                 {
                     excludedInheritBranches.Add(excludedBranch);
                 }
-                var branchesToEvaluate = repositoryMetadataProvider.ExcludingBranches(excludedInheritBranches).ToList();
+                var branchesToEvaluate = repositoryStore.ExcludingBranches(excludedInheritBranches).ToList();
 
-                var branchPoint = repositoryMetadataProvider
+                var branchPoint = repositoryStore
                     .FindCommitBranchWasBranchedFrom(targetBranch, configuration, excludedInheritBranches.ToArray());
                 List<IBranch> possibleParents;
                 if (branchPoint == BranchCommit.Empty)
                 {
-                    possibleParents = repositoryMetadataProvider.GetBranchesContainingCommit(targetBranch.Tip, branchesToEvaluate)
+                    possibleParents = repositoryStore.GetBranchesContainingCommit(targetBranch.Tip, branchesToEvaluate)
                         // It fails to inherit Increment branch configuration if more than 1 parent;
                         // therefore no point to get more than 2 parents
                         .Take(2)
@@ -91,10 +91,10 @@ namespace GitVersion.Configuration
                 }
                 else
                 {
-                    var branches = repositoryMetadataProvider.GetBranchesContainingCommit(branchPoint.Commit, branchesToEvaluate).ToList();
+                    var branches = repositoryStore.GetBranchesContainingCommit(branchPoint.Commit, branchesToEvaluate).ToList();
                     if (branches.Count > 1)
                     {
-                        var currentTipBranches = repositoryMetadataProvider.GetBranchesContainingCommit(currentCommit, branchesToEvaluate).ToList();
+                        var currentTipBranches = repositoryStore.GetBranchesContainingCommit(currentCommit, branchesToEvaluate).ToList();
                         possibleParents = branches.Except(currentTipBranches).ToList();
                     }
                     else
@@ -127,7 +127,7 @@ namespace GitVersion.Configuration
                     ? "Failed to inherit Increment branch configuration, no branches found."
                     : "Failed to inherit Increment branch configuration, ended up with: " + string.Join(", ", possibleParents.Select(p => p.ToString()));
 
-                var chosenBranch = repositoryMetadataProvider.GetChosenBranch(configuration);
+                var chosenBranch = repositoryStore.GetChosenBranch(configuration);
                 if (chosenBranch == null)
                 {
                     // TODO We should call the build server to generate this exception, each build server works differently
@@ -175,7 +175,7 @@ namespace GitVersion.Configuration
         private IBranch[] CalculateWhenMultipleParents(ICommit currentCommit, ref IBranch currentBranch, IBranch[] excludedBranches)
         {
             var parents = currentCommit.Parents.ToArray();
-            var branches = repositoryMetadataProvider.GetBranchesForCommit(parents[1]).ToList();
+            var branches = repositoryStore.GetBranchesForCommit(parents[1]).ToList();
             if (branches.Count == 1)
             {
                 var branch = branches[0];
@@ -192,7 +192,7 @@ namespace GitVersion.Configuration
             }
             else
             {
-                var possibleTargetBranches = repositoryMetadataProvider.GetBranchesForCommit(parents[0]).ToList();
+                var possibleTargetBranches = repositoryStore.GetBranchesForCommit(parents[0]).ToList();
                 if (possibleTargetBranches.Count > 1)
                 {
                     currentBranch = possibleTargetBranches.FirstOrDefault(b => b.Name.WithoutRemote == Config.MasterBranchKey) ?? possibleTargetBranches.First();

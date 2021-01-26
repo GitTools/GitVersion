@@ -11,11 +11,11 @@ using Shouldly;
 namespace GitVersionCore.Tests
 {
     [TestFixture]
-    public class RepositoryMetadataProviderTests : TestBase
+    public class RepositoryStoreTests : TestBase
     {
         private readonly ILog log;
 
-        public RepositoryMetadataProviderTests()
+        public RepositoryStoreTests()
         {
             var sp = ConfigureServices();
             log = sp.GetService<ILog>();
@@ -63,7 +63,7 @@ namespace GitVersionCore.Tests
 
             var develop = fixtureRepository.FindBranch("develop");
             var release = fixtureRepository.FindBranch("release-2.0.0");
-            var gitRepoMetadataProvider = new RepositoryMetadataProvider(log, fixtureRepository);
+            var gitRepoMetadataProvider = new RepositoryStore(log, fixtureRepository);
 
             var releaseBranchMergeBase = gitRepoMetadataProvider.FindMergeBase(release, develop);
 
@@ -119,7 +119,7 @@ namespace GitVersionCore.Tests
 
             var develop = fixtureRepository.FindBranch("develop");
             var release = fixtureRepository.FindBranch("release-2.0.0");
-            var gitRepoMetadataProvider = new RepositoryMetadataProvider(log, fixtureRepository);
+            var gitRepoMetadataProvider = new RepositoryStore(log, fixtureRepository);
 
             var releaseBranchMergeBase = gitRepoMetadataProvider.FindMergeBase(release, develop);
 
@@ -194,7 +194,7 @@ namespace GitVersionCore.Tests
             var develop = fixtureRepository.FindBranch("develop");
             var release = fixtureRepository.FindBranch("release-2.0.0");
 
-            var gitRepoMetadataProvider = new RepositoryMetadataProvider(log, fixtureRepository);
+            var gitRepoMetadataProvider = new RepositoryStore(log, fixtureRepository);
 
             var releaseBranchMergeBase = gitRepoMetadataProvider.FindMergeBase(release, develop);
 
