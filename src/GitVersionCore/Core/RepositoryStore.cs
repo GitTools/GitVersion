@@ -423,7 +423,7 @@ namespace GitVersion
             return IncrementStrategyFinder.DetermineIncrementedField(repository, context, baseVersion);
         }
 
-        public bool GetMatchingCommitBranch(ICommit baseVersionSource, IBranch branch, ICommit firstMatchingCommit)
+        public bool IsCommitOnBranch(ICommit baseVersionSource, IBranch branch, ICommit firstMatchingCommit)
         {
             var filter = new CommitFilter
             {
