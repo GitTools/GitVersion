@@ -134,7 +134,7 @@ Following options are supported:
 
 Read more about [Configuration](docs/reference/configuration).
 
-It will not change config file 'GitVersion.yml'.
+Using `override-config` on the command line will not change the contents of the config file `GitVersion.yml`.
 
 ### Example: How to override configuration option 'tag-prefix' to use prefix 'custom'
 
