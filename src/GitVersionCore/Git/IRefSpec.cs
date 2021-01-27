@@ -9,10 +9,4 @@ namespace GitVersion
         string Source { get; }
         string Destination { get; }
     }
-
-    public enum RefSpecDirection
-    {
-        Fetch,
-        Push
-    }
 }

@@ -118,14 +118,15 @@ namespace GitVersion
 
             var reference = refs.First();
             var canonicalName = reference.CanonicalName;
+            var referenceName = ReferenceName.Parse(reference.CanonicalName);
             log.Info($"Found remote tip '{canonicalName}' pointing at the commit '{headTipSha}'.");
 
-            if (canonicalName.StartsWith("refs/tags"))
+            if (referenceName.IsTag)
             {
                 log.Info($"Checking out tag '{canonicalName}'");
                 Checkout(reference.Target.Sha);
             }
-            else if (canonicalName.StartsWith("refs/pull/") || canonicalName.StartsWith("refs/pull-requests/"))
+            else if (referenceName.IsPullRequest)
             {
                 var fakeBranchName = canonicalName.Replace("refs/pull/", "refs/heads/pull/").Replace("refs/pull-requests/", "refs/heads/pull-requests/");
 
@@ -153,15 +154,15 @@ namespace GitVersion
                 var message = ex.Message;
                 if (message.Contains("401"))
                 {
-                    throw new Exception("Unauthorized: Incorrect username/password");
+                    throw new Exception("Unauthorized: Incorrect username/password", ex);
                 }
                 if (message.Contains("403"))
                 {
-                    throw new Exception("Forbidden: Possibly Incorrect username/password");
+                    throw new Exception("Forbidden: Possibly Incorrect username/password", ex);
                 }
                 if (message.Contains("404"))
                 {
-                    throw new Exception("Not found: The repository was not found");
+                    throw new Exception("Not found: The repository was not found", ex);
                 }
 
                 throw new Exception("There was an unknown problem with the Git repository you provided", ex);

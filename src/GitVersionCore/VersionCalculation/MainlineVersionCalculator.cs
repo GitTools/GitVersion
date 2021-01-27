@@ -147,7 +147,7 @@ namespace GitVersion.VersionCalculation
             }
 
             // prefer a branch on which the merge base was a direct commit, if there is such a branch
-            var firstMatchingCommitBranch = possibleMainlineBranches.FirstOrDefault(b => repositoryStore.GetMatchingCommitBranch(baseVersionSource, b, firstMatchingCommit));
+            var firstMatchingCommitBranch = possibleMainlineBranches.FirstOrDefault(b => repositoryStore.IsCommitOnBranch(baseVersionSource, b, firstMatchingCommit));
             if (firstMatchingCommitBranch != null)
             {
                 var message = string.Format(

@@ -39,7 +39,7 @@ namespace GitVersion.Common
         IEnumerable<SemanticVersion> GetVersionTagsOnBranch(IBranch branch, string tagPrefixRegex);
         IEnumerable<Tuple<ITag, SemanticVersion>> GetValidVersionTags(string tagPrefixRegex, DateTimeOffset? olderThan = null);
 
-        bool GetMatchingCommitBranch(ICommit baseVersionSource, IBranch branch, ICommit firstMatchingCommit);
+        bool IsCommitOnBranch(ICommit baseVersionSource, IBranch branch, ICommit firstMatchingCommit);
         VersionField? DetermineIncrementedField(BaseVersion baseVersion, GitVersionContext context);
 
         int GetNumberOfUncommittedChanges();
