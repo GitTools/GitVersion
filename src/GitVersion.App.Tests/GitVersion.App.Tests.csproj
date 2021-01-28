@@ -10,7 +10,7 @@
     </ItemGroup>
     <ItemGroup>
         <ProjectReference Include="..\GitVersion.Core\GitVersion.Core.csproj"/>
-        <ProjectReference Include="..\GitVersionExe\GitVersionExe.csproj"/>
+        <ProjectReference Include="..\GitVersion.App\GitVersion.App.csproj"/>
     </ItemGroup>
     <ItemGroup>
         <None Include="TestBuildFile.proj"/>

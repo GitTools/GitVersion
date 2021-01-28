@@ -60,7 +60,7 @@ Task("Pack-Nuget")
 
     // GitVersion.MsBuild, global tool & core
     settings.ArgumentCustomization = arg => arg.Append("/p:PackAsTool=true");
-    DotNetCorePack("./src/GitVersionExe/GitVersionExe.csproj", settings);
+    DotNetCorePack("./src/GitVersion.App/GitVersion.App.csproj", settings);
 
     settings.ArgumentCustomization = arg => arg.Append("/p:IsPackaging=true");
     DotNetCorePack("./src/GitVersion.MsBuild", settings);
@@ -153,7 +153,7 @@ DirectoryPath PackPrepareNative(ICakeContext context, BuildParameters parameters
         arg => arg
         .Append("/p:PublishSingleFile=true");
 
-    context.DotNetCorePublish("./src/GitVersionExe/GitVersionExe.csproj", settings);
+    context.DotNetCorePublish("./src/GitVersion.App/GitVersion.App.csproj", settings);
 
     return outputPath;
 }

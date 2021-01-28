@@ -1,7 +1,7 @@
 using System;
 using GitVersion.OutputVariables;
 
-namespace GitVersionExe.Tests
+namespace GitVersion.App.Tests
 {
     public class ExecutionResults
     {

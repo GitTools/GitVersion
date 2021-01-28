@@ -1,12 +1,11 @@
 using System;
-using GitVersion;
 using GitVersion.OutputVariables;
 using GitVersion.Core.Tests.Helpers;
 using Microsoft.Extensions.DependencyInjection;
 using NUnit.Framework;
 using Shouldly;
 
-namespace GitVersionExe.Tests
+namespace GitVersion.App.Tests
 {
     [TestFixture]
     public class ArgumentParserOnBuildServerTests : TestBase

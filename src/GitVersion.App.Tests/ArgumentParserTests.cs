@@ -1,15 +1,13 @@
 using System.IO;
 using GitTools.Testing;
-using GitVersion;
 using GitVersion.Logging;
 using GitVersion.Model;
 using GitVersion.Core.Tests.Helpers;
 using Microsoft.Extensions.DependencyInjection;
 using NUnit.Framework;
 using Shouldly;
-using Environment = System.Environment;
 
-namespace GitVersionExe.Tests
+namespace GitVersion.App.Tests
 {
     [TestFixture]
     public class ArgumentParserTests : TestBase
@@ -33,7 +31,7 @@ namespace GitVersionExe.Tests
         public void EmptyMeansUseCurrentDirectory()
         {
             var arguments = argumentParser.ParseArguments("");
-            arguments.TargetPath.ShouldBe(Environment.CurrentDirectory);
+            arguments.TargetPath.ShouldBe(System.Environment.CurrentDirectory);
             arguments.LogFilePath.ShouldBe(null);
             arguments.IsHelp.ShouldBe(false);
         }
@@ -51,7 +49,7 @@ namespace GitVersionExe.Tests
         public void NoPathAndLogfileShouldUseCurrentDirectoryTargetDirectory()
         {
             var arguments = argumentParser.ParseArguments("-l logFilePath");
-            arguments.TargetPath.ShouldBe(Environment.CurrentDirectory);
+            arguments.TargetPath.ShouldBe(System.Environment.CurrentDirectory);
             arguments.LogFilePath.ShouldBe("logFilePath");
             arguments.IsHelp.ShouldBe(false);
         }

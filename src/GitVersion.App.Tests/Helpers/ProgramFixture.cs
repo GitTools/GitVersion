@@ -3,13 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using GitVersion;
 using GitVersion.Logging;
 using GitVersion.OutputVariables;
 using GitVersion.Core.Tests.Helpers;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace GitVersionExe.Tests
+namespace GitVersion.App.Tests
 {
     public sealed class ProgramFixture
     {

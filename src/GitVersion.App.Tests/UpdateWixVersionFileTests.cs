@@ -7,7 +7,7 @@ using GitVersion.OutputVariables;
 using GitVersion.VersionConverters.WixUpdater;
 using NUnit.Framework;
 
-namespace GitVersionExe.Tests
+namespace GitVersion.App.Tests
 {
     [TestFixture]
     [Parallelizable(ParallelScope.None)]

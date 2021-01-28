@@ -7,7 +7,7 @@ using GitVersion.Core.Tests.Helpers;
 using NUnit.Framework;
 using Shouldly;
 
-namespace GitVersionExe.Tests
+namespace GitVersion.App.Tests
 {
     [TestFixture]
     [Parallelizable(ParallelScope.None)]
@@ -55,7 +55,7 @@ namespace GitVersionExe.Tests
         [Test]
         public void WorkingDirectoryWithoutGitFolderFailsWithInformativeMessage()
         {
-            var result = GitVersionHelper.ExecuteIn(Environment.SystemDirectory, arguments: null, logToFile: false);
+            var result = GitVersionHelper.ExecuteIn(System.Environment.SystemDirectory, arguments: null, logToFile: false);
 
             result.ExitCode.ShouldNotBe(0);
             result.Output.ShouldContain("Cannot find the .git directory");
