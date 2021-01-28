@@ -1,13 +1,12 @@
 using System.Collections.Generic;
 using System.Linq;
-using GitVersion;
 using GitVersion.Extensions;
 using GitVersion.Core.Tests.Helpers;
 using Microsoft.Extensions.DependencyInjection;
 using NUnit.Framework;
 using Shouldly;
 
-namespace GitVersionExe.Tests
+namespace GitVersion.App.Tests
 {
     public class HelpWriterTests : TestBase
     {
@@ -17,7 +16,7 @@ namespace GitVersionExe.Tests
         {
             var sp = ConfigureServices(services =>
             {
-                services.AddModule(new GitVersionExeModule());
+                services.AddModule(new GitVersionAppModule());
             });
             helpWriter = sp.GetService<IHelpWriter>();
         }

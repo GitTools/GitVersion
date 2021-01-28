@@ -37,7 +37,7 @@ namespace GitVersion
                 {
                     services.AddModule(new GitVersionCoreModule());
                     services.AddModule(new GitVersionLibGit2SharpModule());
-                    services.AddModule(new GitVersionExeModule());
+                    services.AddModule(new GitVersionAppModule());
 
                     services.AddSingleton(sp =>
                     {

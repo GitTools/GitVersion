@@ -7,7 +7,7 @@ using GitVersion.BuildAgents;
 using GitVersion.Helpers;
 using GitVersion.Core.Tests.Helpers;
 
-namespace GitVersionExe.Tests
+namespace GitVersion.App.Tests
 {
     public static class GitVersionHelper
     {

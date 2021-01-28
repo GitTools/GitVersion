@@ -9,7 +9,7 @@ using LibGit2Sharp;
 using NUnit.Framework;
 using Shouldly;
 
-namespace GitVersionExe.Tests
+namespace GitVersion.App.Tests
 {
     [TestFixture]
     public class PullRequestInBuildAgentTest

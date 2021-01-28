@@ -6,7 +6,7 @@ using GitVersion.OutputVariables;
 using NUnit.Framework;
 using Shouldly;
 
-namespace GitVersionExe.Tests
+namespace GitVersion.App.Tests
 {
     public class JsonOutputOnBuildServerTest
     {

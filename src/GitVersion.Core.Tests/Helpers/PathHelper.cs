@@ -32,7 +32,7 @@ namespace GitVersion.Core.Tests.Helpers
 
         private static string GetExeDirectory()
         {
-            return Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)?.Replace("GitVersionExe.Tests", "GitVersionExe");
+            return Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)?.Replace("GitVersion.App.Tests", "GitVersion.App");
         }
     }
 }

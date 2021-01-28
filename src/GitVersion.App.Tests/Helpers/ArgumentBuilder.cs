@@ -1,6 +1,6 @@
 using System.Text;
 
-namespace GitVersionExe.Tests
+namespace GitVersion.App.Tests
 {
     public class ArgumentBuilder
     {

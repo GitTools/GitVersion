@@ -1,14 +1,13 @@
 using System;
 using System.IO;
 using System.Reflection;
-using GitVersion;
 using GitVersion.Extensions;
 using GitVersion.Core.Tests.Helpers;
 using Microsoft.Extensions.DependencyInjection;
 using Mono.Cecil;
 using NUnit.Framework;
 
-namespace GitVersionExe.Tests
+namespace GitVersion.App.Tests
 {
     [TestFixture]
     public class VersionWriterTests : TestBase
@@ -19,7 +18,7 @@ namespace GitVersionExe.Tests
         {
             var sp = ConfigureServices(services =>
             {
-                services.AddModule(new GitVersionExeModule());
+                services.AddModule(new GitVersionAppModule());
             });
 
             versionWriter = sp.GetService<IVersionWriter>();

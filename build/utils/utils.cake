@@ -170,7 +170,7 @@ GitVersionSettings SetGitVersionTool(GitVersionSettings settings, BuildParameter
 
 FilePath GetGitVersionToolLocation(BuildParameters parameters)
 {
-    return GetFiles($"src/GitVersionExe/bin/{parameters.Configuration}/{parameters.NetVersion50}/gitversion.dll").SingleOrDefault();
+    return GetFiles($"src/GitVersion.App/bin/{parameters.Configuration}/{parameters.NetVersion50}/gitversion.dll").SingleOrDefault();
 }
 
 void Build(BuildParameters parameters)
