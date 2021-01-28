@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using GitVersion.BuildAgents;
 using GitVersion.Helpers;
-using GitVersionCore.Tests.Helpers;
+using GitVersion.Core.Tests.Helpers;
 
 namespace GitVersionExe.Tests
 {

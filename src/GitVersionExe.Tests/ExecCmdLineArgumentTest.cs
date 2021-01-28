@@ -3,7 +3,7 @@ using System.IO;
 using System.Text;
 using GitTools.Testing;
 using GitVersion.Helpers;
-using GitVersionCore.Tests.Helpers;
+using GitVersion.Core.Tests.Helpers;
 using NUnit.Framework;
 using Shouldly;
 

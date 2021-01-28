@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using GitTools.Testing;
 using GitVersion.BuildAgents;
-using GitVersionCore.Tests.Helpers;
+using GitVersion.Core.Tests.Helpers;
 using LibGit2Sharp;
 using NUnit.Framework;
 using Shouldly;

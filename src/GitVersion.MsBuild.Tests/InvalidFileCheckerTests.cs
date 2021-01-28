@@ -1,7 +1,7 @@
 using System;
 using System.IO;
 using GitVersion.MsBuild.Tests.Mocks;
-using GitVersionCore.Tests.Helpers;
+using GitVersion.Core.Tests.Helpers;
 using Microsoft.Build.Framework;
 using NUnit.Framework;
 
