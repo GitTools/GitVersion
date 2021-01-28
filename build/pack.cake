@@ -66,7 +66,7 @@ Task("Pack-Nuget")
     DotNetCorePack("./src/GitVersion.MsBuild", settings);
 
     settings.ArgumentCustomization = null;
-    DotNetCorePack("./src/GitVersionCore", settings);
+    DotNetCorePack("./src/GitVersion.Core", settings);
 });
 
 Task("Pack-Chocolatey")

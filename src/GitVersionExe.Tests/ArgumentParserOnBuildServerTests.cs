@@ -1,7 +1,7 @@
 using System;
 using GitVersion;
 using GitVersion.OutputVariables;
-using GitVersionCore.Tests.Helpers;
+using GitVersion.Core.Tests.Helpers;
 using Microsoft.Extensions.DependencyInjection;
 using NUnit.Framework;
 using Shouldly;

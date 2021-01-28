@@ -34,6 +34,6 @@
 
     <ItemGroup>
         <ProjectReference Include="..\GitVersion.LibGit2Sharp\GitVersion.LibGit2Sharp.csproj" />
-        <ProjectReference Include="..\GitVersionCore\GitVersionCore.csproj" />
+        <ProjectReference Include="..\GitVersion.Core\GitVersion.Core.csproj" />
     </ItemGroup>
 </Project>

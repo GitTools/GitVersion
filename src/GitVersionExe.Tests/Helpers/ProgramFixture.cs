@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using GitVersion;
 using GitVersion.Logging;
 using GitVersion.OutputVariables;
-using GitVersionCore.Tests.Helpers;
+using GitVersion.Core.Tests.Helpers;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace GitVersionExe.Tests

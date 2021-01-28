@@ -27,7 +27,7 @@ See [how it works](http://gitversion.readthedocs.org/en/latest/more-info/how-it-
 
 ## Writing Tests
 
-We have made it super easy to write tests in GitVersion. Most tests you are interested in are in `GitVersionCore.Tests\IntegrationTests`.
+We have made it super easy to write tests in GitVersion. Most tests you are interested in are in `GitVersion.Core.Tests\IntegrationTests`.
 
 There is a scenario class for each type of branch. For example MasterScenarios, FeatureBranchScenarios etc.
 

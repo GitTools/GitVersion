@@ -3,7 +3,7 @@ using System.IO;
 using System.Reflection;
 using GitVersion;
 using GitVersion.Extensions;
-using GitVersionCore.Tests.Helpers;
+using GitVersion.Core.Tests.Helpers;
 using Microsoft.Extensions.DependencyInjection;
 using Mono.Cecil;
 using NUnit.Framework;

@@ -2,7 +2,7 @@ using System;
 using GitTools.Testing;
 using GitVersion.BuildAgents;
 using GitVersion.Extensions;
-using GitVersionCore.Tests.Helpers;
+using GitVersion.Core.Tests.Helpers;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
