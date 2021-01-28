@@ -19,12 +19,12 @@
 
     <PropertyGroup Condition="'$(MSBuildRuntimeType)' == 'Full' Or '$(MSBuildRuntimeType)' == 'Mono'">
         <GitVersionFileExe>&quot;$(MSBuildThisFileDirectory)net48/gitversion.exe&quot;</GitVersionFileExe>
-        <GitVersionAssemblyFile>&quot;$(MSBuildThisFileDirectory)net48/GitVersion.MsBuild.dll&quot;</GitVersionAssemblyFile>
+        <GitVersionAssemblyFile>$(MSBuildThisFileDirectory)net48/GitVersion.MsBuild.dll</GitVersionAssemblyFile>
     </PropertyGroup>
 
     <PropertyGroup>
         <GitVersionFileExe Condition="'$(GitVersionFileExe)' == ''">dotnet --roll-forward Major &quot;$(MSBuildThisFileDirectory)netcoreapp3.1/gitversion.dll&quot;</GitVersionFileExe>
-        <GitVersionAssemblyFile Condition="'$(GitVersionAssemblyFile)' == ''">&quot;$(MSBuildThisFileDirectory)netcoreapp3.1/GitVersion.MsBuild.dll&quot;</GitVersionAssemblyFile>
+        <GitVersionAssemblyFile Condition="'$(GitVersionAssemblyFile)' == ''">$(MSBuildThisFileDirectory)netcoreapp3.1/GitVersion.MsBuild.dll</GitVersionAssemblyFile>
     </PropertyGroup>
 
     <PropertyGroup>
