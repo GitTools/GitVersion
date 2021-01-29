@@ -149,7 +149,7 @@ public class BuildParameters
 
         WyamAdditionalSettings = new Dictionary<string, object>
         {
-            { "BaseEditUrl", "https://github.com/gittools/GitVersion/tree/master/docs/input/" },
+            { "BaseEditUrl", "https://github.com/gittools/GitVersion/tree/main/docs/input/" },
             { "SourceFiles", context.MakeAbsolute(Paths.Directories.Source) + "/**/{!bin,!obj,!packages,!*.Tests,!GitTools.*,}/**/*.cs" },
             { "Title", "GitVersion" },
             { "IncludeGlobalNamespace", false }
