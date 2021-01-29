@@ -85,7 +85,7 @@ namespace GitVersion.Core.Tests
         private static IGitRepository CreateRepository()
         {
             var mockCommit = GitToolsTestingExtensions.CreateMockCommit();
-            var mockBranch = GitToolsTestingExtensions.CreateMockBranch("master", mockCommit);
+            var mockBranch = GitToolsTestingExtensions.CreateMockBranch(TestBase.MainBranch, mockCommit);
             var branches = Substitute.For<IBranchCollection>();
             branches.GetEnumerator().Returns(_ => ((IEnumerable<IBranch>)new[] { mockBranch }).GetEnumerator());
 

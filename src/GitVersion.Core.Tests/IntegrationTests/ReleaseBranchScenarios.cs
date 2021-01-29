@@ -20,7 +20,7 @@ namespace GitVersion.Core.Tests.IntegrationTests
             fixture.BranchTo("develop");
             fixture.Repository.MakeCommits(3);
             var releaseBranch = fixture.Repository.CreateBranch("release/1.0.0");
-            fixture.Checkout("master");
+            fixture.Checkout(MainBranch);
             fixture.Repository.MergeNoFF("release/1.0.0");
             fixture.Repository.ApplyTag("1.0.0");
             fixture.Checkout("develop");
@@ -40,8 +40,8 @@ namespace GitVersion.Core.Tests.IntegrationTests
             fixture.BranchTo("release/1.0.0");
             fixture.Repository.MakeACommit();
 
-            // Merge to master
-            fixture.Checkout("master");
+            // Merge to main
+            fixture.Checkout(MainBranch);
             fixture.Repository.MergeNoFF("release/1.0.0");
             fixture.Repository.ApplyTag("1.0.0");
 
@@ -150,7 +150,7 @@ namespace GitVersion.Core.Tests.IntegrationTests
         }
 
         [Test]
-        public void WhenReleaseBranchOffDevelopIsMergedIntoMasterAndDevelopVersionIsTakenWithIt()
+        public void WhenReleaseBranchOffDevelopIsMergedIntoMainAndDevelopVersionIsTakenWithIt()
         {
             using var fixture = new EmptyRepositoryFixture();
             fixture.Repository.MakeATaggedCommit("1.0.3");
@@ -160,7 +160,7 @@ namespace GitVersion.Core.Tests.IntegrationTests
             fixture.Repository.CreateBranch("release-2.0.0");
             fixture.Checkout("release-2.0.0");
             fixture.Repository.MakeCommits(4);
-            fixture.Checkout("master");
+            fixture.Checkout(MainBranch);
             fixture.Repository.MergeNoFF("release-2.0.0", Generate.SignatureNow());
 
             fixture.AssertFullSemver("2.0.0+0");
@@ -169,7 +169,7 @@ namespace GitVersion.Core.Tests.IntegrationTests
         }
 
         [Test]
-        public void WhenReleaseBranchOffMasterIsMergedIntoMasterVersionIsTakenWithIt()
+        public void WhenReleaseBranchOffMainIsMergedIntoMainVersionIsTakenWithIt()
         {
             using var fixture = new EmptyRepositoryFixture();
             fixture.Repository.MakeATaggedCommit("1.0.3");
@@ -177,14 +177,14 @@ namespace GitVersion.Core.Tests.IntegrationTests
             fixture.Repository.CreateBranch("release-2.0.0");
             fixture.Checkout("release-2.0.0");
             fixture.Repository.MakeCommits(4);
-            fixture.Checkout("master");
+            fixture.Checkout(MainBranch);
             fixture.Repository.MergeNoFF("release-2.0.0", Generate.SignatureNow());
 
             fixture.AssertFullSemver("2.0.0+0");
         }
 
         [Test]
-        public void MasterVersioningContinuousCorrectlyAfterMergingReleaseBranch()
+        public void MainVersioningContinuousCorrectlyAfterMergingReleaseBranch()
         {
             using var fixture = new EmptyRepositoryFixture();
             fixture.Repository.MakeATaggedCommit("1.0.3");
@@ -192,7 +192,7 @@ namespace GitVersion.Core.Tests.IntegrationTests
             fixture.Repository.CreateBranch("release-2.0.0");
             fixture.Checkout("release-2.0.0");
             fixture.Repository.MakeCommits(4);
-            fixture.Checkout("master");
+            fixture.Checkout(MainBranch);
             fixture.Repository.MergeNoFF("release-2.0.0", Generate.SignatureNow());
 
             fixture.AssertFullSemver("2.0.0+0");
@@ -225,7 +225,7 @@ namespace GitVersion.Core.Tests.IntegrationTests
         }
 
         [Test]
-        public void WhenReleaseBranchIsMergedIntoMasterHighestVersionIsTakenWithIt()
+        public void WhenReleaseBranchIsMergedIntoMainHighestVersionIsTakenWithIt()
         {
             using var fixture = new EmptyRepositoryFixture();
             fixture.Repository.MakeATaggedCommit("1.0.3");
@@ -234,20 +234,20 @@ namespace GitVersion.Core.Tests.IntegrationTests
             fixture.Repository.CreateBranch("release-2.0.0");
             fixture.Checkout("release-2.0.0");
             fixture.Repository.MakeCommits(4);
-            fixture.Checkout("master");
+            fixture.Checkout(MainBranch);
             fixture.Repository.MergeNoFF("release-2.0.0", Generate.SignatureNow());
 
             fixture.Repository.CreateBranch("release-1.0.0");
             fixture.Checkout("release-1.0.0");
             fixture.Repository.MakeCommits(4);
-            fixture.Checkout("master");
+            fixture.Checkout(MainBranch);
             fixture.Repository.MergeNoFF("release-1.0.0", Generate.SignatureNow());
 
             fixture.AssertFullSemver("2.0.0+5");
         }
 
         [Test]
-        public void WhenReleaseBranchIsMergedIntoMasterHighestVersionIsTakenWithItEvenWithMoreThanTwoActiveBranches()
+        public void WhenReleaseBranchIsMergedIntoMainHighestVersionIsTakenWithItEvenWithMoreThanTwoActiveBranches()
         {
             using var fixture = new EmptyRepositoryFixture();
             fixture.Repository.MakeATaggedCommit("1.0.3");
@@ -256,19 +256,19 @@ namespace GitVersion.Core.Tests.IntegrationTests
             fixture.Repository.CreateBranch("release-3.0.0");
             fixture.Checkout("release-3.0.0");
             fixture.Repository.MakeCommits(4);
-            fixture.Checkout("master");
+            fixture.Checkout(MainBranch);
             fixture.Repository.MergeNoFF("release-3.0.0", Generate.SignatureNow());
 
             fixture.Repository.CreateBranch("release-2.0.0");
             fixture.Checkout("release-2.0.0");
             fixture.Repository.MakeCommits(4);
-            fixture.Checkout("master");
+            fixture.Checkout(MainBranch);
             fixture.Repository.MergeNoFF("release-2.0.0", Generate.SignatureNow());
 
             fixture.Repository.CreateBranch("release-1.0.0");
             fixture.Checkout("release-1.0.0");
             fixture.Repository.MakeCommits(4);
-            fixture.Checkout("master");
+            fixture.Checkout(MainBranch);
             fixture.Repository.MergeNoFF("release-1.0.0", Generate.SignatureNow());
 
             fixture.AssertFullSemver("3.0.0+10");

@@ -237,7 +237,7 @@ namespace GitVersion
         /// <summary>
         /// <para>s - Default SemVer [1.2.3-beta.4+5]</para>
         /// <para>f - Full SemVer [1.2.3-beta.4+5]</para>
-        /// <para>i - Informational SemVer [1.2.3-beta.4+5.Branch.master.BranchType.Master.Sha.000000]</para>
+        /// <para>i - Informational SemVer [1.2.3-beta.4+5.Branch.main.BranchType.main.Sha.000000]</para>
         /// <para>j - Just the SemVer part [1.2.3]</para>
         /// <para>t - SemVer with the tag [1.2.3-beta.4]</para>
         /// <para>l - Legacy SemVer tag for systems which do not support SemVer 2.0 properly [1.2.3-beta4]</para>
@@ -248,11 +248,8 @@ namespace GitVersion
             if (string.IsNullOrEmpty(format))
                 format = "s";
 
-            if (formatProvider != null)
-            {
-                if (formatProvider.GetFormat(GetType()) is ICustomFormatter formatter)
-                    return formatter.Format(format, this, formatProvider);
-            }
+            if (formatProvider?.GetFormat(GetType()) is ICustomFormatter formatter)
+                return formatter.Format(format, this, formatProvider);
 
             // Check for lp first because the param can vary
             format = format.ToLower();

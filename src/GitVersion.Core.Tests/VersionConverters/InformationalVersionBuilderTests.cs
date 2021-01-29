@@ -14,7 +14,7 @@ namespace GitVersion.Core.Tests
         [TestCase("hotfix-foo", "a682956dc1a2752aa24597a0f5cd939f93614509", "a682956d", 1, 2, 3, "alpha645", null, null, "1.2.3-alpha.645+Branch.hotfix-foo.Sha.a682956dc1a2752aa24597a0f5cd939f93614509")]
         [TestCase("hotfix-foo", "a682956dc1a2752aa24597a0f5cd939f93614509", "a682956d", 1, 2, 3, "beta645", null, null, "1.2.3-beta.645+Branch.hotfix-foo.Sha.a682956dc1a2752aa24597a0f5cd939f93614509")]
         [TestCase("hotfix-foo", "a682956dc1a2752aa24597a0f5cd939f93614509", "a682956d", 1, 2, 3, null, null, null, "1.2.3+Branch.hotfix-foo.Sha.a682956dc1a2752aa24597a0f5cd939f93614509")]
-        [TestCase("master", "a682956dc1a2752aa24597a0f5cd939f93614509", "a682956d", 1, 2, 3, null, null, null, "1.2.3+Branch.master.Sha.a682956dc1a2752aa24597a0f5cd939f93614509")]
+        [TestCase(MainBranch, "a682956dc1a2752aa24597a0f5cd939f93614509", "a682956d", 1, 2, 3, null, null, null, "1.2.3+Branch." + MainBranch + ".Sha.a682956dc1a2752aa24597a0f5cd939f93614509")]
         [TestCase("myPullRequest", "a682956dc1a2752aa24597a0f5cd939f93614509", "a682956d", 1, 2, 3, "unstable3", null, null, "1.2.3-unstable.3+Branch.myPullRequest.Sha.a682956dc1a2752aa24597a0f5cd939f93614509")]
         [TestCase("release-1.2", "a682956dc1a2752aa24597a0f5cd939f93614509", "a682956d", 1, 2, 0, "beta2", null, null, "1.2.0-beta.2+Branch.release-1.2.Sha.a682956dc1a2752aa24597a0f5cd939f93614509")]
         [TestCase("release-1.2", "a682956dc1a2752aa24597a0f5cd939f93614509", "a682956d", 1, 2, 0, "alpha2", null, null, "1.2.0-alpha.2+Branch.release-1.2.Sha.a682956dc1a2752aa24597a0f5cd939f93614509")]

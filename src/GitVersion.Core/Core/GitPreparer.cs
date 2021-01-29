@@ -229,11 +229,11 @@ namespace GitVersion
                     const string moveBranchMsg = "Move one of the branches along a commit to remove warning";
 
                     log.Warning($"Found more than one local branch pointing at the commit '{headSha}' ({csvNames}).");
-                    var master = localBranchesWhereCommitShaIsHead.SingleOrDefault(n => n.Name.EquivalentTo(Config.MasterBranchKey));
-                    if (master != null)
+                    var main = localBranchesWhereCommitShaIsHead.SingleOrDefault(n => n.Name.EquivalentTo(Config.MainBranchKey));
+                    if (main != null)
                     {
-                        log.Warning("Because one of the branches is 'master', will build master." + moveBranchMsg);
-                        repository.Checkout(Config.MasterBranchKey);
+                        log.Warning("Because one of the branches is 'main', will build main." + moveBranchMsg);
+                        repository.Checkout(Config.MainBranchKey);
                     }
                     else
                     {

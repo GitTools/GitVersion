@@ -44,7 +44,7 @@ namespace GitVersion.Core.Tests.IntegrationTests
         }
 
         [Test]
-        public void WhenDevelopBranchedFromTaggedCommitOnMasterVersionDoesNotChange()
+        public void WhenDevelopBranchedFromTaggedCommitOnMainVersionDoesNotChange()
         {
             using var fixture = new EmptyRepositoryFixture();
             fixture.Repository.MakeATaggedCommit("1.0.0");
@@ -87,7 +87,7 @@ namespace GitVersion.Core.Tests.IntegrationTests
         }
 
         [Test]
-        public void WhenDevelopBranchedFromMasterMinorIsIncreased()
+        public void WhenDevelopBranchedFromMainMinorIsIncreased()
         {
             using var fixture = new EmptyRepositoryFixture();
             fixture.Repository.MakeATaggedCommit("1.0.0");
@@ -97,7 +97,7 @@ namespace GitVersion.Core.Tests.IntegrationTests
         }
 
         [Test]
-        public void MergingReleaseBranchBackIntoDevelopWithMergingToMasterDoesBumpDevelopVersion()
+        public void MergingReleaseBranchBackIntoDevelopWithMergingToMainDoesBumpDevelopVersion()
         {
             using var fixture = new EmptyRepositoryFixture();
             fixture.Repository.MakeATaggedCommit("1.0.0");
@@ -105,7 +105,7 @@ namespace GitVersion.Core.Tests.IntegrationTests
             fixture.Repository.MakeACommit();
             Commands.Checkout(fixture.Repository, fixture.Repository.CreateBranch("release-2.0.0"));
             fixture.Repository.MakeACommit();
-            Commands.Checkout(fixture.Repository, "master");
+            Commands.Checkout(fixture.Repository, MainBranch);
             fixture.Repository.MergeNoFF("release-2.0.0", Generate.SignatureNow());
 
             Commands.Checkout(fixture.Repository, "develop");
@@ -128,7 +128,7 @@ namespace GitVersion.Core.Tests.IntegrationTests
         }
 
         [Test]
-        public void WhenDevelopBranchedFromMasterDetachedHeadMinorIsIncreased()
+        public void WhenDevelopBranchedFromMainDetachedHeadMinorIsIncreased()
         {
             using var fixture = new EmptyRepositoryFixture();
             fixture.Repository.MakeATaggedCommit("1.0.0");
@@ -184,7 +184,7 @@ namespace GitVersion.Core.Tests.IntegrationTests
         public void TagOnHotfixShouldNotAffectDevelop()
         {
             using var fixture = new BaseGitFlowRepositoryFixture("1.2.0");
-            Commands.Checkout(fixture.Repository, "master");
+            Commands.Checkout(fixture.Repository, MainBranch);
             var hotfix = fixture.Repository.CreateBranch("hotfix-1.2.1");
             Commands.Checkout(fixture.Repository, hotfix);
             fixture.Repository.MakeACommit();
@@ -223,7 +223,7 @@ namespace GitVersion.Core.Tests.IntegrationTests
             fixture.MakeACommit("commit in release/1.2.0 - 2");
             fixture.MakeACommit("commit in release/1.2.0 - 3");
             fixture.AssertFullSemver("1.2.0-beta.1+3");
-            fixture.Checkout("master");
+            fixture.Checkout(MainBranch);
             fixture.MergeNoFF("release/1.2.0");
             fixture.ApplyTag("1.2.0");
             fixture.Checkout("develop");
@@ -246,7 +246,7 @@ namespace GitVersion.Core.Tests.IntegrationTests
             };
 
             using var fixture = new EmptyRepositoryFixture();
-            fixture.MakeACommit("commit in master - 1");
+            fixture.MakeACommit($"commit in {MainBranch} - 1");
             fixture.ApplyTag("1.1.0");
             fixture.BranchTo("develop");
             fixture.MakeACommit("commit in develop - 1");
@@ -309,7 +309,7 @@ namespace GitVersion.Core.Tests.IntegrationTests
             fixture.Repository.MakeCommits(3);
 
             // Simulate a GitFlow release finish.
-            fixture.Checkout("master");
+            fixture.Checkout(MainBranch);
             fixture.MergeNoFF(ReleaseBranch);
             fixture.ApplyTag("v1.1.0");
             fixture.Checkout("develop");
@@ -366,7 +366,7 @@ namespace GitVersion.Core.Tests.IntegrationTests
             fixture.AssertFullSemver("1.1.0-beta.3", config);
 
             // Simulate a GitFlow release finish.
-            fixture.Checkout("master");
+            fixture.Checkout(MainBranch);
             fixture.MergeNoFF(ReleaseBranch);
             fixture.ApplyTag("v1.1.0");
             fixture.Checkout("develop");
@@ -379,12 +379,12 @@ namespace GitVersion.Core.Tests.IntegrationTests
 
             // Create hotfix for defects found in release/1.1.0
             const string HotfixBranch = "hotfix/1.1.1";
-            fixture.Checkout("master");
+            fixture.Checkout(MainBranch);
             Commands.Checkout(fixture.Repository, fixture.Repository.CreateBranch(HotfixBranch));
             fixture.Repository.MakeCommits(3);
 
             // Hotfix finish
-            fixture.Checkout("master");
+            fixture.Checkout(MainBranch);
             fixture.Repository.MergeNoFF(HotfixBranch);
             fixture.Repository.ApplyTag("v1.1.1");
 

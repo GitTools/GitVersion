@@ -204,10 +204,10 @@ namespace GitVersion.Configuration
                                 PreReleaseWeight = 0,
                             });
 
-            AddBranchConfig(Config.MasterBranchKey,
+            AddBranchConfig(Config.MainBranchKey,
                             new BranchConfig
                             {
-                                Regex = Config.MasterBranchRegex,
+                                Regex = Config.MainBranchRegex,
                                 SourceBranches = new HashSet<string> { Config.DevelopBranchKey, Config.ReleaseBranchKey },
                                 Tag = string.Empty,
                                 PreventIncrementOfMergedBranchVersion = true,
@@ -220,7 +220,7 @@ namespace GitVersion.Configuration
                             new BranchConfig
                             {
                                 Regex = Config.ReleaseBranchRegex,
-                                SourceBranches = new HashSet<string> { Config.DevelopBranchKey, Config.MasterBranchKey, Config.SupportBranchKey, Config.ReleaseBranchKey },
+                                SourceBranches = new HashSet<string> { Config.DevelopBranchKey, Config.MainBranchKey, Config.SupportBranchKey, Config.ReleaseBranchKey },
                                 Tag = "beta",
                                 PreventIncrementOfMergedBranchVersion = true,
                                 Increment = IncrementStrategy.None,
@@ -232,7 +232,7 @@ namespace GitVersion.Configuration
                             new BranchConfig
                             {
                                 Regex = Config.FeatureBranchRegex,
-                                SourceBranches = new HashSet<string> { Config.DevelopBranchKey, Config.MasterBranchKey, Config.ReleaseBranchKey, Config.FeatureBranchKey, Config.SupportBranchKey, Config.HotfixBranchKey },
+                                SourceBranches = new HashSet<string> { Config.DevelopBranchKey, Config.MainBranchKey, Config.ReleaseBranchKey, Config.FeatureBranchKey, Config.SupportBranchKey, Config.HotfixBranchKey },
                                 Increment = IncrementStrategy.Inherit,
                                 PreReleaseWeight = 30000,
                             });
@@ -241,7 +241,7 @@ namespace GitVersion.Configuration
                             new BranchConfig
                             {
                                 Regex = Config.PullRequestRegex,
-                                SourceBranches = new HashSet<string> { Config.DevelopBranchKey, Config.MasterBranchKey, Config.ReleaseBranchKey, Config.FeatureBranchKey, Config.SupportBranchKey, Config.HotfixBranchKey },
+                                SourceBranches = new HashSet<string> { Config.DevelopBranchKey, Config.MainBranchKey, Config.ReleaseBranchKey, Config.FeatureBranchKey, Config.SupportBranchKey, Config.HotfixBranchKey },
                                 Tag = "PullRequest",
                                 TagNumberPattern = @"[/-](?<number>\d+)",
                                 Increment = IncrementStrategy.Inherit,
@@ -252,7 +252,7 @@ namespace GitVersion.Configuration
                             new BranchConfig
                             {
                                 Regex = Config.HotfixBranchRegex,
-                                SourceBranches = new HashSet<string> { Config.DevelopBranchKey, Config.MasterBranchKey, Config.SupportBranchKey },
+                                SourceBranches = new HashSet<string> { Config.DevelopBranchKey, Config.MainBranchKey, Config.SupportBranchKey },
                                 Tag = "beta",
                                 Increment = IncrementStrategy.Patch,
                                 PreReleaseWeight = 30000,
@@ -262,7 +262,7 @@ namespace GitVersion.Configuration
                             new BranchConfig
                             {
                                 Regex = Config.SupportBranchRegex,
-                                SourceBranches = new HashSet<string> { Config.MasterBranchKey },
+                                SourceBranches = new HashSet<string> { Config.MainBranchKey },
                                 Tag = string.Empty,
                                 PreventIncrementOfMergedBranchVersion = true,
                                 Increment = IncrementStrategy.Patch,

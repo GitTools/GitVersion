@@ -18,9 +18,9 @@ namespace GitVersion.Configuration.Init.Wizard
                     Console.WriteLine("GitFlow is likely a good fit, the 'develop' branch can be used " +
                                       "for active development while stabilising the next release.");
                     Console.WriteLine();
-                    Console.WriteLine("GitHubFlow is designed for a lightweight workflow where master is always " +
+                    Console.WriteLine("GitHubFlow is designed for a lightweight workflow where main is always " +
                                       "good to deploy to production and feature branches are used to stabilise " +
-                                      "features, once stable they are merged to master and made available in the next release");
+                                      "features, once stable they are merged to main and made available in the next release");
                     steps.Enqueue(StepFactory.CreateStep<PickBranchingStrategyStep>());
                     return StepResult.Ok();
                 case "n":

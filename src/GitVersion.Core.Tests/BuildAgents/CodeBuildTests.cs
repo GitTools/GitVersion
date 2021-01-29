@@ -39,8 +39,8 @@ namespace GitVersion.Core.Tests.BuildAgents
         [Test]
         public void PicksUpBranchNameFromEnvironmentFromSourceVersion()
         {
-            environment.SetEnvironmentVariable(CodeBuild.SourceVersionEnvironmentVariableName, "refs/heads/master");
-            buildServer.GetCurrentBranch(false).ShouldBe("refs/heads/master");
+            environment.SetEnvironmentVariable(CodeBuild.SourceVersionEnvironmentVariableName, $"refs/heads/{MainBranch}");
+            buildServer.GetCurrentBranch(false).ShouldBe($"refs/heads/{MainBranch}");
         }
 
         [Test]
@@ -53,8 +53,8 @@ namespace GitVersion.Core.Tests.BuildAgents
         [Test]
         public void PicksUpBranchNameFromEnvironmentFromWebHook()
         {
-            environment.SetEnvironmentVariable(CodeBuild.WebHookEnvironmentVariableName, "refs/heads/master");
-            buildServer.GetCurrentBranch(false).ShouldBe("refs/heads/master");
+            environment.SetEnvironmentVariable(CodeBuild.WebHookEnvironmentVariableName, $"refs/heads/{MainBranch}");
+            buildServer.GetCurrentBranch(false).ShouldBe($"refs/heads/{MainBranch}");
         }
 
         [Test]

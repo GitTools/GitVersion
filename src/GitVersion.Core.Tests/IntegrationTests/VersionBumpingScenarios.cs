@@ -17,7 +17,7 @@ namespace GitVersion.Core.Tests.IntegrationTests
                 Branches =
                 {
                     {
-                        "master", new BranchConfig
+                        MainBranch, new BranchConfig
                         {
                             Tag = "pre",
                             SourceBranches = new HashSet<string>()

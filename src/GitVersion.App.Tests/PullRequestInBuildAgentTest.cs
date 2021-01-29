@@ -151,7 +151,7 @@ namespace GitVersion.App.Tests
                 Commands.Checkout(remoteRepository, remoteRepository.Head.Tip.Sha);
                 //Emulate merge commit
                 var mergeCommitSha = remoteRepository.MakeACommit().Sha;
-                Commands.Checkout(remoteRepository, "master"); // HEAD cannot be pointing at the merge commit
+                Commands.Checkout(remoteRepository, TestBase.MainBranch); // HEAD cannot be pointing at the merge commit
                 remoteRepository.Refs.Add(pullRequestRef, new ObjectId(mergeCommitSha));
 
                 // Checkout PR commit

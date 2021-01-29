@@ -22,7 +22,7 @@ namespace GitVersion.Core.Tests.VersionCalculation.Strategies
             mockCommit.Message.Returns("Merge branch 'release-0.1.5'");
             mockCommit.Parents.Returns(GetParents(true));
 
-            var mockBranch = GitToolsTestingExtensions.CreateMockBranch("master", mockCommit);
+            var mockBranch = GitToolsTestingExtensions.CreateMockBranch(MainBranch, mockCommit);
             var branches = Substitute.For<IBranchCollection>();
             branches.GetEnumerator().Returns(_ => ((IEnumerable<IBranch>)new[] { mockBranch }).GetEnumerator());
 
@@ -52,7 +52,7 @@ namespace GitVersion.Core.Tests.VersionCalculation.Strategies
         [TestCase("Finish Release-0.12.0", true, "0.12.0")] //Support Syntevo SmartGit/Hg's Gitflow merge commit messages for finishing a 'Release' branch
         [TestCase("Merge branch 'Release-v0.2.0'", true, "0.2.0")]
         [TestCase("Merge branch 'Release-v2.2'", true, "2.2.0")]
-        [TestCase("Merge remote-tracking branch 'origin/release/0.8.0' into develop/master", true, "0.8.0")]
+        [TestCase("Merge remote-tracking branch 'origin/release/0.8.0' into develop/" + MainBranch, true, "0.8.0")]
         [TestCase("Merge remote-tracking branch 'refs/remotes/origin/release/2.0.0'", true, "2.0.0")]
         public void TakesVersionFromMergeOfReleaseBranch(string message, bool isMergeCommit, string expectedVersion)
         {
@@ -129,8 +129,8 @@ namespace GitVersion.Core.Tests.VersionCalculation.Strategies
   A commit message")]
         [TestCase(@"Merge branch 'release/Sprint_2.0_Holdings_Computed_Balances'")]
         [TestCase(@"Merge branch 'develop' of http://10.0.6.3/gitblit/r/... into develop")]
-        [TestCase(@"Merge branch 'master' of http://172.16.3.10:8082/r/asu_tk/p_sd")]
-        [TestCase(@"Merge branch 'master' of http://212.248.89.56:8082/r/asu_tk/p_sd")]
+        [TestCase(@"Merge branch " + MainBranch + @" of http://172.16.3.10:8082/r/asu_tk/p_sd")]
+        [TestCase(@"Merge branch " + MainBranch + @" of http://212.248.89.56:8082/r/asu_tk/p_sd")]
         [TestCase(@"Merge branch 'DEMO' of http://10.10.10.121/gitlab/mtolland/orcid into DEMO")]
         public void ShouldNotTakeVersionFromUnrelatedMerge(string commitMessage)
         {
@@ -157,7 +157,7 @@ namespace GitVersion.Core.Tests.VersionCalculation.Strategies
             commit.Message.Returns(message);
             commit.Parents.Returns(parents);
 
-            var mockBranch = GitToolsTestingExtensions.CreateMockBranch("master", commit, GitToolsTestingExtensions.CreateMockCommit());
+            var mockBranch = GitToolsTestingExtensions.CreateMockBranch(MainBranch, commit, GitToolsTestingExtensions.CreateMockCommit());
 
             var mockRepository = Substitute.For<IGitRepository>();
             mockRepository.Head.Returns(mockBranch);

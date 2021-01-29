@@ -5,14 +5,14 @@ using LibGit2Sharp;
 namespace GitTools.Testing
 {
     /// <summary>
-    /// Creates a repo with a develop branch off master which is a single commit ahead of master
+    /// Creates a repo with a develop branch off main which is a single commit ahead of main
     /// </summary>
     public class BaseGitFlowRepositoryFixture : EmptyRepositoryFixture
     {
         /// <summary>
-        /// Creates a repo with a develop branch off master which is a single commit ahead of master
+        /// Creates a repo with a develop branch off main which is a single commit ahead of main
         ///
-        /// Master will be tagged with the initial version before branching develop
+        /// Main will be tagged with the initial version before branching develop
         /// </summary>
         public BaseGitFlowRepositoryFixture(string initialVersion) :
             this(r => r.MakeATaggedCommit(initialVersion))
@@ -20,22 +20,22 @@ namespace GitTools.Testing
         }
 
         /// <summary>
-        /// Creates a repo with a develop branch off master which is a single commit ahead of master
+        /// Creates a repo with a develop branch off main which is a single commit ahead of main
         ///
         /// The initial setup actions will be performed before branching develop
         /// </summary>
-        public BaseGitFlowRepositoryFixture(Action<IRepository> initialMasterAction)
+        public BaseGitFlowRepositoryFixture(Action<IRepository> initialMainAction)
         {
-            SetupRepo(initialMasterAction);
+            SetupRepo(initialMainAction);
         }
 
-        void SetupRepo(Action<IRepository> initialMasterAction)
+        void SetupRepo(Action<IRepository> initialMainAction)
         {
             var randomFile = Path.Combine(Repository.Info.WorkingDirectory, Guid.NewGuid().ToString());
             File.WriteAllText(randomFile, string.Empty);
             Commands.Stage(Repository, randomFile);
 
-            initialMasterAction(Repository);
+            initialMainAction(Repository);
 
             Commands.Checkout(Repository, Repository.CreateBranch("develop"));
             Repository.MakeACommit();

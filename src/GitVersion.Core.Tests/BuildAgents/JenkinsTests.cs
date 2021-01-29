@@ -65,16 +65,16 @@ namespace GitVersion.Core.Tests.BuildAgents
             var localBranchOrig = environment.GetEnvironmentVariable(localBranch);
 
             // Set GIT_BRANCH for testing
-            environment.SetEnvironmentVariable(branch, "origin/master");
+            environment.SetEnvironmentVariable(branch, $"origin/{MainBranch}");
 
             // Test Jenkins that GetCurrentBranch falls back to GIT_BRANCH if GIT_LOCAL_BRANCH undefined
-            buildServer.GetCurrentBranch(true).ShouldBe("origin/master");
+            buildServer.GetCurrentBranch(true).ShouldBe($"origin/{MainBranch}");
 
             // Set GIT_LOCAL_BRANCH
-            environment.SetEnvironmentVariable(localBranch, "master");
+            environment.SetEnvironmentVariable(localBranch, MainBranch);
 
             // Test Jenkins GetCurrentBranch method now returns GIT_LOCAL_BRANCH
-            buildServer.GetCurrentBranch(true).ShouldBe("master");
+            buildServer.GetCurrentBranch(true).ShouldBe(MainBranch);
 
             // Restore environment variables
             environment.SetEnvironmentVariable(branch, branchOrig);
@@ -90,13 +90,13 @@ namespace GitVersion.Core.Tests.BuildAgents
             var pipelineBranchOrig = environment.GetEnvironmentVariable(pipelineBranch);
 
             // Set BRANCH_NAME in pipeline mode
-            environment.SetEnvironmentVariable(pipelineBranch, "master");
+            environment.SetEnvironmentVariable(pipelineBranch, MainBranch);
             // When Jenkins uses a Pipeline, GIT_BRANCH and GIT_LOCAL_BRANCH are not set:
             environment.SetEnvironmentVariable(branch, null);
             environment.SetEnvironmentVariable(localBranch, null);
 
             // Test Jenkins GetCurrentBranch method now returns BRANCH_NAME
-            buildServer.GetCurrentBranch(true).ShouldBe("master");
+            buildServer.GetCurrentBranch(true).ShouldBe(MainBranch);
 
             // Restore environment variables
             environment.SetEnvironmentVariable(branch, branchOrig);

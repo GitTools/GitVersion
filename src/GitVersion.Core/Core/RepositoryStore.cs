@@ -201,11 +201,11 @@ namespace GitVersion
         public IBranch GetChosenBranch(Config configuration)
         {
             var developBranchRegex = configuration.Branches[Config.DevelopBranchKey].Regex;
-            var masterBranchRegex = configuration.Branches[Config.MasterBranchKey].Regex;
+            var mainBranchRegex = configuration.Branches[Config.MainBranchKey].Regex;
 
             var chosenBranch = repository.Branches.FirstOrDefault(b =>
                 Regex.IsMatch(b.Name.Friendly, developBranchRegex, RegexOptions.IgnoreCase) ||
-                Regex.IsMatch(b.Name.Friendly, masterBranchRegex, RegexOptions.IgnoreCase));
+                Regex.IsMatch(b.Name.Friendly, mainBranchRegex, RegexOptions.IgnoreCase));
 
             return chosenBranch;
         }

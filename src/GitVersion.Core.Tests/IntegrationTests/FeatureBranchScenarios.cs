@@ -94,7 +94,7 @@ namespace GitVersion.Core.Tests.IntegrationTests
         }
 
         [Test]
-        public void ShouldNotUseNumberInFeatureBranchAsPreReleaseNumberOffMaster()
+        public void ShouldNotUseNumberInFeatureBranchAsPreReleaseNumberOffMain()
         {
             using var fixture = new EmptyRepositoryFixture();
             fixture.Repository.MakeATaggedCommit("1.0.0");
@@ -146,7 +146,7 @@ namespace GitVersion.Core.Tests.IntegrationTests
         }
 
         [Test]
-        public void ShouldBePossibleToMergeDevelopForALongRunningBranchWhereDevelopAndMasterAreEqual()
+        public void ShouldBePossibleToMergeDevelopForALongRunningBranchWhereDevelopAndMainAreEqual()
         {
             using var fixture = new EmptyRepositoryFixture();
             fixture.Repository.MakeATaggedCommit("v1.0.0");
@@ -161,7 +161,7 @@ namespace GitVersion.Core.Tests.IntegrationTests
             Commands.Checkout(fixture.Repository, "develop");
             fixture.Repository.MakeACommit();
 
-            Commands.Checkout(fixture.Repository, "master");
+            Commands.Checkout(fixture.Repository, MainBranch);
             fixture.Repository.Merge(fixture.Repository.Branches["develop"], Generate.SignatureNow());
             fixture.Repository.ApplyTag("v1.1.0");
 
@@ -220,7 +220,7 @@ namespace GitVersion.Core.Tests.IntegrationTests
         }
 
         [Test]
-        public void BranchCreatedAfterFinishReleaseShouldInheritAndIncrementFromLastMasterCommitTag()
+        public void BranchCreatedAfterFinishReleaseShouldInheritAndIncrementFromLastMainCommitTag()
         {
             using var fixture = new BaseGitFlowRepositoryFixture("0.1.0");
             //validate current version
@@ -231,11 +231,11 @@ namespace GitVersion.Core.Tests.IntegrationTests
             //validate release version
             fixture.AssertFullSemver("0.2.0-beta.1+0");
 
-            fixture.Checkout("master");
+            fixture.Checkout(MainBranch);
             fixture.Repository.MergeNoFF("release/0.2.0");
             fixture.Repository.ApplyTag("0.2.0");
 
-            //validate master branch version
+            //validate main branch version
             fixture.AssertFullSemver("0.2.0");
 
             fixture.Checkout("develop");
@@ -244,7 +244,7 @@ namespace GitVersion.Core.Tests.IntegrationTests
 
             fixture.Repository.MakeACommit();
 
-            //validate develop branch version after merging release 0.2.0 to master and develop (finish release)
+            //validate develop branch version after merging release 0.2.0 to main and develop (finish release)
             fixture.AssertFullSemver("0.3.0-alpha.1");
 
             //create a feature branch from develop
@@ -295,20 +295,20 @@ namespace GitVersion.Core.Tests.IntegrationTests
             fixture.AssertFullSemver("1.1.0-test.1+2");
         }
 
-        public class WhenMasterMarkedAsIsDevelop
+        public class WhenMainAsIsDevelop
         {
             [Test]
-            public void ShouldPickUpVersionFromMasterAfterReleaseBranchCreated()
+            public void ShouldPickUpVersionFromMainAfterReleaseBranchCreated()
             {
                 var config = new Config
                 {
                     Branches = new Dictionary<string, BranchConfig>
                     {
                         {
-                            "master", new BranchConfig
+                            MainBranch, new BranchConfig
                             {
                                 TracksReleaseBranches = true,
-                                Regex = "master"
+                                Regex = MainBranch
                             }
                         }
                     }
@@ -319,27 +319,27 @@ namespace GitVersion.Core.Tests.IntegrationTests
                 fixture.MakeACommit();
                 fixture.BranchTo("release/1.0");
                 fixture.MakeACommit();
-                fixture.Checkout("master");
+                fixture.Checkout(MainBranch);
                 fixture.MakeACommit();
                 fixture.AssertFullSemver("1.0.1+1", config);
 
-                // create a feature branch from master and verify the version
+                // create a feature branch from main and verify the version
                 fixture.BranchTo("feature/test");
                 fixture.AssertFullSemver("1.0.1-test.1+1", config);
             }
 
             [Test]
-            public void ShouldPickUpVersionFromMasterAfterReleaseBranchMergedBack()
+            public void ShouldPickUpVersionFromMainAfterReleaseBranchMergedBack()
             {
                 var config = new Config
                 {
                     Branches = new Dictionary<string, BranchConfig>
                     {
                         {
-                            "master", new BranchConfig
+                            MainBranch, new BranchConfig
                             {
                                 TracksReleaseBranches = true,
-                                Regex = "master"
+                                Regex = MainBranch
                             }
                         }
                     }
@@ -351,12 +351,12 @@ namespace GitVersion.Core.Tests.IntegrationTests
                 fixture.BranchTo("release/1.0");
                 fixture.MakeACommit();
 
-                // merge release into master
-                fixture.Checkout("master");
+                // merge release into main
+                fixture.Checkout(MainBranch);
                 fixture.MergeNoFF("release/1.0");
                 fixture.AssertFullSemver("1.0.1+2", config);
 
-                // create a feature branch from master and verify the version
+                // create a feature branch from main and verify the version
                 fixture.BranchTo("feature/test");
                 fixture.AssertFullSemver("1.0.1-test.1+2", config);
             }
@@ -365,7 +365,7 @@ namespace GitVersion.Core.Tests.IntegrationTests
         public class WhenFeatureBranchHasNoConfig
         {
             [Test]
-            public void ShouldPickUpVersionFromMasterAfterReleaseBranchCreated()
+            public void ShouldPickUpVersionFromMainAfterReleaseBranchCreated()
             {
                 using var fixture = new EmptyRepositoryFixture();
                 // Create develop and release branches
@@ -405,20 +405,20 @@ namespace GitVersion.Core.Tests.IntegrationTests
             }
 
             // ReSharper disable once MemberHidesStaticFromOuterClass
-            public class WhenMasterMarkedAsIsDevelop
+            public class WhenMainMarkedAsIsDevelop
             {
                 [Test]
-                public void ShouldPickUpVersionFromMasterAfterReleaseBranchCreated()
+                public void ShouldPickUpVersionFromMainAfterReleaseBranchCreated()
                 {
                     var config = new Config
                     {
                         Branches = new Dictionary<string, BranchConfig>
                         {
                             {
-                                "master", new BranchConfig
+                                MainBranch, new BranchConfig
                                 {
                                     TracksReleaseBranches = true,
-                                    Regex = "master"
+                                    Regex = MainBranch
                                 }
                             }
                         }
@@ -429,27 +429,27 @@ namespace GitVersion.Core.Tests.IntegrationTests
                     fixture.MakeACommit();
                     fixture.BranchTo("release/1.0");
                     fixture.MakeACommit();
-                    fixture.Checkout("master");
+                    fixture.Checkout(MainBranch);
                     fixture.MakeACommit();
                     fixture.AssertFullSemver("1.0.1+1", config);
 
-                    // create a misnamed feature branch (i.e. it uses the default config) from master and verify the version
+                    // create a misnamed feature branch (i.e. it uses the default config) from main and verify the version
                     fixture.BranchTo("misnamed");
                     fixture.AssertFullSemver("1.0.1-misnamed.1+1", config);
                 }
 
                 [Test]
-                public void ShouldPickUpVersionFromMasterAfterReleaseBranchMergedBack()
+                public void ShouldPickUpVersionFromMainAfterReleaseBranchMergedBack()
                 {
                     var config = new Config
                     {
                         Branches = new Dictionary<string, BranchConfig>
                         {
                             {
-                                "master", new BranchConfig
+                                MainBranch, new BranchConfig
                                 {
                                     TracksReleaseBranches = true,
-                                    Regex = "master"
+                                    Regex = MainBranch
                                 }
                             }
                         }
@@ -461,12 +461,12 @@ namespace GitVersion.Core.Tests.IntegrationTests
                     fixture.BranchTo("release/1.0");
                     fixture.MakeACommit();
 
-                    // merge release into master
-                    fixture.Checkout("master");
+                    // merge release into main
+                    fixture.Checkout(MainBranch);
                     fixture.MergeNoFF("release/1.0");
                     fixture.AssertFullSemver("1.0.1+2", config);
 
-                    // create a misnamed feature branch (i.e. it uses the default config) from master and verify the version
+                    // create a misnamed feature branch (i.e. it uses the default config) from main and verify the version
                     fixture.BranchTo("misnamed");
                     fixture.AssertFullSemver("1.0.1-misnamed.1+2", config);
                 }
@@ -474,7 +474,7 @@ namespace GitVersion.Core.Tests.IntegrationTests
         }
 
         [Test]
-        public void PickUpVersionFromMasterMarkedWithIsTracksReleaseBranches()
+        public void PickUpVersionFromMainMarkedWithIsTracksReleaseBranches()
         {
             var config = new Config
             {
@@ -482,7 +482,7 @@ namespace GitVersion.Core.Tests.IntegrationTests
                 Branches = new Dictionary<string, BranchConfig>
                 {
                     {
-                        "master", new BranchConfig
+                        MainBranch, new BranchConfig
                         {
                             Tag = "pre",
                             TracksReleaseBranches = true,
@@ -507,12 +507,12 @@ namespace GitVersion.Core.Tests.IntegrationTests
             fixture.MakeACommit();
             fixture.AssertFullSemver("0.10.0-rc.1+2", config);
 
-            // switch to master and verify the version
-            fixture.Checkout("master");
+            // switch to main and verify the version
+            fixture.Checkout(MainBranch);
             fixture.MakeACommit();
             fixture.AssertFullSemver("0.10.1-pre.1+1", config);
 
-            // create a feature branch from master and verify the version
+            // create a feature branch from main and verify the version
             fixture.BranchTo("MyFeatureD");
             fixture.AssertFullSemver("0.10.1-MyFeatureD.1+1", config);
         }

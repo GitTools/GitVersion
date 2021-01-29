@@ -20,8 +20,8 @@ namespace GitVersion.Core.Tests.IntegrationTests
             Commands.Checkout(fixture.Repository, fixture.Repository.CreateBranch("release-2.0.0"));
             fixture.Repository.MakeCommits(2);
 
-            // Merge into develop and master
-            Commands.Checkout(fixture.Repository, "master");
+            // Merge into develop and main
+            Commands.Checkout(fixture.Repository, MainBranch);
             fixture.Repository.MergeNoFF("release-2.0.0");
             fixture.Repository.ApplyTag("2.0.0");
             fixture.AssertFullSemver("2.0.0");

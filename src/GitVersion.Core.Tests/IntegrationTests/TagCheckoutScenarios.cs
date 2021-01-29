@@ -1,4 +1,5 @@
 using GitTools.Testing;
+using GitVersion.Core.Tests.Helpers;
 using NUnit.Framework;
 
 namespace GitVersion.Core.Tests.IntegrationTests
@@ -36,7 +37,7 @@ namespace GitVersion.Core.Tests.IntegrationTests
             const string firstVersion = "1.0";
             const string hotfixVersion = "1.0.1";
 
-            fixture.MakeACommit("init master");
+            fixture.MakeACommit($"init {TestBase.MainBranch}");
             fixture.ApplyTag(firstVersion);
             fixture.MakeACommit("hotfix");
             fixture.ApplyTag(hotfixVersion);

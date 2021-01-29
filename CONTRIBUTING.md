@@ -14,7 +14,7 @@ Issues are also welcome, [failing tests](#writing-tests) are even more welcome.
 
 ## Contribution Guidelines
 
-- Try to use feature branches rather than developing on master.
+- Try to use feature branches rather than developing on main.
 - Please include tests covering the change.
 - The documentation is stored in the repository under the [`docs`](docs) folder.
    Have a look at the [documentation readme file](docs/readme.md) for guidance
@@ -29,7 +29,7 @@ See [how it works](http://gitversion.readthedocs.org/en/latest/more-info/how-it-
 
 We have made it super easy to write tests in GitVersion. Most tests you are interested in are in `GitVersion.Core.Tests\IntegrationTests`.
 
-There is a scenario class for each type of branch. For example MasterScenarios, FeatureBranchScenarios etc.
+There is a scenario class for each type of branch. For example MainScenarios, FeatureBranchScenarios etc.
 
 ### 1. Find Appropriate Scenario class
 
@@ -87,7 +87,7 @@ We use Cake for our build and deployment process. The way the build / release pr
 
 1) We build releasable artifacts on AppVeyor
 1) Login to AppVeyor
-1) Deploy the latest master build
+1) Deploy the latest main build
 ![docs/input/docs/img/release-1-deploy.png](docs/input/docs/img/release-1-deploy.png)
 1) Choose GitVersion release, when you press deploy it will create a *non-released* GitHub release, this *will not* create a Git tag. This step is so we can validate the release and release notes before pushing the button.
 ![docs/input/docs/img/release-2-deploy.png](docs/input/docs/img/release-2-deploy.png)

@@ -31,7 +31,7 @@ namespace GitVersion.Core.Tests
             //    | *4441531 54 minutes ago
             //    | *89840df 56 minutes ago
             //    |/
-            //*91bf945 58 minutes ago(master)
+            //*91bf945 58 minutes ago(main)
             using var fixture = new EmptyRepositoryFixture();
             fixture.MakeACommit("initial");
             fixture.BranchTo("develop");
@@ -85,7 +85,7 @@ namespace GitVersion.Core.Tests
             //    | *4441531 54 minutes ago
             //    | *89840df 56 minutes ago
             //    |/
-            //*91bf945 58 minutes ago(master)
+            //*91bf945 58 minutes ago(main)
             using var fixture = new EmptyRepositoryFixture();
             fixture.MakeACommit("initial");
             fixture.BranchTo("develop");
@@ -145,7 +145,7 @@ namespace GitVersion.Core.Tests
             //| *8113776 54 minutes ago
             //| *3c0235e 56 minutes ago
             //|/
-            //*f6f1283 58 minutes ago(master)
+            //*f6f1283 58 minutes ago(main)
 
             using var fixture = new EmptyRepositoryFixture();
             fixture.MakeACommit("initial");

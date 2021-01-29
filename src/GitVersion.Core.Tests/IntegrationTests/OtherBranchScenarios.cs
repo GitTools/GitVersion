@@ -39,13 +39,13 @@ namespace GitVersion.Core.Tests.IntegrationTests
         public void ShouldNotGetVersionFromFeatureBranchIfNotMerged()
         {
             using var fixture = new EmptyRepositoryFixture();
-            fixture.Repository.MakeATaggedCommit("1.0.0-unstable.0"); // initial commit in master
+            fixture.Repository.MakeATaggedCommit("1.0.0-unstable.0"); // initial commit in main
 
             fixture.Repository.CreateBranch("feature");
             Commands.Checkout(fixture.Repository, "feature");
             fixture.Repository.MakeATaggedCommit("1.0.1-feature.1");
 
-            Commands.Checkout(fixture.Repository, "master");
+            Commands.Checkout(fixture.Repository, MainBranch);
             fixture.Repository.CreateBranch("develop");
             Commands.Checkout(fixture.Repository, "develop");
             fixture.Repository.MakeACommit();

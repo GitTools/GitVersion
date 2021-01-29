@@ -26,7 +26,7 @@ namespace GitVersion.Core.Tests
                 .Add(new Config { VersioningMode = mode })
                 .Build();
 
-            const string branchName = "master";
+            const string branchName = MainBranch;
 
             var mockCommit = GitToolsTestingExtensions.CreateMockCommit();
             var mockBranch = GitToolsTestingExtensions.CreateMockBranch(branchName, mockCommit);
@@ -44,7 +44,7 @@ namespace GitVersion.Core.Tests
             context.Configuration.VersioningMode.ShouldBe(mode);
         }
 
-        [TestCase(IncrementStrategy.Inherit, IncrementStrategy.Patch)] // Since it inherits, the increment strategy of master is used => Patch
+        [TestCase(IncrementStrategy.Inherit, IncrementStrategy.Patch)] // Since it inherits, the increment strategy of main is used => Patch
         [TestCase(IncrementStrategy.Patch, null)]
         [TestCase(IncrementStrategy.Major, null)]
         [TestCase(IncrementStrategy.Minor, null)]
@@ -91,11 +91,11 @@ namespace GitVersion.Core.Tests
                 })
                 .Build();
 
-            var master = GitToolsTestingExtensions.CreateMockBranch("master", GitToolsTestingExtensions.CreateMockCommit());
+            var main = GitToolsTestingExtensions.CreateMockBranch(MainBranch, GitToolsTestingExtensions.CreateMockCommit());
             var develop = GitToolsTestingExtensions.CreateMockBranch(branchName, GitToolsTestingExtensions.CreateMockCommit());
 
             var branches = Substitute.For<IBranchCollection>();
-            branches.GetEnumerator().Returns(_ => ((IEnumerable<IBranch>)new[] { master, develop }).GetEnumerator());
+            branches.GetEnumerator().Returns(_ => ((IEnumerable<IBranch>)new[] { main, develop }).GetEnumerator());
 
             var mockRepository = Substitute.For<IGitRepository>();
             mockRepository.Head.Returns(develop);

@@ -25,7 +25,7 @@ namespace GitVersion.VersionCalculation
         {
             if (baseVersion.SemanticVersion.PreReleaseTag.HasTag())
             {
-                throw new NotSupportedException("Mainline development mode doesn't yet support pre-release tags on master");
+                throw new NotSupportedException("Mainline development mode doesn't yet support pre-release tags on main");
             }
 
             using (log.IndentLog("Using mainline development mode to calculate current version"))
@@ -35,7 +35,7 @@ namespace GitVersion.VersionCalculation
                 // Forward merge / PR
                 //          * feature/foo
                 //         / |
-                // master *  *
+                // main *  *
                 //
 
                 var mergeBase = baseVersion.BaseVersionSource;
@@ -70,7 +70,7 @@ namespace GitVersion.VersionCalculation
 
                 mainlineVersion.BuildMetaData = CreateVersionBuildMetaData(mergeBase);
 
-                // branches other than master always get a bump for the act of branching
+                // branches other than main always get a bump for the act of branching
                 if ((!context.CurrentBranch.Equals(mainline)) && (string.IsNullOrEmpty(context.Configuration.NextVersion)))
                 {
                     var branchIncrement = FindMessageIncrement(null, context.CurrentCommit, mergeBase, mainlineCommitLog);
@@ -109,7 +109,7 @@ namespace GitVersion.VersionCalculation
             var findMergeBase = repositoryStore.FindMergeBase(mergeCommit.Parents.First(), mergedHead);
             var findMessageIncrement = FindMessageIncrement(mergeCommit, mergedHead, findMergeBase, directCommits);
 
-            // If this collection is not empty there has been some direct commits against master
+            // If this collection is not empty there has been some direct commits against main
             // Treat each commit as it's own 'release', we need to do this before we increment the branch
             mainlineVersion = IncrementForEachCommit(directCommits, mainlineVersion, mainline);
             directCommits.Clear();
@@ -231,7 +231,7 @@ namespace GitVersion.VersionCalculation
                 var directCommitIncrement = IncrementStrategyFinder.GetIncrementForCommits(context, new[] { directCommit })
                                             ?? FindDefaultIncrementForBranch(context, mainline.Name.Friendly);
                 mainlineVersion = mainlineVersion.IncrementVersion(directCommitIncrement);
-                log.Info($"Direct commit on master {directCommit} incremented base versions {directCommitIncrement}, now {mainlineVersion}");
+                log.Info($"Direct commit on main {directCommit} incremented base versions {directCommitIncrement}, now {mainlineVersion}");
             }
 
             return mainlineVersion;

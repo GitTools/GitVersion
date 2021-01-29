@@ -1,5 +1,6 @@
 using GitTools.Testing;
 using GitVersion.Configuration;
+using GitVersion.Core.Tests.Helpers;
 using GitVersion.Model.Configuration;
 using GitVersion.VersionCalculation;
 using NUnit.Framework;
@@ -66,7 +67,7 @@ namespace GitVersion.Core.Tests.IntegrationTests
 
             // Act
             using var fixture = new BaseGitFlowRepositoryFixture("1.0.0");
-            fixture.Checkout("master");
+            fixture.Checkout(TestBase.MainBranch);
             fixture.MergeNoFF("develop");
             fixture.Checkout("develop");
             fixture.MakeACommit("Feature commit 1");
@@ -94,7 +95,7 @@ namespace GitVersion.Core.Tests.IntegrationTests
 
             // Act
             using var fixture = new BaseGitFlowRepositoryFixture("1.0.0");
-            fixture.Checkout("master");
+            fixture.Checkout(TestBase.MainBranch);
             fixture.MergeNoFF("develop");
             fixture.Checkout("develop");
             fixture.MakeACommit("Feature commit 1");

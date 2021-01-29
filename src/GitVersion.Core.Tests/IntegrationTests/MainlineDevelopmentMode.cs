@@ -20,14 +20,14 @@ namespace GitVersion.Core.Tests.IntegrationTests
         };
 
         [Test]
-        public void VerifyNonMasterMainlineVersionIdenticalAsMaster()
+        public void VerifyNonMainMainlineVersionIdenticalAsMain()
         {
             using var fixture = new EmptyRepositoryFixture();
             fixture.Repository.MakeACommit("1");
 
             fixture.BranchTo("feature/foo", "foo");
             fixture.MakeACommit("2 +semver: major");
-            fixture.Checkout("master");
+            fixture.Checkout(MainBranch);
             fixture.MergeNoFF("feature/foo");
 
             fixture.AssertFullSemver("1.0.0", config);
@@ -38,7 +38,7 @@ namespace GitVersion.Core.Tests.IntegrationTests
         }
 
         [Test]
-        public void MergedFeatureBranchesToMasterImpliesRelease()
+        public void MergedFeatureBranchesToMainImpliesRelease()
         {
             using var fixture = new EmptyRepositoryFixture();
             fixture.Repository.MakeACommit("1");
@@ -49,7 +49,7 @@ namespace GitVersion.Core.Tests.IntegrationTests
             fixture.AssertFullSemver("1.0.1-foo.1", config);
             fixture.MakeACommit("2.1");
             fixture.AssertFullSemver("1.0.1-foo.2", config);
-            fixture.Checkout("master");
+            fixture.Checkout(MainBranch);
             fixture.MergeNoFF("feature/foo");
 
             fixture.AssertFullSemver("1.0.1", config);
@@ -57,15 +57,15 @@ namespace GitVersion.Core.Tests.IntegrationTests
             fixture.BranchTo("feature/foo2", "foo2");
             fixture.MakeACommit("3 +semver: minor");
             fixture.AssertFullSemver("1.1.0-foo2.1", config);
-            fixture.Checkout("master");
+            fixture.Checkout(MainBranch);
             fixture.MergeNoFF("feature/foo2");
             fixture.AssertFullSemver("1.1.0", config);
 
             fixture.BranchTo("feature/foo3", "foo3");
             fixture.MakeACommit("4");
-            fixture.Checkout("master");
+            fixture.Checkout(MainBranch);
             fixture.MergeNoFF("feature/foo3");
-            fixture.SequenceDiagram.NoteOver("Merge message contains '+semver: minor'", "master");
+            fixture.SequenceDiagram.NoteOver("Merge message contains '+semver: minor'", MainBranch);
             var commit = fixture.Repository.Head.Tip;
             // Put semver increment in merge message
             fixture.Repository.Commit(commit.Message + " +semver: minor", commit.Author, commit.Committer, new CommitOptions
@@ -77,7 +77,7 @@ namespace GitVersion.Core.Tests.IntegrationTests
             fixture.BranchTo("feature/foo4", "foo4");
             fixture.MakeACommit("5 +semver: major");
             fixture.AssertFullSemver("2.0.0-foo4.1", config);
-            fixture.Checkout("master");
+            fixture.Checkout(MainBranch);
             fixture.MergeNoFF("feature/foo4");
             fixture.AssertFullSemver("2.0.0", config);
 
@@ -93,7 +93,7 @@ namespace GitVersion.Core.Tests.IntegrationTests
             fixture.BranchTo("feature/foo5", "foo5");
             fixture.MakeACommit("9 +semver: minor");
             fixture.AssertFullSemver("3.2.0-foo5.1", config);
-            fixture.Checkout("master");
+            fixture.Checkout(MainBranch);
             fixture.MergeNoFF("feature/foo5");
             fixture.AssertFullSemver("3.2.0", config);
 
@@ -119,7 +119,7 @@ namespace GitVersion.Core.Tests.IntegrationTests
             fixture.AssertFullSemver("1.0.2-foo.0", config);
             fixture.MakeACommit();
             fixture.MakeACommit();
-            fixture.Repository.CreatePullRequestRef("feature/foo", "master", normalise: true, prNumber: 8);
+            fixture.Repository.CreatePullRequestRef("feature/foo", MainBranch, normalise: true, prNumber: 8);
             fixture.AssertFullSemver("1.0.2-PullRequest0008.3", config);
         }
 
@@ -136,9 +136,9 @@ namespace GitVersion.Core.Tests.IntegrationTests
             fixture.BranchTo("support/1.0", "support10");
             fixture.AssertFullSemver("1.0.2", config);
 
-            // Move master on
-            fixture.Checkout("master");
-            fixture.MakeACommit("+semver: major"); // 2.0.0 (on master)
+            // Move main on
+            fixture.Checkout(MainBranch);
+            fixture.MakeACommit("+semver: major"); // 2.0.0 (on main)
             fixture.AssertFullSemver("2.0.0", config);
 
             // Continue on support/1.0
@@ -170,7 +170,7 @@ namespace GitVersion.Core.Tests.IntegrationTests
             fixture.MakeACommit();
             fixture.AssertFullSemver("1.0.2-foo.2", config);
 
-            fixture.Checkout("master");
+            fixture.Checkout(MainBranch);
             fixture.MakeACommit();
             fixture.AssertFullSemver("1.0.2", config);
             fixture.Checkout("feature/foo");
@@ -178,7 +178,7 @@ namespace GitVersion.Core.Tests.IntegrationTests
             // and incremented. Mainline has then moved on. We do not follow mainline
             // in feature branches, you need to merge mainline in to get the mainline version
             fixture.AssertFullSemver("1.0.2-foo.2", config);
-            fixture.MergeNoFF("master");
+            fixture.MergeNoFF(MainBranch);
             fixture.AssertFullSemver("1.0.3-foo.3", config);
         }
 
@@ -194,7 +194,7 @@ namespace GitVersion.Core.Tests.IntegrationTests
             fixture.MakeACommit();
             fixture.MakeACommit();
 
-            fixture.Checkout("master");
+            fixture.Checkout(MainBranch);
             fixture.MakeACommit("+semver: minor");
             fixture.AssertFullSemver("1.1.0", config);
             fixture.MergeNoFF("support/1.0");
@@ -211,7 +211,7 @@ namespace GitVersion.Core.Tests.IntegrationTests
         }
 
         [Test]
-        public void VerifyDevelopTracksMasterVersion()
+        public void VerifyDevelopTracksMainVersion()
         {
             using var fixture = new EmptyRepositoryFixture();
             fixture.Repository.MakeACommit("1");
@@ -224,8 +224,8 @@ namespace GitVersion.Core.Tests.IntegrationTests
             fixture.MakeACommit();
             fixture.AssertFullSemver("1.1.0-alpha.1", config);
 
-            // merging develop into master increments minor version on master
-            fixture.Checkout("master");
+            // merging develop into main increments minor version on main
+            fixture.Checkout(MainBranch);
             fixture.MergeNoFF("develop");
             fixture.AssertFullSemver("1.1.0", config);
 
@@ -233,22 +233,22 @@ namespace GitVersion.Core.Tests.IntegrationTests
             fixture.Checkout("develop");
             fixture.AssertFullSemver("1.1.0-alpha.1", config);
 
-            // moving on to further work on develop tracks master's version from the merge
+            // moving on to further work on develop tracks main's version from the merge
             fixture.MakeACommit();
             fixture.AssertFullSemver("1.2.0-alpha.1", config);
 
-            // adding a commit to master increments patch
-            fixture.Checkout("master");
+            // adding a commit to main increments patch
+            fixture.Checkout(MainBranch);
             fixture.MakeACommit();
             fixture.AssertFullSemver("1.1.1", config);
 
-            // adding a commit to master doesn't change develop's version
+            // adding a commit to main doesn't change develop's version
             fixture.Checkout("develop");
             fixture.AssertFullSemver("1.2.0-alpha.1", config);
         }
 
         [Test]
-        public void VerifyDevelopFeatureTracksMasterVersion()
+        public void VerifyDevelopFeatureTracksMainVersion()
         {
             using var fixture = new EmptyRepositoryFixture();
             fixture.Repository.MakeACommit("1");
@@ -261,8 +261,8 @@ namespace GitVersion.Core.Tests.IntegrationTests
             fixture.MakeACommit();
             fixture.AssertFullSemver("1.1.0-alpha.1", config);
 
-            // merging develop into master increments minor version on master
-            fixture.Checkout("master");
+            // merging develop into main increments minor version on main
+            fixture.Checkout(MainBranch);
             fixture.MergeNoFF("develop");
             fixture.AssertFullSemver("1.1.0", config);
 
@@ -270,21 +270,21 @@ namespace GitVersion.Core.Tests.IntegrationTests
             fixture.Checkout("develop");
             fixture.AssertFullSemver("1.1.0-alpha.1", config);
 
-            // a branch from develop before the merge tracks the pre-merge version from master
+            // a branch from develop before the merge tracks the pre-merge version from main
             // (note: the commit on develop looks like a commit to this branch, thus the .1)
             fixture.BranchTo("feature/foo");
             fixture.AssertFullSemver("1.0.2-foo.1", config);
 
-            // further work on the branch tracks the merged version from master
+            // further work on the branch tracks the merged version from main
             fixture.MakeACommit();
             fixture.AssertFullSemver("1.1.1-foo.1", config);
 
-            // adding a commit to master increments patch
-            fixture.Checkout("master");
+            // adding a commit to main increments patch
+            fixture.Checkout(MainBranch);
             fixture.MakeACommit();
             fixture.AssertFullSemver("1.1.1", config);
 
-            // adding a commit to master doesn't change the feature's version
+            // adding a commit to main doesn't change the feature's version
             fixture.Checkout("feature/foo");
             fixture.AssertFullSemver("1.1.1-foo.1", config);
 
@@ -295,22 +295,22 @@ namespace GitVersion.Core.Tests.IntegrationTests
         }
 
         [Test]
-        public void VerifyMergingMasterToFeatureDoesNotCauseBranchCommitsToIncrementVersion()
+        public void VerifyMergingMainToFeatureDoesNotCauseBranchCommitsToIncrementVersion()
         {
             using var fixture = new EmptyRepositoryFixture();
-            fixture.MakeACommit("first in master");
+            fixture.MakeACommit($"first in {MainBranch}");
 
             fixture.BranchTo("feature/foo", "foo");
             fixture.MakeACommit("first in foo");
 
-            fixture.Checkout("master");
-            fixture.MakeACommit("second in master");
+            fixture.Checkout(MainBranch);
+            fixture.MakeACommit($"second in {MainBranch}");
 
             fixture.Checkout("feature/foo");
-            fixture.MergeNoFF("master");
+            fixture.MergeNoFF(MainBranch);
             fixture.MakeACommit("second in foo");
 
-            fixture.Checkout("master");
+            fixture.Checkout(MainBranch);
             fixture.MakeATaggedCommit("1.0.0");
 
             fixture.MergeNoFF("feature/foo");
@@ -318,29 +318,29 @@ namespace GitVersion.Core.Tests.IntegrationTests
         }
 
         [Test]
-        public void VerifyMergingMasterToFeatureDoesNotStopMasterCommitsIncrementingVersion()
+        public void VerifyMergingMainToFeatureDoesNotStopMainCommitsIncrementingVersion()
         {
             using var fixture = new EmptyRepositoryFixture();
-            fixture.MakeACommit("first in master");
+            fixture.MakeACommit($"first in {MainBranch}");
 
             fixture.BranchTo("feature/foo", "foo");
             fixture.MakeACommit("first in foo");
 
-            fixture.Checkout("master");
+            fixture.Checkout(MainBranch);
             fixture.MakeATaggedCommit("1.0.0");
-            fixture.MakeACommit("third in master");
+            fixture.MakeACommit($"third in {MainBranch}");
 
             fixture.Checkout("feature/foo");
-            fixture.MergeNoFF("master");
+            fixture.MergeNoFF(MainBranch);
             fixture.MakeACommit("second in foo");
 
-            fixture.Checkout("master");
+            fixture.Checkout(MainBranch);
             fixture.MergeNoFF("feature/foo");
             fixture.AssertFullSemver("1.0.2", config);
         }
 
         [Test]
-        public void VerifyIssue1154CanForwardMergeMasterToFeatureBranch()
+        public void VerifyIssue1154CanForwardMergeMainToFeatureBranch()
         {
             using var fixture = new EmptyRepositoryFixture();
             fixture.MakeACommit();
@@ -349,7 +349,7 @@ namespace GitVersion.Core.Tests.IntegrationTests
             fixture.MakeACommit();
             fixture.MakeACommit();
 
-            fixture.Checkout("master");
+            fixture.Checkout(MainBranch);
             fixture.MergeNoFF("feature/branch1");
             fixture.AssertFullSemver("0.1.1", config);
 
@@ -357,16 +357,16 @@ namespace GitVersion.Core.Tests.IntegrationTests
             fixture.MakeACommit();
             fixture.MakeACommit();
             fixture.MakeACommit();
-            fixture.MergeNoFF("master");
+            fixture.MergeNoFF(MainBranch);
 
             fixture.AssertFullSemver("0.1.2-branch2.4", config);
         }
 
         [Test]
-        public void VerifyMergingMasterIntoAFeatureBranchWorksWithMultipleBranches()
+        public void VerifyMergingMainIntoAFeatureBranchWorksWithMultipleBranches()
         {
             using var fixture = new EmptyRepositoryFixture();
-            fixture.MakeACommit("first in master");
+            fixture.MakeACommit($"first in {MainBranch}");
 
             fixture.BranchTo("feature/foo", "foo");
             fixture.MakeACommit("first in foo");
@@ -374,18 +374,18 @@ namespace GitVersion.Core.Tests.IntegrationTests
             fixture.BranchTo("feature/bar", "bar");
             fixture.MakeACommit("first in bar");
 
-            fixture.Checkout("master");
-            fixture.MakeACommit("second in master");
+            fixture.Checkout(MainBranch);
+            fixture.MakeACommit($"second in {MainBranch}");
 
             fixture.Checkout("feature/foo");
-            fixture.MergeNoFF("master");
+            fixture.MergeNoFF(MainBranch);
             fixture.MakeACommit("second in foo");
 
             fixture.Checkout("feature/bar");
-            fixture.MergeNoFF("master");
+            fixture.MergeNoFF(MainBranch);
             fixture.MakeACommit("second in bar");
 
-            fixture.Checkout("master");
+            fixture.Checkout(MainBranch);
             fixture.MakeATaggedCommit("1.0.0");
 
             fixture.MergeNoFF("feature/foo");
@@ -394,7 +394,7 @@ namespace GitVersion.Core.Tests.IntegrationTests
         }
 
         [Test]
-        public void MergingFeatureBranchThatIncrementsMinorNumberIncrementsMinorVersionOfMaster()
+        public void MergingFeatureBranchThatIncrementsMinorNumberIncrementsMinorVersionOfMain()
         {
             var currentConfig = new Config
             {
@@ -412,7 +412,7 @@ namespace GitVersion.Core.Tests.IntegrationTests
             };
 
             using var fixture = new EmptyRepositoryFixture();
-            fixture.MakeACommit("first in master");
+            fixture.MakeACommit($"first in {MainBranch}");
             fixture.MakeATaggedCommit("1.0.0");
             fixture.AssertFullSemver("1.0.0", currentConfig);
 
@@ -421,7 +421,7 @@ namespace GitVersion.Core.Tests.IntegrationTests
             fixture.MakeACommit("second in foo");
             fixture.AssertFullSemver("1.1.0-foo.2", currentConfig);
 
-            fixture.Checkout("master");
+            fixture.Checkout(MainBranch);
             fixture.MergeNoFF("feature/foo");
             fixture.AssertFullSemver("1.1.0", currentConfig);
         }
@@ -436,12 +436,12 @@ namespace GitVersion.Core.Tests.IntegrationTests
                 Branches = new Dictionary<string, BranchConfig>
                 {
                     {
-                        "master",
+                        MainBranch,
                         new BranchConfig
                         {
                             Increment = IncrementStrategy.Minor,
-                            Name = "master",
-                            Regex = "master"
+                            Name = MainBranch,
+                            Regex = MainBranch
                         }
                     },
                     {
@@ -465,7 +465,7 @@ namespace GitVersion.Core.Tests.IntegrationTests
             fixture.AssertFullSemver("1.1.0-foo.1", minorIncrementConfig);
             fixture.MakeACommit("2.1");
             fixture.AssertFullSemver("1.1.0-foo.2", minorIncrementConfig);
-            fixture.Checkout("master");
+            fixture.Checkout(MainBranch);
             fixture.MergeNoFF("feature/foo");
 
             fixture.AssertFullSemver("1.1.0", minorIncrementConfig);
@@ -473,15 +473,15 @@ namespace GitVersion.Core.Tests.IntegrationTests
             fixture.BranchTo("feature/foo2", "foo2");
             fixture.MakeACommit("3 +semver: patch");
             fixture.AssertFullSemver("1.1.1-foo2.1", minorIncrementConfig);
-            fixture.Checkout("master");
+            fixture.Checkout(MainBranch);
             fixture.MergeNoFF("feature/foo2");
             fixture.AssertFullSemver("1.1.1", minorIncrementConfig);
 
             fixture.BranchTo("feature/foo3", "foo3");
             fixture.MakeACommit("4");
-            fixture.Checkout("master");
+            fixture.Checkout(MainBranch);
             fixture.MergeNoFF("feature/foo3");
-            fixture.SequenceDiagram.NoteOver("Merge message contains '+semver: patch'", "master");
+            fixture.SequenceDiagram.NoteOver("Merge message contains '+semver: patch'", MainBranch);
             var commit = fixture.Repository.Head.Tip;
             // Put semver increment in merge message
             fixture.Repository.Commit(commit.Message + " +semver: patch", commit.Author, commit.Committer, new CommitOptions
@@ -493,7 +493,7 @@ namespace GitVersion.Core.Tests.IntegrationTests
             fixture.BranchTo("feature/foo4", "foo4");
             fixture.MakeACommit("5 +semver: major");
             fixture.AssertFullSemver("2.0.0-foo4.1", minorIncrementConfig);
-            fixture.Checkout("master");
+            fixture.Checkout(MainBranch);
             fixture.MergeNoFF("feature/foo4");
             fixture.AssertFullSemver("2.0.0", config);
 
@@ -509,7 +509,7 @@ namespace GitVersion.Core.Tests.IntegrationTests
             fixture.BranchTo("feature/foo5", "foo5");
             fixture.MakeACommit("9 +semver: patch");
             fixture.AssertFullSemver("3.1.2-foo5.1", minorIncrementConfig);
-            fixture.Checkout("master");
+            fixture.Checkout(MainBranch);
             fixture.MergeNoFF("feature/foo5");
             fixture.AssertFullSemver("3.1.2", minorIncrementConfig);
 

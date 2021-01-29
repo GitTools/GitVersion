@@ -18,7 +18,7 @@ namespace GitVersion.Core.Tests.IntegrationTests
         {
             using var fixture = new BaseGitFlowRepositoryFixture("1.2.0");
             // create hotfix
-            Commands.Checkout(fixture.Repository, "master");
+            Commands.Checkout(fixture.Repository, MainBranch);
             Commands.Checkout(fixture.Repository, fixture.Repository.CreateBranch("hotfix-1.2.1"));
             fixture.Repository.MakeACommit();
 
@@ -30,8 +30,8 @@ namespace GitVersion.Core.Tests.IntegrationTests
             fixture.Repository.MakeACommit();
             fixture.AssertFullSemver("1.2.1-beta.2+3");
 
-            // Merge hotfix branch to master
-            Commands.Checkout(fixture.Repository, "master");
+            // Merge hotfix branch to main
+            Commands.Checkout(fixture.Repository, MainBranch);
 
             fixture.Repository.MergeNoFF("hotfix-1.2.1", Generate.SignatureNow());
             fixture.AssertFullSemver("1.2.1+4");
@@ -57,7 +57,7 @@ namespace GitVersion.Core.Tests.IntegrationTests
                 r.MakeATaggedCommit("2.0.0");
             });
             // Merge hotfix branch to support
-            Commands.Checkout(fixture.Repository, "master");
+            Commands.Checkout(fixture.Repository, MainBranch);
             Commands.Checkout(fixture.Repository, fixture.Repository.CreateBranch("support-1.1", (Commit)fixture.Repository.Tags.Single(t => t.FriendlyName == "1.1.0").Target));
             fixture.AssertFullSemver("1.1.0");
 
@@ -81,7 +81,7 @@ namespace GitVersion.Core.Tests.IntegrationTests
                 r.MakeATaggedCommit("2.0.0");
             });
             // Merge hotfix branch to support
-            Commands.Checkout(fixture.Repository, "master");
+            Commands.Checkout(fixture.Repository, MainBranch);
             var tag = fixture.Repository.Tags.Single(t => t.FriendlyName == "1.1.0");
             var supportBranch = fixture.Repository.CreateBranch("support-1.1", (Commit)tag.Target);
             Commands.Checkout(fixture.Repository, supportBranch);
@@ -152,7 +152,7 @@ namespace GitVersion.Core.Tests.IntegrationTests
             fixture.Repository.MakeACommit("blabla");
             Commands.Checkout(fixture.Repository, "develop");
             fixture.Repository.MergeNoFF(release450, Generate.SignatureNow());
-            Commands.Checkout(fixture.Repository, "master");
+            Commands.Checkout(fixture.Repository, MainBranch);
             fixture.Repository.MergeNoFF(release450, Generate.SignatureNow());
 
             // create support branch
@@ -205,7 +205,7 @@ namespace GitVersion.Core.Tests.IntegrationTests
             fixture.Repository.MakeACommit("blabla");
             Commands.Checkout(fixture.Repository, "develop");
             fixture.Repository.MergeNoFF(release450, Generate.SignatureNow());
-            Commands.Checkout(fixture.Repository, "master");
+            Commands.Checkout(fixture.Repository, MainBranch);
             fixture.Repository.MergeNoFF(release450, Generate.SignatureNow());
 
             // create support branch

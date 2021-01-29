@@ -18,7 +18,7 @@ namespace GitVersion.VersionCalculation
     /// </para>
     /// <para>
     /// Using <see cref="TaggedCommitVersionStrategy"/>:
-    /// Version is extracted from all tags on the <c>master</c> branch which are valid.
+    /// Version is extracted from all tags on the <c>main</c> branch which are valid.
     /// BaseVersionSource is the tag's commit (same as base strategy).
     /// Increments if the tag is not the current commit (same as base strategy).
     /// </para>
@@ -42,16 +42,16 @@ namespace GitVersion.VersionCalculation
         {
             if (Context.Configuration.TracksReleaseBranches)
             {
-                return ReleaseBranchBaseVersions().Union(MasterTagsVersions());
+                return ReleaseBranchBaseVersions().Union(MainTagsVersions());
             }
 
             return new BaseVersion[0];
         }
 
-        private IEnumerable<BaseVersion> MasterTagsVersions()
+        private IEnumerable<BaseVersion> MainTagsVersions()
         {
-            var master = repositoryStore.FindBranch(Config.MasterBranchKey);
-            return master != null ? taggedCommitVersionStrategy.GetTaggedVersions(master, null) : new BaseVersion[0];
+            var main = repositoryStore.FindBranch(Config.MainBranchKey);
+            return main != null ? taggedCommitVersionStrategy.GetTaggedVersions(main, null) : new BaseVersion[0];
         }
 
 

@@ -8,7 +8,7 @@ using NUnit.Framework;
 namespace GitVersion.Core.Tests.IntegrationTests
 {
     [TestFixture]
-    public class MasterScenarios : TestBase
+    public class MainScenarios : TestBase
     {
         [Test]
         public void CanHandleContinuousDelivery()
@@ -18,7 +18,7 @@ namespace GitVersion.Core.Tests.IntegrationTests
                 Branches =
                 {
                     {
-                        "master", new BranchConfig
+                        MainBranch, new BranchConfig
                         {
                             VersioningMode = VersioningMode.ContinuousDelivery
                         }
@@ -39,7 +39,7 @@ namespace GitVersion.Core.Tests.IntegrationTests
                 Branches =
                 {
                     {
-                        "master", new BranchConfig
+                        MainBranch, new BranchConfig
                         {
                             VersioningMode = VersioningMode.ContinuousDeployment
                         }

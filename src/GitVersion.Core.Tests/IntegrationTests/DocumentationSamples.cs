@@ -13,7 +13,7 @@ namespace GitVersion.Core.Tests.IntegrationTests
         public void GitFlowFeatureBranch()
         {
             using var fixture = new EmptyRepositoryFixture();
-            fixture.SequenceDiagram.Participant("master");
+            fixture.SequenceDiagram.Participant(MainBranch);
             fixture.SequenceDiagram.Participant("develop");
 
             // GitFlow setup
@@ -46,7 +46,7 @@ namespace GitVersion.Core.Tests.IntegrationTests
         public void GitFlowPullRequestBranch()
         {
             using var fixture = new EmptyRepositoryFixture();
-            fixture.SequenceDiagram.Participant("master");
+            fixture.SequenceDiagram.Participant(MainBranch);
             fixture.SequenceDiagram.Participant("develop");
 
             // GitFlow setup
@@ -80,13 +80,13 @@ namespace GitVersion.Core.Tests.IntegrationTests
         {
             using var fixture = new EmptyRepositoryFixture();
             fixture.SequenceDiagram.Participant("develop");
-            fixture.SequenceDiagram.Participant("master");
+            fixture.SequenceDiagram.Participant(MainBranch);
 
             fixture.Repository.MakeACommit();
             fixture.ApplyTag("1.2.0");
 
             // Create hotfix branch
-            fixture.Checkout("master");
+            fixture.Checkout(MainBranch);
             fixture.BranchTo("hotfix/1.2.1", "hotfix");
             fixture.SequenceDiagram.Activate("hotfix/1.2.1");
             fixture.MakeACommit();
@@ -96,7 +96,7 @@ namespace GitVersion.Core.Tests.IntegrationTests
             // Apply beta.1 tag should be exact tag
             fixture.ApplyTag("1.2.1-beta.1");
             fixture.AssertFullSemver("1.2.1-beta.1");
-            fixture.Checkout("master");
+            fixture.Checkout(MainBranch);
             fixture.MergeNoFF("hotfix/1.2.1");
             fixture.SequenceDiagram.Destroy("hotfix/1.2.1");
             fixture.SequenceDiagram.NoteOver("Hotfix branches are deleted once merged", "hotfix/1.2.1");
@@ -108,7 +108,7 @@ namespace GitVersion.Core.Tests.IntegrationTests
         public void GitFlowMinorRelease()
         {
             using var fixture = new EmptyRepositoryFixture();
-            fixture.SequenceDiagram.Participant("master");
+            fixture.SequenceDiagram.Participant(MainBranch);
             fixture.SequenceDiagram.Participant("develop");
 
             // GitFlow setup
@@ -143,14 +143,14 @@ namespace GitVersion.Core.Tests.IntegrationTests
             fixture.AssertFullSemver("1.3.0-beta.2+2");
 
             // Complete release
-            fixture.Checkout("master");
+            fixture.Checkout(MainBranch);
             fixture.MergeNoFF("release/1.3.0");
             fixture.Checkout("develop");
             fixture.MergeNoFF("release/1.3.0");
             fixture.SequenceDiagram.Destroy("release/1.3.0");
             fixture.SequenceDiagram.NoteOver("Release branches are deleted once merged", "release/1.3.0");
 
-            fixture.Checkout("master");
+            fixture.Checkout(MainBranch);
             fixture.ApplyTag("1.3.0");
             fixture.AssertFullSemver("1.3.0");
 
@@ -164,7 +164,7 @@ namespace GitVersion.Core.Tests.IntegrationTests
         public void GitFlowMajorRelease()
         {
             using var fixture = new EmptyRepositoryFixture();
-            fixture.SequenceDiagram.Participant("master");
+            fixture.SequenceDiagram.Participant(MainBranch);
             fixture.SequenceDiagram.Participant("develop");
 
             fixture.Repository.MakeACommit();
@@ -198,14 +198,14 @@ namespace GitVersion.Core.Tests.IntegrationTests
             fixture.AssertFullSemver("2.0.0-beta.2+2");
 
             // Complete release
-            fixture.Checkout("master");
+            fixture.Checkout(MainBranch);
             fixture.MergeNoFF("release/2.0.0");
             fixture.Checkout("develop");
             fixture.MergeNoFF("release/2.0.0");
             fixture.SequenceDiagram.Destroy("release/2.0.0");
             fixture.SequenceDiagram.NoteOver("Release branches are deleted once merged", "release/2.0.0");
 
-            fixture.Checkout("master");
+            fixture.Checkout(MainBranch);
             fixture.AssertFullSemver("2.0.0+0");
             fixture.ApplyTag("2.0.0");
             fixture.AssertFullSemver("2.0.0");
@@ -221,7 +221,7 @@ namespace GitVersion.Core.Tests.IntegrationTests
         {
             using var fixture = new EmptyRepositoryFixture();
             fixture.SequenceDiagram.Participant("develop");
-            fixture.SequenceDiagram.Participant("master");
+            fixture.SequenceDiagram.Participant(MainBranch);
 
             fixture.Repository.MakeACommit();
             fixture.ApplyTag("1.3.0");
@@ -229,13 +229,13 @@ namespace GitVersion.Core.Tests.IntegrationTests
             // GitFlow setup
             fixture.Repository.MakeACommit();
             fixture.BranchTo("develop");
-            fixture.SequenceDiagram.NoteOver("Create 2.0.0 release and complete", "develop", "master");
-            fixture.Checkout("master");
+            fixture.SequenceDiagram.NoteOver("Create 2.0.0 release and complete", "develop", MainBranch);
+            fixture.Checkout(MainBranch);
             fixture.ApplyTag("2.0.0");
 
             // Create hotfix branch
             fixture.Checkout("1.3.0");
-            fixture.BranchToFromTag("support/1.x", "1.3.0", "master", "support");
+            fixture.BranchToFromTag("support/1.x", "1.3.0", MainBranch, "support");
             fixture.MakeACommit();
             fixture.AssertFullSemver("1.3.1+1");
 
@@ -263,7 +263,7 @@ namespace GitVersion.Core.Tests.IntegrationTests
         {
             using var fixture = new EmptyRepositoryFixture();
             fixture.SequenceDiagram.Participant("develop");
-            fixture.SequenceDiagram.Participant("master");
+            fixture.SequenceDiagram.Participant(MainBranch);
 
             fixture.Repository.MakeACommit();
             fixture.ApplyTag("1.3.0");
@@ -271,14 +271,14 @@ namespace GitVersion.Core.Tests.IntegrationTests
             // GitFlow setup
             fixture.Repository.MakeACommit();
             fixture.BranchTo("develop");
-            fixture.SequenceDiagram.NoteOver("Create 2.0.0 release and complete", "develop", "master");
-            fixture.Checkout("master");
+            fixture.SequenceDiagram.NoteOver("Create 2.0.0 release and complete", "develop", MainBranch);
+            fixture.Checkout(MainBranch);
             fixture.ApplyTag("2.0.0");
 
             // Create hotfix branch
             fixture.Checkout("1.3.0");
-            fixture.BranchToFromTag("support/1.x", "1.3.0", "master", "support");
-            fixture.SequenceDiagram.NoteOver("Create 1.3.1 release and complete", "master", "support/1.x");
+            fixture.BranchToFromTag("support/1.x", "1.3.0", MainBranch, "support");
+            fixture.SequenceDiagram.NoteOver("Create 1.3.1 release and complete", MainBranch, "support/1.x");
             fixture.Repository.MakeACommit();
             fixture.ApplyTag("1.3.1");
 
@@ -306,7 +306,7 @@ namespace GitVersion.Core.Tests.IntegrationTests
         public void GitHubFlowFeatureBranch()
         {
             using var fixture = new EmptyRepositoryFixture();
-            fixture.SequenceDiagram.Participant("master");
+            fixture.SequenceDiagram.Participant(MainBranch);
 
             // GitFlow setup
             fixture.Repository.MakeACommit();
@@ -323,8 +323,8 @@ namespace GitVersion.Core.Tests.IntegrationTests
             fixture.MakeACommit();
             fixture.AssertFullSemver("1.2.1-myfeature.1+2");
 
-            // Merge into master
-            fixture.Checkout("master");
+            // Merge into main
+            fixture.Checkout(MainBranch);
             fixture.MergeNoFF("feature/myfeature");
             fixture.SequenceDiagram.Destroy("feature/myfeature");
             fixture.SequenceDiagram.NoteOver("Feature branches should\r\n" +
@@ -336,7 +336,7 @@ namespace GitVersion.Core.Tests.IntegrationTests
         public void GitHubFlowPullRequestBranch()
         {
             using var fixture = new EmptyRepositoryFixture();
-            fixture.SequenceDiagram.Participant("master");
+            fixture.SequenceDiagram.Participant(MainBranch);
 
             // GitFlow setup
             fixture.Repository.MakeACommit();
@@ -353,8 +353,8 @@ namespace GitVersion.Core.Tests.IntegrationTests
             fixture.MakeACommit();
             fixture.AssertFullSemver("1.2.1-PullRequest0002.2");
 
-            // Merge into master
-            fixture.Checkout("master");
+            // Merge into main
+            fixture.Checkout(MainBranch);
             fixture.MergeNoFF("pull/2/merge");
             fixture.SequenceDiagram.Destroy("pull/2/merge");
             fixture.SequenceDiagram.NoteOver("Feature branches/pr's should\r\n" +
@@ -366,7 +366,7 @@ namespace GitVersion.Core.Tests.IntegrationTests
         public void GitHubFlowMajorRelease()
         {
             using var fixture = new EmptyRepositoryFixture();
-            fixture.SequenceDiagram.Participant("master");
+            fixture.SequenceDiagram.Participant(MainBranch);
 
             fixture.Repository.MakeACommit();
             fixture.ApplyTag("1.3.0");
@@ -392,7 +392,7 @@ namespace GitVersion.Core.Tests.IntegrationTests
             fixture.AssertFullSemver("2.0.0-beta.2+3");
 
             // Complete release
-            fixture.Checkout("master");
+            fixture.Checkout(MainBranch);
             fixture.MergeNoFF("release/2.0.0");
             fixture.SequenceDiagram.Destroy("release/2.0.0");
             fixture.SequenceDiagram.NoteOver("Release branches are deleted once merged", "release/2.0.0");

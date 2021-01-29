@@ -70,13 +70,13 @@ namespace GitVersion.Core.Tests.BuildAgents
         public void GetCurrentBranchShouldHandleBranches()
         {
             // Arrange
-            environment.SetEnvironmentVariable("GITHUB_REF", "refs/heads/master");
+            environment.SetEnvironmentVariable("GITHUB_REF", $"refs/heads/{MainBranch}");
 
             // Act
             var result = buildServer.GetCurrentBranch(false);
 
             // Assert
-            result.ShouldBe("refs/heads/master");
+            result.ShouldBe($"refs/heads/{MainBranch}");
         }
 
         [Test]

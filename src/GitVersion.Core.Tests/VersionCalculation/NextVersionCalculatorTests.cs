@@ -17,7 +17,7 @@ namespace GitVersion.Core.Tests.VersionCalculation
         [Test]
         public void ShouldIncrementVersionBasedOnConfig()
         {
-            var semanticVersionBuildMetaData = new SemanticVersionBuildMetaData("ef7d0d7e1e700f1c7c9fa01ea6791bb778a5c37c", 1, "master", "b1a34edbd80e141f7cc046c074f109be7d022074", "b1a34e", DateTimeOffset.Now, 0);
+            var semanticVersionBuildMetaData = new SemanticVersionBuildMetaData("ef7d0d7e1e700f1c7c9fa01ea6791bb778a5c37c", 1, MainBranch, "b1a34edbd80e141f7cc046c074f109be7d022074", "b1a34e", DateTimeOffset.Now, 0);
 
             var contextBuilder = new GitVersionContextBuilder();
 
@@ -42,7 +42,7 @@ namespace GitVersion.Core.Tests.VersionCalculation
         [Test]
         public void DoesNotIncrementWhenBaseVersionSaysNotTo()
         {
-            var semanticVersionBuildMetaData = new SemanticVersionBuildMetaData("ef7d0d7e1e700f1c7c9fa01ea6791bb778a5c37c", 1, "master", "b1a34edbd80e141f7cc046c074f109be7d022074", "b1a34e", DateTimeOffset.Now, 0);
+            var semanticVersionBuildMetaData = new SemanticVersionBuildMetaData("ef7d0d7e1e700f1c7c9fa01ea6791bb778a5c37c", 1, MainBranch, "b1a34edbd80e141f7cc046c074f109be7d022074", "b1a34e", DateTimeOffset.Now, 0);
 
             var contextBuilder = new GitVersionContextBuilder();
 
@@ -148,7 +148,7 @@ namespace GitVersion.Core.Tests.VersionCalculation
             fixture.MakeACommit();
             fixture.BranchTo("foo");
             fixture.MakeACommit();
-            fixture.Checkout("master");
+            fixture.Checkout(MainBranch);
             fixture.MergeNoFF("foo");
 
             fixture.AssertFullSemver("1.0.0", config);
@@ -172,7 +172,7 @@ namespace GitVersion.Core.Tests.VersionCalculation
             fixture.AssertFullSemver("1.0.1-foo.1", config);
             fixture.ApplyTag("1.0.1-foo.1");
 
-            fixture.Checkout("master");
+            fixture.Checkout(MainBranch);
             fixture.MergeNoFF("feature/foo");
             fixture.AssertFullSemver("1.0.1", config);
         }
@@ -201,7 +201,7 @@ namespace GitVersion.Core.Tests.VersionCalculation
             fixture.AssertFullSemver("1.1.0-foo.1", config);
             fixture.ApplyTag("1.1.0-foo.1");
 
-            fixture.Checkout("master");
+            fixture.Checkout(MainBranch);
             fixture.MergeNoFF("feature/foo");
             fixture.AssertFullSemver("1.1.0", config);
         }
@@ -230,7 +230,7 @@ namespace GitVersion.Core.Tests.VersionCalculation
             fixture.AssertFullSemver("1.1.0-foo.1", config);
             fixture.ApplyTag("1.1.0-foo.1");
 
-            fixture.Checkout("master");
+            fixture.Checkout(MainBranch);
             fixture.MergeNoFF("feature/foo");
             fixture.AssertFullSemver("1.1.0", config);
             fixture.ApplyTag("1.1.0");
@@ -240,7 +240,7 @@ namespace GitVersion.Core.Tests.VersionCalculation
             fixture.AssertFullSemver("1.1.1-beta.1", config);
             fixture.ApplyTag("1.1.1-beta.1");
 
-            fixture.Checkout("master");
+            fixture.Checkout(MainBranch);
             fixture.MergeNoFF("hotfix/bar");
             fixture.AssertFullSemver("1.1.1", config);
         }
@@ -283,7 +283,7 @@ namespace GitVersion.Core.Tests.VersionCalculation
                 Branches = new Dictionary<string, BranchConfig>
                 {
                     {
-                        "master", new BranchConfig
+                        MainBranch, new BranchConfig
                         {
                             Tag = "beta"
                         }
@@ -301,7 +301,7 @@ namespace GitVersion.Core.Tests.VersionCalculation
 
             fixture.AssertFullSemver("0.1.0-test.2+2", config);
 
-            Commands.Checkout(fixture.Repository, "master");
+            Commands.Checkout(fixture.Repository, MainBranch);
             fixture.Repository.Merge("feature/test", Generate.SignatureNow());
 
             fixture.AssertFullSemver("0.1.0-beta.1+2", config);

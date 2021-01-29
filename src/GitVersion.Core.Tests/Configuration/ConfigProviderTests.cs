@@ -131,7 +131,7 @@ branches:
         }
 
         [Test(Description = "Well-known branches may not be present in the configuration file. This test confirms the validation check succeeds when the source-branches configuration contain these well-known branches.")]
-        [TestCase(Config.MasterBranchKey)]
+        [TestCase(Config.MainBranchKey)]
         [TestCase(Config.DevelopBranchKey)]
         public void SourceBranchesValidationShouldSucceedForWellKnownBranches(string wellKnownBranchKey)
         {
@@ -380,7 +380,7 @@ branches:
             var config = configProvider.Provide(repoPath);
 
             config.Branches["feature"].SourceBranches.ShouldBe(
-                new List<string> { "develop", "master", "release", "feature", "support", "hotfix" });
+                new List<string> { "develop", MainBranch, "release", "feature", "support", "hotfix" });
         }
 
         [Test]

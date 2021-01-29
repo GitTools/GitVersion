@@ -14,9 +14,9 @@ namespace GitVersion.Core.Tests.IntegrationTests
     {
         // This is an attempt to automatically resolve the issue where you cannot build
         // when multiple branches point at the same commit
-        // Current implementation favors master, then branches without - or / in their name
+        // Current implementation favors main, then branches without - or / in their name
         [Test]
-        public void DoNotBlowUpWhenMasterAndDevelopPointAtSameCommit()
+        public void DoNotBlowUpWhenMainAndDevelopPointAtSameCommit()
         {
             using var fixture = new RemoteRepositoryFixture();
             fixture.Repository.MakeACommit();
@@ -26,20 +26,20 @@ namespace GitVersion.Core.Tests.IntegrationTests
 
             Commands.Fetch((Repository)fixture.LocalRepositoryFixture.Repository, fixture.LocalRepositoryFixture.Repository.Network.Remotes.First().Name, new string[0], new FetchOptions(), null);
             Commands.Checkout(fixture.LocalRepositoryFixture.Repository, fixture.Repository.Head.Tip);
-            fixture.LocalRepositoryFixture.Repository.Branches.Remove("master");
+            fixture.LocalRepositoryFixture.Repository.Branches.Remove(MainBranch);
             fixture.InitializeRepo();
             fixture.AssertFullSemver("1.0.1+1");
         }
 
         [Test]
-        public void AllowNotHavingMaster()
+        public void AllowNotHavingMain()
         {
             using var fixture = new EmptyRepositoryFixture();
             fixture.Repository.MakeACommit();
             fixture.Repository.MakeATaggedCommit("1.0.0");
             fixture.Repository.MakeACommit();
             Commands.Checkout(fixture.Repository, fixture.Repository.CreateBranch("develop"));
-            fixture.Repository.Branches.Remove(fixture.Repository.Branches["master"]);
+            fixture.Repository.Branches.Remove(fixture.Repository.Branches[MainBranch]);
 
             fixture.AssertFullSemver("1.1.0-alpha.1");
         }
@@ -93,7 +93,7 @@ namespace GitVersion.Core.Tests.IntegrationTests
 
             Commands.Fetch((Repository)fixture.LocalRepositoryFixture.Repository, fixture.LocalRepositoryFixture.Repository.Network.Remotes.First().Name, new string[0], new FetchOptions(), null);
             Commands.Checkout(fixture.LocalRepositoryFixture.Repository, fixture.Repository.Head.Tip);
-            fixture.LocalRepositoryFixture.Repository.Branches.Remove("master");
+            fixture.LocalRepositoryFixture.Repository.Branches.Remove(MainBranch);
             fixture.InitializeRepo();
             fixture.AssertFullSemver("1.1.0-alpha.1");
         }

@@ -31,7 +31,7 @@ namespace GitVersion.Core.Tests
         {
             using var fixture = new EmptyRepositoryFixture();
             var targetUrl = "https://github.com/GitTools/GitVersion.git";
-            var targetBranch = "refs/head/master";
+            var targetBranch = $"refs/head/{MainBranch}";
 
             var gitVersionOptions = new GitVersionOptions
             {
@@ -93,7 +93,7 @@ namespace GitVersion.Core.Tests
 
                 var gitVersionOptions = new GitVersionOptions
                 {
-                    RepositoryInfo = { TargetUrl = targetUrl, TargetBranch = "master" },
+                    RepositoryInfo = { TargetUrl = targetUrl, TargetBranch = MainBranch },
                     WorkingDirectory = worktreePath
                 };
 

@@ -122,7 +122,7 @@ namespace GitVersion.Configuration
                 }
 
                 // If we fail to inherit it is probably because the branch has been merged and we can't do much. So we will fall back to develop's config
-                // if develop exists and master if not
+                // if develop exists and main if not
                 var errorMessage = possibleParents.Count == 0
                     ? "Failed to inherit Increment branch configuration, no branches found."
                     : "Failed to inherit Increment branch configuration, ended up with: " + string.Join(", ", possibleParents.Select(p => p.ToString()));
@@ -132,7 +132,7 @@ namespace GitVersion.Configuration
                 {
                     // TODO We should call the build server to generate this exception, each build server works differently
                     // for fetch issues and we could give better warnings.
-                    throw new InvalidOperationException("Could not find a 'develop' or 'master' branch, neither locally nor remotely.");
+                    throw new InvalidOperationException("Could not find a 'develop' or 'main' branch, neither locally nor remotely.");
                 }
 
                 log.Warning($"{errorMessage}{System.Environment.NewLine}Falling back to {chosenBranch} branch config");
@@ -140,12 +140,12 @@ namespace GitVersion.Configuration
                 // To prevent infinite loops, make sure that a new branch was chosen.
                 if (targetBranch.Equals(chosenBranch))
                 {
-                    var developOrMasterConfig =
-                        ChooseMasterOrDevelopIncrementStrategyIfTheChosenBranchIsOneOfThem(
+                    var developOrMainConfig =
+                        ChooseMainOrDevelopIncrementStrategyIfTheChosenBranchIsOneOfThem(
                             chosenBranch, branchConfiguration, configuration);
-                    if (developOrMasterConfig != null)
+                    if (developOrMainConfig != null)
                     {
-                        return developOrMasterConfig;
+                        return developOrMainConfig;
                     }
 
                     log.Warning("Fallback branch wants to inherit Increment branch configuration from itself. Using patch increment instead.");
@@ -188,14 +188,14 @@ namespace GitVersion.Configuration
             }
             else if (branches.Count > 1)
             {
-                currentBranch = branches.FirstOrDefault(b => b.Name.WithoutRemote == Config.MasterBranchKey) ?? branches.First();
+                currentBranch = branches.FirstOrDefault(b => b.Name.WithoutRemote == Config.MainBranchKey) ?? branches.First();
             }
             else
             {
                 var possibleTargetBranches = repositoryStore.GetBranchesForCommit(parents[0]).ToList();
                 if (possibleTargetBranches.Count > 1)
                 {
-                    currentBranch = possibleTargetBranches.FirstOrDefault(b => b.Name.WithoutRemote == Config.MasterBranchKey) ?? possibleTargetBranches.First();
+                    currentBranch = possibleTargetBranches.FirstOrDefault(b => b.Name.WithoutRemote == Config.MainBranchKey) ?? possibleTargetBranches.First();
                 }
                 else
                 {
@@ -210,36 +210,36 @@ namespace GitVersion.Configuration
 
 
 
-        private static BranchConfig ChooseMasterOrDevelopIncrementStrategyIfTheChosenBranchIsOneOfThem(IBranch chosenBranch, BranchConfig branchConfiguration, Config config)
+        private static BranchConfig ChooseMainOrDevelopIncrementStrategyIfTheChosenBranchIsOneOfThem(IBranch chosenBranch, BranchConfig branchConfiguration, Config config)
         {
-            BranchConfig masterOrDevelopConfig = null;
+            BranchConfig mainOrDevelopConfig = null;
             var developBranchRegex = config.Branches[Config.DevelopBranchKey].Regex;
-            var masterBranchRegex = config.Branches[Config.MasterBranchKey].Regex;
+            var mainBranchRegex = config.Branches[Config.MainBranchKey].Regex;
             if (Regex.IsMatch(chosenBranch.Name.Friendly, developBranchRegex, RegexOptions.IgnoreCase))
             {
                 // Normally we would not expect this to happen but for safety we add a check
                 if (config.Branches[Config.DevelopBranchKey].Increment !=
                     IncrementStrategy.Inherit)
                 {
-                    masterOrDevelopConfig = new BranchConfig(branchConfiguration)
+                    mainOrDevelopConfig = new BranchConfig(branchConfiguration)
                     {
                         Increment = config.Branches[Config.DevelopBranchKey].Increment
                     };
                 }
             }
-            else if (Regex.IsMatch(chosenBranch.Name.Friendly, masterBranchRegex, RegexOptions.IgnoreCase))
+            else if (Regex.IsMatch(chosenBranch.Name.Friendly, mainBranchRegex, RegexOptions.IgnoreCase))
             {
                 // Normally we would not expect this to happen but for safety we add a check
-                if (config.Branches[Config.MasterBranchKey].Increment !=
+                if (config.Branches[Config.MainBranchKey].Increment !=
                     IncrementStrategy.Inherit)
                 {
-                    masterOrDevelopConfig = new BranchConfig(branchConfiguration)
+                    mainOrDevelopConfig = new BranchConfig(branchConfiguration)
                     {
                         Increment = config.Branches[Config.DevelopBranchKey].Increment
                     };
                 }
             }
-            return masterOrDevelopConfig;
+            return mainOrDevelopConfig;
         }
     }
 }

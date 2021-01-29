@@ -87,7 +87,7 @@ namespace GitVersion.MsBuild.Tests.Tasks
 
             Commands.Fetch((Repository)fixture.LocalRepositoryFixture.Repository, fixture.LocalRepositoryFixture.Repository.Network.Remotes.First().Name, new string[0], new FetchOptions(), null);
             Commands.Checkout(fixture.LocalRepositoryFixture.Repository, fixture.Repository.Head.Tip);
-            fixture.LocalRepositoryFixture.Repository.Branches.Remove("master");
+            fixture.LocalRepositoryFixture.Repository.Branches.Remove(MainBranch);
             fixture.InitializeRepo();
             return fixture;
         }

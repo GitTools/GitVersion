@@ -58,11 +58,11 @@ namespace GitVersion.Core.Tests
         {
             new object[] { "Merge branch 'feature/one'", "feature/one", null, null },
             new object[] { "Merge branch 'origin/feature/one'", "origin/feature/one", null, null },
-            new object[] { "Merge tag 'v4.0.0' into master", "v4.0.0", "master", new SemanticVersion(4) },
-            new object[] { "Merge tag 'V4.0.0' into master", "V4.0.0", "master", new SemanticVersion(4) },
+            new object[] { $"Merge tag 'v4.0.0' into {MainBranch}", "v4.0.0", MainBranch, new SemanticVersion(4) },
+            new object[] { $"Merge tag 'V4.0.0' into {MainBranch}", "V4.0.0", MainBranch, new SemanticVersion(4) },
             new object[] { "Merge branch 'feature/4.1/one'", "feature/4.1/one", null, new SemanticVersion(4, 1) },
             new object[] { "Merge branch 'origin/4.1/feature/one'", "origin/4.1/feature/one", null, new SemanticVersion(4, 1) },
-            new object[] { "Merge tag 'v://10.10.10.10' into master", "v://10.10.10.10", "master", null }
+            new object[] { $"Merge tag 'v://10.10.10.10' into {MainBranch}", "v://10.10.10.10", MainBranch, null }
          };
 
         [TestCaseSource(nameof(MergeMessages))]
@@ -122,11 +122,11 @@ namespace GitVersion.Core.Tests
             new object[] { "Merge pull request #1234 in v4.0.0 from v4.1.0 to dev", "v4.1.0", "dev", new SemanticVersion(4,1), 1234  },
             new object[] { "Merge pull request #1234 from origin/feature/one from origin/feature/4.2/two to dev", "origin/feature/4.2/two", "dev", new SemanticVersion(4,2), 1234  },
             new object[] { "Merge pull request #1234 in feature/4.1/one from feature/4.2/two to dev", "feature/4.2/two", "dev", new SemanticVersion(4,2), 1234  },
-            new object[] { "Merge pull request #1234 from feature/one from feature/two to master" , "feature/two", "master", null, 1234 },
+            new object[] { $"Merge pull request #1234 from feature/one from feature/two to {MainBranch}" , "feature/two", MainBranch, null, 1234 },
             new object[] { "Merge pull request #1234 in V4.1.0 from V://10.10.10.10 to dev", "V://10.10.10.10", "dev", null, 1234 },
             //TODO: Investigate successful bitbucket merge messages that may be invalid
             // Regex has double 'from/in from' section.  Is that correct?
-            new object[] { "Merge pull request #1234 from feature/one from v4.0.0 to master", "v4.0.0", "master", new SemanticVersion(4), 1234  }
+            new object[] { $"Merge pull request #1234 from feature/one from v4.0.0 to {MainBranch}", "v4.0.0", MainBranch, new SemanticVersion(4), 1234  }
          };
 
         [TestCaseSource(nameof(BitBucketPullMergeMessages))]
@@ -151,11 +151,11 @@ namespace GitVersion.Core.Tests
 
         private static readonly object[] BitBucketPullMergeMessagesv7 =
         {
-            new object[] { @"Pull request #68: Release/2.2
+            new object[] { $@"Pull request #68: Release/2.2
 
-Merge in aaa/777 from release/2.2 to master
+Merge in aaa/777 from release/2.2 to {MainBranch}
 
-* commit '750aa37753dec1a85b22cc16db851187649d9e97':", "release/2.2", "master", new SemanticVersion(2,2), 68  }
+* commit '750aa37753dec1a85b22cc16db851187649d9e97':", "release/2.2", MainBranch, new SemanticVersion(2,2), 68  }
         };
 
         [TestCaseSource(nameof(BitBucketPullMergeMessagesv7))]
@@ -186,7 +186,7 @@ Merge in aaa/777 from release/2.2 to master
             new object[] { "Finish feature/4.1/one", "feature/4.1/one", null, new SemanticVersion(4, 1) },
             new object[] { "Finish origin/4.1/feature/one", "origin/4.1/feature/one", null, new SemanticVersion(4, 1) },
             new object[] { "Finish V://10.10.10.10", "V://10.10.10.10", null, null },
-            new object[] { "Finish V4.0.0 into master", "V4.0.0", "master", new SemanticVersion(4) }
+            new object[] { $"Finish V4.0.0 into {MainBranch}", "V4.0.0", MainBranch, new SemanticVersion(4) }
          };
 
         [TestCaseSource(nameof(SmartGitMergeMessages))]
@@ -210,13 +210,13 @@ Merge in aaa/777 from release/2.2 to master
 
         private static readonly object[] RemoteTrackingMergeMessages =
         {
-            new object[] { "Merge remote-tracking branch 'feature/one' into master", "feature/one", "master", null },
+            new object[] { $"Merge remote-tracking branch 'feature/one' into {MainBranch}", "feature/one", MainBranch, null },
             new object[] { "Merge remote-tracking branch 'origin/feature/one' into dev", "origin/feature/one", "dev", null },
-            new object[] { "Merge remote-tracking branch 'v4.0.0' into master", "v4.0.0", "master", new SemanticVersion(4) },
-            new object[] { "Merge remote-tracking branch 'V4.0.0' into master", "V4.0.0", "master", new SemanticVersion(4) },
+            new object[] { $"Merge remote-tracking branch 'v4.0.0' into {MainBranch}", "v4.0.0", MainBranch, new SemanticVersion(4) },
+            new object[] { $"Merge remote-tracking branch 'V4.0.0' into {MainBranch}", "V4.0.0", MainBranch, new SemanticVersion(4) },
             new object[] { "Merge remote-tracking branch 'feature/4.1/one' into dev", "feature/4.1/one", "dev", new SemanticVersion(4, 1) },
-            new object[] { "Merge remote-tracking branch 'origin/4.1/feature/one' into master", "origin/4.1/feature/one", "master", new SemanticVersion(4, 1) },
-            new object[] { "Merge remote-tracking branch 'v://10.10.10.10' into master", "v://10.10.10.10", "master", null }
+            new object[] { $"Merge remote-tracking branch 'origin/4.1/feature/one' into {MainBranch}", "origin/4.1/feature/one", MainBranch, new SemanticVersion(4, 1) },
+            new object[] { $"Merge remote-tracking branch 'v://10.10.10.10' into {MainBranch}", "v://10.10.10.10", MainBranch, null }
          };
 
         [TestCaseSource(nameof(RemoteTrackingMergeMessages))]
@@ -241,8 +241,8 @@ Merge in aaa/777 from release/2.2 to master
         private static readonly object[] InvalidMergeMessages =
         {
             new object[] { "Merge pull request # from feature/one", "", null, null, null },
-            new object[] { "Merge pull request # in feature/one from feature/two to master" , "", null, null, null },
-            new object[] { "Zusammengeführter PR : feature/one mit master mergen", "", null, null, null }
+            new object[] { $"Merge pull request # in feature/one from feature/two to {MainBranch}" , "", null, null, null },
+            new object[] { $"Zusammengeführter PR : feature/one mit {MainBranch} mergen", "", null, null, null }
         };
 
         [TestCaseSource(nameof(InvalidMergeMessages))]
@@ -324,7 +324,7 @@ Merge in aaa/777 from release/2.2 to master
                 [definition] = format
             };
             var pr = 1234;
-            var target = "master";
+            var target = MainBranch;
             var source = "feature/2.0/example";
 
 

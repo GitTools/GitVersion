@@ -16,7 +16,7 @@ namespace GitVersion.Core.Tests.IntegrationTests
             Commands.Checkout(fixture.Repository, fixture.Repository.CreateBranch("feature/Foo"));
             fixture.Repository.MakeACommit();
 
-            fixture.Repository.CreatePullRequestRef("feature/Foo", "master", normalise: true);
+            fixture.Repository.CreatePullRequestRef("feature/Foo", MainBranch, normalise: true);
 
             fixture.Repository.DumpGraph();
             fixture.AssertFullSemver("0.1.1-PullRequest0002.2");
@@ -47,7 +47,7 @@ namespace GitVersion.Core.Tests.IntegrationTests
             fixture.Repository.MakeACommit();
 
 
-            fixture.Repository.CreatePullRequestRef("feature/Foo", "master", normalise: true);
+            fixture.Repository.CreatePullRequestRef("feature/Foo", MainBranch, normalise: true);
 
             fixture.Repository.DumpGraph();
             fixture.AssertFullSemver("0.1.1-PullRequest0002.2");
@@ -85,7 +85,7 @@ namespace GitVersion.Core.Tests.IntegrationTests
         }
 
         [Test]
-        public void CalculatesCorrectVersionAfterReleaseBranchMergedToMaster()
+        public void CalculatesCorrectVersionAfterReleaseBranchMergedToMain()
         {
             using var fixture = new EmptyRepositoryFixture();
             fixture.Repository.MakeATaggedCommit("1.0.0");
@@ -94,7 +94,7 @@ namespace GitVersion.Core.Tests.IntegrationTests
             fixture.Repository.MakeACommit();
             fixture.Repository.MakeACommit();
 
-            fixture.Repository.CreatePullRequestRef("release/2.0.0", "master", normalise: true);
+            fixture.Repository.CreatePullRequestRef("release/2.0.0", MainBranch, normalise: true);
 
             fixture.AssertFullSemver("2.0.0-PullRequest0002.0");
         }
