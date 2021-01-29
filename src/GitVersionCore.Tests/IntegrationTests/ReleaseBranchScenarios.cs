@@ -171,6 +171,15 @@ namespace GitVersionCore.Tests.IntegrationTests
         [Test]
         public void WhenReleaseBranchOffDevelopIsMergedFFIntoMasterAndDevelopVersionIsTakenWithIt()
         {
+            var config = new Config
+            {
+                Branches =
+                {
+                    { "release", new BranchConfig { Tag = "beta" } },
+                    { "develop", new BranchConfig { Tag = "alpha" } }
+                }
+            };
+
             using var fixture = new EmptyRepositoryFixture();
             fixture.Repository.MakeATaggedCommit("1.0.3");
             fixture.Repository.CreateBranch("develop");
@@ -182,12 +191,21 @@ namespace GitVersionCore.Tests.IntegrationTests
             fixture.Checkout("master");
             fixture.Repository.Merge("release-2.0.0", Generate.SignatureNow());
 
-            fixture.AssertFullSemver("2.0.0+0");
+            fixture.AssertFullSemver("2.0.0+0", config);
         }
 
         [Test]
         public void WhenTaggedReleaseBranchOffDevelopIsMergedFFIntoMasterAndDevelopVersionIsTakenWithIt()
         {
+            var config = new Config
+            {
+                Branches =
+                {
+                    { "release", new BranchConfig { Tag = "beta" } },
+                    { "develop", new BranchConfig { Tag = "alpha" } }
+                }
+            };
+
             using var fixture = new EmptyRepositoryFixture();
             fixture.Repository.MakeATaggedCommit("1.0.3");
             fixture.Repository.CreateBranch("develop");
@@ -197,12 +215,12 @@ namespace GitVersionCore.Tests.IntegrationTests
             fixture.Checkout("release-2.0.0");
             fixture.Repository.MakeCommits(4);
             fixture.Repository.MakeATaggedCommit("2.0.0-beta.1+4");
-            fixture.AssertFullSemver("2.0.0-beta.1+4");
+            fixture.AssertFullSemver("2.0.0-beta.1+4", config);
             fixture.Checkout("master");
             fixture.Repository.Merge("release-2.0.0", Generate.SignatureNow());
 
             // Do not take tag into account since tag is a "beta" tag on the "release" branch but now "master" is checked out
-            fixture.AssertFullSemver("2.0.0+0");
+            fixture.AssertFullSemver("2.0.0+0", config);
         }
 
         [Test]

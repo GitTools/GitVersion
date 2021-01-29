@@ -34,10 +34,10 @@ namespace GitVersion.Common
         /// </summary>
         BranchCommit FindCommitBranchWasBranchedFrom(Branch branch, Config configuration, params Branch[] excludedBranches);
 
-        SemanticVersion GetCurrentCommitTaggedVersion(GitObject commit, EffectiveConfiguration config);
+        SemanticVersion GetCurrentCommitTaggedVersion(Branch branch, GitObject commit, EffectiveConfiguration config);
         SemanticVersion MaybeIncrement(BaseVersion baseVersion, GitVersionContext context);
-        IEnumerable<SemanticVersion> GetVersionTagsOnBranch(Branch branch, string tagPrefixRegex);
-        IEnumerable<Tuple<Tag, SemanticVersion>> GetValidVersionTags(string tagPrefixRegex, DateTimeOffset? olderThan = null);
+        IEnumerable<SemanticVersion> GetVersionTagsOnBranch(Branch branch, string tagPrefixRegex, string tagSuffix);
+        IEnumerable<Tuple<Tag, SemanticVersion>> GetValidVersionTags(string tagPrefixRegex, string tagSuffix, DateTimeOffset? olderThan = null);
 
         ICommitLog GetCommitLog(Commit baseVersionSource, Commit currentCommit);
         bool GetMatchingCommitBranch(Commit baseVersionSource, Branch branch, Commit firstMatchingCommit);

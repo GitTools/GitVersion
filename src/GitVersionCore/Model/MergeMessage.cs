@@ -47,7 +47,7 @@ namespace GitVersion
                         PullRequestNumber = pullNumber;
                     }
 
-                    Version = ParseVersion(config.TagPrefix);
+                    Version = ParseVersion(config.TagPrefix, null);
 
                     break;
                 }
@@ -61,7 +61,7 @@ namespace GitVersion
         public int? PullRequestNumber { get; }
         public SemanticVersion Version { get; }
 
-        private SemanticVersion ParseVersion(string tagPrefix)
+        private SemanticVersion ParseVersion(string tagPrefix, string tagSuffix)
         {
             // Remove remotes and branch prefixes like release/ feature/ hotfix/ etc
             var toMatch = Regex.Replace(MergedBranch, @"^(\w+[-/])*", "", RegexOptions.IgnoreCase);
@@ -70,7 +70,7 @@ namespace GitVersion
             var versionMatch = new Regex(@"^(?<!://)\d+\.\d+(\.*\d+)*");
             var version = versionMatch.Match(toMatch);
 
-            if (version.Success && SemanticVersion.TryParse(version.Value, tagPrefix, out var val))
+            if (version.Success && SemanticVersion.TryParse(version.Value, tagPrefix, tagSuffix, out var val))
             {
                 return val;
             }

@@ -41,7 +41,7 @@ namespace GitVersionCore.Tests
         {
             fullFormattedVersionString ??= versionString;
 
-            SemanticVersion.TryParse(versionString, tagPrefixRegex, out var version).ShouldBe(true, versionString);
+            SemanticVersion.TryParse(versionString, tagPrefixRegex, tag, out var version).ShouldBe(true, versionString);
             Assert.AreEqual(major, version.Major);
             Assert.AreEqual(minor, version.Minor);
             Assert.AreEqual(patch, version.Patch);
@@ -58,7 +58,7 @@ namespace GitVersionCore.Tests
         [TestCase("some-T-ext")]
         public void ValidateInvalidVersionParsing(string versionString)
         {
-            Assert.IsFalse(SemanticVersion.TryParse(versionString, null, out _), "TryParse Result");
+            Assert.IsFalse(SemanticVersion.TryParse(versionString, null, null, out _), "TryParse Result");
         }
 
         [Test]
@@ -74,16 +74,16 @@ namespace GitVersionCore.Tests
         [Test]
         public void VersionSorting()
         {
-            SemanticVersion.Parse("1.0.0", null).ShouldBeGreaterThan(SemanticVersion.Parse("1.0.0-beta", null));
-            SemanticVersion.Parse("1.0.0-beta.2", null).ShouldBeGreaterThan(SemanticVersion.Parse("1.0.0-beta.1", null));
-            SemanticVersion.Parse("1.0.0-beta.1", null).ShouldBeLessThan(SemanticVersion.Parse("1.0.0-beta.2", null));
+            SemanticVersion.Parse("1.0.0", null, null).ShouldBeGreaterThan(SemanticVersion.Parse("1.0.0-beta", null, null));
+            SemanticVersion.Parse("1.0.0-beta.2", null, null).ShouldBeGreaterThan(SemanticVersion.Parse("1.0.0-beta.1", null, null));
+            SemanticVersion.Parse("1.0.0-beta.1", null, null).ShouldBeLessThan(SemanticVersion.Parse("1.0.0-beta.2", null, null));
         }
 
         [Test]
         public void ToStringJTests()
         {
-            Assert.AreEqual("1.2.3", SemanticVersion.Parse("1.2.3", null).ToString("j"));
-            Assert.AreEqual("1.2.3", SemanticVersion.Parse("1.2.3-beta.4", null).ToString("j"));
+            Assert.AreEqual("1.2.3", SemanticVersion.Parse("1.2.3", null, null).ToString("j"));
+            Assert.AreEqual("1.2.3", SemanticVersion.Parse("1.2.3-beta.4", null, "beta").ToString("j"));
             var fullSemVer = new SemanticVersion
             {
                 Major = 1,
@@ -103,8 +103,8 @@ namespace GitVersionCore.Tests
         [Test]
         public void ToStringSTests()
         {
-            Assert.AreEqual("1.2.3", SemanticVersion.Parse("1.2.3", null).ToString("s"));
-            Assert.AreEqual("1.2.3-beta.4", SemanticVersion.Parse("1.2.3-beta.4", null).ToString("s"));
+            Assert.AreEqual("1.2.3", SemanticVersion.Parse("1.2.3", null, null).ToString("s"));
+            Assert.AreEqual("1.2.3-beta.4", SemanticVersion.Parse("1.2.3-beta.4", null, null).ToString("s"));
             var fullSemVer = new SemanticVersion
             {
                 Major = 1,
@@ -139,8 +139,8 @@ namespace GitVersionCore.Tests
         [Test]
         public void ToStringLTests()
         {
-            Assert.AreEqual("1.2.3", SemanticVersion.Parse("1.2.3", null).ToString("l"));
-            Assert.AreEqual("1.2.3-beta4", SemanticVersion.Parse("1.2.3-beta.4", null).ToString("l"));
+            Assert.AreEqual("1.2.3", SemanticVersion.Parse("1.2.3", null, null).ToString("l"));
+            Assert.AreEqual("1.2.3-beta4", SemanticVersion.Parse("1.2.3-beta.4", null, null).ToString("l"));
             var fullSemVer = new SemanticVersion
             {
                 Major = 1,
@@ -160,8 +160,8 @@ namespace GitVersionCore.Tests
         [Test]
         public void ToStringLpTests()
         {
-            Assert.AreEqual("1.2.3", SemanticVersion.Parse("1.2.3", null).ToString("lp"));
-            Assert.AreEqual("1.2.3-beta0004", SemanticVersion.Parse("1.2.3-beta.4", null).ToString("lp"));
+            Assert.AreEqual("1.2.3", SemanticVersion.Parse("1.2.3", null, null).ToString("lp"));
+            Assert.AreEqual("1.2.3-beta0004", SemanticVersion.Parse("1.2.3-beta.4", null, null).ToString("lp"));
             var fullSemVer = new SemanticVersion
             {
                 Major = 1,
@@ -181,9 +181,9 @@ namespace GitVersionCore.Tests
         [Test]
         public void ToStringTests()
         {
-            Assert.AreEqual("1.2.3", SemanticVersion.Parse("1.2.3", null).ToString());
-            Assert.AreEqual("1.2.3-beta.4", SemanticVersion.Parse("1.2.3-beta.4", null).ToString());
-            Assert.AreEqual("1.2.3-beta.4", SemanticVersion.Parse("1.2.3-beta.4+5", null).ToString());
+            Assert.AreEqual("1.2.3", SemanticVersion.Parse("1.2.3", null, null).ToString());
+            Assert.AreEqual("1.2.3-beta.4", SemanticVersion.Parse("1.2.3-beta.4", null, null).ToString());
+            Assert.AreEqual("1.2.3-beta.4", SemanticVersion.Parse("1.2.3-beta.4+5", null, null).ToString());
             var fullSemVer = new SemanticVersion
             {
                 Major = 1,
@@ -218,9 +218,9 @@ namespace GitVersionCore.Tests
         [Test]
         public void ToStringFTests()
         {
-            Assert.AreEqual("1.2.3", SemanticVersion.Parse("1.2.3", null).ToString("f"));
-            Assert.AreEqual("1.2.3-beta.4", SemanticVersion.Parse("1.2.3-beta.4", null).ToString("f"));
-            Assert.AreEqual("1.2.3-beta.4+5", SemanticVersion.Parse("1.2.3-beta.4+5", null).ToString("f"));
+            Assert.AreEqual("1.2.3", SemanticVersion.Parse("1.2.3", null, null).ToString("f"));
+            Assert.AreEqual("1.2.3-beta.4", SemanticVersion.Parse("1.2.3-beta.4", null, null).ToString("f"));
+            Assert.AreEqual("1.2.3-beta.4+5", SemanticVersion.Parse("1.2.3-beta.4+5", null, null).ToString("f"));
             var fullSemVer = new SemanticVersion
             {
                 Major = 1,
@@ -240,9 +240,9 @@ namespace GitVersionCore.Tests
         [Test]
         public void ToStringITests()
         {
-            Assert.AreEqual("1.2.3-beta.4", SemanticVersion.Parse("1.2.3-beta.4", null).ToString("i"));
-            Assert.AreEqual("1.2.3", SemanticVersion.Parse("1.2.3", null).ToString("i"));
-            Assert.AreEqual("1.2.3-beta.4+5", SemanticVersion.Parse("1.2.3-beta.4+5", null).ToString("i"));
+            Assert.AreEqual("1.2.3-beta.4", SemanticVersion.Parse("1.2.3-beta.4", null, null).ToString("i"));
+            Assert.AreEqual("1.2.3", SemanticVersion.Parse("1.2.3", null, null).ToString("i"));
+            Assert.AreEqual("1.2.3-beta.4+5", SemanticVersion.Parse("1.2.3-beta.4+5", null, null).ToString("i"));
             var fullSemVer = new SemanticVersion
             {
                 Major = 1,

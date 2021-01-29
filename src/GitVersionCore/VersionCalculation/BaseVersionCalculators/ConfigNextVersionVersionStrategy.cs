@@ -1,5 +1,8 @@
 using System;
 using System.Collections.Generic;
+using GitVersion.Common;
+using GitVersion.Configuration;
+using GitVersion.Extensions;
 
 namespace GitVersion.VersionCalculation
 {
@@ -18,7 +21,7 @@ namespace GitVersion.VersionCalculation
         {
             if (string.IsNullOrEmpty(Context.Configuration.NextVersion) || Context.IsCurrentCommitTagged)
                 yield break;
-            var semanticVersion = SemanticVersion.Parse(Context.Configuration.NextVersion, Context.Configuration.GitTagPrefix);
+            var semanticVersion = SemanticVersion.Parse(Context.Configuration.NextVersion, Context.Configuration.GitTagPrefix, null);
             yield return new BaseVersion("NextVersion in GitVersion configuration file", false, semanticVersion, null, null);
         }
     }

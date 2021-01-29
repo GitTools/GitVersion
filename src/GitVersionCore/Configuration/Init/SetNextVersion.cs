@@ -20,7 +20,7 @@ namespace GitVersion.Configuration.Init
                 return StepResult.Ok();
             }
 
-            if (!SemanticVersion.TryParse(result, string.Empty, out var semVer))
+            if (!SemanticVersion.TryParse(result, string.Empty, null, out var semVer))
                 return StepResult.InvalidResponseSelected();
 
             config.NextVersion = semVer.ToString("t");

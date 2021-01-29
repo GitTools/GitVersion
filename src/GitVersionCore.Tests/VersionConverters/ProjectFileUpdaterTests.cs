@@ -177,7 +177,7 @@ namespace GitVersionCore.Tests
         {
             using var projectFileUpdater = new ProjectFileUpdater(log, fileSystem);
 
-            var variables = variableProvider.GetVariablesFor(SemanticVersion.Parse("2.0.0", "v"), new TestEffectiveConfiguration(), false);
+            var variables = variableProvider.GetVariablesFor(SemanticVersion.Parse("2.0.0", "v", null), new TestEffectiveConfiguration(), false);
             var xmlRoot = XElement.Parse(xml);
             projectFileUpdater.UpdateProjectVersionElement(xmlRoot, ProjectFileUpdater.AssemblyVersionElement, variables.AssemblySemVer);
 
@@ -207,7 +207,7 @@ namespace GitVersionCore.Tests
         {
             using var projectFileUpdater = new ProjectFileUpdater(log, fileSystem);
 
-            var variables = variableProvider.GetVariablesFor(SemanticVersion.Parse("2.0.0", "v"), new TestEffectiveConfiguration(), false);
+            var variables = variableProvider.GetVariablesFor(SemanticVersion.Parse("2.0.0", "v", null), new TestEffectiveConfiguration(), false);
             var xmlRoot = XElement.Parse(xml);
             projectFileUpdater.UpdateProjectVersionElement(xmlRoot, ProjectFileUpdater.AssemblyVersionElement, variables.AssemblySemVer);
 
@@ -240,7 +240,7 @@ namespace GitVersionCore.Tests
         {
             using var projectFileUpdater = new ProjectFileUpdater(log, fileSystem);
 
-            var variables = variableProvider.GetVariablesFor(SemanticVersion.Parse("2.0.0", "v"), new TestEffectiveConfiguration(), false);
+            var variables = variableProvider.GetVariablesFor(SemanticVersion.Parse("2.0.0", "v", null), new TestEffectiveConfiguration(), false);
             var xmlRoot = XElement.Parse(xml);
             projectFileUpdater.UpdateProjectVersionElement(xmlRoot, ProjectFileUpdater.AssemblyVersionElement, variables.AssemblySemVer);
 
@@ -275,7 +275,7 @@ namespace GitVersionCore.Tests
         {
             using var projectFileUpdater = new ProjectFileUpdater(log, fileSystem);
 
-            var variables = variableProvider.GetVariablesFor(SemanticVersion.Parse("2.0.0", "v"), new TestEffectiveConfiguration(), false);
+            var variables = variableProvider.GetVariablesFor(SemanticVersion.Parse("2.0.0", "v", null), new TestEffectiveConfiguration(), false);
             var xmlRoot = XElement.Parse(xml);
             projectFileUpdater.UpdateProjectVersionElement(xmlRoot, ProjectFileUpdater.AssemblyVersionElement, variables.AssemblySemVer);
 

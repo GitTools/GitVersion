@@ -46,7 +46,7 @@ namespace GitVersionCore.Tests
             var workingDir = Path.GetTempPath();
             var assemblyInfoFile = "VersionAssemblyInfo." + fileExtension;
             var fullPath = Path.Combine(workingDir, assemblyInfoFile);
-            var variables = variableProvider.GetVariablesFor(SemanticVersion.Parse("1.0.0", "v"), new TestEffectiveConfiguration(), false);
+            var variables = variableProvider.GetVariablesFor(SemanticVersion.Parse("1.0.0", "v", null), new TestEffectiveConfiguration(), false);
 
             using var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(log, fileSystem);
             assemblyInfoFileUpdater.Execute(variables, new AssemblyInfoContext(workingDir, true, assemblyInfoFile));
@@ -64,7 +64,7 @@ namespace GitVersionCore.Tests
             var workingDir = Path.GetTempPath();
             var assemblyInfoFile = Path.Combine("src", "Project", "Properties", "VersionAssemblyInfo." + fileExtension);
             var fullPath = Path.Combine(workingDir, assemblyInfoFile);
-            var variables = variableProvider.GetVariablesFor(SemanticVersion.Parse("1.0.0", "v"), new TestEffectiveConfiguration(), false);
+            var variables = variableProvider.GetVariablesFor(SemanticVersion.Parse("1.0.0", "v", null), new TestEffectiveConfiguration(), false);
 
             using var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(log, fileSystem);
             assemblyInfoFileUpdater.Execute(variables, new AssemblyInfoContext(workingDir, true, assemblyInfoFile));
@@ -85,7 +85,7 @@ namespace GitVersionCore.Tests
                 "AssemblyInfo." + fileExtension,
                 Path.Combine("src", "Project", "Properties", "VersionAssemblyInfo." + fileExtension)
             };
-            var variables = variableProvider.GetVariablesFor(SemanticVersion.Parse("1.0.0", "v"), new TestEffectiveConfiguration(), false);
+            var variables = variableProvider.GetVariablesFor(SemanticVersion.Parse("1.0.0", "v", null), new TestEffectiveConfiguration(), false);
 
             using var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(log, fileSystem);
             assemblyInfoFileUpdater.Execute(variables, new AssemblyInfoContext(workingDir, true, assemblyInfoFiles.ToArray()));
@@ -105,7 +105,7 @@ namespace GitVersionCore.Tests
             var workingDir = Path.GetTempPath();
             var assemblyInfoFile = "VersionAssemblyInfo." + fileExtension;
             var fullPath = Path.Combine(workingDir, assemblyInfoFile);
-            var variables = variableProvider.GetVariablesFor(SemanticVersion.Parse("1.0.0", "v"), new TestEffectiveConfiguration(), false);
+            var variables = variableProvider.GetVariablesFor(SemanticVersion.Parse("1.0.0", "v", null), new TestEffectiveConfiguration(), false);
 
             using var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(log, fileSystem);
             assemblyInfoFileUpdater.Execute(variables, new AssemblyInfoContext(workingDir, false, assemblyInfoFile));
@@ -120,7 +120,7 @@ namespace GitVersionCore.Tests
             var workingDir = Path.GetTempPath();
             var assemblyInfoFile = "VersionAssemblyInfo.js";
             var fullPath = Path.Combine(workingDir, assemblyInfoFile);
-            var variables = variableProvider.GetVariablesFor(SemanticVersion.Parse("1.0.0", "v"), new TestEffectiveConfiguration(), false);
+            var variables = variableProvider.GetVariablesFor(SemanticVersion.Parse("1.0.0", "v", null), new TestEffectiveConfiguration(), false);
 
             using var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(log, fileSystem);
             assemblyInfoFileUpdater.Execute(variables, new AssemblyInfoContext(workingDir, true, assemblyInfoFile));
@@ -134,7 +134,7 @@ namespace GitVersionCore.Tests
             fileSystem = Substitute.For<IFileSystem>();
             var workingDir = Path.GetTempPath();
             var assemblyInfoFiles = Array.Empty<string>();
-            var variables = variableProvider.GetVariablesFor(SemanticVersion.Parse("1.0.0", "v"), new TestEffectiveConfiguration(), false);
+            var variables = variableProvider.GetVariablesFor(SemanticVersion.Parse("1.0.0", "v", null), new TestEffectiveConfiguration(), false);
 
             using var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(log, fileSystem);
             assemblyInfoFileUpdater.Execute(variables, new AssemblyInfoContext(workingDir, false, assemblyInfoFiles.ToArray()));

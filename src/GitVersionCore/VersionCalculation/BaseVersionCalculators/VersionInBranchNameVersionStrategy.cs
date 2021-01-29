@@ -25,10 +25,11 @@ namespace GitVersion.VersionCalculation
         {
             var currentBranch = Context.CurrentBranch;
             var tagPrefixRegex = Context.Configuration.GitTagPrefix;
-            return GetVersions(tagPrefixRegex, currentBranch);
+            var tagSuffix = Context.Configuration.GetBranchSpecificTag(null, currentBranch.FriendlyName, null);
+            return GetVersions(tagPrefixRegex, tagSuffix, currentBranch);
         }
 
-        internal IEnumerable<BaseVersion> GetVersions(string tagPrefixRegex, Branch currentBranch)
+        internal IEnumerable<BaseVersion> GetVersions(string tagPrefixRegex, string tagSuffix, Branch currentBranch)
         {
             if (!Context.FullConfiguration.IsReleaseBranch(currentBranch.NameWithoutOrigin()))
             {
@@ -36,7 +37,7 @@ namespace GitVersion.VersionCalculation
             }
 
             var branchName = currentBranch.FriendlyName;
-            var versionInBranch = GetVersionInBranch(branchName, tagPrefixRegex);
+            var versionInBranch = GetVersionInBranch(branchName, tagPrefixRegex, tagSuffix);
             if (versionInBranch != null)
             {
                 var commitBranchWasBranchedFrom = repositoryMetadataProvider.FindCommitBranchWasBranchedFrom(currentBranch, Context.FullConfiguration);
@@ -45,12 +46,12 @@ namespace GitVersion.VersionCalculation
             }
         }
 
-        private Tuple<string, SemanticVersion> GetVersionInBranch(string branchName, string tagPrefixRegex)
+        private Tuple<string, SemanticVersion> GetVersionInBranch(string branchName, string tagPrefixRegex, string tagSuffix)
         {
             var branchParts = branchName.Split('/', '-');
             foreach (var part in branchParts)
             {
-                if (SemanticVersion.TryParse(part, tagPrefixRegex, out var semanticVersion))
+                if (SemanticVersion.TryParse(part, tagPrefixRegex, tagSuffix, out var semanticVersion))
                 {
                     return Tuple.Create(part, semanticVersion);
                 }

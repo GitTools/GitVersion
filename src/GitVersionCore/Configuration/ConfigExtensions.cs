@@ -126,7 +126,10 @@ namespace GitVersion.Configuration
             }
             if (tagToUse.Contains("{BranchName}"))
             {
-                log.Info("Using branch name to calculate version tag");
+                if (log != null)
+                {
+                    log.Info("Using branch name to calculate version tag");
+                }
 
                 var branchName = branchNameOverride ?? branchFriendlyName;
                 if (!string.IsNullOrWhiteSpace(configuration.BranchPrefixToTrim))
