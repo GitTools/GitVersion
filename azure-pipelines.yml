@@ -1,14 +1,12 @@
 trigger:
   branches:
     include:
-    - master
     - main
     - fix/*
     - feature/*
 pr:
   branches:
     include:
-    - master
     - main
 
 variables:

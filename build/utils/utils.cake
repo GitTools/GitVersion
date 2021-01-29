@@ -58,7 +58,7 @@ public static bool IsOnMainBranch(this ICakeContext context)
 
     context.Information("Repository Branch: {0}" , repositoryBranch);
 
-    return !string.IsNullOrWhiteSpace(repositoryBranch) && StringComparer.OrdinalIgnoreCase.Equals("master", repositoryBranch);
+    return !string.IsNullOrWhiteSpace(repositoryBranch) && StringComparer.OrdinalIgnoreCase.Equals("main", repositoryBranch);
 }
 
 public static bool IsBuildTagged(this ICakeContext context)

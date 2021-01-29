@@ -3,14 +3,12 @@ name: Build
 on:
   push:
     branches:
-    - master
     - main
     - 'fix/*'
     - 'feature/*'
 
   pull_request:
     branches:
-    - master
     - main
 
   repository_dispatch:

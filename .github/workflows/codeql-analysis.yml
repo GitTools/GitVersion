@@ -2,11 +2,15 @@ name: CodeQL
 
 on:
   push:
-    branches: [ main, master ]
+    branches:
+    - main
+
   pull_request:
-    branches: [ main, master ]
+    branches:
+    - main
+
   schedule:
-    - cron: '41 21 * * 2'
+    - cron: '0 12 * * *'
 
 jobs:
   analyze:
@@ -17,7 +21,7 @@ jobs:
       fail-fast: false
       matrix:
         language: [ 'csharp' ]
- 
+
     steps:
     - name: Checkout repository
       uses: actions/checkout@v2
