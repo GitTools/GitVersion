@@ -155,18 +155,18 @@ namespace GitVersion.Configuration
                 var regex = branchConfig.Regex;
                 if (regex == null)
                 {
-                    throw new ConfigurationException($"Branch configuration '{name}' is missing required configuration 'regex'{System.Environment.NewLine}" + "See https://gitversion.net/docs/configuration/ for more info");
+                    throw new ConfigurationException($"Branch configuration '{name}' is missing required configuration 'regex'{System.Environment.NewLine}" + "See https://gitversion.net/docs/configuration for more info");
                 }
 
                 var sourceBranches = branchConfig.SourceBranches;
                 if (sourceBranches == null)
                 {
-                    throw new ConfigurationException($"Branch configuration '{name}' is missing required configuration 'source-branches'{System.Environment.NewLine}" + "See https://gitversion.net/docs/configuration/ for more info");
+                    throw new ConfigurationException($"Branch configuration '{name}' is missing required configuration 'source-branches'{System.Environment.NewLine}" + "See https://gitversion.net/docs/configuration for more info");
                 }
 
                 var missingSourceBranches = sourceBranches.Where(sb => !config.Branches.ContainsKey(sb)).ToArray();
                 if (missingSourceBranches.Any())
-                    throw new ConfigurationException($"Branch configuration '{name}' defines these 'source-branches' that are not configured: '[{string.Join(",", missingSourceBranches)}]'{System.Environment.NewLine}" + "See https://gitversion.net/docs/configuration/ for more info");
+                    throw new ConfigurationException($"Branch configuration '{name}' defines these 'source-branches' that are not configured: '[{string.Join(",", missingSourceBranches)}]'{System.Environment.NewLine}" + "See https://gitversion.net/docs/configuration for more info");
             }
         }
 
