@@ -3,7 +3,7 @@ Order: 30
 Title: Continuous Deployment
 ---
 
-Continuous Deployment is the process of checking into master, running all the
+Continuous Deployment is the process of checking into main, running all the
 tests and if everything goes green it is automatically pushed to production.
 
 A good case for Continuous Deployment is when using Octopus deploy, as you

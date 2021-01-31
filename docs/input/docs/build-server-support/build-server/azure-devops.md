@@ -33,7 +33,7 @@ other build steps.
 5. If you want the GitVersionTask to update AssemblyInfo files add
 `updateAssemblyInfo true` to the Arguments parameter.
 6. If you want to update the build number you need to send a
-[logging command](https://github.com/Microsoft/azure-pipelines-tasks/blob/master/docs/authoring/commands.md)
+[logging command](https://github.com/Microsoft/azure-pipelines-tasks/blob/main/docs/authoring/commands.md)
 to TFS.
 
 ### Using the custom GitVersion build step
@@ -53,12 +53,12 @@ to install the GitVersion extension:
 If you run TFS 2015 RTM or Update 1 or don't want to install the GitVersion
 extension you can install the build task manually:
 
-1. Install the `tfx` command line tool as shown [here](https://github.com/Microsoft/tfs-cli/blob/master/README.md#install).
-2. For TFS 2015 On-Prem configure Basic Authentication in TFS as shown [here](https://github.com/Microsoft/tfs-cli/blob/master/docs/configureBasicAuth.md).
+1. Install the `tfx` command line tool as shown [here](https://github.com/Microsoft/tfs-cli/blob/main/README.md#install).
+2. For TFS 2015 On-Prem configure Basic Authentication in TFS as shown [here](https://github.com/Microsoft/tfs-cli/blob/main/docs/configureBasicAuth.md).
 3. Download the GitVersion TFS build task from the latest release on the
 [GitVersion releases page](https://github.com/GitTools/GitVersion/releases) and
 unzip.
-4. Run `tfx login` as shown [here](https://github.com/Microsoft/tfs-cli/blob/master/README.md#login).
+4. Run `tfx login` as shown [here](https://github.com/Microsoft/tfs-cli/blob/main/README.md#login).
 5. From the directory outside of where you unzipped the task, run
 `tfx build tasks upload --task-path .\GitVersionVsixTask --overwrite` where
 GitVersionVsixTask is the directory containing the files.

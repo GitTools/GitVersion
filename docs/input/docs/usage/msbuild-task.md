@@ -71,7 +71,7 @@ Default sample:
 ```csharp
 [assembly: AssemblyVersion("1.0.0.0")]
 [assembly: AssemblyFileVersion("1.0.0.0")]
-[assembly: AssemblyInformationalVersion("1.1.0+Branch.master.Sha.722aad3217bd49a6576b6f82f60884e612f9ba58")]
+[assembly: AssemblyInformationalVersion("1.1.0+Branch.main.Sha.722aad3217bd49a6576b6f82f60884e612f9ba58")]
 ```
 
 Now, when you build:

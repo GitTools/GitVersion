@@ -16,4 +16,4 @@ The tests are quite simple. Using the methods on the `fixture` itself will
 record that action in the sequence diagram. If you do not want the action
 recorded perform the action directly on the repository (`fixture.Repository.`)
 
-The tests for the examples should all live at [DocumentationSamples.cs](https://github.com/GitTools/GitVersion/blob/master/src/GitVersion.Core.Tests/IntegrationTests/DocumentationSamples.cs)
+The tests for the examples should all live at [DocumentationSamples.cs](https://github.com/GitTools/GitVersion/blob/main/src/GitVersion.Core.Tests/IntegrationTests/DocumentationSamples.cs)

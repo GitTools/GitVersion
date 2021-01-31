@@ -40,7 +40,7 @@ pull request branch name which is created when you submit a pull request
 ## Hotfix Branches
 
 Hotfix branches are used when you need to do a *patch* release in GitFlow and
-are always created off `master`
+are always created off `main`
 
 ![GitFlow](img/f26ae57adbd9b74f74c4_hotfix.png)
 
@@ -48,7 +48,7 @@ are always created off `master`
 
 Release branches are used for both major and minor releases for stabilisation
 before a release. Release branches are taken off `develop` then merged to both
-`develop` and `master`. Finally `master` is tagged with the released version.
+`develop` and `main`. Finally `main` is tagged with the released version.
 
 ![GitFlow](img/6d33d35a70a777608fa1_minor-release.png)
 

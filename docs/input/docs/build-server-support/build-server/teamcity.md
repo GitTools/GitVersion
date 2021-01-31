@@ -81,9 +81,9 @@ variables because teamcity will pass them through automatically.
 
 ### When TeamCity -> GitHub can't use https
 
-GitVersion requires the presence of master branch in order to determine the
+GitVersion requires the presence of main branch in order to determine the
 version number.  If TeamCity uses https to clone git repos then GitVersion will
-pull down master branch for you during the build.
+pull down main branch for you during the build.
 
 If however your TeamCity uses SSH to clone git repos and https is unavailable
 then GitVersion will error with a message like
@@ -91,8 +91,8 @@ then GitVersion will error with a message like
 > [GitVersionTask.UpdateAssemblyInfo] Error occurred: GitVersion.MissingBranchException:
 Could not fetch from 'git@github.dev.xero.com:Xero/Bus.git' since LibGit2 does
 not support the transport. You have most likely cloned using SSH. If there is a
-remote branch named 'master' then fetch it manually, otherwise please create a
-local branch named 'master'. ---> LibGit2Sharp.LibGit2SharpException: An error
+remote branch named 'main' then fetch it manually, otherwise please create a
+local branch named 'main'. ---> LibGit2Sharp.LibGit2SharpException: An error
 was raised by libgit2. Category = Net (Error). This transport isn't implemented.
 Sorry
 

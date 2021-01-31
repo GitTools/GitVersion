@@ -48,8 +48,8 @@ There are a number of sources GitVersion can get its versions from, they include
 - Tags
 - Version numbers in branches (e.g. `release/2.0.0`)
 - Merge messages (for branches with versions in them, e.g.
-`Merged branch'release/2.0.0' into master`)
-- Track version of another branch (e.g. develop tracks master, so when master
+`Merged branch'release/2.0.0' into main`)
+- Track version of another branch (e.g. develop tracks main, so when main
 increments so does develop)
 - GitVersion.yml file (e.g `next-version: 2.0.0`)
 

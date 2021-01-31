@@ -50,7 +50,7 @@ For the develop branch, i.e. marked with `is-develop: true`
 
 - Returns the version number extracted from any child release-branches, i.e.
 those marked with `is-release-branch: true`
-- Returns the version number of any tags on the master branch
+- Returns the version number of any tags on the main branch
 
 Will increment: true
 

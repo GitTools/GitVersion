@@ -5,8 +5,8 @@ Title: Mainline Development
 
 Mainline Development is enabled when using
 [GitHubFlow](../../git-branching-strategies/githubflow) or any other strategy
-where you develop on `master`. The main rule of mainline development is that
-**master is always in a state that it could be deployed to production**. This
+where you develop on `main`. The main rule of mainline development is that
+**main is always in a state that it could be deployed to production**. This
 means that pull requests should not be merged until they are ready to go out.
 
 To properly achieve mainline development you need confidence in your test suite
@@ -24,12 +24,12 @@ the version number before the release which means that the version being built
 and the version number which will be deployed are often different.
 
 This mode is great if you do not want to tag each release because you simply
-deploy every commit to master. The behaviour of this mode is as follows:
+deploy every commit to main. The behaviour of this mode is as follows:
 
 1. Calculate a base version (likely a tag in this mode)
 2. Walk all commits from the base version commit
 3. When a merge commit is found:
-    - Calculate increments for each direct commit on master
+    - Calculate increments for each direct commit on main
     - Calculate the increment for the branch
 4. Calculate increments for each remaining direct commit
 5. For feature branches then calculate increment for the commits so far on your

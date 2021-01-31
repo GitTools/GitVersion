@@ -11,7 +11,7 @@ SemVer compatible versions from this structure.
 ## Assumptions:
 
 * Using [GitFlow branching model](http://nvie.com/git-model/) which always has a
-master and a develop branch
+main and a develop branch
 * Following [Semantic Versioning](http://semver.org/)
 * Planned releases (bumps in major or minor) are done on release branches
 prefixed with release-. Eg: release-4.1 (or release-4.1.0)
@@ -19,7 +19,7 @@ prefixed with release-. Eg: release-4.1 (or release-4.1.0)
 * The original [GitFlow model](http://nvie.com/posts/a-successful-git-branching-model/)
 specifies branches with a "-" separator while the [git flow extensions](https://github.com/nvie/gitflow)
 default to a "/" separator.  Either work with GitVersion.
-* Tags are used on the master branch and reflects the SemVer of each stable
+* Tags are used on the main branch and reflects the SemVer of each stable
 release eg 3.3.8 , 4.0.0, etc
 * Tags can also be used to override versions while we transition repositories
 over to GitVersion
@@ -34,9 +34,9 @@ will refer to:
 * `targetBranch` => the branch we are targeting
 * `targetCommit` => the commit we are targeting on `targetbranch`
 
-### Master branch
+### Main branch
 
-Commits on master will always be a merge commit (Either from a `hotfix` or a
+Commits on main will always be a merge commit (Either from a `hotfix` or a
 `release` branch) or a tag. As such we can simply take the commit message or tag
 message.
 
@@ -62,15 +62,15 @@ Long version:
 ### Develop branch
 
 `targetCommitDate` => the date of the `targetCommit`
-`masterVersionCommit` => the first version (merge commit or SemVer tag) on
-`master` that is older than the `targetCommitDate`
-`masterMergeVersion` => the SemVer extracted from `masterVersionCommit.Message`
+`mainVersionCommit` => the first version (merge commit or SemVer tag) on
+`main` that is older than the `targetCommitDate`
+`mainMergeVersion` => the SemVer extracted from `mainVersionCommit.Message`
 
-* major: `masterMergeVersion.Major`
-* minor: `masterMergeVersion.Minor + 1` (0 if the override above is used)
+* major: `mainMergeVersion.Major`
+* minor: `mainMergeVersion.Minor + 1` (0 if the override above is used)
 * patch: 0
 * pre-release: `alpha.{n}` where n = how many commits `develop` is in front of
-`masterVersionCommit.Date` ('0' padded to 4 characters)
+`mainVersionCommit.Date` ('0' padded to 4 characters)
 
 Long version:
 
@@ -97,7 +97,7 @@ Long version:
 ### Release branches
 
  * May branch off from: develop
- * Must merge back into: develop and master
+ * Must merge back into: develop and main
  * Branch naming convention: `release-{n}` eg `release-1.2`
 
 `releaseVersion` => the SemVer extracted from `targetBranch.Name`
@@ -125,14 +125,14 @@ Long version:
 
 May branch off from: `develop`
 Must merge back into: `develop`
-Branch naming convention: anything except `master`, `develop`, `release-{n}`, or
+Branch naming convention: anything except `main`, `develop`, `release-{n}`, or
 `hotfix-{n}`.
 
 TODO: feature branches cannot start with a SemVer. to stop people from create
 branches named like "4.0.3"
 
-* major: `masterMergeVersion.Major`
-* minor: `masterMergeVersion.Minor + 1` (0 if the override above is used)
+* major: `mainMergeVersion.Major`
+* minor: `mainMergeVersion.Minor + 1` (0 if the override above is used)
 * patch: 0
 * pre-release: `alpha.feature-{n}` where n = First 8 characters of the commit
 SHA of the first commit
@@ -146,11 +146,11 @@ Long version:
 
 May branch off from: `develop`
 Must merge back into: `develop`
-Branch naming convention: anything except `master`, `develop`, `release-{n}`, or
+Branch naming convention: anything except `main`, `develop`, `release-{n}`, or
 `hotfix-{n}`. Canonical branch name contains `/pull/`.
 
-* major: `masterMergeVersion.Major`
-* minor: `masterMergeVersion.Minor + 1` (0 if the override above is used)
+* major: `mainMergeVersion.Major`
+* minor: `mainMergeVersion.Minor + 1` (0 if the override above is used)
 * patch: 0
 * pre-release: `alpha.pull{n}` where n = the pull request number  ('0' padded to
 4 characters)

@@ -65,7 +65,7 @@ And the description of the available options are:
 
 ### next-version
 
-Allows you to bump the next version explicitly, useful for bumping `master` or a
+Allows you to bump the next version explicitly, useful for bumping `main` or a
 feature with breaking changes a major increment.
 
 ### assembly-versioning-scheme
@@ -148,7 +148,7 @@ continuous-delivery-fallback-tag: ''
 ...
 ```
 
-Doing so can be helpful if you use your `master` branch as a `release` branch.
+Doing so can be helpful if you use your `main` branch as a `release` branch.
 
 ### tag-prefix
 
@@ -282,7 +282,7 @@ upgrade.
 
 ```yaml
 branches:
-  master:
+  main:
     regex: ^master$|^main$
     mode: ContinuousDelivery
     tag: ''
@@ -373,18 +373,18 @@ Take this commit graph
 |/
 *
 *
-* (master)
+* (main)
 ```
 
 By looking at this graph, you cannot tell which of these scenarios happened:
 
 + feature/foo branches off release/1.0.0
-  + Branch release/1.0.0 from master
+  + Branch release/1.0.0 from main
   + Branch feature/foo from release/1.0.0
   + Add a commit to both release/1.0.0 and feature/foo
   + release/1.0.0 is the base for feature/foo
 + release/1.0.0 branches off feature/foo
-  + Branch feature/foo from master
+  + Branch feature/foo from main
   + Branch release/1.0.0 from feature/foo
   + Add a commit to both release/1.0.0 and feature/foo
   + feature/foo is the base for release/1.0.0
@@ -397,7 +397,7 @@ by telling it what types of branches a branch can be created from. For example,
 feature branches are, by default, configured to have the following source
 branches:
 
-`source-branches: ['master', 'develop', 'feature', 'hotfix', 'support']`
+`source-branches: ['main', 'develop', 'feature', 'hotfix', 'support']`
 
 This means that we will never bother to evaluate pull request branches as merge
 base options and being explicit in this way also improves the performance of
@@ -420,7 +420,7 @@ A complete example:
 branches:
   unstable:
     regex: ...
-    is-source-branch-for: ['master', 'develop', 'feature', 'hotfix', 'support']
+    is-source-branch-for: ['main', 'develop', 'feature', 'hotfix', 'support']
 ```
 
 Without this configuration value you would have to do:
@@ -460,7 +460,7 @@ Same as for the [global configuration, explained above](#increment).
 
 ### prevent-increment-of-merged-branch-version
 
-When `release-2.0.0` is merged into master, we want master to build `2.0.0`. If
+When `release-2.0.0` is merged into main, we want main to build `2.0.0`. If
 `release-2.0.0` is merged into develop we want it to build `2.1.0`, this option
 prevents incrementing after a versioned branch is merged.
 
@@ -494,7 +494,7 @@ branches:
 ### track-merge-target
 
 Strategy which will look for tagged merge commits directly off the current
-branch. For example `develop` → `release/1.0.0` → merge into `master` and tag
+branch. For example `develop` → `release/1.0.0` → merge into `main` and tag
 `1.0.0`. The tag is *not* on develop, but develop should be version `1.0.0` now.
 
 ### tracks-release-branches
@@ -508,7 +508,7 @@ Indicates this branch config represents a release branch in GitFlow.
 ### is-mainline
 
 When using Mainline mode, this indicates that this branch is a mainline. By
-default support/ and master are mainlines.
+default support/ and main are mainlines.
 
 ### pre-release-weight
 

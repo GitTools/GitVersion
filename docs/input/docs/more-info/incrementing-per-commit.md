@@ -18,7 +18,7 @@ adb29a		->		1.0.1-feature-foo.1 (PR #5 Version: `1.0.1-PullRequest.5+2`)
 5f413b		->		1.0.1-ci.4
 d6155b		->		2.0.0-rc.1+4 (Before and after tag)
 d53ab6		->		2.0.0-rc.2 (If there was another commit on the release branch it would be 2.0.0-rc.3)
-b5d142		->		2.0.0-ci.0 (2.0.0 branch was merged, so master is now at 2.0.0)
+b5d142		->		2.0.0-ci.0 (2.0.0 branch was merged, so main is now at 2.0.0)
 ```
 
 As you can see the versions now no longer conflict. When you want to create a
