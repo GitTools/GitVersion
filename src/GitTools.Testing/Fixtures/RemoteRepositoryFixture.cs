@@ -27,7 +27,7 @@ namespace GitTools.Testing
 
         private static IRepository CreateNewRepository(string path)
         {
-            LibGit2Sharp.Repository.Init(path);
+            Init(path);
             Console.WriteLine("Created git repository at '{0}'", path);
 
             var repo = new Repository(path);

@@ -136,7 +136,7 @@ namespace GitVersion.App.Tests
         {
             using var fixture = new EmptyRepositoryFixture();
             var remoteRepositoryPath = PathHelper.GetTempPath();
-            Repository.Init(remoteRepositoryPath);
+            RepositoryFixtureBase.Init(remoteRepositoryPath);
             using (var remoteRepository = new Repository(remoteRepositoryPath))
             {
                 remoteRepository.Config.Set("user.name", "Test");

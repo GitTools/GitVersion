@@ -64,6 +64,11 @@ namespace GitTools.Testing
             Commands.Checkout(Repository, branch);
         }
 
+        public static void Init(string path)
+        {
+            GitTestExtensions.ExecuteGitCmd($"init {path} -b master");
+        }
+
         public void MakeATaggedCommit(string tag)
         {
             MakeACommit();

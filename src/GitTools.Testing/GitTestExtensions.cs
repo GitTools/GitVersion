@@ -1,6 +1,8 @@
 using System;
 using System.IO;
 using System.Linq;
+using System.Text;
+using GitTools.Testing.Internal;
 using LibGit2Sharp;
 
 namespace GitTools.Testing
@@ -34,7 +36,7 @@ namespace GitTools.Testing
                              .ToArray();
         }
 
-        public static Commit CreateFileAndCommit(this IRepository repository, string relativeFileName, string commitMessage = null)
+        private static Commit CreateFileAndCommit(this IRepository repository, string relativeFileName, string commitMessage = null)
         {
             var randomFile = Path.Combine(repository.Info.WorkingDirectory, relativeFileName);
             if (File.Exists(randomFile))
@@ -48,7 +50,7 @@ namespace GitTools.Testing
 
             Commands.Stage(repository, randomFile);
 
-            return repository.Commit(string.Format("Test Commit for file '{0}' - {1}", relativeFileName, commitMessage),
+            return repository.Commit($"Test Commit for file '{relativeFileName}' - {commitMessage}",
                 Generate.SignatureNow(), Generate.SignatureNow());
         }
 
@@ -82,6 +84,40 @@ namespace GitTools.Testing
             }
 
             return commit;
+        }
+
+        public static void ExecuteGitCmd(string gitCmd, Action<string> writer = null)
+        {
+            var output = new StringBuilder();
+            try
+            {
+                ProcessHelper.Run(
+                    o => output.AppendLine(o),
+                    e => output.AppendLineFormat("ERROR: {0}", e),
+                    null,
+                    "git",
+                    gitCmd,
+                    ".");
+            }
+            catch (FileNotFoundException exception)
+            {
+                if (exception.FileName != "git")
+                {
+                    throw;
+                }
+
+                output.AppendLine("Could not execute 'git log' due to the following error:");
+                output.AppendLine(exception.ToString());
+            }
+
+            if (writer != null)
+            {
+                writer(output.ToString());
+            }
+            else
+            {
+                Console.Write(output.ToString());
+            }
         }
     }
 }
