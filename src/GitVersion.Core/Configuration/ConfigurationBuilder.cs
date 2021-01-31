@@ -12,7 +12,7 @@ namespace GitVersion.Configuration
     {
         private const int DefaultTagPreReleaseWeight = 60000;
 
-        private readonly List<Config> _overrides = new List<Config>();
+        private readonly List<Config> _overrides = new();
 
         public ConfigurationBuilder Add([NotNull] Config config)
         {
@@ -87,22 +87,24 @@ namespace GitVersion.Configuration
 
                 var targetConfigBranches = targetConfig.Branches;
 
-                foreach (var (key, source) in overrideConfig.Branches)
+                foreach (var (name, branchConfig) in overrideConfig.Branches)
                 {
-                    if (!targetConfigBranches.TryGetValue(key, out var target))
+                    // for compatibility reason we check if it's master, we rename it to main
+                    var branchName = name == Config.MasterBranchKey ? Config.MainBranchKey : name;
+                    if (!targetConfigBranches.TryGetValue(branchName, out var target))
                     {
-                        target = BranchConfig.CreateDefaultBranchConfig(key);
+                        target = BranchConfig.CreateDefaultBranchConfig(branchName);
                     }
 
-                    source.MergeTo(target);
-                    newBranches[key] = target;
+                    branchConfig.MergeTo(target);
+                    newBranches[branchName] = target;
                 }
 
-                foreach (var (key, branchConfig) in targetConfigBranches)
+                foreach (var (name, branchConfig) in targetConfigBranches)
                 {
-                    if (!newBranches.ContainsKey(key))
+                    if (!newBranches.ContainsKey(name))
                     {
-                        newBranches[key] = branchConfig;
+                        newBranches[name] = branchConfig;
                     }
                 }
 

@@ -57,13 +57,13 @@ namespace GitVersion.Core.Tests.IntegrationTests
         }
 
         [Test]
-        public void AllowHavingMainInsteadOfMaster()
+        public void AllowHavingMasterInsteadOfMain()
         {
             using var fixture = new EmptyRepositoryFixture();
             fixture.Repository.MakeACommit();
             Commands.Checkout(fixture.Repository, fixture.Repository.CreateBranch("develop"));
-            Commands.Checkout(fixture.Repository, fixture.Repository.CreateBranch("main"));
-            fixture.Repository.Branches.Remove(fixture.Repository.Branches["master"]);
+            Commands.Checkout(fixture.Repository, fixture.Repository.CreateBranch("master"));
+            fixture.Repository.Branches.Remove(fixture.Repository.Branches["main"]);
 
             fixture.AssertFullSemver("0.1.0+0");
         }

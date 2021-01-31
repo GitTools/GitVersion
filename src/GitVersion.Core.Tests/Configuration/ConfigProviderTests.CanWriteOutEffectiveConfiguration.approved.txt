@@ -25,7 +25,7 @@ branches:
     is-release-branch: false
     is-mainline: false
     pre-release-weight: 0
-  master:
+  main:
     mode: ContinuousDelivery
     tag: ''
     increment: Patch
@@ -48,7 +48,7 @@ branches:
     regex: ^releases?[/-]
     source-branches:
     - develop
-    - master
+    - main
     - support
     - release
     tracks-release-branches: false
@@ -64,7 +64,7 @@ branches:
     regex: ^features?[/-]
     source-branches:
     - develop
-    - master
+    - main
     - release
     - feature
     - support
@@ -83,7 +83,7 @@ branches:
     regex: ^(pull|pull\-requests|pr)[/-]
     source-branches:
     - develop
-    - master
+    - main
     - release
     - feature
     - support
@@ -101,7 +101,7 @@ branches:
     regex: ^hotfix(es)?[/-]
     source-branches:
     - develop
-    - master
+    - main
     - support
     tracks-release-branches: false
     is-release-branch: false
@@ -115,7 +115,7 @@ branches:
     track-merge-target: false
     regex: ^support[/-]
     source-branches:
-    - master
+    - main
     tracks-release-branches: false
     is-release-branch: false
     is-mainline: true

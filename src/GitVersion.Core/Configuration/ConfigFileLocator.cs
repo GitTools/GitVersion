@@ -46,7 +46,7 @@ namespace GitVersion.Configuration
             return new Config();
         }
 
-        public static void VerifyReadConfig(Config config)
+        private static void VerifyReadConfig(Config config)
         {
             // Verify no branches are set to mainline mode
             if (config.Branches.Any(b => b.Value.VersioningMode == VersioningMode.Mainline))
