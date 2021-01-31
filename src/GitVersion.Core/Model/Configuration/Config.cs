@@ -115,7 +115,7 @@ namespace GitVersion.Model.Configuration
         public const string SupportBranchRegex = "^support[/-]";
         public const string DevelopBranchRegex = "^dev(elop)?(ment)?$";
         public const string MainBranchRegex = "^master$|^main$";
-        public const string MainBranchKey = "master";
+        public const string MainBranchKey = "main";
         public const string MasterBranchKey = "master";
         public const string ReleaseBranchKey = "release";
         public const string FeatureBranchKey = "feature";

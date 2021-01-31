@@ -66,7 +66,7 @@ namespace GitTools.Testing
 
         public static void Init(string path)
         {
-            GitTestExtensions.ExecuteGitCmd($"init {path} -b master");
+            GitTestExtensions.ExecuteGitCmd($"init {path} -b main");
         }
 
         public void MakeATaggedCommit(string tag)
