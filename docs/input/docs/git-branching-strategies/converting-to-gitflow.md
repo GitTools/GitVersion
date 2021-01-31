@@ -7,7 +7,7 @@ Converting to GitFlow is simple. Whenever you need to convert, simply do the
 following
 
 ```shell
-git checkout master
+git checkout main
 git checkout -b develop
 git push upstream develop
 ```

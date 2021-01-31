@@ -44,13 +44,13 @@ branch name (e.g., `release/3.0.0` will find `3.0.0`)
 - `ConfigNextVersionBaseVersionStrategy` - Returns the version from the
 GitVersion.yaml file
 - `MergeMessageBaseVersionStrategy` - Finds version numbers from merge messages
-(e.g., `Merge 'release/3.0.0' into 'master'` will return `3.0.0`)
+(e.g., `Merge 'release/3.0.0' into 'main'` will return `3.0.0`)
 - `FallbackBaseVersionStrategy` - Always returns 0.1.0 for new repositories
 
 Each strategy needs to return an instance of `BaseVersion` which has the
 following properties:
 
-- `Source` - Description of the source (e.g., `Merge message 'Merge 'release/3.0.0' into 'master'`)
+- `Source` - Description of the source (e.g., `Merge message 'Merge 'release/3.0.0' into 'main'`)
 - `ShouldIncrement` - Some strategies should have the version incremented,
 others do not (e.g., `ConfigNextVersionBaseVersionStrategy` returns false,
 `HighestTagBaseVersionStrategy` returns true)

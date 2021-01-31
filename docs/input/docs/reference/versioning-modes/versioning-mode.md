@@ -21,4 +21,4 @@ good mode to operate GitVersion by.
 
 [Mainline Development](./mainline-development) works more like the
 [Continuous Delivery](./continuous-delivery), except that it tells
-GitVersion to *infer* releases from merges and commits to `master`.
+GitVersion to *infer* releases from merges and commits to `main`.

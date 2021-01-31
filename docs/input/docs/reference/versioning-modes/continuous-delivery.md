@@ -23,7 +23,7 @@ In essence continuous delivery means:
   - That means no rebuilding everything when you are deploying
 
 Continuous delivery does not work well with GitFlow. The reason is that you are
-required to *merge* to master to do a release, triggering a rebuild and a new
+required to *merge* to main to do a release, triggering a rebuild and a new
 set of artifacts to go through your pipeline. Depending on how long your
 pipeline is, this could be a while.
 

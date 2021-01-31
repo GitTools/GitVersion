@@ -26,6 +26,6 @@ Only one number should be incremented per release, and all lower parts should be
 For a more complete explanation check out [semver.org](http://semver.org) which is the official spec. Remember this is a brief introduction and does not cover all parts of semantic versioning, just the important parts to get started.
 
 ## SemVer in GitVersion
-GitVersion makes it easy to follow semantic versioning in your library by automatically calculating the next semantic version which your library/application is likely to use. In [GitFlow](https://www.atlassian.com/git/tutorials/comparing-workflows/gitflow-workflow/) the develop branch will bump the *minor* when master is tagged, while [GitHubFlow](https://guides.github.com/introduction/flow/) will bump the *patch*.
+GitVersion makes it easy to follow semantic versioning in your library by automatically calculating the next semantic version which your library/application is likely to use. In [GitFlow](https://www.atlassian.com/git/tutorials/comparing-workflows/gitflow-workflow/) the develop branch will bump the *minor* when main is tagged, while [GitHubFlow](https://guides.github.com/introduction/flow/) will bump the *patch*.
 
 Because one size does not always fit all, GitVersion provides many [Variables](../more-info/variables) for you to use which contain different variations of the version. For example SemVer will be in the format `{major}.{minor}.{patch}-{tag}`, but `FullSemVer` will also include build metadata: `{major}.{minor}.{patch}-{tag}+{buildmetadata}`

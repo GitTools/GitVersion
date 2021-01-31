@@ -47,10 +47,10 @@ manual build in your *build server* which pushes the package to Octopus deploy.
 
 Another simple option is to tag a stable version to release, the basic idea is:
 
-1. GitVersion is set to continuous deployment mode, so master will create `-ci.x`
+1. GitVersion is set to continuous deployment mode, so main will create `-ci.x`
 pre-release builds
 1. CI Builds only create NuGet packages for stable builds
-1. You tag master with a stable version of the next version then push it
+1. You tag main with a stable version of the next version then push it
 1. The CI build triggers, GitVersion will always respect tags so you will get a
 stable version
 1. The stable package will be pushed to Octopus
@@ -98,8 +98,8 @@ if ($pendingChanges -ne $null)
 
 # Pull latest, fast-forward only so that it git stops if there is an error
 & git fetch origin
-& git checkout master
-& git merge origin/master --ff-only
+& git checkout main
+& git merge origin/main --ff-only
 
 # Determine version to release
 $output = & $gitversion /output json
@@ -118,7 +118,7 @@ if ($LASTEXITCODE -ne 0) {
     throw "No changes detected since last release"
 }
 
-& git push origin master --tags
+& git push origin main --tags
 
 Pop-Location
 ```

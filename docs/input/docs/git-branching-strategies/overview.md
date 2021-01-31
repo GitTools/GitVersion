@@ -25,9 +25,9 @@ As mentioned above the GitVersion docs cover [GitHubFlow](githubflow) and
 GitHubFlow is a simple and powerful branching strategy. It is what GitHub uses
 and the branching strategy most open source projects use.
 
- - [Mainline development](../reference/versioning-modes/mainline-development) on `master`
+ - [Mainline development](../reference/versioning-modes/mainline-development) on `main`
  - Work on [feature branches](../reference/feature-branches), merge into
-`master` via [pull requests](../reference/pull-requests)
+`main` via [pull requests](../reference/pull-requests)
  - Works well for [continuous delivery](../reference/versioning-modes/continuous-delivery)
  - Does not have a way to manage/maintain old releases
  - Only allows working on a single release at a time
@@ -38,7 +38,7 @@ GitFlow is a more complex and complete branching strategy. It also gives much
 more control over when features and code is released.
 
 - Development on `develop` branch
-- `master` only contains *released* code
+- `main` only contains *released* code
 - Supports maintaining old releases (like nServiceBus, they support the last 3
 major versions with bug fixes and security updates)
 - Supports development on multiple releases at one time
