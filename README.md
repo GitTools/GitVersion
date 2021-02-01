@@ -3,7 +3,6 @@
 Versioning when using Git, solved. GitVersion looks at your git history and
 works out the [Semantic Version][semver] of the commit being built.
 
-[![Build status][appveyor-badge]][appveyor]
 [![Build status][azure-pipeline-badge]][azure-pipeline]
 [![Build status][github-actions-badge]][github-actions]
 [![codecov][codecov-badge]][codecov]
@@ -88,5 +87,5 @@ from The Noun Project.
 [how]:                             https://gitversion.net/docs/more-info/how-it-works
 [faq]:                             https://gitversion.net/docs/faq
 [who]:                             https://gitversion.net/docs/who
-[gv-in-action]:                    https://raw.github.com/GitTools/GitVersion/main/docs/input/docs/img/README.png
-[banner]:                          https://github.com/GitTools/graphics/raw/main/GitVersion/banner-1280x640.png
+[gv-in-action]:                    https://raw.github.com/GitTools/GitVersion/master/docs/input/docs/img/README.png
+[banner]:                          https://github.com/GitTools/graphics/raw/master/GitVersion/banner-1280x640.png
