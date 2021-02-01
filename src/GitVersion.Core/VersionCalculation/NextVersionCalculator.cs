@@ -56,6 +56,7 @@ namespace GitVersion.VersionCalculation
             }
 
             var baseVersion = baseVersionCalculator.GetBaseVersion();
+            baseVersion.SemanticVersion.BuildMetaData = mainlineVersionCalculator.CreateVersionBuildMetaData(baseVersion.BaseVersionSource);
             SemanticVersion semver;
             if (context.Configuration.VersioningMode == VersioningMode.Mainline)
             {
@@ -63,8 +64,15 @@ namespace GitVersion.VersionCalculation
             }
             else
             {
-                semver = PerformIncrement(baseVersion);
-                semver.BuildMetaData = mainlineVersionCalculator.CreateVersionBuildMetaData(baseVersion.BaseVersionSource);
+                if (taggedSemanticVersion?.BuildMetaData == null || (taggedSemanticVersion.BuildMetaData.Sha != baseVersion.SemanticVersion.BuildMetaData.Sha))
+                {
+                    semver = PerformIncrement(baseVersion);
+                    semver.BuildMetaData = mainlineVersionCalculator.CreateVersionBuildMetaData(baseVersion.BaseVersionSource);
+                }
+                else
+                {
+                    semver = baseVersion.SemanticVersion;
+                }
             }
 
             var hasPreReleaseTag = semver.PreReleaseTag.HasTag();
