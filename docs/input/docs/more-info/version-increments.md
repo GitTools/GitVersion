@@ -84,6 +84,20 @@ One thing to be aware of: If the current version is an alpha-version
 (eg from 0.2.0 to 0.3.0 instead of 1.0.0). Once the current version is greater
 than 1.0.0, bumping the major version works as expected.
 
+#### Conventional commit messages
+
+If you want to use the [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/)
+standard, you can leverage this feature as follows:
+
+```yaml
+mode: MainLine # Only add this if you want every version to be created automatically on your main branch.
+major-version-bump-message: "(build|chore|ci|docs|feat|fix|perf|refactor|revert|style|test)(\\([\\w\\s]*\\))?(!:|:.*\\n\\n.*\\n\\n.*BREAKING.*).*"
+minor-version-bump-message: "(feat)(\\([\\w\\s]*\\))?:"
+patch-version-bump-message: "(build|chore|ci|docs|fix|perf|refactor|revert|style|test)(\\([\\w\\s]*\\))?:(.*\\n\\n.*\\n\\n.*BREAKING.*){0}"
+```
+
+This will ensure that your version gets bumped according to the commits you've created.
+
 ### GitVersion.yml
 
 The first is by setting the `next-version` property in the GitVersion.yml file.
