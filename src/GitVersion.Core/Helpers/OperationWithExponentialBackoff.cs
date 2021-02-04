@@ -5,14 +5,27 @@ using GitVersion.Logging;
 
 namespace GitVersion.Helpers
 {
-    internal class OperationWithExponentialBackoff<T> where T : Exception
+    internal class OperationWithExponentialBackoff<T> : OperationWithExponentialBackoff<T, bool> where T : Exception
+    {
+        public OperationWithExponentialBackoff(IThreadSleep threadSleep, ILog log, Action operation, int maxRetries = 5)
+            : base(threadSleep, log, () => { operation(); return false; }, maxRetries)
+        {
+        }
+        public new Task ExecuteAsync()
+        {
+            return base.ExecuteAsync();
+        }
+
+
+    }
+    internal class OperationWithExponentialBackoff<T, Result> where T : Exception
     {
         private readonly IThreadSleep threadSleep;
         private readonly ILog log;
-        private readonly Action operation;
+        private readonly Func<Result> operation;
         private readonly int maxRetries;
 
-        public OperationWithExponentialBackoff(IThreadSleep threadSleep, ILog log, Action operation, int maxRetries = 5)
+        public OperationWithExponentialBackoff(IThreadSleep threadSleep, ILog log, Func<Result> operation, int maxRetries = 5)
         {
             if (maxRetries < 0)
                 throw new ArgumentOutOfRangeException(nameof(maxRetries));
@@ -23,7 +36,7 @@ namespace GitVersion.Helpers
             this.maxRetries = maxRetries;
         }
 
-        public async Task ExecuteAsync()
+        public async Task<Result> ExecuteAsync()
         {
             var exceptions = new List<Exception>();
 
@@ -36,8 +49,7 @@ namespace GitVersion.Helpers
 
                 try
                 {
-                    operation();
-                    break;
+                    return operation();
                 }
                 catch (T e)
                 {
@@ -53,6 +65,7 @@ namespace GitVersion.Helpers
 
                 sleepMSec *= 2;
             }
+            return default;
         }
     }
 }
