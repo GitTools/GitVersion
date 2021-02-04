@@ -74,7 +74,7 @@ namespace GitVersion.VersionCalculation.Cache
                 {
                     try
                     {
-                        var loadedVariables = VersionVariables.FromFile(cacheFileName, fileSystem);
+                        var loadedVariables = VersionVariables.FromFile(cacheFileName, fileSystem, log);
                         return loadedVariables;
                     }
                     catch (Exception ex)
