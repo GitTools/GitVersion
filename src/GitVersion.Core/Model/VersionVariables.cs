@@ -166,12 +166,31 @@ namespace GitVersion.OutputVariables
 
         public static VersionVariables FromFile(string filePath, IFileSystem fileSystem)
         {
-            using var stream = fileSystem.OpenRead(filePath);
-            using var reader = new StreamReader(stream);
-            var dictionary = new Deserializer().Deserialize<Dictionary<string, string>>(reader);
-            var versionVariables = FromDictionary(dictionary);
-            versionVariables.FileName = filePath;
-            return versionVariables;
+            int remainingAttempts = 5;
+            do
+            {
+                try
+                {
+                    using var stream = fileSystem.OpenRead(filePath);
+                    using var reader = new StreamReader(stream);
+                    var dictionary = new Deserializer().Deserialize<Dictionary<string, string>>(reader);
+                    var versionVariables = FromDictionary(dictionary);
+                    versionVariables.FileName = filePath;
+                    return versionVariables;
+                }
+                catch (System.IO.IOException ex)
+                {
+                    remainingAttempts--;
+                    if (remainingAttempts <= 0)
+                    {
+                        throw;
+                    }
+                    Console.WriteLine($"Error reading file {filePath}. Retrying {remainingAttempts } more times: {ex.Message}");
+                    Thread.Sleep(1000);
+                }
+            }
+            while (remainingAttempts > 0);
+            throw new Exception("Read Retry: Should never get here.");
         }
 
         public bool TryGetValue(string variable, out string variableValue)
