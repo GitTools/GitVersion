@@ -1,4 +1,5 @@
 using System;
+using System.Threading;
 using GitVersion.Logging;
 using GitVersion.Model;
 using GitVersion.OutputVariables;
@@ -34,7 +35,25 @@ namespace GitVersion.VersionConverters.OutputGenerator
             }
             if (gitVersionOptions.Output.Contains(OutputType.File))
             {
-                fileSystem.WriteAllText(context.OutputFile, variables.ToString());
+                int remainingAttempts = 5;
+                do
+                {
+                    try
+                    {
+                        fileSystem.WriteAllText(context.OutputFile, variables.ToString());
+                        remainingAttempts = 0;
+                    }
+                    catch (System.IO.IOException ex)
+                    {
+                        remainingAttempts--;
+                        if (remainingAttempts <= 0)
+                        {
+                            throw;
+                        }
+                        console.WriteLine($"Error writing file {context.OutputFile}. Retrying {remainingAttempts } more times: {ex.Message}");
+                        Thread.Sleep(1000);
+                    }
+                } while (remainingAttempts > 0);
             }
             if (gitVersionOptions.Output.Contains(OutputType.Json))
             {
