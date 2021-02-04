@@ -1,5 +1,6 @@
 using System;
-using System.Threading;
+using System.IO;
+using GitVersion.Helpers;
 using GitVersion.Logging;
 using GitVersion.Model;
 using GitVersion.OutputVariables;
@@ -14,13 +15,15 @@ namespace GitVersion.VersionConverters.OutputGenerator
     public class OutputGenerator : IOutputGenerator
     {
         private readonly IConsole console;
+        private readonly ILog log;
         private readonly IFileSystem fileSystem;
         private readonly IOptions<GitVersionOptions> options;
         private readonly ICurrentBuildAgent buildAgent;
 
-        public OutputGenerator(ICurrentBuildAgent buildAgent, IConsole console, IFileSystem fileSystem, IOptions<GitVersionOptions> options)
+        public OutputGenerator(ICurrentBuildAgent buildAgent, IConsole console, ILog log, IFileSystem fileSystem, IOptions<GitVersionOptions> options)
         {
             this.console = console ?? throw new ArgumentNullException(nameof(console));
+            this.log = log;
             this.fileSystem = fileSystem ?? throw new ArgumentNullException(nameof(fileSystem));
             this.options = options ?? throw new ArgumentNullException(nameof(options));
             this.buildAgent = buildAgent;
@@ -35,25 +38,8 @@ namespace GitVersion.VersionConverters.OutputGenerator
             }
             if (gitVersionOptions.Output.Contains(OutputType.File))
             {
-                int remainingAttempts = 5;
-                do
-                {
-                    try
-                    {
-                        fileSystem.WriteAllText(context.OutputFile, variables.ToString());
-                        remainingAttempts = 0;
-                    }
-                    catch (System.IO.IOException ex)
-                    {
-                        remainingAttempts--;
-                        if (remainingAttempts <= 0)
-                        {
-                            throw;
-                        }
-                        console.WriteLine($"Error writing file {context.OutputFile}. Retrying {remainingAttempts } more times: {ex.Message}");
-                        Thread.Sleep(1000);
-                    }
-                } while (remainingAttempts > 0);
+                var retryOperation = new OperationWithExponentialBackoff<IOException>(new ThreadSleep(), log, () => fileSystem.WriteAllText(context.OutputFile, variables.ToString()), maxRetries: 6);
+                retryOperation.ExecuteAsync().Wait();
             }
             if (gitVersionOptions.Output.Contains(OutputType.Json))
             {
