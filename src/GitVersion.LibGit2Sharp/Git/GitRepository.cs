@@ -81,8 +81,8 @@ namespace GitVersion
                     catch (Exception)
                     {
                         return int.MaxValue; // this should be somewhat puzzling to see,
-                                             // so we may have reached our goal to show that
-                                             // that repo is really "Dirty"...
+                        // so we may have reached our goal to show that
+                        // that repo is really "Dirty"...
                     }
                 }
 
@@ -184,7 +184,7 @@ namespace GitVersion
         }
         public void Checkout(string commitOrBranchSpec)
         {
-            new OperationWithExponentialBackoff<LockedFileException>(new ThreadSleep(), log, () => Commands.Checkout(repositoryInstance, commitOrBranchSpec) , 6).ExecuteAsync().Wait();
+            new OperationWithExponentialBackoff<LockedFileException>(new ThreadSleep(), log, () => Commands.Checkout(repositoryInstance, commitOrBranchSpec), 6).ExecuteAsync().Wait();
         }
 
         public void Fetch(string remote, IEnumerable<string> refSpecs, AuthenticationInfo auth, string logMessage)
