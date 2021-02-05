@@ -16,7 +16,6 @@ namespace GitVersion.Helpers
         {
             return base.ExecuteAsync();
         }
-
     }
     public class OperationWithExponentialBackoff<T, Result> where T : Exception
     {

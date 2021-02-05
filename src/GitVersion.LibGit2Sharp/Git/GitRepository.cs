@@ -60,7 +60,6 @@ namespace GitVersion
                 return new Commit(mergeBase);
             }).ExecuteAsync().Result;
         }
-
         public int GetNumberOfUncommittedChanges()
         {
             return new OperationWithExponentialBackoff<LibGit2Sharp.LockedFileException, int>(new ThreadSleep(), log, () =>
@@ -68,7 +67,6 @@ namespace GitVersion
                 return GetNumberOfUncommittedChangesInternal();
             }).ExecuteAsync().Result;
         }
-
         private int GetNumberOfUncommittedChangesInternal()
         {
             // check if we have a branch tip at all to behave properly with empty repos
@@ -87,18 +85,17 @@ namespace GitVersion
                 catch (Exception)
                 {
                     return int.MaxValue; // this should be somewhat puzzling to see,
-                                         // so we may have reached our goal to show that
-                                         // that repo is really "Dirty"...
+                    // so we may have reached our goal to show that
+                    // that repo is really "Dirty"...
                 }
             }
 
             // gets all changes of the last commit vs Staging area and WT
             var changes = repositoryInstance.Diff.Compare<TreeChanges>(repositoryInstance.Head.Tip.Tree,
-            DiffTargets.Index | DiffTargets.WorkingDirectory);
+                DiffTargets.Index | DiffTargets.WorkingDirectory);
 
             return changes.Count;
         }
-
         public void CreateBranchForPullRequestBranch(AuthenticationInfo auth)
         {
             new OperationWithExponentialBackoff<LockedFileException>(new ThreadSleep(), log, () =>
@@ -106,7 +103,6 @@ namespace GitVersion
                 CreateBranchForPullRequestBranchInternal(auth);
             }).ExecuteAsync().Wait();
         }
-
         private void CreateBranchForPullRequestBranchInternal(AuthenticationInfo auth)
         {
             var network = repositoryInstance.Network;
@@ -164,7 +160,6 @@ namespace GitVersion
                 throw new WarningException(message);
             }
         }
-
         public void Clone(string sourceUrl, string workdirPath, AuthenticationInfo auth)
         {
             try
@@ -198,7 +193,6 @@ namespace GitVersion
         {
             new OperationWithExponentialBackoff<LockedFileException>(new ThreadSleep(), log, () => Commands.Checkout(repositoryInstance, commitOrBranchSpec)).ExecuteAsync().Wait();
         }
-
         public void Fetch(string remote, IEnumerable<string> refSpecs, AuthenticationInfo auth, string logMessage)
         {
             new OperationWithExponentialBackoff<LockedFileException>(new ThreadSleep(), log, () => Commands.Fetch((Repository)repositoryInstance, remote, refSpecs, GetFetchOptions(auth), logMessage)).ExecuteAsync().Wait();
