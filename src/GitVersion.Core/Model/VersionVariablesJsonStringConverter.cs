@@ -1,7 +1,6 @@
 using System;
 using System.Buffers;
 using System.Buffers.Text;
-using System.Linq;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using JetBrains.Annotations;
@@ -37,7 +36,5 @@ namespace GitVersion.OutputVariables
         }
 
         public override bool HandleNull => true;
-
-        private static bool NotAPaddedNumber(string value) => value != null && (value == "0" || !value.StartsWith("0"));
     }
 }

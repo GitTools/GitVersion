@@ -21,12 +21,12 @@ namespace GitVersion
         public const string DefaultPatchPattern = @"\+semver:\s?(fix|patch)";
         public const string DefaultNoBumpPattern = @"\+semver:\s?(none|skip)";
 
-        private static readonly ConcurrentDictionary<string, Regex> CompiledRegexCache = new ConcurrentDictionary<string, Regex>();
+        private static readonly ConcurrentDictionary<string, Regex> CompiledRegexCache = new();
 
-        private static readonly Regex DefaultMajorPatternRegex = new Regex(DefaultMajorPattern, RegexOptions.Compiled | RegexOptions.IgnoreCase);
-        private static readonly Regex DefaultMinorPatternRegex = new Regex(DefaultMinorPattern, RegexOptions.Compiled | RegexOptions.IgnoreCase);
-        private static readonly Regex DefaultPatchPatternRegex = new Regex(DefaultPatchPattern, RegexOptions.Compiled | RegexOptions.IgnoreCase);
-        private static readonly Regex DefaultNoBumpPatternRegex = new Regex(DefaultNoBumpPattern, RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        private static readonly Regex DefaultMajorPatternRegex = new(DefaultMajorPattern, RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        private static readonly Regex DefaultMinorPatternRegex = new(DefaultMinorPattern, RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        private static readonly Regex DefaultPatchPatternRegex = new(DefaultPatchPattern, RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        private static readonly Regex DefaultNoBumpPatternRegex = new(DefaultNoBumpPattern, RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
         public static VersionField? DetermineIncrementedField(IGitRepository repository, GitVersionContext context, BaseVersion baseVersion)
         {
@@ -36,7 +36,7 @@ namespace GitVersion
             // use the default branch config increment strategy if there are no commit message overrides
             if (commitMessageIncrement == null)
             {
-                return baseVersion.ShouldIncrement ? defaultIncrement : (VersionField?)null;
+                return baseVersion.ShouldIncrement ? defaultIncrement : null;
             }
 
             // cap the commit message severity to minor for alpha versions

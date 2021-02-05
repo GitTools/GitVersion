@@ -17,7 +17,7 @@ namespace GitVersion.Configuration
         public IConfigFileLocator Create()
         {
             return string.IsNullOrWhiteSpace(options.Value.ConfigInfo.ConfigFile)
-                ? new DefaultConfigFileLocator(fileSystem) as IConfigFileLocator
+                ? new DefaultConfigFileLocator(fileSystem)
                 : new NamedConfigFileLocator(fileSystem, options);
         }
     }
