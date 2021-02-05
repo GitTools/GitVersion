@@ -38,7 +38,7 @@ namespace GitVersion.VersionConverters.OutputGenerator
             }
             if (gitVersionOptions.Output.Contains(OutputType.File))
             {
-                var retryOperation = new OperationWithExponentialBackoff<IOException>(new ThreadSleep(), log, () => fileSystem.WriteAllText(context.OutputFile, variables.ToString()), maxRetries: 6);
+                var retryOperation = new OperationWithExponentialBackoff<IOException>(new ThreadSleep(), log, () => fileSystem.WriteAllText(context.OutputFile, variables.ToString()));
                 retryOperation.ExecuteAsync().Wait();
             }
             if (gitVersionOptions.Output.Contains(OutputType.Json))
