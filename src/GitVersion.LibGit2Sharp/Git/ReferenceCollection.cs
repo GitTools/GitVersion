@@ -1,5 +1,3 @@
-using GitVersion.Helpers;
-using GitVersion.Logging;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,9 +19,17 @@ namespace GitVersion
             innerCollection.Add(name, canonicalRefNameOrObjectish, allowOverwrite);
         }
 
-        public void UpdateTarget(IReference directRef, IObjectId targetId, ILog log)
+        public void UpdateTarget(IReference directRef, IObjectId targetId)
         {
-            new OperationWithExponentialBackoff<LibGit2Sharp.LockedFileException>(new ThreadSleep(), log, () => innerCollection.UpdateTarget((Reference)directRef, (ObjectId)targetId), maxRetries: 6).ExecuteAsync().Wait();
+            try
+            {
+                innerCollection.UpdateTarget((Reference)directRef, (ObjectId)targetId);
+            }
+            catch (LibGit2Sharp.LockedFileException ex)
+            {
+                // Wrap this exception so that callers that want to catch it don't need to take a dependency on LibGit2Sharp.
+                throw new LockedFileException(ex);
+            }
         }
 
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
