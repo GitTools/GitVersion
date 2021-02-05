@@ -166,7 +166,7 @@ namespace GitVersion.OutputVariables
 
         public static VersionVariables FromFile(string filePath, IFileSystem fileSystem, ILog log)
         {
-            var retryOperation = new OperationWithExponentialBackoff<IOException, VersionVariables>(new ThreadSleep(), null, () => FromFileInternal(filePath, fileSystem), maxRetries: 6);
+            var retryOperation = new OperationWithExponentialBackoff<IOException, VersionVariables>(new ThreadSleep(), null, () => FromFileInternal(filePath, fileSystem));
 
             var versionVariables = retryOperation.ExecuteAsync().Result;
             return versionVariables;

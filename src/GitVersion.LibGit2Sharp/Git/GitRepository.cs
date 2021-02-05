@@ -58,7 +58,7 @@ namespace GitVersion
             {
                 var mergeBase = repositoryInstance.ObjectDatabase.FindMergeBase((Commit)commit, (Commit)otherCommit);
                 return new Commit(mergeBase);
-            }, 6).ExecuteAsync().Result;
+            }).ExecuteAsync().Result;
         }
 
         public int GetNumberOfUncommittedChanges()
@@ -91,7 +91,7 @@ namespace GitVersion
                 DiffTargets.Index | DiffTargets.WorkingDirectory);
 
                 return changes.Count;
-            }, 6).ExecuteAsync().Result;
+            }).ExecuteAsync().Result;
         }
         public void CreateBranchForPullRequestBranch(AuthenticationInfo auth)
         {
@@ -151,7 +151,7 @@ namespace GitVersion
                     var message = $"Remote tip '{canonicalName}' from remote '{remote.Url}' doesn't look like a valid pull request.";
                     throw new WarningException(message);
                 }
-            }, 6).ExecuteAsync().Wait();
+            }).ExecuteAsync().Wait();
         }
         public void Clone(string sourceUrl, string workdirPath, AuthenticationInfo auth)
         {
@@ -161,7 +161,7 @@ namespace GitVersion
                 {
                     var path = Repository.Clone(sourceUrl, workdirPath, GetCloneOptions(auth));
                     log.Info($"Returned path after repository clone: {path}");
-                }, 6).ExecuteAsync().Wait();
+                }).ExecuteAsync().Wait();
             }
             catch (LibGit2SharpException ex)
             {
@@ -184,12 +184,12 @@ namespace GitVersion
         }
         public void Checkout(string commitOrBranchSpec)
         {
-            new OperationWithExponentialBackoff<LockedFileException>(new ThreadSleep(), log, () => Commands.Checkout(repositoryInstance, commitOrBranchSpec), 6).ExecuteAsync().Wait();
+            new OperationWithExponentialBackoff<LockedFileException>(new ThreadSleep(), log, () => Commands.Checkout(repositoryInstance, commitOrBranchSpec)).ExecuteAsync().Wait();
         }
 
         public void Fetch(string remote, IEnumerable<string> refSpecs, AuthenticationInfo auth, string logMessage)
         {
-            new OperationWithExponentialBackoff<LockedFileException>(new ThreadSleep(), log, () => Commands.Fetch((Repository)repositoryInstance, remote, refSpecs, GetFetchOptions(auth), logMessage), 6).ExecuteAsync().Wait();
+            new OperationWithExponentialBackoff<LockedFileException>(new ThreadSleep(), log, () => Commands.Fetch((Repository)repositoryInstance, remote, refSpecs, GetFetchOptions(auth), logMessage)).ExecuteAsync().Wait();
         }
         internal static string Discover(string path) => Repository.Discover(path);
 
