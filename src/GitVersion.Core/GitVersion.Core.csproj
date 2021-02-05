@@ -8,10 +8,15 @@
         <PackageId>GitVersion.Core</PackageId>
         <Title>GitVersion</Title>
         <Description>Derives SemVer information from a repository following GitFlow or GitHubFlow. This is the Core library which both GitVersion cli and Task use allowing programatic usage of GitVersion.</Description>
-
         <Product>$(AssemblyName)</Product>
     </PropertyGroup>
 
+    <ItemGroup>
+        <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+            <_Parameter1>GitVersion.LibGit2Sharp</_Parameter1>
+        </AssemblyAttribute>
+    </ItemGroup>
+    
     <ItemGroup>
         <PackageReference Include="System.Net.Requests" Version="4.3.0" />
 

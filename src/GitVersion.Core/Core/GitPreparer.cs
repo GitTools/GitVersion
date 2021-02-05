@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using GitVersion.Common;
 using GitVersion.Extensions;
+using GitVersion.Helpers;
 using GitVersion.Logging;
 using GitVersion.Model.Configuration;
 using Microsoft.Extensions.Options;
@@ -329,7 +330,7 @@ Please run `git {GitExtensions.CreateGitLogArgs(100)}` and submit it along with 
                     }
                     var remoteRefTipId = remoteTrackingReference.ReferenceTargetId;
                     log.Info($"Updating local ref '{localRef.Name.Canonical}' to point at {remoteRefTipId}.");
-                    repository.Refs.UpdateTarget(localRef, remoteRefTipId);
+                    repository.Refs.UpdateTarget(localRef, remoteRefTipId, log);
                     continue;
                 }
 
@@ -382,7 +383,7 @@ Please run `git {GitExtensions.CreateGitLogArgs(100)}` and submit it along with 
                 log.Info(isBranch ? $"Updating local branch {referenceName} to point at {repoTip}"
                     : $"Updating local branch {referenceName} to match ref {currentBranch}");
                 var localRef = repository.Refs[localCanonicalName];
-                repository.Refs.UpdateTarget(localRef, repoTipId);
+                repository.Refs.UpdateTarget(localRef, repoTipId, log);
             }
 
             repository.Checkout(localCanonicalName);
