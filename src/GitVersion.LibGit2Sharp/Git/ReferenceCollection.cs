@@ -1,3 +1,5 @@
+using GitVersion.Helpers;
+using GitVersion.Logging;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,9 +21,9 @@ namespace GitVersion
             innerCollection.Add(name, canonicalRefNameOrObjectish, allowOverwrite);
         }
 
-        public void UpdateTarget(IReference directRef, IObjectId targetId)
+        public void UpdateTarget(IReference directRef, IObjectId targetId, ILog log)
         {
-            innerCollection.UpdateTarget((Reference)directRef, (ObjectId)targetId);
+            new OperationWithExponentialBackoff<LibGit2Sharp.LockedFileException>(new ThreadSleep(), log, () => innerCollection.UpdateTarget((Reference)directRef, (ObjectId)targetId), maxRetries: 6).ExecuteAsync().Wait();
         }
 
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();

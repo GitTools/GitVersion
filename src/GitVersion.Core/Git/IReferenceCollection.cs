@@ -1,3 +1,4 @@
+using GitVersion.Logging;
 using System.Collections.Generic;
 
 namespace GitVersion
@@ -7,7 +8,7 @@ namespace GitVersion
         IReference Head { get; }
         IReference this[string name] { get; }
         void Add(string name, string canonicalRefNameOrObjectish, bool allowOverwrite = false);
-        void UpdateTarget(IReference directRef, IObjectId targetId);
+        void UpdateTarget(IReference directRef, IObjectId targetId, ILog log);
         IEnumerable<IReference> FromGlob(string prefix);
     }
 }
