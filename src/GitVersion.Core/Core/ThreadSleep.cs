@@ -2,7 +2,7 @@ using System.Threading.Tasks;
 
 namespace GitVersion
 {
-    internal class ThreadSleep : IThreadSleep
+    public class ThreadSleep : IThreadSleep
     {
         public async Task SleepAsync(int milliseconds)
         {

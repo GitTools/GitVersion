@@ -5,7 +5,7 @@ using GitVersion.Logging;
 
 namespace GitVersion.Helpers
 {
-    internal class OperationWithExponentialBackoff<T> : OperationWithExponentialBackoff<T, bool> where T : Exception
+    public class OperationWithExponentialBackoff<T> : OperationWithExponentialBackoff<T, bool> where T : Exception
     {
         public OperationWithExponentialBackoff(IThreadSleep threadSleep, ILog log, Action operation, int maxRetries = 5)
             : base(threadSleep, log, () => { operation(); return false; }, maxRetries)
@@ -18,7 +18,7 @@ namespace GitVersion.Helpers
 
 
     }
-    internal class OperationWithExponentialBackoff<T, Result> where T : Exception
+    public class OperationWithExponentialBackoff<T, Result> where T : Exception
     {
         private readonly IThreadSleep threadSleep;
         private readonly ILog log;

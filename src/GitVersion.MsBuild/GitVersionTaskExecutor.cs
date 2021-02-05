@@ -18,7 +18,7 @@ namespace GitVersion.MsBuild
         public GitVersionTaskExecutor(IFileSystem fileSystem, IGitVersionOutputTool gitVersionOutputTool, IOptions<GitVersionOptions> options, ILog log)
         {
             this.fileSystem = fileSystem ?? throw new ArgumentNullException(nameof(fileSystem));
-            this.log = log;
+            this.log = log ?? throw new ArgumentNullException(nameof(log));
             this.gitVersionOutputTool = gitVersionOutputTool ?? throw new ArgumentNullException(nameof(gitVersionOutputTool));
             this.options = options ?? throw new ArgumentNullException(nameof(options));
         }

@@ -23,7 +23,7 @@ namespace GitVersion.VersionConverters.OutputGenerator
         public OutputGenerator(ICurrentBuildAgent buildAgent, IConsole console, ILog log, IFileSystem fileSystem, IOptions<GitVersionOptions> options)
         {
             this.console = console ?? throw new ArgumentNullException(nameof(console));
-            this.log = log;
+            this.log = log ?? throw new ArgumentNullException(nameof(log));
             this.fileSystem = fileSystem ?? throw new ArgumentNullException(nameof(fileSystem));
             this.options = options ?? throw new ArgumentNullException(nameof(options));
             this.buildAgent = buildAgent;
