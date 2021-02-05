@@ -11,11 +11,11 @@ namespace GitVersion.Helpers
             : base(threadSleep, log, () => { operation(); return false; }, maxRetries)
         {
         }
+
         public new Task ExecuteAsync()
         {
             return base.ExecuteAsync();
         }
-
 
     }
     public class OperationWithExponentialBackoff<T, Result> where T : Exception
