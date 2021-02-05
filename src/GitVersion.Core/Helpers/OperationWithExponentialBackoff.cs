@@ -31,7 +31,7 @@ namespace GitVersion.Helpers
                 throw new ArgumentOutOfRangeException(nameof(maxRetries));
 
             this.threadSleep = threadSleep ?? throw new ArgumentNullException(nameof(threadSleep));
-            this.log = log;
+            this.log = log ?? throw new ArgumentNullException(nameof(log));
             this.operation = operation;
             this.maxRetries = maxRetries;
         }
