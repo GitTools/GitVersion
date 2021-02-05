@@ -1,3 +1,5 @@
+using GitVersion.Helpers;
+using GitVersion.Logging;
 using System;
 using System.Collections;
 using System.Collections.Generic;
