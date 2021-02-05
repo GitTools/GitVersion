@@ -330,7 +330,7 @@ Please run `git {GitExtensions.CreateGitLogArgs(100)}` and submit it along with 
                     }
                     var remoteRefTipId = remoteTrackingReference.ReferenceTargetId;
                     log.Info($"Updating local ref '{localRef.Name.Canonical}' to point at {remoteRefTipId}.");
-                    repository.Refs.UpdateTarget(localRef, remoteRefTipId, log);
+                    new OperationWithExponentialBackoff<LockedFileException>(new ThreadSleep(), log, () => repository.Refs.UpdateTarget(localRef, remoteRefTipId), maxRetries: 6).ExecuteAsync().Wait();
                     continue;
                 }
 
@@ -383,7 +383,7 @@ Please run `git {GitExtensions.CreateGitLogArgs(100)}` and submit it along with 
                 log.Info(isBranch ? $"Updating local branch {referenceName} to point at {repoTip}"
                     : $"Updating local branch {referenceName} to match ref {currentBranch}");
                 var localRef = repository.Refs[localCanonicalName];
-                repository.Refs.UpdateTarget(localRef, repoTipId, log);
+                new OperationWithExponentialBackoff<LockedFileException>(new ThreadSleep(), log, () => repository.Refs.UpdateTarget(localRef, repoTipId), maxRetries: 6).ExecuteAsync().Wait();
             }
 
             repository.Checkout(localCanonicalName);
