@@ -5,7 +5,7 @@ Title: Command Line
 
 If you want a command line version installed on your machine then you can use
 [Chocolatey](http://chocolatey.org) or [Homebrew](https://brew.sh/) to install
-GitVersion.
+GitVersion, or you can install it as a .NET global tool.
 
 :::{.alert .alert-info}
 **Hint**
@@ -36,6 +36,23 @@ brew install gitversion
 Switches are available with `gitversion --help`. Even though the documentation
 uses a slash `/` for all switches, you need to use a dash `-` instead, since `/`
 is interpreted as a root path on POSIX based operating systems.
+
+## .NET Global Tool
+
+To install GitVersion as a [.NET global tool](https://docs.microsoft.com/en-us/dotnet/core/tools/global-tools#install-a-global-tool), type:
+
+```shell
+dotnet tool install -g GitVersion.Tool
+```
+
+To invoke GitVersion as a .NET global tool you need to write
+`dotnet gitversion` or `dotnet-gitversion` instead of `GitVersion.exe`.
+
+Switches are available with `dotnet gitversion -help`
+
+## Mono
+
+To use on mac or linux with Mono, install `mono-complete` then just run `mono GitVersion.exe`
 
 ## Output
 
@@ -133,7 +150,3 @@ To support integration with WiX projects, use `GitVersion.exe /updatewixversionf
 All the [variables](../more-info/variables) are written to
 `GitVersion_WixVersion.wxi` under the current working directory and can be
 referenced in the WiX project files.
-
-## Mono
-
-To use on mac or linux, install `mono-complete` then just run `mono GitVersion.exe`
