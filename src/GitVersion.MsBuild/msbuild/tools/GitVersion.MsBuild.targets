@@ -72,7 +72,7 @@
             <DefineConstants Condition=" '$(GitVersion_PreReleaseTag)' != '' ">GitVersion_PreReleaseTag=$(GitVersion_PreReleaseTag);$(DefineConstants)</DefineConstants>
             <DefineConstants Condition=" '$(GitVersion_PreReleaseTagWithDash)' != '' ">GitVersion_PreReleaseTagWithDash=$(GitVersion_PreReleaseTagWithDash);$(DefineConstants)</DefineConstants>
             <DefineConstants Condition=" '$(GitVersion_PreReleaseLabel)' != '' ">GitVersion_PreReleaseLabel=$(GitVersion_PreReleaseLabel);$(DefineConstants)</DefineConstants>
-            <DefineConstants Condition=" '$(GitVersion_PreReleaseLabelWithDash)' != '' ">GitVersion_PreReleaseLabelWithDash=$(GitVersion_PreReleaseLabeWithDashl);$(DefineConstants)</DefineConstants>
+            <DefineConstants Condition=" '$(GitVersion_PreReleaseLabelWithDash)' != '' ">GitVersion_PreReleaseLabelWithDash=$(GitVersion_PreReleaseLabelWithDash);$(DefineConstants)</DefineConstants>
             <DefineConstants Condition=" '$(GitVersion_PreReleaseNumber)' != '' ">GitVersion_PreReleaseNumber=$(GitVersion_PreReleaseNumber);$(DefineConstants)</DefineConstants>
             <DefineConstants Condition=" '$(GitVersion_WeightedPreReleaseNumber)' != '' ">GitVersion_WeightedPreReleaseNumber=$(GitVersion_WeightedPreReleaseNumber);$(DefineConstants)</DefineConstants>
             <DefineConstants Condition=" '$(GitVersion_BuildMetaData)' != '' ">GitVersion_BuildMetaData=$(GitVersion_BuildMetaData);$(DefineConstants)</DefineConstants>
