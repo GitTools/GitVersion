@@ -15,6 +15,18 @@ namespace GitVersion.App.Tests
     public class TagCheckoutInBuildAgentTests
     {
         [Test]
+        public async Task VerifyTagCheckoutOnAzurePipelines()
+        {
+            var env = new Dictionary<string, string>
+            {
+                { AzurePipelines.EnvironmentVariableName, "true" },
+                { "BUILD_SOURCEBRANCH", "refs/tags/0.2.0" },
+            };
+
+            await VerifyTagCheckoutVersionIsCalculatedProperly(env);
+        }
+
+        [Test]
         public async Task VerifyTagCheckoutOnGitHubActions()
         {
             var env = new Dictionary<string, string>
@@ -23,6 +35,11 @@ namespace GitVersion.App.Tests
                 { "GITHUB_REF", "ref/tags/0.2.0" },
             };
 
+            await VerifyTagCheckoutVersionIsCalculatedProperly(env);
+        }
+
+        private static async Task VerifyTagCheckoutVersionIsCalculatedProperly(Dictionary<string, string> env)
+        {
             using var fixture = new EmptyRepositoryFixture();
             var remoteRepositoryPath = PathHelper.GetTempPath();
             RepositoryFixtureBase.Init(remoteRepositoryPath);
