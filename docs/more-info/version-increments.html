@@ -74,7 +74,7 @@
             <aside class="main-sidebar ">
                 <section class="infobar" data-spy="affix" data-offset-top="60" data-offset-bottom="200"> 
                     	
-        <div><p><a href="https://github.com/gittools/GitVersion/tree/master/docs/input/docs/more-info/version-increments.md"><i class="fa fa-pencil-square" aria-hidden="true"></i> Edit Content</a></p></div>
+        <div><p><a href="https://github.com/gittools/GitVersion/tree/main/docs/input/docs/more-info/version-increments.md"><i class="fa fa-pencil-square" aria-hidden="true"></i> Edit Content</a></p></div>
     <div id="infobar-headings"><h6>On This Page</h6><p><a href="#approach">Approach</a></p>
 <p><a href="#manually-incrementing-the-version">Manually incrementing the version</a></p>
 <hr class="infobar-hidden">
@@ -253,6 +253,15 @@ bumping the version.</p>
 (i.e. 0.x.y.), attempting to bump the major version will merely bump the minor
 (eg from 0.2.0 to 0.3.0 instead of 1.0.0). Once the current version is greater
 than 1.0.0, bumping the major version works as expected.</p>
+<h4 id="conventional-commit-messages">Conventional commit messages</h4>
+<p>If you want to use the <a href="https://www.conventionalcommits.org/en/v1.0.0/">Conventional Commits</a>
+standard, you can leverage this feature as follows:</p>
+<pre><code class="language-yaml">mode: MainLine # Only add this if you want every version to be created automatically on your main branch.
+major-version-bump-message: "(build|chore|ci|docs|feat|fix|perf|refactor|revert|style|test)(\\([\\w\\s]*\\))?(!:|:.*\\n\\n.*\\n\\n.*BREAKING.*).*"
+minor-version-bump-message: "(feat)(\\([\\w\\s]*\\))?:"
+patch-version-bump-message: "(build|chore|ci|docs|fix|perf|refactor|revert|style|test)(\\([\\w\\s]*\\))?:(.*\\n\\n.*\\n\\n.*BREAKING.*){0}"
+</code></pre>
+<p>This will ensure that your version gets bumped according to the commits you've created.</p>
 <h3 id="gitversion.yml">GitVersion.yml</h3>
 <p>The first is by setting the <code>next-version</code> property in the GitVersion.yml file.
 This property only serves as a base version,</p>

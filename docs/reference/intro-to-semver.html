@@ -74,7 +74,7 @@
             <aside class="main-sidebar ">
                 <section class="infobar" data-spy="affix" data-offset-top="60" data-offset-bottom="200"> 
                     	
-        <div><p><a href="https://github.com/gittools/GitVersion/tree/master/docs/input/docs/reference/intro-to-semver.md"><i class="fa fa-pencil-square" aria-hidden="true"></i> Edit Content</a></p></div>
+        <div><p><a href="https://github.com/gittools/GitVersion/tree/main/docs/input/docs/reference/intro-to-semver.md"><i class="fa fa-pencil-square" aria-hidden="true"></i> Edit Content</a></p></div>
     <div id="infobar-headings"><h6>On This Page</h6><p><a href="#why-semver">Why SemVer?</a></p>
 <p><a href="#semver-in-gitversion">SemVer in GitVersion</a></p>
 <hr class="infobar-hidden">
@@ -211,7 +211,7 @@
 <p>Only one number should be incremented per release, and all lower parts should be reset to 0 (if <code>{major}</code> is incremented, then <code>{minor}</code> and <code>{patch}</code> should become 0).</p>
 <p>For a more complete explanation check out <a href="http://semver.org">semver.org</a> which is the official spec. Remember this is a brief introduction and does not cover all parts of semantic versioning, just the important parts to get started.</p>
 <h2 id="semver-in-gitversion">SemVer in GitVersion</h2>
-<p>GitVersion makes it easy to follow semantic versioning in your library by automatically calculating the next semantic version which your library/application is likely to use. In <a href="https://www.atlassian.com/git/tutorials/comparing-workflows/gitflow-workflow/">GitFlow</a> the develop branch will bump the <em>minor</em> when master is tagged, while <a href="https://guides.github.com/introduction/flow/">GitHubFlow</a> will bump the <em>patch</em>.</p>
+<p>GitVersion makes it easy to follow semantic versioning in your library by automatically calculating the next semantic version which your library/application is likely to use. In <a href="https://www.atlassian.com/git/tutorials/comparing-workflows/gitflow-workflow/">GitFlow</a> the develop branch will bump the <em>minor</em> when main is tagged, while <a href="https://guides.github.com/introduction/flow/">GitHubFlow</a> will bump the <em>patch</em>.</p>
 <p>Because one size does not always fit all, GitVersion provides many <a href="../more-info/variables">Variables</a> for you to use which contain different variations of the version. For example SemVer will be in the format <code>{major}.{minor}.{patch}-{tag}</code>, but <code>FullSemVer</code> will also include build metadata: <code>{major}.{minor}.{patch}-{tag}+{buildmetadata}</code></p>
 
 	</section>

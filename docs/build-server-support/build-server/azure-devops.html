@@ -74,7 +74,7 @@
             <aside class="main-sidebar ">
                 <section class="infobar" data-spy="affix" data-offset-top="60" data-offset-bottom="200"> 
                     	
-        <div><p><a href="https://github.com/gittools/GitVersion/tree/master/docs/input/docs/build-server-support/build-server/azure-devops.md"><i class="fa fa-pencil-square" aria-hidden="true"></i> Edit Content</a></p></div>
+        <div><p><a href="https://github.com/gittools/GitVersion/tree/main/docs/input/docs/build-server-support/build-server/azure-devops.md"><i class="fa fa-pencil-square" aria-hidden="true"></i> Edit Content</a></p></div>
     <div id="infobar-headings"><h6>On This Page</h6><p><a href="#basic-usage">Basic Usage</a></p>
 <p><a href="#executing-gitversion">Executing GitVersion</a></p>
 <p><a href="#running-inside-tfs">Running inside TFS</a></p>
@@ -221,7 +221,7 @@ other build steps.</li>
 <li>If you want the GitVersionTask to update AssemblyInfo files add
 <code>updateAssemblyInfo true</code> to the Arguments parameter.</li>
 <li>If you want to update the build number you need to send a
-<a href="https://github.com/Microsoft/azure-pipelines-tasks/blob/master/docs/authoring/commands.md">logging command</a>
+<a href="https://github.com/Microsoft/azure-pipelines-tasks/blob/main/docs/authoring/commands.md">logging command</a>
 to TFS.</li>
 </ol>
 <h3 id="using-the-custom-gitversion-build-step">Using the custom GitVersion build step</h3>
@@ -237,12 +237,12 @@ to install the GitVersion extension:</p>
 <p>If you run TFS 2015 RTM or Update 1 or don't want to install the GitVersion
 extension you can install the build task manually:</p>
 <ol>
-<li>Install the <code>tfx</code> command line tool as shown <a href="https://github.com/Microsoft/tfs-cli/blob/master/README.md#install">here</a>.</li>
-<li>For TFS 2015 On-Prem configure Basic Authentication in TFS as shown <a href="https://github.com/Microsoft/tfs-cli/blob/master/docs/configureBasicAuth.md">here</a>.</li>
+<li>Install the <code>tfx</code> command line tool as shown <a href="https://github.com/Microsoft/tfs-cli/blob/main/README.md#install">here</a>.</li>
+<li>For TFS 2015 On-Prem configure Basic Authentication in TFS as shown <a href="https://github.com/Microsoft/tfs-cli/blob/main/docs/configureBasicAuth.md">here</a>.</li>
 <li>Download the GitVersion TFS build task from the latest release on the
 <a href="https://github.com/GitTools/GitVersion/releases">GitVersion releases page</a> and
 unzip.</li>
-<li>Run <code>tfx login</code> as shown <a href="https://github.com/Microsoft/tfs-cli/blob/master/README.md#login">here</a>.</li>
+<li>Run <code>tfx login</code> as shown <a href="https://github.com/Microsoft/tfs-cli/blob/main/README.md#login">here</a>.</li>
 <li>From the directory outside of where you unzipped the task, run
 <code>tfx build tasks upload --task-path .\GitVersionVsixTask --overwrite</code> where
 GitVersionVsixTask is the directory containing the files.</li>

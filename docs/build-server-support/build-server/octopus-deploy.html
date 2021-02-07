@@ -74,7 +74,7 @@
             <aside class="main-sidebar ">
                 <section class="infobar" data-spy="affix" data-offset-top="60" data-offset-bottom="200"> 
                     	
-        <div><p><a href="https://github.com/gittools/GitVersion/tree/master/docs/input/docs/build-server-support/build-server/octopus-deploy.md"><i class="fa fa-pencil-square" aria-hidden="true"></i> Edit Content</a></p></div>
+        <div><p><a href="https://github.com/gittools/GitVersion/tree/main/docs/input/docs/build-server-support/build-server/octopus-deploy.md"><i class="fa fa-pencil-square" aria-hidden="true"></i> Edit Content</a></p></div>
     <div id="infobar-headings"><h6>On This Page</h6><p><a href="#githubflow-solutions">GitHubFlow Solutions</a></p>
 <hr class="infobar-hidden">
 </div>
@@ -235,10 +235,10 @@ manual build in your <em>build server</em> which pushes the package to Octopus d
 <h3 id="tag-to-release">Tag to release</h3>
 <p>Another simple option is to tag a stable version to release, the basic idea is:</p>
 <ol>
-<li>GitVersion is set to continuous deployment mode, so master will create <code>-ci.x</code>
+<li>GitVersion is set to continuous deployment mode, so main will create <code>-ci.x</code>
 pre-release builds</li>
 <li>CI Builds only create NuGet packages for stable builds</li>
-<li>You tag master with a stable version of the next version then push it</li>
+<li>You tag main with a stable version of the next version then push it</li>
 <li>The CI build triggers, GitVersion will always respect tags so you will get a
 stable version</li>
 <li>The stable package will be pushed to Octopus</li>
@@ -282,8 +282,8 @@ if ($pendingChanges -ne $null)
 
 # Pull latest, fast-forward only so that it git stops if there is an error
 &amp; git fetch origin
-&amp; git checkout master
-&amp; git merge origin/master --ff-only
+&amp; git checkout main
+&amp; git merge origin/main --ff-only
 
 # Determine version to release
 $output = &amp; $gitversion /output json
@@ -302,7 +302,7 @@ if ($LASTEXITCODE -ne 0) {
     throw "No changes detected since last release"
 }
 
-&amp; git push origin master --tags
+&amp; git push origin main --tags
 
 Pop-Location
 </code></pre>

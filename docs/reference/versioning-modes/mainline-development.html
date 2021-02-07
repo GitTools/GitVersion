@@ -74,7 +74,7 @@
             <aside class="main-sidebar ">
                 <section class="infobar" data-spy="affix" data-offset-top="60" data-offset-bottom="200"> 
                     	
-        <div><p><a href="https://github.com/gittools/GitVersion/tree/master/docs/input/docs/reference/versioning-modes/mainline-development.md"><i class="fa fa-pencil-square" aria-hidden="true"></i> Edit Content</a></p></div>
+        <div><p><a href="https://github.com/gittools/GitVersion/tree/main/docs/input/docs/reference/versioning-modes/mainline-development.md"><i class="fa fa-pencil-square" aria-hidden="true"></i> Edit Content</a></p></div>
     <div id="infobar-headings"><h6>On This Page</h6><p><a href="#usage">Usage</a></p>
 <hr class="infobar-hidden">
 </div>
@@ -195,8 +195,8 @@
 	<section class="content">
 		<p>Mainline Development is enabled when using
 <a href="../../git-branching-strategies/githubflow">GitHubFlow</a> or any other strategy
-where you develop on <code>master</code>. The main rule of mainline development is that
-<strong>master is always in a state that it could be deployed to production</strong>. This
+where you develop on <code>main</code>. The main rule of mainline development is that
+<strong>main is always in a state that it could be deployed to production</strong>. This
 means that pull requests should not be merged until they are ready to go out.</p>
 <p>To properly achieve mainline development you need confidence in your test suite
 as if it goes green against a PR then you are confident that you can merge and
@@ -211,13 +211,13 @@ what the next version to be released is. Most other approaches require bumping
 the version number before the release which means that the version being built
 and the version number which will be deployed are often different.</p>
 <p>This mode is great if you do not want to tag each release because you simply
-deploy every commit to master. The behaviour of this mode is as follows:</p>
+deploy every commit to main. The behaviour of this mode is as follows:</p>
 <ol>
 <li>Calculate a base version (likely a tag in this mode)</li>
 <li>Walk all commits from the base version commit</li>
 <li>When a merge commit is found:
 <ul>
-<li>Calculate increments for each direct commit on master</li>
+<li>Calculate increments for each direct commit on main</li>
 <li>Calculate the increment for the branch</li>
 </ul>
 </li>

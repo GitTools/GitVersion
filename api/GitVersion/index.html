@@ -74,10 +74,10 @@
             <aside class="main-sidebar ">
                 <section class="infobar" data-spy="affix" data-offset-top="60" data-offset-bottom="200"> 
                     	
-	<div id="infobar-headings"><h6>On This Page</h6><p><a href="#EnumTypes">Enum Types</a></p>
-<p><a href="#ClassTypes">Class Types</a></p>
-<p><a href="#InterfaceTypes">Interface Types</a></p>
+	<div id="infobar-headings"><h6>On This Page</h6><p><a href="#ClassTypes">Class Types</a></p>
 <p><a href="#StructTypes">Struct Types</a></p>
+<p><a href="#InterfaceTypes">Interface Types</a></p>
+<p><a href="#EnumTypes">Enum Types</a></p>
 <p><a href="#Namespaces">Namespaces</a></p>
 <hr class="infobar-hidden">
 </div>
@@ -204,33 +204,6 @@
 	
 
 
-			<h1 id="EnumTypes">Enum Types</h1>
-			<div class="box">
-				<div class="box-body no-padding table-responsive">
-					<table class="table table-striped table-hover two-cols">
-						<thead>
-							<tr>
-								<th>Enum</th>
-									<th>Summary</th>
-							</tr>
-						</thead>
-							<tbody><tr>
-								<td><a href="/api/GitVersion/CommitMessageIncrementMode">Commit<wbr>Message<wbr>Increment<wbr>Mode</a></td>
-									<td></td>
-							</tr>
-							<tr>
-								<td><a href="/api/GitVersion/IncrementStrategy">IncrementStrategy</a></td>
-									<td></td>
-							</tr>
-							<tr>
-								<td><a href="/api/GitVersion/VersionField">VersionField</a></td>
-									<td></td>
-							</tr>
-					</tbody></table>
-				</div>
-			</div>
-		
-
 			<h1 id="ClassTypes">Class Types</h1>
 			<div class="box">
 				<div class="box-body no-padding table-responsive">
@@ -270,6 +243,10 @@
 									<td></td>
 							</tr>
 							<tr>
+								<td><a href="/api/GitVersion/CommitFilter">CommitFilter</a></td>
+									<td></td>
+							</tr>
+							<tr>
 								<td><a href="/api/GitVersion/ConfigInfo">ConfigInfo</a></td>
 									<td></td>
 							</tr>
@@ -290,18 +267,11 @@
 									<td></td>
 							</tr>
 							<tr>
-								<td><a href="/api/GitVersion/GitRepository">GitRepository</a></td>
+								<td><a href="/api/GitVersion/GitToolsException">GitToolsException</a></td>
 									<td></td>
 							</tr>
 							<tr>
-								<td><a href="/api/GitVersion/GitRepositoryCommands">Git<wbr>Repository<wbr>Commands</a></td>
-									<td>
-    Default implementation of <code class="cs"><a href="/api/GitVersion/IGitRepositoryCommands">IGitRepositoryCommands</a></code> using
-    the <code class="cs">static</code> <code class="cs">Commands</code> <code class="cs">class</code>.
-    </td>
-							</tr>
-							<tr>
-								<td><a href="/api/GitVersion/GitToolsException">GitToolsException</a></td>
+								<td><a href="/api/GitVersion/GitVersionAppModule">GitVersionAppModule</a></td>
 									<td></td>
 							</tr>
 							<tr>
@@ -331,7 +301,7 @@
 									<td></td>
 							</tr>
 							<tr>
-								<td><a href="/api/GitVersion/GitVersionExeModule">GitVersionExeModule</a></td>
+								<td><a href="/api/GitVersion/GitVersionLibGit2SharpModule">Git<wbr>Version<wbr>Lib<wbr>Git2<wbr>Sharp<wbr>Module</a></td>
 									<td></td>
 							</tr>
 							<tr>
@@ -363,7 +333,23 @@
 									<td></td>
 							</tr>
 							<tr>
+								<td><a href="/api/GitVersion/LockedFileException">LockedFileException</a></td>
+									<td></td>
+							</tr>
+							<tr>
 								<td><a href="/api/GitVersion/MergeMessage">MergeMessage</a></td>
+									<td></td>
+							</tr>
+							<tr>
+								<td><a href="/api/GitVersion/ReferenceName">ReferenceName</a></td>
+									<td></td>
+							</tr>
+							<tr>
+								<td><a href="/api/GitVersion/RefSpec">RefSpec</a></td>
+									<td></td>
+							</tr>
+							<tr>
+								<td><a href="/api/GitVersion/RepositoryExtensions">RepositoryExtensions</a></td>
 									<td></td>
 							</tr>
 							<tr>
@@ -371,7 +357,7 @@
 									<td></td>
 							</tr>
 							<tr>
-								<td><a href="/api/GitVersion/RepositoryMetadataProvider">Repository<wbr>Metadata<wbr>Provider</a></td>
+								<td><a href="/api/GitVersion/RepositoryStore">RepositoryStore</a></td>
 									<td></td>
 							</tr>
 							<tr>
@@ -399,6 +385,10 @@
 									<td></td>
 							</tr>
 							<tr>
+								<td><a href="/api/GitVersion/ThreadSleep">ThreadSleep</a></td>
+									<td></td>
+							</tr>
+							<tr>
 								<td><a href="/api/GitVersion/VersionWriter">VersionWriter</a></td>
 									<td></td>
 							</tr>
@@ -409,6 +399,27 @@
 							<tr>
 								<td><a href="/api/GitVersion/WixInfo">WixInfo</a></td>
 									<td></td>
+							</tr>
+					</tbody></table>
+				</div>
+			</div>
+		
+
+			<h1 id="StructTypes">Struct Types</h1>
+			<div class="box">
+				<div class="box-body no-padding table-responsive">
+					<table class="table table-striped table-hover two-cols">
+						<thead>
+							<tr>
+								<th>Struct</th>
+									<th>Summary</th>
+							</tr>
+						</thead>
+							<tbody><tr>
+								<td><a href="/api/GitVersion/BranchCommit">BranchCommit</a></td>
+									<td>
+    A commit, together with the branch to which the commit belongs.
+    </td>
 							</tr>
 					</tbody></table>
 				</div>
@@ -430,11 +441,27 @@
 									<td></td>
 							</tr>
 							<tr>
+								<td><a href="/api/GitVersion/IBranch">IBranch</a></td>
+									<td></td>
+							</tr>
+							<tr>
+								<td><a href="/api/GitVersion/IBranchCollection">IBranchCollection</a></td>
+									<td></td>
+							</tr>
+							<tr>
 								<td><a href="/api/GitVersion/IBuildAgent">IBuildAgent</a></td>
 									<td></td>
 							</tr>
 							<tr>
 								<td><a href="/api/GitVersion/IBuildAgentResolver">IBuildAgentResolver</a></td>
+									<td></td>
+							</tr>
+							<tr>
+								<td><a href="/api/GitVersion/ICommit">ICommit</a></td>
+									<td></td>
+							</tr>
+							<tr>
+								<td><a href="/api/GitVersion/ICommitCollection">ICommitCollection</a></td>
 									<td></td>
 							</tr>
 							<tr>
@@ -450,6 +477,10 @@
 									<td></td>
 							</tr>
 							<tr>
+								<td><a href="/api/GitVersion/IGitObject">IGitObject</a></td>
+									<td></td>
+							</tr>
+							<tr>
 								<td><a href="/api/GitVersion/IGitPreparer">IGitPreparer</a></td>
 									<td></td>
 							</tr>
@@ -458,11 +489,8 @@
 									<td></td>
 							</tr>
 							<tr>
-								<td><a href="/api/GitVersion/IGitRepositoryCommands">I<wbr>Git<wbr>Repository<wbr>Commands</a></td>
-									<td>
-    Mockable and testable interface wrapper for the <code class="cs">static</code>
-    <code class="cs">Commands</code> <code class="cs">class</code>.
-    </td>
+								<td><a href="/api/GitVersion/IGitRepositoryInfo">IGitRepositoryInfo</a></td>
+									<td></td>
 							</tr>
 							<tr>
 								<td><a href="/api/GitVersion/IGitVersionCalculateTool">I<wbr>Git<wbr>Version<wbr>Calculate<wbr>Tool</a></td>
@@ -493,6 +521,50 @@
 									<td></td>
 							</tr>
 							<tr>
+								<td><a href="/api/GitVersion/IMutatingGitRepository">I<wbr>Mutating<wbr>Git<wbr>Repository</a></td>
+									<td></td>
+							</tr>
+							<tr>
+								<td><a href="/api/GitVersion/INamedReference">INamedReference</a></td>
+									<td></td>
+							</tr>
+							<tr>
+								<td><a href="/api/GitVersion/IObjectId">IObjectId</a></td>
+									<td></td>
+							</tr>
+							<tr>
+								<td><a href="/api/GitVersion/IReference">IReference</a></td>
+									<td></td>
+							</tr>
+							<tr>
+								<td><a href="/api/GitVersion/IReferenceCollection">IReferenceCollection</a></td>
+									<td></td>
+							</tr>
+							<tr>
+								<td><a href="/api/GitVersion/IRefSpec">IRefSpec</a></td>
+									<td></td>
+							</tr>
+							<tr>
+								<td><a href="/api/GitVersion/IRefSpecCollection">IRefSpecCollection</a></td>
+									<td></td>
+							</tr>
+							<tr>
+								<td><a href="/api/GitVersion/IRemote">IRemote</a></td>
+									<td></td>
+							</tr>
+							<tr>
+								<td><a href="/api/GitVersion/IRemoteCollection">IRemoteCollection</a></td>
+									<td></td>
+							</tr>
+							<tr>
+								<td><a href="/api/GitVersion/ITag">ITag</a></td>
+									<td></td>
+							</tr>
+							<tr>
+								<td><a href="/api/GitVersion/ITagCollection">ITagCollection</a></td>
+									<td></td>
+							</tr>
+							<tr>
 								<td><a href="/api/GitVersion/IThreadSleep">IThreadSleep</a></td>
 									<td></td>
 							</tr>
@@ -505,21 +577,35 @@
 			</div>
 		
 
-			<h1 id="StructTypes">Struct Types</h1>
+			<h1 id="EnumTypes">Enum Types</h1>
 			<div class="box">
 				<div class="box-body no-padding table-responsive">
 					<table class="table table-striped table-hover two-cols">
 						<thead>
 							<tr>
-								<th>Struct</th>
+								<th>Enum</th>
 									<th>Summary</th>
 							</tr>
 						</thead>
 							<tbody><tr>
-								<td><a href="/api/GitVersion/BranchCommit">BranchCommit</a></td>
-									<td>
-    A commit, together with the branch to which the commit belongs.
-    </td>
+								<td><a href="/api/GitVersion/CommitMessageIncrementMode">Commit<wbr>Message<wbr>Increment<wbr>Mode</a></td>
+									<td></td>
+							</tr>
+							<tr>
+								<td><a href="/api/GitVersion/CommitSortStrategies">CommitSortStrategies</a></td>
+									<td></td>
+							</tr>
+							<tr>
+								<td><a href="/api/GitVersion/IncrementStrategy">IncrementStrategy</a></td>
+									<td></td>
+							</tr>
+							<tr>
+								<td><a href="/api/GitVersion/RefSpecDirection">RefSpecDirection</a></td>
+									<td></td>
+							</tr>
+							<tr>
+								<td><a href="/api/GitVersion/VersionField">VersionField</a></td>
+									<td></td>
 							</tr>
 					</tbody></table>
 				</div>

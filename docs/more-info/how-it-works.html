@@ -74,7 +74,7 @@
             <aside class="main-sidebar ">
                 <section class="infobar" data-spy="affix" data-offset-top="60" data-offset-bottom="200"> 
                     	
-        <div><p><a href="https://github.com/gittools/GitVersion/tree/master/docs/input/docs/more-info/how-it-works.md"><i class="fa fa-pencil-square" aria-hidden="true"></i> Edit Content</a></p></div>
+        <div><p><a href="https://github.com/gittools/GitVersion/tree/main/docs/input/docs/more-info/how-it-works.md"><i class="fa fa-pencil-square" aria-hidden="true"></i> Edit Content</a></p></div>
     <div id="infobar-headings"><h6>On This Page</h6><p><a href="#architecture">Architecture</a></p>
 <hr class="infobar-hidden">
 </div>
@@ -227,13 +227,13 @@ branch name (e.g., <code>release/3.0.0</code> will find <code>3.0.0</code>)</li>
 <li><code>ConfigNextVersionBaseVersionStrategy</code> - Returns the version from the
 GitVersion.yaml file</li>
 <li><code>MergeMessageBaseVersionStrategy</code> - Finds version numbers from merge messages
-(e.g., <code>Merge 'release/3.0.0' into 'master'</code> will return <code>3.0.0</code>)</li>
+(e.g., <code>Merge 'release/3.0.0' into 'main'</code> will return <code>3.0.0</code>)</li>
 <li><code>FallbackBaseVersionStrategy</code> - Always returns 0.1.0 for new repositories</li>
 </ul>
 <p>Each strategy needs to return an instance of <code><a href="/api/GitVersion.VersionCalculation/BaseVersion">BaseVersion</a></code> which has the
 following properties:</p>
 <ul>
-<li><code>Source</code> - Description of the source (e.g., <code>Merge message 'Merge 'release/3.0.0' into 'master'</code>)</li>
+<li><code>Source</code> - Description of the source (e.g., <code>Merge message 'Merge 'release/3.0.0' into 'main'</code>)</li>
 <li><code>ShouldIncrement</code> - Some strategies should have the version incremented,
 others do not (e.g., <code>ConfigNextVersionBaseVersionStrategy</code> returns false,
 <code>HighestTagBaseVersionStrategy</code> returns true)</li>

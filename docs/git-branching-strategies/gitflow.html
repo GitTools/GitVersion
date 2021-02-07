@@ -74,7 +74,7 @@
             <aside class="main-sidebar ">
                 <section class="infobar" data-spy="affix" data-offset-top="60" data-offset-bottom="200"> 
                     	
-        <div><p><a href="https://github.com/gittools/GitVersion/tree/master/docs/input/docs/git-branching-strategies/gitflow.md"><i class="fa fa-pencil-square" aria-hidden="true"></i> Edit Content</a></p></div>
+        <div><p><a href="https://github.com/gittools/GitVersion/tree/main/docs/input/docs/git-branching-strategies/gitflow.md"><i class="fa fa-pencil-square" aria-hidden="true"></i> Edit Content</a></p></div>
     <div id="infobar-headings"><h6>On This Page</h6><p><a href="#resources">Resources</a></p>
 <p><a href="#assumptions">Assumptions:</a></p>
 <p><a href="#how-branches-are-handled">How Branches are handled</a></p>
@@ -203,7 +203,7 @@ SemVer compatible versions from this structure.</p>
 <h2 id="assumptions">Assumptions:</h2>
 <ul>
 <li>Using <a href="http://nvie.com/git-model/">GitFlow branching model</a> which always has a
-master and a develop branch</li>
+main and a develop branch</li>
 <li>Following <a href="http://semver.org/">Semantic Versioning</a></li>
 <li>Planned releases (bumps in major or minor) are done on release branches
 prefixed with release-. Eg: release-4.1 (or release-4.1.0)</li>
@@ -211,7 +211,7 @@ prefixed with release-. Eg: release-4.1 (or release-4.1.0)</li>
 <li>The original <a href="http://nvie.com/posts/a-successful-git-branching-model/">GitFlow model</a>
 specifies branches with a "-" separator while the <a href="https://github.com/nvie/gitflow">git flow extensions</a>
 default to a "/" separator.  Either work with GitVersion.</li>
-<li>Tags are used on the master branch and reflects the SemVer of each stable
+<li>Tags are used on the main branch and reflects the SemVer of each stable
 release eg 3.3.8 , 4.0.0, etc</li>
 <li>Tags can also be used to override versions while we transition repositories
 over to GitVersion</li>
@@ -225,8 +225,8 @@ will refer to:</p>
 <li><code>targetBranch</code> =&gt; the branch we are targeting</li>
 <li><code>targetCommit</code> =&gt; the commit we are targeting on <code>targetbranch</code></li>
 </ul>
-<h3 id="master-branch">Master branch</h3>
-<p>Commits on master will always be a merge commit (Either from a <code>hotfix</code> or a
+<h3 id="main-branch">Main branch</h3>
+<p>Commits on main will always be a merge commit (Either from a <code>hotfix</code> or a
 <code>release</code> branch) or a tag. As such we can simply take the commit message or tag
 message.</p>
 <p>If we try to build from a commit that is no merge and no tag then assume <code>0.1.0</code></p>
@@ -248,15 +248,15 @@ message.</p>
 </code></pre>
 <h3 id="develop-branch">Develop branch</h3>
 <p><code>targetCommitDate</code> =&gt; the date of the <code>targetCommit</code>
-<code>masterVersionCommit</code> =&gt; the first version (merge commit or SemVer tag) on
-<code>master</code> that is older than the <code>targetCommitDate</code>
-<code>masterMergeVersion</code> =&gt; the SemVer extracted from <code>masterVersionCommit.Message</code></p>
+<code>mainVersionCommit</code> =&gt; the first version (merge commit or SemVer tag) on
+<code>main</code> that is older than the <code>targetCommitDate</code>
+<code>mainMergeVersion</code> =&gt; the SemVer extracted from <code>mainVersionCommit.Message</code></p>
 <ul>
-<li>major: <code>masterMergeVersion.Major</code></li>
-<li>minor: <code>masterMergeVersion.Minor + 1</code> (0 if the override above is used)</li>
+<li>major: <code>mainMergeVersion.Major</code></li>
+<li>minor: <code>mainMergeVersion.Minor + 1</code> (0 if the override above is used)</li>
 <li>patch: 0</li>
 <li>pre-release: <code>alpha.{n}</code> where n = how many commits <code>develop</code> is in front of
-<code>masterVersionCommit.Date</code> ('0' padded to 4 characters)</li>
+<code>mainVersionCommit.Date</code> ('0' padded to 4 characters)</li>
 </ul>
 <p>Long version:</p>
 <pre><code>{major}.{minor}.{patch}-{pre-release} Branch:'{branchName}' Sha:'{sha}'
@@ -279,7 +279,7 @@ message.</p>
 <h3 id="release-branches">Release branches</h3>
 <ul>
 <li>May branch off from: develop</li>
-<li>Must merge back into: develop and master</li>
+<li>Must merge back into: develop and main</li>
 <li>Branch naming convention: <code>release-{n}</code> eg <code>release-1.2</code></li>
 </ul>
 <p><code>releaseVersion</code> =&gt; the SemVer extracted from <code>targetBranch.Name</code>
@@ -304,13 +304,13 @@ that tag the version would be <code>1.2.0-alpha1.4</code></p>
 <h3 id="feature-branches">Feature branches</h3>
 <p>May branch off from: <code>develop</code>
 Must merge back into: <code>develop</code>
-Branch naming convention: anything except <code>master</code>, <code>develop</code>, <code>release-{n}</code>, or
+Branch naming convention: anything except <code>main</code>, <code>develop</code>, <code>release-{n}</code>, or
 <code>hotfix-{n}</code>.</p>
 <p>TODO: feature branches cannot start with a SemVer. to stop people from create
 branches named like "4.0.3"</p>
 <ul>
-<li>major: <code>masterMergeVersion.Major</code></li>
-<li>minor: <code>masterMergeVersion.Minor + 1</code> (0 if the override above is used)</li>
+<li>major: <code>mainMergeVersion.Major</code></li>
+<li>minor: <code>mainMergeVersion.Minor + 1</code> (0 if the override above is used)</li>
 <li>patch: 0</li>
 <li>pre-release: <code>alpha.feature-{n}</code> where n = First 8 characters of the commit
 SHA of the first commit</li>
@@ -322,11 +322,11 @@ SHA of the first commit</li>
 <h3 id="pull-request-branches">Pull-request branches</h3>
 <p>May branch off from: <code>develop</code>
 Must merge back into: <code>develop</code>
-Branch naming convention: anything except <code>master</code>, <code>develop</code>, <code>release-{n}</code>, or
+Branch naming convention: anything except <code>main</code>, <code>develop</code>, <code>release-{n}</code>, or
 <code>hotfix-{n}</code>. Canonical branch name contains <code>/pull/</code>.</p>
 <ul>
-<li>major: <code>masterMergeVersion.Major</code></li>
-<li>minor: <code>masterMergeVersion.Minor + 1</code> (0 if the override above is used)</li>
+<li>major: <code>mainMergeVersion.Major</code></li>
+<li>minor: <code>mainMergeVersion.Minor + 1</code> (0 if the override above is used)</li>
 <li>patch: 0</li>
 <li>pre-release: <code>alpha.pull{n}</code> where n = the pull request number  ('0' padded to
 4 characters)</li>
