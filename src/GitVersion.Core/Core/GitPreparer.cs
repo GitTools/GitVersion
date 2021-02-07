@@ -149,7 +149,10 @@ namespace GitVersion
         {
             using (log.IndentLog($"Cloning repository from url '{repositoryUrl}'"))
             {
-                repository.Clone(repositoryUrl, gitDirectory, auth);
+                new OperationWithExponentialBackoff<LockedFileException>(new ThreadSleep(), log, () =>
+                {
+                    repository.Clone(repositoryUrl, gitDirectory, auth);
+                }).ExecuteAsync().Wait();
             }
         }
 
@@ -179,7 +182,9 @@ namespace GitVersion
                 {
                     var refSpecs = string.Join(", ", remote.FetchRefSpecs.Select(r => r.Specification));
                     log.Info($"Fetching from remote '{remote.Name}' using the following refspecs: {refSpecs}.");
-                    repository.Fetch(remote.Name, Enumerable.Empty<string>(), authentication, null);
+                    new OperationWithExponentialBackoff<LockedFileException>(new ThreadSleep(), log,
+                        () => repository.Fetch(remote.Name, Enumerable.Empty<string>(), authentication, null))
+                    .ExecuteAsync().Wait();
                 }
 
                 EnsureLocalBranchExistsForCurrentBranch(remote, currentBranchName);
@@ -221,7 +226,7 @@ namespace GitVersion
                 if (matchingCurrentBranch != null)
                 {
                     log.Info($"Checking out local branch '{currentBranchName}'.");
-                    repository.Checkout(matchingCurrentBranch.Name.Canonical);
+                    Checkout(matchingCurrentBranch.Name.Canonical);
                 }
                 else if (localBranchesWhereCommitShaIsHead.Count > 1)
                 {
@@ -234,7 +239,7 @@ namespace GitVersion
                     if (main != null)
                     {
                         log.Warning("Because one of the branches is 'main', will build main." + moveBranchMsg);
-                        repository.Checkout(Config.MainBranchKey);
+                        Checkout(Config.MainBranchKey);
                     }
                     else
                     {
@@ -243,7 +248,7 @@ namespace GitVersion
                         {
                             var branchWithoutSeparator = branchesWithoutSeparators[0];
                             log.Warning($"Choosing {branchWithoutSeparator.Name.Canonical} as it is the only branch without / or - in it. " + moveBranchMsg);
-                            repository.Checkout(branchWithoutSeparator.Name.Canonical);
+                            Checkout(branchWithoutSeparator.Name.Canonical);
                         }
                         else
                         {
@@ -254,12 +259,15 @@ namespace GitVersion
                 else if (localBranchesWhereCommitShaIsHead.Count == 0)
                 {
                     log.Info($"No local branch pointing at the commit '{headSha}'. Fake branch needs to be created.");
-                    repository.CreateBranchForPullRequestBranch(authentication);
+                    new OperationWithExponentialBackoff<LockedFileException>(new ThreadSleep(), log, () =>
+                    {
+                        repository.CreateBranchForPullRequestBranch(authentication);
+                    }).ExecuteAsync().Wait();
                 }
                 else
                 {
                     log.Info($"Checking out local branch 'refs/heads/{localBranchesWhereCommitShaIsHead[0]}'.");
-                    repository.Checkout(localBranchesWhereCommitShaIsHead[0].Name.Friendly);
+                    Checkout(localBranchesWhereCommitShaIsHead[0].Name.Friendly);
                 }
             }
             finally
@@ -386,7 +394,13 @@ Please run `git {GitExtensions.CreateGitLogArgs(100)}` and submit it along with 
                 new OperationWithExponentialBackoff<LockedFileException>(new ThreadSleep(), log, () => repository.Refs.UpdateTarget(localRef, repoTipId)).ExecuteAsync().Wait();
             }
 
-            repository.Checkout(localCanonicalName);
+            Checkout(localCanonicalName);
+        }
+
+        private void Checkout(string commitOrBranchSpec)
+        {
+            new OperationWithExponentialBackoff<LockedFileException>(new ThreadSleep(), log, () =>
+                    repository.Checkout(commitOrBranchSpec)).ExecuteAsync().Wait();
         }
     }
 }

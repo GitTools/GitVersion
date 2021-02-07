@@ -98,77 +98,74 @@ namespace GitVersion
         }
         public void CreateBranchForPullRequestBranch(AuthenticationInfo auth)
         {
-            new OperationWithExponentialBackoff<LockedFileException>(new ThreadSleep(), log, () =>
+            RepositoryExtensions.RunSafe(() =>
             {
-                CreateBranchForPullRequestBranchInternal(auth);
-            }).ExecuteAsync().Wait();
-        }
-        private void CreateBranchForPullRequestBranchInternal(AuthenticationInfo auth)
-        {
-            var network = repositoryInstance.Network;
-            var remote = network.Remotes.Single();
+                var network = repositoryInstance.Network;
+                var remote = network.Remotes.Single();
 
-            log.Info("Fetching remote refs to see if there is a pull request ref");
-            var credentialsProvider = GetCredentialsProvider(auth);
-            var remoteTips = (credentialsProvider != null
-                    ? network.ListReferences(remote, credentialsProvider)
-                    : network.ListReferences(remote))
-                .Select(r => r.ResolveToDirectReference()).ToList();
+                log.Info("Fetching remote refs to see if there is a pull request ref");
+                var credentialsProvider = GetCredentialsProvider(auth);
+                var remoteTips = (credentialsProvider != null
+                        ? network.ListReferences(remote, credentialsProvider)
+                        : network.ListReferences(remote))
+                    .Select(r => r.ResolveToDirectReference()).ToList();
 
-            log.Info($"Remote Refs:{System.Environment.NewLine}" + string.Join(System.Environment.NewLine, remoteTips.Select(r => r.CanonicalName)));
+                log.Info($"Remote Refs:{System.Environment.NewLine}" + string.Join(System.Environment.NewLine, remoteTips.Select(r => r.CanonicalName)));
 
-            var headTipSha = Head.Tip?.Sha;
+                var headTipSha = Head.Tip?.Sha;
 
-            var refs = remoteTips.Where(r => r.TargetIdentifier == headTipSha).ToList();
+                var refs = remoteTips.Where(r => r.TargetIdentifier == headTipSha).ToList();
 
-            if (refs.Count == 0)
-            {
-                var message = $"Couldn't find any remote tips from remote '{remote.Url}' pointing at the commit '{headTipSha}'.";
-                throw new WarningException(message);
-            }
+                if (refs.Count == 0)
+                {
+                    var message = $"Couldn't find any remote tips from remote '{remote.Url}' pointing at the commit '{headTipSha}'.";
+                    throw new WarningException(message);
+                }
 
-            if (refs.Count > 1)
-            {
-                var names = string.Join(", ", refs.Select(r => r.CanonicalName));
-                var message = $"Found more than one remote tip from remote '{remote.Url}' pointing at the commit '{headTipSha}'. Unable to determine which one to use ({names}).";
-                throw new WarningException(message);
-            }
+                if (refs.Count > 1)
+                {
+                    var names = string.Join(", ", refs.Select(r => r.CanonicalName));
+                    var message = $"Found more than one remote tip from remote '{remote.Url}' pointing at the commit '{headTipSha}'. Unable to determine which one to use ({names}).";
+                    throw new WarningException(message);
+                }
 
-            var reference = refs.First();
-            var canonicalName = reference.CanonicalName;
-            var referenceName = ReferenceName.Parse(reference.CanonicalName);
-            log.Info($"Found remote tip '{canonicalName}' pointing at the commit '{headTipSha}'.");
+                var reference = refs.First();
+                var canonicalName = reference.CanonicalName;
+                var referenceName = ReferenceName.Parse(reference.CanonicalName);
+                log.Info($"Found remote tip '{canonicalName}' pointing at the commit '{headTipSha}'.");
 
-            if (referenceName.IsTag)
-            {
-                log.Info($"Checking out tag '{canonicalName}'");
-                Checkout(reference.Target.Sha);
-            }
-            else if (referenceName.IsPullRequest)
-            {
-                var fakeBranchName = canonicalName.Replace("refs/pull/", "refs/heads/pull/").Replace("refs/pull-requests/", "refs/heads/pull-requests/");
+                if (referenceName.IsTag)
+                {
+                    log.Info($"Checking out tag '{canonicalName}'");
+                    Checkout(reference.Target.Sha);
+                }
+                else if (referenceName.IsPullRequest)
+                {
+                    var fakeBranchName = canonicalName.Replace("refs/pull/", "refs/heads/pull/").Replace("refs/pull-requests/", "refs/heads/pull-requests/");
 
-                log.Info($"Creating fake local branch '{fakeBranchName}'.");
-                Refs.Add(fakeBranchName, headTipSha);
+                    log.Info($"Creating fake local branch '{fakeBranchName}'.");
+                    Refs.Add(fakeBranchName, headTipSha);
 
-                log.Info($"Checking local branch '{fakeBranchName}' out.");
-                Checkout(fakeBranchName);
-            }
-            else
-            {
-                var message = $"Remote tip '{canonicalName}' from remote '{remote.Url}' doesn't look like a valid pull request.";
-                throw new WarningException(message);
-            }
+                    log.Info($"Checking local branch '{fakeBranchName}' out.");
+                    Checkout(fakeBranchName);
+                }
+                else
+                {
+                    var message = $"Remote tip '{canonicalName}' from remote '{remote.Url}' doesn't look like a valid pull request.";
+                    throw new WarningException(message);
+                }
+            });
         }
         public void Clone(string sourceUrl, string workdirPath, AuthenticationInfo auth)
         {
             try
             {
-                new OperationWithExponentialBackoff<LockedFileException>(new ThreadSleep(), log, () =>
-                {
-                    var path = Repository.Clone(sourceUrl, workdirPath, GetCloneOptions(auth));
-                    log.Info($"Returned path after repository clone: {path}");
-                }).ExecuteAsync().Wait();
+                var path = Repository.Clone(sourceUrl, workdirPath, GetCloneOptions(auth));
+                log.Info($"Returned path after repository clone: {path}");
+            }
+            catch (LibGit2Sharp.LockedFileException ex)
+            {
+                throw new LockedFileException(ex);
             }
             catch (LibGit2SharpException ex)
             {
@@ -191,11 +188,17 @@ namespace GitVersion
         }
         public void Checkout(string commitOrBranchSpec)
         {
-            new OperationWithExponentialBackoff<LockedFileException>(new ThreadSleep(), log, () => Commands.Checkout(repositoryInstance, commitOrBranchSpec)).ExecuteAsync().Wait();
+            RepositoryExtensions.RunSafe(() =>
+            {
+                Commands.Checkout(repositoryInstance, commitOrBranchSpec);
+            });
         }
         public void Fetch(string remote, IEnumerable<string> refSpecs, AuthenticationInfo auth, string logMessage)
         {
-            new OperationWithExponentialBackoff<LockedFileException>(new ThreadSleep(), log, () => Commands.Fetch((Repository)repositoryInstance, remote, refSpecs, GetFetchOptions(auth), logMessage)).ExecuteAsync().Wait();
+            RepositoryExtensions.RunSafe(() =>
+            {
+                Commands.Fetch((Repository)repositoryInstance, remote, refSpecs, GetFetchOptions(auth), logMessage);
+            });
         }
         internal static string Discover(string path) => Repository.Discover(path);
 
