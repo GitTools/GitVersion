@@ -21,15 +21,10 @@ namespace GitVersion
 
         public void UpdateTarget(IReference directRef, IObjectId targetId)
         {
-            try
+            RepositoryExtensions.RunSafe(() =>
             {
                 innerCollection.UpdateTarget((Reference)directRef, (ObjectId)targetId);
-            }
-            catch (LibGit2Sharp.LockedFileException ex)
-            {
-                // Wrap this exception so that callers that want to catch it don't need to take a dependency on LibGit2Sharp.
-                throw new LockedFileException(ex);
-            }
+            });
         }
 
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();

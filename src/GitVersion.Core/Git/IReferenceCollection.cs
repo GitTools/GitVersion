@@ -1,5 +1,3 @@
-using GitVersion.Logging;
-using System;
 using System.Collections.Generic;
 
 namespace GitVersion
@@ -13,10 +11,4 @@ namespace GitVersion
         IEnumerable<IReference> FromGlob(string prefix);
     }
 
-    public class LockedFileException : Exception
-    {
-        public LockedFileException(Exception inner) : base(inner.Message, inner)
-        {
-        }
-    }
 }
