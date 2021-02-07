@@ -77,11 +77,12 @@
         <div><p><a href="https://github.com/gittools/GitVersion/tree/main/docs/input/docs/usage/command-line.md"><i class="fa fa-pencil-square" aria-hidden="true"></i> Edit Content</a></p></div>
     <div id="infobar-headings"><h6>On This Page</h6><p><a href="#chocolatey">Chocolatey</a></p>
 <p><a href="#homebrew">Homebrew</a></p>
+<p><a href="#net-global-tool">.NET Global Tool</a></p>
+<p><a href="#mono">Mono</a></p>
 <p><a href="#output">Output</a></p>
 <p><a href="#inject-version-metadata-into-the-assembly">Inject version metadata into the assembly</a></p>
 <p><a href="#override-config">Override config</a></p>
 <p><a href="#writing-version-metadata-in-wix-format">Writing version metadata in WiX format</a></p>
-<p><a href="#mono">Mono</a></p>
 <hr class="infobar-hidden">
 </div>
 
@@ -201,7 +202,7 @@
 	<section class="content">
 		<p>If you want a command line version installed on your machine then you can use
 <a href="http://chocolatey.org">Chocolatey</a> or <a href="https://brew.sh/">Homebrew</a> to install
-GitVersion.</p>
+GitVersion, or you can install it as a .NET global tool.</p>
 <div class="alert alert-info"><p><strong>Hint</strong></p>
 <p>While documentation and help use '/' as command prefix the hyphen '-'
 is supported as well and is a better alternative for usage on *nix systems.
@@ -219,6 +220,15 @@ Example: <em>-output json vs. /output json</em></p>
 <p>Switches are available with <code>gitversion --help</code>. Even though the documentation
 uses a slash <code>/</code> for all switches, you need to use a dash <code>-</code> instead, since <code>/</code>
 is interpreted as a root path on POSIX based operating systems.</p>
+<h2 id="net-global-tool">.NET Global Tool</h2>
+<p>To install GitVersion as a <a href="https://docs.microsoft.com/en-us/dotnet/core/tools/global-tools#install-a-global-tool">.NET global tool</a>, type:</p>
+<pre><code class="language-shell">dotnet tool install -g GitVersion.Tool
+</code></pre>
+<p>To invoke GitVersion as a .NET global tool you need to write
+<code>dotnet gitversion</code> or <code>dotnet-gitversion</code> instead of <code>GitVersion.exe</code>.</p>
+<p>Switches are available with <code>dotnet gitversion -help</code></p>
+<h2 id="mono">Mono</h2>
+<p>To use on mac or linux with Mono, install <code>mono-complete</code> then just run <code>mono GitVersion.exe</code></p>
 <h2 id="output">Output</h2>
 <p>By default GitVersion returns a json object to stdout containing all the
 <a href="../more-info/variables">variables</a> which GitVersion generates. This works
@@ -288,8 +298,6 @@ same assembly version attributes.  If this occurs your build will fail.</p>
 All the <a href="../more-info/variables">variables</a> are written to
 <code>GitVersion_WixVersion.wxi</code> under the current working directory and can be
 referenced in the WiX project files.</p>
-<h2 id="mono">Mono</h2>
-<p>To use on mac or linux, install <code>mono-complete</code> then just run <code>mono GitVersion.exe</code></p>
 
 	</section>
                 

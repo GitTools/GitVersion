@@ -6,7 +6,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="shortcut icon" href="/assets/img/favicon.ico" type="image/x-icon">
         <link rel="icon" href="/assets/img/favicon.ico" type="image/x-icon">
-        <title>GitVersion - API - LockedFileException Class</title>
+        <title>GitVersion - API - VersionVariables.FromFile(string, IFileSystem) Method</title>
         <link href="/assets/css/highlight.css" rel="stylesheet">
         <link href="/assets/css/bootstrap/bootstrap.css" rel="stylesheet">
         <link href="/assets/css/adminlte/AdminLTE.css" rel="stylesheet">
@@ -75,8 +75,8 @@
                 <section class="infobar" data-spy="affix" data-offset-top="60" data-offset-bottom="200"> 
                     	
 	<div id="infobar-headings"><h6>On This Page</h6><p><a href="#Syntax">Syntax</a></p>
-<p><a href="#Constructors">Constructors</a></p>
-<p><a href="#ExtensionMethods">Extension Methods</a></p>
+<p><a href="#Parameters">Parameters</a></p>
+<p><a href="#ReturnValue">Return Value</a></p>
 <hr class="infobar-hidden">
 </div>
 
@@ -136,98 +136,56 @@
                     <ul class="sidebar-menu">
                         
 			<li class="header">Namespace</li>
-		<li><a href="/api/GitVersion">GitVersion</a></li>
+		<li><a href="/api/GitVersion.OutputVariables">GitVersion<wbr>.OutputVariables</a></li>
+		<li class="header">Type</li>
+		<li><a href="/api/GitVersion.OutputVariables/VersionVariables">VersionVariables</a></li>
 		<li role="separator" class="divider"></li>
-			<li class="header">Class Types</li>
-				<li><a href="/api/GitVersion/ArgumentParser">ArgumentParser</a></li>
-				<li><a href="/api/GitVersion/Arguments">Arguments</a></li>
-				<li><a href="/api/GitVersion/AssemblyInfoData">AssemblyInfoData</a></li>
-				<li><a href="/api/GitVersion/AuthenticationInfo">AuthenticationInfo</a></li>
-				<li><a href="/api/GitVersion/BugException">BugException</a></li>
-				<li><a href="/api/GitVersion/BuildAgentBase">BuildAgentBase</a></li>
-				<li><a href="/api/GitVersion/BuildAgentResolver">BuildAgentResolver</a></li>
-				<li><a href="/api/GitVersion/CommitFilter">CommitFilter</a></li>
-				<li><a href="/api/GitVersion/ConfigInfo">ConfigInfo</a></li>
-				<li><a href="/api/GitVersion/Environment">Environment</a></li>
-				<li><a href="/api/GitVersion/FileSystem">FileSystem</a></li>
-				<li><a href="/api/GitVersion/FileWriteInfo">FileWriteInfo</a></li>
-				<li><a href="/api/GitVersion/GitPreparer">GitPreparer</a></li>
-				<li><a href="/api/GitVersion/GitToolsException">GitToolsException</a></li>
-				<li><a href="/api/GitVersion/GitVersionAppModule">GitVersionAppModule</a></li>
-				<li><a href="/api/GitVersion/GitVersionCalculateTool">Git<wbr>Version<wbr>Calculate<wbr>Tool</a></li>
-				<li><a href="/api/GitVersion/GitVersionContext">GitVersionContext</a></li>
-				<li><a href="/api/GitVersion/GitVersionContextFactory">Git<wbr>Version<wbr>Context<wbr>Factory</a></li>
-				<li><a href="/api/GitVersion/GitVersionCoreModule">GitVersionCoreModule</a></li>
-				<li><a href="/api/GitVersion/GitVersionException">GitVersionException</a></li>
-				<li><a href="/api/GitVersion/GitVersionExecutor">GitVersionExecutor</a></li>
-				<li><a href="/api/GitVersion/GitVersionLibGit2SharpModule">Git<wbr>Version<wbr>Lib<wbr>Git2<wbr>Sharp<wbr>Module</a></li>
-				<li><a href="/api/GitVersion/GitVersionModule">GitVersionModule</a></li>
-				<li><a href="/api/GitVersion/GitVersionOptions">GitVersionOptions</a></li>
-				<li><a href="/api/GitVersion/GitVersionOutputTool">GitVersionOutputTool</a></li>
-				<li><a href="/api/GitVersion/GlobbingResolver">GlobbingResolver</a></li>
-				<li><a href="/api/GitVersion/HelpWriter">HelpWriter</a></li>
-				<li><a href="/api/GitVersion/IncrementStrategyExtensions">Increment<wbr>Strategy<wbr>Extensions</a></li>
-				<li><a href="/api/GitVersion/IncrementStrategyFinder">Increment<wbr>Strategy<wbr>Finder</a></li>
-				<li class="selected"><a href="/api/GitVersion/LockedFileException">LockedFileException</a></li>
-				<li><a href="/api/GitVersion/MergeMessage">MergeMessage</a></li>
-				<li><a href="/api/GitVersion/ReferenceName">ReferenceName</a></li>
-				<li><a href="/api/GitVersion/RefSpec">RefSpec</a></li>
-				<li><a href="/api/GitVersion/RepositoryExtensions">RepositoryExtensions</a></li>
-				<li><a href="/api/GitVersion/RepositoryInfo">RepositoryInfo</a></li>
-				<li><a href="/api/GitVersion/RepositoryStore">RepositoryStore</a></li>
-				<li><a href="/api/GitVersion/SemanticVersion">SemanticVersion</a></li>
-				<li><a href="/api/GitVersion/SemanticVersionBuildMetaData">Semantic<wbr>Version<wbr>Build<wbr>Meta<wbr>Data</a></li>
-				<li><a href="/api/GitVersion/SemanticVersionExtensions">Semantic<wbr>Version<wbr>Extensions</a></li>
-				<li><a href="/api/GitVersion/SemanticVersionFormatValues">Semantic<wbr>Version<wbr>Format<wbr>Values</a></li>
-				<li><a href="/api/GitVersion/SemanticVersionPreReleaseTag">Semantic<wbr>Version<wbr>Pre<wbr>Release<wbr>Tag</a></li>
-				<li><a href="/api/GitVersion/Settings">Settings</a></li>
-				<li><a href="/api/GitVersion/ThreadSleep">ThreadSleep</a></li>
-				<li><a href="/api/GitVersion/VersionWriter">VersionWriter</a></li>
-				<li><a href="/api/GitVersion/WarningException">WarningException</a></li>
-				<li><a href="/api/GitVersion/WixInfo">WixInfo</a></li>
-			<li class="header">Struct Types</li>
-				<li><a href="/api/GitVersion/BranchCommit">BranchCommit</a></li>
-			<li class="header">Interface Types</li>
-				<li><a href="/api/GitVersion/IArgumentParser">IArgumentParser</a></li>
-				<li><a href="/api/GitVersion/IBranch">IBranch</a></li>
-				<li><a href="/api/GitVersion/IBranchCollection">IBranchCollection</a></li>
-				<li><a href="/api/GitVersion/IBuildAgent">IBuildAgent</a></li>
-				<li><a href="/api/GitVersion/IBuildAgentResolver">IBuildAgentResolver</a></li>
-				<li><a href="/api/GitVersion/ICommit">ICommit</a></li>
-				<li><a href="/api/GitVersion/ICommitCollection">ICommitCollection</a></li>
-				<li><a href="/api/GitVersion/ICurrentBuildAgent">ICurrentBuildAgent</a></li>
-				<li><a href="/api/GitVersion/IEnvironment">IEnvironment</a></li>
-				<li><a href="/api/GitVersion/IFileSystem">IFileSystem</a></li>
-				<li><a href="/api/GitVersion/IGitObject">IGitObject</a></li>
-				<li><a href="/api/GitVersion/IGitPreparer">IGitPreparer</a></li>
-				<li><a href="/api/GitVersion/IGitRepository">IGitRepository</a></li>
-				<li><a href="/api/GitVersion/IGitRepositoryInfo">IGitRepositoryInfo</a></li>
-				<li><a href="/api/GitVersion/IGitVersionCalculateTool">I<wbr>Git<wbr>Version<wbr>Calculate<wbr>Tool</a></li>
-				<li><a href="/api/GitVersion/IGitVersionContextFactory">I<wbr>Git<wbr>Version<wbr>Context<wbr>Factory</a></li>
-				<li><a href="/api/GitVersion/IGitVersionExecutor">IGitVersionExecutor</a></li>
-				<li><a href="/api/GitVersion/IGitVersionModule">IGitVersionModule</a></li>
-				<li><a href="/api/GitVersion/IGitVersionOutputTool">I<wbr>Git<wbr>Version<wbr>Output<wbr>Tool</a></li>
-				<li><a href="/api/GitVersion/IGlobbingResolver">IGlobbingResolver</a></li>
-				<li><a href="/api/GitVersion/IHelpWriter">IHelpWriter</a></li>
-				<li><a href="/api/GitVersion/IMutatingGitRepository">I<wbr>Mutating<wbr>Git<wbr>Repository</a></li>
-				<li><a href="/api/GitVersion/INamedReference">INamedReference</a></li>
-				<li><a href="/api/GitVersion/IObjectId">IObjectId</a></li>
-				<li><a href="/api/GitVersion/IReference">IReference</a></li>
-				<li><a href="/api/GitVersion/IReferenceCollection">IReferenceCollection</a></li>
-				<li><a href="/api/GitVersion/IRefSpec">IRefSpec</a></li>
-				<li><a href="/api/GitVersion/IRefSpecCollection">IRefSpecCollection</a></li>
-				<li><a href="/api/GitVersion/IRemote">IRemote</a></li>
-				<li><a href="/api/GitVersion/IRemoteCollection">IRemoteCollection</a></li>
-				<li><a href="/api/GitVersion/ITag">ITag</a></li>
-				<li><a href="/api/GitVersion/ITagCollection">ITagCollection</a></li>
-				<li><a href="/api/GitVersion/IThreadSleep">IThreadSleep</a></li>
-				<li><a href="/api/GitVersion/IVersionWriter">IVersionWriter</a></li>
-			<li class="header">Enum Types</li>
-				<li><a href="/api/GitVersion/CommitMessageIncrementMode">Commit<wbr>Message<wbr>Increment<wbr>Mode</a></li>
-				<li><a href="/api/GitVersion/CommitSortStrategies">CommitSortStrategies</a></li>
-				<li><a href="/api/GitVersion/IncrementStrategy">IncrementStrategy</a></li>
-				<li><a href="/api/GitVersion/RefSpecDirection">RefSpecDirection</a></li>
-				<li><a href="/api/GitVersion/VersionField">VersionField</a></li>
+			<li class="header">Constructors</li>
+				<li><a href="/api/GitVersion.OutputVariables/VersionVariables/EA11A1BA">VersionVariables<wbr>(string, <wbr>string, <wbr>string, <wbr>string, <wbr>string, <wbr>string, <wbr>string, <wbr>string, <wbr>string, <wbr>string, <wbr>string, <wbr>string, <wbr>string, <wbr>string, <wbr>string, <wbr>string, <wbr>string, <wbr>string, <wbr>string, <wbr>string, <wbr>string, <wbr>string, <wbr>string, <wbr>string, <wbr>string, <wbr>string, <wbr>string, <wbr>string, <wbr>string, <wbr>string, <wbr>string, <wbr>string, <wbr>string)<wbr></a></li>
+			<li class="header">Property Members</li>
+				<li><a href="/api/GitVersion.OutputVariables/VersionVariables/EBD061C1">AssemblySemFileVer</a></li>
+				<li><a href="/api/GitVersion.OutputVariables/VersionVariables/ECF06ABF">AssemblySemVer</a></li>
+				<li><a href="/api/GitVersion.OutputVariables/VersionVariables/EF8E8645">AvailableVariables</a></li>
+				<li><a href="/api/GitVersion.OutputVariables/VersionVariables/FF4DDD6D">BranchName</a></li>
+				<li><a href="/api/GitVersion.OutputVariables/VersionVariables/803C1998">BuildMetaData</a></li>
+				<li><a href="/api/GitVersion.OutputVariables/VersionVariables/A07EA114">BuildMetaDataPadded</a></li>
+				<li><a href="/api/GitVersion.OutputVariables/VersionVariables/AC9CE149">CommitDate</a></li>
+				<li><a href="/api/GitVersion.OutputVariables/VersionVariables/71549D21">Commits<wbr>Since<wbr>Version<wbr>Source</a></li>
+				<li><a href="/api/GitVersion.OutputVariables/VersionVariables/636C99CB">Commits<wbr>Since<wbr>Version<wbr>Source<wbr>Padded</a></li>
+				<li><a href="/api/GitVersion.OutputVariables/VersionVariables/B3AFABF7">EscapedBranchName</a></li>
+				<li><a href="/api/GitVersion.OutputVariables/VersionVariables/17096702">FileName</a></li>
+				<li><a href="/api/GitVersion.OutputVariables/VersionVariables/C620F876">FullBuildMetaData</a></li>
+				<li><a href="/api/GitVersion.OutputVariables/VersionVariables/A2BB8E28">FullSemVer</a></li>
+				<li><a href="/api/GitVersion.OutputVariables/VersionVariables/81EE1EBB">InformationalVersion</a></li>
+				<li><a href="/api/GitVersion.OutputVariables/VersionVariables/79F6066D">LegacySemVer</a></li>
+				<li><a href="/api/GitVersion.OutputVariables/VersionVariables/F930EC3E">LegacySemVerPadded</a></li>
+				<li><a href="/api/GitVersion.OutputVariables/VersionVariables/DF7D8A33">Major</a></li>
+				<li><a href="/api/GitVersion.OutputVariables/VersionVariables/62693597">MajorMinorPatch</a></li>
+				<li><a href="/api/GitVersion.OutputVariables/VersionVariables/ECFD37F1">Minor</a></li>
+				<li><a href="/api/GitVersion.OutputVariables/VersionVariables/5706EC82">NuGetPreReleaseTag</a></li>
+				<li><a href="/api/GitVersion.OutputVariables/VersionVariables/E7557679">NuGetPreReleaseTagV2</a></li>
+				<li><a href="/api/GitVersion.OutputVariables/VersionVariables/50160D03">NuGetVersion</a></li>
+				<li><a href="/api/GitVersion.OutputVariables/VersionVariables/A552802B">NuGetVersionV2</a></li>
+				<li><a href="/api/GitVersion.OutputVariables/VersionVariables/E01695EC">Patch</a></li>
+				<li><a href="/api/GitVersion.OutputVariables/VersionVariables/10251BD2">PreReleaseLabel</a></li>
+				<li><a href="/api/GitVersion.OutputVariables/VersionVariables/880B1C7C">Pre<wbr>Release<wbr>Label<wbr>With<wbr>Dash</a></li>
+				<li><a href="/api/GitVersion.OutputVariables/VersionVariables/0FD92A25">PreReleaseNumber</a></li>
+				<li><a href="/api/GitVersion.OutputVariables/VersionVariables/926B9ECB">PreReleaseTag</a></li>
+				<li><a href="/api/GitVersion.OutputVariables/VersionVariables/93F7BB5A">Pre<wbr>Release<wbr>Tag<wbr>With<wbr>Dash</a></li>
+				<li><a href="/api/GitVersion.OutputVariables/VersionVariables/BE1DE405">SemVer</a></li>
+				<li><a href="/api/GitVersion.OutputVariables/VersionVariables/22715A86">Sha</a></li>
+				<li><a href="/api/GitVersion.OutputVariables/VersionVariables/B71D7C06">ShortSha</a></li>
+				<li><a href="/api/GitVersion.OutputVariables/VersionVariables/A6E7BD0E">this[string]</a></li>
+				<li><a href="/api/GitVersion.OutputVariables/VersionVariables/31CE7F42">UncommittedChanges</a></li>
+				<li><a href="/api/GitVersion.OutputVariables/VersionVariables/C4995FA1">VersionSourceSha</a></li>
+				<li><a href="/api/GitVersion.OutputVariables/VersionVariables/A3D13030">Weighted<wbr>Pre<wbr>Release<wbr>Number</a></li>
+			<li class="header">Method Members</li>
+				<li><a href="/api/GitVersion.OutputVariables/VersionVariables/658DA4AF">FromDictionary<wbr>(IEnumerable<wbr>&lt;KeyValuePair<wbr>&lt;string, <wbr>string&gt;<wbr>&gt;<wbr>)<wbr></a></li>
+				<li class="selected"><a href="/api/GitVersion.OutputVariables/VersionVariables/A06C2CD3">FromFile<wbr>(string, <wbr>IFileSystem)<wbr></a></li>
+				<li><a href="/api/GitVersion.OutputVariables/VersionVariables/C14B7E89">FromJson<wbr>(string)<wbr></a></li>
+				<li><a href="/api/GitVersion.OutputVariables/VersionVariables/1CB05429">GetEnumerator<wbr>()<wbr></a></li>
+				<li><a href="/api/GitVersion.OutputVariables/VersionVariables/C1FC0C96">ToString<wbr>()<wbr></a></li>
+				<li><a href="/api/GitVersion.OutputVariables/VersionVariables/5DF213B7">TryGetValue<wbr>(string, <wbr>string)<wbr></a></li>
 
 
                     </ul>
@@ -242,110 +200,77 @@
 
 
 <section class="content-header">
-	<h1>LockedFileException <small>Class</small></h1>
+			<h3><a href="/api/GitVersion.OutputVariables/VersionVariables">VersionVariables</a>.</h3>
+	<h1>FromFile<wbr>(string, <wbr>IFileSystem)<wbr> <small>Method</small></h1>
 </section>
 <section class="content">
 	
 	
 	
 		<div class="panel panel-default">
-  			<div class="panel-body">
-				<div class="row">
-					<div class="col-md-6">
-						<dl class="dl-horizontal">		
-
-								<dt>Namespace</dt>
-								<dd><a href="/api/GitVersion">GitVersion</a></dd>
-											
-								<dt>Interfaces</dt>
-								<dd>
-									<ul class="list-unstyled">
-											<li>ISerializable</li>								
-									</ul>
-								</dd>
-							
-								<dt>Base Types</dt>
-								<dd>
-									<ul class="list-unstyled">										
-											<li>object</li>								
-											<li>Exception</li>								
-									</ul>
-								</dd>				
-							
-							
-						</dl>
-					</div>		
-					<div class="col-md-6">
-						<div class="mermaid">
-							graph BT
-	Type--&gt;Base0["Exception"]
-	Base0--&gt;Base1["object"]
-	Type-.-&gt;Interface0["ISerializable"]
-	Type["LockedFileException"]
-class Type type-node
-
-						</div>
-					</div>
-				</div>
+  			<div class="panel-body">	
+				<dl class="dl-horizontal">	
+						
+						<dt>Namespace</dt>
+						<dd><a href="/api/GitVersion.OutputVariables">GitVersion<wbr>.OutputVariables</a></dd>
+					
+						<dt>Containing Type</dt>
+						<dd><a href="/api/GitVersion.OutputVariables/VersionVariables">VersionVariables</a></dd>		
+					
+				</dl>
   			</div>
 		</div>
 
 	<h1 id="Syntax">Syntax</h1>
-	<pre><code>public class LockedFileException : Exception, ISerializable</code></pre>
+	<pre><code>public static VersionVariables FromFile(string filePath, IFileSystem fileSystem)</code></pre>
 
 
 
 
 
+	<h1 id="Parameters">Parameters</h1>
+	<div class="box">
+		<div class="box-body no-padding table-responsive">
+			<table class="table table-striped table-hover three-cols">
+				<thead>
+					<tr>
+						<th>Name</th>
+						<th>Type</th>
+						<th>Description</th>
+					</tr>
+				</thead>
+					<tbody><tr>
+						<td>filePath</td>
+						<td>string</td>
+						<td></td>
+					</tr>
+					<tr>
+						<td>fileSystem</td>
+						<td><a href="/api/GitVersion/IFileSystem">IFileSystem</a></td>
+						<td></td>
+					</tr>
+			</tbody></table>
+		</div>
+	</div>	
 
+	<h1 id="ReturnValue">Return Value</h1>
+	<div class="box">
+		<div class="box-body no-padding table-responsive">
+			<table class="table table-striped table-hover two-cols">
+				<thead>
+					<tr>
+						<th>Type</th>
+						<th>Description</th>
+					</tr>
+				</thead>
+				<tbody><tr>
+					<td><a href="/api/GitVersion.OutputVariables/VersionVariables">VersionVariables</a></td>
+					<td></td>
+				</tr>
+			</tbody></table>
+		</div>
+	</div>	
 
-			<h1 id="Constructors">Constructors</h1>
-			<div class="box">
-				<div class="box-body no-padding table-responsive">
-					<table class="table table-striped table-hover two-cols">
-						<thead>
-							<tr>
-								<th>Name</th>
-									<th>Summary</th>
-							</tr>
-						</thead>
-							<tbody><tr>
-								<td><a href="/api/GitVersion/LockedFileException/44BF0AA4">LockedFileException<wbr>(Exception)<wbr></a></td>
-									<td></td>
-							</tr>
-					</tbody></table>
-				</div>
-			</div>
-		
-
-
-
-
-
-
-			<h1 id="ExtensionMethods">Extension Methods</h1>
-			<div class="box">
-				<div class="box-body no-padding table-responsive">
-					<table class="table table-striped table-hover three-cols">
-						<thead>
-							<tr>
-								<th>Name</th>
-								<th>Value</th>
-								<th>Summary</th>
-							</tr>
-						</thead>
-							<tbody><tr>
-								<td><a href="/api/GitVersion.Extensions/ObjectExtensions/F42B194D">GetProperties<wbr>()<wbr></a></td>
-								<td>IEnumerable<wbr>&lt;KeyValuePair<wbr>&lt;string, <wbr>string&gt;<wbr>&gt;<wbr></td>
-								<td>
-									<div></div>
-										<div><small><em>From <a href="/api/GitVersion.Extensions/ObjectExtensions">ObjectExtensions</a></em></small></div>
-								</td>
-							</tr>
-					</tbody></table>
-				</div>
-			</div>
-		
 
 	
 </section>

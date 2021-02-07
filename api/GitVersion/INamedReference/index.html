@@ -168,7 +168,6 @@
 				<li><a href="/api/GitVersion/HelpWriter">HelpWriter</a></li>
 				<li><a href="/api/GitVersion/IncrementStrategyExtensions">Increment<wbr>Strategy<wbr>Extensions</a></li>
 				<li><a href="/api/GitVersion/IncrementStrategyFinder">Increment<wbr>Strategy<wbr>Finder</a></li>
-				<li><a href="/api/GitVersion/LockedFileException">LockedFileException</a></li>
 				<li><a href="/api/GitVersion/MergeMessage">MergeMessage</a></li>
 				<li><a href="/api/GitVersion/ReferenceName">ReferenceName</a></li>
 				<li><a href="/api/GitVersion/RefSpec">RefSpec</a></li>
@@ -181,7 +180,6 @@
 				<li><a href="/api/GitVersion/SemanticVersionFormatValues">Semantic<wbr>Version<wbr>Format<wbr>Values</a></li>
 				<li><a href="/api/GitVersion/SemanticVersionPreReleaseTag">Semantic<wbr>Version<wbr>Pre<wbr>Release<wbr>Tag</a></li>
 				<li><a href="/api/GitVersion/Settings">Settings</a></li>
-				<li><a href="/api/GitVersion/ThreadSleep">ThreadSleep</a></li>
 				<li><a href="/api/GitVersion/VersionWriter">VersionWriter</a></li>
 				<li><a href="/api/GitVersion/WarningException">WarningException</a></li>
 				<li><a href="/api/GitVersion/WixInfo">WixInfo</a></li>
@@ -263,9 +261,9 @@
 								<dt>Implementing Types</dt>
 								<dd>
 									<ul class="list-unstyled">
+											<li><a href="/api/GitVersion/IBranch">IBranch</a></li>								
 											<li><a href="/api/GitVersion/ITag">ITag</a></li>								
 											<li><a href="/api/GitVersion/IReference">IReference</a></li>								
-											<li><a href="/api/GitVersion/IBranch">IBranch</a></li>								
 									</ul>
 								</dd>				
 						</dl>
@@ -275,12 +273,12 @@
 							graph BT
 	Type["INamedReference"]
 class Type type-node
-	Implementing0["ITag"]-.-&gt;Type
-	click Implementing0 "/api/GitVersion/ITag"
-	Implementing1["IReference"]-.-&gt;Type
-	click Implementing1 "/api/GitVersion/IReference"
-	Implementing2["IBranch"]-.-&gt;Type
-	click Implementing2 "/api/GitVersion/IBranch"
+	Implementing0["IBranch"]-.-&gt;Type
+	click Implementing0 "/api/GitVersion/IBranch"
+	Implementing1["ITag"]-.-&gt;Type
+	click Implementing1 "/api/GitVersion/ITag"
+	Implementing2["IReference"]-.-&gt;Type
+	click Implementing2 "/api/GitVersion/IReference"
 
 						</div>
 					</div>
