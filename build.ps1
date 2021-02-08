@@ -206,11 +206,7 @@ $Arguments = @{
 # Start Cake
 Write-Host "Running build script..."
 
-& dotnet cake $Script --bootstrap
-if ($LASTEXITCODE -eq 0)
-{
-    & dotnet cake $Script $Arguments
-}
+& dotnet cake $Script $Arguments
 
 if ($env:APPVEYOR) {
     $host.SetShouldExit($LASTEXITCODE)
