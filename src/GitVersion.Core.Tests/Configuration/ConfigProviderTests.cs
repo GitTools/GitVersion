@@ -165,6 +165,44 @@ branches:
         }
 
         [Test]
+        public void MasterConfigReplacedWithMain()
+        {
+            const string text = @"
+next-version: 2.0.0
+branches:
+    master:
+        regex: '^master$|^main$'
+        tag: beta";
+            SetupConfigFileContent(text);
+
+            var config = configProvider.Provide(repoPath);
+
+            config.Branches[MainBranch].Regex.ShouldBe("^master$|^main$");
+            config.Branches[MainBranch].Tag.ShouldBe("beta");
+        }
+
+        [Test]
+        public void MasterConfigReplacedWithMainInSourceBranches()
+        {
+            const string text = @"
+next-version: 2.0.0
+branches:
+    breaking:
+        regex: breaking[/]
+        mode: ContinuousDeployment
+        increment: Major
+        source-branches: ['master']
+        is-release-branch: false";
+            SetupConfigFileContent(text);
+
+            var config = configProvider.Provide(repoPath);
+
+            config.Branches["breaking"].Regex.ShouldBe("breaking[/]");
+            config.Branches["breaking"].SourceBranches.ShouldHaveSingleItem();
+            config.Branches["breaking"].SourceBranches.ShouldContain(MainBranch);
+        }
+
+        [Test]
         public void NextVersionCanBeInteger()
         {
             const string text = "next-version: 2";
