@@ -97,6 +97,11 @@ namespace GitVersion.Configuration
                     }
 
                     branchConfig.MergeTo(target);
+                    if (target.SourceBranches != null && target.SourceBranches.Contains(Config.MasterBranchKey))
+                    {
+                        target.SourceBranches.Remove(Config.MasterBranchKey);
+                        target.SourceBranches.Add(Config.MainBranchKey);
+                    }
                     newBranches[branchName] = target;
                 }
 
@@ -155,20 +160,22 @@ namespace GitVersion.Configuration
             foreach (var (name, branchConfig) in config.Branches)
             {
                 var regex = branchConfig.Regex;
+                var helpUrl = $"{System.Environment.NewLine}See https://gitversion.net/docs/configuration for more info";
+
                 if (regex == null)
                 {
-                    throw new ConfigurationException($"Branch configuration '{name}' is missing required configuration 'regex'{System.Environment.NewLine}" + "See https://gitversion.net/docs/configuration for more info");
+                    throw new ConfigurationException($"Branch configuration '{name}' is missing required configuration 'regex'{helpUrl}");
                 }
 
                 var sourceBranches = branchConfig.SourceBranches;
                 if (sourceBranches == null)
                 {
-                    throw new ConfigurationException($"Branch configuration '{name}' is missing required configuration 'source-branches'{System.Environment.NewLine}" + "See https://gitversion.net/docs/configuration for more info");
+                    throw new ConfigurationException($"Branch configuration '{name}' is missing required configuration 'source-branches'{helpUrl}");
                 }
 
                 var missingSourceBranches = sourceBranches.Where(sb => !config.Branches.ContainsKey(sb)).ToArray();
                 if (missingSourceBranches.Any())
-                    throw new ConfigurationException($"Branch configuration '{name}' defines these 'source-branches' that are not configured: '[{string.Join(",", missingSourceBranches)}]'{System.Environment.NewLine}" + "See https://gitversion.net/docs/configuration for more info");
+                    throw new ConfigurationException($"Branch configuration '{name}' defines these 'source-branches' that are not configured: '[{string.Join(",", missingSourceBranches)}]'{helpUrl}");
             }
         }
 
