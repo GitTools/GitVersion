@@ -1,0 +1,13 @@
+<div class="card">
+    <div class="card-header">
+        <img src="/assets/img/@Model.String("CardIcon")" alt="" aria-hidden="true">
+        <h5>@Html.Raw(Model.String(Keys.Title))</h5>
+    </div>
+
+    <div class="card-body">
+        <p class="card-text">@Html.Raw(Model.String(DocsKeys.Description))</p>
+        <a href="/@Model.String(Keys.RelativeFileDir)" class="btn btn-primary">
+            @Html.Raw(Model.String(Keys.Title))
+        </a>
+    </div>
+</div>

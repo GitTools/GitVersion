@@ -1,8 +1,19 @@
 @font-family-sans-serif:  "Roboto", Helvetica, Arial, sans-serif;
 
 @purple: #682A7B;
+@dark-purple: darken(@purple, 10%);
+
+a {
+    color: @purple;
+
+    &:hover {
+        color: @dark-purple;
+    }
+}
 
 .jumbotron {
+    padding: 4rem;
+
     h1 {
         color: @purple;
     }
@@ -127,5 +138,88 @@ main .col-sm-6 {
 
     li.active > a.expand {
         padding-left: 18px;
+    }
+}
+
+.btn-primary {
+    background-color: @purple;
+    border-color: @dark-purple;
+    text-overflow: ellipsis;
+    overflow: hidden;
+
+    &:hover {
+        background-color: @dark-purple;
+    }
+}
+
+.card-container {
+    display: flex;
+    flex-direction: row;
+
+    .card {
+        margin-right: 1.25rem;
+    }
+
+    .card:last-of-type {
+        margin-right: 0;
+    }
+}
+
+.card {
+    position: relative;
+    display: flex;
+    flex: 1 1 0px;
+    flex-direction: column;
+    min-width: 0;
+    word-wrap: break-word;
+    background-color: #fff;
+    background-clip: border-box;
+    border: 1px solid rgba(0,0,0,.125);
+    border-radius: .25rem;
+    margin-bottom: 1.25rem;
+}
+
+.card-header {
+    display: flex;
+    flex-direction: row;
+    background-color: @purple;
+    padding: .25rem 1.25rem;
+    border-top-left-radius: calc(.25rem - 1px);
+    border-top-right-radius: calc(.25rem - 1px);
+    color: #fff;
+
+    img {
+        height: 2.6rem;
+        margin: 1.1rem 1.25rem 1.25rem 0;
+    }
+
+    h5 {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        min-height: 2rem;
+    }
+}
+
+.card-body {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto;
+    padding: 1.25rem;
+}
+
+.card-text {
+    flex-grow: 1;
+}
+
+.box {
+    border-color: @purple;
+}
+
+@media only screen and (max-width: 890px) {
+    .card-container {
+        flex-direction: column;
     }
 }

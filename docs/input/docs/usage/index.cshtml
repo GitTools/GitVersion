@@ -1,8 +1,11 @@
 ---
-Order: 10
-Description: Information on general usage of GitVersion
-Title: Getting Started
+Title: Usage
+Description: |
+    There are four ways to consume GitVersion itself. You can find each of these
+    options below.
+Order: 1
 ---
-<p>Here you will find some top level information about getting started with GitVersion, as well as the different flavours of GitVersion, i.e. the command line tool, the MSBuild Task, etc.</p>
+
+<p>@Html.Raw(Model.String(DocsKeys.Description))</p>
 
 @Html.Partial("_ChildPages")
