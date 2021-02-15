@@ -28,7 +28,7 @@ namespace GitVersion
             this.log = log ?? throw new ArgumentNullException(nameof(log));
             this.console = console ?? throw new ArgumentNullException(nameof(console));
             this.configFileLocator = configFileLocator ?? throw new ArgumentNullException(nameof(configFileLocator));
-            this.configProvider = configProvider ?? throw new ArgumentNullException(nameof(configFileLocator));
+            this.configProvider = configProvider ?? throw new ArgumentNullException(nameof(configProvider));
 
             this.gitVersionCalculateTool = gitVersionCalculateTool ?? throw new ArgumentNullException(nameof(gitVersionCalculateTool));
             this.gitVersionOutputTool = gitVersionOutputTool ?? throw new ArgumentNullException(nameof(gitVersionOutputTool));

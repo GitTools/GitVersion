@@ -15,14 +15,12 @@ namespace GitVersion.Extensions
                     return list[0];
             }
 
-            using (var e = source.GetEnumerator())
-            {
-                if (!e.MoveNext())
-                    return default;
-                var current = e.Current;
-                if (!e.MoveNext())
-                    return current;
-            }
+            using var e = source.GetEnumerator();
+            if (!e.MoveNext())
+                return default;
+            var current = e.Current;
+            if (!e.MoveNext())
+                return current;
 
             return default;
         }
