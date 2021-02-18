@@ -39,7 +39,7 @@ namespace GitVersion.Core.Tests
             ShouldlyConfiguration.ShouldMatchApprovedDefaults.LocateTestMethodUsingAttribute<TestAttribute>();
         }
 
-        [TestCase(DefaultConfigFileLocator.DefaultFileName, DefaultConfigFileLocator.DefaultFileName)]
+        [TestCase(ConfigFileLocator.DefaultFileName, ConfigFileLocator.DefaultFileName)]
         public void ThrowsExceptionOnAmbiguousConfigFileLocation(string repoConfigFile, string workingConfigFile)
         {
             var repositoryConfigFilePath = SetupConfigFileContent(string.Empty, repoConfigFile, repoPath);
@@ -57,7 +57,7 @@ namespace GitVersion.Core.Tests
         [Test]
         public void NoWarnOnGitVersionYmlFile()
         {
-            SetupConfigFileContent(string.Empty, DefaultConfigFileLocator.DefaultFileName, repoPath);
+            SetupConfigFileContent(string.Empty, ConfigFileLocator.DefaultFileName, repoPath);
 
             Should.NotThrow(() => { configurationProvider.Provide(repoPath); });
         }

@@ -29,7 +29,6 @@ namespace GitVersion
 
             services.AddSingleton<IGitVersionCacheKeyFactory, GitVersionCacheKeyFactory>();
             services.AddSingleton<IGitVersionContextFactory, GitVersionContextFactory>();
-            services.AddSingleton<IConfigFileLocatorFactory, ConfigFileLocatorFactory>();
 
             services.AddSingleton<IConfigProvider, ConfigProvider>();
             services.AddSingleton<IVariableProvider, VariableProvider>();
@@ -52,7 +51,12 @@ namespace GitVersion
             services.AddSingleton<IAssemblyInfoFileUpdater, AssemblyInfoFileUpdater>();
             services.AddSingleton<IProjectFileUpdater, ProjectFileUpdater>();
 
-            services.AddSingleton(sp => sp.GetService<IConfigFileLocatorFactory>()?.Create());
+            services.AddSingleton<IConfigFileLocator>(sp =>
+            {
+                var options = sp.GetService<IOptions<GitVersionOptions>>();
+                var fileSystem = sp.GetService<IFileSystem>();
+                return new ConfigFileLocator(fileSystem, options?.Value.ConfigInfo.ConfigFile);
+            });
 
             services.AddSingleton(sp =>
             {
