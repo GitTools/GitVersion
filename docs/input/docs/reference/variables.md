@@ -1,6 +1,7 @@
 ---
 Order: 30
-Title: Variables
+Title: Version Variables
+Description: The version variables exposed by GitVersion
 ---
 
 Variables are quite useful if you need different formats of the version number.

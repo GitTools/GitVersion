@@ -1,6 +1,7 @@
 ---
 Order: 20
 Title: Configuration
+Description: Details about how GitVersoin can be configured to suit your needs
 ---
 
 GitVersion 3.0 is mainly powered by configuration and no longer has branching
