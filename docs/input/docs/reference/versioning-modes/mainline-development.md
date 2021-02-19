@@ -1,6 +1,10 @@
 ---
 Order: 40
 Title: Mainline Development
+Description: |
+    Mainline Development versioning mode works like the Continuous Delivery,
+    except that it tells GitVersion to *infer* releases from merges and commits
+    to `main`.
 ---
 
 Mainline Development is enabled when using
