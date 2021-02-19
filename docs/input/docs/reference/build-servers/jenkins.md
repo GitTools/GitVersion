@@ -1,6 +1,7 @@
 ---
 Order: 60
-Title: Jenkins Setup
+Title: Jenkins
+Description: Details on the Jenkins support in GitVersion
 ---
 
 Injecting environment variables is not supported in Jenkins natively, but

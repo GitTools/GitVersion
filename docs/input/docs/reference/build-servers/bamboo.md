@@ -1,6 +1,7 @@
 ---
 Order: 30
 Title: Bamboo
+Description: Details on the Bamboo support in GitVersion
 ---
 
 If you use Bamboo then you will have to use GitVersion from the command line, as

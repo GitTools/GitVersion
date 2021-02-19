@@ -1,6 +1,7 @@
 ---
 Order: 90
-Title: TeamCity Setup
+Title: TeamCity
+Description: Details on the TeamCity support in GitVersion
 ---
 
 ## Basic Usage

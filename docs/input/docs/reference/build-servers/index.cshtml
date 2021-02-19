@@ -1,6 +1,6 @@
 ---
 Order: 3000
-Description: Build Server Support
+Description: Build Servers
 ---
 
 <p>
@@ -20,7 +20,7 @@ Description: Build Server Support
 @Html.Partial("_ChildPages")
 
 <p>
-    When the `gitVersion` executable is run with the
+    When the <code>gitVersion</code> executable is run with the
     <code>/output buildserver</code> flag instead of outputting JSON it will
     export variables to the current build server.
 </p>
@@ -33,10 +33,15 @@ Description: Build Server Support
 </p>
 
 <p>
-When running in MSBuild either from the <a href="../usage/msbuild-task">MSBuild Task</a> or
-by using the `/proj myproject.sln` parameter, GitVersion will make the MSBuild
-variables available in the format `$(GitVersion_SemVer)`.
+    When running in MSBuild either from the
+    <a href="../usage/msbuild-task">MSBuild Task</a> or
+    by using the <code>/proj myproject.sln</code> parameter, GitVersion will
+    make the MSBuild variables available in the format
+    <code>$(GitVersion_SemVer)`</code>
 </p>
 
-Standard GitVersion.exe normalize the branches if there is a build server
-detected. This behavior can be disabled with the `/nonormalize` option.
+<p>
+    The standard <code>gitversion</code> executable normalize the branches if
+    there is a build server detected. This behavior can be disabled with the
+    <code>/nonormalize</code> option.
+</p>

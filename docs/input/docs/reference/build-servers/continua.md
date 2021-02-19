@@ -1,6 +1,7 @@
 ---
 Order: 40
-Title: Continua CI Setup
+Title: Continua CI
+Description: Details on the Continua CI support in GitVersion
 ---
 
 This guide explains how to run GitVersion inside [Continua CI](https://www.finalbuilder.com/continua-ci).

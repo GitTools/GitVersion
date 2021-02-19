@@ -1,6 +1,9 @@
 ---
 Order: 20
-Title: Azure DevOps or TFS Build Pipeline SetupUsage
+Title: Azure DevOps
+Description: |
+    Details on the Azure DevOps or Team Foundation Server Build Pipeline support
+    in GitVersion
 ---
 
 ## Basic Usage

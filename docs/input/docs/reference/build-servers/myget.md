@@ -1,6 +1,7 @@
 ---
 Order: 70
 Title: MyGet
+Description: Details on the MyGet support in GitVersion
 ---
 
 MyGet Build Services has built-in support for GitVersion and is encouraging you

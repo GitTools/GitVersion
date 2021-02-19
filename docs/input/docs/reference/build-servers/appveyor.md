@@ -1,7 +1,9 @@
 ---
 Order: 10
-Title: AppVeyor Setup
+Title: AppVeyor
+Description: Details on the AppVeyor support in GitVersion
 ---
+
 AppVeyor is the first build server which has a setup helper built into
 `GitVersion init`.
 
