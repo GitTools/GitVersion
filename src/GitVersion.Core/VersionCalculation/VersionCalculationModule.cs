@@ -1,4 +1,4 @@
-﻿using GitVersion.Extensions;
+using GitVersion.Extensions;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace GitVersion.VersionCalculation

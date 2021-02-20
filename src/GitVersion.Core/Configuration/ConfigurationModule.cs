@@ -1,4 +1,4 @@
-﻿using GitVersion.Configuration.Init;
+using GitVersion.Configuration.Init;
 using GitVersion.Extensions;
 using Microsoft.Extensions.DependencyInjection;
 

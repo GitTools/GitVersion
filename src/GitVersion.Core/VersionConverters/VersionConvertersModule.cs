@@ -1,4 +1,4 @@
-﻿using GitVersion.VersionConverters.AssemblyInfo;
+using GitVersion.VersionConverters.AssemblyInfo;
 using GitVersion.VersionConverters.GitVersionInfo;
 using GitVersion.VersionConverters.OutputGenerator;
 using GitVersion.VersionConverters.WixUpdater;
