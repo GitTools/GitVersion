@@ -2,15 +2,11 @@ using System;
 using GitVersion.BuildAgents;
 using GitVersion.Common;
 using GitVersion.Configuration;
-using GitVersion.Configuration.Init;
 using GitVersion.Extensions;
 using GitVersion.Logging;
 using GitVersion.VersionCalculation;
 using GitVersion.VersionCalculation.Cache;
-using GitVersion.VersionConverters.AssemblyInfo;
-using GitVersion.VersionConverters.GitVersionInfo;
-using GitVersion.VersionConverters.OutputGenerator;
-using GitVersion.VersionConverters.WixUpdater;
+using GitVersion.VersionConverters;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
@@ -23,21 +19,10 @@ namespace GitVersion
             services.AddSingleton<ILog, Log>();
             services.AddSingleton<IFileSystem, FileSystem>();
             services.AddSingleton<IEnvironment, Environment>();
-
             services.AddSingleton<IConsole, ConsoleAdapter>();
+
             services.AddSingleton<IGitVersionCache, GitVersionCache>();
-
             services.AddSingleton<IGitVersionCacheKeyFactory, GitVersionCacheKeyFactory>();
-            services.AddSingleton<IGitVersionContextFactory, GitVersionContextFactory>();
-
-            services.AddSingleton<IConfigProvider, ConfigProvider>();
-            services.AddSingleton<IConfigFileLocator, ConfigFileLocator>();
-            services.AddSingleton<IVariableProvider, VariableProvider>();
-
-            services.AddSingleton<IBaseVersionCalculator, BaseVersionCalculator>();
-            services.AddSingleton<IMainlineVersionCalculator, MainlineVersionCalculator>();
-            services.AddSingleton<INextVersionCalculator, NextVersionCalculator>();
-            services.AddSingleton<IBranchConfigurationCalculator, BranchConfigurationCalculator>();
 
             services.AddSingleton<IGitVersionCalculateTool, GitVersionCalculateTool>();
             services.AddSingleton<IGitVersionOutputTool, GitVersionOutputTool>();
@@ -45,12 +30,7 @@ namespace GitVersion
             services.AddSingleton<IGitPreparer, GitPreparer>();
             services.AddSingleton<IRepositoryStore, RepositoryStore>();
 
-            services.AddSingleton<IOutputGenerator, OutputGenerator>();
-            services.AddSingleton<IGitVersionInfoGenerator, GitVersionInfoGenerator>();
-            services.AddSingleton<IWixVersionFileUpdater, WixVersionFileUpdater>();
-            services.AddSingleton<IAssemblyInfoFileUpdater, AssemblyInfoFileUpdater>();
-            services.AddSingleton<IProjectFileUpdater, ProjectFileUpdater>();
-
+            services.AddSingleton<IGitVersionContextFactory, GitVersionContextFactory>();
             services.AddSingleton(sp =>
             {
                 var options = sp.GetService<IOptions<GitVersionOptions>>();
@@ -58,10 +38,10 @@ namespace GitVersion
                 return new Lazy<GitVersionContext>(() => contextFactory?.Create(options?.Value));
             });
 
-
             services.AddModule(new BuildServerModule());
-            services.AddModule(new GitVersionInitModule());
-            services.AddModule(new VersionStrategyModule());
+            services.AddModule(new ConfigurationModule());
+            services.AddModule(new VersionCalculationModule());
+            services.AddModule(new VersionConvertersModule());
         }
     }
 }
