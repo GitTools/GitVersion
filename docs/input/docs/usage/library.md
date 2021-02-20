@@ -1,15 +1,22 @@
 ---
 Order: 40
-Title: NuGet Library
+Title: Library
+Description: |
+    Install with NuGet and use GitVersion as a software library. Although this
+    is an unsupported option and the API may break even between minor or
+    patch releases, it's a useful option to some.
+CardIcon: library.svg
 ---
 
-To use GitVersion from your own code.
+Install with NuGet and use GitVersion as a software library. Although this
+is an unsupported option and the API may break even between minor or
+patch releases, it's a useful option to some.
 
 :::{.alert .alert-warning}
 **Warning**
 
-We are not semantically versioning this library and it should be considered unstable.**
+We are not semantically versioning this library and it should be considered
+unstable.
 :::
 
-It also is not currently documented. Please open an issue if you are consuming
-the library to let us know, and why you need to.
+<a href="/api" class="btn btn-primary">Explore the GitVersion library API</a>

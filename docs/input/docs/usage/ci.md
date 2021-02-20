@@ -1,5 +1,5 @@
 ---
-Order: 100
+Order: 5
 Title: Continuous Integration
 Description: |
     GitVersion can be used in a Continuous Server pipeline to generate a
@@ -15,16 +15,16 @@ supported continous integration servers below.
 
 ## GitHub Actions
 
-<p>
-    <a href="https://github.com/marketplace/actions/gittools">GitVersion's
-    <code>GitTools Actions</code> GitHub Action</a> allows for simple
-    integration into a GitHub Actions build pipeline.
-</p>
+GitVersion's GitTools Actions allows for simple integration into a GitHub
+Actions build pipeline.
 
-<h2>Azure DevOps</h2>
+<a href="https://github.com/marketplace/actions/gittools"
+   class="btn btn-primary">GitTools Actions</a>
 
-<p>
-    <a href="https://marketplace.visualstudio.com/items?itemName=gittools.gittools">GitVersion's
-    <code>GitTools</code> Azure DevOps Task</a> allows for simple integration of
-    GitVersion into an Azure DevOps build pipeline.
-</p>
+## Azure DevOps
+
+GitVersion's GitTools Azure DevOps Task allows for simple integration of
+GitVersion into an Azure DevOps build pipeline.
+
+<a href="https://marketplace.visualstudio.com/items?itemName=gittools.gittools"
+   class="btn btn-primary">GitTools Task</a>

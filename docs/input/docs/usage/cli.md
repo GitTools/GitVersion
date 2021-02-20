@@ -7,31 +7,30 @@ Description: |
 CardIcon: terminal.svg
 ---
 
-If you want a command line version installed on your machine then you can use
-[Chocolatey](http://chocolatey.org) or [Homebrew](https://brew.sh/) to install
-GitVersion, or you can install it as a .NET global tool.
-
 :::{.alert .alert-info}
-**Hint**
-
-While documentation and help use '/' as command prefix the hyphen '-'
+**Hint:** While documentation and help use `/` as command prefix the hyphen `-`
 is supported as well and is a better alternative for usage on \*nix systems.
-Example: *-output json vs. /output json*
+Example: `-output json` vs. `/output json`
 :::
 
-## Chocolatey
+## Installation
 
-Available on [Chocolatey](http://chocolatey.org) under [GitVersion.Portable](http://chocolatey.org/packages/GitVersion.Portable).
+GitVersion's command line interface can be installed and consumed in many
+different ways. Read about the options below.
+
+### .NET Global Tool
+
+GitVersion can be installed as a [.NET global tool][dotnet-tool] under the name
+[`GitVersion.Tool`][tool] by executing the following in a terminal:
 
 ```shell
-choco install GitVersion.Portable
+dotnet tool install --global GitVersion.Tool
 ```
 
-Switches are available with `GitVersion /?`
+### Homebrew
 
-## Homebrew
-
-To install GitVersion with [Homebrew](https://brew.sh/), type:
+To install the [`gitversion`][brew] formula with [Homebrew](https://brew.sh/),
+enter the following into a terminal:
 
 ```shell
 brew install gitversion
@@ -41,22 +40,38 @@ Switches are available with `gitversion --help`. Even though the documentation
 uses a slash `/` for all switches, you need to use a dash `-` instead, since `/`
 is interpreted as a root path on POSIX based operating systems.
 
-## .NET Global Tool
+### Chocolatey
 
-To install GitVersion as a [.NET global tool](https://docs.microsoft.com/en-us/dotnet/core/tools/global-tools#install-a-global-tool), type:
+Available on [Chocolatey](http://chocolatey.org) as
+[`GitVersion.Portable`][choco].
 
 ```shell
-dotnet tool install -g GitVersion.Tool
+choco install GitVersion.Portable
 ```
 
-To invoke GitVersion as a .NET global tool you need to write
-`dotnet gitversion` or `dotnet-gitversion` instead of `GitVersion.exe`.
+### Docker
 
-Switches are available with `dotnet gitversion -help`
+[`gittools/gitversion`][docker] allows you to use GitVersion through Docker,
+without installing any other dependencies. To use the Docker image, execute
+the following:
 
-## Mono
+```shell
+docker run --rm -v "$(pwd):/repo" gittools/gitversion:5.6.6 /repo
+```
 
-To use on mac or linux with Mono, install `mono-complete` then just run `mono GitVersion.exe`
+The important arguments here are:
+
+|                    Argument | Description                                                                                                  |
+| --------------------------: | :----------------------------------------------------------------------------------------------------------- |
+|            `"$(pwd):/repo"` | Maps the output of `pwd` (the working directory) to the `/repo` directory within the Docker container.       |
+| `gittools/gitversion:5.6.6` | The name and tag of the GitVersion container to use.                                                         |
+|                     `/repo` | The directory within the Docker container GitVersion should use as its working directory. Don't change this. |
+
+:::{.alert .alert-warning}
+**Caveat:** The `/output buildserver` option doesn't work universally with
+Docker since environment variables defined inside the Docker container will not
+be exposed to the host OS.
+:::
 
 ## Output
 
@@ -154,3 +169,9 @@ To support integration with WiX projects, use `GitVersion.exe /updatewixversionf
 All the [variables](../more-info/variables) are written to
 `GitVersion_WixVersion.wxi` under the current working directory and can be
 referenced in the WiX project files.
+
+[docker]: https://hub.docker.com/r/gittools/gitversion
+[choco]: http://chocolatey.org/packages/GitVersion.Portable
+[brew]: https://formulae.brew.sh/formula-linux/gitversion
+[tool]: https://www.nuget.org/packages/GitVersion.Tool/
+[dotnet-tool]: https://docs.microsoft.com/en-us/dotnet/core/tools/global-tools#install-a-global-tool
