@@ -1,7 +1,7 @@
 using System;
 using GitVersion.OutputVariables;
 
-namespace GitVersion
+namespace GitVersion.BuildAgents
 {
     public interface IBuildAgent
     {

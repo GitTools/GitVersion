@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using GitVersion.Logging;
 
-namespace GitVersion
+namespace GitVersion.BuildAgents
 {
     public class BuildAgentResolver : IBuildAgentResolver
     {

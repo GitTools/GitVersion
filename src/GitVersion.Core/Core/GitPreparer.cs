@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Linq;
+using GitVersion.BuildAgents;
 using GitVersion.Common;
 using GitVersion.Extensions;
 using GitVersion.Helpers;

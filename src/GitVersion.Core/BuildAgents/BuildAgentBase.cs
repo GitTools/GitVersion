@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using GitVersion.Logging;
 using GitVersion.OutputVariables;
 
-namespace GitVersion
+namespace GitVersion.BuildAgents
 {
     public abstract class BuildAgentBase : ICurrentBuildAgent
     {

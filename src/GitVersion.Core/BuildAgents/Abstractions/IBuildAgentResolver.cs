@@ -1,4 +1,4 @@
-namespace GitVersion
+namespace GitVersion.BuildAgents
 {
     public interface IBuildAgentResolver
     {
