@@ -2,6 +2,7 @@ using System.IO;
 using System.Linq;
 using GitVersion.Model.Configuration;
 using GitVersion.VersionCalculation;
+using Microsoft.Extensions.Options;
 
 namespace GitVersion.Configuration
 {
@@ -9,9 +10,10 @@ namespace GitVersion.Configuration
     {
         public const string DefaultFileName = "GitVersion.yml";
         private readonly IFileSystem fileSystem;
-        public ConfigFileLocator(IFileSystem fileSystem, string configFile)
+        public ConfigFileLocator(IFileSystem fileSystem, IOptions<GitVersionOptions> options)
         {
             this.fileSystem = fileSystem;
+            var configFile = options?.Value.ConfigInfo.ConfigFile;
             FilePath = !string.IsNullOrWhiteSpace(configFile) ? configFile : DefaultFileName;
         }
 

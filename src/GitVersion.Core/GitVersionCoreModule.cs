@@ -31,6 +31,7 @@ namespace GitVersion
             services.AddSingleton<IGitVersionContextFactory, GitVersionContextFactory>();
 
             services.AddSingleton<IConfigProvider, ConfigProvider>();
+            services.AddSingleton<IConfigFileLocator, ConfigFileLocator>();
             services.AddSingleton<IVariableProvider, VariableProvider>();
 
             services.AddSingleton<IBaseVersionCalculator, BaseVersionCalculator>();
@@ -41,7 +42,6 @@ namespace GitVersion
             services.AddSingleton<IGitVersionCalculateTool, GitVersionCalculateTool>();
             services.AddSingleton<IGitVersionOutputTool, GitVersionOutputTool>();
 
-            services.AddSingleton<IBuildAgentResolver, BuildAgentResolver>();
             services.AddSingleton<IGitPreparer, GitPreparer>();
             services.AddSingleton<IRepositoryStore, RepositoryStore>();
 
@@ -50,13 +50,6 @@ namespace GitVersion
             services.AddSingleton<IWixVersionFileUpdater, WixVersionFileUpdater>();
             services.AddSingleton<IAssemblyInfoFileUpdater, AssemblyInfoFileUpdater>();
             services.AddSingleton<IProjectFileUpdater, ProjectFileUpdater>();
-
-            services.AddSingleton<IConfigFileLocator>(sp =>
-            {
-                var options = sp.GetService<IOptions<GitVersionOptions>>();
-                var fileSystem = sp.GetService<IFileSystem>();
-                return new ConfigFileLocator(fileSystem, options?.Value.ConfigInfo.ConfigFile);
-            });
 
             services.AddSingleton(sp =>
             {
@@ -67,8 +60,6 @@ namespace GitVersion
 
 
             services.AddModule(new BuildServerModule());
-            services.AddSingleton(sp => sp.GetService<IBuildAgentResolver>()?.Resolve());
-
             services.AddModule(new GitVersionInitModule());
             services.AddModule(new VersionStrategyModule());
         }

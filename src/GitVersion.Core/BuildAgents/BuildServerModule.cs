@@ -13,6 +13,9 @@ namespace GitVersion.BuildAgents
             {
                 services.AddSingleton(typeof(IBuildAgent), buildAgent);
             }
+
+            services.AddSingleton<IBuildAgentResolver, BuildAgentResolver>();
+            services.AddSingleton(sp => sp.GetService<IBuildAgentResolver>()?.Resolve());
         }
     }
 }
