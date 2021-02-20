@@ -1,6 +1,10 @@
 ---
 Order: 20
 Title: Command Line
+Description: |
+    The Command Line gives most flexibility by allowing the execution of
+    GitVersion to be customized.
+CardIcon: terminal.svg
 ---
 
 If you want a command line version installed on your machine then you can use

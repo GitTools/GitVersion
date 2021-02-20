@@ -4,12 +4,12 @@ Title: Configuration
 Description: Details about how GitVersion can be configured to suit your needs
 ---
 
-GitVersion 3.0 is mainly powered by configuration and no longer has branching
-strategies hard coded.
+GitVersion from version 3 is mainly powered by configuration and no longer has
+branching strategies hard coded.
 
 ## Configuration tool
 
-If you run `GitVersion init` you will be launched into a configuration tool, it
+If you run `gitversion init` you will be launched into a configuration tool, it
 can help you configure GitVersion the way you want it.
 
 Once complete, the `init` command will create a `GitVersion.yml` file in the

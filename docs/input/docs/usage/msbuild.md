@@ -1,11 +1,18 @@
 ---
 Order: 30
 Title: MSBuild Task
+Description: |
+    Just install with NuGet and GitVersion will automatically generate assembly
+    version information that is compiled into the resulting artifact.
+CardIcon: collect.svg
 ---
 
 The MSBuild Task for GitVersion — **GitVersionTask** — is a simple solution if
 you want to version your assemblies without writing any command line scripts or
 modifying your build process.
+
+Just install with NuGet and GitVersion will automatically generate assembly
+version information that is compiled into the resulting artifact.
 
 It currently works with desktop `MSBuild`. Support for CoreCLR with `dotnet build`
 is coming soon.
