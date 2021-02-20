@@ -50,7 +50,7 @@ namespace GitVersion.Core.Tests
         [Test]
         public void VariableDocumentationIsUpToDate()
         {
-            var variableDocumentationFile = ReadDocumentationFile("input/docs/more-info/variables.md");
+            var variableDocumentationFile = ReadDocumentationFile("input/docs/reference/variables.md");
             var variables = VersionVariables.AvailableVariables.ToList();
 
             variables.ShouldNotBeEmpty();
