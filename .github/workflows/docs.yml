@@ -1,4 +1,4 @@
-name: Build
+name: Verify Documentation
 
 on: [push, pull_request]
 
