@@ -27,20 +27,21 @@ namespace GitVersion
             var assembly = Assembly.GetExecutingAssembly();
             versionWriter.WriteTo(assembly, v => version = v);
 
-            using var argumentsMarkdownStream = GetType().Assembly.GetManifestResourceStream("GitVersion.App.arguments.md");
-            using var sr = new StreamReader(argumentsMarkdownStream);
-            var argsMarkdown = sr.ReadToEnd();
-            var codeBlockStart = argsMarkdown.IndexOf("```");
-            var codeBlockEnd = argsMarkdown.LastIndexOf("```");
-            argsMarkdown = argsMarkdown.Substring(codeBlockStart + 3, codeBlockEnd).Trim();
+            var args = ArgumentList();
             var nl = System.Environment.NewLine;
-            var message = "GitVersion "
-                        + version + nl
-                        + "Use convention to derive a SemVer product version from a GitFlow or GitHub based repository."
-                        + nl + nl + "GitVersion [path]"
-                        + nl + nl + argsMarkdown;
+            var message = "GitVersion " + version + nl + nl + args;
 
             writeAction(message);
+        }
+
+        private string ArgumentList()
+        {
+            using var argumentsMarkdownStream = GetType().Assembly.GetManifestResourceStream("GitVersion.arguments.md");
+            using var sr = new StreamReader(argumentsMarkdownStream);
+            var argsMarkdown = sr.ReadToEnd();
+            var codeBlockStart = argsMarkdown.IndexOf("```") + 3;
+            var codeBlockEnd = argsMarkdown.LastIndexOf("```") - codeBlockStart;
+            return argsMarkdown.Substring(codeBlockStart, codeBlockEnd).Trim();
         }
     }
 }
