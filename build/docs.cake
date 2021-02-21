@@ -23,7 +23,7 @@ Task("Preview-Documentation")
     });
 });
 
-Task("Force-Publish-Documentation")
+Task("Build-Documentation")
     .IsDependentOn("Clean-Documentation")
     .WithCriteria(() => DirectoryExists(MakeAbsolute(Directory("docs"))), "Wyam documentation directory is missing")
     .Does<BuildParameters>((parameters) =>
@@ -37,7 +37,12 @@ Task("Force-Publish-Documentation")
         ConfigurationFile = MakeAbsolute((FilePath)"config.wyam"),
         Settings = parameters.WyamAdditionalSettings
     });
+});
 
+Task("Force-Publish-Documentation")
+    .IsDependentOn("Build-Documentation")
+    .Does<BuildParameters>((parameters) =>
+{
     PublishDocumentation(parameters);
 });
 
