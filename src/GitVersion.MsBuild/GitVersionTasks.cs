@@ -70,6 +70,8 @@ namespace GitVersion.MsBuild
             gitVersionOptions.Output.Add(OutputType.BuildServer);
 
             services.AddSingleton(Options.Create(gitVersionOptions));
+            services.AddModule(new GitVersionCoreModule());
+            services.AddModule(new GitVersionLibGit2SharpModule());
             services.AddModule(new GitVersionTaskModule());
 
             services.AddSingleton<IConsole>(new MsBuildAdapter(task.Log));

@@ -22,6 +22,7 @@
 
     <ItemGroup>
         <ProjectReference Include="..\GitVersion.Core\GitVersion.Core.csproj" PrivateAssets="All"/>
+        <ProjectReference Include="..\GitVersion.LibGit2Sharp\GitVersion.LibGit2Sharp.csproj"/>
     </ItemGroup>
 
     <Import Project="nuget-files.props"/>
