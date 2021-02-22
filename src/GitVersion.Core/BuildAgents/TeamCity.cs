@@ -36,7 +36,7 @@ namespace GitVersion.BuildAgents
             Log.Warning(@"TeamCity doesn't make the current branch available through environmental variables.
 Depending on your authentication and transport setup of your git VCS root things may work. In that case, ignore this warning.
 In your TeamCity build configuration, add a parameter called `env.Git_Branch` with value %teamcity.build.vcs.branch.<vcsid>%
-See https://gitversion.net/docs/build-server-support/build-server/teamcity for more info");
+See https://gitversion.net/docs/reference/build-servers/teamcity for more info");
         }
 
         public override bool PreventFetch()

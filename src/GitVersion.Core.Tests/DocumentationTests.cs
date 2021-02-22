@@ -25,7 +25,7 @@ namespace GitVersion.Core.Tests
         [Test]
         public void ConfigurationDocumentationIsUpToDate()
         {
-            var configurationDocumentationFile = ReadDocumentationFile("input/docs/configuration.md");
+            var configurationDocumentationFile = ReadDocumentationFile("input/docs/reference/configuration.md");
 
             const BindingFlags bindingFlags = BindingFlags.Public | BindingFlags.DeclaredOnly | BindingFlags.Instance;
             var configProperties = typeof(Config)
@@ -50,7 +50,7 @@ namespace GitVersion.Core.Tests
         [Test]
         public void VariableDocumentationIsUpToDate()
         {
-            var variableDocumentationFile = ReadDocumentationFile("input/docs/more-info/variables.md");
+            var variableDocumentationFile = ReadDocumentationFile("input/docs/reference/variables.md");
             var variables = VersionVariables.AvailableVariables.ToList();
 
             variables.ShouldNotBeEmpty();
