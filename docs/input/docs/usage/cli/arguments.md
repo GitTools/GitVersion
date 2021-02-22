@@ -49,6 +49,7 @@ GitVersion [path]
     /nonormalize    Disables normalize step on a build server.
 
 # AssemblyInfo updating
+
     /updateassemblyinfo
                     Will recursively search for all 'AssemblyInfo.cs' files in
                     the git repo and update them
@@ -69,12 +70,14 @@ GitVersion [path]
                     Supports writing version info for: C#, F#, VB
 
 # Create or update Wix version file
+
     /updatewixversionfile
                    All the GitVersion variables are written to
                    'GitVersion_WixVersion.wxi'. The variables can then be
                    referenced in other WiX project files for versioning.
 
-    # Remote repository args
+# Remote repository args
+
     /url            Url to remote git repository.
     /b              Name of the branch to use on the remote repository, must be
                     used in combination with /url.
@@ -89,12 +92,7 @@ GitVersion [path]
                     GitVersion to not calculate your version as expected.
 
 # Execute build args
-    /exec           Executes target executable making GitVersion variables
-                    available as environmental variables
-    /execargs       GitVersionOptions for the executable specified by /exec
-    /proj           Build a msbuild file, GitVersion variables will be passed as
-                    msbuild properties
-    /projargs       Additional arguments to pass to msbuild
+
     /verbosity      Specifies the amount of information to be displayed.
                     (Quiet, Minimal, Normal, Verbose, Diagnostic)
                     Default is Normal
