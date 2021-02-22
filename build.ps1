@@ -206,7 +206,8 @@ $Arguments = @{
 # Start Cake
 Write-Host "Running build script..."
 
-& dotnet cake $Script $Arguments
+& dotnet run --project build/Build.csproj -- $Arguments
+# & dotnet cake $Script $Arguments
 
 if ($env:APPVEYOR) {
     $host.SetShouldExit($LASTEXITCODE)
