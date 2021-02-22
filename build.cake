@@ -196,7 +196,7 @@ Task("Publish-Chocolatey")
 });
 
 Task("Publish-Documentation")
-    .IsDependentOn("Publish-Documentation-Internal")
+    .IsDependentOn("Force-Publish-Documentation")
     .Finally(() =>
 {
     if (publishingError)
