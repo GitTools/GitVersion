@@ -216,11 +216,13 @@ Sets the format which will be used to format the `CommitDate` output variable.
 
 ### ignore
 
-The header for ignore configuration.
+The header property for the `ignore` configuration.
 
-### update-build-number
-
-Configures GitVersion to update the build number or not when running on a build server.
+:::{.alert .alert-info}
+**Note:** When ignoring a commit or a range of commits, they are only ignored in
+the search for a [version source][version-sources], not when calculating other
+parts of the version number, such as build metadata.
+:::
 
 #### sha
 
@@ -247,6 +249,10 @@ ignore:
 Date and time in the format `yyyy-MM-ddTHH:mm:ss` (eg `commits-before:
 2015-10-23T12:23:15`) to setup an exclusion range. Effectively any commit before
 `commits-before` will be ignored.
+
+### update-build-number
+
+Configures GitVersion to update the build number or not when running on a build server.
 
 ### merge-message-formats
 
@@ -524,3 +530,5 @@ If the `pre-release-weight` is set, it would be added to the `PreReleaseNumber`
 to get a final `AssemblySemFileVer`, otherwise a branch specific default for
 `pre-release-weight` will be used in the calculation. Related Issues
 [1145](https://github.com/GitTools/GitVersion/issues/1145), [1366](https://github.com/GitTools/GitVersion/issues/1366)
+
+[version-sources]: /docs/reference/version-sources
