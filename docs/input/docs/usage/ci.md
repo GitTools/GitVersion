@@ -11,7 +11,7 @@ CardIcon: repeat.svg
 GitVersion can be used in a Continuous Server pipeline to generate a version
 number that both labels the build itself and makes the different version
 variables available to the rest of the build pipeline. Choose between the
-supported continous integration servers below.
+supported continuous integration servers below.
 
 ## GitHub Actions
 
