@@ -49,7 +49,6 @@ Task("Force-Publish-Documentation")
 Task("Publish-Documentation-Internal")
     .IsDependentOn("Clean-Documentation")
     .WithCriteria(() => DirectoryExists(MakeAbsolute(Directory("docs"))), "Wyam documentation directory is missing")
-    .WithCriteria<BuildParameters>((context, parameters) => parameters.IsRunningOnWindows, "Publish-Documentation is ran only on Windows agents.")
     .WithCriteria<BuildParameters>((context, parameters) => parameters.IsReleasingCI,      "Publish-Documentation is ran only on Releasing CI.")
     .WithCriteria<BuildParameters>((context, parameters) => parameters.IsStableRelease() || parameters.IsPreRelease(), "Publish-Documentation works only for non-PR commits.")
     .Does<BuildParameters>((parameters) =>
