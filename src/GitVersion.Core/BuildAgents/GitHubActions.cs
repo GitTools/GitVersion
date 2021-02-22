@@ -39,7 +39,7 @@ namespace GitVersion.BuildAgents
             // The outgoing environment variables must be written to a temporary file (identified by the $GITHUB_ENV environment
             // variable, which changes for every step in a workflow) which is then parsed. That file must also be UTF-8 or it will fail.
 
-            if (writer == null || !updateBuildNumber)
+            if (writer == null)
             {
                 return;
             }
