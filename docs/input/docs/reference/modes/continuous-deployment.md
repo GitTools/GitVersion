@@ -25,11 +25,11 @@ not work for you, which leads us into a new mode in v4 of GitVersion:
 By default GitVersion is set up to do Continuous Deployment versioning on the
 `develop` branch, but for all other branches,
 [Continuous Delivery](continuous-delivery) is the default mode. From version
-3 of GitVersion this behavior is [configurable](../../configuration).
+3 of GitVersion this behavior is [configurable](/docs/reference/configuration).
 
 The default behavior for v3 and how v1 & 2 worked was that the version only
 incremented after a tag, which signified a release. In v3 you can simply switch
-the default mode in the [configuration](../../configuration) from
+the default mode in the [configuration](/docs/reference/configuration) from
 `ContinuousDelivery` to `ContinuousDeployment` and the version will then
 increment each commit, giving you the features of GitVersion with continuous
 deployment:
