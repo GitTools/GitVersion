@@ -16,6 +16,8 @@ GitVersion can be installed as a [.NET global tool][dotnet-tool] under the name
 dotnet tool install --global GitVersion.Tool
 ```
 
+This should work on all operating systems supported by .NET Core.
+
 ### Homebrew
 
 To install the [`gitversion`][brew] formula with [Homebrew](https://brew.sh/),
@@ -29,6 +31,9 @@ Switches are available with `gitversion --help`. Even though the documentation
 uses a slash `/` for all switches, you need to use a dash `-` instead, since `/`
 is interpreted as a root path on POSIX based operating systems.
 
+This should work on all operating systems supported by Homebrew (at the time
+of writing: Linux and macOS).
+
 ### Chocolatey
 
 Available on [Chocolatey](http://chocolatey.org) as
@@ -37,6 +42,9 @@ Available on [Chocolatey](http://chocolatey.org) as
 ```shell
 choco install GitVersion.Portable
 ```
+
+This should work on all operating systems supported by Chocolatey (at the time
+of writing: Windows).
 
 ### Docker
 
@@ -61,3 +69,6 @@ The important arguments here are:
 Docker since environment variables defined inside the Docker container will not
 be exposed to the host OS.
 :::
+
+This should work on all operating systems supported by Docker (at the time
+of writing: Linux, macOS, Windows).
