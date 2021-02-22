@@ -84,7 +84,7 @@ from The Noun Project.
 [contribute]:                      https://github.com/GitTools/GitVersion/blob/main/CONTRIBUTING.md
 [why]:                             https://gitversion.net/docs/why
 [usage]:                           https://gitversion.net/docs/usage/usage
-[how]:                             https://gitversion.net/docs/more-info/how-it-works
+[how]:                             https://gitversion.net/docs/learn/how-it-works
 [faq]:                             https://gitversion.net/docs/faq
 [who]:                             https://gitversion.net/docs/who
 [gv-in-action]:                    https://raw.github.com/GitTools/GitVersion/master/docs/input/docs/img/README.png

@@ -1,6 +1,7 @@
 ---
 Order: 50
 Title: Version Sources
+Description: Details on how GitVersion finds a source for its generated version number
 ---
 
 GitVersion has a two step process for calculating the version number. First it

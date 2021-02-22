@@ -7,16 +7,16 @@ Description: Details on the Octopus Deploy support in GitVersion
 While not a build server, there are a few things to consider when using Octopus
 Deploy with GitVersion.
 
- GitVersion follows [continuous delivery](../../reference/versioning-modes/continuous-delivery)
- versioning by default. This means builds will keep producing *the same version*
- with just metadata differing. For example, when you start a new release (say
- `1.0.0`) with git flow, the branch will start with a semver like
- `1.0.0-beta.1+0`, and the Octopus NuGet package will have a version of
- `1.0.0-beta0001`. As you commit changes to this release branch the *metadata*
- of the semver will increase like so: `1.0.0-beta.1+1`, `1.0.0-beta.1+2`, etc.
- However, the version of the corresponding Octopus NuGet package will retain the
- *same* `1.0.0-beta0001` version you started with. The problem is Octopus Deploy
- will prevent you from deploying these revisions because it sees the same NuGet
+ GitVersion follows [continuous delivery][continuous-delivery] versioning by
+ default. This means builds will keep producing *the same version* with just
+ metadata differing. For example, when you start a new release (say `1.0.0`)
+ with git flow, the branch will start with a semver like `1.0.0-beta.1+0`, and
+ the Octopus NuGet package will have a version of `1.0.0-beta0001`. As you
+ commit changes to this release branch the *metadata* of the semver will
+ increase like so: `1.0.0-beta.1+1`, `1.0.0-beta.1+2`, etc. However, the version
+ of the corresponding Octopus NuGet package will retain the *same*
+ `1.0.0-beta0001` version you started with. The problem is Octopus Deploy will
+ prevent you from deploying these revisions because it sees the same NuGet
  package version and thinks nothing has changed.
 
 Because Octopus Deploy uses NuGet like this you cannot continue to push
@@ -169,8 +169,11 @@ if ($versionInfo.PreReleaseTag -eq '')
 }
 ```
 
-### Configure GitVersion to [increment per commit](../../more-info/incrementing-per-commit)
+### Configure GitVersion to Increment Per Commit
 
-As mentioned above, this means you will burn multiple versions per release. This
-might not be an issue for you, but can confuse consumers of your library as the
-version has semantic meaning.
+As mentioned above, [incrementing per commit][increment-per-commit] means you
+will burn multiple versions per release. This might not be an issue for you, but
+can confuse consumers of your library as the version has semantic meaning.
+
+[continuous-delivery]: /docs/reference/modes/continuous-delivery
+[increment-per-commit]: /docs/reference/version-increments#incrementing-per-commit

@@ -5,7 +5,7 @@ Description: Details about the output types supported by the GitVersion CLI
 ---
 
 By default GitVersion returns a json object to stdout containing all the
-[variables](../more-info/variables) which GitVersion generates. This works
+[variables](/docs/reference/variables) which GitVersion generates. This works
 great if you want to get your build scripts to parse the json object then use
 the variables, but there is a simpler way.
 

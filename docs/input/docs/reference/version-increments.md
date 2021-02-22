@@ -1,6 +1,7 @@
 ---
 Order: 40
 Title: Version Incrementing
+Description: Details on how GitVersion performs version increments
 ---
 
 Because GitVersion works with a number of workflows the way it does its version
@@ -48,7 +49,7 @@ feed will see the alpha packages.
 
 ### 2. Octopus deploy
 
-See [Octopus deploy](../build-server-support/build-server/octopus-deploy)
+See [Octopus deploy](/docs/reference/build-servers/octopus-deploy)
 
 ## Manually incrementing the version
 

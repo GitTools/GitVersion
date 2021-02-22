@@ -1,5 +1,5 @@
 ---
-Order: 30
+Order: 20
 Title: Version Variables
 Description: The version variables exposed by GitVersion
 ---

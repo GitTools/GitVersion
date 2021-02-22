@@ -97,7 +97,7 @@ branches:
             SetupConfigFileContent(text);
             var ex = Should.Throw<ConfigurationException>(() => configProvider.Provide(repoPath));
             ex.Message.ShouldBe($"Branch configuration 'bug' is missing required configuration 'regex'{System.Environment.NewLine}" +
-                                "See https://gitversion.net/docs/configuration for more info");
+                                "See https://gitversion.net/docs/reference/configuration for more info");
         }
 
         [Test]
@@ -112,7 +112,7 @@ branches:
             SetupConfigFileContent(text);
             var ex = Should.Throw<ConfigurationException>(() => configProvider.Provide(repoPath));
             ex.Message.ShouldBe($"Branch configuration 'bug' is missing required configuration 'source-branches'{System.Environment.NewLine}" +
-                                "See https://gitversion.net/docs/configuration for more info");
+                                "See https://gitversion.net/docs/reference/configuration for more info");
         }
 
         [Test(Description = "This test proves the configuration validation will fail early with a helpful message when a branch listed in source-branches has no configuration.")]
@@ -127,7 +127,7 @@ branches:
             SetupConfigFileContent(text);
             var ex = Should.Throw<ConfigurationException>(() => configProvider.Provide(repoPath));
             ex.Message.ShouldBe($"Branch configuration 'bug' defines these 'source-branches' that are not configured: '[notconfigured]'{System.Environment.NewLine}" +
-                                "See https://gitversion.net/docs/configuration for more info");
+                                "See https://gitversion.net/docs/reference/configuration for more info");
         }
 
         [Test(Description = "Well-known branches may not be present in the configuration file. This test confirms the validation check succeeds when the source-branches configuration contain these well-known branches.")]

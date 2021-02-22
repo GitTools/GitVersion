@@ -90,7 +90,7 @@ appended to it.
 
 #### Other injected Variables
 
-All other [variables](../more-info/variables) will be injected into an
+All other [variables](/docs/reference/variables) will be injected into an
 internal static class part of the global namespace similar to this:
 
 ```csharp
@@ -153,7 +153,7 @@ else
 ### Populate some MSBuild properties with version metadata
 
 The sub-task `GitVersionTask.GetVersion` will write all the derived
-[variables](../more-info/variables) to MSBuild properties so the information
+[variables](/docs/reference/variables) to MSBuild properties so the information
 can be used by other tooling in the build pipeline.
 
 The class for `GitVersionTask.GetVersion` has a property for each variable.
@@ -195,9 +195,9 @@ The sub-task `GitVersionTask.WriteVersionInfoToBuildLog` will attempt to write
 the version information to the current Build Server log.
 
 If, at build time, it is detected that the build is occurring inside a Build
-Server then the [variables](../more-info/variables) will be written to the
+Server then the [variables](/docs/reference/variables) will be written to the
 Build Server log in a format that the current Build Server can consume. See
-[Build Server Support](../build-server-support/build-server-support).
+[Build Server Support](/docs/reference/build-servers).
 
 ## Conditional control tasks
 

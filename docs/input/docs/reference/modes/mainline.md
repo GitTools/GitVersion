@@ -7,10 +7,9 @@ Description: |
     to `main`.
 ---
 
-Mainline Development is enabled when using
-[GitHubFlow](/docs/learn/git-branching-strategies/githubflow) or any other strategy
-where you develop on `main`. The main rule of mainline development is that
-**main is always in a state that it could be deployed to production**. This
+Mainline Development is enabled when using [GitHubFlow][githubflow] or any other
+strategy where you develop on `main`. The main rule of mainline development is
+that **main is always in a state that it could be deployed to production**. This
 means that pull requests should not be merged until they are ready to go out.
 
 To properly achieve mainline development you need confidence in your test suite
@@ -45,7 +44,7 @@ commit message to skip incrementing for that commit.
 
 Here is an example of what mainline development looks like:
 
-![Mainline mode](/docs/img/mainline-mode.png)
+![Mainline mode][mainline-img]
 
 :::{.alert .alert-warning}
 **Warning**
@@ -58,12 +57,18 @@ slowing down.
 :::
 
 ## Usage
-By default GitVersion is set up to do [Continuous Delivery](continuous-delivery)
-versioning on all branches but `develop` (which does
-[Continuous Deployment](continuous-deployment) by default). To change the
-[versioning mode](versioning-mode) to Mainline Development, just
-change the [configuration](/docs/reference/configuration) as such:
+By default GitVersion is set up to do [Continuous Delivery][continuous-delivery]
+versioning on all branches but `develop` (which does [Continuous
+Deployment][continuous-deployment] by default). To change the [versioning
+mode][modes] to Mainline Development, just change the [configuration] as such:
 
 ```yaml
 mode: Mainline
 ```
+
+[configuration]: /docs/reference/configuration
+[continuous-delivery]: /docs/reference/modes/continuous-delivery
+[continuous-deployment]: /docs/reference/modes/continuous-deployment
+[githubflow]: /docs/learn/branching-strategies/githubflow
+[mainline-img]: /docs/img/mainline-mode.png
+[modes]: /docs/reference/modes

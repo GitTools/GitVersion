@@ -1,9 +1,10 @@
 ---
 Order: 20
-Title: GitFlow
+Title: Git Flow
+Description: The Git Flow branching strategy allows for more structured releases
 ---
 
-GitFlow allows more structured releases, and GitVersion will derive sensible
+Git Flow allows more structured releases, and GitVersion will derive sensible
 SemVer compatible versions from this structure.
 
 ## Resources

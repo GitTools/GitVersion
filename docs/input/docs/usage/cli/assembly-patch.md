@@ -16,7 +16,7 @@ appended `.0`.
 * `AssemblyInformationalVersion` will be set to the `InformationalVersion`
 variable.
 
-Note that contrary to when using the [MSBuild Task](msbuild-task) the
+Note that contrary to when using the [MSBuild Task][msbuild-task] the
 attributes must already exist in the `AssemblyInfo.cs` or `AssemblyInfo.vb`
 files prior to calling GitVersion.
 
@@ -75,13 +75,15 @@ Will iterate through each file and update known attributes (`AssemblyVersion`,
 
 ## Writing version metadata in WiX format
 
-To support integration with WiX projects, use `GitVersion.exe /updatewixversionfile`.
-All the [variables](../more-info/variables) are written to
+To support integration with WiX projects, use `GitVersion.exe
+/updatewixversionfile`. All the [variables][variables] are written to
 `GitVersion_WixVersion.wxi` under the current working directory and can be
 referenced in the WiX project files.
 
-[docker]: https://hub.docker.com/r/gittools/gitversion
-[choco]: http://chocolatey.org/packages/GitVersion.Portable
 [brew]: https://formulae.brew.sh/formula-linux/gitversion
-[tool]: https://www.nuget.org/packages/GitVersion.Tool/
+[choco]: http://chocolatey.org/packages/GitVersion.Portable
+[docker]: https://hub.docker.com/r/gittools/gitversion
 [dotnet-tool]: https://docs.microsoft.com/en-us/dotnet/core/tools/global-tools#install-a-global-tool
+[msbuild-task]: /docs/usage/msbuild
+[tool]: https://www.nuget.org/packages/GitVersion.Tool/
+[variables]: /docs/reference/variables

@@ -49,6 +49,6 @@ defined and set to the reference being built.
 
 [git-switch]: https://git-scm.com/docs/git-switch
 [git-unshallow]: https://git-scm.com/docs/git-fetch#Documentation/git-fetch.txt---unshallow
-[gitflow]: /docs/learn/git-branching-strategies/gitflow
+[gitflow]: /docs/learn/branching-strategies/gitflow
 [build-servers]: /docs/reference/build-servers
 [configuration]: /docs/reference/configuration

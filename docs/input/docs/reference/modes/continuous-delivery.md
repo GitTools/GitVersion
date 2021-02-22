@@ -31,17 +31,17 @@ required to *merge* to main to do a release, triggering a rebuild and a new
 set of artifacts to go through your pipeline. Depending on how long your
 pipeline is, this could be a while.
 
-GitHubFlow is a better fit for Continuous delivery, the
-[mainline development](mainline-development) model means that every merged
-feature branch will be built as a *stable* version and if the build/builds go
-green then you are free to deploy to production at any time.
+GitHubFlow is a better fit for Continuous delivery, the [mainline
+development][mainline] model means that every merged feature branch will be
+built as a *stable* version and if the build/builds go green then you are free
+to deploy to production at any time.
 
 ## Usage
 
 By default, GitVersion is set up to do Continuous Delivery on all branches but
-`develop`, which is set up with [Continuous Deployment](continuous-deployment).
+`develop`, which is set up with [Continuous Deployment][continuous-deployment].
 To change the mode to Continuous Delivery, change your
-[configuration](/docs/reference/configuration) to:
+[configuration] to:
 
 ```yaml
 mode: ContinuousDelivery
@@ -65,5 +65,11 @@ an external manual process.
 
 ## Resources
 
-- [Continuous Delivery on Wikipedia](https://en.wikipedia.org/wiki/Continuous_delivery)
-- [Continuous Delivery, the book](http://www.amazon.com/Continuous-Delivery-Deployment-Automation-Addison-Wesley/dp/0321601912)
+- [Continuous Delivery on Wikipedia][wikipedia]
+- [Continuous Delivery, the book][book]
+
+[book]: http://www.amazon.com/Continuous-Delivery-Deployment-Automation-Addison-Wesley/dp/0321601912
+[configuration]: /docs/reference/configuration
+[continuous-deployment]: continuous-deployment
+[mainline]: /docs/reference/modes/mainline
+[wikipedia]: https://en.wikipedia.org/wiki/Continuous_delivery
