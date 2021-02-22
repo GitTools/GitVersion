@@ -30,6 +30,16 @@
         <meta name="google" content="notranslate">
 <meta http-equiv="Content-Language" content="en">
 <meta name="google-site-verification" content="46g_yrsDyk5YTGoXb2ii9BjmTJ2QAEsacqn6wqiAiII">
+<meta property="og:image" content="https://github.com/GitTools/graphics/raw/master/GitVersion/banner-1280x640.png">
+<meta property="og:site_name" content="GitVersion">
+<meta property="og:type" content="object">
+<meta property="og:title" content="GitVersion">
+<meta property="og:url" content="https://gitversion.net/">
+<meta property="og:description" content="From git log to SemVer in no time">
+<link rel="icon" href="/assets/img/icon.png" type="image/png">
+<link rel="icon" href="/assets/img/icon.svg" type="image/svg">
+<link rel="apple-touch-icon" href="/assets/img/icon.png" type="image/png">
+<link rel="apple-touch-icon" href="/assets/img/icon.svg" type="image/svg">
 
     </head>
     <body class="hold-transition wyam layout-boxed  ">    
@@ -59,7 +69,7 @@
                     <!-- Collect the nav links, forms, and other content for toggling -->
                     <div class="collapse navbar-collapse pull-left" id="navbar-collapse">
                         <ul class="nav navbar-nav">                            
-                                    <li><a href="/docs">Docs</a></li>
+                                    <li><a href="/docs">Documentation</a></li>
         <li class="active"><a href="/api">API</a></li>
  
                         </ul>       
@@ -140,6 +150,13 @@
 			<li class="header">Namespace</li>
 		<li><a href="/api/GitVersion.VersionCalculation">GitVersion<wbr>.VersionCalculation</a></li>
 		<li role="separator" class="divider"></li>
+			<li class="header">Interface Types</li>
+				<li><a href="/api/GitVersion.VersionCalculation/IBaseVersionCalculator">I<wbr>Base<wbr>Version<wbr>Calculator</a></li>
+				<li><a href="/api/GitVersion.VersionCalculation/IMainlineVersionCalculator">I<wbr>Mainline<wbr>Version<wbr>Calculator</a></li>
+				<li><a href="/api/GitVersion.VersionCalculation/INextVersionCalculator">I<wbr>Next<wbr>Version<wbr>Calculator</a></li>
+				<li><a href="/api/GitVersion.VersionCalculation/IVariableProvider">IVariableProvider</a></li>
+				<li><a href="/api/GitVersion.VersionCalculation/IVersionFilter">IVersionFilter</a></li>
+				<li><a href="/api/GitVersion.VersionCalculation/IVersionStrategy">IVersionStrategy</a></li>
 			<li class="header">Class Types</li>
 				<li><a href="/api/GitVersion.VersionCalculation/BaseVersion">BaseVersion</a></li>
 				<li><a href="/api/GitVersion.VersionCalculation/BaseVersionCalculator">Base<wbr>Version<wbr>Calculator</a></li>
@@ -152,16 +169,10 @@
 				<li><a href="/api/GitVersion.VersionCalculation/TaggedCommitVersionStrategy">Tagged<wbr>Commit<wbr>Version<wbr>Strategy</a></li>
 				<li><a href="/api/GitVersion.VersionCalculation/TrackReleaseBranchesVersionStrategy">Track<wbr>Release<wbr>Branches<wbr>Version<wbr>Strategy</a></li>
 				<li><a href="/api/GitVersion.VersionCalculation/VariableProvider">VariableProvider</a></li>
+				<li><a href="/api/GitVersion.VersionCalculation/VersionCalculationModule">Version<wbr>Calculation<wbr>Module</a></li>
 				<li><a href="/api/GitVersion.VersionCalculation/VersionInBranchNameVersionStrategy">Version<wbr>In<wbr>Branch<wbr>Name<wbr>Version<wbr>Strategy</a></li>
 				<li class="selected"><a href="/api/GitVersion.VersionCalculation/VersionStrategyBase">VersionStrategyBase</a></li>
 				<li><a href="/api/GitVersion.VersionCalculation/VersionStrategyModule">Version<wbr>Strategy<wbr>Module</a></li>
-			<li class="header">Interface Types</li>
-				<li><a href="/api/GitVersion.VersionCalculation/IBaseVersionCalculator">I<wbr>Base<wbr>Version<wbr>Calculator</a></li>
-				<li><a href="/api/GitVersion.VersionCalculation/IMainlineVersionCalculator">I<wbr>Mainline<wbr>Version<wbr>Calculator</a></li>
-				<li><a href="/api/GitVersion.VersionCalculation/INextVersionCalculator">I<wbr>Next<wbr>Version<wbr>Calculator</a></li>
-				<li><a href="/api/GitVersion.VersionCalculation/IVariableProvider">IVariableProvider</a></li>
-				<li><a href="/api/GitVersion.VersionCalculation/IVersionFilter">IVersionFilter</a></li>
-				<li><a href="/api/GitVersion.VersionCalculation/IVersionStrategy">IVersionStrategy</a></li>
 			<li class="header">Enum Types</li>
 				<li><a href="/api/GitVersion.VersionCalculation/VersioningMode">VersioningMode</a></li>
 
@@ -210,12 +221,12 @@
 								<dt>Derived Types</dt>
 								<dd>
 									<ul class="list-unstyled">
-											<li><a href="/api/GitVersion.VersionCalculation/TrackReleaseBranchesVersionStrategy">Track<wbr>Release<wbr>Branches<wbr>Version<wbr>Strategy</a></li>								
+											<li><a href="/api/GitVersion.VersionCalculation/TaggedCommitVersionStrategy">Tagged<wbr>Commit<wbr>Version<wbr>Strategy</a></li>								
+											<li><a href="/api/GitVersion.VersionCalculation/MergeMessageVersionStrategy">Merge<wbr>Message<wbr>Version<wbr>Strategy</a></li>								
 											<li><a href="/api/GitVersion.VersionCalculation/FallbackVersionStrategy">Fallback<wbr>Version<wbr>Strategy</a></li>								
 											<li><a href="/api/GitVersion.VersionCalculation/VersionInBranchNameVersionStrategy">Version<wbr>In<wbr>Branch<wbr>Name<wbr>Version<wbr>Strategy</a></li>								
-											<li><a href="/api/GitVersion.VersionCalculation/MergeMessageVersionStrategy">Merge<wbr>Message<wbr>Version<wbr>Strategy</a></li>								
 											<li><a href="/api/GitVersion.VersionCalculation/ConfigNextVersionVersionStrategy">Config<wbr>Next<wbr>Version<wbr>Version<wbr>Strategy</a></li>								
-											<li><a href="/api/GitVersion.VersionCalculation/TaggedCommitVersionStrategy">Tagged<wbr>Commit<wbr>Version<wbr>Strategy</a></li>								
+											<li><a href="/api/GitVersion.VersionCalculation/TrackReleaseBranchesVersionStrategy">Track<wbr>Release<wbr>Branches<wbr>Version<wbr>Strategy</a></li>								
 									</ul>
 								</dd>			
 							
@@ -229,18 +240,18 @@
 	click Interface0 "/api/GitVersion.VersionCalculation/IVersionStrategy"
 	Type["VersionStrategyBase"]
 class Type type-node
-	Derived0["TrackReleaseBranchesVersionStrategy"]--&gt;Type
-	click Derived0 "/api/GitVersion.VersionCalculation/TrackReleaseBranchesVersionStrategy"
-	Derived1["FallbackVersionStrategy"]--&gt;Type
-	click Derived1 "/api/GitVersion.VersionCalculation/FallbackVersionStrategy"
-	Derived2["VersionInBranchNameVersionStrategy"]--&gt;Type
-	click Derived2 "/api/GitVersion.VersionCalculation/VersionInBranchNameVersionStrategy"
-	Derived3["MergeMessageVersionStrategy"]--&gt;Type
-	click Derived3 "/api/GitVersion.VersionCalculation/MergeMessageVersionStrategy"
+	Derived0["TaggedCommitVersionStrategy"]--&gt;Type
+	click Derived0 "/api/GitVersion.VersionCalculation/TaggedCommitVersionStrategy"
+	Derived1["MergeMessageVersionStrategy"]--&gt;Type
+	click Derived1 "/api/GitVersion.VersionCalculation/MergeMessageVersionStrategy"
+	Derived2["FallbackVersionStrategy"]--&gt;Type
+	click Derived2 "/api/GitVersion.VersionCalculation/FallbackVersionStrategy"
+	Derived3["VersionInBranchNameVersionStrategy"]--&gt;Type
+	click Derived3 "/api/GitVersion.VersionCalculation/VersionInBranchNameVersionStrategy"
 	Derived4["ConfigNextVersionVersionStrategy"]--&gt;Type
 	click Derived4 "/api/GitVersion.VersionCalculation/ConfigNextVersionVersionStrategy"
-	Derived5["TaggedCommitVersionStrategy"]--&gt;Type
-	click Derived5 "/api/GitVersion.VersionCalculation/TaggedCommitVersionStrategy"
+	Derived5["TrackReleaseBranchesVersionStrategy"]--&gt;Type
+	click Derived5 "/api/GitVersion.VersionCalculation/TrackReleaseBranchesVersionStrategy"
 
 						</div>
 					</div>

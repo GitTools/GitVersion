@@ -1,0 +1,470 @@
+﻿<!DOCTYPE html><html><head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+        <meta name="description">
+        <meta name="keywords" content="static content generator,static site generator,static site,HTML,web development,.NET,C#,Razor,Markdown,YAML">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="shortcut icon" href="/assets/img/favicon.ico" type="image/x-icon">
+        <link rel="icon" href="/assets/img/favicon.ico" type="image/x-icon">
+        <title>GitVersion - Octopus Deploy</title>
+        <link href="/assets/css/highlight.css" rel="stylesheet">
+        <link href="/assets/css/bootstrap/bootstrap.css" rel="stylesheet">
+        <link href="/assets/css/adminlte/AdminLTE.css" rel="stylesheet">
+        <link href="/assets/css/theme/theme.css" rel="stylesheet">
+        <link href="//fonts.googleapis.com/css?family=Roboto+Mono:400,700|Roboto:400,400i,700,700i" rel="stylesheet">
+        <link href="/assets/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+        <link href="/assets/css/override.css" rel="stylesheet">
+        <script src="/assets/js/jquery-2.2.3.min.js"></script>
+        <script src="/assets/js/bootstrap.min.js"></script>        
+        <script src="/assets/js/app.min.js"></script>         
+        <script src="/assets/js/highlight.pack.js"></script>   
+        <script src="/assets/js/jquery.slimscroll.min.js"></script>
+        <script src="/assets/js/jquery.sticky-kit.min.js"></script>
+        <script src="/assets/js/mermaid.min.js"></script>
+        <script src="/assets/js/svg-pan-zoom.min.js"></script>
+        <!--[if lt IE 9]>
+        <script src="/assets/js/html5shiv.min.js"></script>
+        <script src="/assets/js/respond.min.js"></script>
+        <![endif]-->  
+
+        <meta name="google" content="notranslate">
+<meta http-equiv="Content-Language" content="en">
+<meta name="google-site-verification" content="46g_yrsDyk5YTGoXb2ii9BjmTJ2QAEsacqn6wqiAiII">
+<meta property="og:image" content="https://github.com/GitTools/graphics/raw/master/GitVersion/banner-1280x640.png">
+<meta property="og:site_name" content="GitVersion">
+<meta property="og:type" content="object">
+<meta property="og:title" content="GitVersion">
+<meta property="og:url" content="https://gitversion.net/">
+<meta property="og:description" content="From git log to SemVer in no time">
+<link rel="icon" href="/assets/img/icon.png" type="image/png">
+<link rel="icon" href="/assets/img/icon.svg" type="image/svg">
+<link rel="apple-touch-icon" href="/assets/img/icon.png" type="image/png">
+<link rel="apple-touch-icon" href="/assets/img/icon.svg" type="image/svg">
+
+    </head>
+    <body class="hold-transition wyam layout-boxed  ">    
+        <div class="top-banner"></div>
+        <div class="wrapper with-container">
+            <!-- Header -->
+            <header class="main-header">   
+                     
+                <a href="/" class="logo">
+                            <span>GitVersion</span>
+                </a>   
+                         
+                <nav class="navbar navbar-static-top" role="navigation">
+                    <!-- Sidebar toggle button-->
+                        <a href="#" class="sidebar-toggle visible-xs-block" data-toggle="offcanvas" role="button">
+                            <span class="sr-only">Toggle side menu</span>
+                            <i class="fa fa-chevron-circle-right"></i>
+                        </a>
+                                        
+                    <div class="navbar-header">
+                        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse">
+                            <span class="sr-only">Toggle side menu</span>
+                            <i class="fa fa-chevron-circle-down"></i>
+                        </button>
+                    </div>
+            
+                    <!-- Collect the nav links, forms, and other content for toggling -->
+                    <div class="collapse navbar-collapse pull-left" id="navbar-collapse">
+                        <ul class="nav navbar-nav">                            
+                                    <li class="active"><a href="/docs">Documentation</a></li>
+        <li><a href="/api">API</a></li>
+ 
+                        </ul>       
+                    </div>
+                    <!-- /.navbar-collapse -->
+                
+                    <!-- Navbar Right Menu -->
+                </nav>
+            </header>
+            
+            <!-- Left side column. contains the logo and sidebar -->
+            <aside class="main-sidebar ">
+                <section class="infobar" data-spy="affix" data-offset-top="60" data-offset-bottom="200"> 
+                    	
+        <div><p><a href="https://github.com/gittools/GitVersion/tree/main/docs/input/docs/reference/build-servers/octopus-deploy.md"><i class="fa fa-pencil-square" aria-hidden="true"></i> Edit Content</a></p></div>
+    <div id="infobar-headings"><h6>On This Page</h6><p><a href="#githubflow-solutions">GitHubFlow Solutions</a></p>
+<hr class="infobar-hidden">
+</div>
+
+                </section>
+                <section class="sidebar">    
+                                     
+                    
+
+                    <ul class="sidebar-menu">
+                        
+
+                <li class="treeview">
+                    <a href="/docs/usage">Usage</a> <a href="#" class="expand"></a>
+                    <ul class="treeview-menu">
+                        
+                <li><a href="/docs/usage/ci">Continuous Integration</a></li>
+                <li class="treeview">
+                    <a href="/docs/usage/cli">Command Line</a> <a href="#" class="expand"></a>
+                    <ul class="treeview-menu">
+                        
+                <li><a href="/docs/usage/cli/installation">Installation</a></li>
+                <li><a href="/docs/usage/cli/arguments">Arguments</a></li>
+                <li><a href="/docs/usage/cli/output">Output</a></li>
+                <li><a href="/docs/usage/cli/assembly-patch">Assembly Patching</a></li>
+
+                    </ul>
+                </li>
+                <li><a href="/docs/usage/msbuild">MSBuild Task</a></li>
+                <li><a href="/docs/usage/library">Library</a></li>
+
+                    </ul>
+                </li>
+                <li class="treeview active">
+                    <a href="/docs/reference">Reference</a> <a href="#" class="expand"></a>
+                    <ul class="treeview-menu">
+                        
+                <li><a href="/docs/reference/configuration">Configuration</a></li>
+                <li><a href="/docs/reference/variables">Version Variables</a></li>
+                <li><a href="/docs/reference/requirements">Requirements</a></li>
+                <li><a href="/docs/reference/version-increments">Version Incrementing</a></li>
+                <li><a href="/docs/reference/version-sources">Version Sources</a></li>
+                <li class="treeview">
+                    <a href="/docs/reference/modes">Versioning Modes</a> <a href="#" class="expand"></a>
+                    <ul class="treeview-menu">
+                        
+                <li><a href="/docs/reference/modes/continuous-delivery">Continuous Delivery</a></li>
+                <li><a href="/docs/reference/modes/continuous-deployment">Continuous Deployment</a></li>
+                <li><a href="/docs/reference/modes/mainline">Mainline Development</a></li>
+
+                    </ul>
+                </li>
+                <li class="treeview active">
+                    <a href="/docs/reference/build-servers">Build Servers</a> <a href="#" class="expand"></a>
+                    <ul class="treeview-menu">
+                        
+                <li><a href="/docs/reference/build-servers/appveyor">AppVeyor</a></li>
+                <li><a href="/docs/reference/build-servers/azure-devops">Azure DevOps</a></li>
+                <li><a href="/docs/reference/build-servers/bamboo">Bamboo</a></li>
+                <li><a href="/docs/reference/build-servers/continua">Continua CI</a></li>
+                <li><a href="/docs/reference/build-servers/gitlab">GitLab CI</a></li>
+                <li><a href="/docs/reference/build-servers/jenkins">Jenkins</a></li>
+                <li><a href="/docs/reference/build-servers/myget">MyGet</a></li>
+                <li class="selected"><a href="/docs/reference/build-servers/octopus-deploy">Octopus Deploy</a></li>
+                <li><a href="/docs/reference/build-servers/teamcity">TeamCity</a></li>
+
+                    </ul>
+                </li>
+
+                    </ul>
+                </li>
+                <li class="treeview">
+                    <a href="/docs/learn">Learn</a> <a href="#" class="expand"></a>
+                    <ul class="treeview-menu">
+                        
+                <li><a href="/docs/learn/how-it-works">How it works</a></li>
+                <li><a href="/docs/learn/intro-to-semver">Intro to SemVer</a></li>
+                <li><a href="/docs/learn/dynamic-repositories">Dynamic Repositories</a></li>
+                <li><a href="/docs/learn/git-setup">Git Setup</a></li>
+                <li><a href="/docs/learn/faq">FAQ</a></li>
+                <li><a href="/docs/learn/why">Why use GitVersion?</a></li>
+                <li><a href="/docs/learn/who">Who is using GitVersion</a></li>
+                <li class="treeview">
+                    <a href="/docs/learn/branching-strategies">Branching Strategies</a> <a href="#" class="expand"></a>
+                    <ul class="treeview-menu">
+                        
+                <li><a href="/docs/learn/branching-strategies/overview">Overview</a></li>
+                <li class="treeview">
+                    <a href="/docs/learn/branching-strategies/gitflow">Git Flow</a> <a href="#" class="expand"></a>
+                    <ul class="treeview-menu">
+                        
+                <li><a href="/docs/learn/branching-strategies/gitflow/examples">GitFlow Examples</a></li>
+                <li><a href="/docs/learn/branching-strategies/gitflow/converting-to-gitflow">Converting to GitFlow</a></li>
+
+                    </ul>
+                </li>
+                <li class="treeview">
+                    <a href="/docs/learn/branching-strategies/githubflow">GitHub Flow</a> <a href="#" class="expand"></a>
+                    <ul class="treeview-menu">
+                        
+                <li><a href="/docs/learn/branching-strategies/githubflow/examples">GitHubFlow Examples</a></li>
+
+                    </ul>
+                </li>
+                <li><a href="/docs/learn/branching-strategies/contribute-examples">Contribute Examples</a></li>
+
+                    </ul>
+                </li>
+
+                    </ul>
+                </li>
+
+                    </ul>
+                            
+                </section>                
+            </aside>
+            
+            <!-- Content Wrapper. Contains page content -->
+            <div class="content-wrapper">
+                
+
+
+
+		<section class="content-header">
+			<h1>Octopus Deploy</h1>
+		</section>
+	<section class="content">
+		<p>While not a build server, there are a few things to consider when using Octopus
+Deploy with GitVersion.</p>
+<p>GitVersion follows <a href="/docs/reference/modes/continuous-delivery">continuous delivery</a> versioning by
+default. This means builds will keep producing <em>the same version</em> with just
+metadata differing. For example, when you start a new release (say <code>1.0.0</code>)
+with git flow, the branch will start with a semver like <code>1.0.0-beta.1+0</code>, and
+the Octopus NuGet package will have a version of <code>1.0.0-beta0001</code>. As you
+commit changes to this release branch the <em>metadata</em> of the semver will
+increase like so: <code>1.0.0-beta.1+1</code>, <code>1.0.0-beta.1+2</code>, etc. However, the version
+of the corresponding Octopus NuGet package will retain the <em>same</em>
+<code>1.0.0-beta0001</code> version you started with. The problem is Octopus Deploy will
+prevent you from deploying these revisions because it sees the same NuGet
+package version and thinks nothing has changed.</p>
+<p>Because Octopus Deploy uses NuGet like this you cannot continue to push
+revisions in this manner without some intervention (or changes to GitVersion's
+configuration). To work around this problem we have two possible options:</p>
+<p>The solutions to this issue are a bit different for GitHubFlow and GitFlow.</p>
+<h2 id="githubflow-solutions">GitHubFlow Solutions</h2>
+<h3 id="promote-to-octopus-feed">Promote to Octopus feed</h3>
+<p>The first option is to keep the continuous delivery default in GitVersion,
+depending on which build server you have this approach may or may not work for
+you.  For instance in TFS Build vNext you cannot chain builds to publish
+artifacts built in one build in another.</p>
+<ol>
+<li>Your CI build creates the stable NuGet package</li>
+</ol>
+<ul>
+<li>Do <em>not</em> publish this package into the Octopus nuget feed</li>
+</ul>
+<ol start="2">
+<li>When you want to push a package into the Octopus deployment pipeline you trigger the second build</li>
+</ol>
+<ul>
+<li>it will either take the package built from the first build in the chain (your CI build?) or rebuild</li>
+<li>It will publish that package into the Octopus deploy feed</li>
+<li>The build then is <em>tagged</em> with the version, this will cause GitVersion to increment the version</li>
+</ul>
+<p>This means that CI builds are <em>not</em> available to Octopus deploy, there will be a
+manual build in your <em>build server</em> which pushes the package to Octopus deploy.</p>
+<h3 id="tag-to-release">Tag to release</h3>
+<p>Another simple option is to tag a stable version to release, the basic idea is:</p>
+<ol>
+<li>GitVersion is set to continuous deployment mode, so main will create <code>-ci.x</code>
+pre-release builds</li>
+<li>CI Builds only create NuGet packages for stable builds</li>
+<li>You tag main with a stable version of the next version then push it</li>
+<li>The CI build triggers, GitVersion will always respect tags so you will get a
+stable version</li>
+<li>The stable package will be pushed to Octopus</li>
+<li>Because of the tag, then next build will be incremented and will be producing
+pre-release packages of the next build</li>
+</ol>
+<h4 id="script-to-create-the-release">Script to create the release</h4>
+<p>Here is an example script which could be used to tag the stable version, it uses
+GitVersion to calculate the version so you just run <code>./CreateRelease.ps1</code> and it
+will tag and push the tag.</p>
+<pre><code class="language-powershell">[CmdletBinding()]
+param()
+
+##### <a href="/api/GitVersion.Model.Configuration/Config">Config</a> #####
+# Path to GitVersion.exe
+$gitversion = "tools\GitVersion\GitVersion.exe"
+function Create-AdditionalReleaseArtifacts
+{
+ param( [string]$Version )
+
+ # Put any custom release logic here (like generating release notes?)
+}
+### END <a href="/api/GitVersion.Model.Configuration/Config">Config</a> ###
+
+$ErrorActionPreference = "Stop"
+trap
+{
+   Pop-Location
+   Write-Error "$_"
+   Exit 1
+}
+
+Push-Location $PSScriptRoot
+
+# Make sure there are no pending changes
+$pendingChanges = &amp; git status --porcelain
+if ($pendingChanges -ne $null)
+{
+  throw 'You have pending changes, aborting release'
+}
+
+# Pull latest, fast-forward only so that it git stops if there is an error
+&amp; git fetch origin
+&amp; git checkout main
+&amp; git merge origin/main --ff-only
+
+# Determine version to release
+$output = &amp; $gitversion /output json
+$versionInfoJson = $output -join "`n"
+
+$versionInfo = $versionInfoJson | ConvertFrom-Json
+$stableVersion = $versionInfo.MajorMinorPatch
+
+# Create release
+Create-AdditionalReleaseArtifacts $stableVersion
+# Always create a new commit because some CI servers cannot be triggered by just pushing a tag
+&amp; git commit -Am "Create release $stableVersion" --allow-empty
+&amp; git tag $stableVersion
+if ($LASTEXITCODE -ne 0) {
+    &amp; git reset --hard HEAD^
+    throw "No changes detected since last release"
+}
+
+&amp; git push origin main --tags
+
+Pop-Location
+</code></pre>
+<h4 id="sample-build-script-build.ps1">Sample build script (build.ps1)</h4>
+<pre><code class="language-powershell">[CmdletBinding()]
+param()
+$ErrorActionPreference = "Stop"
+trap
+{
+   Pop-Location
+   Write-Error "$_"
+   Exit 1
+}
+Push-Location $PSScriptRoot
+
+# Tools
+$gitversion = "tools\GitVersion\GitVersion.exe"
+$octo = "tools\Octo\Octo.exe"
+$nuget = "tools\NuGet\NuGet.exe"
+# Calculate version
+$output = &amp; $gitversion /output json /l GitVersion.log /updateAssemblyInfo /nofetch
+if ($LASTEXITCODE -ne 0) {
+    Write-Verbose "$output"
+    throw "GitVersion Exit Code: $LASTEXITCODE"
+}
+
+$versionInfoJson = $output -join "`n"
+Write-Host $versionInfoJson
+
+$versionInfo = $versionInfoJson | ConvertFrom-Json
+$nugetVersion = $versionInfo.NuGetVersion
+
+#Build your project here
+msbuild MyProj.sln
+
+# Only create nuget package for stable
+if ($versionInfo.PreReleaseTag -eq '')
+{
+    Write-Host
+    Write-Host "Creating a release" -ForegroundColor Magenta
+
+    # You probably want to specify output directory too
+    &amp; $nuget pack "src\myProj\MyProj.nuspec" -version $nugetVersion
+}
+</code></pre>
+<h3 id="configure-gitversion-to-increment-per-commit">Configure GitVersion to Increment Per Commit</h3>
+<p>As mentioned above, <a href="/docs/reference/version-increments#incrementing-per-commit">incrementing per commit</a> means you
+will burn multiple versions per release. This might not be an issue for you, but
+can confuse consumers of your library as the version has semantic meaning.</p>
+
+	</section>
+                
+            </div>           
+            
+            <!-- Footer -->
+            <footer class="main-footer">
+            </footer>
+            
+        </div>
+        <div class="wrapper bottom-wrapper">
+            <footer class="bottom-footer">
+                Generated by <a href="https://wyam.io">Wyam</a>
+            </footer>
+        </div>
+        <a href="javascript:" id="return-to-top"><i class="fa fa-chevron-up"></i></a>
+        <div class="github-button">
+    <a href="https://github.com/GitTools/GitVersion"><i class="fa fa-github"></i> GitHub</a>
+</div>
+<script>
+    ((window.gitter = {}).chat = {}).options = {
+        room: 'GitTools/GitVersion'
+    };
+</script>
+<script src="https://sidecar.gitter.im/dist/sidecar.v1.js" async="" defer=""></script>
+
+        <script>           
+            // Close the sidebar if we select an anchor link
+            $(".main-sidebar a[href^='#']:not('.expand')").click(function(){
+                $(document.body).removeClass('sidebar-open');
+            });
+            
+            $(document).ready(function() {
+                mermaid.initialize(
+                {
+                    flowchart:
+                    {
+                        useMaxWidth: false
+                    },
+					startOnLoad: false,
+					cloneCssStyles: false
+                });     
+                mermaid.init(undefined, ".mermaid");
+
+                // Remove the max-width setting that Mermaid sets
+                var mermaidSvg = $('.mermaid svg');
+                mermaidSvg.addClass('img-responsive');
+                mermaidSvg.css('max-width', '');
+
+                // Make it scrollable
+				var target = document.querySelector(".mermaid svg");
+				if(target !== null)
+				{
+					var panZoom = window.panZoom = svgPanZoom(target, {
+						zoomEnabled: true,
+						controlIconsEnabled: true,
+						fit: true,
+						center: true,
+                        maxZoom: 20,
+                        zoomScaleSensitivity: 0.6
+					});			                          
+
+                    // Do the reset once right away to fit the diagram
+                    panZoom.resize();
+                    panZoom.fit();
+                    panZoom.center();
+                    
+                    $(window).resize(function(){
+                        panZoom.resize();
+                        panZoom.fit();
+                        panZoom.center();
+                    });
+				}
+                
+                $('pre code').each(function(i, block) {
+                    hljs.highlightBlock(block);
+                });  
+            });
+
+            hljs.initHighlightingOnLoad();
+
+            // Back to top
+            $(window).scroll(function() {
+                if ($(this).scrollTop() >= 200) {        // If page is scrolled more than 50px
+                    $('#return-to-top').fadeIn(1000);    // Fade in the arrow
+                } else {
+                    $('#return-to-top').fadeOut(1000);   // Else fade out the arrow
+                }
+            });
+            $('#return-to-top').click(function() {      // When arrow is clicked
+                $('body,html').animate({
+                    scrollTop : 0                       // Scroll to top of body
+                }, 500);
+            });
+        </script>
+    
+</body></html>

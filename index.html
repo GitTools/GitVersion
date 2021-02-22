@@ -8,7 +8,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="shortcut icon" href="/assets/img/favicon.ico" type="image/x-icon">
         <link rel="icon" href="/assets/img/favicon.ico" type="image/x-icon">
-        <title>GitVersion - Home</title>
+        <title>GitVersion - GitVersion</title>
         <link href="/assets/css/highlight.css" rel="stylesheet">
         <link href="/assets/css/bootstrap/bootstrap.css" rel="stylesheet" />
         <link href="/assets/css/adminlte/AdminLTE.css" rel="stylesheet" />
@@ -32,11 +32,21 @@
         <meta name="google" content="notranslate">
 <meta http-equiv="Content-Language" content="en">
 <meta name="google-site-verification" content="46g_yrsDyk5YTGoXb2ii9BjmTJ2QAEsacqn6wqiAiII" />
+<meta property="og:image" content="https://github.com/GitTools/graphics/raw/master/GitVersion/banner-1280x640.png" />
+<meta property="og:site_name" content="GitVersion" />
+<meta property="og:type" content="object" />
+<meta property="og:title" content="GitVersion" />
+<meta property="og:url" content="https://gitversion.net/" />
+<meta property="og:description" content="From git log to SemVer in no time" />
+<link rel="icon" href="/assets/img/icon.png" type="image/png">
+<link rel="icon" href="/assets/img/icon.svg" type="image/svg">
+<link rel="apple-touch-icon" href="/assets/img/icon.png" type="image/png">
+<link rel="apple-touch-icon" href="/assets/img/icon.svg" type="image/svg">
 
     </head>
-    <body class="hold-transition wyam layout-boxed layout-top-nav ">    
+    <body class="hold-transition wyam layout-boxed layout-top-nav no-gutter">    
         <div class="top-banner"></div>
-        <div class="wrapper with-container">
+        <div class="wrapper">
             <!-- Header -->
             <header class="main-header">   
                      
@@ -57,7 +67,7 @@
                     <!-- Collect the nav links, forms, and other content for toggling -->
                     <div class="collapse navbar-collapse pull-left" id="navbar-collapse">
                         <ul class="nav navbar-nav">                            
-                                    <li><a href="/docs">Docs</a></li>
+                                    <li><a href="/docs">Documentation</a></li>
         <li><a href="/api">API</a></li>
  
                         </ul>       
@@ -94,11 +104,65 @@
 
 
 
-	<section class="content">
-		<h1>Welcome!</h1>
 
-<p>You can explore the documentation by selecting sections from the navigation bar above.</p>
-	</section>
+<div class="jumbotron">
+    <div class="container">
+        <h1 class="display-4">GitVersion</h1>
+        <p class="tagline">
+            From <code>git log</code> to <a href="https://semver.org">SemVer</a> in no time
+        </p>
+    </div>
+</div>
+
+<main role="main" class="container text-center">
+    <div class="row slideanim">
+        <div class="col-sm-6">
+            <span class="glyphicon glyphicon-heart logo-small"></span>
+            <h3 class="no-anchor">Open-Source</h3>
+            <p>
+                GitVersion is free to use, improve, contribute and distribute.
+                Source code is available on <a href="https://github.com/GitTools/GitVersion">GitHub</a> under MIT license.
+            </p>
+        </div>
+
+        <div class="col-sm-6">
+            <span class="glyphicon glyphicon-random logo-small"></span>
+            <h3 class="no-anchor">Flexible</h3>
+            <p>
+                GitVersion is built for many different use-cases and workflows, so whether you use
+                <a href="/docs/reference/modes/mainline">Mainline</a>,
+                <a href="/docs/learn/branching-strategies/gitflow">Git Flow</a> or
+                <a href="/docs/learn/branching-strategies/githubflow">GitHub Flow</a>,
+                GitVersion has you covered.
+            </p>
+        </div>
+    </div>
+
+    <div class="row slideanim">
+        <div class="col-sm-6">
+            <span class="glyphicon glyphicon-cog logo-small"></span>
+            <h3 class="no-anchor">Configurable</h3>
+            <p>
+                Gitversion is highly <a href="/docs/reference/configuration">configurable</a>
+                and can be made to support your specific versioning scheme, almost
+                regardless of what it may be.
+            </p>
+        </div>
+
+        <div class="col-sm-6">
+            <span class="glyphicon glyphicon-wrench logo-small"></span>
+            <h3 class="no-anchor">Rich tooling</h3>
+            <p>
+                Expose version variables in different formats to the tools you use. Use GitVersion locally or in a
+                build pipeline with
+                <a href="/docs/reference/build-servers/teamcity">TeamCity</a>,
+                <a href="/docs/reference/build-servers/appveyor">AppVeyor</a>,
+                <a href="/docs/reference/build-servers/jenkins">Jenkins</a> or any of the other supported
+                <a href="/docs/reference/build-servers/">build servers</a>.
+            </p>
+        </div>
+    </div>
+</main>
                 
             </div>           
             

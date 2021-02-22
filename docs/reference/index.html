@@ -32,6 +32,16 @@
         <meta name="google" content="notranslate">
 <meta http-equiv="Content-Language" content="en">
 <meta name="google-site-verification" content="46g_yrsDyk5YTGoXb2ii9BjmTJ2QAEsacqn6wqiAiII" />
+<meta property="og:image" content="https://github.com/GitTools/graphics/raw/master/GitVersion/banner-1280x640.png" />
+<meta property="og:site_name" content="GitVersion" />
+<meta property="og:type" content="object" />
+<meta property="og:title" content="GitVersion" />
+<meta property="og:url" content="https://gitversion.net/" />
+<meta property="og:description" content="From git log to SemVer in no time" />
+<link rel="icon" href="/assets/img/icon.png" type="image/png">
+<link rel="icon" href="/assets/img/icon.svg" type="image/svg">
+<link rel="apple-touch-icon" href="/assets/img/icon.png" type="image/png">
+<link rel="apple-touch-icon" href="/assets/img/icon.svg" type="image/svg">
 
     </head>
     <body class="hold-transition wyam layout-boxed  ">    
@@ -61,7 +71,7 @@
                     <!-- Collect the nav links, forms, and other content for toggling -->
                     <div class="collapse navbar-collapse pull-left" id="navbar-collapse">
                         <ul class="nav navbar-nav">                            
-                                    <li class="active"><a href="/docs">Docs</a></li>
+                                    <li class="active"><a href="/docs">Documentation</a></li>
         <li><a href="/api">API</a></li>
  
                         </ul>       
@@ -88,70 +98,23 @@
                         
 
                 <li class="treeview">
-                    <a href="/docs/usage">Getting Started</a> <a href="#" class="expand"></a>
+                    <a href="/docs/usage">Usage</a> <a href="#" class="expand"></a>
                     <ul class="treeview-menu">
                         
-                <li><a href="/docs/usage/usage">Usage</a></li>
-                <li><a href="/docs/usage/command-line">Command Line</a></li>
-                <li><a href="/docs/usage/msbuild-task">MSBuild Task</a></li>
-                <li><a href="/docs/usage/nuget-library">NuGet Library</a></li>
+                <li><a href="/docs/usage/ci">Continuous Integration</a></li>
+                <li class="treeview">
+                    <a href="/docs/usage/cli">Command Line</a> <a href="#" class="expand"></a>
+                    <ul class="treeview-menu">
+                        
+                <li><a href="/docs/usage/cli/installation">Installation</a></li>
+                <li><a href="/docs/usage/cli/arguments">Arguments</a></li>
+                <li><a href="/docs/usage/cli/output">Output</a></li>
+                <li><a href="/docs/usage/cli/assembly-patch">Assembly Patching</a></li>
 
                     </ul>
                 </li>
-                <li><a href="/docs/configuration">Configuration</a></li>
-                <li class="treeview">
-                    <a href="/docs/build-server-support">Build Server Support</a> <a href="#" class="expand"></a>
-                    <ul class="treeview-menu">
-                        
-                <li><a href="/docs/build-server-support/build-server-support">Introduction</a></li>
-                <li class="treeview">
-                    <a href="/docs/build-server-support/build-server">Build Servers</a> <a href="#" class="expand"></a>
-                    <ul class="treeview-menu">
-                        
-                <li><a href="/docs/build-server-support/build-server/appveyor">AppVeyor Setup</a></li>
-                <li><a href="/docs/build-server-support/build-server/azure-devops">Azure DevOps or TFS Build Pipeline SetupUsage</a></li>
-                <li><a href="/docs/build-server-support/build-server/bamboo">Bamboo</a></li>
-                <li><a href="/docs/build-server-support/build-server/continua">Continua CI Setup</a></li>
-                <li><a href="/docs/build-server-support/build-server/gitlab">GitLab CI</a></li>
-                <li><a href="/docs/build-server-support/build-server/jenkins">Jenkins Setup</a></li>
-                <li><a href="/docs/build-server-support/build-server/myget">MyGet</a></li>
-                <li><a href="/docs/build-server-support/build-server/octopus-deploy">Octopus Deploy</a></li>
-                <li><a href="/docs/build-server-support/build-server/teamcity">TeamCity Setup</a></li>
-
-                    </ul>
-                </li>
-
-                    </ul>
-                </li>
-                <li><a href="/docs/examples">Examples</a></li>
-                <li><a href="/docs/faq">FAQ</a></li>
-                <li><a href="/docs/why">Why use GitVersion?</a></li>
-                <li><a href="/docs/who">Who is using GitVersion</a></li>
-                <li class="treeview">
-                    <a href="/docs/more-info">More Info</a> <a href="#" class="expand"></a>
-                    <ul class="treeview-menu">
-                        
-                <li><a href="/docs/more-info/how-it-works">How it works</a></li>
-                <li><a href="/docs/more-info/dynamic-repositories">Dynamic Repositories</a></li>
-                <li><a href="/docs/more-info/variables">Variables</a></li>
-                <li><a href="/docs/more-info/version-increments">Version Incrementing</a></li>
-                <li><a href="/docs/more-info/version-sources">Version Sources</a></li>
-                <li><a href="/docs/more-info/incrementing-per-commit">Incrementing per commit</a></li>
-
-                    </ul>
-                </li>
-                <li class="treeview">
-                    <a href="/docs/git-branching-strategies">Git Branching Strategies</a> <a href="#" class="expand"></a>
-                    <ul class="treeview-menu">
-                        
-                <li><a href="/docs/git-branching-strategies/overview">Home</a></li>
-                <li><a href="/docs/git-branching-strategies/gitflow">GitFlow</a></li>
-                <li><a href="/docs/git-branching-strategies/githubflow">GitHubFlow</a></li>
-                <li><a href="/docs/git-branching-strategies/gitflow-examples">GitFlow Examples</a></li>
-                <li><a href="/docs/git-branching-strategies/githubflow-examples">GitHubFlow Examples</a></li>
-                <li><a href="/docs/git-branching-strategies/converting-to-gitflow">Converting to GitFlow</a></li>
-                <li><a href="/docs/git-branching-strategies/creating-updating-examples">Creating/Updating Examples</a></li>
-                <li><a href="/docs/git-branching-strategies/gitflow-examples_complete">GitFlow Examples</a></li>
+                <li><a href="/docs/usage/msbuild">MSBuild Task</a></li>
+                <li><a href="/docs/usage/library">Library</a></li>
 
                     </ul>
                 </li>
@@ -159,18 +122,74 @@
                     <a href="/docs/reference">Reference</a> <a href="#" class="expand"></a>
                     <ul class="treeview-menu">
                         
-                <li><a href="/docs/reference/intro-to-semver">Intro to SemVer</a></li>
-                <li><a href="/docs/reference/git-setup">Git Setup</a></li>
-                <li><a href="/docs/reference/feature-branches">Feature Branches</a></li>
-                <li><a href="/docs/reference/pull-requests">Pull Requests</a></li>
+                <li><a href="/docs/reference/configuration">Configuration</a></li>
+                <li><a href="/docs/reference/variables">Version Variables</a></li>
+                <li><a href="/docs/reference/requirements">Requirements</a></li>
+                <li><a href="/docs/reference/version-increments">Version Incrementing</a></li>
+                <li><a href="/docs/reference/version-sources">Version Sources</a></li>
                 <li class="treeview">
-                    <a href="/docs/reference/versioning-modes">Versioning Modes</a> <a href="#" class="expand"></a>
+                    <a href="/docs/reference/modes">Versioning Modes</a> <a href="#" class="expand"></a>
                     <ul class="treeview-menu">
                         
-                <li><a href="/docs/reference/versioning-modes/versioning-mode">Versioning Modes</a></li>
-                <li><a href="/docs/reference/versioning-modes/continuous-delivery">Continuous Delivery</a></li>
-                <li><a href="/docs/reference/versioning-modes/continuous-deployment">Continuous Deployment</a></li>
-                <li><a href="/docs/reference/versioning-modes/mainline-development">Mainline Development</a></li>
+                <li><a href="/docs/reference/modes/continuous-delivery">Continuous Delivery</a></li>
+                <li><a href="/docs/reference/modes/continuous-deployment">Continuous Deployment</a></li>
+                <li><a href="/docs/reference/modes/mainline">Mainline Development</a></li>
+
+                    </ul>
+                </li>
+                <li class="treeview">
+                    <a href="/docs/reference/build-servers">Build Servers</a> <a href="#" class="expand"></a>
+                    <ul class="treeview-menu">
+                        
+                <li><a href="/docs/reference/build-servers/appveyor">AppVeyor</a></li>
+                <li><a href="/docs/reference/build-servers/azure-devops">Azure DevOps</a></li>
+                <li><a href="/docs/reference/build-servers/bamboo">Bamboo</a></li>
+                <li><a href="/docs/reference/build-servers/continua">Continua CI</a></li>
+                <li><a href="/docs/reference/build-servers/gitlab">GitLab CI</a></li>
+                <li><a href="/docs/reference/build-servers/jenkins">Jenkins</a></li>
+                <li><a href="/docs/reference/build-servers/myget">MyGet</a></li>
+                <li><a href="/docs/reference/build-servers/octopus-deploy">Octopus Deploy</a></li>
+                <li><a href="/docs/reference/build-servers/teamcity">TeamCity</a></li>
+
+                    </ul>
+                </li>
+
+                    </ul>
+                </li>
+                <li class="treeview">
+                    <a href="/docs/learn">Learn</a> <a href="#" class="expand"></a>
+                    <ul class="treeview-menu">
+                        
+                <li><a href="/docs/learn/how-it-works">How it works</a></li>
+                <li><a href="/docs/learn/intro-to-semver">Intro to SemVer</a></li>
+                <li><a href="/docs/learn/dynamic-repositories">Dynamic Repositories</a></li>
+                <li><a href="/docs/learn/git-setup">Git Setup</a></li>
+                <li><a href="/docs/learn/faq">FAQ</a></li>
+                <li><a href="/docs/learn/why">Why use GitVersion?</a></li>
+                <li><a href="/docs/learn/who">Who is using GitVersion</a></li>
+                <li class="treeview">
+                    <a href="/docs/learn/branching-strategies">Branching Strategies</a> <a href="#" class="expand"></a>
+                    <ul class="treeview-menu">
+                        
+                <li><a href="/docs/learn/branching-strategies/overview">Overview</a></li>
+                <li class="treeview">
+                    <a href="/docs/learn/branching-strategies/gitflow">Git Flow</a> <a href="#" class="expand"></a>
+                    <ul class="treeview-menu">
+                        
+                <li><a href="/docs/learn/branching-strategies/gitflow/examples">GitFlow Examples</a></li>
+                <li><a href="/docs/learn/branching-strategies/gitflow/converting-to-gitflow">Converting to GitFlow</a></li>
+
+                    </ul>
+                </li>
+                <li class="treeview">
+                    <a href="/docs/learn/branching-strategies/githubflow">GitHub Flow</a> <a href="#" class="expand"></a>
+                    <ul class="treeview-menu">
+                        
+                <li><a href="/docs/learn/branching-strategies/githubflow/examples">GitHubFlow Examples</a></li>
+
+                    </ul>
+                </li>
+                <li><a href="/docs/learn/branching-strategies/contribute-examples">Contribute Examples</a></li>
 
                     </ul>
                 </li>
@@ -193,7 +212,7 @@
 			<h1>Reference</h1>
 		</section>
 	<section class="content">
-		<p></p>
+		<p>Technical reference documentation.</p>
 
 			<div class="box">
 				<div class="box-body no-padding">
@@ -201,29 +220,39 @@
 						
 						<tbody>
 								<tr>
-									<td><strong><a href="/docs/reference/intro-to-semver">Intro to SemVer</a></strong></td>
+									<td><strong><a href="/docs/reference/configuration">Configuration</a></strong></td>
 									<td>
-									</td>
+Details about how GitVersion can be configured to suit your needs									</td>
 								</tr>
 								<tr>
-									<td><strong><a href="/docs/reference/git-setup">Git Setup</a></strong></td>
+									<td><strong><a href="/docs/reference/variables">Version Variables</a></strong></td>
 									<td>
-									</td>
+The version variables exposed by GitVersion									</td>
 								</tr>
 								<tr>
-									<td><strong><a href="/docs/reference/feature-branches">Feature Branches</a></strong></td>
+									<td><strong><a href="/docs/reference/requirements">Requirements</a></strong></td>
 									<td>
-									</td>
+Requirements for successful operation of GitVersion									</td>
 								</tr>
 								<tr>
-									<td><strong><a href="/docs/reference/pull-requests">Pull Requests</a></strong></td>
+									<td><strong><a href="/docs/reference/version-increments">Version Incrementing</a></strong></td>
 									<td>
-									</td>
+Details on how GitVersion performs version increments									</td>
 								</tr>
 								<tr>
-									<td><strong><a href="/docs/reference/versioning-modes">Versioning Modes</a></strong></td>
+									<td><strong><a href="/docs/reference/version-sources">Version Sources</a></strong></td>
 									<td>
-									</td>
+Details on how GitVersion finds a source for its generated version number									</td>
+								</tr>
+								<tr>
+									<td><strong><a href="/docs/reference/modes">Versioning Modes</a></strong></td>
+									<td>
+The different modes of versioning GitVersion supports									</td>
+								</tr>
+								<tr>
+									<td><strong><a href="/docs/reference/build-servers">Build Servers</a></strong></td>
+									<td>
+Details on GitVersion&#x27;s Build Server support									</td>
 								</tr>
 						</tbody>				
 					</table>

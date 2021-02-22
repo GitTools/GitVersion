@@ -30,6 +30,16 @@
         <meta name="google" content="notranslate">
 <meta http-equiv="Content-Language" content="en">
 <meta name="google-site-verification" content="46g_yrsDyk5YTGoXb2ii9BjmTJ2QAEsacqn6wqiAiII">
+<meta property="og:image" content="https://github.com/GitTools/graphics/raw/master/GitVersion/banner-1280x640.png">
+<meta property="og:site_name" content="GitVersion">
+<meta property="og:type" content="object">
+<meta property="og:title" content="GitVersion">
+<meta property="og:url" content="https://gitversion.net/">
+<meta property="og:description" content="From git log to SemVer in no time">
+<link rel="icon" href="/assets/img/icon.png" type="image/png">
+<link rel="icon" href="/assets/img/icon.svg" type="image/svg">
+<link rel="apple-touch-icon" href="/assets/img/icon.png" type="image/png">
+<link rel="apple-touch-icon" href="/assets/img/icon.svg" type="image/svg">
 
     </head>
     <body class="hold-transition wyam layout-boxed  ">    
@@ -59,7 +69,7 @@
                     <!-- Collect the nav links, forms, and other content for toggling -->
                     <div class="collapse navbar-collapse pull-left" id="navbar-collapse">
                         <ul class="nav navbar-nav">                            
-                                    <li><a href="/docs">Docs</a></li>
+                                    <li><a href="/docs">Documentation</a></li>
         <li class="active"><a href="/api">API</a></li>
  
                         </ul>       
@@ -139,6 +149,8 @@
 			<li class="header">Namespace</li>
 		<li><a href="/api/GitVersion.VersionConverters">GitVersion<wbr>.VersionConverters</a></li>
 		<li role="separator" class="divider"></li>
+			<li class="header">Class Types</li>
+				<li><a href="/api/GitVersion.VersionConverters/VersionConvertersModule">Version<wbr>Converters<wbr>Module</a></li>
 			<li class="header">Interface Types</li>
 				<li><a href="/api/GitVersion.VersionConverters/IConverterContext">IConverterContext</a></li>
 				<li class="selected"><a href="/api/GitVersion.VersionConverters/IVersionConverter_1">IVersionConverter<wbr>&lt;T&gt;<wbr></a></li>
@@ -183,16 +195,16 @@
 								<dt>Implementing Types</dt>
 								<dd>
 									<ul class="list-unstyled">
+											<li><a href="/api/GitVersion.VersionConverters.WixUpdater/WixVersionFileUpdater">Wix<wbr>Version<wbr>File<wbr>Updater</a></li>								
+											<li><a href="/api/GitVersion.VersionConverters.AssemblyInfo/AssemblyInfoFileUpdater">Assembly<wbr>Info<wbr>File<wbr>Updater</a></li>								
 											<li><a href="/api/GitVersion.VersionConverters.OutputGenerator/IOutputGenerator">IOutputGenerator</a></li>								
+											<li><a href="/api/GitVersion.VersionConverters.AssemblyInfo/IProjectFileUpdater">IProjectFileUpdater</a></li>								
+											<li><a href="/api/GitVersion.VersionConverters.WixUpdater/IWixVersionFileUpdater">I<wbr>Wix<wbr>Version<wbr>File<wbr>Updater</a></li>								
+											<li><a href="/api/GitVersion.VersionConverters.GitVersionInfo/IGitVersionInfoGenerator">I<wbr>Git<wbr>Version<wbr>Info<wbr>Generator</a></li>								
 											<li><a href="/api/GitVersion.VersionConverters.OutputGenerator/OutputGenerator">OutputGenerator</a></li>								
 											<li><a href="/api/GitVersion.VersionConverters.AssemblyInfo/IAssemblyInfoFileUpdater">I<wbr>Assembly<wbr>Info<wbr>File<wbr>Updater</a></li>								
-											<li><a href="/api/GitVersion.VersionConverters.GitVersionInfo/GitVersionInfoGenerator">Git<wbr>Version<wbr>Info<wbr>Generator</a></li>								
-											<li><a href="/api/GitVersion.VersionConverters.WixUpdater/IWixVersionFileUpdater">I<wbr>Wix<wbr>Version<wbr>File<wbr>Updater</a></li>								
-											<li><a href="/api/GitVersion.VersionConverters.AssemblyInfo/AssemblyInfoFileUpdater">Assembly<wbr>Info<wbr>File<wbr>Updater</a></li>								
-											<li><a href="/api/GitVersion.VersionConverters.WixUpdater/WixVersionFileUpdater">Wix<wbr>Version<wbr>File<wbr>Updater</a></li>								
-											<li><a href="/api/GitVersion.VersionConverters.GitVersionInfo/IGitVersionInfoGenerator">I<wbr>Git<wbr>Version<wbr>Info<wbr>Generator</a></li>								
-											<li><a href="/api/GitVersion.VersionConverters.AssemblyInfo/IProjectFileUpdater">IProjectFileUpdater</a></li>								
 											<li><a href="/api/GitVersion.VersionConverters.AssemblyInfo/ProjectFileUpdater">ProjectFileUpdater</a></li>								
+											<li><a href="/api/GitVersion.VersionConverters.GitVersionInfo/GitVersionInfoGenerator">Git<wbr>Version<wbr>Info<wbr>Generator</a></li>								
 									</ul>
 								</dd>				
 						</dl>
@@ -203,26 +215,26 @@
 	Type-.-&gt;Interface0["IDisposable"]
 	Type["IVersionConverter&lt;T&gt;"]
 class Type type-node
-	Implementing0["IOutputGenerator"]-.-&gt;Type
-	click Implementing0 "/api/GitVersion.VersionConverters.OutputGenerator/IOutputGenerator"
-	Implementing1["OutputGenerator"]-.-&gt;Type
-	click Implementing1 "/api/GitVersion.VersionConverters.OutputGenerator/OutputGenerator"
-	Implementing2["IAssemblyInfoFileUpdater"]-.-&gt;Type
-	click Implementing2 "/api/GitVersion.VersionConverters.AssemblyInfo/IAssemblyInfoFileUpdater"
-	Implementing3["GitVersionInfoGenerator"]-.-&gt;Type
-	click Implementing3 "/api/GitVersion.VersionConverters.GitVersionInfo/GitVersionInfoGenerator"
+	Implementing0["WixVersionFileUpdater"]-.-&gt;Type
+	click Implementing0 "/api/GitVersion.VersionConverters.WixUpdater/WixVersionFileUpdater"
+	Implementing1["AssemblyInfoFileUpdater"]-.-&gt;Type
+	click Implementing1 "/api/GitVersion.VersionConverters.AssemblyInfo/AssemblyInfoFileUpdater"
+	Implementing2["IOutputGenerator"]-.-&gt;Type
+	click Implementing2 "/api/GitVersion.VersionConverters.OutputGenerator/IOutputGenerator"
+	Implementing3["IProjectFileUpdater"]-.-&gt;Type
+	click Implementing3 "/api/GitVersion.VersionConverters.AssemblyInfo/IProjectFileUpdater"
 	Implementing4["IWixVersionFileUpdater"]-.-&gt;Type
 	click Implementing4 "/api/GitVersion.VersionConverters.WixUpdater/IWixVersionFileUpdater"
-	Implementing5["AssemblyInfoFileUpdater"]-.-&gt;Type
-	click Implementing5 "/api/GitVersion.VersionConverters.AssemblyInfo/AssemblyInfoFileUpdater"
-	Implementing6["WixVersionFileUpdater"]-.-&gt;Type
-	click Implementing6 "/api/GitVersion.VersionConverters.WixUpdater/WixVersionFileUpdater"
-	Implementing7["IGitVersionInfoGenerator"]-.-&gt;Type
-	click Implementing7 "/api/GitVersion.VersionConverters.GitVersionInfo/IGitVersionInfoGenerator"
-	Implementing8["IProjectFileUpdater"]-.-&gt;Type
-	click Implementing8 "/api/GitVersion.VersionConverters.AssemblyInfo/IProjectFileUpdater"
-	Implementing9["ProjectFileUpdater"]-.-&gt;Type
-	click Implementing9 "/api/GitVersion.VersionConverters.AssemblyInfo/ProjectFileUpdater"
+	Implementing5["IGitVersionInfoGenerator"]-.-&gt;Type
+	click Implementing5 "/api/GitVersion.VersionConverters.GitVersionInfo/IGitVersionInfoGenerator"
+	Implementing6["OutputGenerator"]-.-&gt;Type
+	click Implementing6 "/api/GitVersion.VersionConverters.OutputGenerator/OutputGenerator"
+	Implementing7["IAssemblyInfoFileUpdater"]-.-&gt;Type
+	click Implementing7 "/api/GitVersion.VersionConverters.AssemblyInfo/IAssemblyInfoFileUpdater"
+	Implementing8["ProjectFileUpdater"]-.-&gt;Type
+	click Implementing8 "/api/GitVersion.VersionConverters.AssemblyInfo/ProjectFileUpdater"
+	Implementing9["GitVersionInfoGenerator"]-.-&gt;Type
+	click Implementing9 "/api/GitVersion.VersionConverters.GitVersionInfo/GitVersionInfoGenerator"
 
 						</div>
 					</div>

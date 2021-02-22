@@ -30,6 +30,16 @@
         <meta name="google" content="notranslate">
 <meta http-equiv="Content-Language" content="en">
 <meta name="google-site-verification" content="46g_yrsDyk5YTGoXb2ii9BjmTJ2QAEsacqn6wqiAiII">
+<meta property="og:image" content="https://github.com/GitTools/graphics/raw/master/GitVersion/banner-1280x640.png">
+<meta property="og:site_name" content="GitVersion">
+<meta property="og:type" content="object">
+<meta property="og:title" content="GitVersion">
+<meta property="og:url" content="https://gitversion.net/">
+<meta property="og:description" content="From git log to SemVer in no time">
+<link rel="icon" href="/assets/img/icon.png" type="image/png">
+<link rel="icon" href="/assets/img/icon.svg" type="image/svg">
+<link rel="apple-touch-icon" href="/assets/img/icon.png" type="image/png">
+<link rel="apple-touch-icon" href="/assets/img/icon.svg" type="image/svg">
 
     </head>
     <body class="hold-transition wyam layout-boxed  ">    
@@ -59,7 +69,7 @@
                     <!-- Collect the nav links, forms, and other content for toggling -->
                     <div class="collapse navbar-collapse pull-left" id="navbar-collapse">
                         <ul class="nav navbar-nav">                            
-                                    <li><a href="/docs">Docs</a></li>
+                                    <li><a href="/docs">Documentation</a></li>
         <li class="active"><a href="/api">API</a></li>
  
                         </ul>       
@@ -144,6 +154,8 @@
 			<li class="header">Class Types</li>
 				<li><a href="/api/GitVersion.BuildAgents/AppVeyor">AppVeyor</a></li>
 				<li><a href="/api/GitVersion.BuildAgents/AzurePipelines">AzurePipelines</a></li>
+				<li><a href="/api/GitVersion.BuildAgents/BuildAgentBase">BuildAgentBase</a></li>
+				<li><a href="/api/GitVersion.BuildAgents/BuildAgentResolver">BuildAgentResolver</a></li>
 				<li><a href="/api/GitVersion.BuildAgents/BuildServerModule">BuildServerModule</a></li>
 				<li><a href="/api/GitVersion.BuildAgents/CodeBuild">CodeBuild</a></li>
 				<li><a href="/api/GitVersion.BuildAgents/ContinuaCi">ContinuaCi</a></li>
@@ -155,6 +167,10 @@
 				<li><a href="/api/GitVersion.BuildAgents/MyGet">MyGet</a></li>
 				<li><a href="/api/GitVersion.BuildAgents/TeamCity">TeamCity</a></li>
 				<li class="selected"><a href="/api/GitVersion.BuildAgents/TravisCi">TravisCi</a></li>
+			<li class="header">Interface Types</li>
+				<li><a href="/api/GitVersion.BuildAgents/IBuildAgent">IBuildAgent</a></li>
+				<li><a href="/api/GitVersion.BuildAgents/IBuildAgentResolver">IBuildAgentResolver</a></li>
+				<li><a href="/api/GitVersion.BuildAgents/ICurrentBuildAgent">ICurrentBuildAgent</a></li>
 
 
                     </ul>
@@ -187,8 +203,8 @@
 								<dt>Interfaces</dt>
 								<dd>
 									<ul class="list-unstyled">
-											<li><a href="/api/GitVersion/ICurrentBuildAgent">ICurrentBuildAgent</a></li>								
-											<li><a href="/api/GitVersion/IBuildAgent">IBuildAgent</a></li>								
+											<li><a href="/api/GitVersion.BuildAgents/ICurrentBuildAgent">ICurrentBuildAgent</a></li>								
+											<li><a href="/api/GitVersion.BuildAgents/IBuildAgent">IBuildAgent</a></li>								
 									</ul>
 								</dd>
 							
@@ -196,7 +212,7 @@
 								<dd>
 									<ul class="list-unstyled">										
 											<li>object</li>								
-											<li><a href="/api/GitVersion/BuildAgentBase">BuildAgentBase</a></li>								
+											<li><a href="/api/GitVersion.BuildAgents/BuildAgentBase">BuildAgentBase</a></li>								
 									</ul>
 								</dd>				
 							
@@ -207,12 +223,12 @@
 						<div class="mermaid">
 							graph BT
 	Type--&gt;Base0["BuildAgentBase"]
-	click Base0 "/api/GitVersion/BuildAgentBase"
+	click Base0 "/api/GitVersion.BuildAgents/BuildAgentBase"
 	Base0--&gt;Base1["object"]
 	Type-.-&gt;Interface0["ICurrentBuildAgent"]
-	click Interface0 "/api/GitVersion/ICurrentBuildAgent"
+	click Interface0 "/api/GitVersion.BuildAgents/ICurrentBuildAgent"
 	Type-.-&gt;Interface1["IBuildAgent"]
-	click Interface1 "/api/GitVersion/IBuildAgent"
+	click Interface1 "/api/GitVersion.BuildAgents/IBuildAgent"
 	Type["TravisCi"]
 class Type type-node
 
@@ -271,11 +287,11 @@ class Type type-node
 								</td>
 							</tr>
 							<tr>
-								<td><a href="/api/GitVersion/BuildAgentBase/6690819A">Log</a></td>
+								<td><a href="/api/GitVersion.BuildAgents/BuildAgentBase/EC89F7A3">Log</a></td>
 								<td></td>
 								<td>
 									<div></div>
-											<div><small><em>Inherited from <a href="/api/GitVersion/BuildAgentBase">BuildAgentBase</a></em></small></div>
+											<div><small><em>Inherited from <a href="/api/GitVersion.BuildAgents/BuildAgentBase">BuildAgentBase</a></em></small></div>
 								</td>
 							</tr>
 					</tbody></table>
@@ -295,11 +311,11 @@ class Type type-node
 							</tr>
 						</thead>
 							<tbody><tr>
-								<td><a href="/api/GitVersion/BuildAgentBase/A5B044F2">Environment</a></td>
+								<td><a href="/api/GitVersion.BuildAgents/BuildAgentBase/7276A338">Environment</a></td>
 								<td><a href="/api/GitVersion/IEnvironment">IEnvironment</a></td>
 								<td>
 									<div></div>
-											<div><small><em>Inherited from <a href="/api/GitVersion/BuildAgentBase">BuildAgentBase</a></em></small></div>
+											<div><small><em>Inherited from <a href="/api/GitVersion.BuildAgents/BuildAgentBase">BuildAgentBase</a></em></small></div>
 								</td>
 							</tr>
 							<tr>
@@ -333,11 +349,11 @@ class Type type-node
 								</td>
 							</tr>
 							<tr>
-								<td><a href="/api/GitVersion/BuildAgentBase/92DA594B">Generate<wbr>Build<wbr>Log<wbr>Output<wbr>(VersionVariables)<wbr></a></td>
+								<td><a href="/api/GitVersion.BuildAgents/BuildAgentBase/5F4510B1">Generate<wbr>Build<wbr>Log<wbr>Output<wbr>(VersionVariables)<wbr></a></td>
 								<td>IEnumerable<wbr>&lt;string&gt;<wbr></td>
 								<td>
 									<div></div>
-											<div><small><em>Inherited from <a href="/api/GitVersion/BuildAgentBase">BuildAgentBase</a></em></small></div>
+											<div><small><em>Inherited from <a href="/api/GitVersion.BuildAgents/BuildAgentBase">BuildAgentBase</a></em></small></div>
 								</td>
 							</tr>
 							<tr>
@@ -355,11 +371,11 @@ class Type type-node
 								</td>
 							</tr>
 							<tr>
-								<td><a href="/api/GitVersion/BuildAgentBase/EC1E7A2D">GetCurrentBranch<wbr>(bool)<wbr></a></td>
+								<td><a href="/api/GitVersion.BuildAgents/BuildAgentBase/353817E9">GetCurrentBranch<wbr>(bool)<wbr></a></td>
 								<td>string</td>
 								<td>
 									<div></div>
-											<div><small><em>Inherited from <a href="/api/GitVersion/BuildAgentBase">BuildAgentBase</a></em></small></div>
+											<div><small><em>Inherited from <a href="/api/GitVersion.BuildAgents/BuildAgentBase">BuildAgentBase</a></em></small></div>
 								</td>
 							</tr>
 							<tr>
@@ -370,19 +386,19 @@ class Type type-node
 								</td>
 							</tr>
 							<tr>
-								<td><a href="/api/GitVersion/BuildAgentBase/121824AF">ShouldCleanUpRemotes<wbr>()<wbr></a></td>
+								<td><a href="/api/GitVersion.BuildAgents/BuildAgentBase/6122FE29">ShouldCleanUpRemotes<wbr>()<wbr></a></td>
 								<td>bool</td>
 								<td>
 									<div></div>
-											<div><small><em>Inherited from <a href="/api/GitVersion/BuildAgentBase">BuildAgentBase</a></em></small></div>
+											<div><small><em>Inherited from <a href="/api/GitVersion.BuildAgents/BuildAgentBase">BuildAgentBase</a></em></small></div>
 								</td>
 							</tr>
 							<tr>
-								<td><a href="/api/GitVersion/BuildAgentBase/2266ADBA">WriteIntegration<wbr>(Action<wbr>&lt;string&gt;<wbr>, <wbr>VersionVariables, <wbr>bool)<wbr></a></td>
+								<td><a href="/api/GitVersion.BuildAgents/BuildAgentBase/05392C9E">WriteIntegration<wbr>(Action<wbr>&lt;string&gt;<wbr>, <wbr>VersionVariables, <wbr>bool)<wbr></a></td>
 								<td>void</td>
 								<td>
 									<div></div>
-											<div><small><em>Inherited from <a href="/api/GitVersion/BuildAgentBase">BuildAgentBase</a></em></small></div>
+											<div><small><em>Inherited from <a href="/api/GitVersion.BuildAgents/BuildAgentBase">BuildAgentBase</a></em></small></div>
 								</td>
 							</tr>
 					</tbody></table>
