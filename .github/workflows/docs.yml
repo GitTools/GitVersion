@@ -19,4 +19,4 @@ jobs:
       uses: chabad360/htmlproofer@master
       with:
         directory: ./artifacts/Documentation
-        arguments: --url-ignore /api/ --allow-hash-href
+        arguments: --url-ignore /api/ --allow-hash-href --assume-extension
