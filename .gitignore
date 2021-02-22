@@ -86,6 +86,8 @@ GitVersion.sln.ide/
 .vs/
 Packages/
 build/*
+!build/*.cs
+!build/*.csproj
 site/
 /TestResult.xml
 
