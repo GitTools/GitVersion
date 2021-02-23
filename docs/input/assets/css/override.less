@@ -55,7 +55,7 @@ body.layout-boxed .top-banner,
 }
 
 .gitter-open-chat-button {
-	background-color: #3c8dbc;
+	background-color: @purple;
 	font-family: @font-family-sans-serif;
 	letter-spacing: normal;
 	right: 90px;
@@ -65,7 +65,7 @@ body.layout-boxed .top-banner,
 .gitter-open-chat-button:hover,
 .github-button:focus,
 .github-button:hover {
-	background-color: #4EABDD;
+	background-color: @dark-purple;
 	color: #fff;
 }
 
@@ -216,6 +216,46 @@ main .col-sm-6 {
 
 .box {
     border-color: @purple;
+}
+
+.icons table {
+    border-spacing: 0 1rem;
+
+    thead {
+        display: none;
+    }
+
+    td {
+        border-top: none !important;
+        font-size: 2rem;
+        vertical-align: middle !important;
+
+        &:first-of-type {
+            width: 72px;
+
+            a {
+                width: 55px;
+                height: 55px;
+                background-color: @purple;
+                border-radius: 10px;
+                display: table-cell;
+                vertical-align: middle;
+
+                &:hover {
+                    background-color: @dark-purple;
+                }
+            }
+        }
+
+        &:last-of-type {
+            padding-left: .5rem;
+        }
+    }
+
+    img {
+        max-width: 30px;
+        max-height: 30px;
+    }
 }
 
 @media only screen and (max-width: 890px) {
