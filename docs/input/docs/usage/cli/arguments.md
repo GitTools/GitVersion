@@ -47,6 +47,9 @@ GitVersion [path]
                     Currently supported config overrides: tag-prefix
     /nocache        Bypasses the cache, result will not be written to the cache.
     /nonormalize    Disables normalize step on a build server.
+    /verbosity      Specifies the amount of information to be displayed.
+                    (Quiet, Minimal, Normal, Verbose, Diagnostic)
+                    Default is Normal
 
 # AssemblyInfo updating
 
@@ -90,12 +93,6 @@ GitVersion [path]
                     Use this switch to override
     /nofetch        Disables 'git fetch' during version calculation. Might cause
                     GitVersion to not calculate your version as expected.
-
-# Execute build args
-
-    /verbosity      Specifies the amount of information to be displayed.
-                    (Quiet, Minimal, Normal, Verbose, Diagnostic)
-                    Default is Normal
 
 gitversion init     Configuration utility for gitversion
 ```
