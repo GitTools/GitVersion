@@ -268,9 +268,9 @@
 								<dt>Implementing Types</dt>
 								<dd>
 									<ul class="list-unstyled">
-											<li><a href="/api/GitVersion/IBranch">IBranch</a></li>								
-											<li><a href="/api/GitVersion/ITag">ITag</a></li>								
 											<li><a href="/api/GitVersion/IReference">IReference</a></li>								
+											<li><a href="/api/GitVersion/ITag">ITag</a></li>								
+											<li><a href="/api/GitVersion/IBranch">IBranch</a></li>								
 									</ul>
 								</dd>				
 						</dl>
@@ -280,12 +280,12 @@
 							graph BT
 	Type["INamedReference"]
 class Type type-node
-	Implementing0["IBranch"]-.-&gt;Type
-	click Implementing0 "/api/GitVersion/IBranch"
+	Implementing0["IReference"]-.-&gt;Type
+	click Implementing0 "/api/GitVersion/IReference"
 	Implementing1["ITag"]-.-&gt;Type
 	click Implementing1 "/api/GitVersion/ITag"
-	Implementing2["IReference"]-.-&gt;Type
-	click Implementing2 "/api/GitVersion/IReference"
+	Implementing2["IBranch"]-.-&gt;Type
+	click Implementing2 "/api/GitVersion/IBranch"
 
 						</div>
 					</div>

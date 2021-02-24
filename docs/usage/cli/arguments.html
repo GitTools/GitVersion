@@ -168,6 +168,7 @@
                 <li><a href="/docs/learn/faq">FAQ</a></li>
                 <li><a href="/docs/learn/why">Why use GitVersion?</a></li>
                 <li><a href="/docs/learn/who">Who is using GitVersion</a></li>
+                <li><a href="/docs/learn/credits">Credits</a></li>
                 <li class="treeview">
                     <a href="/docs/learn/branching-strategies">Branching Strategies</a> <a href="#" class="expand"></a>
                     <ul class="treeview-menu">
@@ -251,6 +252,9 @@ GitVersion [path]
                     Currently supported config overrides: tag-prefix
     /nocache        Bypasses the cache, result will not be written to the cache.
     /nonormalize    Disables normalize step on a build server.
+    /verbosity      Specifies the amount of information to be displayed.
+                    (Quiet, Minimal, Normal, Verbose, Diagnostic)
+                    Default is Normal
 
 # AssemblyInfo updating
 
@@ -294,12 +298,6 @@ GitVersion [path]
                     Use this switch to override
     /nofetch        Disables 'git fetch' during version calculation. Might cause
                     GitVersion to not calculate your version as expected.
-
-# Execute build args
-
-    /verbosity      Specifies the amount of information to be displayed.
-                    (Quiet, Minimal, Normal, Verbose, Diagnostic)
-                    Default is Normal
 
 gitversion init     Configuration utility for gitversion
 </code></pre>

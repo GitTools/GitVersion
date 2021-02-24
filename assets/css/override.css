@@ -44,7 +44,7 @@ body.layout-boxed .top-banner .navbar,
   margin-bottom: 40px !important;
 }
 .gitter-open-chat-button {
-  background-color: #3c8dbc;
+  background-color: #682A7B;
   font-family: "Roboto", Helvetica, Arial, sans-serif;
   letter-spacing: normal;
   right: 90px;
@@ -53,7 +53,7 @@ body.layout-boxed .top-banner .navbar,
 .gitter-open-chat-button:hover,
 .github-button:focus,
 .github-button:hover {
-  background-color: #4EABDD;
+  background-color: #481d55;
   color: #fff;
 }
 .gitter-chat-embed {
@@ -181,6 +181,38 @@ main .col-sm-6 {
 }
 .box {
   border-color: #682A7B;
+}
+.icons table {
+  border-spacing: 0 1rem;
+}
+.icons table thead {
+  display: none;
+}
+.icons table td {
+  border-top: none !important;
+  font-size: 2rem;
+  vertical-align: middle !important;
+}
+.icons table td:first-of-type {
+  width: 72px;
+}
+.icons table td:first-of-type a {
+  width: 55px;
+  height: 55px;
+  background-color: #682A7B;
+  border-radius: 10px;
+  display: table-cell;
+  vertical-align: middle;
+}
+.icons table td:first-of-type a:hover {
+  background-color: #481d55;
+}
+.icons table td:last-of-type {
+  padding-left: 0.5rem;
+}
+.icons table img {
+  max-width: 30px;
+  max-height: 30px;
 }
 @media only screen and (max-width: 890px) {
   .card-container {
