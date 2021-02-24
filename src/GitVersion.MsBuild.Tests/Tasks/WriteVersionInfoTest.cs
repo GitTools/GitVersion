@@ -10,6 +10,23 @@ namespace GitVersion.MsBuild.Tests.Tasks
     [TestFixture]
     public class WriteVersionInfoTest : TestTaskBase
     {
+        protected string GitHubEnvFilePath { get; set; }
+
+        [OneTimeSetUp]
+        public void OneTimeSetUp()
+        {
+            GitHubEnvFilePath = System.IO.Path.GetTempFileName();
+        }
+
+        [OneTimeTearDown]
+        public void OneTimeTearDown()
+        {
+            if (System.IO.File.Exists(GitHubEnvFilePath))
+            {
+                System.IO.File.Delete(GitHubEnvFilePath);
+            }
+        }
+
         [Test]
         public void WriteVersionInfoTaskShouldNotLogOutputVariablesToBuildOutput()
         {
@@ -23,15 +40,60 @@ namespace GitVersion.MsBuild.Tests.Tasks
         }
 
         [Test]
-        public void WriteVersionInfoTaskShouldLogOutputVariablesToBuildOutputInBuildServer()
+        public void WriteVersionInfoTaskShouldLogOutputVariablesToBuildOutputInAzurePipeline()
         {
             var task = new WriteVersionInfoToBuildLog();
 
-            using var result = ExecuteMsBuildTaskInBuildServer(task);
+            using var result = ExecuteMsBuildTaskInAzurePipeline(task);
 
             result.Success.ShouldBe(true);
             result.Errors.ShouldBe(0);
             result.Log.ShouldContain("##vso[task.setvariable variable=GitVersion.FullSemVer]1.0.1+1");
+        }
+
+        
+        [TestCase("2021-02-14.1")]
+        public void WriteVersionInfoTaskShouldNotUpdateBuildNumberInAzurePipeline(string buildNumber)
+        {
+            var task = new WriteVersionInfoToBuildLog();
+            var content = @"update-build-number: false";
+            
+            using var result = ExecuteMsBuildTaskInAzurePipeline(task, buildNumber: buildNumber, configurationText: content);
+
+            result.Success.ShouldBe(true);
+            result.Errors.ShouldBe(0);
+            result.Log.ShouldNotContain($"##vso[build.updatebuildnumber]");
+        }
+
+
+        [TestCase("2021-02-14.1-$(GITVERSION.FullSemVer)", "2021-02-14.1-1.0.1+1")]
+        [TestCase("2021-02-14.1-$(GITVERSION.SemVer)",     "2021-02-14.1-1.0.1")]
+        [TestCase("2021-02-14.1-$(GITVERSION.minor)",      "2021-02-14.1-0")]
+        [TestCase("2021-02-14.1-$(GITVERSION_MAJOR)",      "2021-02-14.1-1")]
+        [TestCase("2021-02-14.1",                          "1.0.1+1")]
+        public void WriteVersionInfoTaskShouldUpdateBuildNumberInAzurePipeline(string buildNumber, string expected)
+        {
+            var task = new WriteVersionInfoToBuildLog();
+
+            using var result = ExecuteMsBuildTaskInAzurePipeline(task, buildNumber);
+
+            result.Success.ShouldBe(true);
+            result.Errors.ShouldBe(0);
+            result.Log.ShouldContain($"##vso[build.updatebuildnumber]{expected}");
+        }
+
+
+        [Test]
+        public void WriteVersionInfoTaskShouldLogOutputVariablesToBuildOutputInGitHubActions()
+        {
+            var task = new WriteVersionInfoToBuildLog();
+            
+            using var result = ExecuteMsBuildTaskInGitHubActions(task, GitHubEnvFilePath);
+
+            result.Success.ShouldBe(true);
+            result.Errors.ShouldBe(0);
+            string content = System.IO.File.ReadAllText(GitHubEnvFilePath);
+            content.ShouldContain("GitVersion_SemVer=1.0.1");            
         }
 
         [Test]
@@ -57,11 +119,11 @@ namespace GitVersion.MsBuild.Tests.Tasks
         [Test]
         [Category(NoNet48)]
         [Category(NoMono)]
-        public void WriteVersionInfoTaskShouldLogOutputVariablesToBuildOutputWhenRunWithMsBuildInBuildServer()
+        public void WriteVersionInfoTaskShouldLogOutputVariablesToBuildOutputWhenRunWithMsBuildInAzurePipeline()
         {
             const string taskName = nameof(WriteVersionInfoToBuildLog);
 
-            using var result = ExecuteMsBuildExeInBuildServer(project =>
+            using var result = ExecuteMsBuildExeInAzurePipeline(project =>
             {
                 AddWriteVersionInfoToBuildLogTask(project, taskName, taskName);
             });
