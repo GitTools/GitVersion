@@ -29,7 +29,7 @@
         <PackageVersion_MicrosoftJson>5.0.0</PackageVersion_MicrosoftJson>
         <PackageVersion_MsBuild>16.8.0</PackageVersion_MsBuild>
 
-        <PackageVersion_MicrosoftTestSdk>16.8.3</PackageVersion_MicrosoftTestSdk>
+        <PackageVersion_MicrosoftTestSdk>16.9.1</PackageVersion_MicrosoftTestSdk>
         <PackageVersion_NSubstitute>4.2.2</PackageVersion_NSubstitute>
         <PackageVersion_CoverletMsBuild>3.0.3</PackageVersion_CoverletMsBuild>
         <PackageVersion_NUnit>3.13.1</PackageVersion_NUnit>
