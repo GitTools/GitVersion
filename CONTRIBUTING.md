@@ -109,3 +109,17 @@ It is a manual release step after the release now, first download the appropriat
 ```bash
 docker build . --build-arg GitVersionZip=GitVersion_<VERSION>.zip --tag gittools/gitversion
 ```
+## Code Style
+
+In order to apply the code style defined by by the `.editorconfig` file you can use [`dotnet-format`](https://github.com/dotnet/format).
+
+1. Install [`dotnet-format`](https://github.com/dotnet/format) as a global tool:
+
+```shell
+dotnet tool install -g dotnet-format
+```
+
+2. Change to the root folder of the GitVersion repository and use the following command to apply the code style:
+```shell
+dotnet format ./ --folder --exclude **/AddFormats/ --fix-codestyle
+```
