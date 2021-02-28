@@ -61,11 +61,6 @@ namespace GitVersion.MsBuild.Tests.Tasks
 
             var result = msbuildFixture.Execute(task);
 
-            if(configurationText != null)
-            {
-
-            }
-
             if (result.Success == false) Console.WriteLine(result.Log);
             return result;
         }        
@@ -128,15 +123,6 @@ namespace GitVersion.MsBuild.Tests.Tasks
         {
             var configFilePath = Path.Combine(repoFolder, Configuration.ConfigFileLocator.DefaultFileName);
             File.WriteAllText(configFilePath, content);
-        }
-
-        protected static void DeleteConfiguration(string repoFolder)
-        {
-            var configFilePath = Path.Combine(repoFolder, Configuration.ConfigFileLocator.DefaultFileName);
-            if(File.Exists(configFilePath))
-            {
-                File.Delete(configFilePath);
-            }
         }
     }
 }
