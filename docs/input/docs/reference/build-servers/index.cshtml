@@ -1,0 +1,47 @@
+---
+Order: 3000
+Description: Details on GitVersion's Build Server support
+---
+
+<p>
+    Depending on the Build Server being used, i.e. TeamCity, Jenkins, etc,
+    GitVersion might need to extra repository information in order to work
+    correctly.  In has knowledge of most of the main CI Providers, and when
+    instructed to do so, it will fetch the necessary information in order to
+    correctly assert the semantic version number.
+</p>
+
+<p>
+    In addition, most build servers allow the setting of the build number within
+    the system, GitVersion knows how to do this automatically. GitVersion has
+    support for quite a few build servers out of the box. Currently we support:
+</p>
+
+@Html.Partial("_ChildPages")
+
+<p>
+    When the <code>gitVersion</code> executable is run with the
+    <code>/output buildserver</code> flag instead of outputting JSON it will
+    export variables to the current build server.
+</p>
+
+<p>
+    For instance if you are running in TeamCity after you run
+    <code>gitversion /output buildserver</code> you will have the
+    <code>%system.GitVersion.SemVer%</code> variable available for you to use
+    in the rest of the build configuration.
+</p>
+
+<p>
+    When running in MSBuild either from the
+    <a href="/docs/usage/msbuild">MSBuild Task</a> or
+    by using the <code>/proj myproject.sln</code> parameter, GitVersion will
+    make the MSBuild variables available in the format
+    <code>$(GitVersion_SemVer)`</code>
+</p>
+
+<p>
+    The standard <code>gitversion</code> executable normalize the branches if
+    there is a build server detected. This behavior can be disabled with the
+    <code>/nonormalize</code> option.
+</p>

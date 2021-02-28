@@ -269,7 +269,7 @@ jobs:
     runs-on: windows-latest
     strategy:
       matrix:
-        taskName: [CI, NuGet, Chocolatey, Documentation]
+        taskName: [CI, NuGet, Chocolatey]
       fail-fast: false
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -304,9 +304,37 @@ jobs:
       shell: pwsh
       run: ./build.ps1 -target Publish-${{ matrix.taskName }}
 
+  publish_docs:
+    name: Publish Docs
+    needs: [artifact_linux_test, artifact_msbuild_test, artifact_commandline_test, artifact_portable_test]
+    runs-on: ubuntu-latest
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      GITHUB_USERNAME: ${{ secrets.GITHUB_USERNAME }}
+    steps:
+    - uses: actions/checkout@v2
+    - name: Fetch all history for all tags and branches
+      run: |
+        git fetch --prune --unshallow
+    - name: Cache tools
+      id: cache-tools
+      uses: actions/cache@v1
+      with:
+        path: tools
+        key: v1-${{ runner.os }}-tools-${{ hashFiles('build.cake') }}
+    - name: Cache dotnet
+      id: cache-dotnet
+      uses: actions/cache@v1
+      with:
+        path: .dotnet
+        key: v1-${{ runner.os }}-dotnet-${{ hashFiles('build.config') }}
+    - name: '[Publish]'
+      shell: pwsh
+      run: ./build.ps1 -target Publish-Documentation
+
   release:
     name: Release
-    needs: [docker, publish]
+    needs: [docker, publish, publish_docs]
     runs-on: windows-latest
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

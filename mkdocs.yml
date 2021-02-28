@@ -11,18 +11,18 @@ pages:
   - NuGet Library: usage/nuget-library.md
 - Configuration: configuration.md
 - Build Server Support:
-    - Introduction: build-server-support/build-server-support.md
+    - Introduction: reference/build-servers-support.md
     - Build Servers:
-      - AppVeyor: build-server-support/build-server/appveyor.md
-      - Bamboo: build-server-support/build-server/bamboo.md
-      - GitLab CI: build-server-support/build-server/gitlab.md
-      - Continua CI: build-server-support/build-server/continua.md
-      - Jenkins: build-server-support/build-server/jenkins.md
-      - MyGet: build-server-support/build-server/myget.md
-      - Octopus Deploy: build-server-support/build-server/octopus-deploy.md
-      - TeamCity: build-server-support/build-server/teamcity.md
-      - Team Build (TFS): build-server-support/build-server/teambuild.md
-      - TFS Build vNext: build-server-support/build-server/azure-devops.md
+      - AppVeyor: reference/build-servers/appveyor.md
+      - Bamboo: reference/build-servers/bamboo.md
+      - GitLab CI: reference/build-servers/gitlab.md
+      - Continua CI: reference/build-servers/continua.md
+      - Jenkins: reference/build-servers/jenkins.md
+      - MyGet: reference/build-servers/myget.md
+      - Octopus Deploy: reference/build-servers/octopus-deploy.md
+      - TeamCity: reference/build-servers/teamcity.md
+      - Team Build (TFS): reference/build-servers/teambuild.md
+      - TFS Build vNext: reference/build-servers/azure-devops.md
 - Examples: examples.md
 - FAQ: faq.md
 - Why?: why.md

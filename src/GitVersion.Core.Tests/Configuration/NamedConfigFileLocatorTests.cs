@@ -149,7 +149,7 @@ namespace GitVersion.Core.Tests
 
         private string SetupConfigFileContent(string text, string fileName = null, string path = null)
         {
-            if (string.IsNullOrEmpty(fileName)) fileName = ((NamedConfigFileLocator)configFileLocator).FilePath;
+            if (string.IsNullOrEmpty(fileName)) fileName = configFileLocator.FilePath;
             var filePath = fileName;
             if (!string.IsNullOrEmpty(path))
                 filePath = Path.Combine(path, filePath);

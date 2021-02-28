@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.IO;
 using System.Linq;
+using GitVersion.BuildAgents;
 using GitVersion.Extensions;
 using GitVersion.Logging;
 using GitVersion.Model;

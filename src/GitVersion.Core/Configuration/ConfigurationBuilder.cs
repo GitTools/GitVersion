@@ -160,7 +160,7 @@ namespace GitVersion.Configuration
             foreach (var (name, branchConfig) in config.Branches)
             {
                 var regex = branchConfig.Regex;
-                var helpUrl = $"{System.Environment.NewLine}See https://gitversion.net/docs/configuration for more info";
+                var helpUrl = $"{System.Environment.NewLine}See https://gitversion.net/docs/reference/configuration for more info";
 
                 if (regex == null)
                 {

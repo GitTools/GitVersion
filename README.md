@@ -82,10 +82,10 @@ from The Noun Project.
 [gh-actions]:                      https://github.com/marketplace/actions/gittools
 [gh-actions-badge]:                https://img.shields.io/badge/marketplace-gittools-blue?logo=github
 [contribute]:                      https://github.com/GitTools/GitVersion/blob/main/CONTRIBUTING.md
-[why]:                             https://gitversion.net/docs/why
-[usage]:                           https://gitversion.net/docs/usage/usage
-[how]:                             https://gitversion.net/docs/more-info/how-it-works
-[faq]:                             https://gitversion.net/docs/faq
-[who]:                             https://gitversion.net/docs/who
+[why]:                             https://gitversion.net/docs/learn/why
+[usage]:                           https://gitversion.net/docs/usage
+[how]:                             https://gitversion.net/docs/learn/how-it-works
+[faq]:                             https://gitversion.net/docs/learn/faq
+[who]:                             https://gitversion.net/docs/learn/who
 [gv-in-action]:                    https://raw.github.com/GitTools/GitVersion/master/docs/input/docs/img/README.png
 [banner]:                          https://github.com/GitTools/graphics/raw/master/GitVersion/banner-1280x640.png

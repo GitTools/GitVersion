@@ -42,6 +42,6 @@ work for you
   `GitVersionConfig.yaml` instead
 - GitVersionTask's `ReleaseDateAttribute` no longer exists
 
-[gitflow]: https://gitversion.net/docs/git-branching-strategies/gitflow-examples_complete
+[gitflow]: https://gitversion.net/docs/learn/branching-strategies/gitflow-examples_complete
 [pr-1541]: https://github.com/GitTools/GitVersion/pull/1541
 [pr-1581]: https://github.com/GitTools/GitVersion/pull/1581

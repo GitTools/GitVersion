@@ -62,10 +62,7 @@ namespace GitVersion
         }
         public int GetNumberOfUncommittedChanges()
         {
-            return new OperationWithExponentialBackoff<LibGit2Sharp.LockedFileException, int>(new ThreadSleep(), log, () =>
-            {
-                return GetNumberOfUncommittedChangesInternal();
-            }).ExecuteAsync().Result;
+            return new OperationWithExponentialBackoff<LibGit2Sharp.LockedFileException, int>(new ThreadSleep(), log, GetNumberOfUncommittedChangesInternal).ExecuteAsync().Result;
         }
         private int GetNumberOfUncommittedChangesInternal()
         {

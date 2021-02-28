@@ -1,25 +1,35 @@
-using System;
 using System.IO;
 using System.Linq;
 using GitVersion.Model.Configuration;
 using GitVersion.VersionCalculation;
+using Microsoft.Extensions.Options;
 
 namespace GitVersion.Configuration
 {
-    public abstract class ConfigFileLocator : IConfigFileLocator
+    public class ConfigFileLocator : IConfigFileLocator
     {
-        protected readonly IFileSystem FileSystem;
-
-        protected ConfigFileLocator(IFileSystem fileSystem)
+        public const string DefaultFileName = "GitVersion.yml";
+        private readonly IFileSystem fileSystem;
+        public ConfigFileLocator(IFileSystem fileSystem, IOptions<GitVersionOptions> options)
         {
-            FileSystem = fileSystem ?? throw new ArgumentNullException(nameof(fileSystem));
+            this.fileSystem = fileSystem;
+            var configFile = options?.Value.ConfigInfo.ConfigFile;
+            FilePath = !string.IsNullOrWhiteSpace(configFile) ? configFile : DefaultFileName;
         }
 
-        public abstract bool HasConfigFileAt(string workingDirectory);
+        public string FilePath { get; }
 
-        public abstract string GetConfigFilePath(string workingDirectory);
+        public bool HasConfigFileAt(string workingDirectory) => fileSystem.Exists(Path.Combine(workingDirectory, FilePath));
 
-        public abstract void Verify(string workingDirectory, string projectRootDirectory);
+        public string GetConfigFilePath(string workingDirectory) => Path.Combine(workingDirectory, FilePath);
+
+        public void Verify(string workingDirectory, string projectRootDirectory)
+        {
+            if (!Path.IsPathRooted(FilePath) && !fileSystem.PathsEqual(workingDirectory, projectRootDirectory))
+            {
+                WarnAboutAmbiguousConfigFileSelection(workingDirectory, projectRootDirectory);
+            }
+        }
 
         public string SelectConfigFilePath(GitVersionOptions gitVersionOptions, IGitRepositoryInfo repositoryInfo)
         {
@@ -33,9 +43,9 @@ namespace GitVersion.Configuration
         {
             var configFilePath = GetConfigFilePath(workingDirectory);
 
-            if (FileSystem.Exists(configFilePath))
+            if (fileSystem.Exists(configFilePath))
             {
-                var readAllText = FileSystem.ReadAllText(configFilePath);
+                var readAllText = fileSystem.ReadAllText(configFilePath);
                 var readConfig = ConfigSerializer.Read(new StringReader(readAllText));
 
                 VerifyReadConfig(readConfig);
@@ -44,19 +54,6 @@ namespace GitVersion.Configuration
             }
 
             return new Config();
-        }
-
-        private static void VerifyReadConfig(Config config)
-        {
-            // Verify no branches are set to mainline mode
-            if (config.Branches.Any(b => b.Value.VersioningMode == VersioningMode.Mainline))
-            {
-                throw new ConfigurationException(@"Mainline mode only works at the repository level, a single branch cannot be put into mainline mode
-
-This is because mainline mode treats your entire git repository as an event source with each merge into the 'mainline' incrementing the version.
-
-If the docs do not help you decide on the mode open an issue to discuss what you are trying to do.");
-            }
         }
 
         public void Verify(GitVersionOptions gitVersionOptions, IGitRepositoryInfo repositoryInfo)
@@ -72,6 +69,37 @@ If the docs do not help you decide on the mode open an issue to discuss what you
             var projectRootDirectory = repositoryInfo.ProjectRootDirectory;
 
             Verify(workingDirectory, projectRootDirectory);
+        }
+
+        private static void VerifyReadConfig(Config config)
+        {
+            // Verify no branches are set to mainline mode
+            if (config.Branches.Any(b => b.Value.VersioningMode == VersioningMode.Mainline))
+            {
+                throw new ConfigurationException(@"Mainline mode only works at the repository level, a single branch cannot be put into mainline mode
+
+This is because mainline mode treats your entire git repository as an event source with each merge into the 'mainline' incrementing the version.
+
+If the docs do not help you decide on the mode open an issue to discuss what you are trying to do.");
+            }
+        }
+
+        private void WarnAboutAmbiguousConfigFileSelection(string workingDirectory, string projectRootDirectory)
+        {
+            var workingConfigFile = GetConfigFilePath(workingDirectory);
+            var projectRootConfigFile = GetConfigFilePath(projectRootDirectory);
+
+            var hasConfigInWorkingDirectory = fileSystem.Exists(workingConfigFile);
+            var hasConfigInProjectRootDirectory = fileSystem.Exists(projectRootConfigFile);
+            if (hasConfigInProjectRootDirectory && hasConfigInWorkingDirectory)
+            {
+                throw new WarningException($"Ambiguous config file selection from '{workingConfigFile}' and '{projectRootConfigFile}'");
+            }
+
+            if (!hasConfigInProjectRootDirectory && !hasConfigInWorkingDirectory)
+            {
+                throw new WarningException($"The configuration file was not found at '{workingConfigFile}' or '{projectRootConfigFile}'");
+            }
         }
     }
 }

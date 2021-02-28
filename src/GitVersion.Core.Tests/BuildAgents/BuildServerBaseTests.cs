@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using GitVersion.BuildAgents;
 using GitVersion.Core.Tests.Helpers;
 using GitVersion.Logging;
 using GitVersion.OutputVariables;

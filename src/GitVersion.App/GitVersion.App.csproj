@@ -36,4 +36,8 @@
         <ProjectReference Include="..\GitVersion.LibGit2Sharp\GitVersion.LibGit2Sharp.csproj" />
         <ProjectReference Include="..\GitVersion.Core\GitVersion.Core.csproj" />
     </ItemGroup>
+
+    <ItemGroup>
+        <EmbeddedResource Include="../../docs/input/docs/usage/cli/arguments.md" />
+    </ItemGroup>
 </Project>

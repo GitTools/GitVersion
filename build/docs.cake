@@ -23,7 +23,7 @@ Task("Preview-Documentation")
     });
 });
 
-Task("Force-Publish-Documentation")
+Task("Build-Documentation")
     .IsDependentOn("Clean-Documentation")
     .WithCriteria(() => DirectoryExists(MakeAbsolute(Directory("docs"))), "Wyam documentation directory is missing")
     .Does<BuildParameters>((parameters) =>
@@ -37,14 +37,18 @@ Task("Force-Publish-Documentation")
         ConfigurationFile = MakeAbsolute((FilePath)"config.wyam"),
         Settings = parameters.WyamAdditionalSettings
     });
+});
 
+Task("Force-Publish-Documentation")
+    .IsDependentOn("Build-Documentation")
+    .Does<BuildParameters>((parameters) =>
+{
     PublishDocumentation(parameters);
 });
 
 Task("Publish-Documentation-Internal")
     .IsDependentOn("Clean-Documentation")
     .WithCriteria(() => DirectoryExists(MakeAbsolute(Directory("docs"))), "Wyam documentation directory is missing")
-    .WithCriteria<BuildParameters>((context, parameters) => parameters.IsRunningOnWindows, "Publish-Documentation is ran only on Windows agents.")
     .WithCriteria<BuildParameters>((context, parameters) => parameters.IsReleasingCI,      "Publish-Documentation is ran only on Releasing CI.")
     .WithCriteria<BuildParameters>((context, parameters) => parameters.IsStableRelease() || parameters.IsPreRelease(), "Publish-Documentation works only for non-PR commits.")
     .Does<BuildParameters>((parameters) =>

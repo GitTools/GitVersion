@@ -1,0 +1,22 @@
+name: Verify Documentation
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+
+    - name: '[Build Documentation]'
+      shell: pwsh
+      run: ./build.ps1 -Target Build-Documentation
+
+    - name: '[HTMLProofer]'
+      uses: chabad360/htmlproofer@master
+      with:
+        directory: ./artifacts/Documentation
+        arguments: --url-ignore /api/ --allow-hash-href --assume-extension --disable-external
