@@ -15,7 +15,7 @@ namespace GitVersion.MsBuild.Tests.Tasks
     {
         private static IDictionary<string, string> env = new Dictionary<string, string>
         {
-            { AzurePipelines.EnvironmentVariableName, "true" },            
+            { AzurePipelines.EnvironmentVariableName, "true" },
             { "BUILD_SOURCEBRANCH", null }
         };
 
@@ -126,13 +126,13 @@ namespace GitVersion.MsBuild.Tests.Tasks
 
         protected static void CreateConfiguration(string repoFolder, string content)
         {
-            var configFilePath = Path.Combine(repoFolder, Configuration.DefaultConfigFileLocator.DefaultFileName);
+            var configFilePath = Path.Combine(repoFolder, Configuration.ConfigFileLocator.DefaultFileName);
             File.WriteAllText(configFilePath, content);
         }
 
         protected static void DeleteConfiguration(string repoFolder)
         {
-            var configFilePath = Path.Combine(repoFolder, Configuration.DefaultConfigFileLocator.DefaultFileName);
+            var configFilePath = Path.Combine(repoFolder, Configuration.ConfigFileLocator.DefaultFileName);
             if(File.Exists(configFilePath))
             {
                 File.Delete(configFilePath);
