@@ -51,13 +51,13 @@ namespace GitVersion.MsBuild.Tests.Tasks
             result.Log.ShouldContain("##vso[task.setvariable variable=GitVersion.FullSemVer]1.0.1+1");
         }
 
-        
+
         [TestCase("2021-02-14.1")]
         public void WriteVersionInfoTaskShouldNotUpdateBuildNumberInAzurePipeline(string buildNumber)
         {
             var task = new WriteVersionInfoToBuildLog();
             var content = @"update-build-number: false";
-            
+
             using var result = ExecuteMsBuildTaskInAzurePipeline(task, buildNumber: buildNumber, configurationText: content);
 
             result.Success.ShouldBe(true);
@@ -67,10 +67,10 @@ namespace GitVersion.MsBuild.Tests.Tasks
 
 
         [TestCase("2021-02-14.1-$(GITVERSION.FullSemVer)", "2021-02-14.1-1.0.1+1", Ignore = "#2552 - GitVersion.MsBuild does not set Azure DevOps build number")]
-        [TestCase("2021-02-14.1-$(GITVERSION.SemVer)",     "2021-02-14.1-1.0.1",   Ignore = "#2552 - GitVersion.MsBuild does not set Azure DevOps build number")]
-        [TestCase("2021-02-14.1-$(GITVERSION.minor)",      "2021-02-14.1-0",       Ignore = "#2552 - GitVersion.MsBuild does not set Azure DevOps build number")]
-        [TestCase("2021-02-14.1-$(GITVERSION_MAJOR)",      "2021-02-14.1-1",       Ignore = "#2552 - GitVersion.MsBuild does not set Azure DevOps build number")]
-        [TestCase("2021-02-14.1",                          "1.0.1+1",              Ignore = "#2552 - GitVersion.MsBuild does not set Azure DevOps build number")]
+        [TestCase("2021-02-14.1-$(GITVERSION.SemVer)", "2021-02-14.1-1.0.1", Ignore = "#2552 - GitVersion.MsBuild does not set Azure DevOps build number")]
+        [TestCase("2021-02-14.1-$(GITVERSION.minor)", "2021-02-14.1-0", Ignore = "#2552 - GitVersion.MsBuild does not set Azure DevOps build number")]
+        [TestCase("2021-02-14.1-$(GITVERSION_MAJOR)", "2021-02-14.1-1", Ignore = "#2552 - GitVersion.MsBuild does not set Azure DevOps build number")]
+        [TestCase("2021-02-14.1", "1.0.1+1", Ignore = "#2552 - GitVersion.MsBuild does not set Azure DevOps build number")]
         public void WriteVersionInfoTaskShouldUpdateBuildNumberInAzurePipeline(string buildNumber, string expected)
         {
             var task = new WriteVersionInfoToBuildLog();
@@ -87,13 +87,13 @@ namespace GitVersion.MsBuild.Tests.Tasks
         public void WriteVersionInfoTaskShouldLogOutputVariablesToBuildOutputInGitHubActions()
         {
             var task = new WriteVersionInfoToBuildLog();
-            
+
             using var result = ExecuteMsBuildTaskInGitHubActions(task, GitHubEnvFilePath);
 
             result.Success.ShouldBe(true);
             result.Errors.ShouldBe(0);
             string content = System.IO.File.ReadAllText(GitHubEnvFilePath);
-            content.ShouldContain("GitVersion_SemVer=1.0.1");            
+            content.ShouldContain("GitVersion_SemVer=1.0.1");
         }
 
         [Test]

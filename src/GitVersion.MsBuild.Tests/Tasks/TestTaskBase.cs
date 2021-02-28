@@ -49,12 +49,12 @@ namespace GitVersion.MsBuild.Tests.Tasks
             task.SolutionDirectory = fixture.LocalRepositoryFixture.RepositoryPath;
             var msbuildFixture = new MsBuildTaskFixture(fixture);
             List<KeyValuePair<string, string>> environmentVariables = new List<KeyValuePair<string, string>>(env.ToArray());
-            if(buildNumber != null)
+            if (buildNumber != null)
             {
                 environmentVariables.Add(new KeyValuePair<string, string>("BUILD_BUILDNUMBER", buildNumber));
             }
             msbuildFixture.WithEnv(environmentVariables.ToArray());
-            if(configurationText != null)
+            if (configurationText != null)
             {
                 CreateConfiguration(task.SolutionDirectory, configurationText);
             }
@@ -63,13 +63,13 @@ namespace GitVersion.MsBuild.Tests.Tasks
 
             if (result.Success == false) Console.WriteLine(result.Log);
             return result;
-        }        
+        }
 
         protected static MsBuildTaskFixtureResult<T> ExecuteMsBuildTaskInGitHubActions<T>(T task, string envFilePath) where T : GitVersionTaskBase
         {
             var fixture = CreateRemoteRepositoryFixture();
             task.SolutionDirectory = fixture.LocalRepositoryFixture.RepositoryPath;
-            var msbuildFixture = new MsBuildTaskFixture(fixture);                 
+            var msbuildFixture = new MsBuildTaskFixture(fixture);
             msbuildFixture.WithEnv(new KeyValuePair<string, string>[]
             {
                 new KeyValuePair<string, string>("GITHUB_ACTIONS", "true"),
