@@ -1,7 +1,5 @@
 using System;
 using System.IO;
-
-using GitVersion.Configuration;
 using GitVersion.Logging;
 using GitVersion.MsBuild.Tasks;
 using GitVersion.OutputVariables;
@@ -16,15 +14,13 @@ namespace GitVersion.MsBuild
         private readonly IGitVersionOutputTool gitVersionOutputTool;
         private readonly IOptions<GitVersionOptions> options;
         private VersionVariables versionVariables;
-        private readonly IConfigProvider configProvider;
 
-        public GitVersionTaskExecutor(IFileSystem fileSystem, IGitVersionOutputTool gitVersionOutputTool, IOptions<GitVersionOptions> options, ILog log, IConfigProvider configProvider)
+        public GitVersionTaskExecutor(IFileSystem fileSystem, IGitVersionOutputTool gitVersionOutputTool, IOptions<GitVersionOptions> options, ILog log)
         {
             this.fileSystem = fileSystem ?? throw new ArgumentNullException(nameof(fileSystem));
             this.log = log ?? throw new ArgumentNullException(nameof(log));
             this.gitVersionOutputTool = gitVersionOutputTool ?? throw new ArgumentNullException(nameof(gitVersionOutputTool));
             this.options = options ?? throw new ArgumentNullException(nameof(options));
-            this.configProvider = configProvider ?? throw new ArgumentNullException(nameof(configProvider));
         }
 
         public void GetVersion(GetVersion task)
@@ -70,9 +66,7 @@ namespace GitVersion.MsBuild
         public void WriteVersionInfoToBuildLog(WriteVersionInfoToBuildLog task)
         {
             versionVariables = VersionVariables.FromFile(task.VersionFile, fileSystem, log);
-
-            var configuration = configProvider.Provide(overrideConfig: options.Value.ConfigInfo.OverrideConfig);
-            gitVersionOutputTool.OutputVariables(versionVariables, configuration.UpdateBuildNumber ?? false);
+            gitVersionOutputTool.OutputVariables(versionVariables, false);
         }
     }
 }
