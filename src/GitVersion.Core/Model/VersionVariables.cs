@@ -174,9 +174,8 @@ namespace GitVersion.OutputVariables
                 {
                     return FromFileInternal(filePath, fileSystem);
                 }
-                var retryOperation = new OperationWithExponentialBackoff<IOException, VersionVariables>(new ThreadSleep(), log, () => FromFileInternal(filePath, fileSystem));
-                var versionVariables = retryOperation.ExecuteAsync().Result;
-                return versionVariables;
+                var retryAction = new RetryAction<IOException, VersionVariables>();
+                return retryAction.Execute(() => FromFileInternal(filePath, fileSystem));
             }
             catch (AggregateException ex)
             {

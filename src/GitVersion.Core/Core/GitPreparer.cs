@@ -20,6 +20,7 @@ namespace GitVersion
         private readonly IGitRepositoryInfo repositoryInfo;
         private readonly IRepositoryStore repositoryStore;
         private readonly ICurrentBuildAgent buildAgent;
+        private RetryAction<LockedFileException> retryAction;
 
         private const string DefaultRemoteName = "origin";
 
@@ -33,6 +34,7 @@ namespace GitVersion
             this.repositoryInfo = repositoryInfo ?? throw new ArgumentNullException(nameof(repositoryInfo));
             this.repositoryStore = repositoryStore ?? throw new ArgumentNullException(nameof(repositoryStore));
             this.buildAgent = buildAgent;
+            retryAction = new RetryAction<LockedFileException>();
         }
 
         public void Prepare()
@@ -150,10 +152,7 @@ namespace GitVersion
         {
             using (log.IndentLog($"Cloning repository from url '{repositoryUrl}'"))
             {
-                new OperationWithExponentialBackoff<LockedFileException>(new ThreadSleep(), log, () =>
-                {
-                    repository.Clone(repositoryUrl, gitDirectory, auth);
-                }).ExecuteAsync().Wait();
+                retryAction.Execute(() => repository.Clone(repositoryUrl, gitDirectory, auth));
             }
         }
 
@@ -183,9 +182,7 @@ namespace GitVersion
                 {
                     var refSpecs = string.Join(", ", remote.FetchRefSpecs.Select(r => r.Specification));
                     log.Info($"Fetching from remote '{remote.Name}' using the following refspecs: {refSpecs}.");
-                    new OperationWithExponentialBackoff<LockedFileException>(new ThreadSleep(), log,
-                        () => repository.Fetch(remote.Name, Enumerable.Empty<string>(), authentication, null))
-                    .ExecuteAsync().Wait();
+                    retryAction.Execute(() => repository.Fetch(remote.Name, Enumerable.Empty<string>(), authentication, null));
                 }
 
                 EnsureLocalBranchExistsForCurrentBranch(remote, currentBranchName);
@@ -260,10 +257,7 @@ namespace GitVersion
                 else if (localBranchesWhereCommitShaIsHead.Count == 0)
                 {
                     log.Info($"No local branch pointing at the commit '{headSha}'. Fake branch needs to be created.");
-                    new OperationWithExponentialBackoff<LockedFileException>(new ThreadSleep(), log, () =>
-                    {
-                        repository.CreateBranchForPullRequestBranch(authentication);
-                    }).ExecuteAsync().Wait();
+                    retryAction.Execute(() => repository.CreateBranchForPullRequestBranch(authentication));
                 }
                 else
                 {
@@ -339,7 +333,7 @@ Please run `git {GitExtensions.CreateGitLogArgs(100)}` and submit it along with 
                     }
                     var remoteRefTipId = remoteTrackingReference.ReferenceTargetId;
                     log.Info($"Updating local ref '{localRef.Name.Canonical}' to point at {remoteRefTipId}.");
-                    new OperationWithExponentialBackoff<LockedFileException>(new ThreadSleep(), log, () => repository.Refs.UpdateTarget(localRef, remoteRefTipId)).ExecuteAsync().Wait();
+                    retryAction.Execute(() => repository.Refs.UpdateTarget(localRef, remoteRefTipId));
                     continue;
                 }
 
@@ -392,7 +386,7 @@ Please run `git {GitExtensions.CreateGitLogArgs(100)}` and submit it along with 
                 log.Info(isBranch ? $"Updating local branch {referenceName} to point at {repoTip}"
                     : $"Updating local branch {referenceName} to match ref {currentBranch}");
                 var localRef = repository.Refs[localCanonicalName];
-                new OperationWithExponentialBackoff<LockedFileException>(new ThreadSleep(), log, () => repository.Refs.UpdateTarget(localRef, repoTipId)).ExecuteAsync().Wait();
+                retryAction.Execute(() => repository.Refs.UpdateTarget(localRef, repoTipId));
             }
 
             Checkout(localCanonicalName);
@@ -400,8 +394,7 @@ Please run `git {GitExtensions.CreateGitLogArgs(100)}` and submit it along with 
 
         private void Checkout(string commitOrBranchSpec)
         {
-            new OperationWithExponentialBackoff<LockedFileException>(new ThreadSleep(), log, () =>
-                    repository.Checkout(commitOrBranchSpec)).ExecuteAsync().Wait();
+            retryAction.Execute(() => repository.Checkout(commitOrBranchSpec));
         }
     }
 }

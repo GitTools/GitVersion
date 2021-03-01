@@ -114,7 +114,7 @@ public void PublishDocumentation(BuildParameters parameters)
 
     Information("Sync output files...");
     Kudu.Sync(MakeAbsolute(Directory("artifacts/Documentation")), publishFolder, new KuduSyncSettings {
-        ArgumentCustomization = args=>args.Append("--ignore").AppendQuoted(".git;CNAME")
+        ArgumentCustomization = args=>args.Append("--ignore").AppendQuoted(".git;CNAME;_git2")
     });
 
     if (GitHasUncommitedChanges(publishFolder))

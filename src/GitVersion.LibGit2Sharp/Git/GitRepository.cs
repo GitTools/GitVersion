@@ -54,15 +54,17 @@ namespace GitVersion
 
         public ICommit FindMergeBase(ICommit commit, ICommit otherCommit)
         {
-            return new OperationWithExponentialBackoff<LockedFileException, ICommit>(new ThreadSleep(), log, () =>
+            var retryAction = new RetryAction<LockedFileException, ICommit>();
+            return retryAction.Execute(() =>
             {
                 var mergeBase = repositoryInstance.ObjectDatabase.FindMergeBase((Commit)commit, (Commit)otherCommit);
                 return new Commit(mergeBase);
-            }).ExecuteAsync().Result;
+            });
         }
         public int GetNumberOfUncommittedChanges()
         {
-            return new OperationWithExponentialBackoff<LibGit2Sharp.LockedFileException, int>(new ThreadSleep(), log, GetNumberOfUncommittedChangesInternal).ExecuteAsync().Result;
+            var retryAction = new RetryAction<LibGit2Sharp.LockedFileException, int>();
+            return retryAction.Execute(GetNumberOfUncommittedChangesInternal);
         }
         private int GetNumberOfUncommittedChangesInternal()
         {
