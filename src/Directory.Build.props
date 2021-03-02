@@ -27,7 +27,7 @@
         <PackageVersion_YamlDotNet>8.1.2</PackageVersion_YamlDotNet>
         <PackageVersion_MicrosoftExtensions>5.0.0</PackageVersion_MicrosoftExtensions>
         <PackageVersion_MicrosoftJson>5.0.0</PackageVersion_MicrosoftJson>
-        <PackageVersion_MsBuild>16.8.0</PackageVersion_MsBuild>
+        <PackageVersion_MsBuild>16.9.0</PackageVersion_MsBuild>
 
         <PackageVersion_MicrosoftTestSdk>16.9.1</PackageVersion_MicrosoftTestSdk>
         <PackageVersion_NSubstitute>4.2.2</PackageVersion_NSubstitute>
