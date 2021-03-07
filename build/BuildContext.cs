@@ -5,12 +5,19 @@ namespace GitVersion.Build
 {
     public class BuildContext : FrostingContext
     {
-        public bool Delay { get; set; }
-
+        public new string Configuration { get; }
+        public Paths Paths { get; set; } = new();
         public BuildContext(ICakeContext context)
             : base(context)
         {
-            Delay = context.Arguments.HasArgument("delay");
+            Configuration = context.Arguments.GetArgument("configuration");
         }
+    }
+
+    public class Paths
+    {
+        public string Artifacts { get; } = "./artifacts";
+        public string Src { get; } = "./src";
+        public string Build { get; } = "./build";
     }
 }
