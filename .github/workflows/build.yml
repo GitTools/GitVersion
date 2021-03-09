@@ -40,13 +40,13 @@ jobs:
         git fetch --prune --unshallow
     - name: Cache tools
       id: cache-tools
-      uses: actions/cache@v1
+      uses: actions/cache@v2.1.4
       with:
         path: tools
         key: v1-${{ runner.os }}-tools-${{ hashFiles('build.cake') }}
     - name: Cache dotnet
       id: cache-dotnet
-      uses: actions/cache@v1
+      uses: actions/cache@v2.1.4
       with:
         path: .dotnet
         key: v1-${{ runner.os }}-dotnet-${{ hashFiles('build.config') }}
@@ -82,13 +82,13 @@ jobs:
         git fetch --prune --unshallow
     - name: Cache tools
       id: cache-tools
-      uses: actions/cache@v1
+      uses: actions/cache@v2.1.4
       with:
         path: tools
         key: v1-${{ runner.os }}-tools-${{ hashFiles('build.cake') }}
     - name: Cache dotnet
       id: cache-dotnet
-      uses: actions/cache@v1
+      uses: actions/cache@v2.1.4
       with:
         path: .dotnet
         key: v1-${{ runner.os }}-dotnet-${{ hashFiles('build.config') }}
@@ -114,13 +114,13 @@ jobs:
         git fetch --prune --unshallow
     - name: Cache tools
       id: cache-tools
-      uses: actions/cache@v1
+      uses: actions/cache@v2.1.4
       with:
         path: tools
         key: v1-${{ runner.os }}-tools-${{ hashFiles('build.cake') }}
     - name: Cache dotnet
       id: cache-dotnet
-      uses: actions/cache@v1
+      uses: actions/cache@v2.1.4
       with:
         path: .dotnet
         key: v1-${{ runner.os }}-dotnet-${{ hashFiles('build.config') }}
@@ -144,13 +144,13 @@ jobs:
         git fetch --prune --unshallow
     - name: Cache tools
       id: cache-tools
-      uses: actions/cache@v1
+      uses: actions/cache@v2.1.4
       with:
         path: tools
         key: v1-${{ runner.os }}-tools-${{ hashFiles('build.cake') }}
     - name: Cache dotnet
       id: cache-dotnet
-      uses: actions/cache@v1
+      uses: actions/cache@v2.1.4
       with:
         path: .dotnet
         key: v1-${{ runner.os }}-dotnet-${{ hashFiles('build.config') }}
@@ -174,13 +174,13 @@ jobs:
         git fetch --prune --unshallow
     - name: Cache tools
       id: cache-tools
-      uses: actions/cache@v1
+      uses: actions/cache@v2.1.4
       with:
         path: tools
         key: v1-${{ runner.os }}-tools-${{ hashFiles('build.cake') }}
     - name: Cache dotnet
       id: cache-dotnet
-      uses: actions/cache@v1
+      uses: actions/cache@v2.1.4
       with:
         path: .dotnet
         key: v1-${{ runner.os }}-dotnet-${{ hashFiles('build.config') }}
@@ -204,13 +204,13 @@ jobs:
         git fetch --prune --unshallow
     - name: Cache tools
       id: cache-tools
-      uses: actions/cache@v1
+      uses: actions/cache@v2.1.4
       with:
         path: tools
         key: v1-${{ runner.os }}-tools-${{ hashFiles('build.cake') }}
     - name: Cache dotnet
       id: cache-dotnet
-      uses: actions/cache@v1
+      uses: actions/cache@v2.1.4
       with:
         path: .dotnet
         key: v1-${{ runner.os }}-dotnet-${{ hashFiles('build.config') }}
@@ -244,13 +244,13 @@ jobs:
         git fetch --prune --unshallow
     - name: Cache tools
       id: cache-tools
-      uses: actions/cache@v1
+      uses: actions/cache@v2.1.4
       with:
         path: tools
         key: v1-${{ runner.os }}-tools-${{ hashFiles('build.cake') }}
     - name: Cache dotnet
       id: cache-dotnet
-      uses: actions/cache@v1
+      uses: actions/cache@v2.1.4
       with:
         path: .dotnet
         key: v1-${{ runner.os }}-dotnet-${{ hashFiles('build.config') }}
@@ -285,13 +285,13 @@ jobs:
         git fetch --prune --unshallow
     - name: Cache tools
       id: cache-tools
-      uses: actions/cache@v1
+      uses: actions/cache@v2.1.4
       with:
         path: tools
         key: v1-${{ runner.os }}-tools-${{ hashFiles('build.cake') }}
     - name: Cache dotnet
       id: cache-dotnet
-      uses: actions/cache@v1
+      uses: actions/cache@v2.1.4
       with:
         path: .dotnet
         key: v1-${{ runner.os }}-dotnet-${{ hashFiles('build.config') }}
@@ -318,13 +318,13 @@ jobs:
         git fetch --prune --unshallow
     - name: Cache tools
       id: cache-tools
-      uses: actions/cache@v1
+      uses: actions/cache@v2.1.4
       with:
         path: tools
         key: v1-${{ runner.os }}-tools-${{ hashFiles('build.cake') }}
     - name: Cache dotnet
       id: cache-dotnet
-      uses: actions/cache@v1
+      uses: actions/cache@v2.1.4
       with:
         path: .dotnet
         key: v1-${{ runner.os }}-dotnet-${{ hashFiles('build.config') }}
@@ -345,13 +345,13 @@ jobs:
         git fetch --prune --unshallow
     - name: Cache tools
       id: cache-tools
-      uses: actions/cache@v1
+      uses: actions/cache@v2.1.4
       with:
         path: tools
         key: v1-${{ runner.os }}-tools-${{ hashFiles('build.cake') }}
     - name: Cache dotnet
       id: cache-dotnet
-      uses: actions/cache@v1
+      uses: actions/cache@v2.1.4
       with:
         path: .dotnet
         key: v1-${{ runner.os }}-dotnet-${{ hashFiles('build.config') }}
