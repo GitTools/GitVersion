@@ -1,4 +1,4 @@
-﻿using Cake.Common.Diagnostics;
+using Cake.Common.Diagnostics;
 using Cake.Common.IO;
 using Cake.Common.Tools.DotNetCore;
 using Cake.Common.Tools.DotNetCore.Build;
@@ -20,7 +20,7 @@ namespace Build.Tasks
             context.DotNetCoreRestore(sln, new DotNetCoreRestoreSettings
             {
                 Verbosity = DotNetCoreVerbosity.Minimal,
-                Sources = new [] { "https://api.nuget.org/v3/index.json" },
+                Sources = new[] { "https://api.nuget.org/v3/index.json" },
                 MSBuildSettings = context.MSBuildSettings
             });
 

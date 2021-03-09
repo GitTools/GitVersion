@@ -5,5 +5,6 @@
         <RunWorkingDirectory>$(MSBuildProjectDirectory)</RunWorkingDirectory>
         <Nullable>enable</Nullable>
         <LangVersion>9</LangVersion>
+        <NoWarn>NU1604</NoWarn>
     </PropertyGroup>
 </Project>
