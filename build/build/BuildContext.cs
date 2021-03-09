@@ -8,7 +8,6 @@ namespace Build
 {
     public class BuildContext : FrostingContext
     {
-        public string Target { get; set; }
         public new string Configuration { get; set; }
 
         public bool IsOriginalRepo { get; set; }

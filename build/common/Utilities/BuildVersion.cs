@@ -1,4 +1,4 @@
-﻿using Cake.Common.Diagnostics;
+using Cake.Common.Diagnostics;
 using Cake.Common.Tools.GitVersion;
 using Cake.Core;
 

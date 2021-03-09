@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Cake.Common;
 using Cake.Common.Build;
 using Cake.Common.Diagnostics;
@@ -15,7 +15,6 @@ namespace Build
         {
             context.StartGroup("Build Setup");
 
-            context.Target = context.Argument("target", "Default");
             context.Configuration = context.Argument("configuration", "Release");
 
             var buildSystem = context.BuildSystem();
@@ -34,7 +33,6 @@ namespace Build
             context.IsOnMacOS = context.IsRunningOnMacOs();
 
             context.Information("Configuration:     {0}", context.Configuration);
-            context.Information("Target:            {0}", context.Target);
             context.Information("Build Agent:       {0}", context.GetBuildAgent());
             context.Information("OS:                {0}", context.GetOS());
             context.Information("Pull Request:      {0}", context.IsPullRequest);
