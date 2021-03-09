@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Build", "build\Build.csproj", "{1AC00FB2-E28A-46B7-9683-AA7A1AFC29EB}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "sln", "sln", "{EC2C1EC4-BE56-4CAE-A3EE-4A67EED6BC6C}"
+ProjectSection(SolutionItems) = preProject
+	Directory.Build.props = Directory.Build.props
+	Directory.Packages.props = Directory.Packages.props
+EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common", "common\Common.csproj", "{8B04D233-2891-44D8-A7D2-0EAFD38F1F70}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{1AC00FB2-E28A-46B7-9683-AA7A1AFC29EB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1AC00FB2-E28A-46B7-9683-AA7A1AFC29EB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1AC00FB2-E28A-46B7-9683-AA7A1AFC29EB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1AC00FB2-E28A-46B7-9683-AA7A1AFC29EB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8B04D233-2891-44D8-A7D2-0EAFD38F1F70}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8B04D233-2891-44D8-A7D2-0EAFD38F1F70}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8B04D233-2891-44D8-A7D2-0EAFD38F1F70}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8B04D233-2891-44D8-A7D2-0EAFD38F1F70}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal

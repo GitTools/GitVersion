@@ -1,9 +1,9 @@
 using System.Collections.Generic;
 using Cake.Core.IO;
-using Cake.DotNetFormat;
 using Cake.Frosting;
+using Cake.DotNetFormat;
 
-namespace GitVersion.Build.Tasks
+namespace Build.Tasks
 {
     [TaskName(nameof(CodeFormat))]
     [TaskDescription("Formats the code")]

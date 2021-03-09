@@ -4,7 +4,7 @@ using System.Linq;
 using System.Reflection;
 using Cake.Frosting;
 
-namespace GitVersion.Build.Utilities
+namespace Common.Utilities
 {
     public static class Extensions
     {
@@ -59,4 +59,5 @@ namespace GitVersion.Build.Utilities
             return attribute != null ? attribute.Name : task.Name;
         }
     }
+
 }

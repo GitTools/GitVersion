@@ -2,9 +2,8 @@ using Cake.Common.Diagnostics;
 using Cake.Common.IO;
 using Cake.Frosting;
 
-namespace GitVersion.Build.Tasks
+namespace Build.Tasks
 {
-
     [TaskName(nameof(Clean))]
     [TaskDescription("Cleans build artifacts")]
     public sealed class Clean : FrostingTask<BuildContext>
@@ -17,4 +16,5 @@ namespace GitVersion.Build.Tasks
             context.CleanDirectories(context.Paths.Src + "/**/obj");
         }
     }
+
 }

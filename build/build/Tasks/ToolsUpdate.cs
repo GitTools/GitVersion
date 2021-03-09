@@ -4,7 +4,7 @@ using Cake.Frosting;
 using Cake.Json;
 using Newtonsoft.Json.Linq;
 
-namespace GitVersion.Build.Tasks
+namespace Build.Tasks
 {
     [TaskName(nameof(ToolsUpdate))]
     [TaskDescription("Update dotnet local tools")]

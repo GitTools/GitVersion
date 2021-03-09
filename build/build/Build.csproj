@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <AssemblyName>build</AssemblyName>
+    </PropertyGroup>
+    <ItemGroup>
+        <PackageReference Include="Cake.Common" />
+        <PackageReference Include="Cake.Frosting" />
+        <PackageReference Include="Cake.Incubator" />
+        <PackageReference Include="Cake.Json" />
+    </ItemGroup>
+    <ItemGroup>
+      <ProjectReference Include="..\Common\Common.csproj" />
+    </ItemGroup>
+</Project>
