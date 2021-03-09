@@ -3,9 +3,9 @@ using System.Linq;
 using Cake.Common.Diagnostics;
 using Cake.Core;
 using Cake.Frosting;
-using GitVersion.Build.Utilities;
+using Common.Utilities;
 
-namespace GitVersion.Build.Tasks
+namespace Build.Tasks
 {
     [TaskName(nameof(Default))]
     [TaskDescription("Shows this output")]
