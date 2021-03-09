@@ -124,7 +124,7 @@ jobs:
       with:
         path: .dotnet
         key: v1-${{ runner.os }}-dotnet-${{ hashFiles('build.config') }}
-    - uses: actions/download-artifact@v1
+    - uses: actions/download-artifact@v2.0.8
       name: Download artifacts folder
       with:
         name: storage
@@ -154,7 +154,7 @@ jobs:
       with:
         path: .dotnet
         key: v1-${{ runner.os }}-dotnet-${{ hashFiles('build.config') }}
-    - uses: actions/download-artifact@v1
+    - uses: actions/download-artifact@v2.0.8
       name: Download artifacts folder
       with:
         name: storage
@@ -184,7 +184,7 @@ jobs:
       with:
         path: .dotnet
         key: v1-${{ runner.os }}-dotnet-${{ hashFiles('build.config') }}
-    - uses: actions/download-artifact@v1
+    - uses: actions/download-artifact@v2.0.8
       name: Download artifacts folder
       with:
         name: storage
@@ -214,7 +214,7 @@ jobs:
       with:
         path: .dotnet
         key: v1-${{ runner.os }}-dotnet-${{ hashFiles('build.config') }}
-    - uses: actions/download-artifact@v1
+    - uses: actions/download-artifact@v2.0.8
       name: Download artifacts folder
       with:
         name: storage
@@ -254,7 +254,7 @@ jobs:
       with:
         path: .dotnet
         key: v1-${{ runner.os }}-dotnet-${{ hashFiles('build.config') }}
-    - uses: actions/download-artifact@v1
+    - uses: actions/download-artifact@v2.0.8
       name: Download artifacts folder
       with:
         name: storage
@@ -295,7 +295,7 @@ jobs:
       with:
         path: .dotnet
         key: v1-${{ runner.os }}-dotnet-${{ hashFiles('build.config') }}
-    - uses: actions/download-artifact@v1
+    - uses: actions/download-artifact@v2.0.8
       name: Download artifacts folder
       with:
         name: storage
@@ -355,22 +355,22 @@ jobs:
       with:
         path: .dotnet
         key: v1-${{ runner.os }}-dotnet-${{ hashFiles('build.config') }}
-    - uses: actions/download-artifact@v1
+    - uses: actions/download-artifact@v2.0.8
       name: Download artifacts folder
       with:
         name: storage
         path: ${{ github.workspace }}/artifacts
-    - uses: actions/download-artifact@v1
+    - uses: actions/download-artifact@v2.0.8
       name: Download windows native folder
       with:
         name: storage-windows-latest
         path: ${{ github.workspace }}/artifacts/native
-    - uses: actions/download-artifact@v1
+    - uses: actions/download-artifact@v2.0.8
       name: Download linux native folder
       with:
         name: storage-ubuntu-latest
         path: ${{ github.workspace }}/artifacts/native
-    - uses: actions/download-artifact@v1
+    - uses: actions/download-artifact@v2.0.8
       name: Download osx native folder
       with:
         name: storage-macos-latest
