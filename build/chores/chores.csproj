@@ -1,13 +1,14 @@
 <Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
-        <AssemblyName>build</AssemblyName>
+        <AssemblyName>chores</AssemblyName>
     </PropertyGroup>
     <ItemGroup>
-      <ProjectReference Include="..\Common\Common.csproj" />
+      <ProjectReference Include="..\common\Common.csproj" />
     </ItemGroup>
     <ItemGroup>
       <Compile Include="..\common\Tasks\Default.cs">
         <Link>Tasks\Default.cs</Link>
       </Compile>
     </ItemGroup>
+
 </Project>
