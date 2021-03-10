@@ -1,16 +1,16 @@
 using Cake.Common.Diagnostics;
-using Cake.Common.Tools.GitVersion;
 using Cake.Core;
+using Common.Addins.GitVersion;
 
 namespace Common.Utilities
 {
     public class BuildVersion
     {
-        public GitVersion GitVersion { get; private set; }
-        public string Version { get; private set; }
-        public string Milestone { get; private set; }
-        public string SemVersion { get; private set; }
-        public string NugetVersion { get; private set; }
+        public GitVersion GitVersion { get; }
+        public string Version { get; }
+        public string Milestone { get; }
+        public string SemVersion { get; }
+        public string NugetVersion { get; }
 
         public static BuildVersion Calculate(ICakeContext context)
         {

@@ -1,21 +1,21 @@
 using Cake.Common.Diagnostics;
-using Cake.Common.IO;
 using Cake.Common.Tools.DotNetCore;
 using Cake.Common.Tools.DotNetCore.Build;
 using Cake.Common.Tools.DotNetCore.Restore;
-using Cake.Core.IO;
 using Cake.Frosting;
 
 namespace Build.Tasks
 {
     [TaskName(nameof(Build))]
     [TaskDescription("Builds the solution")]
+    [IsDependentOn(typeof(Clean))]
+    [IsDependentOn(typeof(CodeFormat))]
     public sealed class Build : FrostingTask<BuildContext>
     {
         public override void Run(BuildContext context)
         {
             context.Information("Builds solution...");
-            var sln = "./src/GitVersion.sln";
+            const string sln = "./src/GitVersion.sln";
 
             context.DotNetCoreRestore(sln, new DotNetCoreRestoreSettings
             {
@@ -24,7 +24,6 @@ namespace Build.Tasks
                 MSBuildSettings = context.MSBuildSettings
             });
 
-            var slnPath = context.MakeAbsolute(new DirectoryPath(sln));
             context.DotNetCoreBuild(sln, new DotNetCoreBuildSettings
             {
                 Verbosity = DotNetCoreVerbosity.Minimal,
