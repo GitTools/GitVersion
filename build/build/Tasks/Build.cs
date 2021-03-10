@@ -21,7 +21,7 @@ namespace Build.Tasks
             {
                 Verbosity = DotNetCoreVerbosity.Minimal,
                 Sources = new[] { "https://api.nuget.org/v3/index.json" },
-                MSBuildSettings = context.MSBuildSettings
+                MSBuildSettings = context.MsBuildSettings
             });
 
             context.DotNetCoreBuild(sln, new DotNetCoreBuildSettings
@@ -29,7 +29,7 @@ namespace Build.Tasks
                 Verbosity = DotNetCoreVerbosity.Minimal,
                 Configuration = context.Configuration,
                 NoRestore = true,
-                MSBuildSettings = context.MSBuildSettings
+                MSBuildSettings = context.MsBuildSettings
             });
         }
     }

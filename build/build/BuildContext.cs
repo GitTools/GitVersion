@@ -24,29 +24,14 @@ namespace Build
         public bool IsOnLinux { get; set; }
         public bool IsOnMacOS { get; set; }
 
-        public Paths Paths { get; } = new();
-        public DotNetCoreMSBuildSettings MSBuildSettings { get; set; } = new();
         public BuildVersion Version { get; set; }
-        public BuildContext(ICakeContext context)
-            : base(context)
-        {
-            // Configuration = context.Arguments.GetArgument("configuration");
-            // Version = BuildVersion.Calculate(context);
-            // SetMSBuildSettingsVersion(MSBuildSettings, Version);
-        }
+        public Paths Paths { get; } = new();
 
-        private void SetMSBuildSettingsVersion(DotNetCoreMSBuildSettings msBuildSettings, BuildVersion version)
-        {
-            msBuildSettings.WithProperty("Version", version.SemVersion);
-            msBuildSettings.WithProperty("AssemblyVersion", version.Version);
-            msBuildSettings.WithProperty("PackageVersion", version.NugetVersion);
-            msBuildSettings.WithProperty("FileVersion", version.Version);
-            msBuildSettings.WithProperty("InformationalVersion", version.GitVersion.InformationalVersion);
-            msBuildSettings.WithProperty("RepositoryBranch", version.GitVersion.BranchName);
-            msBuildSettings.WithProperty("RepositoryCommit", version.GitVersion.Sha);
-            msBuildSettings.WithProperty("NoPackageAnalysis", "true");
-        }
+        public DotNetCoreMSBuildSettings MsBuildSettings { get; set; } = new();
 
+        public BuildContext(ICakeContext context) : base(context)
+        {
+        }
     }
 
     public class Paths
