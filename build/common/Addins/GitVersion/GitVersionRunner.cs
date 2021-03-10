@@ -1,14 +1,12 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Runtime.Serialization.Json;
-using System.Text;
 using System.Text.RegularExpressions;
 using Cake.Core;
 using Cake.Core.Diagnostics;
 using Cake.Core.IO;
 using Cake.Core.Tooling;
+using Newtonsoft.Json;
 
 namespace Common.Addins.GitVersion
 {
@@ -42,57 +40,51 @@ namespace Common.Addins.GitVersion
         /// </summary>
         /// <param name="settings">The settings.</param>
         /// <returns>A task with the GitVersion results.</returns>
-        public GitVersion? Run(GitVersionSettings settings)
+        public GitVersion Run(GitVersionSettings settings)
         {
             if (settings == null)
             {
                 throw new ArgumentNullException(nameof(settings));
             }
 
-            if (settings.OutputType != GitVersionOutput.BuildServer)
+            var output = string.Empty;
+            Run(settings, GetArguments(settings), new ProcessSettings { RedirectStandardOutput = true }, process =>
             {
-                var output = string.Empty;
-                Run(settings, GetArguments(settings), new ProcessSettings { RedirectStandardOutput = true }, process =>
+                output = string.Join("\n", process.GetStandardOutput());
+                if (log.Verbosity < Verbosity.Diagnostic)
                 {
-                    output = string.Join("\n", process.GetStandardOutput());
-                    if (log.Verbosity < Verbosity.Diagnostic)
+                    var errors = Regex.Matches(output, @"( *ERROR:? [^\n]*)\n([^\n]*)").Cast<Match>()
+                        .SelectMany(match => new[] { match.Groups[1].Value, match.Groups[2].Value });
+                    foreach (var error in errors)
                     {
-                        var errors = Regex.Matches(output, @"( *ERROR:? [^\n]*)\n([^\n]*)").Cast<Match>()
-                            .SelectMany(match => new[] { match.Groups[1].Value, match.Groups[2].Value });
-                        foreach (var error in errors)
-                        {
-                            log.Error(error);
-                        }
+                        log.Error(error);
                     }
-                });
+                }
+            });
 
-                var jsonSerializer = new DataContractJsonSerializer(typeof(GitVersionInternal));
-                using var jsonStream = new MemoryStream(Encoding.UTF8.GetBytes(output));
-                return (jsonSerializer.ReadObject(jsonStream) as GitVersionInternal)?.GitVersion;
-            }
+            if (!settings.OutputTypes.Contains(GitVersionOutput.Json))
+                return new GitVersion();
 
-            Run(settings, GetArguments(settings));
+            var jsonStartIndex = output.IndexOf("{", StringComparison.Ordinal);
+            var jsonEndIndex = output.IndexOf("}", StringComparison.Ordinal);
+            var json = output.Substring(jsonStartIndex, jsonEndIndex - jsonStartIndex + 1);
 
-            return new GitVersion();
+            return JsonConvert.DeserializeObject<GitVersion>(json);
         }
 
         private ProcessArgumentBuilder GetArguments(GitVersionSettings settings)
         {
             var builder = new ProcessArgumentBuilder();
 
-            if (settings.OutputType.HasValue)
+            if (settings.OutputTypes.Contains(GitVersionOutput.Json))
             {
-                switch (settings.OutputType.Value)
-                {
-                    case GitVersionOutput.Json:
-                        builder.Append("-output");
-                        builder.Append("json");
-                        break;
-                    case GitVersionOutput.BuildServer:
-                        builder.Append("-output");
-                        builder.Append("buildserver");
-                        break;
-                }
+                builder.Append("-output");
+                builder.Append("json");
+            }
+            if (settings.OutputTypes.Contains(GitVersionOutput.BuildServer))
+            {
+                builder.Append("-output");
+                builder.Append("buildserver");
             }
 
             if (!string.IsNullOrWhiteSpace(settings.ShowVariable))
@@ -164,51 +156,9 @@ namespace Common.Addins.GitVersion
                 builder.Append("-nofetch");
             }
 
-            if (settings.Verbosity.HasValue)
-            {
-                switch (settings.Verbosity.Value)
-                {
-                    case GitVersionVerbosity.None:
-                        builder.Append("-verbosity");
-                        builder.Append(nameof(GitVersionVerbosity.None));
-                        break;
-                    case GitVersionVerbosity.Debug:
-                        builder.Append("-verbosity");
-                        builder.Append(nameof(GitVersionVerbosity.Debug));
-                        break;
-                    case GitVersionVerbosity.Info:
-                        builder.Append("-verbosity");
-                        builder.Append(nameof(GitVersionVerbosity.Info));
-                        break;
-                    case GitVersionVerbosity.Warn:
-                        builder.Append("-verbosity");
-                        builder.Append(nameof(GitVersionVerbosity.Warn));
-                        break;
-                    case GitVersionVerbosity.Error:
-                        builder.Append("-verbosity");
-                        builder.Append(nameof(GitVersionVerbosity.Error));
-                        break;
-                }
-            }
-            else
-            {
-                switch (log.Verbosity)
-                {
-                    case Verbosity.Quiet:
-                        builder.Append("-verbosity");
-                        builder.Append(nameof(GitVersionVerbosity.None));
-                        break;
-                    case Verbosity.Diagnostic:
-                    case Verbosity.Verbose:
-                        builder.Append("-verbosity");
-                        builder.Append(nameof(GitVersionVerbosity.Debug));
-                        break;
-                    case Verbosity.Minimal:
-                        builder.Append("-verbosity");
-                        builder.Append(nameof(GitVersionVerbosity.Error));
-                        break;
-                }
-            }
+            var verbosity = settings.Verbosity ?? log.Verbosity;
+            builder.Append("-verbosity");
+            builder.Append(verbosity.ToString());
 
             return builder;
         }
@@ -228,7 +178,7 @@ namespace Common.Addins.GitVersion
         /// <returns>The tool executable name.</returns>
         protected override IEnumerable<string> GetToolExecutableNames()
         {
-            return new[] { "GitVersion.exe", "dotnet-gitversion", "dotnet-gitversion.exe" };
+            return new[] { "GitVersion.exe", "dotnet-gitversion", "dotnet-gitversion.exe", "gitversion" };
         }
     }
 }

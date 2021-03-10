@@ -1,4 +1,4 @@
-﻿namespace Common.Addins.GitVersion
+namespace Common.Addins.GitVersion
 {
     /// <summary>
     /// The Git version output type.

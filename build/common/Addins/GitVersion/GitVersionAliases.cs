@@ -56,7 +56,7 @@ namespace Common.Addins.GitVersion
         /// </code>
         /// </example>
         [CakeMethodAlias]
-        public static GitVersion? GitVersion(this ICakeContext context)
+        public static GitVersion GitVersion(this ICakeContext context)
         {
             if (context == null)
             {
@@ -106,7 +106,7 @@ namespace Common.Addins.GitVersion
         /// </code>
         /// </example>
         [CakeMethodAlias]
-        public static GitVersion? GitVersion(this ICakeContext context, GitVersionSettings settings)
+        public static GitVersion GitVersion(this ICakeContext context, GitVersionSettings settings)
         {
             if (context == null)
             {

@@ -1,4 +1,7 @@
-﻿using Cake.Core.IO;
+using System;
+using System.Collections.Generic;
+using Cake.Core.Diagnostics;
+using Cake.Core.IO;
 using Cake.Core.Tooling;
 
 namespace Common.Addins.GitVersion
@@ -16,7 +19,7 @@ namespace Common.Addins.GitVersion
         /// <summary>
         /// Gets or sets the output type.
         /// </summary>
-        public GitVersionOutput? OutputType { get; set; }
+        public HashSet<GitVersionOutput> OutputTypes { get; set; } = new() { GitVersionOutput.Json };
 
         /// <summary>
         /// Gets or sets a value indicating whether to update all the AssemblyInfo files.
@@ -77,6 +80,6 @@ namespace Common.Addins.GitVersion
         /// <summary>
         /// Gets or sets the logging verbosity.
         /// </summary>
-        public GitVersionVerbosity? Verbosity { get; set; }
+        public Verbosity? Verbosity { get; set; }
     }
 }
