@@ -1,10 +1,13 @@
 using System;
+using System.Collections.Generic;
 using Cake.Common;
 using Cake.Common.Build;
 using Cake.Common.Diagnostics;
+using Cake.Common.Tools.DotNetCore.MSBuild;
 using Cake.Core;
 using Cake.Frosting;
 using Cake.Incubator.LoggingExtensions;
+using Common.Addins.GitVersion;
 using Common.Utilities;
 
 namespace Build
@@ -40,6 +43,26 @@ namespace Build
             context.Information("Main Branch:       {0}", context.IsMainBranch);
             context.Information("Tagged:            {0}", context.IsTagged);
             context.EndGroup();
+
+            var gitVersion = context.GitVersion(new GitVersionSettings
+            {
+                OutputTypes = new HashSet<GitVersionOutput> { GitVersionOutput.Json, GitVersionOutput.BuildServer }
+            });
+
+            context.Version = BuildVersion.Calculate(gitVersion);
+            SetMsBuildSettingsVersion(context.MsBuildSettings, context.Version);
+        }
+
+        private static void SetMsBuildSettingsVersion(DotNetCoreMSBuildSettings msBuildSettings, BuildVersion version)
+        {
+            msBuildSettings.WithProperty("Version", version.SemVersion);
+            msBuildSettings.WithProperty("AssemblyVersion", version.Version);
+            msBuildSettings.WithProperty("PackageVersion", version.NugetVersion);
+            msBuildSettings.WithProperty("FileVersion", version.Version);
+            msBuildSettings.WithProperty("InformationalVersion", version.GitVersion?.InformationalVersion);
+            msBuildSettings.WithProperty("RepositoryBranch", version.GitVersion?.BranchName);
+            msBuildSettings.WithProperty("RepositoryCommit", version.GitVersion?.Sha);
+            msBuildSettings.WithProperty("NoPackageAnalysis", "true");
         }
 
         public override void Teardown(BuildContext context, ITeardownContext info)
@@ -63,5 +86,4 @@ namespace Build
             context.EndGroup();
         }
     }
-
 }

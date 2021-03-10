@@ -6,6 +6,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "sln", "sln", "{EC2C1EC4-BE5
 ProjectSection(SolutionItems) = preProject
 	Directory.Build.props = Directory.Build.props
 	Directory.Packages.props = Directory.Packages.props
+	..\dotnet-tools.json = ..\dotnet-tools.json
 EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common", "common\Common.csproj", "{8B04D233-2891-44D8-A7D2-0EAFD38F1F70}"
