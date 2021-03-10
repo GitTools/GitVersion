@@ -54,11 +54,11 @@ For pipeline projects, GitVersion variables can be accessed by reading the `gitv
 
 In a pipeline stage:
 
-1. Run GitVersion with the flag for *buildserver* output (this only works when run from Jenkins, specifically when the JENKINS_URL environment variable is defined):
+1. Run GitVersion with the flag for *buildserver* output (this only works when run from Jenkins, specifically when the `JENKINS_URL` environment variable is defined):
 ```groovy
 sh 'gitversion /output buildserver'`
 ```
-1. Add a script block to read the properties file, assign environment variables as needed:
+2. Add a script block to read the properties file, assign environment variables as needed:
 ```groovy
 script {
     def props = readProperties file: 'gitversion.properties'
