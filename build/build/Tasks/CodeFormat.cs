@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Cake.Common.Diagnostics;
 using Cake.Core.IO;
 using Cake.Frosting;
 using Cake.DotNetFormat;
@@ -11,6 +12,7 @@ namespace Build.Tasks
     {
         public override void Run(BuildContext context)
         {
+            context.Information("Code format...");
             context.DotNetFormat(new DotNetCoreFormatSettings
             {
                 Workspace = new DirectoryPath(context.Paths.Build),
