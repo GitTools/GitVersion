@@ -4,7 +4,7 @@ using Cake.Core;
 using Cake.Core.IO;
 using Cake.Core.Tooling;
 
-namespace Cake.DotNetFormat
+namespace Cake.DotNetCoreFormat
 {
     public sealed class DotNetCoreFormatToolRunner : DotNetCoreTool<DotNetCoreFormatSettings>
     {

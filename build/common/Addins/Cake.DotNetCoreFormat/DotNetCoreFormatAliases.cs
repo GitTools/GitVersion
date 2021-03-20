@@ -1,7 +1,7 @@
 using Cake.Core;
 using Cake.Core.Annotations;
 
-namespace Cake.DotNetFormat
+namespace Cake.DotNetCoreFormat
 {
     /// <summary>
     /// <para>Contains aliases related to <see href="https://github.com/dotnet/format">dotnet format</see>.</para>
@@ -13,8 +13,8 @@ namespace Cake.DotNetFormat
     /// </code>
     /// </para>
     /// </summary>
-    [CakeAliasCategory("DotNetFormat")]
-    public static class DotNetFormatAliases
+    [CakeAliasCategory("DotNetCoreFormat")]
+    public static class DotNetCoreFormatAliases
     {
         /// <summary>
         /// Formats the code using the given settings.
@@ -22,7 +22,7 @@ namespace Cake.DotNetFormat
         /// <param name="context">The context.</param>
         /// <param name="settings">The settings.</param>
         [CakeMethodAlias]
-        public static void DotNetFormat(this ICakeContext context, DotNetCoreFormatSettings settings)
+        public static void DotNetCoreFormat(this ICakeContext context, DotNetCoreFormatSettings settings)
         {
             if (context is null)
             {

@@ -18,7 +18,7 @@ namespace Build
         {
             context.StartGroup("Build Setup");
 
-            context.Configuration = context.Argument("configuration", "Release");
+            context.BuildConfiguration = context.Argument("configuration", "Release");
 
             var buildSystem = context.BuildSystem();
             context.IsLocalBuild = buildSystem.IsLocalBuild;
@@ -35,7 +35,7 @@ namespace Build
             context.IsOnLinux = context.IsRunningOnLinux();
             context.IsOnMacOS = context.IsRunningOnMacOs();
 
-            context.Information("Configuration:     {0}", context.Configuration);
+            context.Information("Configuration:     {0}", context.BuildConfiguration);
             context.Information("Build Agent:       {0}", context.GetBuildAgent());
             context.Information("OS:                {0}", context.GetOS());
             context.Information("Pull Request:      {0}", context.IsPullRequest);

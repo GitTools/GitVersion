@@ -1,4 +1,3 @@
-using System;
 using Cake.Common.Tools.DotNetCore.MSBuild;
 using Cake.Core;
 using Cake.Frosting;
@@ -8,7 +7,7 @@ namespace Build
 {
     public class BuildContext : FrostingContext
     {
-        public new string Configuration { get; set; }
+        public string BuildConfiguration { get; set; } = "Release";
 
         public bool IsOriginalRepo { get; set; }
         public bool IsMainBranch { get; set; }
