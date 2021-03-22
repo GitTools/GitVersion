@@ -32,7 +32,8 @@
         <PackageVersion_JetBrainsAnnotations>2020.3.0</PackageVersion_JetBrainsAnnotations>
         <PackageVersion_YamlDotNet>8.1.2</PackageVersion_YamlDotNet>
         <PackageVersion_MicrosoftExtensions>5.0.0</PackageVersion_MicrosoftExtensions>
-        <PackageVersion_MicrosoftJson>5.0.0</PackageVersion_MicrosoftJson>
+        <PackageVersion_MicrosoftJson>5.0.1</PackageVersion_MicrosoftJson>
+        <PackageVersion_MicrosoftTextEncoding>5.0.0</PackageVersion_MicrosoftTextEncoding>
         <PackageVersion_MsBuild>16.9.0</PackageVersion_MsBuild>
 
         <PackageVersion_MicrosoftTestSdk>16.9.1</PackageVersion_MicrosoftTestSdk>
@@ -56,7 +57,7 @@
         <PackageReference Include="Microsoft.NET.Test.Sdk" Version="$(PackageVersion_MicrosoftTestSdk)" />
         <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="$(PackageVersion_MicrosoftExtensions)" />
         <PackageReference Include="System.Text.Json" Version="$(PackageVersion_MicrosoftJson)" />
-        <PackageReference Include="System.Text.Encodings.Web" Version="$(PackageVersion_MicrosoftJson)" />
+        <PackageReference Include="System.Text.Encodings.Web" Version="$(PackageVersion_MicrosoftTextEncoding)" />
 
         <PackageReference Include="JetBrains.Annotations" Version="$(PackageVersion_JetBrainsAnnotations)" />
         <PackageReference Include="NSubstitute" Version="$(PackageVersion_NSubstitute)" />
