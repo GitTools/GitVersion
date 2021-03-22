@@ -48,7 +48,7 @@ namespace GitVersion.MsBuild.Tests.Tasks
             var fixture = CreateRemoteRepositoryFixture();
             task.SolutionDirectory = fixture.LocalRepositoryFixture.RepositoryPath;
             var msbuildFixture = new MsBuildTaskFixture(fixture);
-            List<KeyValuePair<string, string>> environmentVariables = new List<KeyValuePair<string, string>>(env.ToArray());
+            var environmentVariables = new List<KeyValuePair<string, string>>(env.ToArray());
             if (buildNumber != null)
             {
                 environmentVariables.Add(new KeyValuePair<string, string>("BUILD_BUILDNUMBER", buildNumber));
@@ -70,11 +70,10 @@ namespace GitVersion.MsBuild.Tests.Tasks
             var fixture = CreateRemoteRepositoryFixture();
             task.SolutionDirectory = fixture.LocalRepositoryFixture.RepositoryPath;
             var msbuildFixture = new MsBuildTaskFixture(fixture);
-            msbuildFixture.WithEnv(new KeyValuePair<string, string>[]
-            {
+            msbuildFixture.WithEnv(
                 new KeyValuePair<string, string>("GITHUB_ACTIONS", "true"),
                 new KeyValuePair<string, string>("GITHUB_ENV", envFilePath)
-            });
+            );
             var result = msbuildFixture.Execute(task);
             if (result.Success == false)
                 Console.WriteLine(result.Log);
@@ -119,7 +118,7 @@ namespace GitVersion.MsBuild.Tests.Tasks
             return fixture;
         }
 
-        protected static void CreateConfiguration(string repoFolder, string content)
+        private static void CreateConfiguration(string repoFolder, string content)
         {
             var configFilePath = Path.Combine(repoFolder, Configuration.ConfigFileLocator.DefaultFileName);
             File.WriteAllText(configFilePath, content);

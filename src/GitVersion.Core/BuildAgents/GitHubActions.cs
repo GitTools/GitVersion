@@ -49,14 +49,12 @@ namespace GitVersion.BuildAgents
             if (gitHubSetEnvFilePath != null)
             {
                 writer($"Writing version variables to $GITHUB_ENV file for '{GetType().Name}'.");
-                using (var streamWriter = File.AppendText(gitHubSetEnvFilePath)) // Already uses UTF-8 as required by GitHub
+                using var streamWriter = File.AppendText(gitHubSetEnvFilePath);
+                foreach (var variable in variables)
                 {
-                    foreach (var variable in variables)
+                    if (!string.IsNullOrEmpty(variable.Value))
                     {
-                        if (!string.IsNullOrEmpty(variable.Value))
-                        {
-                            streamWriter.WriteLine($"GitVersion_{variable.Key}={variable.Value}");
-                        }
+                        streamWriter.WriteLine($"GitVersion_{variable.Key}={variable.Value}");
                     }
                 }
             }
