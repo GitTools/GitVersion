@@ -216,6 +216,7 @@ this:
   ...
 </PropertyGroup>
 ```
+
 For SDK-style projects, `UpdateVersionProperties` controls setting the default
 variables: `Version`, `VersionPrefix`, `VersionSuffix`, `PackageVersion`,
 `InformationalVersion`, `AssemblyVersion` and `FileVersion`.
