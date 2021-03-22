@@ -277,9 +277,9 @@
 								<dt>Derived Types</dt>
 								<dd>
 									<ul class="list-unstyled">
-											<li><a href="/api/GitVersion.Configuration.Init/GitVersionInitModule">GitVersionInitModule</a></li>								
 											<li><a href="/api/GitVersion.VersionCalculation/VersionStrategyModule">Version<wbr>Strategy<wbr>Module</a></li>								
 											<li><a href="/api/GitVersion.BuildAgents/BuildServerModule">BuildServerModule</a></li>								
+											<li><a href="/api/GitVersion.Configuration.Init/GitVersionInitModule">GitVersionInitModule</a></li>								
 									</ul>
 								</dd>			
 							
@@ -293,12 +293,12 @@
 	click Interface0 "/api/GitVersion/IGitVersionModule"
 	Type["GitVersionModule"]
 class Type type-node
-	Derived0["GitVersionInitModule"]--&gt;Type
-	click Derived0 "/api/GitVersion.Configuration.Init/GitVersionInitModule"
-	Derived1["VersionStrategyModule"]--&gt;Type
-	click Derived1 "/api/GitVersion.VersionCalculation/VersionStrategyModule"
-	Derived2["BuildServerModule"]--&gt;Type
-	click Derived2 "/api/GitVersion.BuildAgents/BuildServerModule"
+	Derived0["VersionStrategyModule"]--&gt;Type
+	click Derived0 "/api/GitVersion.VersionCalculation/VersionStrategyModule"
+	Derived1["BuildServerModule"]--&gt;Type
+	click Derived1 "/api/GitVersion.BuildAgents/BuildServerModule"
+	Derived2["GitVersionInitModule"]--&gt;Type
+	click Derived2 "/api/GitVersion.Configuration.Init/GitVersionInitModule"
 
 						</div>
 					</div>
