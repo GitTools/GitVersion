@@ -48,48 +48,49 @@ namespace GitVersion.Core.Tests.IntegrationTests
             fixture.AssertFullSemver("2.0.0+2");
         }
 
-        [Test]
-        public void CanUseConventionalCommitsToBumpVersion()
+        [Theory]
+        [TestCase("build: Cleaned up various things", "1.0.1")]
+        [TestCase("build: Cleaned up various things\n\nSome descriptive text", "1.0.1")]
+        [TestCase("build: Cleaned up various things\n\nSome descriptive text\nWith a second line", "1.0.1")]
+        [TestCase("build(ref): Cleaned up various things", "1.0.1")]
+        [TestCase("build(ref)!: Major update", "2.0.0")]
+        [TestCase("chore: Cleaned up various things", "1.0.1")]
+        [TestCase("ci: Cleaned up various things", "1.0.1")]
+        [TestCase("docs: Cleaned up various things", "1.0.1")]
+        [TestCase("fix: Cleaned up various things", "1.0.1")]
+        [TestCase("perf: Cleaned up various things", "1.0.1")]
+        [TestCase("refactor: Cleaned up various things", "1.0.1")]
+        [TestCase("revert: Cleaned up various things", "1.0.1")]
+        [TestCase("style: Cleaned up various things", "1.0.1")]
+        [TestCase("test: Cleaned up various things", "1.0.1")]
+        [TestCase("feat(ref): Simple feature", "1.1.0")]
+        [TestCase("feat(ref)!: Major update", "2.0.0")]
+        [TestCase("feat: Major update\n\nSome descriptive text\n\nBREAKING CHANGE: A reason", "2.0.0")]
+        [TestCase("feat: Major update\n\nSome descriptive text\n\nBREAKING CHANGE Missing colon", "1.1.0")]
+        [TestCase("feat: Major update\n\nForgot to describe the change\n\nBREAKING CHANGE: ", "1.1.0")]
+        [TestCase("feat: Major update\n\nBREAKING CHANGE: A reason", "2.0.0")]
+        [TestCase("feat: Major update\n\nSome descriptive text\nWith a second line\n\nBREAKING CHANGE: A reason", "2.0.0")]
+        public void CanUseConventionalCommitsToBumpVersion(string commitMessage, string expectedVersion)
         {
             var configuration = new Config
             {
                 VersioningMode = GitVersion.VersionCalculation.VersioningMode.Mainline,
 
-                // For future debugging of this regex: https://regex101.com/r/UfzIwS/1
-                MajorVersionBumpMessage = "(build|chore|ci|docs|feat|fix|perf|refactor|revert|style|test)(\\([\\w\\s]*\\))?(!:|:.*\\n\\n.*\\n\\n.*BREAKING.*).*",
+                // For future debugging of this regex: https://regex101.com/r/CRoBol/1
+                MajorVersionBumpMessage = "^(build|chore|ci|docs|feat|fix|perf|refactor|revert|style|test)(\\([\\w\\s]*\\))?(!:|:.*\\n\\n((.+\\n)+\\n)?BREAKING CHANGE:\\s.+)",
 
                 // For future debugging of this regex: https://regex101.com/r/9ccNam/1
-                MinorVersionBumpMessage = "(feat)(\\([\\w\\s]*\\))?:",
+                MinorVersionBumpMessage = "^(feat)(\\([\\w\\s]*\\))?:",
 
-                // For future debugging of this regex: https://regex101.com/r/ALKccf/1
-                PatchVersionBumpMessage = "(build|chore|ci|docs|fix|perf|refactor|revert|style|test)(\\([\\w\\s]*\\))?:(.*\\n\\n.*\\n\\n.*BREAKING.*){0}"
+                // For future debugging of this regex: https://regex101.com/r/oFpqxA/1
+                PatchVersionBumpMessage = "^(build|chore|ci|docs|fix|perf|refactor|revert|style|test)(\\([\\w\\s]*\\))?:"
             };
             using var fixture = new EmptyRepositoryFixture();
             fixture.Repository.MakeACommit();
             fixture.MakeATaggedCommit("1.0.0");
 
-            fixture.Repository.MakeACommit("feat(Api): Added some new endpoints");
-            fixture.AssertFullSemver("1.1.0", configuration);
-
-            // This tests if adding an exclamation mark after the type (breaking change) bumps the major version
-            fixture.Repository.MakeACommit("feat(Api)!: Changed existing API models");
-            fixture.AssertFullSemver("2.0.0", configuration);
-
-            // This tests if writing BREAKING CHANGE in the footer bumps the major version
-            fixture.Repository.MakeACommit("feat: Changed existing API models\n\nSome more descriptive text\n\nBREAKING CHANGE");
-            fixture.AssertFullSemver("3.0.0", configuration);
-
-            fixture.Repository.MakeACommit("chore: Cleaned up various things");
-            fixture.AssertFullSemver("3.0.1", configuration);
-
-            fixture.Repository.MakeACommit("chore: Cleaned up more various things");
-            fixture.AssertFullSemver("3.0.2", configuration);
-
-            fixture.Repository.MakeACommit("feat: Added some new functionality");
-            fixture.AssertFullSemver("3.1.0", configuration);
-
-            fixture.Repository.MakeACommit("feat: Added even more new functionality");
-            fixture.AssertFullSemver("3.2.0", configuration);
+            fixture.Repository.MakeACommit(commitMessage);
+            fixture.AssertFullSemver(expectedVersion, configuration);
         }
 
         [Test]

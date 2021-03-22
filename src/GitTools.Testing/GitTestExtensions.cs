@@ -50,7 +50,7 @@ namespace GitTools.Testing
 
             Commands.Stage(repository, randomFile);
 
-            return repository.Commit($"Test Commit for file '{relativeFileName}' - {commitMessage}",
+            return repository.Commit(commitMessage ?? $"Test Commit for file '{relativeFileName}'",
                 Generate.SignatureNow(), Generate.SignatureNow());
         }
 
