@@ -6,7 +6,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="shortcut icon" href="/assets/img/favicon.ico" type="image/x-icon">
         <link rel="icon" href="/assets/img/favicon.ico" type="image/x-icon">
-        <title>GitVersion - API - OperationWithExponentialBackoff&lt;T, Result&gt;.ExecuteAsync() Method</title>
+        <title>GitVersion - API - RetryAction&lt;T&gt;.RetryAction(int) Constructor</title>
         <link href="/assets/css/highlight.css" rel="stylesheet">
         <link href="/assets/css/bootstrap/bootstrap.css" rel="stylesheet">
         <link href="/assets/css/adminlte/AdminLTE.css" rel="stylesheet">
@@ -85,6 +85,7 @@
                 <section class="infobar" data-spy="affix" data-offset-top="60" data-offset-bottom="200"> 
                     	
 	<div id="infobar-headings"><h6>On This Page</h6><p><a href="#Syntax">Syntax</a></p>
+<p><a href="#Parameters">Parameters</a></p>
 <p><a href="#ReturnValue">Return Value</a></p>
 <hr class="infobar-hidden">
 </div>
@@ -147,12 +148,12 @@
 			<li class="header">Namespace</li>
 		<li><a href="/api/GitVersion.Helpers">GitVersion<wbr>.Helpers</a></li>
 		<li class="header">Type</li>
-		<li><a href="/api/GitVersion.Helpers/OperationWithExponentialBackoff_2">Operation<wbr>With<wbr>Exponential<wbr>Backoff<wbr>&lt;T, <wbr>Result&gt;<wbr></a></li>
+		<li><a href="/api/GitVersion.Helpers/RetryAction_1">RetryAction<wbr>&lt;T&gt;<wbr></a></li>
 		<li role="separator" class="divider"></li>
 			<li class="header">Constructors</li>
-				<li><a href="/api/GitVersion.Helpers/OperationWithExponentialBackoff_2/0E0113A8">Operation<wbr>With<wbr>Exponential<wbr>Backoff<wbr>(IThreadSleep, <wbr>ILog, <wbr>Func<wbr>&lt;Result&gt;<wbr>, <wbr>int)<wbr></a></li>
+				<li class="selected"><a href="/api/GitVersion.Helpers/RetryAction_1/0DCFB8B0">RetryAction<wbr>(int)<wbr></a></li>
 			<li class="header">Method Members</li>
-				<li class="selected"><a href="/api/GitVersion.Helpers/OperationWithExponentialBackoff_2/11579ADB">ExecuteAsync<wbr>()<wbr></a></li>
+				<li><a href="/api/GitVersion.Helpers/RetryAction_1/39A7F2F9">Execute<wbr>(Action)<wbr></a></li>
 
 
                     </ul>
@@ -167,8 +168,8 @@
 
 
 <section class="content-header">
-			<h3><a href="/api/GitVersion.Helpers/OperationWithExponentialBackoff_2">Operation<wbr>With<wbr>Exponential<wbr>Backoff</a><wbr>&lt;<a href="/api/GitVersion.Helpers/OperationWithExponentialBackoff_2#typeparam-T">T</a>, <wbr><a href="/api/GitVersion.Helpers/OperationWithExponentialBackoff_2#typeparam-Result">Result</a>&gt;<wbr>.</h3>
-	<h1>ExecuteAsync<wbr>()<wbr> <small>Method</small></h1>
+			<h3><a href="/api/GitVersion.Helpers/RetryAction_1">RetryAction</a><wbr>&lt;<a href="/api/GitVersion.Helpers/RetryAction_1#typeparam-T">T</a>&gt;<wbr>.</h3>
+	<h1>RetryAction<wbr>(int)<wbr> <small>Constructor</small></h1>
 </section>
 <section class="content">
 	
@@ -182,19 +183,38 @@
 						<dd><a href="/api/GitVersion.Helpers">GitVersion<wbr>.Helpers</a></dd>
 					
 						<dt>Containing Type</dt>
-						<dd><a href="/api/GitVersion.Helpers/OperationWithExponentialBackoff_2">Operation<wbr>With<wbr>Exponential<wbr>Backoff</a><wbr>&lt;<a href="/api/GitVersion.Helpers/OperationWithExponentialBackoff_2#typeparam-T">T</a>, <wbr><a href="/api/GitVersion.Helpers/OperationWithExponentialBackoff_2#typeparam-Result">Result</a>&gt;<wbr></dd>		
+						<dd><a href="/api/GitVersion.Helpers/RetryAction_1">RetryAction</a><wbr>&lt;<a href="/api/GitVersion.Helpers/RetryAction_1#typeparam-T">T</a>&gt;<wbr></dd>		
 					
 				</dl>
   			</div>
 		</div>
 
 	<h1 id="Syntax">Syntax</h1>
-	<pre><code>public Task&lt;Result&gt; ExecuteAsync()</code></pre>
+	<pre><code>public RetryAction(int maxRetries = 5)</code></pre>
 
 
 
 
 
+	<h1 id="Parameters">Parameters</h1>
+	<div class="box">
+		<div class="box-body no-padding table-responsive">
+			<table class="table table-striped table-hover three-cols">
+				<thead>
+					<tr>
+						<th>Name</th>
+						<th>Type</th>
+						<th>Description</th>
+					</tr>
+				</thead>
+					<tbody><tr>
+						<td>maxRetries</td>
+						<td>int</td>
+						<td></td>
+					</tr>
+			</tbody></table>
+		</div>
+	</div>	
 
 	<h1 id="ReturnValue">Return Value</h1>
 	<div class="box">
@@ -207,7 +227,7 @@
 					</tr>
 				</thead>
 				<tbody><tr>
-					<td>Task<wbr>&lt;<a href="/api/GitVersion.Helpers/OperationWithExponentialBackoff_2#typeparam-Result">Result</a>&gt;<wbr></td>
+					<td>void</td>
 					<td></td>
 				</tr>
 			</tbody></table>

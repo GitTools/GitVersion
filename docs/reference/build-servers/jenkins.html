@@ -1,21 +1,19 @@
-﻿<!DOCTYPE html>
-<html>
-    <head>
+﻿<!DOCTYPE html><html><head>
         <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-        <meta name="description" />
-        <meta name="keywords" content="static content generator,static site generator,static site,HTML,web development,.NET,C#,Razor,Markdown,YAML" />
+        <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+        <meta name="description">
+        <meta name="keywords" content="static content generator,static site generator,static site,HTML,web development,.NET,C#,Razor,Markdown,YAML">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="shortcut icon" href="/assets/img/favicon.ico" type="image/x-icon">
         <link rel="icon" href="/assets/img/favicon.ico" type="image/x-icon">
         <title>GitVersion - Jenkins</title>
         <link href="/assets/css/highlight.css" rel="stylesheet">
-        <link href="/assets/css/bootstrap/bootstrap.css" rel="stylesheet" />
-        <link href="/assets/css/adminlte/AdminLTE.css" rel="stylesheet" />
-        <link href="/assets/css/theme/theme.css" rel="stylesheet" />
+        <link href="/assets/css/bootstrap/bootstrap.css" rel="stylesheet">
+        <link href="/assets/css/adminlte/AdminLTE.css" rel="stylesheet">
+        <link href="/assets/css/theme/theme.css" rel="stylesheet">
         <link href="//fonts.googleapis.com/css?family=Roboto+Mono:400,700|Roboto:400,400i,700,700i" rel="stylesheet">
         <link href="/assets/css/font-awesome.min.css" rel="stylesheet" type="text/css">
-        <link href="/assets/css/override.css" rel="stylesheet" />
+        <link href="/assets/css/override.css" rel="stylesheet">
         <script src="/assets/js/jquery-2.2.3.min.js"></script>
         <script src="/assets/js/bootstrap.min.js"></script>        
         <script src="/assets/js/app.min.js"></script>         
@@ -31,13 +29,13 @@
 
         <meta name="google" content="notranslate">
 <meta http-equiv="Content-Language" content="en">
-<meta name="google-site-verification" content="46g_yrsDyk5YTGoXb2ii9BjmTJ2QAEsacqn6wqiAiII" />
-<meta property="og:image" content="https://github.com/GitTools/graphics/raw/master/GitVersion/banner-1280x640.png" />
-<meta property="og:site_name" content="GitVersion" />
-<meta property="og:type" content="object" />
-<meta property="og:title" content="GitVersion" />
-<meta property="og:url" content="https://gitversion.net/" />
-<meta property="og:description" content="From git log to SemVer in no time" />
+<meta name="google-site-verification" content="46g_yrsDyk5YTGoXb2ii9BjmTJ2QAEsacqn6wqiAiII">
+<meta property="og:image" content="https://github.com/GitTools/graphics/raw/master/GitVersion/banner-1280x640.png">
+<meta property="og:site_name" content="GitVersion">
+<meta property="og:type" content="object">
+<meta property="og:title" content="GitVersion">
+<meta property="og:url" content="https://gitversion.net/">
+<meta property="og:description" content="From git log to SemVer in no time">
 <link rel="icon" href="/assets/img/icon.png" type="image/png">
 <link rel="icon" href="/assets/img/icon.svg" type="image/svg">
 <link rel="apple-touch-icon" href="/assets/img/icon.png" type="image/png">
@@ -87,7 +85,10 @@
                 <section class="infobar" data-spy="affix" data-offset-top="60" data-offset-bottom="200"> 
                     	
         <div><p><a href="https://github.com/gittools/GitVersion/tree/main/docs/input/docs/reference/build-servers/jenkins.md"><i class="fa fa-pencil-square" aria-hidden="true"></i> Edit Content</a></p></div>
-    <div id="infobar-headings"></div>
+    <div id="infobar-headings"><h6>On This Page</h6><p><a href="#scm-settings">SCM Settings</a></p>
+<p><a href="#usage">Usage</a></p>
+<hr class="infobar-hidden">
+</div>
 
                 </section>
                 <section class="sidebar">    
@@ -213,7 +214,27 @@
 			<h1>Jenkins</h1>
 		</section>
 	<section class="content">
-		<p>Injecting environment variables is not supported in Jenkins natively, but
+		<h2 id="scm-settings">SCM Settings</h2>
+<p>When setting up a Jenkins project for GitVersion, it is necessary to add a few <em>Behaviors</em> to the SCM settings to ensure that GitVersion has enough information:</p>
+<ul>
+<li>Advanced clone behaviors
+<ul>
+<li>Enable <code>Fetch tags</code></li>
+<li>Enable <code>Honor refspec on intial clone</code></li>
+</ul>
+</li>
+<li>Check out to matching local branch</li>
+<li>Prune stale remote-tracking branches</li>
+<li>Specify ref specs
+<ul>
+<li>Ref Spec: <code>+refs/heads/*:refs/remotes/@{remote}/*</code></li>
+</ul>
+</li>
+</ul>
+<h2 id="usage">Usage</h2>
+<p>Integrating GitVersion into your Jenkins build varies based on the project type: Freestyle vs. Pipeline.</p>
+<h3 id="freestyle-projects">Freestyle Projects</h3>
+<p>Injecting environment variables is not supported in Jenkins natively, but
 Jenkins plugins exist that provide this functionality. Of these plugins
 <a href="https://wiki.jenkins-ci.org/display/JENKINS/EnvInject+Plugin">EnvInject</a> appears to be the most popular with over 20k downloads per month.</p>
 <p>To inject the GitVersion variables as environment variables for a build job
@@ -226,13 +247,34 @@ using <a href="https://wiki.jenkins-ci.org/display/JENKINS/EnvInject+Plugin">Env
 </ol>
 <p>This assumes GitVersion.exe is available on the command line.</p>
 <p>You can verify correct injection of environment variables by adding another
-&quot;Execute Windows batch command&quot; build step with the following <em>Command</em>:</p>
-<pre><code class="language-shell">&#64;echo Retrieving some GitVersion environment variables:
-&#64;echo %GitVersion_SemVer%
-&#64;echo %GitVersion_BranchName%
-&#64;echo %GitVersion_AssemblySemVer%
-&#64;echo %GitVersion_MajorMinorPatch%
-&#64;echo %GitVersion_Sha%
+"Execute Windows batch command" build step with the following <em>Command</em>:</p>
+<pre><code class="language-shell">@echo Retrieving some GitVersion environment variables:
+@echo %GitVersion_SemVer%
+@echo %GitVersion_BranchName%
+@echo %GitVersion_AssemblySemVer%
+@echo %GitVersion_MajorMinorPatch%
+@echo %GitVersion_Sha%
+</code></pre>
+<h3 id="pipeline-projects">Pipeline Projects</h3>
+<p>For pipeline projects, GitVersion variables can be accessed by reading the <code>gitversion.properties</code> file using the <a href="https://plugins.jenkins.io/pipeline-utility-steps">Pipeline Utility Steps</a> plugin. Variables from a property file are not automatically merged with the environment variables, but they can be accessed within a script block.</p>
+<p>In a pipeline stage:</p>
+<ol>
+<li>Run GitVersion with the flag for <em>buildserver</em> output (this only works when run from Jenkins, specifically when the <code>JENKINS_URL</code> environment variable is defined):</li>
+</ol>
+<pre><code class="language-groovy">sh 'gitversion /output buildserver'`
+</code></pre>
+<ol start="2">
+<li>Add a script block to read the properties file, assign environment variables as needed:</li>
+</ol>
+<pre><code class="language-groovy">script {
+    def props = readProperties file: 'gitversion.properties'
+    
+    env.GitVersion_SemVer = props.GitVersion_SemVer
+    env.GitVersion_BranchName = props.GitVersion_BranchName
+    env.GitVersion_AssemblySemVer = props.GitVersion_AssemblySemVer
+    env.GitVersion_MajorMinorPatch = props.GitVersion_MajorMinorPatch
+    env.GitVersion_Sha = props.GitVersion_Sha
+}
 </code></pre>
 
 	</section>
@@ -258,7 +300,7 @@ using <a href="https://wiki.jenkins-ci.org/display/JENKINS/EnvInject+Plugin">Env
         room: 'GitTools/GitVersion'
     };
 </script>
-<script src="https://sidecar.gitter.im/dist/sidecar.v1.js" async defer></script>
+<script src="https://sidecar.gitter.im/dist/sidecar.v1.js" async="" defer=""></script>
 
         <script>           
             // Close the sidebar if we select an anchor link
@@ -329,5 +371,5 @@ using <a href="https://wiki.jenkins-ci.org/display/JENKINS/EnvInject+Plugin">Env
                 }, 500);
             });
         </script>
-    </body>
-</html>
+    
+</body></html>

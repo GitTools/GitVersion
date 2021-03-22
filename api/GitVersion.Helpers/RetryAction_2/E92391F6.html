@@ -6,7 +6,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="shortcut icon" href="/assets/img/favicon.ico" type="image/x-icon">
         <link rel="icon" href="/assets/img/favicon.ico" type="image/x-icon">
-        <title>GitVersion - API - OperationWithExponentialBackoff&lt;T, Result&gt;.OperationWithExponentialBackoff(IThreadSleep, ILog, Func&lt;Result&gt;, int) Constructor</title>
+        <title>GitVersion - API - RetryAction&lt;T, Result&gt;.Execute(Func&lt;Result&gt;) Method</title>
         <link href="/assets/css/highlight.css" rel="stylesheet">
         <link href="/assets/css/bootstrap/bootstrap.css" rel="stylesheet">
         <link href="/assets/css/adminlte/AdminLTE.css" rel="stylesheet">
@@ -148,12 +148,12 @@
 			<li class="header">Namespace</li>
 		<li><a href="/api/GitVersion.Helpers">GitVersion<wbr>.Helpers</a></li>
 		<li class="header">Type</li>
-		<li><a href="/api/GitVersion.Helpers/OperationWithExponentialBackoff_2">Operation<wbr>With<wbr>Exponential<wbr>Backoff<wbr>&lt;T, <wbr>Result&gt;<wbr></a></li>
+		<li><a href="/api/GitVersion.Helpers/RetryAction_2">RetryAction<wbr>&lt;T, <wbr>Result&gt;<wbr></a></li>
 		<li role="separator" class="divider"></li>
 			<li class="header">Constructors</li>
-				<li class="selected"><a href="/api/GitVersion.Helpers/OperationWithExponentialBackoff_2/0E0113A8">Operation<wbr>With<wbr>Exponential<wbr>Backoff<wbr>(IThreadSleep, <wbr>ILog, <wbr>Func<wbr>&lt;Result&gt;<wbr>, <wbr>int)<wbr></a></li>
+				<li><a href="/api/GitVersion.Helpers/RetryAction_2/EE4DA6CB">RetryAction<wbr>(int)<wbr></a></li>
 			<li class="header">Method Members</li>
-				<li><a href="/api/GitVersion.Helpers/OperationWithExponentialBackoff_2/11579ADB">ExecuteAsync<wbr>()<wbr></a></li>
+				<li class="selected"><a href="/api/GitVersion.Helpers/RetryAction_2/E92391F6">Execute<wbr>(Func<wbr>&lt;Result&gt;<wbr>)<wbr></a></li>
 
 
                     </ul>
@@ -168,8 +168,8 @@
 
 
 <section class="content-header">
-			<h3><a href="/api/GitVersion.Helpers/OperationWithExponentialBackoff_2">Operation<wbr>With<wbr>Exponential<wbr>Backoff</a><wbr>&lt;<a href="/api/GitVersion.Helpers/OperationWithExponentialBackoff_2#typeparam-T">T</a>, <wbr><a href="/api/GitVersion.Helpers/OperationWithExponentialBackoff_2#typeparam-Result">Result</a>&gt;<wbr>.</h3>
-	<h1>Operation<wbr>With<wbr>Exponential<wbr>Backoff<wbr>(IThreadSleep, <wbr>ILog, <wbr>Func<wbr>&lt;Result&gt;<wbr>, <wbr>int)<wbr> <small>Constructor</small></h1>
+			<h3><a href="/api/GitVersion.Helpers/RetryAction_2">RetryAction</a><wbr>&lt;<a href="/api/GitVersion.Helpers/RetryAction_2#typeparam-T">T</a>, <wbr><a href="/api/GitVersion.Helpers/RetryAction_2#typeparam-Result">Result</a>&gt;<wbr>.</h3>
+	<h1>Execute<wbr>(Func<wbr>&lt;Result&gt;<wbr>)<wbr> <small>Method</small></h1>
 </section>
 <section class="content">
 	
@@ -183,14 +183,14 @@
 						<dd><a href="/api/GitVersion.Helpers">GitVersion<wbr>.Helpers</a></dd>
 					
 						<dt>Containing Type</dt>
-						<dd><a href="/api/GitVersion.Helpers/OperationWithExponentialBackoff_2">Operation<wbr>With<wbr>Exponential<wbr>Backoff</a><wbr>&lt;<a href="/api/GitVersion.Helpers/OperationWithExponentialBackoff_2#typeparam-T">T</a>, <wbr><a href="/api/GitVersion.Helpers/OperationWithExponentialBackoff_2#typeparam-Result">Result</a>&gt;<wbr></dd>		
+						<dd><a href="/api/GitVersion.Helpers/RetryAction_2">RetryAction</a><wbr>&lt;<a href="/api/GitVersion.Helpers/RetryAction_2#typeparam-T">T</a>, <wbr><a href="/api/GitVersion.Helpers/RetryAction_2#typeparam-Result">Result</a>&gt;<wbr></dd>		
 					
 				</dl>
   			</div>
 		</div>
 
 	<h1 id="Syntax">Syntax</h1>
-	<pre><code>public OperationWithExponentialBackoff(IThreadSleep threadSleep, ILog log, Func&lt;Result&gt; operation, int maxRetries = 5)</code></pre>
+	<pre><code>public Result Execute(Func&lt;Result&gt; operation)</code></pre>
 
 
 
@@ -208,23 +208,8 @@
 					</tr>
 				</thead>
 					<tbody><tr>
-						<td>threadSleep</td>
-						<td><a href="/api/GitVersion/IThreadSleep">IThreadSleep</a></td>
-						<td></td>
-					</tr>
-					<tr>
-						<td>log</td>
-						<td><a href="/api/GitVersion.Logging/ILog">ILog</a></td>
-						<td></td>
-					</tr>
-					<tr>
 						<td>operation</td>
-						<td>Func<wbr>&lt;<a href="/api/GitVersion.Helpers/OperationWithExponentialBackoff_2#typeparam-Result">Result</a>&gt;<wbr></td>
-						<td></td>
-					</tr>
-					<tr>
-						<td>maxRetries</td>
-						<td>int</td>
+						<td>Func<wbr>&lt;<a href="/api/GitVersion.Helpers/RetryAction_2#typeparam-Result">Result</a>&gt;<wbr></td>
 						<td></td>
 					</tr>
 			</tbody></table>
@@ -242,7 +227,7 @@
 					</tr>
 				</thead>
 				<tbody><tr>
-					<td>void</td>
+					<td><a href="/api/GitVersion.Helpers/RetryAction_2#typeparam-Result">Result</a></td>
 					<td></td>
 				</tr>
 			</tbody></table>

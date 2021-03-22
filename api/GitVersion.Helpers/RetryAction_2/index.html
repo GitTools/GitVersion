@@ -6,7 +6,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="shortcut icon" href="/assets/img/favicon.ico" type="image/x-icon">
         <link rel="icon" href="/assets/img/favicon.ico" type="image/x-icon">
-        <title>GitVersion - API - OperationWithExponentialBackoff&lt;T, Result&gt; Class</title>
+        <title>GitVersion - API - RetryAction&lt;T, Result&gt; Class</title>
         <link href="/assets/css/highlight.css" rel="stylesheet">
         <link href="/assets/css/bootstrap/bootstrap.css" rel="stylesheet">
         <link href="/assets/css/adminlte/AdminLTE.css" rel="stylesheet">
@@ -154,9 +154,9 @@
 				<li><a href="/api/GitVersion.Helpers/EncodingHelper">EncodingHelper</a></li>
 				<li><a href="/api/GitVersion.Helpers/LambdaEqualityHelper_1">LambdaEqualityHelper<wbr>&lt;T&gt;<wbr></a></li>
 				<li><a href="/api/GitVersion.Helpers/LambdaKeyComparer_2">LambdaKeyComparer<wbr>&lt;TSource, <wbr>TKey&gt;<wbr></a></li>
-				<li><a href="/api/GitVersion.Helpers/OperationWithExponentialBackoff_1">Operation<wbr>With<wbr>Exponential<wbr>Backoff<wbr>&lt;T&gt;<wbr></a></li>
-				<li class="selected"><a href="/api/GitVersion.Helpers/OperationWithExponentialBackoff_2">Operation<wbr>With<wbr>Exponential<wbr>Backoff<wbr>&lt;T, <wbr>Result&gt;<wbr></a></li>
 				<li><a href="/api/GitVersion.Helpers/ProcessHelper">ProcessHelper</a></li>
+				<li><a href="/api/GitVersion.Helpers/RetryAction_1">RetryAction<wbr>&lt;T&gt;<wbr></a></li>
+				<li class="selected"><a href="/api/GitVersion.Helpers/RetryAction_2">RetryAction<wbr>&lt;T, <wbr>Result&gt;<wbr></a></li>
 				<li><a href="/api/GitVersion.Helpers/ServiceMessageEscapeHelper">Service<wbr>Message<wbr>Escape<wbr>Helper</a></li>
 				<li><a href="/api/GitVersion.Helpers/StringComparerUtils">StringComparerUtils</a></li>
 
@@ -173,7 +173,7 @@
 
 
 <section class="content-header">
-	<h1>Operation<wbr>With<wbr>Exponential<wbr>Backoff<wbr>&lt;T, <wbr>Result&gt;<wbr> <small>Class</small></h1>
+	<h1>RetryAction<wbr>&lt;T, <wbr>Result&gt;<wbr> <small>Class</small></h1>
 </section>
 <section class="content">
 	
@@ -199,7 +199,7 @@
 								<dt>Derived Types</dt>
 								<dd>
 									<ul class="list-unstyled">
-											<li><a href="/api/GitVersion.Helpers/OperationWithExponentialBackoff_1">Operation<wbr>With<wbr>Exponential<wbr>Backoff</a><wbr>&lt;<a href="/api/GitVersion.Helpers/OperationWithExponentialBackoff_1#typeparam-T">T</a>&gt;<wbr></li>								
+											<li><a href="/api/GitVersion.Helpers/RetryAction_1">RetryAction</a><wbr>&lt;<a href="/api/GitVersion.Helpers/RetryAction_1#typeparam-T">T</a>&gt;<wbr></li>								
 									</ul>
 								</dd>			
 							
@@ -209,10 +209,10 @@
 						<div class="mermaid">
 							graph BT
 	Type--&gt;Base0["object"]
-	Type["OperationWithExponentialBackoff&lt;T, Result&gt;"]
+	Type["RetryAction&lt;T, Result&gt;"]
 class Type type-node
-	Derived0["OperationWithExponentialBackoff&lt;T&gt;"]--&gt;Type
-	click Derived0 "/api/GitVersion.Helpers/OperationWithExponentialBackoff_1"
+	Derived0["RetryAction&lt;T&gt;"]--&gt;Type
+	click Derived0 "/api/GitVersion.Helpers/RetryAction_1"
 
 						</div>
 					</div>
@@ -221,7 +221,7 @@ class Type type-node
 		</div>
 
 	<h1 id="Syntax">Syntax</h1>
-	<pre><code>public class OperationWithExponentialBackoff&lt;T, Result&gt; where T : Exception</code></pre>
+	<pre><code>public class RetryAction&lt;T, Result&gt; where T : Exception</code></pre>
 
 
 
@@ -261,7 +261,7 @@ class Type type-node
 							</tr>
 						</thead>
 							<tbody><tr>
-								<td><a href="/api/GitVersion.Helpers/OperationWithExponentialBackoff_2/0E0113A8">Operation<wbr>With<wbr>Exponential<wbr>Backoff<wbr>(IThreadSleep, <wbr>ILog, <wbr>Func<wbr>&lt;Result&gt;<wbr>, <wbr>int)<wbr></a></td>
+								<td><a href="/api/GitVersion.Helpers/RetryAction_2/EE4DA6CB">RetryAction<wbr>(int)<wbr></a></td>
 									<td></td>
 							</tr>
 					</tbody></table>
@@ -284,8 +284,8 @@ class Type type-node
 							</tr>
 						</thead>
 							<tbody><tr>
-								<td><a href="/api/GitVersion.Helpers/OperationWithExponentialBackoff_2/11579ADB">ExecuteAsync<wbr>()<wbr></a></td>
-								<td>Task<wbr>&lt;<a href="/api/GitVersion.Helpers/OperationWithExponentialBackoff_2#typeparam-Result">Result</a>&gt;<wbr></td>
+								<td><a href="/api/GitVersion.Helpers/RetryAction_2/E92391F6">Execute<wbr>(Func<wbr>&lt;Result&gt;<wbr>)<wbr></a></td>
+								<td><a href="/api/GitVersion.Helpers/RetryAction_2#typeparam-Result">Result</a></td>
 								<td>
 									<div></div>
 								</td>

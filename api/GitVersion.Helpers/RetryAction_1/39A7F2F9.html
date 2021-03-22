@@ -6,7 +6,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="shortcut icon" href="/assets/img/favicon.ico" type="image/x-icon">
         <link rel="icon" href="/assets/img/favicon.ico" type="image/x-icon">
-        <title>GitVersion - API - ThreadSleep.SleepAsync(int) Method</title>
+        <title>GitVersion - API - RetryAction&lt;T&gt;.Execute(Action) Method</title>
         <link href="/assets/css/highlight.css" rel="stylesheet">
         <link href="/assets/css/bootstrap/bootstrap.css" rel="stylesheet">
         <link href="/assets/css/adminlte/AdminLTE.css" rel="stylesheet">
@@ -146,12 +146,14 @@
                     <ul class="sidebar-menu">
                         
 			<li class="header">Namespace</li>
-		<li><a href="/api/GitVersion">GitVersion</a></li>
+		<li><a href="/api/GitVersion.Helpers">GitVersion<wbr>.Helpers</a></li>
 		<li class="header">Type</li>
-		<li><a href="/api/GitVersion/ThreadSleep">ThreadSleep</a></li>
+		<li><a href="/api/GitVersion.Helpers/RetryAction_1">RetryAction<wbr>&lt;T&gt;<wbr></a></li>
 		<li role="separator" class="divider"></li>
+			<li class="header">Constructors</li>
+				<li><a href="/api/GitVersion.Helpers/RetryAction_1/0DCFB8B0">RetryAction<wbr>(int)<wbr></a></li>
 			<li class="header">Method Members</li>
-				<li class="selected"><a href="/api/GitVersion/ThreadSleep/F47D939A">SleepAsync<wbr>(int)<wbr></a></li>
+				<li class="selected"><a href="/api/GitVersion.Helpers/RetryAction_1/39A7F2F9">Execute<wbr>(Action)<wbr></a></li>
 
 
                     </ul>
@@ -166,8 +168,8 @@
 
 
 <section class="content-header">
-			<h3><a href="/api/GitVersion/ThreadSleep">ThreadSleep</a>.</h3>
-	<h1>SleepAsync<wbr>(int)<wbr> <small>Method</small></h1>
+			<h3><a href="/api/GitVersion.Helpers/RetryAction_1">RetryAction</a><wbr>&lt;<a href="/api/GitVersion.Helpers/RetryAction_1#typeparam-T">T</a>&gt;<wbr>.</h3>
+	<h1>Execute<wbr>(Action)<wbr> <small>Method</small></h1>
 </section>
 <section class="content">
 	
@@ -178,17 +180,17 @@
 				<dl class="dl-horizontal">	
 						
 						<dt>Namespace</dt>
-						<dd><a href="/api/GitVersion">GitVersion</a></dd>
+						<dd><a href="/api/GitVersion.Helpers">GitVersion<wbr>.Helpers</a></dd>
 					
 						<dt>Containing Type</dt>
-						<dd><a href="/api/GitVersion/ThreadSleep">ThreadSleep</a></dd>		
+						<dd><a href="/api/GitVersion.Helpers/RetryAction_1">RetryAction</a><wbr>&lt;<a href="/api/GitVersion.Helpers/RetryAction_1#typeparam-T">T</a>&gt;<wbr></dd>		
 					
 				</dl>
   			</div>
 		</div>
 
 	<h1 id="Syntax">Syntax</h1>
-	<pre><code>public Task SleepAsync(int milliseconds)</code></pre>
+	<pre><code>public void Execute(Action operation)</code></pre>
 
 
 
@@ -206,8 +208,8 @@
 					</tr>
 				</thead>
 					<tbody><tr>
-						<td>milliseconds</td>
-						<td>int</td>
+						<td>operation</td>
+						<td>Action</td>
 						<td></td>
 					</tr>
 			</tbody></table>
@@ -225,7 +227,7 @@
 					</tr>
 				</thead>
 				<tbody><tr>
-					<td>Task</td>
+					<td>void</td>
 					<td></td>
 				</tr>
 			</tbody></table>
