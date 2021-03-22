@@ -1,6 +1,10 @@
-name: Verify Documentation
+name: Verify & Publish Documentation
 
-on: [push, pull_request]
+on:
+  push:
+  pull_request:
+    paths:
+    - 'docs/**'
 
 jobs:
   build:
@@ -20,3 +24,8 @@ jobs:
       with:
         directory: ./artifacts/Documentation
         arguments: --url-ignore /api/ --allow-hash-href --assume-extension --disable-external
+
+    - name: '[Publish]'
+      if: ${{ github.event_name == 'push' }}
+      shell: pwsh
+      run: ./build.ps1 -target Publish-Documentation
