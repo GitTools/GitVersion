@@ -133,7 +133,7 @@ public void PublishDocumentation(BuildParameters parameters)
             );
 
             Information("Pushing all changes...");
-            GitPush(publishFolder, parameters.Credentials.GitHub.Token, "x-oauth-basic", "gh-pages");
+            GitPush(publishFolder, parameters.Credentials.GitHub.UserName, parameters.Credentials.GitHub.Token, "gh-pages");
         }
     }
 }
