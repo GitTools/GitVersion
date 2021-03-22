@@ -1,7 +1,8 @@
 <Project>
     <PropertyGroup>
+        <EndYear>$([System.DateTime]::Today.Year)</EndYear>
         <Authors>GitTools and Contributors</Authors>
-        <Copyright>Copyright GitTools 2021.</Copyright>
+        <Copyright>Copyright GitTools $(EndYear).</Copyright>
         <Company>$(Authors)</Company>
 
         <PackageProjectUrl>https://github.com/GitTools/GitVersion</PackageProjectUrl>
@@ -10,6 +11,11 @@
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <PackageIcon>package_icon.png</PackageIcon>
         <PackageReleaseNotes>https://github.com/GitTools/GitVersion/releases</PackageReleaseNotes>
+
+        <IncludeSymbols>true</IncludeSymbols>
+        <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+        <PublishRepositoryUrl>true</PublishRepositoryUrl>
+        <EmbedUntrackedSources>true</EmbedUntrackedSources>
 
         <RepositoryUrl>https://github.com/GitTools/GitVersion</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
@@ -38,6 +44,13 @@
         <PackageVersion_Shouldly>4.0.3</PackageVersion_Shouldly>
 
     </PropertyGroup>
+
+    <ItemGroup Condition=" '$(IsTestProject)' == 'false' ">
+        <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0">
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+            <PrivateAssets>all</PrivateAssets>
+        </PackageReference>
+    </ItemGroup>
 
     <ItemGroup Condition=" '$(IsTestProject)' == 'true' ">
         <PackageReference Include="Microsoft.NET.Test.Sdk" Version="$(PackageVersion_MicrosoftTestSdk)" />
