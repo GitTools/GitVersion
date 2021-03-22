@@ -7,12 +7,14 @@ on:
     - 'fix/*'
     - 'feature/*'
     paths:
+    - '**'
     - '!docs/**'
 
   pull_request:
     branches:
     - main
     paths:
+    - '**'
     - '!docs/**'
 
   repository_dispatch:
