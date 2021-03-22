@@ -6,10 +6,16 @@ on:
     - main
     - 'fix/*'
     - 'feature/*'
+    paths:
+    - '**'
+    - '!docs/**'
 
   pull_request:
     branches:
     - main
+    paths:
+    - '**'
+    - '!docs/**'
 
 jobs:
   format:
