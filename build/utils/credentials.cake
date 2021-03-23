@@ -36,7 +36,7 @@ public class GitHubCredentials
     {
         return new GitHubCredentials(
             context.EnvironmentVariable("GITHUB_USERNAME"),
-            context.EnvironmentVariable("RELEASE_GITHUB_TOKEN"));
+            context.EnvironmentVariable("GITHUB_TOKEN"));
     }
 }
 
