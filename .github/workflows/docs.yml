@@ -1,6 +1,7 @@
 name: Verify & Publish Documentation
 
 on:
+  workflow_dispatch:
   push:
     paths:
     - 'docs/**'
@@ -27,7 +28,12 @@ jobs:
         directory: ./artifacts/Documentation
         arguments: --url-ignore /api/ --allow-hash-href --assume-extension --disable-external
 
-    - name: '[Publish]'
-      if: ${{ github.event_name == 'push' }}
+    - name: '[Publish Documentation]'
+      if: ${{ github.event_name == 'push' || github.event_name == 'workflow_dispatch' }}
       shell: pwsh
       run: ./build.ps1 -target Publish-Documentation
+
+    - name: '[Publish Documentation]'
+      if: ${{ github.event_name == 'workflow_dispatch' }}
+      shell: pwsh
+      run: ./build.ps1 -target Force-Publish-Documentation
