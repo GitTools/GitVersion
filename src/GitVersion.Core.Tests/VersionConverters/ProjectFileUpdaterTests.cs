@@ -40,6 +40,13 @@ namespace GitVersion.Core.Tests
   </PropertyGroup>
 </Project>
 ")]
+        [TestCase(@"
+<Project Sdk=""Microsoft.NET.Sdk.Worker"">
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+  </PropertyGroup>
+</Project>
+")]
         [Category(NoMono)]
         [Description(NoMonoDescription)]
         public void CanUpdateProjectFileWithStandardProjectFileXml(string xml)
