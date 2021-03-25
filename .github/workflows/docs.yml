@@ -29,7 +29,7 @@ jobs:
         arguments: --url-ignore /api/ --allow-hash-href --assume-extension --disable-external
 
     - name: '[Publish Documentation]'
-      if: ${{ github.event_name == 'push' || github.event_name == 'workflow_dispatch' }}
+      if: ${{ github.event_name == 'push' }}
       shell: pwsh
       run: ./build.ps1 -target Publish-Documentation
 
