@@ -40,16 +40,28 @@ namespace GitVersion.Core.Tests
   </PropertyGroup>
 </Project>
 ")]
+        [Category(NoMono)]
+        [Description(NoMonoDescription)]
+        public void CanUpdateProjectFileWithStandardProjectFileXml(string xml)
+        {
+            using var projectFileUpdater = new ProjectFileUpdater(log, fileSystem);
+
+            var canUpdate = projectFileUpdater.CanUpdateProjectFile(XElement.Parse(xml));
+
+            canUpdate.ShouldBe(true);
+        }
+
         [TestCase(@"
 <Project Sdk=""Microsoft.NET.Sdk.Worker"">
   <PropertyGroup>
-    <TargetFramework>net5.0</TargetFramework>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
 </Project>
 ")]
         [Category(NoMono)]
         [Description(NoMonoDescription)]
-        public void CanUpdateProjectFileWithStandardProjectFileXml(string xml)
+        public void CanUpdateProjectFileWithStandardWorkerProjectFileXml(string xml)
         {
             using var projectFileUpdater = new ProjectFileUpdater(log, fileSystem);
 
@@ -292,7 +304,6 @@ namespace GitVersion.Core.Tests
   </PropertyGroup>
 </Project>"
         )]
-
         [Category(NoMono)]
         [Description(NoMonoDescription)]
         public void UpdateProjectXmlVersionElementWithMultipleVersionElementsLastOneIsModified(string xml)
