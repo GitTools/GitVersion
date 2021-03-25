@@ -36,4 +36,4 @@ jobs:
     - name: '[Publish Documentation]'
       if: ${{ github.event_name == 'workflow_dispatch' }}
       shell: pwsh
-      run: ./build.ps1 -target Force-Publish-Documentation
+      run: ./build.ps1 -target Force-Publish-Documentation -exclusive
