@@ -3,6 +3,6 @@
         <PackageReference Include="Cake.Common" Version="1.1.0" />
         <PackageReference Include="Cake.Frosting" Version="1.1.0" />
         <PackageReference Include="Cake.Incubator" Version="6.0.0" />
-        <PackageReference Include="Cake.Json" Version="6.0.0" />
+        <PackageReference Include="Cake.Json" Version="6.0.1" />
     </ItemGroup>
 </Project>
