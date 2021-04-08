@@ -6,4 +6,8 @@
         <RootNamespace>Common</RootNamespace>
     </PropertyGroup>
 
+    <ItemGroup>
+      <PackageReference Include="xunit.assert" Version="2.4.1" />
+    </ItemGroup>
+
 </Project>

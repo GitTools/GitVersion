@@ -6,6 +6,7 @@ using Cake.Common.Build;
 using Cake.Common.Diagnostics;
 using Cake.Core;
 using Cake.Core.IO;
+using Xunit;
 
 namespace Common.Utilities
 {
@@ -73,6 +74,15 @@ namespace Common.Utilities
             var isTagged = ExecGitCmd(context, "tag --points-at " + sha).Any();
 
             return isTagged;
+        }
+
+        public static void ValidateOutput(this ICakeContext context, string cmd, string args, string expected)
+        {
+            var output = context.ExecuteCommand(cmd, args);
+            var outputStr = string.Concat(output);
+            context.Information(outputStr);
+
+            Assert.Equal(expected, outputStr);
         }
 
         public static string GetOS(this ICakeContext context)
