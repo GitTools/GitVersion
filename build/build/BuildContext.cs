@@ -7,6 +7,8 @@ namespace Build
 {
     public class BuildContext : FrostingContext
     {
+        public const string NetVersion50 = "net5.0";
+
         public string BuildConfiguration { get; set; } = "Release";
 
         public bool IsOriginalRepo { get; set; }
@@ -26,7 +28,7 @@ namespace Build
         public BuildVersion Version { get; set; }
         public Paths Paths { get; } = new();
 
-        public DotNetCoreMSBuildSettings MsBuildSettings { get; set; } = new();
+        public DotNetCoreMSBuildSettings MsBuildSettings { get; } = new();
 
         public BuildContext(ICakeContext context) : base(context)
         {
