@@ -3,6 +3,7 @@
     <PropertyGroup>
         <TargetFramework>netstandard2.0</TargetFramework>
         <OutputType>Library</OutputType>
+        <RootNamespace>Common</RootNamespace>
     </PropertyGroup>
 
 </Project>

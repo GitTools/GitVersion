@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using Cake.Common.Diagnostics;
 using Cake.Core.IO;
 using Cake.Frosting;
-using Cake.DotNetCoreFormat;
+using Common.Addins.Cake.DotNetCoreFormat;
 
 namespace Build.Tasks
 {

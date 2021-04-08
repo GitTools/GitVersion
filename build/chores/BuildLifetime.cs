@@ -2,7 +2,7 @@ using Cake.Core;
 using Cake.Frosting;
 using Common.Utilities;
 
-namespace chores
+namespace Chores
 {
     public class BuildLifetime : FrostingLifetime<BuildContext>
     {
