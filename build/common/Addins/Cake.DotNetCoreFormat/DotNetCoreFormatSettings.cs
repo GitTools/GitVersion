@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using Cake.Common.Tools.DotNetCore;
 using Cake.Core.IO;
 
-namespace Cake.DotNetCoreFormat
+namespace Common.Addins.Cake.DotNetCoreFormat
 {
     public sealed class DotNetCoreFormatSettings : DotNetCoreSettings
     {

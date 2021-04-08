@@ -1,7 +1,7 @@
 using Cake.Core;
 using Cake.Frosting;
 
-namespace chores
+namespace Chores
 {
     public class BuildContext : FrostingContext
     {

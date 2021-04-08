@@ -1,6 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
         <AssemblyName>build</AssemblyName>
+        <RootNamespace>Build</RootNamespace>
     </PropertyGroup>
     <ItemGroup>
       <ProjectReference Include="..\Common\Common.csproj" />

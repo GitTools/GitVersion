@@ -1,7 +1,7 @@
 using Cake.Core;
 using Cake.Core.Annotations;
 
-namespace Cake.DotNetCoreFormat
+namespace Common.Addins.Cake.DotNetCoreFormat
 {
     /// <summary>
     /// <para>Contains aliases related to <see href="https://github.com/dotnet/format">dotnet format</see>.</para>

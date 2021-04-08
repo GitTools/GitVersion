@@ -1,6 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
         <AssemblyName>chores</AssemblyName>
+        <RootNamespace>Chores</RootNamespace>
     </PropertyGroup>
     <ItemGroup>
       <ProjectReference Include="..\common\Common.csproj" />
