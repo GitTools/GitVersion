@@ -5,7 +5,7 @@
     <UsingTask TaskName="WriteVersionInfoToBuildLog" AssemblyFile="$(GitVersionAssemblyFile)"/>
     <UsingTask TaskName="UpdateAssemblyInfo" AssemblyFile="$(GitVersionAssemblyFile)"/>
 
-    <Target Name="RunGitVersion">
+    <Target Name="RunGitVersion" Condition="'$(DisableGitVersionTask)' == 'false'">
         <Exec Command="$(GitVersionFileExe) &quot;$(MSBuildProjectDirectory)&quot; $(GitVersion_ToolArgments)" />
     </Target>
 
@@ -13,7 +13,7 @@
         <WriteVersionInfoToBuildLog SolutionDirectory="$(GitVersionPath)" VersionFile="$(GitVersionOutputFile)" />
     </Target>
 
-    <Target Name="GetVersion" DependsOnTargets="RunGitVersion" BeforeTargets="$(GitVersionTargetsBefore)">
+    <Target Name="GetVersion" DependsOnTargets="RunGitVersion" BeforeTargets="$(GitVersionTargetsBefore)" Condition="'$(DisableGitVersionTask)' == 'false'">
 
         <GetVersion SolutionDirectory="$(GitVersionPath)" VersionFile="$(GitVersionOutputFile)">
             <Output TaskParameter="Major" PropertyName="GitVersion_Major" />
