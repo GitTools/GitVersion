@@ -131,7 +131,8 @@ namespace GitVersion.Configuration
                 var branchName = branchNameOverride ?? branchFriendlyName;
                 if (!string.IsNullOrWhiteSpace(configuration.BranchPrefixToTrim))
                 {
-                    branchName = branchName.RegexReplace(configuration.BranchPrefixToTrim, string.Empty, RegexOptions.IgnoreCase);
+                    var branchNameTrimmed = branchName.RegexReplace(configuration.BranchPrefixToTrim, string.Empty, RegexOptions.IgnoreCase);
+                    branchName = string.IsNullOrEmpty(branchNameTrimmed) ? branchName : branchNameTrimmed;
                 }
                 branchName = branchName.RegexReplace("[^a-zA-Z0-9-]", "-");
 
