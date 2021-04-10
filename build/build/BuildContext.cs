@@ -7,8 +7,6 @@ namespace Build
 {
     public class BuildContext : FrostingContext
     {
-        public const string NetVersion50 = "net5.0";
-
         public string BuildConfiguration { get; set; } = "Release";
 
         public bool IsOriginalRepo { get; set; }
@@ -25,8 +23,9 @@ namespace Build
         public bool IsOnLinux { get; set; }
         public bool IsOnMacOS { get; set; }
 
-        public BuildVersion Version { get; set; }
-        public Paths Paths { get; } = new();
+        public bool EnabledUnitTests { get; set; }
+
+        public BuildVersion? Version { get; set; }
 
         public DotNetCoreMSBuildSettings MsBuildSettings { get; } = new();
 
@@ -37,8 +36,9 @@ namespace Build
 
     public class Paths
     {
-        public string Artifacts { get; } = "./artifacts";
-        public string Src { get; } = "./src";
-        public string Build { get; } = "./build";
+        public static string Artifacts => "./artifacts";
+        public static string Src => "./src";
+        public static string Build => "./build";
+        public static string TestOutput => $"{Artifacts}/test-results";
     }
 }

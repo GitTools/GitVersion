@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Build.Utils;
 using Cake.Common;
 using Cake.Common.Build;
 using Cake.Common.Diagnostics;
@@ -18,7 +19,7 @@ namespace Build
         {
             context.StartGroup("Build Setup");
 
-            context.BuildConfiguration = context.Argument("configuration", "Release");
+            context.BuildConfiguration = context.Argument(Arguments.Configuration, "Release");
 
             var buildSystem = context.BuildSystem();
             context.IsLocalBuild = buildSystem.IsLocalBuild;
@@ -34,6 +35,8 @@ namespace Build
             context.IsOnWindows = context.IsRunningOnWindows();
             context.IsOnLinux = context.IsRunningOnLinux();
             context.IsOnMacOS = context.IsRunningOnMacOs();
+
+            context.EnabledUnitTests = context.IsEnabled(EnvVars.EnabledUnitTests);
 
             context.Information("Configuration:     {0}", context.BuildConfiguration);
             context.Information("Build Agent:       {0}", context.GetBuildAgent());
