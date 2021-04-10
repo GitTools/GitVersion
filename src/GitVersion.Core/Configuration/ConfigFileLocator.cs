@@ -98,7 +98,8 @@ If the docs do not help you decide on the mode open an issue to discuss what you
 
             if (!hasConfigInProjectRootDirectory && !hasConfigInWorkingDirectory)
             {
-                throw new WarningException($"The configuration file was not found at '{workingConfigFile}' or '{projectRootConfigFile}'");
+                if (FilePath != DefaultFileName)
+                    throw new WarningException($"The configuration file was not found at '{workingConfigFile}' or '{projectRootConfigFile}'");
             }
         }
     }
