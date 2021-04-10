@@ -12,7 +12,7 @@ namespace Build.Tasks
         public override void Run(BuildContext context)
         {
             var gitversionTool = context.GetGitVersionToolLocation();
-            context.ValidateOutput("dotnet", $"\"{gitversionTool}\" -version", context.Version.GitVersion!.InformationalVersion!);
+            context.ValidateOutput("dotnet", $"\"{gitversionTool}\" -version", context.Version!.GitVersion!.InformationalVersion!);
         }
     }
 }

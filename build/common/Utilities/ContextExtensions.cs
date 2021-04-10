@@ -85,6 +85,13 @@ namespace Common.Utilities
             Assert.Equal(expected, outputStr);
         }
 
+        public static bool IsEnabled(this ICakeContext context, string envVar, bool nullOrEmptyAsEnabled = true)
+        {
+            var value = context.EnvironmentVariable(envVar);
+
+            return string.IsNullOrWhiteSpace(value) ? nullOrEmptyAsEnabled : bool.Parse(value);
+        }
+
         public static string GetOS(this ICakeContext context)
         {
             if (context.IsRunningOnWindows()) return "Windows";
