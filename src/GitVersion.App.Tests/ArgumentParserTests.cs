@@ -559,22 +559,22 @@ namespace GitVersion.App.Tests
         [TestCaseSource(nameof(OverrideconfigWithMultipleOptionsTestData))]
         public void OverrideconfigWithMultipleOptions(string options, Config expected)
         {
-            var arguments = argumentParser.ParseArguments($"/overrideconfig {options}");
+            var arguments = argumentParser.ParseArguments(options);
             arguments.OverrideConfig.ShouldBeEquivalentTo(expected);
         }
 
         private static IEnumerable<TestCaseData> OverrideconfigWithMultipleOptionsTestData()
         {
             yield return new TestCaseData(
-               "tag-prefix=sample;assembly-versioning-scheme=MajorMinor",
+               "/overrideconfig tag-prefix=sample /overrideconfig assembly-versioning-scheme=MajorMinor",
                new Config
                {
                    TagPrefix = "sample",
                    AssemblyVersioningScheme = AssemblyVersioningScheme.MajorMinor,
                }
-           );
+            );
             yield return new TestCaseData(
-                "tag-prefix=sample;assembly-versioning-format=\"{Major}.{Minor}.{Patch}.{env:CI_JOB_ID ?? 0}\"",
+                "/overrideconfig tag-prefix=sample /overrideconfig assembly-versioning-format=\"{Major}.{Minor}.{Patch}.{env:CI_JOB_ID ?? 0}\"",
                 new Config
                 {
                     TagPrefix = "sample",
@@ -582,7 +582,7 @@ namespace GitVersion.App.Tests
                 }
             );
             yield return new TestCaseData(
-                "tag-prefix=sample;assembly-versioning-format=\"{Major}.{Minor}.{Patch}.{env:CI_JOB_ID ?? 0}\";update-build-number=true;assembly-versioning-scheme=MajorMinorPatchTag;mode=ContinuousDelivery;tag-pre-release-weight=4",
+                "/overrideconfig tag-prefix=sample /overrideconfig assembly-versioning-format=\"{Major}.{Minor}.{Patch}.{env:CI_JOB_ID ?? 0}\" /overrideconfig update-build-number=true /overrideconfig assembly-versioning-scheme=MajorMinorPatchTag /overrideconfig mode=ContinuousDelivery /overrideconfig tag-pre-release-weight=4",
                 new Config
                 {
                     TagPrefix = "sample",
