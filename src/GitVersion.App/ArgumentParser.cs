@@ -298,7 +298,7 @@ namespace GitVersion
 
             if (name.IsSwitch("overrideconfig"))
             {
-                ParseOverrideConfig(arguments, value);
+                ParseOverrideConfig(arguments, values);
                 return true;
             }
 
@@ -422,19 +422,15 @@ namespace GitVersion
             }
         }
 
-        private static void ParseOverrideConfig(Arguments arguments, string value)
+        private static void ParseOverrideConfig(Arguments arguments, string[] values)
         {
-            // TODO: Split valu with regex so that double quotes are taken in consideration as well as escaped double quotes.
-            var keyValueOptions = QuotedStringHelpers.SplitUnquoted(value, ';');
-            if (keyValueOptions.Length == 0)
-            {
+            if (values == null || values.Length == 0)
                 return;
-            }
 
             var parser = new OverrideConfigOptionParser();
 
             // key=value
-            foreach (var keyValueOption in keyValueOptions)
+            foreach (var keyValueOption in values)
             {
                 var keyAndValue = QuotedStringHelpers.SplitUnquoted(keyValueOption, '=');
                 if (keyAndValue.Length != 2)

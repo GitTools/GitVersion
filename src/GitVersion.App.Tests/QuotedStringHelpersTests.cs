@@ -110,7 +110,7 @@ namespace GitVersionExe.Tests
         }
 
         [TestCaseSource(nameof(UnquoteTextTestData))]
-        public string UnquoteTextTextTests(string input)
+        public string UnquoteTextTests(string input)
         {
             return QuotedStringHelpers.UnquoteText(input);
         }

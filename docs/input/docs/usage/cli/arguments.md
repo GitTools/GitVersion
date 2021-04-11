@@ -99,15 +99,14 @@ gitversion init     Configuration utility for gitversion
 
 ## Override config
 
-`/overrideconfig [key=value]` will override appropriate key from 'GitVersion.yml'.
+`/overrideconfig [key=value]` will override appropriate `key` from 'GitVersion.yml'.
 
-Multiple options are separated by semicolon: `key1=value1;key2=value2`.
+To specify multiple options add multiple `/overrideconfig [key=value]` entries:
+`/overrideconfig key1=value1 /overrideconfig key2=value2`.
 
 To have **space characters** as a part of `value`, `value` has be enclosed with double quotes - `key="My value"`.
 
 Double quote character inside of the double quoted `value` has to be be escaped with a backslash '\\' - `key="My \"escaped-quotes\""`.
-
-If closing double-qoute character is missing, it will be implicitily added at the very end of the command line argument - `key="My Value;key2=2(")`.
 
 Following options are supported:
 1. `assembly-file-versioning-format`
@@ -151,6 +150,10 @@ Will pickup up environment variable `BUILD_NUMBER` or fallback to zero for assem
 `GitVersion.exe /output json /overrideconfig assembly-versioning-scheme=MajorMinor`
 
 Will use only major and minor version numbers for assembly version. Assembly build and revision numbers will be 0 (e.g. `1.2.0.0`)
+
+### Example: How to override multiple configuration options
+
+`GitVersion.exe /output json /overrideconfig tag-prefix=custom /overrideconfig assembly-versioning-scheme=MajorMinor`
 
 ### Example: How to override configuration option 'update-build-number'
 
