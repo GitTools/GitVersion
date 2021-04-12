@@ -76,7 +76,7 @@ namespace Common.Utilities
             return isTagged;
         }
 
-        public static void ValidateOutput(this ICakeContext context, string cmd, string args, string expected)
+        public static void ValidateOutput(this ICakeContext context, string cmd, string args, string? expected)
         {
             var output = context.ExecuteCommand(cmd, args);
             var outputStr = string.Concat(output);

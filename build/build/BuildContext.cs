@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Cake.Common.Tools.DotNetCore.MSBuild;
 using Cake.Core;
 using Cake.Frosting;
@@ -8,6 +9,13 @@ namespace Build
     public class BuildContext : FrostingContext
     {
         public string MsBuildConfiguration { get; set; } = "Release";
+
+        public Dictionary<PlatformFamily, string[]> NativeRuntimes = new()
+        {
+            [PlatformFamily.Windows] = new[] { "win-x64", "win-x86" },
+            [PlatformFamily.Linux] = new[] { "linux-x64", "linux-musl-x64" },
+            [PlatformFamily.OSX] = new[] { "osx-x64" },
+        };
 
         public bool IsOriginalRepo { get; set; }
         public bool IsMainBranch { get; set; }
@@ -40,5 +48,7 @@ namespace Build
         public static string Src => "./src";
         public static string Build => "./build";
         public static string TestOutput => $"{Artifacts}/test-results";
+        public static string Packages => $"{Artifacts}/packages";
+        public static string Native => $"{Packages}/native";
     }
 }
