@@ -1,4 +1,4 @@
-﻿namespace Common.Utilities
+namespace Common.Utilities
 {
     public class CommonPaths
     {

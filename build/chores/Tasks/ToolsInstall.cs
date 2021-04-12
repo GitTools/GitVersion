@@ -1,4 +1,4 @@
-﻿using System.Linq;
+using System.Linq;
 using Cake.Common.Tools.DotNetCore;
 using Cake.Frosting;
 using Cake.Json;
