@@ -1,0 +1,80 @@
+﻿using Build.Utils;
+using Cake.Common;
+using Cake.Common.Diagnostics;
+using Cake.Common.IO;
+using Cake.Common.Tools.DotNetCore;
+using Cake.Common.Tools.DotNetCore.Publish;
+using Cake.Compression;
+using Cake.Core;
+using Cake.Core.IO;
+using Cake.Frosting;
+using Common.Utilities;
+
+namespace Build.Tasks
+{
+    [TaskName(nameof(PackageZip))]
+    [TaskDescription("Creates the tar.gz packages")]
+    public class PackageZip : FrostingTask<BuildContext>
+    {
+        public override void Run(BuildContext context)
+        {
+            PackPrepareNative(context);
+
+            var platform = context.Environment.Platform.Family;
+            var runtimes = context.NativeRuntimes[platform];
+
+            foreach (var runtime in runtimes)
+            {
+                var sourceDir = DirectoryPath.FromString(Paths.Native).Combine(platform.ToString().ToLower()).Combine(runtime);
+                var targetDir = DirectoryPath.FromString(Paths.Native);
+                context.EnsureDirectoryExists(targetDir);
+
+                var fileName = $"gitversion-{runtime}-{context.Version?.SemVersion}.tar.gz".ToLower();
+                var tarFile = targetDir.CombineWithFilePath(fileName);
+                var filePaths = context.GetFiles($"{sourceDir}/**/*");
+                context.GZipCompress(sourceDir, tarFile, filePaths);
+            }
+            base.Run(context);
+        }
+
+        private static void PackPrepareNative(BuildContext context)
+        {
+            // publish single file for all native runtimes (self contained)
+            var platform = context.Environment.Platform.Family;
+            var runtimes = context.NativeRuntimes[platform];
+
+            foreach (var runtime in runtimes)
+            {
+                var outputPath = PackPrepareNative(context, runtime);
+
+                // testing windows and macos artifacts, the linux is tested with docker
+                if (platform == PlatformFamily.Linux) continue;
+
+                context.Information("Validating native lib:");
+                var nativeExe = outputPath.CombineWithFilePath(context.IsRunningOnWindows() ? "gitversion.exe" : "gitversion");
+                context.ValidateOutput(nativeExe.FullPath, "/showvariable FullSemver", context.Version?.GitVersion?.FullSemVer);
+            }
+        }
+
+        private static DirectoryPath PackPrepareNative(BuildContext context, string runtime)
+        {
+            var platform = context.Environment.Platform.Family;
+            var outputPath = DirectoryPath.FromString(Paths.Native).Combine(platform.ToString().ToLower()).Combine(runtime);
+
+            var settings = new DotNetCorePublishSettings
+            {
+                Framework = Constants.NetVersion50,
+                Runtime = runtime,
+                NoRestore = false,
+                Configuration = context.MsBuildConfiguration,
+                OutputDirectory = outputPath,
+                MSBuildSettings = context.MsBuildSettings,
+                ArgumentCustomization = arg => arg.Append("/p:PublishSingleFile=true"),
+            };
+
+            context.DotNetCorePublish("./src/GitVersion.App/GitVersion.App.csproj", settings);
+
+            return outputPath;
+        }
+    }
+}
