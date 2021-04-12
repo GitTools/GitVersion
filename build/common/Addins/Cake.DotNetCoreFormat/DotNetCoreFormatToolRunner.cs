@@ -1,12 +1,12 @@
 using System;
-using Cake.Common.Tools.DotNetCore;
+using System.Collections.Generic;
 using Cake.Core;
 using Cake.Core.IO;
 using Cake.Core.Tooling;
 
 namespace Common.Addins.Cake.DotNetCoreFormat
 {
-    public sealed class DotNetCoreFormatToolRunner : DotNetCoreTool<DotNetCoreFormatSettings>
+    public sealed class DotNetCoreFormatToolRunner : Tool<DotNetCoreFormatSettings>
     {
         public DotNetCoreFormatToolRunner(
             IFileSystem fileSystem,
@@ -25,11 +25,19 @@ namespace Common.Addins.Cake.DotNetCoreFormat
             Run(settings, GetArguments(settings));
         }
 
+        protected override string GetToolName()
+        {
+            return "Format";
+        }
+
+        protected override IEnumerable<string> GetToolExecutableNames()
+        {
+            return new[] { "dotnet-format", "dotnet-format.exe" };
+        }
+
         private static ProcessArgumentBuilder GetArguments(DotNetCoreFormatSettings settings)
         {
             ProcessArgumentBuilder arguments = new();
-            arguments.Append("format");
-
             arguments.Append(settings.Workspace != null ? settings.Workspace.ToString() : settings.WorkingDirectory.ToString());
 
             if (settings.Folder)
