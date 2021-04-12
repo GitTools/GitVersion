@@ -19,7 +19,7 @@ namespace Build
         {
             context.StartGroup("Build Setup");
 
-            context.BuildConfiguration = context.Argument(Arguments.Configuration, "Release");
+            context.MsBuildConfiguration = context.Argument(Arguments.Configuration, "Release");
 
             var buildSystem = context.BuildSystem();
             context.IsLocalBuild = buildSystem.IsLocalBuild;
@@ -38,7 +38,7 @@ namespace Build
 
             context.EnabledUnitTests = context.IsEnabled(EnvVars.EnabledUnitTests);
 
-            context.Information("Configuration:     {0}", context.BuildConfiguration);
+            context.Information("Configuration:     {0}", context.MsBuildConfiguration);
             context.Information("Build Agent:       {0}", context.GetBuildAgent());
             context.Information("OS:                {0}", context.GetOS());
             context.Information("Pull Request:      {0}", context.IsPullRequest);

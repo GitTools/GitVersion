@@ -12,7 +12,7 @@ namespace Build.Tasks
         {
             context.Information("Cleaning directories...");
 
-            context.CleanDirectories(Paths.Src + "/**/bin/" + context.BuildConfiguration);
+            context.CleanDirectories(Paths.Src + "/**/bin/" + context.MsBuildConfiguration);
             context.CleanDirectories(Paths.Src + "/**/obj");
             context.CleanDirectories(Paths.TestOutput);
             context.CleanDirectories(Paths.Artifacts);

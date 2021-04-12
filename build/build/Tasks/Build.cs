@@ -27,7 +27,7 @@ namespace Build.Tasks
             context.DotNetCoreBuild(sln, new DotNetCoreBuildSettings
             {
                 Verbosity = DotNetCoreVerbosity.Minimal,
-                Configuration = context.BuildConfiguration,
+                Configuration = context.MsBuildConfiguration,
                 NoRestore = true,
                 MSBuildSettings = context.MsBuildSettings
             });

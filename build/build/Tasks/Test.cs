@@ -63,7 +63,7 @@ namespace Build.Tasks
                 Framework = framework,
                 NoBuild = true,
                 NoRestore = true,
-                Configuration = context.BuildConfiguration,
+                Configuration = context.MsBuildConfiguration,
             };
 
             if (!context.IsRunningOnMacOs())
