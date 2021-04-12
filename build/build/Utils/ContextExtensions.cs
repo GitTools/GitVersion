@@ -8,7 +8,7 @@ namespace Build.Utils
     {
         public static FilePath? GetGitVersionToolLocation(this BuildContext context)
         {
-            return context.GetFiles($"src/GitVersion.App/bin/{context.BuildConfiguration}/{Constants.NetVersion50}/gitversion.dll").SingleOrDefault();
+            return context.GetFiles($"src/GitVersion.App/bin/{context.MsBuildConfiguration}/{Constants.NetVersion50}/gitversion.dll").SingleOrDefault();
         }
     }
 }

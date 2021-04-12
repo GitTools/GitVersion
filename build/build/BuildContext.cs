@@ -7,7 +7,7 @@ namespace Build
 {
     public class BuildContext : FrostingContext
     {
-        public string BuildConfiguration { get; set; } = "Release";
+        public string MsBuildConfiguration { get; set; } = "Release";
 
         public bool IsOriginalRepo { get; set; }
         public bool IsMainBranch { get; set; }
