@@ -131,7 +131,7 @@ Following options are supported:
 1. `tag-pre-release-weight`
 1. `update-build-number`
 
-Read more about [Configuration](docs/reference/configuration).
+Read more about [Configuration](/docs/reference/configuration).
 
 Using `override-config` on the command line will not change the contents of the config file `GitVersion.yml`.
 
