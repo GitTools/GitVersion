@@ -394,7 +394,12 @@ namespace GitVersion.App.Tests
             };
             yield return new TestCaseData("assembly-versioning-scheme=WrongEnumValue")
             {
-                ExpectedResult = $"Could not parse /overrideconfig option: assembly-versioning-scheme=WrongEnumValue. Ensure that 'value' is valid for specified 'key' enumeration: {Environment.NewLine}MajorMinorPatchTag{Environment.NewLine}MajorMinorPatch{Environment.NewLine}MajorMinor{Environment.NewLine}Major{Environment.NewLine}None{Environment.NewLine}"
+                ExpectedResult = $"Could not parse /overrideconfig option: assembly-versioning-scheme=WrongEnumValue. Ensure that 'value' is valid for specified 'key' enumeration: {System.Environment.NewLine}" +
+                    $"MajorMinorPatchTag{System.Environment.NewLine}" +
+                    $"MajorMinorPatch{System.Environment.NewLine}" +
+                    $"MajorMinor{System.Environment.NewLine}" +
+                    $"Major{System.Environment.NewLine}" +
+                    $"None{System.Environment.NewLine}"
             };
         }
 
