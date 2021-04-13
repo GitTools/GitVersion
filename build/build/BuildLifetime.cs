@@ -53,6 +53,13 @@ namespace Build
             });
 
             context.Version = BuildVersion.Calculate(gitVersion);
+
+            context.Packages = BuildPackages.GetPackages(
+                Paths.Nuget,
+                context.Version,
+                new[] { "GitVersion.CommandLine", "GitVersion.Core", "GitVersion.MsBuild", "GitVersion.Tool" },
+                new[] { "GitVersion.Portable" });
+
             SetMsBuildSettingsVersion(context.MsBuildSettings, context.Version);
         }
 
@@ -89,4 +96,5 @@ namespace Build
             context.EndGroup();
         }
     }
+
 }

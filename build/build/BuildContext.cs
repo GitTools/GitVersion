@@ -1,6 +1,8 @@
 using System.Collections.Generic;
+using Build.Utils;
 using Cake.Common.Tools.DotNetCore.MSBuild;
 using Cake.Core;
+using Cake.Core.IO;
 using Cake.Frosting;
 using Common.Utilities;
 
@@ -10,12 +12,18 @@ namespace Build
     {
         public string MsBuildConfiguration { get; set; } = "Release";
 
-        public Dictionary<PlatformFamily, string[]> NativeRuntimes = new()
+        public readonly Dictionary<PlatformFamily, string[]> NativeRuntimes = new()
         {
             [PlatformFamily.Windows] = new[] { "win-x64", "win-x86" },
             [PlatformFamily.Linux] = new[] { "linux-x64", "linux-musl-x64" },
             [PlatformFamily.OSX] = new[] { "osx-x64" },
         };
+        public readonly Dictionary<string, DirectoryPath> PackagesBuildMap = new()
+        {
+            ["GitVersion.CommandLine"] = Paths.ArtifactsBinCmdline,
+            ["GitVersion.Portable"] = Paths.ArtifactsBinPortable,
+        };
+        public BuildPackages? Packages { get; set; }
 
         public bool IsOriginalRepo { get; set; }
         public bool IsMainBranch { get; set; }
@@ -40,15 +48,5 @@ namespace Build
         public BuildContext(ICakeContext context) : base(context)
         {
         }
-    }
-
-    public class Paths
-    {
-        public static string Artifacts => "./artifacts";
-        public static string Src => "./src";
-        public static string Build => "./build";
-        public static string TestOutput => $"{Artifacts}/test-results";
-        public static string Packages => $"{Artifacts}/packages";
-        public static string Native => $"{Packages}/native";
     }
 }
