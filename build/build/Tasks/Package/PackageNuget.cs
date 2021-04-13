@@ -1,22 +1,21 @@
-﻿using System.Linq;
+using System.Linq;
 using Cake.Common.IO;
 using Cake.Common.Tools.DotNetCore;
 using Cake.Common.Tools.DotNetCore.Pack;
 using Cake.Common.Tools.NuGet;
 using Cake.Common.Tools.NuGet.Pack;
 using Cake.Core;
-using Cake.Core.IO;
 using Cake.Frosting;
 
 namespace Build.Tasks
 {
     [TaskName(nameof(PackageNuget))]
     [TaskDescription("Creates the nuget packages")]
+    [IsDependentOn(typeof(PackagePrepare))]
     public class PackageNuget : FrostingTask<BuildContext>
     {
         public override void Run(BuildContext context)
         {
-            PackPrepareNative(context);
             context.EnsureDirectoryExists(Paths.Nuget);
 
             foreach (var package in context.Packages!.Nuget)
@@ -39,10 +38,7 @@ namespace Build.Tasks
                         },
                         Files = context.GetFiles(artifactPath + "/**/*.*")
                             .Select(file => new NuSpecContent { Source = file.FullPath, Target = file.FullPath.Replace(artifactPath, "") })
-                            .Concat(
-                                context.GetFiles("docs/**/package_icon.png")
-                                    .Select(file => new NuSpecContent { Source = file.FullPath, Target = "package_icon.png" })
-                            )
+                            .Concat(context.GetFiles("docs/**/package_icon.png").Select(file => new NuSpecContent { Source = file.FullPath, Target = "package_icon.png" }))
                             .ToArray()
                     };
 
@@ -66,16 +62,6 @@ namespace Build.Tasks
 
             settings.ArgumentCustomization = null;
             context.DotNetCorePack("./src/GitVersion.Core", settings);
-        }
-        private static void PackPrepareNative(ICakeContext context)
-        {
-            var sourceDir = DirectoryPath.FromString(Paths.Native).Combine(PlatformFamily.Windows.ToString()).Combine("win-x64");
-            var sourceFiles = context.GetFiles(sourceDir + "/*.*");
-
-            var cmdlineDir = DirectoryPath.FromString(Paths.ArtifactsBinCmdline).Combine("tools");
-
-            context.EnsureDirectoryExists(cmdlineDir);
-            context.CopyFiles(sourceFiles, cmdlineDir);
         }
     }
 }

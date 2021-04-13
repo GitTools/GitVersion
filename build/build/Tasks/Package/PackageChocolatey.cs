@@ -1,20 +1,30 @@
-﻿using System.Linq;
+using System.Linq;
+using Cake.Common;
+using Cake.Common.Diagnostics;
 using Cake.Common.IO;
 using Cake.Common.Tools.Chocolatey;
 using Cake.Common.Tools.Chocolatey.Pack;
-using Cake.Core;
-using Cake.Core.IO;
 using Cake.Frosting;
 
 namespace Build.Tasks
 {
     [TaskName(nameof(PackageChocolatey))]
     [TaskDescription("Creates the chocolatey packages")]
+    [IsDependentOn(typeof(PackagePrepare))]
     public class PackageChocolatey : FrostingTask<BuildContext>
     {
+        public override bool ShouldRun(BuildContext context)
+        {
+            if (context.IsRunningOnWindows())
+            {
+                context.Information("Pack-Chocolatey works only on Windows agents.");
+                return true;
+            }
+            return false;
+        }
+
         public override void Run(BuildContext context)
         {
-            PackPrepareNative(context);
             context.EnsureDirectoryExists(Paths.Nuget);
 
             foreach (var package in context.Packages!.Chocolatey)
@@ -35,18 +45,6 @@ namespace Build.Tasks
                     context.ChocolateyPack(package.NuspecPath, chocolateySettings);
                 }
             }
-        }
-
-        private static void PackPrepareNative(ICakeContext context)
-        {
-            var sourceDir = DirectoryPath.FromString(Paths.Native).Combine(PlatformFamily.Windows.ToString()).Combine("win-x64");
-            var sourceFiles = context.GetFiles(sourceDir + "/*.*");
-
-            var portableDir = DirectoryPath.FromString(Paths.ArtifactsBinPortable).Combine("tools");
-            context.EnsureDirectoryExists(portableDir);
-
-            sourceFiles += context.GetFiles("./build/nuspec/*.ps1") + context.GetFiles("./build/nuspec/*.txt");
-            context.CopyFiles(sourceFiles, portableDir);
         }
     }
 }

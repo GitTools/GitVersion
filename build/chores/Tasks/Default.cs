@@ -1,4 +1,4 @@
-﻿namespace Chores.Tasks
+namespace Chores.Tasks
 {
     public class Default : Common.Tasks.Default
     {
