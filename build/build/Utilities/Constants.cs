@@ -1,4 +1,4 @@
-namespace Build.Utils
+namespace Build.Utilities
 {
     public class Constants
     {

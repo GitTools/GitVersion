@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using Build.Utils;
+using Build.Utilities;
 using Cake.Common.Tools.DotNetCore.MSBuild;
 using Cake.Core;
 using Cake.Core.IO;
@@ -39,9 +39,13 @@ namespace Build
         public bool IsOnLinux { get; set; }
         public bool IsOnMacOS { get; set; }
 
+        public bool IsStableRelease() => !IsLocalBuild && IsOriginalRepo && IsMainBranch && !IsPullRequest && IsTagged;
+        public bool IsPreRelease()    => !IsLocalBuild && IsOriginalRepo && IsMainBranch && !IsPullRequest && !IsTagged;
+
         public bool EnabledUnitTests { get; set; }
 
         public BuildVersion? Version { get; set; }
+        public BuildCredentials? Credentials { get; set; }
 
         public DotNetCoreMSBuildSettings MsBuildSettings { get; } = new();
 

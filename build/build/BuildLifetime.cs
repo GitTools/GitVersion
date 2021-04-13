@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using Build.Utils;
+using Build.Utilities;
 using Cake.Common;
 using Cake.Common.Build;
 using Cake.Common.Diagnostics;
@@ -53,6 +53,7 @@ namespace Build
             });
 
             context.Version = BuildVersion.Calculate(gitVersion);
+            context.Credentials = BuildCredentials.GetCredentials(context);
 
             context.Packages = BuildPackages.GetPackages(
                 Paths.Nuget,
