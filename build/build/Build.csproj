@@ -6,9 +6,4 @@
     <ItemGroup>
       <ProjectReference Include="..\Common\Common.csproj" />
     </ItemGroup>
-    <ItemGroup>
-      <Compile Include="..\common\Tasks\Default.cs">
-        <Link>Tasks\Default.cs</Link>
-      </Compile>
-    </ItemGroup>
 </Project>
