@@ -1,5 +1,5 @@
 using System.Linq;
-using Cake.Common;
+using Build.Utilities;
 using Cake.Common.Diagnostics;
 using Cake.Common.IO;
 using Cake.Common.Tools.Chocolatey;
@@ -15,9 +15,9 @@ namespace Build.Tasks
     {
         public override bool ShouldRun(BuildContext context)
         {
-            if (context.IsRunningOnWindows())
+            if (context.IsOnWindows)
             {
-                context.Information("Pack-Chocolatey works only on Windows agents.");
+                context.Information("PackageChocolatey works only on Windows agents.");
                 return true;
             }
             return false;
@@ -27,7 +27,9 @@ namespace Build.Tasks
         {
             context.EnsureDirectoryExists(Paths.Nuget);
 
-            foreach (var package in context.Packages!.Chocolatey)
+            if (context.Packages is not { Chocolatey: { } }) return;
+
+            foreach (var package in context.Packages.Chocolatey)
             {
                 if (context.FileExists(package.NuspecPath))
                 {

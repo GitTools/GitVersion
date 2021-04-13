@@ -1,0 +1,119 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Build.Utilities;
+using Cake.Common;
+using Cake.Common.Build;
+using Cake.Common.Build.AzurePipelines.Data;
+using Cake.Common.Diagnostics;
+using Cake.Common.IO;
+using Cake.Common.Tools.DotNetCore.Test;
+using Cake.Core.IO;
+using Cake.Coverlet;
+using Cake.Frosting;
+using Cake.Incubator.LoggingExtensions;
+using Common.Utilities;
+
+namespace Build.Tasks
+{
+    [TaskName(nameof(UnitTest))]
+    [TaskDescription("Run the unit tests. Can be specified the target framework with --dotnet_target=")]
+    [IsDependentOn(typeof(Build))]
+    public class UnitTest : FrostingTask<BuildContext>
+    {
+        public override bool ShouldRun(BuildContext context) => context.EnabledUnitTests;
+
+        public override void Run(BuildContext context)
+        {
+            var dotnetTarget = context.Argument(Arguments.DotnetTarget, string.Empty);
+            var frameworks = new[] { Constants.CoreFxVersion31, Constants.FullFxVersion48, Constants.NetVersion50 };
+            if (!string.IsNullOrWhiteSpace(dotnetTarget))
+            {
+                if (!frameworks.Contains(dotnetTarget, StringComparer.OrdinalIgnoreCase))
+                {
+                    throw new Exception($"Dotnet Target {dotnetTarget} is not supported at the moment");
+                }
+                frameworks = new[] { dotnetTarget };
+            }
+
+            foreach (var framework in frameworks)
+            {
+                // run using dotnet test
+                var actions = new List<Action>();
+                var projects = context.GetFiles("./src/**/*.Tests.csproj");
+                foreach (var project in projects)
+                {
+                    actions.Add(() =>
+                    {
+                        TestProjectForTarget(context, project, framework);
+                    });
+                }
+
+                var options = new ParallelOptions
+                {
+                    MaxDegreeOfParallelism = -1,
+                    CancellationToken = default
+                };
+
+                Parallel.Invoke(options, actions.ToArray());
+            }
+        }
+
+        public override void OnError(Exception exception, BuildContext context)
+        {
+            var error = (exception as AggregateException)?.InnerExceptions[0];
+            context.Error(error.Dump());
+        }
+
+        public override void Finally(BuildContext context)
+        {
+            var testResultsFiles = context.GetFiles($"{Paths.TestOutput}/*.results.xml");
+            if (!context.IsAzurePipelineBuild || !testResultsFiles.Any()) return;
+
+            var data = new AzurePipelinesPublishTestResultsData
+            {
+                TestResultsFiles = testResultsFiles.ToArray(),
+                Platform = context.Environment.Platform.Family.ToString(),
+                TestRunner = AzurePipelinesTestRunnerType.NUnit
+            };
+            context.BuildSystem().AzurePipelines.Commands.PublishTestResults(data);
+        }
+
+        private static void TestProjectForTarget(BuildContext context, FilePath project, string framework)
+        {
+            var testResultsPath = Paths.TestOutput;
+            var projectName = $"{project.GetFilenameWithoutExtension()}.{framework}";
+            var settings = new DotNetCoreTestSettings
+            {
+                Framework = framework,
+                NoBuild = true,
+                NoRestore = true,
+                Configuration = context.MsBuildConfiguration,
+            };
+
+            if (!context.IsRunningOnMacOs())
+            {
+                settings.TestAdapterPath = new DirectoryPath(".");
+                var resultsPath = context.MakeAbsolute(testResultsPath.CombineWithFilePath($"{projectName}.results.xml"));
+                settings.Loggers = new[] { $"nunit;LogFilePath={resultsPath}" };
+            }
+
+            var coverletSettings = new CoverletSettings
+            {
+                CollectCoverage = true,
+                CoverletOutputFormat = CoverletOutputFormat.cobertura,
+                CoverletOutputDirectory = testResultsPath,
+                CoverletOutputName = $"{projectName}.coverage.xml",
+                Exclude = new List<string> { "[GitVersion*.Tests]*", "[GitTools.Testing]*" }
+            };
+
+            if (string.Equals(framework, Constants.FullFxVersion48))
+            {
+                settings.Filter = context.IsRunningOnUnix() ? "TestCategory!=NoMono" : "TestCategory!=NoNet48";
+            }
+
+            context.DotNetCoreTest(project.FullPath, settings, coverletSettings);
+        }
+    }
+}

@@ -2,7 +2,7 @@ using System.Linq;
 using Cake.Common.IO;
 using Cake.Core.IO;
 
-namespace Build.Utils
+namespace Build.Utilities
 {
     public static class ContextExtensions
     {

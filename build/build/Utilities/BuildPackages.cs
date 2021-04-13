@@ -4,20 +4,13 @@ using System.Linq;
 using Cake.Core.IO;
 using Common.Utilities;
 
-namespace Build.Utils
+namespace Build.Utilities
 {
     public class BuildPackages
     {
-        public ICollection<BuildPackage> All { get; }
-        public ICollection<BuildPackage> Nuget { get; }
-        public ICollection<BuildPackage> Chocolatey { get; }
-
-        private BuildPackages(ICollection<BuildPackage> all, ICollection<BuildPackage> nuget, ICollection<BuildPackage> chocolatey)
-        {
-            All = all;
-            Nuget = nuget;
-            Chocolatey = chocolatey;
-        }
+        public ICollection<BuildPackage>? All { get; private set; }
+        public ICollection<BuildPackage>? Nuget { get; private set; }
+        public ICollection<BuildPackage>? Chocolatey { get; private set; }
 
         public static BuildPackages GetPackages(
             DirectoryPath nugetRooPath,
@@ -30,7 +23,12 @@ namespace Build.Utils
             var nugetPackages = packageIds.Select(toNugetPackage).ToArray();
             var chocolateyPackages = chocolateyPackageIds.Select(toChocolateyPackage).ToArray();
 
-            return new BuildPackages(nugetPackages.Union(chocolateyPackages).ToArray(), nugetPackages, chocolateyPackages);
+            return new BuildPackages
+            {
+                All = nugetPackages.Union(chocolateyPackages).ToArray(),
+                Nuget = nugetPackages,
+                Chocolatey = chocolateyPackages
+            };
         }
 
         private static Func<string, BuildPackage> BuildPackage(
@@ -64,7 +62,7 @@ namespace Build.Utils
             NuspecPath = nuspecPath;
             PackagePath = packagePath;
             IsChocolateyPackage = isChocolateyPackage;
-            PackageName = PackagePath.GetFilename().ToString();
+            PackageName = packagePath.GetFilename().ToString();
         }
     }
 }

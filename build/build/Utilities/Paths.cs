@@ -1,4 +1,4 @@
-namespace Build
+namespace Build.Utilities
 {
     public class Paths
     {

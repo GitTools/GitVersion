@@ -1,4 +1,5 @@
 using System.Linq;
+using Build.Utilities;
 using Cake.Common.IO;
 using Cake.Common.Tools.DotNetCore;
 using Cake.Common.Tools.DotNetCore.Pack;
@@ -42,7 +43,9 @@ namespace Build.Tasks
         }
         private static void PackageUsingNuspec(BuildContext context)
         {
-            foreach (var package in context.Packages!.Nuget)
+            if (context.Packages is not { Nuget: { } }) return;
+
+            foreach (var package in context.Packages.Nuget)
             {
                 if (!context.FileExists(package.NuspecPath)) continue;
 

@@ -1,5 +1,4 @@
-using Build.Utils;
-using Cake.Common;
+using Build.Utilities;
 using Cake.Common.Diagnostics;
 using Cake.Common.IO;
 using Cake.Common.Tools.DotNetCore;
@@ -49,7 +48,7 @@ namespace Build.Tasks
                 if (platform == PlatformFamily.Linux) continue;
 
                 context.Information("Validating native lib:");
-                var nativeExe = outputPath.CombineWithFilePath(context.IsRunningOnWindows() ? "gitversion.exe" : "gitversion");
+                var nativeExe = outputPath.CombineWithFilePath(context.IsOnWindows ? "gitversion.exe" : "gitversion");
                 context.ValidateOutput(nativeExe.FullPath, "/showvariable FullSemver", context.Version?.GitVersion?.FullSemVer);
             }
         }
