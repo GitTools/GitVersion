@@ -103,8 +103,8 @@ stages:
           TASK_NAME: 'NuGet'
         Chocolatey:
          TASK_NAME: 'Chocolatey'
-        Documentation:
-          TASK_NAME: 'Documentation'
+        # Documentation:
+        #   TASK_NAME: 'Documentation'
     steps:
     - template: .azurepipelines/publish.yml
       parameters:
