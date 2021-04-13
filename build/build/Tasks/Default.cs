@@ -1,4 +1,4 @@
-﻿namespace Build.Tasks
+namespace Build.Tasks
 {
     public class Default : Common.Tasks.Default
     {
