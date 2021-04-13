@@ -20,15 +20,15 @@ namespace Build.Tasks
         {
             PackPrepareNative(context);
 
-            var sourceDir = DirectoryPath.FromString(Paths.Native).Combine(PlatformFamily.Windows.ToString()).Combine("win-x64");
+            var sourceDir = Paths.Native.Combine(PlatformFamily.Windows.ToString()).Combine("win-x64");
             var sourceFiles = context.GetFiles(sourceDir + "/*.*");
 
-            var cmdlineDir = DirectoryPath.FromString(Paths.ArtifactsBinCmdline).Combine("tools");
+            var cmdlineDir = Paths.ArtifactsBinCmdline.Combine("tools");
 
             context.EnsureDirectoryExists(cmdlineDir);
             context.CopyFiles(sourceFiles, cmdlineDir);
 
-            var portableDir = DirectoryPath.FromString(Paths.ArtifactsBinPortable).Combine("tools");
+            var portableDir = Paths.ArtifactsBinPortable.Combine("tools");
             context.EnsureDirectoryExists(portableDir);
 
             sourceFiles += context.GetFiles("./build/nuspec/*.ps1") + context.GetFiles("./build/nuspec/*.txt");
@@ -57,7 +57,7 @@ namespace Build.Tasks
         private static DirectoryPath PackPrepareNative(BuildContext context, string runtime)
         {
             var platform = context.Environment.Platform.Family;
-            var outputPath = DirectoryPath.FromString(Paths.Native).Combine(platform.ToString().ToLower()).Combine(runtime);
+            var outputPath = Paths.Native.Combine(platform.ToString().ToLower()).Combine(runtime);
 
             var settings = new DotNetCorePublishSettings
             {

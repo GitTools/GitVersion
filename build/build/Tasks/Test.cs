@@ -9,6 +9,7 @@ using Cake.Common.Tools.DotNetCore.Test;
 using Cake.Core.IO;
 using Cake.Coverlet;
 using Cake.Frosting;
+using Common.Utilities;
 
 namespace Build.Tasks
 {
@@ -69,7 +70,7 @@ namespace Build.Tasks
             if (!context.IsRunningOnMacOs())
             {
                 settings.TestAdapterPath = new DirectoryPath(".");
-                var resultsPath = context.MakeAbsolute(DirectoryPath.FromString(testResultsPath).CombineWithFilePath($"{projectName}.results.xml"));
+                var resultsPath = context.MakeAbsolute(testResultsPath.CombineWithFilePath($"{projectName}.results.xml"));
                 settings.Loggers = new[] { $"nunit;LogFilePath={resultsPath}" };
             }
 

@@ -18,34 +18,11 @@ namespace Build.Tasks
         {
             context.EnsureDirectoryExists(Paths.Nuget);
 
-            foreach (var package in context.Packages!.Nuget)
-            {
-                if (context.FileExists(package.NuspecPath))
-                {
-                    var artifactPath = context.MakeAbsolute(context.PackagesBuildMap[package.Id]).FullPath;
-                    var version = context.Version;
-                    var gitVersion = version?.GitVersion;
-                    var nugetSettings = new NuGetPackSettings
-                    {
-                        // KeepTemporaryNuSpecFile = true,
-                        Version = version?.NugetVersion,
-                        NoPackageAnalysis = true,
-                        OutputDirectory = Paths.Nuget,
-                        Repository = new NuGetRepository
-                        {
-                            Branch = gitVersion?.BranchName,
-                            Commit = gitVersion?.Sha
-                        },
-                        Files = context.GetFiles(artifactPath + "/**/*.*")
-                            .Select(file => new NuSpecContent { Source = file.FullPath, Target = file.FullPath.Replace(artifactPath, "") })
-                            .Concat(context.GetFiles("docs/**/package_icon.png").Select(file => new NuSpecContent { Source = file.FullPath, Target = "package_icon.png" }))
-                            .ToArray()
-                    };
-
-                    context.NuGetPack(package.NuspecPath, nugetSettings);
-                }
-            }
-
+            PackageWithCli(context);
+            PackageUsingNuspec(context);
+        }
+        private static void PackageWithCli(BuildContext context)
+        {
             var settings = new DotNetCorePackSettings
             {
                 Configuration = context.MsBuildConfiguration,
@@ -62,6 +39,35 @@ namespace Build.Tasks
 
             settings.ArgumentCustomization = null;
             context.DotNetCorePack("./src/GitVersion.Core", settings);
+        }
+        private static void PackageUsingNuspec(BuildContext context)
+        {
+            foreach (var package in context.Packages!.Nuget)
+            {
+                if (!context.FileExists(package.NuspecPath)) continue;
+
+                var artifactPath = context.MakeAbsolute(context.PackagesBuildMap[package.Id]).FullPath;
+                var version = context.Version;
+                var gitVersion = version?.GitVersion;
+                var nugetSettings = new NuGetPackSettings
+                {
+                    // KeepTemporaryNuSpecFile = true,
+                    Version = version?.NugetVersion,
+                    NoPackageAnalysis = true,
+                    OutputDirectory = Paths.Nuget,
+                    Repository = new NuGetRepository
+                    {
+                        Branch = gitVersion?.BranchName,
+                        Commit = gitVersion?.Sha
+                    },
+                    Files = context.GetFiles(artifactPath + "/**/*.*")
+                        .Select(file => new NuSpecContent { Source = file.FullPath, Target = file.FullPath.Replace(artifactPath, "") })
+                        .Concat(context.GetFiles("docs/**/package_icon.png").Select(file => new NuSpecContent { Source = file.FullPath, Target = "package_icon.png" }))
+                        .ToArray()
+                };
+
+                context.NuGetPack(package.NuspecPath, nugetSettings);
+            }
         }
     }
 }

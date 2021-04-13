@@ -2,6 +2,7 @@ using Cake.Common.IO;
 using Cake.Compression;
 using Cake.Core.IO;
 using Cake.Frosting;
+using Common.Utilities;
 
 namespace Build.Tasks
 {
@@ -12,13 +13,15 @@ namespace Build.Tasks
     {
         public override void Run(BuildContext context)
         {
+            context.EnsureDirectoryExists(Paths.Native);
+
             var platform = context.Environment.Platform.Family;
             var runtimes = context.NativeRuntimes[platform];
 
             foreach (var runtime in runtimes)
             {
-                var sourceDir = DirectoryPath.FromString(Paths.Native).Combine(platform.ToString().ToLower()).Combine(runtime);
-                var targetDir = DirectoryPath.FromString(Paths.Native);
+                var sourceDir = Paths.Native.Combine(platform.ToString().ToLower()).Combine(runtime);
+                var targetDir = Paths.Native;
                 context.EnsureDirectoryExists(targetDir);
 
                 var fileName = $"gitversion-{runtime}-{context.Version?.SemVersion}.tar.gz".ToLower();
