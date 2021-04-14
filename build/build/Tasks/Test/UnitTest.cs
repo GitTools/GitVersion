@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using Build.Utilities;
 using Cake.Common;
 using Cake.Common.Build;
@@ -40,23 +39,11 @@ namespace Build.Tasks
             foreach (var framework in frameworks)
             {
                 // run using dotnet test
-                var actions = new List<Action>();
                 var projects = context.GetFiles("./src/**/*.Tests.csproj");
                 foreach (var project in projects)
                 {
-                    actions.Add(() =>
-                    {
-                        TestProjectForTarget(context, project, framework);
-                    });
+                    TestProjectForTarget(context, project, framework);
                 }
-
-                var options = new ParallelOptions
-                {
-                    MaxDegreeOfParallelism = -1,
-                    CancellationToken = default
-                };
-
-                Parallel.Invoke(options, actions.ToArray());
             }
         }
 

@@ -1,4 +1,4 @@
-﻿using Cake.Frosting;
+using Cake.Frosting;
 
 namespace Build.Tasks
 {

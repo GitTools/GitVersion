@@ -142,5 +142,13 @@ namespace Common.Utilities
             }
             context.Information($"{endgroup}");
         }
+
+        public static bool ShouldRun(this ICakeContext context, bool criteria, string skipMessage)
+        {
+            if (criteria) return true;
+
+            context.Information(skipMessage);
+            return false;
+        }
     }
 }

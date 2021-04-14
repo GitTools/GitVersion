@@ -1,10 +1,10 @@
 using System.Linq;
 using Build.Utilities;
-using Cake.Common.Diagnostics;
 using Cake.Common.IO;
 using Cake.Common.Tools.Chocolatey;
 using Cake.Common.Tools.Chocolatey.Pack;
 using Cake.Frosting;
+using Common.Utilities;
 
 namespace Build.Tasks
 {
@@ -15,12 +15,10 @@ namespace Build.Tasks
     {
         public override bool ShouldRun(BuildContext context)
         {
-            if (context.IsOnWindows)
-            {
-                context.Information("PackageChocolatey works only on Windows agents.");
-                return true;
-            }
-            return false;
+            var shouldRun = true;
+            shouldRun &= context.ShouldRun(context.IsOnWindows, "PublishCoverage works only on Windows agents.");
+
+            return shouldRun;
         }
 
         public override void Run(BuildContext context)
