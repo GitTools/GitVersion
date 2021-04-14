@@ -1,9 +1,9 @@
-﻿using System;
+using System;
 using Build.Utilities;
 using Cake.Codecov;
-using Cake.Common.Diagnostics;
 using Cake.Common.IO;
 using Cake.Frosting;
+using Common.Utilities;
 
 namespace Build.Tasks
 {
@@ -14,17 +14,11 @@ namespace Build.Tasks
     {
         public override bool ShouldRun(BuildContext context)
         {
-            if (context.IsOnWindows)
-            {
-                context.Information("PublishCoverage works only on Windows agents.");
-                return true;
-            }
-            if (context.IsStableRelease() || context.IsPreRelease())
-            {
-                context.Information("PublishCoverage works only for releases.");
-                return true;
-            }
-            return false;
+            var shouldRun = true;
+            shouldRun &= context.ShouldRun(context.IsOnWindows, "PublishCoverage works only on Windows agents.");
+            shouldRun &= context.ShouldRun(context.IsStableRelease() || context.IsPreRelease(), "PublishCoverage works only for releases.");
+
+            return shouldRun;
         }
 
         public override void Run(BuildContext context)
