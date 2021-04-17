@@ -41,6 +41,12 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
+    - name: Cache cake frosting
+      id: cache-cake
+      uses: actions/cache@v2.1.5
+      with:
+        path: build
+        key: build-${{ hashFiles('./build/**') }}
     - name: Cache tools
       id: cache-tools
       uses: actions/cache@v2.1.5
@@ -53,6 +59,6 @@ jobs:
       with:
         path: .dotnet
         key: ${{ runner.os }}-dotnet-${{ hashFiles('build.config') }}
-    - name: '[Cake build & pack]'
+    - name: '[Cake Frosting Prepare]'
       shell: pwsh
-      run: dotnet build build/CI.sln
+      run: dotnet build build/CI.sln --configuration=Release
