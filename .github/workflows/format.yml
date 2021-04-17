@@ -23,5 +23,5 @@ jobs:
     name: DotNet Format
     steps:
       - uses: actions/checkout@v2.3.4
-      - run: dotnet tool install -g dotnet-format
+      - run: dotnet tool restore
       - run: dotnet format ./ --folder --check --exclude **/AddFormats/

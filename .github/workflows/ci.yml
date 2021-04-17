@@ -1,0 +1,58 @@
+name: CI
+
+on:
+  push:
+    branches:
+    - main
+    - 'fix/*'
+    - 'feature/*'
+    paths:
+    - '**'
+    - '!docs/**'
+
+  pull_request:
+    branches:
+    - main
+    paths:
+    - '**'
+    - '!docs/**'
+
+  repository_dispatch:
+    types: [release]
+
+env:
+  DOTNET_ROLL_FORWARD_ON_NO_CANDIDATE_FX: 2
+  ENABLED_MULTI_STAGE_BUILD: true
+  ENABLED_UNIT_TESTS: true
+  ENABLED_PUBLISH_DOCKER: true
+  ENABLED_PUBLISH_NUGET: true
+  ENABLED_PUBLISH_CHOCOLATEY: true
+  ENABLED_PUBLISH_RELEASE: true
+  ENABLED_DIAGNOSTICS: ${{ secrets.ENABLED_DIAGNOSTICS }}
+
+jobs:
+  prepare:
+    name: Prepare Cake Frosting
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+      fail-fast: false
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Cache tools
+      id: cache-tools
+      uses: actions/cache@v2.1.5
+      with:
+        path: tools
+        key: tools-${{ hashFiles('./build/**') }}
+    - name: Cache dotnet
+      id: cache-dotnet
+      uses: actions/cache@v2.1.5
+      with:
+        path: .dotnet
+        key: ${{ runner.os }}-dotnet-${{ hashFiles('build.config') }}
+    - name: '[Cake build & pack]'
+      shell: pwsh
+      run: dotnet build build/CI.sln
