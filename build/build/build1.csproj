@@ -4,6 +4,6 @@
         <RootNamespace>Build</RootNamespace>
     </PropertyGroup>
     <ItemGroup>
-      <ProjectReference Include="..\Common\Common.csproj" />
+      <ProjectReference Include="..\common\common.csproj" />
     </ItemGroup>
 </Project>

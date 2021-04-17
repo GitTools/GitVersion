@@ -1,7 +1,5 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Build", "build\Build.csproj", "{1AC00FB2-E28A-46B7-9683-AA7A1AFC29EB}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "sln", "sln", "{EC2C1EC4-BE56-4CAE-A3EE-4A67EED6BC6C}"
 ProjectSection(SolutionItems) = preProject
 	Directory.Build.props = Directory.Build.props
@@ -9,9 +7,11 @@ ProjectSection(SolutionItems) = preProject
 	..\dotnet-tools.json = ..\dotnet-tools.json
 EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common", "common\Common.csproj", "{8B04D233-2891-44D8-A7D2-0EAFD38F1F70}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "build", "build\build.csproj", "{1AC00FB2-E28A-46B7-9683-AA7A1AFC29EB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "chores", "chores\Chores.csproj", "{E8346E70-2A34-460E-90FD-DFD5B15FD476}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "common", "common\common.csproj", "{8B04D233-2891-44D8-A7D2-0EAFD38F1F70}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "chores", "chores\chores.csproj", "{E8346E70-2A34-460E-90FD-DFD5B15FD476}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
