@@ -4,7 +4,7 @@
         <RootNamespace>Chores</RootNamespace>
     </PropertyGroup>
     <ItemGroup>
-      <ProjectReference Include="..\common\Common.csproj" />
+      <ProjectReference Include="..\common\common.csproj" />
     </ItemGroup>
 
 </Project>
