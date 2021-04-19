@@ -45,20 +45,43 @@ jobs:
       id: cache-cake
       uses: actions/cache@v2.1.5
       with:
-        path: build
-        key: build-${{ hashFiles('./build/**') }}
+        path: run
+        key: run-${{ hashFiles('./build/**') }}
     - name: Cache tools
       id: cache-tools
       uses: actions/cache@v2.1.5
       with:
         path: tools
         key: tools-${{ hashFiles('./build/**') }}
-    - name: Cache dotnet
-      id: cache-dotnet
+    - name: '[Prepare]'
+      if: steps.cache-cake.outputs.cache-hit != 'true'
+      run: dotnet build build/CI.sln --configuration=Release
+
+  build:
+    name: Build code
+    needs: [prepare]
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+      fail-fast: false
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Fetch all history for all tags and branches
+      run: git fetch --prune --unshallow
+    - name: Cache cake frosting
+      id: cache-cake
       uses: actions/cache@v2.1.5
       with:
-        path: .dotnet
-        key: ${{ runner.os }}-dotnet-${{ hashFiles('build.config') }}
-    - name: '[Cake Frosting Prepare]'
-      shell: pwsh
-      run: dotnet build build/CI.sln --configuration=Release
+        path: run
+        key: run-${{ hashFiles('./build/**') }}
+    - name: Cache tools
+      id: cache-tools
+      uses: actions/cache@v2.1.5
+      with:
+        path: tools
+        key: tools-${{ hashFiles('./build/**') }}
+    - name: '[Build]'
+      run: dotnet run/build.dll --target=Package
+
