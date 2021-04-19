@@ -63,7 +63,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-latest]
+        os: [ubuntu-latest, macos-latest]
       fail-fast: false
 
     steps:
@@ -85,3 +85,31 @@ jobs:
     - name: '[Build]'
       run: dotnet run/build.dll --target=Package
 
+  unit_test:
+    name: Test code
+    needs: [prepare]
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+        target: [net5.0, netcoreapp3.1]
+      fail-fast: false
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Fetch all history for all tags and branches
+      run: git fetch --prune --unshallow
+    - name: Cache cake frosting
+      id: cache-cake
+      uses: actions/cache@v2.1.5
+      with:
+        path: run
+        key: run-${{ hashFiles('./build/**') }}
+    - name: Cache tools
+      id: cache-tools
+      uses: actions/cache@v2.1.5
+      with:
+        path: tools
+        key: tools-${{ hashFiles('./build/**') }}
+    - name: '[Build]'
+      run: dotnet run/build.dll --target=Test --dotnet_target=${{ matrix.target }}
