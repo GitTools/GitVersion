@@ -157,9 +157,12 @@ namespace Common.Addins.GitVersion
             }
 
             var verbosity = settings.Verbosity ?? log.Verbosity;
-            builder.Append("-verbosity");
-            builder.Append(verbosity.ToString());
 
+            if (verbosity != Verbosity.Normal)
+            {
+                builder.Append("-verbosity");
+                builder.Append(verbosity.ToString());
+            }
             return builder;
         }
 
