@@ -43,14 +43,18 @@ jobs:
       fail-fast: false
 
     steps:
-    - uses: actions/checkout@v2
-    - name: Cache cake frosting
+    -
+      name: Checkout
+      uses: actions/checkout@v2
+    -
+      name: Cache cake frosting
       id: cache-cake
       uses: actions/cache@v2.1.5
       with:
         path: run
         key: run-${{ runner.os }}-${{ hashFiles('./build/**') }}
-    - name: '[Prepare]'
+    -
+      name: '[Prepare]'
       if: steps.cache-cake.outputs.cache-hit != 'true'
       run: dotnet build build/CI.sln --configuration=Release
 
@@ -64,31 +68,39 @@ jobs:
       fail-fast: false
 
     steps:
-    - uses: actions/checkout@v2
-    - name: Fetch all history for all tags and branches
+    -
+      name: Checkout
+      uses: actions/checkout@v2
+    -
+      name: Fetch all history for all tags and branches
       run: git fetch --prune --unshallow
-    - name: Use cached cake frosting
+    -
+      name: Use cached cake frosting
       id: cache-cake
       uses: actions/cache@v2.1.5
       with:
         path: run
         key: run-${{ runner.os }}-${{ hashFiles('./build/**') }}
-    - name: Use cached tools
+    -
+      name: Use cached tools
       id: cache-tools
       uses: actions/cache@v2.1.5
       with:
         path: tools
         key: tools-${{ runner.os }}-${{ hashFiles('./build/**') }}
-    - name: '[Build]'
+    -
+      name: '[Build]'
       shell: pwsh
       run: dotnet run/build.dll --target=Package
-    - name: 'Upload nuget packages'
+    -
+      name: 'Upload nuget packages'
       uses: actions/upload-artifact@v2.2.3
       if: matrix.os == 'windows-latest'
       with:
         name: nuget
         path: ${{ github.workspace }}/artifacts/packages/nuget/*.nupkg
-    - name: 'Upload native packages'
+    -
+      name: 'Upload native packages'
       uses: actions/upload-artifact@v2.2.3
       with:
         name: native-${{ matrix.os }}
@@ -105,21 +117,27 @@ jobs:
       fail-fast: false
 
     steps:
-    - uses: actions/checkout@v2
-    - name: Fetch all history for all tags and branches
+    -
+      name: Checkout
+      uses: actions/checkout@v2
+    -
+      name: Fetch all history for all tags and branches
       run: git fetch --prune --unshallow
-    - name: Use cached cake frosting
+    -
+      name: Use cached cake frosting
       id: cache-cake
       uses: actions/cache@v2.1.5
       with:
         path: run
         key: run-${{ runner.os }}-${{ hashFiles('./build/**') }}
-    - name: Use cached tools
+    -
+      name: Use cached tools
       id: cache-tools
       uses: actions/cache@v2.1.5
       with:
         path: tools
         key: tools-${{ runner.os }}-${{ hashFiles('./build/**') }}
-    - name: '[Build]'
+    -
+      name: '[Build]'
       shell: pwsh
       run: dotnet run/build.dll --target=Test --dotnet_target=${{ matrix.target }}
