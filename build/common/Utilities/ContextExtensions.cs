@@ -41,7 +41,7 @@ namespace Common.Utilities
             {
                 repositoryName = buildSystem.GitHubActions.Environment.Workflow.Repository;
             }
-            context.Information("Repository Name: {0}", repositoryName);
+            context.Information("Repository Name:   {0}", repositoryName);
 
             return !string.IsNullOrWhiteSpace(repositoryName) && StringComparer.OrdinalIgnoreCase.Equals("gittools/GitVersion", repositoryName);
         }
