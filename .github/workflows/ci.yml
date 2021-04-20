@@ -82,7 +82,13 @@ jobs:
     - name: '[Build]'
       shell: pwsh
       run: dotnet run/build.dll --target=Package
-    - name: 'Upload native folder'
+    - name: 'Upload nuget packages'
+      uses: actions/upload-artifact@v2.2.3
+      if: matrix.os == 'windows-latest'
+      with:
+        name: nuget
+        path: ${{ github.workspace }}/artifacts/packages/nuget/*.nupkg
+    - name: 'Upload native packages'
       uses: actions/upload-artifact@v2.2.3
       with:
         name: native-${{ matrix.os }}
