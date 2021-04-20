@@ -1,4 +1,5 @@
 using Build.Utilities;
+using Cake.Common.Diagnostics;
 using Cake.Common.IO;
 using Cake.Compression;
 using Cake.Frosting;
@@ -28,6 +29,8 @@ namespace Build.Tasks
                 var tarFile = targetDir.CombineWithFilePath(fileName);
                 var filePaths = context.GetFiles($"{sourceDir}/**/*");
                 context.GZipCompress(sourceDir, tarFile, filePaths);
+
+                context.Information($"Created {tarFile}");
             }
             base.Run(context);
         }
