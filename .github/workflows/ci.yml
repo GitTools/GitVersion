@@ -35,7 +35,7 @@ env:
 
 jobs:
   prepare:
-    name: Prepare Cake Frosting
+    name: Prepare Build
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -55,7 +55,7 @@ jobs:
       run: dotnet build build/CI.sln --configuration=Release
 
   build:
-    name: Build code
+    name: Build code & Package
     needs: [prepare]
     runs-on: ${{ matrix.os }}
     strategy:
@@ -67,13 +67,13 @@ jobs:
     - uses: actions/checkout@v2
     - name: Fetch all history for all tags and branches
       run: git fetch --prune --unshallow
-    - name: Cache cake frosting
+    - name: Use cached cake frosting
       id: cache-cake
       uses: actions/cache@v2.1.5
       with:
         path: run
         key: run-${{ runner.os }}-${{ hashFiles('./build/**') }}
-    - name: Cache tools
+    - name: Use cached tools
       id: cache-tools
       uses: actions/cache@v2.1.5
       with:
@@ -81,10 +81,10 @@ jobs:
         key: tools-${{ runner.os }}-${{ hashFiles('./build/**') }}
     - name: '[Build]'
       shell: pwsh
-      run: dotnet run/build.dll --target=Package --verbosity=diagnostic
+      run: dotnet run/build.dll --target=Package
 
   unit_test:
-    name: Test code
+    name: Unit Test code
     needs: [prepare]
     runs-on: ${{ matrix.os }}
     strategy:
@@ -97,13 +97,13 @@ jobs:
     - uses: actions/checkout@v2
     - name: Fetch all history for all tags and branches
       run: git fetch --prune --unshallow
-    - name: Cache cake frosting
+    - name: Use cached cake frosting
       id: cache-cake
       uses: actions/cache@v2.1.5
       with:
         path: run
         key: run-${{ runner.os }}-${{ hashFiles('./build/**') }}
-    - name: Cache tools
+    - name: Use cached tools
       id: cache-tools
       uses: actions/cache@v2.1.5
       with:
