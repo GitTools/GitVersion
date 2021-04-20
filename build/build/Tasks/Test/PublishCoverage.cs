@@ -16,7 +16,7 @@ namespace Build.Tasks
         {
             var shouldRun = true;
             shouldRun &= context.ShouldRun(context.IsOnWindows, "PublishCoverage works only on Windows agents.");
-            shouldRun &= context.ShouldRun(context.IsStableRelease() || context.IsPreRelease(), "PublishCoverage works only for releases.");
+            shouldRun &= context.ShouldRun(context.IsOnMainBranchOriginalRepo, "PublishCoverage works only for on main branch original repository.");
 
             return shouldRun;
         }
