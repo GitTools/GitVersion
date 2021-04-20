@@ -82,6 +82,11 @@ jobs:
     - name: '[Build]'
       shell: pwsh
       run: dotnet run/build.dll --target=Package
+    - name: 'Upload native folder'
+      uses: actions/upload-artifact@v2.2.3
+      with:
+        name: native-${{ matrix.os }}
+        path: ${{ github.workspace }}/artifacts/packages/native/*.tar.gz
 
   unit_test:
     name: Unit Test code
