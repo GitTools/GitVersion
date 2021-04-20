@@ -39,8 +39,9 @@ namespace Build
         public bool IsOnLinux { get; set; }
         public bool IsOnMacOS { get; set; }
 
-        public bool IsStableRelease() => !IsLocalBuild && IsOriginalRepo && IsMainBranch && !IsPullRequest && IsTagged;
-        public bool IsPreRelease() => !IsLocalBuild && IsOriginalRepo && IsMainBranch && !IsPullRequest && !IsTagged;
+        public bool IsOnMainBranchOriginalRepo => !IsLocalBuild && IsOriginalRepo && IsMainBranch && !IsPullRequest;
+        public bool IsStableRelease => IsOnMainBranchOriginalRepo && IsTagged;
+        public bool IsPreRelease => IsOnMainBranchOriginalRepo && !IsTagged;
 
         public bool EnabledUnitTests { get; set; }
 
