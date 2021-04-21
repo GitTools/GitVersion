@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Reflection;
+using System.Threading;
 using GitVersion.Configuration;
 using GitVersion.Extensions;
 using GitVersion.Logging;
@@ -56,8 +57,16 @@ namespace GitVersion
 
         private int RunGitVersionTool(GitVersionOptions gitVersionOptions)
         {
+            var mutexName = gitVersionOptions.WorkingDirectory.Replace("\\", "");
+            using var mutex = new Mutex(true, $@"Global\{mutexName}", out var acquired);
+
             try
             {
+                if (!acquired)
+                {
+                    mutex.WaitOne();
+                }
+
                 var variables = gitVersionCalculateTool.CalculateVersionVariables();
 
                 var configuration = configProvider.Provide(overrideConfig: gitVersionOptions.ConfigInfo.OverrideConfig);
@@ -91,6 +100,10 @@ namespace GitVersion
                     log.Error("Couldn't dump the git graph due to the following error: " + dumpGraphException);
                 }
                 return 1;
+            }
+            finally
+            {
+                mutex.ReleaseMutex();
             }
 
             return 0;
