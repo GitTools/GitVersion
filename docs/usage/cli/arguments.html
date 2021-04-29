@@ -302,11 +302,51 @@ GitVersion [path]
 gitversion init     Configuration utility for gitversion
 </code></pre>
 <h2 id="override-config">Override config</h2>
-<p><code>/overrideconfig [key=value]</code> will override appropriate key from
-<code>GitVersion.yml</code>.</p>
-<p>At the moment only <code>tag-prefix</code> option is supported. Read more about
-<a href="/docs/reference/configuration">Configuration</a>. It will not change config file
-<code>GitVersion.yml</code>.</p>
+<p><code>/overrideconfig [key=value]</code> will override appropriate <code>key</code> from 'GitVersion.yml'.</p>
+<p>To specify multiple options add multiple <code>/overrideconfig [key=value]</code> entries:
+<code>/overrideconfig key1=value1 /overrideconfig key2=value2</code>.</p>
+<p>To have <strong>space characters</strong> as a part of <code>value</code>, <code>value</code> has be enclosed with double quotes - <code>key="My value"</code>.</p>
+<p>Double quote character inside of the double quoted <code>value</code> has to be be escaped with a backslash '\' - <code>key="My \"escaped-quotes\""</code>.</p>
+<p>Following options are supported:</p>
+<ol>
+<li><code>assembly-file-versioning-format</code></li>
+<li><code>assembly-file-versioning-scheme</code></li>
+<li><code>assembly-informational-format</code></li>
+<li><code>assembly-versioning-format</code></li>
+<li><code>assembly-versioning-scheme</code></li>
+<li><code>build-metadata-padding</code></li>
+<li><code>commit-date-format</code></li>
+<li><code>commit-message-incrementing</code></li>
+<li><code>commits-since-version-source-padding</code></li>
+<li><code>continuous-delivery-fallback-tag</code></li>
+<li><code>increment</code></li>
+<li><code>legacy-semver-padding</code></li>
+<li><code>major-version-bump-message</code></li>
+<li><code>minor-version-bump-message</code></li>
+<li><code>mode</code></li>
+<li><code>next-version</code></li>
+<li><code>no-bump-message</code></li>
+<li><code>patch-version-bump-message</code></li>
+<li><code>tag-prefix</code></li>
+<li><code>tag-pre-release-weight</code></li>
+<li><code>update-build-number</code></li>
+</ol>
+<p>Read more about <a href="/docs/reference/configuration">Configuration</a>.</p>
+<p>Using <code>override-config</code> on the command line will not change the contents of the config file <code>GitVersion.yml</code>.</p>
+<h3 id="example-how-to-override-configuration-option-tag-prefix-to-use-prefix-custom">Example: How to override configuration option 'tag-prefix' to use prefix 'custom'</h3>
+<p><code>GitVersion.exe /output json /overrideconfig tag-prefix=custom</code></p>
+<h3 id="example-how-to-override-configuration-option-assembly-versioning-format">Example: How to override configuration option 'assembly-versioning-format'</h3>
+<p><code>GitVersion.exe /output json /overrideconfig assembly-versioning-format="{Major}.{Minor}.{Patch}.{env:BUILD_NUMBER ?? 0}"</code></p>
+<p>Will pickup up environment variable <code>BUILD_NUMBER</code> or fallback to zero for assembly revision number.</p>
+<h3 id="example-how-to-override-configuration-option-assembly-versioning-scheme">Example: How to override configuration option 'assembly-versioning-scheme'</h3>
+<p><code>GitVersion.exe /output json /overrideconfig assembly-versioning-scheme=MajorMinor</code></p>
+<p>Will use only major and minor version numbers for assembly version. Assembly build and revision numbers will be 0 (e.g. <code>1.2.0.0</code>)</p>
+<h3 id="example-how-to-override-multiple-configuration-options">Example: How to override multiple configuration options</h3>
+<p><code>GitVersion.exe /output json /overrideconfig tag-prefix=custom /overrideconfig assembly-versioning-scheme=MajorMinor</code></p>
+<h3 id="example-how-to-override-configuration-option-update-build-number">Example: How to override configuration option 'update-build-number'</h3>
+<p><code>GitVersion.exe /output json /overrideconfig update-build-number=true</code></p>
+<h3 id="example-how-to-override-configuration-option-next-version">Example: How to override configuration option 'next-version'</h3>
+<p><code>GitVersion.exe /output json /overrideconfig next-version=6</code></p>
 
 	</section>
                 
