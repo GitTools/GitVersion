@@ -18,6 +18,12 @@ dotnet tool install --global GitVersion.Tool
 
 This should work on all operating systems supported by .NET Core.
 
+To run call
+
+```shell
+dotnet-gitversion
+```
+
 ### Homebrew
 
 To install the [`gitversion`][brew] formula with [Homebrew](https://brew.sh/),
