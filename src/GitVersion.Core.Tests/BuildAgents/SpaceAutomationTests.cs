@@ -13,7 +13,6 @@ namespace GitVersionCore.Tests.BuildAgents
     {
         private IEnvironment environment;
         private SpaceAutomation buildServer;
-        private string setEnvironmentTempFilePath;
 
         [SetUp]
         public void SetUp()
@@ -25,19 +24,12 @@ namespace GitVersionCore.Tests.BuildAgents
             environment = sp.GetService<IEnvironment>();
             buildServer = sp.GetService<SpaceAutomation>();
             environment.SetEnvironmentVariable(SpaceAutomation.EnvironmentVariableName, "true");
-
-            setEnvironmentTempFilePath = Path.GetTempFileName();
         }
 
         [TearDown]
         public void TearDown()
         {
             environment.SetEnvironmentVariable(SpaceAutomation.EnvironmentVariableName, null);
-            if (setEnvironmentTempFilePath != null && File.Exists(setEnvironmentTempFilePath))
-            {
-                File.Delete(setEnvironmentTempFilePath);
-                setEnvironmentTempFilePath = null;
-            }
         }
 
         [Test]
