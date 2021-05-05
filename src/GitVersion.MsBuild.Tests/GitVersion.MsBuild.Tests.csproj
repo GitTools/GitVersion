@@ -7,7 +7,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Buildalyzer" Version="3.2.0" />
+        <PackageReference Include="Buildalyzer" Version="3.2.1" />
         <PackageReference Include="LibGit2Sharp" Version="$(PackageVersion_LibGit2Sharp)" />
         <PackageReference Include="Microsoft.Build" Version="$(PackageVersion_MsBuild)" />
         <PackageReference Include="MSBuild.ProjectCreation" Version="3.0.5" />
