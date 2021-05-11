@@ -29,7 +29,7 @@ public class BuildPackages
     {
         return package => new BuildPackage(
             id: package,
-            nuspecPath: string.Concat("./nuspec/", package, ".nuspec"),
+            nuspecPath: string.Concat("./build/nuspec/", package, ".nuspec"),
             packagePath: nugetRooPath.CombineWithFilePath(string.Concat(package, ".", version, ".nupkg")),
             isChocolateyPackage: isChocolateyPackage);
     }
@@ -100,65 +100,47 @@ public class DockerImages
 
     public static DockerImages GetDockerImages(ICakeContext context, BuildParameters parameters)
     {
-        var dockerJson = context.ParseJsonFromFile("./src/Docker/docker.json");
+        var versions =  new[] { "3.1", "5.0" };
+        var distros  = parameters.DockerDistros;
 
-        var dockerImages = new List<DockerImage>();
-        foreach (var osItem in dockerJson.Properties())
-        {
-            foreach (var targetFramework in ((JObject)osItem.Value).Properties())
-            {
-                foreach (var distro in ((JArray)targetFramework.Value))
-                {
-                    dockerImages.Add(new DockerImage(os: osItem.Name, distro: distro.ToString(), targetFramework: $"netcoreapp{targetFramework.Name}"));
-                }
-            }
-        }
+        var dockerImages =
+            (from version in versions
+            from distro in distros
+            select new DockerImage(distro: distro.ToString(), targetFramework: $"{version}")).ToList();
 
         if (!string.IsNullOrEmpty(parameters.DockerDistro)) {
             dockerImages = dockerImages.Where(x => x.Distro == parameters.DockerDistro).ToList();
         }
 
         if (!string.IsNullOrEmpty(parameters.DockerDotnetVersion)) {
-            dockerImages = dockerImages.Where(x => x.TargetFramework == $"netcoreapp{parameters.DockerDotnetVersion}").ToList();
+            dockerImages = dockerImages.Where(x => x.TargetFramework == $"{parameters.DockerDotnetVersion}").ToList();
         }
 
-        var windowsImages = dockerImages.Where(x => x.OS == "windows").ToArray();
-        var linuxImages = dockerImages.Where(x => x.OS == "linux").ToArray();
-
-        var images = parameters.IsDockerForWindows
-            ? windowsImages
-            : parameters.IsDockerForLinux
-                ? linuxImages
-                : Array.Empty<DockerImage>();
-
         return new DockerImages {
-            Images = images
+            Images = dockerImages
         };
     }
 }
 
 public class DockerImage
 {
-    public string OS { get; private set; }
     public string Distro { get; private set; }
     public string TargetFramework { get; private set; }
 
-    public DockerImage(string os, string distro, string targetFramework)
+    public DockerImage(string distro, string targetFramework)
     {
-        OS = os;
         Distro = distro;
         TargetFramework = targetFramework;
     }
 
-    public void Deconstruct(out string os, out string distro, out string targetFramework)
+    public void Deconstruct(out string distro, out string targetFramework)
     {
-        os = OS;
         distro = Distro;
         targetFramework = TargetFramework;
     }
 
     public override string ToString()
     {
-        return $"OS: {OS}, Distro: {Distro}, TargetFramework: {TargetFramework}";
+        return $"Distro: {Distro}, TargetFramework: {TargetFramework}";
     }
 }

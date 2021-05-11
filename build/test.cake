@@ -5,7 +5,7 @@ Task("UnitTest")
     .IsDependentOn("Build")
     .Does<BuildParameters>((parameters) =>
 {
-    var frameworks = new[] { parameters.CoreFxVersion31, parameters.FullFxVersion48 };
+    var frameworks = new[] { parameters.CoreFxVersion31, parameters.FullFxVersion48, parameters.NetVersion50 };
     var testResultsPath = parameters.Paths.Directories.TestResultsOutput;
 
     foreach(var framework in frameworks)
@@ -28,7 +28,7 @@ Task("UnitTest")
                 if (!parameters.IsRunningOnMacOS) {
                     settings.TestAdapterPath = new DirectoryPath(".");
                     var resultsPath = MakeAbsolute(testResultsPath.CombineWithFilePath($"{projectName}.results.xml"));
-                    settings.Logger = $"nunit;LogFilePath={resultsPath}";
+                    settings.Loggers = new[] { $"nunit;LogFilePath={resultsPath}" };
                 }
 
                 var coverletSettings = new CoverletSettings {
@@ -36,10 +36,10 @@ Task("UnitTest")
                     CoverletOutputFormat = CoverletOutputFormat.cobertura,
                     CoverletOutputDirectory = testResultsPath,
                     CoverletOutputName = $"{projectName}.coverage.xml",
-                    Exclude = new List<string> { "[GitVersion*.Tests]*", "[GitVersionTask.MsBuild]*" }
+                    Exclude = new List<string> { "[GitVersion*.Tests]*" }
                 };
 
-                if (string.Equals(framework, parameters.FullFxVersion48)) 
+                if (string.Equals(framework, parameters.FullFxVersion48))
                 {
                     if (IsRunningOnUnix()) {
                         settings.Filter = "TestCategory!=NoMono";
@@ -47,7 +47,7 @@ Task("UnitTest")
                         settings.Filter = "TestCategory!=NoNet48";
                     }
                 }
-                
+
                 DotNetCoreTest(project.FullPath, settings, coverletSettings);
             });
         }

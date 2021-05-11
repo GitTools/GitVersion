@@ -4,19 +4,6 @@ Task("Pack-Prepare")
 {
     PackPrepareNative(Context, parameters);
 
-    var frameworks = new[] { parameters.CoreFxVersion21, parameters.FullFxVersion48 };
-
-    // MsBuild Task
-    foreach(var framework in frameworks)
-    {
-        DotNetCorePublish("./src/GitVersionTask/GitVersionTask.csproj", new DotNetCorePublishSettings
-        {
-            Framework = framework,
-            Configuration = parameters.Configuration,
-            MSBuildSettings = parameters.MSBuildSettings
-        });
-    }
-
     var sourceDir = parameters.Paths.Directories.Native.Combine(PlatformFamily.Windows.ToString()).Combine("win-x64");
     var sourceFiles = GetFiles(sourceDir + "/*.*");
 
@@ -29,7 +16,7 @@ Task("Pack-Prepare")
 
     CopyFiles(sourceFiles, cmdlineDir);
 
-    sourceFiles += GetFiles("./nuspec/*.ps1") + GetFiles("./nuspec/*.txt");
+    sourceFiles += GetFiles("./build/nuspec/*.ps1") + GetFiles("./build/nuspec/*.txt");
     CopyFiles(sourceFiles, portableDir);
 });
 
@@ -71,14 +58,15 @@ Task("Pack-Nuget")
         MSBuildSettings = parameters.MSBuildSettings
     };
 
-    // GitVersionTask, global tool & core
+    // GitVersion.MsBuild, global tool & core
     settings.ArgumentCustomization = arg => arg.Append("/p:PackAsTool=true");
-    DotNetCorePack("./src/GitVersionExe/GitVersionExe.csproj", settings);
+    DotNetCorePack("./src/GitVersion.App/GitVersion.App.csproj", settings);
+
+    settings.ArgumentCustomization = arg => arg.Append("/p:IsPackaging=true");
+    DotNetCorePack("./src/GitVersion.MsBuild", settings);
 
     settings.ArgumentCustomization = null;
-    DotNetCorePack("./src/GitVersionTask", settings);
-
-    DotNetCorePack("./src/GitVersionCore", settings);
+    DotNetCorePack("./src/GitVersion.Core", settings);
 });
 
 Task("Pack-Chocolatey")
@@ -118,9 +106,11 @@ Task("Zip-Files")
         var sourceDir = parameters.Paths.Directories.Native.Combine(platform.ToString().ToLower()).Combine(runtime);
         var targetDir = parameters.Paths.Directories.ArtifactsRoot.Combine("native");
         EnsureDirectoryExists(targetDir);
+
         var fileName = $"gitversion-{runtime}-{parameters.Version.SemVersion}.tar.gz".ToLower();
         var tarFile = targetDir.CombineWithFilePath(fileName);
-        GZipCompress(sourceDir, tarFile);
+        var filePaths = GetFiles($"{sourceDir}/**/*");
+        GZipCompress(sourceDir, tarFile, filePaths);
     }
 });
 
@@ -134,7 +124,7 @@ void PackPrepareNative(ICakeContext context, BuildParameters parameters)
     {
         var outputPath = PackPrepareNative(context, parameters, runtime);
 
-        // testing windows and macos artifacts, ther linux is tested with docker
+        // testing windows and macos artifacts, the linux is tested with docker
         if (platform != PlatformFamily.Linux)
         {
             context.Information("Validating native lib:");
@@ -151,7 +141,7 @@ DirectoryPath PackPrepareNative(ICakeContext context, BuildParameters parameters
 
     var settings = new DotNetCorePublishSettings
     {
-        Framework = parameters.CoreFxVersion31,
+        Framework = parameters.NetVersion50,
         Runtime = runtime,
         NoRestore = false,
         Configuration = parameters.Configuration,
@@ -161,11 +151,9 @@ DirectoryPath PackPrepareNative(ICakeContext context, BuildParameters parameters
 
     settings.ArgumentCustomization =
         arg => arg
-        .Append("/p:PublishSingleFile=true")
-        .Append("/p:PublishTrimmed=true")
-        .Append("/p:IncludeSymbolsInSingleFile=true");
+        .Append("/p:PublishSingleFile=true");
 
-    context.DotNetCorePublish("./src/GitVersionExe/GitVersionExe.csproj", settings);
+    context.DotNetCorePublish("./src/GitVersion.App/GitVersion.App.csproj", settings);
 
     return outputPath;
 }

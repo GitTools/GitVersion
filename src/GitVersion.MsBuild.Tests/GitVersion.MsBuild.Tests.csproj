@@ -1,0 +1,34 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFrameworks>net48;netcoreapp3.1;net5.0</TargetFrameworks>
+
+        <IsTestProject>true</IsTestProject>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Buildalyzer" Version="3.2.0" />
+        <PackageReference Include="LibGit2Sharp" Version="$(PackageVersion_LibGit2Sharp)" />
+        <PackageReference Include="Microsoft.Build" Version="$(PackageVersion_MsBuild)" />
+        <PackageReference Include="MSBuild.ProjectCreation" Version="3.0.5" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\GitVersion.LibGit2Sharp\GitVersion.LibGit2Sharp.csproj" />
+        <ProjectReference Include="..\GitVersion.MsBuild\GitVersion.MsBuild.csproj" />
+        <ProjectReference Include="..\GitVersion.Core\GitVersion.Core.csproj" />
+    </ItemGroup>
+    <ItemGroup>
+        <Compile Include="..\GitVersion.Core.Tests\Helpers\DirectoryHelper.cs" Link="Helpers\DirectoryHelper.cs" />
+        <Compile Include="..\GitVersion.Core.Tests\Helpers\GitVersionCoreTestModule.cs" Link="Helpers\GitVersionCoreTestModule.cs" />
+        <Compile Include="..\GitVersion.Core.Tests\Helpers\RuntimeHelper.cs" Link="Helpers\RuntimeHelper.cs" />
+        <Compile Include="..\GitVersion.Core.Tests\Helpers\PathHelper.cs" Link="Helpers\PathHelper.cs" />
+        <Compile Include="..\GitVersion.Core.Tests\Helpers\TestBase.cs" Link="Helpers\TestBase.cs" />
+        <Compile Include="..\GitVersion.Core.Tests\Helpers\TestEffectiveConfiguration.cs" Link="Helpers\TestEffectiveConfiguration.cs" />
+        <Compile Include="..\GitVersion.Core.Tests\Helpers\TestEnvironment.cs" Link="Helpers\TestEnvironment.cs" />
+        <Compile Include="..\GitVersion.Core.Tests\Helpers\TestFileSystem.cs" Link="Helpers\TestFileSystem.cs" />
+        <Compile Include="..\GitVersion.Core.Tests\Helpers\TestLogAppender.cs" Link="Helpers\TestLogAppender.cs" />
+        <Compile Include="..\GitVersion.Core.Tests\Helpers\TestStream.cs" Link="Helpers\TestStream.cs" />
+        <Compile Include="..\GitVersion.Core.Tests\Extensions\GitToolsTestingExtensions.cs" Link="Extensions\GitToolsTestingExtensions.cs" />
+    </ItemGroup>
+</Project>

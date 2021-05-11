@@ -3,13 +3,19 @@ name: Validate Commit
 on:
   push:
     branches:
-    - master
+    - main
     - 'fix/*'
     - 'feature/*'
+    paths:
+    - '**'
+    - '!docs/**'
 
   pull_request:
     branches:
-    - master
+    - main
+    paths:
+    - '**'
+    - '!docs/**'
 
 jobs:
   format:

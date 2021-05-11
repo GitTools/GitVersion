@@ -1,62 +1,67 @@
 <Project>
     <PropertyGroup>
-        <BaseIntermediateOutputPath>$(MSBuildThisFileDirectory)obj\$(MSBuildProjectName)\</BaseIntermediateOutputPath>
-
+        <EndYear>$([System.DateTime]::Today.Year)</EndYear>
         <Authors>GitTools and Contributors</Authors>
+        <Copyright>Copyright GitTools $(EndYear).</Copyright>
+        <Company>$(Authors)</Company>
+
         <PackageProjectUrl>https://github.com/GitTools/GitVersion</PackageProjectUrl>
         <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
         <PackageTags>Git;Versioning;GitVersion;GitFlowVersion;GitFlow;GitHubFlow;SemVer</PackageTags>
-        <Copyright>Copyright GitTools 2020.</Copyright>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <PackageIcon>package_icon.png</PackageIcon>
         <PackageReleaseNotes>https://github.com/GitTools/GitVersion/releases</PackageReleaseNotes>
+
         <RepositoryUrl>https://github.com/GitTools/GitVersion</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
-        <PackageReleaseNotes>https://github.com/GitTools/GitVersion/releases</PackageReleaseNotes>
-        <Company>$(Authors)</Company>
 
-        <LangVersion>8.0</LangVersion>
+        <NoWarn>1591</NoWarn>
+        <DebugType>embedded</DebugType>
+        <LangVersion>9.0</LangVersion>
 
     </PropertyGroup>
     <PropertyGroup>
-        <PackageVersion_LibGit2Sharp>0.27.0-preview-0034</PackageVersion_LibGit2Sharp>
-        <PackageVersion_LibGit2Sharp_NativeBinaries>2.0.298</PackageVersion_LibGit2Sharp_NativeBinaries>
+        <PackageVersion_LibGit2Sharp>0.27.0-preview-0096</PackageVersion_LibGit2Sharp>
+        <PackageVersion_LibGit2Sharp_NativeBinaries>2.0.312</PackageVersion_LibGit2Sharp_NativeBinaries>
 
-        <PackageVersion_JetBrainsAnnotations>2020.1.0</PackageVersion_JetBrainsAnnotations>
-        <PackageVersion_YamlDotNet>8.1.2</PackageVersion_YamlDotNet>
-        <PackageVersion_NewtonsoftJson>12.0.3</PackageVersion_NewtonsoftJson>
-        <PackageVersion_MicrosoftExtensions>3.0.0</PackageVersion_MicrosoftExtensions>
-        <PackageVersion_MsBuild>16.7.0</PackageVersion_MsBuild>
+        <PackageVersion_JetBrainsAnnotations>2021.1.0</PackageVersion_JetBrainsAnnotations>
+        <PackageVersion_YamlDotNet>11.1.1</PackageVersion_YamlDotNet>
+        <PackageVersion_MicrosoftExtensions>5.0.0</PackageVersion_MicrosoftExtensions>
+        <PackageVersion_MicrosoftJson>5.0.0</PackageVersion_MicrosoftJson>
+        <PackageVersion_MicrosoftTextEncoding>5.0.0</PackageVersion_MicrosoftTextEncoding>
+        <PackageVersion_MsBuild>16.9.0</PackageVersion_MsBuild>
 
-        <PackageVersion_MicrosoftTestSdk>16.8.0</PackageVersion_MicrosoftTestSdk>
+        <PackageVersion_MicrosoftTestSdk>16.9.4</PackageVersion_MicrosoftTestSdk>
         <PackageVersion_NSubstitute>4.2.2</PackageVersion_NSubstitute>
-        <PackageVersion_CoverletMsBuild>2.9.0</PackageVersion_CoverletMsBuild>
-        <PackageVersion_NUnit>3.12.0</PackageVersion_NUnit>
-        <PackageVersion_GitToolsTesting>1.2.0</PackageVersion_GitToolsTesting>
+        <PackageVersion_CoverletMsBuild>3.0.3</PackageVersion_CoverletMsBuild>
+        <PackageVersion_NUnit>3.13.2</PackageVersion_NUnit>
         <PackageVersion_NUnit3TestAdapter>3.17.0</PackageVersion_NUnit3TestAdapter>
-        <PackageVersion_NunitXmlTestLogger>2.1.80</PackageVersion_NunitXmlTestLogger>
-        <PackageVersion_Shouldly>4.0.0</PackageVersion_Shouldly>
+        <PackageVersion_NunitXmlTestLogger>3.0.97</PackageVersion_NunitXmlTestLogger>
+        <PackageVersion_Shouldly>4.0.3</PackageVersion_Shouldly>
 
     </PropertyGroup>
 
     <ItemGroup Condition=" '$(IsTestProject)' == 'true' ">
         <PackageReference Include="Microsoft.NET.Test.Sdk" Version="$(PackageVersion_MicrosoftTestSdk)" />
         <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="$(PackageVersion_MicrosoftExtensions)" />
+        <PackageReference Include="System.Text.Json" Version="$(PackageVersion_MicrosoftJson)" />
+        <PackageReference Include="System.Text.Encodings.Web" Version="$(PackageVersion_MicrosoftTextEncoding)" />
 
         <PackageReference Include="JetBrains.Annotations" Version="$(PackageVersion_JetBrainsAnnotations)" />
-        <PackageReference Include="Newtonsoft.Json" Version="$(PackageVersion_NewtonsoftJson)" />
         <PackageReference Include="NSubstitute" Version="$(PackageVersion_NSubstitute)" />
 
         <PackageReference Include="NUnit" Version="$(PackageVersion_NUnit)" />
         <PackageReference Include="NUnit3TestAdapter" Version="$(PackageVersion_NUnit3TestAdapter)" />
         <PackageReference Include="NunitXml.TestLogger" Version="$(PackageVersion_NunitXmlTestLogger)" />
         <PackageReference Include="Shouldly" Version="$(PackageVersion_Shouldly)" />
-        <PackageReference Include="GitTools.Testing" Version="$(PackageVersion_GitToolsTesting)" />
 
         <PackageReference Include="coverlet.msbuild" Version="$(PackageVersion_CoverletMsBuild)">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
         </PackageReference>
+
+        <ProjectReference Include="..\GitTools.Testing\GitTools.Testing.csproj" />
+
     </ItemGroup>
 
     <ItemGroup>
@@ -67,6 +72,6 @@
     </ItemGroup>
 
     <ItemGroup Condition=" '$(TargetFramework)' == 'net48' ">
-        <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.0" PrivateAssets="All" />
+        <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.1" PrivateAssets="All" />
     </ItemGroup>
 </Project>

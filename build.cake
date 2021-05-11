@@ -1,30 +1,30 @@
 // Install modules
-#module nuget:?package=Cake.DotNetTool.Module&version=0.4.0
+#module nuget:?package=Cake.DotNetTool.Module&version=1.1.0
 
 // Install addins.
-#addin "nuget:?package=Cake.Codecov&version=0.9.1"
-#addin "nuget:?package=Cake.Compression&version=0.2.4"
-#addin "nuget:?package=Cake.Coverlet&version=2.5.1"
-#addin "nuget:?package=Cake.Docker&version=0.11.1"
-#addin "nuget:?package=Cake.Git&version=0.22.0"
-#addin "nuget:?package=Cake.Gitter&version=0.11.1"
-#addin "nuget:?package=Cake.Incubator&version=5.1.0"
-#addin "nuget:?package=Cake.Json&version=5.2.0"
-#addin "nuget:?package=Cake.Kudu&version=0.11.0"
-#addin "nuget:?package=Cake.Wyam&version=2.2.9"
+#addin "nuget:?package=Cake.Codecov&version=1.0.0"
+#addin "nuget:?package=Cake.Compression&version=0.2.6"
+#addin "nuget:?package=Cake.Coverlet&version=2.5.4"
+#addin "nuget:?package=Cake.Docker&version=1.0.0"
+#addin "nuget:?package=Cake.Git&version=1.0.1"
+#addin "nuget:?package=Cake.Gitter&version=1.0.2"
+#addin "nuget:?package=Cake.Incubator&version=6.0.0"
+#addin "nuget:?package=Cake.Json&version=6.0.1"
+#addin "nuget:?package=Cake.Kudu&version=1.0.1"
+#addin "nuget:?package=Cake.Wyam&version=2.2.10"
 
 #addin "nuget:?package=Newtonsoft.Json&version=12.0.3"
-#addin "nuget:?package=SharpZipLib&version=1.3.0"
+#addin "nuget:?package=SharpZipLib&version=1.3.1"
 #addin "nuget:?package=xunit.assert&version=2.4.1"
 
 // Install tools.
-#tool "nuget:?package=NUnit.ConsoleRunner&version=3.11.1"
-#tool "nuget:?package=nuget.commandline&version=5.7.0"
+#tool "nuget:?package=NUnit.ConsoleRunner&version=3.12.0"
+#tool "nuget:?package=nuget.commandline&version=5.8.1"
 #tool "nuget:?package=KuduSync.NET&version=1.5.3"
 
 // Install .NET Core Global tools.
-#tool "dotnet:?package=Codecov.Tool&version=1.12.3"
-#tool "dotnet:?package=dotnet-format&version=4.1.131201"
+#tool "dotnet:?package=Codecov.Tool&version=1.13.0"
+#tool "dotnet:?package=dotnet-format&version=5.0.211103"
 #tool "dotnet:?package=GitReleaseManager.Tool&version=0.11.0"
 #tool "dotnet:?package=Wyam.Tool&version=2.2.9"
 
@@ -54,64 +54,83 @@ bool singleStageRun = true;
 
 Setup<BuildParameters>(context =>
 {
-    try
+    return LogGroup<BuildParameters>("Cake Setup", () =>
     {
-        EnsureDirectoryExists("artifacts");
-        var parameters = BuildParameters.GetParameters(context);
-        var gitVersion = GetVersion(parameters);
-        parameters.Initialize(context, gitVersion);
+        try
+        {
+            EnsureDirectoryExists("artifacts");
+            var parameters = BuildParameters.GetParameters(context);
+            var gitVersion = GetVersion(parameters);
+            parameters.Initialize(context, gitVersion);
 
-        // Increase verbosity?
-        if (parameters.IsMainBranch && (context.Log.Verbosity != Verbosity.Diagnostic)) {
-            Information("Increasing verbosity to diagnostic.");
-            context.Log.Verbosity = Verbosity.Diagnostic;
+            // Increase verbosity?
+            if (parameters.IsMainBranch && (context.Log.Verbosity != Verbosity.Diagnostic)) {
+                Information("Increasing verbosity to diagnostic.");
+                context.Log.Verbosity = Verbosity.Diagnostic;
+            }
+
+            if (parameters.IsLocalBuild)             Information("Building locally");
+            if (parameters.IsRunningOnAppVeyor)      Information("Building on AppVeyor");
+            if (parameters.IsRunningOnTravis)        Information("Building on Travis");
+            if (parameters.IsRunningOnAzurePipeline) Information("Building on AzurePipeline");
+            if (parameters.IsRunningOnGitHubActions) Information("Building on GitHubActions");
+
+            Information("Building version {0} of GitVersion ({1}, {2})",
+                parameters.Version.SemVersion,
+                parameters.Configuration,
+                parameters.Target);
+
+            Information("Repository info : IsMainRepo {0}, IsMainBranch {1}, IsTagged: {2}, IsPullRequest: {3}",
+                parameters.IsMainRepo,
+                parameters.IsMainBranch,
+                parameters.IsTagged,
+                parameters.IsPullRequest);
+
+            return parameters;
         }
-
-        if (parameters.IsLocalBuild)             Information("Building locally");
-        if (parameters.IsRunningOnAppVeyor)      Information("Building on AppVeyor");
-        if (parameters.IsRunningOnTravis)        Information("Building on Travis");
-        if (parameters.IsRunningOnAzurePipeline) Information("Building on AzurePipeline");
-        if (parameters.IsRunningOnGitHubActions) Information("Building on GitHubActions");
-
-        Information("Building version {0} of GitVersion ({1}, {2})",
-            parameters.Version.SemVersion,
-            parameters.Configuration,
-            parameters.Target);
-
-        Information("Repository info : IsMainRepo {0}, IsMainBranch {1}, IsTagged: {2}, IsPullRequest: {3}",
-            parameters.IsMainRepo,
-            parameters.IsMainBranch,
-            parameters.IsTagged,
-            parameters.IsPullRequest);
-
-        return parameters;
-    }
-    catch (Exception exception)
-    {
-        Error(exception.Dump());
-        return null;
-    }
+        catch (Exception exception)
+        {
+            Error(exception.Dump());
+            return null;
+        }
+    });
 });
 
 Teardown<BuildParameters>((context, parameters) =>
 {
-    try
+    LogGroup("Cake Teardown", () =>
     {
-        Information("Starting Teardown...");
+        try
+        {
+            Information("Starting Teardown...");
 
-        Information("Repository info : IsMainRepo {0}, IsMainBranch {1}, IsTagged: {2}, IsPullRequest: {3}",
-            parameters.IsMainRepo,
-            parameters.IsMainBranch,
-            parameters.IsTagged,
-            parameters.IsPullRequest);
+            Information("Repository info : IsMainRepo {0}, IsMainBranch {1}, IsTagged: {2}, IsPullRequest: {3}",
+                parameters.IsMainRepo,
+                parameters.IsMainBranch,
+                parameters.IsTagged,
+                parameters.IsPullRequest);
 
-        Information("Finished running tasks.");
-    }
-    catch (Exception exception)
-    {
-        Error(exception.Dump());
-    }
+            Information("Finished running tasks.");
+        }
+        catch (Exception exception)
+        {
+            Error(exception.Dump());
+        }
+    });
 });
+
+TaskSetup(setupContext =>
+{
+    var message = string.Format("Task: {0}", setupContext.Task.Name);
+    StartGroup(message);
+});
+
+TaskTeardown(teardownContext =>
+{
+    var message = string.Format("Task: {0}", teardownContext.Task.Name);
+    EndGroup();
+});
+
 
 //////////////////////////////////////////////////////////////////////
 // TASKS
@@ -220,7 +239,7 @@ Task("Format")
     .Does<BuildParameters>((parameters) =>
 {
     var dotnetFormatExe = Context.Tools.Resolve("dotnet-format.exe");
-    var args = $"--folder {parameters.Paths.Directories.Root}";
+    var args = $"{parameters.Paths.Directories.Root} --folder --exclude **/AddFormats/";
     Context.ExecuteCommand(dotnetFormatExe, args);
 });
 

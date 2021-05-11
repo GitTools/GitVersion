@@ -1,0 +1,37 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>netstandard2.0</TargetFramework>
+        <RootNamespace>GitVersion</RootNamespace>
+        <DocumentationFile>bin\$(Configuration)\GitVersionCore.xml</DocumentationFile>
+
+        <PackageId>GitVersion.Core</PackageId>
+        <Title>GitVersion</Title>
+        <Description>Derives SemVer information from a repository following GitFlow or GitHubFlow. This is the Core library which both GitVersion cli and Task use allowing programatic usage of GitVersion.</Description>
+
+        <Product>$(AssemblyName)</Product>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Polly" Version="7.2.2" />
+        <PackageReference Include="System.Net.Requests" Version="4.3.0" />
+
+        <PackageReference Include="JetBrains.Annotations" Version="$(PackageVersion_JetBrainsAnnotations)" PrivateAssets="All" />
+        <PackageReference Include="System.Text.Json" Version="$(PackageVersion_MicrosoftJson)" />
+        <PackageReference Include="System.Text.Encodings.Web" Version="$(PackageVersion_MicrosoftJson)" />
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="$(PackageVersion_MicrosoftExtensions)" />
+        <PackageReference Include="Microsoft.Extensions.Options" Version="$(PackageVersion_MicrosoftExtensions)" />
+        <PackageReference Include="YamlDotNet" Version="$(PackageVersion_YamlDotNet)" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <Compile Remove="VersionConverters\*\AddFormats\**\*.*" />
+        <Compile Remove="VersionConverters\*\Templates\**\*.*" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <EmbeddedResource Include="VersionConverters\*\AddFormats\**\*.*" />
+        <EmbeddedResource Include="VersionConverters\*\Templates\**\*.*" />
+    </ItemGroup>
+
+</Project>

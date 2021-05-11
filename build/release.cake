@@ -21,7 +21,7 @@ Task("Release-Notes")
         Milestone         = parameters.Version.Milestone,
         Name              = parameters.Version.Milestone,
         Prerelease        = false,
-        TargetCommitish   = "master"
+        TargetCommitish   = "main"
     });
 
     GitReleaseManagerAddAssets(token, repoOwner, repository, parameters.Version.Milestone, assets);

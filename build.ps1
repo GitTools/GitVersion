@@ -47,7 +47,7 @@ Param(
     [string]$DockerDotnetVersion = "",
     [switch]$SkipUnitTest,
     [ValidateSet("Quiet", "Minimal", "Normal", "Verbose", "Diagnostic")]
-    [string]$Verbosity = "Verbose",
+    [string]$Verbosity = "Normal",
     [Alias("DryRun","Noop")]
     [switch]$WhatIf,
     [switch]$Exclusive,
@@ -168,8 +168,10 @@ Remove-PathVariable "$InstallPath"
 Add-PathVariable "$InstallPath"
 $env:DOTNET_ROOT=$InstallPath
 
+$env:DOTNET_ROLL_FORWARD="major"
 $env:DOTNET_SKIP_FIRST_TIME_EXPERIENCE=1
 $env:DOTNET_CLI_TELEMETRY_OPTOUT=1
+$env:DOTNET_NOLOGO=$true
 
 # Install cake local tool
 dotnet tool restore
@@ -197,16 +199,14 @@ $Arguments = @{
     nuget_useinprocessclient=$true;
     docker_distro=$DockerDistro;
     docker_dotnetversion=$DockerDotnetVersion;
-}.GetEnumerator() | ForEach-Object { "--{0}=`"{1}`"" -f $_.key, $_.value };
+}.GetEnumerator() | ForEach-Object {
+    if ($_.value -ne "") { "--{0}=`"{1}`"" -f $_.key, $_.value }
+};
 
 # Start Cake
 Write-Host "Running build script..."
 
-& dotnet cake $Script --bootstrap
-if ($LASTEXITCODE -eq 0)
-{
-    & dotnet cake $Script $Arguments
-}
+& dotnet cake $Script $Arguments
 
 if ($env:APPVEYOR) {
     $host.SetShouldExit($LASTEXITCODE)

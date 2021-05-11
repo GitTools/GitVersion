@@ -5,7 +5,7 @@ We love contributions to get started contributing you might need:
 - [Get started with git](http://rogerdudler.github.io/git-guide)
 - [How to create a pull request](https://help.github.com/articles/using-pull-requests)
 - [An issue to work on](https://github.com/GitTools/GitVersion/labels/up-for-grabs) - We are on [Up for grabs](http://up-for-grabs.net/), our up for grabs issues are tagged `up-for-grabs`
-- An understanding of our [architecture](http://gitversion.readthedocs.org/en/latest/more-info/how-it-works/#architecture) and how [we write tests](#writing-tests)
+- An understanding of our [architecture](http://gitversion.net/docs/learn/how-it-works#architecture) and how [we write tests](#writing-tests)
 
 Once you know how to create a pull request and have an issue to work on, just post a comment saying you will work on it.
 If you end up not being able to complete the task, please post another comment so others can pick it up.
@@ -14,7 +14,7 @@ Issues are also welcome, [failing tests](#writing-tests) are even more welcome.
 
 ## Contribution Guidelines
 
-- Try to use feature branches rather than developing on master.
+- Try to use feature branches rather than developing on main.
 - Please include tests covering the change.
 - The documentation is stored in the repository under the [`docs`](docs) folder.
    Have a look at the [documentation readme file](docs/readme.md) for guidance
@@ -23,13 +23,13 @@ Issues are also welcome, [failing tests](#writing-tests) are even more welcome.
 
 ## How it works
 
-See [how it works](http://gitversion.readthedocs.org/en/latest/more-info/how-it-works/) in GitVersion's documentation
+See [how it works](http://gitversion.net/docs/learn/how-it-works/) in GitVersion's documentation
 
 ## Writing Tests
 
-We have made it super easy to write tests in GitVersion. Most tests you are interested in are in `GitVersionCore.Tests\IntegrationTests`.
+We have made it super easy to write tests in GitVersion. Most tests you are interested in are in `GitVersion.Core.Tests\IntegrationTests`.
 
-There is a scenario class for each type of branch. For example MasterScenarios, FeatureBranchScenarios etc.
+There is a scenario class for each type of branch. For example MainScenarios, FeatureBranchScenarios etc.
 
 ### 1. Find Appropriate Scenario class
 
@@ -87,7 +87,7 @@ We use Cake for our build and deployment process. The way the build / release pr
 
 1) We build releasable artifacts on AppVeyor
 1) Login to AppVeyor
-1) Deploy the latest master build
+1) Deploy the latest main build
 ![docs/input/docs/img/release-1-deploy.png](docs/input/docs/img/release-1-deploy.png)
 1) Choose GitVersion release, when you press deploy it will create a *non-released* GitHub release, this *will not* create a Git tag. This step is so we can validate the release and release notes before pushing the button.
 ![docs/input/docs/img/release-2-deploy.png](docs/input/docs/img/release-2-deploy.png)
@@ -108,4 +108,18 @@ It is a manual release step after the release now, first download the appropriat
 
 ```bash
 docker build . --build-arg GitVersionZip=GitVersion_<VERSION>.zip --tag gittools/gitversion
+```
+## Code Style
+
+In order to apply the code style defined by by the `.editorconfig` file you can use [`dotnet-format`](https://github.com/dotnet/format).
+
+1. Install [`dotnet-format`](https://github.com/dotnet/format) as a global tool:
+
+```shell
+dotnet tool install -g dotnet-format
+```
+
+2. Change to the root folder of the GitVersion repository and use the following command to apply the code style:
+```shell
+dotnet format ./ --folder --exclude **/AddFormats/ --fix-codestyle
 ```

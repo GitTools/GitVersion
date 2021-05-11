@@ -58,7 +58,7 @@ public static bool IsOnMainBranch(this ICakeContext context)
 
     context.Information("Repository Branch: {0}" , repositoryBranch);
 
-    return !string.IsNullOrWhiteSpace(repositoryBranch) && StringComparer.OrdinalIgnoreCase.Equals("master", repositoryBranch);
+    return !string.IsNullOrWhiteSpace(repositoryBranch) && StringComparer.OrdinalIgnoreCase.Equals("main", repositoryBranch);
 }
 
 public static bool IsBuildTagged(this ICakeContext context)
@@ -170,7 +170,7 @@ GitVersionSettings SetGitVersionTool(GitVersionSettings settings, BuildParameter
 
 FilePath GetGitVersionToolLocation(BuildParameters parameters)
 {
-    return GetFiles($"src/GitVersionExe/bin/{parameters.Configuration}/{parameters.CoreFxVersion31}/gitversion.dll").SingleOrDefault();
+    return GetFiles($"src/GitVersion.App/bin/{parameters.Configuration}/{parameters.NetVersion50}/gitversion.dll").SingleOrDefault();
 }
 
 void Build(BuildParameters parameters)
@@ -214,4 +214,41 @@ public static CakeTaskBuilder IsDependentOnWhen(this CakeTaskBuilder builder, st
         builder.IsDependentOn(name);
     }
     return builder;
+}
+
+void LogGroup(string title, Action action)
+{
+    StartGroup(title);
+    action();
+    EndGroup();
+}
+T LogGroup<T>(string title, Func<T> action)
+{
+    StartGroup(title);
+    var result = action();
+    EndGroup();
+
+    return result;
+}
+void StartGroup(string title)
+{
+    var buildSystem = Context.BuildSystem();
+    var startGroup = "[group]";
+    if (buildSystem.IsRunningOnAzurePipelines || buildSystem.IsRunningOnAzurePipelinesHosted) {
+        startGroup = "##[group]";
+    } else if (buildSystem.IsRunningOnGitHubActions) {
+        startGroup = "::group::";
+    }
+    Information($"{startGroup}{title}");
+}
+void EndGroup()
+{
+    var buildSystem = Context.BuildSystem();
+    var endgroup = "[endgroup]";
+    if (buildSystem.IsRunningOnAzurePipelines || buildSystem.IsRunningOnAzurePipelinesHosted) {
+        endgroup = "##[endgroup]";
+    } else if (buildSystem.IsRunningOnGitHubActions) {
+        endgroup = "::endgroup::";
+    }
+    Information($"{endgroup}");
 }

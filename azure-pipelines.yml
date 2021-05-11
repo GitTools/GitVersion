@@ -1,13 +1,13 @@
 trigger:
   branches:
     include:
-    - master
+    - main
     - fix/*
     - feature/*
 pr:
   branches:
     include:
-    - master
+    - main
 
 variables:
   DOTNET_SKIP_FIRST_TIME_EXPERIENCE: 'true'
@@ -48,35 +48,48 @@ stages:
     steps:
     - template: .azurepipelines/test.yml
 
-- stage: Artifact_Test
-  displayName: 'Artifacts test'
+- stage: Artifact_Linux_Test
+  displayName: 'Artifacts Linux test'
   dependsOn:
   - Build
   - Test
   condition: succeeded()
   jobs:
-  - template: .azurepipelines/artifacts-test.yml
+  - template: .azurepipelines/artifacts-linux-test.yml
     parameters:
       name: Linux
       vmImage: 'ubuntu-latest'
-      distros: [ 'alpine.3.10-x64', 'centos.7-x64', 'debian.9-x64', 'fedora.30-x64', 'ubuntu.16.04-x64', 'ubuntu.18.04-x64' ]
-      dotnetVersions: [ '3.1' ]
+      distros: [ alpine.3.12-x64, centos.7-x64, centos.8-x64, debian.9-x64, debian.10-x64, fedora.33-x64, ubuntu.16.04-x64, ubuntu.18.04-x64, ubuntu.20.04-x64 ]
+      dotnetVersions: [ '3.1', '5.0' ]
+
+- stage: Artifact_Windows_Test
+  displayName: 'Artifacts Windows test'
+  dependsOn:
+  - Build
+  - Test
+  condition: succeeded()
+  jobs:
+  - template: .azurepipelines/artifacts-windows-test.yml
 
 - stage: Docker
   displayName: 'Docker Build & Test'
-  dependsOn: Artifact_Test
+  dependsOn:
+  - Artifact_Linux_Test
+  - Artifact_Windows_Test
   condition: succeeded()
   jobs:
   - template: .azurepipelines/docker.yml
     parameters:
       name: Linux
       vmImage: 'ubuntu-latest'
-      distros: [ 'alpine.3.10-x64', 'centos.7-x64', 'debian.9-x64', 'fedora.30-x64', 'ubuntu.16.04-x64', 'ubuntu.18.04-x64' ]
-      dotnetVersions: [ '3.1' ]
+      distros: [ alpine.3.12-x64, centos.7-x64, centos.8-x64, debian.9-x64, debian.10-x64, fedora.33-x64, ubuntu.16.04-x64, ubuntu.18.04-x64, ubuntu.20.04-x64 ]
+      dotnetVersions: [ '3.1', '5.0' ]
 
 - stage: Publish
   displayName: 'Publish'
-  dependsOn: Artifact_Test
+  dependsOn:
+  - Artifact_Linux_Test
+  - Artifact_Windows_Test
   condition: succeeded()
   jobs:
   - job: Publish
@@ -90,8 +103,8 @@ stages:
           TASK_NAME: 'NuGet'
         Chocolatey:
          TASK_NAME: 'Chocolatey'
-        Documentation:
-          TASK_NAME: 'Documentation'
+        # Documentation:
+        #   TASK_NAME: 'Documentation'
     steps:
     - template: .azurepipelines/publish.yml
       parameters:

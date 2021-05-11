@@ -25,7 +25,7 @@ void DockerStdinLogin(string username, string password)
 
 void DockerBuild(DockerImage dockerImage, BuildParameters parameters)
 {
-    var (os, distro, targetframework) = dockerImage;
+    var (distro, targetframework) = dockerImage;
     var workDir = DirectoryPath.FromString($"./src/Docker");
     var tags = GetDockerTags(dockerImage, parameters);
 
@@ -37,8 +37,9 @@ void DockerBuild(DockerImage dockerImage, BuildParameters parameters)
         BuildArg = new []
         {
             $"contentFolder=/content",
-            $"DOTNET_VERSION={targetframework.Replace("netcoreapp", "")}",
-            $"DISTRO={distro}"
+            $"DOTNET_VERSION={targetframework}",
+            $"DISTRO={distro}",
+            $"VERSION={parameters.Version.NugetVersion}"
         },
         // Pull = true,
         // Platform = platform // TODO this one is not supported on docker versions < 18.02
@@ -90,8 +91,8 @@ void DockerTestRun(DockerContainerRunSettings settings, BuildParameters paramete
 void DockerTestArtifact(DockerImage dockerImage, BuildParameters parameters, string cmd)
 {
     var settings = GetDockerRunSettings(parameters);
-    var (os, distro, targetframework) = dockerImage;
-    var tag = $"gittools/build-images:{distro}-sdk-{targetframework.Replace("netcoreapp", "")}";
+    var (distro, targetframework) = dockerImage;
+    var tag = $"gittools/build-images:{distro}-sdk-{targetframework}";
 
     Information("Docker tag: {0}", tag);
     Information("Docker cmd: pwsh {0}", cmd);
@@ -101,8 +102,8 @@ void DockerTestArtifact(DockerImage dockerImage, BuildParameters parameters, str
 
 void DockerPullImage(DockerImage dockerImage, BuildParameters parameters)
 {
-    var (os, distro, targetframework) = dockerImage;
-    var tag = $"gittools/build-images:{distro}-sdk-{targetframework.Replace("netcoreapp", "")}";
+    var (distro, targetframework) = dockerImage;
+    var tag = $"gittools/build-images:{distro}-sdk-{targetframework}";
     DockerPull(tag);
 }
 
@@ -142,33 +143,29 @@ DockerContainerRunSettings GetDockerRunSettings(BuildParameters parameters)
 
 string[] GetDockerTags(DockerImage dockerImage, BuildParameters parameters) {
     var name = $"gittools/gitversion";
-    var (os, distro, targetframework) = dockerImage;
+    var (distro, targetframework) = dockerImage;
 
     var tags = new List<string> {
-        $"{name}:{parameters.Version.Version}-{os}-{distro}-{targetframework}",
-        $"{name}:{parameters.Version.SemVersion}-{os}-{distro}-{targetframework}",
+        $"{name}:{parameters.Version.Version}-{distro}-{targetframework}",
+        $"{name}:{parameters.Version.SemVersion}-{distro}-{targetframework}",
     };
 
-    if (distro == "debian-9" && targetframework == parameters.CoreFxVersion21 || distro == "nanoserver-1809") {
+    if (distro == "debian.10-x64" && targetframework == "5.0") {
         tags.AddRange(new[] {
-            $"{name}:{parameters.Version.Version}-{os}",
-            $"{name}:{parameters.Version.SemVersion}-{os}",
+            $"{name}:{parameters.Version.Version}",
+            $"{name}:{parameters.Version.SemVersion}",
 
-            $"{name}:{parameters.Version.Version}-{targetframework}",
-            $"{name}:{parameters.Version.SemVersion}-{targetframework}",
-
-            $"{name}:{parameters.Version.Version}-{os}-{targetframework}",
-            $"{name}:{parameters.Version.SemVersion}-{os}-{targetframework}",
+            $"{name}:{parameters.Version.Version}-{distro}",
+            $"{name}:{parameters.Version.SemVersion}-{distro}"
         });
 
         if (parameters.IsStableRelease())
         {
             tags.AddRange(new[] {
                 $"{name}:latest",
-                $"{name}:latest-{os}",
                 $"{name}:latest-{targetframework}",
-                $"{name}:latest-{os}-{targetframework}",
-                $"{name}:latest-{os}-{distro}-{targetframework}",
+                $"{name}:latest-{distro}",
+                $"{name}:latest-{distro}-{targetframework}",
             });
         }
     }

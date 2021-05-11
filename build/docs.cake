@@ -8,6 +8,8 @@ Task("Preview-Documentation")
     .WithCriteria(() => DirectoryExists(MakeAbsolute(Directory("docs"))), "Wyam documentation directory is missing")
     .Does<BuildParameters>((parameters) =>
 {
+    var additionalSettings = parameters.WyamAdditionalSettings;
+    additionalSettings.Add("Host",  "gittools.github.io");
     Wyam(new WyamSettings
     {
         Recipe = "Docs",
@@ -17,18 +19,11 @@ Task("Preview-Documentation")
         Preview = true,
         Watch = true,
         ConfigurationFile = MakeAbsolute((FilePath)"config.wyam"),
-        Settings = new Dictionary<string, object>
-        {
-            { "Host",  "gittools.github.io" },
-            { "BaseEditUrl", "https://github.com/gittools/GitVersion/tree/master/docs/input/" },
-            { "SourceFiles", MakeAbsolute(parameters.Paths.Directories.Source) + "/**/{!bin,!obj,!packages,!*.Tests,}/**/*.cs" },
-            { "Title", "GitVersion" },
-            { "IncludeGlobalNamespace", false }
-        }
+        Settings = additionalSettings
     });
 });
 
-Task("Force-Publish-Documentation")
+Task("Build-Documentation")
     .IsDependentOn("Clean-Documentation")
     .WithCriteria(() => DirectoryExists(MakeAbsolute(Directory("docs"))), "Wyam documentation directory is missing")
     .Does<BuildParameters>((parameters) =>
@@ -40,22 +35,20 @@ Task("Force-Publish-Documentation")
         OutputPath = MakeAbsolute(Directory("artifacts/Documentation")),
         RootPath = MakeAbsolute(Directory("docs")),
         ConfigurationFile = MakeAbsolute((FilePath)"config.wyam"),
-        Settings = new Dictionary<string, object>
-        {
-            { "BaseEditUrl", "https://github.com/gittools/GitVersion/tree/master/docs/input/" },
-            { "SourceFiles", MakeAbsolute(parameters.Paths.Directories.Source) + "/**/{!bin,!obj,!packages,!*.Tests,}/**/*.cs" },
-            { "Title", "GitVersion" },
-            { "IncludeGlobalNamespace", false }
-        }
+        Settings = parameters.WyamAdditionalSettings
     });
+});
 
+Task("Force-Publish-Documentation")
+    .IsDependentOn("Build-Documentation")
+    .Does<BuildParameters>((parameters) =>
+{
     PublishDocumentation(parameters);
 });
 
 Task("Publish-Documentation-Internal")
     .IsDependentOn("Clean-Documentation")
     .WithCriteria(() => DirectoryExists(MakeAbsolute(Directory("docs"))), "Wyam documentation directory is missing")
-    .WithCriteria<BuildParameters>((context, parameters) => parameters.IsRunningOnWindows, "Publish-Documentation is ran only on Windows agents.")
     .WithCriteria<BuildParameters>((context, parameters) => parameters.IsReleasingCI,      "Publish-Documentation is ran only on Releasing CI.")
     .WithCriteria<BuildParameters>((context, parameters) => parameters.IsStableRelease() || parameters.IsPreRelease(), "Publish-Documentation works only for non-PR commits.")
     .Does<BuildParameters>((parameters) =>
@@ -77,8 +70,8 @@ Task("Publish-Documentation-Internal")
             file.Path.Contains(string.Format("{0}{1}", wyamDocsFolderDirectoryName, forwardSlash)) ||
             file.Path.Contains("config.wyam"))
         {
-        docFileChanged = true;
-        break;
+            docFileChanged = true;
+            break;
         }
     }
 
@@ -93,13 +86,7 @@ Task("Publish-Documentation-Internal")
             OutputPath = MakeAbsolute(Directory("artifacts/Documentation")),
             RootPath = MakeAbsolute(Directory("docs")),
             ConfigurationFile = MakeAbsolute((FilePath)"config.wyam"),
-            Settings = new Dictionary<string, object>
-            {
-                { "BaseEditUrl", "https://github.com/gittools/GitVersion/tree/master/docs/input/" },
-                { "SourceFiles", MakeAbsolute(parameters.Paths.Directories.Source) + "/**/{!bin,!obj,!packages,!*.Tests,}/**/*.cs" },
-                { "Title", "GitVersion" },
-                { "IncludeGlobalNamespace", false }
-            }
+            Settings = parameters.WyamAdditionalSettings
         });
 
         PublishDocumentation(parameters);
@@ -127,7 +114,7 @@ public void PublishDocumentation(BuildParameters parameters)
 
     Information("Sync output files...");
     Kudu.Sync(MakeAbsolute(Directory("artifacts/Documentation")), publishFolder, new KuduSyncSettings {
-        ArgumentCustomization = args=>args.Append("--ignore").AppendQuoted(".git;CNAME")
+        ArgumentCustomization = args=>args.Append("--ignore").AppendQuoted(".git;CNAME;_git2")
     });
 
     if (GitHasUncommitedChanges(publishFolder))
@@ -146,7 +133,7 @@ public void PublishDocumentation(BuildParameters parameters)
             );
 
             Information("Pushing all changes...");
-            GitPush(publishFolder, parameters.Credentials.GitHub.Token, "x-oauth-basic", "gh-pages");
+            GitPush(publishFolder, parameters.Credentials.GitHub.UserName, parameters.Credentials.GitHub.Token, "gh-pages");
         }
     }
 }

@@ -10,12 +10,13 @@ public class BuildParameters
 
     public const string MainRepoOwner = "gittools";
     public const string MainRepoName = "GitVersion";
-    public string CoreFxVersion21 { get; private set; }  = "netcoreapp2.1";
     public string CoreFxVersion31 { get; private set; }  = "netcoreapp3.1";
+    public string NetVersion50 { get; private set; }  = "net5.0";
     public string FullFxVersion48 { get; private set; }  = "net48";
 
     public string DockerDistro { get; private set; }
     public string DockerDotnetVersion { get; private set; }
+    public string[] DockerDistros = new[] { "alpine.3.12-x64", "centos.7-x64", "debian.9-x64", "debian.10-x64", "fedora.33-x64", "ubuntu.16.04-x64", "ubuntu.18.04-x64", "ubuntu.20.04-x64" };
 
     public bool EnabledUnitTests { get; private set; }
     public bool EnabledPublishNuget { get; private set; }
@@ -55,6 +56,7 @@ public class BuildParameters
     public DockerImages Docker { get; private set; }
     public Dictionary<string, DirectoryPath> PackagesBuildMap { get; private set; }
     public Dictionary<PlatformFamily, string[]> NativeRuntimes { get; private set; }
+    public Dictionary<string, object> WyamAdditionalSettings { get; private set; }
 
     public bool IsStableRelease() => !IsLocalBuild && IsMainRepo && IsMainBranch && !IsPullRequest && IsTagged;
     public bool IsPreRelease()    => !IsLocalBuild && IsMainRepo && IsMainBranch && !IsPullRequest && !IsTagged;
@@ -124,7 +126,7 @@ public class BuildParameters
         Packages = BuildPackages.GetPackages(
             Paths.Directories.NugetRoot,
             Version,
-            new [] { "GitVersion.CommandLine", "GitVersion.Core", "GitVersionTask", "GitVersion.Tool" },
+            new [] { "GitVersion.CommandLine", "GitVersion.Core", "GitVersion.MsBuild", "GitVersion.Tool" },
             new [] { "GitVersion.Portable" });
 
 
@@ -141,8 +143,16 @@ public class BuildParameters
         NativeRuntimes = new Dictionary<PlatformFamily, string[]>
         {
             [PlatformFamily.Windows] = new[] { "win-x64", "win-x86" },
-            [PlatformFamily.Linux]   = new[] { "alpine.3.10-x64", "debian.9-x64", "centos.7-x64", "fedora.30-x64", "ubuntu.16.04-x64", "ubuntu.18.04-x64" },
+            [PlatformFamily.Linux]   = new[] { "linux-x64", "linux-musl-x64" },
             [PlatformFamily.OSX]     = new[] { "osx-x64" },
+        };
+
+        WyamAdditionalSettings = new Dictionary<string, object>
+        {
+            { "BaseEditUrl", "https://github.com/gittools/GitVersion/tree/main/docs/input/" },
+            { "SourceFiles", context.MakeAbsolute(Paths.Directories.Source) + "/**/{!bin,!obj,!packages,!*.Tests,!GitTools.*,}/**/*.cs" },
+            { "Title", "GitVersion" },
+            { "IncludeGlobalNamespace", false }
         };
 
         Credentials = BuildCredentials.GetCredentials(context);
