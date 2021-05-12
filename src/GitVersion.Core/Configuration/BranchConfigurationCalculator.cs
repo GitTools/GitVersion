@@ -244,23 +244,21 @@ namespace GitVersion.Configuration
             return mainOrDevelopConfig;
         }
 
-        private class LocalRemoteBranchEqualityComparer : IEqualityComparer<Branch>
+        private class LocalRemoteBranchEqualityComparer : IEqualityComparer<IBranch>
         {
-            public bool Equals(Branch b1, Branch b2)
+            public bool Equals(IBranch b1, IBranch b2)
             {
                 if (b1 == null && b2 == null)
                     return true;
                 if (b1 == null || b2 == null)
                     return false;
 
-                return b1.NameWithoutRemote().IsEquivalentTo(b2.NameWithoutRemote());
+                return b1.Name.WithoutRemote.Equals(b2.Name.WithoutRemote);
             }
 
-            public int GetHashCode(Branch b)
+            public int GetHashCode(IBranch b)
             {
-                if (b == null)
-                    return 0;
-                return b.NameWithoutRemote().ToUpperInvariant().GetHashCode();
+                return b.Name.WithoutRemote.GetHashCode();
             }
         }
     }
