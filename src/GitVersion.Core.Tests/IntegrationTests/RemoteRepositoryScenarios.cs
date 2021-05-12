@@ -133,7 +133,7 @@ namespace GitVersion.Core.Tests.IntegrationTests
                 if (branch.IsRemote)
                 {
                     var localName = branch.FriendlyName.Replace($"{branch.RemoteName}/", "");
-                    if(repository.Branches[localName] == null)
+                    if (repository.Branches[localName] == null)
                     {
                         repository.CreateBranch(localName, branch.FriendlyName);
                     }
