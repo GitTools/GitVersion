@@ -40,7 +40,7 @@ jobs:
       fail-fast: false
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v2.3.4
     - name: Fetch all history for all tags and branches
       run: |
         git fetch --prune --unshallow
@@ -82,7 +82,7 @@ jobs:
       fail-fast: false
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v2.3.4
     - name: Fetch all history for all tags and branches
       run: |
         git fetch --prune --unshallow
@@ -114,7 +114,7 @@ jobs:
       fail-fast: false
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v2.3.4
     - name: Fetch all history for all tags and branches
       run: |
         git fetch --prune --unshallow
@@ -144,7 +144,7 @@ jobs:
     needs: [build, test]
     runs-on: windows-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v2.3.4
     - name: Fetch all history for all tags and branches
       run: |
         git fetch --prune --unshallow
@@ -174,7 +174,7 @@ jobs:
     needs: [build, test]
     runs-on: windows-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v2.3.4
     - name: Fetch all history for all tags and branches
       run: |
         git fetch --prune --unshallow
@@ -204,7 +204,7 @@ jobs:
     needs: [build, test]
     runs-on: windows-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v2.3.4
     - name: Fetch all history for all tags and branches
       run: |
         git fetch --prune --unshallow
@@ -244,7 +244,7 @@ jobs:
       fail-fast: false
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v2.3.4
     - name: Fetch all history for all tags and branches
       run: |
         git fetch --prune --unshallow
@@ -285,7 +285,7 @@ jobs:
       CHOCOLATEY_API_KEY: ${{ secrets.CHOCOLATEY_API_KEY }}
       CHOCOLATEY_API_URL: ${{ secrets.CHOCOLATEY_API_URL }}
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v2.3.4
     - name: Fetch all history for all tags and branches
       run: |
         git fetch --prune --unshallow
@@ -317,7 +317,7 @@ jobs:
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v2.3.4
     - name: Fetch all history for all tags and branches
       run: |
         git fetch --prune --unshallow
