@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using GitTools.Testing;
 using GitVersion.Core.Tests.Helpers;
@@ -227,5 +228,31 @@ namespace GitVersion.Core.Tests.IntegrationTests
             fixture.AssertFullSemver("4.5.1-beta.2", config);
         }
 
+        [Test]
+        public void VersionNumberInHotfixBranchShouldBeConsideredWhenPreventIncrementOfMergedBranchVersion()
+        {
+            var config = new Config
+            {
+                AssemblyVersioningScheme = AssemblyVersioningScheme.MajorMinorPatchTag,
+                AssemblyFileVersioningFormat = "{MajorMinorPatch}.0",
+                VersioningMode = VersioningMode.ContinuousDeployment,
+                Branches = new Dictionary<string, BranchConfig>()
+                {
+                    { "hotfix", new BranchConfig { PreventIncrementOfMergedBranchVersion= true, Regex="r^(origin/)?hotfix[/-]" } }
+                }
+            };
+
+            const string HotfixBranch = "hotfix/1.1.1";
+            const string ReleaseBranch = "release/1.1.0";
+
+            using var fixture = new BaseGitFlowRepositoryFixture("1.0.0");
+            Commands.Checkout(fixture.Repository, fixture.Repository.CreateBranch(ReleaseBranch));
+            fixture.MakeACommit();
+            Commands.Checkout(fixture.Repository, MainBranch);
+            fixture.MergeNoFF(ReleaseBranch);
+            fixture.Repository.CreateBranch(HotfixBranch);
+            fixture.Repository.MakeACommit();
+            fixture.AssertFullSemver("1.1.1-ci.1", config);
+        }
     }
 }
