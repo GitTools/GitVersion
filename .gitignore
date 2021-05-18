@@ -114,6 +114,7 @@ releaseArtifacts
 /ILMergeTemp
 .dotnet
 artifacts
+!build/artifacts
 src/Docker/**/content
 
 !**/*.cake

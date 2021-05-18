@@ -2,14 +2,8 @@ using Common.Addins.GitVersion;
 
 namespace Common.Utilities
 {
-    public class BuildVersion
+    public record BuildVersion(GitVersion GitVersion, string? Version, string? Milestone, string? SemVersion, string? NugetVersion)
     {
-        public GitVersion? GitVersion { get; init; }
-        public string? Version { get; init; }
-        public string? Milestone { get; init; }
-        public string? SemVersion { get; init; }
-        public string? NugetVersion { get; init; }
-
         public static BuildVersion Calculate(GitVersion gitVersion)
         {
             var version = gitVersion.MajorMinorPatch;
@@ -22,14 +16,13 @@ namespace Common.Utilities
                 nugetVersion += $".{gitVersion.BuildMetaData}";
             }
 
-            return new BuildVersion
-            {
-                GitVersion = gitVersion,
-                Version = version,
-                Milestone = version,
-                SemVersion = semVersion,
-                NugetVersion = nugetVersion?.ToLowerInvariant()
-            };
+            return new BuildVersion(
+                GitVersion: gitVersion,
+                Version: version,
+                Milestone: version,
+                SemVersion: semVersion,
+                NugetVersion: nugetVersion?.ToLowerInvariant()
+            );
         }
     }
 }
