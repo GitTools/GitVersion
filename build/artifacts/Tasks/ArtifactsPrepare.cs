@@ -1,5 +1,4 @@
 ﻿using Artifacts.Utilities;
-using Cake.Docker;
 using Cake.Frosting;
 using Common.Utilities;
 using Constants = Common.Utilities.Constants;
