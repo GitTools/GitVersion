@@ -37,32 +37,12 @@ namespace Build.Utilities
             bool isChocolateyPackage = false)
         {
             return package => new BuildPackage(
-                id: package,
-                nuspecPath: string.Concat("./build/nuspec/", package, ".nuspec"),
-                packagePath: nugetRooPath.CombineWithFilePath(string.Concat(package, ".", version, ".nupkg")),
-                isChocolateyPackage: isChocolateyPackage);
+                Id: package,
+                NuspecPath: string.Concat("./build/nuspec/", package, ".nuspec"),
+                PackagePath: nugetRooPath.CombineWithFilePath(string.Concat(package, ".", version, ".nupkg")),
+                IsChocolateyPackage: isChocolateyPackage);
         }
     }
 
-    public class BuildPackage
-    {
-        public string Id { get; }
-        public FilePath NuspecPath { get; }
-        public FilePath PackagePath { get; }
-        public bool IsChocolateyPackage { get; }
-        public string PackageName { get; }
-
-        public BuildPackage(
-            string id,
-            FilePath nuspecPath,
-            FilePath packagePath,
-            bool isChocolateyPackage)
-        {
-            Id = id;
-            NuspecPath = nuspecPath;
-            PackagePath = packagePath;
-            IsChocolateyPackage = isChocolateyPackage;
-            PackageName = packagePath.GetFilename().ToString();
-        }
-    }
+    public record BuildPackage(string Id, FilePath NuspecPath, FilePath PackagePath, bool IsChocolateyPackage);
 }
