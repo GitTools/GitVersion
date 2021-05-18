@@ -5,8 +5,8 @@ using Common.Utilities;
 namespace Artifacts.Tasks
 {
     [TaskName(nameof(ArtifactsDotnetToolTest))]
+    [TaskDescription("Tests the dotnet global tool in docker container")]
     [IsDependentOn(typeof(ArtifactsPrepare))]
-    [TaskDescription("Pulls the docker images needed for testing the artifacts")]
     public class ArtifactsDotnetToolTest : FrostingTask<BuildContext>
     {
         public override bool ShouldRun(BuildContext context)
