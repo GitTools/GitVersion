@@ -31,7 +31,6 @@ namespace Artifacts
 
         public static readonly string[] VersionsToBuild = { "5.0", "3.1" };
 
-
         public override void Setup(BuildContext context)
         {
             context.StartGroup("Build Setup");

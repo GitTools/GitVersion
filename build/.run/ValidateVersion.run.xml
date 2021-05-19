@@ -1,5 +1,5 @@
 ﻿<component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="ValidateVersion" type="DotNetProject" factoryName=".NET Project">
+  <configuration default="false" name="Validate Version" type="DotNetProject" factoryName=".NET Project">
     <option name="EXE_PATH" value="$PROJECT_DIR$/../run/build.exe" />
     <option name="PROGRAM_PARAMETERS" value="--target=ValidateVersion" />
     <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/.." />

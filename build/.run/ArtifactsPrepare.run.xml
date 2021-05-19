@@ -1,5 +1,5 @@
 ﻿<component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="ArtifactsPrepare" type="DotNetProject" factoryName=".NET Project">
+  <configuration default="false" name="Artifacts Prepare" type="DotNetProject" factoryName=".NET Project">
     <option name="EXE_PATH" value="$PROJECT_DIR$/../run/artifacts-test.exe" />
     <option name="PROGRAM_PARAMETERS" value="--target=ArtifactsPrepare --docker_dotnetversion=5.0 --dotnet_distro=alpine.3.12-x64" />
     <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/.." />

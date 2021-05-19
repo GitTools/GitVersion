@@ -1,4 +1,4 @@
-﻿using Artifacts.Utilities;
+using Artifacts.Utilities;
 using Cake.Frosting;
 using Common.Utilities;
 
