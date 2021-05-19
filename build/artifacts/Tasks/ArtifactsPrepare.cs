@@ -1,4 +1,4 @@
-﻿using Artifacts.Utilities;
+using Artifacts.Utilities;
 using Cake.Frosting;
 using Common.Utilities;
 using Constants = Common.Utilities.Constants;
@@ -19,7 +19,7 @@ namespace Artifacts.Tasks
 
         public override void Run(BuildContext context)
         {
-            foreach(var dockerImage in context.Images)
+            foreach (var dockerImage in context.Images)
             {
                 context.DockerPullImage(dockerImage, Constants.GitHubContainerRegistry);
             }

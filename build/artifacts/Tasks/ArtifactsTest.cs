@@ -1,9 +1,9 @@
-﻿using Cake.Frosting;
+using Cake.Frosting;
 using Common.Utilities;
 
 namespace Artifacts.Tasks
 {
-    [TaskName(nameof(ArtifactsMsBuildCoreTest))]
+    [TaskName(nameof(ArtifactsTest))]
     [TaskDescription("Tests packages in docker container")]
     [IsDependentOn(typeof(ArtifactsDotnetToolTest))]
     [IsDependentOn(typeof(ArtifactsMsBuildCoreTest))]
