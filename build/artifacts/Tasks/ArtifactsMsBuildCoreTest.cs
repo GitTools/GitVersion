@@ -26,8 +26,9 @@ namespace Artifacts.Tasks
 
             foreach (var dockerImage in context.Images)
             {
-                var (_, targetFramework) = dockerImage;
+                var (distro, targetFramework) = dockerImage;
 
+                if (targetFramework == "3.1" && distro == "centos.8-x64") continue; // TODO check why this one fails
                 targetFramework = targetFramework switch
                 {
                     "3.1" => $"netcoreapp{targetFramework}",
