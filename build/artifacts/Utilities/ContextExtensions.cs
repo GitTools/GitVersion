@@ -20,7 +20,7 @@ namespace Artifacts.Utilities
             var workDir = DirectoryPath.FromString($"./src/Docker");
             var tags = context.GetDockerTagsForRepository(dockerImage, Constants.GitHubContainerRegistry);
 
-            if (context.Version == null)  return;
+            if (context.Version == null) return;
             var buildSettings = new DockerImageBuildSettings
             {
                 Rm = true,

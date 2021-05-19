@@ -178,14 +178,7 @@ jobs:
       name: Download artifacts folder
       with:
         name: nuget
-        path: ${{ github.workspace }}/artifacts
-    -
-      name: Login to GitHub Container Registry
-      uses: docker/login-action@v1
-      with:
-          registry: ghcr.io
-          username: ${{ github.repository_owner }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+        path: ${{ github.workspace }}/artifacts/packages/nuget
     -
       name: '[Test Artifacts]'
       shell: pwsh

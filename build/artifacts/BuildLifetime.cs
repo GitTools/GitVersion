@@ -52,15 +52,6 @@ namespace Artifacts
 
             context.IsDockerOnLinux = context.DockerCustomCommand("info --format '{{.OSType}}'").First().Replace("'", "") == "linux";
 
-            context.Information("Build Agent:       {0}", context.GetBuildAgent());
-            context.Information("OS:                {0}", context.GetOS());
-            context.Information("Pull Request:      {0}", context.IsPullRequest);
-            context.Information("Original Repo:     {0}", context.IsOriginalRepo);
-            context.Information("Main Branch:       {0}", context.IsMainBranch);
-            context.Information("Tagged:            {0}", context.IsTagged);
-            context.Information("IsDockerOnLinux:   {0}", context.IsDockerOnLinux);
-            context.EndGroup();
-
             var gitVersion = context.GitVersion(new GitVersionSettings
             {
                 OutputTypes = new HashSet<GitVersionOutput> { GitVersionOutput.Json, GitVersionOutput.BuildServer }
@@ -81,6 +72,15 @@ namespace Artifacts
                              from distro in distros
                              select new DockerImage(distro, version);
 
+            context.Information("Version:           {0}", context.Version.SemVersion);
+            context.Information("Build Agent:       {0}", context.GetBuildAgent());
+            context.Information("OS:                {0}", context.GetOS());
+            context.Information("Pull Request:      {0}", context.IsPullRequest);
+            context.Information("Original Repo:     {0}", context.IsOriginalRepo);
+            context.Information("Main Branch:       {0}", context.IsMainBranch);
+            context.Information("Tagged:            {0}", context.IsTagged);
+            context.Information("IsDockerOnLinux:   {0}", context.IsDockerOnLinux);
+            context.EndGroup();
         }
 
         public override void Teardown(BuildContext context, ITeardownContext info)
@@ -104,5 +104,4 @@ namespace Artifacts
             context.EndGroup();
         }
     }
-
 }
