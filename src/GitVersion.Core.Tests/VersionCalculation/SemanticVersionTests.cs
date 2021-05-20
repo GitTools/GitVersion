@@ -34,6 +34,8 @@ namespace GitVersion.Core.Tests
         [TestCase("v1.2.3", 1, 2, 3, null, null, null, null, null, null, "1.2.3", Config.DefaultTagPrefix)]
         [TestCase("V1.2.3", 1, 2, 3, null, null, null, null, null, null, "1.2.3", Config.DefaultTagPrefix)]
         [TestCase("version-1.2.3", 1, 2, 3, null, null, null, null, null, null, "1.2.3", "version-")]
+        [TestCase("1", 1, 0, 0, null, null, null, null, null, null, "1.0.0", null)]
+        [TestCase("1.1", 1, 1, 0, null, null, null, null, null, null, "1.1.0", null)]
         public void ValidateVersionParsing(
             string versionString, int major, int minor, int patch, string tag, int? tagNumber, int? numberOfBuilds,
             string branchName, string sha, string otherMetaData, string fullFormattedVersionString, string tagPrefixRegex)
