@@ -12,7 +12,7 @@ namespace Artifacts.Tasks
         public override bool ShouldRun(BuildContext context)
         {
             var shouldRun = true;
-            shouldRun &= context.ShouldRun(context.IsDockerOnLinux, "ArtifactsDotnetToolTest works only on Docker on Linux agents.");
+            shouldRun &= context.ShouldRun(context.IsDockerOnLinux, $"{nameof(ArtifactsDotnetToolTest)} works only on Docker on Linux agents.");
 
             return shouldRun;
         }
