@@ -103,7 +103,7 @@ jobs:
       name: 'Upload native packages'
       uses: actions/upload-artifact@v2.2.3
       with:
-        name: native-${{ matrix.os }}
+        name: native-${{ runner.os }}
         path: ${{ github.workspace }}/artifacts/packages/native/*.tar.gz
 
   unit_test:
@@ -175,10 +175,16 @@ jobs:
         key: tools-${{ runner.os }}-${{ hashFiles('./build/**') }}
     -
       uses: actions/download-artifact@v2.0.9
-      name: Download artifacts folder
+      name: Download nuget packages
       with:
         name: nuget
         path: ${{ github.workspace }}/artifacts/packages/nuget
+    -
+      uses: actions/download-artifact@v2.0.9
+      name: Download native packages
+      with:
+        name: native-${{ runner.os }}
+        path: ${{ github.workspace }}/artifacts/packages/native
     -
       name: '[Test Artifacts]'
       shell: pwsh

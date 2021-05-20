@@ -15,8 +15,8 @@ namespace Build.Tasks
         public override bool ShouldRun(BuildContext context)
         {
             var shouldRun = true;
-            shouldRun &= context.ShouldRun(context.IsOnWindows, "PublishCoverage works only on Windows agents.");
-            shouldRun &= context.ShouldRun(context.IsOnMainBranchOriginalRepo, "PublishCoverage works only for on main branch original repository.");
+            shouldRun &= context.ShouldRun(context.IsOnWindows, $"{nameof(PublishCoverage)} works only on Windows agents.");
+            shouldRun &= context.ShouldRun(context.IsOnMainBranchOriginalRepo, $"{nameof(PublishCoverage)} works only for on main branch original repository.");
 
             return shouldRun;
         }

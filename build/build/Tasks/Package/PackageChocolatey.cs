@@ -16,7 +16,7 @@ namespace Build.Tasks
         public override bool ShouldRun(BuildContext context)
         {
             var shouldRun = true;
-            shouldRun &= context.ShouldRun(context.IsOnWindows, "PublishCoverage works only on Windows agents.");
+            shouldRun &= context.ShouldRun(context.IsOnWindows, $"{nameof(PackageChocolatey)} works only on Windows agents.");
 
             return shouldRun;
         }
