@@ -1,4 +1,4 @@
-﻿using Artifacts.Utilities;
+using Artifacts.Utilities;
 using Cake.Frosting;
 using Common.Utilities;
 
@@ -19,18 +19,15 @@ namespace Artifacts.Tasks
 
         public override void Run(BuildContext context)
         {
-            if (context.Version == null)
-                return;
-
             var rootPrefix = string.Empty;
-            var version = context.Version.NugetVersion;
 
-            foreach(var dockerImage in context.Images)
+            foreach (var dockerImage in context.Images)
             {
                 var (distro, _) = dockerImage;
 
                 var runtime = "linux-x64";
-                if (distro.StartsWith("alpine")) {
+                if (distro.StartsWith("alpine"))
+                {
                     runtime = "linux-musl-x64";
                 }
 
