@@ -98,13 +98,13 @@ jobs:
       if: matrix.os == 'windows-latest'
       with:
         name: nuget
-        path: ${{ github.workspace }}/artifacts/packages/nuget/*.nupkg
+        path: ${{ github.workspace }}/artifacts/packages/nuget
     -
       name: 'Upload native packages'
       uses: actions/upload-artifact@v2.2.3
       with:
         name: native-${{ runner.os }}
-        path: ${{ github.workspace }}/artifacts/packages/native/*.tar.gz
+        path: ${{ github.workspace }}/artifacts/packages/native
 
   unit_test:
     name: Unit Test code
