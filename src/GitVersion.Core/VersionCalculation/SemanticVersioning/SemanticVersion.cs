@@ -170,14 +170,29 @@ namespace GitVersion
                 semanticVersionBuildMetaData.CommitsSinceTag = int.Parse(fourthPart.Value);
             }
 
-            semanticVersion = new SemanticVersion
+            try
             {
-                Major = int.Parse(parsed.Groups["Major"].Value),
-                Minor = parsed.Groups["Minor"].Success ? int.Parse(parsed.Groups["Minor"].Value) : 0,
-                Patch = parsed.Groups["Patch"].Success ? int.Parse(parsed.Groups["Patch"].Value) : 0,
-                PreReleaseTag = SemanticVersionPreReleaseTag.Parse(parsed.Groups["Tag"].Value),
-                BuildMetaData = semanticVersionBuildMetaData
-            };
+                semanticVersion = new SemanticVersion
+                {
+                    Major = int.Parse(parsed.Groups["Major"].Value),
+                    Minor = parsed.Groups["Minor"].Success ? int.Parse(parsed.Groups["Minor"].Value) : 0,
+                    Patch = parsed.Groups["Patch"].Success ? int.Parse(parsed.Groups["Patch"].Value) : 0,
+                    PreReleaseTag = SemanticVersionPreReleaseTag.Parse(parsed.Groups["Tag"].Value),
+                    BuildMetaData = semanticVersionBuildMetaData
+                };
+            } catch(Exception exception)
+            {
+                if (exception is FormatException || exception is OverflowException)
+                {
+                    Console.Error.WriteLine("Failed to Parse Tag:");
+                    Console.Error.WriteLine(exception.Message);
+
+                    semanticVersion = null;
+                    return false;
+                }
+
+                throw exception;
+            }
 
             return true;
         }
