@@ -180,7 +180,8 @@ namespace GitVersion
                     PreReleaseTag = SemanticVersionPreReleaseTag.Parse(parsed.Groups["Tag"].Value),
                     BuildMetaData = semanticVersionBuildMetaData
                 };
-            } catch(Exception exception)
+            }
+            catch (Exception exception)
             {
                 if (exception is FormatException || exception is OverflowException)
                 {
