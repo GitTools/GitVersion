@@ -57,9 +57,10 @@ namespace GitVersion.Core.Tests
 
         [TestCase("someText")]
         [TestCase("some-T-ext")]
-        public void ValidateInvalidVersionParsing(string versionString)
+        [TestCase("v.1.2.3", "v")]
+        public void ValidateInvalidVersionParsing(string versionString, string tagPrefixRegex = null)
         {
-            Assert.IsFalse(SemanticVersion.TryParse(versionString, null, out _), "TryParse Result");
+            Assert.IsFalse(SemanticVersion.TryParse(versionString, tagPrefixRegex, out _), "TryParse Result");
         }
 
         [Test]
