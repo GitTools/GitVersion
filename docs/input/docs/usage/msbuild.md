@@ -25,7 +25,7 @@ is coming soon.
 
 ### Install the MSTask targets
 
-Add the [GitVersion.MsBuild](https://www.nuget.org/packages/GitVersionTask/) NuGet
+Add the [GitVersion.MsBuild](https://www.nuget.org/packages/GitVersion.MsBuild/) NuGet
 Package into the project you want to be versioned by GitVersion.
 
 From the Package Manager Console:
