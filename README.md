@@ -8,8 +8,8 @@ works out the [Semantic Version][semver] of the commit being built.
 [![codecov][codecov-badge]][codecov]
 [![Gitter][gitter-badge]][gitter]
 
-| Artifact                   |                Stable                                              |
-| :------------------------- | :----------------------------------------------------------------- |
+| Artifact                   |                Stable                                              |   |
+| :------------------------- | :----------------------------------------------------------------- | - |
 | **GitHub Release**         |                [![GitHub release][gh-rel-badge]][gh-rel]           |
 | **GitVersion.Portable**    |                     [![Chocolatey][choco-badge]][choco]            |
 | **GitVersion.Tool**        |                           [![NuGet][gvgt-badge]][gvgt]             |
