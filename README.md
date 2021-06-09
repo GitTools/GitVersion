@@ -14,7 +14,7 @@ works out the [Semantic Version][semver] of the commit being built.
 | **GitVersion.Portable**    |                     [![Chocolatey][choco-badge]][choco]            |
 | **GitVersion.Tool**        |                           [![NuGet][gvgt-badge]][gvgt]             |
 | **GitVersion.CommandLine** |                           [![NuGet][gvcl-badge]][gvcl]             |
-| **GitVersion.MsBuild**     |                            [![NuGet][gvt-badge]][gvt]              | Known as *[GitVersionTask](https://www.nuget.org/packages/GitVersionTask/)*  before v5.6.0 |
+| **GitVersion.MsBuild**     |                            [![NuGet][gvt-badge]][gvt]              | Known as *[GitVersionTask][GitVersionTask]*  before v5.6.0 |
 | **Homebrew**               |                        [![homebrew][brew-badge]][brew]             |
 | **Azure Pipeline Task**    | [![Azure Pipeline Task][az-pipeline-task-badge]][az-pipeline-task] |
 | **Github Action**          |             [![Github Action][gh-actions-badge]][gh-actions]       |
@@ -69,6 +69,7 @@ from The Noun Project.
 [choco-badge]:                     https://img.shields.io/chocolatey/v/gitversion.portable.svg?logo=nuget
 [gvt]:                             https://www.nuget.org/packages/GitVersion.MsBuild
 [gvt-badge]:                       https://img.shields.io/nuget/v/GitVersion.MsBuild.svg?logo=nuget
+[gitversiontask]:                  https://www.nuget.org/packages/GitVersionTask/
 [gvcl]:                            https://www.nuget.org/packages/GitVersion.CommandLine
 [gvcl-badge]:                      https://img.shields.io/nuget/v/GitVersion.CommandLine.svg?logo=nuget
 [gvgt]:                            https://www.nuget.org/packages/GitVersion.Tool
