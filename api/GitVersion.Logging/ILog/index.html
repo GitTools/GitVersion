@@ -202,8 +202,8 @@
 								<dt>Implementing Types</dt>
 								<dd>
 									<ul class="list-unstyled">
-											<li><a href="/api/GitVersion.Logging/Log">Log</a></li>								
 											<li><a href="/api/GitVersion.Logging/NullLog">NullLog</a></li>								
+											<li><a href="/api/GitVersion.Logging/Log">Log</a></li>								
 									</ul>
 								</dd>				
 						</dl>
@@ -213,10 +213,10 @@
 							graph BT
 	Type["ILog"]
 class Type type-node
-	Implementing0["Log"]-.-&gt;Type
-	click Implementing0 "/api/GitVersion.Logging/Log"
-	Implementing1["NullLog"]-.-&gt;Type
-	click Implementing1 "/api/GitVersion.Logging/NullLog"
+	Implementing0["NullLog"]-.-&gt;Type
+	click Implementing0 "/api/GitVersion.Logging/NullLog"
+	Implementing1["Log"]-.-&gt;Type
+	click Implementing1 "/api/GitVersion.Logging/Log"
 
 						</div>
 					</div>

@@ -216,33 +216,38 @@
 			<h1>MSBuild Task</h1>
 		</section>
 	<section class="content">
-		<p>The MSBuild Task for GitVersion — <strong>GitVersionTask</strong> — is a simple solution if
+		<p>The MSBuild Task for GitVersion — <strong>GitVersion.MsBuild</strong> — is a simple solution if
 you want to version your assemblies without writing any command line scripts or
 modifying your build process.</p>
 <p>Just install with NuGet and GitVersion will automatically generate assembly
 version information that is compiled into the resulting artifact.</p>
 <p>It currently works with desktop <code>MSBuild</code>. Support for CoreCLR with <code>dotnet build</code>
 is coming soon.</p>
+<blockquote class="blockquote">
+<p><strong>Note</strong><br>
+The nuget package was "<em><a href="https://www.nuget.org/packages/GitVersionTask/">GitVersionTask</a></em>" up until version 5.5.1.<br>
+From version 5.6.0 it has been called "<em><a href="https://www.nuget.org/packages/GitVersionTask/">GitVersion.MsBuild</a></em>"</p>
+</blockquote>
 <h2 id="tldr">TL;DR</h2>
 <h3 id="install-the-mstask-targets">Install the MSTask targets</h3>
-<p>Add the <a href="https://www.nuget.org/packages/GitVersionTask/">GitVersionTask</a> NuGet
+<p>Add the <a href="https://www.nuget.org/packages/GitVersion.MsBuild/">GitVersion.MsBuild</a> NuGet
 Package into the project you want to be versioned by GitVersion.</p>
 <p>From the Package Manager Console:</p>
-<pre><code class="language-shell">Install-Package GitVersionTask
+<pre><code class="language-shell">Install-Package GitVersion.MsBuild
 </code></pre>
 <p>If you're using <code>PackageReference</code> style NuGet dependencies (VS 2017+), add
 <code>&lt;PrivateAssets&gt;all&lt;/PrivateAssets&gt;</code> to prevent the task from becoming a
 dependency of your package:</p>
-<pre><code class="language-xml">&lt;PackageReference Include="GitVersionTask" Version="4.0.0-beta*"&gt;
+<pre><code class="language-xml">&lt;PackageReference Include="GitVersion.MsBuild" Version="5.6.10*"&gt;
   &lt;PrivateAssets&gt;All&lt;/PrivateAssets&gt;
 &lt;/PackageReference&gt;
 </code></pre>
 <h3 id="remove-assemblyinfo-attributes">Remove AssemblyInfo attributes</h3>
 <p>The next thing you need to do is to remove the <code>Assembly*Version</code> attributes from
-your <code>Properties\AssemblyInfo.cs</code> files. This puts GitVersionTask in charge of
+your <code>Properties\AssemblyInfo.cs</code> files. This puts GitVersion.MsBuild in charge of
 versioning your assemblies.</p>
 <h3 id="done">Done!</h3>
-<p>The setup process is now complete and GitVersionTask should be working its magic,
+<p>The setup process is now complete and GitVersion.MsBuild should be working its magic,
 versioning your assemblies like a champ. However, more can be done to further
 customize the build process. Keep reading to find out how the version variables
 are set and how you can use them in MSBuild tasks.</p>
@@ -251,10 +256,10 @@ are set and how you can use them in MSBuild tasks.</p>
 the MSBuild pipeline and will then perform several actions. These actions are
 described below.</p>
 <h3 id="inject-version-metadata-into-the-assembly">Inject version metadata into the assembly</h3>
-<p>The sub-task named <code>GitVersionTask.UpdateAssemblyInfo</code> will inject version
-metadata into the assembly where GitVersionTask has been added to. For each assembly
+<p>The sub-task named <code>GitVersion.MsBuild.UpdateAssemblyInfo</code> will inject version
+metadata into the assembly where GitVersion.MsBuild has been added to. For each assembly
 you want GitVersion to handle versioning, you will need to install
-<a href="https://www.nuget.org/packages/GitVersionTask/">GitVersionTask</a> into the corresponding
+<a href="https://www.nuget.org/packages/GitVersion.MsBuild/">GitVersion.MsBuild</a> into the corresponding
 project via NuGet.</p>
 <h4 id="assemblyinfo-attributes">AssemblyInfo Attributes</h4>
 <p>A temporary <code>AssemblyInfo.cs</code> will be created at build time. That file will
@@ -323,10 +328,10 @@ else
 }
 </code></pre>
 <h3 id="populate-some-msbuild-properties-with-version-metadata">Populate some MSBuild properties with version metadata</h3>
-<p>The sub-task <code>GitVersionTask.GetVersion</code> will write all the derived
+<p>The sub-task <code>GitVersion.MsBuild.GetVersion</code> will write all the derived
 <a href="/docs/reference/variables">variables</a> to MSBuild properties so the information
 can be used by other tooling in the build pipeline.</p>
-<p>The class for <code>GitVersionTask.GetVersion</code> has a property for each variable.
+<p>The class for <code>GitVersion.MsBuild.GetVersion</code> has a property for each variable.
 However at MSBuild time these properties are mapped to MSBuild properties that
 are prefixed with <code>GitVersion_</code>. This prevents conflicts with other properties
 in the pipeline.</p>
@@ -345,12 +350,12 @@ versions by setting <code>UseFullSemVerForNuGet</code> to true in your project (
 by default for compatibility). Some hosts, like MyGet, support SemVer 2.0
 package versions but older NuGet clients and nuget.org do not.</p>
 <h4 id="accessing-variables-in-msbuild">Accessing variables in MSBuild</h4>
-<p>Once <code>GitVersionTask.GetVersion</code> has been executed, the MSBuild properties can be
+<p>Once <code>GitVersion.MsBuild.GetVersion</code> has been executed, the MSBuild properties can be
 used in the standard way. For example:</p>
 <pre><code class="language-xml">&lt;Message Text="GitVersion_InformationalVersion: $(GitVersion_InformationalVersion)"/&gt;
 </code></pre>
 <h3 id="communicate-variables-to-current-build-server">Communicate variables to current Build Server</h3>
-<p>The sub-task <code>GitVersionTask.WriteVersionInfoToBuildLog</code> will attempt to write
+<p>The sub-task <code>GitVersion.MsBuild.WriteVersionInfoToBuildLog</code> will attempt to write
 the version information to the current Build Server log.</p>
 <p>If, at build time, it is detected that the build is occurring inside a Build
 Server then the <a href="/docs/reference/variables">variables</a> will be written to the
@@ -360,7 +365,7 @@ Build Server log in a format that the current Build Server can consume. See
 <p>Properties <code><a href="/api/GitVersion.MsBuild.Tasks/WriteVersionInfoToBuildLog">WriteVersionInfoToBuildLog</a></code>, <code><a href="/api/GitVersion.MsBuild.Tasks/UpdateAssemblyInfo">UpdateAssemblyInfo</a></code>,
 <code>UseFullSemVerForNuGet</code>, <code>UpdateVersionProperties</code> and <code><a href="/api/GitVersion.MsBuild.Tasks/GetVersion">GetVersion</a></code> are checked
 before running these tasks.</p>
-<p>You can disable <code>GitVersionTask.UpdateAssemblyInfo</code> by setting
+<p>You can disable <code>GitVersion.MsBuild.UpdateAssemblyInfo</code> by setting
 <code><a href="/api/GitVersion.MsBuild.Tasks/UpdateAssemblyInfo">UpdateAssemblyInfo</a></code> to <code>false</code> in your MSBuild script, like
 this:</p>
 <pre><code class="language-xml">&lt;PropertyGroup&gt;
