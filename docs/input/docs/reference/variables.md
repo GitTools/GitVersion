@@ -83,3 +83,10 @@ Each property of the above JSON document is described in the below table.
 | `CommitsSinceVersionSourcePadded` | The `CommitsSinceVersionSource` padded with `0` up to 4 digits.                                                                                                            |
 |                      `CommitDate` | The ISO-8601 formatted date of the commit identified by `Sha`.                                                                                                             |
 |              `UncommittedChanges` | The number of uncommitted changes present in the repository.                                                                                                               |
+
+Depending on how and in which context GitVersion is executed (for instance
+within a [supported build server][build-servers]), the above version variables
+may be exposed automatically as **environment variables** in the format
+`GitVersion_FullSemVer`.
+
+[build-servers]: ./build-servers/
