@@ -148,6 +148,13 @@
 			<li class="header">Namespace</li>
 		<li><a href="/api/GitVersion.VersionCalculation">GitVersion<wbr>.VersionCalculation</a></li>
 		<li role="separator" class="divider"></li>
+			<li class="header">Interface Types</li>
+				<li><a href="/api/GitVersion.VersionCalculation/IBaseVersionCalculator">I<wbr>Base<wbr>Version<wbr>Calculator</a></li>
+				<li><a href="/api/GitVersion.VersionCalculation/IMainlineVersionCalculator">I<wbr>Mainline<wbr>Version<wbr>Calculator</a></li>
+				<li><a href="/api/GitVersion.VersionCalculation/INextVersionCalculator">I<wbr>Next<wbr>Version<wbr>Calculator</a></li>
+				<li><a href="/api/GitVersion.VersionCalculation/IVariableProvider">IVariableProvider</a></li>
+				<li><a href="/api/GitVersion.VersionCalculation/IVersionFilter">IVersionFilter</a></li>
+				<li class="selected"><a href="/api/GitVersion.VersionCalculation/IVersionStrategy">IVersionStrategy</a></li>
 			<li class="header">Class Types</li>
 				<li><a href="/api/GitVersion.VersionCalculation/BaseVersion">BaseVersion</a></li>
 				<li><a href="/api/GitVersion.VersionCalculation/BaseVersionCalculator">Base<wbr>Version<wbr>Calculator</a></li>
@@ -166,13 +173,6 @@
 				<li><a href="/api/GitVersion.VersionCalculation/VersionStrategyModule">Version<wbr>Strategy<wbr>Module</a></li>
 			<li class="header">Enum Types</li>
 				<li><a href="/api/GitVersion.VersionCalculation/VersioningMode">VersioningMode</a></li>
-			<li class="header">Interface Types</li>
-				<li><a href="/api/GitVersion.VersionCalculation/IBaseVersionCalculator">I<wbr>Base<wbr>Version<wbr>Calculator</a></li>
-				<li><a href="/api/GitVersion.VersionCalculation/IMainlineVersionCalculator">I<wbr>Mainline<wbr>Version<wbr>Calculator</a></li>
-				<li><a href="/api/GitVersion.VersionCalculation/INextVersionCalculator">I<wbr>Next<wbr>Version<wbr>Calculator</a></li>
-				<li><a href="/api/GitVersion.VersionCalculation/IVariableProvider">IVariableProvider</a></li>
-				<li><a href="/api/GitVersion.VersionCalculation/IVersionFilter">IVersionFilter</a></li>
-				<li class="selected"><a href="/api/GitVersion.VersionCalculation/IVersionStrategy">IVersionStrategy</a></li>
 
 
                     </ul>
@@ -208,13 +208,13 @@
 								<dt>Implementing Types</dt>
 								<dd>
 									<ul class="list-unstyled">
-											<li><a href="/api/GitVersion.VersionCalculation/VersionStrategyBase">VersionStrategyBase</a></li>								
-											<li><a href="/api/GitVersion.VersionCalculation/TaggedCommitVersionStrategy">Tagged<wbr>Commit<wbr>Version<wbr>Strategy</a></li>								
-											<li><a href="/api/GitVersion.VersionCalculation/FallbackVersionStrategy">Fallback<wbr>Version<wbr>Strategy</a></li>								
-											<li><a href="/api/GitVersion.VersionCalculation/MergeMessageVersionStrategy">Merge<wbr>Message<wbr>Version<wbr>Strategy</a></li>								
 											<li><a href="/api/GitVersion.VersionCalculation/VersionInBranchNameVersionStrategy">Version<wbr>In<wbr>Branch<wbr>Name<wbr>Version<wbr>Strategy</a></li>								
 											<li><a href="/api/GitVersion.VersionCalculation/TrackReleaseBranchesVersionStrategy">Track<wbr>Release<wbr>Branches<wbr>Version<wbr>Strategy</a></li>								
 											<li><a href="/api/GitVersion.VersionCalculation/ConfigNextVersionVersionStrategy">Config<wbr>Next<wbr>Version<wbr>Version<wbr>Strategy</a></li>								
+											<li><a href="/api/GitVersion.VersionCalculation/TaggedCommitVersionStrategy">Tagged<wbr>Commit<wbr>Version<wbr>Strategy</a></li>								
+											<li><a href="/api/GitVersion.VersionCalculation/MergeMessageVersionStrategy">Merge<wbr>Message<wbr>Version<wbr>Strategy</a></li>								
+											<li><a href="/api/GitVersion.VersionCalculation/FallbackVersionStrategy">Fallback<wbr>Version<wbr>Strategy</a></li>								
+											<li><a href="/api/GitVersion.VersionCalculation/VersionStrategyBase">VersionStrategyBase</a></li>								
 									</ul>
 								</dd>				
 						</dl>
@@ -224,20 +224,20 @@
 							graph BT
 	Type["IVersionStrategy"]
 class Type type-node
-	Implementing0["VersionStrategyBase"]-.-&gt;Type
-	click Implementing0 "/api/GitVersion.VersionCalculation/VersionStrategyBase"
-	Implementing1["TaggedCommitVersionStrategy"]-.-&gt;Type
-	click Implementing1 "/api/GitVersion.VersionCalculation/TaggedCommitVersionStrategy"
-	Implementing2["FallbackVersionStrategy"]-.-&gt;Type
-	click Implementing2 "/api/GitVersion.VersionCalculation/FallbackVersionStrategy"
-	Implementing3["MergeMessageVersionStrategy"]-.-&gt;Type
-	click Implementing3 "/api/GitVersion.VersionCalculation/MergeMessageVersionStrategy"
-	Implementing4["VersionInBranchNameVersionStrategy"]-.-&gt;Type
-	click Implementing4 "/api/GitVersion.VersionCalculation/VersionInBranchNameVersionStrategy"
-	Implementing5["TrackReleaseBranchesVersionStrategy"]-.-&gt;Type
-	click Implementing5 "/api/GitVersion.VersionCalculation/TrackReleaseBranchesVersionStrategy"
-	Implementing6["ConfigNextVersionVersionStrategy"]-.-&gt;Type
-	click Implementing6 "/api/GitVersion.VersionCalculation/ConfigNextVersionVersionStrategy"
+	Implementing0["VersionInBranchNameVersionStrategy"]-.-&gt;Type
+	click Implementing0 "/api/GitVersion.VersionCalculation/VersionInBranchNameVersionStrategy"
+	Implementing1["TrackReleaseBranchesVersionStrategy"]-.-&gt;Type
+	click Implementing1 "/api/GitVersion.VersionCalculation/TrackReleaseBranchesVersionStrategy"
+	Implementing2["ConfigNextVersionVersionStrategy"]-.-&gt;Type
+	click Implementing2 "/api/GitVersion.VersionCalculation/ConfigNextVersionVersionStrategy"
+	Implementing3["TaggedCommitVersionStrategy"]-.-&gt;Type
+	click Implementing3 "/api/GitVersion.VersionCalculation/TaggedCommitVersionStrategy"
+	Implementing4["MergeMessageVersionStrategy"]-.-&gt;Type
+	click Implementing4 "/api/GitVersion.VersionCalculation/MergeMessageVersionStrategy"
+	Implementing5["FallbackVersionStrategy"]-.-&gt;Type
+	click Implementing5 "/api/GitVersion.VersionCalculation/FallbackVersionStrategy"
+	Implementing6["VersionStrategyBase"]-.-&gt;Type
+	click Implementing6 "/api/GitVersion.VersionCalculation/VersionStrategyBase"
 
 						</div>
 					</div>
