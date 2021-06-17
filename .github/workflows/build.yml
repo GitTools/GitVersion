@@ -59,13 +59,13 @@ jobs:
     - name: '[Cake build & pack]'
       shell: pwsh
       run: ./build.ps1 -target Pack
-    - uses: actions/upload-artifact@v2.2.3
+    - uses: actions/upload-artifact@v2.2.4
       if: matrix.os == 'windows-latest'
       with:
         name: storage
         path: ${{ github.workspace }}/artifacts
       name: 'Upload artifacts folder'
-    - uses: actions/upload-artifact@v2.2.3
+    - uses: actions/upload-artifact@v2.2.4
       with:
         name: storage-${{ matrix.os }}
         path: ${{ github.workspace }}/artifacts/native
