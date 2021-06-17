@@ -19,7 +19,7 @@ is coming soon.
 
 > **Note**  
   The nuget package was "*[GitVersionTask](https://www.nuget.org/packages/GitVersionTask/)*" up until version 5.5.1.   
-  From version 5.6.0 it has been called "*[GitVersion.MsBuild](https://www.nuget.org/packages/GitVersionTask/)*"
+  From version 5.6.0 it has been called "*[GitVersion.MsBuild](https://www.nuget.org/packages/GitVersion.MsBuild/)*"
 
 ## TL;DR
 
