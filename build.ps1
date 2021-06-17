@@ -62,7 +62,7 @@ $DotNetChannel = 'LTS'
 $PSScriptRoot = Split-Path $MyInvocation.MyCommand.Path -Parent
 
 [string[]] $DotNetVersion= ''
-foreach($line in Get-Content (Join-Path $PSScriptRoot 'build.config'))
+foreach($line in Get-Content (Join-Path $PSScriptRoot 'build' 'build.config'))
 {
   if ($line -like 'DOTNET_VERSION=*') {
       $DotNetVersion = $line.SubString("DOTNET_VERSION=".Length).Split(',')
