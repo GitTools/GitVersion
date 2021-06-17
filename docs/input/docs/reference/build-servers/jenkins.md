@@ -6,15 +6,15 @@ Description: Details on the Jenkins support in GitVersion
 
 ## SCM Settings
 
-When setting up a Jenkins project for GitVersion, it is necessary to add a few *Behaviors* to the SCM settings to ensure that GitVersion has enough information:
+When setting up a Jenkins project for GitVersion, it is necessary to add a few _Behaviors_ to the SCM settings to ensure that GitVersion has enough information:
 
-* Advanced clone behaviors
-  * Enable `Fetch tags`
-  * Enable `Honor refspec on intial clone`
-* Check out to matching local branch
-* Prune stale remote-tracking branches
-* Specify ref specs
-  * Ref Spec: `+refs/heads/*:refs/remotes/@{remote}/*`
+*   Advanced clone behaviors
+    *   Enable `Fetch tags`
+    *   Enable `Honor refspec on intial clone`
+*   Check out to matching local branch
+*   Prune stale remote-tracking branches
+*   Specify ref specs
+    *   Ref Spec: `+refs/heads/*:refs/remotes/@{remote}/*`
 
 ## Usage
 
@@ -29,15 +29,15 @@ Jenkins plugins exist that provide this functionality. Of these plugins
 To inject the GitVersion variables as environment variables for a build job
 using [EnvInject], do the following:
 
-1. Add an **Execute Windows batch command** build step with *Command*:
+1.  Add an **Execute Windows batch command** build step with _Command_:
     `gitversion /output buildserver`
-1. Add an **Inject environment variables** build step and use value
-'gitversion.properties' for the *Properties File Path* parameter
+2.  Add an **Inject environment variables** build step and use value
+    'gitversion.properties' for the _Properties File Path_ parameter
 
 This assumes GitVersion.exe is available on the command line.
 
 You can verify correct injection of environment variables by adding another
-"Execute Windows batch command" build step with the following *Command*:
+"Execute Windows batch command" build step with the following _Command_:
 
 ```shell
 @echo Retrieving some GitVersion environment variables:
@@ -54,15 +54,18 @@ For pipeline projects, GitVersion variables can be accessed by reading the `gitv
 
 In a pipeline stage:
 
-1. Run GitVersion with the flag for *buildserver* output (this only works when run from Jenkins, specifically when the `JENKINS_URL` environment variable is defined):
+1.  Run GitVersion with the flag for _buildserver_ output (this only works when run from Jenkins, specifically when the `JENKINS_URL` environment variable is defined):
+
 ```groovy
 sh 'gitversion /output buildserver'`
 ```
-2. Add a script block to read the properties file, assign environment variables as needed:
+
+2.  Add a script block to read the properties file, assign environment variables as needed:
+
 ```groovy
 script {
     def props = readProperties file: 'gitversion.properties'
-    
+
     env.GitVersion_SemVer = props.GitVersion_SemVer
     env.GitVersion_BranchName = props.GitVersion_BranchName
     env.GitVersion_AssemblySemVer = props.GitVersion_AssemblySemVer

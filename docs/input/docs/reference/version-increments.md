@@ -12,7 +12,7 @@ version.
 
 ## Approach
 
-Semantic Versioning is all about *releases*, not builds. This means that the
+Semantic Versioning is all about _releases_, not builds. This means that the
 version only increases after you release, this directly conflicts with the
 concept of published CI builds. When you release the next version of your
 library/app/website/whatever you should only increment major/minor or patch then
@@ -22,10 +22,10 @@ either `2.0.0`, `1.1.0` or `1.0.1`.
 Because of this, GitVersion works out what the next SemVer of your app is on
 each commit. When you are ready to release you simply deploy the latest built
 version and tag the release it was from. This practice is called
-**continuous delivery**. GitVersion will increment the *metadata* for each build
+**continuous delivery**. GitVersion will increment the _metadata_ for each build
 so you can tell builds apart. For example `1.0.0+5` followed by `1.0.0+6`. It is
-important to note that build metadata *is not part of the semantic version, it
-is just metadata!*.
+important to note that build metadata _is not part of the semantic version, it
+is just metadata!_.
 
 All this effectively means that GitVersion will produce the same version NuGet
 package each commit until you tag a release.
@@ -38,8 +38,8 @@ are:
 ### 1. GitFlow
 
 If you are using GitFlow then builds off the `develop` branch will actually
-*increment on every commit*. This is known in GitVersion as *continuous
-deployment mode*. By default `develop` builds are tagged with the `alpha`
+_increment on every commit_. This is known in GitVersion as _continuous
+deployment mode_. By default `develop` builds are tagged with the `alpha`
 pre-release tag. This is so they are sorted higher than release branches.
 
 If you need to consume packages built from develop, we recommend publishing
@@ -119,7 +119,7 @@ rules for that branch (some branches bump patch, some minor).
 ### Incrementing per commit
 
 When using the continuous deployment mode (which will increment the SemVer every
-commit) all builds *must* have a pre-release tag, except for builds which are
+commit) all builds _must_ have a pre-release tag, except for builds which are
 explicitly tagged as stable.
 
 Then the build metadata (which is the commit count) is promoted to the

@@ -18,13 +18,14 @@ supported continuous integration servers below.
 GitVersion's GitTools Actions allows for simple integration into a GitHub
 Actions build pipeline.
 
-<a href="https://github.com/marketplace/actions/gittools"
-   class="btn btn-primary">GitTools Actions</a>
+[GitTools Actions][gittools-actions]{.btn .btn-primary}
 
 ## Azure DevOps
 
 GitVersion's GitTools Azure DevOps Task allows for simple integration of
 GitVersion into an Azure DevOps build pipeline.
 
-<a href="https://marketplace.visualstudio.com/items?itemName=gittools.gittools"
-   class="btn btn-primary">GitTools Task</a>
+[GitTools Task][gittools-task]{.btn .btn-primary}
+
+[gittools-actions]: https://github.com/marketplace/actions/gittools
+[gittools-task]: https://marketplace.visualstudio.com/items?itemName=gittools.gittools

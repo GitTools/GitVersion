@@ -109,27 +109,28 @@ To have **space characters** as a part of `value`, `value` has be enclosed with 
 Double quote character inside of the double quoted `value` has to be be escaped with a backslash '\\' - `key="My \"escaped-quotes\""`.
 
 Following options are supported:
-1. `assembly-file-versioning-format`
-1. `assembly-file-versioning-scheme`
-1. `assembly-informational-format`
-1. `assembly-versioning-format`
-1. `assembly-versioning-scheme`
-1. `build-metadata-padding`
-1. `commit-date-format`
-1. `commit-message-incrementing`
-1. `commits-since-version-source-padding`
-1. `continuous-delivery-fallback-tag`
-1. `increment`
-1. `legacy-semver-padding`
-1. `major-version-bump-message`
-1. `minor-version-bump-message`
-1. `mode`
-1. `next-version`
-1. `no-bump-message`
-1. `patch-version-bump-message`
-1. `tag-prefix`
-1. `tag-pre-release-weight`
-1. `update-build-number`
+
+1.  `assembly-file-versioning-format`
+2.  `assembly-file-versioning-scheme`
+3.  `assembly-informational-format`
+4.  `assembly-versioning-format`
+5.  `assembly-versioning-scheme`
+6.  `build-metadata-padding`
+7.  `commit-date-format`
+8.  `commit-message-incrementing`
+9.  `commits-since-version-source-padding`
+10. `continuous-delivery-fallback-tag`
+11. `increment`
+12. `legacy-semver-padding`
+13. `major-version-bump-message`
+14. `minor-version-bump-message`
+15. `mode`
+16. `next-version`
+17. `no-bump-message`
+18. `patch-version-bump-message`
+19. `tag-prefix`
+20. `tag-pre-release-weight`
+21. `update-build-number`
 
 Read more about [Configuration](/docs/reference/configuration).
 

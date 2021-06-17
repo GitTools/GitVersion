@@ -6,7 +6,7 @@ Title: FAQ
 ## Why is my version not incrementing?
 
 GitVersion calculates the semantic version, this will only change once per
-*release*. Read more at [version increments](/docs/reference/version-increments)
+_release_. Read more at [version increments](/docs/reference/version-increments)
 
 ## I'm using Octopus deploy
 
@@ -32,7 +32,7 @@ Read more at [intro to semver](/docs/learn/intro-to-semver)
 ## I can't use the build number for NuGet
 
 If you have used NuGet you would notice the versions above are not compatible
-with NuGet. GitVersion solves this by providing *variables*.
+with NuGet. GitVersion solves this by providing _variables_.
 
 What you have seen above is the **SemVer** variable. You can use the
 **NuGetVersion** variable to have the version formatted in a NuGet compatible

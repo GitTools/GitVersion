@@ -14,7 +14,7 @@ works out the [Semantic Version][semver] of the commit being built.
 | **GitVersion.Portable**    |                     [![Chocolatey][choco-badge]][choco]            |
 | **GitVersion.Tool**        |                           [![NuGet][gvgt-badge]][gvgt]             |
 | **GitVersion.CommandLine** |                           [![NuGet][gvcl-badge]][gvcl]             |
-| **GitVersion.MsBuild**     |                            [![NuGet][gvt-badge]][gvt]              | Known as *[GitVersionTask][GitVersionTask]*  before v5.6.0 |
+| **GitVersion.MsBuild**     |                            [![NuGet][gvt-badge]][gvt]              | Known as [GitVersionTask] before v5.6.0 |
 | **Homebrew**               |                        [![homebrew][brew-badge]][brew]             |
 | **Azure Pipeline Task**    | [![Azure Pipeline Task][az-pipeline-task-badge]][az-pipeline-task] |
 | **Github Action**          |             [![Github Action][gh-actions-badge]][gh-actions]       |
@@ -26,13 +26,13 @@ GitVersion works on Windows, Linux, and Mac.
 
 ## Quick Links
 
-- [Documentation][docs]
-- [Contributing][contribute]
-- [Why GitVersion][why]
-- [Usage][usage]
-- [How it works][how]
-- [FAQ][faq]
-- [Who is using GitVersion][who]
+*   [Documentation][docs]
+*   [Contributing][contribute]
+*   [Why GitVersion][why]
+*   [Usage][usage]
+*   [How it works][how]
+*   [FAQ][faq]
+*   [Who is using GitVersion][who]
 
 ## GitVersion in action!
 
@@ -40,8 +40,8 @@ GitVersion works on Windows, Linux, and Mac.
 
 You are seeing:
 
-- Pull requests being built as pre-release builds
-- A branch called `release-1.0.0` producing beta v1 packages
+*   Pull requests being built as pre-release builds
+*   A branch called `release-1.0.0` producing beta v1 packages
 
 ## Icon
 

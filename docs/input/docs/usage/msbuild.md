@@ -17,9 +17,9 @@ version information that is compiled into the resulting artifact.
 It currently works with desktop `MSBuild`. Support for CoreCLR with `dotnet build`
 is coming soon.
 
-> **Note**  
-  The nuget package was "*[GitVersionTask](https://www.nuget.org/packages/GitVersionTask/)*" up until version 5.5.1.   
-  From version 5.6.0 it has been called "*[GitVersion.MsBuild](https://www.nuget.org/packages/GitVersion.MsBuild/)*"
+> **Note**\
+> The nuget package was "_[GitVersionTask](https://www.nuget.org/packages/GitVersionTask/)_" up until version 5.5.1.\
+> From version 5.6.0 it has been called "_[GitVersion.MsBuild](https://www.nuget.org/packages/GitVersion.MsBuild/)_"
 
 ## TL;DR
 
@@ -38,7 +38,7 @@ If you're using `PackageReference` style NuGet dependencies (VS 2017+), add
 `<PrivateAssets>all</PrivateAssets>` to prevent the task from becoming a
 dependency of your package:
 
-``` xml
+```xml
 <PackageReference Include="GitVersion.MsBuild" Version="5.6.10*">
   <PrivateAssets>All</PrivateAssets>
 </PackageReference>
@@ -87,10 +87,10 @@ Default sample:
 
 Now, when you build:
 
-* `AssemblyVersion` will be set to the `AssemblySemVer` variable.
-* `AssemblyFileVersion` will be set to the `MajorMinorPatch` variable with `.0`
-appended to it.
-* `AssemblyInformationalVersion` will be set to the `InformationalVersion` variable.
+*   `AssemblyVersion` will be set to the `AssemblySemVer` variable.
+*   `AssemblyFileVersion` will be set to the `MajorMinorPatch` variable with `.0`
+    appended to it.
+*   `AssemblyInformationalVersion` will be set to the `InformationalVersion` variable.
 
 #### Other injected Variables
 
@@ -182,7 +182,6 @@ GitVersionTask has the option to generate SemVer 2.0 compliant NuGet package
 versions by setting `UseFullSemVerForNuGet` to true in your project (this is off
 by default for compatibility). Some hosts, like MyGet, support SemVer 2.0
 package versions but older NuGet clients and nuget.org do not.
-
 
 #### Accessing variables in MSBuild
 
