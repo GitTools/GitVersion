@@ -191,7 +191,7 @@ namespace GitVersion
                 Major = major,
                 Minor = minor,
                 Patch = patch,
-                PreReleaseTag = SemanticVersionPreReleaseTag.Parse(parsed.Groups["Tag"].Value),
+                PreReleaseTag = SemanticVersionPreReleaseTag.TryParse(parsed.Groups["Tag"].Value),
                 BuildMetaData = semanticVersionBuildMetaData
             };
 
