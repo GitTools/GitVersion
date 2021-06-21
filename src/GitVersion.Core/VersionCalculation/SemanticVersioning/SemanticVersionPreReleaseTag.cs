@@ -84,10 +84,10 @@ namespace GitVersion
 
         public static implicit operator SemanticVersionPreReleaseTag(string preReleaseTag)
         {
-            return Parse(preReleaseTag);
+            return TryParse(preReleaseTag);
         }
 
-        public static SemanticVersionPreReleaseTag Parse(string preReleaseTag)
+        public static SemanticVersionPreReleaseTag TryParse(string preReleaseTag)
         {
             if (string.IsNullOrEmpty(preReleaseTag))
             {
