@@ -180,7 +180,7 @@ namespace GitVersion
             {
                 return false;
             }
-            
+
             if (parsed.Groups["Patch"].Success && !Int32.TryParse(parsed.Groups["Patch"].Value, out patch))
             {
                 return false;
