@@ -216,8 +216,8 @@
 		<p>GitVersion's command line interface can be installed and consumed in many
 different ways. Read about the options below.</p>
 <h3 id="net-global-tool">.NET Global Tool</h3>
-<p>GitVersion can be installed as a [.NET global tool][dotnet-tool] under the name
-[<code>GitVersion.Tool</code>][tool] by executing the following in a terminal:</p>
+<p>GitVersion can be installed as a <a href="https://docs.microsoft.com/en-us/dotnet/core/tools/global-tools#install-a-global-tool">.NET global tool</a> under the name
+<a href="https://www.nuget.org/packages/GitVersion.Tool/"><code>GitVersion.Tool</code></a> by executing the following in a terminal:</p>
 <pre><code class="language-shell">dotnet tool install --global GitVersion.Tool
 </code></pre>
 <p>This should work on all operating systems supported by .NET Core.</p>
@@ -225,7 +225,7 @@ different ways. Read about the options below.</p>
 <pre><code class="language-shell">dotnet-gitversion
 </code></pre>
 <h3 id="homebrew">Homebrew</h3>
-<p>To install the [<code>gitversion</code>][brew] formula with <a href="https://brew.sh/">Homebrew</a>,
+<p>To install the <a href="https://formulae.brew.sh/formula-linux/gitversion"><code>gitversion</code></a> formula with <a href="https://brew.sh/">Homebrew</a>,
 enter the following into a terminal:</p>
 <pre><code class="language-shell">brew install gitversion
 </code></pre>
@@ -236,13 +236,13 @@ is interpreted as a root path on POSIX based operating systems.</p>
 of writing: Linux and macOS).</p>
 <h3 id="chocolatey">Chocolatey</h3>
 <p>Available on <a href="http://chocolatey.org">Chocolatey</a> as
-[<code>GitVersion.Portable</code>][choco].</p>
+<a href="http://chocolatey.org/packages/GitVersion.Portable"><code>GitVersion.Portable</code></a>.</p>
 <pre><code class="language-shell">choco install GitVersion.Portable
 </code></pre>
 <p>This should work on all operating systems supported by Chocolatey (at the time
 of writing: Windows).</p>
 <h3 id="docker">Docker</h3>
-<p><a href="#docker"><code>gittools/gitversion</code></a> allows you to use GitVersion through Docker,
+<p><a href="https://hub.docker.com/r/gittools/gitversion"><code>gittools/gitversion</code></a> allows you to use GitVersion through Docker,
 without installing any other dependencies. To use the Docker image, execute
 the following:</p>
 <pre><code class="language-shell">docker run --rm -v &quot;$(pwd):/repo&quot; gittools/gitversion:5.6.6 /repo

@@ -217,8 +217,7 @@
 		</section>
 	<section class="content">
 		<h2 id="basic-usage">Basic Usage</h2>
-<p>In <a href="https://www.jetbrains.com/teamcity/">TeamCity</a> you can create a build step
-as follows:</p>
+<p>In <a href="https://www.jetbrains.com/teamcity/">TeamCity</a> you can create a build step as follows:</p>
 <ul>
 <li><strong>Runner type:</strong> Command Line</li>
 <li><strong>Run:</strong> Executable with parameters</li>
@@ -231,10 +230,8 @@ the GitVersion variables you would like to use.</p>
 passed to your build scripts to use.</p>
 <h2 id="gitversion-meta-runner-for-teamcity">GitVersion meta runner for TeamCity</h2>
 <p>TeamCity has support for meta-runners which allow custom tasks. There is a
-GitVersion meta-runner available which makes it easy to use GitVersion.</p>
-<ul>
-<li><a href="https://github.com/JetBrains/meta-runner-power-pack/tree/master/gitversion">Project Link</a></li>
-</ul>
+<a href="https://github.com/JetBrains/meta-runner-power-pack/tree/master/gitversion">GitVersion meta-runner</a> available which makes it easy to use
+GitVersion.</p>
 <h2 id="running-inside-teamcity">Running inside TeamCity</h2>
 <p>When running in TeamCity you have two options, run using <strong>agent checkout</strong> or
 use dynamic repositories.</p>
@@ -268,13 +265,14 @@ as msbuild/environmental variables to other build steps</li>
 </ul>
 <h3 id="nuget-in-teamcity">NuGet in TeamCity</h3>
 <ul>
-<li>Add dummy <a href="http://confluence.jetbrains.com/display/TCD8/Configuring+Build+Parameters">parameter</a>
-to the project called <code>GitVersion.NuGetVersion</code>. If many of your projects uses
-git-flow and SemVer you can add the parameter to the "root-project"
-(TeamCity 8.x+). You need a dummy param because GitVersion creates the variables
-at runtime, and you cannot reference a parameter which is not available
-statically. GitVersion will overwrite the dummy value</li>
-<li>Then setup you nuget pack build set the "version" to <code>%GitVersion.NuGetVersion%</code></li>
+<li>Add a dummy <a href="http://confluence.jetbrains.com/display/TCD8/Configuring+Build+Parameters">parameter</a> to the project called <code>GitVersion.NuGetVersion</code>. If
+many of your projects uses git-flow and SemVer you can add the parameter to
+the "root-project" (TeamCity 8.x+). You need a dummy param because
+GitVersion creates the variables at runtime, and you cannot reference a
+parameter which is not available statically. GitVersion will overwrite the
+dummy value.</li>
+<li>Then setup you nuget pack build set the "version" to
+<code>%GitVersion.NuGetVersion%</code>.</li>
 <li>If you do your pack in a build script then you can just use environmental
 variables because teamcity will pass them through automatically.</li>
 </ul>
@@ -284,15 +282,14 @@ version number.  If TeamCity uses https to clone git repos then GitVersion will
 pull down main branch for you during the build.</p>
 <p>If however your TeamCity uses SSH to clone git repos and https is unavailable
 then GitVersion will error with a message like</p>
-<blockquote class="blockquote">
-<p>[GitVersionTask.UpdateAssemblyInfo] Error occurred: GitVersion.MissingBranchException:
+<pre><code class="language-cs">[GitVersionTask.UpdateAssemblyInfo] Error occurred: GitVersion.MissingBranchException:
 Could not fetch from 'git@github.dev.xero.com:Xero/Bus.git' since LibGit2 does
 not support the transport. You have most likely cloned using SSH. If there is a
 remote branch named 'main' then fetch it manually, otherwise please create a
 local branch named 'main'. ---&gt; LibGit2Sharp.LibGit2SharpException: An error
 was raised by libgit2. Category = Net (Error). This transport isn't implemented.
-Sorry</p>
-</blockquote>
+Sorry
+</code></pre>
 <h2 id="guides">Guides</h2>
 <ul>
 <li><a href="http://jake.ginnivan.net/blog/2014/07/09/my-typical-teamcity-build-setup">Continuous Delivery Setup in TeamCity</a></li>

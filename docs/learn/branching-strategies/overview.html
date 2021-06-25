@@ -230,28 +230,28 @@ whole team understands it.</p>
 <p>GitHubFlow is a simple and powerful branching strategy. It is what GitHub uses
 and the branching strategy most open source projects use.</p>
 <ul>
-<li><a href="/docs/reference/modes/mainline">Mainline development</a> on <code>main</code></li>
-<li>Work on <a href="/docs/learn/branching-strategies/gitflow/examples#feature-branches">feature branches</a>, merge into <code>main</code> via [pull
-requests][pull-requests]</li>
-<li>Works well for <a href="/docs/reference/modes/continuous-delivery">continuous delivery</a></li>
-<li>Does not have a way to manage/maintain old releases</li>
-<li>Only allows working on a single release at a time</li>
+<li><a href="/docs/reference/modes/mainline">Mainline development</a> on <code>main</code>.</li>
+<li>Work on <a href="/docs/learn/branching-strategies/gitflow/examples#feature-branches">feature branches</a>, merge into <code>main</code> via a <a href="/docs/learn/branching-strategies/gitflow/examples#pull-request">pull
+request</a>.</li>
+<li>Works well for <a href="/docs/reference/modes/continuous-delivery">continuous delivery</a>.</li>
+<li>Does not have a way to manage/maintain old releases.</li>
+<li>Only allows working on a single release at a time.</li>
 </ul>
 <h3 id="git-flow">Git Flow</h3>
 <p>GitFlow is a more complex and complete branching strategy. It also gives much
 more control over when features and code is released.</p>
 <ul>
-<li>Development on <code>develop</code> branch</li>
-<li><code>main</code> only contains <em>released</em> code</li>
+<li>Development on <code>develop</code> branch.</li>
+<li><code>main</code> only contains <em>released</em> code.</li>
 <li>Supports maintaining old releases (like nServiceBus, they support the last 3
-major versions with bug fixes and security updates)</li>
-<li>Supports development on multiple releases at one time</li>
+major versions with bug fixes and security updates).</li>
+<li>Supports development on multiple releases at one time.</li>
 </ul>
 <h2 id="choosing-a-branching-strategy">Choosing a branching strategy</h2>
 <p>There are a few reasons you would pick GitFlow over GitHubFlow, they are:</p>
 <ol>
-<li>You need to support multiple major versions at the same time</li>
-<li>You need to work on multiple releases at the same time</li>
+<li>You need to support multiple major versions at the same time.</li>
+<li>You need to work on multiple releases at the same time.</li>
 </ol>
 <ul>
 <li>For example a new feature which will go in the next major version, while bug

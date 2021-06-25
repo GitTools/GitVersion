@@ -228,7 +228,7 @@ to commit into a subdirectory.</p>
 <p>GitVersion ships with internal default configuration which works with
 GitHubFlow and GitFlow, probably with others too.</p>
 </div>
-<p>The <em>develop</em> branch is set to <code>ContinuousDeployment</code> mode by default as we have
+<p>The <code>develop</code> branch is set to <code>ContinuousDeployment</code> mode by default as we have
 found that is generally what is needed when using GitFlow.</p>
 <p>You can run <code>GitVersion /showConfig</code> to see the effective configuration
 (defaults + overrides).</p>
@@ -350,11 +350,15 @@ Default <code>\+semver:\s?(none|skip)</code>, which will match occurrences of <c
 <code>BuildMetaData</code> value of <code>1</code> to <code>0001</code>.</p>
 <h3 id="commits-since-version-source-padding">commits-since-version-source-padding</h3>
 <p>The number of characters to pad <code>CommitsSinceVersionSource</code> to in the
-<code>CommitsSinceVersionSourcePadded</code> <a href="/docs/reference/variables">variable</a>. Is default
-set to <code>4</code>, which will pad the <code>CommitsSinceVersionSource</code> value of <code>1</code> to
-<code>0001</code>.</p>
+<code>CommitsSinceVersionSourcePadded</code> <a href="/docs/reference/variables">variable</a>. Is default set to <code>4</code>,
+which will pad the <code>CommitsSinceVersionSource</code> value of <code>1</code> to <code>0001</code>.</p>
 <h3 id="tag-pre-release-weight">tag-pre-release-weight</h3>
-<p>The pre-release weight in case of tagged commits. If the value is not set in the configuration, a default weight of 60000 is used instead. If the <code>WeightedPreReleaseNumber</code> <a href="/docs/reference/variables">variable</a> is 0 and this parameter is set, its value is used. This helps if your branching model is GitFlow and the last release build, which is often tagged, can utilise this parameter to produce a monotonically increasing build number.</p>
+<p>The pre-release weight in case of tagged commits. If the value is not set in the
+configuration, a default weight of 60000 is used instead. If the
+<code>WeightedPreReleaseNumber</code> <a href="/docs/reference/variables">variable</a> is 0 and this
+parameter is set, its value is used. This helps if your branching model is
+GitFlow and the last release build, which is often tagged, can utilise this
+parameter to produce a monotonically increasing build number.</p>
 <h3 id="commit-message-incrementing">commit-message-incrementing</h3>
 <p>Sets whether it should be possible to increment the version with special syntax
 in the commit message. See the <code>*-version-bump-message</code> options above for
@@ -562,8 +566,10 @@ of <code>alpha.foo</code> with the value of <code>alpha.{BranchName}</code>.</p>
 <p>When <code>release-2.0.0</code> is merged into main, we want main to build <code>2.0.0</code>. If
 <code>release-2.0.0</code> is merged into develop we want it to build <code>2.1.0</code>, this option
 prevents incrementing after a versioned branch is merged.</p>
-<p>In a GitFlow-based repository, setting this option can have implications on the <code>CommitsSinceVersionSource</code> output variable. It can rule
-out a potentially better version source proposed by the <code>MergeMessageBaseVersionStrategy</code>. For more details and an in-depth analysis, please see the discussion <a href="https://github.com/GitTools/GitVersion/pull/2506#issuecomment-754754037">here</a>.</p>
+<p>In a GitFlow-based repository, setting this option can have implications on the
+<code>CommitsSinceVersionSource</code> output variable. It can rule out a potentially
+better version source proposed by the <code>MergeMessageBaseVersionStrategy</code>. For
+more details and an in-depth analysis, please see <a href="https://github.com/GitTools/GitVersion/pull/2506#issuecomment-754754037">the discussion</a>.</p>
 <h3 id="tag-number-pattern">tag-number-pattern</h3>
 <p>Pull requests require us to extract the pre-release number out of the branch
 name so <code>refs/pulls/534/merge</code> builds as <code>PullRequest.534</code>. This is a regex with
@@ -594,17 +600,16 @@ branch. For example <code>develop</code> → <code>release/1.0.0</code> → merg
 <p>When using Mainline mode, this indicates that this branch is a mainline. By
 default support/ and main are mainlines.</p>
 <h3 id="pre-release-weight">pre-release-weight</h3>
-<p>Provides a way to translate the <code>PreReleaseLabel</code>
-(<a href="/docs/reference/variables">variables</a>) to a numeric value in order to avoid version
-collisions across different branches. For example, a release branch created
-after "1.2.3-alpha.55" results in "1.2.3-beta.1" and thus e.g. "1.2.3-alpha.4"
-and "1.2.3-beta.4" would have the same file version: "1.2.3.4". One of the ways
-to use this value is to set
-<code>assembly-file-versioning-format: {Major}.{Minor}.{Patch}.{WeightedPreReleaseNumber}</code>.
-If the <code>pre-release-weight</code> is set, it would be added to the <code>PreReleaseNumber</code>
-to get a final <code>AssemblySemFileVer</code>, otherwise a branch specific default for
-<code>pre-release-weight</code> will be used in the calculation. Related Issues
-<a href="https://github.com/GitTools/GitVersion/issues/1145">1145</a>, <a href="https://github.com/GitTools/GitVersion/issues/1366">1366</a></p>
+<p>Provides a way to translate the <code>PreReleaseLabel</code> (<a href="/docs/reference/variables">variables</a>) to a numeric
+value in order to avoid version collisions across different branches. For
+example, a release branch created after "1.2.3-alpha.55" results in
+"1.2.3-beta.1" and thus e.g. "1.2.3-alpha.4" and "1.2.3-beta.4" would have the
+same file version: "1.2.3.4". One of the ways to use this value is to set
+<code>assembly-file-versioning-format: {Major}.{Minor}.{Patch}.{WeightedPreReleaseNumber}</code>. If the <code>pre-release-weight</code>
+is set, it would be added to the <code>PreReleaseNumber</code> to get a final
+<code>AssemblySemFileVer</code>, otherwise a branch specific default for
+<code>pre-release-weight</code> will be used in the calculation. Related Issues <a href="https://github.com/GitTools/GitVersion/issues/1145">1145</a>,
+<a href="https://github.com/GitTools/GitVersion/issues/1366">1366</a></p>
 
 	</section>
                 

@@ -150,13 +150,6 @@
 			<li class="header">Namespace</li>
 		<li><a href="/api/GitVersion.VersionCalculation">GitVersion<wbr>.VersionCalculation</a></li>
 		<li role="separator" class="divider"></li>
-			<li class="header">Interface Types</li>
-				<li><a href="/api/GitVersion.VersionCalculation/IBaseVersionCalculator">I<wbr>Base<wbr>Version<wbr>Calculator</a></li>
-				<li><a href="/api/GitVersion.VersionCalculation/IMainlineVersionCalculator">I<wbr>Mainline<wbr>Version<wbr>Calculator</a></li>
-				<li><a href="/api/GitVersion.VersionCalculation/INextVersionCalculator">I<wbr>Next<wbr>Version<wbr>Calculator</a></li>
-				<li><a href="/api/GitVersion.VersionCalculation/IVariableProvider">IVariableProvider</a></li>
-				<li><a href="/api/GitVersion.VersionCalculation/IVersionFilter">IVersionFilter</a></li>
-				<li><a href="/api/GitVersion.VersionCalculation/IVersionStrategy">IVersionStrategy</a></li>
 			<li class="header">Class Types</li>
 				<li><a href="/api/GitVersion.VersionCalculation/BaseVersion">BaseVersion</a></li>
 				<li><a href="/api/GitVersion.VersionCalculation/BaseVersionCalculator">Base<wbr>Version<wbr>Calculator</a></li>
@@ -175,6 +168,13 @@
 				<li><a href="/api/GitVersion.VersionCalculation/VersionStrategyModule">Version<wbr>Strategy<wbr>Module</a></li>
 			<li class="header">Enum Types</li>
 				<li><a href="/api/GitVersion.VersionCalculation/VersioningMode">VersioningMode</a></li>
+			<li class="header">Interface Types</li>
+				<li><a href="/api/GitVersion.VersionCalculation/IBaseVersionCalculator">I<wbr>Base<wbr>Version<wbr>Calculator</a></li>
+				<li><a href="/api/GitVersion.VersionCalculation/IMainlineVersionCalculator">I<wbr>Mainline<wbr>Version<wbr>Calculator</a></li>
+				<li><a href="/api/GitVersion.VersionCalculation/INextVersionCalculator">I<wbr>Next<wbr>Version<wbr>Calculator</a></li>
+				<li><a href="/api/GitVersion.VersionCalculation/IVariableProvider">IVariableProvider</a></li>
+				<li><a href="/api/GitVersion.VersionCalculation/IVersionFilter">IVersionFilter</a></li>
+				<li><a href="/api/GitVersion.VersionCalculation/IVersionStrategy">IVersionStrategy</a></li>
 
 
                     </ul>
@@ -224,8 +224,8 @@
 											<li><a href="/api/GitVersion.VersionCalculation/VersionInBranchNameVersionStrategy">Version<wbr>In<wbr>Branch<wbr>Name<wbr>Version<wbr>Strategy</a></li>								
 											<li><a href="/api/GitVersion.VersionCalculation/TrackReleaseBranchesVersionStrategy">Track<wbr>Release<wbr>Branches<wbr>Version<wbr>Strategy</a></li>								
 											<li><a href="/api/GitVersion.VersionCalculation/ConfigNextVersionVersionStrategy">Config<wbr>Next<wbr>Version<wbr>Version<wbr>Strategy</a></li>								
-											<li><a href="/api/GitVersion.VersionCalculation/TaggedCommitVersionStrategy">Tagged<wbr>Commit<wbr>Version<wbr>Strategy</a></li>								
 											<li><a href="/api/GitVersion.VersionCalculation/MergeMessageVersionStrategy">Merge<wbr>Message<wbr>Version<wbr>Strategy</a></li>								
+											<li><a href="/api/GitVersion.VersionCalculation/TaggedCommitVersionStrategy">Tagged<wbr>Commit<wbr>Version<wbr>Strategy</a></li>								
 											<li><a href="/api/GitVersion.VersionCalculation/FallbackVersionStrategy">Fallback<wbr>Version<wbr>Strategy</a></li>								
 									</ul>
 								</dd>			
@@ -246,10 +246,10 @@ class Type type-node
 	click Derived1 "/api/GitVersion.VersionCalculation/TrackReleaseBranchesVersionStrategy"
 	Derived2["ConfigNextVersionVersionStrategy"]--&gt;Type
 	click Derived2 "/api/GitVersion.VersionCalculation/ConfigNextVersionVersionStrategy"
-	Derived3["TaggedCommitVersionStrategy"]--&gt;Type
-	click Derived3 "/api/GitVersion.VersionCalculation/TaggedCommitVersionStrategy"
-	Derived4["MergeMessageVersionStrategy"]--&gt;Type
-	click Derived4 "/api/GitVersion.VersionCalculation/MergeMessageVersionStrategy"
+	Derived3["MergeMessageVersionStrategy"]--&gt;Type
+	click Derived3 "/api/GitVersion.VersionCalculation/MergeMessageVersionStrategy"
+	Derived4["TaggedCommitVersionStrategy"]--&gt;Type
+	click Derived4 "/api/GitVersion.VersionCalculation/TaggedCommitVersionStrategy"
 	Derived5["FallbackVersionStrategy"]--&gt;Type
 	click Derived5 "/api/GitVersion.VersionCalculation/FallbackVersionStrategy"
 

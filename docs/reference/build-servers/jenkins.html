@@ -268,7 +268,7 @@ using <a href="https://wiki.jenkins-ci.org/display/JENKINS/EnvInject+Plugin">Env
 </ol>
 <pre><code class="language-groovy">script {
     def props = readProperties file: 'gitversion.properties'
-    
+
     env.GitVersion_SemVer = props.GitVersion_SemVer
     env.GitVersion_BranchName = props.GitVersion_BranchName
     env.GitVersion_AssemblySemVer = props.GitVersion_AssemblySemVer

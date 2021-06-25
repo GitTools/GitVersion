@@ -221,7 +221,7 @@ the lovely things that it does.</p>
 is built, the build process isn't aware of the Git repository at all - i.e
 <em>there is no Git Repository available locally to the build!</em></p>
 <p>For an example of one such circumstance, you can have a read about
-<a href="https://confluence.jetbrains.com/display/TCD7/VCS+Checkout+Mode">Team City's checkout mode: Automatically on Server</a></p>
+<a href="https://confluence.jetbrains.com/display/TCD7/VCS+Checkout+Mode">Team City's checkout mode: Automatically on Server</a>.</p>
 <p>So <code>how is GitVersion meant to work in that scenario?</code> - well it needs to be
 able to obtain a copy of the Git repo on the fly and not rely on the build
 system making one locally available..</p>
@@ -233,11 +233,11 @@ will assume there is already a ".git" folder present, and it will use it.</p>
 <p>To tell GitVersion.exe to obtain the repository on the fly, you need to call
 <code>GitVersion.exe</code> with the following arguments:</p>
 <ul>
-<li>/url [the url of your git repo]</li>
-<li>/u [authentication username]</li>
-<li>/p [authentication password]</li>
-<li>/b [branch name]</li>
-<li>/c [commit id]</li>
+<li><code>/url [the url of your git repo]</code></li>
+<li><code>/u [authentication username]</code></li>
+<li><code>/p [authentication password]</code></li>
+<li><code>/b [branch name]</code></li>
+<li><code>/c [commit id]</code></li>
 </ul>
 <p>Please note that these arguments are described when calling <code>GitVersion.exe /?</code>.</p>
 <p>Also, be aware that if you don't specify the <code>/b</code> argument (branch name) then
