@@ -132,7 +132,7 @@ namespace GitVersion.Configuration
                 {
                     // TODO We should call the build server to generate this exception, each build server works differently
                     // for fetch issues and we could give better warnings.
-                    throw new InvalidOperationException("Could not find a 'develop' or 'main' branch, neither locally nor remotely.");
+                    throw new InvalidOperationException("Gitversion could not determine which branch to treat as the development branch (default is 'develop') nor releaseable branch (default is 'main' or 'master'), either locally or remotely. Ensure the local clone and checkout match the requirements or considering using 'GitVersion Dynamic Repositories'");
                 }
 
                 log.Warning($"{errorMessage}{System.Environment.NewLine}Falling back to {chosenBranch} branch config");
