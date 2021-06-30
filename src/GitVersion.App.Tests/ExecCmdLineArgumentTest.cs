@@ -53,6 +53,18 @@ namespace GitVersion.App.Tests
         }
 
         [Test]
+        public void VersionArgumentReturnsVersionNumber()
+        {
+            using var fixture = new EmptyRepositoryFixture();
+            fixture.MakeACommit();
+
+            var result = GitVersionHelper.ExecuteIn(fixture.RepositoryPath, arguments: " -version", logToFile: false);
+
+            result.ExitCode.ShouldBe(0);
+            result.Output.ShouldNotBe("1.0.0");
+        }
+
+        [Test]
         public void WorkingDirectoryWithoutGitFolderFailsWithInformativeMessage()
         {
             var result = GitVersionHelper.ExecuteIn(System.Environment.SystemDirectory, arguments: null, logToFile: false);
