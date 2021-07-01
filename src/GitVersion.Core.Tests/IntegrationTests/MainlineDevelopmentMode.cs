@@ -445,7 +445,16 @@ namespace GitVersion.Core.Tests.IntegrationTests
             local.AssertFullSemver("1.0.1", config);
             remote.AssertFullSemver("1.0.3", config);
 
-            Commands.Pull((Repository)local.Repository, Generate.SignatureNow(), new PullOptions());
+            Commands.Pull((Repository)local.Repository, Generate.SignatureNow(), new PullOptions
+            {
+                MergeOptions = new MergeOptions
+                {
+                    FastForwardStrategy = FastForwardStrategy.NoFastForward
+                }
+            });
+
+            var latestCommitMessage = local.Repository.Head.Tip.Message;
+            Assert.That(latestCommitMessage, Does.StartWith("Merge branch 'main' of "));
 
             // There are 5 commits including the merge commit.
             // Since all of them were in their 'main' branch, they should all be counted.
