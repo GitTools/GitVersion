@@ -445,9 +445,9 @@ namespace GitVersion.Core.Tests.IntegrationTests
             local.AssertFullSemver("1.0.1", config);
             remote.AssertFullSemver("1.0.3", config);
 
-            Commands.Pull((Repository)local.Repository, Generate.SignatureNow(), new PullOptions
+            Commands.Pull((Repository)local.Repository, Generate.SignatureNow(), new PullOptions()
             {
-                MergeOptions = new MergeOptions
+                MergeOptions = new MergeOptions()
                 {
                     FastForwardStrategy = FastForwardStrategy.NoFastForward
                 }
