@@ -21,7 +21,7 @@
 
     </PropertyGroup>
     <PropertyGroup>
-        <PackageVersion_LibGit2Sharp>0.27.0-preview-0096</PackageVersion_LibGit2Sharp>
+        <PackageVersion_LibGit2Sharp>0.27.0-preview-0102</PackageVersion_LibGit2Sharp>
         <PackageVersion_LibGit2Sharp_NativeBinaries>2.0.312</PackageVersion_LibGit2Sharp_NativeBinaries>
 
         <PackageVersion_JetBrainsAnnotations>2021.1.0</PackageVersion_JetBrainsAnnotations>
