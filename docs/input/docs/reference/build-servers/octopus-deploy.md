@@ -7,17 +7,17 @@ Description: Details on the Octopus Deploy support in GitVersion
 While not a build server, there are a few things to consider when using Octopus
 Deploy with GitVersion.
 
- GitVersion follows [continuous delivery][continuous-delivery] versioning by
- default. This means builds will keep producing *the same version* with just
- metadata differing. For example, when you start a new release (say `1.0.0`)
- with git flow, the branch will start with a semver like `1.0.0-beta.1+0`, and
- the Octopus NuGet package will have a version of `1.0.0-beta0001`. As you
- commit changes to this release branch the *metadata* of the semver will
- increase like so: `1.0.0-beta.1+1`, `1.0.0-beta.1+2`, etc. However, the version
- of the corresponding Octopus NuGet package will retain the *same*
- `1.0.0-beta0001` version you started with. The problem is Octopus Deploy will
- prevent you from deploying these revisions because it sees the same NuGet
- package version and thinks nothing has changed.
+GitVersion follows [continuous delivery][continuous-delivery] versioning by
+default. This means builds will keep producing _the same version_ with just
+metadata differing. For example, when you start a new release (say `1.0.0`)
+with git flow, the branch will start with a semver like `1.0.0-beta.1+0`, and
+the Octopus NuGet package will have a version of `1.0.0-beta0001`. As you
+commit changes to this release branch the _metadata_ of the semver will
+increase like so: `1.0.0-beta.1+1`, `1.0.0-beta.1+2`, etc. However, the version
+of the corresponding Octopus NuGet package will retain the _same_
+`1.0.0-beta0001` version you started with. The problem is Octopus Deploy will
+prevent you from deploying these revisions because it sees the same NuGet
+package version and thinks nothing has changed.
 
 Because Octopus Deploy uses NuGet like this you cannot continue to push
 revisions in this manner without some intervention (or changes to GitVersion's
@@ -34,30 +34,32 @@ depending on which build server you have this approach may or may not work for
 you.  For instance in TFS Build vNext you cannot chain builds to publish
 artifacts built in one build in another.
 
-1. Your CI build creates the stable NuGet package
-  - Do *not* publish this package into the Octopus nuget feed
-2. When you want to push a package into the Octopus deployment pipeline you trigger the second build
-  - it will either take the package built from the first build in the chain (your CI build?) or rebuild
-  - It will publish that package into the Octopus deploy feed
-  - The build then is *tagged* with the version, this will cause GitVersion to increment the version
+1.  Your CI build creates the stable NuGet package
 
-This means that CI builds are *not* available to Octopus deploy, there will be a
-manual build in your *build server* which pushes the package to Octopus deploy.
+*   Do _not_ publish this package into the Octopus nuget feed
+
+2.  When you want to push a package into the Octopus deployment pipeline you trigger the second build
+
+*   it will either take the package built from the first build in the chain (your CI build?) or rebuild
+*   It will publish that package into the Octopus deploy feed
+*   The build then is _tagged_ with the version, this will cause GitVersion to increment the version
+
+This means that CI builds are _not_ available to Octopus deploy, there will be a
+manual build in your _build server_ which pushes the package to Octopus deploy.
 
 ### Tag to release
 
 Another simple option is to tag a stable version to release, the basic idea is:
 
-1. GitVersion is set to continuous deployment mode, so main will create `-ci.x`
-pre-release builds
-1. CI Builds only create NuGet packages for stable builds
-1. You tag main with a stable version of the next version then push it
-1. The CI build triggers, GitVersion will always respect tags so you will get a
-stable version
-1. The stable package will be pushed to Octopus
-1. Because of the tag, then next build will be incremented and will be producing
-pre-release packages of the next build
-
+1.  GitVersion is set to continuous deployment mode, so main will create `-ci.x`
+    pre-release builds
+2.  CI Builds only create NuGet packages for stable builds
+3.  You tag main with a stable version of the next version then push it
+4.  The CI build triggers, GitVersion will always respect tags so you will get a
+    stable version
+5.  The stable package will be pushed to Octopus
+6.  Because of the tag, then next build will be incremented and will be producing
+    pre-release packages of the next build
 
 #### Script to create the release
 
@@ -65,7 +67,7 @@ Here is an example script which could be used to tag the stable version, it uses
 GitVersion to calculate the version so you just run `./CreateRelease.ps1` and it
 will tag and push the tag.
 
-``` powershell
+```powershell
 [CmdletBinding()]
 param()
 
@@ -126,7 +128,7 @@ Pop-Location
 
 #### Sample build script (build.ps1)
 
-``` powershell
+```powershell
 [CmdletBinding()]
 param()
 $ErrorActionPreference = "Stop"

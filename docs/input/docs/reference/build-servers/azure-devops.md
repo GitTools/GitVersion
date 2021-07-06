@@ -17,27 +17,27 @@ task into your TFS or Azure DevOps Pipeline instance.
 
 ### Using GitVersion with the MSBuild Task NuGet Package
 
-1. Add the [GitVersionTask](https://www.nuget.org/packages/GitVersionTask/)
-NuGet package to your projects.
+1.  Add the [GitVersionTask](https://www.nuget.org/packages/GitVersionTask/)
+    NuGet package to your projects.
 
 See [MSBuild Task](/docs/usage/msbuild) for further instructions how to use
 the MS Build Task.
 
 ### Using GitVersion with the Command Line build step
 
-1. Make sure to have GitVersion.exe under version control. There exists also a
-[Chocolatey package](https://chocolatey.org/packages/GitVersion.Portable) for
-installing GitVersion.exe on build agents.
-2. Add a Command Line build step to your build definition. You'll probably want
-to drag the task to be at or near the top to ensure it executes before your
-other build steps.
-3. Set the Tool parameter to `<pathToGitVersion>\GitVersion.exe`.
-4. Set the Arguments parameter to `/output buildserver /nofetch`.
-5. If you want the GitVersionTask to update AssemblyInfo files add
-`updateAssemblyInfo true` to the Arguments parameter.
-6. If you want to update the build number you need to send a
-[logging command](https://github.com/Microsoft/azure-pipelines-tasks/blob/main/docs/authoring/commands.md)
-to TFS.
+1.  Make sure to have GitVersion.exe under version control. There exists also a
+    [Chocolatey package](https://chocolatey.org/packages/GitVersion.Portable) for
+    installing GitVersion.exe on build agents.
+2.  Add a Command Line build step to your build definition. You'll probably want
+    to drag the task to be at or near the top to ensure it executes before your
+    other build steps.
+3.  Set the Tool parameter to `<pathToGitVersion>\GitVersion.exe`.
+4.  Set the Arguments parameter to `/output buildserver /nofetch`.
+5.  If you want the GitVersionTask to update AssemblyInfo files add
+    `updateAssemblyInfo true` to the Arguments parameter.
+6.  If you want to update the build number you need to send a
+    [logging command](https://github.com/Microsoft/azure-pipelines-tasks/blob/main/docs/authoring/commands.md)
+    to TFS.
 
 ### Using the custom GitVersion build step
 
@@ -48,24 +48,24 @@ to TFS.
 For Visual Studio Team Service or TFS 2015 Update 2 or higher it is recommended
 to install the GitVersion extension:
 
-1. Install the
-[GitVersion Extension](https://marketplace.visualstudio.com/items?itemName=gittools.usegitversion).
+1.  Install the
+    [GitVersion Extension](https://marketplace.visualstudio.com/items?itemName=gittools.usegitversion).
 
 ##### Manually installing/updating the custom build step
 
 If you run TFS 2015 RTM or Update 1 or don't want to install the GitVersion
 extension you can install the build task manually:
 
-1. Install the `tfx` command line tool as shown [here](https://github.com/Microsoft/tfs-cli/blob/main/README.md#install).
-2. For TFS 2015 On-Prem configure Basic Authentication in TFS as shown [here](https://github.com/Microsoft/tfs-cli/blob/main/docs/configureBasicAuth.md).
-3. Download the GitVersion TFS build task from the latest release on the
-[GitVersion releases page](https://github.com/GitTools/GitVersion/releases) and
-unzip.
-4. Run `tfx login` as shown [here](https://github.com/Microsoft/tfs-cli/blob/main/README.md#login).
-5. From the directory outside of where you unzipped the task, run
-`tfx build tasks upload --task-path .\GitVersionVsixTask --overwrite` where
-GitVersionVsixTask is the directory containing the files.
-6. It should successfully install.
+1.  Install the `tfx` command line tool as shown [here](https://github.com/Microsoft/tfs-cli/blob/main/README.md#install).
+2.  For TFS 2015 On-Prem configure Basic Authentication in TFS as shown [here](https://github.com/Microsoft/tfs-cli/blob/main/docs/configureBasicAuth.md).
+3.  Download the GitVersion TFS build task from the latest release on the
+    [GitVersion releases page](https://github.com/GitTools/GitVersion/releases) and
+    unzip.
+4.  Run `tfx login` as shown [here](https://github.com/Microsoft/tfs-cli/blob/main/README.md#login).
+5.  From the directory outside of where you unzipped the task, run
+    `tfx build tasks upload --task-path .\GitVersionVsixTask --overwrite` where
+    GitVersionVsixTask is the directory containing the files.
+6.  It should successfully install.
 
 #### Using the GitVersion custom build step
 
@@ -151,22 +151,22 @@ variables.
 
 #### Known limitations
 
-* If you are using on premises TFS, make sure you are using at least
-**TFS 2015 Update 1**, otherwise a few things will not work.
-* Installing the extension on an on premise TFS requires at least TFS 2015
-Update 2.
-* You need to make sure that all tags are fetched for the Git repository,
-otherwise you may end with wrong versions (e.g. `FullSemVer` like `1.2.0+5`
-instead of `1.2.0` for tagged releases)  Just checking the `Clean Repository`
-check box in the build definition settings might not be enough since this will
-run a `git clean -fdx/reset --hard` without fetching all tags later. You can
-force deletion of the whole folder and a re-clone containing all tags by
-settings the variable `Build.Clean` to `all`. This will take more time during
-build but makes sure that all tags are fetched. In the future it is planned to
-allow using `git.exe` instead of current `libgit2sharp` for syncing the repos
-which might allow other possibilities to solve this issue. For details see this
-[GitHub issue](https://github.com/Microsoft/azure-pipelines-tasks/issues/1218).
-* If running a build for a certain commit (through passing the commit SHA while
-queueing the build) all tags from the repository will be fetched, even the ones
-newer than the commit.  This can lead to different version numbers while
-re-running historical builds.
+*   If you are using on premises TFS, make sure you are using at least
+    **TFS 2015 Update 1**, otherwise a few things will not work.
+*   Installing the extension on an on premise TFS requires at least TFS 2015
+    Update 2.
+*   You need to make sure that all tags are fetched for the Git repository,
+    otherwise you may end with wrong versions (e.g. `FullSemVer` like `1.2.0+5`
+    instead of `1.2.0` for tagged releases)  Just checking the `Clean Repository`
+    check box in the build definition settings might not be enough since this will
+    run a `git clean -fdx/reset --hard` without fetching all tags later. You can
+    force deletion of the whole folder and a re-clone containing all tags by
+    settings the variable `Build.Clean` to `all`. This will take more time during
+    build but makes sure that all tags are fetched. In the future it is planned to
+    allow using `git.exe` instead of current `libgit2sharp` for syncing the repos
+    which might allow other possibilities to solve this issue. For details see this
+    [GitHub issue](https://github.com/Microsoft/azure-pipelines-tasks/issues/1218).
+*   If running a build for a certain commit (through passing the commit SHA while
+    queueing the build) all tags from the repository will be fetched, even the ones
+    newer than the commit.  This can lead to different version numbers while
+    re-running historical builds.

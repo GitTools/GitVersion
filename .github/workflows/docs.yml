@@ -30,6 +30,12 @@ jobs:
         directory: ./artifacts/Documentation
         arguments: --url-ignore /api/ --allow-hash-href --assume-extension --disable-external
 
+    - name: '[Remark Lint]'
+      uses: reviewdog/action-remark-lint@v2
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        reporter: github-pr-check
+
     - name: '[Publish Documentation]'
       if: ${{ github.event_name == 'push' }}
       shell: pwsh

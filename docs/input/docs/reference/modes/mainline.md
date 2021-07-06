@@ -21,7 +21,7 @@ fix the issue, then do a release with the fix.
 
 Like all things, it is an approach and will work for some people and not for
 others. GitVersion is unique in the fact that it works very well with mainline
-development and the version numbers it generates are *predictive* and indicate
+development and the version numbers it generates are _predictive_ and indicate
 what the next version to be released is. Most other approaches require bumping
 the version number before the release which means that the version being built
 and the version number which will be deployed are often different.
@@ -29,16 +29,16 @@ and the version number which will be deployed are often different.
 This mode is great if you do not want to tag each release because you simply
 deploy every commit to main. The behaviour of this mode is as follows:
 
-1. Calculate a base version (likely a tag in this mode)
-2. Walk all commits from the base version commit
-3. When a merge commit is found:
-    - Calculate increments for each direct commit on main
-    - Calculate the increment for the branch
-4. Calculate increments for each remaining direct commit
-5. For feature branches then calculate increment for the commits so far on your
-   feature branch.
+1.  Calculate a base version (likely a tag in this mode)
+2.  Walk all commits from the base version commit
+3.  When a merge commit is found:
+    *   Calculate increments for each direct commit on main
+    *   Calculate the increment for the branch
+4.  Calculate increments for each remaining direct commit
+5.  For feature branches then calculate increment for the commits so far on your
+    feature branch.
 
-If you *do not want* GitVersion to treat a commit or a pull request as a release
+If you _do not want_ GitVersion to treat a commit or a pull request as a release
 and increment the version you can use `+semver: none` or `+semver: skip` in a
 commit message to skip incrementing for that commit.
 
@@ -57,6 +57,7 @@ slowing down.
 :::
 
 ## Usage
+
 By default GitVersion is set up to do [Continuous Delivery][continuous-delivery]
 versioning on all branches but `develop` (which does [Continuous
 Deployment][continuous-deployment] by default). To change the [versioning

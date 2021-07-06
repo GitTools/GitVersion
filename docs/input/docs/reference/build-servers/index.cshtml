@@ -19,26 +19,40 @@ Description: Details on GitVersion's Build Server support
 
 @Html.Partial("_ChildPages")
 
-<p>
-    When the <code>gitVersion</code> executable is run with the
-    <code>/output buildserver</code> flag instead of outputting JSON it will
-    export variables to the current build server.
-</p>
+<h2>Build Server Variables</h2>
 
 <p>
-    For instance if you are running in TeamCity after you run
+    When the <code>gitVersion</code> executable is run with the
+    <code>/output buildserver</code> flag instead of outputting JSON, it will
+    export its <a href="/docs/reference/variables">version variables</a> to the
+    current build server as build-server native variables. For instance if you
+    are running in TeamCity after you run
     <code>gitversion /output buildserver</code> you will have the
     <code>%system.GitVersion.SemVer%</code> variable available for you to use
     in the rest of the build configuration.
 </p>
 
+<h2>MSBuild Properties</h2>
+
 <p>
     When running in MSBuild either from the
-    <a href="/docs/usage/msbuild">MSBuild Task</a> or
-    by using the <code>/proj myproject.sln</code> parameter, GitVersion will
-    make the MSBuild variables available in the format
-    <code>$(GitVersion_SemVer)`</code>
+    <a href="/docs/usage/msbuild">MSBuild Task</a> or by using
+    <code>/proj myproject.sln</code> parameter, GitVersion will make its
+    <a href="/docs/reference/variables">version variables</a> available as
+    MSBuild properties in the format <code>$(GitVersion_SemVer)</code>.
 </p>
+
+<h2>Environment Variables</h2>
+
+<p>
+    When executed within one of the supported build servers mentioned above,
+    GitVersion will also expose the <a href="/docs/reference/variables">version
+    variables</a> as <strong>environment variables</strong>, in the format
+    <code>GitVersion_SemVer</code> (and in some circumstances, as
+    <code>GitVersion.SemVer</code>).
+</p>
+
+<h2>Normalization</h2>
 
 <p>
     The standard <code>gitversion</code> executable normalize the branches if

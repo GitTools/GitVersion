@@ -46,26 +46,26 @@ jobs:
         git fetch --prune --unshallow
     - name: Cache tools
       id: cache-tools
-      uses: actions/cache@v2.1.5
+      uses: actions/cache@v2.1.6
       with:
         path: tools
         key: v1-${{ runner.os }}-tools-${{ hashFiles('build.cake') }}
     - name: Cache dotnet
       id: cache-dotnet
-      uses: actions/cache@v2.1.5
+      uses: actions/cache@v2.1.6
       with:
         path: .dotnet
-        key: v1-${{ runner.os }}-dotnet-${{ hashFiles('build.config') }}
+        key: v1-${{ runner.os }}-dotnet-${{ hashFiles('build/build.config') }}
     - name: '[Cake build & pack]'
       shell: pwsh
       run: ./build.ps1 -target Pack
-    - uses: actions/upload-artifact@v2.2.3
+    - uses: actions/upload-artifact@v2.2.4
       if: matrix.os == 'windows-latest'
       with:
         name: storage
         path: ${{ github.workspace }}/artifacts
       name: 'Upload artifacts folder'
-    - uses: actions/upload-artifact@v2.2.3
+    - uses: actions/upload-artifact@v2.2.4
       with:
         name: storage-${{ matrix.os }}
         path: ${{ github.workspace }}/artifacts/native
@@ -88,16 +88,16 @@ jobs:
         git fetch --prune --unshallow
     - name: Cache tools
       id: cache-tools
-      uses: actions/cache@v2.1.5
+      uses: actions/cache@v2.1.6
       with:
         path: tools
         key: v1-${{ runner.os }}-tools-${{ hashFiles('build.cake') }}
     - name: Cache dotnet
       id: cache-dotnet
-      uses: actions/cache@v2.1.5
+      uses: actions/cache@v2.1.6
       with:
         path: .dotnet
-        key: v1-${{ runner.os }}-dotnet-${{ hashFiles('build.config') }}
+        key: v1-${{ runner.os }}-dotnet-${{ hashFiles('build/build.config') }}
     - name: '[Run Test]'
       shell: pwsh
       run: ./build.ps1 -target Test
@@ -120,17 +120,17 @@ jobs:
         git fetch --prune --unshallow
     - name: Cache tools
       id: cache-tools
-      uses: actions/cache@v2.1.5
+      uses: actions/cache@v2.1.6
       with:
         path: tools
         key: v1-${{ runner.os }}-tools-${{ hashFiles('build.cake') }}
     - name: Cache dotnet
       id: cache-dotnet
-      uses: actions/cache@v2.1.5
+      uses: actions/cache@v2.1.6
       with:
         path: .dotnet
-        key: v1-${{ runner.os }}-dotnet-${{ hashFiles('build.config') }}
-    - uses: actions/download-artifact@v2.0.9
+        key: v1-${{ runner.os }}-dotnet-${{ hashFiles('build/build.config') }}
+    - uses: actions/download-artifact@v2.0.10
       name: Download artifacts folder
       with:
         name: storage
@@ -150,17 +150,17 @@ jobs:
         git fetch --prune --unshallow
     - name: Cache tools
       id: cache-tools
-      uses: actions/cache@v2.1.5
+      uses: actions/cache@v2.1.6
       with:
         path: tools
         key: v1-${{ runner.os }}-tools-${{ hashFiles('build.cake') }}
     - name: Cache dotnet
       id: cache-dotnet
-      uses: actions/cache@v2.1.5
+      uses: actions/cache@v2.1.6
       with:
         path: .dotnet
-        key: v1-${{ runner.os }}-dotnet-${{ hashFiles('build.config') }}
-    - uses: actions/download-artifact@v2.0.9
+        key: v1-${{ runner.os }}-dotnet-${{ hashFiles('build/build.config') }}
+    - uses: actions/download-artifact@v2.0.10
       name: Download artifacts folder
       with:
         name: storage
@@ -180,17 +180,17 @@ jobs:
         git fetch --prune --unshallow
     - name: Cache tools
       id: cache-tools
-      uses: actions/cache@v2.1.5
+      uses: actions/cache@v2.1.6
       with:
         path: tools
         key: v1-${{ runner.os }}-tools-${{ hashFiles('build.cake') }}
     - name: Cache dotnet
       id: cache-dotnet
-      uses: actions/cache@v2.1.5
+      uses: actions/cache@v2.1.6
       with:
         path: .dotnet
-        key: v1-${{ runner.os }}-dotnet-${{ hashFiles('build.config') }}
-    - uses: actions/download-artifact@v2.0.9
+        key: v1-${{ runner.os }}-dotnet-${{ hashFiles('build/build.config') }}
+    - uses: actions/download-artifact@v2.0.10
       name: Download artifacts folder
       with:
         name: storage
@@ -210,17 +210,17 @@ jobs:
         git fetch --prune --unshallow
     - name: Cache tools
       id: cache-tools
-      uses: actions/cache@v2.1.5
+      uses: actions/cache@v2.1.6
       with:
         path: tools
         key: v1-${{ runner.os }}-tools-${{ hashFiles('build.cake') }}
     - name: Cache dotnet
       id: cache-dotnet
-      uses: actions/cache@v2.1.5
+      uses: actions/cache@v2.1.6
       with:
         path: .dotnet
-        key: v1-${{ runner.os }}-dotnet-${{ hashFiles('build.config') }}
-    - uses: actions/download-artifact@v2.0.9
+        key: v1-${{ runner.os }}-dotnet-${{ hashFiles('build/build.config') }}
+    - uses: actions/download-artifact@v2.0.10
       name: Download artifacts folder
       with:
         name: storage
@@ -250,17 +250,17 @@ jobs:
         git fetch --prune --unshallow
     - name: Cache tools
       id: cache-tools
-      uses: actions/cache@v2.1.5
+      uses: actions/cache@v2.1.6
       with:
         path: tools
         key: v1-${{ runner.os }}-tools-${{ hashFiles('build.cake') }}
     - name: Cache dotnet
       id: cache-dotnet
-      uses: actions/cache@v2.1.5
+      uses: actions/cache@v2.1.6
       with:
         path: .dotnet
-        key: v1-${{ runner.os }}-dotnet-${{ hashFiles('build.config') }}
-    - uses: actions/download-artifact@v2.0.9
+        key: v1-${{ runner.os }}-dotnet-${{ hashFiles('build/build.config') }}
+    - uses: actions/download-artifact@v2.0.10
       name: Download artifacts folder
       with:
         name: storage
@@ -291,17 +291,17 @@ jobs:
         git fetch --prune --unshallow
     - name: Cache tools
       id: cache-tools
-      uses: actions/cache@v2.1.5
+      uses: actions/cache@v2.1.6
       with:
         path: tools
         key: v1-${{ runner.os }}-tools-${{ hashFiles('build.cake') }}
     - name: Cache dotnet
       id: cache-dotnet
-      uses: actions/cache@v2.1.5
+      uses: actions/cache@v2.1.6
       with:
         path: .dotnet
-        key: v1-${{ runner.os }}-dotnet-${{ hashFiles('build.config') }}
-    - uses: actions/download-artifact@v2.0.9
+        key: v1-${{ runner.os }}-dotnet-${{ hashFiles('build/build.config') }}
+    - uses: actions/download-artifact@v2.0.10
       name: Download artifacts folder
       with:
         name: storage
@@ -323,32 +323,32 @@ jobs:
         git fetch --prune --unshallow
     - name: Cache tools
       id: cache-tools
-      uses: actions/cache@v2.1.5
+      uses: actions/cache@v2.1.6
       with:
         path: tools
         key: v1-${{ runner.os }}-tools-${{ hashFiles('build.cake') }}
     - name: Cache dotnet
       id: cache-dotnet
-      uses: actions/cache@v2.1.5
+      uses: actions/cache@v2.1.6
       with:
         path: .dotnet
-        key: v1-${{ runner.os }}-dotnet-${{ hashFiles('build.config') }}
-    - uses: actions/download-artifact@v2.0.9
+        key: v1-${{ runner.os }}-dotnet-${{ hashFiles('build/build.config') }}
+    - uses: actions/download-artifact@v2.0.10
       name: Download artifacts folder
       with:
         name: storage
         path: ${{ github.workspace }}/artifacts
-    - uses: actions/download-artifact@v2.0.9
+    - uses: actions/download-artifact@v2.0.10
       name: Download windows native folder
       with:
         name: storage-windows-latest
         path: ${{ github.workspace }}/artifacts/native
-    - uses: actions/download-artifact@v2.0.9
+    - uses: actions/download-artifact@v2.0.10
       name: Download linux native folder
       with:
         name: storage-ubuntu-latest
         path: ${{ github.workspace }}/artifacts/native
-    - uses: actions/download-artifact@v2.0.9
+    - uses: actions/download-artifact@v2.0.10
       name: Download osx native folder
       with:
         name: storage-macos-latest

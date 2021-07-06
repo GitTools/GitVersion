@@ -24,7 +24,7 @@ GitVersion ships with internal default configuration which works with
 GitHubFlow and GitFlow, probably with others too.
 :::
 
-The *develop* branch is set to `ContinuousDeployment` mode by default as we have
+The `develop` branch is set to `ContinuousDeployment` mode by default as we have
 found that is generally what is needed when using GitFlow.
 
 You can run `GitVersion /showConfig` to see the effective configuration
@@ -91,7 +91,7 @@ skip updating the `AssemblyFileVersion` while still updating the
 Specifies the format of `AssemblyFileVersion` and
 overwrites the value of `assembly-file-versioning-scheme`.
 
-Expressions in curly braces reference one of the [variables](/docs/reference/variables)
+Expressions in curly braces reference one of the [variables]
 or a process-scoped environment variable (when prefixed with `env:`).  For example,
 
 ```yaml
@@ -120,7 +120,7 @@ The default value is `{InformationalVersion}`.
 ### mode
 
 Sets the `mode` of how GitVersion should create a new version. Read more at
-[versioning modes](/docs/reference/modes).
+[versioning modes][modes].
 
 ### increment
 
@@ -184,25 +184,29 @@ none` and `+semver: skip`
 ### legacy-semver-padding
 
 The number of characters to pad `LegacySemVer` to in the `LegacySemVerPadded`
-[variable](/docs/reference/variables). Is default set to `4`, which will pad the
+[variable][variables]. Is default set to `4`, which will pad the
 `LegacySemVer` value of `3.0.0-beta1` to `3.0.0-beta0001`.
 
 ### build-metadata-padding
 
 The number of characters to pad `BuildMetaData` to in the `BuildMetaDataPadded`
-[variable](/docs/reference/variables). Is default set to `4`, which will pad the
+[variable][variables]. Is default set to `4`, which will pad the
 `BuildMetaData` value of `1` to `0001`.
 
 ### commits-since-version-source-padding
 
 The number of characters to pad `CommitsSinceVersionSource` to in the
-`CommitsSinceVersionSourcePadded` [variable](/docs/reference/variables). Is default
-set to `4`, which will pad the `CommitsSinceVersionSource` value of `1` to
-`0001`.
+`CommitsSinceVersionSourcePadded` [variable][variables]. Is default set to `4`,
+which will pad the `CommitsSinceVersionSource` value of `1` to `0001`.
 
 ### tag-pre-release-weight
 
-The pre-release weight in case of tagged commits. If the value is not set in the configuration, a default weight of 60000 is used instead. If the `WeightedPreReleaseNumber` [variable](/docs/reference/variables) is 0 and this parameter is set, its value is used. This helps if your branching model is GitFlow and the last release build, which is often tagged, can utilise this parameter to produce a monotonically increasing build number.
+The pre-release weight in case of tagged commits. If the value is not set in the
+configuration, a default weight of 60000 is used instead. If the
+`WeightedPreReleaseNumber` [variable][variables] is 0 and this
+parameter is set, its value is used. This helps if your branching model is
+GitFlow and the last release build, which is often tagged, can utilise this
+parameter to produce a monotonically increasing build number.
 
 ### commit-message-incrementing
 
@@ -268,9 +272,9 @@ merge-message-formats:
 
 The regular expression should contain the following capture groups:
 
-+ SourceBranch - Identifies the source branch of the merge
-+ TargetBranch - Identifies the target of the merge
-+ PullRequestNumber - Captures the pull-request number
+*   SourceBranch - Identifies the source branch of the merge
+*   TargetBranch - Identifies the target of the merge
+*   PullRequestNumber - Captures the pull-request number
 
 Custom merge message formats are evaluated _before_ any built in formats.
 
@@ -385,16 +389,16 @@ Take this commit graph
 
 By looking at this graph, you cannot tell which of these scenarios happened:
 
-+ feature/foo branches off release/1.0.0
-  + Branch release/1.0.0 from main
-  + Branch feature/foo from release/1.0.0
-  + Add a commit to both release/1.0.0 and feature/foo
-  + release/1.0.0 is the base for feature/foo
-+ release/1.0.0 branches off feature/foo
-  + Branch feature/foo from main
-  + Branch release/1.0.0 from feature/foo
-  + Add a commit to both release/1.0.0 and feature/foo
-  + feature/foo is the base for release/1.0.0
+*   feature/foo branches off release/1.0.0
+    *   Branch release/1.0.0 from main
+    *   Branch feature/foo from release/1.0.0
+    *   Add a commit to both release/1.0.0 and feature/foo
+    *   release/1.0.0 is the base for feature/foo
+*   release/1.0.0 branches off feature/foo
+    *   Branch feature/foo from main
+    *   Branch release/1.0.0 from feature/foo
+    *   Add a commit to both release/1.0.0 and feature/foo
+    *   feature/foo is the base for release/1.0.0
 
 Or put more simply, you cannot tell which branch was created first,
 `release/1.0.0` or `feature/foo`.
@@ -471,8 +475,10 @@ When `release-2.0.0` is merged into main, we want main to build `2.0.0`. If
 `release-2.0.0` is merged into develop we want it to build `2.1.0`, this option
 prevents incrementing after a versioned branch is merged.
 
-In a GitFlow-based repository, setting this option can have implications on the `CommitsSinceVersionSource` output variable. It can rule
-out a potentially better version source proposed by the `MergeMessageBaseVersionStrategy`. For more details and an in-depth analysis, please see the discussion [here](https://github.com/GitTools/GitVersion/pull/2506#issuecomment-754754037).
+In a GitFlow-based repository, setting this option can have implications on the
+`CommitsSinceVersionSource` output variable. It can rule out a potentially
+better version source proposed by the `MergeMessageBaseVersionStrategy`. For
+more details and an in-depth analysis, please see [the discussion][2506].
 
 ### tag-number-pattern
 
@@ -502,7 +508,7 @@ branches:
 
 Strategy which will look for tagged merge commits directly off the current
 branch. For example `develop` → `release/1.0.0` → merge into `main` and tag
-`1.0.0`. The tag is *not* on develop, but develop should be version `1.0.0` now.
+`1.0.0`. The tag is _not_ on develop, but develop should be version `1.0.0` now.
 
 ### tracks-release-branches
 
@@ -519,16 +525,21 @@ default support/ and main are mainlines.
 
 ### pre-release-weight
 
-Provides a way to translate the `PreReleaseLabel`
-([variables](/docs/reference/variables)) to a numeric value in order to avoid version
-collisions across different branches. For example, a release branch created
-after "1.2.3-alpha.55" results in "1.2.3-beta.1" and thus e.g. "1.2.3-alpha.4"
-and "1.2.3-beta.4" would have the same file version: "1.2.3.4". One of the ways
-to use this value is to set
-`assembly-file-versioning-format: {Major}.{Minor}.{Patch}.{WeightedPreReleaseNumber}`.
-If the `pre-release-weight` is set, it would be added to the `PreReleaseNumber`
-to get a final `AssemblySemFileVer`, otherwise a branch specific default for
-`pre-release-weight` will be used in the calculation. Related Issues
-[1145](https://github.com/GitTools/GitVersion/issues/1145), [1366](https://github.com/GitTools/GitVersion/issues/1366)
+Provides a way to translate the `PreReleaseLabel` ([variables]) to a numeric
+value in order to avoid version collisions across different branches. For
+example, a release branch created after "1.2.3-alpha.55" results in
+"1.2.3-beta.1" and thus e.g. "1.2.3-alpha.4" and "1.2.3-beta.4" would have the
+same file version: "1.2.3.4". One of the ways to use this value is to set
+`assembly-file-versioning-format:
+{Major}.{Minor}.{Patch}.{WeightedPreReleaseNumber}`. If the `pre-release-weight`
+is set, it would be added to the `PreReleaseNumber` to get a final
+`AssemblySemFileVer`, otherwise a branch specific default for
+`pre-release-weight` will be used in the calculation. Related Issues [1145],
+[1366]
 
+[1145]: https://github.com/GitTools/GitVersion/issues/1145
+[1366]: https://github.com/GitTools/GitVersion/issues/1366
+[2506]: https://github.com/GitTools/GitVersion/pull/2506#issuecomment-754754037
+[modes]: /docs/reference/modes
+[variables]: /docs/reference/variables
 [version-sources]: /docs/reference/version-sources

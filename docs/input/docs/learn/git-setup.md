@@ -13,4 +13,4 @@ newly created feature branch
 
 ### origin
 
-`origin` should point to your *fork*.
+`origin` should point to your _fork_.
