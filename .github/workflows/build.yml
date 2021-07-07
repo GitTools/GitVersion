@@ -110,7 +110,7 @@ jobs:
       matrix:
         os: [linux]
         targetFramework: [ '3.1', '5.0' ]
-        distro: [ alpine.3.12-x64, centos.7-x64, centos.8-x64, debian.9-x64, debian.10-x64, fedora.33-x64, ubuntu.16.04-x64, ubuntu.18.04-x64, ubuntu.20.04-x64 ]
+        distro: [ alpine.3.12-x64, centos.7-x64, centos.8-x64, debian.9-x64, debian.10-x64, fedora.33-x64, ubuntu.16.04-x64, ubuntu.18.04-x64, ubuntu.20.04-x64, ubuntu.20.04-arm64 ]
       fail-fast: false
 
     steps:
@@ -240,7 +240,7 @@ jobs:
       matrix:
         os: [linux]
         targetFramework: [ '3.1', '5.0' ]
-        distro: [ alpine.3.12-x64, centos.7-x64, centos.8-x64, debian.9-x64, debian.10-x64, fedora.33-x64, ubuntu.16.04-x64, ubuntu.18.04-x64, ubuntu.20.04-x64 ]
+        distro: [ alpine.3.12-x64, centos.7-x64, centos.8-x64, debian.9-x64, debian.10-x64, fedora.33-x64, ubuntu.16.04-x64, ubuntu.18.04-x64, ubuntu.20.04-x64, ubuntu.20.04-arm64 ]
       fail-fast: false
 
     steps:

@@ -16,7 +16,7 @@ public class BuildParameters
 
     public string DockerDistro { get; private set; }
     public string DockerDotnetVersion { get; private set; }
-    public string[] DockerDistros = new[] { "alpine.3.12-x64", "centos.7-x64", "debian.9-x64", "debian.10-x64", "fedora.33-x64", "ubuntu.16.04-x64", "ubuntu.18.04-x64", "ubuntu.20.04-x64" };
+    public string[] DockerDistros = new[] { "alpine.3.12-x64", "centos.7-x64", "debian.9-x64", "debian.10-x64", "fedora.33-x64", "ubuntu.16.04-x64", "ubuntu.18.04-x64", "ubuntu.20.04-x64", "ubuntu.20.04-arm64" };
 
     public bool EnabledUnitTests { get; private set; }
     public bool EnabledPublishNuget { get; private set; }
@@ -143,7 +143,7 @@ public class BuildParameters
         NativeRuntimes = new Dictionary<PlatformFamily, string[]>
         {
             [PlatformFamily.Windows] = new[] { "win-x64", "win-x86" },
-            [PlatformFamily.Linux]   = new[] { "linux-x64", "linux-musl-x64" },
+            [PlatformFamily.Linux]   = new[] { "linux-x64", "linux-musl-x64", "linux-arm64" },
             [PlatformFamily.OSX]     = new[] { "osx-x64" },
         };
 
