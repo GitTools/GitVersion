@@ -55,6 +55,25 @@ If you run `gitversion init` then choose `Getting started wizard` then choose
 will try and help point you towards a branching strategy and why you would use
 it.
 
+## Merged branch names as version source
+
+When GitVersion considers previous commits to calculate a version number, it's
+important that the metadata to be considered is _stable_. Since branches are
+usually deleted after they are merged, the name of a branch can't be considered
+as a stable version source. _Branch names are not stable_, they are ephemeral.
+
+The only place a branch name can be considered for version calculation is for
+the branch itself. This is typically used for `release/*` branches, which
+usually have a version number in their name. For the release branch
+`release/1.2.3`, the verison number `1.2.3` will be used to calculate the final
+version number _for the release branch_.
+
+However, when the `release/1.2.3` branch is merged into `main`, the fact that
+the merged commits came from a branch named `release/1.2.3` vanishes with the
+branch which will be deleted. The name of the merged release branch can
+therefore not be considered for version calculation in the target branch of the
+merge.
+
 [dynamic-repos]: /docs/learn/dynamic-repositories
 [increments]: /docs/reference/version-increments
 [octopus]: /docs/reference/build-servers/octopus-deploy
