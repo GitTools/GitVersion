@@ -6,28 +6,25 @@ Title: FAQ
 ## Why is my version not incrementing?
 
 GitVersion calculates the semantic version, this will only change once per
-_release_. Read more at [version increments](/docs/reference/version-increments)
+_release_. Read more about [version increments][increments].
 
 ## I'm using Octopus deploy
 
 Because Octopus deploy cannot have the same version of a package to a NuGet
 feed. There is no magic solution to this, but you can read more about your
-options at [octopus deploy](/docs/reference/build-servers/octopus-deploy).
+options at [octopus deploy][octopus].
 
 ## How can GitVersion run for a shallow clone or checkout on server working directories
 
 GitVersion needs a proper git repository to run, some build servers do not do a
-proper clone which can cause issues. GitVersion has a feature called
-[dynamic repositories](/docs/learn/dynamic-repositories) which solves this by
-cloning the repository and working against that clone instead of the working
-directory.
+proper clone which can cause issues. GitVersion has a feature called [dynamic
+repositories][dynamic-repos] which solves this by cloning the repository and
+working against that clone instead of the working directory.
 
 ## I don't understand what SemVer is all about
 
-Not a problem, we have a quick introduction to SemVer which can be a good primer
-to read before reading [SemVer.org](https://semver.org)
-
-Read more at [intro to semver](/docs/learn/intro-to-semver)
+Not a problem, we have a quick [introduction to SemVer][semver-intro] which can
+be a good primer to read before reading [SemVer.org][semver].
 
 ## I can't use the build number for NuGet
 
@@ -58,3 +55,9 @@ If you run `gitversion init` then choose `Getting started wizard` then choose
 `Unsure, tell me more`, GitVersion will run through a series of questions which
 will try and help point you towards a branching strategy and why you would use
 it.
+
+[dynamic-repos]: /docs/learn/dynamic-repositories
+[increments]: /docs/reference/version-increments
+[octopus]: /docs/reference/build-servers/octopus-deploy
+[semver-intro]: /docs/learn/intro-to-semver
+[semver]: https://semver.org
