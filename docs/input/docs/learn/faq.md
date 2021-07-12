@@ -29,11 +29,10 @@ be a good primer to read before reading [SemVer.org][semver].
 ## I can't use the build number for NuGet
 
 If you have used NuGet you would notice the versions above are not compatible
-with NuGet. GitVersion solves this by providing _variables_.
+with NuGet. GitVersion solves this by providing [variables].
 
-What you have seen above is the **SemVer** variable. You can use the
-**NuGetVersion** variable to have the version formatted in a NuGet compatible
-way.
+What you have seen above is the `SemVer` variable. You can use the
+`NuGetVersion` variable to have the version formatted in a NuGet compatible way.
 
 So `1.0.1-rc.1+5` would become `1.0.1-rc0001`, this takes into account
 characters which are not allowed and NuGets crap sorting.
@@ -61,3 +60,4 @@ it.
 [octopus]: /docs/reference/build-servers/octopus-deploy
 [semver-intro]: /docs/learn/intro-to-semver
 [semver]: https://semver.org
+[variables]: /docs/reference/variables
