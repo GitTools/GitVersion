@@ -91,6 +91,7 @@
 <p><a href="#i-dont-understand-what-semver-is-all-about">I don't understand what SemVer is all about</a></p>
 <p><a href="#i-cant-use-the-build-number-for-nuget">I can't use the build number for NuGet</a></p>
 <p><a href="#how-do-i-choose-my-branching-strategy-gitflow-vs-githubflow">How do I choose my branching strategy (GitFlow vs GitHubFlow)</a></p>
+<p><a href="#merged-branch-names-as-version-source">Merged branch names as version source</a></p>
 <hr class="infobar-hidden">
 </div>
 
@@ -220,27 +221,24 @@
 	<section class="content">
 		<h2 id="why-is-my-version-not-incrementing">Why is my version not incrementing?</h2>
 <p>GitVersion calculates the semantic version, this will only change once per
-<em>release</em>. Read more at <a href="/docs/reference/version-increments">version increments</a></p>
+<em>release</em>. Read more about <a href="/docs/reference/version-increments">version increments</a>.</p>
 <h2 id="im-using-octopus-deploy">I'm using Octopus deploy</h2>
 <p>Because Octopus deploy cannot have the same version of a package to a NuGet
 feed. There is no magic solution to this, but you can read more about your
 options at <a href="/docs/reference/build-servers/octopus-deploy">octopus deploy</a>.</p>
 <h2 id="how-can-gitversion-run-for-a-shallow-clone-or-checkout-on-server-working-directories">How can GitVersion run for a shallow clone or checkout on server working directories</h2>
 <p>GitVersion needs a proper git repository to run, some build servers do not do a
-proper clone which can cause issues. GitVersion has a feature called
-<a href="/docs/learn/dynamic-repositories">dynamic repositories</a> which solves this by
-cloning the repository and working against that clone instead of the working
-directory.</p>
+proper clone which can cause issues. GitVersion has a feature called <a href="/docs/learn/dynamic-repositories">dynamic
+repositories</a> which solves this by cloning the repository and
+working against that clone instead of the working directory.</p>
 <h2 id="i-dont-understand-what-semver-is-all-about">I don't understand what SemVer is all about</h2>
-<p>Not a problem, we have a quick introduction to SemVer which can be a good primer
-to read before reading <a href="https://semver.org">SemVer.org</a></p>
-<p>Read more at <a href="/docs/learn/intro-to-semver">intro to semver</a></p>
+<p>Not a problem, we have a quick <a href="/docs/learn/intro-to-semver">introduction to SemVer</a> which can
+be a good primer to read before reading <a href="https://semver.org">SemVer.org</a>.</p>
 <h2 id="i-cant-use-the-build-number-for-nuget">I can't use the build number for NuGet</h2>
 <p>If you have used NuGet you would notice the versions above are not compatible
-with NuGet. GitVersion solves this by providing <em>variables</em>.</p>
-<p>What you have seen above is the <strong>SemVer</strong> variable. You can use the
-<strong>NuGetVersion</strong> variable to have the version formatted in a NuGet compatible
-way.</p>
+with NuGet. GitVersion solves this by providing <a href="/docs/reference/variables">variables</a>.</p>
+<p>What you have seen above is the <code>SemVer</code> variable. You can use the
+<code>NuGetVersion</code> variable to have the version formatted in a NuGet compatible way.</p>
 <p>So <code>1.0.1-rc.1+5</code> would become <code>1.0.1-rc0001</code>, this takes into account
 characters which are not allowed and NuGets crap sorting.</p>
 <div class="alert alert-info"><p><strong>Note</strong></p>
@@ -255,6 +253,21 @@ after NuGet 3.0 comes out</p>
 <code>Unsure, tell me more</code>, GitVersion will run through a series of questions which
 will try and help point you towards a branching strategy and why you would use
 it.</p>
+<h2 id="merged-branch-names-as-version-source">Merged branch names as version source</h2>
+<p>When GitVersion considers previous commits to calculate a version number, it's
+important that the metadata to be considered is <em>stable</em>. Since branches are
+usually deleted after they are merged, the name of a branch can't be considered
+as a stable version source. <em>Branch names are not stable</em>, they are ephemeral.</p>
+<p>The only place a branch name can be considered for version calculation is for
+the branch itself. This is typically used for <code>release/*</code> branches, which
+usually have a version number in their name. For the release branch
+<code>release/1.2.3</code>, the verison number <code>1.2.3</code> will be used to calculate the final
+version number <em>for the release branch</em>.</p>
+<p>However, when the <code>release/1.2.3</code> branch is merged into <code>main</code>, the fact that
+the merged commits came from a branch named <code>release/1.2.3</code> vanishes with the
+branch which will be deleted. The name of the merged release branch can
+therefore not be considered for version calculation in the target branch of the
+merge.</p>
 
 	</section>
                 

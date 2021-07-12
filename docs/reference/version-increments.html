@@ -214,7 +214,7 @@
 			<h1>Version Incrementing</h1>
 		</section>
 	<section class="content">
-		<p>Because GitVersion works with a number of workflows the way it does its version
+		<p>Because GitVersion works with several workflows, the way it does its version
 incrementing may work perfectly for you, or it may cause you issues. This page
 is split up into two sections, first is all about understanding the approach
 GitVersion uses by default, and the second is how you can manually increment the
@@ -224,15 +224,15 @@ version.</p>
 version only increases after you release, this directly conflicts with the
 concept of published CI builds. When you release the next version of your
 library/app/website/whatever you should only increment major/minor or patch then
-reset all lower parts to 0, for instance given 1.0.0, the next release should be
-either <code>2.0.0</code>, <code>1.1.0</code> or <code>1.0.1</code>.</p>
+reset all lower parts to 0, for instance given <code>1.0.0</code>, the next release should
+be either <code>2.0.0</code>, <code>1.1.0</code> or <code>1.0.1</code>.</p>
 <p>Because of this, GitVersion works out what the next SemVer of your app is on
-each commit. When you are ready to release you simply deploy the latest built
-version and tag the release it was from. This practice is called
-<strong>continuous delivery</strong>. GitVersion will increment the <em>metadata</em> for each build
-so you can tell builds apart. For example <code>1.0.0+5</code> followed by <code>1.0.0+6</code>. It is
-important to note that build metadata <em>is not part of the semantic version, it
-is just metadata!</em>.</p>
+each commit. When you are ready to release, you simply deploy the latest built
+version and tag the commit it was created from. This practice is called
+<a href="/docs/reference/modes/continuous-delivery">continuous delivery</a>. GitVersion will increment the
+<em>metadata</em> for each build so you can tell builds apart. For example <code>1.0.0+5</code>
+followed by <code>1.0.0+6</code>. It is important to note that build metadata <em>is not part
+of the semantic version; it is just metadata!</em>.</p>
 <p>All this effectively means that GitVersion will produce the same version NuGet
 package each commit until you tag a release.</p>
 <p>This causes problems for people as NuGet and other package managers do not
@@ -244,14 +244,14 @@ are:</p>
 <em>increment on every commit</em>. This is known in GitVersion as <em>continuous
 deployment mode</em>. By default <code>develop</code> builds are tagged with the <code>alpha</code>
 pre-release tag. This is so they are sorted higher than release branches.</p>
-<p>If you need to consume packages built from develop, we recommend publishing
+<p>If you need to consume packages built from <code>develop</code>, we recommend publishing
 these packages to a separate NuGet feed as an alpha channel. That way you can
 publish beta/release candidate builds and only people who opt into the alpha
 feed will see the alpha packages.</p>
 <h3 id="octopus-deploy">2. Octopus deploy</h3>
 <p>See <a href="/docs/reference/build-servers/octopus-deploy">Octopus deploy</a></p>
 <h2 id="manually-incrementing-the-version">Manually incrementing the version</h2>
-<p>With v3 there are multiple approaches.</p>
+<p>With v3 there are multiple approaches. Read about these below.</p>
 <h3 id="commit-messages">Commit messages</h3>
 <p>Adding <code>+semver: breaking</code> or <code>+semver: major</code> will cause the major version to
 be increased, <code>+semver: feature</code> or <code>+semver: minor</code> will bump minor and
@@ -266,52 +266,54 @@ commit-message-incrementing: Enabled
 </code></pre>
 <p>The options for <code>commit-message-incrementing</code> are <code>Enabled</code>, <code>MergeMessageOnly</code>
 and <code>Disabled</code></p>
-<p>If the incrementing mode is set to <code>MergeMessageOnly</code> you can add this
-information in when merging a pull request. This prevents commits within a PR
-bumping the version.</p>
-<p>One thing to be aware of: If the current version is an alpha-version
-(i.e. 0.x.y.), attempting to bump the major version will merely bump the minor
-(eg from 0.2.0 to 0.3.0 instead of 1.0.0). Once the current version is greater
-than 1.0.0, bumping the major version works as expected.</p>
+<p>If the incrementing <code>mode</code> is set to <code>MergeMessageOnly</code> you can add this
+information when merging a pull request. This prevents commits within a PR to
+bump the version number.</p>
+<p>One thing to be aware of: If the current version is an alpha-version (i.e.
+<code>0.x.y</code>.), attempting to bump the major version will merely bump the minor (eg
+from <code>0.2.0</code> to <code>0.3.0</code> instead of <code>1.0.0</code>). Once the current version is greater
+than <code>1.0.0</code>, bumping the major version works as expected.</p>
 <h4 id="conventional-commit-messages">Conventional commit messages</h4>
-<p>If you want to use the <a href="https://www.conventionalcommits.org/en/v1.0.0/">Conventional Commits</a>
-standard, you can leverage this feature as follows:</p>
+<p>If you want to use the <a href="https://www.conventionalcommits.org/">Conventional Commits</a> standard,
+you can leverage this feature as follows:</p>
 <pre><code class="language-yaml">mode: MainLine # Only add this if you want every version to be created automatically on your main branch.
 major-version-bump-message: "^(build|chore|ci|docs|feat|fix|perf|refactor|revert|style|test)(\\([\\w\\s]*\\))?(!:|:.*\\n\\n((.+\\n)+\\n)?BREAKING CHANGE:\\s.+)"
 minor-version-bump-message: "^(feat)(\\([\\w\\s]*\\))?:"
 patch-version-bump-message: "^(build|chore|ci|docs|fix|perf|refactor|revert|style|test)(\\([\\w\\s]*\\))?:"
 </code></pre>
-<p>This will ensure that your version gets bumped according to the commits you've created.</p>
+<p>This will ensure that your version gets bumped according to the commits you've
+created.</p>
 <h3 id="gitversion.yml">GitVersion.yml</h3>
 <p>The first is by setting the <code>next-version</code> property in the GitVersion.yml file.
 This property only serves as a base version,</p>
 <h3 id="branch-name">Branch name</h3>
-<p>If you create a branch with the version number in the branch name such as
+<p>If you create a branch with the version number in the branch name, such as
 <code>release-1.2.0</code> or <code>hotfix/1.0.1</code> then GitVersion will take the version number
-from the branch name as a source</p>
+from the branch name as a source. However, GitVersion can't use the <a href="/docs/learn/faq#merged-branch-names-as-version-source">branch
+name as a version source for <em>other branches</em></a>.</p>
 <h3 id="tagging-commit">Tagging commit</h3>
 <p>By tagging a commit, GitVersion will use that tag for the version of that
 commit, then increment the next commit automatically based on the increment
 rules for that branch (some branches bump patch, some minor).</p>
 <h3 id="incrementing-per-commit">Incrementing per commit</h3>
-<p>When using the continuous deployment mode (which will increment the SemVer every
-commit) all builds <em>must</em> have a pre-release tag, except for builds which are
+<p>When using the continuous deployment <code>mode</code> (which will increment the SemVer every
+commit) all builds <em>must</em> have a pre-release tag, except for builds that are
 explicitly tagged as stable.</p>
 <p>Then the build metadata (which is the commit count) is promoted to the
-pre-release tag. Applying those rules the above commit graph would produce:</p>
-<pre><code>e137e9		-&gt;		1.0.0+0
-a5f6c5		-&gt;		1.0.1-ci.1
-adb29a		-&gt;		1.0.1-feature-foo.1 (PR #5 Version: `1.0.1-PullRequest.5+2`)
-7c2438		-&gt;		1.0.1-feature-foo.2 (PR #5 Version: `1.0.1-PullRequest.5+3`)
-5f413b		-&gt;		1.0.1-ci.4
-d6155b		-&gt;		2.0.0-rc.1+4 (Before and after tag)
-d53ab6		-&gt;		2.0.0-rc.2 (If there was another commit on the release branch it would be 2.0.0-rc.3)
-b5d142		-&gt;		2.0.0-ci.0 (2.0.0 branch was merged, so main is now at 2.0.0)
+pre-release tag. Applying these rules, the above commit-graph would produce:</p>
+<pre><code>e137e9 -&gt; 1.0.0+0
+a5f6c5 -&gt; 1.0.1-ci.1
+adb29a -&gt; 1.0.1-feature-foo.1 (PR #5 Version: `1.0.1-PullRequest.5+2`)
+7c2438 -&gt; 1.0.1-feature-foo.2 (PR #5 Version: `1.0.1-PullRequest.5+3`)
+5f413b -&gt; 1.0.1-ci.4
+d6155b -&gt; 2.0.0-rc.1+4 (Before and after tag)
+d53ab6 -&gt; 2.0.0-rc.2 (If there was another commit on the release branch it would be 2.0.0-rc.3)
+b5d142 -&gt; 2.0.0-ci.0 (2.0.0 branch was merged, so main is now at 2.0.0)
 </code></pre>
-<p>As you can see the versions now no longer conflict. When you want to create a
-stable <code>2.0.0</code> release you simply <code>git tag 2.0.0</code> then build the tag and it will
-produce a stable 2.0.0 package.</p>
-<p>For more information/background on why we have come to this conclusion read
+<p>As you can see, the versions now no longer conflict. When you want to create a
+stable <code>2.0.0</code> release you simply <code>git tag 2.0.0</code>, then build the tag, and it
+will produce a stable <code>2.0.0</code> package.</p>
+<p>For more information/background on why we have come to this conclusion, read
 <a href="http://www.xavierdecoster.com/semantic-versioning-auto-incremented-nuget-package-versions">Xavier Decoster's blog post on the subject</a>.</p>
 
 	</section>
