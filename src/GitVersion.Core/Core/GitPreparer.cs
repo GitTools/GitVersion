@@ -20,7 +20,7 @@ namespace GitVersion
         private readonly IGitRepositoryInfo repositoryInfo;
         private readonly IRepositoryStore repositoryStore;
         private readonly ICurrentBuildAgent buildAgent;
-        private RetryAction<LockedFileException> retryAction;
+        private readonly RetryAction<LockedFileException> retryAction;
 
         private const string DefaultRemoteName = "origin";
 
@@ -39,6 +39,7 @@ namespace GitVersion
 
         public void Prepare()
         {
+            System.Diagnostics.Debugger.Launch();
             var gitVersionOptions = options.Value;
 
             // Normalize if we are running on build server

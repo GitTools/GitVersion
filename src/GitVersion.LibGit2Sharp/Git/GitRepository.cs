@@ -11,7 +11,7 @@ namespace GitVersion
     internal sealed class GitRepository : IMutatingGitRepository
     {
         private readonly ILog log;
-        private Lazy<IRepository> repositoryLazy;
+        private readonly Lazy<IRepository> repositoryLazy;
         private IRepository repositoryInstance => repositoryLazy.Value;
 
         public GitRepository(ILog log, IGitRepositoryInfo repositoryInfo)

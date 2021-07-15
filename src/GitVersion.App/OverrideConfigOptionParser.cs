@@ -10,7 +10,7 @@ namespace GitVersion
         private static readonly Lazy<ILookup<string, PropertyInfo>> _lazySupportedProperties =
             new Lazy<ILookup<string, PropertyInfo>>(GetSupportedProperties, true);
 
-        private Lazy<Config> _lazyConfig = new Lazy<Config>();
+        private readonly Lazy<Config> _lazyConfig = new Lazy<Config>();
 
         internal ILookup<string, PropertyInfo> SupportedProperties => _lazySupportedProperties.Value;
 
