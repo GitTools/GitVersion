@@ -160,3 +160,6 @@ dotnet_diagnostic.IDE0090.severity = warning
 
 # IDE0041: Use 'is null' check
 dotnet_diagnostic.IDE0041.severity = warning
+
+# CA1825: Avoid zero-length array allocations
+dotnet_diagnostic.CA1825.severity = warning
