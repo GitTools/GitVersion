@@ -1,13 +1,13 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using GitTools.Testing;
 using GitVersion.BuildAgents;
-using GitVersion.MsBuild.Tests.Helpers;
 using GitVersion.Core.Tests.Helpers;
+using GitVersion.MsBuild.Tests.Helpers;
 using LibGit2Sharp;
 using Microsoft.Build.Utilities.ProjectCreation;
-using System.IO;
 
 namespace GitVersion.MsBuild.Tests.Tasks
 {

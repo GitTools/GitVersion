@@ -4,8 +4,8 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using GitVersion.BuildAgents;
-using GitVersion.Helpers;
 using GitVersion.Core.Tests.Helpers;
+using GitVersion.Helpers;
 using GitVersion.Extensions;
 
 namespace GitVersion.App.Tests

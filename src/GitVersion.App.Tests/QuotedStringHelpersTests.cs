@@ -1,6 +1,6 @@
+using System.Collections.Generic;
 using GitVersion;
 using NUnit.Framework;
-using System.Collections.Generic;
 
 namespace GitVersionExe.Tests
 {

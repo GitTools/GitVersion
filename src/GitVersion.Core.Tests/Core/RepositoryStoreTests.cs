@@ -1,12 +1,11 @@
 using System;
 using GitTools.Testing;
 using GitVersion.Core.Tests.Helpers;
-using GitVersion.Logging;
 using GitVersion.Core.Tests.IntegrationTests;
+using GitVersion.Logging;
 using Microsoft.Extensions.DependencyInjection;
 using NUnit.Framework;
 using Shouldly;
-using NSubstitute.ExceptionExtensions;
 
 namespace GitVersion.Core.Tests
 {

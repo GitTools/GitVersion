@@ -1,4 +1,3 @@
-using System.IO;
 using GitVersion;
 using GitVersion.BuildAgents;
 using GitVersion.Core.Tests.Helpers;
