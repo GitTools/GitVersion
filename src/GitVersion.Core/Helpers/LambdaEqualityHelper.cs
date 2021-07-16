@@ -14,7 +14,7 @@ namespace GitVersion.Helpers
 
         public bool Equals(T? instance, T? other)
         {
-            if (ReferenceEquals(null, instance) || ReferenceEquals(null, other))
+            if (instance is null || other is null)
             {
                 return false;
             }
