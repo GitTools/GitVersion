@@ -48,31 +48,31 @@ namespace GitVersion.VersionConverters.AssemblyInfo
             {
                 var localProjectFile = projectFile.FullName;
 
-                var originalFileContents = fileSystem.ReadAllText(localProjectFile);
+                var originalFileContents = this.fileSystem.ReadAllText(localProjectFile);
                 var fileXml = XElement.Parse(originalFileContents);
 
                 if (!CanUpdateProjectFile(fileXml))
                 {
-                    log.Warning($"Unable to update file: {localProjectFile}");
+                    this.log.Warning($"Unable to update file: {localProjectFile}");
                     continue;
                 }
 
-                log.Debug($"Update file: {localProjectFile}");
+                this.log.Debug($"Update file: {localProjectFile}");
 
                 var backupProjectFile = localProjectFile + ".bak";
-                fileSystem.Copy(localProjectFile, backupProjectFile, true);
+                this.fileSystem.Copy(localProjectFile, backupProjectFile, true);
 
-                restoreBackupTasks.Add(() =>
+                this.restoreBackupTasks.Add(() =>
                 {
-                    if (fileSystem.Exists(localProjectFile))
+                    if (this.fileSystem.Exists(localProjectFile))
                     {
-                        fileSystem.Delete(localProjectFile);
+                        this.fileSystem.Delete(localProjectFile);
                     }
 
-                    fileSystem.Move(backupProjectFile, localProjectFile);
+                    this.fileSystem.Move(backupProjectFile, localProjectFile);
                 });
 
-                cleanupBackupTasks.Add(() => fileSystem.Delete(backupProjectFile));
+                this.cleanupBackupTasks.Add(() => this.fileSystem.Delete(backupProjectFile));
 
                 if (!assemblyVersion.IsNullOrWhiteSpace())
                 {
@@ -97,7 +97,7 @@ namespace GitVersion.VersionConverters.AssemblyInfo
                 var outputXmlString = fileXml.ToString();
                 if (originalFileContents != outputXmlString)
                 {
-                    fileSystem.WriteAllText(localProjectFile, outputXmlString);
+                    this.fileSystem.WriteAllText(localProjectFile, outputXmlString);
                 }
             }
 
@@ -108,7 +108,7 @@ namespace GitVersion.VersionConverters.AssemblyInfo
         {
             if (xmlRoot.Name != "Project")
             {
-                log.Warning($"Invalid project file specified, root element must be <Project>.");
+                this.log.Warning($"Invalid project file specified, root element must be <Project>.");
                 return false;
             }
 
@@ -117,21 +117,21 @@ namespace GitVersion.VersionConverters.AssemblyInfo
             if (sdkAttribute == null || !supportedSdks.Contains(sdkAttribute.Value))
             {
                 var supportedSdkString = string.Join("|", supportedSdks);
-                log.Warning($"Specified project file Sdk ({sdkAttribute?.Value}) is not supported, please ensure the project sdk is of the following: {supportedSdkString}.");
+                this.log.Warning($"Specified project file Sdk ({sdkAttribute?.Value}) is not supported, please ensure the project sdk is of the following: {supportedSdkString}.");
                 return false;
             }
 
             var propertyGroups = xmlRoot.Descendants("PropertyGroup").ToList();
             if (!propertyGroups.Any())
             {
-                log.Warning("Unable to locate any <PropertyGroup> elements in specified project file. Are you sure it is in a correct format?");
+                this.log.Warning("Unable to locate any <PropertyGroup> elements in specified project file. Are you sure it is in a correct format?");
                 return false;
             }
 
             var lastGenerateAssemblyInfoElement = propertyGroups.SelectMany(s => s.Elements("GenerateAssemblyInfo")).LastOrDefault();
             if (lastGenerateAssemblyInfoElement != null && (bool)lastGenerateAssemblyInfoElement == false)
             {
-                log.Warning($"Project file specifies <GenerateAssemblyInfo>false</GenerateAssemblyInfo>: versions set in this project file will not affect the output artifacts.");
+                this.log.Warning($"Project file specifies <GenerateAssemblyInfo>false</GenerateAssemblyInfo>: versions set in this project file will not affect the output artifacts.");
                 return false;
             }
 
@@ -158,24 +158,24 @@ namespace GitVersion.VersionConverters.AssemblyInfo
 
         public void Dispose()
         {
-            foreach (var restoreBackup in restoreBackupTasks)
+            foreach (var restoreBackup in this.restoreBackupTasks)
             {
                 restoreBackup();
             }
 
-            cleanupBackupTasks.Clear();
-            restoreBackupTasks.Clear();
+            this.cleanupBackupTasks.Clear();
+            this.restoreBackupTasks.Clear();
         }
 
         private void CommitChanges()
         {
-            foreach (var cleanupBackupTask in cleanupBackupTasks)
+            foreach (var cleanupBackupTask in this.cleanupBackupTasks)
             {
                 cleanupBackupTask();
             }
 
-            cleanupBackupTasks.Clear();
-            restoreBackupTasks.Clear();
+            this.cleanupBackupTasks.Clear();
+            this.restoreBackupTasks.Clear();
         }
 
         private IEnumerable<FileInfo> GetProjectFiles(AssemblyInfoContext context)
@@ -189,19 +189,19 @@ namespace GitVersion.VersionConverters.AssemblyInfo
                 {
                     var fullPath = Path.Combine(workingDirectory, item);
 
-                    if (fileSystem.Exists(fullPath))
+                    if (this.fileSystem.Exists(fullPath))
                     {
                         yield return new FileInfo(fullPath);
                     }
                     else
                     {
-                        log.Warning($"Specified file {fullPath} was not found and will not be updated.");
+                        this.log.Warning($"Specified file {fullPath} was not found and will not be updated.");
                     }
                 }
             }
             else
             {
-                foreach (var item in fileSystem.DirectoryEnumerateFiles(workingDirectory, "*", SearchOption.AllDirectories).Where(IsSupportedProjectFile))
+                foreach (var item in this.fileSystem.DirectoryEnumerateFiles(workingDirectory, "*", SearchOption.AllDirectories).Where(IsSupportedProjectFile))
                 {
                     var assemblyInfoFile = new FileInfo(item);
 

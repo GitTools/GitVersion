@@ -24,7 +24,7 @@ namespace GitVersion.Logging
         {
             try
             {
-                WriteLogEntry(filePath, message);
+                WriteLogEntry(this.filePath, message);
             }
             catch (Exception)
             {

@@ -22,34 +22,34 @@ namespace GitVersion.Core.Tests.BuildAgents
             {
                 services.AddSingleton<EnvRun>();
             });
-            environment = sp.GetService<IEnvironment>();
-            buildServer = sp.GetService<EnvRun>();
+            this.environment = sp.GetService<IEnvironment>();
+            this.buildServer = sp.GetService<EnvRun>();
 
             // set environment variable and create an empty envrun file to indicate that EnvRun is running...
-            mFilePath = Path.Combine(Path.GetTempPath(), "envrun.db");
-            environment.SetEnvironmentVariable(EnvVarName, mFilePath);
-            File.OpenWrite(mFilePath).Dispose();
+            this.mFilePath = Path.Combine(Path.GetTempPath(), "envrun.db");
+            this.environment.SetEnvironmentVariable(EnvVarName, this.mFilePath);
+            File.OpenWrite(this.mFilePath).Dispose();
         }
 
         [TearDown]
         public void ClearEnvironmentVariableForTest()
         {
-            environment.SetEnvironmentVariable(EnvVarName, null);
-            File.Delete(mFilePath);
+            this.environment.SetEnvironmentVariable(EnvVarName, null);
+            File.Delete(this.mFilePath);
         }
 
         [Test]
         public void CanApplyToCurrentContext()
         {
-            var applys = buildServer.CanApplyToCurrentContext();
+            var applys = this.buildServer.CanApplyToCurrentContext();
             applys.ShouldBeTrue();
         }
 
         [Test]
         public void CanApplyToCurrentContextEnvironmentVariableNotSet()
         {
-            environment.SetEnvironmentVariable(EnvVarName, null);
-            var applys = buildServer.CanApplyToCurrentContext();
+            this.environment.SetEnvironmentVariable(EnvVarName, null);
+            var applys = this.buildServer.CanApplyToCurrentContext();
             applys.ShouldBeFalse();
         }
 
@@ -58,7 +58,7 @@ namespace GitVersion.Core.Tests.BuildAgents
         public void GenerateSetVersionMessage(string fullSemVer)
         {
             var vars = new TestableVersionVariables(fullSemVer: fullSemVer);
-            var version = buildServer.GenerateSetVersionMessage(vars);
+            var version = this.buildServer.GenerateSetVersionMessage(vars);
             version.ShouldBe(fullSemVer);
         }
 
@@ -66,7 +66,7 @@ namespace GitVersion.Core.Tests.BuildAgents
         [TestCase("Version", "1.2.3-rc4", "@@envrun[set name='GitVersion_Version' value='1.2.3-rc4']")]
         public void GenerateSetParameterMessage(string name, string value, string expected)
         {
-            var output = buildServer.GenerateSetParameterMessage(name, value);
+            var output = this.buildServer.GenerateSetParameterMessage(name, value);
             output.ShouldHaveSingleItem();
             output[0].ShouldBe(expected);
         }

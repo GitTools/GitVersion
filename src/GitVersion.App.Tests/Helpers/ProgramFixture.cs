@@ -30,24 +30,24 @@ namespace GitVersion.App.Tests
             var consoleBuilder = new StringBuilder();
             IConsole consoleAdapter = new TestConsoleAdapter(consoleBuilder);
 
-            environment = new TestEnvironment();
+            this.environment = new TestEnvironment();
 
             Overrides.Add(services =>
             {
                 services.AddSingleton(log);
                 services.AddSingleton(consoleAdapter);
-                services.AddSingleton(environment);
+                services.AddSingleton(this.environment);
             });
 
-            logger = new Lazy<string>(() => logBuilder.ToString());
-            output = new Lazy<string>(() => consoleAdapter.ToString());
+            this.logger = new Lazy<string>(() => logBuilder.ToString());
+            this.output = new Lazy<string>(() => consoleAdapter.ToString());
         }
 
         public void WithEnv(params KeyValuePair<string, string>[] envs)
         {
             foreach (var env in envs)
             {
-                environment.SetEnvironmentVariable(env.Key, env.Value);
+                this.environment.SetEnvironmentVariable(env.Key, env.Value);
             }
         }
 
@@ -62,17 +62,17 @@ namespace GitVersion.App.Tests
             // Create the application and override registrations.
             var program = new Program(builder => Overrides.ForEach(action => action(builder)));
 
-            if (!workingDirectory.IsNullOrWhiteSpace())
+            if (!this.workingDirectory.IsNullOrWhiteSpace())
             {
-                args = new[] { "-targetpath", workingDirectory }.Concat(args).ToArray();
+                args = new[] { "-targetpath", this.workingDirectory }.Concat(args).ToArray();
             }
             await program.RunAsync(args);
 
             return new ProgramFixtureResult
             {
                 ExitCode = System.Environment.ExitCode,
-                Output = output.Value,
-                Log = logger.Value
+                Output = this.output.Value,
+                Log = this.logger.Value
             };
         }
     }

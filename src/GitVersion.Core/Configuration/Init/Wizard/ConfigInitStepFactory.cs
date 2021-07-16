@@ -16,6 +16,6 @@ namespace GitVersion.Configuration.Init.Wizard
             this.sp = sp ?? throw new ArgumentNullException(nameof(sp));
         }
 
-        public T? CreateStep<T>() => sp!.GetService<T>();
+        public T? CreateStep<T>() => this.sp!.GetService<T>();
     }
 }

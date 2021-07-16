@@ -15,16 +15,16 @@ namespace GitVersion.Configuration.Init.Wizard
             switch (result?.ToLower())
             {
                 case "y":
-                    Console.WriteLine("GitFlow is likely a good fit, the 'develop' branch can be used " +
+                    this.Console.WriteLine("GitFlow is likely a good fit, the 'develop' branch can be used " +
                                       "for active development while stabilising the next release.");
-                    Console.WriteLine();
-                    Console.WriteLine("GitHubFlow is designed for a lightweight workflow where main is always " +
+                    this.Console.WriteLine();
+                    this.Console.WriteLine("GitHubFlow is designed for a lightweight workflow where main is always " +
                                       "good to deploy to production and feature branches are used to stabilise " +
                                       "features, once stable they are merged to main and made available in the next release");
-                    steps.Enqueue(StepFactory.CreateStep<PickBranchingStrategyStep>()!);
+                    steps.Enqueue(this.StepFactory.CreateStep<PickBranchingStrategyStep>()!);
                     return StepResult.Ok();
                 case "n":
-                    steps.Enqueue(StepFactory.CreateStep<PickBranchingStrategy3Step>()!);
+                    steps.Enqueue(this.StepFactory.CreateStep<PickBranchingStrategy3Step>()!);
                     return StepResult.Ok();
             }
 

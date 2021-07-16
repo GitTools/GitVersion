@@ -24,13 +24,13 @@ namespace GitVersion.Configuration.Init.BuildServer
 
         public AppVeyorSetup WithData(ProjectVisibility visibility)
         {
-            projectVisibility = visibility;
+            this.projectVisibility = visibility;
             return this;
         }
 
         protected override StepResult HandleResult(string? result, Queue<ConfigInitWizardStep> steps, Config config, string workingDirectory)
         {
-            var editConfigStep = StepFactory.CreateStep<EditConfigStep>()!;
+            var editConfigStep = this.StepFactory.CreateStep<EditConfigStep>()!;
             switch (result)
             {
                 case "0":
@@ -60,12 +60,12 @@ namespace GitVersion.Configuration.Init.BuildServer
 
         private void GenerateBasicConfig(string workingDirectory)
         {
-            WriteConfig(workingDirectory, FileSystem, $@"install:
+            WriteConfig(workingDirectory, this.FileSystem, $@"install:
   - choco install gitversion.portable -pre -y
 
 before_build:
   - nuget restore
-{GetGvCommand(projectVisibility)}
+{GetGvCommand(this.projectVisibility)}
 
 build:
   project: <your sln file>");
@@ -73,7 +73,7 @@ build:
 
         private void GenerateNuGetConfig(string workingDirectory)
         {
-            WriteConfig(workingDirectory, FileSystem, $@"install:
+            WriteConfig(workingDirectory, this.FileSystem, $@"install:
   - choco install gitversion.portable -pre -y
 
 assembly_info:
@@ -81,7 +81,7 @@ assembly_info:
 
 before_build:
   - nuget restore
-{GetGvCommand(projectVisibility)}
+{GetGvCommand(this.projectVisibility)}
 
 build:
   project: <your sln file>
@@ -96,13 +96,13 @@ after_build:
         {
             var outputFilename = GetOutputFilename(workingDirectory, fileSystem);
             fileSystem.WriteAllText(outputFilename, configContents);
-            Log.Info($"AppVeyor sample config file written to {outputFilename}");
+            this.Log.Info($"AppVeyor sample config file written to {outputFilename}");
         }
 
         protected override string GetPrompt(Config config, string workingDirectory)
         {
             var prompt = new StringBuilder();
-            if (AppVeyorConfigExists(workingDirectory, FileSystem))
+            if (AppVeyorConfigExists(workingDirectory, this.FileSystem))
             {
                 prompt.AppendLine("GitVersion doesn't support modifying existing appveyor config files. We will generate appveyor.gitversion.yml instead");
                 prompt.AppendLine();

@@ -14,7 +14,7 @@ namespace GitVersion.VersionCalculation
         private readonly IMainlineVersionCalculator mainlineVersionCalculator;
         private readonly IRepositoryStore repositoryStore;
         private readonly Lazy<GitVersionContext> versionContext;
-        private GitVersionContext context => versionContext.Value;
+        private GitVersionContext context => this.versionContext.Value;
 
         public NextVersionCalculator(ILog log, IBaseVersionCalculator baseVersionCalculator,
             IMainlineVersionCalculator mainlineVersionCalculator, IRepositoryStore repositoryStore,
@@ -29,10 +29,10 @@ namespace GitVersion.VersionCalculation
 
         public SemanticVersion FindVersion()
         {
-            log.Info($"Running against branch: {context.CurrentBranch} ({context.CurrentCommit?.ToString() ?? "-"})");
+            this.log.Info($"Running against branch: {context.CurrentBranch} ({context.CurrentCommit?.ToString() ?? "-"})");
             if (context.IsCurrentCommitTagged)
             {
-                log.Info($"Current commit is tagged with version {context.CurrentCommitTaggedVersion}, " +
+                this.log.Info($"Current commit is tagged with version {context.CurrentCommitTaggedVersion}, " +
                          "version calculation is for metadata only.");
             }
             else
@@ -45,7 +45,7 @@ namespace GitVersion.VersionCalculation
             if (context.IsCurrentCommitTagged)
             {
                 // Will always be 0, don't bother with the +0 on tags
-                var semanticVersionBuildMetaData = mainlineVersionCalculator.CreateVersionBuildMetaData(context.CurrentCommit);
+                var semanticVersionBuildMetaData = this.mainlineVersionCalculator.CreateVersionBuildMetaData(context.CurrentCommit);
                 semanticVersionBuildMetaData.CommitsSinceTag = null;
 
                 var semanticVersion = new SemanticVersion(context.CurrentCommitTaggedVersion)
@@ -55,19 +55,19 @@ namespace GitVersion.VersionCalculation
                 taggedSemanticVersion = semanticVersion;
             }
 
-            var baseVersion = baseVersionCalculator.GetBaseVersion();
-            baseVersion.SemanticVersion.BuildMetaData = mainlineVersionCalculator.CreateVersionBuildMetaData(baseVersion.BaseVersionSource);
+            var baseVersion = this.baseVersionCalculator.GetBaseVersion();
+            baseVersion.SemanticVersion.BuildMetaData = this.mainlineVersionCalculator.CreateVersionBuildMetaData(baseVersion.BaseVersionSource);
             SemanticVersion semver;
             if (context.Configuration?.VersioningMode == VersioningMode.Mainline)
             {
-                semver = mainlineVersionCalculator.FindMainlineModeVersion(baseVersion);
+                semver = this.mainlineVersionCalculator.FindMainlineModeVersion(baseVersion);
             }
             else
             {
                 if (taggedSemanticVersion?.BuildMetaData == null || (taggedSemanticVersion.BuildMetaData.Sha != baseVersion.SemanticVersion.BuildMetaData.Sha))
                 {
                     semver = PerformIncrement(baseVersion);
-                    semver.BuildMetaData = mainlineVersionCalculator.CreateVersionBuildMetaData(baseVersion.BaseVersionSource);
+                    semver.BuildMetaData = this.mainlineVersionCalculator.CreateVersionBuildMetaData(baseVersion.BaseVersionSource);
                 }
                 else
                 {
@@ -106,22 +106,22 @@ namespace GitVersion.VersionCalculation
         private SemanticVersion PerformIncrement(BaseVersion baseVersion)
         {
             var semver = baseVersion.SemanticVersion;
-            var increment = repositoryStore.DetermineIncrementedField(baseVersion, context);
+            var increment = this.repositoryStore.DetermineIncrementedField(baseVersion, context);
             if (increment != null)
             {
                 semver = semver.IncrementVersion(increment.Value);
             }
-            else log.Info("Skipping version increment");
+            else this.log.Info("Skipping version increment");
             return semver;
         }
 
         private void UpdatePreReleaseTag(SemanticVersion semanticVersion, string? branchNameOverride)
         {
-            var tagToUse = context.Configuration?.GetBranchSpecificTag(log, context.CurrentBranch?.Name.Friendly, branchNameOverride);
+            var tagToUse = context.Configuration?.GetBranchSpecificTag(this.log, context.CurrentBranch?.Name.Friendly, branchNameOverride);
 
             int? number = null;
 
-            var lastTag = repositoryStore
+            var lastTag = this.repositoryStore
                 .GetVersionTagsOnBranch(context.CurrentBranch!, context.Configuration?.GitTagPrefix)
                 .FirstOrDefault(v => v?.PreReleaseTag?.Name?.IsEquivalentTo(tagToUse) == true);
 

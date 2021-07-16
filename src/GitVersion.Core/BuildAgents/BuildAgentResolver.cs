@@ -17,19 +17,19 @@ namespace GitVersion.BuildAgents
         public ICurrentBuildAgent? Resolve()
         {
             ICurrentBuildAgent? instance = null;
-            foreach (var buildAgent in buildAgents)
+            foreach (var buildAgent in this.buildAgents)
             {
                 var agentName = buildAgent.GetType().Name;
                 try
                 {
                     if (!buildAgent.CanApplyToCurrentContext()) continue;
 
-                    log.Info($"Applicable build agent found: '{agentName}'.");
+                    this.log.Info($"Applicable build agent found: '{agentName}'.");
                     instance = (ICurrentBuildAgent)buildAgent;
                 }
                 catch (Exception ex)
                 {
-                    log.Warning($"Failed to check build agent '{agentName}': {ex.Message}");
+                    this.log.Warning($"Failed to check build agent '{agentName}': {ex.Message}");
                 }
             }
 

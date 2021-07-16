@@ -29,19 +29,19 @@ namespace GitVersion.Configuration.Init.SetConfig
                 return StepResult.InvalidResponseSelected();
             }
 
-            var configureBranchStep = StepFactory.CreateStep<ConfigureBranch>()!;
+            var configureBranchStep = this.StepFactory.CreateStep<ConfigureBranch>()!;
             switch (result)
             {
                 case "0":
-                    steps.Enqueue(configureBranchStep.WithData(name, branchConfig));
+                    steps.Enqueue(configureBranchStep.WithData(this.name, this.branchConfig));
                     return StepResult.Ok();
                 case "1":
-                    branchConfig!.Tag = string.Empty;
-                    steps.Enqueue(configureBranchStep.WithData(name, branchConfig));
+                    this.branchConfig!.Tag = string.Empty;
+                    steps.Enqueue(configureBranchStep.WithData(name, this.branchConfig));
                     return StepResult.Ok();
                 default:
-                    branchConfig!.Tag = result;
-                    steps.Enqueue(configureBranchStep.WithData(name, branchConfig));
+                    this.branchConfig!.Tag = result;
+                    steps.Enqueue(configureBranchStep.WithData(name, this.branchConfig));
                     return StepResult.Ok();
             }
         }

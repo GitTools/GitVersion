@@ -49,7 +49,7 @@ namespace GitVersion
             if (exitCode != 0)
             {
                 // Dump log to console if we fail to complete successfully
-                console.Write(log.ToString());
+                this.console.Write(this.log.ToString());
             }
 
             return exitCode;
@@ -57,7 +57,7 @@ namespace GitVersion
 
         private int RunGitVersionTool(GitVersionOptions gitVersionOptions)
         {
-            var mutexName = repositoryInfo.DotGitDirectory.Replace(Path.DirectorySeparatorChar.ToString(), "");
+            var mutexName = this.repositoryInfo.DotGitDirectory.Replace(Path.DirectorySeparatorChar.ToString(), "");
             using var mutex = new Mutex(true, $@"Global\gitversion{mutexName}", out var acquired);
 
             try
@@ -67,37 +67,37 @@ namespace GitVersion
                     mutex.WaitOne();
                 }
 
-                var variables = gitVersionCalculateTool.CalculateVersionVariables();
+                var variables = this.gitVersionCalculateTool.CalculateVersionVariables();
 
-                var configuration = configProvider.Provide(overrideConfig: gitVersionOptions.ConfigInfo.OverrideConfig);
+                var configuration = this.configProvider.Provide(overrideConfig: gitVersionOptions.ConfigInfo.OverrideConfig);
 
-                gitVersionOutputTool.OutputVariables(variables, configuration.UpdateBuildNumber ?? true);
-                gitVersionOutputTool.UpdateAssemblyInfo(variables);
-                gitVersionOutputTool.UpdateWixVersionFile(variables);
+                this.gitVersionOutputTool.OutputVariables(variables, configuration.UpdateBuildNumber ?? true);
+                this.gitVersionOutputTool.UpdateAssemblyInfo(variables);
+                this.gitVersionOutputTool.UpdateWixVersionFile(variables);
             }
             catch (WarningException exception)
             {
                 var error = $"An error occurred:{System.Environment.NewLine}{exception.Message}";
-                log.Warning(error);
+                this.log.Warning(error);
                 return 1;
             }
             catch (Exception exception)
             {
                 var error = $"An unexpected error occurred:{System.Environment.NewLine}{exception}";
-                log.Error(error);
+                this.log.Error(error);
 
                 if (gitVersionOptions == null) return 1;
 
-                log.Info("Attempting to show the current git graph (please include in issue): ");
-                log.Info("Showing max of 100 commits");
+                this.log.Info("Attempting to show the current git graph (please include in issue): ");
+                this.log.Info("Showing max of 100 commits");
 
                 try
                 {
-                    GitExtensions.DumpGraph(gitVersionOptions.WorkingDirectory, mess => log.Info(mess), 100);
+                    GitExtensions.DumpGraph(gitVersionOptions.WorkingDirectory, mess => this.log.Info(mess), 100);
                 }
                 catch (Exception dumpGraphException)
                 {
-                    log.Error("Couldn't dump the git graph due to the following error: " + dumpGraphException);
+                    this.log.Error("Couldn't dump the git graph due to the following error: " + dumpGraphException);
                 }
                 return 1;
             }
@@ -113,7 +113,7 @@ namespace GitVersion
         {
             if (gitVersionOptions == null)
             {
-                helpWriter.Write();
+                this.helpWriter.Write();
                 exitCode = 1;
                 return true;
             }
@@ -122,14 +122,14 @@ namespace GitVersion
             if (gitVersionOptions.IsVersion)
             {
                 var assembly = Assembly.GetExecutingAssembly();
-                versionWriter.Write(assembly);
+                this.versionWriter.Write(assembly);
                 exitCode = 0;
                 return true;
             }
 
             if (gitVersionOptions.IsHelp)
             {
-                helpWriter.Write();
+                this.helpWriter.Write();
                 exitCode = 0;
                 return true;
             }
@@ -140,37 +140,37 @@ namespace GitVersion
                 gitVersionOptions.Output.Add(OutputType.BuildServer);
             }
 
-            ConfigureLogging(gitVersionOptions, log);
+            ConfigureLogging(gitVersionOptions, this.log);
 
             var workingDirectory = gitVersionOptions.WorkingDirectory;
             if (gitVersionOptions.Diag)
             {
-                log.Info("Dumping commit graph: ");
-                GitExtensions.DumpGraph(workingDirectory, mess => log.Info(mess), 100);
+                this.log.Info("Dumping commit graph: ");
+                GitExtensions.DumpGraph(workingDirectory, mess => this.log.Info(mess), 100);
             }
 
             if (!Directory.Exists(workingDirectory))
             {
-                log.Warning($"The working directory '{workingDirectory}' does not exist.");
+                this.log.Warning($"The working directory '{workingDirectory}' does not exist.");
             }
             else
             {
-                log.Info("Working directory: " + workingDirectory);
+                this.log.Info("Working directory: " + workingDirectory);
             }
 
-            configFileLocator.Verify(gitVersionOptions, repositoryInfo);
+            this.configFileLocator.Verify(gitVersionOptions, this.repositoryInfo);
 
             if (gitVersionOptions.Init)
             {
-                configProvider.Init(workingDirectory);
+                this.configProvider.Init(workingDirectory);
                 exitCode = 0;
                 return true;
             }
 
             if (gitVersionOptions.ConfigInfo.ShowConfig)
             {
-                var config = configProvider.Provide(workingDirectory);
-                console.WriteLine(config.ToString());
+                var config = this.configProvider.Provide(workingDirectory);
+                this.console.WriteLine(config.ToString());
                 exitCode = 0;
                 return true;
             }

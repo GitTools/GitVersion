@@ -25,19 +25,19 @@ namespace GitVersion.Configuration.Init.SetConfig
 
         protected override StepResult HandleResult(string? result, Queue<ConfigInitWizardStep> steps, Config config, string workingDirectory)
         {
-            var configureBranchStep = StepFactory.CreateStep<ConfigureBranch>()!;
+            var configureBranchStep = this.StepFactory.CreateStep<ConfigureBranch>()!;
             switch (result)
             {
                 case "0":
-                    steps.Enqueue(configureBranchStep.WithData(name, branchConfig));
+                    steps.Enqueue(configureBranchStep.WithData(this.name, this.branchConfig));
                     return StepResult.Ok();
                 case "1":
-                    branchConfig!.VersioningMode = VersioningMode.ContinuousDelivery;
-                    steps.Enqueue(configureBranchStep.WithData(name, branchConfig));
+                    this.branchConfig!.VersioningMode = VersioningMode.ContinuousDelivery;
+                    steps.Enqueue(configureBranchStep.WithData(name, this.branchConfig));
                     return StepResult.Ok();
                 case "2":
-                    branchConfig!.VersioningMode = VersioningMode.ContinuousDeployment;
-                    steps.Enqueue(configureBranchStep.WithData(name, branchConfig));
+                    this.branchConfig!.VersioningMode = VersioningMode.ContinuousDeployment;
+                    steps.Enqueue(configureBranchStep.WithData(name, this.branchConfig));
                     return StepResult.Ok();
             }
 
@@ -46,7 +46,7 @@ namespace GitVersion.Configuration.Init.SetConfig
 
         protected override string GetPrompt(Config config, string workingDirectory)
         {
-            return $@"What do you want the increment mode for {name} to be?
+            return $@"What do you want the increment mode for {this.name} to be?
 
 0) Go Back
 1) Follow SemVer and only increment when a release has been tagged (continuous delivery mode)

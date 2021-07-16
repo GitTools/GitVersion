@@ -19,7 +19,7 @@ namespace GitVersion.Configuration.Init.SetConfig
             {
                 if (parsed == 0)
                 {
-                    steps.Enqueue(StepFactory.CreateStep<EditConfigStep>()!);
+                    steps.Enqueue(this.StepFactory.CreateStep<EditConfigStep>()!);
                     return StepResult.Ok();
                 }
 
@@ -32,7 +32,7 @@ namespace GitVersion.Configuration.Init.SetConfig
                         branchConfig = new BranchConfig { Name = foundBranch.Key };
                         config.Branches.Add(foundBranch.Key, branchConfig);
                     }
-                    steps.Enqueue(StepFactory.CreateStep<ConfigureBranch>()!.WithData(foundBranch.Key, branchConfig));
+                    steps.Enqueue(this.StepFactory.CreateStep<ConfigureBranch>()!.WithData(foundBranch.Key, branchConfig));
                     return StepResult.Ok();
                 }
                 catch (ArgumentOutOfRangeException)

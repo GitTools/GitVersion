@@ -46,7 +46,7 @@ namespace GitVersion
                         return Options.Create(gitVersionOptions);
                     });
 
-                    overrides?.Invoke(services);
+                    this.overrides?.Invoke(services);
                     services.AddHostedService<GitVersionApp>();
                 })
                 .UseConsoleLifetime();

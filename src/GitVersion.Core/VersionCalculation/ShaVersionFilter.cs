@@ -21,7 +21,7 @@ namespace GitVersion.VersionCalculation
             reason = null;
 
             if (version.BaseVersionSource != null &&
-                shas.Any(sha => version.BaseVersionSource.Sha.StartsWith(sha, StringComparison.OrdinalIgnoreCase)))
+                this.shas.Any(sha => version.BaseVersionSource.Sha.StartsWith(sha, StringComparison.OrdinalIgnoreCase)))
             {
                 reason = $"Sha {version.BaseVersionSource} was ignored due to commit having been excluded by configuration";
                 return true;

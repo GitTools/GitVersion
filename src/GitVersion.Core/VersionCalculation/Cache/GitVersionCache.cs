@@ -31,16 +31,16 @@ namespace GitVersion.VersionCalculation.Cache
             variablesFromCache.FileName = cacheFileName;
 
             Dictionary<string, string> dictionary;
-            using (log.IndentLog("Creating dictionary"))
+            using (this.log.IndentLog("Creating dictionary"))
             {
                 dictionary = variablesFromCache.ToDictionary(x => x.Key, x => x.Value);
             }
 
             void WriteCacheOperation()
             {
-                using var stream = fileSystem.OpenWrite(cacheFileName);
+                using var stream = this.fileSystem.OpenWrite(cacheFileName);
                 using var sw = new StreamWriter(stream);
-                using (log.IndentLog("Storing version variables to cache file " + cacheFileName))
+                using (this.log.IndentLog("Storing version variables to cache file " + cacheFileName))
                 {
                     var serializer = new Serializer();
                     serializer.Serialize(sw, dictionary);
@@ -53,41 +53,41 @@ namespace GitVersion.VersionCalculation.Cache
 
         public string GetCacheDirectory()
         {
-            var gitDir = repositoryInfo.DotGitDirectory;
+            var gitDir = this.repositoryInfo.DotGitDirectory;
             return Path.Combine(gitDir, "gitversion_cache");
         }
 
         public VersionVariables? LoadVersionVariablesFromDiskCache(GitVersionCacheKey key)
         {
-            using (log.IndentLog("Loading version variables from disk cache"))
+            using (this.log.IndentLog("Loading version variables from disk cache"))
             {
                 var cacheDir = PrepareCacheDirectory();
 
                 var cacheFileName = GetCacheFileName(key, cacheDir);
-                if (!fileSystem.Exists(cacheFileName))
+                if (!this.fileSystem.Exists(cacheFileName))
                 {
-                    log.Info("Cache file " + cacheFileName + " not found.");
+                    this.log.Info("Cache file " + cacheFileName + " not found.");
                     return null;
                 }
 
-                using (log.IndentLog("Deserializing version variables from cache file " + cacheFileName))
+                using (this.log.IndentLog("Deserializing version variables from cache file " + cacheFileName))
                 {
                     try
                     {
-                        var loadedVariables = VersionVariables.FromFile(cacheFileName, fileSystem, log);
+                        var loadedVariables = VersionVariables.FromFile(cacheFileName, this.fileSystem, this.log);
                         return loadedVariables;
                     }
                     catch (Exception ex)
                     {
-                        log.Warning("Unable to read cache file " + cacheFileName + ", deleting it.");
-                        log.Info(ex.ToString());
+                        this.log.Warning("Unable to read cache file " + cacheFileName + ", deleting it.");
+                        this.log.Info(ex.ToString());
                         try
                         {
-                            fileSystem.Delete(cacheFileName);
+                            this.fileSystem.Delete(cacheFileName);
                         }
                         catch (Exception deleteEx)
                         {
-                            log.Warning($"Unable to delete corrupted version cache file {cacheFileName}. Got {deleteEx.GetType().FullName} exception.");
+                            this.log.Warning($"Unable to delete corrupted version cache file {cacheFileName}. Got {deleteEx.GetType().FullName} exception.");
                         }
 
                         return null;
@@ -101,7 +101,7 @@ namespace GitVersion.VersionCalculation.Cache
             var cacheDir = GetCacheDirectory();
 
             // If the cacheDir already exists, CreateDirectory just won't do anything (it won't fail). @asbjornu
-            fileSystem.CreateDirectory(cacheDir);
+            this.fileSystem.CreateDirectory(cacheDir);
 
             return cacheDir;
         }

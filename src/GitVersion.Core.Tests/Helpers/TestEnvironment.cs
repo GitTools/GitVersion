@@ -8,17 +8,17 @@ namespace GitVersion.Core.Tests.Helpers
 
         public TestEnvironment()
         {
-            map = new Dictionary<string, string>();
+            this.map = new Dictionary<string, string>();
         }
 
         public string GetEnvironmentVariable(string variableName)
         {
-            return map.TryGetValue(variableName, out var val) ? val : null;
+            return this.map.TryGetValue(variableName, out var val) ? val : null;
         }
 
         public void SetEnvironmentVariable(string variableName, string value)
         {
-            map[variableName] = value;
+            this.map[variableName] = value;
         }
     }
 }

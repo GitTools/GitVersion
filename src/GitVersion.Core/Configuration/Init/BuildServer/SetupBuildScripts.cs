@@ -16,10 +16,10 @@ namespace GitVersion.Configuration.Init.BuildServer
             switch (result)
             {
                 case "0":
-                    steps.Enqueue(StepFactory.CreateStep<EditConfigStep>()!);
+                    steps.Enqueue(this.StepFactory.CreateStep<EditConfigStep>()!);
                     return StepResult.Ok();
                 case "1":
-                    steps.Enqueue(StepFactory.CreateStep<AppveyorPublicPrivate>()!);
+                    steps.Enqueue(this.StepFactory.CreateStep<AppveyorPublicPrivate>()!);
                     return StepResult.Ok();
             }
             return StepResult.Ok();

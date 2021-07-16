@@ -18,9 +18,9 @@ namespace GitVersion.Configuration.Init.Wizard
 
         public Config? Run(Config config, string workingDirectory)
         {
-            console.WriteLine("GitVersion init will guide you through setting GitVersion up to work for you");
+            this.console.WriteLine("GitVersion init will guide you through setting GitVersion up to work for you");
             var steps = new Queue<ConfigInitWizardStep>();
-            steps.Enqueue(stepFactory.CreateStep<EditConfigStep>()!);
+            steps.Enqueue(this.stepFactory.CreateStep<EditConfigStep>()!);
 
             while (steps.Count > 0)
             {

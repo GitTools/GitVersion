@@ -12,17 +12,17 @@ namespace GitVersion.Configuration.Init.Wizard
 
         protected override StepResult HandleResult(string? result, Queue<ConfigInitWizardStep> steps, Config config, string workingDirectory)
         {
-            var returnToStep = StepFactory.CreateStep<FinishedSetupStep>();
+            var returnToStep = this.StepFactory.CreateStep<FinishedSetupStep>();
             switch (result)
             {
                 case "1":
-                    steps.Enqueue(StepFactory.CreateStep<GitFlowSetupStep>()!.WithData(returnToStep!, true));
+                    steps.Enqueue(this.StepFactory.CreateStep<GitFlowSetupStep>()!.WithData(returnToStep!, true));
                     break;
                 case "2":
-                    steps.Enqueue(StepFactory.CreateStep<GitHubFlowStep>()!.WithData(returnToStep!, true));
+                    steps.Enqueue(this.StepFactory.CreateStep<GitHubFlowStep>()!.WithData(returnToStep!, true));
                     break;
                 case "3":
-                    steps.Enqueue(StepFactory.CreateStep<PickBranchingStrategy1Step>()!);
+                    steps.Enqueue(this.StepFactory.CreateStep<PickBranchingStrategy1Step>()!);
                     break;
                 default:
                     return StepResult.InvalidResponseSelected();

@@ -29,7 +29,7 @@ namespace GitVersion.VersionCalculation
                 // Continuous Deployment always requires a pre-release tag unless the commit is tagged
                 if (semanticVersion.PreReleaseTag?.HasTag() != true)
                 {
-                    semanticVersion.PreReleaseTag!.Name = config.GetBranchSpecificTag(log, semanticVersion.BuildMetaData?.Branch, null);
+                    semanticVersion.PreReleaseTag!.Name = config.GetBranchSpecificTag(this.log, semanticVersion.BuildMetaData?.Branch, null);
                     if (semanticVersion.PreReleaseTag.Name.IsNullOrEmpty())
                     {
                         semanticVersion.PreReleaseTag.Name = config.ContinuousDeploymentFallbackTag;
@@ -139,7 +139,7 @@ namespace GitVersion.VersionCalculation
 
                 try
                 {
-                    formattedString = formatString.FormatWith(source, environment).RegexReplace("[^0-9A-Za-z-.+]", "-");
+                    formattedString = formatString.FormatWith(source, this.environment).RegexReplace("[^0-9A-Za-z-.+]", "-");
                 }
                 catch (ArgumentException formex)
                 {
@@ -157,7 +157,7 @@ namespace GitVersion.VersionCalculation
 #pragma warning restore CS0618 // Type or member is obsolete
             if (formatString.Contains($"{{{obsoletePropertyName}}}"))
             {
-                log.Write(LogLevel.Warn, $"Use format variable '{nameof(SemanticVersionFormatValues.InformationalVersion)}' instead of '{obsoletePropertyName}' which is obsolete and will be removed in a future release.");
+                this.log.Write(LogLevel.Warn, $"Use format variable '{nameof(SemanticVersionFormatValues.InformationalVersion)}' instead of '{obsoletePropertyName}' which is obsolete and will be removed in a future release.");
             }
         }
     }

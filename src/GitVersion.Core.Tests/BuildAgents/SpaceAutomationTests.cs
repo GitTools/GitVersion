@@ -21,22 +21,22 @@ namespace GitVersionCore.Tests.BuildAgents
             {
                 services.AddSingleton<SpaceAutomation>();
             });
-            environment = sp.GetService<IEnvironment>();
-            buildServer = sp.GetService<SpaceAutomation>();
-            environment.SetEnvironmentVariable(SpaceAutomation.EnvironmentVariableName, "true");
+            this.environment = sp.GetService<IEnvironment>();
+            this.buildServer = sp.GetService<SpaceAutomation>();
+            this.environment.SetEnvironmentVariable(SpaceAutomation.EnvironmentVariableName, "true");
         }
 
         [TearDown]
         public void TearDown()
         {
-            environment.SetEnvironmentVariable(SpaceAutomation.EnvironmentVariableName, null);
+            this.environment.SetEnvironmentVariable(SpaceAutomation.EnvironmentVariableName, null);
         }
 
         [Test]
         public void CanApplyToCurrentContextShouldBeTrueWhenEnvironmentVariableIsSet()
         {
             // Act
-            var result = buildServer.CanApplyToCurrentContext();
+            var result = this.buildServer.CanApplyToCurrentContext();
 
             // Assert
             result.ShouldBeTrue();
@@ -46,10 +46,10 @@ namespace GitVersionCore.Tests.BuildAgents
         public void CanApplyToCurrentContextShouldBeFalseWhenEnvironmentVariableIsNotSet()
         {
             // Arrange
-            environment.SetEnvironmentVariable(SpaceAutomation.EnvironmentVariableName, "");
+            this.environment.SetEnvironmentVariable(SpaceAutomation.EnvironmentVariableName, "");
 
             // Act
-            var result = buildServer.CanApplyToCurrentContext();
+            var result = this.buildServer.CanApplyToCurrentContext();
 
             // Assert
             result.ShouldBeFalse();
@@ -59,10 +59,10 @@ namespace GitVersionCore.Tests.BuildAgents
         public void GetCurrentBranchShouldHandleBranches()
         {
             // Arrange
-            environment.SetEnvironmentVariable("JB_SPACE_GIT_BRANCH", "refs/heads/master");
+            this.environment.SetEnvironmentVariable("JB_SPACE_GIT_BRANCH", "refs/heads/master");
 
             // Act
-            var result = buildServer.GetCurrentBranch(false);
+            var result = this.buildServer.GetCurrentBranch(false);
 
             // Assert
             result.ShouldBe("refs/heads/master");
@@ -72,10 +72,10 @@ namespace GitVersionCore.Tests.BuildAgents
         public void GetCurrentBranchShouldHandleTags()
         {
             // Arrange
-            environment.SetEnvironmentVariable("JB_SPACE_GIT_BRANCH", "refs/tags/1.0.0");
+            this.environment.SetEnvironmentVariable("JB_SPACE_GIT_BRANCH", "refs/tags/1.0.0");
 
             // Act
-            var result = buildServer.GetCurrentBranch(false);
+            var result = this.buildServer.GetCurrentBranch(false);
 
             // Assert
             result.ShouldBe("refs/tags/1.0.0");
@@ -85,10 +85,10 @@ namespace GitVersionCore.Tests.BuildAgents
         public void GetCurrentBranchShouldHandlePullRequests()
         {
             // Arrange
-            environment.SetEnvironmentVariable("JB_SPACE_GIT_BRANCH", "refs/pull/1/merge");
+            this.environment.SetEnvironmentVariable("JB_SPACE_GIT_BRANCH", "refs/pull/1/merge");
 
             // Act
-            var result = buildServer.GetCurrentBranch(false);
+            var result = this.buildServer.GetCurrentBranch(false);
 
             // Assert
             result.ShouldBe("refs/pull/1/merge");
@@ -101,7 +101,7 @@ namespace GitVersionCore.Tests.BuildAgents
             var vars = new TestableVersionVariables("1.0.0");
 
             // Act
-            var message = buildServer.GenerateSetVersionMessage(vars);
+            var message = this.buildServer.GenerateSetVersionMessage(vars);
 
             // Assert
             message.ShouldBeEmpty();

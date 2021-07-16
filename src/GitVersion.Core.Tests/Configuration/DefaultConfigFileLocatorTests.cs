@@ -28,8 +28,8 @@ namespace GitVersion.Core.Tests
             [SetUp]
             public void Setup()
             {
-                repoPath = DefaultRepoPath;
-                workingPath = DefaultWorkingPath;
+                this.repoPath = DefaultRepoPath;
+                this.workingPath = DefaultWorkingPath;
                 var options = Options.Create(new GitVersionOptions { WorkingDirectory = repoPath });
 
                 var sp = ConfigureServices(services =>
@@ -37,9 +37,9 @@ namespace GitVersion.Core.Tests
                     services.AddSingleton(options);
                 });
 
-                fileSystem = sp.GetService<IFileSystem>();
-                configurationProvider = sp.GetService<IConfigProvider>();
-                configFileLocator = sp.GetService<IConfigFileLocator>();
+                this.fileSystem = sp.GetService<IFileSystem>();
+                this.configurationProvider = sp.GetService<IConfigProvider>();
+                this.configFileLocator = sp.GetService<IConfigFileLocator>();
 
                 ShouldlyConfiguration.ShouldMatchApprovedDefaults.LocateTestMethodUsingAttribute<TestAttribute>();
             }
@@ -47,12 +47,12 @@ namespace GitVersion.Core.Tests
             [TestCase(ConfigFileLocator.DefaultFileName, ConfigFileLocator.DefaultFileName)]
             public void ThrowsExceptionOnAmbiguousConfigFileLocation(string repoConfigFile, string workingConfigFile)
             {
-                var repositoryConfigFilePath = SetupConfigFileContent(string.Empty, repoConfigFile, repoPath);
-                var workingDirectoryConfigFilePath = SetupConfigFileContent(string.Empty, workingConfigFile, workingPath);
+                var repositoryConfigFilePath = SetupConfigFileContent(string.Empty, repoConfigFile, this.repoPath);
+                var workingDirectoryConfigFilePath = SetupConfigFileContent(string.Empty, workingConfigFile, this.workingPath);
 
                 var exception = Should.Throw<WarningException>(() =>
                 {
-                    configFileLocator.Verify(workingPath, repoPath);
+                    this.configFileLocator.Verify(this.workingPath, this.repoPath);
                 });
 
                 var expecedMessage = $"Ambiguous config file selection from '{workingDirectoryConfigFilePath}' and '{repositoryConfigFilePath}'";
@@ -62,21 +62,21 @@ namespace GitVersion.Core.Tests
             [Test]
             public void NoWarnOnGitVersionYmlFile()
             {
-                SetupConfigFileContent(string.Empty, ConfigFileLocator.DefaultFileName, repoPath);
+                SetupConfigFileContent(string.Empty, ConfigFileLocator.DefaultFileName, this.repoPath);
 
-                Should.NotThrow(() => { configurationProvider.Provide(repoPath); });
+                Should.NotThrow(() => { this.configurationProvider.Provide(this.repoPath); });
             }
 
             [Test]
             public void NoWarnOnNoGitVersionYmlFile()
             {
-                Should.NotThrow(() => { configurationProvider.Provide(repoPath); });
+                Should.NotThrow(() => { this.configurationProvider.Provide(this.repoPath); });
             }
 
             private string SetupConfigFileContent(string text, string fileName, string path)
             {
                 var fullPath = Path.Combine(path, fileName);
-                fileSystem.WriteAllText(fullPath, text);
+                this.fileSystem.WriteAllText(fullPath, text);
 
                 return fullPath;
             }
@@ -96,9 +96,9 @@ namespace GitVersion.Core.Tests
             [SetUp]
             public void Setup()
             {
-                gitVersionOptions = new GitVersionOptions { ConfigInfo = { ConfigFile = "my-config.yaml" } };
-                repoPath = DefaultRepoPath;
-                workingPath = DefaultWorkingPath;
+                this.gitVersionOptions = new GitVersionOptions { ConfigInfo = { ConfigFile = "my-config.yaml" } };
+                this.repoPath = DefaultRepoPath;
+                this.workingPath = DefaultWorkingPath;
 
                 ShouldlyConfiguration.ShouldMatchApprovedDefaults.LocateTestMethodUsingAttribute<TestAttribute>();
             }
@@ -106,14 +106,14 @@ namespace GitVersion.Core.Tests
             [Test]
             public void ThrowsExceptionOnAmbiguousConfigFileLocation()
             {
-                var sp = GetServiceProvider(gitVersionOptions);
-                configFileLocator = sp.GetService<IConfigFileLocator>();
-                fileSystem = sp.GetService<IFileSystem>();
+                var sp = GetServiceProvider(this.gitVersionOptions);
+                this.configFileLocator = sp.GetService<IConfigFileLocator>();
+                this.fileSystem = sp.GetService<IFileSystem>();
 
-                var repositoryConfigFilePath = SetupConfigFileContent(string.Empty, path: repoPath);
-                var workingDirectoryConfigFilePath = SetupConfigFileContent(string.Empty, path: workingPath);
+                var repositoryConfigFilePath = SetupConfigFileContent(string.Empty, path: this.repoPath);
+                var workingDirectoryConfigFilePath = SetupConfigFileContent(string.Empty, path: this.workingPath);
 
-                var exception = Should.Throw<WarningException>(() => { configFileLocator.Verify(workingPath, repoPath); });
+                var exception = Should.Throw<WarningException>(() => { this.configFileLocator.Verify(this.workingPath, this.repoPath); });
 
                 var expectedMessage = $"Ambiguous config file selection from '{workingDirectoryConfigFilePath}' and '{repositoryConfigFilePath}'";
                 exception.Message.ShouldBe(expectedMessage);
@@ -122,44 +122,44 @@ namespace GitVersion.Core.Tests
             [Test]
             public void DoNotThrowWhenWorkingAndRepoPathsAreSame()
             {
-                workingPath = DefaultRepoPath;
+                this.workingPath = DefaultRepoPath;
 
-                var sp = GetServiceProvider(gitVersionOptions);
-                configFileLocator = sp.GetService<IConfigFileLocator>();
-                fileSystem = sp.GetService<IFileSystem>();
+                var sp = GetServiceProvider(this.gitVersionOptions);
+                this.configFileLocator = sp.GetService<IConfigFileLocator>();
+                this.fileSystem = sp.GetService<IFileSystem>();
 
-                SetupConfigFileContent(string.Empty, path: workingPath);
+                SetupConfigFileContent(string.Empty, path: this.workingPath);
 
-                Should.NotThrow(() => { configFileLocator.Verify(workingPath, repoPath); });
+                Should.NotThrow(() => { this.configFileLocator.Verify(this.workingPath, this.repoPath); });
             }
 
             [Test]
             public void DoNotThrowWhenWorkingAndRepoPathsAreSame_WithDifferentCasing()
             {
-                workingPath = DefaultRepoPath.ToLower();
+                this.workingPath = DefaultRepoPath.ToLower();
 
-                var sp = GetServiceProvider(gitVersionOptions);
-                configFileLocator = sp.GetService<IConfigFileLocator>();
-                fileSystem = sp.GetService<IFileSystem>();
+                var sp = GetServiceProvider(this.gitVersionOptions);
+                this.configFileLocator = sp.GetService<IConfigFileLocator>();
+                this.fileSystem = sp.GetService<IFileSystem>();
 
-                SetupConfigFileContent(string.Empty, path: workingPath);
+                SetupConfigFileContent(string.Empty, path: this.workingPath);
 
-                Should.NotThrow(() => { configFileLocator.Verify(workingPath, repoPath); });
+                Should.NotThrow(() => { this.configFileLocator.Verify(this.workingPath, this.repoPath); });
             }
 
             [Test]
             public void DoNotThrowWhenConfigFileIsInSubDirectoryOfRepoPath()
             {
-                workingPath = DefaultRepoPath;
+                this.workingPath = DefaultRepoPath;
 
-                gitVersionOptions = new GitVersionOptions { ConfigInfo = { ConfigFile = "./src/my-config.yaml" } };
-                var sp = GetServiceProvider(gitVersionOptions);
-                configFileLocator = sp.GetService<IConfigFileLocator>();
-                fileSystem = sp.GetService<IFileSystem>();
+                this.gitVersionOptions = new GitVersionOptions { ConfigInfo = { ConfigFile = "./src/my-config.yaml" } };
+                var sp = GetServiceProvider(this.gitVersionOptions);
+                this.configFileLocator = sp.GetService<IConfigFileLocator>();
+                this.fileSystem = sp.GetService<IFileSystem>();
 
-                SetupConfigFileContent(string.Empty, path: workingPath);
+                SetupConfigFileContent(string.Empty, path: this.workingPath);
 
-                Should.NotThrow(() => { configFileLocator.Verify(workingPath, repoPath); });
+                Should.NotThrow(() => { this.configFileLocator.Verify(this.workingPath, this.repoPath); });
             }
 
             [Test]
@@ -171,15 +171,15 @@ namespace GitVersion.Core.Tests
                 var logAppender = new TestLogAppender(Action);
                 var log = new Log(logAppender);
 
-                var sp = GetServiceProvider(gitVersionOptions, log);
-                configFileLocator = sp.GetService<IConfigFileLocator>();
-                fileSystem = sp.GetService<IFileSystem>();
+                var sp = GetServiceProvider(this.gitVersionOptions, log);
+                this.configFileLocator = sp.GetService<IConfigFileLocator>();
+                this.fileSystem = sp.GetService<IFileSystem>();
 
                 SetupConfigFileContent(string.Empty);
 
                 var configurationProvider = sp.GetService<IConfigProvider>();
 
-                configurationProvider.Provide(repoPath);
+                configurationProvider.Provide(this.repoPath);
                 stringLogger.Length.ShouldBe(0);
             }
 
@@ -192,39 +192,39 @@ namespace GitVersion.Core.Tests
                 var logAppender = new TestLogAppender(Action);
                 var log = new Log(logAppender);
 
-                var sp = GetServiceProvider(gitVersionOptions, log);
-                configFileLocator = sp.GetService<IConfigFileLocator>();
-                fileSystem = sp.GetService<IFileSystem>();
+                var sp = GetServiceProvider(this.gitVersionOptions, log);
+                this.configFileLocator = sp.GetService<IConfigFileLocator>();
+                this.fileSystem = sp.GetService<IFileSystem>();
 
                 SetupConfigFileContent(string.Empty, path: @"c:\\Unrelated\\path");
 
                 var configurationProvider = sp.GetService<IConfigProvider>();
 
-                configurationProvider.Provide(repoPath);
+                configurationProvider.Provide(this.repoPath);
                 stringLogger.Length.ShouldBe(0);
             }
 
             [Test]
             public void ThrowsExceptionOnCustomYmlFileDoesNotExist()
             {
-                var sp = GetServiceProvider(gitVersionOptions);
-                configFileLocator = sp.GetService<IConfigFileLocator>();
+                var sp = GetServiceProvider(this.gitVersionOptions);
+                this.configFileLocator = sp.GetService<IConfigFileLocator>();
 
-                var exception = Should.Throw<WarningException>(() => { configFileLocator.Verify(workingPath, repoPath); });
+                var exception = Should.Throw<WarningException>(() => { this.configFileLocator.Verify(this.workingPath, this.repoPath); });
 
-                var workingPathFileConfig = Path.Combine(workingPath, gitVersionOptions.ConfigInfo.ConfigFile);
-                var repoPathFileConfig = Path.Combine(repoPath, gitVersionOptions.ConfigInfo.ConfigFile);
+                var workingPathFileConfig = Path.Combine(this.workingPath, this.gitVersionOptions.ConfigInfo.ConfigFile);
+                var repoPathFileConfig = Path.Combine(this.repoPath, this.gitVersionOptions.ConfigInfo.ConfigFile);
                 var expectedMessage = $"The configuration file was not found at '{workingPathFileConfig}' or '{repoPathFileConfig}'";
                 exception.Message.ShouldBe(expectedMessage);
             }
 
             private string SetupConfigFileContent(string text, string fileName = null, string path = null)
             {
-                if (fileName.IsNullOrEmpty()) fileName = configFileLocator.FilePath;
+                if (fileName.IsNullOrEmpty()) fileName = this.configFileLocator.FilePath;
                 var filePath = fileName;
                 if (!path.IsNullOrEmpty())
                     filePath = Path.Combine(path, filePath);
-                fileSystem.WriteAllText(filePath, text);
+                this.fileSystem.WriteAllText(filePath, text);
                 return filePath;
             }
 

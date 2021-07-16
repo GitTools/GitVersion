@@ -17,8 +17,8 @@ namespace GitTools.Testing
         /// </summary>
         public SequenceDiagram()
         {
-            _diagramBuilder = new StringBuilder();
-            _diagramBuilder.AppendLine("@startuml");
+            this._diagramBuilder = new StringBuilder();
+            this._diagramBuilder.AppendLine("@startuml");
         }
 
         /// <summary>
@@ -26,7 +26,7 @@ namespace GitTools.Testing
         /// </summary>
         public void Activate(string branch)
         {
-            _diagramBuilder.AppendLineFormat("activate {0}", GetParticipant(branch));
+            this._diagramBuilder.AppendLineFormat("activate {0}", GetParticipant(branch));
         }
 
         /// <summary>
@@ -34,7 +34,7 @@ namespace GitTools.Testing
         /// </summary>
         public void Destroy(string branch)
         {
-            _diagramBuilder.AppendLineFormat("destroy {0}", GetParticipant(branch));
+            this._diagramBuilder.AppendLineFormat("destroy {0}", GetParticipant(branch));
         }
 
         /// <summary>
@@ -42,11 +42,11 @@ namespace GitTools.Testing
         /// </summary>
         public void Participant(string participant, string @as = null)
         {
-            _participants.Add(participant, @as ?? participant);
+            this._participants.Add(participant, @as ?? participant);
             if (@as == null)
-                _diagramBuilder.AppendLineFormat("participant {0}", participant);
+                this._diagramBuilder.AppendLineFormat("participant {0}", participant);
             else
-                _diagramBuilder.AppendLineFormat("participant \"{0}\" as {1}", participant, @as);
+                this._diagramBuilder.AppendLineFormat("participant \"{0}\" as {1}", participant, @as);
         }
 
         /// <summary>
@@ -54,7 +54,7 @@ namespace GitTools.Testing
         /// </summary>
         public void Divider(string text)
         {
-            _diagramBuilder.AppendLineFormat("== {0} ==", text);
+            this._diagramBuilder.AppendLineFormat("== {0} ==", text);
         }
 
         /// <summary>
@@ -62,7 +62,7 @@ namespace GitTools.Testing
         /// </summary>
         public void NoteOver(string noteText, string startParticipant, string endParticipant = null, string prefix = null, string color = null)
         {
-            _diagramBuilder.AppendLineFormat(
+            this._diagramBuilder.AppendLineFormat(
                 prefix + @"note over {0}{1}{2}
   {3}
 end note",
@@ -77,7 +77,7 @@ end note",
         /// </summary>
         public void ApplyTag(string tag, string toBranch)
         {
-            _diagramBuilder.AppendLineFormat("{0} -> {0}: tag {1}", GetParticipant(toBranch), tag);
+            this._diagramBuilder.AppendLineFormat("{0} -> {0}: tag {1}", GetParticipant(toBranch), tag);
         }
 
         /// <summary>
@@ -85,13 +85,13 @@ end note",
         /// </summary>
         public void BranchTo(string branchName, string currentName, string @as)
         {
-            if (!_participants.ContainsKey(branchName))
+            if (!this._participants.ContainsKey(branchName))
             {
-                _diagramBuilder.Append("create ");
+                this._diagramBuilder.Append("create ");
                 Participant(branchName, @as);
             }
 
-            _diagramBuilder.AppendLineFormat(
+            this._diagramBuilder.AppendLineFormat(
                 "{0} -> {1}: branch from {2}",
                 GetParticipant(currentName),
                 GetParticipant(branchName), currentName);
@@ -102,13 +102,13 @@ end note",
         /// </summary>
         public void BranchToFromTag(string branchName, string fromTag, string onBranch, string @as)
         {
-            if (!_participants.ContainsKey(branchName))
+            if (!this._participants.ContainsKey(branchName))
             {
-                _diagramBuilder.Append("create ");
+                this._diagramBuilder.Append("create ");
                 Participant(branchName, @as);
             }
 
-            _diagramBuilder.AppendLineFormat("{0} -> {1}: branch from tag ({2})", GetParticipant(onBranch), GetParticipant(branchName), fromTag);
+            this._diagramBuilder.AppendLineFormat("{0} -> {1}: branch from tag ({2})", GetParticipant(onBranch), GetParticipant(branchName), fromTag);
         }
 
         /// <summary>
@@ -116,7 +116,7 @@ end note",
         /// </summary>
         public void MakeACommit(string toParticipant)
         {
-            _diagramBuilder.AppendLineFormat("{0} -> {0}: commit", GetParticipant(toParticipant));
+            this._diagramBuilder.AppendLineFormat("{0} -> {0}: commit", GetParticipant(toParticipant));
         }
 
         /// <summary>
@@ -124,13 +124,13 @@ end note",
         /// </summary>
         public void Merge(string @from, string to)
         {
-            _diagramBuilder.AppendLineFormat("{0} -> {1}: merge", GetParticipant(@from), GetParticipant(to));
+            this._diagramBuilder.AppendLineFormat("{0} -> {1}: merge", GetParticipant(@from), GetParticipant(to));
         }
 
         string GetParticipant(string branch)
         {
-            if (_participants.ContainsKey(branch))
-                return _participants[branch];
+            if (this._participants.ContainsKey(branch))
+                return this._participants[branch];
 
             return branch;
         }
@@ -140,7 +140,7 @@ end note",
         /// </summary>
         public void End()
         {
-            _diagramBuilder.AppendLine("@enduml");
+            this._diagramBuilder.AppendLine("@enduml");
         }
 
         /// <summary>
@@ -148,7 +148,7 @@ end note",
         /// </summary>
         public string GetDiagram()
         {
-            return _diagramBuilder.ToString();
+            return this._diagramBuilder.ToString();
         }
     }
 }

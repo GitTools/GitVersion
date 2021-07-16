@@ -13,7 +13,7 @@ namespace GitVersion.Core.Tests.Helpers
         }
         public void WriteTo(LogLevel level, string message)
         {
-            logAction(message);
+            this.logAction(message);
         }
     }
 }

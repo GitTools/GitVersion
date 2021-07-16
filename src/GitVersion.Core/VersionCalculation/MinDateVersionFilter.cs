@@ -19,7 +19,7 @@ namespace GitVersion.VersionCalculation
             reason = null;
 
             if (version.BaseVersionSource != null &&
-                version.BaseVersionSource.When < minimum)
+                version.BaseVersionSource.When < this.minimum)
             {
                 reason = "Source was ignored due to commit date being outside of configured range";
                 return true;

@@ -46,9 +46,9 @@ namespace GitVersion.Model.Configuration
         [YamlMember(Alias = "next-version")]
         public string? NextVersion
         {
-            get => nextVersion;
+            get => this.nextVersion;
             set =>
-                nextVersion = int.TryParse(value, NumberStyles.Any, NumberFormatInfo.InvariantInfo, out var major)
+                this.nextVersion = int.TryParse(value, NumberStyles.Any, NumberFormatInfo.InvariantInfo, out var major)
                     ? $"{major}.0"
                     : value;
         }

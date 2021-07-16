@@ -19,8 +19,8 @@ namespace GitVersion.VersionConverters
 
         public TemplateManager(TemplateType templateType)
         {
-            templates = GetEmbeddedTemplates(templateType, "Templates").ToDictionary(Path.GetExtension, v => v, StringComparer.OrdinalIgnoreCase);
-            addFormats = GetEmbeddedTemplates(templateType, "AddFormats").ToDictionary(Path.GetExtension, v => v, StringComparer.OrdinalIgnoreCase);
+            this.templates = GetEmbeddedTemplates(templateType, "Templates").ToDictionary(Path.GetExtension, v => v, StringComparer.OrdinalIgnoreCase);
+            this.addFormats = GetEmbeddedTemplates(templateType, "AddFormats").ToDictionary(Path.GetExtension, v => v, StringComparer.OrdinalIgnoreCase);
         }
 
         public string? GetTemplateFor(string fileExtension)
@@ -32,7 +32,7 @@ namespace GitVersion.VersionConverters
 
             string? result = null;
 
-            if (templates.TryGetValue(fileExtension, out var template) && template != null)
+            if (this.templates.TryGetValue(fileExtension, out var template) && template != null)
             {
                 result = template.ReadAsStringFromEmbeddedResource<TemplateManager>();
             }
@@ -49,7 +49,7 @@ namespace GitVersion.VersionConverters
 
             string? result = null;
 
-            if (addFormats.TryGetValue(fileExtension, out var addFormat) && addFormat != null)
+            if (this.addFormats.TryGetValue(fileExtension, out var addFormat) && addFormat != null)
             {
                 result = addFormat.ReadAsStringFromEmbeddedResource<TemplateManager>().TrimEnd('\r', '\n');
             }
@@ -64,7 +64,7 @@ namespace GitVersion.VersionConverters
                 throw new ArgumentNullException(nameof(fileExtension));
             }
 
-            return templates.ContainsKey(fileExtension);
+            return this.templates.ContainsKey(fileExtension);
         }
 
         private static IEnumerable<string> GetEmbeddedTemplates(TemplateType templateType, string templateCategory)

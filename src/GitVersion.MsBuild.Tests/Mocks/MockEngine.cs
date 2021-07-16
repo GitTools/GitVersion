@@ -27,21 +27,21 @@ namespace GitVersion.MsBuild.Tests.Mocks
         public void LogErrorEvent(BuildErrorEventArgs eventArgs)
         {
             Console.WriteLine(EventArgsFormatting.FormatEventMessage(eventArgs));
-            _log.AppendLine(EventArgsFormatting.FormatEventMessage(eventArgs));
+            this._log.AppendLine(EventArgsFormatting.FormatEventMessage(eventArgs));
             ++Errors;
         }
 
         public void LogWarningEvent(BuildWarningEventArgs eventArgs)
         {
             Console.WriteLine(EventArgsFormatting.FormatEventMessage(eventArgs));
-            _log.AppendLine(EventArgsFormatting.FormatEventMessage(eventArgs));
+            this._log.AppendLine(EventArgsFormatting.FormatEventMessage(eventArgs));
             ++Warnings;
         }
 
         public void LogCustomEvent(CustomBuildEventArgs eventArgs)
         {
             Console.WriteLine(eventArgs.Message);
-            _log.AppendLine(eventArgs.Message);
+            this._log.AppendLine(eventArgs.Message);
         }
 
         public void LogMessageEvent(BuildMessageEventArgs eventArgs)
@@ -50,7 +50,7 @@ namespace GitVersion.MsBuild.Tests.Mocks
             if (eventArgs.Importance <= MinimumMessageImportance)
             {
                 Console.WriteLine(eventArgs.Message);
-                _log.AppendLine(eventArgs.Message);
+                this._log.AppendLine(eventArgs.Message);
                 ++Messages;
             }
         }
@@ -65,8 +65,8 @@ namespace GitVersion.MsBuild.Tests.Mocks
 
         public string Log
         {
-            set => _log = new StringBuilder(value);
-            get => _log.ToString();
+            set => this._log = new StringBuilder(value);
+            get => this._log.ToString();
         }
 
         public bool BuildProjectFile(string projectFileName, string[] targetNames, IDictionary globalProperties, IDictionary targetOutputs) => false;
@@ -114,18 +114,18 @@ namespace GitVersion.MsBuild.Tests.Mocks
 
         public object GetRegisteredTaskObject(object key, RegisteredTaskObjectLifetime lifetime)
         {
-            _objectCache.TryGetValue(key, out var obj);
+            this._objectCache.TryGetValue(key, out var obj);
             return obj;
         }
 
         public void RegisterTaskObject(object key, object obj, RegisteredTaskObjectLifetime lifetime, bool allowEarlyCollection)
         {
-            _objectCache[key] = obj;
+            this._objectCache[key] = obj;
         }
 
         public object UnregisterTaskObject(object key, RegisteredTaskObjectLifetime lifetime)
         {
-            _objectCache.TryRemove(key, out var obj);
+            this._objectCache.TryRemove(key, out var obj);
             return obj;
         }
     }

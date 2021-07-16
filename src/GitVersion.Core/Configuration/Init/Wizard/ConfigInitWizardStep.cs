@@ -15,23 +15,23 @@ namespace GitVersion.Configuration.Init.Wizard
 
         protected ConfigInitWizardStep(IConsole console, IFileSystem fileSystem, ILog log, IConfigInitStepFactory stepFactory)
         {
-            Console = console ?? throw new ArgumentNullException(nameof(console));
-            FileSystem = fileSystem ?? throw new ArgumentNullException(nameof(fileSystem));
-            Log = log ?? throw new ArgumentNullException(nameof(log));
-            StepFactory = stepFactory ?? throw new ArgumentNullException(nameof(stepFactory));
+            this.Console = console ?? throw new ArgumentNullException(nameof(console));
+            this.FileSystem = fileSystem ?? throw new ArgumentNullException(nameof(fileSystem));
+            this.Log = log ?? throw new ArgumentNullException(nameof(log));
+            this.StepFactory = stepFactory ?? throw new ArgumentNullException(nameof(stepFactory));
         }
 
         public bool Apply(Queue<ConfigInitWizardStep> steps, Config config, string workingDirectory)
         {
-            Console.WriteLine();
-            Console.WriteLine(GetPrompt(config, workingDirectory));
-            Console.WriteLine();
-            Console.Write("> ");
-            var input = Console.ReadLine();
+            this.Console.WriteLine();
+            this.Console.WriteLine(GetPrompt(config, workingDirectory));
+            this.Console.WriteLine();
+            this.Console.Write("> ");
+            var input = this.Console.ReadLine();
             if (input == null)
             {
-                Console.WriteLine("Would you like to save changes? (y/n)");
-                input = Console.ReadLine();
+                this.Console.WriteLine("Would you like to save changes? (y/n)");
+                input = this.Console.ReadLine();
                 if (input == null || input.ToLower() == "n") return false;
                 if (input.ToLower() == "y")
                 {
@@ -58,10 +58,10 @@ namespace GitVersion.Configuration.Init.Wizard
 
         private void InvalidResponse(Queue<ConfigInitWizardStep> steps)
         {
-            Console.WriteLine();
-            using (Console.UseColor(ConsoleColor.Red))
+            this.Console.WriteLine();
+            using (this.Console.UseColor(ConsoleColor.Red))
             {
-                Console.WriteLine("Invalid response!");
+                this.Console.WriteLine("Invalid response!");
             }
             steps.Enqueue(this);
         }

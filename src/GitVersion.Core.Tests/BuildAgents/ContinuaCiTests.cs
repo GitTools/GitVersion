@@ -14,7 +14,7 @@ namespace GitVersion.Core.Tests.BuildAgents
         [SetUp]
         public void SetUp()
         {
-            sp = ConfigureServices(services =>
+            this.sp = ConfigureServices(services =>
             {
                 services.AddSingleton<ContinuaCi>();
             });
@@ -23,7 +23,7 @@ namespace GitVersion.Core.Tests.BuildAgents
         [Test]
         public void GenerateBuildVersion()
         {
-            var buildServer = sp.GetService<ContinuaCi>();
+            var buildServer = this.sp.GetService<ContinuaCi>();
             var vars = new TestableVersionVariables(fullSemVer: "0.0.0-Beta4.7");
             var continuaCiVersion = buildServer.GenerateSetVersionMessage(vars);
             Assert.AreEqual("@@continua[setBuildVersion value='0.0.0-Beta4.7']", continuaCiVersion);
