@@ -9,7 +9,7 @@ using Shouldly;
 namespace GitVersion.Core.Tests.IntegrationTests
 {
     [TestFixture]
-    class VersionInTagScenarios
+    internal class VersionInTagScenarios
     {
         [Test]
         public void TagPreReleaseWeightIsNotConfigured_HeadIsATaggedCommit_WeightedPreReleaseNumberShouldBeTheDefaultValue()

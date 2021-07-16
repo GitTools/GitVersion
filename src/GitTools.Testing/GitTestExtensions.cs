@@ -9,7 +9,7 @@ namespace GitTools.Testing
 {
     public static class GitTestExtensions
     {
-        static int _pad = 1;
+        private static int _pad = 1;
 
         public static Commit MakeACommit(this IRepository repository, string commitMessage = null) => CreateFileAndCommit(repository, Guid.NewGuid().ToString(), commitMessage);
 
