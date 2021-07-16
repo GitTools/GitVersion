@@ -2,8 +2,8 @@ using System;
 using System.IO;
 using System.Text;
 using GitTools.Testing;
-using GitVersion.Helpers;
 using GitVersion.Core.Tests.Helpers;
+using GitVersion.Helpers;
 using NUnit.Framework;
 using Shouldly;
 

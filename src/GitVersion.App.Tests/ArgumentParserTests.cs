@@ -1,11 +1,11 @@
 using System.Collections.Generic;
 using System.IO;
+using GitTools.Testing;
 using GitVersion.Core.Tests.Helpers;
 using GitVersion.Extensions;
 using GitVersion.Logging;
 using GitVersion.Model;
 using GitVersion.Model.Configuration;
-using GitTools.Testing;
 using Microsoft.Extensions.DependencyInjection;
 using NUnit.Framework;
 using Shouldly;

@@ -1,8 +1,8 @@
 using System;
 using System.IO;
 using System.Reflection;
-using GitVersion.Extensions;
 using GitVersion.Core.Tests.Helpers;
+using GitVersion.Extensions;
 using Microsoft.Extensions.DependencyInjection;
 using Mono.Cecil;
 using NUnit.Framework;

@@ -1,3 +1,7 @@
+using System;
+using System.IO;
+using System.Xml.Linq;
+using GitVersion.Core.Tests.Helpers;
 using GitVersion.Extensions;
 using GitVersion.Logging;
 using GitVersion.OutputVariables;
@@ -7,10 +11,6 @@ using Microsoft.Extensions.DependencyInjection;
 using NSubstitute;
 using NUnit.Framework;
 using Shouldly;
-using System;
-using System.IO;
-using System.Xml.Linq;
-using GitVersion.Core.Tests.Helpers;
 
 namespace GitVersion.Core.Tests
 {

@@ -1,6 +1,6 @@
+using System.IO;
 using GitVersion.Logging;
 using GitVersion.OutputVariables;
-using System.IO;
 
 namespace GitVersion.BuildAgents
 {

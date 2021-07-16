@@ -1,10 +1,10 @@
-using GitVersion.Logging;
-using GitVersion.OutputVariables;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Xml.Linq;
+using GitVersion.Logging;
+using GitVersion.OutputVariables;
 
 namespace GitVersion.VersionConverters.AssemblyInfo
 {
