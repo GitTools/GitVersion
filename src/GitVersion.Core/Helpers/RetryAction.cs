@@ -32,14 +32,14 @@ namespace GitVersion.Helpers
                 throw new ArgumentOutOfRangeException(nameof(maxRetries));
 
             var linearBackoff = LinearBackoff(TimeSpan.FromMilliseconds(100), maxRetries);
-            retryPolicy = Policy<Result>
+            this.retryPolicy = Policy<Result>
                 .Handle<T>()
                 .WaitAndRetry(linearBackoff);
         }
 
         public Result Execute(Func<Result> operation)
         {
-            return retryPolicy.Execute(operation);
+            return this.retryPolicy.Execute(operation);
         }
 
         private static IEnumerable<TimeSpan> LinearBackoff(TimeSpan initialDelay, int retryCount, double factor = 1.0, bool fastFirst = false)

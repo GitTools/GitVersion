@@ -27,7 +27,7 @@ namespace GitVersion.VersionCalculation
 
         internal IEnumerable<BaseVersion> GetTaggedVersions(IBranch? currentBranch, DateTimeOffset? olderThan)
         {
-            var allTags = repositoryStore.GetValidVersionTags(Context.Configuration?.GitTagPrefix, olderThan);
+            var allTags = this.repositoryStore.GetValidVersionTags(Context.Configuration?.GitTagPrefix, olderThan);
 
             var taggedCommits = currentBranch
                 ?.Commits
@@ -73,14 +73,14 @@ namespace GitVersion.VersionCalculation
 
             public VersionTaggedCommit(ICommit commit, SemanticVersion semVer, string tag)
             {
-                Tag = tag;
-                Commit = commit;
-                SemVer = semVer;
+                this.Tag = tag;
+                this.Commit = commit;
+                this.SemVer = semVer;
             }
 
             public override string ToString()
             {
-                return $"{Tag} | {Commit} | {SemVer}";
+                return $"{this.Tag} | {this.Commit} | {this.SemVer}";
             }
         }
     }

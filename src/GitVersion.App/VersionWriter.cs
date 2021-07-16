@@ -15,7 +15,7 @@ namespace GitVersion
         }
         public void Write(Assembly assembly)
         {
-            WriteTo(assembly, console.WriteLine);
+            WriteTo(assembly, this.console.WriteLine);
         }
 
         public void WriteTo(Assembly assembly, Action<string> writeAction)

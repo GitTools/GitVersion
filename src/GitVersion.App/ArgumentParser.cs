@@ -47,7 +47,7 @@ namespace GitVersion
 
                 AddAuthentication(args);
 
-                args.NoFetch = buildAgent != null && buildAgent.PreventFetch();
+                args.NoFetch = this.buildAgent != null && this.buildAgent.PreventFetch();
 
                 return args;
             }
@@ -109,7 +109,7 @@ namespace GitVersion
             arguments.TargetPath = arguments.TargetPath.TrimEnd('/', '\\');
 
             if (!arguments.EnsureAssemblyInfo) arguments.UpdateAssemblyInfoFileName = ResolveFiles(arguments.TargetPath, arguments.UpdateAssemblyInfoFileName).ToHashSet();
-            arguments.NoFetch = arguments.NoFetch || buildAgent != null && buildAgent.PreventFetch();
+            arguments.NoFetch = arguments.NoFetch || this.buildAgent != null && this.buildAgent.PreventFetch();
 
             return arguments;
         }
@@ -127,13 +127,13 @@ namespace GitVersion
 
         private void AddAuthentication(Arguments arguments)
         {
-            var username = environment.GetEnvironmentVariable("GITVERSION_REMOTE_USERNAME");
+            var username = this.environment.GetEnvironmentVariable("GITVERSION_REMOTE_USERNAME");
             if (!username.IsNullOrWhiteSpace())
             {
                 arguments.Authentication.Username = username;
             }
 
-            var password = environment.GetEnvironmentVariable("GITVERSION_REMOTE_PASSWORD");
+            var password = this.environment.GetEnvironmentVariable("GITVERSION_REMOTE_PASSWORD");
             if (!password.IsNullOrWhiteSpace())
             {
                 arguments.Authentication.Password = password;
@@ -146,7 +146,7 @@ namespace GitVersion
 
             foreach (var file in assemblyInfoFiles)
             {
-                var paths = globbingResolver.Resolve(workingDirectory, file);
+                var paths = this.globbingResolver.Resolve(workingDirectory, file);
 
                 foreach (var path in paths)
                 {
@@ -163,7 +163,7 @@ namespace GitVersion
                 arguments.TargetPath = value;
                 if (!Directory.Exists(value))
                 {
-                    console.WriteLine($"The working directory '{value}' does not exist.");
+                    this.console.WriteLine($"The working directory '{value}' does not exist.");
                 }
 
                 return;

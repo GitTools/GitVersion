@@ -182,11 +182,11 @@ namespace GitTools.Testing.Internal
             {
                 try
                 {
-                    oldMode = SetErrorMode((int)mode);
+                    this.oldMode = SetErrorMode((int)mode);
                 }
                 catch (Exception ex) when (ex is EntryPointNotFoundException || ex is DllNotFoundException)
                 {
-                    oldMode = (int)mode;
+                    this.oldMode = (int)mode;
                 }
             }
 
@@ -195,7 +195,7 @@ namespace GitTools.Testing.Internal
             {
                 try
                 {
-                    SetErrorMode(oldMode);
+                    SetErrorMode(this.oldMode);
                 }
                 catch (Exception ex) when (ex is EntryPointNotFoundException || ex is DllNotFoundException)
                 {

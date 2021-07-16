@@ -30,28 +30,28 @@ namespace GitVersion
 
         public SemanticVersionBuildMetaData(string? versionSourceSha, int? commitsSinceTag, string? branch, string? commitSha, string? commitShortSha, DateTimeOffset? commitDate, int numbeerOfUncommitedChanges, string? otherMetadata = null)
         {
-            Sha = commitSha;
-            ShortSha = commitShortSha;
-            CommitsSinceTag = commitsSinceTag;
-            Branch = branch;
-            CommitDate = commitDate;
-            OtherMetaData = otherMetadata;
-            VersionSourceSha = versionSourceSha;
-            CommitsSinceVersionSource = commitsSinceTag ?? 0;
-            UncommittedChanges = numbeerOfUncommitedChanges;
+            this.Sha = commitSha;
+            this.ShortSha = commitShortSha;
+            this.CommitsSinceTag = commitsSinceTag;
+            this.Branch = branch;
+            this.CommitDate = commitDate;
+            this.OtherMetaData = otherMetadata;
+            this.VersionSourceSha = versionSourceSha;
+            this.CommitsSinceVersionSource = commitsSinceTag ?? 0;
+            this.UncommittedChanges = numbeerOfUncommitedChanges;
         }
 
         public SemanticVersionBuildMetaData(SemanticVersionBuildMetaData? buildMetaData)
         {
-            Sha = buildMetaData?.Sha;
-            ShortSha = buildMetaData?.ShortSha;
-            CommitsSinceTag = buildMetaData?.CommitsSinceTag;
-            Branch = buildMetaData?.Branch;
-            CommitDate = buildMetaData?.CommitDate;
-            OtherMetaData = buildMetaData?.OtherMetaData;
-            VersionSourceSha = buildMetaData?.VersionSourceSha;
-            CommitsSinceVersionSource = buildMetaData?.CommitsSinceVersionSource;
-            UncommittedChanges = buildMetaData?.UncommittedChanges ?? 0;
+            this.Sha = buildMetaData?.Sha;
+            this.ShortSha = buildMetaData?.ShortSha;
+            this.CommitsSinceTag = buildMetaData?.CommitsSinceTag;
+            this.Branch = buildMetaData?.Branch;
+            this.CommitDate = buildMetaData?.CommitDate;
+            this.OtherMetaData = buildMetaData?.OtherMetaData;
+            this.VersionSourceSha = buildMetaData?.VersionSourceSha;
+            this.CommitsSinceVersionSource = buildMetaData?.CommitsSinceVersionSource;
+            this.UncommittedChanges = buildMetaData?.UncommittedChanges ?? 0;
         }
 
         public override bool Equals(object obj)
@@ -105,14 +105,14 @@ namespace GitVersion
                     }
                 }
 
-                return CommitsSinceTag != null ? CommitsSinceTag.Value.ToString("D" + padding) : string.Empty;
+                return this.CommitsSinceTag != null ? this.CommitsSinceTag.Value.ToString("D" + padding) : string.Empty;
             }
 
             return format.ToLower() switch
             {
-                "b" => CommitsSinceTag.ToString(),
-                "s" => $"{CommitsSinceTag}{(Sha.IsNullOrEmpty() ? null : ".Sha." + Sha)}".TrimStart('.'),
-                "f" => $"{CommitsSinceTag}{(Branch.IsNullOrEmpty() ? null : ".Branch." + FormatMetaDataPart(Branch))}{(Sha.IsNullOrEmpty() ? null : ".Sha." + Sha)}{(OtherMetaData.IsNullOrEmpty() ? null : "." + FormatMetaDataPart(OtherMetaData))}".TrimStart('.'),
+                "b" => this.CommitsSinceTag.ToString(),
+                "s" => $"{this.CommitsSinceTag}{(this.Sha.IsNullOrEmpty() ? null : ".Sha." + this.Sha)}".TrimStart('.'),
+                "f" => $"{this.CommitsSinceTag}{(this.Branch.IsNullOrEmpty() ? null : ".Branch." + FormatMetaDataPart(this.Branch))}{(this.Sha.IsNullOrEmpty() ? null : ".Sha." + this.Sha)}{(this.OtherMetaData.IsNullOrEmpty() ? null : "." + FormatMetaDataPart(this.OtherMetaData))}".TrimStart('.'),
                 _ => throw new ArgumentException("Unrecognised format", nameof(format))
             };
         }

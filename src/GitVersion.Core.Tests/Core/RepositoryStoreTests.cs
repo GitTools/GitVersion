@@ -18,7 +18,7 @@ namespace GitVersion.Core.Tests
         public RepositoryStoreTests()
         {
             var sp = ConfigureServices();
-            log = sp.GetService<ILog>();
+            this.log = sp.GetService<ILog>();
         }
 
         [Test]
@@ -63,7 +63,7 @@ namespace GitVersion.Core.Tests
 
             var develop = fixtureRepository.FindBranch("develop");
             var release = fixtureRepository.FindBranch("release-2.0.0");
-            var gitRepoMetadataProvider = new RepositoryStore(log, fixtureRepository);
+            var gitRepoMetadataProvider = new RepositoryStore(this.log, fixtureRepository);
 
             var releaseBranchMergeBase = gitRepoMetadataProvider.FindMergeBase(release, develop);
 
@@ -119,7 +119,7 @@ namespace GitVersion.Core.Tests
 
             var develop = fixtureRepository.FindBranch("develop");
             var release = fixtureRepository.FindBranch("release-2.0.0");
-            var gitRepoMetadataProvider = new RepositoryStore(log, fixtureRepository);
+            var gitRepoMetadataProvider = new RepositoryStore(this.log, fixtureRepository);
 
             var releaseBranchMergeBase = gitRepoMetadataProvider.FindMergeBase(release, develop);
 
@@ -194,7 +194,7 @@ namespace GitVersion.Core.Tests
             var develop = fixtureRepository.FindBranch("develop");
             var release = fixtureRepository.FindBranch("release-2.0.0");
 
-            var gitRepoMetadataProvider = new RepositoryStore(log, fixtureRepository);
+            var gitRepoMetadataProvider = new RepositoryStore(this.log, fixtureRepository);
 
             var releaseBranchMergeBase = gitRepoMetadataProvider.FindMergeBase(release, develop);
 

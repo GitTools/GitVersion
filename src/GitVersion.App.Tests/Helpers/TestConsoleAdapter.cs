@@ -13,22 +13,22 @@ namespace GitVersion.App.Tests
         }
         public void WriteLine(string msg)
         {
-            sb.AppendLine(msg);
+            this.sb.AppendLine(msg);
         }
 
         public void WriteLine()
         {
-            sb.AppendLine();
+            this.sb.AppendLine();
         }
 
         public void Write(string msg)
         {
-            sb.Append(msg);
+            this.sb.Append(msg);
         }
 
         public override string ToString()
         {
-            return sb.ToString();
+            return this.sb.ToString();
         }
 
         public string ReadLine()

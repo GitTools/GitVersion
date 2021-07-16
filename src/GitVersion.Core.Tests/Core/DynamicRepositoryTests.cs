@@ -29,18 +29,18 @@ namespace GitVersion.Core.Tests
         public void CreateTemporaryRepository()
         {
             // Note: we can't use guid because paths will be too long
-            workDirectory = Path.Combine(Path.GetTempPath(), "GV");
+            this.workDirectory = Path.Combine(Path.GetTempPath(), "GV");
 
             // Clean directory upfront, some build agents are having troubles
-            if (Directory.Exists(workDirectory))
+            if (Directory.Exists(this.workDirectory))
             {
-                var di = new DirectoryInfo(workDirectory);
+                var di = new DirectoryInfo(this.workDirectory);
                 ClearReadOnly(di);
 
-                Directory.Delete(workDirectory, true);
+                Directory.Delete(this.workDirectory, true);
             }
 
-            Directory.CreateDirectory(workDirectory);
+            Directory.CreateDirectory(this.workDirectory);
         }
 
 
@@ -56,7 +56,7 @@ namespace GitVersion.Core.Tests
         [TestCase("GV_main", "https://github.com/GitTools/GitVersion", MainBranch, "3bdcd899530b4e9b37d13639f317da04a749e728", "4.0.0+1092")]
         public void FindsVersionInDynamicRepo(string name, string url, string targetBranch, string commitId, string expectedFullSemVer)
         {
-            var root = Path.Combine(workDirectory, name);
+            var root = Path.Combine(this.workDirectory, name);
             var dynamicDirectory = Path.Combine(root, "D"); // dynamic, keeping directory as short as possible
             var workingDirectory = Path.Combine(root, "W"); // working, keeping directory as short as possible
             var gitVersionOptions = new GitVersionOptions

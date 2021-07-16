@@ -41,7 +41,7 @@ namespace GitVersion.MsBuild
             var fileWriteInfo = task.IntermediateOutputPath.GetFileWriteInfo(task.Language, task.ProjectFile, "AssemblyInfo");
             task.AssemblyInfoTempFilePath = Path.Combine(fileWriteInfo.WorkingDirectory, fileWriteInfo.FileName);
 
-            var gitVersionOptions = options.Value;
+            var gitVersionOptions = this.options.Value;
             gitVersionOptions.AssemblyInfo.UpdateAssemblyInfo = true;
             gitVersionOptions.AssemblyInfo.EnsureAssemblyInfo = true;
             gitVersionOptions.WorkingDirectory = fileWriteInfo.WorkingDirectory;
@@ -56,7 +56,7 @@ namespace GitVersion.MsBuild
             var fileWriteInfo = task.IntermediateOutputPath.GetFileWriteInfo(task.Language, task.ProjectFile, "GitVersionInformation");
             task.GitVersionInformationFilePath = Path.Combine(fileWriteInfo.WorkingDirectory, fileWriteInfo.FileName);
 
-            var gitVersionOptions = options.Value;
+            var gitVersionOptions = this.options.Value;
             gitVersionOptions.WorkingDirectory = fileWriteInfo.WorkingDirectory;
 
             gitVersionOutputTool.GenerateGitVersionInformation(versionVariables, fileWriteInfo);

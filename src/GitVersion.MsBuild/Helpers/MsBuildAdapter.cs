@@ -21,12 +21,12 @@ namespace GitVersion.MsBuild
 
         public void WriteLine()
         {
-            taskLog.LogMessage("\n");
+            this.taskLog.LogMessage("\n");
         }
 
         public void Write(string msg)
         {
-            taskLog.LogMessage(msg);
+            this.taskLog.LogMessage(msg);
         }
 
         public string ReadLine()

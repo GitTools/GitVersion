@@ -11,8 +11,8 @@ namespace GitVersion
         private readonly LibGit2Sharp.Tag innerTag;
         internal Tag(LibGit2Sharp.Tag tag)
         {
-            innerTag = tag;
-            Name = new ReferenceName(innerTag.CanonicalName);
+            this.innerTag = tag;
+            Name = new ReferenceName(this.innerTag.CanonicalName);
         }
         public ReferenceName Name { get; }
 
@@ -21,11 +21,11 @@ namespace GitVersion
         public override bool Equals(object obj) => Equals((obj as ITag)!);
         public override int GetHashCode() => equalityHelper.GetHashCode(this);
         public override string ToString() => Name.ToString();
-        public string TargetSha => innerTag.Target.Sha;
+        public string TargetSha => this.innerTag.Target.Sha;
 
         public ICommit? PeeledTargetCommit()
         {
-            var target = innerTag.Target;
+            var target = this.innerTag.Target;
 
             while (target is TagAnnotation annotation)
             {

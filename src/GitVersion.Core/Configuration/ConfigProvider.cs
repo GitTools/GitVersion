@@ -29,33 +29,33 @@ namespace GitVersion.Configuration
 
         public Config Provide(Config? overrideConfig = null)
         {
-            var gitVersionOptions = options.Value;
+            var gitVersionOptions = this.options.Value;
             var workingDirectory = gitVersionOptions.WorkingDirectory;
-            var projectRootDirectory = repositoryInfo.ProjectRootDirectory;
+            var projectRootDirectory = this.repositoryInfo.ProjectRootDirectory;
 
-            var rootDirectory = configFileLocator.HasConfigFileAt(workingDirectory) ? workingDirectory : projectRootDirectory;
+            var rootDirectory = this.configFileLocator.HasConfigFileAt(workingDirectory) ? workingDirectory : projectRootDirectory;
             return Provide(rootDirectory, overrideConfig);
         }
 
         public Config Provide(string? workingDirectory, Config? overrideConfig = null)
         {
             return new ConfigurationBuilder()
-                   .Add(configFileLocator.ReadConfig(workingDirectory))
+                   .Add(this.configFileLocator.ReadConfig(workingDirectory))
                    .Add(overrideConfig ?? new Config())
                    .Build();
         }
 
         public void Init(string workingDirectory)
         {
-            var configFilePath = configFileLocator.GetConfigFilePath(workingDirectory);
-            var currentConfiguration = configFileLocator.ReadConfig(workingDirectory);
+            var configFilePath = this.configFileLocator.GetConfigFilePath(workingDirectory);
+            var currentConfiguration = this.configFileLocator.ReadConfig(workingDirectory);
 
-            var config = configInitWizard.Run(currentConfiguration, workingDirectory);
+            var config = this.configInitWizard.Run(currentConfiguration, workingDirectory);
             if (config == null) return;
 
-            using var stream = fileSystem.OpenWrite(configFilePath);
+            using var stream = this.fileSystem.OpenWrite(configFilePath);
             using var writer = new StreamWriter(stream);
-            log.Info("Saving config file");
+            this.log.Info("Saving config file");
             ConfigSerializer.Write(config, writer);
             stream.Flush();
         }

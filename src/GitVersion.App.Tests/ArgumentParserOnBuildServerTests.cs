@@ -22,13 +22,13 @@ namespace GitVersion.App.Tests
                 services.AddSingleton<IGlobbingResolver, GlobbingResolver>();
                 services.AddSingleton<ICurrentBuildAgent, MockBuildAgent>();
             });
-            argumentParser = sp.GetService<IArgumentParser>();
+            this.argumentParser = sp.GetService<IArgumentParser>();
         }
 
         [Test]
         public void EmptyOnFetchDisabledBuildServerMeansNoFetchIsTrue()
         {
-            var arguments = argumentParser.ParseArguments("");
+            var arguments = this.argumentParser.ParseArguments("");
             arguments.NoFetch.ShouldBe(true);
         }
 

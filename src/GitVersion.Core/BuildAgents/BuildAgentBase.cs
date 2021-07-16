@@ -13,7 +13,7 @@ namespace GitVersion.BuildAgents
 
         protected BuildAgentBase(IEnvironment environment, ILog log)
         {
-            Log = log;
+            this.Log = log;
             Environment = environment;
         }
 

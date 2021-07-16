@@ -25,13 +25,13 @@ namespace GitVersion
         public override int GetHashCode() => equalityHelper.GetHashCode(this);
         public override string ToString()
         {
-            return $"{Id.ToString(7)} {innerCommit.MessageShort}";
+            return $"{Id.ToString(7)} {this.innerCommit.MessageShort}";
         }
         public static implicit operator LibGit2Sharp.Commit(Commit d) => d.innerCommit;
 
         public IEnumerable<ICommit> Parents { get; }
         public DateTimeOffset When { get; }
 
-        public string Message => innerCommit.Message;
+        public string Message => this.innerCommit.Message;
     }
 }

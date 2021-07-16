@@ -35,55 +35,55 @@ namespace GitVersion
 
         public void OutputVariables(VersionVariables variables, bool updateBuildNumber)
         {
-            var gitVersionOptions = options.Value;
+            var gitVersionOptions = this.options.Value;
 
-            using (outputGenerator)
+            using (this.outputGenerator)
             {
-                outputGenerator.Execute(variables, new OutputContext(gitVersionOptions.WorkingDirectory, gitVersionOptions.OutputFile, updateBuildNumber));
+                this.outputGenerator.Execute(variables, new OutputContext(gitVersionOptions.WorkingDirectory, gitVersionOptions.OutputFile, updateBuildNumber));
             }
         }
 
         public void UpdateAssemblyInfo(VersionVariables variables)
         {
-            var gitVersionOptions = options.Value!;
+            var gitVersionOptions = this.options.Value!;
             var assemblyInfoContext = new AssemblyInfoContext(gitVersionOptions.WorkingDirectory, gitVersionOptions.AssemblyInfo.EnsureAssemblyInfo, gitVersionOptions.AssemblyInfo.Files.ToArray());
 
             if (gitVersionOptions.AssemblyInfo.UpdateProjectFiles)
             {
-                using (projectFileUpdater)
+                using (this.projectFileUpdater)
                 {
-                    projectFileUpdater.Execute(variables, assemblyInfoContext);
+                    this.projectFileUpdater.Execute(variables, assemblyInfoContext);
                 }
             }
             else if (gitVersionOptions.AssemblyInfo.UpdateAssemblyInfo)
             {
-                using (assemblyInfoFileUpdater)
+                using (this.assemblyInfoFileUpdater)
                 {
-                    assemblyInfoFileUpdater.Execute(variables, assemblyInfoContext);
+                    this.assemblyInfoFileUpdater.Execute(variables, assemblyInfoContext);
                 }
             }
         }
 
         public void UpdateWixVersionFile(VersionVariables variables)
         {
-            var gitVersionOptions = options.Value;
+            var gitVersionOptions = this.options.Value;
 
             if (gitVersionOptions.WixInfo.ShouldUpdate)
             {
-                using (wixVersionFileUpdater)
+                using (this.wixVersionFileUpdater)
                 {
-                    wixVersionFileUpdater.Execute(variables, new WixVersionContext(gitVersionOptions.WorkingDirectory));
+                    this.wixVersionFileUpdater.Execute(variables, new WixVersionContext(gitVersionOptions.WorkingDirectory));
                 }
             }
         }
 
         public void GenerateGitVersionInformation(VersionVariables variables, FileWriteInfo fileWriteInfo)
         {
-            var gitVersionOptions = options.Value;
+            var gitVersionOptions = this.options.Value;
 
-            using (gitVersionInfoGenerator)
+            using (this.gitVersionInfoGenerator)
             {
-                gitVersionInfoGenerator.Execute(variables, new GitVersionInfoContext(gitVersionOptions.WorkingDirectory, fileWriteInfo.FileName, fileWriteInfo.FileExtension));
+                this.gitVersionInfoGenerator.Execute(variables, new GitVersionInfoContext(gitVersionOptions.WorkingDirectory, fileWriteInfo.FileName, fileWriteInfo.FileExtension));
             }
         }
     }

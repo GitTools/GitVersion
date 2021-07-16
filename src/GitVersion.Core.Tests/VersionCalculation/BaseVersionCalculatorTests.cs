@@ -191,7 +191,7 @@ namespace GitVersion.Core.Tests.VersionCalculation
 
             public override IEnumerable<IVersionFilter> ToFilters()
             {
-                yield return filter;
+                yield return this.filter;
             }
         }
 
@@ -229,7 +229,7 @@ namespace GitVersion.Core.Tests.VersionCalculation
 
             public IEnumerable<BaseVersion> GetVersions()
             {
-                yield return new BaseVersion("Source 1", false, new SemanticVersion(1), when, null);
+                yield return new BaseVersion("Source 1", false, new SemanticVersion(1), this.when, null);
             }
         }
 
@@ -252,7 +252,7 @@ namespace GitVersion.Core.Tests.VersionCalculation
 
             public IEnumerable<BaseVersion> GetVersions()
             {
-                yield return new BaseVersion("Source 2", true, new SemanticVersion(2), when, null);
+                yield return new BaseVersion("Source 2", true, new SemanticVersion(2), this.when, null);
             }
         }
 
@@ -267,7 +267,7 @@ namespace GitVersion.Core.Tests.VersionCalculation
 
             public IEnumerable<BaseVersion> GetVersions()
             {
-                return versions;
+                return this.versions;
             }
         }
     }

@@ -27,42 +27,42 @@ namespace GitVersion.App.Tests
             this.logFile = logFile;
         }
 
-        public string WorkingDirectory => workingDirectory;
+        public string WorkingDirectory => this.workingDirectory;
 
-        public string LogFile => logFile;
+        public string LogFile => this.logFile;
 
         public override string ToString()
         {
             var arguments = new StringBuilder();
 
-            arguments.AppendFormat(" /targetpath \"{0}\"", workingDirectory);
+            arguments.AppendFormat(" /targetpath \"{0}\"", this.workingDirectory);
 
-            if (!exec.IsNullOrWhiteSpace())
+            if (!this.exec.IsNullOrWhiteSpace())
             {
-                arguments.AppendFormat(" /exec \"{0}\"", exec);
+                arguments.AppendFormat(" /exec \"{0}\"", this.exec);
             }
 
-            if (!execArgs.IsNullOrWhiteSpace())
+            if (!this.execArgs.IsNullOrWhiteSpace())
             {
-                arguments.AppendFormat(" /execArgs \"{0}\"", execArgs);
+                arguments.AppendFormat(" /execArgs \"{0}\"", this.execArgs);
             }
 
-            if (!projectFile.IsNullOrWhiteSpace())
+            if (!this.projectFile.IsNullOrWhiteSpace())
             {
-                arguments.AppendFormat(" /proj \"{0}\"", projectFile);
+                arguments.AppendFormat(" /proj \"{0}\"", this.projectFile);
             }
 
-            if (!projectArgs.IsNullOrWhiteSpace())
+            if (!this.projectArgs.IsNullOrWhiteSpace())
             {
-                arguments.AppendFormat(" /projargs \"{0}\"", projectArgs);
+                arguments.AppendFormat(" /projargs \"{0}\"", this.projectArgs);
             }
 
-            if (!logFile.IsNullOrWhiteSpace())
+            if (!this.logFile.IsNullOrWhiteSpace())
             {
-                arguments.AppendFormat(" /l \"{0}\"", logFile);
+                arguments.AppendFormat(" /l \"{0}\"", this.logFile);
             }
 
-            arguments.Append(additionalArguments);
+            arguments.Append(this.additionalArguments);
 
             return arguments.ToString();
         }

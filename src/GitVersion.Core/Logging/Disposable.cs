@@ -22,8 +22,8 @@ namespace GitVersion.Logging
 
             public void Dispose()
             {
-                disposer?.Invoke();
-                disposer = null;
+                this.disposer?.Invoke();
+                this.disposer = null;
             }
 
             private Action? disposer;

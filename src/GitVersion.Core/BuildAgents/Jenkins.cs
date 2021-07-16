@@ -19,7 +19,7 @@ namespace GitVersion.BuildAgents
 
         public void WithPropertyFile(string propertiesFileName)
         {
-            file = propertiesFileName;
+            this.file = propertiesFileName;
         }
 
         public override string GenerateSetVersionMessage(VersionVariables variables)
@@ -62,13 +62,13 @@ namespace GitVersion.BuildAgents
         public override void WriteIntegration(Action<string?> writer, VersionVariables variables, bool updateBuildNumber = true)
         {
             base.WriteIntegration(writer, variables);
-            writer($"Outputting variables to '{file}' ... ");
+            writer($"Outputting variables to '{this.file}' ... ");
             WriteVariablesFile(variables);
         }
 
         private void WriteVariablesFile(VersionVariables variables)
         {
-            File.WriteAllLines(file, GenerateBuildLogOutput(variables));
+            File.WriteAllLines(this.file, GenerateBuildLogOutput(variables));
         }
     }
 }

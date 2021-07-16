@@ -23,24 +23,24 @@ namespace GitVersion
 
         public GitVersionContext Create(GitVersionOptions? gitVersionOptions)
         {
-            var currentBranch = repositoryStore.GetTargetBranch(gitVersionOptions?.RepositoryInfo.TargetBranch);
+            var currentBranch = this.repositoryStore.GetTargetBranch(gitVersionOptions?.RepositoryInfo.TargetBranch);
             if (currentBranch == null)
                 throw new InvalidOperationException("Need a branch to operate on");
 
-            var configuration = configProvider.Provide(overrideConfig: options.Value.ConfigInfo.OverrideConfig);
+            var configuration = this.configProvider.Provide(overrideConfig: this.options.Value.ConfigInfo.OverrideConfig);
 
-            var currentCommit = repositoryStore.GetCurrentCommit(currentBranch, gitVersionOptions?.RepositoryInfo.CommitId);
+            var currentCommit = this.repositoryStore.GetCurrentCommit(currentBranch, gitVersionOptions?.RepositoryInfo.CommitId);
 
             if (currentBranch.IsDetachedHead)
             {
-                var branchForCommit = repositoryStore.GetBranchesContainingCommit(currentCommit, onlyTrackedBranches: gitVersionOptions?.Settings.OnlyTrackedBranches == true).OnlyOrDefault();
+                var branchForCommit = this.repositoryStore.GetBranchesContainingCommit(currentCommit, onlyTrackedBranches: gitVersionOptions?.Settings.OnlyTrackedBranches == true).OnlyOrDefault();
                 currentBranch = branchForCommit ?? currentBranch;
             }
 
-            var currentBranchConfig = branchConfigurationCalculator.GetBranchConfiguration(currentBranch, currentCommit, configuration);
+            var currentBranchConfig = this.branchConfigurationCalculator.GetBranchConfiguration(currentBranch, currentCommit, configuration);
             var effectiveConfiguration = configuration.CalculateEffectiveConfiguration(currentBranchConfig);
-            var currentCommitTaggedVersion = repositoryStore.GetCurrentCommitTaggedVersion(currentCommit, effectiveConfiguration);
-            var numberOfUncommittedChanges = repositoryStore.GetNumberOfUncommittedChanges();
+            var currentCommitTaggedVersion = this.repositoryStore.GetCurrentCommitTaggedVersion(currentCommit, effectiveConfiguration);
+            var numberOfUncommittedChanges = this.repositoryStore.GetNumberOfUncommittedChanges();
 
             return new GitVersionContext(currentBranch, currentCommit, configuration, effectiveConfiguration, currentCommitTaggedVersion, numberOfUncommittedChanges);
         }

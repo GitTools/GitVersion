@@ -20,13 +20,13 @@ namespace GitVersion.Configuration
 
         public string FilePath { get; }
 
-        public bool HasConfigFileAt(string? workingDirectory) => fileSystem.Exists(Path.Combine(workingDirectory, FilePath));
+        public bool HasConfigFileAt(string? workingDirectory) => this.fileSystem.Exists(Path.Combine(workingDirectory, FilePath));
 
         public string GetConfigFilePath(string? workingDirectory) => Path.Combine(workingDirectory, FilePath);
 
         public void Verify(string? workingDirectory, string? projectRootDirectory)
         {
-            if (!Path.IsPathRooted(FilePath) && !fileSystem.PathsEqual(workingDirectory, projectRootDirectory))
+            if (!Path.IsPathRooted(FilePath) && !this.fileSystem.PathsEqual(workingDirectory, projectRootDirectory))
             {
                 WarnAboutAmbiguousConfigFileSelection(workingDirectory, projectRootDirectory);
             }
@@ -44,9 +44,9 @@ namespace GitVersion.Configuration
         {
             var configFilePath = GetConfigFilePath(workingDirectory);
 
-            if (fileSystem.Exists(configFilePath))
+            if (this.fileSystem.Exists(configFilePath))
             {
-                var readAllText = fileSystem.ReadAllText(configFilePath);
+                var readAllText = this.fileSystem.ReadAllText(configFilePath);
                 var readConfig = ConfigSerializer.Read(new StringReader(readAllText));
 
                 VerifyReadConfig(readConfig);
@@ -90,8 +90,8 @@ If the docs do not help you decide on the mode open an issue to discuss what you
             var workingConfigFile = GetConfigFilePath(workingDirectory);
             var projectRootConfigFile = GetConfigFilePath(projectRootDirectory);
 
-            var hasConfigInWorkingDirectory = fileSystem.Exists(workingConfigFile);
-            var hasConfigInProjectRootDirectory = fileSystem.Exists(projectRootConfigFile);
+            var hasConfigInWorkingDirectory = this.fileSystem.Exists(workingConfigFile);
+            var hasConfigInProjectRootDirectory = this.fileSystem.Exists(projectRootConfigFile);
             if (hasConfigInProjectRootDirectory && hasConfigInWorkingDirectory)
             {
                 throw new WarningException($"Ambiguous config file selection from '{workingConfigFile}' and '{projectRootConfigFile}'");
