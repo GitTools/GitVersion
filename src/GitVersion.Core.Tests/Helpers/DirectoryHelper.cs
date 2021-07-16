@@ -8,8 +8,8 @@ namespace GitVersion.Core.Tests.Helpers
     {
         private static readonly Dictionary<string, string> ToRename = new()
         {
-            {"gitted", ".git"},
-            {"gitmodules", ".gitmodules"},
+            { "gitted", ".git" },
+            { "gitmodules", ".gitmodules" },
         };
 
         public static void CopyFilesRecursively(DirectoryInfo source, DirectoryInfo target)
