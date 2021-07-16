@@ -11,9 +11,6 @@ namespace GitVersion.Core.Tests.Helpers
         {
             this.logAction = logAction;
         }
-        public void WriteTo(LogLevel level, string message)
-        {
-            this.logAction(message);
-        }
+        public void WriteTo(LogLevel level, string message) => this.logAction(message);
     }
 }

@@ -26,10 +26,7 @@ namespace GitVersion.Core.Tests.Helpers
             }
         }
 
-        private static string Rename(string name)
-        {
-            return ToRename.ContainsKey(name) ? ToRename[name] : name;
-        }
+        private static string Rename(string name) => ToRename.ContainsKey(name) ? ToRename[name] : name;
 
         public static void DeleteSubDirectories(string parentPath)
         {

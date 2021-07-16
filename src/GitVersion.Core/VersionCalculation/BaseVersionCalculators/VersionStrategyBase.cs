@@ -12,9 +12,6 @@ namespace GitVersion.VersionCalculation
         {
             this.versionContext = versionContext ?? throw new ArgumentNullException(nameof(versionContext));
         }
-        public virtual IEnumerable<BaseVersion> GetVersions()
-        {
-            throw new NotImplementedException();
-        }
+        public virtual IEnumerable<BaseVersion> GetVersions() => throw new NotImplementedException();
     }
 }

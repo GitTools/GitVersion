@@ -16,13 +16,11 @@ namespace GitVersion.MsBuild.Tests.Helpers
         /// </summary>
         /// <param name="e">Error to format</param>
         /// <returns>The formatted message string.</returns>
-        internal static string FormatEventMessage(BuildErrorEventArgs e)
-        {
+        internal static string FormatEventMessage(BuildErrorEventArgs e) =>
             // "error" should not be localized
-            return FormatEventMessage("error", e.Subcategory, e.Message,
+            FormatEventMessage("error", e.Subcategory, e.Message,
                 e.Code, e.File, null, e.LineNumber, e.EndLineNumber,
                 e.ColumnNumber, e.EndColumnNumber, e.ThreadId);
-        }
 
         /// <summary>
         /// Format the error event message and all the other event data into
@@ -31,13 +29,11 @@ namespace GitVersion.MsBuild.Tests.Helpers
         /// <param name="e">Error to format</param>
         /// <param name="showProjectFile"><code>true</code> to show the project file which issued the event, otherwise <code>false</code>.</param>
         /// <returns>The formatted message string.</returns>
-        internal static string FormatEventMessage(BuildErrorEventArgs e, bool showProjectFile)
-        {
+        internal static string FormatEventMessage(BuildErrorEventArgs e, bool showProjectFile) =>
             // "error" should not be localized
-            return FormatEventMessage("error", e.Subcategory, e.Message,
+            FormatEventMessage("error", e.Subcategory, e.Message,
                 e.Code, e.File, showProjectFile ? e.ProjectFile : null, e.LineNumber, e.EndLineNumber,
                 e.ColumnNumber, e.EndColumnNumber, e.ThreadId);
-        }
 
         /// <summary>
         /// Format the warning message and all the other event data into a
@@ -45,13 +41,11 @@ namespace GitVersion.MsBuild.Tests.Helpers
         /// </summary>
         /// <param name="e">Warning to format</param>
         /// <returns>The formatted message string.</returns>
-        internal static string FormatEventMessage(BuildWarningEventArgs e)
-        {
+        internal static string FormatEventMessage(BuildWarningEventArgs e) =>
             // "warning" should not be localized
-            return FormatEventMessage("warning", e.Subcategory, e.Message,
+            FormatEventMessage("warning", e.Subcategory, e.Message,
                 e.Code, e.File, null, e.LineNumber, e.EndLineNumber,
                 e.ColumnNumber, e.EndColumnNumber, e.ThreadId);
-        }
 
         /// <summary>
         /// Format the warning message and all the other event data into a
@@ -60,13 +54,11 @@ namespace GitVersion.MsBuild.Tests.Helpers
         /// <param name="e">Warning to format</param>
         /// <param name="showProjectFile"><code>true</code> to show the project file which issued the event, otherwise <code>false</code>.</param>
         /// <returns>The formatted message string.</returns>
-        internal static string FormatEventMessage(BuildWarningEventArgs e, bool showProjectFile)
-        {
+        internal static string FormatEventMessage(BuildWarningEventArgs e, bool showProjectFile) =>
             // "warning" should not be localized
-            return FormatEventMessage("warning", e.Subcategory, e.Message,
+            FormatEventMessage("warning", e.Subcategory, e.Message,
                 e.Code, e.File, showProjectFile ? e.ProjectFile : null, e.LineNumber, e.EndLineNumber,
                 e.ColumnNumber, e.EndColumnNumber, e.ThreadId);
-        }
 
         /// <summary>
         /// Format the message and all the other event data into a
@@ -74,10 +66,7 @@ namespace GitVersion.MsBuild.Tests.Helpers
         /// </summary>
         /// <param name="e">Message to format</param>
         /// <returns>The formatted message string.</returns>
-        internal static string FormatEventMessage(BuildMessageEventArgs e)
-        {
-            return FormatEventMessage(e, false);
-        }
+        internal static string FormatEventMessage(BuildMessageEventArgs e) => FormatEventMessage(e, false);
 
         /// <summary>
         /// Format the message and all the other event data into a
@@ -86,12 +75,10 @@ namespace GitVersion.MsBuild.Tests.Helpers
         /// <param name="e">Message to format</param>
         /// <param name="showProjectFile">Show project file or not</param>
         /// <returns>The formatted message string.</returns>
-        internal static string FormatEventMessage(BuildMessageEventArgs e, bool showProjectFile)
-        {
+        internal static string FormatEventMessage(BuildMessageEventArgs e, bool showProjectFile) =>
             // "message" should not be localized
-            return FormatEventMessage("message", e.Subcategory, e.Message,
+            FormatEventMessage("message", e.Subcategory, e.Message,
                 e.Code, e.File, showProjectFile ? e.ProjectFile : null, e.LineNumber, e.EndLineNumber, e.ColumnNumber, e.EndColumnNumber, e.ThreadId);
-        }
 
         /// <summary>
         /// Format the event message and all the other event data into a
@@ -120,10 +107,7 @@ namespace GitVersion.MsBuild.Tests.Helpers
             int columnNumber,
             int endColumnNumber,
             int threadId
-        )
-        {
-            return FormatEventMessage(category, subcategory, message, code, file, null, lineNumber, endLineNumber, columnNumber, endColumnNumber, threadId);
-        }
+        ) => FormatEventMessage(category, subcategory, message, code, file, null, lineNumber, endLineNumber, columnNumber, endColumnNumber, threadId);
 
         /// <summary>
         /// Format the event message and all the other event data into a

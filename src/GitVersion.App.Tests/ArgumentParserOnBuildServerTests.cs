@@ -34,30 +34,15 @@ namespace GitVersion.App.Tests
 
         private class MockBuildAgent : ICurrentBuildAgent
         {
-            public bool CanApplyToCurrentContext()
-            {
-                throw new NotImplementedException();
-            }
+            public bool CanApplyToCurrentContext() => throw new NotImplementedException();
 
-            public void WriteIntegration(Action<string> writer, VersionVariables variables, bool updateBuildNumber = true)
-            {
-                throw new NotImplementedException();
-            }
+            public void WriteIntegration(Action<string> writer, VersionVariables variables, bool updateBuildNumber = true) => throw new NotImplementedException();
 
-            public string GetCurrentBranch(bool usingDynamicRepos)
-            {
-                throw new NotImplementedException();
-            }
+            public string GetCurrentBranch(bool usingDynamicRepos) => throw new NotImplementedException();
 
-            public bool PreventFetch()
-            {
-                return true;
-            }
+            public bool PreventFetch() => true;
 
-            public bool ShouldCleanUpRemotes()
-            {
-                throw new NotImplementedException();
-            }
+            public bool ShouldCleanUpRemotes() => throw new NotImplementedException();
         }
     }
 }

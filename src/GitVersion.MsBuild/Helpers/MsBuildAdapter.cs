@@ -19,20 +19,11 @@ namespace GitVersion.MsBuild
             WriteLine();
         }
 
-        public void WriteLine()
-        {
-            this.taskLog.LogMessage("\n");
-        }
+        public void WriteLine() => this.taskLog.LogMessage("\n");
 
-        public void Write(string msg)
-        {
-            this.taskLog.LogMessage(msg);
-        }
+        public void Write(string msg) => this.taskLog.LogMessage(msg);
 
-        public string ReadLine()
-        {
-            return Console.ReadLine();
-        }
+        public string ReadLine() => Console.ReadLine();
 
         public IDisposable UseColor(ConsoleColor consoleColor)
         {

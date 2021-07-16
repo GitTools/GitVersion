@@ -99,8 +99,8 @@ namespace GitVersion
 
             return changes.Count;
         }
-        public void CreateBranchForPullRequestBranch(AuthenticationInfo auth)
-        {
+
+        public void CreateBranchForPullRequestBranch(AuthenticationInfo auth) =>
             RepositoryExtensions.RunSafe(() =>
             {
                 var network = repositoryInstance.Network;
@@ -159,7 +159,7 @@ namespace GitVersion
                     throw new WarningException(message);
                 }
             });
-        }
+
         public void Clone(string? sourceUrl, string? workdirPath, AuthenticationInfo auth)
         {
             try
@@ -190,37 +190,29 @@ namespace GitVersion
                 throw new Exception("There was an unknown problem with the Git repository you provided", ex);
             }
         }
-        public void Checkout(string commitOrBranchSpec)
-        {
+        public void Checkout(string commitOrBranchSpec) =>
             RepositoryExtensions.RunSafe(() =>
-            {
-                Commands.Checkout(repositoryInstance, commitOrBranchSpec);
-            });
-        }
-        public void Fetch(string remote, IEnumerable<string> refSpecs, AuthenticationInfo auth, string? logMessage)
-        {
+                Commands.Checkout(repositoryInstance, commitOrBranchSpec));
+
+        public void Fetch(string remote, IEnumerable<string> refSpecs, AuthenticationInfo auth, string? logMessage) =>
             RepositoryExtensions.RunSafe(() =>
-            {
-                Commands.Fetch((Repository)repositoryInstance, remote, refSpecs, GetFetchOptions(auth), logMessage);
-            });
-        }
+                Commands.Fetch((Repository)repositoryInstance, remote, refSpecs, GetFetchOptions(auth), logMessage));
+
         internal static string Discover(string? path) => Repository.Discover(path);
 
-        private static FetchOptions GetFetchOptions(AuthenticationInfo auth)
-        {
-            return new()
+        private static FetchOptions GetFetchOptions(AuthenticationInfo auth) =>
+            new()
             {
                 CredentialsProvider = GetCredentialsProvider(auth)
             };
-        }
-        private static CloneOptions GetCloneOptions(AuthenticationInfo auth)
-        {
-            return new()
+
+        private static CloneOptions GetCloneOptions(AuthenticationInfo auth) =>
+            new()
             {
                 Checkout = false,
                 CredentialsProvider = GetCredentialsProvider(auth)
             };
-        }
+
         private static CredentialsHandler? GetCredentialsProvider(AuthenticationInfo auth)
         {
             if (!auth.Username.IsNullOrWhiteSpace())

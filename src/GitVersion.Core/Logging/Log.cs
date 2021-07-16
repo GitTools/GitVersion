@@ -58,15 +58,9 @@ namespace GitVersion.Logging
             });
         }
 
-        public void AddLogAppender(ILogAppender logAppender)
-        {
-            this.appenders = this.appenders.Concat(new[] { logAppender });
-        }
+        public void AddLogAppender(ILogAppender logAppender) => this.appenders = this.appenders.Concat(new[] { logAppender });
 
-        public override string ToString()
-        {
-            return this.sb.ToString();
-        }
+        public override string ToString() => this.sb.ToString();
 
         private string FormatMessage(string message, string level)
         {

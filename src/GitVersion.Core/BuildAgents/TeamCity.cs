@@ -32,31 +32,19 @@ namespace GitVersion.BuildAgents
             return branchName;
         }
 
-        private void WriteBranchEnvVariableWarning()
-        {
-            this.Log.Warning(@"TeamCity doesn't make the current branch available through environmental variables.
+        private void WriteBranchEnvVariableWarning() => this.Log.Warning(@"TeamCity doesn't make the current branch available through environmental variables.
 Depending on your authentication and transport setup of your git VCS root things may work. In that case, ignore this warning.
 In your TeamCity build configuration, add a parameter called `env.Git_Branch` with value %teamcity.build.vcs.branch.<vcsid>%
 See https://gitversion.net/docs/reference/build-servers/teamcity for more info");
-        }
 
-        public override bool PreventFetch()
-        {
-            return !Environment.GetEnvironmentVariable("Git_Branch").IsNullOrEmpty();
-        }
+        public override bool PreventFetch() => !string.IsNullOrEmpty(Environment.GetEnvironmentVariable("Git_Branch"));
 
-        public override string[] GenerateSetParameterMessage(string name, string value)
-        {
-            return new[]
+        public override string[] GenerateSetParameterMessage(string name, string value) => new[]
             {
                 $"##teamcity[setParameter name='GitVersion.{name}' value='{ServiceMessageEscapeHelper.EscapeValue(value)}']",
                 $"##teamcity[setParameter name='system.GitVersion.{name}' value='{ServiceMessageEscapeHelper.EscapeValue(value)}']"
             };
-        }
 
-        public override string GenerateSetVersionMessage(VersionVariables variables)
-        {
-            return $"##teamcity[buildNumber '{ServiceMessageEscapeHelper.EscapeValue(variables.FullSemVer)}']";
-        }
+        public override string GenerateSetVersionMessage(VersionVariables variables) => $"##teamcity[buildNumber '{ServiceMessageEscapeHelper.EscapeValue(variables.FullSemVer)}']";
     }
 }

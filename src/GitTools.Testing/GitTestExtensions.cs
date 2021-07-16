@@ -11,30 +11,18 @@ namespace GitTools.Testing
     {
         static int _pad = 1;
 
-        public static Commit MakeACommit(this IRepository repository, string commitMessage = null)
-        {
-            return CreateFileAndCommit(repository, Guid.NewGuid().ToString(), commitMessage);
-        }
+        public static Commit MakeACommit(this IRepository repository, string commitMessage = null) => CreateFileAndCommit(repository, Guid.NewGuid().ToString(), commitMessage);
 
-        public static void MergeNoFF(this IRepository repository, string branch)
-        {
-            MergeNoFF(repository, branch, Generate.SignatureNow());
-        }
+        public static void MergeNoFF(this IRepository repository, string branch) => MergeNoFF(repository, branch, Generate.SignatureNow());
 
-        public static void MergeNoFF(this IRepository repository, string branch, Signature sig)
+        public static void MergeNoFF(this IRepository repository, string branch, Signature sig) => repository.Merge(repository.Branches[branch], sig, new MergeOptions
         {
-            repository.Merge(repository.Branches[branch], sig, new MergeOptions
-            {
-                FastForwardStrategy = FastForwardStrategy.NoFastForward
-            });
-        }
+            FastForwardStrategy = FastForwardStrategy.NoFastForward
+        });
 
-        public static Commit[] MakeCommits(this IRepository repository, int numCommitsToMake)
-        {
-            return Enumerable.Range(1, numCommitsToMake)
+        public static Commit[] MakeCommits(this IRepository repository, int numCommitsToMake) => Enumerable.Range(1, numCommitsToMake)
                              .Select(_ => repository.MakeACommit())
                              .ToArray();
-        }
 
         private static Commit CreateFileAndCommit(this IRepository repository, string relativeFileName, string commitMessage = null)
         {

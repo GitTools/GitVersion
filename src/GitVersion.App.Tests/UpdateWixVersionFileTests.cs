@@ -16,10 +16,7 @@ namespace GitVersion.App.Tests
         private string wixVersionFileName;
 
         [SetUp]
-        public void Setup()
-        {
-            this.wixVersionFileName = WixVersionFileUpdater.WixVersionFileName;
-        }
+        public void Setup() => this.wixVersionFileName = WixVersionFileUpdater.WixVersionFileName;
 
         [Test]
         public void WixVersionFileCreationTest()

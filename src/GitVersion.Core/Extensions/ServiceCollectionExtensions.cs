@@ -12,9 +12,7 @@ namespace GitVersion.Extensions
             return serviceCollection;
         }
 
-        public static TService GetServiceForType<TService, TType>(this IServiceProvider serviceProvider)
-        {
-            return serviceProvider.GetServices<TService>().SingleOrDefault(t => t?.GetType() == typeof(TType));
-        }
+        public static TService GetServiceForType<TService, TType>(this IServiceProvider serviceProvider) =>
+            serviceProvider.GetServices<TService>().SingleOrDefault(t => t?.GetType() == typeof(TType));
     }
 }

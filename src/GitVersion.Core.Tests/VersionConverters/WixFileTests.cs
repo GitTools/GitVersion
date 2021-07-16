@@ -16,10 +16,7 @@ namespace GitVersion.Core.Tests
     internal class WixFileTests : TestBase
     {
         [SetUp]
-        public void Setup()
-        {
-            ShouldlyConfiguration.ShouldMatchApprovedDefaults.LocateTestMethodUsingAttribute<TestAttribute>();
-        }
+        public void Setup() => ShouldlyConfiguration.ShouldMatchApprovedDefaults.LocateTestMethodUsingAttribute<TestAttribute>();
 
         [Test]
         [Category(NoMono)]

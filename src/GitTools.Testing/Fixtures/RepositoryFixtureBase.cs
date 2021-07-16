@@ -59,15 +59,9 @@ namespace GitTools.Testing
             Console.WriteLine(this._sequenceDiagram.GetDiagram());
         }
 
-        public void Checkout(string branch)
-        {
-            Commands.Checkout(Repository, branch);
-        }
+        public void Checkout(string branch) => Commands.Checkout(Repository, branch);
 
-        public static void Init(string path)
-        {
-            GitTestExtensions.ExecuteGitCmd($"init {path} -b main");
-        }
+        public static void Init(string path) => GitTestExtensions.ExecuteGitCmd($"init {path} -b main");
 
         public void MakeATaggedCommit(string tag)
         {

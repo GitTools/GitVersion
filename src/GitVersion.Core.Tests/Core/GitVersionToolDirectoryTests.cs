@@ -24,10 +24,7 @@ namespace GitVersion.Core.Tests
         }
 
         [TearDown]
-        public void Cleanup()
-        {
-            Directory.Delete(this.workDirectory, true);
-        }
+        public void Cleanup() => Directory.Delete(this.workDirectory, true);
 
         [Test]
         public void FindsGitDirectory()

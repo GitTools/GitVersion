@@ -37,10 +37,7 @@ namespace GitVersion.Core.Tests
             return this;
         }
 
-        public GitVersionContextBuilder WithDevelopBranch()
-        {
-            return WithBranch("develop");
-        }
+        public GitVersionContextBuilder WithDevelopBranch() => WithBranch("develop");
 
         private GitVersionContextBuilder WithBranch(string branchName)
         {

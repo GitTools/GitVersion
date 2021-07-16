@@ -17,15 +17,9 @@ namespace GitVersion
             this.overrides = overrides;
         }
 
-        private static async Task Main(string[] args)
-        {
-            await new Program().RunAsync(args);
-        }
+        private static async Task Main(string[] args) => await new Program().RunAsync(args);
 
-        internal Task RunAsync(string[] args)
-        {
-            return CreateHostBuilder(args).Build().RunAsync();
-        }
+        internal Task RunAsync(string[] args) => CreateHostBuilder(args).Build().RunAsync();
 
         private IHostBuilder CreateHostBuilder(string[] args) =>
             new HostBuilder()

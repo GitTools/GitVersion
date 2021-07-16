@@ -28,16 +28,13 @@ namespace GitVersion.Configuration.Init.BuildServer
             return StepResult.Ok();
         }
 
-        protected override string GetPrompt(Config config, string workingDirectory)
-        {
-            return @"Is your project public or private?
+        protected override string GetPrompt(Config config, string workingDirectory) => @"Is your project public or private?
 
 That is ... does it require authentication to clone/pull?
 
 0) Go Back
 1) Public
 2) Private";
-        }
 
         protected override string DefaultResult => "0";
     }

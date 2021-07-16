@@ -9,10 +9,7 @@ namespace GitVersion
         private readonly LibGit2Sharp.BranchCollection innerCollection;
         internal BranchCollection(LibGit2Sharp.BranchCollection collection) => this.innerCollection = collection;
 
-        public IEnumerator<IBranch> GetEnumerator()
-        {
-            return this.innerCollection.Select(branch => new Branch(branch)).GetEnumerator();
-        }
+        public IEnumerator<IBranch> GetEnumerator() => this.innerCollection.Select(branch => new Branch(branch)).GetEnumerator();
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
         public IBranch? this[string name]
         {

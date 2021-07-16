@@ -52,20 +52,11 @@ namespace GitVersion.Core.Tests
             return branch;
         }
 
-        public static IBranch FindBranch(this IGitRepository repository, string branchName)
-        {
-            return repository.Branches.FirstOrDefault(x => x.Name.WithoutRemote == branchName);
-        }
+        public static IBranch FindBranch(this IGitRepository repository, string branchName) => repository.Branches.FirstOrDefault(x => x.Name.WithoutRemote == branchName);
 
-        public static void DumpGraph(this IGitRepository repository, Action<string> writer = null, int? maxCommits = null)
-        {
-            GitExtensions.DumpGraph(repository.Path, writer, maxCommits);
-        }
+        public static void DumpGraph(this IGitRepository repository, Action<string> writer = null, int? maxCommits = null) => GitExtensions.DumpGraph(repository.Path, writer, maxCommits);
 
-        public static void DumpGraph(this IRepository repository, Action<string> writer = null, int? maxCommits = null)
-        {
-            GitExtensions.DumpGraph(repository.ToGitRepository().Path, writer, maxCommits);
-        }
+        public static void DumpGraph(this IRepository repository, Action<string> writer = null, int? maxCommits = null) => GitExtensions.DumpGraph(repository.ToGitRepository().Path, writer, maxCommits);
 
         public static VersionVariables GetVersion(this RepositoryFixtureBase fixture, Config configuration = null, IRepository repository = null, string commitId = null, bool onlyTrackedBranches = true, string branch = null)
         {

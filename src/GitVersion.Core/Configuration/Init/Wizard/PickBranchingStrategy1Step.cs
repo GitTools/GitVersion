@@ -28,12 +28,9 @@ GitFlow allows you to have new development happening on the 'develop' branch, pa
             return StepResult.InvalidResponseSelected();
         }
 
-        protected override string GetPrompt(Config config, string workingDirectory)
-        {
-            return @"GitVersion can try to recommend you a branching strategy based on a few questions. 
+        protected override string GetPrompt(Config config, string workingDirectory) => @"GitVersion can try to recommend you a branching strategy based on a few questions. 
 
 Do you need to maintain multiple versions of your application simultaneously in production? (y/n)";
-        }
 
         protected override string? DefaultResult => null;
     }

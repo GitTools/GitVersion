@@ -113,18 +113,15 @@ namespace GitVersion.Model.Configuration
             return this;
         }
 
-        public static BranchConfig CreateDefaultBranchConfig(string name)
+        public static BranchConfig CreateDefaultBranchConfig(string name) => new BranchConfig
         {
-            return new BranchConfig
-            {
-                Name = name,
-                Tag = "useBranchName",
-                PreventIncrementOfMergedBranchVersion = false,
-                TrackMergeTarget = false,
-                TracksReleaseBranches = false,
-                IsReleaseBranch = false,
-                IsMainline = false,
-            };
-        }
+            Name = name,
+            Tag = "useBranchName",
+            PreventIncrementOfMergedBranchVersion = false,
+            TrackMergeTarget = false,
+            TracksReleaseBranches = false,
+            IsReleaseBranch = false,
+            IsMainline = false,
+        };
     }
 }

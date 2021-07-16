@@ -44,14 +44,11 @@ namespace GitVersion.Configuration.Init.SetConfig
             return StepResult.InvalidResponseSelected();
         }
 
-        protected override string GetPrompt(Config config, string workingDirectory)
-        {
-            return $@"What do you want the increment mode for {this.name} to be?
+        protected override string GetPrompt(Config config, string workingDirectory) => $@"What do you want the increment mode for {this.name} to be?
 
 0) Go Back
 1) Follow SemVer and only increment when a release has been tagged (continuous delivery mode)
 2) Increment based on branch config every commit (continuous deployment mode)";
-        }
 
         protected override string DefaultResult => "0";
     }

@@ -11,10 +11,7 @@ namespace GitVersion.Core.Tests
         private IEnvironment environment;
 
         [SetUp]
-        public void Setup()
-        {
-            this.environment = new TestEnvironment();
-        }
+        public void Setup() => this.environment = new TestEnvironment();
 
         [Test]
         public void FormatWithNoTokens()

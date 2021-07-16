@@ -64,20 +64,11 @@ namespace GitVersion.Core.Tests.BuildAgents
             {
             }
 
-            public override bool CanApplyToCurrentContext()
-            {
-                throw new NotImplementedException();
-            }
+            public override bool CanApplyToCurrentContext() => throw new NotImplementedException();
 
-            public override string GenerateSetVersionMessage(VersionVariables variables)
-            {
-                return variables.FullSemVer;
-            }
+            public override string GenerateSetVersionMessage(VersionVariables variables) => variables.FullSemVer;
 
-            public override string[] GenerateSetParameterMessage(string name, string value)
-            {
-                return new string[0];
-            }
+            public override string[] GenerateSetParameterMessage(string name, string value) => new string[0];
         }
     }
 }

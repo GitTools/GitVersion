@@ -13,11 +13,9 @@ namespace GitVersion.Core.Tests
         private readonly Config config = new Config { TagPrefix = "[vV]" };
 
         [Test]
-        public void NullMessageStringThrows()
-        {
+        public void NullMessageStringThrows() =>
             // Act / Assert
             Should.Throw<NullReferenceException>(() => new MergeMessage(null, this.config));
-        }
 
         [TestCase("")]
         [TestCase("\t\t  ")]

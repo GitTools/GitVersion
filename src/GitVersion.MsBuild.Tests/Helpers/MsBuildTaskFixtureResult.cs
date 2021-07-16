@@ -21,9 +21,6 @@ namespace GitVersion.MsBuild.Tests.Helpers
         public int Messages { get; set; }
         public string Log { get; set; }
 
-        public void Dispose()
-        {
-            this.fixture.Dispose();
-        }
+        public void Dispose() => this.fixture.Dispose();
     }
 }

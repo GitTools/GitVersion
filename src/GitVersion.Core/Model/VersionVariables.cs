@@ -136,15 +136,9 @@ namespace GitVersion.OutputVariables
         [ReflectionIgnore]
         public string? this[string variable] => typeof(VersionVariables).GetProperty(variable)?.GetValue(this, null) as string;
 
-        public IEnumerator<KeyValuePair<string, string>> GetEnumerator()
-        {
-            return this.GetProperties().GetEnumerator();
-        }
+        public IEnumerator<KeyValuePair<string, string>> GetEnumerator() => this.GetProperties().GetEnumerator();
 
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
-        }
+        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
         // FIX ME: Shall we return an instance with no ctorArgs or explicitly fail when properties is null?
         public static VersionVariables FromDictionary(IEnumerable<KeyValuePair<string, string>>? properties)
@@ -210,10 +204,7 @@ namespace GitVersion.OutputVariables
             return false;
         }
 
-        private static bool ContainsKey(string variable)
-        {
-            return typeof(VersionVariables).GetProperty(variable) != null;
-        }
+        private static bool ContainsKey(string variable) => typeof(VersionVariables).GetProperty(variable) != null;
 
         public override string ToString()
         {

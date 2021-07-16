@@ -30,18 +30,12 @@ namespace GitVersion.BuildAgents
             return false;
         }
 
-        public override string GenerateSetVersionMessage(VersionVariables variables)
-        {
-            return variables.FullSemVer;
-        }
+        public override string GenerateSetVersionMessage(VersionVariables variables) => variables.FullSemVer;
 
-        public override string[] GenerateSetParameterMessage(string name, string value)
-        {
-            return new[]
+        public override string[] GenerateSetParameterMessage(string name, string value) => new[]
             {
                 $"@@envrun[set name='GitVersion_{name}' value='{value}']"
             };
-        }
         public override bool PreventFetch() => true;
     }
 }

@@ -13,23 +13,14 @@ namespace GitVersion.BuildAgents
 
         public const string EnvironmentVariableName = "DRONE";
         protected override string EnvironmentVariable { get; } = EnvironmentVariableName;
-        public override bool CanApplyToCurrentContext()
-        {
-            return Environment.GetEnvironmentVariable(EnvironmentVariable)?.Equals("true", StringComparison.OrdinalIgnoreCase) ?? false;
-        }
+        public override bool CanApplyToCurrentContext() => Environment.GetEnvironmentVariable(EnvironmentVariable)?.Equals("true", StringComparison.OrdinalIgnoreCase) ?? false;
 
-        public override string GenerateSetVersionMessage(VersionVariables variables)
-        {
-            return variables.FullSemVer;
-        }
+        public override string GenerateSetVersionMessage(VersionVariables variables) => variables.FullSemVer;
 
-        public override string[] GenerateSetParameterMessage(string name, string value)
-        {
-            return new[]
+        public override string[] GenerateSetParameterMessage(string name, string value) => new[]
             {
                 $"GitVersion_{name}={value}"
             };
-        }
 
         public override string? GetCurrentBranch(bool usingDynamicRepos)
         {
