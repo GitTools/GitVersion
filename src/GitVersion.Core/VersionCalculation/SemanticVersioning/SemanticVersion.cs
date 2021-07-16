@@ -147,10 +147,10 @@ namespace GitVersion
         public static bool TryParse(string version, string tagPrefixRegex, out SemanticVersion semanticVersion)
         {
             var match = Regex.Match(version, $"^({tagPrefixRegex})?(?<version>.*)$");
+            semanticVersion = null;
 
             if (!match.Success)
             {
-                semanticVersion = null;
                 return false;
             }
 
@@ -159,7 +159,6 @@ namespace GitVersion
 
             if (!parsed.Success)
             {
-                semanticVersion = null;
                 return false;
             }
 
@@ -167,15 +166,32 @@ namespace GitVersion
             var fourthPart = parsed.Groups["FourthPart"];
             if (fourthPart.Success && semanticVersionBuildMetaData.CommitsSinceTag == null)
             {
-                semanticVersionBuildMetaData.CommitsSinceTag = int.Parse(fourthPart.Value);
+                semanticVersionBuildMetaData.CommitsSinceTag = Int32.Parse(fourthPart.Value);
+            }
+
+            int major = 0, minor = 0, patch = 0;
+
+            if (!parsed.Groups["Major"].Success || !Int32.TryParse(parsed.Groups["Major"].Value, out major))
+            {
+                return false;
+            }
+
+            if (parsed.Groups["Minor"].Success && !Int32.TryParse(parsed.Groups["Minor"].Value, out minor))
+            {
+                return false;
+            }
+
+            if (parsed.Groups["Patch"].Success && !Int32.TryParse(parsed.Groups["Patch"].Value, out patch))
+            {
+                return false;
             }
 
             semanticVersion = new SemanticVersion
             {
-                Major = int.Parse(parsed.Groups["Major"].Value),
-                Minor = parsed.Groups["Minor"].Success ? int.Parse(parsed.Groups["Minor"].Value) : 0,
-                Patch = parsed.Groups["Patch"].Success ? int.Parse(parsed.Groups["Patch"].Value) : 0,
-                PreReleaseTag = SemanticVersionPreReleaseTag.Parse(parsed.Groups["Tag"].Value),
+                Major = major,
+                Minor = minor,
+                Patch = patch,
+                PreReleaseTag = SemanticVersionPreReleaseTag.TryParse(parsed.Groups["Tag"].Value),
                 BuildMetaData = semanticVersionBuildMetaData
             };
 

@@ -84,10 +84,10 @@ namespace GitVersion
 
         public static implicit operator SemanticVersionPreReleaseTag(string preReleaseTag)
         {
-            return Parse(preReleaseTag);
+            return TryParse(preReleaseTag);
         }
 
-        public static SemanticVersionPreReleaseTag Parse(string preReleaseTag)
+        public static SemanticVersionPreReleaseTag TryParse(string preReleaseTag)
         {
             if (string.IsNullOrEmpty(preReleaseTag))
             {
@@ -103,7 +103,8 @@ namespace GitVersion
             }
 
             var value = match.Groups["name"].Value;
-            var number = match.Groups["number"].Success ? int.Parse(match.Groups["number"].Value) : (int?)null;
+            var number = (match.Groups["number"].Success && int.TryParse(match.Groups["number"].Value, out int parsedNumber)) ? (int?)parsedNumber : null;
+
             if (value.EndsWith("-"))
                 return new SemanticVersionPreReleaseTag(preReleaseTag, null);
 
