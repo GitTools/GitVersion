@@ -35,14 +35,8 @@ namespace GitVersion
             }
         }
 
-        public static bool operator ==(BranchCommit left, BranchCommit right)
-        {
-            return left.Equals(right);
-        }
+        public static bool operator ==(BranchCommit left, BranchCommit right) => left.Equals(right);
 
-        public static bool operator !=(BranchCommit left, BranchCommit right)
-        {
-            return !left.Equals(right);
-        }
+        public static bool operator !=(BranchCommit left, BranchCommit right) => !left.Equals(right);
     }
 }
