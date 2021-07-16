@@ -50,10 +50,7 @@ namespace GitVersion.MsBuild.Tests.Tasks
             const string taskName = nameof(UpdateAssemblyInfo);
             const string outputProperty = nameof(UpdateAssemblyInfo.AssemblyInfoTempFilePath);
 
-            using var result = ExecuteMsBuildExe(project =>
-            {
-                AddUpdateAssemblyInfoTask(project, taskName, taskName, outputProperty);
-            });
+            using var result = ExecuteMsBuildExe(project => AddUpdateAssemblyInfoTask(project, taskName, taskName, outputProperty));
 
             result.ProjectPath.ShouldNotBeNullOrWhiteSpace();
             result.MsBuild.Count.ShouldBeGreaterThan(0);
@@ -76,10 +73,7 @@ namespace GitVersion.MsBuild.Tests.Tasks
             const string taskName = nameof(UpdateAssemblyInfo);
             const string outputProperty = nameof(UpdateAssemblyInfo.AssemblyInfoTempFilePath);
 
-            using var result = ExecuteMsBuildExeInAzurePipeline(project =>
-            {
-                AddUpdateAssemblyInfoTask(project, taskName, taskName, outputProperty);
-            });
+            using var result = ExecuteMsBuildExeInAzurePipeline(project => AddUpdateAssemblyInfoTask(project, taskName, taskName, outputProperty));
 
             result.ProjectPath.ShouldNotBeNullOrWhiteSpace();
             result.MsBuild.Count.ShouldBeGreaterThan(0);

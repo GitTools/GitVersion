@@ -18,10 +18,7 @@ namespace GitVersion.Core.Tests.BuildAgents
         [SetUp]
         public void SetEnvironmentVariableForTest()
         {
-            var sp = ConfigureServices(services =>
-            {
-                services.AddSingleton<EnvRun>();
-            });
+            var sp = ConfigureServices(services => services.AddSingleton<EnvRun>());
             this.environment = sp.GetService<IEnvironment>();
             this.buildServer = sp.GetService<EnvRun>();
 

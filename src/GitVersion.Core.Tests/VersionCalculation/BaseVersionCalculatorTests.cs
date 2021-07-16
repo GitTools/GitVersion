@@ -18,15 +18,12 @@ namespace GitVersion.Core.Tests.VersionCalculation
         public void ChoosesHighestVersionReturnedFromStrategies()
         {
             var dateTimeOffset = DateTimeOffset.Now;
-            var versionCalculator = GetBaseVersionCalculator(contextBuilder =>
-            {
-                contextBuilder.OverrideServices(services =>
-                {
-                    services.RemoveAll<IVersionStrategy>();
-                    services.AddSingleton<IVersionStrategy>(new V1Strategy(DateTimeOffset.Now));
-                    services.AddSingleton<IVersionStrategy>(new V2Strategy(dateTimeOffset));
-                });
-            });
+            var versionCalculator = GetBaseVersionCalculator(contextBuilder => contextBuilder.OverrideServices(services =>
+{
+    services.RemoveAll<IVersionStrategy>();
+    services.AddSingleton<IVersionStrategy>(new V1Strategy(DateTimeOffset.Now));
+    services.AddSingleton<IVersionStrategy>(new V2Strategy(dateTimeOffset));
+}));
 
             var baseVersion = versionCalculator.GetBaseVersion();
 
@@ -40,15 +37,12 @@ namespace GitVersion.Core.Tests.VersionCalculation
         {
             var when = DateTimeOffset.Now;
 
-            var versionCalculator = GetBaseVersionCalculator(contextBuilder =>
-            {
-                contextBuilder.OverrideServices(services =>
-                {
-                    services.RemoveAll<IVersionStrategy>();
-                    services.AddSingleton<IVersionStrategy>(new V1Strategy(when));
-                    services.AddSingleton<IVersionStrategy>(new V2Strategy(null));
-                });
-            });
+            var versionCalculator = GetBaseVersionCalculator(contextBuilder => contextBuilder.OverrideServices(services =>
+{
+    services.RemoveAll<IVersionStrategy>();
+    services.AddSingleton<IVersionStrategy>(new V1Strategy(when));
+    services.AddSingleton<IVersionStrategy>(new V2Strategy(null));
+}));
 
             var baseVersion = versionCalculator.GetBaseVersion();
 
@@ -62,15 +56,12 @@ namespace GitVersion.Core.Tests.VersionCalculation
         {
             var when = DateTimeOffset.Now;
 
-            var versionCalculator = GetBaseVersionCalculator(contextBuilder =>
-            {
-                contextBuilder.OverrideServices(services =>
-                {
-                    services.RemoveAll<IVersionStrategy>();
-                    services.AddSingleton<IVersionStrategy>(new V1Strategy(null));
-                    services.AddSingleton<IVersionStrategy>(new V2Strategy(when));
-                });
-            });
+            var versionCalculator = GetBaseVersionCalculator(contextBuilder => contextBuilder.OverrideServices(services =>
+{
+    services.RemoveAll<IVersionStrategy>();
+    services.AddSingleton<IVersionStrategy>(new V1Strategy(null));
+    services.AddSingleton<IVersionStrategy>(new V2Strategy(when));
+}));
 
             var baseVersion = versionCalculator.GetBaseVersion();
 
@@ -85,16 +76,13 @@ namespace GitVersion.Core.Tests.VersionCalculation
             var fakeIgnoreConfig = new TestIgnoreConfig(new ExcludeSourcesContainingExclude());
             var version = new BaseVersion("dummy", false, new SemanticVersion(2), GitToolsTestingExtensions.CreateMockCommit(), null);
 
-            var versionCalculator = GetBaseVersionCalculator(contextBuilder =>
-            {
-                contextBuilder
+            var versionCalculator = GetBaseVersionCalculator(contextBuilder => contextBuilder
                     .WithConfig(new Config { Ignore = fakeIgnoreConfig })
                     .OverrideServices(services =>
                     {
                         services.RemoveAll<IVersionStrategy>();
                         services.AddSingleton<IVersionStrategy>(new TestVersionStrategy(version));
-                    });
-            });
+                    }));
 
             var baseVersion = versionCalculator.GetBaseVersion();
 
@@ -111,16 +99,13 @@ namespace GitVersion.Core.Tests.VersionCalculation
             var higherVersion = new BaseVersion("exclude", false, new SemanticVersion(2), GitToolsTestingExtensions.CreateMockCommit(), null);
             var lowerVersion = new BaseVersion("dummy", false, new SemanticVersion(1), GitToolsTestingExtensions.CreateMockCommit(), null);
 
-            var versionCalculator = GetBaseVersionCalculator(contextBuilder =>
-            {
-                contextBuilder
+            var versionCalculator = GetBaseVersionCalculator(contextBuilder => contextBuilder
                     .WithConfig(new Config { Ignore = fakeIgnoreConfig })
                     .OverrideServices(services =>
                     {
                         services.RemoveAll<IVersionStrategy>();
                         services.AddSingleton<IVersionStrategy>(new TestVersionStrategy(higherVersion, lowerVersion));
-                    });
-            });
+                    }));
             var baseVersion = versionCalculator.GetBaseVersion();
 
             baseVersion.Source.ShouldNotBe(higherVersion.Source);
@@ -150,16 +135,13 @@ namespace GitVersion.Core.Tests.VersionCalculation
                 null
             );
 
-            var versionCalculator = GetBaseVersionCalculator(contextBuilder =>
-            {
-                contextBuilder
+            var versionCalculator = GetBaseVersionCalculator(contextBuilder => contextBuilder
                     .WithConfig(new Config { VersioningMode = VersioningMode.Mainline, Ignore = fakeIgnoreConfig })
                     .OverrideServices(services =>
                     {
                         services.RemoveAll<IVersionStrategy>();
                         services.AddSingleton<IVersionStrategy>(new TestVersionStrategy(preReleaseVersion, lowerVersion));
-                    });
-            });
+                    }));
             var baseVersion = versionCalculator.GetBaseVersion();
 
             baseVersion.Source.ShouldNotBe(preReleaseVersion.Source);

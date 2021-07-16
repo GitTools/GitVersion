@@ -18,10 +18,7 @@ namespace GitVersion.Core.Tests.BuildAgents
         [SetUp]
         public void SetEnvironmentVariableForTest()
         {
-            var sp = ConfigureServices(services =>
-            {
-                services.AddSingleton<AzurePipelines>();
-            });
+            var sp = ConfigureServices(services => services.AddSingleton<AzurePipelines>());
             this.environment = sp.GetService<IEnvironment>();
             this.buildServer = sp.GetService<AzurePipelines>();
 

@@ -59,10 +59,7 @@ namespace GitVersion.MsBuild.Tests.Tasks
             const string taskName = nameof(GenerateGitVersionInformation);
             const string outputProperty = nameof(GenerateGitVersionInformation.GitVersionInformationFilePath);
 
-            using var result = ExecuteMsBuildExe(project =>
-            {
-                AddGenerateGitVersionInformationTask(project, taskName, taskName, outputProperty);
-            });
+            using var result = ExecuteMsBuildExe(project => AddGenerateGitVersionInformationTask(project, taskName, taskName, outputProperty));
 
             result.ProjectPath.ShouldNotBeNullOrWhiteSpace();
             result.MsBuild.Count.ShouldBeGreaterThan(0);
@@ -89,10 +86,7 @@ namespace GitVersion.MsBuild.Tests.Tasks
             const string taskName = nameof(GenerateGitVersionInformation);
             const string outputProperty = nameof(GenerateGitVersionInformation.GitVersionInformationFilePath);
 
-            using var result = ExecuteMsBuildExeInAzurePipeline(project =>
-            {
-                AddGenerateGitVersionInformationTask(project, taskName, taskName, outputProperty);
-            });
+            using var result = ExecuteMsBuildExeInAzurePipeline(project => AddGenerateGitVersionInformationTask(project, taskName, taskName, outputProperty));
 
             result.ProjectPath.ShouldNotBeNullOrWhiteSpace();
             result.MsBuild.Count.ShouldBeGreaterThan(0);

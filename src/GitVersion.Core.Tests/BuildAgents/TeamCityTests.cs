@@ -13,10 +13,7 @@ namespace GitVersion.Core.Tests.BuildAgents
         [SetUp]
         public void SetUp()
         {
-            var sp = ConfigureServices(services =>
-            {
-                services.AddSingleton<TeamCity>();
-            });
+            var sp = ConfigureServices(services => services.AddSingleton<TeamCity>());
             this.buildServer = sp.GetService<TeamCity>();
         }
 

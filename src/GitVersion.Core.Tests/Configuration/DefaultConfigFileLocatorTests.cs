@@ -32,10 +32,7 @@ namespace GitVersion.Core.Tests
                 this.workingPath = DefaultWorkingPath;
                 var options = Options.Create(new GitVersionOptions { WorkingDirectory = repoPath });
 
-                var sp = ConfigureServices(services =>
-                {
-                    services.AddSingleton(options);
-                });
+                var sp = ConfigureServices(services => services.AddSingleton(options));
 
                 this.fileSystem = sp.GetService<IFileSystem>();
                 this.configurationProvider = sp.GetService<IConfigProvider>();
@@ -50,10 +47,7 @@ namespace GitVersion.Core.Tests
                 var repositoryConfigFilePath = SetupConfigFileContent(string.Empty, repoConfigFile, this.repoPath);
                 var workingDirectoryConfigFilePath = SetupConfigFileContent(string.Empty, workingConfigFile, this.workingPath);
 
-                var exception = Should.Throw<WarningException>(() =>
-                {
-                    this.configFileLocator.Verify(this.workingPath, this.repoPath);
-                });
+                var exception = Should.Throw<WarningException>(() => this.configFileLocator.Verify(this.workingPath, this.repoPath));
 
                 var expecedMessage = $"Ambiguous config file selection from '{workingDirectoryConfigFilePath}' and '{repositoryConfigFilePath}'";
                 exception.Message.ShouldBe(expecedMessage);
@@ -64,11 +58,11 @@ namespace GitVersion.Core.Tests
             {
                 SetupConfigFileContent(string.Empty, ConfigFileLocator.DefaultFileName, this.repoPath);
 
-                Should.NotThrow(() => { this.configurationProvider.Provide(this.repoPath); });
+                Should.NotThrow(() => this.configurationProvider.Provide(this.repoPath));
             }
 
             [Test]
-            public void NoWarnOnNoGitVersionYmlFile() => Should.NotThrow(() => { this.configurationProvider.Provide(this.repoPath); });
+            public void NoWarnOnNoGitVersionYmlFile() => Should.NotThrow(() => this.configurationProvider.Provide(this.repoPath));
 
             private string SetupConfigFileContent(string text, string fileName, string path)
             {
@@ -110,7 +104,7 @@ namespace GitVersion.Core.Tests
                 var repositoryConfigFilePath = SetupConfigFileContent(string.Empty, path: this.repoPath);
                 var workingDirectoryConfigFilePath = SetupConfigFileContent(string.Empty, path: this.workingPath);
 
-                var exception = Should.Throw<WarningException>(() => { this.configFileLocator.Verify(this.workingPath, this.repoPath); });
+                var exception = Should.Throw<WarningException>(() => this.configFileLocator.Verify(this.workingPath, this.repoPath));
 
                 var expectedMessage = $"Ambiguous config file selection from '{workingDirectoryConfigFilePath}' and '{repositoryConfigFilePath}'";
                 exception.Message.ShouldBe(expectedMessage);
@@ -127,7 +121,7 @@ namespace GitVersion.Core.Tests
 
                 SetupConfigFileContent(string.Empty, path: this.workingPath);
 
-                Should.NotThrow(() => { this.configFileLocator.Verify(this.workingPath, this.repoPath); });
+                Should.NotThrow(() => this.configFileLocator.Verify(this.workingPath, this.repoPath));
             }
 
             [Test]
@@ -141,7 +135,7 @@ namespace GitVersion.Core.Tests
 
                 SetupConfigFileContent(string.Empty, path: this.workingPath);
 
-                Should.NotThrow(() => { this.configFileLocator.Verify(this.workingPath, this.repoPath); });
+                Should.NotThrow(() => this.configFileLocator.Verify(this.workingPath, this.repoPath));
             }
 
             [Test]
@@ -156,7 +150,7 @@ namespace GitVersion.Core.Tests
 
                 SetupConfigFileContent(string.Empty, path: this.workingPath);
 
-                Should.NotThrow(() => { this.configFileLocator.Verify(this.workingPath, this.repoPath); });
+                Should.NotThrow(() => this.configFileLocator.Verify(this.workingPath, this.repoPath));
             }
 
             [Test]
@@ -207,7 +201,7 @@ namespace GitVersion.Core.Tests
                 var sp = GetServiceProvider(this.gitVersionOptions);
                 this.configFileLocator = sp.GetService<IConfigFileLocator>();
 
-                var exception = Should.Throw<WarningException>(() => { this.configFileLocator.Verify(this.workingPath, this.repoPath); });
+                var exception = Should.Throw<WarningException>(() => this.configFileLocator.Verify(this.workingPath, this.repoPath));
 
                 var workingPathFileConfig = Path.Combine(this.workingPath, this.gitVersionOptions.ConfigInfo.ConfigFile);
                 var repoPathFileConfig = Path.Combine(this.repoPath, this.gitVersionOptions.ConfigInfo.ConfigFile);
