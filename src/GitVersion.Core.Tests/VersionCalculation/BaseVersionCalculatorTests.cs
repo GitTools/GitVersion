@@ -18,12 +18,13 @@ namespace GitVersion.Core.Tests.VersionCalculation
         public void ChoosesHighestVersionReturnedFromStrategies()
         {
             var dateTimeOffset = DateTimeOffset.Now;
-            var versionCalculator = GetBaseVersionCalculator(contextBuilder => contextBuilder.OverrideServices(services =>
-{
-    services.RemoveAll<IVersionStrategy>();
-    services.AddSingleton<IVersionStrategy>(new V1Strategy(DateTimeOffset.Now));
-    services.AddSingleton<IVersionStrategy>(new V2Strategy(dateTimeOffset));
-}));
+            var versionCalculator = GetBaseVersionCalculator(contextBuilder =>
+                contextBuilder.OverrideServices(services =>
+                {
+                    services.RemoveAll<IVersionStrategy>();
+                    services.AddSingleton<IVersionStrategy>(new V1Strategy(DateTimeOffset.Now));
+                    services.AddSingleton<IVersionStrategy>(new V2Strategy(dateTimeOffset));
+                }));
 
             var baseVersion = versionCalculator.GetBaseVersion();
 
@@ -37,12 +38,13 @@ namespace GitVersion.Core.Tests.VersionCalculation
         {
             var when = DateTimeOffset.Now;
 
-            var versionCalculator = GetBaseVersionCalculator(contextBuilder => contextBuilder.OverrideServices(services =>
-{
-    services.RemoveAll<IVersionStrategy>();
-    services.AddSingleton<IVersionStrategy>(new V1Strategy(when));
-    services.AddSingleton<IVersionStrategy>(new V2Strategy(null));
-}));
+            var versionCalculator = GetBaseVersionCalculator(contextBuilder =>
+                contextBuilder.OverrideServices(services =>
+                {
+                    services.RemoveAll<IVersionStrategy>();
+                    services.AddSingleton<IVersionStrategy>(new V1Strategy(when));
+                    services.AddSingleton<IVersionStrategy>(new V2Strategy(null));
+                }));
 
             var baseVersion = versionCalculator.GetBaseVersion();
 
@@ -56,12 +58,13 @@ namespace GitVersion.Core.Tests.VersionCalculation
         {
             var when = DateTimeOffset.Now;
 
-            var versionCalculator = GetBaseVersionCalculator(contextBuilder => contextBuilder.OverrideServices(services =>
-{
-    services.RemoveAll<IVersionStrategy>();
-    services.AddSingleton<IVersionStrategy>(new V1Strategy(null));
-    services.AddSingleton<IVersionStrategy>(new V2Strategy(when));
-}));
+            var versionCalculator = GetBaseVersionCalculator(contextBuilder =>
+                contextBuilder.OverrideServices(services =>
+                {
+                    services.RemoveAll<IVersionStrategy>();
+                    services.AddSingleton<IVersionStrategy>(new V1Strategy(null));
+                    services.AddSingleton<IVersionStrategy>(new V2Strategy(when));
+                }));
 
             var baseVersion = versionCalculator.GetBaseVersion();
 
