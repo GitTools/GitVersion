@@ -14,10 +14,7 @@ namespace GitVersion.MsBuild.Tests.Helpers
         private readonly RepositoryFixtureBase fixture;
         private KeyValuePair<string, string>[] environmentVariables;
 
-        public MsBuildTaskFixture(RepositoryFixtureBase fixture)
-        {
-            this.fixture = fixture;
-        }
+        public MsBuildTaskFixture(RepositoryFixtureBase fixture) => this.fixture = fixture;
 
         public void WithEnv(params KeyValuePair<string, string>[] envs) => this.environmentVariables = envs;
 

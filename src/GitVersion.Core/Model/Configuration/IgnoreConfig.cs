@@ -8,10 +8,7 @@ namespace GitVersion.Model.Configuration
 {
     public class IgnoreConfig
     {
-        public IgnoreConfig()
-        {
-            ShAs = Enumerable.Empty<string>();
-        }
+        public IgnoreConfig() => ShAs = Enumerable.Empty<string>();
 
         [YamlMember(Alias = "commits-before")]
         public DateTimeOffset? Before { get; set; }

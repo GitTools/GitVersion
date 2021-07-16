@@ -184,10 +184,7 @@ namespace GitVersion.Core.Tests.VersionCalculation
 
             public override bool IsEmpty => false;
 
-            public TestIgnoreConfig(IVersionFilter filter)
-            {
-                this.filter = filter;
-            }
+            public TestIgnoreConfig(IVersionFilter filter) => this.filter = filter;
 
             public override IEnumerable<IVersionFilter> ToFilters()
             {
@@ -260,10 +257,7 @@ namespace GitVersion.Core.Tests.VersionCalculation
         {
             private readonly IEnumerable<BaseVersion> versions;
 
-            public TestVersionStrategy(params BaseVersion[] versions)
-            {
-                this.versions = versions;
-            }
+            public TestVersionStrategy(params BaseVersion[] versions) => this.versions = versions;
 
             public IEnumerable<BaseVersion> GetVersions() => this.versions;
         }

@@ -8,10 +8,7 @@ namespace GitVersion.MsBuild
     {
         private readonly TaskLoggingHelper taskLog;
 
-        public MsBuildAppender(TaskLoggingHelper taskLog)
-        {
-            this.taskLog = taskLog;
-        }
+        public MsBuildAppender(TaskLoggingHelper taskLog) => this.taskLog = taskLog;
 
         public void WriteTo(LogLevel level, string message)
         {

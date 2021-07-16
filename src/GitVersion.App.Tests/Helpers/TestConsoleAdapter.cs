@@ -7,10 +7,7 @@ namespace GitVersion.App.Tests
     public class TestConsoleAdapter : IConsole
     {
         private readonly StringBuilder sb;
-        public TestConsoleAdapter(StringBuilder sb)
-        {
-            this.sb = sb;
-        }
+        public TestConsoleAdapter(StringBuilder sb) => this.sb = sb;
         public void WriteLine(string msg) => this.sb.AppendLine(msg);
 
         public void WriteLine() => this.sb.AppendLine();

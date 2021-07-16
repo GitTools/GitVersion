@@ -4,10 +4,7 @@ namespace GitVersion.Logging
 {
     public static class Disposable
     {
-        static Disposable()
-        {
-            Empty = Create(() => { });
-        }
+        static Disposable() => Empty = Create(() => { });
 
         public static IDisposable Create(Action disposer) => new AnonymousDisposable(disposer);
 
@@ -15,10 +12,7 @@ namespace GitVersion.Logging
 
         private sealed class AnonymousDisposable : IDisposable
         {
-            public AnonymousDisposable(Action disposer)
-            {
-                this.disposer = disposer ?? throw new ArgumentNullException(nameof(disposer));
-            }
+            public AnonymousDisposable(Action disposer) => this.disposer = disposer ?? throw new ArgumentNullException(nameof(disposer));
 
             public void Dispose()
             {

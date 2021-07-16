@@ -17,10 +17,7 @@ namespace GitVersion.VersionCalculation
     {
         private readonly ILog log;
 
-        public MergeMessageVersionStrategy(ILog log, Lazy<GitVersionContext> versionContext) : base(versionContext)
-        {
-            this.log = log ?? throw new ArgumentNullException(nameof(log));
-        }
+        public MergeMessageVersionStrategy(ILog log, Lazy<GitVersionContext> versionContext) : base(versionContext) => this.log = log ?? throw new ArgumentNullException(nameof(log));
 
         public override IEnumerable<BaseVersion> GetVersions()
         {
