@@ -76,7 +76,9 @@ namespace GitVersion.Configuration
                 {
                     excludedInheritBranches.Add(excludedBranch);
                 }
-                var branchesToEvaluate = repositoryStore.ExcludingBranches(excludedInheritBranches).ToList();
+                var branchesToEvaluate = repositoryStore.ExcludingBranches(excludedInheritBranches)
+                    .Distinct(new LocalRemoteBranchEqualityComparer())
+                    .ToList();
 
                 var branchPoint = repositoryStore
                     .FindCommitBranchWasBranchedFrom(targetBranch, configuration, excludedInheritBranches.ToArray());
@@ -240,6 +242,24 @@ namespace GitVersion.Configuration
                 }
             }
             return mainOrDevelopConfig;
+        }
+
+        private class LocalRemoteBranchEqualityComparer : IEqualityComparer<IBranch>
+        {
+            public bool Equals(IBranch b1, IBranch b2)
+            {
+                if (b1 == null && b2 == null)
+                    return true;
+                if (b1 == null || b2 == null)
+                    return false;
+
+                return b1.Name.WithoutRemote.Equals(b2.Name.WithoutRemote);
+            }
+
+            public int GetHashCode(IBranch b)
+            {
+                return b.Name.WithoutRemote.GetHashCode();
+            }
         }
     }
 }

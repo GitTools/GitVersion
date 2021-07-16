@@ -107,5 +107,38 @@ namespace GitVersion.Core.Tests.IntegrationTests
 
             fixture.AssertFullSemver("0.1.0+4", repository: fixture.LocalRepositoryFixture.Repository);
         }
+
+        [Test]
+        public void GivenARemoteGitRepositoryTheLocalAndRemoteBranchAreTreatedAsSameParentWhenInheritingConfiguration()
+        {
+            using var remote = new EmptyRepositoryFixture();
+            remote.MakeATaggedCommit("1.0");
+            remote.BranchTo("develop");
+            remote.MakeACommit();
+            remote.Checkout("main");
+            remote.BranchTo("support/1.0.x");
+            remote.MakeATaggedCommit("1.0.1");
+
+            using var local = remote.CloneRepository();
+            CopyRemoteBranchesToHeads(local.Repository);
+            local.BranchTo("bug/hotfix");
+            local.MakeACommit();
+            local.AssertFullSemver("1.0.2-bug-hotfix.1+1");
+        }
+
+        private static void CopyRemoteBranchesToHeads(IRepository repository)
+        {
+            foreach (var branch in repository.Branches)
+            {
+                if (branch.IsRemote)
+                {
+                    var localName = branch.FriendlyName.Replace($"{branch.RemoteName}/", "");
+                    if (repository.Branches[localName] == null)
+                    {
+                        repository.CreateBranch(localName, branch.FriendlyName);
+                    }
+                }
+            }
+        }
     }
 }
