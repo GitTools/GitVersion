@@ -244,14 +244,16 @@ namespace GitVersion
                 throw new ArgumentNullException(nameof(commit));
             }
 
+            return InnerGetBranchesContainingCommit();
 
-            branches ??= repository.Branches.ToList();
             static bool IncludeTrackedBranches(IBranch branch, bool includeOnlyTracked) => includeOnlyTracked && branch.IsTracking || !includeOnlyTracked;
 
-            return Impl();
-
-            IEnumerable<IBranch> Impl()
+            // Yielding part is split from the main part of the method to avoid having the exception check performed lazily.
+            // Details at https://github.com/GitTools/GitVersion/issues/2755
+            IEnumerable<IBranch> InnerGetBranchesContainingCommit()
             {
+                branches ??= repository.Branches.ToList();
+
                 using (log.IndentLog($"Getting branches containing the commit '{commit.Id}'."))
                 {
                     var directBranchHasBeenFound = false;
