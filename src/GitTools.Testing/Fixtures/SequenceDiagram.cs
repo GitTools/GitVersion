@@ -9,7 +9,7 @@ namespace GitTools.Testing
     /// </summary>
     public class SequenceDiagram
     {
-        private readonly Dictionary<string, string> _participants = new Dictionary<string, string>();
+        private readonly Dictionary<string, string> _participants = new();
         private readonly StringBuilder _diagramBuilder;
 
         /// <summary>

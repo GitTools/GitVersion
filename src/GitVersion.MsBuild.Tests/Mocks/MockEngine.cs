@@ -11,8 +11,8 @@ namespace GitVersion.MsBuild.Tests.Mocks
 {
     internal sealed class MockEngine : IBuildEngine4
     {
-        private readonly ConcurrentDictionary<object, object> _objectCache = new ConcurrentDictionary<object, object>();
-        private StringBuilder _log = new StringBuilder();
+        private readonly ConcurrentDictionary<object, object> _objectCache = new();
+        private StringBuilder _log = new();
 
         internal MessageImportance MinimumMessageImportance { get; set; } = MessageImportance.Low;
 
@@ -102,7 +102,7 @@ namespace GitVersion.MsBuild.Tests.Mocks
             IDictionary[] globalProperties,
             IList<string>[] undefineProperties,
             string[] toolsVersion,
-            bool includeTargetOutputs) => new BuildEngineResult(false, null);
+            bool includeTargetOutputs) => new(false, null);
 
         public void Yield()
         {

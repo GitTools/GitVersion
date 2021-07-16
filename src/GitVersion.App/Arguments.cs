@@ -7,7 +7,7 @@ namespace GitVersion
 {
     public class Arguments
     {
-        public AuthenticationInfo Authentication = new AuthenticationInfo();
+        public AuthenticationInfo Authentication = new();
 
         public string ConfigFile;
         public Config OverrideConfig;

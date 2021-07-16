@@ -11,7 +11,7 @@ namespace GitVersion.Helpers
         // - env:ENV name OR a member name
         // - optional fallback value after " ?? "
         // - the fallback value should be a quoted string, but simple unquoted text is allowed for back compat
-        private static readonly Regex TokensRegex = new Regex(@"{((env:(?<envvar>\w+))|(?<member>\w+))(\s+(\?\?)??\s+((?<fallback>\w+)|""(?<fallback>.*)""))??}", RegexOptions.Compiled);
+        private static readonly Regex TokensRegex = new(@"{((env:(?<envvar>\w+))|(?<member>\w+))(\s+(\?\?)??\s+((?<fallback>\w+)|""(?<fallback>.*)""))??}", RegexOptions.Compiled);
 
         /// <summary>
         /// Formats the <paramref name="template"/>, replacing each expression wrapped in curly braces

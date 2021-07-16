@@ -15,6 +15,6 @@ namespace GitVersion.Core.Tests.VersionCalculation
             this.shouldIncrement = shouldIncrement;
         }
 
-        public BaseVersion GetBaseVersion() => new BaseVersion("Test source", this.shouldIncrement, this.semanticVersion, this.source, null);
+        public BaseVersion GetBaseVersion() => new("Test source", this.shouldIncrement, this.semanticVersion, this.source, null);
     }
 }

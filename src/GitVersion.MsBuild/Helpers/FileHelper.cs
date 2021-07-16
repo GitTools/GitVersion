@@ -9,7 +9,7 @@ namespace GitVersion.MsBuild
 {
     public static class FileHelper
     {
-        private static readonly Dictionary<string, Func<string, string, bool>> VersionAttributeFinders = new Dictionary<string, Func<string, string, bool>>
+        private static readonly Dictionary<string, Func<string, string, bool>> VersionAttributeFinders = new()
         {
             { ".cs", CSharpFileContainsVersionAttribute },
             { ".vb", VisualBasicFileContainsVersionAttribute }
