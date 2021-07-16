@@ -13,7 +13,7 @@ namespace GitVersion.MsBuild.Tests.Tasks
 {
     public class TestTaskBase : TestBase
     {
-        private static IDictionary<string, string> env = new Dictionary<string, string>
+        private static readonly IDictionary<string, string> env = new Dictionary<string, string>
         {
             { AzurePipelines.EnvironmentVariableName, "true" },
             { "BUILD_SOURCEBRANCH", null }

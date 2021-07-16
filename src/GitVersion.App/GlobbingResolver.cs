@@ -9,7 +9,7 @@ namespace GitVersion
 {
     public class GlobbingResolver : IGlobbingResolver
     {
-        private Matcher matcher = new Matcher(StringComparison.OrdinalIgnoreCase);
+        private readonly Matcher matcher = new Matcher(StringComparison.OrdinalIgnoreCase);
 
         public IEnumerable<string> Resolve(string workingDirectory, string pattern)
         {

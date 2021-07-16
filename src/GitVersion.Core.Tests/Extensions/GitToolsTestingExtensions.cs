@@ -21,7 +21,7 @@ namespace GitVersion.Core.Tests
     public static class GitToolsTestingExtensions
     {
         private static int commitCount = 1;
-        private static DateTimeOffset when = DateTimeOffset.Now;
+        private static readonly DateTimeOffset when = DateTimeOffset.Now;
 
         public static ICommit CreateMockCommit()
         {
