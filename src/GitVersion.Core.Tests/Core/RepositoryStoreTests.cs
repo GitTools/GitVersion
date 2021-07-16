@@ -6,6 +6,7 @@ using GitVersion.Core.Tests.IntegrationTests;
 using Microsoft.Extensions.DependencyInjection;
 using NUnit.Framework;
 using Shouldly;
+using NSubstitute.ExceptionExtensions;
 
 namespace GitVersion.Core.Tests
 {
@@ -203,6 +204,16 @@ namespace GitVersion.Core.Tests
 
             releaseBranchMergeBase.ShouldBe(expectedReleaseMergeBase);
             developMergeBase.ShouldBe(expectedDevelopMergeBase);
+        }
+
+        [Test]
+        public void GetBranchesContainingCommitThrowsDirectlyOnNullCommit()
+        {
+            using var fixture = new EmptyRepositoryFixture();
+            var fixtureRepository = fixture.Repository.ToGitRepository();
+            var gitRepoMetadataProvider = new RepositoryStore(log, fixtureRepository);
+
+            Assert.Throws<ArgumentNullException>(() => gitRepoMetadataProvider.GetBranchesContainingCommit(null));
         }
     }
 }

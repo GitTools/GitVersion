@@ -13,7 +13,6 @@ namespace GitVersion.MsBuild
         private readonly ILog log;
         private readonly IGitVersionOutputTool gitVersionOutputTool;
         private readonly IOptions<GitVersionOptions> options;
-        private VersionVariables versionVariables;
 
         public GitVersionTaskExecutor(IFileSystem fileSystem, IGitVersionOutputTool gitVersionOutputTool, IOptions<GitVersionOptions> options, ILog log)
         {
@@ -25,7 +24,7 @@ namespace GitVersion.MsBuild
 
         public void GetVersion(GetVersion task)
         {
-            versionVariables = VersionVariables.FromFile(task.VersionFile, fileSystem, log);
+            var versionVariables = VersionVariables.FromFile(task.VersionFile, fileSystem, log);
             var outputType = typeof(GetVersion);
             foreach (var variable in versionVariables)
             {
@@ -35,7 +34,7 @@ namespace GitVersion.MsBuild
 
         public void UpdateAssemblyInfo(UpdateAssemblyInfo task)
         {
-            versionVariables = VersionVariables.FromFile(task.VersionFile, fileSystem, log);
+            var versionVariables = VersionVariables.FromFile(task.VersionFile, fileSystem, log);
             FileHelper.DeleteTempFiles();
             if (task.CompileFiles != null) FileHelper.CheckForInvalidFiles(task.CompileFiles, task.ProjectFile);
 
@@ -53,7 +52,7 @@ namespace GitVersion.MsBuild
 
         public void GenerateGitVersionInformation(GenerateGitVersionInformation task)
         {
-            versionVariables = VersionVariables.FromFile(task.VersionFile, fileSystem, log);
+            var versionVariables = VersionVariables.FromFile(task.VersionFile, fileSystem, log);
             var fileWriteInfo = task.IntermediateOutputPath.GetFileWriteInfo(task.Language, task.ProjectFile, "GitVersionInformation");
             task.GitVersionInformationFilePath = Path.Combine(fileWriteInfo.WorkingDirectory, fileWriteInfo.FileName);
 
@@ -65,7 +64,7 @@ namespace GitVersion.MsBuild
 
         public void WriteVersionInfoToBuildLog(WriteVersionInfoToBuildLog task)
         {
-            versionVariables = VersionVariables.FromFile(task.VersionFile, fileSystem, log);
+            var versionVariables = VersionVariables.FromFile(task.VersionFile, fileSystem, log);
             gitVersionOutputTool.OutputVariables(versionVariables, false);
         }
     }
