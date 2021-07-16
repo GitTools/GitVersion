@@ -39,35 +39,23 @@ namespace GitVersion
 
         public override int GetHashCode() => EqualityHelper.GetHashCode(this);
 
-        public static bool operator ==(SemanticVersionPreReleaseTag? left, SemanticVersionPreReleaseTag? right)
-        {
-            return Equals(left, right);
-        }
+        public static bool operator ==(SemanticVersionPreReleaseTag? left, SemanticVersionPreReleaseTag? right) =>
+            Equals(left, right);
 
-        public static bool operator !=(SemanticVersionPreReleaseTag? left, SemanticVersionPreReleaseTag? right)
-        {
-            return !Equals(left, right);
-        }
+        public static bool operator !=(SemanticVersionPreReleaseTag? left, SemanticVersionPreReleaseTag? right) =>
+            !Equals(left, right);
 
-        public static bool operator >(SemanticVersionPreReleaseTag? left, SemanticVersionPreReleaseTag? right)
-        {
-            return left?.CompareTo(right) > 0;
-        }
+        public static bool operator >(SemanticVersionPreReleaseTag? left, SemanticVersionPreReleaseTag? right) =>
+            left?.CompareTo(right) > 0;
 
-        public static bool operator <(SemanticVersionPreReleaseTag? left, SemanticVersionPreReleaseTag? right)
-        {
-            return left?.CompareTo(right) < 0;
-        }
+        public static bool operator <(SemanticVersionPreReleaseTag? left, SemanticVersionPreReleaseTag? right) =>
+            left?.CompareTo(right) < 0;
 
-        public static bool operator >=(SemanticVersionPreReleaseTag? left, SemanticVersionPreReleaseTag? right)
-        {
-            return left?.CompareTo(right) >= 0;
-        }
+        public static bool operator >=(SemanticVersionPreReleaseTag? left, SemanticVersionPreReleaseTag? right) =>
+            left?.CompareTo(right) >= 0;
 
-        public static bool operator <=(SemanticVersionPreReleaseTag? left, SemanticVersionPreReleaseTag? right)
-        {
-            return StringComparerUtils.IgnoreCaseComparer.Compare(left?.Name, right?.Name) != 1;
-        }
+        public static bool operator <=(SemanticVersionPreReleaseTag? left, SemanticVersionPreReleaseTag? right) =>
+            StringComparerUtils.IgnoreCaseComparer.Compare(left?.Name, right?.Name) != 1;
 
         public static implicit operator string?(SemanticVersionPreReleaseTag? preReleaseTag)
         {
