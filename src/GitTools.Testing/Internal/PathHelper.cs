@@ -5,9 +5,6 @@ namespace GitTools.Testing.Internal
 {
     static class PathHelper
     {
-        public static string GetTempPath()
-        {
-            return Path.Combine(Path.GetTempPath(), "TestRepositories", Guid.NewGuid().ToString());
-        }
+        public static string GetTempPath() => Path.Combine(Path.GetTempPath(), "TestRepositories", Guid.NewGuid().ToString());
     }
 }

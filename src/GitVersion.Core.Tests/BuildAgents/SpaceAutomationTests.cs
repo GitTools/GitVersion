@@ -27,10 +27,7 @@ namespace GitVersionCore.Tests.BuildAgents
         }
 
         [TearDown]
-        public void TearDown()
-        {
-            this.environment.SetEnvironmentVariable(SpaceAutomation.EnvironmentVariableName, null);
-        }
+        public void TearDown() => this.environment.SetEnvironmentVariable(SpaceAutomation.EnvironmentVariableName, null);
 
         [Test]
         public void CanApplyToCurrentContextShouldBeTrueWhenEnvironmentVariableIsSet()

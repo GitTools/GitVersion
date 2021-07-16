@@ -11,34 +11,16 @@ namespace GitVersion.App.Tests
         {
             this.sb = sb;
         }
-        public void WriteLine(string msg)
-        {
-            this.sb.AppendLine(msg);
-        }
+        public void WriteLine(string msg) => this.sb.AppendLine(msg);
 
-        public void WriteLine()
-        {
-            this.sb.AppendLine();
-        }
+        public void WriteLine() => this.sb.AppendLine();
 
-        public void Write(string msg)
-        {
-            this.sb.Append(msg);
-        }
+        public void Write(string msg) => this.sb.Append(msg);
 
-        public override string ToString()
-        {
-            return this.sb.ToString();
-        }
+        public override string ToString() => this.sb.ToString();
 
-        public string ReadLine()
-        {
-            throw new NotImplementedException();
-        }
+        public string ReadLine() => throw new NotImplementedException();
 
-        public IDisposable UseColor(ConsoleColor consoleColor)
-        {
-            return Disposable.Empty;
-        }
+        public IDisposable UseColor(ConsoleColor consoleColor) => Disposable.Empty;
     }
 }

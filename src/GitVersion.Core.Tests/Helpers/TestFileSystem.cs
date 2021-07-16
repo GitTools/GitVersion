@@ -72,15 +72,9 @@ namespace GitVersion.Core.Tests.Helpers
             this.fileSystem[path] = encoding.GetBytes(fileContents);
         }
 
-        public IEnumerable<string> DirectoryEnumerateFiles(string directory, string searchPattern, SearchOption searchOption)
-        {
-            throw new NotImplementedException();
-        }
+        public IEnumerable<string> DirectoryEnumerateFiles(string directory, string searchPattern, SearchOption searchOption) => throw new NotImplementedException();
 
-        public Stream OpenWrite(string path)
-        {
-            return new TestStream(path, this);
-        }
+        public Stream OpenWrite(string path) => new TestStream(path, this);
 
         public Stream OpenRead(string file)
         {
@@ -113,17 +107,11 @@ namespace GitVersion.Core.Tests.Helpers
             return this.fileSystem.ContainsKey(path);
         }
 
-        public long GetLastDirectoryWrite(string path)
-        {
-            return 1;
-        }
+        public long GetLastDirectoryWrite(string path) => 1;
 
-        public bool PathsEqual(string path, string otherPath)
-        {
-            return string.Equals(
+        public bool PathsEqual(string path, string otherPath) => string.Equals(
                 Path.GetFullPath(path).TrimEnd('\\').TrimEnd('/'),
                 Path.GetFullPath(otherPath).TrimEnd('\\').TrimEnd('/'),
                 StringComparerUtils.OsDependentComparison);
-        }
     }
 }

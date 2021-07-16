@@ -9,23 +9,14 @@ namespace GitVersion
         private readonly LibGit2Sharp.ReferenceCollection innerCollection;
         internal ReferenceCollection(LibGit2Sharp.ReferenceCollection collection) => this.innerCollection = collection;
 
-        public IEnumerator<IReference> GetEnumerator()
-        {
-            return this.innerCollection.Select(reference => new Reference(reference)).GetEnumerator();
-        }
+        public IEnumerator<IReference> GetEnumerator() => this.innerCollection.Select(reference => new Reference(reference)).GetEnumerator();
 
-        public void Add(string name, string canonicalRefNameOrObjectish, bool allowOverwrite = false)
-        {
-            this.innerCollection.Add(name, canonicalRefNameOrObjectish, allowOverwrite);
-        }
+        public void Add(string name, string canonicalRefNameOrObjectish, bool allowOverwrite = false) => this.innerCollection.Add(name, canonicalRefNameOrObjectish, allowOverwrite);
 
-        public void UpdateTarget(IReference directRef, IObjectId targetId)
-        {
-            RepositoryExtensions.RunSafe(() =>
-            {
-                this.innerCollection.UpdateTarget((Reference)directRef, (ObjectId)targetId);
-            });
-        }
+        public void UpdateTarget(IReference directRef, IObjectId targetId) => RepositoryExtensions.RunSafe(() =>
+                                                                            {
+                                                                                this.innerCollection.UpdateTarget((Reference)directRef, (ObjectId)targetId);
+                                                                            });
 
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
@@ -40,9 +31,6 @@ namespace GitVersion
 
         public IReference? Head => this["HEAD"];
 
-        public IEnumerable<IReference> FromGlob(string pattern)
-        {
-            return this.innerCollection.FromGlob(pattern).Select(reference => new Reference(reference));
-        }
+        public IEnumerable<IReference> FromGlob(string pattern) => this.innerCollection.FromGlob(pattern).Select(reference => new Reference(reference));
     }
 }

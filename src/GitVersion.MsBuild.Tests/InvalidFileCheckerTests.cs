@@ -25,10 +25,7 @@ namespace GitVersion.MsBuild.Tests
         }
 
         [TearDown]
-        public void Cleanup()
-        {
-            Directory.Delete(this.projectDirectory, true);
-        }
+        public void Cleanup() => Directory.Delete(this.projectDirectory, true);
 
         [Test]
         public void VerifyIgnoreNonAssemblyInfoFile()

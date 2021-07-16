@@ -46,16 +46,13 @@ namespace GitVersion.MsBuild
             }
         }
 
-        public static string GetFileExtension(string language)
+        public static string GetFileExtension(string language) => language switch
         {
-            return language switch
-            {
-                "C#" => "cs",
-                "F#" => "fs",
-                "VB" => "vb",
-                _ => throw new ArgumentException($"Unknown language detected: '{language}'")
-            };
-        }
+            "C#" => "cs",
+            "F#" => "fs",
+            "VB" => "vb",
+            _ => throw new ArgumentException($"Unknown language detected: '{language}'")
+        };
 
         public static void CheckForInvalidFiles(IEnumerable<ITaskItem> compileFiles, string projectFile)
         {
@@ -131,12 +128,9 @@ Assembly(File|Informational)?Version    # The attribute AssemblyVersion, Assembl
 \s*\(\s*\)\s*\>                         # End brackets ()>");
         }
 
-        private static IEnumerable<string> GetInvalidFiles(IEnumerable<ITaskItem> compileFiles, string projectFile)
-        {
-            return compileFiles.Select(x => x.ItemSpec)
+        private static IEnumerable<string> GetInvalidFiles(IEnumerable<ITaskItem> compileFiles, string projectFile) => compileFiles.Select(x => x.ItemSpec)
                 .Where(compileFile => compileFile.Contains("AssemblyInfo"))
                 .Where(s => FileContainsVersionAttribute(s, projectFile));
-        }
 
         public static FileWriteInfo GetFileWriteInfo(this string intermediateOutputPath, string language, string projectFile, string outputFileName)
         {

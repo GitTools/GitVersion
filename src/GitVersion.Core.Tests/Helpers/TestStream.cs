@@ -27,25 +27,13 @@ namespace GitVersion.Core.Tests.Helpers
             this.testFileSystem.WriteAllText(this.path, readToEnd);
         }
 
-        public override long Seek(long offset, SeekOrigin origin)
-        {
-            return this.underlying.Seek(offset, origin);
-        }
+        public override long Seek(long offset, SeekOrigin origin) => this.underlying.Seek(offset, origin);
 
-        public override void SetLength(long value)
-        {
-            this.underlying.SetLength(value);
-        }
+        public override void SetLength(long value) => this.underlying.SetLength(value);
 
-        public override int Read(byte[] buffer, int offset, int count)
-        {
-            return this.underlying.Read(buffer, offset, count);
-        }
+        public override int Read(byte[] buffer, int offset, int count) => this.underlying.Read(buffer, offset, count);
 
-        public override void Write(byte[] buffer, int offset, int count)
-        {
-            this.underlying.Write(buffer, offset, count);
-        }
+        public override void Write(byte[] buffer, int offset, int count) => this.underlying.Write(buffer, offset, count);
 
         public override bool CanRead => this.underlying.CanRead;
         public override bool CanSeek => this.underlying.CanSeek;

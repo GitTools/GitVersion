@@ -35,10 +35,7 @@ namespace GitTools.Testing
             return repo;
         }
 
-        private void CreateLocalRepository()
-        {
-            LocalRepositoryFixture = CloneRepository();
-        }
+        private void CreateLocalRepository() => LocalRepositoryFixture = CloneRepository();
 
         /// <summary>
         ///     Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.

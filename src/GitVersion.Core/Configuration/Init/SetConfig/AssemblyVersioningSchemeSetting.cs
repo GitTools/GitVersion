@@ -45,9 +45,7 @@ namespace GitVersion.Configuration.Init.SetConfig
             return StepResult.InvalidResponseSelected();
         }
 
-        protected override string GetPrompt(Config config, string workingDirectory)
-        {
-            return @"What assembly versioning scheme do you want to use:
+        protected override string GetPrompt(Config config, string workingDirectory) => @"What assembly versioning scheme do you want to use:
 
 0) Go Back
 1) Major.0.0.0
@@ -55,8 +53,6 @@ namespace GitVersion.Configuration.Init.SetConfig
 3) Major.Minor.Patch.0   (default)
 4) Major.Minor.Patch.TagCount (Allows different pre-release tags to cause assembly version to change)
 5) None (skip's updating AssemblyVersion)";
-
-        }
 
         protected override string DefaultResult => "0";
     }

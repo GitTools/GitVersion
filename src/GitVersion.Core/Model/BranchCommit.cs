@@ -18,10 +18,7 @@ namespace GitVersion
         public IBranch Branch { get; }
         public ICommit Commit { get; }
 
-        private bool Equals(BranchCommit other)
-        {
-            return Equals(Branch, other.Branch) && Equals(Commit, other.Commit);
-        }
+        private bool Equals(BranchCommit other) => Equals(Branch, other.Branch) && Equals(Commit, other.Commit);
 
         public override bool Equals(object obj)
         {

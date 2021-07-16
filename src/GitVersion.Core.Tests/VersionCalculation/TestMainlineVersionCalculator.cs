@@ -11,14 +11,8 @@ namespace GitVersion.Core.Tests.VersionCalculation
             this.metaData = metaData;
         }
 
-        public SemanticVersion FindMainlineModeVersion(BaseVersion baseVersion)
-        {
-            throw new System.NotImplementedException();
-        }
+        public SemanticVersion FindMainlineModeVersion(BaseVersion baseVersion) => throw new System.NotImplementedException();
 
-        public SemanticVersionBuildMetaData CreateVersionBuildMetaData(ICommit baseVersionSource)
-        {
-            return this.metaData;
-        }
+        public SemanticVersionBuildMetaData CreateVersionBuildMetaData(ICommit baseVersionSource) => this.metaData;
     }
 }

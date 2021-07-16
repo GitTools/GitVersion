@@ -12,16 +12,10 @@ namespace GitVersion.Core.Tests.IntegrationTests
         public string TempFilePath { get; set; }
 
         [SetUp]
-        public void CreateTempFile()
-        {
-            TempFilePath = Path.GetTempFileName();
-        }
+        public void CreateTempFile() => TempFilePath = Path.GetTempFileName();
 
         [TearDown]
-        public void Cleanup()
-        {
-            File.Delete(TempFilePath);
-        }
+        public void Cleanup() => File.Delete(TempFilePath);
 
         [TestCase("utf-32")]
         [TestCase("utf-32BE")]

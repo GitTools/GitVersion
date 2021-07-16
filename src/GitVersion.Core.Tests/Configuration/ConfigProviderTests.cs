@@ -345,10 +345,7 @@ branches: {}";
             stringLogger.Length.ShouldBe(0);
         }
 
-        private string SetupConfigFileContent(string text, string fileName = ConfigFileLocator.DefaultFileName)
-        {
-            return SetupConfigFileContent(text, fileName, this.repoPath);
-        }
+        private string SetupConfigFileContent(string text, string fileName = ConfigFileLocator.DefaultFileName) => SetupConfigFileContent(text, fileName, this.repoPath);
 
         private string SetupConfigFileContent(string text, string fileName, string path)
         {

@@ -15,30 +15,15 @@ namespace GitVersion.Core.Tests.Helpers
             this.responses = new Queue<string>(responses);
         }
 
-        public void WriteLine(string msg)
-        {
-            this.log.Info(msg + System.Environment.NewLine);
-        }
+        public void WriteLine(string msg) => this.log.Info(msg + System.Environment.NewLine);
 
-        public void WriteLine()
-        {
-            this.log.Info(System.Environment.NewLine);
-        }
+        public void WriteLine() => this.log.Info(System.Environment.NewLine);
 
-        public void Write(string msg)
-        {
-            this.log.Info(msg);
-        }
+        public void Write(string msg) => this.log.Info(msg);
 
-        public string ReadLine()
-        {
-            return this.responses.Dequeue();
-        }
+        public string ReadLine() => this.responses.Dequeue();
 
-        public IDisposable UseColor(ConsoleColor consoleColor)
-        {
-            return new NoOpDisposable();
-        }
+        public IDisposable UseColor(ConsoleColor consoleColor) => new NoOpDisposable();
 
         private class NoOpDisposable : IDisposable
         {

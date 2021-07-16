@@ -556,18 +556,15 @@ namespace GitVersion.Core.Tests
             return this.sp.GetService<IGitVersionCalculateTool>();
         }
 
-        private static IServiceProvider GetServiceProvider(GitVersionOptions gitVersionOptions, ILog log = null, IGitRepository repository = null, IFileSystem fileSystem = null, IEnvironment environment = null)
-        {
-            return ConfigureServices(services =>
-            {
-                if (log != null) services.AddSingleton(log);
-                if (fileSystem != null) services.AddSingleton(fileSystem);
-                if (repository != null) services.AddSingleton(repository);
-                if (environment != null) services.AddSingleton(environment);
-                var options = Options.Create(gitVersionOptions);
-                services.AddSingleton(options);
-                services.AddSingleton(RepositoryExtensions.ToGitRepositoryInfo(options));
-            });
-        }
+        private static IServiceProvider GetServiceProvider(GitVersionOptions gitVersionOptions, ILog log = null, IGitRepository repository = null, IFileSystem fileSystem = null, IEnvironment environment = null) => ConfigureServices(services =>
+                                                                                                                                                                                                                                {
+                                                                                                                                                                                                                                    if (log != null) services.AddSingleton(log);
+                                                                                                                                                                                                                                    if (fileSystem != null) services.AddSingleton(fileSystem);
+                                                                                                                                                                                                                                    if (repository != null) services.AddSingleton(repository);
+                                                                                                                                                                                                                                    if (environment != null) services.AddSingleton(environment);
+                                                                                                                                                                                                                                    var options = Options.Create(gitVersionOptions);
+                                                                                                                                                                                                                                    services.AddSingleton(options);
+                                                                                                                                                                                                                                    services.AddSingleton(RepositoryExtensions.ToGitRepositoryInfo(options));
+                                                                                                                                                                                                                                });
     }
 }

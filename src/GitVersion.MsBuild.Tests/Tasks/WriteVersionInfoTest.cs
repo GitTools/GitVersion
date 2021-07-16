@@ -13,10 +13,7 @@ namespace GitVersion.MsBuild.Tests.Tasks
         protected string GitHubEnvFilePath { get; set; }
 
         [OneTimeSetUp]
-        public void OneTimeSetUp()
-        {
-            GitHubEnvFilePath = System.IO.Path.GetTempFileName();
-        }
+        public void OneTimeSetUp() => GitHubEnvFilePath = System.IO.Path.GetTempFileName();
 
         [OneTimeTearDown]
         public void OneTimeTearDown()

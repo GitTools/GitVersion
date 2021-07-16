@@ -23,9 +23,7 @@ namespace GitVersion
         /// Lookup keys are created from <see cref="YamlDotNet.Serialization.YamlMemberAttribute"/> to match 'GitVersion.yml'
         /// options as close as possible.
         /// </remarks>
-        private static ILookup<string, PropertyInfo> GetSupportedProperties()
-        {
-            return typeof(Config).GetProperties(BindingFlags.Public | BindingFlags.Instance)
+        private static ILookup<string, PropertyInfo> GetSupportedProperties() => typeof(Config).GetProperties(BindingFlags.Public | BindingFlags.Instance)
                 .Where(
                     pi => IsSupportedPropertyType(pi.PropertyType)
                         && pi.CanWrite
@@ -35,7 +33,6 @@ namespace GitVersion
                     pi => (pi.GetCustomAttributes(typeof(YamlDotNet.Serialization.YamlMemberAttribute), false)[0] as YamlDotNet.Serialization.YamlMemberAttribute).Alias,
                     pi => pi
                 );
-        }
 
         /// <summary>
         /// Checks if property <see cref="Type"/> of <see cref="Config"/>
@@ -106,9 +103,6 @@ namespace GitVersion
             }
         }
 
-        internal Config GetConfig()
-        {
-            return this._lazyConfig.IsValueCreated ? this._lazyConfig.Value : null;
-        }
+        internal Config GetConfig() => this._lazyConfig.IsValueCreated ? this._lazyConfig.Value : null;
     }
 }

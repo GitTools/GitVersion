@@ -265,10 +265,7 @@ namespace GitVersion.Core.Tests.VersionCalculation
                 this.versions = versions;
             }
 
-            public IEnumerable<BaseVersion> GetVersions()
-            {
-                return this.versions;
-            }
+            public IEnumerable<BaseVersion> GetVersions() => this.versions;
         }
     }
 }

@@ -27,10 +27,7 @@ namespace GitVersion.Core.Tests.BuildAgents
         }
 
         [TearDown]
-        public void TearDown()
-        {
-            this.environment.SetEnvironmentVariable("DRONE", null);
-        }
+        public void TearDown() => this.environment.SetEnvironmentVariable("DRONE", null);
 
         [Test]
         public void CanApplyToCurrentContextShouldBeTrueWhenEnvironmentVariableIsSet()

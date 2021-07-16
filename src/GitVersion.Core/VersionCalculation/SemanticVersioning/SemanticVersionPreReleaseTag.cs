@@ -32,20 +32,11 @@ namespace GitVersion
         public int? Number { get; set; }
         public bool PromotedFromCommits { get; set; }
 
-        public override bool Equals(object obj)
-        {
-            return Equals(obj as SemanticVersionPreReleaseTag);
-        }
+        public override bool Equals(object obj) => Equals(obj as SemanticVersionPreReleaseTag);
 
-        public bool Equals(SemanticVersionPreReleaseTag other)
-        {
-            return EqualityHelper.Equals(this, other);
-        }
+        public bool Equals(SemanticVersionPreReleaseTag other) => EqualityHelper.Equals(this, other);
 
-        public override int GetHashCode()
-        {
-            return EqualityHelper.GetHashCode(this);
-        }
+        public override int GetHashCode() => EqualityHelper.GetHashCode(this);
 
         public static bool operator ==(SemanticVersionPreReleaseTag left, SemanticVersionPreReleaseTag right)
         {
@@ -129,10 +120,7 @@ namespace GitVersion
             return Nullable.Compare(Number, other.Number);
         }
 
-        public override string ToString()
-        {
-            return ToString(null);
-        }
+        public override string ToString() => ToString(null);
 
         /// <summary>
         /// Default formats:
@@ -198,9 +186,6 @@ namespace GitVersion
             return firstPart.Replace(".", string.Empty);
         }
 
-        public bool HasTag()
-        {
-            return !string.IsNullOrEmpty(Name) || (Number.HasValue && !PromotedFromCommits);
-        }
+        public bool HasTag() => !string.IsNullOrEmpty(Name) || (Number.HasValue && !PromotedFromCommits);
     }
 }

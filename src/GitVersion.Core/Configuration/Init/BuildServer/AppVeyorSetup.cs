@@ -48,19 +48,14 @@ namespace GitVersion.Configuration.Init.BuildServer
             return StepResult.InvalidResponseSelected();
         }
 
-        private static string GetGvCommand(ProjectVisibility visibility)
+        private static string GetGvCommand(ProjectVisibility visibility) => visibility switch
         {
-            return visibility switch
-            {
-                ProjectVisibility.Public => "  - ps: gitversion /l console /output buildserver /updateAssemblyInfo",
-                ProjectVisibility.Private => "  - ps: gitversion $env:APPVEYOR_BUILD_FOLDER /l console /output buildserver /updateAssemblyInfo /nofetch /b $env:APPVEYOR_REPO_BRANCH",
-                _ => ""
-            };
-        }
+            ProjectVisibility.Public => "  - ps: gitversion /l console /output buildserver /updateAssemblyInfo",
+            ProjectVisibility.Private => "  - ps: gitversion $env:APPVEYOR_BUILD_FOLDER /l console /output buildserver /updateAssemblyInfo /nofetch /b $env:APPVEYOR_REPO_BRANCH",
+            _ => ""
+        };
 
-        private void GenerateBasicConfig(string workingDirectory)
-        {
-            WriteConfig(workingDirectory, this.FileSystem, $@"install:
+        private void GenerateBasicConfig(string workingDirectory) => WriteConfig(workingDirectory, this.FileSystem, $@"install:
   - choco install gitversion.portable -pre -y
 
 before_build:
@@ -69,11 +64,8 @@ before_build:
 
 build:
   project: <your sln file>");
-        }
 
-        private void GenerateNuGetConfig(string workingDirectory)
-        {
-            WriteConfig(workingDirectory, this.FileSystem, $@"install:
+        private void GenerateNuGetConfig(string workingDirectory) => WriteConfig(workingDirectory, this.FileSystem, $@"install:
   - choco install gitversion.portable -pre -y
 
 assembly_info:
@@ -90,7 +82,6 @@ after_build:
   - cmd: ECHO nuget pack <Project>\<NuSpec>.nuspec -version ""%GitVersion_NuGetVersion%"" -prop ""target=%CONFIGURATION%""
   - cmd: nuget pack <Project>\<NuSpec>.nuspec -version ""%GitVersion_NuGetVersion%"" -prop ""target=%CONFIGURATION%""
   - cmd: appveyor PushArtifact ""<NuSpec>.%GitVersion_NuGetVersion%.nupkg""");
-        }
 
         private void WriteConfig(string workingDirectory, IFileSystem fileSystem, string configContents)
         {
@@ -139,10 +130,7 @@ after_build:
             return Path.Combine(workingDirectory, "appveyor.yml");
         }
 
-        private static bool AppVeyorConfigExists(string workingDirectory, IFileSystem fileSystem)
-        {
-            return fileSystem.Exists(Path.Combine(workingDirectory, "appveyor.yml"));
-        }
+        private static bool AppVeyorConfigExists(string workingDirectory, IFileSystem fileSystem) => fileSystem.Exists(Path.Combine(workingDirectory, "appveyor.yml"));
 
         protected override string DefaultResult => "0";
     }

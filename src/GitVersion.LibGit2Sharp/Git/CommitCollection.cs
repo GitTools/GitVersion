@@ -11,10 +11,7 @@ namespace GitVersion
         private readonly ICommitLog innerCollection;
         internal CommitCollection(ICommitLog collection) => this.innerCollection = collection;
 
-        public IEnumerator<ICommit> GetEnumerator()
-        {
-            return this.innerCollection.Select(commit => new Commit(commit)).GetEnumerator();
-        }
+        public IEnumerator<ICommit> GetEnumerator() => this.innerCollection.Select(commit => new Commit(commit)).GetEnumerator();
 
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 

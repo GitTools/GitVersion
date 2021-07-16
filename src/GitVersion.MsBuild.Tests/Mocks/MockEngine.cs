@@ -118,10 +118,7 @@ namespace GitVersion.MsBuild.Tests.Mocks
             return obj;
         }
 
-        public void RegisterTaskObject(object key, object obj, RegisteredTaskObjectLifetime lifetime, bool allowEarlyCollection)
-        {
-            this._objectCache[key] = obj;
-        }
+        public void RegisterTaskObject(object key, object obj, RegisteredTaskObjectLifetime lifetime, bool allowEarlyCollection) => this._objectCache[key] = obj;
 
         public object UnregisterTaskObject(object key, RegisteredTaskObjectLifetime lifetime)
         {
