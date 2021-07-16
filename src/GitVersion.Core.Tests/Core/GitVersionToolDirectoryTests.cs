@@ -33,10 +33,7 @@ namespace GitVersion.Core.Tests
             {
                 var options = Options.Create(new GitVersionOptions { WorkingDirectory = workDirectory, Settings = { NoFetch = true } });
 
-                var sp = ConfigureServices(services =>
-                {
-                    services.AddSingleton(options);
-                });
+                var sp = ConfigureServices(services => services.AddSingleton(options));
 
                 var gitVersionCalculator = sp.GetService<IGitVersionCalculateTool>();
 
@@ -61,10 +58,7 @@ namespace GitVersion.Core.Tests
             {
                 var options = Options.Create(new GitVersionOptions { WorkingDirectory = childDir, Settings = { NoFetch = true } });
 
-                var sp = ConfigureServices(services =>
-                {
-                    services.AddSingleton(options);
-                });
+                var sp = ConfigureServices(services => services.AddSingleton(options));
 
                 var gitVersionCalculator = sp.GetService<IGitVersionCalculateTool>();
 

@@ -14,10 +14,7 @@ namespace GitVersion.App.Tests
 
         public HelpWriterTests()
         {
-            var sp = ConfigureServices(services =>
-            {
-                services.AddModule(new GitVersionAppModule());
-            });
+            var sp = ConfigureServices(services => services.AddModule(new GitVersionAppModule()));
             this.helpWriter = sp.GetService<IHelpWriter>();
         }
 

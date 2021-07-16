@@ -32,10 +32,7 @@ namespace GitVersion.Core.Tests
         {
             this.repoPath = DefaultRepoPath;
             var options = Options.Create(new GitVersionOptions { WorkingDirectory = repoPath });
-            var sp = ConfigureServices(services =>
-            {
-                services.AddSingleton(options);
-            });
+            var sp = ConfigureServices(services => services.AddSingleton(options));
             this.configProvider = sp.GetService<IConfigProvider>();
             this.fileSystem = sp.GetService<IFileSystem>();
 

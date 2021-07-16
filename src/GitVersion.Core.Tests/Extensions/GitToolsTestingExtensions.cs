@@ -76,10 +76,7 @@ namespace GitVersion.Core.Tests
                 Settings = { OnlyTrackedBranches = onlyTrackedBranches }
             });
 
-            var sp = ConfigureServices(services =>
-            {
-                services.AddSingleton(options);
-            });
+            var sp = ConfigureServices(services => services.AddSingleton(options));
 
             var variableProvider = sp.GetService<IVariableProvider>();
             var nextVersionCalculator = sp.GetService<INextVersionCalculator>();

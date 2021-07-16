@@ -17,10 +17,7 @@ namespace GitVersionCore.Tests.BuildAgents
         [SetUp]
         public void SetUp()
         {
-            var sp = ConfigureServices(services =>
-            {
-                services.AddSingleton<SpaceAutomation>();
-            });
+            var sp = ConfigureServices(services => services.AddSingleton<SpaceAutomation>());
             this.environment = sp.GetService<IEnvironment>();
             this.buildServer = sp.GetService<SpaceAutomation>();
             this.environment.SetEnvironmentVariable(SpaceAutomation.EnvironmentVariableName, "true");

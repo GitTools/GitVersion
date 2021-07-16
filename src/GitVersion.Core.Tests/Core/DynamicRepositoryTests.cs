@@ -76,10 +76,7 @@ namespace GitVersion.Core.Tests
             Directory.CreateDirectory(dynamicDirectory);
             Directory.CreateDirectory(workingDirectory);
 
-            var sp = ConfigureServices(services =>
-            {
-                services.AddSingleton(options);
-            });
+            var sp = ConfigureServices(services => services.AddSingleton(options));
 
             var gitPreparer = sp.GetService<IGitPreparer>();
             gitPreparer?.Prepare();

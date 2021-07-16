@@ -100,10 +100,7 @@ namespace GitVersion.MsBuild.Tests.Tasks
         {
             const string taskName = nameof(WriteVersionInfoToBuildLog);
 
-            using var result = ExecuteMsBuildExe(project =>
-            {
-                AddWriteVersionInfoToBuildLogTask(project, taskName, taskName);
-            });
+            using var result = ExecuteMsBuildExe(project => AddWriteVersionInfoToBuildLogTask(project, taskName, taskName));
 
             result.ProjectPath.ShouldNotBeNullOrWhiteSpace();
             result.MsBuild.Count.ShouldBeGreaterThan(0);
@@ -120,10 +117,7 @@ namespace GitVersion.MsBuild.Tests.Tasks
         {
             const string taskName = nameof(WriteVersionInfoToBuildLog);
 
-            using var result = ExecuteMsBuildExeInAzurePipeline(project =>
-            {
-                AddWriteVersionInfoToBuildLogTask(project, taskName, taskName);
-            });
+            using var result = ExecuteMsBuildExeInAzurePipeline(project => AddWriteVersionInfoToBuildLogTask(project, taskName, taskName));
 
             result.ProjectPath.ShouldNotBeNullOrWhiteSpace();
             result.MsBuild.Count.ShouldBeGreaterThan(0);
