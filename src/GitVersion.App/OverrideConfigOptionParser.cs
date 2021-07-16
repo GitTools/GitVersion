@@ -10,7 +10,7 @@ namespace GitVersion
         private static readonly Lazy<ILookup<string, PropertyInfo>> _lazySupportedProperties =
             new(GetSupportedProperties, true);
 
-        private readonly Lazy<Config> _lazyConfig = new();
+        private readonly Lazy<Config> lazyConfig = new();
 
         internal static ILookup<string, PropertyInfo> SupportedProperties => _lazySupportedProperties.Value;
 
@@ -66,13 +66,13 @@ namespace GitVersion
                     unwrapped = pi.PropertyType;
 
                 if (unwrapped == typeof(string))
-                    pi.SetValue(this._lazyConfig.Value, unwrappedText);
+                    pi.SetValue(this.lazyConfig.Value, unwrappedText);
                 else if (unwrapped.IsEnum)
                 {
                     try
                     {
                         var parsedEnum = Enum.Parse(unwrapped, unwrappedText);
-                        pi.SetValue(this._lazyConfig.Value, parsedEnum);
+                        pi.SetValue(this.lazyConfig.Value, parsedEnum);
                     }
                     catch (ArgumentException)
                     {
@@ -89,20 +89,20 @@ namespace GitVersion
                 else if (unwrapped == typeof(int))
                 {
                     if (int.TryParse(unwrappedText, out int parsedInt))
-                        pi.SetValue(this._lazyConfig.Value, parsedInt);
+                        pi.SetValue(this.lazyConfig.Value, parsedInt);
                     else
                         throw new WarningException($"Could not parse /overrideconfig option: {key}={value}. Ensure that 'value' is valid integer number.");
                 }
                 else if (unwrapped == typeof(bool))
                 {
                     if (bool.TryParse(unwrappedText, out bool parsedBool))
-                        pi.SetValue(this._lazyConfig.Value, parsedBool);
+                        pi.SetValue(this.lazyConfig.Value, parsedBool);
                     else
                         throw new WarningException($"Could not parse /overrideconfig option: {key}={value}. Ensure that 'value' is 'true' or 'false'.");
                 }
             }
         }
 
-        internal Config GetConfig() => this._lazyConfig.IsValueCreated ? this._lazyConfig.Value : null;
+        internal Config GetConfig() => this.lazyConfig.IsValueCreated ? this.lazyConfig.Value : null;
     }
 }
