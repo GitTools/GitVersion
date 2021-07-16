@@ -153,7 +153,7 @@ namespace GitVersion
             };
         }
 
-        private string FormatLegacy(string tag, string number = "")
+        private static string FormatLegacy(string tag, string number = "")
         {
             var tagEndsWithANumber = char.IsNumber(tag.LastOrDefault());
             if (tagEndsWithANumber && number.Length > 0)

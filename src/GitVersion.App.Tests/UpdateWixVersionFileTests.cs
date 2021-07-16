@@ -72,7 +72,7 @@ namespace GitVersion.App.Tests
             }
         }
 
-        private Dictionary<string, string> GetGitVersionVarsInWixFile(string file)
+        private static Dictionary<string, string> GetGitVersionVarsInWixFile(string file)
         {
             var gitVersionVarsInWix = new Dictionary<string, string>();
             using (var reader = new XmlTextReader(file))

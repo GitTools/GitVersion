@@ -108,7 +108,7 @@ after_build:
             return prompt.ToString();
         }
 
-        private string GetOutputFilename(string workingDirectory, IFileSystem fileSystem)
+        private static string GetOutputFilename(string workingDirectory, IFileSystem fileSystem)
         {
             if (AppVeyorConfigExists(workingDirectory, fileSystem))
             {
