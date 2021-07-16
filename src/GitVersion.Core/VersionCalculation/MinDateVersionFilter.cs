@@ -7,10 +7,7 @@ namespace GitVersion.VersionCalculation
     {
         private readonly DateTimeOffset minimum;
 
-        public MinDateVersionFilter(DateTimeOffset minimum)
-        {
-            this.minimum = minimum;
-        }
+        public MinDateVersionFilter(DateTimeOffset minimum) => this.minimum = minimum;
 
         public bool Exclude(BaseVersion version, [NotNullWhen(true)] out string? reason)
         {

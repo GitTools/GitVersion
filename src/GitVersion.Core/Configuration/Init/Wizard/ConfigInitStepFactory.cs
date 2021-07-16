@@ -11,10 +11,7 @@ namespace GitVersion.Configuration.Init.Wizard
         {
         }
 
-        public ConfigInitStepFactory(IServiceProvider sp)
-        {
-            this.sp = sp ?? throw new ArgumentNullException(nameof(sp));
-        }
+        public ConfigInitStepFactory(IServiceProvider sp) => this.sp = sp ?? throw new ArgumentNullException(nameof(sp));
 
         public T? CreateStep<T>() => this.sp!.GetService<T>();
     }

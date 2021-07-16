@@ -9,10 +9,8 @@ namespace GitVersion.Helpers
     {
         private readonly Func<T?, object?>[] equalityContributorAccessors;
 
-        public LambdaEqualityHelper(params Func<T?, object?>[] equalityContributorAccessors)
-        {
+        public LambdaEqualityHelper(params Func<T?, object?>[] equalityContributorAccessors) =>
             this.equalityContributorAccessors = equalityContributorAccessors;
-        }
 
         public bool Equals(T? instance, T? other)
         {

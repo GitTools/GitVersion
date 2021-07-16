@@ -15,10 +15,7 @@ namespace GitVersion.VersionCalculation
     {
         private readonly IRepositoryStore repositoryStore;
 
-        public TaggedCommitVersionStrategy(IRepositoryStore repositoryStore, Lazy<GitVersionContext> versionContext) : base(versionContext)
-        {
-            this.repositoryStore = repositoryStore ?? throw new ArgumentNullException(nameof(repositoryStore));
-        }
+        public TaggedCommitVersionStrategy(IRepositoryStore repositoryStore, Lazy<GitVersionContext> versionContext) : base(versionContext) => this.repositoryStore = repositoryStore ?? throw new ArgumentNullException(nameof(repositoryStore));
 
         public override IEnumerable<BaseVersion> GetVersions() =>
             GetTaggedVersions(Context.CurrentBranch, Context.CurrentCommit?.When);
