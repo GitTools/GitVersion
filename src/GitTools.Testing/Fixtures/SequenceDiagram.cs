@@ -9,8 +9,8 @@ namespace GitTools.Testing
     /// </summary>
     public class SequenceDiagram
     {
-        readonly Dictionary<string, string> _participants = new Dictionary<string, string>();
-        readonly StringBuilder _diagramBuilder;
+        private readonly Dictionary<string, string> _participants = new Dictionary<string, string>();
+        private readonly StringBuilder _diagramBuilder;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="T:SequenceDiagram"/> class.
@@ -106,7 +106,7 @@ end note",
         /// </summary>
         public void Merge(string @from, string to) => this._diagramBuilder.AppendLineFormat("{0} -> {1}: merge", GetParticipant(@from), GetParticipant(to));
 
-        string GetParticipant(string branch)
+        private string GetParticipant(string branch)
         {
             if (this._participants.ContainsKey(branch))
                 return this._participants[branch];

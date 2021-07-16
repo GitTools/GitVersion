@@ -9,7 +9,7 @@ namespace GitTools.Testing
     /// </summary>
     public abstract class RepositoryFixtureBase : IDisposable
     {
-        readonly SequenceDiagram _sequenceDiagram;
+        private readonly SequenceDiagram _sequenceDiagram;
 
         protected RepositoryFixtureBase(Func<string, IRepository> repoBuilder)
             : this(repoBuilder(PathHelper.GetTempPath()))

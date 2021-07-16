@@ -26,7 +26,7 @@ namespace GitTools.Testing
         /// </summary>
         public BaseGitFlowRepositoryFixture(Action<IRepository> initialMainAction) => SetupRepo(initialMainAction);
 
-        void SetupRepo(Action<IRepository> initialMainAction)
+        private void SetupRepo(Action<IRepository> initialMainAction)
         {
             var randomFile = Path.Combine(Repository.Info.WorkingDirectory, Guid.NewGuid().ToString());
             File.WriteAllText(randomFile, string.Empty);
