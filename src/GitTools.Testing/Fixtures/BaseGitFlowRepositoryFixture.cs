@@ -24,10 +24,7 @@ namespace GitTools.Testing
         ///
         /// The initial setup actions will be performed before branching develop
         /// </summary>
-        public BaseGitFlowRepositoryFixture(Action<IRepository> initialMainAction)
-        {
-            SetupRepo(initialMainAction);
-        }
+        public BaseGitFlowRepositoryFixture(Action<IRepository> initialMainAction) => SetupRepo(initialMainAction);
 
         void SetupRepo(Action<IRepository> initialMainAction)
         {

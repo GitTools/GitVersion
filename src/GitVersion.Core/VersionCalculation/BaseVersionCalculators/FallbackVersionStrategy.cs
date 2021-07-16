@@ -13,10 +13,7 @@ namespace GitVersion.VersionCalculation
     {
         private readonly IRepositoryStore repositoryStore;
 
-        public FallbackVersionStrategy(IRepositoryStore repositoryStore, Lazy<GitVersionContext> versionContext) : base(versionContext)
-        {
-            this.repositoryStore = repositoryStore;
-        }
+        public FallbackVersionStrategy(IRepositoryStore repositoryStore, Lazy<GitVersionContext> versionContext) : base(versionContext) => this.repositoryStore = repositoryStore;
         public override IEnumerable<BaseVersion> GetVersions()
         {
             var currentBranchTip = Context.CurrentBranch?.Tip;

@@ -5,10 +5,7 @@ namespace GitVersion.App.Tests
 {
     public class ArgumentBuilder
     {
-        public ArgumentBuilder(string workingDirectory)
-        {
-            this.workingDirectory = workingDirectory;
-        }
+        public ArgumentBuilder(string workingDirectory) => this.workingDirectory = workingDirectory;
 
         public ArgumentBuilder(string workingDirectory, string exec, string execArgs, string projectFile, string projectArgs, string logFile)
         {

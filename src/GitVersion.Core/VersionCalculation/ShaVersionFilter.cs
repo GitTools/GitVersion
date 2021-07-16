@@ -9,10 +9,7 @@ namespace GitVersion.VersionCalculation
     {
         private readonly IEnumerable<string> shas;
 
-        public ShaVersionFilter(IEnumerable<string> shas)
-        {
-            this.shas = shas ?? throw new ArgumentNullException(nameof(shas));
-        }
+        public ShaVersionFilter(IEnumerable<string> shas) => this.shas = shas ?? throw new ArgumentNullException(nameof(shas));
 
         public bool Exclude(BaseVersion version, [NotNullWhen(true)] out string? reason)
         {

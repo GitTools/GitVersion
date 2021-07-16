@@ -12,10 +12,7 @@ namespace GitVersion
     {
         private readonly Action<IServiceCollection> overrides;
 
-        internal Program(Action<IServiceCollection> overrides = null)
-        {
-            this.overrides = overrides;
-        }
+        internal Program(Action<IServiceCollection> overrides = null) => this.overrides = overrides;
 
         private static async Task Main(string[] args) => await new Program().RunAsync(args);
 

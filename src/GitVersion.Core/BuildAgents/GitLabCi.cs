@@ -10,10 +10,7 @@ namespace GitVersion.BuildAgents
         public const string EnvironmentVariableName = "GITLAB_CI";
         private string? file;
 
-        public GitLabCi(IEnvironment environment, ILog log) : base(environment, log)
-        {
-            WithPropertyFile("gitversion.properties");
-        }
+        public GitLabCi(IEnvironment environment, ILog log) : base(environment, log) => WithPropertyFile("gitversion.properties");
 
         public void WithPropertyFile(string propertiesFileName) => this.file = propertiesFileName;
 

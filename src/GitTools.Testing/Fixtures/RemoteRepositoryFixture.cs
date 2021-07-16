@@ -11,10 +11,7 @@ namespace GitTools.Testing
     public class RemoteRepositoryFixture : RepositoryFixtureBase
     {
         public RemoteRepositoryFixture(Func<string, IRepository> builder)
-            : base(builder)
-        {
-            CreateLocalRepository();
-        }
+            : base(builder) => CreateLocalRepository();
 
         public RemoteRepositoryFixture() : this(CreateNewRepository)
         {

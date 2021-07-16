@@ -12,10 +12,7 @@ namespace GitVersion.BuildAgents
         public const string WebHookEnvironmentVariableName = "CODEBUILD_WEBHOOK_HEAD_REF";
         public const string SourceVersionEnvironmentVariableName = "CODEBUILD_SOURCE_VERSION";
 
-        public CodeBuild(IEnvironment environment, ILog log) : base(environment, log)
-        {
-            WithPropertyFile("gitversion.properties");
-        }
+        public CodeBuild(IEnvironment environment, ILog log) : base(environment, log) => WithPropertyFile("gitversion.properties");
 
         public void WithPropertyFile(string propertiesFileName) => this.file = propertiesFileName;
 
