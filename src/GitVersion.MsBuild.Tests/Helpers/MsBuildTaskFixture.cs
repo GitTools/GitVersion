@@ -4,8 +4,8 @@ using System.IO;
 using System.Linq;
 using GitTools.Testing;
 using GitVersion.BuildAgents;
-using GitVersion.MsBuild.Tests.Mocks;
 using GitVersion.Core.Tests;
+using GitVersion.MsBuild.Tests.Mocks;
 
 namespace GitVersion.MsBuild.Tests.Helpers
 {

@@ -1,10 +1,10 @@
+using System.Collections.Generic;
 using GitTools.Testing;
 using GitVersion.Core.Tests.Helpers;
 using GitVersion.Model.Configuration;
 using LibGit2Sharp;
 using NUnit.Framework;
 using Shouldly;
-using System.Collections.Generic;
 
 namespace GitVersion.Core.Tests.IntegrationTests
 {

@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
-using GitVersion.Extensions;
 using GitVersion.Core.Tests.Helpers;
+using GitVersion.Extensions;
 using Microsoft.Extensions.DependencyInjection;
 using NUnit.Framework;
 using Shouldly;
