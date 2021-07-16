@@ -9,7 +9,7 @@ namespace GitTools.Testing
     /// </summary>
     public abstract class RepositoryFixtureBase : IDisposable
     {
-        private readonly SequenceDiagram _sequenceDiagram;
+        private readonly SequenceDiagram sequenceDiagram;
 
         protected RepositoryFixtureBase(Func<string, IRepository> repoBuilder)
             : this(repoBuilder(PathHelper.GetTempPath()))
@@ -18,7 +18,7 @@ namespace GitTools.Testing
 
         protected RepositoryFixtureBase(IRepository repository)
         {
-            this._sequenceDiagram = new SequenceDiagram();
+            this.sequenceDiagram = new SequenceDiagram();
             Repository = repository;
             Repository.Config.Set("user.name", "Test");
             Repository.Config.Set("user.email", "test@email.com");
@@ -33,7 +33,7 @@ namespace GitTools.Testing
 
         public SequenceDiagram SequenceDiagram
         {
-            get { return this._sequenceDiagram; }
+            get { return this.sequenceDiagram; }
         }
 
         /// <summary>
@@ -53,10 +53,10 @@ namespace GitTools.Testing
                     e.Message);
             }
 
-            this._sequenceDiagram.End();
+            this.sequenceDiagram.End();
             Console.WriteLine("**Visualisation of test:**");
             Console.WriteLine(string.Empty);
-            Console.WriteLine(this._sequenceDiagram.GetDiagram());
+            Console.WriteLine(this.sequenceDiagram.GetDiagram());
         }
 
         public void Checkout(string branch) => Commands.Checkout(Repository, branch);
@@ -71,20 +71,20 @@ namespace GitTools.Testing
 
         public void ApplyTag(string tag)
         {
-            this._sequenceDiagram.ApplyTag(tag, Repository.Head.FriendlyName);
+            this.sequenceDiagram.ApplyTag(tag, Repository.Head.FriendlyName);
             Repository.ApplyTag(tag);
         }
 
         public void BranchTo(string branchName, string @as = null)
         {
-            this._sequenceDiagram.BranchTo(branchName, Repository.Head.FriendlyName, @as);
+            this.sequenceDiagram.BranchTo(branchName, Repository.Head.FriendlyName, @as);
             var branch = Repository.CreateBranch(branchName);
             Commands.Checkout(Repository, branch);
         }
 
         public void BranchToFromTag(string branchName, string fromTag, string onBranch, string @as = null)
         {
-            this._sequenceDiagram.BranchToFromTag(branchName, fromTag, onBranch, @as);
+            this.sequenceDiagram.BranchToFromTag(branchName, fromTag, onBranch, @as);
             var branch = Repository.CreateBranch(branchName);
             Commands.Checkout(Repository, branch);
         }
@@ -92,7 +92,7 @@ namespace GitTools.Testing
         public void MakeACommit()
         {
             var to = Repository.Head.FriendlyName;
-            this._sequenceDiagram.MakeACommit(to);
+            this.sequenceDiagram.MakeACommit(to);
             Repository.MakeACommit();
         }
 
@@ -101,7 +101,7 @@ namespace GitTools.Testing
         /// </summary>
         public void MergeNoFF(string mergeSource)
         {
-            this._sequenceDiagram.Merge(mergeSource, Repository.Head.FriendlyName);
+            this.sequenceDiagram.Merge(mergeSource, Repository.Head.FriendlyName);
             Repository.MergeNoFF(mergeSource, Generate.SignatureNow());
         }
 

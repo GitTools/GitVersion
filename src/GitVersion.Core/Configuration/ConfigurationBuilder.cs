@@ -12,13 +12,13 @@ namespace GitVersion.Configuration
     {
         private const int DefaultTagPreReleaseWeight = 60000;
 
-        private readonly List<Config> _overrides = new();
+        private readonly List<Config> overrides = new();
 
         public ConfigurationBuilder Add([NotNull] Config config)
         {
             if (config == null) throw new ArgumentNullException(nameof(config));
 
-            this._overrides.Add(config);
+            this.overrides.Add(config);
             return this;
         }
 
@@ -27,7 +27,7 @@ namespace GitVersion.Configuration
         {
             var config = CreateDefaultConfiguration();
 
-            foreach (var overrideConfig in this._overrides)
+            foreach (var overrideConfig in this.overrides)
             {
                 ApplyOverrides(config, overrideConfig);
             }
