@@ -38,10 +38,7 @@ namespace GitVersion.BuildAgents
             return messages.ToArray();
         }
 
-        public override string? GenerateSetVersionMessage(VersionVariables variables)
-        {
-            return null;
-        }
+        public override string? GenerateSetVersionMessage(VersionVariables variables) => null;
 
         public override bool PreventFetch() => false;
     }

@@ -14,10 +14,7 @@ namespace GitVersion.Core.Tests.Init
     public class InitScenarios : TestBase
     {
         [SetUp]
-        public void Setup()
-        {
-            ShouldlyConfiguration.ShouldMatchApprovedDefaults.LocateTestMethodUsingAttribute<TestAttribute>();
-        }
+        public void Setup() => ShouldlyConfiguration.ShouldMatchApprovedDefaults.LocateTestMethodUsingAttribute<TestAttribute>();
 
         [Test]
         [Category(NoMono)]

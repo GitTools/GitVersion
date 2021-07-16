@@ -28,15 +28,9 @@ namespace GitVersion.Extensions
             };
         }
 
-        public static bool IsTrue(this string value)
-        {
-            return Trues.Contains(value, StringComparer.OrdinalIgnoreCase);
-        }
+        public static bool IsTrue(this string value) => Trues.Contains(value, StringComparer.OrdinalIgnoreCase);
 
-        public static bool IsFalse(this string value)
-        {
-            return Falses.Contains(value, StringComparer.OrdinalIgnoreCase);
-        }
+        public static bool IsFalse(this string value) => Falses.Contains(value, StringComparer.OrdinalIgnoreCase);
 
         public static bool IsValidPath(this string path)
         {
@@ -64,12 +58,9 @@ namespace GitVersion.Extensions
             return Directory.Exists(path);
         }
 
-        public static bool IsSwitchArgument(this string value)
-        {
-            return value != null
+        public static bool IsSwitchArgument(this string value) => value != null
                    && (value.StartsWith("-") || value.StartsWith("/"))
                    && !Regex.Match(value, @"/\w+:").Success; //Exclude msbuild & project parameters in form /blah:, which should be parsed as values, not switch names.
-        }
 
         public static bool IsSwitch(this string value, string switchName)
         {
@@ -89,15 +80,9 @@ namespace GitVersion.Extensions
             return string.Equals(switchName, value, StringComparison.OrdinalIgnoreCase);
         }
 
-        public static bool IsInit(this string singleArgument)
-        {
-            return singleArgument.Equals("init", StringComparison.OrdinalIgnoreCase);
-        }
+        public static bool IsInit(this string singleArgument) => singleArgument.Equals("init", StringComparison.OrdinalIgnoreCase);
 
-        public static bool IsHelp(this string singleArgument)
-        {
-            return (singleArgument == "?") || singleArgument.IsSwitch("h") || singleArgument.IsSwitch("help") || singleArgument.IsSwitch("?");
-        }
+        public static bool IsHelp(this string singleArgument) => (singleArgument == "?") || singleArgument.IsSwitch("h") || singleArgument.IsSwitch("help") || singleArgument.IsSwitch("?");
 
         public static bool ArgumentRequiresValue(this string argument, int argumentIndex)
         {
@@ -126,15 +111,10 @@ namespace GitVersion.Extensions
             stringBuilder.AppendLine();
         }
 
-        public static string RegexReplace(this string input, string pattern, string replace, RegexOptions options = RegexOptions.None)
-        {
-            return Regex.Replace(input, pattern, replace, options);
-        }
+        public static string RegexReplace(this string input, string pattern, string replace, RegexOptions options = RegexOptions.None) => Regex.Replace(input, pattern, replace, options);
 
-        public static bool IsEquivalentTo(this string self, string? other)
-        {
-            return string.Equals(self, other, StringComparison.OrdinalIgnoreCase);
-        }
+        public static bool IsEquivalentTo(this string self, string? other) =>
+            string.Equals(self, other, StringComparison.OrdinalIgnoreCase);
 
         /// <inheritdoc cref="string.IsNullOrEmpty()"/>
         public static bool IsNullOrEmpty([NotNullWhen(returnValue: false)] this string? value) => string.IsNullOrEmpty(value);

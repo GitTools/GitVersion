@@ -68,10 +68,7 @@ namespace GitVersion.Core.Tests
             }
 
             [Test]
-            public void NoWarnOnNoGitVersionYmlFile()
-            {
-                Should.NotThrow(() => { this.configurationProvider.Provide(this.repoPath); });
-            }
+            public void NoWarnOnNoGitVersionYmlFile() => Should.NotThrow(() => { this.configurationProvider.Provide(this.repoPath); });
 
             private string SetupConfigFileContent(string text, string fileName, string path)
             {
@@ -228,14 +225,11 @@ namespace GitVersion.Core.Tests
                 return filePath;
             }
 
-            private static IServiceProvider GetServiceProvider(GitVersionOptions gitVersionOptions, ILog log = null)
-            {
-                return ConfigureServices(services =>
-                {
-                    if (log != null) services.AddSingleton(log);
-                    services.AddSingleton(Options.Create(gitVersionOptions));
-                });
-            }
+            private static IServiceProvider GetServiceProvider(GitVersionOptions gitVersionOptions, ILog log = null) => ConfigureServices(services =>
+                                                                                                                                      {
+                                                                                                                                          if (log != null) services.AddSingleton(log);
+                                                                                                                                          services.AddSingleton(Options.Create(gitVersionOptions));
+                                                                                                                                      });
         }
     }
 }

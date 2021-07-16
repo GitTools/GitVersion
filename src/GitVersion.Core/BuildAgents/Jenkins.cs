@@ -17,35 +17,20 @@ namespace GitVersion.BuildAgents
             WithPropertyFile("gitversion.properties");
         }
 
-        public void WithPropertyFile(string propertiesFileName)
-        {
-            this.file = propertiesFileName;
-        }
+        public void WithPropertyFile(string propertiesFileName) => this.file = propertiesFileName;
 
-        public override string GenerateSetVersionMessage(VersionVariables variables)
-        {
-            return variables.FullSemVer;
-        }
+        public override string GenerateSetVersionMessage(VersionVariables variables) => variables.FullSemVer;
 
-        public override string[] GenerateSetParameterMessage(string name, string value)
-        {
-            return new[]
+        public override string[] GenerateSetParameterMessage(string name, string value) => new[]
             {
                 $"GitVersion_{name}={value}"
             };
-        }
 
-        public override string? GetCurrentBranch(bool usingDynamicRepos)
-        {
-            return IsPipelineAsCode()
+        public override string? GetCurrentBranch(bool usingDynamicRepos) => IsPipelineAsCode()
                 ? Environment.GetEnvironmentVariable("BRANCH_NAME")
                 : Environment.GetEnvironmentVariable("GIT_LOCAL_BRANCH") ?? Environment.GetEnvironmentVariable("GIT_BRANCH");
-        }
 
-        private bool IsPipelineAsCode()
-        {
-            return !Environment.GetEnvironmentVariable("BRANCH_NAME").IsNullOrEmpty();
-        }
+        private bool IsPipelineAsCode() => !Environment.GetEnvironmentVariable("BRANCH_NAME").IsNullOrEmpty();
 
         public override bool PreventFetch() => true;
 
@@ -54,10 +39,7 @@ namespace GitVersion.BuildAgents
         /// This should be cleaned up, so that normizaling the Git repo will not fail.
         /// </summary>
         /// <returns></returns>
-        public override bool ShouldCleanUpRemotes()
-        {
-            return IsPipelineAsCode();
-        }
+        public override bool ShouldCleanUpRemotes() => IsPipelineAsCode();
 
         public override void WriteIntegration(Action<string?> writer, VersionVariables variables, bool updateBuildNumber = true)
         {
@@ -66,9 +48,6 @@ namespace GitVersion.BuildAgents
             WriteVariablesFile(variables);
         }
 
-        private void WriteVariablesFile(VersionVariables variables)
-        {
-            File.WriteAllLines(this.file, GenerateBuildLogOutput(variables));
-        }
+        private void WriteVariablesFile(VersionVariables variables) => File.WriteAllLines(this.file, GenerateBuildLogOutput(variables));
     }
 }

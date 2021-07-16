@@ -18,10 +18,7 @@ namespace GitVersion.MsBuild.Tests.Helpers
         private readonly RepositoryFixtureBase fixture;
         private KeyValuePair<string, string>[] environmentVariables;
 
-        public void WithEnv(params KeyValuePair<string, string>[] envs)
-        {
-            this.environmentVariables = envs;
-        }
+        public void WithEnv(params KeyValuePair<string, string>[] envs) => this.environmentVariables = envs;
 
         public const string OutputTarget = "GitVersionOutput";
 

@@ -33,15 +33,9 @@ namespace GitVersion.Core.Tests.BuildAgents
             this.buildServer = this.sp.GetService<Jenkins>();
         }
 
-        private void SetEnvironmentVariableForDetection()
-        {
-            this.environment.SetEnvironmentVariable(key, "a value");
-        }
+        private void SetEnvironmentVariableForDetection() => this.environment.SetEnvironmentVariable(key, "a value");
 
-        private void ClearenvironmentVariableForDetection()
-        {
-            this.environment.SetEnvironmentVariable(key, null);
-        }
+        private void ClearenvironmentVariableForDetection() => this.environment.SetEnvironmentVariable(key, null);
 
         [Test]
         public void CanApplyCurrentContextWhenenvironmentVariableIsSet()

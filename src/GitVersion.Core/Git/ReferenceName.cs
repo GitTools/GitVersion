@@ -52,12 +52,10 @@ namespace GitVersion
         public override int GetHashCode() => equalityHelper.GetHashCode(this);
         public override string ToString() => Friendly;
 
-        public bool EquivalentTo(string? name)
-        {
-            return Canonical.Equals(name, StringComparison.OrdinalIgnoreCase)
-                   || Friendly.Equals(name, StringComparison.OrdinalIgnoreCase)
-                   || WithoutRemote.Equals(name, StringComparison.OrdinalIgnoreCase);
-        }
+        public bool EquivalentTo(string? name) =>
+            Canonical.Equals(name, StringComparison.OrdinalIgnoreCase)
+            || Friendly.Equals(name, StringComparison.OrdinalIgnoreCase)
+            || WithoutRemote.Equals(name, StringComparison.OrdinalIgnoreCase);
 
         private string Shorten()
         {

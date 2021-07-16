@@ -20,9 +20,6 @@ namespace GitTools.Testing
         /// <summary>
         /// Creates a libgit2sharp signature at the specified time
         /// </summary>
-        public static Signature Signature(DateTimeOffset dateTimeOffset)
-        {
-            return new Signature("A. U. Thor", "thor@valhalla.asgard.com", dateTimeOffset);
-        }
+        public static Signature Signature(DateTimeOffset dateTimeOffset) => new Signature("A. U. Thor", "thor@valhalla.asgard.com", dateTimeOffset);
     }
 }

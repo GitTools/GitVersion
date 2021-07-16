@@ -31,14 +31,11 @@ namespace GitVersion.Configuration.Init.Wizard
             return StepResult.Ok();
         }
 
-        protected override string GetPrompt(Config config, string workingDirectory)
-        {
-            return @"The way you will use GitVersion will change a lot based on your branching strategy. What branching strategy will you be using:
+        protected override string GetPrompt(Config config, string workingDirectory) => @"The way you will use GitVersion will change a lot based on your branching strategy. What branching strategy will you be using:
 
 1) GitFlow (or similar)
 2) GitHubFlow
 3) Unsure, tell me more";
-        }
 
         protected override string? DefaultResult => null;
     }

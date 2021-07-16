@@ -10,10 +10,7 @@ namespace GitVersion.Logging
         {
         }
 
-        public IDisposable IndentLog(string operationDescription)
-        {
-            return Disposable.Empty;
-        }
+        public IDisposable IndentLog(string operationDescription) => Disposable.Empty;
 
         public void AddLogAppender(ILogAppender logAppender)
         {

@@ -141,11 +141,9 @@ namespace GitVersion.Configuration
             return tagToUse;
         }
 
-        public static List<KeyValuePair<string, BranchConfig?>> GetReleaseBranchConfig(this Config configuration)
-        {
-            return configuration.Branches
+        public static List<KeyValuePair<string, BranchConfig?>> GetReleaseBranchConfig(this Config configuration) =>
+            configuration.Branches
                 .Where(b => b.Value?.IsReleaseBranch == true)
                 .ToList();
-        }
     }
 }

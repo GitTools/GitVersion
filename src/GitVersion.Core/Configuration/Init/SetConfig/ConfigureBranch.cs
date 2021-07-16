@@ -39,14 +39,11 @@ namespace GitVersion.Configuration.Init.SetConfig
             return StepResult.InvalidResponseSelected();
         }
 
-        protected override string GetPrompt(Config config, string workingDirectory)
-        {
-            return $@"What would you like to change for '{this.name}':
+        protected override string GetPrompt(Config config, string workingDirectory) => $@"What would you like to change for '{this.name}':
 
 0) Go Back
 1) Branch Pre-release tag (Current: {this.branchConfig!.Tag})
 2) Branch Increment mode (per commit/after tag) (Current: {this.branchConfig.VersioningMode})";
-        }
 
         protected override string DefaultResult => "0";
     }

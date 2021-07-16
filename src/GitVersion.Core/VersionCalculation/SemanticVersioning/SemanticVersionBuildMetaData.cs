@@ -54,25 +54,13 @@ namespace GitVersion
             this.UncommittedChanges = buildMetaData?.UncommittedChanges ?? 0;
         }
 
-        public override bool Equals(object obj)
-        {
-            return Equals(obj as SemanticVersionBuildMetaData);
-        }
+        public override bool Equals(object obj) => Equals(obj as SemanticVersionBuildMetaData);
 
-        public bool Equals(SemanticVersionBuildMetaData? other)
-        {
-            return EqualityHelper.Equals(this, other);
-        }
+        public bool Equals(SemanticVersionBuildMetaData? other) => EqualityHelper.Equals(this, other);
 
-        public override int GetHashCode()
-        {
-            return EqualityHelper.GetHashCode(this);
-        }
+        public override int GetHashCode() => EqualityHelper.GetHashCode(this);
 
-        public override string ToString()
-        {
-            return ToString(null);
-        }
+        public override string ToString() => ToString(null);
 
         /// <summary>
         /// <para>b - Formats just the build number</para>

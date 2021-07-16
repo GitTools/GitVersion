@@ -32,10 +32,7 @@ namespace GitVersion.Configuration.Init.Wizard
             return StepResult.Ok();
         }
 
-        protected override string GetPrompt(Config config, string workingDirectory)
-        {
-            return "Do you need to build nightlies or consume packages the CI build creates without releasing those versions? (y/n)";
-        }
+        protected override string GetPrompt(Config config, string workingDirectory) => "Do you need to build nightlies or consume packages the CI build creates without releasing those versions? (y/n)";
 
         protected override string? DefaultResult => null;
     }

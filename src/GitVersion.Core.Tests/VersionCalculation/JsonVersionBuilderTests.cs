@@ -11,10 +11,7 @@ namespace GitVersion.Core.Tests
     public class JsonVersionBuilderTests : TestBase
     {
         [SetUp]
-        public void Setup()
-        {
-            ShouldlyConfiguration.ShouldMatchApprovedDefaults.LocateTestMethodUsingAttribute<TestAttribute>();
-        }
+        public void Setup() => ShouldlyConfiguration.ShouldMatchApprovedDefaults.LocateTestMethodUsingAttribute<TestAttribute>();
 
         [Test]
         [Category(NoMono)]

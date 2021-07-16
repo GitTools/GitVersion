@@ -14,10 +14,7 @@ namespace GitVersion.Core.Tests
     public class GitVersionInfoGeneratorTests : TestBase
     {
         [SetUp]
-        public void Setup()
-        {
-            ShouldlyConfiguration.ShouldMatchApprovedDefaults.LocateTestMethodUsingAttribute<TestCaseAttribute>();
-        }
+        public void Setup() => ShouldlyConfiguration.ShouldMatchApprovedDefaults.LocateTestMethodUsingAttribute<TestCaseAttribute>();
 
         [TestCase("cs")]
         [TestCase("fs")]

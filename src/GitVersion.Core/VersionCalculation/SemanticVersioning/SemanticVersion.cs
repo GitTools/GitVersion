@@ -51,10 +51,7 @@ namespace GitVersion
                    this.BuildMetaData == obj.BuildMetaData;
         }
 
-        public bool IsEmpty()
-        {
-            return Equals(Empty);
-        }
+        public bool IsEmpty() => Equals(Empty);
 
         public override bool Equals(object? obj)
         {
@@ -184,10 +181,7 @@ namespace GitVersion
             return true;
         }
 
-        public int CompareTo(SemanticVersion value)
-        {
-            return CompareTo(value, true);
-        }
+        public int CompareTo(SemanticVersion value) => CompareTo(value, true);
 
         public int CompareTo(SemanticVersion? value, bool includePrerelease)
         {
@@ -231,10 +225,7 @@ namespace GitVersion
             return 0;
         }
 
-        public override string ToString()
-        {
-            return ToString(null);
-        }
+        public override string ToString() => ToString(null);
 
         /// <summary>
         /// <para>s - Default SemVer [1.2.3-beta.4+5]</para>

@@ -20,10 +20,8 @@ namespace GitVersion.VersionCalculation
             this.repositoryStore = repositoryStore ?? throw new ArgumentNullException(nameof(repositoryStore));
         }
 
-        public override IEnumerable<BaseVersion> GetVersions()
-        {
-            return GetTaggedVersions(Context.CurrentBranch, Context.CurrentCommit?.When);
-        }
+        public override IEnumerable<BaseVersion> GetVersions() =>
+            GetTaggedVersions(Context.CurrentBranch, Context.CurrentCommit?.When);
 
         internal IEnumerable<BaseVersion> GetTaggedVersions(IBranch? currentBranch, DateTimeOffset? olderThan)
         {
@@ -54,10 +52,7 @@ namespace GitVersion.VersionCalculation
             return baseVersion;
         }
 
-        protected virtual string FormatSource(VersionTaggedCommit version)
-        {
-            return $"Git tag '{version.Tag}'";
-        }
+        protected virtual string FormatSource(VersionTaggedCommit version) => $"Git tag '{version.Tag}'";
 
         protected virtual bool IsValidTag(ITag? tag, ICommit commit)
         {
@@ -78,10 +73,7 @@ namespace GitVersion.VersionCalculation
                 this.SemVer = semVer;
             }
 
-            public override string ToString()
-            {
-                return $"{this.Tag} | {this.Commit} | {this.SemVer}";
-            }
+            public override string ToString() => $"{this.Tag} | {this.Commit} | {this.SemVer}";
         }
     }
 }

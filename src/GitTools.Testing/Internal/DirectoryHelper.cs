@@ -28,10 +28,7 @@ namespace GitTools.Testing.Internal
             }
         }
 
-        static string Rename(string name)
-        {
-            return ToRename.ContainsKey(name) ? ToRename[name] : name;
-        }
+        static string Rename(string name) => ToRename.ContainsKey(name) ? ToRename[name] : name;
 
         public static void DeleteSubDirectories(string parentPath)
         {

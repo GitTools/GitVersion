@@ -17,25 +17,16 @@ namespace GitVersion.BuildAgents
             WithPropertyFile("gitversion.properties");
         }
 
-        public void WithPropertyFile(string propertiesFileName)
-        {
-            this.file = propertiesFileName;
-        }
+        public void WithPropertyFile(string propertiesFileName) => this.file = propertiesFileName;
 
         protected override string EnvironmentVariable => throw new NotSupportedException($"Accessing {nameof(EnvironmentVariable)} is not supported as {nameof(CodeBuild)} supports two environment variables for branch names.");
 
-        public override string GenerateSetVersionMessage(VersionVariables variables)
-        {
-            return variables.FullSemVer;
-        }
+        public override string GenerateSetVersionMessage(VersionVariables variables) => variables.FullSemVer;
 
-        public override string[] GenerateSetParameterMessage(string name, string value)
-        {
-            return new[]
+        public override string[] GenerateSetParameterMessage(string name, string value) => new[]
             {
                 $"GitVersion_{name}={value}"
             };
-        }
 
         public override string? GetCurrentBranch(bool usingDynamicRepos)
         {

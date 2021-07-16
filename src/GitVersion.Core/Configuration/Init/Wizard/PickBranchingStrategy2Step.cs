@@ -31,10 +31,7 @@ namespace GitVersion.Configuration.Init.Wizard
             return StepResult.InvalidResponseSelected();
         }
 
-        protected override string GetPrompt(Config config, string workingDirectory)
-        {
-            return "Do you stabilise releases while continuing work on the next version? (y/n)";
-        }
+        protected override string GetPrompt(Config config, string workingDirectory) => "Do you stabilise releases while continuing work on the next version? (y/n)";
 
         protected override string? DefaultResult => null;
     }

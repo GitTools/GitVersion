@@ -17,10 +17,7 @@ namespace GitVersion.Core.Tests
         private DirectoryInfo docsDirectory;
 
         [OneTimeSetUp]
-        public void OneTimeSetUp()
-        {
-            this.docsDirectory = GetDocsDirectory();
-        }
+        public void OneTimeSetUp() => this.docsDirectory = GetDocsDirectory();
 
         [Test]
         public void ConfigurationDocumentationIsUpToDate()

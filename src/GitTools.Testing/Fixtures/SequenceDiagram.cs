@@ -24,18 +24,12 @@ namespace GitTools.Testing
         /// <summary>
         /// Activates a branch/participant in the sequence diagram
         /// </summary>
-        public void Activate(string branch)
-        {
-            this._diagramBuilder.AppendLineFormat("activate {0}", GetParticipant(branch));
-        }
+        public void Activate(string branch) => this._diagramBuilder.AppendLineFormat("activate {0}", GetParticipant(branch));
 
         /// <summary>
         /// Destroys a branch/participant in the sequence diagram
         /// </summary>
-        public void Destroy(string branch)
-        {
-            this._diagramBuilder.AppendLineFormat("destroy {0}", GetParticipant(branch));
-        }
+        public void Destroy(string branch) => this._diagramBuilder.AppendLineFormat("destroy {0}", GetParticipant(branch));
 
         /// <summary>
         /// Creates a participant in the sequence diagram
@@ -52,17 +46,12 @@ namespace GitTools.Testing
         /// <summary>
         /// Appends a divider with specified text to the sequence diagram
         /// </summary>
-        public void Divider(string text)
-        {
-            this._diagramBuilder.AppendLineFormat("== {0} ==", text);
-        }
+        public void Divider(string text) => this._diagramBuilder.AppendLineFormat("== {0} ==", text);
 
         /// <summary>
         /// Appends a note over one or many participants to the sequence diagram
         /// </summary>
-        public void NoteOver(string noteText, string startParticipant, string endParticipant = null, string prefix = null, string color = null)
-        {
-            this._diagramBuilder.AppendLineFormat(
+        public void NoteOver(string noteText, string startParticipant, string endParticipant = null, string prefix = null, string color = null) => this._diagramBuilder.AppendLineFormat(
                 prefix + @"note over {0}{1}{2}
   {3}
 end note",
@@ -70,15 +59,11 @@ end note",
                 endParticipant == null ? null : ", " + GetParticipant(endParticipant),
                 color == null ? null : " " + color,
                 noteText.Replace("\n", "\n  "));
-        }
 
         /// <summary>
         /// Appends applying a tag to the specified branch/participant to the sequence diagram
         /// </summary>
-        public void ApplyTag(string tag, string toBranch)
-        {
-            this._diagramBuilder.AppendLineFormat("{0} -> {0}: tag {1}", GetParticipant(toBranch), tag);
-        }
+        public void ApplyTag(string tag, string toBranch) => this._diagramBuilder.AppendLineFormat("{0} -> {0}: tag {1}", GetParticipant(toBranch), tag);
 
         /// <summary>
         /// Appends branching from a branch to another branch, @as can override the participant name
@@ -114,18 +99,12 @@ end note",
         /// <summary>
         /// Appends a commit on the target participant/branch to the sequence diagram
         /// </summary>
-        public void MakeACommit(string toParticipant)
-        {
-            this._diagramBuilder.AppendLineFormat("{0} -> {0}: commit", GetParticipant(toParticipant));
-        }
+        public void MakeACommit(string toParticipant) => this._diagramBuilder.AppendLineFormat("{0} -> {0}: commit", GetParticipant(toParticipant));
 
         /// <summary>
         /// Append a merge to the sequence diagram
         /// </summary>
-        public void Merge(string @from, string to)
-        {
-            this._diagramBuilder.AppendLineFormat("{0} -> {1}: merge", GetParticipant(@from), GetParticipant(to));
-        }
+        public void Merge(string @from, string to) => this._diagramBuilder.AppendLineFormat("{0} -> {1}: merge", GetParticipant(@from), GetParticipant(to));
 
         string GetParticipant(string branch)
         {
@@ -138,17 +117,11 @@ end note",
         /// <summary>
         /// Ends the sequence diagram
         /// </summary>
-        public void End()
-        {
-            this._diagramBuilder.AppendLine("@enduml");
-        }
+        public void End() => this._diagramBuilder.AppendLine("@enduml");
 
         /// <summary>
         /// returns the plantUML representation of the Sequence Diagram
         /// </summary>
-        public string GetDiagram()
-        {
-            return this._diagramBuilder.ToString();
-        }
+        public string GetDiagram() => this._diagramBuilder.ToString();
     }
 }

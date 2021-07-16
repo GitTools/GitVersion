@@ -16,10 +16,7 @@ namespace GitVersion
             this.console = console ?? throw new ArgumentNullException(nameof(console));
         }
 
-        public void Write()
-        {
-            WriteTo(this.console.WriteLine);
-        }
+        public void Write() => WriteTo(this.console.WriteLine);
 
         public void WriteTo(Action<string> writeAction)
         {

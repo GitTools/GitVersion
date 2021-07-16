@@ -392,9 +392,6 @@ Please run `git {GitExtensions.CreateGitLogArgs(100)}` and submit it along with 
             Checkout(localCanonicalName);
         }
 
-        private void Checkout(string commitOrBranchSpec)
-        {
-            this.retryAction.Execute(() => this.repository.Checkout(commitOrBranchSpec));
-        }
+        private void Checkout(string commitOrBranchSpec) => this.retryAction.Execute(() => this.repository.Checkout(commitOrBranchSpec));
     }
 }

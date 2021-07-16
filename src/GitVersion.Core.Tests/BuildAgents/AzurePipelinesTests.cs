@@ -29,10 +29,7 @@ namespace GitVersion.Core.Tests.BuildAgents
         }
 
         [TearDown]
-        public void ClearEnvironmentVariableForTest()
-        {
-            this.environment.SetEnvironmentVariable(key, null);
-        }
+        public void ClearEnvironmentVariableForTest() => this.environment.SetEnvironmentVariable(key, null);
 
         [Test]
         public void DevelopBranch()

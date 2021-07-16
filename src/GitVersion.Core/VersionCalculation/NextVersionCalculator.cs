@@ -151,11 +151,8 @@ namespace GitVersion.VersionCalculation
             throw new WarningException(message);
         }
 
-        private static bool MajorMinorPatchEqual(SemanticVersion lastTag, SemanticVersion baseVersion)
-        {
-            return lastTag.Major == baseVersion.Major &&
+        private static bool MajorMinorPatchEqual(SemanticVersion lastTag, SemanticVersion baseVersion) => lastTag.Major == baseVersion.Major &&
                    lastTag.Minor == baseVersion.Minor &&
                    lastTag.Patch == baseVersion.Patch;
-        }
     }
 }
