@@ -298,7 +298,7 @@ namespace GitVersion
                         incremented.Patch++;
                         break;
                     default:
-                        throw new ArgumentOutOfRangeException();
+                        throw new ArgumentOutOfRangeException(nameof(incrementStrategy));
                 }
             }
             else
