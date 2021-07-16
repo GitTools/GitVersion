@@ -122,7 +122,7 @@ namespace GitVersion.Core.Tests.BuildAgents
             var result = this.buildServer.GenerateSetParameterMessage("Hello", string.Empty);
 
             // Assert
-            result.ShouldBeEquivalentTo(new string[0]);
+            result.ShouldBeEquivalentTo(System.Array.Empty<string>());
         }
 
         [Test]

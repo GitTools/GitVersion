@@ -155,7 +155,7 @@ namespace GitVersion.App.Tests
                 remoteRepository.Refs.Add(pullRequestRef, new ObjectId(mergeCommitSha));
 
                 // Checkout PR commit
-                Commands.Fetch((Repository)fixture.Repository, "origin", new string[0], new FetchOptions(), null);
+                Commands.Fetch((Repository)fixture.Repository, "origin", Array.Empty<string>(), new FetchOptions(), null);
                 Commands.Checkout(fixture.Repository, mergeCommitSha);
             }
 

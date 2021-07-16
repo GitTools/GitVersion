@@ -93,11 +93,11 @@ namespace GitVersion.Core.Tests.Helpers
             var path = Path.GetFullPath(directory);
             if (this.fileSystem.ContainsKey(path))
             {
-                this.fileSystem[path] = new byte[0];
+                this.fileSystem[path] = Array.Empty<byte>();
             }
             else
             {
-                this.fileSystem.Add(path, new byte[0]);
+                this.fileSystem.Add(path, Array.Empty<byte>());
             }
         }
 

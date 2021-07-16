@@ -341,7 +341,7 @@ namespace GitVersion
                         {
                             version
                         };
-                    return new SemanticVersion[0];
+                    return Array.Empty<SemanticVersion>();
                 })
                 .Max();
 

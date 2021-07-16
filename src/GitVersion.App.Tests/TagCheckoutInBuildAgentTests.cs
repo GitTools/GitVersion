@@ -58,7 +58,7 @@ namespace GitVersion.App.Tests
                 remoteRepository.MergeNoFF("release/0.2.0", Generate.SignatureNow());
                 remoteRepository.MakeATaggedCommit("0.2.0");
 
-                Commands.Fetch((Repository)fixture.Repository, "origin", new string[0], new FetchOptions(), null);
+                Commands.Fetch((Repository)fixture.Repository, "origin", Array.Empty<string>(), new FetchOptions(), null);
                 Commands.Checkout(fixture.Repository, "0.2.0");
             }
 

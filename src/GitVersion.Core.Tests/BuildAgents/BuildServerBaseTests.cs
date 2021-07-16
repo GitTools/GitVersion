@@ -65,7 +65,7 @@ namespace GitVersion.Core.Tests.BuildAgents
 
             public override string GenerateSetVersionMessage(VersionVariables variables) => variables.FullSemVer;
 
-            public override string[] GenerateSetParameterMessage(string name, string value) => new string[0];
+            public override string[] GenerateSetParameterMessage(string name, string value) => Array.Empty<string>();
         }
     }
 }
