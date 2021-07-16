@@ -244,13 +244,13 @@ namespace GitVersion
                 throw new ArgumentNullException(nameof(commit));
             }
 
-            return InnerGetBranchesContainingCommit();
+            return InnerGetBranchesContainingCommit(commit, branches, onlyTrackedBranches, repository, log);
 
             static bool IncludeTrackedBranches(IBranch branch, bool includeOnlyTracked) => includeOnlyTracked && branch.IsTracking || !includeOnlyTracked;
 
             // Yielding part is split from the main part of the method to avoid having the exception check performed lazily.
             // Details at https://github.com/GitTools/GitVersion/issues/2755
-            IEnumerable<IBranch> InnerGetBranchesContainingCommit()
+            static IEnumerable<IBranch> InnerGetBranchesContainingCommit(ICommit commit, IEnumerable<IBranch> branches, bool onlyTrackedBranches, IGitRepository repository, ILog log)
             {
                 branches ??= repository.Branches.ToList();
 
@@ -282,7 +282,7 @@ namespace GitVersion
                     {
                         log.Info($"Searching for commits reachable from '{branch}'.");
 
-                        var commits = GetCommitsReacheableFrom(commit, branch);
+                        var commits = GetCommitsReacheableFrom(repository, commit, branch);
 
                         if (!commits.Any())
                         {
@@ -482,7 +482,7 @@ namespace GitVersion
             return branchMergeBases;
         }
 
-        private IEnumerable<ICommit> GetCommitsReacheableFrom(ICommit commit, IBranch branch)
+        private static IEnumerable<ICommit> GetCommitsReacheableFrom(IGitRepository repository, ICommit commit, IBranch branch)
         {
             var filter = new CommitFilter
             {
