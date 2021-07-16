@@ -13,11 +13,15 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Microsoft.Build.Utilities.Core" Version="$(PackageVersion_MsBuild)" PrivateAssets="All"/>
-        <PackageReference Include="Microsoft.Win32.Registry" Version="$(PackageVersion_MicrosoftExtensions)" PrivateAssets="All"/>
-        <PackageReference Include="System.Text.Json" Version="$(PackageVersion_MicrosoftJson)" PrivateAssets="All"/>
-        <PackageReference Include="System.Text.Encodings.Web" Version="$(PackageVersion_MicrosoftJson)" PrivateAssets="All"/>
-        <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="$(PackageVersion_MicrosoftExtensions)" PrivateAssets="All"/>
+        <PackageReference Include="Microsoft.Build.Utilities.Core" Version="$(PackageVersion_MsBuild)" PrivateAssets="All" />
+        <PackageReference Include="Microsoft.CodeAnalysis.CSharp.CodeStyle" Version="3.10.0">
+          <PrivateAssets>all</PrivateAssets>
+          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+        <PackageReference Include="Microsoft.Win32.Registry" Version="$(PackageVersion_MicrosoftExtensions)" PrivateAssets="All" />
+        <PackageReference Include="System.Text.Json" Version="$(PackageVersion_MicrosoftJson)" PrivateAssets="All" />
+        <PackageReference Include="System.Text.Encodings.Web" Version="$(PackageVersion_MicrosoftJson)" PrivateAssets="All" />
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="$(PackageVersion_MicrosoftExtensions)" PrivateAssets="All" />
     </ItemGroup>
 
     <ItemGroup>
