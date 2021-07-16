@@ -23,7 +23,7 @@ namespace GitVersion.MsBuild.Tests.Helpers
 
         public void Dispose()
         {
-            fixture.Dispose();
+            this.fixture.Dispose();
         }
     }
 }

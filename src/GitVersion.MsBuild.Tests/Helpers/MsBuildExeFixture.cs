@@ -20,7 +20,7 @@ namespace GitVersion.MsBuild.Tests.Helpers
 
         public void WithEnv(params KeyValuePair<string, string>[] envs)
         {
-            environmentVariables = envs;
+            this.environmentVariables = envs;
         }
 
         public const string OutputTarget = "GitVersionOutput";
@@ -31,7 +31,7 @@ namespace GitVersion.MsBuild.Tests.Helpers
         public MsBuildExeFixture(RepositoryFixtureBase fixture, string workingDirectory = "")
         {
             this.fixture = fixture;
-            ProjectPath = Path.Combine(workingDirectory, "app.csproj");
+            this.ProjectPath = Path.Combine(workingDirectory, "app.csproj");
 
             var versionFile = Path.Combine(workingDirectory, "gitversion.json");
 
@@ -40,7 +40,7 @@ namespace GitVersion.MsBuild.Tests.Helpers
 
         public MsBuildExeFixtureResult Execute()
         {
-            var analyzer = manager.GetProject(ProjectPath);
+            var analyzer = this.manager.GetProject(this.ProjectPath);
 
             var output = new StringWriter();
             analyzer.AddBuildLogger(new ConsoleLogger(LoggerVerbosity.Normal, output.Write, null, null));
@@ -49,9 +49,9 @@ namespace GitVersion.MsBuild.Tests.Helpers
             environmentOptions.TargetsToBuild.Clear();
             environmentOptions.TargetsToBuild.Add(OutputTarget);
 
-            if (environmentVariables != null)
+            if (this.environmentVariables != null)
             {
-                foreach (var pair in environmentVariables)
+                foreach (var pair in this.environmentVariables)
                 {
                     analyzer.SetEnvironmentVariable(pair.Key, pair.Value);
                 }
@@ -59,7 +59,7 @@ namespace GitVersion.MsBuild.Tests.Helpers
 
             var results = analyzer.Build(environmentOptions);
 
-            return new MsBuildExeFixtureResult(fixture)
+            return new MsBuildExeFixtureResult(this.fixture)
             {
                 ProjectPath = ProjectPath,
                 Output = output.ToString(),
@@ -70,8 +70,8 @@ namespace GitVersion.MsBuild.Tests.Helpers
         public void CreateTestProject(Action<ProjectCreator> extendProject)
         {
             var project = RuntimeHelper.IsCoreClr()
-                ? ProjectCreator.Templates.SdkCsproj(ProjectPath)
-                : ProjectCreator.Templates.LegacyCsproj(ProjectPath, defaultTargets: null, targetFrameworkVersion: "v4.8", toolsVersion: "15.0");
+                ? ProjectCreator.Templates.SdkCsproj(this.ProjectPath)
+                : ProjectCreator.Templates.LegacyCsproj(this.ProjectPath, defaultTargets: null, targetFrameworkVersion: "v4.8", toolsVersion: "15.0");
 
             if (project == null) return;
 

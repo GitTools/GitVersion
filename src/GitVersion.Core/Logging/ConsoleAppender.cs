@@ -9,16 +9,16 @@ namespace GitVersion.Logging
         private readonly IDictionary<LogLevel, (ConsoleColor, ConsoleColor)> palettes;
         public ConsoleAppender()
         {
-            locker = new object();
-            palettes = CreatePalette();
+            this.locker = new object();
+            this.palettes = CreatePalette();
         }
         public void WriteTo(LogLevel level, string message)
         {
-            lock (locker)
+            lock (this.locker)
             {
                 try
                 {
-                    var (backgroundColor, foregroundColor) = palettes[level];
+                    var (backgroundColor, foregroundColor) = this.palettes[level];
 
                     Console.BackgroundColor = backgroundColor;
                     Console.ForegroundColor = foregroundColor;

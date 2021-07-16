@@ -12,7 +12,7 @@ namespace GitVersion
     {
         private readonly ILog log;
         private Lazy<IRepository> repositoryLazy;
-        private IRepository repositoryInstance => repositoryLazy.Value;
+        private IRepository repositoryInstance => this.repositoryLazy.Value;
 
         public GitRepository(ILog log, IGitRepositoryInfo repositoryInfo)
             : this(log, () => repositoryInfo.GitRootPath)
@@ -26,19 +26,19 @@ namespace GitVersion
 
         internal GitRepository(IRepository repository)
         {
-            log = new NullLog();
-            repositoryLazy = new Lazy<IRepository>(() => repository);
+            this.log = new NullLog();
+            this.repositoryLazy = new Lazy<IRepository>(() => repository);
         }
 
         private GitRepository(ILog log, Func<string> getGitRootDirectory)
         {
             this.log = log ?? throw new ArgumentNullException(nameof(log));
-            repositoryLazy = new Lazy<IRepository>(() => new Repository(getGitRootDirectory()));
+            this.repositoryLazy = new Lazy<IRepository>(() => new Repository(getGitRootDirectory()));
         }
 
         public void Dispose()
         {
-            if (repositoryLazy.IsValueCreated) repositoryInstance.Dispose();
+            if (this.repositoryLazy.IsValueCreated) repositoryInstance.Dispose();
         }
 
         public string Path => repositoryInstance.Info.Path;
@@ -102,14 +102,14 @@ namespace GitVersion
                 var network = repositoryInstance.Network;
                 var remote = network.Remotes.Single();
 
-                log.Info("Fetching remote refs to see if there is a pull request ref");
+                this.log.Info("Fetching remote refs to see if there is a pull request ref");
                 var credentialsProvider = GetCredentialsProvider(auth);
                 var remoteTips = (credentialsProvider != null
                         ? network.ListReferences(remote, credentialsProvider)
                         : network.ListReferences(remote))
                     .Select(r => r.ResolveToDirectReference()).ToList();
 
-                log.Info($"Remote Refs:{System.Environment.NewLine}" + string.Join(System.Environment.NewLine, remoteTips.Select(r => r.CanonicalName)));
+                this.log.Info($"Remote Refs:{System.Environment.NewLine}" + string.Join(System.Environment.NewLine, remoteTips.Select(r => r.CanonicalName)));
 
                 var headTipSha = Head.Tip?.Sha;
 
@@ -131,21 +131,21 @@ namespace GitVersion
                 var reference = refs.First();
                 var canonicalName = reference.CanonicalName;
                 var referenceName = ReferenceName.Parse(reference.CanonicalName);
-                log.Info($"Found remote tip '{canonicalName}' pointing at the commit '{headTipSha}'.");
+                this.log.Info($"Found remote tip '{canonicalName}' pointing at the commit '{headTipSha}'.");
 
                 if (referenceName.IsTag)
                 {
-                    log.Info($"Checking out tag '{canonicalName}'");
+                    this.log.Info($"Checking out tag '{canonicalName}'");
                     Checkout(reference.Target.Sha);
                 }
                 else if (referenceName.IsPullRequest)
                 {
                     var fakeBranchName = canonicalName.Replace("refs/pull/", "refs/heads/pull/").Replace("refs/pull-requests/", "refs/heads/pull-requests/");
 
-                    log.Info($"Creating fake local branch '{fakeBranchName}'.");
+                    this.log.Info($"Creating fake local branch '{fakeBranchName}'.");
                     Refs.Add(fakeBranchName, headTipSha);
 
-                    log.Info($"Checking local branch '{fakeBranchName}' out.");
+                    this.log.Info($"Checking local branch '{fakeBranchName}' out.");
                     Checkout(fakeBranchName);
                 }
                 else
@@ -160,7 +160,7 @@ namespace GitVersion
             try
             {
                 var path = Repository.Clone(sourceUrl, workdirPath, GetCloneOptions(auth));
-                log.Info($"Returned path after repository clone: {path}");
+                this.log.Info($"Returned path after repository clone: {path}");
             }
             catch (LibGit2Sharp.LockedFileException ex)
             {

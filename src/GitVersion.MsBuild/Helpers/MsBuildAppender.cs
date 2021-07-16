@@ -32,15 +32,15 @@ namespace GitVersion.MsBuild
             {
                 case LogLevel.Fatal:
                 case LogLevel.Error:
-                    taskLog.LogError(contents);
+                    this.taskLog.LogError(contents);
                     break;
                 case LogLevel.Warn:
-                    taskLog.LogWarning(contents);
+                    this.taskLog.LogWarning(contents);
                     break;
                 case LogLevel.Info:
                 case LogLevel.Verbose:
                 case LogLevel.Debug:
-                    taskLog.LogMessage(contents);
+                    this.taskLog.LogMessage(contents);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(level), level, null);

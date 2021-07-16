@@ -25,8 +25,8 @@ namespace GitVersion.VersionConverters.WixUpdater
 
         public void Execute(VersionVariables variables, WixVersionContext context)
         {
-            wixVersionFile = Path.Combine(context.WorkingDirectory, WixVersionFileName);
-            log.Info("Updating GitVersion_WixVersion.wxi");
+            this.wixVersionFile = Path.Combine(context.WorkingDirectory, WixVersionFileName);
+            this.log.Info("Updating GitVersion_WixVersion.wxi");
 
             var doc = new XmlDocument();
             doc.LoadXml(GetWixFormatFromVersionVariables(variables));
@@ -35,8 +35,8 @@ namespace GitVersion.VersionConverters.WixUpdater
             var root = doc.DocumentElement;
             doc.InsertBefore(xmlDecl, root);
 
-            fileSystem.Delete(wixVersionFile);
-            using var fs = fileSystem.OpenWrite(wixVersionFile);
+            this.fileSystem.Delete(this.wixVersionFile);
+            using var fs = this.fileSystem.OpenWrite(this.wixVersionFile);
             doc.Save(fs);
         }
 
@@ -56,7 +56,7 @@ namespace GitVersion.VersionConverters.WixUpdater
 
         public void Dispose()
         {
-            log.Info($"Done writing {wixVersionFile}");
+            this.log.Info($"Done writing {this.wixVersionFile}");
         }
     }
 }

@@ -25,96 +25,96 @@ namespace GitVersion.Core.Tests.BuildAgents
         [SetUp]
         public void SetUp()
         {
-            sp = ConfigureServices(services =>
+            this.sp = ConfigureServices(services =>
             {
                 services.AddSingleton<Jenkins>();
             });
-            environment = sp.GetService<IEnvironment>();
-            buildServer = sp.GetService<Jenkins>();
+            this.environment = this.sp.GetService<IEnvironment>();
+            this.buildServer = this.sp.GetService<Jenkins>();
         }
 
         private void SetEnvironmentVariableForDetection()
         {
-            environment.SetEnvironmentVariable(key, "a value");
+            this.environment.SetEnvironmentVariable(key, "a value");
         }
 
         private void ClearenvironmentVariableForDetection()
         {
-            environment.SetEnvironmentVariable(key, null);
+            this.environment.SetEnvironmentVariable(key, null);
         }
 
         [Test]
         public void CanApplyCurrentContextWhenenvironmentVariableIsSet()
         {
             SetEnvironmentVariableForDetection();
-            buildServer.CanApplyToCurrentContext().ShouldBe(true);
+            this.buildServer.CanApplyToCurrentContext().ShouldBe(true);
         }
 
         [Test]
         public void CanNotApplyCurrentContextWhenenvironmentVariableIsNotSet()
         {
             ClearenvironmentVariableForDetection();
-            buildServer.CanApplyToCurrentContext().ShouldBe(false);
+            this.buildServer.CanApplyToCurrentContext().ShouldBe(false);
         }
 
         [Test]
         public void JenkinsTakesLocalBranchNameNotRemoteName()
         {
             // Save original values so they can be restored
-            var branchOrig = environment.GetEnvironmentVariable(branch);
-            var localBranchOrig = environment.GetEnvironmentVariable(localBranch);
+            var branchOrig = this.environment.GetEnvironmentVariable(branch);
+            var localBranchOrig = this.environment.GetEnvironmentVariable(localBranch);
 
             // Set GIT_BRANCH for testing
-            environment.SetEnvironmentVariable(branch, $"origin/{MainBranch}");
+            this.environment.SetEnvironmentVariable(branch, $"origin/{MainBranch}");
 
             // Test Jenkins that GetCurrentBranch falls back to GIT_BRANCH if GIT_LOCAL_BRANCH undefined
-            buildServer.GetCurrentBranch(true).ShouldBe($"origin/{MainBranch}");
+            this.buildServer.GetCurrentBranch(true).ShouldBe($"origin/{MainBranch}");
 
             // Set GIT_LOCAL_BRANCH
-            environment.SetEnvironmentVariable(localBranch, MainBranch);
+            this.environment.SetEnvironmentVariable(localBranch, MainBranch);
 
             // Test Jenkins GetCurrentBranch method now returns GIT_LOCAL_BRANCH
-            buildServer.GetCurrentBranch(true).ShouldBe(MainBranch);
+            this.buildServer.GetCurrentBranch(true).ShouldBe(MainBranch);
 
             // Restore environment variables
-            environment.SetEnvironmentVariable(branch, branchOrig);
-            environment.SetEnvironmentVariable(localBranch, localBranchOrig);
+            this.environment.SetEnvironmentVariable(branch, branchOrig);
+            this.environment.SetEnvironmentVariable(localBranch, localBranchOrig);
         }
 
         [Test]
         public void JenkinsTakesBranchNameInPipelineAsCode()
         {
             // Save original values so they can be restored
-            var branchOrig = environment.GetEnvironmentVariable(branch);
-            var localBranchOrig = environment.GetEnvironmentVariable(localBranch);
-            var pipelineBranchOrig = environment.GetEnvironmentVariable(pipelineBranch);
+            var branchOrig = this.environment.GetEnvironmentVariable(branch);
+            var localBranchOrig = this.environment.GetEnvironmentVariable(localBranch);
+            var pipelineBranchOrig = this.environment.GetEnvironmentVariable(pipelineBranch);
 
             // Set BRANCH_NAME in pipeline mode
-            environment.SetEnvironmentVariable(pipelineBranch, MainBranch);
+            this.environment.SetEnvironmentVariable(pipelineBranch, MainBranch);
             // When Jenkins uses a Pipeline, GIT_BRANCH and GIT_LOCAL_BRANCH are not set:
-            environment.SetEnvironmentVariable(branch, null);
-            environment.SetEnvironmentVariable(localBranch, null);
+            this.environment.SetEnvironmentVariable(branch, null);
+            this.environment.SetEnvironmentVariable(localBranch, null);
 
             // Test Jenkins GetCurrentBranch method now returns BRANCH_NAME
-            buildServer.GetCurrentBranch(true).ShouldBe(MainBranch);
+            this.buildServer.GetCurrentBranch(true).ShouldBe(MainBranch);
 
             // Restore environment variables
-            environment.SetEnvironmentVariable(branch, branchOrig);
-            environment.SetEnvironmentVariable(localBranch, localBranchOrig);
-            environment.SetEnvironmentVariable(pipelineBranch, pipelineBranchOrig);
+            this.environment.SetEnvironmentVariable(branch, branchOrig);
+            this.environment.SetEnvironmentVariable(localBranch, localBranchOrig);
+            this.environment.SetEnvironmentVariable(pipelineBranch, pipelineBranchOrig);
         }
 
         [Test]
         public void GenerateSetVersionMessageReturnsVersionAsIsAlthoughThisIsNotUsedByJenkins()
         {
             var vars = new TestableVersionVariables(fullSemVer: "0.0.0-Beta4.7");
-            buildServer.GenerateSetVersionMessage(vars).ShouldBe("0.0.0-Beta4.7");
+            this.buildServer.GenerateSetVersionMessage(vars).ShouldBe("0.0.0-Beta4.7");
         }
 
         [Test]
         public void GenerateMessageTest()
         {
-            var generatedParameterMessages = buildServer.GenerateSetParameterMessage("name", "value");
+            var generatedParameterMessages = this.buildServer.GenerateSetParameterMessage("name", "value");
             generatedParameterMessages.Length.ShouldBe(1);
             generatedParameterMessages[0].ShouldBe("GitVersion_name=value");
         }
@@ -152,13 +152,13 @@ namespace GitVersion.Core.Tests.BuildAgents
 
             var config = new TestEffectiveConfiguration();
 
-            var variableProvider = sp.GetService<IVariableProvider>();
+            var variableProvider = this.sp.GetService<IVariableProvider>();
 
             var variables = variableProvider.GetVariablesFor(semanticVersion, config, false);
 
-            buildServer.WithPropertyFile(file);
+            this.buildServer.WithPropertyFile(file);
 
-            buildServer.WriteIntegration(writes.Add, variables);
+            this.buildServer.WriteIntegration(writes.Add, variables);
 
             writes[1].ShouldBe("1.2.3-beta.1+5");
 

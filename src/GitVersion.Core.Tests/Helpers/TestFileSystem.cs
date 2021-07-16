@@ -14,43 +14,43 @@ namespace GitVersion.Core.Tests.Helpers
         {
             var fromPath = Path.GetFullPath(from);
             var toPath = Path.GetFullPath(to);
-            if (fileSystem.ContainsKey(toPath))
+            if (this.fileSystem.ContainsKey(toPath))
             {
                 if (overwrite)
-                    fileSystem.Remove(toPath);
+                    this.fileSystem.Remove(toPath);
                 else
                     throw new IOException("File already exists");
             }
 
-            if (!fileSystem.TryGetValue(fromPath, out var source))
+            if (!this.fileSystem.TryGetValue(fromPath, out var source))
                 throw new FileNotFoundException($"The source file '{fromPath}' was not found", from);
 
-            fileSystem.Add(toPath, source);
+            this.fileSystem.Add(toPath, source);
         }
 
         public void Move(string from, string to)
         {
             var fromPath = Path.GetFullPath(from);
             Copy(from, to, false);
-            fileSystem.Remove(fromPath);
+            this.fileSystem.Remove(fromPath);
         }
 
         public bool Exists(string file)
         {
             var path = Path.GetFullPath(file);
-            return fileSystem.ContainsKey(path);
+            return this.fileSystem.ContainsKey(path);
         }
 
         public void Delete(string path)
         {
             var fullPath = Path.GetFullPath(path);
-            fileSystem.Remove(fullPath);
+            this.fileSystem.Remove(fullPath);
         }
 
         public string ReadAllText(string file)
         {
             var path = Path.GetFullPath(file);
-            if (!fileSystem.TryGetValue(path, out var content))
+            if (!this.fileSystem.TryGetValue(path, out var content))
                 throw new FileNotFoundException($"The file '{path}' was not found", path);
 
             var encoding = EncodingHelper.DetectEncoding(content) ?? Encoding.UTF8;
@@ -60,8 +60,8 @@ namespace GitVersion.Core.Tests.Helpers
         public void WriteAllText(string file, string fileContents)
         {
             var path = Path.GetFullPath(file);
-            var encoding = fileSystem.ContainsKey(path)
-                ? EncodingHelper.DetectEncoding(fileSystem[path]) ?? Encoding.UTF8
+            var encoding = this.fileSystem.ContainsKey(path)
+                ? EncodingHelper.DetectEncoding(this.fileSystem[path]) ?? Encoding.UTF8
                 : Encoding.UTF8;
             WriteAllText(path, fileContents, encoding);
         }
@@ -69,7 +69,7 @@ namespace GitVersion.Core.Tests.Helpers
         public void WriteAllText(string file, string fileContents, Encoding encoding)
         {
             var path = Path.GetFullPath(file);
-            fileSystem[path] = encoding.GetBytes(fileContents);
+            this.fileSystem[path] = encoding.GetBytes(fileContents);
         }
 
         public IEnumerable<string> DirectoryEnumerateFiles(string directory, string searchPattern, SearchOption searchOption)
@@ -85,9 +85,9 @@ namespace GitVersion.Core.Tests.Helpers
         public Stream OpenRead(string file)
         {
             var path = Path.GetFullPath(file);
-            if (fileSystem.ContainsKey(path))
+            if (this.fileSystem.ContainsKey(path))
             {
-                var content = fileSystem[path];
+                var content = this.fileSystem[path];
                 return new MemoryStream(content);
             }
 
@@ -97,20 +97,20 @@ namespace GitVersion.Core.Tests.Helpers
         public void CreateDirectory(string directory)
         {
             var path = Path.GetFullPath(directory);
-            if (fileSystem.ContainsKey(path))
+            if (this.fileSystem.ContainsKey(path))
             {
-                fileSystem[path] = new byte[0];
+                this.fileSystem[path] = new byte[0];
             }
             else
             {
-                fileSystem.Add(path, new byte[0]);
+                this.fileSystem.Add(path, new byte[0]);
             }
         }
 
         public bool DirectoryExists(string directory)
         {
             var path = Path.GetFullPath(directory);
-            return fileSystem.ContainsKey(path);
+            return this.fileSystem.ContainsKey(path);
         }
 
         public long GetLastDirectoryWrite(string path)

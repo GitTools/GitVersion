@@ -9,15 +9,15 @@ namespace GitVersion
 
         private readonly LibGit2Sharp.RefSpec innerRefSpec;
 
-        internal RefSpec(LibGit2Sharp.RefSpec refSpec) => innerRefSpec = refSpec;
+        internal RefSpec(LibGit2Sharp.RefSpec refSpec) => this.innerRefSpec = refSpec;
         public int CompareTo(IRefSpec other) => comparerHelper.Compare(this, other);
         public bool Equals(IRefSpec other) => equalityHelper.Equals(this, other);
         public override bool Equals(object obj) => Equals((obj as IRefSpec)!);
         public override int GetHashCode() => equalityHelper.GetHashCode(this);
         public override string ToString() => Specification;
-        public string Specification => innerRefSpec.Specification;
-        public RefSpecDirection Direction => (RefSpecDirection)innerRefSpec.Direction;
-        public string Source => innerRefSpec.Source;
-        public string Destination => innerRefSpec.Destination;
+        public string Specification => this.innerRefSpec.Specification;
+        public RefSpecDirection Direction => (RefSpecDirection)this.innerRefSpec.Direction;
+        public string Source => this.innerRefSpec.Source;
+        public string Destination => this.innerRefSpec.Destination;
     }
 }

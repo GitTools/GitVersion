@@ -20,11 +20,11 @@ namespace GitVersion.Core.Tests.BuildAgents
         [SetUp]
         public void SetUp()
         {
-            sp = ConfigureServices(services =>
+            this.sp = ConfigureServices(services =>
             {
                 services.AddSingleton<BuildAgent>();
             });
-            buildServer = sp.GetService<IVariableProvider>();
+            this.buildServer = this.sp.GetService<IVariableProvider>();
         }
 
         [Test]
@@ -46,7 +46,7 @@ namespace GitVersion.Core.Tests.BuildAgents
             var config = new TestEffectiveConfiguration();
 
             var variables = this.buildServer.GetVariablesFor(semanticVersion, config, false);
-            var buildServer = sp.GetService<BuildAgent>();
+            var buildServer = this.sp.GetService<BuildAgent>();
             buildServer.WriteIntegration(writes.Add, variables);
 
             writes[1].ShouldBe("1.2.3-beta.1+5");

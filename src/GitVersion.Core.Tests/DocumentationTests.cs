@@ -19,7 +19,7 @@ namespace GitVersion.Core.Tests
         [OneTimeSetUp]
         public void OneTimeSetUp()
         {
-            docsDirectory = GetDocsDirectory();
+            this.docsDirectory = GetDocsDirectory();
         }
 
         [Test]
@@ -64,7 +64,7 @@ namespace GitVersion.Core.Tests
 
         private string ReadDocumentationFile(string relativeDocumentationFilePath)
         {
-            var documentationFilePath = Path.Combine(docsDirectory.FullName, relativeDocumentationFilePath);
+            var documentationFilePath = Path.Combine(this.docsDirectory.FullName, relativeDocumentationFilePath);
             // Normalize path separators and such.
             documentationFilePath = new FileInfo(documentationFilePath).FullName;
 

@@ -16,7 +16,7 @@ namespace GitVersion.Core.Tests
         public void NullMessageStringThrows()
         {
             // Act / Assert
-            Should.Throw<NullReferenceException>(() => new MergeMessage(null, config));
+            Should.Throw<NullReferenceException>(() => new MergeMessage(null, this.config));
         }
 
         [TestCase("")]
@@ -24,7 +24,7 @@ namespace GitVersion.Core.Tests
         public void EmptyMessageString(string message)
         {
             // Act
-            var sut = new MergeMessage(message, config);
+            var sut = new MergeMessage(message, this.config);
 
             // Assert
             sut.TargetBranch.ShouldBeNull();
@@ -73,7 +73,7 @@ namespace GitVersion.Core.Tests
             SemanticVersion expectedVersion)
         {
             // Act
-            var sut = new MergeMessage(message, config);
+            var sut = new MergeMessage(message, this.config);
 
             // Assert
             sut.FormatName.ShouldBe("Default");
@@ -104,7 +104,7 @@ namespace GitVersion.Core.Tests
             int? expectedPullRequestNumber)
         {
             // Act
-            var sut = new MergeMessage(message, config);
+            var sut = new MergeMessage(message, this.config);
 
             // Assert
             sut.FormatName.ShouldBe("GitHubPull");
@@ -138,7 +138,7 @@ namespace GitVersion.Core.Tests
             int? expectedPullRequestNumber)
         {
             // Act
-            var sut = new MergeMessage(message, config);
+            var sut = new MergeMessage(message, this.config);
 
             // Assert
             sut.FormatName.ShouldBe("BitBucketPull");
@@ -167,7 +167,7 @@ Merge in aaa/777 from release/2.2 to {MainBranch}
             int? expectedPullRequestNumber)
         {
             // Act
-            var sut = new MergeMessage(message, config);
+            var sut = new MergeMessage(message, this.config);
 
             // Assert
             sut.FormatName.ShouldBe("BitBucketPullv7");
@@ -197,7 +197,7 @@ Merge in aaa/777 from release/2.2 to {MainBranch}
             SemanticVersion expectedVersion)
         {
             // Act
-            var sut = new MergeMessage(message, config);
+            var sut = new MergeMessage(message, this.config);
 
             // Assert
             sut.FormatName.ShouldBe("SmartGit");
@@ -227,7 +227,7 @@ Merge in aaa/777 from release/2.2 to {MainBranch}
             SemanticVersion expectedVersion)
         {
             // Act
-            var sut = new MergeMessage(message, config);
+            var sut = new MergeMessage(message, this.config);
 
             // Assert
             sut.FormatName.ShouldBe("RemoteTracking");
@@ -254,7 +254,7 @@ Merge in aaa/777 from release/2.2 to {MainBranch}
             int? expectedPullRequestNumber)
         {
             // Act
-            var sut = new MergeMessage(message, config);
+            var sut = new MergeMessage(message, this.config);
 
             // Assert
             sut.FormatName.ShouldBeNull();
@@ -271,13 +271,13 @@ Merge in aaa/777 from release/2.2 to {MainBranch}
             // Arrange
             var message = "My custom message";
             var definition = "Mycustom";
-            config.MergeMessageFormats = new Dictionary<string, string>
+            this.config.MergeMessageFormats = new Dictionary<string, string>
             {
                 [definition] = message
             };
 
             // Act
-            var sut = new MergeMessage(message, config);
+            var sut = new MergeMessage(message, this.config);
 
             // Assert
             sut.FormatName.ShouldBe(definition);
@@ -294,7 +294,7 @@ Merge in aaa/777 from release/2.2 to {MainBranch}
             // Arrange
             var format = "My custom message";
             var definition = "Mycustom";
-            config.MergeMessageFormats = new Dictionary<string, string>
+            this.config.MergeMessageFormats = new Dictionary<string, string>
             {
                 ["Default2"] = "some example",
                 ["Default3"] = "another example",
@@ -302,7 +302,7 @@ Merge in aaa/777 from release/2.2 to {MainBranch}
             };
 
             // Act
-            var sut = new MergeMessage(format, config);
+            var sut = new MergeMessage(format, this.config);
 
             // Assert
             sut.FormatName.ShouldBe(definition);
@@ -319,7 +319,7 @@ Merge in aaa/777 from release/2.2 to {MainBranch}
             // Arrange
             var format = @"^Merged PR #(?<PullRequestNumber>\d+) into (?<TargetBranch>[^\s]*) from (?:(?<SourceBranch>[^\s]*))";
             var definition = "Mycustom";
-            config.MergeMessageFormats = new Dictionary<string, string>
+            this.config.MergeMessageFormats = new Dictionary<string, string>
             {
                 [definition] = format
             };
@@ -329,7 +329,7 @@ Merge in aaa/777 from release/2.2 to {MainBranch}
 
 
             // Act
-            var sut = new MergeMessage($"Merged PR #{pr} into {target} from {source}", config);
+            var sut = new MergeMessage($"Merged PR #{pr} into {target} from {source}", this.config);
 
             // Assert
             sut.FormatName.ShouldBe(definition);
@@ -346,7 +346,7 @@ Merge in aaa/777 from release/2.2 to {MainBranch}
             // Arrange
             var format = @"^Merge (branch|tag) '(?<SourceBranch>[^']*)'(?: into (?<TargetBranch>[^\s]*))*";
             var definition = "Mycustom";
-            config.MergeMessageFormats = new Dictionary<string, string>
+            this.config.MergeMessageFormats = new Dictionary<string, string>
             {
                 [definition] = format,
                 ["Default2"] = format,
@@ -354,7 +354,7 @@ Merge in aaa/777 from release/2.2 to {MainBranch}
             };
 
             // Act
-            var sut = new MergeMessage("Merge branch 'this'", config);
+            var sut = new MergeMessage("Merge branch 'this'", this.config);
 
             // Assert
             sut.FormatName.ShouldBe(definition);

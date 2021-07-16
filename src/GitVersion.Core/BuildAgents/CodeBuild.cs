@@ -18,7 +18,7 @@ namespace GitVersion.BuildAgents
 
         public void WithPropertyFile(string propertiesFileName)
         {
-            file = propertiesFileName;
+            this.file = propertiesFileName;
         }
 
         protected override string EnvironmentVariable => throw new NotSupportedException($"Accessing {nameof(EnvironmentVariable)} is not supported as {nameof(CodeBuild)} supports two environment variables for branch names.");
@@ -52,8 +52,8 @@ namespace GitVersion.BuildAgents
         public override void WriteIntegration(Action<string> writer, VersionVariables variables, bool updateBuildNumber = true)
         {
             base.WriteIntegration(writer, variables);
-            writer($"Outputting variables to '{file}' ... ");
-            File.WriteAllLines(file, GenerateBuildLogOutput(variables));
+            writer($"Outputting variables to '{this.file}' ... ");
+            File.WriteAllLines(this.file, GenerateBuildLogOutput(variables));
         }
 
         public override bool PreventFetch() => true;

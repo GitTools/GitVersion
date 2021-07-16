@@ -46,7 +46,7 @@ namespace GitVersion.VersionCalculation.Cache
 
         private string GetGitSystemHash()
         {
-            var dotGitDirectory = repositoryInfo.DotGitDirectory;
+            var dotGitDirectory = this.repositoryInfo.DotGitDirectory;
 
             // traverse the directory and get a list of files, use that for GetHash
             var contents = CalculateDirectoryContents(Path.Combine(dotGitDirectory, "refs"));
@@ -93,12 +93,12 @@ namespace GitVersion.VersionCalculation.Cache
                 // about the systems on which this code will run.
                 catch (UnauthorizedAccessException e)
                 {
-                    log.Error(e.Message);
+                    this.log.Error(e.Message);
                     continue;
                 }
                 catch (DirectoryNotFoundException e)
                 {
-                    log.Error(e.Message);
+                    this.log.Error(e.Message);
                     continue;
                 }
 
@@ -109,12 +109,12 @@ namespace GitVersion.VersionCalculation.Cache
                 }
                 catch (UnauthorizedAccessException e)
                 {
-                    log.Error(e.Message);
+                    this.log.Error(e.Message);
                     continue;
                 }
                 catch (DirectoryNotFoundException e)
                 {
-                    log.Error(e.Message);
+                    this.log.Error(e.Message);
                     continue;
                 }
 
@@ -128,7 +128,7 @@ namespace GitVersion.VersionCalculation.Cache
                     }
                     catch (IOException e)
                     {
-                        log.Error(e.Message);
+                        this.log.Error(e.Message);
                     }
                 }
 
@@ -146,7 +146,7 @@ namespace GitVersion.VersionCalculation.Cache
 
         private string GetRepositorySnapshotHash()
         {
-            var head = gitRepository.Head;
+            var head = this.gitRepository.Head;
             if (head.Tip == null)
             {
                 return head.Name.Canonical;
@@ -179,13 +179,13 @@ namespace GitVersion.VersionCalculation.Cache
         {
             // will return the same hash even when config file will be moved
             // from workingDirectory to rootProjectDirectory. It's OK. Config essentially is the same.
-            var configFilePath = configFileLocator.SelectConfigFilePath(options.Value, repositoryInfo);
-            if (!fileSystem.Exists(configFilePath))
+            var configFilePath = this.configFileLocator.SelectConfigFilePath(this.options.Value, this.repositoryInfo);
+            if (!this.fileSystem.Exists(configFilePath))
             {
                 return string.Empty;
             }
 
-            var configFileContent = fileSystem.ReadAllText(configFilePath);
+            var configFileContent = this.fileSystem.ReadAllText(configFilePath);
             return GetHash(configFileContent);
         }
 

@@ -13,7 +13,7 @@ namespace GitVersion.Core.Tests
         [SetUp]
         public void Setup()
         {
-            environment = new TestEnvironment();
+            this.environment = new TestEnvironment();
         }
 
         [Test]
@@ -22,7 +22,7 @@ namespace GitVersion.Core.Tests
             var propertyObject = new { };
             var target = "Some String without tokens";
             var expected = target;
-            var actual = target.FormatWith(propertyObject, environment);
+            var actual = target.FormatWith(propertyObject, this.environment);
             Assert.AreEqual(expected, actual);
         }
 
@@ -32,7 +32,7 @@ namespace GitVersion.Core.Tests
             var propertyObject = new { SomeProperty = "SomeValue" };
             var target = "{SomeProperty}";
             var expected = "SomeValue";
-            var actual = target.FormatWith(propertyObject, environment);
+            var actual = target.FormatWith(propertyObject, this.environment);
             Assert.AreEqual(expected, actual);
         }
 
@@ -42,61 +42,61 @@ namespace GitVersion.Core.Tests
             var propertyObject = new { SomeProperty = "SomeValue", AnotherProperty = "Other Value" };
             var target = "{SomeProperty} some text {AnotherProperty}";
             var expected = "SomeValue some text Other Value";
-            var actual = target.FormatWith(propertyObject, environment);
+            var actual = target.FormatWith(propertyObject, this.environment);
             Assert.AreEqual(expected, actual);
         }
 
         [Test]
         public void FormatWithEnvVarToken()
         {
-            environment.SetEnvironmentVariable("GIT_VERSION_TEST_VAR", "Env Var Value");
+            this.environment.SetEnvironmentVariable("GIT_VERSION_TEST_VAR", "Env Var Value");
             var propertyObject = new { };
             var target = "{env:GIT_VERSION_TEST_VAR}";
             var expected = "Env Var Value";
-            var actual = target.FormatWith(propertyObject, environment);
+            var actual = target.FormatWith(propertyObject, this.environment);
             Assert.AreEqual(expected, actual);
         }
 
         [Test]
         public void FormatWithEnvVarTokenWithFallback()
         {
-            environment.SetEnvironmentVariable("GIT_VERSION_TEST_VAR", "Env Var Value");
+            this.environment.SetEnvironmentVariable("GIT_VERSION_TEST_VAR", "Env Var Value");
             var propertyObject = new { };
             var target = "{env:GIT_VERSION_TEST_VAR ?? fallback}";
             var expected = "Env Var Value";
-            var actual = target.FormatWith(propertyObject, environment);
+            var actual = target.FormatWith(propertyObject, this.environment);
             Assert.AreEqual(expected, actual);
         }
 
         [Test]
         public void FormatWithUnsetEnvVarToken_WithFallback()
         {
-            environment.SetEnvironmentVariable("GIT_VERSION_UNSET_TEST_VAR", null);
+            this.environment.SetEnvironmentVariable("GIT_VERSION_UNSET_TEST_VAR", null);
             var propertyObject = new { };
             var target = "{env:GIT_VERSION_UNSET_TEST_VAR ?? fallback}";
             var expected = "fallback";
-            var actual = target.FormatWith(propertyObject, environment);
+            var actual = target.FormatWith(propertyObject, this.environment);
             Assert.AreEqual(expected, actual);
         }
 
         [Test]
         public void FormatWithUnsetEnvVarToken_WithoutFallback()
         {
-            environment.SetEnvironmentVariable("GIT_VERSION_UNSET_TEST_VAR", null);
+            this.environment.SetEnvironmentVariable("GIT_VERSION_UNSET_TEST_VAR", null);
             var propertyObject = new { };
             var target = "{env:GIT_VERSION_UNSET_TEST_VAR}";
-            Assert.Throws<ArgumentException>(() => target.FormatWith(propertyObject, environment));
+            Assert.Throws<ArgumentException>(() => target.FormatWith(propertyObject, this.environment));
         }
 
         [Test]
         public void FormatWithMultipleEnvVars()
         {
-            environment.SetEnvironmentVariable("GIT_VERSION_TEST_VAR_1", "Val-1");
-            environment.SetEnvironmentVariable("GIT_VERSION_TEST_VAR_2", "Val-2");
+            this.environment.SetEnvironmentVariable("GIT_VERSION_TEST_VAR_1", "Val-1");
+            this.environment.SetEnvironmentVariable("GIT_VERSION_TEST_VAR_2", "Val-2");
             var propertyObject = new { };
             var target = "{env:GIT_VERSION_TEST_VAR_1} and {env:GIT_VERSION_TEST_VAR_2}";
             var expected = "Val-1 and Val-2";
-            var actual = target.FormatWith(propertyObject, environment);
+            var actual = target.FormatWith(propertyObject, this.environment);
             Assert.AreEqual(expected, actual);
         }
 
@@ -107,7 +107,7 @@ namespace GitVersion.Core.Tests
             //Test the greediness of the regex in matching env: char
             var target = "{env:env:GIT_VERSION_TEST_VAR_1} and {env:DUMMY_VAR ?? fallback}";
             var expected = "{env:env:GIT_VERSION_TEST_VAR_1} and fallback";
-            var actual = target.FormatWith(propertyObject, environment);
+            var actual = target.FormatWith(propertyObject, this.environment);
             Assert.AreEqual(expected, actual);
         }
 
@@ -117,18 +117,18 @@ namespace GitVersion.Core.Tests
             var propertyObject = new { };
             //Test the greediness of the regex in matching env: and ?? chars
             var target = "{env:env:GIT_VERSION_TEST_VAR_1} and {env:DUMMY_VAR ??? fallback}";
-            var actual = target.FormatWith(propertyObject, environment);
+            var actual = target.FormatWith(propertyObject, this.environment);
             Assert.AreEqual(target, actual);
         }
 
         [Test]
         public void FormatWithSingleFallbackChar()
         {
-            environment.SetEnvironmentVariable("DUMMY_ENV_VAR", "Dummy-Val");
+            this.environment.SetEnvironmentVariable("DUMMY_ENV_VAR", "Dummy-Val");
             var propertyObject = new { };
             //Test the sanity of the regex when there is a grammar mismatch
             var target = "{en:DUMMY_ENV_VAR} and {env:DUMMY_ENV_VAR??fallback}";
-            var actual = target.FormatWith(propertyObject, environment);
+            var actual = target.FormatWith(propertyObject, this.environment);
             Assert.AreEqual(target, actual);
         }
 
@@ -138,17 +138,17 @@ namespace GitVersion.Core.Tests
             var propertyObject = new { SomeProperty = "Some Value" };
             var target = "{SomeProperty} and {env:DUMMY_ENV_VAR  ??  fallback}";
             var expected = "Some Value and fallback";
-            var actual = target.FormatWith(propertyObject, environment);
+            var actual = target.FormatWith(propertyObject, this.environment);
             Assert.AreEqual(expected, actual);
         }
 
         [Test]
         public void FormatEnvVar_WithFallback_QuotedAndEmpty()
         {
-            environment.SetEnvironmentVariable("ENV_VAR", null);
+            this.environment.SetEnvironmentVariable("ENV_VAR", null);
             var propertyObject = new { };
             var target = "{env:ENV_VAR ?? \"\"}";
-            var actual = target.FormatWith(propertyObject, environment);
+            var actual = target.FormatWith(propertyObject, this.environment);
             Assert.That(actual, Is.EqualTo(""));
         }
 
@@ -157,7 +157,7 @@ namespace GitVersion.Core.Tests
         {
             var propertyObject = new { Property = "Value" };
             var target = "{Property}";
-            var actual = target.FormatWith(propertyObject, environment);
+            var actual = target.FormatWith(propertyObject, this.environment);
             Assert.That(actual, Is.EqualTo("Value"));
         }
 
@@ -166,7 +166,7 @@ namespace GitVersion.Core.Tests
         {
             var propertyObject = new { Property = 42 };
             var target = "{Property}";
-            var actual = target.FormatWith(propertyObject, environment);
+            var actual = target.FormatWith(propertyObject, this.environment);
             Assert.That(actual, Is.EqualTo("42"));
         }
 
@@ -175,7 +175,7 @@ namespace GitVersion.Core.Tests
         {
             var propertyObject = new { Property = (object)null };
             var target = "{Property}";
-            var actual = target.FormatWith(propertyObject, environment);
+            var actual = target.FormatWith(propertyObject, this.environment);
             Assert.That(actual, Is.EqualTo(""));
         }
 
@@ -184,7 +184,7 @@ namespace GitVersion.Core.Tests
         {
             var propertyObject = new { Property = (int?)null };
             var target = "{Property}";
-            var actual = target.FormatWith(propertyObject, environment);
+            var actual = target.FormatWith(propertyObject, this.environment);
             Assert.That(actual, Is.EqualTo(""));
         }
 
@@ -193,7 +193,7 @@ namespace GitVersion.Core.Tests
         {
             var propertyObject = new { Property = "Value" };
             var target = "{Property ?? fallback}";
-            var actual = target.FormatWith(propertyObject, environment);
+            var actual = target.FormatWith(propertyObject, this.environment);
             Assert.That(actual, Is.EqualTo("Value"));
         }
 
@@ -202,7 +202,7 @@ namespace GitVersion.Core.Tests
         {
             var propertyObject = new { Property = 42 };
             var target = "{Property ?? fallback}";
-            var actual = target.FormatWith(propertyObject, environment);
+            var actual = target.FormatWith(propertyObject, this.environment);
             Assert.That(actual, Is.EqualTo("42"));
         }
 
@@ -211,7 +211,7 @@ namespace GitVersion.Core.Tests
         {
             var propertyObject = new { Property = (object)null };
             var target = "{Property ?? fallback}";
-            var actual = target.FormatWith(propertyObject, environment);
+            var actual = target.FormatWith(propertyObject, this.environment);
             Assert.That(actual, Is.EqualTo("fallback"));
         }
 
@@ -220,7 +220,7 @@ namespace GitVersion.Core.Tests
         {
             var propertyObject = new { Property = (int?)null };
             var target = "{Property ?? fallback}";
-            var actual = target.FormatWith(propertyObject, environment);
+            var actual = target.FormatWith(propertyObject, this.environment);
             Assert.That(actual, Is.EqualTo("fallback"));
         }
 
@@ -229,7 +229,7 @@ namespace GitVersion.Core.Tests
         {
             var propertyObject = new { Property = (object)null };
             var target = "{Property ?? \"fallback\"}";
-            var actual = target.FormatWith(propertyObject, environment);
+            var actual = target.FormatWith(propertyObject, this.environment);
             Assert.That(actual, Is.EqualTo("fallback"));
         }
 
@@ -238,7 +238,7 @@ namespace GitVersion.Core.Tests
         {
             var propertyObject = new { Property = (object)null };
             var target = "{Property ?? \" fallback \"}";
-            var actual = target.FormatWith(propertyObject, environment);
+            var actual = target.FormatWith(propertyObject, this.environment);
             Assert.That(actual, Is.EqualTo(" fallback "));
         }
 
@@ -247,7 +247,7 @@ namespace GitVersion.Core.Tests
         {
             var propertyObject = new { Property = (object)null };
             var target = "{Property ?? \"\"}";
-            var actual = target.FormatWith(propertyObject, environment);
+            var actual = target.FormatWith(propertyObject, this.environment);
             Assert.That(actual, Is.EqualTo(""));
         }
     }

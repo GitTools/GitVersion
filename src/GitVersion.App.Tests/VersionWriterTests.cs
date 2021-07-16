@@ -21,7 +21,7 @@ namespace GitVersion.App.Tests
                 services.AddModule(new GitVersionAppModule());
             });
 
-            versionWriter = sp.GetService<IVersionWriter>();
+            this.versionWriter = sp.GetService<IVersionWriter>();
         }
         [Test]
         public void WriteVersionShouldWriteFileVersionWithNoPrereleaseTag()
@@ -29,7 +29,7 @@ namespace GitVersion.App.Tests
             var asm = GenerateAssembly(new Version(1, 0, 0), "");
 
             string version = null;
-            versionWriter.WriteTo(asm, v => version = v);
+            this.versionWriter.WriteTo(asm, v => version = v);
 
             Assert.IsNotNull(asm);
             Assert.AreEqual("1.0.0", version);
@@ -41,7 +41,7 @@ namespace GitVersion.App.Tests
             var asm = GenerateAssembly(new Version(1, 0, 0), "-beta0004");
 
             string version = null;
-            versionWriter.WriteTo(asm, v => version = v);
+            this.versionWriter.WriteTo(asm, v => version = v);
 
             Assert.IsNotNull(asm);
             Assert.AreEqual("1.0.0-beta0004", version);

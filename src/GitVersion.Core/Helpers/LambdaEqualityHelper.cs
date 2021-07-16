@@ -31,7 +31,7 @@ namespace GitVersion.Helpers
                 return false;
             }
 
-            foreach (var accessor in equalityContributorAccessors)
+            foreach (var accessor in this.equalityContributorAccessors)
             {
                 if (!Equals(accessor(instance), accessor(other)))
                 {
@@ -48,7 +48,7 @@ namespace GitVersion.Helpers
 
             unchecked
             {
-                foreach (var accessor in equalityContributorAccessors)
+                foreach (var accessor in this.equalityContributorAccessors)
                 {
                     var item = accessor(instance);
                     hashCode = (hashCode * 397) ^ (item != null ? item.GetHashCode() : 0);

@@ -18,7 +18,7 @@ namespace GitTools.Testing
 
         protected RepositoryFixtureBase(IRepository repository)
         {
-            _sequenceDiagram = new SequenceDiagram();
+            this._sequenceDiagram = new SequenceDiagram();
             Repository = repository;
             Repository.Config.Set("user.name", "Test");
             Repository.Config.Set("user.email", "test@email.com");
@@ -33,7 +33,7 @@ namespace GitTools.Testing
 
         public SequenceDiagram SequenceDiagram
         {
-            get { return _sequenceDiagram; }
+            get { return this._sequenceDiagram; }
         }
 
         /// <summary>
@@ -53,10 +53,10 @@ namespace GitTools.Testing
                     e.Message);
             }
 
-            _sequenceDiagram.End();
+            this._sequenceDiagram.End();
             Console.WriteLine("**Visualisation of test:**");
             Console.WriteLine(string.Empty);
-            Console.WriteLine(_sequenceDiagram.GetDiagram());
+            Console.WriteLine(this._sequenceDiagram.GetDiagram());
         }
 
         public void Checkout(string branch)
@@ -77,20 +77,20 @@ namespace GitTools.Testing
 
         public void ApplyTag(string tag)
         {
-            _sequenceDiagram.ApplyTag(tag, Repository.Head.FriendlyName);
+            this._sequenceDiagram.ApplyTag(tag, Repository.Head.FriendlyName);
             Repository.ApplyTag(tag);
         }
 
         public void BranchTo(string branchName, string @as = null)
         {
-            _sequenceDiagram.BranchTo(branchName, Repository.Head.FriendlyName, @as);
+            this._sequenceDiagram.BranchTo(branchName, Repository.Head.FriendlyName, @as);
             var branch = Repository.CreateBranch(branchName);
             Commands.Checkout(Repository, branch);
         }
 
         public void BranchToFromTag(string branchName, string fromTag, string onBranch, string @as = null)
         {
-            _sequenceDiagram.BranchToFromTag(branchName, fromTag, onBranch, @as);
+            this._sequenceDiagram.BranchToFromTag(branchName, fromTag, onBranch, @as);
             var branch = Repository.CreateBranch(branchName);
             Commands.Checkout(Repository, branch);
         }
@@ -98,7 +98,7 @@ namespace GitTools.Testing
         public void MakeACommit()
         {
             var to = Repository.Head.FriendlyName;
-            _sequenceDiagram.MakeACommit(to);
+            this._sequenceDiagram.MakeACommit(to);
             Repository.MakeACommit();
         }
 
@@ -107,7 +107,7 @@ namespace GitTools.Testing
         /// </summary>
         public void MergeNoFF(string mergeSource)
         {
-            _sequenceDiagram.Merge(mergeSource, Repository.Head.FriendlyName);
+            this._sequenceDiagram.Merge(mergeSource, Repository.Head.FriendlyName);
             Repository.MergeNoFF(mergeSource, Generate.SignatureNow());
         }
 

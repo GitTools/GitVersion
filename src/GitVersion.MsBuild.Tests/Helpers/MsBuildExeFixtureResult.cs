@@ -17,7 +17,7 @@ namespace GitVersion.MsBuild.Tests.Helpers
         public string ProjectPath { get; set; }
         public void Dispose()
         {
-            fixture.Dispose();
+            this.fixture.Dispose();
         }
     }
 }

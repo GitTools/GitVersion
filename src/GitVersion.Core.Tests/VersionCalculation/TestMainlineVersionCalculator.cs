@@ -18,7 +18,7 @@ namespace GitVersion.Core.Tests.VersionCalculation
 
         public SemanticVersionBuildMetaData CreateVersionBuildMetaData(ICommit baseVersionSource)
         {
-            return metaData;
+            return this.metaData;
         }
     }
 }

@@ -6,7 +6,7 @@ namespace GitVersion.VersionCalculation
     public class VersionStrategyBase : IVersionStrategy
     {
         private readonly Lazy<GitVersionContext> versionContext;
-        protected GitVersionContext Context => versionContext.Value;
+        protected GitVersionContext Context => this.versionContext.Value;
 
         protected VersionStrategyBase(Lazy<GitVersionContext> versionContext)
         {

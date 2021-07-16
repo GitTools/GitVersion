@@ -21,40 +21,40 @@ namespace GitVersion.Core.Tests.BuildAgents
         [SetUp]
         public void SetUp()
         {
-            sp = ConfigureServices(services =>
+            this.sp = ConfigureServices(services =>
             {
                 services.AddSingleton<CodeBuild>();
             });
-            environment = sp.GetService<IEnvironment>();
-            buildServer = sp.GetService<CodeBuild>();
+            this.environment = this.sp.GetService<IEnvironment>();
+            this.buildServer = this.sp.GetService<CodeBuild>();
         }
 
         [Test]
         public void CorrectlyIdentifiesCodeBuildPresenceFromSourceVersion()
         {
-            environment.SetEnvironmentVariable(CodeBuild.SourceVersionEnvironmentVariableName, "a value");
-            buildServer.CanApplyToCurrentContext().ShouldBe(true);
+            this.environment.SetEnvironmentVariable(CodeBuild.SourceVersionEnvironmentVariableName, "a value");
+            this.buildServer.CanApplyToCurrentContext().ShouldBe(true);
         }
 
         [Test]
         public void PicksUpBranchNameFromEnvironmentFromSourceVersion()
         {
-            environment.SetEnvironmentVariable(CodeBuild.SourceVersionEnvironmentVariableName, $"refs/heads/{MainBranch}");
-            buildServer.GetCurrentBranch(false).ShouldBe($"refs/heads/{MainBranch}");
+            this.environment.SetEnvironmentVariable(CodeBuild.SourceVersionEnvironmentVariableName, $"refs/heads/{MainBranch}");
+            this.buildServer.GetCurrentBranch(false).ShouldBe($"refs/heads/{MainBranch}");
         }
 
         [Test]
         public void CorrectlyIdentifiesCodeBuildPresenceFromWebHook()
         {
-            environment.SetEnvironmentVariable(CodeBuild.WebHookEnvironmentVariableName, "a value");
-            buildServer.CanApplyToCurrentContext().ShouldBe(true);
+            this.environment.SetEnvironmentVariable(CodeBuild.WebHookEnvironmentVariableName, "a value");
+            this.buildServer.CanApplyToCurrentContext().ShouldBe(true);
         }
 
         [Test]
         public void PicksUpBranchNameFromEnvironmentFromWebHook()
         {
-            environment.SetEnvironmentVariable(CodeBuild.WebHookEnvironmentVariableName, $"refs/heads/{MainBranch}");
-            buildServer.GetCurrentBranch(false).ShouldBe($"refs/heads/{MainBranch}");
+            this.environment.SetEnvironmentVariable(CodeBuild.WebHookEnvironmentVariableName, $"refs/heads/{MainBranch}");
+            this.buildServer.GetCurrentBranch(false).ShouldBe($"refs/heads/{MainBranch}");
         }
 
         [Test]
@@ -90,13 +90,13 @@ namespace GitVersion.Core.Tests.BuildAgents
 
             var config = new TestEffectiveConfiguration();
 
-            var variableProvider = sp.GetService<IVariableProvider>();
+            var variableProvider = this.sp.GetService<IVariableProvider>();
 
             var variables = variableProvider.GetVariablesFor(semanticVersion, config, false);
 
-            buildServer.WithPropertyFile(file);
+            this.buildServer.WithPropertyFile(file);
 
-            buildServer.WriteIntegration(writes.Add, variables);
+            this.buildServer.WriteIntegration(writes.Add, variables);
 
             writes[1].ShouldBe("1.2.3-beta.1+5");
 

@@ -18,7 +18,7 @@ namespace GitVersion.App.Tests
         [SetUp]
         public void Setup()
         {
-            wixVersionFileName = WixVersionFileUpdater.WixVersionFileName;
+            this.wixVersionFileName = WixVersionFileUpdater.WixVersionFileName;
         }
 
         [Test]
@@ -29,7 +29,7 @@ namespace GitVersion.App.Tests
             fixture.MakeACommit();
 
             GitVersionHelper.ExecuteIn(fixture.RepositoryPath, arguments: " /updatewixversionfile");
-            Assert.IsTrue(File.Exists(Path.Combine(fixture.RepositoryPath, wixVersionFileName)));
+            Assert.IsTrue(File.Exists(Path.Combine(fixture.RepositoryPath, this.wixVersionFileName)));
         }
 
         [Test]
@@ -44,7 +44,7 @@ namespace GitVersion.App.Tests
 
             GitVersionHelper.ExecuteIn(fixture.RepositoryPath, arguments: " /updatewixversionfile");
 
-            var gitVersionVarsInWix = GetGitVersionVarsInWixFile(Path.Combine(fixture.RepositoryPath, wixVersionFileName));
+            var gitVersionVarsInWix = GetGitVersionVarsInWixFile(Path.Combine(fixture.RepositoryPath, this.wixVersionFileName));
             var gitVersionVars = VersionVariables.AvailableVariables;
 
             Assert.AreEqual(gitVersionVars.Count(), gitVersionVarsInWix.Count);
@@ -62,7 +62,7 @@ namespace GitVersion.App.Tests
 
             GitVersionHelper.ExecuteIn(fixture.RepositoryPath, arguments: " /updatewixversionfile");
 
-            var gitVersionVarsInWix = GetGitVersionVarsInWixFile(Path.Combine(fixture.RepositoryPath, wixVersionFileName));
+            var gitVersionVarsInWix = GetGitVersionVarsInWixFile(Path.Combine(fixture.RepositoryPath, this.wixVersionFileName));
             var gitVersionVars = VersionVariables.AvailableVariables;
 
             foreach (var variable in gitVersionVars)

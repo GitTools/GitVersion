@@ -18,14 +18,14 @@ namespace GitVersion
 
         public void Write()
         {
-            WriteTo(console.WriteLine);
+            WriteTo(this.console.WriteLine);
         }
 
         public void WriteTo(Action<string> writeAction)
         {
             var version = string.Empty;
             var assembly = Assembly.GetExecutingAssembly();
-            versionWriter.WriteTo(assembly, v => version = v);
+            this.versionWriter.WriteTo(assembly, v => version = v);
 
             var args = ArgumentList();
             var nl = System.Environment.NewLine;

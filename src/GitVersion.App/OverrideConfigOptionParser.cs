@@ -69,13 +69,13 @@ namespace GitVersion
                     unwrapped = pi.PropertyType;
 
                 if (unwrapped == typeof(string))
-                    pi.SetValue(_lazyConfig.Value, unwrappedText);
+                    pi.SetValue(this._lazyConfig.Value, unwrappedText);
                 else if (unwrapped.IsEnum)
                 {
                     try
                     {
                         var parsedEnum = Enum.Parse(unwrapped, unwrappedText);
-                        pi.SetValue(_lazyConfig.Value, parsedEnum);
+                        pi.SetValue(this._lazyConfig.Value, parsedEnum);
                     }
                     catch (ArgumentException)
                     {
@@ -92,14 +92,14 @@ namespace GitVersion
                 else if (unwrapped == typeof(int))
                 {
                     if (int.TryParse(unwrappedText, out int parsedInt))
-                        pi.SetValue(_lazyConfig.Value, parsedInt);
+                        pi.SetValue(this._lazyConfig.Value, parsedInt);
                     else
                         throw new WarningException($"Could not parse /overrideconfig option: {key}={value}. Ensure that 'value' is valid integer number.");
                 }
                 else if (unwrapped == typeof(bool))
                 {
                     if (bool.TryParse(unwrappedText, out bool parsedBool))
-                        pi.SetValue(_lazyConfig.Value, parsedBool);
+                        pi.SetValue(this._lazyConfig.Value, parsedBool);
                     else
                         throw new WarningException($"Could not parse /overrideconfig option: {key}={value}. Ensure that 'value' is 'true' or 'false'.");
                 }
@@ -108,7 +108,7 @@ namespace GitVersion
 
         internal Config GetConfig()
         {
-            return _lazyConfig.IsValueCreated ? _lazyConfig.Value : null;
+            return this._lazyConfig.IsValueCreated ? this._lazyConfig.Value : null;
         }
     }
 }

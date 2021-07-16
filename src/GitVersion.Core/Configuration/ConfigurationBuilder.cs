@@ -18,7 +18,7 @@ namespace GitVersion.Configuration
         {
             if (config == null) throw new ArgumentNullException(nameof(config));
 
-            _overrides.Add(config);
+            this._overrides.Add(config);
             return this;
         }
 
@@ -27,7 +27,7 @@ namespace GitVersion.Configuration
         {
             var config = CreateDefaultConfiguration();
 
-            foreach (var overrideConfig in _overrides)
+            foreach (var overrideConfig in this._overrides)
             {
                 ApplyOverrides(config, overrideConfig);
             }

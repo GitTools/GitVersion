@@ -21,7 +21,7 @@ namespace GitVersion.MsBuild.Tests.Helpers
 
         public void WithEnv(params KeyValuePair<string, string>[] envs)
         {
-            environmentVariables = envs;
+            this.environmentVariables = envs;
         }
 
         public MsBuildTaskFixtureResult<T> Execute<T>(T task) where T : GitVersionTaskBase
@@ -33,13 +33,13 @@ namespace GitVersion.MsBuild.Tests.Helpers
                 task.BuildEngine = buildEngine;
 
                 var versionFile = Path.Combine(task.SolutionDirectory, "gitversion.json");
-                fixture.WriteVersionVariables(versionFile);
+                this.fixture.WriteVersionVariables(versionFile);
 
                 task.VersionFile = versionFile;
 
                 var result = task.Execute();
 
-                return new MsBuildTaskFixtureResult<T>(fixture)
+                return new MsBuildTaskFixtureResult<T>(this.fixture)
                 {
                     Success = result,
                     Task = task,
@@ -54,7 +54,7 @@ namespace GitVersion.MsBuild.Tests.Helpers
         private T UsingEnv<T>(Func<T> func)
         {
             ResetEnvironment();
-            SetEnvironmentVariables(environmentVariables);
+            SetEnvironmentVariables(this.environmentVariables);
 
             try
             {

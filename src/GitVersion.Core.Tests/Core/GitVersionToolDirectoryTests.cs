@@ -18,15 +18,15 @@ namespace GitVersion.Core.Tests
         [SetUp]
         public void SetUp()
         {
-            workDirectory = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
-            gitDirectory = Repository.Init(workDirectory).TrimEnd(Path.DirectorySeparatorChar);
-            Assert.NotNull(gitDirectory);
+            this.workDirectory = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
+            this.gitDirectory = Repository.Init(this.workDirectory).TrimEnd(Path.DirectorySeparatorChar);
+            Assert.NotNull(this.gitDirectory);
         }
 
         [TearDown]
         public void Cleanup()
         {
-            Directory.Delete(workDirectory, true);
+            Directory.Delete(this.workDirectory, true);
         }
 
         [Test]
@@ -57,7 +57,7 @@ namespace GitVersion.Core.Tests
         [Test]
         public void FindsGitDirectoryInParent()
         {
-            var childDir = Path.Combine(workDirectory, "child");
+            var childDir = Path.Combine(this.workDirectory, "child");
             Directory.CreateDirectory(childDir);
 
             try

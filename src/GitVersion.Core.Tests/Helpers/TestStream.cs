@@ -22,40 +22,40 @@ namespace GitVersion.Core.Tests.Helpers
 
         public override void Flush()
         {
-            underlying.Position = 0;
-            var readToEnd = new StreamReader(underlying).ReadToEnd();
-            testFileSystem.WriteAllText(path, readToEnd);
+            this.underlying.Position = 0;
+            var readToEnd = new StreamReader(this.underlying).ReadToEnd();
+            this.testFileSystem.WriteAllText(this.path, readToEnd);
         }
 
         public override long Seek(long offset, SeekOrigin origin)
         {
-            return underlying.Seek(offset, origin);
+            return this.underlying.Seek(offset, origin);
         }
 
         public override void SetLength(long value)
         {
-            underlying.SetLength(value);
+            this.underlying.SetLength(value);
         }
 
         public override int Read(byte[] buffer, int offset, int count)
         {
-            return underlying.Read(buffer, offset, count);
+            return this.underlying.Read(buffer, offset, count);
         }
 
         public override void Write(byte[] buffer, int offset, int count)
         {
-            underlying.Write(buffer, offset, count);
+            this.underlying.Write(buffer, offset, count);
         }
 
-        public override bool CanRead => underlying.CanRead;
-        public override bool CanSeek => underlying.CanSeek;
-        public override bool CanWrite => underlying.CanWrite;
-        public override long Length => underlying.Length;
+        public override bool CanRead => this.underlying.CanRead;
+        public override bool CanSeek => this.underlying.CanSeek;
+        public override bool CanWrite => this.underlying.CanWrite;
+        public override long Length => this.underlying.Length;
 
         public override long Position
         {
-            get => underlying.Position;
-            set => underlying.Position = value;
+            get => this.underlying.Position;
+            set => this.underlying.Position = value;
         }
     }
 }
