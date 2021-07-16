@@ -8,7 +8,7 @@ namespace GitTools.Testing
     /// </summary>
     public static class VirtualTime
     {
-        static DateTimeOffset _simulatedTime = DateTimeOffset.Now.AddHours(-1);
+        private static DateTimeOffset _simulatedTime = DateTimeOffset.Now.AddHours(-1);
 
         /// <summary>
         /// Increments by 1 minute each time it is called
