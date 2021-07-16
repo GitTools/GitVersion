@@ -10,7 +10,7 @@ namespace GitVersion.Logging
     public sealed class Log : ILog
     {
         private IEnumerable<ILogAppender> appenders;
-        private readonly Regex obscurePasswordRegex = new Regex("(https?://)(.+)(:.+@)", RegexOptions.Compiled);
+        private readonly Regex obscurePasswordRegex = new("(https?://)(.+)(:.+@)", RegexOptions.Compiled);
         private readonly StringBuilder sb;
         private string indent = string.Empty;
 

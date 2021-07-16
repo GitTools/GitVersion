@@ -8,7 +8,7 @@ namespace GitVersion.Core.Tests.Helpers
 {
     public class TestFileSystem : IFileSystem
     {
-        private readonly Dictionary<string, byte[]> fileSystem = new Dictionary<string, byte[]>(StringComparerUtils.OsDependentComparer);
+        private readonly Dictionary<string, byte[]> fileSystem = new(StringComparerUtils.OsDependentComparer);
 
         public void Copy(string from, string to, bool overwrite)
         {
