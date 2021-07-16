@@ -92,10 +92,7 @@ namespace GitVersion
             return v1.Equals(v2);
         }
 
-        public static bool operator !=(SemanticVersion? v1, SemanticVersion? v2)
-        {
-            return !(v1 == v2);
-        }
+        public static bool operator !=(SemanticVersion? v1, SemanticVersion? v2) => !(v1 == v2);
 
         public static bool operator >(SemanticVersion v1, SemanticVersion v2)
         {

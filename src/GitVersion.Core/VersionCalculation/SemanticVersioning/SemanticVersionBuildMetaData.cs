@@ -105,15 +105,11 @@ namespace GitVersion
             };
         }
 
-        public static bool operator ==(SemanticVersionBuildMetaData? left, SemanticVersionBuildMetaData? right)
-        {
-            return Equals(left, right);
-        }
+        public static bool operator ==(SemanticVersionBuildMetaData? left, SemanticVersionBuildMetaData? right) =>
+            Equals(left, right);
 
-        public static bool operator !=(SemanticVersionBuildMetaData? left, SemanticVersionBuildMetaData? right)
-        {
-            return !Equals(left, right);
-        }
+        public static bool operator !=(SemanticVersionBuildMetaData? left, SemanticVersionBuildMetaData? right) =>
+            !Equals(left, right);
 
         public static implicit operator string?(SemanticVersionBuildMetaData? preReleaseTag)
         {
