@@ -25,10 +25,7 @@ namespace GitVersion.Core.Tests.BuildAgents
         [SetUp]
         public void SetUp()
         {
-            this.sp = ConfigureServices(services =>
-            {
-                services.AddSingleton<Jenkins>();
-            });
+            this.sp = ConfigureServices(services => services.AddSingleton<Jenkins>());
             this.environment = this.sp.GetService<IEnvironment>();
             this.buildServer = this.sp.GetService<Jenkins>();
         }

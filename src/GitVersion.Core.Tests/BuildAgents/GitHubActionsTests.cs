@@ -19,10 +19,7 @@ namespace GitVersion.Core.Tests.BuildAgents
         [SetUp]
         public void SetUp()
         {
-            var sp = ConfigureServices(services =>
-            {
-                services.AddSingleton<GitHubActions>();
-            });
+            var sp = ConfigureServices(services => services.AddSingleton<GitHubActions>());
             this.environment = sp.GetService<IEnvironment>();
             this.buildServer = sp.GetService<GitHubActions>();
             this.environment.SetEnvironmentVariable(GitHubActions.EnvironmentVariableName, "true");
@@ -140,7 +137,7 @@ namespace GitVersion.Core.Tests.BuildAgents
             this.environment.GetEnvironmentVariable("GitVersion_Major").ShouldBeNullOrWhiteSpace();
 
             // Act
-            this.buildServer.WriteIntegration(s => { list.Add(s); }, vars);
+            this.buildServer.WriteIntegration(s => list.Add(s), vars);
 
             // Assert
             var expected = new List<string>
@@ -176,7 +173,7 @@ namespace GitVersion.Core.Tests.BuildAgents
             this.environment.GetEnvironmentVariable("GitVersion_Major").ShouldBeNullOrWhiteSpace();
 
             // Act
-            this.buildServer.WriteIntegration(s => { list.Add(s); }, vars, false);
+            this.buildServer.WriteIntegration(s => list.Add(s), vars, false);
 
             list.ShouldNotContain(x => x.StartsWith("Executing GenerateSetVersionMessage for "));
         }

@@ -16,10 +16,7 @@ namespace GitVersion.App.Tests
 
         public VersionWriterTests()
         {
-            var sp = ConfigureServices(services =>
-            {
-                services.AddModule(new GitVersionAppModule());
-            });
+            var sp = ConfigureServices(services => services.AddModule(new GitVersionAppModule()));
 
             this.versionWriter = sp.GetService<IVersionWriter>();
         }

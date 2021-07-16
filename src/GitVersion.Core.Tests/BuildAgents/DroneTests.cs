@@ -17,10 +17,7 @@ namespace GitVersion.Core.Tests.BuildAgents
         [SetUp]
         public void SetUp()
         {
-            this.sp = ConfigureServices(services =>
-            {
-                services.AddSingleton<Drone>();
-            });
+            this.sp = ConfigureServices(services => services.AddSingleton<Drone>());
             this.environment = this.sp.GetService<IEnvironment>();
             this.buildServer = this.sp.GetService<Drone>();
             this.environment.SetEnvironmentVariable("DRONE", "true");

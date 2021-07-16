@@ -13,10 +13,7 @@ namespace GitVersion.Core.Tests.BuildAgents
         [SetUp]
         public void SetUp()
         {
-            var sp = ConfigureServices(services =>
-            {
-                services.AddSingleton<MyGet>();
-            });
+            var sp = ConfigureServices(services => services.AddSingleton<MyGet>());
             this.buildServer = sp.GetService<MyGet>();
         }
 

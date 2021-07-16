@@ -20,10 +20,7 @@ namespace GitVersion.Core.Tests.BuildAgents
         [SetUp]
         public void SetUp()
         {
-            this.sp = ConfigureServices(services =>
-            {
-                services.AddSingleton<GitLabCi>();
-            });
+            this.sp = ConfigureServices(services => services.AddSingleton<GitLabCi>());
             this.buildServer = this.sp.GetService<GitLabCi>();
         }
 

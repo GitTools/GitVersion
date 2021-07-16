@@ -286,10 +286,7 @@ namespace GitVersion
         }
 
         public Dictionary<string, List<IBranch>> GetMainlineBranches(ICommit commit, IEnumerable<KeyValuePair<string, BranchConfig>> mainlineBranchConfigs) => this.repository.Branches
-                .Where(b =>
-                {
-                    return mainlineBranchConfigs.Any(c => Regex.IsMatch(b.Name.Friendly, c.Value.Regex));
-                })
+                .Where(b => mainlineBranchConfigs.Any(c => Regex.IsMatch(b.Name.Friendly, c.Value.Regex)))
                 .Select(b => new
                 {
                     MergeBase = FindMergeBase(b.Tip, commit),

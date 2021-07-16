@@ -12,10 +12,7 @@ namespace GitVersion.Core.Tests.BuildAgents
         private IServiceProvider sp;
 
         [SetUp]
-        public void SetUp() => this.sp = ConfigureServices(services =>
-                             {
-                                 services.AddSingleton<ContinuaCi>();
-                             });
+        public void SetUp() => this.sp = ConfigureServices(services => services.AddSingleton<ContinuaCi>());
 
         [Test]
         public void GenerateBuildVersion()

@@ -13,10 +13,7 @@ namespace GitVersion
 
         public void Add(string name, string canonicalRefNameOrObjectish, bool allowOverwrite = false) => this.innerCollection.Add(name, canonicalRefNameOrObjectish, allowOverwrite);
 
-        public void UpdateTarget(IReference directRef, IObjectId targetId) => RepositoryExtensions.RunSafe(() =>
-                                                                            {
-                                                                                this.innerCollection.UpdateTarget((Reference)directRef, (ObjectId)targetId);
-                                                                            });
+        public void UpdateTarget(IReference directRef, IObjectId targetId) => RepositoryExtensions.RunSafe(() => this.innerCollection.UpdateTarget((Reference)directRef, (ObjectId)targetId));
 
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 

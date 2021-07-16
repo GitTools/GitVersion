@@ -20,10 +20,7 @@ namespace GitVersion
 
         private IHostBuilder CreateHostBuilder(string[] args) =>
             new HostBuilder()
-                .ConfigureAppConfiguration((_, configApp) =>
-                {
-                    configApp.AddCommandLine(args);
-                })
+                .ConfigureAppConfiguration((_, configApp) => configApp.AddCommandLine(args))
                 .ConfigureServices((_, services) =>
                 {
                     services.AddModule(new GitVersionCoreModule());

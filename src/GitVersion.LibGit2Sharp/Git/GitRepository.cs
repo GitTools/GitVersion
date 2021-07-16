@@ -182,14 +182,8 @@ namespace GitVersion
                 throw new Exception("There was an unknown problem with the Git repository you provided", ex);
             }
         }
-        public void Checkout(string commitOrBranchSpec) => RepositoryExtensions.RunSafe(() =>
-                                                         {
-                                                             Commands.Checkout(repositoryInstance, commitOrBranchSpec);
-                                                         });
-        public void Fetch(string remote, IEnumerable<string> refSpecs, AuthenticationInfo auth, string logMessage) => RepositoryExtensions.RunSafe(() =>
-                                                                                                                    {
-                                                                                                                        Commands.Fetch((Repository)repositoryInstance, remote, refSpecs, GetFetchOptions(auth), logMessage);
-                                                                                                                    });
+        public void Checkout(string commitOrBranchSpec) => RepositoryExtensions.RunSafe(() => Commands.Checkout(repositoryInstance, commitOrBranchSpec));
+        public void Fetch(string remote, IEnumerable<string> refSpecs, AuthenticationInfo auth, string logMessage) => RepositoryExtensions.RunSafe(() => Commands.Fetch((Repository)repositoryInstance, remote, refSpecs, GetFetchOptions(auth), logMessage));
         internal static string Discover(string path) => Repository.Discover(path);
 
         private static FetchOptions GetFetchOptions(AuthenticationInfo auth) => new()
