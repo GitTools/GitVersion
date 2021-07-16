@@ -464,7 +464,7 @@ namespace GitVersion
             {
                 IncludeReachableFrom = branch
             };
-            var commitCollection = this.repository.Commits.QueryBy(filter);
+            var commitCollection = repository.Commits.QueryBy(filter);
 
             return commitCollection.Where(c => c.Sha == commit.Sha);
         }
