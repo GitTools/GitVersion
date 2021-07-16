@@ -163,3 +163,6 @@ dotnet_diagnostic.IDE0041.severity = warning
 
 # CA1825: Avoid zero-length array allocations
 dotnet_diagnostic.CA1825.severity = warning
+
+# CA1822: Mark members as static
+dotnet_diagnostic.CA1822.severity = warning

@@ -469,7 +469,7 @@ namespace GitVersion.Core.Tests.IntegrationTests
             fixture.AssertFullSemver("2.0.0-beta.4", config);
         }
 
-        public void ReleaseBranchShouldUseBranchNameVersionDespiteBumpInPreviousCommit()
+        public static void ReleaseBranchShouldUseBranchNameVersionDespiteBumpInPreviousCommit()
         {
             using var fixture = new EmptyRepositoryFixture();
             fixture.Repository.MakeATaggedCommit("1.0");
