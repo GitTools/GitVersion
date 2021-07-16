@@ -26,7 +26,7 @@ namespace GitVersion.BuildAgents
         public override string[] GenerateSetParameterMessage(string name, string value) =>
             // There is no equivalent function in GitHub Actions.
 
-            new string[0];
+            System.Array.Empty<string>();
 
         public override void WriteIntegration(System.Action<string?> writer, VersionVariables variables, bool updateBuildNumber = true)
         {

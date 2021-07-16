@@ -45,13 +45,13 @@ namespace GitVersion.VersionCalculation
                 return ReleaseBranchBaseVersions().Union(MainTagsVersions());
             }
 
-            return new BaseVersion[0];
+            return Array.Empty<BaseVersion>();
         }
 
         private IEnumerable<BaseVersion> MainTagsVersions()
         {
             var main = this.repositoryStore.FindBranch(Config.MainBranchKey);
-            return main != null ? this.taggedCommitVersionStrategy.GetTaggedVersions(main, null) : new BaseVersion[0];
+            return main != null ? this.taggedCommitVersionStrategy.GetTaggedVersions(main, null) : Array.Empty<BaseVersion>();
         }
 
 
@@ -78,7 +78,7 @@ namespace GitVersion.VersionCalculation
                     })
                     .ToList();
             }
-            return new BaseVersion[0];
+            return Array.Empty<BaseVersion>();
         }
 
         private IEnumerable<BaseVersion> GetReleaseVersion(GitVersionContext context, IBranch releaseBranch)
@@ -90,7 +90,7 @@ namespace GitVersion.VersionCalculation
             if (Equals(baseSource, context.CurrentCommit))
             {
                 // Ignore the branch if it has no commits.
-                return new BaseVersion[0];
+                return Array.Empty<BaseVersion>();
             }
 
             return this.releaseVersionStrategy

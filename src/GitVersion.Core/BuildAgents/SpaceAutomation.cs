@@ -15,7 +15,7 @@ namespace GitVersion.BuildAgents
 
         public override string? GetCurrentBranch(bool usingDynamicRepos) => Environment.GetEnvironmentVariable("JB_SPACE_GIT_BRANCH");
 
-        public override string[] GenerateSetParameterMessage(string name, string value) => new string[0];
+        public override string[] GenerateSetParameterMessage(string name, string value) => System.Array.Empty<string>();
 
         public override string GenerateSetVersionMessage(VersionVariables variables) => string.Empty;
     }
