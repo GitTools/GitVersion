@@ -51,7 +51,8 @@ namespace GitTools.Testing
         /// <summary>
         /// Appends a note over one or many participants to the sequence diagram
         /// </summary>
-        public void NoteOver(string noteText, string startParticipant, string endParticipant = null, string prefix = null, string color = null) => this.diagramBuilder.AppendLineFormat(
+        public void NoteOver(string noteText, string startParticipant, string endParticipant = null, string prefix = null, string color = null) =>
+            this.diagramBuilder.AppendLineFormat(
                 prefix + @"note over {0}{1}{2}
   {3}
 end note",
