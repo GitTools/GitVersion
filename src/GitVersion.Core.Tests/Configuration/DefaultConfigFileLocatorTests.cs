@@ -219,11 +219,12 @@ namespace GitVersion.Core.Tests
                 return filePath;
             }
 
-            private static IServiceProvider GetServiceProvider(GitVersionOptions gitVersionOptions, ILog log = null) => ConfigureServices(services =>
-                                                                                                                                      {
-                                                                                                                                          if (log != null) services.AddSingleton(log);
-                                                                                                                                          services.AddSingleton(Options.Create(gitVersionOptions));
-                                                                                                                                      });
+            private static IServiceProvider GetServiceProvider(GitVersionOptions gitVersionOptions, ILog log = null) =>
+                ConfigureServices(services =>
+                {
+                    if (log != null) services.AddSingleton(log);
+                    services.AddSingleton(Options.Create(gitVersionOptions));
+                });
         }
     }
 }
