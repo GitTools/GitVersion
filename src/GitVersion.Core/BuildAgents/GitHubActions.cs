@@ -19,14 +19,10 @@ namespace GitVersion.BuildAgents
         protected override string EnvironmentVariable { get; } = EnvironmentVariableName;
 
         public override string GenerateSetVersionMessage(VersionVariables variables) =>
-            // There is no equivalent function in GitHub Actions.
-
-            string.Empty;
+            string.Empty; // There is no equivalent function in GitHub Actions.
 
         public override string[] GenerateSetParameterMessage(string name, string value) =>
-            // There is no equivalent function in GitHub Actions.
-
-            System.Array.Empty<string>();
+            System.Array.Empty<string>(); // There is no equivalent function in GitHub Actions.
 
         public override void WriteIntegration(System.Action<string?> writer, VersionVariables variables, bool updateBuildNumber = true)
         {
