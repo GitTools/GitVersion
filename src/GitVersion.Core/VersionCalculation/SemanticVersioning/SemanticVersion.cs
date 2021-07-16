@@ -53,7 +53,7 @@ namespace GitVersion
 
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(null, obj))
+            if (obj is null)
             {
                 return false;
             }
@@ -83,9 +83,9 @@ namespace GitVersion
 
         public static bool operator ==(SemanticVersion v1, SemanticVersion v2)
         {
-            if (ReferenceEquals(v1, null))
+            if (v1 is null)
             {
-                return ReferenceEquals(v2, null);
+                return v2 is null;
             }
             return v1.Equals(v2);
         }
