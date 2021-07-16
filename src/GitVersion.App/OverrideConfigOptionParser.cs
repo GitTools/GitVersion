@@ -12,7 +12,7 @@ namespace GitVersion
 
         private readonly Lazy<Config> _lazyConfig = new();
 
-        internal ILookup<string, PropertyInfo> SupportedProperties => _lazySupportedProperties.Value;
+        internal static ILookup<string, PropertyInfo> SupportedProperties => _lazySupportedProperties.Value;
 
         /// <summary>
         /// Dynamically creates <see cref="System.Linq.ILookup{TKey, TElement}"/> of

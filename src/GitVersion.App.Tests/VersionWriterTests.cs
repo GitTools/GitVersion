@@ -44,7 +44,7 @@ namespace GitVersion.App.Tests
             Assert.AreEqual("1.0.0-beta0004", version);
         }
 
-        private Assembly GenerateAssembly(Version fileVersion, string prereleaseInfo)
+        private static Assembly GenerateAssembly(Version fileVersion, string prereleaseInfo)
         {
             var definition = new AssemblyNameDefinition("test-asm", fileVersion);
 

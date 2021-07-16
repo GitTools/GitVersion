@@ -47,7 +47,7 @@ namespace GitVersion.Logging
             }
         }
 
-        private IDictionary<LogLevel, (ConsoleColor backgroundColor, ConsoleColor foregroundColor)> CreatePalette()
+        private static IDictionary<LogLevel, (ConsoleColor backgroundColor, ConsoleColor foregroundColor)> CreatePalette()
         {
             var background = Console.BackgroundColor;
             var palette = new Dictionary<LogLevel, (ConsoleColor, ConsoleColor)>

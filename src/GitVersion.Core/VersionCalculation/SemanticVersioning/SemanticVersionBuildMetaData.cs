@@ -145,7 +145,7 @@ namespace GitVersion
             return semanticVersionBuildMetaData;
         }
 
-        private string FormatMetaDataPart(string value)
+        private static string FormatMetaDataPart(string value)
         {
             if (!string.IsNullOrEmpty(value))
                 value = Regex.Replace(value, "[^0-9A-Za-z-.]", "-");

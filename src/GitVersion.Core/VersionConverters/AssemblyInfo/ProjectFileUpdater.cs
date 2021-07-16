@@ -137,7 +137,7 @@ namespace GitVersion.VersionConverters.AssemblyInfo
             return true;
         }
 
-        internal void UpdateProjectVersionElement(XElement xmlRoot, string versionElement, string versionValue)
+        internal static void UpdateProjectVersionElement(XElement xmlRoot, string versionElement, string versionValue)
         {
             var propertyGroups = xmlRoot.Descendants("PropertyGroup").ToList();
 

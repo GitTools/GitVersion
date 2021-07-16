@@ -215,7 +215,7 @@ namespace GitVersion.Core.Tests
 
             var variables = this.variableProvider.GetVariablesFor(SemanticVersion.Parse("2.0.0", "v"), new TestEffectiveConfiguration(), false);
             var xmlRoot = XElement.Parse(xml);
-            projectFileUpdater.UpdateProjectVersionElement(xmlRoot, ProjectFileUpdater.AssemblyVersionElement, variables.AssemblySemVer);
+            ProjectFileUpdater.UpdateProjectVersionElement(xmlRoot, ProjectFileUpdater.AssemblyVersionElement, variables.AssemblySemVer);
 
             var expectedXml = XElement.Parse(@"
 <Project Sdk=""Microsoft.NET.Sdk"">
@@ -245,7 +245,7 @@ namespace GitVersion.Core.Tests
 
             var variables = this.variableProvider.GetVariablesFor(SemanticVersion.Parse("2.0.0", "v"), new TestEffectiveConfiguration(), false);
             var xmlRoot = XElement.Parse(xml);
-            projectFileUpdater.UpdateProjectVersionElement(xmlRoot, ProjectFileUpdater.AssemblyVersionElement, variables.AssemblySemVer);
+            ProjectFileUpdater.UpdateProjectVersionElement(xmlRoot, ProjectFileUpdater.AssemblyVersionElement, variables.AssemblySemVer);
 
             var expectedXml = XElement.Parse(@"
 <Project Sdk=""Microsoft.NET.Sdk"">
@@ -278,7 +278,7 @@ namespace GitVersion.Core.Tests
 
             var variables = this.variableProvider.GetVariablesFor(SemanticVersion.Parse("2.0.0", "v"), new TestEffectiveConfiguration(), false);
             var xmlRoot = XElement.Parse(xml);
-            projectFileUpdater.UpdateProjectVersionElement(xmlRoot, ProjectFileUpdater.AssemblyVersionElement, variables.AssemblySemVer);
+            ProjectFileUpdater.UpdateProjectVersionElement(xmlRoot, ProjectFileUpdater.AssemblyVersionElement, variables.AssemblySemVer);
 
             var expectedXml = XElement.Parse(@"
 <Project Sdk=""Microsoft.NET.Sdk"">
@@ -312,7 +312,7 @@ namespace GitVersion.Core.Tests
 
             var variables = this.variableProvider.GetVariablesFor(SemanticVersion.Parse("2.0.0", "v"), new TestEffectiveConfiguration(), false);
             var xmlRoot = XElement.Parse(xml);
-            projectFileUpdater.UpdateProjectVersionElement(xmlRoot, ProjectFileUpdater.AssemblyVersionElement, variables.AssemblySemVer);
+            ProjectFileUpdater.UpdateProjectVersionElement(xmlRoot, ProjectFileUpdater.AssemblyVersionElement, variables.AssemblySemVer);
 
             var expectedXml = XElement.Parse(@"
 <Project Sdk=""Microsoft.NET.Sdk"">

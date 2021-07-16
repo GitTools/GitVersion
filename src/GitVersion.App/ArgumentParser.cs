@@ -439,7 +439,7 @@ namespace GitVersion
                 }
 
                 var optionKey = keyAndValue[0].ToLowerInvariant();
-                if (!parser.SupportedProperties.Contains(optionKey))
+                if (!OverrideConfigOptionParser.SupportedProperties.Contains(optionKey))
                 {
                     throw new WarningException($"Could not parse /overrideconfig option: {keyValueOption}. Unsuported 'key'.");
                 }
