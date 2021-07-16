@@ -18,6 +18,10 @@
           <PrivateAssets>all</PrivateAssets>
           <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
+        <PackageReference Include="Microsoft.CodeAnalysis.NetAnalyzers" Version="5.0.3">
+          <PrivateAssets>all</PrivateAssets>
+          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
         <PackageReference Include="Microsoft.Win32.Registry" Version="$(PackageVersion_MicrosoftExtensions)" PrivateAssets="All" />
         <PackageReference Include="System.Text.Json" Version="$(PackageVersion_MicrosoftJson)" PrivateAssets="All" />
         <PackageReference Include="System.Text.Encodings.Web" Version="$(PackageVersion_MicrosoftJson)" PrivateAssets="All" />
@@ -25,9 +29,9 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\GitVersion.Core\GitVersion.Core.csproj" PrivateAssets="All"/>
+        <ProjectReference Include="..\GitVersion.Core\GitVersion.Core.csproj" PrivateAssets="All" />
     </ItemGroup>
 
-    <Import Project="nuget-files.props"/>
+    <Import Project="nuget-files.props" />
 
 </Project>
