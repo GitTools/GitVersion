@@ -15,8 +15,8 @@ namespace GitVersion.VersionConverters.AssemblyInfo
 
     public class AssemblyInfoFileUpdater : IAssemblyInfoFileUpdater
     {
-        private readonly List<Action> restoreBackupTasks = new List<Action>();
-        private readonly List<Action> cleanupBackupTasks = new List<Action>();
+        private readonly List<Action> restoreBackupTasks = new();
+        private readonly List<Action> cleanupBackupTasks = new();
 
         private readonly IDictionary<string, Regex> assemblyAttributeRegexes = new Dictionary<string, Regex>
         {
@@ -25,9 +25,9 @@ namespace GitVersion.VersionConverters.AssemblyInfo
             {".vb", new Regex( @"(\s*\<Assembly:\s*(?:.*)\>\s*$(\r?\n)?)", RegexOptions.Multiline) },
         };
 
-        private readonly Regex assemblyVersionRegex = new Regex(@"AssemblyVersion(Attribute)?\s*\(.*\)\s*");
-        private readonly Regex assemblyInfoVersionRegex = new Regex(@"AssemblyInformationalVersion(Attribute)?\s*\(.*\)\s*");
-        private readonly Regex assemblyFileVersionRegex = new Regex(@"AssemblyFileVersion(Attribute)?\s*\(.*\)\s*");
+        private readonly Regex assemblyVersionRegex = new(@"AssemblyVersion(Attribute)?\s*\(.*\)\s*");
+        private readonly Regex assemblyInfoVersionRegex = new(@"AssemblyInformationalVersion(Attribute)?\s*\(.*\)\s*");
+        private readonly Regex assemblyFileVersionRegex = new(@"AssemblyFileVersion(Attribute)?\s*\(.*\)\s*");
 
         private const string NewLine = "\r\n";
 

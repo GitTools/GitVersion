@@ -113,7 +113,7 @@ namespace GitVersion.Model.Configuration
             return this;
         }
 
-        public static BranchConfig CreateDefaultBranchConfig(string name) => new BranchConfig
+        public static BranchConfig CreateDefaultBranchConfig(string name) => new()
         {
             Name = name,
             Tag = "useBranchName",

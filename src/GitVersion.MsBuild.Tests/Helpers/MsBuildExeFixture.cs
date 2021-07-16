@@ -22,7 +22,7 @@ namespace GitVersion.MsBuild.Tests.Helpers
 
         public const string OutputTarget = "GitVersionOutput";
 
-        private readonly AnalyzerManager manager = new AnalyzerManager();
+        private readonly AnalyzerManager manager = new();
         private readonly string ProjectPath;
 
         public MsBuildExeFixture(RepositoryFixtureBase fixture, string workingDirectory = "")

@@ -154,3 +154,6 @@ csharp_space_between_square_brackets = false
 
 # IDE0011: Add braces
 dotnet_diagnostic.IDE0011.severity = none
+
+# IDE0090: Use 'new(...)'
+dotnet_diagnostic.IDE0090.severity = warning

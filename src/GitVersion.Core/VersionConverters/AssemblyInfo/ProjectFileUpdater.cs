@@ -20,8 +20,8 @@ namespace GitVersion.VersionConverters.AssemblyInfo
         internal const string InformationalVersionElement = "InformationalVersion";
         internal const string VersionElement = "Version";
 
-        private readonly List<Action> restoreBackupTasks = new List<Action>();
-        private readonly List<Action> cleanupBackupTasks = new List<Action>();
+        private readonly List<Action> restoreBackupTasks = new();
+        private readonly List<Action> cleanupBackupTasks = new();
 
         private readonly IFileSystem fileSystem;
         private readonly ILog log;

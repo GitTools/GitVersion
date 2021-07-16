@@ -7,7 +7,7 @@ namespace GitVersion
     /// </summary>
     public readonly struct BranchCommit
     {
-        public static readonly BranchCommit Empty = new BranchCommit();
+        public static readonly BranchCommit Empty = new();
 
         public BranchCommit(ICommit commit, IBranch branch) : this()
         {

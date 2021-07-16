@@ -8,9 +8,9 @@ namespace GitVersion
     internal class OverrideConfigOptionParser
     {
         private static readonly Lazy<ILookup<string, PropertyInfo>> _lazySupportedProperties =
-            new Lazy<ILookup<string, PropertyInfo>>(GetSupportedProperties, true);
+            new(GetSupportedProperties, true);
 
-        private readonly Lazy<Config> _lazyConfig = new Lazy<Config>();
+        private readonly Lazy<Config> _lazyConfig = new();
 
         internal ILookup<string, PropertyInfo> SupportedProperties => _lazySupportedProperties.Value;
 
