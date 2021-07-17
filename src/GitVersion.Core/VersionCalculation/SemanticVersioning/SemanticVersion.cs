@@ -5,9 +5,9 @@ namespace GitVersion
 {
     public class SemanticVersion : IFormattable, IComparable<SemanticVersion>
     {
-        private static SemanticVersion Empty = new SemanticVersion();
+        private static readonly SemanticVersion Empty = new();
 
-        private static readonly Regex ParseSemVer = new Regex(
+        private static readonly Regex ParseSemVer = new(
             @"^(?<SemVer>(?<Major>\d+)(\.(?<Minor>\d+))?(\.(?<Patch>\d+))?)(\.(?<FourthPart>\d+))?(-(?<Tag>[^\+]*))?(\+(?<BuildMetaData>.*))?$",
             RegexOptions.Compiled);
 
@@ -19,21 +19,21 @@ namespace GitVersion
 
         public SemanticVersion(int major = 0, int minor = 0, int patch = 0)
         {
-            Major = major;
-            Minor = minor;
-            Patch = patch;
-            PreReleaseTag = new SemanticVersionPreReleaseTag();
-            BuildMetaData = new SemanticVersionBuildMetaData();
+            this.Major = major;
+            this.Minor = minor;
+            this.Patch = patch;
+            this.PreReleaseTag = new SemanticVersionPreReleaseTag();
+            this.BuildMetaData = new SemanticVersionBuildMetaData();
         }
 
         public SemanticVersion(SemanticVersion semanticVersion)
         {
-            Major = semanticVersion.Major;
-            Minor = semanticVersion.Minor;
-            Patch = semanticVersion.Patch;
+            this.Major = semanticVersion.Major;
+            this.Minor = semanticVersion.Minor;
+            this.Patch = semanticVersion.Patch;
 
-            PreReleaseTag = new SemanticVersionPreReleaseTag(semanticVersion.PreReleaseTag);
-            BuildMetaData = new SemanticVersionBuildMetaData(semanticVersion.BuildMetaData);
+            this.PreReleaseTag = new SemanticVersionPreReleaseTag(semanticVersion.PreReleaseTag);
+            this.BuildMetaData = new SemanticVersionBuildMetaData(semanticVersion.BuildMetaData);
         }
 
         public bool Equals(SemanticVersion obj)
@@ -42,21 +42,18 @@ namespace GitVersion
             {
                 return false;
             }
-            return Major == obj.Major &&
-                   Minor == obj.Minor &&
-                   Patch == obj.Patch &&
-                   PreReleaseTag == obj.PreReleaseTag &&
-                   BuildMetaData == obj.BuildMetaData;
+            return this.Major == obj.Major &&
+                   this.Minor == obj.Minor &&
+                   this.Patch == obj.Patch &&
+                   this.PreReleaseTag == obj.PreReleaseTag &&
+                   this.BuildMetaData == obj.BuildMetaData;
         }
 
-        public bool IsEmpty()
-        {
-            return Equals(Empty);
-        }
+        public bool IsEmpty() => Equals(Empty);
 
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(null, obj))
+            if (obj is null)
             {
                 return false;
             }
@@ -75,28 +72,25 @@ namespace GitVersion
         {
             unchecked
             {
-                var hashCode = Major;
-                hashCode = (hashCode * 397) ^ Minor;
-                hashCode = (hashCode * 397) ^ Patch;
-                hashCode = (hashCode * 397) ^ (PreReleaseTag != null ? PreReleaseTag.GetHashCode() : 0);
-                hashCode = (hashCode * 397) ^ (BuildMetaData != null ? BuildMetaData.GetHashCode() : 0);
+                var hashCode = this.Major;
+                hashCode = (hashCode * 397) ^ this.Minor;
+                hashCode = (hashCode * 397) ^ this.Patch;
+                hashCode = (hashCode * 397) ^ (this.PreReleaseTag != null ? this.PreReleaseTag.GetHashCode() : 0);
+                hashCode = (hashCode * 397) ^ (this.BuildMetaData != null ? this.BuildMetaData.GetHashCode() : 0);
                 return hashCode;
             }
         }
 
         public static bool operator ==(SemanticVersion v1, SemanticVersion v2)
         {
-            if (ReferenceEquals(v1, null))
+            if (v1 is null)
             {
-                return ReferenceEquals(v2, null);
+                return v2 is null;
             }
             return v1.Equals(v2);
         }
 
-        public static bool operator !=(SemanticVersion v1, SemanticVersion v2)
-        {
-            return !(v1 == v2);
-        }
+        public static bool operator !=(SemanticVersion v1, SemanticVersion v2) => !(v1 == v2);
 
         public static bool operator >(SemanticVersion v1, SemanticVersion v2)
         {
@@ -182,10 +176,7 @@ namespace GitVersion
             return true;
         }
 
-        public int CompareTo(SemanticVersion value)
-        {
-            return CompareTo(value, true);
-        }
+        public int CompareTo(SemanticVersion value) => CompareTo(value, true);
 
         public int CompareTo(SemanticVersion value, bool includePrerelease)
         {
@@ -193,33 +184,33 @@ namespace GitVersion
             {
                 return 1;
             }
-            if (Major != value.Major)
+            if (this.Major != value.Major)
             {
-                if (Major > value.Major)
+                if (this.Major > value.Major)
                 {
                     return 1;
                 }
                 return -1;
             }
-            if (Minor != value.Minor)
+            if (this.Minor != value.Minor)
             {
-                if (Minor > value.Minor)
+                if (this.Minor > value.Minor)
                 {
                     return 1;
                 }
                 return -1;
             }
-            if (Patch != value.Patch)
+            if (this.Patch != value.Patch)
             {
-                if (Patch > value.Patch)
+                if (this.Patch > value.Patch)
                 {
                     return 1;
                 }
                 return -1;
             }
-            if (includePrerelease && PreReleaseTag != value.PreReleaseTag)
+            if (includePrerelease && this.PreReleaseTag != value.PreReleaseTag)
             {
-                if (PreReleaseTag > value.PreReleaseTag)
+                if (this.PreReleaseTag > value.PreReleaseTag)
                 {
                     return 1;
                 }
@@ -229,10 +220,7 @@ namespace GitVersion
             return 0;
         }
 
-        public override string ToString()
-        {
-            return ToString(null);
-        }
+        public override string ToString() => ToString(null);
 
         /// <summary>
         /// <para>s - Default SemVer [1.2.3-beta.4+5]</para>
@@ -256,28 +244,28 @@ namespace GitVersion
             if (format.StartsWith("lp", StringComparison.Ordinal))
             {
                 // handle the padding
-                return PreReleaseTag.HasTag() ? $"{ToString("j")}-{PreReleaseTag.ToString(format)}" : ToString("j");
+                return this.PreReleaseTag.HasTag() ? $"{ToString("j")}-{this.PreReleaseTag.ToString(format)}" : ToString("j");
             }
 
             switch (format)
             {
                 case "j":
-                    return $"{Major}.{Minor}.{Patch}";
+                    return $"{this.Major}.{this.Minor}.{this.Patch}";
                 case "s":
-                    return PreReleaseTag.HasTag() ? $"{ToString("j")}-{PreReleaseTag}" : ToString("j");
+                    return this.PreReleaseTag.HasTag() ? $"{ToString("j")}-{this.PreReleaseTag}" : ToString("j");
                 case "t":
-                    return PreReleaseTag.HasTag() ? $"{ToString("j")}-{PreReleaseTag.ToString("t")}" : ToString("j");
+                    return this.PreReleaseTag.HasTag() ? $"{ToString("j")}-{this.PreReleaseTag.ToString("t")}" : ToString("j");
                 case "l":
-                    return PreReleaseTag.HasTag() ? $"{ToString("j")}-{PreReleaseTag.ToString("l")}" : ToString("j");
+                    return this.PreReleaseTag.HasTag() ? $"{ToString("j")}-{this.PreReleaseTag.ToString("l")}" : ToString("j");
                 case "f":
                     {
-                        var buildMetadata = BuildMetaData.ToString();
+                        var buildMetadata = this.BuildMetaData.ToString();
 
                         return !string.IsNullOrEmpty(buildMetadata) ? $"{ToString("s")}+{buildMetadata}" : ToString("s");
                     }
                 case "i":
                     {
-                        var buildMetadata = BuildMetaData.ToString("f");
+                        var buildMetadata = this.BuildMetaData.ToString("f");
 
                         return !string.IsNullOrEmpty(buildMetadata) ? $"{ToString("s")}+{buildMetadata}" : ToString("s");
                     }
@@ -308,7 +296,7 @@ namespace GitVersion
                         incremented.Patch++;
                         break;
                     default:
-                        throw new ArgumentOutOfRangeException();
+                        throw new ArgumentOutOfRangeException(nameof(incrementStrategy));
                 }
             }
             else

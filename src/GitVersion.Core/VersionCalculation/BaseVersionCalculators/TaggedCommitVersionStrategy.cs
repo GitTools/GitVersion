@@ -14,19 +14,13 @@ namespace GitVersion.VersionCalculation
     {
         private readonly IRepositoryStore repositoryStore;
 
-        public TaggedCommitVersionStrategy(IRepositoryStore repositoryStore, Lazy<GitVersionContext> versionContext) : base(versionContext)
-        {
-            this.repositoryStore = repositoryStore ?? throw new ArgumentNullException(nameof(repositoryStore));
-        }
+        public TaggedCommitVersionStrategy(IRepositoryStore repositoryStore, Lazy<GitVersionContext> versionContext) : base(versionContext) => this.repositoryStore = repositoryStore ?? throw new ArgumentNullException(nameof(repositoryStore));
 
-        public override IEnumerable<BaseVersion> GetVersions()
-        {
-            return GetTaggedVersions(Context.CurrentBranch, Context.CurrentCommit.When);
-        }
+        public override IEnumerable<BaseVersion> GetVersions() => GetTaggedVersions(Context.CurrentBranch, Context.CurrentCommit.When);
 
         internal IEnumerable<BaseVersion> GetTaggedVersions(IBranch currentBranch, DateTimeOffset? olderThan)
         {
-            var allTags = repositoryStore.GetValidVersionTags(Context.Configuration.GitTagPrefix, olderThan);
+            var allTags = this.repositoryStore.GetValidVersionTags(Context.Configuration.GitTagPrefix, olderThan);
 
             var taggedCommits = currentBranch
                 .Commits
@@ -53,10 +47,7 @@ namespace GitVersion.VersionCalculation
             return baseVersion;
         }
 
-        protected virtual string FormatSource(VersionTaggedCommit version)
-        {
-            return $"Git tag '{version.Tag}'";
-        }
+        protected virtual string FormatSource(VersionTaggedCommit version) => $"Git tag '{version.Tag}'";
 
         protected virtual bool IsValidTag(ITag tag, ICommit commit)
         {
@@ -72,15 +63,12 @@ namespace GitVersion.VersionCalculation
 
             public VersionTaggedCommit(ICommit commit, SemanticVersion semVer, string tag)
             {
-                Tag = tag;
-                Commit = commit;
-                SemVer = semVer;
+                this.Tag = tag;
+                this.Commit = commit;
+                this.SemVer = semVer;
             }
 
-            public override string ToString()
-            {
-                return $"{Tag} | {Commit} | {SemVer}";
-            }
+            public override string ToString() => $"{this.Tag} | {this.Commit} | {this.SemVer}";
         }
     }
 }

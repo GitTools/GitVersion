@@ -6,10 +6,7 @@ namespace GitVersion.VersionCalculation
     {
         private readonly DateTimeOffset minimum;
 
-        public MinDateVersionFilter(DateTimeOffset minimum)
-        {
-            this.minimum = minimum;
-        }
+        public MinDateVersionFilter(DateTimeOffset minimum) => this.minimum = minimum;
 
         public bool Exclude(BaseVersion version, out string reason)
         {
@@ -18,7 +15,7 @@ namespace GitVersion.VersionCalculation
             reason = null;
 
             if (version.BaseVersionSource != null &&
-                version.BaseVersionSource.When < minimum)
+                version.BaseVersionSource.When < this.minimum)
             {
                 reason = "Source was ignored due to commit date being outside of configured range";
                 return true;

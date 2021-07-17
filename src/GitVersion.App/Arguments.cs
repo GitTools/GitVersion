@@ -7,7 +7,7 @@ namespace GitVersion
 {
     public class Arguments
     {
-        public AuthenticationInfo Authentication = new AuthenticationInfo();
+        public AuthenticationInfo Authentication = new();
 
         public string ConfigFile;
         public Config OverrideConfig;
@@ -44,7 +44,7 @@ namespace GitVersion
 
         public GitVersionOptions ToOptions()
         {
-            var workingDirectory = TargetPath?.TrimEnd('/', '\\');
+            var workingDirectory = this.TargetPath?.TrimEnd('/', '\\');
 
             return new GitVersionOptions
             {
@@ -60,9 +60,9 @@ namespace GitVersion
 
                 Authentication =
                 {
-                    Username = Authentication.Username,
-                    Password = Authentication.Password,
-                    Token = Authentication.Token,
+                    Username = this.Authentication.Username,
+                    Password = this.Authentication.Password,
+                    Token = this.Authentication.Token,
                 },
 
                 ConfigInfo =

@@ -14,7 +14,7 @@ namespace GitVersion.Core.Tests.IntegrationTests
 {
     public class MainlineDevelopmentMode : TestBase
     {
-        private readonly Config config = new Config
+        private readonly Config config = new()
         {
             VersioningMode = VersioningMode.Mainline
         };
@@ -30,11 +30,11 @@ namespace GitVersion.Core.Tests.IntegrationTests
             fixture.Checkout(MainBranch);
             fixture.MergeNoFF("feature/foo");
 
-            fixture.AssertFullSemver("1.0.0", config);
+            fixture.AssertFullSemver("1.0.0", this.config);
 
             fixture.BranchTo("support/1.0", "support");
 
-            fixture.AssertFullSemver("1.0.0", config);
+            fixture.AssertFullSemver("1.0.0", this.config);
         }
 
         [Test]
@@ -46,20 +46,20 @@ namespace GitVersion.Core.Tests.IntegrationTests
 
             fixture.BranchTo("feature/foo", "foo");
             fixture.MakeACommit("2");
-            fixture.AssertFullSemver("1.0.1-foo.1", config);
+            fixture.AssertFullSemver("1.0.1-foo.1", this.config);
             fixture.MakeACommit("2.1");
-            fixture.AssertFullSemver("1.0.1-foo.2", config);
+            fixture.AssertFullSemver("1.0.1-foo.2", this.config);
             fixture.Checkout(MainBranch);
             fixture.MergeNoFF("feature/foo");
 
-            fixture.AssertFullSemver("1.0.1", config);
+            fixture.AssertFullSemver("1.0.1", this.config);
 
             fixture.BranchTo("feature/foo2", "foo2");
             fixture.MakeACommit("3 +semver: minor");
-            fixture.AssertFullSemver("1.1.0-foo2.1", config);
+            fixture.AssertFullSemver("1.1.0-foo2.1", this.config);
             fixture.Checkout(MainBranch);
             fixture.MergeNoFF("feature/foo2");
-            fixture.AssertFullSemver("1.1.0", config);
+            fixture.AssertFullSemver("1.1.0", this.config);
 
             fixture.BranchTo("feature/foo3", "foo3");
             fixture.MakeACommit("4");
@@ -72,37 +72,37 @@ namespace GitVersion.Core.Tests.IntegrationTests
             {
                 AmendPreviousCommit = true
             });
-            fixture.AssertFullSemver("1.2.0", config);
+            fixture.AssertFullSemver("1.2.0", this.config);
 
             fixture.BranchTo("feature/foo4", "foo4");
             fixture.MakeACommit("5 +semver: major");
-            fixture.AssertFullSemver("2.0.0-foo4.1", config);
+            fixture.AssertFullSemver("2.0.0-foo4.1", this.config);
             fixture.Checkout(MainBranch);
             fixture.MergeNoFF("feature/foo4");
-            fixture.AssertFullSemver("2.0.0", config);
+            fixture.AssertFullSemver("2.0.0", this.config);
 
             // We should evaluate any commits not included in merge commit calculations for direct commit/push or squash to merge commits
             fixture.MakeACommit("6 +semver: major");
-            fixture.AssertFullSemver("3.0.0", config);
+            fixture.AssertFullSemver("3.0.0", this.config);
             fixture.MakeACommit("7 +semver: minor");
-            fixture.AssertFullSemver("3.1.0", config);
+            fixture.AssertFullSemver("3.1.0", this.config);
             fixture.MakeACommit("8");
-            fixture.AssertFullSemver("3.1.1", config);
+            fixture.AssertFullSemver("3.1.1", this.config);
 
             // Finally verify that the merge commits still function properly
             fixture.BranchTo("feature/foo5", "foo5");
             fixture.MakeACommit("9 +semver: minor");
-            fixture.AssertFullSemver("3.2.0-foo5.1", config);
+            fixture.AssertFullSemver("3.2.0-foo5.1", this.config);
             fixture.Checkout(MainBranch);
             fixture.MergeNoFF("feature/foo5");
-            fixture.AssertFullSemver("3.2.0", config);
+            fixture.AssertFullSemver("3.2.0", this.config);
 
             // One more direct commit for good measure
             fixture.MakeACommit("10 +semver: minor");
-            fixture.AssertFullSemver("3.3.0", config);
+            fixture.AssertFullSemver("3.3.0", this.config);
             // And we can commit without bumping semver
             fixture.MakeACommit("11 +semver: none");
-            fixture.AssertFullSemver("3.3.0", config);
+            fixture.AssertFullSemver("3.3.0", this.config);
             Console.WriteLine(fixture.SequenceDiagram.GetDiagram());
         }
 
@@ -113,14 +113,14 @@ namespace GitVersion.Core.Tests.IntegrationTests
             fixture.Repository.MakeACommit("1");
             fixture.MakeATaggedCommit("1.0.0");
             fixture.MakeACommit();
-            fixture.AssertFullSemver("1.0.1", config);
+            fixture.AssertFullSemver("1.0.1", this.config);
 
             fixture.BranchTo("feature/foo", "foo");
-            fixture.AssertFullSemver("1.0.2-foo.0", config);
+            fixture.AssertFullSemver("1.0.2-foo.0", this.config);
             fixture.MakeACommit();
             fixture.MakeACommit();
             fixture.Repository.CreatePullRequestRef("feature/foo", MainBranch, normalise: true, prNumber: 8);
-            fixture.AssertFullSemver("1.0.2-PullRequest0008.3", config);
+            fixture.AssertFullSemver("1.0.2-PullRequest0008.3", this.config);
         }
 
         [Test]
@@ -131,29 +131,29 @@ namespace GitVersion.Core.Tests.IntegrationTests
             fixture.MakeATaggedCommit("1.0.0");
             fixture.MakeACommit(); // 1.0.1
             fixture.MakeACommit(); // 1.0.2
-            fixture.AssertFullSemver("1.0.2", config);
+            fixture.AssertFullSemver("1.0.2", this.config);
 
             fixture.BranchTo("support/1.0", "support10");
-            fixture.AssertFullSemver("1.0.2", config);
+            fixture.AssertFullSemver("1.0.2", this.config);
 
             // Move main on
             fixture.Checkout(MainBranch);
             fixture.MakeACommit("+semver: major"); // 2.0.0 (on main)
-            fixture.AssertFullSemver("2.0.0", config);
+            fixture.AssertFullSemver("2.0.0", this.config);
 
             // Continue on support/1.0
             fixture.Checkout("support/1.0");
             fixture.MakeACommit(); // 1.0.3
             fixture.MakeACommit(); // 1.0.4
-            fixture.AssertFullSemver("1.0.4", config);
+            fixture.AssertFullSemver("1.0.4", this.config);
             fixture.BranchTo("feature/foo", "foo");
-            fixture.AssertFullSemver("1.0.5-foo.0", config);
+            fixture.AssertFullSemver("1.0.5-foo.0", this.config);
             fixture.MakeACommit();
-            fixture.AssertFullSemver("1.0.5-foo.1", config);
+            fixture.AssertFullSemver("1.0.5-foo.1", this.config);
             fixture.MakeACommit();
-            fixture.AssertFullSemver("1.0.5-foo.2", config);
+            fixture.AssertFullSemver("1.0.5-foo.2", this.config);
             fixture.Repository.CreatePullRequestRef("feature/foo", "support/1.0", normalise: true, prNumber: 7);
-            fixture.AssertFullSemver("1.0.5-PullRequest0007.3", config);
+            fixture.AssertFullSemver("1.0.5-PullRequest0007.3", this.config);
         }
 
         [Test]
@@ -166,20 +166,20 @@ namespace GitVersion.Core.Tests.IntegrationTests
 
             fixture.BranchTo("feature/foo", "foo");
             fixture.MakeACommit();
-            fixture.AssertFullSemver("1.0.2-foo.1", config);
+            fixture.AssertFullSemver("1.0.2-foo.1", this.config);
             fixture.MakeACommit();
-            fixture.AssertFullSemver("1.0.2-foo.2", config);
+            fixture.AssertFullSemver("1.0.2-foo.2", this.config);
 
             fixture.Checkout(MainBranch);
             fixture.MakeACommit();
-            fixture.AssertFullSemver("1.0.2", config);
+            fixture.AssertFullSemver("1.0.2", this.config);
             fixture.Checkout("feature/foo");
             // This may seem surprising, but this happens because we branched off mainline
             // and incremented. Mainline has then moved on. We do not follow mainline
             // in feature branches, you need to merge mainline in to get the mainline version
-            fixture.AssertFullSemver("1.0.2-foo.2", config);
+            fixture.AssertFullSemver("1.0.2-foo.2", this.config);
             fixture.MergeNoFF(MainBranch);
-            fixture.AssertFullSemver("1.0.3-foo.3", config);
+            fixture.AssertFullSemver("1.0.3-foo.3", this.config);
         }
 
         [Test]
@@ -196,18 +196,18 @@ namespace GitVersion.Core.Tests.IntegrationTests
 
             fixture.Checkout(MainBranch);
             fixture.MakeACommit("+semver: minor");
-            fixture.AssertFullSemver("1.1.0", config);
+            fixture.AssertFullSemver("1.1.0", this.config);
             fixture.MergeNoFF("support/1.0");
-            fixture.AssertFullSemver("1.1.1", config);
+            fixture.AssertFullSemver("1.1.1", this.config);
             fixture.MakeACommit();
-            fixture.AssertFullSemver("1.1.2", config);
+            fixture.AssertFullSemver("1.1.2", this.config);
             fixture.Checkout("support/1.0");
-            fixture.AssertFullSemver("1.0.3", config);
+            fixture.AssertFullSemver("1.0.3", this.config);
 
             fixture.BranchTo("feature/foo", "foo");
             fixture.MakeACommit();
             fixture.MakeACommit();
-            fixture.AssertFullSemver("1.0.4-foo.2", config); // TODO This probably should be 1.0.5
+            fixture.AssertFullSemver("1.0.4-foo.2", this.config); // TODO This probably should be 1.0.5
         }
 
         [Test]
@@ -220,31 +220,31 @@ namespace GitVersion.Core.Tests.IntegrationTests
 
             // branching increments the version
             fixture.BranchTo("develop");
-            fixture.AssertFullSemver("1.1.0-alpha.0", config);
+            fixture.AssertFullSemver("1.1.0-alpha.0", this.config);
             fixture.MakeACommit();
-            fixture.AssertFullSemver("1.1.0-alpha.1", config);
+            fixture.AssertFullSemver("1.1.0-alpha.1", this.config);
 
             // merging develop into main increments minor version on main
             fixture.Checkout(MainBranch);
             fixture.MergeNoFF("develop");
-            fixture.AssertFullSemver("1.1.0", config);
+            fixture.AssertFullSemver("1.1.0", this.config);
 
             // a commit on develop before the merge still has the same version number
             fixture.Checkout("develop");
-            fixture.AssertFullSemver("1.1.0-alpha.1", config);
+            fixture.AssertFullSemver("1.1.0-alpha.1", this.config);
 
             // moving on to further work on develop tracks main's version from the merge
             fixture.MakeACommit();
-            fixture.AssertFullSemver("1.2.0-alpha.1", config);
+            fixture.AssertFullSemver("1.2.0-alpha.1", this.config);
 
             // adding a commit to main increments patch
             fixture.Checkout(MainBranch);
             fixture.MakeACommit();
-            fixture.AssertFullSemver("1.1.1", config);
+            fixture.AssertFullSemver("1.1.1", this.config);
 
             // adding a commit to main doesn't change develop's version
             fixture.Checkout("develop");
-            fixture.AssertFullSemver("1.2.0-alpha.1", config);
+            fixture.AssertFullSemver("1.2.0-alpha.1", this.config);
         }
 
         [Test]
@@ -257,41 +257,41 @@ namespace GitVersion.Core.Tests.IntegrationTests
 
             // branching increments the version
             fixture.BranchTo("develop");
-            fixture.AssertFullSemver("1.1.0-alpha.0", config);
+            fixture.AssertFullSemver("1.1.0-alpha.0", this.config);
             fixture.MakeACommit();
-            fixture.AssertFullSemver("1.1.0-alpha.1", config);
+            fixture.AssertFullSemver("1.1.0-alpha.1", this.config);
 
             // merging develop into main increments minor version on main
             fixture.Checkout(MainBranch);
             fixture.MergeNoFF("develop");
-            fixture.AssertFullSemver("1.1.0", config);
+            fixture.AssertFullSemver("1.1.0", this.config);
 
             // a commit on develop before the merge still has the same version number
             fixture.Checkout("develop");
-            fixture.AssertFullSemver("1.1.0-alpha.1", config);
+            fixture.AssertFullSemver("1.1.0-alpha.1", this.config);
 
             // a branch from develop before the merge tracks the pre-merge version from main
             // (note: the commit on develop looks like a commit to this branch, thus the .1)
             fixture.BranchTo("feature/foo");
-            fixture.AssertFullSemver("1.0.2-foo.1", config);
+            fixture.AssertFullSemver("1.0.2-foo.1", this.config);
 
             // further work on the branch tracks the merged version from main
             fixture.MakeACommit();
-            fixture.AssertFullSemver("1.1.1-foo.1", config);
+            fixture.AssertFullSemver("1.1.1-foo.1", this.config);
 
             // adding a commit to main increments patch
             fixture.Checkout(MainBranch);
             fixture.MakeACommit();
-            fixture.AssertFullSemver("1.1.1", config);
+            fixture.AssertFullSemver("1.1.1", this.config);
 
             // adding a commit to main doesn't change the feature's version
             fixture.Checkout("feature/foo");
-            fixture.AssertFullSemver("1.1.1-foo.1", config);
+            fixture.AssertFullSemver("1.1.1-foo.1", this.config);
 
             // merging the feature to develop increments develop
             fixture.Checkout("develop");
             fixture.MergeNoFF("feature/foo");
-            fixture.AssertFullSemver("1.2.0-alpha.2", config);
+            fixture.AssertFullSemver("1.2.0-alpha.2", this.config);
         }
 
         [Test]
@@ -314,7 +314,7 @@ namespace GitVersion.Core.Tests.IntegrationTests
             fixture.MakeATaggedCommit("1.0.0");
 
             fixture.MergeNoFF("feature/foo");
-            fixture.AssertFullSemver("1.0.1", config);
+            fixture.AssertFullSemver("1.0.1", this.config);
         }
 
         [Test]
@@ -336,7 +336,7 @@ namespace GitVersion.Core.Tests.IntegrationTests
 
             fixture.Checkout(MainBranch);
             fixture.MergeNoFF("feature/foo");
-            fixture.AssertFullSemver("1.0.2", config);
+            fixture.AssertFullSemver("1.0.2", this.config);
         }
 
         [Test]
@@ -351,7 +351,7 @@ namespace GitVersion.Core.Tests.IntegrationTests
 
             fixture.Checkout(MainBranch);
             fixture.MergeNoFF("feature/branch1");
-            fixture.AssertFullSemver("0.1.1", config);
+            fixture.AssertFullSemver("0.1.1", this.config);
 
             fixture.Checkout("feature/branch2");
             fixture.MakeACommit();
@@ -359,7 +359,7 @@ namespace GitVersion.Core.Tests.IntegrationTests
             fixture.MakeACommit();
             fixture.MergeNoFF(MainBranch);
 
-            fixture.AssertFullSemver("0.1.2-branch2.4", config);
+            fixture.AssertFullSemver("0.1.2-branch2.4", this.config);
         }
 
         [Test]
@@ -390,7 +390,7 @@ namespace GitVersion.Core.Tests.IntegrationTests
 
             fixture.MergeNoFF("feature/foo");
             fixture.MergeNoFF("feature/bar");
-            fixture.AssertFullSemver("1.0.2", config);
+            fixture.AssertFullSemver("1.0.2", this.config);
         }
 
         [Test]
@@ -495,7 +495,7 @@ namespace GitVersion.Core.Tests.IntegrationTests
             fixture.AssertFullSemver("2.0.0-foo4.1", minorIncrementConfig);
             fixture.Checkout(MainBranch);
             fixture.MergeNoFF("feature/foo4");
-            fixture.AssertFullSemver("2.0.0", config);
+            fixture.AssertFullSemver("2.0.0", this.config);
 
             // We should evaluate any commits not included in merge commit calculations for direct commit/push or squash to merge commits
             fixture.MakeACommit("6 +semver: major");
@@ -529,7 +529,7 @@ namespace GitVersion.Core.Tests.IntegrationTests
         {
             fixture.Repository.MakeACommit(commitMsg);
             var diagramBuilder = (StringBuilder)typeof(SequenceDiagram)
-                .GetField("_diagramBuilder", BindingFlags.Instance | BindingFlags.NonPublic)
+                .GetField("diagramBuilder", BindingFlags.Instance | BindingFlags.NonPublic)
                 ?.GetValue(fixture.SequenceDiagram);
 
             string GetParticipant(string participant) =>

@@ -6,12 +6,12 @@ namespace GitVersion
 {
     public class SemanticVersionBuildMetaData : IFormattable, IEquatable<SemanticVersionBuildMetaData>
     {
-        private static readonly Regex ParseRegex = new Regex(
+        private static readonly Regex ParseRegex = new(
             @"(?<BuildNumber>\d+)?(\.?Branch(Name)?\.(?<BranchName>[^\.]+))?(\.?Sha?\.(?<Sha>[^\.]+))?(?<Other>.*)",
             RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
         private static readonly LambdaEqualityHelper<SemanticVersionBuildMetaData> EqualityHelper =
-           new LambdaEqualityHelper<SemanticVersionBuildMetaData>(x => x.CommitsSinceTag, x => x.Branch, x => x.Sha);
+           new(x => x.CommitsSinceTag, x => x.Branch, x => x.Sha);
 
         public int? CommitsSinceTag;
         public string Branch;
@@ -29,49 +29,37 @@ namespace GitVersion
 
         public SemanticVersionBuildMetaData(string versionSourceSha, int? commitsSinceTag, string branch, string commitSha, string commitShortSha, DateTimeOffset commitDate, int numbeerOfUncommitedChanges, string otherMetadata = null)
         {
-            Sha = commitSha;
-            ShortSha = commitShortSha;
-            CommitsSinceTag = commitsSinceTag;
-            Branch = branch;
-            CommitDate = commitDate;
-            OtherMetaData = otherMetadata;
-            VersionSourceSha = versionSourceSha;
-            CommitsSinceVersionSource = commitsSinceTag ?? 0;
-            UncommittedChanges = numbeerOfUncommitedChanges;
+            this.Sha = commitSha;
+            this.ShortSha = commitShortSha;
+            this.CommitsSinceTag = commitsSinceTag;
+            this.Branch = branch;
+            this.CommitDate = commitDate;
+            this.OtherMetaData = otherMetadata;
+            this.VersionSourceSha = versionSourceSha;
+            this.CommitsSinceVersionSource = commitsSinceTag ?? 0;
+            this.UncommittedChanges = numbeerOfUncommitedChanges;
         }
 
         public SemanticVersionBuildMetaData(SemanticVersionBuildMetaData buildMetaData)
         {
-            Sha = buildMetaData.Sha;
-            ShortSha = buildMetaData.ShortSha;
-            CommitsSinceTag = buildMetaData.CommitsSinceTag;
-            Branch = buildMetaData.Branch;
-            CommitDate = buildMetaData.CommitDate;
-            OtherMetaData = buildMetaData.OtherMetaData;
-            VersionSourceSha = buildMetaData.VersionSourceSha;
-            CommitsSinceVersionSource = buildMetaData.CommitsSinceVersionSource;
-            UncommittedChanges = buildMetaData.UncommittedChanges;
+            this.Sha = buildMetaData.Sha;
+            this.ShortSha = buildMetaData.ShortSha;
+            this.CommitsSinceTag = buildMetaData.CommitsSinceTag;
+            this.Branch = buildMetaData.Branch;
+            this.CommitDate = buildMetaData.CommitDate;
+            this.OtherMetaData = buildMetaData.OtherMetaData;
+            this.VersionSourceSha = buildMetaData.VersionSourceSha;
+            this.CommitsSinceVersionSource = buildMetaData.CommitsSinceVersionSource;
+            this.UncommittedChanges = buildMetaData.UncommittedChanges;
         }
 
-        public override bool Equals(object obj)
-        {
-            return Equals(obj as SemanticVersionBuildMetaData);
-        }
+        public override bool Equals(object obj) => Equals(obj as SemanticVersionBuildMetaData);
 
-        public bool Equals(SemanticVersionBuildMetaData other)
-        {
-            return EqualityHelper.Equals(this, other);
-        }
+        public bool Equals(SemanticVersionBuildMetaData other) => EqualityHelper.Equals(this, other);
 
-        public override int GetHashCode()
-        {
-            return EqualityHelper.GetHashCode(this);
-        }
+        public override int GetHashCode() => EqualityHelper.GetHashCode(this);
 
-        public override string ToString()
-        {
-            return ToString(null);
-        }
+        public override string ToString() => ToString(null);
 
         /// <summary>
         /// <para>b - Formats just the build number</para>
@@ -105,27 +93,21 @@ namespace GitVersion
                     }
                 }
 
-                return CommitsSinceTag != null ? CommitsSinceTag.Value.ToString("D" + padding) : string.Empty;
+                return this.CommitsSinceTag != null ? this.CommitsSinceTag.Value.ToString("D" + padding) : string.Empty;
             }
 
             return format.ToLower() switch
             {
-                "b" => CommitsSinceTag.ToString(),
-                "s" => $"{CommitsSinceTag}{(string.IsNullOrEmpty(Sha) ? null : ".Sha." + Sha)}".TrimStart('.'),
-                "f" => $"{CommitsSinceTag}{(string.IsNullOrEmpty(Branch) ? null : ".Branch." + FormatMetaDataPart(Branch))}{(string.IsNullOrEmpty(Sha) ? null : ".Sha." + Sha)}{(string.IsNullOrEmpty(OtherMetaData) ? null : "." + FormatMetaDataPart(OtherMetaData))}".TrimStart('.'),
+                "b" => this.CommitsSinceTag.ToString(),
+                "s" => $"{this.CommitsSinceTag}{(string.IsNullOrEmpty(this.Sha) ? null : ".Sha." + this.Sha)}".TrimStart('.'),
+                "f" => $"{this.CommitsSinceTag}{(string.IsNullOrEmpty(this.Branch) ? null : ".Branch." + FormatMetaDataPart(this.Branch))}{(string.IsNullOrEmpty(this.Sha) ? null : ".Sha." + this.Sha)}{(string.IsNullOrEmpty(this.OtherMetaData) ? null : "." + FormatMetaDataPart(this.OtherMetaData))}".TrimStart('.'),
                 _ => throw new ArgumentException("Unrecognised format", nameof(format))
             };
         }
 
-        public static bool operator ==(SemanticVersionBuildMetaData left, SemanticVersionBuildMetaData right)
-        {
-            return Equals(left, right);
-        }
+        public static bool operator ==(SemanticVersionBuildMetaData left, SemanticVersionBuildMetaData right) => Equals(left, right);
 
-        public static bool operator !=(SemanticVersionBuildMetaData left, SemanticVersionBuildMetaData right)
-        {
-            return !Equals(left, right);
-        }
+        public static bool operator !=(SemanticVersionBuildMetaData left, SemanticVersionBuildMetaData right) => !Equals(left, right);
 
         public static implicit operator string(SemanticVersionBuildMetaData preReleaseTag)
         {
@@ -163,7 +145,7 @@ namespace GitVersion
             return semanticVersionBuildMetaData;
         }
 
-        private string FormatMetaDataPart(string value)
+        private static string FormatMetaDataPart(string value)
         {
             if (!string.IsNullOrEmpty(value))
                 value = Regex.Replace(value, "[^0-9A-Za-z-.]", "-");

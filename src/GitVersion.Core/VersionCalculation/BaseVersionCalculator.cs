@@ -13,7 +13,7 @@ namespace GitVersion.VersionCalculation
         private readonly IRepositoryStore repositoryStore;
         private readonly IVersionStrategy[] strategies;
         private readonly Lazy<GitVersionContext> versionContext;
-        private GitVersionContext context => versionContext.Value;
+        private GitVersionContext context => this.versionContext.Value;
 
         public BaseVersionCalculator(ILog log, IRepositoryStore repositoryStore, Lazy<GitVersionContext> versionContext, IEnumerable<IVersionStrategy> strategies)
         {
@@ -25,10 +25,10 @@ namespace GitVersion.VersionCalculation
 
         public BaseVersion GetBaseVersion()
         {
-            using (log.IndentLog("Calculating base versions"))
+            using (this.log.IndentLog("Calculating base versions"))
             {
                 var allVersions = new List<BaseVersion>();
-                foreach (var strategy in strategies)
+                foreach (var strategy in this.strategies)
                 {
                     var baseVersions = GetBaseVersions(strategy).ToList();
                     allVersions.AddRange(baseVersions);
@@ -37,7 +37,7 @@ namespace GitVersion.VersionCalculation
                 var versions = allVersions
                     .Select(baseVersion => new Versions
                     {
-                        IncrementedVersion = repositoryStore.MaybeIncrement(baseVersion, context),
+                        IncrementedVersion = this.repositoryStore.MaybeIncrement(baseVersion, context),
                         Version = baseVersion
                     })
                     .ToList();
@@ -61,7 +61,7 @@ namespace GitVersion.VersionCalculation
                     var oldest = matchingVersionsOnceIncremented.Aggregate((v1, v2) => v1.Version.BaseVersionSource.When < v2.Version.BaseVersionSource.When ? v1 : v2);
                     baseVersionWithOldestSource = oldest.Version;
                     maxVersion = oldest;
-                    log.Info($"Found multiple base versions which will produce the same SemVer ({maxVersion.IncrementedVersion}), taking oldest source for commit counting ({baseVersionWithOldestSource.Source})");
+                    this.log.Info($"Found multiple base versions which will produce the same SemVer ({maxVersion.IncrementedVersion}), taking oldest source for commit counting ({baseVersionWithOldestSource.Source})");
                 }
                 else
                 {
@@ -80,7 +80,7 @@ namespace GitVersion.VersionCalculation
                     maxVersion.Version.Source, maxVersion.Version.ShouldIncrement, maxVersion.Version.SemanticVersion,
                     baseVersionWithOldestSource.BaseVersionSource, maxVersion.Version.BranchNameOverride);
 
-                log.Info($"Base version used: {calculatedBase}");
+                this.log.Info($"Base version used: {calculatedBase}");
 
                 return calculatedBase;
             }
@@ -91,7 +91,7 @@ namespace GitVersion.VersionCalculation
             {
                 if (version == null) continue;
 
-                log.Info(version.ToString());
+                this.log.Info(version.ToString());
                 if (strategy is FallbackVersionStrategy || IncludeVersion(version))
                 {
                     yield return version;
@@ -104,7 +104,7 @@ namespace GitVersion.VersionCalculation
             {
                 if (filter.Exclude(version, out var reason))
                 {
-                    log.Info(reason);
+                    this.log.Info(reason);
                     return false;
                 }
             }
@@ -125,7 +125,7 @@ namespace GitVersion.VersionCalculation
                         baseVersion.Version.Source,
                         baseVersion.Version.ShouldIncrement,
                         baseVersion.Version.SemanticVersion,
-                        repositoryStore.FindMergeBase(parents[0], parents[1]),
+                        this.repositoryStore.FindMergeBase(parents[0], parents[1]),
                         baseVersion.Version.BranchNameOverride);
                 }
             }
@@ -134,7 +134,7 @@ namespace GitVersion.VersionCalculation
         private bool ReleaseBranchExistsInRepo()
         {
             var releaseBranchConfig = context.FullConfiguration.GetReleaseBranchConfig();
-            var releaseBranches = repositoryStore.GetReleaseBranches(releaseBranchConfig);
+            var releaseBranches = this.repositoryStore.GetReleaseBranches(releaseBranchConfig);
             return releaseBranches.Any();
         }
 
@@ -143,10 +143,7 @@ namespace GitVersion.VersionCalculation
             public SemanticVersion IncrementedVersion { get; set; }
             public BaseVersion Version { get; set; }
 
-            public override string ToString()
-            {
-                return $"{Version} | {IncrementedVersion}";
-            }
+            public override string ToString() => $"{Version} | {IncrementedVersion}";
         }
     }
 }

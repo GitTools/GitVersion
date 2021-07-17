@@ -9,7 +9,7 @@ namespace GitVersion
         IFormattable, IComparable<SemanticVersionPreReleaseTag>, IEquatable<SemanticVersionPreReleaseTag>
     {
         private static readonly LambdaEqualityHelper<SemanticVersionPreReleaseTag> EqualityHelper =
-           new LambdaEqualityHelper<SemanticVersionPreReleaseTag>(x => x.Name, x => x.Number);
+           new(x => x.Name, x => x.Number);
 
         public SemanticVersionPreReleaseTag()
         {
@@ -32,50 +32,23 @@ namespace GitVersion
         public int? Number { get; set; }
         public bool PromotedFromCommits { get; set; }
 
-        public override bool Equals(object obj)
-        {
-            return Equals(obj as SemanticVersionPreReleaseTag);
-        }
+        public override bool Equals(object obj) => Equals(obj as SemanticVersionPreReleaseTag);
 
-        public bool Equals(SemanticVersionPreReleaseTag other)
-        {
-            return EqualityHelper.Equals(this, other);
-        }
+        public bool Equals(SemanticVersionPreReleaseTag other) => EqualityHelper.Equals(this, other);
 
-        public override int GetHashCode()
-        {
-            return EqualityHelper.GetHashCode(this);
-        }
+        public override int GetHashCode() => EqualityHelper.GetHashCode(this);
 
-        public static bool operator ==(SemanticVersionPreReleaseTag left, SemanticVersionPreReleaseTag right)
-        {
-            return Equals(left, right);
-        }
+        public static bool operator ==(SemanticVersionPreReleaseTag left, SemanticVersionPreReleaseTag right) => Equals(left, right);
 
-        public static bool operator !=(SemanticVersionPreReleaseTag left, SemanticVersionPreReleaseTag right)
-        {
-            return !Equals(left, right);
-        }
+        public static bool operator !=(SemanticVersionPreReleaseTag left, SemanticVersionPreReleaseTag right) => !Equals(left, right);
 
-        public static bool operator >(SemanticVersionPreReleaseTag left, SemanticVersionPreReleaseTag right)
-        {
-            return left.CompareTo(right) > 0;
-        }
+        public static bool operator >(SemanticVersionPreReleaseTag left, SemanticVersionPreReleaseTag right) => left.CompareTo(right) > 0;
 
-        public static bool operator <(SemanticVersionPreReleaseTag left, SemanticVersionPreReleaseTag right)
-        {
-            return left.CompareTo(right) < 0;
-        }
+        public static bool operator <(SemanticVersionPreReleaseTag left, SemanticVersionPreReleaseTag right) => left.CompareTo(right) < 0;
 
-        public static bool operator >=(SemanticVersionPreReleaseTag left, SemanticVersionPreReleaseTag right)
-        {
-            return left.CompareTo(right) >= 0;
-        }
+        public static bool operator >=(SemanticVersionPreReleaseTag left, SemanticVersionPreReleaseTag right) => left.CompareTo(right) >= 0;
 
-        public static bool operator <=(SemanticVersionPreReleaseTag left, SemanticVersionPreReleaseTag right)
-        {
-            return StringComparerUtils.IgnoreCaseComparer.Compare(left.Name, right.Name) != 1;
-        }
+        public static bool operator <=(SemanticVersionPreReleaseTag left, SemanticVersionPreReleaseTag right) => StringComparerUtils.IgnoreCaseComparer.Compare(left.Name, right.Name) != 1;
 
         public static implicit operator string(SemanticVersionPreReleaseTag preReleaseTag)
         {
@@ -129,10 +102,7 @@ namespace GitVersion
             return Nullable.Compare(Number, other.Number);
         }
 
-        public override string ToString()
-        {
-            return ToString(null);
-        }
+        public override string ToString() => ToString(null);
 
         /// <summary>
         /// Default formats:
@@ -176,7 +146,7 @@ namespace GitVersion
             };
         }
 
-        private string FormatLegacy(string tag, string number = "")
+        private static string FormatLegacy(string tag, string number = "")
         {
             var tagEndsWithANumber = char.IsNumber(tag.LastOrDefault());
             if (tagEndsWithANumber && number.Length > 0)
@@ -198,9 +168,6 @@ namespace GitVersion
             return firstPart.Replace(".", string.Empty);
         }
 
-        public bool HasTag()
-        {
-            return !string.IsNullOrEmpty(Name) || (Number.HasValue && !PromotedFromCommits);
-        }
+        public bool HasTag() => !string.IsNullOrEmpty(Name) || (Number.HasValue && !PromotedFromCommits);
     }
 }

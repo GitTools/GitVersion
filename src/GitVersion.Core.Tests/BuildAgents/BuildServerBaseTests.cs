@@ -20,11 +20,8 @@ namespace GitVersion.Core.Tests.BuildAgents
         [SetUp]
         public void SetUp()
         {
-            sp = ConfigureServices(services =>
-            {
-                services.AddSingleton<BuildAgent>();
-            });
-            buildServer = sp.GetService<IVariableProvider>();
+            this.sp = ConfigureServices(services => services.AddSingleton<BuildAgent>());
+            this.buildServer = this.sp.GetService<IVariableProvider>();
         }
 
         [Test]
@@ -46,7 +43,7 @@ namespace GitVersion.Core.Tests.BuildAgents
             var config = new TestEffectiveConfiguration();
 
             var variables = this.buildServer.GetVariablesFor(semanticVersion, config, false);
-            var buildServer = sp.GetService<BuildAgent>();
+            var buildServer = this.sp.GetService<BuildAgent>();
             buildServer.WriteIntegration(writes.Add, variables);
 
             writes[1].ShouldBe("1.2.3-beta.1+5");
@@ -64,20 +61,11 @@ namespace GitVersion.Core.Tests.BuildAgents
             {
             }
 
-            public override bool CanApplyToCurrentContext()
-            {
-                throw new NotImplementedException();
-            }
+            public override bool CanApplyToCurrentContext() => throw new NotImplementedException();
 
-            public override string GenerateSetVersionMessage(VersionVariables variables)
-            {
-                return variables.FullSemVer;
-            }
+            public override string GenerateSetVersionMessage(VersionVariables variables) => variables.FullSemVer;
 
-            public override string[] GenerateSetParameterMessage(string name, string value)
-            {
-                return new string[0];
-            }
+            public override string[] GenerateSetParameterMessage(string name, string value) => Array.Empty<string>();
         }
     }
 }

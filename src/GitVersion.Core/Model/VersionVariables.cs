@@ -1,5 +1,3 @@
-using GitVersion.Helpers;
-using GitVersion.Logging;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -7,6 +5,8 @@ using System.IO;
 using System.Linq;
 using System.Text.Encodings.Web;
 using System.Text.Json;
+using GitVersion.Helpers;
+using GitVersion.Logging;
 using YamlDotNet.Serialization;
 using static GitVersion.Extensions.ObjectExtensions;
 
@@ -118,17 +118,11 @@ namespace GitVersion.OutputVariables
         public string CommitDate { get; set; }
 
         [ReflectionIgnore]
-        public static IEnumerable<string> AvailableVariables
-        {
-            get
-            {
-                return typeof(VersionVariables)
+        public static IEnumerable<string> AvailableVariables => typeof(VersionVariables)
                     .GetProperties()
                     .Where(p => !p.GetCustomAttributes(typeof(ReflectionIgnoreAttribute), false).Any())
                     .Select(p => p.Name)
                     .OrderBy(a => a, StringComparer.Ordinal);
-            }
-        }
 
         [ReflectionIgnore]
         public string FileName { get; set; }
@@ -136,15 +130,9 @@ namespace GitVersion.OutputVariables
         [ReflectionIgnore]
         public string this[string variable] => typeof(VersionVariables).GetProperty(variable)?.GetValue(this, null) as string;
 
-        public IEnumerator<KeyValuePair<string, string>> GetEnumerator()
-        {
-            return this.GetProperties().GetEnumerator();
-        }
+        public IEnumerator<KeyValuePair<string, string>> GetEnumerator() => this.GetProperties().GetEnumerator();
 
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
-        }
+        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
         public static VersionVariables FromDictionary(IEnumerable<KeyValuePair<string, string>> properties)
         {
@@ -209,10 +197,7 @@ namespace GitVersion.OutputVariables
             return false;
         }
 
-        private static bool ContainsKey(string variable)
-        {
-            return typeof(VersionVariables).GetProperty(variable) != null;
-        }
+        private static bool ContainsKey(string variable) => typeof(VersionVariables).GetProperty(variable) != null;
 
         public override string ToString()
         {

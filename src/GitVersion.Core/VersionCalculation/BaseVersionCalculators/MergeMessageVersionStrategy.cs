@@ -17,10 +17,7 @@ namespace GitVersion.VersionCalculation
     {
         private readonly ILog log;
 
-        public MergeMessageVersionStrategy(ILog log, Lazy<GitVersionContext> versionContext) : base(versionContext)
-        {
-            this.log = log ?? throw new ArgumentNullException(nameof(log));
-        }
+        public MergeMessageVersionStrategy(ILog log, Lazy<GitVersionContext> versionContext) : base(versionContext) => this.log = log ?? throw new ArgumentNullException(nameof(log));
 
         public override IEnumerable<BaseVersion> GetVersions()
         {
@@ -32,7 +29,7 @@ namespace GitVersion.VersionCalculation
                         mergeMessage.Version != null &&
                         Context.FullConfiguration.IsReleaseBranch(TrimRemote(mergeMessage.MergedBranch)))
                     {
-                        log.Info($"Found commit [{Context.CurrentCommit}] matching merge message format: {mergeMessage.FormatName}");
+                        this.log.Info($"Found commit [{Context.CurrentCommit}] matching merge message format: {mergeMessage.FormatName}");
                         var shouldIncrement = !Context.Configuration.PreventIncrementForMergedBranchVersion;
                         return new[]
                         {

@@ -1,6 +1,6 @@
+using System.Collections.Generic;
 using GitVersion;
 using NUnit.Framework;
-using System.Collections.Generic;
 
 namespace GitVersionExe.Tests
 {
@@ -8,10 +8,7 @@ namespace GitVersionExe.Tests
     public class QuotedStringHelpersTests
     {
         [TestCaseSource(nameof(SplitUnquotedTestData))]
-        public string[] SplitUnquotedTests(string input, char splitChar)
-        {
-            return QuotedStringHelpers.SplitUnquoted(input, splitChar);
-        }
+        public string[] SplitUnquotedTests(string input, char splitChar) => QuotedStringHelpers.SplitUnquoted(input, splitChar);
 
         private static IEnumerable<TestCaseData> SplitUnquotedTestData()
         {
@@ -91,10 +88,7 @@ namespace GitVersionExe.Tests
         }
 
         [TestCaseSource(nameof(RemoveEmptyEntriesTestData))]
-        public string[] SplitUnquotedRemovesEmptyEntries(string input, char splitChar)
-        {
-            return QuotedStringHelpers.SplitUnquoted(input, splitChar);
-        }
+        public string[] SplitUnquotedRemovesEmptyEntries(string input, char splitChar) => QuotedStringHelpers.SplitUnquoted(input, splitChar);
 
         private static IEnumerable<TestCaseData> RemoveEmptyEntriesTestData()
         {
@@ -110,10 +104,7 @@ namespace GitVersionExe.Tests
         }
 
         [TestCaseSource(nameof(UnquoteTextTestData))]
-        public string UnquoteTextTests(string input)
-        {
-            return QuotedStringHelpers.UnquoteText(input);
-        }
+        public string UnquoteTextTests(string input) => QuotedStringHelpers.UnquoteText(input);
 
         private static IEnumerable<TestCaseData> UnquoteTextTestData()
         {

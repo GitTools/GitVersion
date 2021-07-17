@@ -8,10 +8,7 @@ namespace GitVersion.MsBuild
     {
         private readonly TaskLoggingHelper taskLog;
 
-        public MsBuildAppender(TaskLoggingHelper taskLog)
-        {
-            this.taskLog = taskLog;
-        }
+        public MsBuildAppender(TaskLoggingHelper taskLog) => this.taskLog = taskLog;
 
         public void WriteTo(LogLevel level, string message)
         {
@@ -32,15 +29,15 @@ namespace GitVersion.MsBuild
             {
                 case LogLevel.Fatal:
                 case LogLevel.Error:
-                    taskLog.LogError(contents);
+                    this.taskLog.LogError(contents);
                     break;
                 case LogLevel.Warn:
-                    taskLog.LogWarning(contents);
+                    this.taskLog.LogWarning(contents);
                     break;
                 case LogLevel.Info:
                 case LogLevel.Verbose:
                 case LogLevel.Debug:
-                    taskLog.LogMessage(contents);
+                    this.taskLog.LogMessage(contents);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(level), level, null);

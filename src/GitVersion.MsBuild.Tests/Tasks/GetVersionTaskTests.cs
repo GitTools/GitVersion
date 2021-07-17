@@ -69,10 +69,7 @@ namespace GitVersion.MsBuild.Tests.Tasks
         {
             const string taskName = nameof(GetVersion);
 
-            using var result = ExecuteMsBuildExe(project =>
-            {
-                AddGetVersionTask(project, taskName, taskName, outputProperty);
-            });
+            using var result = ExecuteMsBuildExe(project => AddGetVersionTask(project, taskName, taskName, outputProperty));
 
             result.ProjectPath.ShouldNotBeNullOrWhiteSpace();
             result.MsBuild.Count.ShouldBeGreaterThan(0);
@@ -93,10 +90,7 @@ namespace GitVersion.MsBuild.Tests.Tasks
         {
             const string taskName = nameof(GetVersion);
 
-            using var result = ExecuteMsBuildExeInAzurePipeline(project =>
-            {
-                AddGetVersionTask(project, taskName, taskName, outputProperty);
-            });
+            using var result = ExecuteMsBuildExeInAzurePipeline(project => AddGetVersionTask(project, taskName, taskName, outputProperty));
 
             result.ProjectPath.ShouldNotBeNullOrWhiteSpace();
             result.MsBuild.Count.ShouldBeGreaterThan(0);

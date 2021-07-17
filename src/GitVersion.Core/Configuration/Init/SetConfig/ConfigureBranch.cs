@@ -26,27 +26,24 @@ namespace GitVersion.Configuration.Init.SetConfig
             switch (result)
             {
                 case "0":
-                    steps.Enqueue(StepFactory.CreateStep<ConfigureBranches>());
+                    steps.Enqueue(this.StepFactory.CreateStep<ConfigureBranches>());
                     return StepResult.Ok();
                 case "1":
-                    steps.Enqueue(StepFactory.CreateStep<SetBranchTag>().WithData(name, branchConfig));
+                    steps.Enqueue(this.StepFactory.CreateStep<SetBranchTag>().WithData(this.name, this.branchConfig));
                     return StepResult.Ok();
                 case "2":
-                    steps.Enqueue(StepFactory.CreateStep<SetBranchIncrementMode>().WithData(name, branchConfig));
+                    steps.Enqueue(this.StepFactory.CreateStep<SetBranchIncrementMode>().WithData(this.name, this.branchConfig));
                     return StepResult.Ok();
             }
 
             return StepResult.InvalidResponseSelected();
         }
 
-        protected override string GetPrompt(Config config, string workingDirectory)
-        {
-            return $@"What would you like to change for '{name}':
+        protected override string GetPrompt(Config config, string workingDirectory) => $@"What would you like to change for '{this.name}':
 
 0) Go Back
-1) Branch Pre-release tag (Current: {branchConfig.Tag})
-2) Branch Increment mode (per commit/after tag) (Current: {branchConfig.VersioningMode})";
-        }
+1) Branch Pre-release tag (Current: {this.branchConfig.Tag})
+2) Branch Increment mode (per commit/after tag) (Current: {this.branchConfig.VersioningMode})";
 
         protected override string DefaultResult => "0";
     }

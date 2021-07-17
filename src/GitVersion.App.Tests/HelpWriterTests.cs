@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
-using GitVersion.Extensions;
 using GitVersion.Core.Tests.Helpers;
+using GitVersion.Extensions;
 using Microsoft.Extensions.DependencyInjection;
 using NUnit.Framework;
 using Shouldly;
@@ -14,11 +14,8 @@ namespace GitVersion.App.Tests
 
         public HelpWriterTests()
         {
-            var sp = ConfigureServices(services =>
-            {
-                services.AddModule(new GitVersionAppModule());
-            });
-            helpWriter = sp.GetService<IHelpWriter>();
+            var sp = ConfigureServices(services => services.AddModule(new GitVersionAppModule()));
+            this.helpWriter = sp.GetService<IHelpWriter>();
         }
 
         [Test]
@@ -41,7 +38,7 @@ namespace GitVersion.App.Tests
             };
             string helpText = null;
 
-            helpWriter.WriteTo(s => helpText = s);
+            this.helpWriter.WriteTo(s => helpText = s);
 
             var ignored = new[]
             {

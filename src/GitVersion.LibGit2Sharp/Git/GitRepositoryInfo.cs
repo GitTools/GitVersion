@@ -8,27 +8,27 @@ namespace GitVersion
     internal class GitRepositoryInfo : IGitRepositoryInfo
     {
         private readonly IOptions<GitVersionOptions> options;
-        private GitVersionOptions gitVersionOptions => options.Value;
+        private GitVersionOptions gitVersionOptions => this.options.Value;
 
-        private Lazy<string?> dynamicGitRepositoryPath;
-        private Lazy<string?> dotGitDirectory;
-        private Lazy<string?> gitRootPath;
-        private Lazy<string> projectRootDirectory;
+        private readonly Lazy<string?> dynamicGitRepositoryPath;
+        private readonly Lazy<string?> dotGitDirectory;
+        private readonly Lazy<string?> gitRootPath;
+        private readonly Lazy<string> projectRootDirectory;
 
         public GitRepositoryInfo(IOptions<GitVersionOptions> options)
         {
             this.options = options ?? throw new ArgumentNullException(nameof(options));
 
-            dynamicGitRepositoryPath = new Lazy<string?>(GetDynamicGitRepositoryPath);
-            dotGitDirectory = new Lazy<string?>(GetDotGitDirectory);
-            gitRootPath = new Lazy<string?>(GetGitRootPath);
-            projectRootDirectory = new Lazy<string>(GetProjectRootDirectory);
+            this.dynamicGitRepositoryPath = new Lazy<string?>(GetDynamicGitRepositoryPath);
+            this.dotGitDirectory = new Lazy<string?>(GetDotGitDirectory);
+            this.gitRootPath = new Lazy<string?>(GetGitRootPath);
+            this.projectRootDirectory = new Lazy<string>(GetProjectRootDirectory);
         }
 
-        public string? DynamicGitRepositoryPath => dynamicGitRepositoryPath.Value;
-        public string? DotGitDirectory => dotGitDirectory.Value;
-        public string? GitRootPath => gitRootPath.Value;
-        public string ProjectRootDirectory => projectRootDirectory.Value;
+        public string? DynamicGitRepositoryPath => this.dynamicGitRepositoryPath.Value;
+        public string? DotGitDirectory => this.dotGitDirectory.Value;
+        public string? GitRootPath => this.gitRootPath.Value;
+        public string ProjectRootDirectory => this.projectRootDirectory.Value;
 
         private string? GetDynamicGitRepositoryPath()
         {

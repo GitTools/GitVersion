@@ -1,8 +1,8 @@
 using System;
 using System.IO;
 using System.Reflection;
-using GitVersion.Extensions;
 using GitVersion.Core.Tests.Helpers;
+using GitVersion.Extensions;
 using Microsoft.Extensions.DependencyInjection;
 using Mono.Cecil;
 using NUnit.Framework;
@@ -16,12 +16,9 @@ namespace GitVersion.App.Tests
 
         public VersionWriterTests()
         {
-            var sp = ConfigureServices(services =>
-            {
-                services.AddModule(new GitVersionAppModule());
-            });
+            var sp = ConfigureServices(services => services.AddModule(new GitVersionAppModule()));
 
-            versionWriter = sp.GetService<IVersionWriter>();
+            this.versionWriter = sp.GetService<IVersionWriter>();
         }
         [Test]
         public void WriteVersionShouldWriteFileVersionWithNoPrereleaseTag()
@@ -29,7 +26,7 @@ namespace GitVersion.App.Tests
             var asm = GenerateAssembly(new Version(1, 0, 0), "");
 
             string version = null;
-            versionWriter.WriteTo(asm, v => version = v);
+            this.versionWriter.WriteTo(asm, v => version = v);
 
             Assert.IsNotNull(asm);
             Assert.AreEqual("1.0.0", version);
@@ -41,13 +38,13 @@ namespace GitVersion.App.Tests
             var asm = GenerateAssembly(new Version(1, 0, 0), "-beta0004");
 
             string version = null;
-            versionWriter.WriteTo(asm, v => version = v);
+            this.versionWriter.WriteTo(asm, v => version = v);
 
             Assert.IsNotNull(asm);
             Assert.AreEqual("1.0.0-beta0004", version);
         }
 
-        private Assembly GenerateAssembly(Version fileVersion, string prereleaseInfo)
+        private static Assembly GenerateAssembly(Version fileVersion, string prereleaseInfo)
         {
             var definition = new AssemblyNameDefinition("test-asm", fileVersion);
 

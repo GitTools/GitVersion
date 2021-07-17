@@ -10,7 +10,7 @@ namespace GitTools.Testing.Internal
 {
     public static class ProcessHelper
     {
-        private static readonly object LockObject = new object();
+        private static readonly object LockObject = new();
 
         // http://social.msdn.microsoft.com/Forums/en/netfxbcl/thread/f6069441-4ab1-4299-ad6a-b8bb9ed36be3
         private static Process Start(ProcessStartInfo startInfo)
@@ -182,11 +182,11 @@ namespace GitTools.Testing.Internal
             {
                 try
                 {
-                    oldMode = SetErrorMode((int)mode);
+                    this.oldMode = SetErrorMode((int)mode);
                 }
                 catch (Exception ex) when (ex is EntryPointNotFoundException || ex is DllNotFoundException)
                 {
-                    oldMode = (int)mode;
+                    this.oldMode = (int)mode;
                 }
             }
 
@@ -195,7 +195,7 @@ namespace GitTools.Testing.Internal
             {
                 try
                 {
-                    SetErrorMode(oldMode);
+                    SetErrorMode(this.oldMode);
                 }
                 catch (Exception ex) when (ex is EntryPointNotFoundException || ex is DllNotFoundException)
                 {

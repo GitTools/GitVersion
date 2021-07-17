@@ -16,10 +16,7 @@ namespace GitVersion.App.Tests
         private string wixVersionFileName;
 
         [SetUp]
-        public void Setup()
-        {
-            wixVersionFileName = WixVersionFileUpdater.WixVersionFileName;
-        }
+        public void Setup() => this.wixVersionFileName = WixVersionFileUpdater.WixVersionFileName;
 
         [Test]
         public void WixVersionFileCreationTest()
@@ -29,7 +26,7 @@ namespace GitVersion.App.Tests
             fixture.MakeACommit();
 
             GitVersionHelper.ExecuteIn(fixture.RepositoryPath, arguments: " /updatewixversionfile");
-            Assert.IsTrue(File.Exists(Path.Combine(fixture.RepositoryPath, wixVersionFileName)));
+            Assert.IsTrue(File.Exists(Path.Combine(fixture.RepositoryPath, this.wixVersionFileName)));
         }
 
         [Test]
@@ -44,7 +41,7 @@ namespace GitVersion.App.Tests
 
             GitVersionHelper.ExecuteIn(fixture.RepositoryPath, arguments: " /updatewixversionfile");
 
-            var gitVersionVarsInWix = GetGitVersionVarsInWixFile(Path.Combine(fixture.RepositoryPath, wixVersionFileName));
+            var gitVersionVarsInWix = GetGitVersionVarsInWixFile(Path.Combine(fixture.RepositoryPath, this.wixVersionFileName));
             var gitVersionVars = VersionVariables.AvailableVariables;
 
             Assert.AreEqual(gitVersionVars.Count(), gitVersionVarsInWix.Count);
@@ -62,7 +59,7 @@ namespace GitVersion.App.Tests
 
             GitVersionHelper.ExecuteIn(fixture.RepositoryPath, arguments: " /updatewixversionfile");
 
-            var gitVersionVarsInWix = GetGitVersionVarsInWixFile(Path.Combine(fixture.RepositoryPath, wixVersionFileName));
+            var gitVersionVarsInWix = GetGitVersionVarsInWixFile(Path.Combine(fixture.RepositoryPath, this.wixVersionFileName));
             var gitVersionVars = VersionVariables.AvailableVariables;
 
             foreach (var variable in gitVersionVars)
@@ -75,7 +72,7 @@ namespace GitVersion.App.Tests
             }
         }
 
-        private Dictionary<string, string> GetGitVersionVarsInWixFile(string file)
+        private static Dictionary<string, string> GetGitVersionVarsInWixFile(string file)
         {
             var gitVersionVarsInWix = new Dictionary<string, string>();
             using (var reader = new XmlTextReader(file))

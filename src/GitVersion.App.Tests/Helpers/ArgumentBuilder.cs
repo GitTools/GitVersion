@@ -4,10 +4,7 @@ namespace GitVersion.App.Tests
 {
     public class ArgumentBuilder
     {
-        public ArgumentBuilder(string workingDirectory)
-        {
-            this.workingDirectory = workingDirectory;
-        }
+        public ArgumentBuilder(string workingDirectory) => this.workingDirectory = workingDirectory;
 
         public ArgumentBuilder(string workingDirectory, string exec, string execArgs, string projectFile, string projectArgs, string logFile)
         {
@@ -26,42 +23,42 @@ namespace GitVersion.App.Tests
             this.logFile = logFile;
         }
 
-        public string WorkingDirectory => workingDirectory;
+        public string WorkingDirectory => this.workingDirectory;
 
-        public string LogFile => logFile;
+        public string LogFile => this.logFile;
 
         public override string ToString()
         {
             var arguments = new StringBuilder();
 
-            arguments.AppendFormat(" /targetpath \"{0}\"", workingDirectory);
+            arguments.AppendFormat(" /targetpath \"{0}\"", this.workingDirectory);
 
-            if (!string.IsNullOrWhiteSpace(exec))
+            if (!string.IsNullOrWhiteSpace(this.exec))
             {
-                arguments.AppendFormat(" /exec \"{0}\"", exec);
+                arguments.AppendFormat(" /exec \"{0}\"", this.exec);
             }
 
-            if (!string.IsNullOrWhiteSpace(execArgs))
+            if (!string.IsNullOrWhiteSpace(this.execArgs))
             {
-                arguments.AppendFormat(" /execArgs \"{0}\"", execArgs);
+                arguments.AppendFormat(" /execArgs \"{0}\"", this.execArgs);
             }
 
-            if (!string.IsNullOrWhiteSpace(projectFile))
+            if (!string.IsNullOrWhiteSpace(this.projectFile))
             {
-                arguments.AppendFormat(" /proj \"{0}\"", projectFile);
+                arguments.AppendFormat(" /proj \"{0}\"", this.projectFile);
             }
 
-            if (!string.IsNullOrWhiteSpace(projectArgs))
+            if (!string.IsNullOrWhiteSpace(this.projectArgs))
             {
-                arguments.AppendFormat(" /projargs \"{0}\"", projectArgs);
+                arguments.AppendFormat(" /projargs \"{0}\"", this.projectArgs);
             }
 
-            if (!string.IsNullOrWhiteSpace(logFile))
+            if (!string.IsNullOrWhiteSpace(this.logFile))
             {
-                arguments.AppendFormat(" /l \"{0}\"", logFile);
+                arguments.AppendFormat(" /l \"{0}\"", this.logFile);
             }
 
-            arguments.Append(additionalArguments);
+            arguments.Append(this.additionalArguments);
 
             return arguments.ToString();
         }

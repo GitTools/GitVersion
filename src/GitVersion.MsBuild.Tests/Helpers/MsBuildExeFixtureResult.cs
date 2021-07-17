@@ -8,16 +8,10 @@ namespace GitVersion.MsBuild.Tests.Helpers
     {
         private readonly RepositoryFixtureBase fixture;
 
-        public MsBuildExeFixtureResult(RepositoryFixtureBase fixture)
-        {
-            this.fixture = fixture;
-        }
+        public MsBuildExeFixtureResult(RepositoryFixtureBase fixture) => this.fixture = fixture;
         public IAnalyzerResults MsBuild { get; set; }
         public string Output { get; set; }
         public string ProjectPath { get; set; }
-        public void Dispose()
-        {
-            fixture.Dispose();
-        }
+        public void Dispose() => this.fixture.Dispose();
     }
 }

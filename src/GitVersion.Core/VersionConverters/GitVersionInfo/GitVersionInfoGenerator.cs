@@ -17,7 +17,7 @@ namespace GitVersion.VersionConverters.GitVersionInfo
         public GitVersionInfoGenerator(IFileSystem fileSystem)
         {
             this.fileSystem = fileSystem ?? throw new ArgumentNullException(nameof(fileSystem));
-            templateManager = new TemplateManager(TemplateType.GitVersionInfo);
+            this.templateManager = new TemplateManager(TemplateType.GitVersionInfo);
         }
 
         public void Execute(VersionVariables variables, GitVersionInfoContext context)
@@ -30,12 +30,12 @@ namespace GitVersion.VersionConverters.GitVersionInfo
 
             if (File.Exists(filePath))
             {
-                originalFileContents = fileSystem.ReadAllText(filePath);
+                originalFileContents = this.fileSystem.ReadAllText(filePath);
             }
 
             var fileExtension = Path.GetExtension(filePath);
-            var template = templateManager.GetTemplateFor(fileExtension);
-            var addFormat = templateManager.GetAddFormatFor(fileExtension);
+            var template = this.templateManager.GetTemplateFor(fileExtension);
+            var addFormat = this.templateManager.GetAddFormatFor(fileExtension);
             var indentation = GetIndentation(fileExtension);
 
             var members = string.Join(System.Environment.NewLine, variables.Select(v => string.Format(indentation + addFormat, v.Key, v.Value)));
@@ -44,7 +44,7 @@ namespace GitVersion.VersionConverters.GitVersionInfo
 
             if (fileContents != originalFileContents)
             {
-                fileSystem.WriteAllText(filePath, fileContents);
+                this.fileSystem.WriteAllText(filePath, fileContents);
             }
         }
 

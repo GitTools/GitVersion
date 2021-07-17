@@ -30,9 +30,9 @@ namespace GitVersion.Core.Tests
 
             var sp = ConfigureServices();
 
-            log = sp.GetService<ILog>();
-            fileSystem = sp.GetService<IFileSystem>();
-            variableProvider = sp.GetService<IVariableProvider>();
+            this.log = sp.GetService<ILog>();
+            this.fileSystem = sp.GetService<IFileSystem>();
+            this.variableProvider = sp.GetService<IVariableProvider>();
         }
 
         [TestCase("cs")]
@@ -45,12 +45,12 @@ namespace GitVersion.Core.Tests
             var workingDir = Path.GetTempPath();
             var assemblyInfoFile = "VersionAssemblyInfo." + fileExtension;
             var fullPath = Path.Combine(workingDir, assemblyInfoFile);
-            var variables = variableProvider.GetVariablesFor(SemanticVersion.Parse("1.0.0", "v"), new TestEffectiveConfiguration(), false);
+            var variables = this.variableProvider.GetVariablesFor(SemanticVersion.Parse("1.0.0", "v"), new TestEffectiveConfiguration(), false);
 
-            using var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(log, fileSystem);
+            using var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(this.log, this.fileSystem);
             assemblyInfoFileUpdater.Execute(variables, new AssemblyInfoContext(workingDir, true, assemblyInfoFile));
 
-            fileSystem.ReadAllText(fullPath).ShouldMatchApproved(c => c.SubFolder(Path.Combine("Approved", fileExtension)));
+            this.fileSystem.ReadAllText(fullPath).ShouldMatchApproved(c => c.SubFolder(Path.Combine("Approved", fileExtension)));
         }
 
         [TestCase("cs")]
@@ -63,12 +63,12 @@ namespace GitVersion.Core.Tests
             var workingDir = Path.GetTempPath();
             var assemblyInfoFile = Path.Combine("src", "Project", "Properties", "VersionAssemblyInfo." + fileExtension);
             var fullPath = Path.Combine(workingDir, assemblyInfoFile);
-            var variables = variableProvider.GetVariablesFor(SemanticVersion.Parse("1.0.0", "v"), new TestEffectiveConfiguration(), false);
+            var variables = this.variableProvider.GetVariablesFor(SemanticVersion.Parse("1.0.0", "v"), new TestEffectiveConfiguration(), false);
 
-            using var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(log, fileSystem);
+            using var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(this.log, this.fileSystem);
             assemblyInfoFileUpdater.Execute(variables, new AssemblyInfoContext(workingDir, true, assemblyInfoFile));
 
-            fileSystem.ReadAllText(fullPath).ShouldMatchApproved(c => c.SubFolder(Path.Combine("Approved", fileExtension)));
+            this.fileSystem.ReadAllText(fullPath).ShouldMatchApproved(c => c.SubFolder(Path.Combine("Approved", fileExtension)));
         }
 
         [TestCase("cs")]
@@ -84,15 +84,15 @@ namespace GitVersion.Core.Tests
                 "AssemblyInfo." + fileExtension,
                 Path.Combine("src", "Project", "Properties", "VersionAssemblyInfo." + fileExtension)
             };
-            var variables = variableProvider.GetVariablesFor(SemanticVersion.Parse("1.0.0", "v"), new TestEffectiveConfiguration(), false);
+            var variables = this.variableProvider.GetVariablesFor(SemanticVersion.Parse("1.0.0", "v"), new TestEffectiveConfiguration(), false);
 
-            using var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(log, fileSystem);
+            using var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(this.log, this.fileSystem);
             assemblyInfoFileUpdater.Execute(variables, new AssemblyInfoContext(workingDir, true, assemblyInfoFiles.ToArray()));
 
             foreach (var item in assemblyInfoFiles)
             {
                 var fullPath = Path.Combine(workingDir, item);
-                fileSystem.ReadAllText(fullPath).ShouldMatchApproved(c => c.SubFolder(Path.Combine("Approved", fileExtension)));
+                this.fileSystem.ReadAllText(fullPath).ShouldMatchApproved(c => c.SubFolder(Path.Combine("Approved", fileExtension)));
             }
         }
 
@@ -104,41 +104,41 @@ namespace GitVersion.Core.Tests
             var workingDir = Path.GetTempPath();
             var assemblyInfoFile = "VersionAssemblyInfo." + fileExtension;
             var fullPath = Path.Combine(workingDir, assemblyInfoFile);
-            var variables = variableProvider.GetVariablesFor(SemanticVersion.Parse("1.0.0", "v"), new TestEffectiveConfiguration(), false);
+            var variables = this.variableProvider.GetVariablesFor(SemanticVersion.Parse("1.0.0", "v"), new TestEffectiveConfiguration(), false);
 
-            using var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(log, fileSystem);
+            using var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(this.log, this.fileSystem);
             assemblyInfoFileUpdater.Execute(variables, new AssemblyInfoContext(workingDir, false, assemblyInfoFile));
 
-            fileSystem.Exists(fullPath).ShouldBeFalse();
+            this.fileSystem.Exists(fullPath).ShouldBeFalse();
         }
 
         [Test]
         public void ShouldNotCreateAssemblyInfoFileForUnknownSourceCodeAndEnsureAssemblyInfo()
         {
-            fileSystem = Substitute.For<IFileSystem>();
+            this.fileSystem = Substitute.For<IFileSystem>();
             var workingDir = Path.GetTempPath();
             var assemblyInfoFile = "VersionAssemblyInfo.js";
             var fullPath = Path.Combine(workingDir, assemblyInfoFile);
-            var variables = variableProvider.GetVariablesFor(SemanticVersion.Parse("1.0.0", "v"), new TestEffectiveConfiguration(), false);
+            var variables = this.variableProvider.GetVariablesFor(SemanticVersion.Parse("1.0.0", "v"), new TestEffectiveConfiguration(), false);
 
-            using var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(log, fileSystem);
+            using var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(this.log, this.fileSystem);
             assemblyInfoFileUpdater.Execute(variables, new AssemblyInfoContext(workingDir, true, assemblyInfoFile));
 
-            fileSystem.Received(0).WriteAllText(fullPath, Arg.Any<string>());
+            this.fileSystem.Received(0).WriteAllText(fullPath, Arg.Any<string>());
         }
 
         [Test]
         public void ShouldStartSearchFromWorkingDirectory()
         {
-            fileSystem = Substitute.For<IFileSystem>();
+            this.fileSystem = Substitute.For<IFileSystem>();
             var workingDir = Path.GetTempPath();
             var assemblyInfoFiles = Array.Empty<string>();
-            var variables = variableProvider.GetVariablesFor(SemanticVersion.Parse("1.0.0", "v"), new TestEffectiveConfiguration(), false);
+            var variables = this.variableProvider.GetVariablesFor(SemanticVersion.Parse("1.0.0", "v"), new TestEffectiveConfiguration(), false);
 
-            using var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(log, fileSystem);
+            using var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(this.log, this.fileSystem);
             assemblyInfoFileUpdater.Execute(variables, new AssemblyInfoContext(workingDir, false, assemblyInfoFiles.ToArray()));
 
-            fileSystem.Received().DirectoryEnumerateFiles(Arg.Is(workingDir), Arg.Any<string>(), Arg.Any<SearchOption>());
+            this.fileSystem.Received().DirectoryEnumerateFiles(Arg.Is(workingDir), Arg.Any<string>(), Arg.Any<SearchOption>());
         }
 
         [TestCase("cs", "[assembly: AssemblyVersion(\"1.0.0.0\")]\r\n[assembly: AssemblyInformationalVersion(\"1.0.0.0\")]\r\n[assembly: AssemblyFileVersion(\"1.0.0.0\")]")]
@@ -152,7 +152,7 @@ namespace GitVersion.Core.Tests
 
             VerifyAssemblyInfoFile(assemblyFileContent, fileName, AssemblyVersioningScheme.MajorMinor, (fs, variables) =>
             {
-                using var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(log, fs);
+                using var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(this.log, fs);
                 assemblyInfoFileUpdater.Execute(variables, new AssemblyInfoContext(workingDir, false, assemblyInfoFile));
 
                 fs.Received().WriteAllText(fileName, Arg.Is<string>(s =>
@@ -175,7 +175,7 @@ namespace GitVersion.Core.Tests
 
             VerifyAssemblyInfoFile(assemblyFileContent, fileName, AssemblyVersioningScheme.None, verify: (fs, variables) =>
             {
-                using var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(log, fs);
+                using var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(this.log, fs);
                 assemblyInfoFileUpdater.Execute(variables, new AssemblyInfoContext(workingDir, false, assemblyInfoFile));
 
                 assemblyFileContent = fs.ReadAllText(fileName);
@@ -194,7 +194,7 @@ namespace GitVersion.Core.Tests
 
             VerifyAssemblyInfoFile(assemblyFileContent, fileName, AssemblyVersioningScheme.MajorMinor, (fs, variables) =>
             {
-                using var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(log, fs);
+                using var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(this.log, fs);
                 assemblyInfoFileUpdater.Execute(variables, new AssemblyInfoContext(workingDir, false, assemblyInfoFile));
 
                 fs.Received().WriteAllText(fileName, Arg.Is<string>(s =>
@@ -215,7 +215,7 @@ namespace GitVersion.Core.Tests
 
             VerifyAssemblyInfoFile(assemblyFileContent, fileName, AssemblyVersioningScheme.MajorMinor, (fs, variables) =>
             {
-                using var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(log, fs);
+                using var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(this.log, fs);
                 assemblyInfoFileUpdater.Execute(variables, new AssemblyInfoContext(workingDir, false, assemblyInfoFile));
 
                 fs.Received().WriteAllText(fileName, Arg.Is<string>(s =>
@@ -236,7 +236,7 @@ namespace GitVersion.Core.Tests
 
             VerifyAssemblyInfoFile(assemblyFileContent, fileName, AssemblyVersioningScheme.MajorMinor, (fs, variables) =>
             {
-                using var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(log, fs);
+                using var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(this.log, fs);
                 assemblyInfoFileUpdater.Execute(variables, new AssemblyInfoContext(workingDir, false, assemblyInfoFile));
 
                 fs.Received().WriteAllText(fileName, Arg.Is<string>(s =>
@@ -257,7 +257,7 @@ namespace GitVersion.Core.Tests
 
             VerifyAssemblyInfoFile(assemblyFileContent, fileName, verify: (fs, variables) =>
             {
-                using var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(log, fs);
+                using var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(this.log, fs);
                 assemblyInfoFileUpdater.Execute(variables, new AssemblyInfoContext(workingDir, false, assemblyInfoFile));
 
                 fs.Received().WriteAllText(fileName, Arg.Is<string>(s =>
@@ -281,7 +281,7 @@ namespace GitVersion.Core.Tests
 
             VerifyAssemblyInfoFile("", fileName, AssemblyVersioningScheme.MajorMinor, (fs, variables) =>
             {
-                using var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(log, fs);
+                using var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(this.log, fs);
                 assemblyInfoFileUpdater.Execute(variables, new AssemblyInfoContext(workingDir, false, assemblyInfoFile));
 
                 fs.Received().WriteAllText(fileName, Arg.Is<string>(s =>
@@ -302,7 +302,7 @@ namespace GitVersion.Core.Tests
 
             VerifyAssemblyInfoFile(assemblyFileContent, fileName, AssemblyVersioningScheme.MajorMinor, (fs, variables) =>
             {
-                using var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(log, fs);
+                using var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(this.log, fs);
                 assemblyInfoFileUpdater.Execute(variables, new AssemblyInfoContext(workingDir, false, assemblyInfoFile));
 
                 fs.Received().WriteAllText(fileName, Arg.Is<string>(s =>
@@ -323,7 +323,7 @@ namespace GitVersion.Core.Tests
 
             VerifyAssemblyInfoFile(assemblyFileContent, fileName, verify: (fs, variables) =>
             {
-                using var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(log, fs);
+                using var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(this.log, fs);
                 assemblyInfoFileUpdater.Execute(variables, new AssemblyInfoContext(workingDir, false, assemblyInfoFile));
 
                 fs.Received().WriteAllText(fileName, Arg.Is<string>(s =>
@@ -344,7 +344,7 @@ namespace GitVersion.Core.Tests
 
             VerifyAssemblyInfoFile(assemblyFileContent, fileName, AssemblyVersioningScheme.MajorMinor, (fs, variables) =>
             {
-                using var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(log, fs);
+                using var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(this.log, fs);
                 assemblyInfoFileUpdater.Execute(variables, new AssemblyInfoContext(workingDir, false, assemblyInfoFile));
 
                 fs.Received().WriteAllText(fileName, Arg.Is<string>(s =>
@@ -365,7 +365,7 @@ namespace GitVersion.Core.Tests
 
             VerifyAssemblyInfoFile(assemblyFileContent, fileName, AssemblyVersioningScheme.MajorMinor, (fs, variables) =>
             {
-                using var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(log, fs);
+                using var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(this.log, fs);
                 assemblyInfoFileUpdater.Execute(variables, new AssemblyInfoContext(workingDir, false, assemblyInfoFile));
 
                 fs.Received().WriteAllText(fileName, Arg.Is<string>(s =>
@@ -388,7 +388,7 @@ namespace GitVersion.Core.Tests
 
             VerifyAssemblyInfoFile(assemblyFileContent, fileName, verify: (fs, variables) =>
             {
-                using var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(log, fs);
+                using var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(this.log, fs);
                 assemblyInfoFileUpdater.Execute(variables, new AssemblyInfoContext(workingDir, false, assemblyInfoFile));
 
                 assemblyFileContent = fs.ReadAllText(fileName);
@@ -409,7 +409,7 @@ namespace GitVersion.Core.Tests
 
             VerifyAssemblyInfoFile(assemblyFileContent, fileName, verify: (fs, variables) =>
             {
-                using var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(log, fs);
+                using var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(this.log, fs);
                 assemblyInfoFileUpdater.Execute(variables, new AssemblyInfoContext(workingDir, false, assemblyInfoFile));
 
                 assemblyFileContent = fs.ReadAllText(fileName);
@@ -430,7 +430,7 @@ namespace GitVersion.Core.Tests
 
             VerifyAssemblyInfoFile(assemblyFileContent, fileName, AssemblyVersioningScheme.None, verify: (fs, variables) =>
             {
-                using var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(log, fs);
+                using var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(this.log, fs);
                 assemblyInfoFileUpdater.Execute(variables, new AssemblyInfoContext(workingDir, false, assemblyInfoFile));
 
                 assemblyFileContent = fs.ReadAllText(fileName);
@@ -444,7 +444,7 @@ namespace GitVersion.Core.Tests
             AssemblyVersioningScheme versioningScheme = AssemblyVersioningScheme.MajorMinorPatch,
             Action<IFileSystem, VersionVariables> verify = null)
         {
-            fileSystem = Substitute.For<IFileSystem>();
+            this.fileSystem = Substitute.For<IFileSystem>();
             var version = new SemanticVersion
             {
                 BuildMetaData = new SemanticVersionBuildMetaData("versionSourceHash", 3, "foo", "hash", "shortHash", DateTimeOffset.Now, 0),
@@ -453,18 +453,18 @@ namespace GitVersion.Core.Tests
                 Patch = 1
             };
 
-            fileSystem.Exists(fileName).Returns(true);
-            fileSystem.ReadAllText(fileName).Returns(assemblyFileContent);
-            fileSystem.When(f => f.WriteAllText(fileName, Arg.Any<string>())).Do(c =>
+            this.fileSystem.Exists(fileName).Returns(true);
+            this.fileSystem.ReadAllText(fileName).Returns(assemblyFileContent);
+            this.fileSystem.When(f => f.WriteAllText(fileName, Arg.Any<string>())).Do(c =>
             {
                 assemblyFileContent = c.ArgAt<string>(1);
-                fileSystem.ReadAllText(fileName).Returns(assemblyFileContent);
+                this.fileSystem.ReadAllText(fileName).Returns(assemblyFileContent);
             });
 
             var config = new TestEffectiveConfiguration(assemblyVersioningScheme: versioningScheme);
-            var variables = variableProvider.GetVariablesFor(version, config, false);
+            var variables = this.variableProvider.GetVariablesFor(version, config, false);
 
-            verify?.Invoke(fileSystem, variables);
+            verify?.Invoke(this.fileSystem, variables);
         }
     }
 }

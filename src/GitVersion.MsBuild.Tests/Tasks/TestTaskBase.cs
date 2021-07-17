@@ -1,19 +1,19 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using GitTools.Testing;
 using GitVersion.BuildAgents;
-using GitVersion.MsBuild.Tests.Helpers;
 using GitVersion.Core.Tests.Helpers;
+using GitVersion.MsBuild.Tests.Helpers;
 using LibGit2Sharp;
 using Microsoft.Build.Utilities.ProjectCreation;
-using System.IO;
 
 namespace GitVersion.MsBuild.Tests.Tasks
 {
     public class TestTaskBase : TestBase
     {
-        private static IDictionary<string, string> env = new Dictionary<string, string>
+        private static readonly IDictionary<string, string> env = new Dictionary<string, string>
         {
             { AzurePipelines.EnvironmentVariableName, "true" },
             { "BUILD_SOURCEBRANCH", null }
@@ -111,7 +111,7 @@ namespace GitVersion.MsBuild.Tests.Tasks
             fixture.Repository.MakeACommit();
             fixture.Repository.CreateBranch("develop");
 
-            Commands.Fetch((Repository)fixture.LocalRepositoryFixture.Repository, fixture.LocalRepositoryFixture.Repository.Network.Remotes.First().Name, new string[0], new FetchOptions(), null);
+            Commands.Fetch((Repository)fixture.LocalRepositoryFixture.Repository, fixture.LocalRepositoryFixture.Repository.Network.Remotes.First().Name, Array.Empty<string>(), new FetchOptions(), null);
             Commands.Checkout(fixture.LocalRepositoryFixture.Repository, fixture.Repository.Head.Tip);
             fixture.LocalRepositoryFixture.Repository.Branches.Remove(MainBranch);
             fixture.InitializeRepo();

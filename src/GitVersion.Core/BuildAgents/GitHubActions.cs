@@ -1,6 +1,6 @@
+using System.IO;
 using GitVersion.Logging;
 using GitVersion.OutputVariables;
-using System.IO;
 
 namespace GitVersion.BuildAgents
 {
@@ -17,19 +17,11 @@ namespace GitVersion.BuildAgents
 
         protected override string EnvironmentVariable { get; } = EnvironmentVariableName;
 
-        public override string GenerateSetVersionMessage(VersionVariables variables)
-        {
-            // There is no equivalent function in GitHub Actions.
+        public override string GenerateSetVersionMessage(VersionVariables variables) =>
+            string.Empty; // There is no equivalent function in GitHub Actions.
 
-            return string.Empty;
-        }
-
-        public override string[] GenerateSetParameterMessage(string name, string value)
-        {
-            // There is no equivalent function in GitHub Actions.
-
-            return new string[0];
-        }
+        public override string[] GenerateSetParameterMessage(string name, string value) =>
+            System.Array.Empty<string>(); // There is no equivalent function in GitHub Actions.
 
         public override void WriteIntegration(System.Action<string> writer, VersionVariables variables, bool updateBuildNumber = true)
         {
@@ -64,10 +56,7 @@ namespace GitVersion.BuildAgents
             }
         }
 
-        public override string GetCurrentBranch(bool usingDynamicRepos)
-        {
-            return Environment.GetEnvironmentVariable("GITHUB_REF");
-        }
+        public override string GetCurrentBranch(bool usingDynamicRepos) => Environment.GetEnvironmentVariable("GITHUB_REF");
 
         public override bool PreventFetch() => true;
     }

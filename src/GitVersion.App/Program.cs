@@ -12,27 +12,15 @@ namespace GitVersion
     {
         private readonly Action<IServiceCollection> overrides;
 
-        internal Program(Action<IServiceCollection> overrides = null)
-        {
-            this.overrides = overrides;
-        }
+        internal Program(Action<IServiceCollection> overrides = null) => this.overrides = overrides;
 
-        private static async Task Main(string[] args)
-        {
-            await new Program().RunAsync(args);
-        }
+        private static async Task Main(string[] args) => await new Program().RunAsync(args);
 
-        internal Task RunAsync(string[] args)
-        {
-            return CreateHostBuilder(args).Build().RunAsync();
-        }
+        internal Task RunAsync(string[] args) => CreateHostBuilder(args).Build().RunAsync();
 
         private IHostBuilder CreateHostBuilder(string[] args) =>
             new HostBuilder()
-                .ConfigureAppConfiguration((_, configApp) =>
-                {
-                    configApp.AddCommandLine(args);
-                })
+                .ConfigureAppConfiguration((_, configApp) => configApp.AddCommandLine(args))
                 .ConfigureServices((_, services) =>
                 {
                     services.AddModule(new GitVersionCoreModule());
@@ -46,7 +34,7 @@ namespace GitVersion
                         return Options.Create(gitVersionOptions);
                     });
 
-                    overrides?.Invoke(services);
+                    this.overrides?.Invoke(services);
                     services.AddHostedService<GitVersionApp>();
                 })
                 .UseConsoleLifetime();

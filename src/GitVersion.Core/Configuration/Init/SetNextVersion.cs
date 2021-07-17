@@ -13,7 +13,7 @@ namespace GitVersion.Configuration.Init
 
         protected override StepResult HandleResult(string result, Queue<ConfigInitWizardStep> steps, Config config, string workingDirectory)
         {
-            var editConfigStep = StepFactory.CreateStep<EditConfigStep>();
+            var editConfigStep = this.StepFactory.CreateStep<EditConfigStep>();
             if (string.IsNullOrEmpty(result))
             {
                 steps.Enqueue(editConfigStep);
@@ -28,10 +28,7 @@ namespace GitVersion.Configuration.Init
             return StepResult.Ok();
         }
 
-        protected override string GetPrompt(Config config, string workingDirectory)
-        {
-            return @"What would you like to set the next version to (enter nothing to cancel)?";
-        }
+        protected override string GetPrompt(Config config, string workingDirectory) => @"What would you like to set the next version to (enter nothing to cancel)?";
 
         protected override string DefaultResult => null;
     }

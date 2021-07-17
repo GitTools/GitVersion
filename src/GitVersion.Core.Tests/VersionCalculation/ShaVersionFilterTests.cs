@@ -10,10 +10,7 @@ namespace GitVersion.Core.Tests
     public class ShaVersionFilterTests : TestBase
     {
         [Test]
-        public void VerifyNullGuard()
-        {
-            Should.Throw<ArgumentNullException>(() => new ShaVersionFilter(null));
-        }
+        public void VerifyNullGuard() => Should.Throw<ArgumentNullException>(() => new ShaVersionFilter(null));
 
         [Test]
         public void VerifyNullGuard2()

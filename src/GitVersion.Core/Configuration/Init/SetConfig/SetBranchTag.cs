@@ -28,32 +28,29 @@ namespace GitVersion.Configuration.Init.SetConfig
                 return StepResult.InvalidResponseSelected();
             }
 
-            var configureBranchStep = StepFactory.CreateStep<ConfigureBranch>();
+            var configureBranchStep = this.StepFactory.CreateStep<ConfigureBranch>();
             switch (result)
             {
                 case "0":
-                    steps.Enqueue(configureBranchStep.WithData(name, branchConfig));
+                    steps.Enqueue(configureBranchStep.WithData(this.name, this.branchConfig));
                     return StepResult.Ok();
                 case "1":
-                    branchConfig.Tag = string.Empty;
-                    steps.Enqueue(configureBranchStep.WithData(name, branchConfig));
+                    this.branchConfig.Tag = string.Empty;
+                    steps.Enqueue(configureBranchStep.WithData(this.name, this.branchConfig));
                     return StepResult.Ok();
                 default:
-                    branchConfig.Tag = result;
-                    steps.Enqueue(configureBranchStep.WithData(name, branchConfig));
+                    this.branchConfig.Tag = result;
+                    steps.Enqueue(configureBranchStep.WithData(this.name, this.branchConfig));
                     return StepResult.Ok();
             }
         }
 
-        protected override string GetPrompt(Config config, string workingDirectory)
-        {
-            return @"This sets the pre-release tag which will be used for versions on this branch (beta, rc etc)
+        protected override string GetPrompt(Config config, string workingDirectory) => @"This sets the pre-release tag which will be used for versions on this branch (beta, rc etc)
 
 0) Go Back
 1) No tag
 
 Anything else will be used as the tag";
-        }
 
         protected override string DefaultResult => "0";
     }

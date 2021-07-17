@@ -25,9 +25,9 @@ namespace GitVersion.Helpers
             if (y == null)
                 return 1;
 
-            var xKey = keySelector(x);
-            var yKey = keySelector(y);
-            return innerComparer.Compare(xKey, yKey);
+            var xKey = this.keySelector(x);
+            var yKey = this.keySelector(y);
+            return this.innerComparer.Compare(xKey, yKey);
         }
     }
 }

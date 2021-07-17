@@ -11,8 +11,8 @@ namespace GitVersion.MsBuild.Tests.Mocks
 {
     internal sealed class MockEngine : IBuildEngine4
     {
-        private readonly ConcurrentDictionary<object, object> _objectCache = new ConcurrentDictionary<object, object>();
-        private StringBuilder _log = new StringBuilder();
+        private readonly ConcurrentDictionary<object, object> objectCache = new();
+        private StringBuilder log = new();
 
         internal MessageImportance MinimumMessageImportance { get; set; } = MessageImportance.Low;
 
@@ -27,21 +27,21 @@ namespace GitVersion.MsBuild.Tests.Mocks
         public void LogErrorEvent(BuildErrorEventArgs eventArgs)
         {
             Console.WriteLine(EventArgsFormatting.FormatEventMessage(eventArgs));
-            _log.AppendLine(EventArgsFormatting.FormatEventMessage(eventArgs));
+            this.log.AppendLine(EventArgsFormatting.FormatEventMessage(eventArgs));
             ++Errors;
         }
 
         public void LogWarningEvent(BuildWarningEventArgs eventArgs)
         {
             Console.WriteLine(EventArgsFormatting.FormatEventMessage(eventArgs));
-            _log.AppendLine(EventArgsFormatting.FormatEventMessage(eventArgs));
+            this.log.AppendLine(EventArgsFormatting.FormatEventMessage(eventArgs));
             ++Warnings;
         }
 
         public void LogCustomEvent(CustomBuildEventArgs eventArgs)
         {
             Console.WriteLine(eventArgs.Message);
-            _log.AppendLine(eventArgs.Message);
+            this.log.AppendLine(eventArgs.Message);
         }
 
         public void LogMessageEvent(BuildMessageEventArgs eventArgs)
@@ -50,7 +50,7 @@ namespace GitVersion.MsBuild.Tests.Mocks
             if (eventArgs.Importance <= MinimumMessageImportance)
             {
                 Console.WriteLine(eventArgs.Message);
-                _log.AppendLine(eventArgs.Message);
+                this.log.AppendLine(eventArgs.Message);
                 ++Messages;
             }
         }
@@ -65,8 +65,8 @@ namespace GitVersion.MsBuild.Tests.Mocks
 
         public string Log
         {
-            set => _log = new StringBuilder(value);
-            get => _log.ToString();
+            set => this.log = new StringBuilder(value);
+            get => this.log.ToString();
         }
 
         public bool BuildProjectFile(string projectFileName, string[] targetNames, IDictionary globalProperties, IDictionary targetOutputs) => false;
@@ -102,7 +102,7 @@ namespace GitVersion.MsBuild.Tests.Mocks
             IDictionary[] globalProperties,
             IList<string>[] undefineProperties,
             string[] toolsVersion,
-            bool includeTargetOutputs) => new BuildEngineResult(false, null);
+            bool includeTargetOutputs) => new(false, null);
 
         public void Yield()
         {
@@ -114,18 +114,15 @@ namespace GitVersion.MsBuild.Tests.Mocks
 
         public object GetRegisteredTaskObject(object key, RegisteredTaskObjectLifetime lifetime)
         {
-            _objectCache.TryGetValue(key, out var obj);
+            this.objectCache.TryGetValue(key, out var obj);
             return obj;
         }
 
-        public void RegisterTaskObject(object key, object obj, RegisteredTaskObjectLifetime lifetime, bool allowEarlyCollection)
-        {
-            _objectCache[key] = obj;
-        }
+        public void RegisterTaskObject(object key, object obj, RegisteredTaskObjectLifetime lifetime, bool allowEarlyCollection) => this.objectCache[key] = obj;
 
         public object UnregisterTaskObject(object key, RegisteredTaskObjectLifetime lifetime)
         {
-            _objectCache.TryRemove(key, out var obj);
+            this.objectCache.TryRemove(key, out var obj);
             return obj;
         }
     }
