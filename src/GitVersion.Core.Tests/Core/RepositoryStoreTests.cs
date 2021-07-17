@@ -210,7 +210,7 @@ namespace GitVersion.Core.Tests
         {
             using var fixture = new EmptyRepositoryFixture();
             var fixtureRepository = fixture.Repository.ToGitRepository();
-            var gitRepoMetadataProvider = new RepositoryStore(log, fixtureRepository);
+            var gitRepoMetadataProvider = new RepositoryStore(this.log, fixtureRepository);
 
             Assert.Throws<ArgumentNullException>(() => gitRepoMetadataProvider.GetBranchesContainingCommit(null));
         }
