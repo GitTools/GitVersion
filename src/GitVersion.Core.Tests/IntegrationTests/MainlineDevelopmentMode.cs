@@ -529,7 +529,7 @@ namespace GitVersion.Core.Tests.IntegrationTests
         {
             fixture.Repository.MakeACommit(commitMsg);
             var diagramBuilder = (StringBuilder)typeof(SequenceDiagram)
-                .GetField("_diagramBuilder", BindingFlags.Instance | BindingFlags.NonPublic)
+                .GetField("diagramBuilder", BindingFlags.Instance | BindingFlags.NonPublic)
                 ?.GetValue(fixture.SequenceDiagram);
 
             string GetParticipant(string participant) =>
