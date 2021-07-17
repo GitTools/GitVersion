@@ -118,17 +118,11 @@ namespace GitVersion.OutputVariables
         public string? CommitDate { get; set; }
 
         [ReflectionIgnore]
-        public static IEnumerable<string> AvailableVariables
-        {
-            get
-            {
-                return typeof(VersionVariables)
+        public static IEnumerable<string> AvailableVariables => typeof(VersionVariables)
                     .GetProperties()
                     .Where(p => !p.GetCustomAttributes(typeof(ReflectionIgnoreAttribute), false).Any())
                     .Select(p => p.Name)
                     .OrderBy(a => a, StringComparer.Ordinal);
-            }
-        }
 
         [ReflectionIgnore]
         public string? FileName { get; set; }
