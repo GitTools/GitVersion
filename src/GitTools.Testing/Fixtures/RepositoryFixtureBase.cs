@@ -26,15 +26,9 @@ namespace GitTools.Testing
 
         public IRepository Repository { get; }
 
-        public string RepositoryPath
-        {
-            get { return Repository.Info.WorkingDirectory.TrimEnd('\\'); }
-        }
+        public string RepositoryPath => Repository.Info.WorkingDirectory.TrimEnd('\\');
 
-        public SequenceDiagram SequenceDiagram
-        {
-            get { return this.sequenceDiagram; }
-        }
+        public SequenceDiagram SequenceDiagram => this.sequenceDiagram;
 
         /// <summary>
         ///     Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
