@@ -39,7 +39,6 @@ namespace GitVersion
 
         public void Prepare()
         {
-            System.Diagnostics.Debugger.Launch();
             var gitVersionOptions = options.Value;
 
             // Normalize if we are running on build server
