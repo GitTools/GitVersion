@@ -20,7 +20,7 @@ namespace GitVersion
         private readonly IGitRepositoryInfo repositoryInfo;
         private readonly IRepositoryStore repositoryStore;
         private readonly ICurrentBuildAgent buildAgent;
-        private RetryAction<LockedFileException> retryAction;
+        private readonly RetryAction<LockedFileException> retryAction;
 
         private const string DefaultRemoteName = "origin";
 

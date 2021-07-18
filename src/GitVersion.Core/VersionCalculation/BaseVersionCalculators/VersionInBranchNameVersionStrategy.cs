@@ -13,7 +13,7 @@ namespace GitVersion.VersionCalculation
     /// </summary>
     public class VersionInBranchNameVersionStrategy : VersionStrategyBase
     {
-        private IRepositoryStore repositoryStore;
+        private readonly IRepositoryStore repositoryStore;
 
         public VersionInBranchNameVersionStrategy(IRepositoryStore repositoryStore, Lazy<GitVersionContext> versionContext) : base(versionContext)
         {

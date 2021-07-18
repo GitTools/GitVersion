@@ -10,10 +10,10 @@ namespace GitVersion
         private readonly IOptions<GitVersionOptions> options;
         private GitVersionOptions gitVersionOptions => options.Value;
 
-        private Lazy<string?> dynamicGitRepositoryPath;
-        private Lazy<string?> dotGitDirectory;
-        private Lazy<string?> gitRootPath;
-        private Lazy<string> projectRootDirectory;
+        private readonly Lazy<string?> dynamicGitRepositoryPath;
+        private readonly Lazy<string?> dotGitDirectory;
+        private readonly Lazy<string?> gitRootPath;
+        private readonly Lazy<string> projectRootDirectory;
 
         public GitRepositoryInfo(IOptions<GitVersionOptions> options)
         {
