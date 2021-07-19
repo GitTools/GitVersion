@@ -19,6 +19,6 @@ namespace GitVersion.Logging
         {
         }
 
-        public string Indent { get; set; }
+        public string? Indent { get; set; }
     }
 }

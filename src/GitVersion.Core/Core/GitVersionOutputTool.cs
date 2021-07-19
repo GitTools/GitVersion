@@ -45,7 +45,7 @@ namespace GitVersion
 
         public void UpdateAssemblyInfo(VersionVariables variables)
         {
-            var gitVersionOptions = options.Value;
+            var gitVersionOptions = options.Value!;
             var assemblyInfoContext = new AssemblyInfoContext(gitVersionOptions.WorkingDirectory, gitVersionOptions.AssemblyInfo.EnsureAssemblyInfo, gitVersionOptions.AssemblyInfo.Files.ToArray());
 
             if (gitVersionOptions.AssemblyInfo.UpdateProjectFiles)

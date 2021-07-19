@@ -4,7 +4,7 @@ namespace GitVersion.Logging
 {
     public class ConsoleAdapter : IConsole
     {
-        public void WriteLine(string msg)
+        public void WriteLine(string? msg)
         {
             Console.WriteLine(msg);
         }

@@ -28,9 +28,9 @@ namespace GitVersion.Configuration.Init.BuildServer
             return this;
         }
 
-        protected override StepResult HandleResult(string result, Queue<ConfigInitWizardStep> steps, Config config, string workingDirectory)
+        protected override StepResult HandleResult(string? result, Queue<ConfigInitWizardStep> steps, Config config, string workingDirectory)
         {
-            var editConfigStep = StepFactory.CreateStep<EditConfigStep>();
+            var editConfigStep = StepFactory.CreateStep<EditConfigStep>()!;
             switch (result)
             {
                 case "0":

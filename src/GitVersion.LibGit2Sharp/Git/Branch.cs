@@ -5,7 +5,7 @@ namespace GitVersion
 {
     internal sealed class Branch : IBranch
     {
-        private static readonly LambdaEqualityHelper<IBranch> equalityHelper = new(x => x.Name.Canonical);
+        private static readonly LambdaEqualityHelper<IBranch> equalityHelper = new(x => x?.Name.Canonical);
         private static readonly LambdaKeyComparer<IBranch, string> comparerHelper = new(x => x.Name.Canonical);
 
         private readonly LibGit2Sharp.Branch innerBranch;

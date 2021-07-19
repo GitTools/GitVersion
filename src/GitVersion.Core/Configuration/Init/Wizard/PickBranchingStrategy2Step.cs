@@ -10,9 +10,9 @@ namespace GitVersion.Configuration.Init.Wizard
         {
         }
 
-        protected override StepResult HandleResult(string result, Queue<ConfigInitWizardStep> steps, Config config, string workingDirectory)
+        protected override StepResult HandleResult(string? result, Queue<ConfigInitWizardStep> steps, Config config, string workingDirectory)
         {
-            switch (result.ToLower())
+            switch (result?.ToLower())
             {
                 case "y":
                     Console.WriteLine("GitFlow is likely a good fit, the 'develop' branch can be used " +
@@ -21,10 +21,10 @@ namespace GitVersion.Configuration.Init.Wizard
                     Console.WriteLine("GitHubFlow is designed for a lightweight workflow where main is always " +
                                       "good to deploy to production and feature branches are used to stabilise " +
                                       "features, once stable they are merged to main and made available in the next release");
-                    steps.Enqueue(StepFactory.CreateStep<PickBranchingStrategyStep>());
+                    steps.Enqueue(StepFactory.CreateStep<PickBranchingStrategyStep>()!);
                     return StepResult.Ok();
                 case "n":
-                    steps.Enqueue(StepFactory.CreateStep<PickBranchingStrategy3Step>());
+                    steps.Enqueue(StepFactory.CreateStep<PickBranchingStrategy3Step>()!);
                     return StepResult.Ok();
             }
 
@@ -36,6 +36,6 @@ namespace GitVersion.Configuration.Init.Wizard
             return "Do you stabilise releases while continuing work on the next version? (y/n)";
         }
 
-        protected override string DefaultResult => null;
+        protected override string? DefaultResult => null;
     }
 }

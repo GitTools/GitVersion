@@ -7,32 +7,32 @@ namespace GitVersion.Configuration.Init.SetConfig
 {
     public class ConfigureBranch : ConfigInitWizardStep
     {
-        private string name;
-        private BranchConfig branchConfig;
+        private string? name;
+        private BranchConfig? branchConfig;
 
         public ConfigureBranch(IConsole console, IFileSystem fileSystem, ILog log, IConfigInitStepFactory stepFactory) : base(console, fileSystem, log, stepFactory)
         {
         }
 
-        public ConfigureBranch WithData(string name, BranchConfig branchConfig)
+        public ConfigureBranch WithData(string? name, BranchConfig? branchConfig)
         {
             this.branchConfig = branchConfig;
             this.name = name;
             return this;
         }
 
-        protected override StepResult HandleResult(string result, Queue<ConfigInitWizardStep> steps, Config config, string workingDirectory)
+        protected override StepResult HandleResult(string? result, Queue<ConfigInitWizardStep> steps, Config config, string workingDirectory)
         {
             switch (result)
             {
                 case "0":
-                    steps.Enqueue(StepFactory.CreateStep<ConfigureBranches>());
+                    steps.Enqueue(StepFactory.CreateStep<ConfigureBranches>()!);
                     return StepResult.Ok();
                 case "1":
-                    steps.Enqueue(StepFactory.CreateStep<SetBranchTag>().WithData(name, branchConfig));
+                    steps.Enqueue(StepFactory.CreateStep<SetBranchTag>()!.WithData(name, branchConfig));
                     return StepResult.Ok();
                 case "2":
-                    steps.Enqueue(StepFactory.CreateStep<SetBranchIncrementMode>().WithData(name, branchConfig));
+                    steps.Enqueue(StepFactory.CreateStep<SetBranchIncrementMode>()!.WithData(name!, branchConfig!));
                     return StepResult.Ok();
             }
 
@@ -44,7 +44,7 @@ namespace GitVersion.Configuration.Init.SetConfig
             return $@"What would you like to change for '{name}':
 
 0) Go Back
-1) Branch Pre-release tag (Current: {branchConfig.Tag})
+1) Branch Pre-release tag (Current: {branchConfig!.Tag})
 2) Branch Increment mode (per commit/after tag) (Current: {branchConfig.VersioningMode})";
         }
 

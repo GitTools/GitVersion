@@ -7,7 +7,7 @@ namespace GitVersion.Extensions
 {
     public static class GitExtensions
     {
-        public static void DumpGraph(string workingDirectory, Action<string> writer = null, int? maxCommits = null)
+        public static void DumpGraph(string workingDirectory, Action<string>? writer = null, int? maxCommits = null)
         {
             var output = new StringBuilder();
             try

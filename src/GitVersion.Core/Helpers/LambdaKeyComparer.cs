@@ -10,7 +10,7 @@ namespace GitVersion.Helpers
 
         public LambdaKeyComparer(
             Func<TSource, TKey> keySelector,
-            IComparer<TKey> innerComparer = null)
+            IComparer<TKey>? innerComparer = null)
         {
             this.keySelector = keySelector;
             this.innerComparer = innerComparer ?? Comparer<TKey>.Default;

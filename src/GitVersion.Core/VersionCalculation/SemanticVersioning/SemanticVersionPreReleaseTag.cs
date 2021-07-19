@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using System.Text.RegularExpressions;
+using GitVersion.Extensions;
 using GitVersion.Helpers;
 
 namespace GitVersion
@@ -9,35 +10,35 @@ namespace GitVersion
         IFormattable, IComparable<SemanticVersionPreReleaseTag>, IEquatable<SemanticVersionPreReleaseTag>
     {
         private static readonly LambdaEqualityHelper<SemanticVersionPreReleaseTag> EqualityHelper =
-           new LambdaEqualityHelper<SemanticVersionPreReleaseTag>(x => x.Name, x => x.Number);
+           new LambdaEqualityHelper<SemanticVersionPreReleaseTag>(x => x?.Name, x => x?.Number);
 
         public SemanticVersionPreReleaseTag()
         {
         }
 
-        public SemanticVersionPreReleaseTag(string name, int? number)
+        public SemanticVersionPreReleaseTag(string? name, int? number)
         {
             Name = name;
             Number = number;
         }
 
-        public SemanticVersionPreReleaseTag(SemanticVersionPreReleaseTag preReleaseTag)
+        public SemanticVersionPreReleaseTag(SemanticVersionPreReleaseTag? preReleaseTag)
         {
-            Name = preReleaseTag.Name;
-            Number = preReleaseTag.Number;
-            PromotedFromCommits = preReleaseTag.PromotedFromCommits;
+            Name = preReleaseTag?.Name;
+            Number = preReleaseTag?.Number;
+            PromotedFromCommits = preReleaseTag?.PromotedFromCommits;
         }
 
-        public string Name { get; set; }
+        public string? Name { get; set; }
         public int? Number { get; set; }
-        public bool PromotedFromCommits { get; set; }
+        public bool? PromotedFromCommits { get; set; }
 
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
             return Equals(obj as SemanticVersionPreReleaseTag);
         }
 
-        public bool Equals(SemanticVersionPreReleaseTag other)
+        public bool Equals(SemanticVersionPreReleaseTag? other)
         {
             return EqualityHelper.Equals(this, other);
         }
@@ -47,49 +48,49 @@ namespace GitVersion
             return EqualityHelper.GetHashCode(this);
         }
 
-        public static bool operator ==(SemanticVersionPreReleaseTag left, SemanticVersionPreReleaseTag right)
+        public static bool operator ==(SemanticVersionPreReleaseTag? left, SemanticVersionPreReleaseTag? right)
         {
             return Equals(left, right);
         }
 
-        public static bool operator !=(SemanticVersionPreReleaseTag left, SemanticVersionPreReleaseTag right)
+        public static bool operator !=(SemanticVersionPreReleaseTag? left, SemanticVersionPreReleaseTag? right)
         {
             return !Equals(left, right);
         }
 
-        public static bool operator >(SemanticVersionPreReleaseTag left, SemanticVersionPreReleaseTag right)
+        public static bool operator >(SemanticVersionPreReleaseTag? left, SemanticVersionPreReleaseTag? right)
         {
-            return left.CompareTo(right) > 0;
+            return left?.CompareTo(right) > 0;
         }
 
-        public static bool operator <(SemanticVersionPreReleaseTag left, SemanticVersionPreReleaseTag right)
+        public static bool operator <(SemanticVersionPreReleaseTag? left, SemanticVersionPreReleaseTag? right)
         {
-            return left.CompareTo(right) < 0;
+            return left?.CompareTo(right) < 0;
         }
 
-        public static bool operator >=(SemanticVersionPreReleaseTag left, SemanticVersionPreReleaseTag right)
+        public static bool operator >=(SemanticVersionPreReleaseTag? left, SemanticVersionPreReleaseTag? right)
         {
-            return left.CompareTo(right) >= 0;
+            return left?.CompareTo(right) >= 0;
         }
 
-        public static bool operator <=(SemanticVersionPreReleaseTag left, SemanticVersionPreReleaseTag right)
+        public static bool operator <=(SemanticVersionPreReleaseTag? left, SemanticVersionPreReleaseTag? right)
         {
-            return StringComparerUtils.IgnoreCaseComparer.Compare(left.Name, right.Name) != 1;
+            return StringComparerUtils.IgnoreCaseComparer.Compare(left?.Name, right?.Name) != 1;
         }
 
-        public static implicit operator string(SemanticVersionPreReleaseTag preReleaseTag)
+        public static implicit operator string?(SemanticVersionPreReleaseTag? preReleaseTag)
         {
-            return preReleaseTag.ToString();
+            return preReleaseTag?.ToString()!;
         }
 
-        public static implicit operator SemanticVersionPreReleaseTag(string preReleaseTag)
+        public static implicit operator SemanticVersionPreReleaseTag(string? preReleaseTag)
         {
             return Parse(preReleaseTag);
         }
 
-        public static SemanticVersionPreReleaseTag Parse(string preReleaseTag)
+        public static SemanticVersionPreReleaseTag Parse(string? preReleaseTag)
         {
-            if (string.IsNullOrEmpty(preReleaseTag))
+            if (StringExtensions.IsNullOrEmpty(preReleaseTag))
             {
                 return new SemanticVersionPreReleaseTag();
             }
@@ -110,26 +111,26 @@ namespace GitVersion
             return new SemanticVersionPreReleaseTag(value, number);
         }
 
-        public int CompareTo(SemanticVersionPreReleaseTag other)
+        public int CompareTo(SemanticVersionPreReleaseTag? other)
         {
-            if (!HasTag() && other.HasTag())
+            if (!HasTag() && other?.HasTag() == true)
             {
                 return 1;
             }
-            if (HasTag() && !other.HasTag())
+            if (HasTag() && other?.HasTag() != true)
             {
                 return -1;
             }
 
 
-            var nameComparison = StringComparerUtils.IgnoreCaseComparer.Compare(Name, other.Name);
+            var nameComparison = StringComparerUtils.IgnoreCaseComparer.Compare(Name, other?.Name);
             if (nameComparison != 0)
                 return nameComparison;
 
-            return Nullable.Compare(Number, other.Number);
+            return Nullable.Compare(Number, other?.Number);
         }
 
-        public override string ToString()
+        public override string? ToString()
         {
             return ToString(null);
         }
@@ -140,7 +141,7 @@ namespace GitVersion
         /// <para>l - Legacy SemVer tag with the tag number padded. [beta1]</para>
         /// <para>lp - Legacy SemVer tag with the tag number padded. [beta0001]. Can specify an integer to control padding (i.e., lp5)</para>
         /// </summary>
-        public string ToString(string format, IFormatProvider formatProvider = null)
+        public string? ToString(string? format, IFormatProvider? formatProvider = null)
         {
             if (formatProvider != null)
             {
@@ -148,7 +149,7 @@ namespace GitVersion
                     return formatter.Format(format, this, formatProvider);
             }
 
-            if (string.IsNullOrEmpty(format))
+            if (StringExtensions.IsNullOrEmpty(format))
                 format = "t";
 
             format = format.ToLower();
@@ -170,7 +171,7 @@ namespace GitVersion
 
             return format switch
             {
-                "t" => (Number.HasValue ? string.IsNullOrEmpty(Name) ? $"{Number}" : $"{Name}.{Number}" : Name),
+                "t" => (Number.HasValue ? StringExtensions.IsNullOrEmpty(Name) ? $"{Number}" : $"{Name}.{Number}" : Name),
                 "l" => (Number.HasValue ? FormatLegacy(GetLegacyName(), Number.Value.ToString()) : FormatLegacy(GetLegacyName())),
                 _ => throw new ArgumentException("Unknown format", nameof(format))
             };
@@ -190,7 +191,7 @@ namespace GitVersion
 
         private string GetLegacyName()
         {
-            if (string.IsNullOrEmpty(Name))
+            if (StringExtensions.IsNullOrEmpty(Name))
             {
                 return string.Empty;
             }
@@ -200,7 +201,7 @@ namespace GitVersion
 
         public bool HasTag()
         {
-            return !string.IsNullOrEmpty(Name) || (Number.HasValue && !PromotedFromCommits);
+            return !StringExtensions.IsNullOrEmpty(Name) || (Number.HasValue && PromotedFromCommits != true);
         }
     }
 }

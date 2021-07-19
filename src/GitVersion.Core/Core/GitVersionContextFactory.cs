@@ -21,19 +21,19 @@ namespace GitVersion
             this.options = options ?? throw new ArgumentNullException(nameof(options));
         }
 
-        public GitVersionContext Create(GitVersionOptions gitVersionOptions)
+        public GitVersionContext Create(GitVersionOptions? gitVersionOptions)
         {
-            var currentBranch = repositoryStore.GetTargetBranch(gitVersionOptions.RepositoryInfo.TargetBranch);
+            var currentBranch = repositoryStore.GetTargetBranch(gitVersionOptions?.RepositoryInfo.TargetBranch);
             if (currentBranch == null)
                 throw new InvalidOperationException("Need a branch to operate on");
 
             var configuration = configProvider.Provide(overrideConfig: options.Value.ConfigInfo.OverrideConfig);
 
-            var currentCommit = repositoryStore.GetCurrentCommit(currentBranch, gitVersionOptions.RepositoryInfo.CommitId);
+            var currentCommit = repositoryStore.GetCurrentCommit(currentBranch, gitVersionOptions?.RepositoryInfo.CommitId);
 
             if (currentBranch.IsDetachedHead)
             {
-                var branchForCommit = repositoryStore.GetBranchesContainingCommit(currentCommit, onlyTrackedBranches: gitVersionOptions.Settings.OnlyTrackedBranches).OnlyOrDefault();
+                var branchForCommit = repositoryStore.GetBranchesContainingCommit(currentCommit, onlyTrackedBranches: gitVersionOptions?.Settings.OnlyTrackedBranches == true).OnlyOrDefault();
                 currentBranch = branchForCommit ?? currentBranch;
             }
 

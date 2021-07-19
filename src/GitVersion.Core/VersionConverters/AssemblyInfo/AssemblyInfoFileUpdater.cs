@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using GitVersion.Extensions;
 using GitVersion.Logging;
 using GitVersion.OutputVariables;
 
@@ -48,13 +49,13 @@ namespace GitVersion.VersionConverters.AssemblyInfo
             log.Info($"Found {assemblyInfoFiles.Count} files");
 
             var assemblyVersion = variables.AssemblySemVer;
-            var assemblyVersionString = !string.IsNullOrWhiteSpace(assemblyVersion) ? $"AssemblyVersion(\"{assemblyVersion}\")" : null;
+            var assemblyVersionString = !StringExtensions.IsNullOrWhiteSpace(assemblyVersion) ? $"AssemblyVersion(\"{assemblyVersion}\")" : null;
 
             var assemblyInfoVersion = variables.InformationalVersion;
-            var assemblyInfoVersionString = !string.IsNullOrWhiteSpace(assemblyInfoVersion) ? $"AssemblyInformationalVersion(\"{assemblyInfoVersion}\")" : null;
+            var assemblyInfoVersionString = !StringExtensions.IsNullOrWhiteSpace(assemblyInfoVersion) ? $"AssemblyInformationalVersion(\"{assemblyInfoVersion}\")" : null;
 
             var assemblyFileVersion = variables.AssemblySemFileVer;
-            var assemblyFileVersionString = !string.IsNullOrWhiteSpace(assemblyFileVersion) ? $"AssemblyFileVersion(\"{assemblyFileVersion}\")" : null;
+            var assemblyFileVersionString = !StringExtensions.IsNullOrWhiteSpace(assemblyFileVersion) ? $"AssemblyFileVersion(\"{assemblyFileVersion}\")" : null;
 
             foreach (var assemblyInfoFile in assemblyInfoFiles)
             {
@@ -78,17 +79,17 @@ namespace GitVersion.VersionConverters.AssemblyInfo
                 var fileContents = originalFileContents;
                 var appendedAttributes = false;
 
-                if (!string.IsNullOrWhiteSpace(assemblyVersion))
+                if (!StringExtensions.IsNullOrWhiteSpace(assemblyVersion))
                 {
                     fileContents = ReplaceOrInsertAfterLastAssemblyAttributeOrAppend(assemblyVersionRegex, fileContents, assemblyVersionString, assemblyInfoFile.Extension, ref appendedAttributes);
                 }
 
-                if (!string.IsNullOrWhiteSpace(assemblyFileVersion))
+                if (!StringExtensions.IsNullOrWhiteSpace(assemblyFileVersion))
                 {
                     fileContents = ReplaceOrInsertAfterLastAssemblyAttributeOrAppend(assemblyFileVersionRegex, fileContents, assemblyFileVersionString, assemblyInfoFile.Extension, ref appendedAttributes);
                 }
 
-                if (!string.IsNullOrWhiteSpace(assemblyInfoVersion))
+                if (!StringExtensions.IsNullOrWhiteSpace(assemblyInfoVersion))
                 {
                     fileContents = ReplaceOrInsertAfterLastAssemblyAttributeOrAppend(assemblyInfoVersionRegex, fileContents, assemblyInfoVersionString, assemblyInfoFile.Extension, ref appendedAttributes);
                 }
@@ -129,7 +130,7 @@ namespace GitVersion.VersionConverters.AssemblyInfo
             restoreBackupTasks.Clear();
         }
 
-        private string ReplaceOrInsertAfterLastAssemblyAttributeOrAppend(Regex replaceRegex, string inputString, string replaceString, string fileExtension, ref bool appendedAttributes)
+        private string ReplaceOrInsertAfterLastAssemblyAttributeOrAppend(Regex replaceRegex, string inputString, string? replaceString, string fileExtension, ref bool appendedAttributes)
         {
             var assemblyAddFormat = templateManager.GetAddFormatFor(fileExtension);
 
@@ -159,11 +160,11 @@ namespace GitVersion.VersionConverters.AssemblyInfo
 
         private IEnumerable<FileInfo> GetAssemblyInfoFiles(AssemblyInfoContext context)
         {
-            var workingDirectory = context.WorkingDirectory;
+            var workingDirectory = context.WorkingDirectory!;
             var ensureAssemblyInfo = context.EnsureAssemblyInfo;
             var assemblyInfoFileNames = new HashSet<string>(context.AssemblyInfoFiles);
 
-            if (assemblyInfoFileNames.Any(x => !string.IsNullOrWhiteSpace(x)))
+            if (assemblyInfoFileNames.Any(x => !StringExtensions.IsNullOrWhiteSpace(x)))
             {
                 foreach (var item in assemblyInfoFileNames)
                 {
@@ -204,7 +205,7 @@ namespace GitVersion.VersionConverters.AssemblyInfo
 
             var assemblyInfoSource = templateManager.GetTemplateFor(Path.GetExtension(fullPath));
 
-            if (!string.IsNullOrWhiteSpace(assemblyInfoSource))
+            if (!StringExtensions.IsNullOrWhiteSpace(assemblyInfoSource))
             {
                 var fileInfo = new FileInfo(fullPath);
 

@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using GitVersion.Extensions;
 using GitVersion.Logging;
 using GitVersion.OutputVariables;
 
@@ -7,7 +8,7 @@ namespace GitVersion.BuildAgents
 {
     public sealed class CodeBuild : BuildAgentBase
     {
-        private string file;
+        private string? file;
         public const string WebHookEnvironmentVariableName = "CODEBUILD_WEBHOOK_HEAD_REF";
         public const string SourceVersionEnvironmentVariableName = "CODEBUILD_SOURCE_VERSION";
 
@@ -41,7 +42,7 @@ namespace GitVersion.BuildAgents
 
             var currentBranch = Environment.GetEnvironmentVariable(WebHookEnvironmentVariableName);
 
-            if (string.IsNullOrEmpty(currentBranch))
+            if (StringExtensions.IsNullOrEmpty(currentBranch))
             {
                 return Environment.GetEnvironmentVariable(SourceVersionEnvironmentVariableName);
             }
@@ -49,7 +50,7 @@ namespace GitVersion.BuildAgents
             return currentBranch;
         }
 
-        public override void WriteIntegration(Action<string> writer, VersionVariables variables, bool updateBuildNumber = true)
+        public override void WriteIntegration(Action<string?> writer, VersionVariables variables, bool updateBuildNumber = true)
         {
             base.WriteIntegration(writer, variables);
             writer($"Outputting variables to '{file}' ... ");
@@ -59,6 +60,6 @@ namespace GitVersion.BuildAgents
         public override bool PreventFetch() => true;
 
         public override bool CanApplyToCurrentContext()
-            => !string.IsNullOrEmpty(Environment.GetEnvironmentVariable(WebHookEnvironmentVariableName)) || !string.IsNullOrEmpty(Environment.GetEnvironmentVariable(SourceVersionEnvironmentVariableName));
+            => !StringExtensions.IsNullOrEmpty(Environment.GetEnvironmentVariable(WebHookEnvironmentVariableName)) || !StringExtensions.IsNullOrEmpty(Environment.GetEnvironmentVariable(SourceVersionEnvironmentVariableName));
     }
 }

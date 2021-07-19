@@ -1,4 +1,5 @@
 using System.Text;
+using GitVersion.Extensions;
 
 namespace GitVersion.App.Tests
 {
@@ -36,27 +37,27 @@ namespace GitVersion.App.Tests
 
             arguments.AppendFormat(" /targetpath \"{0}\"", workingDirectory);
 
-            if (!string.IsNullOrWhiteSpace(exec))
+            if (!StringExtensions.IsNullOrWhiteSpace(exec))
             {
                 arguments.AppendFormat(" /exec \"{0}\"", exec);
             }
 
-            if (!string.IsNullOrWhiteSpace(execArgs))
+            if (!StringExtensions.IsNullOrWhiteSpace(execArgs))
             {
                 arguments.AppendFormat(" /execArgs \"{0}\"", execArgs);
             }
 
-            if (!string.IsNullOrWhiteSpace(projectFile))
+            if (!StringExtensions.IsNullOrWhiteSpace(projectFile))
             {
                 arguments.AppendFormat(" /proj \"{0}\"", projectFile);
             }
 
-            if (!string.IsNullOrWhiteSpace(projectArgs))
+            if (!StringExtensions.IsNullOrWhiteSpace(projectArgs))
             {
                 arguments.AppendFormat(" /projargs \"{0}\"", projectArgs);
             }
 
-            if (!string.IsNullOrWhiteSpace(logFile))
+            if (!StringExtensions.IsNullOrWhiteSpace(logFile))
             {
                 arguments.AppendFormat(" /l \"{0}\"", logFile);
             }

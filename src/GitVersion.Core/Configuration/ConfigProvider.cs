@@ -27,7 +27,7 @@ namespace GitVersion.Configuration
             this.repositoryInfo = repositoryInfo ?? throw new ArgumentNullException(nameof(this.repositoryInfo));
         }
 
-        public Config Provide(Config overrideConfig = null)
+        public Config Provide(Config? overrideConfig = null)
         {
             var gitVersionOptions = options.Value;
             var workingDirectory = gitVersionOptions.WorkingDirectory;
@@ -37,7 +37,7 @@ namespace GitVersion.Configuration
             return Provide(rootDirectory, overrideConfig);
         }
 
-        public Config Provide(string workingDirectory, Config overrideConfig = null)
+        public Config Provide(string? workingDirectory, Config? overrideConfig = null)
         {
             return new ConfigurationBuilder()
                    .Add(configFileLocator.ReadConfig(workingDirectory))

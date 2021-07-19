@@ -10,11 +10,11 @@ namespace GitVersion.Configuration
 {
     public static class ConfigExtensions
     {
-        public static BranchConfig GetConfigForBranch(this Config config, string branchName)
+        public static BranchConfig? GetConfigForBranch(this Config config, string? branchName)
         {
             if (branchName == null) throw new ArgumentNullException(nameof(branchName));
             var matches = config.Branches
-                .Where(b => Regex.IsMatch(branchName, b.Value.Regex, RegexOptions.IgnoreCase))
+                .Where(b => Regex.IsMatch(branchName, b.Value?.Regex, RegexOptions.IgnoreCase))
                 .ToArray();
 
             try
@@ -33,7 +33,7 @@ namespace GitVersion.Configuration
                 // TODO check how to log this
                 Console.WriteLine(
                     $"Multiple branch configurations match the current branch branchName of '{branchName}'. " +
-                    $"Using the first matching configuration, '{picked.Name}'. Matching configurations include:'{matchingConfigs}'");
+                    $"Using the first matching configuration, '{picked?.Name}'. Matching configurations include:'{matchingConfigs}'");
 
                 return picked;
             }
@@ -117,9 +117,9 @@ namespace GitVersion.Configuration
                 tagPreReleaseWeight);
         }
 
-        public static string GetBranchSpecificTag(this EffectiveConfiguration configuration, ILog log, string branchFriendlyName, string branchNameOverride)
+        public static string GetBranchSpecificTag(this EffectiveConfiguration configuration, ILog log, string? branchFriendlyName, string? branchNameOverride)
         {
-            var tagToUse = configuration.Tag;
+            var tagToUse = configuration.Tag!;
             if (tagToUse == "useBranchName")
             {
                 tagToUse = "{BranchName}";
@@ -129,22 +129,22 @@ namespace GitVersion.Configuration
                 log.Info("Using branch name to calculate version tag");
 
                 var branchName = branchNameOverride ?? branchFriendlyName;
-                if (!string.IsNullOrWhiteSpace(configuration.BranchPrefixToTrim))
+                if (!StringExtensions.IsNullOrWhiteSpace(configuration.BranchPrefixToTrim))
                 {
-                    var branchNameTrimmed = branchName.RegexReplace(configuration.BranchPrefixToTrim, string.Empty, RegexOptions.IgnoreCase);
-                    branchName = string.IsNullOrEmpty(branchNameTrimmed) ? branchName : branchNameTrimmed;
+                    var branchNameTrimmed = branchName?.RegexReplace(configuration.BranchPrefixToTrim, string.Empty, RegexOptions.IgnoreCase);
+                    branchName = StringExtensions.IsNullOrEmpty(branchNameTrimmed) ? branchName : branchNameTrimmed;
                 }
-                branchName = branchName.RegexReplace("[^a-zA-Z0-9-]", "-");
+                branchName = branchName?.RegexReplace("[^a-zA-Z0-9-]", "-");
 
                 tagToUse = tagToUse.Replace("{BranchName}", branchName);
             }
             return tagToUse;
         }
 
-        public static List<KeyValuePair<string, BranchConfig>> GetReleaseBranchConfig(this Config configuration)
+        public static List<KeyValuePair<string, BranchConfig?>> GetReleaseBranchConfig(this Config configuration)
         {
             return configuration.Branches
-                .Where(b => b.Value.IsReleaseBranch == true)
+                .Where(b => b.Value?.IsReleaseBranch == true)
                 .ToList();
         }
     }

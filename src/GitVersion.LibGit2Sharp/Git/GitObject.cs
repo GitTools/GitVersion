@@ -4,7 +4,7 @@ namespace GitVersion
 {
     internal class GitObject : IGitObject
     {
-        private static readonly LambdaEqualityHelper<IGitObject> equalityHelper = new(x => x.Id);
+        private static readonly LambdaEqualityHelper<IGitObject> equalityHelper = new(x => x?.Id);
         private static readonly LambdaKeyComparer<IGitObject, string> comparerHelper = new(x => x.Sha);
 
         internal GitObject(LibGit2Sharp.GitObject innerGitObject)

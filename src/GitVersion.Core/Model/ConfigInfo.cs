@@ -4,8 +4,8 @@ namespace GitVersion
 {
     public class ConfigInfo
     {
-        public string ConfigFile;
-        public Config OverrideConfig;
+        public string? ConfigFile;
+        public Config? OverrideConfig;
         public bool ShowConfig;
     }
 }

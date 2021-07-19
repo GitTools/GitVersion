@@ -7,6 +7,7 @@ using GitVersion.Logging;
 using GitVersion.OutputVariables;
 using GitVersion.Core.Tests.Helpers;
 using Microsoft.Extensions.DependencyInjection;
+using GitVersion.Extensions;
 
 namespace GitVersion.App.Tests
 {
@@ -61,7 +62,7 @@ namespace GitVersion.App.Tests
             // Create the application and override registrations.
             var program = new Program(builder => Overrides.ForEach(action => action(builder)));
 
-            if (!string.IsNullOrWhiteSpace(workingDirectory))
+            if (!StringExtensions.IsNullOrWhiteSpace(workingDirectory))
             {
                 args = new[] { "-targetpath", workingDirectory }.Concat(args).ToArray();
             }
@@ -86,7 +87,7 @@ namespace GitVersion.App.Tests
         {
             get
             {
-                if (string.IsNullOrWhiteSpace(Output)) return null;
+                if (StringExtensions.IsNullOrWhiteSpace(Output)) return null;
 
                 var jsonStartIndex = Output.IndexOf("{", StringComparison.Ordinal);
                 var jsonEndIndex = Output.IndexOf("}", StringComparison.Ordinal);

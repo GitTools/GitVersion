@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 
 namespace GitVersion.VersionCalculation
@@ -13,7 +14,7 @@ namespace GitVersion.VersionCalculation
             this.shas = shas ?? throw new ArgumentNullException(nameof(shas));
         }
 
-        public bool Exclude(BaseVersion version, out string reason)
+        public bool Exclude(BaseVersion version, [NotNullWhen(true)] out string? reason)
         {
             if (version == null) throw new ArgumentNullException(nameof(version));
 

@@ -14,7 +14,7 @@ namespace GitVersion.VersionConverters.WixUpdater
     {
         private readonly IFileSystem fileSystem;
         private readonly ILog log;
-        private string wixVersionFile;
+        private string? wixVersionFile;
         public const string WixVersionFileName = "GitVersion_WixVersion.wxi";
 
         public WixVersionFileUpdater(IFileSystem fileSystem, ILog log)

@@ -2,6 +2,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using GitVersion.Extensions;
 using GitVersion.VersionCalculation;
 
 namespace GitVersion
@@ -15,7 +16,7 @@ namespace GitVersion
 
     public static class IncrementStrategyFinder
     {
-        private static IEnumerable<ICommit> intermediateCommitCache;
+        private static IEnumerable<ICommit>? intermediateCommitCache;
         public const string DefaultMajorPattern = @"\+semver:\s?(breaking|major)";
         public const string DefaultMinorPattern = @"\+semver:\s?(feature|minor)";
         public const string DefaultPatchPattern = @"\+semver:\s?(fix|patch)";
@@ -31,7 +32,7 @@ namespace GitVersion
         public static VersionField? DetermineIncrementedField(IGitRepository repository, GitVersionContext context, BaseVersion baseVersion)
         {
             var commitMessageIncrement = FindCommitMessageIncrement(repository, context, baseVersion);
-            var defaultIncrement = context.Configuration.Increment.ToVersionField();
+            var defaultIncrement = context.Configuration?.Increment.ToVersionField();
 
             // use the default branch config increment strategy if there are no commit message overrides
             if (commitMessageIncrement == null)
@@ -57,15 +58,15 @@ namespace GitVersion
 
         public static VersionField? GetIncrementForCommits(GitVersionContext context, IEnumerable<ICommit> commits)
         {
-            var majorRegex = TryGetRegexOrDefault(context.Configuration.MajorVersionBumpMessage, DefaultMajorPatternRegex);
-            var minorRegex = TryGetRegexOrDefault(context.Configuration.MinorVersionBumpMessage, DefaultMinorPatternRegex);
-            var patchRegex = TryGetRegexOrDefault(context.Configuration.PatchVersionBumpMessage, DefaultPatchPatternRegex);
-            var none = TryGetRegexOrDefault(context.Configuration.NoBumpMessage, DefaultNoBumpPatternRegex);
+            var majorRegex = TryGetRegexOrDefault(context.Configuration?.MajorVersionBumpMessage, DefaultMajorPatternRegex);
+            var minorRegex = TryGetRegexOrDefault(context.Configuration?.MinorVersionBumpMessage, DefaultMinorPatternRegex);
+            var patchRegex = TryGetRegexOrDefault(context.Configuration?.PatchVersionBumpMessage, DefaultPatchPatternRegex);
+            var none = TryGetRegexOrDefault(context.Configuration?.NoBumpMessage, DefaultNoBumpPatternRegex);
 
             var increments = commits
                 .Select(c => GetIncrementFromMessage(c.Message, majorRegex, minorRegex, patchRegex, none))
                 .Where(v => v != null)
-                .Select(v => v.Value)
+                .Select(v => v!.Value)
                 .ToList();
 
             if (increments.Any())
@@ -78,21 +79,21 @@ namespace GitVersion
 
         private static VersionField? FindCommitMessageIncrement(IGitRepository repository, GitVersionContext context, BaseVersion baseVersion)
         {
-            if (context.Configuration.CommitMessageIncrementing == CommitMessageIncrementMode.Disabled)
+            if (context.Configuration?.CommitMessageIncrementing == CommitMessageIncrementMode.Disabled)
             {
                 return null;
             }
 
             var commits = GetIntermediateCommits(repository, baseVersion.BaseVersionSource, context.CurrentCommit);
 
-            if (context.Configuration.CommitMessageIncrementing == CommitMessageIncrementMode.MergeMessageOnly)
+            if (context.Configuration?.CommitMessageIncrementing == CommitMessageIncrementMode.MergeMessageOnly)
             {
                 commits = commits.Where(c => c.Parents.Count() > 1);
             }
 
             return GetIncrementForCommits(context, commits);
         }
-        private static Regex TryGetRegexOrDefault(string messageRegex, Regex defaultRegex)
+        private static Regex TryGetRegexOrDefault(string? messageRegex, Regex defaultRegex)
         {
             if (messageRegex == null)
             {
@@ -101,7 +102,7 @@ namespace GitVersion
 
             return CompiledRegexCache.GetOrAdd(messageRegex, pattern => new Regex(pattern, RegexOptions.Compiled | RegexOptions.IgnoreCase));
         }
-        private static IEnumerable<ICommit> GetIntermediateCommits(IGitRepository repo, ICommit baseCommit, ICommit headCommit)
+        private static IEnumerable<ICommit> GetIntermediateCommits(IGitRepository repo, ICommit? baseCommit, ICommit? headCommit)
         {
             if (baseCommit == null) yield break;
 
@@ -132,7 +133,7 @@ namespace GitVersion
             return null;
         }
 
-        private static IEnumerable<ICommit> GetCommitsReacheableFromHead(IGitRepository repo, ICommit headCommit)
+        private static IEnumerable<ICommit> GetCommitsReacheableFromHead(IGitRepository repo, ICommit? headCommit)
         {
             var filter = new CommitFilter
             {

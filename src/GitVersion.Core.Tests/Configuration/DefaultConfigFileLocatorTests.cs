@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using GitVersion.Configuration;
 using GitVersion.Core.Tests.Helpers;
+using GitVersion.Extensions;
 using GitVersion.Logging;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
@@ -219,9 +220,9 @@ namespace GitVersion.Core.Tests
 
             private string SetupConfigFileContent(string text, string fileName = null, string path = null)
             {
-                if (string.IsNullOrEmpty(fileName)) fileName = configFileLocator.FilePath;
+                if (StringExtensions.IsNullOrEmpty(fileName)) fileName = configFileLocator.FilePath;
                 var filePath = fileName;
-                if (!string.IsNullOrEmpty(path))
+                if (!StringExtensions.IsNullOrEmpty(path))
                     filePath = Path.Combine(path, filePath);
                 fileSystem.WriteAllText(filePath, text);
                 return filePath;

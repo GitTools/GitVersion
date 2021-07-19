@@ -5,6 +5,6 @@ namespace GitVersion.VersionCalculation.Cache
 {
     public interface IGitVersionCacheKeyFactory
     {
-        GitVersionCacheKey Create(Config overrideConfig);
+        GitVersionCacheKey Create(Config? overrideConfig);
     }
 }

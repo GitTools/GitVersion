@@ -6,6 +6,7 @@ using System.Text;
 using GitVersion.BuildAgents;
 using GitVersion.Helpers;
 using GitVersion.Core.Tests.Helpers;
+using GitVersion.Extensions;
 
 namespace GitVersion.App.Tests
 {
@@ -100,7 +101,7 @@ namespace GitVersion.App.Tests
             Console.WriteLine();
             Console.WriteLine("-------------------------------------------------------");
 
-            if (string.IsNullOrWhiteSpace(arguments.LogFile) || !File.Exists(arguments.LogFile))
+            if (StringExtensions.IsNullOrWhiteSpace(arguments.LogFile) || !File.Exists(arguments.LogFile))
             {
                 return new ExecutionResults(exitCode, output.ToString(), null);
             }

@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using GitVersion.Configuration.Init.Wizard;
+using GitVersion.Extensions;
 using GitVersion.Logging;
 using GitVersion.Model.Configuration;
 
@@ -11,10 +12,10 @@ namespace GitVersion.Configuration.Init
         {
         }
 
-        protected override StepResult HandleResult(string result, Queue<ConfigInitWizardStep> steps, Config config, string workingDirectory)
+        protected override StepResult HandleResult(string? result, Queue<ConfigInitWizardStep> steps, Config config, string workingDirectory)
         {
-            var editConfigStep = StepFactory.CreateStep<EditConfigStep>();
-            if (string.IsNullOrEmpty(result))
+            var editConfigStep = StepFactory.CreateStep<EditConfigStep>()!;
+            if (StringExtensions.IsNullOrEmpty(result))
             {
                 steps.Enqueue(editConfigStep);
                 return StepResult.Ok();
@@ -33,6 +34,6 @@ namespace GitVersion.Configuration.Init
             return @"What would you like to set the next version to (enter nothing to cancel)?";
         }
 
-        protected override string DefaultResult => null;
+        protected override string? DefaultResult => null;
     }
 }

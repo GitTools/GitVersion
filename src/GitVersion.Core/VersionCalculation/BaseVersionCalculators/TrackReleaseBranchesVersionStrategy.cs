@@ -40,7 +40,7 @@ namespace GitVersion.VersionCalculation
 
         public override IEnumerable<BaseVersion> GetVersions()
         {
-            if (Context.Configuration.TracksReleaseBranches)
+            if (Context.Configuration?.TracksReleaseBranches == true)
             {
                 return ReleaseBranchBaseVersions().Union(MainTagsVersions());
             }
@@ -58,7 +58,7 @@ namespace GitVersion.VersionCalculation
 
         private IEnumerable<BaseVersion> ReleaseBranchBaseVersions()
         {
-            var releaseBranchConfig = Context.FullConfiguration.GetReleaseBranchConfig();
+            var releaseBranchConfig = Context.FullConfiguration?.GetReleaseBranchConfig();
             if (releaseBranchConfig.Any())
             {
                 var releaseBranches = repositoryStore.GetReleaseBranches(releaseBranchConfig);
@@ -83,7 +83,7 @@ namespace GitVersion.VersionCalculation
 
         private IEnumerable<BaseVersion> GetReleaseVersion(GitVersionContext context, IBranch releaseBranch)
         {
-            var tagPrefixRegex = context.Configuration.GitTagPrefix;
+            var tagPrefixRegex = context.Configuration?.GitTagPrefix;
 
             // Find the commit where the child branch was created.
             var baseSource = repositoryStore.FindMergeBase(releaseBranch, context.CurrentBranch);

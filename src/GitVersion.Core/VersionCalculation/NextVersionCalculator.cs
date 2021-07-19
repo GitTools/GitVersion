@@ -40,7 +40,7 @@ namespace GitVersion.VersionCalculation
                 EnsureHeadIsNotDetached(context);
             }
 
-            SemanticVersion taggedSemanticVersion = null;
+            SemanticVersion? taggedSemanticVersion = null;
 
             if (context.IsCurrentCommitTagged)
             {
@@ -58,7 +58,7 @@ namespace GitVersion.VersionCalculation
             var baseVersion = baseVersionCalculator.GetBaseVersion();
             baseVersion.SemanticVersion.BuildMetaData = mainlineVersionCalculator.CreateVersionBuildMetaData(baseVersion.BaseVersionSource);
             SemanticVersion semver;
-            if (context.Configuration.VersioningMode == VersioningMode.Mainline)
+            if (context.Configuration?.VersioningMode == VersioningMode.Mainline)
             {
                 semver = mainlineVersionCalculator.FindMainlineModeVersion(baseVersion);
             }
@@ -75,12 +75,14 @@ namespace GitVersion.VersionCalculation
                 }
             }
 
-            var hasPreReleaseTag = semver.PreReleaseTag.HasTag();
-            var branchConfigHasPreReleaseTagConfigured = !string.IsNullOrEmpty(context.Configuration.Tag);
-            var preReleaseTagDoesNotMatchConfiguration = hasPreReleaseTag && branchConfigHasPreReleaseTagConfigured && semver.PreReleaseTag.Name != context.Configuration.Tag;
-            if (!semver.PreReleaseTag.HasTag() && branchConfigHasPreReleaseTagConfigured || preReleaseTagDoesNotMatchConfiguration)
+            var hasPreReleaseTag = semver.PreReleaseTag?.HasTag() == true;
+            var branchConfigHasPreReleaseTagConfigured = !StringExtensions.IsNullOrEmpty(context.Configuration?.Tag);
+#pragma warning disable CS8602 // Dereference of a possibly null reference. // context.Configuration.Tag not null when branchConfigHasPreReleaseTagConfigured is true
+            var preReleaseTagDoesNotMatchConfiguration = hasPreReleaseTag && branchConfigHasPreReleaseTagConfigured && semver.PreReleaseTag?.Name != context.Configuration.Tag;
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
+            if (semver.PreReleaseTag?.HasTag() != true && branchConfigHasPreReleaseTagConfigured || preReleaseTagDoesNotMatchConfiguration)
             {
-                UpdatePreReleaseTag(semver, baseVersion.BranchNameOverride);
+                UpdatePreReleaseTag(semver, baseVersion?.BranchNameOverride);
             }
 
             if (taggedSemanticVersion != null)
@@ -90,10 +92,10 @@ namespace GitVersion.VersionCalculation
                 {
                     taggedSemanticVersion = null;
                 }
-                else
+                else if (taggedSemanticVersion.BuildMetaData != null)
                 {
                     // set the commit count on the tagged ver
-                    taggedSemanticVersion.BuildMetaData.CommitsSinceVersionSource = semver.BuildMetaData.CommitsSinceVersionSource;
+                    taggedSemanticVersion.BuildMetaData.CommitsSinceVersionSource = semver.BuildMetaData?.CommitsSinceVersionSource;
                 }
             }
 
@@ -112,19 +114,19 @@ namespace GitVersion.VersionCalculation
             return semver;
         }
 
-        private void UpdatePreReleaseTag(SemanticVersion semanticVersion, string branchNameOverride)
+        private void UpdatePreReleaseTag(SemanticVersion semanticVersion, string? branchNameOverride)
         {
-            var tagToUse = context.Configuration.GetBranchSpecificTag(log, context.CurrentBranch.Name.Friendly, branchNameOverride);
+            var tagToUse = context.Configuration?.GetBranchSpecificTag(log, context.CurrentBranch?.Name.Friendly, branchNameOverride);
 
             int? number = null;
 
             var lastTag = repositoryStore
-                .GetVersionTagsOnBranch(context.CurrentBranch, context.Configuration.GitTagPrefix)
-                .FirstOrDefault(v => v.PreReleaseTag.Name.IsEquivalentTo(tagToUse));
+                .GetVersionTagsOnBranch(context.CurrentBranch!, context.Configuration?.GitTagPrefix)
+                .FirstOrDefault(v => v?.PreReleaseTag?.Name?.IsEquivalentTo(tagToUse) == true);
 
             if (lastTag != null &&
                 MajorMinorPatchEqual(lastTag, semanticVersion) &&
-                lastTag.PreReleaseTag.HasTag())
+                lastTag.PreReleaseTag?.HasTag() == true)
             {
                 number = lastTag.PreReleaseTag.Number + 1;
             }
@@ -136,7 +138,7 @@ namespace GitVersion.VersionCalculation
 
         private static void EnsureHeadIsNotDetached(GitVersionContext context)
         {
-            if (!context.CurrentBranch.IsDetachedHead)
+            if (context.CurrentBranch?.IsDetachedHead != true)
             {
                 return;
             }
@@ -144,7 +146,7 @@ namespace GitVersion.VersionCalculation
             var message = string.Format(
                 "It looks like the branch being examined is a detached Head pointing to commit '{0}'. " +
                 "Without a proper branch name GitVersion cannot determine the build version.",
-                context.CurrentCommit.Id.ToString(7));
+                context.CurrentCommit?.Id.ToString(7));
             throw new WarningException(message);
         }
 

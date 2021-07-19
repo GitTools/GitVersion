@@ -1,3 +1,4 @@
+using GitVersion.Extensions;
 using GitVersion.Logging;
 using GitVersion.OutputVariables;
 using System.IO;
@@ -31,7 +32,7 @@ namespace GitVersion.BuildAgents
             return new string[0];
         }
 
-        public override void WriteIntegration(System.Action<string> writer, VersionVariables variables, bool updateBuildNumber = true)
+        public override void WriteIntegration(System.Action<string?> writer, VersionVariables variables, bool updateBuildNumber = true)
         {
             base.WriteIntegration(writer, variables, updateBuildNumber);
 
@@ -52,7 +53,7 @@ namespace GitVersion.BuildAgents
                 using var streamWriter = File.AppendText(gitHubSetEnvFilePath);
                 foreach (var variable in variables)
                 {
-                    if (!string.IsNullOrEmpty(variable.Value))
+                    if (!StringExtensions.IsNullOrEmpty(variable.Value))
                     {
                         streamWriter.WriteLine($"GitVersion_{variable.Key}={variable.Value}");
                     }

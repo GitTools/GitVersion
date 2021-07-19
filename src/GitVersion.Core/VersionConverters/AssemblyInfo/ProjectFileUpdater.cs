@@ -1,3 +1,4 @@
+using GitVersion.Extensions;
 using GitVersion.Logging;
 using GitVersion.OutputVariables;
 using System;
@@ -73,22 +74,22 @@ namespace GitVersion.VersionConverters.AssemblyInfo
 
                 cleanupBackupTasks.Add(() => fileSystem.Delete(backupProjectFile));
 
-                if (!string.IsNullOrWhiteSpace(assemblyVersion))
+                if (!StringExtensions.IsNullOrWhiteSpace(assemblyVersion))
                 {
                     UpdateProjectVersionElement(fileXml, AssemblyVersionElement, assemblyVersion);
                 }
 
-                if (!string.IsNullOrWhiteSpace(assemblyFileVersion))
+                if (!StringExtensions.IsNullOrWhiteSpace(assemblyFileVersion))
                 {
                     UpdateProjectVersionElement(fileXml, FileVersionElement, assemblyFileVersion);
                 }
 
-                if (!string.IsNullOrWhiteSpace(assemblyInfoVersion))
+                if (!StringExtensions.IsNullOrWhiteSpace(assemblyInfoVersion))
                 {
                     UpdateProjectVersionElement(fileXml, InformationalVersionElement, assemblyInfoVersion);
                 }
 
-                if (!string.IsNullOrWhiteSpace(packageVersion))
+                if (!StringExtensions.IsNullOrWhiteSpace(packageVersion))
                 {
                     UpdateProjectVersionElement(fileXml, VersionElement, packageVersion);
                 }
@@ -182,7 +183,7 @@ namespace GitVersion.VersionConverters.AssemblyInfo
             var workingDirectory = context.WorkingDirectory;
             var assemblyInfoFileNames = new HashSet<string>(context.AssemblyInfoFiles);
 
-            if (assemblyInfoFileNames.Any(x => !string.IsNullOrWhiteSpace(x)))
+            if (assemblyInfoFileNames.Any(x => !StringExtensions.IsNullOrWhiteSpace(x)))
             {
                 foreach (var item in assemblyInfoFileNames)
                 {
@@ -211,7 +212,7 @@ namespace GitVersion.VersionConverters.AssemblyInfo
 
         private bool IsSupportedProjectFile(string fileName)
         {
-            if (string.IsNullOrEmpty(fileName))
+            if (StringExtensions.IsNullOrEmpty(fileName))
             {
                 return false;
             }

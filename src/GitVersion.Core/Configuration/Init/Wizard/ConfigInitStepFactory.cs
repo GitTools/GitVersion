@@ -5,7 +5,7 @@ namespace GitVersion.Configuration.Init.Wizard
 {
     public class ConfigInitStepFactory : IConfigInitStepFactory
     {
-        private readonly IServiceProvider sp;
+        private readonly IServiceProvider? sp;
 
         public ConfigInitStepFactory()
         {
@@ -16,6 +16,6 @@ namespace GitVersion.Configuration.Init.Wizard
             this.sp = sp ?? throw new ArgumentNullException(nameof(sp));
         }
 
-        public T CreateStep<T>() => sp.GetService<T>();
+        public T? CreateStep<T>() => sp!.GetService<T>();
     }
 }

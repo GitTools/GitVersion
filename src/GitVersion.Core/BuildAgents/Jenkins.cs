@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using GitVersion.Extensions;
 using GitVersion.Logging;
 using GitVersion.OutputVariables;
 
@@ -8,7 +9,7 @@ namespace GitVersion.BuildAgents
     public class Jenkins : BuildAgentBase
     {
         public const string EnvironmentVariableName = "JENKINS_URL";
-        private string file;
+        private string? file;
         protected override string EnvironmentVariable { get; } = EnvironmentVariableName;
 
         public Jenkins(IEnvironment environment, ILog log) : base(environment, log)
@@ -43,7 +44,7 @@ namespace GitVersion.BuildAgents
 
         private bool IsPipelineAsCode()
         {
-            return !string.IsNullOrEmpty(Environment.GetEnvironmentVariable("BRANCH_NAME"));
+            return !StringExtensions.IsNullOrEmpty(Environment.GetEnvironmentVariable("BRANCH_NAME"));
         }
 
         public override bool PreventFetch() => true;
@@ -58,7 +59,7 @@ namespace GitVersion.BuildAgents
             return IsPipelineAsCode();
         }
 
-        public override void WriteIntegration(Action<string> writer, VersionVariables variables, bool updateBuildNumber = true)
+        public override void WriteIntegration(Action<string?> writer, VersionVariables variables, bool updateBuildNumber = true)
         {
             base.WriteIntegration(writer, variables);
             writer($"Outputting variables to '{file}' ... ");

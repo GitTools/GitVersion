@@ -5,7 +5,7 @@ namespace GitVersion
 {
     public class ReferenceName : IEquatable<ReferenceName>, IComparable<ReferenceName>
     {
-        private static readonly LambdaEqualityHelper<ReferenceName> equalityHelper = new(x => x.Canonical);
+        private static readonly LambdaEqualityHelper<ReferenceName> equalityHelper = new(x => x?.Canonical);
         private static readonly LambdaKeyComparer<ReferenceName, string> comparerHelper = new(x => x.Canonical);
 
         private const string LocalBranchPrefix = "refs/heads/";
@@ -52,7 +52,7 @@ namespace GitVersion
         public override int GetHashCode() => equalityHelper.GetHashCode(this);
         public override string ToString() => Friendly;
 
-        public bool EquivalentTo(string name)
+        public bool EquivalentTo(string? name)
         {
             return Canonical.Equals(name, StringComparison.OrdinalIgnoreCase)
                    || Friendly.Equals(name, StringComparison.OrdinalIgnoreCase)

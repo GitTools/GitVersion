@@ -50,7 +50,7 @@ namespace GitVersion
             if (versionVariables != null) return versionVariables;
 
             var semanticVersion = nextVersionCalculator.FindVersion();
-            versionVariables = variableProvider.GetVariablesFor(semanticVersion, context.Configuration, context.IsCurrentCommitTagged);
+            versionVariables = variableProvider.GetVariablesFor(semanticVersion, context.Configuration!, context.IsCurrentCommitTagged);
 
             if (gitVersionOptions.Settings.NoCache) return versionVariables;
             try

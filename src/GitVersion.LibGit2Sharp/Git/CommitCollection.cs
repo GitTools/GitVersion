@@ -21,7 +21,7 @@ namespace GitVersion
         public IEnumerable<ICommit> GetCommitsPriorTo(DateTimeOffset olderThan) => this.SkipWhile(c => c.When > olderThan);
         public IEnumerable<ICommit> QueryBy(CommitFilter commitFilter)
         {
-            static object? GetReacheableFrom(object item)
+            static object? GetReacheableFrom(object? item)
             {
                 return item switch
                 {

@@ -57,7 +57,7 @@ namespace GitVersion.VersionCalculation.Cache
             return Path.Combine(gitDir, "gitversion_cache");
         }
 
-        public VersionVariables LoadVersionVariablesFromDiskCache(GitVersionCacheKey key)
+        public VersionVariables? LoadVersionVariablesFromDiskCache(GitVersionCacheKey key)
         {
             using (log.IndentLog("Loading version variables from disk cache"))
             {

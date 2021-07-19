@@ -83,7 +83,7 @@ namespace GitVersion.Configuration
                 // In case when several branch configurations match the current branch (by regex), we choose the first one.
                 // So we have to add new branches to the beginning of a dictionary to preserve 5.3.x behavior.
 
-                var newBranches = new Dictionary<string, BranchConfig>();
+                var newBranches = new Dictionary<string, BranchConfig?>();
 
                 var targetConfigBranches = targetConfig.Branches;
 
@@ -96,8 +96,8 @@ namespace GitVersion.Configuration
                         target = BranchConfig.CreateDefaultBranchConfig(branchName);
                     }
 
-                    branchConfig.MergeTo(target);
-                    if (target.SourceBranches != null && target.SourceBranches.Contains(Config.MasterBranchKey))
+                    branchConfig!.MergeTo(target!);
+                    if (target!.SourceBranches != null && target.SourceBranches.Contains(Config.MasterBranchKey))
                     {
                         target.SourceBranches.Remove(Config.MasterBranchKey);
                         target.SourceBranches.Add(Config.MainBranchKey);
@@ -127,9 +127,9 @@ namespace GitVersion.Configuration
             }
         }
 
-        private static void FinalizeBranchConfiguration(Config config, string name, BranchConfig branchConfig)
+        private static void FinalizeBranchConfiguration(Config config, string name, BranchConfig? branchConfig)
         {
-            branchConfig.Name = name;
+            branchConfig!.Name = name;
             branchConfig.Increment ??= config.Increment ?? IncrementStrategy.Inherit;
 
             if (branchConfig.VersioningMode == null)
@@ -148,7 +148,7 @@ namespace GitVersion.Configuration
             {
                 foreach (var targetBranchName in branchConfig.IsSourceBranchFor)
                 {
-                    var targetBranchConfig = config.Branches[targetBranchName];
+                    var targetBranchConfig = config.Branches[targetBranchName]!;
                     targetBranchConfig.SourceBranches ??= new HashSet<string>();
                     targetBranchConfig.SourceBranches.Add(name);
                 }
@@ -159,7 +159,7 @@ namespace GitVersion.Configuration
         {
             foreach (var (name, branchConfig) in config.Branches)
             {
-                var regex = branchConfig.Regex;
+                var regex = branchConfig?.Regex;
                 var helpUrl = $"{System.Environment.NewLine}See https://gitversion.net/docs/reference/configuration for more info";
 
                 if (regex == null)
@@ -167,7 +167,7 @@ namespace GitVersion.Configuration
                     throw new ConfigurationException($"Branch configuration '{name}' is missing required configuration 'regex'{helpUrl}");
                 }
 
-                var sourceBranches = branchConfig.SourceBranches;
+                var sourceBranches = branchConfig?.SourceBranches;
                 if (sourceBranches == null)
                 {
                     throw new ConfigurationException($"Branch configuration '{name}' is missing required configuration 'source-branches'{helpUrl}");

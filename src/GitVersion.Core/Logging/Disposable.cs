@@ -26,7 +26,7 @@ namespace GitVersion.Logging
                 disposer = null;
             }
 
-            private Action disposer;
+            private Action? disposer;
         }
     }
 }

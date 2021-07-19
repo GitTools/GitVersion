@@ -6,7 +6,7 @@ namespace GitVersion
 {
     internal sealed class Remote : IRemote
     {
-        private static readonly LambdaEqualityHelper<IRemote> equalityHelper = new(x => x.Name);
+        private static readonly LambdaEqualityHelper<IRemote> equalityHelper = new(x => x?.Name);
         private static readonly LambdaKeyComparer<IRemote, string> comparerHelper = new(x => x.Name);
 
         private readonly LibGit2Sharp.Remote innerRemote;

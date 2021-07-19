@@ -14,9 +14,9 @@ namespace GitVersion.BuildAgents
             this.buildAgents = buildAgents ?? Array.Empty<IBuildAgent>();
         }
 
-        public ICurrentBuildAgent Resolve()
+        public ICurrentBuildAgent? Resolve()
         {
-            ICurrentBuildAgent instance = null;
+            ICurrentBuildAgent? instance = null;
             foreach (var buildAgent in buildAgents)
             {
                 var agentName = buildAgent.GetType().Name;

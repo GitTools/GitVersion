@@ -5,7 +5,7 @@ namespace GitVersion
 {
     internal sealed class Reference : IReference
     {
-        private static readonly LambdaEqualityHelper<IReference> equalityHelper = new(x => x.Name.Canonical);
+        private static readonly LambdaEqualityHelper<IReference> equalityHelper = new(x => x?.Name.Canonical);
         private static readonly LambdaKeyComparer<IReference, string> comparerHelper = new(x => x.Name.Canonical);
 
         internal readonly LibGit2Sharp.Reference innerReference;

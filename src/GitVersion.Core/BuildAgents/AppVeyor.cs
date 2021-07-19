@@ -4,6 +4,7 @@ using System.Text;
 using GitVersion.Logging;
 using GitVersion.OutputVariables;
 using System.Text.Json;
+using GitVersion.Extensions;
 
 namespace GitVersion.BuildAgents
 {
@@ -69,7 +70,7 @@ namespace GitVersion.BuildAgents
         public override string GetCurrentBranch(bool usingDynamicRepos)
         {
             var pullRequestBranchName = Environment.GetEnvironmentVariable("APPVEYOR_PULL_REQUEST_HEAD_REPO_BRANCH");
-            if (!string.IsNullOrWhiteSpace(pullRequestBranchName))
+            if (!StringExtensions.IsNullOrWhiteSpace(pullRequestBranchName))
             {
                 return pullRequestBranchName;
             }
