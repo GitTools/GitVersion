@@ -24,7 +24,7 @@
         <PackageVersion_LibGit2Sharp>0.27.0-preview-0102</PackageVersion_LibGit2Sharp>
         <PackageVersion_LibGit2Sharp_NativeBinaries>2.0.312</PackageVersion_LibGit2Sharp_NativeBinaries>
 
-        <PackageVersion_JetBrainsAnnotations>2021.1.0</PackageVersion_JetBrainsAnnotations>
+        <PackageVersion_JetBrainsAnnotations>2021.2.0</PackageVersion_JetBrainsAnnotations>
         <PackageVersion_YamlDotNet>11.2.1</PackageVersion_YamlDotNet>
         <PackageVersion_MicrosoftExtensions>5.0.0</PackageVersion_MicrosoftExtensions>
         <PackageVersion_MicrosoftJson>5.0.0</PackageVersion_MicrosoftJson>
