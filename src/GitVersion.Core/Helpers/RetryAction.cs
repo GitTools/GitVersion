@@ -24,7 +24,7 @@ namespace GitVersion.Helpers
     }
     public class RetryAction<T, Result> where T : Exception
     {
-        private RetryPolicy<Result> retryPolicy;
+        private readonly RetryPolicy<Result> retryPolicy;
 
         public RetryAction(int maxRetries = 5)
         {
