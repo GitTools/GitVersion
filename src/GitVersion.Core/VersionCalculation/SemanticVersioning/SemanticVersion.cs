@@ -100,7 +100,7 @@ namespace GitVersion
             return !(v1 == v2);
         }
 
-        public static bool operator >(SemanticVersion? v1, SemanticVersion? v2)
+        public static bool operator >(SemanticVersion v1, SemanticVersion v2)
         {
             if (v1 == null)
                 throw new ArgumentNullException(nameof(v1));
@@ -109,7 +109,7 @@ namespace GitVersion
             return v1.CompareTo(v2) > 0;
         }
 
-        public static bool operator >=(SemanticVersion? v1, SemanticVersion? v2)
+        public static bool operator >=(SemanticVersion v1, SemanticVersion v2)
         {
             if (v1 == null)
                 throw new ArgumentNullException(nameof(v1));
@@ -118,7 +118,7 @@ namespace GitVersion
             return v1.CompareTo(v2) >= 0;
         }
 
-        public static bool operator <=(SemanticVersion? v1, SemanticVersion? v2)
+        public static bool operator <=(SemanticVersion v1, SemanticVersion v2)
         {
             if (v1 == null)
                 throw new ArgumentNullException(nameof(v1));
@@ -128,7 +128,7 @@ namespace GitVersion
             return v1.CompareTo(v2) <= 0;
         }
 
-        public static bool operator <(SemanticVersion? v1, SemanticVersion? v2)
+        public static bool operator <(SemanticVersion v1, SemanticVersion v2)
         {
             if (v1 == null)
                 throw new ArgumentNullException(nameof(v1));

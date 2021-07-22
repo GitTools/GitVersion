@@ -44,13 +44,13 @@ namespace GitVersion
             {
                 // Other branch tip is a forward merge
                 var commitToFindCommonBase = otherBranch?.Tip;
-                var commit = branch.Tip;
+                var commit = branch.Tip!;
                 if (commitToFindCommonBase?.Parents.Contains(commit) == true)
                 {
                     commitToFindCommonBase = otherBranch!.Tip!.Parents.First();
                 }
 
-                var findMergeBase = FindMergeBase(commit, commitToFindCommonBase);
+                var findMergeBase = FindMergeBase(commit, commitToFindCommonBase!);
                 if (findMergeBase != null)
                 {
                     log.Info($"Found merge base of {findMergeBase}");
@@ -298,13 +298,13 @@ namespace GitVersion
             }
         }
 
-        public Dictionary<string, List<IBranch>> GetMainlineBranches(ICommit? commit, IEnumerable<KeyValuePair<string, BranchConfig?>>? mainlineBranchConfigs)
+        public Dictionary<string, List<IBranch>> GetMainlineBranches(ICommit commit, IEnumerable<KeyValuePair<string, BranchConfig?>>? mainlineBranchConfigs)
         {
             return repository.Branches
                 .Where(b => mainlineBranchConfigs?.Any(c => Regex.IsMatch(b.Name.Friendly, c.Value?.Regex)) == true)
                 .Select(b => new
                 {
-                    MergeBase = FindMergeBase(b.Tip, commit),
+                    MergeBase = FindMergeBase(b.Tip!, commit),
                     Branch = b
                 })
                 .Where(a => a.MergeBase != null)
@@ -505,7 +505,7 @@ namespace GitVersion
             return commitCollection.FirstOrDefault(c => c.Parents.Contains(findMergeBase));
         }
 
-        public ICommit FindMergeBase(ICommit? commit, ICommit? mainlineTip) => repository.FindMergeBase(commit, mainlineTip);
+        public ICommit FindMergeBase(ICommit commit, ICommit mainlineTip) => repository.FindMergeBase(commit, mainlineTip);
 
         public int GetNumberOfUncommittedChanges() => repository.GetNumberOfUncommittedChanges();
     }

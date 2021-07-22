@@ -126,7 +126,7 @@ namespace GitVersion.VersionCalculation
         private IBranch GetMainline(ICommit? baseVersionSource)
         {
             var mainlineBranchConfigs = context.FullConfiguration?.Branches.Where(b => b.Value?.IsMainline == true).ToList();
-            var mainlineBranches = repositoryStore.GetMainlineBranches(context.CurrentCommit, mainlineBranchConfigs);
+            var mainlineBranches = repositoryStore.GetMainlineBranches(context.CurrentCommit!, mainlineBranchConfigs);
 
             var allMainlines = mainlineBranches.Values.SelectMany(branches => branches.Select(b => b.Name.Friendly));
             log.Info("Found possible mainline branches: " + string.Join(", ", allMainlines));
@@ -202,7 +202,7 @@ namespace GitVersion.VersionCalculation
         /// <returns>The best possible merge base between the current commit and <paramref name="mainline"/> that is not the child of a forward merge.</returns>
         private ICommit FindMergeBaseBeforeForwardMerge(ICommit? baseVersionSource, IBranch mainline, [NotNullWhen(true)] out ICommit? mainlineTip)
         {
-            var mergeBase = repositoryStore.FindMergeBase(context.CurrentCommit, mainline.Tip);
+            var mergeBase = repositoryStore.FindMergeBase(context.CurrentCommit!, mainline.Tip!);
             var mainlineCommitLog = repositoryStore.GetMainlineCommitLog(baseVersionSource, mainline.Tip).ToList();
 
             // find the mainline commit effective for versioning the current branch

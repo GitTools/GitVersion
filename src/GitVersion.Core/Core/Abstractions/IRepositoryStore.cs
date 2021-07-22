@@ -11,7 +11,7 @@ namespace GitVersion.Common
         /// Find the merge base of the two branches, i.e. the best common ancestor of the two branches' tips.
         /// </summary>
         ICommit? FindMergeBase(IBranch branch, IBranch? otherBranch);
-        ICommit FindMergeBase(ICommit? commit, ICommit? mainlineTip);
+        ICommit FindMergeBase(ICommit commit, ICommit mainlineTip);
         ICommit? GetCurrentCommit(IBranch currentBranch, string? commitId);
         ICommit GetBaseVersionSource(ICommit currentBranchTip);
         IEnumerable<ICommit> GetMainlineCommitLog(ICommit? baseVersionSource, ICommit? mainlineTip);
@@ -26,7 +26,7 @@ namespace GitVersion.Common
         IEnumerable<IBranch> GetReleaseBranches(IEnumerable<KeyValuePair<string, BranchConfig?>>? releaseBranchConfig);
         IEnumerable<IBranch> ExcludingBranches(IEnumerable<IBranch> branchesToExclude);
         IEnumerable<IBranch> GetBranchesContainingCommit(ICommit? commit, IEnumerable<IBranch>? branches = null, bool onlyTrackedBranches = false);
-        Dictionary<string, List<IBranch>> GetMainlineBranches(ICommit? commit, IEnumerable<KeyValuePair<string, BranchConfig?>>? mainlineBranchConfigs);
+        Dictionary<string, List<IBranch>> GetMainlineBranches(ICommit commit, IEnumerable<KeyValuePair<string, BranchConfig?>>? mainlineBranchConfigs);
 
         /// <summary>
         /// Find the commit where the given branch was branched from another branch.

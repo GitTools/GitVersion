@@ -51,7 +51,7 @@ namespace GitVersion.VersionCalculation
                         .ToList();
                 }
 
-                var maxVersion = versions.Aggregate((v1, v2) => v1.IncrementedVersion > v2.IncrementedVersion ? v1 : v2);
+                var maxVersion = versions.Aggregate((v1, v2) => v1.IncrementedVersion! > v2.IncrementedVersion! ? v1 : v2);
                 var matchingVersionsOnceIncremented = versions
                     .Where(b => b.Version?.BaseVersionSource != null && b.IncrementedVersion == maxVersion.IncrementedVersion)
                     .ToList();

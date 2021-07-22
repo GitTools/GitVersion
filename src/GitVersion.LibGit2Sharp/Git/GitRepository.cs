@@ -53,7 +53,7 @@ namespace GitVersion
         public ICommitCollection Commits => new CommitCollection(repositoryInstance.Commits);
         public IRemoteCollection Remotes => new RemoteCollection(repositoryInstance.Network.Remotes);
 
-        public ICommit FindMergeBase(ICommit? commit, ICommit? otherCommit)
+        public ICommit FindMergeBase(ICommit commit, ICommit otherCommit)
         {
             _ = commit ?? throw new ArgumentNullException(nameof(commit));
             _ = otherCommit ?? throw new ArgumentNullException(nameof(otherCommit));
