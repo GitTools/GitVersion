@@ -15,7 +15,7 @@ namespace GitVersion.Configuration.Init
         protected override StepResult HandleResult(string? result, Queue<ConfigInitWizardStep> steps, Config config, string workingDirectory)
         {
             var editConfigStep = StepFactory.CreateStep<EditConfigStep>()!;
-            if (StringExtensions.IsNullOrEmpty(result))
+            if (result.IsNullOrEmpty())
             {
                 steps.Enqueue(editConfigStep);
                 return StepResult.Ok();

@@ -62,7 +62,7 @@ namespace GitVersion.App.Tests
             // Create the application and override registrations.
             var program = new Program(builder => Overrides.ForEach(action => action(builder)));
 
-            if (!StringExtensions.IsNullOrWhiteSpace(workingDirectory))
+            if (!workingDirectory.IsNullOrWhiteSpace())
             {
                 args = new[] { "-targetpath", workingDirectory }.Concat(args).ToArray();
             }
@@ -87,7 +87,7 @@ namespace GitVersion.App.Tests
         {
             get
             {
-                if (StringExtensions.IsNullOrWhiteSpace(Output)) return null;
+                if (Output.IsNullOrWhiteSpace()) return null;
 
                 var jsonStartIndex = Output.IndexOf("{", StringComparison.Ordinal);
                 var jsonEndIndex = Output.IndexOf("}", StringComparison.Ordinal);

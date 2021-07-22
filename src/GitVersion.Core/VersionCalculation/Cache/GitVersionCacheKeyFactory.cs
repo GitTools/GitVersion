@@ -198,7 +198,7 @@ namespace GitVersion.VersionCalculation.Cache
 
         private static string GetHash(string textToHash)
         {
-            if (StringExtensions.IsNullOrEmpty(textToHash))
+            if (textToHash.IsNullOrEmpty())
             {
                 return string.Empty;
             }

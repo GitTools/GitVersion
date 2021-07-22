@@ -92,7 +92,7 @@ namespace GitVersion
             var weightedPreReleaseNumber =
                 semver.PreReleaseTag?.HasTag() == true ? (semver.PreReleaseTag.Number + config.PreReleaseWeight).ToString() : null;
 
-            if (StringExtensions.IsNullOrEmpty(weightedPreReleaseNumber))
+            if (weightedPreReleaseNumber.IsNullOrEmpty())
             {
                 return $"{config.TagPreReleaseWeight}";
             }

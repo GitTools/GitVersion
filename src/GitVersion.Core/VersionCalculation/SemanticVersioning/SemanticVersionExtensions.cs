@@ -7,7 +7,7 @@ namespace GitVersion
     {
         public static void OverrideVersionManuallyIfNeeded(this SemanticVersion version, EffectiveConfiguration configuration)
         {
-            if (!StringExtensions.IsNullOrEmpty(configuration.NextVersion) && SemanticVersion.TryParse(configuration.NextVersion, configuration.GitTagPrefix, out var manualNextVersion))
+            if (!configuration.NextVersion.IsNullOrEmpty() && SemanticVersion.TryParse(configuration.NextVersion, configuration.GitTagPrefix, out var manualNextVersion))
             {
                 if (manualNextVersion > version)
                 {

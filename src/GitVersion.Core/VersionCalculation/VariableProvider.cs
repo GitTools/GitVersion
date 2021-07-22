@@ -30,7 +30,7 @@ namespace GitVersion.VersionCalculation
                 if (semanticVersion.PreReleaseTag?.HasTag() != true)
                 {
                     semanticVersion.PreReleaseTag!.Name = config.GetBranchSpecificTag(log, semanticVersion.BuildMetaData?.Branch, null);
-                    if (StringExtensions.IsNullOrEmpty(semanticVersion.PreReleaseTag.Name))
+                    if (semanticVersion.PreReleaseTag.Name.IsNullOrEmpty())
                     {
                         semanticVersion.PreReleaseTag.Name = config.ContinuousDeploymentFallbackTag;
                     }
@@ -38,7 +38,7 @@ namespace GitVersion.VersionCalculation
             }
 
             // Evaluate tag number pattern and append to prerelease tag, preserving build metadata
-            var appendTagNumberPattern = !StringExtensions.IsNullOrEmpty(config.TagNumberPattern) && semanticVersion.PreReleaseTag?.HasTag() == true;
+            var appendTagNumberPattern = !config.TagNumberPattern.IsNullOrEmpty() && semanticVersion.PreReleaseTag?.HasTag() == true;
             if (appendTagNumberPattern)
             {
                 var match = Regex.Match(semanticVersion.BuildMetaData!.Branch, config.TagNumberPattern);
@@ -129,7 +129,7 @@ namespace GitVersion.VersionCalculation
         {
             string? formattedString;
 
-            if (StringExtensions.IsNullOrEmpty(formatString))
+            if (formatString.IsNullOrEmpty())
             {
                 formattedString = defaultValue;
             }

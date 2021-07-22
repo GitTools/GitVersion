@@ -7,7 +7,7 @@ namespace GitVersion.Cache
     {
         public GitVersionCacheKey(string value)
         {
-            if (StringExtensions.IsNullOrEmpty(value))
+            if (value.IsNullOrEmpty())
             {
                 throw new ArgumentNullException(nameof(value));
             }

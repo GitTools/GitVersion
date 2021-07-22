@@ -247,7 +247,7 @@ namespace GitVersion
         /// </summary>
         public string ToString(string? format, IFormatProvider? formatProvider = null)
         {
-            if (StringExtensions.IsNullOrEmpty(format))
+            if (format.IsNullOrEmpty())
                 format = "s";
 
             if (formatProvider?.GetFormat(GetType()) is ICustomFormatter formatter)
@@ -275,13 +275,13 @@ namespace GitVersion
                     {
                         var buildMetadata = BuildMetaData?.ToString();
 
-                        return !StringExtensions.IsNullOrEmpty(buildMetadata) ? $"{ToString("s")}+{buildMetadata}" : ToString("s");
+                        return !buildMetadata.IsNullOrEmpty() ? $"{ToString("s")}+{buildMetadata}" : ToString("s");
                     }
                 case "i":
                     {
                         var buildMetadata = BuildMetaData?.ToString("f");
 
-                        return !StringExtensions.IsNullOrEmpty(buildMetadata) ? $"{ToString("s")}+{buildMetadata}" : ToString("s");
+                        return !buildMetadata.IsNullOrEmpty() ? $"{ToString("s")}+{buildMetadata}" : ToString("s");
                     }
                 default:
                     throw new ArgumentException($"Unrecognised format '{format}'", nameof(format));

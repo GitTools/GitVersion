@@ -38,7 +38,7 @@ namespace GitVersion.BuildAgents
             // For AzurePipelines, we'll get the Build Number and insert GitVersion variables where
             // specified
             var buildNumberEnv = Environment.GetEnvironmentVariable("BUILD_BUILDNUMBER");
-            if (StringExtensions.IsNullOrWhiteSpace(buildNumberEnv))
+            if (buildNumberEnv.IsNullOrWhiteSpace())
                 return variables.FullSemVer;
 
             var newBuildNumber = variables.Aggregate(buildNumberEnv, ReplaceVariables);

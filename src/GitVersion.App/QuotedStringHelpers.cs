@@ -55,7 +55,7 @@ namespace GitVersion
 
             splitted.Add(input.Substring(startIndex, input.Length - startIndex));
 
-            return splitted.Where(argument => !StringExtensions.IsNullOrEmpty(argument)).ToArray();
+            return splitted.Where(argument => !argument.IsNullOrEmpty()).ToArray();
         }
 
         /// <summary>

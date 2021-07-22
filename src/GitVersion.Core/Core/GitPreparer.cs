@@ -51,7 +51,7 @@ namespace GitVersion
 
             log.Info($"Project root is: {projectRoot}");
             log.Info($"DotGit directory is: {dotGitDirectory}");
-            if (StringExtensions.IsNullOrEmpty(dotGitDirectory) || StringExtensions.IsNullOrEmpty(projectRoot))
+            if (dotGitDirectory.IsNullOrEmpty() || projectRoot.IsNullOrEmpty())
             {
                 throw new Exception($"Failed to prepare or find the .git directory in path '{gitVersionOptions.WorkingDirectory}'.");
             }
@@ -62,7 +62,7 @@ namespace GitVersion
         private void PrepareInternal(bool normalizeGitDirectory, string? currentBranch, bool shouldCleanUpRemotes = false)
         {
             var gitVersionOptions = options.Value;
-            if (!StringExtensions.IsNullOrWhiteSpace(gitVersionOptions.RepositoryInfo.TargetUrl))
+            if (!gitVersionOptions.RepositoryInfo.TargetUrl.IsNullOrWhiteSpace())
             {
                 CreateDynamicRepository(currentBranch);
             }
@@ -87,7 +87,7 @@ namespace GitVersion
                 return targetBranch;
             }
 
-            var isDynamicRepository = !StringExtensions.IsNullOrWhiteSpace(gitVersionOptions.RepositoryInfo.DynamicRepositoryClonePath);
+            var isDynamicRepository = !gitVersionOptions.RepositoryInfo.DynamicRepositoryClonePath.IsNullOrWhiteSpace();
             var currentBranch = buildAgent.GetCurrentBranch(isDynamicRepository) ?? targetBranch;
             log.Info("Branch from build environment: " + currentBranch);
 
@@ -117,7 +117,7 @@ namespace GitVersion
         private void CreateDynamicRepository(string? targetBranch)
         {
             var gitVersionOptions = options.Value;
-            if (StringExtensions.IsNullOrWhiteSpace(targetBranch))
+            if (targetBranch.IsNullOrWhiteSpace())
             {
                 throw new Exception("Dynamic Git repositories must have a target branch (/b)");
             }
@@ -218,7 +218,7 @@ namespace GitVersion
                 // If no, go ahead and check out a new branch, using the known commit SHA as the pointer
                 var localBranchesWhereCommitShaIsHead = repository.Branches.Where(b => !b.IsRemote && b.Tip?.Sha == headSha).ToList();
 
-                var matchingCurrentBranch = !StringExtensions.IsNullOrEmpty(currentBranchName)
+                var matchingCurrentBranch = !currentBranchName.IsNullOrEmpty()
                     ? localBranchesWhereCommitShaIsHead.SingleOrDefault(b => b.Name.Canonical.Replace("/heads/", "/") == currentBranchName.Replace("/heads/", "/"))
                     : null;
                 if (matchingCurrentBranch != null)
@@ -352,7 +352,7 @@ Please run `git {GitExtensions.CreateGitLogArgs(100)}` and submit it along with 
                 throw new ArgumentNullException(nameof(remote));
             }
 
-            if (StringExtensions.IsNullOrEmpty(currentBranch)) return;
+            if (currentBranch.IsNullOrEmpty()) return;
 
             var isRef = currentBranch.Contains("refs");
             var isBranch = currentBranch.Contains("refs/heads");

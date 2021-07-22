@@ -44,7 +44,7 @@ namespace GitVersion.BuildAgents
 
         private bool IsPipelineAsCode()
         {
-            return !StringExtensions.IsNullOrEmpty(Environment.GetEnvironmentVariable("BRANCH_NAME"));
+            return !Environment.GetEnvironmentVariable("BRANCH_NAME").IsNullOrEmpty();
         }
 
         public override bool PreventFetch() => true;

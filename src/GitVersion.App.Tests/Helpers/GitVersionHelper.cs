@@ -101,7 +101,7 @@ namespace GitVersion.App.Tests
             Console.WriteLine();
             Console.WriteLine("-------------------------------------------------------");
 
-            if (StringExtensions.IsNullOrWhiteSpace(arguments.LogFile) || !File.Exists(arguments.LogFile))
+            if (arguments.LogFile.IsNullOrWhiteSpace() || !File.Exists(arguments.LogFile))
             {
                 return new ExecutionResults(exitCode, output.ToString(), null);
             }

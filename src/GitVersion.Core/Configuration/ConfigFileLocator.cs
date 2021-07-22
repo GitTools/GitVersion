@@ -15,7 +15,7 @@ namespace GitVersion.Configuration
         {
             this.fileSystem = fileSystem;
             var configFile = options?.Value.ConfigInfo.ConfigFile;
-            FilePath = !StringExtensions.IsNullOrWhiteSpace(configFile) ? configFile : DefaultFileName;
+            FilePath = !configFile.IsNullOrWhiteSpace() ? configFile : DefaultFileName;
         }
 
         public string FilePath { get; }
@@ -59,7 +59,7 @@ namespace GitVersion.Configuration
 
         public void Verify(GitVersionOptions gitVersionOptions, IGitRepositoryInfo repositoryInfo)
         {
-            if (!StringExtensions.IsNullOrWhiteSpace(gitVersionOptions.RepositoryInfo.TargetUrl))
+            if (!gitVersionOptions.RepositoryInfo.TargetUrl.IsNullOrWhiteSpace())
             {
                 // Assuming this is a dynamic repository. At this stage it's unsure whether we have
                 // any .git info so we need to skip verification

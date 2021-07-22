@@ -16,7 +16,7 @@ namespace GitVersion.BuildAgents
         public override bool CanApplyToCurrentContext()
         {
             var envRunDatabasePath = Environment.GetEnvironmentVariable(EnvironmentVariableName);
-            if (!StringExtensions.IsNullOrEmpty(envRunDatabasePath))
+            if (!envRunDatabasePath.IsNullOrEmpty())
             {
                 if (!File.Exists(envRunDatabasePath))
                 {

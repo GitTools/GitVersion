@@ -136,10 +136,10 @@ namespace GitVersion.Extensions
             return string.Equals(self, other, StringComparison.OrdinalIgnoreCase);
         }
 
-        /// <inheritdoc cref="StringExtensions.IsNullOrEmpty(string)"/>
-        public static bool IsNullOrEmpty([NotNullWhen(returnValue: false)] string? value) => string.IsNullOrEmpty(value);
+        /// <inheritdoc cref="string.IsNullOrEmpty()"/>
+        public static bool IsNullOrEmpty([NotNullWhen(returnValue: false)] this string? value) => string.IsNullOrEmpty(value);
 
-        /// <inheritdoc cref="StringExtensions.IsNullOrWhiteSpace(string)"/>
-        public static bool IsNullOrWhiteSpace([NotNullWhen(returnValue: false)] string? value) => string.IsNullOrWhiteSpace(value);
+        /// <inheritdoc cref="string.IsNullOrWhiteSpace()"/>
+        public static bool IsNullOrWhiteSpace([NotNullWhen(returnValue: false)] this string? value) => string.IsNullOrWhiteSpace(value);
     }
 }

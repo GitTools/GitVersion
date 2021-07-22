@@ -128,13 +128,13 @@ namespace GitVersion
         private void AddAuthentication(Arguments arguments)
         {
             var username = environment.GetEnvironmentVariable("GITVERSION_REMOTE_USERNAME");
-            if (!StringExtensions.IsNullOrWhiteSpace(username))
+            if (!username.IsNullOrWhiteSpace())
             {
                 arguments.Authentication.Username = username;
             }
 
             var password = environment.GetEnvironmentVariable("GITVERSION_REMOTE_PASSWORD");
-            if (!StringExtensions.IsNullOrWhiteSpace(password))
+            if (!password.IsNullOrWhiteSpace())
             {
                 arguments.Authentication.Password = password;
             }
@@ -362,7 +362,7 @@ namespace GitVersion
         {
             string versionVariable = null;
 
-            if (!StringExtensions.IsNullOrWhiteSpace(value))
+            if (!value.IsNullOrWhiteSpace())
             {
                 versionVariable = VersionVariables.AvailableVariables.SingleOrDefault(av => av.Equals(value.Replace("'", ""), StringComparison.CurrentCultureIgnoreCase));
             }
@@ -563,7 +563,7 @@ namespace GitVersion
                 else if (currentKey != null)
                 {
                     // And if the current switch does not have a value yet and the value is not itself a switch, set its value to this argument.
-                    if (StringExtensions.IsNullOrEmpty(switchesAndValues[currentKey]))
+                    if (switchesAndValues[currentKey].IsNullOrEmpty())
                     {
                         switchesAndValues[currentKey] = arg;
                     }

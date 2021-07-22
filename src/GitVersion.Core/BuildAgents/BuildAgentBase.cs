@@ -22,7 +22,7 @@ namespace GitVersion.BuildAgents
         public abstract string? GenerateSetVersionMessage(VersionVariables variables);
         public abstract string[] GenerateSetParameterMessage(string name, string value);
 
-        public virtual bool CanApplyToCurrentContext() => !StringExtensions.IsNullOrEmpty(Environment.GetEnvironmentVariable(EnvironmentVariable));
+        public virtual bool CanApplyToCurrentContext() => !Environment.GetEnvironmentVariable(EnvironmentVariable).IsNullOrEmpty();
 
         public virtual string? GetCurrentBranch(bool usingDynamicRepos) => null;
 

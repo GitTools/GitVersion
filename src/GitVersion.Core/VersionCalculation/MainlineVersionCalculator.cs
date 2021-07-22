@@ -54,7 +54,8 @@ namespace GitVersion.VersionCalculation
                 var mainlineCommitLog = repositoryStore.GetMainlineCommitLog(baseVersion.BaseVersionSource, mainlineTip).ToList();
                 var directCommits = new List<ICommit>(mainlineCommitLog.Count);
 
-                if (StringExtensions.IsNullOrEmpty(context.Configuration?.NextVersion))
+                var nextVersion = context.Configuration?.NextVersion;
+                if (nextVersion.IsNullOrEmpty())
                 {
                     // Scans commit log in reverse, aggregating merge commits
                     foreach (var commit in mainlineCommitLog)
@@ -73,7 +74,7 @@ namespace GitVersion.VersionCalculation
                 mainlineVersion.BuildMetaData = CreateVersionBuildMetaData(mergeBase);
 
                 // branches other than main always get a bump for the act of branching
-                if ((!context.CurrentBranch.Equals(mainline)) && (StringExtensions.IsNullOrEmpty(context.Configuration?.NextVersion)))
+                if (!context.CurrentBranch.Equals(mainline) && nextVersion.IsNullOrEmpty())
                 {
                     var branchIncrement = FindMessageIncrement(null, context.CurrentCommit, mergeBase, mainlineCommitLog);
                     log.Info($"Performing {branchIncrement} increment for current branch ");

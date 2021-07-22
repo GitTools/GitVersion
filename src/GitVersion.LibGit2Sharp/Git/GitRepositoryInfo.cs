@@ -34,7 +34,7 @@ namespace GitVersion
         private string? GetDynamicGitRepositoryPath()
         {
             var repositoryInfo = gitVersionOptions.RepositoryInfo;
-            if (StringExtensions.IsNullOrWhiteSpace(repositoryInfo.TargetUrl)) return null;
+            if (repositoryInfo.TargetUrl.IsNullOrWhiteSpace()) return null;
 
             var targetUrl = repositoryInfo.TargetUrl;
             var dynamicRepositoryClonePath = repositoryInfo.DynamicRepositoryClonePath;
@@ -62,12 +62,12 @@ namespace GitVersion
 
         private string? GetDotGitDirectory()
         {
-            var gitDirectory = !StringExtensions.IsNullOrWhiteSpace(DynamicGitRepositoryPath)
+            var gitDirectory = !DynamicGitRepositoryPath.IsNullOrWhiteSpace()
                 ? DynamicGitRepositoryPath
                 : GitRepository.Discover(gitVersionOptions.WorkingDirectory);
 
             gitDirectory = gitDirectory?.TrimEnd('/', '\\');
-            if (StringExtensions.IsNullOrEmpty(gitDirectory))
+            if (gitDirectory.IsNullOrEmpty())
                 throw new DirectoryNotFoundException("Cannot find the .git directory");
 
             return gitDirectory is null ? null : gitDirectory.Contains(Path.Combine(".git", "worktrees"))
@@ -77,14 +77,14 @@ namespace GitVersion
 
         private string? GetProjectRootDirectory()
         {
-            if (!StringExtensions.IsNullOrWhiteSpace(DynamicGitRepositoryPath))
+            if (!DynamicGitRepositoryPath.IsNullOrWhiteSpace())
             {
                 return gitVersionOptions.WorkingDirectory;
             }
 
             var gitDirectory = GitRepository.Discover(gitVersionOptions.WorkingDirectory);
 
-            if (StringExtensions.IsNullOrEmpty(gitDirectory))
+            if (gitDirectory.IsNullOrEmpty())
                 throw new DirectoryNotFoundException("Cannot find the .git directory");
 
             return new GitRepository(gitDirectory).WorkingDirectory;
@@ -92,7 +92,7 @@ namespace GitVersion
 
         private string? GetGitRootPath()
         {
-            var isDynamicRepo = !StringExtensions.IsNullOrWhiteSpace(DynamicGitRepositoryPath);
+            var isDynamicRepo = !DynamicGitRepositoryPath.IsNullOrWhiteSpace();
             var rootDirectory = isDynamicRepo ? DotGitDirectory : ProjectRootDirectory;
 
             return rootDirectory;

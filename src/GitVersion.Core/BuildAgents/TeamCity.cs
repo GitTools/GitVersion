@@ -19,7 +19,7 @@ namespace GitVersion.BuildAgents
         {
             var branchName = Environment.GetEnvironmentVariable("Git_Branch");
 
-            if (StringExtensions.IsNullOrEmpty(branchName))
+            if (branchName.IsNullOrEmpty())
             {
                 if (!usingDynamicRepos)
                 {
@@ -42,7 +42,7 @@ See https://gitversion.net/docs/reference/build-servers/teamcity for more info")
 
         public override bool PreventFetch()
         {
-            return !StringExtensions.IsNullOrEmpty(Environment.GetEnvironmentVariable("Git_Branch"));
+            return !Environment.GetEnvironmentVariable("Git_Branch").IsNullOrEmpty();
         }
 
         public override string[] GenerateSetParameterMessage(string name, string value)

@@ -37,27 +37,27 @@ namespace GitVersion.App.Tests
 
             arguments.AppendFormat(" /targetpath \"{0}\"", workingDirectory);
 
-            if (!StringExtensions.IsNullOrWhiteSpace(exec))
+            if (!exec.IsNullOrWhiteSpace())
             {
                 arguments.AppendFormat(" /exec \"{0}\"", exec);
             }
 
-            if (!StringExtensions.IsNullOrWhiteSpace(execArgs))
+            if (!execArgs.IsNullOrWhiteSpace())
             {
                 arguments.AppendFormat(" /execArgs \"{0}\"", execArgs);
             }
 
-            if (!StringExtensions.IsNullOrWhiteSpace(projectFile))
+            if (!projectFile.IsNullOrWhiteSpace())
             {
                 arguments.AppendFormat(" /proj \"{0}\"", projectFile);
             }
 
-            if (!StringExtensions.IsNullOrWhiteSpace(projectArgs))
+            if (!projectArgs.IsNullOrWhiteSpace())
             {
                 arguments.AppendFormat(" /projargs \"{0}\"", projectArgs);
             }
 
-            if (!StringExtensions.IsNullOrWhiteSpace(logFile))
+            if (!logFile.IsNullOrWhiteSpace())
             {
                 arguments.AppendFormat(" /l \"{0}\"", logFile);
             }

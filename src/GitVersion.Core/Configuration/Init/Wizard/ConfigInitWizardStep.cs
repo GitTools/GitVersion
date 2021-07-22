@@ -42,7 +42,7 @@ namespace GitVersion.Configuration.Init.Wizard
                 InvalidResponse(steps);
                 return true;
             }
-            var resultWithDefaultApplied = StringExtensions.IsNullOrEmpty(input) ? DefaultResult : input;
+            var resultWithDefaultApplied = input.IsNullOrEmpty() ? DefaultResult : input;
             var stepResult = HandleResult(resultWithDefaultApplied, steps, config, workingDirectory);
             if (stepResult.InvalidResponse)
             {

@@ -53,7 +53,7 @@ namespace GitVersion.BuildAgents
                 using var streamWriter = File.AppendText(gitHubSetEnvFilePath);
                 foreach (var variable in variables)
                 {
-                    if (!StringExtensions.IsNullOrEmpty(variable.Value))
+                    if (!variable.Value.IsNullOrEmpty())
                     {
                         streamWriter.WriteLine($"GitVersion_{variable.Key}={variable.Value}");
                     }

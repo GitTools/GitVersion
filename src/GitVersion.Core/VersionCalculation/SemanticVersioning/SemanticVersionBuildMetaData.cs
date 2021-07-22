@@ -88,7 +88,7 @@ namespace GitVersion
                     return formatter.Format(format, this, formatProvider);
             }
 
-            if (StringExtensions.IsNullOrEmpty(format))
+            if (format.IsNullOrEmpty())
                 format = "b";
 
             format = format.ToLower();
@@ -111,8 +111,8 @@ namespace GitVersion
             return format.ToLower() switch
             {
                 "b" => CommitsSinceTag.ToString(),
-                "s" => $"{CommitsSinceTag}{(StringExtensions.IsNullOrEmpty(Sha) ? null : ".Sha." + Sha)}".TrimStart('.'),
-                "f" => $"{CommitsSinceTag}{(StringExtensions.IsNullOrEmpty(Branch) ? null : ".Branch." + FormatMetaDataPart(Branch))}{(StringExtensions.IsNullOrEmpty(Sha) ? null : ".Sha." + Sha)}{(StringExtensions.IsNullOrEmpty(OtherMetaData) ? null : "." + FormatMetaDataPart(OtherMetaData))}".TrimStart('.'),
+                "s" => $"{CommitsSinceTag}{(Sha.IsNullOrEmpty() ? null : ".Sha." + Sha)}".TrimStart('.'),
+                "f" => $"{CommitsSinceTag}{(Branch.IsNullOrEmpty() ? null : ".Branch." + FormatMetaDataPart(Branch))}{(Sha.IsNullOrEmpty() ? null : ".Sha." + Sha)}{(OtherMetaData.IsNullOrEmpty() ? null : "." + FormatMetaDataPart(OtherMetaData))}".TrimStart('.'),
                 _ => throw new ArgumentException("Unrecognised format", nameof(format))
             };
         }
@@ -140,7 +140,7 @@ namespace GitVersion
         public static SemanticVersionBuildMetaData Parse(string? buildMetaData)
         {
             var semanticVersionBuildMetaData = new SemanticVersionBuildMetaData();
-            if (StringExtensions.IsNullOrEmpty(buildMetaData))
+            if (buildMetaData.IsNullOrEmpty())
                 return semanticVersionBuildMetaData;
 
             var parsed = ParseRegex.Match(buildMetaData);
@@ -157,7 +157,7 @@ namespace GitVersion
             if (parsed.Groups["Sha"].Success)
                 semanticVersionBuildMetaData.Sha = parsed.Groups["Sha"].Value;
 
-            if (parsed.Groups["Other"].Success && !StringExtensions.IsNullOrEmpty(parsed.Groups["Other"].Value))
+            if (parsed.Groups["Other"].Success && !parsed.Groups["Other"].Value.IsNullOrEmpty())
                 semanticVersionBuildMetaData.OtherMetaData = parsed.Groups["Other"].Value.TrimStart('.');
 
             return semanticVersionBuildMetaData;
@@ -165,7 +165,7 @@ namespace GitVersion
 
         private string FormatMetaDataPart(string value)
         {
-            if (!StringExtensions.IsNullOrEmpty(value))
+            if (!value.IsNullOrEmpty())
                 value = Regex.Replace(value, "[^0-9A-Za-z-.]", "-");
             return value;
         }

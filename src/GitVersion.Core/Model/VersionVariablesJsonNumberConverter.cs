@@ -32,7 +32,7 @@ namespace GitVersion.OutputVariables
 
         public override void Write(Utf8JsonWriter writer, [CanBeNull] string value, JsonSerializerOptions options)
         {
-            if (StringExtensions.IsNullOrWhiteSpace(value))
+            if (value.IsNullOrWhiteSpace())
             {
                 writer.WriteNullValue();
             }

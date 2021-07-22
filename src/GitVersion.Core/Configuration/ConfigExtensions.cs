@@ -129,10 +129,10 @@ namespace GitVersion.Configuration
                 log.Info("Using branch name to calculate version tag");
 
                 var branchName = branchNameOverride ?? branchFriendlyName;
-                if (!StringExtensions.IsNullOrWhiteSpace(configuration.BranchPrefixToTrim))
+                if (!configuration.BranchPrefixToTrim.IsNullOrWhiteSpace())
                 {
                     var branchNameTrimmed = branchName?.RegexReplace(configuration.BranchPrefixToTrim, string.Empty, RegexOptions.IgnoreCase);
-                    branchName = StringExtensions.IsNullOrEmpty(branchNameTrimmed) ? branchName : branchNameTrimmed;
+                    branchName = branchNameTrimmed.IsNullOrEmpty() ? branchName : branchNameTrimmed;
                 }
                 branchName = branchName?.RegexReplace("[^a-zA-Z0-9-]", "-");
 

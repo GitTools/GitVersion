@@ -70,7 +70,7 @@ namespace GitVersion.BuildAgents
         public override string GetCurrentBranch(bool usingDynamicRepos)
         {
             var pullRequestBranchName = Environment.GetEnvironmentVariable("APPVEYOR_PULL_REQUEST_HEAD_REPO_BRANCH");
-            if (!StringExtensions.IsNullOrWhiteSpace(pullRequestBranchName))
+            if (!pullRequestBranchName.IsNullOrWhiteSpace())
             {
                 return pullRequestBranchName;
             }

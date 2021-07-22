@@ -19,7 +19,7 @@ namespace GitVersion.BuildAgents
         {
             var buildRunner = Environment.GetEnvironmentVariable(EnvironmentVariable);
 
-            return !StringExtensions.IsNullOrEmpty(buildRunner)
+            return !buildRunner.IsNullOrEmpty()
                 && buildRunner.Equals("MyGet", StringComparison.InvariantCultureIgnoreCase);
         }
 

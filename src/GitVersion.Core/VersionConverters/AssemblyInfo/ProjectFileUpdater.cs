@@ -74,22 +74,22 @@ namespace GitVersion.VersionConverters.AssemblyInfo
 
                 cleanupBackupTasks.Add(() => fileSystem.Delete(backupProjectFile));
 
-                if (!StringExtensions.IsNullOrWhiteSpace(assemblyVersion))
+                if (!assemblyVersion.IsNullOrWhiteSpace())
                 {
                     UpdateProjectVersionElement(fileXml, AssemblyVersionElement, assemblyVersion);
                 }
 
-                if (!StringExtensions.IsNullOrWhiteSpace(assemblyFileVersion))
+                if (!assemblyFileVersion.IsNullOrWhiteSpace())
                 {
                     UpdateProjectVersionElement(fileXml, FileVersionElement, assemblyFileVersion);
                 }
 
-                if (!StringExtensions.IsNullOrWhiteSpace(assemblyInfoVersion))
+                if (!assemblyInfoVersion.IsNullOrWhiteSpace())
                 {
                     UpdateProjectVersionElement(fileXml, InformationalVersionElement, assemblyInfoVersion);
                 }
 
-                if (!StringExtensions.IsNullOrWhiteSpace(packageVersion))
+                if (!packageVersion.IsNullOrWhiteSpace())
                 {
                     UpdateProjectVersionElement(fileXml, VersionElement, packageVersion);
                 }
@@ -183,7 +183,7 @@ namespace GitVersion.VersionConverters.AssemblyInfo
             var workingDirectory = context.WorkingDirectory;
             var assemblyInfoFileNames = new HashSet<string>(context.AssemblyInfoFiles);
 
-            if (assemblyInfoFileNames.Any(x => !StringExtensions.IsNullOrWhiteSpace(x)))
+            if (assemblyInfoFileNames.Any(x => !x.IsNullOrWhiteSpace()))
             {
                 foreach (var item in assemblyInfoFileNames)
                 {
@@ -212,7 +212,7 @@ namespace GitVersion.VersionConverters.AssemblyInfo
 
         private bool IsSupportedProjectFile(string fileName)
         {
-            if (StringExtensions.IsNullOrEmpty(fileName))
+            if (fileName.IsNullOrEmpty())
             {
                 return false;
             }

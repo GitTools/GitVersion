@@ -223,7 +223,7 @@ namespace GitVersion
         }
         private static CredentialsHandler? GetCredentialsProvider(AuthenticationInfo auth)
         {
-            if (!StringExtensions.IsNullOrWhiteSpace(auth.Username))
+            if (!auth.Username.IsNullOrWhiteSpace())
             {
                 return (_, _, _) => new UsernamePasswordCredentials
                 {

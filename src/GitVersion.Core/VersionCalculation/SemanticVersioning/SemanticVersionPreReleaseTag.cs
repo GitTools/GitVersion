@@ -90,7 +90,7 @@ namespace GitVersion
 
         public static SemanticVersionPreReleaseTag Parse(string? preReleaseTag)
         {
-            if (StringExtensions.IsNullOrEmpty(preReleaseTag))
+            if (preReleaseTag.IsNullOrEmpty())
             {
                 return new SemanticVersionPreReleaseTag();
             }
@@ -149,7 +149,7 @@ namespace GitVersion
                     return formatter.Format(format, this, formatProvider);
             }
 
-            if (StringExtensions.IsNullOrEmpty(format))
+            if (format.IsNullOrEmpty())
                 format = "t";
 
             format = format.ToLower();
@@ -171,7 +171,7 @@ namespace GitVersion
 
             return format switch
             {
-                "t" => (Number.HasValue ? StringExtensions.IsNullOrEmpty(Name) ? $"{Number}" : $"{Name}.{Number}" : Name),
+                "t" => (Number.HasValue ? Name.IsNullOrEmpty() ? $"{Number}" : $"{Name}.{Number}" : Name),
                 "l" => (Number.HasValue ? FormatLegacy(GetLegacyName(), Number.Value.ToString()) : FormatLegacy(GetLegacyName())),
                 _ => throw new ArgumentException("Unknown format", nameof(format))
             };
@@ -191,7 +191,7 @@ namespace GitVersion
 
         private string GetLegacyName()
         {
-            if (StringExtensions.IsNullOrEmpty(Name))
+            if (Name.IsNullOrEmpty())
             {
                 return string.Empty;
             }
@@ -201,7 +201,7 @@ namespace GitVersion
 
         public bool HasTag()
         {
-            return !StringExtensions.IsNullOrEmpty(Name) || (Number.HasValue && PromotedFromCommits != true);
+            return !Name.IsNullOrEmpty() || (Number.HasValue && PromotedFromCommits != true);
         }
     }
 }

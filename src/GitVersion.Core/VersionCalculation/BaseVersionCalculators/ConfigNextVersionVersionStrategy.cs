@@ -17,9 +17,10 @@ namespace GitVersion.VersionCalculation
 
         public override IEnumerable<BaseVersion> GetVersions()
         {
-            if (StringExtensions.IsNullOrEmpty(Context.Configuration?.NextVersion) || Context.IsCurrentCommitTagged)
+            var nextVersion = Context.Configuration?.NextVersion;
+            if (nextVersion.IsNullOrEmpty() || Context.IsCurrentCommitTagged)
                 yield break;
-            var semanticVersion = SemanticVersion.Parse(Context.Configuration.NextVersion, Context.Configuration?.GitTagPrefix);
+            var semanticVersion = SemanticVersion.Parse(nextVersion, Context.Configuration?.GitTagPrefix);
             yield return new BaseVersion("NextVersion in GitVersion configuration file", false, semanticVersion, null, null);
         }
     }

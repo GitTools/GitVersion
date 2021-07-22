@@ -24,7 +24,7 @@ namespace GitVersion.Configuration.Init.SetConfig
 
         protected override StepResult HandleResult(string? result, Queue<ConfigInitWizardStep> steps, Config config, string workingDirectory)
         {
-            if (StringExtensions.IsNullOrWhiteSpace(result))
+            if (result.IsNullOrWhiteSpace())
             {
                 return StepResult.InvalidResponseSelected();
             }

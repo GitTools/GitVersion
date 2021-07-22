@@ -42,7 +42,7 @@ namespace GitVersion.BuildAgents
 
             var currentBranch = Environment.GetEnvironmentVariable(WebHookEnvironmentVariableName);
 
-            if (StringExtensions.IsNullOrEmpty(currentBranch))
+            if (currentBranch.IsNullOrEmpty())
             {
                 return Environment.GetEnvironmentVariable(SourceVersionEnvironmentVariableName);
             }
@@ -60,6 +60,6 @@ namespace GitVersion.BuildAgents
         public override bool PreventFetch() => true;
 
         public override bool CanApplyToCurrentContext()
-            => !StringExtensions.IsNullOrEmpty(Environment.GetEnvironmentVariable(WebHookEnvironmentVariableName)) || !StringExtensions.IsNullOrEmpty(Environment.GetEnvironmentVariable(SourceVersionEnvironmentVariableName));
+            => !Environment.GetEnvironmentVariable(WebHookEnvironmentVariableName).IsNullOrEmpty() || !Environment.GetEnvironmentVariable(SourceVersionEnvironmentVariableName).IsNullOrEmpty();
     }
 }

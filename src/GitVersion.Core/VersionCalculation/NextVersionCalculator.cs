@@ -76,9 +76,10 @@ namespace GitVersion.VersionCalculation
             }
 
             var hasPreReleaseTag = semver.PreReleaseTag?.HasTag() == true;
-            var branchConfigHasPreReleaseTagConfigured = !StringExtensions.IsNullOrEmpty(context.Configuration?.Tag);
+            var tag = context.Configuration?.Tag;
+            var branchConfigHasPreReleaseTagConfigured = !tag.IsNullOrEmpty();
 #pragma warning disable CS8602 // Dereference of a possibly null reference. // context.Configuration.Tag not null when branchConfigHasPreReleaseTagConfigured is true
-            var preReleaseTagDoesNotMatchConfiguration = hasPreReleaseTag && branchConfigHasPreReleaseTagConfigured && semver.PreReleaseTag?.Name != context.Configuration.Tag;
+            var preReleaseTagDoesNotMatchConfiguration = hasPreReleaseTag && branchConfigHasPreReleaseTagConfigured && semver.PreReleaseTag?.Name != tag;
 #pragma warning restore CS8602 // Dereference of a possibly null reference.
             if (semver.PreReleaseTag?.HasTag() != true && branchConfigHasPreReleaseTagConfigured || preReleaseTagDoesNotMatchConfiguration)
             {

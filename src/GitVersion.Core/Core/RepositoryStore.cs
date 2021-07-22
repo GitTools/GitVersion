@@ -98,7 +98,7 @@ namespace GitVersion
         public ICommit? GetCurrentCommit(IBranch currentBranch, string? commitId)
         {
             ICommit? currentCommit = null;
-            if (!StringExtensions.IsNullOrWhiteSpace(commitId))
+            if (!commitId.IsNullOrWhiteSpace())
             {
                 log.Info($"Searching for specific commit '{commitId}'");
 
@@ -174,7 +174,7 @@ namespace GitVersion
             var desiredBranch = repository.Head;
 
             // Make sure the desired branch has been specified
-            if (!StringExtensions.IsNullOrEmpty(targetBranchName))
+            if (!targetBranchName.IsNullOrEmpty())
             {
                 // There are some edge cases where HEAD is not pointing to the desired branch.
                 // Therefore it's important to verify if 'currentBranch' is indeed the desired branch.
