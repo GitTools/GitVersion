@@ -19,7 +19,7 @@ namespace GitVersion.VersionCalculation
         }
         public override IEnumerable<BaseVersion> GetVersions()
         {
-            var currentBranchTip = Context.CurrentBranch.Tip;
+            var currentBranchTip = Context.CurrentBranch?.Tip;
             if (currentBranchTip == null)
             {
                 throw new GitVersionException("No commits found on the current branch.");

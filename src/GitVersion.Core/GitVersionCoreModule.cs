@@ -35,7 +35,7 @@ namespace GitVersion
             {
                 var options = sp.GetService<IOptions<GitVersionOptions>>();
                 var contextFactory = sp.GetService<IGitVersionContextFactory>();
-                return new Lazy<GitVersionContext>(() => contextFactory?.Create(options?.Value));
+                return new Lazy<GitVersionContext?>(() => contextFactory?.Create(options?.Value));
             });
 
             services.AddModule(new BuildServerModule());

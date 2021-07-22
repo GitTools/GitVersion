@@ -11,11 +11,11 @@ namespace GitVersion.Model.Configuration
 {
     public class Config
     {
-        private string nextVersion;
+        private string? nextVersion;
 
         public Config()
         {
-            Branches = new Dictionary<string, BranchConfig>();
+            Branches = new Dictionary<string, BranchConfig?>();
             Ignore = new IgnoreConfig();
         }
 
@@ -26,25 +26,25 @@ namespace GitVersion.Model.Configuration
         public AssemblyFileVersioningScheme? AssemblyFileVersioningScheme { get; set; }
 
         [YamlMember(Alias = "assembly-informational-format")]
-        public string AssemblyInformationalFormat { get; set; }
+        public string? AssemblyInformationalFormat { get; set; }
 
         [YamlMember(Alias = "assembly-versioning-format")]
-        public string AssemblyVersioningFormat { get; set; }
+        public string? AssemblyVersioningFormat { get; set; }
 
         [YamlMember(Alias = "assembly-file-versioning-format")]
-        public string AssemblyFileVersioningFormat { get; set; }
+        public string? AssemblyFileVersioningFormat { get; set; }
 
         [YamlMember(Alias = "mode")]
         public VersioningMode? VersioningMode { get; set; }
 
         [YamlMember(Alias = "tag-prefix")]
-        public string TagPrefix { get; set; }
+        public string? TagPrefix { get; set; }
 
         [YamlMember(Alias = "continuous-delivery-fallback-tag")]
-        public string ContinuousDeploymentFallbackTag { get; set; }
+        public string? ContinuousDeploymentFallbackTag { get; set; }
 
         [YamlMember(Alias = "next-version")]
-        public string NextVersion
+        public string? NextVersion
         {
             get => nextVersion;
             set =>
@@ -54,16 +54,16 @@ namespace GitVersion.Model.Configuration
         }
 
         [YamlMember(Alias = "major-version-bump-message")]
-        public string MajorVersionBumpMessage { get; set; }
+        public string? MajorVersionBumpMessage { get; set; }
 
         [YamlMember(Alias = "minor-version-bump-message")]
-        public string MinorVersionBumpMessage { get; set; }
+        public string? MinorVersionBumpMessage { get; set; }
 
         [YamlMember(Alias = "patch-version-bump-message")]
-        public string PatchVersionBumpMessage { get; set; }
+        public string? PatchVersionBumpMessage { get; set; }
 
         [YamlMember(Alias = "no-bump-message")]
-        public string NoBumpMessage { get; set; }
+        public string? NoBumpMessage { get; set; }
 
         [YamlMember(Alias = "legacy-semver-padding")]
         public int? LegacySemVerPadding { get; set; }
@@ -81,7 +81,7 @@ namespace GitVersion.Model.Configuration
         public CommitMessageIncrementMode? CommitMessageIncrementing { get; set; }
 
         [YamlMember(Alias = "branches")]
-        public Dictionary<string, BranchConfig> Branches { get; set; }
+        public Dictionary<string, BranchConfig?> Branches { get; set; }
 
         [YamlMember(Alias = "ignore")]
         public IgnoreConfig Ignore { get; set; }
@@ -90,7 +90,7 @@ namespace GitVersion.Model.Configuration
         public IncrementStrategy? Increment { get; set; }
 
         [YamlMember(Alias = "commit-date-format")]
-        public string CommitDateFormat { get; set; }
+        public string? CommitDateFormat { get; set; }
 
         [YamlMember(Alias = "merge-message-formats")]
         public Dictionary<string, string> MergeMessageFormats { get; set; } = new Dictionary<string, string>();

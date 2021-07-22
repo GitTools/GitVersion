@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using GitVersion.Extensions;
 
 namespace GitVersion
 {
@@ -54,7 +55,7 @@ namespace GitVersion
 
             splitted.Add(input.Substring(startIndex, input.Length - startIndex));
 
-            return splitted.Where(argument => !string.IsNullOrEmpty(argument)).ToArray();
+            return splitted.Where(argument => !argument.IsNullOrEmpty()).ToArray();
         }
 
         /// <summary>

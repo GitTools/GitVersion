@@ -26,7 +26,7 @@ namespace GitVersion.BuildAgents
             };
         }
 
-        public override string GetCurrentBranch(bool usingDynamicRepos)
+        public override string? GetCurrentBranch(bool usingDynamicRepos)
         {
             return Environment.GetEnvironmentVariable("BUILD_SOURCEBRANCH");
         }
@@ -38,7 +38,7 @@ namespace GitVersion.BuildAgents
             // For AzurePipelines, we'll get the Build Number and insert GitVersion variables where
             // specified
             var buildNumberEnv = Environment.GetEnvironmentVariable("BUILD_BUILDNUMBER");
-            if (string.IsNullOrWhiteSpace(buildNumberEnv))
+            if (buildNumberEnv.IsNullOrWhiteSpace())
                 return variables.FullSemVer;
 
             var newBuildNumber = variables.Aggregate(buildNumberEnv, ReplaceVariables);

@@ -7,7 +7,7 @@ namespace GitVersion
 {
     internal sealed class Commit : GitObject, ICommit
     {
-        private static readonly LambdaEqualityHelper<ICommit> equalityHelper = new(x => x.Id);
+        private static readonly LambdaEqualityHelper<ICommit> equalityHelper = new(x => x?.Id);
         private static readonly LambdaKeyComparer<ICommit, string> comparerHelper = new(x => x.Sha);
 
         private readonly LibGit2Sharp.Commit innerCommit;

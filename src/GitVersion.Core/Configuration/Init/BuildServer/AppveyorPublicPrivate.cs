@@ -11,18 +11,18 @@ namespace GitVersion.Configuration.Init.BuildServer
         {
         }
 
-        protected override StepResult HandleResult(string result, Queue<ConfigInitWizardStep> steps, Config config, string workingDirectory)
+        protected override StepResult HandleResult(string? result, Queue<ConfigInitWizardStep> steps, Config config, string workingDirectory)
         {
             switch (result)
             {
                 case "0":
-                    steps.Enqueue(StepFactory.CreateStep<EditConfigStep>());
+                    steps.Enqueue(StepFactory.CreateStep<EditConfigStep>()!);
                     return StepResult.Ok();
                 case "1":
-                    steps.Enqueue(StepFactory.CreateStep<AppVeyorSetup>().WithData(ProjectVisibility.Public));
+                    steps.Enqueue(StepFactory.CreateStep<AppVeyorSetup>()!.WithData(ProjectVisibility.Public));
                     return StepResult.Ok();
                 case "2":
-                    steps.Enqueue(StepFactory.CreateStep<AppVeyorSetup>().WithData(ProjectVisibility.Private));
+                    steps.Enqueue(StepFactory.CreateStep<AppVeyorSetup>()!.WithData(ProjectVisibility.Private));
                     return StepResult.Ok();
             }
             return StepResult.Ok();

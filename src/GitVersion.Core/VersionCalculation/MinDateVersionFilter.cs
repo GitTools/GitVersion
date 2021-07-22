@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics.CodeAnalysis;
 
 namespace GitVersion.VersionCalculation
 {
@@ -11,7 +12,7 @@ namespace GitVersion.VersionCalculation
             this.minimum = minimum;
         }
 
-        public bool Exclude(BaseVersion version, out string reason)
+        public bool Exclude(BaseVersion version, [NotNullWhen(true)] out string? reason)
         {
             if (version == null) throw new ArgumentNullException(nameof(version));
 

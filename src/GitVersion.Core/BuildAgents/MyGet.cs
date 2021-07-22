@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using GitVersion.Extensions;
 using GitVersion.Helpers;
 using GitVersion.Logging;
 using GitVersion.OutputVariables;
@@ -18,7 +19,7 @@ namespace GitVersion.BuildAgents
         {
             var buildRunner = Environment.GetEnvironmentVariable(EnvironmentVariable);
 
-            return !string.IsNullOrEmpty(buildRunner)
+            return !buildRunner.IsNullOrEmpty()
                 && buildRunner.Equals("MyGet", StringComparison.InvariantCultureIgnoreCase);
         }
 
@@ -37,7 +38,7 @@ namespace GitVersion.BuildAgents
             return messages.ToArray();
         }
 
-        public override string GenerateSetVersionMessage(VersionVariables variables)
+        public override string? GenerateSetVersionMessage(VersionVariables variables)
         {
             return null;
         }

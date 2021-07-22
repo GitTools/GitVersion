@@ -26,7 +26,7 @@ namespace GitVersion.VersionConverters.GitVersionInfo
             var directory = context.WorkingDirectory;
             var filePath = Path.Combine(directory, fileName);
 
-            string originalFileContents = null;
+            string? originalFileContents = null;
 
             if (File.Exists(filePath))
             {

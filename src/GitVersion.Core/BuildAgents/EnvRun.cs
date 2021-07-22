@@ -1,4 +1,5 @@
 using System.IO;
+using GitVersion.Extensions;
 using GitVersion.Logging;
 using GitVersion.OutputVariables;
 
@@ -15,7 +16,7 @@ namespace GitVersion.BuildAgents
         public override bool CanApplyToCurrentContext()
         {
             var envRunDatabasePath = Environment.GetEnvironmentVariable(EnvironmentVariableName);
-            if (!string.IsNullOrEmpty(envRunDatabasePath))
+            if (!envRunDatabasePath.IsNullOrEmpty())
             {
                 if (!File.Exists(envRunDatabasePath))
                 {

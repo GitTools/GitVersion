@@ -7,14 +7,14 @@ namespace GitVersion.Helpers
     // see https://github.com/libgit2/libgit2sharp/blob/7af5c60f22f9bd6064204f84467cfa62bedd1147/LibGit2Sharp/Core/LambdaEqualityHelper.cs
     public class LambdaEqualityHelper<T>
     {
-        private readonly Func<T, object>[] equalityContributorAccessors;
+        private readonly Func<T?, object?>[] equalityContributorAccessors;
 
-        public LambdaEqualityHelper(params Func<T, object>[] equalityContributorAccessors)
+        public LambdaEqualityHelper(params Func<T?, object?>[] equalityContributorAccessors)
         {
             this.equalityContributorAccessors = equalityContributorAccessors;
         }
 
-        public bool Equals(T instance, T other)
+        public bool Equals(T? instance, T? other)
         {
             if (ReferenceEquals(null, instance) || ReferenceEquals(null, other))
             {

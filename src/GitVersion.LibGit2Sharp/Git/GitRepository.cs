@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using GitVersion.Extensions;
 using GitVersion.Helpers;
 using GitVersion.Logging;
 using LibGit2Sharp;
@@ -30,7 +31,7 @@ namespace GitVersion
             repositoryLazy = new Lazy<IRepository>(() => repository);
         }
 
-        private GitRepository(ILog log, Func<string> getGitRootDirectory)
+        private GitRepository(ILog log, Func<string?> getGitRootDirectory)
         {
             this.log = log ?? throw new ArgumentNullException(nameof(log));
             repositoryLazy = new Lazy<IRepository>(() => new Repository(getGitRootDirectory()));
@@ -54,6 +55,9 @@ namespace GitVersion
 
         public ICommit FindMergeBase(ICommit commit, ICommit otherCommit)
         {
+            _ = commit ?? throw new ArgumentNullException(nameof(commit));
+            _ = otherCommit ?? throw new ArgumentNullException(nameof(otherCommit));
+
             var retryAction = new RetryAction<LockedFileException, ICommit>();
             return retryAction.Execute(() =>
             {
@@ -111,7 +115,8 @@ namespace GitVersion
 
                 log.Info($"Remote Refs:{System.Environment.NewLine}" + string.Join(System.Environment.NewLine, remoteTips.Select(r => r.CanonicalName)));
 
-                var headTipSha = Head.Tip?.Sha;
+                // FIX ME: What to do when Tip is null?
+                var headTipSha = Head.Tip!.Sha;
 
                 var refs = remoteTips.Where(r => r.TargetIdentifier == headTipSha).ToList();
 
@@ -155,7 +160,7 @@ namespace GitVersion
                 }
             });
         }
-        public void Clone(string sourceUrl, string workdirPath, AuthenticationInfo auth)
+        public void Clone(string? sourceUrl, string? workdirPath, AuthenticationInfo auth)
         {
             try
             {
@@ -192,14 +197,14 @@ namespace GitVersion
                 Commands.Checkout(repositoryInstance, commitOrBranchSpec);
             });
         }
-        public void Fetch(string remote, IEnumerable<string> refSpecs, AuthenticationInfo auth, string logMessage)
+        public void Fetch(string remote, IEnumerable<string> refSpecs, AuthenticationInfo auth, string? logMessage)
         {
             RepositoryExtensions.RunSafe(() =>
             {
                 Commands.Fetch((Repository)repositoryInstance, remote, refSpecs, GetFetchOptions(auth), logMessage);
             });
         }
-        internal static string Discover(string path) => Repository.Discover(path);
+        internal static string Discover(string? path) => Repository.Discover(path);
 
         private static FetchOptions GetFetchOptions(AuthenticationInfo auth)
         {
@@ -218,7 +223,7 @@ namespace GitVersion
         }
         private static CredentialsHandler? GetCredentialsProvider(AuthenticationInfo auth)
         {
-            if (!string.IsNullOrWhiteSpace(auth.Username))
+            if (!auth.Username.IsNullOrWhiteSpace())
             {
                 return (_, _, _) => new UsernamePasswordCredentials
                 {

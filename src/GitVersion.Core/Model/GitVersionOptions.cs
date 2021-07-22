@@ -6,7 +6,7 @@ namespace GitVersion
 {
     public class GitVersionOptions
     {
-        public string WorkingDirectory { get; set; }
+        public string? WorkingDirectory { get; set; }
 
         public AssemblyInfoData AssemblyInfo { get; } = new AssemblyInfoData();
         public AuthenticationInfo Authentication { get; } = new AuthenticationInfo();
@@ -20,9 +20,9 @@ namespace GitVersion
         public bool IsVersion;
         public bool IsHelp;
 
-        public string LogFilePath;
-        public string ShowVariable;
-        public string OutputFile;
+        public string? LogFilePath;
+        public string? ShowVariable;
+        public string? OutputFile;
         public ISet<OutputType> Output = new HashSet<OutputType>();
         public Verbosity Verbosity = Verbosity.Normal;
     }

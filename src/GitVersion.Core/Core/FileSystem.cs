@@ -33,7 +33,7 @@ namespace GitVersion
             return File.ReadAllText(path);
         }
 
-        public void WriteAllText(string file, string fileContents)
+        public void WriteAllText(string? file, string fileContents)
         {
             // Opinionated decision to use UTF8 with BOM when creating new files or when the existing
             // encoding was not easily detected due to the file not having an encoding preamble.
@@ -41,12 +41,12 @@ namespace GitVersion
             WriteAllText(file, fileContents, encoding);
         }
 
-        public void WriteAllText(string file, string fileContents, Encoding encoding)
+        public void WriteAllText(string? file, string fileContents, Encoding encoding)
         {
             File.WriteAllText(file, fileContents, encoding);
         }
 
-        public IEnumerable<string> DirectoryEnumerateFiles(string directory, string searchPattern, SearchOption searchOption)
+        public IEnumerable<string> DirectoryEnumerateFiles(string? directory, string searchPattern, SearchOption searchOption)
         {
             return Directory.EnumerateFiles(directory, searchPattern, searchOption);
         }
@@ -81,7 +81,7 @@ namespace GitVersion
                 .Ticks;
         }
 
-        public bool PathsEqual(string path, string otherPath)
+        public bool PathsEqual(string? path, string? otherPath)
         {
             return string.Equals(
                 Path.GetFullPath(path).TrimEnd('\\').TrimEnd('/'),

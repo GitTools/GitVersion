@@ -6,6 +6,7 @@ using System.Security.Cryptography;
 using System.Text;
 using GitVersion.Cache;
 using GitVersion.Configuration;
+using GitVersion.Extensions;
 using GitVersion.Logging;
 using GitVersion.Model.Configuration;
 using Microsoft.Extensions.Options;
@@ -33,7 +34,7 @@ namespace GitVersion.VersionCalculation.Cache
             this.repositoryInfo = repositoryInfo ?? throw new ArgumentNullException(nameof(repositoryInfo));
         }
 
-        public GitVersionCacheKey Create(Config overrideConfig)
+        public GitVersionCacheKey Create(Config? overrideConfig)
         {
             var gitSystemHash = GetGitSystemHash();
             var configFileHash = GetConfigFileHash();
@@ -155,7 +156,7 @@ namespace GitVersion.VersionCalculation.Cache
             return GetHash(hash);
         }
 
-        private static string GetOverrideConfigHash(Config overrideConfig)
+        private static string GetOverrideConfigHash(Config? overrideConfig)
         {
             if (overrideConfig == null)
             {
@@ -197,7 +198,7 @@ namespace GitVersion.VersionCalculation.Cache
 
         private static string GetHash(string textToHash)
         {
-            if (string.IsNullOrEmpty(textToHash))
+            if (textToHash.IsNullOrEmpty())
             {
                 return string.Empty;
             }

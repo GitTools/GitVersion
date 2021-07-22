@@ -1,4 +1,5 @@
 using System;
+using GitVersion.Extensions;
 
 namespace GitVersion.Cache
 {
@@ -6,7 +7,7 @@ namespace GitVersion.Cache
     {
         public GitVersionCacheKey(string value)
         {
-            if (string.IsNullOrEmpty(value))
+            if (value.IsNullOrEmpty())
             {
                 throw new ArgumentNullException(nameof(value));
             }

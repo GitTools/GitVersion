@@ -1,5 +1,7 @@
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.RegularExpressions;
+using GitVersion.Extensions;
 
 namespace GitVersion
 {
@@ -14,8 +16,8 @@ namespace GitVersion
         public int Major;
         public int Minor;
         public int Patch;
-        public SemanticVersionPreReleaseTag PreReleaseTag;
-        public SemanticVersionBuildMetaData BuildMetaData;
+        public SemanticVersionPreReleaseTag? PreReleaseTag;
+        public SemanticVersionBuildMetaData? BuildMetaData;
 
         public SemanticVersion(int major = 0, int minor = 0, int patch = 0)
         {
@@ -26,17 +28,17 @@ namespace GitVersion
             BuildMetaData = new SemanticVersionBuildMetaData();
         }
 
-        public SemanticVersion(SemanticVersion semanticVersion)
+        public SemanticVersion(SemanticVersion? semanticVersion)
         {
-            Major = semanticVersion.Major;
-            Minor = semanticVersion.Minor;
-            Patch = semanticVersion.Patch;
+            Major = semanticVersion?.Major ?? 0;
+            Minor = semanticVersion?.Minor ?? 0;
+            Patch = semanticVersion?.Patch ?? 0;
 
-            PreReleaseTag = new SemanticVersionPreReleaseTag(semanticVersion.PreReleaseTag);
-            BuildMetaData = new SemanticVersionBuildMetaData(semanticVersion.BuildMetaData);
+            PreReleaseTag = new SemanticVersionPreReleaseTag(semanticVersion?.PreReleaseTag);
+            BuildMetaData = new SemanticVersionBuildMetaData(semanticVersion?.BuildMetaData);
         }
 
-        public bool Equals(SemanticVersion obj)
+        public bool Equals(SemanticVersion? obj)
         {
             if (obj == null)
             {
@@ -54,7 +56,7 @@ namespace GitVersion
             return Equals(Empty);
         }
 
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
             if (ReferenceEquals(null, obj))
             {
@@ -84,7 +86,7 @@ namespace GitVersion
             }
         }
 
-        public static bool operator ==(SemanticVersion v1, SemanticVersion v2)
+        public static bool operator ==(SemanticVersion? v1, SemanticVersion? v2)
         {
             if (ReferenceEquals(v1, null))
             {
@@ -93,7 +95,7 @@ namespace GitVersion
             return v1.Equals(v2);
         }
 
-        public static bool operator !=(SemanticVersion v1, SemanticVersion v2)
+        public static bool operator !=(SemanticVersion? v1, SemanticVersion? v2)
         {
             return !(v1 == v2);
         }
@@ -136,7 +138,7 @@ namespace GitVersion
             return v1.CompareTo(v2) < 0;
         }
 
-        public static SemanticVersion Parse(string version, string tagPrefixRegex)
+        public static SemanticVersion Parse(string version, string? tagPrefixRegex)
         {
             if (!TryParse(version, tagPrefixRegex, out var semanticVersion))
                 throw new WarningException($"Failed to parse {version} into a Semantic Version");
@@ -144,7 +146,7 @@ namespace GitVersion
             return semanticVersion;
         }
 
-        public static bool TryParse(string version, string tagPrefixRegex, out SemanticVersion semanticVersion)
+        public static bool TryParse(string version, string? tagPrefixRegex, [NotNullWhen(true)] out SemanticVersion? semanticVersion)
         {
             var match = Regex.Match(version, $"^({tagPrefixRegex})?(?<version>.*)$");
 
@@ -187,7 +189,7 @@ namespace GitVersion
             return CompareTo(value, true);
         }
 
-        public int CompareTo(SemanticVersion value, bool includePrerelease)
+        public int CompareTo(SemanticVersion? value, bool includePrerelease)
         {
             if (value == null)
             {
@@ -217,9 +219,9 @@ namespace GitVersion
                 }
                 return -1;
             }
-            if (includePrerelease && PreReleaseTag != value.PreReleaseTag)
+            if (includePrerelease && PreReleaseTag != value?.PreReleaseTag)
             {
-                if (PreReleaseTag > value.PreReleaseTag)
+                if (PreReleaseTag > value?.PreReleaseTag)
                 {
                     return 1;
                 }
@@ -243,9 +245,9 @@ namespace GitVersion
         /// <para>l - Legacy SemVer tag for systems which do not support SemVer 2.0 properly [1.2.3-beta4]</para>
         /// <para>lp - Legacy SemVer tag for systems which do not support SemVer 2.0 properly (padded) [1.2.3-beta0004]</para>
         /// </summary>
-        public string ToString(string format, IFormatProvider formatProvider = null)
+        public string ToString(string? format, IFormatProvider? formatProvider = null)
         {
-            if (string.IsNullOrEmpty(format))
+            if (format.IsNullOrEmpty())
                 format = "s";
 
             if (formatProvider?.GetFormat(GetType()) is ICustomFormatter formatter)
@@ -256,7 +258,7 @@ namespace GitVersion
             if (format.StartsWith("lp", StringComparison.Ordinal))
             {
                 // handle the padding
-                return PreReleaseTag.HasTag() ? $"{ToString("j")}-{PreReleaseTag.ToString(format)}" : ToString("j");
+                return PreReleaseTag?.HasTag() == true ? $"{ToString("j")}-{PreReleaseTag.ToString(format)}" : ToString("j");
             }
 
             switch (format)
@@ -264,22 +266,22 @@ namespace GitVersion
                 case "j":
                     return $"{Major}.{Minor}.{Patch}";
                 case "s":
-                    return PreReleaseTag.HasTag() ? $"{ToString("j")}-{PreReleaseTag}" : ToString("j");
+                    return PreReleaseTag?.HasTag() == true ? $"{ToString("j")}-{PreReleaseTag}" : ToString("j");
                 case "t":
-                    return PreReleaseTag.HasTag() ? $"{ToString("j")}-{PreReleaseTag.ToString("t")}" : ToString("j");
+                    return PreReleaseTag?.HasTag() == true ? $"{ToString("j")}-{PreReleaseTag.ToString("t")}" : ToString("j");
                 case "l":
-                    return PreReleaseTag.HasTag() ? $"{ToString("j")}-{PreReleaseTag.ToString("l")}" : ToString("j");
+                    return PreReleaseTag?.HasTag() == true ? $"{ToString("j")}-{PreReleaseTag.ToString("l")}" : ToString("j");
                 case "f":
                     {
-                        var buildMetadata = BuildMetaData.ToString();
+                        var buildMetadata = BuildMetaData?.ToString();
 
-                        return !string.IsNullOrEmpty(buildMetadata) ? $"{ToString("s")}+{buildMetadata}" : ToString("s");
+                        return !buildMetadata.IsNullOrEmpty() ? $"{ToString("s")}+{buildMetadata}" : ToString("s");
                     }
                 case "i":
                     {
-                        var buildMetadata = BuildMetaData.ToString("f");
+                        var buildMetadata = BuildMetaData?.ToString("f");
 
-                        return !string.IsNullOrEmpty(buildMetadata) ? $"{ToString("s")}+{buildMetadata}" : ToString("s");
+                        return !buildMetadata.IsNullOrEmpty() ? $"{ToString("s")}+{buildMetadata}" : ToString("s");
                     }
                 default:
                     throw new ArgumentException($"Unrecognised format '{format}'", nameof(format));
@@ -289,7 +291,7 @@ namespace GitVersion
         public SemanticVersion IncrementVersion(VersionField incrementStrategy)
         {
             var incremented = new SemanticVersion(this);
-            if (!incremented.PreReleaseTag.HasTag())
+            if (incremented.PreReleaseTag?.HasTag() != true)
             {
                 switch (incrementStrategy)
                 {

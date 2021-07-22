@@ -8,7 +8,7 @@ namespace GitVersion.BuildAgents
     public class GitLabCi : BuildAgentBase
     {
         public const string EnvironmentVariableName = "GITLAB_CI";
-        private string file;
+        private string? file;
 
         public GitLabCi(IEnvironment environment, ILog log) : base(environment, log)
         {
@@ -36,14 +36,14 @@ namespace GitVersion.BuildAgents
             };
         }
 
-        public override string GetCurrentBranch(bool usingDynamicRepos)
+        public override string? GetCurrentBranch(bool usingDynamicRepos)
         {
             return Environment.GetEnvironmentVariable("CI_COMMIT_REF_NAME");
         }
 
         public override bool PreventFetch() => true;
 
-        public override void WriteIntegration(Action<string> writer, VersionVariables variables, bool updateBuildNumber = true)
+        public override void WriteIntegration(Action<string?> writer, VersionVariables variables, bool updateBuildNumber = true)
         {
             base.WriteIntegration(writer, variables);
             writer($"Outputting variables to '{file}' ... ");

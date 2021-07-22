@@ -2,7 +2,7 @@ namespace GitVersion.Helpers
 {
     public static class ServiceMessageEscapeHelper
     {
-        public static string EscapeValue(string value)
+        public static string? EscapeValue(string value)
         {
             if (value == null)
             {

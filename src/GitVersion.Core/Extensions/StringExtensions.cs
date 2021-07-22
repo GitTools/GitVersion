@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -130,9 +131,15 @@ namespace GitVersion.Extensions
             return Regex.Replace(input, pattern, replace, options);
         }
 
-        public static bool IsEquivalentTo(this string self, string other)
+        public static bool IsEquivalentTo(this string self, string? other)
         {
             return string.Equals(self, other, StringComparison.OrdinalIgnoreCase);
         }
+
+        /// <inheritdoc cref="string.IsNullOrEmpty()"/>
+        public static bool IsNullOrEmpty([NotNullWhen(returnValue: false)] this string? value) => string.IsNullOrEmpty(value);
+
+        /// <inheritdoc cref="string.IsNullOrWhiteSpace()"/>
+        public static bool IsNullOrWhiteSpace([NotNullWhen(returnValue: false)] this string? value) => string.IsNullOrWhiteSpace(value);
     }
 }

@@ -27,10 +27,10 @@ namespace GitVersion.VersionCalculation
             {
                 semanticVersion = new SemanticVersion(semanticVersion);
                 // Continuous Deployment always requires a pre-release tag unless the commit is tagged
-                if (!semanticVersion.PreReleaseTag.HasTag())
+                if (semanticVersion.PreReleaseTag?.HasTag() != true)
                 {
-                    semanticVersion.PreReleaseTag.Name = config.GetBranchSpecificTag(log, semanticVersion.BuildMetaData.Branch, null);
-                    if (string.IsNullOrEmpty(semanticVersion.PreReleaseTag.Name))
+                    semanticVersion.PreReleaseTag!.Name = config.GetBranchSpecificTag(log, semanticVersion.BuildMetaData?.Branch, null);
+                    if (semanticVersion.PreReleaseTag.Name.IsNullOrEmpty())
                     {
                         semanticVersion.PreReleaseTag.Name = config.ContinuousDeploymentFallbackTag;
                     }
@@ -38,14 +38,14 @@ namespace GitVersion.VersionCalculation
             }
 
             // Evaluate tag number pattern and append to prerelease tag, preserving build metadata
-            var appendTagNumberPattern = !string.IsNullOrEmpty(config.TagNumberPattern) && semanticVersion.PreReleaseTag.HasTag();
+            var appendTagNumberPattern = !config.TagNumberPattern.IsNullOrEmpty() && semanticVersion.PreReleaseTag?.HasTag() == true;
             if (appendTagNumberPattern)
             {
-                var match = Regex.Match(semanticVersion.BuildMetaData.Branch, config.TagNumberPattern);
+                var match = Regex.Match(semanticVersion.BuildMetaData!.Branch, config.TagNumberPattern);
                 var numberGroup = match.Groups["number"];
                 if (numberGroup.Success)
                 {
-                    semanticVersion.PreReleaseTag.Name += numberGroup.Value.PadLeft(config.BuildMetaDataPadding, '0');
+                    semanticVersion.PreReleaseTag!.Name += numberGroup.Value.PadLeft(config.BuildMetaDataPadding, '0');
                 }
             }
 
@@ -103,15 +103,15 @@ namespace GitVersion.VersionCalculation
         private static void PromoteNumberOfCommitsToTagNumber(SemanticVersion semanticVersion)
         {
             // For continuous deployment the commits since tag gets promoted to the pre-release number
-            if (!semanticVersion.BuildMetaData.CommitsSinceTag.HasValue)
+            if (!semanticVersion.BuildMetaData!.CommitsSinceTag.HasValue)
             {
-                semanticVersion.PreReleaseTag.Number = null;
+                semanticVersion.PreReleaseTag!.Number = null;
                 semanticVersion.BuildMetaData.CommitsSinceVersionSource = 0;
             }
             else
             {
                 // Number of commits since last tag should be added to PreRelease number if given. Remember to deduct automatic version bump.
-                if (semanticVersion.PreReleaseTag.Number.HasValue)
+                if (semanticVersion.PreReleaseTag!.Number.HasValue)
                 {
                     semanticVersion.PreReleaseTag.Number += semanticVersion.BuildMetaData.CommitsSinceTag - 1;
                 }
@@ -125,11 +125,11 @@ namespace GitVersion.VersionCalculation
             }
         }
 
-        private string CheckAndFormatString<T>(string formatString, T source, string defaultValue, string formatVarName)
+        private string? CheckAndFormatString<T>(string? formatString, T source, string? defaultValue, string formatVarName)
         {
-            string formattedString;
+            string? formattedString;
 
-            if (string.IsNullOrEmpty(formatString))
+            if (formatString.IsNullOrEmpty())
             {
                 formattedString = defaultValue;
             }

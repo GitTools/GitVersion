@@ -13,7 +13,7 @@ namespace GitVersion.BuildAgents
 
         protected override string EnvironmentVariable { get; } = EnvironmentVariableName;
 
-        public override string GetCurrentBranch(bool usingDynamicRepos)
+        public override string? GetCurrentBranch(bool usingDynamicRepos)
         {
             return Environment.GetEnvironmentVariable("JB_SPACE_GIT_BRANCH");
         }

@@ -7,7 +7,7 @@ namespace GitVersion.Helpers
 {
     public static class EncodingHelper
     {
-        private static IList<Encoding> encodingsWithPreambles;
+        private static IList<Encoding>? encodingsWithPreambles;
 
         private static int maxPreambleLength;
 
@@ -16,7 +16,7 @@ namespace GitVersion.Helpers
         /// </summary>
         /// <param name="filename">The file name to check the encoding of.</param>
         /// <returns>The encoding of the file if it has a preamble otherwise null.</returns>
-        public static Encoding DetectEncoding(string filename)
+        public static Encoding? DetectEncoding(string? filename)
         {
             if (!File.Exists(filename))
             {
@@ -48,7 +48,7 @@ namespace GitVersion.Helpers
         /// </summary>
         /// <param name="bytes">The bytes to check for a matching preamble.</param>
         /// <returns>The encoding that has a matching preamble or null if one was not found.</returns>
-        public static Encoding DetectEncoding(IList<byte> bytes)
+        public static Encoding? DetectEncoding(IList<byte> bytes)
         {
             if (bytes == null || bytes.Count == 0)
             {

@@ -5,7 +5,7 @@ namespace GitVersion
 {
     internal sealed class Tag : ITag
     {
-        private static readonly LambdaEqualityHelper<ITag> equalityHelper = new(x => x.Name.Canonical);
+        private static readonly LambdaEqualityHelper<ITag> equalityHelper = new(x => x?.Name.Canonical);
         private static readonly LambdaKeyComparer<ITag, string> comparerHelper = new(x => x.Name.Canonical);
 
         private readonly LibGit2Sharp.Tag innerTag;

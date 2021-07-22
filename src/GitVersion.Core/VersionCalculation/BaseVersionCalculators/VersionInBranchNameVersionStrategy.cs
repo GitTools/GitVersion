@@ -23,13 +23,14 @@ namespace GitVersion.VersionCalculation
         public override IEnumerable<BaseVersion> GetVersions()
         {
             var currentBranch = Context.CurrentBranch;
-            var tagPrefixRegex = Context.Configuration.GitTagPrefix;
+            var tagPrefixRegex = Context.Configuration?.GitTagPrefix;
             return GetVersions(tagPrefixRegex, currentBranch);
         }
 
-        internal IEnumerable<BaseVersion> GetVersions(string tagPrefixRegex, IBranch currentBranch)
+        internal IEnumerable<BaseVersion> GetVersions(string? tagPrefixRegex, IBranch? currentBranch)
         {
-            if (!Context.FullConfiguration.IsReleaseBranch(NameWithoutOrigin(currentBranch)))
+            if (currentBranch == null ||
+                Context.FullConfiguration?.IsReleaseBranch(NameWithoutOrigin(currentBranch)) != true)
             {
                 yield break;
             }
@@ -44,7 +45,7 @@ namespace GitVersion.VersionCalculation
             }
         }
 
-        private static Tuple<string, SemanticVersion> GetVersionInBranch(string branchName, string tagPrefixRegex)
+        private static Tuple<string, SemanticVersion>? GetVersionInBranch(string branchName, string? tagPrefixRegex)
         {
             var branchParts = branchName.Split('/', '-');
             foreach (var part in branchParts)

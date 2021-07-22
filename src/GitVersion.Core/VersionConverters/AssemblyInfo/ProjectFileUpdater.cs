@@ -1,3 +1,4 @@
+using GitVersion.Extensions;
 using GitVersion.Logging;
 using GitVersion.OutputVariables;
 using System;
@@ -73,22 +74,22 @@ namespace GitVersion.VersionConverters.AssemblyInfo
 
                 cleanupBackupTasks.Add(() => fileSystem.Delete(backupProjectFile));
 
-                if (!string.IsNullOrWhiteSpace(assemblyVersion))
+                if (!assemblyVersion.IsNullOrWhiteSpace())
                 {
                     UpdateProjectVersionElement(fileXml, AssemblyVersionElement, assemblyVersion);
                 }
 
-                if (!string.IsNullOrWhiteSpace(assemblyFileVersion))
+                if (!assemblyFileVersion.IsNullOrWhiteSpace())
                 {
                     UpdateProjectVersionElement(fileXml, FileVersionElement, assemblyFileVersion);
                 }
 
-                if (!string.IsNullOrWhiteSpace(assemblyInfoVersion))
+                if (!assemblyInfoVersion.IsNullOrWhiteSpace())
                 {
                     UpdateProjectVersionElement(fileXml, InformationalVersionElement, assemblyInfoVersion);
                 }
 
-                if (!string.IsNullOrWhiteSpace(packageVersion))
+                if (!packageVersion.IsNullOrWhiteSpace())
                 {
                     UpdateProjectVersionElement(fileXml, VersionElement, packageVersion);
                 }
@@ -182,7 +183,7 @@ namespace GitVersion.VersionConverters.AssemblyInfo
             var workingDirectory = context.WorkingDirectory;
             var assemblyInfoFileNames = new HashSet<string>(context.AssemblyInfoFiles);
 
-            if (assemblyInfoFileNames.Any(x => !string.IsNullOrWhiteSpace(x)))
+            if (assemblyInfoFileNames.Any(x => !x.IsNullOrWhiteSpace()))
             {
                 foreach (var item in assemblyInfoFileNames)
                 {
@@ -211,7 +212,7 @@ namespace GitVersion.VersionConverters.AssemblyInfo
 
         private bool IsSupportedProjectFile(string fileName)
         {
-            if (string.IsNullOrEmpty(fileName))
+            if (fileName.IsNullOrEmpty())
             {
                 return false;
             }

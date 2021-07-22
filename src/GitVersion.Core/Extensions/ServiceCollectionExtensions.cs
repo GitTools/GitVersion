@@ -14,7 +14,7 @@ namespace GitVersion.Extensions
 
         public static TService GetServiceForType<TService, TType>(this IServiceProvider serviceProvider)
         {
-            return serviceProvider.GetServices<TService>().SingleOrDefault(t => t.GetType() == typeof(TType));
+            return serviceProvider.GetServices<TService>().SingleOrDefault(t => t?.GetType() == typeof(TType));
         }
     }
 }

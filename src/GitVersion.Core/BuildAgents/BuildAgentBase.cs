@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using GitVersion.Extensions;
 using GitVersion.Logging;
 using GitVersion.OutputVariables;
 
@@ -18,17 +19,17 @@ namespace GitVersion.BuildAgents
 
         protected abstract string EnvironmentVariable { get; }
 
-        public abstract string GenerateSetVersionMessage(VersionVariables variables);
+        public abstract string? GenerateSetVersionMessage(VersionVariables variables);
         public abstract string[] GenerateSetParameterMessage(string name, string value);
 
-        public virtual bool CanApplyToCurrentContext() => !string.IsNullOrEmpty(Environment.GetEnvironmentVariable(EnvironmentVariable));
+        public virtual bool CanApplyToCurrentContext() => !Environment.GetEnvironmentVariable(EnvironmentVariable).IsNullOrEmpty();
 
-        public virtual string GetCurrentBranch(bool usingDynamicRepos) => null;
+        public virtual string? GetCurrentBranch(bool usingDynamicRepos) => null;
 
         public virtual bool PreventFetch() => true;
         public virtual bool ShouldCleanUpRemotes() => false;
 
-        public virtual void WriteIntegration(Action<string> writer, VersionVariables variables, bool updateBuildNumber = true)
+        public virtual void WriteIntegration(Action<string?> writer, VersionVariables variables, bool updateBuildNumber = true)
         {
             if (writer == null)
             {

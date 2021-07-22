@@ -23,14 +23,14 @@ namespace GitVersion.VersionConverters
             addFormats = GetEmbeddedTemplates(templateType, "AddFormats").ToDictionary(Path.GetExtension, v => v, StringComparer.OrdinalIgnoreCase);
         }
 
-        public string GetTemplateFor(string fileExtension)
+        public string? GetTemplateFor(string fileExtension)
         {
             if (fileExtension == null)
             {
                 throw new ArgumentNullException(nameof(fileExtension));
             }
 
-            string result = null;
+            string? result = null;
 
             if (templates.TryGetValue(fileExtension, out var template) && template != null)
             {
@@ -40,14 +40,14 @@ namespace GitVersion.VersionConverters
             return result;
         }
 
-        public string GetAddFormatFor(string fileExtension)
+        public string? GetAddFormatFor(string fileExtension)
         {
             if (fileExtension == null)
             {
                 throw new ArgumentNullException(nameof(fileExtension));
             }
 
-            string result = null;
+            string? result = null;
 
             if (addFormats.TryGetValue(fileExtension, out var addFormat) && addFormat != null)
             {

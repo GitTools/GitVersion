@@ -10,9 +10,9 @@ namespace GitVersion.Configuration.Init.Wizard
         {
         }
 
-        protected override StepResult HandleResult(string result, Queue<ConfigInitWizardStep> steps, Config config, string workingDirectory)
+        protected override StepResult HandleResult(string? result, Queue<ConfigInitWizardStep> steps, Config config, string workingDirectory)
         {
-            switch (result.ToLower())
+            switch (result?.ToLower())
             {
                 case "y":
                     Console.WriteLine("GitFlow could be a better fit than GitHubFlow for you.");
@@ -28,7 +28,7 @@ namespace GitVersion.Configuration.Init.Wizard
                     return StepResult.InvalidResponseSelected();
             }
 
-            steps.Enqueue(StepFactory.CreateStep<PickBranchingStrategyStep>());
+            steps.Enqueue(StepFactory.CreateStep<PickBranchingStrategyStep>()!);
             return StepResult.Ok();
         }
 
@@ -37,6 +37,6 @@ namespace GitVersion.Configuration.Init.Wizard
             return "Do you need to build nightlies or consume packages the CI build creates without releasing those versions? (y/n)";
         }
 
-        protected override string DefaultResult => null;
+        protected override string? DefaultResult => null;
     }
 }

@@ -25,7 +25,7 @@ namespace GitVersion.Configuration
         /// <summary>
         /// Gets the <see cref="BranchConfig"/> for the current commit.
         /// </summary>
-        public BranchConfig GetBranchConfiguration(IBranch targetBranch, ICommit currentCommit, Config configuration, IList<IBranch> excludedInheritBranches = null)
+        public BranchConfig GetBranchConfiguration(IBranch targetBranch, ICommit? currentCommit, Config configuration, IList<IBranch>? excludedInheritBranches = null)
         {
             var matchingBranches = configuration.GetConfigForBranch(targetBranch.Name.WithoutRemote);
 
@@ -45,7 +45,7 @@ namespace GitVersion.Configuration
             if (matchingBranches.Increment == IncrementStrategy.Inherit)
             {
                 matchingBranches = InheritBranchConfiguration(targetBranch, matchingBranches, currentCommit, configuration, excludedInheritBranches);
-                if (matchingBranches.Name.IsEquivalentTo(FallbackConfigName) && matchingBranches.Increment == IncrementStrategy.Inherit)
+                if (matchingBranches.Name!.IsEquivalentTo(FallbackConfigName) && matchingBranches.Increment == IncrementStrategy.Inherit)
                 {
                     // We tried, and failed to inherit, just fall back to patch
                     matchingBranches.Increment = IncrementStrategy.Patch;
@@ -56,16 +56,16 @@ namespace GitVersion.Configuration
         }
 
         // TODO I think we need to take a fresh approach to this.. it's getting really complex with heaps of edge cases
-        private BranchConfig InheritBranchConfiguration(IBranch targetBranch, BranchConfig branchConfiguration, ICommit currentCommit, Config configuration, IList<IBranch> excludedInheritBranches)
+        private BranchConfig InheritBranchConfiguration(IBranch targetBranch, BranchConfig branchConfiguration, ICommit? currentCommit, Config configuration, IList<IBranch>? excludedInheritBranches)
         {
             using (log.IndentLog("Attempting to inherit branch configuration from parent branch"))
             {
                 var excludedBranches = new[] { targetBranch };
                 // Check if we are a merge commit. If so likely we are a pull request
-                var parentCount = currentCommit.Parents.Count();
+                var parentCount = currentCommit?.Parents.Count();
                 if (parentCount == 2)
                 {
-                    excludedBranches = CalculateWhenMultipleParents(currentCommit, ref targetBranch, excludedBranches);
+                    excludedBranches = CalculateWhenMultipleParents(currentCommit!, ref targetBranch, excludedBranches);
                 }
 
                 excludedInheritBranches ??= repositoryStore.GetExcludedInheritBranches(configuration).ToList();
@@ -155,9 +155,9 @@ namespace GitVersion.Configuration
                     };
                 }
 
-                var inheritingBranchConfig = GetBranchConfiguration(chosenBranch, currentCommit, configuration, excludedInheritBranches);
+                var inheritingBranchConfig = GetBranchConfiguration(chosenBranch, currentCommit, configuration, excludedInheritBranches)!;
                 var configIncrement = inheritingBranchConfig.Increment;
-                if (inheritingBranchConfig.Name.IsEquivalentTo(FallbackConfigName) && configIncrement == IncrementStrategy.Inherit)
+                if (inheritingBranchConfig.Name!.IsEquivalentTo(FallbackConfigName) && configIncrement == IncrementStrategy.Inherit)
                 {
                     log.Warning("Fallback config inherits by default, dropping to patch increment");
                     configIncrement = IncrementStrategy.Patch;
@@ -210,32 +210,32 @@ namespace GitVersion.Configuration
 
 
 
-        private static BranchConfig ChooseMainOrDevelopIncrementStrategyIfTheChosenBranchIsOneOfThem(IBranch chosenBranch, BranchConfig branchConfiguration, Config config)
+        private static BranchConfig? ChooseMainOrDevelopIncrementStrategyIfTheChosenBranchIsOneOfThem(IBranch chosenBranch, BranchConfig branchConfiguration, Config config)
         {
-            BranchConfig mainOrDevelopConfig = null;
-            var developBranchRegex = config.Branches[Config.DevelopBranchKey].Regex;
-            var mainBranchRegex = config.Branches[Config.MainBranchKey].Regex;
+            BranchConfig? mainOrDevelopConfig = null;
+            var developBranchRegex = config.Branches[Config.DevelopBranchKey]?.Regex;
+            var mainBranchRegex = config.Branches[Config.MainBranchKey]?.Regex;
             if (Regex.IsMatch(chosenBranch.Name.Friendly, developBranchRegex, RegexOptions.IgnoreCase))
             {
                 // Normally we would not expect this to happen but for safety we add a check
-                if (config.Branches[Config.DevelopBranchKey].Increment !=
+                if (config.Branches[Config.DevelopBranchKey]?.Increment !=
                     IncrementStrategy.Inherit)
                 {
                     mainOrDevelopConfig = new BranchConfig(branchConfiguration)
                     {
-                        Increment = config.Branches[Config.DevelopBranchKey].Increment
+                        Increment = config.Branches[Config.DevelopBranchKey]?.Increment
                     };
                 }
             }
             else if (Regex.IsMatch(chosenBranch.Name.Friendly, mainBranchRegex, RegexOptions.IgnoreCase))
             {
                 // Normally we would not expect this to happen but for safety we add a check
-                if (config.Branches[Config.MainBranchKey].Increment !=
+                if (config.Branches[Config.MainBranchKey]?.Increment !=
                     IncrementStrategy.Inherit)
                 {
                     mainOrDevelopConfig = new BranchConfig(branchConfiguration)
                     {
-                        Increment = config.Branches[Config.DevelopBranchKey].Increment
+                        Increment = config.Branches[Config.DevelopBranchKey]?.Increment
                     };
                 }
             }

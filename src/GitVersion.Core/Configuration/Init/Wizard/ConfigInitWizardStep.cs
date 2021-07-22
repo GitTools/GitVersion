@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using GitVersion.Extensions;
 using GitVersion.Logging;
 using GitVersion.Model.Configuration;
 
@@ -41,7 +42,7 @@ namespace GitVersion.Configuration.Init.Wizard
                 InvalidResponse(steps);
                 return true;
             }
-            var resultWithDefaultApplied = string.IsNullOrEmpty(input) ? DefaultResult : input;
+            var resultWithDefaultApplied = input.IsNullOrEmpty() ? DefaultResult : input;
             var stepResult = HandleResult(resultWithDefaultApplied, steps, config, workingDirectory);
             if (stepResult.InvalidResponse)
             {
@@ -65,8 +66,8 @@ namespace GitVersion.Configuration.Init.Wizard
             steps.Enqueue(this);
         }
 
-        protected abstract StepResult HandleResult(string result, Queue<ConfigInitWizardStep> steps, Config config, string workingDirectory);
+        protected abstract StepResult HandleResult(string? result, Queue<ConfigInitWizardStep> steps, Config config, string workingDirectory);
         protected abstract string GetPrompt(Config config, string workingDirectory);
-        protected abstract string DefaultResult { get; }
+        protected abstract string? DefaultResult { get; }
     }
 }
