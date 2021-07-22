@@ -28,7 +28,7 @@ namespace GitVersion.Extensions
                 AssemblyVersioningScheme.Major => $"{sv.Major}.0.0.0",
                 AssemblyVersioningScheme.MajorMinor => $"{sv.Major}.{sv.Minor}.0.0",
                 AssemblyVersioningScheme.MajorMinorPatch => $"{sv.Major}.{sv.Minor}.{sv.Patch}.0",
-                AssemblyVersioningScheme.MajorMinorPatchTag => $"{sv.Major}.{sv.Minor}.{sv.Patch}.{sv.PreReleaseTag.Number ?? 0}",
+                AssemblyVersioningScheme.MajorMinorPatchTag => $"{sv.Major}.{sv.Minor}.{sv.Patch}.{sv.PreReleaseTag?.Number ?? 0}",
                 AssemblyVersioningScheme.None => null,
                 _ => throw new ArgumentException($"Unexpected value ({scheme}).", nameof(scheme))
             };
