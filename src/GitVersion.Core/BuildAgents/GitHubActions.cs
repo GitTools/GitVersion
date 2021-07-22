@@ -65,7 +65,7 @@ namespace GitVersion.BuildAgents
             }
         }
 
-        public override string GetCurrentBranch(bool usingDynamicRepos)
+        public override string? GetCurrentBranch(bool usingDynamicRepos)
         {
             return Environment.GetEnvironmentVariable("GITHUB_REF");
         }

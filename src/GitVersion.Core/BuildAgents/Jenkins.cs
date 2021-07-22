@@ -35,7 +35,7 @@ namespace GitVersion.BuildAgents
             };
         }
 
-        public override string GetCurrentBranch(bool usingDynamicRepos)
+        public override string? GetCurrentBranch(bool usingDynamicRepos)
         {
             return IsPipelineAsCode()
                 ? Environment.GetEnvironmentVariable("BRANCH_NAME")

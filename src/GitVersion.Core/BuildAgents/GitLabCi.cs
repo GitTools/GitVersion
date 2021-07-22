@@ -36,7 +36,7 @@ namespace GitVersion.BuildAgents
             };
         }
 
-        public override string GetCurrentBranch(bool usingDynamicRepos)
+        public override string? GetCurrentBranch(bool usingDynamicRepos)
         {
             return Environment.GetEnvironmentVariable("CI_COMMIT_REF_NAME");
         }

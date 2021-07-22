@@ -31,7 +31,7 @@ namespace GitVersion.BuildAgents
             };
         }
 
-        public override string GetCurrentBranch(bool usingDynamicRepos)
+        public override string? GetCurrentBranch(bool usingDynamicRepos)
         {
             // In Drone DRONE_BRANCH variable is equal to destination branch in case of pull request
             // https://discourse.drone.io/t/getting-the-branch-a-pull-request-is-created-from/670

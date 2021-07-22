@@ -37,7 +37,7 @@ namespace GitVersion.BuildAgents
             };
         }
 
-        public override string GetCurrentBranch(bool usingDynamicRepos)
+        public override string? GetCurrentBranch(bool usingDynamicRepos)
         {
 
             var currentBranch = Environment.GetEnvironmentVariable(WebHookEnvironmentVariableName);
