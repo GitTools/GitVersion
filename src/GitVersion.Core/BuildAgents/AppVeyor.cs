@@ -2,9 +2,9 @@ using System;
 using System.Net.Http;
 using System.Text;
 using System.Text.Json;
+using GitVersion.Extensions;
 using GitVersion.Logging;
 using GitVersion.OutputVariables;
-using GitVersion.Extensions;
 
 namespace GitVersion.BuildAgents
 {

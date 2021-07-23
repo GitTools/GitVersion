@@ -4,10 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using GitVersion.Core.Tests.Helpers;
+using GitVersion.Extensions;
 using GitVersion.Logging;
 using GitVersion.OutputVariables;
 using Microsoft.Extensions.DependencyInjection;
-using GitVersion.Extensions;
 
 namespace GitVersion.App.Tests
 {
