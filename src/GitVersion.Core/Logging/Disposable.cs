@@ -4,11 +4,9 @@ namespace GitVersion.Logging
 {
     public static class Disposable
     {
-        static Disposable() => Empty = Create(() => { });
-
         public static IDisposable Create(Action disposer) => new AnonymousDisposable(disposer);
 
-        public static readonly IDisposable Empty;
+        public static readonly IDisposable Empty = Create(() => { });
 
         private sealed class AnonymousDisposable : IDisposable
         {
