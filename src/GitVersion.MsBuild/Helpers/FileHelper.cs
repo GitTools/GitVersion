@@ -15,12 +15,13 @@ namespace GitVersion.MsBuild
             { ".vb", VisualBasicFileContainsVersionAttribute }
         };
 
-        public static string TempPath = MakeAndGetTempPath();
+        public static readonly string TempPath = MakeAndGetTempPath();
 
         private static string MakeAndGetTempPath()
         {
-            Directory.CreateDirectory(TempPath);
-            return Path.Combine(Path.GetTempPath(), "GitVersionTask");
+            var tempPath = Path.Combine(Path.GetTempPath(), "GitVersionTask");
+            Directory.CreateDirectory(tempPath);
+            return tempPath;
         }
 
         public static void DeleteTempFiles()
