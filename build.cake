@@ -1,6 +1,3 @@
-// Install modules
-#module nuget:?package=Cake.DotNetTool.Module&version=1.1.0
-
 // Install addins.
 #addin "nuget:?package=Cake.Codecov&version=1.0.1"
 #addin "nuget:?package=Cake.Compression&version=0.2.6"
