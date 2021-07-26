@@ -28,6 +28,6 @@ namespace GitVersion
 
         public IReference? Head => this["HEAD"];
 
-        public IEnumerable<IReference> FromGlob(string pattern) => this.innerCollection.FromGlob(pattern).Select(reference => new Reference(reference));
+        public IEnumerable<IReference> FromGlob(string prefix) => this.innerCollection.FromGlob(prefix).Select(reference => new Reference(reference));
     }
 }
