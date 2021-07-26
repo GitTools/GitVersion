@@ -1,4 +1,3 @@
-using System;
 using GitVersion.Helpers;
 
 namespace GitVersion
