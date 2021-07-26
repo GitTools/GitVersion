@@ -4,7 +4,7 @@ using Microsoft.Build.Framework;
 
 namespace GitVersion.MsBuild.Tests.Helpers
 {
-    public class MsBuildTaskFixtureResult<T> : IDisposable where T : ITask
+    public sealed class MsBuildTaskFixtureResult<T> : IDisposable where T : ITask
     {
         private readonly RepositoryFixtureBase fixture;
 

@@ -4,7 +4,7 @@ using GitTools.Testing;
 
 namespace GitVersion.MsBuild.Tests.Helpers
 {
-    public class MsBuildExeFixtureResult : IDisposable
+    public sealed class MsBuildExeFixtureResult : IDisposable
     {
         private readonly RepositoryFixtureBase fixture;
 

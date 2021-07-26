@@ -37,10 +37,14 @@ namespace GitTools.Testing
         /// <summary>
         ///     Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
         /// </summary>
-        public override void Dispose()
+        protected override void Dispose(bool disposing)
         {
-            LocalRepositoryFixture.Dispose();
-            base.Dispose();
+            if (disposing)
+            {
+                LocalRepositoryFixture.Dispose();
+            }
+
+            base.Dispose(disposing);
         }
     }
 }

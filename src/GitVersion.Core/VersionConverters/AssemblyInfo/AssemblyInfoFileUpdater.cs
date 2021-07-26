@@ -13,7 +13,7 @@ namespace GitVersion.VersionConverters.AssemblyInfo
     {
     }
 
-    public class AssemblyInfoFileUpdater : IAssemblyInfoFileUpdater
+    public sealed class AssemblyInfoFileUpdater : IAssemblyInfoFileUpdater
     {
         private readonly List<Action> restoreBackupTasks = new();
         private readonly List<Action> cleanupBackupTasks = new();

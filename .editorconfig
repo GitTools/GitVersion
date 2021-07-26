@@ -175,3 +175,6 @@ dotnet_diagnostic.CA2208.severity = warning
 
 # CA1810: Initialize reference type static fields inline
 dotnet_diagnostic.CA1810.severity = warning
+
+# CA1816: Dispose methods should call SuppressFinalize
+dotnet_diagnostic.CA1816.severity = warning
