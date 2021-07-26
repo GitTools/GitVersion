@@ -10,7 +10,7 @@ namespace GitVersion.VersionConverters.WixUpdater
     public interface IWixVersionFileUpdater : IVersionConverter<WixVersionContext>
     {
     }
-    public class WixVersionFileUpdater : IWixVersionFileUpdater
+    public sealed class WixVersionFileUpdater : IWixVersionFileUpdater
     {
         private readonly IFileSystem fileSystem;
         private readonly ILog log;

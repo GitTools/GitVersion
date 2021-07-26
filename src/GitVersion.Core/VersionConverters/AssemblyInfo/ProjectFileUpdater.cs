@@ -13,7 +13,7 @@ namespace GitVersion.VersionConverters.AssemblyInfo
     {
     }
 
-    public class ProjectFileUpdater : IProjectFileUpdater
+    public sealed class ProjectFileUpdater : IProjectFileUpdater
     {
         internal const string AssemblyVersionElement = "AssemblyVersion";
         internal const string FileVersionElement = "FileVersion";

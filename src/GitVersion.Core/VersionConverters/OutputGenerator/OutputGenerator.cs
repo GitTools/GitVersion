@@ -13,7 +13,7 @@ namespace GitVersion.VersionConverters.OutputGenerator
     {
     }
 
-    public class OutputGenerator : IOutputGenerator
+    public sealed class OutputGenerator : IOutputGenerator
     {
         private readonly IConsole console;
         private readonly IFileSystem fileSystem;

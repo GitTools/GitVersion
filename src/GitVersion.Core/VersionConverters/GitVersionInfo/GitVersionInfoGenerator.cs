@@ -9,7 +9,7 @@ namespace GitVersion.VersionConverters.GitVersionInfo
     {
     }
 
-    public class GitVersionInfoGenerator : IGitVersionInfoGenerator
+    public sealed class GitVersionInfoGenerator : IGitVersionInfoGenerator
     {
         private readonly IFileSystem fileSystem;
         private readonly TemplateManager templateManager;
