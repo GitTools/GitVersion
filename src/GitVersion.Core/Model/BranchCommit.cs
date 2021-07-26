@@ -5,7 +5,7 @@ namespace GitVersion
     /// <summary>
     /// A commit, together with the branch to which the commit belongs.
     /// </summary>
-    public readonly struct BranchCommit
+    public readonly struct BranchCommit : IEquatable<BranchCommit?>
     {
         public static readonly BranchCommit Empty = new();
 
@@ -18,14 +18,9 @@ namespace GitVersion
         public IBranch Branch { get; }
         public ICommit Commit { get; }
 
-        private bool Equals(BranchCommit other) => Equals(Branch, other.Branch) && Equals(Commit, other.Commit);
+        public bool Equals(BranchCommit? other) => Equals(Branch, other?.Branch) && Equals(Commit, other?.Commit);
 
-        public override bool Equals(object obj)
-        {
-            if (obj is null)
-                return false;
-            return obj is BranchCommit commit && Equals(commit);
-        }
+        public override bool Equals(object obj) => obj is null ? false : Equals(obj as BranchCommit?);
 
         public override int GetHashCode()
         {

@@ -5,7 +5,7 @@ using GitVersion.Extensions;
 
 namespace GitVersion
 {
-    public class SemanticVersion : IFormattable, IComparable<SemanticVersion>
+    public class SemanticVersion : IFormattable, IComparable<SemanticVersion>, IEquatable<SemanticVersion?>
     {
         private static readonly SemanticVersion Empty = new();
 

@@ -2,7 +2,7 @@ using System;
 
 namespace GitVersion
 {
-    public interface IRefSpec : IEquatable<IRefSpec>, IComparable<IRefSpec>
+    public interface IRefSpec : IEquatable<IRefSpec?>, IComparable<IRefSpec>
     {
         string Specification { get; }
         RefSpecDirection Direction { get; }

@@ -20,9 +20,9 @@ namespace GitVersion.Configuration
 
         public string FilePath { get; }
 
-        public bool HasConfigFileAt(string? workingDirectory) => this.fileSystem.Exists(Path.Combine(workingDirectory, FilePath));
+        public bool HasConfigFileAt(string workingDirectory) => this.fileSystem.Exists(Path.Combine(workingDirectory, FilePath));
 
-        public string GetConfigFilePath(string? workingDirectory) => Path.Combine(workingDirectory, FilePath);
+        public string GetConfigFilePath(string workingDirectory) => Path.Combine(workingDirectory, FilePath);
 
         public void Verify(string? workingDirectory, string? projectRootDirectory)
         {
@@ -40,7 +40,7 @@ namespace GitVersion.Configuration
             return GetConfigFilePath(HasConfigFileAt(workingDirectory) ? workingDirectory : projectRootDirectory);
         }
 
-        public Config ReadConfig(string? workingDirectory)
+        public Config ReadConfig(string workingDirectory)
         {
             var configFilePath = GetConfigFilePath(workingDirectory);
 

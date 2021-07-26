@@ -1,3 +1,4 @@
+using System;
 using GitVersion.Helpers;
 using LibGit2Sharp;
 
@@ -5,7 +6,7 @@ namespace GitVersion
 {
     internal sealed class Tag : ITag
     {
-        private static readonly LambdaEqualityHelper<ITag> equalityHelper = new(x => x?.Name.Canonical);
+        private static readonly LambdaEqualityHelper<ITag> equalityHelper = new(x => x.Name.Canonical);
         private static readonly LambdaKeyComparer<ITag, string> comparerHelper = new(x => x.Name.Canonical);
 
         private readonly LibGit2Sharp.Tag innerTag;
@@ -17,7 +18,7 @@ namespace GitVersion
         public ReferenceName Name { get; }
 
         public int CompareTo(ITag other) => comparerHelper.Compare(this, other);
-        public bool Equals(ITag other) => equalityHelper.Equals(this, other);
+        public bool Equals(ITag? other) => equalityHelper.Equals(this, other);
         public override bool Equals(object obj) => Equals((obj as ITag)!);
         public override int GetHashCode() => equalityHelper.GetHashCode(this);
         public override string ToString() => Name.ToString();
