@@ -204,6 +204,7 @@ namespace GitVersion.VersionCalculation
         {
             var mergeBase = this.repositoryStore.FindMergeBase(context.CurrentCommit!, mainline.Tip!);
             var mainlineCommitLog = this.repositoryStore.GetMainlineCommitLog(baseVersionSource, mainline.Tip).ToList();
+            //var mainlineCommitLog = this.repositoryStore.GetMainlineCommitLog(mergeBase.Parents.FirstOrDefault(), mainline.Tip).ToList();
 
             // find the mainline commit effective for versioning the current branch
             mainlineTip = GetEffectiveMainlineTip(mainlineCommitLog, mergeBase, mainline.Tip);
