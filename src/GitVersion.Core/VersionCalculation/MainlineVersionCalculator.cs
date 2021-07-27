@@ -200,6 +200,7 @@ namespace GitVersion.VersionCalculation
         private ICommit FindMergeBaseBeforeForwardMerge(ICommit baseVersionSource, IBranch mainline, out ICommit mainlineTip)
         {
             var mergeBase = repositoryStore.FindMergeBase(context.CurrentCommit, mainline.Tip);
+            //var mainlineCommitLog = repositoryStore.GetMainlineCommitLog(mergeBase.Parents.FirstOrDefault(), mainline.Tip).ToList();
             var mainlineCommitLog = repositoryStore.GetMainlineCommitLog(baseVersionSource, mainline.Tip).ToList();
 
             // find the mainline commit effective for versioning the current branch
