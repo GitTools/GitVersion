@@ -279,6 +279,128 @@ namespace GitVersion.Core.Tests.IntegrationTests
         }
 
         [Test]
+        public void HotfixBranchesWithTaggedCommitsOnMain()
+        {
+            using var fixture = new EmptyRepositoryFixture();
+            var configBumpMinor = new Config()
+            {
+                VersioningMode = VersioningMode.Mainline,
+                Increment = IncrementStrategy.Minor,
+                Branches =
+                {
+                    {
+                        Config.MainBranchKey,
+                        new BranchConfig
+                        {
+                            Regex = Config.MainBranchRegex,
+                            SourceBranches = new HashSet<string>
+                            {
+                                Config.DevelopBranchKey,
+                                Config.ReleaseBranchKey
+                            },
+                            Tag = string.Empty,
+                            PreventIncrementOfMergedBranchVersion = true,
+                            Increment = IncrementStrategy.Minor,
+                            IsMainline = true,
+                            PreReleaseWeight = 55000,
+                        }
+                    },
+                    {
+                        Config.HotfixBranchKey,
+                        new BranchConfig
+                        {
+                            Tag = ""
+                        }
+                    }
+                }
+            };
+
+            fixture.Repository.MakeACommit("1");
+            fixture.MakeATaggedCommit("1.0.0");
+
+            fixture.MakeACommit(); // 1.1.0
+            fixture.AssertFullSemver("1.1.0", configBumpMinor);
+            fixture.ApplyTag("1.1.0");
+            fixture.AssertFullSemver("1.1.0", configBumpMinor);
+
+            fixture.BranchTo("hotfix/may");
+            fixture.AssertFullSemver("1.1.1", configBumpMinor);
+
+            // Move main on
+            fixture.Checkout(MainBranch);
+            fixture.MakeACommit();
+            fixture.AssertFullSemver("1.2.0", configBumpMinor);
+
+            // Continue on hotfix
+            fixture.Checkout("hotfix/may");
+            fixture.MakeACommit(); // 1.2.1
+            fixture.AssertFullSemver("1.1.1", configBumpMinor);
+        }
+
+        [Test]
+        public void HotfixBranchesWithTaggedCommitsOnHotfix()
+        {
+            using var fixture = new EmptyRepositoryFixture();
+            var configBumpMinor = new Config()
+            {
+                VersioningMode = VersioningMode.Mainline,
+                Increment = IncrementStrategy.Minor,
+                Branches =
+                {
+                    {
+                        Config.MainBranchKey,
+                        new BranchConfig
+                        {
+                            Regex = Config.MainBranchRegex,
+                            SourceBranches = new HashSet<string>
+                            {
+                                Config.DevelopBranchKey,
+                                Config.ReleaseBranchKey
+                            },
+                            Tag = string.Empty,
+                            PreventIncrementOfMergedBranchVersion = true,
+                            Increment = IncrementStrategy.Minor,
+                            IsMainline = true,
+                            PreReleaseWeight = 55000,
+                        }
+                    },
+                    {
+                        Config.HotfixBranchKey,
+                        new BranchConfig
+                        {
+                            Tag = ""
+                        }
+                    }
+                }
+            };
+
+            fixture.Repository.MakeACommit("1");
+            fixture.MakeATaggedCommit("1.0.0");
+
+            fixture.MakeACommit(); // 1.1.0
+            fixture.AssertFullSemver("1.1.0", configBumpMinor);
+            fixture.ApplyTag("1.1.0");
+            fixture.AssertFullSemver("1.1.0", configBumpMinor);
+            fixture.MakeACommit(); // 1.2.0
+            fixture.AssertFullSemver("1.2.0", configBumpMinor);
+
+            fixture.BranchTo("hotfix/may");
+            fixture.AssertFullSemver("1.2.1", configBumpMinor);
+
+            // Move main on
+            fixture.Checkout(MainBranch);
+            fixture.MakeACommit();
+            fixture.AssertFullSemver("1.3.0", configBumpMinor);
+
+            // Continue on hotfix
+            fixture.Checkout("hotfix/may");
+            fixture.MakeACommit(); // 1.2.1
+            fixture.MakeATaggedCommit("1.2.2");
+            fixture.MakeACommit(); // 1.2.3
+            fixture.AssertFullSemver("1.2.3", configBumpMinor);
+        }
+
+        [Test]
         public void VerifyForwardMerge()
         {
             using var fixture = new EmptyRepositoryFixture();

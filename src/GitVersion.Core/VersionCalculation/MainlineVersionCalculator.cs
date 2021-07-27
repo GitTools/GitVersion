@@ -202,9 +202,9 @@ namespace GitVersion.VersionCalculation
         /// <returns>The best possible merge base between the current commit and <paramref name="mainline"/> that is not the child of a forward merge.</returns>
         private ICommit FindMergeBaseBeforeForwardMerge(ICommit? baseVersionSource, IBranch mainline, [NotNullWhen(true)] out ICommit? mainlineTip)
         {
-            var mergeBase = this.repositoryStore.FindMergeBase(context.CurrentCommit!, mainline.Tip!);
-            var mainlineCommitLog = this.repositoryStore.GetMainlineCommitLog(baseVersionSource, mainline.Tip).ToList();
+            var mergeBase = repositoryStore.FindMergeBase(context.CurrentCommit, mainline.Tip);
             //var mainlineCommitLog = this.repositoryStore.GetMainlineCommitLog(mergeBase.Parents.FirstOrDefault(), mainline.Tip).ToList();
+            var mainlineCommitLog = this.repositoryStore.GetMainlineCommitLog(baseVersionSource, mainline.Tip).ToList();
 
             // find the mainline commit effective for versioning the current branch
             mainlineTip = GetEffectiveMainlineTip(mainlineCommitLog, mergeBase, mainline.Tip);
