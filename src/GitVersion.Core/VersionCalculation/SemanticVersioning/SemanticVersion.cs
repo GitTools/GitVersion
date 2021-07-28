@@ -301,13 +301,9 @@ namespace GitVersion
                         throw new ArgumentOutOfRangeException(nameof(incrementStrategy));
                 }
             }
-            else
+            else if (incremented.PreReleaseTag.Number != null)
             {
-                if (incremented.PreReleaseTag.Number != null)
-                {
-                    incremented.PreReleaseTag.Number = incremented.PreReleaseTag.Number;
-                    incremented.PreReleaseTag.Number++;
-                }
+                incremented.PreReleaseTag.Number++;
             }
 
             return incremented;
