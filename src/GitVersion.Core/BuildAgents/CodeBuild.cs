@@ -40,7 +40,7 @@ namespace GitVersion.BuildAgents
 
         public override void WriteIntegration(Action<string?> writer, VersionVariables variables, bool updateBuildNumber = true)
         {
-            base.WriteIntegration(writer, variables);
+            base.WriteIntegration(writer, variables, updateBuildNumber);
             writer($"Outputting variables to '{this.file}' ... ");
             File.WriteAllLines(this.file, GenerateBuildLogOutput(variables));
         }
