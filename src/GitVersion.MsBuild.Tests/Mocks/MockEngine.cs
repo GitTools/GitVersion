@@ -24,33 +24,33 @@ namespace GitVersion.MsBuild.Tests.Mocks
 
         public bool IsRunningMultipleNodes { get; set; }
 
-        public void LogErrorEvent(BuildErrorEventArgs eventArgs)
+        public void LogErrorEvent(BuildErrorEventArgs e)
         {
-            Console.WriteLine(EventArgsFormatting.FormatEventMessage(eventArgs));
-            this.log.AppendLine(EventArgsFormatting.FormatEventMessage(eventArgs));
+            Console.WriteLine(EventArgsFormatting.FormatEventMessage(e));
+            this.log.AppendLine(EventArgsFormatting.FormatEventMessage(e));
             ++Errors;
         }
 
-        public void LogWarningEvent(BuildWarningEventArgs eventArgs)
+        public void LogWarningEvent(BuildWarningEventArgs e)
         {
-            Console.WriteLine(EventArgsFormatting.FormatEventMessage(eventArgs));
-            this.log.AppendLine(EventArgsFormatting.FormatEventMessage(eventArgs));
+            Console.WriteLine(EventArgsFormatting.FormatEventMessage(e));
+            this.log.AppendLine(EventArgsFormatting.FormatEventMessage(e));
             ++Warnings;
         }
 
-        public void LogCustomEvent(CustomBuildEventArgs eventArgs)
+        public void LogCustomEvent(CustomBuildEventArgs e)
         {
-            Console.WriteLine(eventArgs.Message);
-            this.log.AppendLine(eventArgs.Message);
+            Console.WriteLine(e.Message);
+            this.log.AppendLine(e.Message);
         }
 
-        public void LogMessageEvent(BuildMessageEventArgs eventArgs)
+        public void LogMessageEvent(BuildMessageEventArgs e)
         {
             // Only if the message is above the minimum importance should we record the log message
-            if (eventArgs.Importance <= MinimumMessageImportance)
+            if (e.Importance <= MinimumMessageImportance)
             {
-                Console.WriteLine(eventArgs.Message);
-                this.log.AppendLine(eventArgs.Message);
+                Console.WriteLine(e.Message);
+                this.log.AppendLine(e.Message);
                 ++Messages;
             }
         }
@@ -100,9 +100,9 @@ namespace GitVersion.MsBuild.Tests.Mocks
             string[] projectFileNames,
             string[] targetNames,
             IDictionary[] globalProperties,
-            IList<string>[] undefineProperties,
+            IList<string>[] removeGlobalProperties,
             string[] toolsVersion,
-            bool includeTargetOutputs) => new(false, null);
+            bool returnTargetOutputs) => new(false, null);
 
         public void Yield()
         {

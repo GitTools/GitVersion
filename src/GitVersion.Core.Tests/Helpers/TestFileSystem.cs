@@ -47,11 +47,11 @@ namespace GitVersion.Core.Tests.Helpers
             this.fileSystem.Remove(fullPath);
         }
 
-        public string ReadAllText(string file)
+        public string ReadAllText(string path)
         {
-            var path = Path.GetFullPath(file);
-            if (!this.fileSystem.TryGetValue(path, out var content))
-                throw new FileNotFoundException($"The file '{path}' was not found", path);
+            var fullPath = Path.GetFullPath(path);
+            if (!this.fileSystem.TryGetValue(fullPath, out var content))
+                throw new FileNotFoundException($"The file '{fullPath}' was not found", fullPath);
 
             var encoding = EncodingHelper.DetectEncoding(content) ?? Encoding.UTF8;
             return encoding.GetString(content);
@@ -76,35 +76,35 @@ namespace GitVersion.Core.Tests.Helpers
 
         public Stream OpenWrite(string path) => new TestStream(path, this);
 
-        public Stream OpenRead(string file)
+        public Stream OpenRead(string path)
         {
-            var path = Path.GetFullPath(file);
-            if (this.fileSystem.ContainsKey(path))
+            var fullPath = Path.GetFullPath(path);
+            if (this.fileSystem.ContainsKey(fullPath))
             {
-                var content = this.fileSystem[path];
+                var content = this.fileSystem[fullPath];
                 return new MemoryStream(content);
             }
 
-            throw new FileNotFoundException("File not found.", path);
+            throw new FileNotFoundException("File not found.", fullPath);
         }
 
-        public void CreateDirectory(string directory)
+        public void CreateDirectory(string path)
         {
-            var path = Path.GetFullPath(directory);
-            if (this.fileSystem.ContainsKey(path))
+            var fullPath = Path.GetFullPath(path);
+            if (this.fileSystem.ContainsKey(fullPath))
             {
-                this.fileSystem[path] = Array.Empty<byte>();
+                this.fileSystem[fullPath] = Array.Empty<byte>();
             }
             else
             {
-                this.fileSystem.Add(path, Array.Empty<byte>());
+                this.fileSystem.Add(fullPath, Array.Empty<byte>());
             }
         }
 
-        public bool DirectoryExists(string directory)
+        public bool DirectoryExists(string path)
         {
-            var path = Path.GetFullPath(directory);
-            return this.fileSystem.ContainsKey(path);
+            var fullPath = Path.GetFullPath(path);
+            return this.fileSystem.ContainsKey(fullPath);
         }
 
         public long GetLastDirectoryWrite(string path) => 1;
