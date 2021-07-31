@@ -5,7 +5,7 @@ namespace GitVersion
 {
     internal sealed class Branch : IBranch
     {
-        private static readonly LambdaEqualityHelper<IBranch> equalityHelper = new(x => x?.Name.Canonical);
+        private static readonly LambdaEqualityHelper<IBranch> equalityHelper = new(x => x.Name.Canonical);
         private static readonly LambdaKeyComparer<IBranch, string> comparerHelper = new(x => x.Name.Canonical);
 
         private readonly LibGit2Sharp.Branch innerBranch;
@@ -26,7 +26,7 @@ namespace GitVersion
         public ICommitCollection? Commits { get; }
 
         public int CompareTo(IBranch other) => comparerHelper.Compare(this, other);
-        public bool Equals(IBranch other) => equalityHelper.Equals(this, other);
+        public bool Equals(IBranch? other) => equalityHelper.Equals(this, other);
         public override bool Equals(object obj) => Equals((obj as IBranch)!);
         public override int GetHashCode() => equalityHelper.GetHashCode(this);
         public override string ToString() => Name.ToString();

@@ -7,10 +7,10 @@ using GitVersion.Helpers;
 namespace GitVersion
 {
     public class SemanticVersionPreReleaseTag :
-        IFormattable, IComparable<SemanticVersionPreReleaseTag>, IEquatable<SemanticVersionPreReleaseTag>
+        IFormattable, IComparable<SemanticVersionPreReleaseTag>, IEquatable<SemanticVersionPreReleaseTag?>
     {
         private static readonly LambdaEqualityHelper<SemanticVersionPreReleaseTag> EqualityHelper =
-           new(x => x?.Name, x => x?.Number);
+           new(x => x.Name, x => x.Number);
 
         public SemanticVersionPreReleaseTag()
         {

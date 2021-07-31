@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace GitVersion
 {
-    public interface ICommit : IEquatable<ICommit>, IComparable<ICommit>, IGitObject
+    public interface ICommit : IEquatable<ICommit?>, IComparable<ICommit>, IGitObject
     {
         IEnumerable<ICommit> Parents { get; }
         DateTimeOffset When { get; }

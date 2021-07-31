@@ -37,7 +37,7 @@ namespace GitVersion.Configuration
             return Provide(rootDirectory, overrideConfig);
         }
 
-        public Config Provide(string? workingDirectory, Config? overrideConfig = null) =>
+        public Config Provide(string workingDirectory, Config? overrideConfig = null) =>
             new ConfigurationBuilder()
                 .Add(this.configFileLocator.ReadConfig(workingDirectory))
                 .Add(overrideConfig ?? new Config())

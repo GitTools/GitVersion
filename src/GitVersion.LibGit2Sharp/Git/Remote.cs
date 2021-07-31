@@ -6,7 +6,7 @@ namespace GitVersion
 {
     internal sealed class Remote : IRemote
     {
-        private static readonly LambdaEqualityHelper<IRemote> equalityHelper = new(x => x?.Name);
+        private static readonly LambdaEqualityHelper<IRemote> equalityHelper = new(x => x.Name);
         private static readonly LambdaKeyComparer<IRemote, string> comparerHelper = new(x => x.Name);
 
         private readonly LibGit2Sharp.Remote innerRemote;
@@ -14,7 +14,7 @@ namespace GitVersion
         internal Remote(LibGit2Sharp.Remote remote) => this.innerRemote = remote;
 
         public int CompareTo(IRemote other) => comparerHelper.Compare(this, other);
-        public bool Equals(IRemote other) => equalityHelper.Equals(this, other);
+        public bool Equals(IRemote? other) => equalityHelper.Equals(this, other);
         public override bool Equals(object obj) => Equals((obj as IRemote)!);
         public override int GetHashCode() => equalityHelper.GetHashCode(this);
         public override string ToString() => Name;
