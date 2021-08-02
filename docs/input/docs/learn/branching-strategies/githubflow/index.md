@@ -2,6 +2,7 @@
 Order: 30
 Title: GitHub Flow
 Description: GitHub flow is a simpler and pull request-driven branching strategy
+RedirectFrom: docs/git-branching-strategies/githubflow
 ---
 
 GitHubFlow is a simple and effective branching strategy which the folks at

@@ -1,6 +1,7 @@
 ---
 Order: 60
 Title: Why use GitVersion?
+RedirectFrom: docs/why
 ---
 
 GitVersion makes versioning woes a thing of the past. It looks at your git

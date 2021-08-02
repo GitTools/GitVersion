@@ -5,6 +5,7 @@ Description: |
     Just install with NuGet and GitVersion will automatically generate assembly
     version information that is compiled into the resulting artifact.
 CardIcon: collect.svg
+RedirectFrom:  docs/usage/msbuild-task
 ---
 
 The MSBuild Task for GitVersion — **GitVersion.MsBuild** — is a simple solution if

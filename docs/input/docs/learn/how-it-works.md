@@ -1,6 +1,7 @@
 ---
 Order: 10
 Title: How it works
+RedirectFrom: docs/more-info/how-it-works
 ---
 
 GitVersion v3 works very differently to v2. Version 2 had knowledge of both

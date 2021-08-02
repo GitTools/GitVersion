@@ -2,6 +2,7 @@
 Order: 80
 Title: Octopus Deploy
 Description: Details on the Octopus Deploy support in GitVersion
+RedirectFrom: docs/build-server-support/build-server/octopus-deploy
 ---
 
 While not a build server, there are a few things to consider when using Octopus

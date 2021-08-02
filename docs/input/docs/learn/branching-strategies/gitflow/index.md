@@ -2,6 +2,7 @@
 Order: 20
 Title: Git Flow
 Description: The Git Flow branching strategy allows for more structured releases
+RedirectFrom: docs/git-branching-strategies/gitflow
 ---
 
 Git Flow allows more structured releases, and GitVersion will derive sensible
