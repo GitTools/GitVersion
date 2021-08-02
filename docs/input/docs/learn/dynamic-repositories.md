@@ -1,6 +1,7 @@
 ---
 Order: 20
 Title: Dynamic Repositories
+RedirectFrom: docs/more-info/dynamic-repositories
 ---
 
 GitVersion.exe requires access to the Git repository in order to do / infer all

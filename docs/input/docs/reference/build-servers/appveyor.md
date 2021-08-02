@@ -2,6 +2,7 @@
 Order: 10
 Title: AppVeyor
 Description: Details on the AppVeyor support in GitVersion
+RedirectFrom: docs/build-server-support/build-server/appveyor
 ---
 
 AppVeyor is the first build server which has a setup helper built into

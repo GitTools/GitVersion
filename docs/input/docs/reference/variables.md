@@ -2,6 +2,7 @@
 Order: 20
 Title: Version Variables
 Description: The version variables exposed by GitVersion
+RedirectFrom: docs/more-info/variables
 ---
 
 Version variables are quite useful if you need different formats of the version

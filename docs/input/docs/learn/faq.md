@@ -1,6 +1,7 @@
 ---
 Order: 50
 Title: FAQ
+RedirectFrom: docs/faq
 ---
 
 ## Why is my version not incrementing?

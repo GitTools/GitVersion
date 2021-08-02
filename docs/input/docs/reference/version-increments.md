@@ -2,6 +2,9 @@
 Order: 40
 Title: Version Incrementing
 Description: Details on how GitVersion performs version increments
+RedirectFrom:
+- docs/more-info/incrementing-per-commit
+- docs/more-info/version-increments
 ---
 
 Because GitVersion works with several workflows, the way it does its version

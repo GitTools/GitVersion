@@ -1,6 +1,7 @@
 ---
 Order: 20
 Title: Git Setup
+RedirectFrom: docs/reference/git-setup
 ---
 
 ## Remotes
