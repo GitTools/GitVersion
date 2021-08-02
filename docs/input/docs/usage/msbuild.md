@@ -51,6 +51,14 @@ The next thing you need to do is to remove the `Assembly*Version` attributes fro
 your `Properties\AssemblyInfo.cs` files. This puts GitVersion.MsBuild in charge of
 versioning your assemblies.
 
+For SDK-style projects, add the following properties set to `false`:
+```
+    <!-- GitVersion DotNet SDK Compatibility -->
+    <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
+    <GenerateAssemblyFileVersionAttribute>false</GenerateAssemblyFileVersionAttribute>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+```
+
 ### Done!
 
 The setup process is now complete and GitVersion.MsBuild should be working its magic,
