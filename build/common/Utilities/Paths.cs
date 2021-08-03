@@ -1,7 +1,9 @@
-namespace Build.Utilities
+namespace Common.Utilities
 {
     public class Paths
     {
+        public const string ToolsDirectory = "./tools";
+
         public static string Artifacts => "./artifacts";
         public static string Src => "./src";
         public static string Build => "./build";

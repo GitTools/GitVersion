@@ -1,5 +1,4 @@
 using System.Linq;
-using Build.Utilities;
 using Cake.Common.IO;
 using Cake.Common.Tools.DotNetCore;
 using Cake.Common.Tools.DotNetCore.Pack;
@@ -7,6 +6,7 @@ using Cake.Common.Tools.NuGet;
 using Cake.Common.Tools.NuGet.Pack;
 using Cake.Core;
 using Cake.Frosting;
+using Common.Utilities;
 
 namespace Build.Tasks
 {
