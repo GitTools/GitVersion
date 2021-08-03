@@ -7,10 +7,10 @@ using Common.Utilities;
 
 namespace Build.Tasks
 {
-    [TaskName(nameof(PackageZip))]
+    [TaskName(nameof(PackageGZip))]
     [TaskDescription("Creates the tar.gz packages")]
     [IsDependentOn(typeof(PackagePrepare))]
-    public class PackageZip : FrostingTask<BuildContext>
+    public class PackageGZip : FrostingTask<BuildContext>
     {
         public override void Run(BuildContext context)
         {
