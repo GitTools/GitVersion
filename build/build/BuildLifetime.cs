@@ -70,9 +70,9 @@ namespace Build
             msBuildSettings.WithProperty("AssemblyVersion", version.Version);
             msBuildSettings.WithProperty("PackageVersion", version.NugetVersion);
             msBuildSettings.WithProperty("FileVersion", version.Version);
-            msBuildSettings.WithProperty("InformationalVersion", version.GitVersion?.InformationalVersion);
-            msBuildSettings.WithProperty("RepositoryBranch", version.GitVersion?.BranchName);
-            msBuildSettings.WithProperty("RepositoryCommit", version.GitVersion?.Sha);
+            msBuildSettings.WithProperty("InformationalVersion", version.GitVersion.InformationalVersion);
+            msBuildSettings.WithProperty("RepositoryBranch", version.GitVersion.BranchName);
+            msBuildSettings.WithProperty("RepositoryCommit", version.GitVersion.Sha);
             msBuildSettings.WithProperty("NoPackageAnalysis", "true");
         }
 

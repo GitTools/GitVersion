@@ -20,7 +20,7 @@ namespace Chores.Tasks
             var tools = jToken.Select(x => (JProperty)x).ToDictionary(x => x.Name, x => x.Value["version"]?.Value<string>());
             foreach (var (toolName, version) in tools)
             {
-                context.DotNetCoreTool($"tool update --tool-path {CommonPaths.ToolsDirectory} --version {version} {toolName}");
+                context.DotNetCoreTool($"tool update --tool-path {Paths.ToolsDirectory} --version {version} {toolName}");
             }
         }
     }

@@ -1,5 +1,4 @@
 using System;
-using Build.Utilities;
 using Cake.Codecov;
 using Cake.Common.IO;
 using Cake.Frosting;

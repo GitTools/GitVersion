@@ -1,5 +1,4 @@
 using System.Linq;
-using Build.Utilities;
 using Cake.Common.IO;
 using Cake.Common.Tools.Chocolatey;
 using Cake.Common.Tools.Chocolatey.Pack;
