@@ -9,24 +9,37 @@ using Xunit;
 
 namespace Artifacts.Tasks
 {
-    [TaskName(nameof(ArtifactsCmdlineTest))]
-    [TaskDescription("Tests the cmdline package on windows")]
-    public class ArtifactsCmdlineTest : FrostingTask<BuildContext>
+    [TaskName(nameof(ArtifactsExecutableTest))]
+    [TaskDescription("Tests the cmdline and portable packages on windows")]
+    public class ArtifactsExecutableTest : FrostingTask<BuildContext>
     {
         public override bool ShouldRun(BuildContext context)
         {
             var shouldRun = true;
-            shouldRun &= context.ShouldRun(context.IsOnWindows, $"{nameof(ArtifactsCmdlineTest)} works only on Windows agents.");
+            shouldRun &= context.ShouldRun(context.IsOnWindows, $"{nameof(ArtifactsExecutableTest)} works only on Windows agents.");
 
             return shouldRun;
         }
 
         public override void Run(BuildContext context)
         {
+            var packagesToTest = new[]
+            {
+                "GitVersion.Commandline", "GitVersion.Portable"
+            };
+            foreach (var packageToTest in packagesToTest)
+            {
+                PackageTest(context, packageToTest);
+            }
+        }
+        private static void PackageTest(BuildContext context, string packageToTest)
+        {
             if (context.Version == null)
                 return;
 
-            context.NuGetInstall("GitVersion.Commandline", new NuGetInstallSettings
+            var outputDirectory = Paths.Packages.Combine("test");
+
+            context.NuGetInstall(packageToTest, new NuGetInstallSettings
             {
                 Source = new[]
                 {
@@ -34,7 +47,7 @@ namespace Artifacts.Tasks
                 },
                 ExcludeVersion = true,
                 Prerelease = true,
-                OutputDirectory = Paths.ArtifactsTestBinCmdline
+                OutputDirectory = outputDirectory
             });
 
             var settings = new GitVersionSettings
@@ -43,7 +56,7 @@ namespace Artifacts.Tasks
                 {
                     GitVersionOutput.Json
                 },
-                ToolPath = Paths.ArtifactsTestBinCmdline.Combine("GitVersion.Commandline/tools").CombineWithFilePath("gitversion.exe").FullPath
+                ToolPath = outputDirectory.Combine(packageToTest).Combine("tools").CombineWithFilePath("gitversion.exe").FullPath
             };
             var gitVersion = context.GitVersion(settings);
 
