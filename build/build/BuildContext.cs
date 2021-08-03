@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using Build.Utilities;
 using Cake.Common.Tools.DotNetCore.MSBuild;
 using Cake.Core;
-using Cake.Core.IO;
 using Cake.Frosting;
 using Common.Utilities;
 
@@ -18,11 +17,7 @@ namespace Build
             [PlatformFamily.Linux] = new[] { "linux-x64", "linux-musl-x64" },
             [PlatformFamily.OSX] = new[] { "osx-x64" },
         };
-        public readonly Dictionary<string, DirectoryPath> PackagesBuildMap = new()
-        {
-            ["GitVersion.CommandLine"] = Paths.ArtifactsBinCmdline,
-            ["GitVersion.Portable"] = Paths.ArtifactsBinPortable,
-        };
+
         public BuildPackages? Packages { get; set; }
 
         public bool IsOriginalRepo { get; set; }

@@ -30,7 +30,7 @@ namespace Build.Tasks
             {
                 if (context.FileExists(package.NuspecPath))
                 {
-                    var artifactPath = context.MakeAbsolute(context.PackagesBuildMap[package.Id]).FullPath;
+                    var artifactPath = context.MakeAbsolute(Paths.ArtifactsBinPortable).FullPath;
 
                     var chocolateySettings = new ChocolateyPackSettings
                     {

@@ -49,7 +49,7 @@ namespace Build.Tasks
             {
                 if (!context.FileExists(package.NuspecPath)) continue;
 
-                var artifactPath = context.MakeAbsolute(context.PackagesBuildMap[package.Id]).FullPath;
+                var artifactPath = context.MakeAbsolute(Paths.ArtifactsBinCmdline).FullPath;
                 var version = context.Version;
                 var gitVersion = version?.GitVersion;
                 var nugetSettings = new NuGetPackSettings
