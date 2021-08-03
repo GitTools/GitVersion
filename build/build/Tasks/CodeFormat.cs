@@ -16,14 +16,14 @@ namespace Build.Tasks
             context.Information("Code format...");
             context.DotNetCoreFormat(new DotNetCoreFormatSettings
             {
-                Workspace = new DirectoryPath(Paths.Build),
+                Workspace = Paths.Build,
                 Folder = true,
                 FixWhitespaces = true,
             });
 
             context.DotNetCoreFormat(new DotNetCoreFormatSettings
             {
-                Workspace = new DirectoryPath(Paths.Src),
+                Workspace = Paths.Src,
                 Folder = true,
                 FixWhitespaces = true,
                 Exclude = new List<string> { " **/AddFormats/" }
