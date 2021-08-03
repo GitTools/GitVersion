@@ -13,7 +13,7 @@ A working example of integrating GitVersion with GitLab is maintained in the pro
 Here is a summary of what it demonstrated (many more details in the [README.md][])
 
 - Is a working example know as a [Guided Explorations (GE Manifesto)][] - so job logs and package artifacts can be reviewed. The project can also be imported to your own GitLab group or instance.
-- IMPORTANT: It demonstrates how to override GitLab CI's default cloning behavior so that GitVersion can do a dynamic copy. This best practice demonstrates the best way to do this while avoiding a double-cloning of the project (once by GitLab Runner and once by GitVersion)
+- IMPORTANT: It demonstrates how to override GitLab CI's default cloning behavior so that GitVersion can do a dynamic copy. Selectively clones GitVersion.yml so that these settings take effect. This best practice demonstrates the best way to do this while avoiding a double-cloning of the project (once by GitLab Runner and once by GitVersion). 
 - Implements GitVersion as a CI CD Extension that can be reused across many projects on the same GitLab instance using includes.
 - Implements GitVersion as a single job that runs the GitVersion container and passes the version number downstream into both PIPLINE and JOB level variables, which means...
 - It can be used with ANY coding language, framework or packaging engine.
