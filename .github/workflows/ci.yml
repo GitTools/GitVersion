@@ -196,7 +196,7 @@ jobs:
     runs-on: windows-latest
     strategy:
       matrix:
-        package: [ Executable ]
+        package: [ Executable, MsBuildFull ]
       fail-fast: false
 
     steps:
@@ -226,12 +226,6 @@ jobs:
       with:
         name: nuget
         path: ${{ github.workspace }}/artifacts/packages/nuget
-    -
-      uses: actions/download-artifact@v2.0.10
-      name: Download native packages
-      with:
-        name: native-${{ runner.os }}
-        path: ${{ github.workspace }}/artifacts/packages/native
     -
       name: '[Test Artifacts]'
       shell: pwsh
