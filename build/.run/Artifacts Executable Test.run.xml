@@ -1,7 +1,7 @@
 ﻿<component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="Artifacts Cmdline Test" type="DotNetProject" factoryName=".NET Project">
+  <configuration default="false" name="Artifacts Executable Test" type="DotNetProject" factoryName=".NET Project">
     <option name="EXE_PATH" value="$PROJECT_DIR$/../run/artifacts-test.exe" />
-    <option name="PROGRAM_PARAMETERS" value="--target=ArtifactsCmdlineTest" />
+    <option name="PROGRAM_PARAMETERS" value="--target=ArtifactsExecutableTest" />
     <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/.." />
     <option name="PASS_PARENT_ENVS" value="1" />
     <option name="USE_EXTERNAL_CONSOLE" value="0" />

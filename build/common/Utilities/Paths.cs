@@ -17,7 +17,6 @@ namespace Common.Utilities
         public static DirectoryPath ArtifactsBinCmdline => $"{Packages}/prepare/cmdline";
         public static DirectoryPath ArtifactsBinPortable => $"{Packages}/prepare/portable";
 
-        public static DirectoryPath ArtifactsTestBinCmdline => $"{Packages}/test/cmdline";
         public static DirectoryPath ArtifactsTestBinPortable => $"{Packages}/test/portable";
     }
 }
