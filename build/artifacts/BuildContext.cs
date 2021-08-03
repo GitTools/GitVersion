@@ -10,6 +10,8 @@ namespace Artifacts
 
     public class BuildContext : FrostingContext
     {
+        public string MsBuildConfiguration { get; set; } = "Release";
+
         public bool IsOriginalRepo { get; set; }
         public bool IsMainBranch { get; set; }
         public bool IsPullRequest { get; set; }

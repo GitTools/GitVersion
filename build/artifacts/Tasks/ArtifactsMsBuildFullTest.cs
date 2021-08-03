@@ -1,0 +1,73 @@
+using Cake.Common.Diagnostics;
+using Cake.Common.IO;
+using Cake.Common.Tools.DotNetCore;
+using Cake.Common.Tools.DotNetCore.Build;
+using Cake.Common.Tools.DotNetCore.MSBuild;
+using Cake.Common.Tools.MSBuild;
+using Cake.Core;
+using Cake.Core.Diagnostics;
+using Cake.Core.IO;
+using Cake.Frosting;
+using Common.Utilities;
+
+namespace Artifacts.Tasks
+{
+    [TaskName(nameof(ArtifactsMsBuildFullTest))]
+    [TaskDescription("Tests the msbuild package on windows")]
+    public class ArtifactsMsBuildFullTest : FrostingTask<BuildContext>
+    {
+        public override bool ShouldRun(BuildContext context)
+        {
+            var shouldRun = true;
+            shouldRun &= context.ShouldRun(context.IsOnWindows, $"{nameof(ArtifactsMsBuildFullTest)} works only on windows agents.");
+
+            return shouldRun;
+        }
+
+        public override void Run(BuildContext context)
+        {
+            if (context.Version == null)
+                return;
+            var version = context.Version.NugetVersion;
+
+            var nugetSource = context.MakeAbsolute(Paths.Nuget).FullPath;
+
+            context.Information("\nTesting msbuild task with dotnet build (for .net core)\n");
+            var frameworks = new[] { Constants.CoreFxVersion31, Constants.NetVersion50 };
+            foreach (var framework in frameworks)
+            {
+                var dotnetCoreMsBuildSettings = new DotNetCoreMSBuildSettings();
+                dotnetCoreMsBuildSettings.WithProperty("TargetFramework", framework);
+                dotnetCoreMsBuildSettings.WithProperty("GitVersionMsBuildVersion", version);
+                var projPath = context.MakeAbsolute(new DirectoryPath("./tests/integration/core"));
+
+                context.DotNetCoreBuild(projPath.FullPath, new DotNetCoreBuildSettings
+                {
+                    Verbosity = DotNetCoreVerbosity.Minimal,
+                    Configuration = context.MsBuildConfiguration,
+                    MSBuildSettings = dotnetCoreMsBuildSettings,
+                    ArgumentCustomization = args => args.Append($"--source {nugetSource}")
+                });
+
+                var netcoreExe = new DirectoryPath("./tests/integration/core/build").Combine(framework).CombineWithFilePath("app.dll");
+                context.ValidateOutput("dotnet", netcoreExe.FullPath, context.Version.GitVersion.FullSemVer);
+            }
+
+            context.Information("\nTesting msbuild task with msbuild (for full framework)\n");
+
+            var msBuildSettings = new MSBuildSettings
+            {
+                Verbosity = Verbosity.Minimal,
+                Restore = true
+            };
+
+            msBuildSettings.WithProperty("GitVersionMsBuildVersion", version);
+            msBuildSettings.WithProperty("RestoreSource", nugetSource);
+
+            context.MSBuild("./tests/integration/full", msBuildSettings);
+
+            var fullExe = new DirectoryPath("./tests/integration/full/build").CombineWithFilePath("app.exe");
+            context.ValidateOutput(fullExe.FullPath, null, context.Version.GitVersion.FullSemVer);
+        }
+    }
+}
