@@ -81,7 +81,7 @@ namespace Artifacts.Utilities
                     $"{currentDir}:{root}/repo",
                     $"{currentDir}/tests/scripts:{root}/scripts",
                     $"{currentDir}/artifacts/packages/nuget:{root}/nuget",
-                    $"{currentDir}/artifacts/packages/native/linux:{root}/native",
+                    $"{currentDir}/artifacts/packages/native:{root}/native",
                 }
             };
 

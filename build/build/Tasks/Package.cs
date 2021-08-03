@@ -6,7 +6,7 @@ namespace Build.Tasks
     [TaskDescription("Creates the packages (nuget, chocolatey or tar.gz)")]
     [IsDependentOn(typeof(PackageChocolatey))]
     [IsDependentOn(typeof(PackageNuget))]
-    [IsDependentOn(typeof(PackageZip))]
+    [IsDependentOn(typeof(PackageGZip))]
     public class Package : FrostingTask<BuildContext>
     {
     }

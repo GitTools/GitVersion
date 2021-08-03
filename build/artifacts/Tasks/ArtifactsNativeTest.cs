@@ -1,4 +1,7 @@
 using Artifacts.Utilities;
+using Cake.Common.Diagnostics;
+using Cake.Common.IO;
+using Cake.Compression;
 using Cake.Frosting;
 using Common.Utilities;
 
@@ -19,6 +22,9 @@ namespace Artifacts.Tasks
 
         public override void Run(BuildContext context)
         {
+            if (context.Version == null)
+                return;
+            var version = context.Version.SemVersion;
             var rootPrefix = string.Empty;
 
             foreach (var dockerImage in context.Images)
@@ -31,7 +37,7 @@ namespace Artifacts.Tasks
                     runtime = "linux-musl-x64";
                 }
 
-                var cmd = $"-file {rootPrefix}/scripts/Test-Native.ps1 -repoPath {rootPrefix}/repo -runtime {runtime}";
+                var cmd = $"-file {rootPrefix}/scripts/Test-Native.ps1 -version {version} -repoPath {rootPrefix}/repo -runtime {runtime}";
 
                 context.DockerTestArtifact(dockerImage, cmd, Constants.GitHubContainerRegistry);
             }

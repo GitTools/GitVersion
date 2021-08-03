@@ -94,17 +94,17 @@ jobs:
       run: dotnet run/build.dll --target=Package
     -
       name: 'Upload nuget packages'
-      uses: actions/upload-artifact@v2.2.3
+      uses: actions/upload-artifact@v2.2.4
       if: matrix.os == 'windows-latest'
       with:
         name: nuget
         path: ${{ github.workspace }}/artifacts/packages/nuget
     -
       name: 'Upload native packages'
-      uses: actions/upload-artifact@v2.2.3
+      uses: actions/upload-artifact@v2.2.4
       with:
         name: native-${{ runner.os }}
-        path: ${{ github.workspace }}/artifacts/packages/native
+        path: ${{ github.workspace }}/artifacts/packages/native/*.tar.gz
 
   unit_test:
     name: Unit Test code
@@ -174,13 +174,13 @@ jobs:
         path: tools
         key: tools-${{ runner.os }}-${{ hashFiles('./build/**') }}
     -
-      uses: actions/download-artifact@v2.0.9
+      uses: actions/download-artifact@v2.0.10
       name: Download nuget packages
       with:
         name: nuget
         path: ${{ github.workspace }}/artifacts/packages/nuget
     -
-      uses: actions/download-artifact@v2.0.9
+      uses: actions/download-artifact@v2.0.10
       name: Download native packages
       with:
         name: native-${{ runner.os }}
