@@ -142,7 +142,7 @@ jobs:
       shell: pwsh
       run: dotnet run/build.dll --target=Test --dotnet_target=${{ matrix.targetFramework }}
 
-  artifacts_test:
+  artifacts_linux_test:
     name: Test artifacts in docker
     needs: [build]
     runs-on: ubuntu-latest
@@ -189,3 +189,50 @@ jobs:
       name: '[Test Artifacts]'
       shell: pwsh
       run: dotnet run/artifacts-test.dll --target=ArtifactsTest --docker_dotnetversion=${{ matrix.targetFramework }} --dotnet_distro=${{ matrix.distro }}
+
+  artifacts_windows_test:
+    name: Test artifacts on windows
+    needs: [build]
+    runs-on: windows-latest
+    strategy:
+      matrix:
+        package: [ Executable ]
+      fail-fast: false
+
+    steps:
+    -
+      name: Checkout
+      uses: actions/checkout@v2
+    -
+      name: Fetch all history for all tags and branches
+      run: git fetch --prune --unshallow
+    -
+      name: Use cached cake frosting
+      id: cache-cake
+      uses: actions/cache@v2.1.5
+      with:
+        path: run
+        key: run-${{ runner.os }}-${{ hashFiles('./build/**') }}
+    -
+      name: Use cached tools
+      id: cache-tools
+      uses: actions/cache@v2.1.5
+      with:
+        path: tools
+        key: tools-${{ runner.os }}-${{ hashFiles('./build/**') }}
+    -
+      uses: actions/download-artifact@v2.0.10
+      name: Download nuget packages
+      with:
+        name: nuget
+        path: ${{ github.workspace }}/artifacts/packages/nuget
+    -
+      uses: actions/download-artifact@v2.0.10
+      name: Download native packages
+      with:
+        name: native-${{ runner.os }}
+        path: ${{ github.workspace }}/artifacts/packages/native
+    -
+      name: '[Test Artifacts]'
+      shell: pwsh
+      run: dotnet run/artifacts-test.dll --target=Artifacts${{ matrix.package }}Test
