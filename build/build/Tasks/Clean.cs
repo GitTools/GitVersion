@@ -15,11 +15,11 @@ namespace Build.Tasks
 
             context.CleanDirectories(Paths.Src + "/**/bin/" + context.MsBuildConfiguration);
             context.CleanDirectories(Paths.Src + "/**/obj");
-            context.CleanDirectories(Paths.TestOutput);
-            context.CleanDirectories(Paths.Nuget);
-            context.CleanDirectories(Paths.Native);
-            context.CleanDirectories(Paths.Packages);
-            context.CleanDirectories(Paths.Artifacts);
+            context.CleanDirectory(Paths.TestOutput);
+            context.CleanDirectory(Paths.Nuget);
+            context.CleanDirectory(Paths.Native);
+            context.CleanDirectory(Paths.Packages);
+            context.CleanDirectory(Paths.Artifacts);
         }
     }
 }

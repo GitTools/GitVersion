@@ -1,18 +1,23 @@
+using Cake.Core.IO;
+
 namespace Common.Utilities
 {
     public class Paths
     {
-        public const string ToolsDirectory = "./tools";
+        public static DirectoryPath ToolsDirectory = "./tools";
 
-        public static string Artifacts => "./artifacts";
-        public static string Src => "./src";
-        public static string Build => "./build";
-        public static string TestOutput => $"{Artifacts}/test-results";
-        public static string Packages => $"{Artifacts}/packages";
-        public static string Native => $"{Packages}/native";
+        public static DirectoryPath Artifacts => "./artifacts";
+        public static DirectoryPath Src => "./src";
+        public static DirectoryPath Build => "./build";
+        public static DirectoryPath TestOutput => $"{Artifacts}/test-results";
+        public static DirectoryPath Packages => $"{Artifacts}/packages";
+        public static DirectoryPath Native => $"{Packages}/native";
 
-        public static string Nuget => $"{Packages}/nuget";
-        public static string ArtifactsBinCmdline => $"{Packages}/prepare/cmdline";
-        public static string ArtifactsBinPortable => $"{Packages}/prepare/portable";
+        public static DirectoryPath Nuget => $"{Packages}/nuget";
+        public static DirectoryPath ArtifactsBinCmdline => $"{Packages}/prepare/cmdline";
+        public static DirectoryPath ArtifactsBinPortable => $"{Packages}/prepare/portable";
+
+        public static DirectoryPath ArtifactsTestBinCmdline => $"{Packages}/test/cmdline";
+        public static DirectoryPath ArtifactsTestBinPortable => $"{Packages}/test/portable";
     }
 }
