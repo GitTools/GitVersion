@@ -1,5 +1,5 @@
 ﻿<component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="Artifacts Executable Test" type="DotNetProject" factoryName=".NET Project">
+  <configuration default="false" name="Artifacts Executable Test" type="DotNetProject" factoryName=".NET Project" folderName="Artifacts">
     <option name="EXE_PATH" value="$PROJECT_DIR$/../run/artifacts-test.exe" />
     <option name="PROGRAM_PARAMETERS" value="--target=ArtifactsExecutableTest" />
     <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/.." />

@@ -1,5 +1,5 @@
 ﻿<component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="UnitTest (4.8)" type="DotNetProject" factoryName=".NET Project">
+  <configuration default="false" name="UnitTest (4.8)" type="DotNetProject" factoryName=".NET Project" folderName="Unit Test">
     <option name="EXE_PATH" value="$PROJECT_DIR$/../run/build.exe" />
     <option name="PROGRAM_PARAMETERS" value="--target=UnitTest --dotnet_target=net48" />
     <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/.." />
