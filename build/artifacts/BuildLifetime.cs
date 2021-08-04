@@ -11,26 +11,12 @@ using Cake.Frosting;
 using Cake.Incubator.LoggingExtensions;
 using Common.Addins.GitVersion;
 using Common.Utilities;
+using Constants = Common.Utilities.Constants;
 
 namespace Artifacts
 {
     public class BuildLifetime : FrostingLifetime<BuildContext>
     {
-        public static readonly string[] DockerDistrosToBuild =
-        {
-            "alpine.3.12-x64",
-            "centos.7-x64",
-            "centos.8-x64",
-            "debian.9-x64",
-            "debian.10-x64",
-            "fedora.33-x64",
-            "ubuntu.16.04-x64",
-            "ubuntu.18.04-x64",
-            "ubuntu.20.04-x64"
-        };
-
-        public static readonly string[] VersionsToBuild = { "5.0", "3.1" };
-
         public override void Setup(BuildContext context)
         {
             context.StartGroup("Build Setup");
@@ -65,8 +51,8 @@ namespace Artifacts
 
             context.Information($"Building for Version: {dotnetVersion}, Distro: {dockerDistro}");
 
-            var versions = string.IsNullOrWhiteSpace(dotnetVersion) ? VersionsToBuild : new[] { dotnetVersion };
-            var distros = string.IsNullOrWhiteSpace(dockerDistro) ? DockerDistrosToBuild : new[] { dockerDistro };
+            var versions = string.IsNullOrWhiteSpace(dotnetVersion) ? Constants.VersionsToBuild : new[] { dotnetVersion };
+            var distros = string.IsNullOrWhiteSpace(dockerDistro) ? Constants.DockerDistrosToBuild : new[] { dockerDistro };
 
             context.Images = from version in versions
                              from distro in distros

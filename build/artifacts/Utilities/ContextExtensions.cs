@@ -7,6 +7,7 @@ using Cake.Common.IO;
 using Cake.Core;
 using Cake.Core.IO;
 using Cake.Docker;
+using Common.Utilities;
 using Xunit;
 using Constants = Common.Utilities.Constants;
 
