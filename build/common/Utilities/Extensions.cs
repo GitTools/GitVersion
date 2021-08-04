@@ -36,6 +36,45 @@ namespace Common.Utilities
             var attribute = task.GetCustomAttribute<TaskNameAttribute>();
             return attribute != null ? attribute.Name : task.Name;
         }
+
+        public static IEnumerable<string> GetDockerTagsForRepository(this BuildContextBase context, DockerImage dockerImage, string repositoryName)
+        {
+            var name = $"gittools/gitversion";
+            var (distro, targetFramework) = dockerImage;
+
+            if (context.Version == null) return Enumerable.Empty<string>();
+            var tags = new List<string>
+            {
+                $"{name}:{context.Version.Version}-{distro}-{targetFramework}",
+                $"{name}:{context.Version.SemVersion}-{distro}-{targetFramework}",
+            };
+
+            if (distro == Constants.DockerDistroLatest && targetFramework == Constants.Version50)
+            {
+                tags.AddRange(new[]
+                {
+                    $"{name}:{context.Version.Version}",
+                    $"{name}:{context.Version.SemVersion}",
+
+                    $"{name}:{context.Version.Version}-{distro}",
+                    $"{name}:{context.Version.SemVersion}-{distro}"
+                });
+
+                if (context.IsStableRelease)
+                {
+                    tags.AddRange(new[]
+                    {
+                        $"{name}:latest",
+                        $"{name}:latest-{targetFramework}",
+                        $"{name}:latest-{distro}",
+                        $"{name}:latest-{distro}-{targetFramework}",
+                    });
+                }
+            }
+
+            return tags;
+        }
+
         public static DirectoryPath Combine(this string path, string segment) => DirectoryPath.FromString(path).Combine(segment);
         public static FilePath CombineWithFilePath(this string path, string segment) => DirectoryPath.FromString(path).CombineWithFilePath(segment);
     }
