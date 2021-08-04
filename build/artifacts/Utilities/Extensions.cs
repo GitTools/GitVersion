@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using Common.Utilities;
 
 namespace Artifacts.Utilities
 {
@@ -17,7 +18,7 @@ namespace Artifacts.Utilities
                 $"{name}:{context.Version.SemVersion}-{distro}-{targetFramework}",
             };
 
-            if (distro == "debian.10-x64" && targetFramework == "5.0")
+            if (distro == Constants.DockerDistroLatest && targetFramework == Constants.Version50)
             {
                 tags.AddRange(new[]
                 {

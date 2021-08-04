@@ -2,6 +2,20 @@ using Common.Addins.GitVersion;
 
 namespace Common.Utilities
 {
+    public record DockerImage(string Distro, string TargetFramework);
+
+    public record CodeCovCredentials(string Token);
+
+    public record GitHubCredentials(string UserName, string Token);
+
+    public record GitterCredentials(string Token, string RoomId);
+
+    public record DockerHubCredentials(string UserName, string Password);
+
+    public record NugetCredentials(string ApiKey, string ApiUrl);
+
+    public record ChocolateyCredentials(string ApiKey, string ApiUrl);
+
     public record BuildVersion(GitVersion GitVersion, string? Version, string? Milestone, string? SemVersion, string? NugetVersion)
     {
         public static BuildVersion Calculate(GitVersion gitVersion)

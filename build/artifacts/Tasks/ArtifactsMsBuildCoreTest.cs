@@ -28,11 +28,11 @@ namespace Artifacts.Tasks
             {
                 var (distro, targetFramework) = dockerImage;
 
-                if (targetFramework == "3.1" && distro == "centos.8-x64") continue; // TODO check why this one fails
+                if (targetFramework == Constants.Version31 && distro == "centos.8-x64") continue; // TODO check why this one fails
                 targetFramework = targetFramework switch
                 {
-                    "3.1" => $"netcoreapp{targetFramework}",
-                    "5.0" => $"net{targetFramework}",
+                    Constants.Version31 => $"netcoreapp{targetFramework}",
+                    Constants.Version50 => $"net{targetFramework}",
                     _ => targetFramework
                 };
 
