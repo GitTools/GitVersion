@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Artifacts.Utilities;
 using Cake.Common;
 using Cake.Common.Build;
 using Cake.Common.Diagnostics;
@@ -44,7 +43,6 @@ namespace Artifacts
             });
 
             context.Version = BuildVersion.Calculate(gitVersion);
-            context.Credentials = BuildCredentials.GetCredentials(context);
 
             var dotnetVersion = context.Argument("docker_dotnetversion", "").ToLower();
             var dockerDistro = context.Argument("dotnet_distro", "").ToLower();

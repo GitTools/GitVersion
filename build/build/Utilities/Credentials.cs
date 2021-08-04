@@ -1,5 +1,6 @@
 using Cake.Common;
 using Cake.Core;
+using Common.Utilities;
 
 namespace Build.Utilities
 {
@@ -7,20 +8,9 @@ namespace Build.Utilities
     {
         public CodeCovCredentials? CodeCov { get; private set; }
 
-        public static BuildCredentials GetCredentials(ICakeContext context)
+        public static BuildCredentials GetCredentials(ICakeContext context) => new()
         {
-            return new()
-            {
-                CodeCov = CodeCovCredentials.GetCodeCovCredentials(context),
-            };
-        }
-    }
-
-    public record CodeCovCredentials(string Token)
-    {
-        public static CodeCovCredentials GetCodeCovCredentials(ICakeContext context)
-        {
-            return new(context.EnvironmentVariable("CODECOV_TOKEN"));
-        }
+            CodeCov = new CodeCovCredentials(context.EnvironmentVariable("CODECOV_TOKEN")),
+        };
     }
 }
