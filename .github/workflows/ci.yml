@@ -271,4 +271,4 @@ jobs:
     -
       name: '[Test Artifacts]'
       shell: pwsh
-      run: dotnet run/docker.dll --target=DockerTest --docker_dotnetversion=${{ matrix.targetFramework }} --docker_distro=${{ matrix.distro }}
+      run: dotnet run/docker.dll --target=Docker --docker_dotnetversion=${{ matrix.targetFramework }} --docker_distro=${{ matrix.distro }}
