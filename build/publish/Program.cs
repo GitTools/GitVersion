@@ -1,6 +1,6 @@
-using Publish;
 using Cake.Frosting;
 using Common.Utilities;
+using Publish;
 
 return new CakeHost()
     .UseContext<BuildContext>()
