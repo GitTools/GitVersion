@@ -1,4 +1,4 @@
-﻿using Cake.Core;
+using Cake.Core;
 using Cake.Frosting;
 
 namespace Common.Utilities
@@ -8,6 +8,8 @@ namespace Common.Utilities
         protected BuildContextBase(ICakeContext context) : base(context)
         {
         }
+        public BuildVersion? Version { get; set; }
+
         public bool IsOriginalRepo { get; set; }
         public bool IsMainBranch { get; set; }
         public bool IsPullRequest { get; set; }
@@ -22,6 +24,5 @@ namespace Common.Utilities
         public bool IsOnMainBranchOriginalRepo => !IsLocalBuild && IsOriginalRepo && IsMainBranch && !IsPullRequest;
         public bool IsStableRelease => IsOnMainBranchOriginalRepo && IsTagged;
         public bool IsPreRelease => IsOnMainBranchOriginalRepo && !IsTagged;
-        public BuildVersion? Version { get; set; }
     }
 }
