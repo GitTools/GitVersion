@@ -12,14 +12,14 @@ namespace Common.Utilities
 {
     public static class ContextExtensions
     {
-        private static IEnumerable<string> ExecuteCommand(this ICakeContext context, FilePath exe, string args)
+        private static IEnumerable<string> ExecuteCommand(this ICakeContext context, FilePath exe, string? args)
         {
             var processSettings = new ProcessSettings { Arguments = args, RedirectStandardOutput = true };
             context.StartProcess(exe, processSettings, out var redirectedOutput);
             return redirectedOutput.ToList();
         }
 
-        private static IEnumerable<string> ExecGitCmd(this ICakeContext context, string cmd)
+        private static IEnumerable<string> ExecGitCmd(this ICakeContext context, string? cmd)
         {
             var gitExe = context.Tools.Resolve(context.IsRunningOnWindows() ? "git.exe" : "git");
             return context.ExecuteCommand(gitExe, cmd);
