@@ -8,6 +8,7 @@ namespace Artifacts
     {
         public string MsBuildConfiguration { get; set; } = "Release";
 
+        public string DockerRegistry { get; set; } = Constants.GitHubContainerRegistry;
         public bool IsDockerOnLinux { get; set; }
 
         public IEnumerable<DockerImage> Images { get; set; } = new List<DockerImage>();

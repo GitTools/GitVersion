@@ -26,7 +26,7 @@ namespace Docker.Tasks
 
             foreach (var dockerImage in context.Images)
             {
-                context.DockerBuild(dockerImage);
+                context.DockerBuild(dockerImage, context.DockerRegistry);
             }
         }
     }

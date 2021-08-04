@@ -14,12 +14,14 @@ namespace Artifacts
             base.Setup(context);
             context.IsDockerOnLinux = context.DockerCustomCommand("info --format '{{.OSType}}'").First().Replace("'", "") == "linux";
 
+            var dockerRegistry = context.Argument("docker_registry", "github").ToLower();
             var dotnetVersion = context.Argument("docker_dotnetversion", "").ToLower();
-            var dockerDistro = context.Argument("dotnet_distro", "").ToLower();
+            var dockerDistro = context.Argument("docker_distro", "").ToLower();
 
             var versions = string.IsNullOrWhiteSpace(dotnetVersion) ? Constants.VersionsToBuild : new[] { dotnetVersion };
             var distros = string.IsNullOrWhiteSpace(dockerDistro) ? Constants.DockerDistrosToBuild : new[] { dockerDistro };
 
+            context.DockerRegistry = dockerRegistry == "github" ? Constants.GitHubContainerRegistry : Constants.DockerHubRegistry;
             context.Images = from version in versions
                              from distro in distros
                              select new DockerImage(distro, version);

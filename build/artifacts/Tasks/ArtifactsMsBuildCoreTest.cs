@@ -37,7 +37,7 @@ namespace Artifacts.Tasks
 
                 var cmd = $"-file {rootPrefix}/scripts/Test-MsBuildCore.ps1 -version {version} -repoPath {rootPrefix}/repo/tests/integration/core -nugetPath {rootPrefix}/nuget -targetframework {targetFramework}";
 
-                context.DockerTestArtifact(dockerImage, cmd, Constants.GitHubContainerRegistry);
+                context.DockerTestArtifact(dockerImage, cmd, context.DockerRegistry);
             }
         }
     }

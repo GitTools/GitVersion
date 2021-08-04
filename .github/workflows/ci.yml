@@ -188,7 +188,7 @@ jobs:
     -
       name: '[Test Artifacts]'
       shell: pwsh
-      run: dotnet run/artifacts-test.dll --target=ArtifactsTest --docker_dotnetversion=${{ matrix.targetFramework }} --dotnet_distro=${{ matrix.distro }}
+      run: dotnet run/artifacts-test.dll --target=ArtifactsTest --docker_dotnetversion=${{ matrix.targetFramework }} --docker_distro=${{ matrix.distro }}
 
   artifacts_windows_test:
     name: Test artifacts on windows
@@ -230,3 +230,45 @@ jobs:
       name: '[Test Artifacts]'
       shell: pwsh
       run: dotnet run/artifacts-test.dll --target=Artifacts${{ matrix.package }}Test
+
+  docker_linux_images:
+    name: Build, Test and Publish Docker Images
+    needs: [build]
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        targetFramework: [ '3.1', '5.0' ]
+        distro: [ alpine.3.12-x64, centos.7-x64, centos.8-x64, debian.9-x64, debian.10-x64, fedora.33-x64, ubuntu.16.04-x64, ubuntu.18.04-x64, ubuntu.20.04-x64 ]
+      fail-fast: false
+
+    steps:
+    -
+      name: Checkout
+      uses: actions/checkout@v2
+    -
+      name: Fetch all history for all tags and branches
+      run: git fetch --prune --unshallow
+    -
+      name: Use cached cake frosting
+      id: cache-cake
+      uses: actions/cache@v2.1.5
+      with:
+        path: run
+        key: run-${{ runner.os }}-${{ hashFiles('./build/**') }}
+    -
+      name: Use cached tools
+      id: cache-tools
+      uses: actions/cache@v2.1.5
+      with:
+        path: tools
+        key: tools-${{ runner.os }}-${{ hashFiles('./build/**') }}
+    -
+      uses: actions/download-artifact@v2.0.10
+      name: Download nuget packages
+      with:
+        name: nuget
+        path: ${{ github.workspace }}/artifacts/packages/nuget
+    -
+      name: '[Test Artifacts]'
+      shell: pwsh
+      run: dotnet run/docker.dll --target=DockerTest --docker_dotnetversion=${{ matrix.targetFramework }} --docker_distro=${{ matrix.distro }}
