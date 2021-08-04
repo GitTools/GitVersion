@@ -6,8 +6,6 @@ using Common.Utilities;
 
 namespace Artifacts
 {
-    public record DockerImage(string Distro, string TargetFramework);
-
     public class BuildContext : FrostingContext
     {
         public string MsBuildConfiguration { get; set; } = "Release";
@@ -32,7 +30,6 @@ namespace Artifacts
         public bool IsPreRelease => IsOnMainBranchOriginalRepo && !IsTagged;
 
         public BuildVersion? Version { get; set; }
-        public BuildCredentials? Credentials { get; set; }
         public IEnumerable<DockerImage> Images { get; set; } = new List<DockerImage>();
 
 
