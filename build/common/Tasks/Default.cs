@@ -14,12 +14,13 @@ namespace Common.Tasks
     {
         public override void Run(ICakeContext context)
         {
-            var tasks = Assembly.GetEntryAssembly()?.FindAllDerivedTypes(typeof(IFrostingTask)).ToList();
+            var entryAssembly = Assembly.GetEntryAssembly();
+            var tasks = entryAssembly?.FindAllDerivedTypes(typeof(IFrostingTask)).ToList();
             if (tasks == null) return;
             context.Information($"Available targets:{Environment.NewLine}");
             foreach (var task in tasks)
             {
-                context.Information($"./build.ps1 --target={task.GetTaskName()} # ({task.GetTaskDescription()})");
+                context.Information($"./build.ps1 --stage={entryAssembly?.GetName().Name} --target={task.GetTaskName()} # ({task.GetTaskDescription()})");
             }
         }
     }
