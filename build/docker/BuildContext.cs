@@ -12,7 +12,6 @@ namespace Docker
         public BuildCredentials? Credentials { get; set; }
         public IEnumerable<DockerImage> Images { get; set; } = new List<DockerImage>();
 
-
         public BuildContext(ICakeContext context) : base(context)
         {
         }

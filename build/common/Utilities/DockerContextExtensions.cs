@@ -7,15 +7,13 @@ using Cake.Common.IO;
 using Cake.Core;
 using Cake.Core.IO;
 using Cake.Docker;
-using Common.Utilities;
 using Xunit;
-using Constants = Common.Utilities.Constants;
 
-namespace Artifacts.Utilities
+namespace Common.Utilities
 {
-    public static class ContextExtensions
+    public static class DockerContextExtensions
     {
-        public static void DockerBuild(this BuildContext context, DockerImage dockerImage)
+        public static void DockerBuild(this BuildContextBase context, DockerImage dockerImage)
         {
             var (distro, targetFramework) = dockerImage;
             var workDir = DirectoryPath.FromString($"./src/Docker");
@@ -42,7 +40,7 @@ namespace Artifacts.Utilities
         }
 
 
-        public static void DockerPush(this BuildContext context, DockerImage dockerImage, string repositoryName)
+        public static void DockerPush(this BuildContextBase context, DockerImage dockerImage, string repositoryName)
         {
             var tags = context.GetDockerTagsForRepository(dockerImage, repositoryName);
 
@@ -52,7 +50,7 @@ namespace Artifacts.Utilities
             }
         }
 
-        public static void DockerTestArtifact(this BuildContext context, DockerImage dockerImage, string cmd, string repositoryName)
+        public static void DockerTestArtifact(this BuildContextBase context, DockerImage dockerImage, string cmd, string repositoryName)
         {
             var settings = GetDockerRunSettings(context);
             var (distro, targetFramework) = dockerImage;
@@ -70,7 +68,7 @@ namespace Artifacts.Utilities
             var tag = $"{repositoryName}:{distro}-sdk-{targetFramework}";
             context.DockerPull(tag);
         }
-        private static DockerContainerRunSettings GetDockerRunSettings(this BuildContext context)
+        private static DockerContainerRunSettings GetDockerRunSettings(this BuildContextBase context)
         {
             var currentDir = context.MakeAbsolute(context.Directory("."));
             var root = string.Empty;
@@ -127,7 +125,7 @@ namespace Artifacts.Utilities
             return string.Join("\n", result);
         }
 
-        private static void DockerTestRun(this BuildContext context, DockerContainerRunSettings settings, string image, string command, params string[] args)
+        private static void DockerTestRun(this BuildContextBase context, DockerContainerRunSettings settings, string image, string command, params string[] args)
         {
             context.Information($"Testing image: {image}");
             var output = context.DockerRunImage(settings, image, command, args);
