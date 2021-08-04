@@ -35,7 +35,7 @@ namespace Artifacts.Tasks
 
                 var cmd = $"-file {rootPrefix}/scripts/Test-Native.ps1 -version {version} -repoPath {rootPrefix}/repo -runtime {runtime}";
 
-                context.DockerTestArtifact(dockerImage, cmd, Constants.GitHubContainerRegistry);
+                context.DockerTestArtifact(dockerImage, cmd, context.DockerRegistry);
             }
         }
     }

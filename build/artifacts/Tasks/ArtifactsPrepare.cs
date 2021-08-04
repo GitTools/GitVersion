@@ -20,7 +20,7 @@ namespace Artifacts.Tasks
         {
             foreach (var dockerImage in context.Images)
             {
-                context.DockerPullImage(dockerImage, Constants.GitHubContainerRegistry);
+                context.DockerPullImage(dockerImage, context.DockerRegistry);
             }
         }
     }

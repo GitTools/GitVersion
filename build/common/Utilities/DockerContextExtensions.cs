@@ -13,11 +13,11 @@ namespace Common.Utilities
 {
     public static class DockerContextExtensions
     {
-        public static void DockerBuild(this BuildContextBase context, DockerImage dockerImage)
+        public static void DockerBuild(this BuildContextBase context, DockerImage dockerImage, string dockerRegistry)
         {
             var (distro, targetFramework) = dockerImage;
             var workDir = DirectoryPath.FromString($"./src/Docker");
-            var tags = context.GetDockerTagsForRepository(dockerImage, Constants.GitHubContainerRegistry);
+            var tags = context.GetDockerTagsForRepository(dockerImage, dockerRegistry);
 
             if (context.Version == null) return;
             var buildSettings = new DockerImageBuildSettings
@@ -68,7 +68,7 @@ namespace Common.Utilities
             var tag = $"{repositoryName}:{distro}-sdk-{targetFramework}";
             context.DockerPull(tag);
         }
-        private static DockerContainerRunSettings GetDockerRunSettings(this BuildContextBase context)
+        public static DockerContainerRunSettings GetDockerRunSettings(this BuildContextBase context)
         {
             var currentDir = context.MakeAbsolute(context.Directory("."));
             var root = string.Empty;
@@ -125,7 +125,7 @@ namespace Common.Utilities
             return string.Join("\n", result);
         }
 
-        private static void DockerTestRun(this BuildContextBase context, DockerContainerRunSettings settings, string image, string command, params string[] args)
+        public static void DockerTestRun(this BuildContextBase context, DockerContainerRunSettings settings, string image, string command, params string[] args)
         {
             context.Information($"Testing image: {image}");
             var output = context.DockerRunImage(settings, image, command, args);
