@@ -24,26 +24,22 @@ namespace Build.Tasks
         {
             context.EnsureDirectoryExists(Paths.Nuget);
 
-            if (context.Packages is not { Chocolatey: { } }) return;
+            var portableNuspecFile = Paths.Nuspec.CombineWithFilePath("GitVersion.Portable.nuspec");
+            if (!context.FileExists(portableNuspecFile))
+                return;
 
-            foreach (var package in context.Packages.Chocolatey)
+            var artifactPath = context.MakeAbsolute(Paths.ArtifactsBinPortable).FullPath;
+
+            var chocolateySettings = new ChocolateyPackSettings
             {
-                if (context.FileExists(package.NuspecPath))
-                {
-                    var artifactPath = context.MakeAbsolute(Paths.ArtifactsBinPortable).FullPath;
-
-                    var chocolateySettings = new ChocolateyPackSettings
-                    {
-                        LimitOutput = true,
-                        Version = context.Version?.SemVersion,
-                        OutputDirectory = Paths.Nuget,
-                        Files = context.GetFiles(artifactPath + "/**/*.*")
-                            .Select(file => new ChocolateyNuSpecContent { Source = file.FullPath, Target = file.FullPath.Replace(artifactPath, "") })
-                            .ToArray()
-                    };
-                    context.ChocolateyPack(package.NuspecPath, chocolateySettings);
-                }
-            }
+                LimitOutput = true,
+                Version = context.Version?.SemVersion,
+                OutputDirectory = Paths.Nuget,
+                Files = context.GetFiles(artifactPath + "/**/*.*")
+                    .Select(file => new ChocolateyNuSpecContent { Source = file.FullPath, Target = file.FullPath.Replace(artifactPath, "") })
+                    .ToArray()
+            };
+            context.ChocolateyPack(portableNuspecFile, chocolateySettings);
         }
     }
 }

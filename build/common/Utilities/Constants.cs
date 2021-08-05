@@ -27,5 +27,7 @@ namespace Common.Utilities
             "ubuntu.18.04-x64",
             "ubuntu.20.04-x64"
         };
+        public const string NugetOrgUrl = "https://api.nuget.org/v3/index.json";
+        public const string GithubPackagesUrl = "https://nuget.pkg.github.com/gittools/index.json";
     }
 }

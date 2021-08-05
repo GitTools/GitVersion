@@ -17,8 +17,6 @@ namespace Build
             [PlatformFamily.OSX] = new[] { "osx-x64" },
         };
 
-        public BuildPackages? Packages { get; set; }
-
         public bool EnabledUnitTests { get; set; }
 
         public BuildCredentials? Credentials { get; set; }

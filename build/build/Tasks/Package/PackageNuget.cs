@@ -41,36 +41,33 @@ namespace Build.Tasks
             settings.ArgumentCustomization = null;
             context.DotNetCorePack("./src/GitVersion.Core", settings);
         }
-        private static void PackageUsingNuspec(BuildContext context)
+        private static void PackageUsingNuspec(BuildContextBase context)
         {
-            if (context.Packages is not { Nuget: { } }) return;
+            var cmdlineNuspecFile = Paths.Nuspec.CombineWithFilePath("GitVersion.CommandLine.nuspec");
+            if (!context.FileExists(cmdlineNuspecFile))
+                return;
 
-            foreach (var package in context.Packages.Nuget)
+            var artifactPath = context.MakeAbsolute(Paths.ArtifactsBinCmdline).FullPath;
+            var version = context.Version;
+            var gitVersion = version?.GitVersion;
+            var nugetSettings = new NuGetPackSettings
             {
-                if (!context.FileExists(package.NuspecPath)) continue;
-
-                var artifactPath = context.MakeAbsolute(Paths.ArtifactsBinCmdline).FullPath;
-                var version = context.Version;
-                var gitVersion = version?.GitVersion;
-                var nugetSettings = new NuGetPackSettings
+                // KeepTemporaryNuSpecFile = true,
+                Version = version?.NugetVersion,
+                NoPackageAnalysis = true,
+                OutputDirectory = Paths.Nuget,
+                Repository = new NuGetRepository
                 {
-                    // KeepTemporaryNuSpecFile = true,
-                    Version = version?.NugetVersion,
-                    NoPackageAnalysis = true,
-                    OutputDirectory = Paths.Nuget,
-                    Repository = new NuGetRepository
-                    {
-                        Branch = gitVersion?.BranchName,
-                        Commit = gitVersion?.Sha
-                    },
-                    Files = context.GetFiles(artifactPath + "/**/*.*")
-                        .Select(file => new NuSpecContent { Source = file.FullPath, Target = file.FullPath.Replace(artifactPath, "") })
-                        .Concat(context.GetFiles("docs/**/package_icon.png").Select(file => new NuSpecContent { Source = file.FullPath, Target = "package_icon.png" }))
-                        .ToArray()
-                };
+                    Branch = gitVersion?.BranchName,
+                    Commit = gitVersion?.Sha
+                },
+                Files = context.GetFiles(artifactPath + "/**/*.*")
+                    .Select(file => new NuSpecContent { Source = file.FullPath, Target = file.FullPath.Replace(artifactPath, "") })
+                    .Concat(context.GetFiles("docs/**/package_icon.png").Select(file => new NuSpecContent { Source = file.FullPath, Target = "package_icon.png" }))
+                    .ToArray()
+            };
 
-                context.NuGetPack(package.NuspecPath, nugetSettings);
-            }
+            context.NuGetPack(cmdlineNuspecFile, nugetSettings);
         }
     }
 }
