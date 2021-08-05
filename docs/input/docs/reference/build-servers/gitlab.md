@@ -28,6 +28,6 @@ Here is a summary of what it demonstrated (many more details in the [README.md][
 [GitLab NuGet repository]: https://docs.gitlab.com/ee/user/packages/nuget_repository/
 [GitLab release-cli]: https://gitlab.com/gitlab-org/release-cli/-/tree/master/docs
 [GitLabs Container Registry]: https://docs.gitlab.com/ee/user/packages/container_registry/
-[(GE Manifesto)]: https://gitlab.com/guided-explorations/guided-exploration-concept/-/blob/master/README.md
+[GE Manifesto]: https://gitlab.com/guided-explorations/guided-exploration-concept/-/blob/master/README.md
 [README.md]: https://gitlab.com/guided-explorations/devops-patterns/utterly-automated-versioning/-/blob/develop/README.md
 [Utterly Automated Software and Artifact Versioning with GitVersion]: https://gitlab.com/guided-explorations/devops-patterns/utterly-automated-versioning/
