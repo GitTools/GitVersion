@@ -4,19 +4,19 @@ namespace Common.Utilities
 {
     public class Paths
     {
-        public static DirectoryPath ToolsDirectory = "./tools";
+        public static readonly DirectoryPath ToolsDirectory = "./tools";
+        public static readonly DirectoryPath Artifacts = "./artifacts";
+        public static readonly DirectoryPath Src = "./src";
+        public static readonly DirectoryPath Build = "./build";
 
-        public static DirectoryPath Artifacts => "./artifacts";
-        public static DirectoryPath Src => "./src";
-        public static DirectoryPath Build => "./build";
-        public static DirectoryPath TestOutput => $"{Artifacts}/test-results";
-        public static DirectoryPath Packages => $"{Artifacts}/packages";
-        public static DirectoryPath Native => $"{Packages}/native";
+        public static readonly DirectoryPath Nuspec = $"{Build}/nuspec";
 
-        public static DirectoryPath Nuget => $"{Packages}/nuget";
-        public static DirectoryPath ArtifactsBinCmdline => $"{Packages}/prepare/cmdline";
-        public static DirectoryPath ArtifactsBinPortable => $"{Packages}/prepare/portable";
+        public static readonly DirectoryPath TestOutput = $"{Artifacts}/test-results";
+        public static readonly DirectoryPath Packages = $"{Artifacts}/packages";
+        public static readonly DirectoryPath Native = $"{Packages}/native";
 
-        public static DirectoryPath ArtifactsTestBinPortable => $"{Packages}/test/portable";
+        public static readonly DirectoryPath Nuget = $"{Packages}/nuget";
+        public static readonly DirectoryPath ArtifactsBinCmdline = $"{Packages}/prepare/cmdline";
+        public static readonly DirectoryPath ArtifactsBinPortable = $"{Packages}/prepare/portable";
     }
 }

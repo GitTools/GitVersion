@@ -17,12 +17,6 @@ namespace Build
 
             context.Credentials = BuildCredentials.GetCredentials(context);
 
-            context.Packages = BuildPackages.GetPackages(
-                Paths.Nuget,
-                context.Version!,
-                new[] { "GitVersion.CommandLine", "GitVersion.Core", "GitVersion.MsBuild", "GitVersion.Tool" },
-                new[] { "GitVersion.Portable" });
-
             SetMsBuildSettingsVersion(context.MsBuildSettings, context.Version!);
 
             context.StartGroup("Build Setup");

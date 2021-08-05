@@ -1,7 +1,10 @@
+using Cake.Core.IO;
 using Common.Addins.GitVersion;
 
 namespace Common.Utilities
 {
+    public record NugetPackage(string PackageName, FilePath FilePath, bool IsChocoPackage);
+
     public record DockerImage(string Distro, string TargetFramework);
 
     public record CodeCovCredentials(string Token);
