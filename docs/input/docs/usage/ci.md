@@ -29,7 +29,7 @@ GitVersion into an Azure DevOps build pipeline.
 
 ## GitLab CI Pipelines
 
-The GitLab CI example [Utterly Automated Software and Artifact Versioning with GitVersion][] implements GitVersion support at the pipeline level by using a single job that runs the GitVersion container and passes the version number downstream into both PIPELINE and JOB level variables. It is also implemented as as a reusable CI CD Extension that can be included in many different projects.
+The GitLab CI example [Utterly Automated Software and Artifact Versioning with GitVersion][] implements GitVersion support at the pipeline level by using a single job that runs the GitVersion container and passes the version number downstream into both _pipeline_ and _job_ level variables. It is also implemented as a reusable CI/CD Extension that can be included in many different projects.
 
 [gittools-actions]: https://github.com/marketplace/actions/gittools
 [gittools-task]: https://marketplace.visualstudio.com/items?itemName=gittools.gittools
