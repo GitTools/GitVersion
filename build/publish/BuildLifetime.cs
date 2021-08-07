@@ -10,7 +10,7 @@ namespace Publish
         public override void Setup(BuildContext context)
         {
             base.Setup(context);
-            context.Credentials = BuildCredentials.GetCredentials(context);
+            context.Credentials = Credentials.GetCredentials(context);
 
             if (context.Version?.NugetVersion != null)
             {

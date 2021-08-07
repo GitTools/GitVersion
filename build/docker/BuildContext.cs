@@ -9,7 +9,7 @@ namespace Docker
     {
         public bool IsDockerOnLinux { get; set; }
 
-        public BuildCredentials? Credentials { get; set; }
+        public Credentials? Credentials { get; set; }
         public string DockerRegistry { get; set; } = Constants.GitHubContainerRegistry;
         public IEnumerable<DockerImage> Images { get; set; } = new List<DockerImage>();
 

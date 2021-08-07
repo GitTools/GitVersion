@@ -7,7 +7,7 @@ namespace Publish
 {
     public class BuildContext : BuildContextBase
     {
-        public BuildCredentials? Credentials { get; set; }
+        public Credentials? Credentials { get; set; }
 
 
         public List<NugetPackage> Packages { get; set; }

@@ -19,7 +19,7 @@ namespace Build
 
         public bool EnabledUnitTests { get; set; }
 
-        public BuildCredentials? Credentials { get; set; }
+        public Credentials? Credentials { get; set; }
 
         public DotNetCoreMSBuildSettings MsBuildSettings { get; } = new();
 

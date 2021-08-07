@@ -15,7 +15,7 @@ namespace Build
             context.MsBuildConfiguration = context.Argument(Arguments.Configuration, "Release");
             context.EnabledUnitTests = context.IsEnabled(EnvVars.EnabledUnitTests);
 
-            context.Credentials = BuildCredentials.GetCredentials(context);
+            context.Credentials = Credentials.GetCredentials(context);
 
             SetMsBuildSettingsVersion(context.MsBuildSettings, context.Version!);
 
