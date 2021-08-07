@@ -4,11 +4,11 @@ using Common.Utilities;
 
 namespace Docker.Utilities
 {
-    public class BuildCredentials
+    public class Credentials
     {
         public GitHubCredentials? GitHub { get; private set; }
         public DockerHubCredentials? Docker { get; private set; }
-        public static BuildCredentials GetCredentials(ICakeContext context) => new()
+        public static Credentials GetCredentials(ICakeContext context) => new()
         {
             GitHub = new GitHubCredentials(
                 context.EnvironmentVariable("GITHUB_USERNAME"),

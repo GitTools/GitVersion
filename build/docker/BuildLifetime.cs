@@ -15,7 +15,7 @@ namespace Docker
             base.Setup(context);
 
             context.IsDockerOnLinux = context.DockerCustomCommand("info --format '{{.OSType}}'").First().Replace("'", "") == "linux";
-            context.Credentials = BuildCredentials.GetCredentials(context);
+            context.Credentials = Credentials.GetCredentials(context);
 
             var dockerRegistry = context.Argument("docker_registry", "github").ToLower();
             var dotnetVersion = context.Argument("docker_dotnetversion", "").ToLower();
