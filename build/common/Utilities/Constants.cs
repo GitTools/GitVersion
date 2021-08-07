@@ -29,5 +29,6 @@ namespace Common.Utilities
         };
         public const string NugetOrgUrl = "https://api.nuget.org/v3/index.json";
         public const string GithubPackagesUrl = "https://nuget.pkg.github.com/gittools/index.json";
+        public const string ChocolateyUrl = "https://push.chocolatey.org/";
     }
 }
