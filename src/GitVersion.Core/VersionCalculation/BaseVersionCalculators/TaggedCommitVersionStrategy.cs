@@ -21,22 +21,13 @@ namespace GitVersion.VersionCalculation
 
         internal IEnumerable<BaseVersion> GetTaggedVersions(IBranch? currentBranch, DateTimeOffset? olderThan)
         {
-            var allTags = this.repositoryStore.GetValidVersionTags(Context.Configuration?.GitTagPrefix, olderThan);
-
-            var taggedCommits = currentBranch
-                ?.Commits
-                .SelectMany(commit => allTags.Where(t => IsValidTag(t.Item1, commit))).ToList();
-
-            var taggedVersions = taggedCommits
-                .Select(t =>
-                {
-                    var commit = t.Item1?.PeeledTargetCommit();
-                    return commit != null ? new VersionTaggedCommit(commit, t.Item2!, t.Item1!.Name.Friendly) : null;
-                })
-                .Where(versionTaggedCommit => versionTaggedCommit != null)
-                .Select(versionTaggedCommit => CreateBaseVersion(Context, versionTaggedCommit!))
-                .ToList();
-
+            if (currentBranch is null) return Enumerable.Empty<BaseVersion>();
+            var versionTags = this.repositoryStore.GetValidVersionTags(Context.Configuration?.GitTagPrefix, olderThan);
+            var versionTagsByCommit = versionTags.ToLookup(vt => vt.Item3.Id.Sha);
+            var commitsOnBranch = currentBranch.Commits;
+            var versionTagsOnBranch = commitsOnBranch.SelectMany(commit => versionTagsByCommit[commit.Id.Sha]);
+            var versionTaggedCommits = versionTagsOnBranch.Select(t => new VersionTaggedCommit(t.Item3, t.Item2, t.Item1.Name.Friendly));
+            var taggedVersions = versionTaggedCommits.Select(versionTaggedCommit => CreateBaseVersion(Context, versionTaggedCommit)).ToList();
             var taggedVersionsOnCurrentCommit = taggedVersions.Where(version => !version.ShouldIncrement).ToList();
             return taggedVersionsOnCurrentCommit.Any() ? taggedVersionsOnCurrentCommit : taggedVersions;
         }
@@ -49,12 +40,6 @@ namespace GitVersion.VersionCalculation
         }
 
         protected virtual string FormatSource(VersionTaggedCommit version) => $"Git tag '{version.Tag}'";
-
-        protected virtual bool IsValidTag(ITag? tag, ICommit commit)
-        {
-            var targetCommit = tag?.PeeledTargetCommit();
-            return targetCommit != null && Equals(targetCommit, commit);
-        }
 
         protected class VersionTaggedCommit
         {
