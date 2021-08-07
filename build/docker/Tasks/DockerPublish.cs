@@ -12,6 +12,7 @@ namespace Docker.Tasks
         public override bool ShouldRun(BuildContext context)
         {
             var shouldRun = true;
+            shouldRun &= context.ShouldRun(context.IsGitHubActionsBuild, $"{nameof(DockerPublish)} works only on GitHub Actions.");
             shouldRun &= context.ShouldRun(context.IsDockerOnLinux, $"{nameof(DockerPublish)} works only on Docker on Linux agents.");
             shouldRun &= context.ShouldRun(context.IsStableRelease || context.IsPreRelease, $"{nameof(DockerPublish)} works only for releases.");
 

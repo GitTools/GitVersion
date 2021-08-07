@@ -17,6 +17,7 @@ namespace Publish.Tasks
         public override bool ShouldRun(BuildContext context)
         {
             var shouldRun = true;
+            shouldRun &= context.ShouldRun(context.IsGitHubActionsBuild, $"{nameof(PublishNuget)} works only on GitHub Actions.");
             shouldRun &= context.ShouldRun(context.IsPreRelease || context.IsStableRelease, $"{nameof(PublishNuget)} works only for releases.");
 
             return shouldRun;
