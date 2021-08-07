@@ -12,7 +12,15 @@ namespace Publish.Tasks
 {
     [TaskName(nameof(PublishNuget))]
     [TaskDescription("Publish nuget packages")]
+    [IsDependentOn(typeof(PublishNugetInternal))]
+
     public class PublishNuget : FrostingTask<BuildContext>
+    {
+    }
+
+    [TaskName(nameof(PublishNugetInternal))]
+    [TaskDescription("Publish nuget packages")]
+    public class PublishNugetInternal : FrostingTask<BuildContext>
     {
         public override bool ShouldRun(BuildContext context)
         {
