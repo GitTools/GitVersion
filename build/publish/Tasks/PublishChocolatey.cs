@@ -3,10 +3,6 @@ using System.Linq;
 using Cake.Common.Diagnostics;
 using Cake.Common.Tools.Chocolatey;
 using Cake.Common.Tools.Chocolatey.Push;
-using Cake.Common.Tools.DotNetCore;
-using Cake.Common.Tools.DotNetCore.NuGet.Push;
-using Cake.Common.Tools.NuGet;
-using Cake.Common.Tools.NuGet.List;
 using Cake.Frosting;
 using Common.Utilities;
 
@@ -14,7 +10,14 @@ namespace Publish.Tasks
 {
     [TaskName(nameof(PublishChocolatey))]
     [TaskDescription("Publish chocolatey packages")]
+    [IsDependentOn(typeof(PublishChocolateyInternal))]
     public class PublishChocolatey : FrostingTask<BuildContext>
+    {
+    }
+
+    [TaskName(nameof(PublishChocolateyInternal))]
+    [TaskDescription("Publish chocolatey packages")]
+    public class PublishChocolateyInternal : FrostingTask<BuildContext>
     {
         public override bool ShouldRun(BuildContext context)
         {

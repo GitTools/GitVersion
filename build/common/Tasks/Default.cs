@@ -15,7 +15,7 @@ namespace Common.Tasks
         public override void Run(ICakeContext context)
         {
             var entryAssembly = Assembly.GetEntryAssembly();
-            var tasks = entryAssembly?.FindAllDerivedTypes(typeof(IFrostingTask)).ToList();
+            var tasks = entryAssembly?.FindAllDerivedTypes(typeof(IFrostingTask)).Where(x => !x.Name.Contains("Internal")).ToList();
             if (tasks == null) return;
             context.Information($"Available targets:{Environment.NewLine}");
             foreach (var task in tasks)
