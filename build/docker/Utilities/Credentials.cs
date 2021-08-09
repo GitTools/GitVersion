@@ -6,17 +6,16 @@ namespace Docker.Utilities
 {
     public class Credentials
     {
-        public GitHubCredentials? GitHub { get; private set; }
-        public DockerHubCredentials? Docker { get; private set; }
-        public static Credentials GetCredentials(ICakeContext context) => new()
+        public DockerCredentials? Docker { get; private set; }
+        public static Credentials GetCredentials(ICakeContext context, string dockerRegistry) => new()
         {
-            GitHub = new GitHubCredentials(
-                context.EnvironmentVariable("GITHUB_USERNAME"),
-                context.EnvironmentVariable("GITHUB_TOKEN")),
-
-            Docker = new DockerHubCredentials(
-                context.EnvironmentVariable("DOCKER_USERNAME"),
-                context.EnvironmentVariable("DOCKER_PASSWORD")),
+            Docker = dockerRegistry == "github"
+                ? new DockerCredentials(
+                    context.EnvironmentVariable("GITHUB_USERNAME"),
+                    context.EnvironmentVariable("GITHUB_TOKEN"))
+                : new DockerCredentials(
+                    context.EnvironmentVariable("DOCKER_USERNAME"),
+                    context.EnvironmentVariable("DOCKER_PASSWORD"))
         };
     }
 }

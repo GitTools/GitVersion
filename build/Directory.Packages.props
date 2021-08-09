@@ -3,11 +3,13 @@
         <PackageReference Include="Cake.Codecov" Version="1.0.1"/>
         <PackageReference Include="Cake.Common" Version="1.1.0" />
         <PackageReference Include="Cake.Compression" Version="0.2.6" />
-        <PackageReference Include="Cake.Docker" Version="1.0.0" />
         <PackageReference Include="Cake.Coverlet" Version="2.5.4" />
+        <PackageReference Include="Cake.Docker" Version="1.0.0" />
         <PackageReference Include="Cake.Frosting" Version="1.1.0" />
-        <PackageReference Include="Cake.Incubator" Version="6.0.0" />
+        <PackageReference Include="Cake.Git" Version="1.1.0" />
+        <PackageReference Include="Cake.Kudu" Version="1.0.1" />
         <PackageReference Include="Cake.Json" Version="6.0.1" />
+        <PackageReference Include="Cake.Incubator" Version="6.0.0" />
         <PackageReference Include="Cake.Wyam" Version="2.2.12" />
     </ItemGroup>
 </Project>

@@ -15,7 +15,6 @@ namespace Docker
             base.Setup(context);
 
             context.IsDockerOnLinux = context.DockerCustomCommand("info --format '{{.OSType}}'").First().Replace("'", "") == "linux";
-            context.Credentials = Credentials.GetCredentials(context);
 
             var dockerRegistry = context.Argument("docker_registry", "github").ToLower();
             var dotnetVersion = context.Argument("docker_dotnetversion", "").ToLower();
@@ -24,10 +23,12 @@ namespace Docker
             var versions = string.IsNullOrWhiteSpace(dotnetVersion) ? Constants.VersionsToBuild : new[] { dotnetVersion };
             var distros = string.IsNullOrWhiteSpace(dockerDistro) ? Constants.DockerDistrosToBuild : new[] { dockerDistro };
 
-            context.DockerRegistry = dockerRegistry == "github" ? Constants.GitHubContainerRegistry : Constants.DockerHubRegistry;
+            context.DockerRegistryPrefix = dockerRegistry == "github" ? Constants.GitHubContainerRegistry : Constants.DockerHubRegistry;
             context.Images = from version in versions
                              from distro in distros
                              select new DockerImage(distro, version);
+
+            context.Credentials = Credentials.GetCredentials(context, dockerRegistry);
 
             context.StartGroup("Build Setup");
 

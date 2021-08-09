@@ -13,7 +13,7 @@ namespace Common.Utilities
 
     public record GitterCredentials(string Token, string RoomId);
 
-    public record DockerHubCredentials(string UserName, string Password);
+    public record DockerCredentials(string UserName, string Password);
 
     public record NugetCredentials(string ApiKey, string ApiUrl);
 
