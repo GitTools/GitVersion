@@ -28,7 +28,7 @@ jobs:
         key: run-${{ runner.os }}-${{ hashFiles('./build/**') }}
     -
       name: '[Prepare]'
-      # if: steps.cache-cake.outputs.cache-hit != 'true'
+      if: steps.cache-cake.outputs.cache-hit != 'true'
       run: dotnet build build/CI.sln --configuration=Release
     -
       name: '[Build Documentation]'
