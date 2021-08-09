@@ -1,4 +1,5 @@
 using System;
+using Cake.Common.Diagnostics;
 using Cake.Frosting;
 using Common.Utilities;
 
@@ -21,6 +22,7 @@ namespace Docker.Tasks
 
         public override void Run(BuildContext context)
         {
+            context.Information($"Docker image prefix: {context.DockerRegistryPrefix}");
             var username = context.Credentials?.Docker?.UserName;
             if (string.IsNullOrEmpty(username))
             {
@@ -35,7 +37,7 @@ namespace Docker.Tasks
 
             foreach (var dockerImage in context.Images)
             {
-                context.DockerPush(dockerImage, context.DockerRegistry);
+                context.DockerPush(dockerImage, context.DockerRegistryPrefix);
             }
         }
     }

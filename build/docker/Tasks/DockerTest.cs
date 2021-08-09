@@ -22,7 +22,7 @@ namespace Docker.Tasks
 
             foreach (var dockerImage in context.Images)
             {
-                var tags = context.GetDockerTagsForRepository(dockerImage, context.DockerRegistry);
+                var tags = context.GetDockerTagsForRepository(dockerImage, context.DockerRegistryPrefix);
                 foreach (var tag in tags)
                 {
                     context.DockerTestRun(settings, tag, "/repo", "/showvariable", "FullSemver");

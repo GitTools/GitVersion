@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using Cake.Core;
 using Cake.Wyam;
 using Common.Utilities;
