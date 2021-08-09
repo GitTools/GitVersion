@@ -1,32 +1,58 @@
 using System;
+using System.Linq;
 using Cake.Common.Diagnostics;
 using Cake.Common.IO;
 using Cake.Core;
 using Cake.Core.IO;
 using Cake.Frosting;
 using Cake.Git;
-using Cake.Kudu;
-using Cake.Kudu.KuduSync;
+using Cake.Wyam;
 using Common.Utilities;
 
 namespace Docs.Tasks
 {
     [TaskName(nameof(PublishDocs))]
     [TaskDescription("Published the docs changes to docs specific branch")]
-    [IsDependentOn(typeof(BuildDocs))]
+    [IsDependentOn(typeof(Clean))]
     public sealed class PublishDocs : FrostingTask<BuildContext>
     {
         public override bool ShouldRun(BuildContext context)
         {
             var shouldRun = true;
             shouldRun &= context.ShouldRun(context.DirectoryExists(Paths.Docs), "Wyam documentation directory is missing");
+            shouldRun &= context.ShouldRun(context.IsStableRelease || context.IsPreRelease, $"{nameof(PublishDocs)} works only for releases.");
 
             return shouldRun;
         }
 
         public override void Run(BuildContext context)
         {
-            PublishDocumentation(context);
+            if (context.ForcePublish is false)
+            {
+                if (AnyDocsChanged(context))
+                {
+                    context.Information("Performing a docs publish. Detected docs changes");
+                    PublishDocumentation(context);
+                }
+                else
+                {
+                    context.Information("No docs have changed, so no need to generate documentation");
+                }
+            }
+            else
+            {
+                context.Information("Performing a forced docs publish...");
+                PublishDocumentation(context);
+            }
+        }
+        private static bool AnyDocsChanged(ICakeContext context)
+        {
+            var sourceCommit = context.GitLogTip(Paths.Root);
+            var filesChanged = context.GitDiff(Paths.Root, sourceCommit.Sha);
+
+            const string path = "docs/";
+            var docFileChanged = filesChanged.Any(file => file.OldPath.StartsWith(path) || file.Path.StartsWith(path) || file.Path.Contains("config.wyam"));
+            return docFileChanged;
         }
 
         private static void PublishDocumentation(BuildContext context)
@@ -42,32 +68,31 @@ namespace Docs.Tasks
                 BranchName = publishBranchName
             });
 
-            context.Information("Sync output files...");
-            context.Kudu().Sync(context.MakeAbsolute(Paths.ArtifactsDocs.Combine("preview")), publishFolder, new KuduSyncSettings
+            if (context.WyamSettings is not null)
             {
-                ArgumentCustomization = args => args.Append("--ignore").AppendQuoted(".git;CNAME;_git2")
-            });
-
-            if (context.GitHasUncommitedChanges(publishFolder))
-            {
-                context.Information("Stage all changes...");
-                context.GitAddAll(publishFolder);
-
-                if (context.GitHasStagedChanges(publishFolder))
-                {
-                    context.Information("Commit all changes...");
-                    context.GitCommit(
-                        publishFolder,
-                        sourceCommit.Committer.Name,
-                        sourceCommit.Committer.Email,
-                        $"Continuous Integration Publish: {sourceCommit.Sha}\r\n{sourceCommit.Message}"
-                    );
-
-                    PublishToGitHub(context, publishFolder, publishBranchName);
-                }
+                context.WyamSettings.OutputPath = publishFolder;
+                context.WyamSettings.NoClean = true;
+                context.Wyam(context.WyamSettings);
             }
+
+            if (!context.GitHasUncommitedChanges(publishFolder)) return;
+
+            context.Information("Stage all changes...");
+            context.GitAddAll(publishFolder);
+
+            if (!context.GitHasStagedChanges(publishFolder)) return;
+
+            context.Information("Commit all changes...");
+            context.GitCommit(
+                publishFolder,
+                sourceCommit.Committer.Name,
+                sourceCommit.Committer.Email,
+                $"Continuous Integration Publish: {sourceCommit.Sha}\r\n{sourceCommit.Message}"
+            );
+
+            PublishToGitHub(context, publishFolder, publishBranchName);
         }
-        
+
         private static void PublishToGitHub(BuildContext context, DirectoryPath publishFolder, string publishBranchName)
         {
             var username = context.Credentials?.GitHub?.UserName;
