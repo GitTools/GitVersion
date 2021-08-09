@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Cake.Common;
 using Cake.Common.IO;
 using Cake.Wyam;
 using Common.Utilities;
@@ -13,6 +14,7 @@ namespace Docs
             base.Setup(context);
 
             context.Credentials = Credentials.GetCredentials(context);
+            context.ForcePublish = context.HasArgument("force");
 
             context.WyamSettings = new WyamSettings
             {

@@ -4,11 +4,13 @@ namespace Common.Utilities
 {
     public class Paths
     {
-        public static readonly DirectoryPath ToolsDirectory = "./tools";
-        public static readonly DirectoryPath Artifacts = "./artifacts";
-        public static readonly DirectoryPath Src = "./src";
-        public static readonly DirectoryPath Docs = "./docs";
-        public static readonly DirectoryPath Build = "./build";
+        public static readonly DirectoryPath Root = "./";
+
+        public static readonly DirectoryPath ToolsDirectory = $"{Root}tools";
+        public static readonly DirectoryPath Artifacts = $"{Root}artifacts";
+        public static readonly DirectoryPath Src = $"{Root}src";
+        public static readonly DirectoryPath Docs = $"{Root}docs";
+        public static readonly DirectoryPath Build = $"{Root}build";
 
         public static readonly DirectoryPath Nuspec = $"{Build}/nuspec";
 

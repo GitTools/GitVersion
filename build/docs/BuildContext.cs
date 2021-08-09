@@ -7,6 +7,7 @@ namespace Docs
 {
     public class BuildContext : BuildContextBase
     {
+        public bool ForcePublish { get; set; }
         public Credentials? Credentials { get; set; }
 
         public WyamSettings? WyamSettings { get; set; }
