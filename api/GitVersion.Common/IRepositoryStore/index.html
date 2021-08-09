@@ -243,7 +243,7 @@ class Type type-node
 								</td>
 							</tr>
 							<tr>
-								<td><a href="/api/GitVersion.Common/IRepositoryStore/9859F1C9">FindBranch<wbr>(string)<wbr></a></td>
+								<td><a href="/api/GitVersion.Common/IRepositoryStore/FCEF7ACE">FindBranch<wbr>(string?)<wbr></a></td>
 								<td><a href="/api/GitVersion/IBranch">IBranch</a></td>
 								<td>
 									<div></div>
@@ -260,8 +260,8 @@ class Type type-node
 								</td>
 							</tr>
 							<tr>
-								<td><a href="/api/GitVersion.Common/IRepositoryStore/310E4AC4">FindMergeBase<wbr>(IBranch, <wbr>IBranch)<wbr></a></td>
-								<td><a href="/api/GitVersion/ICommit">ICommit</a></td>
+								<td><a href="/api/GitVersion.Common/IRepositoryStore/48C12D8A">FindMergeBase<wbr>(IBranch, <wbr>IBranch?)<wbr></a></td>
+								<td><a href="/api/GitVersion/ICommit">ICommit?</a></td>
 								<td>
 									<div>
     Find the merge base of the two branches, i.e. the best common ancestor of the two branches' tips.
@@ -283,7 +283,7 @@ class Type type-node
 								</td>
 							</tr>
 							<tr>
-								<td><a href="/api/GitVersion.Common/IRepositoryStore/D7431712">Get<wbr>Branches<wbr>Containing<wbr>Commit<wbr>(ICommit, <wbr>IEnumerable<wbr>&lt;IBranch&gt;<wbr>, <wbr>bool)<wbr></a></td>
+								<td><a href="/api/GitVersion.Common/IRepositoryStore/1B384A1F">Get<wbr>Branches<wbr>Containing<wbr>Commit<wbr>(ICommit?, <wbr>IEnumerable<wbr>&lt;IBranch&gt;<wbr>?, <wbr>bool)<wbr></a></td>
 								<td>IEnumerable<wbr>&lt;<a href="/api/GitVersion/IBranch">IBranch</a>&gt;<wbr></td>
 								<td>
 									<div></div>
@@ -304,21 +304,21 @@ class Type type-node
 								</td>
 							</tr>
 							<tr>
-								<td><a href="/api/GitVersion.Common/IRepositoryStore/C4CEACB6">GetCommitLog<wbr>(ICommit, <wbr>ICommit)<wbr></a></td>
+								<td><a href="/api/GitVersion.Common/IRepositoryStore/983F64DD">GetCommitLog<wbr>(ICommit?, <wbr>ICommit?)<wbr></a></td>
 								<td>IEnumerable<wbr>&lt;<a href="/api/GitVersion/ICommit">ICommit</a>&gt;<wbr></td>
 								<td>
 									<div></div>
 								</td>
 							</tr>
 							<tr>
-								<td><a href="/api/GitVersion.Common/IRepositoryStore/E2A05D12">GetCurrentCommit<wbr>(IBranch, <wbr>string)<wbr></a></td>
-								<td><a href="/api/GitVersion/ICommit">ICommit</a></td>
+								<td><a href="/api/GitVersion.Common/IRepositoryStore/B6D6F5AE">GetCurrentCommit<wbr>(IBranch, <wbr>string?)<wbr></a></td>
+								<td><a href="/api/GitVersion/ICommit">ICommit?</a></td>
 								<td>
 									<div></div>
 								</td>
 							</tr>
 							<tr>
-								<td><a href="/api/GitVersion.Common/IRepositoryStore/C03E9C76">Get<wbr>Current<wbr>Commit<wbr>Tagged<wbr>Version<wbr>(ICommit, <wbr>Effective<wbr>Configuration)<wbr></a></td>
+								<td><a href="/api/GitVersion.Common/IRepositoryStore/F598F041">Get<wbr>Current<wbr>Commit<wbr>Tagged<wbr>Version<wbr>(ICommit?, <wbr>Effective<wbr>Configuration)<wbr></a></td>
 								<td><a href="/api/GitVersion/SemanticVersion">SemanticVersion</a></td>
 								<td>
 									<div></div>
@@ -332,21 +332,21 @@ class Type type-node
 								</td>
 							</tr>
 							<tr>
-								<td><a href="/api/GitVersion.Common/IRepositoryStore/19AAF357">GetMainlineBranches<wbr>(ICommit, <wbr>IEnumerable<wbr>&lt;KeyValuePair<wbr>&lt;string, <wbr>BranchConfig&gt;<wbr>&gt;<wbr>)<wbr></a></td>
+								<td><a href="/api/GitVersion.Common/IRepositoryStore/2B7035BE">GetMainlineBranches<wbr>(ICommit, <wbr>IEnumerable<wbr>&lt;KeyValuePair<wbr>&lt;string, <wbr>BranchConfig?&gt;<wbr>&gt;<wbr>?)<wbr></a></td>
 								<td>Dictionary<wbr>&lt;string, <wbr>List<wbr>&lt;<a href="/api/GitVersion/IBranch">IBranch</a>&gt;<wbr>&gt;<wbr></td>
 								<td>
 									<div></div>
 								</td>
 							</tr>
 							<tr>
-								<td><a href="/api/GitVersion.Common/IRepositoryStore/083A9742">GetMainlineCommitLog<wbr>(ICommit, <wbr>ICommit)<wbr></a></td>
+								<td><a href="/api/GitVersion.Common/IRepositoryStore/03EC77DD">GetMainlineCommitLog<wbr>(ICommit?, <wbr>ICommit?)<wbr></a></td>
 								<td>IEnumerable<wbr>&lt;<a href="/api/GitVersion/ICommit">ICommit</a>&gt;<wbr></td>
 								<td>
 									<div></div>
 								</td>
 							</tr>
 							<tr>
-								<td><a href="/api/GitVersion.Common/IRepositoryStore/93D34FD9">GetMergeBaseCommits<wbr>(ICommit, <wbr>ICommit, <wbr>ICommit)<wbr></a></td>
+								<td><a href="/api/GitVersion.Common/IRepositoryStore/75006FC8">GetMergeBaseCommits<wbr>(ICommit?, <wbr>ICommit?, <wbr>ICommit?)<wbr></a></td>
 								<td>IEnumerable<wbr>&lt;<a href="/api/GitVersion/ICommit">ICommit</a>&gt;<wbr></td>
 								<td>
 									<div></div>
@@ -360,35 +360,35 @@ class Type type-node
 								</td>
 							</tr>
 							<tr>
-								<td><a href="/api/GitVersion.Common/IRepositoryStore/68AF3A96">GetReleaseBranches<wbr>(IEnumerable<wbr>&lt;KeyValuePair<wbr>&lt;string, <wbr>BranchConfig&gt;<wbr>&gt;<wbr>)<wbr></a></td>
+								<td><a href="/api/GitVersion.Common/IRepositoryStore/CEE2221D">GetReleaseBranches<wbr>(IEnumerable<wbr>&lt;KeyValuePair<wbr>&lt;string, <wbr>BranchConfig?&gt;<wbr>&gt;<wbr>?)<wbr></a></td>
 								<td>IEnumerable<wbr>&lt;<a href="/api/GitVersion/IBranch">IBranch</a>&gt;<wbr></td>
 								<td>
 									<div></div>
 								</td>
 							</tr>
 							<tr>
-								<td><a href="/api/GitVersion.Common/IRepositoryStore/6BD33CFE">GetTargetBranch<wbr>(string)<wbr></a></td>
+								<td><a href="/api/GitVersion.Common/IRepositoryStore/85F1FF5D">GetTargetBranch<wbr>(string?)<wbr></a></td>
 								<td><a href="/api/GitVersion/IBranch">IBranch</a></td>
 								<td>
 									<div></div>
 								</td>
 							</tr>
 							<tr>
-								<td><a href="/api/GitVersion.Common/IRepositoryStore/EB8B041F">GetValidVersionTags<wbr>(string, <wbr>DateTimeOffset?)<wbr></a></td>
-								<td>IEnumerable<wbr>&lt;Tuple<wbr>&lt;<a href="/api/GitVersion/ITag">ITag</a>, <wbr><a href="/api/GitVersion/SemanticVersion">SemanticVersion</a>&gt;<wbr>&gt;<wbr></td>
+								<td><a href="/api/GitVersion.Common/IRepositoryStore/0EF7B386">GetValidVersionTags<wbr>(string?, <wbr>DateTimeOffset?)<wbr></a></td>
+								<td>IEnumerable<wbr>&lt;Tuple<wbr>&lt;<a href="/api/GitVersion/ITag">ITag?</a>, <wbr><a href="/api/GitVersion/SemanticVersion">SemanticVersion?</a>&gt;<wbr>&gt;<wbr></td>
 								<td>
 									<div></div>
 								</td>
 							</tr>
 							<tr>
-								<td><a href="/api/GitVersion.Common/IRepositoryStore/33ED4CB9">Get<wbr>Version<wbr>Tags<wbr>On<wbr>Branch<wbr>(IBranch, <wbr>string)<wbr></a></td>
-								<td>IEnumerable<wbr>&lt;<a href="/api/GitVersion/SemanticVersion">SemanticVersion</a>&gt;<wbr></td>
+								<td><a href="/api/GitVersion.Common/IRepositoryStore/47764A02">Get<wbr>Version<wbr>Tags<wbr>On<wbr>Branch<wbr>(IBranch, <wbr>string?)<wbr></a></td>
+								<td>IEnumerable<wbr>&lt;<a href="/api/GitVersion/SemanticVersion">SemanticVersion?</a>&gt;<wbr></td>
 								<td>
 									<div></div>
 								</td>
 							</tr>
 							<tr>
-								<td><a href="/api/GitVersion.Common/IRepositoryStore/6D7E379E">IsCommitOnBranch<wbr>(ICommit, <wbr>IBranch, <wbr>ICommit)<wbr></a></td>
+								<td><a href="/api/GitVersion.Common/IRepositoryStore/8888A0ED">IsCommitOnBranch<wbr>(ICommit?, <wbr>IBranch, <wbr>ICommit)<wbr></a></td>
 								<td>bool</td>
 								<td>
 									<div></div>

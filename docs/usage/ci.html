@@ -87,6 +87,7 @@
         <div><p><a href="https://github.com/gittools/GitVersion/tree/main/docs/input/docs/usage/ci.md"><i class="fa fa-pencil-square" aria-hidden="true"></i> Edit Content</a></p></div>
     <div id="infobar-headings"><h6>On This Page</h6><p><a href="#github-actions">GitHub Actions</a></p>
 <p><a href="#azure-devops">Azure DevOps</a></p>
+<p><a href="#gitlab-ci-pipelines">GitLab CI Pipelines</a></p>
 <hr class="infobar-hidden">
 </div>
 
@@ -226,6 +227,8 @@ Actions build pipeline.</p>
 <p>GitVersion's GitTools Azure DevOps Task allows for simple integration of
 GitVersion into an Azure DevOps build pipeline.</p>
 <p><a href="https://marketplace.visualstudio.com/items?itemName=gittools.gittools" class="btn btn-primary">GitTools Task</a></p>
+<h2 id="gitlab-ci-pipelines">GitLab CI Pipelines</h2>
+<p>The GitLab CI example <a href="https://gitlab.com/guided-explorations/devops-patterns/utterly-automated-versioning/">Utterly Automated Software and Artifact Versioning with GitVersion</a> implements GitVersion support at the pipeline level by using a single job that runs the GitVersion container and passes the version number downstream into both <em>pipeline</em> and <em>job</em> level variables. It is also implemented as a reusable CI/CD Extension that can be included in many different projects.</p>
 
 	</section>
                 

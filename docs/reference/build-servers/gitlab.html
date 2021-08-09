@@ -216,6 +216,23 @@
 		<p>To use GitVersion with GitLab CI, either use the <a href="/docs/usage/msbuild">MSBuild
 Task</a> or put the GitVersion executable in your
 runner's <code>PATH</code>.</p>
+<p>A working example of integrating GitVersion with GitLab is maintained in the project <a href="https://gitlab.com/guided-explorations/devops-patterns/utterly-automated-versioning/">Utterly Automated Software and Artifact Versioning with GitVersion</a></p>
+<p>Here is a summary of what it demonstrated (many more details in the <a href="https://gitlab.com/guided-explorations/devops-patterns/utterly-automated-versioning/-/blob/develop/README.md">README.md</a>)</p>
+<ul>
+<li>Is a reusable working example known as a Guided Exploration (<a href="https://gitlab.com/guided-explorations/guided-exploration-concept/-/blob/master/README.md">GE Manifesto</a>) - so job logs and package artifacts can be reviewed. The project can also be imported to your own GitLab group or instance as a starting point for your own work.</li>
+<li>IMPORTANT: It demonstrates how to override GitLab CI's default cloning behavior so that GitVersion can do a dynamic copy. Selectively clones GitVersion.yml so that these settings take effect. This best practice demonstrates the best way to do this while avoiding a double-cloning of the project (once by GitLab Runner and once by GitVersion).</li>
+<li>Implements GitVersion as a CI/CD Extension that can be reused across many projects using includes.</li>
+<li>Implements GitVersion as a single job that runs the GitVersion container and passes the version number downstream into both <em>pipeline</em> and <em>job</em> level variables, which means...</li>
+<li>It can be used with ANY coding language, framework or packaging engine.</li>
+<li>Generates example packaged artifacts:
+<ul>
+<li>Two ways of building Sem Versioned NuGet packages (msbuild-ish and nuget.exe-ish) and uploads them and tests them from a <a href="https://docs.gitlab.com/ee/user/packages/nuget_repository/">GitLab NuGet repository</a>.</li>
+<li>A Sem Versioned <a href="https://docs.gitlab.com/ee/user/packages/generic_packages/">GitLab Generic Package</a></li>
+<li>A Sem Versioned docker container and uploads to <a href="https://docs.gitlab.com/ee/user/packages/container_registry/">GitLabs Container Registry</a>.</li>
+</ul>
+</li>
+<li>It creates a Sem Versioned [GitLab Release](GitLab Releases Feature Help) and Git tag using the <a href="https://gitlab.com/gitlab-org/release-cli/-/tree/master/docs">GitLab release-cli</a> and links the generic package as evidence.</li>
+</ul>
 
 	</section>
                 
