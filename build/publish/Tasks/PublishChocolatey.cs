@@ -43,7 +43,9 @@ namespace Publish.Tasks
                 context.Information($"Package {packageName}, version {nugetVersion} is being published.");
                 context.ChocolateyPush(filePath.FullPath, new ChocolateyPushSettings
                 {
-                    ApiKey = apiKey, Source = Constants.ChocolateyUrl, Force = true
+                    ApiKey = apiKey,
+                    Source = Constants.ChocolateyUrl,
+                    Force = true
                 });
             }
         }

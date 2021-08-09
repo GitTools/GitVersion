@@ -1,3 +1,4 @@
+using Cake.Common.Diagnostics;
 using Cake.Common.IO;
 using Cake.Frosting;
 using Cake.Wyam;
@@ -5,10 +6,10 @@ using Common.Utilities;
 
 namespace Docs.Tasks
 {
-    [TaskName(nameof(PreviewDocs))]
-    [TaskDescription("Run a local server with docs in preview")]
+    [TaskName(nameof(BuildDocs))]
+    [TaskDescription("Builds the docs to local path")]
     [IsDependentOn(typeof(Clean))]
-    public sealed class PreviewDocs : FrostingTask<BuildContext>
+    public sealed class BuildDocs : FrostingTask<BuildContext>
     {
         public override bool ShouldRun(BuildContext context)
         {
@@ -22,9 +23,6 @@ namespace Docs.Tasks
         {
             if (context.WyamSettings is not null)
             {
-                context.WyamSettings.Preview = true;
-                context.WyamSettings.Watch = true;
-                context.WyamSettings.Settings.Add("Host", "gittools.github.io");
                 context.Wyam(context.WyamSettings);
             }
         }

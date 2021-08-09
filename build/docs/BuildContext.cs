@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Cake.Core;
+using Cake.Wyam;
 using Common.Utilities;
 using Docs.Utilities;
 
@@ -9,7 +10,7 @@ namespace Docs
     {
         public Credentials? Credentials { get; set; }
 
-        public Dictionary<string, object> WyamAdditionalSettings = new();
+        public WyamSettings? WyamSettings { get; set; }
 
         public BuildContext(ICakeContext context) : base(context)
         {

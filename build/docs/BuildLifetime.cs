@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Cake.Common.IO;
+using Cake.Wyam;
 using Common.Utilities;
 using Docs.Utilities;
 
@@ -12,12 +13,21 @@ namespace Docs
             base.Setup(context);
 
             context.Credentials = Credentials.GetCredentials(context);
-            context.WyamAdditionalSettings = new Dictionary<string, object>
+
+            context.WyamSettings = new WyamSettings
             {
-                { "BaseEditUrl", "https://github.com/gittools/GitVersion/tree/main/docs/input/" },
-                { "SourceFiles", context.MakeAbsolute(Paths.Src) + "/**/{!bin,!obj,!packages,!*.Tests,!GitTools.*,}/**/*.cs" },
-                { "Title", "GitVersion" },
-                { "IncludeGlobalNamespace", false }
+                Recipe = "Docs",
+                Theme = "Samson",
+                OutputPath = context.MakeAbsolute(Paths.ArtifactsDocs.Combine("preview")),
+                RootPath = context.MakeAbsolute(Paths.Docs),
+                ConfigurationFile = context.MakeAbsolute(Paths.Docs.CombineWithFilePath("config.wyam")),
+                Settings = new Dictionary<string, object>
+                {
+                    { "BaseEditUrl", "https://github.com/gittools/GitVersion/tree/main/docs/input/" },
+                    { "SourceFiles", context.MakeAbsolute(Paths.Src) + "/**/{!bin,!obj,!packages,!*.Tests,!GitTools.*,}/**/*.cs" },
+                    { "Title", "GitVersion" },
+                    { "IncludeGlobalNamespace", false }
+                }
             };
 
             context.StartGroup("Build Setup");
