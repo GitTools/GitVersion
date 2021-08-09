@@ -12,7 +12,7 @@ namespace Docs
             services.UseLifetime<BuildLifetime>();
             services.UseTaskLifetime<BuildTaskLifetime>();
 
-            services.UseTool(new Uri("dotnet:?package=GitVersion.Tool&version=5.6.8"));
+            services.UseTool(new Uri("dotnet:?package=Wyam.Tool&version=2.2.9"));
         }
     }
 }

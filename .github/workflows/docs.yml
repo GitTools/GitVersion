@@ -16,32 +16,44 @@ jobs:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       GITHUB_USERNAME: ${{ secrets.GITHUB_USERNAME }}
     steps:
-    - uses: actions/checkout@v2.3.4
+    -
+      name: Checkout
+      uses: actions/checkout@v2
+    -
+      name: Cache cake frosting
+      id: cache-cake
+      uses: actions/cache@v2.1.5
       with:
-        fetch-depth: 0
-
-    - name: '[Build Documentation]'
+        path: run
+        key: run-${{ runner.os }}-${{ hashFiles('./build/**') }}
+    -
+      name: '[Prepare]'
+      # if: steps.cache-cake.outputs.cache-hit != 'true'
+      run: dotnet build build/CI.sln --configuration=Release
+    -
+      name: '[Build Documentation]'
       shell: pwsh
-      run: ./build.ps1 -Target Build-Documentation
+      run: dotnet run/docs.dll --target=BuildDocs
 
-    - name: '[HTMLProofer]'
+    -
+      name: '[HTMLProofer]'
       uses: chabad360/htmlproofer@master
       with:
-        directory: ./artifacts/Documentation
+        directory: ./artifacts/docs/preview
         arguments: --url-ignore /api/ --allow-hash-href --assume-extension --disable-external
-
-    - name: '[Remark Lint]'
+    -
+      name: '[Remark Lint]'
       uses: reviewdog/action-remark-lint@v2
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
         reporter: github-pr-check
-
-    - name: '[Publish Documentation]'
+    -
+      name: '[Publish Documentation]'
       if: ${{ github.event_name == 'push' }}
       shell: pwsh
-      run: ./build.ps1 -target Publish-Documentation
-
-    - name: '[Publish Documentation]'
+      run: dotnet run/docs.dll --target=PublishDocs
+    -
+      name: '[Publish Documentation]'
       if: ${{ github.event_name == 'workflow_dispatch' }}
       shell: pwsh
-      run: ./build.ps1 -target Force-Publish-Documentation -exclusive
+      run: dotnet run/docs.dll --target=PublishDocs --force

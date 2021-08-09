@@ -13,8 +13,22 @@ namespace Docs.Tasks
 {
     [TaskName(nameof(PublishDocs))]
     [TaskDescription("Published the docs changes to docs specific branch")]
-    [IsDependentOn(typeof(Clean))]
+    [IsDependentOn(typeof(PublishDocsInternal))]
     public sealed class PublishDocs : FrostingTask<BuildContext>
+    {
+        public override bool ShouldRun(BuildContext context)
+        {
+            var shouldRun = true;
+            shouldRun &= context.ShouldRun(context.DirectoryExists(Paths.Docs), "Wyam documentation directory is missing");
+
+            return shouldRun;
+        }
+    }
+
+    [TaskName(nameof(PublishDocsInternal))]
+    [TaskDescription("Published the docs changes to docs specific branch")]
+    [IsDependentOn(typeof(Clean))]
+    public sealed class PublishDocsInternal : FrostingTask<BuildContext>
     {
         public override bool ShouldRun(BuildContext context)
         {

@@ -1,4 +1,3 @@
-using Cake.Common.Diagnostics;
 using Cake.Common.IO;
 using Cake.Frosting;
 using Cake.Wyam;
