@@ -11,9 +11,6 @@ namespace Common.Lifetime
             var message = $"Task: {info.Task.Name}";
             context.StartGroup(message);
         }
-        public override void Teardown(ICakeContext context, ITaskTeardownContext info)
-        {
-            context.EndGroup();
-        }
+        public override void Teardown(ICakeContext context, ITaskTeardownContext info) => context.EndGroup();
     }
 }
