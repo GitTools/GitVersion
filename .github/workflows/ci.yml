@@ -269,9 +269,9 @@ jobs:
         name: nuget
         path: ${{ github.workspace }}/artifacts/packages/nuget
     -
-      name: '[Test Artifacts]'
+      name: '[Docker Build/Test/Publish]'
       shell: pwsh
-      run: dotnet run/docker.dll --target=Docker --docker_dotnetversion=${{ matrix.targetFramework }} --docker_distro=${{ matrix.distro }}
+      run: dotnet run/docker.dll --target=DockerPublish --docker_dotnetversion=${{ matrix.targetFramework }} --docker_distro=${{ matrix.distro }}
 
   publish:
     name: Publish
