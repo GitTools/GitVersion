@@ -374,12 +374,15 @@ namespace GitVersion
             }
         }
 
-        public IEnumerable<Tuple<ITag?, SemanticVersion?>> GetValidVersionTags(string? tagPrefixRegex, DateTimeOffset? olderThan = null)
+        public IEnumerable<Tuple<ITag, SemanticVersion, ICommit>> GetValidVersionTags(string? tagPrefixRegex, DateTimeOffset? olderThan = null)
         {
-            var tags = new List<Tuple<ITag?, SemanticVersion?>>();
+            var tags = new List<Tuple<ITag, SemanticVersion, ICommit>>();
 
             foreach (var tag in this.repository.Tags)
             {
+                if (!SemanticVersion.TryParse(tag.Name.Friendly, tagPrefixRegex, out var semver))
+                    continue;
+
                 var commit = tag.PeeledTargetCommit();
 
                 if (commit == null)
@@ -388,12 +391,7 @@ namespace GitVersion
                 if (olderThan.HasValue && commit.When > olderThan.Value)
                     continue;
 
-                if (SemanticVersion.TryParse(tag.Name.Friendly, tagPrefixRegex, out var semver))
-                {
-#pragma warning disable CS8620 // Argument cannot be used for parameter due to differences in the nullability of reference types.
-                    tags.Add(Tuple.Create(tag, semver));
-#pragma warning restore CS8620 // Argument cannot be used for parameter due to differences in the nullability of reference types.
-                }
+                tags.Add(Tuple.Create(tag, semver, commit));
             }
 
             return tags;
