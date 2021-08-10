@@ -3,7 +3,7 @@
 #addin "nuget:?package=Cake.Compression&version=0.2.6"
 #addin "nuget:?package=Cake.Coverlet&version=2.5.4"
 #addin "nuget:?package=Cake.Docker&version=1.0.0"
-#addin "nuget:?package=Cake.Git&version=1.0.1"
+#addin "nuget:?package=Cake.Git&version=1.1.0"
 #addin "nuget:?package=Cake.Gitter&version=1.1.0"
 #addin "nuget:?package=Cake.Incubator&version=6.0.0"
 #addin "nuget:?package=Cake.Json&version=6.0.1"
