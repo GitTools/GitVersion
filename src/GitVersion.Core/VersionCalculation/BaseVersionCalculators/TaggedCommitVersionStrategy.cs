@@ -21,7 +21,7 @@ namespace GitVersion.VersionCalculation
 
         internal IEnumerable<BaseVersion> GetTaggedVersions(IBranch? currentBranch, DateTimeOffset? olderThan)
         {
-            if (currentBranch is null) 
+            if (currentBranch is null)
                 return Enumerable.Empty<BaseVersion>();
             var versionTags = this.repositoryStore.GetValidVersionTags(Context.Configuration?.GitTagPrefix, olderThan);
             var versionTagsByCommit = versionTags.ToLookup(vt => vt.Item3.Id.Sha);
