@@ -1,6 +1,8 @@
 using System;
+using Cake.Core.IO;
 using Cake.Frosting;
 using Common.Lifetime;
+using Common.Utilities;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Build
@@ -11,6 +13,8 @@ namespace Build
         {
             services.UseLifetime<BuildLifetime>();
             services.UseTaskLifetime<BuildTaskLifetime>();
+
+            services.UseWorkingDirectory(Extensions.GetRootDirectory());
 
             services.UseTool(new Uri("dotnet:?package=Codecov.Tool&version=1.13.0"));
             services.UseTool(new Uri("dotnet:?package=dotnet-format&version=5.0.211103"));

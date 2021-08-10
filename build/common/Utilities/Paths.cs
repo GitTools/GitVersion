@@ -6,7 +6,6 @@ namespace Common.Utilities
     {
         public static readonly DirectoryPath Root = "./";
 
-        public static readonly DirectoryPath ToolsDirectory = Root.Combine("tools");
         public static readonly DirectoryPath Artifacts = Root.Combine("artifacts");
         public static readonly DirectoryPath Src = Root.Combine("src");
         public static readonly DirectoryPath Docs = Root.Combine("docs");

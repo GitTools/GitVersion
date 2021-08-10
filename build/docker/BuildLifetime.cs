@@ -3,7 +3,6 @@ using Cake.Common;
 using Cake.Common.Diagnostics;
 using Cake.Docker;
 using Common.Utilities;
-using Docker.Utilities;
 using Constants = Common.Utilities.Constants;
 
 namespace Docker

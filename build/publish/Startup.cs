@@ -1,6 +1,7 @@
 using System;
 using Cake.Frosting;
 using Common.Lifetime;
+using Common.Utilities;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Publish
@@ -11,6 +12,8 @@ namespace Publish
         {
             services.UseLifetime<BuildLifetime>();
             services.UseTaskLifetime<BuildTaskLifetime>();
+
+            services.UseWorkingDirectory(Extensions.GetRootDirectory());
 
             services.UseTool(new Uri("dotnet:?package=GitVersion.Tool&version=5.6.11"));
         }
