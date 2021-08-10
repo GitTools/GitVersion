@@ -1,6 +1,5 @@
 using Cake.Common;
 using Cake.Core;
-using Cake.Incubator.LoggingExtensions;
 using Common.Utilities;
 
 namespace Docker.Utilities

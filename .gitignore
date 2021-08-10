@@ -128,3 +128,5 @@ config.wyam.packages.xml
 /tests/integration/full/build
 
 run/
+
+build/build/tools/

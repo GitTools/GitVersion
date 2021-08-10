@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using Cake.Core.IO;
@@ -77,6 +78,15 @@ namespace Common.Utilities
 
         public static DirectoryPath Combine(this string path, string segment) => DirectoryPath.FromString(path).Combine(segment);
         public static FilePath CombineWithFilePath(this string path, string segment) => DirectoryPath.FromString(path).CombineWithFilePath(segment);
-    }
+        public static DirectoryPath GetRootDirectory()
+        {
+            var currentPath = DirectoryPath.FromString(Directory.GetCurrentDirectory());
+            while (!Directory.Exists(currentPath.Combine(".git").FullPath))
+            {
+                currentPath = DirectoryPath.FromString(Directory.GetParent(currentPath.FullPath)?.FullName);
+            }
 
+            return currentPath;
+        }
+    }
 }
