@@ -316,3 +316,53 @@ jobs:
       name: '[Publish]'
       shell: pwsh
       run: dotnet run/publish.dll --target=Publish${{ matrix.taskName }}
+
+  release:
+    name: Release
+    needs: [publish]
+    runs-on: windows-latest
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+    -
+      name: Checkout
+      uses: actions/checkout@v2
+    -
+      name: Fetch all history for all tags and branches
+      run: git fetch --prune --unshallow
+    -
+      name: Use cached cake frosting
+      id: cache-cake
+      uses: actions/cache@v2.1.5
+      with:
+        path: run
+        key: run-${{ runner.os }}-${{ hashFiles('./build/**') }}
+    -
+      name: Use cached tools
+      id: cache-tools
+      uses: actions/cache@v2.1.5
+      with:
+        path: tools
+        key: tools-${{ runner.os }}-${{ hashFiles('./build/**') }}
+    -
+      uses: actions/download-artifact@v2.0.10
+      name: Download native linux packages
+      with:
+        name: native-Linux
+        path: ${{ github.workspace }}/artifacts/packages/native
+    -
+      uses: actions/download-artifact@v2.0.10
+      name: Download native windows packages
+      with:
+        name: native-Windows
+        path: ${{ github.workspace }}/artifacts/packages/native
+    -
+      uses: actions/download-artifact@v2.0.10
+      name: Download native macos packages
+      with:
+        name: native-macOS
+        path: ${{ github.workspace }}/artifacts/packages/native
+    -
+      name: '[Release]'
+      shell: pwsh
+      run: dotnet run/release.dll --target=PublishRelease
