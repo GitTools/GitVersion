@@ -20,7 +20,7 @@ namespace Common.Tasks
             context.Information($"Available targets:{Environment.NewLine}");
             foreach (var task in tasks)
             {
-                context.Information($"./build.ps1 --stage={entryAssembly?.GetName().Name} --target={task.GetTaskName()} # ({task.GetTaskDescription()})");
+                context.Information($"./build.ps1 -Stage {entryAssembly?.GetName().Name} -Target {task.GetTaskName()} # ({task.GetTaskDescription()})");
             }
         }
     }
