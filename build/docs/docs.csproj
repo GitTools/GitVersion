@@ -4,6 +4,10 @@
         <RootNamespace>Docs</RootNamespace>
     </PropertyGroup>
     <ItemGroup>
-        <ProjectReference Include="..\common\common.csproj" />
+        <ProjectReference Include="..\common\common.csproj"/>
+    </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="Cake.Git" Version="1.1.0"/>
+        <PackageReference Include="Cake.Wyam" Version="2.2.12"/>
     </ItemGroup>
 </Project>
