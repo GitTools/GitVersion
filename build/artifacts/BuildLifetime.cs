@@ -14,9 +14,9 @@ namespace Artifacts
             base.Setup(context);
             context.IsDockerOnLinux = context.DockerCustomCommand("info --format '{{.OSType}}'").First().Replace("'", "") == "linux";
 
-            var dockerRegistry = context.Argument("docker_registry", "github").ToLower();
-            var dotnetVersion = context.Argument("docker_dotnetversion", "").ToLower();
-            var dockerDistro = context.Argument("docker_distro", "").ToLower();
+            var dockerRegistry = context.Argument(Arguments.DockerRegistry, "github").ToLower();
+            var dotnetVersion = context.Argument(Arguments.DockerDotnetversion, string.Empty).ToLower();
+            var dockerDistro = context.Argument(Arguments.DockerDistro, string.Empty).ToLower();
 
             var versions = string.IsNullOrWhiteSpace(dotnetVersion) ? Constants.VersionsToBuild : new[] { dotnetVersion };
             var distros = string.IsNullOrWhiteSpace(dockerDistro) ? Constants.DockerDistrosToBuild : new[] { dockerDistro };

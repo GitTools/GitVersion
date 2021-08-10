@@ -3,7 +3,7 @@ using Cake.Frosting;
 namespace Build.Tasks
 {
     [TaskName(nameof(Test))]
-    [TaskDescription("Run the tests. Can be specified the target framework with --dotnet_target=")]
+    [TaskDescription("(CI only) Run the tests and publish the results.")]
     [IsDependentOn(typeof(PublishCoverage))]
     public class Test : FrostingTask<BuildContext>
     {
