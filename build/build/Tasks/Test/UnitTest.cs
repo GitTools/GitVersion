@@ -17,7 +17,7 @@ using Common.Utilities;
 namespace Build.Tasks
 {
     [TaskName(nameof(UnitTest))]
-    [TaskDescription("Run the unit tests. Can be specified the target framework with --dotnet_target=")]
+    [TaskDescription("Run the tests. Can be specified the target framework with --dotnet_target={target} where target is net5.0, net48 or netcoreapp3.1")]
     [IsDependentOn(typeof(Build))]
     public class UnitTest : FrostingTask<BuildContext>
     {
