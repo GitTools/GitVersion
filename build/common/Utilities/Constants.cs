@@ -13,10 +13,13 @@ namespace Common.Utilities
         public const string FullFxVersion48 = "net48";
         public static readonly string[] VersionsToBuild = { Version50, Version31 };
 
-        private const string DockerImageName = "gittools/build-images";
+        public const string DockerBaseImageName = "gittools/build-images";
+        public const string DockerImageName = "gittools/gitversion";
 
-        public static readonly string DockerHubRegistry = $"docker.io/{DockerImageName}";
-        public static readonly string GitHubContainerRegistry = $"ghcr.io/{DockerImageName}";
+        public const string DockerHub = "dockerhub";
+        public const string GitHub = "github";
+        public const string DockerHubRegistry = "docker.io";
+        public const string GitHubContainerRegistry = "ghcr.io";
 
         public const string Alpine312 = "alpine.3.12-x64";
         public const string Debian10 = "debian.10-x64";

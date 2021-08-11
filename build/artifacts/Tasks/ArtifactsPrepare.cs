@@ -5,7 +5,7 @@ namespace Artifacts.Tasks
 {
     [TaskName(nameof(ArtifactsPrepare))]
     [TaskDescription("Pulls the docker images needed for testing the artifacts")]
-    [TaskArgument(Arguments.DockerRegistry, "github", "dockerhub")]
+    [TaskArgument(Arguments.DockerRegistry, Constants.GitHub, Constants.DockerHub)]
     [TaskArgument(Arguments.DockerDotnetVersion, Constants.Version50, Constants.Version31)]
     [TaskArgument(Arguments.DockerDistro, Constants.Alpine312, Constants.Debian10, Constants.Ubuntu2004)]
     public class ArtifactsPrepare : FrostingTask<BuildContext>
@@ -22,7 +22,7 @@ namespace Artifacts.Tasks
         {
             foreach (var dockerImage in context.Images)
             {
-                context.DockerPullImage(dockerImage, context.DockerRegistry);
+                context.DockerPullImage(dockerImage);
             }
         }
     }

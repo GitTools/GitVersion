@@ -5,7 +5,7 @@ namespace Artifacts.Tasks
 {
     [TaskName(nameof(ArtifactsNativeTest))]
     [TaskDescription("Tests the native executables in docker container")]
-    [TaskArgument(Arguments.DockerRegistry, "github", "dockerhub")]
+    [TaskArgument(Arguments.DockerRegistry, Constants.GitHub, Constants.DockerHub)]
     [TaskArgument(Arguments.DockerDotnetVersion, Constants.Version50, Constants.Version31)]
     [TaskArgument(Arguments.DockerDistro, Constants.Alpine312, Constants.Debian10, Constants.Ubuntu2004)]
     [IsDependentOn(typeof(ArtifactsPrepare))]
@@ -28,17 +28,15 @@ namespace Artifacts.Tasks
 
             foreach (var dockerImage in context.Images)
             {
-                var (distro, _) = dockerImage;
-
                 var runtime = "linux-x64";
-                if (distro.StartsWith("alpine"))
+                if (dockerImage.Distro.StartsWith("alpine"))
                 {
                     runtime = "linux-musl-x64";
                 }
 
                 var cmd = $"-file {rootPrefix}/scripts/Test-Native.ps1 -version {version} -repoPath {rootPrefix}/repo -runtime {runtime}";
 
-                context.DockerTestArtifact(dockerImage, cmd, context.DockerRegistry);
+                context.DockerTestArtifact(dockerImage, cmd);
             }
         }
     }

@@ -5,7 +5,7 @@ namespace Artifacts.Tasks
 {
     [TaskName(nameof(ArtifactsDotnetToolTest))]
     [TaskDescription("Tests the dotnet global tool in docker container")]
-    [TaskArgument(Arguments.DockerRegistry, "github", "dockerhub")]
+    [TaskArgument(Arguments.DockerRegistry, Constants.GitHub, Constants.DockerHub)]
     [TaskArgument(Arguments.DockerDotnetVersion, Constants.Version50, Constants.Version31)]
     [TaskArgument(Arguments.DockerDistro, Constants.Alpine312, Constants.Debian10, Constants.Ubuntu2004)]
     [IsDependentOn(typeof(ArtifactsPrepare))]
@@ -30,7 +30,7 @@ namespace Artifacts.Tasks
             {
                 var cmd = $"-file {rootPrefix}/scripts/Test-DotnetGlobalTool.ps1 -version {version} -repoPath {rootPrefix}/repo -nugetPath {rootPrefix}/nuget";
 
-                context.DockerTestArtifact(dockerImage, cmd, context.DockerRegistry);
+                context.DockerTestArtifact(dockerImage, cmd);
             }
         }
     }

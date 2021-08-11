@@ -12,19 +12,20 @@ namespace Artifacts
         public override void Setup(BuildContext context)
         {
             base.Setup(context);
+
             context.IsDockerOnLinux = context.DockerCustomCommand("info --format '{{.OSType}}'").First().Replace("'", string.Empty) == "linux";
 
-            var dockerRegistry = context.Argument(Arguments.DockerRegistry, "github").ToLower();
+            var dockerRegistry = context.Argument(Arguments.DockerRegistry, DockerRegistry.GitHub);
             var dotnetVersion = context.Argument(Arguments.DockerDotnetVersion, string.Empty).ToLower();
             var dockerDistro = context.Argument(Arguments.DockerDistro, string.Empty).ToLower();
 
             var versions = string.IsNullOrWhiteSpace(dotnetVersion) ? Constants.VersionsToBuild : new[] { dotnetVersion };
             var distros = string.IsNullOrWhiteSpace(dockerDistro) ? Constants.DockerDistrosToBuild : new[] { dockerDistro };
 
-            context.DockerRegistry = dockerRegistry == "github" ? Constants.GitHubContainerRegistry : Constants.DockerHubRegistry;
+            var registry = dockerRegistry == DockerRegistry.GitHub ? Constants.GitHubContainerRegistry : Constants.DockerHubRegistry;
             context.Images = from version in versions
                              from distro in distros
-                             select new DockerImage(distro, version);
+                             select new DockerImage(distro, version, registry, true);
 
             context.StartGroup("Build Setup");
 
