@@ -6,7 +6,7 @@ namespace Common.Utilities
     /// Represents a task additional arguments.
     /// </summary>
     /// <seealso cref="Attribute" />
-    [AttributeUsage(AttributeTargets.Class, Inherited = false)]
+    [AttributeUsage(AttributeTargets.Class, Inherited = false, AllowMultiple = true)]
     public class TaskArgumentAttribute : Attribute
     {
         public string Name { get; set; }
