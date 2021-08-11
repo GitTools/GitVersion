@@ -106,6 +106,7 @@ site/
 # Cake
 ####################
 tools/*
+run/*
 !tools/packages.config
 /*.zip
 GitVersion.CommandLine/*/
@@ -126,7 +127,3 @@ config.wyam.hash
 config.wyam.packages.xml
 /tests/integration/core/build
 /tests/integration/full/build
-
-run/
-
-build/build/tools/

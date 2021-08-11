@@ -137,6 +137,47 @@ jobs:
       shell: pwsh
       run: dotnet run/build.dll --target=Test --dotnet_target=${{ matrix.targetFramework }}
 
+  artifacts_windows_test:
+    name: Test artifacts on windows
+    needs: [build]
+    runs-on: windows-latest
+    strategy:
+      matrix:
+        package: [ Executable, MsBuildFull ]
+      fail-fast: false
+
+    steps:
+    -
+      name: Checkout
+      uses: actions/checkout@v2
+    -
+      name: Fetch all history for all tags and branches
+      run: git fetch --prune --unshallow
+    -
+      name: Use cached cake frosting
+      id: cache-cake
+      uses: actions/cache@v2.1.5
+      with:
+        path: run
+        key: run-${{ runner.os }}-${{ hashFiles('./build/**') }}
+    -
+      name: Use cached tools
+      id: cache-tools
+      uses: actions/cache@v2.1.5
+      with:
+        path: tools
+        key: tools-${{ runner.os }}-${{ hashFiles('./build/**') }}
+    -
+      uses: actions/download-artifact@v2.0.10
+      name: Download nuget packages
+      with:
+        name: nuget
+        path: ${{ github.workspace }}/artifacts/packages/nuget
+    -
+      name: '[Test Artifacts]'
+      shell: pwsh
+      run: dotnet run/artifacts.dll --target=Artifacts${{ matrix.package }}Test
+
   artifacts_linux_test:
     name: Test artifacts in docker
     needs: [build]
@@ -184,47 +225,6 @@ jobs:
       name: '[Test Artifacts]'
       shell: pwsh
       run: dotnet run/artifacts.dll --target=ArtifactsTest --docker_dotnetversion=${{ matrix.targetFramework }} --docker_distro=${{ matrix.distro }}
-
-  artifacts_windows_test:
-    name: Test artifacts on windows
-    needs: [build]
-    runs-on: windows-latest
-    strategy:
-      matrix:
-        package: [ Executable, MsBuildFull ]
-      fail-fast: false
-
-    steps:
-    -
-      name: Checkout
-      uses: actions/checkout@v2
-    -
-      name: Fetch all history for all tags and branches
-      run: git fetch --prune --unshallow
-    -
-      name: Use cached cake frosting
-      id: cache-cake
-      uses: actions/cache@v2.1.5
-      with:
-        path: run
-        key: run-${{ runner.os }}-${{ hashFiles('./build/**') }}
-    -
-      name: Use cached tools
-      id: cache-tools
-      uses: actions/cache@v2.1.5
-      with:
-        path: tools
-        key: tools-${{ runner.os }}-${{ hashFiles('./build/**') }}
-    -
-      uses: actions/download-artifact@v2.0.10
-      name: Download nuget packages
-      with:
-        name: nuget
-        path: ${{ github.workspace }}/artifacts/packages/nuget
-    -
-      name: '[Test Artifacts]'
-      shell: pwsh
-      run: dotnet run/artifacts.dll --target=Artifacts${{ matrix.package }}Test
 
   docker_linux_images:
     name: Build, Test and Publish Docker Images
@@ -289,7 +289,7 @@ jobs:
 
   publish:
     name: Publish
-    needs: [docker_linux_images, artifacts_windows_test, artifacts_linux_test]
+    needs: [artifacts_windows_test, artifacts_linux_test, docker_linux_images]
     runs-on: windows-latest
     strategy:
       matrix:

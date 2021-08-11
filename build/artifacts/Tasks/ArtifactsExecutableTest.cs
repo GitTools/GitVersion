@@ -32,7 +32,7 @@ namespace Artifacts.Tasks
                 PackageTest(context, packageToTest);
             }
         }
-        private static void PackageTest(BuildContext context, string packageToTest)
+        private static void PackageTest(BuildContextBase context, string packageToTest)
         {
             if (context.Version == null)
                 return;
