@@ -7,7 +7,7 @@ using Cake.Frosting;
 namespace Build.Tasks
 {
     [TaskName(nameof(Build))]
-    [TaskDescription("Builds the solution.")]
+    [TaskDescription("Builds the solution")]
     [IsDependentOn(typeof(Clean))]
     [IsDependentOn(typeof(CodeFormat))]
     public sealed class Build : FrostingTask<BuildContext>
