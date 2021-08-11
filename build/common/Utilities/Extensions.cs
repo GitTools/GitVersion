@@ -45,10 +45,11 @@ namespace Common.Utilities
                 throw new ArgumentNullException(nameof(task));
             }
 
-            var attribute = task.GetCustomAttribute<TaskArgumentAttribute>();
-            if (attribute != null)
+            var attributes = task.GetCustomAttributes<TaskArgumentAttribute>().ToArray();
+            if (attributes.Any())
             {
-                return $"[--{attribute.Name} ({string.Join(" | ", attribute.PossibleValues)})]";
+                var arguments = attributes.Select(attribute => $"[--{attribute.Name} ({string.Join(" | ", attribute.PossibleValues)})]");
+                return string.Join(" ", arguments);
             }
             return string.Empty;
         }

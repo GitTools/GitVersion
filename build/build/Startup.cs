@@ -1,5 +1,4 @@
 using System;
-using Cake.Core.IO;
 using Cake.Frosting;
 using Common.Lifetime;
 using Common.Utilities;

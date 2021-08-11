@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Build.Utilities;
 using Cake.Common;
 using Cake.Common.Build;
 using Cake.Common.Build.AzurePipelines.Data;
@@ -18,7 +17,7 @@ namespace Build.Tasks
 {
     [TaskName(nameof(UnitTest))]
     [TaskDescription("Run the unit tests")]
-    [TaskArgument(Arguments.DotnetTarget, "net5.0", "net48", "netcoreapp3.1")]
+    [TaskArgument(Arguments.DotnetTarget, Constants.NetVersion50, Constants.CoreFxVersion31, Constants.FullFxVersion48)]
     [IsDependentOn(typeof(Build))]
     public class UnitTest : FrostingTask<BuildContext>
     {
