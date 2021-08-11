@@ -7,7 +7,7 @@ namespace Docker.Tasks
 {
     [TaskName(nameof(DockerPublish))]
     [TaskDescription("Publish the docker images containing the GitVersion Tool")]
-    [TaskArgument(Arguments.DockerRegistry, Constants.GitHub, Constants.DockerHub)]
+    [TaskArgument(Arguments.DockerRegistry, Constants.DockerHub, Constants.GitHub)]
     [TaskArgument(Arguments.DockerDotnetVersion, Constants.Version50, Constants.Version31)]
     [TaskArgument(Arguments.DockerDistro, Constants.Alpine312, Constants.Debian10, Constants.Ubuntu2004)]
     [IsDependentOn(typeof(DockerPublishInternal))]
