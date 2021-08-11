@@ -21,9 +21,9 @@ namespace Artifacts.Tasks
 
         public override void Run(BuildContext context)
         {
-            if (context.Version == null)
+            if (context.Version?.SemVersion == null)
                 return;
-            var version = context.Version.SemVersion;
+            var version = context.Version.SemVersion.ToLower();
             var rootPrefix = string.Empty;
 
             foreach (var dockerImage in context.Images)

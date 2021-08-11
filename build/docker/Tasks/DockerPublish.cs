@@ -1,5 +1,4 @@
 using System;
-using Cake.Common.Diagnostics;
 using Cake.Frosting;
 using Common.Utilities;
 

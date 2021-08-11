@@ -5,7 +5,6 @@ using Cake.Common;
 using Cake.Common.Diagnostics;
 using Cake.Common.IO;
 using Cake.Core;
-using Cake.Core.IO;
 using Cake.Docker;
 using Xunit;
 
@@ -16,7 +15,7 @@ namespace Common.Utilities
         public static void DockerBuild(this BuildContextBase context, DockerImage dockerImage)
         {
             var (distro, targetFramework, registry, _) = dockerImage;
-            var workDir = DirectoryPath.FromString($"./src/Docker");
+            var workDir = Paths.Src.Combine("Docker");
             var tags = context.GetDockerTags(dockerImage);
 
             if (context.Version == null) return;
@@ -24,7 +23,7 @@ namespace Common.Utilities
             {
                 Rm = true,
                 Tag = tags.ToArray(),
-                File = $"{workDir}/Dockerfile",
+                File = workDir.CombineWithFilePath("Dockerfile").FullPath,
                 BuildArg = new[]
                 {
                     $"contentFolder=/content",
@@ -43,7 +42,6 @@ namespace Common.Utilities
         public static void DockerPush(this BuildContextBase context, DockerImage dockerImage)
         {
             var tags = context.GetDockerTags(dockerImage);
-
             foreach (var tag in tags)
             {
                 context.DockerPush(tag);

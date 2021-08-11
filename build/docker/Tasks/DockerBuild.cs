@@ -23,7 +23,7 @@ namespace Docker.Tasks
         public override void Run(BuildContext context)
         {
             var tool = Paths.Nuget.CombineWithFilePath("GitVersion.Tool*");
-            var dest = DirectoryPath.FromString($"./src/Docker").Combine("content");
+            var dest = Paths.Src.Combine("Docker").Combine("content");
             context.EnsureDirectoryExists(dest);
             context.CopyFiles(tool.FullPath, dest);
 

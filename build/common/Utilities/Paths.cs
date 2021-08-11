@@ -10,6 +10,7 @@ namespace Common.Utilities
         public static readonly DirectoryPath Src = Root.Combine("src");
         public static readonly DirectoryPath Docs = Root.Combine("docs");
         public static readonly DirectoryPath Build = Root.Combine("build");
+        public static readonly DirectoryPath Integration = Root.Combine("tests").Combine("integration");
 
         public static readonly DirectoryPath Nuspec = Build.Combine("nuspec");
 

@@ -39,7 +39,7 @@ namespace Artifacts.Tasks
                 var dotnetCoreMsBuildSettings = new DotNetCoreMSBuildSettings();
                 dotnetCoreMsBuildSettings.WithProperty("TargetFramework", framework);
                 dotnetCoreMsBuildSettings.WithProperty("GitVersionMsBuildVersion", version);
-                var projPath = context.MakeAbsolute(new DirectoryPath("./tests/integration/core"));
+                var projPath = context.MakeAbsolute(Paths.Integration.Combine("core"));
 
                 context.DotNetCoreBuild(projPath.FullPath, new DotNetCoreBuildSettings
                 {
@@ -49,7 +49,7 @@ namespace Artifacts.Tasks
                     ArgumentCustomization = args => args.Append($"--source {nugetSource}")
                 });
 
-                var netcoreExe = new DirectoryPath("./tests/integration/core/build").Combine(framework).CombineWithFilePath("app.dll");
+                var netcoreExe = Paths.Integration.Combine("core").Combine("build").Combine(framework).CombineWithFilePath("app.dll");
                 context.ValidateOutput("dotnet", netcoreExe.FullPath, context.Version.GitVersion.FullSemVer);
             }
 
@@ -66,7 +66,7 @@ namespace Artifacts.Tasks
 
             context.MSBuild("./tests/integration/full", msBuildSettings);
 
-            var fullExe = new DirectoryPath("./tests/integration/full/build").CombineWithFilePath("app.exe");
+            var fullExe = Paths.Integration.Combine("full").Combine("build").CombineWithFilePath("app.exe");
             context.ValidateOutput(fullExe.FullPath, null, context.Version.GitVersion.FullSemVer);
         }
     }
