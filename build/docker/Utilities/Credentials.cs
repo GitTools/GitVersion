@@ -4,11 +4,6 @@ using Common.Utilities;
 
 namespace Docker.Utilities
 {
-    public enum DockerRegistry
-    {
-        GitHub = 0,
-        DockerHub = 1
-    }
     public class Credentials
     {
         public DockerCredentials? Docker { get; private set; }

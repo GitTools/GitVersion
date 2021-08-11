@@ -13,11 +13,11 @@ namespace Common.Utilities
 {
     public static class DockerContextExtensions
     {
-        public static void DockerBuild(this BuildContextBase context, DockerImage dockerImage, string dockerRegistry)
+        public static void DockerBuild(this BuildContextBase context, DockerImage dockerImage)
         {
-            var (distro, targetFramework) = dockerImage;
+            var (distro, targetFramework, registry, _) = dockerImage;
             var workDir = DirectoryPath.FromString($"./src/Docker");
-            var tags = context.GetDockerTagsForRepository(dockerImage, dockerRegistry);
+            var tags = context.GetDockerTags(dockerImage);
 
             if (context.Version == null) return;
             var buildSettings = new DockerImageBuildSettings
@@ -28,6 +28,7 @@ namespace Common.Utilities
                 BuildArg = new[]
                 {
                     $"contentFolder=/content",
+                    $"REGISTRY={registry}",
                     $"DOTNET_VERSION={targetFramework}",
                     $"DISTRO={distro}",
                     $"VERSION={context.Version.NugetVersion}"
@@ -39,10 +40,9 @@ namespace Common.Utilities
             context.DockerBuild(buildSettings, workDir.ToString());
         }
 
-
-        public static void DockerPush(this BuildContextBase context, DockerImage dockerImage, string repositoryName)
+        public static void DockerPush(this BuildContextBase context, DockerImage dockerImage)
         {
-            var tags = context.GetDockerTagsForRepository(dockerImage, repositoryName);
+            var tags = context.GetDockerTags(dockerImage);
 
             foreach (var tag in tags)
             {
@@ -50,25 +50,76 @@ namespace Common.Utilities
             }
         }
 
-        public static void DockerTestArtifact(this BuildContextBase context, DockerImage dockerImage, string cmd, string repositoryName)
+        public static void DockerPullImage(this ICakeContext context, DockerImage dockerImage)
         {
-            var settings = GetDockerRunSettings(context);
-            var (distro, targetFramework) = dockerImage;
-            var tag = $"{repositoryName}:{distro}-sdk-{targetFramework}";
-
-            context.Information("Docker tag: {0}", tag);
-            context.Information("Docker cmd: pwsh {0}", cmd);
-
-            context.DockerTestRun(settings, tag, "pwsh", cmd);
-        }
-
-        public static void DockerPullImage(this ICakeContext context, DockerImage dockerImage, string repositoryName)
-        {
-            var (distro, targetFramework) = dockerImage;
-            var tag = $"{repositoryName}:{distro}-sdk-{targetFramework}";
+            var tag = $"{dockerImage.DockerImageName()}:{dockerImage.Distro}-sdk-{dockerImage.TargetFramework}";
             context.DockerPull(tag);
         }
-        public static DockerContainerRunSettings GetDockerRunSettings(this BuildContextBase context)
+
+        public static void DockerTestImage(this BuildContextBase context, DockerImage dockerImage)
+        {
+            var tags = context.GetDockerTags(dockerImage);
+            foreach (var tag in tags)
+            {
+                context.DockerTestRun(tag, "/repo", "/showvariable", "FullSemver");
+            }
+        }
+
+        public static void DockerTestArtifact(this BuildContextBase context, DockerImage dockerImage, string cmd)
+        {
+            var tag = $"{dockerImage.DockerImageName()}:{dockerImage.Distro}-sdk-{dockerImage.TargetFramework}";
+            context.DockerTestRun(tag, "pwsh", cmd);
+        }
+
+        private static void DockerTestRun(this BuildContextBase context, string image, string command, params string[] args)
+        {
+            var settings = GetDockerRunSettings(context);
+            context.Information($"Testing image: {image}");
+            var output = context.DockerRunImage(settings, image, command, args);
+            context.Information("Output : " + output);
+
+            Assert.Equal(context.Version?.GitVersion.FullSemVer, output);
+        }
+        private static IEnumerable<string> GetDockerTags(this BuildContextBase context, DockerImage dockerImage)
+        {
+            var name = dockerImage.DockerImageName();
+            var distro = dockerImage.Distro;
+            var targetFramework = dockerImage.TargetFramework;
+
+            if (context.Version == null) return Enumerable.Empty<string>();
+            var tags = new List<string>
+            {
+                $"{name}:{context.Version.Version}-{distro}-{targetFramework}",
+                $"{name}:{context.Version.SemVersion}-{distro}-{targetFramework}",
+            };
+
+            if (distro == Constants.DockerDistroLatest && targetFramework == Constants.Version50)
+            {
+                tags.AddRange(new[]
+                {
+                    $"{name}:{context.Version.Version}",
+                    $"{name}:{context.Version.SemVersion}",
+
+                    $"{name}:{context.Version.Version}-{distro}",
+                    $"{name}:{context.Version.SemVersion}-{distro}"
+                });
+
+                if (context.IsStableRelease)
+                {
+                    tags.AddRange(new[]
+                    {
+                        $"{name}:latest",
+                        $"{name}:latest-{targetFramework}",
+                        $"{name}:latest-{distro}",
+                        $"{name}:latest-{distro}-{targetFramework}",
+                    });
+                }
+            }
+
+            return tags;
+        }
+        private static string DockerImageName(this DockerImage image) => $"{image.Registry}/{(image.UseBaseImage ? Constants.DockerBaseImageName : Constants.DockerImageName)}";
+        private static DockerContainerRunSettings GetDockerRunSettings(this BuildContextBase context)
         {
             var currentDir = context.MakeAbsolute(context.Directory("."));
             var root = string.Empty;
@@ -103,7 +154,6 @@ namespace Common.Utilities
 
             return settings;
         }
-
         private static string DockerRunImage(this ICakeContext context, DockerContainerRunSettings settings, string image, string command, params string[] args)
         {
             if (string.IsNullOrEmpty(image))
@@ -111,7 +161,10 @@ namespace Common.Utilities
                 throw new ArgumentNullException(nameof(image));
             }
             var runner = new GenericDockerRunner<DockerContainerRunSettings>(context.FileSystem, context.Environment, context.ProcessRunner, context.Tools);
-            List<string> arguments = new() { image };
+            List<string> arguments = new()
+            {
+                image
+            };
             if (!string.IsNullOrEmpty(command))
             {
                 arguments.Add(command);
@@ -123,15 +176,6 @@ namespace Common.Utilities
 
             var result = runner.RunWithResult("run", settings, r => r.ToArray(), arguments.ToArray());
             return string.Join("\n", result);
-        }
-
-        public static void DockerTestRun(this BuildContextBase context, DockerContainerRunSettings settings, string image, string command, params string[] args)
-        {
-            context.Information($"Testing image: {image}");
-            var output = context.DockerRunImage(settings, image, command, args);
-            context.Information("Output : " + output);
-
-            Assert.Equal(context.Version?.GitVersion.FullSemVer, output);
         }
     }
 }

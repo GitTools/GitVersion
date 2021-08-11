@@ -3,6 +3,7 @@ using Cake.Common;
 using Cake.Common.Diagnostics;
 using Cake.Docker;
 using Common.Utilities;
+using Docker.Utilities;
 using Constants = Common.Utilities.Constants;
 
 namespace Docker
@@ -15,17 +16,20 @@ namespace Docker
 
             context.IsDockerOnLinux = context.DockerCustomCommand("info --format '{{.OSType}}'").First().Replace("'", "") == "linux";
 
+            var dockerRegistry = context.Argument(Arguments.DockerRegistry, DockerRegistry.GitHub);
             var dotnetVersion = context.Argument(Arguments.DockerDotnetVersion, string.Empty).ToLower();
             var dockerDistro = context.Argument(Arguments.DockerDistro, string.Empty).ToLower();
 
             var versions = string.IsNullOrWhiteSpace(dotnetVersion) ? Constants.VersionsToBuild : new[] { dotnetVersion };
             var distros = string.IsNullOrWhiteSpace(dockerDistro) ? Constants.DockerDistrosToBuild : new[] { dockerDistro };
 
+            var registry = dockerRegistry == DockerRegistry.GitHub ? Constants.GitHubContainerRegistry : Constants.DockerHubRegistry;
             context.Images = from version in versions
                              from distro in distros
-                             select new DockerImage(distro, version);
+                             select new DockerImage(distro, version, registry, false);
 
             context.StartGroup("Build Setup");
+            context.Credentials = Credentials.GetCredentials(context, dockerRegistry);
 
             LogBuildInformation(context);
 

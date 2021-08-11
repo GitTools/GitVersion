@@ -2,12 +2,14 @@ using System;
 using Cake.Common.Diagnostics;
 using Cake.Frosting;
 using Common.Utilities;
-using Docker.Utilities;
 
 namespace Docker.Tasks
 {
     [TaskName(nameof(DockerPublish))]
     [TaskDescription("Publish the docker images containing the GitVersion Tool")]
+    [TaskArgument(Arguments.DockerRegistry, Constants.GitHub, Constants.DockerHub)]
+    [TaskArgument(Arguments.DockerDotnetVersion, Constants.Version50, Constants.Version31)]
+    [TaskArgument(Arguments.DockerDistro, Constants.Alpine312, Constants.Debian10, Constants.Ubuntu2004)]
     [IsDependentOn(typeof(DockerPublishInternal))]
     public class DockerPublish : FrostingTask<BuildContext>
     {
@@ -36,17 +38,6 @@ namespace Docker.Tasks
 
         public override void Run(BuildContext context)
         {
-            DockerPublish(context, DockerRegistry.GitHub);
-            DockerPublish(context, DockerRegistry.DockerHub);
-        }
-        private static void DockerPublish(BuildContext context, DockerRegistry dockerRegistry)
-        {
-            context.Credentials = Credentials.GetCredentials(context, dockerRegistry);
-            context.DockerRegistryPrefix = dockerRegistry == DockerRegistry.GitHub
-                ? Constants.GitHubContainerRegistry
-                : Constants.DockerHubRegistry;
-
-            context.Information($"Docker image prefix: {context.DockerRegistryPrefix}");
             var username = context.Credentials?.Docker?.UserName;
             if (string.IsNullOrEmpty(username))
             {
@@ -61,7 +52,7 @@ namespace Docker.Tasks
 
             foreach (var dockerImage in context.Images)
             {
-                context.DockerPush(dockerImage, context.DockerRegistryPrefix);
+                context.DockerPush(dockerImage);
             }
         }
     }

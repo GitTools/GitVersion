@@ -1,6 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
-        <AssemblyName>artifacts-test</AssemblyName>
+        <AssemblyName>artifacts</AssemblyName>
         <RootNamespace>Artifacts</RootNamespace>
     </PropertyGroup>
     <ItemGroup>

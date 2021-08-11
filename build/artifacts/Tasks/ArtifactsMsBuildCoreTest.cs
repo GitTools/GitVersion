@@ -5,7 +5,7 @@ namespace Artifacts.Tasks
 {
     [TaskName(nameof(ArtifactsMsBuildCoreTest))]
     [TaskDescription("Tests the msbuild package in docker container")]
-    [TaskArgument(Arguments.DockerRegistry, "github", "dockerhub")]
+    [TaskArgument(Arguments.DockerRegistry, Constants.GitHub, Constants.DockerHub)]
     [TaskArgument(Arguments.DockerDotnetVersion, Constants.Version50, Constants.Version31)]
     [TaskArgument(Arguments.DockerDistro, Constants.Alpine312, Constants.Debian10, Constants.Ubuntu2004)]
     [IsDependentOn(typeof(ArtifactsPrepare))]
@@ -28,7 +28,8 @@ namespace Artifacts.Tasks
 
             foreach (var dockerImage in context.Images)
             {
-                var (distro, targetFramework) = dockerImage;
+                string distro = dockerImage.Distro;
+                string targetFramework = dockerImage.TargetFramework;
 
                 if (targetFramework == Constants.Version31 && distro == "centos.8-x64") continue; // TODO check why this one fails
                 targetFramework = targetFramework switch
@@ -40,7 +41,7 @@ namespace Artifacts.Tasks
 
                 var cmd = $"-file {rootPrefix}/scripts/Test-MsBuildCore.ps1 -version {version} -repoPath {rootPrefix}/repo/tests/integration/core -nugetPath {rootPrefix}/nuget -targetframework {targetFramework}";
 
-                context.DockerTestArtifact(dockerImage, cmd, context.DockerRegistry);
+                context.DockerTestArtifact(dockerImage, cmd);
             }
         }
     }

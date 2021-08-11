@@ -7,6 +7,9 @@ namespace Docker.Tasks
 {
     [TaskName(nameof(DockerBuild))]
     [TaskDescription("Build the docker images containing the GitVersion Tool")]
+    [TaskArgument(Arguments.DockerRegistry, Constants.GitHub, Constants.DockerHub)]
+    [TaskArgument(Arguments.DockerDotnetVersion, Constants.Version50, Constants.Version31)]
+    [TaskArgument(Arguments.DockerDistro, Constants.Alpine312, Constants.Debian10, Constants.Ubuntu2004)]
     public class DockerBuild : FrostingTask<BuildContext>
     {
         public override bool ShouldRun(BuildContext context)
@@ -26,7 +29,7 @@ namespace Docker.Tasks
 
             foreach (var dockerImage in context.Images)
             {
-                context.DockerBuild(dockerImage, context.DockerRegistryPrefix);
+                context.DockerBuild(dockerImage);
             }
         }
     }

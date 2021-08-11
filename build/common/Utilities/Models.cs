@@ -5,8 +5,6 @@ namespace Common.Utilities
 {
     public record NugetPackage(string PackageName, FilePath FilePath, bool IsChocoPackage);
 
-    public record DockerImage(string Distro, string TargetFramework);
-
     public record CodeCovCredentials(string Token);
 
     public record GitHubCredentials(string UserName, string Token);
@@ -41,5 +39,13 @@ namespace Common.Utilities
                 NugetVersion: nugetVersion?.ToLowerInvariant()
             );
         }
+    }
+
+    public record DockerImage(string Distro, string TargetFramework, string Registry, bool UseBaseImage);
+
+    public enum DockerRegistry
+    {
+        GitHub = 0,
+        DockerHub = 1
     }
 }

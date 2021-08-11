@@ -5,6 +5,9 @@ namespace Docker.Tasks
 {
     [TaskName(nameof(DockerTest))]
     [TaskDescription("Test the docker images containing the GitVersion Tool")]
+    [TaskArgument(Arguments.DockerRegistry, Constants.GitHub, Constants.DockerHub)]
+    [TaskArgument(Arguments.DockerDotnetVersion, Constants.Version50, Constants.Version31)]
+    [TaskArgument(Arguments.DockerDistro, Constants.Alpine312, Constants.Debian10, Constants.Ubuntu2004)]
     [IsDependentOn(typeof(DockerBuild))]
     public class DockerTest : FrostingTask<BuildContext>
     {
@@ -18,15 +21,9 @@ namespace Docker.Tasks
 
         public override void Run(BuildContext context)
         {
-            var settings = context.GetDockerRunSettings();
-
             foreach (var dockerImage in context.Images)
             {
-                var tags = context.GetDockerTagsForRepository(dockerImage, context.DockerRegistryPrefix);
-                foreach (var tag in tags)
-                {
-                    context.DockerTestRun(settings, tag, "/repo", "/showvariable", "FullSemver");
-                }
+                context.DockerTestImage(dockerImage);
             }
         }
     }
