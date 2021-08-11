@@ -25,12 +25,7 @@ env:
   DOTNET_CLI_TELEMETRY_OPTOUT: 1
   DOTNET_SKIP_FIRST_TIME_EXPERIENCE: 1
   DOTNET_NOLOGO: 1
-  ENABLED_MULTI_STAGE_BUILD: true
-  ENABLED_UNIT_TESTS: true
-  ENABLED_PUBLISH_DOCKER: true
-  ENABLED_PUBLISH_NUGET: true
-  ENABLED_PUBLISH_CHOCOLATEY: true
-  ENABLED_PUBLISH_RELEASE: true
+
   ENABLED_DIAGNOSTICS: ${{ secrets.ENABLED_DIAGNOSTICS }}
 
 jobs:
@@ -269,9 +264,28 @@ jobs:
         name: nuget
         path: ${{ github.workspace }}/artifacts/packages/nuget
     -
-      name: '[Docker Build/Test/Publish]'
+      name: Login to DockerHub
+      if: success() && github.event_name != 'pull_request'
+      uses: docker/login-action@v1
+      with:
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
+    -
+      name: '[Docker Build/Test/Publish] DockerHub'
       shell: pwsh
-      run: dotnet run/docker.dll --target=DockerPublish --docker_dotnetversion=${{ matrix.targetFramework }} --docker_distro=${{ matrix.distro }}
+      run: dotnet run/docker.dll --target=DockerPublish --docker_dotnetversion=${{ matrix.targetFramework }} --docker_distro=${{ matrix.distro }} --docker_registry dockerhub
+    -
+      name: Login to GitHub Container Registry
+      if: success() && github.event_name != 'pull_request'
+      uses: docker/login-action@v1
+      with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+    -
+      name: '[Docker Build/Test/Publish] GitHub Docker'
+      shell: pwsh
+      run: dotnet run/docker.dll --target=DockerPublish --docker_dotnetversion=${{ matrix.targetFramework }} --docker_distro=${{ matrix.distro }} --docker_registry github
 
   publish:
     name: Publish
