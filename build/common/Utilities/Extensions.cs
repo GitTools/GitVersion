@@ -38,6 +38,21 @@ namespace Common.Utilities
             return attribute != null ? attribute.Name : task.Name;
         }
 
+        public static string GetTaskArguments(this Type task)
+        {
+            if (task is null)
+            {
+                throw new ArgumentNullException(nameof(task));
+            }
+
+            var attribute = task.GetCustomAttribute<TaskArgumentAttribute>();
+            if (attribute != null)
+            {
+                return $"[--{attribute.Name} ({string.Join(" | ", attribute.PossibleValues)})]";
+            }
+            return string.Empty;
+        }
+
         public static IEnumerable<string> GetDockerTagsForRepository(this BuildContextBase context, DockerImage dockerImage, string repositoryName)
         {
             var name = $"gittools/gitversion";

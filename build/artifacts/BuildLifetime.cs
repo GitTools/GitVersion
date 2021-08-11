@@ -12,10 +12,10 @@ namespace Artifacts
         public override void Setup(BuildContext context)
         {
             base.Setup(context);
-            context.IsDockerOnLinux = context.DockerCustomCommand("info --format '{{.OSType}}'").First().Replace("'", "") == "linux";
+            context.IsDockerOnLinux = context.DockerCustomCommand("info --format '{{.OSType}}'").First().Replace("'", string.Empty) == "linux";
 
             var dockerRegistry = context.Argument(Arguments.DockerRegistry, "github").ToLower();
-            var dotnetVersion = context.Argument(Arguments.DockerDotnetversion, string.Empty).ToLower();
+            var dotnetVersion = context.Argument(Arguments.DockerDotnetVersion, string.Empty).ToLower();
             var dockerDistro = context.Argument(Arguments.DockerDistro, string.Empty).ToLower();
 
             var versions = string.IsNullOrWhiteSpace(dotnetVersion) ? Constants.VersionsToBuild : new[] { dotnetVersion };

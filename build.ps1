@@ -49,7 +49,7 @@ $Arguments = @{
 # Start Cake
 Write-Host "Running build stage $Stage..."
 
-& dotnet run --project build/$Stage/$Stage.csproj -- $Arguments
+& dotnet run --project build/$Stage/$Stage.csproj -- $Arguments $ScriptArgs
 
 if ($env:APPVEYOR) {
     $host.SetShouldExit($LASTEXITCODE)

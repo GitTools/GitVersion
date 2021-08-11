@@ -15,7 +15,7 @@ namespace Docker
 
             context.IsDockerOnLinux = context.DockerCustomCommand("info --format '{{.OSType}}'").First().Replace("'", "") == "linux";
 
-            var dotnetVersion = context.Argument(Arguments.DockerDotnetversion, string.Empty).ToLower();
+            var dotnetVersion = context.Argument(Arguments.DockerDotnetVersion, string.Empty).ToLower();
             var dockerDistro = context.Argument(Arguments.DockerDistro, string.Empty).ToLower();
 
             var versions = string.IsNullOrWhiteSpace(dotnetVersion) ? Constants.VersionsToBuild : new[] { dotnetVersion };

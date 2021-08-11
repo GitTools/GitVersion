@@ -7,7 +7,7 @@ using Common.Utilities;
 namespace Build.Tasks
 {
     [TaskName(nameof(PublishCoverage))]
-    [TaskDescription("Publishes the test coverage.")]
+    [TaskDescription("Publishes the test coverage")]
     [IsDependentOn(typeof(UnitTest))]
     public class PublishCoverage : FrostingTask<BuildContext>
     {
