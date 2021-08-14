@@ -105,6 +105,8 @@ jobs:
     name: Unit Test code
     needs: [prepare]
     runs-on: ${{ matrix.os }}
+    env:
+      CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
     strategy:
       matrix:
         os: [windows-latest, ubuntu-latest, macos-latest]
