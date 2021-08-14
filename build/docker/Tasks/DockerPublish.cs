@@ -1,4 +1,3 @@
-using System;
 using Cake.Frosting;
 using Common.Utilities;
 
@@ -37,18 +36,6 @@ namespace Docker.Tasks
 
         public override void Run(BuildContext context)
         {
-            var username = context.Credentials?.Docker?.UserName;
-            if (string.IsNullOrEmpty(username))
-            {
-                throw new InvalidOperationException("Could not resolve Docker user name.");
-            }
-
-            var password = context.Credentials?.Docker?.Password;
-            if (string.IsNullOrEmpty(password))
-            {
-                throw new InvalidOperationException("Could not resolve Docker password.");
-            }
-
             foreach (var dockerImage in context.Images)
             {
                 context.DockerPush(dockerImage);

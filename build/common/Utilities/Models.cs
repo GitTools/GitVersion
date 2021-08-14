@@ -9,10 +9,6 @@ namespace Common.Utilities
 
     public record GitHubCredentials(string UserName, string Token);
 
-    public record GitterCredentials(string Token, string RoomId);
-
-    public record DockerCredentials(string UserName, string Password);
-
     public record NugetCredentials(string ApiKey, string ApiUrl);
 
     public record ChocolateyCredentials(string ApiKey, string ApiUrl);

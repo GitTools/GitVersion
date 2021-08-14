@@ -3,7 +3,6 @@ using Cake.Common;
 using Cake.Common.Diagnostics;
 using Cake.Docker;
 using Common.Utilities;
-using Docker.Utilities;
 using Constants = Common.Utilities.Constants;
 
 namespace Docker
@@ -29,7 +28,6 @@ namespace Docker
                              select new DockerImage(distro, version, registry, false);
 
             context.StartGroup("Build Setup");
-            context.Credentials = Credentials.GetCredentials(context, dockerRegistry);
 
             LogBuildInformation(context);
 
