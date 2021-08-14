@@ -24,7 +24,7 @@ jobs:
       uses: actions/cache@v2.1.5
       with:
         path: run
-        key: run-${{ runner.os }}-${{ hashFiles('./build/**') }}
+        key: run-docs-${{ runner.os }}-${{ hashFiles('./build/**') }}
     -
       name: '[Prepare]'
       if: steps.cache-cake.outputs.cache-hit != 'true'
