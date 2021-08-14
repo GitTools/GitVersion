@@ -109,12 +109,6 @@ namespace Docs.Tasks
 
         private static void PublishToGitHub(BuildContext context, DirectoryPath publishFolder, string publishBranchName)
         {
-            var username = context.Credentials?.GitHub?.UserName;
-            if (string.IsNullOrEmpty(username))
-            {
-                throw new InvalidOperationException("Could not resolve Github username.");
-            }
-
             var token = context.Credentials?.GitHub?.Token;
             if (string.IsNullOrEmpty(token))
             {
@@ -122,7 +116,7 @@ namespace Docs.Tasks
             }
 
             context.Information("Pushing all changes...");
-            context.GitPush(publishFolder, username, token, publishBranchName);
+            context.GitPush(publishFolder, Constants.RepoOwner, token, publishBranchName);
         }
     }
 }

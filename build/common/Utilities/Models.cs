@@ -7,7 +7,7 @@ namespace Common.Utilities
 
     public record CodeCovCredentials(string Token);
 
-    public record GitHubCredentials(string UserName, string Token);
+    public record GitHubCredentials(string Token);
 
     public record NugetCredentials(string ApiKey, string ApiUrl);
 

@@ -9,9 +9,7 @@ namespace Release.Utilities
         public GitHubCredentials? GitHub { get; private set; }
         public static Credentials GetCredentials(ICakeContext context) => new()
         {
-            GitHub = new GitHubCredentials(
-                context.EnvironmentVariable("GITHUB_USERNAME"),
-                context.EnvironmentVariable("GITHUB_TOKEN")),
+            GitHub = new GitHubCredentials(context.EnvironmentVariable("GITHUB_TOKEN")),
         };
     }
 }

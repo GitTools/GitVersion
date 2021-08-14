@@ -12,9 +12,7 @@ namespace Publish.Utilities
 
         public static Credentials GetCredentials(ICakeContext context) => new()
         {
-            GitHub = new GitHubCredentials(
-                context.EnvironmentVariable("GITHUB_USERNAME"),
-                context.EnvironmentVariable("GITHUB_TOKEN")),
+            GitHub = new GitHubCredentials(context.EnvironmentVariable("GITHUB_TOKEN")),
 
             Nuget = new NugetCredentials(
                 context.EnvironmentVariable("NUGET_API_KEY"),
