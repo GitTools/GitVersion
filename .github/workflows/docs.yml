@@ -8,12 +8,12 @@ on:
   pull_request:
     paths:
     - 'docs/**'
-
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
     env:
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      GITHUB_TOKEN: ${{ secrets.RELEASE_GITHUB_TOKEN }}
+      GITHUB_USERNAME: ${{ github.actor }}
     steps:
     -
       name: Checkout
@@ -29,23 +29,23 @@ jobs:
       name: '[Prepare]'
       if: steps.cache-cake.outputs.cache-hit != 'true'
       run: dotnet build build/CI.sln --configuration=Release
-    -
-      name: '[Build Documentation]'
-      shell: pwsh
-      run: dotnet run/docs.dll --target=BuildDocs
+    # -
+    #   name: '[Build Documentation]'
+    #   shell: pwsh
+    #   run: dotnet run/docs.dll --target=BuildDocs
 
-    -
-      name: '[HTMLProofer]'
-      uses: chabad360/htmlproofer@master
-      with:
-        directory: ./artifacts/docs/preview
-        arguments: --url-ignore /api/ --allow-hash-href --assume-extension --disable-external
-    -
-      name: '[Remark Lint]'
-      uses: reviewdog/action-remark-lint@v2
-      with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-        reporter: github-pr-check
+    # -
+    #   name: '[HTMLProofer]'
+    #   uses: chabad360/htmlproofer@master
+    #   with:
+    #     directory: ./artifacts/docs/preview
+    #     arguments: --url-ignore /api/ --allow-hash-href --assume-extension --disable-external
+    # -
+    #   name: '[Remark Lint]'
+    #   uses: reviewdog/action-remark-lint@v2
+    #   with:
+    #     github_token: ${{ secrets.GITHUB_TOKEN }}
+    #     reporter: github-pr-check
     -
       name: '[Publish Documentation]'
       if: ${{ github.event_name == 'push' }}

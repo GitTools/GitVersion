@@ -115,8 +115,14 @@ namespace Docs.Tasks
                 throw new InvalidOperationException("Could not resolve Github token.");
             }
 
+            var username = context.Credentials?.GitHub?.UserName;
+            if (string.IsNullOrEmpty(username))
+            {
+                throw new InvalidOperationException("Could not resolve Github username.");
+            }
+
             context.Information("Pushing all changes...");
-            context.GitPush(publishFolder, Constants.RepoOwner, token, publishBranchName);
+            context.GitPush(publishFolder, username, token, publishBranchName);
         }
     }
 }
