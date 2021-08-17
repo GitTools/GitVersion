@@ -199,8 +199,6 @@
 				<li><a href="/api/GitVersion/IncrementStrategy">IncrementStrategy</a></li>
 				<li><a href="/api/GitVersion/RefSpecDirection">RefSpecDirection</a></li>
 				<li><a href="/api/GitVersion/VersionField">VersionField</a></li>
-			<li class="header">Struct Types</li>
-				<li><a href="/api/GitVersion/BranchCommit">BranchCommit</a></li>
 			<li class="header">Interface Types</li>
 				<li><a href="/api/GitVersion/IArgumentParser">IArgumentParser</a></li>
 				<li><a href="/api/GitVersion/IBranch">IBranch</a></li>
@@ -232,6 +230,8 @@
 				<li><a href="/api/GitVersion/ITag">ITag</a></li>
 				<li><a href="/api/GitVersion/ITagCollection">ITagCollection</a></li>
 				<li><a href="/api/GitVersion/IVersionWriter">IVersionWriter</a></li>
+			<li class="header">Struct Types</li>
+				<li><a href="/api/GitVersion/BranchCommit">BranchCommit</a></li>
 
 
                     </ul>
@@ -278,8 +278,8 @@
 								<dt>Derived Types</dt>
 								<dd>
 									<ul class="list-unstyled">
-											<li><a href="/api/GitVersion.VersionCalculation/VersionStrategyModule">Version<wbr>Strategy<wbr>Module</a></li>								
 											<li><a href="/api/GitVersion.BuildAgents/BuildServerModule">BuildServerModule</a></li>								
+											<li><a href="/api/GitVersion.VersionCalculation/VersionStrategyModule">Version<wbr>Strategy<wbr>Module</a></li>								
 											<li><a href="/api/GitVersion.Configuration.Init/GitVersionInitModule">GitVersionInitModule</a></li>								
 									</ul>
 								</dd>			
@@ -294,10 +294,10 @@
 	click Interface0 "/api/GitVersion/IGitVersionModule"
 	Type["GitVersionModule"]
 class Type type-node
-	Derived0["VersionStrategyModule"]--&gt;Type
-	click Derived0 "/api/GitVersion.VersionCalculation/VersionStrategyModule"
-	Derived1["BuildServerModule"]--&gt;Type
-	click Derived1 "/api/GitVersion.BuildAgents/BuildServerModule"
+	Derived0["BuildServerModule"]--&gt;Type
+	click Derived0 "/api/GitVersion.BuildAgents/BuildServerModule"
+	Derived1["VersionStrategyModule"]--&gt;Type
+	click Derived1 "/api/GitVersion.VersionCalculation/VersionStrategyModule"
 	Derived2["GitVersionInitModule"]--&gt;Type
 	click Derived2 "/api/GitVersion.Configuration.Init/GitVersionInitModule"
 
