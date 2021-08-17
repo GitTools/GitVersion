@@ -208,13 +208,13 @@
 								<dt>Implementing Types</dt>
 								<dd>
 									<ul class="list-unstyled">
-											<li><a href="/api/GitVersion.VersionCalculation/TrackReleaseBranchesVersionStrategy">Track<wbr>Release<wbr>Branches<wbr>Version<wbr>Strategy</a></li>								
-											<li><a href="/api/GitVersion.VersionCalculation/FallbackVersionStrategy">Fallback<wbr>Version<wbr>Strategy</a></li>								
-											<li><a href="/api/GitVersion.VersionCalculation/TaggedCommitVersionStrategy">Tagged<wbr>Commit<wbr>Version<wbr>Strategy</a></li>								
-											<li><a href="/api/GitVersion.VersionCalculation/VersionInBranchNameVersionStrategy">Version<wbr>In<wbr>Branch<wbr>Name<wbr>Version<wbr>Strategy</a></li>								
 											<li><a href="/api/GitVersion.VersionCalculation/MergeMessageVersionStrategy">Merge<wbr>Message<wbr>Version<wbr>Strategy</a></li>								
-											<li><a href="/api/GitVersion.VersionCalculation/VersionStrategyBase">VersionStrategyBase</a></li>								
 											<li><a href="/api/GitVersion.VersionCalculation/ConfigNextVersionVersionStrategy">Config<wbr>Next<wbr>Version<wbr>Version<wbr>Strategy</a></li>								
+											<li><a href="/api/GitVersion.VersionCalculation/FallbackVersionStrategy">Fallback<wbr>Version<wbr>Strategy</a></li>								
+											<li><a href="/api/GitVersion.VersionCalculation/VersionStrategyBase">VersionStrategyBase</a></li>								
+											<li><a href="/api/GitVersion.VersionCalculation/VersionInBranchNameVersionStrategy">Version<wbr>In<wbr>Branch<wbr>Name<wbr>Version<wbr>Strategy</a></li>								
+											<li><a href="/api/GitVersion.VersionCalculation/TaggedCommitVersionStrategy">Tagged<wbr>Commit<wbr>Version<wbr>Strategy</a></li>								
+											<li><a href="/api/GitVersion.VersionCalculation/TrackReleaseBranchesVersionStrategy">Track<wbr>Release<wbr>Branches<wbr>Version<wbr>Strategy</a></li>								
 									</ul>
 								</dd>				
 						</dl>
@@ -224,20 +224,20 @@
 							graph BT
 	Type["IVersionStrategy"]
 class Type type-node
-	Implementing0["TrackReleaseBranchesVersionStrategy"]-.-&gt;Type
-	click Implementing0 "/api/GitVersion.VersionCalculation/TrackReleaseBranchesVersionStrategy"
-	Implementing1["FallbackVersionStrategy"]-.-&gt;Type
-	click Implementing1 "/api/GitVersion.VersionCalculation/FallbackVersionStrategy"
-	Implementing2["TaggedCommitVersionStrategy"]-.-&gt;Type
-	click Implementing2 "/api/GitVersion.VersionCalculation/TaggedCommitVersionStrategy"
-	Implementing3["VersionInBranchNameVersionStrategy"]-.-&gt;Type
-	click Implementing3 "/api/GitVersion.VersionCalculation/VersionInBranchNameVersionStrategy"
-	Implementing4["MergeMessageVersionStrategy"]-.-&gt;Type
-	click Implementing4 "/api/GitVersion.VersionCalculation/MergeMessageVersionStrategy"
-	Implementing5["VersionStrategyBase"]-.-&gt;Type
-	click Implementing5 "/api/GitVersion.VersionCalculation/VersionStrategyBase"
-	Implementing6["ConfigNextVersionVersionStrategy"]-.-&gt;Type
-	click Implementing6 "/api/GitVersion.VersionCalculation/ConfigNextVersionVersionStrategy"
+	Implementing0["MergeMessageVersionStrategy"]-.-&gt;Type
+	click Implementing0 "/api/GitVersion.VersionCalculation/MergeMessageVersionStrategy"
+	Implementing1["ConfigNextVersionVersionStrategy"]-.-&gt;Type
+	click Implementing1 "/api/GitVersion.VersionCalculation/ConfigNextVersionVersionStrategy"
+	Implementing2["FallbackVersionStrategy"]-.-&gt;Type
+	click Implementing2 "/api/GitVersion.VersionCalculation/FallbackVersionStrategy"
+	Implementing3["VersionStrategyBase"]-.-&gt;Type
+	click Implementing3 "/api/GitVersion.VersionCalculation/VersionStrategyBase"
+	Implementing4["VersionInBranchNameVersionStrategy"]-.-&gt;Type
+	click Implementing4 "/api/GitVersion.VersionCalculation/VersionInBranchNameVersionStrategy"
+	Implementing5["TaggedCommitVersionStrategy"]-.-&gt;Type
+	click Implementing5 "/api/GitVersion.VersionCalculation/TaggedCommitVersionStrategy"
+	Implementing6["TrackReleaseBranchesVersionStrategy"]-.-&gt;Type
+	click Implementing6 "/api/GitVersion.VersionCalculation/TrackReleaseBranchesVersionStrategy"
 
 						</div>
 					</div>
