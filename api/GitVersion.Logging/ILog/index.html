@@ -157,16 +157,16 @@
 				<li><a href="/api/GitVersion.Logging/Log">Log</a></li>
 				<li><a href="/api/GitVersion.Logging/LogExtensions">LogExtensions</a></li>
 				<li><a href="/api/GitVersion.Logging/NullLog">NullLog</a></li>
-			<li class="header">Interface Types</li>
-				<li><a href="/api/GitVersion.Logging/IConsole">IConsole</a></li>
-				<li class="selected"><a href="/api/GitVersion.Logging/ILog">ILog</a></li>
-				<li><a href="/api/GitVersion.Logging/ILogAppender">ILogAppender</a></li>
 			<li class="header">Enum Types</li>
 				<li><a href="/api/GitVersion.Logging/LogLevel">LogLevel</a></li>
 				<li><a href="/api/GitVersion.Logging/Verbosity">Verbosity</a></li>
 			<li class="header">Delegate Types</li>
 				<li><a href="/api/GitVersion.Logging/LogAction">LogAction</a></li>
 				<li><a href="/api/GitVersion.Logging/LogActionEntry">LogActionEntry</a></li>
+			<li class="header">Interface Types</li>
+				<li><a href="/api/GitVersion.Logging/IConsole">IConsole</a></li>
+				<li class="selected"><a href="/api/GitVersion.Logging/ILog">ILog</a></li>
+				<li><a href="/api/GitVersion.Logging/ILogAppender">ILogAppender</a></li>
 
 
                     </ul>
@@ -202,8 +202,8 @@
 								<dt>Implementing Types</dt>
 								<dd>
 									<ul class="list-unstyled">
-											<li><a href="/api/GitVersion.Logging/Log">Log</a></li>								
 											<li><a href="/api/GitVersion.Logging/NullLog">NullLog</a></li>								
+											<li><a href="/api/GitVersion.Logging/Log">Log</a></li>								
 									</ul>
 								</dd>				
 						</dl>
@@ -213,10 +213,10 @@
 							graph BT
 	Type["ILog"]
 class Type type-node
-	Implementing0["Log"]-.-&gt;Type
-	click Implementing0 "/api/GitVersion.Logging/Log"
-	Implementing1["NullLog"]-.-&gt;Type
-	click Implementing1 "/api/GitVersion.Logging/NullLog"
+	Implementing0["NullLog"]-.-&gt;Type
+	click Implementing0 "/api/GitVersion.Logging/NullLog"
+	Implementing1["Log"]-.-&gt;Type
+	click Implementing1 "/api/GitVersion.Logging/Log"
 
 						</div>
 					</div>
