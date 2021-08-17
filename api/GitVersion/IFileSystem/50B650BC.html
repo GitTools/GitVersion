@@ -6,7 +6,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="shortcut icon" href="/assets/img/favicon.ico" type="image/x-icon">
         <link rel="icon" href="/assets/img/favicon.ico" type="image/x-icon">
-        <title>GitVersion - API - IFileSystem.Move(string, string) Method</title>
+        <title>GitVersion - API - IFileSystem.DirectoryEnumerateFiles(string?, string, SearchOption) Method</title>
         <link href="/assets/css/highlight.css" rel="stylesheet">
         <link href="/assets/css/bootstrap/bootstrap.css" rel="stylesheet">
         <link href="/assets/css/adminlte/AdminLTE.css" rel="stylesheet">
@@ -154,11 +154,11 @@
 				<li><a href="/api/GitVersion/IFileSystem/27A858BD">Copy<wbr>(string, <wbr>string, <wbr>bool)<wbr></a></li>
 				<li><a href="/api/GitVersion/IFileSystem/BDE1D614">CreateDirectory<wbr>(string)<wbr></a></li>
 				<li><a href="/api/GitVersion/IFileSystem/12B6EF25">Delete<wbr>(string)<wbr></a></li>
-				<li><a href="/api/GitVersion/IFileSystem/50B650BC">Directory<wbr>Enumerate<wbr>Files<wbr>(string?, <wbr>string, <wbr>SearchOption)<wbr></a></li>
+				<li class="selected"><a href="/api/GitVersion/IFileSystem/50B650BC">Directory<wbr>Enumerate<wbr>Files<wbr>(string?, <wbr>string, <wbr>SearchOption)<wbr></a></li>
 				<li><a href="/api/GitVersion/IFileSystem/CB3FEA5E">DirectoryExists<wbr>(string)<wbr></a></li>
 				<li><a href="/api/GitVersion/IFileSystem/59A24147">Exists<wbr>(string)<wbr></a></li>
 				<li><a href="/api/GitVersion/IFileSystem/EE2A9DBB">Get<wbr>Last<wbr>Directory<wbr>Write<wbr>(string)<wbr></a></li>
-				<li class="selected"><a href="/api/GitVersion/IFileSystem/1CD994AA">Move<wbr>(string, <wbr>string)<wbr></a></li>
+				<li><a href="/api/GitVersion/IFileSystem/1CD994AA">Move<wbr>(string, <wbr>string)<wbr></a></li>
 				<li><a href="/api/GitVersion/IFileSystem/6BEB73CD">OpenRead<wbr>(string)<wbr></a></li>
 				<li><a href="/api/GitVersion/IFileSystem/B3CD890D">OpenWrite<wbr>(string)<wbr></a></li>
 				<li><a href="/api/GitVersion/IFileSystem/598AEB32">PathsEqual<wbr>(string?, <wbr>string?)<wbr></a></li>
@@ -180,7 +180,7 @@
 
 <section class="content-header">
 			<h3><a href="/api/GitVersion/IFileSystem">IFileSystem</a>.</h3>
-	<h1>Move<wbr>(string, <wbr>string)<wbr> <small>Method</small></h1>
+	<h1>Directory<wbr>Enumerate<wbr>Files<wbr>(string?, <wbr>string, <wbr>SearchOption)<wbr> <small>Method</small></h1>
 </section>
 <section class="content">
 	
@@ -201,7 +201,7 @@
 		</div>
 
 	<h1 id="Syntax">Syntax</h1>
-	<pre><code>void Move(string from, string to)</code></pre>
+	<pre><code>IEnumerable&lt;string&gt; DirectoryEnumerateFiles(string? directory, string searchPattern, SearchOption searchOption)</code></pre>
 
 
 
@@ -219,13 +219,18 @@
 					</tr>
 				</thead>
 					<tbody><tr>
-						<td>from</td>
+						<td>directory</td>
+						<td>string?</td>
+						<td></td>
+					</tr>
+					<tr>
+						<td>searchPattern</td>
 						<td>string</td>
 						<td></td>
 					</tr>
 					<tr>
-						<td>to</td>
-						<td>string</td>
+						<td>searchOption</td>
+						<td>SearchOption</td>
 						<td></td>
 					</tr>
 			</tbody></table>
@@ -243,7 +248,7 @@
 					</tr>
 				</thead>
 				<tbody><tr>
-					<td>void</td>
+					<td>IEnumerable<wbr>&lt;string&gt;<wbr></td>
 					<td></td>
 				</tr>
 			</tbody></table>

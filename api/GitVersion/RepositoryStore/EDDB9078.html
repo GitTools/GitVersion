@@ -213,7 +213,7 @@
 		</div>
 
 	<h1 id="Syntax">Syntax</h1>
-	<pre><code>public IEnumerable&lt;Tuple&lt;ITag?, SemanticVersion?&gt;&gt; GetValidVersionTags(string? tagPrefixRegex, DateTimeOffset? olderThan = null)</code></pre>
+	<pre><code>public IEnumerable&lt;Tuple&lt;ITag, SemanticVersion, ICommit&gt;&gt; GetValidVersionTags(string? tagPrefixRegex, DateTimeOffset? olderThan = null)</code></pre>
 
 
 
@@ -255,7 +255,7 @@
 					</tr>
 				</thead>
 				<tbody><tr>
-					<td>IEnumerable<wbr>&lt;Tuple<wbr>&lt;<a href="/api/GitVersion/ITag">ITag?</a>, <wbr><a href="/api/GitVersion/SemanticVersion">SemanticVersion?</a>&gt;<wbr>&gt;<wbr></td>
+					<td>IEnumerable<wbr>&lt;Tuple<wbr>&lt;<a href="/api/GitVersion/ITag">ITag</a>, <wbr><a href="/api/GitVersion/SemanticVersion">SemanticVersion</a>, <wbr><a href="/api/GitVersion/ICommit">ICommit</a>&gt;<wbr>&gt;<wbr></td>
 					<td></td>
 				</tr>
 			</tbody></table>
