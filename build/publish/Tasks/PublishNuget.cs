@@ -37,6 +37,10 @@ namespace Publish.Tasks
             if (context.IsGitHubActionsBuild && context.IsOnMainBranchOriginalRepo)
             {
                 var apiKey = context.Credentials?.GitHub?.Token;
+                if (string.IsNullOrEmpty(apiKey))
+                {
+                    throw new InvalidOperationException("Could not resolve NuGet GitHub Packages API key.");
+                }
                 PublishToNugetRepo(context, apiKey, Constants.GithubPackagesUrl);
             }
             // publish to nuget.org for stable releases
@@ -51,7 +55,7 @@ namespace Publish.Tasks
                 PublishToNugetRepo(context, apiKey, Constants.NugetOrgUrl);
             }
         }
-        private static void PublishToNugetRepo(BuildContext context, string? apiKey, string? apiUrl)
+        private static void PublishToNugetRepo(BuildContext context, string apiKey, string apiUrl)
         {
             var nugetVersion = context.Version!.NugetVersion;
             foreach (var (packageName, filePath, _) in context.Packages.Where(x => !x.IsChocoPackage))
