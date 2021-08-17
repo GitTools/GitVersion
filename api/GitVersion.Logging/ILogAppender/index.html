@@ -148,6 +148,13 @@
 			<li class="header">Namespace</li>
 		<li><a href="/api/GitVersion.Logging">GitVersion<wbr>.Logging</a></li>
 		<li role="separator" class="divider"></li>
+			<li class="header">Interface Types</li>
+				<li><a href="/api/GitVersion.Logging/IConsole">IConsole</a></li>
+				<li><a href="/api/GitVersion.Logging/ILog">ILog</a></li>
+				<li class="selected"><a href="/api/GitVersion.Logging/ILogAppender">ILogAppender</a></li>
+			<li class="header">Enum Types</li>
+				<li><a href="/api/GitVersion.Logging/LogLevel">LogLevel</a></li>
+				<li><a href="/api/GitVersion.Logging/Verbosity">Verbosity</a></li>
 			<li class="header">Class Types</li>
 				<li><a href="/api/GitVersion.Logging/ConsoleAdapter">ConsoleAdapter</a></li>
 				<li><a href="/api/GitVersion.Logging/ConsoleAppender">ConsoleAppender</a></li>
@@ -156,13 +163,6 @@
 				<li><a href="/api/GitVersion.Logging/Log">Log</a></li>
 				<li><a href="/api/GitVersion.Logging/LogExtensions">LogExtensions</a></li>
 				<li><a href="/api/GitVersion.Logging/NullLog">NullLog</a></li>
-			<li class="header">Interface Types</li>
-				<li><a href="/api/GitVersion.Logging/IConsole">IConsole</a></li>
-				<li><a href="/api/GitVersion.Logging/ILog">ILog</a></li>
-				<li class="selected"><a href="/api/GitVersion.Logging/ILogAppender">ILogAppender</a></li>
-			<li class="header">Enum Types</li>
-				<li><a href="/api/GitVersion.Logging/LogLevel">LogLevel</a></li>
-				<li><a href="/api/GitVersion.Logging/Verbosity">Verbosity</a></li>
 			<li class="header">Delegate Types</li>
 				<li><a href="/api/GitVersion.Logging/LogAction">LogAction</a></li>
 				<li><a href="/api/GitVersion.Logging/LogActionEntry">LogActionEntry</a></li>
@@ -201,9 +201,9 @@
 								<dt>Implementing Types</dt>
 								<dd>
 									<ul class="list-unstyled">
+											<li><a href="/api/GitVersion.MsBuild/MsBuildAppender">MsBuildAppender</a></li>								
 											<li><a href="/api/GitVersion.Logging/ConsoleAppender">ConsoleAppender</a></li>								
 											<li><a href="/api/GitVersion.Logging/FileAppender">FileAppender</a></li>								
-											<li><a href="/api/GitVersion.MsBuild/MsBuildAppender">MsBuildAppender</a></li>								
 									</ul>
 								</dd>				
 						</dl>
@@ -213,12 +213,12 @@
 							graph BT
 	Type["ILogAppender"]
 class Type type-node
-	Implementing0["ConsoleAppender"]-.-&gt;Type
-	click Implementing0 "/api/GitVersion.Logging/ConsoleAppender"
-	Implementing1["FileAppender"]-.-&gt;Type
-	click Implementing1 "/api/GitVersion.Logging/FileAppender"
-	Implementing2["MsBuildAppender"]-.-&gt;Type
-	click Implementing2 "/api/GitVersion.MsBuild/MsBuildAppender"
+	Implementing0["MsBuildAppender"]-.-&gt;Type
+	click Implementing0 "/api/GitVersion.MsBuild/MsBuildAppender"
+	Implementing1["ConsoleAppender"]-.-&gt;Type
+	click Implementing1 "/api/GitVersion.Logging/ConsoleAppender"
+	Implementing2["FileAppender"]-.-&gt;Type
+	click Implementing2 "/api/GitVersion.Logging/FileAppender"
 
 						</div>
 					</div>
