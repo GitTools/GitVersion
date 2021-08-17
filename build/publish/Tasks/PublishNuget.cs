@@ -69,9 +69,8 @@ namespace Publish.Tasks
             }
         }
         // TODO check package is already published
-        private static bool IsPackagePublished(BuildContext context, string? packageName, string? nugetVersion)
+        private static bool IsPackagePublished(BuildContext context, string? packageName, string? nugetVersion, string apiUrl)
         {
-            var apiUrl = context.Credentials?.Nuget?.ApiUrl;
             var publishedPackages = context.NuGetList($"packageId:{packageName} version:{nugetVersion}", new NuGetListSettings
             {
                 Source = new[]

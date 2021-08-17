@@ -2,7 +2,7 @@ namespace Common.Utilities
 {
     public class Constants
     {
-        public const string RepoOwner = "gittools";
+        public const string RepoOwner = "GitTools";
         public const string Repository = "GitVersion";
 
         public const string Version50 = "5.0";

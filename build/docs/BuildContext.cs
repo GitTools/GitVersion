@@ -9,7 +9,6 @@ namespace Docs
     {
         public bool ForcePublish { get; set; }
         public Credentials? Credentials { get; set; }
-
         public WyamSettings? WyamSettings { get; set; }
 
         public BuildContext(ICakeContext context) : base(context)

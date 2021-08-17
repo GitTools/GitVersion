@@ -12,17 +12,27 @@ namespace Common.Utilities
 {
     public static class ContextExtensions
     {
-        private static IEnumerable<string> ExecuteCommand(this ICakeContext context, FilePath exe, string? args)
+        private static IEnumerable<string> ExecuteCommand(this ICakeContext context, FilePath exe, string? args, DirectoryPath? workDir = null)
         {
             var processSettings = new ProcessSettings { Arguments = args, RedirectStandardOutput = true };
+            if (workDir is not null)
+            {
+                processSettings.WorkingDirectory = workDir;
+            }
             context.StartProcess(exe, processSettings, out var redirectedOutput);
             return redirectedOutput.ToList();
         }
 
-        private static IEnumerable<string> ExecGitCmd(this ICakeContext context, string? cmd)
+        private static IEnumerable<string> ExecGitCmd(this ICakeContext context, string? cmd, DirectoryPath? workDir = null)
         {
             var gitExe = context.Tools.Resolve(context.IsRunningOnWindows() ? "git.exe" : "git");
-            return context.ExecuteCommand(gitExe, cmd);
+            return context.ExecuteCommand(gitExe, cmd, workDir);
+        }
+
+        public static void GitPushBranch(this ICakeContext context, DirectoryPath repositoryDirectoryPath, string username, string token, string branchName)
+        {
+            var pushUrl = $"https://{username}:{token}@github.com/{Constants.RepoOwner}/{Constants.Repository}";
+            context.ExecGitCmd($"push {pushUrl} {branchName}", workDir: repositoryDirectoryPath);
         }
 
         public static bool IsOriginalRepo(this ICakeContext context)
@@ -49,7 +59,7 @@ namespace Common.Utilities
         public static bool IsMainBranch(this ICakeContext context)
         {
             var buildSystem = context.BuildSystem();
-            string repositoryBranch = ExecGitCmd(context, "rev-parse --abbrev-ref HEAD").Single();
+            string repositoryBranch = context.ExecGitCmd("rev-parse --abbrev-ref HEAD").Single();
             if (buildSystem.IsRunningOnAppVeyor)
             {
                 repositoryBranch = buildSystem.AppVeyor.Environment.Repository.Branch;
@@ -70,8 +80,8 @@ namespace Common.Utilities
 
         public static bool IsTagged(this ICakeContext context)
         {
-            var sha = ExecGitCmd(context, "rev-parse --verify HEAD").Single();
-            var isTagged = ExecGitCmd(context, "tag --points-at " + sha).Any();
+            var sha = context.ExecGitCmd("rev-parse --verify HEAD").Single();
+            var isTagged = context.ExecGitCmd("tag --points-at " + sha).Any();
 
             return isTagged;
         }

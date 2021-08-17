@@ -9,9 +9,9 @@ namespace Common.Utilities
 
     public record GitHubCredentials(string Token, string? UserName = null);
 
-    public record NugetCredentials(string ApiKey, string ApiUrl);
+    public record NugetCredentials(string ApiKey);
 
-    public record ChocolateyCredentials(string ApiKey, string ApiUrl);
+    public record ChocolateyCredentials(string ApiKey);
 
     public record BuildVersion(GitVersion GitVersion, string? Version, string? Milestone, string? SemVersion, string? NugetVersion)
     {

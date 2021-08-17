@@ -122,7 +122,8 @@ namespace Docs.Tasks
             }
 
             context.Information("Pushing all changes...");
-            context.GitPush(publishFolder, username, token, publishBranchName);
+
+            context.GitPushBranch(publishFolder, username, token, publishBranchName);
         }
     }
 }

@@ -13,14 +13,8 @@ namespace Publish.Utilities
         public static Credentials GetCredentials(ICakeContext context) => new()
         {
             GitHub = new GitHubCredentials(context.EnvironmentVariable("GITHUB_TOKEN")),
-
-            Nuget = new NugetCredentials(
-                context.EnvironmentVariable("NUGET_API_KEY"),
-                context.EnvironmentVariable("NUGET_API_URL")),
-
-            Chocolatey = new ChocolateyCredentials(
-                context.EnvironmentVariable("CHOCOLATEY_API_KEY"),
-                context.EnvironmentVariable("CHOCOLATEY_API_URL")),
+            Nuget = new NugetCredentials(context.EnvironmentVariable("NUGET_API_KEY")),
+            Chocolatey = new ChocolateyCredentials(context.EnvironmentVariable("CHOCOLATEY_API_KEY")),
         };
     }
 }
