@@ -148,15 +148,6 @@
 			<li class="header">Namespace</li>
 		<li><a href="/api/GitVersion.VersionCalculation">GitVersion<wbr>.VersionCalculation</a></li>
 		<li role="separator" class="divider"></li>
-			<li class="header">Interface Types</li>
-				<li><a href="/api/GitVersion.VersionCalculation/IBaseVersionCalculator">I<wbr>Base<wbr>Version<wbr>Calculator</a></li>
-				<li><a href="/api/GitVersion.VersionCalculation/IMainlineVersionCalculator">I<wbr>Mainline<wbr>Version<wbr>Calculator</a></li>
-				<li><a href="/api/GitVersion.VersionCalculation/INextVersionCalculator">I<wbr>Next<wbr>Version<wbr>Calculator</a></li>
-				<li><a href="/api/GitVersion.VersionCalculation/IVariableProvider">IVariableProvider</a></li>
-				<li class="selected"><a href="/api/GitVersion.VersionCalculation/IVersionFilter">IVersionFilter</a></li>
-				<li><a href="/api/GitVersion.VersionCalculation/IVersionStrategy">IVersionStrategy</a></li>
-			<li class="header">Enum Types</li>
-				<li><a href="/api/GitVersion.VersionCalculation/VersioningMode">VersioningMode</a></li>
 			<li class="header">Class Types</li>
 				<li><a href="/api/GitVersion.VersionCalculation/BaseVersion">BaseVersion</a></li>
 				<li><a href="/api/GitVersion.VersionCalculation/BaseVersionCalculator">Base<wbr>Version<wbr>Calculator</a></li>
@@ -173,6 +164,15 @@
 				<li><a href="/api/GitVersion.VersionCalculation/VersionInBranchNameVersionStrategy">Version<wbr>In<wbr>Branch<wbr>Name<wbr>Version<wbr>Strategy</a></li>
 				<li><a href="/api/GitVersion.VersionCalculation/VersionStrategyBase">VersionStrategyBase</a></li>
 				<li><a href="/api/GitVersion.VersionCalculation/VersionStrategyModule">Version<wbr>Strategy<wbr>Module</a></li>
+			<li class="header">Interface Types</li>
+				<li><a href="/api/GitVersion.VersionCalculation/IBaseVersionCalculator">I<wbr>Base<wbr>Version<wbr>Calculator</a></li>
+				<li><a href="/api/GitVersion.VersionCalculation/IMainlineVersionCalculator">I<wbr>Mainline<wbr>Version<wbr>Calculator</a></li>
+				<li><a href="/api/GitVersion.VersionCalculation/INextVersionCalculator">I<wbr>Next<wbr>Version<wbr>Calculator</a></li>
+				<li><a href="/api/GitVersion.VersionCalculation/IVariableProvider">IVariableProvider</a></li>
+				<li class="selected"><a href="/api/GitVersion.VersionCalculation/IVersionFilter">IVersionFilter</a></li>
+				<li><a href="/api/GitVersion.VersionCalculation/IVersionStrategy">IVersionStrategy</a></li>
+			<li class="header">Enum Types</li>
+				<li><a href="/api/GitVersion.VersionCalculation/VersioningMode">VersioningMode</a></li>
 
 
                     </ul>
@@ -208,8 +208,8 @@
 								<dt>Implementing Types</dt>
 								<dd>
 									<ul class="list-unstyled">
-											<li><a href="/api/GitVersion.VersionCalculation/MinDateVersionFilter">MinDateVersionFilter</a></li>								
 											<li><a href="/api/GitVersion.VersionCalculation/ShaVersionFilter">ShaVersionFilter</a></li>								
+											<li><a href="/api/GitVersion.VersionCalculation/MinDateVersionFilter">MinDateVersionFilter</a></li>								
 									</ul>
 								</dd>				
 						</dl>
@@ -219,10 +219,10 @@
 							graph BT
 	Type["IVersionFilter"]
 class Type type-node
-	Implementing0["MinDateVersionFilter"]-.-&gt;Type
-	click Implementing0 "/api/GitVersion.VersionCalculation/MinDateVersionFilter"
-	Implementing1["ShaVersionFilter"]-.-&gt;Type
-	click Implementing1 "/api/GitVersion.VersionCalculation/ShaVersionFilter"
+	Implementing0["ShaVersionFilter"]-.-&gt;Type
+	click Implementing0 "/api/GitVersion.VersionCalculation/ShaVersionFilter"
+	Implementing1["MinDateVersionFilter"]-.-&gt;Type
+	click Implementing1 "/api/GitVersion.VersionCalculation/MinDateVersionFilter"
 
 						</div>
 					</div>
