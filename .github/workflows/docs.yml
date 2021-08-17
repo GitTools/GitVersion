@@ -1,4 +1,4 @@
-name: Verify & Publish Documentation
+name: Verify & Publish Docs
 
 on:
   workflow_dispatch:
@@ -9,11 +9,14 @@ on:
     paths:
     - 'docs/**'
 jobs:
-  build:
-    runs-on: windows-latest
-    env:
-      GITHUB_TOKEN: ${{ secrets.RELEASE_GITHUB_TOKEN }}
-      GITHUB_USERNAME: ${{ github.actor }}
+  prepare:
+    name: Prepare Build
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [windows-latest, ubuntu-latest]
+      fail-fast: false
+
     steps:
     -
       name: Checkout
@@ -24,28 +27,82 @@ jobs:
       uses: actions/cache@v2.1.6
       with:
         path: run
-        key: run-docs-${{ runner.os }}-${{ hashFiles('./build/**') }}
+        key: run-${{ runner.os }}-${{ hashFiles('./build/**') }}
     -
       name: '[Prepare]'
       if: steps.cache-cake.outputs.cache-hit != 'true'
       run: dotnet build build/CI.sln --configuration=Release
-    # -
-    #   name: '[Build Documentation]'
-    #   shell: pwsh
-    #   run: dotnet run/docs.dll --target=BuildDocs
 
-    # -
-    #   name: '[HTMLProofer]'
-    #   uses: chabad360/htmlproofer@master
-    #   with:
-    #     directory: ./artifacts/docs/preview
-    #     arguments: --url-ignore /api/ --allow-hash-href --assume-extension --disable-external
-    # -
-    #   name: '[Remark Lint]'
-    #   uses: reviewdog/action-remark-lint@v2
-    #   with:
-    #     github_token: ${{ secrets.GITHUB_TOKEN }}
-    #     reporter: github-pr-check
+  validate:
+    name: Validates Html
+    needs: [prepare]
+    runs-on: ubuntu-latest
+    steps:
+    -
+      name: Checkout
+      uses: actions/checkout@v2
+    -
+      name: Fetch all history for all tags and branches
+      run: git fetch --prune --unshallow
+    -
+      name: Use cached cake frosting
+      id: cache-cake
+      uses: actions/cache@v2.1.6
+      with:
+        path: run
+        key: run-${{ runner.os }}-${{ hashFiles('./build/**') }}
+    -
+      name: Use cached tools
+      id: cache-tools
+      uses: actions/cache@v2.1.6
+      with:
+        path: tools
+        key: tools-${{ runner.os }}-${{ hashFiles('./build/**') }}
+    -
+      name: '[Build Documentation]'
+      shell: pwsh
+      run: dotnet run/docs.dll --target=BuildDocs
+
+    -
+      name: '[HTMLProofer]'
+      uses: chabad360/htmlproofer@master
+      with:
+        directory: ./artifacts/docs/preview
+        arguments: --url-ignore /api/ --allow-hash-href --assume-extension --disable-external
+    -
+      name: '[Remark Lint]'
+      uses: reviewdog/action-remark-lint@v2
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        reporter: github-pr-check
+  publish:
+    name: Publish docs
+    needs: [validate]
+    runs-on: windows-latest
+    env:
+      GITHUB_TOKEN: ${{ secrets.RELEASE_GITHUB_TOKEN }}
+      GITHUB_USERNAME: ${{ github.actor }}
+    steps:
+    -
+      name: Checkout
+      uses: actions/checkout@v2
+    -
+      name: Fetch all history for all tags and branches
+      run: git fetch --prune --unshallow
+    -
+      name: Use cached cake frosting
+      id: cache-cake
+      uses: actions/cache@v2.1.6
+      with:
+        path: run
+        key: run-${{ runner.os }}-${{ hashFiles('./build/**') }}
+    -
+      name: Use cached tools
+      id: cache-tools
+      uses: actions/cache@v2.1.6
+      with:
+        path: tools
+        key: tools-${{ runner.os }}-${{ hashFiles('./build/**') }}
     -
       name: '[Publish Documentation]'
       if: ${{ github.event_name == 'push' }}
