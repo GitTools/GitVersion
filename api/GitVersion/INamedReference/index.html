@@ -199,6 +199,8 @@
 				<li><a href="/api/GitVersion/IncrementStrategy">IncrementStrategy</a></li>
 				<li><a href="/api/GitVersion/RefSpecDirection">RefSpecDirection</a></li>
 				<li><a href="/api/GitVersion/VersionField">VersionField</a></li>
+			<li class="header">Struct Types</li>
+				<li><a href="/api/GitVersion/BranchCommit">BranchCommit</a></li>
 			<li class="header">Interface Types</li>
 				<li><a href="/api/GitVersion/IArgumentParser">IArgumentParser</a></li>
 				<li><a href="/api/GitVersion/IBranch">IBranch</a></li>
@@ -230,8 +232,6 @@
 				<li><a href="/api/GitVersion/ITag">ITag</a></li>
 				<li><a href="/api/GitVersion/ITagCollection">ITagCollection</a></li>
 				<li><a href="/api/GitVersion/IVersionWriter">IVersionWriter</a></li>
-			<li class="header">Struct Types</li>
-				<li><a href="/api/GitVersion/BranchCommit">BranchCommit</a></li>
 
 
                     </ul>
@@ -267,8 +267,8 @@
 								<dt>Implementing Types</dt>
 								<dd>
 									<ul class="list-unstyled">
-											<li><a href="/api/GitVersion/ITag">ITag</a></li>								
 											<li><a href="/api/GitVersion/IReference">IReference</a></li>								
+											<li><a href="/api/GitVersion/ITag">ITag</a></li>								
 											<li><a href="/api/GitVersion/IBranch">IBranch</a></li>								
 									</ul>
 								</dd>				
@@ -279,10 +279,10 @@
 							graph BT
 	Type["INamedReference"]
 class Type type-node
-	Implementing0["ITag"]-.-&gt;Type
-	click Implementing0 "/api/GitVersion/ITag"
-	Implementing1["IReference"]-.-&gt;Type
-	click Implementing1 "/api/GitVersion/IReference"
+	Implementing0["IReference"]-.-&gt;Type
+	click Implementing0 "/api/GitVersion/IReference"
+	Implementing1["ITag"]-.-&gt;Type
+	click Implementing1 "/api/GitVersion/ITag"
 	Implementing2["IBranch"]-.-&gt;Type
 	click Implementing2 "/api/GitVersion/IBranch"
 
