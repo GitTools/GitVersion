@@ -60,7 +60,9 @@ namespace Publish.Tasks
                 context.Information($"Package {packageName}, version {nugetVersion} is being published.");
                 context.DotNetCoreNuGetPush(filePath.FullPath, new DotNetCoreNuGetPushSettings
                 {
-                    ApiKey = apiKey, Source = apiUrl, SkipDuplicate = true
+                    ApiKey = apiKey,
+                    Source = apiUrl,
+                    SkipDuplicate = true
                 });
             }
         }
