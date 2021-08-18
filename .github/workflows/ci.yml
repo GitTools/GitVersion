@@ -105,8 +105,6 @@ jobs:
     name: Unit Test code
     needs: [prepare]
     runs-on: ${{ matrix.os }}
-    env:
-      CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
     strategy:
       matrix:
         os: [windows-latest, ubuntu-latest, macos-latest]
@@ -138,6 +136,11 @@ jobs:
       name: '[Build]'
       shell: pwsh
       run: dotnet run/build.dll --target=Test --dotnet_target=${{ matrix.targetFramework }}
+    -
+      name: Upload coverage to Codecov
+      uses: codecov/codecov-action@v2
+      with:
+        directory: ./artifacts/test-results/
 
   artifacts_windows_test:
     name: Test artifacts on windows
