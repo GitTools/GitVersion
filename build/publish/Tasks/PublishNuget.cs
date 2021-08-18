@@ -3,8 +3,6 @@ using System.Linq;
 using Cake.Common.Diagnostics;
 using Cake.Common.Tools.DotNetCore;
 using Cake.Common.Tools.DotNetCore.NuGet.Push;
-using Cake.Common.Tools.NuGet;
-using Cake.Common.Tools.NuGet.List;
 using Cake.Frosting;
 using Common.Utilities;
 
@@ -13,7 +11,6 @@ namespace Publish.Tasks
     [TaskName(nameof(PublishNuget))]
     [TaskDescription("Publish nuget packages")]
     [IsDependentOn(typeof(PublishNugetInternal))]
-
     public class PublishNuget : FrostingTask<BuildContext>
     {
     }
@@ -63,24 +60,9 @@ namespace Publish.Tasks
                 context.Information($"Package {packageName}, version {nugetVersion} is being published.");
                 context.DotNetCoreNuGetPush(filePath.FullPath, new DotNetCoreNuGetPushSettings
                 {
-                    ApiKey = apiKey,
-                    Source = apiUrl
+                    ApiKey = apiKey, Source = apiUrl, SkipDuplicate = true
                 });
             }
-        }
-        // TODO check package is already published
-        private static bool IsPackagePublished(BuildContext context, string? packageName, string? nugetVersion, string apiUrl)
-        {
-            var publishedPackages = context.NuGetList($"packageId:{packageName} version:{nugetVersion}", new NuGetListSettings
-            {
-                Source = new[]
-                {
-                    apiUrl
-                },
-                AllVersions = true,
-            });
-
-            return publishedPackages.Any();
         }
     }
 }

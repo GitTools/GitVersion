@@ -12,7 +12,7 @@ namespace Common.Utilities
 {
     public static class ContextExtensions
     {
-        private static IEnumerable<string> ExecuteCommand(this ICakeContext context, FilePath exe, string? args, DirectoryPath? workDir = null)
+        public static IEnumerable<string> ExecuteCommand(this ICakeContext context, FilePath exe, string? args, DirectoryPath? workDir = null)
         {
             var processSettings = new ProcessSettings { Arguments = args, RedirectStandardOutput = true };
             if (workDir is not null)

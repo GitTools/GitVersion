@@ -3,6 +3,7 @@ using System.Linq;
 using Cake.Common.Diagnostics;
 using Cake.Common.Tools.Chocolatey;
 using Cake.Common.Tools.Chocolatey.Push;
+using Cake.Core;
 using Cake.Frosting;
 using Common.Utilities;
 
@@ -40,14 +41,30 @@ namespace Publish.Tasks
             var nugetVersion = context.Version!.NugetVersion;
             foreach (var (packageName, filePath, _) in context.Packages.Where(x => x.IsChocoPackage))
             {
-                context.Information($"Package {packageName}, version {nugetVersion} is being published.");
-                context.ChocolateyPush(filePath.FullPath, new ChocolateyPushSettings
+                if (!IsPackagePublished(context, packageName, nugetVersion))
                 {
-                    ApiKey = apiKey,
-                    Source = Constants.ChocolateyUrl,
-                    Force = true
-                });
+                    try
+                    {
+                        context.Information($"Package {packageName}, version {nugetVersion} is being published.");
+                        context.ChocolateyPush(filePath.FullPath, new ChocolateyPushSettings
+                        {
+                            ApiKey = apiKey, Source = Constants.ChocolateyUrl, Force = true
+                        });
+                    }
+                    catch (Exception)
+                    {
+                        context.Warning($"There is an exception publishing the Package {packageName}.");
+                        // chocolatey sometimes fails with an error, even if the package gets pushed
+                    }
+                }
             }
+        }
+
+        private static bool IsPackagePublished(ICakeContext context, string packageName, string? nugetVersion)
+        {
+            var chocoExe = context.Tools.Resolve("choco.exe");
+            var chocoListOutput = context.ExecuteCommand(chocoExe, $"list {packageName} --version={nugetVersion}");
+            return chocoListOutput.Contains("1 packages found.");
         }
     }
 }
