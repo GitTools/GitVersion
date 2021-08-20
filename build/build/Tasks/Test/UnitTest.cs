@@ -39,7 +39,7 @@ namespace Build.Tasks
             foreach (var framework in frameworks)
             {
                 // run using dotnet test
-                var projects = context.GetFiles("./src/**/*.Tests.csproj");
+                var projects = context.GetFiles($"{Paths.Src}/**/*.Tests.csproj");
                 foreach (var project in projects)
                 {
                     TestProjectForTarget(context, project, framework);

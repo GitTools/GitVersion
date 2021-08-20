@@ -16,7 +16,6 @@ namespace Common.Utilities
         {
             var buildSystem = context.BuildSystem();
             context.IsLocalBuild = buildSystem.IsLocalBuild;
-            context.IsAppVeyorBuild = buildSystem.IsRunningOnAppVeyor;
             context.IsAzurePipelineBuild = buildSystem.IsRunningOnAzurePipelines || buildSystem.IsRunningOnAzurePipelinesHosted;
             context.IsGitHubActionsBuild = buildSystem.IsRunningOnGitHubActions;
 
