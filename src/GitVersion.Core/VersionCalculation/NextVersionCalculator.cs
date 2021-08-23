@@ -123,7 +123,7 @@ namespace GitVersion.VersionCalculation
 
             var lastTag = this.repositoryStore
                 .GetVersionTagsOnBranch(context.CurrentBranch!, context.Configuration?.GitTagPrefix)
-                .FirstOrDefault(v => v?.PreReleaseTag?.Name?.IsEquivalentTo(tagToUse) == true);
+                .FirstOrDefault(v => v.PreReleaseTag?.Name?.IsEquivalentTo(tagToUse) == true);
 
             if (lastTag != null &&
                 MajorMinorPatchEqual(lastTag, semanticVersion) &&

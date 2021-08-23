@@ -15,7 +15,7 @@ namespace GitVersion
     {
         private readonly Dictionary<IBranch, List<BranchCommit>> mergeBaseCommitsCache = new();
         private readonly Dictionary<Tuple<IBranch, IBranch?>, ICommit?> mergeBaseCache = new();
-        private readonly Dictionary<IBranch, List<SemanticVersion?>> semanticVersionTagsOnBranchCache = new();
+        private readonly Dictionary<IBranch, List<SemanticVersion>> semanticVersionTagsOnBranchCache = new();
         private const string MissingTipFormat = "{0} has no tip. Please see http://example.com/docs for information on how to fix this.";
 
         private readonly ILog log;
@@ -357,7 +357,7 @@ namespace GitVersion
             return increment != null ? baseVersion.SemanticVersion.IncrementVersion(increment.Value) : baseVersion.SemanticVersion;
         }
 
-        public IEnumerable<SemanticVersion?> GetVersionTagsOnBranch(IBranch branch, string? tagPrefixRegex)
+        public IEnumerable<SemanticVersion> GetVersionTagsOnBranch(IBranch branch, string? tagPrefixRegex)
         {
             if (this.semanticVersionTagsOnBranchCache.ContainsKey(branch))
             {
@@ -368,8 +368,8 @@ namespace GitVersion
             using (this.log.IndentLog($"Getting version tags from branch '{branch.Name.Canonical}'."))
             {
                 var tags = GetValidVersionTags(tagPrefixRegex);
-
-                var versionTags = branch.Commits.SelectMany(c => tags.Where(t => c.Sha == t.Item1?.TargetSha).Select(t => t.Item2)).ToList();
+                var tagsBySha = tags.Where(t => t.Item1.TargetSha != null).ToLookup(t => t.Item1.TargetSha, t => t);
+                var versionTags = branch.Commits.SelectMany(c => tagsBySha[c.Sha].Select(t => t.Item2)).ToList();
 
                 this.semanticVersionTagsOnBranchCache.Add(branch, versionTags);
                 return versionTags;
