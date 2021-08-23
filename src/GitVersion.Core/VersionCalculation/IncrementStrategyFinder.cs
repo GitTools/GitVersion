@@ -22,6 +22,7 @@ namespace GitVersion.VersionCalculation
 
         private static readonly ConcurrentDictionary<string, Regex> CompiledRegexCache = new();
         private IEnumerable<ICommit>? intermediateCommitCache;
+        private readonly Dictionary<string, VersionField?> commitIncrementCache = new();
 
         private static readonly Regex DefaultMajorPatternRegex = new(DefaultMajorPattern, RegexOptions.Compiled | RegexOptions.IgnoreCase);
         private static readonly Regex DefaultMinorPatternRegex = new(DefaultMinorPattern, RegexOptions.Compiled | RegexOptions.IgnoreCase);
@@ -63,7 +64,7 @@ namespace GitVersion.VersionCalculation
             var none = TryGetRegexOrDefault(context.Configuration?.NoBumpMessage, DefaultNoBumpPatternRegex);
 
             var increments = commits
-                .Select(c => GetIncrementFromMessage(c.Message, majorRegex, minorRegex, patchRegex, none))
+                .Select(c => GetIncrementFromCommit(c, majorRegex, minorRegex, patchRegex, none))
                 .Where(v => v != null)
                 .Select(v => v!.Value)
                 .ToList();
@@ -92,6 +93,7 @@ namespace GitVersion.VersionCalculation
 
             return GetIncrementForCommits(context, commits);
         }
+
         private static Regex TryGetRegexOrDefault(string? messageRegex, Regex defaultRegex)
         {
             if (messageRegex == null)
@@ -124,6 +126,11 @@ namespace GitVersion.VersionCalculation
                     found = true;
             }
         }
+
+        private VersionField? GetIncrementFromCommit(ICommit commit, Regex majorRegex, Regex minorRegex, Regex patchRegex, Regex none) =>
+            this.commitIncrementCache.GetOrAdd(commit.Sha, () =>
+                GetIncrementFromMessage(commit.Message, majorRegex, minorRegex, patchRegex, none));
+
         private static VersionField? GetIncrementFromMessage(string message, Regex majorRegex, Regex minorRegex, Regex patchRegex, Regex none)
         {
             if (majorRegex.IsMatch(message)) return VersionField.Major;
