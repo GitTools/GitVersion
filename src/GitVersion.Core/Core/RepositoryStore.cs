@@ -20,11 +20,13 @@ namespace GitVersion
 
         private readonly ILog log;
         private readonly IGitRepository repository;
+        private readonly IIncrementStrategyFinder incrementStrategyFinder;
 
-        public RepositoryStore(ILog log, IGitRepository repository)
+        public RepositoryStore(ILog log, IGitRepository repository, IIncrementStrategyFinder incrementStrategyFinder)
         {
             this.log = log ?? throw new ArgumentNullException(nameof(log));
             this.repository = repository ?? throw new ArgumentNullException(nameof(log));
+            this.incrementStrategyFinder = incrementStrategyFinder ?? throw new ArgumentNullException(nameof(incrementStrategyFinder));
         }
 
         /// <summary>
@@ -351,7 +353,7 @@ namespace GitVersion
 
         public SemanticVersion MaybeIncrement(BaseVersion baseVersion, GitVersionContext context)
         {
-            var increment = IncrementStrategyFinder.DetermineIncrementedField(this.repository, context, baseVersion);
+            var increment = this.incrementStrategyFinder.DetermineIncrementedField(this.repository, context, baseVersion);
             return increment != null ? baseVersion.SemanticVersion.IncrementVersion(increment.Value) : baseVersion.SemanticVersion;
         }
 
@@ -409,7 +411,8 @@ namespace GitVersion
             return this.repository.Commits.QueryBy(filter);
         }
 
-        public VersionField? DetermineIncrementedField(BaseVersion baseVersion, GitVersionContext context) => IncrementStrategyFinder.DetermineIncrementedField(this.repository, context, baseVersion);
+        public VersionField? DetermineIncrementedField(BaseVersion baseVersion, GitVersionContext context) =>
+            this.incrementStrategyFinder.DetermineIncrementedField(this.repository, context, baseVersion);
 
         public bool IsCommitOnBranch(ICommit? baseVersionSource, IBranch branch, ICommit firstMatchingCommit)
         {

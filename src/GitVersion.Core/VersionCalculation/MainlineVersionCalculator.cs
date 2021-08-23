@@ -14,13 +14,15 @@ namespace GitVersion.VersionCalculation
         private readonly ILog log;
         private readonly IRepositoryStore repositoryStore;
         private readonly Lazy<GitVersionContext> versionContext;
+        private readonly IIncrementStrategyFinder incrementStrategyFinder;
         private GitVersionContext context => this.versionContext.Value;
 
-        public MainlineVersionCalculator(ILog log, IRepositoryStore repositoryStore, Lazy<GitVersionContext> versionContext)
+        public MainlineVersionCalculator(ILog log, IRepositoryStore repositoryStore, Lazy<GitVersionContext> versionContext, IIncrementStrategyFinder incrementStrategyFinder)
         {
             this.log = log ?? throw new ArgumentNullException(nameof(log));
             this.repositoryStore = repositoryStore ?? throw new ArgumentNullException(nameof(repositoryStore));
             this.versionContext = versionContext ?? throw new ArgumentNullException(nameof(versionContext));
+            this.incrementStrategyFinder = incrementStrategyFinder ?? throw new ArgumentNullException(nameof(incrementStrategyFinder));
         }
 
         public SemanticVersion FindMainlineModeVersion(BaseVersion baseVersion)
@@ -231,7 +233,7 @@ namespace GitVersion.VersionCalculation
         {
             foreach (var directCommit in directCommits)
             {
-                var directCommitIncrement = IncrementStrategyFinder.GetIncrementForCommits(context, new[] { directCommit })
+                var directCommitIncrement = this.incrementStrategyFinder.GetIncrementForCommits(context, new[] { directCommit })
                                             ?? FindDefaultIncrementForBranch(context, mainline.Name.Friendly);
                 mainlineVersion = mainlineVersion.IncrementVersion(directCommitIncrement);
                 this.log.Info($"Direct commit on main {directCommit} incremented base versions {directCommitIncrement}, now {mainlineVersion}");
@@ -244,7 +246,7 @@ namespace GitVersion.VersionCalculation
         {
             var commits = this.repositoryStore.GetMergeBaseCommits(mergeCommit, mergedHead, findMergeBase);
             commitLog.RemoveAll(c => commits.Any(c1 => c1.Sha == c.Sha));
-            return IncrementStrategyFinder.GetIncrementForCommits(context, commits)
+            return this.incrementStrategyFinder.GetIncrementForCommits(context, commits)
                    ?? TryFindIncrementFromMergeMessage(mergeCommit);
         }
 

@@ -6,6 +6,7 @@ using GitVersion.Extensions;
 using GitVersion.Logging;
 using GitVersion.Model;
 using GitVersion.Model.Configuration;
+using GitVersion.VersionCalculation;
 using Microsoft.Extensions.DependencyInjection;
 using NUnit.Framework;
 using Shouldly;
