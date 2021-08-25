@@ -7,13 +7,6 @@ using GitVersion.Extensions;
 
 namespace GitVersion.VersionCalculation
 {
-    public enum CommitMessageIncrementMode
-    {
-        Enabled,
-        Disabled,
-        MergeMessageOnly
-    }
-
     public class IncrementStrategyFinder : IIncrementStrategyFinder
     {
         public const string DefaultMajorPattern = @"\+semver:\s?(breaking|major)";
