@@ -13,6 +13,7 @@ namespace GitVersion.VersionCalculation
             services.AddSingleton<IBaseVersionCalculator, BaseVersionCalculator>();
             services.AddSingleton<IMainlineVersionCalculator, MainlineVersionCalculator>();
             services.AddSingleton<INextVersionCalculator, NextVersionCalculator>();
+            services.AddSingleton<IIncrementStrategyFinder, IncrementStrategyFinder>();
         }
     }
 }

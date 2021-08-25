@@ -15,16 +15,18 @@ namespace GitVersion
     {
         private readonly Dictionary<IBranch, List<BranchCommit>> mergeBaseCommitsCache = new();
         private readonly Dictionary<Tuple<IBranch, IBranch?>, ICommit?> mergeBaseCache = new();
-        private readonly Dictionary<IBranch, List<SemanticVersion?>> semanticVersionTagsOnBranchCache = new();
+        private readonly Dictionary<IBranch, List<SemanticVersion>> semanticVersionTagsOnBranchCache = new();
         private const string MissingTipFormat = "{0} has no tip. Please see http://example.com/docs for information on how to fix this.";
 
         private readonly ILog log;
         private readonly IGitRepository repository;
+        private readonly IIncrementStrategyFinder incrementStrategyFinder;
 
-        public RepositoryStore(ILog log, IGitRepository repository)
+        public RepositoryStore(ILog log, IGitRepository repository, IIncrementStrategyFinder incrementStrategyFinder)
         {
             this.log = log ?? throw new ArgumentNullException(nameof(log));
             this.repository = repository ?? throw new ArgumentNullException(nameof(log));
+            this.incrementStrategyFinder = incrementStrategyFinder ?? throw new ArgumentNullException(nameof(incrementStrategyFinder));
         }
 
         /// <summary>
@@ -351,11 +353,11 @@ namespace GitVersion
 
         public SemanticVersion MaybeIncrement(BaseVersion baseVersion, GitVersionContext context)
         {
-            var increment = IncrementStrategyFinder.DetermineIncrementedField(this.repository, context, baseVersion);
+            var increment = this.incrementStrategyFinder.DetermineIncrementedField(this.repository, context, baseVersion);
             return increment != null ? baseVersion.SemanticVersion.IncrementVersion(increment.Value) : baseVersion.SemanticVersion;
         }
 
-        public IEnumerable<SemanticVersion?> GetVersionTagsOnBranch(IBranch branch, string? tagPrefixRegex)
+        public IEnumerable<SemanticVersion> GetVersionTagsOnBranch(IBranch branch, string? tagPrefixRegex)
         {
             if (this.semanticVersionTagsOnBranchCache.ContainsKey(branch))
             {
@@ -366,8 +368,8 @@ namespace GitVersion
             using (this.log.IndentLog($"Getting version tags from branch '{branch.Name.Canonical}'."))
             {
                 var tags = GetValidVersionTags(tagPrefixRegex);
-
-                var versionTags = branch.Commits.SelectMany(c => tags.Where(t => c.Sha == t.Item1?.TargetSha).Select(t => t.Item2)).ToList();
+                var tagsBySha = tags.Where(t => t.Item1.TargetSha != null).ToLookup(t => t.Item1.TargetSha, t => t);
+                var versionTags = branch.Commits.SelectMany(c => tagsBySha[c.Sha].Select(t => t.Item2)).ToList();
 
                 this.semanticVersionTagsOnBranchCache.Add(branch, versionTags);
                 return versionTags;
@@ -409,7 +411,8 @@ namespace GitVersion
             return this.repository.Commits.QueryBy(filter);
         }
 
-        public VersionField? DetermineIncrementedField(BaseVersion baseVersion, GitVersionContext context) => IncrementStrategyFinder.DetermineIncrementedField(this.repository, context, baseVersion);
+        public VersionField? DetermineIncrementedField(BaseVersion baseVersion, GitVersionContext context) =>
+            this.incrementStrategyFinder.DetermineIncrementedField(this.repository, context, baseVersion);
 
         public bool IsCommitOnBranch(ICommit? baseVersionSource, IBranch branch, ICommit firstMatchingCommit)
         {
