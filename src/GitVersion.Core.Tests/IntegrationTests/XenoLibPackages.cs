@@ -79,6 +79,7 @@ namespace GitVersion.Core.Tests.IntegrationTests
             Commands.Checkout(fixture.Repository, MainBranch);
             fixture.Repository.MergeNoFF("feature/foo", Generate.SignatureNow());
             fixture.AssertFullSemver("2.1.0", config);
+            fixture.Repository.MakeATaggedCommit("2.1.0"); // must tag before pull of any hotfix otherwise hotfix stays at this version
 
             // hotfix branch
             var tag = fixture.Repository.Tags.Single(t => t.FriendlyName == "1.0.0");
@@ -90,6 +91,8 @@ namespace GitVersion.Core.Tests.IntegrationTests
             fixture.Repository.MakeACommit();
             fixture.AssertFullSemver("1.0.1-beta.2", config);
             fixture.Repository.MakeATaggedCommit("1.0.1");
+            fixture.Repository.MakeACommit();
+            fixture.AssertFullSemver("1.0.2-beta.1", config);
 
             // pull request
             fixture.Repository.CreatePullRequestRef("support/1.0.0", MainBranch, 3, normalise: true);
