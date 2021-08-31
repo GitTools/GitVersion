@@ -70,6 +70,7 @@ namespace GitVersion
             {
                 if (!normalizeGitDirectory)
                 {
+                    if (currentBranch == null) return;
                     EnsureLocalBranchExistsForCurrentBranch(EnsureOnlyOneRemoteIsDefined(), currentBranch);
                     return;
                 }
