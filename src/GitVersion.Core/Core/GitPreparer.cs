@@ -68,7 +68,12 @@ namespace GitVersion
             }
             else
             {
-                if (!normalizeGitDirectory) return;
+                if (!normalizeGitDirectory)
+                {
+                    EnsureLocalBranchExistsForCurrentBranch(EnsureOnlyOneRemoteIsDefined(), currentBranch);
+                    return;
+                }
+
                 if (shouldCleanUpRemotes)
                 {
                     CleanupDuplicateOrigin();
