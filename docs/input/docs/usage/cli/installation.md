@@ -13,8 +13,11 @@ GitVersion can be installed as a [.NET global tool][dotnet-tool] under the name
 [`GitVersion.Tool`][tool] by executing the following in a terminal:
 
 ```shell
-dotnet tool install --global GitVersion.Tool
+dotnet tool install --global GitVersion.Tool --version 5.*
 ```
+
+If you want to pin to a specific version of GitVersion, you can find the available
+versions of [`GitVersion.Tool` on NuGet](https://www.nuget.org/packages/GitVersion.Tool/).
 
 This should work on all operating systems supported by .NET Core.
 
