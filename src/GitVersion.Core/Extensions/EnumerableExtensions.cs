@@ -5,7 +5,7 @@ namespace GitVersion.Extensions
 {
     public static class EnumerableExtensions
     {
-        public static T OnlyOrDefault<T>(this IEnumerable<T> source)
+        public static T? OnlyOrDefault<T>(this IEnumerable<T> source)
         {
             switch (source)
             {

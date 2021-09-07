@@ -1,0 +1,36 @@
+{
+    "version": 1,
+    "isRoot": true,
+    "tools": {
+        "codecov.tool": {
+            "version": "1.13.0",
+            "commands": [
+                "codecov"
+            ]
+        },
+        "gitversion.tool": {
+            "version": "5.6.11",
+            "commands": [
+                "dotnet-gitversion"
+            ]
+        },
+        "gitreleasemanager.tool": {
+            "version": "0.12.0",
+            "commands": [
+                "dotnet-gitreleasemanager"
+            ]
+        },
+        "wyam.tool": {
+            "version": "2.2.9",
+            "commands": [
+                "wyam"
+            ]
+        },
+        "dotnet-format": {
+            "version": "5.0.211103",
+            "commands": [
+                "dotnet-format"
+            ]
+        }
+    }
+}

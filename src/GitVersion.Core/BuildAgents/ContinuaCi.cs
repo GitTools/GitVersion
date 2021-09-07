@@ -13,18 +13,12 @@ namespace GitVersion.BuildAgents
 
         protected override string EnvironmentVariable { get; } = EnvironmentVariableName;
 
-        public override string[] GenerateSetParameterMessage(string name, string value)
-        {
-            return new[]
+        public override string[] GenerateSetParameterMessage(string name, string value) => new[]
             {
                 $"@@continua[setVariable name='GitVersion_{name}' value='{value}' skipIfNotDefined='true']"
             };
-        }
 
-        public override string GenerateSetVersionMessage(VersionVariables variables)
-        {
-            return $"@@continua[setBuildVersion value='{variables.FullSemVer}']";
-        }
+        public override string GenerateSetVersionMessage(VersionVariables variables) => $"@@continua[setBuildVersion value='{variables.FullSemVer}']";
 
         public override bool PreventFetch() => false;
     }

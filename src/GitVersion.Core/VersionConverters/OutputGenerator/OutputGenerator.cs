@@ -13,7 +13,7 @@ namespace GitVersion.VersionConverters.OutputGenerator
     {
     }
 
-    public class OutputGenerator : IOutputGenerator
+    public sealed class OutputGenerator : IOutputGenerator
     {
         private readonly IConsole console;
         private readonly IFileSystem fileSystem;
@@ -30,22 +30,22 @@ namespace GitVersion.VersionConverters.OutputGenerator
 
         public void Execute(VersionVariables variables, OutputContext context)
         {
-            var gitVersionOptions = options.Value;
+            var gitVersionOptions = this.options.Value;
             if (gitVersionOptions.Output.Contains(OutputType.BuildServer))
             {
-                buildAgent?.WriteIntegration(console.WriteLine, variables, context.UpdateBuildNumber ?? true);
+                this.buildAgent?.WriteIntegration(this.console.WriteLine, variables, context.UpdateBuildNumber ?? true);
             }
             if (gitVersionOptions.Output.Contains(OutputType.File))
             {
                 var retryOperation = new RetryAction<IOException>();
-                retryOperation.Execute(() => fileSystem.WriteAllText(context.OutputFile, variables.ToString()));
+                retryOperation.Execute(() => this.fileSystem.WriteAllText(context.OutputFile, variables.ToString()));
             }
             if (gitVersionOptions.Output.Contains(OutputType.Json))
             {
                 switch (gitVersionOptions.ShowVariable)
                 {
                     case null:
-                        console.WriteLine(variables.ToString());
+                        this.console.WriteLine(variables.ToString());
                         break;
 
                     default:
@@ -54,7 +54,7 @@ namespace GitVersion.VersionConverters.OutputGenerator
                             throw new WarningException($"'{gitVersionOptions.ShowVariable}' variable does not exist");
                         }
 
-                        console.WriteLine(part);
+                        this.console.WriteLine(part);
                         break;
                 }
             }

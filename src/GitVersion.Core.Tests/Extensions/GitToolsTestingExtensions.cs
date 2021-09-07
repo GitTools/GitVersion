@@ -21,7 +21,7 @@ namespace GitVersion.Core.Tests
     public static class GitToolsTestingExtensions
     {
         private static int commitCount = 1;
-        private static DateTimeOffset when = DateTimeOffset.Now;
+        private static readonly DateTimeOffset when = DateTimeOffset.Now;
 
         public static ICommit CreateMockCommit()
         {
@@ -52,20 +52,11 @@ namespace GitVersion.Core.Tests
             return branch;
         }
 
-        public static IBranch FindBranch(this IGitRepository repository, string branchName)
-        {
-            return repository.Branches.FirstOrDefault(x => x.Name.WithoutRemote == branchName);
-        }
+        public static IBranch FindBranch(this IGitRepository repository, string branchName) => repository.Branches.FirstOrDefault(x => x.Name.WithoutRemote == branchName);
 
-        public static void DumpGraph(this IGitRepository repository, Action<string> writer = null, int? maxCommits = null)
-        {
-            GitExtensions.DumpGraph(repository.Path, writer, maxCommits);
-        }
+        public static void DumpGraph(this IGitRepository repository, Action<string> writer = null, int? maxCommits = null) => GitExtensions.DumpGraph(repository.Path, writer, maxCommits);
 
-        public static void DumpGraph(this IRepository repository, Action<string> writer = null, int? maxCommits = null)
-        {
-            GitExtensions.DumpGraph(repository.ToGitRepository().Path, writer, maxCommits);
-        }
+        public static void DumpGraph(this IRepository repository, Action<string> writer = null, int? maxCommits = null) => GitExtensions.DumpGraph(repository.ToGitRepository().Path, writer, maxCommits);
 
         public static VersionVariables GetVersion(this RepositoryFixtureBase fixture, Config configuration = null, IRepository repository = null, string commitId = null, bool onlyTrackedBranches = true, string branch = null)
         {
@@ -85,10 +76,7 @@ namespace GitVersion.Core.Tests
                 Settings = { OnlyTrackedBranches = onlyTrackedBranches }
             });
 
-            var sp = ConfigureServices(services =>
-            {
-                services.AddSingleton(options);
-            });
+            var sp = ConfigureServices(services => services.AddSingleton(options));
 
             var variableProvider = sp.GetService<IVariableProvider>();
             var nextVersionCalculator = sp.GetService<INextVersionCalculator>();

@@ -10,11 +10,11 @@ namespace GitVersion.VersionConverters.WixUpdater
     public interface IWixVersionFileUpdater : IVersionConverter<WixVersionContext>
     {
     }
-    public class WixVersionFileUpdater : IWixVersionFileUpdater
+    public sealed class WixVersionFileUpdater : IWixVersionFileUpdater
     {
         private readonly IFileSystem fileSystem;
         private readonly ILog log;
-        private string wixVersionFile;
+        private string? wixVersionFile;
         public const string WixVersionFileName = "GitVersion_WixVersion.wxi";
 
         public WixVersionFileUpdater(IFileSystem fileSystem, ILog log)
@@ -25,8 +25,8 @@ namespace GitVersion.VersionConverters.WixUpdater
 
         public void Execute(VersionVariables variables, WixVersionContext context)
         {
-            wixVersionFile = Path.Combine(context.WorkingDirectory, WixVersionFileName);
-            log.Info("Updating GitVersion_WixVersion.wxi");
+            this.wixVersionFile = Path.Combine(context.WorkingDirectory, WixVersionFileName);
+            this.log.Info("Updating GitVersion_WixVersion.wxi");
 
             var doc = new XmlDocument();
             doc.LoadXml(GetWixFormatFromVersionVariables(variables));
@@ -35,8 +35,8 @@ namespace GitVersion.VersionConverters.WixUpdater
             var root = doc.DocumentElement;
             doc.InsertBefore(xmlDecl, root);
 
-            fileSystem.Delete(wixVersionFile);
-            using var fs = fileSystem.OpenWrite(wixVersionFile);
+            this.fileSystem.Delete(this.wixVersionFile);
+            using var fs = this.fileSystem.OpenWrite(this.wixVersionFile);
             doc.Save(fs);
         }
 
@@ -54,9 +54,6 @@ namespace GitVersion.VersionConverters.WixUpdater
             return builder.ToString();
         }
 
-        public void Dispose()
-        {
-            log.Info($"Done writing {wixVersionFile}");
-        }
+        public void Dispose() => this.log.Info($"Done writing {this.wixVersionFile}");
     }
 }

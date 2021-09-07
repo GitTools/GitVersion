@@ -3,16 +3,17 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using GitVersion.Core.Tests.Helpers;
+using GitVersion.Extensions;
 using GitVersion.Logging;
 using GitVersion.OutputVariables;
-using GitVersion.Core.Tests.Helpers;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace GitVersion.App.Tests
 {
     public sealed class ProgramFixture
     {
-        private IEnvironment environment;
+        private readonly IEnvironment environment;
         public List<Action<IServiceCollection>> Overrides { get; } = new List<Action<IServiceCollection>>();
         private readonly Lazy<string> logger;
         private readonly Lazy<string> output;
@@ -29,24 +30,24 @@ namespace GitVersion.App.Tests
             var consoleBuilder = new StringBuilder();
             IConsole consoleAdapter = new TestConsoleAdapter(consoleBuilder);
 
-            environment = new TestEnvironment();
+            this.environment = new TestEnvironment();
 
             Overrides.Add(services =>
             {
                 services.AddSingleton(log);
                 services.AddSingleton(consoleAdapter);
-                services.AddSingleton(environment);
+                services.AddSingleton(this.environment);
             });
 
-            logger = new Lazy<string>(() => logBuilder.ToString());
-            output = new Lazy<string>(() => consoleAdapter.ToString());
+            this.logger = new Lazy<string>(() => logBuilder.ToString());
+            this.output = new Lazy<string>(() => consoleAdapter.ToString());
         }
 
         public void WithEnv(params KeyValuePair<string, string>[] envs)
         {
             foreach (var env in envs)
             {
-                environment.SetEnvironmentVariable(env.Key, env.Value);
+                this.environment.SetEnvironmentVariable(env.Key, env.Value);
             }
         }
 
@@ -61,17 +62,17 @@ namespace GitVersion.App.Tests
             // Create the application and override registrations.
             var program = new Program(builder => Overrides.ForEach(action => action(builder)));
 
-            if (!string.IsNullOrWhiteSpace(workingDirectory))
+            if (!this.workingDirectory.IsNullOrWhiteSpace())
             {
-                args = new[] { "-targetpath", workingDirectory }.Concat(args).ToArray();
+                args = new[] { "-targetpath", this.workingDirectory }.Concat(args).ToArray();
             }
             await program.RunAsync(args);
 
             return new ProgramFixtureResult
             {
                 ExitCode = System.Environment.ExitCode,
-                Output = output.Value,
-                Log = logger.Value
+                Output = this.output.Value,
+                Log = this.logger.Value
             };
         }
     }
@@ -86,7 +87,7 @@ namespace GitVersion.App.Tests
         {
             get
             {
-                if (string.IsNullOrWhiteSpace(Output)) return null;
+                if (Output.IsNullOrWhiteSpace()) return null;
 
                 var jsonStartIndex = Output.IndexOf("{", StringComparison.Ordinal);
                 var jsonEndIndex = Output.IndexOf("}", StringComparison.Ordinal);

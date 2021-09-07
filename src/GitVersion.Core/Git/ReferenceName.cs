@@ -3,7 +3,7 @@ using GitVersion.Helpers;
 
 namespace GitVersion
 {
-    public class ReferenceName : IEquatable<ReferenceName>, IComparable<ReferenceName>
+    public class ReferenceName : IEquatable<ReferenceName?>, IComparable<ReferenceName>
     {
         private static readonly LambdaEqualityHelper<ReferenceName> equalityHelper = new(x => x.Canonical);
         private static readonly LambdaKeyComparer<ReferenceName, string> comparerHelper = new(x => x.Canonical);
@@ -46,18 +46,16 @@ namespace GitVersion
         public bool IsTag { get; }
         public bool IsPullRequest { get; }
 
-        public bool Equals(ReferenceName other) => equalityHelper.Equals(this, other);
+        public bool Equals(ReferenceName? other) => equalityHelper.Equals(this, other);
         public int CompareTo(ReferenceName other) => comparerHelper.Compare(this, other);
         public override bool Equals(object obj) => Equals((obj as ReferenceName)!);
         public override int GetHashCode() => equalityHelper.GetHashCode(this);
         public override string ToString() => Friendly;
 
-        public bool EquivalentTo(string name)
-        {
-            return Canonical.Equals(name, StringComparison.OrdinalIgnoreCase)
-                   || Friendly.Equals(name, StringComparison.OrdinalIgnoreCase)
-                   || WithoutRemote.Equals(name, StringComparison.OrdinalIgnoreCase);
-        }
+        public bool EquivalentTo(string? name) =>
+            Canonical.Equals(name, StringComparison.OrdinalIgnoreCase)
+            || Friendly.Equals(name, StringComparison.OrdinalIgnoreCase)
+            || WithoutRemote.Equals(name, StringComparison.OrdinalIgnoreCase);
 
         private string Shorten()
         {

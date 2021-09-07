@@ -18,7 +18,7 @@ namespace GitVersion
 
         private readonly IOptions<GitVersionOptions> options;
         private readonly Lazy<GitVersionContext> versionContext;
-        private GitVersionContext context => versionContext.Value;
+        private GitVersionContext context => this.versionContext.Value;
 
         public GitVersionCalculateTool(ILog log, INextVersionCalculator nextVersionCalculator,
             IVariableProvider variableProvider, IGitPreparer gitPreparer,
@@ -40,26 +40,26 @@ namespace GitVersion
 
         public VersionVariables CalculateVersionVariables()
         {
-            gitPreparer.Prepare(); //we need to prepare the repository before using it for version calculation
+            this.gitPreparer.Prepare(); //we need to prepare the repository before using it for version calculation
 
-            var gitVersionOptions = options.Value;
+            var gitVersionOptions = this.options.Value;
 
-            var cacheKey = cacheKeyFactory.Create(gitVersionOptions.ConfigInfo.OverrideConfig);
-            var versionVariables = gitVersionOptions.Settings.NoCache ? default : gitVersionCache.LoadVersionVariablesFromDiskCache(cacheKey);
+            var cacheKey = this.cacheKeyFactory.Create(gitVersionOptions.ConfigInfo.OverrideConfig);
+            var versionVariables = gitVersionOptions.Settings.NoCache ? default : this.gitVersionCache.LoadVersionVariablesFromDiskCache(cacheKey);
 
             if (versionVariables != null) return versionVariables;
 
-            var semanticVersion = nextVersionCalculator.FindVersion();
-            versionVariables = variableProvider.GetVariablesFor(semanticVersion, context.Configuration, context.IsCurrentCommitTagged);
+            var semanticVersion = this.nextVersionCalculator.FindVersion();
+            versionVariables = this.variableProvider.GetVariablesFor(semanticVersion, context.Configuration!, context.IsCurrentCommitTagged);
 
             if (gitVersionOptions.Settings.NoCache) return versionVariables;
             try
             {
-                gitVersionCache.WriteVariablesToDiskCache(cacheKey, versionVariables);
+                this.gitVersionCache.WriteVariablesToDiskCache(cacheKey, versionVariables);
             }
             catch (AggregateException e)
             {
-                log.Warning($"One or more exceptions during cache write:{System.Environment.NewLine}{e}");
+                this.log.Warning($"One or more exceptions during cache write:{System.Environment.NewLine}{e}");
             }
 
             return versionVariables;

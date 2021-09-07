@@ -13,18 +13,15 @@ namespace GitVersion.Helpers
         {
         }
 
-        public void Execute(Action operation)
-        {
-            base.Execute(() =>
-            {
-                operation();
-                return false;
-            });
-        }
+        public void Execute(Action operation) => base.Execute(() =>
+                                               {
+                                                   operation();
+                                                   return false;
+                                               });
     }
     public class RetryAction<T, Result> where T : Exception
     {
-        private RetryPolicy<Result> retryPolicy;
+        private readonly RetryPolicy<Result> retryPolicy;
 
         public RetryAction(int maxRetries = 5)
         {
@@ -32,15 +29,12 @@ namespace GitVersion.Helpers
                 throw new ArgumentOutOfRangeException(nameof(maxRetries));
 
             var linearBackoff = LinearBackoff(TimeSpan.FromMilliseconds(100), maxRetries);
-            retryPolicy = Policy<Result>
+            this.retryPolicy = Policy<Result>
                 .Handle<T>()
                 .WaitAndRetry(linearBackoff);
         }
 
-        public Result Execute(Func<Result> operation)
-        {
-            return retryPolicy.Execute(operation);
-        }
+        public Result Execute(Func<Result> operation) => this.retryPolicy.Execute(operation);
 
         private static IEnumerable<TimeSpan> LinearBackoff(TimeSpan initialDelay, int retryCount, double factor = 1.0, bool fastFirst = false)
         {

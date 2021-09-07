@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text.RegularExpressions;
 using GitVersion.Configuration;
@@ -17,23 +18,21 @@ namespace GitVersion.VersionCalculation
     {
         private readonly ILog log;
 
-        public MergeMessageVersionStrategy(ILog log, Lazy<GitVersionContext> versionContext) : base(versionContext)
-        {
-            this.log = log ?? throw new ArgumentNullException(nameof(log));
-        }
+        public MergeMessageVersionStrategy(ILog log, Lazy<GitVersionContext> versionContext) : base(versionContext) => this.log = log ?? throw new ArgumentNullException(nameof(log));
 
         public override IEnumerable<BaseVersion> GetVersions()
         {
-            var commitsPriorToThan = Context.CurrentBranch.Commits.GetCommitsPriorTo(Context.CurrentCommit.When);
+            // FIX ME: What to do when CurrentCommit is null?
+            var commitsPriorToThan = Context.CurrentBranch!.Commits!.GetCommitsPriorTo(Context.CurrentCommit!.When);
             var baseVersions = commitsPriorToThan
                 .SelectMany(c =>
                 {
                     if (TryParse(c, Context, out var mergeMessage) &&
                         mergeMessage.Version != null &&
-                        Context.FullConfiguration.IsReleaseBranch(TrimRemote(mergeMessage.MergedBranch)))
+                        Context.FullConfiguration?.IsReleaseBranch(TrimRemote(mergeMessage.MergedBranch)) == true)
                     {
-                        log.Info($"Found commit [{Context.CurrentCommit}] matching merge message format: {mergeMessage.FormatName}");
-                        var shouldIncrement = !Context.Configuration.PreventIncrementForMergedBranchVersion;
+                        this.log.Info($"Found commit [{Context.CurrentCommit}] matching merge message format: {mergeMessage.FormatName}");
+                        var shouldIncrement = Context.Configuration?.PreventIncrementForMergedBranchVersion != true;
                         return new[]
                         {
                             new BaseVersion($"{MergeMessageStrategyPrefix} '{c.Message.Trim()}'", shouldIncrement, mergeMessage.Version, c, null)
@@ -48,13 +47,13 @@ namespace GitVersion.VersionCalculation
 
         public static readonly string MergeMessageStrategyPrefix = "Merge message";
 
-        private static bool TryParse(ICommit mergeCommit, GitVersionContext context, out MergeMessage mergeMessage)
+        private static bool TryParse(ICommit mergeCommit, GitVersionContext context, [NotNullWhen(true)] out MergeMessage? mergeMessage)
         {
             mergeMessage = Inner(mergeCommit, context);
             return mergeMessage != null;
         }
 
-        private static MergeMessage Inner(ICommit mergeCommit, GitVersionContext context)
+        private static MergeMessage? Inner(ICommit mergeCommit, GitVersionContext context)
         {
             if (mergeCommit.Parents.Count() < 2)
             {

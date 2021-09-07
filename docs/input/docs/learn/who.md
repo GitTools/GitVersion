@@ -1,6 +1,7 @@
 ---
 Order: 70
 Title: Who is using GitVersion
+RedirectFrom: docs/who
 ---
 
 Various people are actively using GitVersion, and taking advantage of the

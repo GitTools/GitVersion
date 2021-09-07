@@ -9,7 +9,7 @@ namespace GitVersion.VersionConverters.GitVersionInfo
     {
     }
 
-    public class GitVersionInfoGenerator : IGitVersionInfoGenerator
+    public sealed class GitVersionInfoGenerator : IGitVersionInfoGenerator
     {
         private readonly IFileSystem fileSystem;
         private readonly TemplateManager templateManager;
@@ -17,7 +17,7 @@ namespace GitVersion.VersionConverters.GitVersionInfo
         public GitVersionInfoGenerator(IFileSystem fileSystem)
         {
             this.fileSystem = fileSystem ?? throw new ArgumentNullException(nameof(fileSystem));
-            templateManager = new TemplateManager(TemplateType.GitVersionInfo);
+            this.templateManager = new TemplateManager(TemplateType.GitVersionInfo);
         }
 
         public void Execute(VersionVariables variables, GitVersionInfoContext context)
@@ -26,16 +26,16 @@ namespace GitVersion.VersionConverters.GitVersionInfo
             var directory = context.WorkingDirectory;
             var filePath = Path.Combine(directory, fileName);
 
-            string originalFileContents = null;
+            string? originalFileContents = null;
 
             if (File.Exists(filePath))
             {
-                originalFileContents = fileSystem.ReadAllText(filePath);
+                originalFileContents = this.fileSystem.ReadAllText(filePath);
             }
 
             var fileExtension = Path.GetExtension(filePath);
-            var template = templateManager.GetTemplateFor(fileExtension);
-            var addFormat = templateManager.GetAddFormatFor(fileExtension);
+            var template = this.templateManager.GetTemplateFor(fileExtension);
+            var addFormat = this.templateManager.GetAddFormatFor(fileExtension);
             var indentation = GetIndentation(fileExtension);
 
             var members = string.Join(System.Environment.NewLine, variables.Select(v => string.Format(indentation + addFormat, v.Key, v.Value)));
@@ -44,7 +44,7 @@ namespace GitVersion.VersionConverters.GitVersionInfo
 
             if (fileContents != originalFileContents)
             {
-                fileSystem.WriteAllText(filePath, fileContents);
+                this.fileSystem.WriteAllText(filePath, fileContents);
             }
         }
 

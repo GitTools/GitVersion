@@ -5,15 +5,16 @@ using System.Diagnostics;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Threading;
+using GitVersion.Extensions;
 
 namespace GitVersion.Helpers
 {
     public static class ProcessHelper
     {
-        private static readonly object LockObject = new object();
+        private static readonly object LockObject = new();
 
         // http://social.msdn.microsoft.com/Forums/en/netfxbcl/thread/f6069441-4ab1-4299-ad6a-b8bb9ed36be3
-        private static Process Start(ProcessStartInfo startInfo)
+        private static Process? Start(ProcessStartInfo startInfo)
         {
             Process process;
 
@@ -79,9 +80,9 @@ namespace GitVersion.Helpers
         }
 
         // http://csharptest.net/532/using-processstart-to-capture-console-output/
-        public static int Run(Action<string> output, Action<string> errorOutput, TextReader input, string exe, string args, string workingDirectory, params KeyValuePair<string, string>[] environmentalVariables)
+        public static int Run(Action<string> output, Action<string> errorOutput, TextReader? input, string exe, string args, string workingDirectory, params KeyValuePair<string, string>[] environmentalVariables)
         {
-            if (string.IsNullOrEmpty(exe))
+            if (exe.IsNullOrEmpty())
                 throw new ArgumentNullException(nameof(exe));
             if (output == null)
                 throw new ArgumentNullException(nameof(output));
@@ -118,6 +119,13 @@ namespace GitVersion.Helpers
             }
 
             using var process = Start(psi);
+
+            if (process is null)
+            {
+                // FIX ME: What error code do you want to return?
+                return -1;
+            }
+
             using var mreOut = new ManualResetEvent(false);
             using var mreErr = new ManualResetEvent(false);
             process.EnableRaisingEvents = true;
@@ -182,11 +190,11 @@ namespace GitVersion.Helpers
             {
                 try
                 {
-                    oldMode = SetErrorMode((int)mode);
+                    this.oldMode = SetErrorMode((int)mode);
                 }
                 catch (Exception ex) when (ex is EntryPointNotFoundException || ex is DllNotFoundException)
                 {
-                    oldMode = (int)mode;
+                    this.oldMode = (int)mode;
                 }
             }
 
@@ -195,7 +203,7 @@ namespace GitVersion.Helpers
             {
                 try
                 {
-                    SetErrorMode(oldMode);
+                    SetErrorMode(this.oldMode);
                 }
                 catch (Exception ex) when (ex is EntryPointNotFoundException || ex is DllNotFoundException)
                 {

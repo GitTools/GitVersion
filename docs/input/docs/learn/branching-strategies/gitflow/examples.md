@@ -1,6 +1,9 @@
 ---
 Order: 40
 Title: GitFlow Examples
+RedirectFrom:
+- docs/git-branching-strategies/gitflow-examples_complete
+- docs/git-branching-strategies/gitflow-examples
 ---
 
 These examples are using the _default_ configuration with GitVersion. Which is

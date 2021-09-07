@@ -16,10 +16,7 @@ namespace GitVersion.Core.Tests
     internal class WixFileTests : TestBase
     {
         [SetUp]
-        public void Setup()
-        {
-            ShouldlyConfiguration.ShouldMatchApprovedDefaults.LocateTestMethodUsingAttribute<TestAttribute>();
-        }
+        public void Setup() => ShouldlyConfiguration.ShouldMatchApprovedDefaults.LocateTestMethodUsingAttribute<TestAttribute>();
 
         [Test]
         [Category(NoMono)]
@@ -48,10 +45,7 @@ namespace GitVersion.Core.Tests
             var logAppender = new TestLogAppender(Action);
             var log = new Log(logAppender);
 
-            var sp = ConfigureServices(service =>
-            {
-                service.AddSingleton<ILog>(log);
-            });
+            var sp = ConfigureServices(service => service.AddSingleton<ILog>(log));
 
             var fileSystem = sp.GetService<IFileSystem>();
             var variableProvider = sp.GetService<IVariableProvider>();
@@ -94,10 +88,7 @@ namespace GitVersion.Core.Tests
             var logAppender = new TestLogAppender(Action);
             var log = new Log(logAppender);
 
-            var sp = ConfigureServices(service =>
-            {
-                service.AddSingleton<ILog>(log);
-            });
+            var sp = ConfigureServices(service => service.AddSingleton<ILog>(log));
 
             var fileSystem = sp.GetService<IFileSystem>();
             var variableProvider = sp.GetService<IVariableProvider>();

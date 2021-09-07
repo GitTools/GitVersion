@@ -11,10 +11,7 @@ namespace GitTools.Testing
     public class RemoteRepositoryFixture : RepositoryFixtureBase
     {
         public RemoteRepositoryFixture(Func<string, IRepository> builder)
-            : base(builder)
-        {
-            CreateLocalRepository();
-        }
+            : base(builder) => CreateLocalRepository();
 
         public RemoteRepositoryFixture() : this(CreateNewRepository)
         {
@@ -35,18 +32,19 @@ namespace GitTools.Testing
             return repo;
         }
 
-        private void CreateLocalRepository()
-        {
-            LocalRepositoryFixture = CloneRepository();
-        }
+        private void CreateLocalRepository() => LocalRepositoryFixture = CloneRepository();
 
         /// <summary>
         ///     Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
         /// </summary>
-        public override void Dispose()
+        protected override void Dispose(bool disposing)
         {
-            LocalRepositoryFixture.Dispose();
-            base.Dispose();
+            if (disposing)
+            {
+                LocalRepositoryFixture.Dispose();
+            }
+
+            base.Dispose(disposing);
         }
     }
 }

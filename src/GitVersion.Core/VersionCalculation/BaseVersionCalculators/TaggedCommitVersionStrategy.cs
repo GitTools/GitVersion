@@ -14,55 +14,33 @@ namespace GitVersion.VersionCalculation
     {
         private readonly IRepositoryStore repositoryStore;
 
-        public TaggedCommitVersionStrategy(IRepositoryStore repositoryStore, Lazy<GitVersionContext> versionContext) : base(versionContext)
+        public TaggedCommitVersionStrategy(IRepositoryStore repositoryStore, Lazy<GitVersionContext> versionContext) : base(versionContext) => this.repositoryStore = repositoryStore ?? throw new ArgumentNullException(nameof(repositoryStore));
+
+        public override IEnumerable<BaseVersion> GetVersions() =>
+            GetTaggedVersions(Context.CurrentBranch, Context.CurrentCommit?.When);
+
+        internal IEnumerable<BaseVersion> GetTaggedVersions(IBranch? currentBranch, DateTimeOffset? olderThan)
         {
-            this.repositoryStore = repositoryStore ?? throw new ArgumentNullException(nameof(repositoryStore));
-        }
-
-        public override IEnumerable<BaseVersion> GetVersions()
-        {
-            return GetTaggedVersions(Context.CurrentBranch, Context.CurrentCommit.When);
-        }
-
-        internal IEnumerable<BaseVersion> GetTaggedVersions(IBranch currentBranch, DateTimeOffset? olderThan)
-        {
-            var allTags = repositoryStore.GetValidVersionTags(Context.Configuration.GitTagPrefix, olderThan);
-
-            var taggedCommits = currentBranch
-                .Commits
-                .SelectMany(commit => allTags.Where(t => IsValidTag(t.Item1, commit))).ToList();
-
-            var taggedVersions = taggedCommits
-                .Select(t =>
-                {
-                    var commit = t.Item1.PeeledTargetCommit();
-                    return commit != null ? new VersionTaggedCommit(commit, t.Item2, t.Item1.Name.Friendly) : null;
-                })
-                .Where(versionTaggedCommit => versionTaggedCommit != null)
-                .Select(versionTaggedCommit => CreateBaseVersion(Context, versionTaggedCommit))
-                .ToList();
-
+            if (currentBranch is null)
+                return Enumerable.Empty<BaseVersion>();
+            var versionTags = this.repositoryStore.GetValidVersionTags(Context.Configuration?.GitTagPrefix, olderThan);
+            var versionTagsByCommit = versionTags.ToLookup(vt => vt.Item3.Id.Sha);
+            var commitsOnBranch = currentBranch.Commits;
+            var versionTagsOnBranch = commitsOnBranch.SelectMany(commit => versionTagsByCommit[commit.Id.Sha]);
+            var versionTaggedCommits = versionTagsOnBranch.Select(t => new VersionTaggedCommit(t.Item3, t.Item2, t.Item1.Name.Friendly));
+            var taggedVersions = versionTaggedCommits.Select(versionTaggedCommit => CreateBaseVersion(Context, versionTaggedCommit)).ToList();
             var taggedVersionsOnCurrentCommit = taggedVersions.Where(version => !version.ShouldIncrement).ToList();
             return taggedVersionsOnCurrentCommit.Any() ? taggedVersionsOnCurrentCommit : taggedVersions;
         }
 
         private BaseVersion CreateBaseVersion(GitVersionContext context, VersionTaggedCommit version)
         {
-            var shouldUpdateVersion = version.Commit.Sha != context.CurrentCommit.Sha;
+            var shouldUpdateVersion = version.Commit.Sha != context.CurrentCommit?.Sha;
             var baseVersion = new BaseVersion(FormatSource(version), shouldUpdateVersion, version.SemVer, version.Commit, null);
             return baseVersion;
         }
 
-        protected virtual string FormatSource(VersionTaggedCommit version)
-        {
-            return $"Git tag '{version.Tag}'";
-        }
-
-        protected virtual bool IsValidTag(ITag tag, ICommit commit)
-        {
-            var targetCommit = tag.PeeledTargetCommit();
-            return targetCommit != null && Equals(targetCommit, commit);
-        }
+        protected virtual string FormatSource(VersionTaggedCommit version) => $"Git tag '{version.Tag}'";
 
         protected class VersionTaggedCommit
         {
@@ -72,15 +50,12 @@ namespace GitVersion.VersionCalculation
 
             public VersionTaggedCommit(ICommit commit, SemanticVersion semVer, string tag)
             {
-                Tag = tag;
-                Commit = commit;
-                SemVer = semVer;
+                this.Tag = tag;
+                this.Commit = commit;
+                this.SemVer = semVer;
             }
 
-            public override string ToString()
-            {
-                return $"{Tag} | {Commit} | {SemVer}";
-            }
+            public override string ToString() => $"{this.Tag} | {this.Commit} | {this.SemVer}";
         }
     }
 }

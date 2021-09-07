@@ -18,16 +18,13 @@ namespace GitVersion.Core.Tests
         [SetUp]
         public void SetUp()
         {
-            workDirectory = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
-            gitDirectory = Repository.Init(workDirectory).TrimEnd(Path.DirectorySeparatorChar);
-            Assert.NotNull(gitDirectory);
+            this.workDirectory = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
+            this.gitDirectory = Repository.Init(this.workDirectory).TrimEnd(Path.DirectorySeparatorChar);
+            Assert.NotNull(this.gitDirectory);
         }
 
         [TearDown]
-        public void Cleanup()
-        {
-            Directory.Delete(workDirectory, true);
-        }
+        public void Cleanup() => Directory.Delete(this.workDirectory, true);
 
         [Test]
         public void FindsGitDirectory()
@@ -36,10 +33,7 @@ namespace GitVersion.Core.Tests
             {
                 var options = Options.Create(new GitVersionOptions { WorkingDirectory = workDirectory, Settings = { NoFetch = true } });
 
-                var sp = ConfigureServices(services =>
-                {
-                    services.AddSingleton(options);
-                });
+                var sp = ConfigureServices(services => services.AddSingleton(options));
 
                 var gitVersionCalculator = sp.GetService<IGitVersionCalculateTool>();
 
@@ -57,17 +51,14 @@ namespace GitVersion.Core.Tests
         [Test]
         public void FindsGitDirectoryInParent()
         {
-            var childDir = Path.Combine(workDirectory, "child");
+            var childDir = Path.Combine(this.workDirectory, "child");
             Directory.CreateDirectory(childDir);
 
             try
             {
                 var options = Options.Create(new GitVersionOptions { WorkingDirectory = childDir, Settings = { NoFetch = true } });
 
-                var sp = ConfigureServices(services =>
-                {
-                    services.AddSingleton(options);
-                });
+                var sp = ConfigureServices(services => services.AddSingleton(options));
 
                 var gitVersionCalculator = sp.GetService<IGitVersionCalculateTool>();
 

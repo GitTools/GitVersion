@@ -16,53 +16,53 @@ namespace GitVersion
             this.config = config;
         }
 
-        public string Major => semver.Major.ToString();
+        public string Major => this.semver.Major.ToString();
 
-        public string Minor => semver.Minor.ToString();
+        public string Minor => this.semver.Minor.ToString();
 
-        public string Patch => semver.Patch.ToString();
+        public string Patch => this.semver.Patch.ToString();
 
-        public string PreReleaseTag => semver.PreReleaseTag;
+        public string? PreReleaseTag => this.semver.PreReleaseTag;
 
-        public string PreReleaseTagWithDash => semver.PreReleaseTag.HasTag() ? "-" + semver.PreReleaseTag : null;
+        public string? PreReleaseTagWithDash => this.semver.PreReleaseTag?.HasTag() == true ? "-" + this.semver.PreReleaseTag : null;
 
-        public string PreReleaseLabel => semver.PreReleaseTag.HasTag() ? semver.PreReleaseTag.Name : null;
+        public string? PreReleaseLabel => this.semver.PreReleaseTag?.HasTag() == true ? this.semver.PreReleaseTag.Name : null;
 
-        public string PreReleaseLabelWithDash => semver.PreReleaseTag.HasTag() ? "-" + semver.PreReleaseTag.Name : null;
+        public string? PreReleaseLabelWithDash => this.semver.PreReleaseTag?.HasTag() == true ? "-" + this.semver.PreReleaseTag.Name : null;
 
-        public string PreReleaseNumber => semver.PreReleaseTag.HasTag() ? semver.PreReleaseTag.Number.ToString() : null;
+        public string? PreReleaseNumber => this.semver.PreReleaseTag?.HasTag() == true ? this.semver.PreReleaseTag.Number.ToString() : null;
 
         public string WeightedPreReleaseNumber => GetWeightedPreReleaseNumber();
 
-        public string BuildMetaData => semver.BuildMetaData;
+        public string? BuildMetaData => this.semver.BuildMetaData;
 
-        public string BuildMetaDataPadded => semver.BuildMetaData.ToString("p" + config.BuildMetaDataPadding);
+        public string? BuildMetaDataPadded => this.semver.BuildMetaData?.ToString("p" + this.config.BuildMetaDataPadding);
 
-        public string FullBuildMetaData => semver.BuildMetaData.ToString("f");
+        public string? FullBuildMetaData => this.semver.BuildMetaData?.ToString("f");
 
-        public string MajorMinorPatch => $"{semver.Major}.{semver.Minor}.{semver.Patch}";
+        public string MajorMinorPatch => $"{this.semver.Major}.{this.semver.Minor}.{this.semver.Patch}";
 
-        public string SemVer => semver.ToString();
+        public string SemVer => this.semver.ToString();
 
-        public string LegacySemVer => semver.ToString("l");
+        public string LegacySemVer => this.semver.ToString("l");
 
-        public string LegacySemVerPadded => semver.ToString("lp" + config.LegacySemVerPadding);
+        public string LegacySemVerPadded => this.semver.ToString("lp" + this.config.LegacySemVerPadding);
 
-        public string AssemblySemVer => semver.GetAssemblyVersion(config.AssemblyVersioningScheme);
+        public string? AssemblySemVer => this.semver.GetAssemblyVersion(this.config.AssemblyVersioningScheme);
 
-        public string AssemblyFileSemVer => semver.GetAssemblyFileVersion(config.AssemblyFileVersioningScheme);
+        public string? AssemblyFileSemVer => this.semver.GetAssemblyFileVersion(this.config.AssemblyFileVersioningScheme);
 
-        public string FullSemVer => semver.ToString("f");
+        public string FullSemVer => this.semver.ToString("f");
 
-        public string BranchName => semver.BuildMetaData.Branch;
+        public string? BranchName => this.semver.BuildMetaData?.Branch;
 
-        public string EscapedBranchName => semver.BuildMetaData.Branch?.RegexReplace("[^a-zA-Z0-9-]", "-");
+        public string? EscapedBranchName => this.semver.BuildMetaData?.Branch?.RegexReplace("[^a-zA-Z0-9-]", "-");
 
-        public string Sha => semver.BuildMetaData.Sha;
+        public string? Sha => this.semver.BuildMetaData?.Sha;
 
-        public string ShortSha => semver.BuildMetaData.ShortSha;
+        public string? ShortSha => this.semver.BuildMetaData?.ShortSha;
 
-        public string CommitDate => semver.BuildMetaData.CommitDate.UtcDateTime.ToString(config.CommitDateFormat, CultureInfo.InvariantCulture);
+        public string? CommitDate => this.semver.BuildMetaData?.CommitDate?.UtcDateTime.ToString(this.config.CommitDateFormat, CultureInfo.InvariantCulture);
 
         // TODO When NuGet 3 is released: public string NuGetVersionV3 { get { return ??; } }
 
@@ -70,30 +70,31 @@ namespace GitVersion
 
         public string NuGetVersion => NuGetVersionV2;
 
-        public string NuGetPreReleaseTagV2 => semver.PreReleaseTag.HasTag() ? semver.PreReleaseTag.ToString("lp").ToLower() : null;
+        public string? NuGetPreReleaseTagV2 => this.semver.PreReleaseTag?.HasTag() == true ? this.semver.PreReleaseTag?.ToString("lp")?.ToLower() : null;
 
-        public string NuGetPreReleaseTag => NuGetPreReleaseTagV2;
+        public string? NuGetPreReleaseTag => NuGetPreReleaseTagV2;
 
-        public string InformationalVersion => semver.ToString("i");
+        public string InformationalVersion => this.semver.ToString("i");
 
         [Obsolete("Use InformationalVersion instead")]
         public string DefaultInformationalVersion => InformationalVersion;
 
-        public string VersionSourceSha => semver.BuildMetaData.VersionSourceSha;
+        public string? VersionSourceSha => this.semver.BuildMetaData?.VersionSourceSha;
 
-        public string CommitsSinceVersionSource => semver.BuildMetaData.CommitsSinceVersionSource.ToString(CultureInfo.InvariantCulture);
+        public string? CommitsSinceVersionSource => this.semver.BuildMetaData?.CommitsSinceVersionSource?.ToString(CultureInfo.InvariantCulture);
 
-        public string CommitsSinceVersionSourcePadded => semver.BuildMetaData.CommitsSinceVersionSource.ToString(CultureInfo.InvariantCulture).PadLeft(config.CommitsSinceVersionSourcePadding, '0');
+        public string? CommitsSinceVersionSourcePadded => this.semver.BuildMetaData?.CommitsSinceVersionSource?.ToString(CultureInfo.InvariantCulture).PadLeft(this.config.CommitsSinceVersionSourcePadding, '0');
 
-        public string UncommittedChanges => semver.BuildMetaData.UncommittedChanges.ToString(CultureInfo.InvariantCulture);
+        public string? UncommittedChanges => this.semver.BuildMetaData?.UncommittedChanges.ToString(CultureInfo.InvariantCulture);
 
         private string GetWeightedPreReleaseNumber()
         {
             var weightedPreReleaseNumber =
-                semver.PreReleaseTag.HasTag() ? (semver.PreReleaseTag.Number + config.PreReleaseWeight).ToString() : null;
-            if (string.IsNullOrEmpty(weightedPreReleaseNumber))
+                this.semver.PreReleaseTag?.HasTag() == true ? (this.semver.PreReleaseTag.Number + this.config.PreReleaseWeight).ToString() : null;
+
+            if (weightedPreReleaseNumber.IsNullOrEmpty())
             {
-                weightedPreReleaseNumber = $"{config.TagPreReleaseWeight}";
+                return $"{this.config.TagPreReleaseWeight}";
             }
 
             return weightedPreReleaseNumber;

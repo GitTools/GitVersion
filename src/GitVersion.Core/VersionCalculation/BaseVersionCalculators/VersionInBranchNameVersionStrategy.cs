@@ -13,23 +13,21 @@ namespace GitVersion.VersionCalculation
     /// </summary>
     public class VersionInBranchNameVersionStrategy : VersionStrategyBase
     {
-        private IRepositoryStore repositoryStore;
+        private readonly IRepositoryStore repositoryStore;
 
-        public VersionInBranchNameVersionStrategy(IRepositoryStore repositoryStore, Lazy<GitVersionContext> versionContext) : base(versionContext)
-        {
-            this.repositoryStore = repositoryStore ?? throw new ArgumentNullException(nameof(repositoryStore));
-        }
+        public VersionInBranchNameVersionStrategy(IRepositoryStore repositoryStore, Lazy<GitVersionContext> versionContext) : base(versionContext) => this.repositoryStore = repositoryStore ?? throw new ArgumentNullException(nameof(repositoryStore));
 
         public override IEnumerable<BaseVersion> GetVersions()
         {
             var currentBranch = Context.CurrentBranch;
-            var tagPrefixRegex = Context.Configuration.GitTagPrefix;
+            var tagPrefixRegex = Context.Configuration?.GitTagPrefix;
             return GetVersions(tagPrefixRegex, currentBranch);
         }
 
-        internal IEnumerable<BaseVersion> GetVersions(string tagPrefixRegex, IBranch currentBranch)
+        internal IEnumerable<BaseVersion> GetVersions(string? tagPrefixRegex, IBranch? currentBranch)
         {
-            if (!Context.FullConfiguration.IsReleaseBranch(NameWithoutOrigin(currentBranch)))
+            if (currentBranch == null ||
+                Context.FullConfiguration?.IsReleaseBranch(NameWithoutOrigin(currentBranch)) != true)
             {
                 yield break;
             }
@@ -38,13 +36,13 @@ namespace GitVersion.VersionCalculation
             var versionInBranch = GetVersionInBranch(branchName, tagPrefixRegex);
             if (versionInBranch != null)
             {
-                var commitBranchWasBranchedFrom = repositoryStore.FindCommitBranchWasBranchedFrom(currentBranch, Context.FullConfiguration);
+                var commitBranchWasBranchedFrom = this.repositoryStore.FindCommitBranchWasBranchedFrom(currentBranch, Context.FullConfiguration);
                 var branchNameOverride = branchName.RegexReplace("[-/]" + versionInBranch.Item1, string.Empty);
                 yield return new BaseVersion("Version in branch name", false, versionInBranch.Item2, commitBranchWasBranchedFrom.Commit, branchNameOverride);
             }
         }
 
-        private static Tuple<string, SemanticVersion> GetVersionInBranch(string branchName, string tagPrefixRegex)
+        private static Tuple<string, SemanticVersion>? GetVersionInBranch(string branchName, string? tagPrefixRegex)
         {
             var branchParts = branchName.Split('/', '-');
             foreach (var part in branchParts)
@@ -58,11 +56,8 @@ namespace GitVersion.VersionCalculation
             return null;
         }
 
-        private static string NameWithoutOrigin(IBranch branch)
-        {
-            return branch.IsRemote && branch.Name.Friendly.StartsWith("origin/")
+        private static string NameWithoutOrigin(IBranch branch) => branch.IsRemote && branch.Name.Friendly.StartsWith("origin/")
                 ? branch.Name.Friendly.Substring("origin/".Length)
                 : branch.Name.Friendly;
-        }
     }
 }

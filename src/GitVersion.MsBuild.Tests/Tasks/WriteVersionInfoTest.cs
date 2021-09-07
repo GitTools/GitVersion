@@ -13,10 +13,7 @@ namespace GitVersion.MsBuild.Tests.Tasks
         protected string GitHubEnvFilePath { get; set; }
 
         [OneTimeSetUp]
-        public void OneTimeSetUp()
-        {
-            GitHubEnvFilePath = System.IO.Path.GetTempFileName();
-        }
+        public void OneTimeSetUp() => GitHubEnvFilePath = System.IO.Path.GetTempFileName();
 
         [OneTimeTearDown]
         public void OneTimeTearDown()
@@ -103,10 +100,7 @@ namespace GitVersion.MsBuild.Tests.Tasks
         {
             const string taskName = nameof(WriteVersionInfoToBuildLog);
 
-            using var result = ExecuteMsBuildExe(project =>
-            {
-                AddWriteVersionInfoToBuildLogTask(project, taskName, taskName);
-            });
+            using var result = ExecuteMsBuildExe(project => AddWriteVersionInfoToBuildLogTask(project, taskName, taskName));
 
             result.ProjectPath.ShouldNotBeNullOrWhiteSpace();
             result.MsBuild.Count.ShouldBeGreaterThan(0);
@@ -123,10 +117,7 @@ namespace GitVersion.MsBuild.Tests.Tasks
         {
             const string taskName = nameof(WriteVersionInfoToBuildLog);
 
-            using var result = ExecuteMsBuildExeInAzurePipeline(project =>
-            {
-                AddWriteVersionInfoToBuildLogTask(project, taskName, taskName);
-            });
+            using var result = ExecuteMsBuildExeInAzurePipeline(project => AddWriteVersionInfoToBuildLogTask(project, taskName, taskName));
 
             result.ProjectPath.ShouldNotBeNullOrWhiteSpace();
             result.MsBuild.Count.ShouldBeGreaterThan(0);

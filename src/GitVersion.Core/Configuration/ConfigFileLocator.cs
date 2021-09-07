@@ -1,5 +1,6 @@
 using System.IO;
 using System.Linq;
+using GitVersion.Extensions;
 using GitVersion.Model.Configuration;
 using GitVersion.VersionCalculation;
 using Microsoft.Extensions.Options;
@@ -14,18 +15,18 @@ namespace GitVersion.Configuration
         {
             this.fileSystem = fileSystem;
             var configFile = options?.Value.ConfigInfo.ConfigFile;
-            FilePath = !string.IsNullOrWhiteSpace(configFile) ? configFile : DefaultFileName;
+            FilePath = !configFile.IsNullOrWhiteSpace() ? configFile : DefaultFileName;
         }
 
         public string FilePath { get; }
 
-        public bool HasConfigFileAt(string workingDirectory) => fileSystem.Exists(Path.Combine(workingDirectory, FilePath));
+        public bool HasConfigFileAt(string workingDirectory) => this.fileSystem.Exists(Path.Combine(workingDirectory, FilePath));
 
         public string GetConfigFilePath(string workingDirectory) => Path.Combine(workingDirectory, FilePath);
 
-        public void Verify(string workingDirectory, string projectRootDirectory)
+        public void Verify(string? workingDirectory, string? projectRootDirectory)
         {
-            if (!Path.IsPathRooted(FilePath) && !fileSystem.PathsEqual(workingDirectory, projectRootDirectory))
+            if (!Path.IsPathRooted(FilePath) && !this.fileSystem.PathsEqual(workingDirectory, projectRootDirectory))
             {
                 WarnAboutAmbiguousConfigFileSelection(workingDirectory, projectRootDirectory);
             }
@@ -43,9 +44,9 @@ namespace GitVersion.Configuration
         {
             var configFilePath = GetConfigFilePath(workingDirectory);
 
-            if (fileSystem.Exists(configFilePath))
+            if (this.fileSystem.Exists(configFilePath))
             {
-                var readAllText = fileSystem.ReadAllText(configFilePath);
+                var readAllText = this.fileSystem.ReadAllText(configFilePath);
                 var readConfig = ConfigSerializer.Read(new StringReader(readAllText));
 
                 VerifyReadConfig(readConfig);
@@ -58,7 +59,7 @@ namespace GitVersion.Configuration
 
         public void Verify(GitVersionOptions gitVersionOptions, IGitRepositoryInfo repositoryInfo)
         {
-            if (!string.IsNullOrWhiteSpace(gitVersionOptions.RepositoryInfo.TargetUrl))
+            if (!gitVersionOptions.RepositoryInfo.TargetUrl.IsNullOrWhiteSpace())
             {
                 // Assuming this is a dynamic repository. At this stage it's unsure whether we have
                 // any .git info so we need to skip verification
@@ -74,7 +75,7 @@ namespace GitVersion.Configuration
         private static void VerifyReadConfig(Config config)
         {
             // Verify no branches are set to mainline mode
-            if (config.Branches.Any(b => b.Value.VersioningMode == VersioningMode.Mainline))
+            if (config.Branches.Any(b => b.Value?.VersioningMode == VersioningMode.Mainline))
             {
                 throw new ConfigurationException(@"Mainline mode only works at the repository level, a single branch cannot be put into mainline mode
 
@@ -84,13 +85,13 @@ If the docs do not help you decide on the mode open an issue to discuss what you
             }
         }
 
-        private void WarnAboutAmbiguousConfigFileSelection(string workingDirectory, string projectRootDirectory)
+        private void WarnAboutAmbiguousConfigFileSelection(string? workingDirectory, string? projectRootDirectory)
         {
             var workingConfigFile = GetConfigFilePath(workingDirectory);
             var projectRootConfigFile = GetConfigFilePath(projectRootDirectory);
 
-            var hasConfigInWorkingDirectory = fileSystem.Exists(workingConfigFile);
-            var hasConfigInProjectRootDirectory = fileSystem.Exists(projectRootConfigFile);
+            var hasConfigInWorkingDirectory = this.fileSystem.Exists(workingConfigFile);
+            var hasConfigInProjectRootDirectory = this.fileSystem.Exists(projectRootConfigFile);
             if (hasConfigInProjectRootDirectory && hasConfigInWorkingDirectory)
             {
                 throw new WarningException($"Ambiguous config file selection from '{workingConfigFile}' and '{projectRootConfigFile}'");

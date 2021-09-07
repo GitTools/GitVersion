@@ -469,7 +469,7 @@ namespace GitVersion.Core.Tests.IntegrationTests
             fixture.AssertFullSemver("2.0.0-beta.4", config);
         }
 
-        public void ReleaseBranchShouldUseBranchNameVersionDespiteBumpInPreviousCommit()
+        public static void ReleaseBranchShouldUseBranchNameVersionDespiteBumpInPreviousCommit()
         {
             using var fixture = new EmptyRepositoryFixture();
             fixture.Repository.MakeATaggedCommit("1.0");
@@ -580,7 +580,7 @@ namespace GitVersion.Core.Tests.IntegrationTests
             fixture.Checkout("release-2.0.0");
 
             var variables = fixture.GetVersion(config);
-            Assert.AreEqual(variables.AssemblySemFileVer, "2.0.0.1001");
+            Assert.AreEqual("2.0.0.1001", variables.AssemblySemFileVer);
         }
 
         [Test]
@@ -599,7 +599,7 @@ namespace GitVersion.Core.Tests.IntegrationTests
             fixture.Repository.CreateBranch("release-2.0.0");
             fixture.Checkout("release-2.0.0");
             var variables = fixture.GetVersion(config);
-            Assert.AreEqual(variables.AssemblySemFileVer, "2.0.0.30001");
+            Assert.AreEqual("2.0.0.30001", variables.AssemblySemFileVer);
         }
 
         /// <summary>

@@ -17,19 +17,13 @@ namespace GitVersion.BuildAgents
 
         protected override string EnvironmentVariable { get; } = EnvironmentVariableName;
 
-        public override string[] GenerateSetParameterMessage(string name, string value)
-        {
-            return new[]
+        public override string[] GenerateSetParameterMessage(string name, string value) => new[]
             {
                 $"##vso[task.setvariable variable=GitVersion.{name}]{value}",
                 $"##vso[task.setvariable variable=GitVersion.{name};isOutput=true]{value}"
             };
-        }
 
-        public override string GetCurrentBranch(bool usingDynamicRepos)
-        {
-            return Environment.GetEnvironmentVariable("BUILD_SOURCEBRANCH");
-        }
+        public override string? GetCurrentBranch(bool usingDynamicRepos) => Environment.GetEnvironmentVariable("BUILD_SOURCEBRANCH");
 
         public override bool PreventFetch() => true;
 
@@ -38,7 +32,7 @@ namespace GitVersion.BuildAgents
             // For AzurePipelines, we'll get the Build Number and insert GitVersion variables where
             // specified
             var buildNumberEnv = Environment.GetEnvironmentVariable("BUILD_BUILDNUMBER");
-            if (string.IsNullOrWhiteSpace(buildNumberEnv))
+            if (buildNumberEnv.IsNullOrWhiteSpace())
                 return variables.FullSemVer;
 
             var newBuildNumber = variables.Aggregate(buildNumberEnv, ReplaceVariables);

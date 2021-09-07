@@ -11,7 +11,7 @@ jobs:
     - uses: dawidd6/action-homebrew-bump-formula@v3.8.0
       with:
         # GitHub token, required, not the default one
-        token: ${{secrets.HOMEBREW_GITHUB_TOKEN}}
+        token: ${{secrets.RELEASE_GITHUB_TOKEN}}
         # Formula name, required
         formula: gitversion
         tag: ${{ github.event.client_payload.ref }}

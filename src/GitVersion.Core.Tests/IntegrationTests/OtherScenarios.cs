@@ -24,7 +24,7 @@ namespace GitVersion.Core.Tests.IntegrationTests
             fixture.Repository.MakeACommit();
             fixture.Repository.CreateBranch("develop");
 
-            Commands.Fetch((Repository)fixture.LocalRepositoryFixture.Repository, fixture.LocalRepositoryFixture.Repository.Network.Remotes.First().Name, new string[0], new FetchOptions(), null);
+            Commands.Fetch((Repository)fixture.LocalRepositoryFixture.Repository, fixture.LocalRepositoryFixture.Repository.Network.Remotes.First().Name, System.Array.Empty<string>(), new FetchOptions(), null);
             Commands.Checkout(fixture.LocalRepositoryFixture.Repository, fixture.Repository.Head.Tip);
             fixture.LocalRepositoryFixture.Repository.Branches.Remove(MainBranch);
             fixture.InitializeRepo();
@@ -91,7 +91,7 @@ namespace GitVersion.Core.Tests.IntegrationTests
             fixture.Repository.MakeACommit();
             fixture.Repository.CreateBranch("feature/someFeature");
 
-            Commands.Fetch((Repository)fixture.LocalRepositoryFixture.Repository, fixture.LocalRepositoryFixture.Repository.Network.Remotes.First().Name, new string[0], new FetchOptions(), null);
+            Commands.Fetch((Repository)fixture.LocalRepositoryFixture.Repository, fixture.LocalRepositoryFixture.Repository.Network.Remotes.First().Name, System.Array.Empty<string>(), new FetchOptions(), null);
             Commands.Checkout(fixture.LocalRepositoryFixture.Repository, fixture.Repository.Head.Tip);
             fixture.LocalRepositoryFixture.Repository.Branches.Remove(MainBranch);
             fixture.InitializeRepo();

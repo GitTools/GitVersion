@@ -11,7 +11,7 @@ namespace GitVersion.Helpers
         // - env:ENV name OR a member name
         // - optional fallback value after " ?? "
         // - the fallback value should be a quoted string, but simple unquoted text is allowed for back compat
-        private static readonly Regex TokensRegex = new Regex(@"{((env:(?<envvar>\w+))|(?<member>\w+))(\s+(\?\?)??\s+((?<fallback>\w+)|""(?<fallback>.*)""))??}", RegexOptions.Compiled);
+        private static readonly Regex TokensRegex = new(@"{((env:(?<envvar>\w+))|(?<member>\w+))(\s+(\?\?)??\s+((?<fallback>\w+)|""(?<fallback>.*)""))??}", RegexOptions.Compiled);
 
         /// <summary>
         /// Formats the <paramref name="template"/>, replacing each expression wrapped in curly braces
@@ -35,7 +35,7 @@ namespace GitVersion.Helpers
         /// "{env:BUILD_NUMBER}".FormatWith(new { }, env);
         /// "{env:BUILD_NUMBER ?? \"0\"}".FormatWith(new { }, env);
         /// </example>
-        public static string FormatWith<T>(this string template, T source, IEnvironment environment)
+        public static string FormatWith<T>(this string template, T? source, IEnvironment environment)
         {
             if (template == null)
             {
@@ -45,7 +45,7 @@ namespace GitVersion.Helpers
             foreach (Match match in TokensRegex.Matches(template))
             {
                 string propertyValue;
-                string fallback = match.Groups["fallback"].Success ? match.Groups["fallback"].Value : null;
+                string? fallback = match.Groups["fallback"].Success ? match.Groups["fallback"].Value : null;
 
                 if (match.Groups["envvar"].Success)
                 {
@@ -55,7 +55,7 @@ namespace GitVersion.Helpers
                 }
                 else
                 {
-                    var objType = source.GetType();
+                    var objType = source?.GetType();
                     string memberAccessExpression = match.Groups["member"].Value;
                     var expression = CompileDataBinder(objType, memberAccessExpression);
                     // It would be better to throw if the expression and fallback produce null, but provide an empty string for back compat.
@@ -68,13 +68,13 @@ namespace GitVersion.Helpers
             return template;
         }
 
-        private static Func<object, object> CompileDataBinder(Type type, string expr)
+        private static Func<object?, object> CompileDataBinder(Type? type, string expr)
         {
             ParameterExpression param = Expression.Parameter(typeof(object));
             Expression body = Expression.Convert(param, type);
             body = expr.Split('.').Aggregate(body, Expression.PropertyOrField);
             body = Expression.Convert(body, typeof(object)); // Convert result in case the body produces a Nullable value type.
-            return Expression.Lambda<Func<object, object>>(body, param).Compile();
+            return Expression.Lambda<Func<object?, object>>(body, param).Compile();
         }
     }
 }

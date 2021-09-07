@@ -11,8 +11,8 @@ namespace GitVersion.MsBuild.Tests.Mocks
 {
     internal sealed class MockEngine : IBuildEngine4
     {
-        private readonly ConcurrentDictionary<object, object> _objectCache = new ConcurrentDictionary<object, object>();
-        private StringBuilder _log = new StringBuilder();
+        private readonly ConcurrentDictionary<object, object> objectCache = new();
+        private StringBuilder log = new();
 
         internal MessageImportance MinimumMessageImportance { get; set; } = MessageImportance.Low;
 
@@ -24,33 +24,33 @@ namespace GitVersion.MsBuild.Tests.Mocks
 
         public bool IsRunningMultipleNodes { get; set; }
 
-        public void LogErrorEvent(BuildErrorEventArgs eventArgs)
+        public void LogErrorEvent(BuildErrorEventArgs e)
         {
-            Console.WriteLine(EventArgsFormatting.FormatEventMessage(eventArgs));
-            _log.AppendLine(EventArgsFormatting.FormatEventMessage(eventArgs));
+            Console.WriteLine(EventArgsFormatting.FormatEventMessage(e));
+            this.log.AppendLine(EventArgsFormatting.FormatEventMessage(e));
             ++Errors;
         }
 
-        public void LogWarningEvent(BuildWarningEventArgs eventArgs)
+        public void LogWarningEvent(BuildWarningEventArgs e)
         {
-            Console.WriteLine(EventArgsFormatting.FormatEventMessage(eventArgs));
-            _log.AppendLine(EventArgsFormatting.FormatEventMessage(eventArgs));
+            Console.WriteLine(EventArgsFormatting.FormatEventMessage(e));
+            this.log.AppendLine(EventArgsFormatting.FormatEventMessage(e));
             ++Warnings;
         }
 
-        public void LogCustomEvent(CustomBuildEventArgs eventArgs)
+        public void LogCustomEvent(CustomBuildEventArgs e)
         {
-            Console.WriteLine(eventArgs.Message);
-            _log.AppendLine(eventArgs.Message);
+            Console.WriteLine(e.Message);
+            this.log.AppendLine(e.Message);
         }
 
-        public void LogMessageEvent(BuildMessageEventArgs eventArgs)
+        public void LogMessageEvent(BuildMessageEventArgs e)
         {
             // Only if the message is above the minimum importance should we record the log message
-            if (eventArgs.Importance <= MinimumMessageImportance)
+            if (e.Importance <= MinimumMessageImportance)
             {
-                Console.WriteLine(eventArgs.Message);
-                _log.AppendLine(eventArgs.Message);
+                Console.WriteLine(e.Message);
+                this.log.AppendLine(e.Message);
                 ++Messages;
             }
         }
@@ -65,8 +65,8 @@ namespace GitVersion.MsBuild.Tests.Mocks
 
         public string Log
         {
-            set => _log = new StringBuilder(value);
-            get => _log.ToString();
+            set => this.log = new StringBuilder(value);
+            get => this.log.ToString();
         }
 
         public bool BuildProjectFile(string projectFileName, string[] targetNames, IDictionary globalProperties, IDictionary targetOutputs) => false;
@@ -100,9 +100,9 @@ namespace GitVersion.MsBuild.Tests.Mocks
             string[] projectFileNames,
             string[] targetNames,
             IDictionary[] globalProperties,
-            IList<string>[] undefineProperties,
+            IList<string>[] removeGlobalProperties,
             string[] toolsVersion,
-            bool includeTargetOutputs) => new BuildEngineResult(false, null);
+            bool returnTargetOutputs) => new(false, null);
 
         public void Yield()
         {
@@ -114,18 +114,15 @@ namespace GitVersion.MsBuild.Tests.Mocks
 
         public object GetRegisteredTaskObject(object key, RegisteredTaskObjectLifetime lifetime)
         {
-            _objectCache.TryGetValue(key, out var obj);
+            this.objectCache.TryGetValue(key, out var obj);
             return obj;
         }
 
-        public void RegisterTaskObject(object key, object obj, RegisteredTaskObjectLifetime lifetime, bool allowEarlyCollection)
-        {
-            _objectCache[key] = obj;
-        }
+        public void RegisterTaskObject(object key, object obj, RegisteredTaskObjectLifetime lifetime, bool allowEarlyCollection) => this.objectCache[key] = obj;
 
         public object UnregisterTaskObject(object key, RegisteredTaskObjectLifetime lifetime)
         {
-            _objectCache.TryRemove(key, out var obj);
+            this.objectCache.TryRemove(key, out var obj);
             return obj;
         }
     }

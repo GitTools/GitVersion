@@ -10,12 +10,12 @@ namespace GitVersion
         /// <summary>
         /// Contains the raw configuration, use Configuration for specific config based on the current GitVersion context.
         /// </summary>
-        public Config FullConfiguration { get; }
+        public Config? FullConfiguration { get; }
 
-        public SemanticVersion CurrentCommitTaggedVersion { get; }
-        public EffectiveConfiguration Configuration { get; }
-        public IBranch CurrentBranch { get; }
-        public ICommit CurrentCommit { get; }
+        public SemanticVersion? CurrentCommitTaggedVersion { get; }
+        public EffectiveConfiguration? Configuration { get; }
+        public IBranch? CurrentBranch { get; }
+        public ICommit? CurrentCommit { get; }
         public bool IsCurrentCommitTagged => CurrentCommitTaggedVersion != null;
 
         public int NumberOfUncommittedChanges { get; }
@@ -24,7 +24,7 @@ namespace GitVersion
         {
         }
 
-        public GitVersionContext(IBranch currentBranch, ICommit currentCommit,
+        public GitVersionContext(IBranch currentBranch, ICommit? currentCommit,
             Config configuration, EffectiveConfiguration effectiveConfiguration, SemanticVersion currentCommitTaggedVersion, int numberOfUncommittedChanges)
         {
             CurrentCommit = currentCommit;

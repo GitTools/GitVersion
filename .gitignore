@@ -85,7 +85,6 @@ _NCrunch_GitVersion
 GitVersion.sln.ide/
 .vs/
 Packages/
-build/*
 site/
 /TestResult.xml
 
@@ -107,6 +106,7 @@ site/
 # Cake
 ####################
 tools/*
+run/*
 !tools/packages.config
 /*.zip
 GitVersion.CommandLine/*/
@@ -115,6 +115,7 @@ releaseArtifacts
 /ILMergeTemp
 .dotnet
 artifacts
+!build/artifacts
 src/Docker/**/content
 
 !**/*.cake

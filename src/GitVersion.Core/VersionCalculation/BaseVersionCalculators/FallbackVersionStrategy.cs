@@ -13,19 +13,16 @@ namespace GitVersion.VersionCalculation
     {
         private readonly IRepositoryStore repositoryStore;
 
-        public FallbackVersionStrategy(IRepositoryStore repositoryStore, Lazy<GitVersionContext> versionContext) : base(versionContext)
-        {
-            this.repositoryStore = repositoryStore;
-        }
+        public FallbackVersionStrategy(IRepositoryStore repositoryStore, Lazy<GitVersionContext> versionContext) : base(versionContext) => this.repositoryStore = repositoryStore;
         public override IEnumerable<BaseVersion> GetVersions()
         {
-            var currentBranchTip = Context.CurrentBranch.Tip;
+            var currentBranchTip = Context.CurrentBranch?.Tip;
             if (currentBranchTip == null)
             {
                 throw new GitVersionException("No commits found on the current branch.");
             }
 
-            var baseVersionSource = repositoryStore.GetBaseVersionSource(currentBranchTip);
+            var baseVersionSource = this.repositoryStore.GetBaseVersionSource(currentBranchTip);
 
             yield return new BaseVersion("Fallback base version", false, new SemanticVersion(minor: 1), baseVersionSource, null);
         }

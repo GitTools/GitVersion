@@ -19,27 +19,24 @@ namespace GitVersion.Core.Tests.BuildAgents
         [SetUp]
         public void SetUp()
         {
-            var sp = ConfigureServices(services =>
-            {
-                services.AddSingleton<GitHubActions>();
-            });
-            environment = sp.GetService<IEnvironment>();
-            buildServer = sp.GetService<GitHubActions>();
-            environment.SetEnvironmentVariable(GitHubActions.EnvironmentVariableName, "true");
+            var sp = ConfigureServices(services => services.AddSingleton<GitHubActions>());
+            this.environment = sp.GetService<IEnvironment>();
+            this.buildServer = sp.GetService<GitHubActions>();
+            this.environment.SetEnvironmentVariable(GitHubActions.EnvironmentVariableName, "true");
 
-            githubSetEnvironmentTempFilePath = Path.GetTempFileName();
-            environment.SetEnvironmentVariable(GitHubActions.GitHubSetEnvTempFileEnvironmentVariableName, githubSetEnvironmentTempFilePath);
+            this.githubSetEnvironmentTempFilePath = Path.GetTempFileName();
+            this.environment.SetEnvironmentVariable(GitHubActions.GitHubSetEnvTempFileEnvironmentVariableName, this.githubSetEnvironmentTempFilePath);
         }
 
         [TearDown]
         public void TearDown()
         {
-            environment.SetEnvironmentVariable(GitHubActions.EnvironmentVariableName, null);
-            environment.SetEnvironmentVariable(GitHubActions.GitHubSetEnvTempFileEnvironmentVariableName, null);
-            if (githubSetEnvironmentTempFilePath != null && File.Exists(githubSetEnvironmentTempFilePath))
+            this.environment.SetEnvironmentVariable(GitHubActions.EnvironmentVariableName, null);
+            this.environment.SetEnvironmentVariable(GitHubActions.GitHubSetEnvTempFileEnvironmentVariableName, null);
+            if (this.githubSetEnvironmentTempFilePath != null && File.Exists(this.githubSetEnvironmentTempFilePath))
             {
-                File.Delete(githubSetEnvironmentTempFilePath);
-                githubSetEnvironmentTempFilePath = null;
+                File.Delete(this.githubSetEnvironmentTempFilePath);
+                this.githubSetEnvironmentTempFilePath = null;
             }
         }
 
@@ -47,7 +44,7 @@ namespace GitVersion.Core.Tests.BuildAgents
         public void CanApplyToCurrentContextShouldBeTrueWhenEnvironmentVariableIsSet()
         {
             // Act
-            var result = buildServer.CanApplyToCurrentContext();
+            var result = this.buildServer.CanApplyToCurrentContext();
 
             // Assert
             result.ShouldBeTrue();
@@ -57,10 +54,10 @@ namespace GitVersion.Core.Tests.BuildAgents
         public void CanApplyToCurrentContextShouldBeFalseWhenEnvironmentVariableIsNotSet()
         {
             // Arrange
-            environment.SetEnvironmentVariable(GitHubActions.EnvironmentVariableName, "");
+            this.environment.SetEnvironmentVariable(GitHubActions.EnvironmentVariableName, "");
 
             // Act
-            var result = buildServer.CanApplyToCurrentContext();
+            var result = this.buildServer.CanApplyToCurrentContext();
 
             // Assert
             result.ShouldBeFalse();
@@ -70,10 +67,10 @@ namespace GitVersion.Core.Tests.BuildAgents
         public void GetCurrentBranchShouldHandleBranches()
         {
             // Arrange
-            environment.SetEnvironmentVariable("GITHUB_REF", $"refs/heads/{MainBranch}");
+            this.environment.SetEnvironmentVariable("GITHUB_REF", $"refs/heads/{MainBranch}");
 
             // Act
-            var result = buildServer.GetCurrentBranch(false);
+            var result = this.buildServer.GetCurrentBranch(false);
 
             // Assert
             result.ShouldBe($"refs/heads/{MainBranch}");
@@ -83,10 +80,10 @@ namespace GitVersion.Core.Tests.BuildAgents
         public void GetCurrentBranchShouldHandleTags()
         {
             // Arrange
-            environment.SetEnvironmentVariable("GITHUB_REF", "refs/tags/1.0.0");
+            this.environment.SetEnvironmentVariable("GITHUB_REF", "refs/tags/1.0.0");
 
             // Act
-            var result = buildServer.GetCurrentBranch(false);
+            var result = this.buildServer.GetCurrentBranch(false);
 
             // Assert
             result.ShouldBe("refs/tags/1.0.0");
@@ -96,10 +93,10 @@ namespace GitVersion.Core.Tests.BuildAgents
         public void GetCurrentBranchShouldHandlePullRequests()
         {
             // Arrange
-            environment.SetEnvironmentVariable("GITHUB_REF", "refs/pull/1/merge");
+            this.environment.SetEnvironmentVariable("GITHUB_REF", "refs/pull/1/merge");
 
             // Act
-            var result = buildServer.GetCurrentBranch(false);
+            var result = this.buildServer.GetCurrentBranch(false);
 
             // Assert
             result.ShouldBe("refs/pull/1/merge");
@@ -109,10 +106,10 @@ namespace GitVersion.Core.Tests.BuildAgents
         public void GetSetParameterMessage()
         {
             // Assert
-            environment.GetEnvironmentVariable("GitVersion_Something").ShouldBeNullOrWhiteSpace();
+            this.environment.GetEnvironmentVariable("GitVersion_Something").ShouldBeNullOrWhiteSpace();
 
             // Act
-            var result = buildServer.GenerateSetParameterMessage("GitVersion_Something", "1.0.0");
+            var result = this.buildServer.GenerateSetParameterMessage("GitVersion_Something", "1.0.0");
 
             // Assert
             result.ShouldContain(s => true, 0);
@@ -122,10 +119,10 @@ namespace GitVersion.Core.Tests.BuildAgents
         public void SkipEmptySetParameterMessage()
         {
             // Act
-            var result = buildServer.GenerateSetParameterMessage("Hello", string.Empty);
+            var result = this.buildServer.GenerateSetParameterMessage("Hello", string.Empty);
 
             // Assert
-            result.ShouldBeEquivalentTo(new string[0]);
+            result.ShouldBeEquivalentTo(System.Array.Empty<string>());
         }
 
         [Test]
@@ -137,10 +134,10 @@ namespace GitVersion.Core.Tests.BuildAgents
             var list = new List<string>();
 
             // Assert
-            environment.GetEnvironmentVariable("GitVersion_Major").ShouldBeNullOrWhiteSpace();
+            this.environment.GetEnvironmentVariable("GitVersion_Major").ShouldBeNullOrWhiteSpace();
 
             // Act
-            buildServer.WriteIntegration(s => { list.Add(s); }, vars);
+            this.buildServer.WriteIntegration(s => list.Add(s), vars);
 
             // Assert
             var expected = new List<string>
@@ -159,7 +156,7 @@ namespace GitVersion.Core.Tests.BuildAgents
                 "GitVersion_Major=1.0.0"
             };
 
-            var actualFileContents = File.ReadAllLines(githubSetEnvironmentTempFilePath);
+            var actualFileContents = File.ReadAllLines(this.githubSetEnvironmentTempFilePath);
 
             actualFileContents.ShouldBe(expectedFileContents);
         }
@@ -173,10 +170,10 @@ namespace GitVersion.Core.Tests.BuildAgents
             var list = new List<string>();
 
             // Assert
-            environment.GetEnvironmentVariable("GitVersion_Major").ShouldBeNullOrWhiteSpace();
+            this.environment.GetEnvironmentVariable("GitVersion_Major").ShouldBeNullOrWhiteSpace();
 
             // Act
-            buildServer.WriteIntegration(s => { list.Add(s); }, vars, false);
+            this.buildServer.WriteIntegration(s => list.Add(s), vars, false);
 
             list.ShouldNotContain(x => x.StartsWith("Executing GenerateSetVersionMessage for "));
         }
@@ -188,7 +185,7 @@ namespace GitVersion.Core.Tests.BuildAgents
             var vars = new TestableVersionVariables("1.0.0");
 
             // Act
-            var message = buildServer.GenerateSetVersionMessage(vars);
+            var message = this.buildServer.GenerateSetVersionMessage(vars);
 
             // Assert
             message.ShouldBeEmpty();

@@ -4,8 +4,8 @@ using System.IO;
 using System.Linq;
 using GitTools.Testing;
 using GitVersion.BuildAgents;
-using GitVersion.MsBuild.Tests.Mocks;
 using GitVersion.Core.Tests;
+using GitVersion.MsBuild.Tests.Mocks;
 
 namespace GitVersion.MsBuild.Tests.Helpers
 {
@@ -14,32 +14,25 @@ namespace GitVersion.MsBuild.Tests.Helpers
         private readonly RepositoryFixtureBase fixture;
         private KeyValuePair<string, string>[] environmentVariables;
 
-        public MsBuildTaskFixture(RepositoryFixtureBase fixture)
-        {
-            this.fixture = fixture;
-        }
+        public MsBuildTaskFixture(RepositoryFixtureBase fixture) => this.fixture = fixture;
 
-        public void WithEnv(params KeyValuePair<string, string>[] envs)
-        {
-            environmentVariables = envs;
-        }
+        public void WithEnv(params KeyValuePair<string, string>[] envs) => this.environmentVariables = envs;
 
-        public MsBuildTaskFixtureResult<T> Execute<T>(T task) where T : GitVersionTaskBase
-        {
-            return UsingEnv(() =>
+        public MsBuildTaskFixtureResult<T> Execute<T>(T task) where T : GitVersionTaskBase =>
+            UsingEnv(() =>
             {
                 var buildEngine = new MockEngine();
 
                 task.BuildEngine = buildEngine;
 
                 var versionFile = Path.Combine(task.SolutionDirectory, "gitversion.json");
-                fixture.WriteVersionVariables(versionFile);
+                this.fixture.WriteVersionVariables(versionFile);
 
                 task.VersionFile = versionFile;
 
                 var result = task.Execute();
 
-                return new MsBuildTaskFixtureResult<T>(fixture)
+                return new MsBuildTaskFixtureResult<T>(this.fixture)
                 {
                     Success = result,
                     Task = task,
@@ -49,12 +42,11 @@ namespace GitVersion.MsBuild.Tests.Helpers
                     Log = buildEngine.Log,
                 };
             });
-        }
 
         private T UsingEnv<T>(Func<T> func)
         {
             ResetEnvironment();
-            SetEnvironmentVariables(environmentVariables);
+            SetEnvironmentVariables(this.environmentVariables);
 
             try
             {

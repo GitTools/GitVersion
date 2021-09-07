@@ -6,19 +6,10 @@ namespace GitVersion.Core.Tests.Helpers
     {
         private readonly IDictionary<string, string> map;
 
-        public TestEnvironment()
-        {
-            map = new Dictionary<string, string>();
-        }
+        public TestEnvironment() => this.map = new Dictionary<string, string>();
 
-        public string GetEnvironmentVariable(string variableName)
-        {
-            return map.TryGetValue(variableName, out var val) ? val : null;
-        }
+        public string GetEnvironmentVariable(string variableName) => this.map.TryGetValue(variableName, out var val) ? val : null;
 
-        public void SetEnvironmentVariable(string variableName, string value)
-        {
-            map[variableName] = value;
-        }
+        public void SetEnvironmentVariable(string variableName, string value) => this.map[variableName] = value;
     }
 }

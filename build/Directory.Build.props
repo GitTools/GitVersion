@@ -1,0 +1,12 @@
+﻿<Project>
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <TargetFramework>net5.0</TargetFramework>
+        <RunWorkingDirectory>$(MSBuildProjectDirectory)</RunWorkingDirectory>
+        <OutputPath>..\..\run\</OutputPath>
+        <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+        <Nullable>enable</Nullable>
+        <LangVersion>9</LangVersion>
+        <NoWarn>NU1604</NoWarn>
+    </PropertyGroup>
+</Project>

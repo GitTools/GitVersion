@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using GitVersion.Extensions;
 using GitVersion.Logging;
 using GitVersion.OutputVariables;
 
@@ -12,10 +13,10 @@ namespace GitVersion.VersionConverters.AssemblyInfo
     {
     }
 
-    public class AssemblyInfoFileUpdater : IAssemblyInfoFileUpdater
+    public sealed class AssemblyInfoFileUpdater : IAssemblyInfoFileUpdater
     {
-        private readonly List<Action> restoreBackupTasks = new List<Action>();
-        private readonly List<Action> cleanupBackupTasks = new List<Action>();
+        private readonly List<Action> restoreBackupTasks = new();
+        private readonly List<Action> cleanupBackupTasks = new();
 
         private readonly IDictionary<string, Regex> assemblyAttributeRegexes = new Dictionary<string, Regex>
         {
@@ -24,9 +25,9 @@ namespace GitVersion.VersionConverters.AssemblyInfo
             {".vb", new Regex( @"(\s*\<Assembly:\s*(?:.*)\>\s*$(\r?\n)?)", RegexOptions.Multiline) },
         };
 
-        private readonly Regex assemblyVersionRegex = new Regex(@"AssemblyVersion(Attribute)?\s*\(.*\)\s*");
-        private readonly Regex assemblyInfoVersionRegex = new Regex(@"AssemblyInformationalVersion(Attribute)?\s*\(.*\)\s*");
-        private readonly Regex assemblyFileVersionRegex = new Regex(@"AssemblyFileVersion(Attribute)?\s*\(.*\)\s*");
+        private readonly Regex assemblyVersionRegex = new(@"AssemblyVersion(Attribute)?\s*\(.*\)\s*");
+        private readonly Regex assemblyInfoVersionRegex = new(@"AssemblyInformationalVersion(Attribute)?\s*\(.*\)\s*");
+        private readonly Regex assemblyFileVersionRegex = new(@"AssemblyFileVersion(Attribute)?\s*\(.*\)\s*");
 
         private const string NewLine = "\r\n";
 
@@ -38,59 +39,59 @@ namespace GitVersion.VersionConverters.AssemblyInfo
         {
             this.fileSystem = fileSystem;
             this.log = log;
-            templateManager = new TemplateManager(TemplateType.AssemblyInfo);
+            this.templateManager = new TemplateManager(TemplateType.AssemblyInfo);
         }
 
         public void Execute(VersionVariables variables, AssemblyInfoContext context)
         {
             var assemblyInfoFiles = GetAssemblyInfoFiles(context).ToList();
-            log.Info("Updating assembly info files");
-            log.Info($"Found {assemblyInfoFiles.Count} files");
+            this.log.Info("Updating assembly info files");
+            this.log.Info($"Found {assemblyInfoFiles.Count} files");
 
             var assemblyVersion = variables.AssemblySemVer;
-            var assemblyVersionString = !string.IsNullOrWhiteSpace(assemblyVersion) ? $"AssemblyVersion(\"{assemblyVersion}\")" : null;
+            var assemblyVersionString = !assemblyVersion.IsNullOrWhiteSpace() ? $"AssemblyVersion(\"{assemblyVersion}\")" : null;
 
             var assemblyInfoVersion = variables.InformationalVersion;
-            var assemblyInfoVersionString = !string.IsNullOrWhiteSpace(assemblyInfoVersion) ? $"AssemblyInformationalVersion(\"{assemblyInfoVersion}\")" : null;
+            var assemblyInfoVersionString = !assemblyInfoVersion.IsNullOrWhiteSpace() ? $"AssemblyInformationalVersion(\"{assemblyInfoVersion}\")" : null;
 
             var assemblyFileVersion = variables.AssemblySemFileVer;
-            var assemblyFileVersionString = !string.IsNullOrWhiteSpace(assemblyFileVersion) ? $"AssemblyFileVersion(\"{assemblyFileVersion}\")" : null;
+            var assemblyFileVersionString = !assemblyFileVersion.IsNullOrWhiteSpace() ? $"AssemblyFileVersion(\"{assemblyFileVersion}\")" : null;
 
             foreach (var assemblyInfoFile in assemblyInfoFiles)
             {
                 var localAssemblyInfo = assemblyInfoFile.FullName;
                 var backupAssemblyInfo = localAssemblyInfo + ".bak";
-                fileSystem.Copy(localAssemblyInfo, backupAssemblyInfo, true);
+                this.fileSystem.Copy(localAssemblyInfo, backupAssemblyInfo, true);
 
-                restoreBackupTasks.Add(() =>
+                this.restoreBackupTasks.Add(() =>
                 {
-                    if (fileSystem.Exists(localAssemblyInfo))
+                    if (this.fileSystem.Exists(localAssemblyInfo))
                     {
-                        fileSystem.Delete(localAssemblyInfo);
+                        this.fileSystem.Delete(localAssemblyInfo);
                     }
 
-                    fileSystem.Move(backupAssemblyInfo, localAssemblyInfo);
+                    this.fileSystem.Move(backupAssemblyInfo, localAssemblyInfo);
                 });
 
-                cleanupBackupTasks.Add(() => fileSystem.Delete(backupAssemblyInfo));
+                this.cleanupBackupTasks.Add(() => this.fileSystem.Delete(backupAssemblyInfo));
 
-                var originalFileContents = fileSystem.ReadAllText(localAssemblyInfo);
+                var originalFileContents = this.fileSystem.ReadAllText(localAssemblyInfo);
                 var fileContents = originalFileContents;
                 var appendedAttributes = false;
 
-                if (!string.IsNullOrWhiteSpace(assemblyVersion))
+                if (!assemblyVersion.IsNullOrWhiteSpace())
                 {
-                    fileContents = ReplaceOrInsertAfterLastAssemblyAttributeOrAppend(assemblyVersionRegex, fileContents, assemblyVersionString, assemblyInfoFile.Extension, ref appendedAttributes);
+                    fileContents = ReplaceOrInsertAfterLastAssemblyAttributeOrAppend(this.assemblyVersionRegex, fileContents, assemblyVersionString, assemblyInfoFile.Extension, ref appendedAttributes);
                 }
 
-                if (!string.IsNullOrWhiteSpace(assemblyFileVersion))
+                if (!assemblyFileVersion.IsNullOrWhiteSpace())
                 {
-                    fileContents = ReplaceOrInsertAfterLastAssemblyAttributeOrAppend(assemblyFileVersionRegex, fileContents, assemblyFileVersionString, assemblyInfoFile.Extension, ref appendedAttributes);
+                    fileContents = ReplaceOrInsertAfterLastAssemblyAttributeOrAppend(this.assemblyFileVersionRegex, fileContents, assemblyFileVersionString, assemblyInfoFile.Extension, ref appendedAttributes);
                 }
 
-                if (!string.IsNullOrWhiteSpace(assemblyInfoVersion))
+                if (!assemblyInfoVersion.IsNullOrWhiteSpace())
                 {
-                    fileContents = ReplaceOrInsertAfterLastAssemblyAttributeOrAppend(assemblyInfoVersionRegex, fileContents, assemblyInfoVersionString, assemblyInfoFile.Extension, ref appendedAttributes);
+                    fileContents = ReplaceOrInsertAfterLastAssemblyAttributeOrAppend(this.assemblyInfoVersionRegex, fileContents, assemblyInfoVersionString, assemblyInfoFile.Extension, ref appendedAttributes);
                 }
 
                 if (appendedAttributes)
@@ -101,7 +102,7 @@ namespace GitVersion.VersionConverters.AssemblyInfo
 
                 if (originalFileContents != fileContents)
                 {
-                    fileSystem.WriteAllText(localAssemblyInfo, fileContents);
+                    this.fileSystem.WriteAllText(localAssemblyInfo, fileContents);
                 }
             }
             CommitChanges();
@@ -109,36 +110,36 @@ namespace GitVersion.VersionConverters.AssemblyInfo
 
         public void Dispose()
         {
-            foreach (var restoreBackup in restoreBackupTasks)
+            foreach (var restoreBackup in this.restoreBackupTasks)
             {
                 restoreBackup();
             }
 
-            cleanupBackupTasks.Clear();
-            restoreBackupTasks.Clear();
+            this.cleanupBackupTasks.Clear();
+            this.restoreBackupTasks.Clear();
         }
 
         private void CommitChanges()
         {
-            foreach (var cleanupBackupTask in cleanupBackupTasks)
+            foreach (var cleanupBackupTask in this.cleanupBackupTasks)
             {
                 cleanupBackupTask();
             }
 
-            cleanupBackupTasks.Clear();
-            restoreBackupTasks.Clear();
+            this.cleanupBackupTasks.Clear();
+            this.restoreBackupTasks.Clear();
         }
 
-        private string ReplaceOrInsertAfterLastAssemblyAttributeOrAppend(Regex replaceRegex, string inputString, string replaceString, string fileExtension, ref bool appendedAttributes)
+        private string ReplaceOrInsertAfterLastAssemblyAttributeOrAppend(Regex replaceRegex, string inputString, string? replaceString, string fileExtension, ref bool appendedAttributes)
         {
-            var assemblyAddFormat = templateManager.GetAddFormatFor(fileExtension);
+            var assemblyAddFormat = this.templateManager.GetAddFormatFor(fileExtension);
 
             if (replaceRegex.IsMatch(inputString))
             {
                 return replaceRegex.Replace(inputString, replaceString);
             }
 
-            if (assemblyAttributeRegexes.TryGetValue(fileExtension, out var assemblyRegex))
+            if (this.assemblyAttributeRegexes.TryGetValue(fileExtension, out var assemblyRegex))
             {
                 var assemblyMatches = assemblyRegex.Matches(inputString);
                 if (assemblyMatches.Count > 0)
@@ -159,11 +160,11 @@ namespace GitVersion.VersionConverters.AssemblyInfo
 
         private IEnumerable<FileInfo> GetAssemblyInfoFiles(AssemblyInfoContext context)
         {
-            var workingDirectory = context.WorkingDirectory;
+            var workingDirectory = context.WorkingDirectory!;
             var ensureAssemblyInfo = context.EnsureAssemblyInfo;
             var assemblyInfoFileNames = new HashSet<string>(context.AssemblyInfoFiles);
 
-            if (assemblyInfoFileNames.Any(x => !string.IsNullOrWhiteSpace(x)))
+            if (assemblyInfoFileNames.Any(x => !x.IsNullOrWhiteSpace()))
             {
                 foreach (var item in assemblyInfoFileNames)
                 {
@@ -177,11 +178,11 @@ namespace GitVersion.VersionConverters.AssemblyInfo
             }
             else
             {
-                foreach (var item in fileSystem.DirectoryEnumerateFiles(workingDirectory, "AssemblyInfo.*", SearchOption.AllDirectories))
+                foreach (var item in this.fileSystem.DirectoryEnumerateFiles(workingDirectory, "AssemblyInfo.*", SearchOption.AllDirectories))
                 {
                     var assemblyInfoFile = new FileInfo(item);
 
-                    if (templateManager.IsSupported(assemblyInfoFile.Extension))
+                    if (this.templateManager.IsSupported(assemblyInfoFile.Extension))
                     {
                         yield return assemblyInfoFile;
                     }
@@ -192,7 +193,7 @@ namespace GitVersion.VersionConverters.AssemblyInfo
         private bool EnsureVersionAssemblyInfoFile(string fullPath, bool ensureAssemblyInfo)
         {
             fullPath = fullPath ?? throw new ArgumentNullException(nameof(fullPath));
-            if (fileSystem.Exists(fullPath))
+            if (this.fileSystem.Exists(fullPath))
             {
                 return true;
             }
@@ -202,22 +203,22 @@ namespace GitVersion.VersionConverters.AssemblyInfo
                 return false;
             }
 
-            var assemblyInfoSource = templateManager.GetTemplateFor(Path.GetExtension(fullPath));
+            var assemblyInfoSource = this.templateManager.GetTemplateFor(Path.GetExtension(fullPath));
 
-            if (!string.IsNullOrWhiteSpace(assemblyInfoSource))
+            if (!assemblyInfoSource.IsNullOrWhiteSpace())
             {
                 var fileInfo = new FileInfo(fullPath);
 
-                if (fileInfo.Directory != null && !fileSystem.DirectoryExists(fileInfo.Directory.FullName))
+                if (fileInfo.Directory != null && !this.fileSystem.DirectoryExists(fileInfo.Directory.FullName))
                 {
-                    fileSystem.CreateDirectory(fileInfo.Directory.FullName);
+                    this.fileSystem.CreateDirectory(fileInfo.Directory.FullName);
                 }
 
-                fileSystem.WriteAllText(fullPath, assemblyInfoSource);
+                this.fileSystem.WriteAllText(fullPath, assemblyInfoSource);
                 return true;
             }
 
-            log.Warning($"No version assembly info template available to create source file '{fullPath}'");
+            this.log.Warning($"No version assembly info template available to create source file '{fullPath}'");
             return false;
         }
     }

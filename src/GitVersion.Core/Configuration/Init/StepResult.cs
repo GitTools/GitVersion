@@ -4,36 +4,24 @@ namespace GitVersion.Configuration.Init
     {
         private StepResult() { }
 
-        public static StepResult Ok()
-        {
-            return new StepResult();
-        }
+        public static StepResult Ok() => new();
 
-        public static StepResult InvalidResponseSelected()
+        public static StepResult InvalidResponseSelected() => new()
         {
-            return new StepResult
-            {
-                InvalidResponse = true
-            };
-        }
+            InvalidResponse = true
+        };
 
-        public static StepResult SaveAndExit()
+        public static StepResult SaveAndExit() => new()
         {
-            return new StepResult
-            {
-                Save = true,
-                Exit = true
-            };
-        }
+            Save = true,
+            Exit = true
+        };
 
-        public static StepResult ExitWithoutSaving()
+        public static StepResult ExitWithoutSaving() => new()
         {
-            return new StepResult
-            {
-                Save = false,
-                Exit = true
-            };
-        }
+            Save = false,
+            Exit = true
+        };
 
         public bool Exit { get; private set; }
 

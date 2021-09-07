@@ -1,0 +1,384 @@
+name: CI
+
+on:
+  push:
+    branches:
+    - main
+    - 'fix/*'
+    - 'feature/*'
+    paths:
+    - '**'
+    - '!docs/**'
+
+  pull_request:
+    branches:
+    - main
+    paths:
+    - '**'
+    - '!docs/**'
+
+  repository_dispatch:
+    types: [release]
+
+env:
+  DOTNET_ROLL_FORWARD_ON_NO_CANDIDATE_FX: 2
+  DOTNET_CLI_TELEMETRY_OPTOUT: 1
+  DOTNET_SKIP_FIRST_TIME_EXPERIENCE: 1
+  DOTNET_NOLOGO: 1
+
+  ENABLED_DIAGNOSTICS: ${{ secrets.ENABLED_DIAGNOSTICS }}
+
+jobs:
+  prepare:
+    name: Prepare Build
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [windows-latest, ubuntu-latest, macos-latest]
+      fail-fast: false
+
+    steps:
+    -
+      name: Checkout
+      uses: actions/checkout@v2
+    -
+      name: Cache cake frosting
+      id: cache-cake
+      uses: actions/cache@v2.1.6
+      with:
+        path: run
+        key: run-${{ runner.os }}-${{ hashFiles('./build/**') }}
+    -
+      name: '[Prepare]'
+      if: steps.cache-cake.outputs.cache-hit != 'true'
+      run: dotnet build build/CI.sln --configuration=Release
+
+  build:
+    name: Build code & Package
+    needs: [prepare]
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [windows-latest, ubuntu-latest, macos-latest]
+      fail-fast: false
+
+    steps:
+    -
+      name: Checkout
+      uses: actions/checkout@v2
+    -
+      name: Fetch all history for all tags and branches
+      run: git fetch --prune --unshallow
+    -
+      name: Use cached cake frosting
+      id: cache-cake
+      uses: actions/cache@v2.1.6
+      with:
+        path: run
+        key: run-${{ runner.os }}-${{ hashFiles('./build/**') }}
+    -
+      name: Use cached tools
+      id: cache-tools
+      uses: actions/cache@v2.1.6
+      with:
+        path: tools
+        key: tools-${{ runner.os }}-${{ hashFiles('./build/**') }}
+    -
+      name: '[Build]'
+      shell: pwsh
+      run: dotnet run/build.dll --target=Package
+    -
+      name: 'Upload nuget packages'
+      uses: actions/upload-artifact@v2.2.4
+      if: matrix.os == 'windows-latest'
+      with:
+        name: nuget
+        path: ${{ github.workspace }}/artifacts/packages/nuget
+    -
+      name: 'Upload native packages'
+      uses: actions/upload-artifact@v2.2.4
+      with:
+        name: native-${{ runner.os }}
+        path: ${{ github.workspace }}/artifacts/packages/native/*.tar.gz
+
+  unit_test:
+    name: Unit Test code
+    needs: [prepare]
+    runs-on: ${{ matrix.os }}
+    env:
+      CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+    strategy:
+      matrix:
+        os: [windows-latest, ubuntu-latest, macos-latest]
+        targetFramework: [net5.0, netcoreapp3.1]
+      fail-fast: false
+
+    steps:
+    -
+      name: Checkout
+      uses: actions/checkout@v2
+    -
+      name: Fetch all history for all tags and branches
+      run: git fetch --prune --unshallow
+    -
+      name: Use cached cake frosting
+      id: cache-cake
+      uses: actions/cache@v2.1.6
+      with:
+        path: run
+        key: run-${{ runner.os }}-${{ hashFiles('./build/**') }}
+    -
+      name: Use cached tools
+      id: cache-tools
+      uses: actions/cache@v2.1.6
+      with:
+        path: tools
+        key: tools-${{ runner.os }}-${{ hashFiles('./build/**') }}
+    -
+      name: '[Build]'
+      shell: pwsh
+      run: dotnet run/build.dll --target=Test --dotnet_target=${{ matrix.targetFramework }}
+
+  artifacts_windows_test:
+    name: Test artifacts on windows
+    needs: [build]
+    runs-on: windows-latest
+    strategy:
+      matrix:
+        package: [ Executable, MsBuildFull ]
+      fail-fast: false
+
+    steps:
+    -
+      name: Checkout
+      uses: actions/checkout@v2
+    -
+      name: Fetch all history for all tags and branches
+      run: git fetch --prune --unshallow
+    -
+      name: Use cached cake frosting
+      id: cache-cake
+      uses: actions/cache@v2.1.6
+      with:
+        path: run
+        key: run-${{ runner.os }}-${{ hashFiles('./build/**') }}
+    -
+      name: Use cached tools
+      id: cache-tools
+      uses: actions/cache@v2.1.6
+      with:
+        path: tools
+        key: tools-${{ runner.os }}-${{ hashFiles('./build/**') }}
+    -
+      uses: actions/download-artifact@v2.0.10
+      name: Download nuget packages
+      with:
+        name: nuget
+        path: ${{ github.workspace }}/artifacts/packages/nuget
+    -
+      name: '[Test Artifacts]'
+      shell: pwsh
+      run: dotnet run/artifacts.dll --target=Artifacts${{ matrix.package }}Test
+
+  artifacts_linux_test:
+    name: Test artifacts in docker
+    needs: [build]
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        targetFramework: [ '3.1', '5.0' ]
+        distro: [ alpine.3.12-x64, centos.7-x64, centos.8-x64, debian.9-x64, debian.10-x64, fedora.33-x64, ubuntu.16.04-x64, ubuntu.18.04-x64, ubuntu.20.04-x64 ]
+      fail-fast: false
+
+    steps:
+    -
+      name: Checkout
+      uses: actions/checkout@v2
+    -
+      name: Fetch all history for all tags and branches
+      run: git fetch --prune --unshallow
+    -
+      name: Use cached cake frosting
+      id: cache-cake
+      uses: actions/cache@v2.1.6
+      with:
+        path: run
+        key: run-${{ runner.os }}-${{ hashFiles('./build/**') }}
+    -
+      name: Use cached tools
+      id: cache-tools
+      uses: actions/cache@v2.1.6
+      with:
+        path: tools
+        key: tools-${{ runner.os }}-${{ hashFiles('./build/**') }}
+    -
+      uses: actions/download-artifact@v2.0.10
+      name: Download nuget packages
+      with:
+        name: nuget
+        path: ${{ github.workspace }}/artifacts/packages/nuget
+    -
+      uses: actions/download-artifact@v2.0.10
+      name: Download native packages
+      with:
+        name: native-${{ runner.os }}
+        path: ${{ github.workspace }}/artifacts/packages/native
+    -
+      name: '[Test Artifacts]'
+      shell: pwsh
+      run: dotnet run/artifacts.dll --target=ArtifactsTest --docker_dotnetversion=${{ matrix.targetFramework }} --docker_distro=${{ matrix.distro }}
+
+  docker_linux_images:
+    name: Build, Test and Publish Docker Images
+    needs: [build]
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        targetFramework: [ '3.1', '5.0' ]
+        distro: [ alpine.3.12-x64, centos.7-x64, centos.8-x64, debian.9-x64, debian.10-x64, fedora.33-x64, ubuntu.16.04-x64, ubuntu.18.04-x64, ubuntu.20.04-x64 ]
+      fail-fast: false
+
+    steps:
+    -
+      name: Checkout
+      uses: actions/checkout@v2
+    -
+      name: Fetch all history for all tags and branches
+      run: git fetch --prune --unshallow
+    -
+      name: Use cached cake frosting
+      id: cache-cake
+      uses: actions/cache@v2.1.6
+      with:
+        path: run
+        key: run-${{ runner.os }}-${{ hashFiles('./build/**') }}
+    -
+      name: Use cached tools
+      id: cache-tools
+      uses: actions/cache@v2.1.6
+      with:
+        path: tools
+        key: tools-${{ runner.os }}-${{ hashFiles('./build/**') }}
+    -
+      uses: actions/download-artifact@v2.0.10
+      name: Download nuget packages
+      with:
+        name: nuget
+        path: ${{ github.workspace }}/artifacts/packages/nuget
+    -
+      name: Login to DockerHub
+      if: success() && github.event_name != 'pull_request'
+      uses: docker/login-action@v1
+      with:
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
+    -
+      name: '[Docker Build/Test/Publish] DockerHub'
+      shell: pwsh
+      run: dotnet run/docker.dll --target=DockerPublish --docker_dotnetversion=${{ matrix.targetFramework }} --docker_distro=${{ matrix.distro }} --docker_registry dockerhub
+    -
+      name: Login to GitHub Container Registry
+      if: success() && github.event_name != 'pull_request'
+      uses: docker/login-action@v1
+      with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+    -
+      name: '[Docker Build/Test/Publish] GitHub Docker'
+      shell: pwsh
+      run: dotnet run/docker.dll --target=DockerPublish --docker_dotnetversion=${{ matrix.targetFramework }} --docker_distro=${{ matrix.distro }} --docker_registry github
+
+  publish:
+    name: Publish
+    needs: [artifacts_windows_test, artifacts_linux_test, docker_linux_images]
+    runs-on: windows-latest
+    strategy:
+      matrix:
+        taskName: [NuGet, Chocolatey]
+      fail-fast: false
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
+      CHOCOLATEY_API_KEY: ${{ secrets.CHOCOLATEY_API_KEY }}
+    steps:
+    -
+      name: Checkout
+      uses: actions/checkout@v2
+    -
+      name: Fetch all history for all tags and branches
+      run: git fetch --prune --unshallow
+    -
+      name: Use cached cake frosting
+      id: cache-cake
+      uses: actions/cache@v2.1.6
+      with:
+        path: run
+        key: run-${{ runner.os }}-${{ hashFiles('./build/**') }}
+    -
+      name: Use cached tools
+      id: cache-tools
+      uses: actions/cache@v2.1.6
+      with:
+        path: tools
+        key: tools-${{ runner.os }}-${{ hashFiles('./build/**') }}
+    -
+      uses: actions/download-artifact@v2.0.10
+      name: Download nuget packages
+      with:
+        name: nuget
+        path: ${{ github.workspace }}/artifacts/packages/nuget
+    -
+      name: '[Publish]'
+      shell: pwsh
+      run: dotnet run/publish.dll --target=Publish${{ matrix.taskName }}
+
+  release:
+    name: Release
+    needs: [publish]
+    runs-on: windows-latest
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+    -
+      name: Checkout
+      uses: actions/checkout@v2
+    -
+      name: Fetch all history for all tags and branches
+      run: git fetch --prune --unshallow
+    -
+      name: Use cached cake frosting
+      id: cache-cake
+      uses: actions/cache@v2.1.6
+      with:
+        path: run
+        key: run-${{ runner.os }}-${{ hashFiles('./build/**') }}
+    -
+      name: Use cached tools
+      id: cache-tools
+      uses: actions/cache@v2.1.6
+      with:
+        path: tools
+        key: tools-${{ runner.os }}-${{ hashFiles('./build/**') }}
+    -
+      uses: actions/download-artifact@v2.0.10
+      name: Download native linux packages
+      with:
+        name: native-Linux
+        path: ${{ github.workspace }}/artifacts/packages/native
+    -
+      uses: actions/download-artifact@v2.0.10
+      name: Download native windows packages
+      with:
+        name: native-Windows
+        path: ${{ github.workspace }}/artifacts/packages/native
+    -
+      uses: actions/download-artifact@v2.0.10
+      name: Download native macos packages
+      with:
+        name: native-macOS
+        path: ${{ github.workspace }}/artifacts/packages/native
+    -
+      name: '[Release]'
+      shell: pwsh
+      run: dotnet run/release.dll --target=PublishRelease

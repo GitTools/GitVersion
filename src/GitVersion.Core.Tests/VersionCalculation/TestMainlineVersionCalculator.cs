@@ -6,19 +6,10 @@ namespace GitVersion.Core.Tests.VersionCalculation
     {
         private readonly SemanticVersionBuildMetaData metaData;
 
-        public TestMainlineVersionCalculator(SemanticVersionBuildMetaData metaData)
-        {
-            this.metaData = metaData;
-        }
+        public TestMainlineVersionCalculator(SemanticVersionBuildMetaData metaData) => this.metaData = metaData;
 
-        public SemanticVersion FindMainlineModeVersion(BaseVersion baseVersion)
-        {
-            throw new System.NotImplementedException();
-        }
+        public SemanticVersion FindMainlineModeVersion(BaseVersion baseVersion) => throw new System.NotImplementedException();
 
-        public SemanticVersionBuildMetaData CreateVersionBuildMetaData(ICommit baseVersionSource)
-        {
-            return metaData;
-        }
+        public SemanticVersionBuildMetaData CreateVersionBuildMetaData(ICommit baseVersionSource) => this.metaData;
     }
 }

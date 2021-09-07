@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics.CodeAnalysis;
 
 namespace GitVersion.VersionCalculation
 {
@@ -6,19 +7,16 @@ namespace GitVersion.VersionCalculation
     {
         private readonly DateTimeOffset minimum;
 
-        public MinDateVersionFilter(DateTimeOffset minimum)
-        {
-            this.minimum = minimum;
-        }
+        public MinDateVersionFilter(DateTimeOffset minimum) => this.minimum = minimum;
 
-        public bool Exclude(BaseVersion version, out string reason)
+        public bool Exclude(BaseVersion version, [NotNullWhen(true)] out string? reason)
         {
             if (version == null) throw new ArgumentNullException(nameof(version));
 
             reason = null;
 
             if (version.BaseVersionSource != null &&
-                version.BaseVersionSource.When < minimum)
+                version.BaseVersionSource.When < this.minimum)
             {
                 reason = "Source was ignored due to commit date being outside of configured range";
                 return true;

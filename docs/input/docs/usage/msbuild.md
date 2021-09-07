@@ -5,6 +5,7 @@ Description: |
     Just install with NuGet and GitVersion will automatically generate assembly
     version information that is compiled into the resulting artifact.
 CardIcon: collect.svg
+RedirectFrom:  docs/usage/msbuild-task
 ---
 
 The MSBuild Task for GitVersion — **GitVersion.MsBuild** — is a simple solution if
@@ -49,6 +50,16 @@ dependency of your package:
 The next thing you need to do is to remove the `Assembly*Version` attributes from
 your `Properties\AssemblyInfo.cs` files. This puts GitVersion.MsBuild in charge of
 versioning your assemblies.
+
+DotNet SDK-style projects will generate Assembly Version info along with other
+Assembly Info in a 'projectname.AssemblyInfo.cs' file, conflicting with GitVersion.
+So, you will need to edit your project. Add [GenerateAssemblyFileVersionAttribute](https://docs.microsoft.com/en-us/dotnet/core/project-sdk/msbuild-props#generateassemblyfileversionattribute)
+under the first PropertyGroup and set it to `false`:
+
+```xml
+<!-- GitVersion DotNet SDK Compatibility -->
+<GenerateAssemblyFileVersionAttribute>false</GenerateAssemblyFileVersionAttribute>
+```
 
 ### Done!
 

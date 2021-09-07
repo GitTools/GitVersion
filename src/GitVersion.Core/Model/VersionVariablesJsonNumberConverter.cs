@@ -3,6 +3,7 @@ using System.Buffers;
 using System.Buffers.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using GitVersion.Extensions;
 using JetBrains.Annotations;
 
 namespace GitVersion.OutputVariables
@@ -31,7 +32,7 @@ namespace GitVersion.OutputVariables
 
         public override void Write(Utf8JsonWriter writer, [CanBeNull] string value, JsonSerializerOptions options)
         {
-            if (string.IsNullOrWhiteSpace(value))
+            if (value.IsNullOrWhiteSpace())
             {
                 writer.WriteNullValue();
             }

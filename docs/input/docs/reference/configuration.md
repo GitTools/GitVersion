@@ -2,6 +2,7 @@
 Order: 10
 Title: Configuration
 Description: Details about how GitVersion can be configured to suit your needs
+RedirectFrom: docs/configuration
 ---
 
 GitVersion from version 3 is mainly powered by configuration and no longer has

@@ -11,29 +11,26 @@ namespace GitVersion.Configuration.Init.BuildServer
         {
         }
 
-        protected override StepResult HandleResult(string result, Queue<ConfigInitWizardStep> steps, Config config, string workingDirectory)
+        protected override StepResult HandleResult(string? result, Queue<ConfigInitWizardStep> steps, Config config, string workingDirectory)
         {
             switch (result)
             {
                 case "0":
-                    steps.Enqueue(StepFactory.CreateStep<EditConfigStep>());
+                    steps.Enqueue(this.StepFactory.CreateStep<EditConfigStep>()!);
                     return StepResult.Ok();
                 case "1":
-                    steps.Enqueue(StepFactory.CreateStep<AppveyorPublicPrivate>());
+                    steps.Enqueue(this.StepFactory.CreateStep<AppveyorPublicPrivate>()!);
                     return StepResult.Ok();
             }
             return StepResult.Ok();
         }
 
-        protected override string GetPrompt(Config config, string workingDirectory)
-        {
-            return @"What build server are you using?
+        protected override string GetPrompt(Config config, string workingDirectory) => @"What build server are you using?
 
 Want to see more? Contribute a pull request!
 
 0) Go Back
 1) AppVeyor";
-        }
 
         protected override string DefaultResult => "0";
     }

@@ -4,6 +4,7 @@ Title: Azure DevOps
 Description: |
     Details on the Azure DevOps or Team Foundation Server Build Pipeline support
     in GitVersion
+RedirectFrom: docs/build-server-support/build-server/azure-devops
 ---
 
 ## Basic Usage

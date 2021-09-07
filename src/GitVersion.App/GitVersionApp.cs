@@ -25,9 +25,9 @@ namespace GitVersion
         {
             try
             {
-                var gitVersionOptions = options.Value;
-                log.Verbosity = gitVersionOptions.Verbosity;
-                System.Environment.ExitCode = gitVersionExecutor.Execute(gitVersionOptions);
+                var gitVersionOptions = this.options.Value;
+                this.log.Verbosity = gitVersionOptions.Verbosity;
+                System.Environment.ExitCode = this.gitVersionExecutor.Execute(gitVersionOptions);
             }
             catch (Exception exception)
             {
@@ -35,13 +35,10 @@ namespace GitVersion
                 System.Environment.ExitCode = 1;
             }
 
-            applicationLifetime.StopApplication();
+            this.applicationLifetime.StopApplication();
             return Task.CompletedTask;
         }
 
-        public Task StopAsync(CancellationToken cancellationToken)
-        {
-            return Task.CompletedTask;
-        }
+        public Task StopAsync(CancellationToken cancellationToken) => Task.CompletedTask;
     }
 }

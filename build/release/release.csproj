@@ -1,0 +1,9 @@
+<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <AssemblyName>release</AssemblyName>
+        <RootNamespace>Release</RootNamespace>
+    </PropertyGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\common\common.csproj"/>
+    </ItemGroup>
+</Project>

@@ -2,6 +2,7 @@
 Order: 30
 Title: Bamboo
 Description: Details on the Bamboo support in GitVersion
+RedirectFrom: docs/build-server-support/build-server/bamboo
 ---
 
 If you use Bamboo then you will have to use GitVersion from the command line, as

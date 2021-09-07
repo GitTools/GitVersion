@@ -20,15 +20,15 @@ namespace GitVersion.Core.Tests
         {
             ShouldlyConfiguration.ShouldMatchApprovedDefaults.LocateTestMethodUsingAttribute<TestAttribute>();
 
-            logMessages = new List<string>();
+            this.logMessages = new List<string>();
 
             var sp = ConfigureServices(services =>
             {
-                var log = new Log(new TestLogAppender(logMessages.Add));
+                var log = new Log(new TestLogAppender(this.logMessages.Add));
                 services.AddSingleton<ILog>(log);
             });
 
-            variableProvider = sp.GetService<IVariableProvider>();
+            this.variableProvider = sp.GetService<IVariableProvider>();
         }
 
         [Test]
@@ -45,8 +45,8 @@ namespace GitVersion.Core.Tests
             var propertyName = nameof(SemanticVersionFormatValues.DefaultInformationalVersion);
 #pragma warning restore CS0618 // Type or member is obsolete
             var config = new TestEffectiveConfiguration(assemblyInformationalFormat: $"{{{propertyName}}}");
-            variableProvider.GetVariablesFor(semVer, config, false);
-            logMessages.ShouldContain(message => message.Trim().StartsWith("WARN") && message.Contains(propertyName), 1, $"Expected a warning to be logged when using the variable {propertyName} in a configuration format template");
+            this.variableProvider.GetVariablesFor(semVer, config, false);
+            this.logMessages.ShouldContain(message => message.Trim().StartsWith("WARN") && message.Contains(propertyName), 1, $"Expected a warning to be logged when using the variable {propertyName} in a configuration format template");
         }
 
         [Test]
@@ -71,7 +71,7 @@ namespace GitVersion.Core.Tests
 
             var config = new TestEffectiveConfiguration();
 
-            var vars = variableProvider.GetVariablesFor(semVer, config, false);
+            var vars = this.variableProvider.GetVariablesFor(semVer, config, false);
 
             vars.ToString().ShouldMatchApproved(c => c.SubFolder("Approved"));
         }
@@ -98,7 +98,7 @@ namespace GitVersion.Core.Tests
 
             var config = new TestEffectiveConfiguration(buildMetaDataPadding: 2, legacySemVerPadding: 5);
 
-            var vars = variableProvider.GetVariablesFor(semVer, config, false);
+            var vars = this.variableProvider.GetVariablesFor(semVer, config, false);
 
             vars.ToString().ShouldMatchApproved(c => c.SubFolder("Approved"));
         }
@@ -124,7 +124,7 @@ namespace GitVersion.Core.Tests
 
             var config = new TestEffectiveConfiguration(versioningMode: VersioningMode.ContinuousDeployment);
 
-            var vars = variableProvider.GetVariablesFor(semVer, config, false);
+            var vars = this.variableProvider.GetVariablesFor(semVer, config, false);
 
             vars.ToString().ShouldMatchApproved(c => c.SubFolder("Approved"));
         }
@@ -149,7 +149,7 @@ namespace GitVersion.Core.Tests
 
             var config = new TestEffectiveConfiguration();
 
-            var vars = variableProvider.GetVariablesFor(semVer, config, false);
+            var vars = this.variableProvider.GetVariablesFor(semVer, config, false);
 
             vars.ToString().ShouldMatchApproved(c => c.SubFolder("Approved"));
         }
@@ -174,7 +174,7 @@ namespace GitVersion.Core.Tests
 
             var config = new TestEffectiveConfiguration(versioningMode: VersioningMode.ContinuousDeployment);
 
-            var vars = variableProvider.GetVariablesFor(semVer, config, false);
+            var vars = this.variableProvider.GetVariablesFor(semVer, config, false);
 
             vars.ToString().ShouldMatchApproved(c => c.SubFolder("Approved"));
         }
@@ -202,7 +202,7 @@ namespace GitVersion.Core.Tests
 
             var config = new TestEffectiveConfiguration(versioningMode: VersioningMode.ContinuousDeployment);
 
-            var vars = variableProvider.GetVariablesFor(semVer, config, true);
+            var vars = this.variableProvider.GetVariablesFor(semVer, config, true);
 
             vars.ToString().ShouldMatchApproved(c => c.SubFolder("Approved"));
         }
@@ -225,7 +225,7 @@ namespace GitVersion.Core.Tests
             semVer.BuildMetaData.CommitDate = DateTimeOffset.Parse("2014-03-06 23:59:59Z");
 
             var config = new TestEffectiveConfiguration(versioningMode: VersioningMode.ContinuousDeployment, tagNumberPattern: @"[/-](?<number>\d+)[-/]");
-            var vars = variableProvider.GetVariablesFor(semVer, config, false);
+            var vars = this.variableProvider.GetVariablesFor(semVer, config, false);
 
             vars.FullSemVer.ShouldBe("1.2.3-PullRequest0002.5");
         }
@@ -247,7 +247,7 @@ namespace GitVersion.Core.Tests
             semVer.BuildMetaData.CommitDate = DateTimeOffset.Parse("2014-03-06 23:59:59Z");
 
             var config = new TestEffectiveConfiguration(versioningMode: VersioningMode.ContinuousDeployment, tag: "useBranchName");
-            var vars = variableProvider.GetVariablesFor(semVer, config, false);
+            var vars = this.variableProvider.GetVariablesFor(semVer, config, false);
 
             vars.FullSemVer.ShouldBe("1.2.3-feature.5");
         }
@@ -274,7 +274,7 @@ namespace GitVersion.Core.Tests
 
             var config = new TestEffectiveConfiguration();
 
-            var vars = variableProvider.GetVariablesFor(semVer, config, false);
+            var vars = this.variableProvider.GetVariablesFor(semVer, config, false);
 
             vars.ToString().ShouldMatchApproved(c => c.SubFolder("Approved"));
         }
@@ -301,7 +301,7 @@ namespace GitVersion.Core.Tests
 
             var config = new TestEffectiveConfiguration(assemblyInformationalFormat: "{Major}.{Minor}.{Patch}+{CommitsSinceVersionSource}.Branch.{BranchName}.Sha.{ShortSha}");
 
-            var vars = variableProvider.GetVariablesFor(semVer, config, false);
+            var vars = this.variableProvider.GetVariablesFor(semVer, config, false);
 
             vars.ToString().ShouldMatchApproved(c => c.SubFolder("Approved"));
         }

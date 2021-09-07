@@ -1,3 +1,7 @@
+using System;
+using System.IO;
+using System.Xml.Linq;
+using GitVersion.Core.Tests.Helpers;
 using GitVersion.Extensions;
 using GitVersion.Logging;
 using GitVersion.OutputVariables;
@@ -7,10 +11,6 @@ using Microsoft.Extensions.DependencyInjection;
 using NSubstitute;
 using NUnit.Framework;
 using Shouldly;
-using System;
-using System.IO;
-using System.Xml.Linq;
-using GitVersion.Core.Tests.Helpers;
 
 namespace GitVersion.Core.Tests
 {
@@ -27,9 +27,9 @@ namespace GitVersion.Core.Tests
         {
             ShouldlyConfiguration.ShouldMatchApprovedDefaults.LocateTestMethodUsingAttribute<TestCaseAttribute>();
             var sp = ConfigureServices();
-            log = Substitute.For<ILog>();
-            fileSystem = sp.GetService<IFileSystem>();
-            variableProvider = sp.GetService<IVariableProvider>();
+            this.log = Substitute.For<ILog>();
+            this.fileSystem = sp.GetService<IFileSystem>();
+            this.variableProvider = sp.GetService<IVariableProvider>();
         }
 
         [TestCase(@"
@@ -44,7 +44,7 @@ namespace GitVersion.Core.Tests
         [Description(NoMonoDescription)]
         public void CanUpdateProjectFileWithStandardProjectFileXml(string xml)
         {
-            using var projectFileUpdater = new ProjectFileUpdater(log, fileSystem);
+            using var projectFileUpdater = new ProjectFileUpdater(this.log, this.fileSystem);
 
             var canUpdate = projectFileUpdater.CanUpdateProjectFile(XElement.Parse(xml));
 
@@ -63,7 +63,7 @@ namespace GitVersion.Core.Tests
         [Description(NoMonoDescription)]
         public void CanUpdateProjectFileWithStandardWorkerProjectFileXml(string xml)
         {
-            using var projectFileUpdater = new ProjectFileUpdater(log, fileSystem);
+            using var projectFileUpdater = new ProjectFileUpdater(this.log, this.fileSystem);
 
             var canUpdate = projectFileUpdater.CanUpdateProjectFile(XElement.Parse(xml));
 
@@ -82,7 +82,7 @@ namespace GitVersion.Core.Tests
         [Description(NoMonoDescription)]
         public void CanUpdateProjectFileWithStandardWebProjectFileXml(string xml)
         {
-            using var projectFileUpdater = new ProjectFileUpdater(log, fileSystem);
+            using var projectFileUpdater = new ProjectFileUpdater(this.log, this.fileSystem);
 
             var canUpdate = projectFileUpdater.CanUpdateProjectFile(XElement.Parse(xml));
 
@@ -101,7 +101,7 @@ namespace GitVersion.Core.Tests
         [Description(NoMonoDescription)]
         public void CanUpdateProjectFileWithStandardDesktopProjectFileXml(string xml)
         {
-            using var projectFileUpdater = new ProjectFileUpdater(log, fileSystem);
+            using var projectFileUpdater = new ProjectFileUpdater(this.log, this.fileSystem);
 
             var canUpdate = projectFileUpdater.CanUpdateProjectFile(XElement.Parse(xml));
 
@@ -119,7 +119,7 @@ namespace GitVersion.Core.Tests
         [Description(NoMonoDescription)]
         public void CanUpdateProjectFileWithRazorClassLibraryProjectFileXml(string xml)
         {
-            using var projectFileUpdater = new ProjectFileUpdater(log, fileSystem);
+            using var projectFileUpdater = new ProjectFileUpdater(this.log, this.fileSystem);
 
             var canUpdate = projectFileUpdater.CanUpdateProjectFile(XElement.Parse(xml));
 
@@ -138,7 +138,7 @@ namespace GitVersion.Core.Tests
         [Description(NoMonoDescription)]
         public void CannotUpdateProjectFileWithIncorrectProjectSdk(string xml)
         {
-            using var projectFileUpdater = new ProjectFileUpdater(log, fileSystem);
+            using var projectFileUpdater = new ProjectFileUpdater(this.log, this.fileSystem);
 
             var canUpdate = projectFileUpdater.CanUpdateProjectFile(XElement.Parse(xml));
 
@@ -157,7 +157,7 @@ namespace GitVersion.Core.Tests
         [Description(NoMonoDescription)]
         public void CannotUpdateProjectFileWithMissingProjectSdk(string xml)
         {
-            using var projectFileUpdater = new ProjectFileUpdater(log, fileSystem);
+            using var projectFileUpdater = new ProjectFileUpdater(this.log, this.fileSystem);
 
             var canUpdate = projectFileUpdater.CanUpdateProjectFile(XElement.Parse(xml));
 
@@ -177,7 +177,7 @@ namespace GitVersion.Core.Tests
         [Description(NoMonoDescription)]
         public void CannotUpdateProjectFileWithoutAssemblyInfoGeneration(string xml)
         {
-            using var projectFileUpdater = new ProjectFileUpdater(log, fileSystem);
+            using var projectFileUpdater = new ProjectFileUpdater(this.log, this.fileSystem);
 
             var canUpdate = projectFileUpdater.CanUpdateProjectFile(XElement.Parse(xml));
 
@@ -192,7 +192,7 @@ namespace GitVersion.Core.Tests
         [Description(NoMonoDescription)]
         public void CannotUpdateProjectFileWithoutAPropertyGroup(string xml)
         {
-            using var projectFileUpdater = new ProjectFileUpdater(log, fileSystem);
+            using var projectFileUpdater = new ProjectFileUpdater(this.log, this.fileSystem);
 
             var canUpdate = projectFileUpdater.CanUpdateProjectFile(XElement.Parse(xml));
 
@@ -211,11 +211,11 @@ namespace GitVersion.Core.Tests
         [Description(NoMonoDescription)]
         public void UpdateProjectXmlVersionElementWithStandardXmlInsertsElement(string xml)
         {
-            using var projectFileUpdater = new ProjectFileUpdater(log, fileSystem);
+            using var projectFileUpdater = new ProjectFileUpdater(this.log, this.fileSystem);
 
-            var variables = variableProvider.GetVariablesFor(SemanticVersion.Parse("2.0.0", "v"), new TestEffectiveConfiguration(), false);
+            var variables = this.variableProvider.GetVariablesFor(SemanticVersion.Parse("2.0.0", "v"), new TestEffectiveConfiguration(), false);
             var xmlRoot = XElement.Parse(xml);
-            projectFileUpdater.UpdateProjectVersionElement(xmlRoot, ProjectFileUpdater.AssemblyVersionElement, variables.AssemblySemVer);
+            ProjectFileUpdater.UpdateProjectVersionElement(xmlRoot, ProjectFileUpdater.AssemblyVersionElement, variables.AssemblySemVer);
 
             var expectedXml = XElement.Parse(@"
 <Project Sdk=""Microsoft.NET.Sdk"">
@@ -241,11 +241,11 @@ namespace GitVersion.Core.Tests
         [Description(NoMonoDescription)]
         public void UpdateProjectXmlVersionElementWithStandardXmlModifiesElement(string xml)
         {
-            using var projectFileUpdater = new ProjectFileUpdater(log, fileSystem);
+            using var projectFileUpdater = new ProjectFileUpdater(this.log, this.fileSystem);
 
-            var variables = variableProvider.GetVariablesFor(SemanticVersion.Parse("2.0.0", "v"), new TestEffectiveConfiguration(), false);
+            var variables = this.variableProvider.GetVariablesFor(SemanticVersion.Parse("2.0.0", "v"), new TestEffectiveConfiguration(), false);
             var xmlRoot = XElement.Parse(xml);
-            projectFileUpdater.UpdateProjectVersionElement(xmlRoot, ProjectFileUpdater.AssemblyVersionElement, variables.AssemblySemVer);
+            ProjectFileUpdater.UpdateProjectVersionElement(xmlRoot, ProjectFileUpdater.AssemblyVersionElement, variables.AssemblySemVer);
 
             var expectedXml = XElement.Parse(@"
 <Project Sdk=""Microsoft.NET.Sdk"">
@@ -274,11 +274,11 @@ namespace GitVersion.Core.Tests
         [Description(NoMonoDescription)]
         public void UpdateProjectXmlVersionElementWithDuplicatePropertyGroupsModifiesLastElement(string xml)
         {
-            using var projectFileUpdater = new ProjectFileUpdater(log, fileSystem);
+            using var projectFileUpdater = new ProjectFileUpdater(this.log, this.fileSystem);
 
-            var variables = variableProvider.GetVariablesFor(SemanticVersion.Parse("2.0.0", "v"), new TestEffectiveConfiguration(), false);
+            var variables = this.variableProvider.GetVariablesFor(SemanticVersion.Parse("2.0.0", "v"), new TestEffectiveConfiguration(), false);
             var xmlRoot = XElement.Parse(xml);
-            projectFileUpdater.UpdateProjectVersionElement(xmlRoot, ProjectFileUpdater.AssemblyVersionElement, variables.AssemblySemVer);
+            ProjectFileUpdater.UpdateProjectVersionElement(xmlRoot, ProjectFileUpdater.AssemblyVersionElement, variables.AssemblySemVer);
 
             var expectedXml = XElement.Parse(@"
 <Project Sdk=""Microsoft.NET.Sdk"">
@@ -308,11 +308,11 @@ namespace GitVersion.Core.Tests
         [Description(NoMonoDescription)]
         public void UpdateProjectXmlVersionElementWithMultipleVersionElementsLastOneIsModified(string xml)
         {
-            using var projectFileUpdater = new ProjectFileUpdater(log, fileSystem);
+            using var projectFileUpdater = new ProjectFileUpdater(this.log, this.fileSystem);
 
-            var variables = variableProvider.GetVariablesFor(SemanticVersion.Parse("2.0.0", "v"), new TestEffectiveConfiguration(), false);
+            var variables = this.variableProvider.GetVariablesFor(SemanticVersion.Parse("2.0.0", "v"), new TestEffectiveConfiguration(), false);
             var xmlRoot = XElement.Parse(xml);
-            projectFileUpdater.UpdateProjectVersionElement(xmlRoot, ProjectFileUpdater.AssemblyVersionElement, variables.AssemblySemVer);
+            ProjectFileUpdater.UpdateProjectVersionElement(xmlRoot, ProjectFileUpdater.AssemblyVersionElement, variables.AssemblySemVer);
 
             var expectedXml = XElement.Parse(@"
 <Project Sdk=""Microsoft.NET.Sdk"">
@@ -341,7 +341,7 @@ namespace GitVersion.Core.Tests
 
             VerifyAssemblyInfoFile(xml, fileName, AssemblyVersioningScheme.MajorMinorPatch, verify: (fs, variables) =>
             {
-                using var projectFileUpdater = new ProjectFileUpdater(log, fs);
+                using var projectFileUpdater = new ProjectFileUpdater(this.log, fs);
                 projectFileUpdater.Execute(variables, new AssemblyInfoContext(Path.GetTempPath(), false, fileName));
 
                 var expectedXml = @"
@@ -366,7 +366,7 @@ namespace GitVersion.Core.Tests
             AssemblyVersioningScheme versioningScheme = AssemblyVersioningScheme.MajorMinorPatch,
             Action<IFileSystem, VersionVariables> verify = null)
         {
-            fileSystem = Substitute.For<IFileSystem>();
+            this.fileSystem = Substitute.For<IFileSystem>();
             var version = new SemanticVersion
             {
                 BuildMetaData = new SemanticVersionBuildMetaData("versionSourceHash", 3, "foo", "hash", "shortHash", DateTimeOffset.Now, 0),
@@ -375,18 +375,18 @@ namespace GitVersion.Core.Tests
                 Patch = 1
             };
 
-            fileSystem.Exists(fileName).Returns(true);
-            fileSystem.ReadAllText(fileName).Returns(projectFileContent);
-            fileSystem.When(f => f.WriteAllText(fileName, Arg.Any<string>())).Do(c =>
+            this.fileSystem.Exists(fileName).Returns(true);
+            this.fileSystem.ReadAllText(fileName).Returns(projectFileContent);
+            this.fileSystem.When(f => f.WriteAllText(fileName, Arg.Any<string>())).Do(c =>
             {
                 projectFileContent = c.ArgAt<string>(1);
-                fileSystem.ReadAllText(fileName).Returns(projectFileContent);
+                this.fileSystem.ReadAllText(fileName).Returns(projectFileContent);
             });
 
             var config = new TestEffectiveConfiguration(assemblyVersioningScheme: versioningScheme);
-            var variables = variableProvider.GetVariablesFor(version, config, false);
+            var variables = this.variableProvider.GetVariablesFor(version, config, false);
 
-            verify?.Invoke(fileSystem, variables);
+            verify?.Invoke(this.fileSystem, variables);
         }
     }
 }

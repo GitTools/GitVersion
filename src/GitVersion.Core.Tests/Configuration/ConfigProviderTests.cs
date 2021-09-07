@@ -30,14 +30,11 @@ namespace GitVersion.Core.Tests
         [SetUp]
         public void Setup()
         {
-            repoPath = DefaultRepoPath;
+            this.repoPath = DefaultRepoPath;
             var options = Options.Create(new GitVersionOptions { WorkingDirectory = repoPath });
-            var sp = ConfigureServices(services =>
-            {
-                services.AddSingleton(options);
-            });
-            configProvider = sp.GetService<IConfigProvider>();
-            fileSystem = sp.GetService<IFileSystem>();
+            var sp = ConfigureServices(services => services.AddSingleton(options));
+            this.configProvider = sp.GetService<IConfigProvider>();
+            this.fileSystem = sp.GetService<IFileSystem>();
 
             ShouldlyConfiguration.ShouldMatchApprovedDefaults.LocateTestMethodUsingAttribute<TestAttribute>();
         }
@@ -45,7 +42,7 @@ namespace GitVersion.Core.Tests
         [Test]
         public void OverwritesDefaultsWithProvidedConfig()
         {
-            var defaultConfig = configProvider.Provide(repoPath);
+            var defaultConfig = this.configProvider.Provide(this.repoPath);
             const string text = @"
 next-version: 2.0.0
 branches:
@@ -53,7 +50,7 @@ branches:
         mode: ContinuousDeployment
         tag: dev";
             SetupConfigFileContent(text);
-            var config = configProvider.Provide(repoPath);
+            var config = this.configProvider.Provide(this.repoPath);
 
             config.NextVersion.ShouldBe("2.0.0");
             config.Branches["develop"].Increment.ShouldBe(defaultConfig.Branches["develop"].Increment);
@@ -66,7 +63,7 @@ branches:
         {
             const string text = @"mode: Mainline";
             SetupConfigFileContent(text);
-            var config = configProvider.Provide(repoPath);
+            var config = this.configProvider.Provide(this.repoPath);
             var branches = config.Branches.Select(x => x.Value);
             branches.All(branch => branch.VersioningMode == VersioningMode.Mainline).ShouldBe(true);
         }
@@ -80,7 +77,7 @@ branches:
     release:
         tag: """"";
             SetupConfigFileContent(text);
-            var config = configProvider.Provide(repoPath);
+            var config = this.configProvider.Provide(this.repoPath);
 
             config.NextVersion.ShouldBe("2.0.0");
             config.Branches["release"].Tag.ShouldBe(string.Empty);
@@ -95,7 +92,7 @@ branches:
     bug:
         tag: bugfix";
             SetupConfigFileContent(text);
-            var ex = Should.Throw<ConfigurationException>(() => configProvider.Provide(repoPath));
+            var ex = Should.Throw<ConfigurationException>(() => this.configProvider.Provide(this.repoPath));
             ex.Message.ShouldBe($"Branch configuration 'bug' is missing required configuration 'regex'{System.Environment.NewLine}" +
                                 "See https://gitversion.net/docs/reference/configuration for more info");
         }
@@ -110,7 +107,7 @@ branches:
         regex: 'bug[/-]'
         tag: bugfix";
             SetupConfigFileContent(text);
-            var ex = Should.Throw<ConfigurationException>(() => configProvider.Provide(repoPath));
+            var ex = Should.Throw<ConfigurationException>(() => this.configProvider.Provide(this.repoPath));
             ex.Message.ShouldBe($"Branch configuration 'bug' is missing required configuration 'source-branches'{System.Environment.NewLine}" +
                                 "See https://gitversion.net/docs/reference/configuration for more info");
         }
@@ -125,7 +122,7 @@ branches:
         tag: bugfix
         source-branches: [notconfigured]";
             SetupConfigFileContent(text);
-            var ex = Should.Throw<ConfigurationException>(() => configProvider.Provide(repoPath));
+            var ex = Should.Throw<ConfigurationException>(() => this.configProvider.Provide(this.repoPath));
             ex.Message.ShouldBe($"Branch configuration 'bug' defines these 'source-branches' that are not configured: '[notconfigured]'{System.Environment.NewLine}" +
                                 "See https://gitversion.net/docs/reference/configuration for more info");
         }
@@ -142,7 +139,7 @@ branches:
         tag: bugfix
         source-branches: [{wellKnownBranchKey}]";
             SetupConfigFileContent(text);
-            var config = configProvider.Provide(repoPath);
+            var config = this.configProvider.Provide(this.repoPath);
 
             config.Branches["bug"].SourceBranches.ShouldBe(new List<string> { wellKnownBranchKey });
         }
@@ -158,7 +155,7 @@ branches:
         tag: bugfix
         source-branches: []";
             SetupConfigFileContent(text);
-            var config = configProvider.Provide(repoPath);
+            var config = this.configProvider.Provide(this.repoPath);
 
             config.Branches["bug"].Regex.ShouldBe("bug[/-]");
             config.Branches["bug"].Tag.ShouldBe("bugfix");
@@ -175,7 +172,7 @@ branches:
         tag: beta";
             SetupConfigFileContent(text);
 
-            var config = configProvider.Provide(repoPath);
+            var config = this.configProvider.Provide(this.repoPath);
 
             config.Branches[MainBranch].Regex.ShouldBe("^master$|^main$");
             config.Branches[MainBranch].Tag.ShouldBe("beta");
@@ -195,7 +192,7 @@ branches:
         is-release-branch: false";
             SetupConfigFileContent(text);
 
-            var config = configProvider.Provide(repoPath);
+            var config = this.configProvider.Provide(this.repoPath);
 
             config.Branches["breaking"].Regex.ShouldBe("breaking[/]");
             config.Branches["breaking"].SourceBranches.ShouldHaveSingleItem();
@@ -207,7 +204,7 @@ branches:
         {
             const string text = "next-version: 2";
             SetupConfigFileContent(text);
-            var config = configProvider.Provide(repoPath);
+            var config = this.configProvider.Provide(this.repoPath);
 
             config.NextVersion.ShouldBe("2.0");
         }
@@ -217,7 +214,7 @@ branches:
         {
             const string text = "next-version: 2.118998723";
             SetupConfigFileContent(text);
-            var config = configProvider.Provide(repoPath);
+            var config = this.configProvider.Provide(this.repoPath);
 
             config.NextVersion.ShouldBe("2.118998723");
         }
@@ -227,7 +224,7 @@ branches:
         {
             const string text = "next-version: 2.12.654651698";
             SetupConfigFileContent(text);
-            var config = configProvider.Provide(repoPath);
+            var config = this.configProvider.Provide(this.repoPath);
 
             config.NextVersion.ShouldBe("2.12.654651698");
         }
@@ -238,7 +235,7 @@ branches:
         [Description(NoMonoDescription)]
         public void CanWriteOutEffectiveConfiguration()
         {
-            var config = configProvider.Provide(repoPath);
+            var config = this.configProvider.Provide(this.repoPath);
 
             config.ToString().ShouldMatchApproved();
         }
@@ -253,7 +250,7 @@ assembly-informational-format: '{NugetVersion}'";
 
             SetupConfigFileContent(text);
 
-            var config = configProvider.Provide(repoPath);
+            var config = this.configProvider.Provide(this.repoPath);
             config.AssemblyVersioningScheme.ShouldBe(AssemblyVersioningScheme.MajorMinor);
             config.AssemblyFileVersioningScheme.ShouldBe(AssemblyFileVersioningScheme.MajorMinorPatch);
             config.AssemblyInformationalFormat.ShouldBe("{NugetVersion}");
@@ -269,7 +266,7 @@ assembly-informational-format: '{Major}.{Minor}.{Patch}'";
 
             SetupConfigFileContent(text);
 
-            var config = configProvider.Provide(repoPath);
+            var config = this.configProvider.Provide(this.repoPath);
             config.AssemblyVersioningScheme.ShouldBe(AssemblyVersioningScheme.MajorMinor);
             config.AssemblyFileVersioningScheme.ShouldBe(AssemblyFileVersioningScheme.MajorMinorPatch);
             config.AssemblyInformationalFormat.ShouldBe("{Major}.{Minor}.{Patch}");
@@ -288,7 +285,7 @@ branches: {}";
 
             SetupConfigFileContent(text);
 
-            var config = configProvider.Provide(repoPath);
+            var config = this.configProvider.Provide(this.repoPath);
             config.AssemblyVersioningScheme.ShouldBe(AssemblyVersioningScheme.MajorMinorPatch);
             config.AssemblyFileVersioningScheme.ShouldBe(AssemblyFileVersioningScheme.MajorMinorPatch);
             config.AssemblyInformationalFormat.ShouldBe("{FullSemVer}");
@@ -299,7 +296,7 @@ branches: {}";
         {
             const string text = "";
             SetupConfigFileContent(text);
-            var config = configProvider.Provide(repoPath);
+            var config = this.configProvider.Provide(this.repoPath);
             config.AssemblyVersioningScheme.ShouldBe(AssemblyVersioningScheme.MajorMinorPatch);
             config.AssemblyFileVersioningScheme.ShouldBe(AssemblyFileVersioningScheme.MajorMinorPatch);
             config.AssemblyInformationalFormat.ShouldBe(null);
@@ -338,22 +335,19 @@ branches: {}";
                 services.AddSingleton(options);
                 services.AddSingleton<ILog>(log);
             });
-            configProvider = sp.GetService<IConfigProvider>();
+            this.configProvider = sp.GetService<IConfigProvider>();
 
-            configProvider.Provide(repoPath);
+            this.configProvider.Provide(this.repoPath);
 
             stringLogger.Length.ShouldBe(0);
         }
 
-        private string SetupConfigFileContent(string text, string fileName = ConfigFileLocator.DefaultFileName)
-        {
-            return SetupConfigFileContent(text, fileName, repoPath);
-        }
+        private string SetupConfigFileContent(string text, string fileName = ConfigFileLocator.DefaultFileName) => SetupConfigFileContent(text, fileName, this.repoPath);
 
         private string SetupConfigFileContent(string text, string fileName, string path)
         {
             var fullPath = Path.Combine(path, fileName);
-            fileSystem.WriteAllText(fullPath, text);
+            this.fileSystem.WriteAllText(fullPath, text);
 
             return fullPath;
         }
@@ -369,7 +363,7 @@ branches:
         source-branches: ['develop']
         tag: dev";
             SetupConfigFileContent(text);
-            var config = configProvider.Provide(repoPath);
+            var config = this.configProvider.Provide(this.repoPath);
 
             config.Branches["develop"].SourceBranches.ShouldBe(new List<string> { "develop" });
         }
@@ -384,7 +378,7 @@ branches:
         mode: ContinuousDeployment
         tag: dev";
             SetupConfigFileContent(text);
-            var config = configProvider.Provide(repoPath);
+            var config = this.configProvider.Provide(this.repoPath);
 
             config.Branches["develop"].SourceBranches.ShouldBe(new List<string>());
         }
@@ -400,7 +394,7 @@ branches:
         source-branches: ['develop', 'release']
         tag: dev";
             SetupConfigFileContent(text);
-            var config = configProvider.Provide(repoPath);
+            var config = this.configProvider.Provide(this.repoPath);
 
             config.Branches["feature"].SourceBranches.ShouldBe(new List<string> { "develop", "release" });
         }
@@ -415,7 +409,7 @@ branches:
         mode: ContinuousDeployment
         tag: dev";
             SetupConfigFileContent(text);
-            var config = configProvider.Provide(repoPath);
+            var config = this.configProvider.Provide(this.repoPath);
 
             config.Branches["feature"].SourceBranches.ShouldBe(
                 new List<string> { "develop", MainBranch, "release", "feature", "support", "hotfix" });
@@ -429,8 +423,8 @@ next-version: 1.2.3
 tag-prefix: custom-tag-prefix-from-yml";
             SetupConfigFileContent(text);
 
-            var expectedConfig = configProvider.Provide(repoPath, overrideConfig: null);
-            var overridenConfig = configProvider.Provide(repoPath, overrideConfig: new Config());
+            var expectedConfig = this.configProvider.Provide(this.repoPath, overrideConfig: null);
+            var overridenConfig = this.configProvider.Provide(this.repoPath, overrideConfig: new Config());
 
             overridenConfig.AssemblyVersioningScheme.ShouldBe(expectedConfig.AssemblyVersioningScheme);
             overridenConfig.AssemblyFileVersioningScheme.ShouldBe(expectedConfig.AssemblyFileVersioningScheme);
@@ -470,7 +464,7 @@ tag-prefix: custom-tag-prefix-from-yml";
         {
             const string text = "";
             SetupConfigFileContent(text);
-            var config = configProvider.Provide(repoPath);
+            var config = this.configProvider.Provide(this.repoPath);
 
             config.TagPrefix.ShouldBe("[vV]");
         }
@@ -480,7 +474,7 @@ tag-prefix: custom-tag-prefix-from-yml";
         {
             const string text = "tag-prefix: custom-tag-prefix-from-yml";
             SetupConfigFileContent(text);
-            var config = configProvider.Provide(repoPath);
+            var config = this.configProvider.Provide(this.repoPath);
 
             config.TagPrefix.ShouldBe("custom-tag-prefix-from-yml");
         }
@@ -490,7 +484,7 @@ tag-prefix: custom-tag-prefix-from-yml";
         {
             var text = tagPrefixSetAtYmlFile ? "tag-prefix: custom-tag-prefix-from-yml" : "";
             SetupConfigFileContent(text);
-            var config = configProvider.Provide(repoPath, overrideConfig: new Config { TagPrefix = "tag-prefix-from-override-config" });
+            var config = this.configProvider.Provide(this.repoPath, overrideConfig: new Config { TagPrefix = "tag-prefix-from-override-config" });
 
             config.TagPrefix.ShouldBe("tag-prefix-from-override-config");
         }
@@ -500,7 +494,7 @@ tag-prefix: custom-tag-prefix-from-yml";
         {
             const string text = "";
             SetupConfigFileContent(text);
-            var config = configProvider.Provide(repoPath, overrideConfig: new Config { TagPrefix = null });
+            var config = this.configProvider.Provide(this.repoPath, overrideConfig: new Config { TagPrefix = null });
 
             config.TagPrefix.ShouldBe("[vV]");
         }
@@ -510,7 +504,7 @@ tag-prefix: custom-tag-prefix-from-yml";
         {
             const string text = "tag-prefix: custom-tag-prefix-from-yml";
             SetupConfigFileContent(text);
-            var config = configProvider.Provide(repoPath, overrideConfig: new Config { TagPrefix = null });
+            var config = this.configProvider.Provide(this.repoPath, overrideConfig: new Config { TagPrefix = null });
 
             config.TagPrefix.ShouldBe("custom-tag-prefix-from-yml");
         }

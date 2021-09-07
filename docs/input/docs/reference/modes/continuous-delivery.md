@@ -5,6 +5,7 @@ Description: |
     Continuous Delivery is the default versioning mode. In this mode,
     GitVersion calculates the next version and will use that until that is
     released.
+RedirectFrom: docs/reference/versioning-modes/continuous-delivery
 ---
 
 Continuous Delivery is the practice of having a deployment pipeline and is the

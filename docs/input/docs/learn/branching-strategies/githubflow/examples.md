@@ -1,6 +1,7 @@
 ---
 Order: 50
 Title: GitHubFlow Examples
+RedirectFrom: docs/git-branching-strategies/githubflow-examples
 ---
 
 ## Feature branch

@@ -1,37 +1,34 @@
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
-using GitVersion.VersionCalculation;
+using GitVersion.Extensions;
 
-namespace GitVersion
+namespace GitVersion.VersionCalculation
 {
-    public enum CommitMessageIncrementMode
+    public class IncrementStrategyFinder : IIncrementStrategyFinder
     {
-        Enabled,
-        Disabled,
-        MergeMessageOnly
-    }
-
-    public static class IncrementStrategyFinder
-    {
-        private static IEnumerable<ICommit> intermediateCommitCache;
         public const string DefaultMajorPattern = @"\+semver:\s?(breaking|major)";
         public const string DefaultMinorPattern = @"\+semver:\s?(feature|minor)";
         public const string DefaultPatchPattern = @"\+semver:\s?(fix|patch)";
         public const string DefaultNoBumpPattern = @"\+semver:\s?(none|skip)";
 
         private static readonly ConcurrentDictionary<string, Regex> CompiledRegexCache = new();
+        private readonly Dictionary<string, VersionField?> commitIncrementCache = new();
+        private readonly Dictionary<string, Dictionary<string, int>> headCommitsMapCache = new();
+        private readonly Dictionary<string, ICommit[]> headCommitsCache = new();
 
         private static readonly Regex DefaultMajorPatternRegex = new(DefaultMajorPattern, RegexOptions.Compiled | RegexOptions.IgnoreCase);
         private static readonly Regex DefaultMinorPatternRegex = new(DefaultMinorPattern, RegexOptions.Compiled | RegexOptions.IgnoreCase);
         private static readonly Regex DefaultPatchPatternRegex = new(DefaultPatchPattern, RegexOptions.Compiled | RegexOptions.IgnoreCase);
         private static readonly Regex DefaultNoBumpPatternRegex = new(DefaultNoBumpPattern, RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
-        public static VersionField? DetermineIncrementedField(IGitRepository repository, GitVersionContext context, BaseVersion baseVersion)
+        public VersionField? DetermineIncrementedField(IGitRepository repository, GitVersionContext context, BaseVersion baseVersion)
         {
-            var commitMessageIncrement = FindCommitMessageIncrement(repository, context, baseVersion);
-            var defaultIncrement = context.Configuration.Increment.ToVersionField();
+            var commitMessageIncrement = FindCommitMessageIncrement(repository, context, baseVersion.BaseVersionSource);
+
+            var defaultIncrement = context.Configuration?.Increment.ToVersionField();
 
             // use the default branch config increment strategy if there are no commit message overrides
             if (commitMessageIncrement == null)
@@ -55,17 +52,17 @@ namespace GitVersion
             return commitMessageIncrement;
         }
 
-        public static VersionField? GetIncrementForCommits(GitVersionContext context, IEnumerable<ICommit> commits)
+        public VersionField? GetIncrementForCommits(GitVersionContext context, IEnumerable<ICommit> commits)
         {
-            var majorRegex = TryGetRegexOrDefault(context.Configuration.MajorVersionBumpMessage, DefaultMajorPatternRegex);
-            var minorRegex = TryGetRegexOrDefault(context.Configuration.MinorVersionBumpMessage, DefaultMinorPatternRegex);
-            var patchRegex = TryGetRegexOrDefault(context.Configuration.PatchVersionBumpMessage, DefaultPatchPatternRegex);
-            var none = TryGetRegexOrDefault(context.Configuration.NoBumpMessage, DefaultNoBumpPatternRegex);
+            var majorRegex = TryGetRegexOrDefault(context.Configuration?.MajorVersionBumpMessage, DefaultMajorPatternRegex);
+            var minorRegex = TryGetRegexOrDefault(context.Configuration?.MinorVersionBumpMessage, DefaultMinorPatternRegex);
+            var patchRegex = TryGetRegexOrDefault(context.Configuration?.PatchVersionBumpMessage, DefaultPatchPatternRegex);
+            var none = TryGetRegexOrDefault(context.Configuration?.NoBumpMessage, DefaultNoBumpPatternRegex);
 
             var increments = commits
-                .Select(c => GetIncrementFromMessage(c.Message, majorRegex, minorRegex, patchRegex, none))
+                .Select(c => GetIncrementFromCommit(c, majorRegex, minorRegex, patchRegex, none))
                 .Where(v => v != null)
-                .Select(v => v.Value)
+                .Select(v => v!.Value)
                 .ToList();
 
             if (increments.Any())
@@ -76,23 +73,26 @@ namespace GitVersion
             return null;
         }
 
-        private static VersionField? FindCommitMessageIncrement(IGitRepository repository, GitVersionContext context, BaseVersion baseVersion)
+        private VersionField? FindCommitMessageIncrement(IGitRepository repository, GitVersionContext context, ICommit? baseCommit)
         {
-            if (context.Configuration.CommitMessageIncrementing == CommitMessageIncrementMode.Disabled)
+            if (baseCommit == null) return null;
+
+            if (context.Configuration?.CommitMessageIncrementing == CommitMessageIncrementMode.Disabled)
             {
                 return null;
             }
 
-            var commits = GetIntermediateCommits(repository, baseVersion.BaseVersionSource, context.CurrentCommit);
+            var commits = GetIntermediateCommits(repository, baseCommit, context.CurrentCommit);
 
-            if (context.Configuration.CommitMessageIncrementing == CommitMessageIncrementMode.MergeMessageOnly)
+            if (context.Configuration?.CommitMessageIncrementing == CommitMessageIncrementMode.MergeMessageOnly)
             {
                 commits = commits.Where(c => c.Parents.Count() > 1);
             }
 
             return GetIncrementForCommits(context, commits);
         }
-        private static Regex TryGetRegexOrDefault(string messageRegex, Regex defaultRegex)
+
+        private static Regex TryGetRegexOrDefault(string? messageRegex, Regex defaultRegex)
         {
             if (messageRegex == null)
             {
@@ -101,28 +101,42 @@ namespace GitVersion
 
             return CompiledRegexCache.GetOrAdd(messageRegex, pattern => new Regex(pattern, RegexOptions.Compiled | RegexOptions.IgnoreCase));
         }
-        private static IEnumerable<ICommit> GetIntermediateCommits(IGitRepository repo, ICommit baseCommit, ICommit headCommit)
+
+        /// <summary>
+        /// Get the sequence of commits in a <paramref name="repo"/> between a <paramref name="baseCommit"/> (exclusive)
+        /// and a particular <paramref name="headCommit"/> (inclusive)
+        /// </summary>
+        private IEnumerable<ICommit> GetIntermediateCommits(IGitRepository repo, ICommit baseCommit, ICommit? headCommit)
         {
-            if (baseCommit == null) yield break;
-
-            var commitCache = intermediateCommitCache;
-
-            if (commitCache == null || !Equals(commitCache.LastOrDefault(), headCommit))
-            {
-                commitCache = GetCommitsReacheableFromHead(repo, headCommit).ToList();
-                intermediateCommitCache = commitCache;
-            }
-
-            var found = false;
-            foreach (var commit in commitCache)
-            {
-                if (found)
-                    yield return commit;
-
-                if (commit.Sha == baseCommit.Sha)
-                    found = true;
-            }
+            var map = GetHeadCommitsMap(repo, headCommit);
+            if (!map.TryGetValue(baseCommit.Sha, out var baseIndex)) return Enumerable.Empty<ICommit>();
+            var commitAfterBaseIndex = baseIndex + 1;
+            var headCommits = GetHeadCommits(repo, headCommit);
+            return new ArraySegment<ICommit>(headCommits, commitAfterBaseIndex, headCommits.Length - commitAfterBaseIndex);
         }
+
+        /// <summary>
+        /// Get a mapping of commit shas to their zero-based position in the sequence of commits from the beginning of a
+        /// <paramref name="repo"/> to a particular <paramref name="headCommit"/>
+        /// </summary>
+        private Dictionary<string, int> GetHeadCommitsMap(IGitRepository repo, ICommit? headCommit) =>
+            this.headCommitsMapCache.GetOrAdd(headCommit?.Sha ?? "NULL", () =>
+                GetHeadCommits(repo, headCommit)
+                    .Select((commit, index) => (Sha: commit.Sha, Index: index))
+                    .ToDictionary(t => t.Sha, t => t.Index));
+
+        /// <summary>
+        /// Get the sequence of commits from the beginning of a <paramref name="repo"/> to a particular
+        /// <paramref name="headCommit"/> (inclusive)
+        /// </summary>
+        private ICommit[] GetHeadCommits(IGitRepository repo, ICommit? headCommit) =>
+            this.headCommitsCache.GetOrAdd(headCommit?.Sha ?? "NULL", () =>
+                GetCommitsReacheableFromHead(repo, headCommit).ToArray());
+
+        private VersionField? GetIncrementFromCommit(ICommit commit, Regex majorRegex, Regex minorRegex, Regex patchRegex, Regex none) =>
+            this.commitIncrementCache.GetOrAdd(commit.Sha, () =>
+                GetIncrementFromMessage(commit.Message, majorRegex, minorRegex, patchRegex, none));
+
         private static VersionField? GetIncrementFromMessage(string message, Regex majorRegex, Regex minorRegex, Regex patchRegex, Regex none)
         {
             if (majorRegex.IsMatch(message)) return VersionField.Major;
@@ -132,7 +146,11 @@ namespace GitVersion
             return null;
         }
 
-        private static IEnumerable<ICommit> GetCommitsReacheableFromHead(IGitRepository repo, ICommit headCommit)
+        /// <summary>
+        /// Query a <paramref name="repo"/> for the sequence of commits from the beginning to a particular
+        /// <paramref name="headCommit"/> (inclusive)
+        /// </summary>
+        private static IEnumerable<ICommit> GetCommitsReacheableFromHead(IGitRepository repo, ICommit? headCommit)
         {
             var filter = new CommitFilter
             {

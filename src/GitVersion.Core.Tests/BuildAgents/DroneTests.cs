@@ -17,26 +17,20 @@ namespace GitVersion.Core.Tests.BuildAgents
         [SetUp]
         public void SetUp()
         {
-            sp = ConfigureServices(services =>
-            {
-                services.AddSingleton<Drone>();
-            });
-            environment = sp.GetService<IEnvironment>();
-            buildServer = sp.GetService<Drone>();
-            environment.SetEnvironmentVariable("DRONE", "true");
+            this.sp = ConfigureServices(services => services.AddSingleton<Drone>());
+            this.environment = this.sp.GetService<IEnvironment>();
+            this.buildServer = this.sp.GetService<Drone>();
+            this.environment.SetEnvironmentVariable("DRONE", "true");
         }
 
         [TearDown]
-        public void TearDown()
-        {
-            environment.SetEnvironmentVariable("DRONE", null);
-        }
+        public void TearDown() => this.environment.SetEnvironmentVariable("DRONE", null);
 
         [Test]
         public void CanApplyToCurrentContextShouldBeTrueWhenEnvironmentVariableIsSet()
         {
             // Act
-            var result = buildServer.CanApplyToCurrentContext();
+            var result = this.buildServer.CanApplyToCurrentContext();
 
             // Assert
             result.ShouldBeTrue();
@@ -46,10 +40,10 @@ namespace GitVersion.Core.Tests.BuildAgents
         public void CanApplyToCurrentContextShouldBeFalseWhenEnvironmentVariableIsNotSet()
         {
             // Arrange
-            environment.SetEnvironmentVariable("DRONE", "");
+            this.environment.SetEnvironmentVariable("DRONE", "");
 
             // Act
-            var result = buildServer.CanApplyToCurrentContext();
+            var result = this.buildServer.CanApplyToCurrentContext();
 
             // Assert
             result.ShouldBeFalse();
@@ -61,11 +55,11 @@ namespace GitVersion.Core.Tests.BuildAgents
             // Arrange
             const string droneBranch = "droneBranch";
 
-            environment.SetEnvironmentVariable("DRONE_PULL_REQUEST", "");
-            environment.SetEnvironmentVariable("DRONE_BRANCH", droneBranch);
+            this.environment.SetEnvironmentVariable("DRONE_PULL_REQUEST", "");
+            this.environment.SetEnvironmentVariable("DRONE_BRANCH", droneBranch);
 
             // Act
-            var result = buildServer.GetCurrentBranch(false);
+            var result = this.buildServer.GetCurrentBranch(false);
 
             // Assert
             result.ShouldBe(droneBranch);
@@ -76,11 +70,11 @@ namespace GitVersion.Core.Tests.BuildAgents
         {
             // Arrange
             const string droneSourceBranch = "droneSourceBranch";
-            environment.SetEnvironmentVariable("DRONE_PULL_REQUEST", "1");
-            environment.SetEnvironmentVariable("DRONE_SOURCE_BRANCH", droneSourceBranch);
+            this.environment.SetEnvironmentVariable("DRONE_PULL_REQUEST", "1");
+            this.environment.SetEnvironmentVariable("DRONE_SOURCE_BRANCH", droneSourceBranch);
 
             // Act
-            var result = buildServer.GetCurrentBranch(false);
+            var result = this.buildServer.GetCurrentBranch(false);
 
             // Assert
             result.ShouldBe(droneSourceBranch);
@@ -95,12 +89,12 @@ namespace GitVersion.Core.Tests.BuildAgents
 
             var ciCommitRefSpec = $"{droneSourceBranch}:{droneDestinationBranch}";
 
-            environment.SetEnvironmentVariable("DRONE_PULL_REQUEST", "1");
-            environment.SetEnvironmentVariable("DRONE_SOURCE_BRANCH", "");
-            environment.SetEnvironmentVariable("CI_COMMIT_REFSPEC", ciCommitRefSpec);
+            this.environment.SetEnvironmentVariable("DRONE_PULL_REQUEST", "1");
+            this.environment.SetEnvironmentVariable("DRONE_SOURCE_BRANCH", "");
+            this.environment.SetEnvironmentVariable("CI_COMMIT_REFSPEC", ciCommitRefSpec);
 
             // Act
-            var result = buildServer.GetCurrentBranch(false);
+            var result = this.buildServer.GetCurrentBranch(false);
 
             // Assert
             result.ShouldBe(droneSourceBranch);
@@ -112,13 +106,13 @@ namespace GitVersion.Core.Tests.BuildAgents
             // Arrange
             const string droneBranch = "droneBranch";
 
-            environment.SetEnvironmentVariable("DRONE_PULL_REQUEST", "1");
-            environment.SetEnvironmentVariable("DRONE_SOURCE_BRANCH", "");
-            environment.SetEnvironmentVariable("CI_COMMIT_REFSPEC", "");
-            environment.SetEnvironmentVariable("DRONE_BRANCH", droneBranch);
+            this.environment.SetEnvironmentVariable("DRONE_PULL_REQUEST", "1");
+            this.environment.SetEnvironmentVariable("DRONE_SOURCE_BRANCH", "");
+            this.environment.SetEnvironmentVariable("CI_COMMIT_REFSPEC", "");
+            this.environment.SetEnvironmentVariable("DRONE_BRANCH", droneBranch);
 
             // Act
-            var result = buildServer.GetCurrentBranch(false);
+            var result = this.buildServer.GetCurrentBranch(false);
 
             // Assert
             result.ShouldBe(droneBranch);
@@ -134,13 +128,13 @@ namespace GitVersion.Core.Tests.BuildAgents
 
             var ciCommitRefSpec = $"{droneSourceBranch};{droneDestinationBranch}";
 
-            environment.SetEnvironmentVariable("DRONE_PULL_REQUEST", "1");
-            environment.SetEnvironmentVariable("DRONE_SOURCE_BRANCH", "");
-            environment.SetEnvironmentVariable("CI_COMMIT_REFSPEC", ciCommitRefSpec);
-            environment.SetEnvironmentVariable("DRONE_BRANCH", droneBranch);
+            this.environment.SetEnvironmentVariable("DRONE_PULL_REQUEST", "1");
+            this.environment.SetEnvironmentVariable("DRONE_SOURCE_BRANCH", "");
+            this.environment.SetEnvironmentVariable("CI_COMMIT_REFSPEC", ciCommitRefSpec);
+            this.environment.SetEnvironmentVariable("DRONE_BRANCH", droneBranch);
 
             // Act
-            var result = buildServer.GetCurrentBranch(false);
+            var result = this.buildServer.GetCurrentBranch(false);
 
             // Assert
             result.ShouldBe(droneBranch);

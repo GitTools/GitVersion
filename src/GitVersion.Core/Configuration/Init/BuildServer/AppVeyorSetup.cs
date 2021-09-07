@@ -24,13 +24,13 @@ namespace GitVersion.Configuration.Init.BuildServer
 
         public AppVeyorSetup WithData(ProjectVisibility visibility)
         {
-            projectVisibility = visibility;
+            this.projectVisibility = visibility;
             return this;
         }
 
-        protected override StepResult HandleResult(string result, Queue<ConfigInitWizardStep> steps, Config config, string workingDirectory)
+        protected override StepResult HandleResult(string? result, Queue<ConfigInitWizardStep> steps, Config config, string workingDirectory)
         {
-            var editConfigStep = StepFactory.CreateStep<EditConfigStep>();
+            var editConfigStep = this.StepFactory.CreateStep<EditConfigStep>()!;
             switch (result)
             {
                 case "0":
@@ -48,32 +48,24 @@ namespace GitVersion.Configuration.Init.BuildServer
             return StepResult.InvalidResponseSelected();
         }
 
-        private static string GetGvCommand(ProjectVisibility visibility)
+        private static string GetGvCommand(ProjectVisibility visibility) => visibility switch
         {
-            return visibility switch
-            {
-                ProjectVisibility.Public => "  - ps: gitversion /l console /output buildserver /updateAssemblyInfo",
-                ProjectVisibility.Private => "  - ps: gitversion $env:APPVEYOR_BUILD_FOLDER /l console /output buildserver /updateAssemblyInfo /nofetch /b $env:APPVEYOR_REPO_BRANCH",
-                _ => ""
-            };
-        }
+            ProjectVisibility.Public => "  - ps: gitversion /l console /output buildserver /updateAssemblyInfo",
+            ProjectVisibility.Private => "  - ps: gitversion $env:APPVEYOR_BUILD_FOLDER /l console /output buildserver /updateAssemblyInfo /nofetch /b $env:APPVEYOR_REPO_BRANCH",
+            _ => ""
+        };
 
-        private void GenerateBasicConfig(string workingDirectory)
-        {
-            WriteConfig(workingDirectory, FileSystem, $@"install:
+        private void GenerateBasicConfig(string workingDirectory) => WriteConfig(workingDirectory, this.FileSystem, $@"install:
   - choco install gitversion.portable -pre -y
 
 before_build:
   - nuget restore
-{GetGvCommand(projectVisibility)}
+{GetGvCommand(this.projectVisibility)}
 
 build:
   project: <your sln file>");
-        }
 
-        private void GenerateNuGetConfig(string workingDirectory)
-        {
-            WriteConfig(workingDirectory, FileSystem, $@"install:
+        private void GenerateNuGetConfig(string workingDirectory) => WriteConfig(workingDirectory, this.FileSystem, $@"install:
   - choco install gitversion.portable -pre -y
 
 assembly_info:
@@ -81,7 +73,7 @@ assembly_info:
 
 before_build:
   - nuget restore
-{GetGvCommand(projectVisibility)}
+{GetGvCommand(this.projectVisibility)}
 
 build:
   project: <your sln file>
@@ -90,19 +82,18 @@ after_build:
   - cmd: ECHO nuget pack <Project>\<NuSpec>.nuspec -version ""%GitVersion_NuGetVersion%"" -prop ""target=%CONFIGURATION%""
   - cmd: nuget pack <Project>\<NuSpec>.nuspec -version ""%GitVersion_NuGetVersion%"" -prop ""target=%CONFIGURATION%""
   - cmd: appveyor PushArtifact ""<NuSpec>.%GitVersion_NuGetVersion%.nupkg""");
-        }
 
         private void WriteConfig(string workingDirectory, IFileSystem fileSystem, string configContents)
         {
             var outputFilename = GetOutputFilename(workingDirectory, fileSystem);
             fileSystem.WriteAllText(outputFilename, configContents);
-            Log.Info($"AppVeyor sample config file written to {outputFilename}");
+            this.Log.Info($"AppVeyor sample config file written to {outputFilename}");
         }
 
         protected override string GetPrompt(Config config, string workingDirectory)
         {
             var prompt = new StringBuilder();
-            if (AppVeyorConfigExists(workingDirectory, FileSystem))
+            if (AppVeyorConfigExists(workingDirectory, this.FileSystem))
             {
                 prompt.AppendLine("GitVersion doesn't support modifying existing appveyor config files. We will generate appveyor.gitversion.yml instead");
                 prompt.AppendLine();
@@ -117,7 +108,7 @@ after_build:
             return prompt.ToString();
         }
 
-        private string GetOutputFilename(string workingDirectory, IFileSystem fileSystem)
+        private static string GetOutputFilename(string workingDirectory, IFileSystem fileSystem)
         {
             if (AppVeyorConfigExists(workingDirectory, fileSystem))
             {
@@ -139,10 +130,7 @@ after_build:
             return Path.Combine(workingDirectory, "appveyor.yml");
         }
 
-        private static bool AppVeyorConfigExists(string workingDirectory, IFileSystem fileSystem)
-        {
-            return fileSystem.Exists(Path.Combine(workingDirectory, "appveyor.yml"));
-        }
+        private static bool AppVeyorConfigExists(string workingDirectory, IFileSystem fileSystem) => fileSystem.Exists(Path.Combine(workingDirectory, "appveyor.yml"));
 
         protected override string DefaultResult => "0";
     }

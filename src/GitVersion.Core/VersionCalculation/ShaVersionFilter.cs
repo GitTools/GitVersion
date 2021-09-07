@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 
 namespace GitVersion.VersionCalculation
@@ -8,19 +9,16 @@ namespace GitVersion.VersionCalculation
     {
         private readonly IEnumerable<string> shas;
 
-        public ShaVersionFilter(IEnumerable<string> shas)
-        {
-            this.shas = shas ?? throw new ArgumentNullException(nameof(shas));
-        }
+        public ShaVersionFilter(IEnumerable<string> shas) => this.shas = shas ?? throw new ArgumentNullException(nameof(shas));
 
-        public bool Exclude(BaseVersion version, out string reason)
+        public bool Exclude(BaseVersion version, [NotNullWhen(true)] out string? reason)
         {
             if (version == null) throw new ArgumentNullException(nameof(version));
 
             reason = null;
 
             if (version.BaseVersionSource != null &&
-                shas.Any(sha => version.BaseVersionSource.Sha.StartsWith(sha, StringComparison.OrdinalIgnoreCase)))
+                this.shas.Any(sha => version.BaseVersionSource.Sha.StartsWith(sha, StringComparison.OrdinalIgnoreCase)))
             {
                 reason = $"Sha {version.BaseVersionSource} was ignored due to commit having been excluded by configuration";
                 return true;

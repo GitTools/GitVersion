@@ -41,7 +41,7 @@ namespace GitVersion.Model.Configuration
         /// Special value 'useBranchName' will extract the tag from the branch name
         /// </summary>
         [YamlMember(Alias = "tag")]
-        public string Tag { get; set; }
+        public string? Tag { get; set; }
 
         [YamlMember(Alias = "increment")]
         public IncrementStrategy? Increment { get; set; }
@@ -50,7 +50,7 @@ namespace GitVersion.Model.Configuration
         public bool? PreventIncrementOfMergedBranchVersion { get; set; }
 
         [YamlMember(Alias = "tag-number-pattern")]
-        public string TagNumberPattern { get; set; }
+        public string? TagNumberPattern { get; set; }
 
         [YamlMember(Alias = "track-merge-target")]
         public bool? TrackMergeTarget { get; set; }
@@ -59,13 +59,13 @@ namespace GitVersion.Model.Configuration
         public CommitMessageIncrementMode? CommitMessageIncrementing { get; set; }
 
         [YamlMember(Alias = "regex")]
-        public string Regex { get; set; }
+        public string? Regex { get; set; }
 
         [YamlMember(Alias = "source-branches")]
-        public HashSet<string> SourceBranches { get; set; }
+        public HashSet<string>? SourceBranches { get; set; }
 
         [YamlMember(Alias = "is-source-branch-for")]
-        public HashSet<string> IsSourceBranchFor { get; set; }
+        public HashSet<string>? IsSourceBranchFor { get; set; }
 
         [YamlMember(Alias = "tracks-release-branches")]
         public bool? TracksReleaseBranches { get; set; }
@@ -83,7 +83,7 @@ namespace GitVersion.Model.Configuration
         /// The name given to this configuration in the config file.
         /// </summary>
         [YamlIgnore]
-        public string Name { get; set; }
+        public string? Name { get; set; }
 
         public void MergeTo([NotNull] BranchConfig targetConfig)
         {
@@ -113,18 +113,15 @@ namespace GitVersion.Model.Configuration
             return this;
         }
 
-        public static BranchConfig CreateDefaultBranchConfig(string name)
+        public static BranchConfig CreateDefaultBranchConfig(string name) => new()
         {
-            return new BranchConfig
-            {
-                Name = name,
-                Tag = "useBranchName",
-                PreventIncrementOfMergedBranchVersion = false,
-                TrackMergeTarget = false,
-                TracksReleaseBranches = false,
-                IsReleaseBranch = false,
-                IsMainline = false,
-            };
-        }
+            Name = name,
+            Tag = "useBranchName",
+            PreventIncrementOfMergedBranchVersion = false,
+            TrackMergeTarget = false,
+            TracksReleaseBranches = false,
+            IsReleaseBranch = false,
+            IsMainline = false,
+        };
     }
 }

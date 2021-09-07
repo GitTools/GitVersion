@@ -6,10 +6,10 @@ namespace GitVersion.Core.Tests.Helpers
 {
     public static class DirectoryHelper
     {
-        private static readonly Dictionary<string, string> ToRename = new Dictionary<string, string>
+        private static readonly Dictionary<string, string> ToRename = new()
         {
-            {"gitted", ".git"},
-            {"gitmodules", ".gitmodules"},
+            { "gitted", ".git" },
+            { "gitmodules", ".gitmodules" },
         };
 
         public static void CopyFilesRecursively(DirectoryInfo source, DirectoryInfo target)
@@ -26,10 +26,7 @@ namespace GitVersion.Core.Tests.Helpers
             }
         }
 
-        private static string Rename(string name)
-        {
-            return ToRename.ContainsKey(name) ? ToRename[name] : name;
-        }
+        private static string Rename(string name) => ToRename.ContainsKey(name) ? ToRename[name] : name;
 
         public static void DeleteSubDirectories(string parentPath)
         {

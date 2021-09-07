@@ -16,16 +16,13 @@ namespace GitVersion
             this.console = console ?? throw new ArgumentNullException(nameof(console));
         }
 
-        public void Write()
-        {
-            WriteTo(console.WriteLine);
-        }
+        public void Write() => WriteTo(this.console.WriteLine);
 
         public void WriteTo(Action<string> writeAction)
         {
             var version = string.Empty;
             var assembly = Assembly.GetExecutingAssembly();
-            versionWriter.WriteTo(assembly, v => version = v);
+            this.versionWriter.WriteTo(assembly, v => version = v);
 
             var args = ArgumentList();
             var nl = System.Environment.NewLine;

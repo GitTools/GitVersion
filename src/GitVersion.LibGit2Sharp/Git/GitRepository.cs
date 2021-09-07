@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using GitVersion.Extensions;
 using GitVersion.Helpers;
 using GitVersion.Logging;
 using LibGit2Sharp;
@@ -11,8 +12,8 @@ namespace GitVersion
     internal sealed class GitRepository : IMutatingGitRepository
     {
         private readonly ILog log;
-        private Lazy<IRepository> repositoryLazy;
-        private IRepository repositoryInstance => repositoryLazy.Value;
+        private readonly Lazy<IRepository> repositoryLazy;
+        private IRepository repositoryInstance => this.repositoryLazy.Value;
 
         public GitRepository(ILog log, IGitRepositoryInfo repositoryInfo)
             : this(log, () => repositoryInfo.GitRootPath)
@@ -26,19 +27,19 @@ namespace GitVersion
 
         internal GitRepository(IRepository repository)
         {
-            log = new NullLog();
-            repositoryLazy = new Lazy<IRepository>(() => repository);
+            this.log = new NullLog();
+            this.repositoryLazy = new Lazy<IRepository>(() => repository);
         }
 
-        private GitRepository(ILog log, Func<string> getGitRootDirectory)
+        private GitRepository(ILog log, Func<string?> getGitRootDirectory)
         {
             this.log = log ?? throw new ArgumentNullException(nameof(log));
-            repositoryLazy = new Lazy<IRepository>(() => new Repository(getGitRootDirectory()));
+            this.repositoryLazy = new Lazy<IRepository>(() => new Repository(getGitRootDirectory()));
         }
 
         public void Dispose()
         {
-            if (repositoryLazy.IsValueCreated) repositoryInstance.Dispose();
+            if (this.repositoryLazy.IsValueCreated) repositoryInstance.Dispose();
         }
 
         public string Path => repositoryInstance.Info.Path;
@@ -54,6 +55,9 @@ namespace GitVersion
 
         public ICommit FindMergeBase(ICommit commit, ICommit otherCommit)
         {
+            _ = commit ?? throw new ArgumentNullException(nameof(commit));
+            _ = otherCommit ?? throw new ArgumentNullException(nameof(otherCommit));
+
             var retryAction = new RetryAction<LockedFileException, ICommit>();
             return retryAction.Execute(() =>
             {
@@ -95,23 +99,24 @@ namespace GitVersion
 
             return changes.Count;
         }
-        public void CreateBranchForPullRequestBranch(AuthenticationInfo auth)
-        {
+
+        public void CreateBranchForPullRequestBranch(AuthenticationInfo auth) =>
             RepositoryExtensions.RunSafe(() =>
             {
                 var network = repositoryInstance.Network;
                 var remote = network.Remotes.Single();
 
-                log.Info("Fetching remote refs to see if there is a pull request ref");
+                this.log.Info("Fetching remote refs to see if there is a pull request ref");
                 var credentialsProvider = GetCredentialsProvider(auth);
                 var remoteTips = (credentialsProvider != null
                         ? network.ListReferences(remote, credentialsProvider)
                         : network.ListReferences(remote))
                     .Select(r => r.ResolveToDirectReference()).ToList();
 
-                log.Info($"Remote Refs:{System.Environment.NewLine}" + string.Join(System.Environment.NewLine, remoteTips.Select(r => r.CanonicalName)));
+                this.log.Info($"Remote Refs:{System.Environment.NewLine}" + string.Join(System.Environment.NewLine, remoteTips.Select(r => r.CanonicalName)));
 
-                var headTipSha = Head.Tip?.Sha;
+                // FIX ME: What to do when Tip is null?
+                var headTipSha = Head.Tip!.Sha;
 
                 var refs = remoteTips.Where(r => r.TargetIdentifier == headTipSha).ToList();
 
@@ -131,21 +136,21 @@ namespace GitVersion
                 var reference = refs.First();
                 var canonicalName = reference.CanonicalName;
                 var referenceName = ReferenceName.Parse(reference.CanonicalName);
-                log.Info($"Found remote tip '{canonicalName}' pointing at the commit '{headTipSha}'.");
+                this.log.Info($"Found remote tip '{canonicalName}' pointing at the commit '{headTipSha}'.");
 
                 if (referenceName.IsTag)
                 {
-                    log.Info($"Checking out tag '{canonicalName}'");
+                    this.log.Info($"Checking out tag '{canonicalName}'");
                     Checkout(reference.Target.Sha);
                 }
                 else if (referenceName.IsPullRequest)
                 {
                     var fakeBranchName = canonicalName.Replace("refs/pull/", "refs/heads/pull/").Replace("refs/pull-requests/", "refs/heads/pull-requests/");
 
-                    log.Info($"Creating fake local branch '{fakeBranchName}'.");
+                    this.log.Info($"Creating fake local branch '{fakeBranchName}'.");
                     Refs.Add(fakeBranchName, headTipSha);
 
-                    log.Info($"Checking local branch '{fakeBranchName}' out.");
+                    this.log.Info($"Checking local branch '{fakeBranchName}' out.");
                     Checkout(fakeBranchName);
                 }
                 else
@@ -154,13 +159,13 @@ namespace GitVersion
                     throw new WarningException(message);
                 }
             });
-        }
-        public void Clone(string sourceUrl, string workdirPath, AuthenticationInfo auth)
+
+        public void Clone(string? sourceUrl, string? workdirPath, AuthenticationInfo auth)
         {
             try
             {
                 var path = Repository.Clone(sourceUrl, workdirPath, GetCloneOptions(auth));
-                log.Info($"Returned path after repository clone: {path}");
+                this.log.Info($"Returned path after repository clone: {path}");
             }
             catch (LibGit2Sharp.LockedFileException ex)
             {
@@ -185,40 +190,32 @@ namespace GitVersion
                 throw new Exception("There was an unknown problem with the Git repository you provided", ex);
             }
         }
-        public void Checkout(string commitOrBranchSpec)
-        {
+        public void Checkout(string commitOrBranchSpec) =>
             RepositoryExtensions.RunSafe(() =>
-            {
-                Commands.Checkout(repositoryInstance, commitOrBranchSpec);
-            });
-        }
-        public void Fetch(string remote, IEnumerable<string> refSpecs, AuthenticationInfo auth, string logMessage)
-        {
-            RepositoryExtensions.RunSafe(() =>
-            {
-                Commands.Fetch((Repository)repositoryInstance, remote, refSpecs, GetFetchOptions(auth), logMessage);
-            });
-        }
-        internal static string Discover(string path) => Repository.Discover(path);
+                Commands.Checkout(repositoryInstance, commitOrBranchSpec));
 
-        private static FetchOptions GetFetchOptions(AuthenticationInfo auth)
-        {
-            return new()
+        public void Fetch(string remote, IEnumerable<string> refSpecs, AuthenticationInfo auth, string? logMessage) =>
+            RepositoryExtensions.RunSafe(() =>
+                Commands.Fetch((Repository)repositoryInstance, remote, refSpecs, GetFetchOptions(auth), logMessage));
+
+        internal static string Discover(string? path) => Repository.Discover(path);
+
+        private static FetchOptions GetFetchOptions(AuthenticationInfo auth) =>
+            new()
             {
                 CredentialsProvider = GetCredentialsProvider(auth)
             };
-        }
-        private static CloneOptions GetCloneOptions(AuthenticationInfo auth)
-        {
-            return new()
+
+        private static CloneOptions GetCloneOptions(AuthenticationInfo auth) =>
+            new()
             {
                 Checkout = false,
                 CredentialsProvider = GetCredentialsProvider(auth)
             };
-        }
+
         private static CredentialsHandler? GetCredentialsProvider(AuthenticationInfo auth)
         {
-            if (!string.IsNullOrWhiteSpace(auth.Username))
+            if (!auth.Username.IsNullOrWhiteSpace())
             {
                 return (_, _, _) => new UsernamePasswordCredentials
                 {
