@@ -19,7 +19,7 @@ namespace GitVersion.Core.Tests.IntegrationTests
             using var fixture = new BaseGitFlowRepositoryFixture("1.2.0");
             // create hotfix
             Commands.Checkout(fixture.Repository, MainBranch);
-            Commands.Checkout(fixture.Repository, fixture.Repository.CreateBranch("hotfix-1.2.1"));
+            Commands.Checkout(fixture.Repository, fixture.Repository.CreateBranch("hotfix/1.2.1"));
             fixture.Repository.MakeACommit();
 
             fixture.AssertFullSemver("1.2.1-beta.1+1");
@@ -33,7 +33,7 @@ namespace GitVersion.Core.Tests.IntegrationTests
             // Merge hotfix branch to main
             Commands.Checkout(fixture.Repository, MainBranch);
 
-            fixture.Repository.MergeNoFF("hotfix-1.2.1", Generate.SignatureNow());
+            fixture.Repository.MergeNoFF("hotfix/1.2.1", Generate.SignatureNow());
             fixture.AssertFullSemver("1.2.1+4");
 
             fixture.Repository.ApplyTag("1.2.1");
@@ -43,7 +43,7 @@ namespace GitVersion.Core.Tests.IntegrationTests
             Commands.Checkout(fixture.Repository, "develop");
             fixture.AssertFullSemver("1.3.0-alpha.1");
 
-            fixture.Repository.MergeNoFF("hotfix-1.2.1", Generate.SignatureNow());
+            fixture.Repository.MergeNoFF("hotfix/1.2.1", Generate.SignatureNow());
             fixture.AssertFullSemver("1.3.0-alpha.5");
         }
 
@@ -227,5 +227,55 @@ namespace GitVersion.Core.Tests.IntegrationTests
             fixture.AssertFullSemver("4.5.1-beta.2", config);
         }
 
+        [Test]
+        public void HotfixMergeIncrementsVersion()
+        {
+            using var fixture = new EmptyRepositoryFixture();
+
+            // initialize gitflow
+
+            const string devBranch = "develop";
+
+            fixture.Repository.MakeACommit("setup repo");
+            fixture.Repository.CreateBranch(devBranch);
+            Commands.Checkout(fixture.Repository, devBranch);
+
+            // make some changes on dev
+
+            fixture.Repository.MakeACommit("add stuff");
+            fixture.Repository.MakeACommit("add more stuff");
+
+            // start a release
+
+            const string releaseBranch = "release/1.0";
+
+            fixture.Repository.CreateBranch(releaseBranch);
+            Commands.Checkout(fixture.Repository, releaseBranch);
+            fixture.Repository.MakeACommit("fix some minor thing");
+
+            fixture.AssertFullSemver("1.0.0-beta.1+1");
+
+            Commands.Checkout(fixture.Repository, MainBranch);
+            fixture.Repository.MergeNoFF(releaseBranch, Generate.SignatureNow());
+
+            fixture.AssertFullSemver("1.0.0+0");
+            fixture.ApplyTag("1.0");
+            fixture.AssertFullSemver("1.0.0");
+
+            // start hotfix
+
+            const string hotfixBranch = "hotfix/something-important";
+
+            fixture.Repository.CreateBranch(hotfixBranch);
+            fixture.Repository.MakeACommit("fix the important issue");
+            // fixture.AssertFullSemver("1.0.1-beta.1+1"); // FAILS, not sure if hotfixes should have beta tag
+            fixture.AssertFullSemver("1.0.1+1"); // PASSES
+
+            Commands.Checkout(fixture.Repository, MainBranch);
+            fixture.Repository.MergeNoFF(hotfixBranch, Generate.SignatureNow());
+
+            // NOTE unsure if build metadata should be +1 in this case
+            fixture.AssertFullSemver("1.0.1+1");
+        }
     }
 }
