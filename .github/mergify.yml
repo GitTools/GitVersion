@@ -10,6 +10,12 @@ pull_request_rules:
       - author~=^dependabot(|-preview)\[bot\]$
       - check-success=DotNet Format
       - check-success=Release
+      - check-success=Unit Test code (windows-latest, netcoreapp3.1)
+      - check-success=Unit Test code (ubuntu-latest, netcoreapp3.1)
+      - check-success=Unit Test code (macos-latest, netcoreapp3.1)
+      - check-success=Unit Test code (windows-latest, net5.0)
+      - check-success=Unit Test code (windows-latest, net5.0)
+      - check-success=Unit Test code (windows-latest, net5.0)
     actions:
       merge:
         method: rebase
