@@ -66,7 +66,7 @@ namespace Common.Utilities
         public static void DockerTestArtifact(this BuildContextBase context, DockerImage dockerImage, string cmd)
         {
             var tag = $"{dockerImage.DockerImageName()}:{dockerImage.Distro}-sdk-{dockerImage.TargetFramework}";
-            context.DockerTestRun(tag, "pwsh", cmd);
+            context.DockerTestRun(tag, "sh", cmd);
         }
 
         private static void DockerTestRun(this BuildContextBase context, string image, string command, params string[] args)
@@ -76,7 +76,7 @@ namespace Common.Utilities
             var output = context.DockerRunImage(settings, image, command, args);
             context.Information("Output : " + output);
 
-            Assert.Equal(context.Version?.GitVersion.FullSemVer, output);
+            Assert.Contains(context.Version?.GitVersion.FullSemVer, output);
         }
         private static IEnumerable<string> GetDockerTags(this BuildContextBase context, DockerImage dockerImage)
         {
