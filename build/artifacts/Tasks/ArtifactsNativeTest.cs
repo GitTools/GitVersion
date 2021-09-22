@@ -34,7 +34,7 @@ namespace Artifacts.Tasks
                     runtime = "linux-musl-x64";
                 }
 
-                var cmd = $"-file {rootPrefix}/scripts/Test-Native.ps1 -version {version} -repoPath {rootPrefix}/repo -runtime {runtime}";
+                var cmd = $"{rootPrefix}/scripts/test-native-tool.sh --version {version} --repoPath {rootPrefix}/repo --runtime {runtime}";
 
                 context.DockerTestArtifact(dockerImage, cmd);
             }
