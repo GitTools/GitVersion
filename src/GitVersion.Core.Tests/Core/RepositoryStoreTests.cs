@@ -217,5 +217,21 @@ namespace GitVersion.Core.Tests
 
             Assert.Throws<ArgumentNullException>(() => gitRepoMetadataProvider.GetBranchesContainingCommit(null));
         }
+
+        [Test]
+        public void FindCommitBranchWasBranchedFromShouldReturnNullIfTheRemoteIsTheOnlySource()
+        {
+            using var fixture = new RemoteRepositoryFixture();
+            fixture.MakeACommit("initial");
+
+            var localRepository = fixture.LocalRepositoryFixture.Repository.ToGitRepository();
+
+            var gitRepoMetadataProvider = new RepositoryStore(this.log, localRepository, this.incrementStrategyFinder);
+
+            var branchedCommit = gitRepoMetadataProvider.FindCommitBranchWasBranchedFrom(localRepository.FindBranch("main"), new Model.Configuration.Config(), Array.Empty<IBranch>());
+
+            Assert.IsNull(branchedCommit.Branch);
+            Assert.IsNull(branchedCommit.Commit);
+        }
     }
 }

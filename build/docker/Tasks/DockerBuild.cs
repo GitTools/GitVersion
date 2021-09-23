@@ -11,6 +11,9 @@ namespace Docker.Tasks
     [TaskArgument(Arguments.DockerDistro, Constants.Alpine312, Constants.Debian10, Constants.Ubuntu2004)]
     public class DockerBuild : FrostingTask<BuildContext>
     {
+        protected bool PushImages { get; init; }
+        public DockerBuild() => this.PushImages = false;
+
         public override bool ShouldRun(BuildContext context)
         {
             var shouldRun = true;
@@ -28,7 +31,7 @@ namespace Docker.Tasks
 
             foreach (var dockerImage in context.Images)
             {
-                context.DockerBuild(dockerImage);
+                context.DockerBuild(dockerImage, PushImages);
             }
         }
     }

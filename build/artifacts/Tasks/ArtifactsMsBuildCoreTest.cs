@@ -39,7 +39,7 @@ namespace Artifacts.Tasks
                     _ => targetFramework
                 };
 
-                var cmd = $"-file {rootPrefix}/scripts/Test-MsBuildCore.ps1 -version {version} -repoPath {rootPrefix}/repo/tests/integration/core -nugetPath {rootPrefix}/nuget -targetframework {targetFramework}";
+                var cmd = $"{rootPrefix}/scripts/test-msbuild-task.sh --version {version} --nugetPath {rootPrefix}/nuget --repoPath {rootPrefix}/repo/tests/integration/core --targetframework {targetFramework}";
 
                 context.DockerTestArtifact(dockerImage, cmd);
             }

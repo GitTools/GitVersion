@@ -42,7 +42,7 @@ namespace GitVersion.VersionConverters.AssemblyInfo
             var assemblyVersion = variables.AssemblySemVer;
             var assemblyInfoVersion = variables.InformationalVersion;
             var assemblyFileVersion = variables.AssemblySemFileVer;
-            var packageVersion = variables.NuGetVersionV2;
+            var packageVersion = variables.NuGetVersion;
 
             foreach (var projectFile in projectFilesToUpdate)
             {

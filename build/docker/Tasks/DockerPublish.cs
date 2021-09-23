@@ -21,9 +21,9 @@ namespace Docker.Tasks
 
     [TaskName(nameof(DockerPublishInternal))]
     [TaskDescription("Publish the docker images containing the GitVersion Tool")]
-    [IsDependentOn(typeof(DockerTest))]
-    public class DockerPublishInternal : FrostingTask<BuildContext>
+    public class DockerPublishInternal : DockerBuild
     {
+        public DockerPublishInternal() => this.PushImages = true;
         public override bool ShouldRun(BuildContext context)
         {
             var shouldRun = true;
@@ -32,14 +32,6 @@ namespace Docker.Tasks
             shouldRun &= context.ShouldRun(context.IsStableRelease || context.IsPreRelease, $"{nameof(DockerPublish)} works only for releases.");
 
             return shouldRun;
-        }
-
-        public override void Run(BuildContext context)
-        {
-            foreach (var dockerImage in context.Images)
-            {
-                context.DockerPush(dockerImage);
-            }
         }
     }
 }
