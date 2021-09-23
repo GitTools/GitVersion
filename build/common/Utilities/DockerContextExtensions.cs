@@ -12,13 +12,20 @@ namespace Common.Utilities
 {
     public static class DockerContextExtensions
     {
-        public static void DockerBuild(this BuildContextBase context, DockerImage dockerImage)
+        public static void DockerBuild(this BuildContextBase context, DockerImage dockerImage, bool pushImages)
         {
+            if (context.Version == null) return;
+
             var (distro, targetFramework, registry, _) = dockerImage;
             var workDir = Paths.Src.Combine("Docker");
             var tags = context.GetDockerTags(dockerImage);
 
-            if (context.Version == null) return;
+            var platforms = new List<string> { "linux/amd64" };
+            // if (targetFramework != "3.1" || !distro.StartsWith("alpine"))
+            // {
+            //     platforms.Add("linux/arm64");
+            // }
+
             var buildSettings = new DockerImageBuildSettings
             {
                 Rm = true,
@@ -32,11 +39,13 @@ namespace Common.Utilities
                     $"DISTRO={distro}",
                     $"VERSION={context.Version.NugetVersion}"
                 },
-                // Pull = true,
-                // Platform = platform // TODO this one is not supported on docker versions < 18.02
+                Pull = true,
+                Platform = string.Join(",", platforms),
             };
 
-            context.DockerBuild(buildSettings, workDir.ToString());
+            var pushArg = pushImages ? "--push" : string.Empty;
+
+            context.DockerBuild(buildSettings, workDir.ToString(), pushArg);
         }
 
         public static void DockerPush(this BuildContextBase context, DockerImage dockerImage)
@@ -67,6 +76,31 @@ namespace Common.Utilities
         {
             var tag = $"{dockerImage.DockerImageName()}:{dockerImage.Distro}-sdk-{dockerImage.TargetFramework}";
             context.DockerTestRun(tag, "sh", cmd);
+        }
+
+        private static void DockerBuild(
+            this ICakeContext context,
+            DockerImageBuildSettings settings,
+            string path, params string[] args)
+        {
+            GenericDockerRunner<DockerImageBuildSettings> genericDockerRunner =
+                new(context.FileSystem, context.Environment, context.ProcessRunner, context.Tools);
+
+            string str1;
+            switch (string.IsNullOrEmpty(path))
+            {
+                case false:
+                    {
+                        string str2 = path.Trim();
+                        str1 = str2.Length <= 1 || !str2.StartsWith("\"") || !str2.EndsWith("\"") ? "\"" + path + "\"" : path;
+                        break;
+                    }
+                default:
+                    str1 = path;
+                    break;
+            }
+            var additional = args.Concat(new[] { str1 }).ToArray();
+            genericDockerRunner.Run("buildx build", settings, additional);
         }
 
         private static void DockerTestRun(this BuildContextBase context, string image, string command, params string[] args)

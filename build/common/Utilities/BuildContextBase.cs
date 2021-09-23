@@ -15,7 +15,6 @@ namespace Common.Utilities
         public bool IsPullRequest { get; set; }
         public bool IsTagged { get; set; }
         public bool IsLocalBuild { get; set; }
-        public bool IsAppVeyorBuild { get; set; }
         public bool IsAzurePipelineBuild { get; set; }
         public bool IsGitHubActionsBuild { get; set; }
         public bool IsOnWindows { get; set; }
