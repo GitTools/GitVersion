@@ -294,11 +294,11 @@ jobs:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
-    -
-      name: '[Docker Publish] GitHub Container Registry'
-      if: success() && github.event_name != 'pull_request'
-      shell: pwsh
-      run: dotnet run/docker.dll --target=DockerPublish --docker_dotnetversion=${{ matrix.targetFramework }} --docker_distro=${{ matrix.distro }} --docker_registry github
+    # -
+    #   name: '[Docker Publish] GitHub Container Registry'
+    #   if: success() && github.event_name != 'pull_request'
+    #   shell: pwsh
+    #   run: dotnet run/docker.dll --target=DockerPublish --docker_dotnetversion=${{ matrix.targetFramework }} --docker_distro=${{ matrix.distro }} --docker_registry github
 
   publish:
     name: Publish
