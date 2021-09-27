@@ -187,7 +187,7 @@ jobs:
     strategy:
       matrix:
         targetFramework: [ '3.1', '5.0' ]
-        distro: [ alpine.3.12-x64, centos.7-x64, centos.8-x64, debian.9-x64, debian.10-x64, fedora.33-x64, ubuntu.16.04-x64, ubuntu.18.04-x64, ubuntu.20.04-x64 ]
+        distro: [ alpine.3.12, alpine.3.13, alpine.3.14, centos.7, centos.8, debian.9, debian.10, debian.11, fedora.33, ubuntu.18.04, ubuntu.20.04 ]
       fail-fast: false
 
     steps:
@@ -226,7 +226,7 @@ jobs:
     -
       name: '[Test Artifacts]'
       shell: pwsh
-      run: dotnet run/artifacts.dll --target=ArtifactsTest --docker_dotnetversion=${{ matrix.targetFramework }} --docker_distro=${{ matrix.distro }}
+      run: dotnet run/artifacts.dll --target=ArtifactsTest --arch amd64 --docker_dotnetversion=${{ matrix.targetFramework }} --docker_distro=${{ matrix.distro }}
 
   docker_linux_images:
     name: Build, Test and Publish Docker Images
@@ -235,7 +235,7 @@ jobs:
     strategy:
       matrix:
         targetFramework: [ '3.1', '5.0' ]
-        distro: [ alpine.3.12-x64, centos.7-x64, centos.8-x64, debian.9-x64, debian.10-x64, fedora.33-x64, ubuntu.16.04-x64, ubuntu.18.04-x64, ubuntu.20.04-x64 ]
+        distro: [ alpine.3.12, alpine.3.13, alpine.3.14, centos.7, centos.8, debian.9, debian.10, debian.11, fedora.33, ubuntu.18.04, ubuntu.20.04 ]
       fail-fast: false
 
     steps:
@@ -274,10 +274,6 @@ jobs:
       with:
         install: true
     -
-      name: '[Docker Build/Test] DockerHub'
-      shell: pwsh
-      run: dotnet run/docker.dll --target=DockerTest --docker_dotnetversion=${{ matrix.targetFramework }} --docker_distro=${{ matrix.distro }} --docker_registry dockerhub
-    -
       name: Login to DockerHub
       if: success() && github.event_name != 'pull_request'
       uses: docker/login-action@v1
@@ -285,28 +281,20 @@ jobs:
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_PASSWORD }}
     -
-      name: '[Docker Publish] DockerHub'
+      name: '[Docker Build/Test/Publish (amd64)] DockerHub'
       if: success() && github.event_name != 'pull_request'
       shell: pwsh
-      run: dotnet run/docker.dll --target=DockerPublish --docker_dotnetversion=${{ matrix.targetFramework }} --docker_distro=${{ matrix.distro }} --docker_registry dockerhub
-
-    # -
-    #   name: '[Docker Build/Test] GitHub Container Registry'
-    #   shell: pwsh
-    #   run: dotnet run/docker.dll --target=DockerTest --docker_dotnetversion=${{ matrix.targetFramework }} --docker_distro=${{ matrix.distro }} --docker_registry github
-    # -
-    #   name: Login to GitHub Container Registry
-    #   if: success() && github.event_name != 'pull_request'
-    #   uses: docker/login-action@v1
-    #   with:
-    #       registry: ghcr.io
-    #       username: ${{ github.repository_owner }}
-    #       password: ${{ secrets.GITHUB_TOKEN }}
-    # -
-    #   name: '[Docker Publish] GitHub Container Registry'
-    #   if: success() && github.event_name != 'pull_request'
-    #   shell: pwsh
-    #   run: dotnet run/docker.dll --target=DockerPublish --docker_dotnetversion=${{ matrix.targetFramework }} --docker_distro=${{ matrix.distro }} --docker_registry github
+      run: dotnet run/docker.dll --target=DockerPublish --arch amd64 --docker_dotnetversion=${{ matrix.targetFramework }} --docker_distro=${{ matrix.distro }} --docker_registry dockerhub
+    -
+      name: '[Docker Build/Test/Publish (arm64)] DockerHub'
+      if: success() && github.event_name != 'pull_request'
+      shell: pwsh
+      run: dotnet run/docker.dll --target=DockerPublish --arch arm64 --docker_dotnetversion=${{ matrix.targetFramework }} --docker_distro=${{ matrix.distro }} --docker_registry dockerhub
+    -
+      name: '[Docker Publish Manifest] DockerHub'
+      if: success() && github.event_name != 'pull_request'
+      shell: pwsh
+      run: dotnet run/docker.dll --target=DockerManifest --docker_dotnetversion=${{ matrix.targetFramework }} --docker_distro=${{ matrix.distro }} --docker_registry dockerhub
 
   publish:
     name: Publish

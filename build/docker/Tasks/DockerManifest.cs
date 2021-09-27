@@ -1,16 +1,17 @@
+using System.Linq;
 using Cake.Frosting;
 using Common.Utilities;
+using Constants = Common.Utilities.Constants;
 
 namespace Docker.Tasks
 {
-    [TaskName(nameof(DockerPublish))]
-    [TaskDescription("Publish the docker images containing the GitVersion Tool")]
+    [TaskName(nameof(DockerManifest))]
+    [TaskDescription("Publish the docker manifest containing the images for amd64 and arm64")]
     [TaskArgument(Arguments.DockerRegistry, Constants.DockerHub, Constants.GitHub)]
     [TaskArgument(Arguments.DockerDotnetVersion, Constants.Version50, Constants.Version31)]
     [TaskArgument(Arguments.DockerDistro, Constants.Alpine312, Constants.Debian10, Constants.Ubuntu2004)]
-    [TaskArgument(Arguments.Architecture, Constants.Amd64, Constants.Arm64)]
-    [IsDependentOn(typeof(DockerPublishInternal))]
-    public class DockerPublish : FrostingTask<BuildContext>
+    [IsDependentOn(typeof(DockerManifestInternal))]
+    public class DockerManifest : FrostingTask<BuildContext>
     {
         public override bool ShouldRun(BuildContext context)
         {
@@ -20,10 +21,9 @@ namespace Docker.Tasks
         }
     }
 
-    [TaskName(nameof(DockerPublishInternal))]
-    [TaskDescription("Publish the docker images containing the GitVersion Tool")]
-    [IsDependentOn(typeof(DockerTest))]
-    public class DockerPublishInternal : FrostingTask<BuildContext>
+    [TaskName(nameof(DockerManifestInternal))]
+    [TaskDescription("Publish the docker manifest containing the images for amd64 and arm64")]
+    public class DockerManifestInternal : FrostingTask<BuildContext>
     {
         public override bool ShouldRun(BuildContext context)
         {
@@ -37,10 +37,12 @@ namespace Docker.Tasks
 
         public override void Run(BuildContext context)
         {
-            foreach (var dockerImage in context.Images)
+            foreach (var group in context.Images.GroupBy(x => new { x.Distro, x.TargetFramework }))
             {
-                if (context.SkipArm64Image(dockerImage)) continue;
-                context.DockerPushImage(dockerImage);
+                var dockerImage = group.First();
+                context.DockerCreateManifest(dockerImage, Constants.DistrosToSkip.Contains(dockerImage.Distro));
+                context.DockerPushManifest(dockerImage);
+                context.DockerRemoveManifest(dockerImage);
             }
         }
     }
