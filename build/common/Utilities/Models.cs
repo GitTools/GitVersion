@@ -37,7 +37,7 @@ namespace Common.Utilities
         }
     }
 
-    public record DockerImage(string Distro, string TargetFramework, string Registry, bool UseBaseImage);
+    public record DockerImage(string Distro, string TargetFramework, Architecture Architecture, string Registry, bool UseBaseImage);
 
     public enum DockerRegistry
     {
