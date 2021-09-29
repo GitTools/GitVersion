@@ -35,7 +35,7 @@ namespace GitVersion.VersionCalculation
                         var shouldIncrement = Context.Configuration?.PreventIncrementForMergedBranchVersion != true;
                         return new[]
                         {
-                            new BaseVersion($"{MergeMessageStrategyPrefix} '{c.Message.Trim()}'", shouldIncrement, mergeMessage.Version, c, null)
+                            new BaseVersion(Context, $"{MergeMessageStrategyPrefix} '{c.Message.Trim()}'", shouldIncrement, mergeMessage.Version, c, null)
                         };
                     }
                     return Enumerable.Empty<BaseVersion>();

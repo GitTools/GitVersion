@@ -12,7 +12,6 @@ namespace GitVersion.VersionCalculation
 
         private readonly IEnumerable<string> paths;
         private readonly PathFilterMode mode;
-        private readonly IGitRepository repo;
 
         public PathFilter(IEnumerable<string> paths, PathFilterMode mode = PathFilterMode.Inclusive)
         {
@@ -51,9 +50,9 @@ namespace GitVersion.VersionCalculation
                 //}
                 //patchsCache[commit.Sha] = patch;
 
-                if (!this.repo.Tags.Any(t => t.TargetSha == commit.Sha && match.IsMatch(t.Name.Friendly)))
+                if (!context.Repository.Tags.Any(t => t.TargetSha == commit.Sha && match.IsMatch(t.Name.Friendly)))
 
-                    patch = this.repo.DiffPathChanges(commit.Parents.FirstOrDefault(), commit);
+                    patch = context.Repository.DiffPathChanges(commit.Parents.FirstOrDefault(), commit);
             }
             patchsCache[commit.Sha] = patch;
 

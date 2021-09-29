@@ -70,7 +70,8 @@ namespace GitVersion.VersionCalculation
                         // Need to drop branch overrides and give a bit more context about
                         // where this version came from
                         var source1 = "Release branch exists -> " + baseVersion.Source;
-                        return new BaseVersion(source1,
+                        return new BaseVersion(Context,
+                            source1,
                             baseVersion.ShouldIncrement,
                             baseVersion.SemanticVersion,
                             baseVersion.BaseVersionSource,
@@ -95,7 +96,7 @@ namespace GitVersion.VersionCalculation
 
             return this.releaseVersionStrategy
                 .GetVersions(tagPrefixRegex, releaseBranch)
-                .Select(b => new BaseVersion(b.Source, true, b.SemanticVersion, baseSource, b.BranchNameOverride));
+                .Select(b => new BaseVersion(Context, b.Source, true, b.SemanticVersion, baseSource, b.BranchNameOverride));
         }
     }
 }

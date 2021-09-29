@@ -20,12 +20,14 @@ namespace GitVersion
 
         public int NumberOfUncommittedChanges { get; }
 
+        public IGitRepository Repository { get; }
+
         public GitVersionContext()
         {
         }
 
         public GitVersionContext(IBranch currentBranch, ICommit? currentCommit,
-            Config configuration, EffectiveConfiguration effectiveConfiguration, SemanticVersion currentCommitTaggedVersion, int numberOfUncommittedChanges)
+            Config configuration, EffectiveConfiguration effectiveConfiguration, SemanticVersion currentCommitTaggedVersion, int numberOfUncommittedChanges, IGitRepository repository)
         {
             CurrentCommit = currentCommit;
             CurrentBranch = currentBranch;
@@ -36,6 +38,7 @@ namespace GitVersion
             CurrentCommitTaggedVersion = currentCommitTaggedVersion;
 
             NumberOfUncommittedChanges = numberOfUncommittedChanges;
+            Repository = repository;
         }
     }
 }

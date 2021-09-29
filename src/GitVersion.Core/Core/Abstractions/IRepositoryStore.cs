@@ -43,5 +43,7 @@ namespace GitVersion.Common
         VersionField? DetermineIncrementedField(BaseVersion baseVersion, GitVersionContext context);
 
         int GetNumberOfUncommittedChanges();
+
+        public IGitRepository Repository { get; }
     }
 }

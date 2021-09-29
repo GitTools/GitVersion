@@ -24,7 +24,7 @@ namespace GitVersion.VersionCalculation
 
             var baseVersionSource = this.repositoryStore.GetBaseVersionSource(currentBranchTip);
 
-            yield return new BaseVersion("Fallback base version", false, new SemanticVersion(minor: 1), baseVersionSource, null);
+            yield return new BaseVersion(Context, "Fallback base version", false, new SemanticVersion(minor: 1), baseVersionSource, null);
         }
     }
 }

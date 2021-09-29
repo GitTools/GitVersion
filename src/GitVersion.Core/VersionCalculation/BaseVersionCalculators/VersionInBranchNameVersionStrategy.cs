@@ -38,7 +38,7 @@ namespace GitVersion.VersionCalculation
             {
                 var commitBranchWasBranchedFrom = this.repositoryStore.FindCommitBranchWasBranchedFrom(currentBranch, Context.FullConfiguration);
                 var branchNameOverride = branchName.RegexReplace("[-/]" + versionInBranch.Item1, string.Empty);
-                yield return new BaseVersion("Version in branch name", false, versionInBranch.Item2, commitBranchWasBranchedFrom.Commit, branchNameOverride);
+                yield return new BaseVersion(Context, "Version in branch name", false, versionInBranch.Item2, commitBranchWasBranchedFrom.Commit, branchNameOverride);
             }
         }
 

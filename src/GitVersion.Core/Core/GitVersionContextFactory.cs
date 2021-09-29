@@ -42,7 +42,7 @@ namespace GitVersion
             var currentCommitTaggedVersion = this.repositoryStore.GetCurrentCommitTaggedVersion(currentCommit, effectiveConfiguration);
             var numberOfUncommittedChanges = this.repositoryStore.GetNumberOfUncommittedChanges();
 
-            return new GitVersionContext(currentBranch, currentCommit, configuration, effectiveConfiguration, currentCommitTaggedVersion, numberOfUncommittedChanges);
+            return new GitVersionContext(currentBranch, currentCommit, configuration, effectiveConfiguration, currentCommitTaggedVersion, numberOfUncommittedChanges, this.repositoryStore.Repository);
         }
     }
 }

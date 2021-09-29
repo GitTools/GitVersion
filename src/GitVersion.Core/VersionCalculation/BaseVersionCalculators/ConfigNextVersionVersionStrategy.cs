@@ -21,7 +21,7 @@ namespace GitVersion.VersionCalculation
             if (nextVersion.IsNullOrEmpty() || Context.IsCurrentCommitTagged)
                 yield break;
             var semanticVersion = SemanticVersion.Parse(nextVersion, Context.Configuration?.GitTagPrefix);
-            yield return new BaseVersion("NextVersion in GitVersion configuration file", false, semanticVersion, null, null);
+            yield return new BaseVersion(Context, "NextVersion in GitVersion configuration file", false, semanticVersion, null, null);
         }
     }
 }

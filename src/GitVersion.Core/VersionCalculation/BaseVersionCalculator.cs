@@ -4,6 +4,7 @@ using System.Linq;
 using GitVersion.Common;
 using GitVersion.Configuration;
 using GitVersion.Logging;
+using Polly;
 
 namespace GitVersion.VersionCalculation
 {
@@ -78,6 +79,7 @@ namespace GitVersion.VersionCalculation
                     throw new Exception("Base version should not be null");
 
                 var calculatedBase = new BaseVersion(
+                    this.versionContext.Value,
                     maxVersion.Version!.Source, maxVersion.Version.ShouldIncrement, maxVersion.Version.SemanticVersion,
                     baseVersionWithOldestSource.BaseVersionSource, maxVersion.Version.BranchNameOverride);
 
@@ -126,6 +128,7 @@ namespace GitVersion.VersionCalculation
                 {
                     var parents = baseVersion.Version.BaseVersionSource!.Parents.ToList();
                     baseVersion.Version = new BaseVersion(
+                        this.versionContext.Value,
                         baseVersion.Version.Source,
                         baseVersion.Version.ShouldIncrement,
                         baseVersion.Version.SemanticVersion,

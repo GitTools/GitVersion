@@ -36,7 +36,7 @@ namespace GitVersion.VersionCalculation
         private BaseVersion CreateBaseVersion(GitVersionContext context, VersionTaggedCommit version)
         {
             var shouldUpdateVersion = version.Commit.Sha != context.CurrentCommit?.Sha;
-            var baseVersion = new BaseVersion(FormatSource(version), shouldUpdateVersion, version.SemVer, version.Commit, null);
+            var baseVersion = new BaseVersion(Context, FormatSource(version), shouldUpdateVersion, version.SemVer, version.Commit, null);
             return baseVersion;
         }
 

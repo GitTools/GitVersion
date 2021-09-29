@@ -491,5 +491,6 @@ namespace GitVersion
         public ICommit FindMergeBase(ICommit commit, ICommit mainlineTip) => this.repository.FindMergeBase(commit, mainlineTip);
 
         public int GetNumberOfUncommittedChanges() => this.repository.GetNumberOfUncommittedChanges();
+        public IGitRepository Repository => this.repository;
     }
 }
