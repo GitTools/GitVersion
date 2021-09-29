@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 namespace GitVersion
 {
     public interface IGitRepository
@@ -14,5 +16,7 @@ namespace GitVersion
 
         ICommit FindMergeBase(ICommit commit, ICommit otherCommit);
         int GetNumberOfUncommittedChanges();
+
+        IEnumerable<string> DiffPathChanges(ICommit commitFrom, ICommit commitTo);
     }
 }

@@ -198,6 +198,17 @@ namespace GitVersion
             RepositoryExtensions.RunSafe(() =>
                 Commands.Fetch((Repository)repositoryInstance, remote, refSpecs, GetFetchOptions(auth), logMessage));
 
+        public IEnumerable<string> DiffPathChanges(ICommit commitFrom, ICommit commitTo)
+        {
+            var cFrom = this.repositoryInstance.Commits.Single(c => c.Sha == commitFrom.Sha);
+            var cTo = this.repositoryInstance.Commits.Single(c => c.Sha == commitTo.Sha);
+
+
+            var patch = this.repositoryInstance.Diff.Compare<Patch>(cTo.Parents.FirstOrDefault()?.Tree, cFrom.Tree);
+
+            return patch.Select(p => p.Path);
+        }
+
         internal static string Discover(string? path) => Repository.Discover(path);
 
         private static FetchOptions GetFetchOptions(AuthenticationInfo auth) =>

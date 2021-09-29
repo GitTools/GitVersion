@@ -59,7 +59,11 @@ namespace GitVersion.VersionCalculation
             var patchRegex = TryGetRegexOrDefault(context.Configuration?.PatchVersionBumpMessage, DefaultPatchPatternRegex);
             var none = TryGetRegexOrDefault(context.Configuration?.NoBumpMessage, DefaultNoBumpPatternRegex);
 
+            var pathFilters = context.Configuration.VersionFilters
+                .OfType<VersionFilters.PathFilter>();
+
             var increments = commits
+                .Where(c => !pathFilters.Any(f => f.Exclude(c, context, out _)))
                 .Select(c => GetIncrementFromCommit(c, majorRegex, minorRegex, patchRegex, none))
                 .Where(v => v != null)
                 .Select(v => v!.Value)
