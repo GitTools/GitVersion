@@ -1,7 +1,7 @@
-﻿<component name="ProjectRunConfigurationManager">
+<component name="ProjectRunConfigurationManager">
   <configuration default="false" name="Artifacts DotnetTool Test" type="DotNetProject" factoryName=".NET Project" folderName="Artifacts">
-    <option name="EXE_PATH" value="$PROJECT_DIR$/../run/artifacts-test.exe" />
-    <option name="PROGRAM_PARAMETERS" value="--target=ArtifactsDotnetToolTest --docker_dotnetversion=5.0 --docker_distro=alpine.3.12-x64" />
+    <option name="EXE_PATH" value="$PROJECT_DIR$/../run/artifacts.exe" />
+    <option name="PROGRAM_PARAMETERS" value="--target=ArtifactsDotnetToolTest --arch=amd64 --docker_dotnetversion=5.0 --docker_distro=debian.11" />
     <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/.." />
     <option name="PASS_PARENT_ENVS" value="1" />
     <option name="USE_EXTERNAL_CONSOLE" value="0" />

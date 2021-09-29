@@ -28,6 +28,8 @@ namespace Artifacts.Tasks
 
             foreach (var dockerImage in context.Images)
             {
+                if (context.SkipArm64Image(dockerImage)) continue;
+
                 string distro = dockerImage.Distro;
                 string targetFramework = dockerImage.TargetFramework;
 
