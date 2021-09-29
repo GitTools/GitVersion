@@ -37,7 +37,7 @@ namespace Common.Utilities
             var workDir = Paths.Src.Combine("Docker");
             var tags = context.GetDockerTags(dockerImage, arch);
 
-            var suffix = GetArchitectureSuffix(arch);
+            var suffix = arch.ToSuffix();
             var platforms = new List<string> { $"linux/{suffix}" };
 
             var buildSettings = new DockerImageBuildSettings
@@ -74,14 +74,14 @@ namespace Common.Utilities
             var manifestTags = context.GetDockerTags(dockerImage);
             foreach (var tag in manifestTags)
             {
-                var amd64Tag = $"{tag}-{GetArchitectureSuffix(Architecture.Amd64)}";
+                var amd64Tag = $"{tag}-{Architecture.Amd64.ToSuffix()}";
                 if (skipArm64Image)
                 {
                     context.DockerManifestCreate(tag, amd64Tag);
                 }
                 else
                 {
-                    var arm64Tag = $"{tag}-{GetArchitectureSuffix(Architecture.Arm64)}";
+                    var arm64Tag = $"{tag}-{Architecture.Arm64.ToSuffix()}";
                     context.DockerManifestCreate(tag, amd64Tag, arm64Tag);
                 }
             }
@@ -109,7 +109,8 @@ namespace Common.Utilities
         public static void DockerPullImage(this ICakeContext context, DockerImage dockerImage)
         {
             var tag = $"{dockerImage.DockerImageName()}:{dockerImage.Distro}-sdk-{dockerImage.TargetFramework}";
-            context.DockerPull(tag);
+            var platform = $"linux/{dockerImage.Architecture.ToString().ToLower()}";
+            context.DockerPull(new DockerImagePullSettings { Platform = platform }, tag);
         }
 
         public static void DockerTestImage(this BuildContextBase context, DockerImage dockerImage)
@@ -127,13 +128,6 @@ namespace Common.Utilities
             context.DockerTestRun(tag, dockerImage.Architecture, "sh", cmd);
         }
 
-        private static string GetArchitectureSuffix(Architecture arch) => arch switch
-        {
-            Architecture.Arm64 => "arm64",
-            Architecture.Amd64 => "amd64",
-            _ => "amd64"
-        };
-
         private static void DockerBuild(
             this ICakeContext context,
             DockerImageBuildSettings settings,
@@ -142,20 +136,20 @@ namespace Common.Utilities
             GenericDockerRunner<DockerImageBuildSettings> genericDockerRunner =
                 new(context.FileSystem, context.Environment, context.ProcessRunner, context.Tools);
 
-            string str1;
+            string str;
             switch (string.IsNullOrEmpty(path))
             {
                 case false:
                     {
                         string str2 = path.Trim();
-                        str1 = str2.Length <= 1 || !str2.StartsWith("\"") || !str2.EndsWith("\"") ? "\"" + path + "\"" : path;
+                        str = str2.Length <= 1 || !str2.StartsWith("\"") || !str2.EndsWith("\"") ? "\"" + path + "\"" : path;
                         break;
                     }
                 default:
-                    str1 = path;
+                    str = path;
                     break;
             }
-            var additional = args.Concat(new[] { str1 }).ToArray();
+            var additional = args.Concat(new[] { str }).ToArray();
             genericDockerRunner.Run("buildx build", settings, additional);
         }
 
@@ -206,7 +200,7 @@ namespace Common.Utilities
 
             if (!arch.HasValue) return tags;
 
-            var suffix = GetArchitectureSuffix(arch.Value);
+            var suffix = arch.Value.ToSuffix();
             return tags.Select(x => $"{x}-{suffix}");
 
         }

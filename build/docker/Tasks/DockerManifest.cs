@@ -39,10 +39,11 @@ namespace Docker.Tasks
         {
             foreach (var group in context.Images.GroupBy(x => new { x.Distro, x.TargetFramework }))
             {
-                var dockerImage = group.First();
-                context.DockerCreateManifest(dockerImage, Constants.DistrosToSkip.Contains(dockerImage.Distro));
-                context.DockerPushManifest(dockerImage);
-                context.DockerRemoveManifest(dockerImage);
+                var amd64DockerImage = group.First(x => x.Architecture == Architecture.Amd64);
+                var arm64DockerImage = group.First(x => x.Architecture == Architecture.Arm64);
+                context.DockerCreateManifest(amd64DockerImage, context.SkipArm64Image(arm64DockerImage));
+                context.DockerPushManifest(amd64DockerImage);
+                context.DockerRemoveManifest(amd64DockerImage);
             }
         }
     }

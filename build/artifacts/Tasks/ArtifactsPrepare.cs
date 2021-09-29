@@ -22,6 +22,7 @@ namespace Artifacts.Tasks
         {
             foreach (var dockerImage in context.Images)
             {
+                if (context.SkipArm64Image(dockerImage)) continue;
                 context.DockerPullImage(dockerImage);
             }
         }
