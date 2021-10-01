@@ -1,34 +1,32 @@
-namespace Common.Addins.GitVersion
+namespace Common.Addins.GitVersion;
+
+/// <summary>
+/// The GitVersion verbosity.
+/// </summary>
+public enum GitVersionVerbosity
 {
     /// <summary>
-    /// The GitVersion verbosity.
+    /// No messages will be logged.
     /// </summary>
-    public enum GitVersionVerbosity
-    {
-        /// <summary>
-        /// No messages will be logged.
-        /// </summary>
-        None,
+    None,
 
-        /// <summary>
-        /// Log error messages.
-        /// </summary>
-        Error,
+    /// <summary>
+    /// Log error messages.
+    /// </summary>
+    Error,
 
-        /// <summary>
-        /// Log error and warning messages.
-        /// </summary>
-        Warn,
+    /// <summary>
+    /// Log error and warning messages.
+    /// </summary>
+    Warn,
 
-        /// <summary>
-        /// Log error, warning and info messages.
-        /// </summary>
-        Info,
+    /// <summary>
+    /// Log error, warning and info messages.
+    /// </summary>
+    Info,
 
-        /// <summary>
-        /// Log error, warning, info and debug messages (log all).
-        /// </summary>
-        Debug
-    }
-
+    /// <summary>
+    /// Log error, warning, info and debug messages (log all).
+    /// </summary>
+    Debug
 }
