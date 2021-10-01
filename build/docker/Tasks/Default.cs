@@ -1,9 +1,8 @@
 using Cake.Frosting;
 
-namespace Docker.Tasks
+namespace Docker.Tasks;
+
+[TaskDescription("Shows this output")]
+public class Default : Common.Tasks.Default
 {
-    [TaskDescription("Shows this output")]
-    public class Default : Common.Tasks.Default
-    {
-    }
 }
