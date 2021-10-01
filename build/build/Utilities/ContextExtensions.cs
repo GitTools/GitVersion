@@ -1,8 +1,3 @@
-using System.Linq;
-using Cake.Common.IO;
-using Cake.Core.IO;
-using Common.Utilities;
-
 namespace Build.Utilities;
 
 public static class ContextExtensions

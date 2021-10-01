@@ -1,7 +1,3 @@
-using System;
-using Cake.Core;
-using Cake.Core.Annotations;
-
 namespace Common.Addins.GitVersion;
 
 /// <summary>

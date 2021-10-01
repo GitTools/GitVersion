@@ -1,4 +1,5 @@
-using Cake.Frosting;
+global using Constants = Common.Utilities.Constants;
+
 using Publish;
 
 return new CakeHost()

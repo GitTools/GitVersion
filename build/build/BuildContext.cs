@@ -1,7 +1,4 @@
-using System.Collections.Generic;
 using Build.Utilities;
-using Cake.Common.Tools.DotNetCore.MSBuild;
-using Cake.Core;
 using Common.Utilities;
 
 namespace Build;

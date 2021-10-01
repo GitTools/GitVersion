@@ -1,5 +1,6 @@
+global using Constants = Common.Utilities.Constants;
+
 using Build;
-using Cake.Frosting;
 
 return new CakeHost()
     .UseContext<BuildContext>()

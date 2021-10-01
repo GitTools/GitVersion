@@ -1,10 +1,3 @@
-using System;
-using System.Linq;
-using Cake.Common.Diagnostics;
-using Cake.Common.IO;
-using Cake.Core;
-using Cake.Core.IO;
-using Cake.Frosting;
 using Cake.Git;
 using Cake.Wyam;
 using Common.Utilities;

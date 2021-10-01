@@ -1,4 +1,3 @@
-using Cake.Core;
 using Common.Utilities;
 using Release.Utilities;
 

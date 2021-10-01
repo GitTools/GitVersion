@@ -1,4 +1,3 @@
-using Cake.Core.IO;
 using Common.Addins.GitVersion;
 
 namespace Common.Utilities;

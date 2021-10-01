@@ -1,6 +1,3 @@
-using System.Collections.Generic;
-using Cake.Common.Diagnostics;
-using Cake.Frosting;
 using Common.Addins.Cake.DotNetCoreFormat;
 using Common.Utilities;
 

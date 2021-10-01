@@ -1,8 +1,5 @@
-using System.Linq;
-using Cake.Common.IO;
 using Cake.Common.Tools.Chocolatey;
 using Cake.Common.Tools.Chocolatey.Pack;
-using Cake.Frosting;
 using Common.Utilities;
 
 namespace Build.Tasks;

@@ -1,12 +1,3 @@
-using Cake.Common.Diagnostics;
-using Cake.Common.IO;
-using Cake.Common.Tools.DotNetCore;
-using Cake.Common.Tools.DotNetCore.Build;
-using Cake.Common.Tools.DotNetCore.MSBuild;
-using Cake.Common.Tools.MSBuild;
-using Cake.Core;
-using Cake.Core.Diagnostics;
-using Cake.Frosting;
 using Common.Utilities;
 
 namespace Artifacts.Tasks;
