@@ -25,6 +25,7 @@ namespace Docker
             var archs = architecture.HasValue ? new[] { architecture.Value } : Constants.ArchToBuild;
 
             var registry = dockerRegistry == DockerRegistry.DockerHub ? Constants.DockerHubRegistry : Constants.GitHubContainerRegistry;
+            context.DockerRegistry = dockerRegistry;
             context.Images = from version in versions
                              from distro in distros
                              from arch in archs

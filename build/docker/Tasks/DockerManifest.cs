@@ -30,7 +30,15 @@ namespace Docker.Tasks
             var shouldRun = true;
             shouldRun &= context.ShouldRun(context.IsGitHubActionsBuild, $"{nameof(DockerPublish)} works only on GitHub Actions.");
             shouldRun &= context.ShouldRun(context.IsDockerOnLinux, $"{nameof(DockerPublish)} works only on Docker on Linux agents.");
-            shouldRun &= context.ShouldRun(context.IsStableRelease || context.IsPreRelease, $"{nameof(DockerPublish)} works only for releases.");
+
+            if (context.DockerRegistry == DockerRegistry.GitHub)
+            {
+                shouldRun &= context.ShouldRun(context.IsStableRelease || context.IsPreRelease, $"{nameof(DockerPublish)} to GitHub Package Registry works only for releases.");
+            }
+            if (context.DockerRegistry == DockerRegistry.DockerHub)
+            {
+                shouldRun &= context.ShouldRun(context.IsStableRelease, $"{nameof(DockerPublish)} DockerHub works only for tagged releases.");
+            }
 
             return shouldRun;
         }
