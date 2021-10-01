@@ -49,6 +49,12 @@ jobs:
         path: run
         key: run-${{ runner.os }}-${{ hashFiles('./build/**') }}
     -
+      name: Setup .NET SDK
+      uses: actions/setup-dotnet@v1.8.2
+      with:
+        dotnet-version: '6.0.x'
+        include-prerelease: true
+    -
       name: '[Prepare]'
       if: steps.cache-cake.outputs.cache-hit != 'true'
       run: dotnet build build/CI.sln --configuration=Release
@@ -83,6 +89,12 @@ jobs:
       with:
         path: tools
         key: tools-${{ runner.os }}-${{ hashFiles('./build/**') }}
+    -
+      name: Setup .NET SDK
+      uses: actions/setup-dotnet@v1.8.2
+      with:
+        dotnet-version: '6.0.x'
+        include-prerelease: true
     -
       name: '[Build]'
       shell: pwsh
@@ -135,6 +147,12 @@ jobs:
         path: tools
         key: tools-${{ runner.os }}-${{ hashFiles('./build/**') }}
     -
+      name: Setup .NET SDK
+      uses: actions/setup-dotnet@v1.8.2
+      with:
+        dotnet-version: '6.0.x'
+        include-prerelease: true
+    -
       name: '[Build]'
       shell: pwsh
       run: dotnet run/build.dll --target=Test --dotnet_target=${{ matrix.targetFramework }}
@@ -175,6 +193,12 @@ jobs:
       with:
         name: nuget
         path: ${{ github.workspace }}/artifacts/packages/nuget
+    -
+      name: Setup .NET SDK
+      uses: actions/setup-dotnet@v1.8.2
+      with:
+        dotnet-version: '6.0.x'
+        include-prerelease: true
     -
       name: '[Test Artifacts]'
       shell: pwsh
@@ -224,13 +248,19 @@ jobs:
         name: native-${{ runner.os }}
         path: ${{ github.workspace }}/artifacts/packages/native
     -
-      name: Set up QEMU
+      name: Setup QEMU
       uses: docker/setup-qemu-action@v1
     -
       name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v1
       with:
         install: true
+    -
+      name: Setup .NET SDK
+      uses: actions/setup-dotnet@v1.8.2
+      with:
+        dotnet-version: '6.0.x'
+        include-prerelease: true
     -
       name: '[Test Artifacts (amd64)]'
       shell: pwsh
@@ -278,13 +308,19 @@ jobs:
         name: nuget
         path: ${{ github.workspace }}/artifacts/packages/nuget
     -
-      name: Set up QEMU
+      name: Setup QEMU
       uses: docker/setup-qemu-action@v1
     -
       name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v1
       with:
         install: true
+    -
+      name: Setup .NET SDK
+      uses: actions/setup-dotnet@v1.8.2
+      with:
+        dotnet-version: '6.0.x'
+        include-prerelease: true
     -
       name: Login to DockerHub
       if: success() && github.event_name != 'pull_request'
@@ -372,6 +408,12 @@ jobs:
         name: nuget
         path: ${{ github.workspace }}/artifacts/packages/nuget
     -
+      name: Setup .NET SDK
+      uses: actions/setup-dotnet@v1.8.2
+      with:
+        dotnet-version: '6.0.x'
+        include-prerelease: true
+    -
       name: '[Publish]'
       shell: pwsh
       run: dotnet run/publish.dll --target=Publish${{ matrix.taskName }}
@@ -421,6 +463,12 @@ jobs:
       with:
         name: native-macOS
         path: ${{ github.workspace }}/artifacts/packages/native
+    -
+      name: Setup .NET SDK
+      uses: actions/setup-dotnet@v1.8.2
+      with:
+        dotnet-version: '6.0.x'
+        include-prerelease: true
     -
       name: '[Release]'
       shell: pwsh
