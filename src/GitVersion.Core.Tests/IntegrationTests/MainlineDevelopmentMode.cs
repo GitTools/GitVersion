@@ -427,6 +427,41 @@ namespace GitVersion.Core.Tests.IntegrationTests
         }
 
         [Test]
+        public void VerifyMergeRemoteMainIncrementsAllCommits()
+        {
+            using var remote = new EmptyRepositoryFixture();
+
+            remote.Repository.MakeACommit("1");
+            remote.MakeATaggedCommit("1.0.0");
+
+            using var local = remote.CloneRepository();
+
+            local.Repository.MakeACommit("l.1");
+
+            remote.Repository.MakeACommit("r.1");
+            remote.Repository.MakeACommit("r.2");
+            remote.Repository.MakeACommit("r.3");
+
+            local.AssertFullSemver("1.0.1", config);
+            remote.AssertFullSemver("1.0.3", config);
+
+            Commands.Pull((Repository)local.Repository, Generate.SignatureNow(), new PullOptions()
+            {
+                MergeOptions = new MergeOptions()
+                {
+                    FastForwardStrategy = FastForwardStrategy.NoFastForward
+                }
+            });
+
+            var latestCommitMessage = local.Repository.Head.Tip.Message;
+            Assert.That(latestCommitMessage, Does.StartWith("Merge branch 'main' of "));
+
+            // There are 5 commits including the merge commit.
+            // Since all of them were in their 'main' branch, they should all be counted.
+            local.AssertFullSemver("1.0.5", config);
+        }
+
+        [Test]
         public void VerifyIncrementConfigIsHonoured()
         {
             var minorIncrementConfig = new Config
