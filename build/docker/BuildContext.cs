@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-using Cake.Core;
 using Common.Utilities;
 
 namespace Docker;

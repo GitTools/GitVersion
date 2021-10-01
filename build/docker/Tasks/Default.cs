@@ -1,5 +1,3 @@
-using Cake.Frosting;
-
 namespace Docker.Tasks;
 
 [TaskDescription("Shows this output")]

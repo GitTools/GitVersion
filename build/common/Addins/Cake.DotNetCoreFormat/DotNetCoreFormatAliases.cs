@@ -1,4 +1,3 @@
-using Cake.Core;
 using Cake.Core.Annotations;
 
 namespace Common.Addins.Cake.DotNetCoreFormat;
@@ -26,7 +25,7 @@ public static class DotNetCoreFormatAliases
     {
         if (context is null)
         {
-            throw new System.ArgumentNullException(nameof(context));
+            throw new ArgumentNullException(nameof(context));
         }
 
         var runner = new DotNetCoreFormatToolRunner(context.FileSystem, context.Environment, context.ProcessRunner, context.Tools);

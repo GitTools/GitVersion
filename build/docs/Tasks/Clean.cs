@@ -1,6 +1,3 @@
-using Cake.Common.Diagnostics;
-using Cake.Common.IO;
-using Cake.Frosting;
 using Common.Utilities;
 
 namespace Docs.Tasks;

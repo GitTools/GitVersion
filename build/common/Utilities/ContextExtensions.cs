@@ -1,11 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using Cake.Common;
-using Cake.Common.Build;
-using Cake.Common.Diagnostics;
-using Cake.Core;
-using Cake.Core.IO;
 using Xunit;
 
 namespace Common.Utilities;

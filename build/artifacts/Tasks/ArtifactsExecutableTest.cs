@@ -1,8 +1,3 @@
-using System.Collections.Generic;
-using Cake.Common.IO;
-using Cake.Common.Tools.NuGet;
-using Cake.Common.Tools.NuGet.Install;
-using Cake.Frosting;
 using Common.Addins.GitVersion;
 using Common.Utilities;
 using Xunit;

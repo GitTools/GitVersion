@@ -1,11 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text.RegularExpressions;
-using Cake.Core;
-using Cake.Core.Diagnostics;
-using Cake.Core.IO;
-using Cake.Core.Tooling;
 using Newtonsoft.Json;
 
 namespace Common.Addins.GitVersion;

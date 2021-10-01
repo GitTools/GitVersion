@@ -1,10 +1,4 @@
-using Cake.Common.Diagnostics;
-using Cake.Common.IO;
-using Cake.Common.Tools.DotNetCore;
 using Cake.Common.Tools.DotNetCore.Publish;
-using Cake.Core;
-using Cake.Core.IO;
-using Cake.Frosting;
 using Common.Utilities;
 
 namespace Build.Tasks;

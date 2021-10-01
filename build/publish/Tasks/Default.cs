@@ -1,5 +1,3 @@
-using Cake.Frosting;
-
 namespace Publish.Tasks;
 
 [TaskDescription("Shows this output")]

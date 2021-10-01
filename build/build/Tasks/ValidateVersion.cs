@@ -1,5 +1,4 @@
 using Build.Utilities;
-using Cake.Frosting;
 using Common.Utilities;
 
 namespace Build.Tasks;

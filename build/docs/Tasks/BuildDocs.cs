@@ -1,5 +1,3 @@
-using Cake.Common.IO;
-using Cake.Frosting;
 using Cake.Wyam;
 using Common.Utilities;
 

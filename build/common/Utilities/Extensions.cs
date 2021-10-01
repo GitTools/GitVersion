@@ -1,11 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using Cake.Core.IO;
-using Cake.Frosting;
-
 namespace Common.Utilities;
 
 public static class Extensions

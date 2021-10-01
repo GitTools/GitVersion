@@ -1,7 +1,4 @@
-using Cake.Common.Diagnostics;
-using Cake.Common.IO;
 using Cake.Compression;
-using Cake.Frosting;
 using Common.Utilities;
 
 namespace Build.Tasks;

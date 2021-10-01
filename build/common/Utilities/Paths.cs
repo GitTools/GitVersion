@@ -1,5 +1,3 @@
-using Cake.Core.IO;
-
 namespace Common.Utilities;
 
 public class Paths

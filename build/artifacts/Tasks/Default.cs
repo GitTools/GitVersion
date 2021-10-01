@@ -1,5 +1,3 @@
-using Cake.Frosting;
-
 namespace Artifacts.Tasks;
 
 [TaskDescription("Shows this output")]

@@ -1,10 +1,5 @@
-using System;
-using System.Linq;
-using Cake.Common.Diagnostics;
-using Cake.Common.IO;
 using Cake.Common.Tools.GitReleaseManager;
 using Cake.Common.Tools.GitReleaseManager.Create;
-using Cake.Frosting;
 using Common.Utilities;
 
 namespace Release.Tasks;

@@ -1,4 +1,3 @@
-using Cake.Core;
 using Cake.Wyam;
 using Common.Utilities;
 using Docs.Utilities;

@@ -1,6 +1,3 @@
-using System.Collections.Generic;
-using Cake.Common;
-using Cake.Common.IO;
 using Cake.Wyam;
 using Common.Utilities;
 using Docs.Utilities;

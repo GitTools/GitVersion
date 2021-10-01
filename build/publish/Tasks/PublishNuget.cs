@@ -1,9 +1,4 @@
-using System;
-using System.Linq;
-using Cake.Common.Diagnostics;
-using Cake.Common.Tools.DotNetCore;
 using Cake.Common.Tools.DotNetCore.NuGet.Push;
-using Cake.Frosting;
 using Common.Utilities;
 
 namespace Publish.Tasks;

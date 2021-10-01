@@ -1,5 +1,3 @@
-using Cake.Frosting;
-
 namespace Build.Tasks;
 
 [TaskName(nameof(Package))]

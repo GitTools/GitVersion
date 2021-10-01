@@ -1,5 +1,3 @@
-using System;
-using Cake.Common.IO;
 using Common.Utilities;
 using Publish.Utilities;
 

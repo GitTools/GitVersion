@@ -1,10 +1,5 @@
-using System;
-using System.Linq;
-using Cake.Common.Diagnostics;
 using Cake.Common.Tools.Chocolatey;
 using Cake.Common.Tools.Chocolatey.Push;
-using Cake.Core;
-using Cake.Frosting;
 using Common.Utilities;
 
 namespace Publish.Tasks;

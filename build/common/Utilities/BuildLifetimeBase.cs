@@ -1,10 +1,3 @@
-using System;
-using System.Collections.Generic;
-using Cake.Common;
-using Cake.Common.Build;
-using Cake.Common.Diagnostics;
-using Cake.Core;
-using Cake.Frosting;
 using Cake.Incubator.LoggingExtensions;
 using Common.Addins.GitVersion;
 

@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-using Cake.Common.Tools.DotNetCore;
 using Path = Cake.Core.IO.Path;
 
 namespace Common.Addins.Cake.DotNetCoreFormat;
