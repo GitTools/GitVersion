@@ -11,24 +11,9 @@ public sealed class DotNetCoreFormatSettings : DotNetCoreSettings
     public Path? Workspace { get; set; }
 
     /// <summary>
-    /// Whether to treat the <see cref="Workspace"/> argument as a simple folder of files.
+    /// Run formatting command (Whitespace, style or analyzers). Run by default when not applying fixes.
     /// </summary>
-    public bool Folder { get; set; }
-
-    /// <summary>
-    /// Run whitespace formatting. Run by default when not applying fixes.
-    /// </summary>
-    public bool FixWhitespaces { get; set; }
-
-    /// <summary>
-    /// Run code style analyzers and apply fixes.
-    /// </summary>
-    public string? FixStyle { get; set; }
-
-    /// <summary>
-    /// Run 3rd party analyzers and apply fixes.
-    /// </summary>
-    public string? FixAnalyzers { get; set; }
+    public DotNetFormatFix Fix { get; set; }
 
     /// <summary>
     /// A list of diagnostic ids to use as a filter when fixing code style or 3rd party analyzers.
@@ -48,7 +33,7 @@ public sealed class DotNetCoreFormatSettings : DotNetCoreSettings
     /// <summary>
     /// Formats files without saving changes to disk. Terminates with a non-zero exit code if any files were formatted.
     /// </summary>
-    public bool Check { get; set; }
+    public bool VerifyNoChanges { get; set; }
 
     /// <summary>
     /// Set the verbosity level. Allowed values are q[uiet], m[inimal], n[ormal], d[etailed], and diag[nostic]
@@ -56,6 +41,12 @@ public sealed class DotNetCoreFormatSettings : DotNetCoreSettings
     public new DotNetFormatVerbosity Verbosity { get; set; } = DotNetFormatVerbosity.Normal;
 }
 
+public enum DotNetFormatFix
+{
+    Whitespace,
+    Style,
+    Analyzers
+}
 /// <summary>
 /// Represents verbosity.
 /// </summary>
