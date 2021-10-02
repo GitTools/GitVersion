@@ -1,10 +1,9 @@
 using GitVersion.Cache;
 using GitVersion.Model.Configuration;
 
-namespace GitVersion.VersionCalculation.Cache
+namespace GitVersion.VersionCalculation.Cache;
+
+public interface IGitVersionCacheKeyFactory
 {
-    public interface IGitVersionCacheKeyFactory
-    {
-        GitVersionCacheKey Create(Config? overrideConfig);
-    }
+    GitVersionCacheKey Create(Config? overrideConfig);
 }

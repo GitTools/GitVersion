@@ -1,10 +1,9 @@
 using System;
 
-namespace GitVersion
+namespace GitVersion;
+
+public interface IGitObject : IEquatable<IGitObject?>, IComparable<IGitObject>
 {
-    public interface IGitObject : IEquatable<IGitObject?>, IComparable<IGitObject>
-    {
-        IObjectId Id { get; }
-        string Sha { get; }
-    }
+    IObjectId Id { get; }
+    string Sha { get; }
 }

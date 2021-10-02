@@ -1,11 +1,10 @@
 using System;
 
-namespace GitVersion
+namespace GitVersion;
+
+public class BugException : Exception
 {
-    public class BugException : Exception
+    public BugException(string message) : base(message)
     {
-        public BugException(string message) : base(message)
-        {
-        }
     }
 }

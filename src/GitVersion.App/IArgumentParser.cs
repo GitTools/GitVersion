@@ -1,8 +1,7 @@
-namespace GitVersion
+namespace GitVersion;
+
+public interface IArgumentParser
 {
-    public interface IArgumentParser
-    {
-        Arguments ParseArguments(string commandLineArguments);
-        Arguments ParseArguments(string[] commandLineArguments);
-    }
+    Arguments ParseArguments(string commandLineArguments);
+    Arguments ParseArguments(string[] commandLineArguments);
 }

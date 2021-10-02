@@ -1,9 +1,8 @@
-namespace GitVersion.VersionCalculation
+namespace GitVersion.VersionCalculation;
+
+public enum VersioningMode
 {
-    public enum VersioningMode
-    {
-        ContinuousDelivery,
-        ContinuousDeployment,
-        Mainline
-    }
+    ContinuousDelivery,
+    ContinuousDeployment,
+    Mainline
 }

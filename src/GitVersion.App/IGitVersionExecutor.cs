@@ -1,7 +1,6 @@
-namespace GitVersion
+namespace GitVersion;
+
+public interface IGitVersionExecutor
 {
-    public interface IGitVersionExecutor
-    {
-        int Execute(GitVersionOptions gitVersionOptions);
-    }
+    int Execute(GitVersionOptions gitVersionOptions);
 }

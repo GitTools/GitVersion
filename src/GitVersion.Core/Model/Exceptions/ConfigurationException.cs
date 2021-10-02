@@ -1,13 +1,12 @@
 using System;
 
-namespace GitVersion.Configuration
+namespace GitVersion.Configuration;
+
+[Serializable]
+public class ConfigurationException : GitVersionException
 {
-    [Serializable]
-    public class ConfigurationException : GitVersionException
+    public ConfigurationException(string msg)
+        : base(msg)
     {
-        public ConfigurationException(string msg)
-            : base(msg)
-        {
-        }
     }
 }
