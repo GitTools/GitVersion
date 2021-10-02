@@ -12,16 +12,12 @@ public class CodeFormat : FrostingTask<BuildContext>
         context.Information("Code format...");
         context.DotNetCoreFormat(new DotNetCoreFormatSettings
         {
-            Workspace = Paths.Build,
-            Folder = true,
-            FixWhitespaces = true,
+            Workspace = Paths.Build
         });
 
         context.DotNetCoreFormat(new DotNetCoreFormatSettings
         {
             Workspace = Paths.Src,
-            Folder = true,
-            FixWhitespaces = true,
             Exclude = new List<string> { " **/AddFormats/" }
         });
     }

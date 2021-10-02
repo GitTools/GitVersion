@@ -1,6 +1,6 @@
 namespace Common.Addins.Cake.DotNetCoreFormat;
 
-public sealed class DotNetCoreFormatToolRunner : Tool<DotNetCoreFormatSettings>
+public sealed class DotNetCoreFormatToolRunner : DotNetCoreTool<DotNetCoreFormatSettings>
 {
     public DotNetCoreFormatToolRunner(
         IFileSystem fileSystem,
@@ -19,37 +19,26 @@ public sealed class DotNetCoreFormatToolRunner : Tool<DotNetCoreFormatSettings>
         Run(settings, GetArguments(settings));
     }
 
-    protected override string GetToolName()
-    {
-        return "Format";
-    }
-
-    protected override IEnumerable<string> GetToolExecutableNames()
-    {
-        return new[] { "dotnet-format", "dotnet-format.exe" };
-    }
-
     private static ProcessArgumentBuilder GetArguments(DotNetCoreFormatSettings settings)
     {
         ProcessArgumentBuilder arguments = new();
+
+        arguments.Append("format");
+        switch (settings.Fix)
+        {
+            case DotNetFormatFix.Whitespace:
+                arguments.Append("whitespace");
+                break;
+            case DotNetFormatFix.Style:
+                arguments.Append("style");
+                break;
+            case DotNetFormatFix.Analyzers:
+                arguments.Append("analyzers");
+                break;
+        }
+
         arguments.Append(settings.Workspace != null ? settings.Workspace.ToString() : settings.WorkingDirectory.ToString());
 
-        if (settings.Folder)
-        {
-            arguments.Append("--folder");
-        }
-        if (settings.FixWhitespaces)
-        {
-            arguments.Append("--fix-whitespace");
-        }
-        if (settings.FixStyle != null)
-        {
-            arguments.AppendSwitch("--fix-style", " ", settings.FixStyle);
-        }
-        if (settings.FixAnalyzers != null)
-        {
-            arguments.AppendSwitch("--fix-analyzers", " ", settings.FixAnalyzers);
-        }
         if (settings.Diagnostics != null)
         {
             arguments.AppendSwitch("--diagnostics", " ", string.Join(" ", settings.Diagnostics));
@@ -62,9 +51,9 @@ public sealed class DotNetCoreFormatToolRunner : Tool<DotNetCoreFormatSettings>
         {
             arguments.AppendSwitch("--exclude", " ", string.Join(" ", settings.Exclude));
         }
-        if (settings.Check)
+        if (settings.VerifyNoChanges)
         {
-            arguments.Append("--check");
+            arguments.Append("--verify-no-changes");
         }
         return arguments;
     }
