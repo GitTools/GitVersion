@@ -1,7 +1,6 @@
-namespace GitVersion.VersionConverters
+namespace GitVersion.VersionConverters;
+
+public interface IConverterContext
 {
-    public interface IConverterContext
-    {
-        public string? WorkingDirectory { get; }
-    }
+    public string? WorkingDirectory { get; }
 }

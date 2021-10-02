@@ -1,11 +1,10 @@
 using GitVersion.Model.Configuration;
 
-namespace GitVersion
+namespace GitVersion;
+
+public class ConfigInfo
 {
-    public class ConfigInfo
-    {
-        public string? ConfigFile;
-        public Config? OverrideConfig;
-        public bool ShowConfig;
-    }
+    public string? ConfigFile;
+    public Config? OverrideConfig;
+    public bool ShowConfig;
 }

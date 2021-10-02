@@ -1,11 +1,10 @@
-namespace GitVersion.Logging
+namespace GitVersion.Logging;
+
+public enum Verbosity
 {
-    public enum Verbosity
-    {
-        Quiet = 0,
-        Minimal = 1,
-        Normal = 2,
-        Verbose = 3,
-        Diagnostic = 4
-    }
+    Quiet = 0,
+    Minimal = 1,
+    Normal = 2,
+    Verbose = 3,
+    Diagnostic = 4
 }

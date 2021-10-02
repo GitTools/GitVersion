@@ -1,24 +1,23 @@
 using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
 
-namespace GitVersion.MsBuild
+namespace GitVersion.MsBuild;
+
+public abstract class GitVersionTaskBase : ITask
 {
-    public abstract class GitVersionTaskBase : ITask
-    {
-        public IBuildEngine BuildEngine { get; set; }
-        public ITaskHost HostObject { get; set; }
+    public IBuildEngine BuildEngine { get; set; }
+    public ITaskHost HostObject { get; set; }
 
-        protected GitVersionTaskBase() => Log = new TaskLoggingHelper(this);
+    protected GitVersionTaskBase() => Log = new TaskLoggingHelper(this);
 
-        [Required]
-        public string SolutionDirectory { get; set; }
+    [Required]
+    public string SolutionDirectory { get; set; }
 
-        public string VersionFile { get; set; }
+    public string VersionFile { get; set; }
 
-        public TaskLoggingHelper Log { get; }
+    public TaskLoggingHelper Log { get; }
 
-        public bool Execute() => OnExecute();
+    public bool Execute() => OnExecute();
 
-        protected abstract bool OnExecute();
-    }
+    protected abstract bool OnExecute();
 }

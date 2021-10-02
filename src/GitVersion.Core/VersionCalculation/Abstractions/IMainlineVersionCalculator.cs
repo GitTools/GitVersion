@@ -1,8 +1,7 @@
-namespace GitVersion.VersionCalculation
+namespace GitVersion.VersionCalculation;
+
+public interface IMainlineVersionCalculator
 {
-    public interface IMainlineVersionCalculator
-    {
-        SemanticVersion FindMainlineModeVersion(BaseVersion baseVersion);
-        SemanticVersionBuildMetaData CreateVersionBuildMetaData(ICommit? baseVersionSource);
-    }
+    SemanticVersion FindMainlineModeVersion(BaseVersion baseVersion);
+    SemanticVersionBuildMetaData CreateVersionBuildMetaData(ICommit? baseVersionSource);
 }

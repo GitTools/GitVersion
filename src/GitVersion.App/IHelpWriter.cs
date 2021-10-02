@@ -1,10 +1,9 @@
 using System;
 
-namespace GitVersion
+namespace GitVersion;
+
+public interface IHelpWriter
 {
-    public interface IHelpWriter
-    {
-        void Write();
-        void WriteTo(Action<string> writeAction);
-    }
+    void Write();
+    void WriteTo(Action<string> writeAction);
 }

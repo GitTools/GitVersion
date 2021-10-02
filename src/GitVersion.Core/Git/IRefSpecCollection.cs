@@ -1,8 +1,7 @@
 using System.Collections.Generic;
 
-namespace GitVersion
+namespace GitVersion;
+
+public interface IRefSpecCollection : IEnumerable<IRefSpec>
 {
-    public interface IRefSpecCollection : IEnumerable<IRefSpec>
-    {
-    }
 }
