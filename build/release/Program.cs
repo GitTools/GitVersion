@@ -1,5 +1,3 @@
-global using Constants = Common.Utilities.Constants;
-
 using Release;
 
 return new CakeHost()
