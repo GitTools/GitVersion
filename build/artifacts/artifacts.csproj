@@ -4,6 +4,11 @@
         <RootNamespace>Artifacts</RootNamespace>
     </PropertyGroup>
     <ItemGroup>
-        <ProjectReference Include="..\common\common.csproj"/>
+        <ProjectReference Include="..\common\common.csproj" />
+    </ItemGroup>
+    <ItemGroup>
+      <Compile Include="..\common\Utilities\ImportUsings.cs">
+        <Link>ImportUsings.cs</Link>
+      </Compile>
     </ItemGroup>
 </Project>

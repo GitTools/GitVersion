@@ -10,4 +10,9 @@
         <PackageReference Include="Cake.Codecov" Version="1.0.1"/>
         <PackageReference Include="Cake.Coverlet" Version="2.5.4"/>
     </ItemGroup>
+    <ItemGroup>
+        <Compile Include="..\common\Utilities\ImportUsings.cs">
+            <Link>ImportUsings.cs</Link>
+        </Compile>
+    </ItemGroup>
 </Project>
