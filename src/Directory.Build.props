@@ -17,8 +17,8 @@
 
         <NoWarn>1591</NoWarn>
         <DebugType>embedded</DebugType>
-        <LangVersion>9.0</LangVersion>
-
+        <LangVersion>10</LangVersion>
+        <ImplicitUsings>enable</ImplicitUsings>
     </PropertyGroup>
     <PropertyGroup>
         <PackageVersion_LibGit2Sharp>0.27.0-preview-0116</PackageVersion_LibGit2Sharp>
