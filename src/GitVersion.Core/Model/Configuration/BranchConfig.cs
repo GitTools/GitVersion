@@ -1,5 +1,3 @@
-using System;
-using System.Collections.Generic;
 using GitVersion.VersionCalculation;
 using JetBrains.Annotations;
 using YamlDotNet.Serialization;

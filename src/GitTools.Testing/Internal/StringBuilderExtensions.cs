@@ -1,4 +1,3 @@
-using System.Text;
 using JetBrains.Annotations;
 
 namespace GitTools.Testing.Internal;

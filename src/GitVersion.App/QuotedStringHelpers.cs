@@ -1,6 +1,3 @@
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using GitVersion.Extensions;
 
 namespace GitVersion;
@@ -26,7 +23,7 @@ public static class QuotedStringHelpers
     public static string[] SplitUnquoted(string input, char splitChar)
     {
         if (input == null)
-            return System.Array.Empty<string>();
+            return Array.Empty<string>();
 
         var splitted = new List<string>();
         bool isPreviousCharBackslash = false;

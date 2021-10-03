@@ -14,7 +14,7 @@ public static class RuntimeHelper
         return _isCoreClr.Value;
 #else
 #pragma warning disable IDE0022 // Use expression body for methods // Cannot be set because of the pragma section
-            return false;
+        return false;
 #pragma warning restore IDE0022 // Use expression body for methods
 #endif
     }

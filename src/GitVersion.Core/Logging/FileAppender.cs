@@ -1,6 +1,3 @@
-using System;
-using System.IO;
-
 namespace GitVersion.Logging;
 
 public class FileAppender : ILogAppender

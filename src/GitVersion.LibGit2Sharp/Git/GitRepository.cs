@@ -1,6 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using GitVersion.Extensions;
 using GitVersion.Helpers;
 using GitVersion.Logging;

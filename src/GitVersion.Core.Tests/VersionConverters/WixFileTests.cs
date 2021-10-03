@@ -1,6 +1,3 @@
-using System;
-using System.IO;
-using System.Text;
 using GitVersion.Core.Tests.Helpers;
 using GitVersion.Logging;
 using GitVersion.VersionCalculation;

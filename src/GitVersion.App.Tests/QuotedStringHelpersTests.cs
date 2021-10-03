@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using GitVersion;
 using NUnit.Framework;
 
@@ -14,7 +13,7 @@ public class QuotedStringHelpersTests
     {
         yield return new TestCaseData(null, ' ')
         {
-            ExpectedResult = System.Array.Empty<string>()
+            ExpectedResult = Array.Empty<string>()
         };
         yield return new TestCaseData("one two three", ' ')
         {

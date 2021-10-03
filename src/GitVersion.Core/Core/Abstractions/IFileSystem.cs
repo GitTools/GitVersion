@@ -1,7 +1,3 @@
-using System.Collections.Generic;
-using System.IO;
-using System.Text;
-
 namespace GitVersion;
 
 public interface IFileSystem

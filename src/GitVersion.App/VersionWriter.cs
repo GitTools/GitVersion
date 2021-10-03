@@ -1,6 +1,3 @@
-using System;
-using System.Linq;
-using System.Reflection;
 using GitVersion.Logging;
 
 namespace GitVersion;

@@ -1,6 +1,3 @@
-using System;
-using System.Collections.Generic;
-
 namespace GitVersion;
 
 public interface IRemote : IEquatable<IRemote?>, IComparable<IRemote>

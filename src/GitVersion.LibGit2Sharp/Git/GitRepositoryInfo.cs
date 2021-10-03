@@ -1,6 +1,3 @@
-using System;
-using System.IO;
-using System.Linq;
 using GitVersion.Extensions;
 using Microsoft.Extensions.Options;
 

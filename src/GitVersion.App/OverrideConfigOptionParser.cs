@@ -1,6 +1,3 @@
-using System;
-using System.Linq;
-using System.Reflection;
 using GitVersion.Model.Configuration;
 
 namespace GitVersion;
@@ -76,7 +73,7 @@ internal class OverrideConfigOptionParser
                 }
                 catch (ArgumentException)
                 {
-                    var sb = new System.Text.StringBuilder();
+                    var sb = new StringBuilder();
 
                     sb.Append($"Could not parse /overrideconfig option: {key}={value}.");
                     sb.AppendLine(" Ensure that 'value' is valid for specified 'key' enumeration: ");

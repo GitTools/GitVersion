@@ -1,5 +1,3 @@
-using System;
-using System.Linq;
 using GitVersion.OutputVariables;
 using GitVersion.VersionConverters.AssemblyInfo;
 using GitVersion.VersionConverters.GitVersionInfo;

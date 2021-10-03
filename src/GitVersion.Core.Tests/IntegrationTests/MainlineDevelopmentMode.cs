@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Text;
 using GitTools.Testing;
 using GitVersion.Core.Tests.Helpers;
 using GitVersion.Extensions;

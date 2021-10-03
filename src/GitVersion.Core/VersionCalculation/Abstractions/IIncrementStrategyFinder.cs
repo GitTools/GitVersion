@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-
 namespace GitVersion.VersionCalculation;
 
 public interface IIncrementStrategyFinder

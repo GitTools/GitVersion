@@ -1,8 +1,5 @@
-using System;
 using System.Collections;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Text;
 using GitVersion.MsBuild.Tests.Helpers;
 using Microsoft.Build.Framework;
 using Shouldly;

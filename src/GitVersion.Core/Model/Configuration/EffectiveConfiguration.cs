@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using GitVersion.Extensions;
 using GitVersion.VersionCalculation;
 

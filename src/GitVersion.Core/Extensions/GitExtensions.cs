@@ -1,6 +1,3 @@
-using System;
-using System.IO;
-using System.Text;
 using GitVersion.Helpers;
 
 namespace GitVersion.Extensions;

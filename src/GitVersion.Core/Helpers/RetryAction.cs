@@ -1,5 +1,3 @@
-using System;
-using System.Collections.Generic;
 using Polly;
 using Polly.Retry;
 

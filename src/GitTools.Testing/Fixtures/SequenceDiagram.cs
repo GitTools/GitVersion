@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-using System.Text;
 using GitTools.Testing.Internal;
 
 namespace GitTools.Testing;

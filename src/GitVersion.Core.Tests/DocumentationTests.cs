@@ -1,7 +1,3 @@
-using System;
-using System.IO;
-using System.Linq;
-using System.Reflection;
 using GitVersion.Core.Tests.Helpers;
 using GitVersion.Model.Configuration;
 using GitVersion.OutputVariables;

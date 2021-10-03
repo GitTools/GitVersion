@@ -1,5 +1,3 @@
-using System;
-using System.Collections.Generic;
 using GitVersion.Core.Tests.Helpers;
 using GitVersion.Model.Configuration;
 using NUnit.Framework;

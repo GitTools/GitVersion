@@ -1,5 +1,3 @@
-using System;
-
 namespace GitVersion;
 
 public interface IReference : IEquatable<IReference?>, IComparable<IReference>, INamedReference

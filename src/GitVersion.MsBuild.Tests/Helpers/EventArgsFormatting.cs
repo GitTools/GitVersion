@@ -1,6 +1,4 @@
-using System;
 using System.Globalization;
-using System.Text;
 using Microsoft.Build.Framework;
 
 namespace GitVersion.MsBuild.Tests.Helpers;

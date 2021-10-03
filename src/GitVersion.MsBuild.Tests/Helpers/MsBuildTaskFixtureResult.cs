@@ -1,4 +1,3 @@
-using System;
 using GitTools.Testing;
 using Microsoft.Build.Framework;
 

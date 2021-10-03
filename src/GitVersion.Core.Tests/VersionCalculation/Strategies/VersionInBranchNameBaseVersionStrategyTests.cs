@@ -1,4 +1,3 @@
-using System.Linq;
 using GitTools.Testing;
 using GitVersion.Configuration;
 using GitVersion.Core.Tests.Helpers;
@@ -72,7 +71,7 @@ public class VersionInBranchNameBaseVersionStrategyTests : TestBase
         Commands.Checkout(fixture.Repository, branch);
         fixture.MakeACommit();
 
-        Commands.Fetch((Repository)fixture.LocalRepositoryFixture.Repository, fixture.LocalRepositoryFixture.Repository.Network.Remotes.First().Name, System.Array.Empty<string>(), new FetchOptions(), null);
+        Commands.Fetch((Repository)fixture.LocalRepositoryFixture.Repository, fixture.LocalRepositoryFixture.Repository.Network.Remotes.First().Name, Array.Empty<string>(), new FetchOptions(), null);
         fixture.LocalRepositoryFixture.Checkout($"origin/{branchName}");
 
         var strategy = GetVersionStrategy(fixture.RepositoryPath, fixture.Repository.ToGitRepository(), branchName);

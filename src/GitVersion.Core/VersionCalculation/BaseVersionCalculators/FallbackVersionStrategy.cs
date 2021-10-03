@@ -1,5 +1,3 @@
-using System;
-using System.Collections.Generic;
 using GitVersion.Common;
 
 namespace GitVersion.VersionCalculation;

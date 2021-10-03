@@ -1,4 +1,3 @@
-using System;
 using GitVersion.Model.Configuration;
 
 namespace GitVersion;

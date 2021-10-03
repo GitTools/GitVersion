@@ -1,5 +1,3 @@
-using System;
-
 namespace GitVersion.Configuration;
 
 [Serializable]

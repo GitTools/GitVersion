@@ -1,4 +1,3 @@
-using System.Reflection;
 using GitVersion.Configuration.Init.Wizard;
 using Microsoft.Extensions.DependencyInjection;
 

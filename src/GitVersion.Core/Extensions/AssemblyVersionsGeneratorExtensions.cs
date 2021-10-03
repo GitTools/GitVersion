@@ -1,5 +1,3 @@
-using System;
-
 namespace GitVersion.Extensions;
 
 public enum AssemblyFileVersioningScheme

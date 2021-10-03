@@ -1,4 +1,3 @@
-using System;
 using Buildalyzer;
 using GitTools.Testing;
 

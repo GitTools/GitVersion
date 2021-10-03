@@ -1,5 +1,3 @@
-using System;
-
 namespace GitVersion.Logging;
 
 public sealed class NullLog : ILog

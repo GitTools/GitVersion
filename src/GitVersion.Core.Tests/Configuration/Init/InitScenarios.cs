@@ -1,4 +1,3 @@
-using System.IO;
 using System.Runtime.InteropServices;
 using GitVersion.Configuration;
 using GitVersion.Core.Tests.Helpers;

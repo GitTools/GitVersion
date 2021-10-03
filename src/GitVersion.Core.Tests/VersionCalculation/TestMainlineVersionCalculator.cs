@@ -8,7 +8,7 @@ public class TestMainlineVersionCalculator : IMainlineVersionCalculator
 
     public TestMainlineVersionCalculator(SemanticVersionBuildMetaData metaData) => this.metaData = metaData;
 
-    public SemanticVersion FindMainlineModeVersion(BaseVersion baseVersion) => throw new System.NotImplementedException();
+    public SemanticVersion FindMainlineModeVersion(BaseVersion baseVersion) => throw new NotImplementedException();
 
     public SemanticVersionBuildMetaData CreateVersionBuildMetaData(ICommit baseVersionSource) => this.metaData;
 }

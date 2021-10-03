@@ -1,4 +1,3 @@
-using System;
 using GitVersion.Extensions;
 
 namespace GitVersion.Cache;

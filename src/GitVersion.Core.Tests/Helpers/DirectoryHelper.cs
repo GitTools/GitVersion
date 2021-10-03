@@ -1,7 +1,3 @@
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
-
 namespace GitVersion.Core.Tests.Helpers;
 
 public static class DirectoryHelper

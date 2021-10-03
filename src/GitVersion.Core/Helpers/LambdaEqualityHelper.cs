@@ -1,5 +1,3 @@
-using System;
-
 namespace GitVersion.Helpers;
 
 // From the LibGit2Sharp project (libgit2sharp.com)

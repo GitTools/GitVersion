@@ -1,4 +1,3 @@
-using System.IO;
 using GitVersion.Core.Tests.Helpers;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;

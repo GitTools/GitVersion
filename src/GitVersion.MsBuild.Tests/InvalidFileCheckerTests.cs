@@ -1,5 +1,3 @@
-using System;
-using System.IO;
 using GitVersion.Core.Tests.Helpers;
 using GitVersion.MsBuild.Tests.Mocks;
 using Microsoft.Build.Framework;

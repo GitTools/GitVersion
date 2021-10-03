@@ -1,4 +1,3 @@
-using System;
 using Microsoft.Build.Framework;
 
 namespace GitVersion.MsBuild.Tasks;

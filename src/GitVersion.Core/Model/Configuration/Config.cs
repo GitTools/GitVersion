@@ -1,7 +1,4 @@
-using System.Collections.Generic;
 using System.Globalization;
-using System.IO;
-using System.Text;
 using GitVersion.Configuration;
 using GitVersion.Extensions;
 using GitVersion.VersionCalculation;

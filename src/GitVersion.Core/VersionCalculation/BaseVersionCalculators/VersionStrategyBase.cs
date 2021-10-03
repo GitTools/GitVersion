@@ -1,6 +1,3 @@
-using System;
-using System.Collections.Generic;
-
 namespace GitVersion.VersionCalculation;
 
 public class VersionStrategyBase : IVersionStrategy
