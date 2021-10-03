@@ -1,5 +1,3 @@
-using System;
-using System.Collections.Generic;
 using GitVersion.Extensions;
 using GitVersion.Logging;
 using GitVersion.OutputVariables;

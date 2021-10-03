@@ -1,5 +1,3 @@
-using System;
-using System.IO;
 using GitVersion.Core.Tests.Helpers;
 using LibGit2Sharp;
 using Microsoft.Extensions.DependencyInjection;

@@ -1,7 +1,3 @@
-using System;
-using System.IO;
-using System.Text;
-using System.Xml;
 using GitVersion.Logging;
 using GitVersion.OutputVariables;
 

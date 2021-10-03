@@ -1,7 +1,3 @@
-using System;
-using System.IO;
-using System.Linq;
-using System.Text;
 using GitTools.Testing.Internal;
 using LibGit2Sharp;
 

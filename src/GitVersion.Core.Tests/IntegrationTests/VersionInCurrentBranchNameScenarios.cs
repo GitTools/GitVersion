@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-using System.Linq;
 using GitTools.Testing;
 using GitVersion.Core.Tests.Helpers;
 using GitVersion.Model.Configuration;
@@ -49,7 +47,7 @@ public class VersionInCurrentBranchNameScenarios : TestBase
         using var fixture = new RemoteRepositoryFixture();
         fixture.BranchTo("release/2.0.0");
         fixture.MakeACommit();
-        Commands.Fetch((Repository)fixture.LocalRepositoryFixture.Repository, fixture.LocalRepositoryFixture.Repository.Network.Remotes.First().Name, System.Array.Empty<string>(), new FetchOptions(), null);
+        Commands.Fetch((Repository)fixture.LocalRepositoryFixture.Repository, fixture.LocalRepositoryFixture.Repository.Network.Remotes.First().Name, Array.Empty<string>(), new FetchOptions(), null);
 
         fixture.LocalRepositoryFixture.Checkout("origin/release/2.0.0");
 
@@ -63,7 +61,7 @@ public class VersionInCurrentBranchNameScenarios : TestBase
         fixture.LocalRepositoryFixture.Repository.Network.Remotes.Rename("origin", "upstream");
         fixture.BranchTo("release/2.0.0");
         fixture.MakeACommit();
-        Commands.Fetch((Repository)fixture.LocalRepositoryFixture.Repository, fixture.LocalRepositoryFixture.Repository.Network.Remotes.First().Name, System.Array.Empty<string>(), new FetchOptions(), null);
+        Commands.Fetch((Repository)fixture.LocalRepositoryFixture.Repository, fixture.LocalRepositoryFixture.Repository.Network.Remotes.First().Name, Array.Empty<string>(), new FetchOptions(), null);
 
         fixture.LocalRepositoryFixture.Checkout("upstream/release/2.0.0");
 

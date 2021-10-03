@@ -1,4 +1,3 @@
-using System;
 using GitVersion.BuildAgents;
 using GitVersion.Common;
 using GitVersion.Configuration;

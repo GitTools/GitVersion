@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-using System.IO;
 using GitVersion.BuildAgents;
 using GitVersion.Core.Tests.Helpers;
 using Microsoft.Extensions.DependencyInjection;
@@ -121,7 +119,7 @@ public class GitHubActionsTests : TestBase
         var result = this.buildServer.GenerateSetParameterMessage("Hello", string.Empty);
 
         // Assert
-        result.ShouldBeEquivalentTo(System.Array.Empty<string>());
+        result.ShouldBeEquivalentTo(Array.Empty<string>());
     }
 
     [Test]

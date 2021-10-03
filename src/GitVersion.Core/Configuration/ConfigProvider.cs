@@ -1,5 +1,3 @@
-using System;
-using System.IO;
 using GitVersion.Configuration.Init.Wizard;
 using GitVersion.Logging;
 using GitVersion.Model.Configuration;

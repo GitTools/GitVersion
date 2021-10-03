@@ -1,4 +1,3 @@
-using System.Text;
 using GitVersion.Extensions;
 
 namespace GitVersion.App.Tests;

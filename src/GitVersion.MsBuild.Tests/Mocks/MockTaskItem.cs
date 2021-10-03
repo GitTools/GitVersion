@@ -1,5 +1,3 @@
-using System;
-using System.Collections;
 using Microsoft.Build.Framework;
 
 namespace GitVersion.MsBuild.Tests.Mocks;

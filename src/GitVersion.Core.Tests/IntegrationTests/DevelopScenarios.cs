@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using GitTools.Testing;
 using GitVersion.Core.Tests.Helpers;
 using GitVersion.Model.Configuration;

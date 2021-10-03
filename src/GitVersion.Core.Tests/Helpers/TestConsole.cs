@@ -1,5 +1,3 @@
-using System;
-using System.Collections.Generic;
 using GitVersion.Logging;
 
 namespace GitVersion.Core.Tests.Helpers;

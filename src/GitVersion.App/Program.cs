@@ -1,5 +1,3 @@
-using System;
-using System.Threading.Tasks;
 using GitVersion.Extensions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;

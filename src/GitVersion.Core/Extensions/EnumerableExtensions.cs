@@ -1,6 +1,3 @@
-using System;
-using System.Collections.Generic;
-
 namespace GitVersion.Extensions;
 
 public static class EnumerableExtensions

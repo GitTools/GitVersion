@@ -1,7 +1,3 @@
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Xml;
 using GitTools.Testing;
 using GitVersion.OutputVariables;
 using GitVersion.VersionConverters.WixUpdater;

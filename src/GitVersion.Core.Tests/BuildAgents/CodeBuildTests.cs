@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Reflection;
 using GitVersion.BuildAgents;
 using GitVersion.Core.Tests.Helpers;
 using GitVersion.VersionCalculation;

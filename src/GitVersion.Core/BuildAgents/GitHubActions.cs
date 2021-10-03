@@ -1,4 +1,3 @@
-using System.IO;
 using GitVersion.Extensions;
 using GitVersion.Logging;
 using GitVersion.OutputVariables;
@@ -22,9 +21,9 @@ public class GitHubActions : BuildAgentBase
         string.Empty; // There is no equivalent function in GitHub Actions.
 
     public override string[] GenerateSetParameterMessage(string name, string value) =>
-        System.Array.Empty<string>(); // There is no equivalent function in GitHub Actions.
+        Array.Empty<string>(); // There is no equivalent function in GitHub Actions.
 
-    public override void WriteIntegration(System.Action<string?> writer, VersionVariables variables, bool updateBuildNumber = true)
+    public override void WriteIntegration(Action<string?> writer, VersionVariables variables, bool updateBuildNumber = true)
     {
         base.WriteIntegration(writer, variables, updateBuildNumber);
 

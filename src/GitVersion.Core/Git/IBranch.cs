@@ -1,5 +1,3 @@
-using System;
-
 namespace GitVersion;
 
 public interface IBranch : IEquatable<IBranch?>, IComparable<IBranch>, INamedReference

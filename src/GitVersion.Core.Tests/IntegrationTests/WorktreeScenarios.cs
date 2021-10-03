@@ -1,4 +1,3 @@
-using System.IO;
 using GitTools.Testing;
 using GitVersion.Core.Tests.Helpers;
 using LibGit2Sharp;

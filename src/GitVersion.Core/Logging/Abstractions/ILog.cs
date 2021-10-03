@@ -1,5 +1,3 @@
-using System;
-
 namespace GitVersion.Logging;
 
 public interface ILog

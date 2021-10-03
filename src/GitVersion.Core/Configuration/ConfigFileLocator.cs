@@ -1,5 +1,3 @@
-using System.IO;
-using System.Linq;
 using GitVersion.Extensions;
 using GitVersion.Model.Configuration;
 using GitVersion.VersionCalculation;

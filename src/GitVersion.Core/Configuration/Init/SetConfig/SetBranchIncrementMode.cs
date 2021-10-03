@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using GitVersion.Configuration.Init.Wizard;
 using GitVersion.Logging;
 using GitVersion.Model.Configuration;

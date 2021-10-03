@@ -1,5 +1,3 @@
-using System.IO;
-
 namespace GitVersion.Core.Tests.Helpers;
 
 public class TestStream : Stream

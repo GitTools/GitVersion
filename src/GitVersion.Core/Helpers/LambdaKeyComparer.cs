@@ -1,6 +1,3 @@
-using System;
-using System.Collections.Generic;
-
 namespace GitVersion.Helpers;
 
 public class LambdaKeyComparer<TSource, TKey> : Comparer<TSource> where TSource : class

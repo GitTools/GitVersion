@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using GitVersion.Core.Tests.Helpers;
 using NSubstitute;
 using NUnit.Framework;

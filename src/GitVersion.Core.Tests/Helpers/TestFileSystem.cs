@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Text;
 using GitVersion.Helpers;
 
 namespace GitVersion.Core.Tests.Helpers;

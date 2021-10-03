@@ -67,6 +67,15 @@
     </ItemGroup>
 
     <ItemGroup>
+        <Using Include="System.Collections" />
+        <Using Include="System.Collections.Specialized" />
+        <Using Include="System.Diagnostics" />
+        <Using Include="System.Reflection" />
+        <Using Include="System.Text" />
+        <Using Include="System.Xml" />
+    </ItemGroup>
+
+    <ItemGroup>
         <None Include="../../docs/input/docs/img/package_icon.png">
             <Pack>true</Pack>
             <PackagePath>/</PackagePath>

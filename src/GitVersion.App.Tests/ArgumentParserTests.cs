@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-using System.IO;
 using GitTools.Testing;
 using GitVersion.Core.Tests.Helpers;
 using GitVersion.Extensions;
@@ -452,7 +450,7 @@ public class ArgumentParserTests : TestBase
             "mode=ContinuousDelivery",
             new Config
             {
-                VersioningMode = GitVersion.VersionCalculation.VersioningMode.ContinuousDelivery
+                VersioningMode = VersioningMode.ContinuousDelivery
             }
         );
         yield return new TestCaseData(
@@ -595,7 +593,7 @@ public class ArgumentParserTests : TestBase
                 AssemblyVersioningFormat = "{Major}.{Minor}.{Patch}.{env:CI_JOB_ID ?? 0}",
                 UpdateBuildNumber = true,
                 AssemblyVersioningScheme = AssemblyVersioningScheme.MajorMinorPatchTag,
-                VersioningMode = GitVersion.VersionCalculation.VersioningMode.ContinuousDelivery,
+                VersioningMode = VersioningMode.ContinuousDelivery,
                 TagPreReleaseWeight = 4
             }
         );

@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using GitVersion.MsBuild.Tasks;
 using GitVersion.MsBuild.Tests.Helpers;
 using Microsoft.Build.Utilities.ProjectCreation;
@@ -13,14 +12,14 @@ public class WriteVersionInfoTest : TestTaskBase
     protected string GitHubEnvFilePath { get; set; }
 
     [OneTimeSetUp]
-    public void OneTimeSetUp() => GitHubEnvFilePath = System.IO.Path.GetTempFileName();
+    public void OneTimeSetUp() => GitHubEnvFilePath = Path.GetTempFileName();
 
     [OneTimeTearDown]
     public void OneTimeTearDown()
     {
-        if (System.IO.File.Exists(GitHubEnvFilePath))
+        if (File.Exists(GitHubEnvFilePath))
         {
-            System.IO.File.Delete(GitHubEnvFilePath);
+            File.Delete(GitHubEnvFilePath);
         }
     }
 
@@ -89,7 +88,7 @@ public class WriteVersionInfoTest : TestTaskBase
 
         result.Success.ShouldBe(true);
         result.Errors.ShouldBe(0);
-        string content = System.IO.File.ReadAllText(GitHubEnvFilePath);
+        string content = File.ReadAllText(GitHubEnvFilePath);
         content.ShouldContain("GitVersion_SemVer=1.0.1");
     }
 

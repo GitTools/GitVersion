@@ -1,5 +1,3 @@
-using System;
-using System.Linq;
 using GitVersion.Core.Tests.Helpers;
 using GitVersion.Extensions;
 using GitVersion.Model.Configuration;

@@ -1,5 +1,3 @@
-using System;
-
 namespace GitVersion;
 
 public interface IObjectId : IEquatable<IObjectId?>, IComparable<IObjectId>

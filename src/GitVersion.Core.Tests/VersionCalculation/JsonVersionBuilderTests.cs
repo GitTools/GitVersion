@@ -1,4 +1,3 @@
-using System;
 using GitVersion.Core.Tests.Helpers;
 using GitVersion.VersionCalculation;
 using Microsoft.Extensions.DependencyInjection;

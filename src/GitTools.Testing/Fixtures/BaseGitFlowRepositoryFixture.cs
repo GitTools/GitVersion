@@ -1,5 +1,3 @@
-using System;
-using System.IO;
 using LibGit2Sharp;
 
 namespace GitTools.Testing;

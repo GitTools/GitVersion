@@ -1,4 +1,3 @@
-using System;
 using GitTools.Testing;
 using GitVersion.Core.Tests.Helpers;
 using NUnit.Framework;

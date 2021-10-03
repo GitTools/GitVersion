@@ -1,5 +1,3 @@
-using System;
-using System.Text;
 using GitVersion.Logging;
 
 namespace GitVersion.App.Tests;

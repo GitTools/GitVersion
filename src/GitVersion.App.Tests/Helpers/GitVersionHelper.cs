@@ -1,8 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
 using GitVersion.BuildAgents;
 using GitVersion.Core.Tests.Helpers;
 using GitVersion.Extensions;

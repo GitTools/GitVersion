@@ -1,5 +1,3 @@
-using System.IO;
-using System.Text;
 using GitVersion.Core.Tests.Helpers;
 using NUnit.Framework;
 using Shouldly;

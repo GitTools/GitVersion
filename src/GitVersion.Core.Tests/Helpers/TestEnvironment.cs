@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-
 namespace GitVersion.Core.Tests.Helpers;
 
 public class TestEnvironment : IEnvironment
