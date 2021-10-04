@@ -13,7 +13,7 @@ namespace Build
         public readonly Dictionary<PlatformFamily, string[]> NativeRuntimes = new()
         {
             [PlatformFamily.Windows] = new[] { "win-x64", "win-x86" },
-            [PlatformFamily.Linux] = new[] { "linux-x64", "linux-musl-x64" },
+            [PlatformFamily.Linux] = new[] { "linux-x64", "linux-musl-x64", "linux-arm64" },
             [PlatformFamily.OSX] = new[] { "osx-x64" },
         };
 

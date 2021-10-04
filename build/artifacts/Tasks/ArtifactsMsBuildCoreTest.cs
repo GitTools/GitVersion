@@ -28,10 +28,12 @@ namespace Artifacts.Tasks
 
             foreach (var dockerImage in context.Images)
             {
+                if (context.SkipArm64Image(dockerImage)) continue;
+
                 string distro = dockerImage.Distro;
                 string targetFramework = dockerImage.TargetFramework;
 
-                if (targetFramework == Constants.Version31 && distro == "centos.8-x64") continue; // TODO check why this one fails
+                if (targetFramework == Constants.Version31 && distro == Constants.Centos8) continue; // TODO check why this one fails
                 targetFramework = targetFramework switch
                 {
                     Constants.Version31 => $"netcoreapp{targetFramework}",

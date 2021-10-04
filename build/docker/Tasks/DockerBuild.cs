@@ -9,11 +9,9 @@ namespace Docker.Tasks
     [TaskArgument(Arguments.DockerRegistry, Constants.DockerHub, Constants.GitHub)]
     [TaskArgument(Arguments.DockerDotnetVersion, Constants.Version50, Constants.Version31)]
     [TaskArgument(Arguments.DockerDistro, Constants.Alpine312, Constants.Debian10, Constants.Ubuntu2004)]
+    [TaskArgument(Arguments.Architecture, Constants.Amd64, Constants.Arm64)]
     public class DockerBuild : FrostingTask<BuildContext>
     {
-        protected bool PushImages { get; init; }
-        public DockerBuild() => this.PushImages = false;
-
         public override bool ShouldRun(BuildContext context)
         {
             var shouldRun = true;
@@ -31,7 +29,8 @@ namespace Docker.Tasks
 
             foreach (var dockerImage in context.Images)
             {
-                context.DockerBuild(dockerImage, PushImages);
+                if (context.SkipArm64Image(dockerImage)) continue;
+                context.DockerBuildImage(dockerImage);
             }
         }
     }

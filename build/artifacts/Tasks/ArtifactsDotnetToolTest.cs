@@ -28,6 +28,8 @@ namespace Artifacts.Tasks
 
             foreach (var dockerImage in context.Images)
             {
+                if (context.SkipArm64Image(dockerImage)) continue;
+
                 var cmd = $"{rootPrefix}/scripts/test-global-tool.sh --version {version} --nugetPath {rootPrefix}/nuget --repoPath {rootPrefix}/repo";
 
                 context.DockerTestArtifact(dockerImage, cmd);
