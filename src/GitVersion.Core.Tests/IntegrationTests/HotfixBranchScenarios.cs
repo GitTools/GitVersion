@@ -228,7 +228,7 @@ namespace GitVersion.Core.Tests.IntegrationTests
         }
 
         [Test]
-        public void HotfixMergeIncrementsVersion()
+        public void HotfixMergeIncrementsVersionWithModeContinuousDeployment()
         {
             var config = new Config
             {
@@ -268,7 +268,7 @@ namespace GitVersion.Core.Tests.IntegrationTests
             fixture.ApplyTag("1.0");
             fixture.AssertFullSemver("1.0.0", config);
 
-            // start hotfix
+            // start first hotfix
 
             const string hotfixBranch = "hotfix/something-important";
 
@@ -284,6 +284,89 @@ namespace GitVersion.Core.Tests.IntegrationTests
             fixture.Repository.MergeNoFF(hotfixBranch, Generate.SignatureNow());
 
             fixture.AssertFullSemver("1.0.1-ci.2", config);
+
+            // start second hotfix
+
+            const string hotfix2Branch = "hotfix/another-important-thing";
+
+            fixture.Repository.CreateBranch(hotfix2Branch);
+            fixture.Repository.MakeACommit("fix the new issue");
+            // fixture.AssertFullSemver("1.0.2-beta.1"); // FAILS, not sure if hotfixes should have beta tag
+            fixture.AssertFullSemver("1.0.2-ci.1", config); // FAILS, version is 1.0.1-ci.3
+
+            Commands.Checkout(fixture.Repository, MainBranch);
+            fixture.Repository.MergeNoFF(hotfix2Branch, Generate.SignatureNow());
+
+            fixture.AssertFullSemver("1.0.2-ci.1", config); // FAILS, version is 1.0.1-ci.3
+        }
+
+        [Test]
+        public void HotfixMergeIncrementsVersionWithDefaultConfig()
+        {
+            var config = new Config();
+
+            using var fixture = new EmptyRepositoryFixture();
+
+            // initialize gitflow
+
+            const string devBranch = "develop";
+
+            fixture.Repository.MakeACommit("setup repo");
+            fixture.Repository.CreateBranch(devBranch);
+            Commands.Checkout(fixture.Repository, devBranch);
+
+            // make some changes on dev
+
+            fixture.Repository.MakeACommit("add stuff");
+            fixture.Repository.MakeACommit("add more stuff");
+
+            // start a release
+
+            const string releaseBranch = "release/1.0";
+
+            fixture.Repository.CreateBranch(releaseBranch);
+            Commands.Checkout(fixture.Repository, releaseBranch);
+            fixture.Repository.MakeACommit("fix some minor thing");
+
+            fixture.AssertFullSemver("1.0.0-beta.1+1", config);
+
+            Commands.Checkout(fixture.Repository, MainBranch);
+            fixture.Repository.MergeNoFF(releaseBranch, Generate.SignatureNow());
+
+            fixture.AssertFullSemver("1.0.0+0", config);
+            fixture.ApplyTag("1.0");
+            fixture.AssertFullSemver("1.0.0", config);
+
+            // start first hotfix
+
+            const string hotfixBranch = "hotfix/something-important";
+
+            fixture.Repository.CreateBranch(hotfixBranch);
+            fixture.Repository.MakeACommit("fix the important issue");
+            // fixture.AssertFullSemver("1.0.1-beta.1+1", config); // FAILS, not sure if hotfixes should have beta tag
+            fixture.AssertFullSemver("1.0.1+1", config);
+            fixture.Repository.MakeACommit("fix something else");
+            // fixture.AssertFullSemver("1.0.1-beta.2+2", config); // FAILS, not sure if hotfixes should have beta tag
+            fixture.AssertFullSemver("1.0.1+2", config);
+
+            Commands.Checkout(fixture.Repository, MainBranch);
+            fixture.Repository.MergeNoFF(hotfixBranch, Generate.SignatureNow());
+
+            fixture.AssertFullSemver("1.0.1+2", config);
+
+            // start second hotfix
+
+            const string hotfix2Branch = "hotfix/another-important-thing";
+
+            fixture.Repository.CreateBranch(hotfix2Branch);
+            fixture.Repository.MakeACommit("fix the new issue");
+            // fixture.AssertFullSemver("1.0.2-beta.1+1", config); // FAILS, not sure if hotfixes should have beta tag
+            fixture.AssertFullSemver("1.0.2+1", config); // FAILS, version is 1.0.1+3
+
+            Commands.Checkout(fixture.Repository, MainBranch);
+            fixture.Repository.MergeNoFF(hotfix2Branch, Generate.SignatureNow());
+
+            fixture.AssertFullSemver("1.0.2+1", config); // FAILS, version is 1.0.1+3
         }
     }
 }
