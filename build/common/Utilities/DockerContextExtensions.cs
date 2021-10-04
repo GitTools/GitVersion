@@ -10,15 +10,36 @@ using Xunit;
 
 namespace Common.Utilities
 {
+    public enum Architecture
+    {
+        Arm64,
+        Amd64
+    }
     public static class DockerContextExtensions
     {
-        public static void DockerBuild(this BuildContextBase context, DockerImage dockerImage)
+        public static bool SkipArm64Image(this ICakeContext context, DockerImage dockerImage)
         {
-            var (distro, targetFramework, registry, _) = dockerImage;
-            var workDir = Paths.Src.Combine("Docker");
-            var tags = context.GetDockerTags(dockerImage);
+            if (dockerImage.Architecture != Architecture.Arm64) return false;
+            if (!Constants.DistrosToSkip.Contains(dockerImage.Distro)) return false;
 
+            context.Information($"Skipping Target: {dockerImage.TargetFramework}, Distro: {dockerImage.Distro}, Arch: {dockerImage.Architecture}");
+            return true;
+        }
+
+        public static void DockerBuildImage(this BuildContextBase context, DockerImage dockerImage)
+        {
             if (context.Version == null) return;
+
+            var (distro, targetFramework, arch, registry, _) = dockerImage;
+
+            context.Information($"Building image: {dockerImage}");
+
+            var workDir = Paths.Src.Combine("Docker");
+            var tags = context.GetDockerTags(dockerImage, arch);
+
+            var suffix = arch.ToSuffix();
+            var platforms = new List<string> { $"linux/{suffix}" };
+
             var buildSettings = new DockerImageBuildSettings
             {
                 Rm = true,
@@ -32,53 +53,116 @@ namespace Common.Utilities
                     $"DISTRO={distro}",
                     $"VERSION={context.Version.NugetVersion}"
                 },
-                // Pull = true,
-                // Platform = platform // TODO this one is not supported on docker versions < 18.02
+                Pull = true,
+                Platform = string.Join(",", platforms),
             };
 
-            context.DockerBuild(buildSettings, workDir.ToString());
+            context.DockerBuild(buildSettings, workDir.ToString(), "--output type=docker");
         }
 
-        public static void DockerPush(this BuildContextBase context, DockerImage dockerImage)
+        public static void DockerPushImage(this BuildContextBase context, DockerImage dockerImage)
         {
-            var tags = context.GetDockerTags(dockerImage);
+            var tags = context.GetDockerTags(dockerImage, dockerImage.Architecture);
             foreach (var tag in tags)
             {
                 context.DockerPush(tag);
             }
         }
 
+        public static void DockerCreateManifest(this BuildContextBase context, DockerImage dockerImage, bool skipArm64Image)
+        {
+            var manifestTags = context.GetDockerTags(dockerImage);
+            foreach (var tag in manifestTags)
+            {
+                var amd64Tag = $"{tag}-{Architecture.Amd64.ToSuffix()}";
+                if (skipArm64Image)
+                {
+                    context.DockerManifestCreate(tag, amd64Tag);
+                }
+                else
+                {
+                    var arm64Tag = $"{tag}-{Architecture.Arm64.ToSuffix()}";
+                    context.DockerManifestCreate(tag, amd64Tag, arm64Tag);
+                }
+            }
+        }
+
+        public static void DockerPushManifest(this BuildContextBase context, DockerImage dockerImage)
+        {
+            var manifestTags = context.GetDockerTags(dockerImage);
+            foreach (var tag in manifestTags)
+            {
+                context.DockerManifestPush(tag);
+            }
+        }
+        public static void DockerRemoveManifest(this BuildContextBase context, DockerImage dockerImage)
+        {
+            var manifestTags = context.GetDockerTags(dockerImage);
+            foreach (var tag in manifestTags)
+            {
+                context.DockerManifestRemove(tag);
+            }
+        }
+
+        private static void DockerManifestRemove(this ICakeContext context, string tag) => context.DockerCustomCommand($"manifest rm {tag}");
+
         public static void DockerPullImage(this ICakeContext context, DockerImage dockerImage)
         {
             var tag = $"{dockerImage.DockerImageName()}:{dockerImage.Distro}-sdk-{dockerImage.TargetFramework}";
-            context.DockerPull(tag);
+            var platform = $"linux/{dockerImage.Architecture.ToString().ToLower()}";
+            context.DockerPull(new DockerImagePullSettings { Platform = platform }, tag);
         }
 
         public static void DockerTestImage(this BuildContextBase context, DockerImage dockerImage)
         {
-            var tags = context.GetDockerTags(dockerImage);
+            var tags = context.GetDockerTags(dockerImage, dockerImage.Architecture);
             foreach (var tag in tags)
             {
-                context.DockerTestRun(tag, "/repo", "/showvariable", "FullSemver");
+                context.DockerTestRun(tag, dockerImage.Architecture, "/repo", "/showvariable", "FullSemver");
             }
         }
 
         public static void DockerTestArtifact(this BuildContextBase context, DockerImage dockerImage, string cmd)
         {
             var tag = $"{dockerImage.DockerImageName()}:{dockerImage.Distro}-sdk-{dockerImage.TargetFramework}";
-            context.DockerTestRun(tag, "pwsh", cmd);
+            context.DockerTestRun(tag, dockerImage.Architecture, "sh", cmd);
         }
 
-        private static void DockerTestRun(this BuildContextBase context, string image, string command, params string[] args)
+        private static void DockerBuild(
+            this ICakeContext context,
+            DockerImageBuildSettings settings,
+            string path, params string[] args)
         {
-            var settings = GetDockerRunSettings(context);
+            GenericDockerRunner<DockerImageBuildSettings> genericDockerRunner =
+                new(context.FileSystem, context.Environment, context.ProcessRunner, context.Tools);
+
+            string str;
+            switch (string.IsNullOrEmpty(path))
+            {
+                case false:
+                    {
+                        string str2 = path.Trim();
+                        str = str2.Length <= 1 || !str2.StartsWith("\"") || !str2.EndsWith("\"") ? "\"" + path + "\"" : path;
+                        break;
+                    }
+                default:
+                    str = path;
+                    break;
+            }
+            var additional = args.Concat(new[] { str }).ToArray();
+            genericDockerRunner.Run("buildx build", settings, additional);
+        }
+
+        private static void DockerTestRun(this BuildContextBase context, string image, Architecture arch, string command, params string[] args)
+        {
+            var settings = GetDockerRunSettings(context, arch);
             context.Information($"Testing image: {image}");
             var output = context.DockerRunImage(settings, image, command, args);
             context.Information("Output : " + output);
 
-            Assert.Equal(context.Version?.GitVersion.FullSemVer, output);
+            Assert.Contains(context.Version?.GitVersion.FullSemVer, output);
         }
-        private static IEnumerable<string> GetDockerTags(this BuildContextBase context, DockerImage dockerImage)
+        private static IEnumerable<string> GetDockerTags(this BuildContextBase context, DockerImage dockerImage, Architecture? arch = null)
         {
             var name = dockerImage.DockerImageName();
             var distro = dockerImage.Distro;
@@ -114,10 +198,14 @@ namespace Common.Utilities
                 }
             }
 
-            return tags;
+            if (!arch.HasValue) return tags;
+
+            var suffix = arch.Value.ToSuffix();
+            return tags.Select(x => $"{x}-{suffix}");
+
         }
         private static string DockerImageName(this DockerImage image) => $"{image.Registry}/{(image.UseBaseImage ? Constants.DockerBaseImageName : Constants.DockerImageName)}";
-        private static DockerContainerRunSettings GetDockerRunSettings(this BuildContextBase context)
+        private static DockerContainerRunSettings GetDockerRunSettings(this BuildContextBase context, Architecture arch)
         {
             var currentDir = context.MakeAbsolute(context.Directory("."));
             var root = string.Empty;
@@ -130,7 +218,8 @@ namespace Common.Utilities
                     $"{currentDir}/tests/scripts:{root}/scripts",
                     $"{currentDir}/artifacts/packages/nuget:{root}/nuget",
                     $"{currentDir}/artifacts/packages/native:{root}/native",
-                }
+                },
+                Platform = $"linux/{arch.ToString().ToLower()}"
             };
 
             if (context.IsAzurePipelineBuild)

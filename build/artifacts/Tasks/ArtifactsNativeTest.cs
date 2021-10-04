@@ -28,13 +28,15 @@ namespace Artifacts.Tasks
 
             foreach (var dockerImage in context.Images)
             {
-                var runtime = "linux-x64";
+                if (context.SkipArm64Image(dockerImage)) continue;
+
+                var runtime = dockerImage.Architecture == Architecture.Amd64 ? "linux-x64" : "linux-arm64";
                 if (dockerImage.Distro.StartsWith("alpine"))
                 {
                     runtime = "linux-musl-x64";
                 }
 
-                var cmd = $"-file {rootPrefix}/scripts/Test-Native.ps1 -version {version} -repoPath {rootPrefix}/repo -runtime {runtime}";
+                var cmd = $"{rootPrefix}/scripts/test-native-tool.sh --version {version} --repoPath {rootPrefix}/repo --runtime {runtime}";
 
                 context.DockerTestArtifact(dockerImage, cmd);
             }

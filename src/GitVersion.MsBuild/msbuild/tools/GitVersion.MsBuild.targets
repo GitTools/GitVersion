@@ -52,7 +52,7 @@
         </GetVersion>
 
         <PropertyGroup Condition=" '$(UpdateVersionProperties)' == 'true' ">
-            <Version>$(GitVersion_FullSemVer)</Version>
+            <Version>$(GitVersion_NuGetVersion)</Version>
             <VersionPrefix>$(GitVersion_MajorMinorPatch)</VersionPrefix>
             <VersionSuffix Condition=" '$(UseFullSemVerForNuGet)' == 'false' ">$(GitVersion_NuGetPreReleaseTag)</VersionSuffix>
             <VersionSuffix Condition=" '$(UseFullSemVerForNuGet)' == 'true' ">$(GitVersion_PreReleaseTag)</VersionSuffix>

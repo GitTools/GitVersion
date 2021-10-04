@@ -51,6 +51,16 @@ The next thing you need to do is to remove the `Assembly*Version` attributes fro
 your `Properties\AssemblyInfo.cs` files. This puts GitVersion.MsBuild in charge of
 versioning your assemblies.
 
+DotNet SDK-style projects will generate Assembly Version info along with other
+Assembly Info in a 'projectname.AssemblyInfo.cs' file, conflicting with GitVersion.
+So, you will need to edit your project. Add [GenerateAssemblyFileVersionAttribute](https://docs.microsoft.com/en-us/dotnet/core/project-sdk/msbuild-props#generateassemblyfileversionattribute)
+under the first PropertyGroup and set it to `false`:
+
+```xml
+<!-- GitVersion DotNet SDK Compatibility -->
+<GenerateAssemblyFileVersionAttribute>false</GenerateAssemblyFileVersionAttribute>
+```
+
 ### Done!
 
 The setup process is now complete and GitVersion.MsBuild should be working its magic,
@@ -179,10 +189,10 @@ have the ability to create NuGet packages directly by using the `pack` target:
 `msbuild /t:pack`. The version is controlled by the MSBuild properties described
 above.
 
-GitVersionTask has the option to generate SemVer 2.0 compliant NuGet package
-versions by setting `UseFullSemVerForNuGet` to true in your project (this is off
-by default for compatibility). Some hosts, like MyGet, support SemVer 2.0
-package versions but older NuGet clients and nuget.org do not.
+GitVersionTask generates SemVer 2.0 compliant NuGet package versions by default.
+You can disable it by setting `UseFullSemVerForNuGet` to false in your project.
+Older NuGet clients do not support SemVer 2.0 package versions, but most of the
+modern hosts support it.
 
 #### Accessing variables in MSBuild
 

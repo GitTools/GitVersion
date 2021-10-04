@@ -66,5 +66,7 @@ namespace Common.Utilities
 
             return currentPath;
         }
+
+        public static string ToSuffix(this Architecture arch) => arch.ToString().ToLower();
     }
 }

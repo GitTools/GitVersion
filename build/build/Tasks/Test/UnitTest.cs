@@ -51,6 +51,7 @@ namespace Build.Tasks
         {
             var error = (exception as AggregateException)?.InnerExceptions[0];
             context.Error(error.Dump());
+            throw exception;
         }
 
         public override void Finally(BuildContext context)
