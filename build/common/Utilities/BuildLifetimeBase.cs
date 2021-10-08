@@ -50,6 +50,10 @@ public class BuildLifetimeBase<T> : FrostingLifetime<T> where T : BuildContextBa
     }
     protected void LogBuildInformation(T context)
     {
+        if (context.HasArgument(Arguments.Target))
+        {
+            context.Information("Target:            {0}", context.Argument<string>(Arguments.Target));
+        }
         context.Information("Version:           {0}", context.Version?.SemVersion);
         context.Information("Build Agent:       {0}", context.GetBuildAgent());
         context.Information("OS:                {0}", context.GetOS());

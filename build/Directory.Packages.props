@@ -1,8 +1,8 @@
 ﻿<Project>
     <ItemGroup>
-        <PackageReference Include="Cake.Common" Version="1.2.0" />
+        <PackageReference Include="Cake.Common" Version="1.3.0" />
         <PackageReference Include="Cake.Compression" Version="0.2.6" />
-        <PackageReference Include="Cake.Frosting" Version="1.2.0" />
+        <PackageReference Include="Cake.Frosting" Version="1.3.0" />
         <PackageReference Include="Cake.Incubator" Version="6.0.0" />
 
         <PackageReference Include="Cake.Docker" Version="1.0.0" />
