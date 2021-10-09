@@ -29,16 +29,52 @@ jobs:
         language: [ 'csharp' ]
 
     steps:
-    - name: Checkout repository
+    -
+      name: Checkout repository
       uses: actions/checkout@v2.3.4
+    -
+      name: Fetch all history for all tags and branches
+      run: git fetch --prune --unshallow
 
     - name: Initialize CodeQL
       uses: github/codeql-action/init@v1
       with:
         languages: ${{ matrix.language }}
 
-    - name: Autobuild
-      uses: github/codeql-action/autobuild@v1
+    -
+      name: Cache cake frosting
+      id: cache-cake
+      uses: actions/cache@v2.1.6
+      with:
+        path: run
+        key: run-${{ runner.os }}-${{ hashFiles('./build/**') }}
+
+    -
+      name: Install .NET Core SDK 3.1.x
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: '3.1.x'
+
+    -
+      name: Install .NET SDK 5.0.x
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: '5.0.x'
+    -
+      name: Install .NET SDK 6.0.x
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: '6.0.x'
+        include-prerelease: true
+    -
+      name: '[Prepare]'
+      if: steps.cache-cake.outputs.cache-hit != 'true'
+      run: dotnet build build/CI.sln --configuration=Release
+
+    -
+      name: '[Build]'
+      shell: pwsh
+      run: dotnet run/build.dll --target=Build
 
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v1

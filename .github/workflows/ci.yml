@@ -49,8 +49,8 @@ jobs:
         path: run
         key: run-${{ runner.os }}-${{ hashFiles('./build/**') }}
     -
-      name: Setup .NET SDK
-      uses: actions/setup-dotnet@v1.8.2
+      name: Install .NET SDK 6.0.x
+      uses: actions/setup-dotnet@v1
       with:
         dotnet-version: '6.0.x'
         include-prerelease: true
@@ -90,8 +90,8 @@ jobs:
         path: tools
         key: tools-${{ runner.os }}-${{ hashFiles('./build/**') }}
     -
-      name: Setup .NET SDK
-      uses: actions/setup-dotnet@v1.8.2
+      name: Install .NET SDK 6.0.x
+      uses: actions/setup-dotnet@v1
       with:
         dotnet-version: '6.0.x'
         include-prerelease: true
@@ -147,8 +147,8 @@ jobs:
         path: tools
         key: tools-${{ runner.os }}-${{ hashFiles('./build/**') }}
     -
-      name: Setup .NET SDK
-      uses: actions/setup-dotnet@v1.8.2
+      name: Install .NET SDK 6.0.x
+      uses: actions/setup-dotnet@v1
       with:
         dotnet-version: '6.0.x'
         include-prerelease: true
@@ -194,8 +194,8 @@ jobs:
         name: nuget
         path: ${{ github.workspace }}/artifacts/packages/nuget
     -
-      name: Setup .NET SDK
-      uses: actions/setup-dotnet@v1.8.2
+      name: Install .NET SDK 6.0.x
+      uses: actions/setup-dotnet@v1
       with:
         dotnet-version: '6.0.x'
         include-prerelease: true
@@ -256,8 +256,8 @@ jobs:
       with:
         install: true
     -
-      name: Setup .NET SDK
-      uses: actions/setup-dotnet@v1.8.2
+      name: Install .NET SDK 6.0.x
+      uses: actions/setup-dotnet@v1
       with:
         dotnet-version: '6.0.x'
         include-prerelease: true
@@ -316,8 +316,8 @@ jobs:
       with:
         install: true
     -
-      name: Setup .NET SDK
-      uses: actions/setup-dotnet@v1.8.2
+      name: Install .NET SDK 6.0.x
+      uses: actions/setup-dotnet@v1
       with:
         dotnet-version: '6.0.x'
         include-prerelease: true
@@ -408,8 +408,8 @@ jobs:
         name: nuget
         path: ${{ github.workspace }}/artifacts/packages/nuget
     -
-      name: Setup .NET SDK
-      uses: actions/setup-dotnet@v1.8.2
+      name: Install .NET SDK 6.0.x
+      uses: actions/setup-dotnet@v1
       with:
         dotnet-version: '6.0.x'
         include-prerelease: true
@@ -464,8 +464,8 @@ jobs:
         name: native-macOS
         path: ${{ github.workspace }}/artifacts/packages/native
     -
-      name: Setup .NET SDK
-      uses: actions/setup-dotnet@v1.8.2
+      name: Install .NET SDK 6.0.x
+      uses: actions/setup-dotnet@v1
       with:
         dotnet-version: '6.0.x'
         include-prerelease: true
