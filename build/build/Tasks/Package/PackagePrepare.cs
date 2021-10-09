@@ -59,7 +59,7 @@ public class PackagePrepare : FrostingTask<BuildContext>
             Configuration = context.MsBuildConfiguration,
             OutputDirectory = outputPath,
             MSBuildSettings = context.MsBuildSettings,
-            ArgumentCustomization = arg => arg.Append("/p:PublishSingleFile=true"),
+            ArgumentCustomization = arg => arg.Append("/p:PublishSingleFile=true --self-contained"),
         };
 
         context.DotNetCorePublish("./src/GitVersion.App/GitVersion.App.csproj", settings);

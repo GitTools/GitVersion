@@ -10,6 +10,7 @@
         <PackageTags>Git;Versioning;GitVersion;GitFlowVersion;GitFlow;GitHubFlow;SemVer</PackageTags>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <PackageIcon>package_icon.png</PackageIcon>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
         <PackageReleaseNotes>https://github.com/GitTools/GitVersion/releases</PackageReleaseNotes>
 
         <RepositoryUrl>https://github.com/GitTools/GitVersion</RepositoryUrl>
@@ -76,10 +77,8 @@
     </ItemGroup>
 
     <ItemGroup>
-        <None Include="../../docs/input/docs/img/package_icon.png">
-            <Pack>true</Pack>
-            <PackagePath>/</PackagePath>
-        </None>
+        <None Include="../../docs/input/docs/img/package_icon.png" Pack="true" PackagePath="/"/>
+        <None Include="../../build/nuspec/README.md" Pack="true" PackagePath="/"/>
     </ItemGroup>
 
     <ItemGroup Condition=" '$(TargetFramework)' == 'net48' ">

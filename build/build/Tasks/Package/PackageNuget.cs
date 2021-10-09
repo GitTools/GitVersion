@@ -58,6 +58,7 @@ public class PackageNuget : FrostingTask<BuildContext>
             Files = context.GetFiles(artifactPath + "/**/*.*")
                 .Select(file => new NuSpecContent { Source = file.FullPath, Target = file.FullPath.Replace(artifactPath, "") })
                 .Concat(context.GetFiles("docs/**/package_icon.png").Select(file => new NuSpecContent { Source = file.FullPath, Target = "package_icon.png" }))
+                .Concat(context.GetFiles("build/nuspec/README.md").Select(file => new NuSpecContent { Source = file.FullPath, Target = "README.md" }))
                 .ToArray()
         };
 

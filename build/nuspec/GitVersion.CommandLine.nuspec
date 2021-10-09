@@ -16,5 +16,6 @@
     <tags>Git Versioning GitVersion GitFlowVersion GitFlow GitHubFlow SemVer</tags>
     <developmentDependency>true</developmentDependency>
     <releaseNotes>https://github.com/GitTools/GitVersion/releases</releaseNotes>
+    <readme>README.md</readme>
   </metadata>
 </package>
