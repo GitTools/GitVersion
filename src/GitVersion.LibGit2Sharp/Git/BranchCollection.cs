@@ -1,5 +1,3 @@
-using System.Collections;
-
 namespace GitVersion;
 
 internal sealed class BranchCollection : IBranchCollection

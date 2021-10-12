@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Concurrent;
 using GitVersion.MsBuild.Tests.Helpers;
 using Microsoft.Build.Framework;
