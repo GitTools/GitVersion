@@ -27,8 +27,16 @@ public class AppVeyor : BuildAgentBase
         };
 
         var stringContent = new StringContent(JsonSerializer.Serialize(body), Encoding.UTF8, "application/json");
-        var response = httpClient.PutAsync("api/build", stringContent).GetAwaiter().GetResult();
-        response.EnsureSuccessStatusCode();
+
+        try
+        {
+            var response = httpClient.PutAsync("api/build", stringContent).GetAwaiter().GetResult();
+            response.EnsureSuccessStatusCode();
+        }
+        catch (Exception ex)
+        {
+            return $"Failed to set AppVeyor build number to '{variables.FullSemVer}'. The error was: {ex.Message}";
+        }
 
         return $"Set AppVeyor build number to '{variables.FullSemVer}'.";
     }
