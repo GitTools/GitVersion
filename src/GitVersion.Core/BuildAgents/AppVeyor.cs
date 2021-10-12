@@ -33,7 +33,7 @@ public class AppVeyor : BuildAgentBase
             var response = httpClient.PutAsync("api/build", stringContent).GetAwaiter().GetResult();
             response.EnsureSuccessStatusCode();
         }
-        catch(Exception ex)
+        catch (Exception ex)
         {
             return $"Failed to set AppVeyor build number to '{variables.FullSemVer}'. The error was: {ex.Message}";
         }
