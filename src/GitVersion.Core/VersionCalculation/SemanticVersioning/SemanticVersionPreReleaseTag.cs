@@ -1,3 +1,4 @@
+using System.Globalization;
 using System.Text.RegularExpressions;
 using GitVersion.Extensions;
 using GitVersion.Helpers;
@@ -99,7 +100,6 @@ public class SemanticVersionPreReleaseTag :
             return -1;
         }
 
-
         var nameComparison = StringComparerUtils.IgnoreCaseComparer.Compare(Name, other?.Name);
         if (nameComparison != 0)
             return nameComparison;
@@ -107,7 +107,9 @@ public class SemanticVersionPreReleaseTag :
         return Nullable.Compare(Number, other?.Number);
     }
 
-    public override string? ToString() => ToString(null);
+    public override string ToString() => ToString("t");
+
+    public string ToString(string format) => ToString(format, CultureInfo.CurrentCulture);
 
     /// <summary>
     /// Default formats:
@@ -115,7 +117,7 @@ public class SemanticVersionPreReleaseTag :
     /// <para>l - Legacy SemVer tag with the tag number padded. [beta1]</para>
     /// <para>lp - Legacy SemVer tag with the tag number padded. [beta0001]. Can specify an integer to control padding (i.e., lp5)</para>
     /// </summary>
-    public string? ToString(string? format, IFormatProvider? formatProvider = null)
+    public string ToString(string format, IFormatProvider formatProvider = null)
     {
         if (formatProvider != null)
         {
@@ -147,7 +149,7 @@ public class SemanticVersionPreReleaseTag :
         {
             "t" => (Number.HasValue ? Name.IsNullOrEmpty() ? $"{Number}" : $"{Name}.{Number}" : Name),
             "l" => (Number.HasValue ? FormatLegacy(GetLegacyName(), Number.Value.ToString()) : FormatLegacy(GetLegacyName())),
-            _ => throw new ArgumentException("Unknown format", nameof(format))
+            _ => throw new FormatException($"Unknown format '{format}'.")
         };
     }
 
