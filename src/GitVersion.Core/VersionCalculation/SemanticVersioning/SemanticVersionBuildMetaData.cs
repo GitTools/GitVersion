@@ -1,3 +1,4 @@
+using System.Globalization;
 using System.Text.RegularExpressions;
 using GitVersion.Extensions;
 using GitVersion.Helpers;
@@ -59,7 +60,9 @@ public class SemanticVersionBuildMetaData : IFormattable, IEquatable<SemanticVer
 
     public override int GetHashCode() => EqualityHelper.GetHashCode(this);
 
-    public override string ToString() => ToString(null);
+    public override string ToString() => ToString("b");
+
+    public string ToString(string format) => ToString(format, CultureInfo.CurrentCulture);
 
     /// <summary>
     /// <para>b - Formats just the build number</para>
@@ -67,7 +70,7 @@ public class SemanticVersionBuildMetaData : IFormattable, IEquatable<SemanticVer
     /// <para>f - Formats the full build metadata</para>
     /// <para>p - Formats the padded build number. Can specify an integer for padding, default is 4. (i.e., p5)</para>
     /// </summary>
-    public string ToString(string? format, IFormatProvider? formatProvider = null)
+    public string ToString(string format, IFormatProvider formatProvider)
     {
         if (formatProvider != null)
         {
@@ -100,7 +103,7 @@ public class SemanticVersionBuildMetaData : IFormattable, IEquatable<SemanticVer
             "b" => this.CommitsSinceTag.ToString(),
             "s" => $"{this.CommitsSinceTag}{(this.Sha.IsNullOrEmpty() ? null : ".Sha." + this.Sha)}".TrimStart('.'),
             "f" => $"{this.CommitsSinceTag}{(this.Branch.IsNullOrEmpty() ? null : ".Branch." + FormatMetaDataPart(this.Branch))}{(this.Sha.IsNullOrEmpty() ? null : ".Sha." + this.Sha)}{(this.OtherMetaData.IsNullOrEmpty() ? null : "." + FormatMetaDataPart(this.OtherMetaData))}".TrimStart('.'),
-            _ => throw new ArgumentException("Unrecognised format", nameof(format))
+            _ => throw new FormatException($"Unknown format '{format}'.")
         };
     }
 
