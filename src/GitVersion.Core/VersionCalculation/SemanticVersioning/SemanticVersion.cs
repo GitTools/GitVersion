@@ -235,7 +235,7 @@ public class SemanticVersion : IFormattable, IComparable<SemanticVersion>, IEqua
     /// <para>l - Legacy SemVer tag for systems which do not support SemVer 2.0 properly [1.2.3-beta4]</para>
     /// <para>lp - Legacy SemVer tag for systems which do not support SemVer 2.0 properly (padded) [1.2.3-beta0004]</para>
     /// </summary>
-    public string ToString(string format, IFormatProvider formatProvider = null)
+    public string ToString(string format, IFormatProvider formatProvider)
     {
         if (format.IsNullOrEmpty())
             format = "s";
