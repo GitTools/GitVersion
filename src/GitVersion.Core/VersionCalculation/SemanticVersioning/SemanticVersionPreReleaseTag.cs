@@ -117,7 +117,7 @@ public class SemanticVersionPreReleaseTag :
     /// <para>l - Legacy SemVer tag with the tag number padded. [beta1]</para>
     /// <para>lp - Legacy SemVer tag with the tag number padded. [beta0001]. Can specify an integer to control padding (i.e., lp5)</para>
     /// </summary>
-    public string ToString(string format, IFormatProvider formatProvider = null)
+    public string ToString(string format, IFormatProvider formatProvider)
     {
         if (formatProvider != null)
         {
