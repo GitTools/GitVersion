@@ -110,15 +110,9 @@ public class SemanticVersionBuildMetaData : IFormattable, IEquatable<SemanticVer
     public static bool operator !=(SemanticVersionBuildMetaData? left, SemanticVersionBuildMetaData? right) =>
         !Equals(left, right);
 
-    public static implicit operator string?(SemanticVersionBuildMetaData? preReleaseTag)
-    {
-        return preReleaseTag?.ToString();
-    }
+    public static implicit operator string?(SemanticVersionBuildMetaData? preReleaseTag) => preReleaseTag?.ToString();
 
-    public static implicit operator SemanticVersionBuildMetaData(string preReleaseTag)
-    {
-        return Parse(preReleaseTag);
-    }
+    public static implicit operator SemanticVersionBuildMetaData(string preReleaseTag) => Parse(preReleaseTag);
 
     public static SemanticVersionBuildMetaData Parse(string? buildMetaData)
     {

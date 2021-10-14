@@ -253,9 +253,6 @@ public class BranchConfigurationCalculator : IBranchConfigurationCalculator
             return b1.Name.WithoutRemote.Equals(b2.Name.WithoutRemote);
         }
 
-        public int GetHashCode(IBranch b)
-        {
-            return b.Name.WithoutRemote.GetHashCode();
-        }
+        public int GetHashCode(IBranch b) => b.Name.WithoutRemote.GetHashCode();
     }
 }

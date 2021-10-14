@@ -14,15 +14,13 @@ internal sealed class CommitCollection : ICommitCollection
     public IEnumerable<ICommit> GetCommitsPriorTo(DateTimeOffset olderThan) => this.SkipWhile(c => c.When > olderThan);
     public IEnumerable<ICommit> QueryBy(CommitFilter commitFilter)
     {
-        static object? GetReacheableFrom(object? item)
-        {
-            return item switch
+        static object? GetReacheableFrom(object? item) =>
+            item switch
             {
                 Commit c => (LibGit2Sharp.Commit)c,
                 Branch b => (LibGit2Sharp.Branch)b,
                 _ => null
             };
-        }
 
         var includeReachableFrom = GetReacheableFrom(commitFilter.IncludeReachableFrom);
         var excludeReachableFrom = GetReacheableFrom(commitFilter.ExcludeReachableFrom);

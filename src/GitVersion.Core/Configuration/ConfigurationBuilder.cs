@@ -278,9 +278,6 @@ public class ConfigurationBuilder
 
         return config;
 
-        void AddBranchConfig(string name, BranchConfig overrides)
-        {
-            config.Branches[name] = BranchConfig.CreateDefaultBranchConfig(name).Apply(overrides);
-        }
+        void AddBranchConfig(string name, BranchConfig overrides) => config.Branches[name] = BranchConfig.CreateDefaultBranchConfig(name).Apply(overrides);
     }
 }
