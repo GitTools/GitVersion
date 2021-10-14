@@ -141,7 +141,7 @@ public class SemanticVersionPreReleaseTag :
 
         return format switch
         {
-            "t" => (Number.HasValue ? Name.IsNullOrEmpty() ? $"{Number}" : $"{Name}.{Number}" : Name),
+            "t" => (Number.HasValue ? Name.IsNullOrEmpty() ? $"{Number}" : $"{Name}.{Number}" : Name!),
             "l" => (Number.HasValue ? FormatLegacy(GetLegacyName(), Number.Value.ToString()) : FormatLegacy(GetLegacyName())),
             _ => throw new FormatException($"Unknown format '{format}'.")
         };

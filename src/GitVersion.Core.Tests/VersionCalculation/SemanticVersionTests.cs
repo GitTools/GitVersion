@@ -81,10 +81,7 @@ public class SemanticVersionTests : TestBase
     public void ToStringWithInvalidFormatTest()
     {
         var semVer = BuildSemVer(1, 2, 3, "rc", 1, 1);
-        Should.Throw<FormatException>(() => 
-        {
-            semVer.ToString("invalid");
-        });
+        Should.Throw<FormatException>(() => semVer.ToString("invalid"));
     }
 
     [TestCase(1, 2, 3, null, null, null, null, null, null, ExpectedResult = "1.2.3")]
