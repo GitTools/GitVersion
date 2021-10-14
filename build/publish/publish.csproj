@@ -4,11 +4,6 @@
         <RootNamespace>Publish</RootNamespace>
     </PropertyGroup>
     <ItemGroup>
-        <ProjectReference Include="..\common\common.csproj"/>
-    </ItemGroup>
-    <ItemGroup>
-        <Compile Include="..\common\Utilities\ImportUsings.cs">
-            <Link>ImportUsings.cs</Link>
-        </Compile>
+        <ProjectReference Include="..\common\common.csproj" />
     </ItemGroup>
 </Project>

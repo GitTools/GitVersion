@@ -34,5 +34,8 @@
         <Using Include="Cake.Docker" />
         <Using Include="Cake.Frosting" />
     </ItemGroup>
+    <ItemGroup>
+        <Using Include="Common.Utilities.Constants" Alias="Constants"/>
+    </ItemGroup>
 
 </Project>

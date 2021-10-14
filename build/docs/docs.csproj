@@ -10,9 +10,4 @@
         <PackageReference Include="Cake.Git" Version="1.1.0" />
         <PackageReference Include="Cake.Wyam" Version="2.2.12" />
     </ItemGroup>
-    <ItemGroup>
-        <Compile Include="..\common\Utilities\ImportUsings.cs">
-            <Link>ImportUsings.cs</Link>
-        </Compile>
-    </ItemGroup>
 </Project>

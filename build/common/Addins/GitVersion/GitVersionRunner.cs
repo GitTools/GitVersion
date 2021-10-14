@@ -23,10 +23,7 @@ public sealed class GitVersionRunner : Tool<GitVersionSettings>
         ICakeEnvironment environment,
         IProcessRunner processRunner,
         IToolLocator tools,
-        ICakeLog log) : base(fileSystem, environment, processRunner, tools)
-    {
-        this.log = log;
-    }
+        ICakeLog log) : base(fileSystem, environment, processRunner, tools) => this.log = log;
 
     /// <summary>
     /// Runs GitVersion and processes the results.
@@ -62,7 +59,7 @@ public sealed class GitVersionRunner : Tool<GitVersionSettings>
         var jsonEndIndex = output.IndexOf("}", StringComparison.Ordinal);
         var json = output.Substring(jsonStartIndex, jsonEndIndex - jsonStartIndex + 1);
 
-        return JsonConvert.DeserializeObject<GitVersion>(json);
+        return JsonConvert.DeserializeObject<GitVersion>(json) ?? new GitVersion();
     }
 
     private ProcessArgumentBuilder GetArguments(GitVersionSettings settings)
@@ -163,17 +160,11 @@ public sealed class GitVersionRunner : Tool<GitVersionSettings>
     /// Gets the name of the tool.
     /// </summary>
     /// <returns>The name of the tool.</returns>
-    protected override string GetToolName()
-    {
-        return "GitVersion";
-    }
+    protected override string GetToolName() => "GitVersion";
 
     /// <summary>
     /// Gets the possible names of the tool executable.
     /// </summary>
     /// <returns>The tool executable name.</returns>
-    protected override IEnumerable<string> GetToolExecutableNames()
-    {
-        return new[] { "GitVersion.exe", "dotnet-gitversion", "dotnet-gitversion.exe", "gitversion" };
-    }
+    protected override IEnumerable<string> GetToolExecutableNames() => new[] { "GitVersion.exe", "dotnet-gitversion", "dotnet-gitversion.exe", "gitversion" };
 }

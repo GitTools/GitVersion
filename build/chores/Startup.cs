@@ -1,4 +1,3 @@
-using Cake.Frosting;
 using Common.Lifetime;
 using Microsoft.Extensions.DependencyInjection;
 

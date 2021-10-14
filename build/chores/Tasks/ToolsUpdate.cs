@@ -1,6 +1,3 @@
-using System.Linq;
-using Cake.Common.Tools.DotNetCore;
-using Cake.Frosting;
 using Cake.Json;
 using Newtonsoft.Json.Linq;
 

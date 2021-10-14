@@ -1,6 +1,3 @@
-using Cake.Core;
-using Cake.Frosting;
-
 namespace Chores;
 
 public class BuildContext : FrostingContext

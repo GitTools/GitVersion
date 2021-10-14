@@ -1,5 +1,3 @@
-using Cake.Core.Annotations;
-
 namespace Common.Addins.Cake.DotNetCoreFormat;
 
 /// <summary>
