@@ -1,4 +1,5 @@
 using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
 using System.Text.RegularExpressions;
 using GitVersion.Extensions;
 
@@ -221,10 +222,12 @@ public class SemanticVersion : IFormattable, IComparable<SemanticVersion>, IEqua
         return 0;
     }
 
-    public override string ToString() => ToString(null);
+    public override string ToString() => ToString("s");
+
+    public string ToString(string format) => ToString(format, CultureInfo.CurrentCulture);
 
     /// <summary>
-    /// <para>s - Default SemVer [1.2.3-beta.4+5]</para>
+    /// <para>s - Default SemVer [1.2.3-beta.4]</para>
     /// <para>f - Full SemVer [1.2.3-beta.4+5]</para>
     /// <para>i - Informational SemVer [1.2.3-beta.4+5.Branch.main.BranchType.main.Sha.000000]</para>
     /// <para>j - Just the SemVer part [1.2.3]</para>
@@ -232,7 +235,7 @@ public class SemanticVersion : IFormattable, IComparable<SemanticVersion>, IEqua
     /// <para>l - Legacy SemVer tag for systems which do not support SemVer 2.0 properly [1.2.3-beta4]</para>
     /// <para>lp - Legacy SemVer tag for systems which do not support SemVer 2.0 properly (padded) [1.2.3-beta0004]</para>
     /// </summary>
-    public string ToString(string? format, IFormatProvider? formatProvider = null)
+    public string ToString(string format, IFormatProvider formatProvider)
     {
         if (format.IsNullOrEmpty())
             format = "s";
@@ -271,7 +274,7 @@ public class SemanticVersion : IFormattable, IComparable<SemanticVersion>, IEqua
                     return !buildMetadata.IsNullOrEmpty() ? $"{ToString("s")}+{buildMetadata}" : ToString("s");
                 }
             default:
-                throw new ArgumentException($"Unrecognised format '{format}'", nameof(format));
+                throw new FormatException($"Unknown format '{format}'.");
         }
     }
 
