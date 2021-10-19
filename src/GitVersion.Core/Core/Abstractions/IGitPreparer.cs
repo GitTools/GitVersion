@@ -1,8 +1,7 @@
-namespace GitVersion
+namespace GitVersion;
+
+public interface IGitPreparer
 {
-    public interface IGitPreparer
-    {
-        void Prepare();
-        void EnsureLocalBranchExistsForCurrentBranch(IRemote remote, string currentBranch);
-    }
+    void Prepare();
+    void EnsureLocalBranchExistsForCurrentBranch(IRemote remote, string currentBranch);
 }

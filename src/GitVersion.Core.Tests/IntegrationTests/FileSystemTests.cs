@@ -1,58 +1,55 @@
-using System.IO;
-using System.Text;
 using GitVersion.Core.Tests.Helpers;
 using NUnit.Framework;
 using Shouldly;
 
-namespace GitVersion.Core.Tests.IntegrationTests
+namespace GitVersion.Core.Tests.IntegrationTests;
+
+[TestFixture]
+public class FileSystemTests : TestBase
 {
-    [TestFixture]
-    public class FileSystemTests : TestBase
+    public string TempFilePath { get; set; }
+
+    [SetUp]
+    public void CreateTempFile() => TempFilePath = Path.GetTempFileName();
+
+    [TearDown]
+    public void Cleanup() => File.Delete(TempFilePath);
+
+    [TestCase("utf-32")]
+    [TestCase("utf-32BE")]
+    [TestCase("utf-16")]
+    [TestCase("utf-16BE")]
+    [TestCase("utf-8")]
+    public void WhenFileExistsWithEncodingPreambleEncodingIsPreservedAfterWriteAll(string encodingName)
     {
-        public string TempFilePath { get; set; }
+        var encoding = Encoding.GetEncoding(encodingName);
 
-        [SetUp]
-        public void CreateTempFile() => TempFilePath = Path.GetTempFileName();
+        File.WriteAllText(TempFilePath, "(－‸ლ)", encoding);
 
-        [TearDown]
-        public void Cleanup() => File.Delete(TempFilePath);
+        var fileSystem = new FileSystem();
+        fileSystem.WriteAllText(TempFilePath, @"¯\(◉◡◔)/¯");
 
-        [TestCase("utf-32")]
-        [TestCase("utf-32BE")]
-        [TestCase("utf-16")]
-        [TestCase("utf-16BE")]
-        [TestCase("utf-8")]
-        public void WhenFileExistsWithEncodingPreambleEncodingIsPreservedAfterWriteAll(string encodingName)
-        {
-            var encoding = Encoding.GetEncoding(encodingName);
+        using var stream = File.OpenRead(TempFilePath);
+        var preamble = encoding.GetPreamble();
+        var bytes = new byte[preamble.Length];
+        stream.Read(bytes, 0, preamble.Length);
 
-            File.WriteAllText(TempFilePath, "(－‸ლ)", encoding);
+        bytes.ShouldBe(preamble);
+    }
 
-            var fileSystem = new FileSystem();
-            fileSystem.WriteAllText(TempFilePath, @"¯\(◉◡◔)/¯");
+    [Test]
+    public void WhenFileDoesNotExistCreateWithUtf8WithPreamble()
+    {
+        var encoding = Encoding.UTF8;
 
-            using var stream = File.OpenRead(TempFilePath);
-            var preamble = encoding.GetPreamble();
-            var bytes = new byte[preamble.Length];
-            stream.Read(bytes, 0, preamble.Length);
+        var fileSystem = new FileSystem();
+        fileSystem.WriteAllText(TempFilePath, "╚(ಠ_ಠ)=┐");
 
-            bytes.ShouldBe(preamble);
-        }
+        using var stream = File.OpenRead(TempFilePath);
+        var preamble = encoding.GetPreamble();
+        var bytes = new byte[preamble.Length];
+        stream.Read(bytes, 0, preamble.Length);
 
-        [Test]
-        public void WhenFileDoesNotExistCreateWithUtf8WithPreamble()
-        {
-            var encoding = Encoding.UTF8;
-
-            var fileSystem = new FileSystem();
-            fileSystem.WriteAllText(TempFilePath, "╚(ಠ_ಠ)=┐");
-
-            using var stream = File.OpenRead(TempFilePath);
-            var preamble = encoding.GetPreamble();
-            var bytes = new byte[preamble.Length];
-            stream.Read(bytes, 0, preamble.Length);
-
-            bytes.ShouldBe(preamble);
-        }
+        bytes.ShouldBe(preamble);
     }
 }

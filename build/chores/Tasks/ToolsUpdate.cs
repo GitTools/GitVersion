@@ -1,26 +1,22 @@
-using System.Linq;
-using Cake.Common.Tools.DotNetCore;
-using Cake.Frosting;
 using Cake.Json;
 using Newtonsoft.Json.Linq;
 
-namespace Chores.Tasks
+namespace Chores.Tasks;
+
+[TaskName(nameof(ToolsUpdate))]
+[TaskDescription("Update dotnet local tools")]
+public class ToolsUpdate : FrostingTask<BuildContext>
 {
-    [TaskName(nameof(ToolsUpdate))]
-    [TaskDescription("Update dotnet local tools")]
-    public class ToolsUpdate : FrostingTask<BuildContext>
+    public override void Run(BuildContext context)
     {
-        public override void Run(BuildContext context)
+        var json = context.ParseJsonFromFile("dotnet-tools.json");
+        var jToken = json["tools"];
+        if (jToken != null)
         {
-            var json = context.ParseJsonFromFile("dotnet-tools.json");
-            var jToken = json["tools"];
-            if (jToken != null)
+            var tools = jToken.Select(x => ((JProperty)x).Name).ToArray();
+            foreach (var tool in tools)
             {
-                var tools = jToken.Select(x => ((JProperty)x).Name).ToArray();
-                foreach (var tool in tools)
-                {
-                    context.DotNetCoreTool($"tool update --local {tool}");
-                }
+                context.DotNetCoreTool($"tool update --local {tool}");
             }
         }
     }

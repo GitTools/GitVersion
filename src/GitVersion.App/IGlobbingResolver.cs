@@ -1,9 +1,6 @@
-using System.Collections.Generic;
+namespace GitVersion;
 
-namespace GitVersion
+public interface IGlobbingResolver
 {
-    public interface IGlobbingResolver
-    {
-        public IEnumerable<string> Resolve(string workingDirectory, string pattern);
-    }
+    public IEnumerable<string> Resolve(string workingDirectory, string pattern);
 }

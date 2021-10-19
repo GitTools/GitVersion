@@ -1,40 +1,36 @@
-using System.Collections.Generic;
-using Cake.Common;
-using Cake.Common.IO;
 using Cake.Wyam;
 using Common.Utilities;
 using Docs.Utilities;
 
-namespace Docs
+namespace Docs;
+
+public class BuildLifetime : BuildLifetimeBase<BuildContext>
 {
-    public class BuildLifetime : BuildLifetimeBase<BuildContext>
+    public override void Setup(BuildContext context)
     {
-        public override void Setup(BuildContext context)
+        context.Credentials = Credentials.GetCredentials(context);
+        context.ForcePublish = context.HasArgument("force");
+
+        context.WyamSettings = new WyamSettings
         {
-            context.Credentials = Credentials.GetCredentials(context);
-            context.ForcePublish = context.HasArgument("force");
-
-            context.WyamSettings = new WyamSettings
+            Recipe = "Docs",
+            Theme = "Samson",
+            OutputPath = context.MakeAbsolute(Paths.ArtifactsDocs.Combine("preview")),
+            RootPath = context.MakeAbsolute(Paths.Docs),
+            ConfigurationFile = context.MakeAbsolute(Paths.Docs.CombineWithFilePath("config.wyam")),
+            Settings = new Dictionary<string, object>
             {
-                Recipe = "Docs",
-                Theme = "Samson",
-                OutputPath = context.MakeAbsolute(Paths.ArtifactsDocs.Combine("preview")),
-                RootPath = context.MakeAbsolute(Paths.Docs),
-                ConfigurationFile = context.MakeAbsolute(Paths.Docs.CombineWithFilePath("config.wyam")),
-                Settings = new Dictionary<string, object>
-                {
-                    { "BaseEditUrl", "https://github.com/gittools/GitVersion/tree/main/docs/input/" },
-                    { "SourceFiles", context.MakeAbsolute(Paths.Src) + "/**/{!bin,!obj,!packages,!*.Tests,!GitTools.*,}/**/*.cs" },
-                    { "Title", "GitVersion" },
-                    { "IncludeGlobalNamespace", false }
-                }
-            };
+                { "BaseEditUrl", "https://github.com/gittools/GitVersion/tree/main/docs/input/" },
+                { "SourceFiles", context.MakeAbsolute(Paths.Src) + "/**/{!bin,!obj,!packages,!*.Tests,!GitTools.*,}/**/*.cs" },
+                { "Title", "GitVersion" },
+                { "IncludeGlobalNamespace", false }
+            }
+        };
 
-            context.StartGroup("Build Setup");
+        context.StartGroup("Build Setup");
 
-            LogBuildInformation(context);
+        LogBuildInformation(context);
 
-            context.EndGroup();
-        }
+        context.EndGroup();
     }
 }

@@ -1,12 +1,41 @@
 ﻿<Project>
     <PropertyGroup>
         <OutputType>Exe</OutputType>
-        <TargetFramework>net5.0</TargetFramework>
+        <TargetFramework>net6.0</TargetFramework>
         <RunWorkingDirectory>$(MSBuildProjectDirectory)</RunWorkingDirectory>
         <OutputPath>..\..\run\</OutputPath>
         <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
         <Nullable>enable</Nullable>
-        <LangVersion>9</LangVersion>
+        <LangVersion>10</LangVersion>
         <NoWarn>NU1604</NoWarn>
+        <ImplicitUsings>enable</ImplicitUsings>
     </PropertyGroup>
+
+    <ItemGroup>
+        <Using Include="System.Text" />
+        <Using Include="System.Reflection" />
+    </ItemGroup>
+    <ItemGroup>
+        <Using Include="Cake.Common" />
+        <Using Include="Cake.Common.Build" />
+        <Using Include="Cake.Common.Diagnostics" />
+        <Using Include="Cake.Common.Tools.NuGet" />
+        <Using Include="Cake.Common.Tools.NuGet.Install" />
+        <Using Include="Cake.Common.IO" />
+        <Using Include="Cake.Core" />
+        <Using Include="Cake.Core.Annotations" />
+        <Using Include="Cake.Core.Diagnostics" />
+        <Using Include="Cake.Core.IO" />
+        <Using Include="Cake.Core.Tooling" />
+        <Using Include="Cake.Common.Tools.DotNetCore" />
+        <Using Include="Cake.Common.Tools.DotNetCore.Build" />
+        <Using Include="Cake.Common.Tools.DotNetCore.MSBuild" />
+        <Using Include="Cake.Common.Tools.MSBuild" />
+        <Using Include="Cake.Docker" />
+        <Using Include="Cake.Frosting" />
+    </ItemGroup>
+    <ItemGroup>
+        <Using Include="Common.Utilities.Constants" Alias="Constants"/>
+    </ItemGroup>
+
 </Project>

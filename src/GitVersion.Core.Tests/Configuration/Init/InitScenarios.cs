@@ -1,4 +1,3 @@
-using System.IO;
 using System.Runtime.InteropServices;
 using GitVersion.Configuration;
 using GitVersion.Core.Tests.Helpers;
@@ -8,33 +7,32 @@ using Microsoft.Extensions.Options;
 using NUnit.Framework;
 using Shouldly;
 
-namespace GitVersion.Core.Tests.Init
+namespace GitVersion.Core.Tests.Init;
+
+[TestFixture]
+public class InitScenarios : TestBase
 {
-    [TestFixture]
-    public class InitScenarios : TestBase
+    [SetUp]
+    public void Setup() => ShouldlyConfiguration.ShouldMatchApprovedDefaults.LocateTestMethodUsingAttribute<TestAttribute>();
+
+    [Test]
+    [Category(NoMono)]
+    [Description(NoMonoDescription)]
+    public void CanSetNextVersion()
     {
-        [SetUp]
-        public void Setup() => ShouldlyConfiguration.ShouldMatchApprovedDefaults.LocateTestMethodUsingAttribute<TestAttribute>();
+        var workingDirectory = RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? "c:\\proj" : "/proj";
+        var options = Options.Create(new GitVersionOptions { WorkingDirectory = workingDirectory });
 
-        [Test]
-        [Category(NoMono)]
-        [Description(NoMonoDescription)]
-        public void CanSetNextVersion()
+        var sp = ConfigureServices(services =>
         {
-            var workingDirectory = RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? "c:\\proj" : "/proj";
-            var options = Options.Create(new GitVersionOptions { WorkingDirectory = workingDirectory });
+            services.AddSingleton<IConsole>(new TestConsole("3", "2.0.0", "0"));
+            services.AddSingleton(options);
+        });
 
-            var sp = ConfigureServices(services =>
-            {
-                services.AddSingleton<IConsole>(new TestConsole("3", "2.0.0", "0"));
-                services.AddSingleton(options);
-            });
+        var configurationProvider = sp.GetService<IConfigProvider>();
+        var fileSystem = sp.GetService<IFileSystem>();
+        configurationProvider.Init(workingDirectory);
 
-            var configurationProvider = sp.GetService<IConfigProvider>();
-            var fileSystem = sp.GetService<IFileSystem>();
-            configurationProvider.Init(workingDirectory);
-
-            fileSystem.ReadAllText(Path.Combine(workingDirectory, "GitVersion.yml")).ShouldMatchApproved();
-        }
+        fileSystem.ReadAllText(Path.Combine(workingDirectory, "GitVersion.yml")).ShouldMatchApproved();
     }
 }

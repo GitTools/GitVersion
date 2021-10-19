@@ -1,39 +1,36 @@
-using System;
-using System.Collections.Generic;
 using GitVersion.Logging;
 
-namespace GitVersion.BuildAgents
+namespace GitVersion.BuildAgents;
+
+public class BuildAgentResolver : IBuildAgentResolver
 {
-    public class BuildAgentResolver : IBuildAgentResolver
+    private readonly IEnumerable<IBuildAgent> buildAgents;
+    private readonly ILog log;
+    public BuildAgentResolver(IEnumerable<IBuildAgent> buildAgents, ILog log)
     {
-        private readonly IEnumerable<IBuildAgent> buildAgents;
-        private readonly ILog log;
-        public BuildAgentResolver(IEnumerable<IBuildAgent> buildAgents, ILog log)
-        {
-            this.log = log;
-            this.buildAgents = buildAgents ?? Array.Empty<IBuildAgent>();
-        }
+        this.log = log;
+        this.buildAgents = buildAgents ?? Array.Empty<IBuildAgent>();
+    }
 
-        public ICurrentBuildAgent? Resolve()
+    public ICurrentBuildAgent? Resolve()
+    {
+        ICurrentBuildAgent? instance = null;
+        foreach (var buildAgent in this.buildAgents)
         {
-            ICurrentBuildAgent? instance = null;
-            foreach (var buildAgent in this.buildAgents)
+            var agentName = buildAgent.GetType().Name;
+            try
             {
-                var agentName = buildAgent.GetType().Name;
-                try
-                {
-                    if (!buildAgent.CanApplyToCurrentContext()) continue;
+                if (!buildAgent.CanApplyToCurrentContext()) continue;
 
-                    this.log.Info($"Applicable build agent found: '{agentName}'.");
-                    instance = (ICurrentBuildAgent)buildAgent;
-                }
-                catch (Exception ex)
-                {
-                    this.log.Warning($"Failed to check build agent '{agentName}': {ex.Message}");
-                }
+                this.log.Info($"Applicable build agent found: '{agentName}'.");
+                instance = (ICurrentBuildAgent)buildAgent;
             }
-
-            return instance;
+            catch (Exception ex)
+            {
+                this.log.Warning($"Failed to check build agent '{agentName}': {ex.Message}");
+            }
         }
+
+        return instance;
     }
 }

@@ -1,10 +1,7 @@
-using System;
+namespace GitVersion;
 
-namespace GitVersion
+public interface IReference : IEquatable<IReference?>, IComparable<IReference>, INamedReference
 {
-    public interface IReference : IEquatable<IReference?>, IComparable<IReference>, INamedReference
-    {
-        string TargetIdentifier { get; }
-        IObjectId? ReferenceTargetId { get; }
-    }
+    string TargetIdentifier { get; }
+    IObjectId? ReferenceTargetId { get; }
 }

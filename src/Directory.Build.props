@@ -10,6 +10,7 @@
         <PackageTags>Git;Versioning;GitVersion;GitFlowVersion;GitFlow;GitHubFlow;SemVer</PackageTags>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <PackageIcon>package_icon.png</PackageIcon>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
         <PackageReleaseNotes>https://github.com/GitTools/GitVersion/releases</PackageReleaseNotes>
 
         <RepositoryUrl>https://github.com/GitTools/GitVersion</RepositoryUrl>
@@ -17,8 +18,8 @@
 
         <NoWarn>1591</NoWarn>
         <DebugType>embedded</DebugType>
-        <LangVersion>9.0</LangVersion>
-
+        <LangVersion>10</LangVersion>
+        <ImplicitUsings>enable</ImplicitUsings>
     </PropertyGroup>
     <PropertyGroup>
         <PackageVersion_LibGit2Sharp>0.27.0-preview-0116</PackageVersion_LibGit2Sharp>
@@ -29,7 +30,7 @@
         <PackageVersion_MicrosoftExtensions>5.0.0</PackageVersion_MicrosoftExtensions>
         <PackageVersion_MicrosoftJson>5.0.0</PackageVersion_MicrosoftJson>
         <PackageVersion_MicrosoftTextEncoding>5.0.0</PackageVersion_MicrosoftTextEncoding>
-        <PackageVersion_MsBuild>16.10.0</PackageVersion_MsBuild>
+        <PackageVersion_MsBuild>16.9.0</PackageVersion_MsBuild>
 
         <PackageVersion_MicrosoftTestSdk>16.11.0</PackageVersion_MicrosoftTestSdk>
         <PackageVersion_NSubstitute>4.2.2</PackageVersion_NSubstitute>
@@ -67,10 +68,17 @@
     </ItemGroup>
 
     <ItemGroup>
-        <None Include="../../docs/input/docs/img/package_icon.png">
-            <Pack>true</Pack>
-            <PackagePath>/</PackagePath>
-        </None>
+        <Using Include="System.Collections" />
+        <Using Include="System.Collections.Specialized" />
+        <Using Include="System.Diagnostics" />
+        <Using Include="System.Reflection" />
+        <Using Include="System.Text" />
+        <Using Include="System.Xml" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <None Include="../../docs/input/docs/img/package_icon.png" Pack="true" PackagePath="/"/>
+        <None Include="../../build/nuspec/README.md" Pack="true" PackagePath="/"/>
     </ItemGroup>
 
     <ItemGroup Condition=" '$(TargetFramework)' == 'net48' ">

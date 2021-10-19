@@ -1,41 +1,37 @@
-using System;
-using System.IO;
+namespace GitVersion.Logging;
 
-namespace GitVersion.Logging
+public class FileAppender : ILogAppender
 {
-    public class FileAppender : ILogAppender
+    private readonly string filePath;
+
+    public FileAppender(string filePath)
     {
-        private readonly string filePath;
+        this.filePath = filePath;
 
-        public FileAppender(string filePath)
+        var logFile = new FileInfo(Path.GetFullPath(filePath));
+
+        // NOTE: logFile.Directory will be null if the path is i.e. C:\logfile.log. @asbjornu
+        logFile.Directory?.Create();
+        if (logFile.Exists) return;
+
+        using (logFile.CreateText()) { }
+    }
+
+    public void WriteTo(LogLevel level, string message)
+    {
+        try
         {
-            this.filePath = filePath;
-
-            var logFile = new FileInfo(Path.GetFullPath(filePath));
-
-            // NOTE: logFile.Directory will be null if the path is i.e. C:\logfile.log. @asbjornu
-            logFile.Directory?.Create();
-            if (logFile.Exists) return;
-
-            using (logFile.CreateText()) { }
+            WriteLogEntry(this.filePath, message);
         }
-
-        public void WriteTo(LogLevel level, string message)
+        catch (Exception)
         {
-            try
-            {
-                WriteLogEntry(this.filePath, message);
-            }
-            catch (Exception)
-            {
-                //
-            }
+            //
         }
+    }
 
-        private static void WriteLogEntry(string logFilePath, string str)
-        {
-            var contents = $"{DateTime.Now:yyyy-MM-dd HH:mm:ss}\t\t{str}{System.Environment.NewLine}";
-            File.AppendAllText(logFilePath, contents);
-        }
+    private static void WriteLogEntry(string logFilePath, string str)
+    {
+        var contents = $"{DateTime.Now:yyyy-MM-dd HH:mm:ss}\t\t{str}{System.Environment.NewLine}";
+        File.AppendAllText(logFilePath, contents);
     }
 }

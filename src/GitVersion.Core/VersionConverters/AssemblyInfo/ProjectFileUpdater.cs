@@ -1,225 +1,220 @@
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 using System.Xml.Linq;
 using GitVersion.Extensions;
 using GitVersion.Logging;
 using GitVersion.OutputVariables;
 
-namespace GitVersion.VersionConverters.AssemblyInfo
+namespace GitVersion.VersionConverters.AssemblyInfo;
+
+public interface IProjectFileUpdater : IVersionConverter<AssemblyInfoContext>
 {
-    public interface IProjectFileUpdater : IVersionConverter<AssemblyInfoContext>
+}
+
+public sealed class ProjectFileUpdater : IProjectFileUpdater
+{
+    internal const string AssemblyVersionElement = "AssemblyVersion";
+    internal const string FileVersionElement = "FileVersion";
+    internal const string InformationalVersionElement = "InformationalVersion";
+    internal const string VersionElement = "Version";
+
+    private readonly List<Action> restoreBackupTasks = new();
+    private readonly List<Action> cleanupBackupTasks = new();
+
+    private readonly IFileSystem fileSystem;
+    private readonly ILog log;
+
+    public ProjectFileUpdater(ILog log, IFileSystem fileSystem)
     {
+        this.fileSystem = fileSystem;
+        this.log = log;
     }
 
-    public sealed class ProjectFileUpdater : IProjectFileUpdater
+    public void Execute(VersionVariables variables, AssemblyInfoContext context)
     {
-        internal const string AssemblyVersionElement = "AssemblyVersion";
-        internal const string FileVersionElement = "FileVersion";
-        internal const string InformationalVersionElement = "InformationalVersion";
-        internal const string VersionElement = "Version";
+        if (context.EnsureAssemblyInfo)
+            throw new WarningException($"Configuration setting {nameof(context.EnsureAssemblyInfo)} is not valid when updating project files!");
 
-        private readonly List<Action> restoreBackupTasks = new();
-        private readonly List<Action> cleanupBackupTasks = new();
+        var projectFilesToUpdate = GetProjectFiles(context).ToList();
 
-        private readonly IFileSystem fileSystem;
-        private readonly ILog log;
+        var assemblyVersion = variables.AssemblySemVer;
+        var assemblyInfoVersion = variables.InformationalVersion;
+        var assemblyFileVersion = variables.AssemblySemFileVer;
+        var packageVersion = variables.NuGetVersion;
 
-        public ProjectFileUpdater(ILog log, IFileSystem fileSystem)
+        foreach (var projectFile in projectFilesToUpdate)
         {
-            this.fileSystem = fileSystem;
-            this.log = log;
-        }
+            var localProjectFile = projectFile.FullName;
 
-        public void Execute(VersionVariables variables, AssemblyInfoContext context)
-        {
-            if (context.EnsureAssemblyInfo)
-                throw new WarningException($"Configuration setting {nameof(context.EnsureAssemblyInfo)} is not valid when updating project files!");
+            var originalFileContents = this.fileSystem.ReadAllText(localProjectFile);
+            var fileXml = XElement.Parse(originalFileContents);
 
-            var projectFilesToUpdate = GetProjectFiles(context).ToList();
-
-            var assemblyVersion = variables.AssemblySemVer;
-            var assemblyInfoVersion = variables.InformationalVersion;
-            var assemblyFileVersion = variables.AssemblySemFileVer;
-            var packageVersion = variables.NuGetVersionV2;
-
-            foreach (var projectFile in projectFilesToUpdate)
+            if (!CanUpdateProjectFile(fileXml))
             {
-                var localProjectFile = projectFile.FullName;
-
-                var originalFileContents = this.fileSystem.ReadAllText(localProjectFile);
-                var fileXml = XElement.Parse(originalFileContents);
-
-                if (!CanUpdateProjectFile(fileXml))
-                {
-                    this.log.Warning($"Unable to update file: {localProjectFile}");
-                    continue;
-                }
-
-                this.log.Debug($"Update file: {localProjectFile}");
-
-                var backupProjectFile = localProjectFile + ".bak";
-                this.fileSystem.Copy(localProjectFile, backupProjectFile, true);
-
-                this.restoreBackupTasks.Add(() =>
-                {
-                    if (this.fileSystem.Exists(localProjectFile))
-                    {
-                        this.fileSystem.Delete(localProjectFile);
-                    }
-
-                    this.fileSystem.Move(backupProjectFile, localProjectFile);
-                });
-
-                this.cleanupBackupTasks.Add(() => this.fileSystem.Delete(backupProjectFile));
-
-                if (!assemblyVersion.IsNullOrWhiteSpace())
-                {
-                    UpdateProjectVersionElement(fileXml, AssemblyVersionElement, assemblyVersion);
-                }
-
-                if (!assemblyFileVersion.IsNullOrWhiteSpace())
-                {
-                    UpdateProjectVersionElement(fileXml, FileVersionElement, assemblyFileVersion);
-                }
-
-                if (!assemblyInfoVersion.IsNullOrWhiteSpace())
-                {
-                    UpdateProjectVersionElement(fileXml, InformationalVersionElement, assemblyInfoVersion);
-                }
-
-                if (!packageVersion.IsNullOrWhiteSpace())
-                {
-                    UpdateProjectVersionElement(fileXml, VersionElement, packageVersion);
-                }
-
-                var outputXmlString = fileXml.ToString();
-                if (originalFileContents != outputXmlString)
-                {
-                    this.fileSystem.WriteAllText(localProjectFile, outputXmlString);
-                }
+                this.log.Warning($"Unable to update file: {localProjectFile}");
+                continue;
             }
 
-            CommitChanges();
-        }
+            this.log.Debug($"Update file: {localProjectFile}");
 
-        internal bool CanUpdateProjectFile(XElement xmlRoot)
-        {
-            if (xmlRoot.Name != "Project")
+            var backupProjectFile = localProjectFile + ".bak";
+            this.fileSystem.Copy(localProjectFile, backupProjectFile, true);
+
+            this.restoreBackupTasks.Add(() =>
             {
-                this.log.Warning($"Invalid project file specified, root element must be <Project>.");
-                return false;
+                if (this.fileSystem.Exists(localProjectFile))
+                {
+                    this.fileSystem.Delete(localProjectFile);
+                }
+
+                this.fileSystem.Move(backupProjectFile, localProjectFile);
+            });
+
+            this.cleanupBackupTasks.Add(() => this.fileSystem.Delete(backupProjectFile));
+
+            if (!assemblyVersion.IsNullOrWhiteSpace())
+            {
+                UpdateProjectVersionElement(fileXml, AssemblyVersionElement, assemblyVersion);
             }
 
-            var supportedSdks = new[] { "Microsoft.NET.Sdk", "Microsoft.NET.Sdk.Web", "Microsoft.NET.Sdk.WindowsDesktop", "Microsoft.NET.Sdk.Razor", "Microsoft.NET.Sdk.Worker" };
-            var sdkAttribute = xmlRoot.Attribute("Sdk");
-            if (sdkAttribute == null || !supportedSdks.Contains(sdkAttribute.Value))
+            if (!assemblyFileVersion.IsNullOrWhiteSpace())
             {
-                var supportedSdkString = string.Join("|", supportedSdks);
-                this.log.Warning($"Specified project file Sdk ({sdkAttribute?.Value}) is not supported, please ensure the project sdk is of the following: {supportedSdkString}.");
-                return false;
+                UpdateProjectVersionElement(fileXml, FileVersionElement, assemblyFileVersion);
             }
 
-            var propertyGroups = xmlRoot.Descendants("PropertyGroup").ToList();
-            if (!propertyGroups.Any())
+            if (!assemblyInfoVersion.IsNullOrWhiteSpace())
             {
-                this.log.Warning("Unable to locate any <PropertyGroup> elements in specified project file. Are you sure it is in a correct format?");
-                return false;
+                UpdateProjectVersionElement(fileXml, InformationalVersionElement, assemblyInfoVersion);
             }
 
-            var lastGenerateAssemblyInfoElement = propertyGroups.SelectMany(s => s.Elements("GenerateAssemblyInfo")).LastOrDefault();
-            if (lastGenerateAssemblyInfoElement != null && (bool)lastGenerateAssemblyInfoElement == false)
+            if (!packageVersion.IsNullOrWhiteSpace())
             {
-                this.log.Warning($"Project file specifies <GenerateAssemblyInfo>false</GenerateAssemblyInfo>: versions set in this project file will not affect the output artifacts.");
-                return false;
+                UpdateProjectVersionElement(fileXml, VersionElement, packageVersion);
             }
 
-            return true;
-        }
-
-        internal static void UpdateProjectVersionElement(XElement xmlRoot, string versionElement, string versionValue)
-        {
-            var propertyGroups = xmlRoot.Descendants("PropertyGroup").ToList();
-
-            var propertyGroupToModify = propertyGroups.LastOrDefault(l => l.Element(versionElement) != null)
-                ?? propertyGroups.First();
-
-            var versionXmlElement = propertyGroupToModify.Elements(versionElement).LastOrDefault();
-            if (versionXmlElement != null)
+            var outputXmlString = fileXml.ToString();
+            if (originalFileContents != outputXmlString)
             {
-                versionXmlElement.Value = versionValue;
-            }
-            else
-            {
-                propertyGroupToModify.SetElementValue(versionElement, versionValue);
+                this.fileSystem.WriteAllText(localProjectFile, outputXmlString);
             }
         }
 
-        public void Dispose()
-        {
-            foreach (var restoreBackup in this.restoreBackupTasks)
-            {
-                restoreBackup();
-            }
+        CommitChanges();
+    }
 
-            this.cleanupBackupTasks.Clear();
-            this.restoreBackupTasks.Clear();
+    internal bool CanUpdateProjectFile(XElement xmlRoot)
+    {
+        if (xmlRoot.Name != "Project")
+        {
+            this.log.Warning($"Invalid project file specified, root element must be <Project>.");
+            return false;
         }
 
-        private void CommitChanges()
+        var supportedSdks = new[] { "Microsoft.NET.Sdk", "Microsoft.NET.Sdk.Web", "Microsoft.NET.Sdk.WindowsDesktop", "Microsoft.NET.Sdk.Razor", "Microsoft.NET.Sdk.Worker" };
+        var sdkAttribute = xmlRoot.Attribute("Sdk");
+        if (sdkAttribute == null || !supportedSdks.Contains(sdkAttribute.Value))
         {
-            foreach (var cleanupBackupTask in this.cleanupBackupTasks)
-            {
-                cleanupBackupTask();
-            }
-
-            this.cleanupBackupTasks.Clear();
-            this.restoreBackupTasks.Clear();
+            var supportedSdkString = string.Join("|", supportedSdks);
+            this.log.Warning($"Specified project file Sdk ({sdkAttribute?.Value}) is not supported, please ensure the project sdk is of the following: {supportedSdkString}.");
+            return false;
         }
 
-        private IEnumerable<FileInfo> GetProjectFiles(AssemblyInfoContext context)
+        var propertyGroups = xmlRoot.Descendants("PropertyGroup").ToList();
+        if (!propertyGroups.Any())
         {
-            var workingDirectory = context.WorkingDirectory;
-            var assemblyInfoFileNames = new HashSet<string>(context.AssemblyInfoFiles);
+            this.log.Warning("Unable to locate any <PropertyGroup> elements in specified project file. Are you sure it is in a correct format?");
+            return false;
+        }
 
-            if (assemblyInfoFileNames.Any(x => !x.IsNullOrWhiteSpace()))
+        var lastGenerateAssemblyInfoElement = propertyGroups.SelectMany(s => s.Elements("GenerateAssemblyInfo")).LastOrDefault();
+        if (lastGenerateAssemblyInfoElement != null && (bool)lastGenerateAssemblyInfoElement == false)
+        {
+            this.log.Warning($"Project file specifies <GenerateAssemblyInfo>false</GenerateAssemblyInfo>: versions set in this project file will not affect the output artifacts.");
+            return false;
+        }
+
+        return true;
+    }
+
+    internal static void UpdateProjectVersionElement(XElement xmlRoot, string versionElement, string versionValue)
+    {
+        var propertyGroups = xmlRoot.Descendants("PropertyGroup").ToList();
+
+        var propertyGroupToModify = propertyGroups.LastOrDefault(l => l.Element(versionElement) != null)
+                                    ?? propertyGroups.First();
+
+        var versionXmlElement = propertyGroupToModify.Elements(versionElement).LastOrDefault();
+        if (versionXmlElement != null)
+        {
+            versionXmlElement.Value = versionValue;
+        }
+        else
+        {
+            propertyGroupToModify.SetElementValue(versionElement, versionValue);
+        }
+    }
+
+    public void Dispose()
+    {
+        foreach (var restoreBackup in this.restoreBackupTasks)
+        {
+            restoreBackup();
+        }
+
+        this.cleanupBackupTasks.Clear();
+        this.restoreBackupTasks.Clear();
+    }
+
+    private void CommitChanges()
+    {
+        foreach (var cleanupBackupTask in this.cleanupBackupTasks)
+        {
+            cleanupBackupTask();
+        }
+
+        this.cleanupBackupTasks.Clear();
+        this.restoreBackupTasks.Clear();
+    }
+
+    private IEnumerable<FileInfo> GetProjectFiles(AssemblyInfoContext context)
+    {
+        var workingDirectory = context.WorkingDirectory;
+        var assemblyInfoFileNames = new HashSet<string>(context.AssemblyInfoFiles);
+
+        if (assemblyInfoFileNames.Any(x => !x.IsNullOrWhiteSpace()))
+        {
+            foreach (var item in assemblyInfoFileNames)
             {
-                foreach (var item in assemblyInfoFileNames)
+                var fullPath = Path.Combine(workingDirectory, item);
+
+                if (this.fileSystem.Exists(fullPath))
                 {
-                    var fullPath = Path.Combine(workingDirectory, item);
-
-                    if (this.fileSystem.Exists(fullPath))
-                    {
-                        yield return new FileInfo(fullPath);
-                    }
-                    else
-                    {
-                        this.log.Warning($"Specified file {fullPath} was not found and will not be updated.");
-                    }
+                    yield return new FileInfo(fullPath);
+                }
+                else
+                {
+                    this.log.Warning($"Specified file {fullPath} was not found and will not be updated.");
                 }
             }
-            else
-            {
-                foreach (var item in this.fileSystem.DirectoryEnumerateFiles(workingDirectory, "*", SearchOption.AllDirectories).Where(IsSupportedProjectFile))
-                {
-                    var assemblyInfoFile = new FileInfo(item);
-
-                    yield return assemblyInfoFile;
-                }
-            }
         }
-
-        private bool IsSupportedProjectFile(string fileName)
+        else
         {
-            if (fileName.IsNullOrEmpty())
+            foreach (var item in this.fileSystem.DirectoryEnumerateFiles(workingDirectory, "*", SearchOption.AllDirectories).Where(IsSupportedProjectFile))
             {
-                return false;
-            }
+                var assemblyInfoFile = new FileInfo(item);
 
-            return fileName.EndsWith(".csproj") ||
-                   fileName.EndsWith(".fsproj") ||
-                   fileName.EndsWith(".vbproj");
+                yield return assemblyInfoFile;
+            }
         }
+    }
+
+    private bool IsSupportedProjectFile(string fileName)
+    {
+        if (fileName.IsNullOrEmpty())
+        {
+            return false;
+        }
+
+        return fileName.EndsWith(".csproj") ||
+               fileName.EndsWith(".fsproj") ||
+               fileName.EndsWith(".vbproj");
     }
 }

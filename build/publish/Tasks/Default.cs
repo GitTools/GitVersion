@@ -1,9 +1,6 @@
-using Cake.Frosting;
+namespace Publish.Tasks;
 
-namespace Publish.Tasks
+[TaskDescription("Shows this output")]
+public class Default : Common.Tasks.Default
 {
-    [TaskDescription("Shows this output")]
-    public class Default : Common.Tasks.Default
-    {
-    }
 }

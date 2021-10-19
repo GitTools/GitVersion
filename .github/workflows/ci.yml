@@ -49,6 +49,12 @@ jobs:
         path: run
         key: run-${{ runner.os }}-${{ hashFiles('./build/**') }}
     -
+      name: Install .NET SDK 6.0.x
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: '6.0.x'
+        include-prerelease: true
+    -
       name: '[Prepare]'
       if: steps.cache-cake.outputs.cache-hit != 'true'
       run: dotnet build build/CI.sln --configuration=Release
@@ -84,6 +90,12 @@ jobs:
         path: tools
         key: tools-${{ runner.os }}-${{ hashFiles('./build/**') }}
     -
+      name: Install .NET SDK 6.0.x
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: '6.0.x'
+        include-prerelease: true
+    -
       name: '[Build]'
       shell: pwsh
       run: dotnet run/build.dll --target=Package
@@ -110,7 +122,7 @@ jobs:
     strategy:
       matrix:
         os: [windows-latest, ubuntu-latest, macos-latest]
-        targetFramework: [net5.0, netcoreapp3.1]
+        targetFramework: [net5.0, net6.0, netcoreapp3.1]
       fail-fast: false
 
     steps:
@@ -134,6 +146,12 @@ jobs:
       with:
         path: tools
         key: tools-${{ runner.os }}-${{ hashFiles('./build/**') }}
+    -
+      name: Install .NET SDK 6.0.x
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: '6.0.x'
+        include-prerelease: true
     -
       name: '[Build]'
       shell: pwsh
@@ -176,6 +194,12 @@ jobs:
         name: nuget
         path: ${{ github.workspace }}/artifacts/packages/nuget
     -
+      name: Install .NET SDK 6.0.x
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: '6.0.x'
+        include-prerelease: true
+    -
       name: '[Test Artifacts]'
       shell: pwsh
       run: dotnet run/artifacts.dll --target=Artifacts${{ matrix.package }}Test
@@ -186,8 +210,8 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        targetFramework: [ '3.1', '5.0' ]
-        distro: [ alpine.3.12-x64, centos.7-x64, centos.8-x64, debian.9-x64, debian.10-x64, fedora.33-x64, ubuntu.16.04-x64, ubuntu.18.04-x64, ubuntu.20.04-x64 ]
+        targetFramework: [ '3.1', '5.0', '6.0' ]
+        distro: [ alpine.3.12, alpine.3.13, alpine.3.14, centos.7, centos.8, debian.9, debian.10, debian.11, fedora.33, ubuntu.18.04, ubuntu.20.04 ]
       fail-fast: false
 
     steps:
@@ -224,9 +248,27 @@ jobs:
         name: native-${{ runner.os }}
         path: ${{ github.workspace }}/artifacts/packages/native
     -
-      name: '[Test Artifacts]'
+      name: Setup QEMU
+      uses: docker/setup-qemu-action@v1
+    -
+      name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v1
+      with:
+        install: true
+    -
+      name: Install .NET SDK 6.0.x
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: '6.0.x'
+        include-prerelease: true
+    -
+      name: '[Test Artifacts (amd64)]'
       shell: pwsh
-      run: dotnet run/artifacts.dll --target=ArtifactsTest --docker_dotnetversion=${{ matrix.targetFramework }} --docker_distro=${{ matrix.distro }}
+      run: dotnet run/artifacts.dll --target=ArtifactsTest --arch amd64 --docker_dotnetversion=${{ matrix.targetFramework }} --docker_distro=${{ matrix.distro }} --verbosity=diagnostic
+    -
+      name: '[Test Artifacts (arm64)]'
+      shell: pwsh
+      run: dotnet run/artifacts.dll --target=ArtifactsTest --arch arm64 --docker_dotnetversion=${{ matrix.targetFramework }} --docker_distro=${{ matrix.distro }}
 
   docker_linux_images:
     name: Build, Test and Publish Docker Images
@@ -234,8 +276,8 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        targetFramework: [ '3.1', '5.0' ]
-        distro: [ alpine.3.12-x64, centos.7-x64, centos.8-x64, debian.9-x64, debian.10-x64, fedora.33-x64, ubuntu.16.04-x64, ubuntu.18.04-x64, ubuntu.20.04-x64 ]
+        targetFramework: [ '3.1', '5.0', '6.0' ]
+        distro: [ alpine.3.12, alpine.3.13, alpine.3.14, centos.7, centos.8, debian.9, debian.10, debian.11, fedora.33, ubuntu.18.04, ubuntu.20.04 ]
       fail-fast: false
 
     steps:
@@ -266,6 +308,20 @@ jobs:
         name: nuget
         path: ${{ github.workspace }}/artifacts/packages/nuget
     -
+      name: Setup QEMU
+      uses: docker/setup-qemu-action@v1
+    -
+      name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v1
+      with:
+        install: true
+    -
+      name: Install .NET SDK 6.0.x
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: '6.0.x'
+        include-prerelease: true
+    -
       name: Login to DockerHub
       if: success() && github.event_name != 'pull_request'
       uses: docker/login-action@v1
@@ -273,21 +329,44 @@ jobs:
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_PASSWORD }}
     -
-      name: '[Docker Build/Test/Publish] DockerHub'
+      name: '[Docker Build/Test/Publish (amd64)] DockerHub'
+      if: success() && github.event_name != 'pull_request'
       shell: pwsh
-      run: dotnet run/docker.dll --target=DockerPublish --docker_dotnetversion=${{ matrix.targetFramework }} --docker_distro=${{ matrix.distro }} --docker_registry dockerhub
+      run: dotnet run/docker.dll --target=DockerPublish --arch amd64 --docker_dotnetversion=${{ matrix.targetFramework }} --docker_distro=${{ matrix.distro }} --docker_registry dockerhub
+    -
+      name: '[Docker Build/Test/Publish (arm64)] DockerHub'
+      if: success() && github.event_name != 'pull_request'
+      shell: pwsh
+      run: dotnet run/docker.dll --target=DockerPublish --arch arm64 --docker_dotnetversion=${{ matrix.targetFramework }} --docker_distro=${{ matrix.distro }} --docker_registry dockerhub
+    -
+      name: '[Docker Publish Manifest] DockerHub'
+      if: success() && github.event_name != 'pull_request'
+      shell: pwsh
+      run: dotnet run/docker.dll --target=DockerManifest --docker_dotnetversion=${{ matrix.targetFramework }} --docker_distro=${{ matrix.distro }} --docker_registry dockerhub
+
     -
       name: Login to GitHub Container Registry
       if: success() && github.event_name != 'pull_request'
       uses: docker/login-action@v1
       with:
-          registry: ghcr.io
-          username: ${{ github.repository_owner }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+        registry: ghcr.io
+        username: ${{ github.repository_owner }}
+        password: ${{ secrets.DOCKER_GITHUB_TOKEN }}
     -
-      name: '[Docker Build/Test/Publish] GitHub Docker'
+      name: '[Docker Build/Test/Publish (amd64)] GitHub Container Registry'
+      if: success() && github.event_name != 'pull_request'
       shell: pwsh
-      run: dotnet run/docker.dll --target=DockerPublish --docker_dotnetversion=${{ matrix.targetFramework }} --docker_distro=${{ matrix.distro }} --docker_registry github
+      run: dotnet run/docker.dll --target=DockerPublish --arch amd64 --docker_dotnetversion=${{ matrix.targetFramework }} --docker_distro=${{ matrix.distro }} --docker_registry github
+    -
+      name: '[Docker Build/Test/Publish (arm64)] GitHub Container Registry'
+      if: success() && github.event_name != 'pull_request'
+      shell: pwsh
+      run: dotnet run/docker.dll --target=DockerPublish --arch arm64 --docker_dotnetversion=${{ matrix.targetFramework }} --docker_distro=${{ matrix.distro }} --docker_registry github
+    -
+      name: '[Docker Publish Manifest] GitHub Container Registry'
+      if: success() && github.event_name != 'pull_request'
+      shell: pwsh
+      run: dotnet run/docker.dll --target=DockerManifest --docker_dotnetversion=${{ matrix.targetFramework }} --docker_distro=${{ matrix.distro }} --docker_registry github
 
   publish:
     name: Publish
@@ -328,6 +407,12 @@ jobs:
       with:
         name: nuget
         path: ${{ github.workspace }}/artifacts/packages/nuget
+    -
+      name: Install .NET SDK 6.0.x
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: '6.0.x'
+        include-prerelease: true
     -
       name: '[Publish]'
       shell: pwsh
@@ -378,6 +463,12 @@ jobs:
       with:
         name: native-macOS
         path: ${{ github.workspace }}/artifacts/packages/native
+    -
+      name: Install .NET SDK 6.0.x
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: '6.0.x'
+        include-prerelease: true
     -
       name: '[Release]'
       shell: pwsh

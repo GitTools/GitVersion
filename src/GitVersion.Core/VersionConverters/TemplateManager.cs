@@ -1,83 +1,78 @@
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 using GitVersion.Extensions;
 
-namespace GitVersion.VersionConverters
+namespace GitVersion.VersionConverters;
+
+internal enum TemplateType
 {
-    internal enum TemplateType
+    AssemblyInfo,
+    GitVersionInfo
+}
+
+internal class TemplateManager
+{
+    private readonly Dictionary<string, string> templates;
+    private readonly Dictionary<string, string> addFormats;
+
+    public TemplateManager(TemplateType templateType)
     {
-        AssemblyInfo,
-        GitVersionInfo
+        this.templates = GetEmbeddedTemplates(templateType, "Templates").ToDictionary(Path.GetExtension, v => v, StringComparer.OrdinalIgnoreCase);
+        this.addFormats = GetEmbeddedTemplates(templateType, "AddFormats").ToDictionary(Path.GetExtension, v => v, StringComparer.OrdinalIgnoreCase);
     }
 
-    internal class TemplateManager
+    public string? GetTemplateFor(string fileExtension)
     {
-        private readonly Dictionary<string, string> templates;
-        private readonly Dictionary<string, string> addFormats;
-
-        public TemplateManager(TemplateType templateType)
+        if (fileExtension == null)
         {
-            this.templates = GetEmbeddedTemplates(templateType, "Templates").ToDictionary(Path.GetExtension, v => v, StringComparer.OrdinalIgnoreCase);
-            this.addFormats = GetEmbeddedTemplates(templateType, "AddFormats").ToDictionary(Path.GetExtension, v => v, StringComparer.OrdinalIgnoreCase);
+            throw new ArgumentNullException(nameof(fileExtension));
         }
 
-        public string? GetTemplateFor(string fileExtension)
+        string? result = null;
+
+        if (this.templates.TryGetValue(fileExtension, out var template) && template != null)
         {
-            if (fileExtension == null)
-            {
-                throw new ArgumentNullException(nameof(fileExtension));
-            }
-
-            string? result = null;
-
-            if (this.templates.TryGetValue(fileExtension, out var template) && template != null)
-            {
-                result = template.ReadAsStringFromEmbeddedResource<TemplateManager>();
-            }
-
-            return result;
+            result = template.ReadAsStringFromEmbeddedResource<TemplateManager>();
         }
 
-        public string? GetAddFormatFor(string fileExtension)
+        return result;
+    }
+
+    public string? GetAddFormatFor(string fileExtension)
+    {
+        if (fileExtension == null)
         {
-            if (fileExtension == null)
-            {
-                throw new ArgumentNullException(nameof(fileExtension));
-            }
-
-            string? result = null;
-
-            if (this.addFormats.TryGetValue(fileExtension, out var addFormat) && addFormat != null)
-            {
-                result = addFormat.ReadAsStringFromEmbeddedResource<TemplateManager>().TrimEnd('\r', '\n');
-            }
-
-            return result;
+            throw new ArgumentNullException(nameof(fileExtension));
         }
 
-        public bool IsSupported(string fileExtension)
-        {
-            if (fileExtension == null)
-            {
-                throw new ArgumentNullException(nameof(fileExtension));
-            }
+        string? result = null;
 
-            return this.templates.ContainsKey(fileExtension);
+        if (this.addFormats.TryGetValue(fileExtension, out var addFormat) && addFormat != null)
+        {
+            result = addFormat.ReadAsStringFromEmbeddedResource<TemplateManager>().TrimEnd('\r', '\n');
         }
 
-        private static IEnumerable<string> GetEmbeddedTemplates(TemplateType templateType, string templateCategory)
+        return result;
+    }
+
+    public bool IsSupported(string fileExtension)
+    {
+        if (fileExtension == null)
         {
+            throw new ArgumentNullException(nameof(fileExtension));
+        }
 
-            var assy = typeof(TemplateManager).Assembly;
+        return this.templates.ContainsKey(fileExtension);
+    }
 
-            foreach (var name in assy.GetManifestResourceNames())
+    private static IEnumerable<string> GetEmbeddedTemplates(TemplateType templateType, string templateCategory)
+    {
+
+        var assy = typeof(TemplateManager).Assembly;
+
+        foreach (var name in assy.GetManifestResourceNames())
+        {
+            if (name.Contains(templateType.ToString()) && name.Contains(templateCategory))
             {
-                if (name.Contains(templateType.ToString()) && name.Contains(templateCategory))
-                {
-                    yield return name;
-                }
+                yield return name;
             }
         }
     }

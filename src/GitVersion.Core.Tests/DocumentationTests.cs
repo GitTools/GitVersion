@@ -1,7 +1,3 @@
-using System;
-using System.IO;
-using System.Linq;
-using System.Reflection;
 using GitVersion.Core.Tests.Helpers;
 using GitVersion.Model.Configuration;
 using GitVersion.OutputVariables;
@@ -9,94 +5,93 @@ using NUnit.Framework;
 using Shouldly;
 using YamlDotNet.Serialization;
 
-namespace GitVersion.Core.Tests
+namespace GitVersion.Core.Tests;
+
+[TestFixture]
+public class DocumentationTests : TestBase
 {
-    [TestFixture]
-    public class DocumentationTests : TestBase
+    private DirectoryInfo docsDirectory;
+
+    [OneTimeSetUp]
+    public void OneTimeSetUp() => this.docsDirectory = GetDocsDirectory();
+
+    [Test]
+    public void ConfigurationDocumentationIsUpToDate()
     {
-        private DirectoryInfo docsDirectory;
+        var configurationDocumentationFile = ReadDocumentationFile("input/docs/reference/configuration.md");
 
-        [OneTimeSetUp]
-        public void OneTimeSetUp() => this.docsDirectory = GetDocsDirectory();
+        const BindingFlags bindingFlags = BindingFlags.Public | BindingFlags.DeclaredOnly | BindingFlags.Instance;
+        var configProperties = typeof(Config)
+            .GetProperties(bindingFlags)
+            .Union(typeof(BranchConfig).GetProperties(bindingFlags))
+            .Select(p => p.GetCustomAttribute<YamlMemberAttribute>())
+            .Where(a => a != null)
+            .Select(a => a.Alias)
+            .ToList();
 
-        [Test]
-        public void ConfigurationDocumentationIsUpToDate()
+        configProperties.ShouldNotBeEmpty();
+
+        foreach (var configProperty in configProperties)
         {
-            var configurationDocumentationFile = ReadDocumentationFile("input/docs/reference/configuration.md");
+            var formattedConfigProperty = $"### {configProperty}";
+            configurationDocumentationFile.ShouldContain(formattedConfigProperty, Case.Insensitive,
+                System.Environment.NewLine + configurationDocumentationFile);
+        }
+    }
 
-            const BindingFlags bindingFlags = BindingFlags.Public | BindingFlags.DeclaredOnly | BindingFlags.Instance;
-            var configProperties = typeof(Config)
-                .GetProperties(bindingFlags)
-                .Union(typeof(BranchConfig).GetProperties(bindingFlags))
-                .Select(p => p.GetCustomAttribute<YamlMemberAttribute>())
-                .Where(a => a != null)
-                .Select(a => a.Alias)
-                .ToList();
 
-            configProperties.ShouldNotBeEmpty();
+    [Test]
+    public void VariableDocumentationIsUpToDate()
+    {
+        var variableDocumentationFile = ReadDocumentationFile("input/docs/reference/variables.md");
+        var variables = VersionVariables.AvailableVariables.ToList();
 
-            foreach (var configProperty in configProperties)
-            {
-                var formattedConfigProperty = $"### {configProperty}";
-                configurationDocumentationFile.ShouldContain(formattedConfigProperty, Case.Insensitive,
-                    System.Environment.NewLine + configurationDocumentationFile);
-            }
+        variables.ShouldNotBeEmpty();
+
+        foreach (var variable in variables)
+        {
+            variableDocumentationFile.ShouldContain(variable, Case.Insensitive,
+                System.Environment.NewLine + variableDocumentationFile);
+        }
+    }
+
+    private string ReadDocumentationFile(string relativeDocumentationFilePath)
+    {
+        var documentationFilePath = Path.Combine(this.docsDirectory.FullName, relativeDocumentationFilePath);
+        // Normalize path separators and such.
+        documentationFilePath = new FileInfo(documentationFilePath).FullName;
+
+        if (!File.Exists(documentationFilePath))
+        {
+            throw new FileNotFoundException($"The documentation file '{documentationFilePath}' couldn't be found.", documentationFilePath);
         }
 
+        return File.ReadAllText(documentationFilePath);
+    }
 
-        [Test]
-        public void VariableDocumentationIsUpToDate()
+    private static DirectoryInfo GetDocsDirectory()
+    {
+        var currentDirectory = new FileInfo(typeof(DocumentationTests).Assembly.Location).Directory;
+        while (currentDirectory != null)
         {
-            var variableDocumentationFile = ReadDocumentationFile("input/docs/reference/variables.md");
-            var variables = VersionVariables.AvailableVariables.ToList();
+            var docsDirectory = currentDirectory
+                .EnumerateDirectories("docs", SearchOption.TopDirectoryOnly)
+                .FirstOrDefault();
 
-            variables.ShouldNotBeEmpty();
-
-            foreach (var variable in variables)
+            if (docsDirectory != null)
             {
-                variableDocumentationFile.ShouldContain(variable, Case.Insensitive,
-                    System.Environment.NewLine + variableDocumentationFile);
+                currentDirectory = docsDirectory;
+                break;
             }
+
+            currentDirectory = currentDirectory.Parent;
         }
 
-        private string ReadDocumentationFile(string relativeDocumentationFilePath)
+        if (currentDirectory == null || !currentDirectory.Name.Equals("docs", StringComparison.Ordinal))
         {
-            var documentationFilePath = Path.Combine(this.docsDirectory.FullName, relativeDocumentationFilePath);
-            // Normalize path separators and such.
-            documentationFilePath = new FileInfo(documentationFilePath).FullName;
-
-            if (!File.Exists(documentationFilePath))
-            {
-                throw new FileNotFoundException($"The documentation file '{documentationFilePath}' couldn't be found.", documentationFilePath);
-            }
-
-            return File.ReadAllText(documentationFilePath);
+            throw new DirectoryNotFoundException("Couldn't find the 'docs' directory.");
         }
 
-        private static DirectoryInfo GetDocsDirectory()
-        {
-            var currentDirectory = new FileInfo(typeof(DocumentationTests).Assembly.Location).Directory;
-            while (currentDirectory != null)
-            {
-                var docsDirectory = currentDirectory
-                    .EnumerateDirectories("docs", SearchOption.TopDirectoryOnly)
-                    .FirstOrDefault();
-
-                if (docsDirectory != null)
-                {
-                    currentDirectory = docsDirectory;
-                    break;
-                }
-
-                currentDirectory = currentDirectory.Parent;
-            }
-
-            if (currentDirectory == null || !currentDirectory.Name.Equals("docs", StringComparison.Ordinal))
-            {
-                throw new DirectoryNotFoundException("Couldn't find the 'docs' directory.");
-            }
-
-            return currentDirectory;
-        }
+        return currentDirectory;
     }
 }

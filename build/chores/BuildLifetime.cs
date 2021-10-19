@@ -1,20 +1,17 @@
-using Cake.Core;
-using Cake.Frosting;
 using Common.Utilities;
 
-namespace Chores
+namespace Chores;
+
+public class BuildLifetime : FrostingLifetime<BuildContext>
 {
-    public class BuildLifetime : FrostingLifetime<BuildContext>
+    public override void Setup(BuildContext context)
     {
-        public override void Setup(BuildContext context)
-        {
-            context.StartGroup("Build Setup");
-            context.EndGroup();
-        }
-        public override void Teardown(BuildContext context, ITeardownContext info)
-        {
-            context.StartGroup("Build Teardown");
-            context.EndGroup();
-        }
+        context.StartGroup("Build Setup");
+        context.EndGroup();
+    }
+    public override void Teardown(BuildContext context, ITeardownContext info)
+    {
+        context.StartGroup("Build Teardown");
+        context.EndGroup();
     }
 }

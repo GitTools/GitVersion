@@ -1,33 +1,29 @@
-using System;
-using System.Linq;
-using System.Reflection;
 using GitVersion.Logging;
 
-namespace GitVersion
+namespace GitVersion;
+
+public class VersionWriter : IVersionWriter
 {
-    public class VersionWriter : IVersionWriter
+    private readonly IConsole console;
+
+    public VersionWriter(IConsole console) => this.console = console ?? throw new ArgumentNullException(nameof(console));
+    public void Write(Assembly assembly) => WriteTo(assembly, this.console.WriteLine);
+
+    public void WriteTo(Assembly assembly, Action<string> writeAction)
     {
-        private readonly IConsole console;
+        var version = GetAssemblyVersion(assembly);
+        writeAction(version);
+    }
 
-        public VersionWriter(IConsole console) => this.console = console ?? throw new ArgumentNullException(nameof(console));
-        public void Write(Assembly assembly) => WriteTo(assembly, this.console.WriteLine);
-
-        public void WriteTo(Assembly assembly, Action<string> writeAction)
+    private static string GetAssemblyVersion(Assembly assembly)
+    {
+        if (assembly
+            .GetCustomAttributes(typeof(AssemblyInformationalVersionAttribute), false)
+            .FirstOrDefault() is AssemblyInformationalVersionAttribute attribute)
         {
-            var version = GetAssemblyVersion(assembly);
-            writeAction(version);
+            return attribute.InformationalVersion;
         }
 
-        private static string GetAssemblyVersion(Assembly assembly)
-        {
-            if (assembly
-                .GetCustomAttributes(typeof(AssemblyInformationalVersionAttribute), false)
-                .FirstOrDefault() is AssemblyInformationalVersionAttribute attribute)
-            {
-                return attribute.InformationalVersion;
-            }
-
-            return assembly.GetName().Version.ToString();
-        }
+        return assembly.GetName().Version.ToString();
     }
 }

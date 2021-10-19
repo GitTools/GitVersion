@@ -1,30 +1,26 @@
-using System.Collections.Generic;
 using Build.Utilities;
-using Cake.Common.Tools.DotNetCore.MSBuild;
-using Cake.Core;
 using Common.Utilities;
 
-namespace Build
+namespace Build;
+
+public class BuildContext : BuildContextBase
 {
-    public class BuildContext : BuildContextBase
+    public string MsBuildConfiguration { get; set; } = "Release";
+
+    public readonly Dictionary<PlatformFamily, string[]> NativeRuntimes = new()
     {
-        public string MsBuildConfiguration { get; set; } = "Release";
+        [PlatformFamily.Windows] = new[] { "win-x64", "win-x86" },
+        [PlatformFamily.Linux] = new[] { "linux-x64", "linux-musl-x64", "linux-arm64" },
+        [PlatformFamily.OSX] = new[] { "osx-x64" },
+    };
 
-        public readonly Dictionary<PlatformFamily, string[]> NativeRuntimes = new()
-        {
-            [PlatformFamily.Windows] = new[] { "win-x64", "win-x86" },
-            [PlatformFamily.Linux] = new[] { "linux-x64", "linux-musl-x64" },
-            [PlatformFamily.OSX] = new[] { "osx-x64" },
-        };
+    public bool EnabledUnitTests { get; set; }
 
-        public bool EnabledUnitTests { get; set; }
+    public Credentials? Credentials { get; set; }
 
-        public Credentials? Credentials { get; set; }
+    public DotNetCoreMSBuildSettings MsBuildSettings { get; } = new();
 
-        public DotNetCoreMSBuildSettings MsBuildSettings { get; } = new();
-
-        public BuildContext(ICakeContext context) : base(context)
-        {
-        }
+    public BuildContext(ICakeContext context) : base(context)
+    {
     }
 }

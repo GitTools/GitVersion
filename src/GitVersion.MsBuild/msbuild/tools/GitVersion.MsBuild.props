@@ -2,7 +2,7 @@
 
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
     <PropertyGroup>
-        <GitVersionOutputFile>$([MSBuild]::EnsureTrailingSlash($(BaseIntermediateOutputPath)))gitversion.json</GitVersionOutputFile>
+        <GitVersionOutputFile Condition="'$(GitVersionOutputFile)' == ''">$([MSBuild]::EnsureTrailingSlash($(BaseIntermediateOutputPath)))gitversion.json</GitVersionOutputFile>
 
         <Language Condition=" '$(Language)' == '' Or '$(DefaultLanguageSourceExtension)' == ''">C#</Language>
         <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">$(MSBuildProjectDirectory)/../</SolutionDir>

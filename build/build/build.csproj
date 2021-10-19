@@ -4,10 +4,10 @@
         <RootNamespace>Build</RootNamespace>
     </PropertyGroup>
     <ItemGroup>
-        <ProjectReference Include="..\common\common.csproj"/>
+        <ProjectReference Include="..\common\common.csproj" />
     </ItemGroup>
     <ItemGroup>
-        <PackageReference Include="Cake.Codecov" Version="1.0.1"/>
-        <PackageReference Include="Cake.Coverlet" Version="2.5.4"/>
+        <PackageReference Include="Cake.Codecov" Version="1.0.1" />
+        <PackageReference Include="Cake.Coverlet" Version="2.5.4" />
     </ItemGroup>
 </Project>

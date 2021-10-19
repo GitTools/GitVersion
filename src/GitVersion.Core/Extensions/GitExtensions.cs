@@ -1,50 +1,46 @@
-using System;
-using System.IO;
-using System.Text;
 using GitVersion.Helpers;
 
-namespace GitVersion.Extensions
+namespace GitVersion.Extensions;
+
+public static class GitExtensions
 {
-    public static class GitExtensions
+    public static void DumpGraph(string workingDirectory, Action<string>? writer = null, int? maxCommits = null)
     {
-        public static void DumpGraph(string workingDirectory, Action<string>? writer = null, int? maxCommits = null)
+        var output = new StringBuilder();
+        try
         {
-            var output = new StringBuilder();
-            try
+            ProcessHelper.Run(
+                o => output.AppendLine(o),
+                e => output.AppendLineFormat("ERROR: {0}", e),
+                null,
+                "git",
+                CreateGitLogArgs(maxCommits),
+                workingDirectory);
+        }
+        catch (FileNotFoundException exception)
+        {
+            if (exception.FileName != "git")
             {
-                ProcessHelper.Run(
-                    o => output.AppendLine(o),
-                    e => output.AppendLineFormat("ERROR: {0}", e),
-                    null,
-                    "git",
-                    CreateGitLogArgs(maxCommits),
-                    workingDirectory);
-            }
-            catch (FileNotFoundException exception)
-            {
-                if (exception.FileName != "git")
-                {
-                    throw;
-                }
-
-                output.AppendLine("Could not execute 'git log' due to the following error:");
-                output.AppendLine(exception.ToString());
+                throw;
             }
 
-            if (writer != null)
-            {
-                writer(output.ToString());
-            }
-            else
-            {
-                Console.Write(output.ToString());
-            }
+            output.AppendLine("Could not execute 'git log' due to the following error:");
+            output.AppendLine(exception.ToString());
         }
 
-        public static string CreateGitLogArgs(int? maxCommits)
+        if (writer != null)
         {
-            var commits = maxCommits != null ? $" -n {maxCommits}" : null;
-            return $@"log --graph --format=""%h %cr %d"" --decorate --date=relative --all --remotes=*{commits}";
+            writer(output.ToString());
         }
+        else
+        {
+            Console.Write(output.ToString());
+        }
+    }
+
+    public static string CreateGitLogArgs(int? maxCommits)
+    {
+        var commits = maxCommits != null ? $" -n {maxCommits}" : null;
+        return $@"log --graph --format=""%h %cr %d"" --decorate --date=relative --all --remotes=*{commits}";
     }
 }

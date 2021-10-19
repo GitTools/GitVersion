@@ -1,12 +1,8 @@
-using Cake.Core;
-using Cake.Frosting;
+namespace Chores;
 
-namespace Chores
+public class BuildContext : FrostingContext
 {
-    public class BuildContext : FrostingContext
+    public BuildContext(ICakeContext context) : base(context)
     {
-        public BuildContext(ICakeContext context) : base(context)
-        {
-        }
     }
 }

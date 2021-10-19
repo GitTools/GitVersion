@@ -1,9 +1,6 @@
-using Cake.Frosting;
+namespace Artifacts.Tasks;
 
-namespace Artifacts.Tasks
+[TaskDescription("Shows this output")]
+public class Default : Common.Tasks.Default
 {
-    [TaskDescription("Shows this output")]
-    public class Default : Common.Tasks.Default
-    {
-    }
 }
