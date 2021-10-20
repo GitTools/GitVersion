@@ -72,9 +72,8 @@ jobs:
     -
       name: Checkout
       uses: actions/checkout@v2
-    -
-      name: Fetch all history for all tags and branches
-      run: git fetch --prune --unshallow
+      with:
+        fetch-depth: 0
     -
       name: Use cached cake frosting
       id: cache-cake
@@ -129,9 +128,8 @@ jobs:
     -
       name: Checkout
       uses: actions/checkout@v2
-    -
-      name: Fetch all history for all tags and branches
-      run: git fetch --prune --unshallow
+      with:
+        fetch-depth: 0
     -
       name: Use cached cake frosting
       id: cache-cake
@@ -170,9 +168,8 @@ jobs:
     -
       name: Checkout
       uses: actions/checkout@v2
-    -
-      name: Fetch all history for all tags and branches
-      run: git fetch --prune --unshallow
+      with:
+        fetch-depth: 0
     -
       name: Use cached cake frosting
       id: cache-cake
@@ -218,9 +215,8 @@ jobs:
     -
       name: Checkout
       uses: actions/checkout@v2
-    -
-      name: Fetch all history for all tags and branches
-      run: git fetch --prune --unshallow
+      with:
+        fetch-depth: 0
     -
       name: Use cached cake frosting
       id: cache-cake
@@ -284,9 +280,8 @@ jobs:
     -
       name: Checkout
       uses: actions/checkout@v2
-    -
-      name: Fetch all history for all tags and branches
-      run: git fetch --prune --unshallow
+      with:
+        fetch-depth: 0
     -
       name: Use cached cake frosting
       id: cache-cake
@@ -384,9 +379,8 @@ jobs:
     -
       name: Checkout
       uses: actions/checkout@v2
-    -
-      name: Fetch all history for all tags and branches
-      run: git fetch --prune --unshallow
+      with:
+        fetch-depth: 0
     -
       name: Use cached cake frosting
       id: cache-cake
@@ -428,9 +422,8 @@ jobs:
     -
       name: Checkout
       uses: actions/checkout@v2
-    -
-      name: Fetch all history for all tags and branches
-      run: git fetch --prune --unshallow
+      with:
+        fetch-depth: 0
     -
       name: Use cached cake frosting
       id: cache-cake

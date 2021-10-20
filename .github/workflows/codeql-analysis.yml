@@ -30,11 +30,10 @@ jobs:
 
     steps:
     -
-      name: Checkout repository
-      uses: actions/checkout@v2.3.4
-    -
-      name: Fetch all history for all tags and branches
-      run: git fetch --prune --unshallow
+      name: Checkout
+      uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
 
     - name: Initialize CodeQL
       uses: github/codeql-action/init@v1
