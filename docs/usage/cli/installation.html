@@ -218,8 +218,10 @@ different ways. Read about the options below.</p>
 <h3 id="net-global-tool">.NET Global Tool</h3>
 <p>GitVersion can be installed as a <a href="https://docs.microsoft.com/en-us/dotnet/core/tools/global-tools#install-a-global-tool">.NET global tool</a> under the name
 <a href="https://www.nuget.org/packages/GitVersion.Tool/"><code>GitVersion.Tool</code></a> by executing the following in a terminal:</p>
-<pre><code class="language-shell">dotnet tool install --global GitVersion.Tool
+<pre><code class="language-shell">dotnet tool install --global GitVersion.Tool --version 5.*
 </code></pre>
+<p>If you want to pin to a specific version of GitVersion, you can find the available
+versions of <a href="https://www.nuget.org/packages/GitVersion.Tool/"><code>GitVersion.Tool</code> on NuGet</a>.</p>
 <p>This should work on all operating systems supported by .NET Core.</p>
 <p>To run call</p>
 <pre><code class="language-shell">dotnet-gitversion

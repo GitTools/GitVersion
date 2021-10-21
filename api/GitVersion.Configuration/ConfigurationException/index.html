@@ -191,17 +191,10 @@
 								<dt>Namespace</dt>
 								<dd><a href="/api/GitVersion.Configuration">GitVersion<wbr>.Configuration</a></dd>
 											
-								<dt>Interfaces</dt>
-								<dd>
-									<ul class="list-unstyled">
-											<li>ISerializable</li>								
-									</ul>
-								</dd>
 							
 								<dt>Base Types</dt>
 								<dd>
 									<ul class="list-unstyled">										
-											<li>object</li>								
 											<li>Exception</li>								
 											<li><a href="/api/GitVersion/GitToolsException">GitToolsException</a></li>								
 											<li><a href="/api/GitVersion/GitVersionException">GitVersionException</a></li>								
@@ -219,8 +212,6 @@
 	Base0--&gt;Base1["GitToolsException"]
 	click Base1 "/api/GitVersion/GitToolsException"
 	Base1--&gt;Base2["Exception"]
-	Base2--&gt;Base3["object"]
-	Type-.-&gt;Interface0["ISerializable"]
 	Type["ConfigurationException"]
 class Type type-node
 
@@ -232,7 +223,7 @@ class Type type-node
 
 	<h1 id="Syntax">Syntax</h1>
 	<pre><code>[Serializable]
-public class ConfigurationException : GitVersionException, ISerializable</code></pre>
+public class ConfigurationException : GitVersionException</code></pre>
 
 
 
@@ -247,7 +238,7 @@ public class ConfigurationException : GitVersionException, ISerializable</code><
 					</tr>
 				</thead>
 					<tbody><tr>
-						<td>Serializable<wbr>Attribute</td>
+						<td>Serializable</td>
 						<td></td>
 					</tr>
 			</tbody></table>

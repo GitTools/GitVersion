@@ -246,6 +246,13 @@ dependency of your package:</p>
 <p>The next thing you need to do is to remove the <code>Assembly*Version</code> attributes from
 your <code>Properties\AssemblyInfo.cs</code> files. This puts GitVersion.MsBuild in charge of
 versioning your assemblies.</p>
+<p>DotNet SDK-style projects will generate Assembly Version info along with other
+Assembly Info in a 'projectname.AssemblyInfo.cs' file, conflicting with GitVersion.
+So, you will need to edit your project. Add <a href="https://docs.microsoft.com/en-us/dotnet/core/project-sdk/msbuild-props#generateassemblyfileversionattribute">GenerateAssemblyFileVersionAttribute</a>
+under the first PropertyGroup and set it to <code>false</code>:</p>
+<pre><code class="language-xml">&lt;!-- GitVersion DotNet SDK Compatibility --&gt;
+&lt;GenerateAssemblyFileVersionAttribute&gt;false&lt;/GenerateAssemblyFileVersionAttribute&gt;
+</code></pre>
 <h3 id="done">Done!</h3>
 <p>The setup process is now complete and GitVersion.MsBuild should be working its magic,
 versioning your assemblies like a champ. However, more can be done to further
@@ -345,10 +352,10 @@ package versions.</p>
 have the ability to create NuGet packages directly by using the <code>pack</code> target:
 <code>msbuild /t:pack</code>. The version is controlled by the MSBuild properties described
 above.</p>
-<p>GitVersionTask has the option to generate SemVer 2.0 compliant NuGet package
-versions by setting <code>UseFullSemVerForNuGet</code> to true in your project (this is off
-by default for compatibility). Some hosts, like MyGet, support SemVer 2.0
-package versions but older NuGet clients and nuget.org do not.</p>
+<p>GitVersionTask generates SemVer 2.0 compliant NuGet package versions by default.
+You can disable it by setting <code>UseFullSemVerForNuGet</code> to false in your project.
+Older NuGet clients do not support SemVer 2.0 package versions, but most of the
+modern hosts support it.</p>
 <h4 id="accessing-variables-in-msbuild">Accessing variables in MSBuild</h4>
 <p>Once <code>GitVersion.MsBuild.GetVersion</code> has been executed, the MSBuild properties can be
 used in the standard way. For example:</p>

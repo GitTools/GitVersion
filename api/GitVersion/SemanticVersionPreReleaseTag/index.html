@@ -178,7 +178,6 @@
 				<li><a href="/api/GitVersion/GlobbingResolver">GlobbingResolver</a></li>
 				<li><a href="/api/GitVersion/HelpWriter">HelpWriter</a></li>
 				<li><a href="/api/GitVersion/IncrementStrategyExtensions">Increment<wbr>Strategy<wbr>Extensions</a></li>
-				<li><a href="/api/GitVersion/IncrementStrategyFinder">Increment<wbr>Strategy<wbr>Finder</a></li>
 				<li><a href="/api/GitVersion/LockedFileException">LockedFileException</a></li>
 				<li><a href="/api/GitVersion/MergeMessage">MergeMessage</a></li>
 				<li><a href="/api/GitVersion/QuotedStringHelpers">QuotedStringHelpers</a></li>
@@ -197,13 +196,10 @@
 				<li><a href="/api/GitVersion/WarningException">WarningException</a></li>
 				<li><a href="/api/GitVersion/WixInfo">WixInfo</a></li>
 			<li class="header">Enum Types</li>
-				<li><a href="/api/GitVersion/CommitMessageIncrementMode">Commit<wbr>Message<wbr>Increment<wbr>Mode</a></li>
 				<li><a href="/api/GitVersion/CommitSortStrategies">CommitSortStrategies</a></li>
 				<li><a href="/api/GitVersion/IncrementStrategy">IncrementStrategy</a></li>
 				<li><a href="/api/GitVersion/RefSpecDirection">RefSpecDirection</a></li>
 				<li><a href="/api/GitVersion/VersionField">VersionField</a></li>
-			<li class="header">Struct Types</li>
-				<li><a href="/api/GitVersion/BranchCommit">BranchCommit</a></li>
 			<li class="header">Interface Types</li>
 				<li><a href="/api/GitVersion/IArgumentParser">IArgumentParser</a></li>
 				<li><a href="/api/GitVersion/IBranch">IBranch</a></li>
@@ -235,6 +231,8 @@
 				<li><a href="/api/GitVersion/ITag">ITag</a></li>
 				<li><a href="/api/GitVersion/ITagCollection">ITagCollection</a></li>
 				<li><a href="/api/GitVersion/IVersionWriter">IVersionWriter</a></li>
+			<li class="header">Struct Types</li>
+				<li><a href="/api/GitVersion/BranchCommit">BranchCommit</a></li>
 
 
                     </ul>
@@ -267,7 +265,6 @@
 								<dt>Interfaces</dt>
 								<dd>
 									<ul class="list-unstyled">
-											<li>IFormattable</li>								
 											<li>IComparable<wbr>&lt;<a href="/api/GitVersion/SemanticVersionPreReleaseTag">Semantic<wbr>Version<wbr>Pre<wbr>Release<wbr>Tag</a>&gt;<wbr></li>								
 											<li>IEquatable<wbr>&lt;<a href="/api/GitVersion/SemanticVersionPreReleaseTag">Semantic<wbr>Version<wbr>Pre<wbr>Release<wbr>Tag?</a>&gt;<wbr></li>								
 									</ul>
@@ -276,7 +273,7 @@
 								<dt>Base Types</dt>
 								<dd>
 									<ul class="list-unstyled">										
-											<li>object</li>								
+											<li>IFormattable</li>								
 									</ul>
 								</dd>				
 							
@@ -286,10 +283,9 @@
 					<div class="col-md-6">
 						<div class="mermaid">
 							graph BT
-	Type--&gt;Base0["object"]
-	Type-.-&gt;Interface0["IFormattable"]
-	Type-.-&gt;Interface1["IComparable&lt;SemanticVersionPreReleaseTag&gt;"]
-	Type-.-&gt;Interface2["IEquatable&lt;SemanticVersionPreReleaseTag?&gt;"]
+	Type--&gt;Base0["IFormattable"]
+	Type-.-&gt;Interface0["IComparable&lt;SemanticVersionPreReleaseTag&gt;"]
+	Type-.-&gt;Interface1["IEquatable&lt;SemanticVersionPreReleaseTag?&gt;"]
 	Type["SemanticVersionPreReleaseTag"]
 class Type type-node
 
@@ -424,14 +420,21 @@ class Type type-node
 							</tr>
 							<tr>
 								<td><a href="/api/GitVersion/SemanticVersionPreReleaseTag/82DB9559">ToString<wbr>()<wbr></a></td>
-								<td>string?</td>
+								<td>string</td>
 								<td>
 									<div></div>
 								</td>
 							</tr>
 							<tr>
-								<td><a href="/api/GitVersion/SemanticVersionPreReleaseTag/5DFADF46">ToString<wbr>(string?, <wbr>IFormatProvider?)<wbr></a></td>
-								<td>string?</td>
+								<td><a href="/api/GitVersion/SemanticVersionPreReleaseTag/04F88155">ToString<wbr>(string)<wbr></a></td>
+								<td>string</td>
+								<td>
+									<div></div>
+								</td>
+							</tr>
+							<tr>
+								<td><a href="/api/GitVersion/SemanticVersionPreReleaseTag/8FD92C8F">ToString<wbr>(string, <wbr>IFormatProvider)<wbr></a></td>
+								<td>string</td>
 								<td>
 									<div>
     Default formats:

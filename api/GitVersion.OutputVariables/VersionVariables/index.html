@@ -184,18 +184,11 @@
 								<dt>Namespace</dt>
 								<dd><a href="/api/GitVersion.OutputVariables">GitVersion<wbr>.OutputVariables</a></dd>
 											
-								<dt>Interfaces</dt>
-								<dd>
-									<ul class="list-unstyled">
-											<li>IEnumerable<wbr>&lt;KeyValuePair<wbr>&lt;string, <wbr>string&gt;<wbr>&gt;<wbr></li>								
-											<li>IEnumerable</li>								
-									</ul>
-								</dd>
 							
 								<dt>Base Types</dt>
 								<dd>
 									<ul class="list-unstyled">										
-											<li>object</li>								
+											<li>IEnumerable<wbr>&lt;KeyValuePair<wbr>&lt;string, <wbr>string&gt;<wbr>&gt;<wbr></li>								
 									</ul>
 								</dd>				
 							
@@ -205,9 +198,7 @@
 					<div class="col-md-6">
 						<div class="mermaid">
 							graph BT
-	Type--&gt;Base0["object"]
-	Type-.-&gt;Interface0["IEnumerable&lt;KeyValuePair&lt;string, string&gt;&gt;"]
-	Type-.-&gt;Interface1["IEnumerable"]
+	Type--&gt;Base0["IEnumerable&lt;KeyValuePair&lt;string, string&gt;&gt;"]
 	Type["VersionVariables"]
 class Type type-node
 
@@ -218,7 +209,7 @@ class Type type-node
 		</div>
 
 	<h1 id="Syntax">Syntax</h1>
-	<pre><code>public class VersionVariables : IEnumerable&lt;KeyValuePair&lt;string, string&gt;&gt;, IEnumerable</code></pre>
+	<pre><code>public class VersionVariables : IEnumerable&lt;KeyValuePair&lt;string, string&gt;&gt;</code></pre>
 
 
 
@@ -528,7 +519,7 @@ class Type type-node
 							</tr>
 						</thead>
 							<tbody><tr>
-								<td><a href="/api/GitVersion.OutputVariables/VersionVariables/3A2AE82C">FromDictionary<wbr>(IEnumerable<wbr>&lt;KeyValuePair<wbr>&lt;string, <wbr>string&gt;<wbr>&gt;<wbr>?)<wbr></a></td>
+								<td><a href="/api/GitVersion.OutputVariables/VersionVariables/43DE98DF">FromDictionary<wbr>(IEnumerable<wbr>&lt;KeyValuePair<wbr>&lt;string, <wbr>string&gt;<wbr>&gt;<wbr>?)<wbr></a></td>
 								<td><a href="/api/GitVersion.OutputVariables/VersionVariables">VersionVariables</a></td>
 								<td>
 									<div></div>
@@ -595,14 +586,6 @@ class Type type-node
 								<td>
 									<div></div>
 										<div><small><em>From <a href="/api/GitVersion.Extensions/ObjectExtensions">ObjectExtensions</a></em></small></div>
-								</td>
-							</tr>
-							<tr>
-								<td><a href="/api/GitVersion.Extensions/EnumerableExtensions/E9EA32E8">OnlyOrDefault<wbr>&lt;KeyValuePair<wbr>&lt;string, <wbr>string&gt;<wbr>&gt;<wbr><wbr>()<wbr></a></td>
-								<td>T?</td>
-								<td>
-									<div></div>
-										<div><small><em>From <a href="/api/GitVersion.Extensions/EnumerableExtensions">EnumerableExtensions</a></em></small></div>
 								</td>
 							</tr>
 					</tbody></table>

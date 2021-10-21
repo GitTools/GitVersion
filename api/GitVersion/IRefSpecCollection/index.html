@@ -174,7 +174,6 @@
 				<li><a href="/api/GitVersion/GlobbingResolver">GlobbingResolver</a></li>
 				<li><a href="/api/GitVersion/HelpWriter">HelpWriter</a></li>
 				<li><a href="/api/GitVersion/IncrementStrategyExtensions">Increment<wbr>Strategy<wbr>Extensions</a></li>
-				<li><a href="/api/GitVersion/IncrementStrategyFinder">Increment<wbr>Strategy<wbr>Finder</a></li>
 				<li><a href="/api/GitVersion/LockedFileException">LockedFileException</a></li>
 				<li><a href="/api/GitVersion/MergeMessage">MergeMessage</a></li>
 				<li><a href="/api/GitVersion/QuotedStringHelpers">QuotedStringHelpers</a></li>
@@ -193,13 +192,10 @@
 				<li><a href="/api/GitVersion/WarningException">WarningException</a></li>
 				<li><a href="/api/GitVersion/WixInfo">WixInfo</a></li>
 			<li class="header">Enum Types</li>
-				<li><a href="/api/GitVersion/CommitMessageIncrementMode">Commit<wbr>Message<wbr>Increment<wbr>Mode</a></li>
 				<li><a href="/api/GitVersion/CommitSortStrategies">CommitSortStrategies</a></li>
 				<li><a href="/api/GitVersion/IncrementStrategy">IncrementStrategy</a></li>
 				<li><a href="/api/GitVersion/RefSpecDirection">RefSpecDirection</a></li>
 				<li><a href="/api/GitVersion/VersionField">VersionField</a></li>
-			<li class="header">Struct Types</li>
-				<li><a href="/api/GitVersion/BranchCommit">BranchCommit</a></li>
 			<li class="header">Interface Types</li>
 				<li><a href="/api/GitVersion/IArgumentParser">IArgumentParser</a></li>
 				<li><a href="/api/GitVersion/IBranch">IBranch</a></li>
@@ -231,6 +227,8 @@
 				<li><a href="/api/GitVersion/ITag">ITag</a></li>
 				<li><a href="/api/GitVersion/ITagCollection">ITagCollection</a></li>
 				<li><a href="/api/GitVersion/IVersionWriter">IVersionWriter</a></li>
+			<li class="header">Struct Types</li>
+				<li><a href="/api/GitVersion/BranchCommit">BranchCommit</a></li>
 
 
                     </ul>
@@ -264,7 +262,6 @@
 								<dd>
 									<ul class="list-unstyled">
 											<li>IEnumerable<wbr>&lt;<a href="/api/GitVersion/IRefSpec">IRefSpec</a>&gt;<wbr></li>								
-											<li>IEnumerable</li>								
 									</ul>
 								</dd>
 							
@@ -276,7 +273,6 @@
 						<div class="mermaid">
 							graph BT
 	Type-.-&gt;Interface0["IEnumerable&lt;IRefSpec&gt;"]
-	Type-.-&gt;Interface1["IEnumerable"]
 	Type["IRefSpecCollection"]
 class Type type-node
 
@@ -287,7 +283,7 @@ class Type type-node
 		</div>
 
 	<h1 id="Syntax">Syntax</h1>
-	<pre><code>public interface IRefSpecCollection : IEnumerable&lt;IRefSpec&gt;, IEnumerable</code></pre>
+	<pre><code>public interface IRefSpecCollection : IEnumerable&lt;IRefSpec&gt;</code></pre>
 
 
 
@@ -318,14 +314,6 @@ class Type type-node
 								<td>
 									<div></div>
 										<div><small><em>From <a href="/api/GitVersion.Extensions/ObjectExtensions">ObjectExtensions</a></em></small></div>
-								</td>
-							</tr>
-							<tr>
-								<td><a href="/api/GitVersion.Extensions/EnumerableExtensions/E9EA32E8">OnlyOrDefault<wbr>&lt;IRefSpec&gt;<wbr><wbr>()<wbr></a></td>
-								<td>T?</td>
-								<td>
-									<div></div>
-										<div><small><em>From <a href="/api/GitVersion.Extensions/EnumerableExtensions">EnumerableExtensions</a></em></small></div>
 								</td>
 							</tr>
 					</tbody></table>

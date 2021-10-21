@@ -176,7 +176,6 @@
 				<li><a href="/api/GitVersion/GlobbingResolver">GlobbingResolver</a></li>
 				<li><a href="/api/GitVersion/HelpWriter">HelpWriter</a></li>
 				<li><a href="/api/GitVersion/IncrementStrategyExtensions">Increment<wbr>Strategy<wbr>Extensions</a></li>
-				<li><a href="/api/GitVersion/IncrementStrategyFinder">Increment<wbr>Strategy<wbr>Finder</a></li>
 				<li><a href="/api/GitVersion/LockedFileException">LockedFileException</a></li>
 				<li><a href="/api/GitVersion/MergeMessage">MergeMessage</a></li>
 				<li><a href="/api/GitVersion/QuotedStringHelpers">QuotedStringHelpers</a></li>
@@ -195,13 +194,10 @@
 				<li><a href="/api/GitVersion/WarningException">WarningException</a></li>
 				<li><a href="/api/GitVersion/WixInfo">WixInfo</a></li>
 			<li class="header">Enum Types</li>
-				<li><a href="/api/GitVersion/CommitMessageIncrementMode">Commit<wbr>Message<wbr>Increment<wbr>Mode</a></li>
 				<li><a href="/api/GitVersion/CommitSortStrategies">CommitSortStrategies</a></li>
 				<li><a href="/api/GitVersion/IncrementStrategy">IncrementStrategy</a></li>
 				<li><a href="/api/GitVersion/RefSpecDirection">RefSpecDirection</a></li>
 				<li><a href="/api/GitVersion/VersionField">VersionField</a></li>
-			<li class="header">Struct Types</li>
-				<li><a href="/api/GitVersion/BranchCommit">BranchCommit</a></li>
 			<li class="header">Interface Types</li>
 				<li><a href="/api/GitVersion/IArgumentParser">IArgumentParser</a></li>
 				<li><a href="/api/GitVersion/IBranch">IBranch</a></li>
@@ -233,6 +229,8 @@
 				<li><a href="/api/GitVersion/ITag">ITag</a></li>
 				<li><a href="/api/GitVersion/ITagCollection">ITagCollection</a></li>
 				<li><a href="/api/GitVersion/IVersionWriter">IVersionWriter</a></li>
+			<li class="header">Struct Types</li>
+				<li><a href="/api/GitVersion/BranchCommit">BranchCommit</a></li>
 
 
                     </ul>
@@ -314,7 +312,7 @@ class Type type-node
 							</tr>
 						</thead>
 							<tbody><tr>
-								<td><a href="/api/GitVersion/RepositoryStore/4EDA6AFE">RepositoryStore<wbr>(ILog, <wbr>IGitRepository)<wbr></a></td>
+								<td><a href="/api/GitVersion/RepositoryStore/CF74CBE5">RepositoryStore<wbr>(ILog, <wbr>IGitRepository, <wbr>I<wbr>Increment<wbr>Strategy<wbr>Finder)<wbr></a></td>
 									<td></td>
 							</tr>
 					</tbody></table>
@@ -344,7 +342,7 @@ class Type type-node
 								</td>
 							</tr>
 							<tr>
-								<td><a href="/api/GitVersion/RepositoryStore/CBA04153">ExcludingBranches<wbr>(IEnumerable<wbr>&lt;IBranch&gt;<wbr>)<wbr></a></td>
+								<td><a href="/api/GitVersion/RepositoryStore/864AECF6">ExcludingBranches<wbr>(IEnumerable<wbr>&lt;IBranch&gt;<wbr>)<wbr></a></td>
 								<td>IEnumerable<wbr>&lt;<a href="/api/GitVersion/IBranch">IBranch</a>&gt;<wbr></td>
 								<td>
 									<div></div>
@@ -391,7 +389,7 @@ class Type type-node
 								</td>
 							</tr>
 							<tr>
-								<td><a href="/api/GitVersion/RepositoryStore/28BCDF7E">Get<wbr>Branches<wbr>Containing<wbr>Commit<wbr>(ICommit?, <wbr>IEnumerable<wbr>&lt;IBranch&gt;<wbr>?, <wbr>bool)<wbr></a></td>
+								<td><a href="/api/GitVersion/RepositoryStore/67F201F9">Get<wbr>Branches<wbr>Containing<wbr>Commit<wbr>(ICommit?, <wbr>IEnumerable<wbr>&lt;IBranch&gt;<wbr>?, <wbr>bool)<wbr></a></td>
 								<td>IEnumerable<wbr>&lt;<a href="/api/GitVersion/IBranch">IBranch</a>&gt;<wbr></td>
 								<td>
 									<div></div>
@@ -440,7 +438,7 @@ class Type type-node
 								</td>
 							</tr>
 							<tr>
-								<td><a href="/api/GitVersion/RepositoryStore/EE92F6B9">GetMainlineBranches<wbr>(ICommit, <wbr>IEnumerable<wbr>&lt;KeyValuePair<wbr>&lt;string, <wbr>BranchConfig?&gt;<wbr>&gt;<wbr>?)<wbr></a></td>
+								<td><a href="/api/GitVersion/RepositoryStore/8DDD94AE">GetMainlineBranches<wbr>(ICommit, <wbr>IEnumerable<wbr>&lt;KeyValuePair<wbr>&lt;string, <wbr>BranchConfig?&gt;<wbr>&gt;<wbr>?)<wbr></a></td>
 								<td>Dictionary<wbr>&lt;string, <wbr>List<wbr>&lt;<a href="/api/GitVersion/IBranch">IBranch</a>&gt;<wbr>&gt;<wbr></td>
 								<td>
 									<div></div>
@@ -468,7 +466,7 @@ class Type type-node
 								</td>
 							</tr>
 							<tr>
-								<td><a href="/api/GitVersion/RepositoryStore/5C47115D">GetReleaseBranches<wbr>(IEnumerable<wbr>&lt;KeyValuePair<wbr>&lt;string, <wbr>BranchConfig?&gt;<wbr>&gt;<wbr>?)<wbr></a></td>
+								<td><a href="/api/GitVersion/RepositoryStore/13224073">GetReleaseBranches<wbr>(IEnumerable<wbr>&lt;KeyValuePair<wbr>&lt;string, <wbr>BranchConfig?&gt;<wbr>&gt;<wbr>?)<wbr></a></td>
 								<td>IEnumerable<wbr>&lt;<a href="/api/GitVersion/IBranch">IBranch</a>&gt;<wbr></td>
 								<td>
 									<div></div>
@@ -482,7 +480,7 @@ class Type type-node
 								</td>
 							</tr>
 							<tr>
-								<td><a href="/api/GitVersion/RepositoryStore/EDDB9078">GetValidVersionTags<wbr>(string?, <wbr>DateTimeOffset?)<wbr></a></td>
+								<td><a href="/api/GitVersion/RepositoryStore/9E426126">GetValidVersionTags<wbr>(string?, <wbr>DateTimeOffset?)<wbr></a></td>
 								<td>IEnumerable<wbr>&lt;Tuple<wbr>&lt;<a href="/api/GitVersion/ITag">ITag</a>, <wbr><a href="/api/GitVersion/SemanticVersion">SemanticVersion</a>, <wbr><a href="/api/GitVersion/ICommit">ICommit</a>&gt;<wbr>&gt;<wbr></td>
 								<td>
 									<div></div>
@@ -490,7 +488,7 @@ class Type type-node
 							</tr>
 							<tr>
 								<td><a href="/api/GitVersion/RepositoryStore/671A59BA">Get<wbr>Version<wbr>Tags<wbr>On<wbr>Branch<wbr>(IBranch, <wbr>string?)<wbr></a></td>
-								<td>IEnumerable<wbr>&lt;<a href="/api/GitVersion/SemanticVersion">SemanticVersion?</a>&gt;<wbr></td>
+								<td>IEnumerable<wbr>&lt;<a href="/api/GitVersion/SemanticVersion">SemanticVersion</a>&gt;<wbr></td>
 								<td>
 									<div></div>
 								</td>

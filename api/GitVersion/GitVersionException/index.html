@@ -176,7 +176,6 @@
 				<li><a href="/api/GitVersion/GlobbingResolver">GlobbingResolver</a></li>
 				<li><a href="/api/GitVersion/HelpWriter">HelpWriter</a></li>
 				<li><a href="/api/GitVersion/IncrementStrategyExtensions">Increment<wbr>Strategy<wbr>Extensions</a></li>
-				<li><a href="/api/GitVersion/IncrementStrategyFinder">Increment<wbr>Strategy<wbr>Finder</a></li>
 				<li><a href="/api/GitVersion/LockedFileException">LockedFileException</a></li>
 				<li><a href="/api/GitVersion/MergeMessage">MergeMessage</a></li>
 				<li><a href="/api/GitVersion/QuotedStringHelpers">QuotedStringHelpers</a></li>
@@ -195,13 +194,10 @@
 				<li><a href="/api/GitVersion/WarningException">WarningException</a></li>
 				<li><a href="/api/GitVersion/WixInfo">WixInfo</a></li>
 			<li class="header">Enum Types</li>
-				<li><a href="/api/GitVersion/CommitMessageIncrementMode">Commit<wbr>Message<wbr>Increment<wbr>Mode</a></li>
 				<li><a href="/api/GitVersion/CommitSortStrategies">CommitSortStrategies</a></li>
 				<li><a href="/api/GitVersion/IncrementStrategy">IncrementStrategy</a></li>
 				<li><a href="/api/GitVersion/RefSpecDirection">RefSpecDirection</a></li>
 				<li><a href="/api/GitVersion/VersionField">VersionField</a></li>
-			<li class="header">Struct Types</li>
-				<li><a href="/api/GitVersion/BranchCommit">BranchCommit</a></li>
 			<li class="header">Interface Types</li>
 				<li><a href="/api/GitVersion/IArgumentParser">IArgumentParser</a></li>
 				<li><a href="/api/GitVersion/IBranch">IBranch</a></li>
@@ -233,6 +229,8 @@
 				<li><a href="/api/GitVersion/ITag">ITag</a></li>
 				<li><a href="/api/GitVersion/ITagCollection">ITagCollection</a></li>
 				<li><a href="/api/GitVersion/IVersionWriter">IVersionWriter</a></li>
+			<li class="header">Struct Types</li>
+				<li><a href="/api/GitVersion/BranchCommit">BranchCommit</a></li>
 
 
                     </ul>
@@ -262,17 +260,10 @@
 								<dt>Namespace</dt>
 								<dd><a href="/api/GitVersion">GitVersion</a></dd>
 											
-								<dt>Interfaces</dt>
-								<dd>
-									<ul class="list-unstyled">
-											<li>ISerializable</li>								
-									</ul>
-								</dd>
 							
 								<dt>Base Types</dt>
 								<dd>
 									<ul class="list-unstyled">										
-											<li>object</li>								
 											<li>Exception</li>								
 											<li><a href="/api/GitVersion/GitToolsException">GitToolsException</a></li>								
 									</ul>
@@ -293,8 +284,6 @@
 	Type--&gt;Base0["GitToolsException"]
 	click Base0 "/api/GitVersion/GitToolsException"
 	Base0--&gt;Base1["Exception"]
-	Base1--&gt;Base2["object"]
-	Type-.-&gt;Interface0["ISerializable"]
 	Type["GitVersionException"]
 class Type type-node
 	Derived0["ConfigurationException"]--&gt;Type
@@ -308,7 +297,7 @@ class Type type-node
 
 	<h1 id="Syntax">Syntax</h1>
 	<pre><code>[Serializable]
-public class GitVersionException : GitToolsException, ISerializable</code></pre>
+public class GitVersionException : GitToolsException</code></pre>
 
 
 
@@ -323,7 +312,7 @@ public class GitVersionException : GitToolsException, ISerializable</code></pre>
 					</tr>
 				</thead>
 					<tbody><tr>
-						<td>Serializable<wbr>Attribute</td>
+						<td>Serializable</td>
 						<td></td>
 					</tr>
 			</tbody></table>
@@ -348,7 +337,7 @@ public class GitVersionException : GitToolsException, ISerializable</code></pre>
 									<td></td>
 							</tr>
 							<tr>
-								<td><a href="/api/GitVersion/GitVersionException/C0D57ED3">GitVersionException<wbr>(string, <wbr>Exception)<wbr></a></td>
+								<td><a href="/api/GitVersion/GitVersionException/D1625695">GitVersionException<wbr>(string, <wbr>Exception)<wbr></a></td>
 									<td></td>
 							</tr>
 					</tbody></table>
