@@ -127,3 +127,4 @@ config.wyam.hash
 config.wyam.packages.xml
 /tests/integration/core/build
 /tests/integration/full/build
+docs/output
