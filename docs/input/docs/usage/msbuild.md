@@ -53,7 +53,7 @@ versioning your assemblies.
 
 ### WPF specific concerns
 
-One futhur step needs to be taken for SDK-style WPF projects.
+One further step needs to be taken for SDK-style WPF projects.
 
 Building projects with .NET Core SDK with a version lower than v5.0.200
 requires turning off automatic generation of the different versioning attributes.
