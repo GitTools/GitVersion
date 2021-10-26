@@ -19,109 +19,45 @@ public class ProjectFileUpdaterTests : TestBase
     private IVariableProvider variableProvider;
     private ILog log;
     private IFileSystem fileSystem;
+    private IProjectFileUpdater projectFileUpdater;
+    private List<string> logMessages;
 
     [SetUp]
     public void Setup()
     {
         ShouldlyConfiguration.ShouldMatchApprovedDefaults.LocateTestMethodUsingAttribute<TestCaseAttribute>();
         var sp = ConfigureServices();
-        this.log = Substitute.For<ILog>();
+
+        this.logMessages = new List<string>();
+        this.log = new Log(new TestLogAppender(this.logMessages.Add));
+
         this.fileSystem = sp.GetService<IFileSystem>();
         this.variableProvider = sp.GetService<IVariableProvider>();
+        this.projectFileUpdater = new ProjectFileUpdater(this.log, this.fileSystem!);
     }
 
-    [TestCase(@"
-<Project Sdk=""Microsoft.NET.Sdk"">
+    [Category(NoMono)]
+    [Description(NoMonoDescription)]
+    [TestCase("Microsoft.NET.Sdk")]
+    [TestCase("Microsoft.NET.Sdk.Worker")]
+    [TestCase("Microsoft.NET.Sdk.Web")]
+    [TestCase("Microsoft.NET.Sdk.WindowsDesktop")]
+    [TestCase("Microsoft.NET.Sdk.Razor")]
+    [TestCase("Microsoft.NET.Sdk.BlazorWebAssembly")]
+    public void CanUpdateProjectFileWithSdkProjectFileXml(string sdk)
+    {
+        var xml = $@"
+<Project Sdk=""{sdk}"">
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
 </Project>
-")]
-    [Category(NoMono)]
-    [Description(NoMonoDescription)]
-    public void CanUpdateProjectFileWithStandardProjectFileXml(string xml)
-    {
-        using var projectFileUpdater = new ProjectFileUpdater(this.log, this.fileSystem);
-
+";
         var canUpdate = projectFileUpdater.CanUpdateProjectFile(XElement.Parse(xml));
 
         canUpdate.ShouldBe(true);
-    }
-
-    [TestCase(@"
-<Project Sdk=""Microsoft.NET.Sdk.Worker"">
-  <PropertyGroup>
-    <OutputType>Exe</OutputType>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
-  </PropertyGroup>
-</Project>
-")]
-    [Category(NoMono)]
-    [Description(NoMonoDescription)]
-    public void CanUpdateProjectFileWithStandardWorkerProjectFileXml(string xml)
-    {
-        using var projectFileUpdater = new ProjectFileUpdater(this.log, this.fileSystem);
-
-        var canUpdate = projectFileUpdater.CanUpdateProjectFile(XElement.Parse(xml));
-
-        canUpdate.ShouldBe(true);
-    }
-
-    [TestCase(@"
-<Project Sdk=""Microsoft.NET.Sdk.Web"">
-  <PropertyGroup>
-    <OutputType>Exe</OutputType>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
-  </PropertyGroup>
-</Project>
-")]
-    [Category(NoMono)]
-    [Description(NoMonoDescription)]
-    public void CanUpdateProjectFileWithStandardWebProjectFileXml(string xml)
-    {
-        using var projectFileUpdater = new ProjectFileUpdater(this.log, this.fileSystem);
-
-        var canUpdate = projectFileUpdater.CanUpdateProjectFile(XElement.Parse(xml));
-
-        canUpdate.ShouldBe(true);
-    }
-
-    [TestCase(@"
-<Project Sdk=""Microsoft.NET.Sdk.WindowsDesktop"">
-  <PropertyGroup>
-    <OutputType>Exe</OutputType>
-    <TargetFramework>net461</TargetFramework>
-  </PropertyGroup>
-</Project>
-")]
-    [Category(NoMono)]
-    [Description(NoMonoDescription)]
-    public void CanUpdateProjectFileWithStandardDesktopProjectFileXml(string xml)
-    {
-        using var projectFileUpdater = new ProjectFileUpdater(this.log, this.fileSystem);
-
-        var canUpdate = projectFileUpdater.CanUpdateProjectFile(XElement.Parse(xml));
-
-        canUpdate.ShouldBe(true);
-    }
-
-    [TestCase(@"
-<Project Sdk=""Microsoft.NET.Sdk.Razor"">
-  <PropertyGroup>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
-  </PropertyGroup>
-</Project>
-")]
-    [Category(NoMono)]
-    [Description(NoMonoDescription)]
-    public void CanUpdateProjectFileWithRazorClassLibraryProjectFileXml(string xml)
-    {
-        using var projectFileUpdater = new ProjectFileUpdater(this.log, this.fileSystem);
-
-        var canUpdate = projectFileUpdater.CanUpdateProjectFile(XElement.Parse(xml));
-
-        canUpdate.ShouldBe(true);
+        logMessages.ShouldBeEmpty();
     }
 
     [TestCase(@"
@@ -136,11 +72,13 @@ public class ProjectFileUpdaterTests : TestBase
     [Description(NoMonoDescription)]
     public void CannotUpdateProjectFileWithIncorrectProjectSdk(string xml)
     {
-        using var projectFileUpdater = new ProjectFileUpdater(this.log, this.fileSystem);
-
         var canUpdate = projectFileUpdater.CanUpdateProjectFile(XElement.Parse(xml));
 
         canUpdate.ShouldBe(false);
+
+        logMessages.ShouldNotBeEmpty();
+        logMessages.Count.ShouldBe(1);
+        logMessages.First().ShouldContain("Specified project file Sdk (SomeOtherProject.Sdk) is not supported, please ensure the project sdk starts with 'Microsoft.NET.Sdk'");
     }
 
     [TestCase(@"
@@ -155,11 +93,13 @@ public class ProjectFileUpdaterTests : TestBase
     [Description(NoMonoDescription)]
     public void CannotUpdateProjectFileWithMissingProjectSdk(string xml)
     {
-        using var projectFileUpdater = new ProjectFileUpdater(this.log, this.fileSystem);
-
         var canUpdate = projectFileUpdater.CanUpdateProjectFile(XElement.Parse(xml));
 
         canUpdate.ShouldBe(false);
+
+        logMessages.ShouldNotBeEmpty();
+        logMessages.Count.ShouldBe(1);
+        logMessages.First().ShouldContain("Specified project file Sdk () is not supported, please ensure the project sdk starts with 'Microsoft.NET.Sdk'");
     }
 
     [TestCase(@"
@@ -175,11 +115,13 @@ public class ProjectFileUpdaterTests : TestBase
     [Description(NoMonoDescription)]
     public void CannotUpdateProjectFileWithoutAssemblyInfoGeneration(string xml)
     {
-        using var projectFileUpdater = new ProjectFileUpdater(this.log, this.fileSystem);
-
         var canUpdate = projectFileUpdater.CanUpdateProjectFile(XElement.Parse(xml));
 
         canUpdate.ShouldBe(false);
+
+        logMessages.ShouldNotBeEmpty();
+        logMessages.Count.ShouldBe(1);
+        logMessages.First().ShouldContain("Project file specifies <GenerateAssemblyInfo>false</GenerateAssemblyInfo>: versions set in this project file will not affect the output artifacts");
     }
 
     [TestCase(@"
@@ -190,11 +132,13 @@ public class ProjectFileUpdaterTests : TestBase
     [Description(NoMonoDescription)]
     public void CannotUpdateProjectFileWithoutAPropertyGroup(string xml)
     {
-        using var projectFileUpdater = new ProjectFileUpdater(this.log, this.fileSystem);
-
         var canUpdate = projectFileUpdater.CanUpdateProjectFile(XElement.Parse(xml));
 
         canUpdate.ShouldBe(false);
+
+        logMessages.ShouldNotBeEmpty();
+        logMessages.Count.ShouldBe(1);
+        logMessages.First().ShouldContain("Unable to locate any <PropertyGroup> elements in specified project file. Are you sure it is in a correct format?");
     }
 
     [TestCase(@"
@@ -209,11 +153,9 @@ public class ProjectFileUpdaterTests : TestBase
     [Description(NoMonoDescription)]
     public void UpdateProjectXmlVersionElementWithStandardXmlInsertsElement(string xml)
     {
-        using var projectFileUpdater = new ProjectFileUpdater(this.log, this.fileSystem);
-
         var variables = this.variableProvider.GetVariablesFor(SemanticVersion.Parse("2.0.0", "v"), new TestEffectiveConfiguration(), false);
         var xmlRoot = XElement.Parse(xml);
-        ProjectFileUpdater.UpdateProjectVersionElement(xmlRoot, ProjectFileUpdater.AssemblyVersionElement, variables.AssemblySemVer);
+        ProjectFileUpdater.UpdateProjectVersionElement(xmlRoot, ProjectFileUpdater.AssemblyVersionElement, variables.AssemblySemVer!);
 
         var expectedXml = XElement.Parse(@"
 <Project Sdk=""Microsoft.NET.Sdk"">
@@ -239,11 +181,9 @@ public class ProjectFileUpdaterTests : TestBase
     [Description(NoMonoDescription)]
     public void UpdateProjectXmlVersionElementWithStandardXmlModifiesElement(string xml)
     {
-        using var projectFileUpdater = new ProjectFileUpdater(this.log, this.fileSystem);
-
         var variables = this.variableProvider.GetVariablesFor(SemanticVersion.Parse("2.0.0", "v"), new TestEffectiveConfiguration(), false);
         var xmlRoot = XElement.Parse(xml);
-        ProjectFileUpdater.UpdateProjectVersionElement(xmlRoot, ProjectFileUpdater.AssemblyVersionElement, variables.AssemblySemVer);
+        ProjectFileUpdater.UpdateProjectVersionElement(xmlRoot, ProjectFileUpdater.AssemblyVersionElement, variables.AssemblySemVer!);
 
         var expectedXml = XElement.Parse(@"
 <Project Sdk=""Microsoft.NET.Sdk"">
@@ -272,11 +212,9 @@ public class ProjectFileUpdaterTests : TestBase
     [Description(NoMonoDescription)]
     public void UpdateProjectXmlVersionElementWithDuplicatePropertyGroupsModifiesLastElement(string xml)
     {
-        using var projectFileUpdater = new ProjectFileUpdater(this.log, this.fileSystem);
-
         var variables = this.variableProvider.GetVariablesFor(SemanticVersion.Parse("2.0.0", "v"), new TestEffectiveConfiguration(), false);
         var xmlRoot = XElement.Parse(xml);
-        ProjectFileUpdater.UpdateProjectVersionElement(xmlRoot, ProjectFileUpdater.AssemblyVersionElement, variables.AssemblySemVer);
+        ProjectFileUpdater.UpdateProjectVersionElement(xmlRoot, ProjectFileUpdater.AssemblyVersionElement, variables.AssemblySemVer!);
 
         var expectedXml = XElement.Parse(@"
 <Project Sdk=""Microsoft.NET.Sdk"">
@@ -306,11 +244,9 @@ public class ProjectFileUpdaterTests : TestBase
     [Description(NoMonoDescription)]
     public void UpdateProjectXmlVersionElementWithMultipleVersionElementsLastOneIsModified(string xml)
     {
-        using var projectFileUpdater = new ProjectFileUpdater(this.log, this.fileSystem);
-
         var variables = this.variableProvider.GetVariablesFor(SemanticVersion.Parse("2.0.0", "v"), new TestEffectiveConfiguration(), false);
         var xmlRoot = XElement.Parse(xml);
-        ProjectFileUpdater.UpdateProjectVersionElement(xmlRoot, ProjectFileUpdater.AssemblyVersionElement, variables.AssemblySemVer);
+        ProjectFileUpdater.UpdateProjectVersionElement(xmlRoot, ProjectFileUpdater.AssemblyVersionElement, variables.AssemblySemVer!);
 
         var expectedXml = XElement.Parse(@"
 <Project Sdk=""Microsoft.NET.Sdk"">
@@ -339,8 +275,8 @@ public class ProjectFileUpdaterTests : TestBase
 
         VerifyAssemblyInfoFile(xml, fileName, AssemblyVersioningScheme.MajorMinorPatch, verify: (fs, variables) =>
         {
-            using var projectFileUpdater = new ProjectFileUpdater(this.log, fs);
-            projectFileUpdater.Execute(variables, new AssemblyInfoContext(Path.GetTempPath(), false, fileName));
+            using var projFileUpdater = new ProjectFileUpdater(this.log, fs);
+            projFileUpdater.Execute(variables, new AssemblyInfoContext(Path.GetTempPath(), false, fileName));
 
             var expectedXml = @"
 <Project Sdk=""Microsoft.NET.Sdk"">
