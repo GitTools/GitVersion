@@ -2,7 +2,7 @@
 
     <PropertyGroup>
         <OutputType>Exe</OutputType>
-        <TargetFramework>net5.0</TargetFramework>
+        <TargetFramework>net6.0</TargetFramework>
         <RootNamespace>GitVersion</RootNamespace>
     </PropertyGroup>
 
@@ -13,19 +13,19 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="5.0.0"/>
+        <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="6.0.0-rc.2.21480.5" />
         <PackageReference Include="System.CommandLine" Version="2.0.0-beta1.20574.7"/>
 
-        <PackageReference Include="Serilog.Extensions.Logging" Version="3.0.2-dev-10281"/>
-        <PackageReference Include="Serilog.Sinks.Console" Version="4.0.0-dev-00839"/>
-        <PackageReference Include="Serilog.Sinks.File" Version="5.0.0-dev-00905"/>
+        <PackageReference Include="Serilog.Extensions.Logging" Version="3.1.0" />
+        <PackageReference Include="Serilog.Sinks.Console" Version="4.0.0" />
+        <PackageReference Include="Serilog.Sinks.File" Version="5.0.0" />
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\GitVersion.Calculation\GitVersion.Calculation.csproj"/>
-        <ProjectReference Include="..\GitVersion.Configuration\GitVersion.Configuration.csproj"/>
-        <ProjectReference Include="..\GitVersion.Normalization\GitVersion.Normalization.csproj"/>
-        <ProjectReference Include="..\GitVersion.Output\GitVersion.Output.csproj"/>
+        <ProjectReference Include="..\GitVersion.Calculation\GitVersion.Calculation.csproj" />
+        <ProjectReference Include="..\GitVersion.Configuration\GitVersion.Configuration.csproj" />
+        <ProjectReference Include="..\GitVersion.Normalization\GitVersion.Normalization.csproj" />
+        <ProjectReference Include="..\GitVersion.Output\GitVersion.Output.csproj" />
     </ItemGroup>
 
 </Project>
