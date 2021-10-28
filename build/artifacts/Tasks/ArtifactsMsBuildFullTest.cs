@@ -37,7 +37,7 @@ public class ArtifactsMsBuildFullTest : FrostingTask<BuildContext>
                 Verbosity = DotNetCoreVerbosity.Minimal,
                 Configuration = context.MsBuildConfiguration,
                 MSBuildSettings = dotnetCoreMsBuildSettings,
-                ArgumentCustomization = args => args.Append($"--source {nugetSource}")
+                Sources = new[] { nugetSource }
             });
 
             var netcoreExe = Paths.Integration.Combine("core").Combine("build").Combine(framework).CombineWithFilePath("app.dll");
