@@ -10,5 +10,5 @@ public interface IConfigFileLocator
     void Verify(GitVersionOptions gitVersionOptions, IGitRepositoryInfo repositoryInfo);
     void Verify(string workingDirectory, string projectRootDirectory);
     string SelectConfigFilePath(GitVersionOptions gitVersionOptions, IGitRepositoryInfo repositoryInfo);
-    Config ReadConfig(string? workingDirectory);
+    Config ReadConfig(string workingDirectory);
 }
