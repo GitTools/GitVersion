@@ -23,17 +23,16 @@ public class PackageNuget : FrostingTask<BuildContext>
             Configuration = context.MsBuildConfiguration,
             OutputDirectory = Paths.Nuget,
             MSBuildSettings = context.MsBuildSettings,
-            ArgumentCustomization = arg => arg.Append("/p:PackAsTool=true")
         };
 
         // GitVersion.MsBuild, global tool & core
-        context.DotNetCorePack("./src/GitVersion.App/GitVersion.App.csproj", settings);
+        context.DotNetCorePack("./src/GitVersion.Core", settings);
+
+        settings.ArgumentCustomization = arg => arg.Append("/p:PackAsTool=true");
+        context.DotNetCorePack("./src/GitVersion.App", settings);
 
         settings.ArgumentCustomization = arg => arg.Append("/p:IsPackaging=true");
         context.DotNetCorePack("./src/GitVersion.MsBuild", settings);
-
-        settings.ArgumentCustomization = null;
-        context.DotNetCorePack("./src/GitVersion.Core", settings);
     }
     private static void PackageUsingNuspec(BuildContextBase context)
     {

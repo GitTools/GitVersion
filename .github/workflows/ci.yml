@@ -108,6 +108,14 @@ jobs:
     -
       name: 'Upload native packages'
       uses: actions/upload-artifact@v2.2.4
+      if: matrix.os == 'windows-latest'
+      with:
+        name: native-${{ runner.os }}
+        path: ${{ github.workspace }}/artifacts/packages/native/*.zip
+    -
+      name: 'Upload native packages'
+      uses: actions/upload-artifact@v2.2.4
+      if: matrix.os != 'windows-latest'
       with:
         name: native-${{ runner.os }}
         path: ${{ github.workspace }}/artifacts/packages/native/*.tar.gz
