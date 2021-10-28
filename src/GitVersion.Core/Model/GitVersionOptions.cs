@@ -7,12 +7,12 @@ public class GitVersionOptions
 {
     public string? WorkingDirectory { get; set; }
 
-    public AssemblyInfoData AssemblyInfo { get; } = new AssemblyInfoData();
-    public AuthenticationInfo Authentication { get; } = new AuthenticationInfo();
-    public ConfigInfo ConfigInfo { get; } = new ConfigInfo();
-    public RepositoryInfo RepositoryInfo { get; } = new RepositoryInfo();
-    public WixInfo WixInfo { get; } = new WixInfo();
-    public Settings Settings { get; } = new Settings();
+    public AssemblyInfoData AssemblyInfo { get; } = new();
+    public AuthenticationInfo Authentication { get; } = new();
+    public ConfigInfo ConfigInfo { get; } = new();
+    public RepositoryInfo RepositoryInfo { get; } = new();
+    public WixInfo WixInfo { get; } = new();
+    public Settings Settings { get; } = new();
 
     public bool Init;
     public bool Diag;
