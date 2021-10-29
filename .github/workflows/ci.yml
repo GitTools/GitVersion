@@ -268,7 +268,7 @@ jobs:
     -
       name: '[Test Artifacts (amd64)]'
       shell: pwsh
-      run: dotnet run/artifacts.dll --target=ArtifactsTest --arch amd64 --docker_dotnetversion=${{ matrix.targetFramework }} --docker_distro=${{ matrix.distro }} --verbosity=diagnostic
+      run: dotnet run/artifacts.dll --target=ArtifactsTest --arch amd64 --docker_dotnetversion=${{ matrix.targetFramework }} --docker_distro=${{ matrix.distro }}
     -
       name: '[Test Artifacts (arm64)]'
       shell: pwsh
