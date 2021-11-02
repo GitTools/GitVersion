@@ -211,6 +211,7 @@ jobs:
 
   artifacts_linux_test:
     name: Test artifacts in docker
+    if: ${{ false }}
     needs: [build]
     runs-on: ubuntu-latest
     strategy:
@@ -276,6 +277,7 @@ jobs:
 
   docker_linux_images:
     name: Build, Test and Publish Docker Images
+    if: ${{ false }}
     needs: [build]
     runs-on: ubuntu-latest
     strategy:
