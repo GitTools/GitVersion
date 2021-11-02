@@ -50,6 +50,7 @@ public class GenerateGitVersionInformationTest : TestTaskBase
     }
 
     [Test]
+    [Category(NoNetCoreApp31)]
     [Category(NoNet48)]
     [Category(NoMono)]
     public void GenerateGitVersionInformationTaskShouldCreateFileWhenRunWithMsBuild()
@@ -77,6 +78,7 @@ public class GenerateGitVersionInformationTest : TestTaskBase
     }
 
     [Test]
+    [Category(NoNetCoreApp31)]
     [Category(NoNet48)]
     [Category(NoMono)]
     public void GenerateGitVersionInformationTaskShouldCreateFileWhenRunWithMsBuildInBuildServer()
