@@ -159,7 +159,7 @@ jobs:
         dotnet-version: '6.0.x'
         include-prerelease: true
     -
-      name: '[Build]'
+      name: '[Unit Test]'
       shell: pwsh
       run: dotnet run/build.dll --target=Test --dotnet_target=${{ matrix.targetFramework }}
 

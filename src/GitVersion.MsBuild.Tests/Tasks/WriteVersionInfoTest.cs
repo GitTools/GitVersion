@@ -93,6 +93,7 @@ public class WriteVersionInfoTest : TestTaskBase
     }
 
     [Test]
+    [Category(NoNetCoreApp31)]
     [Category(NoNet48)]
     [Category(NoMono)]
     public void WriteVersionInfoTaskShouldNotLogOutputVariablesToBuildOutputWhenRunWithMsBuild()
@@ -110,6 +111,7 @@ public class WriteVersionInfoTest : TestTaskBase
     }
 
     [Test]
+    [Category(NoNetCoreApp31)]
     [Category(NoNet48)]
     [Category(NoMono)]
     public void WriteVersionInfoTaskShouldLogOutputVariablesToBuildOutputWhenRunWithMsBuildInAzurePipeline()
