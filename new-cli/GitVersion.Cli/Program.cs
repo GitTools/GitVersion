@@ -37,7 +37,7 @@ namespace GitVersion
 
             var app = serviceProvider.GetService<GitVersionApp>();
 
-            var result = await app.RunAsync(args);
+            var result = await app!.RunAsync(args);
 
             if (!Console.IsInputRedirected) Console.ReadKey();
 

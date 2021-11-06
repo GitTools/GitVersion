@@ -11,7 +11,7 @@ namespace GitVersion.Infrastructure
 
         public T? GetService<T>() => serviceProvider.GetService<T>();
 
-        public object GetService(Type type) => serviceProvider.GetService(type);
+        public object? GetService(Type type) => serviceProvider.GetService(type);
 
         public void Dispose() => serviceProvider.Dispose();
     }
