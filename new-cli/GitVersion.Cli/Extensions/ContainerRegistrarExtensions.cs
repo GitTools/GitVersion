@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using GitVersion.Infrastructure;
+﻿using GitVersion.Infrastructure;
 
 namespace GitVersion.Extensions;
 

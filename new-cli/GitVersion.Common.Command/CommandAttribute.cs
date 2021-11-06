@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace GitVersion.Command;
+﻿namespace GitVersion.Command;
 
 [AttributeUsage(AttributeTargets.Class)]
 public class CommandAttribute : Attribute

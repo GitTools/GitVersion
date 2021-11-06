@@ -1,6 +1,4 @@
-﻿using System.Threading.Tasks;
-
-namespace GitVersion.Command;
+﻿namespace GitVersion.Command;
 
 public interface ICommand
 {

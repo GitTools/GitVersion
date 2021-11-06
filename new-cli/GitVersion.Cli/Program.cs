@@ -1,5 +1,4 @@
-﻿using System;
-using GitVersion;
+﻿using GitVersion;
 
 using var serviceProvider = ModulesLoader.Load(args);
 var app = serviceProvider.GetService<GitVersionApp>();

@@ -1,6 +1,4 @@
-﻿using System;
-using System.Linq;
-using GitVersion.Calculation;
+﻿using GitVersion.Calculation;
 using GitVersion.Configuration;
 using GitVersion.Extensions;
 using GitVersion.Infrastructure;

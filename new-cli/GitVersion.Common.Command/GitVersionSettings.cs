@@ -1,6 +1,4 @@
-﻿using System.IO;
-
-namespace GitVersion.Command;
+﻿namespace GitVersion.Command;
 
 public record GitVersionSettings
 {

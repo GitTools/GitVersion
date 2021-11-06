@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace GitVersion.Command;
+﻿namespace GitVersion.Command;
 
 [AttributeUsage(AttributeTargets.Property)]
 public class OptionAttribute : Attribute

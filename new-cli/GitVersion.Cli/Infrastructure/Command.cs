@@ -1,5 +1,3 @@
-using System;
-
 namespace GitVersion.Infrastructure;
 
 public class Command : System.CommandLine.Command

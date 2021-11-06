@@ -1,5 +1,3 @@
-using System.Threading.Tasks;
-
 namespace GitVersion.Command;
 
 public abstract class Command<T> : ICommand

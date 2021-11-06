@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.CommandLine;
+﻿using System.CommandLine;
 using System.CommandLine.Builder;
 using System.CommandLine.Invocation;
 using System.CommandLine.Parsing;
-using System.Linq;
 using System.Reflection;
-using System.Threading.Tasks;
 using GitVersion.Command;
 using GitVersion.Extensions;
 using ICommand = GitVersion.Command.ICommand;

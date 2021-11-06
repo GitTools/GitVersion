@@ -1,5 +1,3 @@
-using System;
-using System.IO;
 using GitVersion.Command;
 
 namespace GitVersion.Output;

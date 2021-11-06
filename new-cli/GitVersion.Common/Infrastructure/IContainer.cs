@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace GitVersion.Infrastructure;
+﻿namespace GitVersion.Infrastructure;
 
 public interface IContainer : IDisposable
 {

@@ -1,5 +1,4 @@
-﻿using System.Threading.Tasks;
-using GitVersion.Command;
+﻿using GitVersion.Command;
 using GitVersion.Infrastructure;
 
 namespace GitVersion.Output.Project;
