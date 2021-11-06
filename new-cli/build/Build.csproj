@@ -6,6 +6,6 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Cake.Frosting" Version="1.0.0-rc0002" />
+    <PackageReference Include="Cake.Frosting" Version="1.3.0" />
   </ItemGroup>
 </Project>
