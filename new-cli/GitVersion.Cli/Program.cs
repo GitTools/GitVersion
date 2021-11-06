@@ -20,7 +20,7 @@ var assemblies = new[]
 };
 
 var gitVersionModules = assemblies
-    .SelectMany(a => a.GetTypes().Where(TypeIsGitVersionModule))
+    .SelectMany(a => a.GetTypes().Where(t => t.TypeIsGitVersionModule()))
     .Select(t => (IGitVersionModule)Activator.CreateInstance(t)!)
     .ToList();
 
@@ -36,10 +36,3 @@ var result = await app!.RunAsync(args);
 if (!Console.IsInputRedirected) Console.ReadKey();
 
 return result;
-
-static bool TypeIsGitVersionModule(Type type)
-{
-    return typeof(IGitVersionModule).IsAssignableFrom(type) &&
-           !type.IsInterface &&
-           !type.IsAbstract;
-}

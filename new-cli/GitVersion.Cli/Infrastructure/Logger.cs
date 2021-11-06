@@ -2,7 +2,7 @@
 
 namespace GitVersion.Infrastructure;
 
-public class Logger : GitVersion.Infrastructure.ILogger
+public class Logger : ILogger
 {
     private readonly Microsoft.Extensions.Logging.ILogger logger;
 
