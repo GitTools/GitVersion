@@ -2,24 +2,24 @@
 using GitVersion.Command;
 using GitVersion.Infrastructure;
 
-namespace GitVersion.Normalization
+namespace GitVersion.Output
 {
-    public class NormalizeCommandHandler : CommandHandler<NormalizeSettings>
+    public class OutputCommand : Command<OutputSettings>
     {
         private readonly ILogger logger;
         private readonly IService service;
 
-        public NormalizeCommandHandler(ILogger logger, IService service)
+        public OutputCommand(ILogger logger, IService service)
         {
             this.logger = logger;
             this.service = service;
         }
 
-        public override Task<int> InvokeAsync(NormalizeSettings settings)
+        public override Task<int> InvokeAsync(OutputSettings settings)
         {
             var value = service.Call();
             logger.LogInformation(
-                $"Command : 'normalize', LogFile : '{settings.LogFile}', WorkDir : '{settings.WorkDir}' ");
+                $"Command : 'output', LogFile : '{settings.LogFile}', WorkDir : '{settings.WorkDir}' ");
             return Task.FromResult(value);
         }
     }

@@ -2,7 +2,7 @@
 
 namespace GitVersion.Command
 {
-    public interface ICommandHandler
+    public interface ICommand
     {
         Task<int> InvokeAsync(object command);
     }

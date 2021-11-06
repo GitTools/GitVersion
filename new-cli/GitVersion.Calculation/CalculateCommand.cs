@@ -2,23 +2,24 @@
 using GitVersion.Command;
 using GitVersion.Infrastructure;
 
-namespace GitVersion.Configuration
+namespace GitVersion.Calculation
 {
-    public class ConfigCommandHandler : CommandHandler<ConfigSettings>
+    public class CalculateCommand : Command<CalculateSettings>
     {
         private readonly ILogger logger;
         private readonly IService service;
 
-        public ConfigCommandHandler(ILogger logger, IService service)
+        public CalculateCommand(ILogger logger, IService service)
         {
             this.logger = logger;
             this.service = service;
         }
 
-        public override Task<int> InvokeAsync(ConfigSettings settings)
+        public override Task<int> InvokeAsync(CalculateSettings settings)
         {
             var value = service.Call();
-            logger.LogInformation($"Command : 'config', LogFile : '{settings.LogFile}', WorkDir : '{settings.WorkDir}' ");
+            logger.LogInformation(
+                $"Command : 'calculate', LogFile : '{settings.LogFile}', WorkDir : '{settings.WorkDir}' ");
             return Task.FromResult(value);
         }
     }

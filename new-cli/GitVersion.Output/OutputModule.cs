@@ -10,10 +10,10 @@ namespace GitVersion.Output
     {
         public void RegisterTypes(IContainerRegistrar services)
         {
-            services.AddSingleton<ICommandHandler, OutputCommandHandler>();
-            services.AddSingleton<ICommandHandler, OutputAssemblyInfoCommandHandler>();
-            services.AddSingleton<ICommandHandler, OutputProjectCommandHandler>();
-            services.AddSingleton<ICommandHandler, OutputWixCommandHandler>();
+            services.AddSingleton<ICommand, OutputCommand>();
+            services.AddSingleton<ICommand, OutputAssemblyInfoCommand>();
+            services.AddSingleton<ICommand, OutputProjectCommand>();
+            services.AddSingleton<ICommand, OutputWixCommand>();
         }
     }
 }

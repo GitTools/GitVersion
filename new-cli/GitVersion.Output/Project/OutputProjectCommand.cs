@@ -4,12 +4,12 @@ using GitVersion.Infrastructure;
 
 namespace GitVersion.Output.Project
 {
-    public class OutputProjectCommandHandler : CommandHandler<OutputProjectSettings>
+    public class OutputProjectCommand : Command<OutputProjectSettings>
     {
         private readonly ILogger logger;
         private readonly IService service;
 
-        public OutputProjectCommandHandler(ILogger logger, IService service)
+        public OutputProjectCommand(ILogger logger, IService service)
         {
             this.logger = logger;
             this.service = service;

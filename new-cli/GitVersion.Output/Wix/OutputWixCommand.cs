@@ -4,12 +4,12 @@ using GitVersion.Infrastructure;
 
 namespace GitVersion.Output.Wix
 {
-    public class OutputWixCommandHandler : CommandHandler<OutputWixSettings>
+    public class OutputWixCommand : Command<OutputWixSettings>
     {
         private readonly ILogger logger;
         private readonly IService service;
 
-        public OutputWixCommandHandler(ILogger logger, IService service)
+        public OutputWixCommand(ILogger logger, IService service)
         {
             this.logger = logger;
             this.service = service;

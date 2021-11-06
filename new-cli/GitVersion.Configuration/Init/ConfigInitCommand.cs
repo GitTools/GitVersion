@@ -2,24 +2,24 @@
 using GitVersion.Command;
 using GitVersion.Infrastructure;
 
-namespace GitVersion.Output
+namespace GitVersion.Configuration.Init
 {
-    public class OutputCommandHandler : CommandHandler<OutputSettings>
+    public class ConfigInitCommand : Command<ConfigInitSettings>
     {
         private readonly ILogger logger;
         private readonly IService service;
 
-        public OutputCommandHandler(ILogger logger, IService service)
+        public ConfigInitCommand(ILogger logger, IService service)
         {
             this.logger = logger;
             this.service = service;
         }
 
-        public override Task<int> InvokeAsync(OutputSettings settings)
+        public override Task<int> InvokeAsync(ConfigInitSettings settings)
         {
             var value = service.Call();
             logger.LogInformation(
-                $"Command : 'output', LogFile : '{settings.LogFile}', WorkDir : '{settings.WorkDir}' ");
+                $"Command : 'config init', LogFile : '{settings.LogFile}', WorkDir : '{settings.WorkDir}' ");
             return Task.FromResult(value);
         }
     }

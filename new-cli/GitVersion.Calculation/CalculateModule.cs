@@ -7,7 +7,7 @@ namespace GitVersion.Calculation
     {
         public void RegisterTypes(IContainerRegistrar services)
         {
-            services.AddSingleton<ICommandHandler, CalculateCommandHandler>();
+            services.AddSingleton<ICommand, CalculateCommand>();
         }
     }
 }

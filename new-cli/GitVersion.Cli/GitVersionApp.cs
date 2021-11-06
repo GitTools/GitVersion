@@ -9,7 +9,7 @@ using System.Reflection;
 using System.Threading.Tasks;
 using GitVersion.Command;
 using GitVersion.Extensions;
-using ICommandHandler = GitVersion.Command.ICommandHandler;
+using ICommand = GitVersion.Command.ICommand;
 
 namespace GitVersion
 {
@@ -17,7 +17,7 @@ namespace GitVersion
     {
         private readonly RootCommand rootCommand;
 
-        public GitVersionApp(IEnumerable<ICommandHandler> commandHandlers) =>
+        public GitVersionApp(IEnumerable<ICommand> commandHandlers) =>
             rootCommand = MapCommands(commandHandlers);
 
         public Task<int> RunAsync(string[] args)
@@ -28,7 +28,7 @@ namespace GitVersion
                 .InvokeAsync(args);
         }
 
-        private static RootCommand MapCommands(IEnumerable<ICommandHandler> handlers)
+        private static RootCommand MapCommands(IEnumerable<ICommand> handlers)
         {
             var commandsMap = new Dictionary<Type, Infrastructure.Command>();
             foreach (var handler in handlers)
@@ -46,7 +46,7 @@ namespace GitVersion
                         };
                         command.AddOptions(commandOptionsType);
 
-                        var handlerMethod = handlerType?.GetMethod(nameof(ICommandHandler.InvokeAsync));
+                        var handlerMethod = handlerType?.GetMethod(nameof(ICommand.InvokeAsync));
                         command.Handler = CommandHandler.Create(handlerMethod!, handler);
 
                         commandsMap.Add(commandOptionsType, command);
