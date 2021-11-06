@@ -4,7 +4,7 @@ using GitVersion.Infrastructure;
 
 namespace GitVersion.Output.AssemblyInfo
 {
-    public class OutputAssemblyInfoCommandHandler : CommandHandler<OutputAssemblyInfoCommand>
+    public class OutputAssemblyInfoCommandHandler : CommandHandler<OutputAssemblyInfoSettings>
     {
         private readonly ILogger logger;
         private readonly IService service;
@@ -15,12 +15,12 @@ namespace GitVersion.Output.AssemblyInfo
             this.service = service;
         }
 
-        public override Task<int> InvokeAsync(OutputAssemblyInfoCommand command)
+        public override Task<int> InvokeAsync(OutputAssemblyInfoSettings settings)
         {
             var value = service.Call();
-            var versionInfo = command.VersionInfo.Value;
+            var versionInfo = settings.VersionInfo.Value;
             logger.LogInformation(
-                $"Command : 'output assemblyinfo', LogFile : '{command.LogFile}', WorkDir : '{command.OutputDir}', InputFile: '{command.InputFile}', AssemblyInfo: '{command.AssemblyinfoFile}' ");
+                $"Command : 'output assemblyinfo', LogFile : '{settings.LogFile}', WorkDir : '{settings.OutputDir}', InputFile: '{settings.InputFile}', AssemblyInfo: '{settings.AssemblyinfoFile}' ");
             logger.LogInformation($"Version info: {versionInfo}");
             return Task.FromResult(value);
         }

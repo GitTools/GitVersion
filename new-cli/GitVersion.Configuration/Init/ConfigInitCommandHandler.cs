@@ -4,7 +4,7 @@ using GitVersion.Infrastructure;
 
 namespace GitVersion.Configuration.Init
 {
-    public class ConfigInitCommandHandler : CommandHandler<ConfigInitCommand>
+    public class ConfigInitCommandHandler : CommandHandler<ConfigInitSettings>
     {
         private readonly ILogger logger;
         private readonly IService service;
@@ -15,11 +15,11 @@ namespace GitVersion.Configuration.Init
             this.service = service;
         }
 
-        public override Task<int> InvokeAsync(ConfigInitCommand command)
+        public override Task<int> InvokeAsync(ConfigInitSettings settings)
         {
             var value = service.Call();
             logger.LogInformation(
-                $"Command : 'config init', LogFile : '{command.LogFile}', WorkDir : '{command.WorkDir}' ");
+                $"Command : 'config init', LogFile : '{settings.LogFile}', WorkDir : '{settings.WorkDir}' ");
             return Task.FromResult(value);
         }
     }

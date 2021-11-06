@@ -4,7 +4,7 @@ using GitVersion.Infrastructure;
 
 namespace GitVersion.Output.Wix
 {
-    public class OutputWixCommandHandler : CommandHandler<OutputWixCommand>
+    public class OutputWixCommandHandler : CommandHandler<OutputWixSettings>
     {
         private readonly ILogger logger;
         private readonly IService service;
@@ -15,11 +15,11 @@ namespace GitVersion.Output.Wix
             this.service = service;
         }
 
-        public override Task<int> InvokeAsync(OutputWixCommand command)
+        public override Task<int> InvokeAsync(OutputWixSettings settings)
         {
             var value = service.Call();
             logger.LogInformation(
-                $"Command : 'output wix', LogFile : '{command.LogFile}', WorkDir : '{command.OutputDir}', InputFile: '{command.InputFile}', WixFile: '{command.WixFile}' ");
+                $"Command : 'output wix', LogFile : '{settings.LogFile}', WorkDir : '{settings.OutputDir}', InputFile: '{settings.InputFile}', WixFile: '{settings.WixFile}' ");
             return Task.FromResult(value);
         }
     }

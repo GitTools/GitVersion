@@ -6,7 +6,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\GitVersion.Common\GitVersion.Common.csproj"/>
+        <ProjectReference Include="..\GitVersion.Common\GitVersion.Common.csproj" />
     </ItemGroup>
 
 </Project>

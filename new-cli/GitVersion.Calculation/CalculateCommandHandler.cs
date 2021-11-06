@@ -4,7 +4,7 @@ using GitVersion.Infrastructure;
 
 namespace GitVersion.Calculation
 {
-    public class CalculateCommandHandler : CommandHandler<CalculateCommand>
+    public class CalculateCommandHandler : CommandHandler<CalculateSettings>
     {
         private readonly ILogger logger;
         private readonly IService service;
@@ -15,11 +15,11 @@ namespace GitVersion.Calculation
             this.service = service;
         }
 
-        public override Task<int> InvokeAsync(CalculateCommand command)
+        public override Task<int> InvokeAsync(CalculateSettings settings)
         {
             var value = service.Call();
             logger.LogInformation(
-                $"Command : 'calculate', LogFile : '{command.LogFile}', WorkDir : '{command.WorkDir}' ");
+                $"Command : 'calculate', LogFile : '{settings.LogFile}', WorkDir : '{settings.WorkDir}' ");
             return Task.FromResult(value);
         }
     }

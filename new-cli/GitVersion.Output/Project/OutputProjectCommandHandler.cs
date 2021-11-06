@@ -4,7 +4,7 @@ using GitVersion.Infrastructure;
 
 namespace GitVersion.Output.Project
 {
-    public class OutputProjectCommandHandler : CommandHandler<OutputProjectCommand>
+    public class OutputProjectCommandHandler : CommandHandler<OutputProjectSettings>
     {
         private readonly ILogger logger;
         private readonly IService service;
@@ -15,11 +15,11 @@ namespace GitVersion.Output.Project
             this.service = service;
         }
 
-        public override Task<int> InvokeAsync(OutputProjectCommand command)
+        public override Task<int> InvokeAsync(OutputProjectSettings settings)
         {
             var value = service.Call();
             logger.LogInformation(
-                $"Command : 'output project', LogFile : '{command.LogFile}', WorkDir : '{command.OutputDir}', InputFile: '{command.InputFile}', Project: '{command.ProjectFile}' ");
+                $"Command : 'output project', LogFile : '{settings.LogFile}', WorkDir : '{settings.OutputDir}', InputFile: '{settings.InputFile}', Project: '{settings.ProjectFile}' ");
             return Task.FromResult(value);
         }
     }

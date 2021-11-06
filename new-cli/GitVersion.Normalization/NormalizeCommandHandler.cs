@@ -4,7 +4,7 @@ using GitVersion.Infrastructure;
 
 namespace GitVersion.Normalization
 {
-    public class NormalizeCommandHandler : CommandHandler<NormalizeCommand>
+    public class NormalizeCommandHandler : CommandHandler<NormalizeSettings>
     {
         private readonly ILogger logger;
         private readonly IService service;
@@ -15,11 +15,11 @@ namespace GitVersion.Normalization
             this.service = service;
         }
 
-        public override Task<int> InvokeAsync(NormalizeCommand command)
+        public override Task<int> InvokeAsync(NormalizeSettings settings)
         {
             var value = service.Call();
             logger.LogInformation(
-                $"Command : 'normalize', LogFile : '{command.LogFile}', WorkDir : '{command.WorkDir}' ");
+                $"Command : 'normalize', LogFile : '{settings.LogFile}', WorkDir : '{settings.WorkDir}' ");
             return Task.FromResult(value);
         }
     }

@@ -67,7 +67,7 @@ namespace GitVersion.Infrastructure
             // so we perform a pre-parse of the arguments to fetch the logFile so that we can create the logger and
             // register in the DI container
             var option = new Option(new[]
-                { GitVersionCommand.LogFileOptionAlias1, GitVersionCommand.LogFileOptionAlias2 })
+                { GitVersionSettings.LogFileOptionAlias1, GitVersionSettings.LogFileOptionAlias2 })
             {
                 Argument = new Argument()
             };
