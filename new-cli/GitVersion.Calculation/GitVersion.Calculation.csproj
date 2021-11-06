@@ -1,10 +1,5 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-    <PropertyGroup>
-        <TargetFramework>netstandard2.0</TargetFramework>
-        <RootNamespace>GitVersion.Calculation</RootNamespace>
-    </PropertyGroup>
-
     <ItemGroup>
         <ProjectReference Include="..\GitVersion.Common.Command\GitVersion.Common.Command.csproj" />
     </ItemGroup>
