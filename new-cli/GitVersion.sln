@@ -10,8 +10,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GitVersion.Output", "GitVer
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "GitVersion", "GitVersion", "{610883EF-A96B-4A86-8A3F-1F1601FFDC7D}"
 ProjectSection(SolutionItems) = preProject
-	command.md = command.md
 	Directory.Build.props = Directory.Build.props
+	..\command.md = ..\command.md
 EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GitVersion.Normalization", "GitVersion.Normalization\GitVersion.Normalization.csproj", "{45776CC1-7FDA-4299-86A7-9F11E7855CE4}"

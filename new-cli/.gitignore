@@ -28,3 +28,7 @@
 
 .vscode
 artifacts
+
+run/
+
+tools/
