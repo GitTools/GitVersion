@@ -1,12 +1,11 @@
 ﻿using GitVersion.Infrastructure;
 
-namespace GitVersion
+namespace GitVersion;
+
+public class CommonModule : IGitVersionModule
 {
-    public class CommonModule : IGitVersionModule
+    public void RegisterTypes(IContainerRegistrar services)
     {
-        public void RegisterTypes(IContainerRegistrar services)
-        {
-            services.AddSingleton<IService, Service>();
-        }
+        services.AddSingleton<IService, Service>();
     }
 }

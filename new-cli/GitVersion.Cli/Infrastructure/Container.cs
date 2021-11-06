@@ -1,18 +1,17 @@
 ﻿using System;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace GitVersion.Infrastructure
+namespace GitVersion.Infrastructure;
+
+public class Container : IContainer
 {
-    public class Container : IContainer
-    {
-        private readonly ServiceProvider serviceProvider;
+    private readonly ServiceProvider serviceProvider;
 
-        public Container(ServiceProvider serviceProvider) => this.serviceProvider = serviceProvider;
+    public Container(ServiceProvider serviceProvider) => this.serviceProvider = serviceProvider;
 
-        public T? GetService<T>() => serviceProvider.GetService<T>();
+    public T? GetService<T>() => serviceProvider.GetService<T>();
 
-        public object? GetService(Type type) => serviceProvider.GetService(type);
+    public object? GetService(Type type) => serviceProvider.GetService(type);
 
-        public void Dispose() => serviceProvider.Dispose();
-    }
+    public void Dispose() => serviceProvider.Dispose();
 }

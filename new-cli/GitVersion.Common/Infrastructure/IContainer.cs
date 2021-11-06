@@ -1,10 +1,9 @@
 ﻿using System;
 
-namespace GitVersion.Infrastructure
+namespace GitVersion.Infrastructure;
+
+public interface IContainer : IDisposable
 {
-    public interface IContainer : IDisposable
-    {
-        T? GetService<T>();
-        object? GetService(Type type);
-    }
+    T? GetService<T>();
+    object? GetService(Type type);
 }

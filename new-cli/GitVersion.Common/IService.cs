@@ -1,7 +1,6 @@
-﻿namespace GitVersion
+﻿namespace GitVersion;
+
+public interface IService
 {
-    public interface IService
-    {
-        int Call();
-    }
+    int Call();
 }

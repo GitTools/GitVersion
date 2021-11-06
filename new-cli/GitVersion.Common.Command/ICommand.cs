@@ -1,9 +1,8 @@
 ﻿using System.Threading.Tasks;
 
-namespace GitVersion.Command
+namespace GitVersion.Command;
+
+public interface ICommand
 {
-    public interface ICommand
-    {
-        Task<int> InvokeAsync(object command);
-    }
+    Task<int> InvokeAsync(object command);
 }

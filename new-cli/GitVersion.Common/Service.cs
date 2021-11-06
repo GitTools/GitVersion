@@ -1,10 +1,9 @@
-﻿namespace GitVersion
+﻿namespace GitVersion;
+
+public class Service : IService
 {
-    public class Service : IService
+    public int Call()
     {
-        public int Call()
-        {
-            return 13;
-        }
+        return 13;
     }
 }

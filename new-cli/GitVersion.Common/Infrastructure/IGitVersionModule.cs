@@ -1,7 +1,6 @@
-﻿namespace GitVersion.Infrastructure
+﻿namespace GitVersion.Infrastructure;
+
+public interface IGitVersionModule
 {
-    public interface IGitVersionModule
-    {
-        void RegisterTypes(IContainerRegistrar services);
-    }
+    void RegisterTypes(IContainerRegistrar services);
 }

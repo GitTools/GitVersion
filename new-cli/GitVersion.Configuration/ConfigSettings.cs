@@ -1,9 +1,8 @@
 ﻿using GitVersion.Command;
 
-namespace GitVersion.Configuration
+namespace GitVersion.Configuration;
+
+[Command("config", "Manages the GitVersion configuration file.")]
+public record ConfigSettings : GitVersionSettings
 {
-    [Command("config", "Manages the GitVersion configuration file.")]
-    public record ConfigSettings : GitVersionSettings
-    {
-    }
 }

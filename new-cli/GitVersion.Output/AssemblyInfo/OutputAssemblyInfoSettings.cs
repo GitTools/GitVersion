@@ -1,11 +1,10 @@
 ﻿using GitVersion.Command;
 
-namespace GitVersion.Output.AssemblyInfo
+namespace GitVersion.Output.AssemblyInfo;
+
+[Command("assemblyinfo", typeof(OutputSettings), "Outputs version to assembly")]
+public record OutputAssemblyInfoSettings : OutputSettings
 {
-    [Command("assemblyinfo", typeof(OutputSettings), "Outputs version to assembly")]
-    public record OutputAssemblyInfoSettings : OutputSettings
-    {
-        [Option("--assemblyinfo-file", "The assembly file")]
-        public string AssemblyinfoFile { get; init; } = default!;
-    }
+    [Option("--assemblyinfo-file", "The assembly file")]
+    public string AssemblyinfoFile { get; init; } = default!;
 }

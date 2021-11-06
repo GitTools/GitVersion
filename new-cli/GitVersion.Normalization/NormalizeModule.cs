@@ -1,13 +1,12 @@
 ﻿using GitVersion.Command;
 using GitVersion.Infrastructure;
 
-namespace GitVersion.Normalization
+namespace GitVersion.Normalization;
+
+public class NormalizeModule : IGitVersionModule
 {
-    public class NormalizeModule : IGitVersionModule
+    public void RegisterTypes(IContainerRegistrar services)
     {
-        public void RegisterTypes(IContainerRegistrar services)
-        {
-            services.AddSingleton<ICommand, NormalizeCommand>();
-        }
+        services.AddSingleton<ICommand, NormalizeCommand>();
     }
 }
