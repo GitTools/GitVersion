@@ -16,10 +16,9 @@ public static class CommandExtension
             var optionAttribute = propertyInfo.GetCustomAttribute<OptionAttribute>();
             if (optionAttribute == null) continue;
 
-            var option = new Option(optionAttribute.Aliases, optionAttribute.Description)
+            var option = new Option(optionAttribute.Aliases, optionAttribute.Description, propertyInfo.PropertyType)
             {
                 IsRequired = optionAttribute.IsRequired,
-                Argument = new Argument { ArgumentType = propertyInfo.PropertyType }
             };
             command.AddOption(option);
         }

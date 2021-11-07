@@ -64,11 +64,8 @@ public class ContainerRegistrar : IContainerRegistrar
         // We cannot use the logFile path when the logger was already created and registered in DI container
         // so we perform a pre-parse of the arguments to fetch the logFile so that we can create the logger and
         // register in the DI container
-        var option = new Option(new[]
-            { GitVersionSettings.LogFileOptionAlias1, GitVersionSettings.LogFileOptionAlias2 })
-        {
-            Argument = new Argument()
-        };
+        var aliases = new[] { GitVersionSettings.LogFileOptionAlias1, GitVersionSettings.LogFileOptionAlias2 };
+        var option = new Option(aliases, argumentType: typeof(FileInfo));
         var logFile = new Parser(option).Parse(args).ValueForOption<FileInfo>(option);
 
         var configuration = new LoggerConfiguration()
