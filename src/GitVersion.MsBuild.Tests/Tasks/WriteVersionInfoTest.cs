@@ -80,6 +80,7 @@ public class WriteVersionInfoTest : TestTaskBase
 
 
     [Test]
+    [Category(NoNetCoreApp31)]
     public void WriteVersionInfoTaskShouldLogOutputVariablesToBuildOutputInGitHubActions()
     {
         var task = new WriteVersionInfoToBuildLog();

@@ -41,7 +41,7 @@
         <PackageVersion_Shouldly>4.0.3</PackageVersion_Shouldly>
 
         <PackageVersion_MicrosoftCodeStyle>3.11.0</PackageVersion_MicrosoftCodeStyle>
-        <PackageVersion_MicrosoftNetAnalyzers>5.0.3</PackageVersion_MicrosoftNetAnalyzers>
+        <PackageVersion_MicrosoftNetAnalyzers>6.0.0</PackageVersion_MicrosoftNetAnalyzers>
     </PropertyGroup>
 
     <ItemGroup Condition=" '$(IsTestProject)' == 'true' ">
