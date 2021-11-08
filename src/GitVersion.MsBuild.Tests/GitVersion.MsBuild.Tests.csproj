@@ -6,11 +6,20 @@
         <IsTestProject>true</IsTestProject>
     </PropertyGroup>
 
-    <ItemGroup>
-        <PackageReference Include="Buildalyzer" Version="3.2.3" />
-        <PackageReference Include="LibGit2Sharp" Version="$(PackageVersion_LibGit2Sharp)" />
-        <PackageReference Include="Microsoft.Build" Version="$(PackageVersion_MsBuild)" />
+    <ItemGroup Condition=" '$(TargetFramework)' == 'netcoreapp3.1' ">
+        <PackageReference Include="Buildalyzer" Version="3.2.2" />
         <PackageReference Include="MSBuild.ProjectCreation" Version="6.3.3" />
+        <PackageReference Include="Microsoft.Build" Version="16.9.0" />
+    </ItemGroup>
+
+    <ItemGroup Condition=" '$(TargetFramework)' != 'netcoreapp3.1' ">
+        <PackageReference Include="Buildalyzer" Version="3.2.3" />
+        <PackageReference Include="MSBuild.ProjectCreation" Version="6.3.3" />
+        <PackageReference Include="Microsoft.Build" Version="16.11.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="LibGit2Sharp" Version="$(PackageVersion_LibGit2Sharp)" />
     </ItemGroup>
 
     <ItemGroup>

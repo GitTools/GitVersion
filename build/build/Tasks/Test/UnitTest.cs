@@ -89,7 +89,7 @@ public class UnitTest : FrostingTask<BuildContext>
 
         if (string.Equals(framework, Constants.CoreFxVersion31))
         {
-            settings.Filter = $"TestCategory!={Constants.NoNetCoreApp31}";
+            // settings.Filter = $"TestCategory!={Constants.NoNetCoreApp31}";
         }
 
         if (string.Equals(framework, Constants.FullFxVersion48))
