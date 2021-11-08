@@ -1,7 +1,8 @@
 using Cake.Common.Build.AzurePipelines.Data;
-using Cake.Common.Tools.DotNetCore.Test;
+using Cake.Common.Tools.DotNet.Test;
 using Cake.Coverlet;
 using Cake.Incubator.LoggingExtensions;
+using Common.Addins.Cake.Coverlet;
 using Common.Utilities;
 
 namespace Build.Tasks;
@@ -63,7 +64,7 @@ public class UnitTest : FrostingTask<BuildContext>
     {
         var testResultsPath = Paths.TestOutput;
         var projectName = $"{project.GetFilenameWithoutExtension()}.{framework}";
-        var settings = new DotNetCoreTestSettings
+        var settings = new DotNetTestSettings
         {
             Framework = framework,
             NoBuild = true,
@@ -97,7 +98,6 @@ public class UnitTest : FrostingTask<BuildContext>
             settings.Filter = context.IsRunningOnUnix() ? $"TestCategory!={Constants.NoMono}" : $"TestCategory!={Constants.NoNet48}";
         }
 
-        // TODO update to DotNetTest when available
-        context.DotNetCoreTest(project.FullPath, settings, coverletSettings);
+        context.DotNetTest(project.FullPath, settings, coverletSettings);
     }
 }
