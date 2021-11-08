@@ -16,7 +16,6 @@ public class Constants
 
     public const string NoMono = "NoMono";
     public const string NoNet48 = "NoNet48";
-    public const string NoNetCoreApp31 = "NoNetCoreApp31";
 
     public static readonly string[] VersionsToBuild = { Version60, Version50, Version31 };
     public static readonly Architecture[] ArchToBuild = { Architecture.Amd64, Architecture.Arm64 };

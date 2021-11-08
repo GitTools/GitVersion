@@ -88,11 +88,6 @@ public class UnitTest : FrostingTask<BuildContext>
             Exclude = new List<string> { "[GitVersion*.Tests]*", "[GitTools.Testing]*" }
         };
 
-        if (string.Equals(framework, Constants.CoreFxVersion31))
-        {
-            // settings.Filter = $"TestCategory!={Constants.NoNetCoreApp31}";
-        }
-
         if (string.Equals(framework, Constants.FullFxVersion48))
         {
             settings.Filter = context.IsRunningOnUnix() ? $"TestCategory!={Constants.NoMono}" : $"TestCategory!={Constants.NoNet48}";

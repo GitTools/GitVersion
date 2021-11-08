@@ -41,7 +41,6 @@ public class UpdateAssemblyInfoTaskTest : TestTaskBase
     }
 
     [Test]
-    [Category(NoNetCoreApp31)]
     [Category(NoNet48)]
     [Category(NoMono)]
     public void UpdateAssemblyInfoTaskShouldCreateFileWhenRunWithMsBuild()
@@ -65,7 +64,6 @@ public class UpdateAssemblyInfoTaskTest : TestTaskBase
     }
 
     [Test]
-    [Category(NoNetCoreApp31)]
     [Category(NoNet48)]
     [Category(NoMono)]
     public void UpdateAssemblyInfoTaskShouldCreateFileWhenRunWithMsBuildInBuildServer()
