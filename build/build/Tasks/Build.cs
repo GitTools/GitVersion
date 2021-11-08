@@ -1,4 +1,4 @@
-using Cake.Common.Tools.DotNetCore.Restore;
+using Cake.Common.Tools.DotNet.Restore;
 
 namespace Build.Tasks;
 
@@ -13,16 +13,16 @@ public sealed class Build : FrostingTask<BuildContext>
         context.Information("Builds solution...");
         const string sln = "./src/GitVersion.sln";
 
-        context.DotNetCoreRestore(sln, new DotNetCoreRestoreSettings
+        context.DotNetRestore(sln, new DotNetRestoreSettings
         {
-            Verbosity = DotNetCoreVerbosity.Minimal,
+            Verbosity = DotNetVerbosity.Minimal,
             Sources = new[] { "https://api.nuget.org/v3/index.json" },
             MSBuildSettings = context.MsBuildSettings
         });
 
-        context.DotNetCoreBuild(sln, new DotNetCoreBuildSettings
+        context.DotNetBuild(sln, new DotNetBuildSettings
         {
-            Verbosity = DotNetCoreVerbosity.Minimal,
+            Verbosity = DotNetVerbosity.Minimal,
             Configuration = context.MsBuildConfiguration,
             NoRestore = true,
             MSBuildSettings = context.MsBuildSettings

@@ -97,6 +97,7 @@ public class UnitTest : FrostingTask<BuildContext>
             settings.Filter = context.IsRunningOnUnix() ? $"TestCategory!={Constants.NoMono}" : $"TestCategory!={Constants.NoNet48}";
         }
 
+        // TODO update to DotNetTest when available
         context.DotNetCoreTest(project.FullPath, settings, coverletSettings);
     }
 }

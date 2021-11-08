@@ -27,9 +27,9 @@
         <Using Include="Cake.Core.Diagnostics" />
         <Using Include="Cake.Core.IO" />
         <Using Include="Cake.Core.Tooling" />
-        <Using Include="Cake.Common.Tools.DotNetCore" />
-        <Using Include="Cake.Common.Tools.DotNetCore.Build" />
-        <Using Include="Cake.Common.Tools.DotNetCore.MSBuild" />
+        <Using Include="Cake.Common.Tools.DotNet" />
+        <Using Include="Cake.Common.Tools.DotNet.Build" />
+        <Using Include="Cake.Common.Tools.DotNet.MSBuild" />
         <Using Include="Cake.Common.Tools.MSBuild" />
         <Using Include="Cake.Docker" />
         <Using Include="Cake.Frosting" />

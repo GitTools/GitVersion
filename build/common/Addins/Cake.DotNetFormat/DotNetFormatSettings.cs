@@ -1,8 +1,8 @@
 using Path = Cake.Core.IO.Path;
 
-namespace Common.Addins.Cake.DotNetCoreFormat;
+namespace Common.Addins.Cake.DotNetFormat;
 
-public sealed class DotNetCoreFormatSettings : DotNetCoreSettings
+public sealed class DotNetFormatSettings : DotNetSettings
 {
     /// <summary>
     /// A path to a solution file, a project file, or a folder containing a solution or project file.

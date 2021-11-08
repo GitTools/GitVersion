@@ -1,3 +1,4 @@
+using Cake.Common.Tools.DotNetCore.MSBuild;
 using Common.Utilities;
 
 namespace Artifacts.Tasks;
@@ -26,17 +27,18 @@ public class ArtifactsMsBuildFullTest : FrostingTask<BuildContext>
         var frameworks = new[] { Constants.CoreFxVersion31, Constants.NetVersion50, Constants.NetVersion60 };
         foreach (var framework in frameworks)
         {
-            var dotnetCoreMsBuildSettings = new DotNetCoreMSBuildSettings();
-            dotnetCoreMsBuildSettings.WithProperty("TargetFrameworks", framework);
-            dotnetCoreMsBuildSettings.WithProperty("TargetFramework", framework);
-            dotnetCoreMsBuildSettings.WithProperty("GitVersionMsBuildVersion", version);
+            // TODO update to DotNetMSBuildSettings when available
+            var dotnetMsBuildSettings = new DotNetCoreMSBuildSettings();
+            dotnetMsBuildSettings.WithProperty("TargetFrameworks", framework);
+            dotnetMsBuildSettings.WithProperty("TargetFramework", framework);
+            dotnetMsBuildSettings.WithProperty("GitVersionMsBuildVersion", version);
             var projPath = context.MakeAbsolute(Paths.Integration.Combine("core"));
 
-            context.DotNetCoreBuild(projPath.FullPath, new DotNetCoreBuildSettings
+            context.DotNetBuild(projPath.FullPath, new DotNetBuildSettings
             {
-                Verbosity = DotNetCoreVerbosity.Minimal,
+                Verbosity = DotNetVerbosity.Minimal,
                 Configuration = context.MsBuildConfiguration,
-                MSBuildSettings = dotnetCoreMsBuildSettings,
+                MSBuildSettings = dotnetMsBuildSettings,
                 Sources = new[] { nugetSource }
             });
 

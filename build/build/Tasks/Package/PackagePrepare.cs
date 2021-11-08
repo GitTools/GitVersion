@@ -1,4 +1,4 @@
-using Cake.Common.Tools.DotNetCore.Publish;
+using Cake.Common.Tools.DotNet.Publish;
 using Common.Utilities;
 
 namespace Build.Tasks;
@@ -51,7 +51,7 @@ public class PackagePrepare : FrostingTask<BuildContext>
         var platform = context.Environment.Platform.Family;
         var outputPath = Paths.Native.Combine(platform.ToString().ToLower()).Combine(runtime);
 
-        var settings = new DotNetCorePublishSettings
+        var settings = new DotNetPublishSettings
         {
             Framework = Constants.NetVersion60,
             Runtime = runtime,
@@ -64,7 +64,7 @@ public class PackagePrepare : FrostingTask<BuildContext>
             SelfContained = true
         };
 
-        context.DotNetCorePublish("./src/GitVersion.App/GitVersion.App.csproj", settings);
+        context.DotNetPublish("./src/GitVersion.App/GitVersion.App.csproj", settings);
 
         return outputPath;
     }

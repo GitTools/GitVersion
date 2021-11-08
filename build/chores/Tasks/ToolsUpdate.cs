@@ -16,7 +16,7 @@ public class ToolsUpdate : FrostingTask<BuildContext>
             var tools = jToken.Select(x => ((JProperty)x).Name).ToArray();
             foreach (var tool in tools)
             {
-                context.DotNetCoreTool($"tool update --local {tool}");
+                context.DotNetTool($"tool update --local {tool}");
             }
         }
     }

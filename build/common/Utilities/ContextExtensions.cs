@@ -35,7 +35,7 @@ public static class ContextExtensions
         {
             repositoryName = buildSystem.AppVeyor.Environment.Repository.Name;
         }
-        else if (buildSystem.IsRunningOnAzurePipelines || buildSystem.IsRunningOnAzurePipelinesHosted)
+        else if (buildSystem.IsRunningOnAzurePipelines)
         {
             repositoryName = buildSystem.AzurePipelines.Environment.Repository.RepoName;
         }
@@ -56,7 +56,7 @@ public static class ContextExtensions
         {
             repositoryBranch = buildSystem.AppVeyor.Environment.Repository.Branch;
         }
-        else if (buildSystem.IsRunningOnAzurePipelines || buildSystem.IsRunningOnAzurePipelinesHosted)
+        else if (buildSystem.IsRunningOnAzurePipelines)
         {
             repositoryBranch = buildSystem.AzurePipelines.Environment.Repository.SourceBranchName;
         }
@@ -110,7 +110,6 @@ public static class ContextExtensions
             BuildProvider.Local => "Local",
             BuildProvider.AppVeyor => "AppVeyor",
             BuildProvider.AzurePipelines => "AzurePipelines",
-            BuildProvider.AzurePipelinesHosted => "AzurePipelines",
             BuildProvider.GitHubActions => "GitHubActions",
             _ => string.Empty
         };
@@ -120,7 +119,7 @@ public static class ContextExtensions
     {
         var buildSystem = context.BuildSystem();
         var startGroup = "[group]";
-        if (buildSystem.IsRunningOnAzurePipelines || buildSystem.IsRunningOnAzurePipelinesHosted)
+        if (buildSystem.IsRunningOnAzurePipelines)
         {
             startGroup = "##[group]";
         }
@@ -134,7 +133,7 @@ public static class ContextExtensions
     {
         var buildSystem = context.BuildSystem();
         var endgroup = "[endgroup]";
-        if (buildSystem.IsRunningOnAzurePipelines || buildSystem.IsRunningOnAzurePipelinesHosted)
+        if (buildSystem.IsRunningOnAzurePipelines)
         {
             endgroup = "##[endgroup]";
         }

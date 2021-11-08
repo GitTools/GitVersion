@@ -1,4 +1,4 @@
-using Cake.Common.Tools.DotNetCore.Pack;
+using Cake.Common.Tools.DotNet.Pack;
 using Cake.Common.Tools.NuGet.Pack;
 using Common.Utilities;
 
@@ -18,7 +18,7 @@ public class PackageNuget : FrostingTask<BuildContext>
     }
     private static void PackageWithCli(BuildContext context)
     {
-        var settings = new DotNetCorePackSettings
+        var settings = new DotNetPackSettings
         {
             Configuration = context.MsBuildConfiguration,
             OutputDirectory = Paths.Nuget,
@@ -26,13 +26,13 @@ public class PackageNuget : FrostingTask<BuildContext>
         };
 
         // GitVersion.MsBuild, global tool & core
-        context.DotNetCorePack("./src/GitVersion.Core", settings);
+        context.DotNetPack("./src/GitVersion.Core", settings);
 
         settings.ArgumentCustomization = arg => arg.Append("/p:PackAsTool=true");
-        context.DotNetCorePack("./src/GitVersion.App", settings);
+        context.DotNetPack("./src/GitVersion.App", settings);
 
         settings.ArgumentCustomization = arg => arg.Append("/p:IsPackaging=true");
-        context.DotNetCorePack("./src/GitVersion.MsBuild", settings);
+        context.DotNetPack("./src/GitVersion.MsBuild", settings);
     }
     private static void PackageUsingNuspec(BuildContextBase context)
     {
