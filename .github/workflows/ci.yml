@@ -53,7 +53,6 @@ jobs:
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: '6.0.x'
-        include-prerelease: true
     -
       name: '[Prepare]'
       if: steps.cache-cake.outputs.cache-hit != 'true'
@@ -93,7 +92,6 @@ jobs:
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: '6.0.x'
-        include-prerelease: true
     -
       name: '[Build]'
       shell: pwsh
@@ -157,7 +155,6 @@ jobs:
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: '6.0.x'
-        include-prerelease: true
     -
       name: '[Unit Test]'
       shell: pwsh
@@ -203,7 +200,6 @@ jobs:
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: '6.0.x'
-        include-prerelease: true
     -
       name: '[Test Artifacts]'
       shell: pwsh
@@ -264,7 +260,6 @@ jobs:
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: '6.0.x'
-        include-prerelease: true
     -
       name: '[Test Artifacts (amd64)]'
       shell: pwsh
@@ -323,7 +318,6 @@ jobs:
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: '6.0.x'
-        include-prerelease: true
     -
       name: Login to DockerHub
       if: success() && github.event_name != 'pull_request'
@@ -414,7 +408,6 @@ jobs:
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: '6.0.x'
-        include-prerelease: true
     -
       name: '[Publish]'
       shell: pwsh
@@ -469,7 +462,6 @@ jobs:
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: '6.0.x'
-        include-prerelease: true
     -
       name: '[Release]'
       shell: pwsh
