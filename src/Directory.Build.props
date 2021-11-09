@@ -89,9 +89,6 @@
     <PropertyGroup>
         <SkipDefaultEditorConfigAsAdditionalFile>true</SkipDefaultEditorConfigAsAdditionalFile>
     </PropertyGroup>
-    <ItemGroup>
-        <AdditionalFiles Include="$(MSBuildThisFileDirectory)..\.editorconfig" />
-    </ItemGroup>
 
     <!-- Common code quality and styling analyzers -->
     <ItemGroup>
