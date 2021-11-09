@@ -20,7 +20,7 @@ internal static class ArgumentsProcessor
                 throw new Exception("Threshold Percentage cannot be set as greater than 100%");
             }
 
-            builder.AppendMSBuildProperty(nameof(CoverletSettings.Threshold), settings.Threshold.ToString());
+            builder.AppendMSBuildProperty(nameof(CoverletSettings.Threshold), settings.Threshold.ToString()!);
 
             if (settings.ThresholdType != ThresholdType.NotSet)
             {
