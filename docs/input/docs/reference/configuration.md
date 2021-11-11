@@ -31,9 +31,9 @@ found that is generally what is needed when using GitFlow.
 To see the effective configuration (defaults and overrides), you can run
 `gitversion /showConfig`.
 
-To create your config file just type `gitversion init` in your repo directory
-after installing via Chocolatey and a minimal `GitVersion.yml` configuration
-file will be created. Modify this to suit your needs.
+To create your config file just type `gitversion init` in your repo directory,
+after [installing]. A minimal `GitVersion.yml` configuration file will be
+created. Modify this to suit your needs.
 
 ## Global configuration
 
@@ -271,9 +271,9 @@ merge-message-formats:
 
 The regular expression should contain the following capture groups:
 
-+ SourceBranch - Identifies the source branch of the merge
-+ TargetBranch - Identifies the target of the merge
-+ PullRequestNumber - Captures the pull-request number
+* `SourceBranch` - Identifies the source branch of the merge
+* `TargetBranch` - Identifies the target branch of the merge
+* `PullRequestNumber` - Captures the pull-request number
 
 Custom merge message formats are evaluated _before_ any built in formats.
 
@@ -412,16 +412,16 @@ Take this commit graph
 
 By looking at this graph, you cannot tell which of these scenarios happened:
 
-+ feature/foo branches off release/v1.0.0
-  + Branch release/v1.0.0 from main
-  + Branch feature/foo from release/v1.0.0
-  + Add a commit to both release/v1.0.0 and feature/foo
-  + release/v1.0.0 is the base for feature/foo
-+ release/v1.0.0 branches off feature/foo
-  + Branch feature/foo from main
-  + Branch release/v1.0.0 from feature/foo
-  + Add a commit to both release/v1.0.0 and feature/foo
-  + feature/foo is the base for release/v1.0.0
+* feature/foo branches off release/v1.0.0
+  * Branch release/v1.0.0 from main
+  * Branch feature/foo from release/v1.0.0
+  * Add a commit to both release/v1.0.0 and feature/foo
+  * release/v1.0.0 is the base for feature/foo
+* release/v1.0.0 branches off feature/foo
+  * Branch feature/foo from main
+  * Branch release/v1.0.0 from feature/foo
+  * Add a commit to both release/v1.0.0 and feature/foo
+  * feature/foo is the base for release/v1.0.0
 
 Or put more simply, you cannot tell which branch was created first,
 `release/v1.0.0` or `feature/foo`.
@@ -544,7 +544,7 @@ Indicates this branch config represents a release branch in GitFlow.
 ### is-mainline
 
 When using Mainline mode, this indicates that this branch is a mainline. By
-default *main* and *support* are mainlines.
+default `main` and `support/*` are mainlines.
 
 ### pre-release-weight
 
@@ -563,6 +563,7 @@ and [1366].
 [1145]: https://github.com/GitTools/GitVersion/issues/1145
 [1366]: https://github.com/GitTools/GitVersion/issues/1366
 [2506]: https://github.com/GitTools/GitVersion/pull/2506#issuecomment-754754037
+[installing]: /docs/usage/cli/installation
 [modes]: /docs/reference/modes
 [variables]: /docs/reference/variables
 [version-sources]: /docs/reference/version-sources
