@@ -22,10 +22,6 @@
         <script src="/assets/js/jquery.sticky-kit.min.js"></script>
         <script src="/assets/js/mermaid.min.js"></script>
         <script src="/assets/js/svg-pan-zoom.min.js"></script>
-        <!--[if lt IE 9]>
-        <script src="/assets/js/html5shiv.min.js"></script>
-        <script src="/assets/js/respond.min.js"></script>
-        <![endif]-->  
 
         <meta name="google" content="notranslate">
 <meta http-equiv="Content-Language" content="en">
@@ -266,7 +262,7 @@
 								<dd>
 									<ul class="list-unstyled">
 											<li>IComparable<wbr>&lt;<a href="/api/GitVersion/SemanticVersion">SemanticVersion</a>&gt;<wbr></li>								
-											<li>IEquatable<wbr>&lt;<a href="/api/GitVersion/SemanticVersion">SemanticVersion?</a>&gt;<wbr></li>								
+											<li>IEquatable<wbr>&lt;<a href="/api/GitVersion/SemanticVersion">SemanticVersion</a>&gt;<wbr></li>								
 									</ul>
 								</dd>
 							
@@ -285,7 +281,7 @@
 							graph BT
 	Type--&gt;Base0["IFormattable"]
 	Type-.-&gt;Interface0["IComparable&lt;SemanticVersion&gt;"]
-	Type-.-&gt;Interface1["IEquatable&lt;SemanticVersion?&gt;"]
+	Type-.-&gt;Interface1["IEquatable&lt;SemanticVersion&gt;"]
 	Type["SemanticVersion"]
 class Type type-node
 
@@ -297,7 +293,7 @@ class Type type-node
 
 	<h1 id="Syntax">Syntax</h1>
 	<pre><code>public class SemanticVersion : IFormattable, IComparable&lt;SemanticVersion&gt;, 
-    IEquatable&lt;SemanticVersion?&gt;</code></pre>
+    IEquatable&lt;SemanticVersion&gt;</code></pre>
 
 
 
@@ -320,7 +316,7 @@ class Type type-node
 									<td></td>
 							</tr>
 							<tr>
-								<td><a href="/api/GitVersion/SemanticVersion/59B0BFBD">SemanticVersion<wbr>(SemanticVersion?)<wbr></a></td>
+								<td><a href="/api/GitVersion/SemanticVersion/CE420650">SemanticVersion<wbr>(SemanticVersion)<wbr></a></td>
 									<td></td>
 							</tr>
 					</tbody></table>
@@ -400,21 +396,21 @@ class Type type-node
 								</td>
 							</tr>
 							<tr>
-								<td><a href="/api/GitVersion/SemanticVersion/CCCC2FAF">CompareTo<wbr>(SemanticVersion?, <wbr>bool)<wbr></a></td>
+								<td><a href="/api/GitVersion/SemanticVersion/55B2BE72">CompareTo<wbr>(SemanticVersion, <wbr>bool)<wbr></a></td>
 								<td>int</td>
 								<td>
 									<div></div>
 								</td>
 							</tr>
 							<tr>
-								<td><a href="/api/GitVersion/SemanticVersion/9F8650E6">Equals<wbr>(object?)<wbr></a></td>
+								<td><a href="/api/GitVersion/SemanticVersion/0D5B3CBC">Equals<wbr>(object)<wbr></a></td>
 								<td>bool</td>
 								<td>
 									<div></div>
 								</td>
 							</tr>
 							<tr>
-								<td><a href="/api/GitVersion/SemanticVersion/92801152">Equals<wbr>(SemanticVersion?)<wbr></a></td>
+								<td><a href="/api/GitVersion/SemanticVersion/AF74BBA9">Equals<wbr>(SemanticVersion)<wbr></a></td>
 								<td>bool</td>
 								<td>
 									<div></div>
@@ -442,7 +438,7 @@ class Type type-node
 								</td>
 							</tr>
 							<tr>
-								<td><a href="/api/GitVersion/SemanticVersion/3C954770">Parse<wbr>(string, <wbr>string?)<wbr></a></td>
+								<td><a href="/api/GitVersion/SemanticVersion/DB68CBB0">Parse<wbr>(string, <wbr>string)<wbr></a></td>
 								<td><a href="/api/GitVersion/SemanticVersion">SemanticVersion</a></td>
 								<td>
 									<div></div>
@@ -479,7 +475,7 @@ class Type type-node
 								</td>
 							</tr>
 							<tr>
-								<td><a href="/api/GitVersion/SemanticVersion/54544CC5">TryParse<wbr>(string, <wbr>string?, <wbr>SemanticVersion?)<wbr></a></td>
+								<td><a href="/api/GitVersion/SemanticVersion/550F1A3B">TryParse<wbr>(string, <wbr>string, <wbr>SemanticVersion)<wbr></a></td>
 								<td>bool</td>
 								<td>
 									<div></div>
@@ -503,7 +499,7 @@ class Type type-node
 							</tr>
 						</thead>
 							<tbody><tr>
-								<td>operator !=<wbr>(SemanticVersion?, <wbr>SemanticVersion?)<wbr></td>
+								<td>operator !=<wbr>(SemanticVersion, <wbr>SemanticVersion)<wbr></td>
 								<td>bool</td>
 								<td>
 									<div></div>
@@ -524,7 +520,7 @@ class Type type-node
 								</td>
 							</tr>
 							<tr>
-								<td>operator ==<wbr>(SemanticVersion?, <wbr>SemanticVersion?)<wbr></td>
+								<td>operator ==<wbr>(SemanticVersion, <wbr>SemanticVersion)<wbr></td>
 								<td>bool</td>
 								<td>
 									<div></div>
@@ -561,8 +557,16 @@ class Type type-node
 							</tr>
 						</thead>
 							<tbody><tr>
+								<td><a href="/api/GitVersion.Extensions/AssemblyVersionsGeneratorExtensions/C6A0DDF2">Get<wbr>Assembly<wbr>File<wbr>Version<wbr>(<wbr>Assembly<wbr>File<wbr>Versioning<wbr>Scheme)<wbr></a></td>
+								<td>string</td>
+								<td>
+									<div></div>
+										<div><small><em>From <a href="/api/GitVersion.Extensions/AssemblyVersionsGeneratorExtensions">Assembly<wbr>Versions<wbr>Generator<wbr>Extensions</a></em></small></div>
+								</td>
+							</tr>
+							<tr>
 								<td><a href="/api/GitVersion.Extensions/AssemblyVersionsGeneratorExtensions/04FAE1B8">GetAssemblyVersion<wbr>(<wbr>Assembly<wbr>Versioning<wbr>Scheme)<wbr></a></td>
-								<td>string?</td>
+								<td>string</td>
 								<td>
 									<div></div>
 										<div><small><em>From <a href="/api/GitVersion.Extensions/AssemblyVersionsGeneratorExtensions">Assembly<wbr>Versions<wbr>Generator<wbr>Extensions</a></em></small></div>
@@ -601,7 +605,7 @@ class Type type-node
         </div>
         <div class="wrapper bottom-wrapper">
             <footer class="bottom-footer">
-                Generated by <a href="https://wyam.io">Wyam</a>
+                Generated by <a href="https://wyam2.github.io">Wyam2</a>
             </footer>
         </div>
         <a href="javascript:" id="return-to-top"><i class="fa fa-chevron-up"></i></a>

@@ -22,10 +22,6 @@
         <script src="/assets/js/jquery.sticky-kit.min.js"></script>
         <script src="/assets/js/mermaid.min.js"></script>
         <script src="/assets/js/svg-pan-zoom.min.js"></script>
-        <!--[if lt IE 9]>
-        <script src="/assets/js/html5shiv.min.js"></script>
-        <script src="/assets/js/respond.min.js"></script>
-        <![endif]-->  
 
         <meta name="google" content="notranslate">
 <meta http-equiv="Content-Language" content="en">
@@ -215,11 +211,11 @@
 			<h1>Configuration</h1>
 		</section>
 	<section class="content">
-		<p>GitVersion from version 3 is mainly powered by configuration and no longer has
-branching strategies hard coded.</p>
+		<p>GitVersion, starting from version 3.0, is mainly powered by configuration and no
+longer has branching strategies hard-coded.</p>
 <h2 id="configuration-tool">Configuration tool</h2>
-<p>If you run <code>gitversion init</code> you will be launched into a configuration tool, it
-can help you configure GitVersion the way you want it.</p>
+<p>If you run <code>gitversion init</code>, GitVersion will launch into a configuration tool,
+which can help you configure GitVersion the way you want it.</p>
 <p>Once complete, the <code>init</code> command will create a <code>GitVersion.yml</code> file in the
 working directory. It can be the root repository directory or any subdirectory
 in case you have a single repository for more than one project or are restricted
@@ -230,16 +226,16 @@ GitHubFlow and GitFlow, probably with others too.</p>
 </div>
 <p>The <code>develop</code> branch is set to <code>ContinuousDeployment</code> mode by default as we have
 found that is generally what is needed when using GitFlow.</p>
-<p>You can run <code>GitVersion /showConfig</code> to see the effective configuration
-(defaults + overrides).</p>
-<p>To create your config file just type <code>GitVersion init</code> in your repo directory
-after installing via chocolatey and a minimal <code>GitVersion.yml</code> configuration
-file will be created. Modify this as you need.</p>
+<p>To see the effective configuration (defaults and overrides), you can run
+<code>gitversion /showConfig</code>.</p>
+<p>To create your config file just type <code>gitversion init</code> in your repo directory,
+after <a href="/docs/usage/cli/installation">installing</a>. A minimal <code>GitVersion.yml</code> configuration file will be
+created. Modify this to suit your needs.</p>
 <h2 id="global-configuration">Global configuration</h2>
-<p>The global configuration look like this:</p>
+<p>The global configuration looks like this:</p>
 <pre><code class="language-yaml">next-version: 1.0
 assembly-versioning-scheme: MajorMinorPatch
-assembly-file-versioning-scheme: MajorMinorPatchTag
+assembly-file-versioning-scheme: MajorMinorPatch
 assembly-informational-format: '{InformationalVersion}'
 mode: ContinuousDelivery
 increment: Inherit
@@ -252,17 +248,18 @@ no-bump-message: '\+semver:\s?(none|skip)'
 legacy-semver-padding: 4
 build-metadata-padding: 4
 commits-since-version-source-padding: 4
+tag-pre-release-weight: 60000
 commit-message-incrementing: Enabled
-commit-date-format: 'yyyy-MM-dd'
 ignore:
   sha: []
   commits-before: yyyy-MM-ddTHH:mm:ss
 merge-message-formats: {}
+update-build-number: true
 </code></pre>
-<p>And the description of the available options are:</p>
+<p>The details of the available options are as follows:</p>
 <h3 id="next-version">next-version</h3>
 <p>Allows you to bump the next version explicitly, useful for bumping <code>main</code> or a
-feature with breaking changes a major increment.</p>
+feature with breaking changes (i.e., a major increment).</p>
 <h3 id="assembly-versioning-scheme">assembly-versioning-scheme</h3>
 <p>When updating assembly info, <code>assembly-versioning-scheme</code> tells GitVersion how
 to treat the <code>AssemblyVersion</code> attribute. Useful to lock the major when using
@@ -315,16 +312,17 @@ and <a href="#tracks-release-branches">tracks-release-branches</a>.</p>
 branches which do not have one specified. Default set to <code>ci</code>.</p>
 <p>Just to clarify: For a build name without <code>...-ci-&lt;buildnumber&gt;</code> or in other
 words without a <code>PreReleaseTag</code> (ergo <code>"PreReleaseTag":""</code> in GitVersion's JSON output)
-at the end you would need to set <code>continuous-delivery-fallback-tag</code> to an empty string (<code>''</code>):</p>
+at the end you would need to set <code>continuous-delivery-fallback-tag</code> to an empty
+string (<code>''</code>):</p>
 <pre><code class="language-yaml">mode: ContinuousDeployment
 continuous-delivery-fallback-tag: ''
 ...
 </code></pre>
 <p>Doing so can be helpful if you use your <code>main</code> branch as a <code>release</code> branch.</p>
 <h3 id="tag-prefix">tag-prefix</h3>
-<p>A regex which is used to trim git tags before processing (eg v1.0.0). Default is
-<code>[vV]</code> though this is just for illustrative purposes as we do a IgnoreCase match
-and could be <code>v</code>.</p>
+<p>A regex which is used to trim Git tags before processing (e.g., v1.0.0). Default
+is <code>[vV]</code>, although this is just for illustrative purposes as we do a IgnoreCase
+match and could be <code>v</code>.</p>
 <h3 id="major-version-bump-message">major-version-bump-message</h3>
 <p>The regex to match commit messages with to perform a major version increment.
 Default set to <code>'\+semver:\s?(breaking|major)'</code>, which will match occurrences of
@@ -342,23 +340,23 @@ Default set to <code>'\+semver:\s?(fix|patch)'</code>, which will match occurren
 Default <code>\+semver:\s?(none|skip)</code>, which will match occurrences of <code>+semver: none</code> and <code>+semver: skip</code></p>
 <h3 id="legacy-semver-padding">legacy-semver-padding</h3>
 <p>The number of characters to pad <code>LegacySemVer</code> to in the <code>LegacySemVerPadded</code>
-<a href="/docs/reference/variables">variable</a>. Is default set to <code>4</code>, which will pad the
-<code>LegacySemVer</code> value of <code>3.0.0-beta1</code> to <code>3.0.0-beta0001</code>.</p>
+<a href="/docs/reference/variables">variable</a>. Default is <code>4</code>, which will pad the <code>LegacySemVer</code> value
+of <code>3.0.0-beta1</code> to <code>3.0.0-beta0001</code>.</p>
 <h3 id="build-metadata-padding">build-metadata-padding</h3>
 <p>The number of characters to pad <code>BuildMetaData</code> to in the <code>BuildMetaDataPadded</code>
-<a href="/docs/reference/variables">variable</a>. Is default set to <code>4</code>, which will pad the
-<code>BuildMetaData</code> value of <code>1</code> to <code>0001</code>.</p>
+<a href="/docs/reference/variables">variable</a>. Default is <code>4</code>, which will pad the <code>BuildMetaData</code> value
+of <code>1</code> to <code>0001</code>.</p>
 <h3 id="commits-since-version-source-padding">commits-since-version-source-padding</h3>
 <p>The number of characters to pad <code>CommitsSinceVersionSource</code> to in the
-<code>CommitsSinceVersionSourcePadded</code> <a href="/docs/reference/variables">variable</a>. Is default set to <code>4</code>,
-which will pad the <code>CommitsSinceVersionSource</code> value of <code>1</code> to <code>0001</code>.</p>
+<code>CommitsSinceVersionSourcePadded</code> <a href="/docs/reference/variables">variable</a>. Default is <code>4</code>, which
+will pad the <code>CommitsSinceVersionSource</code> value of <code>1</code> to <code>0001</code>.</p>
 <h3 id="tag-pre-release-weight">tag-pre-release-weight</h3>
 <p>The pre-release weight in case of tagged commits. If the value is not set in the
 configuration, a default weight of 60000 is used instead. If the
-<code>WeightedPreReleaseNumber</code> <a href="/docs/reference/variables">variable</a> is 0 and this
-parameter is set, its value is used. This helps if your branching model is
-GitFlow and the last release build, which is often tagged, can utilise this
-parameter to produce a monotonically increasing build number.</p>
+<code>WeightedPreReleaseNumber</code> <a href="/docs/reference/variables">variable</a> is 0 and this parameter is set,
+its value is used. This helps if your branching model is GitFlow and the last
+release build, which is often tagged, can utilise this parameter to produce a
+monotonically increasing build number.</p>
 <h3 id="commit-message-incrementing">commit-message-incrementing</h3>
 <p>Sets whether it should be possible to increment the version with special syntax
 in the commit message. See the <code>*-version-bump-message</code> options above for
@@ -387,8 +385,6 @@ style below:</p>
 <h4 id="commits-before">commits-before</h4>
 <p>Date and time in the format <code>yyyy-MM-ddTHH:mm:ss</code> (eg <code>commits-before: 2015-10-23T12:23:15</code>) to setup an exclusion range. Effectively any commit before
 <code>commits-before</code> will be ignored.</p>
-<h3 id="update-build-number">update-build-number</h3>
-<p>Configures GitVersion to update the build number or not when running on a build server.</p>
 <h3 id="merge-message-formats">merge-message-formats</h3>
 <p>Custom merge message formats to enable identification of merge messages that do not
 follow the built-in conventions.  Entries should be added as key-value pairs where
@@ -399,11 +395,13 @@ e.g.</p>
 </code></pre>
 <p>The regular expression should contain the following capture groups:</p>
 <ul>
-<li>SourceBranch - Identifies the source branch of the merge</li>
-<li>TargetBranch - Identifies the target of the merge</li>
-<li>PullRequestNumber - Captures the pull-request number</li>
+<li><code>SourceBranch</code> - Identifies the source branch of the merge</li>
+<li><code>TargetBranch</code> - Identifies the target branch of the merge</li>
+<li><code>PullRequestNumber</code> - Captures the pull-request number</li>
 </ul>
 <p>Custom merge message formats are evaluated <em>before</em> any built in formats.</p>
+<h3 id="update-build-number">update-build-number</h3>
+<p>Configures GitVersion to update the build number or not when running on a build server.</p>
 <h2 id="branch-configuration">Branch configuration</h2>
 <p>Then we have branch specific configuration, which looks something like this:</p>
 <div class="alert alert-info"><p><strong>Note</strong></p>
@@ -419,18 +417,35 @@ upgrade.</p>
     increment: Patch
     prevent-increment-of-merged-branch-version: true
     track-merge-target: false
+    source-branches: [ 'develop', 'release' ]
     tracks-release-branches: false
     is-release-branch: false
+    is-mainline: true
+    pre-release-weight: 55000
+  develop:
+    regex: ^dev(elop)?(ment)?$
+    mode: ContinuousDeployment
+    tag: alpha
+    increment: Minor
+    prevent-increment-of-merged-branch-version: false
+    track-merge-target: true
+    source-branches: []
+    tracks-release-branches: true
+    is-release-branch: false
+    is-mainline: false
+    pre-release-weight: 0
   release:
     regex: ^releases?[/-]
     mode: ContinuousDelivery
     tag: beta
-    increment: Patch
+    increment: None
     prevent-increment-of-merged-branch-version: true
     track-merge-target: false
+    source-branches: [ 'develop', 'main', 'support', 'release' ]
     tracks-release-branches: false
     is-release-branch: true
-    pre-release-weight: 1000
+    is-mainline: false
+    pre-release-weight: 30000
   feature:
     regex: ^features?[/-]
     mode: ContinuousDelivery
@@ -438,8 +453,11 @@ upgrade.</p>
     increment: Inherit
     prevent-increment-of-merged-branch-version: false
     track-merge-target: false
+    source-branches: [ 'develop', 'main', 'release', 'feature', 'support', 'hotfix' ]
     tracks-release-branches: false
     is-release-branch: false
+    is-mainline: false
+    pre-release-weight: 30000
   pull-request:
     regex: ^(pull|pull\-requests|pr)[/-]
     mode: ContinuousDelivery
@@ -448,8 +466,11 @@ upgrade.</p>
     prevent-increment-of-merged-branch-version: false
     tag-number-pattern: '[/-](?&lt;number&gt;\d+)[-/]'
     track-merge-target: false
+    source-branches: [ 'develop', 'main', 'release', 'feature', 'support', 'hotfix' ]
     tracks-release-branches: false
     is-release-branch: false
+    is-mainline: false
+    pre-release-weight: 30000
   hotfix:
     regex: ^hotfix(es)?[/-]
     mode: ContinuousDelivery
@@ -457,8 +478,11 @@ upgrade.</p>
     increment: Patch
     prevent-increment-of-merged-branch-version: false
     track-merge-target: false
+    source-branches: [ 'develop', 'main', 'support' ]
     tracks-release-branches: false
     is-release-branch: false
+    is-mainline: false
+    pre-release-weight: 30000
   support:
     regex: ^support[/-]
     mode: ContinuousDelivery
@@ -466,30 +490,24 @@ upgrade.</p>
     increment: Patch
     prevent-increment-of-merged-branch-version: true
     track-merge-target: false
+    source-branches: [ 'main' ]
     tracks-release-branches: false
     is-release-branch: false
-  develop:
-    regex: ^dev(elop)?(ment)?$
-    mode: ContinuousDeployment
-    tag: unstable
-    increment: Minor
-    prevent-increment-of-merged-branch-version: false
-    track-merge-target: true
-    tracks-release-branches: true
-    is-release-branch: false
+    is-mainline: true
+    pre-release-weight: 55000
 </code></pre>
-<p>If you don't specify the regex the inbuilt for that branch config will be used
-(recommended)</p>
+<p>If you don't specify the regex, the built-in for that branch config will be
+used (recommended).</p>
 <p>We don't envision many people needing to change most of these configuration
 values, but here they are if you need to:</p>
 <h3 id="regex">regex</h3>
 <p>This is the regex which is used to match the current branch to the correct
 branch configuration.</p>
 <h3 id="source-branches">source-branches</h3>
-<p>Because git commits only refer to parent commits (not branches) GitVersion
+<p>Because Git commits only refer to parent commits (not branches) GitVersion
 sometimes cannot tell which branch the current branch was branched from.</p>
 <p>Take this commit graph</p>
-<pre><code class="language-shell">* release/1.0.0   * feature/foo
+<pre><code class="language-shell">* release/v1.0.0   * feature/foo
 | ________________/
 |/
 *
@@ -498,25 +516,25 @@ sometimes cannot tell which branch the current branch was branched from.</p>
 </code></pre>
 <p>By looking at this graph, you cannot tell which of these scenarios happened:</p>
 <ul>
-<li>feature/foo branches off release/1.0.0
+<li>feature/foo branches off release/v1.0.0
 <ul>
-<li>Branch release/1.0.0 from main</li>
-<li>Branch feature/foo from release/1.0.0</li>
-<li>Add a commit to both release/1.0.0 and feature/foo</li>
-<li>release/1.0.0 is the base for feature/foo</li>
+<li>Branch release/v1.0.0 from main</li>
+<li>Branch feature/foo from release/v1.0.0</li>
+<li>Add a commit to both release/v1.0.0 and feature/foo</li>
+<li>release/v1.0.0 is the base for feature/foo</li>
 </ul>
 </li>
-<li>release/1.0.0 branches off feature/foo
+<li>release/v1.0.0 branches off feature/foo
 <ul>
 <li>Branch feature/foo from main</li>
-<li>Branch release/1.0.0 from feature/foo</li>
-<li>Add a commit to both release/1.0.0 and feature/foo</li>
-<li>feature/foo is the base for release/1.0.0</li>
+<li>Branch release/v1.0.0 from feature/foo</li>
+<li>Add a commit to both release/v1.0.0 and feature/foo</li>
+<li>feature/foo is the base for release/v1.0.0</li>
 </ul>
 </li>
 </ul>
 <p>Or put more simply, you cannot tell which branch was created first,
-<code>release/1.0.0</code> or <code>feature/foo</code>.</p>
+<code>release/v1.0.0</code> or <code>feature/foo</code>.</p>
 <p>To resolve this issue, we give GitVersion a hint about our branching workflows
 by telling it what types of branches a branch can be created from. For example,
 feature branches are, by default, configured to have the following source
@@ -598,7 +616,7 @@ branch. For example <code>develop</code> → <code>release/1.0.0</code> → merg
 <p>Indicates this branch config represents a release branch in GitFlow.</p>
 <h3 id="is-mainline">is-mainline</h3>
 <p>When using Mainline mode, this indicates that this branch is a mainline. By
-default support/ and main are mainlines.</p>
+default <code>main</code> and <code>support/*</code> are mainlines.</p>
 <h3 id="pre-release-weight">pre-release-weight</h3>
 <p>Provides a way to translate the <code>PreReleaseLabel</code> (<a href="/docs/reference/variables">variables</a>) to a numeric
 value in order to avoid version collisions across different branches. For
@@ -608,8 +626,8 @@ same file version: "1.2.3.4". One of the ways to use this value is to set
 <code>assembly-file-versioning-format: {Major}.{Minor}.{Patch}.{WeightedPreReleaseNumber}</code>. If the <code>pre-release-weight</code>
 is set, it would be added to the <code>PreReleaseNumber</code> to get a final
 <code>AssemblySemFileVer</code>, otherwise a branch specific default for
-<code>pre-release-weight</code> will be used in the calculation. Related Issues <a href="https://github.com/GitTools/GitVersion/issues/1145">1145</a>,
-<a href="https://github.com/GitTools/GitVersion/issues/1366">1366</a></p>
+<code>pre-release-weight</code> will be used in the calculation. Related Issues <a href="https://github.com/GitTools/GitVersion/issues/1145">1145</a>
+and <a href="https://github.com/GitTools/GitVersion/issues/1366">1366</a>.</p>
 
 	</section>
                 
@@ -622,7 +640,7 @@ is set, it would be added to the <code>PreReleaseNumber</code> to get a final
         </div>
         <div class="wrapper bottom-wrapper">
             <footer class="bottom-footer">
-                Generated by <a href="https://wyam.io">Wyam</a>
+                Generated by <a href="https://wyam2.github.io">Wyam2</a>
             </footer>
         </div>
         <a href="javascript:" id="return-to-top"><i class="fa fa-chevron-up"></i></a>

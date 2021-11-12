@@ -22,10 +22,6 @@
         <script src="/assets/js/jquery.sticky-kit.min.js"></script>
         <script src="/assets/js/mermaid.min.js"></script>
         <script src="/assets/js/svg-pan-zoom.min.js"></script>
-        <!--[if lt IE 9]>
-        <script src="/assets/js/html5shiv.min.js"></script>
-        <script src="/assets/js/respond.min.js"></script>
-        <![endif]-->  
 
         <meta name="google" content="notranslate">
 <meta http-equiv="Content-Language" content="en">
@@ -265,17 +261,17 @@
 								<dt>Implementing Types</dt>
 								<dd>
 									<ul class="list-unstyled">
-											<li><a href="/api/GitVersion.Configuration/ConfigurationModule">ConfigurationModule</a></li>								
-											<li><a href="/api/GitVersion/GitVersionAppModule">GitVersionAppModule</a></li>								
 											<li><a href="/api/GitVersion/GitVersionCoreModule">GitVersionCoreModule</a></li>								
-											<li><a href="/api/GitVersion/GitVersionModule">GitVersionModule</a></li>								
-											<li><a href="/api/GitVersion.MsBuild/GitVersionTaskModule">GitVersionTaskModule</a></li>								
-											<li><a href="/api/GitVersion.VersionConverters/VersionConvertersModule">Version<wbr>Converters<wbr>Module</a></li>								
-											<li><a href="/api/GitVersion.BuildAgents/BuildServerModule">BuildServerModule</a></li>								
-											<li><a href="/api/GitVersion.Configuration.Init/GitVersionInitModule">GitVersionInitModule</a></li>								
 											<li><a href="/api/GitVersion/GitVersionLibGit2SharpModule">Git<wbr>Version<wbr>Lib<wbr>Git2<wbr>Sharp<wbr>Module</a></li>								
-											<li><a href="/api/GitVersion.VersionCalculation/VersionStrategyModule">Version<wbr>Strategy<wbr>Module</a></li>								
+											<li><a href="/api/GitVersion.Configuration.Init/GitVersionInitModule">GitVersionInitModule</a></li>								
+											<li><a href="/api/GitVersion.Configuration/ConfigurationModule">ConfigurationModule</a></li>								
+											<li><a href="/api/GitVersion.BuildAgents/BuildServerModule">BuildServerModule</a></li>								
 											<li><a href="/api/GitVersion.VersionCalculation/VersionCalculationModule">Version<wbr>Calculation<wbr>Module</a></li>								
+											<li><a href="/api/GitVersion.VersionCalculation/VersionStrategyModule">Version<wbr>Strategy<wbr>Module</a></li>								
+											<li><a href="/api/GitVersion.VersionConverters/VersionConvertersModule">Version<wbr>Converters<wbr>Module</a></li>								
+											<li><a href="/api/GitVersion.MsBuild/GitVersionTaskModule">GitVersionTaskModule</a></li>								
+											<li><a href="/api/GitVersion/GitVersionAppModule">GitVersionAppModule</a></li>								
+											<li><a href="/api/GitVersion/GitVersionModule">GitVersionModule</a></li>								
 									</ul>
 								</dd>				
 						</dl>
@@ -285,28 +281,28 @@
 							graph BT
 	Type["IGitVersionModule"]
 class Type type-node
-	Implementing0["ConfigurationModule"]-.-&gt;Type
-	click Implementing0 "/api/GitVersion.Configuration/ConfigurationModule"
-	Implementing1["GitVersionAppModule"]-.-&gt;Type
-	click Implementing1 "/api/GitVersion/GitVersionAppModule"
-	Implementing2["GitVersionCoreModule"]-.-&gt;Type
-	click Implementing2 "/api/GitVersion/GitVersionCoreModule"
-	Implementing3["GitVersionModule"]-.-&gt;Type
-	click Implementing3 "/api/GitVersion/GitVersionModule"
-	Implementing4["GitVersionTaskModule"]-.-&gt;Type
-	click Implementing4 "/api/GitVersion.MsBuild/GitVersionTaskModule"
-	Implementing5["VersionConvertersModule"]-.-&gt;Type
-	click Implementing5 "/api/GitVersion.VersionConverters/VersionConvertersModule"
-	Implementing6["BuildServerModule"]-.-&gt;Type
-	click Implementing6 "/api/GitVersion.BuildAgents/BuildServerModule"
-	Implementing7["GitVersionInitModule"]-.-&gt;Type
-	click Implementing7 "/api/GitVersion.Configuration.Init/GitVersionInitModule"
-	Implementing8["GitVersionLibGit2SharpModule"]-.-&gt;Type
-	click Implementing8 "/api/GitVersion/GitVersionLibGit2SharpModule"
-	Implementing9["VersionStrategyModule"]-.-&gt;Type
-	click Implementing9 "/api/GitVersion.VersionCalculation/VersionStrategyModule"
-	Implementing10["VersionCalculationModule"]-.-&gt;Type
-	click Implementing10 "/api/GitVersion.VersionCalculation/VersionCalculationModule"
+	Implementing0["GitVersionCoreModule"]-.-&gt;Type
+	click Implementing0 "/api/GitVersion/GitVersionCoreModule"
+	Implementing1["GitVersionLibGit2SharpModule"]-.-&gt;Type
+	click Implementing1 "/api/GitVersion/GitVersionLibGit2SharpModule"
+	Implementing2["GitVersionInitModule"]-.-&gt;Type
+	click Implementing2 "/api/GitVersion.Configuration.Init/GitVersionInitModule"
+	Implementing3["ConfigurationModule"]-.-&gt;Type
+	click Implementing3 "/api/GitVersion.Configuration/ConfigurationModule"
+	Implementing4["BuildServerModule"]-.-&gt;Type
+	click Implementing4 "/api/GitVersion.BuildAgents/BuildServerModule"
+	Implementing5["VersionCalculationModule"]-.-&gt;Type
+	click Implementing5 "/api/GitVersion.VersionCalculation/VersionCalculationModule"
+	Implementing6["VersionStrategyModule"]-.-&gt;Type
+	click Implementing6 "/api/GitVersion.VersionCalculation/VersionStrategyModule"
+	Implementing7["VersionConvertersModule"]-.-&gt;Type
+	click Implementing7 "/api/GitVersion.VersionConverters/VersionConvertersModule"
+	Implementing8["GitVersionTaskModule"]-.-&gt;Type
+	click Implementing8 "/api/GitVersion.MsBuild/GitVersionTaskModule"
+	Implementing9["GitVersionAppModule"]-.-&gt;Type
+	click Implementing9 "/api/GitVersion/GitVersionAppModule"
+	Implementing10["GitVersionModule"]-.-&gt;Type
+	click Implementing10 "/api/GitVersion/GitVersionModule"
 
 						</div>
 					</div>
@@ -387,7 +383,7 @@ class Type type-node
         </div>
         <div class="wrapper bottom-wrapper">
             <footer class="bottom-footer">
-                Generated by <a href="https://wyam.io">Wyam</a>
+                Generated by <a href="https://wyam2.github.io">Wyam2</a>
             </footer>
         </div>
         <a href="javascript:" id="return-to-top"><i class="fa fa-chevron-up"></i></a>

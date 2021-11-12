@@ -22,10 +22,6 @@
         <script src="/assets/js/jquery.sticky-kit.min.js"></script>
         <script src="/assets/js/mermaid.min.js"></script>
         <script src="/assets/js/svg-pan-zoom.min.js"></script>
-        <!--[if lt IE 9]>
-        <script src="/assets/js/html5shiv.min.js"></script>
-        <script src="/assets/js/respond.min.js"></script>
-        <![endif]-->  
 
         <meta name="google" content="notranslate">
 <meta http-equiv="Content-Language" content="en">
@@ -88,6 +84,7 @@
 <p><a href="#Constructors">Constructors</a></p>
 <p><a href="#fields">Fields</a></p>
 <p><a href="#Methods">Methods</a></p>
+<p><a href="#Operators">Operators</a></p>
 <p><a href="#ExtensionMethods">Extension Methods</a></p>
 <hr class="infobar-hidden">
 </div>
@@ -264,7 +261,7 @@
 								<dt>Interfaces</dt>
 								<dd>
 									<ul class="list-unstyled">
-											<li>IEquatable<wbr>&lt;<a href="/api/GitVersion/SemanticVersionBuildMetaData">Semantic<wbr>Version<wbr>Build<wbr>Meta<wbr>Data?</a>&gt;<wbr></li>								
+											<li>IEquatable<wbr>&lt;<a href="/api/GitVersion/SemanticVersionBuildMetaData">Semantic<wbr>Version<wbr>Build<wbr>Meta<wbr>Data</a>&gt;<wbr></li>								
 									</ul>
 								</dd>
 							
@@ -282,7 +279,7 @@
 						<div class="mermaid">
 							graph BT
 	Type--&gt;Base0["IFormattable"]
-	Type-.-&gt;Interface0["IEquatable&lt;SemanticVersionBuildMetaData?&gt;"]
+	Type-.-&gt;Interface0["IEquatable&lt;SemanticVersionBuildMetaData&gt;"]
 	Type["SemanticVersionBuildMetaData"]
 class Type type-node
 
@@ -293,7 +290,7 @@ class Type type-node
 		</div>
 
 	<h1 id="Syntax">Syntax</h1>
-	<pre><code>public class SemanticVersionBuildMetaData : IFormattable, IEquatable&lt;SemanticVersionBuildMetaData?&gt;</code></pre>
+	<pre><code>public class SemanticVersionBuildMetaData : IFormattable, IEquatable&lt;SemanticVersionBuildMetaData&gt;</code></pre>
 
 
 
@@ -316,11 +313,11 @@ class Type type-node
 									<td></td>
 							</tr>
 							<tr>
-								<td><a href="/api/GitVersion/SemanticVersionBuildMetaData/2A5493E4">Semantic<wbr>Version<wbr>Build<wbr>Meta<wbr>Data<wbr>(<wbr>Semantic<wbr>Version<wbr>Build<wbr>Meta<wbr>Data?)<wbr></a></td>
+								<td><a href="/api/GitVersion/SemanticVersionBuildMetaData/27F96080">Semantic<wbr>Version<wbr>Build<wbr>Meta<wbr>Data<wbr>(<wbr>Semantic<wbr>Version<wbr>Build<wbr>Meta<wbr>Data)<wbr></a></td>
 									<td></td>
 							</tr>
 							<tr>
-								<td><a href="/api/GitVersion/SemanticVersionBuildMetaData/5F0E68DB">Semantic<wbr>Version<wbr>Build<wbr>Meta<wbr>Data<wbr>(string?, <wbr>int?, <wbr>string?, <wbr>string?, <wbr>string?, <wbr>DateTimeOffset?, <wbr>int, <wbr>string?)<wbr></a></td>
+								<td><a href="/api/GitVersion/SemanticVersionBuildMetaData/8345CC55">Semantic<wbr>Version<wbr>Build<wbr>Meta<wbr>Data<wbr>(string, <wbr>int?, <wbr>string, <wbr>string, <wbr>string, <wbr>DateTimeOffset?, <wbr>int, <wbr>string)<wbr></a></td>
 									<td></td>
 							</tr>
 					</tbody></table>
@@ -428,7 +425,7 @@ class Type type-node
 								</td>
 							</tr>
 							<tr>
-								<td><a href="/api/GitVersion/SemanticVersionBuildMetaData/1389F017">Equals<wbr>(<wbr>Semantic<wbr>Version<wbr>Build<wbr>Meta<wbr>Data?)<wbr></a></td>
+								<td><a href="/api/GitVersion/SemanticVersionBuildMetaData/33EB5BBB">Equals<wbr>(<wbr>Semantic<wbr>Version<wbr>Build<wbr>Meta<wbr>Data)<wbr></a></td>
 								<td>bool</td>
 								<td>
 									<div></div>
@@ -439,6 +436,14 @@ class Type type-node
 								<td>int</td>
 								<td>
 									<div></div>
+								</td>
+							</tr>
+							<tr>
+								<td><a href="/api/GitVersion/SemanticVersionBuildMetaData/DA183863">Parse<wbr>(string)<wbr></a></td>
+								<td><a href="/api/GitVersion/SemanticVersionBuildMetaData">Semantic<wbr>Version<wbr>Build<wbr>Meta<wbr>Data</a></td>
+								<td>
+									<div></div>
+											<div><small><em>static</em></small></div>
 								</td>
 							</tr>
 							<tr>
@@ -472,6 +477,49 @@ class Type type-node
 			</div>
 		
 
+			<h1 id="Operators">Operators</h1>
+			<div class="box">
+				<div class="box-body no-padding table-responsive">
+					<table class="table table-striped table-hover three-cols">
+						<thead>
+							<tr>
+								<th>Name</th>
+								<th>Value</th>
+								<th>Summary</th>
+							</tr>
+						</thead>
+							<tbody><tr>
+								<td>implicit operator <wbr>Semantic<wbr>Version<wbr>Build<wbr>Meta<wbr>Data<wbr>(string)<wbr></td>
+								<td><a href="/api/GitVersion/SemanticVersionBuildMetaData">Semantic<wbr>Version<wbr>Build<wbr>Meta<wbr>Data</a></td>
+								<td>
+									<div></div>
+								</td>
+							</tr>
+							<tr>
+								<td>implicit operator string<wbr>(<wbr>Semantic<wbr>Version<wbr>Build<wbr>Meta<wbr>Data)<wbr></td>
+								<td>string</td>
+								<td>
+									<div></div>
+								</td>
+							</tr>
+							<tr>
+								<td>operator !=<wbr>(<wbr>Semantic<wbr>Version<wbr>Build<wbr>Meta<wbr>Data, <wbr>Semantic<wbr>Version<wbr>Build<wbr>Meta<wbr>Data)<wbr></td>
+								<td>bool</td>
+								<td>
+									<div></div>
+								</td>
+							</tr>
+							<tr>
+								<td>operator ==<wbr>(<wbr>Semantic<wbr>Version<wbr>Build<wbr>Meta<wbr>Data, <wbr>Semantic<wbr>Version<wbr>Build<wbr>Meta<wbr>Data)<wbr></td>
+								<td>bool</td>
+								<td>
+									<div></div>
+								</td>
+							</tr>
+					</tbody></table>
+				</div>
+			</div>
+		
 
 			<h1 id="ExtensionMethods">Extension Methods</h1>
 			<div class="box">
@@ -509,7 +557,7 @@ class Type type-node
         </div>
         <div class="wrapper bottom-wrapper">
             <footer class="bottom-footer">
-                Generated by <a href="https://wyam.io">Wyam</a>
+                Generated by <a href="https://wyam2.github.io">Wyam2</a>
             </footer>
         </div>
         <a href="javascript:" id="return-to-top"><i class="fa fa-chevron-up"></i></a>

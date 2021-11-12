@@ -22,10 +22,6 @@
         <script src="/assets/js/jquery.sticky-kit.min.js"></script>
         <script src="/assets/js/mermaid.min.js"></script>
         <script src="/assets/js/svg-pan-zoom.min.js"></script>
-        <!--[if lt IE 9]>
-        <script src="/assets/js/html5shiv.min.js"></script>
-        <script src="/assets/js/respond.min.js"></script>
-        <![endif]-->  
 
         <meta name="google" content="notranslate">
 <meta http-equiv="Content-Language" content="en">
@@ -266,7 +262,7 @@
 								<dd>
 									<ul class="list-unstyled">
 											<li>IComparable<wbr>&lt;<a href="/api/GitVersion/SemanticVersionPreReleaseTag">Semantic<wbr>Version<wbr>Pre<wbr>Release<wbr>Tag</a>&gt;<wbr></li>								
-											<li>IEquatable<wbr>&lt;<a href="/api/GitVersion/SemanticVersionPreReleaseTag">Semantic<wbr>Version<wbr>Pre<wbr>Release<wbr>Tag?</a>&gt;<wbr></li>								
+											<li>IEquatable<wbr>&lt;<a href="/api/GitVersion/SemanticVersionPreReleaseTag">Semantic<wbr>Version<wbr>Pre<wbr>Release<wbr>Tag</a>&gt;<wbr></li>								
 									</ul>
 								</dd>
 							
@@ -285,7 +281,7 @@
 							graph BT
 	Type--&gt;Base0["IFormattable"]
 	Type-.-&gt;Interface0["IComparable&lt;SemanticVersionPreReleaseTag&gt;"]
-	Type-.-&gt;Interface1["IEquatable&lt;SemanticVersionPreReleaseTag?&gt;"]
+	Type-.-&gt;Interface1["IEquatable&lt;SemanticVersionPreReleaseTag&gt;"]
 	Type["SemanticVersionPreReleaseTag"]
 class Type type-node
 
@@ -297,7 +293,7 @@ class Type type-node
 
 	<h1 id="Syntax">Syntax</h1>
 	<pre><code>public class SemanticVersionPreReleaseTag : IFormattable, 
-    IComparable&lt;SemanticVersionPreReleaseTag&gt;, IEquatable&lt;SemanticVersionPreReleaseTag?&gt;</code></pre>
+    IComparable&lt;SemanticVersionPreReleaseTag&gt;, IEquatable&lt;SemanticVersionPreReleaseTag&gt;</code></pre>
 
 
 
@@ -320,11 +316,11 @@ class Type type-node
 									<td></td>
 							</tr>
 							<tr>
-								<td><a href="/api/GitVersion/SemanticVersionPreReleaseTag/DAFAFA85">Semantic<wbr>Version<wbr>Pre<wbr>Release<wbr>Tag<wbr>(<wbr>Semantic<wbr>Version<wbr>Pre<wbr>Release<wbr>Tag?)<wbr></a></td>
+								<td><a href="/api/GitVersion/SemanticVersionPreReleaseTag/646C346F">Semantic<wbr>Version<wbr>Pre<wbr>Release<wbr>Tag<wbr>(<wbr>Semantic<wbr>Version<wbr>Pre<wbr>Release<wbr>Tag)<wbr></a></td>
 									<td></td>
 							</tr>
 							<tr>
-								<td><a href="/api/GitVersion/SemanticVersionPreReleaseTag/11F8B646">Semantic<wbr>Version<wbr>Pre<wbr>Release<wbr>Tag<wbr>(string?, <wbr>int?)<wbr></a></td>
+								<td><a href="/api/GitVersion/SemanticVersionPreReleaseTag/206F6495">Semantic<wbr>Version<wbr>Pre<wbr>Release<wbr>Tag<wbr>(string, <wbr>int?)<wbr></a></td>
 									<td></td>
 							</tr>
 					</tbody></table>
@@ -347,7 +343,7 @@ class Type type-node
 						</thead>
 							<tbody><tr>
 								<td><a href="/api/GitVersion/SemanticVersionPreReleaseTag/BBBD029A">Name</a></td>
-								<td>string?</td>
+								<td>string</td>
 								<td>
 									<div></div>
 								</td>
@@ -383,21 +379,21 @@ class Type type-node
 							</tr>
 						</thead>
 							<tbody><tr>
-								<td><a href="/api/GitVersion/SemanticVersionPreReleaseTag/B9B57C02">CompareTo<wbr>(<wbr>Semantic<wbr>Version<wbr>Pre<wbr>Release<wbr>Tag?)<wbr></a></td>
+								<td><a href="/api/GitVersion/SemanticVersionPreReleaseTag/8C5112D5">CompareTo<wbr>(<wbr>Semantic<wbr>Version<wbr>Pre<wbr>Release<wbr>Tag)<wbr></a></td>
 								<td>int</td>
 								<td>
 									<div></div>
 								</td>
 							</tr>
 							<tr>
-								<td><a href="/api/GitVersion/SemanticVersionPreReleaseTag/7098F3ED">Equals<wbr>(object?)<wbr></a></td>
+								<td><a href="/api/GitVersion/SemanticVersionPreReleaseTag/58489370">Equals<wbr>(object)<wbr></a></td>
 								<td>bool</td>
 								<td>
 									<div></div>
 								</td>
 							</tr>
 							<tr>
-								<td><a href="/api/GitVersion/SemanticVersionPreReleaseTag/FF5F53BE">Equals<wbr>(<wbr>Semantic<wbr>Version<wbr>Pre<wbr>Release<wbr>Tag?)<wbr></a></td>
+								<td><a href="/api/GitVersion/SemanticVersionPreReleaseTag/90BE702A">Equals<wbr>(<wbr>Semantic<wbr>Version<wbr>Pre<wbr>Release<wbr>Tag)<wbr></a></td>
 								<td>bool</td>
 								<td>
 									<div></div>
@@ -411,7 +407,14 @@ class Type type-node
 								</td>
 							</tr>
 							<tr>
-								<td><a href="/api/GitVersion/SemanticVersionPreReleaseTag/21A6AAC2">Parse<wbr>(string?)<wbr></a></td>
+								<td><a href="/api/GitVersion/SemanticVersionPreReleaseTag/FB2C4A8F">HasTag<wbr>()<wbr></a></td>
+								<td>bool</td>
+								<td>
+									<div></div>
+								</td>
+							</tr>
+							<tr>
+								<td><a href="/api/GitVersion/SemanticVersionPreReleaseTag/EA04E556">Parse<wbr>(string)<wbr></a></td>
 								<td><a href="/api/GitVersion/SemanticVersionPreReleaseTag">Semantic<wbr>Version<wbr>Pre<wbr>Release<wbr>Tag</a></td>
 								<td>
 									<div></div>
@@ -461,56 +464,56 @@ class Type type-node
 							</tr>
 						</thead>
 							<tbody><tr>
-								<td>implicit operator <wbr>Semantic<wbr>Version<wbr>Pre<wbr>Release<wbr>Tag<wbr>(string?)<wbr></td>
+								<td>implicit operator <wbr>Semantic<wbr>Version<wbr>Pre<wbr>Release<wbr>Tag<wbr>(string)<wbr></td>
 								<td><a href="/api/GitVersion/SemanticVersionPreReleaseTag">Semantic<wbr>Version<wbr>Pre<wbr>Release<wbr>Tag</a></td>
 								<td>
 									<div></div>
 								</td>
 							</tr>
 							<tr>
-								<td>implicit operator string?<wbr>(<wbr>Semantic<wbr>Version<wbr>Pre<wbr>Release<wbr>Tag?)<wbr></td>
-								<td>string?</td>
+								<td>implicit operator string<wbr>(<wbr>Semantic<wbr>Version<wbr>Pre<wbr>Release<wbr>Tag)<wbr></td>
+								<td>string</td>
 								<td>
 									<div></div>
 								</td>
 							</tr>
 							<tr>
-								<td>operator !=<wbr>(<wbr>Semantic<wbr>Version<wbr>Pre<wbr>Release<wbr>Tag?, <wbr>Semantic<wbr>Version<wbr>Pre<wbr>Release<wbr>Tag?)<wbr></td>
+								<td>operator !=<wbr>(<wbr>Semantic<wbr>Version<wbr>Pre<wbr>Release<wbr>Tag, <wbr>Semantic<wbr>Version<wbr>Pre<wbr>Release<wbr>Tag)<wbr></td>
 								<td>bool</td>
 								<td>
 									<div></div>
 								</td>
 							</tr>
 							<tr>
-								<td>operator <wbr>&lt;<wbr>(<wbr>Semantic<wbr>Version<wbr>Pre<wbr>Release<wbr>Tag?, <wbr>Semantic<wbr>Version<wbr>Pre<wbr>Release<wbr>Tag?)<wbr></td>
+								<td>operator <wbr>&lt;<wbr>(<wbr>Semantic<wbr>Version<wbr>Pre<wbr>Release<wbr>Tag, <wbr>Semantic<wbr>Version<wbr>Pre<wbr>Release<wbr>Tag)<wbr></td>
 								<td>bool</td>
 								<td>
 									<div></div>
 								</td>
 							</tr>
 							<tr>
-								<td>operator <wbr>&lt;=<wbr>(<wbr>Semantic<wbr>Version<wbr>Pre<wbr>Release<wbr>Tag?, <wbr>Semantic<wbr>Version<wbr>Pre<wbr>Release<wbr>Tag?)<wbr></td>
+								<td>operator <wbr>&lt;=<wbr>(<wbr>Semantic<wbr>Version<wbr>Pre<wbr>Release<wbr>Tag, <wbr>Semantic<wbr>Version<wbr>Pre<wbr>Release<wbr>Tag)<wbr></td>
 								<td>bool</td>
 								<td>
 									<div></div>
 								</td>
 							</tr>
 							<tr>
-								<td>operator ==<wbr>(<wbr>Semantic<wbr>Version<wbr>Pre<wbr>Release<wbr>Tag?, <wbr>Semantic<wbr>Version<wbr>Pre<wbr>Release<wbr>Tag?)<wbr></td>
+								<td>operator ==<wbr>(<wbr>Semantic<wbr>Version<wbr>Pre<wbr>Release<wbr>Tag, <wbr>Semantic<wbr>Version<wbr>Pre<wbr>Release<wbr>Tag)<wbr></td>
 								<td>bool</td>
 								<td>
 									<div></div>
 								</td>
 							</tr>
 							<tr>
-								<td>operator &gt;<wbr><wbr>(<wbr>Semantic<wbr>Version<wbr>Pre<wbr>Release<wbr>Tag?, <wbr>Semantic<wbr>Version<wbr>Pre<wbr>Release<wbr>Tag?)<wbr></td>
+								<td>operator &gt;<wbr><wbr>(<wbr>Semantic<wbr>Version<wbr>Pre<wbr>Release<wbr>Tag, <wbr>Semantic<wbr>Version<wbr>Pre<wbr>Release<wbr>Tag)<wbr></td>
 								<td>bool</td>
 								<td>
 									<div></div>
 								</td>
 							</tr>
 							<tr>
-								<td>operator &gt;<wbr>=<wbr>(<wbr>Semantic<wbr>Version<wbr>Pre<wbr>Release<wbr>Tag?, <wbr>Semantic<wbr>Version<wbr>Pre<wbr>Release<wbr>Tag?)<wbr></td>
+								<td>operator &gt;<wbr>=<wbr>(<wbr>Semantic<wbr>Version<wbr>Pre<wbr>Release<wbr>Tag, <wbr>Semantic<wbr>Version<wbr>Pre<wbr>Release<wbr>Tag)<wbr></td>
 								<td>bool</td>
 								<td>
 									<div></div>
@@ -557,7 +560,7 @@ class Type type-node
         </div>
         <div class="wrapper bottom-wrapper">
             <footer class="bottom-footer">
-                Generated by <a href="https://wyam.io">Wyam</a>
+                Generated by <a href="https://wyam2.github.io">Wyam2</a>
             </footer>
         </div>
         <a href="javascript:" id="return-to-top"><i class="fa fa-chevron-up"></i></a>
