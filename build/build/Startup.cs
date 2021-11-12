@@ -15,6 +15,6 @@ public class Startup : IFrostingStartup
 
         services.UseTool(new Uri("nuget:?package=NuGet.CommandLine&version=5.11.0"));
         services.UseTool(new Uri("dotnet:?package=Codecov.Tool&version=1.13.0"));
-        services.UseTool(new Uri("dotnet:?package=GitVersion.Tool&version=5.6.11"));
+        services.UseTool(new Uri("dotnet:?package=GitVersion.Tool&version=5.7.0"));
     }
 }
