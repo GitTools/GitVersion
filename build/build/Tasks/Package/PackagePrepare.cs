@@ -39,6 +39,7 @@ public class PackagePrepare : FrostingTask<BuildContext>
 
             // testing windows and macos artifacts, the linux is tested with docker
             if (platform == PlatformFamily.Linux) continue;
+            if (runtime.EndsWith("arm64")) continue;
 
             context.Information("Validating native lib:");
             var nativeExe = outputPath.CombineWithFilePath(context.IsOnWindows ? "gitversion.exe" : "gitversion");
@@ -63,6 +64,12 @@ public class PackagePrepare : FrostingTask<BuildContext>
             PublishSingleFile = true,
             SelfContained = true
         };
+
+        // workaround for https://github.com/dotnet/runtime/issues/49508
+        if (runtime == "osx-arm64")
+        {
+            settings.ArgumentCustomization = arg => arg.Append("/p:OsxArm64=true");
+        }
 
         context.DotNetPublish("./src/GitVersion.App/GitVersion.App.csproj", settings);
 
