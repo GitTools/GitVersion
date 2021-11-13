@@ -8,6 +8,8 @@ public class BuildLifetime : BuildLifetimeBase<BuildContext>
 {
     public override void Setup(BuildContext context)
     {
+        base.Setup(context);
+
         context.Credentials = Credentials.GetCredentials(context);
         context.ForcePublish = context.HasArgument("force");
 
