@@ -1,3 +1,4 @@
+using GitVersion.Extensions;
 using GitVersion.Logging;
 
 namespace GitVersion;
@@ -6,7 +7,7 @@ public class VersionWriter : IVersionWriter
 {
     private readonly IConsole console;
 
-    public VersionWriter(IConsole console) => this.console = console ?? throw new ArgumentNullException(nameof(console));
+    public VersionWriter(IConsole console) => this.console = console.NotNull();
     public void Write(Assembly assembly) => WriteTo(assembly, this.console.WriteLine);
 
     public void WriteTo(Assembly assembly, Action<string> writeAction)

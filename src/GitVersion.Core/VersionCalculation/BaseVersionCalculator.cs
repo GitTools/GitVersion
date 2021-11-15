@@ -1,5 +1,6 @@
 using GitVersion.Common;
 using GitVersion.Configuration;
+using GitVersion.Extensions;
 using GitVersion.Logging;
 
 namespace GitVersion.VersionCalculation;
@@ -14,10 +15,10 @@ public class BaseVersionCalculator : IBaseVersionCalculator
 
     public BaseVersionCalculator(ILog log, IRepositoryStore repositoryStore, Lazy<GitVersionContext> versionContext, IEnumerable<IVersionStrategy> strategies)
     {
-        this.log = log ?? throw new ArgumentNullException(nameof(log));
-        this.repositoryStore = repositoryStore ?? throw new ArgumentNullException(nameof(repositoryStore));
-        this.strategies = strategies?.ToArray() ?? Array.Empty<IVersionStrategy>();
-        this.versionContext = versionContext ?? throw new ArgumentNullException(nameof(versionContext));
+        this.log = log.NotNull();
+        this.repositoryStore = repositoryStore.NotNull();
+        this.strategies = strategies.ToArray();
+        this.versionContext = versionContext.NotNull();
     }
 
     public BaseVersion GetBaseVersion()
@@ -59,7 +60,7 @@ public class BaseVersionCalculator : IBaseVersionCalculator
                     v1.Version!.BaseVersionSource!.When < v2.Version!.BaseVersionSource!.When ? v1 : v2);
                 baseVersionWithOldestSource = oldest!.Version!;
                 maxVersion = oldest;
-                this.log.Info($"Found multiple base versions which will produce the same SemVer ({maxVersion.IncrementedVersion}), taking oldest source for commit counting ({baseVersionWithOldestSource!.Source})");
+                this.log.Info($"Found multiple base versions which will produce the same SemVer ({maxVersion.IncrementedVersion}), taking oldest source for commit counting ({baseVersionWithOldestSource.Source})");
             }
             else
             {

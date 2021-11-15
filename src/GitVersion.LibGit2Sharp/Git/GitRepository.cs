@@ -30,7 +30,7 @@ internal sealed class GitRepository : IMutatingGitRepository
 
     private GitRepository(ILog log, Func<string?> getGitRootDirectory)
     {
-        this.log = log ?? throw new ArgumentNullException(nameof(log));
+        this.log = log.NotNull();
         this.repositoryLazy = new Lazy<IRepository>(() => new Repository(getGitRootDirectory()));
     }
 
@@ -52,8 +52,8 @@ internal sealed class GitRepository : IMutatingGitRepository
 
     public ICommit FindMergeBase(ICommit commit, ICommit otherCommit)
     {
-        _ = commit ?? throw new ArgumentNullException(nameof(commit));
-        _ = otherCommit ?? throw new ArgumentNullException(nameof(otherCommit));
+        _ = commit.NotNull();
+        _ = otherCommit.NotNull();
 
         var retryAction = new RetryAction<LockedFileException, ICommit>();
         return retryAction.Execute(() =>

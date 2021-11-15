@@ -1,3 +1,4 @@
+using GitVersion.Extensions;
 using GitVersion.Logging;
 using GitVersion.MsBuild.Tasks;
 using GitVersion.OutputVariables;
@@ -14,10 +15,10 @@ public class GitVersionTaskExecutor : IGitVersionTaskExecutor
 
     public GitVersionTaskExecutor(IFileSystem fileSystem, IGitVersionOutputTool gitVersionOutputTool, IOptions<GitVersionOptions> options, ILog log)
     {
-        this.fileSystem = fileSystem ?? throw new ArgumentNullException(nameof(fileSystem));
-        this.log = log ?? throw new ArgumentNullException(nameof(log));
-        this.gitVersionOutputTool = gitVersionOutputTool ?? throw new ArgumentNullException(nameof(gitVersionOutputTool));
-        this.options = options ?? throw new ArgumentNullException(nameof(options));
+        this.fileSystem = fileSystem.NotNull();
+        this.log = log.NotNull();
+        this.gitVersionOutputTool = gitVersionOutputTool.NotNull();
+        this.options = options.NotNull();
     }
 
     public void GetVersion(GetVersion task)

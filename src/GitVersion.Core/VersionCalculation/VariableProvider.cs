@@ -15,8 +15,8 @@ public class VariableProvider : IVariableProvider
 
     public VariableProvider(IEnvironment environment, ILog log)
     {
-        this.environment = environment ?? throw new ArgumentNullException(nameof(environment));
-        this.log = log ?? throw new ArgumentNullException(nameof(log));
+        this.environment = environment.NotNull();
+        this.log = log.NotNull();
     }
 
     public VersionVariables GetVariablesFor(SemanticVersion semanticVersion, EffectiveConfiguration config, bool isCurrentCommitTagged)

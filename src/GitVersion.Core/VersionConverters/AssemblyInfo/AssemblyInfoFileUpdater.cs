@@ -188,7 +188,7 @@ public sealed class AssemblyInfoFileUpdater : IAssemblyInfoFileUpdater
 
     private bool EnsureVersionAssemblyInfoFile(string fullPath, bool ensureAssemblyInfo)
     {
-        fullPath = fullPath ?? throw new ArgumentNullException(nameof(fullPath));
+        fullPath = fullPath.NotNull();
         if (this.fileSystem.Exists(fullPath))
         {
             return true;

@@ -1,3 +1,4 @@
+using GitVersion.Extensions;
 using GitVersion.Logging;
 using GitVersion.OutputVariables;
 using GitVersion.VersionCalculation;
@@ -24,17 +25,17 @@ public class GitVersionCalculateTool : IGitVersionCalculateTool
         IGitVersionCache gitVersionCache, IGitVersionCacheKeyFactory cacheKeyFactory,
         IOptions<GitVersionOptions> options, Lazy<GitVersionContext> versionContext)
     {
-        this.log = log ?? throw new ArgumentNullException(nameof(log));
+        this.log = log.NotNull();
 
-        this.nextVersionCalculator = nextVersionCalculator ?? throw new ArgumentNullException(nameof(nextVersionCalculator));
-        this.variableProvider = variableProvider ?? throw new ArgumentNullException(nameof(variableProvider));
-        this.gitPreparer = gitPreparer ?? throw new ArgumentNullException(nameof(gitPreparer));
+        this.nextVersionCalculator = nextVersionCalculator.NotNull();
+        this.variableProvider = variableProvider.NotNull();
+        this.gitPreparer = gitPreparer.NotNull();
 
-        this.cacheKeyFactory = cacheKeyFactory ?? throw new ArgumentNullException(nameof(cacheKeyFactory));
-        this.gitVersionCache = gitVersionCache ?? throw new ArgumentNullException(nameof(gitVersionCache));
+        this.cacheKeyFactory = cacheKeyFactory.NotNull();
+        this.gitVersionCache = gitVersionCache.NotNull();
 
-        this.options = options ?? throw new ArgumentNullException(nameof(options));
-        this.versionContext = versionContext ?? throw new ArgumentNullException(nameof(versionContext));
+        this.options = options.NotNull();
+        this.versionContext = versionContext.NotNull();
     }
 
     public VersionVariables CalculateVersionVariables()

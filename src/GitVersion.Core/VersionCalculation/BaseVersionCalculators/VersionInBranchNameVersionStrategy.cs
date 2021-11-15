@@ -13,7 +13,7 @@ public class VersionInBranchNameVersionStrategy : VersionStrategyBase
 {
     private readonly IRepositoryStore repositoryStore;
 
-    public VersionInBranchNameVersionStrategy(IRepositoryStore repositoryStore, Lazy<GitVersionContext> versionContext) : base(versionContext) => this.repositoryStore = repositoryStore ?? throw new ArgumentNullException(nameof(repositoryStore));
+    public VersionInBranchNameVersionStrategy(IRepositoryStore repositoryStore, Lazy<GitVersionContext> versionContext) : base(versionContext) => this.repositoryStore = repositoryStore.NotNull();
 
     public override IEnumerable<BaseVersion> GetVersions()
     {

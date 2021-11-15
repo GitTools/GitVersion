@@ -1,3 +1,4 @@
+using GitVersion.Extensions;
 using GitVersion.Helpers;
 
 namespace GitVersion;
@@ -15,7 +16,7 @@ public class ReferenceName : IEquatable<ReferenceName?>, IComparable<ReferenceNa
 
     public ReferenceName(string canonical)
     {
-        Canonical = canonical ?? throw new ArgumentNullException(nameof(canonical));
+        Canonical = canonical.NotNull();
         Friendly = Shorten();
         WithoutRemote = RemoveRemote();
 

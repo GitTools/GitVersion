@@ -1,4 +1,5 @@
 using GitVersion.Cache;
+using GitVersion.Extensions;
 using GitVersion.Helpers;
 using GitVersion.Logging;
 using GitVersion.OutputVariables;
@@ -14,9 +15,9 @@ public class GitVersionCache : IGitVersionCache
 
     public GitVersionCache(IFileSystem fileSystem, ILog log, IGitRepositoryInfo repositoryInfo)
     {
-        this.fileSystem = fileSystem ?? throw new ArgumentNullException(nameof(fileSystem));
-        this.log = log ?? throw new ArgumentNullException(nameof(log));
-        this.repositoryInfo = repositoryInfo ?? throw new ArgumentNullException(nameof(repositoryInfo));
+        this.fileSystem = fileSystem.NotNull();
+        this.log = log.NotNull();
+        this.repositoryInfo = repositoryInfo.NotNull();
     }
 
     public void WriteVariablesToDiskCache(GitVersionCacheKey cacheKey, VersionVariables variablesFromCache)

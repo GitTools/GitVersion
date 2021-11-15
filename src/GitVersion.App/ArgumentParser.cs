@@ -16,9 +16,9 @@ public class ArgumentParser : IArgumentParser
 
     public ArgumentParser(IEnvironment environment, ICurrentBuildAgent buildAgent, IConsole console, IGlobbingResolver globbingResolver)
     {
-        this.environment = environment ?? throw new ArgumentNullException(nameof(environment));
-        this.console = console ?? throw new ArgumentNullException(nameof(console));
-        this.globbingResolver = globbingResolver ?? throw new ArgumentNullException(nameof(globbingResolver));
+        this.environment = environment.NotNull();
+        this.console = console.NotNull();
+        this.globbingResolver = globbingResolver.NotNull();
         this.buildAgent = buildAgent;
     }
 

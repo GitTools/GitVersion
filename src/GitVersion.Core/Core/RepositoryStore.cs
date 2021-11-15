@@ -21,9 +21,9 @@ public class RepositoryStore : IRepositoryStore
 
     public RepositoryStore(ILog log, IGitRepository repository, IIncrementStrategyFinder incrementStrategyFinder)
     {
-        this.log = log ?? throw new ArgumentNullException(nameof(log));
-        this.repository = repository ?? throw new ArgumentNullException(nameof(log));
-        this.incrementStrategyFinder = incrementStrategyFinder ?? throw new ArgumentNullException(nameof(incrementStrategyFinder));
+        this.log = log.NotNull();
+        this.repository = repository.NotNull();
+        this.incrementStrategyFinder = incrementStrategyFinder.NotNull();
     }
 
     /// <summary>

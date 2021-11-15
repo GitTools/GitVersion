@@ -15,8 +15,8 @@ public class BranchConfigurationCalculator : IBranchConfigurationCalculator
 
     public BranchConfigurationCalculator(ILog log, IRepositoryStore repositoryStore)
     {
-        this.log = log ?? throw new ArgumentNullException(nameof(log));
-        this.repositoryStore = repositoryStore ?? throw new ArgumentNullException(nameof(repositoryStore));
+        this.log = log.NotNull();
+        this.repositoryStore = repositoryStore.NotNull();
     }
 
     /// <summary>

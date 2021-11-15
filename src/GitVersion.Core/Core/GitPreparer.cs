@@ -24,12 +24,12 @@ public class GitPreparer : IGitPreparer
     public GitPreparer(ILog log, IEnvironment environment, ICurrentBuildAgent buildAgent, IOptions<GitVersionOptions> options,
         IMutatingGitRepository repository, IGitRepositoryInfo repositoryInfo, IRepositoryStore repositoryStore)
     {
-        this.log = log ?? throw new ArgumentNullException(nameof(log));
-        this.environment = environment ?? throw new ArgumentNullException(nameof(environment));
-        this.repository = repository ?? throw new ArgumentNullException(nameof(repository));
-        this.options = options ?? throw new ArgumentNullException(nameof(options));
-        this.repositoryInfo = repositoryInfo ?? throw new ArgumentNullException(nameof(repositoryInfo));
-        this.repositoryStore = repositoryStore ?? throw new ArgumentNullException(nameof(repositoryStore));
+        this.log = log.NotNull();
+        this.environment = environment.NotNull();
+        this.repository = repository.NotNull();
+        this.options = options.NotNull();
+        this.repositoryInfo = repositoryInfo.NotNull();
+        this.repositoryStore = repositoryStore.NotNull();
         this.buildAgent = buildAgent;
         this.retryAction = new RetryAction<LockedFileException>();
     }

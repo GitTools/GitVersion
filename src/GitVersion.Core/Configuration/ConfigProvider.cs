@@ -1,4 +1,5 @@
 using GitVersion.Configuration.Init.Wizard;
+using GitVersion.Extensions;
 using GitVersion.Logging;
 using GitVersion.Model.Configuration;
 using Microsoft.Extensions.Options;
@@ -17,12 +18,12 @@ public class ConfigProvider : IConfigProvider
     public ConfigProvider(IFileSystem fileSystem, ILog log, IConfigFileLocator configFileLocator,
         IOptions<GitVersionOptions> options, IConfigInitWizard configInitWizard, IGitRepositoryInfo repositoryInfo)
     {
-        this.fileSystem = fileSystem ?? throw new ArgumentNullException(nameof(fileSystem));
-        this.log = log ?? throw new ArgumentNullException(nameof(log));
-        this.configFileLocator = configFileLocator ?? throw new ArgumentNullException(nameof(configFileLocator));
-        this.options = options ?? throw new ArgumentNullException(nameof(options));
-        this.configInitWizard = configInitWizard ?? throw new ArgumentNullException(nameof(this.configInitWizard));
-        this.repositoryInfo = repositoryInfo ?? throw new ArgumentNullException(nameof(this.repositoryInfo));
+        this.fileSystem = fileSystem.NotNull();
+        this.log = log.NotNull();
+        this.configFileLocator = configFileLocator.NotNull();
+        this.options = options.NotNull();
+        this.configInitWizard = configInitWizard.NotNull();
+        this.repositoryInfo = repositoryInfo.NotNull();
     }
 
     public Config Provide(Config? overrideConfig = null)

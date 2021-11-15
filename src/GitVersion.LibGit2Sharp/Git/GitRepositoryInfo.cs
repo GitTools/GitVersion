@@ -15,7 +15,7 @@ internal class GitRepositoryInfo : IGitRepositoryInfo
 
     public GitRepositoryInfo(IOptions<GitVersionOptions> options)
     {
-        this.options = options ?? throw new ArgumentNullException(nameof(options));
+        this.options = options.NotNull();
 
         this.dynamicGitRepositoryPath = new Lazy<string?>(GetDynamicGitRepositoryPath);
         this.dotGitDirectory = new Lazy<string?>(GetDotGitDirectory);

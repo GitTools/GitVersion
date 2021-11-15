@@ -16,10 +16,10 @@ internal class MainlineVersionCalculator : IMainlineVersionCalculator
 
     public MainlineVersionCalculator(ILog log, IRepositoryStore repositoryStore, Lazy<GitVersionContext> versionContext, IIncrementStrategyFinder incrementStrategyFinder)
     {
-        this.log = log ?? throw new ArgumentNullException(nameof(log));
-        this.repositoryStore = repositoryStore ?? throw new ArgumentNullException(nameof(repositoryStore));
-        this.versionContext = versionContext ?? throw new ArgumentNullException(nameof(versionContext));
-        this.incrementStrategyFinder = incrementStrategyFinder ?? throw new ArgumentNullException(nameof(incrementStrategyFinder));
+        this.log = log.NotNull();
+        this.repositoryStore = repositoryStore.NotNull();
+        this.versionContext = versionContext.NotNull();
+        this.incrementStrategyFinder = incrementStrategyFinder.NotNull();
     }
 
     public SemanticVersion FindMainlineModeVersion(BaseVersion baseVersion)

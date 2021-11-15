@@ -14,10 +14,10 @@ public class GitVersionContextFactory : IGitVersionContextFactory
 
     public GitVersionContextFactory(IConfigProvider configProvider, IRepositoryStore repositoryStore, IBranchConfigurationCalculator branchConfigurationCalculator, IOptions<GitVersionOptions> options)
     {
-        this.configProvider = configProvider ?? throw new ArgumentNullException(nameof(configProvider));
-        this.repositoryStore = repositoryStore ?? throw new ArgumentNullException(nameof(repositoryStore));
-        this.branchConfigurationCalculator = branchConfigurationCalculator ?? throw new ArgumentNullException(nameof(branchConfigurationCalculator));
-        this.options = options ?? throw new ArgumentNullException(nameof(options));
+        this.configProvider = configProvider.NotNull();
+        this.repositoryStore = repositoryStore.NotNull();
+        this.branchConfigurationCalculator = branchConfigurationCalculator.NotNull();
+        this.options = options.NotNull();
     }
 
     public GitVersionContext Create(GitVersionOptions? gitVersionOptions)

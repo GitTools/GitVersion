@@ -1,3 +1,4 @@
+using GitVersion.Extensions;
 using GitVersion.Logging;
 
 namespace GitVersion;
@@ -9,8 +10,8 @@ public class HelpWriter : IHelpWriter
 
     public HelpWriter(IVersionWriter versionWriter, IConsole console)
     {
-        this.versionWriter = versionWriter ?? throw new ArgumentNullException(nameof(versionWriter));
-        this.console = console ?? throw new ArgumentNullException(nameof(console));
+        this.versionWriter = versionWriter.NotNull();
+        this.console = console.NotNull();
     }
 
     public void Write() => WriteTo(this.console.WriteLine);
