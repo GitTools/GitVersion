@@ -487,7 +487,7 @@ public class ArgumentParser : IArgumentParser
         }
     }
 
-    private static void ParseUpdateProjectInfo(Arguments arguments, string value, string[] values)
+    private static void ParseUpdateProjectInfo(Arguments arguments, string value, IReadOnlyCollection<string> values)
     {
         if (value.IsTrue())
         {
@@ -497,7 +497,7 @@ public class ArgumentParser : IArgumentParser
         {
             arguments.UpdateProjectFiles = false;
         }
-        else if (values != null && values.Length > 1)
+        else if (values != null && values.Count > 1)
         {
             arguments.UpdateProjectFiles = true;
             foreach (var v in values)

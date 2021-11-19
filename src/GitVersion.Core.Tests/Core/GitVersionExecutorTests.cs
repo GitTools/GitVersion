@@ -61,7 +61,7 @@ public class GitVersionExecutorTests : TestBase
         var gitVersionOptions = new GitVersionOptions
         {
             RepositoryInfo = { TargetUrl = targetUrl },
-            WorkingDirectory = null
+            WorkingDirectory = string.Empty
         };
         Should.NotThrow(() =>
         {

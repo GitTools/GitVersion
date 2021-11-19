@@ -12,7 +12,7 @@ public class RefSpec : IRefSpec
     internal RefSpec(LibGit2Sharp.RefSpec refSpec) => this.innerRefSpec = refSpec;
     public int CompareTo(IRefSpec other) => comparerHelper.Compare(this, other);
     public bool Equals(IRefSpec? other) => equalityHelper.Equals(this, other);
-    public override bool Equals(object obj) => Equals((obj as IRefSpec)!);
+    public override bool Equals(object obj) => Equals((obj as IRefSpec));
     public override int GetHashCode() => equalityHelper.GetHashCode(this);
     public override string ToString() => Specification;
     public string Specification => this.innerRefSpec.Specification;

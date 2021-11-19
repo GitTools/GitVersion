@@ -36,11 +36,15 @@ public class ConfigProvider : IConfigProvider
         return Provide(rootDirectory, overrideConfig);
     }
 
-    public Config Provide(string workingDirectory, Config? overrideConfig = null) =>
-        new ConfigurationBuilder()
-            .Add(this.configFileLocator.ReadConfig(workingDirectory))
+    public Config Provide(string? workingDirectory, Config? overrideConfig = null)
+    {
+        var configurationBuilder = new ConfigurationBuilder();
+        if (workingDirectory != null)
+            configurationBuilder = configurationBuilder.Add(this.configFileLocator.ReadConfig(workingDirectory));
+        return configurationBuilder
             .Add(overrideConfig ?? new Config())
             .Build();
+    }
 
     public void Init(string workingDirectory)
     {
@@ -48,7 +52,7 @@ public class ConfigProvider : IConfigProvider
         var currentConfiguration = this.configFileLocator.ReadConfig(workingDirectory);
 
         var config = this.configInitWizard.Run(currentConfiguration, workingDirectory);
-        if (config == null) return;
+        if (config == null || configFilePath == null) return;
 
         using var stream = this.fileSystem.OpenWrite(configFilePath);
         using var writer = new StreamWriter(stream);

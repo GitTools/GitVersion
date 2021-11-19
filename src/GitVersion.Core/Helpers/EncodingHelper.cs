@@ -45,7 +45,7 @@ public static class EncodingHelper
     /// <returns>The encoding that has a matching preamble or null if one was not found.</returns>
     public static Encoding? DetectEncoding(IList<byte> bytes)
     {
-        if (bytes == null || bytes.Count == 0)
+        if (bytes.Count == 0)
         {
             return null;
         }

@@ -5,7 +5,7 @@ namespace GitVersion;
 
 public class GitVersionOptions
 {
-    public string? WorkingDirectory { get; set; }
+    public string WorkingDirectory { get; set; } = System.Environment.CurrentDirectory;
 
     public AssemblyInfoData AssemblyInfo { get; } = new();
     public AuthenticationInfo Authentication { get; } = new();

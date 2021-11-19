@@ -26,7 +26,7 @@ internal sealed class Branch : IBranch
 
     public int CompareTo(IBranch other) => comparerHelper.Compare(this, other);
     public bool Equals(IBranch? other) => equalityHelper.Equals(this, other);
-    public override bool Equals(object obj) => Equals((obj as IBranch)!);
+    public override bool Equals(object obj) => Equals((obj as IBranch));
     public override int GetHashCode() => equalityHelper.GetHashCode(this);
     public override string ToString() => Name.ToString();
     public static implicit operator LibGit2Sharp.Branch(Branch d) => d.innerBranch;

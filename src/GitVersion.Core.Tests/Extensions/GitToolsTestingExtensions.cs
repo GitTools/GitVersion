@@ -74,15 +74,15 @@ public static class GitToolsTestingExtensions
 
         var sp = ConfigureServices(services => services.AddSingleton(options));
 
-        var variableProvider = sp.GetService<IVariableProvider>();
-        var nextVersionCalculator = sp.GetService<INextVersionCalculator>();
-        var contextOptions = sp.GetService<Lazy<GitVersionContext>>();
+        var variableProvider = sp.GetService<IVariableProvider>().NotNull();
+        var nextVersionCalculator = sp.GetService<INextVersionCalculator>().NotNull();
+        var contextOptions = sp.GetService<Lazy<GitVersionContext>>().NotNull();
 
         var context = contextOptions!.Value;
 
         try
         {
-            var semanticVersion = nextVersionCalculator!.FindVersion();
+            var semanticVersion = nextVersionCalculator.FindVersion();
             var variables = variableProvider!.GetVariablesFor(semanticVersion, context.Configuration, context.IsCurrentCommitTagged);
 
             return variables;

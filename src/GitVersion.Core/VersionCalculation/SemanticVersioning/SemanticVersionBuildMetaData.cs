@@ -70,13 +70,10 @@ public class SemanticVersionBuildMetaData : IFormattable, IEquatable<SemanticVer
     /// <para>f - Formats the full build metadata</para>
     /// <para>p - Formats the padded build number. Can specify an integer for padding, default is 4. (i.e., p5)</para>
     /// </summary>
-    public string ToString(string format, IFormatProvider formatProvider)
+    public string ToString(string? format, IFormatProvider? formatProvider)
     {
-        if (formatProvider != null)
-        {
-            if (formatProvider.GetFormat(GetType()) is ICustomFormatter formatter)
-                return formatter.Format(format, this, formatProvider);
-        }
+        if (formatProvider?.GetFormat(GetType()) is ICustomFormatter formatter)
+            return formatter.Format(format, this, formatProvider);
 
         if (format.IsNullOrEmpty())
             format = "b";

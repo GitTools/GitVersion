@@ -243,7 +243,7 @@ public class BranchConfigurationCalculator : IBranchConfigurationCalculator
 
     private class LocalRemoteBranchEqualityComparer : IEqualityComparer<IBranch>
     {
-        public bool Equals(IBranch b1, IBranch b2)
+        public bool Equals(IBranch? b1, IBranch? b2)
         {
             if (b1 == null && b2 == null)
                 return true;

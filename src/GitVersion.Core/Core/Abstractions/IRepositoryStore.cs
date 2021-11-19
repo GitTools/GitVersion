@@ -9,7 +9,7 @@ public interface IRepositoryStore
     /// Find the merge base of the two branches, i.e. the best common ancestor of the two branches' tips.
     /// </summary>
     ICommit? FindMergeBase(IBranch branch, IBranch? otherBranch);
-    ICommit FindMergeBase(ICommit commit, ICommit mainlineTip);
+    ICommit? FindMergeBase(ICommit commit, ICommit mainlineTip);
     ICommit? GetCurrentCommit(IBranch currentBranch, string? commitId);
     ICommit GetBaseVersionSource(ICommit currentBranchTip);
     IEnumerable<ICommit> GetMainlineCommitLog(ICommit? baseVersionSource, ICommit? mainlineTip);
@@ -17,8 +17,8 @@ public interface IRepositoryStore
     IEnumerable<ICommit> GetCommitLog(ICommit? baseVersionSource, ICommit? currentCommit);
 
     IBranch GetTargetBranch(string? targetBranchName);
-    IBranch FindBranch(string? branchName);
-    IBranch GetChosenBranch(Config configuration);
+    IBranch? FindBranch(string? branchName);
+    IBranch? GetChosenBranch(Config configuration);
     IEnumerable<IBranch> GetBranchesForCommit(ICommit commit);
     IEnumerable<IBranch> GetExcludedInheritBranches(Config configuration);
     IEnumerable<IBranch> GetReleaseBranches(IEnumerable<KeyValuePair<string, BranchConfig?>>? releaseBranchConfig);
@@ -35,7 +35,7 @@ public interface IRepositoryStore
     SemanticVersion GetCurrentCommitTaggedVersion(ICommit? commit, EffectiveConfiguration config);
     SemanticVersion MaybeIncrement(BaseVersion baseVersion, GitVersionContext context);
     IEnumerable<SemanticVersion> GetVersionTagsOnBranch(IBranch branch, string? tagPrefixRegex);
-    IEnumerable<Tuple<ITag, SemanticVersion, ICommit>> GetValidVersionTags(string? tagPrefixRegex, DateTimeOffset? olderThan = null);
+    IEnumerable<(ITag Tag, SemanticVersion Semver, ICommit Commit)> GetValidVersionTags(string? tagPrefixRegex, DateTimeOffset? olderThan = null);
 
     bool IsCommitOnBranch(ICommit? baseVersionSource, IBranch branch, ICommit firstMatchingCommit);
     VersionField? DetermineIncrementedField(BaseVersion baseVersion, GitVersionContext context);

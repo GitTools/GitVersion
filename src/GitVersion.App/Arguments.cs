@@ -43,12 +43,8 @@ public class Arguments
 
     public GitVersionOptions ToOptions()
     {
-        var workingDirectory = this.TargetPath?.TrimEnd('/', '\\');
-
-        return new GitVersionOptions
+        var gitVersionOptions = new GitVersionOptions
         {
-            WorkingDirectory = workingDirectory,
-
             AssemblyInfo =
             {
                 UpdateProjectFiles = UpdateProjectFiles,
@@ -102,5 +98,13 @@ public class Arguments
             Output = Output,
             OutputFile = OutputFile
         };
+
+        var workingDirectory = this.TargetPath?.TrimEnd('/', '\\');
+        if (workingDirectory != null)
+        {
+            gitVersionOptions.WorkingDirectory = workingDirectory;
+        }
+
+        return gitVersionOptions;
     }
 }

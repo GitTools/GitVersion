@@ -52,8 +52,6 @@ public class TrackReleaseBranchesVersionStrategy : VersionStrategyBase
         return main != null ? this.taggedCommitVersionStrategy.GetTaggedVersions(main, null) : Array.Empty<BaseVersion>();
     }
 
-
-
     private IEnumerable<BaseVersion> ReleaseBranchBaseVersions()
     {
         var releaseBranchConfig = Context.FullConfiguration?.GetReleaseBranchConfig();

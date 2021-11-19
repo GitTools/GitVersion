@@ -11,7 +11,7 @@ public static class ProcessHelper
     // http://social.msdn.microsoft.com/Forums/en/netfxbcl/thread/f6069441-4ab1-4299-ad6a-b8bb9ed36be3
     private static Process? Start(ProcessStartInfo startInfo)
     {
-        Process process;
+        Process? process;
 
         lock (LockObject)
         {
@@ -81,8 +81,6 @@ public static class ProcessHelper
             throw new ArgumentNullException(nameof(exe));
         if (output == null)
             throw new ArgumentNullException(nameof(output));
-
-        workingDirectory ??= System.Environment.CurrentDirectory;
 
         var psi = new ProcessStartInfo
         {

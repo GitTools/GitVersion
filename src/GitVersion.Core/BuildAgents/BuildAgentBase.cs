@@ -29,11 +29,6 @@ public abstract class BuildAgentBase : ICurrentBuildAgent
 
     public virtual void WriteIntegration(Action<string?> writer, VersionVariables variables, bool updateBuildNumber = true)
     {
-        if (writer == null)
-        {
-            return;
-        }
-
         if (updateBuildNumber)
         {
             writer($"Executing GenerateSetVersionMessage for '{GetType().Name}'.");

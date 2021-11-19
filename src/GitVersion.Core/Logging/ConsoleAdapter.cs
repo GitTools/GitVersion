@@ -8,7 +8,7 @@ public class ConsoleAdapter : IConsole
 
     public void Write(string msg) => Console.Write(msg);
 
-    public string ReadLine() => Console.ReadLine();
+    public string? ReadLine() => Console.ReadLine();
 
     public IDisposable UseColor(ConsoleColor consoleColor)
     {

@@ -90,7 +90,7 @@ public class Config
     public string? CommitDateFormat { get; set; }
 
     [YamlMember(Alias = "merge-message-formats")]
-    public Dictionary<string, string> MergeMessageFormats { get; set; } = new Dictionary<string, string>();
+    public Dictionary<string, string> MergeMessageFormats { get; set; } = new();
 
     [YamlMember(Alias = "update-build-number")]
     public bool? UpdateBuildNumber { get; set; }

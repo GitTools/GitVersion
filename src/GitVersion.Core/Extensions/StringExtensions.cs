@@ -12,7 +12,7 @@ public static class StringExtensions
 
     public static bool IsFalse(this string value) => Falses.Contains(value, StringComparer.OrdinalIgnoreCase);
 
-    public static bool IsValidPath(this string path)
+    public static bool IsValidPath(this string? path)
     {
         if (path == null)
             return false;
@@ -38,11 +38,11 @@ public static class StringExtensions
         return Directory.Exists(path);
     }
 
-    public static bool IsSwitchArgument(this string value) => value != null
+    public static bool IsSwitchArgument(this string? value) => value != null
                                                               && (value.StartsWith("-") || value.StartsWith("/"))
                                                               && !Regex.Match(value, @"/\w+:").Success; //Exclude msbuild & project parameters in form /blah:, which should be parsed as values, not switch names.
 
-    public static bool IsSwitch(this string value, string switchName)
+    public static bool IsSwitch(this string? value, string switchName)
     {
         if (value == null)
             return false;

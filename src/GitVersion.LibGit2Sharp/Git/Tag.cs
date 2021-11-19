@@ -18,10 +18,10 @@ internal sealed class Tag : ITag
 
     public int CompareTo(ITag other) => comparerHelper.Compare(this, other);
     public bool Equals(ITag? other) => equalityHelper.Equals(this, other);
-    public override bool Equals(object obj) => Equals((obj as ITag)!);
+    public override bool Equals(object obj) => Equals((obj as ITag));
     public override int GetHashCode() => equalityHelper.GetHashCode(this);
     public override string ToString() => Name.ToString();
-    public string TargetSha => this.innerTag.Target.Sha;
+    public string? TargetSha => this.innerTag.Target.Sha;
 
     public ICommit? PeeledTargetCommit()
     {
