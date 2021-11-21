@@ -75,14 +75,14 @@ public class VersionBumpingScenarios : TestBase
         {
             VersioningMode = GitVersion.VersionCalculation.VersioningMode.Mainline,
 
-            // For future debugging of this regex: https://regex101.com/r/CRoBol/1
-            MajorVersionBumpMessage = "^(build|chore|ci|docs|feat|fix|perf|refactor|revert|style|test)(\\([\\w\\s]*\\))?(!:|:.*\\n\\n((.+\\n)+\\n)?BREAKING CHANGE:\\s.+)",
+            // For future debugging of this regex: https://regex101.com/r/CRoBol/2
+            MajorVersionBumpMessage = "^(build|chore|ci|docs|feat|fix|perf|refactor|revert|style|test)(\\([\\w\\s-]*\\))?(!:|:.*\\n\\n((.+\\n)+\\n)?BREAKING CHANGE:\\s.+)",
 
-            // For future debugging of this regex: https://regex101.com/r/9ccNam/1
-            MinorVersionBumpMessage = "^(feat)(\\([\\w\\s]*\\))?:",
+            // For future debugging of this regex: https://regex101.com/r/9ccNam/3
+            MinorVersionBumpMessage = "^(feat)(\\([\\w\\s-]*\\))?:",
 
-            // For future debugging of this regex: https://regex101.com/r/oFpqxA/1
-            PatchVersionBumpMessage = "^(build|chore|ci|docs|fix|perf|refactor|revert|style|test)(\\([\\w\\s]*\\))?:"
+            // For future debugging of this regex: https://regex101.com/r/oFpqxA/2
+            PatchVersionBumpMessage = "^(build|chore|ci|docs|fix|perf|refactor|revert|style|test)(\\([\\w\\s-]*\\))?:"
         };
         using var fixture = new EmptyRepositoryFixture();
         fixture.Repository.MakeACommit();
