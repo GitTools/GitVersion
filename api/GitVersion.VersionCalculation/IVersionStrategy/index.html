@@ -207,13 +207,13 @@
 								<dt>Implementing Types</dt>
 								<dd>
 									<ul class="list-unstyled">
-											<li><a href="/api/GitVersion.VersionCalculation/VersionStrategyBase">VersionStrategyBase</a></li>								
-											<li><a href="/api/GitVersion.VersionCalculation/MergeMessageVersionStrategy">Merge<wbr>Message<wbr>Version<wbr>Strategy</a></li>								
-											<li><a href="/api/GitVersion.VersionCalculation/VersionInBranchNameVersionStrategy">Version<wbr>In<wbr>Branch<wbr>Name<wbr>Version<wbr>Strategy</a></li>								
 											<li><a href="/api/GitVersion.VersionCalculation/TrackReleaseBranchesVersionStrategy">Track<wbr>Release<wbr>Branches<wbr>Version<wbr>Strategy</a></li>								
 											<li><a href="/api/GitVersion.VersionCalculation/TaggedCommitVersionStrategy">Tagged<wbr>Commit<wbr>Version<wbr>Strategy</a></li>								
-											<li><a href="/api/GitVersion.VersionCalculation/ConfigNextVersionVersionStrategy">Config<wbr>Next<wbr>Version<wbr>Version<wbr>Strategy</a></li>								
+											<li><a href="/api/GitVersion.VersionCalculation/VersionInBranchNameVersionStrategy">Version<wbr>In<wbr>Branch<wbr>Name<wbr>Version<wbr>Strategy</a></li>								
 											<li><a href="/api/GitVersion.VersionCalculation/FallbackVersionStrategy">Fallback<wbr>Version<wbr>Strategy</a></li>								
+											<li><a href="/api/GitVersion.VersionCalculation/VersionStrategyBase">VersionStrategyBase</a></li>								
+											<li><a href="/api/GitVersion.VersionCalculation/MergeMessageVersionStrategy">Merge<wbr>Message<wbr>Version<wbr>Strategy</a></li>								
+											<li><a href="/api/GitVersion.VersionCalculation/ConfigNextVersionVersionStrategy">Config<wbr>Next<wbr>Version<wbr>Version<wbr>Strategy</a></li>								
 									</ul>
 								</dd>				
 						</dl>
@@ -223,20 +223,20 @@
 							graph BT
 	Type["IVersionStrategy"]
 class Type type-node
-	Implementing0["VersionStrategyBase"]-.-&gt;Type
-	click Implementing0 "/api/GitVersion.VersionCalculation/VersionStrategyBase"
-	Implementing1["MergeMessageVersionStrategy"]-.-&gt;Type
-	click Implementing1 "/api/GitVersion.VersionCalculation/MergeMessageVersionStrategy"
+	Implementing0["TrackReleaseBranchesVersionStrategy"]-.-&gt;Type
+	click Implementing0 "/api/GitVersion.VersionCalculation/TrackReleaseBranchesVersionStrategy"
+	Implementing1["TaggedCommitVersionStrategy"]-.-&gt;Type
+	click Implementing1 "/api/GitVersion.VersionCalculation/TaggedCommitVersionStrategy"
 	Implementing2["VersionInBranchNameVersionStrategy"]-.-&gt;Type
 	click Implementing2 "/api/GitVersion.VersionCalculation/VersionInBranchNameVersionStrategy"
-	Implementing3["TrackReleaseBranchesVersionStrategy"]-.-&gt;Type
-	click Implementing3 "/api/GitVersion.VersionCalculation/TrackReleaseBranchesVersionStrategy"
-	Implementing4["TaggedCommitVersionStrategy"]-.-&gt;Type
-	click Implementing4 "/api/GitVersion.VersionCalculation/TaggedCommitVersionStrategy"
-	Implementing5["ConfigNextVersionVersionStrategy"]-.-&gt;Type
-	click Implementing5 "/api/GitVersion.VersionCalculation/ConfigNextVersionVersionStrategy"
-	Implementing6["FallbackVersionStrategy"]-.-&gt;Type
-	click Implementing6 "/api/GitVersion.VersionCalculation/FallbackVersionStrategy"
+	Implementing3["FallbackVersionStrategy"]-.-&gt;Type
+	click Implementing3 "/api/GitVersion.VersionCalculation/FallbackVersionStrategy"
+	Implementing4["VersionStrategyBase"]-.-&gt;Type
+	click Implementing4 "/api/GitVersion.VersionCalculation/VersionStrategyBase"
+	Implementing5["MergeMessageVersionStrategy"]-.-&gt;Type
+	click Implementing5 "/api/GitVersion.VersionCalculation/MergeMessageVersionStrategy"
+	Implementing6["ConfigNextVersionVersionStrategy"]-.-&gt;Type
+	click Implementing6 "/api/GitVersion.VersionCalculation/ConfigNextVersionVersionStrategy"
 
 						</div>
 					</div>
@@ -300,6 +300,14 @@ class Type type-node
 								<td>
 									<div></div>
 										<div><small><em>From <a href="/api/GitVersion.Extensions/ObjectExtensions">ObjectExtensions</a></em></small></div>
+								</td>
+							</tr>
+							<tr>
+								<td><a href="/api/GitVersion.Extensions/CommonExtensions/84349AB5">NotNull<wbr>&lt;<wbr>I<wbr>Version<wbr>Strategy&gt;<wbr><wbr>(string)<wbr></a></td>
+								<td>T</td>
+								<td>
+									<div></div>
+										<div><small><em>From <a href="/api/GitVersion.Extensions/CommonExtensions">CommonExtensions</a></em></small></div>
 								</td>
 							</tr>
 					</tbody></table>

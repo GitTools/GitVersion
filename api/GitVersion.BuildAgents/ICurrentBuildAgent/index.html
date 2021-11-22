@@ -205,20 +205,20 @@
 								<dt>Implementing Types</dt>
 								<dd>
 									<ul class="list-unstyled">
-											<li><a href="/api/GitVersion.BuildAgents/ContinuaCi">ContinuaCi</a></li>								
-											<li><a href="/api/GitVersion.BuildAgents/GitHubActions">GitHubActions</a></li>								
-											<li><a href="/api/GitVersion.BuildAgents/SpaceAutomation">SpaceAutomation</a></li>								
-											<li><a href="/api/GitVersion.BuildAgents/Drone">Drone</a></li>								
-											<li><a href="/api/GitVersion.BuildAgents/EnvRun">EnvRun</a></li>								
-											<li><a href="/api/GitVersion.BuildAgents/MyGet">MyGet</a></li>								
-											<li><a href="/api/GitVersion.BuildAgents/AppVeyor">AppVeyor</a></li>								
-											<li><a href="/api/GitVersion.BuildAgents/CodeBuild">CodeBuild</a></li>								
 											<li><a href="/api/GitVersion.BuildAgents/AzurePipelines">AzurePipelines</a></li>								
+											<li><a href="/api/GitVersion.BuildAgents/AppVeyor">AppVeyor</a></li>								
+											<li><a href="/api/GitVersion.BuildAgents/SpaceAutomation">SpaceAutomation</a></li>								
+											<li><a href="/api/GitVersion.BuildAgents/ContinuaCi">ContinuaCi</a></li>								
+											<li><a href="/api/GitVersion.BuildAgents/TravisCi">TravisCi</a></li>								
+											<li><a href="/api/GitVersion.BuildAgents/Drone">Drone</a></li>								
 											<li><a href="/api/GitVersion.BuildAgents/BuildAgentBase">BuildAgentBase</a></li>								
-											<li><a href="/api/GitVersion.BuildAgents/Jenkins">Jenkins</a></li>								
 											<li><a href="/api/GitVersion.BuildAgents/GitLabCi">GitLabCi</a></li>								
 											<li><a href="/api/GitVersion.BuildAgents/TeamCity">TeamCity</a></li>								
-											<li><a href="/api/GitVersion.BuildAgents/TravisCi">TravisCi</a></li>								
+											<li><a href="/api/GitVersion.BuildAgents/Jenkins">Jenkins</a></li>								
+											<li><a href="/api/GitVersion.BuildAgents/GitHubActions">GitHubActions</a></li>								
+											<li><a href="/api/GitVersion.BuildAgents/EnvRun">EnvRun</a></li>								
+											<li><a href="/api/GitVersion.BuildAgents/CodeBuild">CodeBuild</a></li>								
+											<li><a href="/api/GitVersion.BuildAgents/MyGet">MyGet</a></li>								
 									</ul>
 								</dd>				
 						</dl>
@@ -230,34 +230,34 @@
 	click Interface0 "/api/GitVersion.BuildAgents/IBuildAgent"
 	Type["ICurrentBuildAgent"]
 class Type type-node
-	Implementing0["ContinuaCi"]-.-&gt;Type
-	click Implementing0 "/api/GitVersion.BuildAgents/ContinuaCi"
-	Implementing1["GitHubActions"]-.-&gt;Type
-	click Implementing1 "/api/GitVersion.BuildAgents/GitHubActions"
+	Implementing0["AzurePipelines"]-.-&gt;Type
+	click Implementing0 "/api/GitVersion.BuildAgents/AzurePipelines"
+	Implementing1["AppVeyor"]-.-&gt;Type
+	click Implementing1 "/api/GitVersion.BuildAgents/AppVeyor"
 	Implementing2["SpaceAutomation"]-.-&gt;Type
 	click Implementing2 "/api/GitVersion.BuildAgents/SpaceAutomation"
-	Implementing3["Drone"]-.-&gt;Type
-	click Implementing3 "/api/GitVersion.BuildAgents/Drone"
-	Implementing4["EnvRun"]-.-&gt;Type
-	click Implementing4 "/api/GitVersion.BuildAgents/EnvRun"
-	Implementing5["MyGet"]-.-&gt;Type
-	click Implementing5 "/api/GitVersion.BuildAgents/MyGet"
-	Implementing6["AppVeyor"]-.-&gt;Type
-	click Implementing6 "/api/GitVersion.BuildAgents/AppVeyor"
-	Implementing7["CodeBuild"]-.-&gt;Type
-	click Implementing7 "/api/GitVersion.BuildAgents/CodeBuild"
-	Implementing8["AzurePipelines"]-.-&gt;Type
-	click Implementing8 "/api/GitVersion.BuildAgents/AzurePipelines"
-	Implementing9["BuildAgentBase"]-.-&gt;Type
-	click Implementing9 "/api/GitVersion.BuildAgents/BuildAgentBase"
-	Implementing10["Jenkins"]-.-&gt;Type
-	click Implementing10 "/api/GitVersion.BuildAgents/Jenkins"
-	Implementing11["GitLabCi"]-.-&gt;Type
-	click Implementing11 "/api/GitVersion.BuildAgents/GitLabCi"
-	Implementing12["TeamCity"]-.-&gt;Type
-	click Implementing12 "/api/GitVersion.BuildAgents/TeamCity"
-	Implementing13["TravisCi"]-.-&gt;Type
-	click Implementing13 "/api/GitVersion.BuildAgents/TravisCi"
+	Implementing3["ContinuaCi"]-.-&gt;Type
+	click Implementing3 "/api/GitVersion.BuildAgents/ContinuaCi"
+	Implementing4["TravisCi"]-.-&gt;Type
+	click Implementing4 "/api/GitVersion.BuildAgents/TravisCi"
+	Implementing5["Drone"]-.-&gt;Type
+	click Implementing5 "/api/GitVersion.BuildAgents/Drone"
+	Implementing6["BuildAgentBase"]-.-&gt;Type
+	click Implementing6 "/api/GitVersion.BuildAgents/BuildAgentBase"
+	Implementing7["GitLabCi"]-.-&gt;Type
+	click Implementing7 "/api/GitVersion.BuildAgents/GitLabCi"
+	Implementing8["TeamCity"]-.-&gt;Type
+	click Implementing8 "/api/GitVersion.BuildAgents/TeamCity"
+	Implementing9["Jenkins"]-.-&gt;Type
+	click Implementing9 "/api/GitVersion.BuildAgents/Jenkins"
+	Implementing10["GitHubActions"]-.-&gt;Type
+	click Implementing10 "/api/GitVersion.BuildAgents/GitHubActions"
+	Implementing11["EnvRun"]-.-&gt;Type
+	click Implementing11 "/api/GitVersion.BuildAgents/EnvRun"
+	Implementing12["CodeBuild"]-.-&gt;Type
+	click Implementing12 "/api/GitVersion.BuildAgents/CodeBuild"
+	Implementing13["MyGet"]-.-&gt;Type
+	click Implementing13 "/api/GitVersion.BuildAgents/MyGet"
 
 						</div>
 					</div>
@@ -297,6 +297,14 @@ class Type type-node
 								<td>
 									<div></div>
 										<div><small><em>From <a href="/api/GitVersion.Extensions/ObjectExtensions">ObjectExtensions</a></em></small></div>
+								</td>
+							</tr>
+							<tr>
+								<td><a href="/api/GitVersion.Extensions/CommonExtensions/84349AB5">NotNull<wbr>&lt;<wbr>I<wbr>Current<wbr>Build<wbr>Agent&gt;<wbr><wbr>(string)<wbr></a></td>
+								<td>T</td>
+								<td>
+									<div></div>
+										<div><small><em>From <a href="/api/GitVersion.Extensions/CommonExtensions">CommonExtensions</a></em></small></div>
 								</td>
 							</tr>
 					</tbody></table>

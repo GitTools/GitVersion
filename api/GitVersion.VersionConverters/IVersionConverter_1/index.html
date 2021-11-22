@@ -192,15 +192,15 @@
 								<dd>
 									<ul class="list-unstyled">
 											<li><a href="/api/GitVersion.VersionConverters.AssemblyInfo/ProjectFileUpdater">ProjectFileUpdater</a></li>								
-											<li><a href="/api/GitVersion.VersionConverters.OutputGenerator/OutputGenerator">OutputGenerator</a></li>								
+											<li><a href="/api/GitVersion.VersionConverters.GitVersionInfo/IGitVersionInfoGenerator">I<wbr>Git<wbr>Version<wbr>Info<wbr>Generator</a></li>								
+											<li><a href="/api/GitVersion.VersionConverters.AssemblyInfo/AssemblyInfoFileUpdater">Assembly<wbr>Info<wbr>File<wbr>Updater</a></li>								
 											<li><a href="/api/GitVersion.VersionConverters.AssemblyInfo/IProjectFileUpdater">IProjectFileUpdater</a></li>								
 											<li><a href="/api/GitVersion.VersionConverters.WixUpdater/WixVersionFileUpdater">Wix<wbr>Version<wbr>File<wbr>Updater</a></li>								
-											<li><a href="/api/GitVersion.VersionConverters.GitVersionInfo/GitVersionInfoGenerator">Git<wbr>Version<wbr>Info<wbr>Generator</a></li>								
-											<li><a href="/api/GitVersion.VersionConverters.AssemblyInfo/AssemblyInfoFileUpdater">Assembly<wbr>Info<wbr>File<wbr>Updater</a></li>								
-											<li><a href="/api/GitVersion.VersionConverters.WixUpdater/IWixVersionFileUpdater">I<wbr>Wix<wbr>Version<wbr>File<wbr>Updater</a></li>								
-											<li><a href="/api/GitVersion.VersionConverters.GitVersionInfo/IGitVersionInfoGenerator">I<wbr>Git<wbr>Version<wbr>Info<wbr>Generator</a></li>								
 											<li><a href="/api/GitVersion.VersionConverters.OutputGenerator/IOutputGenerator">IOutputGenerator</a></li>								
+											<li><a href="/api/GitVersion.VersionConverters.WixUpdater/IWixVersionFileUpdater">I<wbr>Wix<wbr>Version<wbr>File<wbr>Updater</a></li>								
+											<li><a href="/api/GitVersion.VersionConverters.OutputGenerator/OutputGenerator">OutputGenerator</a></li>								
 											<li><a href="/api/GitVersion.VersionConverters.AssemblyInfo/IAssemblyInfoFileUpdater">I<wbr>Assembly<wbr>Info<wbr>File<wbr>Updater</a></li>								
+											<li><a href="/api/GitVersion.VersionConverters.GitVersionInfo/GitVersionInfoGenerator">Git<wbr>Version<wbr>Info<wbr>Generator</a></li>								
 									</ul>
 								</dd>				
 						</dl>
@@ -213,24 +213,24 @@
 class Type type-node
 	Implementing0["ProjectFileUpdater"]-.-&gt;Type
 	click Implementing0 "/api/GitVersion.VersionConverters.AssemblyInfo/ProjectFileUpdater"
-	Implementing1["OutputGenerator"]-.-&gt;Type
-	click Implementing1 "/api/GitVersion.VersionConverters.OutputGenerator/OutputGenerator"
-	Implementing2["IProjectFileUpdater"]-.-&gt;Type
-	click Implementing2 "/api/GitVersion.VersionConverters.AssemblyInfo/IProjectFileUpdater"
-	Implementing3["WixVersionFileUpdater"]-.-&gt;Type
-	click Implementing3 "/api/GitVersion.VersionConverters.WixUpdater/WixVersionFileUpdater"
-	Implementing4["GitVersionInfoGenerator"]-.-&gt;Type
-	click Implementing4 "/api/GitVersion.VersionConverters.GitVersionInfo/GitVersionInfoGenerator"
-	Implementing5["AssemblyInfoFileUpdater"]-.-&gt;Type
-	click Implementing5 "/api/GitVersion.VersionConverters.AssemblyInfo/AssemblyInfoFileUpdater"
+	Implementing1["IGitVersionInfoGenerator"]-.-&gt;Type
+	click Implementing1 "/api/GitVersion.VersionConverters.GitVersionInfo/IGitVersionInfoGenerator"
+	Implementing2["AssemblyInfoFileUpdater"]-.-&gt;Type
+	click Implementing2 "/api/GitVersion.VersionConverters.AssemblyInfo/AssemblyInfoFileUpdater"
+	Implementing3["IProjectFileUpdater"]-.-&gt;Type
+	click Implementing3 "/api/GitVersion.VersionConverters.AssemblyInfo/IProjectFileUpdater"
+	Implementing4["WixVersionFileUpdater"]-.-&gt;Type
+	click Implementing4 "/api/GitVersion.VersionConverters.WixUpdater/WixVersionFileUpdater"
+	Implementing5["IOutputGenerator"]-.-&gt;Type
+	click Implementing5 "/api/GitVersion.VersionConverters.OutputGenerator/IOutputGenerator"
 	Implementing6["IWixVersionFileUpdater"]-.-&gt;Type
 	click Implementing6 "/api/GitVersion.VersionConverters.WixUpdater/IWixVersionFileUpdater"
-	Implementing7["IGitVersionInfoGenerator"]-.-&gt;Type
-	click Implementing7 "/api/GitVersion.VersionConverters.GitVersionInfo/IGitVersionInfoGenerator"
-	Implementing8["IOutputGenerator"]-.-&gt;Type
-	click Implementing8 "/api/GitVersion.VersionConverters.OutputGenerator/IOutputGenerator"
-	Implementing9["IAssemblyInfoFileUpdater"]-.-&gt;Type
-	click Implementing9 "/api/GitVersion.VersionConverters.AssemblyInfo/IAssemblyInfoFileUpdater"
+	Implementing7["OutputGenerator"]-.-&gt;Type
+	click Implementing7 "/api/GitVersion.VersionConverters.OutputGenerator/OutputGenerator"
+	Implementing8["IAssemblyInfoFileUpdater"]-.-&gt;Type
+	click Implementing8 "/api/GitVersion.VersionConverters.AssemblyInfo/IAssemblyInfoFileUpdater"
+	Implementing9["GitVersionInfoGenerator"]-.-&gt;Type
+	click Implementing9 "/api/GitVersion.VersionConverters.GitVersionInfo/GitVersionInfoGenerator"
 
 						</div>
 					</div>
@@ -309,6 +309,14 @@ class Type type-node
 								<td>
 									<div></div>
 										<div><small><em>From <a href="/api/GitVersion.Extensions/ObjectExtensions">ObjectExtensions</a></em></small></div>
+								</td>
+							</tr>
+							<tr>
+								<td><a href="/api/GitVersion.Extensions/CommonExtensions/84349AB5">NotNull<wbr>&lt;<wbr>I<wbr>Version<wbr>Converter<wbr>&lt;T&gt;<wbr>&gt;<wbr><wbr>(string)<wbr></a></td>
+								<td>T</td>
+								<td>
+									<div></div>
+										<div><small><em>From <a href="/api/GitVersion.Extensions/CommonExtensions">CommonExtensions</a></em></small></div>
 								</td>
 							</tr>
 					</tbody></table>

@@ -207,8 +207,8 @@
 								<dt>Implementing Types</dt>
 								<dd>
 									<ul class="list-unstyled">
-											<li><a href="/api/GitVersion.VersionCalculation/MinDateVersionFilter">MinDateVersionFilter</a></li>								
 											<li><a href="/api/GitVersion.VersionCalculation/ShaVersionFilter">ShaVersionFilter</a></li>								
+											<li><a href="/api/GitVersion.VersionCalculation/MinDateVersionFilter">MinDateVersionFilter</a></li>								
 									</ul>
 								</dd>				
 						</dl>
@@ -218,10 +218,10 @@
 							graph BT
 	Type["IVersionFilter"]
 class Type type-node
-	Implementing0["MinDateVersionFilter"]-.-&gt;Type
-	click Implementing0 "/api/GitVersion.VersionCalculation/MinDateVersionFilter"
-	Implementing1["ShaVersionFilter"]-.-&gt;Type
-	click Implementing1 "/api/GitVersion.VersionCalculation/ShaVersionFilter"
+	Implementing0["ShaVersionFilter"]-.-&gt;Type
+	click Implementing0 "/api/GitVersion.VersionCalculation/ShaVersionFilter"
+	Implementing1["MinDateVersionFilter"]-.-&gt;Type
+	click Implementing1 "/api/GitVersion.VersionCalculation/MinDateVersionFilter"
 
 						</div>
 					</div>
@@ -283,6 +283,14 @@ class Type type-node
 								<td>
 									<div></div>
 										<div><small><em>From <a href="/api/GitVersion.Extensions/ObjectExtensions">ObjectExtensions</a></em></small></div>
+								</td>
+							</tr>
+							<tr>
+								<td><a href="/api/GitVersion.Extensions/CommonExtensions/84349AB5">NotNull<wbr>&lt;<wbr>I<wbr>Version<wbr>Filter&gt;<wbr><wbr>(string)<wbr></a></td>
+								<td>T</td>
+								<td>
+									<div></div>
+										<div><small><em>From <a href="/api/GitVersion.Extensions/CommonExtensions">CommonExtensions</a></em></small></div>
 								</td>
 							</tr>
 					</tbody></table>
