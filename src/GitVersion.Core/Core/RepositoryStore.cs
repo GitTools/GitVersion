@@ -13,7 +13,7 @@ public class RepositoryStore : IRepositoryStore
     private readonly Dictionary<IBranch, List<BranchCommit>> mergeBaseCommitsCache = new();
     private readonly Dictionary<Tuple<IBranch, IBranch?>, ICommit?> mergeBaseCache = new();
     private readonly Dictionary<IBranch, List<SemanticVersion>> semanticVersionTagsOnBranchCache = new();
-    private const string MissingTipFormat = "{0} has no tip. Please see http://example.com/docs for information on how to fix this.";
+    private const string MissingTipFormat = "{0} has no tip. Please see https://example.com/docs for information on how to fix this.";
 
     private readonly ILog log;
     private readonly IGitRepository repository;
@@ -54,7 +54,7 @@ public class RepositoryStore : IRepositoryStore
             {
                 this.log.Info($"Found merge base of {findMergeBase}");
                 // We do not want to include merge base commits which got forward merged into the other branch
-                ICommit forwardMerge;
+                ICommit? forwardMerge;
                 do
                 {
                     // Now make sure that the merge base is not a forward merge
@@ -68,7 +68,7 @@ public class RepositoryStore : IRepositoryStore
                         var mergeBase = FindMergeBase(commit, second);
                         if (mergeBase == null)
                         {
-                            this.log.Warning("Could not find mergbase for " + commit);
+                            this.log.Warning("Could not find merge base for " + commit);
                         }
                         else
                         {
@@ -183,7 +183,7 @@ public class RepositoryStore : IRepositoryStore
             if (!desiredBranch.Equals(targetBranch))
             {
                 // In the case where HEAD is not the desired branch, try to find the branch with matching name
-                desiredBranch = this.repository.Branches?
+                desiredBranch = this.repository.Branches
                     .Where(b => b.Name.EquivalentTo(targetBranchName))
                     .OrderBy(b => b.IsRemote)
                     .FirstOrDefault();
@@ -196,17 +196,17 @@ public class RepositoryStore : IRepositoryStore
         return desiredBranch;
     }
 
-    public IBranch FindBranch(string? branchName) => this.repository.Branches.FirstOrDefault(x => x.Name.EquivalentTo(branchName));
+    public IBranch? FindBranch(string? branchName) => this.repository.Branches.FirstOrDefault(x => x.Name.EquivalentTo(branchName));
 
-    public IBranch GetChosenBranch(Config configuration)
+    public IBranch? GetChosenBranch(Config configuration)
     {
         var developBranchRegex = configuration.Branches[Config.DevelopBranchKey]?.Regex;
         var mainBranchRegex = configuration.Branches[Config.MainBranchKey]?.Regex;
 
+        if (mainBranchRegex == null || developBranchRegex == null) return null;
         var chosenBranch = this.repository.Branches.FirstOrDefault(b =>
-            Regex.IsMatch(b.Name.Friendly, developBranchRegex, RegexOptions.IgnoreCase) ||
-            Regex.IsMatch(b.Name.Friendly, mainBranchRegex, RegexOptions.IgnoreCase));
-
+            Regex.IsMatch(b.Name.Friendly, developBranchRegex, RegexOptions.IgnoreCase)
+            || Regex.IsMatch(b.Name.Friendly, mainBranchRegex, RegexOptions.IgnoreCase));
         return chosenBranch;
     }
 
@@ -221,7 +221,7 @@ public class RepositoryStore : IRepositoryStore
 
     public IEnumerable<IBranch> GetReleaseBranches(IEnumerable<KeyValuePair<string, BranchConfig?>>? releaseBranchConfig) =>
         this.repository.Branches
-            .Where(b => releaseBranchConfig?.Any(c => Regex.IsMatch(b.Name.Friendly, c.Value?.Regex)) == true);
+            .Where(b => releaseBranchConfig?.Any(c => c.Value?.Regex != null && Regex.IsMatch(b.Name.Friendly, c.Value.Regex)) == true);
 
     public IEnumerable<IBranch> ExcludingBranches(IEnumerable<IBranch> branchesToExclude) => this.repository.Branches.ExcludeBranches(branchesToExclude);
 
@@ -288,14 +288,14 @@ public class RepositoryStore : IRepositoryStore
 
     public Dictionary<string, List<IBranch>> GetMainlineBranches(ICommit commit, IEnumerable<KeyValuePair<string, BranchConfig?>>? mainlineBranchConfigs) =>
         this.repository.Branches
-            .Where(b => mainlineBranchConfigs?.Any(c => Regex.IsMatch(b.Name.Friendly, c.Value?.Regex)) == true)
+            .Where(b => mainlineBranchConfigs?.Any(c => c.Value?.Regex != null && Regex.IsMatch(b.Name.Friendly, c.Value.Regex)) == true)
             .Select(b => new
             {
                 MergeBase = FindMergeBase(b.Tip!, commit),
                 Branch = b
             })
             .Where(a => a.MergeBase != null)
-            .GroupBy(b => b.MergeBase.Sha, b => b.Branch)
+            .GroupBy(b => b.MergeBase!.Sha, b => b.Branch)
             .ToDictionary(b => b.Key, b => b.ToList());
 
     /// <summary>
@@ -365,17 +365,18 @@ public class RepositoryStore : IRepositoryStore
         using (this.log.IndentLog($"Getting version tags from branch '{branch.Name.Canonical}'."))
         {
             var tags = GetValidVersionTags(tagPrefixRegex);
-            var tagsBySha = tags.Where(t => t.Item1.TargetSha != null).ToLookup(t => t.Item1.TargetSha, t => t);
-            var versionTags = branch.Commits.SelectMany(c => tagsBySha[c.Sha].Select(t => t.Item2)).ToList();
+            var tagsBySha = tags.Where(t => t.Tag.TargetSha != null).ToLookup(t => t.Tag.TargetSha, t => t);
+
+            var versionTags = (branch.Commits?.SelectMany(c => tagsBySha[c.Sha].Select(t => t.Semver)) ?? Enumerable.Empty<SemanticVersion>()).ToList();
 
             this.semanticVersionTagsOnBranchCache.Add(branch, versionTags);
             return versionTags;
         }
     }
 
-    public IEnumerable<Tuple<ITag, SemanticVersion, ICommit>> GetValidVersionTags(string? tagPrefixRegex, DateTimeOffset? olderThan = null)
+    public IEnumerable<(ITag Tag, SemanticVersion Semver, ICommit Commit)> GetValidVersionTags(string? tagPrefixRegex, DateTimeOffset? olderThan = null)
     {
-        var tags = new List<Tuple<ITag, SemanticVersion, ICommit>>();
+        var tags = new List<(ITag, SemanticVersion, ICommit)>();
 
         foreach (var tag in this.repository.Tags)
         {
@@ -390,7 +391,7 @@ public class RepositoryStore : IRepositoryStore
             if (olderThan.HasValue && commit.When > olderThan.Value)
                 continue;
 
-            tags.Add(Tuple.Create(tag, semver, commit));
+            tags.Add((tag, semver, commit));
         }
 
         return tags;
@@ -432,14 +433,14 @@ public class RepositoryStore : IRepositoryStore
         }
 
         var currentBranchConfig = configuration.GetConfigForBranch(branch.Name.WithoutRemote);
-        var regexesToCheck = currentBranchConfig == null
-            ? new[] { ".*" } // Match anything if we can't find a branch config
-            : currentBranchConfig.SourceBranches.Select(sb => configuration.Branches[sb]?.Regex);
+        var regexesToCheck = currentBranchConfig?.SourceBranches == null
+                    ? new[] { ".*" } // Match anything if we can't find a branch config
+                    : currentBranchConfig.SourceBranches.Select(sb => configuration.Branches[sb]?.Regex);
         var branchMergeBases = ExcludingBranches(excludedBranches)
             .Where(b =>
             {
                 if (Equals(b, branch)) return false;
-                var branchCanBeMergeBase = regexesToCheck.Any(regex => Regex.IsMatch(b.Name.Friendly, regex));
+                var branchCanBeMergeBase = regexesToCheck.Any(regex => regex != null && Regex.IsMatch(b.Name.Friendly, regex));
 
                 return branchCanBeMergeBase;
             })
@@ -452,9 +453,9 @@ public class RepositoryStore : IRepositoryStore
                 }
 
                 var findMergeBase = FindMergeBase(branch, otherBranch);
-                return new BranchCommit(findMergeBase!, otherBranch);
+                return findMergeBase == null ? BranchCommit.Empty : new BranchCommit(findMergeBase, otherBranch);
+
             })
-            .Where(b => b.Commit != null)
             .OrderByDescending(b => b.Commit.When)
             .ToList();
         this.mergeBaseCommitsCache.Add(branch, branchMergeBases);
@@ -473,7 +474,7 @@ public class RepositoryStore : IRepositoryStore
         return commitCollection.Where(c => c.Sha == commit.Sha);
     }
 
-    private ICommit GetForwardMerge(ICommit? commitToFindCommonBase, ICommit? findMergeBase)
+    private ICommit? GetForwardMerge(ICommit? commitToFindCommonBase, ICommit? findMergeBase)
     {
         var filter = new CommitFilter
         {
@@ -485,7 +486,7 @@ public class RepositoryStore : IRepositoryStore
         return commitCollection.FirstOrDefault(c => c.Parents.Contains(findMergeBase));
     }
 
-    public ICommit FindMergeBase(ICommit commit, ICommit mainlineTip) => this.repository.FindMergeBase(commit, mainlineTip);
+    public ICommit? FindMergeBase(ICommit commit, ICommit mainlineTip) => this.repository.FindMergeBase(commit, mainlineTip);
 
     public int GetNumberOfUncommittedChanges() => this.repository.GetNumberOfUncommittedChanges();
 }

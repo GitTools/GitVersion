@@ -12,7 +12,7 @@ public class ConfigFileLocator : IConfigFileLocator
     public ConfigFileLocator(IFileSystem fileSystem, IOptions<GitVersionOptions> options)
     {
         this.fileSystem = fileSystem;
-        var configFile = options?.Value.ConfigInfo.ConfigFile;
+        var configFile = options.Value.ConfigInfo.ConfigFile;
         FilePath = !configFile.IsNullOrWhiteSpace() ? configFile : DefaultFileName;
     }
 
@@ -20,7 +20,7 @@ public class ConfigFileLocator : IConfigFileLocator
 
     public bool HasConfigFileAt(string workingDirectory) => this.fileSystem.Exists(Path.Combine(workingDirectory, FilePath));
 
-    public string GetConfigFilePath(string workingDirectory) => Path.Combine(workingDirectory, FilePath);
+    public string? GetConfigFilePath(string? workingDirectory) => workingDirectory != null ? Path.Combine(workingDirectory, FilePath) : null;
 
     public void Verify(string? workingDirectory, string? projectRootDirectory)
     {
@@ -30,7 +30,7 @@ public class ConfigFileLocator : IConfigFileLocator
         }
     }
 
-    public string SelectConfigFilePath(GitVersionOptions gitVersionOptions, IGitRepositoryInfo repositoryInfo)
+    public string? SelectConfigFilePath(GitVersionOptions gitVersionOptions, IGitRepositoryInfo repositoryInfo)
     {
         var workingDirectory = gitVersionOptions.WorkingDirectory;
         var projectRootDirectory = repositoryInfo.ProjectRootDirectory;
@@ -42,7 +42,7 @@ public class ConfigFileLocator : IConfigFileLocator
     {
         var configFilePath = GetConfigFilePath(workingDirectory);
 
-        if (this.fileSystem.Exists(configFilePath))
+        if (configFilePath != null && this.fileSystem.Exists(configFilePath))
         {
             var readAllText = this.fileSystem.ReadAllText(configFilePath);
             var readConfig = ConfigSerializer.Read(new StringReader(readAllText));
@@ -88,8 +88,9 @@ If the docs do not help you decide on the mode open an issue to discuss what you
         var workingConfigFile = GetConfigFilePath(workingDirectory);
         var projectRootConfigFile = GetConfigFilePath(projectRootDirectory);
 
-        var hasConfigInWorkingDirectory = this.fileSystem.Exists(workingConfigFile);
-        var hasConfigInProjectRootDirectory = this.fileSystem.Exists(projectRootConfigFile);
+        var hasConfigInWorkingDirectory = workingConfigFile != null && this.fileSystem.Exists(workingConfigFile);
+        var hasConfigInProjectRootDirectory = projectRootConfigFile != null && this.fileSystem.Exists(projectRootConfigFile);
+
         if (hasConfigInProjectRootDirectory && hasConfigInWorkingDirectory)
         {
             throw new WarningException($"Ambiguous config file selection from '{workingConfigFile}' and '{projectRootConfigFile}'");

@@ -13,7 +13,7 @@ public class LambdaKeyComparer<TSource, TKey> : Comparer<TSource> where TSource 
         this.innerComparer = innerComparer ?? Comparer<TKey>.Default;
     }
 
-    public override int Compare(TSource x, TSource y)
+    public override int Compare(TSource? x, TSource? y)
     {
         if (ReferenceEquals(x, y))
             return 0;

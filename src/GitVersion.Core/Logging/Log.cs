@@ -16,7 +16,7 @@ public sealed class Log : ILog
 
     public Log(params ILogAppender[] appenders)
     {
-        this.appenders = appenders ?? Array.Empty<ILogAppender>();
+        this.appenders = appenders;
         this.sb = new StringBuilder();
         Verbosity = Verbosity.Normal;
     }

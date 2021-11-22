@@ -12,6 +12,6 @@ public interface IGitRepository
     ICommitCollection Commits { get; }
     IRemoteCollection Remotes { get; }
 
-    ICommit FindMergeBase(ICommit commit, ICommit otherCommit);
+    ICommit? FindMergeBase(ICommit commit, ICommit otherCommit);
     int GetNumberOfUncommittedChanges();
 }

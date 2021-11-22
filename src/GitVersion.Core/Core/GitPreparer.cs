@@ -16,12 +16,12 @@ public class GitPreparer : IGitPreparer
     private readonly IOptions<GitVersionOptions> options;
     private readonly IGitRepositoryInfo repositoryInfo;
     private readonly IRepositoryStore repositoryStore;
-    private readonly ICurrentBuildAgent buildAgent;
+    private readonly ICurrentBuildAgent? buildAgent;
     private readonly RetryAction<LockedFileException> retryAction;
 
     private const string DefaultRemoteName = "origin";
 
-    public GitPreparer(ILog log, IEnvironment environment, ICurrentBuildAgent buildAgent, IOptions<GitVersionOptions> options,
+    public GitPreparer(ILog log, IEnvironment environment, ICurrentBuildAgent? buildAgent, IOptions<GitVersionOptions> options,
         IMutatingGitRepository repository, IGitRepositoryInfo repositoryInfo, IRepositoryStore repositoryStore)
     {
         this.log = log.NotNull();

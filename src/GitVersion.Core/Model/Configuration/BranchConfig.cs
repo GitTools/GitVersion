@@ -1,5 +1,4 @@
 using GitVersion.VersionCalculation;
-using JetBrains.Annotations;
 using YamlDotNet.Serialization;
 
 namespace GitVersion.Model.Configuration;
@@ -83,7 +82,7 @@ public class BranchConfig
     [YamlIgnore]
     public string? Name { get; set; }
 
-    public void MergeTo([NotNull] BranchConfig targetConfig)
+    public void MergeTo(BranchConfig targetConfig)
     {
         if (targetConfig == null) throw new ArgumentNullException(nameof(targetConfig));
 
@@ -103,7 +102,7 @@ public class BranchConfig
         targetConfig.PreReleaseWeight = this.PreReleaseWeight ?? targetConfig.PreReleaseWeight;
     }
 
-    public BranchConfig Apply([NotNull] BranchConfig overrides)
+    public BranchConfig Apply(BranchConfig overrides)
     {
         if (overrides == null) throw new ArgumentNullException(nameof(overrides));
 

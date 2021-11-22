@@ -11,8 +11,8 @@ public class ConfigSerializer
         var deserializer = new DeserializerBuilder()
             .WithNamingConvention(HyphenatedNamingConvention.Instance)
             .Build();
-        var deserialize = deserializer.Deserialize<Config>(reader);
-        return deserialize ?? new Config();
+        var config = deserializer.Deserialize<Config?>(reader);
+        return config ?? new Config();
     }
 
     public static void Write(Config config, TextWriter writer)

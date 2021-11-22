@@ -50,16 +50,16 @@ internal sealed class GitRepository : IMutatingGitRepository
     public ICommitCollection Commits => new CommitCollection(repositoryInstance.Commits);
     public IRemoteCollection Remotes => new RemoteCollection(repositoryInstance.Network.Remotes);
 
-    public ICommit FindMergeBase(ICommit commit, ICommit otherCommit)
+    public ICommit? FindMergeBase(ICommit commit, ICommit otherCommit)
     {
         _ = commit.NotNull();
         _ = otherCommit.NotNull();
 
-        var retryAction = new RetryAction<LockedFileException, ICommit>();
+        var retryAction = new RetryAction<LockedFileException, ICommit?>();
         return retryAction.Execute(() =>
         {
             var mergeBase = repositoryInstance.ObjectDatabase.FindMergeBase((Commit)commit, (Commit)otherCommit);
-            return new Commit(mergeBase);
+            return mergeBase == null ? null : new Commit(mergeBase);
         });
     }
     public int GetNumberOfUncommittedChanges()
@@ -70,7 +70,7 @@ internal sealed class GitRepository : IMutatingGitRepository
     private int GetNumberOfUncommittedChangesInternal()
     {
         // check if we have a branch tip at all to behave properly with empty repos
-        // => return that we have actually uncomitted changes because we are apparently
+        // => return that we have actually un-committed changes because we are apparently
         // running GitVersion on something which lives inside this brand new repo _/\Ö/\_
         if (repositoryInstance.Head?.Tip == null || repositoryInstance.Diff == null)
         {

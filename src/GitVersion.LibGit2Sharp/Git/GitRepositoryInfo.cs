@@ -67,7 +67,7 @@ internal class GitRepositoryInfo : IGitRepositoryInfo
         if (gitDirectory.IsNullOrEmpty())
             throw new DirectoryNotFoundException("Cannot find the .git directory");
 
-        return gitDirectory?.Contains(Path.Combine(".git", "worktrees")) == true
+        return gitDirectory.Contains(Path.Combine(".git", "worktrees"))
             ? Directory.GetParent(Directory.GetParent(gitDirectory).FullName).FullName
             : gitDirectory;
     }

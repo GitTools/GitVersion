@@ -13,7 +13,7 @@ internal sealed class Remote : IRemote
 
     public int CompareTo(IRemote other) => comparerHelper.Compare(this, other);
     public bool Equals(IRemote? other) => equalityHelper.Equals(this, other);
-    public override bool Equals(object obj) => Equals((obj as IRemote)!);
+    public override bool Equals(object obj) => Equals((obj as IRemote));
     public override int GetHashCode() => equalityHelper.GetHashCode(this);
     public override string ToString() => Name;
     public string Name => this.innerRemote.Name;

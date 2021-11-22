@@ -3,7 +3,6 @@ using System.Buffers.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using GitVersion.Extensions;
-using JetBrains.Annotations;
 
 namespace GitVersion.OutputVariables;
 
@@ -29,7 +28,7 @@ public class VersionVariablesJsonNumberConverter : JsonConverter<string>
         };
     }
 
-    public override void Write(Utf8JsonWriter writer, [CanBeNull] string value, JsonSerializerOptions options)
+    public override void Write(Utf8JsonWriter writer, string? value, JsonSerializerOptions options)
     {
         if (value.IsNullOrWhiteSpace())
         {
@@ -50,6 +49,4 @@ public class VersionVariablesJsonNumberConverter : JsonConverter<string>
     }
 
     public override bool HandleNull => true;
-
-    private static bool NotAPaddedNumber(string value) => value != null && (value == "0" || !value.StartsWith("0"));
 }

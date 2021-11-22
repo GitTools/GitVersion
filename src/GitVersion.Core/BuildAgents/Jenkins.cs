@@ -31,7 +31,7 @@ public class Jenkins : BuildAgentBase
 
     /// <summary>
     /// When Jenkins uses pipeline-as-code, it creates two remotes: "origin" and "origin1".
-    /// This should be cleaned up, so that normizaling the Git repo will not fail.
+    /// This should be cleaned up, so that normalizing the Git repo will not fail.
     /// </summary>
     /// <returns></returns>
     public override bool ShouldCleanUpRemotes() => IsPipelineAsCode();

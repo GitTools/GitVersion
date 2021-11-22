@@ -1,7 +1,6 @@
 using GitVersion.Extensions;
 using GitVersion.Model.Configuration;
 using GitVersion.VersionCalculation;
-using JetBrains.Annotations;
 
 namespace GitVersion.Configuration;
 
@@ -11,7 +10,7 @@ public class ConfigurationBuilder
 
     private readonly List<Config> overrides = new();
 
-    public ConfigurationBuilder Add([NotNull] Config config)
+    public ConfigurationBuilder Add(Config config)
     {
         if (config == null) throw new ArgumentNullException(nameof(config));
 
@@ -19,7 +18,6 @@ public class ConfigurationBuilder
         return this;
     }
 
-    [NotNull]
     public Config Build()
     {
         var config = CreateDefaultConfiguration();
@@ -35,7 +33,7 @@ public class ConfigurationBuilder
         return config;
     }
 
-    private static void ApplyOverrides([NotNull] Config targetConfig, [NotNull] Config overrideConfig)
+    private static void ApplyOverrides(Config targetConfig, Config overrideConfig)
     {
         targetConfig.AssemblyVersioningScheme = overrideConfig.AssemblyVersioningScheme ?? targetConfig.AssemblyVersioningScheme;
         targetConfig.AssemblyFileVersioningScheme = overrideConfig.AssemblyFileVersioningScheme ?? targetConfig.AssemblyFileVersioningScheme;
@@ -60,7 +58,7 @@ public class ConfigurationBuilder
         targetConfig.MergeMessageFormats = overrideConfig.MergeMessageFormats.Any() ? overrideConfig.MergeMessageFormats : targetConfig.MergeMessageFormats;
         targetConfig.UpdateBuildNumber = overrideConfig.UpdateBuildNumber ?? targetConfig.UpdateBuildNumber;
 
-        if (overrideConfig.Ignore != null && !overrideConfig.Ignore.IsEmpty)
+        if (overrideConfig.Ignore is { IsEmpty: false })
         {
             targetConfig.Ignore = overrideConfig.Ignore;
         }
@@ -70,7 +68,7 @@ public class ConfigurationBuilder
 
     private static void ApplyBranchOverrides(Config targetConfig, Config overrideConfig)
     {
-        if (overrideConfig.Branches != null && overrideConfig.Branches.Count > 0)
+        if (overrideConfig.Branches is { Count: > 0 })
         {
             // We can't just add new configs to the targetConfig.Branches, and have to create a new dictionary.
             // The reason is that GitVersion 5.3.x (and earlier) merges default configs into overrides. The new approach is opposite: we merge overrides into default config.
@@ -116,8 +114,6 @@ public class ConfigurationBuilder
 
     private static void FinalizeConfiguration(Config config)
     {
-        config.Ignore ??= new IgnoreConfig();
-
         foreach (var (name, branchConfig) in config.Branches)
         {
             FinalizeBranchConfiguration(config, name, branchConfig);

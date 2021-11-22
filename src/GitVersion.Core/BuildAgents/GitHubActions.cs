@@ -30,12 +30,6 @@ public class GitHubActions : BuildAgentBase
         // https://docs.github.com/en/free-pro-team@latest/actions/reference/workflow-commands-for-github-actions#environment-files
         // The outgoing environment variables must be written to a temporary file (identified by the $GITHUB_ENV environment
         // variable, which changes for every step in a workflow) which is then parsed. That file must also be UTF-8 or it will fail.
-
-        if (writer == null)
-        {
-            return;
-        }
-
         var gitHubSetEnvFilePath = this.Environment.GetEnvironmentVariable(GitHubSetEnvTempFileEnvironmentVariableName);
 
         if (gitHubSetEnvFilePath != null)
