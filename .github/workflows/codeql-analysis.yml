@@ -43,7 +43,7 @@ jobs:
     -
       name: Cache cake frosting
       id: cache-cake
-      uses: actions/cache@v2.1.6
+      uses: actions/cache@v2.1.7
       with:
         path: run
         key: run-${{ runner.os }}-${{ hashFiles('./build/**') }}
