@@ -3,6 +3,7 @@ using GitVersion.Infrastructure;
 
 namespace GitVersion.Configuration.Init;
 
+[Command("init", typeof(ConfigSettings), "Inits the configuration for current repository.")]
 public class ConfigInitCommand : Command<ConfigInitSettings>
 {
     private readonly ILogger logger;

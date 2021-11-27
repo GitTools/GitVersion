@@ -3,6 +3,7 @@ using GitVersion.Infrastructure;
 
 namespace GitVersion.Output.AssemblyInfo;
 
+[Command("assemblyinfo", typeof(OutputSettings), "Outputs version to assembly")]
 public class OutputAssemblyInfoCommand : Command<OutputAssemblyInfoSettings>
 {
     private readonly ILogger logger;

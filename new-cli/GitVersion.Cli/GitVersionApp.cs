@@ -29,23 +29,23 @@ internal class GitVersionApp
         var commandsMap = new Dictionary<Type, Infrastructure.Command>();
         foreach (var handler in handlers)
         {
-            var handlerType = handler?.GetType();
-            var commandOptionsType = handlerType?.BaseType?.GenericTypeArguments[0];
-            if (commandOptionsType != null)
+            var handlerType = handler.GetType();
+            var commandSettingsType = handlerType.BaseType?.GenericTypeArguments[0];
+            if (commandSettingsType != null)
             {
-                var commandAttribute = commandOptionsType.GetCustomAttribute<CommandAttribute>();
+                var commandAttribute = handlerType.GetCustomAttribute<CommandAttribute>();
                 if (commandAttribute != null)
                 {
                     var command = new Infrastructure.Command(commandAttribute.Name, commandAttribute.Description)
                     {
                         Parent = commandAttribute.Parent
                     };
-                    command.AddOptions(commandOptionsType);
+                    command.AddOptions(commandSettingsType);
 
-                    var handlerMethod = handlerType?.GetMethod(nameof(ICommand.InvokeAsync));
+                    var handlerMethod = handlerType.GetMethod(nameof(ICommand.InvokeAsync));
                     command.Handler = CommandHandler.Create(handlerMethod!, handler);
 
-                    commandsMap.Add(commandOptionsType, command);
+                    commandsMap.Add(commandSettingsType, command);
                 }
             }
         }

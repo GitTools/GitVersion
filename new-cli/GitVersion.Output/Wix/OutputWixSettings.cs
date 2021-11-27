@@ -2,7 +2,6 @@
 
 namespace GitVersion.Output.Wix;
 
-[Command("wix", typeof(OutputSettings), "Outputs version to wix file")]
 public class OutputWixSettings : OutputSettings
 {
     [Option("--wix-file", "The wix file")]

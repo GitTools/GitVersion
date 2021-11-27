@@ -3,6 +3,7 @@ using GitVersion.Infrastructure;
 
 namespace GitVersion.Configuration.Show;
 
+[Command("show", typeof(ConfigSettings), "Shows the effective configuration.")]
 public class ConfigShowCommand : Command<ConfigShowSettings>
 {
     private readonly ILogger logger;

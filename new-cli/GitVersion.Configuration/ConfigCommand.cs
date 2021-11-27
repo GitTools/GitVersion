@@ -3,6 +3,7 @@ using GitVersion.Infrastructure;
 
 namespace GitVersion.Configuration;
 
+[Command("config", "Manages the GitVersion configuration file.")]
 public class ConfigCommand : Command<ConfigSettings>
 {
     private readonly ILogger logger;

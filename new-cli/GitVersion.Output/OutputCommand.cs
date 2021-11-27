@@ -3,6 +3,7 @@ using GitVersion.Infrastructure;
 
 namespace GitVersion.Output;
 
+[Command("output", "Outputs the version object.")]
 public class OutputCommand : Command<OutputSettings>
 {
     private readonly ILogger logger;

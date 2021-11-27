@@ -2,7 +2,6 @@
 
 namespace GitVersion.Output.Project;
 
-[Command("project", typeof(OutputSettings), "Outputs version to project")]
 public class OutputProjectSettings : OutputSettings
 {
     [Option("--project-file", "The project file")]

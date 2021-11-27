@@ -2,7 +2,6 @@
 
 namespace GitVersion.Output.AssemblyInfo;
 
-[Command("assemblyinfo", typeof(OutputSettings), "Outputs version to assembly")]
 public class OutputAssemblyInfoSettings : OutputSettings
 {
     [Option("--assemblyinfo-file", "The assembly file")]
