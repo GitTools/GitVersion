@@ -2,7 +2,6 @@ using Cake.Common.Build.AzurePipelines.Data;
 using Cake.Common.Tools.DotNet.Test;
 using Cake.Coverlet;
 using Cake.Incubator.LoggingExtensions;
-using Common.Addins.Cake.Coverlet;
 using Common.Utilities;
 
 namespace Build.Tasks;

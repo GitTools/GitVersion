@@ -1,5 +1,4 @@
 using Build.Utilities;
-using Cake.Common.Tools.DotNetCore.MSBuild;
 using Common.Utilities;
 
 namespace Build;
@@ -19,8 +18,7 @@ public class BuildContext : BuildContextBase
 
     public Credentials? Credentials { get; set; }
 
-    // TODO update to DotNetMSBuildSettings when available
-    public DotNetCoreMSBuildSettings MsBuildSettings { get; } = new();
+    public DotNetMSBuildSettings MsBuildSettings { get; } = new();
 
     public BuildContext(ICakeContext context) : base(context)
     {

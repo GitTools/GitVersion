@@ -1,4 +1,3 @@
-using Cake.Common.Tools.DotNetCore.MSBuild;
 using Common.Utilities;
 
 namespace Artifacts.Tasks;
@@ -27,8 +26,7 @@ public class ArtifactsMsBuildFullTest : FrostingTask<BuildContext>
         var frameworks = new[] { Constants.CoreFxVersion31, Constants.NetVersion50, Constants.NetVersion60 };
         foreach (var framework in frameworks)
         {
-            // TODO update to DotNetMSBuildSettings when available
-            var dotnetMsBuildSettings = new DotNetCoreMSBuildSettings();
+            var dotnetMsBuildSettings = new DotNetMSBuildSettings();
             dotnetMsBuildSettings.WithProperty("TargetFrameworks", framework);
             dotnetMsBuildSettings.WithProperty("TargetFramework", framework);
             dotnetMsBuildSettings.WithProperty("GitVersionMsBuildVersion", version);
