@@ -3,7 +3,7 @@ using GitVersion.Command;
 namespace GitVersion.Output;
 
 [Command("output", "Outputs the version object.")]
-public record OutputSettings : GitVersionSettings
+public class OutputSettings : GitVersionSettings
 {
     public Lazy<string> VersionInfo { get; } = new(() => (Console.IsInputRedirected ? Console.ReadLine() : string.Empty)!);
 

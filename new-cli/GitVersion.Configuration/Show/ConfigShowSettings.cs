@@ -3,6 +3,6 @@
 namespace GitVersion.Configuration.Show;
 
 [Command("show", typeof(ConfigSettings), "Shows the effective configuration.")]
-public record ConfigShowSettings : ConfigSettings
+public class ConfigShowSettings : ConfigSettings
 {
 }

@@ -1,6 +1,6 @@
 ﻿namespace GitVersion.Command;
 
-public record GitVersionSettings
+public partial class GitVersionSettings
 {
     public const string LogFileOptionAlias1 = "--log-file";
     public const string LogFileOptionAlias2 = "-l";
