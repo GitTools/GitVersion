@@ -17,8 +17,7 @@ public class NormalizeCommand : Command<NormalizeSettings>
     public override Task<int> InvokeAsync(NormalizeSettings settings)
     {
         var value = service.Call();
-        logger.LogInformation(
-            $"Command : 'normalize', LogFile : '{settings.LogFile}', WorkDir : '{settings.WorkDir}' ");
+        logger.LogInformation($"Command : 'normalize', LogFile : '{settings.LogFile}', WorkDir : '{settings.WorkDir}' ");
         return Task.FromResult(value);
     }
 }

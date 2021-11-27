@@ -17,8 +17,7 @@ public class ConfigInitCommand : Command<ConfigInitSettings>
     public override Task<int> InvokeAsync(ConfigInitSettings settings)
     {
         var value = service.Call();
-        logger.LogInformation(
-            $"Command : 'config init', LogFile : '{settings.LogFile}', WorkDir : '{settings.WorkDir}' ");
+        logger.LogInformation($"Command : 'config init', LogFile : '{settings.LogFile}', WorkDir : '{settings.WorkDir}' ");
         return Task.FromResult(value);
     }
 }

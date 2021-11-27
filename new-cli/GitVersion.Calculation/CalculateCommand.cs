@@ -1,6 +1,5 @@
 ﻿using GitVersion.Command;
 using GitVersion.Infrastructure;
-
 namespace GitVersion.Calculation;
 
 public class CalculateCommand : Command<CalculateSettings>
@@ -17,8 +16,7 @@ public class CalculateCommand : Command<CalculateSettings>
     public override Task<int> InvokeAsync(CalculateSettings settings)
     {
         var value = service.Call();
-        logger.LogInformation(
-            $"Command : 'calculate', LogFile : '{settings.LogFile}', WorkDir : '{settings.WorkDir}' ");
+        logger.LogInformation($"Command : 'calculate', LogFile : '{settings.LogFile}', WorkDir : '{settings.WorkDir}' ");
         return Task.FromResult(value);
     }
 }

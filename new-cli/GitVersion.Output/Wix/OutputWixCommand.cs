@@ -17,8 +17,7 @@ public class OutputWixCommand : Command<OutputWixSettings>
     public override Task<int> InvokeAsync(OutputWixSettings settings)
     {
         var value = service.Call();
-        logger.LogInformation(
-            $"Command : 'output wix', LogFile : '{settings.LogFile}', WorkDir : '{settings.OutputDir}', InputFile: '{settings.InputFile}', WixFile: '{settings.WixFile}' ");
+        logger.LogInformation($"Command : 'output wix', LogFile : '{settings.LogFile}', WorkDir : '{settings.OutputDir}', InputFile: '{settings.InputFile}', WixFile: '{settings.WixFile}' ");
         return Task.FromResult(value);
     }
 }

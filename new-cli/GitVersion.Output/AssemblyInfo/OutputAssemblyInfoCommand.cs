@@ -18,8 +18,7 @@ public class OutputAssemblyInfoCommand : Command<OutputAssemblyInfoSettings>
     {
         var value = service.Call();
         var versionInfo = settings.VersionInfo.Value;
-        logger.LogInformation(
-            $"Command : 'output assemblyinfo', LogFile : '{settings.LogFile}', WorkDir : '{settings.OutputDir}', InputFile: '{settings.InputFile}', AssemblyInfo: '{settings.AssemblyinfoFile}' ");
+        logger.LogInformation($"Command : 'output assemblyinfo', LogFile : '{settings.LogFile}', WorkDir : '{settings.OutputDir}', InputFile: '{settings.InputFile}', AssemblyInfo: '{settings.AssemblyinfoFile}' ");
         logger.LogInformation($"Version info: {versionInfo}");
         return Task.FromResult(value);
     }

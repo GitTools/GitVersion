@@ -17,8 +17,7 @@ public class OutputCommand : Command<OutputSettings>
     public override Task<int> InvokeAsync(OutputSettings settings)
     {
         var value = service.Call();
-        logger.LogInformation(
-            $"Command : 'output', LogFile : '{settings.LogFile}', WorkDir : '{settings.WorkDir}' ");
+        logger.LogInformation($"Command : 'output', LogFile : '{settings.LogFile}', WorkDir : '{settings.WorkDir}' ");
         return Task.FromResult(value);
     }
 }

@@ -17,8 +17,7 @@ public class OutputProjectCommand : Command<OutputProjectSettings>
     public override Task<int> InvokeAsync(OutputProjectSettings settings)
     {
         var value = service.Call();
-        logger.LogInformation(
-            $"Command : 'output project', LogFile : '{settings.LogFile}', WorkDir : '{settings.OutputDir}', InputFile: '{settings.InputFile}', Project: '{settings.ProjectFile}' ");
+        logger.LogInformation($"Command : 'output project', LogFile : '{settings.LogFile}', WorkDir : '{settings.OutputDir}', InputFile: '{settings.InputFile}', Project: '{settings.ProjectFile}' ");
         return Task.FromResult(value);
     }
 }

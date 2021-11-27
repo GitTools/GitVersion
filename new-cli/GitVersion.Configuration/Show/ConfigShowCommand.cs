@@ -17,8 +17,7 @@ public class ConfigShowCommand : Command<ConfigShowSettings>
     public override Task<int> InvokeAsync(ConfigShowSettings settings)
     {
         var value = service.Call();
-        logger.LogInformation(
-            $"Command : 'config show', LogFile : '{settings.LogFile}', WorkDir : '{settings.WorkDir}' ");
+        logger.LogInformation($"Command : 'config show', LogFile : '{settings.LogFile}', WorkDir : '{settings.WorkDir}' ");
         return Task.FromResult(value);
     }
 }
