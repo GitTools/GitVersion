@@ -40,7 +40,10 @@ public class GitVersionCalculateTool : IGitVersionCalculateTool
 
     public VersionVariables CalculateVersionVariables()
     {
-        this.gitPreparer.Prepare(); //we need to prepare the repository before using it for version calculation
+        if (!this.context.IsCurrentCommitTagged)
+        {
+            this.gitPreparer.Prepare(); //we need to prepare the repository before using it for version calculation
+        }
 
         var gitVersionOptions = this.options.Value;
 
