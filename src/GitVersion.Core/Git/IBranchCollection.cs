@@ -1,11 +1,8 @@
-using System.Collections.Generic;
+namespace GitVersion;
 
-namespace GitVersion
+public interface IBranchCollection : IEnumerable<IBranch>
 {
-    public interface IBranchCollection : IEnumerable<IBranch>
-    {
-        IBranch? this[string name] { get; }
-        IEnumerable<IBranch> ExcludeBranches(IEnumerable<IBranch> branchesToExclude);
-        void UpdateTrackedBranch(IBranch branch, string remoteTrackingReferenceName);
-    }
+    IBranch? this[string name] { get; }
+    IEnumerable<IBranch> ExcludeBranches(IEnumerable<IBranch> branchesToExclude);
+    void UpdateTrackedBranch(IBranch branch, string remoteTrackingReferenceName);
 }

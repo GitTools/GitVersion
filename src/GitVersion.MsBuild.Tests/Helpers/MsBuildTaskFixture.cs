@@ -1,86 +1,81 @@
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 using GitTools.Testing;
 using GitVersion.BuildAgents;
 using GitVersion.Core.Tests;
 using GitVersion.MsBuild.Tests.Mocks;
 
-namespace GitVersion.MsBuild.Tests.Helpers
+namespace GitVersion.MsBuild.Tests.Helpers;
+
+public class MsBuildTaskFixture
 {
-    public class MsBuildTaskFixture
-    {
-        private readonly RepositoryFixtureBase fixture;
-        private KeyValuePair<string, string>[] environmentVariables;
+    private readonly RepositoryFixtureBase fixture;
+    private KeyValuePair<string, string>[] environmentVariables;
 
-        public MsBuildTaskFixture(RepositoryFixtureBase fixture) => this.fixture = fixture;
+    public MsBuildTaskFixture(RepositoryFixtureBase fixture) => this.fixture = fixture;
 
-        public void WithEnv(params KeyValuePair<string, string>[] envs) => this.environmentVariables = envs;
+    public void WithEnv(params KeyValuePair<string, string>[] envs) => this.environmentVariables = envs;
 
-        public MsBuildTaskFixtureResult<T> Execute<T>(T task) where T : GitVersionTaskBase =>
-            UsingEnv(() =>
+    public MsBuildTaskFixtureResult<T> Execute<T>(T task) where T : GitVersionTaskBase =>
+        UsingEnv(() =>
+        {
+            var buildEngine = new MockEngine();
+
+            task.BuildEngine = buildEngine;
+
+            var versionFile = Path.Combine(task.SolutionDirectory, "gitversion.json");
+            this.fixture.WriteVersionVariables(versionFile);
+
+            task.VersionFile = versionFile;
+
+            var result = task.Execute();
+
+            return new MsBuildTaskFixtureResult<T>(this.fixture)
             {
-                var buildEngine = new MockEngine();
+                Success = result,
+                Task = task,
+                Errors = buildEngine.Errors,
+                Warnings = buildEngine.Warnings,
+                Messages = buildEngine.Messages,
+                Log = buildEngine.Log,
+            };
+        });
 
-                task.BuildEngine = buildEngine;
+    private T UsingEnv<T>(Func<T> func)
+    {
+        ResetEnvironment();
+        SetEnvironmentVariables(this.environmentVariables);
 
-                var versionFile = Path.Combine(task.SolutionDirectory, "gitversion.json");
-                this.fixture.WriteVersionVariables(versionFile);
-
-                task.VersionFile = versionFile;
-
-                var result = task.Execute();
-
-                return new MsBuildTaskFixtureResult<T>(this.fixture)
-                {
-                    Success = result,
-                    Task = task,
-                    Errors = buildEngine.Errors,
-                    Warnings = buildEngine.Warnings,
-                    Messages = buildEngine.Messages,
-                    Log = buildEngine.Log,
-                };
-            });
-
-        private T UsingEnv<T>(Func<T> func)
+        try
+        {
+            return func();
+        }
+        finally
         {
             ResetEnvironment();
-            SetEnvironmentVariables(this.environmentVariables);
-
-            try
-            {
-                return func();
-            }
-            finally
-            {
-                ResetEnvironment();
-            }
         }
+    }
 
-        private static void ResetEnvironment()
+    private static void ResetEnvironment()
+    {
+        var environmentalVariables = new Dictionary<string, string>
         {
-            var environmentalVariables = new Dictionary<string, string>
-            {
-                { TeamCity.EnvironmentVariableName, null },
-                { AppVeyor.EnvironmentVariableName, null },
-                { TravisCi.EnvironmentVariableName, null },
-                { Jenkins.EnvironmentVariableName, null },
-                { AzurePipelines.EnvironmentVariableName, null },
-                { GitHubActions.EnvironmentVariableName, null },
-                { SpaceAutomation.EnvironmentVariableName, null },
-            };
+            { TeamCity.EnvironmentVariableName, null },
+            { AppVeyor.EnvironmentVariableName, null },
+            { TravisCi.EnvironmentVariableName, null },
+            { Jenkins.EnvironmentVariableName, null },
+            { AzurePipelines.EnvironmentVariableName, null },
+            { GitHubActions.EnvironmentVariableName, null },
+            { SpaceAutomation.EnvironmentVariableName, null },
+        };
 
-            SetEnvironmentVariables(environmentalVariables.ToArray());
-        }
+        SetEnvironmentVariables(environmentalVariables.ToArray());
+    }
 
-        private static void SetEnvironmentVariables(KeyValuePair<string, string>[] envs)
+    private static void SetEnvironmentVariables(KeyValuePair<string, string>[] envs)
+    {
+        if (envs == null) return;
+        foreach (var env in envs)
         {
-            if (envs == null) return;
-            foreach (var env in envs)
-            {
-                System.Environment.SetEnvironmentVariable(env.Key, env.Value);
-            }
+            System.Environment.SetEnvironmentVariable(env.Key, env.Value);
         }
     }
 }

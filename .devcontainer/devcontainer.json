@@ -1,0 +1,42 @@
+// For format details, see https://aka.ms/devcontainer.json. For config options, see the README at:
+// https://github.com/microsoft/vscode-dev-containers/tree/v0.202.5/containers/dotnet
+{
+	"name": "C# (.NET)",
+	"runArgs": ["--init"],
+	"build": {
+		"dockerfile": "Dockerfile",
+		"args": {
+			"VARIANT": "6.0",
+		}
+	},
+
+	// Set *default* container specific settings.json values on container create.
+	"settings": {
+        "editor.fontFamily": "'Cascadia Code', Consolas, 'Courier New', monospace",
+        "editor.rulers": [90],
+        "cSpell.words": [
+            "commiting",
+            "gittools",
+            "gitversion"
+        ],
+    },
+
+	// Add the IDs of extensions you want installed when the container is created.
+	"extensions": [
+		"ms-dotnettools.csharp",
+        "EditorConfig.EditorConfig",
+        "streetsidesoftware.code-spell-checker"
+	],
+
+	"postCreateCommand": "dotnet restore src; dotnet build build",
+
+	// Comment out connect as root instead. More info: https://aka.ms/vscode-remote/containers/non-root.
+	"remoteUser": "vscode",
+	"features": {
+		"docker-in-docker": "latest",
+		"git": "latest",
+		"github-cli": "latest",
+		"sshd": "latest",
+		"powershell": "latest"
+	}
+}

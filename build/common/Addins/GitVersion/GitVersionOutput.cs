@@ -1,18 +1,17 @@
-namespace Common.Addins.GitVersion
+namespace Common.Addins.GitVersion;
+
+/// <summary>
+/// The Git version output type.
+/// </summary>
+public enum GitVersionOutput
 {
     /// <summary>
-    /// The Git version output type.
+    /// Outputs to the stdout using json.
     /// </summary>
-    public enum GitVersionOutput
-    {
-        /// <summary>
-        /// Outputs to the stdout using json.
-        /// </summary>
-        Json,
+    Json,
 
-        /// <summary>
-        /// Outputs to the stdout in a way usable by a detected build server.
-        /// </summary>
-        BuildServer
-    }
+    /// <summary>
+    /// Outputs to the stdout in a way usable by a detected build server.
+    /// </summary>
+    BuildServer
 }

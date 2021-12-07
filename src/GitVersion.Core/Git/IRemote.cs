@@ -1,15 +1,11 @@
-using System;
-using System.Collections.Generic;
+namespace GitVersion;
 
-namespace GitVersion
+public interface IRemote : IEquatable<IRemote?>, IComparable<IRemote>
 {
-    public interface IRemote : IEquatable<IRemote?>, IComparable<IRemote>
-    {
-        string Name { get; }
-        string Url { get; }
+    string Name { get; }
+    string Url { get; }
 
-        IEnumerable<IRefSpec> RefSpecs { get; }
-        IEnumerable<IRefSpec> FetchRefSpecs { get; }
-        IEnumerable<IRefSpec> PushRefSpecs { get; }
-    }
+    IEnumerable<IRefSpec> RefSpecs { get; }
+    IEnumerable<IRefSpec> FetchRefSpecs { get; }
+    IEnumerable<IRefSpec> PushRefSpecs { get; }
 }

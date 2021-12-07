@@ -1,4 +1,3 @@
-using Cake.Frosting;
 using Docs;
 
 return new CakeHost()

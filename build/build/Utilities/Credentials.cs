@@ -1,16 +1,13 @@
-using Cake.Common;
-using Cake.Core;
 using Common.Utilities;
 
-namespace Build.Utilities
-{
-    public class Credentials
-    {
-        public CodeCovCredentials? CodeCov { get; private set; }
+namespace Build.Utilities;
 
-        public static Credentials GetCredentials(ICakeContext context) => new()
-        {
-            CodeCov = new CodeCovCredentials(context.EnvironmentVariable("CODECOV_TOKEN")),
-        };
-    }
+public class Credentials
+{
+    public CodeCovCredentials? CodeCov { get; private set; }
+
+    public static Credentials GetCredentials(ICakeContext context) => new()
+    {
+        CodeCov = new CodeCovCredentials(context.EnvironmentVariable("CODECOV_TOKEN")),
+    };
 }

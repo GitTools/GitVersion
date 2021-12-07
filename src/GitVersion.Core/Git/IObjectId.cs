@@ -1,10 +1,7 @@
-using System;
+namespace GitVersion;
 
-namespace GitVersion
+public interface IObjectId : IEquatable<IObjectId?>, IComparable<IObjectId>
 {
-    public interface IObjectId : IEquatable<IObjectId?>, IComparable<IObjectId>
-    {
-        string Sha { get; }
-        string ToString(int prefixLength);
-    }
+    string Sha { get; }
+    string ToString(int prefixLength);
 }

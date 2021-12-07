@@ -8,6 +8,9 @@ on:
   pull_request:
     paths:
     - 'docs/**'
+env:
+  DOTNET_ROLL_FORWARD_ON_NO_CANDIDATE_FX: 2
+
 jobs:
   prepare:
     name: Prepare Build
@@ -26,17 +29,22 @@ jobs:
     -
       name: Cache cake frosting
       id: cache-cake
-      uses: actions/cache@v2.1.6
+      uses: actions/cache@v2.1.7
       with:
         path: run
         key: run-${{ runner.os }}-${{ hashFiles('./build/**') }}
     -
       name: Use cached tools
       id: cache-tools
-      uses: actions/cache@v2.1.6
+      uses: actions/cache@v2.1.7
       with:
         path: tools
         key: tools-${{ runner.os }}-${{ hashFiles('./build/**') }}
+    -
+      name: Install .NET SDK 6.0.x
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: '6.0.x'
     -
       name: '[Prepare]'
       if: steps.cache-cake.outputs.cache-hit != 'true'
@@ -55,17 +63,22 @@ jobs:
     -
       name: Use cached cake frosting
       id: cache-cake
-      uses: actions/cache@v2.1.6
+      uses: actions/cache@v2.1.7
       with:
         path: run
         key: run-${{ runner.os }}-${{ hashFiles('./build/**') }}
     -
       name: Use cached tools
       id: cache-tools
-      uses: actions/cache@v2.1.6
+      uses: actions/cache@v2.1.7
       with:
         path: tools
         key: tools-${{ runner.os }}-${{ hashFiles('./build/**') }}
+    -
+      name: Install .NET SDK 6.0.x
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: '6.0.x'
     -
       name: '[Build Documentation]'
       shell: pwsh
@@ -79,7 +92,7 @@ jobs:
         arguments: --url-ignore /api/ --allow-hash-href --assume-extension --disable-external
     -
       name: '[Remark Lint]'
-      uses: reviewdog/action-remark-lint@v4
+      uses: reviewdog/action-remark-lint@v5
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
         reporter: github-pr-check
@@ -100,17 +113,22 @@ jobs:
     -
       name: Use cached cake frosting
       id: cache-cake
-      uses: actions/cache@v2.1.6
+      uses: actions/cache@v2.1.7
       with:
         path: run
         key: run-${{ runner.os }}-${{ hashFiles('./build/**') }}
     -
       name: Use cached tools
       id: cache-tools
-      uses: actions/cache@v2.1.6
+      uses: actions/cache@v2.1.7
       with:
         path: tools
         key: tools-${{ runner.os }}-${{ hashFiles('./build/**') }}
+    -
+      name: Install .NET SDK 6.0.x
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: '6.0.x'
     -
       name: '[Publish Documentation]'
       if: ${{ github.event_name == 'push' }}

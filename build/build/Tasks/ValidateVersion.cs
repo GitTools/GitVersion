@@ -1,18 +1,16 @@
 using Build.Utilities;
-using Cake.Frosting;
 using Common.Utilities;
 
-namespace Build.Tasks
+namespace Build.Tasks;
+
+[TaskName(nameof(ValidateVersion))]
+[TaskDescription("Validates built assembly version")]
+[IsDependentOn(typeof(Build))]
+public class ValidateVersion : FrostingTask<BuildContext>
 {
-    [TaskName(nameof(ValidateVersion))]
-    [TaskDescription("Validates built assembly version")]
-    [IsDependentOn(typeof(Build))]
-    public class ValidateVersion : FrostingTask<BuildContext>
+    public override void Run(BuildContext context)
     {
-        public override void Run(BuildContext context)
-        {
-            var gitversionTool = context.GetGitVersionToolLocation();
-            context.ValidateOutput("dotnet", $"\"{gitversionTool}\" -version", context.Version!.GitVersion!.InformationalVersion!);
-        }
+        var gitversionTool = context.GetGitVersionToolLocation();
+        context.ValidateOutput("dotnet", $"\"{gitversionTool}\" -version", context.Version!.GitVersion!.InformationalVersion!);
     }
 }

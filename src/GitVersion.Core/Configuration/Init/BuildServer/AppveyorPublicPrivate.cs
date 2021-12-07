@@ -1,34 +1,33 @@
-using System.Collections.Generic;
 using GitVersion.Configuration.Init.Wizard;
 using GitVersion.Logging;
 using GitVersion.Model.Configuration;
 
-namespace GitVersion.Configuration.Init.BuildServer
+namespace GitVersion.Configuration.Init.BuildServer;
+
+internal class AppveyorPublicPrivate : ConfigInitWizardStep
 {
-    internal class AppveyorPublicPrivate : ConfigInitWizardStep
+    public AppveyorPublicPrivate(IConsole console, IFileSystem fileSystem, ILog log, IConfigInitStepFactory stepFactory) : base(console, fileSystem, log, stepFactory)
     {
-        public AppveyorPublicPrivate(IConsole console, IFileSystem fileSystem, ILog log, IConfigInitStepFactory stepFactory) : base(console, fileSystem, log, stepFactory)
-        {
-        }
+    }
 
-        protected override StepResult HandleResult(string? result, Queue<ConfigInitWizardStep> steps, Config config, string workingDirectory)
+    protected override StepResult HandleResult(string? result, Queue<ConfigInitWizardStep> steps, Config config, string workingDirectory)
+    {
+        switch (result)
         {
-            switch (result)
-            {
-                case "0":
-                    steps.Enqueue(this.StepFactory.CreateStep<EditConfigStep>()!);
-                    return StepResult.Ok();
-                case "1":
-                    steps.Enqueue(this.StepFactory.CreateStep<AppVeyorSetup>()!.WithData(ProjectVisibility.Public));
-                    return StepResult.Ok();
-                case "2":
-                    steps.Enqueue(this.StepFactory.CreateStep<AppVeyorSetup>()!.WithData(ProjectVisibility.Private));
-                    return StepResult.Ok();
-            }
-            return StepResult.Ok();
+            case "0":
+                steps.Enqueue(this.StepFactory.CreateStep<EditConfigStep>()!);
+                return StepResult.Ok();
+            case "1":
+                steps.Enqueue(this.StepFactory.CreateStep<AppVeyorSetup>()!.WithData(ProjectVisibility.Public));
+                return StepResult.Ok();
+            case "2":
+                steps.Enqueue(this.StepFactory.CreateStep<AppVeyorSetup>()!.WithData(ProjectVisibility.Private));
+                return StepResult.Ok();
         }
+        return StepResult.Ok();
+    }
 
-        protected override string GetPrompt(Config config, string workingDirectory) => @"Is your project public or private?
+    protected override string GetPrompt(Config config, string workingDirectory) => @"Is your project public or private?
 
 That is ... does it require authentication to clone/pull?
 
@@ -36,6 +35,5 @@ That is ... does it require authentication to clone/pull?
 1) Public
 2) Private";
 
-        protected override string DefaultResult => "0";
-    }
+    protected override string DefaultResult => "0";
 }

@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-using System.IO;
 using GitVersion.MsBuild.Tasks;
 using GitVersion.MsBuild.Tests.Helpers;
 using Microsoft.Build.Framework;
@@ -7,109 +5,108 @@ using Microsoft.Build.Utilities.ProjectCreation;
 using NUnit.Framework;
 using Shouldly;
 
-namespace GitVersion.MsBuild.Tests.Tasks
+namespace GitVersion.MsBuild.Tests.Tasks;
+
+[TestFixture]
+public class UpdateAssemblyInfoTaskTest : TestTaskBase
 {
-    [TestFixture]
-    public class UpdateAssemblyInfoTaskTest : TestTaskBase
+    [Test]
+    public void UpdateAssemblyInfoTaskShouldCreateFile()
     {
-        [Test]
-        public void UpdateAssemblyInfoTaskShouldCreateFile()
-        {
-            var task = new UpdateAssemblyInfo();
+        var task = new UpdateAssemblyInfo();
 
-            using var result = ExecuteMsBuildTask(task);
+        using var result = ExecuteMsBuildTask(task);
 
-            result.Success.ShouldBe(true);
-            result.Errors.ShouldBe(0);
-            result.Task.AssemblyInfoTempFilePath.ShouldNotBeNull();
+        result.Success.ShouldBe(true);
+        result.Errors.ShouldBe(0);
+        result.Task.AssemblyInfoTempFilePath.ShouldNotBeNull();
 
-            var fileContent = File.ReadAllText(result.Task.AssemblyInfoTempFilePath);
-            fileContent.ShouldContain(@"[assembly: AssemblyVersion(""1.2.4.0"")]");
-        }
+        var fileContent = File.ReadAllText(result.Task.AssemblyInfoTempFilePath);
+        fileContent.ShouldContain(@"[assembly: AssemblyVersion(""1.2.4.0"")]");
+    }
 
-        [Test]
-        public void UpdateAssemblyInfoTaskShouldCreateFileInBuildServer()
-        {
-            var task = new UpdateAssemblyInfo();
+    [Test]
+    public void UpdateAssemblyInfoTaskShouldCreateFileInBuildServer()
+    {
+        var task = new UpdateAssemblyInfo();
 
-            using var result = ExecuteMsBuildTaskInAzurePipeline(task);
+        using var result = ExecuteMsBuildTaskInAzurePipeline(task);
 
-            result.Success.ShouldBe(true);
-            result.Errors.ShouldBe(0);
-            result.Task.AssemblyInfoTempFilePath.ShouldNotBeNull();
+        result.Success.ShouldBe(true);
+        result.Errors.ShouldBe(0);
+        result.Task.AssemblyInfoTempFilePath.ShouldNotBeNull();
 
-            var fileContent = File.ReadAllText(result.Task.AssemblyInfoTempFilePath);
-            fileContent.ShouldContain(@"[assembly: AssemblyVersion(""1.0.1.0"")]");
-        }
+        var fileContent = File.ReadAllText(result.Task.AssemblyInfoTempFilePath);
+        fileContent.ShouldContain(@"[assembly: AssemblyVersion(""1.0.1.0"")]");
+    }
 
-        [Test]
-        [Category(NoNet48)]
-        [Category(NoMono)]
-        public void UpdateAssemblyInfoTaskShouldCreateFileWhenRunWithMsBuild()
-        {
-            const string taskName = nameof(UpdateAssemblyInfo);
-            const string outputProperty = nameof(UpdateAssemblyInfo.AssemblyInfoTempFilePath);
+    [Test]
+    [Category(NoNet48)]
+    [Category(NoMono)]
+    public void UpdateAssemblyInfoTaskShouldCreateFileWhenRunWithMsBuild()
+    {
+        const string taskName = nameof(UpdateAssemblyInfo);
+        const string outputProperty = nameof(UpdateAssemblyInfo.AssemblyInfoTempFilePath);
 
-            using var result = ExecuteMsBuildExe(project => AddUpdateAssemblyInfoTask(project, taskName, taskName, outputProperty));
+        using var result = ExecuteMsBuildExe(project => AddUpdateAssemblyInfoTask(project, taskName, taskName, outputProperty));
 
-            result.ProjectPath.ShouldNotBeNullOrWhiteSpace();
-            result.MsBuild.Count.ShouldBeGreaterThan(0);
-            result.MsBuild.OverallSuccess.ShouldBe(true);
-            result.MsBuild.ShouldAllBe(x => x.Succeeded);
-            result.Output.ShouldNotBeNullOrWhiteSpace();
+        result.ProjectPath.ShouldNotBeNullOrWhiteSpace();
+        result.MsBuild.Count.ShouldBeGreaterThan(0);
+        result.MsBuild.OverallSuccess.ShouldBe(true);
+        result.MsBuild.ShouldAllBe(x => x.Succeeded);
+        result.Output.ShouldNotBeNullOrWhiteSpace();
 
-            var generatedFilePath = Path.Combine(Path.GetDirectoryName(result.ProjectPath), "AssemblyInfo.g.cs");
-            result.Output.ShouldContain($"{outputProperty}: {generatedFilePath}");
+        var generatedFilePath = Path.Combine(Path.GetDirectoryName(result.ProjectPath), "AssemblyInfo.g.cs");
+        result.Output.ShouldContain($"{outputProperty}: {generatedFilePath}");
 
-            var fileContent = File.ReadAllText(generatedFilePath);
-            fileContent.ShouldContain(@"[assembly: AssemblyVersion(""1.2.4.0"")]");
-        }
+        var fileContent = File.ReadAllText(generatedFilePath);
+        fileContent.ShouldContain(@"[assembly: AssemblyVersion(""1.2.4.0"")]");
+    }
 
-        [Test]
-        [Category(NoNet48)]
-        [Category(NoMono)]
-        public void UpdateAssemblyInfoTaskShouldCreateFileWhenRunWithMsBuildInBuildServer()
-        {
-            const string taskName = nameof(UpdateAssemblyInfo);
-            const string outputProperty = nameof(UpdateAssemblyInfo.AssemblyInfoTempFilePath);
+    [Test]
+    [Category(NoNet48)]
+    [Category(NoMono)]
+    public void UpdateAssemblyInfoTaskShouldCreateFileWhenRunWithMsBuildInBuildServer()
+    {
+        const string taskName = nameof(UpdateAssemblyInfo);
+        const string outputProperty = nameof(UpdateAssemblyInfo.AssemblyInfoTempFilePath);
 
-            using var result = ExecuteMsBuildExeInAzurePipeline(project => AddUpdateAssemblyInfoTask(project, taskName, taskName, outputProperty));
+        using var result = ExecuteMsBuildExeInAzurePipeline(project => AddUpdateAssemblyInfoTask(project, taskName, taskName, outputProperty));
 
-            result.ProjectPath.ShouldNotBeNullOrWhiteSpace();
-            result.MsBuild.Count.ShouldBeGreaterThan(0);
-            result.MsBuild.OverallSuccess.ShouldBe(true);
-            result.MsBuild.ShouldAllBe(x => x.Succeeded);
-            result.Output.ShouldNotBeNullOrWhiteSpace();
+        result.ProjectPath.ShouldNotBeNullOrWhiteSpace();
+        result.MsBuild.Count.ShouldBeGreaterThan(0);
+        result.MsBuild.OverallSuccess.ShouldBe(true);
+        result.MsBuild.ShouldAllBe(x => x.Succeeded);
+        result.Output.ShouldNotBeNullOrWhiteSpace();
 
-            var generatedFilePath = Path.Combine(Path.GetDirectoryName(result.ProjectPath), "AssemblyInfo.g.cs");
-            result.Output.ShouldContain($"{outputProperty}: {generatedFilePath}");
+        var generatedFilePath = Path.Combine(Path.GetDirectoryName(result.ProjectPath), "AssemblyInfo.g.cs");
+        result.Output.ShouldContain($"{outputProperty}: {generatedFilePath}");
 
-            var fileContent = File.ReadAllText(generatedFilePath);
-            fileContent.ShouldContain(@"[assembly: AssemblyVersion(""1.0.1.0"")]");
-        }
+        var fileContent = File.ReadAllText(generatedFilePath);
+        fileContent.ShouldContain(@"[assembly: AssemblyVersion(""1.0.1.0"")]");
+    }
 
-        private static void AddUpdateAssemblyInfoTask(ProjectCreator project, string targetToRun, string taskName, string outputProperty)
-        {
-            var assemblyFileLocation = typeof(GitVersionTaskBase).Assembly.Location;
-            project.UsingTaskAssemblyFile(taskName, assemblyFileLocation)
-                .Property("GenerateAssemblyInfo", "false")
-                .Target(targetToRun, beforeTargets: "CoreCompile;GetAssemblyVersion;GenerateNuspec")
-                    .Task(taskName, parameters: new Dictionary<string, string>
-                    {
-                        { "SolutionDirectory", "$(MSBuildProjectDirectory)" },
-                        { "VersionFile", "$(MSBuildProjectDirectory)/gitversion.json" },
-                        { "ProjectFile", "$(MSBuildProjectFullPath)" },
-                        { "IntermediateOutputPath", "$(MSBuildProjectDirectory)" },
-                        { "Language", "$(Language)" },
-                        { "CompileFiles", "@(Compile)" },
-                    })
-                        .TaskOutputProperty(outputProperty, outputProperty)
-                    .ItemGroup()
-                        .ItemCompile($"$({outputProperty})")
-                        .ItemInclude("FileWrites", $"$({outputProperty})")
-                        .ItemInclude("_GeneratedCodeFiles", $"$({outputProperty})")
-                .Target(MsBuildExeFixture.OutputTarget, dependsOnTargets: targetToRun)
-                    .TaskMessage($"{outputProperty}: $({outputProperty})", MessageImportance.High);
-        }
+    private static void AddUpdateAssemblyInfoTask(ProjectCreator project, string targetToRun, string taskName, string outputProperty)
+    {
+        var assemblyFileLocation = typeof(GitVersionTaskBase).Assembly.Location;
+        project.UsingTaskAssemblyFile(taskName, assemblyFileLocation)
+            .Property("GenerateAssemblyInfo", "false")
+            .Target(targetToRun, beforeTargets: "CoreCompile;GetAssemblyVersion;GenerateNuspec")
+            .Task(taskName, parameters: new Dictionary<string, string>
+            {
+                { "SolutionDirectory", "$(MSBuildProjectDirectory)" },
+                { "VersionFile", "$(MSBuildProjectDirectory)/gitversion.json" },
+                { "ProjectFile", "$(MSBuildProjectFullPath)" },
+                { "IntermediateOutputPath", "$(MSBuildProjectDirectory)" },
+                { "Language", "$(Language)" },
+                { "CompileFiles", "@(Compile)" },
+            })
+            .TaskOutputProperty(outputProperty, outputProperty)
+            .ItemGroup()
+            .ItemCompile($"$({outputProperty})")
+            .ItemInclude("FileWrites", $"$({outputProperty})")
+            .ItemInclude("_GeneratedCodeFiles", $"$({outputProperty})")
+            .Target(MsBuildExeFixture.OutputTarget, dependsOnTargets: targetToRun)
+            .TaskMessage($"{outputProperty}: $({outputProperty})", MessageImportance.High);
     }
 }

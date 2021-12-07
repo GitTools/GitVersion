@@ -1,11 +1,7 @@
-using System;
-using System.Reflection;
+namespace GitVersion;
 
-namespace GitVersion
+public interface IVersionWriter
 {
-    public interface IVersionWriter
-    {
-        void Write(Assembly assembly);
-        void WriteTo(Assembly assembly, Action<string> writeAction);
-    }
+    void Write(Assembly assembly);
+    void WriteTo(Assembly assembly, Action<string> writeAction);
 }

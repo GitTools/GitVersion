@@ -1,42 +1,39 @@
-using System;
-using System.Threading.Tasks;
 using GitVersion.Extensions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 
-namespace GitVersion
+namespace GitVersion;
+
+internal class Program
 {
-    internal class Program
-    {
-        private readonly Action<IServiceCollection> overrides;
+    private readonly Action<IServiceCollection> overrides;
 
-        internal Program(Action<IServiceCollection> overrides = null) => this.overrides = overrides;
+    internal Program(Action<IServiceCollection> overrides = null) => this.overrides = overrides;
 
-        private static async Task Main(string[] args) => await new Program().RunAsync(args);
+    private static async Task Main(string[] args) => await new Program().RunAsync(args);
 
-        internal Task RunAsync(string[] args) => CreateHostBuilder(args).Build().RunAsync();
+    internal Task RunAsync(string[] args) => CreateHostBuilder(args).Build().RunAsync();
 
-        private IHostBuilder CreateHostBuilder(string[] args) =>
-            new HostBuilder()
-                .ConfigureAppConfiguration((_, configApp) => configApp.AddCommandLine(args))
-                .ConfigureServices((_, services) =>
+    private IHostBuilder CreateHostBuilder(string[] args) =>
+        new HostBuilder()
+            .ConfigureAppConfiguration((_, configApp) => configApp.AddCommandLine(args))
+            .ConfigureServices((_, services) =>
+            {
+                services.AddModule(new GitVersionCoreModule());
+                services.AddModule(new GitVersionLibGit2SharpModule());
+                services.AddModule(new GitVersionAppModule());
+
+                services.AddSingleton(sp =>
                 {
-                    services.AddModule(new GitVersionCoreModule());
-                    services.AddModule(new GitVersionLibGit2SharpModule());
-                    services.AddModule(new GitVersionAppModule());
+                    var arguments = sp.GetService<IArgumentParser>()?.ParseArguments(args);
+                    var gitVersionOptions = arguments?.ToOptions();
+                    return Options.Create(gitVersionOptions);
+                });
 
-                    services.AddSingleton(sp =>
-                    {
-                        var arguments = sp.GetService<IArgumentParser>()?.ParseArguments(args);
-                        var gitVersionOptions = arguments?.ToOptions();
-                        return Options.Create(gitVersionOptions);
-                    });
-
-                    this.overrides?.Invoke(services);
-                    services.AddHostedService<GitVersionApp>();
-                })
-                .UseConsoleLifetime();
-    }
+                this.overrides?.Invoke(services);
+                services.AddHostedService<GitVersionApp>();
+            })
+            .UseConsoleLifetime();
 }

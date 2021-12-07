@@ -1,4 +1,3 @@
-using Cake.Frosting;
 using Docker;
 
 return new CakeHost()

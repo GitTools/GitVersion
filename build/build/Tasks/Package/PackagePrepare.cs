@@ -1,76 +1,78 @@
-using Cake.Common.Diagnostics;
-using Cake.Common.IO;
-using Cake.Common.Tools.DotNetCore;
-using Cake.Common.Tools.DotNetCore.Publish;
-using Cake.Core;
-using Cake.Core.IO;
-using Cake.Frosting;
+using Cake.Common.Tools.DotNet.Publish;
 using Common.Utilities;
 
-namespace Build.Tasks
+namespace Build.Tasks;
+
+[TaskName(nameof(PackagePrepare))]
+[TaskDescription("Prepares for packaging")]
+[IsDependentOn(typeof(ValidateVersion))]
+public class PackagePrepare : FrostingTask<BuildContext>
 {
-    [TaskName(nameof(PackagePrepare))]
-    [TaskDescription("Prepares for packaging")]
-    [IsDependentOn(typeof(ValidateVersion))]
-    public class PackagePrepare : FrostingTask<BuildContext>
+    public override void Run(BuildContext context)
     {
-        public override void Run(BuildContext context)
+        PackPrepareNative(context);
+
+        var sourceDir = Paths.Native.Combine(PlatformFamily.Windows.ToString()).Combine("win-x64");
+        var sourceFiles = context.GetFiles(sourceDir + "/*.*");
+
+        var cmdlineDir = Paths.ArtifactsBinCmdline.Combine("tools");
+
+        context.EnsureDirectoryExists(cmdlineDir);
+        context.CopyFiles(sourceFiles, cmdlineDir);
+
+        var portableDir = Paths.ArtifactsBinPortable.Combine("tools");
+        context.EnsureDirectoryExists(portableDir);
+
+        sourceFiles += context.GetFiles("./build/nuspec/*.ps1") + context.GetFiles("./build/nuspec/*.txt");
+        context.CopyFiles(sourceFiles, portableDir);
+    }
+
+    private static void PackPrepareNative(BuildContext context)
+    {
+        // publish single file for all native runtimes (self contained)
+        var platform = context.Environment.Platform.Family;
+        var runtimes = context.NativeRuntimes[platform];
+
+        foreach (var runtime in runtimes)
         {
-            PackPrepareNative(context);
+            var outputPath = PackPrepareNative(context, runtime);
 
-            var sourceDir = Paths.Native.Combine(PlatformFamily.Windows.ToString()).Combine("win-x64");
-            var sourceFiles = context.GetFiles(sourceDir + "/*.*");
+            // testing windows and macos artifacts, the linux is tested with docker
+            if (platform == PlatformFamily.Linux) continue;
+            if (runtime.EndsWith("arm64")) continue;
 
-            var cmdlineDir = Paths.ArtifactsBinCmdline.Combine("tools");
+            context.Information("Validating native lib:");
+            var nativeExe = outputPath.CombineWithFilePath(context.IsOnWindows ? "gitversion.exe" : "gitversion");
+            context.ValidateOutput(nativeExe.FullPath, "/showvariable FullSemver", context.Version?.GitVersion?.FullSemVer);
+        }
+    }
 
-            context.EnsureDirectoryExists(cmdlineDir);
-            context.CopyFiles(sourceFiles, cmdlineDir);
+    private static DirectoryPath PackPrepareNative(BuildContext context, string runtime)
+    {
+        var platform = context.Environment.Platform.Family;
+        var outputPath = Paths.Native.Combine(platform.ToString().ToLower()).Combine(runtime);
 
-            var portableDir = Paths.ArtifactsBinPortable.Combine("tools");
-            context.EnsureDirectoryExists(portableDir);
+        var settings = new DotNetPublishSettings
+        {
+            Framework = Constants.NetVersion60,
+            Runtime = runtime,
+            NoRestore = false,
+            Configuration = context.MsBuildConfiguration,
+            OutputDirectory = outputPath,
+            MSBuildSettings = context.MsBuildSettings,
+            IncludeNativeLibrariesForSelfExtract = true,
+            PublishSingleFile = true,
+            SelfContained = true
+        };
 
-            sourceFiles += context.GetFiles("./build/nuspec/*.ps1") + context.GetFiles("./build/nuspec/*.txt");
-            context.CopyFiles(sourceFiles, portableDir);
+        // workaround for https://github.com/dotnet/runtime/issues/49508
+        if (runtime == "osx-arm64")
+        {
+            settings.ArgumentCustomization = arg => arg.Append("/p:OsxArm64=true");
         }
 
-        private static void PackPrepareNative(BuildContext context)
-        {
-            // publish single file for all native runtimes (self contained)
-            var platform = context.Environment.Platform.Family;
-            var runtimes = context.NativeRuntimes[platform];
+        context.DotNetPublish("./src/GitVersion.App/GitVersion.App.csproj", settings);
 
-            foreach (var runtime in runtimes)
-            {
-                var outputPath = PackPrepareNative(context, runtime);
-
-                // testing windows and macos artifacts, the linux is tested with docker
-                if (platform == PlatformFamily.Linux) continue;
-
-                context.Information("Validating native lib:");
-                var nativeExe = outputPath.CombineWithFilePath(context.IsOnWindows ? "gitversion.exe" : "gitversion");
-                context.ValidateOutput(nativeExe.FullPath, "/showvariable FullSemver", context.Version?.GitVersion?.FullSemVer);
-            }
-        }
-
-        private static DirectoryPath PackPrepareNative(BuildContext context, string runtime)
-        {
-            var platform = context.Environment.Platform.Family;
-            var outputPath = Paths.Native.Combine(platform.ToString().ToLower()).Combine(runtime);
-
-            var settings = new DotNetCorePublishSettings
-            {
-                Framework = Constants.NetVersion50,
-                Runtime = runtime,
-                NoRestore = false,
-                Configuration = context.MsBuildConfiguration,
-                OutputDirectory = outputPath,
-                MSBuildSettings = context.MsBuildSettings,
-                ArgumentCustomization = arg => arg.Append("/p:PublishSingleFile=true"),
-            };
-
-            context.DotNetCorePublish("./src/GitVersion.App/GitVersion.App.csproj", settings);
-
-            return outputPath;
-        }
+        return outputPath;
     }
 }

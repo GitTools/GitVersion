@@ -1,6 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using GitTools.Testing;
 using GitVersion.Configuration;
 using GitVersion.Core.Tests.Helpers;
@@ -10,98 +7,97 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using NSubstitute;
 
-namespace GitVersion.Core.Tests
+namespace GitVersion.Core.Tests;
+
+public class GitVersionContextBuilder
 {
-    public class GitVersionContextBuilder
+    private IGitRepository repository;
+    private Config configuration;
+    public IServiceProvider ServicesProvider;
+    private Action<IServiceCollection> overrideServices;
+
+    public GitVersionContextBuilder WithRepository(IGitRepository gitRepository)
     {
-        private IGitRepository repository;
-        private Config configuration;
-        public IServiceProvider ServicesProvider;
-        private Action<IServiceCollection> overrideServices;
+        this.repository = gitRepository;
+        return this;
+    }
 
-        public GitVersionContextBuilder WithRepository(IGitRepository gitRepository)
+    public GitVersionContextBuilder WithConfig(Config config)
+    {
+        this.configuration = config;
+        return this;
+    }
+
+    public GitVersionContextBuilder OverrideServices(Action<IServiceCollection> overrides = null)
+    {
+        this.overrideServices = overrides;
+        return this;
+    }
+
+    public GitVersionContextBuilder WithDevelopBranch() => WithBranch("develop");
+
+    private GitVersionContextBuilder WithBranch(string branchName)
+    {
+        this.repository = CreateRepository();
+        return AddBranch(branchName);
+    }
+
+    private GitVersionContextBuilder AddBranch(string branchName)
+    {
+        var mockCommit = GitToolsTestingExtensions.CreateMockCommit();
+        var mockBranch = GitToolsTestingExtensions.CreateMockBranch(branchName, mockCommit);
+
+        var branches = this.repository.Branches.ToList();
+        branches.Add(mockBranch);
+        this.repository.Branches.GetEnumerator().Returns(_ => ((IEnumerable<IBranch>)branches).GetEnumerator());
+        this.repository.Head.Returns(mockBranch);
+        return this;
+    }
+
+    public void Build()
+    {
+        var repo = this.repository ?? CreateRepository();
+
+        var config = new ConfigurationBuilder()
+            .Add(this.configuration ?? new Config())
+            .Build();
+
+        var options = Options.Create(new GitVersionOptions
         {
-            this.repository = gitRepository;
-            return this;
-        }
+            WorkingDirectory = new EmptyRepositoryFixture().RepositoryPath,
+            ConfigInfo = { OverrideConfig = config }
+        });
 
-        public GitVersionContextBuilder WithConfig(Config config)
+        this.ServicesProvider = ConfigureServices(services =>
         {
-            this.configuration = config;
-            return this;
-        }
+            services.AddSingleton(options);
+            services.AddSingleton(repo);
+            this.overrideServices?.Invoke(services);
+        });
+    }
 
-        public GitVersionContextBuilder OverrideServices(Action<IServiceCollection> overrides = null)
-        {
-            this.overrideServices = overrides;
-            return this;
-        }
+    private static IGitRepository CreateRepository()
+    {
+        var mockCommit = GitToolsTestingExtensions.CreateMockCommit();
+        var mockBranch = GitToolsTestingExtensions.CreateMockBranch(TestBase.MainBranch, mockCommit);
+        var branches = Substitute.For<IBranchCollection>();
+        branches.GetEnumerator().Returns(_ => ((IEnumerable<IBranch>)new[] { mockBranch }).GetEnumerator());
 
-        public GitVersionContextBuilder WithDevelopBranch() => WithBranch("develop");
+        var mockRepository = Substitute.For<IGitRepository>();
+        mockRepository.Branches.Returns(branches);
+        mockRepository.Head.Returns(mockBranch);
+        mockRepository.Commits.Returns(mockBranch.Commits);
 
-        private GitVersionContextBuilder WithBranch(string branchName)
-        {
-            this.repository = CreateRepository();
-            return AddBranch(branchName);
-        }
+        return mockRepository;
+    }
 
-        private GitVersionContextBuilder AddBranch(string branchName)
-        {
-            var mockCommit = GitToolsTestingExtensions.CreateMockCommit();
-            var mockBranch = GitToolsTestingExtensions.CreateMockBranch(branchName, mockCommit);
+    private static IServiceProvider ConfigureServices(Action<IServiceCollection> overrideServices = null)
+    {
+        var services = new ServiceCollection()
+            .AddModule(new GitVersionCoreTestModule());
 
-            var branches = this.repository.Branches.ToList();
-            branches.Add(mockBranch);
-            this.repository.Branches.GetEnumerator().Returns(_ => ((IEnumerable<IBranch>)branches).GetEnumerator());
-            this.repository.Head.Returns(mockBranch);
-            return this;
-        }
+        overrideServices?.Invoke(services);
 
-        public void Build()
-        {
-            var repo = this.repository ?? CreateRepository();
-
-            var config = new ConfigurationBuilder()
-                         .Add(this.configuration ?? new Config())
-                         .Build();
-
-            var options = Options.Create(new GitVersionOptions
-            {
-                WorkingDirectory = new EmptyRepositoryFixture().RepositoryPath,
-                ConfigInfo = { OverrideConfig = config }
-            });
-
-            this.ServicesProvider = ConfigureServices(services =>
-            {
-                services.AddSingleton(options);
-                services.AddSingleton(repo);
-                this.overrideServices?.Invoke(services);
-            });
-        }
-
-        private static IGitRepository CreateRepository()
-        {
-            var mockCommit = GitToolsTestingExtensions.CreateMockCommit();
-            var mockBranch = GitToolsTestingExtensions.CreateMockBranch(TestBase.MainBranch, mockCommit);
-            var branches = Substitute.For<IBranchCollection>();
-            branches.GetEnumerator().Returns(_ => ((IEnumerable<IBranch>)new[] { mockBranch }).GetEnumerator());
-
-            var mockRepository = Substitute.For<IGitRepository>();
-            mockRepository.Branches.Returns(branches);
-            mockRepository.Head.Returns(mockBranch);
-            mockRepository.Commits.Returns(mockBranch.Commits);
-
-            return mockRepository;
-        }
-
-        private static IServiceProvider ConfigureServices(Action<IServiceCollection> overrideServices = null)
-        {
-            var services = new ServiceCollection()
-                .AddModule(new GitVersionCoreTestModule());
-
-            overrideServices?.Invoke(services);
-
-            return services.BuildServiceProvider();
-        }
+        return services.BuildServiceProvider();
     }
 }

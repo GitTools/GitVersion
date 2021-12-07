@@ -1,11 +1,10 @@
 using LibGit2Sharp;
 
-namespace GitTools.Testing
+namespace GitTools.Testing;
+
+public class LocalRepositoryFixture : RepositoryFixtureBase
 {
-    public class LocalRepositoryFixture : RepositoryFixtureBase
+    public LocalRepositoryFixture(IRepository repository) : base(repository)
     {
-        public LocalRepositoryFixture(IRepository repository) : base(repository)
-        {
-        }
     }
 }

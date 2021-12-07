@@ -1,4 +1,3 @@
-using Cake.Frosting;
 using Release;
 
 return new CakeHost()

@@ -1,7 +1,6 @@
-namespace GitVersion.Configuration.Init.Wizard
+namespace GitVersion.Configuration.Init.Wizard;
+
+public interface IConfigInitStepFactory
 {
-    public interface IConfigInitStepFactory
-    {
-        T? CreateStep<T>();
-    }
+    T? CreateStep<T>();
 }

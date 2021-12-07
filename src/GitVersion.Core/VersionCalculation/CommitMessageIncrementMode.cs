@@ -1,9 +1,8 @@
-namespace GitVersion.VersionCalculation
+namespace GitVersion.VersionCalculation;
+
+public enum CommitMessageIncrementMode
 {
-    public enum CommitMessageIncrementMode
-    {
-        Enabled,
-        Disabled,
-        MergeMessageOnly
-    }
+    Enabled,
+    Disabled,
+    MergeMessageOnly
 }

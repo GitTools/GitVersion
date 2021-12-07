@@ -1,11 +1,8 @@
-using System.Collections.Generic;
+namespace GitVersion;
 
-namespace GitVersion
+public interface IRemoteCollection : IEnumerable<IRemote>
 {
-    public interface IRemoteCollection : IEnumerable<IRemote>
-    {
-        IRemote? this[string name] { get; }
-        void Remove(string remoteName);
-        void Update(string remoteName, string refSpec);
-    }
+    IRemote? this[string name] { get; }
+    void Remove(string remoteName);
+    void Update(string remoteName, string refSpec);
 }
