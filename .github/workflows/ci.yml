@@ -190,7 +190,7 @@ jobs:
         path: tools
         key: tools-${{ runner.os }}-${{ hashFiles('./build/**') }}
     -
-      uses: actions/download-artifact@v2.0.10
+      uses: actions/download-artifact@v2.1.0
       name: Download nuget packages
       with:
         name: nuget
@@ -236,13 +236,13 @@ jobs:
         path: tools
         key: tools-${{ runner.os }}-${{ hashFiles('./build/**') }}
     -
-      uses: actions/download-artifact@v2.0.10
+      uses: actions/download-artifact@v2.1.0
       name: Download nuget packages
       with:
         name: nuget
         path: ${{ github.workspace }}/artifacts/packages/nuget
     -
-      uses: actions/download-artifact@v2.0.10
+      uses: actions/download-artifact@v2.1.0
       name: Download native packages
       with:
         name: native-${{ runner.os }}
@@ -300,7 +300,7 @@ jobs:
         path: tools
         key: tools-${{ runner.os }}-${{ hashFiles('./build/**') }}
     -
-      uses: actions/download-artifact@v2.0.10
+      uses: actions/download-artifact@v2.1.0
       name: Download nuget packages
       with:
         name: nuget
@@ -398,7 +398,7 @@ jobs:
         path: tools
         key: tools-${{ runner.os }}-${{ hashFiles('./build/**') }}
     -
-      uses: actions/download-artifact@v2.0.10
+      uses: actions/download-artifact@v2.1.0
       name: Download nuget packages
       with:
         name: nuget
@@ -440,19 +440,19 @@ jobs:
         path: tools
         key: tools-${{ runner.os }}-${{ hashFiles('./build/**') }}
     -
-      uses: actions/download-artifact@v2.0.10
+      uses: actions/download-artifact@v2.1.0
       name: Download native linux packages
       with:
         name: native-Linux
         path: ${{ github.workspace }}/artifacts/packages/native
     -
-      uses: actions/download-artifact@v2.0.10
+      uses: actions/download-artifact@v2.1.0
       name: Download native windows packages
       with:
         name: native-Windows
         path: ${{ github.workspace }}/artifacts/packages/native
     -
-      uses: actions/download-artifact@v2.0.10
+      uses: actions/download-artifact@v2.1.0
       name: Download native macos packages
       with:
         name: native-macOS
