@@ -541,6 +541,79 @@ public class GitVersionExecutorTests : TestBase
         version.Sha.ShouldBe(commits.First().Sha);
     }
 
+    [Test]
+    [Category(NoMono)]
+    [Description(NoMonoDescription)]
+    public void CalculateVersionVariables_TwoBranchHasSameCommitHeadDetachedAndNotTagged_ThrowException()
+    {
+        // Setup
+        using var fixture = new RemoteRepositoryFixture();
+        var repoDir = new DirectoryInfo(fixture.RepositoryPath);
+        var Init = fixture.LocalRepositoryFixture.Repository.MakeACommit("Init commit");
+        var branchV1 = fixture.LocalRepositoryFixture.Repository.CreateBranch("feature/1.0");
+        fixture.LocalRepositoryFixture.Checkout("feature/1.0");
+        var commit = fixture.LocalRepositoryFixture.Repository.MakeACommit("feat: a new commit");
+        var branchV2 = fixture.LocalRepositoryFixture.Repository.CreateBranch("support/1.0");
+        fixture.LocalRepositoryFixture.Checkout(commit.Sha);
+
+        using var worktreeFixture = new LocalRepositoryFixture(new Repository(fixture.LocalRepositoryFixture.RepositoryPath));
+        var gitVersionOptions = new GitVersionOptions { WorkingDirectory = worktreeFixture.RepositoryPath };
+
+        var environment = new TestEnvironment();
+        environment.SetEnvironmentVariable(AzurePipelines.EnvironmentVariableName, "true");
+
+        this.sp = GetServiceProvider(gitVersionOptions, environment: environment);
+
+        var lazyContext = this.sp.GetService<Lazy<GitVersionContext>>();
+        var context = lazyContext.Value;
+
+        var preparer = this.sp.GetService<IGitPreparer>();
+        var sut = sp.GetService<IGitVersionCalculateTool>();
+
+        // Execute & Verify
+        var exception = Assert.Throws<WarningException>(() => sut.CalculateVersionVariables());
+        exception.Message.ShouldBe("Failed to try and guess branch to use. Move one of the branches along a commit to remove warning");
+    }
+
+    [Test]
+    [Category(NoMono)]
+    [Description(NoMonoDescription)]
+    public void CalculateVersionVariables_TwoBranchHasSameCommitHeadDetachedAndTagged_ReturnSemver()
+    {
+        // Setup
+        using var fixture = new RemoteRepositoryFixture();
+        var repoDir = new DirectoryInfo(fixture.RepositoryPath);
+        var Init = fixture.LocalRepositoryFixture.Repository.MakeACommit("Init commit");
+        var branchV1 = fixture.LocalRepositoryFixture.Repository.CreateBranch("feature/1.0");
+        fixture.LocalRepositoryFixture.Checkout("feature/1.0");
+        var commit = fixture.LocalRepositoryFixture.Repository.MakeACommit("feat: a new commit");
+        var branchV2 = fixture.LocalRepositoryFixture.Repository.CreateBranch("support/1.0");
+        fixture.LocalRepositoryFixture.ApplyTag("1.0.1");
+        fixture.LocalRepositoryFixture.Checkout(commit.Sha);
+
+        using var worktreeFixture = new LocalRepositoryFixture(new Repository(fixture.LocalRepositoryFixture.RepositoryPath));
+        var gitVersionOptions = new GitVersionOptions { WorkingDirectory = worktreeFixture.RepositoryPath };
+
+        var environment = new TestEnvironment();
+        environment.SetEnvironmentVariable(AzurePipelines.EnvironmentVariableName, "true");
+
+        this.sp = GetServiceProvider(gitVersionOptions, environment: environment);
+
+        var lazyContext = this.sp.GetService<Lazy<GitVersionContext>>();
+        var context = lazyContext.Value;
+
+        var preparer = this.sp.GetService<IGitPreparer>();
+        var sut = sp.GetService<IGitVersionCalculateTool>();
+
+        // Execute
+        var version = sut.CalculateVersionVariables();
+
+        // Verify
+        version.SemVer.ShouldBe("1.0.1");
+        var commits = worktreeFixture.Repository.Head.Commits;
+        version.Sha.ShouldBe(commits.First().Sha);
+    }
+
     private IGitVersionCalculateTool GetGitVersionCalculator(GitVersionOptions gitVersionOptions, ILog logger = null, IGitRepository repository = null, IFileSystem fs = null)
     {
         this.sp = GetServiceProvider(gitVersionOptions, logger, repository, fs);
@@ -555,6 +628,13 @@ public class GitVersionExecutorTests : TestBase
     private static IServiceProvider GetServiceProvider(GitVersionOptions gitVersionOptions, ILog log = null, IGitRepository repository = null, IFileSystem fileSystem = null, IEnvironment environment = null) =>
         ConfigureServices(services =>
         {
+            services.AddSingleton<IGitVersionContextFactory, GitVersionContextFactory>();
+            services.AddSingleton(sp =>
+            {
+                var options = sp.GetService<IOptions<GitVersionOptions>>();
+                var contextFactory = sp.GetService<IGitVersionContextFactory>();
+                return new Lazy<GitVersionContext?>(() => contextFactory?.Create(options?.Value));
+            });
             if (log != null) services.AddSingleton(log);
             if (fileSystem != null) services.AddSingleton(fileSystem);
             if (repository != null) services.AddSingleton(repository);
