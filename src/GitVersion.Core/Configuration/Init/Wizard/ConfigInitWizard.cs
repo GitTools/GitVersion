@@ -1,3 +1,4 @@
+using GitVersion.Extensions;
 using GitVersion.Logging;
 using GitVersion.Model.Configuration;
 
@@ -10,8 +11,8 @@ public class ConfigInitWizard : IConfigInitWizard
 
     public ConfigInitWizard(IConsole console, IConfigInitStepFactory stepFactory)
     {
-        this.console = console ?? throw new ArgumentNullException(nameof(console));
-        this.stepFactory = stepFactory ?? throw new ArgumentNullException(nameof(stepFactory));
+        this.console = console.NotNull();
+        this.stepFactory = stepFactory.NotNull();
     }
 
     public Config? Run(Config config, string workingDirectory)

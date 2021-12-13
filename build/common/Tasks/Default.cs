@@ -13,7 +13,7 @@ public class Default : FrostingTask
         if (tasks == null) return;
 
         var defaultTask = tasks.Find(x => x.Name.Contains(nameof(Default)));
-        if (tasks.Remove(defaultTask))
+        if (defaultTask != null && tasks.Remove(defaultTask))
         {
             tasks.Insert(0, defaultTask);
         }

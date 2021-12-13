@@ -1,3 +1,4 @@
+using GitVersion.Extensions;
 using GitVersion.Logging;
 
 namespace GitVersion.BuildAgents;
@@ -8,8 +9,8 @@ public class BuildAgentResolver : IBuildAgentResolver
     private readonly ILog log;
     public BuildAgentResolver(IEnumerable<IBuildAgent> buildAgents, ILog log)
     {
-        this.log = log;
-        this.buildAgents = buildAgents ?? Array.Empty<IBuildAgent>();
+        this.log = log.NotNull();
+        this.buildAgents = buildAgents;
     }
 
     public ICurrentBuildAgent? Resolve()

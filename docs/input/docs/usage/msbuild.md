@@ -51,15 +51,38 @@ The next thing you need to do is to remove the `Assembly*Version` attributes fro
 your `Properties\AssemblyInfo.cs` files. This puts GitVersion.MsBuild in charge of
 versioning your assemblies.
 
-DotNet SDK-style projects will generate Assembly Version info along with other
-Assembly Info in a 'projectname.AssemblyInfo.cs' file, conflicting with GitVersion.
-So, you will need to edit your project. Add [GenerateAssemblyFileVersionAttribute](https://docs.microsoft.com/en-us/dotnet/core/project-sdk/msbuild-props#generateassemblyfileversionattribute)
-under the first PropertyGroup and set it to `false`:
+### WPF specific concerns
+
+One further step needs to be taken for SDK-style WPF projects.
+
+Building projects with .NET Core SDK with a version lower than v5.0.200
+requires turning off automatic generation of the different versioning attributes.
+GitVersion usually controls these properties but cannot during WPF specific
+targets that generate a temporary project.
 
 ```xml
-<!-- GitVersion DotNet SDK Compatibility -->
-<GenerateAssemblyFileVersionAttribute>false</GenerateAssemblyFileVersionAttribute>
+<PropertyGroup>
+  <!-- Wpf workaround: GitVersion and .NET SDK < v5.0.200 -->
+  <GenerateAssemblyFileVersionAttribute>false</GenerateAssemblyFileVersionAttribute>
+  <GenerateAssemblyInformationalVersionAttribute>false</GenerateAssemblyInformationalVersionAttribute>
+  <GenerateAssemblyVersionAttribute>false</GenerateAssemblyVersionAttribute>
+</PropertyGroup>
 ```
+
+For .NET Core SDK v5.0.200 to v6.0.0-preview.1, a opt-in flag was introduced to
+allow package references to be imported to the temporary project.
+You can now remove the previous versioning attributes and replace them with
+a single property.
+
+```xml
+<PropertyGroup>
+  <!-- WPF workaround: GitVersion and .NET SDK between v5.0.200 and v6.0.0-preview.2  -->
+  <IncludePackageReferencesDuringMarkupCompilation>true</IncludePackageReferencesDuringMarkupCompilation>
+</PropertyGroup>
+```
+
+You can remove all workarounds if you are building with .NET Core SDK
+v6.0.0-preview.2 or later as the flag is now opt-out.
 
 ### Done!
 

@@ -1,3 +1,4 @@
+using GitVersion.Extensions;
 using GitVersion.Logging;
 using GitVersion.OutputVariables;
 
@@ -15,8 +16,8 @@ public sealed class WixVersionFileUpdater : IWixVersionFileUpdater
 
     public WixVersionFileUpdater(IFileSystem fileSystem, ILog log)
     {
-        this.fileSystem = fileSystem ?? throw new ArgumentNullException(nameof(fileSystem));
-        this.log = log ?? throw new ArgumentNullException(nameof(log));
+        this.fileSystem = fileSystem.NotNull();
+        this.log = log.NotNull();
     }
 
     public void Execute(VersionVariables variables, WixVersionContext context)

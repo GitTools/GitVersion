@@ -16,7 +16,7 @@ public class ToolsInstall : FrostingTask<BuildContext>
         var tools = jToken.Select(x => (JProperty)x).ToDictionary(x => x.Name, x => x.Value["version"]?.Value<string>());
         foreach (var (toolName, version) in tools)
         {
-            // context.DotNetCoreTool($"tool update --tool-path {context.Configuration.GetToolPath()} --version {version} {toolName}");
+            // context.DotNetTool($"tool update --tool-path {context.Configuration.GetToolPath()} --version {version} {toolName}");
         }
     }
 }

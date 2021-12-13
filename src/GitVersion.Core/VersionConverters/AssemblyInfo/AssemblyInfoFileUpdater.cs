@@ -130,7 +130,7 @@ public sealed class AssemblyInfoFileUpdater : IAssemblyInfoFileUpdater
     {
         var assemblyAddFormat = this.templateManager.GetAddFormatFor(fileExtension);
 
-        if (replaceRegex.IsMatch(inputString))
+        if (replaceRegex.IsMatch(inputString) && replaceString != null)
         {
             return replaceRegex.Replace(inputString, replaceString);
         }
@@ -143,20 +143,22 @@ public sealed class AssemblyInfoFileUpdater : IAssemblyInfoFileUpdater
                 var lastMatch = assemblyMatches[assemblyMatches.Count - 1];
                 var replacementString = lastMatch.Value;
                 if (!lastMatch.Value.EndsWith(NewLine)) replacementString += NewLine;
-                replacementString += string.Format(assemblyAddFormat, replaceString);
+                if (assemblyAddFormat != null)
+                    replacementString += string.Format(assemblyAddFormat, replaceString);
                 replacementString += NewLine;
                 return inputString.Replace(lastMatch.Value, replacementString);
             }
         }
 
-        inputString += NewLine + string.Format(assemblyAddFormat, replaceString);
+        if (assemblyAddFormat != null)
+            inputString += NewLine + string.Format(assemblyAddFormat, replaceString);
         appendedAttributes = true;
         return inputString;
     }
 
     private IEnumerable<FileInfo> GetAssemblyInfoFiles(AssemblyInfoContext context)
     {
-        var workingDirectory = context.WorkingDirectory!;
+        var workingDirectory = context.WorkingDirectory;
         var ensureAssemblyInfo = context.EnsureAssemblyInfo;
         var assemblyInfoFileNames = new HashSet<string>(context.AssemblyInfoFiles);
 
@@ -188,7 +190,7 @@ public sealed class AssemblyInfoFileUpdater : IAssemblyInfoFileUpdater
 
     private bool EnsureVersionAssemblyInfoFile(string fullPath, bool ensureAssemblyInfo)
     {
-        fullPath = fullPath ?? throw new ArgumentNullException(nameof(fullPath));
+        fullPath = fullPath.NotNull();
         if (this.fileSystem.Exists(fullPath))
         {
             return true;

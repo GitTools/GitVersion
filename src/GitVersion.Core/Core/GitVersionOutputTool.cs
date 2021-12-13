@@ -1,3 +1,4 @@
+using GitVersion.Extensions;
 using GitVersion.OutputVariables;
 using GitVersion.VersionConverters.AssemblyInfo;
 using GitVersion.VersionConverters.GitVersionInfo;
@@ -21,14 +22,14 @@ public class GitVersionOutputTool : IGitVersionOutputTool
         IGitVersionInfoGenerator gitVersionInfoGenerator, IAssemblyInfoFileUpdater assemblyInfoFileUpdater,
         IProjectFileUpdater projectFileUpdater)
     {
-        this.options = options ?? throw new ArgumentNullException(nameof(options));
+        this.options = options.NotNull();
 
-        this.outputGenerator = outputGenerator ?? throw new ArgumentNullException(nameof(outputGenerator));
+        this.outputGenerator = outputGenerator.NotNull();
 
-        this.wixVersionFileUpdater = wixVersionFileUpdater ?? throw new ArgumentNullException(nameof(wixVersionFileUpdater));
-        this.gitVersionInfoGenerator = gitVersionInfoGenerator ?? throw new ArgumentNullException(nameof(gitVersionInfoGenerator));
-        this.assemblyInfoFileUpdater = assemblyInfoFileUpdater ?? throw new ArgumentNullException(nameof(gitVersionInfoGenerator));
-        this.projectFileUpdater = projectFileUpdater ?? throw new ArgumentNullException(nameof(projectFileUpdater));
+        this.wixVersionFileUpdater = wixVersionFileUpdater.NotNull();
+        this.gitVersionInfoGenerator = gitVersionInfoGenerator.NotNull();
+        this.assemblyInfoFileUpdater = assemblyInfoFileUpdater.NotNull();
+        this.projectFileUpdater = projectFileUpdater.NotNull();
     }
 
     public void OutputVariables(VersionVariables variables, bool updateBuildNumber)

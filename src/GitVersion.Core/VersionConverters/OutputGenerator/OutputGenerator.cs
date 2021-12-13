@@ -1,4 +1,5 @@
 using GitVersion.BuildAgents;
+using GitVersion.Extensions;
 using GitVersion.Helpers;
 using GitVersion.Logging;
 using GitVersion.Model;
@@ -20,9 +21,9 @@ public sealed class OutputGenerator : IOutputGenerator
 
     public OutputGenerator(ICurrentBuildAgent buildAgent, IConsole console, IFileSystem fileSystem, IOptions<GitVersionOptions> options)
     {
-        this.console = console ?? throw new ArgumentNullException(nameof(console));
-        this.fileSystem = fileSystem ?? throw new ArgumentNullException(nameof(fileSystem));
-        this.options = options ?? throw new ArgumentNullException(nameof(options));
+        this.console = console.NotNull();
+        this.fileSystem = fileSystem.NotNull();
+        this.options = options.NotNull();
         this.buildAgent = buildAgent;
     }
 

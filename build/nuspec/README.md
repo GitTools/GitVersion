@@ -36,8 +36,8 @@ You are seeing:
 
 ## Icon
 
-<a href="https://thenounproject.com/term/tree/13389/" target="_blank">Tree</a>
-designed by <a href="http://thenounproject.com/david.chapman" target="_blank">David Chapman</a>
+[Tree][app-icon]
+designed by [David Chapman][app-icon-author]
 from The Noun Project.
 
 [semver]:                          http://semver.org
@@ -59,5 +59,7 @@ from The Noun Project.
 [how]:                             https://gitversion.net/docs/learn/how-it-works
 [faq]:                             https://gitversion.net/docs/learn/faq
 [who]:                             https://gitversion.net/docs/learn/who
-[gv-in-action]:                    https://raw.github.com/GitTools/GitVersion/master/docs/input/docs/img/README.png
-[banner]:                          https://github.com/GitTools/graphics/raw/master/GitVersion/banner-1280x640.png
+[gv-in-action]:                    https://raw.githubusercontent.com/GitTools/GitVersion/master/docs/input/docs/img/README.png
+[banner]:                          https://raw.githubusercontent.com/GitTools/graphics/master/GitVersion/banner-1280x640.png
+[app-icon]:                        https://thenounproject.com/term/tree/13389/
+[app-icon-author]:                 http://thenounproject.com/david.chapman

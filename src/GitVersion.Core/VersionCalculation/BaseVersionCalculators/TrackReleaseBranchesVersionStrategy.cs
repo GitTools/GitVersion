@@ -1,5 +1,6 @@
 using GitVersion.Common;
 using GitVersion.Configuration;
+using GitVersion.Extensions;
 using GitVersion.Model.Configuration;
 
 namespace GitVersion.VersionCalculation;
@@ -29,7 +30,7 @@ public class TrackReleaseBranchesVersionStrategy : VersionStrategyBase
     public TrackReleaseBranchesVersionStrategy(IRepositoryStore repositoryStore, Lazy<GitVersionContext> versionContext)
         : base(versionContext)
     {
-        this.repositoryStore = repositoryStore ?? throw new ArgumentNullException(nameof(repositoryStore));
+        this.repositoryStore = repositoryStore.NotNull();
 
         this.releaseVersionStrategy = new VersionInBranchNameVersionStrategy(repositoryStore, versionContext);
         this.taggedCommitVersionStrategy = new TaggedCommitVersionStrategy(repositoryStore, versionContext);
@@ -50,8 +51,6 @@ public class TrackReleaseBranchesVersionStrategy : VersionStrategyBase
         var main = this.repositoryStore.FindBranch(Config.MainBranchKey);
         return main != null ? this.taggedCommitVersionStrategy.GetTaggedVersions(main, null) : Array.Empty<BaseVersion>();
     }
-
-
 
     private IEnumerable<BaseVersion> ReleaseBranchBaseVersions()
     {

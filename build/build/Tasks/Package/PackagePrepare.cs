@@ -1,4 +1,4 @@
-using Cake.Common.Tools.DotNetCore.Publish;
+using Cake.Common.Tools.DotNet.Publish;
 using Common.Utilities;
 
 namespace Build.Tasks;
@@ -39,6 +39,7 @@ public class PackagePrepare : FrostingTask<BuildContext>
 
             // testing windows and macos artifacts, the linux is tested with docker
             if (platform == PlatformFamily.Linux) continue;
+            if (runtime.EndsWith("arm64")) continue;
 
             context.Information("Validating native lib:");
             var nativeExe = outputPath.CombineWithFilePath(context.IsOnWindows ? "gitversion.exe" : "gitversion");
@@ -51,7 +52,7 @@ public class PackagePrepare : FrostingTask<BuildContext>
         var platform = context.Environment.Platform.Family;
         var outputPath = Paths.Native.Combine(platform.ToString().ToLower()).Combine(runtime);
 
-        var settings = new DotNetCorePublishSettings
+        var settings = new DotNetPublishSettings
         {
             Framework = Constants.NetVersion60,
             Runtime = runtime,
@@ -59,10 +60,18 @@ public class PackagePrepare : FrostingTask<BuildContext>
             Configuration = context.MsBuildConfiguration,
             OutputDirectory = outputPath,
             MSBuildSettings = context.MsBuildSettings,
-            ArgumentCustomization = arg => arg.Append("/p:PublishSingleFile=true --self-contained"),
+            IncludeNativeLibrariesForSelfExtract = true,
+            PublishSingleFile = true,
+            SelfContained = true
         };
 
-        context.DotNetCorePublish("./src/GitVersion.App/GitVersion.App.csproj", settings);
+        // workaround for https://github.com/dotnet/runtime/issues/49508
+        if (runtime == "osx-arm64")
+        {
+            settings.ArgumentCustomization = arg => arg.Append("/p:OsxArm64=true");
+        }
+
+        context.DotNetPublish("./src/GitVersion.App/GitVersion.App.csproj", settings);
 
         return outputPath;
     }

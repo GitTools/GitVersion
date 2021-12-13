@@ -18,11 +18,11 @@ public class NextVersionCalculator : INextVersionCalculator
         IMainlineVersionCalculator mainlineVersionCalculator, IRepositoryStore repositoryStore,
         Lazy<GitVersionContext> versionContext)
     {
-        this.log = log ?? throw new ArgumentNullException(nameof(log));
-        this.baseVersionCalculator = baseVersionCalculator ?? throw new ArgumentNullException(nameof(baseVersionCalculator));
-        this.mainlineVersionCalculator = mainlineVersionCalculator ?? throw new ArgumentNullException(nameof(mainlineVersionCalculator));
-        this.repositoryStore = repositoryStore ?? throw new ArgumentNullException(nameof(repositoryStore));
-        this.versionContext = versionContext ?? throw new ArgumentNullException(nameof(versionContext));
+        this.log = log.NotNull();
+        this.baseVersionCalculator = baseVersionCalculator.NotNull();
+        this.mainlineVersionCalculator = mainlineVersionCalculator.NotNull();
+        this.repositoryStore = repositoryStore.NotNull();
+        this.versionContext = versionContext.NotNull();
     }
 
     public SemanticVersion FindVersion()
@@ -81,7 +81,7 @@ public class NextVersionCalculator : INextVersionCalculator
 #pragma warning restore CS8602 // Dereference of a possibly null reference.
         if (semver.PreReleaseTag?.HasTag() != true && branchConfigHasPreReleaseTagConfigured || preReleaseTagDoesNotMatchConfiguration)
         {
-            UpdatePreReleaseTag(semver, baseVersion?.BranchNameOverride);
+            UpdatePreReleaseTag(semver, baseVersion.BranchNameOverride);
         }
 
         if (taggedSemanticVersion != null)

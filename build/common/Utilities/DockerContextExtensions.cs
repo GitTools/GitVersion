@@ -66,15 +66,16 @@ public static class DockerContextExtensions
         var manifestTags = context.GetDockerTags(dockerImage);
         foreach (var tag in manifestTags)
         {
+            var manifestCreateSettings = new DockerManifestCreateSettings { Amend = true };
             var amd64Tag = $"{tag}-{Architecture.Amd64.ToSuffix()}";
             if (skipArm64Image)
             {
-                context.DockerManifestCreate(tag, amd64Tag);
+                context.DockerManifestCreate(manifestCreateSettings, tag, amd64Tag);
             }
             else
             {
                 var arm64Tag = $"{tag}-{Architecture.Arm64.ToSuffix()}";
-                context.DockerManifestCreate(tag, amd64Tag, arm64Tag);
+                context.DockerManifestCreate(manifestCreateSettings, tag, amd64Tag, arm64Tag);
             }
         }
     }
@@ -84,19 +85,9 @@ public static class DockerContextExtensions
         var manifestTags = context.GetDockerTags(dockerImage);
         foreach (var tag in manifestTags)
         {
-            context.DockerManifestPush(tag);
+            context.DockerManifestPush(new DockerManifestPushSettings { Purge = true }, tag);
         }
     }
-    public static void DockerRemoveManifest(this BuildContextBase context, DockerImage dockerImage)
-    {
-        var manifestTags = context.GetDockerTags(dockerImage);
-        foreach (var tag in manifestTags)
-        {
-            context.DockerManifestRemove(tag);
-        }
-    }
-
-    private static void DockerManifestRemove(this ICakeContext context, string tag) => context.DockerCustomCommand($"manifest rm {tag}");
 
     public static void DockerPullImage(this ICakeContext context, DockerImage dockerImage)
     {
@@ -190,10 +181,10 @@ public static class DockerContextExtensions
             }
         }
 
-        if (!arch.HasValue) return tags;
+        if (!arch.HasValue) return tags.Distinct();
 
         var suffix = arch.Value.ToSuffix();
-        return tags.Select(x => $"{x}-{suffix}");
+        return tags.Select(x => $"{x}-{suffix}").Distinct();
 
     }
     private static string DockerImageName(this DockerImage image) => $"{image.Registry}/{(image.UseBaseImage ? Constants.DockerBaseImageName : Constants.DockerImageName)}";

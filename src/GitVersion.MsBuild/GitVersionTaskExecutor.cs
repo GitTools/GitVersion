@@ -1,4 +1,4 @@
-using GitVersion.Logging;
+using GitVersion.Extensions;
 using GitVersion.MsBuild.Tasks;
 using GitVersion.OutputVariables;
 using Microsoft.Extensions.Options;
@@ -8,21 +8,19 @@ namespace GitVersion.MsBuild;
 public class GitVersionTaskExecutor : IGitVersionTaskExecutor
 {
     private readonly IFileSystem fileSystem;
-    private readonly ILog log;
     private readonly IGitVersionOutputTool gitVersionOutputTool;
     private readonly IOptions<GitVersionOptions> options;
 
-    public GitVersionTaskExecutor(IFileSystem fileSystem, IGitVersionOutputTool gitVersionOutputTool, IOptions<GitVersionOptions> options, ILog log)
+    public GitVersionTaskExecutor(IFileSystem fileSystem, IGitVersionOutputTool gitVersionOutputTool, IOptions<GitVersionOptions> options)
     {
-        this.fileSystem = fileSystem ?? throw new ArgumentNullException(nameof(fileSystem));
-        this.log = log ?? throw new ArgumentNullException(nameof(log));
-        this.gitVersionOutputTool = gitVersionOutputTool ?? throw new ArgumentNullException(nameof(gitVersionOutputTool));
-        this.options = options ?? throw new ArgumentNullException(nameof(options));
+        this.fileSystem = fileSystem.NotNull();
+        this.gitVersionOutputTool = gitVersionOutputTool.NotNull();
+        this.options = options.NotNull();
     }
 
     public void GetVersion(GetVersion task)
     {
-        var versionVariables = VersionVariables.FromFile(task.VersionFile, fileSystem, log);
+        var versionVariables = VersionVariables.FromFile(task.VersionFile, fileSystem);
         var outputType = typeof(GetVersion);
         foreach (var variable in versionVariables)
         {
@@ -32,7 +30,7 @@ public class GitVersionTaskExecutor : IGitVersionTaskExecutor
 
     public void UpdateAssemblyInfo(UpdateAssemblyInfo task)
     {
-        var versionVariables = VersionVariables.FromFile(task.VersionFile, fileSystem, log);
+        var versionVariables = VersionVariables.FromFile(task.VersionFile, fileSystem);
         FileHelper.DeleteTempFiles();
         if (task.CompileFiles != null) FileHelper.CheckForInvalidFiles(task.CompileFiles, task.ProjectFile);
 
@@ -50,7 +48,7 @@ public class GitVersionTaskExecutor : IGitVersionTaskExecutor
 
     public void GenerateGitVersionInformation(GenerateGitVersionInformation task)
     {
-        var versionVariables = VersionVariables.FromFile(task.VersionFile, fileSystem, log);
+        var versionVariables = VersionVariables.FromFile(task.VersionFile, fileSystem);
         var fileWriteInfo = task.IntermediateOutputPath.GetFileWriteInfo(task.Language, task.ProjectFile, "GitVersionInformation");
         task.GitVersionInformationFilePath = Path.Combine(fileWriteInfo.WorkingDirectory, fileWriteInfo.FileName);
 
@@ -62,7 +60,7 @@ public class GitVersionTaskExecutor : IGitVersionTaskExecutor
 
     public void WriteVersionInfoToBuildLog(WriteVersionInfoToBuildLog task)
     {
-        var versionVariables = VersionVariables.FromFile(task.VersionFile, fileSystem, log);
+        var versionVariables = VersionVariables.FromFile(task.VersionFile, fileSystem);
         gitVersionOutputTool.OutputVariables(versionVariables, false);
     }
 }

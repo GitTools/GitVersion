@@ -1,4 +1,5 @@
 using System.Diagnostics.CodeAnalysis;
+using GitVersion.Extensions;
 
 namespace GitVersion.VersionCalculation;
 
@@ -6,7 +7,7 @@ public class ShaVersionFilter : IVersionFilter
 {
     private readonly IEnumerable<string> shas;
 
-    public ShaVersionFilter(IEnumerable<string> shas) => this.shas = shas ?? throw new ArgumentNullException(nameof(shas));
+    public ShaVersionFilter(IEnumerable<string> shas) => this.shas = shas.NotNull();
 
     public bool Exclude(BaseVersion version, [NotNullWhen(true)] out string? reason)
     {

@@ -15,7 +15,7 @@ public class MergeMessageVersionStrategy : VersionStrategyBase
 {
     private readonly ILog log;
 
-    public MergeMessageVersionStrategy(ILog log, Lazy<GitVersionContext> versionContext) : base(versionContext) => this.log = log ?? throw new ArgumentNullException(nameof(log));
+    public MergeMessageVersionStrategy(ILog log, Lazy<GitVersionContext> versionContext) : base(versionContext) => this.log = log.NotNull();
 
     public override IEnumerable<BaseVersion> GetVersions()
     {

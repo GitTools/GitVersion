@@ -9,7 +9,7 @@ public class BuildLifetimeBase<T> : FrostingLifetime<T> where T : BuildContextBa
     {
         var buildSystem = context.BuildSystem();
         context.IsLocalBuild = buildSystem.IsLocalBuild;
-        context.IsAzurePipelineBuild = buildSystem.IsRunningOnAzurePipelines || buildSystem.IsRunningOnAzurePipelinesHosted;
+        context.IsAzurePipelineBuild = buildSystem.IsRunningOnAzurePipelines;
         context.IsGitHubActionsBuild = buildSystem.IsRunningOnGitHubActions;
 
         context.IsPullRequest = buildSystem.IsPullRequest;

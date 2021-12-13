@@ -13,6 +13,10 @@ public class Constants
     public const string NetVersion60 = "net6.0";
     public const string CoreFxVersion31 = "netcoreapp3.1";
     public const string FullFxVersion48 = "net48";
+
+    public const string NoMono = "NoMono";
+    public const string NoNet48 = "NoNet48";
+
     public static readonly string[] VersionsToBuild = { Version60, Version50, Version31 };
     public static readonly Architecture[] ArchToBuild = { Architecture.Amd64, Architecture.Arm64 };
     public static readonly string[] DistrosToSkip = { Alpine312, Alpine313, Alpine314, Centos7 };

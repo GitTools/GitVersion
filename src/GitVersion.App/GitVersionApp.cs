@@ -1,3 +1,4 @@
+using GitVersion.Extensions;
 using GitVersion.Logging;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
@@ -13,10 +14,10 @@ internal class GitVersionApp : IHostedService
 
     public GitVersionApp(IHostApplicationLifetime applicationLifetime, IGitVersionExecutor gitVersionExecutor, ILog log, IOptions<GitVersionOptions> options)
     {
-        this.options = options ?? throw new ArgumentNullException(nameof(options));
-        this.applicationLifetime = applicationLifetime ?? throw new ArgumentNullException(nameof(applicationLifetime));
-        this.gitVersionExecutor = gitVersionExecutor ?? throw new ArgumentNullException(nameof(gitVersionExecutor));
-        this.log = log ?? throw new ArgumentNullException(nameof(log));
+        this.options = options.NotNull();
+        this.applicationLifetime = applicationLifetime.NotNull();
+        this.gitVersionExecutor = gitVersionExecutor.NotNull();
+        this.log = log.NotNull();
     }
     public Task StartAsync(CancellationToken cancellationToken)
     {

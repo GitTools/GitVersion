@@ -1,3 +1,5 @@
+using GitVersion.Extensions;
+
 namespace GitVersion;
 
 /// <summary>
@@ -9,8 +11,8 @@ public readonly struct BranchCommit : IEquatable<BranchCommit?>
 
     public BranchCommit(ICommit commit, IBranch branch) : this()
     {
-        Branch = branch ?? throw new ArgumentNullException(nameof(branch));
-        Commit = commit ?? throw new ArgumentNullException(nameof(commit));
+        Branch = branch.NotNull();
+        Commit = commit.NotNull();
     }
 
     public IBranch Branch { get; }
@@ -18,7 +20,7 @@ public readonly struct BranchCommit : IEquatable<BranchCommit?>
 
     public bool Equals(BranchCommit? other) => Equals(Branch, other?.Branch) && Equals(Commit, other?.Commit);
 
-    public override bool Equals(object obj) => obj is null ? false : Equals(obj as BranchCommit?);
+    public override bool Equals(object? obj) => obj is not null && Equals(obj as BranchCommit?);
 
     public override int GetHashCode()
     {

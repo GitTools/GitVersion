@@ -1,4 +1,3 @@
-using System.Diagnostics.CodeAnalysis;
 using GitVersion.Common;
 using GitVersion.Configuration;
 using GitVersion.Extensions;
@@ -16,10 +15,10 @@ internal class MainlineVersionCalculator : IMainlineVersionCalculator
 
     public MainlineVersionCalculator(ILog log, IRepositoryStore repositoryStore, Lazy<GitVersionContext> versionContext, IIncrementStrategyFinder incrementStrategyFinder)
     {
-        this.log = log ?? throw new ArgumentNullException(nameof(log));
-        this.repositoryStore = repositoryStore ?? throw new ArgumentNullException(nameof(repositoryStore));
-        this.versionContext = versionContext ?? throw new ArgumentNullException(nameof(versionContext));
-        this.incrementStrategyFinder = incrementStrategyFinder ?? throw new ArgumentNullException(nameof(incrementStrategyFinder));
+        this.log = log.NotNull();
+        this.repositoryStore = repositoryStore.NotNull();
+        this.versionContext = versionContext.NotNull();
+        this.incrementStrategyFinder = incrementStrategyFinder.NotNull();
     }
 
     public SemanticVersion FindMainlineModeVersion(BaseVersion baseVersion)
@@ -46,7 +45,7 @@ internal class MainlineVersionCalculator : IMainlineVersionCalculator
             // when the current branch is not mainline, find the effective mainline tip for versioning the branch
             if (!context.CurrentBranch!.Equals(mainline))
             {
-                mergeBase = FindMergeBaseBeforeForwardMerge(baseVersion.BaseVersionSource, mainline, out mainlineTip);
+                (mergeBase, mainlineTip) = FindMergeBaseBeforeForwardMerge(baseVersion.BaseVersionSource, mainline);
                 this.log.Info($"Current branch ({context.CurrentBranch}) was branch from {mergeBase}");
             }
 
@@ -197,33 +196,39 @@ internal class MainlineVersionCalculator : IMainlineVersionCalculator
     /// </summary>
     /// <param name="baseVersionSource">The commit that establishes the contextual base version.</param>
     /// <param name="mainline">The mainline branch.</param>
-    /// <param name="mainlineTip">The commit on mainline at which the returned merge base was fully integrated.</param>
     /// <returns>The best possible merge base between the current commit and <paramref name="mainline"/> that is not the child of a forward merge.</returns>
-    private ICommit FindMergeBaseBeforeForwardMerge(ICommit? baseVersionSource, IBranch mainline, [NotNullWhen(true)] out ICommit? mainlineTip)
+    private (ICommit? mergeBase, ICommit? mainlineTip) FindMergeBaseBeforeForwardMerge(ICommit? baseVersionSource, IBranch mainline)
     {
-        var mergeBase = this.repositoryStore.FindMergeBase(context.CurrentCommit!, mainline.Tip!);
-        var mainlineCommitLog = this.repositoryStore.GetMainlineCommitLog(baseVersionSource, mainline.Tip).ToList();
+        var mainlineTipCurrent = mainline.Tip;
+        var mainlineCommitLog = this.repositoryStore.GetMainlineCommitLog(baseVersionSource, mainlineTipCurrent).ToList();
 
         // find the mainline commit effective for versioning the current branch
-        mainlineTip = GetEffectiveMainlineTip(mainlineCommitLog, mergeBase, mainline.Tip);
-
-        // detect forward merge and rewind mainlineTip to before it
-        if (Equals(mergeBase, context.CurrentCommit) && !mainlineCommitLog.Contains(mergeBase))
+        if (context.CurrentCommit != null)
         {
-            var mainlineTipPrevious = mainlineTip?.Parents.FirstOrDefault();
-            if (mainlineTipPrevious != null)
+            var mergeBase = this.repositoryStore.FindMergeBase(context.CurrentCommit, mainlineTipCurrent!);
+            if (mergeBase != null)
             {
-                var message = $"Detected forward merge at {mainlineTip}; rewinding mainline to previous commit {mainlineTipPrevious}";
+                var mainlineTip = GetEffectiveMainlineTip(mainlineCommitLog, mergeBase, mainlineTipCurrent);
 
-                this.log.Info(message);
+                // detect forward merge and rewind mainlineTip to before it
+                if (Equals(mergeBase, context.CurrentCommit) && !mainlineCommitLog.Contains(mergeBase))
+                {
+                    var mainlineTipPrevious = mainlineTip?.Parents.FirstOrDefault();
+                    if (mainlineTipPrevious != null)
+                    {
+                        this.log.Info($"Detected forward merge at {mainlineTip}; rewinding mainline to previous commit {mainlineTipPrevious}");
 
-                // re-do mergeBase detection before the forward merge
-                mergeBase = this.repositoryStore.FindMergeBase(context.CurrentCommit, mainlineTipPrevious);
-                mainlineTip = GetEffectiveMainlineTip(mainlineCommitLog, mergeBase, mainlineTipPrevious);
+                        // re-do mergeBase detection before the forward merge
+                        mergeBase = this.repositoryStore.FindMergeBase(context.CurrentCommit, mainlineTipPrevious);
+                        if (mergeBase != null)
+                            mainlineTip = GetEffectiveMainlineTip(mainlineCommitLog, mergeBase, mainlineTipPrevious);
+                    }
+                }
+
+                return (mergeBase, mainlineTip);
             }
         }
-
-        return mergeBase;
+        return (null, null);
     }
 
     private SemanticVersion IncrementForEachCommit(IEnumerable<ICommit> directCommits, SemanticVersion mainlineVersion, IBranch mainline)
@@ -243,8 +248,7 @@ internal class MainlineVersionCalculator : IMainlineVersionCalculator
     {
         var commits = this.repositoryStore.GetMergeBaseCommits(mergeCommit, mergedHead, findMergeBase);
         commitLog.RemoveAll(c => commits.Any(c1 => c1.Sha == c.Sha));
-        return this.incrementStrategyFinder.GetIncrementForCommits(context, commits)
-               ?? TryFindIncrementFromMergeMessage(mergeCommit);
+        return this.incrementStrategyFinder.GetIncrementForCommits(context, commits) ?? TryFindIncrementFromMergeMessage(mergeCommit);
     }
 
     private VersionField TryFindIncrementFromMergeMessage(ICommit? mergeCommit)
@@ -252,13 +256,10 @@ internal class MainlineVersionCalculator : IMainlineVersionCalculator
         if (mergeCommit != null)
         {
             var mergeMessage = new MergeMessage(mergeCommit.Message, context.FullConfiguration);
-            if (mergeMessage.MergedBranch != null)
+            var config = context.FullConfiguration?.GetConfigForBranch(mergeMessage.MergedBranch);
+            if (config?.Increment != null && config.Increment != IncrementStrategy.Inherit)
             {
-                var config = context.FullConfiguration?.GetConfigForBranch(mergeMessage.MergedBranch);
-                if (config?.Increment != null && config.Increment != IncrementStrategy.Inherit)
-                {
-                    return config.Increment.Value.ToVersionField();
-                }
+                return config.Increment.Value.ToVersionField();
             }
         }
 

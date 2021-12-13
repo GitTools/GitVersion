@@ -7,14 +7,15 @@ namespace GitVersion.VersionConverters.AssemblyInfo;
 
 public interface IProjectFileUpdater : IVersionConverter<AssemblyInfoContext>
 {
+    bool CanUpdateProjectFile(XElement xmlRoot);
 }
 
 public sealed class ProjectFileUpdater : IProjectFileUpdater
 {
     internal const string AssemblyVersionElement = "AssemblyVersion";
-    internal const string FileVersionElement = "FileVersion";
-    internal const string InformationalVersionElement = "InformationalVersion";
-    internal const string VersionElement = "Version";
+    private const string FileVersionElement = "FileVersion";
+    private const string InformationalVersionElement = "InformationalVersion";
+    private const string VersionElement = "Version";
 
     private readonly List<Action> restoreBackupTasks = new();
     private readonly List<Action> cleanupBackupTasks = new();
@@ -100,7 +101,7 @@ public sealed class ProjectFileUpdater : IProjectFileUpdater
         CommitChanges();
     }
 
-    internal bool CanUpdateProjectFile(XElement xmlRoot)
+    public bool CanUpdateProjectFile(XElement xmlRoot)
     {
         if (xmlRoot.Name != "Project")
         {
@@ -108,12 +109,10 @@ public sealed class ProjectFileUpdater : IProjectFileUpdater
             return false;
         }
 
-        var supportedSdks = new[] { "Microsoft.NET.Sdk", "Microsoft.NET.Sdk.Web", "Microsoft.NET.Sdk.WindowsDesktop", "Microsoft.NET.Sdk.Razor", "Microsoft.NET.Sdk.Worker" };
         var sdkAttribute = xmlRoot.Attribute("Sdk");
-        if (sdkAttribute == null || !supportedSdks.Contains(sdkAttribute.Value))
+        if (sdkAttribute == null || !sdkAttribute.Value.StartsWith("Microsoft.NET.Sdk"))
         {
-            var supportedSdkString = string.Join("|", supportedSdks);
-            this.log.Warning($"Specified project file Sdk ({sdkAttribute?.Value}) is not supported, please ensure the project sdk is of the following: {supportedSdkString}.");
+            this.log.Warning($"Specified project file Sdk ({sdkAttribute?.Value}) is not supported, please ensure the project sdk starts with 'Microsoft.NET.Sdk'");
             return false;
         }
 
@@ -206,7 +205,7 @@ public sealed class ProjectFileUpdater : IProjectFileUpdater
         }
     }
 
-    private bool IsSupportedProjectFile(string fileName)
+    private static bool IsSupportedProjectFile(string fileName)
     {
         if (fileName.IsNullOrEmpty())
         {

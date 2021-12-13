@@ -1,3 +1,4 @@
+using GitVersion.Extensions;
 using GitVersion.OutputVariables;
 
 namespace GitVersion.VersionConverters.GitVersionInfo;
@@ -13,7 +14,7 @@ public sealed class GitVersionInfoGenerator : IGitVersionInfoGenerator
 
     public GitVersionInfoGenerator(IFileSystem fileSystem)
     {
-        this.fileSystem = fileSystem ?? throw new ArgumentNullException(nameof(fileSystem));
+        this.fileSystem = fileSystem.NotNull();
         this.templateManager = new TemplateManager(TemplateType.GitVersionInfo);
     }
 

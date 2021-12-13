@@ -1,4 +1,4 @@
-namespace Common.Addins.Cake.DotNetCoreFormat;
+namespace Common.Addins.Cake.DotNetFormat;
 
 /// <summary>
 /// <para>Contains aliases related to <see href="https://github.com/dotnet/format">dotnet format</see>.</para>
@@ -10,8 +10,8 @@ namespace Common.Addins.Cake.DotNetCoreFormat;
 /// </code>
 /// </para>
 /// </summary>
-[CakeAliasCategory("DotNetCoreFormat")]
-public static class DotNetCoreFormatAliases
+[CakeAliasCategory("DotNetFormat")]
+public static class DotNetFormatAliases
 {
     /// <summary>
     /// Formats the code using the given settings.
@@ -19,14 +19,14 @@ public static class DotNetCoreFormatAliases
     /// <param name="context">The context.</param>
     /// <param name="settings">The settings.</param>
     [CakeMethodAlias]
-    public static void DotNetCoreFormat(this ICakeContext context, DotNetCoreFormatSettings settings)
+    public static void DotNetFormat(this ICakeContext context, DotNetFormatSettings settings)
     {
         if (context is null)
         {
             throw new ArgumentNullException(nameof(context));
         }
 
-        var runner = new DotNetCoreFormatToolRunner(context.FileSystem, context.Environment, context.ProcessRunner, context.Tools);
+        var runner = new DotNetFormatToolRunner(context.FileSystem, context.Environment, context.ProcessRunner, context.Tools);
         runner.Run(settings);
     }
 }

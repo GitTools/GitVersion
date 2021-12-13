@@ -1,7 +1,6 @@
 using System.Text.Encodings.Web;
 using System.Text.Json;
 using GitVersion.Helpers;
-using GitVersion.Logging;
 using YamlDotNet.Serialization;
 using static GitVersion.Extensions.ObjectExtensions;
 
@@ -150,14 +149,10 @@ public class VersionVariables : IEnumerable<KeyValuePair<string, string>>
         return FromDictionary(variablePairs);
     }
 
-    public static VersionVariables FromFile(string filePath, IFileSystem fileSystem, ILog log)
+    public static VersionVariables FromFile(string filePath, IFileSystem fileSystem)
     {
         try
         {
-            if (log == null)
-            {
-                return FromFileInternal(filePath, fileSystem);
-            }
             var retryAction = new RetryAction<IOException, VersionVariables>();
             return retryAction.Execute(() => FromFileInternal(filePath, fileSystem));
         }

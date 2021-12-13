@@ -1,4 +1,4 @@
-using Cake.Common.Tools.DotNetCore.NuGet.Push;
+using Cake.Common.Tools.DotNet.NuGet.Push;
 using Common.Utilities;
 
 namespace Publish.Tasks;
@@ -53,7 +53,7 @@ public class PublishNugetInternal : FrostingTask<BuildContext>
         foreach (var (packageName, filePath, _) in context.Packages.Where(x => !x.IsChocoPackage))
         {
             context.Information($"Package {packageName}, version {nugetVersion} is being published.");
-            context.DotNetCoreNuGetPush(filePath.FullPath, new DotNetCoreNuGetPushSettings
+            context.DotNetNuGetPush(filePath.FullPath, new DotNetNuGetPushSettings
             {
                 ApiKey = apiKey,
                 Source = apiUrl,

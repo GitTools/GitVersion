@@ -13,10 +13,10 @@ public abstract class ConfigInitWizardStep
 
     protected ConfigInitWizardStep(IConsole console, IFileSystem fileSystem, ILog log, IConfigInitStepFactory stepFactory)
     {
-        this.Console = console ?? throw new ArgumentNullException(nameof(console));
-        this.FileSystem = fileSystem ?? throw new ArgumentNullException(nameof(fileSystem));
-        this.Log = log ?? throw new ArgumentNullException(nameof(log));
-        this.StepFactory = stepFactory ?? throw new ArgumentNullException(nameof(stepFactory));
+        this.Console = console.NotNull();
+        this.FileSystem = fileSystem.NotNull();
+        this.Log = log.NotNull();
+        this.StepFactory = stepFactory.NotNull();
     }
 
     public bool Apply(Queue<ConfigInitWizardStep> steps, Config config, string workingDirectory)

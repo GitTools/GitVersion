@@ -2,7 +2,6 @@ using System.Buffers;
 using System.Buffers.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using JetBrains.Annotations;
 
 namespace GitVersion.OutputVariables;
 
@@ -28,7 +27,7 @@ public class VersionVariablesJsonStringConverter : JsonConverter<string>
         };
     }
 
-    public override void Write(Utf8JsonWriter writer, [CanBeNull] string value, JsonSerializerOptions options)
+    public override void Write(Utf8JsonWriter writer, string? value, JsonSerializerOptions options)
     {
         value ??= string.Empty;
         writer.WriteStringValue(value);

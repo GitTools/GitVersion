@@ -9,7 +9,7 @@ namespace GitVersion.App.Tests;
 public sealed class ProgramFixture
 {
     private readonly IEnvironment environment;
-    public List<Action<IServiceCollection>> Overrides { get; } = new List<Action<IServiceCollection>>();
+    public List<Action<IServiceCollection>> Overrides { get; } = new();
     private readonly Lazy<string> logger;
     private readonly Lazy<string> output;
 

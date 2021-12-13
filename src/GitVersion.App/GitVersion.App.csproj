@@ -14,9 +14,15 @@
         <TargetFrameworks>net48;$(TargetFrameworks);</TargetFrameworks>
     </PropertyGroup>
 
+    <!-- workaround for https://github.com/dotnet/runtime/issues/49508 -->
+    <PropertyGroup Condition=" '$(OsxArm64)' == 'true'">
+        <TargetFrameworks>net6.0</TargetFrameworks>
+    </PropertyGroup>
+
     <PropertyGroup Condition=" '$(PackAsTool)' == 'true' ">
         <ToolCommandName>dotnet-gitversion</ToolCommandName>
         <PackageId>GitVersion.Tool</PackageId>
+        <RollForward>LatestMajor</RollForward>
         <PackageDescription>Derives SemVer information from a repository following GitFlow or GitHubFlow. This is the .NET Core Global Tool allowing usage of GitVersion from command line.</PackageDescription>
     </PropertyGroup>
 

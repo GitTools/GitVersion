@@ -1,3 +1,4 @@
+using GitVersion.Extensions;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace GitVersion.Configuration.Init.Wizard;
@@ -10,7 +11,7 @@ public class ConfigInitStepFactory : IConfigInitStepFactory
     {
     }
 
-    public ConfigInitStepFactory(IServiceProvider sp) => this.sp = sp ?? throw new ArgumentNullException(nameof(sp));
+    public ConfigInitStepFactory(IServiceProvider sp) => this.sp = sp.NotNull();
 
     public T? CreateStep<T>() => this.sp!.GetService<T>();
 }

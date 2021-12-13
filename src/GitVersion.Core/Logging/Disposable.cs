@@ -1,3 +1,5 @@
+using GitVersion.Extensions;
+
 namespace GitVersion.Logging;
 
 public static class Disposable
@@ -8,7 +10,7 @@ public static class Disposable
 
     private sealed class AnonymousDisposable : IDisposable
     {
-        public AnonymousDisposable(Action disposer) => this.disposer = disposer ?? throw new ArgumentNullException(nameof(disposer));
+        public AnonymousDisposable(Action disposer) => this.disposer = disposer.NotNull();
 
         public void Dispose()
         {

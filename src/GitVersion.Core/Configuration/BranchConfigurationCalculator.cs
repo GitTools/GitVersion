@@ -18,8 +18,8 @@ public class BranchConfigurationCalculator : IBranchConfigurationCalculator
 
     public BranchConfigurationCalculator(ILog log, IRepositoryStore repositoryStore)
     {
-        this.log = log ?? throw new ArgumentNullException(nameof(log));
-        this.repositoryStore = repositoryStore ?? throw new ArgumentNullException(nameof(repositoryStore));
+        this.log = log.NotNull();
+        this.repositoryStore = repositoryStore.NotNull();
     }
 
     /// <summary>
@@ -254,7 +254,7 @@ public class BranchConfigurationCalculator : IBranchConfigurationCalculator
 
     private class LocalRemoteBranchEqualityComparer : IEqualityComparer<IBranch>
     {
-        public bool Equals(IBranch b1, IBranch b2)
+        public bool Equals(IBranch? b1, IBranch? b2)
         {
             if (b1 == null && b2 == null)
                 return true;

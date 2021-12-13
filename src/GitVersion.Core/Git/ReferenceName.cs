@@ -1,3 +1,4 @@
+using GitVersion.Extensions;
 using GitVersion.Helpers;
 
 namespace GitVersion;
@@ -15,7 +16,7 @@ public class ReferenceName : IEquatable<ReferenceName?>, IComparable<ReferenceNa
 
     public ReferenceName(string canonical)
     {
-        Canonical = canonical ?? throw new ArgumentNullException(nameof(canonical));
+        Canonical = canonical.NotNull();
         Friendly = Shorten();
         WithoutRemote = RemoveRemote();
 
@@ -47,7 +48,7 @@ public class ReferenceName : IEquatable<ReferenceName?>, IComparable<ReferenceNa
 
     public bool Equals(ReferenceName? other) => equalityHelper.Equals(this, other);
     public int CompareTo(ReferenceName other) => comparerHelper.Compare(this, other);
-    public override bool Equals(object obj) => Equals((obj as ReferenceName)!);
+    public override bool Equals(object obj) => Equals((obj as ReferenceName));
     public override int GetHashCode() => equalityHelper.GetHashCode(this);
     public override string ToString() => Friendly;
 

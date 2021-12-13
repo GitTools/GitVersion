@@ -1,11 +1,22 @@
 version: 2
 updates:
 - package-ecosystem: nuget
+  labels:
+    - "dependencies"
+  commit-message:
+    prefix: "(deps)"
   directory: "/"
   schedule:
     interval: daily
   open-pull-requests-limit: 10
+  ignore:
+    - dependency-name: "Microsoft.Build"
+      versions: ["16.9.0", "16.11.0"]
 - package-ecosystem: github-actions
+  labels:
+    - "dependencies"
+  commit-message:
+    prefix: "(build deps)"
   directory: "/"
   schedule:
     interval: daily

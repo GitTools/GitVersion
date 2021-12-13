@@ -22,26 +22,26 @@
         <ImplicitUsings>enable</ImplicitUsings>
     </PropertyGroup>
     <PropertyGroup>
-        <PackageVersion_LibGit2Sharp>0.27.0-preview-0116</PackageVersion_LibGit2Sharp>
-        <PackageVersion_LibGit2Sharp_NativeBinaries>2.0.314</PackageVersion_LibGit2Sharp_NativeBinaries>
+        <PackageVersion_LibGit2Sharp>0.27.0-preview-0158</PackageVersion_LibGit2Sharp>
+        <PackageVersion_LibGit2Sharp_NativeBinaries>2.0.315-alpha.0.9</PackageVersion_LibGit2Sharp_NativeBinaries>
 
-        <PackageVersion_JetBrainsAnnotations>2021.2.0</PackageVersion_JetBrainsAnnotations>
+        <PackageVersion_JetBrainsAnnotations>2021.3.0</PackageVersion_JetBrainsAnnotations>
         <PackageVersion_YamlDotNet>11.2.1</PackageVersion_YamlDotNet>
-        <PackageVersion_MicrosoftExtensions>5.0.0</PackageVersion_MicrosoftExtensions>
-        <PackageVersion_MicrosoftJson>5.0.0</PackageVersion_MicrosoftJson>
-        <PackageVersion_MicrosoftTextEncoding>5.0.0</PackageVersion_MicrosoftTextEncoding>
-        <PackageVersion_MsBuild>16.9.0</PackageVersion_MsBuild>
+        <PackageVersion_MicrosoftExtensions>6.0.0</PackageVersion_MicrosoftExtensions>
+        <PackageVersion_MicrosoftJson>6.0.0</PackageVersion_MicrosoftJson>
+        <PackageVersion_MicrosoftTextEncoding>6.0.0</PackageVersion_MicrosoftTextEncoding>
+        <PackageVersion_MsBuild>17.0.0</PackageVersion_MsBuild>
 
-        <PackageVersion_MicrosoftTestSdk>16.11.0</PackageVersion_MicrosoftTestSdk>
+        <PackageVersion_MicrosoftTestSdk>17.0.0</PackageVersion_MicrosoftTestSdk>
         <PackageVersion_NSubstitute>4.2.2</PackageVersion_NSubstitute>
         <PackageVersion_CoverletMsBuild>3.1.0</PackageVersion_CoverletMsBuild>
         <PackageVersion_NUnit>3.13.2</PackageVersion_NUnit>
-        <PackageVersion_NUnit3TestAdapter>4.0.0</PackageVersion_NUnit3TestAdapter>
-        <PackageVersion_NunitXmlTestLogger>3.0.107</PackageVersion_NunitXmlTestLogger>
+        <PackageVersion_NUnit3TestAdapter>4.1.0</PackageVersion_NUnit3TestAdapter>
+        <PackageVersion_NunitXmlTestLogger>3.0.117</PackageVersion_NunitXmlTestLogger>
         <PackageVersion_Shouldly>4.0.3</PackageVersion_Shouldly>
 
-        <PackageVersion_MicrosoftCodeStyle>3.11.0</PackageVersion_MicrosoftCodeStyle>
-        <PackageVersion_MicrosoftNetAnalyzers>5.0.3</PackageVersion_MicrosoftNetAnalyzers>
+        <PackageVersion_MicrosoftCodeStyle>4.0.1</PackageVersion_MicrosoftCodeStyle>
+        <PackageVersion_MicrosoftNetAnalyzers>6.0.0</PackageVersion_MicrosoftNetAnalyzers>
     </PropertyGroup>
 
     <ItemGroup Condition=" '$(IsTestProject)' == 'true' ">
@@ -89,9 +89,6 @@
     <PropertyGroup>
         <SkipDefaultEditorConfigAsAdditionalFile>true</SkipDefaultEditorConfigAsAdditionalFile>
     </PropertyGroup>
-    <ItemGroup>
-        <AdditionalFiles Include="$(MSBuildThisFileDirectory)..\.editorconfig" />
-    </ItemGroup>
 
     <!-- Common code quality and styling analyzers -->
     <ItemGroup>

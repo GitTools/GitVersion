@@ -21,12 +21,12 @@ public class GitVersionCacheKeyFactory : IGitVersionCacheKeyFactory
         IOptions<GitVersionOptions> options, IConfigFileLocator configFileLocator,
         IGitRepository gitRepository, IGitRepositoryInfo repositoryInfo)
     {
-        this.fileSystem = fileSystem ?? throw new ArgumentNullException(nameof(fileSystem));
-        this.log = log ?? throw new ArgumentNullException(nameof(log));
-        this.options = options ?? throw new ArgumentNullException(nameof(options));
-        this.configFileLocator = configFileLocator ?? throw new ArgumentNullException(nameof(configFileLocator));
-        this.gitRepository = gitRepository ?? throw new ArgumentNullException(nameof(gitRepository));
-        this.repositoryInfo = repositoryInfo ?? throw new ArgumentNullException(nameof(repositoryInfo));
+        this.fileSystem = fileSystem.NotNull();
+        this.log = log.NotNull();
+        this.options = options.NotNull();
+        this.configFileLocator = configFileLocator.NotNull();
+        this.gitRepository = gitRepository.NotNull();
+        this.repositoryInfo = repositoryInfo.NotNull();
     }
 
     public GitVersionCacheKey Create(Config? overrideConfig)
@@ -176,7 +176,7 @@ public class GitVersionCacheKeyFactory : IGitVersionCacheKeyFactory
         // will return the same hash even when config file will be moved
         // from workingDirectory to rootProjectDirectory. It's OK. Config essentially is the same.
         var configFilePath = this.configFileLocator.SelectConfigFilePath(this.options.Value, this.repositoryInfo);
-        if (!this.fileSystem.Exists(configFilePath))
+        if (configFilePath == null || !this.fileSystem.Exists(configFilePath))
         {
             return string.Empty;
         }

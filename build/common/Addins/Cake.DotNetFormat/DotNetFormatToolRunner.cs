@@ -1,8 +1,8 @@
-namespace Common.Addins.Cake.DotNetCoreFormat;
+namespace Common.Addins.Cake.DotNetFormat;
 
-public sealed class DotNetCoreFormatToolRunner : DotNetCoreTool<DotNetCoreFormatSettings>
+public sealed class DotNetFormatToolRunner : DotNetTool<DotNetFormatSettings>
 {
-    public DotNetCoreFormatToolRunner(
+    public DotNetFormatToolRunner(
         IFileSystem fileSystem,
         ICakeEnvironment environment,
         IProcessRunner processRunner,
@@ -10,7 +10,7 @@ public sealed class DotNetCoreFormatToolRunner : DotNetCoreTool<DotNetCoreFormat
     {
     }
 
-    public void Run(DotNetCoreFormatSettings settings)
+    public void Run(DotNetFormatSettings settings)
     {
         if (settings == null)
         {
@@ -19,7 +19,7 @@ public sealed class DotNetCoreFormatToolRunner : DotNetCoreTool<DotNetCoreFormat
         Run(settings, GetArguments(settings));
     }
 
-    private static ProcessArgumentBuilder GetArguments(DotNetCoreFormatSettings settings)
+    private static ProcessArgumentBuilder GetArguments(DotNetFormatSettings settings)
     {
         ProcessArgumentBuilder arguments = new();
 

@@ -1,9 +1,32 @@
+using Cake.Common.Tools.DotNet.Test;
+using Cake.Coverlet;
+using Common.Addins.Cake.Coverlet;
 using Xunit;
 
 namespace Common.Utilities;
 
 public static class ContextExtensions
 {
+    public static void DotNetTest(
+        this ICakeContext context,
+        FilePath project,
+        DotNetTestSettings settings,
+        CoverletSettings coverletSettings)
+    {
+        if (context == null)
+        {
+            throw new ArgumentNullException(nameof(context));
+        }
+        var currentCustomization = settings.ArgumentCustomization;
+        settings.ArgumentCustomization = (args) => ArgumentsProcessor.ProcessMSBuildArguments(
+            coverletSettings,
+            context.Environment,
+            currentCustomization?.Invoke(args) ?? args,
+            project);
+
+        context.DotNetTest(project.FullPath, settings);
+    }
+
     public static IEnumerable<string> ExecuteCommand(this ICakeContext context, FilePath exe, string? args, DirectoryPath? workDir = null)
     {
         var processSettings = new ProcessSettings { Arguments = args, RedirectStandardOutput = true };
@@ -35,7 +58,7 @@ public static class ContextExtensions
         {
             repositoryName = buildSystem.AppVeyor.Environment.Repository.Name;
         }
-        else if (buildSystem.IsRunningOnAzurePipelines || buildSystem.IsRunningOnAzurePipelinesHosted)
+        else if (buildSystem.IsRunningOnAzurePipelines)
         {
             repositoryName = buildSystem.AzurePipelines.Environment.Repository.RepoName;
         }
@@ -56,7 +79,7 @@ public static class ContextExtensions
         {
             repositoryBranch = buildSystem.AppVeyor.Environment.Repository.Branch;
         }
-        else if (buildSystem.IsRunningOnAzurePipelines || buildSystem.IsRunningOnAzurePipelinesHosted)
+        else if (buildSystem.IsRunningOnAzurePipelines)
         {
             repositoryBranch = buildSystem.AzurePipelines.Environment.Repository.SourceBranchName;
         }
@@ -110,7 +133,6 @@ public static class ContextExtensions
             BuildProvider.Local => "Local",
             BuildProvider.AppVeyor => "AppVeyor",
             BuildProvider.AzurePipelines => "AzurePipelines",
-            BuildProvider.AzurePipelinesHosted => "AzurePipelines",
             BuildProvider.GitHubActions => "GitHubActions",
             _ => string.Empty
         };
@@ -120,7 +142,7 @@ public static class ContextExtensions
     {
         var buildSystem = context.BuildSystem();
         var startGroup = "[group]";
-        if (buildSystem.IsRunningOnAzurePipelines || buildSystem.IsRunningOnAzurePipelinesHosted)
+        if (buildSystem.IsRunningOnAzurePipelines)
         {
             startGroup = "##[group]";
         }
@@ -134,7 +156,7 @@ public static class ContextExtensions
     {
         var buildSystem = context.BuildSystem();
         var endgroup = "[endgroup]";
-        if (buildSystem.IsRunningOnAzurePipelines || buildSystem.IsRunningOnAzurePipelinesHosted)
+        if (buildSystem.IsRunningOnAzurePipelines)
         {
             endgroup = "##[endgroup]";
         }

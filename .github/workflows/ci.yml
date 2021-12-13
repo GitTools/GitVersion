@@ -44,7 +44,7 @@ jobs:
     -
       name: Cache cake frosting
       id: cache-cake
-      uses: actions/cache@v2.1.6
+      uses: actions/cache@v2.1.7
       with:
         path: run
         key: run-${{ runner.os }}-${{ hashFiles('./build/**') }}
@@ -53,7 +53,6 @@ jobs:
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: '6.0.x'
-        include-prerelease: true
     -
       name: '[Prepare]'
       if: steps.cache-cake.outputs.cache-hit != 'true'
@@ -72,20 +71,19 @@ jobs:
     -
       name: Checkout
       uses: actions/checkout@v2
-    -
-      name: Fetch all history for all tags and branches
-      run: git fetch --prune --unshallow
+      with:
+        fetch-depth: 0
     -
       name: Use cached cake frosting
       id: cache-cake
-      uses: actions/cache@v2.1.6
+      uses: actions/cache@v2.1.7
       with:
         path: run
         key: run-${{ runner.os }}-${{ hashFiles('./build/**') }}
     -
       name: Use cached tools
       id: cache-tools
-      uses: actions/cache@v2.1.6
+      uses: actions/cache@v2.1.7
       with:
         path: tools
         key: tools-${{ runner.os }}-${{ hashFiles('./build/**') }}
@@ -94,21 +92,28 @@ jobs:
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: '6.0.x'
-        include-prerelease: true
     -
       name: '[Build]'
       shell: pwsh
       run: dotnet run/build.dll --target=Package
     -
       name: 'Upload nuget packages'
-      uses: actions/upload-artifact@v2.2.4
+      uses: actions/upload-artifact@v2.3.0
       if: matrix.os == 'windows-latest'
       with:
         name: nuget
         path: ${{ github.workspace }}/artifacts/packages/nuget
     -
       name: 'Upload native packages'
-      uses: actions/upload-artifact@v2.2.4
+      uses: actions/upload-artifact@v2.3.0
+      if: matrix.os == 'windows-latest'
+      with:
+        name: native-${{ runner.os }}
+        path: ${{ github.workspace }}/artifacts/packages/native/*.zip
+    -
+      name: 'Upload native packages'
+      uses: actions/upload-artifact@v2.3.0
+      if: matrix.os != 'windows-latest'
       with:
         name: native-${{ runner.os }}
         path: ${{ github.workspace }}/artifacts/packages/native/*.tar.gz
@@ -122,27 +127,26 @@ jobs:
     strategy:
       matrix:
         os: [windows-latest, ubuntu-latest, macos-latest]
-        targetFramework: [net5.0, net6.0, netcoreapp3.1]
+        targetFramework: [net48, net5.0, net6.0, netcoreapp3.1]
       fail-fast: false
 
     steps:
     -
       name: Checkout
       uses: actions/checkout@v2
-    -
-      name: Fetch all history for all tags and branches
-      run: git fetch --prune --unshallow
+      with:
+        fetch-depth: 0
     -
       name: Use cached cake frosting
       id: cache-cake
-      uses: actions/cache@v2.1.6
+      uses: actions/cache@v2.1.7
       with:
         path: run
         key: run-${{ runner.os }}-${{ hashFiles('./build/**') }}
     -
       name: Use cached tools
       id: cache-tools
-      uses: actions/cache@v2.1.6
+      uses: actions/cache@v2.1.7
       with:
         path: tools
         key: tools-${{ runner.os }}-${{ hashFiles('./build/**') }}
@@ -151,9 +155,8 @@ jobs:
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: '6.0.x'
-        include-prerelease: true
     -
-      name: '[Build]'
+      name: '[Unit Test]'
       shell: pwsh
       run: dotnet run/build.dll --target=Test --dotnet_target=${{ matrix.targetFramework }}
 
@@ -170,25 +173,24 @@ jobs:
     -
       name: Checkout
       uses: actions/checkout@v2
-    -
-      name: Fetch all history for all tags and branches
-      run: git fetch --prune --unshallow
+      with:
+        fetch-depth: 0
     -
       name: Use cached cake frosting
       id: cache-cake
-      uses: actions/cache@v2.1.6
+      uses: actions/cache@v2.1.7
       with:
         path: run
         key: run-${{ runner.os }}-${{ hashFiles('./build/**') }}
     -
       name: Use cached tools
       id: cache-tools
-      uses: actions/cache@v2.1.6
+      uses: actions/cache@v2.1.7
       with:
         path: tools
         key: tools-${{ runner.os }}-${{ hashFiles('./build/**') }}
     -
-      uses: actions/download-artifact@v2.0.10
+      uses: actions/download-artifact@v2.1.0
       name: Download nuget packages
       with:
         name: nuget
@@ -198,7 +200,6 @@ jobs:
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: '6.0.x'
-        include-prerelease: true
     -
       name: '[Test Artifacts]'
       shell: pwsh
@@ -218,31 +219,30 @@ jobs:
     -
       name: Checkout
       uses: actions/checkout@v2
-    -
-      name: Fetch all history for all tags and branches
-      run: git fetch --prune --unshallow
+      with:
+        fetch-depth: 0
     -
       name: Use cached cake frosting
       id: cache-cake
-      uses: actions/cache@v2.1.6
+      uses: actions/cache@v2.1.7
       with:
         path: run
         key: run-${{ runner.os }}-${{ hashFiles('./build/**') }}
     -
       name: Use cached tools
       id: cache-tools
-      uses: actions/cache@v2.1.6
+      uses: actions/cache@v2.1.7
       with:
         path: tools
         key: tools-${{ runner.os }}-${{ hashFiles('./build/**') }}
     -
-      uses: actions/download-artifact@v2.0.10
+      uses: actions/download-artifact@v2.1.0
       name: Download nuget packages
       with:
         name: nuget
         path: ${{ github.workspace }}/artifacts/packages/nuget
     -
-      uses: actions/download-artifact@v2.0.10
+      uses: actions/download-artifact@v2.1.0
       name: Download native packages
       with:
         name: native-${{ runner.os }}
@@ -260,11 +260,10 @@ jobs:
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: '6.0.x'
-        include-prerelease: true
     -
       name: '[Test Artifacts (amd64)]'
       shell: pwsh
-      run: dotnet run/artifacts.dll --target=ArtifactsTest --arch amd64 --docker_dotnetversion=${{ matrix.targetFramework }} --docker_distro=${{ matrix.distro }} --verbosity=diagnostic
+      run: dotnet run/artifacts.dll --target=ArtifactsTest --arch amd64 --docker_dotnetversion=${{ matrix.targetFramework }} --docker_distro=${{ matrix.distro }}
     -
       name: '[Test Artifacts (arm64)]'
       shell: pwsh
@@ -284,25 +283,24 @@ jobs:
     -
       name: Checkout
       uses: actions/checkout@v2
-    -
-      name: Fetch all history for all tags and branches
-      run: git fetch --prune --unshallow
+      with:
+        fetch-depth: 0
     -
       name: Use cached cake frosting
       id: cache-cake
-      uses: actions/cache@v2.1.6
+      uses: actions/cache@v2.1.7
       with:
         path: run
         key: run-${{ runner.os }}-${{ hashFiles('./build/**') }}
     -
       name: Use cached tools
       id: cache-tools
-      uses: actions/cache@v2.1.6
+      uses: actions/cache@v2.1.7
       with:
         path: tools
         key: tools-${{ runner.os }}-${{ hashFiles('./build/**') }}
     -
-      uses: actions/download-artifact@v2.0.10
+      uses: actions/download-artifact@v2.1.0
       name: Download nuget packages
       with:
         name: nuget
@@ -320,7 +318,6 @@ jobs:
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: '6.0.x'
-        include-prerelease: true
     -
       name: Login to DockerHub
       if: success() && github.event_name != 'pull_request'
@@ -384,25 +381,24 @@ jobs:
     -
       name: Checkout
       uses: actions/checkout@v2
-    -
-      name: Fetch all history for all tags and branches
-      run: git fetch --prune --unshallow
+      with:
+        fetch-depth: 0
     -
       name: Use cached cake frosting
       id: cache-cake
-      uses: actions/cache@v2.1.6
+      uses: actions/cache@v2.1.7
       with:
         path: run
         key: run-${{ runner.os }}-${{ hashFiles('./build/**') }}
     -
       name: Use cached tools
       id: cache-tools
-      uses: actions/cache@v2.1.6
+      uses: actions/cache@v2.1.7
       with:
         path: tools
         key: tools-${{ runner.os }}-${{ hashFiles('./build/**') }}
     -
-      uses: actions/download-artifact@v2.0.10
+      uses: actions/download-artifact@v2.1.0
       name: Download nuget packages
       with:
         name: nuget
@@ -412,7 +408,6 @@ jobs:
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: '6.0.x'
-        include-prerelease: true
     -
       name: '[Publish]'
       shell: pwsh
@@ -428,37 +423,36 @@ jobs:
     -
       name: Checkout
       uses: actions/checkout@v2
-    -
-      name: Fetch all history for all tags and branches
-      run: git fetch --prune --unshallow
+      with:
+        fetch-depth: 0
     -
       name: Use cached cake frosting
       id: cache-cake
-      uses: actions/cache@v2.1.6
+      uses: actions/cache@v2.1.7
       with:
         path: run
         key: run-${{ runner.os }}-${{ hashFiles('./build/**') }}
     -
       name: Use cached tools
       id: cache-tools
-      uses: actions/cache@v2.1.6
+      uses: actions/cache@v2.1.7
       with:
         path: tools
         key: tools-${{ runner.os }}-${{ hashFiles('./build/**') }}
     -
-      uses: actions/download-artifact@v2.0.10
+      uses: actions/download-artifact@v2.1.0
       name: Download native linux packages
       with:
         name: native-Linux
         path: ${{ github.workspace }}/artifacts/packages/native
     -
-      uses: actions/download-artifact@v2.0.10
+      uses: actions/download-artifact@v2.1.0
       name: Download native windows packages
       with:
         name: native-Windows
         path: ${{ github.workspace }}/artifacts/packages/native
     -
-      uses: actions/download-artifact@v2.0.10
+      uses: actions/download-artifact@v2.1.0
       name: Download native macos packages
       with:
         name: native-macOS
@@ -468,7 +462,6 @@ jobs:
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: '6.0.x'
-        include-prerelease: true
     -
       name: '[Release]'
       shell: pwsh

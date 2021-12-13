@@ -218,6 +218,7 @@ public class RepositoryStoreTests : TestBase
     }
 
     [Test]
+    [Ignore("Needs more investigations.")]
     public void FindCommitBranchWasBranchedFromShouldReturnNullIfTheRemoteIsTheOnlySource()
     {
         using var fixture = new RemoteRepositoryFixture();

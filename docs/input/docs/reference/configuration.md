@@ -5,13 +5,13 @@ Description: Details about how GitVersion can be configured to suit your needs
 RedirectFrom: docs/configuration
 ---
 
-GitVersion from version 3 is mainly powered by configuration and no longer has
-branching strategies hard coded.
+GitVersion, starting from version 3.0, is mainly powered by configuration and no
+longer has branching strategies hard-coded.
 
 ## Configuration tool
 
-If you run `gitversion init` you will be launched into a configuration tool, it
-can help you configure GitVersion the way you want it.
+If you run `gitversion init`, GitVersion will launch into a configuration tool,
+which can help you configure GitVersion the way you want it.
 
 Once complete, the `init` command will create a `GitVersion.yml` file in the
 working directory. It can be the root repository directory or any subdirectory
@@ -28,21 +28,21 @@ GitHubFlow and GitFlow, probably with others too.
 The `develop` branch is set to `ContinuousDeployment` mode by default as we have
 found that is generally what is needed when using GitFlow.
 
-You can run `GitVersion /showConfig` to see the effective configuration
-(defaults + overrides).
+To see the effective configuration (defaults and overrides), you can run
+`gitversion /showConfig`.
 
-To create your config file just type `GitVersion init` in your repo directory
-after installing via chocolatey and a minimal `GitVersion.yml` configuration
-file will be created. Modify this as you need.
+To create your config file just type `gitversion init` in your repo directory,
+after [installing]. A minimal `GitVersion.yml` configuration file will be
+created. Modify this to suit your needs.
 
 ## Global configuration
 
-The global configuration look like this:
+The global configuration looks like this:
 
 ```yaml
 next-version: 1.0
 assembly-versioning-scheme: MajorMinorPatch
-assembly-file-versioning-scheme: MajorMinorPatchTag
+assembly-file-versioning-scheme: MajorMinorPatch
 assembly-informational-format: '{InformationalVersion}'
 mode: ContinuousDelivery
 increment: Inherit
@@ -55,20 +55,21 @@ no-bump-message: '\+semver:\s?(none|skip)'
 legacy-semver-padding: 4
 build-metadata-padding: 4
 commits-since-version-source-padding: 4
+tag-pre-release-weight: 60000
 commit-message-incrementing: Enabled
-commit-date-format: 'yyyy-MM-dd'
 ignore:
   sha: []
   commits-before: yyyy-MM-ddTHH:mm:ss
 merge-message-formats: {}
+update-build-number: true
 ```
 
-And the description of the available options are:
+The details of the available options are as follows:
 
 ### next-version
 
 Allows you to bump the next version explicitly, useful for bumping `main` or a
-feature with breaking changes a major increment.
+feature with breaking changes (i.e., a major increment).
 
 ### assembly-versioning-scheme
 
@@ -142,7 +143,8 @@ branches which do not have one specified. Default set to `ci`.
 
 Just to clarify: For a build name without `...-ci-<buildnumber>` or in other
 words without a `PreReleaseTag` (ergo `"PreReleaseTag":""` in GitVersion's JSON output)
-at the end you would need to set `continuous-delivery-fallback-tag` to an empty string (`''`):
+at the end you would need to set `continuous-delivery-fallback-tag` to an empty
+string (`''`):
 
 ```yaml
 mode: ContinuousDeployment
@@ -154,9 +156,9 @@ Doing so can be helpful if you use your `main` branch as a `release` branch.
 
 ### tag-prefix
 
-A regex which is used to trim git tags before processing (eg v1.0.0). Default is
-`[vV]` though this is just for illustrative purposes as we do a IgnoreCase match
-and could be `v`.
+A regex which is used to trim Git tags before processing (e.g., v1.0.0). Default
+is `[vV]`, although this is just for illustrative purposes as we do a IgnoreCase
+match and could be `v`.
 
 ### major-version-bump-message
 
@@ -185,29 +187,29 @@ none` and `+semver: skip`
 ### legacy-semver-padding
 
 The number of characters to pad `LegacySemVer` to in the `LegacySemVerPadded`
-[variable][variables]. Is default set to `4`, which will pad the
-`LegacySemVer` value of `3.0.0-beta1` to `3.0.0-beta0001`.
+[variable][variables]. Default is `4`, which will pad the `LegacySemVer` value
+ of `3.0.0-beta1` to `3.0.0-beta0001`.
 
 ### build-metadata-padding
 
 The number of characters to pad `BuildMetaData` to in the `BuildMetaDataPadded`
-[variable][variables]. Is default set to `4`, which will pad the
-`BuildMetaData` value of `1` to `0001`.
+[variable][variables]. Default is `4`, which will pad the `BuildMetaData` value
+of `1` to `0001`.
 
 ### commits-since-version-source-padding
 
 The number of characters to pad `CommitsSinceVersionSource` to in the
-`CommitsSinceVersionSourcePadded` [variable][variables]. Is default set to `4`,
-which will pad the `CommitsSinceVersionSource` value of `1` to `0001`.
+`CommitsSinceVersionSourcePadded` [variable][variables]. Default is `4`, which
+will pad the `CommitsSinceVersionSource` value of `1` to `0001`.
 
 ### tag-pre-release-weight
 
 The pre-release weight in case of tagged commits. If the value is not set in the
 configuration, a default weight of 60000 is used instead. If the
-`WeightedPreReleaseNumber` [variable][variables] is 0 and this
-parameter is set, its value is used. This helps if your branching model is
-GitFlow and the last release build, which is often tagged, can utilise this
-parameter to produce a monotonically increasing build number.
+`WeightedPreReleaseNumber` [variable][variables] is 0 and this parameter is set,
+its value is used. This helps if your branching model is GitFlow and the last
+release build, which is often tagged, can utilise this parameter to produce a
+monotonically increasing build number.
 
 ### commit-message-incrementing
 
@@ -255,10 +257,6 @@ Date and time in the format `yyyy-MM-ddTHH:mm:ss` (eg `commits-before:
 2015-10-23T12:23:15`) to setup an exclusion range. Effectively any commit before
 `commits-before` will be ignored.
 
-### update-build-number
-
-Configures GitVersion to update the build number or not when running on a build server.
-
 ### merge-message-formats
 
 Custom merge message formats to enable identification of merge messages that do not
@@ -273,11 +271,15 @@ merge-message-formats:
 
 The regular expression should contain the following capture groups:
 
-*   SourceBranch - Identifies the source branch of the merge
-*   TargetBranch - Identifies the target of the merge
-*   PullRequestNumber - Captures the pull-request number
+* `SourceBranch` - Identifies the source branch of the merge
+* `TargetBranch` - Identifies the target branch of the merge
+* `PullRequestNumber` - Captures the pull-request number
 
 Custom merge message formats are evaluated _before_ any built in formats.
+
+### update-build-number
+
+Configures GitVersion to update the build number or not when running on a build server.
 
 ## Branch configuration
 
@@ -301,18 +303,35 @@ branches:
     increment: Patch
     prevent-increment-of-merged-branch-version: true
     track-merge-target: false
+    source-branches: [ 'develop', 'release' ]
     tracks-release-branches: false
     is-release-branch: false
+    is-mainline: true
+    pre-release-weight: 55000
+  develop:
+    regex: ^dev(elop)?(ment)?$
+    mode: ContinuousDeployment
+    tag: alpha
+    increment: Minor
+    prevent-increment-of-merged-branch-version: false
+    track-merge-target: true
+    source-branches: []
+    tracks-release-branches: true
+    is-release-branch: false
+    is-mainline: false
+    pre-release-weight: 0
   release:
     regex: ^releases?[/-]
     mode: ContinuousDelivery
     tag: beta
-    increment: Patch
+    increment: None
     prevent-increment-of-merged-branch-version: true
     track-merge-target: false
+    source-branches: [ 'develop', 'main', 'support', 'release' ]
     tracks-release-branches: false
     is-release-branch: true
-    pre-release-weight: 1000
+    is-mainline: false
+    pre-release-weight: 30000
   feature:
     regex: ^features?[/-]
     mode: ContinuousDelivery
@@ -320,8 +339,11 @@ branches:
     increment: Inherit
     prevent-increment-of-merged-branch-version: false
     track-merge-target: false
+    source-branches: [ 'develop', 'main', 'release', 'feature', 'support', 'hotfix' ]
     tracks-release-branches: false
     is-release-branch: false
+    is-mainline: false
+    pre-release-weight: 30000
   pull-request:
     regex: ^(pull|pull\-requests|pr)[/-]
     mode: ContinuousDelivery
@@ -330,8 +352,11 @@ branches:
     prevent-increment-of-merged-branch-version: false
     tag-number-pattern: '[/-](?<number>\d+)[-/]'
     track-merge-target: false
+    source-branches: [ 'develop', 'main', 'release', 'feature', 'support', 'hotfix' ]
     tracks-release-branches: false
     is-release-branch: false
+    is-mainline: false
+    pre-release-weight: 30000
   hotfix:
     regex: ^hotfix(es)?[/-]
     mode: ContinuousDelivery
@@ -339,8 +364,11 @@ branches:
     increment: Patch
     prevent-increment-of-merged-branch-version: false
     track-merge-target: false
+    source-branches: [ 'develop', 'main', 'support' ]
     tracks-release-branches: false
     is-release-branch: false
+    is-mainline: false
+    pre-release-weight: 30000
   support:
     regex: ^support[/-]
     mode: ContinuousDelivery
@@ -348,21 +376,15 @@ branches:
     increment: Patch
     prevent-increment-of-merged-branch-version: true
     track-merge-target: false
+    source-branches: [ 'main' ]
     tracks-release-branches: false
     is-release-branch: false
-  develop:
-    regex: ^dev(elop)?(ment)?$
-    mode: ContinuousDeployment
-    tag: unstable
-    increment: Minor
-    prevent-increment-of-merged-branch-version: false
-    track-merge-target: true
-    tracks-release-branches: true
-    is-release-branch: false
+    is-mainline: true
+    pre-release-weight: 55000
 ```
 
-If you don't specify the regex the inbuilt for that branch config will be used
-(recommended)
+If you don't specify the regex, the built-in for that branch config will be
+used (recommended).
 
 We don't envision many people needing to change most of these configuration
 values, but here they are if you need to:
@@ -374,13 +396,13 @@ branch configuration.
 
 ### source-branches
 
-Because git commits only refer to parent commits (not branches) GitVersion
+Because Git commits only refer to parent commits (not branches) GitVersion
 sometimes cannot tell which branch the current branch was branched from.
 
 Take this commit graph
 
 ```shell
-* release/1.0.0   * feature/foo
+* release/v1.0.0   * feature/foo
 | ________________/
 |/
 *
@@ -390,19 +412,19 @@ Take this commit graph
 
 By looking at this graph, you cannot tell which of these scenarios happened:
 
-*   feature/foo branches off release/1.0.0
-    *   Branch release/1.0.0 from main
-    *   Branch feature/foo from release/1.0.0
-    *   Add a commit to both release/1.0.0 and feature/foo
-    *   release/1.0.0 is the base for feature/foo
-*   release/1.0.0 branches off feature/foo
-    *   Branch feature/foo from main
-    *   Branch release/1.0.0 from feature/foo
-    *   Add a commit to both release/1.0.0 and feature/foo
-    *   feature/foo is the base for release/1.0.0
+* feature/foo branches off release/v1.0.0
+  * Branch release/v1.0.0 from main
+  * Branch feature/foo from release/v1.0.0
+  * Add a commit to both release/v1.0.0 and feature/foo
+  * release/v1.0.0 is the base for feature/foo
+* release/v1.0.0 branches off feature/foo
+  * Branch feature/foo from main
+  * Branch release/v1.0.0 from feature/foo
+  * Add a commit to both release/v1.0.0 and feature/foo
+  * feature/foo is the base for release/v1.0.0
 
 Or put more simply, you cannot tell which branch was created first,
-`release/1.0.0` or `feature/foo`.
+`release/v1.0.0` or `feature/foo`.
 
 To resolve this issue, we give GitVersion a hint about our branching workflows
 by telling it what types of branches a branch can be created from. For example,
@@ -509,7 +531,7 @@ branches:
 
 Strategy which will look for tagged merge commits directly off the current
 branch. For example `develop` → `release/1.0.0` → merge into `main` and tag
-`1.0.0`. The tag is _not_ on develop, but develop should be version `1.0.0` now.
+`1.0.0`. The tag is *not* on develop, but develop should be version `1.0.0` now.
 
 ### tracks-release-branches
 
@@ -522,7 +544,7 @@ Indicates this branch config represents a release branch in GitFlow.
 ### is-mainline
 
 When using Mainline mode, this indicates that this branch is a mainline. By
-default support/ and main are mainlines.
+default `main` and `support/*` are mainlines.
 
 ### pre-release-weight
 
@@ -535,12 +557,13 @@ same file version: "1.2.3.4". One of the ways to use this value is to set
 {Major}.{Minor}.{Patch}.{WeightedPreReleaseNumber}`. If the `pre-release-weight`
 is set, it would be added to the `PreReleaseNumber` to get a final
 `AssemblySemFileVer`, otherwise a branch specific default for
-`pre-release-weight` will be used in the calculation. Related Issues [1145],
-[1366]
+`pre-release-weight` will be used in the calculation. Related Issues [1145]
+and [1366].
 
 [1145]: https://github.com/GitTools/GitVersion/issues/1145
 [1366]: https://github.com/GitTools/GitVersion/issues/1366
 [2506]: https://github.com/GitTools/GitVersion/pull/2506#issuecomment-754754037
+[installing]: /docs/usage/cli/installation
 [modes]: /docs/reference/modes
 [variables]: /docs/reference/variables
 [version-sources]: /docs/reference/version-sources

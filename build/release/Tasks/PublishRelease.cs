@@ -33,10 +33,10 @@ public class PublishReleaseInternal : FrostingTask<BuildContext>
             throw new InvalidOperationException("Could not resolve GitHub Token.");
         }
 
-        var tarGzFiles = context.GetFiles(Paths.Native + "/*.tar.gz").Select(x => x.ToString()).ToList();
-        context.Information("zip count: " + tarGzFiles.Count);
+        var archives = context.GetFiles(Paths.Native + "/*.{tar.gz,zip}").Select(x => x.ToString()).ToList();
+        context.Information("Archives count: " + archives.Count);
 
-        var assets = string.Join(",", tarGzFiles);
+        var assets = string.Join(",", archives);
 
         var milestone = context.Version?.Milestone;
 

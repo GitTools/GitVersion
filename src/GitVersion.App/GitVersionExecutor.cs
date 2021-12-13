@@ -22,17 +22,17 @@ public class GitVersionExecutor : IGitVersionExecutor
         IGitVersionCalculateTool gitVersionCalculateTool, IGitVersionOutputTool gitVersionOutputTool,
         IVersionWriter versionWriter, IHelpWriter helpWriter, IGitRepositoryInfo repositoryInfo)
     {
-        this.log = log ?? throw new ArgumentNullException(nameof(log));
-        this.console = console ?? throw new ArgumentNullException(nameof(console));
-        this.configFileLocator = configFileLocator ?? throw new ArgumentNullException(nameof(configFileLocator));
-        this.configProvider = configProvider ?? throw new ArgumentNullException(nameof(configProvider));
+        this.log = log.NotNull();
+        this.console = console.NotNull();
+        this.configFileLocator = configFileLocator.NotNull();
+        this.configProvider = configProvider.NotNull();
 
-        this.gitVersionCalculateTool = gitVersionCalculateTool ?? throw new ArgumentNullException(nameof(gitVersionCalculateTool));
-        this.gitVersionOutputTool = gitVersionOutputTool ?? throw new ArgumentNullException(nameof(gitVersionOutputTool));
+        this.gitVersionCalculateTool = gitVersionCalculateTool.NotNull();
+        this.gitVersionOutputTool = gitVersionOutputTool.NotNull();
 
-        this.versionWriter = versionWriter ?? throw new ArgumentNullException(nameof(versionWriter));
-        this.helpWriter = helpWriter ?? throw new ArgumentNullException(nameof(helpWriter));
-        this.repositoryInfo = repositoryInfo ?? throw new ArgumentNullException(nameof(repositoryInfo));
+        this.versionWriter = versionWriter.NotNull();
+        this.helpWriter = helpWriter.NotNull();
+        this.repositoryInfo = repositoryInfo.NotNull();
     }
 
     public int Execute(GitVersionOptions gitVersionOptions)

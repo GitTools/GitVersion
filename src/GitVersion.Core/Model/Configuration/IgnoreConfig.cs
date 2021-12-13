@@ -14,8 +14,7 @@ public class IgnoreConfig
     public IEnumerable<string> ShAs { get; set; }
 
     [YamlIgnore]
-    public virtual bool IsEmpty => Before == null
-                                   && (ShAs == null || ShAs.Any() == false);
+    public virtual bool IsEmpty => Before == null && ShAs.Any() == false;
 
     public virtual IEnumerable<IVersionFilter> ToFilters()
     {
