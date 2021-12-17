@@ -1,4 +1,4 @@
-﻿using System.CommandLine;
+using System.CommandLine;
 using System.CommandLine.Parsing;
 using GitVersion.Command;
 using Microsoft.Extensions.DependencyInjection;
@@ -23,25 +23,11 @@ public class ContainerRegistrar : IContainerRegistrar
         where TService : class
         => AddSingleton<TService, TService>();
 
-    public IContainerRegistrar AddSingleton<TService>(Func<IServiceProvider, TService> implementationFactory)
-        where TService : class
-    {
-        services.AddSingleton(typeof(TService), implementationFactory);
-        return this;
-    }
-
     public IContainerRegistrar AddTransient<TService, TImplementation>()
         where TService : class
         where TImplementation : class, TService
     {
         services.AddTransient<TService, TImplementation>();
-        return this;
-    }
-
-    public IContainerRegistrar AddTransient<TService>(Func<IServiceProvider, TService> implementationFactory)
-        where TService : class
-    {
-        services.AddTransient(typeof(TService), implementationFactory);
         return this;
     }
 

@@ -1,6 +1,6 @@
 ﻿namespace GitVersion.Command;
 
-public partial class GitVersionSettings
+public class GitVersionSettings
 {
     public const string LogFileOptionAlias1 = "--log-file";
     public const string LogFileOptionAlias2 = "-l";
@@ -11,5 +11,5 @@ public partial class GitVersionSettings
     public FileInfo? LogFile { get; init; } = default;
 
     [Option(WorkDirOption, "The working directory with the git repository")]
-    public DirectoryInfo WorkDir { get; init; } = new(System.Environment.CurrentDirectory);
+    public DirectoryInfo WorkDir { get; init; } = new(Environment.CurrentDirectory);
 }
