@@ -548,12 +548,11 @@ public class GitVersionExecutorTests : TestBase
     {
         // Setup
         using var fixture = new RemoteRepositoryFixture();
-        var repoDir = new DirectoryInfo(fixture.RepositoryPath);
-        var Init = fixture.LocalRepositoryFixture.Repository.MakeACommit("Init commit");
-        var branchV1 = fixture.LocalRepositoryFixture.Repository.CreateBranch("feature/1.0");
+        fixture.LocalRepositoryFixture.Repository.MakeACommit("Init commit");
+        fixture.LocalRepositoryFixture.Repository.CreateBranch("feature/1.0");
         fixture.LocalRepositoryFixture.Checkout("feature/1.0");
         var commit = fixture.LocalRepositoryFixture.Repository.MakeACommit("feat: a new commit");
-        var branchV2 = fixture.LocalRepositoryFixture.Repository.CreateBranch("support/1.0");
+        fixture.LocalRepositoryFixture.Repository.CreateBranch("support/1.0");
         fixture.LocalRepositoryFixture.Checkout(commit.Sha);
 
         using var worktreeFixture = new LocalRepositoryFixture(new Repository(fixture.LocalRepositoryFixture.RepositoryPath));
@@ -564,15 +563,13 @@ public class GitVersionExecutorTests : TestBase
 
         this.sp = GetServiceProvider(gitVersionOptions, environment: environment);
 
-        var lazyContext = this.sp.GetService<Lazy<GitVersionContext>>();
-        var context = lazyContext.Value;
+        var _ = this.sp.GetService<Lazy<GitVersionContext>>()?.Value;
 
-        var preparer = this.sp.GetService<IGitPreparer>();
         var sut = sp.GetService<IGitVersionCalculateTool>();
 
         // Execute & Verify
-        var exception = Assert.Throws<WarningException>(() => sut.CalculateVersionVariables());
-        exception.Message.ShouldBe("Failed to try and guess branch to use. Move one of the branches along a commit to remove warning");
+        var exception = Assert.Throws<WarningException>(() => sut!.CalculateVersionVariables());
+        exception!.Message.ShouldBe("Failed to try and guess branch to use. Move one of the branches along a commit to remove warning");
     }
 
     [Test]
@@ -582,12 +579,11 @@ public class GitVersionExecutorTests : TestBase
     {
         // Setup
         using var fixture = new RemoteRepositoryFixture();
-        var repoDir = new DirectoryInfo(fixture.RepositoryPath);
-        var Init = fixture.LocalRepositoryFixture.Repository.MakeACommit("Init commit");
-        var branchV1 = fixture.LocalRepositoryFixture.Repository.CreateBranch("feature/1.0");
+        fixture.LocalRepositoryFixture.Repository.MakeACommit("Init commit");
+        fixture.LocalRepositoryFixture.Repository.CreateBranch("feature/1.0");
         fixture.LocalRepositoryFixture.Checkout("feature/1.0");
         var commit = fixture.LocalRepositoryFixture.Repository.MakeACommit("feat: a new commit");
-        var branchV2 = fixture.LocalRepositoryFixture.Repository.CreateBranch("support/1.0");
+        fixture.LocalRepositoryFixture.Repository.CreateBranch("support/1.0");
         fixture.LocalRepositoryFixture.ApplyTag("1.0.1");
         fixture.LocalRepositoryFixture.Checkout(commit.Sha);
 
@@ -599,14 +595,12 @@ public class GitVersionExecutorTests : TestBase
 
         this.sp = GetServiceProvider(gitVersionOptions, environment: environment);
 
-        var lazyContext = this.sp.GetService<Lazy<GitVersionContext>>();
-        var context = lazyContext.Value;
+        var _ = this.sp.GetService<Lazy<GitVersionContext>>()?.Value;
 
-        var preparer = this.sp.GetService<IGitPreparer>();
         var sut = sp.GetService<IGitVersionCalculateTool>();
 
         // Execute
-        var version = sut.CalculateVersionVariables();
+        var version = sut!.CalculateVersionVariables();
 
         // Verify
         version.SemVer.ShouldBe("1.0.1");
@@ -633,7 +627,7 @@ public class GitVersionExecutorTests : TestBase
             {
                 var options = sp.GetService<IOptions<GitVersionOptions>>();
                 var contextFactory = sp.GetService<IGitVersionContextFactory>();
-                return new Lazy<GitVersionContext?>(() => contextFactory?.Create(options?.Value));
+                return new Lazy<GitVersionContext>(() => contextFactory?.Create(options?.Value));
             });
             if (log != null) services.AddSingleton(log);
             if (fileSystem != null) services.AddSingleton(fileSystem);
