@@ -1,4 +1,4 @@
-namespace GitVersion.Infrastructure;
+﻿namespace GitVersion.Infrastructure;
 
 public interface IContainerRegistrar
 {
@@ -12,7 +12,7 @@ public interface IContainerRegistrar
     IContainerRegistrar AddTransient<TService, TImplementation>()
         where TService : class where TImplementation : class, TService;
 
-    IContainerRegistrar AddLogging(string[] args);
+    IContainerRegistrar AddLogging();
 
     IContainer Build();
 }

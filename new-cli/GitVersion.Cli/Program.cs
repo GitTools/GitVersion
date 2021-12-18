@@ -1,6 +1,6 @@
 ﻿using GitVersion;
 
-using var serviceProvider = ModulesLoader.Load(args);
+using var serviceProvider = ModulesLoader.Load();
 var app = serviceProvider.GetService<GitVersionApp>();
 var result = await app!.RunAsync(args);
 

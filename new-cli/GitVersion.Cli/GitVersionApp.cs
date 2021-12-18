@@ -5,6 +5,8 @@ using System.CommandLine.Parsing;
 using System.Reflection;
 using GitVersion.Command;
 using GitVersion.Extensions;
+using GitVersion.Infrastructure;
+using Serilog.Events;
 using ICommand = GitVersion.Command.ICommand;
 
 namespace GitVersion;
@@ -13,18 +15,55 @@ internal class GitVersionApp
 {
     private readonly RootCommand rootCommand;
 
-    public GitVersionApp(IEnumerable<ICommand> commandHandlers) =>
-        rootCommand = MapCommands(commandHandlers);
+    public GitVersionApp(IEnumerable<ICommand> commandHandlers) => rootCommand = CreateCommandsHierarchy(commandHandlers);
 
     public Task<int> RunAsync(string[] args)
     {
         return new CommandLineBuilder(rootCommand)
+            .UseMiddleware(async (context, next) =>
+            {
+                EnrichLogger(context);
+                await next(context);
+            })
             .UseDefaults()
             .Build()
             .InvokeAsync(args);
     }
+    
+    private static void EnrichLogger(InvocationContext context)
+    {
+        FileInfo? GetLogOption(string optionName) =>
+            context.ParseResult.HasOption(optionName)
+                ? context.ParseResult.ValueForOption<FileInfo>(optionName)
+                : null;
+        
+        Verbosity? GetLogVerbosity(string optionName) =>
+            context.ParseResult.HasOption(optionName)
+                ? context.ParseResult.ValueForOption<Verbosity>(optionName)
+                : null;
 
-    private static RootCommand MapCommands(IEnumerable<ICommand> handlers)
+        var logFile = GetLogOption(GitVersionSettings.LogFileOptionAlias1) ?? GetLogOption(GitVersionSettings.LogFileOptionAlias2);
+        var verbosity = GetLogVerbosity(GitVersionSettings.VerbosityOption);
+        
+        LoggingEnricher.Path = logFile?.FullName ?? "log.txt";
+        if (verbosity is not null)
+        {
+            LoggingEnricher.LogLevel.MinimumLevel = GetLevelForVerbosity(verbosity.Value);
+        }
+    }
+    
+    public static LogEventLevel GetLevelForVerbosity(Verbosity verbosity) => VerbosityMaps[verbosity];
+
+    private static readonly IDictionary<Verbosity, LogEventLevel> VerbosityMaps = new Dictionary<Verbosity, LogEventLevel>
+    {
+        { Verbosity.Verbose, LogEventLevel.Verbose },
+        { Verbosity.Diagnostic, LogEventLevel.Debug },
+        { Verbosity.Normal, LogEventLevel.Information },
+        { Verbosity.Minimal, LogEventLevel.Warning },
+        { Verbosity.Quiet, LogEventLevel.Error },
+    };
+ 
+    private static RootCommand CreateCommandsHierarchy(IEnumerable<ICommand> handlers)
     {
         var commandsMap = new Dictionary<Type, Infrastructure.Command>();
         foreach (var handler in handlers)

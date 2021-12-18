@@ -9,7 +9,7 @@ namespace GitVersion;
 
 public class ModulesLoader
 {
-    public static IContainer Load(string[] args)
+    public static IContainer Load()
     {
         // TODO: load the list of assemblies from the app working directory, later we might load from nuget
         var assemblies = new[]
@@ -29,7 +29,7 @@ public class ModulesLoader
 
         var serviceProvider = new ContainerRegistrar()
             .RegisterModules(gitVersionModules)
-            .AddLogging(args)
+            .AddLogging()
             .Build();
 
         return serviceProvider;

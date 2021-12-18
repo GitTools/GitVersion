@@ -1,7 +1,4 @@
-using System.CommandLine;
-using System.CommandLine.Parsing;
-using GitVersion.Command;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Serilog;
 
@@ -35,35 +32,32 @@ public class ContainerRegistrar : IContainerRegistrar
         where TService : class
         => AddTransient<TService, TService>();
 
-    public IContainerRegistrar AddLogging(string[] args)
+    public IContainerRegistrar AddLogging()
     {
-        var logger = GetLogger(args);
-        services.AddLogging(builder => builder.AddSerilog(logger, dispose: true));
+        services.AddLogging(builder =>
+        {
+            var logger = CreateLogger();
+            builder.AddSerilog(logger, dispose: true);
+        });
         services.AddSingleton<ILogger>(provider => new Logger(provider.GetService<ILogger<Logger>>()!));
         return this;
     }
 
     public IContainer Build() => new Container(services.BuildServiceProvider());
-
-    private static Serilog.Core.Logger GetLogger(string[] args)
+    
+    private static Serilog.Core.Logger CreateLogger()
     {
-        // We cannot use the logFile path when the logger was already created and registered in DI container
-        // so we perform a pre-parse of the arguments to fetch the logFile so that we can create the logger and
-        // register in the DI container
-        var aliases = new[] { GitVersionSettings.LogFileOptionAlias1, GitVersionSettings.LogFileOptionAlias2 };
-        var option = new Option(aliases, argumentType: typeof(FileInfo));
-        var logFile = new Parser(option).Parse(args).ValueForOption<FileInfo>(option);
-
-        var configuration = new LoggerConfiguration()
-            .WriteTo.Console();
-
-        if (logFile != null)
-        {
-            var path = logFile.FullName;
-            configuration = configuration
-                .WriteTo.File(path);
-        }
-
-        return configuration.CreateLogger();
+        var logger = new LoggerConfiguration()
+            // log level will be dynamically be controlled by our log interceptor upon running
+            .MinimumLevel.ControlledBy(LoggingEnricher.LogLevel)
+            // the log enricher will add a new property with the log file path from the settings
+            // that we can use to set the path dynamically
+            .Enrich.With<LoggingEnricher>()
+            // serilog.sinks.map will defer the configuration of the sink to be on demand
+            // allowing us to look at the properties set by the enricher to set the path appropriately
+            .WriteTo.Console()
+            .WriteTo.Map(LoggingEnricher.LogFilePathPropertyName, (logFilePath, wt) => wt.File(logFilePath), 1)
+            .CreateLogger();
+        return logger;
     }
 }
