@@ -1,6 +1,7 @@
 ﻿using System.CommandLine;
 using System.CommandLine.Builder;
 using System.CommandLine.Invocation;
+using System.CommandLine.NamingConventionBinder;
 using System.CommandLine.Parsing;
 using System.Reflection;
 using GitVersion.Command;
@@ -20,7 +21,7 @@ internal class GitVersionApp
     public Task<int> RunAsync(string[] args)
     {
         return new CommandLineBuilder(rootCommand)
-            .UseMiddleware(async (context, next) =>
+            .AddMiddleware(async (context, next) =>
             {
                 EnrichLogger(context);
                 await next(context);
@@ -29,32 +30,37 @@ internal class GitVersionApp
             .Build()
             .InvokeAsync(args);
     }
-    
+
     private static void EnrichLogger(InvocationContext context)
     {
-        FileInfo? GetLogOption(string optionName) =>
-            context.ParseResult.HasOption(optionName)
-                ? context.ParseResult.ValueForOption<FileInfo>(optionName)
-                : null;
-        
-        Verbosity? GetLogVerbosity(string optionName) =>
-            context.ParseResult.HasOption(optionName)
-                ? context.ParseResult.ValueForOption<Verbosity>(optionName)
-                : null;
-
-        var logFile = GetLogOption(GitVersionSettings.LogFileOptionAlias1) ?? GetLogOption(GitVersionSettings.LogFileOptionAlias2);
-        var verbosity = GetLogVerbosity(GitVersionSettings.VerbosityOption);
-        
-        LoggingEnricher.Path = logFile?.FullName ?? "log.txt";
-        if (verbosity is not null)
+        Option? GetOption(string alias)
         {
-            LoggingEnricher.LogLevel.MinimumLevel = GetLevelForVerbosity(verbosity.Value);
+            foreach (var symbolResult in context.ParseResult.CommandResult.Children)
+            {
+                if (symbolResult.Symbol is Option id && id.HasAlias(alias))
+                {
+                    return id;
+                }
+            }
+            return null;
         }
-    }
-    
-    public static LogEventLevel GetLevelForVerbosity(Verbosity verbosity) => VerbosityMaps[verbosity];
+        
+        T? GetOptionValue<T>(string alias)
+        {
+            var option = GetOption(alias);
+            return option != null ? context.ParseResult.GetValueForOption<T>(option) : default;
+        }
 
-    private static readonly IDictionary<Verbosity, LogEventLevel> VerbosityMaps = new Dictionary<Verbosity, LogEventLevel>
+        var logFile = GetOptionValue<FileInfo>(GitVersionSettings.LogFileOptionAlias1);
+        var verbosity = GetOptionValue<Verbosity?>(GitVersionSettings.VerbosityOption) ?? Verbosity.Normal;
+
+        LoggingEnricher.Path = logFile?.FullName ?? "log.txt";
+        LoggingEnricher.LogLevel.MinimumLevel = GetLevelForVerbosity(verbosity);
+    }
+
+    private static LogEventLevel GetLevelForVerbosity(Verbosity verbosity) => VerbosityMaps[verbosity];
+
+    private static readonly Dictionary<Verbosity, LogEventLevel> VerbosityMaps = new()
     {
         { Verbosity.Verbose, LogEventLevel.Verbose },
         { Verbosity.Diagnostic, LogEventLevel.Debug },
@@ -62,7 +68,7 @@ internal class GitVersionApp
         { Verbosity.Minimal, LogEventLevel.Warning },
         { Verbosity.Quiet, LogEventLevel.Error },
     };
- 
+
     private static RootCommand CreateCommandsHierarchy(IEnumerable<ICommand> handlers)
     {
         var commandsMap = new Dictionary<Type, Infrastructure.Command>();
@@ -82,7 +88,9 @@ internal class GitVersionApp
                     command.AddOptions(commandSettingsType);
 
                     var handlerMethod = handlerType.GetMethod(nameof(ICommand.InvokeAsync));
+
                     command.Handler = CommandHandler.Create(handlerMethod!, handler);
+                    // command.SetHandler(handlerDelegate);
 
                     commandsMap.Add(commandSettingsType, command);
                 }

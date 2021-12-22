@@ -2,5 +2,5 @@
 
 public interface ICommand
 {
-    Task<int> InvokeAsync(object command);
+    Task<int> InvokeAsync(object settings);
 }

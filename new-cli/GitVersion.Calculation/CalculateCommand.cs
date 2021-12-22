@@ -17,7 +17,6 @@ public class CalculateCommand : Command<CalculateSettings>
     public override Task<int> InvokeAsync(CalculateSettings settings)
     {
         var value = service.Call();
-        // logger.LogInformation($"Command : 'calculate', LogFile : '{settings.LogFile}', WorkDir : '{settings.WorkDir}' ");
         logger.LogInformation("Command : 'calculate', LogFile : '{logFile}', WorkDir : '{workDir}' ", settings.LogFile, settings.WorkDir);
         return Task.FromResult(value);
     }
