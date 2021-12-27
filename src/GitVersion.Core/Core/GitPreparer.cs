@@ -18,11 +18,13 @@ public class GitPreparer : IGitPreparer
     private readonly IRepositoryStore repositoryStore;
     private readonly ICurrentBuildAgent? buildAgent;
     private readonly RetryAction<LockedFileException> retryAction;
+    private readonly Lazy<GitVersionContext> versionContext;
+    private GitVersionContext context => this.versionContext.Value;
 
     private const string DefaultRemoteName = "origin";
 
     public GitPreparer(ILog log, IEnvironment environment, ICurrentBuildAgent? buildAgent, IOptions<GitVersionOptions> options,
-        IMutatingGitRepository repository, IGitRepositoryInfo repositoryInfo, IRepositoryStore repositoryStore)
+        IMutatingGitRepository repository, IGitRepositoryInfo repositoryInfo, IRepositoryStore repositoryStore, Lazy<GitVersionContext> versionContext)
     {
         this.log = log.NotNull();
         this.environment = environment.NotNull();
@@ -32,6 +34,7 @@ public class GitPreparer : IGitPreparer
         this.repositoryStore = repositoryStore.NotNull();
         this.buildAgent = buildAgent;
         this.retryAction = new RetryAction<LockedFileException>();
+        this.versionContext = versionContext.NotNull();
     }
 
     public void Prepare()
@@ -245,21 +248,24 @@ public class GitPreparer : IGitPreparer
                         this.log.Warning($"Choosing {branchWithoutSeparator.Name.Canonical} as it is the only branch without / or - in it. " + moveBranchMsg);
                         Checkout(branchWithoutSeparator.Name.Canonical);
                     }
-                    else
+                    else if (!this.context.IsCurrentCommitTagged)
                     {
                         throw new WarningException("Failed to try and guess branch to use. " + moveBranchMsg);
                     }
                 }
             }
-            else if (localBranchesWhereCommitShaIsHead.Count == 0)
+            else if (!this.context.IsCurrentCommitTagged)
             {
-                this.log.Info($"No local branch pointing at the commit '{headSha}'. Fake branch needs to be created.");
-                this.retryAction.Execute(() => this.repository.CreateBranchForPullRequestBranch(authentication));
-            }
-            else
-            {
-                this.log.Info($"Checking out local branch 'refs/heads/{localBranchesWhereCommitShaIsHead[0]}'.");
-                Checkout(localBranchesWhereCommitShaIsHead[0].Name.Friendly);
+                if (localBranchesWhereCommitShaIsHead.Count == 0)
+                {
+                    this.log.Info($"No local branch pointing at the commit '{headSha}'. Fake branch needs to be created.");
+                    this.retryAction.Execute(() => this.repository.CreateBranchForPullRequestBranch(authentication));
+                }
+                else
+                {
+                    this.log.Info($"Checking out local branch 'refs/heads/{localBranchesWhereCommitShaIsHead[0]}'.");
+                    Checkout(localBranchesWhereCommitShaIsHead[0].Name.Friendly);
+                }
             }
         }
         finally
