@@ -248,7 +248,7 @@ public class GitPreparer : IGitPreparer
                         this.log.Warning($"Choosing {branchWithoutSeparator.Name.Canonical} as it is the only branch without / or - in it. " + moveBranchMsg);
                         Checkout(branchWithoutSeparator.Name.Canonical);
                     }
-                    else if(!this.context.IsCurrentCommitTagged)
+                    else if (!this.context.IsCurrentCommitTagged)
                     {
                         throw new WarningException("Failed to try and guess branch to use. " + moveBranchMsg);
                     }
@@ -256,8 +256,11 @@ public class GitPreparer : IGitPreparer
             }
             else if (localBranchesWhereCommitShaIsHead.Count == 0)
             {
-                this.log.Info($"No local branch pointing at the commit '{headSha}'. Fake branch needs to be created.");
-                this.retryAction.Execute(() => this.repository.CreateBranchForPullRequestBranch(authentication));
+                if (!this.context.IsCurrentCommitTagged)
+                {
+                    this.log.Info($"No local branch pointing at the commit '{headSha}'. Fake branch needs to be created.");
+                    this.retryAction.Execute(() => this.repository.CreateBranchForPullRequestBranch(authentication));
+                }
             }
             else
             {
