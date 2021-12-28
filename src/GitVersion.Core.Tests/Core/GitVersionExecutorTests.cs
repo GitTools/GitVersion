@@ -562,9 +562,6 @@ public class GitVersionExecutorTests : TestBase
         environment.SetEnvironmentVariable(AzurePipelines.EnvironmentVariableName, "true");
 
         this.sp = GetServiceProvider(gitVersionOptions, environment: environment);
-
-        var _ = this.sp.GetService<Lazy<GitVersionContext>>()?.Value;
-
         var sut = sp.GetService<IGitVersionCalculateTool>();
 
         // Execute & Verify
@@ -594,9 +591,6 @@ public class GitVersionExecutorTests : TestBase
         environment.SetEnvironmentVariable(AzurePipelines.EnvironmentVariableName, "true");
 
         this.sp = GetServiceProvider(gitVersionOptions, environment: environment);
-
-        var _ = this.sp.GetService<Lazy<GitVersionContext>>()?.Value;
-
         var sut = sp.GetService<IGitVersionCalculateTool>();
 
         // Execute
