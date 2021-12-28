@@ -244,7 +244,7 @@ public class GitPreparer : IGitPreparer
                         this.log.Warning($"Choosing {branchWithoutSeparator.Name.Canonical} as it is the only branch without / or - in it. " + moveBranchMsg);
                         Checkout(branchWithoutSeparator.Name.Canonical);
                     }
-                    else if(!this.context.IsCurrentCommitTagged)
+                    else if (!this.context.IsCurrentCommitTagged)
                     {
                         throw new WarningException("Failed to try and guess branch to use. " + moveBranchMsg);
                     }
