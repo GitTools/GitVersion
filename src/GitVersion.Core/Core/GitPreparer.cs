@@ -254,18 +254,15 @@ public class GitPreparer : IGitPreparer
                     }
                 }
             }
-            else if (!this.context.IsCurrentCommitTagged)
+            else if (localBranchesWhereCommitShaIsHead.Count == 0)
             {
-                if (localBranchesWhereCommitShaIsHead.Count == 0)
-                {
-                    this.log.Info($"No local branch pointing at the commit '{headSha}'. Fake branch needs to be created.");
-                    this.retryAction.Execute(() => this.repository.CreateBranchForPullRequestBranch(authentication));
-                }
-                else
-                {
-                    this.log.Info($"Checking out local branch 'refs/heads/{localBranchesWhereCommitShaIsHead[0]}'.");
-                    Checkout(localBranchesWhereCommitShaIsHead[0].Name.Friendly);
-                }
+                this.log.Info($"No local branch pointing at the commit '{headSha}'. Fake branch needs to be created.");
+                this.retryAction.Execute(() => this.repository.CreateBranchForPullRequestBranch(authentication));
+            }
+            else
+            {
+                this.log.Info($"Checking out local branch 'refs/heads/{localBranchesWhereCommitShaIsHead[0]}'.");
+                Checkout(localBranchesWhereCommitShaIsHead[0].Name.Friendly);
             }
         }
         finally
