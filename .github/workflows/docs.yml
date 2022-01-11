@@ -83,7 +83,6 @@ jobs:
       name: '[Build Documentation]'
       shell: pwsh
       run: dotnet run/docs.dll --target=BuildDocs
-
     -
       name: '[HTMLProofer]'
       uses: chabad360/htmlproofer@master
@@ -91,11 +90,19 @@ jobs:
         directory: ./artifacts/docs/preview
         arguments: --url-ignore /api/ --allow-hash-href --assume-extension --disable-external
     -
+      name: Reviewdog Reporter
+      uses: haya14busa/action-cond@v1
+      id: reporter
+      with:
+        cond: ${{ github.event_name == 'pull_request' }}
+        if_true: github-pr-review
+        if_false: github-check
+    -
       name: '[Remark Lint]'
-      uses: reviewdog/action-remark-lint@v5.0
+      uses: reviewdog/action-remark-lint@v5.2
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
-        reporter: github-pr-check
+        reporter: ${{ steps.reporter.outputs.value }}
 
   publish:
     name: Publish docs
