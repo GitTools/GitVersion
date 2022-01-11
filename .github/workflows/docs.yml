@@ -4,10 +4,20 @@ on:
   workflow_dispatch:
   push:
     paths:
-    - 'docs/**'
+    - docs/**
+    - package*.json
+    - markdownlint.json
+    - .remarkrc.yaml
+    - mkdocs.yml
+    - .github/workflows/docs.yml
   pull_request:
     paths:
-    - 'docs/**'
+    - docs/**
+    - package*.json
+    - markdownlint.json
+    - .remarkrc.yaml
+    - mkdocs.yml
+    - .github/workflows/docs.yml
 env:
   DOTNET_ROLL_FORWARD_ON_NO_CANDIDATE_FX: 2
 
