@@ -92,7 +92,7 @@ jobs:
         arguments: --url-ignore /api/ --allow-hash-href --assume-extension --disable-external
     -
       name: '[Remark Lint]'
-      uses: reviewdog/action-remark-lint@v5.0
+      uses: reviewdog/action-remark-lint@v5.2
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
         reporter: github-pr-check
