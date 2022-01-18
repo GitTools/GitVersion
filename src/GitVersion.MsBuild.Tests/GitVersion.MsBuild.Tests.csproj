@@ -7,19 +7,19 @@
     </PropertyGroup>
 
     <ItemGroup Condition=" '$(TargetFramework)' == 'netcoreapp3.1' ">
-        <PackageReference Include="Buildalyzer" Version="3.2.2" />
+        <PackageReference Include="Buildalyzer" Version="3.2.7" />
         <PackageReference Include="MSBuild.ProjectCreation" Version="6.3.3" />
         <PackageReference Include="Microsoft.Build" Version="16.9.0" />
     </ItemGroup>
 
     <ItemGroup Condition=" '$(TargetFramework)' == 'net5.0' ">
-        <PackageReference Include="Buildalyzer" Version="3.2.5" />
+        <PackageReference Include="Buildalyzer" Version="3.2.7" />
         <PackageReference Include="MSBuild.ProjectCreation" Version="6.3.3" />
         <PackageReference Include="Microsoft.Build" Version="16.11.0" />
     </ItemGroup>
 
     <ItemGroup Condition=" '$(TargetFramework)' != 'netcoreapp3.1' or '$(TargetFramework)' != 'net5.0' ">
-        <PackageReference Include="Buildalyzer" Version="3.2.5" />
+        <PackageReference Include="Buildalyzer" Version="3.2.7" />
         <PackageReference Include="MSBuild.ProjectCreation" Version="6.3.3" />
         <PackageReference Include="Microsoft.Build" Version="17.0.0" />
     </ItemGroup>
