@@ -259,8 +259,16 @@ update-build-number: true
 </code></pre>
 <p>The details of the available options are as follows:</p>
 <h3 id="next-version">next-version</h3>
-<p>Allows you to bump the next version explicitly, useful for bumping <code>main</code> or a
-feature with breaking changes (i.e., a major increment).</p>
+<p>Allows you to bump the next version explicitly. Useful for bumping <code>main</code> or a
+feature branch with breaking changes (i.e., a major increment), indicating what
+the next <code>git tag</code> is going to be.</p>
+<p><code>next-version</code> is not a permanent replacement for <code>git tag</code> and should only be
+used intermittently. Since version 5.5 GitVersion supports <code>next-version</code> with
+<code>mode: Mainline</code> and should not be treated as a "base version".</p>
+<p>If you are using <code>next-version</code> and are experiencing weird versioning behaviour,
+please remove it, create a <code>git tag</code> with an appropriate version number on an
+appropriate historical commit and see if that resolves any versioning issues
+you may have.</p>
 <h3 id="assembly-versioning-scheme">assembly-versioning-scheme</h3>
 <p>When updating assembly info, <code>assembly-versioning-scheme</code> tells GitVersion how
 to treat the <code>AssemblyVersion</code> attribute. Useful to lock the major when using
