@@ -33,7 +33,7 @@
         <PackageVersion_MsBuild>17.0.0</PackageVersion_MsBuild>
 
         <PackageVersion_MicrosoftTestSdk>17.0.0</PackageVersion_MicrosoftTestSdk>
-        <PackageVersion_NSubstitute>4.2.2</PackageVersion_NSubstitute>
+        <PackageVersion_NSubstitute>4.3.0</PackageVersion_NSubstitute>
         <PackageVersion_CoverletMsBuild>3.1.0</PackageVersion_CoverletMsBuild>
         <PackageVersion_NUnit>3.13.2</PackageVersion_NUnit>
         <PackageVersion_NUnit3TestAdapter>4.2.1</PackageVersion_NUnit3TestAdapter>
