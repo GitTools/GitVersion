@@ -60,7 +60,7 @@ Each property of the above JSON document is described in the below table.
 |         `PreReleaseLabelWithDash` | The pre-release label prefixed with a dash.                                                                                                                                |
 |                `PreReleaseNumber` | The pre-release number.                                                                                                                                                    |
 |        `WeightedPreReleaseNumber` | A summation of branch specific `pre-release-weight` and the `PreReleaseNumber`. Can be used to obtain a monotonically increasing version number across the branches.       |
-|                   `BuildMetaData` | The build metadata, usually representing number of commits since the `VersionSourceSha`.                                                                                   |
+|                   `BuildMetaData` | The build metadata, usually representing number of commits since the `VersionSourceSha`. Despite its name, will not increment for every build.                             |
 |             `BuildMetaDataPadded` | The `BuildMetaData` padded with `0` up to 4 digits.                                                                                                                        |
 |               `FullBuildMetaData` | The `BuildMetaData` suffixed with `BranchName` and `Sha`.                                                                                                                  |
 |                 `MajorMinorPatch` | `Major`, `Minor` and `Patch` joined together, separated by `.`.                                                                                                            |

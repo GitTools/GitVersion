@@ -15,9 +15,9 @@ version.
 
 ## Approach
 
-Semantic Versioning is all about _releases_, not builds. This means that the
-version only increases after you release, this directly conflicts with the
-concept of published CI builds. When you release the next version of your
+Semantic Versioning is all about _releases_, not commits or builds. This means
+that the version only increases after you release, this directly conflicts with
+the concept of published CI builds. When you release the next version of your
 library/app/website/whatever you should only increment major/minor or patch then
 reset all lower parts to 0, for instance given `1.0.0`, the next release should
 be either `2.0.0`, `1.1.0` or `1.0.1`.
@@ -26,7 +26,7 @@ Because of this, GitVersion works out what the next SemVer of your app is on
 each commit. When you are ready to release, you simply deploy the latest built
 version and tag the commit it was created from. This practice is called
 [continuous delivery][continuous-delivery]. GitVersion will increment the
-_metadata_ for each build so you can tell builds apart. For example `1.0.0+5`
+_metadata_ for each commit so you can tell them apart. For example `1.0.0+5`
 followed by `1.0.0+6`. It is important to note that build metadata _is not part
 of the semantic version; it is just metadata!_.
 
@@ -34,9 +34,9 @@ All this effectively means that GitVersion will produce the same version NuGet
 package each commit until you tag a release.
 
 This causes problems for people as NuGet and other package managers do not
-support multiple packages with the same version with only different metadata.
-There are a few ways to handle this problem depending on what your requirements
-are:
+support multiple packages with the same version where only the metadata is
+different. There are a few ways to handle this problem depending on what your
+requirements are:
 
 ### 1. GitFlow
 
