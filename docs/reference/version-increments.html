@@ -217,9 +217,9 @@ is split up into two sections, first is all about understanding the approach
 GitVersion uses by default, and the second is how you can manually increment the
 version.</p>
 <h2 id="approach">Approach</h2>
-<p>Semantic Versioning is all about <em>releases</em>, not builds. This means that the
-version only increases after you release, this directly conflicts with the
-concept of published CI builds. When you release the next version of your
+<p>Semantic Versioning is all about <em>releases</em>, not commits or builds. This means
+that the version only increases after you release, this directly conflicts with
+the concept of published CI builds. When you release the next version of your
 library/app/website/whatever you should only increment major/minor or patch then
 reset all lower parts to 0, for instance given <code>1.0.0</code>, the next release should
 be either <code>2.0.0</code>, <code>1.1.0</code> or <code>1.0.1</code>.</p>
@@ -227,15 +227,15 @@ be either <code>2.0.0</code>, <code>1.1.0</code> or <code>1.0.1</code>.</p>
 each commit. When you are ready to release, you simply deploy the latest built
 version and tag the commit it was created from. This practice is called
 <a href="/docs/reference/modes/continuous-delivery">continuous delivery</a>. GitVersion will increment the
-<em>metadata</em> for each build so you can tell builds apart. For example <code>1.0.0+5</code>
+<em>metadata</em> for each commit so you can tell them apart. For example <code>1.0.0+5</code>
 followed by <code>1.0.0+6</code>. It is important to note that build metadata <em>is not part
 of the semantic version; it is just metadata!</em>.</p>
 <p>All this effectively means that GitVersion will produce the same version NuGet
 package each commit until you tag a release.</p>
 <p>This causes problems for people as NuGet and other package managers do not
-support multiple packages with the same version with only different metadata.
-There are a few ways to handle this problem depending on what your requirements
-are:</p>
+support multiple packages with the same version where only the metadata is
+different. There are a few ways to handle this problem depending on what your
+requirements are:</p>
 <h3 id="gitflow">1. GitFlow</h3>
 <p>If you are using GitFlow then builds off the <code>develop</code> branch will actually
 <em>increment on every commit</em>. This is known in GitVersion as <em>continuous
