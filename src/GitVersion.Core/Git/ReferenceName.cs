@@ -38,6 +38,9 @@ public class ReferenceName : IEquatable<ReferenceName?>, IComparable<ReferenceNa
         }
         throw new ArgumentException($"The {nameof(canonicalName)} is not a Canonical name");
     }
+
+    public static ReferenceName FromBranchName(string branchName) => Parse(LocalBranchPrefix + branchName);
+
     public string Canonical { get; }
     public string Friendly { get; }
     public string WithoutRemote { get; }
