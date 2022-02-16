@@ -1,6 +1,6 @@
 namespace System.Runtime.CompilerServices;
 
-#if !NET5_0 && !NET6_0
+#if !NET6_0
 
 /// <summary>
 /// Allows capturing of the expressions passed to a method.
