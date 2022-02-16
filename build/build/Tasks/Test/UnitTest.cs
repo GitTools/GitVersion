@@ -8,7 +8,7 @@ namespace Build.Tasks;
 
 [TaskName(nameof(UnitTest))]
 [TaskDescription("Run the unit tests")]
-[TaskArgument(Arguments.DotnetTarget, Constants.NetVersion50, Constants.NetVersion60, Constants.CoreFxVersion31, Constants.FullFxVersion48)]
+[TaskArgument(Arguments.DotnetTarget, Constants.NetVersion60, Constants.CoreFxVersion31, Constants.FullFxVersion48)]
 [IsDependentOn(typeof(Build))]
 public class UnitTest : FrostingTask<BuildContext>
 {
@@ -17,7 +17,7 @@ public class UnitTest : FrostingTask<BuildContext>
     public override void Run(BuildContext context)
     {
         var dotnetTarget = context.Argument(Arguments.DotnetTarget, string.Empty);
-        var frameworks = new[] { Constants.CoreFxVersion31, Constants.FullFxVersion48, Constants.NetVersion50, Constants.NetVersion60 };
+        var frameworks = new[] { Constants.CoreFxVersion31, Constants.FullFxVersion48, Constants.NetVersion60 };
         if (!string.IsNullOrWhiteSpace(dotnetTarget))
         {
             if (!frameworks.Contains(dotnetTarget, StringComparer.OrdinalIgnoreCase))
