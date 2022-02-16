@@ -3,11 +3,9 @@
     <PropertyGroup>
         <PublishTask_net48>../GitVersion.App/bin/$(Configuration)/net48</PublishTask_net48>
         <PublishTask_netcore31>../GitVersion.App/bin/$(Configuration)/netcoreapp3.1/publish</PublishTask_netcore31>
-        <PublishTask_net50>../GitVersion.App/bin/$(Configuration)/net5.0/publish</PublishTask_net50>
         <PublishTask_net60>../GitVersion.App/bin/$(Configuration)/net6.0/publish</PublishTask_net60>
         <Target_net48>tools/net48</Target_net48>
         <Target_netcore31>tools/netcoreapp3.1</Target_netcore31>
-        <Target_net50>tools/net5.0</Target_net50>
         <Target_net60>tools/net6.0</Target_net60>
     </PropertyGroup>
     <ItemGroup Condition="$(IsPackaging) != ''">
@@ -17,12 +15,10 @@
 
         <None Include="$(PublishTask_net48)/**/*"                                Pack="true" PackagePath="$(Target_net48)" />
         <None Include="$(PublishTask_netcore31)/**/*"                            Pack="true" PackagePath="$(Target_netcore31)" />
-        <None Include="$(PublishTask_net50)/**/*"                                Pack="true" PackagePath="$(Target_net50)" />
         <None Include="$(PublishTask_net60)/**/*"                                Pack="true" PackagePath="$(Target_net60)" />
 
         <None Include="bin/$(Configuration)/netstandard2.0/GitVersion.MsBuild.*" Pack="true" PackagePath="$(Target_net48)" />
         <None Include="bin/$(Configuration)/netstandard2.0/GitVersion.MsBuild.*" Pack="true" PackagePath="$(Target_netcore31)" />
-        <None Include="bin/$(Configuration)/netstandard2.0/GitVersion.MsBuild.*" Pack="true" PackagePath="$(Target_net50)" />
         <None Include="bin/$(Configuration)/netstandard2.0/GitVersion.MsBuild.*" Pack="true" PackagePath="$(Target_net60)" />
     </ItemGroup>
 </Project>
