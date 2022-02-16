@@ -158,7 +158,7 @@ public static class DockerContextExtensions
             $"{name}:{context.Version.SemVersion}-{distro}-{targetFramework}",
         };
 
-        if (distro == Constants.DockerDistroLatest && targetFramework == Constants.Version50)
+        if (distro == Constants.DockerDistroLatest && targetFramework == Constants.Version60)
         {
             tags.AddRange(new[]
             {

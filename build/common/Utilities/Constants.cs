@@ -6,10 +6,8 @@ public class Constants
     public const string Repository = "GitVersion";
 
     public const string Version60 = "6.0";
-    public const string Version50 = "5.0";
     public const string Version31 = "3.1";
 
-    public const string NetVersion50 = "net5.0";
     public const string NetVersion60 = "net6.0";
     public const string CoreFxVersion31 = "netcoreapp3.1";
     public const string FullFxVersion48 = "net48";
@@ -17,7 +15,7 @@ public class Constants
     public const string NoMono = "NoMono";
     public const string NoNet48 = "NoNet48";
 
-    public static readonly string[] VersionsToBuild = { Version60, Version50, Version31 };
+    public static readonly string[] VersionsToBuild = { Version60, Version31 };
     public static readonly Architecture[] ArchToBuild = { Architecture.Amd64, Architecture.Arm64 };
     public static readonly string[] DistrosToSkip = { Alpine312, Alpine313, Alpine314, Centos7 };
 
