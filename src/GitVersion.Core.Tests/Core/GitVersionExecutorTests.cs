@@ -26,8 +26,8 @@ public class GitVersionExecutorTests : TestBase
     public void CacheKeySameAfterReNormalizing()
     {
         using var fixture = new EmptyRepositoryFixture();
-        var targetUrl = "https://github.com/GitTools/GitVersion.git";
-        var targetBranch = $"refs/head/{MainBranch}";
+        const string targetUrl = "https://github.com/GitTools/GitVersion.git";
+        const string targetBranch = $"refs/head/{MainBranch}";
 
         var gitVersionOptions = new GitVersionOptions
         {
@@ -56,7 +56,7 @@ public class GitVersionExecutorTests : TestBase
     [Test]
     public void GitPreparerShouldNotFailWhenTargetPathNotInitialized()
     {
-        var targetUrl = "https://github.com/GitTools/GitVersion.git";
+        const string targetUrl = "https://github.com/GitTools/GitVersion.git";
 
         var gitVersionOptions = new GitVersionOptions
         {
@@ -85,7 +85,7 @@ public class GitVersionExecutorTests : TestBase
             var repo = new Repository(fixture.RepositoryPath);
             repo.Worktrees.Add("worktree", worktreePath, false);
 
-            var targetUrl = "https://github.com/GitTools/GitVersion.git";
+            const string targetUrl = "https://github.com/GitTools/GitVersion.git";
 
             var gitVersionOptions = new GitVersionOptions
             {
@@ -424,7 +424,7 @@ public class GitVersionExecutorTests : TestBase
             var repo = new Repository(fixture.RepositoryPath);
             repo.Worktrees.Add("worktree", worktreePath, false);
 
-            var targetUrl = "https://github.com/GitTools/GitVersion.git";
+            const string targetUrl = "https://github.com/GitTools/GitVersion.git";
 
             var gitVersionOptions = new GitVersionOptions
             {
@@ -446,7 +446,7 @@ public class GitVersionExecutorTests : TestBase
     public void GetProjectRootDirectoryNoWorktree()
     {
         using var fixture = new EmptyRepositoryFixture();
-        var targetUrl = "https://github.com/GitTools/GitVersion.git";
+        const string targetUrl = "https://github.com/GitTools/GitVersion.git";
 
         var gitVersionOptions = new GitVersionOptions
         {

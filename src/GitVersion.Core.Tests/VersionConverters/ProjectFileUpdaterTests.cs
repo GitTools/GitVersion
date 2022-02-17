@@ -278,7 +278,7 @@ public class ProjectFileUpdaterTests : TestBase
             using var projFileUpdater = new ProjectFileUpdater(this.log, fs);
             projFileUpdater.Execute(variables, new AssemblyInfoContext(Path.GetTempPath(), false, fileName));
 
-            var expectedXml = @"
+            const string expectedXml = @"
 <Project Sdk=""Microsoft.NET.Sdk"">
   <PropertyGroup>
     <OutputType>Exe</OutputType>

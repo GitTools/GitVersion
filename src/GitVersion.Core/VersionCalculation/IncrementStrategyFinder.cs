@@ -89,15 +89,10 @@ public class IncrementStrategyFinder : IIncrementStrategyFinder
         return GetIncrementForCommits(context, commits);
     }
 
-    private static Regex TryGetRegexOrDefault(string? messageRegex, Regex defaultRegex)
-    {
-        if (messageRegex == null)
-        {
-            return defaultRegex;
-        }
-
-        return CompiledRegexCache.GetOrAdd(messageRegex, pattern => new Regex(pattern, RegexOptions.Compiled | RegexOptions.IgnoreCase));
-    }
+    private static Regex TryGetRegexOrDefault(string? messageRegex, Regex defaultRegex) =>
+        messageRegex == null
+            ? defaultRegex
+            : CompiledRegexCache.GetOrAdd(messageRegex, pattern => new Regex(pattern, RegexOptions.Compiled | RegexOptions.IgnoreCase));
 
     /// <summary>
     /// Get the sequence of commits in a <paramref name="repo"/> between a <paramref name="baseCommit"/> (exclusive)
@@ -119,7 +114,7 @@ public class IncrementStrategyFinder : IIncrementStrategyFinder
     private Dictionary<string, int> GetHeadCommitsMap(IGitRepository repo, ICommit? headCommit) =>
         this.headCommitsMapCache.GetOrAdd(headCommit?.Sha ?? "NULL", () =>
             GetHeadCommits(repo, headCommit)
-                .Select((commit, index) => (Sha: commit.Sha, Index: index))
+                .Select((commit, index) => (commit.Sha, Index: index))
                 .ToDictionary(t => t.Sha, t => t.Index));
 
     /// <summary>

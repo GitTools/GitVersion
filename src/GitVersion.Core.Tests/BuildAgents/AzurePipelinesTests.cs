@@ -51,7 +51,7 @@ public class AzurePipelinesTests : TestBase
     {
         this.environment.SetEnvironmentVariable(key, null);
 
-        var semver = "0.0.0-Unstable4";
+        const string semver = "0.0.0-Unstable4";
         var vars = new TestableVersionVariables(fullSemVer: semver);
         var vsVersion = this.buildServer.GenerateSetVersionMessage(vars);
         vsVersion.ShouldBe(semver);

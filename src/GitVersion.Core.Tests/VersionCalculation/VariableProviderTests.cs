@@ -40,7 +40,7 @@ public class VariableProviderTests : TestBase
         };
 
 #pragma warning disable CS0618 // Type or member is obsolete
-        var propertyName = nameof(SemanticVersionFormatValues.DefaultInformationalVersion);
+        const string propertyName = nameof(SemanticVersionFormatValues.DefaultInformationalVersion);
 #pragma warning restore CS0618 // Type or member is obsolete
         var config = new TestEffectiveConfiguration(assemblyInformationalFormat: $"{{{propertyName}}}");
         this.variableProvider.GetVariablesFor(semVer, config, false);

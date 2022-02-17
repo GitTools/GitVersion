@@ -86,7 +86,7 @@ public class DroneTests : TestBase
         const string droneSourceBranch = "droneSourceBranch";
         const string droneDestinationBranch = "droneDestinationBranch";
 
-        var ciCommitRefSpec = $"{droneSourceBranch}:{droneDestinationBranch}";
+        const string ciCommitRefSpec = $"{droneSourceBranch}:{droneDestinationBranch}";
 
         this.environment.SetEnvironmentVariable("DRONE_PULL_REQUEST", "1");
         this.environment.SetEnvironmentVariable("DRONE_SOURCE_BRANCH", "");
@@ -125,7 +125,7 @@ public class DroneTests : TestBase
         const string droneSourceBranch = "droneSourceBranch";
         const string droneDestinationBranch = "droneDestinationBranch";
 
-        var ciCommitRefSpec = $"{droneSourceBranch};{droneDestinationBranch}";
+        const string ciCommitRefSpec = $"{droneSourceBranch};{droneDestinationBranch}";
 
         this.environment.SetEnvironmentVariable("DRONE_PULL_REQUEST", "1");
         this.environment.SetEnvironmentVariable("DRONE_SOURCE_BRANCH", "");

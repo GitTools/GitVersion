@@ -55,7 +55,7 @@ public static class EncodingHelper
             ScanEncodings();
         }
 
-        return encodingsWithPreambles.FirstOrDefault(encoding => PreambleMatches(encoding, bytes));
+        return encodingsWithPreambles?.FirstOrDefault(encoding => PreambleMatches(encoding, bytes));
     }
 
     /// <summary>

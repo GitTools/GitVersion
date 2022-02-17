@@ -113,7 +113,7 @@ public class AssemblyInfoFileUpdaterTests : TestBase
     {
         this.fileSystem = Substitute.For<IFileSystem>();
         var workingDir = Path.GetTempPath();
-        var assemblyInfoFile = "VersionAssemblyInfo.js";
+        const string assemblyInfoFile = "VersionAssemblyInfo.js";
         var fullPath = Path.Combine(workingDir, assemblyInfoFile);
         var variables = this.variableProvider.GetVariablesFor(SemanticVersion.Parse("1.0.0", "v"), new TestEffectiveConfiguration(), false);
 

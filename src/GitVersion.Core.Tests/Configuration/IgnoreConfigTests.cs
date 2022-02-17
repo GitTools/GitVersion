@@ -13,7 +13,7 @@ public class IgnoreConfigTests : TestBase
     [Test]
     public void CanDeserialize()
     {
-        var yaml = @"
+        const string yaml = @"
 ignore:
     sha: [b6c0c9fda88830ebcd563e500a5a7da5a1658e98]
     commits-before: 2015-10-23T12:23:15
@@ -31,7 +31,7 @@ ignore:
     [Test]
     public void ShouldSupportsOtherSequenceFormat()
     {
-        var yaml = @"
+        const string yaml = @"
 ignore:
     sha:
         - b6c0c9fda88830ebcd563e500a5a7da5a1658e98
@@ -49,7 +49,7 @@ ignore:
     [Test]
     public void WhenNotInConfigShouldHaveDefaults()
     {
-        var yaml = @"
+        const string yaml = @"
 next-version: 1.0
 ";
 
@@ -64,7 +64,7 @@ next-version: 1.0
     [Test]
     public void WhenBadDateFormatShouldFail()
     {
-        var yaml = @"
+        const string yaml = @"
 ignore:
     commits-before: bad format date
 ";

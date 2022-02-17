@@ -232,7 +232,7 @@ public class DevelopScenarios : TestBase
         fixture.SequenceDiagram.Destroy("release/1.2.0");
         fixture.Repository.Branches.Remove("release/1.2.0");
 
-        var expectedFullSemVer = "1.3.0-alpha.9";
+        const string expectedFullSemVer = "1.3.0-alpha.9";
         fixture.AssertFullSemver(expectedFullSemVer, config);
     }
 
@@ -264,7 +264,7 @@ public class DevelopScenarios : TestBase
         fixture.SequenceDiagram.Destroy("release/1.2.0");
         fixture.Repository.Branches.Remove("release/1.2.0");
 
-        var expectedFullSemVer = "1.3.0-alpha.5";
+        const string expectedFullSemVer = "1.3.0-alpha.5";
         fixture.AssertFullSemver(expectedFullSemVer, config);
     }
 

@@ -95,10 +95,7 @@ public class SemanticVersionPreReleaseTag :
         }
 
         var nameComparison = StringComparerUtils.IgnoreCaseComparer.Compare(Name, other?.Name);
-        if (nameComparison != 0)
-            return nameComparison;
-
-        return Nullable.Compare(Number, other?.Number);
+        return nameComparison != 0 ? nameComparison : Nullable.Compare(Number, other?.Number);
     }
 
     public override string ToString() => ToString("t");
@@ -150,10 +147,7 @@ public class SemanticVersionPreReleaseTag :
         if (tagEndsWithANumber && number.Length > 0)
             number = "-" + number;
 
-        if (tag.Length + number.Length > 20)
-            return $"{tag.Substring(0, 20 - number.Length)}{number}";
-
-        return $"{tag}{number}";
+        return tag.Length + number.Length > 20 ? $"{tag.Substring(0, 20 - number.Length)}{number}" : $"{tag}{number}";
     }
 
     private string GetLegacyName()

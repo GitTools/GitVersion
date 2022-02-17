@@ -150,7 +150,7 @@ public class ArgumentParser : IArgumentParser
         }
     }
 
-    private void ParseTargetPath(Arguments arguments, string name, string[] values, string value, bool parseEnded)
+    private void ParseTargetPath(Arguments arguments, string name, IReadOnlyList<string> values, string value, bool parseEnded)
     {
         if (name.IsSwitch("targetpath"))
         {
@@ -282,7 +282,7 @@ public class ArgumentParser : IArgumentParser
         return false;
     }
 
-    private static bool ParseConfigArguments(Arguments arguments, string name, string[] values, string value)
+    private static bool ParseConfigArguments(Arguments arguments, string name, IReadOnlyList<string> values, string value)
     {
         if (name.IsSwitch("config"))
         {
@@ -297,16 +297,15 @@ public class ArgumentParser : IArgumentParser
             return true;
         }
 
-        if (name.IsSwitch("showConfig"))
-        {
-            arguments.ShowConfig = value.IsTrue() || !value.IsFalse();
-            return true;
-        }
+        if (!name.IsSwitch("showConfig"))
+            return false;
 
-        return false;
+        arguments.ShowConfig = value.IsTrue() || !value.IsFalse();
+        return true;
+
     }
 
-    private static bool ParseRemoteArguments(Arguments arguments, string name, string[] values, string value)
+    private static bool ParseRemoteArguments(Arguments arguments, string name, IReadOnlyList<string> values, string value)
     {
         if (name.IsSwitch("dynamicRepoLocation"))
         {
@@ -391,7 +390,7 @@ public class ArgumentParser : IArgumentParser
         }
     }
 
-    private static void ParseOutput(Arguments arguments, string[] values)
+    private static void ParseOutput(Arguments arguments, IEnumerable<string> values)
     {
         foreach (var v in values)
         {
@@ -417,9 +416,9 @@ public class ArgumentParser : IArgumentParser
         }
     }
 
-    private static void ParseOverrideConfig(Arguments arguments, string[] values)
+    private static void ParseOverrideConfig(Arguments arguments, IReadOnlyCollection<string> values)
     {
-        if (values == null || values.Length == 0)
+        if (values == null || values.Count == 0)
             return;
 
         var parser = new OverrideConfigOptionParser();
@@ -436,17 +435,14 @@ public class ArgumentParser : IArgumentParser
             var optionKey = keyAndValue[0].ToLowerInvariant();
             if (!OverrideConfigOptionParser.SupportedProperties.Contains(optionKey))
             {
-                throw new WarningException($"Could not parse /overrideconfig option: {keyValueOption}. Unsuported 'key'.");
+                throw new WarningException($"Could not parse /overrideconfig option: {keyValueOption}. Unsupported 'key'.");
             }
-            else
-            {
-                parser.SetValue(optionKey, keyAndValue[1]);
-            }
+            parser.SetValue(optionKey, keyAndValue[1]);
         }
         arguments.OverrideConfig = parser.GetConfig();
     }
 
-    private static void ParseUpdateAssemblyInfo(Arguments arguments, string value, string[] values)
+    private static void ParseUpdateAssemblyInfo(Arguments arguments, string value, IReadOnlyCollection<string> values)
     {
         if (value.IsTrue())
         {
@@ -456,7 +452,7 @@ public class ArgumentParser : IArgumentParser
         {
             arguments.UpdateAssemblyInfo = false;
         }
-        else if (values != null && values.Length > 1)
+        else if (values != null && values.Count > 1)
         {
             arguments.UpdateAssemblyInfo = true;
             foreach (var v in values)

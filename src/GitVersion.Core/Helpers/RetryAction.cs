@@ -40,10 +40,7 @@ public class RetryAction<T, Result> where T : Exception
         if (retryCount < 0) throw new ArgumentOutOfRangeException(nameof(retryCount), retryCount, "should be >= 0");
         if (factor < 0) throw new ArgumentOutOfRangeException(nameof(factor), factor, "should be >= 0");
 
-        if (retryCount == 0)
-            return Empty();
-
-        return Enumerate(initialDelay, retryCount, fastFirst, factor);
+        return retryCount == 0 ? Empty() : Enumerate(initialDelay, retryCount, fastFirst, factor);
 
         static IEnumerable<TimeSpan> Enumerate(TimeSpan initial, int retry, bool fast, double f)
         {
