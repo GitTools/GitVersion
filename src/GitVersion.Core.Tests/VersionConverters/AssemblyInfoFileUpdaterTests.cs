@@ -26,9 +26,9 @@ public class AssemblyInfoFileUpdaterTests : TestBase
 
         var sp = ConfigureServices();
 
-        this.log = sp.GetService<ILog>();
-        this.fileSystem = sp.GetService<IFileSystem>();
-        this.variableProvider = sp.GetService<IVariableProvider>();
+        this.log = sp.GetRequiredService<ILog>();
+        this.fileSystem = sp.GetRequiredService<IFileSystem>();
+        this.variableProvider = sp.GetRequiredService<IVariableProvider>();
     }
 
     [TestCase("cs")]

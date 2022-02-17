@@ -17,8 +17,8 @@ public class DroneTests : TestBase
     public void SetUp()
     {
         this.sp = ConfigureServices(services => services.AddSingleton<Drone>());
-        this.environment = this.sp.GetService<IEnvironment>();
-        this.buildServer = this.sp.GetService<Drone>();
+        this.environment = this.sp.GetRequiredService<IEnvironment>();
+        this.buildServer = this.sp.GetRequiredService<Drone>();
         this.environment.SetEnvironmentVariable("DRONE", "true");
     }
 

@@ -73,7 +73,7 @@ public static class StringExtensions
             "ensureassemblyinfo",
             "nofetch",
             "nonormalize",
-            "nocache",
+            "nocache"
         };
 
         var argumentMightRequireValue = !booleanArguments.Contains(argument.Substring(1), StringComparer.OrdinalIgnoreCase);

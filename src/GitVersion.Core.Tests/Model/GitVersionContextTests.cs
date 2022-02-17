@@ -193,6 +193,6 @@ public class GitVersionContextTests : TestBase
             services.AddSingleton(repository);
         });
 
-        return sp.GetService<Lazy<GitVersionContext>>()?.Value;
+        return sp.GetRequiredService<Lazy<GitVersionContext>>().Value;
     }
 }

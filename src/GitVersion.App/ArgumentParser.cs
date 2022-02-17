@@ -35,7 +35,7 @@ public class ArgumentParser : IArgumentParser
         {
             var args = new Arguments
             {
-                TargetPath = System.Environment.CurrentDirectory,
+                TargetPath = System.Environment.CurrentDirectory
             };
 
             args.Output.Add(OutputType.Json);
@@ -54,7 +54,7 @@ public class ArgumentParser : IArgumentParser
             return new Arguments
             {
                 TargetPath = System.Environment.CurrentDirectory,
-                Init = true,
+                Init = true
             };
         }
 
@@ -62,7 +62,7 @@ public class ArgumentParser : IArgumentParser
         {
             return new Arguments
             {
-                IsHelp = true,
+                IsHelp = true
             };
         }
 
@@ -70,7 +70,7 @@ public class ArgumentParser : IArgumentParser
         {
             return new Arguments
             {
-                IsVersion = true,
+                IsVersion = true
             };
         }
 

@@ -31,8 +31,8 @@ public class ProjectFileUpdaterTests : TestBase
         this.logMessages = new List<string>();
         this.log = new Log(new TestLogAppender(this.logMessages.Add));
 
-        this.fileSystem = sp.GetService<IFileSystem>();
-        this.variableProvider = sp.GetService<IVariableProvider>();
+        this.fileSystem = sp.GetRequiredService<IFileSystem>();
+        this.variableProvider = sp.GetRequiredService<IVariableProvider>();
         this.projectFileUpdater = new ProjectFileUpdater(this.log, this.fileSystem!);
     }
 

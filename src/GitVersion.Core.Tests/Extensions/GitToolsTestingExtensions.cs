@@ -67,23 +67,23 @@ public static class GitToolsTestingExtensions
             RepositoryInfo =
             {
                 TargetBranch = branch,
-                CommitId = commitId,
+                CommitId = commitId
             },
             Settings = { OnlyTrackedBranches = onlyTrackedBranches }
         });
 
         var sp = ConfigureServices(services => services.AddSingleton(options));
 
-        var variableProvider = sp.GetService<IVariableProvider>().NotNull();
-        var nextVersionCalculator = sp.GetService<INextVersionCalculator>().NotNull();
-        var contextOptions = sp.GetService<Lazy<GitVersionContext>>().NotNull();
+        var variableProvider = sp.GetRequiredService<IVariableProvider>();
+        var nextVersionCalculator = sp.GetRequiredService<INextVersionCalculator>();
+        var contextOptions = sp.GetRequiredService<Lazy<GitVersionContext>>();
 
-        var context = contextOptions!.Value;
+        var context = contextOptions.Value;
 
         try
         {
             var semanticVersion = nextVersionCalculator.FindVersion();
-            var variables = variableProvider!.GetVariablesFor(semanticVersion, context.Configuration, context.IsCurrentCommitTagged);
+            var variables = variableProvider.GetVariablesFor(semanticVersion, context.Configuration, context.IsCurrentCommitTagged);
 
             return variables;
         }
@@ -146,8 +146,8 @@ public static class GitToolsTestingExtensions
             services.AddSingleton(environment);
         });
 
-        var gitPreparer = serviceProvider.GetService<IGitPreparer>();
-        gitPreparer!.Prepare();
+        var gitPreparer = serviceProvider.GetRequiredService<IGitPreparer>();
+        gitPreparer.Prepare();
     }
 
     private static IServiceProvider ConfigureServices(Action<IServiceCollection> servicesOverrides = null)

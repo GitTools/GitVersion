@@ -30,7 +30,7 @@ public class JsonVersionBuilderTests : TestBase
 
         var sp = ConfigureServices();
 
-        var variableProvider = sp.GetService<IVariableProvider>();
+        var variableProvider = sp.GetRequiredService<IVariableProvider>();
         var variables = variableProvider.GetVariablesFor(semanticVersion, config, false);
         var json = variables.ToString();
         json.ShouldMatchApproved(c => c.SubFolder("Approved"));

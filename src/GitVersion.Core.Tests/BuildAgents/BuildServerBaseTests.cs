@@ -19,7 +19,7 @@ public class BuildServerBaseTests : TestBase
     public void SetUp()
     {
         this.sp = ConfigureServices(services => services.AddSingleton<BuildAgent>());
-        this.buildServer = this.sp.GetService<IVariableProvider>();
+        this.buildServer = this.sp.GetRequiredService<IVariableProvider>();
     }
 
     [Test]

@@ -13,7 +13,7 @@ public class HelpWriterTests : TestBase
     public HelpWriterTests()
     {
         var sp = ConfigureServices(services => services.AddModule(new GitVersionAppModule()));
-        this.helpWriter = sp.GetService<IHelpWriter>();
+        this.helpWriter = sp.GetRequiredService<IHelpWriter>();
     }
 
     [Test]
@@ -32,7 +32,7 @@ public class HelpWriterTests : TestBase
             { nameof(Arguments.UpdateWixVersionFile), "/updatewixversionfile" },
             { nameof(Arguments.ConfigFile), "/config" },
             { nameof(Arguments.Verbosity), "/verbosity" },
-            { nameof(Arguments.CommitId), "/c" },
+            { nameof(Arguments.CommitId), "/c" }
         };
         string helpText = null;
 
@@ -40,7 +40,7 @@ public class HelpWriterTests : TestBase
 
         var ignored = new[]
         {
-            nameof(Arguments.Authentication),
+            nameof(Arguments.Authentication)
         };
         typeof(Arguments).GetFields()
             .Select(p => p.Name)

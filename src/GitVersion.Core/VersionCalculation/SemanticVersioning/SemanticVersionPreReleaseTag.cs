@@ -56,7 +56,7 @@ public class SemanticVersionPreReleaseTag :
     public static bool operator <=(SemanticVersionPreReleaseTag? left, SemanticVersionPreReleaseTag? right) =>
         StringComparerUtils.IgnoreCaseComparer.Compare(left?.Name, right?.Name) != 1;
 
-    public static implicit operator string?(SemanticVersionPreReleaseTag? preReleaseTag) => preReleaseTag?.ToString()!;
+    public static implicit operator string?(SemanticVersionPreReleaseTag? preReleaseTag) => preReleaseTag?.ToString();
 
     public static implicit operator SemanticVersionPreReleaseTag(string? preReleaseTag) => Parse(preReleaseTag);
 

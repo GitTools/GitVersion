@@ -197,7 +197,7 @@ public class VersionVariables : IEnumerable<KeyValuePair<string, string>>
 
         foreach (KeyValuePair<string, string> property in this.GetProperties())
         {
-            variablesType.GetProperty(property.Key).SetValue(variables, property.Value);
+            variablesType.GetProperty(property.Key)?.SetValue(variables, property.Value);
         }
 
         var serializeOptions = JsonSerializerOptions();

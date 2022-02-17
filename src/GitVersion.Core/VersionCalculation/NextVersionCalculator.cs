@@ -62,7 +62,7 @@ public class NextVersionCalculator : INextVersionCalculator
         }
         else
         {
-            if (taggedSemanticVersion?.BuildMetaData == null || (taggedSemanticVersion.BuildMetaData.Sha != baseVersion.SemanticVersion.BuildMetaData.Sha))
+            if (taggedSemanticVersion?.BuildMetaData == null || (taggedSemanticVersion.BuildMetaData?.Sha != baseVersion.SemanticVersion.BuildMetaData.Sha))
             {
                 semver = PerformIncrement(baseVersion);
                 semver.BuildMetaData = this.mainlineVersionCalculator.CreateVersionBuildMetaData(baseVersion.BaseVersionSource);

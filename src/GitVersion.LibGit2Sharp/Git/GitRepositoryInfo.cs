@@ -72,7 +72,7 @@ internal class GitRepositoryInfo : IGitRepositoryInfo
             : gitDirectory;
     }
 
-    private string? GetProjectRootDirectory()
+    private string GetProjectRootDirectory()
     {
         if (!DynamicGitRepositoryPath.IsNullOrWhiteSpace())
         {

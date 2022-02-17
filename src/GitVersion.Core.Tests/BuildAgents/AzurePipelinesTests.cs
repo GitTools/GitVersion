@@ -19,8 +19,8 @@ public class AzurePipelinesTests : TestBase
     public void SetEnvironmentVariableForTest()
     {
         var sp = ConfigureServices(services => services.AddSingleton<AzurePipelines>());
-        this.environment = sp.GetService<IEnvironment>();
-        this.buildServer = sp.GetService<AzurePipelines>();
+        this.environment = sp.GetRequiredService<IEnvironment>();
+        this.buildServer = sp.GetRequiredService<AzurePipelines>();
 
         this.environment.SetEnvironmentVariable(key, "Some Build_Value $(GitVersion_FullSemVer) 20151310.3 $(UnknownVar) Release");
     }

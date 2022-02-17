@@ -14,7 +14,7 @@ public class TeamCityTests : TestBase
     public void SetUp()
     {
         var sp = ConfigureServices(services => services.AddSingleton<TeamCity>());
-        this.buildServer = sp.GetService<TeamCity>();
+        this.buildServer = sp.GetRequiredService<TeamCity>();
     }
 
     [Test]

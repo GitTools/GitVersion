@@ -35,7 +35,7 @@ public class MsBuildTaskFixture
                 Errors = buildEngine.Errors,
                 Warnings = buildEngine.Warnings,
                 Messages = buildEngine.Messages,
-                Log = buildEngine.Log,
+                Log = buildEngine.Log
             };
         });
 
@@ -64,7 +64,7 @@ public class MsBuildTaskFixture
             { Jenkins.EnvironmentVariableName, null },
             { AzurePipelines.EnvironmentVariableName, null },
             { GitHubActions.EnvironmentVariableName, null },
-            { SpaceAutomation.EnvironmentVariableName, null },
+            { SpaceAutomation.EnvironmentVariableName, null }
         };
 
         SetEnvironmentVariables(environmentalVariables.ToArray());

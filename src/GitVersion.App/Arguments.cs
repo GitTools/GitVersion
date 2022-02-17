@@ -57,14 +57,14 @@ public class Arguments
             {
                 Username = this.Authentication.Username,
                 Password = this.Authentication.Password,
-                Token = this.Authentication.Token,
+                Token = this.Authentication.Token
             },
 
             ConfigInfo =
             {
                 ConfigFile = ConfigFile,
                 OverrideConfig = OverrideConfig,
-                ShowConfig = ShowConfig,
+                ShowConfig = ShowConfig
             },
 
             RepositoryInfo =
@@ -72,19 +72,19 @@ public class Arguments
                 TargetUrl = TargetUrl,
                 TargetBranch = TargetBranch,
                 CommitId = CommitId,
-                DynamicRepositoryClonePath = DynamicRepositoryClonePath,
+                DynamicRepositoryClonePath = DynamicRepositoryClonePath
             },
 
             Settings =
             {
                 NoFetch = NoFetch,
                 NoCache = NoCache,
-                NoNormalize = NoNormalize,
+                NoNormalize = NoNormalize
             },
 
             WixInfo =
             {
-                ShouldUpdate = UpdateWixVersionFile,
+                ShouldUpdate = UpdateWixVersionFile
             },
 
             Init = Init,

@@ -17,8 +17,8 @@ public class GitHubActionsTests : TestBase
     public void SetUp()
     {
         var sp = ConfigureServices(services => services.AddSingleton<GitHubActions>());
-        this.environment = sp.GetService<IEnvironment>();
-        this.buildServer = sp.GetService<GitHubActions>();
+        this.environment = sp.GetRequiredService<IEnvironment>();
+        this.buildServer = sp.GetRequiredService<GitHubActions>();
         this.environment.SetEnvironmentVariable(GitHubActions.EnvironmentVariableName, "true");
 
         this.githubSetEnvironmentTempFilePath = Path.GetTempFileName();

@@ -140,9 +140,9 @@ public class VariableProvider : IVariableProvider
             {
                 formattedString = formatString.FormatWith(source, this.environment).RegexReplace("[^0-9A-Za-z-.+]", "-");
             }
-            catch (ArgumentException formex)
+            catch (ArgumentException exception)
             {
-                throw new WarningException($"Unable to format {formatVarName}.  Check your format string: {formex.Message}");
+                throw new WarningException($"Unable to format {formatVarName}.  Check your format string: {exception.Message}");
             }
         }
 

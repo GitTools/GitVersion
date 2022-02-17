@@ -29,7 +29,7 @@ public static class GitToolsTestingExtensions
             services.AddSingleton(environment);
         });
 
-        var gitPreparer = serviceProvider.GetService<IGitPreparer>();
+        var gitPreparer = serviceProvider.GetRequiredService<IGitPreparer>();
         gitPreparer.Prepare();
     }
 

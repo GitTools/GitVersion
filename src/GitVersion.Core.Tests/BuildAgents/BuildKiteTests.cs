@@ -16,8 +16,8 @@ public class BuildKiteTests : TestBase
     public void SetUp()
     {
         var sp = ConfigureServices(services => services.AddSingleton<BuildKite>());
-        this.environment = sp.GetService<IEnvironment>();
-        this.buildServer = sp.GetService<BuildKite>();
+        this.environment = sp.GetRequiredService<IEnvironment>();
+        this.buildServer = sp.GetRequiredService<BuildKite>();
         this.environment.SetEnvironmentVariable(BuildKite.EnvironmentVariableName, "true");
     }
 

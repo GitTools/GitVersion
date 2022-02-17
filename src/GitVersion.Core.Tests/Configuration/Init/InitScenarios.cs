@@ -29,8 +29,8 @@ public class InitScenarios : TestBase
             services.AddSingleton(options);
         });
 
-        var configurationProvider = sp.GetService<IConfigProvider>();
-        var fileSystem = sp.GetService<IFileSystem>();
+        var configurationProvider = sp.GetRequiredService<IConfigProvider>();
+        var fileSystem = sp.GetRequiredService<IFileSystem>();
         configurationProvider.Init(workingDirectory);
 
         fileSystem.ReadAllText(Path.Combine(workingDirectory, "GitVersion.yml")).ShouldMatchApproved();

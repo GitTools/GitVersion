@@ -17,8 +17,8 @@ public class SpaceAutomationTests : TestBase
     public void SetUp()
     {
         var sp = ConfigureServices(services => services.AddSingleton<SpaceAutomation>());
-        this.environment = sp.GetService<IEnvironment>();
-        this.buildServer = sp.GetService<SpaceAutomation>();
+        this.environment = sp.GetRequiredService<IEnvironment>();
+        this.buildServer = sp.GetRequiredService<SpaceAutomation>();
         this.environment.SetEnvironmentVariable(SpaceAutomation.EnvironmentVariableName, "true");
     }
 

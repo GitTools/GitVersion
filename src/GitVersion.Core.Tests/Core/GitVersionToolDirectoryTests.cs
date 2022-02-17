@@ -32,7 +32,7 @@ public class GitVersionTaskDirectoryTests : TestBase
 
             var sp = ConfigureServices(services => services.AddSingleton(options));
 
-            var gitVersionCalculator = sp.GetService<IGitVersionCalculateTool>();
+            var gitVersionCalculator = sp.GetRequiredService<IGitVersionCalculateTool>();
 
             gitVersionCalculator.CalculateVersionVariables();
         }
@@ -57,7 +57,7 @@ public class GitVersionTaskDirectoryTests : TestBase
 
             var sp = ConfigureServices(services => services.AddSingleton(options));
 
-            var gitVersionCalculator = sp.GetService<IGitVersionCalculateTool>();
+            var gitVersionCalculator = sp.GetRequiredService<IGitVersionCalculateTool>();
 
             gitVersionCalculator.CalculateVersionVariables();
         }

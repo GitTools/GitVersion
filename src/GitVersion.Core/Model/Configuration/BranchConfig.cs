@@ -118,6 +118,6 @@ public class BranchConfig
         TrackMergeTarget = false,
         TracksReleaseBranches = false,
         IsReleaseBranch = false,
-        IsMainline = false,
+        IsMainline = false
     };
 }

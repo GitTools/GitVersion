@@ -99,7 +99,7 @@ public class UpdateAssemblyInfoTaskTest : TestTaskBase
                 { "ProjectFile", "$(MSBuildProjectFullPath)" },
                 { "IntermediateOutputPath", "$(MSBuildProjectDirectory)" },
                 { "Language", "$(Language)" },
-                { "CompileFiles", "@(Compile)" },
+                { "CompileFiles", "@(Compile)" }
             })
             .TaskOutputProperty(outputProperty, outputProperty)
             .ItemGroup()

@@ -18,7 +18,7 @@ internal class VersionInTagScenarios
         var config = new ConfigurationBuilder()
             .Add(new Config
             {
-                AssemblyFileVersioningFormat = "{Major}.{Minor}.{Patch}.{WeightedPreReleaseNumber}",
+                AssemblyFileVersioningFormat = "{Major}.{Minor}.{Patch}.{WeightedPreReleaseNumber}"
             })
             .Build();
 

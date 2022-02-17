@@ -67,6 +67,6 @@ public class VersionSourceTests : TestBase
     private static INextVersionCalculator GetNextVersionCalculator(RepositoryFixtureBase fixture)
     {
         var sp = BuildServiceProvider(fixture.RepositoryPath, fixture.Repository.ToGitRepository(), fixture.Repository.Head.CanonicalName);
-        return sp.GetService<INextVersionCalculator>();
+        return sp.GetRequiredService<INextVersionCalculator>();
     }
 }

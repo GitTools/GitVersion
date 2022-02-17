@@ -26,7 +26,7 @@ public class VariableProviderTests : TestBase
             services.AddSingleton<ILog>(log);
         });
 
-        this.variableProvider = sp.GetService<IVariableProvider>();
+        this.variableProvider = sp.GetRequiredService<IVariableProvider>();
     }
 
     [Test]
@@ -36,7 +36,7 @@ public class VariableProviderTests : TestBase
         {
             Major = 1,
             Minor = 2,
-            Patch = 3,
+            Patch = 3
         };
 
 #pragma warning disable CS0618 // Type or member is obsolete

@@ -66,9 +66,9 @@ internal class TemplateManager
     private static IEnumerable<string> GetEmbeddedTemplates(TemplateType templateType, string templateCategory)
     {
 
-        var assy = typeof(TemplateManager).Assembly;
+        var assembly = typeof(TemplateManager).Assembly;
 
-        foreach (var name in assy.GetManifestResourceNames())
+        foreach (var name in assembly.GetManifestResourceNames())
         {
             if (name.Contains(templateType.ToString()) && name.Contains(templateCategory))
             {

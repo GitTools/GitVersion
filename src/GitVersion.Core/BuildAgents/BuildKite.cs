@@ -13,7 +13,7 @@ public class BuildKite : BuildAgentBase
 
     protected override string EnvironmentVariable { get; } = EnvironmentVariableName;
 
-    public override bool CanApplyToCurrentContext() => Environment.GetEnvironmentVariable(EnvironmentVariable)?.Equals("true", StringComparison.OrdinalIgnoreCase) ?? false;
+    public override bool CanApplyToCurrentContext() => "true".Equals(Environment.GetEnvironmentVariable(EnvironmentVariable), StringComparison.OrdinalIgnoreCase);
 
     public override string GenerateSetVersionMessage(VersionVariables variables) =>
         string.Empty; // There is no equivalent function in BuildKite.

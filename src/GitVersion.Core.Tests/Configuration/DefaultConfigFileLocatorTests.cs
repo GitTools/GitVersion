@@ -32,9 +32,9 @@ public class ConfigFileLocatorTests
 
             var sp = ConfigureServices(services => services.AddSingleton(options));
 
-            this.fileSystem = sp.GetService<IFileSystem>();
-            this.configurationProvider = sp.GetService<IConfigProvider>();
-            this.configFileLocator = sp.GetService<IConfigFileLocator>();
+            this.fileSystem = sp.GetRequiredService<IFileSystem>();
+            this.configurationProvider = sp.GetRequiredService<IConfigProvider>();
+            this.configFileLocator = sp.GetRequiredService<IConfigFileLocator>();
 
             ShouldlyConfiguration.ShouldMatchApprovedDefaults.LocateTestMethodUsingAttribute<TestAttribute>();
         }
@@ -96,8 +96,8 @@ public class ConfigFileLocatorTests
         public void ThrowsExceptionOnAmbiguousConfigFileLocation()
         {
             var sp = GetServiceProvider(this.gitVersionOptions);
-            this.configFileLocator = sp.GetService<IConfigFileLocator>();
-            this.fileSystem = sp.GetService<IFileSystem>();
+            this.configFileLocator = sp.GetRequiredService<IConfigFileLocator>();
+            this.fileSystem = sp.GetRequiredService<IFileSystem>();
 
             var repositoryConfigFilePath = SetupConfigFileContent(string.Empty, path: this.repoPath);
             var workingDirectoryConfigFilePath = SetupConfigFileContent(string.Empty, path: this.workingPath);
@@ -114,8 +114,8 @@ public class ConfigFileLocatorTests
             this.workingPath = DefaultRepoPath;
 
             var sp = GetServiceProvider(this.gitVersionOptions);
-            this.configFileLocator = sp.GetService<IConfigFileLocator>();
-            this.fileSystem = sp.GetService<IFileSystem>();
+            this.configFileLocator = sp.GetRequiredService<IConfigFileLocator>();
+            this.fileSystem = sp.GetRequiredService<IFileSystem>();
 
             SetupConfigFileContent(string.Empty, path: this.workingPath);
 
@@ -128,8 +128,8 @@ public class ConfigFileLocatorTests
             this.workingPath = DefaultRepoPath.ToLower();
 
             var sp = GetServiceProvider(this.gitVersionOptions);
-            this.configFileLocator = sp.GetService<IConfigFileLocator>();
-            this.fileSystem = sp.GetService<IFileSystem>();
+            this.configFileLocator = sp.GetRequiredService<IConfigFileLocator>();
+            this.fileSystem = sp.GetRequiredService<IFileSystem>();
 
             SetupConfigFileContent(string.Empty, path: this.workingPath);
 
@@ -143,8 +143,8 @@ public class ConfigFileLocatorTests
 
             this.gitVersionOptions = new GitVersionOptions { ConfigInfo = { ConfigFile = "./src/my-config.yaml" } };
             var sp = GetServiceProvider(this.gitVersionOptions);
-            this.configFileLocator = sp.GetService<IConfigFileLocator>();
-            this.fileSystem = sp.GetService<IFileSystem>();
+            this.configFileLocator = sp.GetRequiredService<IConfigFileLocator>();
+            this.fileSystem = sp.GetRequiredService<IFileSystem>();
 
             SetupConfigFileContent(string.Empty, path: this.workingPath);
 
@@ -161,12 +161,12 @@ public class ConfigFileLocatorTests
             var log = new Log(logAppender);
 
             var sp = GetServiceProvider(this.gitVersionOptions, log);
-            this.configFileLocator = sp.GetService<IConfigFileLocator>();
-            this.fileSystem = sp.GetService<IFileSystem>();
+            this.configFileLocator = sp.GetRequiredService<IConfigFileLocator>();
+            this.fileSystem = sp.GetRequiredService<IFileSystem>();
 
             SetupConfigFileContent(string.Empty);
 
-            var configurationProvider = sp.GetService<IConfigProvider>();
+            var configurationProvider = sp.GetRequiredService<IConfigProvider>();
 
             configurationProvider.Provide(this.repoPath);
             stringLogger.Length.ShouldBe(0);
@@ -182,12 +182,12 @@ public class ConfigFileLocatorTests
             var log = new Log(logAppender);
 
             var sp = GetServiceProvider(this.gitVersionOptions, log);
-            this.configFileLocator = sp.GetService<IConfigFileLocator>();
-            this.fileSystem = sp.GetService<IFileSystem>();
+            this.configFileLocator = sp.GetRequiredService<IConfigFileLocator>();
+            this.fileSystem = sp.GetRequiredService<IFileSystem>();
 
             SetupConfigFileContent(string.Empty, path: @"c:\\Unrelated\\path");
 
-            var configurationProvider = sp.GetService<IConfigProvider>();
+            var configurationProvider = sp.GetRequiredService<IConfigProvider>();
 
             configurationProvider.Provide(this.repoPath);
             stringLogger.Length.ShouldBe(0);
@@ -197,7 +197,7 @@ public class ConfigFileLocatorTests
         public void ThrowsExceptionOnCustomYmlFileDoesNotExist()
         {
             var sp = GetServiceProvider(this.gitVersionOptions);
-            this.configFileLocator = sp.GetService<IConfigFileLocator>();
+            this.configFileLocator = sp.GetRequiredService<IConfigFileLocator>();
 
             var exception = Should.Throw<WarningException>(() => this.configFileLocator.Verify(this.workingPath, this.repoPath));
 

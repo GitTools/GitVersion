@@ -27,8 +27,8 @@ internal class Program
 
                 services.AddSingleton(sp =>
                 {
-                    var arguments = sp.GetService<IArgumentParser>()?.ParseArguments(args);
-                    var gitVersionOptions = arguments?.ToOptions();
+                    var arguments = sp.GetRequiredService<IArgumentParser>().ParseArguments(args);
+                    var gitVersionOptions = arguments.ToOptions();
                     return Options.Create(gitVersionOptions);
                 });
 

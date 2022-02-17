@@ -25,7 +25,7 @@ public static class GitVersionTasks
         try
         {
             var sp = BuildServiceProvider(task);
-            var gitVersionTaskExecutor = sp.GetService<IGitVersionTaskExecutor>();
+            var gitVersionTaskExecutor = sp.GetRequiredService<IGitVersionTaskExecutor>();
 
             action(gitVersionTaskExecutor);
         }
@@ -45,9 +45,9 @@ public static class GitVersionTasks
 
     private static void Configure(IServiceProvider sp, GitVersionTaskBase task)
     {
-        var log = sp.GetService<ILog>();
+        var log = sp.GetRequiredService<ILog>();
         var buildAgent = sp.GetService<ICurrentBuildAgent>();
-        var gitVersionOptions = sp.GetService<IOptions<GitVersionOptions>>()?.Value;
+        var gitVersionOptions = sp.GetRequiredService<IOptions<GitVersionOptions>>().Value;
 
         log.AddLogAppender(new MsBuildAppender(task.Log));
 
@@ -64,7 +64,7 @@ public static class GitVersionTasks
 
         var gitVersionOptions = new GitVersionOptions
         {
-            WorkingDirectory = task.SolutionDirectory,
+            WorkingDirectory = task.SolutionDirectory
         };
 
         gitVersionOptions.Output.Add(OutputType.BuildServer);

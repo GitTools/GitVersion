@@ -5,7 +5,7 @@ public static class DirectoryHelper
     private static readonly Dictionary<string, string> ToRename = new()
     {
         { "gitted", ".git" },
-        { "gitmodules", ".gitmodules" },
+        { "gitmodules", ".gitmodules" }
     };
 
     public static void CopyFilesRecursively(DirectoryInfo source, DirectoryInfo target)

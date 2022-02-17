@@ -16,7 +16,7 @@ public class TagCheckoutInBuildAgentTests
         var env = new Dictionary<string, string>
         {
             { AzurePipelines.EnvironmentVariableName, "true" },
-            { "BUILD_SOURCEBRANCH", "refs/tags/0.2.0" },
+            { "BUILD_SOURCEBRANCH", "refs/tags/0.2.0" }
         };
 
         await VerifyTagCheckoutVersionIsCalculatedProperly(env);
@@ -28,7 +28,7 @@ public class TagCheckoutInBuildAgentTests
         var env = new Dictionary<string, string>
         {
             { GitHubActions.EnvironmentVariableName, "true" },
-            { "GITHUB_REF", "ref/tags/0.2.0" },
+            { "GITHUB_REF", "ref/tags/0.2.0" }
         };
 
         await VerifyTagCheckoutVersionIsCalculatedProperly(env);

@@ -15,13 +15,11 @@ public class ShaVersionFilter : IVersionFilter
 
         reason = null;
 
-        if (version.BaseVersionSource != null &&
-            this.shas.Any(sha => version.BaseVersionSource.Sha.StartsWith(sha, StringComparison.OrdinalIgnoreCase)))
-        {
-            reason = $"Sha {version.BaseVersionSource} was ignored due to commit having been excluded by configuration";
-            return true;
-        }
+        if (version.BaseVersionSource == null || !this.shas.Any(sha => version.BaseVersionSource.Sha.StartsWith(sha, StringComparison.OrdinalIgnoreCase)))
+            return false;
 
-        return false;
+        reason = $"Sha {version.BaseVersionSource} was ignored due to commit having been excluded by configuration";
+        return true;
+
     }
 }

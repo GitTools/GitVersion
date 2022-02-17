@@ -44,11 +44,11 @@ internal class WixFileTests : TestBase
 
         var sp = ConfigureServices(service => service.AddSingleton<ILog>(log));
 
-        var fileSystem = sp.GetService<IFileSystem>();
-        var variableProvider = sp.GetService<IVariableProvider>();
+        var fileSystem = sp.GetRequiredService<IFileSystem>();
+        var variableProvider = sp.GetRequiredService<IVariableProvider>();
         var versionVariables = variableProvider.GetVariablesFor(semVer, config, false);
 
-        using var wixVersionFileUpdater = sp.GetService<IWixVersionFileUpdater>();
+        using var wixVersionFileUpdater = sp.GetRequiredService<IWixVersionFileUpdater>();
 
         wixVersionFileUpdater.Execute(versionVariables, new WixVersionContext(workingDir));
 
@@ -87,11 +87,11 @@ internal class WixFileTests : TestBase
 
         var sp = ConfigureServices(service => service.AddSingleton<ILog>(log));
 
-        var fileSystem = sp.GetService<IFileSystem>();
-        var variableProvider = sp.GetService<IVariableProvider>();
+        var fileSystem = sp.GetRequiredService<IFileSystem>();
+        var variableProvider = sp.GetRequiredService<IVariableProvider>();
         var versionVariables = variableProvider.GetVariablesFor(semVer, config, false);
 
-        using var wixVersionFileUpdater = sp.GetService<IWixVersionFileUpdater>();
+        using var wixVersionFileUpdater = sp.GetRequiredService<IWixVersionFileUpdater>();
 
         // fake an already existing file
         var file = Path.Combine(workingDir, WixVersionFileUpdater.WixVersionFileName);
