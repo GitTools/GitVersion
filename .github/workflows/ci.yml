@@ -343,7 +343,7 @@ jobs:
 
     -
       name: Login to GitHub Container Registry
-      if: success() && github.event_name != 'pull_request'
+      if: success() && github.event_name != 'pull_request' && github.repository == 'GitTools/GitVersion'
       uses: docker/login-action@v1
       with:
         registry: ghcr.io
@@ -351,17 +351,17 @@ jobs:
         password: ${{ secrets.DOCKER_GITHUB_TOKEN }}
     -
       name: '[Docker Build/Test/Publish (amd64)] GitHub Container Registry'
-      if: success() && github.event_name != 'pull_request'
+      if: success() && github.event_name != 'pull_request' && github.repository == 'GitTools/GitVersion'
       shell: pwsh
       run: dotnet run/docker.dll --target=DockerPublish --arch amd64 --docker_dotnetversion=${{ matrix.targetFramework }} --docker_distro=${{ matrix.distro }} --docker_registry github
     -
       name: '[Docker Build/Test/Publish (arm64)] GitHub Container Registry'
-      if: success() && github.event_name != 'pull_request'
+      if: success() && github.event_name != 'pull_request' && github.repository == 'GitTools/GitVersion'
       shell: pwsh
       run: dotnet run/docker.dll --target=DockerPublish --arch arm64 --docker_dotnetversion=${{ matrix.targetFramework }} --docker_distro=${{ matrix.distro }} --docker_registry github
     -
       name: '[Docker Publish Manifest] GitHub Container Registry'
-      if: success() && github.event_name != 'pull_request'
+      if: success() && github.event_name != 'pull_request' && github.repository == 'GitTools/GitVersion'
       shell: pwsh
       run: dotnet run/docker.dll --target=DockerManifest --docker_dotnetversion=${{ matrix.targetFramework }} --docker_distro=${{ matrix.distro }} --docker_registry github
 
