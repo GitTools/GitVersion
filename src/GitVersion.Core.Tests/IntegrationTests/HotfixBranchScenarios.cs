@@ -134,11 +134,11 @@ public class HotfixBranchScenarios : TestBase
         };
 
         using var fixture = new EmptyRepositoryFixture();
-        var release450 = "release/4.5.0";
-        var hotfix451 = "hotfix/4.5.1";
-        var support45 = "support/4.5";
-        var tag450 = "4.5.0";
-        var featureBranch = "feature/some-bug-fix";
+        const string release450 = "release/4.5.0";
+        const string hotfix451 = "hotfix/4.5.1";
+        const string support45 = "support/4.5";
+        const string tag450 = "4.5.0";
+        const string featureBranch = "feature/some-bug-fix";
 
         fixture.Repository.MakeACommit("initial");
         fixture.Repository.CreateBranch("develop");
@@ -187,11 +187,11 @@ public class HotfixBranchScenarios : TestBase
         };
 
         using var fixture = new EmptyRepositoryFixture();
-        var release450 = "release/4.5.0";
-        var hotfix451 = "hotfix/4.5.1";
-        var support45 = "support/4.5";
-        var tag450 = "4.5.0";
-        var featureBranch = "feature/some-bug-fix";
+        const string release450 = "release/4.5.0";
+        const string hotfix451 = "hotfix/4.5.1";
+        const string support45 = "support/4.5";
+        const string tag450 = "4.5.0";
+        const string featureBranch = "feature/some-bug-fix";
 
         fixture.Repository.MakeACommit("initial");
         fixture.Repository.CreateBranch("develop");

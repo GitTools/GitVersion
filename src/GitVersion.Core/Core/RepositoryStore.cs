@@ -418,7 +418,7 @@ public class RepositoryStore : IRepositoryStore
         {
             IncludeReachableFrom = branch,
             ExcludeReachableFrom = baseVersionSource,
-            FirstParentOnly = true,
+            FirstParentOnly = true
         };
         var commitCollection = this.repository.Commits.QueryBy(filter);
         return commitCollection.Contains(firstMatchingCommit);

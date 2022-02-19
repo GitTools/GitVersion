@@ -112,6 +112,6 @@ public static class LogExtensions
         { LogLevel.Info, Verbosity.Normal },
         { LogLevel.Warn, Verbosity.Minimal },
         { LogLevel.Error, Verbosity.Quiet },
-        { LogLevel.Fatal, Verbosity.Quiet },
+        { LogLevel.Fatal, Verbosity.Quiet }
     };
 }

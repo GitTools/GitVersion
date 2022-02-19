@@ -1,5 +1,5 @@
 ---
-Order: 50
+Order: 60
 Title: GitLab CI
 Description: Details on the GitLab CI support in GitVersion
 RedirectFrom: docs/build-server-support/build-server/gitlab

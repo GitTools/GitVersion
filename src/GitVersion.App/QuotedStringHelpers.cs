@@ -10,7 +10,7 @@ public static class QuotedStringHelpers
     /// </summary>
     /// <param name="input">String we want to split.</param>
     /// <param name="splitChar">Character used for splitting.</param>
-    /// <returns>Array of splitted string parts</returns>
+    /// <returns>Array of split string parts</returns>
     /// <remarks>
     /// If there is opening quotes character without closing quotes,
     /// closing quotes are implicitly assumed at the end of the input string.
@@ -25,7 +25,7 @@ public static class QuotedStringHelpers
         if (input == null)
             return Array.Empty<string>();
 
-        var splitted = new List<string>();
+        var split = new List<string>();
         bool isPreviousCharBackslash = false;
         bool isInsideQuotes = false;
 
@@ -42,7 +42,7 @@ public static class QuotedStringHelpers
                 default:
                     if (current == splitChar && !isInsideQuotes)
                     {
-                        splitted.Add(input.Substring(startIndex, i - startIndex));
+                        split.Add(input.Substring(startIndex, i - startIndex));
                         startIndex = i + 1;
                     }
                     break;
@@ -50,9 +50,9 @@ public static class QuotedStringHelpers
             isPreviousCharBackslash = current == '\\';
         }
 
-        splitted.Add(input.Substring(startIndex, input.Length - startIndex));
+        split.Add(input.Substring(startIndex, input.Length - startIndex));
 
-        return splitted.Where(argument => !argument.IsNullOrEmpty()).ToArray();
+        return split.Where(argument => !argument.IsNullOrEmpty()).ToArray();
     }
 
     /// <summary>

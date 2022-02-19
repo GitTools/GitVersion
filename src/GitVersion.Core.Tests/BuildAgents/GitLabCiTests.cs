@@ -17,7 +17,7 @@ public class GitLabCiTests : TestBase
     public void SetUp()
     {
         this.sp = ConfigureServices(services => services.AddSingleton<GitLabCi>());
-        this.buildServer = this.sp.GetService<GitLabCi>();
+        this.buildServer = this.sp.GetRequiredService<GitLabCi>();
     }
 
     [Test]
@@ -67,7 +67,7 @@ public class GitLabCiTests : TestBase
         semanticVersion.BuildMetaData.Sha = "commitSha";
 
         var config = new TestEffectiveConfiguration();
-        var variableProvider = this.sp.GetService<IVariableProvider>();
+        var variableProvider = this.sp.GetRequiredService<IVariableProvider>();
 
         var variables = variableProvider.GetVariablesFor(semanticVersion, config, false);
 

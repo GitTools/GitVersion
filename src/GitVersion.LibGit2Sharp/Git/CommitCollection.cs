@@ -29,7 +29,7 @@ internal sealed class CommitCollection : ICommitCollection
             IncludeReachableFrom = includeReachableFrom,
             ExcludeReachableFrom = excludeReachableFrom,
             FirstParentOnly = commitFilter.FirstParentOnly,
-            SortBy = (LibGit2Sharp.CommitSortStrategies)commitFilter.SortBy,
+            SortBy = (LibGit2Sharp.CommitSortStrategies)commitFilter.SortBy
         };
         var commitLog = ((IQueryableCommitLog)this.innerCollection).QueryBy(filter);
         return new CommitCollection(commitLog);

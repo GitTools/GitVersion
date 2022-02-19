@@ -29,7 +29,7 @@ public class NextVersionCalculatorTests : TestBase
             .WithConfig(new Config())
             .Build();
 
-        var nextVersionCalculator = contextBuilder.ServicesProvider.GetService<INextVersionCalculator>();
+        var nextVersionCalculator = contextBuilder.ServicesProvider.GetRequiredService<INextVersionCalculator>();
         nextVersionCalculator.ShouldNotBeNull();
 
         var version = nextVersionCalculator.FindVersion();
@@ -54,7 +54,7 @@ public class NextVersionCalculatorTests : TestBase
             .WithConfig(new Config())
             .Build();
 
-        var nextVersionCalculator = contextBuilder.ServicesProvider.GetService<INextVersionCalculator>();
+        var nextVersionCalculator = contextBuilder.ServicesProvider.GetRequiredService<INextVersionCalculator>();
 
         nextVersionCalculator.ShouldNotBeNull();
 
@@ -79,7 +79,7 @@ public class NextVersionCalculatorTests : TestBase
             .WithDevelopBranch()
             .Build();
 
-        var nextVersionCalculator = contextBuilder.ServicesProvider.GetService<INextVersionCalculator>();
+        var nextVersionCalculator = contextBuilder.ServicesProvider.GetRequiredService<INextVersionCalculator>();
         nextVersionCalculator.ShouldNotBeNull();
 
         var version = nextVersionCalculator.FindVersion();
@@ -285,7 +285,7 @@ public class NextVersionCalculatorTests : TestBase
                     {
                         Tag = "beta"
                     }
-                },
+                }
             }
         };
 

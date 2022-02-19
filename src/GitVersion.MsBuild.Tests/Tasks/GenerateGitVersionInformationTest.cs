@@ -115,7 +115,7 @@ public class GenerateGitVersionInformationTest : TestTaskBase
                 { "VersionFile", "$(MSBuildProjectDirectory)/gitversion.json" },
                 { "ProjectFile", "$(MSBuildProjectFullPath)" },
                 { "IntermediateOutputPath", "$(MSBuildProjectDirectory)" },
-                { "Language", "$(Language)" },
+                { "Language", "$(Language)" }
             })
             .TaskOutputProperty(outputProperty, outputProperty)
             .ItemGroup()

@@ -26,9 +26,9 @@ public class AssemblyInfoFileUpdaterTests : TestBase
 
         var sp = ConfigureServices();
 
-        this.log = sp.GetService<ILog>();
-        this.fileSystem = sp.GetService<IFileSystem>();
-        this.variableProvider = sp.GetService<IVariableProvider>();
+        this.log = sp.GetRequiredService<ILog>();
+        this.fileSystem = sp.GetRequiredService<IFileSystem>();
+        this.variableProvider = sp.GetRequiredService<IVariableProvider>();
     }
 
     [TestCase("cs")]
@@ -113,7 +113,7 @@ public class AssemblyInfoFileUpdaterTests : TestBase
     {
         this.fileSystem = Substitute.For<IFileSystem>();
         var workingDir = Path.GetTempPath();
-        var assemblyInfoFile = "VersionAssemblyInfo.js";
+        const string assemblyInfoFile = "VersionAssemblyInfo.js";
         var fullPath = Path.Combine(workingDir, assemblyInfoFile);
         var variables = this.variableProvider.GetVariablesFor(SemanticVersion.Parse("1.0.0", "v"), new TestEffectiveConfiguration(), false);
 

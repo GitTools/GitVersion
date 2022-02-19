@@ -52,13 +52,13 @@ public class WriteVersionInfoTest : TestTaskBase
     public void WriteVersionInfoTaskShouldNotUpdateBuildNumberInAzurePipeline(string buildNumber)
     {
         var task = new WriteVersionInfoToBuildLog();
-        var content = @"update-build-number: false";
+        const string content = "update-build-number: false";
 
         using var result = ExecuteMsBuildTaskInAzurePipeline(task, buildNumber: buildNumber, configurationText: content);
 
         result.Success.ShouldBe(true);
         result.Errors.ShouldBe(0);
-        result.Log.ShouldNotContain($"##vso[build.updatebuildnumber]");
+        result.Log.ShouldNotContain("##vso[build.updatebuildnumber]");
     }
 
 

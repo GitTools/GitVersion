@@ -127,7 +127,7 @@ public class OtherScenarios : TestBase
         fixture.Repository.MakeACommit();
 
         var version = fixture.GetVersion();
-        var zero = 0;
+        const int zero = 0;
         version.UncommittedChanges.ShouldBe(zero.ToString(CultureInfo.InvariantCulture));
     }
 }

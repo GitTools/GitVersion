@@ -25,8 +25,8 @@ public class ArgumentParserTests : TestBase
             services.AddSingleton<IArgumentParser, ArgumentParser>();
             services.AddSingleton<IGlobbingResolver, GlobbingResolver>();
         });
-        this.environment = sp.GetService<IEnvironment>();
-        this.argumentParser = sp.GetService<IArgumentParser>();
+        this.environment = sp.GetRequiredService<IEnvironment>();
+        this.argumentParser = sp.GetRequiredService<IArgumentParser>();
     }
 
     [Test]
@@ -381,7 +381,7 @@ public class ArgumentParserTests : TestBase
         };
         yield return new TestCaseData("unknown-option=25")
         {
-            ExpectedResult = "Could not parse /overrideconfig option: unknown-option=25. Unsuported 'key'."
+            ExpectedResult = "Could not parse /overrideconfig option: unknown-option=25. Unsupported 'key'."
         };
         yield return new TestCaseData("update-build-number=1")
         {
@@ -415,35 +415,35 @@ public class ArgumentParserTests : TestBase
             "assembly-versioning-scheme=MajorMinor",
             new Config
             {
-                AssemblyVersioningScheme = AssemblyVersioningScheme.MajorMinor,
+                AssemblyVersioningScheme = AssemblyVersioningScheme.MajorMinor
             }
         );
         yield return new TestCaseData(
             "assembly-file-versioning-scheme=\"MajorMinorPatch\"",
             new Config
             {
-                AssemblyFileVersioningScheme = AssemblyFileVersioningScheme.MajorMinorPatch,
+                AssemblyFileVersioningScheme = AssemblyFileVersioningScheme.MajorMinorPatch
             }
         );
         yield return new TestCaseData(
             "assembly-informational-format=\"{Major}.{Minor}.{Patch}.{env:CI_JOB_ID ?? 0}\"",
             new Config
             {
-                AssemblyInformationalFormat = "{Major}.{Minor}.{Patch}.{env:CI_JOB_ID ?? 0}",
+                AssemblyInformationalFormat = "{Major}.{Minor}.{Patch}.{env:CI_JOB_ID ?? 0}"
             }
         );
         yield return new TestCaseData(
             "assembly-versioning-format=\"{Major}.{Minor}.{Patch}.{env:CI_JOB_ID ?? 0}\"",
             new Config
             {
-                AssemblyVersioningFormat = "{Major}.{Minor}.{Patch}.{env:CI_JOB_ID ?? 0}",
+                AssemblyVersioningFormat = "{Major}.{Minor}.{Patch}.{env:CI_JOB_ID ?? 0}"
             }
         );
         yield return new TestCaseData(
             "assembly-file-versioning-format=\"{Major}.{Minor}.{Patch}.{env:CI_JOB_ID ?? 0}\"",
             new Config
             {
-                AssemblyFileVersioningFormat = "{Major}.{Minor}.{Patch}.{env:CI_JOB_ID ?? 0}",
+                AssemblyFileVersioningFormat = "{Major}.{Minor}.{Patch}.{env:CI_JOB_ID ?? 0}"
             }
         );
         yield return new TestCaseData(
@@ -574,7 +574,7 @@ public class ArgumentParserTests : TestBase
             new Config
             {
                 TagPrefix = "sample",
-                AssemblyVersioningScheme = AssemblyVersioningScheme.MajorMinor,
+                AssemblyVersioningScheme = AssemblyVersioningScheme.MajorMinor
             }
         );
         yield return new TestCaseData(

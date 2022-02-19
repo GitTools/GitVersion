@@ -18,8 +18,8 @@ public sealed class CodeBuildTests : TestBase
     public void SetUp()
     {
         this.sp = ConfigureServices(services => services.AddSingleton<CodeBuild>());
-        this.environment = this.sp.GetService<IEnvironment>();
-        this.buildServer = this.sp.GetService<CodeBuild>();
+        this.environment = this.sp.GetRequiredService<IEnvironment>();
+        this.buildServer = this.sp.GetRequiredService<CodeBuild>();
     }
 
     [Test]
@@ -83,7 +83,7 @@ public sealed class CodeBuildTests : TestBase
 
         var config = new TestEffectiveConfiguration();
 
-        var variableProvider = this.sp.GetService<IVariableProvider>();
+        var variableProvider = this.sp.GetRequiredService<IVariableProvider>();
 
         var variables = variableProvider.GetVariablesFor(semanticVersion, config, false);
 

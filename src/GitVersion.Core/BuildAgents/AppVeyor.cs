@@ -23,7 +23,7 @@ public class AppVeyor : BuildAgentBase
 
         var body = new
         {
-            version = $"{variables.FullSemVer}.build.{buildNumber}",
+            version = $"{variables.FullSemVer}.build.{buildNumber}"
         };
 
         var stringContent = new StringContent(JsonSerializer.Serialize(body), Encoding.UTF8, "application/json");

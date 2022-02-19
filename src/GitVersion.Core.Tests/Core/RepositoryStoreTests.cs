@@ -18,8 +18,8 @@ public class RepositoryStoreTests : TestBase
     public RepositoryStoreTests()
     {
         var sp = ConfigureServices();
-        this.log = sp.GetService<ILog>();
-        this.incrementStrategyFinder = sp.GetService<IIncrementStrategyFinder>();
+        this.log = sp.GetRequiredService<ILog>();
+        this.incrementStrategyFinder = sp.GetRequiredService<IIncrementStrategyFinder>();
     }
 
     [Test]

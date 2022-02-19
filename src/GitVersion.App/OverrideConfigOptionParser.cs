@@ -27,7 +27,7 @@ internal class OverrideConfigOptionParser
                   && pi.GetCustomAttributes(typeof(YamlDotNet.Serialization.YamlMemberAttribute), false).Length > 0
         )
         .ToLookup(
-            pi => (pi.GetCustomAttributes(typeof(YamlDotNet.Serialization.YamlMemberAttribute), false)[0] as YamlDotNet.Serialization.YamlMemberAttribute).Alias,
+            pi => (pi.GetCustomAttributes(typeof(YamlDotNet.Serialization.YamlMemberAttribute), false)[0] as YamlDotNet.Serialization.YamlMemberAttribute)?.Alias,
             pi => pi
         );
 
@@ -40,9 +40,7 @@ internal class OverrideConfigOptionParser
     /// <remarks>Only simple types are supported</remarks>
     private static bool IsSupportedPropertyType(Type propertyType)
     {
-        Type unwrappedType = Nullable.GetUnderlyingType(propertyType);
-        if (unwrappedType == null)
-            unwrappedType = propertyType;
+        Type unwrappedType = Nullable.GetUnderlyingType(propertyType) ?? propertyType;
 
         return unwrappedType == typeof(string)
                || unwrappedType.IsEnum
@@ -58,9 +56,7 @@ internal class OverrideConfigOptionParser
         var unwrappedText = QuotedStringHelpers.UnquoteText(value);
         foreach (var pi in SupportedProperties[key])
         {
-            Type unwrapped = Nullable.GetUnderlyingType(pi.PropertyType);
-            if (unwrapped == null)
-                unwrapped = pi.PropertyType;
+            Type unwrapped = Nullable.GetUnderlyingType(pi.PropertyType) ?? pi.PropertyType;
 
             if (unwrapped == typeof(string))
                 pi.SetValue(this.lazyConfig.Value, unwrappedText);

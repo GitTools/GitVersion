@@ -28,8 +28,8 @@ public class ConfigProviderTests : TestBase
         this.repoPath = DefaultRepoPath;
         var options = Options.Create(new GitVersionOptions { WorkingDirectory = repoPath });
         var sp = ConfigureServices(services => services.AddSingleton(options));
-        this.configProvider = sp.GetService<IConfigProvider>();
-        this.fileSystem = sp.GetService<IFileSystem>();
+        this.configProvider = sp.GetRequiredService<IConfigProvider>();
+        this.fileSystem = sp.GetRequiredService<IFileSystem>();
 
         ShouldlyConfiguration.ShouldMatchApprovedDefaults.LocateTestMethodUsingAttribute<TestAttribute>();
     }
@@ -330,7 +330,7 @@ branches: {}";
             services.AddSingleton(options);
             services.AddSingleton<ILog>(log);
         });
-        this.configProvider = sp.GetService<IConfigProvider>();
+        this.configProvider = sp.GetRequiredService<IConfigProvider>();
 
         this.configProvider.Provide(this.repoPath);
 

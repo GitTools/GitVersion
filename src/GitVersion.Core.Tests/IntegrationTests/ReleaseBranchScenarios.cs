@@ -353,7 +353,7 @@ public class ReleaseBranchScenarios : TestBase
         var config = new Config
         {
             AssemblyVersioningScheme = AssemblyVersioningScheme.MajorMinorPatchTag,
-            VersioningMode = VersioningMode.ContinuousDeployment,
+            VersioningMode = VersioningMode.ContinuousDeployment
         };
         using var fixture = new EmptyRepositoryFixture();
         const string taggedVersion = "1.0.3";
@@ -589,7 +589,7 @@ public class ReleaseBranchScenarios : TestBase
         var config = new ConfigurationBuilder()
             .Add(new Config
             {
-                AssemblyFileVersioningFormat = "{Major}.{Minor}.{Patch}.{WeightedPreReleaseNumber}",
+                AssemblyFileVersioningFormat = "{Major}.{Minor}.{Patch}.{WeightedPreReleaseNumber}"
             })
             .Build();
 
@@ -615,8 +615,8 @@ public class ReleaseBranchScenarios : TestBase
         };
 
         using var fixture = new EmptyRepositoryFixture();
-        var release450 = "release/4.5.0";
-        var featureBranch = "feature/some-bug-fix";
+        const string release450 = "release/4.5.0";
+        const string featureBranch = "feature/some-bug-fix";
 
         fixture.Repository.MakeACommit("initial");
         fixture.Repository.CreateBranch("develop");
@@ -650,8 +650,8 @@ public class ReleaseBranchScenarios : TestBase
         };
 
         using var fixture = new EmptyRepositoryFixture();
-        var release450 = "release/4.5.0";
-        var featureBranch = "feature/some-bug-fix";
+        const string release450 = "release/4.5.0";
+        const string featureBranch = "feature/some-bug-fix";
 
         fixture.Repository.MakeACommit("initial");
         fixture.Repository.CreateBranch("develop");

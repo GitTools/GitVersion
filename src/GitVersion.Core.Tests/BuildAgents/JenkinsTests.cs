@@ -22,13 +22,13 @@ public class JenkinsTests : TestBase
     public void SetUp()
     {
         this.sp = ConfigureServices(services => services.AddSingleton<Jenkins>());
-        this.environment = this.sp.GetService<IEnvironment>();
-        this.buildServer = this.sp.GetService<Jenkins>();
+        this.environment = this.sp.GetRequiredService<IEnvironment>();
+        this.buildServer = this.sp.GetRequiredService<Jenkins>();
     }
 
     private void SetEnvironmentVariableForDetection() => this.environment.SetEnvironmentVariable(key, "a value");
 
-    private void ClearenvironmentVariableForDetection() => this.environment.SetEnvironmentVariable(key, null);
+    private void ClearEnvironmentVariableForDetection() => this.environment.SetEnvironmentVariable(key, null);
 
     [Test]
     public void CanApplyCurrentContextWhenenvironmentVariableIsSet()
@@ -40,7 +40,7 @@ public class JenkinsTests : TestBase
     [Test]
     public void CanNotApplyCurrentContextWhenenvironmentVariableIsNotSet()
     {
-        ClearenvironmentVariableForDetection();
+        ClearEnvironmentVariableForDetection();
         this.buildServer.CanApplyToCurrentContext().ShouldBe(false);
     }
 
@@ -139,7 +139,7 @@ public class JenkinsTests : TestBase
 
         var config = new TestEffectiveConfiguration();
 
-        var variableProvider = this.sp.GetService<IVariableProvider>();
+        var variableProvider = this.sp.GetRequiredService<IVariableProvider>();
 
         var variables = variableProvider.GetVariablesFor(semanticVersion, config, false);
 

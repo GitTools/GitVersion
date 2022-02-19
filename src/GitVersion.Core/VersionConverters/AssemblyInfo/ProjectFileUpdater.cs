@@ -105,7 +105,7 @@ public sealed class ProjectFileUpdater : IProjectFileUpdater
     {
         if (xmlRoot.Name != "Project")
         {
-            this.log.Warning($"Invalid project file specified, root element must be <Project>.");
+            this.log.Warning("Invalid project file specified, root element must be <Project>.");
             return false;
         }
 
@@ -126,7 +126,7 @@ public sealed class ProjectFileUpdater : IProjectFileUpdater
         var lastGenerateAssemblyInfoElement = propertyGroups.SelectMany(s => s.Elements("GenerateAssemblyInfo")).LastOrDefault();
         if (lastGenerateAssemblyInfoElement != null && (bool)lastGenerateAssemblyInfoElement == false)
         {
-            this.log.Warning($"Project file specifies <GenerateAssemblyInfo>false</GenerateAssemblyInfo>: versions set in this project file will not affect the output artifacts.");
+            this.log.Warning("Project file specifies <GenerateAssemblyInfo>false</GenerateAssemblyInfo>: versions set in this project file will not affect the output artifacts.");
             return false;
         }
 

@@ -69,7 +69,7 @@ public class SemanticVersionFormatValues
 
     public string NuGetVersion => NuGetVersionV2;
 
-    public string? NuGetPreReleaseTagV2 => this.semver.PreReleaseTag?.HasTag() == true ? this.semver.PreReleaseTag?.ToString("lp")?.ToLower() : null;
+    public string? NuGetPreReleaseTagV2 => this.semver.PreReleaseTag?.HasTag() == true ? this.semver.PreReleaseTag?.ToString("lp").ToLower() : null;
 
     public string? NuGetPreReleaseTag => NuGetPreReleaseTagV2;
 

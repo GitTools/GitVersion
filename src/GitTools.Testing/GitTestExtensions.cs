@@ -42,15 +42,13 @@ public static class GitTestExtensions
     {
         var commit = repository.MakeACommit();
         var existingTag = repository.Tags.SingleOrDefault(t => t.FriendlyName == tag);
-        if (existingTag != null)
-            return existingTag;
-        return repository.Tags.Add(tag, commit);
+        return existingTag != null ? existingTag : repository.Tags.Add(tag, commit);
     }
 
-    public static Commit CreatePullRequestRef(this IRepository repository, string from, string to, int prNumber = 2, bool normalise = false, bool allowFastFowardMerge = false)
+    public static Commit CreatePullRequestRef(this IRepository repository, string from, string to, int prNumber = 2, bool normalise = false, bool allowFastForwardMerge = false)
     {
         Commands.Checkout(repository, repository.Branches[to].Tip);
-        if (allowFastFowardMerge)
+        if (allowFastForwardMerge)
         {
             repository.Merge(repository.Branches[from], Generate.SignatureNow());
         }

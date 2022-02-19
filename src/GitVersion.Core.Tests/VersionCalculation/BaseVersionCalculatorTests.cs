@@ -158,7 +158,7 @@ public class BaseVersionCalculatorTests : TestBase
 
         contextBuilder.Build();
 
-        return contextBuilder.ServicesProvider.GetService<IBaseVersionCalculator>();
+        return contextBuilder.ServicesProvider.GetRequiredService<IBaseVersionCalculator>();
     }
 
     private class TestIgnoreConfig : IgnoreConfig

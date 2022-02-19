@@ -4,10 +4,20 @@ on:
   workflow_dispatch:
   push:
     paths:
-    - 'docs/**'
+    - docs/**
+    - package*.json
+    - markdownlint.json
+    - .remarkrc.yaml
+    - mkdocs.yml
+    - .github/workflows/docs.yml
   pull_request:
     paths:
-    - 'docs/**'
+    - docs/**
+    - package*.json
+    - markdownlint.json
+    - .remarkrc.yaml
+    - mkdocs.yml
+    - .github/workflows/docs.yml
 env:
   DOTNET_ROLL_FORWARD_ON_NO_CANDIDATE_FX: 2
 
@@ -40,6 +50,18 @@ jobs:
       with:
         path: tools
         key: tools-${{ runner.os }}-${{ hashFiles('./build/**') }}
+    -
+      name: Get npm cache directory
+      id: cache-node-dir
+      run: echo "::set-output name=dir::$(npm config get cache)"
+    -
+      name: Cache Node Modules
+      id: cache-node
+      uses: actions/cache@v2.1.7
+      with:
+        path: ${{ steps.cache-node-dir.outputs.dir }}
+        key: node-${{ runner.os }}-${{ hashFiles('./package-lock.json') }}
+        restore-keys: node-${{ runner.os }}
     -
       name: Install .NET SDK 6.0.x
       uses: actions/setup-dotnet@v1
@@ -83,7 +105,6 @@ jobs:
       name: '[Build Documentation]'
       shell: pwsh
       run: dotnet run/docs.dll --target=BuildDocs
-
     -
       name: '[HTMLProofer]'
       uses: chabad360/htmlproofer@master
@@ -91,11 +112,19 @@ jobs:
         directory: ./artifacts/docs/preview
         arguments: --url-ignore /api/ --allow-hash-href --assume-extension --disable-external
     -
+      name: Reviewdog Reporter
+      uses: haya14busa/action-cond@v1
+      id: reporter
+      with:
+        cond: ${{ github.event_name == 'pull_request' }}
+        if_true: github-pr-review
+        if_false: github-check
+    -
       name: '[Remark Lint]'
-      uses: reviewdog/action-remark-lint@v5
+      uses: reviewdog/action-remark-lint@v5.3
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
-        reporter: github-pr-check
+        reporter: ${{ steps.reporter.outputs.value }}
 
   publish:
     name: Publish docs

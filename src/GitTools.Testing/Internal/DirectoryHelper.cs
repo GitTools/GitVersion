@@ -5,7 +5,7 @@ internal static class DirectoryHelper
     private static readonly Dictionary<string, string> ToRename = new()
     {
         { "gitted", ".git" },
-        { "gitmodules", ".gitmodules" },
+        { "gitmodules", ".gitmodules" }
     };
 
     public static void CopyFilesRecursively(DirectoryInfo source, DirectoryInfo target)
@@ -40,9 +40,7 @@ internal static class DirectoryHelper
 
         if (!Directory.Exists(directoryPath))
         {
-            Trace.WriteLine(
-                string.Format("Directory '{0}' is missing and can't be removed.",
-                    directoryPath));
+            Trace.WriteLine($"Directory '{directoryPath}' is missing and can't be removed.");
 
             return;
         }

@@ -36,7 +36,7 @@ public class MergeMessageTests : TestBase
     public void EmptyTagPrefix(string prefix)
     {
         // Arrange
-        var message = "Updated some code.";
+        const string message = "Updated some code.";
         var config = new Config { TagPrefix = prefix };
 
         // Act
@@ -265,8 +265,8 @@ Merge in aaa/777 from release/2.2 to {MainBranch}
     public void MatchesSingleCustomMessage()
     {
         // Arrange
-        var message = "My custom message";
-        var definition = "Mycustom";
+        const string message = "My custom message";
+        const string definition = "Mycustom";
         this.config.MergeMessageFormats = new Dictionary<string, string>
         {
             [definition] = message
@@ -288,8 +288,8 @@ Merge in aaa/777 from release/2.2 to {MainBranch}
     public void MatchesMultipleCustomMessages()
     {
         // Arrange
-        var format = "My custom message";
-        var definition = "Mycustom";
+        const string format = "My custom message";
+        const string definition = "Mycustom";
         this.config.MergeMessageFormats = new Dictionary<string, string>
         {
             ["Default2"] = "some example",
@@ -313,16 +313,15 @@ Merge in aaa/777 from release/2.2 to {MainBranch}
     public void MatchesCaptureGroupsFromCustomMessages()
     {
         // Arrange
-        var format = @"^Merged PR #(?<PullRequestNumber>\d+) into (?<TargetBranch>[^\s]*) from (?:(?<SourceBranch>[^\s]*))";
-        var definition = "Mycustom";
+        const string format = @"^Merged PR #(?<PullRequestNumber>\d+) into (?<TargetBranch>[^\s]*) from (?:(?<SourceBranch>[^\s]*))";
+        const string definition = "Mycustom";
         this.config.MergeMessageFormats = new Dictionary<string, string>
         {
             [definition] = format
         };
-        var pr = 1234;
-        var target = MainBranch;
-        var source = "feature/2.0/example";
-
+        const int pr = 1234;
+        const string target = MainBranch;
+        const string source = "feature/2.0/example";
 
         // Act
         var sut = new MergeMessage($"Merged PR #{pr} into {target} from {source}", this.config);
@@ -340,8 +339,8 @@ Merge in aaa/777 from release/2.2 to {MainBranch}
     public void ReturnsAfterFirstMatchingPattern()
     {
         // Arrange
-        var format = @"^Merge (branch|tag) '(?<SourceBranch>[^']*)'(?: into (?<TargetBranch>[^\s]*))*";
-        var definition = "Mycustom";
+        const string format = @"^Merge (branch|tag) '(?<SourceBranch>[^']*)'(?: into (?<TargetBranch>[^\s]*))*";
+        const string definition = "Mycustom";
         this.config.MergeMessageFormats = new Dictionary<string, string>
         {
             [definition] = format,

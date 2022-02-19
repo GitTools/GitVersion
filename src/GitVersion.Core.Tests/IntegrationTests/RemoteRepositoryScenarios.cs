@@ -23,7 +23,7 @@ public class RemoteRepositoryScenarios : TestBase
     [Test]
     public void GivenARemoteGitRepositoryWithCommitsAndBranchesThenClonedLocalShouldMatchRemoteVersion()
     {
-        var targetBranch = "release-1.0";
+        const string targetBranch = "release-1.0";
         using var fixture = new RemoteRepositoryFixture(
             path =>
             {
@@ -66,7 +66,7 @@ public class RemoteRepositoryScenarios : TestBase
             services.AddSingleton<IEnvironment>(environment);
         });
 
-        var gitPreparer = sp.GetService<IGitPreparer>();
+        var gitPreparer = sp.GetRequiredService<IGitPreparer>();
 
         gitPreparer.Prepare();
 
@@ -87,7 +87,7 @@ public class RemoteRepositoryScenarios : TestBase
     }
 
     [Test]
-    public void GivenARemoteGitRepositoryWhenCheckingOutDetachedheadUsingExistingImplementationThrowsException()
+    public void GivenARemoteGitRepositoryWhenCheckingOutDetachedHeadUsingExistingImplementationThrowsException()
     {
         using var fixture = new RemoteRepositoryFixture();
         Commands.Checkout(
@@ -100,7 +100,7 @@ public class RemoteRepositoryScenarios : TestBase
 
     [Test]
     [Ignore("Needs more investigations.")]
-    public void GivenARemoteGitRepositoryWhenCheckingOutDetachedheadUsingTrackingBranchOnlyBehaviourShouldReturnVersion014Plus5()
+    public void GivenARemoteGitRepositoryWhenCheckingOutDetachedHeadUsingTrackingBranchOnlyBehaviourShouldReturnVersion014Plus5()
     {
         using var fixture = new RemoteRepositoryFixture();
         Commands.Checkout(fixture.LocalRepositoryFixture.Repository, fixture.LocalRepositoryFixture.Repository.Head.Tip);

@@ -314,15 +314,14 @@ Please run `git {GitExtensions.CreateGitLogArgs(100)}` and submit it along with 
         {
             var remoteTrackingReferenceName = remoteTrackingReference.Name.Canonical;
             var branchName = remoteTrackingReferenceName.Substring(prefix.Length);
-            var localCanonicalName = "refs/heads/" + branchName;
+            var localReferenceName = ReferenceName.FromBranchName(branchName);
 
-            var referenceName = ReferenceName.Parse(localCanonicalName);
             // We do not want to touch our current branch
             if (this.repository.Head.Name.EquivalentTo(branchName)) continue;
 
-            if (this.repository.Refs.Any(x => x.Name.Equals(referenceName)))
+            if (this.repository.Refs[localReferenceName] is not null)
             {
-                var localRef = this.repository.Refs[localCanonicalName]!;
+                var localRef = this.repository.Refs[localReferenceName]!;
                 if (localRef.TargetIdentifier == remoteTrackingReference.TargetIdentifier)
                 {
                     this.log.Info($"Skipping update of '{remoteTrackingReference.Name.Canonical}' as it already matches the remote ref.");
@@ -335,7 +334,7 @@ Please run `git {GitExtensions.CreateGitLogArgs(100)}` and submit it along with 
             }
 
             this.log.Info($"Creating local branch from remote tracking '{remoteTrackingReference.Name.Canonical}'.");
-            this.repository.Refs.Add(localCanonicalName, remoteTrackingReference.TargetIdentifier, true);
+            this.repository.Refs.Add(localReferenceName.Canonical, remoteTrackingReference.TargetIdentifier, true);
 
             var branch = this.repository.Branches[branchName]!;
             this.repository.Branches.UpdateTrackedBranch(branch, remoteTrackingReferenceName);

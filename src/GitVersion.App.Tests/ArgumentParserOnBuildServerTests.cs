@@ -21,7 +21,7 @@ public class ArgumentParserOnBuildServerTests : TestBase
             services.AddSingleton<IGlobbingResolver, GlobbingResolver>();
             services.AddSingleton<ICurrentBuildAgent, MockBuildAgent>();
         });
-        this.argumentParser = sp.GetService<IArgumentParser>();
+        this.argumentParser = sp.GetRequiredService<IArgumentParser>();
     }
 
     [Test]

@@ -51,7 +51,7 @@ public sealed class GitVersionInfoGenerator : IGitVersionInfoGenerator
     }
 
     // Because The VB-generated class is included in a namespace declaration,
-    // the properties must be offsetted by 2 tabs.
+    // the properties must be offset by 2 tabs.
     // Whereas in the C# and F# cases, 1 tab is enough.
     private static string GetIndentation(string fileExtension)
     {

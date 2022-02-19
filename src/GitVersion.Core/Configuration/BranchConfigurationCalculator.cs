@@ -35,7 +35,7 @@ public class BranchConfigurationCalculator : IBranchConfigurationCalculator
                 {
                     Regex = "",
                     VersioningMode = configuration.VersioningMode,
-                    Increment = configuration.Increment ?? IncrementStrategy.Inherit,
+                    Increment = configuration.Increment ?? IncrementStrategy.Inherit
                 });
         }
 

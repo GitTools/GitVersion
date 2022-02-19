@@ -17,8 +17,8 @@ public class DroneTests : TestBase
     public void SetUp()
     {
         this.sp = ConfigureServices(services => services.AddSingleton<Drone>());
-        this.environment = this.sp.GetService<IEnvironment>();
-        this.buildServer = this.sp.GetService<Drone>();
+        this.environment = this.sp.GetRequiredService<IEnvironment>();
+        this.buildServer = this.sp.GetRequiredService<Drone>();
         this.environment.SetEnvironmentVariable("DRONE", "true");
     }
 
@@ -86,7 +86,7 @@ public class DroneTests : TestBase
         const string droneSourceBranch = "droneSourceBranch";
         const string droneDestinationBranch = "droneDestinationBranch";
 
-        var ciCommitRefSpec = $"{droneSourceBranch}:{droneDestinationBranch}";
+        const string ciCommitRefSpec = $"{droneSourceBranch}:{droneDestinationBranch}";
 
         this.environment.SetEnvironmentVariable("DRONE_PULL_REQUEST", "1");
         this.environment.SetEnvironmentVariable("DRONE_SOURCE_BRANCH", "");
@@ -125,7 +125,7 @@ public class DroneTests : TestBase
         const string droneSourceBranch = "droneSourceBranch";
         const string droneDestinationBranch = "droneDestinationBranch";
 
-        var ciCommitRefSpec = $"{droneSourceBranch};{droneDestinationBranch}";
+        const string ciCommitRefSpec = $"{droneSourceBranch};{droneDestinationBranch}";
 
         this.environment.SetEnvironmentVariable("DRONE_PULL_REQUEST", "1");
         this.environment.SetEnvironmentVariable("DRONE_SOURCE_BRANCH", "");

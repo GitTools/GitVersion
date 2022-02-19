@@ -65,10 +65,10 @@ public class DynamicRepositoryTests : TestBase
                 TargetUrl = url,
                 DynamicRepositoryClonePath = dynamicDirectory,
                 TargetBranch = targetBranch,
-                CommitId = commitId,
+                CommitId = commitId
             },
             Settings = { NoFetch = false },
-            WorkingDirectory = workingDirectory,
+            WorkingDirectory = workingDirectory
         };
         var options = Options.Create(gitVersionOptions);
 
@@ -77,13 +77,13 @@ public class DynamicRepositoryTests : TestBase
 
         var sp = ConfigureServices(services => services.AddSingleton(options));
 
-        var gitPreparer = sp.GetService<IGitPreparer>();
-        gitPreparer?.Prepare();
+        var gitPreparer = sp.GetRequiredService<IGitPreparer>();
+        gitPreparer.Prepare();
 
-        var gitVersionCalculator = sp.GetService<IGitVersionCalculateTool>();
+        var gitVersionCalculator = sp.GetRequiredService<IGitVersionCalculateTool>();
 
-        var versionVariables = gitVersionCalculator?.CalculateVersionVariables();
+        var versionVariables = gitVersionCalculator.CalculateVersionVariables();
 
-        Assert.AreEqual(expectedFullSemVer, versionVariables?.FullSemVer);
+        Assert.AreEqual(expectedFullSemVer, versionVariables.FullSemVer);
     }
 }

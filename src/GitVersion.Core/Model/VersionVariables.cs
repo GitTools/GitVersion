@@ -129,14 +129,14 @@ public class VersionVariables : IEnumerable<KeyValuePair<string, string>>
     IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
     // FIX ME: Shall we return an instance with no ctorArgs or explicitly fail when properties is null?
-    public static VersionVariables FromDictionary(IEnumerable<KeyValuePair<string, string>>? properties)
+    private static VersionVariables FromDictionary(IEnumerable<KeyValuePair<string, string>>? properties)
     {
         var type = typeof(VersionVariables);
         var constructors = type.GetConstructors();
 
         var ctor = constructors.Single();
         var ctorArgs = ctor.GetParameters()
-            .Select(p => properties.Single(v => string.Equals(v.Key, p.Name, StringComparison.InvariantCultureIgnoreCase)).Value)
+            .Select(p => properties?.Single(v => string.Equals(v.Key, p.Name, StringComparison.InvariantCultureIgnoreCase)).Value)
             .Cast<object>()
             .ToArray();
         return (VersionVariables)Activator.CreateInstance(type, ctorArgs);
@@ -197,7 +197,7 @@ public class VersionVariables : IEnumerable<KeyValuePair<string, string>>
 
         foreach (KeyValuePair<string, string> property in this.GetProperties())
         {
-            variablesType.GetProperty(property.Key).SetValue(variables, property.Value);
+            variablesType.GetProperty(property.Key)?.SetValue(variables, property.Value);
         }
 
         var serializeOptions = JsonSerializerOptions();

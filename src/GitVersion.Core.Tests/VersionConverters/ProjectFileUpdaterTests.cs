@@ -31,8 +31,8 @@ public class ProjectFileUpdaterTests : TestBase
         this.logMessages = new List<string>();
         this.log = new Log(new TestLogAppender(this.logMessages.Add));
 
-        this.fileSystem = sp.GetService<IFileSystem>();
-        this.variableProvider = sp.GetService<IVariableProvider>();
+        this.fileSystem = sp.GetRequiredService<IFileSystem>();
+        this.variableProvider = sp.GetRequiredService<IVariableProvider>();
         this.projectFileUpdater = new ProjectFileUpdater(this.log, this.fileSystem!);
     }
 
@@ -278,7 +278,7 @@ public class ProjectFileUpdaterTests : TestBase
             using var projFileUpdater = new ProjectFileUpdater(this.log, fs);
             projFileUpdater.Execute(variables, new AssemblyInfoContext(Path.GetTempPath(), false, fileName));
 
-            var expectedXml = @"
+            const string expectedXml = @"
 <Project Sdk=""Microsoft.NET.Sdk"">
   <PropertyGroup>
     <OutputType>Exe</OutputType>

@@ -15,7 +15,7 @@ public class VersionWriterTests : TestBase
     {
         var sp = ConfigureServices(services => services.AddModule(new GitVersionAppModule()));
 
-        this.versionWriter = sp.GetService<IVersionWriter>();
+        this.versionWriter = sp.GetRequiredService<IVersionWriter>();
     }
     [Test]
     public void WriteVersionShouldWriteFileVersionWithNoPrereleaseTag()

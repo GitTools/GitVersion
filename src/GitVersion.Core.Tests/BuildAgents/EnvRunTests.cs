@@ -18,8 +18,8 @@ public class EnvRunTests : TestBase
     public void SetEnvironmentVariableForTest()
     {
         var sp = ConfigureServices(services => services.AddSingleton<EnvRun>());
-        this.environment = sp.GetService<IEnvironment>();
-        this.buildServer = sp.GetService<EnvRun>();
+        this.environment = sp.GetRequiredService<IEnvironment>();
+        this.buildServer = sp.GetRequiredService<EnvRun>();
 
         // set environment variable and create an empty envrun file to indicate that EnvRun is running...
         this.mFilePath = Path.Combine(Path.GetTempPath(), "envrun.db");

@@ -14,7 +14,7 @@ public class MyGetTests : TestBase
     public void SetUp()
     {
         var sp = ConfigureServices(services => services.AddSingleton<MyGet>());
-        this.buildServer = sp.GetService<MyGet>();
+        this.buildServer = sp.GetRequiredService<MyGet>();
     }
 
     [Test]

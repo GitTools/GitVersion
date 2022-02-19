@@ -232,7 +232,7 @@ public class DevelopScenarios : TestBase
         fixture.SequenceDiagram.Destroy("release/1.2.0");
         fixture.Repository.Branches.Remove("release/1.2.0");
 
-        var expectedFullSemVer = "1.3.0-alpha.9";
+        const string expectedFullSemVer = "1.3.0-alpha.9";
         fixture.AssertFullSemver(expectedFullSemVer, config);
     }
 
@@ -264,7 +264,7 @@ public class DevelopScenarios : TestBase
         fixture.SequenceDiagram.Destroy("release/1.2.0");
         fixture.Repository.Branches.Remove("release/1.2.0");
 
-        var expectedFullSemVer = "1.3.0-alpha.5";
+        const string expectedFullSemVer = "1.3.0-alpha.5";
         fixture.AssertFullSemver(expectedFullSemVer, config);
     }
 
@@ -292,7 +292,7 @@ public class DevelopScenarios : TestBase
             VersioningMode = VersioningMode.ContinuousDeployment,
             Branches = new Dictionary<string, BranchConfig>
             {
-                { "develop", new BranchConfig { PreventIncrementOfMergedBranchVersion = false } },
+                { "develop", new BranchConfig { PreventIncrementOfMergedBranchVersion = false } }
             }
         };
 
@@ -330,7 +330,7 @@ public class DevelopScenarios : TestBase
 
         config.Branches = new Dictionary<string, BranchConfig>
         {
-            { "develop", new BranchConfig { PreventIncrementOfMergedBranchVersion = true } },
+            { "develop", new BranchConfig { PreventIncrementOfMergedBranchVersion = true } }
         };
         fixture.AssertFullSemver("1.2.0-alpha.3", config);
     }
@@ -344,7 +344,7 @@ public class DevelopScenarios : TestBase
             Branches = new Dictionary<string, BranchConfig>
             {
                 { "develop", new BranchConfig { PreventIncrementOfMergedBranchVersion = false } },
-                { "hotfix", new BranchConfig { PreventIncrementOfMergedBranchVersion = true, Regex = "^(origin/)?hotfix[/-]" } },
+                { "hotfix", new BranchConfig { PreventIncrementOfMergedBranchVersion = true, Regex = "^(origin/)?hotfix[/-]" } }
 
             }
         };

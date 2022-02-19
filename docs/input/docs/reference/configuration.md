@@ -68,8 +68,18 @@ The details of the available options are as follows:
 
 ### next-version
 
-Allows you to bump the next version explicitly, useful for bumping `main` or a
-feature with breaking changes (i.e., a major increment).
+Allows you to bump the next version explicitly. Useful for bumping `main` or a
+feature branch with breaking changes (i.e., a major increment), indicating what
+the next `git tag` is going to be.
+
+`next-version` is not a permanent replacement for `git tag` and should only be
+used intermittently. Since version 5.5 GitVersion supports `next-version` with
+`mode: Mainline` and should not be treated as a "base version".
+
+If you are using `next-version` and are experiencing weird versioning behaviour,
+please remove it, create a `git tag` with an appropriate version number on an
+appropriate historical commit and see if that resolves any versioning issues
+you may have.
 
 ### assembly-versioning-scheme
 

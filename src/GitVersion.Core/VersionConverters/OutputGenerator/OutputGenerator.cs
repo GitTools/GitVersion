@@ -39,23 +39,23 @@ public sealed class OutputGenerator : IOutputGenerator
             var retryOperation = new RetryAction<IOException>();
             retryOperation.Execute(() => this.fileSystem.WriteAllText(context.OutputFile, variables.ToString()));
         }
-        if (gitVersionOptions.Output.Contains(OutputType.Json))
+
+        if (!gitVersionOptions.Output.Contains(OutputType.Json)) return;
+
+        switch (gitVersionOptions.ShowVariable)
         {
-            switch (gitVersionOptions.ShowVariable)
-            {
-                case null:
-                    this.console.WriteLine(variables.ToString());
-                    break;
+            case null:
+                this.console.WriteLine(variables.ToString());
+                break;
 
-                default:
-                    if (!variables.TryGetValue(gitVersionOptions.ShowVariable, out var part))
-                    {
-                        throw new WarningException($"'{gitVersionOptions.ShowVariable}' variable does not exist");
-                    }
+            default:
+                if (!variables.TryGetValue(gitVersionOptions.ShowVariable, out var part))
+                {
+                    throw new WarningException($"'{gitVersionOptions.ShowVariable}' variable does not exist");
+                }
 
-                    this.console.WriteLine(part);
-                    break;
-            }
+                this.console.WriteLine(part);
+                break;
         }
     }
 

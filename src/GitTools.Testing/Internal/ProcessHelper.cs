@@ -179,7 +179,7 @@ public static class ProcessHelper
             {
                 this.oldMode = SetErrorMode((int)mode);
             }
-            catch (Exception ex) when (ex is EntryPointNotFoundException || ex is DllNotFoundException)
+            catch (Exception ex) when (ex is EntryPointNotFoundException or DllNotFoundException)
             {
                 this.oldMode = (int)mode;
             }
@@ -192,7 +192,7 @@ public static class ProcessHelper
             {
                 SetErrorMode(this.oldMode);
             }
-            catch (Exception ex) when (ex is EntryPointNotFoundException || ex is DllNotFoundException)
+            catch (Exception ex) when (ex is EntryPointNotFoundException or DllNotFoundException)
             {
                 // NOTE: Mono doesn't support DllImport("kernel32.dll") and its SetErrorMode method, obviously. @asbjornu
             }

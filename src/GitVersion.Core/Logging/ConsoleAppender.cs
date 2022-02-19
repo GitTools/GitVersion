@@ -20,7 +20,7 @@ public class ConsoleAppender : ILogAppender
                 Console.BackgroundColor = backgroundColor;
                 Console.ForegroundColor = foregroundColor;
 
-                if (level == LogLevel.Error || level == LogLevel.Fatal)
+                if (level is LogLevel.Error or LogLevel.Fatal)
                 {
                     Console.Error.Write(message);
                 }
@@ -32,7 +32,7 @@ public class ConsoleAppender : ILogAppender
             finally
             {
                 Console.ResetColor();
-                if (level == LogLevel.Error || level == LogLevel.Fatal)
+                if (level is LogLevel.Error or LogLevel.Fatal)
                 {
                     Console.Error.WriteLine();
                 }

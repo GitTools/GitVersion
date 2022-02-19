@@ -16,7 +16,7 @@ public class StringFormatWithExtensionTests
     public void FormatWithNoTokens()
     {
         var propertyObject = new { };
-        var target = "Some String without tokens";
+        const string target = "Some String without tokens";
         var expected = target;
         var actual = target.FormatWith(propertyObject, this.environment);
         Assert.AreEqual(expected, actual);
@@ -26,8 +26,8 @@ public class StringFormatWithExtensionTests
     public void FormatWithSingleSimpleToken()
     {
         var propertyObject = new { SomeProperty = "SomeValue" };
-        var target = "{SomeProperty}";
-        var expected = "SomeValue";
+        const string target = "{SomeProperty}";
+        const string expected = "SomeValue";
         var actual = target.FormatWith(propertyObject, this.environment);
         Assert.AreEqual(expected, actual);
     }
@@ -36,8 +36,8 @@ public class StringFormatWithExtensionTests
     public void FormatWithMultipleTokensAndVerbatimText()
     {
         var propertyObject = new { SomeProperty = "SomeValue", AnotherProperty = "Other Value" };
-        var target = "{SomeProperty} some text {AnotherProperty}";
-        var expected = "SomeValue some text Other Value";
+        const string target = "{SomeProperty} some text {AnotherProperty}";
+        const string expected = "SomeValue some text Other Value";
         var actual = target.FormatWith(propertyObject, this.environment);
         Assert.AreEqual(expected, actual);
     }
@@ -47,8 +47,8 @@ public class StringFormatWithExtensionTests
     {
         this.environment.SetEnvironmentVariable("GIT_VERSION_TEST_VAR", "Env Var Value");
         var propertyObject = new { };
-        var target = "{env:GIT_VERSION_TEST_VAR}";
-        var expected = "Env Var Value";
+        const string target = "{env:GIT_VERSION_TEST_VAR}";
+        const string expected = "Env Var Value";
         var actual = target.FormatWith(propertyObject, this.environment);
         Assert.AreEqual(expected, actual);
     }
@@ -58,8 +58,8 @@ public class StringFormatWithExtensionTests
     {
         this.environment.SetEnvironmentVariable("GIT_VERSION_TEST_VAR", "Env Var Value");
         var propertyObject = new { };
-        var target = "{env:GIT_VERSION_TEST_VAR ?? fallback}";
-        var expected = "Env Var Value";
+        const string target = "{env:GIT_VERSION_TEST_VAR ?? fallback}";
+        const string expected = "Env Var Value";
         var actual = target.FormatWith(propertyObject, this.environment);
         Assert.AreEqual(expected, actual);
     }
@@ -69,8 +69,8 @@ public class StringFormatWithExtensionTests
     {
         this.environment.SetEnvironmentVariable("GIT_VERSION_UNSET_TEST_VAR", null);
         var propertyObject = new { };
-        var target = "{env:GIT_VERSION_UNSET_TEST_VAR ?? fallback}";
-        var expected = "fallback";
+        const string target = "{env:GIT_VERSION_UNSET_TEST_VAR ?? fallback}";
+        const string expected = "fallback";
         var actual = target.FormatWith(propertyObject, this.environment);
         Assert.AreEqual(expected, actual);
     }
@@ -80,7 +80,7 @@ public class StringFormatWithExtensionTests
     {
         this.environment.SetEnvironmentVariable("GIT_VERSION_UNSET_TEST_VAR", null);
         var propertyObject = new { };
-        var target = "{env:GIT_VERSION_UNSET_TEST_VAR}";
+        const string target = "{env:GIT_VERSION_UNSET_TEST_VAR}";
         Assert.Throws<ArgumentException>(() => target.FormatWith(propertyObject, this.environment));
     }
 
@@ -90,8 +90,8 @@ public class StringFormatWithExtensionTests
         this.environment.SetEnvironmentVariable("GIT_VERSION_TEST_VAR_1", "Val-1");
         this.environment.SetEnvironmentVariable("GIT_VERSION_TEST_VAR_2", "Val-2");
         var propertyObject = new { };
-        var target = "{env:GIT_VERSION_TEST_VAR_1} and {env:GIT_VERSION_TEST_VAR_2}";
-        var expected = "Val-1 and Val-2";
+        const string target = "{env:GIT_VERSION_TEST_VAR_1} and {env:GIT_VERSION_TEST_VAR_2}";
+        const string expected = "Val-1 and Val-2";
         var actual = target.FormatWith(propertyObject, this.environment);
         Assert.AreEqual(expected, actual);
     }
@@ -101,8 +101,8 @@ public class StringFormatWithExtensionTests
     {
         var propertyObject = new { };
         //Test the greediness of the regex in matching env: char
-        var target = "{env:env:GIT_VERSION_TEST_VAR_1} and {env:DUMMY_VAR ?? fallback}";
-        var expected = "{env:env:GIT_VERSION_TEST_VAR_1} and fallback";
+        const string target = "{env:env:GIT_VERSION_TEST_VAR_1} and {env:DUMMY_VAR ?? fallback}";
+        const string expected = "{env:env:GIT_VERSION_TEST_VAR_1} and fallback";
         var actual = target.FormatWith(propertyObject, this.environment);
         Assert.AreEqual(expected, actual);
     }
@@ -112,7 +112,7 @@ public class StringFormatWithExtensionTests
     {
         var propertyObject = new { };
         //Test the greediness of the regex in matching env: and ?? chars
-        var target = "{env:env:GIT_VERSION_TEST_VAR_1} and {env:DUMMY_VAR ??? fallback}";
+        const string target = "{env:env:GIT_VERSION_TEST_VAR_1} and {env:DUMMY_VAR ??? fallback}";
         var actual = target.FormatWith(propertyObject, this.environment);
         Assert.AreEqual(target, actual);
     }
@@ -123,7 +123,7 @@ public class StringFormatWithExtensionTests
         this.environment.SetEnvironmentVariable("DUMMY_ENV_VAR", "Dummy-Val");
         var propertyObject = new { };
         //Test the sanity of the regex when there is a grammar mismatch
-        var target = "{en:DUMMY_ENV_VAR} and {env:DUMMY_ENV_VAR??fallback}";
+        const string target = "{en:DUMMY_ENV_VAR} and {env:DUMMY_ENV_VAR??fallback}";
         var actual = target.FormatWith(propertyObject, this.environment);
         Assert.AreEqual(target, actual);
     }
@@ -132,8 +132,8 @@ public class StringFormatWithExtensionTests
     public void FormatWIthNullPropagationWithMultipleSpaces()
     {
         var propertyObject = new { SomeProperty = "Some Value" };
-        var target = "{SomeProperty} and {env:DUMMY_ENV_VAR  ??  fallback}";
-        var expected = "Some Value and fallback";
+        const string target = "{SomeProperty} and {env:DUMMY_ENV_VAR  ??  fallback}";
+        const string expected = "Some Value and fallback";
         var actual = target.FormatWith(propertyObject, this.environment);
         Assert.AreEqual(expected, actual);
     }
@@ -143,7 +143,7 @@ public class StringFormatWithExtensionTests
     {
         this.environment.SetEnvironmentVariable("ENV_VAR", null);
         var propertyObject = new { };
-        var target = "{env:ENV_VAR ?? \"\"}";
+        const string target = "{env:ENV_VAR ?? \"\"}";
         var actual = target.FormatWith(propertyObject, this.environment);
         Assert.That(actual, Is.EqualTo(""));
     }
@@ -152,7 +152,7 @@ public class StringFormatWithExtensionTests
     public void FormatProperty_String()
     {
         var propertyObject = new { Property = "Value" };
-        var target = "{Property}";
+        const string target = "{Property}";
         var actual = target.FormatWith(propertyObject, this.environment);
         Assert.That(actual, Is.EqualTo("Value"));
     }
@@ -161,7 +161,7 @@ public class StringFormatWithExtensionTests
     public void FormatProperty_Integer()
     {
         var propertyObject = new { Property = 42 };
-        var target = "{Property}";
+        const string target = "{Property}";
         var actual = target.FormatWith(propertyObject, this.environment);
         Assert.That(actual, Is.EqualTo("42"));
     }
@@ -170,7 +170,7 @@ public class StringFormatWithExtensionTests
     public void FormatProperty_NullObject()
     {
         var propertyObject = new { Property = (object)null };
-        var target = "{Property}";
+        const string target = "{Property}";
         var actual = target.FormatWith(propertyObject, this.environment);
         Assert.That(actual, Is.EqualTo(""));
     }
@@ -179,7 +179,7 @@ public class StringFormatWithExtensionTests
     public void FormatProperty_NullInteger()
     {
         var propertyObject = new { Property = (int?)null };
-        var target = "{Property}";
+        const string target = "{Property}";
         var actual = target.FormatWith(propertyObject, this.environment);
         Assert.That(actual, Is.EqualTo(""));
     }
@@ -188,7 +188,7 @@ public class StringFormatWithExtensionTests
     public void FormatProperty_String_WithFallback()
     {
         var propertyObject = new { Property = "Value" };
-        var target = "{Property ?? fallback}";
+        const string target = "{Property ?? fallback}";
         var actual = target.FormatWith(propertyObject, this.environment);
         Assert.That(actual, Is.EqualTo("Value"));
     }
@@ -197,7 +197,7 @@ public class StringFormatWithExtensionTests
     public void FormatProperty_Integer_WithFallback()
     {
         var propertyObject = new { Property = 42 };
-        var target = "{Property ?? fallback}";
+        const string target = "{Property ?? fallback}";
         var actual = target.FormatWith(propertyObject, this.environment);
         Assert.That(actual, Is.EqualTo("42"));
     }
@@ -206,7 +206,7 @@ public class StringFormatWithExtensionTests
     public void FormatProperty_NullObject_WithFallback()
     {
         var propertyObject = new { Property = (object)null };
-        var target = "{Property ?? fallback}";
+        const string target = "{Property ?? fallback}";
         var actual = target.FormatWith(propertyObject, this.environment);
         Assert.That(actual, Is.EqualTo("fallback"));
     }
@@ -215,7 +215,7 @@ public class StringFormatWithExtensionTests
     public void FormatProperty_NullInteger_WithFallback()
     {
         var propertyObject = new { Property = (int?)null };
-        var target = "{Property ?? fallback}";
+        const string target = "{Property ?? fallback}";
         var actual = target.FormatWith(propertyObject, this.environment);
         Assert.That(actual, Is.EqualTo("fallback"));
     }
@@ -224,7 +224,7 @@ public class StringFormatWithExtensionTests
     public void FormatProperty_NullObject_WithFallback_Quoted()
     {
         var propertyObject = new { Property = (object)null };
-        var target = "{Property ?? \"fallback\"}";
+        const string target = "{Property ?? \"fallback\"}";
         var actual = target.FormatWith(propertyObject, this.environment);
         Assert.That(actual, Is.EqualTo("fallback"));
     }
@@ -233,7 +233,7 @@ public class StringFormatWithExtensionTests
     public void FormatProperty_NullObject_WithFallback_QuotedAndPadded()
     {
         var propertyObject = new { Property = (object)null };
-        var target = "{Property ?? \" fallback \"}";
+        const string target = "{Property ?? \" fallback \"}";
         var actual = target.FormatWith(propertyObject, this.environment);
         Assert.That(actual, Is.EqualTo(" fallback "));
     }
@@ -242,7 +242,7 @@ public class StringFormatWithExtensionTests
     public void FormatProperty_NullObject_WithFallback_QuotedAndEmpty()
     {
         var propertyObject = new { Property = (object)null };
-        var target = "{Property ?? \"\"}";
+        const string target = "{Property ?? \"\"}";
         var actual = target.FormatWith(propertyObject, this.environment);
         Assert.That(actual, Is.EqualTo(""));
     }

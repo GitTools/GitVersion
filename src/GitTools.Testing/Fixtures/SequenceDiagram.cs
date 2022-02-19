@@ -103,15 +103,9 @@ end note",
     /// <summary>
     /// Append a merge to the sequence diagram
     /// </summary>
-    public void Merge(string @from, string to) => this.diagramBuilder.AppendLineFormat("{0} -> {1}: merge", GetParticipant(@from), GetParticipant(to));
+    public void Merge(string from, string to) => this.diagramBuilder.AppendLineFormat("{0} -> {1}: merge", GetParticipant(from), GetParticipant(to));
 
-    private string GetParticipant(string branch)
-    {
-        if (this.participants.ContainsKey(branch))
-            return this.participants[branch];
-
-        return branch;
-    }
+    private string GetParticipant(string branch) => this.participants.ContainsKey(branch) ? this.participants[branch] : branch;
 
     /// <summary>
     /// Ends the sequence diagram

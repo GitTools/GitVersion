@@ -34,7 +34,7 @@ public class PullRequestInBuildAgentTest
     {
         var env = new Dictionary<string, string>
         {
-            { CodeBuild.WebHookEnvironmentVariableName, PullRequestBranchName },
+            { CodeBuild.WebHookEnvironmentVariableName, PullRequestBranchName }
         };
         await VerifyPullRequestVersionIsCalculatedProperly(pullRequestRef, env);
     }
@@ -44,7 +44,7 @@ public class PullRequestInBuildAgentTest
     {
         var env = new Dictionary<string, string>
         {
-            { ContinuaCi.EnvironmentVariableName, "true" },
+            { ContinuaCi.EnvironmentVariableName, "true" }
         };
         await VerifyPullRequestVersionIsCalculatedProperly(pullRequestRef, env);
     }
@@ -56,7 +56,7 @@ public class PullRequestInBuildAgentTest
         var env = new Dictionary<string, string>
         {
             { Drone.EnvironmentVariableName, "true" },
-            { "DRONE_PULL_REQUEST", PullRequestBranchName },
+            { "DRONE_PULL_REQUEST", PullRequestBranchName }
         };
         await VerifyPullRequestVersionIsCalculatedProperly(pullRequestRef, env);
     }
@@ -67,7 +67,7 @@ public class PullRequestInBuildAgentTest
         var env = new Dictionary<string, string>
         {
             { GitHubActions.EnvironmentVariableName, "true" },
-            { "GITHUB_REF", PullRequestBranchName },
+            { "GITHUB_REF", PullRequestBranchName }
         };
         await VerifyPullRequestVersionIsCalculatedProperly(pullRequestRef, env);
     }
@@ -78,7 +78,7 @@ public class PullRequestInBuildAgentTest
         var env = new Dictionary<string, string>
         {
             { GitLabCi.EnvironmentVariableName, "true" },
-            { "CI_COMMIT_REF_NAME", PullRequestBranchName },
+            { "CI_COMMIT_REF_NAME", PullRequestBranchName }
         };
         await VerifyPullRequestVersionIsCalculatedProperly(pullRequestRef, env);
     }
@@ -101,7 +101,7 @@ public class PullRequestInBuildAgentTest
     {
         var env = new Dictionary<string, string>
         {
-            { MyGet.EnvironmentVariableName, "MyGet" },
+            { MyGet.EnvironmentVariableName, "MyGet" }
         };
 
         await VerifyPullRequestVersionIsCalculatedProperly(pullRequestRef, env);
@@ -112,7 +112,7 @@ public class PullRequestInBuildAgentTest
     {
         var env = new Dictionary<string, string>
         {
-            { TeamCity.EnvironmentVariableName, "8.0.0" },
+            { TeamCity.EnvironmentVariableName, "8.0.0" }
         };
         await VerifyPullRequestVersionIsCalculatedProperly(pullRequestRef, env);
     }
@@ -123,7 +123,7 @@ public class PullRequestInBuildAgentTest
         var env = new Dictionary<string, string>
         {
             { TravisCi.EnvironmentVariableName, "true" },
-            {  "CI", "true" },
+            {  "CI", "true" }
         };
         await VerifyPullRequestVersionIsCalculatedProperly(pullRequestRef, env);
     }

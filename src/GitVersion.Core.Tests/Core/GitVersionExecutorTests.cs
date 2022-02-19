@@ -26,8 +26,8 @@ public class GitVersionExecutorTests : TestBase
     public void CacheKeySameAfterReNormalizing()
     {
         using var fixture = new EmptyRepositoryFixture();
-        var targetUrl = "https://github.com/GitTools/GitVersion.git";
-        var targetBranch = $"refs/head/{MainBranch}";
+        const string targetUrl = "https://github.com/GitTools/GitVersion.git";
+        const string targetBranch = $"refs/head/{MainBranch}";
 
         var gitVersionOptions = new GitVersionOptions
         {
@@ -41,10 +41,10 @@ public class GitVersionExecutorTests : TestBase
 
         this.sp = GetServiceProvider(gitVersionOptions, environment: environment);
 
-        var preparer = this.sp.GetService<IGitPreparer>();
+        var preparer = this.sp.GetRequiredService<IGitPreparer>();
 
         preparer.Prepare();
-        var cacheKeyFactory = this.sp.GetService<IGitVersionCacheKeyFactory>();
+        var cacheKeyFactory = this.sp.GetRequiredService<IGitVersionCacheKeyFactory>();
         var cacheKey1 = cacheKeyFactory.Create(null);
         preparer.Prepare();
 
@@ -56,7 +56,7 @@ public class GitVersionExecutorTests : TestBase
     [Test]
     public void GitPreparerShouldNotFailWhenTargetPathNotInitialized()
     {
-        var targetUrl = "https://github.com/GitTools/GitVersion.git";
+        const string targetUrl = "https://github.com/GitTools/GitVersion.git";
 
         var gitVersionOptions = new GitVersionOptions
         {
@@ -67,7 +67,7 @@ public class GitVersionExecutorTests : TestBase
         {
             this.sp = GetServiceProvider(gitVersionOptions);
 
-            this.sp.GetService<IGitPreparer>();
+            this.sp.GetRequiredService<IGitPreparer>();
         });
     }
 
@@ -85,7 +85,7 @@ public class GitVersionExecutorTests : TestBase
             var repo = new Repository(fixture.RepositoryPath);
             repo.Worktrees.Add("worktree", worktreePath, false);
 
-            var targetUrl = "https://github.com/GitTools/GitVersion.git";
+            const string targetUrl = "https://github.com/GitTools/GitVersion.git";
 
             var gitVersionOptions = new GitVersionOptions
             {
@@ -95,9 +95,9 @@ public class GitVersionExecutorTests : TestBase
 
             this.sp = GetServiceProvider(gitVersionOptions);
 
-            var preparer = this.sp.GetService<IGitPreparer>();
+            var preparer = this.sp.GetRequiredService<IGitPreparer>();
             preparer.Prepare();
-            var cacheKey = this.sp.GetService<IGitVersionCacheKeyFactory>().Create(null);
+            var cacheKey = this.sp.GetRequiredService<IGitVersionCacheKeyFactory>().Create(null);
             cacheKey.Value.ShouldNotBeEmpty();
         }
         finally
@@ -391,7 +391,7 @@ public class GitVersionExecutorTests : TestBase
             var gitVersionCalculator = GetGitVersionCalculator(gitVersionOptions);
             gitVersionCalculator.CalculateVersionVariables();
         });
-        exception.Message.ShouldContain("Cannot find the .git directory");
+        exception?.Message.ShouldContain("Cannot find the .git directory");
     }
 
     [Test]
@@ -406,7 +406,7 @@ public class GitVersionExecutorTests : TestBase
             var gitVersionCalculator = GetGitVersionCalculator(gitVersionOptions);
             gitVersionCalculator.CalculateVersionVariables();
         });
-        exception.Message.ShouldContain("No commits found on the current branch.");
+        exception?.Message.ShouldContain("No commits found on the current branch.");
     }
 
     [Test]
@@ -424,7 +424,7 @@ public class GitVersionExecutorTests : TestBase
             var repo = new Repository(fixture.RepositoryPath);
             repo.Worktrees.Add("worktree", worktreePath, false);
 
-            var targetUrl = "https://github.com/GitTools/GitVersion.git";
+            const string targetUrl = "https://github.com/GitTools/GitVersion.git";
 
             var gitVersionOptions = new GitVersionOptions
             {
@@ -433,8 +433,8 @@ public class GitVersionExecutorTests : TestBase
             };
 
             this.sp = GetServiceProvider(gitVersionOptions);
-            var repositoryInfo = this.sp.GetService<IGitRepositoryInfo>();
-            repositoryInfo?.ProjectRootDirectory.TrimEnd('/', '\\').ShouldBe(worktreePath);
+            var repositoryInfo = this.sp.GetRequiredService<IGitRepositoryInfo>();
+            repositoryInfo.ProjectRootDirectory?.TrimEnd('/', '\\').ShouldBe(worktreePath);
         }
         finally
         {
@@ -446,7 +446,7 @@ public class GitVersionExecutorTests : TestBase
     public void GetProjectRootDirectoryNoWorktree()
     {
         using var fixture = new EmptyRepositoryFixture();
-        var targetUrl = "https://github.com/GitTools/GitVersion.git";
+        const string targetUrl = "https://github.com/GitTools/GitVersion.git";
 
         var gitVersionOptions = new GitVersionOptions
         {
@@ -455,10 +455,10 @@ public class GitVersionExecutorTests : TestBase
         };
 
         this.sp = GetServiceProvider(gitVersionOptions);
-        var repositoryInfo = this.sp.GetService<IGitRepositoryInfo>();
+        var repositoryInfo = this.sp.GetRequiredService<IGitRepositoryInfo>();
 
         var expectedPath = fixture.RepositoryPath.TrimEnd('/', '\\');
-        repositoryInfo?.ProjectRootDirectory.TrimEnd('/', '\\').ShouldBe(expectedPath);
+        repositoryInfo.ProjectRootDirectory?.TrimEnd('/', '\\').ShouldBe(expectedPath);
     }
 
     [Test]
@@ -472,10 +472,10 @@ public class GitVersionExecutorTests : TestBase
         };
 
         this.sp = GetServiceProvider(gitVersionOptions);
-        var repositoryInfo = this.sp.GetService<IGitRepositoryInfo>();
+        var repositoryInfo = this.sp.GetRequiredService<IGitRepositoryInfo>();
 
         var expectedPath = Path.Combine(fixture.RepositoryPath, ".git");
-        repositoryInfo?.DotGitDirectory.ShouldBe(expectedPath);
+        repositoryInfo.DotGitDirectory.ShouldBe(expectedPath);
     }
 
     [Test]
@@ -499,10 +499,10 @@ public class GitVersionExecutorTests : TestBase
             };
 
             this.sp = GetServiceProvider(gitVersionOptions);
-            var repositoryInfo = this.sp.GetService<IGitRepositoryInfo>();
+            var repositoryInfo = this.sp.GetRequiredService<IGitRepositoryInfo>();
 
             var expectedPath = Path.Combine(fixture.RepositoryPath, ".git");
-            repositoryInfo?.DotGitDirectory.ShouldBe(expectedPath);
+            repositoryInfo.DotGitDirectory.ShouldBe(expectedPath);
         }
         finally
         {
@@ -541,20 +541,94 @@ public class GitVersionExecutorTests : TestBase
         version.Sha.ShouldBe(commits.First().Sha);
     }
 
+    [Test]
+    [Category(NoMono)]
+    [Description(NoMonoDescription)]
+    public void CalculateVersionVariables_TwoBranchHasSameCommitHeadDetachedAndNotTagged_ThrowException()
+    {
+        // Setup
+        using var fixture = new RemoteRepositoryFixture();
+        fixture.LocalRepositoryFixture.Repository.MakeACommit("Init commit");
+        fixture.LocalRepositoryFixture.Repository.CreateBranch("feature/1.0");
+        fixture.LocalRepositoryFixture.Checkout("feature/1.0");
+        var commit = fixture.LocalRepositoryFixture.Repository.MakeACommit("feat: a new commit");
+        fixture.LocalRepositoryFixture.Repository.CreateBranch("support/1.0");
+        fixture.LocalRepositoryFixture.Checkout(commit.Sha);
+
+        using var worktreeFixture = new LocalRepositoryFixture(new Repository(fixture.LocalRepositoryFixture.RepositoryPath));
+        var gitVersionOptions = new GitVersionOptions { WorkingDirectory = worktreeFixture.RepositoryPath };
+
+        var environment = new TestEnvironment();
+        environment.SetEnvironmentVariable(AzurePipelines.EnvironmentVariableName, "true");
+
+        this.sp = GetServiceProvider(gitVersionOptions, environment: environment);
+
+        var _ = this.sp.GetRequiredService<Lazy<GitVersionContext>>()?.Value;
+
+        var sut = sp.GetRequiredService<IGitVersionCalculateTool>();
+
+        // Execute & Verify
+        var exception = Assert.Throws<WarningException>(() => sut.CalculateVersionVariables());
+        exception?.Message.ShouldBe("Failed to try and guess branch to use. Move one of the branches along a commit to remove warning");
+    }
+
+    [Test]
+    [Category(NoMono)]
+    [Description(NoMonoDescription)]
+    public void CalculateVersionVariables_TwoBranchHasSameCommitHeadDetachedAndTagged_ReturnSemver()
+    {
+        // Setup
+        using var fixture = new RemoteRepositoryFixture();
+        fixture.LocalRepositoryFixture.Repository.MakeACommit("Init commit");
+        fixture.LocalRepositoryFixture.Repository.CreateBranch("feature/1.0");
+        fixture.LocalRepositoryFixture.Checkout("feature/1.0");
+        var commit = fixture.LocalRepositoryFixture.Repository.MakeACommit("feat: a new commit");
+        fixture.LocalRepositoryFixture.Repository.CreateBranch("support/1.0");
+        fixture.LocalRepositoryFixture.ApplyTag("1.0.1");
+        fixture.LocalRepositoryFixture.Checkout(commit.Sha);
+
+        using var worktreeFixture = new LocalRepositoryFixture(new Repository(fixture.LocalRepositoryFixture.RepositoryPath));
+        var gitVersionOptions = new GitVersionOptions { WorkingDirectory = worktreeFixture.RepositoryPath };
+
+        var environment = new TestEnvironment();
+        environment.SetEnvironmentVariable(AzurePipelines.EnvironmentVariableName, "true");
+
+        this.sp = GetServiceProvider(gitVersionOptions, environment: environment);
+
+        var _ = this.sp.GetRequiredService<Lazy<GitVersionContext>>()?.Value;
+
+        var sut = sp.GetRequiredService<IGitVersionCalculateTool>();
+
+        // Execute
+        var version = sut.CalculateVersionVariables();
+
+        // Verify
+        version.SemVer.ShouldBe("1.0.1");
+        var commits = worktreeFixture.Repository.Head.Commits;
+        version.Sha.ShouldBe(commits.First().Sha);
+    }
+
     private IGitVersionCalculateTool GetGitVersionCalculator(GitVersionOptions gitVersionOptions, ILog logger = null, IGitRepository repository = null, IFileSystem fs = null)
     {
         this.sp = GetServiceProvider(gitVersionOptions, logger, repository, fs);
 
-        this.fileSystem = this.sp.GetService<IFileSystem>();
-        this.log = this.sp.GetService<ILog>();
-        this.gitVersionCache = this.sp.GetService<IGitVersionCache>();
+        this.fileSystem = this.sp.GetRequiredService<IFileSystem>();
+        this.log = this.sp.GetRequiredService<ILog>();
+        this.gitVersionCache = this.sp.GetRequiredService<IGitVersionCache>();
 
-        return this.sp.GetService<IGitVersionCalculateTool>();
+        return this.sp.GetRequiredService<IGitVersionCalculateTool>();
     }
 
     private static IServiceProvider GetServiceProvider(GitVersionOptions gitVersionOptions, ILog log = null, IGitRepository repository = null, IFileSystem fileSystem = null, IEnvironment environment = null) =>
         ConfigureServices(services =>
         {
+            services.AddSingleton<IGitVersionContextFactory, GitVersionContextFactory>();
+            services.AddSingleton(sp =>
+            {
+                var options = sp.GetRequiredService<IOptions<GitVersionOptions>>();
+                var contextFactory = sp.GetRequiredService<IGitVersionContextFactory>();
+                return new Lazy<GitVersionContext>(() => contextFactory.Create(options?.Value));
+            });
             if (log != null) services.AddSingleton(log);
             if (fileSystem != null) services.AddSingleton(fileSystem);
             if (repository != null) services.AddSingleton(repository);

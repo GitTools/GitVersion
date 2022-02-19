@@ -140,9 +140,9 @@ public class VariableProvider : IVariableProvider
             {
                 formattedString = formatString.FormatWith(source, this.environment).RegexReplace("[^0-9A-Za-z-.+]", "-");
             }
-            catch (ArgumentException formex)
+            catch (ArgumentException exception)
             {
-                throw new WarningException($"Unable to format {formatVarName}.  Check your format string: {formex.Message}");
+                throw new WarningException($"Unable to format {formatVarName}.  Check your format string: {exception.Message}");
             }
         }
 
@@ -152,7 +152,7 @@ public class VariableProvider : IVariableProvider
     private void WarnIfUsingObsoleteFormatValues(string formatString)
     {
 #pragma warning disable CS0618 // Type or member is obsolete
-        var obsoletePropertyName = nameof(SemanticVersionFormatValues.DefaultInformationalVersion);
+        const string obsoletePropertyName = nameof(SemanticVersionFormatValues.DefaultInformationalVersion);
 #pragma warning restore CS0618 // Type or member is obsolete
         if (formatString.Contains($"{{{obsoletePropertyName}}}"))
         {

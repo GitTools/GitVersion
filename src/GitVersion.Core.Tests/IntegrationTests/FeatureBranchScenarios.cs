@@ -484,14 +484,14 @@ public class FeatureBranchScenarios : TestBase
                     MainBranch, new BranchConfig
                     {
                         Tag = "pre",
-                        TracksReleaseBranches = true,
+                        TracksReleaseBranches = true
                     }
                 },
                 {
                     "release", new BranchConfig
                     {
                         IsReleaseBranch = true,
-                        Tag = "rc",
+                        Tag = "rc"
                     }
                 }
             }
