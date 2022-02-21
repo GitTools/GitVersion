@@ -15,7 +15,7 @@ public class GitHubActions : BuildAgentBase
     public const string EnvironmentVariableName = "GITHUB_ACTIONS";
     public const string GitHubSetEnvTempFileEnvironmentVariableName = "GITHUB_ENV";
 
-    protected override string EnvironmentVariable { get; } = EnvironmentVariableName;
+    protected override string EnvironmentVariable => EnvironmentVariableName;
 
     public override string GenerateSetVersionMessage(VersionVariables variables) =>
         string.Empty; // There is no equivalent function in GitHub Actions.

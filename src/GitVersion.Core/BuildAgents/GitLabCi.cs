@@ -12,7 +12,7 @@ public class GitLabCi : BuildAgentBase
 
     public void WithPropertyFile(string propertiesFileName) => this.file = propertiesFileName;
 
-    protected override string EnvironmentVariable { get; } = EnvironmentVariableName;
+    protected override string EnvironmentVariable => EnvironmentVariableName;
 
 
     public override string GenerateSetVersionMessage(VersionVariables variables) => variables.FullSemVer;

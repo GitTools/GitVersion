@@ -14,7 +14,7 @@ public sealed class CodeBuild : BuildAgentBase
 
     public void WithPropertyFile(string propertiesFileName) => this.file = propertiesFileName;
 
-    protected override string EnvironmentVariable => throw new NotSupportedException($"Accessing {nameof(EnvironmentVariable)} is not supported as {nameof(CodeBuild)} supports two environment variables for branch names.");
+    protected override string EnvironmentVariable => WebHookEnvironmentVariableName;
 
     public override string GenerateSetVersionMessage(VersionVariables variables) => variables.FullSemVer;
 
@@ -25,7 +25,6 @@ public sealed class CodeBuild : BuildAgentBase
 
     public override string? GetCurrentBranch(bool usingDynamicRepos)
     {
-
         var currentBranch = Environment.GetEnvironmentVariable(WebHookEnvironmentVariableName);
 
         if (currentBranch.IsNullOrEmpty())
@@ -45,6 +44,6 @@ public sealed class CodeBuild : BuildAgentBase
 
     public override bool PreventFetch() => true;
 
-    public override bool CanApplyToCurrentContext()
-        => !Environment.GetEnvironmentVariable(WebHookEnvironmentVariableName).IsNullOrEmpty() || !Environment.GetEnvironmentVariable(SourceVersionEnvironmentVariableName).IsNullOrEmpty();
+    public override bool CanApplyToCurrentContext() => !Environment.GetEnvironmentVariable(WebHookEnvironmentVariableName).IsNullOrEmpty()
+                                                       || !Environment.GetEnvironmentVariable(SourceVersionEnvironmentVariableName).IsNullOrEmpty();
 }

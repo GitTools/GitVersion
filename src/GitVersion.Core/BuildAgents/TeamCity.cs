@@ -13,7 +13,7 @@ public class TeamCity : BuildAgentBase
 
     public const string EnvironmentVariableName = "TEAMCITY_VERSION";
 
-    protected override string EnvironmentVariable { get; } = EnvironmentVariableName;
+    protected override string EnvironmentVariable => EnvironmentVariableName;
 
     public override string? GetCurrentBranch(bool usingDynamicRepos)
     {
