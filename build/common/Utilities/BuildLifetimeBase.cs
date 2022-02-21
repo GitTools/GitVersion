@@ -15,6 +15,7 @@ public class BuildLifetimeBase<T> : FrostingLifetime<T> where T : BuildContextBa
         context.IsPullRequest = buildSystem.IsPullRequest;
         context.IsOriginalRepo = context.IsOriginalRepo();
         context.IsMainBranch = context.IsMainBranch();
+        context.IsReleaseBranch = context.IsReleaseBranch();
         context.IsTagged = context.IsTagged();
 
         context.IsOnWindows = context.IsRunningOnWindows();
@@ -38,6 +39,7 @@ public class BuildLifetimeBase<T> : FrostingLifetime<T> where T : BuildContextBa
             context.Information("Pull Request:      {0}", context.IsPullRequest);
             context.Information("Original Repo:     {0}", context.IsOriginalRepo);
             context.Information("Main Branch:       {0}", context.IsMainBranch);
+            context.Information("Release Branch:    {0}", context.IsReleaseBranch);
             context.Information("Tagged:            {0}", context.IsTagged);
 
             context.Information("Finished running tasks.");
@@ -60,6 +62,7 @@ public class BuildLifetimeBase<T> : FrostingLifetime<T> where T : BuildContextBa
         context.Information("Pull Request:      {0}", context.IsPullRequest);
         context.Information("Original Repo:     {0}", context.IsOriginalRepo);
         context.Information("Main Branch:       {0}", context.IsMainBranch);
+        context.Information("Release Branch:    {0}", context.IsReleaseBranch);
         context.Information("Tagged:            {0}", context.IsTagged);
     }
 }

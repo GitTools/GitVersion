@@ -73,24 +73,20 @@ public static class ContextExtensions
 
     public static bool IsMainBranch(this ICakeContext context)
     {
-        var buildSystem = context.BuildSystem();
-        string repositoryBranch = context.ExecGitCmd("rev-parse --abbrev-ref HEAD").Single();
-        if (buildSystem.IsRunningOnAppVeyor)
-        {
-            repositoryBranch = buildSystem.AppVeyor.Environment.Repository.Branch;
-        }
-        else if (buildSystem.IsRunningOnAzurePipelines)
-        {
-            repositoryBranch = buildSystem.AzurePipelines.Environment.Repository.SourceBranchName;
-        }
-        else if (buildSystem.IsRunningOnGitHubActions)
-        {
-            repositoryBranch = buildSystem.GitHubActions.Environment.Workflow.Ref.Replace("refs/heads/", "");
-        }
+        var repositoryBranch = GetBranchName(context);
 
         context.Information("Repository Branch: {0}", repositoryBranch);
 
         return !string.IsNullOrWhiteSpace(repositoryBranch) && StringComparer.OrdinalIgnoreCase.Equals("main", repositoryBranch);
+    }
+
+    public static bool IsReleaseBranch(this ICakeContext context)
+    {
+        var repositoryBranch = GetBranchName(context);
+
+        context.Information("Repository Branch: {0}", repositoryBranch);
+
+        return !string.IsNullOrWhiteSpace(repositoryBranch) && repositoryBranch.StartsWith("release/", StringComparison.OrdinalIgnoreCase);
     }
 
     public static bool IsTagged(this ICakeContext context)
@@ -122,6 +118,7 @@ public static class ContextExtensions
         if (context.IsRunningOnWindows()) return "Windows";
         if (context.IsRunningOnLinux()) return "Linux";
         if (context.IsRunningOnMacOs()) return "macOs";
+
         return string.Empty;
     }
 
@@ -173,5 +170,25 @@ public static class ContextExtensions
 
         context.Information(skipMessage);
         return false;
+    }
+
+    private static string GetBranchName(ICakeContext context)
+    {
+
+        var buildSystem = context.BuildSystem();
+        string repositoryBranch = context.ExecGitCmd("rev-parse --abbrev-ref HEAD").Single();
+        if (buildSystem.IsRunningOnAppVeyor)
+        {
+            repositoryBranch = buildSystem.AppVeyor.Environment.Repository.Branch;
+        }
+        else if (buildSystem.IsRunningOnAzurePipelines)
+        {
+            repositoryBranch = buildSystem.AzurePipelines.Environment.Repository.SourceBranchName;
+        }
+        else if (buildSystem.IsRunningOnGitHubActions)
+        {
+            repositoryBranch = buildSystem.GitHubActions.Environment.Workflow.Ref.Replace("refs/heads/", "");
+        }
+        return repositoryBranch;
     }
 }

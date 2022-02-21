@@ -16,9 +16,8 @@ public class StringFormatWithExtensionTests
     public void FormatWithNoTokens()
     {
         var propertyObject = new { };
-        const string target = "Some String without tokens";
-        var expected = target;
-        var actual = target.FormatWith(propertyObject, this.environment);
+        const string expected = "Some String without tokens";
+        var actual = expected.FormatWith(propertyObject, this.environment);
         Assert.AreEqual(expected, actual);
     }
 
