@@ -24,7 +24,7 @@ public sealed class OutputGenerator : IOutputGenerator
         this.console = console.NotNull();
         this.fileSystem = fileSystem.NotNull();
         this.options = options.NotNull();
-        this.buildAgent = buildAgent;
+        this.buildAgent = buildAgent.NotNull();
     }
 
     public void Execute(VersionVariables variables, OutputContext context)
@@ -32,7 +32,7 @@ public sealed class OutputGenerator : IOutputGenerator
         var gitVersionOptions = this.options.Value;
         if (gitVersionOptions.Output.Contains(OutputType.BuildServer))
         {
-            this.buildAgent?.WriteIntegration(this.console.WriteLine, variables, context.UpdateBuildNumber ?? true);
+            this.buildAgent.WriteIntegration(this.console.WriteLine, variables, context.UpdateBuildNumber ?? true);
         }
         if (gitVersionOptions.Output.Contains(OutputType.File))
         {

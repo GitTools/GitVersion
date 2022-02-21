@@ -12,7 +12,7 @@ public class MyGet : BuildAgentBase
     }
 
     public const string EnvironmentVariableName = "BuildRunner";
-    protected override string EnvironmentVariable { get; } = EnvironmentVariableName;
+    protected override string EnvironmentVariable => EnvironmentVariableName;
     public override bool CanApplyToCurrentContext()
     {
         var buildRunner = Environment.GetEnvironmentVariable(EnvironmentVariable);

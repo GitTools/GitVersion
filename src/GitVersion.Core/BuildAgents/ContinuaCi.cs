@@ -11,7 +11,7 @@ public class ContinuaCi : BuildAgentBase
 
     public const string EnvironmentVariableName = "ContinuaCI.Version";
 
-    protected override string EnvironmentVariable { get; } = EnvironmentVariableName;
+    protected override string EnvironmentVariable => EnvironmentVariableName;
 
     public override string[] GenerateSetParameterMessage(string name, string value) => new[]
     {

@@ -11,7 +11,7 @@ public class BuildKite : BuildAgentBase
 
     public const string EnvironmentVariableName = "BUILDKITE";
 
-    protected override string EnvironmentVariable { get; } = EnvironmentVariableName;
+    protected override string EnvironmentVariable => EnvironmentVariableName;
 
     public override bool CanApplyToCurrentContext() => "true".Equals(Environment.GetEnvironmentVariable(EnvironmentVariable), StringComparison.OrdinalIgnoreCase);
 

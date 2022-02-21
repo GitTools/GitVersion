@@ -11,7 +11,7 @@ public class Drone : BuildAgentBase
     }
 
     public const string EnvironmentVariableName = "DRONE";
-    protected override string EnvironmentVariable { get; } = EnvironmentVariableName;
+    protected override string EnvironmentVariable => EnvironmentVariableName;
     public override bool CanApplyToCurrentContext() => "true".Equals(Environment.GetEnvironmentVariable(EnvironmentVariable), StringComparison.OrdinalIgnoreCase);
 
     public override string GenerateSetVersionMessage(VersionVariables variables) => variables.FullSemVer;

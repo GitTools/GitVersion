@@ -46,12 +46,12 @@ public static class GitVersionTasks
     private static void Configure(IServiceProvider sp, GitVersionTaskBase task)
     {
         var log = sp.GetRequiredService<ILog>();
-        var buildAgent = sp.GetService<ICurrentBuildAgent>();
+        var buildAgent = sp.GetRequiredService<ICurrentBuildAgent>();
         var gitVersionOptions = sp.GetRequiredService<IOptions<GitVersionOptions>>().Value;
 
         log.AddLogAppender(new MsBuildAppender(task.Log));
 
-        if (buildAgent != null)
+        if (buildAgent is not LocalBuild)
         {
             gitVersionOptions.Output.Add(OutputType.BuildServer);
         }

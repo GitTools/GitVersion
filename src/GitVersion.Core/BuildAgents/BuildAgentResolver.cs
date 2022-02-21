@@ -13,17 +13,18 @@ public class BuildAgentResolver : IBuildAgentResolver
         this.buildAgents = buildAgents;
     }
 
-    public ICurrentBuildAgent? Resolve()
+    public ICurrentBuildAgent Resolve() => new Lazy<ICurrentBuildAgent>(ResolveInternal).Value;
+
+    private ICurrentBuildAgent ResolveInternal()
     {
-        ICurrentBuildAgent? instance = null;
-        foreach (var buildAgent in this.buildAgents)
+        ICurrentBuildAgent instance = (ICurrentBuildAgent)this.buildAgents.Single(x => x is LocalBuild);
+
+        foreach (var buildAgent in this.buildAgents.Where(x => x is not LocalBuild))
         {
             var agentName = buildAgent.GetType().Name;
             try
             {
                 if (!buildAgent.CanApplyToCurrentContext()) continue;
-
-                this.log.Info($"Applicable build agent found: '{agentName}'.");
                 instance = (ICurrentBuildAgent)buildAgent;
             }
             catch (Exception ex)
@@ -32,6 +33,7 @@ public class BuildAgentResolver : IBuildAgentResolver
             }
         }
 
+        this.log.Info($"Applicable build agent found: '{instance.GetType().Name}'.");
         return instance;
     }
 }
