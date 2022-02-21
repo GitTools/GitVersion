@@ -4,9 +4,9 @@
         <RootNamespace>Chores</RootNamespace>
     </PropertyGroup>
     <ItemGroup>
-        <ProjectReference Include="..\common\common.csproj"/>
+        <ProjectReference Include="..\common\common.csproj" />
     </ItemGroup>
     <ItemGroup>
-        <PackageReference Include="Cake.Json" Version="6.0.1"/>
+        <PackageReference Include="Cake.Json" Version="7.0.1" />
     </ItemGroup>
 </Project>
