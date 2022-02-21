@@ -16,12 +16,12 @@ public class GitPreparer : IGitPreparer
     private readonly IOptions<GitVersionOptions> options;
     private readonly IGitRepositoryInfo repositoryInfo;
     private readonly IRepositoryStore repositoryStore;
-    private readonly ICurrentBuildAgent? buildAgent;
+    private readonly ICurrentBuildAgent buildAgent;
     private readonly RetryAction<LockedFileException> retryAction;
 
     private const string DefaultRemoteName = "origin";
 
-    public GitPreparer(ILog log, IEnvironment environment, ICurrentBuildAgent? buildAgent, IOptions<GitVersionOptions> options,
+    public GitPreparer(ILog log, IEnvironment environment, ICurrentBuildAgent buildAgent, IOptions<GitVersionOptions> options,
         IMutatingGitRepository repository, IGitRepositoryInfo repositoryInfo, IRepositoryStore repositoryStore)
     {
         this.log = log.NotNull();
@@ -30,7 +30,7 @@ public class GitPreparer : IGitPreparer
         this.options = options.NotNull();
         this.repositoryInfo = repositoryInfo.NotNull();
         this.repositoryStore = repositoryStore.NotNull();
-        this.buildAgent = buildAgent;
+        this.buildAgent = buildAgent.NotNull();
         this.retryAction = new RetryAction<LockedFileException>();
     }
 
@@ -39,8 +39,8 @@ public class GitPreparer : IGitPreparer
         var gitVersionOptions = this.options.Value;
 
         // Normalize if we are running on build server
-        var normalizeGitDirectory = !gitVersionOptions.Settings.NoNormalize && this.buildAgent != null;
-        var shouldCleanUpRemotes = this.buildAgent != null && this.buildAgent.ShouldCleanUpRemotes();
+        var normalizeGitDirectory = !gitVersionOptions.Settings.NoNormalize && this.buildAgent is not LocalBuild;
+        var shouldCleanUpRemotes = this.buildAgent.ShouldCleanUpRemotes();
         var currentBranch = ResolveCurrentBranch();
 
         var dotGitDirectory = this.repositoryInfo.DotGitDirectory;
@@ -79,10 +79,6 @@ public class GitPreparer : IGitPreparer
     {
         var gitVersionOptions = this.options.Value;
         var targetBranch = gitVersionOptions.RepositoryInfo.TargetBranch;
-        if (this.buildAgent == null)
-        {
-            return targetBranch;
-        }
 
         var isDynamicRepository = !gitVersionOptions.RepositoryInfo.DynamicRepositoryClonePath.IsNullOrWhiteSpace();
         var currentBranch = this.buildAgent.GetCurrentBranch(isDynamicRepository) ?? targetBranch;

@@ -19,7 +19,7 @@ public class ArgumentParser : IArgumentParser
         this.environment = environment.NotNull();
         this.console = console.NotNull();
         this.globbingResolver = globbingResolver.NotNull();
-        this.buildAgent = buildAgent;
+        this.buildAgent = buildAgent.NotNull();
     }
 
     public Arguments ParseArguments(string commandLineArguments)
@@ -42,7 +42,7 @@ public class ArgumentParser : IArgumentParser
 
             AddAuthentication(args);
 
-            args.NoFetch = this.buildAgent != null && this.buildAgent.PreventFetch();
+            args.NoFetch = this.buildAgent.PreventFetch();
 
             return args;
         }
