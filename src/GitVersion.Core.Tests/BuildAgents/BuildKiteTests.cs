@@ -52,12 +52,27 @@ public class BuildKiteTests : TestBase
     {
         // Arrange
         this.environment.SetEnvironmentVariable("BUILDKITE_BRANCH", MainBranch);
+        this.environment.SetEnvironmentVariable("BUILDKITE_PULL_REQUEST", "false");
 
         // Act
         var result = this.buildServer.GetCurrentBranch(false);
 
         // Assert
         result.ShouldBe(MainBranch);
+    }
+
+    [Test]
+    public void GetCurrentBranchShouldHandlePullRequests()
+    {
+        // Arrange
+        this.environment.SetEnvironmentVariable("BUILDKITE_BRANCH", "feature/new");
+        this.environment.SetEnvironmentVariable("BUILDKITE_PULL_REQUEST", "55");
+
+        // Act
+        var result = this.buildServer.GetCurrentBranch(false);
+
+        // Assert
+        result.ShouldBe("refs/pull/55/head");
     }
 
     [Test]
