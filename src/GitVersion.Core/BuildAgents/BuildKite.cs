@@ -22,7 +22,7 @@ public class BuildKite : BuildAgentBase
         Array.Empty<string>(); // There is no equivalent function in BuildKite.
 
     public override string? GetCurrentBranch(bool usingDynamicRepos)
-    {        
+    {
         var pullRequest = Environment.GetEnvironmentVariable("BUILDKITE_PULL_REQUEST");
         if (string.IsNullOrEmpty(pullRequest) || pullRequest == "false")
         {
@@ -30,7 +30,7 @@ public class BuildKite : BuildAgentBase
         }
         else
         {
-            // for pull requests BUILDKITE_BRANCH refers to the head, so adjust the 
+            // For pull requests BUILDKITE_BRANCH refers to the head, so adjust the
             // branch name for pull request versioning to function as expected
             return string.Format("refs/pull/{0}/head", pullRequest);
         }
