@@ -52,7 +52,7 @@ jobs:
         key: run-${{ runner.os }}-${{ hashFiles('./build/**') }}
     -
       name: Install .NET SDK 6.0.x
-      uses: actions/setup-dotnet@v1
+      uses: actions/setup-dotnet@v2
       with:
         dotnet-version: '6.0.x'
     -
@@ -91,7 +91,7 @@ jobs:
         key: tools-${{ runner.os }}-${{ hashFiles('./build/**') }}
     -
       name: Install .NET SDK 6.0.x
-      uses: actions/setup-dotnet@v1
+      uses: actions/setup-dotnet@v2
       with:
         dotnet-version: '6.0.x'
     -
@@ -154,7 +154,7 @@ jobs:
         key: tools-${{ runner.os }}-${{ hashFiles('./build/**') }}
     -
       name: Install .NET SDK 6.0.x
-      uses: actions/setup-dotnet@v1
+      uses: actions/setup-dotnet@v2
       with:
         dotnet-version: '6.0.x'
     -
@@ -199,7 +199,7 @@ jobs:
         path: ${{ github.workspace }}/artifacts/packages/nuget
     -
       name: Install .NET SDK 6.0.x
-      uses: actions/setup-dotnet@v1
+      uses: actions/setup-dotnet@v2
       with:
         dotnet-version: '6.0.x'
     -
@@ -259,7 +259,7 @@ jobs:
         install: true
     -
       name: Install .NET SDK 6.0.x
-      uses: actions/setup-dotnet@v1
+      uses: actions/setup-dotnet@v2
       with:
         dotnet-version: '6.0.x'
     -
@@ -317,7 +317,7 @@ jobs:
         install: true
     -
       name: Install .NET SDK 6.0.x
-      uses: actions/setup-dotnet@v1
+      uses: actions/setup-dotnet@v2
       with:
         dotnet-version: '6.0.x'
     -
@@ -407,7 +407,7 @@ jobs:
         path: ${{ github.workspace }}/artifacts/packages/nuget
     -
       name: Install .NET SDK 6.0.x
-      uses: actions/setup-dotnet@v1
+      uses: actions/setup-dotnet@v2
       with:
         dotnet-version: '6.0.x'
     -
@@ -461,7 +461,7 @@ jobs:
         path: ${{ github.workspace }}/artifacts/packages/native
     -
       name: Install .NET SDK 6.0.x
-      uses: actions/setup-dotnet@v1
+      uses: actions/setup-dotnet@v2
       with:
         dotnet-version: '6.0.x'
     -
