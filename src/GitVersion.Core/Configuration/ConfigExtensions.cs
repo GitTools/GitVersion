@@ -9,7 +9,16 @@ public static class ConfigExtensions
 {
     public static BranchConfig? GetConfigForBranch(this Config config, string? branchName)
     {
-        if (branchName == null) throw new ArgumentNullException(nameof(branchName));
+        if (branchName == null)
+        {
+            throw new ArgumentNullException(nameof(branchName));
+        }
+
+        if (config?.Branches is null)
+        {
+            return null;
+        }
+
         var matches = config.Branches
             .Where(b => Regex.IsMatch(branchName, b.Value?.Regex, RegexOptions.IgnoreCase))
             .ToArray();
