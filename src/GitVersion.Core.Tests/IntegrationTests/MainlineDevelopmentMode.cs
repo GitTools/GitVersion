@@ -517,6 +517,26 @@ public class MainlineDevelopmentMode : TestBase
         fixture.AssertFullSemver("3.1.3", minorIncrementConfig);
         Console.WriteLine(fixture.SequenceDiagram.GetDiagram());
     }
+
+    [Test]
+    public void BranchWithoutMergeBaseMainlineBranchIsFound()
+    {
+        var currentConfig = new Config
+        {
+            VersioningMode = VersioningMode.Mainline,
+            AssemblyFileVersioningScheme = AssemblyFileVersioningScheme.MajorMinorPatchTag
+        };
+
+        using var fixture = new EmptyRepositoryFixture();
+        fixture.Repository.MakeACommit();
+        Commands.Checkout(fixture.Repository, fixture.Repository.CreateBranch("master"));
+        fixture.Repository.Branches.Remove(fixture.Repository.Branches["main"]);
+        fixture.Repository.MakeCommits(2);
+        Commands.Checkout(fixture.Repository, fixture.Repository.CreateBranch("issue-branch"));
+        fixture.Repository.MakeACommit();
+        fixture.AssertFullSemver("0.1.3-issue-branch.1", currentConfig);
+    }
+
 }
 
 internal static class CommitExtensions
