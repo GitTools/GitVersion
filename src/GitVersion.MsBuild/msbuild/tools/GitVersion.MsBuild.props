@@ -13,7 +13,7 @@
         <GitVersion_NoNormalizeEnabled Condition="$(GitVersion_NoNormalizeEnabled) == ''">false</GitVersion_NoNormalizeEnabled>
         <GitVersion_NoCacheEnabled Condition="$(GitVersion_NoCacheEnabled) == ''">false</GitVersion_NoCacheEnabled>
 
-        <GitVersion_ToolArgments>$(GitVersion_CommandLineArgments) -output file -outputfile $(GitVersionOutputFile)</GitVersion_ToolArgments>
+        <GitVersion_ToolArgments>$(GitVersion_CommandLineArguments) -output file -outputfile $(GitVersionOutputFile)</GitVersion_ToolArgments>
         <GitVersion_ToolArgments Condition=" '$(GitVersion_NoFetchEnabled)' == 'true' ">$(GitVersion_ToolArgments) -nofetch</GitVersion_ToolArgments>
         <GitVersion_ToolArgments Condition=" '$(GitVersion_NoNormalizeEnabled)' == 'true' ">$(GitVersion_ToolArgments) -nonormalize</GitVersion_ToolArgments>
         <GitVersion_ToolArgments Condition=" '$(GitVersion_NoCacheEnabled)' == 'true' ">$(GitVersion_ToolArgments) -nocache</GitVersion_ToolArgments>
