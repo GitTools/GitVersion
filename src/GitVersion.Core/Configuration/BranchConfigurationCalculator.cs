@@ -27,11 +27,11 @@ public class BranchConfigurationCalculator : IBranchConfigurationCalculator
     public BranchConfig GetBranchConfiguration(IBranch targetBranch, ICommit? currentCommit, Config configuration, IList<IBranch>? excludedInheritBranches = null) =>
         GetBranchConfigurationInternal(0, targetBranch, currentCommit, configuration, excludedInheritBranches);
 
-    private BranchConfig GetBranchConfigurationInternal(int recursiveLevel, IBranch targetBranch, ICommit? currentCommit, Config configuration, IList<IBranch>? excludedInheritBranches = null)
+    private BranchConfig GetBranchConfigurationInternal(int recursions, IBranch targetBranch, ICommit? currentCommit, Config configuration, IList<IBranch>? excludedInheritBranches = null)
     {
-        if (recursiveLevel >= MaxRecursions)
+        if (recursions >= MaxRecursions)
         {
-            throw new InfiniteLoopProtectionException($"Inherited branch configuration caused {recursiveLevel} recursions. Aborting!");
+            throw new InfiniteLoopProtectionException($"Inherited branch configuration caused {recursions} recursions. Aborting!");
         }
 
         var matchingBranches = configuration.GetConfigForBranch(targetBranch.Name.WithoutRemote);
@@ -51,7 +51,7 @@ public class BranchConfigurationCalculator : IBranchConfigurationCalculator
 
         if (matchingBranches.Increment == IncrementStrategy.Inherit)
         {
-            matchingBranches = InheritBranchConfiguration(recursiveLevel, targetBranch, matchingBranches, currentCommit, configuration, excludedInheritBranches);
+            matchingBranches = InheritBranchConfiguration(recursions, targetBranch, matchingBranches, currentCommit, configuration, excludedInheritBranches);
             if (matchingBranches.Name!.IsEquivalentTo(FallbackConfigName) && matchingBranches.Increment == IncrementStrategy.Inherit)
             {
                 // We tried, and failed to inherit, just fall back to patch
@@ -64,11 +64,11 @@ public class BranchConfigurationCalculator : IBranchConfigurationCalculator
     }
 
     // TODO I think we need to take a fresh approach to this.. it's getting really complex with heaps of edge cases
-    private BranchConfig InheritBranchConfiguration(int recursiveLevel, IBranch targetBranch, BranchConfig branchConfiguration, ICommit? currentCommit, Config configuration, IList<IBranch>? excludedInheritBranches)
+    private BranchConfig InheritBranchConfiguration(int recursions, IBranch targetBranch, BranchConfig branchConfiguration, ICommit? currentCommit, Config configuration, IList<IBranch>? excludedInheritBranches)
     {
         using (this.log.IndentLog("Attempting to inherit branch configuration from parent branch"))
         {
-            recursiveLevel += 1;
+            recursions += 1;
 
             var excludedBranches = new[] { targetBranch };
             // Check if we are a merge commit. If so likely we are a pull request
@@ -119,7 +119,7 @@ public class BranchConfigurationCalculator : IBranchConfigurationCalculator
 
             if (possibleParents.Count == 1)
             {
-                var branchConfig = GetBranchConfigurationInternal(recursiveLevel, possibleParents[0], currentCommit, configuration, excludedInheritBranches);
+                var branchConfig = GetBranchConfigurationInternal(recursions, possibleParents[0], currentCommit, configuration, excludedInheritBranches);
                 // If we have resolved a fallback config we should not return that we have got config
                 if (branchConfig.Name != FallbackConfigName)
                 {
@@ -167,7 +167,7 @@ public class BranchConfigurationCalculator : IBranchConfigurationCalculator
                 };
             }
 
-            var inheritingBranchConfig = GetBranchConfigurationInternal(recursiveLevel, chosenBranch, currentCommit, configuration, excludedInheritBranches)!;
+            var inheritingBranchConfig = GetBranchConfigurationInternal(recursions, chosenBranch, currentCommit, configuration, excludedInheritBranches)!;
             var configIncrement = inheritingBranchConfig.Increment;
             if (inheritingBranchConfig.Name!.IsEquivalentTo(FallbackConfigName) && configIncrement == IncrementStrategy.Inherit)
             {
