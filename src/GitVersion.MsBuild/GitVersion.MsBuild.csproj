@@ -13,17 +13,17 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Microsoft.Build.Utilities.Core" Version="$(PackageVersion_MsBuild)" PrivateAssets="All"/>
-        <PackageReference Include="Microsoft.Win32.Registry" Version="$(PackageVersion_MicrosoftExtensions)" PrivateAssets="All"/>
-        <PackageReference Include="System.Text.Json" Version="$(PackageVersion_MicrosoftJson)" PrivateAssets="All"/>
-        <PackageReference Include="System.Text.Encodings.Web" Version="$(PackageVersion_MicrosoftJson)" PrivateAssets="All"/>
-        <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="$(PackageVersion_MicrosoftExtensions)" PrivateAssets="All"/>
+        <PackageReference Include="Microsoft.Build.Utilities.Core" Version="$(PackageVersion_MsBuild)" PrivateAssets="All" />
+        <PackageReference Include="Microsoft.Win32.Registry" Version="6.0.0-preview.5.21301.5" PrivateAssets="All" />
+        <PackageReference Include="System.Text.Json" Version="$(PackageVersion_MicrosoftJson)" PrivateAssets="All" />
+        <PackageReference Include="System.Text.Encodings.Web" Version="$(PackageVersion_MicrosoftJson)" PrivateAssets="All" />
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="$(PackageVersion_MicrosoftExtensions)" PrivateAssets="All" />
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\GitVersion.Core\GitVersion.Core.csproj" PrivateAssets="All"/>
+        <ProjectReference Include="..\GitVersion.Core\GitVersion.Core.csproj" PrivateAssets="All" />
     </ItemGroup>
 
-    <Import Project="nuget-files.props"/>
+    <Import Project="nuget-files.props" />
 
 </Project>

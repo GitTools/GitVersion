@@ -2,6 +2,7 @@
 Order: 30
 Title: Bamboo
 Description: Details on the Bamboo support in GitVersion
+RedirectFrom: docs/build-server-support/build-server/bamboo
 ---
 
 If you use Bamboo then you will have to use GitVersion from the command line, as
@@ -35,6 +36,6 @@ sed -i '1d;$ d;s/  //;s/"//g;s/,//;s/:/=/' gitversion.txt
 
 **Required Properties**
 
-- __Path to properties file__: gitversion.txt
-- __Namespace__: GitVersion
-- __Scope of the Variables__: Result
+*   **Path to properties file**: gitversion.txt
+*   **Namespace**: GitVersion
+*   **Scope of the Variables**: Result

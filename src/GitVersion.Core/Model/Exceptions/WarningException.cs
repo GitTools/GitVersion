@@ -1,13 +1,10 @@
-using System;
+namespace GitVersion;
 
-namespace GitVersion
+[Serializable]
+public class WarningException : Exception
 {
-    [Serializable]
-    public class WarningException : Exception
+    public WarningException(string message)
+        : base(message)
     {
-        public WarningException(string message)
-            : base(message)
-        {
-        }
     }
 }

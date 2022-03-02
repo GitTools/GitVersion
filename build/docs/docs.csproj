@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <AssemblyName>docs</AssemblyName>
+        <RootNamespace>Docs</RootNamespace>
+    </PropertyGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\common\common.csproj" />
+    </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="Cake.Git" Version="2.0.0" />
+        <PackageReference Include="Cake.Wyam2" Version="3.0.0-rc2" />
+    </ItemGroup>
+</Project>

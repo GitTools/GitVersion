@@ -1,19 +1,18 @@
-using System;
+using GitVersion.Extensions;
 
-namespace GitVersion.Cache
+namespace GitVersion.Cache;
+
+public class GitVersionCacheKey
 {
-    public class GitVersionCacheKey
+    public GitVersionCacheKey(string value)
     {
-        public GitVersionCacheKey(string value)
+        if (value.IsNullOrEmpty())
         {
-            if (string.IsNullOrEmpty(value))
-            {
-                throw new ArgumentNullException(nameof(value));
-            }
-
-            Value = value;
+            throw new ArgumentNullException(nameof(value));
         }
 
-        public string Value { get; private set; }
+        Value = value;
     }
+
+    public string Value { get; private set; }
 }

@@ -1,6 +1,7 @@
 ---
 Order: 20
 Title: Git Setup
+RedirectFrom: docs/reference/git-setup
 ---
 
 ## Remotes
@@ -13,4 +14,4 @@ newly created feature branch
 
 ### origin
 
-`origin` should point to your *fork*.
+`origin` should point to your _fork_.

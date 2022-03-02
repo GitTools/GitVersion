@@ -1,0 +1,9 @@
+<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <AssemblyName>artifacts</AssemblyName>
+        <RootNamespace>Artifacts</RootNamespace>
+    </PropertyGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\common\common.csproj" />
+    </ItemGroup>
+</Project>

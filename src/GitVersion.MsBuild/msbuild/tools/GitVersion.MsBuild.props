@@ -2,7 +2,7 @@
 
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
     <PropertyGroup>
-        <GitVersionOutputFile>$([MSBuild]::EnsureTrailingSlash($(BaseIntermediateOutputPath)))gitversion.json</GitVersionOutputFile>
+        <GitVersionOutputFile Condition="'$(GitVersionOutputFile)' == ''">$([MSBuild]::EnsureTrailingSlash($(BaseIntermediateOutputPath)))gitversion.json</GitVersionOutputFile>
 
         <Language Condition=" '$(Language)' == '' Or '$(DefaultLanguageSourceExtension)' == ''">C#</Language>
         <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">$(MSBuildProjectDirectory)/../</SolutionDir>
@@ -54,6 +54,12 @@
         -->
         <GenerateGitVersionInformation Condition=" '$(GenerateGitVersionInformation)' == '' And '$(_TargetAssemblyProjectName)' != '' ">false</GenerateGitVersionInformation>
         <GenerateGitVersionInformation Condition=" '$(GenerateGitVersionInformation)' == '' ">true</GenerateGitVersionInformation>
+        <!--
+          Compounding on the previous "GenerateTemporaryTargetAssembly" explanation, "UpdateAssemblyInfo" is
+          also called in this temp-build. This results in a warning since we already updated assembly info.
+          Prevent UpdateAssemblyInfo from running a second time.
+        -->
+        <UpdateAssemblyInfo Condition=" '$(UpdateAssemblyInfo)' == 'true' And '$(_TargetAssemblyProjectName)' != '' ">false</UpdateAssemblyInfo>
 
         <!-- Property that enables GetVersion -->
         <GetVersion Condition=" '$(DisableGitVersionTask)' == 'true' ">false</GetVersion>

@@ -8,13 +8,13 @@ works out the [Semantic Version][semver] of the commit being built.
 [![codecov][codecov-badge]][codecov]
 [![Gitter][gitter-badge]][gitter]
 
-| Artifact                   |                Stable                                              |
-| :------------------------- | :----------------------------------------------------------------- |
+| Artifact                   |                Stable                                              |   |
+| :------------------------- | :----------------------------------------------------------------- | - |
 | **GitHub Release**         |                [![GitHub release][gh-rel-badge]][gh-rel]           |
 | **GitVersion.Portable**    |                     [![Chocolatey][choco-badge]][choco]            |
 | **GitVersion.Tool**        |                           [![NuGet][gvgt-badge]][gvgt]             |
 | **GitVersion.CommandLine** |                           [![NuGet][gvcl-badge]][gvcl]             |
-| **GitVersion.MsBuild**     |                            [![NuGet][gvt-badge]][gvt]              |
+| **GitVersion.MsBuild**     |                            [![NuGet][gvt-badge]][gvt]              | Known as [GitVersionTask] before v5.6.0 |
 | **Homebrew**               |                        [![homebrew][brew-badge]][brew]             |
 | **Azure Pipeline Task**    | [![Azure Pipeline Task][az-pipeline-task-badge]][az-pipeline-task] |
 | **Github Action**          |             [![Github Action][gh-actions-badge]][gh-actions]       |
@@ -26,13 +26,13 @@ GitVersion works on Windows, Linux, and Mac.
 
 ## Quick Links
 
-- [Documentation][docs]
-- [Contributing][contribute]
-- [Why GitVersion][why]
-- [Usage][usage]
-- [How it works][how]
-- [FAQ][faq]
-- [Who is using GitVersion][who]
+*   [Documentation][docs]
+*   [Contributing][contribute]
+*   [Why GitVersion][why]
+*   [Usage][usage]
+*   [How it works][how]
+*   [FAQ][faq]
+*   [Who is using GitVersion][who]
 
 ## GitVersion in action!
 
@@ -40,26 +40,22 @@ GitVersion works on Windows, Linux, and Mac.
 
 You are seeing:
 
-- Pull requests being built as pre-release builds
-- A branch called `release-1.0.0` producing beta v1 packages
+*   Pull requests being built as pre-release builds
+*   A branch called `release-1.0.0` producing beta v1 packages
 
 ## Icon
 
-<a href="https://thenounproject.com/term/tree/13389/" target="_blank">Tree</a>
-designed by <a href="http://thenounproject.com/david.chapman" target="_blank">David Chapman</a>
+[Tree][app-icon]
+designed by [David Chapman][app-icon-author]
 from The Noun Project.
 
 [semver]:                          http://semver.org
 [gitter]:                          https://gitter.im/GitTools/GitVersion?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge
 [gitter-badge]:                    https://badges.gitter.im/Join+Chat.svg
-[appveyor]:                        https://ci.appveyor.com/project/GitTools/gitversion/branch/main
-[appveyor-badge]:                  https://ci.appveyor.com/api/projects/status/sxje0wht0cscmn7w/branch/main?svg=true
 [azure-pipeline]:                  https://dev.azure.com/GitTools/GitVersion/_build/latest?definitionId=1
 [azure-pipeline-badge]:            https://dev.azure.com/GitTools/GitVersion/_apis/build/status/GitTools.GitVersion
 [github-actions]:                  https://github.com/GitTools/GitVersion/actions
 [github-actions-badge]:            https://github.com/GitTools/GitVersion/workflows/Build/badge.svg
-[travis]:                          https://travis-ci.org/GitTools/GitVersion
-[travis-badge]:                    https://travis-ci.org/GitTools/GitVersion.svg?branch=main
 [codecov]:                         https://codecov.io/gh/GitTools/GitVersion
 [codecov-badge]:                   https://codecov.io/gh/GitTools/GitVersion/branch/main/graph/badge.svg
 [docs]:                            https://gitversion.net/docs/
@@ -69,6 +65,7 @@ from The Noun Project.
 [choco-badge]:                     https://img.shields.io/chocolatey/v/gitversion.portable.svg?logo=nuget
 [gvt]:                             https://www.nuget.org/packages/GitVersion.MsBuild
 [gvt-badge]:                       https://img.shields.io/nuget/v/GitVersion.MsBuild.svg?logo=nuget
+[gitversiontask]:                  https://www.nuget.org/packages/GitVersionTask/
 [gvcl]:                            https://www.nuget.org/packages/GitVersion.CommandLine
 [gvcl-badge]:                      https://img.shields.io/nuget/v/GitVersion.CommandLine.svg?logo=nuget
 [gvgt]:                            https://www.nuget.org/packages/GitVersion.Tool
@@ -87,5 +84,7 @@ from The Noun Project.
 [how]:                             https://gitversion.net/docs/learn/how-it-works
 [faq]:                             https://gitversion.net/docs/learn/faq
 [who]:                             https://gitversion.net/docs/learn/who
-[gv-in-action]:                    https://raw.github.com/GitTools/GitVersion/master/docs/input/docs/img/README.png
-[banner]:                          https://github.com/GitTools/graphics/raw/master/GitVersion/banner-1280x640.png
+[gv-in-action]:                    https://raw.githubusercontent.com/GitTools/GitVersion/master/docs/input/docs/img/README.png
+[banner]:                          https://raw.githubusercontent.com/GitTools/graphics/master/GitVersion/banner-1280x640.png
+[app-icon]:                        https://thenounproject.com/term/tree/13389/
+[app-icon-author]:                 http://thenounproject.com/david.chapman

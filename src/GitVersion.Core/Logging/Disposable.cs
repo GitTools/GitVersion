@@ -1,32 +1,23 @@
-using System;
+using GitVersion.Extensions;
 
-namespace GitVersion.Logging
+namespace GitVersion.Logging;
+
+public static class Disposable
 {
-    public static class Disposable
+    public static IDisposable Create(Action disposer) => new AnonymousDisposable(disposer);
+
+    public static readonly IDisposable Empty = Create(() => { });
+
+    private sealed class AnonymousDisposable : IDisposable
     {
-        static Disposable()
+        public AnonymousDisposable(Action disposer) => this.disposer = disposer.NotNull();
+
+        public void Dispose()
         {
-            Empty = Create(() => { });
+            this.disposer?.Invoke();
+            this.disposer = null;
         }
 
-        public static IDisposable Create(Action disposer) => new AnonymousDisposable(disposer);
-
-        public static readonly IDisposable Empty;
-
-        private sealed class AnonymousDisposable : IDisposable
-        {
-            public AnonymousDisposable(Action disposer)
-            {
-                this.disposer = disposer ?? throw new ArgumentNullException(nameof(disposer));
-            }
-
-            public void Dispose()
-            {
-                disposer?.Invoke();
-                disposer = null;
-            }
-
-            private Action disposer;
-        }
+        private Action? disposer;
     }
 }

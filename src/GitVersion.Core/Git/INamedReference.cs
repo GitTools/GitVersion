@@ -1,7 +1,6 @@
-namespace GitVersion
+namespace GitVersion;
+
+public interface INamedReference
 {
-    public interface INamedReference
-    {
-        ReferenceName Name { get; }
-    }
+    ReferenceName Name { get; }
 }

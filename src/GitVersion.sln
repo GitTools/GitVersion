@@ -8,12 +8,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GitVersion.Core.Tests", "Gi
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{3EFFC5D6-88D0-49D9-BB53-E1B7EB49DD45}"
 	ProjectSection(SolutionItems) = preProject
+		..\.editorconfig = ..\.editorconfig
 		..\.gitattributes = ..\.gitattributes
 		..\.gitignore = ..\.gitignore
-		..\appveyor.yml = ..\appveyor.yml
 		..\azure-pipelines.yml = ..\azure-pipelines.yml
-		..\BREAKING CHANGES.md = ..\BREAKING CHANGES.md
-		..\build.cake = ..\build.cake
 		..\build.ps1 = ..\build.ps1
 		..\CONTRIBUTING.md = ..\CONTRIBUTING.md
 		Directory.Build.props = Directory.Build.props
@@ -30,9 +28,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GitVersion.MsBuild", "GitVe
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GitVersion.MsBuild.Tests", "GitVersion.MsBuild.Tests\GitVersion.MsBuild.Tests.csproj", "{B35EF742-95D4-4E6A-B782-BE1C3E5CF9AE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GitTools.Testing", "GitTools.Testing\GitTools.Testing.csproj", "{6138640B-5C05-4070-BE32-6B17BEFDF63C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GitTools.Testing", "GitTools.Testing\GitTools.Testing.csproj", "{6138640B-5C05-4070-BE32-6B17BEFDF63C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GitVersion.LibGit2Sharp", "GitVersion.LibGit2Sharp\GitVersion.LibGit2Sharp.csproj", "{093AFCF2-68F4-49B1-8173-7CB88467E783}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GitVersion.LibGit2Sharp", "GitVersion.LibGit2Sharp\GitVersion.LibGit2Sharp.csproj", "{093AFCF2-68F4-49B1-8173-7CB88467E783}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

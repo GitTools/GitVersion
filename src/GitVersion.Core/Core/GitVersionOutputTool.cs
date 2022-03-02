@@ -1,5 +1,4 @@
-using System;
-using System.Linq;
+using GitVersion.Extensions;
 using GitVersion.OutputVariables;
 using GitVersion.VersionConverters.AssemblyInfo;
 using GitVersion.VersionConverters.GitVersionInfo;
@@ -7,84 +6,83 @@ using GitVersion.VersionConverters.OutputGenerator;
 using GitVersion.VersionConverters.WixUpdater;
 using Microsoft.Extensions.Options;
 
-namespace GitVersion
+namespace GitVersion;
+
+public class GitVersionOutputTool : IGitVersionOutputTool
 {
-    public class GitVersionOutputTool : IGitVersionOutputTool
+    private readonly IOptions<GitVersionOptions> options;
+    private readonly IOutputGenerator outputGenerator;
+    private readonly IWixVersionFileUpdater wixVersionFileUpdater;
+    private readonly IGitVersionInfoGenerator gitVersionInfoGenerator;
+    private readonly IAssemblyInfoFileUpdater assemblyInfoFileUpdater;
+    private readonly IProjectFileUpdater projectFileUpdater;
+
+    public GitVersionOutputTool(IOptions<GitVersionOptions> options,
+        IOutputGenerator outputGenerator, IWixVersionFileUpdater wixVersionFileUpdater,
+        IGitVersionInfoGenerator gitVersionInfoGenerator, IAssemblyInfoFileUpdater assemblyInfoFileUpdater,
+        IProjectFileUpdater projectFileUpdater)
     {
-        private readonly IOptions<GitVersionOptions> options;
-        private readonly IOutputGenerator outputGenerator;
-        private readonly IWixVersionFileUpdater wixVersionFileUpdater;
-        private readonly IGitVersionInfoGenerator gitVersionInfoGenerator;
-        private readonly IAssemblyInfoFileUpdater assemblyInfoFileUpdater;
-        private readonly IProjectFileUpdater projectFileUpdater;
+        this.options = options.NotNull();
 
-        public GitVersionOutputTool(IOptions<GitVersionOptions> options,
-            IOutputGenerator outputGenerator, IWixVersionFileUpdater wixVersionFileUpdater,
-            IGitVersionInfoGenerator gitVersionInfoGenerator, IAssemblyInfoFileUpdater assemblyInfoFileUpdater,
-            IProjectFileUpdater projectFileUpdater)
+        this.outputGenerator = outputGenerator.NotNull();
+
+        this.wixVersionFileUpdater = wixVersionFileUpdater.NotNull();
+        this.gitVersionInfoGenerator = gitVersionInfoGenerator.NotNull();
+        this.assemblyInfoFileUpdater = assemblyInfoFileUpdater.NotNull();
+        this.projectFileUpdater = projectFileUpdater.NotNull();
+    }
+
+    public void OutputVariables(VersionVariables variables, bool updateBuildNumber)
+    {
+        var gitVersionOptions = this.options.Value;
+
+        using (this.outputGenerator)
         {
-            this.options = options ?? throw new ArgumentNullException(nameof(options));
-
-            this.outputGenerator = outputGenerator ?? throw new ArgumentNullException(nameof(outputGenerator));
-
-            this.wixVersionFileUpdater = wixVersionFileUpdater ?? throw new ArgumentNullException(nameof(wixVersionFileUpdater));
-            this.gitVersionInfoGenerator = gitVersionInfoGenerator ?? throw new ArgumentNullException(nameof(gitVersionInfoGenerator));
-            this.assemblyInfoFileUpdater = assemblyInfoFileUpdater ?? throw new ArgumentNullException(nameof(gitVersionInfoGenerator));
-            this.projectFileUpdater = projectFileUpdater ?? throw new ArgumentNullException(nameof(projectFileUpdater));
+            this.outputGenerator.Execute(variables, new OutputContext(gitVersionOptions.WorkingDirectory, gitVersionOptions.OutputFile, updateBuildNumber));
         }
+    }
 
-        public void OutputVariables(VersionVariables variables, bool updateBuildNumber)
+    public void UpdateAssemblyInfo(VersionVariables variables)
+    {
+        var gitVersionOptions = this.options.Value!;
+        var assemblyInfoContext = new AssemblyInfoContext(gitVersionOptions.WorkingDirectory, gitVersionOptions.AssemblyInfo.EnsureAssemblyInfo, gitVersionOptions.AssemblyInfo.Files.ToArray());
+
+        if (gitVersionOptions.AssemblyInfo.UpdateProjectFiles)
         {
-            var gitVersionOptions = options.Value;
-
-            using (outputGenerator)
+            using (this.projectFileUpdater)
             {
-                outputGenerator.Execute(variables, new OutputContext(gitVersionOptions.WorkingDirectory, gitVersionOptions.OutputFile, updateBuildNumber));
-            }
-        }
-
-        public void UpdateAssemblyInfo(VersionVariables variables)
-        {
-            var gitVersionOptions = options.Value;
-            var assemblyInfoContext = new AssemblyInfoContext(gitVersionOptions.WorkingDirectory, gitVersionOptions.AssemblyInfo.EnsureAssemblyInfo, gitVersionOptions.AssemblyInfo.Files.ToArray());
-
-            if (gitVersionOptions.AssemblyInfo.UpdateProjectFiles)
-            {
-                using (projectFileUpdater)
-                {
-                    projectFileUpdater.Execute(variables, assemblyInfoContext);
-                }
-            }
-            else if (gitVersionOptions.AssemblyInfo.UpdateAssemblyInfo)
-            {
-                using (assemblyInfoFileUpdater)
-                {
-                    assemblyInfoFileUpdater.Execute(variables, assemblyInfoContext);
-                }
+                this.projectFileUpdater.Execute(variables, assemblyInfoContext);
             }
         }
-
-        public void UpdateWixVersionFile(VersionVariables variables)
+        else if (gitVersionOptions.AssemblyInfo.UpdateAssemblyInfo)
         {
-            var gitVersionOptions = options.Value;
-
-            if (gitVersionOptions.WixInfo.ShouldUpdate)
+            using (this.assemblyInfoFileUpdater)
             {
-                using (wixVersionFileUpdater)
-                {
-                    wixVersionFileUpdater.Execute(variables, new WixVersionContext(gitVersionOptions.WorkingDirectory));
-                }
+                this.assemblyInfoFileUpdater.Execute(variables, assemblyInfoContext);
             }
         }
+    }
 
-        public void GenerateGitVersionInformation(VersionVariables variables, FileWriteInfo fileWriteInfo)
+    public void UpdateWixVersionFile(VersionVariables variables)
+    {
+        var gitVersionOptions = this.options.Value;
+
+        if (gitVersionOptions.WixInfo.ShouldUpdate)
         {
-            var gitVersionOptions = options.Value;
-
-            using (gitVersionInfoGenerator)
+            using (this.wixVersionFileUpdater)
             {
-                gitVersionInfoGenerator.Execute(variables, new GitVersionInfoContext(gitVersionOptions.WorkingDirectory, fileWriteInfo.FileName, fileWriteInfo.FileExtension));
+                this.wixVersionFileUpdater.Execute(variables, new WixVersionContext(gitVersionOptions.WorkingDirectory));
             }
+        }
+    }
+
+    public void GenerateGitVersionInformation(VersionVariables variables, FileWriteInfo fileWriteInfo)
+    {
+        var gitVersionOptions = this.options.Value;
+
+        using (this.gitVersionInfoGenerator)
+        {
+            this.gitVersionInfoGenerator.Execute(variables, new GitVersionInfoContext(gitVersionOptions.WorkingDirectory, fileWriteInfo.FileName, fileWriteInfo.FileExtension));
         }
     }
 }

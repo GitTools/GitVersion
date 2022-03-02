@@ -1,8 +1,7 @@
-namespace GitVersion
+namespace GitVersion;
+
+public enum RefSpecDirection
 {
-    public enum RefSpecDirection
-    {
-        Fetch,
-        Push
-    }
+    Fetch,
+    Push
 }

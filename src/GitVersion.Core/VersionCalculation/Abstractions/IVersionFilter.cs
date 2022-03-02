@@ -1,7 +1,8 @@
-namespace GitVersion.VersionCalculation
+using System.Diagnostics.CodeAnalysis;
+
+namespace GitVersion.VersionCalculation;
+
+public interface IVersionFilter
 {
-    public interface IVersionFilter
-    {
-        bool Exclude(BaseVersion version, out string reason);
-    }
+    bool Exclude(BaseVersion version, [NotNullWhen(true)] out string? reason);
 }
