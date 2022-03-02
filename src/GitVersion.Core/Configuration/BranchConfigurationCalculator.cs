@@ -226,8 +226,8 @@ public class BranchConfigurationCalculator : IBranchConfigurationCalculator
     private static BranchConfig? ChooseMainOrDevelopIncrementStrategyIfTheChosenBranchIsOneOfThem(IBranch chosenBranch, BranchConfig branchConfiguration, Config config)
     {
         BranchConfig? mainOrDevelopConfig = null;
-        var developBranchRegex = config.Branches[Config.DevelopBranchKey]?.Regex;
-        var mainBranchRegex = config.Branches[Config.MainBranchKey]?.Regex;
+        var developBranchRegex = config.Branches[Config.DevelopBranchKey]?.Regex ?? Config.DevelopBranchRegex;
+        var mainBranchRegex = config.Branches[Config.MainBranchKey]?.Regex ?? Config.MainBranchRegex;
         if (Regex.IsMatch(chosenBranch.Name.Friendly, developBranchRegex, RegexOptions.IgnoreCase))
         {
             // Normally we would not expect this to happen but for safety we add a check
