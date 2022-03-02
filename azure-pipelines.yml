@@ -1,124 +1,42 @@
-trigger:
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+trigger: none
+pr: none
+schedules:
+- cron: "0 12 * * 5"
+  displayName: Weekly Friday Fortify scan
   branches:
     include:
     - main
-    - fix/*
-    - feature/*
-pr:
-  branches:
-    include:
-    - main
+  always: false
 
-variables:
-  DOTNET_SKIP_FIRST_TIME_EXPERIENCE: 'true'
-  DOTNET_CLI_TELEMETRY_OPTOUT: 'true'
+jobs:
+  - job: Fortify
+    pool: Fortify-Windows
+    variables:
+      - group: Fortify_Appsec
+      - name: APPNAME
+        value: pscore-gitversion
+      - name: APPVERSION
+        value: 1.0
 
-stages:
-- stage: Build
-  displayName: 'Build'
-  jobs:
-  - job: Build
-    strategy:
-      matrix:
-        'Windows':
-          VM_IMAGE: 'windows-latest'
-        'Linux':
-          VM_IMAGE: 'ubuntu-latest'
-        'macOS':
-          VM_IMAGE: 'macOS-latest'
-    pool:
-      vmImage: $(VM_IMAGE)
     steps:
-    - template: .azurepipelines/build.yml
-- stage: Test
-  displayName: 'Unit Test'
-  dependsOn: []
-  jobs:
-  - job: Test
-    strategy:
-      matrix:
-        'Windows':
-          VM_IMAGE: 'windows-latest'
-        'Linux':
-          VM_IMAGE: 'ubuntu-latest'
-        'macOS':
-          VM_IMAGE: 'macOS-latest'
-    pool:
-      vmImage: $(VM_IMAGE)
-    steps:
-    - template: .azurepipelines/test.yml
+      - task: DotNetCoreCLI@2
+        inputs:
+          command: "restore"
+          projects: "**/*.sln"
+          feedsToUse: "config"
+          nugetConfigPath: "NuGet.config"
 
-- stage: Artifact_Linux_Test
-  displayName: 'Artifacts Linux test'
-  dependsOn:
-  - Build
-  - Test
-  condition: succeeded()
-  jobs:
-  - template: .azurepipelines/artifacts-linux-test.yml
-    parameters:
-      name: Linux
-      vmImage: 'ubuntu-latest'
-      distros: [ alpine.3.12-x64, centos.7-x64, centos.8-x64, debian.9-x64, debian.10-x64, fedora.33-x64, ubuntu.16.04-x64, ubuntu.18.04-x64, ubuntu.20.04-x64 ]
-      dotnetVersions: [ '3.1', '5.0' ]
-
-- stage: Artifact_Windows_Test
-  displayName: 'Artifacts Windows test'
-  dependsOn:
-  - Build
-  - Test
-  condition: succeeded()
-  jobs:
-  - template: .azurepipelines/artifacts-windows-test.yml
-
-- stage: Docker
-  displayName: 'Docker Build & Test'
-  dependsOn:
-  - Artifact_Linux_Test
-  - Artifact_Windows_Test
-  condition: succeeded()
-  jobs:
-  - template: .azurepipelines/docker.yml
-    parameters:
-      name: Linux
-      vmImage: 'ubuntu-latest'
-      distros: [ alpine.3.12-x64, centos.7-x64, centos.8-x64, debian.9-x64, debian.10-x64, fedora.33-x64, ubuntu.16.04-x64, ubuntu.18.04-x64, ubuntu.20.04-x64 ]
-      dotnetVersions: [ '3.1', '5.0' ]
-
-- stage: Publish
-  displayName: 'Publish'
-  dependsOn:
-  - Artifact_Linux_Test
-  - Artifact_Windows_Test
-  condition: succeeded()
-  jobs:
-  - job: Publish
-    pool:
-      vmImage: windows-latest
-    strategy:
-      matrix:
-        CI:
-          TASK_NAME: 'CI'
-        NuGet:
-          TASK_NAME: 'NuGet'
-        Chocolatey:
-         TASK_NAME: 'Chocolatey'
-        # Documentation:
-        #   TASK_NAME: 'Documentation'
-    steps:
-    - template: .azurepipelines/publish.yml
-      parameters:
-        taskName: $(TASK_NAME)
-
-- stage: Release
-  displayName: 'Release'
-  dependsOn:
-  - Docker
-  - Publish
-  condition: succeeded()
-  jobs:
-  - job: Release
-    pool:
-      vmImage: windows-latest
-    steps:
-    - template: .azurepipelines/release.yml
+      - script: |
+          call "C:\Program Files (x86)\Microsoft Visual Studio\2019\BuildTools\Common7\Tools\VsDevCmd.bat"
+          sourceanalyzer -b $(Build.Repository.Name) -clean
+          sourceanalyzer -b $(Build.Repository.Name) msbuild /t:rebuild /p:Configuration=Release GitVersion.sln
+        displayName: Fortify Translate
+        
+      - script: |
+          scancentral -sscurl $(SSCURL) -ssctoken $(SSCTOKEN) start -email "$(NOTIFICATIONEMAIL2)" -upload -b $(Build.Repository.Name) -application "$(APPNAME)"" -version "$(APPVERSION)" -uptoken $(SSCTOKEN) -scan
+        displayName: Fortify ScanCentral scan
