@@ -3,16 +3,17 @@ using GitVersion.Common;
 using GitVersion.Extensions;
 using GitVersion.Logging;
 using GitVersion.Model.Configuration;
+using GitVersion.Model.Exceptions;
 
 namespace GitVersion.Configuration;
 
 public class BranchConfigurationCalculator : IBranchConfigurationCalculator
 {
     private const string FallbackConfigName = "Fallback";
+    private const int MaxRecursions = 50;
 
     private readonly ILog log;
     private readonly IRepositoryStore repositoryStore;
-    private readonly int _infiniteLoopProtectionLevel = 50;
 
     public BranchConfigurationCalculator(ILog log, IRepositoryStore repositoryStore)
     {
@@ -23,11 +24,14 @@ public class BranchConfigurationCalculator : IBranchConfigurationCalculator
     /// <summary>
     /// Gets the <see cref="BranchConfig"/> for the current commit.
     /// </summary>
-    public BranchConfig GetBranchConfiguration(int recursiveLevel, IBranch targetBranch, ICommit? currentCommit, Config configuration, IList<IBranch>? excludedInheritBranches = null)
+    public BranchConfig GetBranchConfiguration(IBranch targetBranch, ICommit? currentCommit, Config configuration, IList<IBranch>? excludedInheritBranches = null) =>
+        GetBranchConfigurationInternal(0, targetBranch, currentCommit, configuration, excludedInheritBranches);
+
+    private BranchConfig GetBranchConfigurationInternal(int recursiveLevel, IBranch targetBranch, ICommit? currentCommit, Config configuration, IList<IBranch>? excludedInheritBranches = null)
     {
-        if (recursiveLevel >= _infiniteLoopProtectionLevel)
+        if (recursiveLevel >= MaxRecursions)
         {
-            throw new InfiniteLoopProtectionException("Inherited branch configuration caused an infinite loop...breaking.");
+            throw new InfiniteLoopProtectionException($"Inherited branch configuration caused {recursiveLevel} recursions. Aborting!");
         }
 
         var matchingBranches = configuration.GetConfigForBranch(targetBranch.Name.WithoutRemote);
@@ -56,6 +60,7 @@ public class BranchConfigurationCalculator : IBranchConfigurationCalculator
         }
 
         return matchingBranches;
+
     }
 
     // TODO I think we need to take a fresh approach to this.. it's getting really complex with heaps of edge cases
@@ -114,7 +119,7 @@ public class BranchConfigurationCalculator : IBranchConfigurationCalculator
 
             if (possibleParents.Count == 1)
             {
-                var branchConfig = GetBranchConfiguration(recursiveLevel, possibleParents[0], currentCommit, configuration, excludedInheritBranches);
+                var branchConfig = GetBranchConfigurationInternal(recursiveLevel, possibleParents[0], currentCommit, configuration, excludedInheritBranches);
                 // If we have resolved a fallback config we should not return that we have got config
                 if (branchConfig.Name != FallbackConfigName)
                 {
@@ -162,13 +167,14 @@ public class BranchConfigurationCalculator : IBranchConfigurationCalculator
                 };
             }
 
-            var inheritingBranchConfig = GetBranchConfiguration(recursiveLevel, chosenBranch, currentCommit, configuration, excludedInheritBranches)!;
+            var inheritingBranchConfig = GetBranchConfigurationInternal(recursiveLevel, chosenBranch, currentCommit, configuration, excludedInheritBranches)!;
             var configIncrement = inheritingBranchConfig.Increment;
             if (inheritingBranchConfig.Name!.IsEquivalentTo(FallbackConfigName) && configIncrement == IncrementStrategy.Inherit)
             {
                 this.log.Warning("Fallback config inherits by default, dropping to patch increment");
                 configIncrement = IncrementStrategy.Patch;
             }
+
             return new BranchConfig(branchConfiguration)
             {
                 Increment = configIncrement,
