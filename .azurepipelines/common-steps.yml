@@ -11,7 +11,7 @@ steps:
   displayName: Cache Cake tools
 - task: Cache@2
   inputs:
-    key: 'v1-dotnet | "$(Agent.OS)" | build.config'
+    key: 'v1-dotnet | "$(Agent.OS)" | build/build.config'
     path: .dotnet
   displayName: Cache dotnet locally
 - ${{ if eq(parameters.includeArtifacts, true) }}:

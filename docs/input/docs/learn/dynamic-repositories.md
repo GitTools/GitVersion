@@ -1,6 +1,7 @@
 ---
 Order: 20
 Title: Dynamic Repositories
+RedirectFrom: docs/more-info/dynamic-repositories
 ---
 
 GitVersion.exe requires access to the Git repository in order to do / infer all
@@ -13,7 +14,7 @@ is built, the build process isn't aware of the Git repository at all - i.e
 _there is no Git Repository available locally to the build!_
 
 For an example of one such circumstance, you can have a read about
-[Team City's checkout mode: Automatically on Server](https://confluence.jetbrains.com/display/TCD7/VCS+Checkout+Mode)
+[Team City's checkout mode: Automatically on Server][tc-checkout].
 
 So `how is GitVersion meant to work in that scenario?` - well it needs to be
 able to obtain a copy of the Git repo on the fly and not rely on the build
@@ -30,11 +31,11 @@ will assume there is already a ".git" folder present, and it will use it.
 To tell GitVersion.exe to obtain the repository on the fly, you need to call
 `GitVersion.exe` with the following arguments:
 
-* /url [the url of your git repo]
-* /u [authentication username]
-* /p [authentication password]
-* /b [branch name]
-* /c [commit id]
+*   `/url [the url of your git repo]`
+*   `/u [authentication username]`
+*   `/p [authentication password]`
+*   `/b [branch name]`
+*   `/c [commit id]`
 
 Please note that these arguments are described when calling `GitVersion.exe /?`.
 
@@ -56,3 +57,5 @@ Where `<VCS root ID>` is the `VCS root ID` as described on the Configuring
 GitVersion will checkout the dynamic repository into the %tmp% directory and
 just keep that dynamic repository up to date, this saves recloning the
 repository every build.
+
+[tc-checkout]: https://confluence.jetbrains.com/display/TCD7/VCS+Checkout+Mode

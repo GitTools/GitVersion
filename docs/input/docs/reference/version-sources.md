@@ -2,6 +2,7 @@
 Order: 50
 Title: Version Sources
 Description: Details on how GitVersion finds a source for its generated version number
+RedirectFrom: docs/more-info/version-sources
 ---
 
 GitVersion has a two step process for calculating the version number. First it
@@ -10,13 +11,13 @@ version should be.
 
 The logic of GitVersion is something like this:
 
-- Is the current commit tagged
-  - Yes: Use the tag as the version
-  - No: continue
-- Calculate the base version (highest version from all the sources)
-- Increment version if needed based on branch config
-- Calculate the build metadata (everything after the +) and append to the
-calculated version
+*   Is the current commit tagged
+    *   Yes: Use the tag as the version
+    *   No: continue
+*   Calculate the base version (highest version from all the sources)
+*   Increment version if needed based on branch config
+*   Calculate the build metadata (everything after the +) and append to the
+    calculated version
 
 ## Version Sources
 
@@ -49,9 +50,9 @@ Will increment: false
 
 For the develop branch, i.e. marked with `is-develop: true`
 
-- Returns the version number extracted from any child release-branches, i.e.
-those marked with `is-release-branch: true`
-- Returns the version number of any tags on the main branch
+*   Returns the version number extracted from any child release-branches, i.e.
+    those marked with `is-release-branch: true`
+*   Returns the version number of any tags on the main branch
 
 Will increment: true
 

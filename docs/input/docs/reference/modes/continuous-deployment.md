@@ -4,6 +4,7 @@ Title: Continuous Deployment
 Description: |
     Sometimes you just want the version to keep changing and deploy continuously.
     In this case, Continuous Deployment is a good mode to operate GitVersion by.
+RedirectFrom: docs/reference/versioning-modes/continuous-deployment
 ---
 
 Continuous Deployment is the process of checking into main, running all the

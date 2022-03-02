@@ -1,11 +1,7 @@
-using System;
-using System.Collections.Generic;
+namespace GitVersion;
 
-namespace GitVersion
+public interface ICommitCollection : IEnumerable<ICommit>
 {
-    public interface ICommitCollection : IEnumerable<ICommit>
-    {
-        IEnumerable<ICommit> GetCommitsPriorTo(DateTimeOffset olderThan);
-        IEnumerable<ICommit> QueryBy(CommitFilter commitFilter);
-    }
+    IEnumerable<ICommit> GetCommitsPriorTo(DateTimeOffset olderThan);
+    IEnumerable<ICommit> QueryBy(CommitFilter commitFilter);
 }

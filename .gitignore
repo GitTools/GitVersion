@@ -85,7 +85,6 @@ _NCrunch_GitVersion
 GitVersion.sln.ide/
 .vs/
 Packages/
-build/*
 site/
 /TestResult.xml
 
@@ -107,6 +106,7 @@ site/
 # Cake
 ####################
 tools/*
+run/*
 !tools/packages.config
 /*.zip
 GitVersion.CommandLine/*/
@@ -115,6 +115,7 @@ releaseArtifacts
 /ILMergeTemp
 .dotnet
 artifacts
+!build/artifacts
 src/Docker/**/content
 
 !**/*.cake
@@ -126,3 +127,7 @@ config.wyam.hash
 config.wyam.packages.xml
 /tests/integration/core/build
 /tests/integration/full/build
+docs/output
+
+# NPM
+node_modules

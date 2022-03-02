@@ -6,6 +6,7 @@ Description: |
     is an unsupported option and the API may break even between minor or
     patch releases, it's a useful option to some.
 CardIcon: library.svg
+RedirectFrom: docs/usage/nuget-library
 ---
 
 Install with NuGet and use GitVersion as a software library. Although this

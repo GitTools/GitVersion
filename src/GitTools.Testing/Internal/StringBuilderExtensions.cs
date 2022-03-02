@@ -1,15 +1,13 @@
-using System.Text;
 using JetBrains.Annotations;
 
-namespace GitTools.Testing.Internal
+namespace GitTools.Testing.Internal;
+
+internal static class StringBuilderExtensions
 {
-    internal static class StringBuilderExtensions
+    [StringFormatMethod("format")]
+    public static void AppendLineFormat(this StringBuilder stringBuilder, string format, params object[] args)
     {
-        [StringFormatMethod("format")]
-        public static void AppendLineFormat(this StringBuilder stringBuilder, string format, params object[] args)
-        {
-            stringBuilder.AppendFormat(format, args);
-            stringBuilder.AppendLine();
-        }
+        stringBuilder.AppendFormat(format, args);
+        stringBuilder.AppendLine();
     }
 }

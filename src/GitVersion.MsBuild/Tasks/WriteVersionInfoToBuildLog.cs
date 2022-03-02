@@ -1,7 +1,6 @@
-namespace GitVersion.MsBuild.Tasks
+namespace GitVersion.MsBuild.Tasks;
+
+public class WriteVersionInfoToBuildLog : GitVersionTaskBase
 {
-    public class WriteVersionInfoToBuildLog : GitVersionTaskBase
-    {
-        protected override bool OnExecute() => GitVersionTasks.WriteVersionInfoToBuildLog(this);
-    }
+    protected override bool OnExecute() => GitVersionTasks.WriteVersionInfoToBuildLog(this);
 }

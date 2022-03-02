@@ -1,11 +1,32 @@
-namespace GitVersion.Logging
+namespace GitVersion.Logging;
+
+/// <summary>
+/// Represents verbosity.
+/// </summary>
+public enum Verbosity
 {
-    public enum Verbosity
-    {
-        Quiet = 0,
-        Minimal = 1,
-        Normal = 2,
-        Verbose = 3,
-        Diagnostic = 4
-    }
+    /// <summary>
+    /// Quiet verbosity.
+    /// </summary>
+    Quiet = 0,
+
+    /// <summary>
+    /// Minimal verbosity.
+    /// </summary>
+    Minimal = 1,
+
+    /// <summary>
+    /// Normal verbosity.
+    /// </summary>
+    Normal = 2,
+
+    /// <summary>
+    /// Verbose verbosity.
+    /// </summary>
+    Verbose = 3,
+
+    /// <summary>
+    /// Diagnostic verbosity.
+    /// </summary>
+    Diagnostic = 4
 }

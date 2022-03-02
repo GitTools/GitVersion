@@ -1,7 +1,6 @@
-namespace GitVersion.Logging
+namespace GitVersion.Logging;
+
+public interface ILogAppender
 {
-    public interface ILogAppender
-    {
-        void WriteTo(LogLevel level, string message);
-    }
+    void WriteTo(LogLevel level, string message);
 }

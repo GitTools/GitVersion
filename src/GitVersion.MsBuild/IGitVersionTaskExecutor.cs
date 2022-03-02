@@ -1,12 +1,11 @@
 using GitVersion.MsBuild.Tasks;
 
-namespace GitVersion.MsBuild
+namespace GitVersion.MsBuild;
+
+public interface IGitVersionTaskExecutor
 {
-    public interface IGitVersionTaskExecutor
-    {
-        void GetVersion(GetVersion task);
-        void UpdateAssemblyInfo(UpdateAssemblyInfo task);
-        void GenerateGitVersionInformation(GenerateGitVersionInformation task);
-        void WriteVersionInfoToBuildLog(WriteVersionInfoToBuildLog task);
-    }
+    void GetVersion(GetVersion task);
+    void UpdateAssemblyInfo(UpdateAssemblyInfo task);
+    void GenerateGitVersionInformation(GenerateGitVersionInformation task);
+    void WriteVersionInfoToBuildLog(WriteVersionInfoToBuildLog task);
 }

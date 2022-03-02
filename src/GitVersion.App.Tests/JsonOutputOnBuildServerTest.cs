@@ -1,73 +1,70 @@
-using System.Collections.Generic;
-using System.IO;
 using GitTools.Testing;
 using GitVersion.BuildAgents;
 using GitVersion.OutputVariables;
 using NUnit.Framework;
 using Shouldly;
 
-namespace GitVersion.App.Tests
+namespace GitVersion.App.Tests;
+
+public class JsonOutputOnBuildServerTest
 {
-    public class JsonOutputOnBuildServerTest
+    [Test]
+    public void BeingOnBuildServerDoesntOverrideOutputJson()
     {
-        [Test]
-        public void BeingOnBuildServerDoesntOverrideOutputJson()
-        {
-            using var fixture = new RemoteRepositoryFixture();
-            fixture.Repository.MakeATaggedCommit("1.2.3");
-            fixture.Repository.MakeACommit();
+        using var fixture = new RemoteRepositoryFixture();
+        fixture.Repository.MakeATaggedCommit("1.2.3");
+        fixture.Repository.MakeACommit();
 
-            var env = new KeyValuePair<string, string>(TeamCity.EnvironmentVariableName, "8.0.0");
+        var env = new KeyValuePair<string, string>(TeamCity.EnvironmentVariableName, "8.0.0");
 
-            var result = GitVersionHelper.ExecuteIn(fixture.LocalRepositoryFixture.RepositoryPath, arguments: " /output json", environments: env);
+        var result = GitVersionHelper.ExecuteIn(fixture.LocalRepositoryFixture.RepositoryPath, arguments: " /output json", environments: env);
 
-            result.ExitCode.ShouldBe(0);
-            result.Output.ShouldStartWith("{");
-            result.Output.TrimEnd().ShouldEndWith("}");
-        }
+        result.ExitCode.ShouldBe(0);
+        result.Output.ShouldStartWith("{");
+        result.Output.TrimEnd().ShouldEndWith("}");
+    }
 
-        [Test]
-        public void BeingOnBuildServerWithOutputJsonDoesNotFail()
-        {
-            using var fixture = new RemoteRepositoryFixture();
-            fixture.Repository.MakeATaggedCommit("1.2.3");
-            fixture.Repository.MakeACommit();
+    [Test]
+    public void BeingOnBuildServerWithOutputJsonDoesNotFail()
+    {
+        using var fixture = new RemoteRepositoryFixture();
+        fixture.Repository.MakeATaggedCommit("1.2.3");
+        fixture.Repository.MakeACommit();
 
-            var env = new KeyValuePair<string, string>(TeamCity.EnvironmentVariableName, "8.0.0");
+        var env = new KeyValuePair<string, string>(TeamCity.EnvironmentVariableName, "8.0.0");
 
-            var result = GitVersionHelper.ExecuteIn(fixture.LocalRepositoryFixture.RepositoryPath, arguments: " /output json /output buildserver", environments: env);
+        var result = GitVersionHelper.ExecuteIn(fixture.LocalRepositoryFixture.RepositoryPath, arguments: " /output json /output buildserver", environments: env);
 
-            result.ExitCode.ShouldBe(0);
-            const string version = "0.1.0+4";
-            result.Output.ShouldContain($"##teamcity[buildNumber '{version}']");
-            result.OutputVariables.ShouldNotBeNull();
-            result.OutputVariables.FullSemVer.ShouldBeEquivalentTo(version);
-        }
+        result.ExitCode.ShouldBe(0);
+        const string version = "0.1.0+4";
+        result.Output.ShouldContain($"##teamcity[buildNumber '{version}']");
+        result.OutputVariables.ShouldNotBeNull();
+        result.OutputVariables.FullSemVer.ShouldBeEquivalentTo(version);
+    }
 
-        [TestCase("", "GitVersion.json")]
-        [TestCase("version.json", "version.json")]
-        public void BeingOnBuildServerWithOutputJsonAndOutputFileDoesNotFail(string outputFile, string fileName)
-        {
-            using var fixture = new RemoteRepositoryFixture();
-            fixture.Repository.MakeATaggedCommit("1.2.3");
-            fixture.Repository.MakeACommit();
+    [TestCase("", "GitVersion.json")]
+    [TestCase("version.json", "version.json")]
+    public void BeingOnBuildServerWithOutputJsonAndOutputFileDoesNotFail(string outputFile, string fileName)
+    {
+        using var fixture = new RemoteRepositoryFixture();
+        fixture.Repository.MakeATaggedCommit("1.2.3");
+        fixture.Repository.MakeACommit();
 
-            var env = new KeyValuePair<string, string>(TeamCity.EnvironmentVariableName, "8.0.0");
+        var env = new KeyValuePair<string, string>(TeamCity.EnvironmentVariableName, "8.0.0");
 
-            var result = GitVersionHelper.ExecuteIn(fixture.LocalRepositoryFixture.RepositoryPath, arguments: $" /output json /output buildserver /output file /outputfile {outputFile}", environments: env);
+        var result = GitVersionHelper.ExecuteIn(fixture.LocalRepositoryFixture.RepositoryPath, arguments: $" /output json /output buildserver /output file /outputfile {outputFile}", environments: env);
 
-            result.ExitCode.ShouldBe(0);
-            const string version = "0.1.0+4";
-            result.Output.ShouldContain($"##teamcity[buildNumber '{version}']");
-            result.OutputVariables.ShouldNotBeNull();
-            result.OutputVariables.FullSemVer.ShouldBeEquivalentTo(version);
+        result.ExitCode.ShouldBe(0);
+        const string version = "0.1.0+4";
+        result.Output.ShouldContain($"##teamcity[buildNumber '{version}']");
+        result.OutputVariables.ShouldNotBeNull();
+        result.OutputVariables.FullSemVer.ShouldBeEquivalentTo(version);
 
-            var filePath = Path.Combine(fixture.LocalRepositoryFixture.RepositoryPath, fileName);
-            var json = File.ReadAllText(filePath);
+        var filePath = Path.Combine(fixture.LocalRepositoryFixture.RepositoryPath, fileName);
+        var json = File.ReadAllText(filePath);
 
-            var outputVariables = VersionVariables.FromJson(json);
-            outputVariables.ShouldNotBeNull();
-            outputVariables.FullSemVer.ShouldBeEquivalentTo(version);
-        }
+        var outputVariables = VersionVariables.FromJson(json);
+        outputVariables.ShouldNotBeNull();
+        outputVariables.FullSemVer.ShouldBeEquivalentTo(version);
     }
 }
