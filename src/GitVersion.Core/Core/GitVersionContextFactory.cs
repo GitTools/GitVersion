@@ -36,7 +36,7 @@ public class GitVersionContextFactory : IGitVersionContextFactory
             currentBranch = branchForCommit ?? currentBranch;
         }
 
-        var currentBranchConfig = this.branchConfigurationCalculator.GetBranchConfiguration(0, currentBranch, currentCommit, configuration);
+        var currentBranchConfig = this.branchConfigurationCalculator.GetBranchConfiguration(currentBranch, currentCommit, configuration);
         var effectiveConfiguration = configuration.CalculateEffectiveConfiguration(currentBranchConfig);
         var currentCommitTaggedVersion = this.repositoryStore.GetCurrentCommitTaggedVersion(currentCommit, effectiveConfiguration);
         var numberOfUncommittedChanges = this.repositoryStore.GetNumberOfUncommittedChanges();

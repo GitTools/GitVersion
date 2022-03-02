@@ -1,5 +1,3 @@
-using System;
-
 namespace GitVersion.Model.Exceptions
 {
     public class InfiniteLoopProtectionException : Exception
