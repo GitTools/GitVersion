@@ -1,0 +1,37 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+trigger: none
+pr: none
+schedules:
+- cron: “0 12 * * 5”
+  displayName: Weekly Friday Fortify scan
+  branches:
+    include:
+    - main
+  always: false
+jobs:
+  - job: Fortify
+    pool: Fortify-Windows
+    variables:
+      - group: Fortify_Appsec
+      - name: APPNAME
+        value: pscore-gitversion
+      - name: APPVERSION
+        value: 1.0
+    steps:
+      - task: DotNetCoreCLI@2
+        inputs:
+          command: “restore”
+          projects: “**/*.sln”
+          feedsToUse: “config”
+          nugetConfigPath: “NuGet.config”
+      - script: |
+          call “C:\Program Files (x86)\Microsoft Visual Studio\2019\BuildTools\Common7\Tools\VsDevCmd.bat”
+          sourceanalyzer -b $(Build.Repository.Name) -clean
+          sourceanalyzer -b $(Build.Repository.Name) msbuild /t:rebuild /p:Configuration=Release GitVersion.sln
+        displayName: Fortify Translate
+      - script: |
+          scancentral -sscurl $(SSCURL) -ssctoken $(SSCTOKEN) start -email “$(NOTIFICATIONEMAIL2)” -upload -b $(Build.Repository.Name) -application “$(APPNAME)“” -version “$(APPVERSION)” -uptoken $(SSCTOKEN) -scan
+        displayName: Fortify ScanCentral scan

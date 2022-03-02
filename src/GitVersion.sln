@@ -15,8 +15,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		..\build.ps1 = ..\build.ps1
 		..\CONTRIBUTING.md = ..\CONTRIBUTING.md
 		Directory.Build.props = Directory.Build.props
+		..\fortify-pipeline.yml = ..\fortify-pipeline.yml
 		..\GitVersion.yml = ..\GitVersion.yml
 		..\LICENSE = ..\LICENSE
+		..\Nuget.config = ..\Nuget.config
 		..\README.md = ..\README.md
 	EndProjectSection
 EndProject
