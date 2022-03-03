@@ -11,7 +11,7 @@ works out the [Semantic Version][semver] of the commit being built.
 | **GitVersion.CommandLine** |                           [![NuGet][gvcl-badge]][gvcl]             |
 | **GitVersion.MsBuild**     |                            [![NuGet][gvt-badge]][gvt]              | Known as [GitVersionTask] before v5.6.0 |
 
-## Compatibility
+## Compatibility 
 
 GitVersion works on Windows, Linux, and Mac.
 
