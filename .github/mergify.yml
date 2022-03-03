@@ -17,6 +17,7 @@ pull_request_rules:
       - check-success=Unit Test code (windows-latest, net5.0)
       - check-success=Unit Test code (windows-latest, net5.0)
       - check-success=Unit Test code (windows-latest, net5.0)
+      - repository-full-name=GitTools/GitVersion # Don't auto-merge PRs in forks
     actions:
       merge:
   - name: Thank contributor
