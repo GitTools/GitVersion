@@ -295,14 +295,50 @@ public class RepositoryStore : IRepositoryStore
 
     public Dictionary<string, List<IBranch>> GetMainlineBranches(ICommit commit, IEnumerable<KeyValuePair<string, BranchConfig?>>? mainlineBranchConfigs) =>
         this.repository.Branches
-            .Where(b => mainlineBranchConfigs?.Any(c => c.Value?.Regex != null && Regex.IsMatch(b.Name.Friendly, c.Value.Regex)) == true)
+            .Where(b => BranchIsMainline(b, mainlineBranchConfigs))
             .Select(b => new { Origin = FindBranchOrigin(b, commit), Branch = b })
-            .Where(a => a.Origin != null)
-            .GroupBy(b => b.Origin?.Sha, b => b.Branch)
-            .ToDictionary(b => b.Key, b => b.ToList());
+            .Where(x => x.Origin is not null)
+            .GroupBy(x => x.Origin!.Sha, a => a.Branch)
+            .ToDictionary(x => x.Key, x => x.ToList());
 
-    private ICommit FindBranchOrigin(IBranch branch, ICommit commit) =>
-        FindMergeBase(branch.Tip!, commit) ?? FindCommitBranchWasBranchedFrom(branch, null).Commit;
+    private bool BranchIsMainline(INamedReference branch, IEnumerable<KeyValuePair<string, BranchConfig?>>? mainlineBranchConfigs) =>
+        mainlineBranchConfigs?.Any(c => BranchMatchesMainlineConfig(branch, c)) == true;
+
+    private bool BranchMatchesMainlineConfig(INamedReference branch, KeyValuePair<string, BranchConfig?> mainlineBranchConfig)
+    {
+        if (mainlineBranchConfig.Value?.Regex == null)
+        {
+            return false;
+        }
+
+        var mainlineRegex = mainlineBranchConfig.Value.Regex;
+        var branchName = branch.Name.WithoutRemote;
+        var match = Regex.IsMatch(branchName, mainlineRegex);
+        this.log.Info($"'{mainlineRegex}' {(match ? "matches" : "does not match")} '{branchName}'.");
+        return match;
+    }
+
+    private ICommit? FindBranchOrigin(IBranch branch, ICommit commit)
+    {
+        var branchName = branch.Name.Friendly;
+        var mergeBase = FindMergeBase(branch.Tip!, commit);
+        if (mergeBase is not null)
+        {
+            this.log.Info($"Found merge base {mergeBase.Sha} for '{branchName}'.");
+            return mergeBase;
+        }
+
+        var branchCommit = FindCommitBranchWasBranchedFrom(branch, null);
+        if (branchCommit != BranchCommit.Empty)
+        {
+            this.log.Info($"Found parent commit {branchCommit.Commit.Sha} for '{branchName}'.");
+            return branchCommit.Commit;
+        }
+
+        this.log.Info($"Found no merge base or parent commit for '{branchName}'.");
+        return null;
+    }
+
 
 
     /// <summary>
