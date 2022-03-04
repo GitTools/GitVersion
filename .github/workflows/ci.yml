@@ -100,21 +100,21 @@ jobs:
       run: dotnet run/build.dll --target=Package
     -
       name: 'Upload nuget packages'
-      uses: actions/upload-artifact@v2.3.1
+      uses: actions/upload-artifact@v3
       if: matrix.os == 'windows-latest'
       with:
         name: nuget
         path: ${{ github.workspace }}/artifacts/packages/nuget
     -
       name: 'Upload native packages'
-      uses: actions/upload-artifact@v2.3.1
+      uses: actions/upload-artifact@v3
       if: matrix.os == 'windows-latest'
       with:
         name: native-${{ runner.os }}
         path: ${{ github.workspace }}/artifacts/packages/native/*.zip
     -
       name: 'Upload native packages'
-      uses: actions/upload-artifact@v2.3.1
+      uses: actions/upload-artifact@v3
       if: matrix.os != 'windows-latest'
       with:
         name: native-${{ runner.os }}
