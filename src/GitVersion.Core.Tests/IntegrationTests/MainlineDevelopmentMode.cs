@@ -562,7 +562,7 @@ public class MainlineDevelopmentMode : TestBase
         fixture.Repository.Branches.Remove(fixture.Repository.Branches["main"]);
 
         var exception = Assert.Throws<WarningException>(() => fixture.AssertFullSemver("1.1.0-alpha.1", config));
-        exception.Message.ShouldMatch("No branches can be found matching the commit .* in the configured Mainline branches: main, support");
+        exception!.Message.ShouldMatch("No branches can be found matching the commit .* in the configured Mainline branches: main, support");
     }
 }
 
