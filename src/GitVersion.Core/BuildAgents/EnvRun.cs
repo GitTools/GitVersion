@@ -11,7 +11,7 @@ public class EnvRun : BuildAgentBase
     }
 
     public const string EnvironmentVariableName = "ENVRUN_DATABASE";
-    protected override string EnvironmentVariable { get; } = EnvironmentVariableName;
+    protected override string EnvironmentVariable => EnvironmentVariableName;
     public override bool CanApplyToCurrentContext()
     {
         var envRunDatabasePath = Environment.GetEnvironmentVariable(EnvironmentVariableName);

@@ -137,8 +137,14 @@ public class RepositoryStore : IRepositoryStore
             throw new GitVersionException($"Cannot find commit {currentBranchTip}. Please ensure that the repository is an unshallow clone with `git fetch --unshallow`.", exception);
         }
     }
+
     public IEnumerable<ICommit> GetMainlineCommitLog(ICommit? baseVersionSource, ICommit? mainlineTip)
     {
+        if (mainlineTip is null)
+        {
+            return Enumerable.Empty<ICommit>();
+        }
+
         var filter = new CommitFilter
         {
             IncludeReachableFrom = mainlineTip,
@@ -149,6 +155,7 @@ public class RepositoryStore : IRepositoryStore
 
         return this.repository.Commits.QueryBy(filter);
     }
+
     public IEnumerable<ICommit> GetMergeBaseCommits(ICommit? mergeCommit, ICommit? mergedHead, ICommit? findMergeBase)
     {
         var filter = new CommitFilter
@@ -288,21 +295,57 @@ public class RepositoryStore : IRepositoryStore
 
     public Dictionary<string, List<IBranch>> GetMainlineBranches(ICommit commit, IEnumerable<KeyValuePair<string, BranchConfig?>>? mainlineBranchConfigs) =>
         this.repository.Branches
-            .Where(b => mainlineBranchConfigs?.Any(c => c.Value?.Regex != null && Regex.IsMatch(b.Name.Friendly, c.Value.Regex)) == true)
-            .Select(b => new
-            {
-                MergeBase = FindMergeBase(b.Tip!, commit),
-                Branch = b
-            })
-            .Where(a => a.MergeBase != null)
-            .GroupBy(b => b.MergeBase!.Sha, b => b.Branch)
-            .ToDictionary(b => b.Key, b => b.ToList());
+            .Where(b => BranchIsMainline(b, mainlineBranchConfigs))
+            .Select(b => new { Origin = FindBranchOrigin(b, commit), Branch = b })
+            .Where(x => x.Origin is not null)
+            .GroupBy(x => x.Origin!.Sha, a => a.Branch)
+            .ToDictionary(x => x.Key, x => x.ToList());
+
+    private bool BranchIsMainline(INamedReference branch, IEnumerable<KeyValuePair<string, BranchConfig?>>? mainlineBranchConfigs) =>
+        mainlineBranchConfigs?.Any(c => BranchMatchesMainlineConfig(branch, c)) == true;
+
+    private bool BranchMatchesMainlineConfig(INamedReference branch, KeyValuePair<string, BranchConfig?> mainlineBranchConfig)
+    {
+        if (mainlineBranchConfig.Value?.Regex == null)
+        {
+            return false;
+        }
+
+        var mainlineRegex = mainlineBranchConfig.Value.Regex;
+        var branchName = branch.Name.WithoutRemote;
+        var match = Regex.IsMatch(branchName, mainlineRegex);
+        this.log.Info($"'{mainlineRegex}' {(match ? "matches" : "does not match")} '{branchName}'.");
+        return match;
+    }
+
+    private ICommit? FindBranchOrigin(IBranch branch, ICommit commit)
+    {
+        var branchName = branch.Name.Friendly;
+        var mergeBase = FindMergeBase(branch.Tip!, commit);
+        if (mergeBase is not null)
+        {
+            this.log.Info($"Found merge base {mergeBase.Sha} for '{branchName}'.");
+            return mergeBase;
+        }
+
+        var branchCommit = FindCommitBranchWasBranchedFrom(branch, null);
+        if (branchCommit != BranchCommit.Empty)
+        {
+            this.log.Info($"Found parent commit {branchCommit.Commit.Sha} for '{branchName}'.");
+            return branchCommit.Commit;
+        }
+
+        this.log.Info($"Found no merge base or parent commit for '{branchName}'.");
+        return null;
+    }
+
+
 
     /// <summary>
     /// Find the commit where the given branch was branched from another branch.
     /// If there are multiple such commits and branches, tries to guess based on commit histories.
     /// </summary>
-    public BranchCommit FindCommitBranchWasBranchedFrom(IBranch branch, Config configuration, params IBranch[] excludedBranches)
+    public BranchCommit FindCommitBranchWasBranchedFrom(IBranch branch, Config? configuration, params IBranch[] excludedBranches)
     {
         if (branch == null)
         {
@@ -456,6 +499,7 @@ public class RepositoryStore : IRepositoryStore
                 return findMergeBase == null ? BranchCommit.Empty : new BranchCommit(findMergeBase, otherBranch);
 
             })
+            .Where(b => b.Commit is not null)
             .OrderByDescending(b => b.Commit.When)
             .ToList();
         this.mergeBaseCommitsCache.Add(branch, branchMergeBases);

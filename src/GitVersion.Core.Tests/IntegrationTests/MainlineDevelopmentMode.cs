@@ -5,6 +5,7 @@ using GitVersion.Model.Configuration;
 using GitVersion.VersionCalculation;
 using LibGit2Sharp;
 using NUnit.Framework;
+using Shouldly;
 
 namespace GitVersion.Core.Tests.IntegrationTests;
 
@@ -516,6 +517,52 @@ public class MainlineDevelopmentMode : TestBase
         fixture.MakeACommit("11 +semver: none");
         fixture.AssertFullSemver("3.1.3", minorIncrementConfig);
         Console.WriteLine(fixture.SequenceDiagram.GetDiagram());
+    }
+
+    [Test]
+    public void BranchWithoutMergeBaseMainlineBranchIsFound()
+    {
+        var currentConfig = new Config
+        {
+            VersioningMode = VersioningMode.Mainline,
+            AssemblyFileVersioningScheme = AssemblyFileVersioningScheme.MajorMinorPatchTag
+        };
+
+        using var fixture = new EmptyRepositoryFixture();
+        fixture.Repository.MakeACommit();
+        Commands.Checkout(fixture.Repository, fixture.Repository.CreateBranch("master"));
+        fixture.Repository.Branches.Remove(fixture.Repository.Branches["main"]);
+        fixture.Repository.MakeCommits(2);
+        Commands.Checkout(fixture.Repository, fixture.Repository.CreateBranch("issue-branch"));
+        fixture.Repository.MakeACommit();
+        fixture.AssertFullSemver("0.1.3-issue-branch.1", currentConfig);
+    }
+
+    [Test]
+    public void GivenARemoteGitRepositoryWithCommitsThenClonedLocalDevelopShouldMatchRemoteVersion()
+    {
+        using var fixture = new RemoteRepositoryFixture();
+        fixture.AssertFullSemver("0.1.4", config);
+        fixture.BranchTo("develop");
+        fixture.AssertFullSemver("0.2.0-alpha.0", config);
+        Console.WriteLine(fixture.SequenceDiagram.GetDiagram());
+        var local = fixture.CloneRepository();
+        fixture.AssertFullSemver("0.2.0-alpha.0", config, repository: local.Repository);
+        local.Repository.DumpGraph();
+    }
+
+    [Test]
+    public void GivenNoMainThrowsWarning()
+    {
+        using var fixture = new EmptyRepositoryFixture();
+        fixture.Repository.MakeACommit();
+        fixture.Repository.MakeATaggedCommit("1.0.0");
+        fixture.Repository.MakeACommit();
+        Commands.Checkout(fixture.Repository, fixture.Repository.CreateBranch("develop"));
+        fixture.Repository.Branches.Remove(fixture.Repository.Branches["main"]);
+
+        var exception = Assert.Throws<WarningException>(() => fixture.AssertFullSemver("1.1.0-alpha.1", config));
+        exception!.Message.ShouldMatch("No branches can be found matching the commit .* in the configured Mainline branches: main, support");
     }
 }
 

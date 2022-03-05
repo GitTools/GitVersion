@@ -14,8 +14,6 @@ public class BuildServerModule : GitVersionModule
         }
 
         services.AddSingleton<IBuildAgentResolver, BuildAgentResolver>();
-#pragma warning disable CS8634 // The type cannot be used as type parameter in the generic type or method. Nullability of type argument doesn't match 'class' constraint.
-        services.AddSingleton(sp => sp.GetService<IBuildAgentResolver>()?.Resolve());
-#pragma warning restore CS8634 // The type cannot be used as type parameter in the generic type or method. Nullability of type argument doesn't match 'class' constraint.
+        services.AddSingleton(sp => sp.GetRequiredService<IBuildAgentResolver>().Resolve());
     }
 }

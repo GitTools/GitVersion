@@ -10,7 +10,7 @@ public class TravisCi : BuildAgentBase
     }
 
     public const string EnvironmentVariableName = "TRAVIS";
-    protected override string EnvironmentVariable { get; } = EnvironmentVariableName;
+    protected override string EnvironmentVariable => EnvironmentVariableName;
 
     public override bool CanApplyToCurrentContext() => "true".Equals(Environment.GetEnvironmentVariable(EnvironmentVariable)) && "true".Equals(Environment.GetEnvironmentVariable("CI"));
 

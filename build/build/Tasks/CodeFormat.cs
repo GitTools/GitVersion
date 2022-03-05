@@ -1,4 +1,4 @@
-using Common.Addins.Cake.DotNetFormat;
+using Cake.Common.Tools.DotNet.Format;
 using Common.Utilities;
 
 namespace Build.Tasks;
@@ -10,14 +10,9 @@ public class CodeFormat : FrostingTask<BuildContext>
     public override void Run(BuildContext context)
     {
         context.Information("Code format...");
-        context.DotNetFormat(new DotNetFormatSettings
+        context.DotNetFormat(Paths.Build.FullPath);
+        context.DotNetFormat(Paths.Src.FullPath, new DotNetFormatSettings
         {
-            Workspace = Paths.Build
-        });
-
-        context.DotNetFormat(new DotNetFormatSettings
-        {
-            Workspace = Paths.Src,
             Exclude = new List<string> { " **/AddFormats/" }
         });
     }

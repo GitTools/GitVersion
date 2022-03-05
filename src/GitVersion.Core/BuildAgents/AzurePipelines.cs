@@ -13,7 +13,7 @@ public class AzurePipelines : BuildAgentBase
 
     public const string EnvironmentVariableName = "TF_BUILD";
 
-    protected override string EnvironmentVariable { get; } = EnvironmentVariableName;
+    protected override string EnvironmentVariable => EnvironmentVariableName;
 
     public override string[] GenerateSetParameterMessage(string name, string value) => new[]
     {

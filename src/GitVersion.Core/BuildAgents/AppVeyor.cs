@@ -13,7 +13,7 @@ public class AppVeyor : BuildAgentBase
 
     public const string EnvironmentVariableName = "APPVEYOR";
 
-    protected override string EnvironmentVariable { get; } = EnvironmentVariableName;
+    protected override string EnvironmentVariable => EnvironmentVariableName;
 
     public override string GenerateSetVersionMessage(VersionVariables variables)
     {

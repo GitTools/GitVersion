@@ -6,6 +6,7 @@ on:
     - main
     - 'fix/*'
     - 'feature/*'
+    - 'release/*'
     paths:
     - '**'
     - '!docs/**'
@@ -13,6 +14,7 @@ on:
   pull_request:
     branches:
     - main
+    - 'release/*'
     paths:
     - '**'
     - '!docs/**'
@@ -40,7 +42,7 @@ jobs:
     steps:
     -
       name: Checkout
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
     -
       name: Cache cake frosting
       id: cache-cake
@@ -50,7 +52,7 @@ jobs:
         key: run-${{ runner.os }}-${{ hashFiles('./build/**') }}
     -
       name: Install .NET SDK 6.0.x
-      uses: actions/setup-dotnet@v1
+      uses: actions/setup-dotnet@v2
       with:
         dotnet-version: '6.0.x'
     -
@@ -70,7 +72,7 @@ jobs:
     steps:
     -
       name: Checkout
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
       with:
         fetch-depth: 0
     -
@@ -89,7 +91,7 @@ jobs:
         key: tools-${{ runner.os }}-${{ hashFiles('./build/**') }}
     -
       name: Install .NET SDK 6.0.x
-      uses: actions/setup-dotnet@v1
+      uses: actions/setup-dotnet@v2
       with:
         dotnet-version: '6.0.x'
     -
@@ -98,21 +100,21 @@ jobs:
       run: dotnet run/build.dll --target=Package
     -
       name: 'Upload nuget packages'
-      uses: actions/upload-artifact@v2.3.1
+      uses: actions/upload-artifact@v3
       if: matrix.os == 'windows-latest'
       with:
         name: nuget
         path: ${{ github.workspace }}/artifacts/packages/nuget
     -
       name: 'Upload native packages'
-      uses: actions/upload-artifact@v2.3.1
+      uses: actions/upload-artifact@v3
       if: matrix.os == 'windows-latest'
       with:
         name: native-${{ runner.os }}
         path: ${{ github.workspace }}/artifacts/packages/native/*.zip
     -
       name: 'Upload native packages'
-      uses: actions/upload-artifact@v2.3.1
+      uses: actions/upload-artifact@v3
       if: matrix.os != 'windows-latest'
       with:
         name: native-${{ runner.os }}
@@ -133,7 +135,7 @@ jobs:
     steps:
     -
       name: Checkout
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
       with:
         fetch-depth: 0
     -
@@ -152,7 +154,7 @@ jobs:
         key: tools-${{ runner.os }}-${{ hashFiles('./build/**') }}
     -
       name: Install .NET SDK 6.0.x
-      uses: actions/setup-dotnet@v1
+      uses: actions/setup-dotnet@v2
       with:
         dotnet-version: '6.0.x'
     -
@@ -172,7 +174,7 @@ jobs:
     steps:
     -
       name: Checkout
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
       with:
         fetch-depth: 0
     -
@@ -190,14 +192,14 @@ jobs:
         path: tools
         key: tools-${{ runner.os }}-${{ hashFiles('./build/**') }}
     -
-      uses: actions/download-artifact@v2.1.0
+      uses: actions/download-artifact@v3
       name: Download nuget packages
       with:
         name: nuget
         path: ${{ github.workspace }}/artifacts/packages/nuget
     -
       name: Install .NET SDK 6.0.x
-      uses: actions/setup-dotnet@v1
+      uses: actions/setup-dotnet@v2
       with:
         dotnet-version: '6.0.x'
     -
@@ -218,7 +220,7 @@ jobs:
     steps:
     -
       name: Checkout
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
       with:
         fetch-depth: 0
     -
@@ -236,13 +238,13 @@ jobs:
         path: tools
         key: tools-${{ runner.os }}-${{ hashFiles('./build/**') }}
     -
-      uses: actions/download-artifact@v2.1.0
+      uses: actions/download-artifact@v3
       name: Download nuget packages
       with:
         name: nuget
         path: ${{ github.workspace }}/artifacts/packages/nuget
     -
-      uses: actions/download-artifact@v2.1.0
+      uses: actions/download-artifact@v3
       name: Download native packages
       with:
         name: native-${{ runner.os }}
@@ -257,7 +259,7 @@ jobs:
         install: true
     -
       name: Install .NET SDK 6.0.x
-      uses: actions/setup-dotnet@v1
+      uses: actions/setup-dotnet@v2
       with:
         dotnet-version: '6.0.x'
     -
@@ -282,7 +284,7 @@ jobs:
     steps:
     -
       name: Checkout
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
       with:
         fetch-depth: 0
     -
@@ -300,7 +302,7 @@ jobs:
         path: tools
         key: tools-${{ runner.os }}-${{ hashFiles('./build/**') }}
     -
-      uses: actions/download-artifact@v2.1.0
+      uses: actions/download-artifact@v3
       name: Download nuget packages
       with:
         name: nuget
@@ -315,7 +317,7 @@ jobs:
         install: true
     -
       name: Install .NET SDK 6.0.x
-      uses: actions/setup-dotnet@v1
+      uses: actions/setup-dotnet@v2
       with:
         dotnet-version: '6.0.x'
     -
@@ -380,7 +382,7 @@ jobs:
     steps:
     -
       name: Checkout
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
       with:
         fetch-depth: 0
     -
@@ -398,14 +400,14 @@ jobs:
         path: tools
         key: tools-${{ runner.os }}-${{ hashFiles('./build/**') }}
     -
-      uses: actions/download-artifact@v2.1.0
+      uses: actions/download-artifact@v3
       name: Download nuget packages
       with:
         name: nuget
         path: ${{ github.workspace }}/artifacts/packages/nuget
     -
       name: Install .NET SDK 6.0.x
-      uses: actions/setup-dotnet@v1
+      uses: actions/setup-dotnet@v2
       with:
         dotnet-version: '6.0.x'
     -
@@ -422,7 +424,7 @@ jobs:
     steps:
     -
       name: Checkout
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
       with:
         fetch-depth: 0
     -
@@ -440,26 +442,26 @@ jobs:
         path: tools
         key: tools-${{ runner.os }}-${{ hashFiles('./build/**') }}
     -
-      uses: actions/download-artifact@v2.1.0
+      uses: actions/download-artifact@v3
       name: Download native linux packages
       with:
         name: native-Linux
         path: ${{ github.workspace }}/artifacts/packages/native
     -
-      uses: actions/download-artifact@v2.1.0
+      uses: actions/download-artifact@v3
       name: Download native windows packages
       with:
         name: native-Windows
         path: ${{ github.workspace }}/artifacts/packages/native
     -
-      uses: actions/download-artifact@v2.1.0
+      uses: actions/download-artifact@v3
       name: Download native macos packages
       with:
         name: native-macOS
         path: ${{ github.workspace }}/artifacts/packages/native
     -
       name: Install .NET SDK 6.0.x
-      uses: actions/setup-dotnet@v1
+      uses: actions/setup-dotnet@v2
       with:
         dotnet-version: '6.0.x'
     -

@@ -8,7 +8,7 @@ public class Jenkins : BuildAgentBase
 {
     public const string EnvironmentVariableName = "JENKINS_URL";
     private string? file;
-    protected override string EnvironmentVariable { get; } = EnvironmentVariableName;
+    protected override string EnvironmentVariable => EnvironmentVariableName;
 
     public Jenkins(IEnvironment environment, ILog log) : base(environment, log) => WithPropertyFile("gitversion.properties");
 

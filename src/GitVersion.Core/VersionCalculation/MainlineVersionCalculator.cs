@@ -126,13 +126,29 @@ internal class MainlineVersionCalculator : IMainlineVersionCalculator
         var mainlineBranchConfigs = context.FullConfiguration?.Branches.Where(b => b.Value?.IsMainline == true).ToList();
         var mainlineBranches = this.repositoryStore.GetMainlineBranches(context.CurrentCommit!, mainlineBranchConfigs);
 
-        var allMainlines = mainlineBranches.Values.SelectMany(branches => branches.Select(b => b.Name.Friendly));
-        this.log.Info("Found possible mainline branches: " + string.Join(", ", allMainlines));
+        if (!mainlineBranches.Any())
+        {
+            var mainlineBranchConfigsString = string.Join(", ", mainlineBranchConfigs.Select(b => b.Value.Name));
+            throw new WarningException($"No branches can be found matching the commit {context.CurrentCommit?.Sha} in the configured Mainline branches: {mainlineBranchConfigsString}");
+        }
+
+        var mainlineBranchNames = mainlineBranches.Values.SelectMany(branches => branches.Select(b => b.Name.Friendly));
+        this.log.Info("Found possible mainline branches: " + string.Join(", ", mainlineBranchNames));
 
         // Find closest mainline branch
-        var firstMatchingCommit = context.CurrentBranch?.Commits.First(c => mainlineBranches.ContainsKey(c.Sha));
-        var possibleMainlineBranches = mainlineBranches[firstMatchingCommit!.Sha];
+        var firstMatchingCommit = context.CurrentBranch?.Commits.FirstOrDefault(c => mainlineBranches.ContainsKey(c.Sha));
+        if (firstMatchingCommit is null)
+        {
+            var mainlineBranchList = mainlineBranches.Values.SelectMany(x => x).ToList();
+            return FindMainlineBranch(mainlineBranchList, baseVersionSource, context.CurrentCommit);
+        }
 
+        var possibleMainlineBranches = mainlineBranches[firstMatchingCommit!.Sha];
+        return FindMainlineBranch(possibleMainlineBranches, baseVersionSource, firstMatchingCommit);
+    }
+
+    private IBranch FindMainlineBranch(List<IBranch> possibleMainlineBranches, ICommit? baseVersionSource, ICommit? firstMatchingCommit)
+    {
         if (possibleMainlineBranches.Count == 1)
         {
             var mainlineBranch = possibleMainlineBranches[0];
@@ -144,11 +160,14 @@ internal class MainlineVersionCalculator : IMainlineVersionCalculator
         if (possibleMainlineBranches.Any(context.CurrentBranch!.Equals))
         {
             this.log.Info($"Choosing {context.CurrentBranch} as mainline because it is the current branch");
-            return context.CurrentBranch;
+            return context.CurrentBranch!;
         }
 
         // prefer a branch on which the merge base was a direct commit, if there is such a branch
-        var firstMatchingCommitBranch = possibleMainlineBranches.FirstOrDefault(b => this.repositoryStore.IsCommitOnBranch(baseVersionSource, b, firstMatchingCommit));
+        var firstMatchingCommitBranch = firstMatchingCommit != null
+            ? possibleMainlineBranches.FirstOrDefault(b => this.repositoryStore.IsCommitOnBranch(baseVersionSource, b, firstMatchingCommit))
+            : null;
+
         if (firstMatchingCommitBranch != null)
         {
             var message = string.Format(
