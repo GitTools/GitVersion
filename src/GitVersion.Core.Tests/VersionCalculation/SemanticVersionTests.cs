@@ -35,8 +35,10 @@ public class SemanticVersionTests : TestBase
     [TestCase("version-1.2.3", 1, 2, 3, null, null, null, null, null, null, "1.2.3", "version-")]
     [TestCase("1", 1, 0, 0, null, null, null, null, null, null, "1.0.0", null)]
     [TestCase("1.1", 1, 1, 0, null, null, null, null, null, null, "1.1.0", null)]
+    [TestCase("1.0.0-develop-20201007113711", 1, 0, 0, "develop-20201007113711", null, null, null, null, null, "1.0.0-develop-20201007113711", null)]
+    [TestCase("20201007113711.658165168461351.64136516984163213-develop-20201007113711.98848747823+65416321321", 20201007113711, 658165168461351, 64136516984163213, "develop-20201007113711", 98848747823, 65416321321, null, null, null, "20201007113711.658165168461351.64136516984163213-develop-20201007113711.98848747823+65416321321", null)]
     public void ValidateVersionParsing(
-        string versionString, int major, int minor, int patch, string tag, int? tagNumber, int? numberOfBuilds,
+        string versionString, long major, long minor, long patch, string tag, long? tagNumber, long? numberOfBuilds,
         string branchName, string sha, string otherMetaData, string fullFormattedVersionString, string tagPrefixRegex)
     {
         fullFormattedVersionString ??= versionString;

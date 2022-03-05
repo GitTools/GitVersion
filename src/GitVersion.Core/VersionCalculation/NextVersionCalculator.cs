@@ -117,7 +117,7 @@ public class NextVersionCalculator : INextVersionCalculator
     {
         var tagToUse = context.Configuration?.GetBranchSpecificTag(this.log, context.CurrentBranch?.Name.Friendly, branchNameOverride);
 
-        int? number = null;
+        long? number = null;
 
         var lastTag = this.repositoryStore
             .GetVersionTagsOnBranch(context.CurrentBranch!, context.Configuration?.GitTagPrefix)
