@@ -1,4 +1,5 @@
 using System.Text.RegularExpressions;
+using GitVersion.Helpers;
 using Microsoft.Build.Framework;
 
 namespace GitVersion.MsBuild;
@@ -15,7 +16,7 @@ public static class FileHelper
 
     private static string MakeAndGetTempPath()
     {
-        var tempPath = Path.Combine(Path.GetTempPath(), "GitVersionTask");
+        var tempPath = PathHelper.Combine(Path.GetTempPath(), "GitVersionTask");
         Directory.CreateDirectory(tempPath);
         return tempPath;
     }
@@ -72,7 +73,7 @@ public static class FileHelper
 
     private static bool CSharpFileContainsVersionAttribute(string compileFile, string projectFile)
     {
-        var combine = Path.Combine(Path.GetDirectoryName(projectFile), compileFile);
+        var combine = PathHelper.Combine(Path.GetDirectoryName(projectFile), compileFile);
         var allText = File.ReadAllText(combine);
 
         allText += System.Environment.NewLine; // Always add a new line, this handles the case for when a file ends with the EOF marker and no new line. If you don't have this newline, the regex will match commented out Assembly*Version tags on the last line.
@@ -100,7 +101,7 @@ Assembly(File|Informational)?Version    # The attribute AssemblyVersion, Assembl
 
     private static bool VisualBasicFileContainsVersionAttribute(string compileFile, string projectFile)
     {
-        var combine = Path.Combine(Path.GetDirectoryName(projectFile), compileFile);
+        var combine = PathHelper.Combine(Path.GetDirectoryName(projectFile), compileFile);
         var allText = File.ReadAllText(combine);
 
         allText += System.Environment.NewLine; // Always add a new line, this handles the case for when a file ends with the EOF marker and no new line. If you don't have this newline, the regex will match commented out Assembly*Version tags on the last line.
@@ -128,7 +129,7 @@ Assembly(File|Informational)?Version    # The attribute AssemblyVersion, Assembl
         .Where(compileFile => compileFile.Contains("AssemblyInfo"))
         .Where(s => FileContainsVersionAttribute(s, projectFile));
 
-    public static FileWriteInfo GetFileWriteInfo(this string intermediateOutputPath, string language, string projectFile, string outputFileName)
+    public static FileWriteInfo GetFileWriteInfo(this string? intermediateOutputPath, string language, string projectFile, string outputFileName)
     {
         var fileExtension = GetFileExtension(language);
         string workingDirectory, fileName;

@@ -19,7 +19,7 @@ public class ConfigInitWizard : IConfigInitWizard
     {
         this.console.WriteLine("GitVersion init will guide you through setting GitVersion up to work for you");
         var steps = new Queue<ConfigInitWizardStep>();
-        steps.Enqueue(this.stepFactory.CreateStep<EditConfigStep>()!);
+        steps.Enqueue(this.stepFactory.CreateStep<EditConfigStep>());
 
         while (steps.Count > 0)
         {

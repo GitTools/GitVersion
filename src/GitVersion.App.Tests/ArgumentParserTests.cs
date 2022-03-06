@@ -1,6 +1,7 @@
 using GitTools.Testing;
 using GitVersion.Core.Tests.Helpers;
 using GitVersion.Extensions;
+using GitVersion.Helpers;
 using GitVersion.Logging;
 using GitVersion.Model;
 using GitVersion.Model.Configuration;
@@ -97,6 +98,7 @@ public class ArgumentParserTests : TestBase
     public void UnknownOutputShouldThrow()
     {
         var exception = Assert.Throws<WarningException>(() => this.argumentParser.ParseArguments("targetDirectoryPath -output invalid_value"));
+        exception.ShouldNotBeNull();
         exception.Message.ShouldBe("Value 'invalid_value' cannot be parsed as output type, please use 'json', 'file' or 'buildserver'");
     }
 
@@ -201,10 +203,10 @@ public class ArgumentParserTests : TestBase
     [Test]
     public void UrlAndBranchNameCanBeParsed()
     {
-        var arguments = this.argumentParser.ParseArguments("targetDirectoryPath -url http://github.com/Particular/GitVersion.git -b somebranch");
+        var arguments = this.argumentParser.ParseArguments("targetDirectoryPath -url https://github.com/Particular/GitVersion.git -b someBranch");
         arguments.TargetPath.ShouldBe("targetDirectoryPath");
-        arguments.TargetUrl.ShouldBe("http://github.com/Particular/GitVersion.git");
-        arguments.TargetBranch.ShouldBe("somebranch");
+        arguments.TargetUrl.ShouldBe("https://github.com/Particular/GitVersion.git");
+        arguments.TargetBranch.ShouldBe("someBranch");
         arguments.IsHelp.ShouldBe(false);
     }
 
@@ -212,6 +214,7 @@ public class ArgumentParserTests : TestBase
     public void WrongNumberOfArgumentsShouldThrow()
     {
         var exception = Assert.Throws<WarningException>(() => this.argumentParser.ParseArguments("targetDirectoryPath -l logFilePath extraArg"));
+        exception.ShouldNotBeNull();
         exception.Message.ShouldBe("Could not parse command line parameter 'extraArg'.");
     }
 
@@ -220,6 +223,7 @@ public class ArgumentParserTests : TestBase
     public void UnknownArgumentsShouldThrow(string arguments)
     {
         var exception = Assert.Throws<WarningException>(() => this.argumentParser.ParseArguments(arguments));
+        exception.ShouldNotBeNull();
         exception.Message.ShouldStartWith("Could not parse command line parameter");
     }
 
@@ -255,9 +259,10 @@ public class ArgumentParserTests : TestBase
     }
 
     [TestCase("-updateAssemblyInfo Assembly.cs Assembly1.cs -ensureassemblyinfo")]
-    public void CreateMulitpleAssemblyInfoProtected(string command)
+    public void CreateMultipleAssemblyInfoProtected(string command)
     {
         var exception = Assert.Throws<WarningException>(() => this.argumentParser.ParseArguments(command));
+        exception.ShouldNotBeNull();
         exception.Message.ShouldBe("Can't specify multiple assembly info files when using /ensureassemblyinfo switch, either use a single assembly info file or do not specify /ensureassemblyinfo and create assembly info files manually");
     }
 
@@ -265,6 +270,7 @@ public class ArgumentParserTests : TestBase
     public void UpdateProjectInfoWithEnsureAssemblyInfoProtected(string command)
     {
         var exception = Assert.Throws<WarningException>(() => this.argumentParser.ParseArguments(command));
+        exception.ShouldNotBeNull();
         exception.Message.ShouldBe("Cannot specify -ensureassemblyinfo with updateprojectfiles: please ensure your project file exists before attempting to update it");
     }
 
@@ -273,7 +279,7 @@ public class ArgumentParserTests : TestBase
     {
         using var repo = new EmptyRepositoryFixture();
 
-        var assemblyFile = Path.Combine(repo.RepositoryPath, "CommonAssemblyInfo.cs");
+        var assemblyFile = PathHelper.Combine(repo.RepositoryPath, "CommonAssemblyInfo.cs");
         using var file = File.Create(assemblyFile);
 
         var arguments = this.argumentParser.ParseArguments($"-targetpath {repo.RepositoryPath} -updateAssemblyInfo CommonAssemblyInfo.cs");
@@ -287,10 +293,10 @@ public class ArgumentParserTests : TestBase
     {
         using var repo = new EmptyRepositoryFixture();
 
-        var assemblyFile1 = Path.Combine(repo.RepositoryPath, "CommonAssemblyInfo.cs");
+        var assemblyFile1 = PathHelper.Combine(repo.RepositoryPath, "CommonAssemblyInfo.cs");
         using var file = File.Create(assemblyFile1);
 
-        var assemblyFile2 = Path.Combine(repo.RepositoryPath, "VersionAssemblyInfo.cs");
+        var assemblyFile2 = PathHelper.Combine(repo.RepositoryPath, "VersionAssemblyInfo.cs");
         using var file2 = File.Create(assemblyFile2);
 
         var arguments = this.argumentParser.ParseArguments($"-targetpath {repo.RepositoryPath} -updateAssemblyInfo CommonAssemblyInfo.cs VersionAssemblyInfo.cs");
@@ -305,10 +311,10 @@ public class ArgumentParserTests : TestBase
     {
         using var repo = new EmptyRepositoryFixture();
 
-        var assemblyFile1 = Path.Combine(repo.RepositoryPath, "CommonAssemblyInfo.csproj");
+        var assemblyFile1 = PathHelper.Combine(repo.RepositoryPath, "CommonAssemblyInfo.csproj");
         using var file = File.Create(assemblyFile1);
 
-        var assemblyFile2 = Path.Combine(repo.RepositoryPath, "VersionAssemblyInfo.csproj");
+        var assemblyFile2 = PathHelper.Combine(repo.RepositoryPath, "VersionAssemblyInfo.csproj");
         using var file2 = File.Create(assemblyFile2);
 
         var arguments = this.argumentParser.ParseArguments($"-targetpath {repo.RepositoryPath} -updateProjectFiles CommonAssemblyInfo.csproj VersionAssemblyInfo.csproj");
@@ -323,15 +329,15 @@ public class ArgumentParserTests : TestBase
     {
         using var repo = new EmptyRepositoryFixture();
 
-        var assemblyFile1 = Path.Combine(repo.RepositoryPath, "CommonAssemblyInfo.cs");
+        var assemblyFile1 = PathHelper.Combine(repo.RepositoryPath, "CommonAssemblyInfo.cs");
         using var file = File.Create(assemblyFile1);
 
-        var assemblyFile2 = Path.Combine(repo.RepositoryPath, "VersionAssemblyInfo.cs");
+        var assemblyFile2 = PathHelper.Combine(repo.RepositoryPath, "VersionAssemblyInfo.cs");
         using var file2 = File.Create(assemblyFile2);
 
-        var subdir = Path.Combine(repo.RepositoryPath, "subdir");
+        var subdir = PathHelper.Combine(repo.RepositoryPath, "subdir");
         Directory.CreateDirectory(subdir);
-        var assemblyFile3 = Path.Combine(subdir, "LocalAssemblyInfo.cs");
+        var assemblyFile3 = PathHelper.Combine(subdir, "LocalAssemblyInfo.cs");
         using var file3 = File.Create(assemblyFile3);
 
         var arguments = this.argumentParser.ParseArguments($"-targetpath {repo.RepositoryPath} -updateAssemblyInfo **/*AssemblyInfo.cs");
@@ -347,10 +353,10 @@ public class ArgumentParserTests : TestBase
     {
         using var repo = new EmptyRepositoryFixture();
 
-        var assemblyFile = Path.Combine(repo.RepositoryPath, "CommonAssemblyInfo.cs");
+        var assemblyFile = PathHelper.Combine(repo.RepositoryPath, "CommonAssemblyInfo.cs");
         using var file = File.Create(assemblyFile);
 
-        var targetPath = Path.Combine(repo.RepositoryPath, "subdir1", "subdir2");
+        var targetPath = PathHelper.Combine(repo.RepositoryPath, "subdir1", "subdir2");
         Directory.CreateDirectory(targetPath);
 
         var arguments = this.argumentParser.ParseArguments($"-targetpath {targetPath} -updateAssemblyInfo ..\\..\\CommonAssemblyInfo.cs");
@@ -370,6 +376,7 @@ public class ArgumentParserTests : TestBase
     public string OverrideconfigWithInvalidOption(string options)
     {
         var exception = Assert.Throws<WarningException>(() => this.argumentParser.ParseArguments($"/overrideconfig {options}"));
+        exception.ShouldNotBeNull();
         return exception.Message;
     }
 
@@ -642,7 +649,7 @@ public class ArgumentParserTests : TestBase
     }
 
     [Test]
-    public void NonormilizeTrueWhenDefined()
+    public void NoNormalizeTrueWhenDefined()
     {
         var arguments = this.argumentParser.ParseArguments("-nonormalize");
         arguments.NoNormalize.ShouldBe(true);

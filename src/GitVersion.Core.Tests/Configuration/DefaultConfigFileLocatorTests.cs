@@ -1,6 +1,7 @@
 using GitVersion.Configuration;
 using GitVersion.Core.Tests.Helpers;
 using GitVersion.Extensions;
+using GitVersion.Helpers;
 using GitVersion.Logging;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
@@ -47,8 +48,8 @@ public class ConfigFileLocatorTests
 
             var exception = Should.Throw<WarningException>(() => this.configFileLocator.Verify(this.workingPath, this.repoPath));
 
-            var expecedMessage = $"Ambiguous config file selection from '{workingDirectoryConfigFilePath}' and '{repositoryConfigFilePath}'";
-            exception.Message.ShouldBe(expecedMessage);
+            var expectedMessage = $"Ambiguous config file selection from '{workingDirectoryConfigFilePath}' and '{repositoryConfigFilePath}'";
+            exception.Message.ShouldBe(expectedMessage);
         }
 
         [Test]
@@ -64,7 +65,7 @@ public class ConfigFileLocatorTests
 
         private string SetupConfigFileContent(string text, string fileName, string path)
         {
-            var fullPath = Path.Combine(path, fileName);
+            var fullPath = PathHelper.Combine(path, fileName);
             this.fileSystem.WriteAllText(fullPath, text);
 
             return fullPath;
@@ -201,23 +202,23 @@ public class ConfigFileLocatorTests
 
             var exception = Should.Throw<WarningException>(() => this.configFileLocator.Verify(this.workingPath, this.repoPath));
 
-            var workingPathFileConfig = Path.Combine(this.workingPath, this.gitVersionOptions.ConfigInfo.ConfigFile);
-            var repoPathFileConfig = Path.Combine(this.repoPath, this.gitVersionOptions.ConfigInfo.ConfigFile);
+            var workingPathFileConfig = PathHelper.Combine(this.workingPath, this.gitVersionOptions.ConfigInfo.ConfigFile);
+            var repoPathFileConfig = PathHelper.Combine(this.repoPath, this.gitVersionOptions.ConfigInfo.ConfigFile);
             var expectedMessage = $"The configuration file was not found at '{workingPathFileConfig}' or '{repoPathFileConfig}'";
             exception.Message.ShouldBe(expectedMessage);
         }
 
-        private string SetupConfigFileContent(string text, string fileName = null, string path = null)
+        private string SetupConfigFileContent(string text, string? fileName = null, string? path = null)
         {
             if (fileName.IsNullOrEmpty()) fileName = this.configFileLocator.FilePath;
             var filePath = fileName;
             if (!path.IsNullOrEmpty())
-                filePath = Path.Combine(path, filePath);
+                filePath = PathHelper.Combine(path, filePath);
             this.fileSystem.WriteAllText(filePath, text);
             return filePath;
         }
 
-        private static IServiceProvider GetServiceProvider(GitVersionOptions gitVersionOptions, ILog log = null) =>
+        private static IServiceProvider GetServiceProvider(GitVersionOptions gitVersionOptions, ILog? log = null) =>
             ConfigureServices(services =>
             {
                 if (log != null) services.AddSingleton(log);

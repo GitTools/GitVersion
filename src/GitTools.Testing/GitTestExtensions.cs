@@ -7,7 +7,7 @@ public static class GitTestExtensions
 {
     private static int _pad = 1;
 
-    public static Commit MakeACommit(this IRepository repository, string commitMessage = null) => CreateFileAndCommit(repository, Guid.NewGuid().ToString(), commitMessage);
+    public static Commit MakeACommit(this IRepository repository, string? commitMessage = null) => CreateFileAndCommit(repository, Guid.NewGuid().ToString(), commitMessage);
 
     public static void MergeNoFF(this IRepository repository, string branch) => MergeNoFF(repository, branch, Generate.SignatureNow());
 
@@ -20,7 +20,7 @@ public static class GitTestExtensions
         .Select(_ => repository.MakeACommit())
         .ToArray();
 
-    private static Commit CreateFileAndCommit(this IRepository repository, string relativeFileName, string commitMessage = null)
+    private static Commit CreateFileAndCommit(this IRepository repository, string relativeFileName, string? commitMessage = null)
     {
         var randomFile = Path.Combine(repository.Info.WorkingDirectory, relativeFileName);
         if (File.Exists(randomFile))
@@ -68,7 +68,7 @@ public static class GitTestExtensions
         return commit;
     }
 
-    public static void ExecuteGitCmd(string gitCmd, Action<string> writer = null)
+    public static void ExecuteGitCmd(string gitCmd, Action<string>? writer = null)
     {
         var output = new StringBuilder();
         try

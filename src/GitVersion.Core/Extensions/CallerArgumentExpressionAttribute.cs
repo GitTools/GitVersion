@@ -5,7 +5,7 @@ namespace System.Runtime.CompilerServices;
 /// <summary>
 /// Allows capturing of the expressions passed to a method.
 /// </summary>
-[AttributeUsage(AttributeTargets.Parameter, AllowMultiple = false, Inherited = false)]
+[AttributeUsage(AttributeTargets.Parameter)]
 public sealed class CallerArgumentExpressionAttribute : Attribute
 {
     /// <summary>

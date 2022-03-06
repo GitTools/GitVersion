@@ -21,9 +21,12 @@ public class TaggedCommitVersionStrategy : VersionStrategyBase
     {
         if (currentBranch is null)
             return Enumerable.Empty<BaseVersion>();
-        var versionTags = this.repositoryStore.GetValidVersionTags(Context.Configuration?.GitTagPrefix, olderThan);
+        var versionTags = this.repositoryStore.GetValidVersionTags(Context.Configuration.GitTagPrefix, olderThan);
         var versionTagsByCommit = versionTags.ToLookup(vt => vt.Item3.Id.Sha);
         var commitsOnBranch = currentBranch.Commits;
+        if (commitsOnBranch == null)
+            return Enumerable.Empty<BaseVersion>();
+
         var versionTagsOnBranch = commitsOnBranch.SelectMany(commit => versionTagsByCommit[commit.Id.Sha]);
         var versionTaggedCommits = versionTagsOnBranch.Select(t => new VersionTaggedCommit(t.Item3, t.Item2, t.Item1.Name.Friendly));
         var taggedVersions = versionTaggedCommits.Select(versionTaggedCommit => CreateBaseVersion(Context, versionTaggedCommit)).ToList();

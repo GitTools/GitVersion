@@ -26,6 +26,7 @@ public class VersionSourceTests : TestBase
 
         var version = nextVersionCalculator.FindVersion();
 
+        version.BuildMetaData.ShouldNotBeNull();
         version.BuildMetaData.VersionSourceSha.ShouldBe(initialCommit.Sha);
         version.BuildMetaData.CommitsSinceVersionSource.ShouldBe(2);
     }
@@ -40,6 +41,7 @@ public class VersionSourceTests : TestBase
 
         var version = nextVersionCalculator.FindVersion();
 
+        version.BuildMetaData.ShouldNotBeNull();
         version.BuildMetaData.VersionSourceSha.ShouldBe(initialCommit.Sha);
         version.BuildMetaData.CommitsSinceVersionSource.ShouldBe(0);
     }
@@ -60,6 +62,7 @@ public class VersionSourceTests : TestBase
 
         var version = nextVersionCalculator.FindVersion();
 
+        version.BuildMetaData.ShouldNotBeNull();
         version.BuildMetaData.VersionSourceSha.ShouldBe(secondCommit.Sha);
         version.BuildMetaData.CommitsSinceVersionSource.ShouldBe(1);
     }

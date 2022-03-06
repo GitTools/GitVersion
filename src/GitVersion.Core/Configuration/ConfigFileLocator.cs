@@ -1,4 +1,5 @@
 using GitVersion.Extensions;
+using GitVersion.Helpers;
 using GitVersion.Model.Configuration;
 using GitVersion.VersionCalculation;
 using Microsoft.Extensions.Options;
@@ -18,9 +19,9 @@ public class ConfigFileLocator : IConfigFileLocator
 
     public string FilePath { get; }
 
-    public bool HasConfigFileAt(string workingDirectory) => this.fileSystem.Exists(Path.Combine(workingDirectory, FilePath));
+    public bool HasConfigFileAt(string workingDirectory) => this.fileSystem.Exists(PathHelper.Combine(workingDirectory, FilePath));
 
-    public string? GetConfigFilePath(string? workingDirectory) => workingDirectory != null ? Path.Combine(workingDirectory, FilePath) : null;
+    public string? GetConfigFilePath(string? workingDirectory) => workingDirectory != null ? PathHelper.Combine(workingDirectory, FilePath) : null;
 
     public void Verify(string? workingDirectory, string? projectRootDirectory)
     {

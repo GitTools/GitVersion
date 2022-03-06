@@ -14,13 +14,8 @@ public static class ConfigExtensions
             throw new ArgumentNullException(nameof(branchName));
         }
 
-        if (config?.Branches is null)
-        {
-            return null;
-        }
-
         var matches = config.Branches
-            .Where(b => Regex.IsMatch(branchName, b.Value?.Regex, RegexOptions.IgnoreCase))
+            .Where(b => b.Value?.Regex != null && Regex.IsMatch(branchName, b.Value.Regex, RegexOptions.IgnoreCase))
             .ToArray();
 
         try
@@ -125,7 +120,7 @@ public static class ConfigExtensions
 
     public static string GetBranchSpecificTag(this EffectiveConfiguration configuration, ILog log, string? branchFriendlyName, string? branchNameOverride)
     {
-        var tagToUse = configuration.Tag!;
+        var tagToUse = configuration.Tag ?? "{BranchName}";
         if (tagToUse == "useBranchName")
         {
             tagToUse = "{BranchName}";
@@ -147,8 +142,15 @@ public static class ConfigExtensions
         return tagToUse;
     }
 
-    public static List<KeyValuePair<string, BranchConfig?>> GetReleaseBranchConfig(this Config configuration) =>
-        configuration.Branches
-            .Where(b => b.Value?.IsReleaseBranch == true)
-            .ToList();
+    public static List<KeyValuePair<string, BranchConfig>> GetReleaseBranchConfig(this Config configuration)
+    {
+        foreach (var (key, value) in configuration.Branches)
+        {
+            if (value?.IsReleaseBranch != null && value.IsReleaseBranch.Value)
+            {
+                return new List<KeyValuePair<string, BranchConfig>> { new(key, value) };
+            }
+        }
+        return new List<KeyValuePair<string, BranchConfig>>();
+    }
 }

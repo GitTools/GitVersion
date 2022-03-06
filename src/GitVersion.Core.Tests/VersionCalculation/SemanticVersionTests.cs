@@ -38,17 +38,23 @@ public class SemanticVersionTests : TestBase
     [TestCase("1.0.0-develop-20201007113711", 1, 0, 0, "develop-20201007113711", null, null, null, null, null, "1.0.0-develop-20201007113711", null)]
     [TestCase("20201007113711.658165168461351.64136516984163213-develop-20201007113711.98848747823+65416321321", 20201007113711, 658165168461351, 64136516984163213, "develop-20201007113711", 98848747823, 65416321321, null, null, null, "20201007113711.658165168461351.64136516984163213-develop-20201007113711.98848747823+65416321321", null)]
     public void ValidateVersionParsing(
-        string versionString, long major, long minor, long patch, string tag, long? tagNumber, long? numberOfBuilds,
-        string branchName, string sha, string otherMetaData, string fullFormattedVersionString, string tagPrefixRegex)
+        string? versionString, long major, long minor, long patch, string? tag, long? tagNumber, long? numberOfBuilds,
+        string? branchName, string? sha, string? otherMetaData, string? fullFormattedVersionString, string? tagPrefixRegex)
     {
         fullFormattedVersionString ??= versionString;
 
+        versionString.ShouldNotBeNull();
         SemanticVersion.TryParse(versionString, tagPrefixRegex, out var version).ShouldBe(true, versionString);
+
+        version.ShouldNotBeNull();
         Assert.AreEqual(major, version.Major);
         Assert.AreEqual(minor, version.Minor);
         Assert.AreEqual(patch, version.Patch);
+        version.PreReleaseTag.ShouldNotBeNull();
         Assert.AreEqual(tag, version.PreReleaseTag.Name);
         Assert.AreEqual(tagNumber, version.PreReleaseTag.Number);
+
+        version.BuildMetaData.ShouldNotBeNull();
         Assert.AreEqual(numberOfBuilds, version.BuildMetaData.CommitsSinceTag);
         Assert.AreEqual(branchName, version.BuildMetaData.Branch);
         Assert.AreEqual(sha, version.BuildMetaData.Sha);
@@ -59,7 +65,8 @@ public class SemanticVersionTests : TestBase
     [TestCase("someText")]
     [TestCase("some-T-ext")]
     [TestCase("v.1.2.3", "v")]
-    public void ValidateInvalidVersionParsing(string versionString, string tagPrefixRegex = null) => Assert.IsFalse(SemanticVersion.TryParse(versionString, tagPrefixRegex, out _), "TryParse Result");
+    public void ValidateInvalidVersionParsing(string versionString, string? tagPrefixRegex = null) =>
+        Assert.IsFalse(SemanticVersion.TryParse(versionString, tagPrefixRegex, out _), "TryParse Result");
 
     [Test]
     public void LegacySemVerTest()
@@ -153,7 +160,7 @@ public class SemanticVersionTests : TestBase
         return semVer.ToString("i");
     }
 
-    private static SemanticVersion BuildSemVer(int major, int minor, int patch, string preReleaseName, int preReleaseVersion, int? buildCount, string branchName = null, string sha = null, string otherMetadata = null)
+    private static SemanticVersion BuildSemVer(int major, int minor, int patch, string? preReleaseName, int preReleaseVersion, int? buildCount, string? branchName = null, string? sha = null, string? otherMetadata = null)
     {
         var semVer = new SemanticVersion(major, minor, patch);
         if (preReleaseName != null)

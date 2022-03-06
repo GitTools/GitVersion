@@ -32,7 +32,7 @@ public class SequenceDiagram
     /// <summary>
     /// Creates a participant in the sequence diagram
     /// </summary>
-    public void Participant(string participant, string @as = null)
+    public void Participant(string participant, string? @as = null)
     {
         this.participants.Add(participant, @as ?? participant);
         if (@as == null)
@@ -49,7 +49,7 @@ public class SequenceDiagram
     /// <summary>
     /// Appends a note over one or many participants to the sequence diagram
     /// </summary>
-    public void NoteOver(string noteText, string startParticipant, string endParticipant = null, string prefix = null, string color = null) =>
+    public void NoteOver(string noteText, string startParticipant, string? endParticipant = null, string? prefix = null, string? color = null) =>
         this.diagramBuilder.AppendLineFormat(
             prefix + @"note over {0}{1}{2}
   {3}
@@ -67,7 +67,7 @@ end note",
     /// <summary>
     /// Appends branching from a branch to another branch, @as can override the participant name
     /// </summary>
-    public void BranchTo(string branchName, string currentName, string @as)
+    public void BranchTo(string branchName, string currentName, string? @as)
     {
         if (!this.participants.ContainsKey(branchName))
         {
@@ -84,7 +84,7 @@ end note",
     /// <summary>
     /// Appends branching from a tag to a specified branch to the sequence diagram
     /// </summary>
-    public void BranchToFromTag(string branchName, string fromTag, string onBranch, string @as)
+    public void BranchToFromTag(string branchName, string fromTag, string onBranch, string? @as)
     {
         if (!this.participants.ContainsKey(branchName))
         {

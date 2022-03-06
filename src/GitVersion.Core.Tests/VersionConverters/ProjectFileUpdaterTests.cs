@@ -1,6 +1,7 @@
 using System.Xml.Linq;
 using GitVersion.Core.Tests.Helpers;
 using GitVersion.Extensions;
+using GitVersion.Helpers;
 using GitVersion.Logging;
 using GitVersion.OutputVariables;
 using GitVersion.VersionCalculation;
@@ -33,7 +34,7 @@ public class ProjectFileUpdaterTests : TestBase
 
         this.fileSystem = sp.GetRequiredService<IFileSystem>();
         this.variableProvider = sp.GetRequiredService<IVariableProvider>();
-        this.projectFileUpdater = new ProjectFileUpdater(this.log, this.fileSystem!);
+        this.projectFileUpdater = new ProjectFileUpdater(this.log, this.fileSystem);
     }
 
     [Category(NoMono)]
@@ -155,7 +156,8 @@ public class ProjectFileUpdaterTests : TestBase
     {
         var variables = this.variableProvider.GetVariablesFor(SemanticVersion.Parse("2.0.0", "v"), new TestEffectiveConfiguration(), false);
         var xmlRoot = XElement.Parse(xml);
-        ProjectFileUpdater.UpdateProjectVersionElement(xmlRoot, ProjectFileUpdater.AssemblyVersionElement, variables.AssemblySemVer!);
+        variables.AssemblySemVer.ShouldNotBeNull();
+        ProjectFileUpdater.UpdateProjectVersionElement(xmlRoot, ProjectFileUpdater.AssemblyVersionElement, variables.AssemblySemVer);
 
         var expectedXml = XElement.Parse(@"
 <Project Sdk=""Microsoft.NET.Sdk"">
@@ -183,7 +185,8 @@ public class ProjectFileUpdaterTests : TestBase
     {
         var variables = this.variableProvider.GetVariablesFor(SemanticVersion.Parse("2.0.0", "v"), new TestEffectiveConfiguration(), false);
         var xmlRoot = XElement.Parse(xml);
-        ProjectFileUpdater.UpdateProjectVersionElement(xmlRoot, ProjectFileUpdater.AssemblyVersionElement, variables.AssemblySemVer!);
+        variables.AssemblySemVer.ShouldNotBeNull();
+        ProjectFileUpdater.UpdateProjectVersionElement(xmlRoot, ProjectFileUpdater.AssemblyVersionElement, variables.AssemblySemVer);
 
         var expectedXml = XElement.Parse(@"
 <Project Sdk=""Microsoft.NET.Sdk"">
@@ -214,7 +217,8 @@ public class ProjectFileUpdaterTests : TestBase
     {
         var variables = this.variableProvider.GetVariablesFor(SemanticVersion.Parse("2.0.0", "v"), new TestEffectiveConfiguration(), false);
         var xmlRoot = XElement.Parse(xml);
-        ProjectFileUpdater.UpdateProjectVersionElement(xmlRoot, ProjectFileUpdater.AssemblyVersionElement, variables.AssemblySemVer!);
+        variables.AssemblySemVer.ShouldNotBeNull();
+        ProjectFileUpdater.UpdateProjectVersionElement(xmlRoot, ProjectFileUpdater.AssemblyVersionElement, variables.AssemblySemVer);
 
         var expectedXml = XElement.Parse(@"
 <Project Sdk=""Microsoft.NET.Sdk"">
@@ -246,7 +250,8 @@ public class ProjectFileUpdaterTests : TestBase
     {
         var variables = this.variableProvider.GetVariablesFor(SemanticVersion.Parse("2.0.0", "v"), new TestEffectiveConfiguration(), false);
         var xmlRoot = XElement.Parse(xml);
-        ProjectFileUpdater.UpdateProjectVersionElement(xmlRoot, ProjectFileUpdater.AssemblyVersionElement, variables.AssemblySemVer!);
+        variables.AssemblySemVer.ShouldNotBeNull();
+        ProjectFileUpdater.UpdateProjectVersionElement(xmlRoot, ProjectFileUpdater.AssemblyVersionElement, variables.AssemblySemVer);
 
         var expectedXml = XElement.Parse(@"
 <Project Sdk=""Microsoft.NET.Sdk"">
@@ -271,9 +276,9 @@ public class ProjectFileUpdaterTests : TestBase
     [Description(NoMonoDescription)]
     public void UpdateProjectFileAddsVersionToFile(string xml)
     {
-        var fileName = Path.Combine(Path.GetTempPath(), "TestProject.csproj");
+        var fileName = PathHelper.Combine(Path.GetTempPath(), "TestProject.csproj");
 
-        VerifyAssemblyInfoFile(xml, fileName, AssemblyVersioningScheme.MajorMinorPatch, verify: (fs, variables) =>
+        VerifyAssemblyInfoFile(xml, fileName, AssemblyVersioningScheme.MajorMinorPatch, (fs, variables) =>
         {
             using var projFileUpdater = new ProjectFileUpdater(this.log, fs);
             projFileUpdater.Execute(variables, new AssemblyInfoContext(Path.GetTempPath(), false, fileName));
@@ -298,7 +303,7 @@ public class ProjectFileUpdaterTests : TestBase
         string projectFileContent,
         string fileName,
         AssemblyVersioningScheme versioningScheme = AssemblyVersioningScheme.MajorMinorPatch,
-        Action<IFileSystem, VersionVariables> verify = null)
+        Action<IFileSystem, VersionVariables>? verify = null)
     {
         this.fileSystem = Substitute.For<IFileSystem>();
         var version = new SemanticVersion
@@ -317,7 +322,7 @@ public class ProjectFileUpdaterTests : TestBase
             this.fileSystem.ReadAllText(fileName).Returns(projectFileContent);
         });
 
-        var config = new TestEffectiveConfiguration(assemblyVersioningScheme: versioningScheme);
+        var config = new TestEffectiveConfiguration(versioningScheme);
         var variables = this.variableProvider.GetVariablesFor(version, config, false);
 
         verify?.Invoke(this.fileSystem, variables);

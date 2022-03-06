@@ -91,11 +91,8 @@ public class SemanticVersionFormatValues
         var weightedPreReleaseNumber =
             this.semver.PreReleaseTag?.HasTag() == true ? (this.semver.PreReleaseTag.Number + this.config.PreReleaseWeight).ToString() : null;
 
-        if (weightedPreReleaseNumber.IsNullOrEmpty())
-        {
-            return $"{this.config.TagPreReleaseWeight}";
-        }
-
-        return weightedPreReleaseNumber;
+        return weightedPreReleaseNumber.IsNullOrEmpty()
+            ? $"{this.config.TagPreReleaseWeight}"
+            : weightedPreReleaseNumber;
     }
 }

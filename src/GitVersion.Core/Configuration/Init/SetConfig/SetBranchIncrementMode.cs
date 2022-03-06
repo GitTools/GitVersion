@@ -7,34 +7,34 @@ namespace GitVersion.Configuration.Init.SetConfig;
 
 public class SetBranchIncrementMode : ConfigInitWizardStep
 {
-    private string? name;
-    private BranchConfig? branchConfig;
+    private string name;
+    private BranchConfig branchConfig;
 
     public SetBranchIncrementMode(IConsole console, IFileSystem fileSystem, ILog log, IConfigInitStepFactory stepFactory) : base(console, fileSystem, log, stepFactory)
     {
     }
 
-    public SetBranchIncrementMode WithData(string name, BranchConfig branchConfig)
+    public SetBranchIncrementMode WithData(string configName, BranchConfig config)
     {
-        this.branchConfig = branchConfig;
-        this.name = name;
+        this.branchConfig = config;
+        this.name = configName;
         return this;
     }
 
     protected override StepResult HandleResult(string? result, Queue<ConfigInitWizardStep> steps, Config config, string workingDirectory)
     {
-        var configureBranchStep = this.StepFactory.CreateStep<ConfigureBranch>()!;
+        var configureBranchStep = this.StepFactory.CreateStep<ConfigureBranch>();
         switch (result)
         {
             case "0":
                 steps.Enqueue(configureBranchStep.WithData(this.name, this.branchConfig));
                 return StepResult.Ok();
             case "1":
-                this.branchConfig!.VersioningMode = VersioningMode.ContinuousDelivery;
+                this.branchConfig.VersioningMode = VersioningMode.ContinuousDelivery;
                 steps.Enqueue(configureBranchStep.WithData(name, this.branchConfig));
                 return StepResult.Ok();
             case "2":
-                this.branchConfig!.VersioningMode = VersioningMode.ContinuousDeployment;
+                this.branchConfig.VersioningMode = VersioningMode.ContinuousDeployment;
                 steps.Enqueue(configureBranchStep.WithData(name, this.branchConfig));
                 return StepResult.Ok();
         }

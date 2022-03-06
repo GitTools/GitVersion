@@ -2,6 +2,7 @@ using System.Security.Cryptography;
 using GitVersion.Cache;
 using GitVersion.Configuration;
 using GitVersion.Extensions;
+using GitVersion.Helpers;
 using GitVersion.Logging;
 using GitVersion.Model.Configuration;
 using Microsoft.Extensions.Options;
@@ -45,7 +46,7 @@ public class GitVersionCacheKeyFactory : IGitVersionCacheKeyFactory
         var dotGitDirectory = this.repositoryInfo.DotGitDirectory;
 
         // traverse the directory and get a list of files, use that for GetHash
-        var contents = CalculateDirectoryContents(Path.Combine(dotGitDirectory, "refs"));
+        var contents = CalculateDirectoryContents(PathHelper.Combine(dotGitDirectory, "refs"));
 
         return GetHash(contents.ToArray());
     }

@@ -10,15 +10,15 @@ internal sealed class MockEngine : IBuildEngine4
     private readonly ConcurrentDictionary<object, object> objectCache = new();
     private StringBuilder log = new();
 
-    internal MessageImportance MinimumMessageImportance { get; set; } = MessageImportance.Low;
+    private static MessageImportance MinimumMessageImportance => MessageImportance.Low;
 
-    internal int Messages { set; get; }
+    internal int Messages { private set; get; }
 
-    internal int Warnings { set; get; }
+    internal int Warnings { private set; get; }
 
-    internal int Errors { set; get; }
+    internal int Errors { private set; get; }
 
-    public bool IsRunningMultipleNodes { get; set; }
+    public bool IsRunningMultipleNodes => false;
 
     public void LogErrorEvent(BuildErrorEventArgs e)
     {
@@ -43,12 +43,12 @@ internal sealed class MockEngine : IBuildEngine4
     public void LogMessageEvent(BuildMessageEventArgs e)
     {
         // Only if the message is above the minimum importance should we record the log message
-        if (e.Importance <= MinimumMessageImportance)
-        {
-            Console.WriteLine(e.Message);
-            this.log.AppendLine(e.Message);
-            ++Messages;
-        }
+        if (e.Importance > MinimumMessageImportance)
+            return;
+
+        Console.WriteLine(e.Message);
+        this.log.AppendLine(e.Message);
+        ++Messages;
     }
 
     public bool ContinueOnError => false;
@@ -74,13 +74,13 @@ internal sealed class MockEngine : IBuildEngine4
     /// Case insensitive.
     /// </summary>
     /// <param name="contains"></param>
-    internal void AssertLogContains(string contains) => Log.ShouldContain(contains, Case.Insensitive);
+    internal void AssertLogContains(string contains) => Log.ShouldContain(contains);
 
     /// <summary>
     /// Assert that the log doesn't contain the given string.
     /// </summary>
     /// <param name="contains"></param>
-    internal void AssertLogDoesntContain(string contains) => Log.ShouldNotContain(contains, Case.Insensitive);
+    internal void AssertLogDoesntContain(string contains) => Log.ShouldNotContain(contains);
 
     public bool BuildProjectFilesInParallel(
         string[] projectFileNames,
@@ -108,7 +108,7 @@ internal sealed class MockEngine : IBuildEngine4
     {
     }
 
-    public object GetRegisteredTaskObject(object key, RegisteredTaskObjectLifetime lifetime)
+    public object? GetRegisteredTaskObject(object key, RegisteredTaskObjectLifetime lifetime)
     {
         this.objectCache.TryGetValue(key, out var obj);
         return obj;
@@ -116,7 +116,7 @@ internal sealed class MockEngine : IBuildEngine4
 
     public void RegisterTaskObject(object key, object obj, RegisteredTaskObjectLifetime lifetime, bool allowEarlyCollection) => this.objectCache[key] = obj;
 
-    public object UnregisterTaskObject(object key, RegisteredTaskObjectLifetime lifetime)
+    public object? UnregisterTaskObject(object key, RegisteredTaskObjectLifetime lifetime)
     {
         this.objectCache.TryRemove(key, out var obj);
         return obj;

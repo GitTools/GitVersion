@@ -35,9 +35,14 @@ internal static class StringFormatWithExtension
     /// </example>
     public static string FormatWith<T>(this string template, T? source, IEnvironment environment)
     {
-        if (template == null)
+        if (template is null)
         {
             throw new ArgumentNullException(nameof(template));
+        }
+
+        if (source is null)
+        {
+            throw new ArgumentNullException(nameof(source));
         }
 
         foreach (Match match in TokensRegex.Matches(template))
@@ -53,7 +58,7 @@ internal static class StringFormatWithExtension
             }
             else
             {
-                var objType = source?.GetType();
+                var objType = source.GetType();
                 string memberAccessExpression = match.Groups["member"].Value;
                 var expression = CompileDataBinder(objType, memberAccessExpression);
                 // It would be better to throw if the expression and fallback produce null, but provide an empty string for back compat.
@@ -66,7 +71,7 @@ internal static class StringFormatWithExtension
         return template;
     }
 
-    private static Func<object?, object> CompileDataBinder(Type? type, string expr)
+    private static Func<object?, object> CompileDataBinder(Type type, string expr)
     {
         ParameterExpression param = Expression.Parameter(typeof(object));
         Expression body = Expression.Convert(param, type);

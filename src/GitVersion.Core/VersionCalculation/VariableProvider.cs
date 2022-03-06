@@ -26,9 +26,9 @@ public class VariableProvider : IVariableProvider
         {
             semanticVersion = new SemanticVersion(semanticVersion);
             // Continuous Deployment always requires a pre-release tag unless the commit is tagged
-            if (semanticVersion.PreReleaseTag?.HasTag() != true)
+            if (semanticVersion.PreReleaseTag != null && semanticVersion.PreReleaseTag.HasTag() != true)
             {
-                semanticVersion.PreReleaseTag!.Name = config.GetBranchSpecificTag(this.log, semanticVersion.BuildMetaData?.Branch, null);
+                semanticVersion.PreReleaseTag.Name = config.GetBranchSpecificTag(this.log, semanticVersion.BuildMetaData?.Branch, null);
                 if (semanticVersion.PreReleaseTag.Name.IsNullOrEmpty())
                 {
                     semanticVersion.PreReleaseTag.Name = config.ContinuousDeploymentFallbackTag;
@@ -40,11 +40,14 @@ public class VariableProvider : IVariableProvider
         var appendTagNumberPattern = !config.TagNumberPattern.IsNullOrEmpty() && semanticVersion.PreReleaseTag?.HasTag() == true;
         if (appendTagNumberPattern)
         {
-            var match = Regex.Match(semanticVersion.BuildMetaData!.Branch, config.TagNumberPattern);
-            var numberGroup = match.Groups["number"];
-            if (numberGroup.Success)
+            if (semanticVersion.BuildMetaData?.Branch != null && config.TagNumberPattern != null)
             {
-                semanticVersion.PreReleaseTag!.Name += numberGroup.Value.PadLeft(config.BuildMetaDataPadding, '0');
+                var match = Regex.Match(semanticVersion.BuildMetaData.Branch, config.TagNumberPattern);
+                var numberGroup = match.Groups["number"];
+                if (numberGroup.Success && semanticVersion.PreReleaseTag != null)
+                {
+                    semanticVersion.PreReleaseTag.Name += numberGroup.Value.PadLeft(config.BuildMetaDataPadding, '0');
+                }
             }
         }
 
@@ -101,26 +104,29 @@ public class VariableProvider : IVariableProvider
 
     private static void PromoteNumberOfCommitsToTagNumber(SemanticVersion semanticVersion)
     {
-        // For continuous deployment the commits since tag gets promoted to the pre-release number
-        if (!semanticVersion.BuildMetaData!.CommitsSinceTag.HasValue)
+        if (semanticVersion.PreReleaseTag != null && semanticVersion.BuildMetaData != null)
         {
-            semanticVersion.PreReleaseTag!.Number = null;
-            semanticVersion.BuildMetaData.CommitsSinceVersionSource = 0;
-        }
-        else
-        {
-            // Number of commits since last tag should be added to PreRelease number if given. Remember to deduct automatic version bump.
-            if (semanticVersion.PreReleaseTag!.Number.HasValue)
+            // For continuous deployment the commits since tag gets promoted to the pre-release number
+            if (!semanticVersion.BuildMetaData.CommitsSinceTag.HasValue)
             {
-                semanticVersion.PreReleaseTag.Number += semanticVersion.BuildMetaData.CommitsSinceTag - 1;
+                semanticVersion.PreReleaseTag.Number = null;
+                semanticVersion.BuildMetaData.CommitsSinceVersionSource = 0;
             }
             else
             {
-                semanticVersion.PreReleaseTag.Number = semanticVersion.BuildMetaData.CommitsSinceTag;
-                semanticVersion.PreReleaseTag.PromotedFromCommits = true;
+                // Number of commits since last tag should be added to PreRelease number if given. Remember to deduct automatic version bump.
+                if (semanticVersion.PreReleaseTag.Number.HasValue)
+                {
+                    semanticVersion.PreReleaseTag.Number += semanticVersion.BuildMetaData.CommitsSinceTag - 1;
+                }
+                else
+                {
+                    semanticVersion.PreReleaseTag.Number = semanticVersion.BuildMetaData.CommitsSinceTag;
+                    semanticVersion.PreReleaseTag.PromotedFromCommits = true;
+                }
+                semanticVersion.BuildMetaData.CommitsSinceVersionSource = semanticVersion.BuildMetaData.CommitsSinceTag.Value;
+                semanticVersion.BuildMetaData.CommitsSinceTag = null; // why is this set to null ?
             }
-            semanticVersion.BuildMetaData.CommitsSinceVersionSource = semanticVersion.BuildMetaData.CommitsSinceTag.Value;
-            semanticVersion.BuildMetaData.CommitsSinceTag = null; // why is this set to null ?
         }
     }
 
