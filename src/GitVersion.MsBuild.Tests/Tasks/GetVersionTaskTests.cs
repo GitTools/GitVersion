@@ -61,6 +61,8 @@ public class GetVersionTaskTests : TestTaskBase
     [TestCase(nameof(VersionVariables.Patch), "4")]
     [TestCase(nameof(VersionVariables.MajorMinorPatch), "1.2.4")]
     [TestCase(nameof(VersionVariables.FullSemVer), "1.2.4+1")]
+    [Category(NoNet48)]
+    [Category(NoMono)]
     public void GetVersionTaskShouldReturnVersionOutputVariablesWhenRunWithMsBuild(string outputProperty, string version)
     {
         const string taskName = nameof(GetVersion);
@@ -80,6 +82,8 @@ public class GetVersionTaskTests : TestTaskBase
     [TestCase(nameof(VersionVariables.Patch), "1")]
     [TestCase(nameof(VersionVariables.MajorMinorPatch), "1.0.1")]
     [TestCase(nameof(VersionVariables.FullSemVer), "1.0.1+1")]
+    [Category(NoNet48)]
+    [Category(NoMono)]
     public void GetVersionTaskShouldReturnVersionOutputVariablesWhenRunWithMsBuildInBuildServer(string outputProperty, string version)
     {
         const string taskName = nameof(GetVersion);

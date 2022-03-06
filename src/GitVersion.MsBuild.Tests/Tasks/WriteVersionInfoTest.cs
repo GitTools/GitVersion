@@ -89,6 +89,8 @@ public class WriteVersionInfoTest : TestTaskBase
     }
 
     [Test]
+    [Category(NoNet48)]
+    [Category(NoMono)]
     public void WriteVersionInfoTaskShouldNotLogOutputVariablesToBuildOutputWhenRunWithMsBuild()
     {
         const string taskName = nameof(WriteVersionInfoToBuildLog);
@@ -104,6 +106,8 @@ public class WriteVersionInfoTest : TestTaskBase
     }
 
     [Test]
+    [Category(NoNet48)]
+    [Category(NoMono)]
     public void WriteVersionInfoTaskShouldLogOutputVariablesToBuildOutputWhenRunWithMsBuildInAzurePipeline()
     {
         const string taskName = nameof(WriteVersionInfoToBuildLog);

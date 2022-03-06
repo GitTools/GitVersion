@@ -10,7 +10,10 @@ namespace GitVersion.Core.Tests.IntegrationTests;
 [TestFixture]
 public class WorktreeScenarios : TestBase
 {
+
     [Test]
+    [Category(NoMono)]
+    [Description(NoMonoDescription)]
     public void UseWorktreeRepositoryForVersion()
     {
         using var fixture = new EmptyRepositoryFixture();

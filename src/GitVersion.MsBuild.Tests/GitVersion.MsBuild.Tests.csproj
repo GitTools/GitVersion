@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFrameworks>netcoreapp3.1;net6.0</TargetFrameworks>
+        <TargetFrameworks>net48;netcoreapp3.1;net6.0</TargetFrameworks>
 
         <IsTestProject>true</IsTestProject>
     </PropertyGroup>
@@ -12,7 +12,7 @@
         <PackageReference Include="Microsoft.Build" Version="16.9.0" />
     </ItemGroup>
 
-    <ItemGroup Condition=" '$(TargetFramework)' == 'net6.0' ">
+    <ItemGroup Condition=" '$(TargetFramework)' == 'net48' or '$(TargetFramework)' == 'net6.0' ">
         <PackageReference Include="Buildalyzer" Version="3.2.8" />
         <PackageReference Include="MSBuild.ProjectCreation" Version="6.3.3" />
         <PackageReference Include="Microsoft.Build" Version="$(PackageVersion_MsBuild)" />
@@ -30,6 +30,7 @@
     <ItemGroup>
         <Compile Include="..\GitVersion.Core.Tests\Helpers\DirectoryHelper.cs" Link="Helpers\DirectoryHelper.cs" />
         <Compile Include="..\GitVersion.Core.Tests\Helpers\GitVersionCoreTestModule.cs" Link="Helpers\GitVersionCoreTestModule.cs" />
+        <Compile Include="..\GitVersion.Core.Tests\Helpers\RuntimeHelper.cs" Link="Helpers\RuntimeHelper.cs" />
         <Compile Include="..\GitVersion.Core.Tests\Helpers\ExecutableHelper.cs" Link="Helpers\ExecutableHelper.cs" />
         <Compile Include="..\GitVersion.Core.Tests\Helpers\TestBase.cs" Link="Helpers\TestBase.cs" />
         <Compile Include="..\GitVersion.Core.Tests\Helpers\TestEffectiveConfiguration.cs" Link="Helpers\TestEffectiveConfiguration.cs" />
