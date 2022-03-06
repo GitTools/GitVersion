@@ -48,8 +48,6 @@ public class VariableProviderTests : TestBase
     }
 
     [Test]
-    [Category(NoMono)]
-    [Description(NoMonoDescription)]
     public void ProvidesVariablesInContinuousDeliveryModeForPreRelease()
     {
         var semVer = new SemanticVersion
@@ -75,8 +73,6 @@ public class VariableProviderTests : TestBase
     }
 
     [Test]
-    [Category(NoMono)]
-    [Description(NoMonoDescription)]
     public void ProvidesVariablesInContinuousDeliveryModeForPreReleaseWithPadding()
     {
         var semVer = new SemanticVersion
@@ -102,8 +98,6 @@ public class VariableProviderTests : TestBase
     }
 
     [Test]
-    [Category(NoMono)]
-    [Description(NoMonoDescription)]
     public void ProvidesVariablesInContinuousDeploymentModeForPreRelease()
     {
         var semVer = new SemanticVersion
@@ -128,8 +122,6 @@ public class VariableProviderTests : TestBase
     }
 
     [Test]
-    [Category(NoMono)]
-    [Description(NoMonoDescription)]
     public void ProvidesVariablesInContinuousDeliveryModeForStable()
     {
         var semVer = new SemanticVersion
@@ -153,8 +145,6 @@ public class VariableProviderTests : TestBase
     }
 
     [Test]
-    [Category(NoMono)]
-    [Description(NoMonoDescription)]
     public void ProvidesVariablesInContinuousDeploymentModeForStable()
     {
         var semVer = new SemanticVersion
@@ -178,8 +168,6 @@ public class VariableProviderTests : TestBase
     }
 
     [Test]
-    [Category(NoMono)]
-    [Description(NoMonoDescription)]
     public void ProvidesVariablesInContinuousDeploymentModeForStableWhenCurrentCommitIsTagged()
     {
         var semVer = new SemanticVersion
@@ -251,8 +239,6 @@ public class VariableProviderTests : TestBase
     }
 
     [Test]
-    [Category(NoMono)]
-    [Description(NoMonoDescription)]
     public void ProvidesVariablesInContinuousDeliveryModeForFeatureBranch()
     {
         var semVer = new SemanticVersion
@@ -278,8 +264,6 @@ public class VariableProviderTests : TestBase
     }
 
     [Test]
-    [Category(NoMono)]
-    [Description(NoMonoDescription)]
     public void ProvidesVariablesInContinuousDeliveryModeForFeatureBranchWithCustomAssemblyInfoFormat()
     {
         var semVer = new SemanticVersion
