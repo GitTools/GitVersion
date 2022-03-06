@@ -9,10 +9,6 @@
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
     </PropertyGroup>
 
-    <PropertyGroup Condition=" '$(PackAsTool)' != 'true'">
-        <TargetFrameworks>net48;$(TargetFrameworks);</TargetFrameworks>
-    </PropertyGroup>
-
     <!-- workaround for https://github.com/dotnet/runtime/issues/49508 -->
     <PropertyGroup Condition=" '$(OsxArm64)' == 'true'">
         <TargetFrameworks>net6.0</TargetFrameworks>
@@ -24,11 +20,6 @@
         <RollForward>LatestMajor</RollForward>
         <PackageDescription>Derives SemVer information from a repository following GitFlow or GitHubFlow. This is the .NET Core Global Tool allowing usage of GitVersion from command line.</PackageDescription>
     </PropertyGroup>
-
-    <ItemGroup Condition="'$(TargetFramework)'=='net48'">
-        <PackageReference Include="JetBrains.Annotations" Version="$(PackageVersion_JetBrainsAnnotations)" />
-        <PackageReference Include="LibGit2Sharp.NativeBinaries" Version="$(PackageVersion_LibGit2Sharp_NativeBinaries)" />
-    </ItemGroup>
 
     <ItemGroup>
         <PackageReference Include="System.Text.Json" Version="$(PackageVersion_MicrosoftJson)" />

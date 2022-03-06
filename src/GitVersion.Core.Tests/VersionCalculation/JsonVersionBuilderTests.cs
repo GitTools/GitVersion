@@ -13,8 +13,6 @@ public class JsonVersionBuilderTests : TestBase
     public void Setup() => ShouldlyConfiguration.ShouldMatchApprovedDefaults.LocateTestMethodUsingAttribute<TestAttribute>();
 
     [Test]
-    [Category(NoMono)]
-    [Description(NoMonoDescription)]
     public void Json()
     {
         var semanticVersion = new SemanticVersion

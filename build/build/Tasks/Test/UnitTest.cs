@@ -8,7 +8,7 @@ namespace Build.Tasks;
 
 [TaskName(nameof(UnitTest))]
 [TaskDescription("Run the unit tests")]
-[TaskArgument(Arguments.DotnetTarget, Constants.NetVersion60, Constants.CoreFxVersion31, Constants.FullFxVersion48)]
+[TaskArgument(Arguments.DotnetTarget, Constants.NetVersion60, Constants.CoreFxVersion31)]
 [IsDependentOn(typeof(Build))]
 public class UnitTest : FrostingTask<BuildContext>
 {
@@ -17,7 +17,7 @@ public class UnitTest : FrostingTask<BuildContext>
     public override void Run(BuildContext context)
     {
         var dotnetTarget = context.Argument(Arguments.DotnetTarget, string.Empty);
-        var frameworks = new[] { Constants.CoreFxVersion31, Constants.FullFxVersion48, Constants.NetVersion60 };
+        var frameworks = new[] { Constants.CoreFxVersion31, Constants.NetVersion60 };
         if (!string.IsNullOrWhiteSpace(dotnetTarget))
         {
             if (!frameworks.Contains(dotnetTarget, StringComparer.OrdinalIgnoreCase))
@@ -86,11 +86,6 @@ public class UnitTest : FrostingTask<BuildContext>
             CoverletOutputName = $"{projectName}.coverage.xml",
             Exclude = new List<string> { "[GitVersion*.Tests]*", "[GitTools.Testing]*" }
         };
-
-        if (string.Equals(framework, Constants.FullFxVersion48))
-        {
-            settings.Filter = context.IsRunningOnUnix() ? $"TestCategory!={Constants.NoMono}" : $"TestCategory!={Constants.NoNet48}";
-        }
 
         context.DotNetTest(project.FullPath, settings, coverletSettings);
     }
