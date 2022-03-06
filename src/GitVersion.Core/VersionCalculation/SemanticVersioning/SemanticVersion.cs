@@ -63,11 +63,7 @@ public class SemanticVersion : IFormattable, IComparable<SemanticVersion>, IEqua
         {
             return true;
         }
-        if (obj.GetType() != GetType())
-        {
-            return false;
-        }
-        return Equals((SemanticVersion)obj);
+        return obj.GetType() == GetType() && Equals((SemanticVersion)obj);
     }
 
     public override int GetHashCode()
@@ -210,9 +206,9 @@ public class SemanticVersion : IFormattable, IComparable<SemanticVersion>, IEqua
             }
             return -1;
         }
-        if (includePrerelease && this.PreReleaseTag != value?.PreReleaseTag)
+        if (includePrerelease && this.PreReleaseTag != value.PreReleaseTag)
         {
-            if (this.PreReleaseTag > value?.PreReleaseTag)
+            if (this.PreReleaseTag > value.PreReleaseTag)
             {
                 return 1;
             }
@@ -235,7 +231,7 @@ public class SemanticVersion : IFormattable, IComparable<SemanticVersion>, IEqua
     /// <para>l - Legacy SemVer tag for systems which do not support SemVer 2.0 properly [1.2.3-beta4]</para>
     /// <para>lp - Legacy SemVer tag for systems which do not support SemVer 2.0 properly (padded) [1.2.3-beta0004]</para>
     /// </summary>
-    public string ToString(string format, IFormatProvider formatProvider)
+    public string ToString(string? format, IFormatProvider? formatProvider)
     {
         if (format.IsNullOrEmpty())
             format = "s";

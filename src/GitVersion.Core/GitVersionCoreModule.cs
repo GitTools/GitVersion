@@ -32,9 +32,9 @@ public class GitVersionCoreModule : IGitVersionModule
         services.AddSingleton<IGitVersionContextFactory, GitVersionContextFactory>();
         services.AddSingleton(sp =>
         {
-            var options = sp.GetService<IOptions<GitVersionOptions>>();
-            var contextFactory = sp.GetService<IGitVersionContextFactory>();
-            return new Lazy<GitVersionContext?>(() => contextFactory?.Create(options?.Value));
+            var options = sp.GetRequiredService<IOptions<GitVersionOptions>>();
+            var contextFactory = sp.GetRequiredService<IGitVersionContextFactory>();
+            return new Lazy<GitVersionContext>(() => contextFactory.Create(options.Value));
         });
 
         services.AddModule(new BuildServerModule());

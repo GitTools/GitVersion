@@ -69,6 +69,7 @@ public class GitPreparer : IGitPreparer
         else
         {
             if (!normalizeGitDirectory) return;
+
             if (shouldCleanUpRemotes)
             {
                 CleanupDuplicateOrigin();
@@ -187,8 +188,7 @@ public class GitPreparer : IGitPreparer
             var currentBranch = this.repositoryStore.FindBranch(currentBranchName);
             // Bug fix for https://github.com/GitTools/GitVersion/issues/1754, head maybe have been changed
             // if this is a dynamic repository. But only allow this in case the branches are different (branch switch)
-            if (expectedSha != this.repository.Head.Tip?.Sha &&
-                (isDynamicRepository || currentBranch is null || !this.repository.Head.Equals(currentBranch)))
+            if (expectedSha != this.repository.Head.Tip?.Sha && (isDynamicRepository || currentBranch is null || !this.repository.Head.Equals(currentBranch)))
             {
                 var newExpectedSha = this.repository.Head.Tip?.Sha;
                 var newExpectedBranchName = this.repository.Head.Name.Canonical;
@@ -318,25 +318,31 @@ Please run `git {GitExtensions.CreateGitLogArgs(100)}` and submit it along with 
             // We do not want to touch our current branch
             if (this.repository.Head.Name.EquivalentTo(branchName)) continue;
 
-            if (this.repository.Refs[localReferenceName] is not null)
+            var localRef = this.repository.Refs[localReferenceName];
+            if (localRef != null)
             {
-                var localRef = this.repository.Refs[localReferenceName]!;
                 if (localRef.TargetIdentifier == remoteTrackingReference.TargetIdentifier)
                 {
                     this.log.Info($"Skipping update of '{remoteTrackingReference.Name.Canonical}' as it already matches the remote ref.");
                     continue;
                 }
-                var remoteRefTipId = remoteTrackingReference.ReferenceTargetId!;
-                this.log.Info($"Updating local ref '{localRef.Name.Canonical}' to point at {remoteRefTipId}.");
-                this.retryAction.Execute(() => this.repository.Refs.UpdateTarget(localRef, remoteRefTipId));
+                var remoteRefTipId = remoteTrackingReference.ReferenceTargetId;
+                if (remoteRefTipId != null)
+                {
+                    this.log.Info($"Updating local ref '{localRef.Name.Canonical}' to point at {remoteRefTipId}.");
+                    this.retryAction.Execute(() => this.repository.Refs.UpdateTarget(localRef, remoteRefTipId));
+                }
                 continue;
             }
 
             this.log.Info($"Creating local branch from remote tracking '{remoteTrackingReference.Name.Canonical}'.");
             this.repository.Refs.Add(localReferenceName.Canonical, remoteTrackingReference.TargetIdentifier, true);
 
-            var branch = this.repository.Branches[branchName]!;
-            this.repository.Branches.UpdateTrackedBranch(branch, remoteTrackingReferenceName);
+            var branch = this.repository.Branches[branchName];
+            if (branch != null)
+            {
+                this.repository.Branches.UpdateTrackedBranch(branch, remoteTrackingReferenceName);
+            }
         }
     }
 
@@ -367,23 +373,29 @@ Please run `git {GitExtensions.CreateGitLogArgs(100)}` and submit it along with 
             repoTip = originBranch.Tip;
         }
 
-        var repoTipId = repoTip!.Id;
+        var repoTipId = repoTip?.Id;
 
-        var referenceName = ReferenceName.Parse(localCanonicalName);
-        if (this.repository.Branches.All(b => !b.Name.Equals(referenceName)))
+        if (repoTipId != null)
         {
-            this.log.Info(isBranch ? $"Creating local branch {referenceName}"
-                : $"Creating local branch {referenceName} pointing at {repoTipId}");
-            this.repository.Refs.Add(localCanonicalName, repoTipId.Sha);
+            var referenceName = ReferenceName.Parse(localCanonicalName);
+            if (this.repository.Branches.All(b => !b.Name.Equals(referenceName)))
+            {
+                this.log.Info(isBranch
+                    ? $"Creating local branch {referenceName}"
+                    : $"Creating local branch {referenceName} pointing at {repoTipId}");
+                this.repository.Refs.Add(localCanonicalName, repoTipId.Sha);
+            }
+            else
+            {
+                this.log.Info(isBranch ? $"Updating local branch {referenceName} to point at {repoTip}"
+                    : $"Updating local branch {referenceName} to match ref {currentBranch}");
+                var localRef = this.repository.Refs[localCanonicalName];
+                if (localRef != null)
+                {
+                    this.retryAction.Execute(() => this.repository.Refs.UpdateTarget(localRef, repoTipId));
+                }
+            }
         }
-        else
-        {
-            this.log.Info(isBranch ? $"Updating local branch {referenceName} to point at {repoTip}"
-                : $"Updating local branch {referenceName} to match ref {currentBranch}");
-            var localRef = this.repository.Refs[localCanonicalName]!;
-            this.retryAction.Execute(() => this.repository.Refs.UpdateTarget(localRef, repoTipId));
-        }
-
         Checkout(localCanonicalName);
     }
 

@@ -7,17 +7,17 @@ namespace GitVersion.Configuration.Init.SetConfig;
 
 public class SetBranchTag : ConfigInitWizardStep
 {
-    private string? name;
-    private BranchConfig? branchConfig;
+    private string name;
+    private BranchConfig branchConfig;
 
     public SetBranchTag(IConsole console, IFileSystem fileSystem, ILog log, IConfigInitStepFactory stepFactory) : base(console, fileSystem, log, stepFactory)
     {
     }
 
-    public SetBranchTag WithData(string? name, BranchConfig? branchConfig)
+    public SetBranchTag WithData(string configName, BranchConfig config)
     {
-        this.branchConfig = branchConfig;
-        this.name = name;
+        this.branchConfig = config;
+        this.name = configName;
         return this;
     }
 
@@ -28,18 +28,18 @@ public class SetBranchTag : ConfigInitWizardStep
             return StepResult.InvalidResponseSelected();
         }
 
-        var configureBranchStep = this.StepFactory.CreateStep<ConfigureBranch>()!;
+        var configureBranchStep = this.StepFactory.CreateStep<ConfigureBranch>();
         switch (result)
         {
             case "0":
                 steps.Enqueue(configureBranchStep.WithData(this.name, this.branchConfig));
                 return StepResult.Ok();
             case "1":
-                this.branchConfig!.Tag = string.Empty;
+                this.branchConfig.Tag = string.Empty;
                 steps.Enqueue(configureBranchStep.WithData(name, this.branchConfig));
                 return StepResult.Ok();
             default:
-                this.branchConfig!.Tag = result;
+                this.branchConfig.Tag = result;
                 steps.Enqueue(configureBranchStep.WithData(name, this.branchConfig));
                 return StepResult.Ok();
         }

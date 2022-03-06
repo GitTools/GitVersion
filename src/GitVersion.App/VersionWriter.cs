@@ -10,13 +10,13 @@ public class VersionWriter : IVersionWriter
     public VersionWriter(IConsole console) => this.console = console.NotNull();
     public void Write(Assembly assembly) => WriteTo(assembly, this.console.WriteLine);
 
-    public void WriteTo(Assembly assembly, Action<string> writeAction)
+    public void WriteTo(Assembly assembly, Action<string?> writeAction)
     {
         var version = GetAssemblyVersion(assembly);
         writeAction(version);
     }
 
-    private static string GetAssemblyVersion(Assembly assembly)
+    private static string? GetAssemblyVersion(Assembly assembly)
     {
         if (assembly
             .GetCustomAttributes(typeof(AssemblyInformationalVersionAttribute), false)
@@ -25,6 +25,6 @@ public class VersionWriter : IVersionWriter
             return attribute.InformationalVersion;
         }
 
-        return assembly.GetName().Version.ToString();
+        return assembly.GetName().Version?.ToString();
     }
 }

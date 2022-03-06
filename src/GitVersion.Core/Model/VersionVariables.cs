@@ -158,7 +158,7 @@ public class VersionVariables : IEnumerable<KeyValuePair<string, string>>
         }
         catch (AggregateException ex)
         {
-            var lastException = ex.InnerExceptions?.LastOrDefault() ?? ex.InnerException;
+            var lastException = ex.InnerExceptions.LastOrDefault() ?? ex.InnerException;
             if (lastException != null)
             {
                 throw lastException;
@@ -195,9 +195,9 @@ public class VersionVariables : IEnumerable<KeyValuePair<string, string>>
         var variablesType = typeof(VersionVariablesJsonModel);
         var variables = new VersionVariablesJsonModel();
 
-        foreach (KeyValuePair<string, string> property in this.GetProperties())
+        foreach (var (key, value) in this.GetProperties())
         {
-            variablesType.GetProperty(property.Key)?.SetValue(variables, property.Value);
+            variablesType.GetProperty(key)?.SetValue(variables, value);
         }
 
         var serializeOptions = JsonSerializerOptions();

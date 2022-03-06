@@ -13,7 +13,7 @@ public class SetNextVersion : ConfigInitWizardStep
 
     protected override StepResult HandleResult(string? result, Queue<ConfigInitWizardStep> steps, Config config, string workingDirectory)
     {
-        var editConfigStep = this.StepFactory.CreateStep<EditConfigStep>()!;
+        var editConfigStep = this.StepFactory.CreateStep<EditConfigStep>();
         if (result.IsNullOrEmpty())
         {
             steps.Enqueue(editConfigStep);
@@ -28,7 +28,7 @@ public class SetNextVersion : ConfigInitWizardStep
         return StepResult.Ok();
     }
 
-    protected override string GetPrompt(Config config, string workingDirectory) => @"What would you like to set the next version to (enter nothing to cancel)?";
+    protected override string GetPrompt(Config config, string workingDirectory) => "What would you like to set the next version to (enter nothing to cancel)?";
 
     protected override string? DefaultResult => null;
 }

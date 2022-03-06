@@ -13,11 +13,11 @@ public class TestConsole : IConsole
         this.responses = new Queue<string>(responses);
     }
 
-    public void WriteLine(string msg) => this.log.Info(msg + System.Environment.NewLine);
+    public void WriteLine(string? msg) => this.log.Info(msg + System.Environment.NewLine);
 
     public void WriteLine() => this.log.Info(System.Environment.NewLine);
 
-    public void Write(string msg) => this.log.Info(msg);
+    public void Write(string? msg) => this.log.Info(msg ?? throw new ArgumentNullException(nameof(msg)));
 
     public string ReadLine() => this.responses.Dequeue();
 

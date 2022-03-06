@@ -38,10 +38,12 @@ public class Jenkins : BuildAgentBase
 
     public override void WriteIntegration(Action<string?> writer, VersionVariables variables, bool updateBuildNumber = true)
     {
+        if (this.file is null)
+            return;
+
         base.WriteIntegration(writer, variables, updateBuildNumber);
         writer($"Outputting variables to '{this.file}' ... ");
-        WriteVariablesFile(variables);
+        File.WriteAllLines(this.file, GenerateBuildLogOutput(variables));
     }
 
-    private void WriteVariablesFile(VersionVariables variables) => File.WriteAllLines(this.file, GenerateBuildLogOutput(variables));
 }

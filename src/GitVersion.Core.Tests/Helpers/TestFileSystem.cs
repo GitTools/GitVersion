@@ -53,35 +53,33 @@ public class TestFileSystem : IFileSystem
         return encoding.GetString(content);
     }
 
-    public void WriteAllText(string file, string fileContents)
+    public void WriteAllText(string? file, string fileContents)
     {
-        var path = Path.GetFullPath(file);
+        var path = Path.GetFullPath(file ?? throw new ArgumentNullException(nameof(file)));
         var encoding = this.fileSystem.ContainsKey(path)
             ? EncodingHelper.DetectEncoding(this.fileSystem[path]) ?? Encoding.UTF8
             : Encoding.UTF8;
         WriteAllText(path, fileContents, encoding);
     }
 
-    public void WriteAllText(string file, string fileContents, Encoding encoding)
+    public void WriteAllText(string? file, string fileContents, Encoding encoding)
     {
-        var path = Path.GetFullPath(file);
+        var path = Path.GetFullPath(file ?? throw new ArgumentNullException(nameof(file)));
         this.fileSystem[path] = encoding.GetBytes(fileContents);
     }
 
-    public IEnumerable<string> DirectoryEnumerateFiles(string directory, string searchPattern, SearchOption searchOption) => throw new NotImplementedException();
+    public IEnumerable<string> DirectoryEnumerateFiles(string? directory, string searchPattern, SearchOption searchOption) => throw new NotImplementedException();
 
     public Stream OpenWrite(string path) => new TestStream(path, this);
 
     public Stream OpenRead(string path)
     {
         var fullPath = Path.GetFullPath(path);
-        if (this.fileSystem.ContainsKey(fullPath))
-        {
-            var content = this.fileSystem[fullPath];
-            return new MemoryStream(content);
-        }
+        if (!this.fileSystem.ContainsKey(fullPath))
+            throw new FileNotFoundException("File not found.", fullPath);
 
-        throw new FileNotFoundException("File not found.", fullPath);
+        var content = this.fileSystem[fullPath];
+        return new MemoryStream(content);
     }
 
     public void CreateDirectory(string path)
@@ -105,8 +103,8 @@ public class TestFileSystem : IFileSystem
 
     public long GetLastDirectoryWrite(string path) => 1;
 
-    public bool PathsEqual(string path, string otherPath) => string.Equals(
-        Path.GetFullPath(path).TrimEnd('\\').TrimEnd('/'),
-        Path.GetFullPath(otherPath).TrimEnd('\\').TrimEnd('/'),
+    public bool PathsEqual(string? path, string? otherPath) => string.Equals(
+        Path.GetFullPath(path ?? throw new ArgumentNullException(nameof(path))).TrimEnd('\\').TrimEnd('/'),
+        Path.GetFullPath(otherPath ?? throw new ArgumentNullException(nameof(otherPath))).TrimEnd('\\').TrimEnd('/'),
         StringComparerUtils.OsDependentComparison);
 }

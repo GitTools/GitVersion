@@ -1,15 +1,16 @@
 using GitVersion.Model.Configuration;
+using YamlDotNet.Serialization;
 
 namespace GitVersion;
 
 internal class OverrideConfigOptionParser
 {
-    private static readonly Lazy<ILookup<string, PropertyInfo>> _lazySupportedProperties =
+    private static readonly Lazy<ILookup<string?, PropertyInfo>> _lazySupportedProperties =
         new(GetSupportedProperties, true);
 
     private readonly Lazy<Config> lazyConfig = new();
 
-    internal static ILookup<string, PropertyInfo> SupportedProperties => _lazySupportedProperties.Value;
+    internal static ILookup<string?, PropertyInfo> SupportedProperties => _lazySupportedProperties.Value;
 
     /// <summary>
     /// Dynamically creates <see cref="System.Linq.ILookup{TKey, TElement}"/> of
@@ -20,14 +21,14 @@ internal class OverrideConfigOptionParser
     /// Lookup keys are created from <see cref="YamlDotNet.Serialization.YamlMemberAttribute"/> to match 'GitVersion.yml'
     /// options as close as possible.
     /// </remarks>
-    private static ILookup<string, PropertyInfo> GetSupportedProperties() => typeof(Config).GetProperties(BindingFlags.Public | BindingFlags.Instance)
+    private static ILookup<string?, PropertyInfo> GetSupportedProperties() => typeof(Config).GetProperties(BindingFlags.Public | BindingFlags.Instance)
         .Where(
             pi => IsSupportedPropertyType(pi.PropertyType)
                   && pi.CanWrite
-                  && pi.GetCustomAttributes(typeof(YamlDotNet.Serialization.YamlMemberAttribute), false).Length > 0
+                  && pi.GetCustomAttributes(typeof(YamlMemberAttribute), false).Length > 0
         )
         .ToLookup(
-            pi => (pi.GetCustomAttributes(typeof(YamlDotNet.Serialization.YamlMemberAttribute), false)[0] as YamlDotNet.Serialization.YamlMemberAttribute)?.Alias,
+            pi => (pi.GetCustomAttributes(typeof(YamlMemberAttribute), false)[0] as YamlMemberAttribute)?.Alias,
             pi => pi
         );
 
@@ -96,5 +97,5 @@ internal class OverrideConfigOptionParser
         }
     }
 
-    internal Config GetConfig() => this.lazyConfig.IsValueCreated ? this.lazyConfig.Value : null;
+    internal Config? GetConfig() => this.lazyConfig.IsValueCreated ? this.lazyConfig.Value : null;
 }

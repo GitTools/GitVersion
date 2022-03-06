@@ -168,7 +168,7 @@ public class StringFormatWithExtensionTests
     [Test]
     public void FormatProperty_NullObject()
     {
-        var propertyObject = new { Property = (object)null };
+        var propertyObject = new { Property = (object?)null };
         const string target = "{Property}";
         var actual = target.FormatWith(propertyObject, this.environment);
         Assert.That(actual, Is.EqualTo(""));
@@ -204,7 +204,7 @@ public class StringFormatWithExtensionTests
     [Test]
     public void FormatProperty_NullObject_WithFallback()
     {
-        var propertyObject = new { Property = (object)null };
+        var propertyObject = new { Property = (object?)null };
         const string target = "{Property ?? fallback}";
         var actual = target.FormatWith(propertyObject, this.environment);
         Assert.That(actual, Is.EqualTo("fallback"));
@@ -222,7 +222,7 @@ public class StringFormatWithExtensionTests
     [Test]
     public void FormatProperty_NullObject_WithFallback_Quoted()
     {
-        var propertyObject = new { Property = (object)null };
+        var propertyObject = new { Property = (object?)null };
         const string target = "{Property ?? \"fallback\"}";
         var actual = target.FormatWith(propertyObject, this.environment);
         Assert.That(actual, Is.EqualTo("fallback"));
@@ -231,7 +231,7 @@ public class StringFormatWithExtensionTests
     [Test]
     public void FormatProperty_NullObject_WithFallback_QuotedAndPadded()
     {
-        var propertyObject = new { Property = (object)null };
+        var propertyObject = new { Property = (object?)null };
         const string target = "{Property ?? \" fallback \"}";
         var actual = target.FormatWith(propertyObject, this.environment);
         Assert.That(actual, Is.EqualTo(" fallback "));
@@ -240,7 +240,7 @@ public class StringFormatWithExtensionTests
     [Test]
     public void FormatProperty_NullObject_WithFallback_QuotedAndEmpty()
     {
-        var propertyObject = new { Property = (object)null };
+        var propertyObject = new { Property = (object?)null };
         const string target = "{Property ?? \"\"}";
         var actual = target.FormatWith(propertyObject, this.environment);
         Assert.That(actual, Is.EqualTo(""));

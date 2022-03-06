@@ -52,7 +52,7 @@ public class BranchConfigurationCalculator : IBranchConfigurationCalculator
         if (matchingBranches.Increment == IncrementStrategy.Inherit)
         {
             matchingBranches = InheritBranchConfiguration(recursions, targetBranch, matchingBranches, currentCommit, configuration, excludedInheritBranches);
-            if (matchingBranches.Name!.IsEquivalentTo(FallbackConfigName) && matchingBranches.Increment == IncrementStrategy.Inherit)
+            if (matchingBranches.Name.IsEquivalentTo(FallbackConfigName) && matchingBranches.Increment == IncrementStrategy.Inherit)
             {
                 // We tried, and failed to inherit, just fall back to patch
                 matchingBranches.Increment = IncrementStrategy.Patch;
@@ -72,10 +72,13 @@ public class BranchConfigurationCalculator : IBranchConfigurationCalculator
 
             var excludedBranches = new[] { targetBranch };
             // Check if we are a merge commit. If so likely we are a pull request
-            var parentCount = currentCommit?.Parents.Count();
-            if (parentCount == 2)
+            if (currentCommit != null)
             {
-                excludedBranches = CalculateWhenMultipleParents(currentCommit!, ref targetBranch, excludedBranches);
+                var parentCount = currentCommit.Parents.Count();
+                if (parentCount == 2)
+                {
+                    excludedBranches = CalculateWhenMultipleParents(currentCommit, ref targetBranch, excludedBranches);
+                }
             }
 
             excludedInheritBranches ??= this.repositoryStore.GetExcludedInheritBranches(configuration).ToList();
@@ -144,7 +147,7 @@ public class BranchConfigurationCalculator : IBranchConfigurationCalculator
             {
                 // TODO We should call the build server to generate this exception, each build server works differently
                 // for fetch issues and we could give better warnings.
-                throw new InvalidOperationException("Gitversion could not determine which branch to treat as the development branch (default is 'develop') nor releaseable branch (default is 'main' or 'master'), either locally or remotely. Ensure the local clone and checkout match the requirements or considering using 'GitVersion Dynamic Repositories'");
+                throw new InvalidOperationException("Gitversion could not determine which branch to treat as the development branch (default is 'develop') nor release-able branch (default is 'main' or 'master'), either locally or remotely. Ensure the local clone and checkout match the requirements or considering using 'GitVersion Dynamic Repositories'");
             }
 
             this.log.Warning($"{errorMessage}{System.Environment.NewLine}Falling back to {chosenBranch} branch config");
@@ -167,9 +170,9 @@ public class BranchConfigurationCalculator : IBranchConfigurationCalculator
                 };
             }
 
-            var inheritingBranchConfig = GetBranchConfigurationInternal(recursions, chosenBranch, currentCommit, configuration, excludedInheritBranches)!;
+            var inheritingBranchConfig = GetBranchConfigurationInternal(recursions, chosenBranch, currentCommit, configuration, excludedInheritBranches);
             var configIncrement = inheritingBranchConfig.Increment;
-            if (inheritingBranchConfig.Name!.IsEquivalentTo(FallbackConfigName) && configIncrement == IncrementStrategy.Inherit)
+            if (inheritingBranchConfig.Name.IsEquivalentTo(FallbackConfigName) && configIncrement == IncrementStrategy.Inherit)
             {
                 this.log.Warning("Fallback config inherits by default, dropping to patch increment");
                 configIncrement = IncrementStrategy.Patch;

@@ -1,6 +1,7 @@
 using GitTools.Testing;
 using GitVersion.Core.Tests.Helpers;
 using GitVersion.Model.Configuration;
+using GitVersion.VersionCalculation;
 using NUnit.Framework;
 
 namespace GitVersion.Core.Tests.IntegrationTests;
@@ -73,7 +74,7 @@ public class VersionBumpingScenarios : TestBase
     {
         var configuration = new Config
         {
-            VersioningMode = GitVersion.VersionCalculation.VersioningMode.Mainline,
+            VersioningMode = VersioningMode.Mainline,
 
             // For future debugging of this regex: https://regex101.com/r/CRoBol/2
             MajorVersionBumpMessage = "^(build|chore|ci|docs|feat|fix|perf|refactor|revert|style|test)(\\([\\w\\s-]*\\))?(!:|:.*\\n\\n((.+\\n)+\\n)?BREAKING CHANGE:\\s.+)",

@@ -17,7 +17,7 @@ public class BranchWithoutCommitScenarios : TestBase
         fixture.Repository.CreateBranch("release-4.0.123");
         fixture.Checkout(commit.Sha);
 
-        fixture.AssertFullSemver("4.0.123-beta.1+0", null, fixture.Repository, commit.Sha, onlyTrackedBranches: false, targetBranch: "release-4.0.123");
+        fixture.AssertFullSemver("4.0.123-beta.1+0", null, fixture.Repository, commit.Sha, false, "release-4.0.123");
     }
 
     [Test]

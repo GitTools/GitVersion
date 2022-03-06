@@ -36,15 +36,10 @@ public class TrackReleaseBranchesVersionStrategy : VersionStrategyBase
         this.taggedCommitVersionStrategy = new TaggedCommitVersionStrategy(repositoryStore, versionContext);
     }
 
-    public override IEnumerable<BaseVersion> GetVersions()
-    {
-        if (Context.Configuration?.TracksReleaseBranches == true)
-        {
-            return ReleaseBranchBaseVersions().Union(MainTagsVersions());
-        }
-
-        return Array.Empty<BaseVersion>();
-    }
+    public override IEnumerable<BaseVersion> GetVersions() =>
+        Context.Configuration.TracksReleaseBranches
+            ? ReleaseBranchBaseVersions().Union(MainTagsVersions())
+            : Array.Empty<BaseVersion>();
 
     private IEnumerable<BaseVersion> MainTagsVersions()
     {
@@ -54,32 +49,31 @@ public class TrackReleaseBranchesVersionStrategy : VersionStrategyBase
 
     private IEnumerable<BaseVersion> ReleaseBranchBaseVersions()
     {
-        var releaseBranchConfig = Context.FullConfiguration?.GetReleaseBranchConfig();
-        if (releaseBranchConfig.Any())
-        {
-            var releaseBranches = this.repositoryStore.GetReleaseBranches(releaseBranchConfig);
+        var releaseBranchConfig = Context.FullConfiguration.GetReleaseBranchConfig();
+        if (!releaseBranchConfig.Any())
+            return Array.Empty<BaseVersion>();
 
-            return releaseBranches
-                .SelectMany(b => GetReleaseVersion(Context, b))
-                .Select(baseVersion =>
-                {
-                    // Need to drop branch overrides and give a bit more context about
-                    // where this version came from
-                    var source1 = "Release branch exists -> " + baseVersion.Source;
-                    return new BaseVersion(source1,
-                        baseVersion.ShouldIncrement,
-                        baseVersion.SemanticVersion,
-                        baseVersion.BaseVersionSource,
-                        null);
-                })
-                .ToList();
-        }
-        return Array.Empty<BaseVersion>();
+        var releaseBranches = this.repositoryStore.GetReleaseBranches(releaseBranchConfig);
+
+        return releaseBranches
+            .SelectMany(b => GetReleaseVersion(Context, b))
+            .Select(baseVersion =>
+            {
+                // Need to drop branch overrides and give a bit more context about
+                // where this version came from
+                var source1 = "Release branch exists -> " + baseVersion.Source;
+                return new BaseVersion(source1,
+                    baseVersion.ShouldIncrement,
+                    baseVersion.SemanticVersion,
+                    baseVersion.BaseVersionSource,
+                    null);
+            })
+            .ToList();
     }
 
-    private IEnumerable<BaseVersion> GetReleaseVersion(GitVersionContext context, IBranch releaseBranch)
+    private IEnumerable<BaseVersion> GetReleaseVersion(GitVersionContext context, IBranch? releaseBranch)
     {
-        var tagPrefixRegex = context.Configuration?.GitTagPrefix;
+        var tagPrefixRegex = context.Configuration.GitTagPrefix;
 
         // Find the commit where the child branch was created.
         var baseSource = this.repositoryStore.FindMergeBase(releaseBranch, context.CurrentBranch);

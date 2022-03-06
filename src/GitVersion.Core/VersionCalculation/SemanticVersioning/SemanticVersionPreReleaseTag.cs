@@ -77,10 +77,9 @@ public class SemanticVersionPreReleaseTag :
 
         var value = match.Groups["name"].Value;
         var number = match.Groups["number"].Success ? long.Parse(match.Groups["number"].Value) : (long?)null;
-        if (value.EndsWith("-"))
-            return new SemanticVersionPreReleaseTag(preReleaseTag, null);
-
-        return new SemanticVersionPreReleaseTag(value, number);
+        return value.EndsWith("-")
+            ? new SemanticVersionPreReleaseTag(preReleaseTag, null)
+            : new SemanticVersionPreReleaseTag(value, number);
     }
 
     public int CompareTo(SemanticVersionPreReleaseTag? other)

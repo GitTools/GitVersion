@@ -1,4 +1,5 @@
 using GitVersion.Configuration.Init.Wizard;
+using GitVersion.Helpers;
 using GitVersion.Logging;
 using GitVersion.Model.Configuration;
 
@@ -26,7 +27,7 @@ internal class AppVeyorSetup : ConfigInitWizardStep
 
     protected override StepResult HandleResult(string? result, Queue<ConfigInitWizardStep> steps, Config config, string workingDirectory)
     {
-        var editConfigStep = this.StepFactory.CreateStep<EditConfigStep>()!;
+        var editConfigStep = this.StepFactory.CreateStep<EditConfigStep>();
         switch (result)
         {
             case "0":
@@ -111,7 +112,7 @@ after_build:
             var count = 0;
             do
             {
-                var path = Path.Combine(workingDirectory, $"appveyor.gitversion{(count == 0 ? string.Empty : "." + count)}.yml");
+                var path = PathHelper.Combine(workingDirectory, $"appveyor.gitversion{(count == 0 ? string.Empty : "." + count)}.yml");
 
                 if (!fileSystem.Exists(path))
                 {
@@ -123,10 +124,10 @@ after_build:
             throw new Exception("appveyor.gitversion.yml -> appveyor.gitversion.9.yml all exist. Pretty sure you have enough templates");
         }
 
-        return Path.Combine(workingDirectory, "appveyor.yml");
+        return PathHelper.Combine(workingDirectory, "appveyor.yml");
     }
 
-    private static bool AppVeyorConfigExists(string workingDirectory, IFileSystem fileSystem) => fileSystem.Exists(Path.Combine(workingDirectory, "appveyor.yml"));
+    private static bool AppVeyorConfigExists(string workingDirectory, IFileSystem fileSystem) => fileSystem.Exists(PathHelper.Combine(workingDirectory, "appveyor.yml"));
 
     protected override string DefaultResult => "0";
 }

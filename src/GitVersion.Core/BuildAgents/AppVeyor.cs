@@ -18,8 +18,9 @@ public class AppVeyor : BuildAgentBase
     public override string GenerateSetVersionMessage(VersionVariables variables)
     {
         var buildNumber = Environment.GetEnvironmentVariable("APPVEYOR_BUILD_NUMBER");
+        var apiUrl = Environment.GetEnvironmentVariable("APPVEYOR_API_URL") ?? throw new Exception("APPVEYOR_API_URL environment variable not set");
 
-        using var httpClient = GetHttpClient();
+        using var httpClient = GetHttpClient(apiUrl);
 
         var body = new
         {
@@ -43,7 +44,8 @@ public class AppVeyor : BuildAgentBase
 
     public override string[] GenerateSetParameterMessage(string name, string value)
     {
-        var httpClient = GetHttpClient();
+        var apiUrl = Environment.GetEnvironmentVariable("APPVEYOR_API_URL") ?? throw new Exception("APPVEYOR_API_URL environment variable not set");
+        var httpClient = GetHttpClient(apiUrl);
 
         var body = new
         {
@@ -61,16 +63,10 @@ public class AppVeyor : BuildAgentBase
         };
     }
 
-    private HttpClient GetHttpClient()
+    private static HttpClient GetHttpClient(string apiUrl) => new()
     {
-        var httpClient = new HttpClient
-        {
-            BaseAddress = new Uri(Environment.GetEnvironmentVariable("APPVEYOR_API_URL"))
-        };
-
-        return httpClient;
-    }
-
+        BaseAddress = new Uri(apiUrl)
+    };
 
     public override string? GetCurrentBranch(bool usingDynamicRepos)
     {

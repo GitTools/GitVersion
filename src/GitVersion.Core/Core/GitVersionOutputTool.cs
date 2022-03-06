@@ -10,7 +10,7 @@ namespace GitVersion;
 
 public class GitVersionOutputTool : IGitVersionOutputTool
 {
-    private readonly IOptions<GitVersionOptions> options;
+    private readonly GitVersionOptions gitVersionOptions;
     private readonly IOutputGenerator outputGenerator;
     private readonly IWixVersionFileUpdater wixVersionFileUpdater;
     private readonly IGitVersionInfoGenerator gitVersionInfoGenerator;
@@ -22,7 +22,7 @@ public class GitVersionOutputTool : IGitVersionOutputTool
         IGitVersionInfoGenerator gitVersionInfoGenerator, IAssemblyInfoFileUpdater assemblyInfoFileUpdater,
         IProjectFileUpdater projectFileUpdater)
     {
-        this.options = options.NotNull();
+        this.gitVersionOptions = options.Value.NotNull();
 
         this.outputGenerator = outputGenerator.NotNull();
 
@@ -34,8 +34,6 @@ public class GitVersionOutputTool : IGitVersionOutputTool
 
     public void OutputVariables(VersionVariables variables, bool updateBuildNumber)
     {
-        var gitVersionOptions = this.options.Value;
-
         using (this.outputGenerator)
         {
             this.outputGenerator.Execute(variables, new OutputContext(gitVersionOptions.WorkingDirectory, gitVersionOptions.OutputFile, updateBuildNumber));
@@ -44,7 +42,6 @@ public class GitVersionOutputTool : IGitVersionOutputTool
 
     public void UpdateAssemblyInfo(VersionVariables variables)
     {
-        var gitVersionOptions = this.options.Value!;
         var assemblyInfoContext = new AssemblyInfoContext(gitVersionOptions.WorkingDirectory, gitVersionOptions.AssemblyInfo.EnsureAssemblyInfo, gitVersionOptions.AssemblyInfo.Files.ToArray());
 
         if (gitVersionOptions.AssemblyInfo.UpdateProjectFiles)
@@ -65,8 +62,6 @@ public class GitVersionOutputTool : IGitVersionOutputTool
 
     public void UpdateWixVersionFile(VersionVariables variables)
     {
-        var gitVersionOptions = this.options.Value;
-
         if (gitVersionOptions.WixInfo.ShouldUpdate)
         {
             using (this.wixVersionFileUpdater)
@@ -78,8 +73,6 @@ public class GitVersionOutputTool : IGitVersionOutputTool
 
     public void GenerateGitVersionInformation(VersionVariables variables, FileWriteInfo fileWriteInfo)
     {
-        var gitVersionOptions = this.options.Value;
-
         using (this.gitVersionInfoGenerator)
         {
             this.gitVersionInfoGenerator.Execute(variables, new GitVersionInfoContext(gitVersionOptions.WorkingDirectory, fileWriteInfo.FileName, fileWriteInfo.FileExtension));

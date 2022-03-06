@@ -22,25 +22,25 @@ public class EditConfigStep : ConfigInitWizardStep
                 return StepResult.ExitWithoutSaving();
 
             case "2":
-                steps.Enqueue(this.StepFactory.CreateStep<PickBranchingStrategyStep>()!);
+                steps.Enqueue(this.StepFactory.CreateStep<PickBranchingStrategyStep>());
                 return StepResult.Ok();
 
             case "3":
-                steps.Enqueue(this.StepFactory.CreateStep<SetNextVersion>()!);
+                steps.Enqueue(this.StepFactory.CreateStep<SetNextVersion>());
                 return StepResult.Ok();
 
             case "4":
-                steps.Enqueue(this.StepFactory.CreateStep<ConfigureBranches>()!);
+                steps.Enqueue(this.StepFactory.CreateStep<ConfigureBranches>());
                 return StepResult.Ok();
             case "5":
                 var editConfigStep = this.StepFactory.CreateStep<EditConfigStep>();
-                steps.Enqueue(this.StepFactory.CreateStep<GlobalModeSetting>()!.WithData(editConfigStep!, false));
+                steps.Enqueue(this.StepFactory.CreateStep<GlobalModeSetting>().WithData(editConfigStep, false));
                 return StepResult.Ok();
             case "6":
-                steps.Enqueue(this.StepFactory.CreateStep<AssemblyVersioningSchemeSetting>()!);
+                steps.Enqueue(this.StepFactory.CreateStep<AssemblyVersioningSchemeSetting>());
                 return StepResult.Ok();
             case "7":
-                steps.Enqueue(this.StepFactory.CreateStep<SetupBuildScripts>()!);
+                steps.Enqueue(this.StepFactory.CreateStep<SetupBuildScripts>());
                 return StepResult.Ok();
         }
         return StepResult.InvalidResponseSelected();

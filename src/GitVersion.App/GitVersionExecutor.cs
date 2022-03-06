@@ -53,7 +53,7 @@ public class GitVersionExecutor : IGitVersionExecutor
 
     private int RunGitVersionTool(GitVersionOptions gitVersionOptions)
     {
-        var mutexName = this.repositoryInfo.DotGitDirectory.Replace(Path.DirectorySeparatorChar.ToString(), "");
+        var mutexName = this.repositoryInfo.DotGitDirectory?.Replace(Path.DirectorySeparatorChar.ToString(), "") ?? string.Empty;
         using var mutex = new Mutex(true, $@"Global\gitversion{mutexName}", out var acquired);
 
         try
@@ -65,7 +65,7 @@ public class GitVersionExecutor : IGitVersionExecutor
 
             var variables = this.gitVersionCalculateTool.CalculateVersionVariables();
 
-            var configuration = this.configProvider.Provide(overrideConfig: gitVersionOptions.ConfigInfo.OverrideConfig);
+            var configuration = this.configProvider.Provide(gitVersionOptions.ConfigInfo.OverrideConfig);
 
             this.gitVersionOutputTool.OutputVariables(variables, configuration.UpdateBuildNumber ?? true);
             this.gitVersionOutputTool.UpdateAssemblyInfo(variables);
@@ -81,8 +81,6 @@ public class GitVersionExecutor : IGitVersionExecutor
         {
             var error = $"An unexpected error occurred:{System.Environment.NewLine}{exception}";
             this.log.Error(error);
-
-            if (gitVersionOptions == null) return 1;
 
             this.log.Info("Attempting to show the current git graph (please include in issue): ");
             this.log.Info("Showing max of 100 commits");
@@ -107,14 +105,6 @@ public class GitVersionExecutor : IGitVersionExecutor
 
     private bool HandleNonMainCommand(GitVersionOptions gitVersionOptions, out int exitCode)
     {
-        if (gitVersionOptions == null)
-        {
-            this.helpWriter.Write();
-            exitCode = 1;
-            return true;
-        }
-
-
         if (gitVersionOptions.IsVersion)
         {
             var assembly = Assembly.GetExecutingAssembly();

@@ -1,4 +1,5 @@
 using GitTools.Testing;
+using GitVersion.Helpers;
 using GitVersion.OutputVariables;
 using GitVersion.VersionConverters.WixUpdater;
 using NUnit.Framework;
@@ -22,7 +23,7 @@ internal class UpdateWixVersionFileTests
         fixture.MakeACommit();
 
         GitVersionHelper.ExecuteIn(fixture.RepositoryPath, arguments: " /updatewixversionfile");
-        Assert.IsTrue(File.Exists(Path.Combine(fixture.RepositoryPath, this.wixVersionFileName)));
+        Assert.IsTrue(File.Exists(PathHelper.Combine(fixture.RepositoryPath, this.wixVersionFileName)));
     }
 
     [Test]
@@ -37,7 +38,7 @@ internal class UpdateWixVersionFileTests
 
         GitVersionHelper.ExecuteIn(fixture.RepositoryPath, arguments: " /updatewixversionfile");
 
-        var gitVersionVarsInWix = GetGitVersionVarsInWixFile(Path.Combine(fixture.RepositoryPath, this.wixVersionFileName));
+        var gitVersionVarsInWix = GetGitVersionVarsInWixFile(PathHelper.Combine(fixture.RepositoryPath, this.wixVersionFileName));
         var gitVersionVars = VersionVariables.AvailableVariables;
 
         Assert.AreEqual(gitVersionVars.Count(), gitVersionVarsInWix.Count);
@@ -55,7 +56,7 @@ internal class UpdateWixVersionFileTests
 
         GitVersionHelper.ExecuteIn(fixture.RepositoryPath, arguments: " /updatewixversionfile");
 
-        var gitVersionVarsInWix = GetGitVersionVarsInWixFile(Path.Combine(fixture.RepositoryPath, this.wixVersionFileName));
+        var gitVersionVarsInWix = GetGitVersionVarsInWixFile(PathHelper.Combine(fixture.RepositoryPath, this.wixVersionFileName));
         var gitVersionVars = VersionVariables.AvailableVariables;
 
         foreach (var variable in gitVersionVars)
@@ -71,16 +72,14 @@ internal class UpdateWixVersionFileTests
     private static Dictionary<string, string> GetGitVersionVarsInWixFile(string file)
     {
         var gitVersionVarsInWix = new Dictionary<string, string>();
-        using (var reader = new XmlTextReader(file))
+        using var reader = new XmlTextReader(file);
+        while (reader.Read())
         {
-            while (reader.Read())
-            {
-                if (reader.Name == "define")
-                {
-                    var component = reader.Value.Split('=');
-                    gitVersionVarsInWix[component[0]] = component[1].TrimStart('"').TrimEnd('"');
-                }
-            }
+            if (reader.Name != "define")
+                continue;
+
+            var component = reader.Value.Split('=');
+            gitVersionVarsInWix[component[0]] = component[1].TrimStart('"').TrimEnd('"');
         }
         return gitVersionVarsInWix;
     }

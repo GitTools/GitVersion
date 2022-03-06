@@ -13,7 +13,7 @@ public class AssemblyVersioningSchemeSetting : ConfigInitWizardStep
 
     protected override StepResult HandleResult(string? result, Queue<ConfigInitWizardStep> steps, Config config, string workingDirectory)
     {
-        var editConfigStep = this.StepFactory.CreateStep<EditConfigStep>()!;
+        var editConfigStep = this.StepFactory.CreateStep<EditConfigStep>();
         switch (result)
         {
             case "0":

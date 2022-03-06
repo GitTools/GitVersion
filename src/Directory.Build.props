@@ -16,10 +16,12 @@
         <RepositoryUrl>https://github.com/GitTools/GitVersion</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
 
-        <NoWarn>1591</NoWarn>
+        <NoWarn>1591,8618</NoWarn>
         <DebugType>embedded</DebugType>
         <LangVersion>10</LangVersion>
         <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+
     </PropertyGroup>
     <PropertyGroup>
         <PackageVersion_LibGit2Sharp>0.27.0-preview-0175</PackageVersion_LibGit2Sharp>

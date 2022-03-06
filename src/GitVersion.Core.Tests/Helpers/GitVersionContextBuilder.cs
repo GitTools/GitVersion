@@ -11,10 +11,10 @@ namespace GitVersion.Core.Tests;
 
 public class GitVersionContextBuilder
 {
-    private IGitRepository repository;
-    private Config configuration;
-    public IServiceProvider ServicesProvider;
-    private Action<IServiceCollection> overrideServices;
+    private IGitRepository? repository;
+    private Config? configuration;
+    public IServiceProvider? ServicesProvider;
+    private Action<IServiceCollection>? overrideServices;
 
     public GitVersionContextBuilder WithRepository(IGitRepository gitRepository)
     {
@@ -28,7 +28,7 @@ public class GitVersionContextBuilder
         return this;
     }
 
-    public GitVersionContextBuilder OverrideServices(Action<IServiceCollection> overrides = null)
+    public GitVersionContextBuilder OverrideServices(Action<IServiceCollection>? overrides = null)
     {
         this.overrideServices = overrides;
         return this;
@@ -46,6 +46,8 @@ public class GitVersionContextBuilder
     {
         var mockCommit = GitToolsTestingExtensions.CreateMockCommit();
         var mockBranch = GitToolsTestingExtensions.CreateMockBranch(branchName, mockCommit);
+
+        this.repository ??= CreateRepository();
 
         var branches = this.repository.Branches.ToList();
         branches.Add(mockBranch);
@@ -91,7 +93,7 @@ public class GitVersionContextBuilder
         return mockRepository;
     }
 
-    private static IServiceProvider ConfigureServices(Action<IServiceCollection> overrideServices = null)
+    private static IServiceProvider ConfigureServices(Action<IServiceCollection>? overrideServices = null)
     {
         var services = new ServiceCollection()
             .AddModule(new GitVersionCoreTestModule());

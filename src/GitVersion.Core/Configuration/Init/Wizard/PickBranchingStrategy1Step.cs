@@ -17,10 +17,10 @@ public class PickBranchingStrategy1Step : ConfigInitWizardStep
                 this.Console.Write(@"Because you need to maintain multiple versions of your product in production at the same time, GitFlow is likely a good fit.
 
 GitFlow allows you to have new development happening on the 'develop' branch, patch issues in old minor versions with 'hotfix/' branches and support old major versions with 'support/' branches");
-                steps.Enqueue(this.StepFactory.CreateStep<PickBranchingStrategyStep>()!);
+                steps.Enqueue(this.StepFactory.CreateStep<PickBranchingStrategyStep>());
                 return StepResult.Ok();
             case "n":
-                steps.Enqueue(this.StepFactory.CreateStep<PickBranchingStrategy2Step>()!);
+                steps.Enqueue(this.StepFactory.CreateStep<PickBranchingStrategy2Step>());
                 return StepResult.Ok();
         }
 

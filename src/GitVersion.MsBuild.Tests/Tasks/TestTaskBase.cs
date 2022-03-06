@@ -1,6 +1,8 @@
 using GitTools.Testing;
 using GitVersion.BuildAgents;
+using GitVersion.Configuration;
 using GitVersion.Core.Tests.Helpers;
+using GitVersion.Helpers;
 using GitVersion.MsBuild.Tests.Helpers;
 using LibGit2Sharp;
 using Microsoft.Build.Utilities.ProjectCreation;
@@ -9,7 +11,7 @@ namespace GitVersion.MsBuild.Tests.Tasks;
 
 public class TestTaskBase : TestBase
 {
-    private static readonly IDictionary<string, string> env = new Dictionary<string, string>
+    private static readonly IDictionary<string, string?> env = new Dictionary<string, string?>
     {
         { AzurePipelines.EnvironmentVariableName, "true" },
         { "BUILD_SOURCEBRANCH", null }
@@ -39,15 +41,15 @@ public class TestTaskBase : TestBase
         return result;
     }
 
-    protected static MsBuildTaskFixtureResult<T> ExecuteMsBuildTaskInAzurePipeline<T>(T task, string buildNumber = null, string configurationText = null) where T : GitVersionTaskBase
+    protected static MsBuildTaskFixtureResult<T> ExecuteMsBuildTaskInAzurePipeline<T>(T task, string? buildNumber = null, string? configurationText = null) where T : GitVersionTaskBase
     {
         var fixture = CreateRemoteRepositoryFixture();
         task.SolutionDirectory = fixture.LocalRepositoryFixture.RepositoryPath;
         var msbuildFixture = new MsBuildTaskFixture(fixture);
-        var environmentVariables = new List<KeyValuePair<string, string>>(env.ToArray());
+        var environmentVariables = new List<KeyValuePair<string, string?>>(env.ToArray());
         if (buildNumber != null)
         {
-            environmentVariables.Add(new KeyValuePair<string, string>("BUILD_BUILDNUMBER", buildNumber));
+            environmentVariables.Add(new KeyValuePair<string, string?>("BUILD_BUILDNUMBER", buildNumber));
         }
         msbuildFixture.WithEnv(environmentVariables.ToArray());
         if (configurationText != null)
@@ -67,8 +69,8 @@ public class TestTaskBase : TestBase
         task.SolutionDirectory = fixture.LocalRepositoryFixture.RepositoryPath;
         var msbuildFixture = new MsBuildTaskFixture(fixture);
         msbuildFixture.WithEnv(
-            new KeyValuePair<string, string>("GITHUB_ACTIONS", "true"),
-            new KeyValuePair<string, string>("GITHUB_ENV", envFilePath)
+            new KeyValuePair<string, string?>("GITHUB_ACTIONS", "true"),
+            new KeyValuePair<string, string?>("GITHUB_ENV", envFilePath)
         );
         var result = msbuildFixture.Execute(task);
         if (result.Success == false)
@@ -116,7 +118,7 @@ public class TestTaskBase : TestBase
 
     private static void CreateConfiguration(string repoFolder, string content)
     {
-        var configFilePath = Path.Combine(repoFolder, Configuration.ConfigFileLocator.DefaultFileName);
+        var configFilePath = PathHelper.Combine(repoFolder, ConfigFileLocator.DefaultFileName);
         File.WriteAllText(configFilePath, content);
     }
 }

@@ -21,7 +21,7 @@ public class GetVersionTaskTests : TestTaskBase
 
         var variablesProperties = VersionVariables.AvailableVariables;
 
-        taskProperties.ShouldBe(variablesProperties, ignoreOrder: true);
+        taskProperties.ShouldBe(variablesProperties, true);
     }
 
     [Test]
