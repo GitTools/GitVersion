@@ -73,8 +73,6 @@ public class GitVersionExecutorTests : TestBase
     }
 
     [Test]
-    [Category(NoMono)]
-    [Description(NoMonoDescription)]
     public void CacheKeyForWorktree()
     {
         using var fixture = new EmptyRepositoryFixture();
@@ -411,8 +409,6 @@ public class GitVersionExecutorTests : TestBase
     }
 
     [Test]
-    [Category(NoMono)]
-    [Description(NoMonoDescription)]
     public void GetProjectRootDirectoryWorkingDirectoryWithWorktree()
     {
         using var fixture = new EmptyRepositoryFixture();
@@ -480,8 +476,6 @@ public class GitVersionExecutorTests : TestBase
     }
 
     [Test]
-    [Category(NoMono)]
-    [Description(NoMonoDescription)]
     public void GetDotGitDirectoryWorktree()
     {
         using var fixture = new EmptyRepositoryFixture();
@@ -512,8 +506,6 @@ public class GitVersionExecutorTests : TestBase
     }
 
     [Test]
-    [Category(NoMono)]
-    [Description(NoMonoDescription)]
     public void CalculateVersionFromWorktreeHead()
     {
         // Setup
@@ -543,8 +535,6 @@ public class GitVersionExecutorTests : TestBase
     }
 
     [Test]
-    [Category(NoMono)]
-    [Description(NoMonoDescription)]
     public void CalculateVersionVariables_TwoBranchHasSameCommitHeadDetachedAndNotTagged_ThrowException()
     {
         // Setup
@@ -571,8 +561,6 @@ public class GitVersionExecutorTests : TestBase
     }
 
     [Test]
-    [Category(NoMono)]
-    [Description(NoMonoDescription)]
     public void CalculateVersionVariables_TwoBranchHasSameCommitHeadDetachedAndTagged_ReturnSemver()
     {
         // Setup

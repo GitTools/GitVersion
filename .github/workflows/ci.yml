@@ -129,7 +129,7 @@ jobs:
     strategy:
       matrix:
         os: [windows-latest, ubuntu-latest, macos-latest]
-        targetFramework: [net48, net6.0, netcoreapp3.1]
+        targetFramework: [net6.0, netcoreapp3.1]
       fail-fast: false
 
     steps:
