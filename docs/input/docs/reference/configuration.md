@@ -286,6 +286,8 @@ The regular expression should contain the following capture groups:
 * `PullRequestNumber` - Captures the pull-request number
 
 Custom merge message formats are evaluated _before_ any built in formats.
+Support for [Conventional Commits][conventional-commits] can be
+[configured][conventional-commits-config].
 
 ### update-build-number
 
@@ -573,6 +575,8 @@ and [1366].
 [1145]: https://github.com/GitTools/GitVersion/issues/1145
 [1366]: https://github.com/GitTools/GitVersion/issues/1366
 [2506]: https://github.com/GitTools/GitVersion/pull/2506#issuecomment-754754037
+[conventional-commits-config]: /docs/reference/version-increments#conventional-commit-messages
+[conventional-commits]: https://www.conventionalcommits.org/
 [installing]: /docs/usage/cli/installation
 [modes]: /docs/reference/modes
 [variables]: /docs/reference/variables
