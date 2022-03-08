@@ -89,7 +89,7 @@ public class UnitTest : FrostingTask<BuildContext>
 
         if (string.Equals(framework, Constants.FullFxVersion48))
         {
-            settings.Filter = context.IsRunningOnUnix() ? $"TestCategory!={Constants.NoMono}" : $"TestCategory!={Constants.NoNet48}";
+            settings.Filter = context.IsRunningOnUnix() ? string.Empty : $"TestCategory!={Constants.NoNet48}";
         }
 
         context.DotNetTest(project.FullPath, settings, coverletSettings);

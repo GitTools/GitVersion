@@ -8,8 +8,6 @@ namespace GitVersion.Core.Tests.Helpers;
 
 public class TestBase
 {
-    protected const string NoMonoDescription = "Won't run on Mono due to source information not being available for ShouldMatchApproved.";
-    protected const string NoMono = "NoMono";
     protected const string NoNet48 = "NoNet48";
     public const string MainBranch = "main";
 

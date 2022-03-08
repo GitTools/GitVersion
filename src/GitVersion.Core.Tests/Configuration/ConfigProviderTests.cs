@@ -228,8 +228,6 @@ branches:
 
     [Test]
     [MethodImpl(MethodImplOptions.NoInlining)]
-    [Category(NoMono)]
-    [Description(NoMonoDescription)]
     public void CanWriteOutEffectiveConfiguration()
     {
         var config = this.configProvider.Provide(this.repoPath);
