@@ -128,10 +128,12 @@ public class RepositoryStore : IRepositoryStore
 
     public IBranch? FindMainBranch(Config configuration)
     {
-        var mainBranchRegex = configuration.Branches[Config.MainBranchKey]?.Regex;
+        var mainBranchRegex = configuration.Branches[Config.MainBranchKey]?.Regex
+                              ?? configuration.Branches[Config.MasterBranchKey]?.Regex;
+
         if (mainBranchRegex == null)
         {
-            return null;
+            return FindBranch(Config.MainBranchKey) ?? FindBranch(Config.MasterBranchKey);
         }
 
         return this.repository.Branches.FirstOrDefault(b =>
