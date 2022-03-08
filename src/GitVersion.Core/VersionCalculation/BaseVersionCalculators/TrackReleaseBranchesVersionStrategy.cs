@@ -43,8 +43,13 @@ public class TrackReleaseBranchesVersionStrategy : VersionStrategyBase
 
     private IEnumerable<BaseVersion> MainTagsVersions()
     {
-        var main = this.repositoryStore.FindBranch(Config.MainBranchKey);
-        return main != null ? this.taggedCommitVersionStrategy.GetTaggedVersions(main, null) : Array.Empty<BaseVersion>();
+        var main = this.repositoryStore.FindBranch(Config.MainBranchKey)
+            // For compatibility reason try to find `master` if `main` cannot be found
+            ?? this.repositoryStore.FindBranch(Config.MasterBranchKey);
+
+        return main != null
+            ? this.taggedCommitVersionStrategy.GetTaggedVersions(main, null)
+            : Array.Empty<BaseVersion>();
     }
 
     private IEnumerable<BaseVersion> ReleaseBranchBaseVersions()
