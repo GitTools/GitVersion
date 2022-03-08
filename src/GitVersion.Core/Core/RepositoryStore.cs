@@ -126,6 +126,18 @@ public class RepositoryStore : IRepositoryStore
 
     public IBranch? FindBranch(string? branchName) => this.repository.Branches.FirstOrDefault(x => x.Name.EquivalentTo(branchName));
 
+    public IBranch? FindMainBranch(Config configuration)
+    {
+        var mainBranchRegex = configuration.Branches[Config.MainBranchKey]?.Regex;
+        if (mainBranchRegex == null)
+        {
+            return null;
+        }
+
+        return this.repository.Branches.FirstOrDefault(b =>
+            Regex.IsMatch(b.Name.Friendly, mainBranchRegex, RegexOptions.IgnoreCase));
+    }
+
     public IBranch? GetChosenBranch(Config configuration)
     {
         var developBranchRegex = configuration.Branches[Config.DevelopBranchKey]?.Regex;

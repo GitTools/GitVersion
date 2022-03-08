@@ -1,7 +1,6 @@
 using GitVersion.Common;
 using GitVersion.Configuration;
 using GitVersion.Extensions;
-using GitVersion.Model.Configuration;
 
 namespace GitVersion.VersionCalculation;
 
@@ -26,14 +25,16 @@ public class TrackReleaseBranchesVersionStrategy : VersionStrategyBase
     private readonly IRepositoryStore repositoryStore;
     private readonly VersionInBranchNameVersionStrategy releaseVersionStrategy;
     private readonly TaggedCommitVersionStrategy taggedCommitVersionStrategy;
+    private readonly Lazy<GitVersionContext> context;
+
 
     public TrackReleaseBranchesVersionStrategy(IRepositoryStore repositoryStore, Lazy<GitVersionContext> versionContext)
         : base(versionContext)
     {
         this.repositoryStore = repositoryStore.NotNull();
-
         this.releaseVersionStrategy = new VersionInBranchNameVersionStrategy(repositoryStore, versionContext);
         this.taggedCommitVersionStrategy = new TaggedCommitVersionStrategy(repositoryStore, versionContext);
+        this.context = versionContext.NotNull();
     }
 
     public override IEnumerable<BaseVersion> GetVersions() =>
@@ -43,9 +44,8 @@ public class TrackReleaseBranchesVersionStrategy : VersionStrategyBase
 
     private IEnumerable<BaseVersion> MainTagsVersions()
     {
-        var main = this.repositoryStore.FindBranch(Config.MainBranchKey)
-            // For compatibility reason try to find `master` if `main` cannot be found
-            ?? this.repositoryStore.FindBranch(Config.MasterBranchKey);
+        var configuration = this.context.Value.Configuration.Configuration;
+        var main = this.repositoryStore.FindMainBranch(configuration);
 
         return main != null
             ? this.taggedCommitVersionStrategy.GetTaggedVersions(main, null)
