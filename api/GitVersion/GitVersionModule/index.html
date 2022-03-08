@@ -181,7 +181,6 @@
 				<li><a href="/api/GitVersion/RepositoryStore">RepositoryStore</a></li>
 				<li><a href="/api/GitVersion/SemanticVersion">SemanticVersion</a></li>
 				<li><a href="/api/GitVersion/SemanticVersionBuildMetaData">Semantic<wbr>Version<wbr>Build<wbr>Meta<wbr>Data</a></li>
-				<li><a href="/api/GitVersion/SemanticVersionExtensions">Semantic<wbr>Version<wbr>Extensions</a></li>
 				<li><a href="/api/GitVersion/SemanticVersionFormatValues">Semantic<wbr>Version<wbr>Format<wbr>Values</a></li>
 				<li><a href="/api/GitVersion/SemanticVersionPreReleaseTag">Semantic<wbr>Version<wbr>Pre<wbr>Release<wbr>Tag</a></li>
 				<li><a href="/api/GitVersion/Settings">Settings</a></li>
@@ -272,9 +271,9 @@
 								<dt>Derived Types</dt>
 								<dd>
 									<ul class="list-unstyled">
+											<li><a href="/api/GitVersion.BuildAgents/BuildServerModule">BuildServerModule</a></li>								
 											<li><a href="/api/GitVersion.Configuration.Init/GitVersionInitModule">GitVersionInitModule</a></li>								
 											<li><a href="/api/GitVersion.VersionCalculation/VersionStrategyModule">Version<wbr>Strategy<wbr>Module</a></li>								
-											<li><a href="/api/GitVersion.BuildAgents/BuildServerModule">BuildServerModule</a></li>								
 									</ul>
 								</dd>			
 							
@@ -288,12 +287,12 @@
 	click Interface0 "/api/GitVersion/IGitVersionModule"
 	Type["GitVersionModule"]
 class Type type-node
-	Derived0["GitVersionInitModule"]--&gt;Type
-	click Derived0 "/api/GitVersion.Configuration.Init/GitVersionInitModule"
-	Derived1["VersionStrategyModule"]--&gt;Type
-	click Derived1 "/api/GitVersion.VersionCalculation/VersionStrategyModule"
-	Derived2["BuildServerModule"]--&gt;Type
-	click Derived2 "/api/GitVersion.BuildAgents/BuildServerModule"
+	Derived0["BuildServerModule"]--&gt;Type
+	click Derived0 "/api/GitVersion.BuildAgents/BuildServerModule"
+	Derived1["GitVersionInitModule"]--&gt;Type
+	click Derived1 "/api/GitVersion.Configuration.Init/GitVersionInitModule"
+	Derived2["VersionStrategyModule"]--&gt;Type
+	click Derived2 "/api/GitVersion.VersionCalculation/VersionStrategyModule"
 
 						</div>
 					</div>

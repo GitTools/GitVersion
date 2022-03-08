@@ -181,7 +181,6 @@
 				<li><a href="/api/GitVersion/RepositoryStore">RepositoryStore</a></li>
 				<li><a href="/api/GitVersion/SemanticVersion">SemanticVersion</a></li>
 				<li><a href="/api/GitVersion/SemanticVersionBuildMetaData">Semantic<wbr>Version<wbr>Build<wbr>Meta<wbr>Data</a></li>
-				<li><a href="/api/GitVersion/SemanticVersionExtensions">Semantic<wbr>Version<wbr>Extensions</a></li>
 				<li><a href="/api/GitVersion/SemanticVersionFormatValues">Semantic<wbr>Version<wbr>Format<wbr>Values</a></li>
 				<li><a href="/api/GitVersion/SemanticVersionPreReleaseTag">Semantic<wbr>Version<wbr>Pre<wbr>Release<wbr>Tag</a></li>
 				<li><a href="/api/GitVersion/Settings">Settings</a></li>
@@ -261,9 +260,9 @@
 								<dt>Implementing Types</dt>
 								<dd>
 									<ul class="list-unstyled">
+											<li><a href="/api/GitVersion/IBranch">IBranch</a></li>								
 											<li><a href="/api/GitVersion/ITag">ITag</a></li>								
 											<li><a href="/api/GitVersion/IReference">IReference</a></li>								
-											<li><a href="/api/GitVersion/IBranch">IBranch</a></li>								
 									</ul>
 								</dd>				
 						</dl>
@@ -273,12 +272,12 @@
 							graph BT
 	Type["INamedReference"]
 class Type type-node
-	Implementing0["ITag"]-.-&gt;Type
-	click Implementing0 "/api/GitVersion/ITag"
-	Implementing1["IReference"]-.-&gt;Type
-	click Implementing1 "/api/GitVersion/IReference"
-	Implementing2["IBranch"]-.-&gt;Type
-	click Implementing2 "/api/GitVersion/IBranch"
+	Implementing0["IBranch"]-.-&gt;Type
+	click Implementing0 "/api/GitVersion/IBranch"
+	Implementing1["ITag"]-.-&gt;Type
+	click Implementing1 "/api/GitVersion/ITag"
+	Implementing2["IReference"]-.-&gt;Type
+	click Implementing2 "/api/GitVersion/IReference"
 
 						</div>
 					</div>
