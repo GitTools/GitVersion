@@ -13,6 +13,7 @@ public class Startup : IFrostingStartup
 
         services.UseWorkingDirectory(Extensions.GetRootDirectory());
 
-        services.UseTool(new Uri("dotnet:?package=Wyam2.Tool&version=3.0.0-rc2&prerelease"));
+        services.UseDotnetTool(Tools.GitVersion, Tools.Versions[Tools.GitVersion]);
+        services.UseDotnetTool(Tools.Wyam2, Tools.Versions[Tools.Wyam2]);
     }
 }
