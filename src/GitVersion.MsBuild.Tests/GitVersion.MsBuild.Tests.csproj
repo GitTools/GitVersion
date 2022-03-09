@@ -21,7 +21,7 @@
     <ItemGroup Condition=" '$(TargetFramework)' == 'net48' or '$(TargetFramework)' == 'net6.0' ">
         <PackageReference Include="Buildalyzer" Version="3.2.8" />
         <PackageReference Include="MSBuild.ProjectCreation" Version="6.3.3" />
-        <PackageReference Include="Microsoft.Build" Version="17.0.0" />
+        <PackageReference Include="Microsoft.Build" Version="17.1.0" />
     </ItemGroup>
 
     <ItemGroup>
