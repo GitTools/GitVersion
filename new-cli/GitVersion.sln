@@ -8,7 +8,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GitVersion.Calculation", "G
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GitVersion.Output", "GitVersion.Output\GitVersion.Output.csproj", "{9543A475-06BA-4C8D-A3CE-E2792FE663DA}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "GitVersion", "GitVersion", "{610883EF-A96B-4A86-8A3F-1F1601FFDC7D}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "sln", "sln", "{610883EF-A96B-4A86-8A3F-1F1601FFDC7D}"
 ProjectSection(SolutionItems) = preProject
 	Directory.Build.props = Directory.Build.props
 	..\command.md = ..\command.md
@@ -23,6 +23,21 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GitVersion.Core", "GitVersion.Core\GitVersion.Core.csproj", "{2167C815-3A7E-4758-9F45-03EFE1E8EB1F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GitVersion.Common.Command", "GitVersion.Common.Command\GitVersion.Common.Command.csproj", "{CB8166C6-2621-4B65-BEB4-4485F27B2368}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "cmds", "cmds", "{ABF3B56F-CF60-418F-A729-05388BD064B7}"
+	ProjectSection(SolutionItems) = preProject
+		docs\calculate.rsp = docs\calculate.rsp
+		docs\config-help.rsp = docs\config-help.rsp
+		docs\config-init.rsp = docs\config-init.rsp
+		docs\config-show.rsp = docs\config-show.rsp
+		docs\help.rsp = docs\help.rsp
+		docs\normalize.rsp = docs\normalize.rsp
+		docs\output-assemblyinfo.rsp = docs\output-assemblyinfo.rsp
+		docs\output-help.rsp = docs\output-help.rsp
+		docs\output-project.rsp = docs\output-project.rsp
+		docs\output-wix.rsp = docs\output-wix.rsp
+		docs\version.rsp = docs\version.rsp
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

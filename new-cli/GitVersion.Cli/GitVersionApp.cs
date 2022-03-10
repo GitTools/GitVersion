@@ -25,6 +25,7 @@ internal class GitVersionApp
                 EnrichLogger(context);
                 await next(context);
             })
+            .ParseResponseFileAs(ResponseFileHandling.ParseArgsAsSpaceSeparated)
             .UseDefaults()
             .Build()
             .InvokeAsync(args);
@@ -85,7 +86,6 @@ internal class GitVersionApp
                                         ?? throw new InvalidOperationException($"{handlerType.Name} does not implement {invokeAsyncName}");
 
                     command.Handler = CommandHandler.Create(handlerMethod, handler);
-                    // command.SetHandler(handlerDelegate);
 
                     commandsMap.Add(commandSettingsType, command);
                 }

@@ -132,3 +132,5 @@ docs/output
 
 # NPM
 node_modules
+
+new-cli/log.txt
