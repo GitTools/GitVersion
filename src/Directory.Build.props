@@ -42,7 +42,7 @@
         <PackageVersion_NunitXmlTestLogger>3.0.117</PackageVersion_NunitXmlTestLogger>
         <PackageVersion_Shouldly>4.0.3</PackageVersion_Shouldly>
 
-        <PackageVersion_MicrosoftCodeStyle>4.0.1</PackageVersion_MicrosoftCodeStyle>
+        <PackageVersion_MicrosoftCodeStyle>4.1.0</PackageVersion_MicrosoftCodeStyle>
         <PackageVersion_MicrosoftNetAnalyzers>6.0.0</PackageVersion_MicrosoftNetAnalyzers>
     </PropertyGroup>
 
