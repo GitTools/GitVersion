@@ -5,9 +5,6 @@ namespace GitVersion.Calculation
 {
     public class CalculateModule : IGitVersionModule
     {
-        public void RegisterTypes(IContainerRegistrar services)
-        {
-            services.AddSingleton<ICommand, CalculateCommand>();
-        }
+        public void RegisterTypes(IContainerRegistrar services) => services.AddSingleton<ICommand, CalculateCommand>();
     }
 }

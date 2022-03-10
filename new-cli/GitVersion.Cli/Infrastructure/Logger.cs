@@ -6,10 +6,7 @@ public class Logger : ILogger
 {
     private readonly Microsoft.Extensions.Logging.ILogger logger;
 
-    public Logger(Microsoft.Extensions.Logging.ILogger logger)
-    {
-        this.logger = logger;
-    }
+    public Logger(Microsoft.Extensions.Logging.ILogger logger) => this.logger = logger;
 
     public void LogTrace(string? message, params object?[] args) => logger.LogTrace(message, args);
     public void LogDebug(string? message, params object?[] args) => logger.LogDebug(message, args);

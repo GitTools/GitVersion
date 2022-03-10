@@ -2,9 +2,10 @@
     <PropertyGroup>
         <TargetFramework>net6.0</TargetFramework>
         <RootNamespace>GitVersion</RootNamespace>
-        
+
         <LangVersion>10.0</LangVersion>
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
+        <NoWarn>8625;2254</NoWarn>
     </PropertyGroup>
 </Project>

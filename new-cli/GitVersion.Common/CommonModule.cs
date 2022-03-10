@@ -4,8 +4,5 @@ namespace GitVersion;
 
 public class CommonModule : IGitVersionModule
 {
-    public void RegisterTypes(IContainerRegistrar services)
-    {
-        services.AddSingleton<IService, Service>();
-    }
+    public void RegisterTypes(IContainerRegistrar services) => services.AddSingleton<IService, Service>();
 }

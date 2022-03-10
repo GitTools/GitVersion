@@ -2,8 +2,5 @@
 
 public class Service : IService
 {
-    public int Call()
-    {
-        return 13;
-    }
+    public int Call() => 13;
 }

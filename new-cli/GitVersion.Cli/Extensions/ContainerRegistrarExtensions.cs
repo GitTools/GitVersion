@@ -13,12 +13,5 @@ public static class ContainerRegistrarExtensions
 
     internal static IContainerRegistrar RegisterModules(this IContainerRegistrar containerRegistrar,
         IEnumerable<IGitVersionModule> gitVersionModules)
-    {
-        foreach (var gitVersionModule in gitVersionModules)
-        {
-            containerRegistrar.RegisterModule(gitVersionModule);
-        }
-
-        return containerRegistrar;
-    }
+        => gitVersionModules.Aggregate(containerRegistrar, (current, gitVersionModule) => current.RegisterModule(gitVersionModule));
 }

@@ -18,9 +18,8 @@ internal class GitVersionApp
 
     public GitVersionApp(IEnumerable<ICommand> commandHandlers) => rootCommand = CreateCommandsHierarchy(commandHandlers);
 
-    public Task<int> RunAsync(string[] args)
-    {
-        return new CommandLineBuilder(rootCommand)
+    public Task<int> RunAsync(string[] args) =>
+        new CommandLineBuilder(rootCommand)
             .AddMiddleware(async (context, next) =>
             {
                 EnrichLogger(context);
@@ -29,7 +28,6 @@ internal class GitVersionApp
             .UseDefaults()
             .Build()
             .InvokeAsync(args);
-    }
 
     private static void EnrichLogger(InvocationContext context)
     {
@@ -37,10 +35,8 @@ internal class GitVersionApp
         {
             foreach (var symbolResult in context.ParseResult.CommandResult.Children)
             {
-                if (symbolResult.Symbol is Option id && id.HasAlias(alias))
-                {
-                    return (Option<T>)id;
-                }
+                if (symbolResult.Symbol is Option<T> id && id.HasAlias(alias))
+                    return id;
             }
             return null;
         }
@@ -81,14 +77,11 @@ internal class GitVersionApp
                 var commandAttribute = handlerType.GetCustomAttribute<CommandAttribute>();
                 if (commandAttribute != null)
                 {
-                    var command = new Infrastructure.Command(commandAttribute.Name, commandAttribute.Description)
-                    {
-                        Parent = commandAttribute.Parent
-                    };
+                    var command = new Infrastructure.Command(commandAttribute.Name, commandAttribute.Description) { Parent = commandAttribute.Parent };
                     command.AddOptions(commandSettingsType);
 
                     const string invokeAsyncName = nameof(ICommand.InvokeAsync);
-                    var handlerMethod = handlerType.GetMethod(invokeAsyncName) 
+                    var handlerMethod = handlerType.GetMethod(invokeAsyncName)
                                         ?? throw new InvalidOperationException($"{handlerType.Name} does not implement {invokeAsyncName}");
 
                     command.Handler = CommandHandler.Create(handlerMethod, handler);
