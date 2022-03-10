@@ -9,7 +9,7 @@
     <ItemGroup Condition=" '$(TargetFramework)' == 'netcoreapp3.1' ">
         <PackageReference Include="Buildalyzer" Version="3.2.2" />
         <PackageReference Include="MSBuild.ProjectCreation" Version="6.3.3" />
-        <PackageReference Include="Microsoft.Build" Version="16.9.0" />
+        <PackageReference Include="Microsoft.Build" Version="17.1.0" />
     </ItemGroup>
 
     <ItemGroup Condition=" '$(TargetFramework)' == 'net6.0' ">
