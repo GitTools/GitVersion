@@ -33,22 +33,22 @@ internal class GitVersionApp
 
     private static void EnrichLogger(InvocationContext context)
     {
-        Option? GetOption(string alias)
+        Option<T>? GetOption<T>(string alias)
         {
             foreach (var symbolResult in context.ParseResult.CommandResult.Children)
             {
                 if (symbolResult.Symbol is Option id && id.HasAlias(alias))
                 {
-                    return id;
+                    return (Option<T>)id;
                 }
             }
             return null;
         }
-        
+
         T? GetOptionValue<T>(string alias)
         {
-            var option = GetOption(alias);
-            return option != null ? context.ParseResult.GetValueForOption<T>(option) : default;
+            var option = GetOption<T>(alias);
+            return option != null ? context.ParseResult.GetValueForOption(option) : default;
         }
 
         var logFile = GetOptionValue<FileInfo>(GitVersionSettings.LogFileOptionAlias1);
@@ -87,9 +87,11 @@ internal class GitVersionApp
                     };
                     command.AddOptions(commandSettingsType);
 
-                    var handlerMethod = handlerType.GetMethod(nameof(ICommand.InvokeAsync));
+                    const string invokeAsyncName = nameof(ICommand.InvokeAsync);
+                    var handlerMethod = handlerType.GetMethod(invokeAsyncName) 
+                                        ?? throw new InvalidOperationException($"{handlerType.Name} does not implement {invokeAsyncName}");
 
-                    command.Handler = CommandHandler.Create(handlerMethod!, handler);
+                    command.Handler = CommandHandler.Create(handlerMethod, handler);
                     // command.SetHandler(handlerDelegate);
 
                     commandsMap.Add(commandSettingsType, command);

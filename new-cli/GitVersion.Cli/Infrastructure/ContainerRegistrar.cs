@@ -39,7 +39,7 @@ public class ContainerRegistrar : IContainerRegistrar
             var logger = CreateLogger();
             builder.AddSerilog(logger, dispose: true);
         });
-        services.AddSingleton<ILogger>(provider => new Logger(provider.GetService<ILogger<Logger>>()!));
+        services.AddSingleton<ILogger>(provider => new Logger(provider.GetRequiredService<ILogger<Logger>>()));
         return this;
     }
 

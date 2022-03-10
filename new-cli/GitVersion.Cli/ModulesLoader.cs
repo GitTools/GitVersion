@@ -22,10 +22,14 @@ public class ModulesLoader
             typeof(CliModule).Assembly
         };
 
-        var gitVersionModules = assemblies
-            .SelectMany(a => a.GetTypes().Where(t => t.TypeIsGitVersionModule()))
-            .Select(t => (IGitVersionModule)Activator.CreateInstance(t)!)
-            .ToList();
+        var gitVersionModules = new List<IGitVersionModule>();
+        foreach (var type in assemblies.SelectMany(x => x.GetTypes()).Where(t => t.TypeIsGitVersionModule()))
+        {
+            if (Activator.CreateInstance(type) is IGitVersionModule module)
+            {
+                gitVersionModules.Add(module);
+            }
+        }
 
         var serviceProvider = new ContainerRegistrar()
             .RegisterModules(gitVersionModules)
