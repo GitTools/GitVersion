@@ -6,7 +6,7 @@ on:
     - main
     - 'fix/*'
     - 'feature/*'
-    - 'release/*'
+    - 'support/*'
     paths:
     - '**'
     - '!docs/**'
@@ -14,7 +14,7 @@ on:
   pull_request:
     branches:
     - main
-    - 'release/*'
+    - 'support/*'
     paths:
     - '**'
     - '!docs/**'
