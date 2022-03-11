@@ -2,3 +2,5 @@ assembly-versioning-scheme: MajorMinorPatch
 branches:
   main:
     tag: beta
+  support:
+    tag: beta
