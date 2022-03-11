@@ -74,19 +74,13 @@ public static class ContextExtensions
     public static bool IsMainBranch(this ICakeContext context)
     {
         var repositoryBranch = GetBranchName(context);
-
-        context.Information("Repository Branch: {0}", repositoryBranch);
-
         return !string.IsNullOrWhiteSpace(repositoryBranch) && StringComparer.OrdinalIgnoreCase.Equals("main", repositoryBranch);
     }
 
     public static bool IsSupportBranch(this ICakeContext context)
     {
         var repositoryBranch = GetBranchName(context);
-
-        context.Information("Repository Branch: {0}", repositoryBranch);
-
-        return !string.IsNullOrWhiteSpace(repositoryBranch) && repositoryBranch.StartsWith("suppoer/", StringComparison.OrdinalIgnoreCase);
+        return !string.IsNullOrWhiteSpace(repositoryBranch) && repositoryBranch.StartsWith("support/", StringComparison.OrdinalIgnoreCase);
     }
 
     public static bool IsTagged(this ICakeContext context)
@@ -172,9 +166,8 @@ public static class ContextExtensions
         return false;
     }
 
-    private static string GetBranchName(ICakeContext context)
+    public static string GetBranchName(this ICakeContext context)
     {
-
         var buildSystem = context.BuildSystem();
         string repositoryBranch = context.ExecGitCmd("rev-parse --abbrev-ref HEAD").Single();
         if (buildSystem.IsRunningOnAppVeyor)

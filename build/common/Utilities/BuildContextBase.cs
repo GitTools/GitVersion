@@ -8,6 +8,7 @@ public class BuildContextBase : FrostingContext
     public BuildVersion? Version { get; set; }
 
     public bool IsOriginalRepo { get; set; }
+    public string BranchName { get; set; } = string.Empty;
     public bool IsMainBranch { get; set; }
     public bool IsSupportBranch { get; set; }
     public bool IsPullRequest { get; set; }
