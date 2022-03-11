@@ -13,7 +13,7 @@ By default Buildkite calls `git fetch` with the flags `-v --prune` which can cau
 *   Setting the environment variable `BUILDKITE_GIT_FETCH_FLAGS` to `-v --tags`
 *   Setting configuration value `git-fetch-flags` to `-v --tags` in your agent configuration file
 
-If you are running GitVersion in a docker container make sure to propogate the `BUILDKITE` and `BUILDKITE_BRANCH` environment variables (c.f. example below).
+If you are running GitVersion in a docker container make sure to propagate the `BUILDKITE`, `BUILDKITE_BRANCH`, and `BUILDKITE_PULL_REQUEST` environment variables (c.f. example below).
 
 ## Example
 
@@ -32,6 +32,7 @@ steps:
         environment:
           - "BUILDKITE"
           - "BUILDKITE_BRANCH"
+          - "BUILDKITE_PULL_REQUEST"
 
   - wait
 
