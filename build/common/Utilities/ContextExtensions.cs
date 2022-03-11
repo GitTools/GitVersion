@@ -80,13 +80,13 @@ public static class ContextExtensions
         return !string.IsNullOrWhiteSpace(repositoryBranch) && StringComparer.OrdinalIgnoreCase.Equals("main", repositoryBranch);
     }
 
-    public static bool IsReleaseBranch(this ICakeContext context)
+    public static bool IsSupportBranch(this ICakeContext context)
     {
         var repositoryBranch = GetBranchName(context);
 
         context.Information("Repository Branch: {0}", repositoryBranch);
 
-        return !string.IsNullOrWhiteSpace(repositoryBranch) && repositoryBranch.StartsWith("release/", StringComparison.OrdinalIgnoreCase);
+        return !string.IsNullOrWhiteSpace(repositoryBranch) && repositoryBranch.StartsWith("suppoer/", StringComparison.OrdinalIgnoreCase);
     }
 
     public static bool IsTagged(this ICakeContext context)
