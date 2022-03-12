@@ -1,4 +1,5 @@
 using GitVersion.Core.Tests.Helpers;
+using GitVersion.Helpers;
 using GitVersion.Logging;
 using GitVersion.VersionCalculation;
 using GitVersion.VersionConverters.WixUpdater;
@@ -52,10 +53,10 @@ internal class WixFileTests : TestBase
 
         wixVersionFileUpdater.Execute(versionVariables, new WixVersionContext(workingDir));
 
-        var file = Path.Combine(workingDir, WixVersionFileUpdater.WixVersionFileName);
+        var file = PathHelper.Combine(workingDir, WixVersionFileUpdater.WixVersionFileName);
         fileSystem
             .ReadAllText(file)
-            .ShouldMatchApproved(c => c.SubFolder(Path.Combine("Approved")));
+            .ShouldMatchApproved(c => c.SubFolder(PathHelper.Combine("Approved")));
     }
 
     [Test]
@@ -94,14 +95,14 @@ internal class WixFileTests : TestBase
         using var wixVersionFileUpdater = sp.GetRequiredService<IWixVersionFileUpdater>();
 
         // fake an already existing file
-        var file = Path.Combine(workingDir, WixVersionFileUpdater.WixVersionFileName);
+        var file = PathHelper.Combine(workingDir, WixVersionFileUpdater.WixVersionFileName);
         fileSystem.WriteAllText(file, new string('x', 1024 * 1024));
 
         wixVersionFileUpdater.Execute(versionVariables, new WixVersionContext(workingDir));
 
         fileSystem
             .ReadAllText(file)
-            .ShouldMatchApproved(c => c.SubFolder(Path.Combine("Approved")));
+            .ShouldMatchApproved(c => c.SubFolder(PathHelper.Combine("Approved")));
     }
 
 }

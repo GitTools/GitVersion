@@ -45,9 +45,9 @@ public abstract class BuildAgentBase : ICurrentBuildAgent
     {
         var output = new List<string>();
 
-        foreach (var variable in variables)
+        foreach (var (key, value) in variables)
         {
-            output.AddRange(GenerateSetParameterMessage(variable.Key, variable.Value));
+            output.AddRange(GenerateSetParameterMessage(key, value));
         }
 
         return output;

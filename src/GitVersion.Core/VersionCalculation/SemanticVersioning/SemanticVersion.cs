@@ -13,13 +13,13 @@ public class SemanticVersion : IFormattable, IComparable<SemanticVersion>, IEqua
         @"^(?<SemVer>(?<Major>\d+)(\.(?<Minor>\d+))?(\.(?<Patch>\d+))?)(\.(?<FourthPart>\d+))?(-(?<Tag>[^\+]*))?(\+(?<BuildMetaData>.*))?$",
         RegexOptions.Compiled);
 
-    public int Major;
-    public int Minor;
-    public int Patch;
+    public long Major;
+    public long Minor;
+    public long Patch;
     public SemanticVersionPreReleaseTag? PreReleaseTag;
     public SemanticVersionBuildMetaData? BuildMetaData;
 
-    public SemanticVersion(int major = 0, int minor = 0, int patch = 0)
+    public SemanticVersion(long major = 0, long minor = 0, long patch = 0)
     {
         this.Major = major;
         this.Minor = minor;
@@ -63,20 +63,16 @@ public class SemanticVersion : IFormattable, IComparable<SemanticVersion>, IEqua
         {
             return true;
         }
-        if (obj.GetType() != GetType())
-        {
-            return false;
-        }
-        return Equals((SemanticVersion)obj);
+        return obj.GetType() == GetType() && Equals((SemanticVersion)obj);
     }
 
     public override int GetHashCode()
     {
         unchecked
         {
-            var hashCode = this.Major;
-            hashCode = (hashCode * 397) ^ this.Minor;
-            hashCode = (hashCode * 397) ^ this.Patch;
+            var hashCode = this.Major.GetHashCode();
+            hashCode = (hashCode * 397) ^ this.Minor.GetHashCode();
+            hashCode = (hashCode * 397) ^ this.Patch.GetHashCode();
             hashCode = (hashCode * 397) ^ (this.PreReleaseTag != null ? this.PreReleaseTag.GetHashCode() : 0);
             hashCode = (hashCode * 397) ^ (this.BuildMetaData != null ? this.BuildMetaData.GetHashCode() : 0);
             return hashCode;
@@ -168,9 +164,9 @@ public class SemanticVersion : IFormattable, IComparable<SemanticVersion>, IEqua
 
         semanticVersion = new SemanticVersion
         {
-            Major = int.Parse(parsed.Groups["Major"].Value),
-            Minor = parsed.Groups["Minor"].Success ? int.Parse(parsed.Groups["Minor"].Value) : 0,
-            Patch = parsed.Groups["Patch"].Success ? int.Parse(parsed.Groups["Patch"].Value) : 0,
+            Major = long.Parse(parsed.Groups["Major"].Value),
+            Minor = parsed.Groups["Minor"].Success ? long.Parse(parsed.Groups["Minor"].Value) : 0,
+            Patch = parsed.Groups["Patch"].Success ? long.Parse(parsed.Groups["Patch"].Value) : 0,
             PreReleaseTag = SemanticVersionPreReleaseTag.Parse(parsed.Groups["Tag"].Value),
             BuildMetaData = semanticVersionBuildMetaData
         };
@@ -210,9 +206,9 @@ public class SemanticVersion : IFormattable, IComparable<SemanticVersion>, IEqua
             }
             return -1;
         }
-        if (includePrerelease && this.PreReleaseTag != value?.PreReleaseTag)
+        if (includePrerelease && this.PreReleaseTag != value.PreReleaseTag)
         {
-            if (this.PreReleaseTag > value?.PreReleaseTag)
+            if (this.PreReleaseTag > value.PreReleaseTag)
             {
                 return 1;
             }
@@ -235,7 +231,7 @@ public class SemanticVersion : IFormattable, IComparable<SemanticVersion>, IEqua
     /// <para>l - Legacy SemVer tag for systems which do not support SemVer 2.0 properly [1.2.3-beta4]</para>
     /// <para>lp - Legacy SemVer tag for systems which do not support SemVer 2.0 properly (padded) [1.2.3-beta0004]</para>
     /// </summary>
-    public string ToString(string format, IFormatProvider formatProvider)
+    public string ToString(string? format, IFormatProvider? formatProvider)
     {
         if (format.IsNullOrEmpty())
             format = "s";

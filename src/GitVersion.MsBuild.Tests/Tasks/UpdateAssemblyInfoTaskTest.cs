@@ -1,3 +1,4 @@
+using GitVersion.Helpers;
 using GitVersion.MsBuild.Tasks;
 using GitVersion.MsBuild.Tests.Helpers;
 using Microsoft.Build.Framework;
@@ -56,7 +57,7 @@ public class UpdateAssemblyInfoTaskTest : TestTaskBase
         result.MsBuild.ShouldAllBe(x => x.Succeeded);
         result.Output.ShouldNotBeNullOrWhiteSpace();
 
-        var generatedFilePath = Path.Combine(Path.GetDirectoryName(result.ProjectPath), "AssemblyInfo.g.cs");
+        var generatedFilePath = PathHelper.Combine(Path.GetDirectoryName(result.ProjectPath), "AssemblyInfo.g.cs");
         result.Output.ShouldContain($"{outputProperty}: {generatedFilePath}");
 
         var fileContent = File.ReadAllText(generatedFilePath);
@@ -79,7 +80,7 @@ public class UpdateAssemblyInfoTaskTest : TestTaskBase
         result.MsBuild.ShouldAllBe(x => x.Succeeded);
         result.Output.ShouldNotBeNullOrWhiteSpace();
 
-        var generatedFilePath = Path.Combine(Path.GetDirectoryName(result.ProjectPath), "AssemblyInfo.g.cs");
+        var generatedFilePath = PathHelper.Combine(Path.GetDirectoryName(result.ProjectPath), "AssemblyInfo.g.cs");
         result.Output.ShouldContain($"{outputProperty}: {generatedFilePath}");
 
         var fileContent = File.ReadAllText(generatedFilePath);

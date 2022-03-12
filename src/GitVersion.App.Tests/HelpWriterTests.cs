@@ -34,7 +34,7 @@ public class HelpWriterTests : TestBase
             { nameof(Arguments.Verbosity), "/verbosity" },
             { nameof(Arguments.CommitId), "/c" }
         };
-        string helpText = null;
+        string helpText = string.Empty;
 
         this.helpWriter.WriteTo(s => helpText = s);
 

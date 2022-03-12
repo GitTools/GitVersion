@@ -27,16 +27,14 @@ public sealed class CodeBuild : BuildAgentBase
     {
         var currentBranch = Environment.GetEnvironmentVariable(WebHookEnvironmentVariableName);
 
-        if (currentBranch.IsNullOrEmpty())
-        {
-            return Environment.GetEnvironmentVariable(SourceVersionEnvironmentVariableName);
-        }
-
-        return currentBranch;
+        return currentBranch.IsNullOrEmpty() ? Environment.GetEnvironmentVariable(SourceVersionEnvironmentVariableName) : currentBranch;
     }
 
     public override void WriteIntegration(Action<string?> writer, VersionVariables variables, bool updateBuildNumber = true)
     {
+        if (this.file is null)
+            return;
+
         base.WriteIntegration(writer, variables, updateBuildNumber);
         writer($"Outputting variables to '{this.file}' ... ");
         File.WriteAllLines(this.file, GenerateBuildLogOutput(variables));

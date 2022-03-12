@@ -15,7 +15,7 @@ public class SemanticVersionPreReleaseTag :
     {
     }
 
-    public SemanticVersionPreReleaseTag(string? name, int? number)
+    public SemanticVersionPreReleaseTag(string? name, long? number)
     {
         Name = name;
         Number = number;
@@ -29,7 +29,7 @@ public class SemanticVersionPreReleaseTag :
     }
 
     public string? Name { get; set; }
-    public int? Number { get; set; }
+    public long? Number { get; set; }
     public bool? PromotedFromCommits { get; set; }
 
     public override bool Equals(object? obj) => Equals(obj as SemanticVersionPreReleaseTag);
@@ -76,11 +76,10 @@ public class SemanticVersionPreReleaseTag :
         }
 
         var value = match.Groups["name"].Value;
-        var number = match.Groups["number"].Success ? int.Parse(match.Groups["number"].Value) : (int?)null;
-        if (value.EndsWith("-"))
-            return new SemanticVersionPreReleaseTag(preReleaseTag, null);
-
-        return new SemanticVersionPreReleaseTag(value, number);
+        var number = match.Groups["number"].Success ? long.Parse(match.Groups["number"].Value) : (long?)null;
+        return value.EndsWith("-")
+            ? new SemanticVersionPreReleaseTag(preReleaseTag, null)
+            : new SemanticVersionPreReleaseTag(value, number);
     }
 
     public int CompareTo(SemanticVersionPreReleaseTag? other)

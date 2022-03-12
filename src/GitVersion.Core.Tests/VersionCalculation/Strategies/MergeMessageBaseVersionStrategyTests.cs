@@ -22,7 +22,10 @@ public class MergeMessageBaseVersionStrategyTests : TestBase
 
         var mockBranch = GitToolsTestingExtensions.CreateMockBranch(MainBranch, mockCommit);
         var branches = Substitute.For<IBranchCollection>();
-        branches.GetEnumerator().Returns(_ => ((IEnumerable<IBranch>)new[] { mockBranch }).GetEnumerator());
+        branches.GetEnumerator().Returns(_ => ((IEnumerable<IBranch>)new[]
+        {
+            mockBranch
+        }).GetEnumerator());
 
         var mockRepository = Substitute.For<IGitRepository>();
         mockRepository.Head.Returns(mockBranch);
@@ -31,6 +34,7 @@ public class MergeMessageBaseVersionStrategyTests : TestBase
 
         var contextBuilder = new GitVersionContextBuilder().WithRepository(mockRepository);
         contextBuilder.Build();
+        contextBuilder.ServicesProvider.ShouldNotBeNull();
         var strategy = contextBuilder.ServicesProvider.GetServiceForType<IVersionStrategy, MergeMessageVersionStrategy>();
 
         var baseVersion = strategy.GetVersions().Single();
@@ -125,11 +129,11 @@ public class MergeMessageBaseVersionStrategyTests : TestBase
   Another commit message
   Commit message including a IP-number https://10.50.1.1
   A commit message")]
-    [TestCase(@"Merge branch 'release/Sprint_2.0_Holdings_Computed_Balances'")]
-    [TestCase(@"Merge branch 'develop' of http://10.0.6.3/gitblit/r/... into develop")]
-    [TestCase(@"Merge branch " + MainBranch + @" of http://172.16.3.10:8082/r/asu_tk/p_sd")]
-    [TestCase(@"Merge branch " + MainBranch + @" of http://212.248.89.56:8082/r/asu_tk/p_sd")]
-    [TestCase(@"Merge branch 'DEMO' of http://10.10.10.121/gitlab/mtolland/orcid into DEMO")]
+    [TestCase("Merge branch 'release/Sprint_2.0_Holdings_Computed_Balances'")]
+    [TestCase("Merge branch 'develop' of http://10.0.6.3/gitblit/r/... into develop")]
+    [TestCase("Merge branch " + MainBranch + " of http://172.16.3.10:8082/r/asu_tk/p_sd")]
+    [TestCase("Merge branch " + MainBranch + " of http://212.248.89.56:8082/r/asu_tk/p_sd")]
+    [TestCase("Merge branch 'DEMO' of http://10.10.10.121/gitlab/mtolland/orcid into DEMO")]
     public void ShouldNotTakeVersionFromUnrelatedMerge(string commitMessage)
     {
         var parents = GetParents(true);
@@ -140,7 +144,7 @@ public class MergeMessageBaseVersionStrategyTests : TestBase
     [TestCase("Merge branch 'support/0.2.0'", "support", "0.2.0")]
     [TestCase("Merge branch 'support/0.2.0'", null, null)]
     [TestCase("Merge branch 'release/2.0.0'", null, "2.0.0")]
-    public void TakesVersionFromMergeOfConfiguredReleaseBranch(string message, string releaseBranch, string expectedVersion)
+    public void TakesVersionFromMergeOfConfiguredReleaseBranch(string message, string? releaseBranch, string expectedVersion)
     {
         var config = new Config();
         if (releaseBranch != null) config.Branches[releaseBranch] = new BranchConfig { IsReleaseBranch = true };
@@ -149,7 +153,7 @@ public class MergeMessageBaseVersionStrategyTests : TestBase
         AssertMergeMessage(message, expectedVersion, parents, config);
     }
 
-    private static void AssertMergeMessage(string message, string expectedVersion, IEnumerable<ICommit> parents, Config config = null)
+    private static void AssertMergeMessage(string message, string? expectedVersion, IEnumerable<ICommit?> parents, Config? config = null)
     {
         var commit = GitToolsTestingExtensions.CreateMockCommit();
         commit.Message.Returns(message);
@@ -165,6 +169,7 @@ public class MergeMessageBaseVersionStrategyTests : TestBase
             .WithConfig(config ?? new Config())
             .WithRepository(mockRepository);
         contextBuilder.Build();
+        contextBuilder.ServicesProvider.ShouldNotBeNull();
         var strategy = contextBuilder.ServicesProvider.GetServiceForType<IVersionStrategy, MergeMessageVersionStrategy>();
 
         var baseVersion = strategy.GetVersions().SingleOrDefault();
@@ -180,20 +185,21 @@ public class MergeMessageBaseVersionStrategyTests : TestBase
         }
     }
 
-    private static List<ICommit> GetParents(bool isMergeCommit)
-    {
-        if (isMergeCommit)
-        {
-            return new List<ICommit>
-            {
-                null,
-                null
-            };
-        }
+    private static List<ICommit> GetParents(bool isMergeCommit) =>
+        isMergeCommit
+            ? new List<ICommit> { new MockCommit(), new MockCommit(), }
+            : new List<ICommit> { new MockCommit(), };
 
-        return new List<ICommit>
-        {
-            null
-        };
+    private class MockCommit : ICommit
+    {
+        public bool Equals(ICommit? other) => throw new NotImplementedException();
+        public int CompareTo(ICommit? other) => throw new NotImplementedException();
+        public bool Equals(IGitObject? other) => throw new NotImplementedException();
+        public int CompareTo(IGitObject? other) => throw new NotImplementedException();
+        public IObjectId Id => throw new NotImplementedException();
+        public string Sha => throw new NotImplementedException();
+        public IEnumerable<ICommit> Parents => throw new NotImplementedException();
+        public DateTimeOffset When => throw new NotImplementedException();
+        public string Message => throw new NotImplementedException();
     }
 }

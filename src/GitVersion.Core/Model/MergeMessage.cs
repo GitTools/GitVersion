@@ -15,19 +15,16 @@ public class MergeMessage
         new("RemoteTracking", @"^Merge remote-tracking branch '(?<SourceBranch>[^\s]*)'(?: into (?<TargetBranch>[^\s]*))*")
     };
 
-    public MergeMessage(string mergeMessage, Config? config)
+    public MergeMessage(string? mergeMessage, Config config)
     {
         if (mergeMessage == null)
             throw new NullReferenceException();
 
         // Concat config formats with the defaults.
         // Ensure configs are processed first.
-        var allFormats = config?.MergeMessageFormats
+        var allFormats = config.MergeMessageFormats
             .Select(x => new MergeMessageFormat(x.Key, x.Value))
             .Concat(DefaultFormats);
-
-        if (allFormats is null)
-            return;
 
         foreach (var format in allFormats)
         {
@@ -47,7 +44,7 @@ public class MergeMessage
                     PullRequestNumber = pullNumber;
                 }
 
-                Version = ParseVersion(config!.TagPrefix!);
+                Version = ParseVersion(config.TagPrefix);
 
                 break;
             }
@@ -61,8 +58,10 @@ public class MergeMessage
     public int? PullRequestNumber { get; }
     public SemanticVersion? Version { get; }
 
-    private SemanticVersion? ParseVersion(string tagPrefix)
+    private SemanticVersion? ParseVersion(string? tagPrefix)
     {
+        if (tagPrefix is null)
+            return null;
         // Remove remotes and branch prefixes like release/ feature/ hotfix/ etc
         var toMatch = Regex.Replace(MergedBranch, @"^(\w+[-/])*", "", RegexOptions.IgnoreCase);
         toMatch = Regex.Replace(toMatch, $"^{tagPrefix}", "");

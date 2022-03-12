@@ -14,21 +14,21 @@ public class SemanticVersionBuildMetaData : IFormattable, IEquatable<SemanticVer
     private static readonly LambdaEqualityHelper<SemanticVersionBuildMetaData> EqualityHelper =
         new(x => x.CommitsSinceTag, x => x.Branch, x => x.Sha);
 
-    public int? CommitsSinceTag;
+    public long? CommitsSinceTag;
     public string? Branch;
     public string? Sha;
     public string? ShortSha;
     public string? OtherMetaData;
     public DateTimeOffset? CommitDate;
     public string? VersionSourceSha;
-    public int? CommitsSinceVersionSource;
-    public int UncommittedChanges;
+    public long? CommitsSinceVersionSource;
+    public long UncommittedChanges;
 
     public SemanticVersionBuildMetaData()
     {
     }
 
-    public SemanticVersionBuildMetaData(string? versionSourceSha, int? commitsSinceTag, string? branch, string? commitSha, string? commitShortSha, DateTimeOffset? commitDate, int numbeerOfUncommitedChanges, string? otherMetadata = null)
+    public SemanticVersionBuildMetaData(string? versionSourceSha, int? commitsSinceTag, string? branch, string? commitSha, string? commitShortSha, DateTimeOffset? commitDate, int numberOfUnCommittedChanges, string? otherMetadata = null)
     {
         this.Sha = commitSha;
         this.ShortSha = commitShortSha;
@@ -38,7 +38,7 @@ public class SemanticVersionBuildMetaData : IFormattable, IEquatable<SemanticVer
         this.OtherMetaData = otherMetadata;
         this.VersionSourceSha = versionSourceSha;
         this.CommitsSinceVersionSource = commitsSinceTag ?? 0;
-        this.UncommittedChanges = numbeerOfUncommitedChanges;
+        this.UncommittedChanges = numberOfUnCommittedChanges;
     }
 
     public SemanticVersionBuildMetaData(SemanticVersionBuildMetaData? buildMetaData)
@@ -124,7 +124,7 @@ public class SemanticVersionBuildMetaData : IFormattable, IEquatable<SemanticVer
 
         if (parsed.Groups["BuildNumber"].Success)
         {
-            semanticVersionBuildMetaData.CommitsSinceTag = int.Parse(parsed.Groups["BuildNumber"].Value);
+            semanticVersionBuildMetaData.CommitsSinceTag = long.Parse(parsed.Groups["BuildNumber"].Value);
             semanticVersionBuildMetaData.CommitsSinceVersionSource = semanticVersionBuildMetaData.CommitsSinceTag ?? 0;
         }
 

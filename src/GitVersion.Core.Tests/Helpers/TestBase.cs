@@ -13,7 +13,7 @@ public class TestBase
     protected const string NoNet48 = "NoNet48";
     public const string MainBranch = "main";
 
-    protected static IServiceProvider ConfigureServices(Action<IServiceCollection> overrideServices = null)
+    protected static IServiceProvider ConfigureServices(Action<IServiceCollection>? overrideServices = null)
     {
         var services = new ServiceCollection()
             .AddModule(new GitVersionCoreTestModule());
@@ -23,7 +23,7 @@ public class TestBase
         return services.BuildServiceProvider();
     }
 
-    protected static IServiceProvider BuildServiceProvider(string workingDirectory, IGitRepository repository, string branch, Config config = null)
+    protected static IServiceProvider BuildServiceProvider(string workingDirectory, IGitRepository repository, string branch, Config? config = null)
     {
         config ??= new ConfigurationBuilder().Build();
         var options = Options.Create(new GitVersionOptions

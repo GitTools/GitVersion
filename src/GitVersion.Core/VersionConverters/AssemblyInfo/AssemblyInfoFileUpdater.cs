@@ -1,5 +1,6 @@
 using System.Text.RegularExpressions;
 using GitVersion.Extensions;
+using GitVersion.Helpers;
 using GitVersion.Logging;
 using GitVersion.OutputVariables;
 
@@ -166,7 +167,7 @@ public sealed class AssemblyInfoFileUpdater : IAssemblyInfoFileUpdater
         {
             foreach (var item in assemblyInfoFileNames)
             {
-                var fullPath = Path.Combine(workingDirectory, item);
+                var fullPath = PathHelper.Combine(workingDirectory, item);
 
                 if (EnsureVersionAssemblyInfoFile(fullPath, ensureAssemblyInfo))
                 {

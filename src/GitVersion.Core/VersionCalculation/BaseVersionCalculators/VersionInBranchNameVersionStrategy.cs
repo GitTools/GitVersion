@@ -18,14 +18,14 @@ public class VersionInBranchNameVersionStrategy : VersionStrategyBase
     public override IEnumerable<BaseVersion> GetVersions()
     {
         var currentBranch = Context.CurrentBranch;
-        var tagPrefixRegex = Context.Configuration?.GitTagPrefix;
+        var tagPrefixRegex = Context.Configuration.GitTagPrefix;
         return GetVersions(tagPrefixRegex, currentBranch);
     }
 
     internal IEnumerable<BaseVersion> GetVersions(string? tagPrefixRegex, IBranch? currentBranch)
     {
         if (currentBranch == null ||
-            Context.FullConfiguration?.IsReleaseBranch(NameWithoutOrigin(currentBranch)) != true)
+            Context.FullConfiguration.IsReleaseBranch(NameWithoutOrigin(currentBranch)) != true)
         {
             yield break;
         }

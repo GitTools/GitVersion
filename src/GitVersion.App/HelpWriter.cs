@@ -32,6 +32,7 @@ public class HelpWriter : IHelpWriter
     private string ArgumentList()
     {
         using var argumentsMarkdownStream = GetType().Assembly.GetManifestResourceStream("GitVersion.arguments.md");
+        argumentsMarkdownStream.NotNull();
         using var sr = new StreamReader(argumentsMarkdownStream);
         var argsMarkdown = sr.ReadToEnd();
         var codeBlockStart = argsMarkdown.IndexOf("```", StringComparison.Ordinal) + 3;

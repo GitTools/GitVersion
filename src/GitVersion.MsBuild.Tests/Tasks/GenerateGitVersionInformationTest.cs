@@ -1,3 +1,4 @@
+using GitVersion.Helpers;
 using GitVersion.MsBuild.Tasks;
 using GitVersion.MsBuild.Tests.Helpers;
 using GitVersion.OutputVariables;
@@ -65,7 +66,7 @@ public class GenerateGitVersionInformationTest : TestTaskBase
         result.MsBuild.ShouldAllBe(x => x.Succeeded);
         result.Output.ShouldNotBeNullOrWhiteSpace();
 
-        var generatedFilePath = Path.Combine(Path.GetDirectoryName(result.ProjectPath), "GitVersionInformation.g.cs");
+        var generatedFilePath = PathHelper.Combine(Path.GetDirectoryName(result.ProjectPath), "GitVersionInformation.g.cs");
         result.Output.ShouldContain($"{outputProperty}: {generatedFilePath}");
 
         var fileContent = File.ReadAllText(generatedFilePath);
@@ -92,7 +93,7 @@ public class GenerateGitVersionInformationTest : TestTaskBase
         result.MsBuild.ShouldAllBe(x => x.Succeeded);
         result.Output.ShouldNotBeNullOrWhiteSpace();
 
-        var generatedFilePath = Path.Combine(Path.GetDirectoryName(result.ProjectPath), "GitVersionInformation.g.cs");
+        var generatedFilePath = PathHelper.Combine(Path.GetDirectoryName(result.ProjectPath), "GitVersionInformation.g.cs");
         result.Output.ShouldContain($"{outputProperty}: {generatedFilePath}");
 
         var fileContent = File.ReadAllText(generatedFilePath);

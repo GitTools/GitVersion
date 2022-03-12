@@ -16,7 +16,7 @@ public class ConfigureBranches : ConfigInitWizardStep
         {
             if (parsed == 0)
             {
-                steps.Enqueue(this.StepFactory.CreateStep<EditConfigStep>()!);
+                steps.Enqueue(this.StepFactory.CreateStep<EditConfigStep>());
                 return StepResult.Ok();
             }
 
@@ -29,7 +29,7 @@ public class ConfigureBranches : ConfigInitWizardStep
                     branchConfig = new BranchConfig { Name = foundBranch.Key };
                     config.Branches.Add(foundBranch.Key, branchConfig);
                 }
-                steps.Enqueue(this.StepFactory.CreateStep<ConfigureBranch>()!.WithData(foundBranch.Key, branchConfig));
+                steps.Enqueue(this.StepFactory.CreateStep<ConfigureBranch>().WithData(foundBranch.Key, branchConfig));
                 return StepResult.Ok();
             }
             catch (ArgumentOutOfRangeException)
@@ -44,14 +44,14 @@ public class ConfigureBranches : ConfigInitWizardStep
 0) Go Back
 " + string.Join(System.Environment.NewLine, OrderedBranches(config).Select((c, i) => $"{i + 1}) {c.Key}"));
 
-    private static IOrderedEnumerable<KeyValuePair<string, BranchConfig?>> OrderedBranches(Config config)
+    private static IOrderedEnumerable<KeyValuePair<string, BranchConfig>> OrderedBranches(Config config)
     {
         var defaultConfig = new ConfigurationBuilder().Build();
 
         var defaultConfigurationBranches = defaultConfig.Branches
             .Where(k => !config.Branches.ContainsKey(k.Key))
             // Return an empty branch config
-            .Select(v => new KeyValuePair<string, BranchConfig?>(v.Key, null));
+            .Select(v => new KeyValuePair<string, BranchConfig>(v.Key, new BranchConfig()));
         return config.Branches.Union(defaultConfigurationBranches).OrderBy(b => b.Key);
     }
 

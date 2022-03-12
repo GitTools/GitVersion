@@ -153,8 +153,9 @@ public class FeatureBranchScenarios : TestBase
         fixture.Repository.CreateBranch("develop");
         Commands.Checkout(fixture.Repository, "develop");
 
-        fixture.Repository.CreateBranch("feature/longrunning");
-        Commands.Checkout(fixture.Repository, "feature/longrunning");
+        const string branchName = "feature/longrunning";
+        fixture.Repository.CreateBranch(branchName);
+        Commands.Checkout(fixture.Repository, branchName);
         fixture.Repository.MakeACommit();
 
         Commands.Checkout(fixture.Repository, "develop");
@@ -164,7 +165,7 @@ public class FeatureBranchScenarios : TestBase
         fixture.Repository.Merge(fixture.Repository.Branches["develop"], Generate.SignatureNow());
         fixture.Repository.ApplyTag("v1.1.0");
 
-        Commands.Checkout(fixture.Repository, "feature/longrunning");
+        Commands.Checkout(fixture.Repository, branchName);
         fixture.Repository.Merge(fixture.Repository.Branches["develop"], Generate.SignatureNow());
 
         var configuration = new Config { VersioningMode = VersioningMode.ContinuousDeployment };

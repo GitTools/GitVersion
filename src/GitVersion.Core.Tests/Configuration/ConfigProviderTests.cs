@@ -2,6 +2,7 @@ using System.Runtime.CompilerServices;
 using GitVersion.Configuration;
 using GitVersion.Core.Tests.Helpers;
 using GitVersion.Extensions;
+using GitVersion.Helpers;
 using GitVersion.Logging;
 using GitVersion.Model.Configuration;
 using GitVersion.VersionCalculation;
@@ -48,6 +49,7 @@ branches:
         var config = this.configProvider.Provide(this.repoPath);
 
         config.NextVersion.ShouldBe("2.0.0");
+        config.Branches.ShouldNotBeNull();
         config.Branches["develop"].Increment.ShouldBe(defaultConfig.Branches["develop"].Increment);
         config.Branches["develop"].VersioningMode.ShouldBe(defaultConfig.Branches["develop"].VersioningMode);
         config.Branches["develop"].Tag.ShouldBe("dev");
@@ -56,7 +58,7 @@ branches:
     [Test]
     public void AllBranchesModeWhenUsingMainline()
     {
-        const string text = @"mode: Mainline";
+        const string text = "mode: Mainline";
         SetupConfigFileContent(text);
         var config = this.configProvider.Provide(this.repoPath);
         var branches = config.Branches.Select(x => x.Value);
@@ -191,7 +193,7 @@ branches:
 
         config.Branches["breaking"].Regex.ShouldBe("breaking[/]");
         config.Branches["breaking"].SourceBranches.ShouldHaveSingleItem();
-        config.Branches["breaking"].SourceBranches.ShouldContain(MainBranch);
+        config.Branches["breaking"].SourceBranches?.ShouldContain(MainBranch);
     }
 
     [Test]
@@ -337,14 +339,12 @@ branches: {}";
         stringLogger.Length.ShouldBe(0);
     }
 
-    private string SetupConfigFileContent(string text, string fileName = ConfigFileLocator.DefaultFileName) => SetupConfigFileContent(text, fileName, this.repoPath);
+    private void SetupConfigFileContent(string text, string fileName = ConfigFileLocator.DefaultFileName) => SetupConfigFileContent(text, fileName, this.repoPath);
 
-    private string SetupConfigFileContent(string text, string fileName, string path)
+    private void SetupConfigFileContent(string text, string fileName, string path)
     {
-        var fullPath = Path.Combine(path, fileName);
+        var fullPath = PathHelper.Combine(path, fileName);
         this.fileSystem.WriteAllText(fullPath, text);
-
-        return fullPath;
     }
 
     [Test]
@@ -418,8 +418,8 @@ next-version: 1.2.3
 tag-prefix: custom-tag-prefix-from-yml";
         SetupConfigFileContent(text);
 
-        var expectedConfig = this.configProvider.Provide(this.repoPath, overrideConfig: null);
-        var overridenConfig = this.configProvider.Provide(this.repoPath, overrideConfig: new Config());
+        var expectedConfig = this.configProvider.Provide(this.repoPath);
+        var overridenConfig = this.configProvider.Provide(this.repoPath, new Config());
 
         overridenConfig.AssemblyVersioningScheme.ShouldBe(expectedConfig.AssemblyVersioningScheme);
         overridenConfig.AssemblyFileVersioningScheme.ShouldBe(expectedConfig.AssemblyFileVersioningScheme);
@@ -479,7 +479,7 @@ tag-prefix: custom-tag-prefix-from-yml";
     {
         var text = tagPrefixSetAtYmlFile ? "tag-prefix: custom-tag-prefix-from-yml" : "";
         SetupConfigFileContent(text);
-        var config = this.configProvider.Provide(this.repoPath, overrideConfig: new Config { TagPrefix = "tag-prefix-from-override-config" });
+        var config = this.configProvider.Provide(this.repoPath, new Config { TagPrefix = "tag-prefix-from-override-config" });
 
         config.TagPrefix.ShouldBe("tag-prefix-from-override-config");
     }
@@ -489,7 +489,7 @@ tag-prefix: custom-tag-prefix-from-yml";
     {
         const string text = "";
         SetupConfigFileContent(text);
-        var config = this.configProvider.Provide(this.repoPath, overrideConfig: new Config { TagPrefix = null });
+        var config = this.configProvider.Provide(this.repoPath, new Config { TagPrefix = null });
 
         config.TagPrefix.ShouldBe("[vV]");
     }
@@ -499,7 +499,7 @@ tag-prefix: custom-tag-prefix-from-yml";
     {
         const string text = "tag-prefix: custom-tag-prefix-from-yml";
         SetupConfigFileContent(text);
-        var config = this.configProvider.Provide(this.repoPath, overrideConfig: new Config { TagPrefix = null });
+        var config = this.configProvider.Provide(this.repoPath, new Config { TagPrefix = null });
 
         config.TagPrefix.ShouldBe("custom-tag-prefix-from-yml");
     }

@@ -18,7 +18,13 @@ public readonly struct BranchCommit : IEquatable<BranchCommit?>
     public IBranch Branch { get; }
     public ICommit Commit { get; }
 
-    public bool Equals(BranchCommit? other) => Equals(Branch, other?.Branch) && Equals(Commit, other?.Commit);
+    public bool Equals(BranchCommit? other)
+    {
+        if (other is null)
+            return false;
+
+        return Equals(Branch, other.Value.Branch) && Equals(Commit, other.Value.Commit);
+    }
 
     public override bool Equals(object? obj) => obj is not null && Equals(obj as BranchCommit?);
 

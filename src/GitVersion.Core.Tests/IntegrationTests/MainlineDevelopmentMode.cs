@@ -5,15 +5,13 @@ using GitVersion.Model.Configuration;
 using GitVersion.VersionCalculation;
 using LibGit2Sharp;
 using NUnit.Framework;
+using Shouldly;
 
 namespace GitVersion.Core.Tests.IntegrationTests;
 
 public class MainlineDevelopmentMode : TestBase
 {
-    private readonly Config config = new()
-    {
-        VersioningMode = VersioningMode.Mainline
-    };
+    private readonly Config config = new() { VersioningMode = VersioningMode.Mainline };
 
     [Test]
     public void VerifyNonMainMainlineVersionIdenticalAsMain()
@@ -64,10 +62,7 @@ public class MainlineDevelopmentMode : TestBase
         fixture.SequenceDiagram.NoteOver("Merge message contains '+semver: minor'", MainBranch);
         var commit = fixture.Repository.Head.Tip;
         // Put semver increment in merge message
-        fixture.Repository.Commit(commit.Message + " +semver: minor", commit.Author, commit.Committer, new CommitOptions
-        {
-            AmendPreviousCommit = true
-        });
+        fixture.Repository.Commit(commit.Message + " +semver: minor", commit.Author, commit.Committer, new CommitOptions { AmendPreviousCommit = true });
         fixture.AssertFullSemver("1.2.0", this.config);
 
         fixture.BranchTo("feature/foo4", "foo4");
@@ -392,20 +387,7 @@ public class MainlineDevelopmentMode : TestBase
     [Test]
     public void MergingFeatureBranchThatIncrementsMinorNumberIncrementsMinorVersionOfMain()
     {
-        var currentConfig = new Config
-        {
-            VersioningMode = VersioningMode.Mainline,
-            Branches = new Dictionary<string, BranchConfig>
-            {
-                {
-                    "feature", new BranchConfig
-                    {
-                        VersioningMode = VersioningMode.ContinuousDeployment,
-                        Increment = IncrementStrategy.Minor
-                    }
-                }
-            }
-        };
+        var currentConfig = new Config { VersioningMode = VersioningMode.Mainline, Branches = new Dictionary<string, BranchConfig> { { "feature", new BranchConfig { VersioningMode = VersioningMode.ContinuousDeployment, Increment = IncrementStrategy.Minor } } } };
 
         using var fixture = new EmptyRepositoryFixture();
         fixture.MakeACommit($"first in {MainBranch}");
@@ -431,24 +413,8 @@ public class MainlineDevelopmentMode : TestBase
             Increment = IncrementStrategy.Minor,
             Branches = new Dictionary<string, BranchConfig>
             {
-                {
-                    MainBranch,
-                    new BranchConfig
-                    {
-                        Increment = IncrementStrategy.Minor,
-                        Name = MainBranch,
-                        Regex = MainBranch
-                    }
-                },
-                {
-                    "feature",
-                    new BranchConfig
-                    {
-                        Increment = IncrementStrategy.Minor,
-                        Name = "feature",
-                        Regex = "features?[/-]"
-                    }
-                }
+                { MainBranch, new BranchConfig { Increment = IncrementStrategy.Minor, Name = MainBranch, Regex = MainBranch } },
+                { "feature", new BranchConfig { Increment = IncrementStrategy.Minor, Name = "feature", Regex = "features?[/-]" } }
             }
         };
 
@@ -480,10 +446,7 @@ public class MainlineDevelopmentMode : TestBase
         fixture.SequenceDiagram.NoteOver("Merge message contains '+semver: patch'", MainBranch);
         var commit = fixture.Repository.Head.Tip;
         // Put semver increment in merge message
-        fixture.Repository.Commit(commit.Message + " +semver: patch", commit.Author, commit.Committer, new CommitOptions
-        {
-            AmendPreviousCommit = true
-        });
+        fixture.Repository.Commit(commit.Message + " +semver: patch", commit.Author, commit.Committer, new CommitOptions { AmendPreviousCommit = true });
         fixture.AssertFullSemver("1.1.2", minorIncrementConfig);
 
         fixture.BranchTo("feature/foo4", "foo4");
@@ -521,11 +484,7 @@ public class MainlineDevelopmentMode : TestBase
     [Test]
     public void BranchWithoutMergeBaseMainlineBranchIsFound()
     {
-        var currentConfig = new Config
-        {
-            VersioningMode = VersioningMode.Mainline,
-            AssemblyFileVersioningScheme = AssemblyFileVersioningScheme.MajorMinorPatchTag
-        };
+        var currentConfig = new Config { VersioningMode = VersioningMode.Mainline, AssemblyFileVersioningScheme = AssemblyFileVersioningScheme.MajorMinorPatchTag };
 
         using var fixture = new EmptyRepositoryFixture();
         fixture.Repository.MakeACommit();
@@ -537,6 +496,33 @@ public class MainlineDevelopmentMode : TestBase
         fixture.AssertFullSemver("0.1.3-issue-branch.1", currentConfig);
     }
 
+    [Test]
+    public void GivenARemoteGitRepositoryWithCommitsThenClonedLocalDevelopShouldMatchRemoteVersion()
+    {
+        using var fixture = new RemoteRepositoryFixture();
+        fixture.AssertFullSemver("0.1.4", config);
+        fixture.BranchTo("develop");
+        fixture.AssertFullSemver("0.2.0-alpha.0", config);
+        Console.WriteLine(fixture.SequenceDiagram.GetDiagram());
+        var local = fixture.CloneRepository();
+        fixture.AssertFullSemver("0.2.0-alpha.0", config, repository: local.Repository);
+        local.Repository.DumpGraph();
+    }
+
+    [Test]
+    public void GivenNoMainThrowsWarning()
+    {
+        using var fixture = new EmptyRepositoryFixture();
+        fixture.Repository.MakeACommit();
+        fixture.Repository.MakeATaggedCommit("1.0.0");
+        fixture.Repository.MakeACommit();
+        Commands.Checkout(fixture.Repository, fixture.Repository.CreateBranch("develop"));
+        fixture.Repository.Branches.Remove(fixture.Repository.Branches["main"]);
+
+        var exception = Assert.Throws<WarningException>(() => fixture.AssertFullSemver("1.1.0-alpha.1", config));
+        exception.ShouldNotBeNull();
+        exception.Message.ShouldMatch("No branches can be found matching the commit .* in the configured Mainline branches: main, support");
+    }
 }
 
 internal static class CommitExtensions
@@ -544,18 +530,20 @@ internal static class CommitExtensions
     public static void MakeACommit(this RepositoryFixtureBase fixture, string commitMsg)
     {
         fixture.Repository.MakeACommit(commitMsg);
-        var diagramBuilder = (StringBuilder)typeof(SequenceDiagram)
+        var diagramBuilder = (StringBuilder?)typeof(SequenceDiagram)
             .GetField("diagramBuilder", BindingFlags.Instance | BindingFlags.NonPublic)
             ?.GetValue(fixture.SequenceDiagram);
 
-        string GetParticipant(string participant) =>
-            (string)typeof(SequenceDiagram).GetMethod("GetParticipant", BindingFlags.Instance | BindingFlags.NonPublic)
-                ?.Invoke(fixture.SequenceDiagram, new object[]
-                {
-                    participant
-                });
+        string? GetParticipant(string participant) =>
+            (string?)typeof(SequenceDiagram).GetMethod("GetParticipant", BindingFlags.Instance | BindingFlags.NonPublic)
+                ?.Invoke(fixture.SequenceDiagram,
+                    new object[]
+                    {
+                        participant
+                    });
 
-        diagramBuilder.AppendLineFormat("{0} -> {0}: Commit '{1}'", GetParticipant(fixture.Repository.Head.FriendlyName),
-            commitMsg);
+        var participant = GetParticipant(fixture.Repository.Head.FriendlyName);
+        if (participant != null)
+            diagramBuilder?.AppendLineFormat("{0} -> {0}: Commit '{1}'", participant, commitMsg);
     }
 }

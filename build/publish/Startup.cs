@@ -13,6 +13,6 @@ public class Startup : IFrostingStartup
 
         services.UseWorkingDirectory(Extensions.GetRootDirectory());
 
-        services.UseTool(new Uri("dotnet:?package=GitVersion.Tool&version=5.8.2"));
+        services.UseDotnetTool(Tools.GitVersion, Tools.Versions[Tools.GitVersion]);
     }
 }

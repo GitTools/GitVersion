@@ -19,17 +19,19 @@ public class MergeMessageVersionStrategy : VersionStrategyBase
 
     public override IEnumerable<BaseVersion> GetVersions()
     {
-        // FIX ME: What to do when CurrentCommit is null?
-        var commitsPriorToThan = Context.CurrentBranch!.Commits!.GetCommitsPriorTo(Context.CurrentCommit!.When);
+        if (Context.CurrentBranch.Commits == null || Context.CurrentCommit == null)
+            return Enumerable.Empty<BaseVersion>();
+
+        var commitsPriorToThan = Context.CurrentBranch.Commits.GetCommitsPriorTo(Context.CurrentCommit.When);
         var baseVersions = commitsPriorToThan
             .SelectMany(c =>
             {
                 if (TryParse(c, Context, out var mergeMessage) &&
                     mergeMessage.Version != null &&
-                    Context.FullConfiguration?.IsReleaseBranch(TrimRemote(mergeMessage.MergedBranch)) == true)
+                    Context.FullConfiguration.IsReleaseBranch(TrimRemote(mergeMessage.MergedBranch)))
                 {
                     this.log.Info($"Found commit [{Context.CurrentCommit}] matching merge message format: {mergeMessage.FormatName}");
-                    var shouldIncrement = Context.Configuration?.PreventIncrementForMergedBranchVersion != true;
+                    var shouldIncrement = Context.Configuration.PreventIncrementForMergedBranchVersion != true;
                     return new[]
                     {
                         new BaseVersion($"{MergeMessageStrategyPrefix} '{c.Message.Trim()}'", shouldIncrement, mergeMessage.Version, c, null)

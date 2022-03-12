@@ -78,7 +78,7 @@ public class ConfigurationBuilder
             // In case when several branch configurations match the current branch (by regex), we choose the first one.
             // So we have to add new branches to the beginning of a dictionary to preserve 5.3.x behavior.
 
-            var newBranches = new Dictionary<string, BranchConfig?>();
+            var newBranches = new Dictionary<string, BranchConfig>();
 
             var targetConfigBranches = targetConfig.Branches;
 
@@ -91,8 +91,8 @@ public class ConfigurationBuilder
                     target = BranchConfig.CreateDefaultBranchConfig(branchName);
                 }
 
-                branchConfig!.MergeTo(target!);
-                if (target!.SourceBranches != null && target.SourceBranches.Contains(Config.MasterBranchKey))
+                branchConfig.MergeTo(target);
+                if (target.SourceBranches != null && target.SourceBranches.Contains(Config.MasterBranchKey))
                 {
                     target.SourceBranches.Remove(Config.MasterBranchKey);
                     target.SourceBranches.Add(Config.MainBranchKey);
@@ -120,9 +120,9 @@ public class ConfigurationBuilder
         }
     }
 
-    private static void FinalizeBranchConfiguration(Config config, string name, BranchConfig? branchConfig)
+    private static void FinalizeBranchConfiguration(Config config, string name, BranchConfig branchConfig)
     {
-        branchConfig!.Name = name;
+        branchConfig.Name = name;
         branchConfig.Increment ??= config.Increment ?? IncrementStrategy.Inherit;
 
         if (branchConfig.VersioningMode == null)
@@ -137,14 +137,14 @@ public class ConfigurationBuilder
             }
         }
 
-        if (branchConfig.IsSourceBranchFor != null)
+        if (branchConfig.IsSourceBranchFor == null)
+            return;
+
+        foreach (var targetBranchName in branchConfig.IsSourceBranchFor)
         {
-            foreach (var targetBranchName in branchConfig.IsSourceBranchFor)
-            {
-                var targetBranchConfig = config.Branches[targetBranchName]!;
-                targetBranchConfig.SourceBranches ??= new HashSet<string>();
-                targetBranchConfig.SourceBranches.Add(name);
-            }
+            var targetBranchConfig = config.Branches[targetBranchName];
+            targetBranchConfig.SourceBranches ??= new HashSet<string>();
+            targetBranchConfig.SourceBranches.Add(name);
         }
     }
 

@@ -33,7 +33,7 @@ public static class GitToolsTestingExtensions
         gitPreparer.Prepare();
     }
 
-    private static IServiceProvider ConfigureServices(Action<IServiceCollection> servicesOverrides = null)
+    private static IServiceProvider ConfigureServices(Action<IServiceCollection>? servicesOverrides = null)
     {
         var services = new ServiceCollection()
             .AddModule(new GitVersionCoreTestModule());

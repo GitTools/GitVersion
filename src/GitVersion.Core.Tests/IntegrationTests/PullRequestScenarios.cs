@@ -32,7 +32,7 @@ public class PullRequestScenarios : TestBase
         Commands.Checkout(fixture.Repository, fixture.Repository.CreateBranch("feature/Foo"));
         fixture.Repository.MakeACommit();
 
-        fixture.Repository.CreatePullRequestRef("feature/Foo", "develop", 44, normalise: true);
+        fixture.Repository.CreatePullRequestRef("feature/Foo", "develop", 44, true);
 
         fixture.Repository.DumpGraph();
         fixture.AssertFullSemver("0.2.0-PullRequest0044.3");

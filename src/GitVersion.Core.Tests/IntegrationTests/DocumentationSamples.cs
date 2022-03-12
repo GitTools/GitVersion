@@ -25,18 +25,18 @@ public class DocumentationSamples : TestBase
         fixture.AssertFullSemver("1.3.0-alpha.1");
 
         // Open Pull Request
-        fixture.BranchTo("feature/myfeature", "feature");
-        fixture.SequenceDiagram.Activate("feature/myfeature");
-        fixture.AssertFullSemver("1.3.0-myfeature.1+1");
+        const string branchName = "feature/myFeature";
+        fixture.BranchTo(branchName, "feature");
+        fixture.SequenceDiagram.Activate(branchName);
+        fixture.AssertFullSemver("1.3.0-myFeature.1+1");
         fixture.MakeACommit();
-        fixture.AssertFullSemver("1.3.0-myfeature.1+2");
+        fixture.AssertFullSemver("1.3.0-myFeature.1+2");
 
         // Merge into develop
         fixture.Checkout("develop");
-        fixture.MergeNoFF("feature/myfeature");
-        fixture.SequenceDiagram.Destroy("feature/myfeature");
-        fixture.SequenceDiagram.NoteOver("Feature branches should\r\n" +
-                                         "be deleted once merged", "feature/myfeature");
+        fixture.MergeNoFF(branchName);
+        fixture.SequenceDiagram.Destroy(branchName);
+        fixture.SequenceDiagram.NoteOver("Feature branches should\r\nbe deleted once merged", branchName);
         fixture.AssertFullSemver("1.3.0-alpha.3");
         Console.WriteLine(fixture.SequenceDiagram.GetDiagram());
     }
@@ -316,18 +316,18 @@ public class DocumentationSamples : TestBase
         fixture.AssertFullSemver("1.2.1+1");
 
         // Open Pull Request
-        fixture.BranchTo("feature/myfeature", "feature");
-        fixture.SequenceDiagram.Activate("feature/myfeature");
-        fixture.AssertFullSemver("1.2.1-myfeature.1+1");
+        const string branchName = "feature/myFeature";
+        fixture.BranchTo(branchName, "feature");
+        fixture.SequenceDiagram.Activate(branchName);
+        fixture.AssertFullSemver("1.2.1-myFeature.1+1");
         fixture.MakeACommit();
-        fixture.AssertFullSemver("1.2.1-myfeature.1+2");
+        fixture.AssertFullSemver("1.2.1-myFeature.1+2");
 
         // Merge into main
         fixture.Checkout(MainBranch);
-        fixture.MergeNoFF("feature/myfeature");
-        fixture.SequenceDiagram.Destroy("feature/myfeature");
-        fixture.SequenceDiagram.NoteOver("Feature branches should\r\n" +
-                                         "be deleted once merged", "feature/myfeature");
+        fixture.MergeNoFF(branchName);
+        fixture.SequenceDiagram.Destroy(branchName);
+        fixture.SequenceDiagram.NoteOver("Feature branches should\r\nbe deleted once merged", branchName);
         fixture.AssertFullSemver("1.2.1+3");
     }
 

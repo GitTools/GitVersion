@@ -8,7 +8,7 @@ jobs:
     name: Trigger Build flow
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2.3.4
+      - uses: actions/checkout@v3
       - uses: peter-evans/repository-dispatch@v1.1.3
         with:
           token: ${{ secrets.RELEASE_GITHUB_TOKEN }}

@@ -22,7 +22,7 @@ public class VersionWriterTests : TestBase
     {
         var asm = GenerateAssembly(new Version(1, 0, 0), "");
 
-        string version = null;
+        string? version = string.Empty;
         this.versionWriter.WriteTo(asm, v => version = v);
 
         Assert.IsNotNull(asm);
@@ -34,7 +34,7 @@ public class VersionWriterTests : TestBase
     {
         var asm = GenerateAssembly(new Version(1, 0, 0), "-beta0004");
 
-        string version = null;
+        string? version = string.Empty;
         this.versionWriter.WriteTo(asm, v => version = v);
 
         Assert.IsNotNull(asm);

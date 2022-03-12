@@ -2,6 +2,7 @@ using GitTools.Testing;
 using GitVersion.BuildAgents;
 using GitVersion.Configuration;
 using GitVersion.Core.Tests.Helpers;
+using GitVersion.Helpers;
 using GitVersion.Logging;
 using GitVersion.Model.Configuration;
 using GitVersion.VersionCalculation.Cache;
@@ -78,7 +79,7 @@ public class GitVersionExecutorTests : TestBase
     {
         using var fixture = new EmptyRepositoryFixture();
         fixture.Repository.MakeACommit();
-        var worktreePath = Path.Combine(Directory.GetParent(fixture.RepositoryPath).FullName, Guid.NewGuid().ToString());
+        var worktreePath = PathHelper.Combine(Directory.GetParent(fixture.RepositoryPath)?.FullName, Guid.NewGuid().ToString());
         try
         {
             // create a branch and a new worktree for it
@@ -312,7 +313,7 @@ public class GitVersionExecutorTests : TestBase
         versionVariables = gitVersionCalculator.CalculateVersionVariables();
         versionVariables.AssemblySemVer.ShouldBe("4.10.3.0");
 
-        var configPath = Path.Combine(fixture.RepositoryPath, ConfigFileLocator.DefaultFileName);
+        var configPath = PathHelper.Combine(fixture.RepositoryPath, ConfigFileLocator.DefaultFileName);
         this.fileSystem.WriteAllText(configPath, "next-version: 5.0");
 
         gitVersionCalculator = GetGitVersionCalculator(gitVersionOptions, fs: this.fileSystem);
@@ -417,7 +418,7 @@ public class GitVersionExecutorTests : TestBase
         using var fixture = new EmptyRepositoryFixture();
         fixture.Repository.MakeACommit();
 
-        var worktreePath = Path.Combine(Directory.GetParent(fixture.RepositoryPath).FullName, Guid.NewGuid().ToString());
+        var worktreePath = PathHelper.Combine(Directory.GetParent(fixture.RepositoryPath)?.FullName, Guid.NewGuid().ToString());
         try
         {
             // create a branch and a new worktree for it
@@ -474,7 +475,7 @@ public class GitVersionExecutorTests : TestBase
         this.sp = GetServiceProvider(gitVersionOptions);
         var repositoryInfo = this.sp.GetRequiredService<IGitRepositoryInfo>();
 
-        var expectedPath = Path.Combine(fixture.RepositoryPath, ".git");
+        var expectedPath = PathHelper.Combine(fixture.RepositoryPath, ".git");
         repositoryInfo.DotGitDirectory.ShouldBe(expectedPath);
     }
 
@@ -486,7 +487,7 @@ public class GitVersionExecutorTests : TestBase
         using var fixture = new EmptyRepositoryFixture();
         fixture.Repository.MakeACommit();
 
-        var worktreePath = Path.Combine(Directory.GetParent(fixture.RepositoryPath).FullName, Guid.NewGuid().ToString());
+        var worktreePath = PathHelper.Combine(Directory.GetParent(fixture.RepositoryPath)?.FullName, Guid.NewGuid().ToString());
         try
         {
             // create a branch and a new worktree for it
@@ -501,7 +502,7 @@ public class GitVersionExecutorTests : TestBase
             this.sp = GetServiceProvider(gitVersionOptions);
             var repositoryInfo = this.sp.GetRequiredService<IGitRepositoryInfo>();
 
-            var expectedPath = Path.Combine(fixture.RepositoryPath, ".git");
+            var expectedPath = PathHelper.Combine(fixture.RepositoryPath, ".git");
             repositoryInfo.DotGitDirectory.ShouldBe(expectedPath);
         }
         finally
@@ -518,7 +519,7 @@ public class GitVersionExecutorTests : TestBase
         // Setup
         using var fixture = new EmptyRepositoryFixture();
         var repoDir = new DirectoryInfo(fixture.RepositoryPath);
-        var worktreePath = Path.Combine(repoDir.Parent.FullName, $"{repoDir.Name}-v1");
+        var worktreePath = PathHelper.Combine(repoDir.Parent?.FullName, $"{repoDir.Name}-v1");
 
         fixture.Repository.MakeATaggedCommit("v1.0.0");
         var branchV1 = fixture.Repository.CreateBranch("support/1.0");
@@ -562,9 +563,6 @@ public class GitVersionExecutorTests : TestBase
         environment.SetEnvironmentVariable(AzurePipelines.EnvironmentVariableName, "true");
 
         this.sp = GetServiceProvider(gitVersionOptions, environment: environment);
-
-        var _ = this.sp.GetRequiredService<Lazy<GitVersionContext>>()?.Value;
-
         var sut = sp.GetRequiredService<IGitVersionCalculateTool>();
 
         // Execute & Verify
@@ -594,9 +592,6 @@ public class GitVersionExecutorTests : TestBase
         environment.SetEnvironmentVariable(AzurePipelines.EnvironmentVariableName, "true");
 
         this.sp = GetServiceProvider(gitVersionOptions, environment: environment);
-
-        var _ = this.sp.GetRequiredService<Lazy<GitVersionContext>>()?.Value;
-
         var sut = sp.GetRequiredService<IGitVersionCalculateTool>();
 
         // Execute
@@ -608,7 +603,7 @@ public class GitVersionExecutorTests : TestBase
         version.Sha.ShouldBe(commits.First().Sha);
     }
 
-    private IGitVersionCalculateTool GetGitVersionCalculator(GitVersionOptions gitVersionOptions, ILog logger = null, IGitRepository repository = null, IFileSystem fs = null)
+    private IGitVersionCalculateTool GetGitVersionCalculator(GitVersionOptions gitVersionOptions, ILog? logger = null, IGitRepository? repository = null, IFileSystem? fs = null)
     {
         this.sp = GetServiceProvider(gitVersionOptions, logger, repository, fs);
 
@@ -619,7 +614,7 @@ public class GitVersionExecutorTests : TestBase
         return this.sp.GetRequiredService<IGitVersionCalculateTool>();
     }
 
-    private static IServiceProvider GetServiceProvider(GitVersionOptions gitVersionOptions, ILog log = null, IGitRepository repository = null, IFileSystem fileSystem = null, IEnvironment environment = null) =>
+    private static IServiceProvider GetServiceProvider(GitVersionOptions gitVersionOptions, ILog? log = null, IGitRepository? repository = null, IFileSystem? fileSystem = null, IEnvironment? environment = null) =>
         ConfigureServices(services =>
         {
             services.AddSingleton<IGitVersionContextFactory, GitVersionContextFactory>();
@@ -627,7 +622,7 @@ public class GitVersionExecutorTests : TestBase
             {
                 var options = sp.GetRequiredService<IOptions<GitVersionOptions>>();
                 var contextFactory = sp.GetRequiredService<IGitVersionContextFactory>();
-                return new Lazy<GitVersionContext>(() => contextFactory.Create(options?.Value));
+                return new Lazy<GitVersionContext>(() => contextFactory.Create(options.Value));
             });
             if (log != null) services.AddSingleton(log);
             if (fileSystem != null) services.AddSingleton(fileSystem);

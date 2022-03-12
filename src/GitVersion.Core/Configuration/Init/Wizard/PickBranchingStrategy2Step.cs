@@ -20,10 +20,10 @@ public class PickBranchingStrategy2Step : ConfigInitWizardStep
                 this.Console.WriteLine("GitHubFlow is designed for a lightweight workflow where main is always " +
                                        "good to deploy to production and feature branches are used to stabilise " +
                                        "features, once stable they are merged to main and made available in the next release");
-                steps.Enqueue(this.StepFactory.CreateStep<PickBranchingStrategyStep>()!);
+                steps.Enqueue(this.StepFactory.CreateStep<PickBranchingStrategyStep>());
                 return StepResult.Ok();
             case "n":
-                steps.Enqueue(this.StepFactory.CreateStep<PickBranchingStrategy3Step>()!);
+                steps.Enqueue(this.StepFactory.CreateStep<PickBranchingStrategy3Step>());
                 return StepResult.Ok();
         }
 

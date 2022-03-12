@@ -10,7 +10,7 @@ public class FileHelperTests
     [TestCase("F#", "fs")]
     [TestCase("VB", "vb")]
     [TestCase("XY", null)]
-    public void GetFileExtensionShouldReturnCorrectExtension(string language, string expectedExtension)
+    public void GetFileExtensionShouldReturnCorrectExtension(string language, string? expectedExtension)
     {
         if (expectedExtension != null)
         {

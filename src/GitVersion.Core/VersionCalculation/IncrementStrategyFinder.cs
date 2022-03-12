@@ -25,7 +25,7 @@ public class IncrementStrategyFinder : IIncrementStrategyFinder
     {
         var commitMessageIncrement = FindCommitMessageIncrement(repository, context, baseVersion.BaseVersionSource);
 
-        var defaultIncrement = context.Configuration?.Increment.ToVersionField();
+        var defaultIncrement = context.Configuration.Increment.ToVersionField();
 
         // use the default branch config increment strategy if there are no commit message overrides
         if (commitMessageIncrement == null)
@@ -51,37 +51,33 @@ public class IncrementStrategyFinder : IIncrementStrategyFinder
 
     public VersionField? GetIncrementForCommits(GitVersionContext context, IEnumerable<ICommit> commits)
     {
-        var majorRegex = TryGetRegexOrDefault(context.Configuration?.MajorVersionBumpMessage, DefaultMajorPatternRegex);
-        var minorRegex = TryGetRegexOrDefault(context.Configuration?.MinorVersionBumpMessage, DefaultMinorPatternRegex);
-        var patchRegex = TryGetRegexOrDefault(context.Configuration?.PatchVersionBumpMessage, DefaultPatchPatternRegex);
-        var none = TryGetRegexOrDefault(context.Configuration?.NoBumpMessage, DefaultNoBumpPatternRegex);
+        var majorRegex = TryGetRegexOrDefault(context.Configuration.MajorVersionBumpMessage, DefaultMajorPatternRegex);
+        var minorRegex = TryGetRegexOrDefault(context.Configuration.MinorVersionBumpMessage, DefaultMinorPatternRegex);
+        var patchRegex = TryGetRegexOrDefault(context.Configuration.PatchVersionBumpMessage, DefaultPatchPatternRegex);
+        var none = TryGetRegexOrDefault(context.Configuration.NoBumpMessage, DefaultNoBumpPatternRegex);
 
         var increments = commits
             .Select(c => GetIncrementFromCommit(c, majorRegex, minorRegex, patchRegex, none))
             .Where(v => v != null)
-            .Select(v => v!.Value)
             .ToList();
 
-        if (increments.Any())
-        {
-            return increments.Max();
-        }
-
-        return null;
+        return increments.Any()
+            ? increments.Max()
+            : null;
     }
 
     private VersionField? FindCommitMessageIncrement(IGitRepository repository, GitVersionContext context, ICommit? baseCommit)
     {
         if (baseCommit == null) return null;
 
-        if (context.Configuration?.CommitMessageIncrementing == CommitMessageIncrementMode.Disabled)
+        if (context.Configuration.CommitMessageIncrementing == CommitMessageIncrementMode.Disabled)
         {
             return null;
         }
 
         var commits = GetIntermediateCommits(repository, baseCommit, context.CurrentCommit);
 
-        if (context.Configuration?.CommitMessageIncrementing == CommitMessageIncrementMode.MergeMessageOnly)
+        if (context.Configuration.CommitMessageIncrementing == CommitMessageIncrementMode.MergeMessageOnly)
         {
             commits = commits.Where(c => c.Parents.Count() > 1);
         }
@@ -98,7 +94,7 @@ public class IncrementStrategyFinder : IIncrementStrategyFinder
     /// Get the sequence of commits in a <paramref name="repo"/> between a <paramref name="baseCommit"/> (exclusive)
     /// and a particular <paramref name="headCommit"/> (inclusive)
     /// </summary>
-    private IEnumerable<ICommit> GetIntermediateCommits(IGitRepository repo, ICommit baseCommit, ICommit? headCommit)
+    private IEnumerable<ICommit> GetIntermediateCommits(IGitRepository repo, IGitObject baseCommit, ICommit? headCommit)
     {
         var map = GetHeadCommitsMap(repo, headCommit);
         if (!map.TryGetValue(baseCommit.Sha, out var baseIndex)) return Enumerable.Empty<ICommit>();

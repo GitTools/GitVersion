@@ -20,7 +20,7 @@ public static class QuotedStringHelpers
     /// "one \"two three\"" -> {"one", "\"two three\""}
     /// "one \"two three" -> {"one", "\"two three"} // implicit closing quote.
     /// </example>
-    public static string[] SplitUnquoted(string input, char splitChar)
+    public static string[] SplitUnquoted(string? input, char splitChar)
     {
         if (input == null)
             return Array.Empty<string>();

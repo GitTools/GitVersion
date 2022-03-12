@@ -1,4 +1,5 @@
 using GitVersion.Extensions;
+using GitVersion.Helpers;
 using GitVersion.MsBuild.Tasks;
 using GitVersion.OutputVariables;
 using Microsoft.Extensions.Options;
@@ -22,9 +23,9 @@ public class GitVersionTaskExecutor : IGitVersionTaskExecutor
     {
         var versionVariables = VersionVariables.FromFile(task.VersionFile, fileSystem);
         var outputType = typeof(GetVersion);
-        foreach (var variable in versionVariables)
+        foreach (var (key, value) in versionVariables)
         {
-            outputType.GetProperty(variable.Key)?.SetValue(task, variable.Value, null);
+            outputType.GetProperty(key)?.SetValue(task, value, null);
         }
     }
 
@@ -32,10 +33,10 @@ public class GitVersionTaskExecutor : IGitVersionTaskExecutor
     {
         var versionVariables = VersionVariables.FromFile(task.VersionFile, fileSystem);
         FileHelper.DeleteTempFiles();
-        if (task.CompileFiles != null) FileHelper.CheckForInvalidFiles(task.CompileFiles, task.ProjectFile);
+        FileHelper.CheckForInvalidFiles(task.CompileFiles, task.ProjectFile);
 
         var fileWriteInfo = task.IntermediateOutputPath.GetFileWriteInfo(task.Language, task.ProjectFile, "AssemblyInfo");
-        task.AssemblyInfoTempFilePath = Path.Combine(fileWriteInfo.WorkingDirectory, fileWriteInfo.FileName);
+        task.AssemblyInfoTempFilePath = PathHelper.Combine(fileWriteInfo.WorkingDirectory, fileWriteInfo.FileName);
 
         var gitVersionOptions = this.options.Value;
         gitVersionOptions.AssemblyInfo.UpdateAssemblyInfo = true;
@@ -50,7 +51,7 @@ public class GitVersionTaskExecutor : IGitVersionTaskExecutor
     {
         var versionVariables = VersionVariables.FromFile(task.VersionFile, fileSystem);
         var fileWriteInfo = task.IntermediateOutputPath.GetFileWriteInfo(task.Language, task.ProjectFile, "GitVersionInformation");
-        task.GitVersionInformationFilePath = Path.Combine(fileWriteInfo.WorkingDirectory, fileWriteInfo.FileName);
+        task.GitVersionInformationFilePath = PathHelper.Combine(fileWriteInfo.WorkingDirectory, fileWriteInfo.FileName);
 
         var gitVersionOptions = this.options.Value;
         gitVersionOptions.WorkingDirectory = fileWriteInfo.WorkingDirectory;

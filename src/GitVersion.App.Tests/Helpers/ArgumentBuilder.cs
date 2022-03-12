@@ -4,58 +4,58 @@ namespace GitVersion.App.Tests;
 
 public class ArgumentBuilder
 {
-    public ArgumentBuilder(string workingDirectory) => this.workingDirectory = workingDirectory;
+    public ArgumentBuilder(string workingDirectory) => this.WorkingDirectory = workingDirectory;
 
-    public ArgumentBuilder(string workingDirectory, string exec, string execArgs, string projectFile, string projectArgs, string logFile)
+    public ArgumentBuilder(string workingDirectory, string? exec, string? execArgs, string? projectFile, string? projectArgs, string? logFile)
     {
-        this.workingDirectory = workingDirectory;
+        this.WorkingDirectory = workingDirectory;
         this.exec = exec;
         this.execArgs = execArgs;
         this.projectFile = projectFile;
         this.projectArgs = projectArgs;
-        this.logFile = logFile;
+        this.LogFile = logFile;
     }
 
-    public ArgumentBuilder(string workingDirectory, string additionalArguments, string logFile)
+    public ArgumentBuilder(string workingDirectory, string? additionalArguments, string? logFile)
     {
-        this.workingDirectory = workingDirectory;
+        this.WorkingDirectory = workingDirectory;
         this.additionalArguments = additionalArguments;
-        this.logFile = logFile;
+        this.LogFile = logFile;
     }
 
-    public string WorkingDirectory => this.workingDirectory;
+    public string WorkingDirectory { get; }
 
-    public string LogFile => this.logFile;
+    public string? LogFile { get; }
 
     public override string ToString()
     {
         var arguments = new StringBuilder();
 
-        arguments.AppendFormat(" /targetpath \"{0}\"", this.workingDirectory);
+        arguments.Append($" /targetpath \"{this.WorkingDirectory}\"");
 
         if (!this.exec.IsNullOrWhiteSpace())
         {
-            arguments.AppendFormat(" /exec \"{0}\"", this.exec);
+            arguments.Append($" /exec \"{this.exec}\"");
         }
 
         if (!this.execArgs.IsNullOrWhiteSpace())
         {
-            arguments.AppendFormat(" /execArgs \"{0}\"", this.execArgs);
+            arguments.Append($" /execArgs \"{this.execArgs}\"");
         }
 
         if (!this.projectFile.IsNullOrWhiteSpace())
         {
-            arguments.AppendFormat(" /proj \"{0}\"", this.projectFile);
+            arguments.Append($" /proj \"{this.projectFile}\"");
         }
 
         if (!this.projectArgs.IsNullOrWhiteSpace())
         {
-            arguments.AppendFormat(" /projargs \"{0}\"", this.projectArgs);
+            arguments.Append($" /projargs \"{this.projectArgs}\"");
         }
 
-        if (!this.logFile.IsNullOrWhiteSpace())
+        if (!this.LogFile.IsNullOrWhiteSpace())
         {
-            arguments.AppendFormat(" /l \"{0}\"", this.logFile);
+            arguments.Append($" /l \"{this.LogFile}\"");
         }
 
         arguments.Append(this.additionalArguments);
@@ -63,11 +63,9 @@ public class ArgumentBuilder
         return arguments.ToString();
     }
 
-    private readonly string additionalArguments;
-    private readonly string exec;
-    private readonly string execArgs;
-    private readonly string logFile;
-    private readonly string projectArgs;
-    private readonly string projectFile;
-    private readonly string workingDirectory;
+    private readonly string? additionalArguments;
+    private readonly string? exec;
+    private readonly string? execArgs;
+    private readonly string? projectArgs;
+    private readonly string? projectFile;
 }
