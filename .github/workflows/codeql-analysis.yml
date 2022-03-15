@@ -39,6 +39,7 @@ jobs:
       uses: github/codeql-action/init@v1
       with:
         languages: ${{ matrix.language }}
+        queries: security-extended
 
     -
       name: Cache cake frosting
