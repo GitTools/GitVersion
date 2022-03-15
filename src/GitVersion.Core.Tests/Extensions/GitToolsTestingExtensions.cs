@@ -54,10 +54,16 @@ public static class GitToolsTestingExtensions
 
     public static void DumpGraph(this IRepository repository, Action<string>? writer = null, int? maxCommits = null) => GitExtensions.DumpGraph(repository.ToGitRepository().Path, writer, maxCommits);
 
-    public static VersionVariables GetVersion(this RepositoryFixtureBase fixture, Config? configuration = null, IRepository? repository = null, string? commitId = null, bool onlyTrackedBranches = true, string? branch = null)
+    public static VersionVariables GetVersion(
+        this RepositoryFixtureBase fixture,
+        Config? configuration = null,
+        IRepository? repository = null,
+        string? commitId = null,
+        bool onlyTrackedBranches = true,
+        string? branch = null,
+        Action<IServiceProvider>? configureServices = null)
     {
         configuration ??= new ConfigurationBuilder().Build();
-
         repository ??= fixture.Repository;
 
         var options = Options.Create(new GitVersionOptions
@@ -73,11 +79,11 @@ public static class GitToolsTestingExtensions
         });
 
         var sp = ConfigureServices(services => services.AddSingleton(options));
+        configureServices?.Invoke(sp);
 
         var variableProvider = sp.GetRequiredService<IVariableProvider>();
         var nextVersionCalculator = sp.GetRequiredService<INextVersionCalculator>();
         var contextOptions = sp.GetRequiredService<Lazy<GitVersionContext>>();
-
         var context = contextOptions.Value;
 
         try
@@ -104,7 +110,15 @@ public static class GitToolsTestingExtensions
         writer.Write(versionInfo.ToString());
     }
 
-    public static void AssertFullSemver(this RepositoryFixtureBase fixture, string fullSemver, Config? configuration = null, IRepository? repository = null, string? commitId = null, bool onlyTrackedBranches = true, string? targetBranch = null)
+    public static void AssertFullSemver(
+        this RepositoryFixtureBase fixture,
+        string fullSemver,
+        Config? configuration = null,
+        IRepository? repository = null,
+        string? commitId = null,
+        bool onlyTrackedBranches = true,
+        string? targetBranch = null,
+        Action<IServiceProvider>? configureServices = null)
     {
         configuration ??= new Config();
         configuration = new ConfigurationBuilder().Add(configuration).Build();
@@ -112,7 +126,7 @@ public static class GitToolsTestingExtensions
 
         try
         {
-            var variables = fixture.GetVersion(configuration, repository, commitId, onlyTrackedBranches, targetBranch);
+            var variables = fixture.GetVersion(configuration, repository, commitId, onlyTrackedBranches, targetBranch, configureServices);
             variables.FullSemVer.ShouldBe(fullSemver);
         }
         catch (Exception)

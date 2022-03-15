@@ -99,6 +99,23 @@ public class RemoteRepositoryScenarios : TestBase
     }
 
     [Test]
+    public void GivenARemoteGitRepositoryWhenCheckingOutDetachedHeadWithEnvironmentVariableSucceeds()
+    {
+        using var fixture = new RemoteRepositoryFixture();
+        var local = fixture.LocalRepositoryFixture;
+        Commands.Checkout(local.Repository, local.Repository.Head.Tip);
+
+        fixture.AssertFullSemver("0.1.0+4",
+            repository: local.Repository,
+            configureServices: sp =>
+            {
+                sp.GetRequiredService<IEnvironment>().SetEnvironmentVariable("GIT_BRANCH", "main");
+                sp.GetRequiredService<IGitPreparer>().Prepare();
+            });
+    }
+
+
+    [Test]
     [Ignore("Needs more investigations.")]
     public void GivenARemoteGitRepositoryWhenCheckingOutDetachedHeadUsingTrackingBranchOnlyBehaviourShouldReturnVersion014Plus5()
     {

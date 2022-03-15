@@ -44,8 +44,7 @@ public class GitPreparer : IGitPreparer
         // Normalize if we are running on build server
         var normalizeGitDirectory = !gitVersionOptions.Settings.NoNormalize && this.buildAgent is not LocalBuild;
         var shouldCleanUpRemotes = this.buildAgent.ShouldCleanUpRemotes();
-        var currentBranch = ResolveCurrentBranch();
-
+        var currentBranch = this.context.CurrentBranch?.Name.WithoutRemote;
         var dotGitDirectory = this.repositoryInfo.DotGitDirectory;
         var projectRoot = this.repositoryInfo.ProjectRootDirectory;
 
@@ -77,18 +76,6 @@ public class GitPreparer : IGitPreparer
 
             NormalizeGitDirectory(currentBranch, false);
         }
-    }
-
-    private string? ResolveCurrentBranch()
-    {
-        var gitVersionOptions = this.options.Value;
-        var targetBranch = gitVersionOptions.RepositoryInfo.TargetBranch;
-
-        var isDynamicRepository = !gitVersionOptions.RepositoryInfo.DynamicRepositoryClonePath.IsNullOrWhiteSpace();
-        var currentBranch = this.buildAgent.GetCurrentBranch(isDynamicRepository) ?? targetBranch;
-        this.log.Info("Branch from build environment: " + currentBranch);
-
-        return currentBranch;
     }
 
     private void CleanupDuplicateOrigin()
