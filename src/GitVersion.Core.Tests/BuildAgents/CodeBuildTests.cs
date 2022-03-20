@@ -1,5 +1,6 @@
 using GitVersion.BuildAgents;
 using GitVersion.Core.Tests.Helpers;
+using GitVersion.Helpers;
 using GitVersion.VersionCalculation;
 using Microsoft.Extensions.DependencyInjection;
 using NUnit.Framework;
@@ -54,7 +55,8 @@ public sealed class CodeBuildTests : TestBase
     public void WriteAllVariablesToTheTextWriter()
     {
         var assemblyLocation = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-        var f = Path.Combine(assemblyLocation, "codebuild_this_file_should_be_deleted.properties");
+        assemblyLocation.ShouldNotBeNull();
+        var f = PathHelper.Combine(assemblyLocation, "codebuild_this_file_should_be_deleted.properties");
 
         try
         {
@@ -68,7 +70,7 @@ public sealed class CodeBuildTests : TestBase
 
     private void AssertVariablesAreWrittenToFile(string file)
     {
-        var writes = new List<string>();
+        var writes = new List<string?>();
         var semanticVersion = new SemanticVersion
         {
             Major = 1,
@@ -99,5 +101,31 @@ public sealed class CodeBuildTests : TestBase
 
         props.ShouldContain("GitVersion_Major=1");
         props.ShouldContain("GitVersion_Minor=2");
+    }
+
+    [Test]
+    public void GetCurrentBranchShouldHandleTags()
+    {
+        // Arrange
+        this.environment.SetEnvironmentVariable("CODEBUILD_WEBHOOK_HEAD_REF", "refs/tags/1.0.0");
+
+        // Act
+        var result = this.buildServer.GetCurrentBranch(false);
+
+        // Assert
+        result.ShouldBeNull();
+    }
+
+    [Test]
+    public void GetCurrentBranchShouldHandlePullRequests()
+    {
+        // Arrange
+        this.environment.SetEnvironmentVariable("CODEBUILD_SOURCE_VERSION", "refs/pull/1/merge");
+
+        // Act
+        var result = this.buildServer.GetCurrentBranch(false);
+
+        // Assert
+        result.ShouldBeNull();
     }
 }

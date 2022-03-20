@@ -1,11 +1,10 @@
-using GitVersion;
 using GitVersion.BuildAgents;
 using GitVersion.Core.Tests.Helpers;
 using Microsoft.Extensions.DependencyInjection;
 using NUnit.Framework;
 using Shouldly;
 
-namespace GitVersionCore.Tests.BuildAgents;
+namespace GitVersion.Core.Tests.BuildAgents;
 
 [TestFixture]
 public class SpaceAutomationTests : TestBase
@@ -71,7 +70,7 @@ public class SpaceAutomationTests : TestBase
         var result = this.buildServer.GetCurrentBranch(false);
 
         // Assert
-        result.ShouldBe("refs/tags/1.0.0");
+        result.ShouldBeNull();
     }
 
     [Test]
@@ -84,7 +83,7 @@ public class SpaceAutomationTests : TestBase
         var result = this.buildServer.GetCurrentBranch(false);
 
         // Assert
-        result.ShouldBe("refs/pull/1/merge");
+        result.ShouldBeNull();
     }
 
     [Test]
