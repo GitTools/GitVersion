@@ -48,13 +48,13 @@ public static class GitToolsTestingExtensions
         return branch;
     }
 
-    public static IBranch FindBranch(this IGitRepository repository, string branchName) => repository.Branches.FirstOrDefault(x => x.Name.WithoutRemote == branchName);
+    public static IBranch? FindBranch(this IGitRepository repository, string branchName) => repository.Branches.FirstOrDefault(x => x.Name.WithoutRemote == branchName);
 
-    public static void DumpGraph(this IGitRepository repository, Action<string> writer = null, int? maxCommits = null) => GitExtensions.DumpGraph(repository.Path, writer, maxCommits);
+    public static void DumpGraph(this IGitRepository repository, Action<string>? writer = null, int? maxCommits = null) => GitExtensions.DumpGraph(repository.Path, writer, maxCommits);
 
-    public static void DumpGraph(this IRepository repository, Action<string> writer = null, int? maxCommits = null) => GitExtensions.DumpGraph(repository.ToGitRepository().Path, writer, maxCommits);
+    public static void DumpGraph(this IRepository repository, Action<string>? writer = null, int? maxCommits = null) => GitExtensions.DumpGraph(repository.ToGitRepository().Path, writer, maxCommits);
 
-    public static VersionVariables GetVersion(this RepositoryFixtureBase fixture, Config configuration = null, IRepository repository = null, string commitId = null, bool onlyTrackedBranches = true, string branch = null)
+    public static VersionVariables GetVersion(this RepositoryFixtureBase fixture, Config? configuration = null, IRepository? repository = null, string? commitId = null, bool onlyTrackedBranches = true, string? branch = null)
     {
         configuration ??= new ConfigurationBuilder().Build();
 
@@ -104,7 +104,7 @@ public static class GitToolsTestingExtensions
         writer.Write(versionInfo.ToString());
     }
 
-    public static void AssertFullSemver(this RepositoryFixtureBase fixture, string fullSemver, Config configuration = null, IRepository repository = null, string commitId = null, bool onlyTrackedBranches = true, string targetBranch = null)
+    public static void AssertFullSemver(this RepositoryFixtureBase fixture, string fullSemver, Config? configuration = null, IRepository? repository = null, string? commitId = null, bool onlyTrackedBranches = true, string? targetBranch = null)
     {
         configuration ??= new Config();
         configuration = new ConfigurationBuilder().Add(configuration).Build();
@@ -150,7 +150,7 @@ public static class GitToolsTestingExtensions
         gitPreparer.Prepare();
     }
 
-    private static IServiceProvider ConfigureServices(Action<IServiceCollection> servicesOverrides = null)
+    private static IServiceProvider ConfigureServices(Action<IServiceCollection>? servicesOverrides = null)
     {
         var services = new ServiceCollection()
             .AddModule(new GitVersionCoreTestModule());

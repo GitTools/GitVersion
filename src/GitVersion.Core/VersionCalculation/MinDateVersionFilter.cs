@@ -8,19 +8,16 @@ public class MinDateVersionFilter : IVersionFilter
 
     public MinDateVersionFilter(DateTimeOffset minimum) => this.minimum = minimum;
 
-    public bool Exclude(BaseVersion version, [NotNullWhen(true)] out string? reason)
+    public bool Exclude(BaseVersion? version, [NotNullWhen(true)] out string? reason)
     {
         if (version == null) throw new ArgumentNullException(nameof(version));
 
         reason = null;
 
-        if (version.BaseVersionSource != null &&
-            version.BaseVersionSource.When < this.minimum)
-        {
-            reason = "Source was ignored due to commit date being outside of configured range";
-            return true;
-        }
+        if (version.BaseVersionSource == null || version.BaseVersionSource.When >= this.minimum)
+            return false;
 
-        return false;
+        reason = "Source was ignored due to commit date being outside of configured range";
+        return true;
     }
 }

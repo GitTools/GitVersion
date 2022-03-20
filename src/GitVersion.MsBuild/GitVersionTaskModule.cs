@@ -29,6 +29,6 @@ public class GitVersionTaskModule : IGitVersionModule
 
         services.AddSingleton<IBuildAgentResolver, BuildAgentResolver>();
         services.AddModule(new BuildServerModule());
-        services.AddSingleton(sp => sp.GetService<IBuildAgentResolver>()?.Resolve());
+        services.AddSingleton(sp => sp.GetRequiredService<IBuildAgentResolver>().Resolve());
     }
 }

@@ -19,5 +19,5 @@ public static class Generate
     /// <summary>
     /// Creates a libgit2sharp signature at the specified time
     /// </summary>
-    public static Signature Signature(DateTimeOffset dateTimeOffset) => new("A. U. Thor", "thor@valhalla.asgard.com", dateTimeOffset);
+    private static Signature Signature(DateTimeOffset dateTimeOffset) => new("A. U. Thor", "thor@valhalla.asgard.com", dateTimeOffset);
 }

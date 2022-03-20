@@ -2,6 +2,7 @@ namespace GitVersion.Extensions;
 
 public static class ObjectExtensions
 {
+    [AttributeUsage(AttributeTargets.Field | AttributeTargets.Parameter | AttributeTargets.Property)]
     internal sealed class ReflectionIgnoreAttribute : Attribute
     {
     }

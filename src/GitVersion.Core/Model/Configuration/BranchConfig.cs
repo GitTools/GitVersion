@@ -80,7 +80,7 @@ public class BranchConfig
     /// The name given to this configuration in the config file.
     /// </summary>
     [YamlIgnore]
-    public string? Name { get; set; }
+    public string Name { get; set; }
 
     public void MergeTo(BranchConfig targetConfig)
     {

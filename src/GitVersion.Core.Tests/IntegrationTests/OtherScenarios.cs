@@ -1,6 +1,7 @@
 using System.Globalization;
 using GitTools.Testing;
 using GitVersion.Core.Tests.Helpers;
+using GitVersion.Helpers;
 using LibGit2Sharp;
 using NUnit.Framework;
 using Shouldly;
@@ -108,7 +109,7 @@ public class OtherScenarios : TestBase
         for (int i = 0; i < numberOfFiles; i++)
         {
             var tempFile = Path.GetTempFileName();
-            var repoFile = Path.Combine(fixture.RepositoryPath, Path.GetFileNameWithoutExtension(tempFile) + ".txt");
+            var repoFile = PathHelper.Combine(fixture.RepositoryPath, Path.GetFileNameWithoutExtension(tempFile) + ".txt");
             File.Move(tempFile, repoFile);
             File.WriteAllText(repoFile, $"Hello world / testfile {i}");
 

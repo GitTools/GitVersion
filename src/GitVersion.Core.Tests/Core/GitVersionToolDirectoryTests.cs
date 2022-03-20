@@ -1,4 +1,5 @@
 using GitVersion.Core.Tests.Helpers;
+using GitVersion.Helpers;
 using LibGit2Sharp;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
@@ -15,7 +16,7 @@ public class GitVersionTaskDirectoryTests : TestBase
     [SetUp]
     public void SetUp()
     {
-        this.workDirectory = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
+        this.workDirectory = PathHelper.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
         this.gitDirectory = Repository.Init(this.workDirectory).TrimEnd(Path.DirectorySeparatorChar);
         Assert.NotNull(this.gitDirectory);
     }
@@ -48,7 +49,7 @@ public class GitVersionTaskDirectoryTests : TestBase
     [Test]
     public void FindsGitDirectoryInParent()
     {
-        var childDir = Path.Combine(this.workDirectory, "child");
+        var childDir = PathHelper.Combine(this.workDirectory, "child");
         Directory.CreateDirectory(childDir);
 
         try

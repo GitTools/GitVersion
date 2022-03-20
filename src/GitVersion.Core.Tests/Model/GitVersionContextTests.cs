@@ -178,7 +178,7 @@ public class GitVersionContextTests : TestBase
         context.Configuration.Increment.ShouldBe(IncrementStrategy.Major);
     }
 
-    private static GitVersionContext GetGitVersionContext(string workingDirectory, IGitRepository repository, string branch, Config config = null)
+    private static GitVersionContext GetGitVersionContext(string workingDirectory, IGitRepository repository, string branch, Config? config = null)
     {
         var options = Options.Create(new GitVersionOptions
         {

@@ -28,6 +28,7 @@ public class BaseVersionCalculatorTests : TestBase
 
         baseVersion.SemanticVersion.ToString().ShouldBe("2.0.0");
         baseVersion.ShouldIncrement.ShouldBe(true);
+        baseVersion.BaseVersionSource.ShouldNotBeNull();
         baseVersion.BaseVersionSource.When.ShouldBe(dateTimeOffset);
     }
 
@@ -48,6 +49,7 @@ public class BaseVersionCalculatorTests : TestBase
 
         baseVersion.SemanticVersion.ToString().ShouldBe("2.0.0");
         baseVersion.ShouldIncrement.ShouldBe(true);
+        baseVersion.BaseVersionSource.ShouldNotBeNull();
         baseVersion.BaseVersionSource.When.ShouldBe(when);
     }
 
@@ -68,6 +70,7 @@ public class BaseVersionCalculatorTests : TestBase
 
         baseVersion.SemanticVersion.ToString().ShouldBe("2.0.0");
         baseVersion.ShouldIncrement.ShouldBe(true);
+        baseVersion.BaseVersionSource.ShouldNotBeNull();
         baseVersion.BaseVersionSource.When.ShouldBe(when);
     }
 
@@ -154,10 +157,10 @@ public class BaseVersionCalculatorTests : TestBase
     private static IBaseVersionCalculator GetBaseVersionCalculator(Action<GitVersionContextBuilder> contextBuilderAction)
     {
         var contextBuilder = new GitVersionContextBuilder();
-        contextBuilderAction?.Invoke(contextBuilder);
+        contextBuilderAction.Invoke(contextBuilder);
 
         contextBuilder.Build();
-
+        contextBuilder.ServicesProvider.ShouldNotBeNull();
         return contextBuilder.ServicesProvider.GetRequiredService<IBaseVersionCalculator>();
     }
 
@@ -177,22 +180,21 @@ public class BaseVersionCalculatorTests : TestBase
 
     private class ExcludeSourcesContainingExclude : IVersionFilter
     {
-        public bool Exclude(BaseVersion version, out string reason)
+        public bool Exclude(BaseVersion version, out string? reason)
         {
             reason = null;
 
-            if (version.Source.Contains("exclude"))
-            {
-                reason = "was excluded";
-                return true;
-            }
-            return false;
+            if (!version.Source.Contains("exclude"))
+                return false;
+
+            reason = "was excluded";
+            return true;
         }
     }
 
     private sealed class V1Strategy : IVersionStrategy
     {
-        private readonly ICommit when;
+        private readonly ICommit? when;
 
         public V1Strategy(DateTimeOffset? when)
         {
@@ -215,7 +217,7 @@ public class BaseVersionCalculatorTests : TestBase
 
     private sealed class V2Strategy : IVersionStrategy
     {
-        private readonly ICommit when;
+        private readonly ICommit? when;
 
         public V2Strategy(DateTimeOffset? when)
         {

@@ -187,7 +187,7 @@ public class VariableProviderTests : TestBase
             Major = 1,
             Minor = 2,
             Patch = 3,
-            BuildMetaData =
+            BuildMetaData = new SemanticVersionBuildMetaData
             {
                 VersionSourceSha = "versionSourceSha",
                 CommitsSinceTag = 5,

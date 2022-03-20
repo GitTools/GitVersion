@@ -1,6 +1,12 @@
 using GitTools.Testing;
 using GitVersion.BuildAgents;
 using GitVersion.Core.Tests;
+using GitVersion.Helpers;
+
+#if NET48
+using GitVersion.Extensions;
+#endif
+
 using GitVersion.MsBuild.Tests.Mocks;
 
 namespace GitVersion.MsBuild.Tests.Helpers;
@@ -8,11 +14,11 @@ namespace GitVersion.MsBuild.Tests.Helpers;
 public class MsBuildTaskFixture
 {
     private readonly RepositoryFixtureBase fixture;
-    private KeyValuePair<string, string>[] environmentVariables;
+    private KeyValuePair<string, string?>[]? environmentVariables;
 
     public MsBuildTaskFixture(RepositoryFixtureBase fixture) => this.fixture = fixture;
 
-    public void WithEnv(params KeyValuePair<string, string>[] envs) => this.environmentVariables = envs;
+    public void WithEnv(params KeyValuePair<string, string?>[] envs) => this.environmentVariables = envs;
 
     public MsBuildTaskFixtureResult<T> Execute<T>(T task) where T : GitVersionTaskBase =>
         UsingEnv(() =>
@@ -21,7 +27,7 @@ public class MsBuildTaskFixture
 
             task.BuildEngine = buildEngine;
 
-            var versionFile = Path.Combine(task.SolutionDirectory, "gitversion.json");
+            var versionFile = PathHelper.Combine(task.SolutionDirectory, "gitversion.json");
             this.fixture.WriteVersionVariables(versionFile);
 
             task.VersionFile = versionFile;
@@ -56,7 +62,7 @@ public class MsBuildTaskFixture
 
     private static void ResetEnvironment()
     {
-        var environmentalVariables = new Dictionary<string, string>
+        var environmentalVariables = new Dictionary<string, string?>
         {
             { TeamCity.EnvironmentVariableName, null },
             { AppVeyor.EnvironmentVariableName, null },
@@ -70,12 +76,12 @@ public class MsBuildTaskFixture
         SetEnvironmentVariables(environmentalVariables.ToArray());
     }
 
-    private static void SetEnvironmentVariables(KeyValuePair<string, string>[] envs)
+    private static void SetEnvironmentVariables(KeyValuePair<string, string?>[]? envs)
     {
         if (envs == null) return;
-        foreach (var env in envs)
+        foreach (var (key, value) in envs)
         {
-            System.Environment.SetEnvironmentVariable(env.Key, env.Value);
+            System.Environment.SetEnvironmentVariable(key, value);
         }
     }
 }

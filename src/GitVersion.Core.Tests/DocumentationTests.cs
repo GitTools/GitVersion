@@ -1,4 +1,5 @@
 using GitVersion.Core.Tests.Helpers;
+using GitVersion.Helpers;
 using GitVersion.Model.Configuration;
 using GitVersion.OutputVariables;
 using NUnit.Framework;
@@ -26,7 +27,7 @@ public class DocumentationTests : TestBase
             .Union(typeof(BranchConfig).GetProperties(bindingFlags))
             .Select(p => p.GetCustomAttribute<YamlMemberAttribute>())
             .Where(a => a != null)
-            .Select(a => a.Alias)
+            .Select(a => a?.Alias)
             .ToList();
 
         configProperties.ShouldNotBeEmpty();
@@ -57,7 +58,7 @@ public class DocumentationTests : TestBase
 
     private string ReadDocumentationFile(string relativeDocumentationFilePath)
     {
-        var documentationFilePath = Path.Combine(this.docsDirectory.FullName, relativeDocumentationFilePath);
+        var documentationFilePath = PathHelper.Combine(this.docsDirectory.FullName, relativeDocumentationFilePath);
         // Normalize path separators and such.
         documentationFilePath = new FileInfo(documentationFilePath).FullName;
 

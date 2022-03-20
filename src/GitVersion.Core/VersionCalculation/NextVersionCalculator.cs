@@ -30,8 +30,7 @@ public class NextVersionCalculator : INextVersionCalculator
         this.log.Info($"Running against branch: {context.CurrentBranch} ({context.CurrentCommit?.ToString() ?? "-"})");
         if (context.IsCurrentCommitTagged)
         {
-            this.log.Info($"Current commit is tagged with version {context.CurrentCommitTaggedVersion}, " +
-                          "version calculation is for metadata only.");
+            this.log.Info($"Current commit is tagged with version {context.CurrentCommitTaggedVersion}, " + "version calculation is for metadata only.");
         }
         else
         {
@@ -46,17 +45,14 @@ public class NextVersionCalculator : INextVersionCalculator
             var semanticVersionBuildMetaData = this.mainlineVersionCalculator.CreateVersionBuildMetaData(context.CurrentCommit);
             semanticVersionBuildMetaData.CommitsSinceTag = null;
 
-            var semanticVersion = new SemanticVersion(context.CurrentCommitTaggedVersion)
-            {
-                BuildMetaData = semanticVersionBuildMetaData
-            };
+            var semanticVersion = new SemanticVersion(context.CurrentCommitTaggedVersion) { BuildMetaData = semanticVersionBuildMetaData };
             taggedSemanticVersion = semanticVersion;
         }
 
         var baseVersion = this.baseVersionCalculator.GetBaseVersion();
         baseVersion.SemanticVersion.BuildMetaData = this.mainlineVersionCalculator.CreateVersionBuildMetaData(baseVersion.BaseVersionSource);
         SemanticVersion semver;
-        if (context.Configuration?.VersioningMode == VersioningMode.Mainline)
+        if (context.Configuration.VersioningMode == VersioningMode.Mainline)
         {
             semver = this.mainlineVersionCalculator.FindMainlineModeVersion(baseVersion);
         }
@@ -74,7 +70,7 @@ public class NextVersionCalculator : INextVersionCalculator
         }
 
         var hasPreReleaseTag = semver.PreReleaseTag?.HasTag() == true;
-        var tag = context.Configuration?.Tag;
+        var tag = context.Configuration.Tag;
         var branchConfigHasPreReleaseTagConfigured = !tag.IsNullOrEmpty();
 #pragma warning disable CS8602 // Dereference of a possibly null reference. // context.Configuration.Tag not null when branchConfigHasPreReleaseTagConfigured is true
         var preReleaseTagDoesNotMatchConfiguration = hasPreReleaseTag && branchConfigHasPreReleaseTagConfigured && semver.PreReleaseTag?.Name != tag;
@@ -115,17 +111,15 @@ public class NextVersionCalculator : INextVersionCalculator
 
     private void UpdatePreReleaseTag(SemanticVersion semanticVersion, string? branchNameOverride)
     {
-        var tagToUse = context.Configuration?.GetBranchSpecificTag(this.log, context.CurrentBranch?.Name.Friendly, branchNameOverride);
+        var tagToUse = context.Configuration.GetBranchSpecificTag(this.log, context.CurrentBranch.Name.Friendly, branchNameOverride);
 
         long? number = null;
 
         var lastTag = this.repositoryStore
-            .GetVersionTagsOnBranch(context.CurrentBranch!, context.Configuration?.GitTagPrefix)
+            .GetVersionTagsOnBranch(context.CurrentBranch, context.Configuration.GitTagPrefix)
             .FirstOrDefault(v => v.PreReleaseTag?.Name?.IsEquivalentTo(tagToUse) == true);
 
-        if (lastTag != null &&
-            MajorMinorPatchEqual(lastTag, semanticVersion) &&
-            lastTag.PreReleaseTag?.HasTag() == true)
+        if (lastTag != null && MajorMinorPatchEqual(lastTag, semanticVersion) && lastTag.PreReleaseTag?.HasTag() == true)
         {
             number = lastTag.PreReleaseTag.Number + 1;
         }
@@ -137,19 +131,16 @@ public class NextVersionCalculator : INextVersionCalculator
 
     private static void EnsureHeadIsNotDetached(GitVersionContext context)
     {
-        if (context.CurrentBranch?.IsDetachedHead != true)
+        if (context.CurrentBranch.IsDetachedHead != true)
         {
             return;
         }
 
         var message = string.Format(
-            "It looks like the branch being examined is a detached Head pointing to commit '{0}'. " +
-            "Without a proper branch name GitVersion cannot determine the build version.",
+            "It looks like the branch being examined is a detached Head pointing to commit '{0}'. " + "Without a proper branch name GitVersion cannot determine the build version.",
             context.CurrentCommit?.Id.ToString(7));
         throw new WarningException(message);
     }
 
-    private static bool MajorMinorPatchEqual(SemanticVersion lastTag, SemanticVersion baseVersion) => lastTag.Major == baseVersion.Major &&
-                                                                                                      lastTag.Minor == baseVersion.Minor &&
-                                                                                                      lastTag.Patch == baseVersion.Patch;
+    private static bool MajorMinorPatchEqual(SemanticVersion lastTag, SemanticVersion baseVersion) => lastTag.Major == baseVersion.Major && lastTag.Minor == baseVersion.Minor && lastTag.Patch == baseVersion.Patch;
 }

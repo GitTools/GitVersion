@@ -8,7 +8,7 @@ public static class EnumerableExtensions
         {
             case null:
                 throw new ArgumentNullException(nameof(source));
-            case IList<T> list when list.Count == 1:
+            case IList<T> { Count: 1 } list:
                 return list[0];
         }
 
@@ -16,9 +16,6 @@ public static class EnumerableExtensions
         if (!e.MoveNext())
             return default;
         var current = e.Current;
-        if (!e.MoveNext())
-            return current;
-
-        return default;
+        return !e.MoveNext() ? current : default;
     }
 }

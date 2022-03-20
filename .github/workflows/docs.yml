@@ -3,6 +3,9 @@ name: Verify & Publish Docs
 on:
   workflow_dispatch:
   push:
+    branches:
+    # - main
+    - 'support/*'
     paths:
     - docs/**
     - package*.json
@@ -11,6 +14,9 @@ on:
     - mkdocs.yml
     - .github/workflows/docs.yml
   pull_request:
+    branches:
+    # - main
+    - 'support/*'
     paths:
     - docs/**
     - package*.json

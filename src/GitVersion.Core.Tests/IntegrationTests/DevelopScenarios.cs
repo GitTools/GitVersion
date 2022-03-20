@@ -39,7 +39,7 @@ public class DevelopScenarios : TestBase
         fixture.Repository.MakeACommit();
         fixture.Repository.MakeACommit();
 
-        fixture.AssertFullSemver("1.1.0-alpha.5", commitId: "nonexistingcommitid");
+        fixture.AssertFullSemver("1.1.0-alpha.5", commitId: "non-existing-commit-id");
     }
 
     [Test]

@@ -13,7 +13,7 @@ public static class EncodingHelper
     /// <returns>The encoding of the file if it has a preamble otherwise null.</returns>
     public static Encoding? DetectEncoding(string? filename)
     {
-        if (!File.Exists(filename))
+        if (string.IsNullOrEmpty(filename) || !File.Exists(filename))
         {
             return null;
         }

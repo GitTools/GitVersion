@@ -1,5 +1,6 @@
 using GitVersion.BuildAgents;
 using GitVersion.Core.Tests.Helpers;
+using GitVersion.Helpers;
 using GitVersion.VersionCalculation;
 using Microsoft.Extensions.DependencyInjection;
 using NUnit.Framework;
@@ -39,7 +40,8 @@ public class GitLabCiTests : TestBase
     public void WriteAllVariablesToTheTextWriter()
     {
         var assemblyLocation = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-        var f = Path.Combine(assemblyLocation, "jenkins_this_file_should_be_deleted.properties");
+        assemblyLocation.ShouldNotBeNull();
+        var f = PathHelper.Combine(assemblyLocation, "jenkins_this_file_should_be_deleted.properties");
 
         try
         {
@@ -53,7 +55,7 @@ public class GitLabCiTests : TestBase
 
     private void AssertVariablesAreWrittenToFile(string file)
     {
-        var writes = new List<string>();
+        var writes = new List<string?>();
         var semanticVersion = new SemanticVersion
         {
             Major = 1,

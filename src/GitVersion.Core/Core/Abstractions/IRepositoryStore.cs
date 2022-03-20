@@ -8,7 +8,7 @@ public interface IRepositoryStore
     /// <summary>
     /// Find the merge base of the two branches, i.e. the best common ancestor of the two branches' tips.
     /// </summary>
-    ICommit? FindMergeBase(IBranch branch, IBranch? otherBranch);
+    ICommit? FindMergeBase(IBranch? branch, IBranch? otherBranch);
     ICommit? FindMergeBase(ICommit commit, ICommit mainlineTip);
     ICommit? GetCurrentCommit(IBranch currentBranch, string? commitId);
     ICommit GetBaseVersionSource(ICommit currentBranchTip);
@@ -21,16 +21,16 @@ public interface IRepositoryStore
     IBranch? GetChosenBranch(Config configuration);
     IEnumerable<IBranch> GetBranchesForCommit(ICommit commit);
     IEnumerable<IBranch> GetExcludedInheritBranches(Config configuration);
-    IEnumerable<IBranch> GetReleaseBranches(IEnumerable<KeyValuePair<string, BranchConfig?>>? releaseBranchConfig);
+    IEnumerable<IBranch> GetReleaseBranches(IEnumerable<KeyValuePair<string, BranchConfig>> releaseBranchConfig);
     IEnumerable<IBranch> ExcludingBranches(IEnumerable<IBranch> branchesToExclude);
     IEnumerable<IBranch> GetBranchesContainingCommit(ICommit? commit, IEnumerable<IBranch>? branches = null, bool onlyTrackedBranches = false);
-    Dictionary<string, List<IBranch>> GetMainlineBranches(ICommit commit, IEnumerable<KeyValuePair<string, BranchConfig?>>? mainlineBranchConfigs);
+    Dictionary<string, List<IBranch>> GetMainlineBranches(ICommit commit, Config configuration, IEnumerable<KeyValuePair<string, BranchConfig>>? mainlineBranchConfigs);
 
     /// <summary>
     /// Find the commit where the given branch was branched from another branch.
     /// If there are multiple such commits and branches, tries to guess based on commit histories.
     /// </summary>
-    BranchCommit FindCommitBranchWasBranchedFrom(IBranch branch, Config configuration, params IBranch[] excludedBranches);
+    BranchCommit FindCommitBranchWasBranchedFrom(IBranch? branch, Config configuration, params IBranch[] excludedBranches);
 
     SemanticVersion GetCurrentCommitTaggedVersion(ICommit? commit, EffectiveConfiguration config);
     SemanticVersion MaybeIncrement(BaseVersion baseVersion, GitVersionContext context);

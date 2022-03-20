@@ -13,8 +13,8 @@ public class Startup : IFrostingStartup
 
         services.UseWorkingDirectory(Extensions.GetRootDirectory());
 
-        services.UseTool(new Uri("nuget:?package=NuGet.CommandLine&version=6.0.0"));
-        services.UseTool(new Uri("dotnet:?package=Codecov.Tool&version=1.13.0"));
-        services.UseTool(new Uri("dotnet:?package=GitVersion.Tool&version=5.8.2"));
+        services.UseNugetTool(Tools.NugetCmd, Tools.Versions[Tools.NugetCmd]);
+        services.UseDotnetTool(Tools.Codecov, Tools.Versions[Tools.Codecov]);
+        services.UseDotnetTool(Tools.GitVersion, Tools.Versions[Tools.GitVersion]);
     }
 }

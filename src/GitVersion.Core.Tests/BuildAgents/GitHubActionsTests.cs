@@ -11,7 +11,7 @@ public class GitHubActionsTests : TestBase
 {
     private IEnvironment environment;
     private GitHubActions buildServer;
-    private string githubSetEnvironmentTempFilePath;
+    private string? githubSetEnvironmentTempFilePath;
 
     [SetUp]
     public void SetUp()
@@ -30,11 +30,11 @@ public class GitHubActionsTests : TestBase
     {
         this.environment.SetEnvironmentVariable(GitHubActions.EnvironmentVariableName, null);
         this.environment.SetEnvironmentVariable(GitHubActions.GitHubSetEnvTempFileEnvironmentVariableName, null);
-        if (this.githubSetEnvironmentTempFilePath != null && File.Exists(this.githubSetEnvironmentTempFilePath))
-        {
-            File.Delete(this.githubSetEnvironmentTempFilePath);
-            this.githubSetEnvironmentTempFilePath = null;
-        }
+        if (this.githubSetEnvironmentTempFilePath == null || !File.Exists(this.githubSetEnvironmentTempFilePath))
+            return;
+
+        File.Delete(this.githubSetEnvironmentTempFilePath);
+        this.githubSetEnvironmentTempFilePath = null;
     }
 
     [Test]
@@ -128,7 +128,7 @@ public class GitHubActionsTests : TestBase
         // Arrange
         var vars = new TestableVersionVariables("1.0.0");
 
-        var list = new List<string>();
+        var list = new List<string?>();
 
         // Assert
         this.environment.GetEnvironmentVariable("GitVersion_Major").ShouldBeNullOrWhiteSpace();
@@ -153,6 +153,7 @@ public class GitHubActionsTests : TestBase
             "GitVersion_Major=1.0.0"
         };
 
+        this.githubSetEnvironmentTempFilePath.ShouldNotBeNull();
         var actualFileContents = File.ReadAllLines(this.githubSetEnvironmentTempFilePath);
 
         actualFileContents.ShouldBe(expectedFileContents);
@@ -164,7 +165,7 @@ public class GitHubActionsTests : TestBase
         // Arrange
         var vars = new TestableVersionVariables("1.0.0");
 
-        var list = new List<string>();
+        var list = new List<string?>();
 
         // Assert
         this.environment.GetEnvironmentVariable("GitVersion_Major").ShouldBeNullOrWhiteSpace();
@@ -172,7 +173,7 @@ public class GitHubActionsTests : TestBase
         // Act
         this.buildServer.WriteIntegration(s => list.Add(s), vars, false);
 
-        list.ShouldNotContain(x => x.StartsWith("Executing GenerateSetVersionMessage for "));
+        list.ShouldNotContain(x => x != null && x.StartsWith("Executing GenerateSetVersionMessage for "));
     }
 
     [Test]

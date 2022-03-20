@@ -29,11 +29,12 @@ public class ConfigNextVersionBaseVersionStrategyTests : TestBase
             NextVersion = nextVersion
         });
 
+        baseVersion.ShouldNotBeNull();
         baseVersion.ShouldIncrement.ShouldBe(false);
         baseVersion.SemanticVersion.ToString().ShouldBe(expectedVersion);
     }
 
-    private static BaseVersion GetBaseVersion(Config config = null)
+    private static BaseVersion? GetBaseVersion(Config? config = null)
     {
         var contextBuilder = new GitVersionContextBuilder();
 
@@ -43,6 +44,7 @@ public class ConfigNextVersionBaseVersionStrategyTests : TestBase
         }
 
         contextBuilder.Build();
+        contextBuilder.ServicesProvider.ShouldNotBeNull();
         var strategy = contextBuilder.ServicesProvider.GetServiceForType<IVersionStrategy, ConfigNextVersionVersionStrategy>();
 
         return strategy.GetVersions().SingleOrDefault();

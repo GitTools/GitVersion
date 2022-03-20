@@ -80,7 +80,7 @@ public class VersionInBranchNameBaseVersionStrategyTests : TestBase
         baseVersion.SemanticVersion.ToString().ShouldBe(expectedBaseVersion);
     }
 
-    private static IVersionStrategy GetVersionStrategy(string workingDirectory, IGitRepository repository, string branch, Config config = null)
+    private static IVersionStrategy GetVersionStrategy(string workingDirectory, IGitRepository repository, string branch, Config? config = null)
     {
         var sp = BuildServiceProvider(workingDirectory, repository, branch, config);
         return sp.GetServiceForType<IVersionStrategy, VersionInBranchNameVersionStrategy>();
