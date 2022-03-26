@@ -21,7 +21,17 @@ public class AzurePipelines : BuildAgentBase
         $"##vso[task.setvariable variable=GitVersion.{name};isOutput=true]{value}"
     };
 
-    public override string? GetCurrentBranch(bool usingDynamicRepos) => Environment.GetEnvironmentVariable("BUILD_SOURCEBRANCH");
+    public override string? GetCurrentBranch(bool usingDynamicRepos)
+    {
+        // https://docs.microsoft.com/en-us/azure/devops/pipelines/build/variables
+        // BUILD_SOURCEBRANCH does not contain the branch name if the build was triggered by a tag or pull request.
+        string? branchName = Environment.GetEnvironmentVariable("BUILD_SOURCEBRANCH");
+        if (branchName != null && branchName.StartsWith("refs/heads/"))
+        {
+            return branchName;
+        }
+        return null;
+    }
 
     public override bool PreventFetch() => true;
 

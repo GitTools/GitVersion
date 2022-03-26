@@ -30,9 +30,9 @@ public class BuildKite : BuildAgentBase
         }
         else
         {
-            // For pull requests BUILDKITE_BRANCH refers to the head, so adjust the
-            // branch name for pull request versioning to function as expected
-            return string.Format("refs/pull/{0}/head", pullRequest);
+            // To align the behavior with the other BuildAgent implementations
+            // we return here also null.
+            return null;
         }
     }
 

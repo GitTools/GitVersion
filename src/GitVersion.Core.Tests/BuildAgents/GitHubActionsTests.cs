@@ -83,7 +83,7 @@ public class GitHubActionsTests : TestBase
         var result = this.buildServer.GetCurrentBranch(false);
 
         // Assert
-        result.ShouldBe("refs/tags/1.0.0");
+        result.ShouldBeNull();
     }
 
     [Test]
@@ -96,7 +96,7 @@ public class GitHubActionsTests : TestBase
         var result = this.buildServer.GetCurrentBranch(false);
 
         // Assert
-        result.ShouldBe("refs/pull/1/merge");
+        result.ShouldBeNull();
     }
 
     [Test]
