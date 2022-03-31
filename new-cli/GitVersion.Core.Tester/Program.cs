@@ -3,11 +3,7 @@
 var assemblies = new[]
 {
     typeof(CoreModule).Assembly,
-    typeof(NormalizeModule).Assembly,
-    typeof(CalculateModule).Assembly,
-    typeof(ConfigModule).Assembly,
-    typeof(OutputModule).Assembly,
-    typeof(CliModule).Assembly
+    typeof(TesterModule).Assembly,
 };
 
 using var serviceProvider = ModulesLoader.Load(assemblies);
