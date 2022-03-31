@@ -48,12 +48,12 @@ public class ReleaseBranchScenarios : TestBase
         // Merge to develop
         fixture.Checkout("develop");
         fixture.Repository.MergeNoFF("release/1.0.0");
-        fixture.AssertFullSemver("1.1.0-alpha.2");
+        fixture.AssertFullSemver("1.1.0-alpha.1");
 
         fixture.Repository.MakeACommit();
         fixture.Repository.Branches.Remove("release/1.0.0");
 
-        fixture.AssertFullSemver("1.1.0-alpha.3");
+        fixture.AssertFullSemver("1.1.0-alpha.2");
     }
 
     [Test]
@@ -184,7 +184,7 @@ public class ReleaseBranchScenarios : TestBase
     }
 
     [Test]
-    public void MainVersioningContinuousCorrectlyAfterMergingReleaseBranch()
+    public void MainVersioningContinuesCorrectlyAfterMergingReleaseBranch()
     {
         using var fixture = new EmptyRepositoryFixture();
         fixture.Repository.MakeATaggedCommit("1.0.3");
@@ -199,6 +199,30 @@ public class ReleaseBranchScenarios : TestBase
         fixture.Repository.ApplyTag("2.0.0");
         fixture.Repository.MakeCommits(1);
         fixture.AssertFullSemver("2.0.1+1");
+    }
+
+    [Test]
+    public void MainVersioningContinuesCountingAfterMergingTheSameReleaseBranchMultipleTimes()
+    {
+        using var fixture = new EmptyRepositoryFixture();
+        fixture.Repository.MakeATaggedCommit("1.0.3");
+        fixture.Repository.MakeCommits(1);
+        fixture.Repository.CreateBranch("release/2.0.0");
+        fixture.Checkout("release/2.0.0");
+        fixture.Repository.MakeCommits(4);
+        fixture.Checkout(MainBranch);
+        fixture.Repository.MergeNoFF("release/2.0.0", Generate.SignatureNow());
+
+        fixture.AssertFullSemver("2.0.0+0");
+
+        fixture.Checkout("release/2.0.0");
+        fixture.Repository.MakeCommits(3);
+        fixture.Checkout(MainBranch);
+        fixture.Repository.MergeNoFF("release/2.0.0", Generate.SignatureNow());
+
+        fixture.AssertFullSemver("2.0.0+4");
+        fixture.Repository.MakeCommits(1);
+        fixture.AssertFullSemver("2.0.0+5");
     }
 
     [Test]
@@ -434,7 +458,7 @@ public class ReleaseBranchScenarios : TestBase
     }
 
     [Test]
-    public void CommitBeetweenMergeReleaseToDevelopShouldNotResetCount()
+    public void CommitBetweenMergeReleaseToDevelopShouldNotResetCount()
     {
         var config = new Config
         {

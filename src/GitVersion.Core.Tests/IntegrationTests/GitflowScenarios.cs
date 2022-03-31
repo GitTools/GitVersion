@@ -41,16 +41,16 @@ namespace GitVersion.Core.Tests.IntegrationTests
             fixture.Checkout(developBranch);
             fixture.MergeNoFF(release1Branch);
             fixture.Repository.Branches.Remove(fixture.Repository.Branches[release1Branch]);
-            fixture.AssertFullSemver("1.2.0-alpha.2");
+            fixture.AssertFullSemver("1.2.0-alpha.1");
 
             // Feature 2
             fixture.BranchTo(feature2Branch);
             fixture.MakeACommit("added feature 2");
-            fixture.AssertFullSemver("1.2.0-f2.1+3");
+            fixture.AssertFullSemver("1.2.0-f2.1+2");
             fixture.Checkout(developBranch);
             fixture.MergeNoFF(feature2Branch);
             fixture.Repository.Branches.Remove(fixture.Repository.Branches[feature2Branch]);
-            fixture.AssertFullSemver("1.2.0-alpha.4");
+            fixture.AssertFullSemver("1.2.0-alpha.3");
 
             // Release 1.2.0
             fixture.BranchTo(release2Branch);
@@ -64,13 +64,13 @@ namespace GitVersion.Core.Tests.IntegrationTests
             fixture.Checkout(developBranch);
             fixture.MergeNoFF(release2Branch);
             fixture.Repository.Branches.Remove(fixture.Repository.Branches[release2Branch]);
-            fixture.AssertFullSemver("1.3.0-alpha.2");
+            fixture.AssertFullSemver("1.3.0-alpha.1");
 
             // Hotfix
             fixture.Checkout(MainBranch);
             fixture.BranchTo(hotfixBranch);
             fixture.MakeACommit("added hotfix");
-            fixture.AssertFullSemver("1.2.1-beta.1+7");
+            fixture.AssertFullSemver("1.2.1-beta.1+1");
             fixture.Checkout(MainBranch);
             fixture.MergeNoFF(hotfixBranch);
             fixture.AssertFullSemver("1.2.1+2");
@@ -79,7 +79,7 @@ namespace GitVersion.Core.Tests.IntegrationTests
             fixture.Checkout(developBranch);
             fixture.MergeNoFF(hotfixBranch);
             fixture.Repository.Branches.Remove(fixture.Repository.Branches[hotfixBranch]);
-            fixture.AssertFullSemver("1.3.0-alpha.9");
+            fixture.AssertFullSemver("1.3.0-alpha.3");
         }
     }
 }

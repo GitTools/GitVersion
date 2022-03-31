@@ -53,24 +53,53 @@ public class BaseVersionCalculator : IBaseVersionCalculator
 
             if (matchingVersionsOnceIncremented.Any())
             {
-                static Versions CompareVersions(Versions versions1, Versions version2)
+                if (matchingVersionsOnceIncremented.Count > 1)
                 {
-                    if (versions1.Version.BaseVersionSource == null)
+                    static Versions CompareVersions(Versions versions1, Versions version2)
                     {
-                        return version2;
-                    }
-                    if (version2.Version.BaseVersionSource == null)
-                    {
-                        return versions1;
+                        if (versions1.Version.BaseVersionSource == null)
+                        {
+                            return version2;
+                        }
+                        if (version2.Version.BaseVersionSource == null)
+                        {
+                            return versions1;
+                        }
+
+                        return versions1.Version.BaseVersionSource.When < version2.Version.BaseVersionSource.When ? versions1 : version2;
                     }
 
-                    return versions1.Version.BaseVersionSource.When < version2.Version.BaseVersionSource.When ? versions1 : version2;
+                    log.Info($"Found multiple base versions which will produce the same SemVer ({maxVersion.IncrementedVersion})");
+                    log.Info($"Here are the different source candidate for commit counting : ");
+                    foreach (var baseVersion in matchingVersionsOnceIncremented.Select(b => b.Version))
+                    {
+                        if (baseVersion != null)
+                        {
+                            log.Info($" - {BaseVersionToString(baseVersion)}");
+                        }
+                    }
+
+                    var tagVersions = matchingVersionsOnceIncremented.FindAll(b => b.Version.Source.Contains("Git tag"));
+
+                    if (tagVersions.Count > 0)
+                    {
+                        log.Info("As there are Git tags, the other sources will be discarded");
+                        matchingVersionsOnceIncremented = tagVersions;
+                    }
+
+                    maxVersion = matchingVersionsOnceIncremented.Aggregate(CompareVersions);
+                    baseVersionWithOldestSource = maxVersion.Version;
+                    log.Info($"Taking oldest source for commit counting : {BaseVersionToString(baseVersionWithOldestSource)}");
                 }
-
-                var oldest = matchingVersionsOnceIncremented.Aggregate(CompareVersions);
-                baseVersionWithOldestSource = oldest.Version;
-                maxVersion = oldest;
-                this.log.Info($"Found multiple base versions which will produce the same SemVer ({maxVersion.IncrementedVersion}), taking oldest source for commit counting ({baseVersionWithOldestSource.Source})");
+                else
+                {
+                    maxVersion = matchingVersionsOnceIncremented.First();
+                    baseVersionWithOldestSource = maxVersion.Version;
+                    log.Info(
+                        $"Found a base versions which will produce the following SemVer ({maxVersion.IncrementedVersion}), " +
+                        $"with the following source for commit counting : {BaseVersionToString(baseVersionWithOldestSource)}"
+                    );
+                }
             }
             else
             {
@@ -92,11 +121,15 @@ public class BaseVersionCalculator : IBaseVersionCalculator
                 baseVersionWithOldestSource.BaseVersionSource,
                 maxVersion.Version.BranchNameOverride);
 
-            this.log.Info($"Base version used: {calculatedBase}");
+            log.Info($"Base version used: {calculatedBase}");
 
             return calculatedBase;
         }
     }
+
+    private static string BaseVersionToString(BaseVersion baseVersion) =>
+        $"{baseVersion!.Source} ({baseVersion!.BaseVersionSource!.Sha})";
+
     private IEnumerable<BaseVersion> GetBaseVersions(IVersionStrategy strategy)
     {
         foreach (var version in strategy.GetVersions())

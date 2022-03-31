@@ -155,7 +155,7 @@ public class DocumentationSamples : TestBase
 
         // Not 0 for commit count as we can't know the increment rules of the merged branch
         fixture.Checkout("develop");
-        fixture.AssertFullSemver("1.4.0-alpha.4");
+        fixture.AssertFullSemver("1.4.0-alpha.2");
         Console.WriteLine(fixture.SequenceDiagram.GetDiagram());
     }
 
@@ -211,7 +211,7 @@ public class DocumentationSamples : TestBase
 
         // Not 0 for commit count as we can't know the increment rules of the merged branch
         fixture.Checkout("develop");
-        fixture.AssertFullSemver("2.1.0-alpha.4");
+        fixture.AssertFullSemver("2.1.0-alpha.2");
         Console.WriteLine(fixture.SequenceDiagram.GetDiagram());
     }
 
