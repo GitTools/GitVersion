@@ -1,4 +1,4 @@
-﻿namespace GitVersion.Command;
+﻿namespace GitVersion;
 
 public interface ICommand
 {

@@ -1,9 +1,5 @@
-﻿using GitVersion.Calculation;
-using GitVersion.Configuration;
-using GitVersion.Extensions;
+﻿using GitVersion.Extensions;
 using GitVersion.Infrastructure;
-using GitVersion.Normalization;
-using GitVersion.Output;
 
 namespace GitVersion;
 
@@ -14,7 +10,7 @@ public class ModulesLoader
         // TODO: load the list of assemblies from the app working directory, later we might load from nuget
         var assemblies = new[]
         {
-            typeof(CommonModule).Assembly,
+            typeof(CoreModule).Assembly,
             typeof(NormalizeModule).Assembly,
             typeof(CalculateModule).Assembly,
             typeof(ConfigModule).Assembly,

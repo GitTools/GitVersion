@@ -1,6 +1,4 @@
-﻿using GitVersion.Command;
-
-namespace GitVersion.Normalization;
+﻿namespace GitVersion;
 
 public class NormalizeSettings : GitVersionSettings
 {

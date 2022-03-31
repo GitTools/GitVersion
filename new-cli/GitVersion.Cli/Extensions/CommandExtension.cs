@@ -1,6 +1,5 @@
 using System.CommandLine;
 using System.Reflection;
-using GitVersion.Command;
 
 namespace GitVersion.Extensions;
 
@@ -8,7 +7,7 @@ public static class CommandExtension
 {
     private const BindingFlags DeclaredOnly = BindingFlags.Public | BindingFlags.Instance;
 
-    public static void AddOptions(this System.CommandLine.Command command, Type commandOptionsType)
+    public static void AddOptions(this Command command, Type commandOptionsType)
     {
         var propertyInfos = commandOptionsType.GetProperties(DeclaredOnly);
         foreach (var propertyInfo in propertyInfos)

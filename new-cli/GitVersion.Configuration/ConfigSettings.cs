@@ -1,6 +1,4 @@
-﻿using GitVersion.Command;
-
-namespace GitVersion.Configuration;
+﻿namespace GitVersion;
 
 public class ConfigSettings : GitVersionSettings
 {

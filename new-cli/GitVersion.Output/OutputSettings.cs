@@ -1,6 +1,4 @@
-using GitVersion.Command;
-
-namespace GitVersion.Output;
+namespace GitVersion;
 
 public class OutputSettings : GitVersionSettings
 {

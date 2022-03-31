@@ -4,11 +4,9 @@ using System.CommandLine.Invocation;
 using System.CommandLine.NamingConventionBinder;
 using System.CommandLine.Parsing;
 using System.Reflection;
-using GitVersion.Command;
 using GitVersion.Extensions;
 using GitVersion.Infrastructure;
 using Serilog.Events;
-using ICommand = GitVersion.Command.ICommand;
 
 namespace GitVersion;
 

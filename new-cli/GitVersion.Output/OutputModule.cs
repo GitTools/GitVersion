@@ -1,10 +1,9 @@
-﻿using GitVersion.Command;
+﻿using GitVersion.AssemblyInfo;
 using GitVersion.Infrastructure;
-using GitVersion.Output.AssemblyInfo;
-using GitVersion.Output.Project;
-using GitVersion.Output.Wix;
+using GitVersion.Project;
+using GitVersion.Wix;
 
-namespace GitVersion.Output;
+namespace GitVersion;
 
 public class OutputModule : IGitVersionModule
 {

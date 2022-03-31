@@ -1,6 +1,4 @@
-﻿using GitVersion.Command;
-
-namespace GitVersion.Output.AssemblyInfo;
+﻿namespace GitVersion.AssemblyInfo;
 
 public class OutputAssemblyInfoSettings : OutputSettings
 {

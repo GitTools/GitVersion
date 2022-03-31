@@ -1,7 +1,6 @@
-﻿using GitVersion.Command;
-using GitVersion.Infrastructure;
+﻿using GitVersion.Infrastructure;
 
-namespace GitVersion.Calculation
+namespace GitVersion
 {
     public class CalculateModule : IGitVersionModule
     {

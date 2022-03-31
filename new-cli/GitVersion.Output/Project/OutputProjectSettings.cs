@@ -1,6 +1,4 @@
-﻿using GitVersion.Command;
-
-namespace GitVersion.Output.Project;
+﻿namespace GitVersion.Project;
 
 public class OutputProjectSettings : OutputSettings
 {

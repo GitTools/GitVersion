@@ -1,6 +1,4 @@
-﻿using GitVersion.Command;
-
-namespace GitVersion.Output.Wix;
+﻿namespace GitVersion.Wix;
 
 public class OutputWixSettings : OutputSettings
 {

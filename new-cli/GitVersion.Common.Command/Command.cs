@@ -1,4 +1,4 @@
-namespace GitVersion.Command;
+namespace GitVersion;
 
 public abstract class Command<T> : ICommand
     where T : GitVersionSettings

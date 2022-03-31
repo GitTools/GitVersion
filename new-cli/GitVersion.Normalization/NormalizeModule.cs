@@ -1,7 +1,6 @@
-﻿using GitVersion.Command;
-using GitVersion.Infrastructure;
+﻿using GitVersion.Infrastructure;
 
-namespace GitVersion.Normalization;
+namespace GitVersion;
 
 public class NormalizeModule : IGitVersionModule
 {

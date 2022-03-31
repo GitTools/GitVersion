@@ -1,6 +1,4 @@
-﻿using GitVersion.Command;
-
-namespace GitVersion.Calculation;
+﻿namespace GitVersion;
 
 public class CalculateSettings : GitVersionSettings
 {

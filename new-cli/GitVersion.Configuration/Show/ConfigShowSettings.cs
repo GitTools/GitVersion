@@ -1,4 +1,4 @@
-﻿namespace GitVersion.Configuration.Show;
+﻿namespace GitVersion.Show;
 
 public class ConfigShowSettings : ConfigSettings
 {

@@ -1,7 +1,6 @@
-﻿using GitVersion.Command;
-using GitVersion.Infrastructure;
+﻿using GitVersion.Infrastructure;
 
-namespace GitVersion.Output.Project;
+namespace GitVersion.Project;
 
 [Command("project", typeof(OutputSettings), "Outputs version to project")]
 public class OutputProjectCommand : Command<OutputProjectSettings>

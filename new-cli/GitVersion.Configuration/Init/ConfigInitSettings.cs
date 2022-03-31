@@ -1,4 +1,4 @@
-﻿namespace GitVersion.Configuration.Init;
+﻿namespace GitVersion.Init;
 
 public class ConfigInitSettings : ConfigSettings
 {

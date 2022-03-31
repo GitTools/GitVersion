@@ -1,9 +1,9 @@
 ﻿using Serilog.Core;
 using Serilog.Events;
 
-namespace GitVersion;
+namespace GitVersion.Infrastructure;
 
-internal class LoggingEnricher : ILogEventEnricher
+public class LoggingEnricher : ILogEventEnricher
 {
     public static readonly LoggingLevelSwitch LogLevel = new();
     private string? cachedLogFilePath;

@@ -1,9 +1,8 @@
-﻿using GitVersion.Command;
-using GitVersion.Configuration.Init;
-using GitVersion.Configuration.Show;
-using GitVersion.Infrastructure;
+﻿using GitVersion.Infrastructure;
+using GitVersion.Init;
+using GitVersion.Show;
 
-namespace GitVersion.Configuration;
+namespace GitVersion;
 
 public class ConfigModule : IGitVersionModule
 {

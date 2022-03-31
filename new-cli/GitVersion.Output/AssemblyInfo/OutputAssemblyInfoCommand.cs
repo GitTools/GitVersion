@@ -1,7 +1,6 @@
-﻿using GitVersion.Command;
-using GitVersion.Infrastructure;
+﻿using GitVersion.Infrastructure;
 
-namespace GitVersion.Output.AssemblyInfo;
+namespace GitVersion.AssemblyInfo;
 
 [Command("assemblyinfo", typeof(OutputSettings), "Outputs version to assembly")]
 public class OutputAssemblyInfoCommand : Command<OutputAssemblyInfoSettings>

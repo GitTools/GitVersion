@@ -1,7 +1,6 @@
-﻿using GitVersion.Command;
-using GitVersion.Infrastructure;
+﻿using GitVersion.Infrastructure;
 
-namespace GitVersion.Output.Wix;
+namespace GitVersion.Wix;
 
 [Command("wix", typeof(OutputSettings), "Outputs version to wix file")]
 public class OutputWixCommand : Command<OutputWixSettings>

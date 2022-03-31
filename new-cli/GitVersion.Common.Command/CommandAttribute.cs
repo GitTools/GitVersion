@@ -1,4 +1,4 @@
-﻿namespace GitVersion.Command;
+﻿namespace GitVersion;
 
 [AttributeUsage(AttributeTargets.Class)]
 public class CommandAttribute : Attribute
