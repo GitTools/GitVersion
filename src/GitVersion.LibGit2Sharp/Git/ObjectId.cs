@@ -1,3 +1,4 @@
+using GitVersion.Extensions;
 using GitVersion.Helpers;
 
 namespace GitVersion;
@@ -8,7 +9,9 @@ internal sealed class ObjectId : IObjectId
     private static readonly LambdaKeyComparer<IObjectId, string> comparerHelper = new(x => x.Sha);
 
     private readonly LibGit2Sharp.ObjectId innerObjectId;
-    internal ObjectId(LibGit2Sharp.ObjectId objectId) => this.innerObjectId = objectId;
+
+    internal ObjectId(LibGit2Sharp.ObjectId objectId) =>
+        this.innerObjectId = objectId.NotNull();
 
     public ObjectId(string sha) : this(new LibGit2Sharp.ObjectId(sha))
     {
