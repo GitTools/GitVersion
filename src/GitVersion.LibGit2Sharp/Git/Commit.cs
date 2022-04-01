@@ -1,3 +1,4 @@
+using GitVersion.Extensions;
 using GitVersion.Helpers;
 
 namespace GitVersion;
@@ -11,20 +12,18 @@ internal sealed class Commit : GitObject, ICommit
 
     internal Commit(LibGit2Sharp.Commit innerCommit) : base(innerCommit)
     {
-        this.innerCommit = innerCommit;
+        this.innerCommit = innerCommit.NotNull();
         Parents = innerCommit.Parents.Select(parent => new Commit(parent));
         When = innerCommit.Committer.When;
     }
 
     public int CompareTo(ICommit other) => comparerHelper.Compare(this, other);
     public bool Equals(ICommit? other) => equalityHelper.Equals(this, other);
+    public IEnumerable<ICommit> Parents { get; }
+    public DateTimeOffset When { get; }
+    public string Message => this.innerCommit.Message;
     public override bool Equals(object obj) => Equals((obj as ICommit));
     public override int GetHashCode() => equalityHelper.GetHashCode(this);
     public override string ToString() => $"{Id.ToString(7)} {this.innerCommit.MessageShort}";
     public static implicit operator LibGit2Sharp.Commit(Commit d) => d.innerCommit;
-
-    public IEnumerable<ICommit> Parents { get; }
-    public DateTimeOffset When { get; }
-
-    public string Message => this.innerCommit.Message;
 }
