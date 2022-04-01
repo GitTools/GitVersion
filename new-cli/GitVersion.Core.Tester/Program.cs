@@ -3,6 +3,7 @@
 var assemblies = new[]
 {
     typeof(CoreModule).Assembly,
+    typeof(LibGit2SharpCoreModule).Assembly,
     typeof(TesterModule).Assembly,
 };
 

@@ -3,6 +3,7 @@
 var assemblies = new[]
 {
     typeof(CoreModule).Assembly,
+    typeof(LibGit2SharpCoreModule).Assembly,
     typeof(NormalizeModule).Assembly,
     typeof(CalculateModule).Assembly,
     typeof(ConfigModule).Assembly,

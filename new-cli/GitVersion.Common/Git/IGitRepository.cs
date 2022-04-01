@@ -1,6 +1,6 @@
 namespace GitVersion.Git;
 
-public interface IGitRepository
+public interface IGitRepository : IDisposable
 {
     string Path { get; }
     string WorkingDirectory { get; }
@@ -14,4 +14,5 @@ public interface IGitRepository
 
     ICommit? FindMergeBase(ICommit commit, ICommit otherCommit);
     int GetNumberOfUncommittedChanges();
+    void Discover(string gitDirectory);
 }
