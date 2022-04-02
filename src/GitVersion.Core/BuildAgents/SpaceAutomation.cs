@@ -13,7 +13,15 @@ public class SpaceAutomation : BuildAgentBase
 
     protected override string EnvironmentVariable => EnvironmentVariableName;
 
-    public override string? GetCurrentBranch(bool usingDynamicRepos) => Environment.GetEnvironmentVariable("JB_SPACE_GIT_BRANCH");
+    public override string? GetCurrentBranch(bool usingDynamicRepos)
+    {
+        string? branchName = Environment.GetEnvironmentVariable("JB_SPACE_GIT_BRANCH");
+        if (branchName != null && branchName.StartsWith("refs/heads/"))
+        {
+            return branchName;
+        }
+        return null;
+    }
 
     public override string[] GenerateSetParameterMessage(string name, string value) => Array.Empty<string>();
 

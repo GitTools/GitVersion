@@ -25,9 +25,17 @@ public sealed class CodeBuild : BuildAgentBase
 
     public override string? GetCurrentBranch(bool usingDynamicRepos)
     {
-        var currentBranch = Environment.GetEnvironmentVariable(WebHookEnvironmentVariableName);
+        string? branchName = Environment.GetEnvironmentVariable(WebHookEnvironmentVariableName);
+        if (string.IsNullOrEmpty(branchName))
+        {
+            branchName = Environment.GetEnvironmentVariable(SourceVersionEnvironmentVariableName);
+        }
 
-        return currentBranch.IsNullOrEmpty() ? Environment.GetEnvironmentVariable(SourceVersionEnvironmentVariableName) : currentBranch;
+        if (branchName != null && branchName.StartsWith("refs/heads/"))
+        {
+            return branchName;
+        }
+        return null;
     }
 
     public override void WriteIntegration(Action<string?> writer, VersionVariables variables, bool updateBuildNumber = true)

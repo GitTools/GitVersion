@@ -102,4 +102,30 @@ public sealed class CodeBuildTests : TestBase
         props.ShouldContain("GitVersion_Major=1");
         props.ShouldContain("GitVersion_Minor=2");
     }
+
+    [Test]
+    public void GetCurrentBranchShouldHandleTags()
+    {
+        // Arrange
+        this.environment.SetEnvironmentVariable("CODEBUILD_WEBHOOK_HEAD_REF", "refs/tags/1.0.0");
+
+        // Act
+        var result = this.buildServer.GetCurrentBranch(false);
+
+        // Assert
+        result.ShouldBeNull();
+    }
+
+    [Test]
+    public void GetCurrentBranchShouldHandlePullRequests()
+    {
+        // Arrange
+        this.environment.SetEnvironmentVariable("CODEBUILD_SOURCE_VERSION", "refs/pull/1/merge");
+
+        // Act
+        var result = this.buildServer.GetCurrentBranch(false);
+
+        // Assert
+        result.ShouldBeNull();
+    }
 }

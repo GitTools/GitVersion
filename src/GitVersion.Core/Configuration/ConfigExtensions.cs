@@ -142,15 +142,8 @@ public static class ConfigExtensions
         return tagToUse;
     }
 
-    public static List<KeyValuePair<string, BranchConfig>> GetReleaseBranchConfig(this Config configuration)
-    {
-        foreach (var (key, value) in configuration.Branches)
-        {
-            if (value?.IsReleaseBranch != null && value.IsReleaseBranch.Value)
-            {
-                return new List<KeyValuePair<string, BranchConfig>> { new(key, value) };
-            }
-        }
-        return new List<KeyValuePair<string, BranchConfig>>();
-    }
+    public static List<KeyValuePair<string, BranchConfig>> GetReleaseBranchConfig(this Config configuration) =>
+        configuration.Branches
+            .Where(b => b.Value.IsReleaseBranch == true)
+            .ToList();
 }
