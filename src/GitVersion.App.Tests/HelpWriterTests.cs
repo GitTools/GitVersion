@@ -26,7 +26,7 @@ public class HelpWriterTests : TestBase
             { nameof(Arguments.TargetBranch), "/b" },
             { nameof(Arguments.LogFilePath) , "/l" },
             { nameof(Arguments.OutputFile) , "/outputfile" },
-            { nameof(Arguments.DynamicRepositoryClonePath), "/dynamicRepoLocation" },
+            { nameof(Arguments.ClonePath), "/dynamicRepoLocation" },
             { nameof(Arguments.IsHelp), "/?" },
             { nameof(Arguments.IsVersion), "/version" },
             { nameof(Arguments.UpdateWixVersionFile), "/updatewixversionfile" },

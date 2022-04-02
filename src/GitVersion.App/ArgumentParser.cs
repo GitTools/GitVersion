@@ -311,7 +311,7 @@ public class ArgumentParser : IArgumentParser
         if (name.IsSwitch("dynamicRepoLocation"))
         {
             EnsureArgumentValueCount(values);
-            arguments.DynamicRepositoryClonePath = value;
+            arguments.ClonePath = value;
             return true;
         }
 
