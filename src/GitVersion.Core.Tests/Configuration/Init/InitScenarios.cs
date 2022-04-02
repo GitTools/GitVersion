@@ -17,6 +17,8 @@ public class InitScenarios : TestBase
     public void Setup() => ShouldlyConfiguration.ShouldMatchApprovedDefaults.LocateTestMethodUsingAttribute<TestAttribute>();
 
     [Test]
+    [Category(NoMono)]
+    [Description(NoMonoDescription)]
     public void CanSetNextVersion()
     {
         var workingDirectory = RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? "c:\\proj" : "/proj";

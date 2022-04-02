@@ -631,7 +631,7 @@ public class ArgumentParserTests : TestBase
     public void DynamicRepoLocation()
     {
         var arguments = this.argumentParser.ParseArguments("-dynamicRepoLocation c:\\foo\\");
-        arguments.DynamicRepositoryClonePath.ShouldBe("c:\\foo\\");
+        arguments.ClonePath.ShouldBe("c:\\foo\\");
     }
 
     [Test]

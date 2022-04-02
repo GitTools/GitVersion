@@ -51,6 +51,8 @@ public class GenerateGitVersionInformationTest : TestTaskBase
     }
 
     [Test]
+    [Category(NoNet48)]
+    [Category(NoMono)]
     public void GenerateGitVersionInformationTaskShouldCreateFileWhenRunWithMsBuild()
     {
         const string taskName = nameof(GenerateGitVersionInformation);
@@ -76,6 +78,8 @@ public class GenerateGitVersionInformationTest : TestTaskBase
     }
 
     [Test]
+    [Category(NoNet48)]
+    [Category(NoMono)]
     public void GenerateGitVersionInformationTaskShouldCreateFileWhenRunWithMsBuildInBuildServer()
     {
         const string taskName = nameof(GenerateGitVersionInformation);

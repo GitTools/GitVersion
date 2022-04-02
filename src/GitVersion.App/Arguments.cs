@@ -19,7 +19,7 @@ public class Arguments
     public string? TargetUrl;
     public string? TargetBranch;
     public string? CommitId;
-    public string? DynamicRepositoryClonePath;
+    public string? ClonePath;
 
     public bool Init;
     public bool Diag;
@@ -72,7 +72,7 @@ public class Arguments
                 TargetUrl = TargetUrl,
                 TargetBranch = TargetBranch,
                 CommitId = CommitId,
-                DynamicRepositoryClonePath = DynamicRepositoryClonePath
+                ClonePath = ClonePath
             },
 
             Settings =

@@ -61,7 +61,7 @@ public class DynamicRepositoryTests : TestBase
             RepositoryInfo =
             {
                 TargetUrl = url,
-                DynamicRepositoryClonePath = dynamicDirectory,
+                ClonePath = dynamicDirectory,
                 TargetBranch = targetBranch,
                 CommitId = commitId
             },

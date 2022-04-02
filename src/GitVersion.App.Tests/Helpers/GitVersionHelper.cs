@@ -36,7 +36,7 @@ public static class GitVersionHelper
         params KeyValuePair<string, string?>[] environments
     )
     {
-        var executable = ExecutableHelper.GetDotNetExecutable();
+        var executable = ExecutableHelper.GetExecutable();
         var output = new StringBuilder();
 
         var environmentalVariables = new Dictionary<string, string?>

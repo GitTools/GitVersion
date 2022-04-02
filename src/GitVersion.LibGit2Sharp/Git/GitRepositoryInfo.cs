@@ -35,9 +35,9 @@ internal class GitRepositoryInfo : IGitRepositoryInfo
         if (repositoryInfo.TargetUrl.IsNullOrWhiteSpace()) return null;
 
         var targetUrl = repositoryInfo.TargetUrl;
-        var dynamicRepositoryClonePath = repositoryInfo.DynamicRepositoryClonePath;
+        var clonePath = repositoryInfo.ClonePath;
 
-        var userTemp = dynamicRepositoryClonePath ?? Path.GetTempPath();
+        var userTemp = clonePath ?? Path.GetTempPath();
         var repositoryName = targetUrl.Split('/', '\\').Last().Replace(".git", string.Empty);
         var possiblePath = PathHelper.Combine(userTemp, repositoryName);
 

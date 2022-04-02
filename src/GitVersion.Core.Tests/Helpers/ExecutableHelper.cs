@@ -6,11 +6,14 @@ public static class ExecutableHelper
 {
     public static string GetCurrentDirectory() => Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) ?? throw new InvalidOperationException();
 
-    public static string GetDotNetExecutable() => "dotnet";
+    public static string GetExecutable() => RuntimeHelper.IsCoreClr() ? "dotnet" : PathHelper.Combine(GetExeDirectory(), "gitversion.exe");
 
     public static string GetExecutableArgs(string args)
     {
-        args = $"{PathHelper.Combine(GetExeDirectory(), "gitversion.dll")} {args}";
+        if (RuntimeHelper.IsCoreClr())
+        {
+            args = $"{PathHelper.Combine(GetExeDirectory(), "gitversion.dll")} {args}";
+        }
         return args;
     }
 

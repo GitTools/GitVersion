@@ -2,7 +2,13 @@ using Buildalyzer;
 using Buildalyzer.Environment;
 using GitTools.Testing;
 using GitVersion.Core.Tests;
+using GitVersion.Core.Tests.Helpers;
 using GitVersion.Helpers;
+
+#if NET48
+using GitVersion.Extensions;
+#endif
+
 using Microsoft.Build.Framework;
 using Microsoft.Build.Logging;
 using Microsoft.Build.Utilities.ProjectCreation;
@@ -62,7 +68,10 @@ public class MsBuildExeFixture
 
     public void CreateTestProject(Action<ProjectCreator> extendProject)
     {
-        var project = ProjectCreator.Templates.SdkCsproj(this.ProjectPath);
+        var project = RuntimeHelper.IsCoreClr()
+            ? ProjectCreator.Templates.SdkCsproj(this.ProjectPath)
+            : ProjectCreator.Templates.LegacyCsproj(this.ProjectPath, defaultTargets: null, targetFrameworkVersion: "v4.8", toolsVersion: "15.0");
+
         if (project == null) return;
 
         extendProject(project);
