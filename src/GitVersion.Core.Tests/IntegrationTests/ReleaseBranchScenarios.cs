@@ -6,6 +6,7 @@ using GitVersion.Model.Configuration;
 using GitVersion.VersionCalculation;
 using LibGit2Sharp;
 using NUnit.Framework;
+using Shouldly;
 
 namespace GitVersion.Core.Tests.IntegrationTests;
 
@@ -223,6 +224,32 @@ public class ReleaseBranchScenarios : TestBase
         fixture.AssertFullSemver("2.0.0+4");
         fixture.Repository.MakeCommits(1);
         fixture.AssertFullSemver("2.0.0+5");
+    }
+
+    [Test]
+    public void ShouldUseTagsAsVersionSourceWhenPossible()
+    {
+        using var fixture = new EmptyRepositoryFixture();
+        fixture.Repository.MakeATaggedCommit("0.1.0");
+        fixture.Checkout(MainBranch);
+        fixture.Repository.CreateBranch("develop");
+        fixture.Checkout("develop");
+        fixture.MakeACommit("Feature commit 1");
+        fixture.BranchTo("release/0.2.0");
+        fixture.MakeACommit("Release commit 1");
+        fixture.Checkout(MainBranch);
+        fixture.MergeNoFF("release/0.2.0");
+        fixture.ApplyTag("0.2.0");
+
+        var tag = fixture.Repository.Head.Tip;
+
+        fixture.Checkout("develop");
+        fixture.MergeNoFF(MainBranch);
+
+        fixture.AssertFullSemver("0.3.0-alpha.1");
+
+        var version = fixture.GetVersion();
+        version.VersionSourceSha.ShouldBeEquivalentTo(tag.Sha);
     }
 
     [Test]
