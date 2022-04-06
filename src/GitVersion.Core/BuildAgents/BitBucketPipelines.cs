@@ -5,13 +5,19 @@ namespace GitVersion.BuildAgents;
 
 public class BitBucketPipelines : BuildAgentBase
 {
-    public BitBucketPipelines(IEnvironment environment, ILog log) : base(environment, log)
-    {
-    }
+    public const string EnvironmentVariableName = "BITBUCKET_WORKSPACE";
+    public const string BranchEnvironmentVariableName = "BITBUCKET_BRANCH";
+    public const string TagEnvironmentVariableName = "BITBUCKET_TAG";
+    public const string PullRequestEnvironmentVariableName = "BITBUCKET_PR_ID";
+    private string? file;
 
-    protected override string EnvironmentVariable => "BITBUCKET_WORKSPACE";
+    public BitBucketPipelines(IEnvironment environment, ILog log) : base(environment, log) => WithPropertyFile("gitversion.env");
+
+    protected override string EnvironmentVariable => EnvironmentVariableName;
 
     public override string? GenerateSetVersionMessage(VersionVariables variables) => variables.FullSemVer;
+
+    public void WithPropertyFile(string propertiesFileName) => this.file = propertiesFileName;
 
     public override string[] GenerateSetParameterMessage(string name, string value) => new[]
     {
@@ -20,7 +26,7 @@ public class BitBucketPipelines : BuildAgentBase
 
     public override string? GetCurrentBranch(bool usingDynamicRepos)
     {
-        var branchName = EvaluateEnvironmentVariable("BITBUCKET_BRANCH");
+        var branchName = EvaluateEnvironmentVariable(BranchEnvironmentVariableName);
         if (branchName != null && branchName.StartsWith("refs/heads/"))
         {
             return branchName;
@@ -28,6 +34,22 @@ public class BitBucketPipelines : BuildAgentBase
 
         return null;
     }
+
+    public override void WriteIntegration(Action<string?> writer, VersionVariables variables, bool updateBuildNumber = true)
+    {
+        if (this.file is null)
+            return;
+
+        base.WriteIntegration(writer, variables, updateBuildNumber);
+        writer($"Outputting variables to '{this.file}' ... ");
+
+        var exports = variables
+            .Select(variable => $"export GITVERSION_{variable.Key.ToUpperInvariant()}={variable.Value}")
+            .ToList();
+
+        File.WriteAllLines(this.file, exports);
+    }
+
 
     private string? EvaluateEnvironmentVariable(string variableName)
     {
