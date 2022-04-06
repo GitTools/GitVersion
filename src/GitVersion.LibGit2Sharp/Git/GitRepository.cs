@@ -10,7 +10,6 @@ internal sealed class GitRepository : IMutatingGitRepository
 {
     private readonly ILog log;
     private readonly Lazy<IRepository> repositoryLazy;
-    private IRepository repositoryInstance => this.repositoryLazy.Value;
 
     public GitRepository(ILog log, IGitRepositoryInfo repositoryInfo)
         : this(log, () => repositoryInfo.GitRootPath)
@@ -24,6 +23,7 @@ internal sealed class GitRepository : IMutatingGitRepository
 
     internal GitRepository(IRepository repository)
     {
+        repository = repository.NotNull();
         this.log = new NullLog();
         this.repositoryLazy = new Lazy<IRepository>(() => repository);
     }
@@ -34,133 +34,74 @@ internal sealed class GitRepository : IMutatingGitRepository
         this.repositoryLazy = new Lazy<IRepository>(() => new Repository(getGitRootDirectory()));
     }
 
-    public void Dispose()
-    {
-        if (this.repositoryLazy.IsValueCreated) repositoryInstance.Dispose();
-    }
-
-    public string Path => repositoryInstance.Info.Path;
-    public string WorkingDirectory => repositoryInstance.Info.WorkingDirectory;
-    public bool IsHeadDetached => repositoryInstance.Info.IsHeadDetached;
-
-    public IBranch Head => new Branch(repositoryInstance.Head);
-    public ITagCollection Tags => new TagCollection(repositoryInstance.Tags);
-    public IReferenceCollection Refs => new ReferenceCollection(repositoryInstance.Refs);
-    public IBranchCollection Branches => new BranchCollection(repositoryInstance.Branches);
-    public ICommitCollection Commits => new CommitCollection(repositoryInstance.Commits);
-    public IRemoteCollection Remotes => new RemoteCollection(repositoryInstance.Network.Remotes);
+    private IRepository RepositoryInstance => this.repositoryLazy.Value;
+    public string Path => RepositoryInstance.Info.Path;
+    public string WorkingDirectory => RepositoryInstance.Info.WorkingDirectory;
+    public bool IsHeadDetached => RepositoryInstance.Info.IsHeadDetached;
+    public IBranch Head => new Branch(RepositoryInstance.Head);
+    public ITagCollection Tags => new TagCollection(RepositoryInstance.Tags);
+    public IReferenceCollection Refs => new ReferenceCollection(RepositoryInstance.Refs);
+    public IBranchCollection Branches => new BranchCollection(RepositoryInstance.Branches);
+    public ICommitCollection Commits => new CommitCollection(RepositoryInstance.Commits);
+    public IRemoteCollection Remotes => new RemoteCollection(RepositoryInstance.Network.Remotes);
 
     public ICommit? FindMergeBase(ICommit commit, ICommit otherCommit)
     {
-        _ = commit.NotNull();
-        _ = otherCommit.NotNull();
+        commit = commit.NotNull();
+        otherCommit = otherCommit.NotNull();
 
         var retryAction = new RetryAction<LockedFileException, ICommit?>();
         return retryAction.Execute(() =>
         {
-            var mergeBase = repositoryInstance.ObjectDatabase.FindMergeBase((Commit)commit, (Commit)otherCommit);
+            var first = (Commit)commit;
+            var second = (Commit)otherCommit;
+            var mergeBase = RepositoryInstance.ObjectDatabase.FindMergeBase(first, second);
             return mergeBase == null ? null : new Commit(mergeBase);
         });
     }
+
     public int GetNumberOfUncommittedChanges()
     {
         var retryAction = new RetryAction<LibGit2Sharp.LockedFileException, int>();
         return retryAction.Execute(GetNumberOfUncommittedChangesInternal);
     }
-    private int GetNumberOfUncommittedChangesInternal()
+
+    public void CreateBranchForPullRequestBranch(AuthenticationInfo auth) => RepositoryExtensions.RunSafe(() =>
     {
-        // check if we have a branch tip at all to behave properly with empty repos
-        // => return that we have actually un-committed changes because we are apparently
-        // running GitVersion on something which lives inside this brand new repo _/\Ö/\_
-        if (repositoryInstance.Head?.Tip == null || repositoryInstance.Diff == null)
+        this.log.Info("Fetching remote refs to see if there is a pull request ref");
+
+        // FIX ME: What to do when Tip is null?
+        if (Head.Tip == null)
+            return;
+
+        var headTipSha = Head.Tip.Sha;
+        var remote = RepositoryInstance.Network.Remotes.Single();
+        var reference = GetPullRequestReference(auth, remote, headTipSha);
+        var canonicalName = reference.CanonicalName;
+        var referenceName = ReferenceName.Parse(reference.CanonicalName);
+        this.log.Info($"Found remote tip '{canonicalName}' pointing at the commit '{headTipSha}'.");
+
+        if (referenceName.IsTag)
         {
-            // this is a somewhat cumbersome way of figuring out the number of changes in the repo
-            // which is more expensive than to use the Diff as it gathers more info, but
-            // we can't use the other method when we are dealing with a new/empty repo
-            try
-            {
-                var status = repositoryInstance.RetrieveStatus();
-                return status.Untracked.Count() + status.Staged.Count();
-            }
-            catch (Exception)
-            {
-                return int.MaxValue; // this should be somewhat puzzling to see,
-                // so we may have reached our goal to show that
-                // that repo is really "Dirty"...
-            }
+            this.log.Info($"Checking out tag '{canonicalName}'");
+            Checkout(reference.Target.Sha);
         }
-
-        // gets all changes of the last commit vs Staging area and WT
-        var changes = repositoryInstance.Diff.Compare<TreeChanges>(repositoryInstance.Head.Tip.Tree,
-            DiffTargets.Index | DiffTargets.WorkingDirectory);
-
-        return changes.Count;
-    }
-
-    public void CreateBranchForPullRequestBranch(AuthenticationInfo auth) =>
-        RepositoryExtensions.RunSafe(() =>
+        else if (referenceName.IsPullRequest)
         {
-            var network = repositoryInstance.Network;
-            var remote = network.Remotes.Single();
+            var fakeBranchName = canonicalName.Replace("refs/pull/", "refs/heads/pull/").Replace("refs/pull-requests/", "refs/heads/pull-requests/");
 
-            this.log.Info("Fetching remote refs to see if there is a pull request ref");
-            var credentialsProvider = GetCredentialsProvider(auth);
-            var remoteTips = (credentialsProvider != null
-                    ? network.ListReferences(remote, credentialsProvider)
-                    : network.ListReferences(remote))
-                .Select(r => r.ResolveToDirectReference()).ToList();
+            this.log.Info($"Creating fake local branch '{fakeBranchName}'.");
+            Refs.Add(fakeBranchName, headTipSha);
 
-            this.log.Info($"Remote Refs:{System.Environment.NewLine}" + string.Join(System.Environment.NewLine, remoteTips.Select(r => r.CanonicalName)));
-
-            // FIX ME: What to do when Tip is null?
-            if (Head.Tip != null)
-            {
-                var headTipSha = Head.Tip.Sha;
-
-                var refs = remoteTips.Where(r => r.TargetIdentifier == headTipSha).ToList();
-
-                switch (refs.Count)
-                {
-                    case 0:
-                        {
-                            var message = $"Couldn't find any remote tips from remote '{remote.Url}' pointing at the commit '{headTipSha}'.";
-                            throw new WarningException(message);
-                        }
-                    case > 1:
-                        {
-                            var names = string.Join(", ", refs.Select(r => r.CanonicalName));
-                            var message = $"Found more than one remote tip from remote '{remote.Url}' pointing at the commit '{headTipSha}'. Unable to determine which one to use ({names}).";
-                            throw new WarningException(message);
-                        }
-                }
-
-                var reference = refs.First();
-                var canonicalName = reference.CanonicalName;
-                var referenceName = ReferenceName.Parse(reference.CanonicalName);
-                this.log.Info($"Found remote tip '{canonicalName}' pointing at the commit '{headTipSha}'.");
-
-                if (referenceName.IsTag)
-                {
-                    this.log.Info($"Checking out tag '{canonicalName}'");
-                    Checkout(reference.Target.Sha);
-                }
-                else if (referenceName.IsPullRequest)
-                {
-                    var fakeBranchName = canonicalName.Replace("refs/pull/", "refs/heads/pull/").Replace("refs/pull-requests/", "refs/heads/pull-requests/");
-
-                    this.log.Info($"Creating fake local branch '{fakeBranchName}'.");
-                    Refs.Add(fakeBranchName, headTipSha);
-
-                    this.log.Info($"Checking local branch '{fakeBranchName}' out.");
-                    Checkout(fakeBranchName);
-                }
-                else
-                {
-                    var message = $"Remote tip '{canonicalName}' from remote '{remote.Url}' doesn't look like a valid pull request.";
-                    throw new WarningException(message);
-                }
-            }
-        });
+            this.log.Info($"Checking local branch '{fakeBranchName}' out.");
+            Checkout(fakeBranchName);
+        }
+        else
+        {
+            var message = $"Remote tip '{canonicalName}' from remote '{remote.Url}' doesn't look like a valid pull request.";
+            throw new WarningException(message);
+        }
+    });
 
     public void Clone(string? sourceUrl, string? workdirPath, AuthenticationInfo auth)
     {
@@ -180,10 +121,12 @@ internal sealed class GitRepository : IMutatingGitRepository
             {
                 throw new Exception("Unauthorized: Incorrect username/password", ex);
             }
+
             if (message.Contains("403"))
             {
                 throw new Exception("Forbidden: Possibly Incorrect username/password", ex);
             }
+
             if (message.Contains("404"))
             {
                 throw new Exception("Not found: The repository was not found", ex);
@@ -192,39 +135,95 @@ internal sealed class GitRepository : IMutatingGitRepository
             throw new Exception("There was an unknown problem with the Git repository you provided", ex);
         }
     }
+
     public void Checkout(string commitOrBranchSpec) =>
         RepositoryExtensions.RunSafe(() =>
-            Commands.Checkout(repositoryInstance, commitOrBranchSpec));
+            Commands.Checkout(RepositoryInstance, commitOrBranchSpec));
 
     public void Fetch(string remote, IEnumerable<string> refSpecs, AuthenticationInfo auth, string? logMessage) =>
         RepositoryExtensions.RunSafe(() =>
-            Commands.Fetch((Repository)repositoryInstance, remote, refSpecs, GetFetchOptions(auth), logMessage));
+            Commands.Fetch((Repository)RepositoryInstance, remote, refSpecs, GetFetchOptions(auth), logMessage));
+
+    private DirectReference GetPullRequestReference(AuthenticationInfo auth, LibGit2Sharp.Remote remote, string headTipSha)
+    {
+        var network = RepositoryInstance.Network;
+        var credentialsProvider = GetCredentialsProvider(auth);
+        var remoteTips = (credentialsProvider != null
+                ? network.ListReferences(remote, credentialsProvider)
+                : network.ListReferences(remote))
+            .Select(r => r.ResolveToDirectReference()).ToList();
+
+        this.log.Info($"Remote Refs:{System.Environment.NewLine}" + string.Join(System.Environment.NewLine, remoteTips.Select(r => r.CanonicalName)));
+        var refs = remoteTips.Where(r => r.TargetIdentifier == headTipSha).ToList();
+
+        switch (refs.Count)
+        {
+            case 0:
+                {
+                    var message = $"Couldn't find any remote tips from remote '{remote.Url}' pointing at the commit '{headTipSha}'.";
+                    throw new WarningException(message);
+                }
+            case > 1:
+                {
+                    var names = string.Join(", ", refs.Select(r => r.CanonicalName));
+                    var message = $"Found more than one remote tip from remote '{remote.Url}' pointing at the commit '{headTipSha}'. Unable to determine which one to use ({names}).";
+                    throw new WarningException(message);
+                }
+        }
+
+        return refs.First();
+    }
+
+    public void Dispose()
+    {
+        if (this.repositoryLazy.IsValueCreated) RepositoryInstance.Dispose();
+    }
+
+    private int GetNumberOfUncommittedChangesInternal()
+    {
+        // check if we have a branch tip at all to behave properly with empty repos
+        // => return that we have actually un-committed changes because we are apparently
+        // running GitVersion on something which lives inside this brand new repo _/\Ö/\_
+        if (RepositoryInstance.Head?.Tip == null || RepositoryInstance.Diff == null)
+        {
+            // this is a somewhat cumbersome way of figuring out the number of changes in the repo
+            // which is more expensive than to use the Diff as it gathers more info, but
+            // we can't use the other method when we are dealing with a new/empty repo
+            try
+            {
+                var status = RepositoryInstance.RetrieveStatus();
+                return status.Untracked.Count() + status.Staged.Count();
+            }
+            catch (Exception)
+            {
+                return int.MaxValue; // this should be somewhat puzzling to see,
+                // so we may have reached our goal to show that
+                // that repo is really "Dirty"...
+            }
+        }
+
+        // gets all changes of the last commit vs Staging area and WT
+        var changes = RepositoryInstance.Diff.Compare<TreeChanges>(RepositoryInstance.Head.Tip.Tree,
+            DiffTargets.Index | DiffTargets.WorkingDirectory);
+
+        return changes.Count;
+    }
 
     internal static string? Discover(string? path) => Repository.Discover(path);
 
     private static FetchOptions GetFetchOptions(AuthenticationInfo auth) =>
-        new()
-        {
-            CredentialsProvider = GetCredentialsProvider(auth)
-        };
+        new() { CredentialsProvider = GetCredentialsProvider(auth) };
 
     private static CloneOptions GetCloneOptions(AuthenticationInfo auth) =>
-        new()
-        {
-            Checkout = false,
-            CredentialsProvider = GetCredentialsProvider(auth)
-        };
+        new() { Checkout = false, CredentialsProvider = GetCredentialsProvider(auth) };
 
     private static CredentialsHandler? GetCredentialsProvider(AuthenticationInfo auth)
     {
         if (!auth.Username.IsNullOrWhiteSpace())
         {
-            return (_, _, _) => new UsernamePasswordCredentials
-            {
-                Username = auth.Username,
-                Password = auth.Password ?? string.Empty
-            };
+            return (_, _, _) => new UsernamePasswordCredentials { Username = auth.Username, Password = auth.Password ?? string.Empty };
         }
+
         return null;
     }
 }
