@@ -1,4 +1,4 @@
-﻿using GitVersion.Logging;
+using GitVersion.Logging;
 using GitVersion.OutputVariables;
 
 namespace GitVersion.BuildAgents;
@@ -24,6 +24,27 @@ public class BitBucketPipelines : BuildAgentBase
         $"GITVERSION_{name.ToUpperInvariant()}={value}"
     };
 
+    public override void WriteIntegration(Action<string?> writer, VersionVariables variables, bool updateBuildNumber = true)
+    {
+        if (this.file is null)
+            return;
+
+        base.WriteIntegration(writer, variables, updateBuildNumber);
+        writer($"Outputting variables to '{this.file}' ... ");
+        writer("To import the file into your build environment, add the following line to your build step:");
+        writer($"  - source {this.file}");
+        writer("");
+        writer("To reuse the file across build steps, add the file as a build artifact:");
+        writer("  artifacts:");
+        writer($"    - {this.file}");
+
+        var exports = variables
+            .Select(variable => $"export GITVERSION_{variable.Key.ToUpperInvariant()}={variable.Value}")
+            .ToList();
+
+        File.WriteAllLines(this.file, exports);
+    }
+
     public override string? GetCurrentBranch(bool usingDynamicRepos)
     {
         var branchName = EvaluateEnvironmentVariable(BranchEnvironmentVariableName);
@@ -34,22 +55,6 @@ public class BitBucketPipelines : BuildAgentBase
 
         return null;
     }
-
-    public override void WriteIntegration(Action<string?> writer, VersionVariables variables, bool updateBuildNumber = true)
-    {
-        if (this.file is null)
-            return;
-
-        base.WriteIntegration(writer, variables, updateBuildNumber);
-        writer($"Outputting variables to '{this.file}' ... ");
-
-        var exports = variables
-            .Select(variable => $"export GITVERSION_{variable.Key.ToUpperInvariant()}={variable.Value}")
-            .ToList();
-
-        File.WriteAllLines(this.file, exports);
-    }
-
 
     private string? EvaluateEnvironmentVariable(string variableName)
     {
