@@ -121,7 +121,7 @@ public class BaseVersionCalculator : IBaseVersionCalculator
                 baseVersionWithOldestSource.BaseVersionSource,
                 maxVersion.Version.BranchNameOverride);
 
-            log.Info($"Base version used: {calculatedBase}");
+            this.log.Info($"Base version used: {calculatedBase}");
 
             return calculatedBase;
         }
