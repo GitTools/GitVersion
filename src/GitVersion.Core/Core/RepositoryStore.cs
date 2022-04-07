@@ -10,11 +10,10 @@ namespace GitVersion;
 
 public class RepositoryStore : IRepositoryStore
 {
-    private const string MissingTipFormat = "{0} has no tip. Please see https://example.com/docs for information on how to fix this.";
+    internal const string MissingTipFormat = "{0} has no tip. Please see https://example.com/docs for information on how to fix this.";
     private readonly IIncrementStrategyFinder incrementStrategyFinder;
     private readonly ILog log;
     private readonly Dictionary<Tuple<IBranch, IBranch?>, ICommit?> mergeBaseCache = new();
-    private readonly Dictionary<IBranch?, List<BranchCommit>> mergeBaseCommitsCache = new();
     private readonly IGitRepository repository;
     private readonly Dictionary<IBranch, List<SemanticVersion>> semanticVersionTagsOnBranchCache = new();
 
@@ -30,8 +29,7 @@ public class RepositoryStore : IRepositoryStore
     /// </summary>
     public ICommit? FindMergeBase(IBranch? branch, IBranch? otherBranch)
     {
-        if (branch == null)
-            throw new ArgumentNullException(nameof(branch));
+        branch = branch.NotNull();
 
         var key = Tuple.Create(branch, otherBranch);
 
@@ -318,20 +316,19 @@ public class RepositoryStore : IRepositoryStore
                 return BranchCommit.Empty;
             }
 
-            var possibleBranches = GetMergeCommitsForBranch(branch, configuration, excludedBranches)
-                .Where(b => !branch.Name.EquivalentTo(b.Branch.Name.WithoutRemote))
-                .ToList();
+            var possibleBranches =
+                new MergeCommitFinder(this, configuration, excludedBranches, this.log)
+                    .FindMergeCommitsFor(branch)
+                    .ToList();
 
-            if (possibleBranches.Count > 1)
-            {
-                var first = possibleBranches.First();
-                this.log.Info($"Multiple source branches have been found, picking the first one ({first.Branch}).{System.Environment.NewLine}" +
-                              $"This may result in incorrect commit counting.{System.Environment.NewLine}Options were:{System.Environment.NewLine}" +
-                              string.Join(", ", possibleBranches.Select(b => b.Branch.ToString())));
-                return first;
-            }
+            if (possibleBranches.Count <= 1)
+                return possibleBranches.SingleOrDefault();
 
-            return possibleBranches.SingleOrDefault();
+            var first = possibleBranches.First();
+            this.log.Info($"Multiple source branches have been found, picking the first one ({first.Branch}).{System.Environment.NewLine}" +
+                          $"This may result in incorrect commit counting.{System.Environment.NewLine}Options were:{System.Environment.NewLine}" +
+                          string.Join(", ", possibleBranches.Select(b => b.Branch.ToString())));
+            return first;
         }
     }
 
@@ -466,47 +463,6 @@ public class RepositoryStore : IRepositoryStore
         return null;
     }
 
-    private IEnumerable<BranchCommit> GetMergeCommitsForBranch(IBranch branch, Config configuration, IEnumerable<IBranch> excludedBranches)
-    {
-        branch = branch.NotNull();
-
-        if (this.mergeBaseCommitsCache.ContainsKey(branch))
-        {
-            this.log.Debug($"Cache hit for getting merge commits for branch {branch?.Name.Canonical}.");
-            return this.mergeBaseCommitsCache[branch];
-        }
-
-        var currentBranchConfig = configuration.GetConfigForBranch(branch.Name.WithoutRemote);
-        var regexesToCheck = currentBranchConfig?.SourceBranches == null
-            ? new[] { ".*" } // Match anything if we can't find a branch config
-            : currentBranchConfig.SourceBranches.Select(sb => configuration.Branches[sb]?.Regex);
-        var branchMergeBases = ExcludingBranches(excludedBranches)
-            .Where(b =>
-            {
-                if (Equals(b, branch))
-                    return false;
-
-                var branchCanBeMergeBase = regexesToCheck.Any(regex => regex != null && Regex.IsMatch(b.Name.Friendly, regex));
-
-                return branchCanBeMergeBase;
-            })
-            .Select(otherBranch =>
-            {
-                if (otherBranch.Tip == null)
-                {
-                    this.log.Warning(string.Format(MissingTipFormat, otherBranch));
-                    return BranchCommit.Empty;
-                }
-
-                var findMergeBase = FindMergeBase(branch, otherBranch);
-                return findMergeBase == null ? BranchCommit.Empty : new BranchCommit(findMergeBase, otherBranch);
-            })
-            .OrderByDescending(b => b.Commit.When)
-            .ToList();
-        this.mergeBaseCommitsCache.Add(branch, branchMergeBases);
-
-        return branchMergeBases;
-    }
 
     private static IEnumerable<ICommit> GetCommitsReacheableFrom(IGitRepository repository, IGitObject commit, IBranch branch)
     {
