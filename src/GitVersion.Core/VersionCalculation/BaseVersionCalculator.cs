@@ -89,7 +89,7 @@ public class BaseVersionCalculator : IBaseVersionCalculator
 
                     maxVersion = matchingVersionsOnceIncremented.Aggregate(CompareVersions);
                     baseVersionWithOldestSource = maxVersion.Version;
-                    log.Info($"Taking oldest source for commit counting : {BaseVersionToString(baseVersionWithOldestSource)}");
+                    this.log.Info($"Taking oldest source for commit counting : {BaseVersionToString(baseVersionWithOldestSource)}");
                 }
                 else
                 {
