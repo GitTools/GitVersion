@@ -75,7 +75,7 @@ public class BaseVersionCalculator : IBaseVersionCalculator
                     {
                         if (baseVersion != null)
                         {
-                            log.Info($" - {BaseVersionToString(baseVersion)}");
+                            this.log.Info($" - {BaseVersionToString(baseVersion)}");
                         }
                     }
 
