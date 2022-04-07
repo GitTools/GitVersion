@@ -95,7 +95,7 @@ public class BaseVersionCalculator : IBaseVersionCalculator
                 {
                     maxVersion = matchingVersionsOnceIncremented.First();
                     baseVersionWithOldestSource = maxVersion.Version;
-                    log.Info(
+                    this.log.Info(
                         $"Found a base versions which will produce the following SemVer ({maxVersion.IncrementedVersion}), " +
                         $"with the following source for commit counting : {BaseVersionToString(baseVersionWithOldestSource)}"
                     );
