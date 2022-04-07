@@ -83,7 +83,7 @@ public class BaseVersionCalculator : IBaseVersionCalculator
 
                     if (tagVersions.Count > 0)
                     {
-                        log.Info("As there are Git tags, the other sources will be discarded");
+                        this.log.Info("As there are Git tags, the other sources will be discarded");
                         matchingVersionsOnceIncremented = tagVersions;
                     }
 
