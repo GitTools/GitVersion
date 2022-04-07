@@ -69,8 +69,8 @@ public class BaseVersionCalculator : IBaseVersionCalculator
                         return versions1.Version.BaseVersionSource.When < version2.Version.BaseVersionSource.When ? versions1 : version2;
                     }
 
-                    log.Info($"Found multiple base versions which will produce the same SemVer ({maxVersion.IncrementedVersion})");
-                    log.Info($"Here are the different source candidate for commit counting : ");
+                    this.log.Info($"Found multiple base versions which will produce the same SemVer ({maxVersion.IncrementedVersion})");
+                    this.log.Info($"Here are the different source candidate for commit counting : ");
                     foreach (var baseVersion in matchingVersionsOnceIncremented.Select(b => b.Version))
                     {
                         if (baseVersion != null)
