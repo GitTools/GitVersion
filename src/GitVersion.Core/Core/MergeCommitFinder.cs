@@ -48,7 +48,7 @@ internal class MergeCommitFinder
         {
             if (sourceBranch.Tip == null)
             {
-                this.log.Warning(string.Format(RepositoryStore.MissingTipFormat, sourceBranch));
+                this.log.Warning($"{sourceBranch} has no tip.");
                 continue;
             }
 

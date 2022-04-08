@@ -10,98 +10,25 @@ namespace GitVersion;
 
 public class RepositoryStore : IRepositoryStore
 {
-    internal const string MissingTipFormat = "{0} has no tip. Please see https://example.com/docs for information on how to fix this.";
     private readonly IIncrementStrategyFinder incrementStrategyFinder;
     private readonly ILog log;
-    private readonly Dictionary<Tuple<IBranch, IBranch?>, ICommit?> mergeBaseCache = new();
     private readonly IGitRepository repository;
     private readonly Dictionary<IBranch, List<SemanticVersion>> semanticVersionTagsOnBranchCache = new();
+    private readonly MergeBaseFinder mergeBaseFinder;
 
     public RepositoryStore(ILog log, IGitRepository repository, IIncrementStrategyFinder incrementStrategyFinder)
     {
         this.log = log.NotNull();
         this.repository = repository.NotNull();
         this.incrementStrategyFinder = incrementStrategyFinder.NotNull();
+        this.mergeBaseFinder = new MergeBaseFinder(this, repository, log);
     }
 
     /// <summary>
     ///     Find the merge base of the two branches, i.e. the best common ancestor of the two branches' tips.
     /// </summary>
     public ICommit? FindMergeBase(IBranch? branch, IBranch? otherBranch)
-    {
-        branch = branch.NotNull();
-
-        var key = Tuple.Create(branch, otherBranch);
-
-        if (this.mergeBaseCache.ContainsKey(key))
-        {
-            this.log.Debug($"Cache hit for merge base between '{branch}' and '{otherBranch}'.");
-            return this.mergeBaseCache[key];
-        }
-
-        using (this.log.IndentLog($"Finding merge base between '{branch}' and '{otherBranch}'."))
-        {
-            // Other branch tip is a forward merge
-            var commitToFindCommonBase = otherBranch?.Tip;
-            var commit = branch.Tip;
-
-            if (commit == null)
-                return null;
-
-            if (commitToFindCommonBase?.Parents.Contains(commit) == true)
-            {
-                commitToFindCommonBase = commitToFindCommonBase.Parents.First();
-            }
-
-            if (commitToFindCommonBase == null)
-                return null;
-
-            var findMergeBase = FindMergeBase(commit, commitToFindCommonBase);
-            if (findMergeBase != null)
-            {
-                this.log.Info($"Found merge base of {findMergeBase}");
-                // We do not want to include merge base commits which got forward merged into the other branch
-                ICommit? forwardMerge;
-                do
-                {
-                    // Now make sure that the merge base is not a forward merge
-                    forwardMerge = GetForwardMerge(commitToFindCommonBase, findMergeBase);
-
-                    if (forwardMerge == null)
-                        continue;
-
-                    // TODO Fix the logging up in this section
-                    var second = forwardMerge.Parents.First();
-                    this.log.Debug($"Second {second}");
-                    var mergeBase = FindMergeBase(commit, second);
-                    if (mergeBase == null)
-                    {
-                        this.log.Warning("Could not find merge base for " + commit);
-                    }
-                    else
-                    {
-                        this.log.Debug($"New Merge base {mergeBase}");
-                    }
-
-                    if (Equals(mergeBase, findMergeBase))
-                    {
-                        this.log.Debug("Breaking");
-                        break;
-                    }
-
-                    findMergeBase = mergeBase;
-                    commitToFindCommonBase = second;
-                    this.log.Info($"Merge base was due to a forward merge, next merge base is {findMergeBase}");
-                } while (forwardMerge != null);
-            }
-
-            // Store in cache.
-            this.mergeBaseCache.Add(key, findMergeBase);
-
-            this.log.Info($"Merge base of {branch}' and '{otherBranch} is {findMergeBase}");
-            return findMergeBase;
-        }
-    }
+        => this.mergeBaseFinder.FindMergeBaseOf(branch, otherBranch);
 
     public ICommit? GetCurrentCommit(IBranch currentBranch, string? commitId)
     {
@@ -312,7 +239,7 @@ public class RepositoryStore : IRepositoryStore
         {
             if (branch.Tip == null)
             {
-                this.log.Warning(string.Format(MissingTipFormat, branch));
+                this.log.Warning($"{branch} has no tip.");
                 return BranchCommit.Empty;
             }
 
@@ -463,20 +390,11 @@ public class RepositoryStore : IRepositoryStore
         return null;
     }
 
-
     private static IEnumerable<ICommit> GetCommitsReacheableFrom(IGitRepository repository, IGitObject commit, IBranch branch)
     {
         var filter = new CommitFilter { IncludeReachableFrom = branch };
         var commitCollection = repository.Commits.QueryBy(filter);
 
         return commitCollection.Where(c => c.Sha == commit.Sha);
-    }
-
-    private ICommit? GetForwardMerge(ICommit? commitToFindCommonBase, ICommit? findMergeBase)
-    {
-        var filter = new CommitFilter { IncludeReachableFrom = commitToFindCommonBase, ExcludeReachableFrom = findMergeBase };
-        var commitCollection = this.repository.Commits.QueryBy(filter);
-
-        return commitCollection.FirstOrDefault(c => c.Parents.Contains(findMergeBase));
     }
 }
