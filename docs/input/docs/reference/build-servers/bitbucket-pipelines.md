@@ -2,7 +2,6 @@
 Order: 35
 Title: BitBucket Pipelines
 Description: Details on the Atlassian BitBucket Pipelines support in GitVersion
-RedirectFrom: docs/build-server-support/build-server/bitbucket-pipelines
 ---
 
 ## Basic Usage
