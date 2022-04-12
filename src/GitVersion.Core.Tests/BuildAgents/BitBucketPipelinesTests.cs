@@ -123,7 +123,7 @@ public class BitBucketPipelinesTests : TestBase
     {
         var assemblyLocation = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
         assemblyLocation.ShouldNotBeNull();
-        var f = PathHelper.Combine(assemblyLocation, "gitversion.env");
+        var f = PathHelper.Combine(assemblyLocation, "gitversion.properties");
 
         try
         {

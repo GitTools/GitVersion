@@ -29,7 +29,7 @@ pipelines:
         - export PATH="$PATH:/root/.dotnet/tools"
         - dotnet tool install --global GitVersion.Tool --version 5.*
         - dotnet-gitversion /buildserver
-        - source gitversion.env
+        - source gitversion.properties
         - echo Building with semver $GITVERSION_FULLSEMVER
         - dotnet build
 ```
@@ -42,9 +42,9 @@ cause GitVersion will display an error message.
 :::
 
 When the action `dotnet-gitversion /buildserver` is executed, it will detect that it is running in BitBucket Pipelines by the presence of
-the `BITBUCKET_WORKSPACE` environment variable, which is set by the BitBucket Pipelines engine. It will generate a text file named `gitversion.env`
+the `BITBUCKET_WORKSPACE` environment variable, which is set by the BitBucket Pipelines engine. It will generate a text file named `gitversion.properties`
 which contains all the output of the GitVersion tool, exported as individual environment variables prefixed with `GITVERSION_`.
-These environment variables can then be imported back into the build step using the `source gitversion.env` action.
+These environment variables can then be imported back into the build step using the `source gitversion.properties` action.
 
 If you want to share the text file across multiple build steps, then you will need to save it as an artifact. A more complex example pipeline
 is shown below:
@@ -64,11 +64,11 @@ pipelines:
         - dotnet tool install --global GitVersion.Tool --version 5.*
         - dotnet-gitversion /buildserver
       artifacts:
-        - gitversion.env
+        - gitversion.properties
     - step:
       name: Build
       script:
-        - source gitversion.env
+        - source gitversion.properties
         - echo Building with semver $GITVERSION_FULLSEMVER
         - dotnet build
 ```

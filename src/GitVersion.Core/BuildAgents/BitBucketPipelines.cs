@@ -11,7 +11,7 @@ public class BitBucketPipelines : BuildAgentBase
     public const string PullRequestEnvironmentVariableName = "BITBUCKET_PR_ID";
     private string? file;
 
-    public BitBucketPipelines(IEnvironment environment, ILog log) : base(environment, log) => WithPropertyFile("gitversion.env");
+    public BitBucketPipelines(IEnvironment environment, ILog log) : base(environment, log) => WithPropertyFile("gitversion.properties");
 
     protected override string EnvironmentVariable => EnvironmentVariableName;
 
