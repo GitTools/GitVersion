@@ -125,7 +125,7 @@ internal class MainlineVersionCalculator : IMainlineVersionCalculator
     {
         var mainlineBranchConfigs = context.FullConfiguration.Branches.Where(b => b.Value?.IsMainline == true).ToList();
 
-        Dictionary<string, List<IBranch>> mainlineBranches = new Dictionary<string, List<IBranch>>();
+        IDictionary<string, List<IBranch>> mainlineBranches = new Dictionary<string, List<IBranch>>();
         if (context.CurrentCommit != null)
         {
             mainlineBranches = this.repositoryStore.GetMainlineBranches(context.CurrentCommit, context.FullConfiguration, mainlineBranchConfigs);
