@@ -38,7 +38,7 @@ pipelines:
 **Important**
 
 You must set the `clone:depth` setting as shown above; without it, BitBucket Pipelines will perform a shallow clone, which will
-cause GitVersion will display an error message.
+cause GitVersion to display an error message.
 :::
 
 When the action `dotnet-gitversion /buildserver` is executed, it will detect that it is running in BitBucket Pipelines by the presence of
