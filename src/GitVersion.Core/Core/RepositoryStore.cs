@@ -154,64 +154,8 @@ public class RepositoryStore : IRepositoryStore
 
     public IEnumerable<IBranch> ExcludingBranches(IEnumerable<IBranch> branchesToExclude) => this.repository.Branches.ExcludeBranches(branchesToExclude);
 
-    // TODO Should we cache this?
     public IEnumerable<IBranch> GetBranchesContainingCommit(ICommit? commit, IEnumerable<IBranch>? branches = null, bool onlyTrackedBranches = false)
-    {
-        commit = commit.NotNull();
-
-        return InnerGetBranchesContainingCommit(commit, branches, onlyTrackedBranches, this.repository, this.log);
-
-        static bool IncludeTrackedBranches(IBranch branch, bool includeOnlyTracked)
-            => includeOnlyTracked && branch.IsTracking || !includeOnlyTracked;
-
-        // Yielding part is split from the main part of the method to avoid having the exception check performed lazily.
-        // Details at https://github.com/GitTools/GitVersion/issues/2755
-        static IEnumerable<IBranch> InnerGetBranchesContainingCommit(IGitObject commit, IEnumerable<IBranch>? branches, bool onlyTrackedBranches, IGitRepository repository, ILog log)
-        {
-            branches ??= repository.Branches.ToList();
-
-            using (log.IndentLog($"Getting branches containing the commit '{commit.Id}'."))
-            {
-                var directBranchHasBeenFound = false;
-                log.Info("Trying to find direct branches.");
-                // TODO: It looks wasteful looping through the branches twice. Can't these loops be merged somehow? @asbjornu
-                List<IBranch> branchList = branches.ToList();
-                foreach (IBranch branch in branchList)
-                {
-                    if (branch.Tip != null && branch.Tip.Sha != commit.Sha || IncludeTrackedBranches(branch, onlyTrackedBranches))
-                    {
-                        continue;
-                    }
-
-                    directBranchHasBeenFound = true;
-                    log.Info($"Direct branch found: '{branch}'.");
-                    yield return branch;
-                }
-
-                if (directBranchHasBeenFound)
-                {
-                    yield break;
-                }
-
-                log.Info($"No direct branches found, searching through {(onlyTrackedBranches ? "tracked" : "all")} branches.");
-                foreach (IBranch branch in branchList.Where(b => IncludeTrackedBranches(b, onlyTrackedBranches)))
-                {
-                    log.Info($"Searching for commits reachable from '{branch}'.");
-
-                    var commits = GetCommitsReacheableFrom(repository, commit, branch);
-
-                    if (!commits.Any())
-                    {
-                        log.Info($"The branch '{branch}' has no matching commits.");
-                        continue;
-                    }
-
-                    log.Info($"The branch '{branch}' has a matching commit.");
-                    yield return branch;
-                }
-            }
-        }
-    }
+        => new BranchesContainingCommitFinder(this.repository, this.log).GetBranchesContainingCommit(commit, branches, onlyTrackedBranches);
 
     public Dictionary<string, List<IBranch>> GetMainlineBranches(ICommit commit, Config configuration, IEnumerable<KeyValuePair<string, BranchConfig>>? mainlineBranchConfigs)
     {
@@ -388,13 +332,5 @@ public class RepositoryStore : IRepositoryStore
 
         this.log.Info($"Found no merge base or parent commit for '{branchName}'.");
         return null;
-    }
-
-    private static IEnumerable<ICommit> GetCommitsReacheableFrom(IGitRepository repository, IGitObject commit, IBranch branch)
-    {
-        var filter = new CommitFilter { IncludeReachableFrom = branch };
-        var commitCollection = repository.Commits.QueryBy(filter);
-
-        return commitCollection.Where(c => c.Sha == commit.Sha);
     }
 }
