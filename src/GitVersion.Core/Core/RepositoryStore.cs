@@ -157,17 +157,10 @@ public class RepositoryStore : IRepositoryStore
     public IEnumerable<IBranch> GetBranchesContainingCommit(ICommit? commit, IEnumerable<IBranch>? branches = null, bool onlyTrackedBranches = false)
         => new BranchesContainingCommitFinder(this.repository, this.log).GetBranchesContainingCommit(commit, branches, onlyTrackedBranches);
 
-    public Dictionary<string, List<IBranch>> GetMainlineBranches(ICommit commit, Config configuration, IEnumerable<KeyValuePair<string, BranchConfig>>? mainlineBranchConfigs)
+    public IDictionary<string, List<IBranch>> GetMainlineBranches(ICommit commit, Config configuration, IEnumerable<KeyValuePair<string, BranchConfig>>? mainlineBranchConfigs)
     {
-        var origins = from branch in this.repository.Branches
-                      where BranchIsMainline(branch, mainlineBranchConfigs)
-                      let branchOrigin = FindBranchOrigin(branch, commit, configuration)
-                      where branchOrigin != null
-                      select (branchOrigin, branch);
-
-        return origins
-            .GroupBy(x => x.branchOrigin.Sha, a => a.branch)
-            .ToDictionary(x => x.Key, x => x.ToList());
+        var mainlineBranchFinder = new MainlineBranchFinder(this, this.repository, configuration, mainlineBranchConfigs, this.log);
+        return mainlineBranchFinder.FindMainlineBranches(commit);
     }
 
 
@@ -291,46 +284,5 @@ public class RepositoryStore : IRepositoryStore
         return targetCommit != null && Equals(targetCommit, commit) && SemanticVersion.TryParse(tagName, config.GitTagPrefix, out var version)
             ? new[] { version }
             : Array.Empty<SemanticVersion>();
-    }
-
-    private bool BranchIsMainline(INamedReference branch, IEnumerable<KeyValuePair<string, BranchConfig>>? mainlineBranchConfigs) =>
-        mainlineBranchConfigs?.Any(c => BranchMatchesMainlineConfig(branch, c)) == true;
-
-    private bool BranchMatchesMainlineConfig(INamedReference branch, KeyValuePair<string, BranchConfig> mainlineBranchConfig)
-    {
-        if (mainlineBranchConfig.Value?.Regex == null)
-        {
-            return false;
-        }
-
-        var mainlineRegex = mainlineBranchConfig.Value.Regex;
-        var branchName = branch.Name.WithoutRemote;
-        var match = Regex.IsMatch(branchName, mainlineRegex);
-        this.log.Info($"'{mainlineRegex}' {(match ? "matches" : "does not match")} '{branchName}'.");
-        return match;
-    }
-
-    private ICommit? FindBranchOrigin(IBranch branch, ICommit commit, Config configuration)
-    {
-        if (branch.Tip == null)
-            return null;
-
-        var branchName = branch.Name.Friendly;
-        var mergeBase = FindMergeBase(branch.Tip, commit);
-        if (mergeBase is not null)
-        {
-            this.log.Info($"Found merge base {mergeBase.Sha} for '{branchName}'.");
-            return mergeBase;
-        }
-
-        var branchCommit = FindCommitBranchWasBranchedFrom(branch, configuration);
-        if (branchCommit != BranchCommit.Empty)
-        {
-            this.log.Info($"Found parent commit {branchCommit.Commit.Sha} for '{branchName}'.");
-            return branchCommit.Commit;
-        }
-
-        this.log.Info($"Found no merge base or parent commit for '{branchName}'.");
-        return null;
     }
 }
