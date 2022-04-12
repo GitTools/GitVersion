@@ -12,10 +12,10 @@ internal class MainlineBranchFinder
     private readonly ILog log;
     private readonly IEnumerable<KeyValuePair<string, BranchConfig>>? mainlineBranchConfigs;
     private readonly IGitRepository repository;
-    private readonly RepositoryStore repositoryStore;
+    private readonly IRepositoryStore repositoryStore;
 
 
-    public MainlineBranchFinder(RepositoryStore repositoryStore,
+    public MainlineBranchFinder(IRepositoryStore repositoryStore,
                                 IGitRepository repository,
                                 Config configuration,
                                 IEnumerable<KeyValuePair<string, BranchConfig>>? mainlineBranchConfigs,
