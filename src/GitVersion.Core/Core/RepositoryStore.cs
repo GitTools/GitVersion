@@ -155,7 +155,10 @@ public class RepositoryStore : IRepositoryStore
     public IEnumerable<IBranch> ExcludingBranches(IEnumerable<IBranch> branchesToExclude) => this.repository.Branches.ExcludeBranches(branchesToExclude);
 
     public IEnumerable<IBranch> GetBranchesContainingCommit(ICommit? commit, IEnumerable<IBranch>? branches = null, bool onlyTrackedBranches = false)
-        => new BranchesContainingCommitFinder(this.repository, this.log).GetBranchesContainingCommit(commit, branches, onlyTrackedBranches);
+    {
+        var branchesContainingCommitFinder = new BranchesContainingCommitFinder(this.repository, this.log);
+        return branchesContainingCommitFinder.GetBranchesContainingCommit(commit, branches, onlyTrackedBranches);
+    }
 
     public IDictionary<string, List<IBranch>> GetMainlineBranches(ICommit commit, Config configuration, IEnumerable<KeyValuePair<string, BranchConfig>>? mainlineBranchConfigs)
     {
