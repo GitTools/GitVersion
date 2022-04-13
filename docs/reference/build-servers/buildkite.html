@@ -219,7 +219,7 @@
 <li>Setting the environment variable <code>BUILDKITE_GIT_FETCH_FLAGS</code> to <code>-v --tags</code></li>
 <li>Setting configuration value <code>git-fetch-flags</code> to <code>-v --tags</code> in your agent configuration file</li>
 </ul>
-<p>If you are running GitVersion in a docker container make sure to propogate the <code>BUILDKITE</code> and <code>BUILDKITE_BRANCH</code> environment variables (c.f. example below).</p>
+<p>If you are running GitVersion in a docker container make sure to propagate the <code>BUILDKITE</code>, <code>BUILDKITE_BRANCH</code>, and <code>BUILDKITE_PULL_REQUEST</code> environment variables (c.f. example below).</p>
 <h2 id="example">Example</h2>
 <p>There are many ways to run GitVersion in a Buildkite pipeline. One way using the GitVersion docker image and using <a href="https://buildkite.com/docs/agent/v3/cli-meta-data">build meta-data</a> to share version info between build steps. Such a pipeline might look like the following:</p>
 <pre><code class="language-yaml">env:
@@ -234,6 +234,7 @@ steps:
         environment:
           - "BUILDKITE"
           - "BUILDKITE_BRANCH"
+          - "BUILDKITE_PULL_REQUEST"
 
   - wait
 
