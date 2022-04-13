@@ -18,6 +18,7 @@ public interface IRepositoryStore
 
     IBranch GetTargetBranch(string? targetBranchName);
     IBranch? FindBranch(string? branchName);
+    IBranch? FindMainBranch(Config configuration);
     IBranch? GetChosenBranch(Config configuration);
     IEnumerable<IBranch> GetBranchesForCommit(ICommit commit);
     IEnumerable<IBranch> GetExcludedInheritBranches(Config configuration);
