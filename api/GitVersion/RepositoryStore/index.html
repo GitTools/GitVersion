@@ -188,6 +188,13 @@
 				<li><a href="/api/GitVersion/VersionWriter">VersionWriter</a></li>
 				<li><a href="/api/GitVersion/WarningException">WarningException</a></li>
 				<li><a href="/api/GitVersion/WixInfo">WixInfo</a></li>
+			<li class="header">Struct Types</li>
+				<li><a href="/api/GitVersion/BranchCommit">BranchCommit</a></li>
+			<li class="header">Enum Types</li>
+				<li><a href="/api/GitVersion/CommitSortStrategies">CommitSortStrategies</a></li>
+				<li><a href="/api/GitVersion/IncrementStrategy">IncrementStrategy</a></li>
+				<li><a href="/api/GitVersion/RefSpecDirection">RefSpecDirection</a></li>
+				<li><a href="/api/GitVersion/VersionField">VersionField</a></li>
 			<li class="header">Interface Types</li>
 				<li><a href="/api/GitVersion/IArgumentParser">IArgumentParser</a></li>
 				<li><a href="/api/GitVersion/IBranch">IBranch</a></li>
@@ -219,13 +226,6 @@
 				<li><a href="/api/GitVersion/ITag">ITag</a></li>
 				<li><a href="/api/GitVersion/ITagCollection">ITagCollection</a></li>
 				<li><a href="/api/GitVersion/IVersionWriter">IVersionWriter</a></li>
-			<li class="header">Enum Types</li>
-				<li><a href="/api/GitVersion/CommitSortStrategies">CommitSortStrategies</a></li>
-				<li><a href="/api/GitVersion/IncrementStrategy">IncrementStrategy</a></li>
-				<li><a href="/api/GitVersion/RefSpecDirection">RefSpecDirection</a></li>
-				<li><a href="/api/GitVersion/VersionField">VersionField</a></li>
-			<li class="header">Struct Types</li>
-				<li><a href="/api/GitVersion/BranchCommit">BranchCommit</a></li>
 
 
                     </ul>
@@ -355,8 +355,8 @@ class Type type-node
 								<td><a href="/api/GitVersion/BranchCommit">BranchCommit</a></td>
 								<td>
 									<div>
-    Find the commit where the given branch was branched from another branch.
-    If there are multiple such commits and branches, tries to guess based on commit histories.
+        Find the commit where the given branch was branched from another branch.
+        If there are multiple such commits and branches, tries to guess based on commit histories.
     </div>
 								</td>
 							</tr>
@@ -365,7 +365,7 @@ class Type type-node
 								<td><a href="/api/GitVersion/ICommit">ICommit</a></td>
 								<td>
 									<div>
-    Find the merge base of the two branches, i.e. the best common ancestor of the two branches' tips.
+        Find the merge base of the two branches, i.e. the best common ancestor of the two branches' tips.
     </div>
 								</td>
 							</tr>
@@ -434,7 +434,7 @@ class Type type-node
 							</tr>
 							<tr>
 								<td><a href="/api/GitVersion/RepositoryStore/F69A9558">GetMainlineBranches<wbr>(ICommit, <wbr>Config, <wbr>IEnumerable<wbr>&lt;KeyValuePair<wbr>&lt;string, <wbr>BranchConfig&gt;<wbr>&gt;<wbr>?)<wbr></a></td>
-								<td>Dictionary<wbr>&lt;string, <wbr>List<wbr>&lt;<a href="/api/GitVersion/IBranch">IBranch</a>&gt;<wbr>&gt;<wbr></td>
+								<td>IDictionary<wbr>&lt;string, <wbr>List<wbr>&lt;<a href="/api/GitVersion/IBranch">IBranch</a>&gt;<wbr>&gt;<wbr></td>
 								<td>
 									<div></div>
 								</td>
