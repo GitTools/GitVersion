@@ -72,7 +72,7 @@ public class BuildKiteTests : TestBase
         var result = this.buildServer.GetCurrentBranch(false);
 
         // Assert
-        result.ShouldBeNull();
+        result.ShouldBe("refs/pull/55/head");
     }
 
     [Test]

@@ -22,9 +22,7 @@ public class GitLabCi : BuildAgentBase
         $"GitVersion_{name}={value}"
     };
 
-    // According to https://docs.gitlab.com/ee/ci/variables/predefined_variables.html
-    // the CI_COMMIT_BRANCH environment variable must be used.
-    public override string? GetCurrentBranch(bool usingDynamicRepos) => Environment.GetEnvironmentVariable("CI_COMMIT_BRANCH");
+    public override string? GetCurrentBranch(bool usingDynamicRepos) => Environment.GetEnvironmentVariable("CI_COMMIT_REF_NAME");
 
     public override bool PreventFetch() => true;
 
