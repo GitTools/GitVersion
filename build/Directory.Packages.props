@@ -4,6 +4,7 @@
         <PackageReference Include="Cake.Compression" Version="0.2.6" />
         <PackageReference Include="Cake.Frosting" Version="2.2.0" />
         <PackageReference Include="Cake.Incubator" Version="7.0.0" />
+        <PackageReference Include="Cake.DotNetLocalTools.Module" Version="1.0.2" />
 
         <PackageReference Include="Cake.Docker" Version="1.1.2" />
 

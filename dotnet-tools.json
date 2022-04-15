@@ -9,7 +9,7 @@
             ]
         },
         "gitversion.tool": {
-            "version": "5.8.2",
+            "version": "5.10.1",
             "commands": [
                 "dotnet-gitversion"
             ]
@@ -20,10 +20,10 @@
                 "dotnet-gitreleasemanager"
             ]
         },
-        "wyam.tool": {
-            "version": "2.2.9",
+        "Wyam2.Tool": {
+            "version": "3.0.0-rc3",
             "commands": [
-                "wyam"
+                "wyam2"
             ]
         }
     }
