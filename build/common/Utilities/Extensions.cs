@@ -53,7 +53,7 @@ public static class Extensions
         var currentPath = DirectoryPath.FromString(Directory.GetCurrentDirectory());
         while (!Directory.Exists(currentPath.Combine(".git").FullPath))
         {
-            currentPath = DirectoryPath.FromString(Directory.GetParent(currentPath.FullPath)?.FullName);
+            currentPath = currentPath.GetParent();
         }
 
         return currentPath;
