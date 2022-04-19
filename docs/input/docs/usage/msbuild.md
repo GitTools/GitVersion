@@ -5,6 +5,7 @@ Description: |
     Just install with NuGet and GitVersion will automatically generate assembly
     version information that is compiled into the resulting artifact.
 CardIcon: collect.svg
+RedirectFrom:  docs/usage/msbuild-task
 ---
 
 The MSBuild Task for GitVersion — **GitVersion.MsBuild** — is a simple solution if
@@ -49,6 +50,39 @@ dependency of your package:
 The next thing you need to do is to remove the `Assembly*Version` attributes from
 your `Properties\AssemblyInfo.cs` files. This puts GitVersion.MsBuild in charge of
 versioning your assemblies.
+
+### WPF specific concerns
+
+One further step needs to be taken for SDK-style WPF projects.
+
+Building projects with .NET Core SDK with a version lower than v5.0.200
+requires turning off automatic generation of the different versioning attributes.
+GitVersion usually controls these properties but cannot during WPF specific
+targets that generate a temporary project.
+
+```xml
+<PropertyGroup>
+  <!-- Wpf workaround: GitVersion and .NET SDK < v5.0.200 -->
+  <GenerateAssemblyFileVersionAttribute>false</GenerateAssemblyFileVersionAttribute>
+  <GenerateAssemblyInformationalVersionAttribute>false</GenerateAssemblyInformationalVersionAttribute>
+  <GenerateAssemblyVersionAttribute>false</GenerateAssemblyVersionAttribute>
+</PropertyGroup>
+```
+
+For .NET Core SDK v5.0.200 to v6.0.0-preview.1, a opt-in flag was introduced to
+allow package references to be imported to the temporary project.
+You can now remove the previous versioning attributes and replace them with
+a single property.
+
+```xml
+<PropertyGroup>
+  <!-- WPF workaround: GitVersion and .NET SDK between v5.0.200 and v6.0.0-preview.2  -->
+  <IncludePackageReferencesDuringMarkupCompilation>true</IncludePackageReferencesDuringMarkupCompilation>
+</PropertyGroup>
+```
+
+You can remove all workarounds if you are building with .NET Core SDK
+v6.0.0-preview.2 or later as the flag is now opt-out.
 
 ### Done!
 
@@ -178,10 +212,10 @@ have the ability to create NuGet packages directly by using the `pack` target:
 `msbuild /t:pack`. The version is controlled by the MSBuild properties described
 above.
 
-GitVersionTask has the option to generate SemVer 2.0 compliant NuGet package
-versions by setting `UseFullSemVerForNuGet` to true in your project (this is off
-by default for compatibility). Some hosts, like MyGet, support SemVer 2.0
-package versions but older NuGet clients and nuget.org do not.
+GitVersionTask generates SemVer 2.0 compliant NuGet package versions by default.
+You can disable it by setting `UseFullSemVerForNuGet` to false in your project.
+Older NuGet clients do not support SemVer 2.0 package versions, but most of the
+modern hosts support it.
 
 #### Accessing variables in MSBuild
 

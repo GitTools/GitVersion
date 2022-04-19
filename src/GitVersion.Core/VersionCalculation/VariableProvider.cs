@@ -1,4 +1,3 @@
-using System;
 using System.Text.RegularExpressions;
 using GitVersion.Configuration;
 using GitVersion.Extensions;
@@ -7,111 +6,116 @@ using GitVersion.Logging;
 using GitVersion.Model.Configuration;
 using GitVersion.OutputVariables;
 
-namespace GitVersion.VersionCalculation
+namespace GitVersion.VersionCalculation;
+
+public class VariableProvider : IVariableProvider
 {
-    public class VariableProvider : IVariableProvider
+    private readonly IEnvironment environment;
+    private readonly ILog log;
+
+    public VariableProvider(IEnvironment environment, ILog log)
     {
-        private readonly IEnvironment environment;
-        private readonly ILog log;
+        this.environment = environment.NotNull();
+        this.log = log.NotNull();
+    }
 
-        public VariableProvider(IEnvironment environment, ILog log)
+    public VersionVariables GetVariablesFor(SemanticVersion semanticVersion, EffectiveConfiguration config, bool isCurrentCommitTagged)
+    {
+        var isContinuousDeploymentMode = config.VersioningMode == VersioningMode.ContinuousDeployment && !isCurrentCommitTagged;
+        if (isContinuousDeploymentMode)
         {
-            this.environment = environment ?? throw new ArgumentNullException(nameof(environment));
-            this.log = log ?? throw new ArgumentNullException(nameof(log));
-        }
-
-        public VersionVariables GetVariablesFor(SemanticVersion semanticVersion, EffectiveConfiguration config, bool isCurrentCommitTagged)
-        {
-            var isContinuousDeploymentMode = config.VersioningMode == VersioningMode.ContinuousDeployment && !isCurrentCommitTagged;
-            if (isContinuousDeploymentMode)
+            semanticVersion = new SemanticVersion(semanticVersion);
+            // Continuous Deployment always requires a pre-release tag unless the commit is tagged
+            if (semanticVersion.PreReleaseTag != null && semanticVersion.PreReleaseTag.HasTag() != true)
             {
-                semanticVersion = new SemanticVersion(semanticVersion);
-                // Continuous Deployment always requires a pre-release tag unless the commit is tagged
-                if (semanticVersion.PreReleaseTag?.HasTag() != true)
+                semanticVersion.PreReleaseTag.Name = config.GetBranchSpecificTag(this.log, semanticVersion.BuildMetaData?.Branch, null);
+                if (semanticVersion.PreReleaseTag.Name.IsNullOrEmpty())
                 {
-                    semanticVersion.PreReleaseTag!.Name = config.GetBranchSpecificTag(this.log, semanticVersion.BuildMetaData?.Branch, null);
-                    if (semanticVersion.PreReleaseTag.Name.IsNullOrEmpty())
-                    {
-                        semanticVersion.PreReleaseTag.Name = config.ContinuousDeploymentFallbackTag;
-                    }
+                    semanticVersion.PreReleaseTag.Name = config.ContinuousDeploymentFallbackTag;
                 }
             }
+        }
 
-            // Evaluate tag number pattern and append to prerelease tag, preserving build metadata
-            var appendTagNumberPattern = !config.TagNumberPattern.IsNullOrEmpty() && semanticVersion.PreReleaseTag?.HasTag() == true;
-            if (appendTagNumberPattern)
+        // Evaluate tag number pattern and append to prerelease tag, preserving build metadata
+        var appendTagNumberPattern = !config.TagNumberPattern.IsNullOrEmpty() && semanticVersion.PreReleaseTag?.HasTag() == true;
+        if (appendTagNumberPattern)
+        {
+            if (semanticVersion.BuildMetaData?.Branch != null && config.TagNumberPattern != null)
             {
-                var match = Regex.Match(semanticVersion.BuildMetaData!.Branch, config.TagNumberPattern);
+                var match = Regex.Match(semanticVersion.BuildMetaData.Branch, config.TagNumberPattern);
                 var numberGroup = match.Groups["number"];
-                if (numberGroup.Success)
+                if (numberGroup.Success && semanticVersion.PreReleaseTag != null)
                 {
-                    semanticVersion.PreReleaseTag!.Name += numberGroup.Value.PadLeft(config.BuildMetaDataPadding, '0');
+                    semanticVersion.PreReleaseTag.Name += numberGroup.Value.PadLeft(config.BuildMetaDataPadding, '0');
                 }
             }
-
-            if (isContinuousDeploymentMode || appendTagNumberPattern || config.VersioningMode == VersioningMode.Mainline)
-            {
-                PromoteNumberOfCommitsToTagNumber(semanticVersion);
-            }
-
-            var semverFormatValues = new SemanticVersionFormatValues(semanticVersion, config);
-
-            var informationalVersion = CheckAndFormatString(config.AssemblyInformationalFormat, semverFormatValues, semverFormatValues.InformationalVersion, "AssemblyInformationalVersion");
-
-            var assemblyFileSemVer = CheckAndFormatString(config.AssemblyFileVersioningFormat, semverFormatValues, semverFormatValues.AssemblyFileSemVer, "AssemblyFileVersioningFormat");
-
-            var assemblySemVer = CheckAndFormatString(config.AssemblyVersioningFormat, semverFormatValues, semverFormatValues.AssemblySemVer, "AssemblyVersioningFormat");
-
-            var variables = new VersionVariables(
-                semverFormatValues.Major,
-                semverFormatValues.Minor,
-                semverFormatValues.Patch,
-                semverFormatValues.BuildMetaData,
-                semverFormatValues.BuildMetaDataPadded,
-                semverFormatValues.FullBuildMetaData,
-                semverFormatValues.BranchName,
-                semverFormatValues.EscapedBranchName,
-                semverFormatValues.Sha,
-                semverFormatValues.ShortSha,
-                semverFormatValues.MajorMinorPatch,
-                semverFormatValues.SemVer,
-                semverFormatValues.LegacySemVer,
-                semverFormatValues.LegacySemVerPadded,
-                semverFormatValues.FullSemVer,
-                assemblySemVer,
-                assemblyFileSemVer,
-                semverFormatValues.PreReleaseTag,
-                semverFormatValues.PreReleaseTagWithDash,
-                semverFormatValues.PreReleaseLabel,
-                semverFormatValues.PreReleaseLabelWithDash,
-                semverFormatValues.PreReleaseNumber,
-                semverFormatValues.WeightedPreReleaseNumber,
-                informationalVersion,
-                semverFormatValues.CommitDate,
-                semverFormatValues.NuGetVersion,
-                semverFormatValues.NuGetVersionV2,
-                semverFormatValues.NuGetPreReleaseTag,
-                semverFormatValues.NuGetPreReleaseTagV2,
-                semverFormatValues.VersionSourceSha,
-                semverFormatValues.CommitsSinceVersionSource,
-                semverFormatValues.CommitsSinceVersionSourcePadded,
-                semverFormatValues.UncommittedChanges);
-
-            return variables;
         }
 
-        private static void PromoteNumberOfCommitsToTagNumber(SemanticVersion semanticVersion)
+        if (isContinuousDeploymentMode || appendTagNumberPattern || config.VersioningMode == VersioningMode.Mainline)
+        {
+            PromoteNumberOfCommitsToTagNumber(semanticVersion);
+        }
+
+        var semverFormatValues = new SemanticVersionFormatValues(semanticVersion, config);
+
+        var informationalVersion = CheckAndFormatString(config.AssemblyInformationalFormat, semverFormatValues, semverFormatValues.InformationalVersion, "AssemblyInformationalVersion");
+
+        var assemblyFileSemVer = CheckAndFormatString(config.AssemblyFileVersioningFormat, semverFormatValues, semverFormatValues.AssemblyFileSemVer, "AssemblyFileVersioningFormat");
+
+        var assemblySemVer = CheckAndFormatString(config.AssemblyVersioningFormat, semverFormatValues, semverFormatValues.AssemblySemVer, "AssemblyVersioningFormat");
+
+        var variables = new VersionVariables(
+            semverFormatValues.Major,
+            semverFormatValues.Minor,
+            semverFormatValues.Patch,
+            semverFormatValues.BuildMetaData,
+            semverFormatValues.BuildMetaDataPadded,
+            semverFormatValues.FullBuildMetaData,
+            semverFormatValues.BranchName,
+            semverFormatValues.EscapedBranchName,
+            semverFormatValues.Sha,
+            semverFormatValues.ShortSha,
+            semverFormatValues.MajorMinorPatch,
+            semverFormatValues.SemVer,
+            semverFormatValues.LegacySemVer,
+            semverFormatValues.LegacySemVerPadded,
+            semverFormatValues.FullSemVer,
+            assemblySemVer,
+            assemblyFileSemVer,
+            semverFormatValues.PreReleaseTag,
+            semverFormatValues.PreReleaseTagWithDash,
+            semverFormatValues.PreReleaseLabel,
+            semverFormatValues.PreReleaseLabelWithDash,
+            semverFormatValues.PreReleaseNumber,
+            semverFormatValues.WeightedPreReleaseNumber,
+            informationalVersion,
+            semverFormatValues.CommitDate,
+            semverFormatValues.NuGetVersion,
+            semverFormatValues.NuGetVersionV2,
+            semverFormatValues.NuGetPreReleaseTag,
+            semverFormatValues.NuGetPreReleaseTagV2,
+            semverFormatValues.VersionSourceSha,
+            semverFormatValues.CommitsSinceVersionSource,
+            semverFormatValues.CommitsSinceVersionSourcePadded,
+            semverFormatValues.UncommittedChanges);
+
+        return variables;
+    }
+
+    private static void PromoteNumberOfCommitsToTagNumber(SemanticVersion semanticVersion)
+    {
+        if (semanticVersion.PreReleaseTag != null && semanticVersion.BuildMetaData != null)
         {
             // For continuous deployment the commits since tag gets promoted to the pre-release number
-            if (!semanticVersion.BuildMetaData!.CommitsSinceTag.HasValue)
+            if (!semanticVersion.BuildMetaData.CommitsSinceTag.HasValue)
             {
-                semanticVersion.PreReleaseTag!.Number = null;
+                semanticVersion.PreReleaseTag.Number = null;
                 semanticVersion.BuildMetaData.CommitsSinceVersionSource = 0;
             }
             else
             {
                 // Number of commits since last tag should be added to PreRelease number if given. Remember to deduct automatic version bump.
-                if (semanticVersion.PreReleaseTag!.Number.HasValue)
+                if (semanticVersion.PreReleaseTag.Number.HasValue)
                 {
                     semanticVersion.PreReleaseTag.Number += semanticVersion.BuildMetaData.CommitsSinceTag - 1;
                 }
@@ -124,41 +128,41 @@ namespace GitVersion.VersionCalculation
                 semanticVersion.BuildMetaData.CommitsSinceTag = null; // why is this set to null ?
             }
         }
+    }
 
-        private string? CheckAndFormatString<T>(string? formatString, T source, string? defaultValue, string formatVarName)
+    private string? CheckAndFormatString<T>(string? formatString, T source, string? defaultValue, string formatVarName)
+    {
+        string? formattedString;
+
+        if (formatString.IsNullOrEmpty())
         {
-            string? formattedString;
+            formattedString = defaultValue;
+        }
+        else
+        {
+            WarnIfUsingObsoleteFormatValues(formatString);
 
-            if (formatString.IsNullOrEmpty())
+            try
             {
-                formattedString = defaultValue;
+                formattedString = formatString.FormatWith(source, this.environment).RegexReplace("[^0-9A-Za-z-.+]", "-");
             }
-            else
+            catch (ArgumentException exception)
             {
-                WarnIfUsingObsoleteFormatValues(formatString);
-
-                try
-                {
-                    formattedString = formatString.FormatWith(source, this.environment).RegexReplace("[^0-9A-Za-z-.+]", "-");
-                }
-                catch (ArgumentException formex)
-                {
-                    throw new WarningException($"Unable to format {formatVarName}.  Check your format string: {formex.Message}");
-                }
+                throw new WarningException($"Unable to format {formatVarName}.  Check your format string: {exception.Message}");
             }
-
-            return formattedString;
         }
 
-        private void WarnIfUsingObsoleteFormatValues(string formatString)
-        {
+        return formattedString;
+    }
+
+    private void WarnIfUsingObsoleteFormatValues(string formatString)
+    {
 #pragma warning disable CS0618 // Type or member is obsolete
-            var obsoletePropertyName = nameof(SemanticVersionFormatValues.DefaultInformationalVersion);
+        const string obsoletePropertyName = nameof(SemanticVersionFormatValues.DefaultInformationalVersion);
 #pragma warning restore CS0618 // Type or member is obsolete
-            if (formatString.Contains($"{{{obsoletePropertyName}}}"))
-            {
-                this.log.Write(LogLevel.Warn, $"Use format variable '{nameof(SemanticVersionFormatValues.InformationalVersion)}' instead of '{obsoletePropertyName}' which is obsolete and will be removed in a future release.");
-            }
+        if (formatString.Contains($"{{{obsoletePropertyName}}}"))
+        {
+            this.log.Write(LogLevel.Warn, $"Use format variable '{nameof(SemanticVersionFormatValues.InformationalVersion)}' instead of '{obsoletePropertyName}' which is obsolete and will be removed in a future release.");
         }
     }
 }

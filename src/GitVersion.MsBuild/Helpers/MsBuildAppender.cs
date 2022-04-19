@@ -1,47 +1,45 @@
-using System;
 using GitVersion.Logging;
 using Microsoft.Build.Utilities;
 
-namespace GitVersion.MsBuild
+namespace GitVersion.MsBuild;
+
+public class MsBuildAppender : ILogAppender
 {
-    public class MsBuildAppender : ILogAppender
+    private readonly TaskLoggingHelper taskLog;
+
+    public MsBuildAppender(TaskLoggingHelper taskLog) => this.taskLog = taskLog;
+
+    public void WriteTo(LogLevel level, string message)
     {
-        private readonly TaskLoggingHelper taskLog;
-
-        public MsBuildAppender(TaskLoggingHelper taskLog) => this.taskLog = taskLog;
-
-        public void WriteTo(LogLevel level, string message)
+        try
         {
-            try
-            {
-                WriteLogEntry(level, message);
-            }
-            catch (Exception)
-            {
-                //
-            }
+            WriteLogEntry(level, message);
         }
-
-        private void WriteLogEntry(LogLevel level, string str)
+        catch (Exception)
         {
-            var contents = $"{DateTime.Now:yyyy-MM-dd HH:mm:ss}\t\t{str}{System.Environment.NewLine}";
-            switch (level)
-            {
-                case LogLevel.Fatal:
-                case LogLevel.Error:
-                    this.taskLog.LogError(contents);
-                    break;
-                case LogLevel.Warn:
-                    this.taskLog.LogWarning(contents);
-                    break;
-                case LogLevel.Info:
-                case LogLevel.Verbose:
-                case LogLevel.Debug:
-                    this.taskLog.LogMessage(contents);
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(level), level, null);
-            }
+            //
+        }
+    }
+
+    private void WriteLogEntry(LogLevel level, string str)
+    {
+        var contents = $"{DateTime.Now:yyyy-MM-dd HH:mm:ss}\t\t{str}{System.Environment.NewLine}";
+        switch (level)
+        {
+            case LogLevel.Fatal:
+            case LogLevel.Error:
+                this.taskLog.LogError(contents);
+                break;
+            case LogLevel.Warn:
+                this.taskLog.LogWarning(contents);
+                break;
+            case LogLevel.Info:
+            case LogLevel.Verbose:
+            case LogLevel.Debug:
+                this.taskLog.LogMessage(contents);
+                break;
+            default:
+                throw new ArgumentOutOfRangeException(nameof(level), level, null);
         }
     }
 }

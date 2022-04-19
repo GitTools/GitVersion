@@ -1,6 +1,7 @@
 ---
 Order: 10
 Title: Intro to SemVer
+RedirectFrom: docs/reference/intro-to-semver
 ---
 
 For the official Semantic Version docs head to [semver.org](http://semver.org). This is just a quick guide for people  getting started and how SemVer is used in GitVersion.

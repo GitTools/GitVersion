@@ -5,6 +5,7 @@ Description: |
     Mainline Development versioning mode works like the Continuous Delivery,
     except that it tells GitVersion to *infer* releases from merges and commits
     to `main`.
+RedirectFrom: docs/reference/versioning-modes/mainline-development
 ---
 
 Mainline Development is enabled when using [GitHubFlow][githubflow] or any other

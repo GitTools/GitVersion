@@ -1,9 +1,8 @@
-namespace GitVersion.Model
+namespace GitVersion.Model;
+
+public enum OutputType
 {
-    public enum OutputType
-    {
-        BuildServer,
-        Json,
-        File
-    }
+    BuildServer,
+    Json,
+    File
 }

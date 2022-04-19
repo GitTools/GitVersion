@@ -8,18 +8,18 @@ pull_request_rules:
   - name: Automatic merge on dependabot PR after success CI
     conditions:
       - author~=^dependabot(|-preview)\[bot\]$
+      - '#commits-behind=0' # Only merge up to date pull requests
       - check-success=DotNet Format
-      - check-success=Build (windows-latest)
-      - check-success=Build (ubuntu-latest)
-      - check-success=Build (macos-latest)
-      - check-success=Unit Test (windows-latest)
-      - check-success=Unit Test (ubuntu-latest)
-      - check-success=Unit Test (macos-latest)
       - check-success=Release
+      - check-success=Unit Test code (windows-latest, netcoreapp3.1)
+      - check-success=Unit Test code (ubuntu-latest, netcoreapp3.1)
+      - check-success=Unit Test code (macos-latest, netcoreapp3.1)
+      - check-success=Unit Test code (windows-latest, net5.0)
+      - check-success=Unit Test code (windows-latest, net5.0)
+      - check-success=Unit Test code (windows-latest, net5.0)
+      - repository-full-name=GitTools/GitVersion # Don't auto-merge PRs in forks
     actions:
       merge:
-        method: rebase
-        strict: smart
   - name: Thank contributor
     conditions:
       - merged

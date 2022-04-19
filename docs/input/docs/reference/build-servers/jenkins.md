@@ -1,7 +1,8 @@
 ---
-Order: 60
+Order: 70
 Title: Jenkins
 Description: Details on the Jenkins support in GitVersion
+RedirectFrom: docs/build-server-support/build-server/jenkins
 ---
 
 ## SCM Settings

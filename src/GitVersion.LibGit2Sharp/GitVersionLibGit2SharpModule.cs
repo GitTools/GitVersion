@@ -1,14 +1,13 @@
 using Microsoft.Extensions.DependencyInjection;
 
-namespace GitVersion
+namespace GitVersion;
+
+public class GitVersionLibGit2SharpModule : IGitVersionModule
 {
-    public class GitVersionLibGit2SharpModule : IGitVersionModule
+    public void RegisterTypes(IServiceCollection services)
     {
-        public void RegisterTypes(IServiceCollection services)
-        {
-            services.AddSingleton<IGitRepository, GitRepository>();
-            services.AddSingleton<IMutatingGitRepository, GitRepository>();
-            services.AddSingleton<IGitRepositoryInfo, GitRepositoryInfo>();
-        }
+        services.AddSingleton<IGitRepository, GitRepository>();
+        services.AddSingleton<IMutatingGitRepository, GitRepository>();
+        services.AddSingleton<IGitRepositoryInfo, GitRepositoryInfo>();
     }
 }

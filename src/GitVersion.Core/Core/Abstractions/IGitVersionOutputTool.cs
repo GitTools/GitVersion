@@ -1,12 +1,11 @@
 using GitVersion.OutputVariables;
 
-namespace GitVersion
+namespace GitVersion;
+
+public interface IGitVersionOutputTool
 {
-    public interface IGitVersionOutputTool
-    {
-        void OutputVariables(VersionVariables variables, bool updateBuildNumber);
-        void UpdateAssemblyInfo(VersionVariables variables);
-        void UpdateWixVersionFile(VersionVariables variables);
-        void GenerateGitVersionInformation(VersionVariables variables, FileWriteInfo fileWriteInfo);
-    }
+    void OutputVariables(VersionVariables variables, bool updateBuildNumber);
+    void UpdateAssemblyInfo(VersionVariables variables);
+    void UpdateWixVersionFile(VersionVariables variables);
+    void GenerateGitVersionInformation(VersionVariables variables, FileWriteInfo fileWriteInfo);
 }

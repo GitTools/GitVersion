@@ -1,7 +1,6 @@
-namespace GitVersion.VersionCalculation
+namespace GitVersion.VersionCalculation;
+
+public interface INextVersionCalculator
 {
-    public interface INextVersionCalculator
-    {
-        SemanticVersion FindVersion();
-    }
+    SemanticVersion FindVersion();
 }

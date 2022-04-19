@@ -1,20 +1,18 @@
-using System;
 using LibGit2Sharp;
 
-namespace GitTools.Testing
+namespace GitTools.Testing;
+
+public class EmptyRepositoryFixture : RepositoryFixtureBase
 {
-    public class EmptyRepositoryFixture : RepositoryFixtureBase
+    public EmptyRepositoryFixture() : base(CreateNewRepository)
     {
-        public EmptyRepositoryFixture() : base(CreateNewRepository)
-        {
-        }
+    }
 
-        private static IRepository CreateNewRepository(string path)
-        {
-            Init(path);
-            Console.WriteLine("Created git repository at '{0}'", path);
+    private static IRepository CreateNewRepository(string path)
+    {
+        Init(path);
+        Console.WriteLine("Created git repository at '{0}'", path);
 
-            return new Repository(path);
-        }
+        return new Repository(path);
     }
 }

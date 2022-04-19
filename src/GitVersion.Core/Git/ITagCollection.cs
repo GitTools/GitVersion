@@ -1,8 +1,5 @@
-using System.Collections.Generic;
+namespace GitVersion;
 
-namespace GitVersion
+public interface ITagCollection : IEnumerable<ITag>
 {
-    public interface ITagCollection : IEnumerable<ITag>
-    {
-    }
 }

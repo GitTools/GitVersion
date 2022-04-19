@@ -45,21 +45,17 @@ You are seeing:
 
 ## Icon
 
-<a href="https://thenounproject.com/term/tree/13389/" target="_blank">Tree</a>
-designed by <a href="http://thenounproject.com/david.chapman" target="_blank">David Chapman</a>
+[Tree][app-icon]
+designed by [David Chapman][app-icon-author]
 from The Noun Project.
 
 [semver]:                          http://semver.org
 [gitter]:                          https://gitter.im/GitTools/GitVersion?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge
 [gitter-badge]:                    https://badges.gitter.im/Join+Chat.svg
-[appveyor]:                        https://ci.appveyor.com/project/GitTools/gitversion/branch/main
-[appveyor-badge]:                  https://ci.appveyor.com/api/projects/status/sxje0wht0cscmn7w/branch/main?svg=true
 [azure-pipeline]:                  https://dev.azure.com/GitTools/GitVersion/_build/latest?definitionId=1
 [azure-pipeline-badge]:            https://dev.azure.com/GitTools/GitVersion/_apis/build/status/GitTools.GitVersion
 [github-actions]:                  https://github.com/GitTools/GitVersion/actions
 [github-actions-badge]:            https://github.com/GitTools/GitVersion/workflows/Build/badge.svg
-[travis]:                          https://travis-ci.org/GitTools/GitVersion
-[travis-badge]:                    https://travis-ci.org/GitTools/GitVersion.svg?branch=main
 [codecov]:                         https://codecov.io/gh/GitTools/GitVersion
 [codecov-badge]:                   https://codecov.io/gh/GitTools/GitVersion/branch/main/graph/badge.svg
 [docs]:                            https://gitversion.net/docs/
@@ -88,5 +84,7 @@ from The Noun Project.
 [how]:                             https://gitversion.net/docs/learn/how-it-works
 [faq]:                             https://gitversion.net/docs/learn/faq
 [who]:                             https://gitversion.net/docs/learn/who
-[gv-in-action]:                    https://raw.github.com/GitTools/GitVersion/master/docs/input/docs/img/README.png
-[banner]:                          https://github.com/GitTools/graphics/raw/master/GitVersion/banner-1280x640.png
+[gv-in-action]:                    https://raw.githubusercontent.com/GitTools/GitVersion/master/docs/input/docs/img/README.png
+[banner]:                          https://raw.githubusercontent.com/GitTools/graphics/master/GitVersion/banner-1280x640.png
+[app-icon]:                        https://thenounproject.com/term/tree/13389/
+[app-icon-author]:                 http://thenounproject.com/david.chapman

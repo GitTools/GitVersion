@@ -1,132 +1,211 @@
-using System.Collections.Generic;
 using GitVersion.Extensions;
 using GitVersion.VersionCalculation;
 
-namespace GitVersion.Model.Configuration
+namespace GitVersion.Model.Configuration;
+
+/// <summary>
+///     Configuration can be applied to different things, effective configuration is the result after applying the
+///     appropriate configuration
+/// </summary>
+public class EffectiveConfiguration
 {
-    /// <summary>
-    /// Configuration can be applied to different things, effective configuration is the result after applying the appropriate configuration
-    /// </summary>
-    public class EffectiveConfiguration
+    public EffectiveConfiguration(Config configuration, BranchConfig currentBranchConfig)
     {
-        public EffectiveConfiguration(
-            AssemblyVersioningScheme assemblyVersioningScheme,
-            AssemblyFileVersioningScheme assemblyFileVersioningScheme,
-            string? assemblyInformationalFormat,
-            string? assemblyVersioningFormat,
-            string? assemblyFileVersioningFormat,
-            VersioningMode versioningMode, string? gitTagPrefix,
-            string? tag, string? nextVersion, IncrementStrategy increment,
-            string? branchPrefixToTrim,
-            bool preventIncrementForMergedBranchVersion,
-            string? tagNumberPattern,
-            string? continuousDeploymentFallbackTag,
-            bool trackMergeTarget,
-            string? majorVersionBumpMessage,
-            string? minorVersionBumpMessage,
-            string? patchVersionBumpMessage,
-            string? noBumpMessage,
-            CommitMessageIncrementMode commitMessageIncrementing,
-            int legacySemVerPaddding,
-            int buildMetaDataPadding,
-            int commitsSinceVersionSourcePadding,
-            IEnumerable<IVersionFilter> versionFilters,
-            bool tracksReleaseBranches,
-            bool isCurrentBranchRelease,
-            string? commitDateFormat,
-            bool updateBuildNumber,
-            int preReleaseWeight,
-            int tagPreReleaseWeight)
-        {
-            AssemblyVersioningScheme = assemblyVersioningScheme;
-            AssemblyFileVersioningScheme = assemblyFileVersioningScheme;
-            AssemblyInformationalFormat = assemblyInformationalFormat;
-            AssemblyVersioningFormat = assemblyVersioningFormat;
-            AssemblyFileVersioningFormat = assemblyFileVersioningFormat;
-            VersioningMode = versioningMode;
-            GitTagPrefix = gitTagPrefix;
-            Tag = tag;
-            NextVersion = nextVersion;
-            Increment = increment;
-            BranchPrefixToTrim = branchPrefixToTrim;
-            PreventIncrementForMergedBranchVersion = preventIncrementForMergedBranchVersion;
-            TagNumberPattern = tagNumberPattern;
-            ContinuousDeploymentFallbackTag = continuousDeploymentFallbackTag;
-            TrackMergeTarget = trackMergeTarget;
-            MajorVersionBumpMessage = majorVersionBumpMessage;
-            MinorVersionBumpMessage = minorVersionBumpMessage;
-            PatchVersionBumpMessage = patchVersionBumpMessage;
-            NoBumpMessage = noBumpMessage;
-            CommitMessageIncrementing = commitMessageIncrementing;
-            LegacySemVerPadding = legacySemVerPaddding;
-            BuildMetaDataPadding = buildMetaDataPadding;
-            CommitsSinceVersionSourcePadding = commitsSinceVersionSourcePadding;
-            VersionFilters = versionFilters;
-            TracksReleaseBranches = tracksReleaseBranches;
-            IsCurrentBranchRelease = isCurrentBranchRelease;
-            CommitDateFormat = commitDateFormat;
-            UpdateBuildNumber = updateBuildNumber;
-            PreReleaseWeight = preReleaseWeight;
-            TagPreReleaseWeight = tagPreReleaseWeight;
-        }
+        Configuration = configuration.NotNull();
+        currentBranchConfig.NotNull();
 
-        public bool TracksReleaseBranches { get; private set; }
-        public bool IsCurrentBranchRelease { get; private set; }
+        var name = currentBranchConfig.Name;
 
-        public VersioningMode VersioningMode { get; private set; }
+        if (!currentBranchConfig.VersioningMode.HasValue)
+            throw new Exception($"Configuration value for 'Versioning mode' for branch {name} has no value. (this should not happen, please report an issue)");
 
-        public AssemblyVersioningScheme AssemblyVersioningScheme { get; private set; }
-        public AssemblyFileVersioningScheme AssemblyFileVersioningScheme { get; private set; }
-        public string? AssemblyInformationalFormat { get; private set; }
-        public string? AssemblyVersioningFormat { get; private set; }
-        public string? AssemblyFileVersioningFormat { get; private set; }
+        if (!currentBranchConfig.Increment.HasValue)
+            throw new Exception($"Configuration value for 'Increment' for branch {name} has no value. (this should not happen, please report an issue)");
 
-        /// <summary>
-        /// Git tag prefix
-        /// </summary>
-        public string? GitTagPrefix { get; private set; }
+        if (!currentBranchConfig.PreventIncrementOfMergedBranchVersion.HasValue)
+            throw new Exception($"Configuration value for 'PreventIncrementOfMergedBranchVersion' for branch {name} has no value. (this should not happen, please report an issue)");
 
-        /// <summary>
-        /// Tag to use when calculating SemVer
-        /// </summary>
-        public string? Tag { get; private set; }
+        if (!currentBranchConfig.TrackMergeTarget.HasValue)
+            throw new Exception($"Configuration value for 'TrackMergeTarget' for branch {name} has no value. (this should not happen, please report an issue)");
 
-        public string? NextVersion { get; private set; }
+        if (!currentBranchConfig.TracksReleaseBranches.HasValue)
+            throw new Exception($"Configuration value for 'TracksReleaseBranches' for branch {name} has no value. (this should not happen, please report an issue)");
 
-        public IncrementStrategy Increment { get; private set; }
+        if (!currentBranchConfig.IsReleaseBranch.HasValue)
+            throw new Exception($"Configuration value for 'IsReleaseBranch' for branch {name} has no value. (this should not happen, please report an issue)");
 
-        public string? BranchPrefixToTrim { get; private set; }
+        if (!configuration.AssemblyVersioningScheme.HasValue)
+            throw new Exception("Configuration value for 'AssemblyVersioningScheme' has no value. (this should not happen, please report an issue)");
 
-        public bool PreventIncrementForMergedBranchVersion { get; private set; }
+        if (!configuration.AssemblyFileVersioningScheme.HasValue)
+            throw new Exception("Configuration value for 'AssemblyFileVersioningScheme' has no value. (this should not happen, please report an issue)");
 
-        public string? TagNumberPattern { get; private set; }
+        if (!configuration.CommitMessageIncrementing.HasValue)
+            throw new Exception("Configuration value for 'CommitMessageIncrementing' has no value. (this should not happen, please report an issue)");
 
-        public string? ContinuousDeploymentFallbackTag { get; private set; }
+        if (!configuration.LegacySemVerPadding.HasValue)
+            throw new Exception("Configuration value for 'LegacySemVerPadding' has no value. (this should not happen, please report an issue)");
 
-        public bool TrackMergeTarget { get; private set; }
+        if (!configuration.BuildMetaDataPadding.HasValue)
+            throw new Exception("Configuration value for 'BuildMetaDataPadding' has no value. (this should not happen, please report an issue)");
 
-        public string? MajorVersionBumpMessage { get; private set; }
+        if (!configuration.CommitsSinceVersionSourcePadding.HasValue)
+            throw new Exception("Configuration value for 'CommitsSinceVersionSourcePadding' has no value. (this should not happen, please report an issue)");
 
-        public string? MinorVersionBumpMessage { get; private set; }
+        if (!configuration.TagPreReleaseWeight.HasValue)
+            throw new Exception("Configuration value for 'TagPreReleaseWeight' has no value. (this should not happen, please report an issue)");
 
-        public string? PatchVersionBumpMessage { get; private set; }
-
-        public string? NoBumpMessage { get; private set; }
-        public int LegacySemVerPadding { get; private set; }
-        public int BuildMetaDataPadding { get; private set; }
-
-        public int CommitsSinceVersionSourcePadding { get; private set; }
-
-        public CommitMessageIncrementMode CommitMessageIncrementing { get; private set; }
-
-        public IEnumerable<IVersionFilter> VersionFilters { get; private set; }
-
-        public string? CommitDateFormat { get; private set; }
-
-        public bool UpdateBuildNumber { get; private set; }
-
-        public int PreReleaseWeight { get; private set; }
-
-        public int TagPreReleaseWeight { get; private set; }
+        AssemblyVersioningScheme = configuration.AssemblyVersioningScheme.Value;
+        AssemblyFileVersioningScheme = configuration.AssemblyFileVersioningScheme.Value;
+        AssemblyInformationalFormat = configuration.AssemblyInformationalFormat;
+        AssemblyVersioningFormat = configuration.AssemblyVersioningFormat;
+        AssemblyFileVersioningFormat = configuration.AssemblyFileVersioningFormat;
+        VersioningMode = currentBranchConfig.VersioningMode.Value;
+        GitTagPrefix = configuration.TagPrefix;
+        Tag = currentBranchConfig.Tag;
+        NextVersion = configuration.NextVersion;
+        Increment = currentBranchConfig.Increment.Value;
+        BranchPrefixToTrim = currentBranchConfig.Regex;
+        PreventIncrementForMergedBranchVersion = currentBranchConfig.PreventIncrementOfMergedBranchVersion.Value;
+        TagNumberPattern = currentBranchConfig.TagNumberPattern;
+        ContinuousDeploymentFallbackTag = configuration.ContinuousDeploymentFallbackTag;
+        TrackMergeTarget = currentBranchConfig.TrackMergeTarget.Value;
+        MajorVersionBumpMessage = configuration.MajorVersionBumpMessage;
+        MinorVersionBumpMessage = configuration.MinorVersionBumpMessage;
+        PatchVersionBumpMessage = configuration.PatchVersionBumpMessage;
+        NoBumpMessage = configuration.NoBumpMessage;
+        CommitMessageIncrementing = currentBranchConfig.CommitMessageIncrementing ?? configuration.CommitMessageIncrementing.Value;
+        LegacySemVerPadding = configuration.LegacySemVerPadding.Value;
+        BuildMetaDataPadding = configuration.BuildMetaDataPadding.Value;
+        CommitsSinceVersionSourcePadding = configuration.CommitsSinceVersionSourcePadding.Value;
+        VersionFilters = configuration.Ignore.ToFilters();
+        TracksReleaseBranches = currentBranchConfig.TracksReleaseBranches.Value;
+        IsCurrentBranchRelease = currentBranchConfig.IsReleaseBranch.Value;
+        CommitDateFormat = configuration.CommitDateFormat;
+        UpdateBuildNumber = configuration.UpdateBuildNumber ?? true;
+        PreReleaseWeight = currentBranchConfig.PreReleaseWeight ?? 0;
+        TagPreReleaseWeight = configuration.TagPreReleaseWeight.Value;
     }
+
+    protected EffectiveConfiguration(AssemblyVersioningScheme assemblyVersioningScheme,
+        AssemblyFileVersioningScheme assemblyFileVersioningScheme,
+        string? assemblyInformationalFormat,
+        string? assemblyVersioningFormat,
+        string? assemblyFileVersioningFormat,
+        VersioningMode versioningMode,
+        string? gitTagPrefix,
+        string? tag,
+        string? nextVersion,
+        IncrementStrategy increment,
+        string? branchPrefixToTrim,
+        bool preventIncrementForMergedBranchVersion,
+        string? tagNumberPattern,
+        string? continuousDeploymentFallbackTag,
+        bool trackMergeTarget,
+        string? majorVersionBumpMessage,
+        string? minorVersionBumpMessage,
+        string? patchVersionBumpMessage,
+        string? noBumpMessage,
+        CommitMessageIncrementMode commitMessageIncrementing,
+        int legacySemVerPaddding,
+        int buildMetaDataPadding,
+        int commitsSinceVersionSourcePadding,
+        IEnumerable<IVersionFilter> versionFilters,
+        bool tracksReleaseBranches,
+        bool isCurrentBranchRelease,
+        string? commitDateFormat,
+        bool updateBuildNumber,
+        int preReleaseWeight,
+        int tagPreReleaseWeight)
+    {
+        AssemblyVersioningScheme = assemblyVersioningScheme;
+        AssemblyFileVersioningScheme = assemblyFileVersioningScheme;
+        AssemblyInformationalFormat = assemblyInformationalFormat;
+        AssemblyVersioningFormat = assemblyVersioningFormat;
+        AssemblyFileVersioningFormat = assemblyFileVersioningFormat;
+        VersioningMode = versioningMode;
+        GitTagPrefix = gitTagPrefix;
+        Tag = tag;
+        NextVersion = nextVersion;
+        Increment = increment;
+        BranchPrefixToTrim = branchPrefixToTrim;
+        PreventIncrementForMergedBranchVersion = preventIncrementForMergedBranchVersion;
+        TagNumberPattern = tagNumberPattern;
+        ContinuousDeploymentFallbackTag = continuousDeploymentFallbackTag;
+        TrackMergeTarget = trackMergeTarget;
+        MajorVersionBumpMessage = majorVersionBumpMessage;
+        MinorVersionBumpMessage = minorVersionBumpMessage;
+        PatchVersionBumpMessage = patchVersionBumpMessage;
+        NoBumpMessage = noBumpMessage;
+        CommitMessageIncrementing = commitMessageIncrementing;
+        LegacySemVerPadding = legacySemVerPaddding;
+        BuildMetaDataPadding = buildMetaDataPadding;
+        CommitsSinceVersionSourcePadding = commitsSinceVersionSourcePadding;
+        VersionFilters = versionFilters;
+        TracksReleaseBranches = tracksReleaseBranches;
+        IsCurrentBranchRelease = isCurrentBranchRelease;
+        CommitDateFormat = commitDateFormat;
+        UpdateBuildNumber = updateBuildNumber;
+        PreReleaseWeight = preReleaseWeight;
+        TagPreReleaseWeight = tagPreReleaseWeight;
+    }
+
+    public bool TracksReleaseBranches { get; }
+    public bool IsCurrentBranchRelease { get; }
+    public VersioningMode VersioningMode { get; }
+    public AssemblyVersioningScheme AssemblyVersioningScheme { get; }
+    public AssemblyFileVersioningScheme AssemblyFileVersioningScheme { get; }
+    public string? AssemblyInformationalFormat { get; }
+    public string? AssemblyVersioningFormat { get; }
+    public string? AssemblyFileVersioningFormat { get; }
+
+    /// <summary>
+    ///     Git tag prefix
+    /// </summary>
+    public string? GitTagPrefix { get; }
+
+    /// <summary>
+    ///     Tag to use when calculating SemVer
+    /// </summary>
+    public string? Tag { get; }
+
+    public string? NextVersion { get; }
+
+    public IncrementStrategy Increment { get; }
+
+    public string? BranchPrefixToTrim { get; }
+
+    public bool PreventIncrementForMergedBranchVersion { get; }
+
+    public string? TagNumberPattern { get; }
+
+    public string? ContinuousDeploymentFallbackTag { get; }
+
+    public bool TrackMergeTarget { get; }
+
+    public string? MajorVersionBumpMessage { get; }
+
+    public string? MinorVersionBumpMessage { get; }
+
+    public string? PatchVersionBumpMessage { get; }
+
+    public string? NoBumpMessage { get; }
+    public int LegacySemVerPadding { get; }
+    public int BuildMetaDataPadding { get; }
+
+    public int CommitsSinceVersionSourcePadding { get; }
+
+    public CommitMessageIncrementMode CommitMessageIncrementing { get; }
+
+    public IEnumerable<IVersionFilter> VersionFilters { get; }
+
+    public string? CommitDateFormat { get; }
+
+    public bool UpdateBuildNumber { get; }
+
+    public int PreReleaseWeight { get; }
+
+    public int TagPreReleaseWeight { get; }
+
+    public Config Configuration { get; }
 }

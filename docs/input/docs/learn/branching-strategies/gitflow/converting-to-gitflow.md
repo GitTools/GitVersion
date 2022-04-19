@@ -1,6 +1,7 @@
 ---
 Order: 60
 Title: Converting to GitFlow
+RedirectFrom: docs/git-branching-strategies/converting-to-gitflow
 ---
 
 Converting to GitFlow is simple. Whenever you need to convert, simply do the

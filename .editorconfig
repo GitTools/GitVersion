@@ -21,7 +21,7 @@ dotnet_separate_import_directive_groups = false
 dotnet_sort_system_directives_first = true
 
 # Avoid "this." and "Me." if not necessary
-dotnet_style_qualification_for_field = true:warning
+dotnet_style_qualification_for_field = false:silent
 dotnet_style_qualification_for_property = false:silent
 dotnet_style_qualification_for_method = false:silent
 dotnet_style_qualification_for_event = false:silent
@@ -155,6 +155,12 @@ csharp_space_between_method_declaration_parameter_list_parentheses = false
 csharp_space_between_parentheses = false
 csharp_space_between_square_brackets = false
 
+# Alignment
+align_multiline_parameter = true
+
+# Qualify fields with "this."
+csharp_instance_members_qualify_members = field
+
 # IDE0011: Add braces
 dotnet_diagnostic.IDE0011.severity = none
 
@@ -175,3 +181,9 @@ dotnet_diagnostic.CA2208.severity = warning
 
 # CA1810: Initialize reference type static fields inline
 dotnet_diagnostic.CA1810.severity = warning
+
+# CA1816: Dispose methods should call SuppressFinalize
+dotnet_diagnostic.CA1816.severity = warning
+
+# IDE0005: Using directive is unnecessary.
+dotnet_diagnostic.IDE0005.severity = warning

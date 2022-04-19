@@ -10,37 +10,40 @@
         <PackageTags>Git;Versioning;GitVersion;GitFlowVersion;GitFlow;GitHubFlow;SemVer</PackageTags>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <PackageIcon>package_icon.png</PackageIcon>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
         <PackageReleaseNotes>https://github.com/GitTools/GitVersion/releases</PackageReleaseNotes>
 
         <RepositoryUrl>https://github.com/GitTools/GitVersion</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
 
-        <NoWarn>1591</NoWarn>
+        <NoWarn>1591,8618</NoWarn>
         <DebugType>embedded</DebugType>
-        <LangVersion>9.0</LangVersion>
+        <LangVersion>10</LangVersion>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
 
     </PropertyGroup>
     <PropertyGroup>
-        <PackageVersion_LibGit2Sharp>0.27.0-preview-0102</PackageVersion_LibGit2Sharp>
-        <PackageVersion_LibGit2Sharp_NativeBinaries>2.0.312</PackageVersion_LibGit2Sharp_NativeBinaries>
+        <PackageVersion_LibGit2Sharp>0.27.0-preview-0175</PackageVersion_LibGit2Sharp>
+        <PackageVersion_LibGit2Sharp_NativeBinaries>2.0.315-alpha.0.9</PackageVersion_LibGit2Sharp_NativeBinaries>
 
-        <PackageVersion_JetBrainsAnnotations>2021.2.0</PackageVersion_JetBrainsAnnotations>
+        <PackageVersion_JetBrainsAnnotations>2021.3.0</PackageVersion_JetBrainsAnnotations>
         <PackageVersion_YamlDotNet>11.2.1</PackageVersion_YamlDotNet>
-        <PackageVersion_MicrosoftExtensions>5.0.0</PackageVersion_MicrosoftExtensions>
-        <PackageVersion_MicrosoftJson>5.0.0</PackageVersion_MicrosoftJson>
-        <PackageVersion_MicrosoftTextEncoding>5.0.0</PackageVersion_MicrosoftTextEncoding>
-        <PackageVersion_MsBuild>16.9.0</PackageVersion_MsBuild>
+        <PackageVersion_MicrosoftExtensions>6.0.0</PackageVersion_MicrosoftExtensions>
+        <PackageVersion_MicrosoftJson>6.0.0</PackageVersion_MicrosoftJson>
+        <PackageVersion_MicrosoftTextEncoding>6.0.0</PackageVersion_MicrosoftTextEncoding>
+        <PackageVersion_MsBuild>17.1.0</PackageVersion_MsBuild>
 
-        <PackageVersion_MicrosoftTestSdk>16.10.0</PackageVersion_MicrosoftTestSdk>
-        <PackageVersion_NSubstitute>4.2.2</PackageVersion_NSubstitute>
-        <PackageVersion_CoverletMsBuild>3.0.3</PackageVersion_CoverletMsBuild>
-        <PackageVersion_NUnit>3.13.2</PackageVersion_NUnit>
-        <PackageVersion_NUnit3TestAdapter>4.0.0</PackageVersion_NUnit3TestAdapter>
-        <PackageVersion_NunitXmlTestLogger>3.0.107</PackageVersion_NunitXmlTestLogger>
+        <PackageVersion_MicrosoftTestSdk>17.1.0</PackageVersion_MicrosoftTestSdk>
+        <PackageVersion_NSubstitute>4.3.0</PackageVersion_NSubstitute>
+        <PackageVersion_CoverletMsBuild>3.1.2</PackageVersion_CoverletMsBuild>
+        <PackageVersion_NUnit>3.13.3</PackageVersion_NUnit>
+        <PackageVersion_NUnit3TestAdapter>4.2.1</PackageVersion_NUnit3TestAdapter>
+        <PackageVersion_NunitXmlTestLogger>3.0.117</PackageVersion_NunitXmlTestLogger>
         <PackageVersion_Shouldly>4.0.3</PackageVersion_Shouldly>
 
-        <PackageVersion_MicrosoftCodeStyle>3.10.0</PackageVersion_MicrosoftCodeStyle>
-        <PackageVersion_MicrosoftNetAnalyzers>5.0.3</PackageVersion_MicrosoftNetAnalyzers>
+        <PackageVersion_MicrosoftCodeStyle>4.0.1</PackageVersion_MicrosoftCodeStyle>
+        <PackageVersion_MicrosoftNetAnalyzers>6.0.0</PackageVersion_MicrosoftNetAnalyzers>
     </PropertyGroup>
 
     <ItemGroup Condition=" '$(IsTestProject)' == 'true' ">
@@ -67,10 +70,17 @@
     </ItemGroup>
 
     <ItemGroup>
-        <None Include="../../docs/input/docs/img/package_icon.png">
-            <Pack>true</Pack>
-            <PackagePath>/</PackagePath>
-        </None>
+        <Using Include="System.Collections" />
+        <Using Include="System.Collections.Specialized" />
+        <Using Include="System.Diagnostics" />
+        <Using Include="System.Reflection" />
+        <Using Include="System.Text" />
+        <Using Include="System.Xml" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <None Include="../../docs/input/docs/img/package_icon.png" Pack="true" PackagePath="/"/>
+        <None Include="../../build/nuspec/README.md" Pack="true" PackagePath="/"/>
     </ItemGroup>
 
     <ItemGroup Condition=" '$(TargetFramework)' == 'net48' ">
@@ -81,9 +91,6 @@
     <PropertyGroup>
         <SkipDefaultEditorConfigAsAdditionalFile>true</SkipDefaultEditorConfigAsAdditionalFile>
     </PropertyGroup>
-    <ItemGroup>
-        <AdditionalFiles Include="$(MSBuildThisFileDirectory)..\.editorconfig" />
-    </ItemGroup>
 
     <!-- Common code quality and styling analyzers -->
     <ItemGroup>

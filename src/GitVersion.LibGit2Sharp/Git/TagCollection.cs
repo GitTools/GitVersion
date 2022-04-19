@@ -1,16 +1,16 @@
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
+using GitVersion.Extensions;
 
-namespace GitVersion
+namespace GitVersion;
+
+internal sealed class TagCollection : ITagCollection
 {
-    internal sealed class TagCollection : ITagCollection
-    {
-        private readonly LibGit2Sharp.TagCollection innerCollection;
-        internal TagCollection(LibGit2Sharp.TagCollection collection) => this.innerCollection = collection;
+    private readonly LibGit2Sharp.TagCollection innerCollection;
 
-        public IEnumerator<ITag> GetEnumerator() => this.innerCollection.Select(tag => new Tag(tag)).GetEnumerator();
+    internal TagCollection(LibGit2Sharp.TagCollection collection)
+        => this.innerCollection = collection.NotNull();
 
-        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
-    }
+    public IEnumerator<ITag> GetEnumerator()
+        => this.innerCollection.Select(tag => new Tag(tag)).GetEnumerator();
+
+    IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 }

@@ -1,7 +1,8 @@
 ---
-Order: 40
+Order: 50
 Title: Continua CI
 Description: Details on the Continua CI support in GitVersion
+RedirectFrom: docs/build-server-support/build-server/continua
 ---
 
 This guide explains how to run GitVersion inside [Continua CI](https://www.finalbuilder.com/continua-ci).

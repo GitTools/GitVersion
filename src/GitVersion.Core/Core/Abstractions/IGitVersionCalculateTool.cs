@@ -1,9 +1,8 @@
 using GitVersion.OutputVariables;
 
-namespace GitVersion
+namespace GitVersion;
+
+public interface IGitVersionCalculateTool
 {
-    public interface IGitVersionCalculateTool
-    {
-        VersionVariables CalculateVersionVariables();
-    }
+    VersionVariables CalculateVersionVariables();
 }
