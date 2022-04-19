@@ -2,6 +2,7 @@ using GitTools.Testing;
 using GitVersion.Core.Tests.Helpers;
 using GitVersion.Model.Configuration;
 using GitVersion.VersionCalculation;
+using LibGit2Sharp;
 using NUnit.Framework;
 
 namespace GitVersion.Core.Tests.IntegrationTests;
@@ -46,6 +47,23 @@ public class VersionBumpingScenarios : TestBase
         fixture.Repository.MakeACommit("+semver:major");
 
         fixture.AssertFullSemver("2.0.0+2");
+    }
+
+    [Test]
+    public void CanUseCommitMessagesToBumpVersion_TagTakesPriority()
+    {
+        using var fixture = new EmptyRepositoryFixture();
+        var repo = fixture.Repository;
+
+        repo.MakeATaggedCommit("1.0.0");
+        repo.MakeACommit("+semver:major");
+        fixture.AssertFullSemver("2.0.0+1");
+
+        repo.ApplyTag("1.1.0");
+        fixture.AssertFullSemver("1.1.0");
+
+        repo.MakeACommit();
+        fixture.AssertFullSemver("1.1.1+1");
     }
 
     [Theory]
