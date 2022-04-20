@@ -8,6 +8,10 @@ abstract GitVersion.Configuration.Init.Wizard.ConfigInitWizardStep.HandleResult(
 abstract GitVersion.GitVersionModule.RegisterTypes(Microsoft.Extensions.DependencyInjection.IServiceCollection! services) -> void
 const GitVersion.BuildAgents.AppVeyor.EnvironmentVariableName = "APPVEYOR" -> string!
 const GitVersion.BuildAgents.AzurePipelines.EnvironmentVariableName = "TF_BUILD" -> string!
+const GitVersion.BuildAgents.BitBucketPipelines.BranchEnvironmentVariableName = "BITBUCKET_BRANCH" -> string!
+const GitVersion.BuildAgents.BitBucketPipelines.EnvironmentVariableName = "BITBUCKET_WORKSPACE" -> string!
+const GitVersion.BuildAgents.BitBucketPipelines.PullRequestEnvironmentVariableName = "BITBUCKET_PR_ID" -> string!
+const GitVersion.BuildAgents.BitBucketPipelines.TagEnvironmentVariableName = "BITBUCKET_TAG" -> string!
 const GitVersion.BuildAgents.BuildKite.EnvironmentVariableName = "BUILDKITE" -> string!
 const GitVersion.BuildAgents.CodeBuild.SourceVersionEnvironmentVariableName = "CODEBUILD_SOURCE_VERSION" -> string!
 const GitVersion.BuildAgents.CodeBuild.WebHookEnvironmentVariableName = "CODEBUILD_WEBHOOK_HEAD_REF" -> string!
@@ -71,6 +75,9 @@ GitVersion.BuildAgents.AppVeyor
 GitVersion.BuildAgents.AppVeyor.AppVeyor(GitVersion.IEnvironment! environment, GitVersion.Logging.ILog! log) -> void
 GitVersion.BuildAgents.AzurePipelines
 GitVersion.BuildAgents.AzurePipelines.AzurePipelines(GitVersion.IEnvironment! environment, GitVersion.Logging.ILog! log) -> void
+GitVersion.BuildAgents.BitBucketPipelines
+GitVersion.BuildAgents.BitBucketPipelines.BitBucketPipelines(GitVersion.IEnvironment! environment, GitVersion.Logging.ILog! log) -> void
+GitVersion.BuildAgents.BitBucketPipelines.WithPropertyFile(string! propertiesFileName) -> void
 GitVersion.BuildAgents.BuildAgentBase
 GitVersion.BuildAgents.BuildAgentBase.BuildAgentBase(GitVersion.IEnvironment! environment, GitVersion.Logging.ILog! log) -> void
 GitVersion.BuildAgents.BuildAgentBase.Environment.get -> GitVersion.IEnvironment!
@@ -141,6 +148,7 @@ GitVersion.Common.IRepositoryStore.DetermineIncrementedField(GitVersion.VersionC
 GitVersion.Common.IRepositoryStore.ExcludingBranches(System.Collections.Generic.IEnumerable<GitVersion.IBranch!>! branchesToExclude) -> System.Collections.Generic.IEnumerable<GitVersion.IBranch!>!
 GitVersion.Common.IRepositoryStore.FindBranch(string? branchName) -> GitVersion.IBranch?
 GitVersion.Common.IRepositoryStore.FindCommitBranchWasBranchedFrom(GitVersion.IBranch? branch, GitVersion.Model.Configuration.Config! configuration, params GitVersion.IBranch![]! excludedBranches) -> GitVersion.BranchCommit
+GitVersion.Common.IRepositoryStore.FindMainBranch(GitVersion.Model.Configuration.Config! configuration) -> GitVersion.IBranch?
 GitVersion.Common.IRepositoryStore.FindMergeBase(GitVersion.IBranch? branch, GitVersion.IBranch? otherBranch) -> GitVersion.ICommit?
 GitVersion.Common.IRepositoryStore.FindMergeBase(GitVersion.ICommit! commit, GitVersion.ICommit! mainlineTip) -> GitVersion.ICommit?
 GitVersion.Common.IRepositoryStore.GetBaseVersionSource(GitVersion.ICommit! currentBranchTip) -> GitVersion.ICommit!
@@ -151,7 +159,7 @@ GitVersion.Common.IRepositoryStore.GetCommitLog(GitVersion.ICommit? baseVersionS
 GitVersion.Common.IRepositoryStore.GetCurrentCommit(GitVersion.IBranch! currentBranch, string? commitId) -> GitVersion.ICommit?
 GitVersion.Common.IRepositoryStore.GetCurrentCommitTaggedVersion(GitVersion.ICommit? commit, GitVersion.Model.Configuration.EffectiveConfiguration! config) -> GitVersion.SemanticVersion!
 GitVersion.Common.IRepositoryStore.GetExcludedInheritBranches(GitVersion.Model.Configuration.Config! configuration) -> System.Collections.Generic.IEnumerable<GitVersion.IBranch!>!
-GitVersion.Common.IRepositoryStore.GetMainlineBranches(GitVersion.ICommit! commit, GitVersion.Model.Configuration.Config! configuration, System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<string!, GitVersion.Model.Configuration.BranchConfig!>>? mainlineBranchConfigs) -> System.Collections.Generic.Dictionary<string!, System.Collections.Generic.List<GitVersion.IBranch!>!>!
+GitVersion.Common.IRepositoryStore.GetMainlineBranches(GitVersion.ICommit! commit, GitVersion.Model.Configuration.Config! configuration, System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<string!, GitVersion.Model.Configuration.BranchConfig!>>? mainlineBranchConfigs) -> System.Collections.Generic.IDictionary<string!, System.Collections.Generic.List<GitVersion.IBranch!>!>!
 GitVersion.Common.IRepositoryStore.GetMainlineCommitLog(GitVersion.ICommit? baseVersionSource, GitVersion.ICommit? mainlineTip) -> System.Collections.Generic.IEnumerable<GitVersion.ICommit!>!
 GitVersion.Common.IRepositoryStore.GetMergeBaseCommits(GitVersion.ICommit? mergeCommit, GitVersion.ICommit? mergedHead, GitVersion.ICommit? findMergeBase) -> System.Collections.Generic.IEnumerable<GitVersion.ICommit!>!
 GitVersion.Common.IRepositoryStore.GetNumberOfUncommittedChanges() -> int
@@ -665,8 +673,10 @@ GitVersion.Model.Configuration.EffectiveConfiguration.BuildMetaDataPadding.get -
 GitVersion.Model.Configuration.EffectiveConfiguration.CommitDateFormat.get -> string?
 GitVersion.Model.Configuration.EffectiveConfiguration.CommitMessageIncrementing.get -> GitVersion.VersionCalculation.CommitMessageIncrementMode
 GitVersion.Model.Configuration.EffectiveConfiguration.CommitsSinceVersionSourcePadding.get -> int
+GitVersion.Model.Configuration.EffectiveConfiguration.Configuration.get -> GitVersion.Model.Configuration.Config!
 GitVersion.Model.Configuration.EffectiveConfiguration.ContinuousDeploymentFallbackTag.get -> string?
 GitVersion.Model.Configuration.EffectiveConfiguration.EffectiveConfiguration(GitVersion.Extensions.AssemblyVersioningScheme assemblyVersioningScheme, GitVersion.Extensions.AssemblyFileVersioningScheme assemblyFileVersioningScheme, string? assemblyInformationalFormat, string? assemblyVersioningFormat, string? assemblyFileVersioningFormat, GitVersion.VersionCalculation.VersioningMode versioningMode, string? gitTagPrefix, string? tag, string? nextVersion, GitVersion.IncrementStrategy increment, string? branchPrefixToTrim, bool preventIncrementForMergedBranchVersion, string? tagNumberPattern, string? continuousDeploymentFallbackTag, bool trackMergeTarget, string? majorVersionBumpMessage, string? minorVersionBumpMessage, string? patchVersionBumpMessage, string? noBumpMessage, GitVersion.VersionCalculation.CommitMessageIncrementMode commitMessageIncrementing, int legacySemVerPaddding, int buildMetaDataPadding, int commitsSinceVersionSourcePadding, System.Collections.Generic.IEnumerable<GitVersion.VersionCalculation.IVersionFilter!>! versionFilters, bool tracksReleaseBranches, bool isCurrentBranchRelease, string? commitDateFormat, bool updateBuildNumber, int preReleaseWeight, int tagPreReleaseWeight) -> void
+GitVersion.Model.Configuration.EffectiveConfiguration.EffectiveConfiguration(GitVersion.Model.Configuration.Config! configuration, GitVersion.Model.Configuration.BranchConfig! currentBranchConfig) -> void
 GitVersion.Model.Configuration.EffectiveConfiguration.GitTagPrefix.get -> string?
 GitVersion.Model.Configuration.EffectiveConfiguration.Increment.get -> GitVersion.IncrementStrategy
 GitVersion.Model.Configuration.EffectiveConfiguration.IsCurrentBranchRelease.get -> bool
@@ -837,6 +847,7 @@ GitVersion.RepositoryStore.DetermineIncrementedField(GitVersion.VersionCalculati
 GitVersion.RepositoryStore.ExcludingBranches(System.Collections.Generic.IEnumerable<GitVersion.IBranch!>! branchesToExclude) -> System.Collections.Generic.IEnumerable<GitVersion.IBranch!>!
 GitVersion.RepositoryStore.FindBranch(string? branchName) -> GitVersion.IBranch?
 GitVersion.RepositoryStore.FindCommitBranchWasBranchedFrom(GitVersion.IBranch? branch, GitVersion.Model.Configuration.Config! configuration, params GitVersion.IBranch![]! excludedBranches) -> GitVersion.BranchCommit
+GitVersion.RepositoryStore.FindMainBranch(GitVersion.Model.Configuration.Config! configuration) -> GitVersion.IBranch?
 GitVersion.RepositoryStore.FindMergeBase(GitVersion.IBranch? branch, GitVersion.IBranch? otherBranch) -> GitVersion.ICommit?
 GitVersion.RepositoryStore.FindMergeBase(GitVersion.ICommit! commit, GitVersion.ICommit! mainlineTip) -> GitVersion.ICommit?
 GitVersion.RepositoryStore.GetBaseVersionSource(GitVersion.ICommit! currentBranchTip) -> GitVersion.ICommit!
@@ -847,7 +858,7 @@ GitVersion.RepositoryStore.GetCommitLog(GitVersion.ICommit? baseVersionSource, G
 GitVersion.RepositoryStore.GetCurrentCommit(GitVersion.IBranch! currentBranch, string? commitId) -> GitVersion.ICommit?
 GitVersion.RepositoryStore.GetCurrentCommitTaggedVersion(GitVersion.ICommit? commit, GitVersion.Model.Configuration.EffectiveConfiguration! config) -> GitVersion.SemanticVersion!
 GitVersion.RepositoryStore.GetExcludedInheritBranches(GitVersion.Model.Configuration.Config! configuration) -> System.Collections.Generic.IEnumerable<GitVersion.IBranch!>!
-GitVersion.RepositoryStore.GetMainlineBranches(GitVersion.ICommit! commit, GitVersion.Model.Configuration.Config! configuration, System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<string!, GitVersion.Model.Configuration.BranchConfig!>>? mainlineBranchConfigs) -> System.Collections.Generic.Dictionary<string!, System.Collections.Generic.List<GitVersion.IBranch!>!>!
+GitVersion.RepositoryStore.GetMainlineBranches(GitVersion.ICommit! commit, GitVersion.Model.Configuration.Config! configuration, System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<string!, GitVersion.Model.Configuration.BranchConfig!>>? mainlineBranchConfigs) -> System.Collections.Generic.IDictionary<string!, System.Collections.Generic.List<GitVersion.IBranch!>!>!
 GitVersion.RepositoryStore.GetMainlineCommitLog(GitVersion.ICommit? baseVersionSource, GitVersion.ICommit? mainlineTip) -> System.Collections.Generic.IEnumerable<GitVersion.ICommit!>!
 GitVersion.RepositoryStore.GetMergeBaseCommits(GitVersion.ICommit? mergeCommit, GitVersion.ICommit? mergedHead, GitVersion.ICommit? findMergeBase) -> System.Collections.Generic.IEnumerable<GitVersion.ICommit!>!
 GitVersion.RepositoryStore.GetNumberOfUncommittedChanges() -> int
@@ -1113,6 +1124,11 @@ override GitVersion.BuildAgents.AzurePipelines.GenerateSetParameterMessage(strin
 override GitVersion.BuildAgents.AzurePipelines.GenerateSetVersionMessage(GitVersion.OutputVariables.VersionVariables! variables) -> string!
 override GitVersion.BuildAgents.AzurePipelines.GetCurrentBranch(bool usingDynamicRepos) -> string?
 override GitVersion.BuildAgents.AzurePipelines.PreventFetch() -> bool
+override GitVersion.BuildAgents.BitBucketPipelines.EnvironmentVariable.get -> string!
+override GitVersion.BuildAgents.BitBucketPipelines.GenerateSetParameterMessage(string! name, string! value) -> string![]!
+override GitVersion.BuildAgents.BitBucketPipelines.GenerateSetVersionMessage(GitVersion.OutputVariables.VersionVariables! variables) -> string?
+override GitVersion.BuildAgents.BitBucketPipelines.GetCurrentBranch(bool usingDynamicRepos) -> string?
+override GitVersion.BuildAgents.BitBucketPipelines.WriteIntegration(System.Action<string?>! writer, GitVersion.OutputVariables.VersionVariables! variables, bool updateBuildNumber = true) -> void
 override GitVersion.BuildAgents.BuildKite.CanApplyToCurrentContext() -> bool
 override GitVersion.BuildAgents.BuildKite.EnvironmentVariable.get -> string!
 override GitVersion.BuildAgents.BuildKite.GenerateSetParameterMessage(string! name, string! value) -> string![]!
@@ -1263,7 +1279,6 @@ readonly GitVersion.Configuration.Init.Wizard.ConfigInitWizardStep.Log -> GitVer
 readonly GitVersion.Configuration.Init.Wizard.ConfigInitWizardStep.StepFactory -> GitVersion.Configuration.Init.Wizard.IConfigInitStepFactory!
 static GitVersion.BranchCommit.operator !=(GitVersion.BranchCommit left, GitVersion.BranchCommit right) -> bool
 static GitVersion.BranchCommit.operator ==(GitVersion.BranchCommit left, GitVersion.BranchCommit right) -> bool
-static GitVersion.Configuration.ConfigExtensions.CalculateEffectiveConfiguration(this GitVersion.Model.Configuration.Config! configuration, GitVersion.Model.Configuration.BranchConfig! currentBranchConfig) -> GitVersion.Model.Configuration.EffectiveConfiguration!
 static GitVersion.Configuration.ConfigExtensions.GetBranchSpecificTag(this GitVersion.Model.Configuration.EffectiveConfiguration! configuration, GitVersion.Logging.ILog! log, string? branchFriendlyName, string? branchNameOverride) -> string!
 static GitVersion.Configuration.ConfigExtensions.GetConfigForBranch(this GitVersion.Model.Configuration.Config! config, string? branchName) -> GitVersion.Model.Configuration.BranchConfig?
 static GitVersion.Configuration.ConfigExtensions.GetReleaseBranchConfig(this GitVersion.Model.Configuration.Config! configuration) -> System.Collections.Generic.List<System.Collections.Generic.KeyValuePair<string!, GitVersion.Model.Configuration.BranchConfig!>>!
