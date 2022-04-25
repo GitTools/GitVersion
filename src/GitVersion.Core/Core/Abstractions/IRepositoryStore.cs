@@ -18,13 +18,14 @@ public interface IRepositoryStore
 
     IBranch GetTargetBranch(string? targetBranchName);
     IBranch? FindBranch(string? branchName);
+    IBranch? FindMainBranch(Config configuration);
     IBranch? GetChosenBranch(Config configuration);
     IEnumerable<IBranch> GetBranchesForCommit(ICommit commit);
     IEnumerable<IBranch> GetExcludedInheritBranches(Config configuration);
     IEnumerable<IBranch> GetReleaseBranches(IEnumerable<KeyValuePair<string, BranchConfig>> releaseBranchConfig);
     IEnumerable<IBranch> ExcludingBranches(IEnumerable<IBranch> branchesToExclude);
     IEnumerable<IBranch> GetBranchesContainingCommit(ICommit? commit, IEnumerable<IBranch>? branches = null, bool onlyTrackedBranches = false);
-    Dictionary<string, List<IBranch>> GetMainlineBranches(ICommit commit, Config configuration, IEnumerable<KeyValuePair<string, BranchConfig>>? mainlineBranchConfigs);
+    IDictionary<string, List<IBranch>> GetMainlineBranches(ICommit commit, Config configuration, IEnumerable<KeyValuePair<string, BranchConfig>>? mainlineBranchConfigs);
 
     /// <summary>
     /// Find the commit where the given branch was branched from another branch.

@@ -155,6 +155,12 @@ csharp_space_between_method_declaration_parameter_list_parentheses = false
 csharp_space_between_parentheses = false
 csharp_space_between_square_brackets = false
 
+# Alignment
+align_multiline_parameter = true
+
+# Qualify fields with "this."
+csharp_instance_members_qualify_members = field
+
 # IDE0011: Add braces
 dotnet_diagnostic.IDE0011.severity = none
 

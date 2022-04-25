@@ -1,6 +1,7 @@
 using GitVersion.Common;
 using GitVersion.Configuration;
 using GitVersion.Extensions;
+using GitVersion.Model.Configuration;
 using Microsoft.Extensions.Options;
 
 namespace GitVersion;
@@ -36,7 +37,7 @@ public class GitVersionContextFactory : IGitVersionContextFactory
         }
 
         var currentBranchConfig = this.branchConfigurationCalculator.GetBranchConfiguration(currentBranch, currentCommit, configuration);
-        var effectiveConfiguration = configuration.CalculateEffectiveConfiguration(currentBranchConfig);
+        var effectiveConfiguration = new EffectiveConfiguration(configuration, currentBranchConfig);
         var currentCommitTaggedVersion = this.repositoryStore.GetCurrentCommitTaggedVersion(currentCommit, effectiveConfiguration);
         var numberOfUncommittedChanges = this.repositoryStore.GetNumberOfUncommittedChanges();
 

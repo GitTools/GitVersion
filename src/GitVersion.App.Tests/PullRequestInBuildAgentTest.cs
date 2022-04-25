@@ -128,6 +128,19 @@ public class PullRequestInBuildAgentTest
         await VerifyPullRequestVersionIsCalculatedProperly(pullRequestRef, env);
     }
 
+
+    [TestCaseSource(nameof(PrMergeRefs))]
+    public async Task VerifyBitBucketPipelinesPullRequest(string pullRequestRef)
+    {
+
+        var env = new Dictionary<string, string>
+        {
+            { BitBucketPipelines.EnvironmentVariableName, "MyWorkspace" },
+            { BitBucketPipelines.PullRequestEnvironmentVariableName, pullRequestRef }
+        };
+        await VerifyPullRequestVersionIsCalculatedProperly(pullRequestRef, env);
+    }
+
     private static async Task VerifyPullRequestVersionIsCalculatedProperly(string pullRequestRef, Dictionary<string, string> env)
     {
         using var fixture = new EmptyRepositoryFixture();
