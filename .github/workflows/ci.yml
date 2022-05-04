@@ -30,6 +30,9 @@ env:
 
   ENABLED_DIAGNOSTICS: ${{ secrets.ENABLED_DIAGNOSTICS }}
 
+permissions:
+  contents: read
+
 jobs:
   prepare:
     name: Prepare Build
