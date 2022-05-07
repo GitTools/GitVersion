@@ -4,8 +4,13 @@ on:
   workflow_dispatch:
   repository_dispatch:
     types: [release]
+permissions:
+  contents: read
+
 jobs:
   homebrew:
+    permissions:
+      contents: none
     name: Bump Homebrew formula
     runs-on: macos-latest
     steps:

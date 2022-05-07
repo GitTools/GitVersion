@@ -46,6 +46,7 @@
         <PackageVersion_NUnit3TestAdapter>4.2.1</PackageVersion_NUnit3TestAdapter>
         <PackageVersion_NunitXmlTestLogger>3.0.117</PackageVersion_NunitXmlTestLogger>
         <PackageVersion_Shouldly>4.0.3</PackageVersion_Shouldly>
+        <PackageVersion_MicrosoftPublicApiAnalyzers>3.3.3</PackageVersion_MicrosoftPublicApiAnalyzers>
     </PropertyGroup>
 
     <ItemGroup Condition=" '$(IsTestProject)' == 'true' ">
