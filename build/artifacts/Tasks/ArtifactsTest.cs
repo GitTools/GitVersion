@@ -5,7 +5,7 @@ namespace Artifacts.Tasks;
 [TaskName(nameof(ArtifactsTest))]
 [TaskDescription("Tests packages in docker container")]
 [TaskArgument(Arguments.DockerRegistry, Constants.DockerHub, Constants.GitHub)]
-[TaskArgument(Arguments.DockerDotnetVersion, Constants.Version50, Constants.Version60, Constants.Version31)]
+[TaskArgument(Arguments.DockerDotnetVersion, Constants.Version60, Constants.Version31)]
 [TaskArgument(Arguments.DockerDistro, Constants.Alpine312, Constants.Debian10, Constants.Ubuntu2004)]
 [IsDependentOn(typeof(ArtifactsNativeTest))]
 [IsDependentOn(typeof(ArtifactsDotnetToolTest))]

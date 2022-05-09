@@ -127,7 +127,7 @@ jobs:
         if_false: github-check
     -
       name: '[Remark Lint]'
-      uses: reviewdog/action-remark-lint@v5.3
+      uses: reviewdog/action-remark-lint@v5.4
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
         reporter: ${{ steps.reporter.outputs.value }}

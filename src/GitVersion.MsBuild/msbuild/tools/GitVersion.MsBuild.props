@@ -19,11 +19,6 @@
         <GitVersion_ToolArgments Condition=" '$(GitVersion_NoCacheEnabled)' == 'true' ">$(GitVersion_ToolArgments) -nocache</GitVersion_ToolArgments>
     </PropertyGroup>
 
-    <PropertyGroup Condition="'$(MSBuildRuntimeType)' == 'Full' Or '$(MSBuildRuntimeType)' == 'Mono'">
-        <GitVersionFileExe>&quot;$(MSBuildThisFileDirectory)net48/gitversion.exe&quot;</GitVersionFileExe>
-        <GitVersionAssemblyFile>$(MSBuildThisFileDirectory)net48/GitVersion.MsBuild.dll</GitVersionAssemblyFile>
-    </PropertyGroup>
-
     <PropertyGroup>
         <GitVersionFileExe Condition="'$(GitVersionFileExe)' == ''">dotnet --roll-forward Major &quot;$(MSBuildThisFileDirectory)netcoreapp3.1/gitversion.dll&quot;</GitVersionFileExe>
         <GitVersionAssemblyFile Condition="'$(GitVersionAssemblyFile)' == ''">$(MSBuildThisFileDirectory)netcoreapp3.1/GitVersion.MsBuild.dll</GitVersionAssemblyFile>

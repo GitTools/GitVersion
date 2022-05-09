@@ -18,8 +18,6 @@ public class GitVersionInfoGeneratorTests : TestBase
     [TestCase("cs")]
     [TestCase("fs")]
     [TestCase("vb")]
-    [Category(NoMono)]
-    [Description(NoMonoDescription)]
     public void ShouldCreateFile(string fileExtension)
     {
         var directory = Path.GetTempPath();
