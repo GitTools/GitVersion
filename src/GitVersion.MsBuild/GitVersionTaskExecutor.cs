@@ -50,6 +50,13 @@ public class GitVersionTaskExecutor : IGitVersionTaskExecutor
     public void GenerateGitVersionInformation(GenerateGitVersionInformation task)
     {
         var versionVariables = VersionVariables.FromFile(task.VersionFile, fileSystem);
+
+        if (!string.IsNullOrEmpty(task.IntermediateOutputPath))
+        {
+            // Ensure provided output path exists first. Fixes issue #2815.
+            this.fileSystem.CreateDirectory(task.IntermediateOutputPath);
+        }
+
         var fileWriteInfo = task.IntermediateOutputPath.GetFileWriteInfo(task.Language, task.ProjectFile, "GitVersionInformation");
         task.GitVersionInformationFilePath = PathHelper.Combine(fileWriteInfo.WorkingDirectory, fileWriteInfo.FileName);
 
