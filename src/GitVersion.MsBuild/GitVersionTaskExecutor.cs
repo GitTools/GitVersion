@@ -34,6 +34,12 @@ public class GitVersionTaskExecutor : IGitVersionTaskExecutor
         var versionVariables = VersionVariables.FromFile(task.VersionFile, fileSystem);
         FileHelper.DeleteTempFiles();
         FileHelper.CheckForInvalidFiles(task.CompileFiles, task.ProjectFile);
+        
+        if (!string.IsNullOrEmpty(task.IntermediateOutputPath))
+        {
+            // Ensure provided output path exists first. Fixes issue #2815.
+            fileSystem.CreateDirectory(task.IntermediateOutputPath);
+        }
 
         var fileWriteInfo = task.IntermediateOutputPath.GetFileWriteInfo(task.Language, task.ProjectFile, "AssemblyInfo");
         task.AssemblyInfoTempFilePath = PathHelper.Combine(fileWriteInfo.WorkingDirectory, fileWriteInfo.FileName);
@@ -54,7 +60,7 @@ public class GitVersionTaskExecutor : IGitVersionTaskExecutor
         if (!string.IsNullOrEmpty(task.IntermediateOutputPath))
         {
             // Ensure provided output path exists first. Fixes issue #2815.
-            this.fileSystem.CreateDirectory(task.IntermediateOutputPath);
+            fileSystem.CreateDirectory(task.IntermediateOutputPath);
         }
 
         var fileWriteInfo = task.IntermediateOutputPath.GetFileWriteInfo(task.Language, task.ProjectFile, "GitVersionInformation");
