@@ -147,10 +147,6 @@
 			<li class="header">Namespace</li>
 		<li><a href="/api/GitVersion.BuildAgents">GitVersion<wbr>.BuildAgents</a></li>
 		<li role="separator" class="divider"></li>
-			<li class="header">Interface Types</li>
-				<li><a href="/api/GitVersion.BuildAgents/IBuildAgent">IBuildAgent</a></li>
-				<li><a href="/api/GitVersion.BuildAgents/IBuildAgentResolver">IBuildAgentResolver</a></li>
-				<li><a href="/api/GitVersion.BuildAgents/ICurrentBuildAgent">ICurrentBuildAgent</a></li>
 			<li class="header">Class Types</li>
 				<li><a href="/api/GitVersion.BuildAgents/AppVeyor">AppVeyor</a></li>
 				<li><a href="/api/GitVersion.BuildAgents/AzurePipelines">AzurePipelines</a></li>
@@ -171,6 +167,10 @@
 				<li><a href="/api/GitVersion.BuildAgents/SpaceAutomation">SpaceAutomation</a></li>
 				<li><a href="/api/GitVersion.BuildAgents/TeamCity">TeamCity</a></li>
 				<li><a href="/api/GitVersion.BuildAgents/TravisCi">TravisCi</a></li>
+			<li class="header">Interface Types</li>
+				<li><a href="/api/GitVersion.BuildAgents/IBuildAgent">IBuildAgent</a></li>
+				<li><a href="/api/GitVersion.BuildAgents/IBuildAgentResolver">IBuildAgentResolver</a></li>
+				<li><a href="/api/GitVersion.BuildAgents/ICurrentBuildAgent">ICurrentBuildAgent</a></li>
 
 
                     </ul>
@@ -219,21 +219,21 @@
 								<dd>
 									<ul class="list-unstyled">
 											<li><a href="/api/GitVersion.BuildAgents/ContinuaCi">ContinuaCi</a></li>								
-											<li><a href="/api/GitVersion.BuildAgents/AzurePipelines">AzurePipelines</a></li>								
-											<li><a href="/api/GitVersion.BuildAgents/Jenkins">Jenkins</a></li>								
-											<li><a href="/api/GitVersion.BuildAgents/MyGet">MyGet</a></li>								
-											<li><a href="/api/GitVersion.BuildAgents/TravisCi">TravisCi</a></li>								
-											<li><a href="/api/GitVersion.BuildAgents/GitHubActions">GitHubActions</a></li>								
 											<li><a href="/api/GitVersion.BuildAgents/EnvRun">EnvRun</a></li>								
-											<li><a href="/api/GitVersion.BuildAgents/LocalBuild">LocalBuild</a></li>								
-											<li><a href="/api/GitVersion.BuildAgents/BitBucketPipelines">BitBucketPipelines</a></li>								
-											<li><a href="/api/GitVersion.BuildAgents/AppVeyor">AppVeyor</a></li>								
-											<li><a href="/api/GitVersion.BuildAgents/BuildKite">BuildKite</a></li>								
 											<li><a href="/api/GitVersion.BuildAgents/Drone">Drone</a></li>								
-											<li><a href="/api/GitVersion.BuildAgents/TeamCity">TeamCity</a></li>								
-											<li><a href="/api/GitVersion.BuildAgents/GitLabCi">GitLabCi</a></li>								
-											<li><a href="/api/GitVersion.BuildAgents/SpaceAutomation">SpaceAutomation</a></li>								
+											<li><a href="/api/GitVersion.BuildAgents/BitBucketPipelines">BitBucketPipelines</a></li>								
+											<li><a href="/api/GitVersion.BuildAgents/BuildKite">BuildKite</a></li>								
 											<li><a href="/api/GitVersion.BuildAgents/CodeBuild">CodeBuild</a></li>								
+											<li><a href="/api/GitVersion.BuildAgents/GitLabCi">GitLabCi</a></li>								
+											<li><a href="/api/GitVersion.BuildAgents/LocalBuild">LocalBuild</a></li>								
+											<li><a href="/api/GitVersion.BuildAgents/TravisCi">TravisCi</a></li>								
+											<li><a href="/api/GitVersion.BuildAgents/AppVeyor">AppVeyor</a></li>								
+											<li><a href="/api/GitVersion.BuildAgents/TeamCity">TeamCity</a></li>								
+											<li><a href="/api/GitVersion.BuildAgents/SpaceAutomation">SpaceAutomation</a></li>								
+											<li><a href="/api/GitVersion.BuildAgents/Jenkins">Jenkins</a></li>								
+											<li><a href="/api/GitVersion.BuildAgents/GitHubActions">GitHubActions</a></li>								
+											<li><a href="/api/GitVersion.BuildAgents/MyGet">MyGet</a></li>								
+											<li><a href="/api/GitVersion.BuildAgents/AzurePipelines">AzurePipelines</a></li>								
 									</ul>
 								</dd>			
 							
@@ -251,36 +251,36 @@
 class Type type-node
 	Derived0["ContinuaCi"]--&gt;Type
 	click Derived0 "/api/GitVersion.BuildAgents/ContinuaCi"
-	Derived1["AzurePipelines"]--&gt;Type
-	click Derived1 "/api/GitVersion.BuildAgents/AzurePipelines"
-	Derived2["Jenkins"]--&gt;Type
-	click Derived2 "/api/GitVersion.BuildAgents/Jenkins"
-	Derived3["MyGet"]--&gt;Type
-	click Derived3 "/api/GitVersion.BuildAgents/MyGet"
-	Derived4["TravisCi"]--&gt;Type
-	click Derived4 "/api/GitVersion.BuildAgents/TravisCi"
-	Derived5["GitHubActions"]--&gt;Type
-	click Derived5 "/api/GitVersion.BuildAgents/GitHubActions"
-	Derived6["EnvRun"]--&gt;Type
-	click Derived6 "/api/GitVersion.BuildAgents/EnvRun"
+	Derived1["EnvRun"]--&gt;Type
+	click Derived1 "/api/GitVersion.BuildAgents/EnvRun"
+	Derived2["Drone"]--&gt;Type
+	click Derived2 "/api/GitVersion.BuildAgents/Drone"
+	Derived3["BitBucketPipelines"]--&gt;Type
+	click Derived3 "/api/GitVersion.BuildAgents/BitBucketPipelines"
+	Derived4["BuildKite"]--&gt;Type
+	click Derived4 "/api/GitVersion.BuildAgents/BuildKite"
+	Derived5["CodeBuild"]--&gt;Type
+	click Derived5 "/api/GitVersion.BuildAgents/CodeBuild"
+	Derived6["GitLabCi"]--&gt;Type
+	click Derived6 "/api/GitVersion.BuildAgents/GitLabCi"
 	Derived7["LocalBuild"]--&gt;Type
 	click Derived7 "/api/GitVersion.BuildAgents/LocalBuild"
-	Derived8["BitBucketPipelines"]--&gt;Type
-	click Derived8 "/api/GitVersion.BuildAgents/BitBucketPipelines"
+	Derived8["TravisCi"]--&gt;Type
+	click Derived8 "/api/GitVersion.BuildAgents/TravisCi"
 	Derived9["AppVeyor"]--&gt;Type
 	click Derived9 "/api/GitVersion.BuildAgents/AppVeyor"
-	Derived10["BuildKite"]--&gt;Type
-	click Derived10 "/api/GitVersion.BuildAgents/BuildKite"
-	Derived11["Drone"]--&gt;Type
-	click Derived11 "/api/GitVersion.BuildAgents/Drone"
-	Derived12["TeamCity"]--&gt;Type
-	click Derived12 "/api/GitVersion.BuildAgents/TeamCity"
-	Derived13["GitLabCi"]--&gt;Type
-	click Derived13 "/api/GitVersion.BuildAgents/GitLabCi"
-	Derived14["SpaceAutomation"]--&gt;Type
-	click Derived14 "/api/GitVersion.BuildAgents/SpaceAutomation"
-	Derived15["CodeBuild"]--&gt;Type
-	click Derived15 "/api/GitVersion.BuildAgents/CodeBuild"
+	Derived10["TeamCity"]--&gt;Type
+	click Derived10 "/api/GitVersion.BuildAgents/TeamCity"
+	Derived11["SpaceAutomation"]--&gt;Type
+	click Derived11 "/api/GitVersion.BuildAgents/SpaceAutomation"
+	Derived12["Jenkins"]--&gt;Type
+	click Derived12 "/api/GitVersion.BuildAgents/Jenkins"
+	Derived13["GitHubActions"]--&gt;Type
+	click Derived13 "/api/GitVersion.BuildAgents/GitHubActions"
+	Derived14["MyGet"]--&gt;Type
+	click Derived14 "/api/GitVersion.BuildAgents/MyGet"
+	Derived15["AzurePipelines"]--&gt;Type
+	click Derived15 "/api/GitVersion.BuildAgents/AzurePipelines"
 
 						</div>
 					</div>
