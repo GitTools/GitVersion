@@ -34,7 +34,7 @@ public class GitVersionTaskExecutor : IGitVersionTaskExecutor
         var versionVariables = VersionVariables.FromFile(task.VersionFile, fileSystem);
         FileHelper.DeleteTempFiles();
         FileHelper.CheckForInvalidFiles(task.CompileFiles, task.ProjectFile);
-        
+
         if (!string.IsNullOrEmpty(task.IntermediateOutputPath))
         {
             // Ensure provided output path exists first. Fixes issue #2815.
