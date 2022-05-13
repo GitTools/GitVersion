@@ -89,8 +89,6 @@ public class WriteVersionInfoTest : TestTaskBase
     }
 
     [Test]
-    [Category(NoNet48)]
-    [Category(NoMono)]
     public void WriteVersionInfoTaskShouldNotLogOutputVariablesToBuildOutputWhenRunWithMsBuild()
     {
         const string taskName = nameof(WriteVersionInfoToBuildLog);
@@ -106,8 +104,6 @@ public class WriteVersionInfoTest : TestTaskBase
     }
 
     [Test]
-    [Category(NoNet48)]
-    [Category(NoMono)]
     public void WriteVersionInfoTaskShouldLogOutputVariablesToBuildOutputWhenRunWithMsBuildInAzurePipeline()
     {
         const string taskName = nameof(WriteVersionInfoToBuildLog);
@@ -128,7 +124,7 @@ public class WriteVersionInfoTest : TestTaskBase
         project.UsingTaskAssemblyFile(taskName, assemblyFileLocation)
             .Property("GenerateAssemblyInfo", "false")
             .Target(targetToRun, beforeTargets: "CoreCompile;GetAssemblyVersion;GenerateNuspec")
-            .Task(taskName, parameters: new Dictionary<string, string>
+            .Task(taskName, parameters: new Dictionary<string, string?>
             {
                 { "SolutionDirectory", "$(MSBuildProjectDirectory)" },
                 { "VersionFile", "$(MSBuildProjectDirectory)/gitversion.json" }
