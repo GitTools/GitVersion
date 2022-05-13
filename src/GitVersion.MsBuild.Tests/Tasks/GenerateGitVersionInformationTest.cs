@@ -51,8 +51,6 @@ public class GenerateGitVersionInformationTest : TestTaskBase
     }
 
     [Test]
-    [Category(NoNet48)]
-    [Category(NoMono)]
     public void GenerateGitVersionInformationTaskShouldCreateFileWhenRunWithMsBuild()
     {
         const string taskName = nameof(GenerateGitVersionInformation);
@@ -78,8 +76,6 @@ public class GenerateGitVersionInformationTest : TestTaskBase
     }
 
     [Test]
-    [Category(NoNet48)]
-    [Category(NoMono)]
     public void GenerateGitVersionInformationTaskShouldCreateFileWhenRunWithMsBuildInBuildServer()
     {
         const string taskName = nameof(GenerateGitVersionInformation);
@@ -143,8 +139,6 @@ public class GenerateGitVersionInformationTest : TestTaskBase
     }
 
     [Test]
-    [Category(NoNet48)]
-    [Category(NoMono)]
     public void GenerateGitVersionInformationTaskShouldCreateFileWhenRunWithMsBuildAndIntermediateOutputPathDoesNotExist()
     {
         const string taskName = nameof(GenerateGitVersionInformation);
@@ -171,8 +165,6 @@ public class GenerateGitVersionInformationTest : TestTaskBase
     }
 
     [Test]
-    [Category(NoNet48)]
-    [Category(NoMono)]
     public void GenerateGitVersionInformationTaskShouldCreateFileWhenRunWithMsBuildAndIntermediateOutputPathDoesNotExistInBuildServer()
     {
         const string taskName = nameof(GenerateGitVersionInformation);
@@ -204,7 +196,7 @@ public class GenerateGitVersionInformationTest : TestTaskBase
         project.UsingTaskAssemblyFile(taskName, assemblyFileLocation)
             .Property("GenerateAssemblyInfo", "false")
             .Target(targetToRun, beforeTargets: "CoreCompile;GetAssemblyVersion;GenerateNuspec")
-            .Task(taskName, parameters: new Dictionary<string, string>
+            .Task(taskName, parameters: new Dictionary<string, string?>
             {
                 { "SolutionDirectory", "$(MSBuildProjectDirectory)" },
                 { "VersionFile", "$(MSBuildProjectDirectory)/gitversion.json" },
