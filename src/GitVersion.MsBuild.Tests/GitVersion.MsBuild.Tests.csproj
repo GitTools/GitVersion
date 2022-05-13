@@ -16,7 +16,7 @@
 
     <ItemGroup>
         <PackageReference Include="Buildalyzer" Version="4.1.2" />
-        <PackageReference Include="MSBuild.ProjectCreation" Version="6.3.3" />
+        <PackageReference Include="MSBuild.ProjectCreation" Version="8.0.0" />
         <PackageReference Include="LibGit2Sharp" Version="$(PackageVersion_LibGit2Sharp)" />
     </ItemGroup>
 
