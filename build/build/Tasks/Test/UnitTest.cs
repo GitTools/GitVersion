@@ -54,7 +54,7 @@ public class UnitTest : FrostingTask<BuildContext>
         {
             TestResultsFiles = testResultsFiles.ToArray(),
             Platform = context.Environment.Platform.Family.ToString(),
-            TestRunner = AzurePipelinesTestRunnerType.NUnit
+            TestRunner = AzurePipelinesTestRunnerType.JUnit
         };
         context.BuildSystem().AzurePipelines.Commands.PublishTestResults(data);
     }
@@ -75,7 +75,7 @@ public class UnitTest : FrostingTask<BuildContext>
         {
             settings.TestAdapterPath = new DirectoryPath(".");
             var resultsPath = context.MakeAbsolute(testResultsPath.CombineWithFilePath($"{projectName}.results.xml"));
-            settings.Loggers = new[] { $"nunit;LogFilePath={resultsPath}" };
+            settings.Loggers = new[] { $"junit;LogFilePath={resultsPath}" };
         }
 
         var coverletSettings = new CoverletSettings
