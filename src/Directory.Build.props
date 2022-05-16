@@ -44,7 +44,7 @@
         <PackageVersion_CoverletMsBuild>3.1.2</PackageVersion_CoverletMsBuild>
         <PackageVersion_NUnit>3.13.3</PackageVersion_NUnit>
         <PackageVersion_NUnit3TestAdapter>4.2.1</PackageVersion_NUnit3TestAdapter>
-        <PackageVersion_NunitXmlTestLogger>3.0.117</PackageVersion_NunitXmlTestLogger>
+        <PackageVersion_JunitXmlTestLogger>3.0.114</PackageVersion_JunitXmlTestLogger>
         <PackageVersion_Shouldly>4.0.3</PackageVersion_Shouldly>
         <PackageVersion_MicrosoftPublicApiAnalyzers>3.3.3</PackageVersion_MicrosoftPublicApiAnalyzers>
     </PropertyGroup>
@@ -60,7 +60,7 @@
 
         <PackageReference Include="NUnit" Version="$(PackageVersion_NUnit)" />
         <PackageReference Include="NUnit3TestAdapter" Version="$(PackageVersion_NUnit3TestAdapter)" />
-        <PackageReference Include="NunitXml.TestLogger" Version="$(PackageVersion_NunitXmlTestLogger)" />
+        <PackageReference Include="JunitXml.TestLogger" Version="$(PackageVersion_JunitXmlTestLogger)" />
         <PackageReference Include="Shouldly" Version="$(PackageVersion_Shouldly)" />
 
         <PackageReference Include="coverlet.msbuild" Version="$(PackageVersion_CoverletMsBuild)">
