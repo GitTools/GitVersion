@@ -72,8 +72,6 @@ public class MsBuildExeFixture
             ? ProjectCreator.Templates.SdkCsproj(this.ProjectPath)
             : ProjectCreator.Templates.LegacyCsproj(this.ProjectPath, defaultTargets: null, targetFrameworkVersion: "v4.8", toolsVersion: "15.0");
 
-        if (project == null) return;
-
         extendProject(project);
 
         project.Save();
