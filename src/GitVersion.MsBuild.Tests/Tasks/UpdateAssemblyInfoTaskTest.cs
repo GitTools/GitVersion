@@ -171,7 +171,7 @@ public class UpdateAssemblyInfoTaskTest : TestTaskBase
         project.UsingTaskAssemblyFile(taskName, assemblyFileLocation)
             .Property("GenerateAssemblyInfo", "false")
             .Target(targetToRun, beforeTargets: "CoreCompile;GetAssemblyVersion;GenerateNuspec")
-            .Task(taskName, parameters: new Dictionary<string, string>
+            .Task(taskName, parameters: new Dictionary<string, string?>
             {
                 { "SolutionDirectory", "$(MSBuildProjectDirectory)" },
                 { "VersionFile", "$(MSBuildProjectDirectory)/gitversion.json" },
