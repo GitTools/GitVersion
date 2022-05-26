@@ -70,7 +70,7 @@ public class MsBuildExeFixture
     {
         var project = RuntimeHelper.IsCoreClr()
             ? ProjectCreator.Templates.SdkCsproj(this.ProjectPath)
-            : ProjectCreator.Templates.LegacyCsproj(this.ProjectPath, defaultTargets: null, targetFrameworkVersion: "v4.8", toolsVersion: "15.0");
+            : ProjectCreator.Templates.LegacyCsproj(this.ProjectPath, targetFrameworkVersion: "v4.8", toolsVersion: "15.0");
 
         extendProject(project);
 
