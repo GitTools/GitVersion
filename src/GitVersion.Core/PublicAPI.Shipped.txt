@@ -625,14 +625,10 @@ GitVersion.Model.Configuration.Config.AssemblyVersioningScheme.get -> GitVersion
 GitVersion.Model.Configuration.Config.AssemblyVersioningScheme.set -> void
 GitVersion.Model.Configuration.Config.Branches.get -> System.Collections.Generic.Dictionary<string!, GitVersion.Model.Configuration.BranchConfig!>!
 GitVersion.Model.Configuration.Config.Branches.set -> void
-GitVersion.Model.Configuration.Config.BuildMetaDataPadding.get -> int?
-GitVersion.Model.Configuration.Config.BuildMetaDataPadding.set -> void
 GitVersion.Model.Configuration.Config.CommitDateFormat.get -> string?
 GitVersion.Model.Configuration.Config.CommitDateFormat.set -> void
 GitVersion.Model.Configuration.Config.CommitMessageIncrementing.get -> GitVersion.VersionCalculation.CommitMessageIncrementMode?
 GitVersion.Model.Configuration.Config.CommitMessageIncrementing.set -> void
-GitVersion.Model.Configuration.Config.CommitsSinceVersionSourcePadding.get -> int?
-GitVersion.Model.Configuration.Config.CommitsSinceVersionSourcePadding.set -> void
 GitVersion.Model.Configuration.Config.Config() -> void
 GitVersion.Model.Configuration.Config.ContinuousDeploymentFallbackTag.get -> string?
 GitVersion.Model.Configuration.Config.ContinuousDeploymentFallbackTag.set -> void
@@ -640,8 +636,6 @@ GitVersion.Model.Configuration.Config.Ignore.get -> GitVersion.Model.Configurati
 GitVersion.Model.Configuration.Config.Ignore.set -> void
 GitVersion.Model.Configuration.Config.Increment.get -> GitVersion.IncrementStrategy?
 GitVersion.Model.Configuration.Config.Increment.set -> void
-GitVersion.Model.Configuration.Config.LegacySemVerPadding.get -> int?
-GitVersion.Model.Configuration.Config.LegacySemVerPadding.set -> void
 GitVersion.Model.Configuration.Config.MajorVersionBumpMessage.get -> string?
 GitVersion.Model.Configuration.Config.MajorVersionBumpMessage.set -> void
 GitVersion.Model.Configuration.Config.MergeMessageFormats.get -> System.Collections.Generic.Dictionary<string!, string!>!
@@ -669,18 +663,14 @@ GitVersion.Model.Configuration.EffectiveConfiguration.AssemblyInformationalForma
 GitVersion.Model.Configuration.EffectiveConfiguration.AssemblyVersioningFormat.get -> string?
 GitVersion.Model.Configuration.EffectiveConfiguration.AssemblyVersioningScheme.get -> GitVersion.Extensions.AssemblyVersioningScheme
 GitVersion.Model.Configuration.EffectiveConfiguration.BranchPrefixToTrim.get -> string?
-GitVersion.Model.Configuration.EffectiveConfiguration.BuildMetaDataPadding.get -> int
 GitVersion.Model.Configuration.EffectiveConfiguration.CommitDateFormat.get -> string?
 GitVersion.Model.Configuration.EffectiveConfiguration.CommitMessageIncrementing.get -> GitVersion.VersionCalculation.CommitMessageIncrementMode
-GitVersion.Model.Configuration.EffectiveConfiguration.CommitsSinceVersionSourcePadding.get -> int
 GitVersion.Model.Configuration.EffectiveConfiguration.Configuration.get -> GitVersion.Model.Configuration.Config!
 GitVersion.Model.Configuration.EffectiveConfiguration.ContinuousDeploymentFallbackTag.get -> string?
-GitVersion.Model.Configuration.EffectiveConfiguration.EffectiveConfiguration(GitVersion.Extensions.AssemblyVersioningScheme assemblyVersioningScheme, GitVersion.Extensions.AssemblyFileVersioningScheme assemblyFileVersioningScheme, string? assemblyInformationalFormat, string? assemblyVersioningFormat, string? assemblyFileVersioningFormat, GitVersion.VersionCalculation.VersioningMode versioningMode, string? gitTagPrefix, string? tag, string? nextVersion, GitVersion.IncrementStrategy increment, string? branchPrefixToTrim, bool preventIncrementForMergedBranchVersion, string? tagNumberPattern, string? continuousDeploymentFallbackTag, bool trackMergeTarget, string? majorVersionBumpMessage, string? minorVersionBumpMessage, string? patchVersionBumpMessage, string? noBumpMessage, GitVersion.VersionCalculation.CommitMessageIncrementMode commitMessageIncrementing, int legacySemVerPaddding, int buildMetaDataPadding, int commitsSinceVersionSourcePadding, System.Collections.Generic.IEnumerable<GitVersion.VersionCalculation.IVersionFilter!>! versionFilters, bool tracksReleaseBranches, bool isCurrentBranchRelease, string? commitDateFormat, bool updateBuildNumber, int preReleaseWeight, int tagPreReleaseWeight) -> void
 GitVersion.Model.Configuration.EffectiveConfiguration.EffectiveConfiguration(GitVersion.Model.Configuration.Config! configuration, GitVersion.Model.Configuration.BranchConfig! currentBranchConfig) -> void
 GitVersion.Model.Configuration.EffectiveConfiguration.GitTagPrefix.get -> string?
 GitVersion.Model.Configuration.EffectiveConfiguration.Increment.get -> GitVersion.IncrementStrategy
 GitVersion.Model.Configuration.EffectiveConfiguration.IsCurrentBranchRelease.get -> bool
-GitVersion.Model.Configuration.EffectiveConfiguration.LegacySemVerPadding.get -> int
 GitVersion.Model.Configuration.EffectiveConfiguration.MajorVersionBumpMessage.get -> string?
 GitVersion.Model.Configuration.EffectiveConfiguration.MinorVersionBumpMessage.get -> string?
 GitVersion.Model.Configuration.EffectiveConfiguration.NextVersion.get -> string?
@@ -713,11 +703,9 @@ GitVersion.OutputVariables.VersionVariables.AssemblySemFileVer.get -> string?
 GitVersion.OutputVariables.VersionVariables.AssemblySemVer.get -> string?
 GitVersion.OutputVariables.VersionVariables.BranchName.get -> string?
 GitVersion.OutputVariables.VersionVariables.BuildMetaData.get -> string?
-GitVersion.OutputVariables.VersionVariables.BuildMetaDataPadded.get -> string?
 GitVersion.OutputVariables.VersionVariables.CommitDate.get -> string?
 GitVersion.OutputVariables.VersionVariables.CommitDate.set -> void
 GitVersion.OutputVariables.VersionVariables.CommitsSinceVersionSource.get -> string?
-GitVersion.OutputVariables.VersionVariables.CommitsSinceVersionSourcePadded.get -> string?
 GitVersion.OutputVariables.VersionVariables.EscapedBranchName.get -> string?
 GitVersion.OutputVariables.VersionVariables.FileName.get -> string?
 GitVersion.OutputVariables.VersionVariables.FileName.set -> void
@@ -725,15 +713,9 @@ GitVersion.OutputVariables.VersionVariables.FullBuildMetaData.get -> string?
 GitVersion.OutputVariables.VersionVariables.FullSemVer.get -> string!
 GitVersion.OutputVariables.VersionVariables.GetEnumerator() -> System.Collections.Generic.IEnumerator<System.Collections.Generic.KeyValuePair<string!, string!>>!
 GitVersion.OutputVariables.VersionVariables.InformationalVersion.get -> string?
-GitVersion.OutputVariables.VersionVariables.LegacySemVer.get -> string!
-GitVersion.OutputVariables.VersionVariables.LegacySemVerPadded.get -> string!
 GitVersion.OutputVariables.VersionVariables.Major.get -> string!
 GitVersion.OutputVariables.VersionVariables.MajorMinorPatch.get -> string!
 GitVersion.OutputVariables.VersionVariables.Minor.get -> string!
-GitVersion.OutputVariables.VersionVariables.NuGetPreReleaseTag.get -> string?
-GitVersion.OutputVariables.VersionVariables.NuGetPreReleaseTagV2.get -> string?
-GitVersion.OutputVariables.VersionVariables.NuGetVersion.get -> string!
-GitVersion.OutputVariables.VersionVariables.NuGetVersionV2.get -> string!
 GitVersion.OutputVariables.VersionVariables.Patch.get -> string!
 GitVersion.OutputVariables.VersionVariables.PreReleaseLabel.get -> string?
 GitVersion.OutputVariables.VersionVariables.PreReleaseLabelWithDash.get -> string?
@@ -747,7 +729,7 @@ GitVersion.OutputVariables.VersionVariables.this[string! variable].get -> string
 GitVersion.OutputVariables.VersionVariables.TryGetValue(string! variable, out string? variableValue) -> bool
 GitVersion.OutputVariables.VersionVariables.UncommittedChanges.get -> string?
 GitVersion.OutputVariables.VersionVariables.VersionSourceSha.get -> string?
-GitVersion.OutputVariables.VersionVariables.VersionVariables(string! major, string! minor, string! patch, string? buildMetaData, string? buildMetaDataPadded, string? fullBuildMetaData, string? branchName, string? escapedBranchName, string? sha, string? shortSha, string! majorMinorPatch, string! semVer, string! legacySemVer, string! legacySemVerPadded, string! fullSemVer, string? assemblySemVer, string? assemblySemFileVer, string? preReleaseTag, string? preReleaseTagWithDash, string? preReleaseLabel, string? preReleaseLabelWithDash, string? preReleaseNumber, string! weightedPreReleaseNumber, string? informationalVersion, string? commitDate, string! nugetVersion, string! nugetVersionV2, string? nugetPreReleaseTag, string? nugetPreReleaseTagV2, string? versionSourceSha, string? commitsSinceVersionSource, string? commitsSinceVersionSourcePadded, string? uncommittedChanges) -> void
+GitVersion.OutputVariables.VersionVariables.VersionVariables(string! major, string! minor, string! patch, string? buildMetaData, string? fullBuildMetaData, string? branchName, string? escapedBranchName, string? sha, string? shortSha, string! majorMinorPatch, string! semVer, string! fullSemVer, string? assemblySemVer, string? assemblySemFileVer, string? preReleaseTag, string? preReleaseTagWithDash, string? preReleaseLabel, string? preReleaseLabelWithDash, string? preReleaseNumber, string! weightedPreReleaseNumber, string? informationalVersion, string? commitDate, string? versionSourceSha, string? commitsSinceVersionSource, string? uncommittedChanges) -> void
 GitVersion.OutputVariables.VersionVariables.WeightedPreReleaseNumber.get -> string!
 GitVersion.OutputVariables.VersionVariablesJsonModel
 GitVersion.OutputVariables.VersionVariablesJsonModel.AssemblySemFileVer.get -> string?
@@ -758,14 +740,10 @@ GitVersion.OutputVariables.VersionVariablesJsonModel.BranchName.get -> string?
 GitVersion.OutputVariables.VersionVariablesJsonModel.BranchName.set -> void
 GitVersion.OutputVariables.VersionVariablesJsonModel.BuildMetaData.get -> string?
 GitVersion.OutputVariables.VersionVariablesJsonModel.BuildMetaData.set -> void
-GitVersion.OutputVariables.VersionVariablesJsonModel.BuildMetaDataPadded.get -> string?
-GitVersion.OutputVariables.VersionVariablesJsonModel.BuildMetaDataPadded.set -> void
 GitVersion.OutputVariables.VersionVariablesJsonModel.CommitDate.get -> string?
 GitVersion.OutputVariables.VersionVariablesJsonModel.CommitDate.set -> void
 GitVersion.OutputVariables.VersionVariablesJsonModel.CommitsSinceVersionSource.get -> string?
 GitVersion.OutputVariables.VersionVariablesJsonModel.CommitsSinceVersionSource.set -> void
-GitVersion.OutputVariables.VersionVariablesJsonModel.CommitsSinceVersionSourcePadded.get -> string?
-GitVersion.OutputVariables.VersionVariablesJsonModel.CommitsSinceVersionSourcePadded.set -> void
 GitVersion.OutputVariables.VersionVariablesJsonModel.EscapedBranchName.get -> string?
 GitVersion.OutputVariables.VersionVariablesJsonModel.EscapedBranchName.set -> void
 GitVersion.OutputVariables.VersionVariablesJsonModel.FullBuildMetaData.get -> string?
@@ -774,24 +752,12 @@ GitVersion.OutputVariables.VersionVariablesJsonModel.FullSemVer.get -> string?
 GitVersion.OutputVariables.VersionVariablesJsonModel.FullSemVer.set -> void
 GitVersion.OutputVariables.VersionVariablesJsonModel.InformationalVersion.get -> string?
 GitVersion.OutputVariables.VersionVariablesJsonModel.InformationalVersion.set -> void
-GitVersion.OutputVariables.VersionVariablesJsonModel.LegacySemVer.get -> string?
-GitVersion.OutputVariables.VersionVariablesJsonModel.LegacySemVer.set -> void
-GitVersion.OutputVariables.VersionVariablesJsonModel.LegacySemVerPadded.get -> string?
-GitVersion.OutputVariables.VersionVariablesJsonModel.LegacySemVerPadded.set -> void
 GitVersion.OutputVariables.VersionVariablesJsonModel.Major.get -> string?
 GitVersion.OutputVariables.VersionVariablesJsonModel.Major.set -> void
 GitVersion.OutputVariables.VersionVariablesJsonModel.MajorMinorPatch.get -> string?
 GitVersion.OutputVariables.VersionVariablesJsonModel.MajorMinorPatch.set -> void
 GitVersion.OutputVariables.VersionVariablesJsonModel.Minor.get -> string?
 GitVersion.OutputVariables.VersionVariablesJsonModel.Minor.set -> void
-GitVersion.OutputVariables.VersionVariablesJsonModel.NuGetPreReleaseTag.get -> string?
-GitVersion.OutputVariables.VersionVariablesJsonModel.NuGetPreReleaseTag.set -> void
-GitVersion.OutputVariables.VersionVariablesJsonModel.NuGetPreReleaseTagV2.get -> string?
-GitVersion.OutputVariables.VersionVariablesJsonModel.NuGetPreReleaseTagV2.set -> void
-GitVersion.OutputVariables.VersionVariablesJsonModel.NuGetVersion.get -> string?
-GitVersion.OutputVariables.VersionVariablesJsonModel.NuGetVersion.set -> void
-GitVersion.OutputVariables.VersionVariablesJsonModel.NuGetVersionV2.get -> string?
-GitVersion.OutputVariables.VersionVariablesJsonModel.NuGetVersionV2.set -> void
 GitVersion.OutputVariables.VersionVariablesJsonModel.Patch.get -> string?
 GitVersion.OutputVariables.VersionVariablesJsonModel.Patch.set -> void
 GitVersion.OutputVariables.VersionVariablesJsonModel.PreReleaseLabel.get -> string?
@@ -905,24 +871,15 @@ GitVersion.SemanticVersionFormatValues.AssemblyFileSemVer.get -> string?
 GitVersion.SemanticVersionFormatValues.AssemblySemVer.get -> string?
 GitVersion.SemanticVersionFormatValues.BranchName.get -> string?
 GitVersion.SemanticVersionFormatValues.BuildMetaData.get -> string?
-GitVersion.SemanticVersionFormatValues.BuildMetaDataPadded.get -> string?
 GitVersion.SemanticVersionFormatValues.CommitDate.get -> string?
 GitVersion.SemanticVersionFormatValues.CommitsSinceVersionSource.get -> string?
-GitVersion.SemanticVersionFormatValues.CommitsSinceVersionSourcePadded.get -> string?
-GitVersion.SemanticVersionFormatValues.DefaultInformationalVersion.get -> string!
 GitVersion.SemanticVersionFormatValues.EscapedBranchName.get -> string?
 GitVersion.SemanticVersionFormatValues.FullBuildMetaData.get -> string?
 GitVersion.SemanticVersionFormatValues.FullSemVer.get -> string!
 GitVersion.SemanticVersionFormatValues.InformationalVersion.get -> string!
-GitVersion.SemanticVersionFormatValues.LegacySemVer.get -> string!
-GitVersion.SemanticVersionFormatValues.LegacySemVerPadded.get -> string!
 GitVersion.SemanticVersionFormatValues.Major.get -> string!
 GitVersion.SemanticVersionFormatValues.MajorMinorPatch.get -> string!
 GitVersion.SemanticVersionFormatValues.Minor.get -> string!
-GitVersion.SemanticVersionFormatValues.NuGetPreReleaseTag.get -> string?
-GitVersion.SemanticVersionFormatValues.NuGetPreReleaseTagV2.get -> string?
-GitVersion.SemanticVersionFormatValues.NuGetVersion.get -> string!
-GitVersion.SemanticVersionFormatValues.NuGetVersionV2.get -> string!
 GitVersion.SemanticVersionFormatValues.Patch.get -> string!
 GitVersion.SemanticVersionFormatValues.PreReleaseLabel.get -> string?
 GitVersion.SemanticVersionFormatValues.PreReleaseLabelWithDash.get -> string?

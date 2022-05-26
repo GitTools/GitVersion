@@ -108,8 +108,6 @@ public class SemanticVersionPreReleaseTag :
     /// <summary>
     /// Default formats:
     /// <para>t - SemVer 2.0 formatted tag [beta.1]</para>
-    /// <para>l - Legacy SemVer tag with the tag number padded. [beta1]</para>
-    /// <para>lp - Legacy SemVer tag with the tag number padded. [beta0001]. Can specify an integer to control padding (i.e., lp5)</para>
     /// </summary>
     public string ToString(string? format, IFormatProvider? formatProvider)
     {
@@ -120,47 +118,12 @@ public class SemanticVersionPreReleaseTag :
             format = "t";
 
         format = format.ToLower();
-        if (format.StartsWith("lp", StringComparison.Ordinal))
-        {
-            // Handle format
-            var padding = 4;
-            if (format.Length > 2)
-            {
-                // try to parse
-                if (int.TryParse(format.Substring(2), out var p))
-                {
-                    padding = p;
-                }
-            }
-
-            return Number.HasValue ? FormatLegacy(GetLegacyName(), Number.Value.ToString("D" + padding)) : FormatLegacy(GetLegacyName());
-        }
 
         return format switch
         {
             "t" => (Number.HasValue ? Name.IsNullOrEmpty() ? $"{Number}" : $"{Name}.{Number}" : Name ?? string.Empty),
-            "l" => (Number.HasValue ? FormatLegacy(GetLegacyName(), Number.Value.ToString()) : FormatLegacy(GetLegacyName())),
             _ => throw new FormatException($"Unknown format '{format}'.")
         };
-    }
-
-    private static string FormatLegacy(string tag, string number = "")
-    {
-        var tagEndsWithANumber = char.IsNumber(tag.LastOrDefault());
-        if (tagEndsWithANumber && number.Length > 0)
-            number = "-" + number;
-
-        return tag.Length + number.Length > 20 ? $"{tag.Substring(0, 20 - number.Length)}{number}" : $"{tag}{number}";
-    }
-
-    private string GetLegacyName()
-    {
-        if (Name.IsNullOrEmpty())
-        {
-            return string.Empty;
-        }
-        var firstPart = Name.Split('_')[0];
-        return firstPart.Replace(".", string.Empty);
     }
 
     public bool HasTag() =>

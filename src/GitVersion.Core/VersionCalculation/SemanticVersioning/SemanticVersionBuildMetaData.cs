@@ -68,7 +68,6 @@ public class SemanticVersionBuildMetaData : IFormattable, IEquatable<SemanticVer
     /// <para>b - Formats just the build number</para>
     /// <para>s - Formats the build number and the Git Sha</para>
     /// <para>f - Formats the full build metadata</para>
-    /// <para>p - Formats the padded build number. Can specify an integer for padding, default is 4. (i.e., p5)</para>
     /// </summary>
     public string ToString(string? format, IFormatProvider? formatProvider)
     {
@@ -79,22 +78,6 @@ public class SemanticVersionBuildMetaData : IFormattable, IEquatable<SemanticVer
             format = "b";
 
         format = format.ToLower();
-        if (format.StartsWith("p", StringComparison.Ordinal))
-        {
-            // Handle format
-            var padding = 4;
-            if (format.Length > 1)
-            {
-                // try to parse
-                if (int.TryParse(format.Substring(1), out var p))
-                {
-                    padding = p;
-                }
-            }
-
-            return this.CommitsSinceTag != null ? this.CommitsSinceTag.Value.ToString("D" + padding) : string.Empty;
-        }
-
         return format.ToLower() switch
         {
             "b" => this.CommitsSinceTag.ToString(),

@@ -69,16 +69,6 @@ public class SemanticVersionTests : TestBase
         Assert.IsFalse(SemanticVersion.TryParse(versionString, tagPrefixRegex, out _), "TryParse Result");
 
     [Test]
-    public void LegacySemVerTest()
-    {
-        new SemanticVersionPreReleaseTag("TKT-2134_JiraDescription", null).ToString("l").ShouldBe("TKT-2134");
-        new SemanticVersionPreReleaseTag("AReallyReallyReallyLongBranchName", null).ToString("l").ShouldBe("AReallyReallyReallyL");
-        new SemanticVersionPreReleaseTag("TKT-2134_JiraDescription", 1).ToString("lp").ShouldBe("TKT-2134-0001");
-        new SemanticVersionPreReleaseTag("TKT-2134", 1).ToString("lp").ShouldBe("TKT-2134-0001");
-        new SemanticVersionPreReleaseTag("AReallyReallyReallyLongBranchName", 1).ToString("lp").ShouldBe("AReallyReallyRea0001");
-    }
-
-    [Test]
     public void VersionSorting()
     {
         SemanticVersion.Parse("1.0.0", null).ShouldBeGreaterThan(SemanticVersion.Parse("1.0.0-beta", null));
@@ -120,24 +110,6 @@ public class SemanticVersionTests : TestBase
     {
         var semVer = BuildSemVer(major, minor, patch, preReleaseName, preReleaseVersion, buildCount, branchName, sha, otherMetadata);
         return semVer.ToString("j");
-    }
-
-    [TestCase(1, 2, 3, null, null, null, null, null, null, ExpectedResult = "1.2.3")]
-    [TestCase(1, 2, 3, "beta", 4, null, null, null, null, ExpectedResult = "1.2.3-beta4")]
-    [TestCase(1, 2, 3, "beta", 4, 5, "theBranch", "theSha", "theOtherMetaData", ExpectedResult = "1.2.3-beta4")]
-    public string ToStringWithFormatLTests(int major, int minor, int patch, string preReleaseName, int preReleaseVersion, int? buildCount, string branchName, string sha, string otherMetadata)
-    {
-        var semVer = BuildSemVer(major, minor, patch, preReleaseName, preReleaseVersion, buildCount, branchName, sha, otherMetadata);
-        return semVer.ToString("l");
-    }
-
-    [TestCase(1, 2, 3, null, null, null, null, null, null, ExpectedResult = "1.2.3")]
-    [TestCase(1, 2, 3, "beta", 4, null, null, null, null, ExpectedResult = "1.2.3-beta0004")]
-    [TestCase(1, 2, 3, "beta", 4, 5, "theBranch", "theSha", "theOtherMetaData", ExpectedResult = "1.2.3-beta0004")]
-    public string ToStringWithFormatLpTests(int major, int minor, int patch, string preReleaseName, int preReleaseVersion, int? buildCount, string branchName, string sha, string otherMetadata)
-    {
-        var semVer = BuildSemVer(major, minor, patch, preReleaseName, preReleaseVersion, buildCount, branchName, sha, otherMetadata);
-        return semVer.ToString("lp");
     }
 
     [TestCase(1, 2, 3, null, null, null, null, null, null, ExpectedResult = "1.2.3")]

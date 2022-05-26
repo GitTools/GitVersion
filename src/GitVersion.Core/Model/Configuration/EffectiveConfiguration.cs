@@ -43,15 +43,6 @@ public class EffectiveConfiguration
         if (!configuration.CommitMessageIncrementing.HasValue)
             throw new Exception("Configuration value for 'CommitMessageIncrementing' has no value. (this should not happen, please report an issue)");
 
-        if (!configuration.LegacySemVerPadding.HasValue)
-            throw new Exception("Configuration value for 'LegacySemVerPadding' has no value. (this should not happen, please report an issue)");
-
-        if (!configuration.BuildMetaDataPadding.HasValue)
-            throw new Exception("Configuration value for 'BuildMetaDataPadding' has no value. (this should not happen, please report an issue)");
-
-        if (!configuration.CommitsSinceVersionSourcePadding.HasValue)
-            throw new Exception("Configuration value for 'CommitsSinceVersionSourcePadding' has no value. (this should not happen, please report an issue)");
-
         if (!configuration.TagPreReleaseWeight.HasValue)
             throw new Exception("Configuration value for 'TagPreReleaseWeight' has no value. (this should not happen, please report an issue)");
 
@@ -75,9 +66,6 @@ public class EffectiveConfiguration
         PatchVersionBumpMessage = configuration.PatchVersionBumpMessage;
         NoBumpMessage = configuration.NoBumpMessage;
         CommitMessageIncrementing = currentBranchConfig.CommitMessageIncrementing ?? configuration.CommitMessageIncrementing.Value;
-        LegacySemVerPadding = configuration.LegacySemVerPadding.Value;
-        BuildMetaDataPadding = configuration.BuildMetaDataPadding.Value;
-        CommitsSinceVersionSourcePadding = configuration.CommitsSinceVersionSourcePadding.Value;
         VersionFilters = configuration.Ignore.ToFilters();
         TracksReleaseBranches = currentBranchConfig.TracksReleaseBranches.Value;
         IsCurrentBranchRelease = currentBranchConfig.IsReleaseBranch.Value;
@@ -107,9 +95,6 @@ public class EffectiveConfiguration
         string? patchVersionBumpMessage,
         string? noBumpMessage,
         CommitMessageIncrementMode commitMessageIncrementing,
-        int legacySemVerPaddding,
-        int buildMetaDataPadding,
-        int commitsSinceVersionSourcePadding,
         IEnumerable<IVersionFilter> versionFilters,
         bool tracksReleaseBranches,
         bool isCurrentBranchRelease,
@@ -138,9 +123,6 @@ public class EffectiveConfiguration
         PatchVersionBumpMessage = patchVersionBumpMessage;
         NoBumpMessage = noBumpMessage;
         CommitMessageIncrementing = commitMessageIncrementing;
-        LegacySemVerPadding = legacySemVerPaddding;
-        BuildMetaDataPadding = buildMetaDataPadding;
-        CommitsSinceVersionSourcePadding = commitsSinceVersionSourcePadding;
         VersionFilters = versionFilters;
         TracksReleaseBranches = tracksReleaseBranches;
         IsCurrentBranchRelease = isCurrentBranchRelease;
@@ -190,10 +172,6 @@ public class EffectiveConfiguration
     public string? PatchVersionBumpMessage { get; }
 
     public string? NoBumpMessage { get; }
-    public int LegacySemVerPadding { get; }
-    public int BuildMetaDataPadding { get; }
-
-    public int CommitsSinceVersionSourcePadding { get; }
 
     public CommitMessageIncrementMode CommitMessageIncrementing { get; }
 

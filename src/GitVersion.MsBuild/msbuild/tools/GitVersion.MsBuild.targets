@@ -26,12 +26,9 @@
             <Output TaskParameter="PreReleaseNumber" PropertyName="GitVersion_PreReleaseNumber" />
             <Output TaskParameter="WeightedPreReleaseNumber" PropertyName="GitVersion_WeightedPreReleaseNumber" />
             <Output TaskParameter="BuildMetaData" PropertyName="GitVersion_BuildMetaData" />
-            <Output TaskParameter="BuildMetaDataPadded" PropertyName="GitVersion_BuildMetaDataPadded" />
             <Output TaskParameter="FullBuildMetaData" PropertyName="GitVersion_FullBuildMetaData" />
             <Output TaskParameter="MajorMinorPatch" PropertyName="GitVersion_MajorMinorPatch" />
             <Output TaskParameter="SemVer" PropertyName="GitVersion_SemVer" />
-            <Output TaskParameter="LegacySemVer" PropertyName="GitVersion_LegacySemVer" />
-            <Output TaskParameter="LegacySemVerPadded" PropertyName="GitVersion_LegacySemVerPadded" />
             <Output TaskParameter="AssemblySemVer" PropertyName="GitVersion_AssemblySemVer" />
             <Output TaskParameter="AssemblySemFileVer" PropertyName="GitVersion_AssemblySemFileVer" />
             <Output TaskParameter="FullSemVer" PropertyName="GitVersion_FullSemVer" />
@@ -40,23 +37,16 @@
             <Output TaskParameter="EscapedBranchName" PropertyName="GitVersion_EscapedBranchName" />
             <Output TaskParameter="Sha" PropertyName="GitVersion_Sha" />
             <Output TaskParameter="ShortSha" PropertyName="GitVersion_ShortSha" />
-            <Output TaskParameter="NuGetVersionV2" PropertyName="GitVersion_NuGetVersionV2" />
-            <Output TaskParameter="NuGetVersion" PropertyName="GitVersion_NuGetVersion" />
-            <Output TaskParameter="NuGetPreReleaseTagV2" PropertyName="GitVersion_NuGetPreReleaseTagV2" />
-            <Output TaskParameter="NuGetPreReleaseTag" PropertyName="GitVersion_NuGetPreReleaseTag" />
             <Output TaskParameter="CommitDate" PropertyName="GitVersion_CommitDate" />
             <Output TaskParameter="VersionSourceSha" PropertyName="GitVersion_VersionSourceSha" />
             <Output TaskParameter="CommitsSinceVersionSource" PropertyName="GitVersion_CommitsSinceVersionSource" />
-            <Output TaskParameter="CommitsSinceVersionSourcePadded" PropertyName="GitVersion_CommitsSinceVersionSourcePadded" />
             <Output TaskParameter="UncommittedChanges" PropertyName="GitVersion_UncommittedChanges" />
         </GetVersion>
 
         <PropertyGroup Condition=" '$(UpdateVersionProperties)' == 'true' ">
-            <Version>$(GitVersion_NuGetVersion)</Version>
+            <Version>$(GitVersion_SemVer)</Version>
             <VersionPrefix>$(GitVersion_MajorMinorPatch)</VersionPrefix>
-            <VersionSuffix Condition=" '$(UseFullSemVerForNuGet)' == 'false' ">$(GitVersion_NuGetPreReleaseTag)</VersionSuffix>
             <VersionSuffix Condition=" '$(UseFullSemVerForNuGet)' == 'true' ">$(GitVersion_PreReleaseTag)</VersionSuffix>
-            <PackageVersion Condition=" '$(UseFullSemVerForNuGet)' == 'false' ">$(GitVersion_NuGetVersion)</PackageVersion>
             <PackageVersion Condition=" '$(UseFullSemVerForNuGet)' == 'true' ">$(GitVersion_FullSemVer)</PackageVersion>
             <InformationalVersion Condition=" '$(InformationalVersion)' == '' ">$(GitVersion_InformationalVersion)</InformationalVersion>
             <AssemblyVersion Condition=" '$(AssemblyVersion)' == '' ">$(GitVersion_AssemblySemVer)</AssemblyVersion>
@@ -76,12 +66,9 @@
             <DefineConstants Condition=" '$(GitVersion_PreReleaseNumber)' != '' ">GitVersion_PreReleaseNumber=$(GitVersion_PreReleaseNumber);$(DefineConstants)</DefineConstants>
             <DefineConstants Condition=" '$(GitVersion_WeightedPreReleaseNumber)' != '' ">GitVersion_WeightedPreReleaseNumber=$(GitVersion_WeightedPreReleaseNumber);$(DefineConstants)</DefineConstants>
             <DefineConstants Condition=" '$(GitVersion_BuildMetaData)' != '' ">GitVersion_BuildMetaData=$(GitVersion_BuildMetaData);$(DefineConstants)</DefineConstants>
-            <DefineConstants Condition=" '$(GitVersion_BuildMetaDataPadded)' != '' ">GitVersion_BuildMetaDataPadded=$(GitVersion_BuildMetaDataPadded);$(DefineConstants)</DefineConstants>
             <DefineConstants Condition=" '$(GitVersion_FullBuildMetaData)' != '' ">GitVersion_FullBuildMetaData=$(GitVersion_FullBuildMetaData);$(DefineConstants)</DefineConstants>
             <DefineConstants Condition=" '$(GitVersion_MajorMinorPatch)' != '' ">GitVersion_MajorMinorPatch=$(GitVersion_MajorMinorPatch);$(DefineConstants)</DefineConstants>
             <DefineConstants Condition=" '$(GitVersion_SemVer)' != '' ">GitVersion_SemVer=$(GitVersion_SemVer);$(DefineConstants)</DefineConstants>
-            <DefineConstants Condition=" '$(GitVersion_LegacySemVer)' != '' ">GitVersion_LegacySemVer=$(GitVersion_LegacySemVer);$(DefineConstants)</DefineConstants>
-            <DefineConstants Condition=" '$(GitVersion_LegacySemVerPadded)' != '' ">GitVersion_LegacySemVerPadded=$(GitVersion_LegacySemVerPadded);$(DefineConstants)</DefineConstants>
             <DefineConstants Condition=" '$(GitVersion_AssemblySemVer)' != '' ">GitVersion_AssemblySemVer=$(GitVersion_AssemblySemVer);$(DefineConstants)</DefineConstants>
             <DefineConstants Condition=" '$(GitVersion_AssemblySemFileVer)' != '' ">GitVersion_AssemblySemFileVer=$(GitVersion_AssemblySemFileVer);$(DefineConstants)</DefineConstants>
             <DefineConstants Condition=" '$(GitVersion_FullSemVer)' != '' ">GitVersion_FullSemVer=$(GitVersion_FullSemVer);$(DefineConstants)</DefineConstants>
@@ -90,14 +77,9 @@
             <DefineConstants Condition=" '$(GitVersion_EscapedBranchName)' != '' ">GitVersion_EscapedBranchName=$(GitVersion_EscapedBranchName);$(DefineConstants)</DefineConstants>
             <DefineConstants Condition=" '$(GitVersion_Sha)' != '' ">GitVersion_Sha=$(GitVersion_Sha);$(DefineConstants)</DefineConstants>
             <DefineConstants Condition=" '$(GitVersion_ShortSha)' != '' ">GitVersion_ShortSha=$(GitVersion_ShortSha);$(DefineConstants)</DefineConstants>
-            <DefineConstants Condition=" '$(GitVersion_NuGetVersionV2)' != '' ">GitVersion_NuGetVersionV2=$(GitVersion_NuGetVersionV2);$(DefineConstants)</DefineConstants>
-            <DefineConstants Condition=" '$(GitVersion_NuGetVersion)' != '' ">GitVersion_NuGetVersion=$(GitVersion_NuGetVersion);$(DefineConstants)</DefineConstants>
-            <DefineConstants Condition=" '$(GitVersion_NuGetPreReleaseTagV2)' != '' ">GitVersion_NuGetPreReleaseTagV2=$(GitVersion_NuGetPreReleaseTagV2);$(DefineConstants)</DefineConstants>
-            <DefineConstants Condition=" '$(GitVersion_NuGetPreReleaseTag)' != '' ">GitVersion_NuGetPreReleaseTag=$(GitVersion_NuGetPreReleaseTag);$(DefineConstants)</DefineConstants>
             <DefineConstants Condition=" '$(GitVersion_CommitDate)' != '' ">GitVersion_CommitDate=$(GitVersion_CommitDate);$(DefineConstants)</DefineConstants>
             <DefineConstants Condition=" '$(GitVersion_VersionSourceSha)' != '' ">GitVersion_VersionSourceSha=$(GitVersion_VersionSourceSha);$(DefineConstants)</DefineConstants>
             <DefineConstants Condition=" '$(GitVersion_CommitsSinceVersionSource)' != '' ">GitVersion_CommitsSinceVersionSource=$(GitVersion_CommitsSinceVersionSource);$(DefineConstants)</DefineConstants>
-            <DefineConstants Condition=" '$(GitVersion_CommitsSinceVersionSourcePadded)' != '' ">GitVersion_CommitsSinceVersionSourcePadded=$(GitVersion_CommitsSinceVersionSourcePadded);$(DefineConstants)</DefineConstants>
             <DefineConstants Condition=" '$(GitVersion_UncommittedChanges)' != '' ">GitVersion_UncommittedChanges=$(GitVersion_UncommittedChanges);$(DefineConstants)</DefineConstants>
         </PropertyGroup>
 

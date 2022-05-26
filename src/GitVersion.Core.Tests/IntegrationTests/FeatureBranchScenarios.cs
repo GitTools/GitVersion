@@ -525,9 +525,6 @@ public class FeatureBranchScenarios : TestBase
             VersioningMode = VersioningMode.ContinuousDeployment,
             AssemblyVersioningScheme = AssemblyVersioningScheme.Major,
             AssemblyFileVersioningFormat = "{MajorMinorPatch}.{env:WeightedPreReleaseNumber ?? 0}",
-            LegacySemVerPadding = 4,
-            BuildMetaDataPadding = 4,
-            CommitsSinceVersionSourcePadding = 4,
             CommitMessageIncrementing = CommitMessageIncrementMode.Disabled,
             Branches = new Dictionary<string, BranchConfig>
             {

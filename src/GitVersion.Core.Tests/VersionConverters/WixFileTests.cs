@@ -33,7 +33,7 @@ internal class WixFileTests : TestBase
         semVer.BuildMetaData.ShortSha = "commitShortSha";
         semVer.BuildMetaData.CommitDate = DateTimeOffset.Parse("2019-02-20 23:59:59Z");
 
-        var config = new TestEffectiveConfiguration(buildMetaDataPadding: 2, legacySemVerPadding: 5);
+        var config = new TestEffectiveConfiguration();
 
         var stringBuilder = new StringBuilder();
         void Action(string s) => stringBuilder.AppendLine(s);
@@ -74,7 +74,7 @@ internal class WixFileTests : TestBase
         semVer.BuildMetaData.ShortSha = "commitShortSha";
         semVer.BuildMetaData.CommitDate = DateTimeOffset.Parse("2019-02-20 23:59:59Z");
 
-        var config = new TestEffectiveConfiguration(buildMetaDataPadding: 2, legacySemVerPadding: 5);
+        var config = new TestEffectiveConfiguration();
 
         var stringBuilder = new StringBuilder();
         void Action(string s) => stringBuilder.AppendLine(s);
