@@ -25,17 +25,11 @@ public class VersionVariablesJsonModel
     [JsonConverter(typeof(VersionVariablesJsonNumberConverter))]
     public string? BuildMetaData { get; set; }
     [JsonConverter(typeof(VersionVariablesJsonStringConverter))]
-    public string? BuildMetaDataPadded { get; set; }
-    [JsonConverter(typeof(VersionVariablesJsonStringConverter))]
     public string? FullBuildMetaData { get; set; }
     [JsonConverter(typeof(VersionVariablesJsonStringConverter))]
     public string? MajorMinorPatch { get; set; }
     [JsonConverter(typeof(VersionVariablesJsonStringConverter))]
     public string? SemVer { get; set; }
-    [JsonConverter(typeof(VersionVariablesJsonStringConverter))]
-    public string? LegacySemVer { get; set; }
-    [JsonConverter(typeof(VersionVariablesJsonStringConverter))]
-    public string? LegacySemVerPadded { get; set; }
     [JsonConverter(typeof(VersionVariablesJsonStringConverter))]
     public string? AssemblySemVer { get; set; }
     [JsonConverter(typeof(VersionVariablesJsonStringConverter))]
@@ -53,19 +47,9 @@ public class VersionVariablesJsonModel
     [JsonConverter(typeof(VersionVariablesJsonStringConverter))]
     public string? ShortSha { get; set; }
     [JsonConverter(typeof(VersionVariablesJsonStringConverter))]
-    public string? NuGetVersionV2 { get; set; }
-    [JsonConverter(typeof(VersionVariablesJsonStringConverter))]
-    public string? NuGetVersion { get; set; }
-    [JsonConverter(typeof(VersionVariablesJsonStringConverter))]
-    public string? NuGetPreReleaseTagV2 { get; set; }
-    [JsonConverter(typeof(VersionVariablesJsonStringConverter))]
-    public string? NuGetPreReleaseTag { get; set; }
-    [JsonConverter(typeof(VersionVariablesJsonStringConverter))]
     public string? VersionSourceSha { get; set; }
     [JsonConverter(typeof(VersionVariablesJsonNumberConverter))]
     public string? CommitsSinceVersionSource { get; set; }
-    [JsonConverter(typeof(VersionVariablesJsonStringConverter))]
-    public string? CommitsSinceVersionSourcePadded { get; set; }
     [JsonConverter(typeof(VersionVariablesJsonNumberConverter))]
     public string? UncommittedChanges { get; set; }
     [JsonConverter(typeof(VersionVariablesJsonStringConverter))]

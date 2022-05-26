@@ -30,7 +30,7 @@ public class PackageChocolatey : FrostingTask<BuildContext>
         var chocolateySettings = new ChocolateyPackSettings
         {
             LimitOutput = true,
-            Version = context.Version?.SemVersion,
+            Version = context.Version?.ChocolateyVersion,
             OutputDirectory = Paths.Nuget,
             Files = context.GetFiles(artifactPath + "/**/*.*")
                 .Select(file => new ChocolateyNuSpecContent { Source = file.FullPath, Target = file.FullPath.Replace(artifactPath, "") })

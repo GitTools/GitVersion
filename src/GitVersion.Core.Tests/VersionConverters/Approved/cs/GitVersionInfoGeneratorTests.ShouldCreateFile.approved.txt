@@ -38,12 +38,9 @@ static class GitVersionInformation
     public const string PreReleaseNumber = "4";
     public const string WeightedPreReleaseNumber = "4";
     public const string BuildMetaData = "5";
-    public const string BuildMetaDataPadded = "0005";
     public const string FullBuildMetaData = "5.Branch.feature1.Sha.commitSha";
     public const string MajorMinorPatch = "1.2.3";
     public const string SemVer = "1.2.3-unstable.4";
-    public const string LegacySemVer = "1.2.3-unstable4";
-    public const string LegacySemVerPadded = "1.2.3-unstable0004";
     public const string AssemblySemVer = "1.2.3.0";
     public const string AssemblySemFileVer = "1.2.3.0";
     public const string FullSemVer = "1.2.3-unstable.4+5";
@@ -52,13 +49,8 @@ static class GitVersionInformation
     public const string EscapedBranchName = "feature1";
     public const string Sha = "commitSha";
     public const string ShortSha = "commitShortSha";
-    public const string NuGetVersionV2 = "1.2.3-unstable0004";
-    public const string NuGetVersion = "1.2.3-unstable0004";
-    public const string NuGetPreReleaseTagV2 = "unstable0004";
-    public const string NuGetPreReleaseTag = "unstable0004";
     public const string VersionSourceSha = "versionSourceSha";
     public const string CommitsSinceVersionSource = "5";
-    public const string CommitsSinceVersionSourcePadded = "0005";
     public const string UncommittedChanges = "0";
     public const string CommitDate = "2014-03-06";
 }

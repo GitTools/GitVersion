@@ -60,9 +60,9 @@ public class DocumentationSamples : TestBase
         // Open Pull Request
         fixture.BranchTo("pull/2/merge", "pr");
         fixture.SequenceDiagram.Activate("pull/2/merge");
-        fixture.AssertFullSemver("1.3.0-PullRequest0002.1");
+        fixture.AssertFullSemver("1.3.0-PullRequest2.1");
         fixture.MakeACommit();
-        fixture.AssertFullSemver("1.3.0-PullRequest0002.2");
+        fixture.AssertFullSemver("1.3.0-PullRequest2.2");
 
         // Merge into develop
         fixture.Checkout("develop");
@@ -348,9 +348,9 @@ public class DocumentationSamples : TestBase
         // Open Pull Request
         fixture.BranchTo("pull/2/merge", "pr");
         fixture.SequenceDiagram.Activate("pull/2/merge");
-        fixture.AssertFullSemver("1.2.1-PullRequest0002.1");
+        fixture.AssertFullSemver("1.2.1-PullRequest2.1");
         fixture.MakeACommit();
-        fixture.AssertFullSemver("1.2.1-PullRequest0002.2");
+        fixture.AssertFullSemver("1.2.1-PullRequest2.2");
 
         // Merge into main
         fixture.Checkout(MainBranch);

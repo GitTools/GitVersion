@@ -12,7 +12,6 @@ public class VersionVariables : IEnumerable<KeyValuePair<string, string>>
         string minor,
         string patch,
         string? buildMetaData,
-        string? buildMetaDataPadded,
         string? fullBuildMetaData,
         string? branchName,
         string? escapedBranchName,
@@ -20,8 +19,6 @@ public class VersionVariables : IEnumerable<KeyValuePair<string, string>>
         string? shortSha,
         string majorMinorPatch,
         string semVer,
-        string legacySemVer,
-        string legacySemVerPadded,
         string fullSemVer,
         string? assemblySemVer,
         string? assemblySemFileVer,
@@ -33,20 +30,14 @@ public class VersionVariables : IEnumerable<KeyValuePair<string, string>>
         string weightedPreReleaseNumber,
         string? informationalVersion,
         string? commitDate,
-        string nugetVersion,
-        string nugetVersionV2,
-        string? nugetPreReleaseTag,
-        string? nugetPreReleaseTagV2,
         string? versionSourceSha,
         string? commitsSinceVersionSource,
-        string? commitsSinceVersionSourcePadded,
         string? uncommittedChanges)
     {
         Major = major;
         Minor = minor;
         Patch = patch;
         BuildMetaData = buildMetaData;
-        BuildMetaDataPadded = buildMetaDataPadded;
         FullBuildMetaData = fullBuildMetaData;
         BranchName = branchName;
         EscapedBranchName = escapedBranchName;
@@ -54,8 +45,6 @@ public class VersionVariables : IEnumerable<KeyValuePair<string, string>>
         ShortSha = shortSha;
         MajorMinorPatch = majorMinorPatch;
         SemVer = semVer;
-        LegacySemVer = legacySemVer;
-        LegacySemVerPadded = legacySemVerPadded;
         FullSemVer = fullSemVer;
         AssemblySemVer = assemblySemVer;
         AssemblySemFileVer = assemblySemFileVer;
@@ -67,13 +56,8 @@ public class VersionVariables : IEnumerable<KeyValuePair<string, string>>
         WeightedPreReleaseNumber = weightedPreReleaseNumber;
         InformationalVersion = informationalVersion;
         CommitDate = commitDate;
-        NuGetVersion = nugetVersion;
-        NuGetVersionV2 = nugetVersionV2;
-        NuGetPreReleaseTag = nugetPreReleaseTag;
-        NuGetPreReleaseTagV2 = nugetPreReleaseTagV2;
         VersionSourceSha = versionSourceSha;
         CommitsSinceVersionSource = commitsSinceVersionSource;
-        CommitsSinceVersionSourcePadded = commitsSinceVersionSourcePadded;
         UncommittedChanges = uncommittedChanges;
     }
 
@@ -87,12 +71,9 @@ public class VersionVariables : IEnumerable<KeyValuePair<string, string>>
     public string? PreReleaseNumber { get; }
     public string WeightedPreReleaseNumber { get; }
     public string? BuildMetaData { get; }
-    public string? BuildMetaDataPadded { get; }
     public string? FullBuildMetaData { get; }
     public string MajorMinorPatch { get; }
     public string SemVer { get; }
-    public string LegacySemVer { get; }
-    public string LegacySemVerPadded { get; }
     public string? AssemblySemVer { get; }
     public string? AssemblySemFileVer { get; }
     public string FullSemVer { get; }
@@ -101,13 +82,8 @@ public class VersionVariables : IEnumerable<KeyValuePair<string, string>>
     public string? EscapedBranchName { get; }
     public string? Sha { get; }
     public string? ShortSha { get; }
-    public string NuGetVersionV2 { get; }
-    public string NuGetVersion { get; }
-    public string? NuGetPreReleaseTagV2 { get; }
-    public string? NuGetPreReleaseTag { get; }
     public string? VersionSourceSha { get; }
     public string? CommitsSinceVersionSource { get; }
-    public string? CommitsSinceVersionSourcePadded { get; }
     public string? UncommittedChanges { get; }
     public string? CommitDate { get; set; }
 

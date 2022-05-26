@@ -46,7 +46,7 @@ public class VariableProvider : IVariableProvider
                 var numberGroup = match.Groups["number"];
                 if (numberGroup.Success && semanticVersion.PreReleaseTag != null)
                 {
-                    semanticVersion.PreReleaseTag.Name += numberGroup.Value.PadLeft(config.BuildMetaDataPadding, '0');
+                    semanticVersion.PreReleaseTag.Name += numberGroup.Value;
                 }
             }
         }
@@ -69,7 +69,6 @@ public class VariableProvider : IVariableProvider
             semverFormatValues.Minor,
             semverFormatValues.Patch,
             semverFormatValues.BuildMetaData,
-            semverFormatValues.BuildMetaDataPadded,
             semverFormatValues.FullBuildMetaData,
             semverFormatValues.BranchName,
             semverFormatValues.EscapedBranchName,
@@ -77,8 +76,6 @@ public class VariableProvider : IVariableProvider
             semverFormatValues.ShortSha,
             semverFormatValues.MajorMinorPatch,
             semverFormatValues.SemVer,
-            semverFormatValues.LegacySemVer,
-            semverFormatValues.LegacySemVerPadded,
             semverFormatValues.FullSemVer,
             assemblySemVer,
             assemblyFileSemVer,
@@ -90,13 +87,8 @@ public class VariableProvider : IVariableProvider
             semverFormatValues.WeightedPreReleaseNumber,
             informationalVersion,
             semverFormatValues.CommitDate,
-            semverFormatValues.NuGetVersion,
-            semverFormatValues.NuGetVersionV2,
-            semverFormatValues.NuGetPreReleaseTag,
-            semverFormatValues.NuGetPreReleaseTagV2,
             semverFormatValues.VersionSourceSha,
             semverFormatValues.CommitsSinceVersionSource,
-            semverFormatValues.CommitsSinceVersionSourcePadded,
             semverFormatValues.UncommittedChanges);
 
         return variables;
@@ -140,8 +132,6 @@ public class VariableProvider : IVariableProvider
         }
         else
         {
-            WarnIfUsingObsoleteFormatValues(formatString);
-
             try
             {
                 formattedString = formatString.FormatWith(source, this.environment).RegexReplace("[^0-9A-Za-z-.+]", "-");
@@ -153,16 +143,5 @@ public class VariableProvider : IVariableProvider
         }
 
         return formattedString;
-    }
-
-    private void WarnIfUsingObsoleteFormatValues(string formatString)
-    {
-#pragma warning disable CS0618 // Type or member is obsolete
-        const string obsoletePropertyName = nameof(SemanticVersionFormatValues.DefaultInformationalVersion);
-#pragma warning restore CS0618 // Type or member is obsolete
-        if (formatString.Contains($"{{{obsoletePropertyName}}}"))
-        {
-            this.log.Write(LogLevel.Warn, $"Use format variable '{nameof(SemanticVersionFormatValues.InformationalVersion)}' instead of '{obsoletePropertyName}' which is obsolete and will be removed in a future release.");
-        }
     }
 }

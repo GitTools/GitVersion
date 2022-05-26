@@ -12,17 +12,24 @@ public record NugetCredentials(string ApiKey);
 
 public record ChocolateyCredentials(string ApiKey);
 
-public record BuildVersion(GitVersion GitVersion, string? Version, string? Milestone, string? SemVersion, string? NugetVersion)
+public record BuildVersion(GitVersion GitVersion, string? Version, string? Milestone, string? SemVersion, string? NugetVersion, string? ChocolateyVersion)
 {
     public static BuildVersion Calculate(GitVersion gitVersion)
     {
         var version = gitVersion.MajorMinorPatch;
-        var semVersion = gitVersion.LegacySemVer;
-        var nugetVersion = gitVersion.LegacySemVer;
+        var semVersion = gitVersion.SemVer;
+        var nugetVersion = gitVersion.SemVer;
+        var chocolateyVersion = gitVersion.MajorMinorPatch;
+
+        if (!string.IsNullOrWhiteSpace(gitVersion.PreReleaseTag))
+        {
+            chocolateyVersion += $"-{gitVersion.PreReleaseTag?.Replace(".", "-")}";
+        }
 
         if (!string.IsNullOrWhiteSpace(gitVersion.BuildMetaData))
         {
             semVersion += $"-{gitVersion.BuildMetaData}";
+            chocolateyVersion += $"-{gitVersion.BuildMetaData}";
             nugetVersion += $".{gitVersion.BuildMetaData}";
         }
 
@@ -31,7 +38,8 @@ public record BuildVersion(GitVersion GitVersion, string? Version, string? Miles
             Version: version,
             Milestone: version,
             SemVersion: semVersion,
-            NugetVersion: nugetVersion?.ToLowerInvariant()
+            NugetVersion: nugetVersion?.ToLowerInvariant(),
+            ChocolateyVersion: chocolateyVersion?.ToLowerInvariant()
         );
     }
 }

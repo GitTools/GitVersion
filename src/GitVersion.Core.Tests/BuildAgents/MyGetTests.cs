@@ -35,7 +35,7 @@ public class MyGetTests : TestBase
     [Test]
     public void BuildNumber()
     {
-        var message = this.buildServer.GenerateSetParameterMessage("LegacySemVerPadded", "0.8.0-unstable568");
+        var message = this.buildServer.GenerateSetParameterMessage("SemVer", "0.8.0-unstable568");
         Assert.AreEqual("##myget[buildNumber '0.8.0-unstable568']", message[1]);
     }
 }

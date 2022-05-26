@@ -21,12 +21,9 @@ what is available. For the `release/3.0.0` branch of GitVersion it shows:
     "PreReleaseNumber": 99,
     "WeightedPreReleaseNumber": 1099,
     "BuildMetaData": 88,
-    "BuildMetaDataPadded": "0088",
     "FullBuildMetaData": "99.Branch.release/3.22.11.Sha.28c853159a46b5a87e6cc9c4f6e940c59d6bc68a",
     "MajorMinorPatch": "3.22.11",
     "SemVer": "3.22.11-beta.99",
-    "LegacySemVer": "3.22.11-beta99",
-    "LegacySemVerPadded": "3.22.11-beta0099",
     "AssemblySemVer": "3.22.11.0",
     "AssemblySemFileVer": "3.22.11.0",
     "InformationalVersion": "3.22.11-beta.99+88.Branch.release/3.022.011.Sha.28c853159a46b5a87e6cc9c4f6e940c59d6bc68a",
@@ -35,13 +32,8 @@ what is available. For the `release/3.0.0` branch of GitVersion it shows:
     "EscapedBranchName": "release-3.022.011",
     "Sha": "28c853159a46b5a87e6cc9c4f6e940c59d6bc68a",
     "ShortSha": "28c8531",
-    "NuGetVersionV2": "3.22.11-beta0099",
-    "NuGetVersion": "3.22.11-beta0099",
-    "NuGetPreReleaseTagV2": "beta0099",
-    "NuGetPreReleaseTag": "beta0099",
     "VersionSourceSha": "28c853159a46b5a87e6cc9c4f6e940c59d6bc68a",
     "CommitsSinceVersionSource": 7,
-    "CommitsSinceVersionSourcePadded": "0007",
     "CommitDate": "2021-12-31",
     "UncommittedChanges": 0
 }
@@ -61,12 +53,9 @@ Each property of the above JSON document is described in the below table.
 |                `PreReleaseNumber` | The pre-release number.                                                                                                                                                    |
 |        `WeightedPreReleaseNumber` | A summation of branch specific `pre-release-weight` and the `PreReleaseNumber`. Can be used to obtain a monotonically increasing version number across the branches.       |
 |                   `BuildMetaData` | The build metadata, usually representing number of commits since the `VersionSourceSha`. Despite its name, will not increment for every build.                             |
-|             `BuildMetaDataPadded` | The `BuildMetaData` padded with `0` up to 4 digits.                                                                                                                        |
 |               `FullBuildMetaData` | The `BuildMetaData` suffixed with `BranchName` and `Sha`.                                                                                                                  |
 |                 `MajorMinorPatch` | `Major`, `Minor` and `Patch` joined together, separated by `.`.                                                                                                            |
 |                          `SemVer` | The semantical version number, including `PreReleaseTagWithDash` for pre-release version numbers.                                                                          |
-|                    `LegacySemVer` | Equal to `SemVer`, but without a `.` separating `PreReleaseLabel` and `PreReleaseNumber`.                                                                                  |
-|              `LegacySemVerPadded` | Equal to `LegacySemVer`, but with `PreReleaseNumber` padded with `0` up to 4 digits.                                                                                       |
 |                  `AssemblySemVer` | Suitable for .NET `AssemblyVersion`. Defaults to `Major.Minor.0.0` to allow the assembly to be hotfixed without breaking existing applications that may be referencing it. |
 |              `AssemblySemFileVer` | Suitable for .NET `AssemblyFileVersion`. Defaults to `Major.Minor.Patch.0`.                                                                                                |
 |            `InformationalVersion` | Suitable for .NET `AssemblyInformationalVersion`. Defaults to `FullSemVer` suffixed by `FullBuildMetaData`.                                                                |
@@ -75,13 +64,8 @@ Each property of the above JSON document is described in the below table.
 |               `EscapedBranchName` | Equal to `BranchName`, but with `/` replaced with `-`.                                                                                                                     |
 |                             `Sha` | The SHA of the Git commit.                                                                                                                                                 |
 |                        `ShortSha` | The `Sha` limited to 7 characters.                                                                                                                                         |
-|                  `NuGetVersionV2` | A NuGet 2.0 compatible version number.                                                                                                                                     |
-|                    `NuGetVersion` | A NuGet 1.0 compatible version number.                                                                                                                                     |
-|            `NuGetPreReleaseTagV2` | A NuGet 2.0 compatible `PreReleaseTag`.                                                                                                                                    |
-|              `NuGetPreReleaseTag` | A NuGet 1.0 compatible `PreReleaseTag`.                                                                                                                                    |
 |                `VersionSourceSha` | The SHA of the commit used as version source.                                                                                                                              |
 |       `CommitsSinceVersionSource` | The number of commits since the version source.                                                                                                                            |
-| `CommitsSinceVersionSourcePadded` | The `CommitsSinceVersionSource` padded with `0` up to 4 digits.                                                                                                            |
 |                      `CommitDate` | The ISO-8601 formatted date of the commit identified by `Sha`.                                                                                                             |
 |              `UncommittedChanges` | The number of uncommitted changes present in the repository.                                                                                                               |
 
