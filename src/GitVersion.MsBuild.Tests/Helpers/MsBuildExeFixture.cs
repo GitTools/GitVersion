@@ -63,8 +63,6 @@ public class MsBuildExeFixture
     public void CreateTestProject(Action<ProjectCreator> extendProject)
     {
         var project = ProjectCreator.Templates.SdkCsproj(this.ProjectPath);
-        if (project == null) return;
-
         extendProject(project);
 
         project.Save();
