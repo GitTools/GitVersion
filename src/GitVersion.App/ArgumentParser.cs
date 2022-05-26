@@ -409,12 +409,7 @@ public class ArgumentParser : IArgumentParser
 
     private static void ParseVerbosity(Arguments arguments, string? value)
     {
-        // first try the old version, this check will be removed in version 6.0.0, making it a breaking change
-        if (Enum.TryParse(value, true, out LogLevel logLevel))
-        {
-            arguments.Verbosity = LogExtensions.GetVerbosityForLevel(logLevel);
-        }
-        else if (!Enum.TryParse(value, true, out arguments.Verbosity))
+        if (!Enum.TryParse(value, true, out arguments.Verbosity))
         {
             throw new WarningException($"Could not parse Verbosity value '{value}'");
         }
