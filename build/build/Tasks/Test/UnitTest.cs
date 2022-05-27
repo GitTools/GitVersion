@@ -69,14 +69,11 @@ public class UnitTest : FrostingTask<BuildContext>
             NoBuild = true,
             NoRestore = true,
             Configuration = context.MsBuildConfiguration,
+            TestAdapterPath = new DirectoryPath(".")
         };
 
-        if (!context.IsRunningOnMacOs())
-        {
-            settings.TestAdapterPath = new DirectoryPath(".");
-            var resultsPath = context.MakeAbsolute(testResultsPath.CombineWithFilePath($"{projectName}.results.xml"));
-            settings.Loggers = new[] { $"junit;LogFilePath={resultsPath}" };
-        }
+        var resultsPath = context.MakeAbsolute(testResultsPath.CombineWithFilePath($"{projectName}.results.xml"));
+        settings.Loggers = new[] { $"junit;LogFilePath={resultsPath}" };
 
         var coverletSettings = new CoverletSettings
         {
