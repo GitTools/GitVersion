@@ -86,6 +86,9 @@ public class Config
     [YamlMember(Alias = "update-build-number")]
     public bool? UpdateBuildNumber { get; set; }
 
+    [YamlMember(Alias = "semver-format")]
+    public SemanticVersionFormat SemanticVersionFormat { get; set; } = SemanticVersionFormat.Strict;
+
     public override string ToString()
     {
         var stringBuilder = new StringBuilder();

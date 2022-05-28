@@ -31,8 +31,8 @@ public class BranchWithoutCommitScenarios : TestBase
         fixture.Checkout("develop");
         fixture.MakeATaggedCommit("0.1.0-alpha.1"); // simulate merge from feature branch
 
-        fixture.Repository.CreateBranch("release/1.0");
-        fixture.Checkout("release/1.0");
+        fixture.Repository.CreateBranch("release/1.0.0");
+        fixture.Checkout("release/1.0.0");
 
         fixture.AssertFullSemver("1.0.0-beta.1+0");
     }

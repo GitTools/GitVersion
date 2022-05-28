@@ -23,7 +23,7 @@ public class RemoteRepositoryScenarios : TestBase
     [Test]
     public void GivenARemoteGitRepositoryWithCommitsAndBranchesThenClonedLocalShouldMatchRemoteVersion()
     {
-        const string targetBranch = "release-1.0";
+        const string targetBranch = "release-1.0.0";
         using var fixture = new RemoteRepositoryFixture(
             path =>
             {

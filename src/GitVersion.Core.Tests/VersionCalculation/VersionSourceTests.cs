@@ -53,7 +53,7 @@ public class VersionSourceTests : TestBase
         _ = fixture.Repository.MakeACommit();
         Commands.Checkout(fixture.Repository, fixture.Repository.CreateBranch("develop"));
         var secondCommit = fixture.Repository.MakeACommit();
-        _ = fixture.Repository.Tags.Add("1.0", secondCommit);
+        _ = fixture.Repository.Tags.Add("1.0.0", secondCommit);
         var featureBranch = fixture.Repository.CreateBranch("feature/foo");
         Commands.Checkout(fixture.Repository, featureBranch);
         _ = fixture.Repository.MakeACommit();

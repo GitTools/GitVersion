@@ -71,6 +71,7 @@ public class EffectiveConfiguration
         IsCurrentBranchRelease = currentBranchConfig.IsReleaseBranch.Value;
         CommitDateFormat = configuration.CommitDateFormat;
         UpdateBuildNumber = configuration.UpdateBuildNumber ?? true;
+        SemanticVersionFormat = configuration.SemanticVersionFormat;
         PreReleaseWeight = currentBranchConfig.PreReleaseWeight ?? 0;
         TagPreReleaseWeight = configuration.TagPreReleaseWeight.Value;
     }
@@ -100,6 +101,7 @@ public class EffectiveConfiguration
         bool isCurrentBranchRelease,
         string? commitDateFormat,
         bool updateBuildNumber,
+        SemanticVersionFormat semanticVersionFormat,
         int preReleaseWeight,
         int tagPreReleaseWeight)
     {
@@ -128,6 +130,7 @@ public class EffectiveConfiguration
         IsCurrentBranchRelease = isCurrentBranchRelease;
         CommitDateFormat = commitDateFormat;
         UpdateBuildNumber = updateBuildNumber;
+        SemanticVersionFormat = semanticVersionFormat;
         PreReleaseWeight = preReleaseWeight;
         TagPreReleaseWeight = tagPreReleaseWeight;
     }
@@ -180,6 +183,8 @@ public class EffectiveConfiguration
     public string? CommitDateFormat { get; }
 
     public bool UpdateBuildNumber { get; }
+
+    public SemanticVersionFormat SemanticVersionFormat { get; set; } = SemanticVersionFormat.Strict;
 
     public int PreReleaseWeight { get; }
 

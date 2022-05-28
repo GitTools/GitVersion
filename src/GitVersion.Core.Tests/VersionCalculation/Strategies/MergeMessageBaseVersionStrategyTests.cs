@@ -53,7 +53,6 @@ public class MergeMessageBaseVersionStrategyTests : TestBase
     [TestCase("Merge branch 'release-0.1.5'\n\nRelates to: TicketId", true, "0.1.5")]
     [TestCase("Finish Release-0.12.0", true, "0.12.0")] //Support Syntevo SmartGit/Hg's Gitflow merge commit messages for finishing a 'Release' branch
     [TestCase("Merge branch 'Release-v0.2.0'", true, "0.2.0")]
-    [TestCase("Merge branch 'Release-v2.2'", true, "2.2.0")]
     [TestCase("Merge remote-tracking branch 'origin/release/0.8.0' into develop/" + MainBranch, true, "0.8.0")]
     [TestCase("Merge remote-tracking branch 'refs/remotes/origin/release/2.0.0'", true, "2.0.0")]
     public void TakesVersionFromMergeOfReleaseBranch(string message, bool isMergeCommit, string expectedVersion)
