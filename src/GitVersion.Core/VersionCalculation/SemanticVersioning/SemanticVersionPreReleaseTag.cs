@@ -8,6 +8,10 @@ namespace GitVersion;
 public class SemanticVersionPreReleaseTag :
     IFormattable, IComparable<SemanticVersionPreReleaseTag>, IEquatable<SemanticVersionPreReleaseTag?>
 {
+    private static readonly Regex ParseRegex = new(
+        @"(?<name>.*?)\.?(?<number>\d+)?$",
+        RegexOptions.Compiled | RegexOptions.IgnoreCase);
+
     private static readonly LambdaEqualityHelper<SemanticVersionPreReleaseTag> EqualityHelper =
         new(x => x.Name, x => x.Number);
 
@@ -67,7 +71,7 @@ public class SemanticVersionPreReleaseTag :
             return new SemanticVersionPreReleaseTag();
         }
 
-        var match = Regex.Match(preReleaseTag, @"(?<name>.*?)\.?(?<number>\d+)?$");
+        var match = ParseRegex.Match(preReleaseTag);
         if (!match.Success)
         {
             // TODO check how to log this

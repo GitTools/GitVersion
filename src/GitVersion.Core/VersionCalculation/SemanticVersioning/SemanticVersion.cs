@@ -11,7 +11,7 @@ public class SemanticVersion : IFormattable, IComparable<SemanticVersion>, IEqua
 
     private static readonly Regex ParseSemVer = new(
         @"^(?<SemVer>(?<Major>\d+)(\.(?<Minor>\d+))?(\.(?<Patch>\d+))?)(\.(?<FourthPart>\d+))?(-(?<Tag>[^\+]*))?(\+(?<BuildMetaData>.*))?$",
-        RegexOptions.Compiled);
+        RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
     public long Major;
     public long Minor;
