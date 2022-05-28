@@ -54,6 +54,7 @@ public class ConfigurationBuilder
         targetConfig.CommitDateFormat = overrideConfig.CommitDateFormat ?? targetConfig.CommitDateFormat;
         targetConfig.MergeMessageFormats = overrideConfig.MergeMessageFormats.Any() ? overrideConfig.MergeMessageFormats : targetConfig.MergeMessageFormats;
         targetConfig.UpdateBuildNumber = overrideConfig.UpdateBuildNumber ?? targetConfig.UpdateBuildNumber;
+        targetConfig.SemanticVersionFormat = overrideConfig.SemanticVersionFormat;
 
         if (overrideConfig.Ignore is { IsEmpty: false })
         {
@@ -185,6 +186,7 @@ public class ConfigurationBuilder
             CommitMessageIncrementing = CommitMessageIncrementMode.Enabled,
             CommitDateFormat = "yyyy-MM-dd",
             UpdateBuildNumber = true,
+            SemanticVersionFormat = SemanticVersionFormat.Strict,
             TagPreReleaseWeight = DefaultTagPreReleaseWeight
         };
 

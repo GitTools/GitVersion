@@ -56,6 +56,7 @@ public class TestEffectiveConfiguration : EffectiveConfiguration
             isRelease,
             commitDateFormat,
             updateBuildNumber,
+            SemanticVersionFormat.Strict,
             0,
             0)
     {
