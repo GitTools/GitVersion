@@ -91,6 +91,6 @@
     "remark-preset-lint-recommended": "^6.1.2",
     "remark-retext": "^5.0.1",
     "remark-textr": "^5.0.1",
-    "remark-validate-links": "^11.0.2"
+    "remark-validate-links": "^12.0.0"
   }
 }
