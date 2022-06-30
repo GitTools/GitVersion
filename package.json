@@ -25,7 +25,7 @@
   "homepage": "https://gitversion.net",
   "devDependencies": {
     "remark": "^14.0.2",
-    "remark-cli": "^10.0.1",
+    "remark-cli": "^11.0.0",
     "remark-frontmatter": "^4.0.1",
     "remark-heading-gap": "^5.0.1",
     "remark-lint": "^9.1.1",
