@@ -40,4 +40,8 @@
     <ItemGroup>
         <EmbeddedResource Include="../../docs/input/docs/usage/cli/arguments.md" />
     </ItemGroup>
+
+    <ItemGroup>
+        <InternalsVisibleTo Include="GitVersion.App.Tests" />
+    </ItemGroup>
 </Project>
