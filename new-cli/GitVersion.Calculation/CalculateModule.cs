@@ -1,9 +1,8 @@
 ﻿using GitVersion.Infrastructure;
 
-namespace GitVersion
+namespace GitVersion;
+
+public class CalculateModule : IGitVersionModule
 {
-    public class CalculateModule : IGitVersionModule
-    {
-        public void RegisterTypes(IContainerRegistrar services) => services.AddSingleton<ICommand, CalculateCommand>();
-    }
+    public void RegisterTypes(IContainerRegistrar services) => services.AddSingleton<ICommand, CalculateCommand>();
 }

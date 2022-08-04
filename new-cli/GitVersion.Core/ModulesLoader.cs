@@ -8,7 +8,6 @@ public class ModulesLoader
 {
     public static IContainer Load(IEnumerable<Assembly> assemblies)
     {
-
         var gitVersionModules = new List<IGitVersionModule>();
         foreach (var type in assemblies.SelectMany(x => x.GetTypes()).Where(t => t.TypeIsGitVersionModule()))
         {

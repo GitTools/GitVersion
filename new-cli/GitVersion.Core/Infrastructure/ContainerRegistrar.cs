@@ -4,7 +4,7 @@ using Serilog;
 
 namespace GitVersion.Infrastructure;
 
-public class ContainerRegistrar : IContainerRegistrar
+public sealed class ContainerRegistrar : IContainerRegistrar
 {
     private readonly ServiceCollection services = new();
 
@@ -44,7 +44,7 @@ public class ContainerRegistrar : IContainerRegistrar
     }
 
     public IContainer Build() => new Container(services.BuildServiceProvider());
-    
+
     private static Serilog.Core.Logger CreateLogger()
     {
         var logger = new LoggerConfiguration()

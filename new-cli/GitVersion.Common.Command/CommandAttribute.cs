@@ -1,6 +1,6 @@
 ﻿namespace GitVersion;
 
-[AttributeUsage(AttributeTargets.Class)]
+[AttributeUsage(AttributeTargets.Class, Inherited = false)]
 public class CommandAttribute : Attribute
 {
     public string Name { get; }
