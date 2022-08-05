@@ -1,7 +1,7 @@
-﻿namespace GitVersion.Wix;
+namespace GitVersion.Wix;
 
-public class OutputWixSettings : OutputSettings
+public record OutputWixSettings : OutputSettings
 {
     [Option("--wix-file", "The wix file")]
-    public string WixFile { get; init; } = default;
+    public required string WixFile { get; init; }
 }

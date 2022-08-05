@@ -1,6 +1,12 @@
-﻿namespace GitVersion;
+namespace GitVersion;
 
-public interface ICommand
+public interface ICommand<in T>
 {
-    Task<int> InvokeAsync(object settings);
+    public Task<int> InvokeAsync(T settings);
+}
+
+public interface ICommandImpl
+{
+    string CommandName { get; }
+    string ParentCommandName { get; }
 }

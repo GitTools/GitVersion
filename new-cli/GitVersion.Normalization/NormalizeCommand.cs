@@ -1,9 +1,9 @@
-﻿using GitVersion.Infrastructure;
+using GitVersion.Infrastructure;
 
 namespace GitVersion;
 
 [Command("normalize", "Normalizes the git repository for GitVersion calculations.")]
-public class NormalizeCommand : Command<NormalizeSettings>
+public class NormalizeCommand : ICommand<NormalizeSettings>
 {
     private readonly ILogger logger;
     private readonly IService service;
@@ -14,7 +14,7 @@ public class NormalizeCommand : Command<NormalizeSettings>
         this.service = service;
     }
 
-    public override Task<int> InvokeAsync(NormalizeSettings settings)
+    public Task<int> InvokeAsync(NormalizeSettings settings)
     {
         var value = service.Call();
         logger.LogInformation($"Command : 'normalize', LogFile : '{settings.LogFile}', WorkDir : '{settings.WorkDir}' ");

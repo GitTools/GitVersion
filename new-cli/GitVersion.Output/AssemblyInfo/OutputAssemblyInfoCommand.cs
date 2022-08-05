@@ -1,9 +1,9 @@
-﻿using GitVersion.Infrastructure;
+using GitVersion.Infrastructure;
 
 namespace GitVersion.AssemblyInfo;
 
-[Command("assemblyinfo", typeof(OutputSettings), "Outputs version to assembly")]
-public class OutputAssemblyInfoCommand : Command<OutputAssemblyInfoSettings>
+[Command<OutputCommand>("assemblyinfo", "Outputs version to assembly")]
+public class OutputAssemblyInfoCommand : ICommand<OutputAssemblyInfoSettings>
 {
     private readonly ILogger logger;
     private readonly IService service;
@@ -14,7 +14,7 @@ public class OutputAssemblyInfoCommand : Command<OutputAssemblyInfoSettings>
         this.service = service;
     }
 
-    public override Task<int> InvokeAsync(OutputAssemblyInfoSettings settings)
+    public Task<int> InvokeAsync(OutputAssemblyInfoSettings settings)
     {
         var value = service.Call();
         var versionInfo = settings.VersionInfo.Value;

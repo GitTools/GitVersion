@@ -1,10 +1,8 @@
-﻿using System.CommandLine;
+using System.CommandLine;
 using System.CommandLine.Builder;
 using System.CommandLine.Invocation;
-using System.CommandLine.NamingConventionBinder;
 using System.CommandLine.Parsing;
-using System.Reflection;
-using GitVersion.Extensions;
+using GitVersion.Generated;
 using GitVersion.Infrastructure;
 using Serilog.Events;
 
@@ -12,9 +10,8 @@ namespace GitVersion;
 
 internal class GitVersionApp
 {
-    private readonly RootCommand rootCommand;
-
-    public GitVersionApp(IEnumerable<ICommand> commandHandlers) => rootCommand = CreateCommandsHierarchy(commandHandlers);
+    private readonly RootCommandImpl rootCommand;
+    public GitVersionApp(RootCommandImpl rootCommand) => this.rootCommand = rootCommand;
 
     public Task<int> RunAsync(string[] args) =>
         new CommandLineBuilder(rootCommand)
@@ -23,7 +20,6 @@ internal class GitVersionApp
                 EnrichLogger(context);
                 await next(context);
             })
-            .ParseResponseFileAs(ResponseFileHandling.ParseArgsAsSpaceSeparated)
             .UseDefaults()
             .Build()
             .InvokeAsync(args);
@@ -63,48 +59,4 @@ internal class GitVersionApp
         { Verbosity.Minimal, LogEventLevel.Warning },
         { Verbosity.Quiet, LogEventLevel.Error },
     };
-
-    private static RootCommand CreateCommandsHierarchy(IEnumerable<ICommand> handlers)
-    {
-        var commandsMap = new Dictionary<Type, Infrastructure.Command>();
-        foreach (var handler in handlers)
-        {
-            var handlerType = handler.GetType();
-            var commandSettingsType = handlerType.BaseType?.GenericTypeArguments[0];
-            if (commandSettingsType != null)
-            {
-                var commandAttribute = handlerType.GetCustomAttribute<CommandAttribute>();
-                if (commandAttribute != null)
-                {
-                    var command = new Infrastructure.Command(commandAttribute.Name, commandAttribute.Description) { Parent = commandAttribute.Parent };
-                    command.AddOptions(commandSettingsType);
-
-                    const string invokeAsyncName = nameof(ICommand.InvokeAsync);
-                    var handlerMethod = handlerType.GetMethod(invokeAsyncName)
-                                        ?? throw new InvalidOperationException($"{handlerType.Name} does not implement {invokeAsyncName}");
-
-                    command.Handler = CommandHandler.Create(handlerMethod, handler);
-
-                    commandsMap.Add(commandSettingsType, command);
-                }
-            }
-        }
-
-        var parentGroups = commandsMap.GroupBy(x => x.Value.Parent, x => x.Key).ToList();
-
-        var rootCommand = new RootCommand();
-        foreach (var parentGroup in parentGroups)
-        {
-            System.CommandLine.Command command = parentGroup.Key is null
-                ? rootCommand
-                : commandsMap[parentGroup.Key];
-
-            foreach (var child in parentGroup)
-            {
-                command.AddCommand(commandsMap[child]);
-            }
-        }
-
-        return rootCommand;
-    }
 }

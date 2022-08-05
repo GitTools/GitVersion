@@ -1,20 +1,34 @@
-﻿using GitVersion;
+using GitVersion;
+using GitVersion.Extensions;
+using GitVersion.Generated;
+using GitVersion.Infrastructure;
 
-var assemblies = new[]
+var modules = new IGitVersionModule[]
 {
-    typeof(CoreModule).Assembly,
-    typeof(LibGit2SharpCoreModule).Assembly,
-    typeof(NormalizeModule).Assembly,
-    typeof(CalculateModule).Assembly,
-    typeof(ConfigModule).Assembly,
-    typeof(OutputModule).Assembly,
-    typeof(CliModule).Assembly
+    new CoreModule(),
+    new LibGit2SharpCoreModule(),
+    new NormalizeModule(),
+    new CalculateModule(),
+    new ConfigModule(),
+    new OutputModule(),
 };
 
-using var serviceProvider = ModulesLoader.Load(assemblies);
+using var serviceProvider = LoadGitVersionModules(modules);
 var app = serviceProvider.GetRequiredService<GitVersionApp>();
 var result = await app.RunAsync(args);
 
 if (!Console.IsInputRedirected) Console.ReadKey();
 
 return result;
+
+static IContainer LoadGitVersionModules(IEnumerable<IGitVersionModule> gitVersionModules)
+{
+    var serviceProvider = new ContainerRegistrar()
+        .RegisterModules(gitVersionModules)
+        .RegisterModule(new CommandsImplModule())
+        .AddSingleton<GitVersionApp>()
+        .AddLogging()
+        .Build();
+
+    return serviceProvider;
+}

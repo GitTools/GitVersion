@@ -1,5 +1,3 @@
-﻿namespace GitVersion;
+namespace GitVersion;
 
-public class CalculateSettings : GitVersionSettings
-{
-}
+public record CalculateSettings : GitVersionSettings;

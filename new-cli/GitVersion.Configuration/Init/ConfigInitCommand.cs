@@ -1,9 +1,9 @@
-﻿using GitVersion.Infrastructure;
+using GitVersion.Infrastructure;
 
 namespace GitVersion.Init;
 
-[Command("init", typeof(ConfigSettings), "Inits the configuration for current repository.")]
-public class ConfigInitCommand : Command<ConfigInitSettings>
+[Command<ConfigCommand>("init", "Inits the configuration for current repository.")]
+public class ConfigInitCommand : ICommand<ConfigInitSettings>
 {
     private readonly ILogger logger;
     private readonly IService service;
@@ -14,7 +14,7 @@ public class ConfigInitCommand : Command<ConfigInitSettings>
         this.service = service;
     }
 
-    public override Task<int> InvokeAsync(ConfigInitSettings settings)
+    public Task<int> InvokeAsync(ConfigInitSettings settings)
     {
         var value = service.Call();
         logger.LogInformation($"Command : 'config init', LogFile : '{settings.LogFile}', WorkDir : '{settings.WorkDir}' ");

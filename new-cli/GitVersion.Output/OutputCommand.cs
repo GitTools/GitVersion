@@ -1,9 +1,9 @@
-﻿using GitVersion.Infrastructure;
+using GitVersion.Infrastructure;
 
 namespace GitVersion;
 
 [Command("output", "Outputs the version object.")]
-public class OutputCommand : Command<OutputSettings>
+public class OutputCommand : ICommand<OutputSettings>
 {
     private readonly ILogger logger;
     private readonly IService service;
@@ -14,7 +14,7 @@ public class OutputCommand : Command<OutputSettings>
         this.service = service;
     }
 
-    public override Task<int> InvokeAsync(OutputSettings settings)
+    public Task<int> InvokeAsync(OutputSettings settings)
     {
         var value = service.Call();
         logger.LogInformation($"Command : 'output', LogFile : '{settings.LogFile}', WorkDir : '{settings.WorkDir}' ");

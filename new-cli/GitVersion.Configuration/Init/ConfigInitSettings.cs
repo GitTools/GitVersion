@@ -1,5 +1,3 @@
-﻿namespace GitVersion.Init;
+namespace GitVersion.Init;
 
-public class ConfigInitSettings : ConfigSettings
-{
-}
+public record ConfigInitSettings : ConfigSettings;

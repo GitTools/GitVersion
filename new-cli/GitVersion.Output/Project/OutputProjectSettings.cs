@@ -1,7 +1,7 @@
-﻿namespace GitVersion.Project;
+namespace GitVersion.Project;
 
-public class OutputProjectSettings : OutputSettings
+public record OutputProjectSettings : OutputSettings
 {
     [Option("--project-file", "The project file")]
-    public string ProjectFile { get; init; } = default;
+    public required string ProjectFile { get; init; }
 }

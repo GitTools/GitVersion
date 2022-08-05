@@ -12,6 +12,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "sln", "sln", "{610883EF-A96
 ProjectSection(SolutionItems) = preProject
 	Directory.Build.props = Directory.Build.props
 	..\command.md = ..\command.md
+	Directory.Packages.props = Directory.Packages.props
 EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GitVersion.Normalization", "GitVersion.Normalization\GitVersion.Normalization.csproj", "{45776CC1-7FDA-4299-86A7-9F11E7855CE4}"
@@ -42,6 +43,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GitVersion.Core.Tester", "GitVersion.Core.Tester\GitVersion.Core.Tester.csproj", "{DE951A86-1B65-4C7B-B6BE-7B5A233D7AF1}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GitVersion.Core.Libgit2Sharp", "GitVersion.Core.Libgit2Sharp\GitVersion.Core.Libgit2Sharp.csproj", "{69E72521-9B30-48CD-A674-BC26A25A0906}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GitVersion.Cli.Generator", "GitVersion.Cli.Generator\GitVersion.Cli.Generator.csproj", "{AF22F642-625A-4A33-92A5-161EE4E2B0CE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -89,6 +92,10 @@ Global
 		{69E72521-9B30-48CD-A674-BC26A25A0906}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{69E72521-9B30-48CD-A674-BC26A25A0906}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{69E72521-9B30-48CD-A674-BC26A25A0906}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AF22F642-625A-4A33-92A5-161EE4E2B0CE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AF22F642-625A-4A33-92A5-161EE4E2B0CE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AF22F642-625A-4A33-92A5-161EE4E2B0CE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AF22F642-625A-4A33-92A5-161EE4E2B0CE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{8F6D4830-B870-4365-9662-457F1A13894B} = {511CE16D-A65E-48F4-9A95-BB521A9048AF}

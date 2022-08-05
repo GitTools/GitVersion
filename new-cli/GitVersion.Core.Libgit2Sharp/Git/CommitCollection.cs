@@ -18,7 +18,7 @@ internal sealed class CommitCollection : ICommitCollection
 
     public IEnumerable<ICommit> QueryBy(CommitFilter commitFilter)
     {
-        static object? GetReacheableFrom(object? item) =>
+        static object? GetReachableFrom(object? item) =>
             item switch
             {
                 Commit c => (LibGit2Sharp.Commit)c,
@@ -26,8 +26,8 @@ internal sealed class CommitCollection : ICommitCollection
                 _ => null
             };
 
-        var includeReachableFrom = GetReacheableFrom(commitFilter.IncludeReachableFrom);
-        var excludeReachableFrom = GetReacheableFrom(commitFilter.ExcludeReachableFrom);
+        var includeReachableFrom = GetReachableFrom(commitFilter.IncludeReachableFrom);
+        var excludeReachableFrom = GetReachableFrom(commitFilter.ExcludeReachableFrom);
         var filter = new LibGit2Sharp.CommitFilter
         {
             IncludeReachableFrom = includeReachableFrom,

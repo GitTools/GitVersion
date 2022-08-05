@@ -1,4 +1,4 @@
-﻿using GitVersion.Infrastructure;
+using GitVersion.Infrastructure;
 using GitVersion.Init;
 using GitVersion.Show;
 
@@ -8,8 +8,8 @@ public class ConfigModule : IGitVersionModule
 {
     public void RegisterTypes(IContainerRegistrar services)
     {
-        services.AddSingleton<ICommand, ConfigCommand>();
-        services.AddSingleton<ICommand, ConfigInitCommand>();
-        services.AddSingleton<ICommand, ConfigShowCommand>();
+        services.AddSingleton<ConfigCommand>();
+        services.AddSingleton<ConfigInitCommand>();
+        services.AddSingleton<ConfigShowCommand>();
     }
 }

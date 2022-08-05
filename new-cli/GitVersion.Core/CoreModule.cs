@@ -1,4 +1,4 @@
-﻿using GitVersion.Infrastructure;
+using GitVersion.Infrastructure;
 using Environment = GitVersion.Infrastructure.Environment;
 
 namespace GitVersion;

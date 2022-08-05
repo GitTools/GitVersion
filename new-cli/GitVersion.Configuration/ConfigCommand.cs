@@ -1,9 +1,9 @@
-﻿using GitVersion.Infrastructure;
+using GitVersion.Infrastructure;
 
 namespace GitVersion;
 
 [Command("config", "Manages the GitVersion configuration file.")]
-public class ConfigCommand : Command<ConfigSettings>
+public class ConfigCommand : ICommand<ConfigSettings>
 {
     private readonly ILogger logger;
     private readonly IService service;
@@ -14,7 +14,7 @@ public class ConfigCommand : Command<ConfigSettings>
         this.service = service;
     }
 
-    public override Task<int> InvokeAsync(ConfigSettings settings)
+    public Task<int> InvokeAsync(ConfigSettings settings)
     {
         var value = service.Call();
         logger.LogInformation($"Command : 'config', LogFile : '{settings.LogFile}', WorkDir : '{settings.WorkDir}' ");

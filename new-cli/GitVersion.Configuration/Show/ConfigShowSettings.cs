@@ -1,5 +1,3 @@
-﻿namespace GitVersion.Show;
+namespace GitVersion.Show;
 
-public class ConfigShowSettings : ConfigSettings
-{
-}
+public record ConfigShowSettings : ConfigSettings;

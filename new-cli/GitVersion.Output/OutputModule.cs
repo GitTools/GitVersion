@@ -1,4 +1,4 @@
-﻿using GitVersion.AssemblyInfo;
+using GitVersion.AssemblyInfo;
 using GitVersion.Infrastructure;
 using GitVersion.Project;
 using GitVersion.Wix;
@@ -9,9 +9,9 @@ public class OutputModule : IGitVersionModule
 {
     public void RegisterTypes(IContainerRegistrar services)
     {
-        services.AddSingleton<ICommand, OutputCommand>();
-        services.AddSingleton<ICommand, OutputAssemblyInfoCommand>();
-        services.AddSingleton<ICommand, OutputProjectCommand>();
-        services.AddSingleton<ICommand, OutputWixCommand>();
+        services.AddSingleton<OutputCommand>();
+        services.AddSingleton<OutputAssemblyInfoCommand>();
+        services.AddSingleton<OutputProjectCommand>();
+        services.AddSingleton<OutputWixCommand>();
     }
 }

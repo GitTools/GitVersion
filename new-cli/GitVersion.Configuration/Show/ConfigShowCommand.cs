@@ -1,9 +1,9 @@
-﻿using GitVersion.Infrastructure;
+using GitVersion.Infrastructure;
 
 namespace GitVersion.Show;
 
-[Command("show", typeof(ConfigSettings), "Shows the effective configuration.")]
-public class ConfigShowCommand : Command<ConfigShowSettings>
+[Command<ConfigCommand>("show", "Shows the effective configuration.")]
+public class ConfigShowCommand : ICommand<ConfigShowSettings>
 {
     private readonly ILogger logger;
     private readonly IService service;
@@ -14,7 +14,7 @@ public class ConfigShowCommand : Command<ConfigShowSettings>
         this.service = service;
     }
 
-    public override Task<int> InvokeAsync(ConfigShowSettings settings)
+    public Task<int> InvokeAsync(ConfigShowSettings settings)
     {
         var value = service.Call();
         logger.LogInformation($"Command : 'config show', LogFile : '{settings.LogFile}', WorkDir : '{settings.WorkDir}' ");

@@ -1,10 +1,10 @@
-﻿using GitVersion.Git;
+using GitVersion.Git;
 using GitVersion.Infrastructure;
 
 namespace GitVersion;
 
 [Command("calculate", "Calculates the version object from the git history.")]
-public class CalculateCommand : Command<CalculateSettings>
+public class CalculateCommand : ICommand<CalculateSettings>
 {
     private readonly ILogger logger;
     private readonly IService service;
@@ -17,7 +17,7 @@ public class CalculateCommand : Command<CalculateSettings>
         this.repository = repository;
     }
 
-    public override Task<int> InvokeAsync(CalculateSettings settings)
+    public Task<int> InvokeAsync(CalculateSettings settings)
     {
         var value = service.Call();
         this.repository.Discover(settings.WorkDir.FullName);

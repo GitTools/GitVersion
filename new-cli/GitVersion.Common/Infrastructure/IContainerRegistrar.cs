@@ -1,4 +1,4 @@
-﻿namespace GitVersion.Infrastructure;
+namespace GitVersion.Infrastructure;
 
 public interface IContainerRegistrar
 {

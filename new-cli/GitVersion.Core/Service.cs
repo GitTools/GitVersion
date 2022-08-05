@@ -1,4 +1,4 @@
-﻿namespace GitVersion;
+namespace GitVersion;
 
 public class Service : IService
 {

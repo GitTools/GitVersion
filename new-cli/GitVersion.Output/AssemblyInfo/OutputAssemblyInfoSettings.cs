@@ -1,7 +1,7 @@
-﻿namespace GitVersion.AssemblyInfo;
+namespace GitVersion.AssemblyInfo;
 
-public class OutputAssemblyInfoSettings : OutputSettings
+public record OutputAssemblyInfoSettings : OutputSettings
 {
     [Option("--assemblyinfo-file", "The assembly file")]
-    public string AssemblyinfoFile { get; init; } = default;
+    public required string AssemblyinfoFile { get; init; }
 }

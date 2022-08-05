@@ -1,5 +1,3 @@
-﻿namespace GitVersion;
+namespace GitVersion;
 
-public class ConfigSettings : GitVersionSettings
-{
-}
+public record ConfigSettings : GitVersionSettings;

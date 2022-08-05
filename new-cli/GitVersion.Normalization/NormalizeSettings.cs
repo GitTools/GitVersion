@@ -1,5 +1,3 @@
-﻿namespace GitVersion;
+namespace GitVersion;
 
-public class NormalizeSettings : GitVersionSettings
-{
-}
+public record NormalizeSettings : GitVersionSettings;

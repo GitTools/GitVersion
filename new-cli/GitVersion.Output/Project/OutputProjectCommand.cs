@@ -1,9 +1,9 @@
-﻿using GitVersion.Infrastructure;
+using GitVersion.Infrastructure;
 
 namespace GitVersion.Project;
 
-[Command("project", typeof(OutputSettings), "Outputs version to project")]
-public class OutputProjectCommand : Command<OutputProjectSettings>
+[Command<OutputCommand>("project", "Outputs version to project")]
+public class OutputProjectCommand : ICommand<OutputProjectSettings>
 {
     private readonly ILogger logger;
     private readonly IService service;
@@ -14,7 +14,7 @@ public class OutputProjectCommand : Command<OutputProjectSettings>
         this.service = service;
     }
 
-    public override Task<int> InvokeAsync(OutputProjectSettings settings)
+    public Task<int> InvokeAsync(OutputProjectSettings settings)
     {
         var value = service.Call();
         logger.LogInformation($"Command : 'output project', LogFile : '{settings.LogFile}', WorkDir : '{settings.OutputDir}', InputFile: '{settings.InputFile}', Project: '{settings.ProjectFile}' ");
