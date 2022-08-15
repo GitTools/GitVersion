@@ -46,7 +46,7 @@ public class DockerManifestInternal : FrostingTask<BuildContext>
         {
             var amd64DockerImage = group.First(x => x.Architecture == Architecture.Amd64);
             var arm64DockerImage = group.First(x => x.Architecture == Architecture.Arm64);
-            context.DockerCreateManifest(amd64DockerImage, context.SkipArm64Image(arm64DockerImage));
+            context.DockerCreateManifest(amd64DockerImage, context.SkipImage(arm64DockerImage));
             context.DockerPushManifest(amd64DockerImage);
         }
     }

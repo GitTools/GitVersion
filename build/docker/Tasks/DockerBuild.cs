@@ -27,7 +27,7 @@ public class DockerBuild : FrostingTask<BuildContext>
 
         foreach (var dockerImage in context.Images)
         {
-            if (context.SkipArm64Image(dockerImage)) continue;
+            if (context.SkipImage(dockerImage)) continue;
             context.DockerBuildImage(dockerImage);
         }
     }
