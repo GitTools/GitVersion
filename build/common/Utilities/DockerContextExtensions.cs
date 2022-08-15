@@ -9,12 +9,17 @@ public enum Architecture
 }
 public static class DockerContextExtensions
 {
-    public static bool SkipArm64Image(this ICakeContext context, DockerImage dockerImage)
+    public static bool SkipImage(this ICakeContext context, DockerImage dockerImage)
     {
-        if (dockerImage.Architecture != Architecture.Arm64) return false;
-        if (!Constants.DistrosToSkip.Contains(dockerImage.Distro)) return false;
+        var (distro, targetFramework, architecture, _, _) = dockerImage;
 
-        context.Information($"Skipping Target: {dockerImage.TargetFramework}, Distro: {dockerImage.Distro}, Arch: {dockerImage.Architecture}");
+        // TODO skip this because of https://github.com/GitTools/GitVersion/pull/3148, remove after .net core 3.1 is removed
+        if (distro == Constants.Ubuntu2204 && targetFramework == Constants.Version31) return true;
+
+        if (architecture != Architecture.Arm64) return false;
+        if (!Constants.DistrosToSkip.Contains(distro)) return false;
+
+        context.Information($"Skipping Target: {targetFramework}, Distro: {distro}, Arch: {architecture}");
         return true;
     }
 

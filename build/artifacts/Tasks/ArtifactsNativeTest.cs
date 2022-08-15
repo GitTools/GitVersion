@@ -27,7 +27,7 @@ public class ArtifactsNativeTest : FrostingTask<BuildContext>
 
         foreach (var dockerImage in context.Images)
         {
-            if (context.SkipArm64Image(dockerImage)) continue;
+            if (context.SkipImage(dockerImage)) continue;
 
             var runtime = dockerImage.Architecture == Architecture.Amd64 ? "linux-x64" : "linux-arm64";
             if (dockerImage.Distro.StartsWith("alpine"))
