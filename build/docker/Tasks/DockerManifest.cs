@@ -44,6 +44,9 @@ public class DockerManifestInternal : FrostingTask<BuildContext>
     {
         foreach (var group in context.Images.GroupBy(x => new { x.Distro, x.TargetFramework }))
         {
+            // TODO skip this because of https://github.com/GitTools/GitVersion/pull/3148, remove after .net core 3.1 is removed
+            if (group.Key.Distro == Constants.Ubuntu2204 && group.Key.TargetFramework == Constants.Version31) continue;
+
             var amd64DockerImage = group.First(x => x.Architecture == Architecture.Amd64);
             var arm64DockerImage = group.First(x => x.Architecture == Architecture.Arm64);
             context.DockerCreateManifest(amd64DockerImage, context.SkipImage(arm64DockerImage));
