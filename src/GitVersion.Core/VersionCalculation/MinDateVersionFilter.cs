@@ -1,3 +1,5 @@
+using GitVersion.Extensions;
+
 namespace GitVersion.VersionCalculation;
 
 public class MinDateVersionFilter : IVersionFilter
@@ -8,6 +10,8 @@ public class MinDateVersionFilter : IVersionFilter
 
     public bool Exclude(ICommit commit, out string? reason)
     {
+        commit.NotNull();
+
         reason = null;
 
         if (commit.When >= this.minimum)

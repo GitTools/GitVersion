@@ -96,29 +96,6 @@ public class BaseVersionCalculatorTests : TestBase
     }
 
     [Test]
-    public void ShouldFilterVersion()
-    {
-        var fakeIgnoreConfig = new TestIgnoreConfig(new ExcludeSourcesContainingExclude());
-
-        var higherVersion = new BaseVersion("exclude", false, new SemanticVersion(2), GitToolsTestingExtensions.CreateMockCommit(), null);
-        var lowerVersion = new BaseVersion("dummy", false, new SemanticVersion(1), GitToolsTestingExtensions.CreateMockCommit(), null);
-
-        var versionCalculator = GetBaseVersionCalculator(contextBuilder => contextBuilder
-            .WithConfig(new Config { Ignore = fakeIgnoreConfig })
-            .OverrideServices(services =>
-            {
-                services.RemoveAll<IVersionStrategy>();
-                services.AddSingleton<IVersionStrategy>(new TestVersionStrategy(higherVersion, lowerVersion));
-            }));
-        var baseVersion = versionCalculator.GetBaseVersion();
-
-        baseVersion.Source.ShouldNotBe(higherVersion.Source);
-        baseVersion.SemanticVersion.ShouldNotBe(higherVersion.SemanticVersion);
-        baseVersion.Source.ShouldBe(lowerVersion.Source);
-        baseVersion.SemanticVersion.ShouldBe(lowerVersion.SemanticVersion);
-    }
-
-    [Test]
     public void ShouldIgnorePreReleaseVersionInMainlineMode()
     {
         var fakeIgnoreConfig = new TestIgnoreConfig(new ExcludeSourcesContainingExclude());

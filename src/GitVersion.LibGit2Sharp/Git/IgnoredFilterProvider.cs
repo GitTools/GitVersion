@@ -19,7 +19,6 @@ internal sealed class IgnoredFilterProvider : IIgnoredFilterProvider
         Options = options.NotNull();
     }
 
-    // TODO 3074: do in ctor?
     public IVersionFilter[] Provide() =>
         this.ConfigProvider.Provide(Options.Value.ConfigInfo.OverrideConfig)
             .Ignore.ToFilters().ToArray();

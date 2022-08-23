@@ -10,6 +10,8 @@ public class ShaVersionFilter : IVersionFilter
 
     public bool Exclude(ICommit commit, out string? reason)
     {
+        commit.NotNull();
+
         reason = null;
 
         if (!this.shas.Any(sha => commit.Sha.StartsWith(sha, StringComparison.OrdinalIgnoreCase)))

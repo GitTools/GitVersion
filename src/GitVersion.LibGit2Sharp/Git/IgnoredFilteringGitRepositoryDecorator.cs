@@ -1,4 +1,4 @@
-﻿using GitVersion.Extensions;
+using GitVersion.Extensions;
 using GitVersion.VersionCalculation;
 
 namespace GitVersion;
@@ -9,7 +9,7 @@ internal sealed class IgnoredFilteringGitRepositoryDecorator : IMutatingGitRepos
     public IVersionFilter[] VersionFilters { get; }
     public IMutatingGitRepository Decoratee { get; }
 
-    // TODO 3074: better to use interface for GitRepository but must instantiate this class explicitly in module
+    // NOTE: it would be better to use the interface IMutatingGitRepository for gitRepository but this would be quite cumbersome to instantiate during startup: https://greatrexpectations.com/2018/10/25/decorators-in-net-core-with-dependency-injection
     public IgnoredFilteringGitRepositoryDecorator(IIgnoredFilterProvider ignoredFilterProvider, GitRepository decoratee)
     {
         Decoratee = decoratee.NotNull();
@@ -30,7 +30,7 @@ internal sealed class IgnoredFilteringGitRepositoryDecorator : IMutatingGitRepos
 
     public IBranchCollection Branches => Decoratee.Branches;
 
-    // TODO 3074: Need to be tested
+    // TODO 3074: test
     public IEnumerable<ICommit> Commits =>
         Decoratee.Commits
             .Where(IncludeVersion)
@@ -51,8 +51,22 @@ internal sealed class IgnoredFilteringGitRepositoryDecorator : IMutatingGitRepos
 
     public void Fetch(string remote, IEnumerable<string> refSpecs, AuthenticationInfo auth, string? logMessage) => Decoratee.Fetch(remote, refSpecs, auth, logMessage);
 
-    // TODO 3074: on ignored commits as output or input return null
-    public ICommit? FindMergeBase(ICommit commit, ICommit otherCommit) => Decoratee.FindMergeBase(commit, otherCommit);
+    // TODO 3074: test
+    public ICommit? FindMergeBase(ICommit commit, ICommit otherCommit)
+    {
+        if (IncludeVersion(commit) == false)
+            throw new ArgumentException($"Commit {commit.Id.Sha} is ignored by date or SHA.", nameof(commit));
+
+        if (IncludeVersion(otherCommit) == false)
+            throw new ArgumentException($"Commit {otherCommit.Id.Sha} is ignored by date or SHA.", nameof(otherCommit));
+
+        var mergeBase = Decoratee.FindMergeBase(commit, otherCommit);
+
+        if (mergeBase != null && IncludeVersion(mergeBase))
+            return mergeBase;
+
+        return null;
+    }
 
     public int GetNumberOfUncommittedChanges() => Decoratee.GetNumberOfUncommittedChanges();
 
