@@ -105,10 +105,8 @@ public class BaseVersionCalculator : IBaseVersionCalculator
             if (version == null) continue;
 
             this.log.Info(version.ToString());
-            if (strategy is FallbackVersionStrategy)
-            {
-                yield return version;
-            }
+
+            yield return version;
         }
     }
 
