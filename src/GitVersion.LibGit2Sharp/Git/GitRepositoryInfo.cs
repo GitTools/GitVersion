@@ -90,6 +90,7 @@ internal class GitRepositoryInfo : IGitRepositoryInfo
         if (gitDirectory.IsNullOrEmpty())
             throw new DirectoryNotFoundException("Cannot find the .git directory");
 
+        // TODO: should possibly be a separate class
         return new GitRepository(gitDirectory).WorkingDirectory;
     }
 
@@ -105,6 +106,7 @@ internal class GitRepositoryInfo : IGitRepositoryInfo
     {
         try
         {
+            // TODO: should possibly be a separate class
             var gitRepository = new GitRepository(possiblePath);
             return gitRepository.Remotes.Any(r => r.Url == targetUrl);
         }
@@ -113,5 +115,4 @@ internal class GitRepositoryInfo : IGitRepositoryInfo
             return false;
         }
     }
-
 }

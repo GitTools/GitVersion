@@ -67,7 +67,7 @@ internal class BranchesContainingCommitFinder
     private IEnumerable<ICommit> GetCommitsReacheableFrom(IGitObject commit, IBranch branch)
     {
         var filter = new CommitFilter { IncludeReachableFrom = branch };
-        var commitCollection = this.repository.Commits.QueryBy(filter);
+        var commitCollection = this.repository.QueryBy(filter);
 
         return commitCollection.Where(c => c.Sha == commit.Sha);
     }

@@ -42,7 +42,11 @@ internal sealed class GitRepository : IMutatingGitRepository
     public ITagCollection Tags => new TagCollection(RepositoryInstance.Tags);
     public IReferenceCollection Refs => new ReferenceCollection(RepositoryInstance.Refs);
     public IBranchCollection Branches => new BranchCollection(RepositoryInstance.Branches);
-    public ICommitCollection Commits => new CommitCollection(RepositoryInstance.Commits);
+    public IEnumerable<ICommit> Commits => new CommitCollection(RepositoryInstance.Commits);
+
+    public IEnumerable<ICommit> QueryBy(CommitFilter commitFilter) =>
+        new CommitCollection(RepositoryInstance.Commits).QueryBy(commitFilter);
+
     public IRemoteCollection Remotes => new RemoteCollection(RepositoryInstance.Network.Remotes);
 
     public ICommit? FindMergeBase(ICommit commit, ICommit otherCommit)

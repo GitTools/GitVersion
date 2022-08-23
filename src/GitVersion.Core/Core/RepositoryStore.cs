@@ -62,7 +62,7 @@ public class RepositoryStore : IRepositoryStore
         try
         {
             var filter = new CommitFilter { IncludeReachableFrom = currentBranchTip };
-            var commitCollection = this.repository.Commits.QueryBy(filter);
+            var commitCollection = this.repository.QueryBy(filter);
 
             return commitCollection.First(c => !c.Parents.Any());
         }
@@ -81,13 +81,13 @@ public class RepositoryStore : IRepositoryStore
 
         var filter = new CommitFilter { IncludeReachableFrom = mainlineTip, ExcludeReachableFrom = baseVersionSource, SortBy = CommitSortStrategies.Reverse, FirstParentOnly = true };
 
-        return this.repository.Commits.QueryBy(filter);
+        return this.repository.QueryBy(filter);
     }
 
     public IEnumerable<ICommit> GetMergeBaseCommits(ICommit? mergeCommit, ICommit? mergedHead, ICommit? findMergeBase)
     {
         var filter = new CommitFilter { IncludeReachableFrom = mergedHead, ExcludeReachableFrom = findMergeBase };
-        var commitCollection = this.repository.Commits.QueryBy(filter);
+        var commitCollection = this.repository.QueryBy(filter);
 
         var commits = mergeCommit != null
             ? new[] { mergeCommit }.Union(commitCollection)
@@ -179,7 +179,6 @@ public class RepositoryStore : IRepositoryStore
         var mainlineBranchFinder = new MainlineBranchFinder(this, this.repository, configuration, mainlineBranchConfigs, this.log);
         return mainlineBranchFinder.FindMainlineBranches(commit);
     }
-
 
     /// <summary>
     ///     Find the commit where the given branch was branched from another branch.
@@ -273,7 +272,7 @@ public class RepositoryStore : IRepositoryStore
     {
         var filter = new CommitFilter { IncludeReachableFrom = currentCommit, ExcludeReachableFrom = baseVersionSource, SortBy = CommitSortStrategies.Topological | CommitSortStrategies.Time };
 
-        return this.repository.Commits.QueryBy(filter);
+        return this.repository.QueryBy(filter);
     }
 
     public VersionField? DetermineIncrementedField(BaseVersion baseVersion, GitVersionContext context) =>
@@ -282,7 +281,7 @@ public class RepositoryStore : IRepositoryStore
     public bool IsCommitOnBranch(ICommit? baseVersionSource, IBranch branch, ICommit firstMatchingCommit)
     {
         var filter = new CommitFilter { IncludeReachableFrom = branch, ExcludeReachableFrom = baseVersionSource, FirstParentOnly = true };
-        var commitCollection = this.repository.Commits.QueryBy(filter);
+        var commitCollection = this.repository.QueryBy(filter);
         return commitCollection.Contains(firstMatchingCommit);
     }
 

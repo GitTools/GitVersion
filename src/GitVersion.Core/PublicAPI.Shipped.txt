@@ -433,7 +433,6 @@ GitVersion.IGitPreparer.EnsureLocalBranchExistsForCurrentBranch(GitVersion.IRemo
 GitVersion.IGitPreparer.Prepare() -> void
 GitVersion.IGitRepository
 GitVersion.IGitRepository.Branches.get -> GitVersion.IBranchCollection!
-GitVersion.IGitRepository.Commits.get -> GitVersion.ICommitCollection!
 GitVersion.IGitRepository.FindMergeBase(GitVersion.ICommit! commit, GitVersion.ICommit! otherCommit) -> GitVersion.ICommit?
 GitVersion.IGitRepository.GetNumberOfUncommittedChanges() -> int
 GitVersion.IGitRepository.Head.get -> GitVersion.IBranch!
@@ -971,19 +970,16 @@ GitVersion.VersionCalculation.INextVersionCalculator.FindVersion() -> GitVersion
 GitVersion.VersionCalculation.IVariableProvider
 GitVersion.VersionCalculation.IVariableProvider.GetVariablesFor(GitVersion.SemanticVersion! semanticVersion, GitVersion.Model.Configuration.EffectiveConfiguration! config, bool isCurrentCommitTagged) -> GitVersion.OutputVariables.VersionVariables!
 GitVersion.VersionCalculation.IVersionFilter
-GitVersion.VersionCalculation.IVersionFilter.Exclude(GitVersion.VersionCalculation.BaseVersion! version, out string? reason) -> bool
 GitVersion.VersionCalculation.IVersionStrategy
 GitVersion.VersionCalculation.IVersionStrategy.GetVersions() -> System.Collections.Generic.IEnumerable<GitVersion.VersionCalculation.BaseVersion!>!
 GitVersion.VersionCalculation.MergeMessageVersionStrategy
 GitVersion.VersionCalculation.MergeMessageVersionStrategy.MergeMessageVersionStrategy(GitVersion.Logging.ILog! log, System.Lazy<GitVersion.GitVersionContext!>! versionContext) -> void
 GitVersion.VersionCalculation.MinDateVersionFilter
-GitVersion.VersionCalculation.MinDateVersionFilter.Exclude(GitVersion.VersionCalculation.BaseVersion? version, out string? reason) -> bool
 GitVersion.VersionCalculation.MinDateVersionFilter.MinDateVersionFilter(System.DateTimeOffset minimum) -> void
 GitVersion.VersionCalculation.NextVersionCalculator
 GitVersion.VersionCalculation.NextVersionCalculator.FindVersion() -> GitVersion.SemanticVersion!
 GitVersion.VersionCalculation.NextVersionCalculator.NextVersionCalculator(GitVersion.Logging.ILog! log, GitVersion.VersionCalculation.IBaseVersionCalculator! baseVersionCalculator, GitVersion.VersionCalculation.IMainlineVersionCalculator! mainlineVersionCalculator, GitVersion.Common.IRepositoryStore! repositoryStore, System.Lazy<GitVersion.GitVersionContext!>! versionContext) -> void
 GitVersion.VersionCalculation.ShaVersionFilter
-GitVersion.VersionCalculation.ShaVersionFilter.Exclude(GitVersion.VersionCalculation.BaseVersion? version, out string? reason) -> bool
 GitVersion.VersionCalculation.ShaVersionFilter.ShaVersionFilter(System.Collections.Generic.IEnumerable<string!>! shas) -> void
 GitVersion.VersionCalculation.TaggedCommitVersionStrategy
 GitVersion.VersionCalculation.TaggedCommitVersionStrategy.TaggedCommitVersionStrategy(GitVersion.Common.IRepositoryStore! repositoryStore, System.Lazy<GitVersion.GitVersionContext!>! versionContext) -> void

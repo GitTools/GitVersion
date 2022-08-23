@@ -116,7 +116,7 @@ internal class MergeBaseFinder
             IncludeReachableFrom = commitToFindCommonBase,
             ExcludeReachableFrom = findMergeBase
         };
-        var commitCollection = this.repository.Commits.QueryBy(filter);
+        var commitCollection = this.repository.QueryBy(filter);
 
         return commitCollection.FirstOrDefault(c => c.Parents.Contains(findMergeBase));
     }

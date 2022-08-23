@@ -180,11 +180,11 @@ public class BaseVersionCalculatorTests : TestBase
 
     private class ExcludeSourcesContainingExclude : IVersionFilter
     {
-        public bool Exclude(BaseVersion version, out string? reason)
+        public bool Exclude(ICommit commit, out string? reason)
         {
             reason = null;
 
-            if (!version.Source.Contains("exclude"))
+            if (!commit.Message.Contains("exclude"))
                 return false;
 
             reason = "was excluded";

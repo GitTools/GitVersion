@@ -97,6 +97,7 @@ public class BaseVersionCalculator : IBaseVersionCalculator
             return calculatedBase;
         }
     }
+
     private IEnumerable<BaseVersion> GetBaseVersions(IVersionStrategy strategy)
     {
         foreach (var version in strategy.GetVersions())
@@ -104,26 +105,11 @@ public class BaseVersionCalculator : IBaseVersionCalculator
             if (version == null) continue;
 
             this.log.Info(version.ToString());
-            if (strategy is FallbackVersionStrategy || IncludeVersion(version))
+            if (strategy is FallbackVersionStrategy)
             {
                 yield return version;
             }
         }
-    }
-    private bool IncludeVersion(BaseVersion version)
-    {
-        foreach (var filter in context.Configuration.VersionFilters)
-        {
-            if (filter.Exclude(version, out var reason))
-            {
-                if (reason != null)
-                {
-                    this.log.Info(reason);
-                }
-                return false;
-            }
-        }
-        return true;
     }
 
     private void FixTheBaseVersionSourceOfMergeMessageStrategyIfReleaseBranchWasMergedAndDeleted(IEnumerable<Versions> baseVersions)

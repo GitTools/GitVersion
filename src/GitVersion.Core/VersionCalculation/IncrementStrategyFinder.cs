@@ -153,6 +153,6 @@ public class IncrementStrategyFinder : IIncrementStrategyFinder
             SortBy = CommitSortStrategies.Topological | CommitSortStrategies.Reverse
         };
 
-        return repo.Commits.QueryBy(filter);
+        return repo.QueryBy(filter);
     }
 }

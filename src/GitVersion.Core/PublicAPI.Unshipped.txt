@@ -1,0 +1,5 @@
+GitVersion.IGitRepository.Commits.get -> System.Collections.Generic.IEnumerable<GitVersion.ICommit!>!
+GitVersion.IGitRepository.QueryBy(GitVersion.CommitFilter! commitFilter) -> System.Collections.Generic.IEnumerable<GitVersion.ICommit!>!
+GitVersion.VersionCalculation.IVersionFilter.Exclude(GitVersion.ICommit! commit, out string? reason) -> bool
+GitVersion.VersionCalculation.MinDateVersionFilter.Exclude(GitVersion.ICommit! commit, out string? reason) -> bool
+GitVersion.VersionCalculation.ShaVersionFilter.Exclude(GitVersion.ICommit! commit, out string? reason) -> bool
