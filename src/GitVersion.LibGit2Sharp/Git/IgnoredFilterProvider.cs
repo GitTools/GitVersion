@@ -8,18 +8,16 @@ namespace GitVersion;
 // TODO 3074: test
 internal sealed class IgnoredFilterProvider : IIgnoredFilterProvider
 {
-    // TODO 3074: adjust naming, order, whitespaces etc.
-    public IConfigProvider ConfigProvider { get; }
-
-    public IOptions<GitVersionOptions> Options { get; }
+    private readonly IConfigProvider configProvider;
+    private readonly IOptions<GitVersionOptions> options;
 
     public IgnoredFilterProvider(IConfigProvider configProvider, IOptions<GitVersionOptions> options)
     {
-        ConfigProvider = configProvider.NotNull();
-        Options = options.NotNull();
+        this.configProvider = configProvider.NotNull();
+        this.options = options.NotNull();
     }
 
     public IVersionFilter[] Provide() =>
-        this.ConfigProvider.Provide(Options.Value.ConfigInfo.OverrideConfig)
+        this.configProvider.Provide(options.Value.ConfigInfo.OverrideConfig)
             .Ignore.ToFilters().ToArray();
 }
