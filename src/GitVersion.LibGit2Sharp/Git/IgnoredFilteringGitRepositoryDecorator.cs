@@ -4,6 +4,8 @@ using GitVersion.VersionCalculation;
 
 namespace GitVersion;
 
+// TODO 3074: re-work: IgnoredFilteringGitRepositoryDecorator must get the configuration and ICommit must get an Ignore Property with an enum: Included, Ignored. Or better a class with two properties for Ignored and Included with static fields for future extensions? Commit always returns "Included". This class adds a decorator to all ICommits that are ignored by SHA and filters those that are ignored by date also as a performance measure. BaseVersionCalculator has to filter for ignored commits again (possibly more than that too). IncrementStrategyFinder must not raise a version for ignored Commits.
+
 // TODO 3074: test
 internal sealed class IgnoredFilteringGitRepositoryDecorator : IMutatingGitRepository
 {
