@@ -35,6 +35,7 @@ public class BaseVersionCalculatorTests : TestBase
     [Test]
     public void UsesWhenFromNextBestMatchIfHighestDoesntHaveWhen()
     {
+        // TODO 3074: re-work: this test tested that the filter had been called inside of the calculator. this is not the case any more. rewrite or drop this test
         var when = DateTimeOffset.Now;
 
         var versionCalculator = GetBaseVersionCalculator(contextBuilder =>

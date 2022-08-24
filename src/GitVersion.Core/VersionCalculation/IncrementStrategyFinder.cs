@@ -130,14 +130,18 @@ public class IncrementStrategyFinder : IIncrementStrategyFinder
 
     private VersionField? GetIncrementFromCommit(ICommit commit, Regex majorRegex, Regex minorRegex, Regex patchRegex, Regex none) =>
         this.commitIncrementCache.GetOrAdd(commit.Sha, () =>
-            GetIncrementFromMessage(commit.Message, majorRegex, minorRegex, patchRegex, none));
+            GetIncrementFromMessage(commit.IgnoredState, commit.Message, majorRegex, minorRegex, patchRegex, none));
 
-    private static VersionField? GetIncrementFromMessage(string message, Regex majorRegex, Regex minorRegex, Regex patchRegex, Regex none)
+    private static VersionField? GetIncrementFromMessage(IgnoredState ignoredState, string message, Regex majorRegex, Regex minorRegex, Regex patchRegex, Regex none)
     {
+        // TODO 3074: test
+        if (ignoredState.IsIgnored) return null;
+
         if (majorRegex.IsMatch(message)) return VersionField.Major;
         if (minorRegex.IsMatch(message)) return VersionField.Minor;
         if (patchRegex.IsMatch(message)) return VersionField.Patch;
         if (none.IsMatch(message)) return VersionField.None;
+
         return null;
     }
 

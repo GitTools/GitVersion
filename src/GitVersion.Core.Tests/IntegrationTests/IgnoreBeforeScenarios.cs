@@ -8,6 +8,7 @@ using NUnit.Framework;
 
 namespace GitVersion.Core.Tests.IntegrationTests;
 
+// TODO 3074: add test cases for ignored commits
 [TestFixture]
 public class IgnoreBeforeScenarios : TestBase
 {
@@ -55,6 +56,6 @@ public class IgnoreBeforeScenarios : TestBase
                 }
             }).Build();
 
-        fixture.AssertFullSemver("1.1.0-alpha.2", config);
+        fixture.AssertFullSemver("1.1.0-alpha.3", config);
     }
 }

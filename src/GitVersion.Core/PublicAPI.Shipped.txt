@@ -1364,3 +1364,10 @@ virtual GitVersion.Model.Configuration.IgnoreConfig.IsEmpty.get -> bool
 virtual GitVersion.Model.Configuration.IgnoreConfig.ToFilters() -> System.Collections.Generic.IEnumerable<GitVersion.VersionCalculation.IVersionFilter!>!
 virtual GitVersion.VersionCalculation.TaggedCommitVersionStrategy.FormatSource(GitVersion.VersionCalculation.TaggedCommitVersionStrategy.VersionTaggedCommit! version) -> string!
 virtual GitVersion.VersionCalculation.VersionStrategyBase.GetVersions() -> System.Collections.Generic.IEnumerable<GitVersion.VersionCalculation.BaseVersion!>!
+
+GitVersion.ICommit.IgnoredState.get -> GitVersion.IgnoredState!
+GitVersion.IgnoredState
+GitVersion.IgnoredState.IsIgnored.get -> bool
+GitVersion.IgnoredState.IsIncluded.get -> bool
+static GitVersion.IgnoredState.Ignored -> GitVersion.IgnoredState!
+static GitVersion.IgnoredState.Included -> GitVersion.IgnoredState!

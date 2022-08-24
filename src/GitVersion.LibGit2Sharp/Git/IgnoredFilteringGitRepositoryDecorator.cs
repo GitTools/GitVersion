@@ -4,8 +4,6 @@ using GitVersion.VersionCalculation;
 
 namespace GitVersion;
 
-// TODO 3074: re-work: IgnoredFilteringGitRepositoryDecorator must get the configuration and ICommit must get an Ignore Property with an enum: Included, Ignored. Or better a class with two properties for Ignored and Included with static fields for future extensions? Commit always returns "Included". This class adds a decorator to all ICommits that are ignored by SHA and filters those that are ignored by date also as a performance measure. BaseVersionCalculator has to filter for ignored commits again (possibly more than that too). IncrementStrategyFinder must not raise a version for ignored Commits.
-
 // TODO 3074: test
 internal sealed class IgnoredFilteringGitRepositoryDecorator : IMutatingGitRepository
 {
@@ -37,14 +35,12 @@ internal sealed class IgnoredFilteringGitRepositoryDecorator : IMutatingGitRepos
 
     // TODO 3074: test
     public IEnumerable<ICommit> Commits =>
-        decoratee.Commits
-            .Where(IncludeVersion)
-            .ToList();
+        decoratee.Commits.Select(DecorateCommit);
 
+    // TODO 3074: test
     public IEnumerable<ICommit> QueryBy(CommitFilter commitFilter) =>
         decoratee.QueryBy(commitFilter)
-            .Where(IncludeVersion)
-            .ToList();
+            .Select(DecorateCommit);
 
     public IRemoteCollection Remotes => decoratee.Remotes;
 
@@ -59,19 +55,19 @@ internal sealed class IgnoredFilteringGitRepositoryDecorator : IMutatingGitRepos
     // TODO 3074: test
     public ICommit? FindMergeBase(ICommit commit, ICommit otherCommit)
     {
-        if (IncludeVersion(commit) == false)
-            throw new ArgumentException($"Commit {commit.Id.Sha} is ignored by date or SHA.", nameof(commit));
-
-        if (IncludeVersion(otherCommit) == false)
-            throw new ArgumentException($"Commit {otherCommit.Id.Sha} is ignored by date or SHA.", nameof(otherCommit));
-
         var mergeBase = decoratee.FindMergeBase(commit, otherCommit);
 
-        if (mergeBase != null && IncludeVersion(mergeBase))
-            return mergeBase;
+        if (mergeBase == null)
+            return null;
 
-        return null;
+        return DecorateCommit(mergeBase);
     }
+
+    // NOTE: filter out those with an old date as a performance measure in order to be able to introduce a clip for big repositories.
+    private ICommit DecorateCommit(ICommit commit) =>
+        IncludeVersion(commit) ?
+            commit :
+            new IgnoredCommit(commit, IgnoredState.Ignored);
 
     public int GetNumberOfUncommittedChanges() => decoratee.GetNumberOfUncommittedChanges();
 

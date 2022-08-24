@@ -192,13 +192,17 @@ public class MergeMessageBaseVersionStrategyTests : TestBase
     private class MockCommit : ICommit
     {
         public bool Equals(ICommit? other) => throw new NotImplementedException();
+
         public int CompareTo(ICommit? other) => throw new NotImplementedException();
+
         public bool Equals(IGitObject? other) => throw new NotImplementedException();
+
         public int CompareTo(IGitObject? other) => throw new NotImplementedException();
         public IObjectId Id => throw new NotImplementedException();
         public string Sha => throw new NotImplementedException();
         public IEnumerable<ICommit> Parents => throw new NotImplementedException();
         public DateTimeOffset When => throw new NotImplementedException();
         public string Message => throw new NotImplementedException();
+        public IgnoredState IgnoredState => throw new NotImplementedException();
     }
 }

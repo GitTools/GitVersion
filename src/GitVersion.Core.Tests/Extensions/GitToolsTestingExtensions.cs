@@ -25,6 +25,7 @@ public static class GitToolsTestingExtensions
         objectId.Sha.Returns(Guid.NewGuid().ToString("n") + "00000000");
 
         var commit = Substitute.For<ICommit>();
+        commit.IgnoredState.Returns(IgnoredState.Included);
         commit.Id.Returns(objectId);
         commit.Sha.Returns(objectId.Sha);
         commit.Message.Returns("Commit " + commitCount++);
@@ -32,6 +33,7 @@ public static class GitToolsTestingExtensions
         commit.When.Returns(when.AddSeconds(1));
         return commit;
     }
+
     public static IBranch CreateMockBranch(string name, params ICommit[] commits)
     {
         var branch = Substitute.For<IBranch>();

@@ -5,4 +5,5 @@ public interface ICommit : IEquatable<ICommit?>, IComparable<ICommit>, IGitObjec
     IEnumerable<ICommit> Parents { get; }
     DateTimeOffset When { get; }
     string Message { get; }
+    IgnoredState IgnoredState { get; }
 }
