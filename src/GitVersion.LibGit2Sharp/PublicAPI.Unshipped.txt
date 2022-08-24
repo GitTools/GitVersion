@@ -1,0 +1,2 @@
+GitVersion.IIgnoredFilterProvider
+GitVersion.IIgnoredFilterProvider.Provide() -> GitVersion.VersionCalculation.IVersionFilter![]!
