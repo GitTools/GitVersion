@@ -4,7 +4,6 @@ using GitVersion.VersionCalculation;
 
 namespace GitVersion;
 
-// TODO 3074: test
 internal sealed class IgnoredFilteringGitRepositoryDecorator : IMutatingGitRepository
 {
     private readonly ILog log;
@@ -33,11 +32,9 @@ internal sealed class IgnoredFilteringGitRepositoryDecorator : IMutatingGitRepos
 
     public IBranchCollection Branches => decoratee.Branches;
 
-    // TODO 3074: test
     public IEnumerable<ICommit> Commits =>
         decoratee.Commits.Select(DecorateCommit);
 
-    // TODO 3074: test
     public IEnumerable<ICommit> QueryBy(CommitFilter commitFilter) =>
         decoratee.QueryBy(commitFilter)
             .Select(DecorateCommit);
@@ -52,7 +49,6 @@ internal sealed class IgnoredFilteringGitRepositoryDecorator : IMutatingGitRepos
 
     public void Fetch(string remote, IEnumerable<string> refSpecs, AuthenticationInfo auth, string? logMessage) => decoratee.Fetch(remote, refSpecs, auth, logMessage);
 
-    // TODO 3074: test
     public ICommit? FindMergeBase(ICommit commit, ICommit otherCommit)
     {
         var mergeBase = decoratee.FindMergeBase(commit, otherCommit);

@@ -5,7 +5,6 @@ using Microsoft.Extensions.Options;
 
 namespace GitVersion;
 
-// TODO 3074: test
 internal sealed class IgnoredFilterProvider : IIgnoredFilterProvider
 {
     private readonly IConfigProvider configProvider;

@@ -106,7 +106,6 @@ public class BaseVersionCalculator : IBaseVersionCalculator
 
             this.log.Info(version.ToString());
 
-            // TODO 3074: test
             if (strategy is FallbackVersionStrategy || version.BaseVersionSource == null || version.BaseVersionSource.IgnoredState.IsIncluded)
                 yield return version;
         }

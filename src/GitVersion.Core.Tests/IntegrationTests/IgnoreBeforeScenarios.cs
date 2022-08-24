@@ -3,12 +3,10 @@ using GitVersion.Configuration;
 using GitVersion.Core.Tests.Helpers;
 using GitVersion.Model.Configuration;
 using LibGit2Sharp;
-using NSubstitute;
 using NUnit.Framework;
 
 namespace GitVersion.Core.Tests.IntegrationTests;
 
-// TODO 3074: add test cases for ignored commits
 [TestFixture]
 public class IgnoreBeforeScenarios : TestBase
 {
@@ -16,21 +14,21 @@ public class IgnoreBeforeScenarios : TestBase
     public void ShouldFallbackToBaseVersionWhenAllCommitsAreIgnored()
     {
         using var fixture = new EmptyRepositoryFixture();
-        var objectId = fixture.Repository.MakeACommit();
-        var commit = Substitute.For<ICommit>();
-        commit.Sha.Returns(objectId.Sha);
-        commit.When.Returns(DateTimeOffset.Now);
+        fixture.Repository.MakeATaggedCommit("1.0.3");
+        fixture.Repository.CreateBranch("develop");
+        fixture.Repository.MakeCommits(1);
+        var commit = fixture.Repository.MakeACommit("+semver:major");
 
         var config = new ConfigurationBuilder()
             .Add(new Config
             {
                 Ignore = new IgnoreConfig
                 {
-                    Before = commit.When.AddMinutes(1)
+                    ShAs = new[] { commit.Sha }
                 }
             }).Build();
 
-        fixture.AssertFullSemver("0.1.0+0", config);
+        fixture.AssertFullSemver("1.0.4+2", config);
     }
 
     [Test]
