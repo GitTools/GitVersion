@@ -134,6 +134,9 @@ jobs:
       matrix:
         os: [windows-latest, ubuntu-latest, macos-latest]
         targetFramework: [net6.0, netcoreapp3.1]
+        exclude:
+        - os: macos-latest
+          targetFramework: netcoreapp3.1
       fail-fast: false
 
     steps:
