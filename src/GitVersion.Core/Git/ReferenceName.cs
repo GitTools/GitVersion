@@ -13,6 +13,8 @@ public class ReferenceName : IEquatable<ReferenceName?>, IComparable<ReferenceNa
     private const string TagPrefix = "refs/tags/";
     private const string PullRequestPrefix1 = "refs/pull/";
     private const string PullRequestPrefix2 = "refs/pull-requests/";
+    private const string RemotePullRequestPrefix1 = "refs/remotes/pull/";
+    private const string RemotePullRequestPrefix2 = "refs/remotes/pull-requests/";
 
     public ReferenceName(string canonical)
     {
@@ -23,7 +25,10 @@ public class ReferenceName : IEquatable<ReferenceName?>, IComparable<ReferenceNa
         IsBranch = IsPrefixedBy(Canonical, LocalBranchPrefix);
         IsRemoteBranch = IsPrefixedBy(Canonical, RemoteTrackingBranchPrefix);
         IsTag = IsPrefixedBy(Canonical, TagPrefix);
-        IsPullRequest = IsPrefixedBy(Canonical, PullRequestPrefix1) || IsPrefixedBy(Canonical, PullRequestPrefix2);
+        IsPullRequest = IsPrefixedBy(Canonical, PullRequestPrefix1)
+            || IsPrefixedBy(Canonical, PullRequestPrefix2)
+            || IsPrefixedBy(Canonical, RemotePullRequestPrefix1)
+            || IsPrefixedBy(Canonical, RemotePullRequestPrefix2);
     }
 
     public static ReferenceName Parse(string canonicalName)
@@ -75,9 +80,17 @@ public class ReferenceName : IEquatable<ReferenceName?>, IComparable<ReferenceNa
     {
         var isRemote = IsPrefixedBy(Canonical, RemoteTrackingBranchPrefix);
 
-        return isRemote
-            ? Friendly.Substring(Friendly.IndexOf("/", StringComparison.Ordinal) + 1)
-            : Friendly;
+        if (isRemote)
+        {
+            var isPullRequest = IsPrefixedBy(Canonical, RemotePullRequestPrefix1)
+                || IsPrefixedBy(Canonical, RemotePullRequestPrefix2);
+
+            if (!isPullRequest)
+                return Friendly.Substring(Friendly.IndexOf("/", StringComparison.Ordinal) + 1);
+        }
+
+        return Friendly;
     }
+
     private static bool IsPrefixedBy(string input, string prefix) => input.StartsWith(prefix, StringComparison.Ordinal);
 }
