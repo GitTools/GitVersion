@@ -98,4 +98,23 @@ public class PullRequestScenarios : TestBase
 
         fixture.AssertFullSemver("2.0.0-PullRequest2.0");
     }
+
+    [Test]
+    public void CalculatesCorrectVersionWhenPullRequestHotfixBranchToMain()
+    {
+        using var fixture = new EmptyRepositoryFixture();
+        fixture.Repository.MakeATaggedCommit("0.1.0");
+        Commands.Checkout(fixture.Repository, fixture.Repository.CreateBranch("develop"));
+        fixture.Repository.MakeACommit();
+
+        Commands.Checkout(fixture.Repository, "main");
+
+        Commands.Checkout(fixture.Repository, fixture.Repository.CreateBranch("hotfix/0.1.1"));
+        fixture.Repository.MakeACommit();
+        fixture.AssertFullSemver("0.1.1-beta.1+1");
+
+        fixture.Repository.CreatePullRequestRef("hotfix/0.1.1", MainBranch, normalise: true);
+
+        fixture.AssertFullSemver("0.1.1-PullRequest0002.2");
+    }
 }
