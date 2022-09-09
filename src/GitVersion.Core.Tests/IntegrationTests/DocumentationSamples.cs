@@ -205,7 +205,7 @@ public class DocumentationSamples : TestBase
         fixture.SequenceDiagram.NoteOver("Release branches are deleted once merged", "release/2.0.0");
 
         fixture.Checkout(MainBranch);
-        fixture.AssertFullSemver("2.0.0+0"); // It has been tagged with 2.0.0-beta.1 why would you expect the version 2.0.0+0 instead of 2.0.0-beta.2+2?
+        fixture.AssertFullSemver("2.0.0-beta.2+2"); // It has been tagged with 2.0.0-beta.1 why would you expect the version 2.0.0+0 instead of 2.0.0-beta.2+2?
         fixture.ApplyTag("2.0.0");
         fixture.AssertFullSemver("2.0.0");
 
@@ -294,7 +294,7 @@ public class DocumentationSamples : TestBase
         fixture.MergeNoFF("release/1.4.0");
         fixture.SequenceDiagram.Destroy("release/1.4.0");
         fixture.SequenceDiagram.NoteOver("Release branches are deleted once merged", "release/1.4.0");
-        fixture.AssertFullSemver("1.4.0+0"); // It has been tagged with 1.4.0-beta.1 why would you expect the version 1.4.0+0 instead of 1.4.0-beta.2+1?
+        fixture.AssertFullSemver("1.4.0-beta.2+1"); // It has been tagged with 1.4.0-beta.1 why would you expect the version 1.4.0+0 instead of 1.4.0-beta.2+1?
         fixture.ApplyTag("1.4.0");
         fixture.AssertFullSemver("1.4.0");
         Console.WriteLine(fixture.SequenceDiagram.GetDiagram());
@@ -396,7 +396,7 @@ public class DocumentationSamples : TestBase
         fixture.SequenceDiagram.Destroy("release/2.0.0");
         fixture.SequenceDiagram.NoteOver("Release branches are deleted once merged", "release/2.0.0");
 
-        fixture.AssertFullSemver("2.0.0+0"); // It has been tagged with 2.0.0-beta.1 why would you expect the version 2.0.0+0 instead of 2.0.0-beta.2+2?
+        fixture.AssertFullSemver("2.0.0-beta.2+2"); // It has been tagged with 2.0.0-beta.1 why would you expect the version 2.0.0+0 instead of 2.0.0-beta.2+2?
         fixture.ApplyTag("2.0.0");
         fixture.AssertFullSemver("2.0.0");
         fixture.MakeACommit();

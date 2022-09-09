@@ -74,11 +74,17 @@ public class BaseVersionCalculator : IBaseVersionCalculator
             }
             else
             {
-                baseVersionWithOldestSource = versions
+                var version = versions.Where(v => v.Version.BaseVersionSource != null)
                     .OrderByDescending(v => v.IncrementedVersion)
-                    .ThenByDescending(v => v.Version.BaseVersionSource?.When)
-                    .First()
-                    .Version;
+                    .ThenByDescending(v => v.Version.BaseVersionSource!.When)
+                    .FirstOrDefault();
+                if (version == null)
+                {
+                    version = versions.Where(v => v.Version.BaseVersionSource == null)
+                        .OrderByDescending(v => v.IncrementedVersion)
+                        .First();
+                }
+                baseVersionWithOldestSource = version.Version;
             }
 
             var calculatedBase = new BaseVersion(

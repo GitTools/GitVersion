@@ -89,8 +89,17 @@ internal class MainlineVersionCalculator : IMainlineVersionCalculator
         int commitsSinceTag = 0;
         if (context.CurrentCommit != null)
         {
-            var commitLog = this.repositoryStore.GetCommitLog(baseVersionSource, context.CurrentCommit);
-            commitsSinceTag = commitLog.Count();
+            var commitLogs = this.repositoryStore.GetCommitLog(baseVersionSource, context.CurrentCommit);
+
+            var ignore = context.FullConfiguration.Ignore;
+            if (!ignore.IsEmpty)
+            {
+                var hashSetLazy = new Lazy<HashSet<string>>(() => new(ignore.ShAs));
+                commitLogs = commitLogs
+                    .Where(c => ignore.Before is null || c.When > ignore.Before && !hashSetLazy.Value.Contains(c.Sha));
+            }
+            commitsSinceTag = commitLogs.Count();
+
             this.log.Info($"{commitsSinceTag} commits found between {baseVersionSource} and {context.CurrentCommit}");
         }
 
@@ -127,13 +136,20 @@ internal class MainlineVersionCalculator : IMainlineVersionCalculator
 
     private IBranch GetMainline(ICommit? baseVersionSource)
     {
-        var mainlineBranchConfigs = context.FullConfiguration.Branches.Where(b => b.Value?.IsMainline == true).ToList();
+        if (context.FullConfiguration.Branches.TryGetValue(context.CurrentBranch.Name.Friendly, out var branchConfig)
+            && branchConfig.IsMainline == true)
+        {
+            return context.CurrentBranch;
+        }
 
-        IDictionary<string, List<IBranch>> mainlineBranches = new Dictionary<string, List<IBranch>>();
+        IDictionary<string, List<IBranch>>? mainlineBranches = null;
+
+        List<KeyValuePair<string, Model.Configuration.BranchConfig>>? mainlineBranchConfigs = context.FullConfiguration.Branches.Where(b => b.Value?.IsMainline == true).ToList();
         if (context.CurrentCommit != null)
         {
             mainlineBranches = this.repositoryStore.GetMainlineBranches(context.CurrentCommit, context.FullConfiguration, mainlineBranchConfigs);
         }
+        mainlineBranches ??= new Dictionary<string, List<IBranch>>();
 
         if (!mainlineBranches.Any())
         {

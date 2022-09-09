@@ -110,13 +110,13 @@ public class NextVersionCalculatorTests : TestBase
         };
 
         using var fixture = new EmptyRepositoryFixture();
-        fixture.MakeACommit();
+        fixture.MakeACommit(); // <<<---
         fixture.BranchTo("develop");
-        fixture.MakeACommit();
+        fixture.MakeACommit(); // <<<---
         fixture.BranchTo("custom/foo");
-        fixture.MakeACommit();
+        fixture.MakeACommit(); // <<<---
 
-        fixture.AssertFullSemver("1.0.0-foo.1+2", config);
+        fixture.AssertFullSemver("1.0.0-foo.1+3", config); // I see three commits in line 113, 115 and 117 obove.
     }
 
     [Test]
@@ -266,13 +266,13 @@ public class NextVersionCalculatorTests : TestBase
         };
 
         using var fixture = new EmptyRepositoryFixture();
-        fixture.MakeACommit();
+        fixture.MakeACommit(); // <<<---
         fixture.BranchTo("develop");
-        fixture.MakeACommit();
+        fixture.MakeACommit(); // <<<---
         fixture.BranchTo("custom/foo");
-        fixture.MakeACommit();
+        fixture.MakeACommit(); // <<<---
 
-        fixture.AssertFullSemver("1.0.0-alpha.foo.1+2", config);
+        fixture.AssertFullSemver("1.0.0-alpha.foo.1+3", config); // I see three commits in line 269, 271 and 273 obove.
     }
 
     [Test]
@@ -300,12 +300,12 @@ public class NextVersionCalculatorTests : TestBase
         fixture.Repository.MakeATaggedCommit("0.1.0-test.1");
         fixture.Repository.MakeACommit();
 
-        fixture.AssertFullSemver("0.1.0-test.2+2", config);
+        fixture.AssertFullSemver("0.1.0-test.2+1", config);
 
         Commands.Checkout(fixture.Repository, MainBranch);
         fixture.Repository.Merge("feature/test", Generate.SignatureNow());
 
-        fixture.AssertFullSemver("0.1.0-beta.1+2", config);
+        fixture.AssertFullSemver("0.1.0-beta.1+1", config); // just one commit no fast forward merge here.
     }
 
     [Test]

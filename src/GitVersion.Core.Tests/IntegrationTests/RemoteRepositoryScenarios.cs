@@ -16,8 +16,8 @@ public class RemoteRepositoryScenarios : TestBase
     public void GivenARemoteGitRepositoryWithCommitsThenClonedLocalShouldMatchRemoteVersion()
     {
         using var fixture = new RemoteRepositoryFixture();
-        fixture.AssertFullSemver("0.1.0+4");
-        fixture.AssertFullSemver("0.1.0+4", repository: fixture.LocalRepositoryFixture.Repository);
+        fixture.AssertFullSemver("0.0.1+5");
+        fixture.AssertFullSemver("0.0.1+5", repository: fixture.LocalRepositoryFixture.Repository);
     }
 
     [Test]
@@ -79,11 +79,11 @@ public class RemoteRepositoryScenarios : TestBase
     {
         using var fixture = new RemoteRepositoryFixture();
         fixture.Repository.MakeACommit();
-        fixture.AssertFullSemver("0.1.0+5");
-        fixture.AssertFullSemver("0.1.0+4", repository: fixture.LocalRepositoryFixture.Repository);
+        fixture.AssertFullSemver("0.0.1+6");
+        fixture.AssertFullSemver("0.0.1+5", repository: fixture.LocalRepositoryFixture.Repository);
         var buildSignature = fixture.LocalRepositoryFixture.Repository.Config.BuildSignature(new DateTimeOffset(DateTime.Now));
         Commands.Pull((Repository)fixture.LocalRepositoryFixture.Repository, buildSignature, new PullOptions());
-        fixture.AssertFullSemver("0.1.0+5", repository: fixture.LocalRepositoryFixture.Repository);
+        fixture.AssertFullSemver("0.0.1+6", repository: fixture.LocalRepositoryFixture.Repository);
     }
 
     [Test]

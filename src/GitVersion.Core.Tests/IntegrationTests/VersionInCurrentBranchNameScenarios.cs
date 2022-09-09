@@ -65,6 +65,6 @@ public class VersionInCurrentBranchNameScenarios : TestBase
 
         fixture.LocalRepositoryFixture.Checkout("upstream/release/2.0.0");
 
-        fixture.LocalRepositoryFixture.AssertFullSemver("0.1.0-beta.1+5");
+        fixture.LocalRepositoryFixture.AssertFullSemver("0.0.0-beta.1+6");
     }
 }

@@ -32,7 +32,17 @@ public class MergeMessageBaseVersionStrategyTests : TestBase
         mockRepository.Branches.Returns(branches);
         mockRepository.Commits.Returns(mockBranch.Commits);
 
-        var contextBuilder = new GitVersionContextBuilder().WithRepository(mockRepository);
+        var contextBuilder = new GitVersionContextBuilder().WithRepository(mockRepository).WithConfig(new Config()
+        {
+            Branches = new Dictionary<string, BranchConfig>()
+            {
+                {
+                    "main", new BranchConfig() {
+                        TrackMergeTarget = true
+                    }
+                }
+            }
+        });
         contextBuilder.Build();
         contextBuilder.ServicesProvider.ShouldNotBeNull();
         var strategy = contextBuilder.ServicesProvider.GetServiceForType<IVersionStrategy, MergeMessageVersionStrategy>();
@@ -146,7 +156,17 @@ public class MergeMessageBaseVersionStrategyTests : TestBase
     [TestCase("Merge branch 'release/2.0.0'", null, "2.0.0")]
     public void TakesVersionFromMergeOfConfiguredReleaseBranch(string message, string? releaseBranch, string expectedVersion)
     {
-        var config = new Config();
+        var config = new Config()
+        {
+            Branches = new Dictionary<string, BranchConfig>()
+            {
+                {
+                    "main", new BranchConfig() {
+                        TrackMergeTarget = true
+                    }
+                }
+            }
+        };
         if (releaseBranch != null) config.Branches[releaseBranch] = new BranchConfig { IsReleaseBranch = true };
         var parents = GetParents(true);
 
@@ -166,8 +186,17 @@ public class MergeMessageBaseVersionStrategyTests : TestBase
         mockRepository.Commits.Returns(mockBranch.Commits);
 
         var contextBuilder = new GitVersionContextBuilder()
-            .WithConfig(config ?? new Config())
-            .WithRepository(mockRepository);
+            .WithConfig(config ?? new Config()
+            {
+                Branches = new Dictionary<string, BranchConfig>()
+                {
+                    {
+                        "main", new BranchConfig() {
+                            TrackMergeTarget = true
+                        }
+                    }
+                }
+            }).WithRepository(mockRepository);
         contextBuilder.Build();
         contextBuilder.ServicesProvider.ShouldNotBeNull();
         var strategy = contextBuilder.ServicesProvider.GetServiceForType<IVersionStrategy, MergeMessageVersionStrategy>();

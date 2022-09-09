@@ -292,7 +292,7 @@ public class DevelopScenarios : TestBase
             VersioningMode = VersioningMode.ContinuousDeployment,
             Branches = new Dictionary<string, BranchConfig>
             {
-                { "develop", new BranchConfig { PreventIncrementOfMergedBranchVersion = false } }
+                { "develop", new BranchConfig { TrackMergeTarget = true, PreventIncrementOfMergedBranchVersion = false } }
             }
         };
 
@@ -325,12 +325,12 @@ public class DevelopScenarios : TestBase
         fixture.Repository.Branches.Remove(ReleaseBranch);
         var versionSourceAfterReleaseBranchIsRemoved = fixture.GetVersion(config).Sha;
         Assert.AreEqual(versionSourceBeforeReleaseBranchIsRemoved, versionSourceAfterReleaseBranchIsRemoved);
-        fixture.AssertFullSemver("1.2.0-alpha.6");
+        fixture.AssertFullSemver("1.2.0-alpha.3");
         fixture.AssertFullSemver("1.2.0-alpha.6", config);
 
         config.Branches = new Dictionary<string, BranchConfig>
         {
-            { "develop", new BranchConfig { PreventIncrementOfMergedBranchVersion = true } }
+            { "develop", new BranchConfig { TrackMergeTarget = true, PreventIncrementOfMergedBranchVersion = true } }
         };
         fixture.AssertFullSemver("1.2.0-alpha.3", config);
     }
@@ -343,7 +343,7 @@ public class DevelopScenarios : TestBase
             VersioningMode = VersioningMode.ContinuousDeployment,
             Branches = new Dictionary<string, BranchConfig>
             {
-                { "develop", new BranchConfig { PreventIncrementOfMergedBranchVersion = false } },
+                { "develop", new BranchConfig { TrackMergeTarget = true, PreventIncrementOfMergedBranchVersion = false } },
                 { "hotfix", new BranchConfig { PreventIncrementOfMergedBranchVersion = true, Regex = "^(origin/)?hotfix[/-]" } }
 
             }

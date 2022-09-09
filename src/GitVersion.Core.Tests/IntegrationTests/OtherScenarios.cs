@@ -59,12 +59,12 @@ public class OtherScenarios : TestBase
     public void AllowHavingMasterInsteadOfMain()
     {
         using var fixture = new EmptyRepositoryFixture();
-        fixture.Repository.MakeACommit();
+        fixture.Repository.MakeACommit(); // one
         Commands.Checkout(fixture.Repository, fixture.Repository.CreateBranch("develop"));
         Commands.Checkout(fixture.Repository, fixture.Repository.CreateBranch("master"));
         fixture.Repository.Branches.Remove(fixture.Repository.Branches["main"]);
 
-        fixture.AssertFullSemver("0.1.0+0");
+        fixture.AssertFullSemver("0.0.1+1");
     }
 
     [Test]

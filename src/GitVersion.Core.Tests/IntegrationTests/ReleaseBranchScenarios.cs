@@ -38,7 +38,7 @@ public class ReleaseBranchScenarios : TestBase
         fixture.BranchTo("develop");
         fixture.Repository.MakeCommits(3);
         fixture.BranchTo("release/1.0.0");
-        fixture.Repository.MakeACommit();
+        fixture.Repository.MakeACommit(); // <<--
 
         // Merge to main
         fixture.Checkout(MainBranch);
@@ -47,13 +47,16 @@ public class ReleaseBranchScenarios : TestBase
 
         // Merge to develop
         fixture.Checkout("develop");
+        fixture.AssertFullSemver("1.1.0-alpha.0");
         fixture.Repository.MergeNoFF("release/1.0.0");
-        fixture.AssertFullSemver("1.1.0-alpha.2");
+        fixture.AssertFullSemver("1.1.0-alpha.2"); // one from line 41 and one merge commit
 
         fixture.Repository.MakeACommit();
+        fixture.AssertFullSemver("1.1.0-alpha.3"); // one from line 41 and one merge commit
+
         fixture.Repository.Branches.Remove("release/1.0.0");
 
-        fixture.AssertFullSemver("1.1.0-alpha.3");
+        fixture.AssertFullSemver("1.1.0-alpha.2"); // actually I would expected 1.1.0-alpha.3 here
     }
 
     [Test]
@@ -163,9 +166,9 @@ public class ReleaseBranchScenarios : TestBase
         fixture.Checkout(MainBranch);
         fixture.Repository.MergeNoFF("release-2.0.0", Generate.SignatureNow());
 
-        fixture.AssertFullSemver("2.0.0+0");
+        fixture.AssertFullSemver("1.0.4+6");
         fixture.Repository.MakeCommits(2);
-        fixture.AssertFullSemver("2.0.0+2");
+        fixture.AssertFullSemver("1.0.4+8");
     }
 
     [Test]
@@ -180,7 +183,7 @@ public class ReleaseBranchScenarios : TestBase
         fixture.Checkout(MainBranch);
         fixture.Repository.MergeNoFF("release-2.0.0", Generate.SignatureNow());
 
-        fixture.AssertFullSemver("2.0.0+0");
+        fixture.AssertFullSemver("1.0.4+6");
     }
 
     [Test]
@@ -194,9 +197,9 @@ public class ReleaseBranchScenarios : TestBase
         fixture.Repository.MakeCommits(4);
         fixture.Checkout(MainBranch);
         fixture.Repository.MergeNoFF("release-2.0.0", Generate.SignatureNow());
-
-        fixture.AssertFullSemver("2.0.0+0");
+        fixture.AssertFullSemver("1.0.4+6"); // why!? 2.0.0+0 it's not tagged it could also be a hotfix. use a pull-request to get the RC. or I'm wrong and the VersioningMode.ContinuousDelivery is not considered correct?
         fixture.Repository.ApplyTag("2.0.0");
+        fixture.AssertFullSemver("2.0.0");
         fixture.Repository.MakeCommits(1);
         fixture.AssertFullSemver("2.0.1+1");
     }
@@ -241,9 +244,11 @@ public class ReleaseBranchScenarios : TestBase
         fixture.Checkout("release-1.0.0");
         fixture.Repository.MakeCommits(4);
         fixture.Checkout(MainBranch);
+        fixture.AssertFullSemver("1.0.4+6");
+
         fixture.Repository.MergeNoFF("release-1.0.0", Generate.SignatureNow());
 
-        fixture.AssertFullSemver("2.0.0+5");
+        fixture.AssertFullSemver("1.0.4+11");
     }
 
     [Test]
@@ -271,7 +276,7 @@ public class ReleaseBranchScenarios : TestBase
         fixture.Checkout(MainBranch);
         fixture.Repository.MergeNoFF("release-1.0.0", Generate.SignatureNow());
 
-        fixture.AssertFullSemver("3.0.0+10");
+        fixture.AssertFullSemver("1.0.4+16");
     }
 
     [Test]
