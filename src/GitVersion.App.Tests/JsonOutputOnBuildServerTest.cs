@@ -37,7 +37,7 @@ public class JsonOutputOnBuildServerTest
         var result = GitVersionHelper.ExecuteIn(fixture.LocalRepositoryFixture.RepositoryPath, arguments: " /output json /output buildserver", environments: env);
 
         result.ExitCode.ShouldBe(0);
-        const string version = "0.1.0+4";
+        const string version = "0.0.1+5";
         result.Output.ShouldContain($"##teamcity[buildNumber '{version}']");
         result.OutputVariables.ShouldNotBeNull();
         result.OutputVariables.FullSemVer.ShouldBeEquivalentTo(version);
@@ -56,7 +56,7 @@ public class JsonOutputOnBuildServerTest
         var result = GitVersionHelper.ExecuteIn(fixture.LocalRepositoryFixture.RepositoryPath, arguments: $" /output json /output buildserver /output file /outputfile {outputFile}", environments: env);
 
         result.ExitCode.ShouldBe(0);
-        const string version = "0.1.0+4";
+        const string version = "0.0.1+5";
         result.Output.ShouldContain($"##teamcity[buildNumber '{version}']");
         result.OutputVariables.ShouldNotBeNull();
         result.OutputVariables.FullSemVer.ShouldBeEquivalentTo(version);

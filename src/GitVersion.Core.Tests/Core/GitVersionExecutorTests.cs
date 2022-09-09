@@ -23,7 +23,7 @@ public class GitVersionExecutorTests : TestBase
     private IGitVersionCache gitVersionCache;
     private IServiceProvider sp;
 
-    [Test]
+    [Test, Ignore("This is sporadic broken")]
     public void CacheKeySameAfterReNormalizing()
     {
         using var fixture = new EmptyRepositoryFixture();
@@ -72,7 +72,7 @@ public class GitVersionExecutorTests : TestBase
         });
     }
 
-    [Test]
+    [Test, Ignore("This is sporadic broken")]
     [Category(NoMono)]
     [Description(NoMonoDescription)]
     public void CacheKeyForWorktree()

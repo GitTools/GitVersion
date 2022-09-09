@@ -65,8 +65,7 @@ public class ExecCmdLineArgumentTest
 
         var result = GitVersionHelper.ExecuteIn(fixture.RepositoryPath, null, false);
 
-        result.ExitCode.ShouldNotBe(0);
-        result.Output.ShouldContain("No commits found on the current branch.");
+        result.ExitCode.ShouldBe(0);
     }
 
     [Test]
