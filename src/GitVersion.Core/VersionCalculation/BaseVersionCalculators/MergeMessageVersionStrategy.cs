@@ -22,6 +22,9 @@ public class MergeMessageVersionStrategy : VersionStrategyBase
         if (Context.CurrentBranch.Commits == null || Context.CurrentCommit == null)
             return Enumerable.Empty<BaseVersion>();
 
+        if (!Context.Configuration.TrackMergeTarget)
+            return Enumerable.Empty<BaseVersion>();
+
         var commitsPriorToThan = Context.CurrentBranch.Commits.GetCommitsPriorTo(Context.CurrentCommit.When);
         var baseVersions = commitsPriorToThan
             .SelectMany(c =>

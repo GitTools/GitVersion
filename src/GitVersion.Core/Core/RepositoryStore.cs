@@ -213,6 +213,30 @@ public class RepositoryStore : IRepositoryStore
         }
     }
 
+    public IEnumerable<BranchCommit> FindCommitBranchesWasBranchedFrom(IBranch branch, Config configuration, params IBranch[] excludedBranches)
+    {
+        using (this.log.IndentLog($"Finding branch source of '{branch}'"))
+        {
+            if (branch.Tip == null)
+            {
+                this.log.Warning($"{branch} has no tip.");
+                return Enumerable.Empty<BranchCommit>();
+            }
+
+            var list = new List<BranchCommit>();
+            DateTimeOffset? when = null;
+            var branchCommits = new MergeCommitFinder(this, configuration, excludedBranches, this.log)
+                .FindMergeCommitsFor(branch).ToList();
+            foreach (var branchCommit in branchCommits)
+            {
+                if (when != null && branchCommit.Commit.When != when) break;
+                list.Add(branchCommit);
+                when = branchCommit.Commit.When;
+            }
+            return list;
+        }
+    }
+
     public SemanticVersion GetCurrentCommitTaggedVersion(ICommit? commit, EffectiveConfiguration config)
         => this.repository.Tags
             .SelectMany(t => GetCurrentCommitSemanticVersions(commit, config, t))

@@ -35,22 +35,22 @@ namespace GitVersion.Core.Tests.IntegrationTests
             fixture.AssertFullSemver("1.1.0-beta.1+1");
             fixture.Checkout(MainBranch);
             fixture.MergeNoFF(release1Branch);
-            fixture.AssertFullSemver("1.1.0+0");
+            fixture.AssertFullSemver("1.0.1+5"); // it's not tagged thus it could also be a hotfix! The pull request on the other hand has the correct version 1.1.0
             fixture.ApplyTag("1.1.0");
             fixture.AssertFullSemver("1.1.0");
             fixture.Checkout(developBranch);
             fixture.MergeNoFF(release1Branch);
             fixture.Repository.Branches.Remove(fixture.Repository.Branches[release1Branch]);
-            fixture.AssertFullSemver("1.2.0-alpha.2");
+            fixture.AssertFullSemver("1.2.0-alpha.1"); // just one merge commit
 
             // Feature 2
             fixture.BranchTo(feature2Branch);
             fixture.MakeACommit("added feature 2");
-            fixture.AssertFullSemver("1.2.0-f2.1+3");
+            fixture.AssertFullSemver("1.2.0-f2.1+2"); // I see two commits why three?
             fixture.Checkout(developBranch);
             fixture.MergeNoFF(feature2Branch);
             fixture.Repository.Branches.Remove(fixture.Repository.Branches[feature2Branch]);
-            fixture.AssertFullSemver("1.2.0-alpha.4");
+            fixture.AssertFullSemver("1.2.0-alpha.3"); // I see two commits and one merge commit why four?
 
             // Release 1.2.0
             fixture.BranchTo(release2Branch);
@@ -58,19 +58,19 @@ namespace GitVersion.Core.Tests.IntegrationTests
             fixture.AssertFullSemver("1.2.0-beta.1+1");
             fixture.Checkout(MainBranch);
             fixture.MergeNoFF(release2Branch);
-            fixture.AssertFullSemver("1.2.0+0");
+            fixture.AssertFullSemver("1.1.1+5"); // sorry but the previous version on main is 1.1.1 not 1.2.0 this could also be a hotfix.
             fixture.ApplyTag("1.2.0");
             fixture.AssertFullSemver("1.2.0");
             fixture.Checkout(developBranch);
             fixture.MergeNoFF(release2Branch);
             fixture.Repository.Branches.Remove(fixture.Repository.Branches[release2Branch]);
-            fixture.AssertFullSemver("1.3.0-alpha.2");
+            fixture.AssertFullSemver("1.3.0-alpha.1"); // just one merge commit
 
             // Hotfix
             fixture.Checkout(MainBranch);
             fixture.BranchTo(hotfixBranch);
             fixture.MakeACommit("added hotfix");
-            fixture.AssertFullSemver("1.2.1-beta.1+7");
+            fixture.AssertFullSemver("1.2.1-beta.1+1"); // why seven it is just one commit on the hotfix branch since last rlease 1.2.0?
             fixture.Checkout(MainBranch);
             fixture.MergeNoFF(hotfixBranch);
             fixture.AssertFullSemver("1.2.1+2");
@@ -79,7 +79,7 @@ namespace GitVersion.Core.Tests.IntegrationTests
             fixture.Checkout(developBranch);
             fixture.MergeNoFF(hotfixBranch);
             fixture.Repository.Branches.Remove(fixture.Repository.Branches[hotfixBranch]);
-            fixture.AssertFullSemver("1.3.0-alpha.9");
+            fixture.AssertFullSemver("1.3.0-alpha.3"); // two changes in hotfix and one merge commit
         }
     }
 }

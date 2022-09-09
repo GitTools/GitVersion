@@ -75,15 +75,11 @@ public class BaseVersionCalculator : IBaseVersionCalculator
             else
             {
                 baseVersionWithOldestSource = versions
-                    .Where(v => v.Version.BaseVersionSource != null)
                     .OrderByDescending(v => v.IncrementedVersion)
                     .ThenByDescending(v => v.Version.BaseVersionSource?.When)
                     .First()
                     .Version;
             }
-
-            if (baseVersionWithOldestSource.BaseVersionSource == null)
-                throw new Exception("Base version should not be null");
 
             var calculatedBase = new BaseVersion(
                 maxVersion.Version.Source,

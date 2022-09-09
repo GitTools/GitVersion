@@ -141,7 +141,7 @@ public class FeatureBranchScenarios : TestBase
         fixture.Repository.CreateBranch("feature/feature2");
         Commands.Checkout(fixture.Repository, "feature/feature2");
 
-        fixture.AssertFullSemver("0.1.0-feature2.1+1");
+        fixture.AssertFullSemver("0.1.0-feature2.1+2");
     }
 
     [Test]
@@ -192,7 +192,7 @@ public class FeatureBranchScenarios : TestBase
         fixture.BranchTo("feature/PROJ-1");
         fixture.MakeACommit();
 
-        fixture.AssertFullSemver("0.3.0-PROJ-1.1+2", config);
+        fixture.AssertFullSemver("0.3.0-PROJ-1.1+3", config);
     }
 
     [TestCase("alpha", "JIRA-123", "alpha")]

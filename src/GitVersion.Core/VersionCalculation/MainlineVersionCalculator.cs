@@ -86,9 +86,13 @@ internal class MainlineVersionCalculator : IMainlineVersionCalculator
 
     public SemanticVersionBuildMetaData CreateVersionBuildMetaData(ICommit? baseVersionSource)
     {
-        var commitLog = this.repositoryStore.GetCommitLog(baseVersionSource, context.CurrentCommit);
-        var commitsSinceTag = commitLog.Count();
-        this.log.Info($"{commitsSinceTag} commits found between {baseVersionSource} and {context.CurrentCommit}");
+        int commitsSinceTag = 0;
+        if (context.CurrentCommit != null)
+        {
+            var commitLog = this.repositoryStore.GetCommitLog(baseVersionSource, context.CurrentCommit);
+            commitsSinceTag = commitLog.Count();
+            this.log.Info($"{commitsSinceTag} commits found between {baseVersionSource} and {context.CurrentCommit}");
+        }
 
         var shortSha = context.CurrentCommit?.Id.ToString(7);
         return new SemanticVersionBuildMetaData(

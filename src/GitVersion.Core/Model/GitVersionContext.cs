@@ -1,3 +1,5 @@
+using GitVersion.Configuration;
+using GitVersion.Extensions;
 using GitVersion.Model.Configuration;
 
 namespace GitVersion;
@@ -13,9 +15,13 @@ public class GitVersionContext
     public Config FullConfiguration { get; }
 
     public SemanticVersion? CurrentCommitTaggedVersion { get; }
+
     public EffectiveConfiguration Configuration { get; }
+
     public IBranch CurrentBranch { get; }
+
     public ICommit? CurrentCommit { get; }
+
     public bool IsCurrentCommitTagged => CurrentCommitTaggedVersion != null;
 
     public int NumberOfUncommittedChanges { get; }
@@ -32,5 +38,18 @@ public class GitVersionContext
 
         CurrentCommitTaggedVersion = currentCommitTaggedVersion;
         NumberOfUncommittedChanges = numberOfUncommittedChanges;
+    }
+
+    public EffectiveConfiguration GetEffectiveConfiguration(IBranch branch)
+    {
+        branch.NotNull();
+        BranchConfig? branchConfiguration = FullConfiguration.GetConfigForBranch(branch.Name.WithoutRemote);
+        branchConfiguration ??= BranchConfig.CreateDefaultBranchConfig("Fallback").Apply(new BranchConfig
+        {
+            Regex = "",
+            VersioningMode = FullConfiguration.VersioningMode,
+            Increment = FullConfiguration.Increment ?? IncrementStrategy.None
+        });
+        return new EffectiveConfiguration(FullConfiguration, branchConfiguration);
     }
 }

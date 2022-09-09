@@ -14,14 +14,6 @@ public class FallbackVersionStrategy : VersionStrategyBase
     public FallbackVersionStrategy(IRepositoryStore repositoryStore, Lazy<GitVersionContext> versionContext) : base(versionContext) => this.repositoryStore = repositoryStore;
     public override IEnumerable<BaseVersion> GetVersions()
     {
-        var currentBranchTip = Context.CurrentBranch.Tip;
-        if (currentBranchTip == null)
-        {
-            throw new GitVersionException("No commits found on the current branch.");
-        }
-
-        var baseVersionSource = this.repositoryStore.GetBaseVersionSource(currentBranchTip);
-
-        yield return new BaseVersion("Fallback base version", false, new SemanticVersion(minor: 1), baseVersionSource, null);
+        yield return new BaseVersion("Fallback base version", true, new SemanticVersion(), null, null);
     }
 }

@@ -150,7 +150,7 @@ public class DevelopScenarios : TestBase
         fixture.MakeACommit();
         fixture.MakeACommit();
         fixture.Checkout("develop");
-        fixture.AssertFullSemver("1.1.0-alpha.1");
+        fixture.AssertFullSemver("2.1.0-alpha.0");
         fixture.MakeACommit();
         fixture.AssertFullSemver("2.1.0-alpha.1");
         fixture.MergeNoFF("release/2.0.0");
@@ -232,7 +232,7 @@ public class DevelopScenarios : TestBase
         fixture.SequenceDiagram.Destroy("release/1.2.0");
         fixture.Repository.Branches.Remove("release/1.2.0");
 
-        const string expectedFullSemVer = "1.3.0-alpha.9";
+        const string expectedFullSemVer = "1.3.0-alpha.6"; // That's not correct three changes in release 1.2.0 has been merged to develop. This changes are included in the previous release and not part of release 1.3.0
         fixture.AssertFullSemver(expectedFullSemVer, config);
     }
 
@@ -264,7 +264,7 @@ public class DevelopScenarios : TestBase
         fixture.SequenceDiagram.Destroy("release/1.2.0");
         fixture.Repository.Branches.Remove("release/1.2.0");
 
-        const string expectedFullSemVer = "1.3.0-alpha.5";
+        const string expectedFullSemVer = "1.3.0-alpha.2"; // three commits of release/1.2.0 are not part of release 1.3.0
         fixture.AssertFullSemver(expectedFullSemVer, config);
     }
 
