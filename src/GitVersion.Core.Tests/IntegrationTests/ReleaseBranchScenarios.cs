@@ -49,14 +49,21 @@ public class ReleaseBranchScenarios : TestBase
         fixture.Checkout("develop");
         fixture.AssertFullSemver("1.1.0-alpha.0");
         fixture.Repository.MergeNoFF("release/1.0.0");
-        fixture.AssertFullSemver("1.1.0-alpha.2");
 
+        //// This edge case needs to be fixed later
+        // this is a edge case... normally after the release branch has been merged and on the main branch tagged it needs to be delete!!!
+        // But anyway my expectation would be that GitVersion handles this like it would be not present.
+        fixture.AssertFullSemver("1.1.0-alpha.2");
+        //fixture.AssertFullSemver("1.1.0-alpha.0", Configurations.ContinuousDeliveryWithoutTrackMergeTarget);
         fixture.Repository.MakeACommit();
-        fixture.AssertFullSemver("1.1.0-alpha.3"); // one from line 41 and one merge commit
+        fixture.AssertFullSemver("1.1.0-alpha.3");
+        //fixture.AssertFullSemver("1.1.0-alpha.1", Configurations.ContinuousDeliveryWithoutTrackMergeTarget);
+        //
 
         fixture.Repository.Branches.Remove("release/1.0.0");
 
-        fixture.AssertFullSemver("1.1.0-alpha.2"); // actually I would expected 1.1.0-alpha.3 here
+        fixture.AssertFullSemver("1.1.0-alpha.3"); // why +3 and not +2? One commit and one merge
+        fixture.AssertFullSemver("1.1.0-alpha.2", Configurations.ContinuousDeliveryWithoutTrackMergeTarget);
     }
 
     [Test]

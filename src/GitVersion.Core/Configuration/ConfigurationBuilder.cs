@@ -201,7 +201,7 @@ public class ConfigurationBuilder
                 SourceBranches = new HashSet<string>(),
                 Tag = "alpha",
                 Increment = IncrementStrategy.Minor,
-                TrackMergeTarget = false,
+                TrackMergeTarget = true,
                 TracksReleaseBranches = true,
                 PreReleaseWeight = 0
             });

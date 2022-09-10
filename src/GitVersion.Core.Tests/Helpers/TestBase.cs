@@ -46,50 +46,68 @@ public class TestBase
     {
         public static Config ContinuousDelivery => new()
         {
-            VersioningMode = VersioningMode.ContinuousDelivery
+            VersioningMode = VersioningMode.ContinuousDelivery,
+            Branches = new Dictionary<string, BranchConfig>()
+            {
+                { "main", new BranchConfig() },
+                { "develop", new BranchConfig() },
+                { "support", new BranchConfig() }
+            }
         };
 
         public static Config ContinuousDeliveryWithoutTrackMergeTarget => new()
         {
             VersioningMode = VersioningMode.ContinuousDelivery,
             Branches = new Dictionary<string, BranchConfig>()
-        {
-            { "main", new BranchConfig() { TrackMergeTarget = false } },
-            { "develop", new BranchConfig() { TrackMergeTarget = false } },
-            { "support", new BranchConfig() { TrackMergeTarget = false } }
-        }
+            {
+                { "main", new BranchConfig() { TrackMergeTarget = false } },
+                { "develop", new BranchConfig() { TrackMergeTarget = false } },
+                { "support", new BranchConfig() { TrackMergeTarget = false } }
+            }
         };
 
         public static Config ContinuousDeployment => new()
         {
-            VersioningMode = VersioningMode.ContinuousDeployment
+            VersioningMode = VersioningMode.ContinuousDeployment,
+            Branches = new Dictionary<string, BranchConfig>()
+            {
+                { "main", new BranchConfig() },
+                { "develop", new BranchConfig() },
+                { "support", new BranchConfig() }
+            }
         };
 
         public static Config ContinuousDeploymentWithoutTrackMergeTarget => new()
         {
             VersioningMode = VersioningMode.ContinuousDeployment,
             Branches = new Dictionary<string, BranchConfig>()
-        {
-            { "main", new BranchConfig() { TrackMergeTarget = false } },
-            { "develop", new BranchConfig() { TrackMergeTarget = false } },
-            { "support", new BranchConfig() { TrackMergeTarget = false } }
-        }
+            {
+                { "main", new BranchConfig() { TrackMergeTarget = false } },
+                { "develop", new BranchConfig() { TrackMergeTarget = false } },
+                { "support", new BranchConfig() { TrackMergeTarget = false } }
+            }
         };
 
         public static Config Mainline => new()
         {
-            VersioningMode = VersioningMode.Mainline
+            VersioningMode = VersioningMode.Mainline,
+            Branches = new Dictionary<string, BranchConfig>()
+            {
+                { "main", new BranchConfig() },
+                { "develop", new BranchConfig() },
+                { "support", new BranchConfig() }
+            }
         };
 
         public static Config MainlineWithoutTrackMergeTarget => new()
         {
             VersioningMode = VersioningMode.Mainline,
             Branches = new Dictionary<string, BranchConfig>()
-        {
-            { "main", new BranchConfig() { TrackMergeTarget = false } },
-            { "develop", new BranchConfig() { TrackMergeTarget = false } },
-            { "support", new BranchConfig() { TrackMergeTarget = false } }
-        }
+            {
+                { "main", new BranchConfig() { TrackMergeTarget = false } },
+                { "develop", new BranchConfig() { TrackMergeTarget = false } },
+                { "support", new BranchConfig() { TrackMergeTarget = false } }
+            }
         };
     }
 }
