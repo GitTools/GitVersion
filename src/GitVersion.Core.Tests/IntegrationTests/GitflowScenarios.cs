@@ -35,7 +35,8 @@ namespace GitVersion.Core.Tests.IntegrationTests
             fixture.AssertFullSemver("1.1.0-beta.1+1");
             fixture.Checkout(MainBranch);
             fixture.MergeNoFF(release1Branch);
-            fixture.AssertFullSemver("1.0.1+5"); // it's not tagged thus it could also be a hotfix! The pull request on the other hand has the correct version 1.1.0
+            fixture.AssertFullSemver("1.1.0+0"); // why +0 and not +5??
+            fixture.AssertFullSemver("1.0.1+5", Configurations.ContinuousDeliveryWithoutTrackMergeTarget);
             fixture.ApplyTag("1.1.0");
             fixture.AssertFullSemver("1.1.0");
             fixture.Checkout(developBranch);
@@ -58,7 +59,8 @@ namespace GitVersion.Core.Tests.IntegrationTests
             fixture.AssertFullSemver("1.2.0-beta.1+1");
             fixture.Checkout(MainBranch);
             fixture.MergeNoFF(release2Branch);
-            fixture.AssertFullSemver("1.1.1+5"); // sorry but the previous version on main is 1.1.1 not 1.2.0 this could also be a hotfix.
+            fixture.AssertFullSemver("1.2.0+0"); // why +0 and not +5??
+            fixture.AssertFullSemver("1.1.1+5", Configurations.ContinuousDeliveryWithoutTrackMergeTarget);
             fixture.ApplyTag("1.2.0");
             fixture.AssertFullSemver("1.2.0");
             fixture.Checkout(developBranch);

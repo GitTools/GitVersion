@@ -12,10 +12,7 @@ public class JustSomeTestScenarios : TestBase
     [Test]
     public void __Just_A_Test_1__()
     {
-        var configuration = new Config()
-        {
-            VersioningMode = VersioningMode.ContinuousDeployment
-        };
+        var configuration = Configurations.ContinuousDeploymentWithoutTrackMergeTarget;
 
         using var fixture = new EmptyRepositoryFixture();
         fixture.MakeACommit();
@@ -27,10 +24,7 @@ public class JustSomeTestScenarios : TestBase
     [Test]
     public void __Just_A_Test_2__()
     {
-        var configuration = new Config()
-        {
-            VersioningMode = VersioningMode.ContinuousDeployment
-        };
+        var configuration = Configurations.ContinuousDeploymentWithoutTrackMergeTarget;
 
         using var fixture = new EmptyRepositoryFixture();
         fixture.Repository.MakeACommit();
@@ -53,10 +47,7 @@ public class JustSomeTestScenarios : TestBase
     [Test]
     public void __Just_A_Test_3__()
     {
-        var configuration = new Config()
-        {
-            VersioningMode = VersioningMode.ContinuousDeployment
-        };
+        var configuration = Configurations.ContinuousDeploymentWithoutTrackMergeTarget;
 
         using var fixture = new EmptyRepositoryFixture();
         fixture.AssertFullSemver("0.0.0-ci.0", configuration);
@@ -82,18 +73,7 @@ public class JustSomeTestScenarios : TestBase
     [Test]
     public void __Just_A_Test_5__()
     {
-        var configuration = new Config()
-        {
-            VersioningMode = VersioningMode.ContinuousDeployment,
-            Branches = new Dictionary<string, BranchConfig>()
-            {
-                {
-                    "develop", new BranchConfig() {
-                        TrackMergeTarget = true
-                    }
-                }
-            }
-        };
+        var configuration = Configurations.ContinuousDeploymentWithoutTrackMergeTarget;
 
         using var fixture = new EmptyRepositoryFixture();
         fixture.AssertFullSemver("0.0.0-ci.0", configuration);
@@ -110,32 +90,19 @@ public class JustSomeTestScenarios : TestBase
         fixture.MakeACommit();
         fixture.AssertFullSemver("1.0.0-beta.2", configuration);
         fixture.Checkout("develop");
-        fixture.AssertFullSemver("1.1.0-alpha.0", configuration); // 1.1.0-alpha.0 expected
+        fixture.AssertFullSemver("1.1.0-alpha.0", configuration);
         fixture.MakeACommit();
         fixture.AssertFullSemver("1.1.0-alpha.1", configuration);
         fixture.MergeNoFF("release/1.0.0");
         fixture.AssertFullSemver("1.1.0-alpha.4", configuration);
         fixture.Repository.Branches.Remove("release/1.0.0");
-        fixture.AssertFullSemver("1.1.0-alpha.4", configuration); // okay because TrackMergeTarget=true ??
-        configuration.Branches["develop"].TrackMergeTarget = false;
-        fixture.AssertFullSemver("0.1.0-alpha.6", configuration); // 0.1.0 expected because TrackMergeTarget=false ??
+        fixture.AssertFullSemver("0.1.0-alpha.6", configuration);
     }
 
     [Test]
     public void __Just_A_Test_6__()
     {
-        var configuration = new Config()
-        {
-            VersioningMode = VersioningMode.ContinuousDeployment,
-            Branches = new Dictionary<string, BranchConfig>()
-            {
-                {
-                    "develop", new BranchConfig() {
-                        TrackMergeTarget = true
-                    }
-                }
-            }
-        };
+        var configuration = Configurations.ContinuousDeploymentWithoutTrackMergeTarget;
 
         using var fixture = new EmptyRepositoryFixture();
         fixture.MakeACommit();
@@ -151,7 +118,7 @@ public class JustSomeTestScenarios : TestBase
         fixture.MakeACommit();
         fixture.AssertFullSemver("1.0.0-beta.2", configuration);
         fixture.Checkout("develop");
-        fixture.AssertFullSemver("1.1.0-alpha.0", configuration); // 1.1.0-alpha.0 expected
+        fixture.AssertFullSemver("1.1.0-alpha.0", configuration);
 
         fixture.MakeACommit();
         fixture.AssertFullSemver("1.1.0-alpha.1", configuration);
@@ -168,26 +135,13 @@ public class JustSomeTestScenarios : TestBase
         fixture.AssertFullSemver("1.1.0-alpha.6", configuration);
 
         fixture.Repository.Branches.Remove("release/1.0.0");
-        fixture.AssertFullSemver("1.1.0-alpha.6", configuration); // okay because TrackMergeTarget=true ??
-        configuration.Branches["develop"].TrackMergeTarget = false;
-        fixture.AssertFullSemver("1.1.0-alpha.2", configuration); // okay because TrackMergeTarget=false ??
+        fixture.AssertFullSemver("1.1.0-alpha.2", configuration);
     }
 
     [Test]
     public void __Just_A_Test_7__()
     {
-        var configuration = new Config()
-        {
-            VersioningMode = VersioningMode.ContinuousDeployment,
-            Branches = new Dictionary<string, BranchConfig>()
-            {
-                {
-                    "develop", new BranchConfig() {
-                        TrackMergeTarget = true
-                    }
-                }
-            }
-        };
+        var configuration = Configurations.ContinuousDeploymentWithoutTrackMergeTarget;
 
         using var fixture = new EmptyRepositoryFixture();
         fixture.MakeACommit();
@@ -203,7 +157,7 @@ public class JustSomeTestScenarios : TestBase
         fixture.MakeACommit();
         fixture.AssertFullSemver("1.0.0-beta.2", configuration);
         fixture.Checkout("develop");
-        fixture.AssertFullSemver("1.1.0-alpha.0", configuration); // 1.1.0-alpha.0 expected
+        fixture.AssertFullSemver("1.1.0-alpha.0", configuration);
 
         fixture.MakeACommit();
         fixture.AssertFullSemver("1.1.0-alpha.1", configuration);
@@ -219,10 +173,6 @@ public class JustSomeTestScenarios : TestBase
         fixture.Checkout("develop");
         fixture.AssertFullSemver("1.1.0-alpha.1", configuration);
         fixture.MergeNoFF("main");
-        fixture.AssertFullSemver("1.1.0-alpha.6", configuration);
-
-        fixture.AssertFullSemver("1.1.0-alpha.6", configuration); // okay because TrackMergeTarget=true ??
-        configuration.Branches["develop"].TrackMergeTarget = false;
-        fixture.AssertFullSemver("1.1.0-alpha.2", configuration); // okay because TrackMergeTarget=false ??
+        fixture.AssertFullSemver("1.1.0-alpha.2", configuration);
     }
 }

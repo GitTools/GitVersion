@@ -52,7 +52,8 @@ public class VersionInMergedBranchNameScenarios : TestBase
 
         fixture.LocalRepositoryFixture.MergeNoFF("origin/release/2.0.0");
 
-        fixture.LocalRepositoryFixture.AssertFullSemver("0.0.1+7");
+        fixture.LocalRepositoryFixture.AssertFullSemver("2.0.0+0"); // why +0 and not +7??
+        fixture.LocalRepositoryFixture.AssertFullSemver("0.0.1+7", Configurations.ContinuousDeliveryWithoutTrackMergeTarget);
     }
 
     [Test]
