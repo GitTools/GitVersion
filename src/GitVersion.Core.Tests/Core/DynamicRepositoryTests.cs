@@ -48,7 +48,7 @@ public class DynamicRepositoryTests : TestBase
     }
 
     // Note: use same name twice to see if changing commits works on same (cached) repository
-    [NonParallelizable, Ignore("This tests are failing don't know why.")]
+    [NonParallelizable]
     [TestCase("GV_main", "https://github.com/GitTools/GitVersion", MainBranch, "efddf2f92c539a9c27f1904d952dcab8fb955f0e", "5.8.2+56")]
     [TestCase("GV_main", "https://github.com/GitTools/GitVersion", MainBranch, "2dc142a4a4df77db61a00d9fb7510b18b3c2c85a", "5.8.2+47")]
     public void FindsVersionInDynamicRepo(string name, string url, string targetBranch, string commitId, string expectedFullSemVer)

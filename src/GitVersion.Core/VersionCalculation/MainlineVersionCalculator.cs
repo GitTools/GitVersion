@@ -94,9 +94,9 @@ internal class MainlineVersionCalculator : IMainlineVersionCalculator
             var ignore = context.FullConfiguration.Ignore;
             if (!ignore.IsEmpty)
             {
-                var hashSetLazy = new Lazy<HashSet<string>>(() => new(ignore.ShAs));
+                var shasToIgnore = new HashSet<string>(ignore.ShAs);
                 commitLogs = commitLogs
-                    .Where(c => ignore.Before is null || c.When > ignore.Before && !hashSetLazy.Value.Contains(c.Sha));
+                    .Where(c => ignore.Before is null || c.When > ignore.Before && !shasToIgnore.Contains(c.Sha));
             }
             commitsSinceTag = commitLogs.Count();
 

@@ -23,7 +23,7 @@ public class GitVersionExecutorTests : TestBase
     private IGitVersionCache gitVersionCache;
     private IServiceProvider sp;
 
-    [Test, Ignore("This is sporadic broken")]
+    [Test]
     public void CacheKeySameAfterReNormalizing()
     {
         using var fixture = new EmptyRepositoryFixture();
@@ -72,7 +72,7 @@ public class GitVersionExecutorTests : TestBase
         });
     }
 
-    [Test, Ignore("This is sporadic broken")]
+    [Test]
     [Category(NoMono)]
     [Description(NoMonoDescription)]
     public void CacheKeyForWorktree()
@@ -403,14 +403,15 @@ public class GitVersionExecutorTests : TestBase
 
         var gitVersionOptions = new GitVersionOptions { WorkingDirectory = fixture.RepositoryPath };
 
-        // Execute
-        var gitVersionCalculator = GetGitVersionCalculator(gitVersionOptions);
-        var version = gitVersionCalculator.CalculateVersionVariables();
+        var exception = Assert.Throws<GitVersionException>(() =>
+        {
+            // Execute
+            var gitVersionCalculator = GetGitVersionCalculator(gitVersionOptions);
+            gitVersionCalculator.CalculateVersionVariables();
+        });
 
         // Verify
-        version.SemVer.ShouldBe("0.0.0");
-        version.AssemblySemVer.ShouldBe("0.0.0.0");
-        version.Sha.ShouldBeNull();
+        exception?.Message.ShouldContain("No commits found on the current branch.");
     }
 
     [Test]

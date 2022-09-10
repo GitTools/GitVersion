@@ -1,5 +1,3 @@
-using GitVersion.Common;
-
 namespace GitVersion.VersionCalculation;
 
 /// <summary>
@@ -9,11 +7,16 @@ namespace GitVersion.VersionCalculation;
 /// </summary>
 public class FallbackVersionStrategy : VersionStrategyBase
 {
-    private readonly IRepositoryStore repositoryStore;
+    public FallbackVersionStrategy(Lazy<GitVersionContext> versionContext)
+        : base(versionContext)
+    {
+    }
 
-    public FallbackVersionStrategy(IRepositoryStore repositoryStore, Lazy<GitVersionContext> versionContext) : base(versionContext) => this.repositoryStore = repositoryStore;
     public override IEnumerable<BaseVersion> GetVersions()
     {
+        if (Context.CurrentBranch.Tip == null)
+            throw new GitVersionException("No commits found on the current branch.");
+
         yield return new BaseVersion("Fallback base version", true, new SemanticVersion(), null, null);
     }
 }
