@@ -38,7 +38,7 @@ public class ReleaseBranchScenarios : TestBase
         fixture.BranchTo("develop");
         fixture.Repository.MakeCommits(3);
         fixture.BranchTo("release/1.0.0");
-        fixture.Repository.MakeACommit(); // <<--
+        fixture.Repository.MakeACommit();
 
         // Merge to main
         fixture.Checkout(MainBranch);
@@ -49,7 +49,7 @@ public class ReleaseBranchScenarios : TestBase
         fixture.Checkout("develop");
         fixture.AssertFullSemver("1.1.0-alpha.0");
         fixture.Repository.MergeNoFF("release/1.0.0");
-        fixture.AssertFullSemver("1.1.0-alpha.2"); // one from line 41 and one merge commit
+        fixture.AssertFullSemver("1.1.0-alpha.2");
 
         fixture.Repository.MakeACommit();
         fixture.AssertFullSemver("1.1.0-alpha.3"); // one from line 41 and one merge commit

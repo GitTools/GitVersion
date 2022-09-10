@@ -334,8 +334,7 @@ public class MainlineDevelopmentMode : TestBase
     public void VerifyIssue1154CanForwardMergeMainToFeatureBranch()
     {
         using var fixture = new EmptyRepositoryFixture();
-        fixture.AssertFullSemver("0.0.0", this.config);
-        fixture.MakeACommit(); // <<--
+        fixture.MakeACommit();
         fixture.AssertFullSemver("0.0.1", this.config);
         fixture.BranchTo("feature/branch2");
         fixture.BranchTo("feature/branch1");
@@ -344,7 +343,7 @@ public class MainlineDevelopmentMode : TestBase
 
         fixture.Checkout(MainBranch);
         fixture.MergeNoFF("feature/branch1");
-        fixture.AssertFullSemver("0.0.2", this.config); // one change in line 337 and one merge commit
+        fixture.AssertFullSemver("0.0.2", this.config);
 
         fixture.Checkout("feature/branch2");
         fixture.MakeACommit();
@@ -489,7 +488,6 @@ public class MainlineDevelopmentMode : TestBase
         var currentConfig = new Config { VersioningMode = VersioningMode.Mainline, AssemblyFileVersioningScheme = AssemblyFileVersioningScheme.MajorMinorPatchTag };
 
         using var fixture = new EmptyRepositoryFixture();
-        fixture.AssertFullSemver("0.0.0", currentConfig);
         fixture.Repository.MakeACommit();
         fixture.AssertFullSemver("0.0.1", currentConfig);
         Commands.Checkout(fixture.Repository, fixture.Repository.CreateBranch("master"));

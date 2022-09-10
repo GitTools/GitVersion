@@ -295,7 +295,8 @@ public class DocumentationSamples : TestBase
         fixture.MergeNoFF("release/1.4.0");
         fixture.SequenceDiagram.Destroy("release/1.4.0");
         fixture.SequenceDiagram.NoteOver("Release branches are deleted once merged", "release/1.4.0");
-        fixture.AssertFullSemver("1.4.0-beta.2+1"); // It has been tagged with 1.4.0-beta.1 why would you expect the version 1.4.0+0 instead of 1.4.0-beta.2+1?
+        fixture.AssertFullSemver("1.4.0+0"); // why +0 and not +1??
+        fixture.AssertFullSemver("1.4.0-beta.2+1", Configurations.ContinuousDeliveryWithoutTrackMergeTarget);
         fixture.ApplyTag("1.4.0");
         fixture.AssertFullSemver("1.4.0");
         Console.WriteLine(fixture.SequenceDiagram.GetDiagram());

@@ -39,7 +39,8 @@ public class SupportBranchScenarios : TestBase
         // Create 1.2.0 release
         Commands.Checkout(fixture.Repository, "support/1.0.0");
         fixture.Repository.MergeNoFF("release/1.2.0");
-        fixture.AssertFullSemver("1.1.1+2");
+        fixture.AssertFullSemver("1.2.0+0"); // why +0 and not +2??
+        fixture.AssertFullSemver("1.1.1+2", Configurations.ContinuousDeliveryWithoutTrackMergeTarget);
         fixture.Repository.ApplyTag("1.2.0");
 
         // Create 1.2.1 hotfix

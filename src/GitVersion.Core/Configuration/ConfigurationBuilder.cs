@@ -269,6 +269,7 @@ public class ConfigurationBuilder
                 Tag = string.Empty,
                 PreventIncrementOfMergedBranchVersion = true,
                 Increment = IncrementStrategy.Patch,
+                TrackMergeTarget = true,
                 IsMainline = true,
                 PreReleaseWeight = 55000
             });

@@ -50,7 +50,7 @@ public class JustSomeTestScenarios : TestBase
         var configuration = Configurations.ContinuousDeploymentWithoutTrackMergeTarget;
 
         using var fixture = new EmptyRepositoryFixture();
-        fixture.AssertFullSemver("0.0.0-ci.0", configuration);
+        //fixture.AssertFullSemver("0.0.0-ci.0", configuration); // uncomment in version 6.x??
         fixture.MakeACommit();
         fixture.AssertFullSemver("0.0.1-ci.1", configuration);
     }
@@ -65,7 +65,7 @@ public class JustSomeTestScenarios : TestBase
         };
 
         using var fixture = new EmptyRepositoryFixture();
-        fixture.AssertFullSemver("1.0.0-ci.0", configuration);
+        //fixture.AssertFullSemver("1.0.0-ci.0", configuration); // uncomment in version 6.x??
         fixture.MakeACommit();
         fixture.AssertFullSemver("1.0.0-ci.1", configuration);
     }
@@ -76,7 +76,6 @@ public class JustSomeTestScenarios : TestBase
         var configuration = Configurations.ContinuousDeploymentWithoutTrackMergeTarget;
 
         using var fixture = new EmptyRepositoryFixture();
-        fixture.AssertFullSemver("0.0.0-ci.0", configuration);
         fixture.MakeACommit();
         fixture.AssertFullSemver("0.0.1-ci.1", configuration);
         fixture.BranchTo("develop");
