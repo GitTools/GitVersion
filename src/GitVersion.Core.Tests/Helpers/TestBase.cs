@@ -73,7 +73,8 @@ public class TestBase
             {
                 { "main", new BranchConfig() },
                 { "develop", new BranchConfig() },
-                { "support", new BranchConfig() }
+                { "support", new BranchConfig() },
+                { "hotfix", new BranchConfig() }
             }
         };
 
@@ -84,7 +85,8 @@ public class TestBase
             {
                 { "main", new BranchConfig() { TrackMergeTarget = false } },
                 { "develop", new BranchConfig() { TrackMergeTarget = false } },
-                { "support", new BranchConfig() { TrackMergeTarget = false } }
+                { "support", new BranchConfig() { TrackMergeTarget = false } },
+                { "hotfix", new BranchConfig() { TrackMergeTarget = false } }
             }
         };
 
@@ -95,7 +97,8 @@ public class TestBase
             {
                 { "main", new BranchConfig() },
                 { "develop", new BranchConfig() },
-                { "support", new BranchConfig() }
+                { "support", new BranchConfig() },
+                { "hotfix", new BranchConfig() }
             }
         };
 
@@ -106,7 +109,8 @@ public class TestBase
             {
                 { "main", new BranchConfig() { TrackMergeTarget = false } },
                 { "develop", new BranchConfig() { TrackMergeTarget = false } },
-                { "support", new BranchConfig() { TrackMergeTarget = false } }
+                { "support", new BranchConfig() { TrackMergeTarget = false } },
+                { "hotfix", new BranchConfig() { TrackMergeTarget = false } }
             }
         };
     }

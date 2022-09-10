@@ -382,7 +382,6 @@ public class DevelopScenarios : TestBase
             {
                 { "develop", new BranchConfig { TrackMergeTarget = true, PreventIncrementOfMergedBranchVersion = false } },
                 { "hotfix", new BranchConfig { PreventIncrementOfMergedBranchVersion = true, Regex = "^(origin/)?hotfix[/-]" } }
-
             }
         };
 
@@ -411,8 +410,8 @@ public class DevelopScenarios : TestBase
         fixture.Repository.MakeCommits(2);
         fixture.MergeNoFF(ReleaseBranch);
         fixture.Repository.Branches.Remove(ReleaseBranch);
-        fixture.AssertFullSemver("1.2.0-alpha.3", config);
-        fixture.AssertFullSemver("1.2.0-alpha.6", Configurations.ContinuousDeliveryWithoutTrackMergeTarget);
+        fixture.AssertFullSemver("1.2.0-alpha.6", config); // why +6 not +3??
+        fixture.AssertFullSemver("1.2.0-alpha.3", Configurations.ContinuousDeploymentWithoutTrackMergeTarget);
 
         // Create hotfix for defects found in release/1.1.0
         const string HotfixBranch = "hotfix/1.1.1";
