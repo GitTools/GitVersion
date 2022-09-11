@@ -6,7 +6,14 @@ using Shouldly;
 
 namespace GitVersion.Core.Tests.IntegrationTests;
 
-public class ReleaseWorkflowDemoWithWorkaround : IDisposable
+/// <summary>
+///     This demonstrates a full cycle to the release of 1.0.0 with the git flow workflow.
+///     Since merging stuff to release/* from develop has a bug then decrements versions on develop
+///     (as shown in the failing test <see cref="ReducedReleaseWorkflowDemo"/>),
+///     we use cherry picking instead of merging to get stuff from develop to release/*.
+///     For simplicity, we ignore the fact that the develop branch is usually updated via feature/* branches.
+/// </summary>
+public class FullReleaseGitFlowWithCherryPickWorkaround : IDisposable
 {
     private readonly EmptyRepositoryFixture _fixture = new();
 
@@ -20,7 +27,7 @@ public class ReleaseWorkflowDemoWithWorkaround : IDisposable
     public void Dispose() => _fixture.Dispose();
 
     [Test]
-    public void Demo()
+    public void Demonstrate()
     {
         // create main and develop branches
         // develop is one commits ahead of main

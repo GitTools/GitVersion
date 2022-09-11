@@ -7,10 +7,16 @@ using Shouldly;
 
 namespace GitVersion.Core.Tests.IntegrationTests;
 
-public class VersioningDemoScenario
+/// <summary>
+///     This demonstrates exactly the git flow described in https://github.com/GitTools/GitVersion/discussions/3177
+///     The assertions expect that the version on develop always increments on develop.
+///     The eventually fail (at the end of this test) after we merged develop -> release/1.0.0.
+///     For simplicity, we ignore the fact that the develop branch is usually updated via feature/* branches.
+/// </summary>
+public class GitFlowScenarioFromDiscussion
 {
     [Test]
-    public void ReleaseAndDevelopProblemDemo()
+    public void Demonstrate()
     {
         var configuration = new Config
         {

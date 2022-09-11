@@ -6,7 +6,12 @@ using Shouldly;
 
 namespace GitVersion.Core.Tests.IntegrationTests;
 
-public class ReducedReleaseWorkflowDemo : IDisposable
+/// <summary>
+///     This demonstrates a bug that decrements the version on develop when we merge stuff from develop to release/*
+///     in the default git flow workflow.
+///     For simplicity, we ignore the fact that the develop branch is usually updated via feature/* branches.
+/// </summary>
+public class ReducedGitFlowWithMerge : IDisposable
 {
     private static readonly EmptyRepositoryFixture _fixture = new();
 
@@ -20,7 +25,7 @@ public class ReducedReleaseWorkflowDemo : IDisposable
     public void Dispose() => _fixture.Dispose();
 
     [Test]
-    public void Demo()
+    public void Demonstrate()
     {
         // create main and develop branches
         // develop is one commits ahead of main
