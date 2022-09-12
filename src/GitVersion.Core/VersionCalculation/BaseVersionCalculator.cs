@@ -49,7 +49,7 @@ public class BaseVersionCalculator : IBaseVersionCalculator
             var matchingVersionsOnceIncremented = versions
                 .Where(b => b.Version.BaseVersionSource != null && b.IncrementedVersion == maxVersion.IncrementedVersion)
                 .ToList();
-            BaseVersion baseVersionWithOldestSource;
+            ICommit? latestBaseVersionSource;
 
             if (matchingVersionsOnceIncremented.Any())
             {
@@ -67,31 +67,42 @@ public class BaseVersionCalculator : IBaseVersionCalculator
                     return versions1.Version.BaseVersionSource.When < version2.Version.BaseVersionSource.When ? versions1 : version2;
                 }
 
-                var oldest = matchingVersionsOnceIncremented.Aggregate(CompareVersions);
-                baseVersionWithOldestSource = oldest.Version;
-                maxVersion = oldest;
-                this.log.Info($"Found multiple base versions which will produce the same SemVer ({maxVersion.IncrementedVersion}), taking oldest source for commit counting ({baseVersionWithOldestSource.Source})");
+                var latestVersion = matchingVersionsOnceIncremented.Aggregate(CompareVersions);
+                latestBaseVersionSource = latestVersion.Version.BaseVersionSource;
+                maxVersion = latestVersion;
+                log.Info($"Found multiple base versions which will produce the same SemVer ({maxVersion.IncrementedVersion})," +
+                    $" taking oldest source for commit counting ({latestVersion.Version.Source})");
             }
             else
             {
-                var version = versions.Where(v => v.Version.BaseVersionSource != null)
+                IEnumerable<Versions> filteredVersions = versions;
+                if (!maxVersion.IncrementedVersion.PreReleaseTag!.HasTag())
+                {
+                    // If the maximal version has no pre-release tag defined than we want to determine just the latest previous
+                    // base source which are not comming from pre-release tag.
+                    filteredVersions = filteredVersions.Where(v => !v.Version.SemanticVersion.PreReleaseTag!.HasTag());
+                }
+
+                Versions version = filteredVersions
+                    .Where(v => v.Version.BaseVersionSource != null)
                     .OrderByDescending(v => v.IncrementedVersion)
                     .ThenByDescending(v => v.Version.BaseVersionSource!.When)
                     .FirstOrDefault();
+
                 if (version == null)
                 {
-                    version = versions.Where(v => v.Version.BaseVersionSource == null)
+                    version = filteredVersions.Where(v => v.Version.BaseVersionSource == null)
                         .OrderByDescending(v => v.IncrementedVersion)
                         .First();
                 }
-                baseVersionWithOldestSource = version.Version;
+                latestBaseVersionSource = version.Version.BaseVersionSource;
             }
 
             var calculatedBase = new BaseVersion(
                 maxVersion.Version.Source,
                 maxVersion.Version.ShouldIncrement,
                 maxVersion.Version.SemanticVersion,
-                baseVersionWithOldestSource.BaseVersionSource,
+                latestBaseVersionSource,
                 maxVersion.Version.BranchNameOverride);
 
             this.log.Info($"Base version used: {calculatedBase}");

@@ -234,7 +234,7 @@ public class DevelopScenarios : TestBase
 
         const string expectedFullSemVer = "1.3.0-alpha.9"; // That's not correct three changes in release 1.2.0 has been merged to develop. This changes are included in the previous release and not part of release 1.3.0
         fixture.AssertFullSemver(expectedFullSemVer, config);
-        fixture.AssertFullSemver("1.3.0-alpha.6", Configurations.ContinuousDeliveryWithoutTrackMergeTarget);
+        fixture.AssertFullSemver("1.3.0-alpha.6", ConfigBuilder.New.WithoutAnyTrackMergeTargets().Build());
     }
 
     [Test]
@@ -267,7 +267,7 @@ public class DevelopScenarios : TestBase
 
         const string expectedFullSemVer = "1.3.0-alpha.5"; // three commits of release/1.2.0 are not part of release 1.3.0
         fixture.AssertFullSemver(expectedFullSemVer, config);
-        fixture.AssertFullSemver("1.3.0-alpha.2", Configurations.ContinuousDeliveryWithoutTrackMergeTarget);
+        fixture.AssertFullSemver("1.3.0-alpha.2", ConfigBuilder.New.WithoutAnyTrackMergeTargets().Build());
     }
 
     [Test]
@@ -289,10 +289,10 @@ public class DevelopScenarios : TestBase
     [Test]
     public void WhenPreventIncrementOfMergedBranchVersionIsSetToFalseForDevelopCommitsSinceVersionSourceShouldNotGoDownWhenMergingReleaseToDevelop()
     {
-        var config = Configurations.ContinuousDeployment;
-        config.Branches["develop"].PreventIncrementOfMergedBranchVersion = false;
-        var configWithoutTrackMergeTarget = Configurations.ContinuousDeploymentWithoutTrackMergeTarget;
-        config.Branches["develop"].PreventIncrementOfMergedBranchVersion = false;
+        var configBuilder = ConfigBuilder.New.WithVersioningMode(VersioningMode.ContinuousDeployment)
+            .WithPreventIncrementOfMergedBranchVersion("develop", false);
+        var config = configBuilder.Build();
+        var configWithoutTrackMergeTarget = configBuilder.WithoutAnyTrackMergeTargets().Build();
 
         using var fixture = new EmptyRepositoryFixture();
         const string ReleaseBranch = "release/1.1.0";
@@ -332,10 +332,10 @@ public class DevelopScenarios : TestBase
     [Test]
     public void WhenPreventIncrementOfMergedBranchVersionIsSetToTrueForDevelopCommitsSinceVersionSourceShouldNotGoDownWhenMergingReleaseToDevelop()
     {
-        var config = Configurations.ContinuousDeployment;
-        config.Branches["develop"].PreventIncrementOfMergedBranchVersion = true;
-        var configWithoutTrackMergeTarget = Configurations.ContinuousDeploymentWithoutTrackMergeTarget;
-        config.Branches["develop"].PreventIncrementOfMergedBranchVersion = true;
+        var configBuilder = ConfigBuilder.New.WithVersioningMode(VersioningMode.ContinuousDeployment)
+            .WithPreventIncrementOfMergedBranchVersion("develop", true);
+        var config = configBuilder.Build();
+        var configWithoutTrackMergeTarget = configBuilder.WithoutAnyTrackMergeTargets().Build();
 
         using var fixture = new EmptyRepositoryFixture();
         const string ReleaseBranch = "release/1.1.0";
@@ -411,7 +411,7 @@ public class DevelopScenarios : TestBase
         fixture.MergeNoFF(ReleaseBranch);
         fixture.Repository.Branches.Remove(ReleaseBranch);
         fixture.AssertFullSemver("1.2.0-alpha.6", config); // why +6 not +3??
-        fixture.AssertFullSemver("1.2.0-alpha.3", Configurations.ContinuousDeploymentWithoutTrackMergeTarget);
+        fixture.AssertFullSemver("1.2.0-alpha.3", ConfigBuilder.New.WithVersioningMode(VersioningMode.ContinuousDeployment).WithoutAnyTrackMergeTargets().Build());
 
         // Create hotfix for defects found in release/1.1.0
         const string HotfixBranch = "hotfix/1.1.1";

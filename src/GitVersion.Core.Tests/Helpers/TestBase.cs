@@ -1,7 +1,6 @@
 using GitVersion.Configuration;
 using GitVersion.Extensions;
 using GitVersion.Model.Configuration;
-using GitVersion.VersionCalculation;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
@@ -40,78 +39,5 @@ public class TestBase
             services.AddSingleton(repository);
         });
         return sp;
-    }
-
-    protected static class Configurations
-    {
-        public static Config ContinuousDelivery => new()
-        {
-            VersioningMode = VersioningMode.ContinuousDelivery,
-            Branches = new Dictionary<string, BranchConfig>()
-            {
-                { "main", new BranchConfig() },
-                { "develop", new BranchConfig() },
-                { "support", new BranchConfig() }
-            }
-        };
-
-        public static Config ContinuousDeliveryWithoutTrackMergeTarget => new()
-        {
-            VersioningMode = VersioningMode.ContinuousDelivery,
-            Branches = new Dictionary<string, BranchConfig>()
-            {
-                { "main", new BranchConfig() { TrackMergeTarget = false } },
-                { "develop", new BranchConfig() { TrackMergeTarget = false } },
-                { "support", new BranchConfig() { TrackMergeTarget = false } }
-            }
-        };
-
-        public static Config ContinuousDeployment => new()
-        {
-            VersioningMode = VersioningMode.ContinuousDeployment,
-            Branches = new Dictionary<string, BranchConfig>()
-            {
-                { "main", new BranchConfig() },
-                { "develop", new BranchConfig() },
-                { "support", new BranchConfig() },
-                { "hotfix", new BranchConfig() }
-            }
-        };
-
-        public static Config ContinuousDeploymentWithoutTrackMergeTarget => new()
-        {
-            VersioningMode = VersioningMode.ContinuousDeployment,
-            Branches = new Dictionary<string, BranchConfig>()
-            {
-                { "main", new BranchConfig() { TrackMergeTarget = false } },
-                { "develop", new BranchConfig() { TrackMergeTarget = false } },
-                { "support", new BranchConfig() { TrackMergeTarget = false } },
-                { "hotfix", new BranchConfig() { TrackMergeTarget = false } }
-            }
-        };
-
-        public static Config Mainline => new()
-        {
-            VersioningMode = VersioningMode.Mainline,
-            Branches = new Dictionary<string, BranchConfig>()
-            {
-                { "main", new BranchConfig() },
-                { "develop", new BranchConfig() },
-                { "support", new BranchConfig() },
-                { "hotfix", new BranchConfig() }
-            }
-        };
-
-        public static Config MainlineWithoutTrackMergeTarget => new()
-        {
-            VersioningMode = VersioningMode.Mainline,
-            Branches = new Dictionary<string, BranchConfig>()
-            {
-                { "main", new BranchConfig() { TrackMergeTarget = false } },
-                { "develop", new BranchConfig() { TrackMergeTarget = false } },
-                { "support", new BranchConfig() { TrackMergeTarget = false } },
-                { "hotfix", new BranchConfig() { TrackMergeTarget = false } }
-            }
-        };
     }
 }

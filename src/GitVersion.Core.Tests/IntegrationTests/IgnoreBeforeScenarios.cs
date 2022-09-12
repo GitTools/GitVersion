@@ -1,7 +1,5 @@
 using GitTools.Testing;
-using GitVersion.Configuration;
 using GitVersion.Core.Tests.Helpers;
-using GitVersion.Model.Configuration;
 using NUnit.Framework;
 
 namespace GitVersion.Core.Tests.IntegrationTests;
@@ -9,39 +7,35 @@ namespace GitVersion.Core.Tests.IntegrationTests;
 [TestFixture]
 public class IgnoreBeforeScenarios : TestBase
 {
-    [Test]
-    public void ShouldFallbackToBaseVersionWhenAllCommitsAreIgnored()
+    [TestCase(null, "0.0.1+0")]
+    [TestCase("0.0.1", "0.0.1+0")]
+    [TestCase("0.1.0", "0.1.0+0")]
+    [TestCase("1.0.0", "1.0.0+0")]
+    public void ShouldFallbackToBaseVersionWhenAllCommitsAreIgnored(string? nextVersion, string expectedFullSemVer)
     {
         using var fixture = new EmptyRepositoryFixture();
         var dateTimeNow = DateTimeOffset.Now;
         var objectId = fixture.Repository.MakeACommit();
 
-        var config = new ConfigurationBuilder().Add(new Config
-        {
-            Ignore = new IgnoreConfig
-            {
-                Before = dateTimeNow.AddDays(1)
-            }
-        }).Build();
+        var config = ConfigBuilder.New.WithNextVersion(nextVersion)
+            .WithIgnoreConfig(new() { Before = dateTimeNow.AddDays(1) }).Build();
 
-        fixture.AssertFullSemver("0.0.1+0", config); // 0.0.1 becaus the main branch has the IncrementStrategy.Patch
+        fixture.AssertFullSemver(expectedFullSemVer, config);
     }
 
-    [Test]
-    public void ShouldFallbackToBaseVersionWhenAllCommitsAreIgnored2()
+    [TestCase(null, "0.0.1+1")]
+    [TestCase("0.0.1", "0.0.1+1")]
+    [TestCase("0.1.0", "0.1.0+1")]
+    [TestCase("1.0.0", "1.0.0+1")]
+    public void ShouldFallbackToBaseVersionWhenAllCommitsAreIgnored2(string? nextVersion, string expectedFullSemVer)
     {
         using var fixture = new EmptyRepositoryFixture();
         var dateTimeNow = DateTimeOffset.Now;
         var objectId = fixture.Repository.MakeACommit();
 
-        var config = new ConfigurationBuilder().Add(new Config
-        {
-            Ignore = new IgnoreConfig
-            {
-                Before = dateTimeNow.AddDays(-1)
-            }
-        }).Build();
+        var config = ConfigBuilder.New.WithNextVersion(nextVersion)
+            .WithIgnoreConfig(new() { Before = dateTimeNow.AddDays(-1) }).Build();
 
-        fixture.AssertFullSemver("0.0.1+1", config); // 0.0.1 becaus the main branch has the IncrementStrategy.Patch
+        fixture.AssertFullSemver(expectedFullSemVer, config);
     }
 }

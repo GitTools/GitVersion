@@ -205,8 +205,8 @@ public class DocumentationSamples : TestBase
         fixture.SequenceDiagram.NoteOver("Release branches are deleted once merged", "release/2.0.0");
 
         fixture.Checkout(MainBranch);
-        fixture.AssertFullSemver("2.0.0+0", Configurations.ContinuousDelivery); // why +0 and not +2??
-        fixture.AssertFullSemver("2.0.0-beta.2+2", Configurations.ContinuousDeliveryWithoutTrackMergeTarget);
+        fixture.AssertFullSemver("2.0.0+0", ConfigBuilder.New.Build()); // why +0 and not +2??
+        fixture.AssertFullSemver("2.0.0-beta.2+2", ConfigBuilder.New.WithoutAnyTrackMergeTargets().Build());
         fixture.ApplyTag("2.0.0");
         fixture.AssertFullSemver("2.0.0");
 
@@ -296,7 +296,7 @@ public class DocumentationSamples : TestBase
         fixture.SequenceDiagram.Destroy("release/1.4.0");
         fixture.SequenceDiagram.NoteOver("Release branches are deleted once merged", "release/1.4.0");
         fixture.AssertFullSemver("1.4.0+0"); // why +0 and not +1??
-        fixture.AssertFullSemver("1.4.0-beta.2+1", Configurations.ContinuousDeliveryWithoutTrackMergeTarget);
+        fixture.AssertFullSemver("1.4.0-beta.2+1", ConfigBuilder.New.WithoutAnyTrackMergeTargets().Build());
         fixture.ApplyTag("1.4.0");
         fixture.AssertFullSemver("1.4.0");
         Console.WriteLine(fixture.SequenceDiagram.GetDiagram());
@@ -398,8 +398,8 @@ public class DocumentationSamples : TestBase
         fixture.SequenceDiagram.Destroy("release/2.0.0");
         fixture.SequenceDiagram.NoteOver("Release branches are deleted once merged", "release/2.0.0");
 
-        fixture.AssertFullSemver("2.0.0+0", Configurations.ContinuousDelivery); // why +0 and not +2??
-        fixture.AssertFullSemver("2.0.0-beta.2+2", Configurations.ContinuousDeliveryWithoutTrackMergeTarget);
+        fixture.AssertFullSemver("2.0.0+0", ConfigBuilder.New.Build()); // why +0 and not +2??
+        fixture.AssertFullSemver("2.0.0-beta.2+2", ConfigBuilder.New.WithoutAnyTrackMergeTargets().Build());
         fixture.ApplyTag("2.0.0");
         fixture.AssertFullSemver("2.0.0");
         fixture.MakeACommit();

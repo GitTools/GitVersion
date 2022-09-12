@@ -143,9 +143,9 @@ public class PullRequestInBuildAgentTest
 
     private static async Task VerifyPullRequestVersionIsCalculatedProperly(string pullRequestRef, Dictionary<string, string> env)
     {
-        using var fixture = new EmptyRepositoryFixture();
+        using var fixture = new EmptyRepositoryFixture("main");
         var remoteRepositoryPath = ExecutableHelper.GetTempPath();
-        RepositoryFixtureBase.Init(remoteRepositoryPath);
+        RepositoryFixtureBase.Init(remoteRepositoryPath, "main");
         using (var remoteRepository = new Repository(remoteRepositoryPath))
         {
             remoteRepository.Config.Set("user.name", "Test");

@@ -12,7 +12,7 @@ public class JustSomeTestScenarios : TestBase
     [Test]
     public void __Just_A_Test_1__()
     {
-        var configuration = Configurations.ContinuousDeploymentWithoutTrackMergeTarget;
+        var configuration = ConfigBuilder.New.WithVersioningMode(VersioningMode.ContinuousDeployment).WithoutAnyTrackMergeTargets().Build();
 
         using var fixture = new EmptyRepositoryFixture();
         fixture.MakeACommit();
@@ -24,7 +24,7 @@ public class JustSomeTestScenarios : TestBase
     [Test]
     public void __Just_A_Test_2__()
     {
-        var configuration = Configurations.ContinuousDeploymentWithoutTrackMergeTarget;
+        var configuration = ConfigBuilder.New.WithVersioningMode(VersioningMode.ContinuousDeployment).WithoutAnyTrackMergeTargets().Build();
 
         using var fixture = new EmptyRepositoryFixture();
         fixture.Repository.MakeACommit();
@@ -47,7 +47,7 @@ public class JustSomeTestScenarios : TestBase
     [Test]
     public void __Just_A_Test_3__()
     {
-        var configuration = Configurations.ContinuousDeploymentWithoutTrackMergeTarget;
+        var configuration = ConfigBuilder.New.WithVersioningMode(VersioningMode.ContinuousDeployment).WithoutAnyTrackMergeTargets().Build();
 
         using var fixture = new EmptyRepositoryFixture();
         //fixture.AssertFullSemver("0.0.0-ci.0", configuration); // uncomment in version 6.x??
@@ -73,7 +73,7 @@ public class JustSomeTestScenarios : TestBase
     [Test]
     public void __Just_A_Test_5__()
     {
-        var configuration = Configurations.ContinuousDeploymentWithoutTrackMergeTarget;
+        var configuration = ConfigBuilder.New.WithVersioningMode(VersioningMode.ContinuousDeployment).WithoutAnyTrackMergeTargets().Build();
 
         using var fixture = new EmptyRepositoryFixture();
         fixture.MakeACommit();
@@ -101,7 +101,7 @@ public class JustSomeTestScenarios : TestBase
     [Test]
     public void __Just_A_Test_6__()
     {
-        var configuration = Configurations.ContinuousDeploymentWithoutTrackMergeTarget;
+        var configuration = ConfigBuilder.New.WithVersioningMode(VersioningMode.ContinuousDeployment).WithoutAnyTrackMergeTargets().Build();
 
         using var fixture = new EmptyRepositoryFixture();
         fixture.MakeACommit();
@@ -140,7 +140,7 @@ public class JustSomeTestScenarios : TestBase
     [Test]
     public void __Just_A_Test_7__()
     {
-        var configuration = Configurations.ContinuousDeploymentWithoutTrackMergeTarget;
+        var configuration = ConfigBuilder.New.WithVersioningMode(VersioningMode.ContinuousDeployment).WithoutAnyTrackMergeTargets().Build();
 
         using var fixture = new EmptyRepositoryFixture();
         fixture.MakeACommit();

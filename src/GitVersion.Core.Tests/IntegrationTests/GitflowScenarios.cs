@@ -36,14 +36,14 @@ namespace GitVersion.Core.Tests.IntegrationTests
             fixture.Checkout(MainBranch);
             fixture.MergeNoFF(release1Branch);
             fixture.AssertFullSemver("1.1.0+0"); // why +0 and not +5??
-            fixture.AssertFullSemver("1.0.1+5", Configurations.ContinuousDeliveryWithoutTrackMergeTarget);
+            fixture.AssertFullSemver("1.0.1+5", ConfigBuilder.New.WithoutAnyTrackMergeTargets().Build());
             fixture.ApplyTag("1.1.0");
             fixture.AssertFullSemver("1.1.0");
             fixture.Checkout(developBranch);
             fixture.MergeNoFF(release1Branch);
             fixture.Repository.Branches.Remove(fixture.Repository.Branches[release1Branch]);
             fixture.AssertFullSemver("1.2.0-alpha.2"); // why +2 not +1??
-            fixture.AssertFullSemver("1.2.0-alpha.1", Configurations.ContinuousDeliveryWithoutTrackMergeTarget);
+            fixture.AssertFullSemver("1.2.0-alpha.1", ConfigBuilder.New.WithoutAnyTrackMergeTargets().Build());
 
             // Feature 2
             fixture.BranchTo(feature2Branch);
@@ -53,7 +53,7 @@ namespace GitVersion.Core.Tests.IntegrationTests
             fixture.MergeNoFF(feature2Branch);
             fixture.Repository.Branches.Remove(fixture.Repository.Branches[feature2Branch]);
             fixture.AssertFullSemver("1.2.0-alpha.4"); // why +4 not +3??
-            fixture.AssertFullSemver("1.2.0-alpha.3", Configurations.ContinuousDeliveryWithoutTrackMergeTarget);
+            fixture.AssertFullSemver("1.2.0-alpha.3", ConfigBuilder.New.WithoutAnyTrackMergeTargets().Build());
 
             // Release 1.2.0
             fixture.BranchTo(release2Branch);
@@ -62,21 +62,21 @@ namespace GitVersion.Core.Tests.IntegrationTests
             fixture.Checkout(MainBranch);
             fixture.MergeNoFF(release2Branch);
             fixture.AssertFullSemver("1.2.0+0"); // why +0 and not +5??
-            fixture.AssertFullSemver("1.1.1+5", Configurations.ContinuousDeliveryWithoutTrackMergeTarget);
+            fixture.AssertFullSemver("1.1.1+5", ConfigBuilder.New.WithoutAnyTrackMergeTargets().Build());
             fixture.ApplyTag("1.2.0");
             fixture.AssertFullSemver("1.2.0");
             fixture.Checkout(developBranch);
             fixture.MergeNoFF(release2Branch);
             fixture.Repository.Branches.Remove(fixture.Repository.Branches[release2Branch]);
             fixture.AssertFullSemver("1.3.0-alpha.2"); // why +2 and +1??
-            fixture.AssertFullSemver("1.3.0-alpha.1", Configurations.ContinuousDeliveryWithoutTrackMergeTarget);
+            fixture.AssertFullSemver("1.3.0-alpha.1", ConfigBuilder.New.WithoutAnyTrackMergeTargets().Build());
 
             // Hotfix
             fixture.Checkout(MainBranch);
             fixture.BranchTo(hotfixBranch);
             fixture.MakeACommit("added hotfix");
             fixture.AssertFullSemver("1.2.1-beta.1+1"); // why seven it is just one commit on the hotfix branch since last rlease 1.2.0?
-            fixture.AssertFullSemver("1.2.1-beta.1+1", Configurations.ContinuousDeliveryWithoutTrackMergeTarget);
+            fixture.AssertFullSemver("1.2.1-beta.1+1", ConfigBuilder.New.WithoutAnyTrackMergeTargets().Build());
             fixture.Checkout(MainBranch);
             fixture.MergeNoFF(hotfixBranch);
             fixture.AssertFullSemver("1.2.1+2");
@@ -87,7 +87,7 @@ namespace GitVersion.Core.Tests.IntegrationTests
             fixture.Repository.Branches.Remove(fixture.Repository.Branches[hotfixBranch]);
             fixture.AssertFullSemver("1.3.0-alpha.9"); // why +9 and not +3??
             // two changes in hotfix and one merge commit
-            fixture.AssertFullSemver("1.3.0-alpha.3", Configurations.ContinuousDeliveryWithoutTrackMergeTarget);
+            fixture.AssertFullSemver("1.3.0-alpha.3", ConfigBuilder.New.WithoutAnyTrackMergeTargets().Build());
         }
     }
 }
