@@ -230,7 +230,7 @@ public class HotfixBranchScenarios : TestBase
     public void MergingHotFixIntoSupportLocalOnly()
     {
         var config = GivenIHaveContinuousDeploymentConfigurationWithAMinorIncrementStrategyForMainBranch();
-        
+
         using var fixture = GivenIHaveALocalRepositoryWithAnHotFixMergedInAPullRequestBranch();
 
         fixture.AssertFullSemver("1.0.2-alpha-pr0002.2", config);
@@ -242,7 +242,7 @@ public class HotfixBranchScenarios : TestBase
     public void MergingHotFixIntoSupportWithRemote()
     {
         var config = GivenIHaveContinuousDeploymentConfigurationWithAMinorIncrementStrategyForMainBranch();
-        
+
         using var fixture = GivenIHaveALocalRepositoryWithAnHotFixMergedInAPullRequestBranch();
 
         using var local = fixture.CloneRepository();
@@ -263,7 +263,7 @@ public class HotfixBranchScenarios : TestBase
     public void MergingFeatureIntoMainLocalOnly()
     {
         var config = GivenIHaveContinuousDeploymentConfigurationWithAMinorIncrementStrategyForMainBranch();
-        
+
         using var fixture = GivenIHaveALocalRepositoryWithAFeatureMergedInAPullRequestBranch();
 
         fixture.AssertFullSemver("1.1.0-alpha-pr0002.3", config);
@@ -275,7 +275,7 @@ public class HotfixBranchScenarios : TestBase
     public void MergingFeatureIntoMainWithRemote()
     {
         var config = GivenIHaveContinuousDeploymentConfigurationWithAMinorIncrementStrategyForMainBranch();
-        
+
         using var fixture = GivenIHaveALocalRepositoryWithAFeatureMergedInAPullRequestBranch();
 
         using var local = fixture.CloneRepository();
