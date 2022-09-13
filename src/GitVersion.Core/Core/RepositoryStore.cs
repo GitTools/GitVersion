@@ -166,7 +166,15 @@ public class RepositoryStore : IRepositoryStore
     public IEnumerable<IBranch> GetReleaseBranches(IEnumerable<KeyValuePair<string, BranchConfig>> releaseBranchConfig)
         => this.repository.Branches.Where(b => IsReleaseBranch(b, releaseBranchConfig));
 
-    public IEnumerable<IBranch> ExcludingBranches(IEnumerable<IBranch> branchesToExclude) => this.repository.Branches.ExcludeBranches(branchesToExclude);
+    public IEnumerable<IBranch> ExcludingBranches(IEnumerable<IBranch> branchesToExclude, bool excludeRemotes = false)
+    {
+        var branches = this.repository.Branches.ExcludeBranches(branchesToExclude);
+        if (excludeRemotes)
+        {
+            branches = branches.Where(b => !b.IsRemote);
+        }
+        return branches;
+    }
 
     public IEnumerable<IBranch> GetBranchesContainingCommit(ICommit? commit, IEnumerable<IBranch>? branches = null, bool onlyTrackedBranches = false)
     {

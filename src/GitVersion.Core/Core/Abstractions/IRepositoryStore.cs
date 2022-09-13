@@ -23,7 +23,7 @@ public interface IRepositoryStore
     IEnumerable<IBranch> GetBranchesForCommit(ICommit commit);
     IEnumerable<IBranch> GetExcludedInheritBranches(Config configuration);
     IEnumerable<IBranch> GetReleaseBranches(IEnumerable<KeyValuePair<string, BranchConfig>> releaseBranchConfig);
-    IEnumerable<IBranch> ExcludingBranches(IEnumerable<IBranch> branchesToExclude);
+    IEnumerable<IBranch> ExcludingBranches(IEnumerable<IBranch> branchesToExclude, bool excludeRemotes = false);
     IEnumerable<IBranch> GetBranchesContainingCommit(ICommit? commit, IEnumerable<IBranch>? branches = null, bool onlyTrackedBranches = false);
     IDictionary<string, List<IBranch>> GetMainlineBranches(ICommit commit, Config configuration, IEnumerable<KeyValuePair<string, BranchConfig>>? mainlineBranchConfigs);
 

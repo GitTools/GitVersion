@@ -1,0 +1,1 @@
+GitVersion.RepositoryStore.ExcludingBranches(System.Collections.Generic.IEnumerable<GitVersion.IBranch!>! branchesToExclude, bool excludeRemotes = false) -> System.Collections.Generic.IEnumerable<GitVersion.IBranch!>!
