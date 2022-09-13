@@ -44,7 +44,7 @@ public class TrackReleaseBranchesVersionStrategy : VersionStrategyBase
 
     private IEnumerable<BaseVersion> MainTagsVersions()
     {
-        var configuration = this.context.Value.Configuration.Configuration;
+        var configuration = this.context.Value.FullConfiguration;
         var main = this.repositoryStore.FindMainBranch(configuration);
 
         return main != null

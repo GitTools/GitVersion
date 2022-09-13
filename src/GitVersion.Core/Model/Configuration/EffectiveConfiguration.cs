@@ -11,7 +11,6 @@ public class EffectiveConfiguration
 {
     public EffectiveConfiguration(Config configuration, BranchConfig currentBranchConfig)
     {
-        Configuration = configuration.NotNull();
         currentBranchConfig.NotNull();
 
         var name = currentBranchConfig.Name;
@@ -206,6 +205,4 @@ public class EffectiveConfiguration
     public int PreReleaseWeight { get; }
 
     public int TagPreReleaseWeight { get; }
-
-    public Config Configuration { get; }
 }
