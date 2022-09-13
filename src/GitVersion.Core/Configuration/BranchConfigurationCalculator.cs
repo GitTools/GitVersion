@@ -89,7 +89,8 @@ public class BranchConfigurationCalculator : IBranchConfigurationCalculator
             {
                 excludedInheritBranches.Add(excludedBranch);
             }
-            var branchesToEvaluate = this.repositoryStore.ExcludingBranches(excludedInheritBranches, excludeRemotes: true)
+            var branchesToEvaluate = this.repositoryStore
+                .ExcludingBranches(excludedInheritBranches, excludeRemotes: true)
                 .Distinct(new LocalRemoteBranchEqualityComparer())
                 .ToList();
 
