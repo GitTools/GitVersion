@@ -1,4 +1,5 @@
 using GitVersion.Common;
+using GitVersion.Model.Configuration;
 
 namespace GitVersion.VersionCalculation;
 
@@ -7,14 +8,14 @@ namespace GitVersion.VersionCalculation;
 /// BaseVersionSource is the "root" commit reachable from the current commit.
 /// Does not increment.
 /// </summary>
-public class FallbackVersionStrategy : VersionStrategyBase
+public class FallbackVersionStrategy : VersionStrategyBaseWithInheritSupport
 {
     public FallbackVersionStrategy(IRepositoryStore repositoryStore, Lazy<GitVersionContext> versionContext)
         : base(repositoryStore, versionContext)
     {
     }
 
-    public override IEnumerable<BaseVersion> GetVersions()
+    public override IEnumerable<BaseVersion> GetVersions(IBranch branch, EffectiveConfiguration configuration)
     {
         if (Context.CurrentBranch.Tip == null)
             throw new GitVersionException("No commits found on the current branch.");

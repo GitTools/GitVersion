@@ -22,7 +22,7 @@ public abstract class VersionStrategyBase : IVersionStrategy
         foreach (var baseVersion in GetVersions())
         {
             var incrementedVersion = RepositoryStore.MaybeIncrement(baseVersion, Context);
-            if (Context.Configuration!.VersioningMode == VersioningMode.Mainline)
+            if (Context.FullConfiguration.VersioningMode == VersioningMode.Mainline)
             {
                 if (!(incrementedVersion.PreReleaseTag?.HasTag() != true))
                 {

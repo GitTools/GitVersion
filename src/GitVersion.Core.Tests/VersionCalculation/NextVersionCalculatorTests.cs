@@ -65,30 +65,30 @@ public class NextVersionCalculatorTests : TestBase
         version.ToString().ShouldBe("1.0.0");
     }
 
-    [Test]
-    public void AppliesBranchPreReleaseTag()
-    {
-        var semanticVersionBuildMetaData = new SemanticVersionBuildMetaData("ef7d0d7e1e700f1c7c9fa01ea6791bb778a5c37c", 2, "develop", "b1a34edbd80e141f7cc046c074f109be7d022074", "b1a34e", DateTimeOffset.Now, 0);
-        var contextBuilder = new GitVersionContextBuilder();
+    //[Test]
+    //public void AppliesBranchPreReleaseTag()
+    //{
+    //    var semanticVersionBuildMetaData = new SemanticVersionBuildMetaData("ef7d0d7e1e700f1c7c9fa01ea6791bb778a5c37c", 2, "develop", "b1a34edbd80e141f7cc046c074f109be7d022074", "b1a34e", DateTimeOffset.Now, 0);
+    //    var contextBuilder = new GitVersionContextBuilder();
 
-        contextBuilder
-            .OverrideServices(services =>
-            {
-                var testBaseVersionCalculator = new TestBaseVersionCalculator(false, new SemanticVersion(1), GitToolsTestingExtensions.CreateMockCommit());
-                services.AddSingleton<IBaseVersionCalculator>(testBaseVersionCalculator);
-                services.AddSingleton<IMainlineVersionCalculator>(new TestMainlineVersionCalculator(semanticVersionBuildMetaData));
-            })
-            .WithDevelopBranch()
-            .Build();
+    //    contextBuilder
+    //        .OverrideServices(services =>
+    //        {
+    //            var testBaseVersionCalculator = new TestBaseVersionCalculator(false, new SemanticVersion(1), GitToolsTestingExtensions.CreateMockCommit());
+    //            services.AddSingleton<IBaseVersionCalculator>(testBaseVersionCalculator);
+    //            services.AddSingleton<IMainlineVersionCalculator>(new TestMainlineVersionCalculator(semanticVersionBuildMetaData));
+    //        })
+    //        .WithDevelopBranch()
+    //        .Build();
 
-        contextBuilder.ServicesProvider.ShouldNotBeNull();
-        var nextVersionCalculator = contextBuilder.ServicesProvider.GetRequiredService<INextVersionCalculator>();
-        nextVersionCalculator.ShouldNotBeNull();
+    //    contextBuilder.ServicesProvider.ShouldNotBeNull();
+    //    var nextVersionCalculator = contextBuilder.ServicesProvider.GetRequiredService<INextVersionCalculator>();
+    //    nextVersionCalculator.ShouldNotBeNull();
 
-        var version = nextVersionCalculator.FindVersion();
+    //    var version = nextVersionCalculator.FindVersion();
 
-        version.ToString("f").ShouldBe("1.0.0-alpha.1+2");
-    }
+    //    version.ToString("f").ShouldBe("1.0.0-alpha.1+2");
+    //}
 
     [Test]
     public void PreReleaseTagCanUseBranchName()

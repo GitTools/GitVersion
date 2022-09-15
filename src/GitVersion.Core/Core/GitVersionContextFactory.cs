@@ -10,14 +10,12 @@ public class GitVersionContextFactory : IGitVersionContextFactory
 {
     private readonly IConfigProvider configProvider;
     private readonly IRepositoryStore repositoryStore;
-    private readonly IBranchConfigurationCalculator branchConfigurationCalculator;
     private readonly IOptions<GitVersionOptions> options;
 
-    public GitVersionContextFactory(IConfigProvider configProvider, IRepositoryStore repositoryStore, IBranchConfigurationCalculator branchConfigurationCalculator, IOptions<GitVersionOptions> options)
+    public GitVersionContextFactory(IConfigProvider configProvider, IRepositoryStore repositoryStore, IOptions<GitVersionOptions> options)
     {
         this.configProvider = configProvider.NotNull();
         this.repositoryStore = repositoryStore.NotNull();
-        this.branchConfigurationCalculator = branchConfigurationCalculator.NotNull();
         this.options = options.NotNull();
     }
 
@@ -41,15 +39,20 @@ public class GitVersionContextFactory : IGitVersionContextFactory
 
         var context = new GitVersionContext(currentBranch, currentCommit, configuration, currentCommitTaggedVersion, numberOfUncommittedChanges);
 
-        ////
-        // this logic has been moved from GitVersionContextFactory to this class. The reason is that we need to set the
-        // effective configuration dynamic dependent on the version strategy implementation. Therefor we are traversing recursive
-        // from the current branch to the base branch until the branch configuration indicates no inheritance. Probably we can
-        // refactor the hole logic here and remove the complexity.
-        var currentBranchConfig = this.branchConfigurationCalculator.GetBranchConfiguration(
-            context.CurrentBranch, context.CurrentCommit, context.FullConfiguration);
-        context.Configuration = new EffectiveConfiguration(context.FullConfiguration, currentBranchConfig);
-        //
+        var branchConfiguration = new BranchConfig()
+        {
+            Name = "OnlyForTest",
+            VersioningMode = context.FullConfiguration.VersioningMode,
+            SourceBranches = new HashSet<string> { Config.DevelopBranchKey, Config.ReleaseBranchKey },
+            Tag = string.Empty,
+            PreventIncrementOfMergedBranchVersion = true,
+            Increment = IncrementStrategy.Patch,
+            TrackMergeTarget = true,
+            IsMainline = true,
+            PreReleaseWeight = 55000
+        };
+        var effectiveConfiguration = new EffectiveConfiguration(context.FullConfiguration, branchConfiguration);
+        context.Configuration = effectiveConfiguration;
 
         return context;
 

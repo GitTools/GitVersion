@@ -58,7 +58,7 @@ public abstract class VersionStrategyBaseWithInheritSupport : VersionStrategyBas
         }
         else
         {
-            var effectiveConfiguration = new EffectiveConfiguration(Context.FullConfiguration, branchConfiguration); ;
+            var effectiveConfiguration = new EffectiveConfiguration(Context.FullConfiguration, branchConfiguration);
             Context.Configuration = effectiveConfiguration;
             foreach (var baseVersion in GetVersions(branch, effectiveConfiguration))
             {

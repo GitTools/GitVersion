@@ -1,5 +1,6 @@
 using GitVersion.Common;
 using GitVersion.Extensions;
+using GitVersion.Model.Configuration;
 
 namespace GitVersion.VersionCalculation;
 
@@ -8,14 +9,14 @@ namespace GitVersion.VersionCalculation;
 /// BaseVersionSource is null.
 /// Does not increment.
 /// </summary>
-public class ConfigNextVersionVersionStrategy : VersionStrategyBase
+public class ConfigNextVersionVersionStrategy : VersionStrategyBaseWithInheritSupport
 {
     public ConfigNextVersionVersionStrategy(IRepositoryStore repositoryStore, Lazy<GitVersionContext> versionContext)
         : base(repositoryStore, versionContext)
     {
     }
 
-    public override IEnumerable<BaseVersion> GetVersions()
+    public override IEnumerable<BaseVersion> GetVersions(IBranch branch, EffectiveConfiguration configuration)
     {
         var nextVersion = Context.FullConfiguration.NextVersion;
         if (!nextVersion.IsNullOrEmpty())

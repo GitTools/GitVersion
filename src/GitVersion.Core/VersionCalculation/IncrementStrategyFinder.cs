@@ -51,10 +51,10 @@ public class IncrementStrategyFinder : IIncrementStrategyFinder
 
     public VersionField? GetIncrementForCommits(GitVersionContext context, IEnumerable<ICommit> commits)
     {
-        var majorRegex = TryGetRegexOrDefault(context.Configuration.MajorVersionBumpMessage, DefaultMajorPatternRegex);
-        var minorRegex = TryGetRegexOrDefault(context.Configuration.MinorVersionBumpMessage, DefaultMinorPatternRegex);
-        var patchRegex = TryGetRegexOrDefault(context.Configuration.PatchVersionBumpMessage, DefaultPatchPatternRegex);
-        var none = TryGetRegexOrDefault(context.Configuration.NoBumpMessage, DefaultNoBumpPatternRegex);
+        var majorRegex = TryGetRegexOrDefault(context.FullConfiguration.MajorVersionBumpMessage, DefaultMajorPatternRegex);
+        var minorRegex = TryGetRegexOrDefault(context.FullConfiguration.MinorVersionBumpMessage, DefaultMinorPatternRegex);
+        var patchRegex = TryGetRegexOrDefault(context.FullConfiguration.PatchVersionBumpMessage, DefaultPatchPatternRegex);
+        var none = TryGetRegexOrDefault(context.FullConfiguration.NoBumpMessage, DefaultNoBumpPatternRegex);
 
         var increments = commits
             .Select(c => GetIncrementFromCommit(c, majorRegex, minorRegex, patchRegex, none))

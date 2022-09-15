@@ -12,6 +12,5 @@ public class ConfigurationModule : IGitVersionModule
 
         services.AddSingleton<IConfigProvider, ConfigProvider>();
         services.AddSingleton<IConfigFileLocator, ConfigFileLocator>();
-        services.AddSingleton<IBranchConfigurationCalculator, BranchConfigurationCalculator>();
     }
 }
