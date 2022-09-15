@@ -4,6 +4,9 @@ using NUnit.Framework;
 
 namespace GitVersion.Core.Tests.IntegrationTests;
 
+/// <summary>
+/// Prevent decrementation of versions on the develop branch #3177
+/// </summary>
 [TestFixture]
 public class PreventDecrementationOfVersionsOnTheDevelopBranchScenario
 {
@@ -130,7 +133,14 @@ public class PreventDecrementationOfVersionsOnTheDevelopBranchScenario
 
         configBuilder.WithNextVersion("1.0.0");
 
-        // ✅ succeeds as expected
+        // ❌ fails! expected: "1.0.0-alpha.3"
+        // this behaviour needs to be changed for the git flow workflow.
         fixture.AssertFullSemver("1.1.0-alpha.3", configBuilder.Build());
+
+        configBuilder.WithNextVersion(null);
+        fixture.BranchTo("main");
+
+        // ✅ succeeds as expected
+        fixture.AssertFullSemver("1.0.0+3", configBuilder.Build());
     }
 }
