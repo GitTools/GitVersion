@@ -49,20 +49,11 @@ public class ReleaseBranchScenarios : TestBase
         fixture.Checkout("develop");
         fixture.AssertFullSemver("1.1.0-alpha.0");
         fixture.Repository.MergeNoFF("release/1.0.0");
-
-        //// This edge case needs to be fixed later
-        // this is a edge case... normally after the release branch has been merged and on the main branch tagged it needs to be delete!!!
-        // But anyway my expectation would be that GitVersion handles this like it would be not present.
         fixture.AssertFullSemver("1.1.0-alpha.2");
-        //fixture.AssertFullSemver("1.1.0-alpha.0", ConfigBuilder.New.WithoutAnyTrackMergeTargets().Build());
         fixture.Repository.MakeACommit();
         fixture.AssertFullSemver("1.1.0-alpha.3");
-        //fixture.AssertFullSemver("1.1.0-alpha.1", ConfigBuilder.New.WithoutAnyTrackMergeTargets().Build());
-        //
-
         fixture.Repository.Branches.Remove("release/1.0.0");
-
-        fixture.AssertFullSemver("1.1.0-alpha.3"); // why +3 and not +2? One commit and one merge
+        fixture.AssertFullSemver("1.1.0-alpha.3");
     }
 
     [Test]
@@ -172,10 +163,9 @@ public class ReleaseBranchScenarios : TestBase
         fixture.Checkout(MainBranch);
         fixture.Repository.MergeNoFF("release-2.0.0", Generate.SignatureNow());
 
-        fixture.AssertFullSemver("2.0.0+0"); // why +0 and not +6??
-
+        fixture.AssertFullSemver("2.0.0+0");
         fixture.Repository.MakeCommits(2);
-        fixture.AssertFullSemver("2.0.0+2"); // why +2 and not +8??
+        fixture.AssertFullSemver("2.0.0+2");
     }
 
     [Test]
@@ -190,7 +180,7 @@ public class ReleaseBranchScenarios : TestBase
         fixture.Checkout(MainBranch);
         fixture.Repository.MergeNoFF("release-2.0.0", Generate.SignatureNow());
 
-        fixture.AssertFullSemver("2.0.0+0"); // why +0 and +6??
+        fixture.AssertFullSemver("2.0.0+0");
     }
 
     [Test]
@@ -204,9 +194,9 @@ public class ReleaseBranchScenarios : TestBase
         fixture.Repository.MakeCommits(4);
         fixture.Checkout(MainBranch);
         fixture.Repository.MergeNoFF("release-2.0.0", Generate.SignatureNow());
-        fixture.AssertFullSemver("2.0.0+0"); // why +0 and not +6??
+
+        fixture.AssertFullSemver("2.0.0+0");
         fixture.Repository.ApplyTag("2.0.0");
-        fixture.AssertFullSemver("2.0.0");
         fixture.Repository.MakeCommits(1);
         fixture.AssertFullSemver("2.0.1+1");
     }
@@ -251,11 +241,9 @@ public class ReleaseBranchScenarios : TestBase
         fixture.Checkout("release-1.0.0");
         fixture.Repository.MakeCommits(4);
         fixture.Checkout(MainBranch);
-        fixture.AssertFullSemver("2.0.0+0"); // why +0 and not +6??
-
         fixture.Repository.MergeNoFF("release-1.0.0", Generate.SignatureNow());
 
-        fixture.AssertFullSemver("2.0.0+5"); // why +5 and not +11??
+        fixture.AssertFullSemver("2.0.0+5");
     }
 
     [Test]
@@ -283,7 +271,7 @@ public class ReleaseBranchScenarios : TestBase
         fixture.Checkout(MainBranch);
         fixture.Repository.MergeNoFF("release-1.0.0", Generate.SignatureNow());
 
-        fixture.AssertFullSemver("3.0.0+10"); // why +10 and not +16??
+        fixture.AssertFullSemver("3.0.0+10");
     }
 
     [Test]

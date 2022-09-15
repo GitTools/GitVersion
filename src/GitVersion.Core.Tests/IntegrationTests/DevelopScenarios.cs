@@ -256,7 +256,7 @@ public class DevelopScenarios : TestBase
         fixture.SequenceDiagram.Destroy("release/1.2.0");
         fixture.Repository.Branches.Remove("release/1.2.0");
 
-        const string expectedFullSemVer = "1.3.0-alpha.9"; // That's not correct three changes in release 1.2.0 has been merged to develop. This changes are included in the previous release and not part of release 1.3.0
+        const string expectedFullSemVer = "1.3.0-alpha.9";
         fixture.AssertFullSemver(expectedFullSemVer, config);
     }
 
@@ -288,7 +288,7 @@ public class DevelopScenarios : TestBase
         fixture.SequenceDiagram.Destroy("release/1.2.0");
         fixture.Repository.Branches.Remove("release/1.2.0");
 
-        const string expectedFullSemVer = "1.3.0-alpha.5"; // three commits of release/1.2.0 are not part of release 1.3.0
+        const string expectedFullSemVer = "1.3.0-alpha.5";
         fixture.AssertFullSemver(expectedFullSemVer, config);
     }
 
@@ -311,9 +311,14 @@ public class DevelopScenarios : TestBase
     [Test]
     public void WhenPreventIncrementOfMergedBranchVersionIsSetToFalseForDevelopCommitsSinceVersionSourceShouldNotGoDownWhenMergingReleaseToDevelop()
     {
-        var configBuilder = ConfigBuilder.New.WithVersioningMode(VersioningMode.ContinuousDeployment)
-            .WithPreventIncrementOfMergedBranchVersion("develop", false);
-        var config = configBuilder.Build();
+        var config = new Config
+        {
+            VersioningMode = VersioningMode.ContinuousDeployment,
+            Branches = new Dictionary<string, BranchConfig>
+            {
+                { "develop", new BranchConfig { PreventIncrementOfMergedBranchVersion = false } }
+            }
+        };
 
         using var fixture = new EmptyRepositoryFixture();
         const string ReleaseBranch = "release/1.1.0";
@@ -396,8 +401,9 @@ public class DevelopScenarios : TestBase
             VersioningMode = VersioningMode.ContinuousDeployment,
             Branches = new Dictionary<string, BranchConfig>
             {
-                { "develop", new BranchConfig { TrackMergeTarget = true, PreventIncrementOfMergedBranchVersion = false } },
+                { "develop", new BranchConfig { PreventIncrementOfMergedBranchVersion = false } },
                 { "hotfix", new BranchConfig { PreventIncrementOfMergedBranchVersion = true, Regex = "^(origin/)?hotfix[/-]" } }
+
             }
         };
 
@@ -426,7 +432,7 @@ public class DevelopScenarios : TestBase
         fixture.Repository.MakeCommits(2);
         fixture.MergeNoFF(ReleaseBranch);
         fixture.Repository.Branches.Remove(ReleaseBranch);
-        fixture.AssertFullSemver("1.2.0-alpha.6", config); // why +6 not +3??
+        fixture.AssertFullSemver("1.2.0-alpha.6", config);
 
         // Create hotfix for defects found in release/1.1.0
         const string HotfixBranch = "hotfix/1.1.1";
