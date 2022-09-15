@@ -58,6 +58,7 @@ branches:
     - main
     - feature
     - support
+    - hotfix
     pre-release-weight: 30000
   pull-request:
     mode: ContinuousDelivery

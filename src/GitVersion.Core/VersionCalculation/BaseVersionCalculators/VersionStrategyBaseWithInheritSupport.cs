@@ -21,10 +21,14 @@ public abstract class VersionStrategyBaseWithInheritSupport : IVersionStrategy
 
     IEnumerable<(SemanticVersion IncrementedVersion, BaseVersion Version)> IVersionStrategy.GetVersions()
     {
-        foreach (var baseVersion in GetVersionsRecursive(Context.CurrentBranch, null, new()))
+        foreach (var item in GetVersionsRecursive(Context.CurrentBranch, null, new()))
         {
-            // This comes from BaseVersionCalculator:
-            var incrementedVersion = RepositoryStore.MaybeIncrement(baseVersion, Context);
+            ////
+            // Has been moved from BaseVersionCalculator because the effected configuration is only available in this class.
+            Context.Configuration = item.Configuration;
+            var incrementedVersion = RepositoryStore.MaybeIncrement(item.Version, Context);
+            //
+
             if (Context.FullConfiguration.VersioningMode == VersioningMode.Mainline)
             {
                 if (!(incrementedVersion.PreReleaseTag?.HasTag() != true))
@@ -33,15 +37,16 @@ public abstract class VersionStrategyBaseWithInheritSupport : IVersionStrategy
                 }
             }
 
-            yield return new(incrementedVersion, baseVersion);
+            yield return new(incrementedVersion, item.Version);
         }
     }
 
-    private IEnumerable<BaseVersion> GetVersionsRecursive(IBranch branch, BranchConfig? childBranchConfiguration, HashSet<IBranch> traversedBranches)
+    private IEnumerable<(EffectiveConfiguration Configuration, BaseVersion Version)> GetVersionsRecursive(IBranch currentBranch,
+        BranchConfig? childBranchConfiguration, HashSet<IBranch> traversedBranches)
     {
-        if (!traversedBranches.Add(branch)) yield break;
+        if (!traversedBranches.Add(currentBranch)) yield break;
 
-        var branchConfiguration = Context.FullConfiguration.GetBranchConfiguration(branch.Name.WithoutRemote);
+        var branchConfiguration = Context.FullConfiguration.GetBranchConfiguration(currentBranch.Name.WithoutRemote);
         if (childBranchConfiguration != null)
         {
             branchConfiguration = childBranchConfiguration.Inherit(branchConfiguration);
@@ -50,7 +55,7 @@ public abstract class VersionStrategyBaseWithInheritSupport : IVersionStrategy
         var branches = Array.Empty<IBranch>();
         if (branchConfiguration.Increment == IncrementStrategy.Inherit)
         {
-            branches = RepositoryStore.GetTargetBranches(branch, Context.FullConfiguration, traversedBranches).ToArray();
+            branches = RepositoryStore.GetTargetBranches(currentBranch, Context.FullConfiguration, traversedBranches).ToArray();
 
             if (branches.Length == 0)
             {
@@ -65,22 +70,20 @@ public abstract class VersionStrategyBaseWithInheritSupport : IVersionStrategy
 
         if (branchConfiguration.Increment == IncrementStrategy.Inherit)
         {
-            foreach (var item in branches)
+            foreach (var branch in branches)
             {
-                if (Context.CurrentBranch == item) continue;
-                foreach (var baseVersion in GetVersionsRecursive(item, branchConfiguration, traversedBranches))
+                foreach (var item in GetVersionsRecursive(branch, branchConfiguration, traversedBranches))
                 {
-                    yield return baseVersion;
+                    yield return item;
                 }
             }
         }
         else
         {
             var effectiveConfiguration = new EffectiveConfiguration(Context.FullConfiguration, branchConfiguration);
-            Context.Configuration = effectiveConfiguration;
-            foreach (var baseVersion in GetVersions(branch, effectiveConfiguration))
+            foreach (var baseVersion in GetVersions(currentBranch, effectiveConfiguration))
             {
-                yield return baseVersion;
+                yield return new(effectiveConfiguration, baseVersion);
             }
         }
     }

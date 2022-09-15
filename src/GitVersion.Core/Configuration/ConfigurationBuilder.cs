@@ -192,15 +192,7 @@ public class ConfigurationBuilder
             CommitDateFormat = "yyyy-MM-dd",
             UpdateBuildNumber = true,
             TagPreReleaseWeight = DefaultTagPreReleaseWeight,
-
-
-            Increment = IncrementStrategy.Inherit,
-            //TrackMergeTarget = false,
-            //TracksReleaseBranches = false,
-            //IsReleaseBranch = false,
-            //IsMainline = false,
-            //UpdateBuildNumber = true,
-            //Tag = "{BranchName}"
+            Increment = IncrementStrategy.Inherit
         };
 
         AddBranchConfig(Config.DevelopBranchKey,
@@ -232,7 +224,12 @@ public class ConfigurationBuilder
             new BranchConfig
             {
                 Regex = Config.ReleaseBranchRegex,
-                SourceBranches = new HashSet<string> { Config.DevelopBranchKey, Config.MainBranchKey, Config.SupportBranchKey, Config.ReleaseBranchKey },
+                SourceBranches = new HashSet<string> {
+                    Config.DevelopBranchKey,
+                    Config.MainBranchKey,
+                    Config.SupportBranchKey,
+                    Config.ReleaseBranchKey
+                },
                 Tag = "beta",
                 PreventIncrementOfMergedBranchVersion = true,
                 Increment = IncrementStrategy.None,
@@ -244,7 +241,14 @@ public class ConfigurationBuilder
             new BranchConfig
             {
                 Regex = Config.FeatureBranchRegex,
-                SourceBranches = new HashSet<string>() { Config.DevelopBranchKey, Config.ReleaseBranchKey, Config.MainBranchKey, Config.FeatureBranchKey, Config.SupportBranchKey },
+                SourceBranches = new HashSet<string>() {
+                    Config.DevelopBranchKey,
+                    Config.ReleaseBranchKey,
+                    Config.MainBranchKey,
+                    Config.FeatureBranchKey,
+                    Config.SupportBranchKey,
+                    Config.HotfixBranchKey
+                },
                 Tag = "{BranchName}",
                 Increment = IncrementStrategy.Inherit,
                 PreReleaseWeight = 30000
@@ -254,7 +258,14 @@ public class ConfigurationBuilder
             new BranchConfig
             {
                 Regex = Config.PullRequestRegex,
-                SourceBranches = new HashSet<string> { Config.DevelopBranchKey, Config.MainBranchKey, Config.ReleaseBranchKey, Config.FeatureBranchKey, Config.SupportBranchKey, Config.HotfixBranchKey },
+                SourceBranches = new HashSet<string> {
+                    Config.DevelopBranchKey,
+                    Config.MainBranchKey,
+                    Config.ReleaseBranchKey,
+                    Config.FeatureBranchKey,
+                    Config.SupportBranchKey,
+                    Config.HotfixBranchKey
+                },
                 Tag = "PullRequest",
                 TagNumberPattern = @"[/-](?<number>\d+)",
                 Increment = IncrementStrategy.Inherit,
@@ -265,7 +276,12 @@ public class ConfigurationBuilder
             new BranchConfig
             {
                 Regex = Config.HotfixBranchRegex,
-                SourceBranches = new HashSet<string> { Config.ReleaseBranchKey, Config.MainBranchKey, Config.SupportBranchKey, Config.HotfixBranchKey },
+                SourceBranches = new HashSet<string> {
+                    Config.ReleaseBranchKey,
+                    Config.MainBranchKey,
+                    Config.SupportBranchKey,
+                    Config.HotfixBranchKey
+                },
                 Tag = "beta",
                 Increment = IncrementStrategy.Inherit,
                 TracksReleaseBranches = false,
