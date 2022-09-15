@@ -120,7 +120,7 @@ public class PreventDecrementationOfVersionsOnTheDevelopBranchScenario
         // ✅ succeeds as expected
         fixture.AssertFullSemver("1.1.0-alpha.3", configBuilder.Build());
 
-        configBuilder.WithNextVersion("1.1.0");
+        configBuilder.WithNextVersion("1.0.0");
 
         // ✅ succeeds as expected
         fixture.AssertFullSemver("1.1.0-alpha.3", configBuilder.Build());
@@ -128,19 +128,38 @@ public class PreventDecrementationOfVersionsOnTheDevelopBranchScenario
         fixture.Repository.Tags.Remove("1.0.0-beta.1");
         fixture.Repository.Tags.Remove("1.0.0-beta.2");
 
+        // ❌ fails! expected: "1.0.0-alpha.3"
+        // This behavior needs to be changed for the git flow workflow using the track-merge-message or track-merge-target options.
+        // [Bug] track-merge-changes produces unexpected result when combining hotfix and support branches #3052
+        fixture.AssertFullSemver("1.1.0-alpha.3", configBuilder.Build());
+
+        configBuilder.WithNextVersion("1.1.0");
+
         // ✅ succeeds as expected
         fixture.AssertFullSemver("1.1.0-alpha.3", configBuilder.Build());
 
-        configBuilder.WithNextVersion("1.0.0");
-
-        // ❌ fails! expected: "1.0.0-alpha.3"
-        // this behaviour needs to be changed for the git flow workflow.
-        fixture.AssertFullSemver("1.1.0-alpha.3", configBuilder.Build());
-
-        configBuilder.WithNextVersion(null);
+        // Merge from develop to main
         fixture.BranchTo("main");
 
         // ✅ succeeds as expected
+        fixture.AssertFullSemver("1.1.0+3", configBuilder.Build());
+
+        configBuilder.WithNextVersion(null);
+
+        // ❌ fails! expected: "0.0.1+3"
+        // This behavior needs to be changed for the git flow workflow using the track-merge-message or track-merge-target options.
+        // [Bug] track-merge-changes produces unexpected result when combining hotfix and support branches #3052
         fixture.AssertFullSemver("1.0.0+3", configBuilder.Build());
+
+        configBuilder.WithNextVersion("1.0.0");
+
+        // ✅ succeeds as expected
+        fixture.AssertFullSemver("1.0.0+3", configBuilder.Build());
+
+        // Mark this version as RTM
+        fixture.ApplyTag("1.0.0");
+
+        // ✅ succeeds as expected
+        fixture.AssertFullSemver("1.0.0", configBuilder.Build());
     }
 }
