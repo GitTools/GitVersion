@@ -1,21 +1,39 @@
 using GitVersion.Common;
 using GitVersion.Configuration;
+using GitVersion.Extensions;
 using GitVersion.Model.Configuration;
 
 namespace GitVersion.VersionCalculation;
 
-public abstract class VersionStrategyBaseWithInheritSupport : VersionStrategyBase
+public abstract class VersionStrategyBaseWithInheritSupport : IVersionStrategy
 {
-    protected VersionStrategyBaseWithInheritSupport(IRepositoryStore repositoryStore, Lazy<GitVersionContext> context)
-        : base(repositoryStore, context)
+    private readonly Lazy<GitVersionContext> contextLazy;
+
+    protected GitVersionContext Context => contextLazy.Value;
+
+    protected IRepositoryStore RepositoryStore { get; }
+
+    protected VersionStrategyBaseWithInheritSupport(IRepositoryStore repositoryStore, Lazy<GitVersionContext> contextLazy)
     {
+        this.contextLazy = contextLazy.NotNull();
+        RepositoryStore = repositoryStore.NotNull();
     }
 
-    public override IEnumerable<BaseVersion> GetVersions()
+    IEnumerable<(SemanticVersion IncrementedVersion, BaseVersion Version)> IVersionStrategy.GetVersions()
     {
         foreach (var baseVersion in GetVersionsRecursive(Context.CurrentBranch, null, new()))
         {
-            yield return baseVersion;
+            // This comes from BaseVersionCalculator:
+            var incrementedVersion = RepositoryStore.MaybeIncrement(baseVersion, Context);
+            if (Context.FullConfiguration.VersioningMode == VersioningMode.Mainline)
+            {
+                if (!(incrementedVersion.PreReleaseTag?.HasTag() != true))
+                {
+                    continue;
+                }
+            }
+
+            yield return new(incrementedVersion, baseVersion);
         }
     }
 
@@ -67,7 +85,5 @@ public abstract class VersionStrategyBaseWithInheritSupport : VersionStrategyBas
         }
     }
 
-    public abstract IEnumerable<BaseVersion> GetVersions(
-        IBranch branch, EffectiveConfiguration configuration
-    );
+    public abstract IEnumerable<BaseVersion> GetVersions(IBranch branch, EffectiveConfiguration configuration);
 }
