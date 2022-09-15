@@ -32,6 +32,7 @@ public class TestEffectiveConfiguration : EffectiveConfiguration
         IEnumerable<IVersionFilter>? versionFilters = null,
         bool tracksReleaseBranches = false,
         bool isRelease = false,
+        bool isMainline = false,
         string commitDateFormat = "yyyy-MM-dd",
         bool updateBuildNumber = false) :
         base(assemblyVersioningScheme,
@@ -60,6 +61,7 @@ public class TestEffectiveConfiguration : EffectiveConfiguration
             versionFilters ?? Enumerable.Empty<IVersionFilter>(),
             tracksReleaseBranches,
             isRelease,
+            isMainline,
             commitDateFormat,
             updateBuildNumber,
             0,

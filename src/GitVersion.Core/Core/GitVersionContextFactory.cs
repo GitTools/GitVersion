@@ -36,11 +36,22 @@ public class GitVersionContextFactory : IGitVersionContextFactory
             currentBranch = branchForCommit ?? currentBranch;
         }
 
-        var currentBranchConfig = this.branchConfigurationCalculator.GetBranchConfiguration(currentBranch, currentCommit, configuration);
-        var effectiveConfiguration = new EffectiveConfiguration(configuration, currentBranchConfig);
-        var currentCommitTaggedVersion = this.repositoryStore.GetCurrentCommitTaggedVersion(currentCommit, effectiveConfiguration);
+        var currentCommitTaggedVersion = this.repositoryStore.GetCurrentCommitTaggedVersion(currentCommit, configuration.TagPrefix);
         var numberOfUncommittedChanges = this.repositoryStore.GetNumberOfUncommittedChanges();
 
-        return new GitVersionContext(currentBranch, currentCommit, configuration, effectiveConfiguration, currentCommitTaggedVersion, numberOfUncommittedChanges);
+        var context = new GitVersionContext(currentBranch, currentCommit, configuration, currentCommitTaggedVersion, numberOfUncommittedChanges);
+
+        ////
+        // this logic has been moved from GitVersionContextFactory to this class. The reason is that we need to set the
+        // effective configuration dynamic dependent on the version strategy implementation. Therefor we are traversing recursive
+        // from the current branch to the base branch until the branch configuration indicates no inheritance. Probably we can
+        // refactor the hole logic here and remove the complexity.
+        var currentBranchConfig = this.branchConfigurationCalculator.GetBranchConfiguration(
+            context.CurrentBranch, context.CurrentCommit, context.FullConfiguration);
+        context.Configuration = new EffectiveConfiguration(context.FullConfiguration, currentBranchConfig);
+        //
+
+        return context;
+
     }
 }

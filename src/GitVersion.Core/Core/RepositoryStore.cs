@@ -180,6 +180,29 @@ public class RepositoryStore : IRepositoryStore
         return mainlineBranchFinder.FindMainlineBranches(commit);
     }
 
+    public IEnumerable<IBranch> GetTargetBranches(IBranch branch, Config configuration, params IBranch[] excludedBranches)
+        => GetTargetBranches(branch, configuration, (IEnumerable<IBranch>)excludedBranches);
+
+    public IEnumerable<IBranch> GetTargetBranches(IBranch branch, Config configuration, IEnumerable<IBranch> excludedBranches)
+    {
+        var referenceLookup = this.repository.Refs.ToLookup(r => r.TargetIdentifier);
+
+        var hashSet = new HashSet<IBranch>();
+        if (referenceLookup.Any())
+        {
+            foreach (var branchCommit in FindCommitBranchesWasBranchedFrom(branch, configuration, excludedBranches))
+            {
+                foreach (var item in referenceLookup[branchCommit.Commit.Sha]
+                    .Where(r => r.Name.Friendly == branchCommit.Branch.Name.Friendly))
+                {
+                    if (hashSet.Add(branchCommit.Branch))
+                    {
+                        yield return branchCommit.Branch;
+                    }
+                }
+            }
+        }
+    }
 
     /// <summary>
     ///     Find the commit where the given branch was branched from another branch.
@@ -214,6 +237,9 @@ public class RepositoryStore : IRepositoryStore
     }
 
     public IEnumerable<BranchCommit> FindCommitBranchesWasBranchedFrom(IBranch branch, Config configuration, params IBranch[] excludedBranches)
+        => FindCommitBranchesWasBranchedFrom(branch, configuration, (IEnumerable<IBranch>)excludedBranches);
+
+    public IEnumerable<BranchCommit> FindCommitBranchesWasBranchedFrom(IBranch branch, Config configuration, IEnumerable<IBranch> excludedBranches)
     {
         using (this.log.IndentLog($"Finding branch source of '{branch}'"))
         {
@@ -237,9 +263,9 @@ public class RepositoryStore : IRepositoryStore
         }
     }
 
-    public SemanticVersion GetCurrentCommitTaggedVersion(ICommit? commit, EffectiveConfiguration config)
+    public SemanticVersion GetCurrentCommitTaggedVersion(ICommit? commit, string? tagPrefix)
         => this.repository.Tags
-            .SelectMany(t => GetCurrentCommitSemanticVersions(commit, config, t))
+            .SelectMany(t => GetCurrentCommitSemanticVersions(commit, tagPrefix, t))
             .Max();
 
     public SemanticVersion MaybeIncrement(BaseVersion baseVersion, GitVersionContext context)
@@ -300,9 +326,6 @@ public class RepositoryStore : IRepositoryStore
         return this.repository.Commits.QueryBy(filter);
     }
 
-    public VersionField? DetermineIncrementedField(BaseVersion baseVersion, GitVersionContext context) =>
-        this.incrementStrategyFinder.DetermineIncrementedField(this.repository, context, baseVersion);
-
     public bool IsCommitOnBranch(ICommit? baseVersionSource, IBranch branch, ICommit firstMatchingCommit)
     {
         var filter = new CommitFilter { IncludeReachableFrom = branch, ExcludeReachableFrom = baseVersionSource, FirstParentOnly = true };
@@ -317,12 +340,12 @@ public class RepositoryStore : IRepositoryStore
     private static bool IsReleaseBranch(INamedReference branch, IEnumerable<KeyValuePair<string, BranchConfig>> releaseBranchConfig)
         => releaseBranchConfig.Any(c => c.Value?.Regex != null && Regex.IsMatch(branch.Name.Friendly, c.Value.Regex));
 
-    private static IEnumerable<SemanticVersion> GetCurrentCommitSemanticVersions(ICommit? commit, EffectiveConfiguration config, ITag tag)
+    private static IEnumerable<SemanticVersion> GetCurrentCommitSemanticVersions(ICommit? commit, string? tagPrefix, ITag tag)
     {
         var targetCommit = tag.PeeledTargetCommit();
         var tagName = tag.Name.Friendly;
 
-        return targetCommit != null && Equals(targetCommit, commit) && SemanticVersion.TryParse(tagName, config.GitTagPrefix, out var version)
+        return targetCommit != null && Equals(targetCommit, commit) && SemanticVersion.TryParse(tagName, tagPrefix, out var version)
             ? new[] { version }
             : Array.Empty<SemanticVersion>();
     }

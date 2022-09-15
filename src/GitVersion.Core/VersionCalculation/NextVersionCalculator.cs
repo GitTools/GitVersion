@@ -50,26 +50,26 @@ public class NextVersionCalculator : INextVersionCalculator
         }
 
         var baseVersion = this.baseVersionCalculator.GetBaseVersion();
-        baseVersion.SemanticVersion.BuildMetaData = this.mainlineVersionCalculator.CreateVersionBuildMetaData(baseVersion.BaseVersionSource);
+        baseVersion.Version.SemanticVersion.BuildMetaData = this.mainlineVersionCalculator.CreateVersionBuildMetaData(baseVersion.Version.BaseVersionSource);
         SemanticVersion semver;
-        if (context.Configuration.VersioningMode == VersioningMode.Mainline)
+        if (context.FullConfiguration.VersioningMode == VersioningMode.Mainline)
         {
-            semver = this.mainlineVersionCalculator.FindMainlineModeVersion(baseVersion);
+            semver = this.mainlineVersionCalculator.FindMainlineModeVersion(baseVersion.Version);
         }
         else
         {
-            if (taggedSemanticVersion == null && baseVersion.SemanticVersion.BuildMetaData?.Sha == null)
+            if (taggedSemanticVersion == null && baseVersion.Version.SemanticVersion.BuildMetaData?.Sha == null)
             {
-                semver = baseVersion.SemanticVersion;
+                semver = baseVersion.Version.SemanticVersion;
             }
-            else if (taggedSemanticVersion?.BuildMetaData == null || (taggedSemanticVersion.BuildMetaData?.Sha != baseVersion.SemanticVersion.BuildMetaData.Sha))
+            else if (taggedSemanticVersion?.BuildMetaData == null || (taggedSemanticVersion.BuildMetaData?.Sha != baseVersion.Version.SemanticVersion.BuildMetaData.Sha))
             {
-                semver = PerformIncrement(baseVersion);
-                semver.BuildMetaData = this.mainlineVersionCalculator.CreateVersionBuildMetaData(baseVersion.BaseVersionSource);
+                semver = baseVersion.IncrementedVersion;
+                semver.BuildMetaData = this.mainlineVersionCalculator.CreateVersionBuildMetaData(baseVersion.Version.BaseVersionSource);
             }
             else
             {
-                semver = baseVersion.SemanticVersion;
+                semver = baseVersion.Version.SemanticVersion;
             }
         }
 
@@ -81,7 +81,7 @@ public class NextVersionCalculator : INextVersionCalculator
 #pragma warning restore CS8602 // Dereference of a possibly null reference.
         if (semver.PreReleaseTag?.HasTag() != true && branchConfigHasPreReleaseTagConfigured || preReleaseTagDoesNotMatchConfiguration)
         {
-            UpdatePreReleaseTag(semver, baseVersion.BranchNameOverride);
+            UpdatePreReleaseTag(semver, baseVersion.Version.BranchNameOverride);
         }
 
         if (taggedSemanticVersion != null)
@@ -101,18 +101,6 @@ public class NextVersionCalculator : INextVersionCalculator
         return taggedSemanticVersion ?? semver;
     }
 
-    private SemanticVersion PerformIncrement(BaseVersion baseVersion)
-    {
-        var semver = baseVersion.SemanticVersion;
-        var increment = this.repositoryStore.DetermineIncrementedField(baseVersion, context);
-        if (increment != null)
-        {
-            semver = semver.IncrementVersion(increment.Value);
-        }
-        else this.log.Info("Skipping version increment");
-        return semver;
-    }
-
     private void UpdatePreReleaseTag(SemanticVersion semanticVersion, string? branchNameOverride)
     {
         var tagToUse = context.Configuration.GetBranchSpecificTag(this.log, context.CurrentBranch.Name.Friendly, branchNameOverride);
@@ -120,7 +108,7 @@ public class NextVersionCalculator : INextVersionCalculator
         long? number = null;
 
         var lastTag = this.repositoryStore
-            .GetVersionTagsOnBranch(context.CurrentBranch, context.Configuration.GitTagPrefix)
+            .GetVersionTagsOnBranch(context.CurrentBranch, context.FullConfiguration.TagPrefix)
             .FirstOrDefault(v => v.PreReleaseTag?.Name?.IsEquivalentTo(tagToUse) == true);
 
         if (lastTag != null && MajorMinorPatchEqual(lastTag, semanticVersion) && lastTag.PreReleaseTag?.HasTag() == true)

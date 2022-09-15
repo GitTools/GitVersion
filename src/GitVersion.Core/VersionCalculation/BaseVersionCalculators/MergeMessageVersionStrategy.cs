@@ -1,8 +1,10 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Text.RegularExpressions;
+using GitVersion.Common;
 using GitVersion.Configuration;
 using GitVersion.Extensions;
 using GitVersion.Logging;
+using GitVersion.Model.Configuration;
 
 namespace GitVersion.VersionCalculation;
 
@@ -11,13 +13,14 @@ namespace GitVersion.VersionCalculation;
 /// BaseVersionSource is the commit where the message was found.
 /// Increments if PreventIncrementForMergedBranchVersion (from the branch config) is false.
 /// </summary>
-public class MergeMessageVersionStrategy : VersionStrategyBase
+public class MergeMessageVersionStrategy : VersionStrategyBaseWithInheritSupport
 {
     private readonly ILog log;
 
-    public MergeMessageVersionStrategy(ILog log, Lazy<GitVersionContext> versionContext) : base(versionContext) => this.log = log.NotNull();
+    public MergeMessageVersionStrategy(ILog log, IRepositoryStore repositoryStore, Lazy<GitVersionContext> versionContext)
+        : base(repositoryStore, versionContext) => this.log = log.NotNull();
 
-    public override IEnumerable<BaseVersion> GetVersions()
+    public override IEnumerable<BaseVersion> GetVersions(IBranch branch, EffectiveConfiguration configuration)
     {
         if (Context.CurrentBranch.Commits == null || Context.CurrentCommit == null)
             return Enumerable.Empty<BaseVersion>();
@@ -31,7 +34,7 @@ public class MergeMessageVersionStrategy : VersionStrategyBase
                     Context.FullConfiguration.IsReleaseBranch(TrimRemote(mergeMessage.MergedBranch)))
                 {
                     this.log.Info($"Found commit [{Context.CurrentCommit}] matching merge message format: {mergeMessage.FormatName}");
-                    var shouldIncrement = Context.Configuration.PreventIncrementForMergedBranchVersion != true;
+                    var shouldIncrement = !configuration.PreventIncrementForMergedBranchVersion;
                     return new[]
                     {
                         new BaseVersion($"{MergeMessageStrategyPrefix} '{c.Message.Trim()}'", shouldIncrement, mergeMessage.Version, c, null)

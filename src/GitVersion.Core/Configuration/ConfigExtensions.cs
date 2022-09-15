@@ -7,6 +7,23 @@ namespace GitVersion.Configuration;
 
 public static class ConfigExtensions
 {
+    public static BranchConfig GetBranchConfiguration(this Config configuration, string branchName)
+    {
+        var branchConfiguration = GetConfigForBranch(configuration, branchName);
+        return branchConfiguration ?? GetFallbackBranchConfiguration(configuration);
+    }
+
+    // TODO: Please make the fallback configuration also configurable in the yaml.
+    public static BranchConfig GetFallbackBranchConfiguration(this Config configuration)
+        => new BranchConfig
+        {
+            Name = "Fallback",
+            Regex = "",
+            Tag = "{BranchName}",
+            VersioningMode = configuration.VersioningMode,
+            Increment = configuration.Increment ?? IncrementStrategy.None
+        };
+
     public static BranchConfig? GetConfigForBranch(this Config config, string? branchName)
     {
         if (branchName == null)

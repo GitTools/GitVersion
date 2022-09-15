@@ -16,7 +16,8 @@ public class GitVersionContext
 
     public SemanticVersion? CurrentCommitTaggedVersion { get; }
 
-    public EffectiveConfiguration Configuration { get; }
+    [Obsolete("The only usage of the effected configuration is in the classes who implements VersionStrategyBaseWithInheritSupport.")]
+    public EffectiveConfiguration? Configuration { get; set; }
 
     public IBranch CurrentBranch { get; }
 
@@ -27,14 +28,12 @@ public class GitVersionContext
     public int NumberOfUncommittedChanges { get; }
 
     public GitVersionContext(IBranch currentBranch, ICommit? currentCommit,
-        Config configuration, EffectiveConfiguration effectiveConfiguration,
-        SemanticVersion currentCommitTaggedVersion, int numberOfUncommittedChanges)
+        Config configuration, SemanticVersion currentCommitTaggedVersion, int numberOfUncommittedChanges)
     {
         CurrentBranch = currentBranch;
         CurrentCommit = currentCommit;
 
         FullConfiguration = configuration;
-        Configuration = effectiveConfiguration;
 
         CurrentCommitTaggedVersion = currentCommitTaggedVersion;
         NumberOfUncommittedChanges = numberOfUncommittedChanges;
@@ -44,12 +43,22 @@ public class GitVersionContext
     {
         branch.NotNull();
         BranchConfig? branchConfiguration = FullConfiguration.GetConfigForBranch(branch.Name.WithoutRemote);
-        branchConfiguration ??= BranchConfig.CreateDefaultBranchConfig("Fallback").Apply(new BranchConfig
+        return GetEffectiveConfiguration(branchConfiguration);
+    }
+
+    public EffectiveConfiguration GetEffectiveConfiguration(BranchConfig? branchConfiguration)
+    {
+        branchConfiguration ??= new BranchConfig
         {
+            Name = "Fallback",
             Regex = "",
+            Tag = "{BranchName}",
             VersioningMode = FullConfiguration.VersioningMode,
             Increment = FullConfiguration.Increment ?? IncrementStrategy.None
-        });
+        };
+
         return new EffectiveConfiguration(FullConfiguration, branchConfiguration);
     }
+
+
 }

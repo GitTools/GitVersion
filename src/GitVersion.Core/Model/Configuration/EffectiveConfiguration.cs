@@ -21,18 +21,6 @@ public class EffectiveConfiguration
         if (!currentBranchConfig.Increment.HasValue)
             throw new Exception($"Configuration value for 'Increment' for branch {name} has no value. (this should not happen, please report an issue)");
 
-        if (!currentBranchConfig.PreventIncrementOfMergedBranchVersion.HasValue)
-            throw new Exception($"Configuration value for 'PreventIncrementOfMergedBranchVersion' for branch {name} has no value. (this should not happen, please report an issue)");
-
-        if (!currentBranchConfig.TrackMergeTarget.HasValue)
-            throw new Exception($"Configuration value for 'TrackMergeTarget' for branch {name} has no value. (this should not happen, please report an issue)");
-
-        if (!currentBranchConfig.TracksReleaseBranches.HasValue)
-            throw new Exception($"Configuration value for 'TracksReleaseBranches' for branch {name} has no value. (this should not happen, please report an issue)");
-
-        if (!currentBranchConfig.IsReleaseBranch.HasValue)
-            throw new Exception($"Configuration value for 'IsReleaseBranch' for branch {name} has no value. (this should not happen, please report an issue)");
-
         if (!configuration.AssemblyVersioningScheme.HasValue)
             throw new Exception("Configuration value for 'AssemblyVersioningScheme' has no value. (this should not happen, please report an issue)");
 
@@ -61,14 +49,14 @@ public class EffectiveConfiguration
         AssemblyFileVersioningFormat = configuration.AssemblyFileVersioningFormat;
         VersioningMode = currentBranchConfig.VersioningMode.Value;
         GitTagPrefix = configuration.TagPrefix;
-        Tag = currentBranchConfig.Tag;
+        Tag = currentBranchConfig.Tag ?? "useBranchName";
         NextVersion = configuration.NextVersion;
         Increment = currentBranchConfig.Increment.Value;
         BranchPrefixToTrim = currentBranchConfig.Regex;
-        PreventIncrementForMergedBranchVersion = currentBranchConfig.PreventIncrementOfMergedBranchVersion.Value;
+        PreventIncrementForMergedBranchVersion = currentBranchConfig.PreventIncrementOfMergedBranchVersion ?? false;
         TagNumberPattern = currentBranchConfig.TagNumberPattern;
         ContinuousDeploymentFallbackTag = configuration.ContinuousDeploymentFallbackTag;
-        TrackMergeTarget = currentBranchConfig.TrackMergeTarget.Value;
+        TrackMergeTarget = currentBranchConfig.TrackMergeTarget ?? false;
         MajorVersionBumpMessage = configuration.MajorVersionBumpMessage;
         MinorVersionBumpMessage = configuration.MinorVersionBumpMessage;
         PatchVersionBumpMessage = configuration.PatchVersionBumpMessage;
@@ -78,8 +66,9 @@ public class EffectiveConfiguration
         BuildMetaDataPadding = configuration.BuildMetaDataPadding.Value;
         CommitsSinceVersionSourcePadding = configuration.CommitsSinceVersionSourcePadding.Value;
         VersionFilters = configuration.Ignore.ToFilters();
-        TracksReleaseBranches = currentBranchConfig.TracksReleaseBranches.Value;
-        IsCurrentBranchRelease = currentBranchConfig.IsReleaseBranch.Value;
+        TracksReleaseBranches = currentBranchConfig.TracksReleaseBranches ?? false;
+        IsCurrentBranchRelease = currentBranchConfig.IsReleaseBranch ?? false;
+        IsMainline = currentBranchConfig.IsMainline ?? false;
         CommitDateFormat = configuration.CommitDateFormat;
         UpdateBuildNumber = configuration.UpdateBuildNumber ?? true;
         PreReleaseWeight = currentBranchConfig.PreReleaseWeight ?? 0;
@@ -112,6 +101,7 @@ public class EffectiveConfiguration
         IEnumerable<IVersionFilter> versionFilters,
         bool tracksReleaseBranches,
         bool isCurrentBranchRelease,
+        bool isMainline,
         string? commitDateFormat,
         bool updateBuildNumber,
         int preReleaseWeight,
@@ -143,6 +133,7 @@ public class EffectiveConfiguration
         VersionFilters = versionFilters;
         TracksReleaseBranches = tracksReleaseBranches;
         IsCurrentBranchRelease = isCurrentBranchRelease;
+        IsMainline = isMainline;
         CommitDateFormat = commitDateFormat;
         UpdateBuildNumber = updateBuildNumber;
         PreReleaseWeight = preReleaseWeight;
@@ -151,6 +142,7 @@ public class EffectiveConfiguration
 
     public bool TracksReleaseBranches { get; }
     public bool IsCurrentBranchRelease { get; }
+    public bool IsMainline { get; }
     public VersioningMode VersioningMode { get; }
     public AssemblyVersioningScheme AssemblyVersioningScheme { get; }
     public AssemblyFileVersioningScheme AssemblyFileVersioningScheme { get; }

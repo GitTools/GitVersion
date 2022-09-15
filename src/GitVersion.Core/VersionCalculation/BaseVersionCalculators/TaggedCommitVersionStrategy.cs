@@ -1,5 +1,4 @@
 using GitVersion.Common;
-using GitVersion.Extensions;
 
 namespace GitVersion.VersionCalculation;
 
@@ -10,18 +9,19 @@ namespace GitVersion.VersionCalculation;
 /// </summary>
 public class TaggedCommitVersionStrategy : VersionStrategyBase
 {
-    private readonly IRepositoryStore repositoryStore;
-
-    public TaggedCommitVersionStrategy(IRepositoryStore repositoryStore, Lazy<GitVersionContext> versionContext) : base(versionContext) => this.repositoryStore = repositoryStore.NotNull();
+    public TaggedCommitVersionStrategy(IRepositoryStore repositoryStore, Lazy<GitVersionContext> versionContext)
+        : base(repositoryStore, versionContext)
+    {
+    }
 
     public override IEnumerable<BaseVersion> GetVersions() =>
-        GetTaggedVersions(Context.CurrentBranch, Context.CurrentCommit?.When);
+        GetTaggedVersions(Context.CurrentBranch, Context.CurrentBranch.Tip?.When);
 
     internal IEnumerable<BaseVersion> GetTaggedVersions(IBranch currentBranch, DateTimeOffset? olderThan)
     {
         if (currentBranch is null)
             return Enumerable.Empty<BaseVersion>();
-        var versionTags = this.repositoryStore.GetValidVersionTags(Context.Configuration.GitTagPrefix, olderThan);
+        var versionTags = RepositoryStore.GetValidVersionTags(Context.FullConfiguration.TagPrefix, olderThan);
         var versionTagsByCommit = versionTags.ToLookup(vt => vt.Item3.Id.Sha);
         var commitsOnBranch = currentBranch.Commits;
         if (commitsOnBranch == null)

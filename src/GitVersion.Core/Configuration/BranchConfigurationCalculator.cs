@@ -40,7 +40,7 @@ public class BranchConfigurationCalculator : IBranchConfigurationCalculator
         {
             this.log.Info($"No branch configuration found for branch {targetBranch}, falling back to default configuration");
 
-            matchingBranches = BranchConfig.CreateDefaultBranchConfig(FallbackConfigName)
+            matchingBranches = new BranchConfig { Name = FallbackConfigName }
                 .Apply(new BranchConfig
                 {
                     Regex = "",

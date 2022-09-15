@@ -1,3 +1,4 @@
+using GitVersion.Common;
 using GitVersion.Extensions;
 
 namespace GitVersion.VersionCalculation;
@@ -9,15 +10,17 @@ namespace GitVersion.VersionCalculation;
 /// </summary>
 public class ConfigNextVersionVersionStrategy : VersionStrategyBase
 {
-    public ConfigNextVersionVersionStrategy(Lazy<GitVersionContext> versionContext) : base(versionContext)
+    public ConfigNextVersionVersionStrategy(IRepositoryStore repositoryStore, Lazy<GitVersionContext> versionContext)
+        : base(repositoryStore, versionContext)
     {
     }
 
     public override IEnumerable<BaseVersion> GetVersions()
     {
-        if (!Context.Configuration.NextVersion.IsNullOrEmpty())
+        var nextVersion = Context.FullConfiguration.NextVersion;
+        if (!nextVersion.IsNullOrEmpty())
         {
-            var semanticVersion = SemanticVersion.Parse(Context.Configuration.NextVersion, Context.FullConfiguration.TagPrefix);
+            var semanticVersion = SemanticVersion.Parse(nextVersion, Context.FullConfiguration.TagPrefix);
             yield return new BaseVersion("NextVersion in GitVersion configuration file", false, semanticVersion, null, null);
         }
     }

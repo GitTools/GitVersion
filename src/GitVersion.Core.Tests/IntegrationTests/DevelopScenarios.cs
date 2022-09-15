@@ -161,6 +161,30 @@ public class DevelopScenarios : TestBase
     }
 
     [Test]
+    public void InheritVersionFromReleaseBranch2Insteadof3()
+    {
+        using var fixture = new EmptyRepositoryFixture();
+        fixture.MakeATaggedCommit("1.0.0");
+        fixture.BranchTo("develop");
+        fixture.Repository.CreateBranch("release/3.0.0");
+        fixture.MakeACommit();
+        fixture.BranchTo("release/2.0.0");
+        fixture.MakeACommit();
+        fixture.MakeACommit();
+        fixture.AssertFullSemver("2.0.0-beta.1+2");
+        fixture.Checkout("develop");
+        fixture.AssertFullSemver("3.1.0-alpha.1");
+        fixture.MakeACommit();
+        fixture.AssertFullSemver("3.1.0-alpha.2");
+        fixture.MergeNoFF("release/2.0.0");
+        fixture.AssertFullSemver("3.1.0-alpha.5");
+        fixture.Checkout("release/2.0.0");
+        fixture.BranchTo("feature/MyFeature");
+        fixture.MakeACommit();
+        fixture.AssertFullSemver("2.0.0-MyFeature.1+3");
+    }
+
+    [Test]
     public void WhenMultipleDevelopBranchesExistAndCurrentBranchHasIncrementInheritPolicyAndCurrentCommitIsAMerge()
     {
         using var fixture = new EmptyRepositoryFixture();
@@ -234,7 +258,6 @@ public class DevelopScenarios : TestBase
 
         const string expectedFullSemVer = "1.3.0-alpha.9"; // That's not correct three changes in release 1.2.0 has been merged to develop. This changes are included in the previous release and not part of release 1.3.0
         fixture.AssertFullSemver(expectedFullSemVer, config);
-        fixture.AssertFullSemver("1.3.0-alpha.6", ConfigBuilder.New.WithoutAnyTrackMergeTargets().Build());
     }
 
     [Test]
@@ -267,7 +290,6 @@ public class DevelopScenarios : TestBase
 
         const string expectedFullSemVer = "1.3.0-alpha.5"; // three commits of release/1.2.0 are not part of release 1.3.0
         fixture.AssertFullSemver(expectedFullSemVer, config);
-        fixture.AssertFullSemver("1.3.0-alpha.2", ConfigBuilder.New.WithoutAnyTrackMergeTargets().Build());
     }
 
     [Test]
@@ -292,7 +314,6 @@ public class DevelopScenarios : TestBase
         var configBuilder = ConfigBuilder.New.WithVersioningMode(VersioningMode.ContinuousDeployment)
             .WithPreventIncrementOfMergedBranchVersion("develop", false);
         var config = configBuilder.Build();
-        var configWithoutTrackMergeTarget = configBuilder.WithoutAnyTrackMergeTargets().Build();
 
         using var fixture = new EmptyRepositoryFixture();
         const string ReleaseBranch = "release/1.1.0";
@@ -317,7 +338,6 @@ public class DevelopScenarios : TestBase
         // Version numbers will still be correct when the release branch is around.
         fixture.AssertFullSemver("1.2.0-alpha.6");
         fixture.AssertFullSemver("1.2.0-alpha.6", config);
-        fixture.AssertFullSemver("1.2.0-alpha.6", configWithoutTrackMergeTarget);
 
         var versionSourceBeforeReleaseBranchIsRemoved = fixture.GetVersion(config).Sha;
 
@@ -326,7 +346,6 @@ public class DevelopScenarios : TestBase
         Assert.AreEqual(versionSourceBeforeReleaseBranchIsRemoved, versionSourceAfterReleaseBranchIsRemoved);
         fixture.AssertFullSemver("1.2.0-alpha.6");
         fixture.AssertFullSemver("1.2.0-alpha.6", config);
-        fixture.AssertFullSemver("1.2.0-alpha.3", configWithoutTrackMergeTarget);
     }
 
     [Test]
@@ -335,7 +354,6 @@ public class DevelopScenarios : TestBase
         var configBuilder = ConfigBuilder.New.WithVersioningMode(VersioningMode.ContinuousDeployment)
             .WithPreventIncrementOfMergedBranchVersion("develop", true);
         var config = configBuilder.Build();
-        var configWithoutTrackMergeTarget = configBuilder.WithoutAnyTrackMergeTargets().Build();
 
         using var fixture = new EmptyRepositoryFixture();
         const string ReleaseBranch = "release/1.1.0";
@@ -360,7 +378,6 @@ public class DevelopScenarios : TestBase
         // Version numbers will still be correct when the release branch is around.
         fixture.AssertFullSemver("1.2.0-alpha.6");
         fixture.AssertFullSemver("1.2.0-alpha.6", config);
-        fixture.AssertFullSemver("1.2.0-alpha.6", configWithoutTrackMergeTarget);
 
         var versionSourceBeforeReleaseBranchIsRemoved = fixture.GetVersion(config).Sha;
 
@@ -369,7 +386,6 @@ public class DevelopScenarios : TestBase
         Assert.AreEqual(versionSourceBeforeReleaseBranchIsRemoved, versionSourceAfterReleaseBranchIsRemoved);
         fixture.AssertFullSemver("1.2.0-alpha.6");
         fixture.AssertFullSemver("1.2.0-alpha.3", config);
-        fixture.AssertFullSemver("1.2.0-alpha.3", configWithoutTrackMergeTarget);
     }
 
     [Test]
@@ -411,7 +427,6 @@ public class DevelopScenarios : TestBase
         fixture.MergeNoFF(ReleaseBranch);
         fixture.Repository.Branches.Remove(ReleaseBranch);
         fixture.AssertFullSemver("1.2.0-alpha.6", config); // why +6 not +3??
-        fixture.AssertFullSemver("1.2.0-alpha.3", ConfigBuilder.New.WithVersioningMode(VersioningMode.ContinuousDeployment).WithoutAnyTrackMergeTargets().Build());
 
         // Create hotfix for defects found in release/1.1.0
         const string HotfixBranch = "hotfix/1.1.1";

@@ -8,5 +8,5 @@ public interface IVersionStrategy
     /// <returns>
     /// An <see cref="T:System.Collections.Generic.IEnumerable`1" /> of the base version values found by the strategy.
     /// </returns>
-    IEnumerable<BaseVersion> GetVersions();
+    IEnumerable<(SemanticVersion IncrementedVersion, BaseVersion Version)> GetVersions();
 }

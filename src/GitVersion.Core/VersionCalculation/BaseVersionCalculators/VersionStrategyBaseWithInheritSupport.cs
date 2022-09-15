@@ -1,46 +1,73 @@
 using GitVersion.Common;
-using GitVersion.Extensions;
+using GitVersion.Configuration;
 using GitVersion.Model.Configuration;
 
 namespace GitVersion.VersionCalculation;
 
 public abstract class VersionStrategyBaseWithInheritSupport : VersionStrategyBase
 {
-    protected IRepositoryStore RepositoryStore { get; }
-
     protected VersionStrategyBaseWithInheritSupport(IRepositoryStore repositoryStore, Lazy<GitVersionContext> context)
-        : base(context) => RepositoryStore = repositoryStore.NotNull();
+        : base(repositoryStore, context)
+    {
+    }
 
     public override IEnumerable<BaseVersion> GetVersions()
     {
-        foreach (BaseVersion baseVersion in GetVersionsRecursive(Context.CurrentBranch, new()))
+        foreach (var baseVersion in GetVersionsRecursive(Context.CurrentBranch, null, new()))
         {
             yield return baseVersion;
         }
     }
 
-    private IEnumerable<BaseVersion> GetVersionsRecursive(IBranch branch, HashSet<IBranch> traversedBranches)
+    private IEnumerable<BaseVersion> GetVersionsRecursive(IBranch branch, BranchConfig? childBranchConfiguration, HashSet<IBranch> traversedBranches)
     {
-        EffectiveConfiguration configuration = Context.GetEffectiveConfiguration(branch);
-        if (configuration.Increment != IncrementStrategy.Inherit)
+        if (!traversedBranches.Add(branch)) yield break;
+
+        var branchConfiguration = Context.FullConfiguration.GetBranchConfiguration(branch.Name.WithoutRemote);
+        if (childBranchConfiguration != null)
         {
-            foreach (var baseVersion in GetVersions(branch, configuration))
+            branchConfiguration = childBranchConfiguration.Inherit(branchConfiguration);
+        }
+
+        var branches = Array.Empty<IBranch>();
+        if (branchConfiguration.Increment == IncrementStrategy.Inherit)
+        {
+            branches = RepositoryStore.GetTargetBranches(branch, Context.FullConfiguration, traversedBranches).ToArray();
+
+            if (branches.Length == 0)
             {
-                yield return baseVersion;
+                var fallbackBranchConfiguration = Context.FullConfiguration.GetFallbackBranchConfiguration();
+                if (fallbackBranchConfiguration.Increment == IncrementStrategy.Inherit)
+                {
+                    fallbackBranchConfiguration.Increment = IncrementStrategy.None;
+                }
+                branchConfiguration = branchConfiguration.Inherit(fallbackBranchConfiguration);
             }
         }
-        else
+
+        if (branchConfiguration.Increment == IncrementStrategy.Inherit)
         {
-            foreach (var branchCommit in RepositoryStore.FindCommitBranchesWasBranchedFrom(branch, Context.FullConfiguration))
+            foreach (var item in branches)
             {
-                if (!traversedBranches.Add(branchCommit.Branch)) continue;
-                foreach (var baseVersion in GetVersionsRecursive(branchCommit.Branch, traversedBranches))
+                if (Context.CurrentBranch == item) continue;
+                foreach (var baseVersion in GetVersionsRecursive(item, branchConfiguration, traversedBranches))
                 {
                     yield return baseVersion;
                 }
             }
         }
+        else
+        {
+            var effectiveConfiguration = new EffectiveConfiguration(Context.FullConfiguration, branchConfiguration); ;
+            Context.Configuration = effectiveConfiguration;
+            foreach (var baseVersion in GetVersions(branch, effectiveConfiguration))
+            {
+                yield return baseVersion;
+            }
+        }
     }
 
-    public abstract IEnumerable<BaseVersion> GetVersions(IBranch branch, EffectiveConfiguration configuration);
+    public abstract IEnumerable<BaseVersion> GetVersions(
+        IBranch branch, EffectiveConfiguration configuration
+    );
 }

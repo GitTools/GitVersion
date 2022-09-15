@@ -5,6 +5,7 @@ namespace GitVersion.Core.Tests.VersionCalculation;
 public class TestBaseVersionCalculator : IBaseVersionCalculator
 {
     private readonly SemanticVersion semanticVersion;
+    private readonly SemanticVersion incrementedVersion;
     private readonly bool shouldIncrement;
     private readonly ICommit source;
 
@@ -13,7 +14,10 @@ public class TestBaseVersionCalculator : IBaseVersionCalculator
         this.semanticVersion = semanticVersion;
         this.source = source;
         this.shouldIncrement = shouldIncrement;
+        incrementedVersion = shouldIncrement ? semanticVersion.IncrementVersion(VersionField.Patch) : semanticVersion;
     }
 
-    public BaseVersion GetBaseVersion() => new("Test source", this.shouldIncrement, this.semanticVersion, this.source, null);
+    public (SemanticVersion IncrementedVersion, BaseVersion Version) GetBaseVersion() => new(
+        incrementedVersion, new("Test source", shouldIncrement, semanticVersion, source, null)
+    );
 }

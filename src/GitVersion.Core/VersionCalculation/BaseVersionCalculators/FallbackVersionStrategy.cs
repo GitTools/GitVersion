@@ -1,3 +1,5 @@
+using GitVersion.Common;
+
 namespace GitVersion.VersionCalculation;
 
 /// <summary>
@@ -7,8 +9,8 @@ namespace GitVersion.VersionCalculation;
 /// </summary>
 public class FallbackVersionStrategy : VersionStrategyBase
 {
-    public FallbackVersionStrategy(Lazy<GitVersionContext> versionContext)
-        : base(versionContext)
+    public FallbackVersionStrategy(IRepositoryStore repositoryStore, Lazy<GitVersionContext> versionContext)
+        : base(repositoryStore, versionContext)
     {
     }
 

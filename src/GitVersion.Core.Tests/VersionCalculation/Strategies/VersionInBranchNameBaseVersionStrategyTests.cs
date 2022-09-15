@@ -24,7 +24,7 @@ public class VersionInBranchNameBaseVersionStrategyTests : TestBase
         var strategy = GetVersionStrategy(fixture.RepositoryPath, fixture.Repository.ToGitRepository(), branchName);
         var baseVersion = strategy.GetVersions().Single();
 
-        baseVersion.SemanticVersion.ToString().ShouldBe(expectedBaseVersion);
+        baseVersion.Version.SemanticVersion.ToString().ShouldBe(expectedBaseVersion);
     }
 
     [TestCase("hotfix-2.0.0")]
@@ -59,7 +59,7 @@ public class VersionInBranchNameBaseVersionStrategyTests : TestBase
 
         var baseVersion = strategy.GetVersions().Single();
 
-        baseVersion.SemanticVersion.ToString().ShouldBe(expectedBaseVersion);
+        baseVersion.Version.SemanticVersion.ToString().ShouldBe(expectedBaseVersion);
     }
 
     [TestCase("release-2.0.0", "2.0.0")]
@@ -77,7 +77,7 @@ public class VersionInBranchNameBaseVersionStrategyTests : TestBase
         var strategy = GetVersionStrategy(fixture.RepositoryPath, fixture.Repository.ToGitRepository(), branchName);
         var baseVersion = strategy.GetVersions().Single();
 
-        baseVersion.SemanticVersion.ToString().ShouldBe(expectedBaseVersion);
+        baseVersion.Version.SemanticVersion.ToString().ShouldBe(expectedBaseVersion);
     }
 
     private static IVersionStrategy GetVersionStrategy(string workingDirectory, IGitRepository repository, string branch, Config? config = null)

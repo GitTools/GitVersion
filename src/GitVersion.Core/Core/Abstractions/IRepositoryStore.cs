@@ -35,13 +35,18 @@ public interface IRepositoryStore
 
     IEnumerable<BranchCommit> FindCommitBranchesWasBranchedFrom(IBranch branch, Config configuration, params IBranch[] excludedBranches);
 
-    SemanticVersion GetCurrentCommitTaggedVersion(ICommit? commit, EffectiveConfiguration config);
+    IEnumerable<BranchCommit> FindCommitBranchesWasBranchedFrom(IBranch branch, Config configuration, IEnumerable<IBranch> excludedBranches);
+
+    IEnumerable<IBranch> GetTargetBranches(IBranch branch, Config configuration, params IBranch[] excludedBranches);
+
+    IEnumerable<IBranch> GetTargetBranches(IBranch branch, Config configuration, IEnumerable<IBranch> excludedBranches);
+
+    SemanticVersion GetCurrentCommitTaggedVersion(ICommit? commit, string? tagPrefix);
     SemanticVersion MaybeIncrement(BaseVersion baseVersion, GitVersionContext context);
     IEnumerable<SemanticVersion> GetVersionTagsOnBranch(IBranch branch, string? tagPrefixRegex);
     IEnumerable<(ITag Tag, SemanticVersion Semver, ICommit Commit)> GetValidVersionTags(string? tagPrefixRegex, DateTimeOffset? olderThan = null);
 
     bool IsCommitOnBranch(ICommit? baseVersionSource, IBranch branch, ICommit firstMatchingCommit);
-    VersionField? DetermineIncrementedField(BaseVersion baseVersion, GitVersionContext context);
 
     int GetNumberOfUncommittedChanges();
 }

@@ -2,5 +2,5 @@ namespace GitVersion.VersionCalculation;
 
 public interface IBaseVersionCalculator
 {
-    BaseVersion GetBaseVersion();
+    (SemanticVersion IncrementedVersion, BaseVersion Version) GetBaseVersion();
 }

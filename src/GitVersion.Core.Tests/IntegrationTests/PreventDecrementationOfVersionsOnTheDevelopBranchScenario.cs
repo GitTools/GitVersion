@@ -1,12 +1,11 @@
 using GitTools.Testing;
 using GitVersion.Core.Tests.Helpers;
-using LibGit2Sharp;
 using NUnit.Framework;
 
 namespace GitVersion.Core.Tests.IntegrationTests;
 
 [TestFixture]
-public class PreventDecrementationOfVersionsOnTheDevelopBranch
+public class PreventDecrementationOfVersionsOnTheDevelopBranchScenario
 {
     [Test]
     public void Discussion3177()
@@ -37,7 +36,8 @@ public class PreventDecrementationOfVersionsOnTheDevelopBranch
         fixture.AssertFullSemver("1.0.0-alpha.2", configBuilder.Build());
 
         // now we are ready to start with the preparation of the 1.0.0 release
-        fixture.Repository.CreateBranch("release/1.0.0");
+        fixture.BranchTo("release/1.0.0");
+        fixture.Checkout("develop");
 
         // ✅ succeeds as expected
         fixture.AssertFullSemver("1.1.0-alpha.0", configBuilder.Build());
