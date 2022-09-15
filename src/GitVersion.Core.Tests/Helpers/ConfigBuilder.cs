@@ -11,8 +11,17 @@ public sealed class ConfigBuilder
     private string? nextVerson;
     private VersioningMode versioningMode;
     private bool withoutAnyTrackMergeTargets;
-    private IDictionary<string, bool> trackMergeTargetsDictionary;
-    private IDictionary<string, bool> preventIncrementOfMergedBranchVersionDictionary;
+
+    /* Unmerged change from project 'GitVersion.Core.Tests(net6.0)'
+    Before:
+        private IDictionary<string, bool> trackMergeTargetsDictionary;
+        private IDictionary<string, bool> preventIncrementOfMergedBranchVersionDictionary;
+    After:
+        private readonly IDictionary<string, bool> trackMergeTargetsDictionary;
+        private readonly IDictionary<string, bool> preventIncrementOfMergedBranchVersionDictionary;
+    */
+    private readonly IDictionary<string, bool> trackMergeTargetsDictionary;
+    private readonly IDictionary<string, bool> preventIncrementOfMergedBranchVersionDictionary;
     private IgnoreConfig? ignoreConfig;
 
     private ConfigBuilder()

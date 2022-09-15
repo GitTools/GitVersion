@@ -15,7 +15,7 @@ public static class ConfigExtensions
 
     // TODO: Please make the fallback configuration also configurable in the yaml.
     public static BranchConfig GetFallbackBranchConfiguration(this Config configuration)
-        => new BranchConfig
+        => new()
         {
             Name = "Fallback",
             Regex = "",
