@@ -128,7 +128,7 @@ public class PreventDecrementationOfVersionsOnTheDevelopBranchScenario
         fixture.Repository.Tags.Remove("1.0.0-beta.1");
         fixture.Repository.Tags.Remove("1.0.0-beta.2");
 
-        // ❌ fails! expected: "1.0.0-alpha.3"
+        // ❌ expected: "1.0.0-alpha.3"
         // This behavior needs to be changed for the git flow workflow using the track-merge-message or track-merge-target options.
         // [Bug] track-merge-changes produces unexpected result when combining hotfix and support branches #3052
         fixture.AssertFullSemver("1.1.0-alpha.3", configBuilder.Build());
@@ -146,7 +146,7 @@ public class PreventDecrementationOfVersionsOnTheDevelopBranchScenario
 
         configBuilder.WithNextVersion(null);
 
-        // ❌ fails! expected: "0.0.1+3"
+        // ❌ expected: "0.0.1+3"
         // This behavior needs to be changed for the git flow workflow using the track-merge-message or track-merge-target options.
         // [Bug] track-merge-changes produces unexpected result when combining hotfix and support branches #3052
         fixture.AssertFullSemver("1.0.0+3", configBuilder.Build());

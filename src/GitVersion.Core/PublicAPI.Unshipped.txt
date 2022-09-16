@@ -27,13 +27,14 @@ GitVersion.VersionCalculation.MergeMessageVersionStrategy.MergeMessageVersionStr
 GitVersion.VersionCalculation.VersionStrategyBase.RepositoryStore.get -> GitVersion.Common.IRepositoryStore!
 GitVersion.VersionCalculation.VersionStrategyBase.VersionStrategyBase(GitVersion.Common.IRepositoryStore! repositoryStore, System.Lazy<GitVersion.GitVersionContext!>! versionContext) -> void
 GitVersion.VersionCalculation.VersionStrategyBaseWithInheritSupport
-GitVersion.VersionCalculation.VersionStrategyBaseWithInheritSupport.VersionStrategyBaseWithInheritSupport(GitVersion.Common.IRepositoryStore! repositoryStore, System.Lazy<GitVersion.GitVersionContext!>! context) -> void
+GitVersion.VersionCalculation.VersionStrategyBaseWithInheritSupport.Context.get -> GitVersion.GitVersionContext!
+GitVersion.VersionCalculation.VersionStrategyBaseWithInheritSupport.RepositoryStore.get -> GitVersion.Common.IRepositoryStore!
+GitVersion.VersionCalculation.VersionStrategyBaseWithInheritSupport.VersionStrategyBaseWithInheritSupport(GitVersion.Common.IRepositoryStore! repositoryStore, System.Lazy<GitVersion.GitVersionContext!>! contextLazy) -> void
 override GitVersion.VersionCalculation.ConfigNextVersionVersionStrategy.GetVersions(GitVersion.IBranch! branch, GitVersion.Model.Configuration.EffectiveConfiguration! configuration) -> System.Collections.Generic.IEnumerable<GitVersion.VersionCalculation.BaseVersion!>!
 override GitVersion.VersionCalculation.FallbackVersionStrategy.GetVersions(GitVersion.IBranch! branch, GitVersion.Model.Configuration.EffectiveConfiguration! configuration) -> System.Collections.Generic.IEnumerable<GitVersion.VersionCalculation.BaseVersion!>!
 override GitVersion.VersionCalculation.MergeMessageVersionStrategy.GetVersions(GitVersion.IBranch! branch, GitVersion.Model.Configuration.EffectiveConfiguration! configuration) -> System.Collections.Generic.IEnumerable<GitVersion.VersionCalculation.BaseVersion!>!
 override GitVersion.VersionCalculation.TaggedCommitVersionStrategy.GetVersions(GitVersion.IBranch! branch, GitVersion.Model.Configuration.EffectiveConfiguration! configuration) -> System.Collections.Generic.IEnumerable<GitVersion.VersionCalculation.BaseVersion!>!
 override GitVersion.VersionCalculation.TrackReleaseBranchesVersionStrategy.GetVersions(GitVersion.IBranch! branch, GitVersion.Model.Configuration.EffectiveConfiguration! configuration) -> System.Collections.Generic.IEnumerable<GitVersion.VersionCalculation.BaseVersion!>!
 override GitVersion.VersionCalculation.VersionInBranchNameVersionStrategy.GetVersions(GitVersion.IBranch! branch, GitVersion.Model.Configuration.EffectiveConfiguration! configuration) -> System.Collections.Generic.IEnumerable<GitVersion.VersionCalculation.BaseVersion!>!
-override GitVersion.VersionCalculation.VersionStrategyBaseWithInheritSupport.GetVersions() -> System.Collections.Generic.IEnumerable<GitVersion.VersionCalculation.BaseVersion!>!
 static GitVersion.Configuration.ConfigExtensions.GetBranchConfiguration(this GitVersion.Model.Configuration.Config! configuration, string! branchName) -> GitVersion.Model.Configuration.BranchConfig!
 static GitVersion.Configuration.ConfigExtensions.GetFallbackBranchConfiguration(this GitVersion.Model.Configuration.Config! configuration) -> GitVersion.Model.Configuration.BranchConfig!
