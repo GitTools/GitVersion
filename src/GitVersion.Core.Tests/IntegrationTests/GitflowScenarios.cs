@@ -46,7 +46,7 @@ namespace GitVersion.Core.Tests.IntegrationTests
             // Feature 2
             fixture.BranchTo(feature2Branch);
             fixture.MakeACommit("added feature 2");
-            fixture.AssertFullSemver("1.2.0-f2.1+3"); // I see two commits why three?
+            fixture.AssertFullSemver("1.2.0-f2.1+3");
             fixture.Checkout(developBranch);
             fixture.MergeNoFF(feature2Branch);
             fixture.Repository.Branches.Remove(fixture.Repository.Branches[feature2Branch]);

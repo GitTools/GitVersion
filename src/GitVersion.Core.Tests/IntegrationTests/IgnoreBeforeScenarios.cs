@@ -15,7 +15,7 @@ public class IgnoreBeforeScenarios : TestBase
     {
         using var fixture = new EmptyRepositoryFixture();
         var dateTimeNow = DateTimeOffset.Now;
-        var objectId = fixture.Repository.MakeACommit();
+        fixture.MakeACommit();
 
         var config = ConfigBuilder.New.WithNextVersion(nextVersion)
             .WithIgnoreConfig(new() { Before = dateTimeNow.AddDays(1) }).Build();
@@ -27,11 +27,11 @@ public class IgnoreBeforeScenarios : TestBase
     [TestCase("0.0.1", "0.0.1+1")]
     [TestCase("0.1.0", "0.1.0+1")]
     [TestCase("1.0.0", "1.0.0+1")]
-    public void ShouldFallbackToBaseVersionWhenAllCommitsAreIgnored2(string? nextVersion, string expectedFullSemVer)
+    public void ShouldNotFallbackToBaseVersionWhenAllCommitsAreNotIgnored(string? nextVersion, string expectedFullSemVer)
     {
         using var fixture = new EmptyRepositoryFixture();
         var dateTimeNow = DateTimeOffset.Now;
-        var objectId = fixture.Repository.MakeACommit();
+        fixture.MakeACommit();
 
         var config = ConfigBuilder.New.WithNextVersion(nextVersion)
             .WithIgnoreConfig(new() { Before = dateTimeNow.AddDays(-1) }).Build();
