@@ -16,7 +16,7 @@ public class TaggedCommitVersionStrategy : VersionStrategyBaseWithInheritSupport
     }
 
     public override IEnumerable<BaseVersion> GetVersions(IBranch branch, EffectiveConfiguration configuration) =>
-        GetTaggedVersions(Context.CurrentBranch, Context.CurrentBranch.Tip?.When);
+        GetTaggedVersions(Context.CurrentBranch, Context.CurrentCommit?.When);
 
     internal IEnumerable<BaseVersion> GetTaggedVersions(IBranch currentBranch, DateTimeOffset? olderThan)
     {
