@@ -4,23 +4,20 @@ using GitVersion.Configuration;
 using GitVersion.Extensions;
 using GitVersion.Logging;
 using GitVersion.Model.Configuration;
-using GitVersion.VersionCalculation;
 
 namespace GitVersion;
 
 public class RepositoryStore : IRepositoryStore
 {
-    private readonly IIncrementStrategyFinder incrementStrategyFinder;
     private readonly ILog log;
     private readonly IGitRepository repository;
     private readonly Dictionary<IBranch, List<SemanticVersion>> semanticVersionTagsOnBranchCache = new();
     private readonly MergeBaseFinder mergeBaseFinder;
 
-    public RepositoryStore(ILog log, IGitRepository repository, IIncrementStrategyFinder incrementStrategyFinder)
+    public RepositoryStore(ILog log, IGitRepository repository)
     {
         this.log = log.NotNull();
         this.repository = repository.NotNull();
-        this.incrementStrategyFinder = incrementStrategyFinder.NotNull();
         this.mergeBaseFinder = new MergeBaseFinder(this, repository, log);
     }
 
@@ -267,12 +264,6 @@ public class RepositoryStore : IRepositoryStore
         => this.repository.Tags
             .SelectMany(t => GetCurrentCommitSemanticVersions(commit, tagPrefix, t))
             .Max();
-
-    public SemanticVersion MaybeIncrement(BaseVersion baseVersion, GitVersionContext context)
-    {
-        var increment = this.incrementStrategyFinder.DetermineIncrementedField(this.repository, context, baseVersion);
-        return increment != null ? baseVersion.SemanticVersion.IncrementVersion(increment.Value) : baseVersion.SemanticVersion;
-    }
 
     public IEnumerable<SemanticVersion> GetVersionTagsOnBranch(IBranch branch, string? tagPrefixRegex)
     {

@@ -14,5 +14,6 @@ public class VersionCalculationModule : IGitVersionModule
         services.AddSingleton<IMainlineVersionCalculator, MainlineVersionCalculator>();
         services.AddSingleton<INextVersionCalculator, NextVersionCalculator>();
         services.AddSingleton<IIncrementStrategyFinder, IncrementStrategyFinder>();
+        services.AddSingleton<IEffectiveBranchConfigurationFinder, EffectiveBranchConfigurationFinder>();
     }
 }

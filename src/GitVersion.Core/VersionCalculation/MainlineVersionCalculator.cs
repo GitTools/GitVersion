@@ -279,8 +279,8 @@ internal class MainlineVersionCalculator : IMainlineVersionCalculator
     {
         foreach (var directCommit in directCommits)
         {
-            var directCommitIncrement = this.incrementStrategyFinder.GetIncrementForCommits(context, new[] { directCommit })
-                                        ?? FindDefaultIncrementForBranch(context, mainline.Name.Friendly);
+            var directCommitIncrement = this.incrementStrategyFinder.GetIncrementForCommits(context.FullConfiguration, new[] { directCommit })
+                ?? FindDefaultIncrementForBranch(context, mainline.Name.Friendly);
             mainlineVersion = mainlineVersion.IncrementVersion(directCommitIncrement);
             this.log.Info($"Direct commit on main {directCommit} incremented base versions {directCommitIncrement}, now {mainlineVersion}");
         }
@@ -292,7 +292,8 @@ internal class MainlineVersionCalculator : IMainlineVersionCalculator
     {
         var commits = this.repositoryStore.GetMergeBaseCommits(mergeCommit, mergedHead, findMergeBase);
         commitLog.RemoveAll(c => commits.Any(c1 => c1.Sha == c.Sha));
-        return this.incrementStrategyFinder.GetIncrementForCommits(context, commits) ?? TryFindIncrementFromMergeMessage(mergeCommit);
+        return this.incrementStrategyFinder.GetIncrementForCommits(context.FullConfiguration, commits)
+            ?? TryFindIncrementFromMergeMessage(mergeCommit);
     }
 
     private VersionField TryFindIncrementFromMergeMessage(ICommit? mergeCommit)

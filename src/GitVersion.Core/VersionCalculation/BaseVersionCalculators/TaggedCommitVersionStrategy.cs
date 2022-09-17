@@ -1,4 +1,5 @@
 using GitVersion.Common;
+using GitVersion.Extensions;
 using GitVersion.Model.Configuration;
 
 namespace GitVersion.VersionCalculation;
@@ -8,12 +9,12 @@ namespace GitVersion.VersionCalculation;
 /// BaseVersionSource is the tag's commit.
 /// Increments if the tag is not the current commit.
 /// </summary>
-public class TaggedCommitVersionStrategy : VersionStrategyBaseWithInheritSupport
+public class TaggedCommitVersionStrategy : VersionStrategyBase
 {
+    private IRepositoryStore RepositoryStore { get; }
+
     public TaggedCommitVersionStrategy(IRepositoryStore repositoryStore, Lazy<GitVersionContext> versionContext)
-        : base(repositoryStore, versionContext)
-    {
-    }
+        : base(versionContext) => RepositoryStore = repositoryStore.NotNull();
 
     public override IEnumerable<BaseVersion> GetVersions(IBranch branch, EffectiveConfiguration configuration) =>
         GetTaggedVersions(Context.CurrentBranch, Context.CurrentCommit?.When);

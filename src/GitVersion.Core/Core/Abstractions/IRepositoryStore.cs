@@ -1,5 +1,4 @@
 using GitVersion.Model.Configuration;
-using GitVersion.VersionCalculation;
 
 namespace GitVersion.Common;
 
@@ -42,7 +41,7 @@ public interface IRepositoryStore
     IEnumerable<IBranch> GetTargetBranches(IBranch branch, Config configuration, IEnumerable<IBranch> excludedBranches);
 
     SemanticVersion GetCurrentCommitTaggedVersion(ICommit? commit, string? tagPrefix);
-    SemanticVersion MaybeIncrement(BaseVersion baseVersion, GitVersionContext context);
+
     IEnumerable<SemanticVersion> GetVersionTagsOnBranch(IBranch branch, string? tagPrefixRegex);
     IEnumerable<(ITag Tag, SemanticVersion Semver, ICommit Commit)> GetValidVersionTags(string? tagPrefixRegex, DateTimeOffset? olderThan = null);
 

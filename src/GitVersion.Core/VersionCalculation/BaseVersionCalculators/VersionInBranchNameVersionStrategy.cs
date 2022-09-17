@@ -10,12 +10,13 @@ namespace GitVersion.VersionCalculation;
 /// BaseVersionSource is the commit where the branch was branched from its parent.
 /// Does not increment.
 /// </summary>
-public class VersionInBranchNameVersionStrategy : VersionStrategyBaseWithInheritSupport
+public class VersionInBranchNameVersionStrategy : VersionStrategyBase
 {
+    private IRepositoryStore RepositoryStore { get; }
+
     public VersionInBranchNameVersionStrategy(IRepositoryStore repositoryStore, Lazy<GitVersionContext> versionContext)
-        : base(repositoryStore, versionContext)
-    {
-    }
+        : base(versionContext) => RepositoryStore = repositoryStore.NotNull();
+
 
     public override IEnumerable<BaseVersion> GetVersions(IBranch branch, EffectiveConfiguration configuration)
     {

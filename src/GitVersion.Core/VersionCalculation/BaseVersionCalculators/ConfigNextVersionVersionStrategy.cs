@@ -1,4 +1,3 @@
-using GitVersion.Common;
 using GitVersion.Extensions;
 using GitVersion.Model.Configuration;
 
@@ -9,10 +8,10 @@ namespace GitVersion.VersionCalculation;
 /// BaseVersionSource is null.
 /// Does not increment.
 /// </summary>
-public class ConfigNextVersionVersionStrategy : VersionStrategyBaseWithInheritSupport
+public class ConfigNextVersionVersionStrategy : VersionStrategyBase
 {
-    public ConfigNextVersionVersionStrategy(IRepositoryStore repositoryStore, Lazy<GitVersionContext> versionContext)
-        : base(repositoryStore, versionContext)
+    public ConfigNextVersionVersionStrategy(Lazy<GitVersionContext> versionContext)
+        : base(versionContext)
     {
     }
 

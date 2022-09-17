@@ -24,12 +24,14 @@ public class BaseVersionCalculatorTests : TestBase
                 services.AddSingleton<IVersionStrategy>(new V2Strategy(dateTimeOffset));
             }));
 
-        var baseVersion = versionCalculator.GetBaseVersion();
+        var mockCommit = GitToolsTestingExtensions.CreateMockCommit();
+        var mockBranch = GitToolsTestingExtensions.CreateMockBranch("main", mockCommit);
+        var nextVersion = versionCalculator.Calculate(mockBranch, ConfigBuilder.New.Build());
 
-        baseVersion.Version.SemanticVersion.ToString().ShouldBe("2.0.0");
-        baseVersion.Version.ShouldIncrement.ShouldBe(true);
-        baseVersion.Version.BaseVersionSource.ShouldNotBeNull();
-        baseVersion.Version.BaseVersionSource.When.ShouldBe(dateTimeOffset);
+        nextVersion.Version.SemanticVersion.ToString().ShouldBe("2.0.0");
+        nextVersion.Version.ShouldIncrement.ShouldBe(true);
+        nextVersion.Version.BaseVersionSource.ShouldNotBeNull();
+        nextVersion.Version.BaseVersionSource.When.ShouldBe(dateTimeOffset);
     }
 
     [Test]
@@ -45,12 +47,14 @@ public class BaseVersionCalculatorTests : TestBase
                 services.AddSingleton<IVersionStrategy>(new V2Strategy(null));
             }));
 
-        var baseVersion = versionCalculator.GetBaseVersion();
+        var mockCommit = GitToolsTestingExtensions.CreateMockCommit();
+        var mockBranch = GitToolsTestingExtensions.CreateMockBranch("main", mockCommit);
+        var nextVersion = versionCalculator.Calculate(mockBranch, ConfigBuilder.New.Build());
 
-        baseVersion.Version.SemanticVersion.ToString().ShouldBe("2.0.0");
-        baseVersion.Version.ShouldIncrement.ShouldBe(true);
-        baseVersion.Version.BaseVersionSource.ShouldNotBeNull();
-        baseVersion.Version.BaseVersionSource.When.ShouldBe(when);
+        nextVersion.Version.SemanticVersion.ToString().ShouldBe("2.0.0");
+        nextVersion.Version.ShouldIncrement.ShouldBe(true);
+        nextVersion.Version.BaseVersionSource.ShouldNotBeNull();
+        nextVersion.Version.BaseVersionSource.When.ShouldBe(when);
     }
 
     [Test]
@@ -66,12 +70,14 @@ public class BaseVersionCalculatorTests : TestBase
                 services.AddSingleton<IVersionStrategy>(new V2Strategy(when));
             }));
 
-        var baseVersion = versionCalculator.GetBaseVersion();
+        var mockCommit = GitToolsTestingExtensions.CreateMockCommit();
+        var mockBranch = GitToolsTestingExtensions.CreateMockBranch("main", mockCommit);
+        var nextVersion = versionCalculator.Calculate(mockBranch, ConfigBuilder.New.Build());
 
-        baseVersion.Version.SemanticVersion.ToString().ShouldBe("2.0.0");
-        baseVersion.Version.ShouldIncrement.ShouldBe(true);
-        baseVersion.Version.BaseVersionSource.ShouldNotBeNull();
-        baseVersion.Version.BaseVersionSource.When.ShouldBe(when);
+        nextVersion.Version.SemanticVersion.ToString().ShouldBe("2.0.0");
+        nextVersion.Version.ShouldIncrement.ShouldBe(true);
+        nextVersion.Version.BaseVersionSource.ShouldNotBeNull();
+        nextVersion.Version.BaseVersionSource.When.ShouldBe(when);
     }
 
     //[Test]
@@ -209,12 +215,9 @@ public class BaseVersionCalculatorTests : TestBase
             }
         }
 
-        public IEnumerable<(SemanticVersion IncrementedVersion, BaseVersion Version)> GetVersions()
+        public IEnumerable<BaseVersion> GetVersions(IBranch branch, EffectiveConfiguration configuration)
         {
-            yield return new(
-                new SemanticVersion(1),
-                new BaseVersion("Source 1", false, new SemanticVersion(1), this.when, null)
-            );
+            yield return new BaseVersion("Source 1", false, new SemanticVersion(1), this.when, null);
         }
     }
 
@@ -235,21 +238,18 @@ public class BaseVersionCalculatorTests : TestBase
             }
         }
 
-        public IEnumerable<(SemanticVersion IncrementedVersion, BaseVersion Version)> GetVersions()
+        public IEnumerable<BaseVersion> GetVersions(IBranch branch, EffectiveConfiguration configuration)
         {
-            yield return new(
-                new SemanticVersion(2),
-                new BaseVersion("Source 2", true, new SemanticVersion(2), this.when, null)
-            );
+            yield return new BaseVersion("Source 2", true, new SemanticVersion(2), this.when, null);
         }
     }
 
     private sealed class TestVersionStrategy : IVersionStrategy
     {
-        private readonly IEnumerable<(SemanticVersion IncrementedVersion, BaseVersion Version)> versions;
+        private readonly IEnumerable<BaseVersion> baseVersions;
 
-        public TestVersionStrategy(params (SemanticVersion IncrementedVersion, BaseVersion Version)[] versions) => this.versions = versions;
+        public TestVersionStrategy(params BaseVersion[] baseVersions) => this.baseVersions = baseVersions;
 
-        public IEnumerable<(SemanticVersion IncrementedVersion, BaseVersion Version)> GetVersions() => this.versions;
+        public IEnumerable<BaseVersion> GetVersions(IBranch branch, EffectiveConfiguration configuration) => this.baseVersions;
     }
 }

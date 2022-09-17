@@ -1,3 +1,4 @@
+using GitVersion.Model.Configuration;
 using GitVersion.VersionCalculation;
 
 namespace GitVersion.Core.Tests.VersionCalculation;
@@ -17,7 +18,7 @@ public class TestBaseVersionCalculator : IBaseVersionCalculator
         incrementedVersion = shouldIncrement ? semanticVersion.IncrementVersion(VersionField.Patch) : semanticVersion;
     }
 
-    public (SemanticVersion IncrementedVersion, BaseVersion Version) GetBaseVersion() => new(
+    public NextVersion Calculate(IBranch branch, Config configuration) => new(
         incrementedVersion, new("Test source", shouldIncrement, semanticVersion, source, null)
     );
 }

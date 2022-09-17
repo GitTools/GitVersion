@@ -8,7 +8,7 @@ public class MinDateVersionFilter : IVersionFilter
 
     public MinDateVersionFilter(DateTimeOffset minimum) => this.minimum = minimum;
 
-    public bool Exclude(BaseVersion? version, [NotNullWhen(true)] out string? reason)
+    public bool Exclude(BaseVersion version, [NotNullWhen(true)] out string? reason)
     {
         if (version == null) throw new ArgumentNullException(nameof(version));
 

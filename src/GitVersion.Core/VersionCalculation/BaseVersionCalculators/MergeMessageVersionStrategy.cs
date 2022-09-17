@@ -1,6 +1,5 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Text.RegularExpressions;
-using GitVersion.Common;
 using GitVersion.Configuration;
 using GitVersion.Extensions;
 using GitVersion.Logging;
@@ -13,12 +12,12 @@ namespace GitVersion.VersionCalculation;
 /// BaseVersionSource is the commit where the message was found.
 /// Increments if PreventIncrementForMergedBranchVersion (from the branch config) is false.
 /// </summary>
-public class MergeMessageVersionStrategy : VersionStrategyBaseWithInheritSupport
+public class MergeMessageVersionStrategy : VersionStrategyBase
 {
     private readonly ILog log;
 
-    public MergeMessageVersionStrategy(ILog log, IRepositoryStore repositoryStore, Lazy<GitVersionContext> versionContext)
-        : base(repositoryStore, versionContext) => this.log = log.NotNull();
+    public MergeMessageVersionStrategy(ILog log, Lazy<GitVersionContext> versionContext)
+        : base(versionContext) => this.log = log.NotNull();
 
     public override IEnumerable<BaseVersion> GetVersions(IBranch branch, EffectiveConfiguration configuration)
     {

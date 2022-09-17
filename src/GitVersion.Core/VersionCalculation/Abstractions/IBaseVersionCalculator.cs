@@ -1,6 +1,8 @@
+using GitVersion.Model.Configuration;
+
 namespace GitVersion.VersionCalculation;
 
 public interface IBaseVersionCalculator
 {
-    (SemanticVersion IncrementedVersion, BaseVersion Version) GetBaseVersion();
+    NextVersion Calculate(IBranch branch, Config configuration);
 }

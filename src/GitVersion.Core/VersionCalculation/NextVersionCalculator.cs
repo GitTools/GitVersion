@@ -49,7 +49,7 @@ public class NextVersionCalculator : INextVersionCalculator
             taggedSemanticVersion = semanticVersion;
         }
 
-        var baseVersion = this.baseVersionCalculator.GetBaseVersion();
+        var baseVersion = this.baseVersionCalculator.Calculate(context.CurrentBranch, context.FullConfiguration);
         baseVersion.Version.SemanticVersion.BuildMetaData = this.mainlineVersionCalculator.CreateVersionBuildMetaData(baseVersion.Version.BaseVersionSource);
         SemanticVersion semver;
         if (context.FullConfiguration.VersioningMode == VersioningMode.Mainline)

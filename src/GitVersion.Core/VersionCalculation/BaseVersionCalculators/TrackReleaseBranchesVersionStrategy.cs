@@ -1,5 +1,6 @@
 using GitVersion.Common;
 using GitVersion.Configuration;
+using GitVersion.Extensions;
 using GitVersion.Model.Configuration;
 
 namespace GitVersion.VersionCalculation;
@@ -20,15 +21,17 @@ namespace GitVersion.VersionCalculation;
 /// Increments if the tag is not the current commit (same as base strategy).
 /// </para>
 /// </summary>
-public class TrackReleaseBranchesVersionStrategy : VersionStrategyBaseWithInheritSupport
+public class TrackReleaseBranchesVersionStrategy : VersionStrategyBase
 {
     private readonly VersionInBranchNameVersionStrategy releaseVersionStrategy;
     private readonly TaggedCommitVersionStrategy taggedCommitVersionStrategy;
 
+    private IRepositoryStore RepositoryStore { get; }
 
     public TrackReleaseBranchesVersionStrategy(IRepositoryStore repositoryStore, Lazy<GitVersionContext> versionContext)
-        : base(repositoryStore, versionContext)
+        : base(versionContext)
     {
+        RepositoryStore = repositoryStore.NotNull();
         this.releaseVersionStrategy = new VersionInBranchNameVersionStrategy(repositoryStore, versionContext);
         this.taggedCommitVersionStrategy = new TaggedCommitVersionStrategy(repositoryStore, versionContext);
     }

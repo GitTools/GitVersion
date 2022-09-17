@@ -1,5 +1,5 @@
-using GitVersion.Common;
 using GitVersion.Extensions;
+using GitVersion.Model.Configuration;
 
 namespace GitVersion.VersionCalculation;
 
@@ -9,30 +9,7 @@ public abstract class VersionStrategyBase : IVersionStrategy
 
     protected GitVersionContext Context => this.versionContext.Value;
 
-    protected IRepositoryStore RepositoryStore { get; }
+    protected VersionStrategyBase(Lazy<GitVersionContext> versionContext) => this.versionContext = versionContext.NotNull();
 
-    protected VersionStrategyBase(IRepositoryStore repositoryStore, Lazy<GitVersionContext> versionContext)
-    {
-        this.versionContext = versionContext.NotNull();
-        RepositoryStore = repositoryStore.NotNull();
-    }
-
-    IEnumerable<(SemanticVersion IncrementedVersion, BaseVersion Version)> IVersionStrategy.GetVersions()
-    {
-        foreach (var baseVersion in GetVersions())
-        {
-            var incrementedVersion = RepositoryStore.MaybeIncrement(baseVersion, Context);
-            if (Context.FullConfiguration.VersioningMode == VersioningMode.Mainline)
-            {
-                if (!(incrementedVersion.PreReleaseTag?.HasTag() != true))
-                {
-                    continue;
-                }
-            }
-
-            yield return new(incrementedVersion, baseVersion);
-        }
-    }
-
-    public abstract IEnumerable<BaseVersion> GetVersions();
+    public abstract IEnumerable<BaseVersion> GetVersions(IBranch branch, EffectiveConfiguration configuration);
 }
