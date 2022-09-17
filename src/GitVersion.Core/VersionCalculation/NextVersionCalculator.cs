@@ -74,7 +74,7 @@ public class NextVersionCalculator : INextVersionCalculator
         }
 
         var hasPreReleaseTag = semver.PreReleaseTag?.HasTag() == true;
-        var tag = context.Configuration.Tag;
+        var tag = context.Configuration?.Tag;
         var branchConfigHasPreReleaseTagConfigured = !tag.IsNullOrEmpty();
 #pragma warning disable CS8602 // Dereference of a possibly null reference. // context.Configuration.Tag not null when branchConfigHasPreReleaseTagConfigured is true
         var preReleaseTagDoesNotMatchConfiguration = hasPreReleaseTag && branchConfigHasPreReleaseTagConfigured && semver.PreReleaseTag?.Name != tag;

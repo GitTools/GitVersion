@@ -48,17 +48,7 @@ public class GitVersionContext
 
     public EffectiveConfiguration GetEffectiveConfiguration(BranchConfig? branchConfiguration)
     {
-        branchConfiguration ??= new BranchConfig
-        {
-            Name = "Fallback",
-            Regex = "",
-            Tag = "{BranchName}",
-            VersioningMode = FullConfiguration.VersioningMode,
-            Increment = FullConfiguration.Increment ?? IncrementStrategy.None
-        };
-
+        branchConfiguration ??= FullConfiguration.GetFallbackBranchConfiguration();
         return new EffectiveConfiguration(FullConfiguration, branchConfiguration);
     }
-
-
 }

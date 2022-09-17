@@ -38,10 +38,15 @@ internal sealed class EffectiveBranchConfigurationFinder : IEffectiveBranchConfi
         var targetBranches = Array.Empty<IBranch>();
         if (branchConfiguration.Increment == IncrementStrategy.Inherit)
         {
+            // At this point we need to check if target branches are available.
             targetBranches = repositoryStore.GetTargetBranches(branch, configuration, traversedBranches).ToArray();
 
             if (targetBranches.Length == 0)
             {
+                // Because the actual branch is marked with the inherit increment strategy we need to either skip the iteration or go further
+                // while inheriting from the fallback branch configuration. This behavior is configurable via the increment settings of the configuration.
+                if (configuration.Increment == null) yield break;
+
                 var fallbackBranchConfiguration = configuration.GetFallbackBranchConfiguration();
                 if (fallbackBranchConfiguration.Increment == IncrementStrategy.Inherit)
                 {

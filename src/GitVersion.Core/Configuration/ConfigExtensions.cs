@@ -21,7 +21,7 @@ public static class ConfigExtensions
             Regex = "",
             Tag = "{BranchName}",
             VersioningMode = configuration.VersioningMode,
-            Increment = configuration.Increment ?? IncrementStrategy.None
+            Increment = configuration.Increment ?? IncrementStrategy.Inherit
         };
 
     public static BranchConfig? GetConfigForBranch(this Config config, string? branchName)

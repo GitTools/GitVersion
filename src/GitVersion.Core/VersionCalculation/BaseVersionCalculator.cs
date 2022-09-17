@@ -32,12 +32,12 @@ public class BaseVersionCalculator : IBaseVersionCalculator
     {
         using (log.IndentLog("Calculating the base versions"))
         {
-            var versions = GetVersions(branch, configuration).ToArray();
+            var nextVersions = GetPotentialNextVersions(branch, configuration).ToArray();
 
-            FixTheBaseVersionSourceOfMergeMessageStrategyIfReleaseBranchWasMergedAndDeleted(versions);
+            FixTheBaseVersionSourceOfMergeMessageStrategyIfReleaseBranchWasMergedAndDeleted(nextVersions);
 
-            var maxVersion = versions.Aggregate((v1, v2) => v1.IncrementedVersion > v2.IncrementedVersion ? v1 : v2);
-            var matchingVersionsOnceIncremented = versions
+            var maxVersion = nextVersions.Aggregate((v1, v2) => v1.IncrementedVersion > v2.IncrementedVersion ? v1 : v2);
+            var matchingVersionsOnceIncremented = nextVersions
                 .Where(v => v.Version.BaseVersionSource != null && v.IncrementedVersion == maxVersion.IncrementedVersion)
                 .ToList();
             ICommit? latestBaseVersionSource;
@@ -69,7 +69,7 @@ public class BaseVersionCalculator : IBaseVersionCalculator
             }
             else
             {
-                IEnumerable<NextVersion> filteredVersions = versions;
+                IEnumerable<NextVersion> filteredVersions = nextVersions;
                 if (!maxVersion.IncrementedVersion.PreReleaseTag!.HasTag())
                 {
                     // If the maximal version has no pre-release tag defined than we want to determine just the latest previous
@@ -106,7 +106,7 @@ public class BaseVersionCalculator : IBaseVersionCalculator
         }
     }
 
-    private IEnumerable<NextVersion> GetVersions(IBranch branch, Config configuration)
+    private IEnumerable<NextVersion> GetPotentialNextVersions(IBranch branch, Config configuration)
     {
         if (branch.Tip == null)
             throw new GitVersionException("No commits found on the current branch.");

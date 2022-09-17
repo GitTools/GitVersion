@@ -129,6 +129,7 @@ public class ConfigurationBuilder
         {
             if (name == Config.DevelopBranchKey)
             {
+                // Why this applies only on develop branch? I'm supprised that the configuration coming from user.
                 branchConfig.VersioningMode = config.VersioningMode == VersioningMode.Mainline ? VersioningMode.Mainline : VersioningMode.ContinuousDeployment;
             }
             else

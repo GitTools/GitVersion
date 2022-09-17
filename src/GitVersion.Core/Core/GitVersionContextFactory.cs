@@ -1,7 +1,6 @@
 using GitVersion.Common;
 using GitVersion.Configuration;
 using GitVersion.Extensions;
-using GitVersion.Model.Configuration;
 using Microsoft.Extensions.Options;
 
 namespace GitVersion;
@@ -37,24 +36,6 @@ public class GitVersionContextFactory : IGitVersionContextFactory
         var currentCommitTaggedVersion = this.repositoryStore.GetCurrentCommitTaggedVersion(currentCommit, configuration.TagPrefix);
         var numberOfUncommittedChanges = this.repositoryStore.GetNumberOfUncommittedChanges();
 
-        var context = new GitVersionContext(currentBranch, currentCommit, configuration, currentCommitTaggedVersion, numberOfUncommittedChanges);
-
-        var branchConfiguration = new BranchConfig()
-        {
-            Name = "OnlyForTest",
-            VersioningMode = context.FullConfiguration.VersioningMode,
-            SourceBranches = new HashSet<string> { Config.DevelopBranchKey, Config.ReleaseBranchKey },
-            Tag = string.Empty,
-            PreventIncrementOfMergedBranchVersion = true,
-            Increment = IncrementStrategy.Patch,
-            TrackMergeTarget = true,
-            IsMainline = true,
-            PreReleaseWeight = 55000
-        };
-        var effectiveConfiguration = new EffectiveConfiguration(context.FullConfiguration, branchConfiguration);
-        context.Configuration = effectiveConfiguration;
-
-        return context;
-
+        return new GitVersionContext(currentBranch, currentCommit, configuration, currentCommitTaggedVersion, numberOfUncommittedChanges);
     }
 }

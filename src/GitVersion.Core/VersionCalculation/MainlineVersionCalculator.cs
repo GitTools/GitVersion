@@ -52,7 +52,7 @@ internal class MainlineVersionCalculator : IMainlineVersionCalculator
             var mainlineCommitLog = this.repositoryStore.GetMainlineCommitLog(baseVersion.BaseVersionSource, mainlineTip).ToList();
             var directCommits = new List<ICommit>(mainlineCommitLog.Count);
 
-            var nextVersion = context.Configuration.NextVersion;
+            var nextVersion = context.FullConfiguration.NextVersion;
             if (nextVersion.IsNullOrEmpty())
             {
                 // Scans commit log in reverse, aggregating merge commits
