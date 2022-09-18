@@ -47,8 +47,8 @@ internal class SourceBranchFinder
         private static IEnumerable<string> GetSourceBranchRegexes(INamedReference branch, Config configuration)
         {
             var branchName = branch.Name.WithoutRemote;
-            var currentBranchConfig = configuration.GetConfigForBranch(branchName);
-            if (currentBranchConfig?.SourceBranches == null)
+            var currentBranchConfig = configuration.GetBranchConfiguration(branchName);
+            if (currentBranchConfig.SourceBranches == null)
             {
                 yield return ".*";
             }

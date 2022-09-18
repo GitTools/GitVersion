@@ -1,6 +1,5 @@
 using System.Text.RegularExpressions;
 using GitVersion.Common;
-using GitVersion.Configuration;
 using GitVersion.Extensions;
 using GitVersion.Logging;
 using GitVersion.Model.Configuration;
@@ -152,13 +151,13 @@ public class RepositoryStore : IRepositoryStore
     public IEnumerable<IBranch> GetBranchesForCommit(ICommit commit)
         => this.repository.Branches.Where(b => !b.IsRemote && Equals(b.Tip, commit)).ToList();
 
-    public IEnumerable<IBranch> GetExcludedInheritBranches(Config configuration)
-        => this.repository.Branches.Where(b =>
-        {
-            var branchConfig = configuration.GetConfigForBranch(b.Name.WithoutRemote);
+    //public IEnumerable<IBranch> GetExcludedInheritBranches(Config configuration)
+    //    => this.repository.Branches.Where(b =>
+    //    {
+    //        var branchConfig = configuration.FindConfigForBranch(b.Name.WithoutRemote);
 
-            return branchConfig == null || branchConfig.Increment == IncrementStrategy.Inherit;
-        }).ToList();
+    //        return branchConfig == null || branchConfig.Increment == IncrementStrategy.Inherit;
+    //    }).ToList();
 
     public IEnumerable<IBranch> GetReleaseBranches(IEnumerable<KeyValuePair<string, BranchConfig>> releaseBranchConfig)
         => this.repository.Branches.Where(b => IsReleaseBranch(b, releaseBranchConfig));
@@ -184,7 +183,7 @@ public class RepositoryStore : IRepositoryStore
     {
         var referenceLookup = this.repository.Refs.ToLookup(r => r.TargetIdentifier);
 
-        var hashSet = new HashSet<IBranch>();
+        var returnedBranches = new HashSet<IBranch>();
         if (referenceLookup.Any())
         {
             foreach (var branchCommit in FindCommitBranchesWasBranchedFrom(branch, configuration, excludedBranches))
@@ -192,7 +191,7 @@ public class RepositoryStore : IRepositoryStore
                 foreach (var item in referenceLookup[branchCommit.Commit.Sha]
                     .Where(r => r.Name.Friendly == branchCommit.Branch.Name.Friendly))
                 {
-                    if (hashSet.Add(branchCommit.Branch))
+                    if (returnedBranches.Add(branchCommit.Branch))
                     {
                         yield return branchCommit.Branch;
                     }

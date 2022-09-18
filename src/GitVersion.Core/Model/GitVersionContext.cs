@@ -1,5 +1,4 @@
 using GitVersion.Configuration;
-using GitVersion.Extensions;
 using GitVersion.Model.Configuration;
 
 namespace GitVersion;
@@ -32,23 +31,14 @@ public class GitVersionContext
     {
         CurrentBranch = currentBranch;
         CurrentCommit = currentCommit;
-
         FullConfiguration = configuration;
-
         CurrentCommitTaggedVersion = currentCommitTaggedVersion;
         NumberOfUncommittedChanges = numberOfUncommittedChanges;
     }
 
     public EffectiveConfiguration GetEffectiveConfiguration(IBranch branch)
     {
-        branch.NotNull();
-        BranchConfig? branchConfiguration = FullConfiguration.GetConfigForBranch(branch.Name.WithoutRemote);
-        return GetEffectiveConfiguration(branchConfiguration);
-    }
-
-    public EffectiveConfiguration GetEffectiveConfiguration(BranchConfig? branchConfiguration)
-    {
-        branchConfiguration ??= FullConfiguration.GetFallbackBranchConfiguration();
+        BranchConfig branchConfiguration = FullConfiguration.GetBranchConfiguration(branch);
         return new EffectiveConfiguration(FullConfiguration, branchConfiguration);
     }
 }

@@ -49,7 +49,7 @@ public class EffectiveConfiguration
         AssemblyFileVersioningFormat = configuration.AssemblyFileVersioningFormat;
         VersioningMode = currentBranchConfig.VersioningMode.Value;
         GitTagPrefix = configuration.TagPrefix;
-        Tag = currentBranchConfig.Tag ?? "useBranchName";
+        Tag = currentBranchConfig.Tag ?? @"{BranchName}";
         NextVersion = configuration.NextVersion;
         Increment = currentBranchConfig.Increment.Value;
         BranchPrefixToTrim = currentBranchConfig.Regex;

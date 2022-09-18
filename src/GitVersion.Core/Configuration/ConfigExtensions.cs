@@ -7,30 +7,55 @@ namespace GitVersion.Configuration;
 
 public static class ConfigExtensions
 {
+    public static BranchConfig GetBranchConfiguration(this Config configuration, IBranch branch)
+        => GetBranchConfiguration(configuration, branch.NotNull().Name.WithoutRemote);
+
     public static BranchConfig GetBranchConfiguration(this Config configuration, string branchName)
     {
-        var branchConfiguration = GetConfigForBranch(configuration, branchName);
-        return branchConfiguration ?? GetFallbackBranchConfiguration(configuration);
+        var branchConfiguration = FindConfigForBranch(configuration, branchName);
+        if (branchConfiguration is null)
+        {
+            branchConfiguration = GetUnknownBranchConfiguration(configuration);
+            branchConfiguration.Name = branchName;
+        }
+        return branchConfiguration;
     }
 
-    // TODO: Please make the fallback configuration also configurable in the yaml.
+    // TODO: Please make the unknown settings also configurable in the yaml.
+    public static BranchConfig GetUnknownBranchConfiguration(this Config configuration) => new()
+    {
+        Name = "Unknown",
+        Regex = "",
+        Tag = "{BranchName}",
+        VersioningMode = configuration.VersioningMode,
+        Increment = IncrementStrategy.Inherit
+    };
+
+    // TODO: Please make the fallback settings also configurable in the yaml.
     public static BranchConfig GetFallbackBranchConfiguration(this Config configuration)
-        => new()
+    {
+        var result = new BranchConfig()
         {
             Name = "Fallback",
             Regex = "",
             Tag = "{BranchName}",
             VersioningMode = configuration.VersioningMode,
-            Increment = configuration.Increment ?? IncrementStrategy.Inherit
+            Increment = configuration.Increment,
+            PreventIncrementOfMergedBranchVersion = false,
+            TrackMergeTarget = false,
+            TracksReleaseBranches = false,
+            IsReleaseBranch = false,
+            IsMainline = false
         };
-
-    public static BranchConfig? GetConfigForBranch(this Config config, string? branchName)
-    {
-        if (branchName == null)
+        if (result.Increment == IncrementStrategy.Inherit)
         {
-            throw new ArgumentNullException(nameof(branchName));
+            result.Increment = IncrementStrategy.None;
         }
+        return result;
+    }
 
+    private static BranchConfig? FindConfigForBranch(Config config, string branchName)
+    {
         var matches = config.Branches
             .Where(b => b.Value?.Regex != null && Regex.IsMatch(branchName, b.Value.Regex, RegexOptions.IgnoreCase))
             .ToArray();
@@ -57,7 +82,7 @@ public static class ConfigExtensions
         }
     }
 
-    public static bool IsReleaseBranch(this Config config, string branchName) => config.GetConfigForBranch(branchName)?.IsReleaseBranch ?? false;
+    public static bool IsReleaseBranch(this Config config, string branchName) => config.GetBranchConfiguration(branchName).IsReleaseBranch ?? false;
 
     public static string GetBranchSpecificTag(this EffectiveConfiguration configuration, ILog log, string? branchFriendlyName, string? branchNameOverride)
     {

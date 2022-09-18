@@ -20,7 +20,7 @@ public interface IRepositoryStore
     IBranch? FindMainBranch(Config configuration);
     IBranch? GetChosenBranch(Config configuration);
     IEnumerable<IBranch> GetBranchesForCommit(ICommit commit);
-    IEnumerable<IBranch> GetExcludedInheritBranches(Config configuration);
+    //IEnumerable<IBranch> GetExcludedInheritBranches(Config configuration);
     IEnumerable<IBranch> GetReleaseBranches(IEnumerable<KeyValuePair<string, BranchConfig>> releaseBranchConfig);
     IEnumerable<IBranch> ExcludingBranches(IEnumerable<IBranch> branchesToExclude);
     IEnumerable<IBranch> GetBranchesContainingCommit(ICommit? commit, IEnumerable<IBranch>? branches = null, bool onlyTrackedBranches = false);

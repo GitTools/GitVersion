@@ -301,8 +301,8 @@ internal class MainlineVersionCalculator : IMainlineVersionCalculator
         if (mergeCommit != null)
         {
             var mergeMessage = new MergeMessage(mergeCommit.Message, context.FullConfiguration);
-            var config = context.FullConfiguration.GetConfigForBranch(mergeMessage.MergedBranch);
-            if (config?.Increment != null && config.Increment != IncrementStrategy.Inherit)
+            var config = context.FullConfiguration.GetBranchConfiguration(mergeMessage.MergedBranch);
+            if (config.Increment != null && config.Increment != IncrementStrategy.Inherit)
             {
                 return config.Increment.Value.ToVersionField();
             }
@@ -312,13 +312,16 @@ internal class MainlineVersionCalculator : IMainlineVersionCalculator
         return FindDefaultIncrementForBranch(context);
     }
 
-    private static VersionField FindDefaultIncrementForBranch(GitVersionContext context, string? branch = null)
+    private static VersionField FindDefaultIncrementForBranch(GitVersionContext context, string? branchName = null)
     {
-        var config = context.FullConfiguration.GetConfigForBranch(branch ?? context.CurrentBranch.Name.WithoutRemote);
-        if (config?.Increment != null && config.Increment != IncrementStrategy.Inherit)
+        var config = context.FullConfiguration.GetBranchConfiguration(branchName ?? context.CurrentBranch.Name.WithoutRemote);
+        if (config.Increment != null && config.Increment != IncrementStrategy.Inherit)
         {
             return config.Increment.Value.ToVersionField();
         }
+
+        // TODO: Hardcoded fallback values are not so good. It might be better to get this information either from the fallback or the unknown
+        // branch configuration settings I have introduced. We should think about it: This is a cooking machine... the ingredients are coming from the user. ;)
 
         // Fallback to patch
         return VersionField.Patch;

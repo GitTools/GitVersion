@@ -21,15 +21,16 @@ internal sealed class EffectiveBranchConfigurationFinder : IEffectiveBranchConfi
     {
         branch.NotNull();
         configuration.NotNull();
+
         return GetEffectiveConfigurationsRecursive(branch, configuration, null, new());
     }
 
-    private IEnumerable<(IBranch Branch, EffectiveConfiguration Configuration)> GetEffectiveConfigurationsRecursive(IBranch branch, Config configuration,
-        BranchConfig? childBranchConfiguration, HashSet<IBranch> traversedBranches)
+    private IEnumerable<(IBranch Branch, EffectiveConfiguration Configuration)> GetEffectiveConfigurationsRecursive(
+        IBranch branch, Config configuration, BranchConfig? childBranchConfiguration, HashSet<IBranch> traversedBranches)
     {
         if (!traversedBranches.Add(branch)) yield break;
 
-        var branchConfiguration = configuration.GetBranchConfiguration(branch.Name.WithoutRemote);
+        var branchConfiguration = configuration.GetBranchConfiguration(branch);
         if (childBranchConfiguration != null)
         {
             branchConfiguration = childBranchConfiguration.Inherit(branchConfiguration);
@@ -45,9 +46,14 @@ internal sealed class EffectiveBranchConfigurationFinder : IEffectiveBranchConfi
             {
                 // Because the actual branch is marked with the inherit increment strategy we need to either skip the iteration or go further
                 // while inheriting from the fallback branch configuration. This behavior is configurable via the increment settings of the configuration.
-                if (configuration.Increment == null) yield break;
-
                 var fallbackBranchConfiguration = configuration.GetFallbackBranchConfiguration();
+                var skipTraversingOfOrphanedBranches = fallbackBranchConfiguration.Increment == null
+                    || fallbackBranchConfiguration.Increment == IncrementStrategy.Inherit;
+                this.log.Info(
+                    $"An orphaned branch '{branch}' has been detected and will be skipped={skipTraversingOfOrphanedBranches}."
+                );
+                if (skipTraversingOfOrphanedBranches) yield break;
+
                 if (fallbackBranchConfiguration.Increment == IncrementStrategy.Inherit)
                 {
                     fallbackBranchConfiguration.Increment = IncrementStrategy.None;
