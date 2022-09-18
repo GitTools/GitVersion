@@ -24,10 +24,7 @@ public class IncrementStrategyFinder : IIncrementStrategyFinder
 
     private readonly IGitRepository repository;
 
-    public IncrementStrategyFinder(IGitRepository repository)
-    {
-        this.repository = repository.NotNull();
-    }
+    public IncrementStrategyFinder(IGitRepository repository) => this.repository = repository.NotNull();
 
     public VersionField DetermineIncrementedField(GitVersionContext context, BaseVersion baseVersion, EffectiveConfiguration configuration)
     {

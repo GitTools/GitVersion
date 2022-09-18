@@ -21,11 +21,8 @@ public class SemanticVersion : IFormattable, IComparable<SemanticVersion>, IEqua
 
     public SemanticVersionBuildMetaData? BuildMetaData
     {
-        get { return _buildMetaData; }
-        set
-        {
-            _buildMetaData = value;
-        }
+        get => _buildMetaData;
+        set => _buildMetaData = value;
     }
     public SemanticVersion(long major = 0, long minor = 0, long patch = 0)
     {
