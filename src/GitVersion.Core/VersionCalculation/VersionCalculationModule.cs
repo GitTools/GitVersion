@@ -10,7 +10,6 @@ public class VersionCalculationModule : IGitVersionModule
         services.AddModule(new VersionStrategyModule());
 
         services.AddSingleton<IVariableProvider, VariableProvider>();
-        services.AddSingleton<IBaseVersionCalculator, BaseVersionCalculator>();
         services.AddSingleton<IMainlineVersionCalculator, MainlineVersionCalculator>();
         services.AddSingleton<INextVersionCalculator, NextVersionCalculator>();
         services.AddSingleton<IIncrementStrategyFinder, IncrementStrategyFinder>();

@@ -1,84 +1,81 @@
 using GitVersion.Core.Tests.Helpers;
 using GitVersion.Model.Configuration;
 using GitVersion.VersionCalculation;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using NSubstitute;
 using NUnit.Framework;
-using Shouldly;
 
 namespace GitVersion.Core.Tests.VersionCalculation;
 
 [TestFixture]
 public class BaseVersionCalculatorTests : TestBase
 {
-    [Test]
-    public void ChoosesHighestVersionReturnedFromStrategies()
-    {
-        var dateTimeOffset = DateTimeOffset.Now;
-        var versionCalculator = GetBaseVersionCalculator(contextBuilder =>
-            contextBuilder.OverrideServices(services =>
-            {
-                services.RemoveAll<IVersionStrategy>();
-                services.AddSingleton<IVersionStrategy>(new V1Strategy(DateTimeOffset.Now));
-                services.AddSingleton<IVersionStrategy>(new V2Strategy(dateTimeOffset));
-            }));
+    //[Test]
+    //public void ChoosesHighestVersionReturnedFromStrategies()
+    //{
+    //    var dateTimeOffset = DateTimeOffset.Now;
+    //    var versionCalculator = GetBaseVersionCalculator(contextBuilder =>
+    //        contextBuilder.OverrideServices(services =>
+    //        {
+    //            services.RemoveAll<IVersionStrategy>();
+    //            services.AddSingleton<IVersionStrategy>(new V1Strategy(DateTimeOffset.Now));
+    //            services.AddSingleton<IVersionStrategy>(new V2Strategy(dateTimeOffset));
+    //        }));
 
-        var mockCommit = GitToolsTestingExtensions.CreateMockCommit();
-        var mockBranch = GitToolsTestingExtensions.CreateMockBranch("main", mockCommit);
-        var nextVersion = versionCalculator.Calculate(mockBranch, ConfigBuilder.New.Build());
+    //    var mockCommit = GitToolsTestingExtensions.CreateMockCommit();
+    //    var mockBranch = GitToolsTestingExtensions.CreateMockBranch("main", mockCommit);
+    //    var nextVersion = versionCalculator.Calculate(mockBranch, ConfigBuilder.New.Build());
 
-        nextVersion.BaseVersion.SemanticVersion.ToString().ShouldBe("2.0.0");
-        nextVersion.BaseVersion.ShouldIncrement.ShouldBe(true);
-        nextVersion.BaseVersion.BaseVersionSource.ShouldNotBeNull();
-        nextVersion.BaseVersion.BaseVersionSource.When.ShouldBe(dateTimeOffset);
-    }
+    //    nextVersion.BaseVersion.SemanticVersion.ToString().ShouldBe("2.0.0");
+    //    nextVersion.BaseVersion.ShouldIncrement.ShouldBe(true);
+    //    nextVersion.BaseVersion.BaseVersionSource.ShouldNotBeNull();
+    //    nextVersion.BaseVersion.BaseVersionSource.When.ShouldBe(dateTimeOffset);
+    //}
 
-    [Test]
-    public void UsesWhenFromNextBestMatchIfHighestDoesntHaveWhen()
-    {
-        var when = DateTimeOffset.Now;
+    //[Test]
+    //public void UsesWhenFromNextBestMatchIfHighestDoesntHaveWhen()
+    //{
+    //    var when = DateTimeOffset.Now;
 
-        var versionCalculator = GetBaseVersionCalculator(contextBuilder =>
-            contextBuilder.OverrideServices(services =>
-            {
-                services.RemoveAll<IVersionStrategy>();
-                services.AddSingleton<IVersionStrategy>(new V1Strategy(when));
-                services.AddSingleton<IVersionStrategy>(new V2Strategy(null));
-            }));
+    //    var versionCalculator = GetBaseVersionCalculator(contextBuilder =>
+    //        contextBuilder.OverrideServices(services =>
+    //        {
+    //            services.RemoveAll<IVersionStrategy>();
+    //            services.AddSingleton<IVersionStrategy>(new V1Strategy(when));
+    //            services.AddSingleton<IVersionStrategy>(new V2Strategy(null));
+    //        }));
 
-        var mockCommit = GitToolsTestingExtensions.CreateMockCommit();
-        var mockBranch = GitToolsTestingExtensions.CreateMockBranch("main", mockCommit);
-        var nextVersion = versionCalculator.Calculate(mockBranch, ConfigBuilder.New.Build());
+    //    var mockCommit = GitToolsTestingExtensions.CreateMockCommit();
+    //    var mockBranch = GitToolsTestingExtensions.CreateMockBranch("main", mockCommit);
+    //    var nextVersion = versionCalculator.Calculate(mockBranch, ConfigBuilder.New.Build());
 
-        nextVersion.BaseVersion.SemanticVersion.ToString().ShouldBe("2.0.0");
-        nextVersion.BaseVersion.ShouldIncrement.ShouldBe(true);
-        nextVersion.BaseVersion.BaseVersionSource.ShouldNotBeNull();
-        nextVersion.BaseVersion.BaseVersionSource.When.ShouldBe(when);
-    }
+    //    nextVersion.BaseVersion.SemanticVersion.ToString().ShouldBe("2.0.0");
+    //    nextVersion.BaseVersion.ShouldIncrement.ShouldBe(true);
+    //    nextVersion.BaseVersion.BaseVersionSource.ShouldNotBeNull();
+    //    nextVersion.BaseVersion.BaseVersionSource.When.ShouldBe(when);
+    //}
 
-    [Test]
-    public void UsesWhenFromNextBestMatchIfHighestDoesntHaveWhenReversedOrder()
-    {
-        var when = DateTimeOffset.Now;
+    //[Test]
+    //public void UsesWhenFromNextBestMatchIfHighestDoesntHaveWhenReversedOrder()
+    //{
+    //    var when = DateTimeOffset.Now;
 
-        var versionCalculator = GetBaseVersionCalculator(contextBuilder =>
-            contextBuilder.OverrideServices(services =>
-            {
-                services.RemoveAll<IVersionStrategy>();
-                services.AddSingleton<IVersionStrategy>(new V1Strategy(null));
-                services.AddSingleton<IVersionStrategy>(new V2Strategy(when));
-            }));
+    //    var versionCalculator = GetBaseVersionCalculator(contextBuilder =>
+    //        contextBuilder.OverrideServices(services =>
+    //        {
+    //            services.RemoveAll<IVersionStrategy>();
+    //            services.AddSingleton<IVersionStrategy>(new V1Strategy(null));
+    //            services.AddSingleton<IVersionStrategy>(new V2Strategy(when));
+    //        }));
 
-        var mockCommit = GitToolsTestingExtensions.CreateMockCommit();
-        var mockBranch = GitToolsTestingExtensions.CreateMockBranch("main", mockCommit);
-        var nextVersion = versionCalculator.Calculate(mockBranch, ConfigBuilder.New.Build());
+    //    var mockCommit = GitToolsTestingExtensions.CreateMockCommit();
+    //    var mockBranch = GitToolsTestingExtensions.CreateMockBranch("main", mockCommit);
+    //    var nextVersion = versionCalculator.Calculate(mockBranch, ConfigBuilder.New.Build());
 
-        nextVersion.BaseVersion.SemanticVersion.ToString().ShouldBe("2.0.0");
-        nextVersion.BaseVersion.ShouldIncrement.ShouldBe(true);
-        nextVersion.BaseVersion.BaseVersionSource.ShouldNotBeNull();
-        nextVersion.BaseVersion.BaseVersionSource.When.ShouldBe(when);
-    }
+    //    nextVersion.BaseVersion.SemanticVersion.ToString().ShouldBe("2.0.0");
+    //    nextVersion.BaseVersion.ShouldIncrement.ShouldBe(true);
+    //    nextVersion.BaseVersion.BaseVersionSource.ShouldNotBeNull();
+    //    nextVersion.BaseVersion.BaseVersionSource.When.ShouldBe(when);
+    //}
 
     //[Test]
     //public void ShouldNotFilterVersion()
@@ -160,15 +157,15 @@ public class BaseVersionCalculatorTests : TestBase
     //    baseVersion.SemanticVersion.ShouldBe(lowerVersion.SemanticVersion);
     //}
 
-    private static IBaseVersionCalculator GetBaseVersionCalculator(Action<GitVersionContextBuilder> contextBuilderAction)
-    {
-        var contextBuilder = new GitVersionContextBuilder();
-        contextBuilderAction.Invoke(contextBuilder);
+    //private static IBaseVersionCalculator GetBaseVersionCalculator(Action<GitVersionContextBuilder> contextBuilderAction)
+    //{
+    //    var contextBuilder = new GitVersionContextBuilder();
+    //    contextBuilderAction.Invoke(contextBuilder);
 
-        contextBuilder.Build();
-        contextBuilder.ServicesProvider.ShouldNotBeNull();
-        return contextBuilder.ServicesProvider.GetRequiredService<IBaseVersionCalculator>();
-    }
+    //    contextBuilder.Build();
+    //    contextBuilder.ServicesProvider.ShouldNotBeNull();
+    //    return contextBuilder.ServicesProvider.GetRequiredService<IBaseVersionCalculator>();
+    //}
 
     private class TestIgnoreConfig : IgnoreConfig
     {

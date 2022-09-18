@@ -4,66 +4,64 @@ using GitVersion.Core.Tests.IntegrationTests;
 using GitVersion.Model.Configuration;
 using GitVersion.VersionCalculation;
 using LibGit2Sharp;
-using Microsoft.Extensions.DependencyInjection;
 using NUnit.Framework;
-using Shouldly;
 
 namespace GitVersion.Core.Tests.VersionCalculation;
 
 public class NextVersionCalculatorTests : TestBase
 {
-    [Test]
-    public void ShouldIncrementVersionBasedOnConfig()
-    {
-        var semanticVersionBuildMetaData = new SemanticVersionBuildMetaData("ef7d0d7e1e700f1c7c9fa01ea6791bb778a5c37c", 1, MainBranch, "b1a34edbd80e141f7cc046c074f109be7d022074", "b1a34e", DateTimeOffset.Now, 0);
+    //[Test]
+    //public void ShouldIncrementVersionBasedOnConfig()
+    //{
+    //    var semanticVersionBuildMetaData = new SemanticVersionBuildMetaData("ef7d0d7e1e700f1c7c9fa01ea6791bb778a5c37c", 1, MainBranch, "b1a34edbd80e141f7cc046c074f109be7d022074", "b1a34e", DateTimeOffset.Now, 0);
 
-        var contextBuilder = new GitVersionContextBuilder();
+    //    var contextBuilder = new GitVersionContextBuilder();
 
-        contextBuilder
-            .OverrideServices(services =>
-            {
-                var testBaseVersionCalculator = new TestBaseVersionCalculator(true, new SemanticVersion(1), GitToolsTestingExtensions.CreateMockCommit());
-                services.AddSingleton<IBaseVersionCalculator>(testBaseVersionCalculator);
-                services.AddSingleton<IMainlineVersionCalculator>(new TestMainlineVersionCalculator(semanticVersionBuildMetaData));
-            })
-            .WithConfig(new Config())
-            .Build();
+    //    contextBuilder
+    //        .OverrideServices(services =>
+    //        {
+    //            var testBaseVersionCalculator = new TestBaseVersionCalculator(true, new SemanticVersion(1), GitToolsTestingExtensions.CreateMockCommit());
+    //            services.AddSingleton<IBaseVersionCalculator>(testBaseVersionCalculator);
+    //            services.AddSingleton<IMainlineVersionCalculator>(new TestMainlineVersionCalculator(semanticVersionBuildMetaData));
+    //        })
+    //        .WithConfig(new Config())
+    //        .Build();
 
-        contextBuilder.ServicesProvider.ShouldNotBeNull();
-        var nextVersionCalculator = contextBuilder.ServicesProvider.GetRequiredService<INextVersionCalculator>();
-        nextVersionCalculator.ShouldNotBeNull();
+    //    contextBuilder.ServicesProvider.ShouldNotBeNull();
+    //    var nextVersionCalculator = contextBuilder.ServicesProvider.GetRequiredService<INextVersionCalculator>();
+    //    nextVersionCalculator.ShouldNotBeNull();
 
-        var version = nextVersionCalculator.FindVersion();
+    //    var version = nextVersionCalculator.FindVersion();
 
-        version.ToString().ShouldBe("1.0.1");
-    }
+    //    version.ToString().ShouldBe("1.0.1");
+    //}
 
-    [Test]
-    public void DoesNotIncrementWhenBaseVersionSaysNotTo()
-    {
-        var semanticVersionBuildMetaData = new SemanticVersionBuildMetaData("ef7d0d7e1e700f1c7c9fa01ea6791bb778a5c37c", 1, MainBranch, "b1a34edbd80e141f7cc046c074f109be7d022074", "b1a34e", DateTimeOffset.Now, 0);
+    //[Test]
+    //public void DoesNotIncrementWhenBaseVersionSaysNotTo()
+    //{
+    //    var semanticVersionBuildMetaData = new SemanticVersionBuildMetaData("ef7d0d7e1e700f1c7c9fa01ea6791bb778a5c37c", 1, MainBranch, "b1a34edbd80e141f7cc046c074f109be7d022074", "b1a34e", DateTimeOffset.Now, 0);
 
-        var contextBuilder = new GitVersionContextBuilder();
+    //    var contextBuilder = new GitVersionContextBuilder();
 
-        contextBuilder
-            .OverrideServices(services =>
-            {
-                var testBaseVersionCalculator = new TestBaseVersionCalculator(false, new SemanticVersion(1), GitToolsTestingExtensions.CreateMockCommit());
-                services.AddSingleton<IBaseVersionCalculator>(testBaseVersionCalculator);
-                services.AddSingleton<IMainlineVersionCalculator>(new TestMainlineVersionCalculator(semanticVersionBuildMetaData));
-            })
-            .WithConfig(new Config())
-            .Build();
+    //    contextBuilder
+    //        .OverrideServices(services =>
+    //        {
+    //            var testBaseVersionCalculator = new TestBaseVersionCalculator(false, new SemanticVersion(1), GitToolsTestingExtensions.CreateMockCommit());
+    //            services.AddSingleton<IBaseVersionCalculator>(testBaseVersionCalculator);
+    //            services.AddSingleton<IMainlineVersionCalculator>(new TestMainlineVersionCalculator(semanticVersionBuildMetaData));
+    //        })
+    //        .WithConfig(new Config())
+    //        .Build();
 
-        contextBuilder.ServicesProvider.ShouldNotBeNull();
-        var nextVersionCalculator = contextBuilder.ServicesProvider.GetRequiredService<INextVersionCalculator>();
+    //    contextBuilder.ServicesProvider.ShouldNotBeNull();
+    //    var nextVersionCalculator = contextBuilder.ServicesProvider.GetRequiredService<INextVersionCalculator>();
 
-        nextVersionCalculator.ShouldNotBeNull();
+    //    nextVersionCalculator.ShouldNotBeNull();
 
-        var version = nextVersionCalculator.FindVersion();
+    //    var version = nextVersionCalculator.FindVersion();
 
-        version.ToString().ShouldBe("1.0.0");
-    }
+    //    version.ToString().ShouldBe("1.0.0");
+    //}
 
     //[Test]
     //public void AppliesBranchPreReleaseTag()
