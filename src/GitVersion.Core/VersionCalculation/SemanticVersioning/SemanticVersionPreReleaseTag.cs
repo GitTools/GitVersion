@@ -161,4 +161,27 @@ public class SemanticVersionPreReleaseTag :
 
     public bool HasTag() =>
         !Name.IsNullOrEmpty() || (Number.HasValue && PromotedFromCommits != true);
+
+    private string? disabledName;
+    private bool? disabledPromotedFromCommits;
+    private long? disabledNumber;
+
+    internal void DisableBeacuaseTheMainLineModeDoesntSupportPreReleaseTags()
+    {
+        if (!HasTag()) return;
+
+        disabledName = Name;
+        Name = null;
+        disabledPromotedFromCommits = PromotedFromCommits;
+        PromotedFromCommits = true;
+        disabledNumber = Number;
+        Number = 0;
+    }
+
+    internal void EnableBeacuaseTheMainLineModeDoesntSupportPreReleaseTags()
+    {
+        Name = disabledName;
+        PromotedFromCommits = disabledPromotedFromCommits;
+        Number = disabledNumber;
+    }
 }

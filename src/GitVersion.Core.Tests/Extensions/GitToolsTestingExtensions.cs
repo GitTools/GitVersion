@@ -82,8 +82,8 @@ public static class GitToolsTestingExtensions
 
         try
         {
-            var semanticVersion = nextVersionCalculator.FindVersion();
-            var variables = variableProvider.GetVariablesFor(semanticVersion, context.Configuration, context.IsCurrentCommitTagged);
+            var nextVersion = nextVersionCalculator.FindVersion();
+            var variables = variableProvider.GetVariablesFor(nextVersion, context.IsCurrentCommitTagged);
 
             return variables;
         }

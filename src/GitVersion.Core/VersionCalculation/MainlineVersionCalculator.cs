@@ -23,9 +23,12 @@ internal class MainlineVersionCalculator : IMainlineVersionCalculator
 
     public SemanticVersion FindMainlineModeVersion(BaseVersion baseVersion)
     {
-        if (baseVersion.SemanticVersion.PreReleaseTag?.HasTag() == true)
+        var preReleaseTag = baseVersion.SemanticVersion.PreReleaseTag;
+        if (preReleaseTag != null)
         {
-            throw new NotSupportedException("Mainline development mode doesn't yet support pre-release tags on main");
+            // TODO: This needs to be refactored. It's a hack because mainline development doesn't support preReleaseTag.
+            preReleaseTag.DisableBeacuaseTheMainLineModeDoesntSupportPreReleaseTags();
+            //throw new NotSupportedException("Mainline development mode doesn't yet support pre-release tags on main");
         }
 
         using (this.log.IndentLog("Using mainline development mode to calculate current version"))
@@ -80,6 +83,14 @@ internal class MainlineVersionCalculator : IMainlineVersionCalculator
                 mainlineVersion = mainlineVersion.IncrementVersion(branchIncrement);
             }
 
+            baseVersion.SemanticVersion.PreReleaseTag = preReleaseTag;
+
+            if (preReleaseTag != null)
+            {
+                // TODO: This needs to be refactored. It's a hack because mainline development doesn't support preReleaseTag.
+                preReleaseTag.EnableBeacuaseTheMainLineModeDoesntSupportPreReleaseTags();
+                mainlineVersion.PreReleaseTag = preReleaseTag;
+            }
             return mainlineVersion;
         }
     }

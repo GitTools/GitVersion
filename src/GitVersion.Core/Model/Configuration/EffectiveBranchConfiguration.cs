@@ -7,14 +7,14 @@ public class EffectiveBranchConfiguration
 {
     public IBranch Branch { get; }
 
-    public EffectiveConfiguration Configuration { get; }
+    public EffectiveConfiguration Value { get; }
 
-    public EffectiveBranchConfiguration(IBranch branch, EffectiveConfiguration configuration)
+    public EffectiveBranchConfiguration(IBranch branch, EffectiveConfiguration value)
     {
         Branch = branch.NotNull();
-        Configuration = configuration.NotNull();
+        Value = value.NotNull();
     }
 
     public NextVersion CreateNextVersion(BaseVersion baseVersion, SemanticVersion incrementedVersion)
-        => new(incrementedVersion.NotNull(), baseVersion.NotNull(), new(Branch, Configuration));
+        => new(incrementedVersion.NotNull(), baseVersion.NotNull(), new(Branch, Value));
 }

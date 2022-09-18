@@ -15,9 +15,6 @@ public class GitVersionContext
 
     public SemanticVersion? CurrentCommitTaggedVersion { get; }
 
-    [Obsolete("The only usage of the effected configuration is in the classes who implements VersionStrategyBaseWithInheritSupport.")]
-    public EffectiveConfiguration? Configuration { get; set; }
-
     public IBranch CurrentBranch { get; }
 
     public ICommit? CurrentCommit { get; }

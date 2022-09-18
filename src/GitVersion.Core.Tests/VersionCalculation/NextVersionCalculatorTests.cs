@@ -287,6 +287,12 @@ public class NextVersionCalculatorTests : TestBase
                         Tag = "beta"
                     }
                 }
+                //{
+                //    "feature", new BranchConfig
+                //    {
+                //        PreReleaseWeight = 99999
+                //    }
+                //}
             }
         };
 
@@ -298,7 +304,7 @@ public class NextVersionCalculatorTests : TestBase
         fixture.Repository.MakeATaggedCommit("0.1.0-test.1");
         fixture.Repository.MakeACommit();
 
-        fixture.AssertFullSemver("0.1.0-test.2+1", config);
+        fixture.AssertFullSemver("0.1.0-test.2+1", config); // 0.1.0-test.1+1??
 
         Commands.Checkout(fixture.Repository, MainBranch);
         fixture.Repository.Merge("feature/test", Generate.SignatureNow());

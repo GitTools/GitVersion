@@ -47,7 +47,7 @@ public class EffectiveBranchConfigurationFinderTests
         // Assert
         actual.ShouldHaveSingleItem();
         actual[0].Branch.ShouldBe(branchMock);
-        actual[0].Configuration.Increment.ShouldBe(IncrementStrategy.None);
+        actual[0].Value.Increment.ShouldBe(IncrementStrategy.None);
     }
 
     [TestCase(IncrementStrategy.None)]
@@ -71,7 +71,7 @@ public class EffectiveBranchConfigurationFinderTests
         // Assert
         actual.ShouldHaveSingleItem();
         actual[0].Branch.ShouldBe(branchMock);
-        actual[0].Configuration.Increment.ShouldBe(fallbackIncrement);
+        actual[0].Value.Increment.ShouldBe(fallbackIncrement);
     }
 
     [Test]
@@ -138,7 +138,7 @@ public class EffectiveBranchConfigurationFinderTests
         // Assert
         actual.ShouldHaveSingleItem();
         actual[0].Branch.ShouldBe(branchMock);
-        actual[0].Configuration.Increment.ShouldBe(fallbackIncrement);
+        actual[0].Value.Increment.ShouldBe(fallbackIncrement);
     }
 
     [TestCase(IncrementStrategy.None, IncrementStrategy.None)]
@@ -175,7 +175,7 @@ public class EffectiveBranchConfigurationFinderTests
         // Assert
         actual.ShouldHaveSingleItem();
         actual[0].Branch.ShouldBe(unknownBranchMock);
-        actual[0].Configuration.Increment.ShouldBe(fallbackIncrement);
+        actual[0].Value.Increment.ShouldBe(fallbackIncrement);
     }
 
     [TestCase(IncrementStrategy.None)]
@@ -200,6 +200,6 @@ public class EffectiveBranchConfigurationFinderTests
         // Assert
         actual.ShouldHaveSingleItem();
         actual[0].Branch.ShouldBe(developBranchMock);
-        actual[0].Configuration.Increment.ShouldBe(developBranchIncrement);
+        actual[0].Value.Increment.ShouldBe(developBranchIncrement);
     }
 }

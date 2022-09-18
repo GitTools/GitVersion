@@ -36,7 +36,7 @@ public class NextVersionCalculator : INextVersionCalculator
         this.incrementStrategyFinder = incrementStrategyFinder.NotNull();
     }
 
-    public virtual SemanticVersion FindVersion()
+    public virtual NextVersion FindVersion()
     {
         this.log.Info($"Running against branch: {context.CurrentBranch} ({context.CurrentCommit?.ToString() ?? "-"})");
         if (context.IsCurrentCommitTagged)
@@ -47,6 +47,11 @@ public class NextVersionCalculator : INextVersionCalculator
         {
             EnsureHeadIsNotDetached(context);
         }
+
+
+        // It is totally unimportant that the current commit has been tagged or not IMO. We can make a double check actually if the result
+        // is the same or make it configurable but each run should be deterministic.Even if the development process goes on the tagged commit
+        // should always calculating the the same result. Otherwise something is wrong with the configuration or someone messed up the branching history.
 
         SemanticVersion? taggedSemanticVersion = null;
 
@@ -60,39 +65,26 @@ public class NextVersionCalculator : INextVersionCalculator
             taggedSemanticVersion = semanticVersion;
         }
 
-        var baseVersion = Calculate(context.CurrentBranch, context.FullConfiguration);
-        baseVersion.BaseVersion.SemanticVersion.BuildMetaData = this.mainlineVersionCalculator.CreateVersionBuildMetaData(baseVersion.BaseVersion.BaseVersionSource);
+        //
+
+        var nextVersion = Calculate(context.CurrentBranch, context.FullConfiguration);
+        nextVersion.BaseVersion.SemanticVersion.BuildMetaData = this.mainlineVersionCalculator.CreateVersionBuildMetaData(nextVersion.BaseVersion.BaseVersionSource);
         SemanticVersion semver;
         if (context.FullConfiguration.VersioningMode == VersioningMode.Mainline)
         {
-            semver = this.mainlineVersionCalculator.FindMainlineModeVersion(baseVersion.BaseVersion);
+            semver = this.mainlineVersionCalculator.FindMainlineModeVersion(nextVersion.BaseVersion);
         }
         else
         {
-            if (taggedSemanticVersion == null && baseVersion.BaseVersion.SemanticVersion.BuildMetaData?.Sha == null)
+            if (taggedSemanticVersion?.BuildMetaData == null || (taggedSemanticVersion.BuildMetaData?.Sha != nextVersion.BaseVersion.SemanticVersion.BuildMetaData.Sha))
             {
-                semver = baseVersion.BaseVersion.SemanticVersion;
-            }
-            else if (taggedSemanticVersion?.BuildMetaData == null || (taggedSemanticVersion.BuildMetaData?.Sha != baseVersion.BaseVersion.SemanticVersion.BuildMetaData.Sha))
-            {
-                semver = baseVersion.IncrementedVersion;
-                semver.BuildMetaData = this.mainlineVersionCalculator.CreateVersionBuildMetaData(baseVersion.BaseVersion.BaseVersionSource);
+                semver = nextVersion.IncrementedVersion;
+                semver.BuildMetaData = this.mainlineVersionCalculator.CreateVersionBuildMetaData(nextVersion.BaseVersion.BaseVersionSource);
             }
             else
             {
-                semver = baseVersion.BaseVersion.SemanticVersion;
+                semver = nextVersion.BaseVersion.SemanticVersion;
             }
-        }
-
-        var hasPreReleaseTag = semver.PreReleaseTag?.HasTag() == true;
-        var tag = context.Configuration?.Tag;
-        var branchConfigHasPreReleaseTagConfigured = !tag.IsNullOrEmpty();
-#pragma warning disable CS8602 // Dereference of a possibly null reference. // context.Configuration.Tag not null when branchConfigHasPreReleaseTagConfigured is true
-        var preReleaseTagDoesNotMatchConfiguration = hasPreReleaseTag && branchConfigHasPreReleaseTagConfigured && semver.PreReleaseTag?.Name != tag;
-#pragma warning restore CS8602 // Dereference of a possibly null reference.
-        if (semver.PreReleaseTag?.HasTag() != true && branchConfigHasPreReleaseTagConfigured || preReleaseTagDoesNotMatchConfiguration)
-        {
-            UpdatePreReleaseTag(semver, baseVersion.BaseVersion.BranchNameOverride);
         }
 
         if (taggedSemanticVersion != null)
@@ -109,12 +101,12 @@ public class NextVersionCalculator : INextVersionCalculator
             }
         }
 
-        return taggedSemanticVersion ?? semver;
+        return new(taggedSemanticVersion ?? semver, nextVersion.BaseVersion, new(nextVersion.Branch, nextVersion.Configuration));
     }
 
-    private void UpdatePreReleaseTag(SemanticVersion semanticVersion, string? branchNameOverride)
+    private void UpdatePreReleaseTag(EffectiveBranchConfiguration configuration, SemanticVersion semanticVersion, string? branchNameOverride)
     {
-        var tagToUse = context.Configuration.GetBranchSpecificTag(this.log, context.CurrentBranch.Name.Friendly, branchNameOverride);
+        var tagToUse = configuration.Value.GetBranchSpecificTag(this.log, context.CurrentBranch.Name.Friendly, branchNameOverride);
 
         long? number = null;
 
@@ -221,7 +213,9 @@ public class NextVersionCalculator : INextVersionCalculator
 
             log.Info($"Base version used: {calculatedBase}");
 
-            return new(maxVersion.IncrementedVersion, calculatedBase, maxVersion.Branch, maxVersion.Configuration);
+            var nextVersion = new NextVersion(maxVersion.IncrementedVersion, calculatedBase, maxVersion.Branch, maxVersion.Configuration);
+
+            return nextVersion;
         }
     }
 
@@ -234,8 +228,8 @@ public class NextVersionCalculator : INextVersionCalculator
 
         foreach (var effectiveBranchConfiguration in effectiveBranchConfigurationFinder.GetConfigurations(branch, configuration))
         {
-            // Has been moved from BaseVersionCalculator because the effected configuration is only available in this class.
-            context.Configuration = effectiveBranchConfiguration.Configuration;
+            //// Has been moved from BaseVersionCalculator because the effected configuration is only available in this class.
+            //context.Configuration = effectiveBranchConfiguration.Value;
 
             foreach (var versionStrategy in versionStrategies)
             {
@@ -247,7 +241,7 @@ public class NextVersionCalculator : INextVersionCalculator
                         var incrementStrategy = incrementStrategyFinder.DetermineIncrementedField(
                             context: context,
                             baseVersion: baseVersion,
-                            configuration: effectiveBranchConfiguration.Configuration
+                            configuration: effectiveBranchConfiguration.Value
                         );
                         var incrementedVersion = incrementStrategy == VersionField.None
                             ? baseVersion.SemanticVersion
@@ -260,6 +254,19 @@ public class NextVersionCalculator : INextVersionCalculator
                                 continue;
                             }
                         }
+
+                        foreach (var semanticVersion in new[] { baseVersion.SemanticVersion, incrementedVersion })
+                        {
+                            var hasPreReleaseTag = semanticVersion.PreReleaseTag?.HasTag() == true;
+                            var tag = effectiveBranchConfiguration.Value.Tag;
+                            var branchConfigHasPreReleaseTagConfigured = !tag.IsNullOrEmpty();
+                            var preReleaseTagDoesNotMatchConfiguration = hasPreReleaseTag && branchConfigHasPreReleaseTagConfigured && semanticVersion.PreReleaseTag?.Name != tag;
+                            if (semanticVersion.PreReleaseTag?.HasTag() != true && branchConfigHasPreReleaseTagConfigured || preReleaseTagDoesNotMatchConfiguration)
+                            {
+                                UpdatePreReleaseTag(effectiveBranchConfiguration, semanticVersion, baseVersion.BranchNameOverride);
+                            }
+                        }
+
 
                         yield return effectiveBranchConfiguration.CreateNextVersion(baseVersion, incrementedVersion);
                         atLeastOneBaseVersionReturned = true;

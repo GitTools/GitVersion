@@ -14,7 +14,7 @@ public class NextVersion
     public EffectiveConfiguration Configuration { get; }
 
     public NextVersion(SemanticVersion incrementedVersion, BaseVersion baseVersion, EffectiveBranchConfiguration configuration)
-        : this(incrementedVersion, baseVersion, configuration.NotNull().Branch, configuration.NotNull().Configuration)
+        : this(incrementedVersion, baseVersion, configuration.NotNull().Branch, configuration.NotNull().Value)
     {
     }
 

@@ -24,11 +24,11 @@ public class VersionSourceTests : TestBase
 
         var nextVersionCalculator = GetNextVersionCalculator(fixture);
 
-        var version = nextVersionCalculator.FindVersion();
+        var nextVersion = nextVersionCalculator.FindVersion();
 
-        version.BuildMetaData.ShouldNotBeNull();
-        version.BuildMetaData.VersionSourceSha.ShouldBeNull();
-        version.BuildMetaData.CommitsSinceVersionSource.ShouldBe(3);
+        nextVersion.IncrementedVersion.BuildMetaData.ShouldNotBeNull();
+        nextVersion.IncrementedVersion.BuildMetaData.VersionSourceSha.ShouldBeNull();
+        nextVersion.IncrementedVersion.BuildMetaData.CommitsSinceVersionSource.ShouldBe(3);
     }
 
     [Test]
@@ -39,11 +39,11 @@ public class VersionSourceTests : TestBase
 
         var nextVersionCalculator = GetNextVersionCalculator(fixture);
 
-        var version = nextVersionCalculator.FindVersion();
+        var nextVersion = nextVersionCalculator.FindVersion();
 
-        version.BuildMetaData.ShouldNotBeNull();
-        version.BuildMetaData.VersionSourceSha.ShouldBeNull();
-        version.BuildMetaData.CommitsSinceVersionSource.ShouldBe(1);
+        nextVersion.IncrementedVersion.BuildMetaData.ShouldNotBeNull();
+        nextVersion.IncrementedVersion.BuildMetaData.VersionSourceSha.ShouldBeNull();
+        nextVersion.IncrementedVersion.BuildMetaData.CommitsSinceVersionSource.ShouldBe(1);
     }
 
     [Test]
@@ -62,9 +62,9 @@ public class VersionSourceTests : TestBase
 
         var version = nextVersionCalculator.FindVersion();
 
-        version.BuildMetaData.ShouldNotBeNull();
-        version.BuildMetaData.VersionSourceSha.ShouldBe(secondCommit.Sha);
-        version.BuildMetaData.CommitsSinceVersionSource.ShouldBe(1);
+        version.IncrementedVersion.BuildMetaData.ShouldNotBeNull();
+        version.IncrementedVersion.BuildMetaData.VersionSourceSha.ShouldBe(secondCommit.Sha);
+        version.IncrementedVersion.BuildMetaData.CommitsSinceVersionSource.ShouldBe(1);
     }
 
     private static INextVersionCalculator GetNextVersionCalculator(RepositoryFixtureBase fixture)

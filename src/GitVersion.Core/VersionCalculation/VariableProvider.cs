@@ -3,7 +3,6 @@ using GitVersion.Configuration;
 using GitVersion.Extensions;
 using GitVersion.Helpers;
 using GitVersion.Logging;
-using GitVersion.Model.Configuration;
 using GitVersion.OutputVariables;
 
 namespace GitVersion.VersionCalculation;
@@ -19,8 +18,11 @@ public class VariableProvider : IVariableProvider
         this.log = log.NotNull();
     }
 
-    public VersionVariables GetVariablesFor(SemanticVersion semanticVersion, EffectiveConfiguration config, bool isCurrentCommitTagged)
+    public VersionVariables GetVariablesFor(NextVersion nextVersion, bool isCurrentCommitTagged)
     {
+        var semanticVersion = nextVersion.NotNull().IncrementedVersion;
+        var config = nextVersion.Configuration;
+
         var isContinuousDeploymentMode = config.VersioningMode == VersioningMode.ContinuousDeployment && !isCurrentCommitTagged;
         if (isContinuousDeploymentMode)
         {
@@ -31,6 +33,8 @@ public class VariableProvider : IVariableProvider
                 semanticVersion.PreReleaseTag.Name = config.GetBranchSpecificTag(this.log, semanticVersion.BuildMetaData?.Branch, null);
                 if (semanticVersion.PreReleaseTag.Name.IsNullOrEmpty())
                 {
+                    // TODO: Why do we manipulating the semantic version here in the VariableProvider? The method name is GET not MANIPULATE.
+                    // What is about the separation of concern and single-responsibility principle?
                     semanticVersion.PreReleaseTag.Name = config.ContinuousDeploymentFallbackTag;
                 }
             }
@@ -46,6 +50,8 @@ public class VariableProvider : IVariableProvider
                 var numberGroup = match.Groups["number"];
                 if (numberGroup.Success && semanticVersion.PreReleaseTag != null)
                 {
+                    // TODO: Why do we manipulating the semantic version here in the VariableProvider? The method name is GET not MANIPULATE.
+                    // What is about the separation of concern and single-responsibility principle?
                     semanticVersion.PreReleaseTag.Name += numberGroup.Value.PadLeft(config.BuildMetaDataPadding, '0');
                 }
             }
@@ -53,6 +59,8 @@ public class VariableProvider : IVariableProvider
 
         if (isContinuousDeploymentMode || appendTagNumberPattern || config.VersioningMode == VersioningMode.Mainline)
         {
+            // TODO: Why do we manipulating the semantic version here in the VariableProvider? The method name is GET not MANIPULATE.
+            // What is about the separation of concern and single-responsibility principle?
             PromoteNumberOfCommitsToTagNumber(semanticVersion);
         }
 

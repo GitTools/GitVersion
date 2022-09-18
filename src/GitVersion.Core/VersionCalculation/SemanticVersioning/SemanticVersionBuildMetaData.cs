@@ -97,7 +97,7 @@ public class SemanticVersionBuildMetaData : IFormattable, IEquatable<SemanticVer
 
         return format.ToLower() switch
         {
-            "b" => this.CommitsSinceTag.ToString(),
+            "b" => $"{this.CommitsSinceTag}",
             "s" => $"{this.CommitsSinceTag}{(this.Sha.IsNullOrEmpty() ? null : ".Sha." + this.Sha)}".TrimStart('.'),
             "f" => $"{this.CommitsSinceTag}{(this.Branch.IsNullOrEmpty() ? null : ".Branch." + FormatMetaDataPart(this.Branch))}{(this.Sha.IsNullOrEmpty() ? null : ".Sha." + this.Sha)}{(this.OtherMetaData.IsNullOrEmpty() ? null : "." + FormatMetaDataPart(this.OtherMetaData))}".TrimStart('.'),
             _ => throw new FormatException($"Unknown format '{format}'.")

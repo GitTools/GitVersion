@@ -1,4 +1,5 @@
 using System.Xml.Linq;
+using GitVersion.Core.Tests.Extensions;
 using GitVersion.Core.Tests.Helpers;
 using GitVersion.Extensions;
 using GitVersion.Helpers;

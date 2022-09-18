@@ -33,7 +33,7 @@ public class MergeMessageVersionStrategy : VersionStrategyBase
                     Context.FullConfiguration.IsReleaseBranch(TrimRemote(mergeMessage.MergedBranch)))
                 {
                     this.log.Info($"Found commit [{Context.CurrentCommit}] matching merge message format: {mergeMessage.FormatName}");
-                    var shouldIncrement = !configuration.Configuration.PreventIncrementForMergedBranchVersion;
+                    var shouldIncrement = !configuration.Value.PreventIncrementForMergedBranchVersion;
                     return new[]
                     {
                         new BaseVersion($"{MergeMessageStrategyPrefix} '{c.Message.Trim()}'", shouldIncrement, mergeMessage.Version, c, null)

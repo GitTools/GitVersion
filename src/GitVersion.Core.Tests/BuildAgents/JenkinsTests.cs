@@ -1,4 +1,5 @@
 using GitVersion.BuildAgents;
+using GitVersion.Core.Tests.Extensions;
 using GitVersion.Core.Tests.Helpers;
 using GitVersion.Helpers;
 using GitVersion.VersionCalculation;
