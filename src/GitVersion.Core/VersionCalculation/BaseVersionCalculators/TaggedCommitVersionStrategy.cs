@@ -16,7 +16,7 @@ public class TaggedCommitVersionStrategy : VersionStrategyBase
     public TaggedCommitVersionStrategy(IRepositoryStore repositoryStore, Lazy<GitVersionContext> versionContext)
         : base(versionContext) => RepositoryStore = repositoryStore.NotNull();
 
-    public override IEnumerable<BaseVersion> GetVersions(IBranch branch, EffectiveConfiguration configuration) =>
+    public override IEnumerable<BaseVersion> GetBaseVersions(EffectiveBranchConfiguration configuration) =>
         GetTaggedVersions(Context.CurrentBranch, Context.CurrentCommit?.When);
 
     internal IEnumerable<BaseVersion> GetTaggedVersions(IBranch currentBranch, DateTimeOffset? olderThan)

@@ -9,7 +9,7 @@ namespace GitVersion.VersionCalculation;
 /// </summary>
 public class FallbackVersionStrategy : IVersionStrategy
 {
-    public virtual IEnumerable<BaseVersion> GetVersions(IBranch branch, EffectiveConfiguration configuration)
+    public virtual IEnumerable<BaseVersion> GetBaseVersions(EffectiveBranchConfiguration configuration)
     {
         yield return new BaseVersion("Fallback base version", true, new SemanticVersion(), null, null);
     }

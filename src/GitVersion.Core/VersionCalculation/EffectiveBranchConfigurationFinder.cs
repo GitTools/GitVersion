@@ -17,7 +17,7 @@ internal sealed class EffectiveBranchConfigurationFinder : IEffectiveBranchConfi
         this.repositoryStore = repositoryStore.NotNull();
     }
 
-    public IEnumerable<(IBranch Branch, EffectiveConfiguration Configuration)> GetConfigurations(IBranch branch, Config configuration)
+    public IEnumerable<EffectiveBranchConfiguration> GetConfigurations(IBranch branch, Config configuration)
     {
         branch.NotNull();
         configuration.NotNull();
@@ -25,7 +25,7 @@ internal sealed class EffectiveBranchConfigurationFinder : IEffectiveBranchConfi
         return GetEffectiveConfigurationsRecursive(branch, configuration, null, new());
     }
 
-    private IEnumerable<(IBranch Branch, EffectiveConfiguration Configuration)> GetEffectiveConfigurationsRecursive(
+    private IEnumerable<EffectiveBranchConfiguration> GetEffectiveConfigurationsRecursive(
         IBranch branch, Config configuration, BranchConfig? childBranchConfiguration, HashSet<IBranch> traversedBranches)
     {
         if (!traversedBranches.Add(branch)) yield break;

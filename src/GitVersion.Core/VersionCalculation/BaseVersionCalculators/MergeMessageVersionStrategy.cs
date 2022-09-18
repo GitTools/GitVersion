@@ -19,7 +19,7 @@ public class MergeMessageVersionStrategy : VersionStrategyBase
     public MergeMessageVersionStrategy(ILog log, Lazy<GitVersionContext> versionContext)
         : base(versionContext) => this.log = log.NotNull();
 
-    public override IEnumerable<BaseVersion> GetVersions(IBranch branch, EffectiveConfiguration configuration)
+    public override IEnumerable<BaseVersion> GetBaseVersions(EffectiveBranchConfiguration configuration)
     {
         if (Context.CurrentBranch.Commits == null || Context.CurrentCommit == null)
             return Enumerable.Empty<BaseVersion>();
@@ -33,7 +33,7 @@ public class MergeMessageVersionStrategy : VersionStrategyBase
                     Context.FullConfiguration.IsReleaseBranch(TrimRemote(mergeMessage.MergedBranch)))
                 {
                     this.log.Info($"Found commit [{Context.CurrentCommit}] matching merge message format: {mergeMessage.FormatName}");
-                    var shouldIncrement = !configuration.PreventIncrementForMergedBranchVersion;
+                    var shouldIncrement = !configuration.Configuration.PreventIncrementForMergedBranchVersion;
                     return new[]
                     {
                         new BaseVersion($"{MergeMessageStrategyPrefix} '{c.Message.Trim()}'", shouldIncrement, mergeMessage.Version, c, null)

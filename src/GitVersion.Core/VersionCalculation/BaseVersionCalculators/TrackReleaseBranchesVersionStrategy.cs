@@ -36,8 +36,8 @@ public class TrackReleaseBranchesVersionStrategy : VersionStrategyBase
         this.taggedCommitVersionStrategy = new TaggedCommitVersionStrategy(repositoryStore, versionContext);
     }
 
-    public override IEnumerable<BaseVersion> GetVersions(IBranch branch, EffectiveConfiguration configuration) =>
-        configuration.TracksReleaseBranches ? ReleaseBranchBaseVersions().Union(MainTagsVersions()) : Array.Empty<BaseVersion>();
+    public override IEnumerable<BaseVersion> GetBaseVersions(EffectiveBranchConfiguration configuration) =>
+        configuration.Configuration.TracksReleaseBranches ? ReleaseBranchBaseVersions().Union(MainTagsVersions()) : Array.Empty<BaseVersion>();
 
     private IEnumerable<BaseVersion> MainTagsVersions()
     {
@@ -79,7 +79,7 @@ public class TrackReleaseBranchesVersionStrategy : VersionStrategyBase
         var baseSource = RepositoryStore.FindMergeBase(releaseBranch, Context.CurrentBranch);
         var configuration = Context.GetEffectiveConfiguration(releaseBranch);
         return this.releaseVersionStrategy
-            .GetVersions(releaseBranch, configuration)
+            .GetBaseVersions(new(releaseBranch, configuration))
             .Select(b => new BaseVersion(b.Source, true, b.SemanticVersion, baseSource, b.BranchNameOverride));
     }
 }

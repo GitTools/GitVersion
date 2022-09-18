@@ -1,3 +1,4 @@
+using GitVersion.Configuration;
 using GitVersion.Model.Configuration;
 using GitVersion.VersionCalculation;
 
@@ -18,7 +19,11 @@ public class TestBaseVersionCalculator : IBaseVersionCalculator
         incrementedVersion = shouldIncrement ? semanticVersion.IncrementVersion(VersionField.Patch) : semanticVersion;
     }
 
-    public NextVersion Calculate(IBranch branch, Config configuration) => new(
-        incrementedVersion, new("Test source", shouldIncrement, semanticVersion, source, null)
-    );
+    public NextVersion Calculate(IBranch branch, Config configuration)
+    {
+        var baseVersion = new BaseVersion("Test source", shouldIncrement, semanticVersion, source, null);
+        var fallbackBranchConfiguration = configuration.GetFallbackBranchConfiguration();
+        var effectiveConfiguration = new EffectiveConfiguration(configuration, fallbackBranchConfiguration);
+        return new(incrementedVersion, baseVersion, branch, effectiveConfiguration);
+    }
 }

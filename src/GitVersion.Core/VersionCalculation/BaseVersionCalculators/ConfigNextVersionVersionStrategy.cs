@@ -15,7 +15,7 @@ public class ConfigNextVersionVersionStrategy : VersionStrategyBase
     {
     }
 
-    public override IEnumerable<BaseVersion> GetVersions(IBranch branch, EffectiveConfiguration configuration)
+    public override IEnumerable<BaseVersion> GetBaseVersions(EffectiveBranchConfiguration configuration)
     {
         var nextVersion = Context.FullConfiguration.NextVersion;
         if (!nextVersion.IsNullOrEmpty())
