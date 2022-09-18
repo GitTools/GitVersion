@@ -6,7 +6,7 @@ using NUnit.Framework;
 namespace GitVersion.Core.Tests.IntegrationTests;
 
 [TestFixture]
-public class ContinuousDeploymentTestScenarios : TestBase
+public class ContinuousDeploymentTestScenarios
 {
     [Test]
     public void ShouldUseTheFallbackVersionOnMainWhenNoVersionsAreAvailable()
@@ -313,7 +313,7 @@ public class ContinuousDeploymentTestScenarios : TestBase
     }
 
     [Test]
-    public void ShouldDetermineTheMergeCommitFromMainToDevelopWhenReleaseHasBeenShippedToProduction()
+    public void ShouldConsiderTheMergeCommitFromMainToDevelopWhenReleaseHasBeenShippedToProduction()
     {
         // *   5d13120 48 minutes ago  (HEAD -> develop)
         // |\  
