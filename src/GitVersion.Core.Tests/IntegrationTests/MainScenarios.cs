@@ -116,9 +116,7 @@ public class MainScenarios : TestBase
         const string taggedVersion = "1.0.3";
         fixture.Repository.MakeATaggedCommit(taggedVersion);
         fixture.AssertFullSemver("1.0.3");
-        // I'm not sure if the postfix +0 is correct here... Maybe it should always disappear when it is zero?
-        // but the next version configuration property is something for the user to manipulate the resulting version.
-        fixture.AssertFullSemver("1.1.0+0", new Config { NextVersion = "1.1.0" });
+        fixture.AssertFullSemver("1.0.3", new Config { NextVersion = "1.1.0" });
     }
 
     [Test]

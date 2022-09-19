@@ -48,15 +48,13 @@ public class ConfigurationBuilder
         targetConfig.MinorVersionBumpMessage = overrideConfig.MinorVersionBumpMessage ?? targetConfig.MinorVersionBumpMessage;
         targetConfig.PatchVersionBumpMessage = overrideConfig.PatchVersionBumpMessage ?? targetConfig.PatchVersionBumpMessage;
         targetConfig.NoBumpMessage = overrideConfig.NoBumpMessage ?? targetConfig.NoBumpMessage;
-        targetConfig.LegacySemVerPadding = overrideConfig.LegacySemVerPadding ?? targetConfig.LegacySemVerPadding;
-        targetConfig.BuildMetaDataPadding = overrideConfig.BuildMetaDataPadding ?? targetConfig.BuildMetaDataPadding;
-        targetConfig.CommitsSinceVersionSourcePadding = overrideConfig.CommitsSinceVersionSourcePadding ?? targetConfig.CommitsSinceVersionSourcePadding;
         targetConfig.TagPreReleaseWeight = overrideConfig.TagPreReleaseWeight ?? targetConfig.TagPreReleaseWeight;
         targetConfig.CommitMessageIncrementing = overrideConfig.CommitMessageIncrementing ?? targetConfig.CommitMessageIncrementing;
         targetConfig.Increment = overrideConfig.Increment ?? targetConfig.Increment;
         targetConfig.CommitDateFormat = overrideConfig.CommitDateFormat ?? targetConfig.CommitDateFormat;
         targetConfig.MergeMessageFormats = overrideConfig.MergeMessageFormats.Any() ? overrideConfig.MergeMessageFormats : targetConfig.MergeMessageFormats;
         targetConfig.UpdateBuildNumber = overrideConfig.UpdateBuildNumber ?? targetConfig.UpdateBuildNumber;
+        targetConfig.SemanticVersionFormat = overrideConfig.SemanticVersionFormat;
 
         if (overrideConfig.Ignore is { IsEmpty: false })
         {
@@ -187,11 +185,9 @@ public class ConfigurationBuilder
             PatchVersionBumpMessage = IncrementStrategyFinder.DefaultPatchPattern,
             NoBumpMessage = IncrementStrategyFinder.DefaultNoBumpPattern,
             CommitMessageIncrementing = CommitMessageIncrementMode.Enabled,
-            LegacySemVerPadding = 4,
-            BuildMetaDataPadding = 4,
-            CommitsSinceVersionSourcePadding = 4,
             CommitDateFormat = "yyyy-MM-dd",
             UpdateBuildNumber = true,
+            SemanticVersionFormat = SemanticVersionFormat.Strict,
             TagPreReleaseWeight = DefaultTagPreReleaseWeight,
             Increment = IncrementStrategy.Inherit
         };

@@ -228,8 +228,6 @@ branches:
 
     [Test]
     [MethodImpl(MethodImplOptions.NoInlining)]
-    [Category(NoMono)]
-    [Description(NoMonoDescription)]
     public void CanWriteOutEffectiveConfiguration()
     {
         var config = this.configProvider.Provide(this.repoPath);
@@ -434,9 +432,6 @@ tag-prefix: custom-tag-prefix-from-yml";
         overridenConfig.MinorVersionBumpMessage.ShouldBe(expectedConfig.MinorVersionBumpMessage);
         overridenConfig.PatchVersionBumpMessage.ShouldBe(expectedConfig.PatchVersionBumpMessage);
         overridenConfig.NoBumpMessage.ShouldBe(expectedConfig.NoBumpMessage);
-        overridenConfig.LegacySemVerPadding.ShouldBe(expectedConfig.LegacySemVerPadding);
-        overridenConfig.BuildMetaDataPadding.ShouldBe(expectedConfig.BuildMetaDataPadding);
-        overridenConfig.CommitsSinceVersionSourcePadding.ShouldBe(expectedConfig.CommitsSinceVersionSourcePadding);
         overridenConfig.TagPreReleaseWeight.ShouldBe(expectedConfig.TagPreReleaseWeight);
         overridenConfig.CommitMessageIncrementing.ShouldBe(expectedConfig.CommitMessageIncrementing);
         overridenConfig.Increment.ShouldBe(expectedConfig.Increment);

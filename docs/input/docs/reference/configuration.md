@@ -52,9 +52,6 @@ major-version-bump-message: '\+semver:\s?(breaking|major)'
 minor-version-bump-message: '\+semver:\s?(feature|minor)'
 patch-version-bump-message: '\+semver:\s?(fix|patch)'
 no-bump-message: '\+semver:\s?(none|skip)'
-legacy-semver-padding: 4
-build-metadata-padding: 4
-commits-since-version-source-padding: 4
 tag-pre-release-weight: 60000
 commit-message-incrementing: Enabled
 ignore:
@@ -193,24 +190,6 @@ Default set to `'\+semver:\s?(fix|patch)'`, which will match occurrences of
 Used to tell GitVersion not to increment when in Mainline development mode.
 Default `\+semver:\s?(none|skip)`, which will match occurrences of `+semver:
 none` and `+semver: skip`
-
-### legacy-semver-padding
-
-The number of characters to pad `LegacySemVer` to in the `LegacySemVerPadded`
-[variable][variables]. Default is `4`, which will pad the `LegacySemVer` value
- of `3.0.0-beta1` to `3.0.0-beta0001`.
-
-### build-metadata-padding
-
-The number of characters to pad `BuildMetaData` to in the `BuildMetaDataPadded`
-[variable][variables]. Default is `4`, which will pad the `BuildMetaData` value
-of `1` to `0001`.
-
-### commits-since-version-source-padding
-
-The number of characters to pad `CommitsSinceVersionSource` to in the
-`CommitsSinceVersionSourcePadded` [variable][variables]. Default is `4`, which
-will pad the `CommitsSinceVersionSource` value of `1` to `0001`.
 
 ### tag-pre-release-weight
 
@@ -543,7 +522,7 @@ branches:
 
 Strategy which will look for tagged merge commits directly off the current
 branch. For example `develop` → `release/1.0.0` → merge into `main` and tag
-`1.0.0`. The tag is *not* on develop, but develop should be version `1.0.0` now.
+`1.0.0`. The tag is _not_ on develop, but develop should be version `1.0.0` now.
 
 ### tracks-release-branches
 
@@ -571,6 +550,19 @@ is set, it would be added to the `PreReleaseNumber` to get a final
 `AssemblySemFileVer`, otherwise a branch specific default for
 `pre-release-weight` will be used in the calculation. Related Issues [1145]
 and [1366].
+
+### semver-format
+
+Specifies the semver format that is used when parsing the string.
+Can be `Strict` - using the [regex](https://regex101.com/r/Ly7O1x/3/)
+or `Loose` the old way of parsing. The default if not specified is `Strict`
+Example of invalid `Strict`, but valid `Loose`
+
+```
+1.2-alpha4
+01.02.03-rc03
+1.2.3.4
+```
 
 [1145]: https://github.com/GitTools/GitVersion/issues/1145
 [1366]: https://github.com/GitTools/GitVersion/issues/1366

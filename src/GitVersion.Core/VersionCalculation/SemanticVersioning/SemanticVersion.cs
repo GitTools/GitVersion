@@ -9,9 +9,14 @@ public class SemanticVersion : IFormattable, IComparable<SemanticVersion>, IEqua
 {
     private static readonly SemanticVersion Empty = new();
 
-    private static readonly Regex ParseSemVer = new(
+    // uses the git-semver spec https://github.com/semver/semver/blob/master/semver.md
+    private static readonly Regex ParseSemVerStrict = new(
+        @"^(?<major>0|[1-9]\d*)\.(?<minor>0|[1-9]\d*)\.(?<patch>0|[1-9]\d*)(?:-(?<prerelease>(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+(?<buildmetadata>[0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$",
+        RegexOptions.Compiled | RegexOptions.IgnoreCase);
+
+    private static readonly Regex ParseSemVerLoose = new(
         @"^(?<SemVer>(?<Major>\d+)(\.(?<Minor>\d+))?(\.(?<Patch>\d+))?)(\.(?<FourthPart>\d+))?(-(?<Tag>[^\+]*))?(\+(?<BuildMetaData>.*))?$",
-        RegexOptions.Compiled);
+        RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
     public long Major;
     public long Minor;
@@ -49,11 +54,7 @@ public class SemanticVersion : IFormattable, IComparable<SemanticVersion>, IEqua
         {
             return false;
         }
-        return this.Major == obj.Major &&
-               this.Minor == obj.Minor &&
-               this.Patch == obj.Patch &&
-               this.PreReleaseTag == obj.PreReleaseTag &&
-               this.BuildMetaData == obj.BuildMetaData;
+        return this.Major == obj.Major && this.Minor == obj.Minor && this.Patch == obj.Patch && this.PreReleaseTag == obj.PreReleaseTag && this.BuildMetaData == obj.BuildMetaData;
     }
 
     public bool IsEmpty() => Equals(Empty);
@@ -101,6 +102,7 @@ public class SemanticVersion : IFormattable, IComparable<SemanticVersion>, IEqua
             throw new ArgumentNullException(nameof(v1));
         if (v2 == null)
             throw new ArgumentNullException(nameof(v2));
+
         return v1.CompareTo(v2) > 0;
     }
 
@@ -110,6 +112,7 @@ public class SemanticVersion : IFormattable, IComparable<SemanticVersion>, IEqua
             throw new ArgumentNullException(nameof(v1));
         if (v2 == null)
             throw new ArgumentNullException(nameof(v2));
+
         return v1.CompareTo(v2) >= 0;
     }
 
@@ -133,15 +136,15 @@ public class SemanticVersion : IFormattable, IComparable<SemanticVersion>, IEqua
         return v1.CompareTo(v2) < 0;
     }
 
-    public static SemanticVersion Parse(string version, string? tagPrefixRegex)
+    public static SemanticVersion Parse(string version, string? tagPrefixRegex, SemanticVersionFormat format = SemanticVersionFormat.Strict)
     {
-        if (!TryParse(version, tagPrefixRegex, out var semanticVersion))
+        if (!TryParse(version, tagPrefixRegex, out var semanticVersion, format))
             throw new WarningException($"Failed to parse {version} into a Semantic Version");
 
         return semanticVersion;
     }
 
-    public static bool TryParse(string version, string? tagPrefixRegex, [NotNullWhen(true)] out SemanticVersion? semanticVersion)
+    public static bool TryParse(string version, string? tagPrefixRegex, [NotNullWhen(true)] out SemanticVersion? semanticVersion, SemanticVersionFormat format = SemanticVersionFormat.Strict)
     {
         var match = Regex.Match(version, $"^({tagPrefixRegex})?(?<version>.*)$");
 
@@ -152,7 +155,36 @@ public class SemanticVersion : IFormattable, IComparable<SemanticVersion>, IEqua
         }
 
         version = match.Groups["version"].Value;
-        var parsed = ParseSemVer.Match(version);
+        return format == SemanticVersionFormat.Strict
+            ? TryParseStrict(version, out semanticVersion)
+            : TryParseLoose(version, out semanticVersion);
+    }
+
+    private static bool TryParseStrict(string version, [NotNullWhen(true)] out SemanticVersion? semanticVersion)
+    {
+        var parsed = ParseSemVerStrict.Match(version);
+
+        if (!parsed.Success)
+        {
+            semanticVersion = null;
+            return false;
+        }
+
+        semanticVersion = new SemanticVersion
+        {
+            Major = long.Parse(parsed.Groups["major"].Value),
+            Minor = parsed.Groups["minor"].Success ? long.Parse(parsed.Groups["minor"].Value) : 0,
+            Patch = parsed.Groups["patch"].Success ? long.Parse(parsed.Groups["patch"].Value) : 0,
+            PreReleaseTag = SemanticVersionPreReleaseTag.Parse(parsed.Groups["prerelease"].Value),
+            BuildMetaData = SemanticVersionBuildMetaData.Parse(parsed.Groups["buildmetadata"].Value)
+        };
+
+        return true;
+    }
+
+    private static bool TryParseLoose(string version, [NotNullWhen(true)] out SemanticVersion? semanticVersion)
+    {
+        var parsed = ParseSemVerLoose.Match(version);
 
         if (!parsed.Success)
         {
@@ -233,8 +265,6 @@ public class SemanticVersion : IFormattable, IComparable<SemanticVersion>, IEqua
     /// <para>i - Informational SemVer [1.2.3-beta.4+5.Branch.main.BranchType.main.Sha.000000]</para>
     /// <para>j - Just the SemVer part [1.2.3]</para>
     /// <para>t - SemVer with the tag [1.2.3-beta.4]</para>
-    /// <para>l - Legacy SemVer tag for systems which do not support SemVer 2.0 properly [1.2.3-beta4]</para>
-    /// <para>lp - Legacy SemVer tag for systems which do not support SemVer 2.0 properly (padded) [1.2.3-beta0004]</para>
     /// </summary>
     public string ToString(string? format, IFormatProvider? formatProvider)
     {
@@ -246,12 +276,6 @@ public class SemanticVersion : IFormattable, IComparable<SemanticVersion>, IEqua
 
         // Check for lp first because the param can vary
         format = format.ToLower();
-        if (format.StartsWith("lp", StringComparison.Ordinal))
-        {
-            // handle the padding
-            return this.PreReleaseTag?.HasTag() == true ? $"{ToString("j")}-{this.PreReleaseTag.ToString(format)}" : ToString("j");
-        }
-
         switch (format)
         {
             case "j":
@@ -260,8 +284,6 @@ public class SemanticVersion : IFormattable, IComparable<SemanticVersion>, IEqua
                 return this.PreReleaseTag?.HasTag() == true ? $"{ToString("j")}-{this.PreReleaseTag}" : ToString("j");
             case "t":
                 return this.PreReleaseTag?.HasTag() == true ? $"{ToString("j")}-{this.PreReleaseTag.ToString("t")}" : ToString("j");
-            case "l":
-                return this.PreReleaseTag?.HasTag() == true ? $"{ToString("j")}-{this.PreReleaseTag.ToString("l")}" : ToString("j");
             case "f":
                 {
                     var buildMetadata = this.BuildMetaData?.ToString();
@@ -311,4 +333,10 @@ public class SemanticVersion : IFormattable, IComparable<SemanticVersion>, IEqua
 
         return incremented;
     }
+}
+
+public enum SemanticVersionFormat
+{
+    Strict,
+    Loose
 }

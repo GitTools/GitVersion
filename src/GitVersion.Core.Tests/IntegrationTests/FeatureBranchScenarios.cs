@@ -263,7 +263,7 @@ public class FeatureBranchScenarios : TestBase
         fixture.MakeACommit();
         fixture.BranchTo("develop");
         fixture.MakeACommit();
-        fixture.BranchTo("release/1.0");
+        fixture.BranchTo("release/1.0.0");
         fixture.MakeACommit();
         fixture.Checkout("develop");
         fixture.MakeACommit();
@@ -282,12 +282,12 @@ public class FeatureBranchScenarios : TestBase
         fixture.MakeACommit();
         fixture.BranchTo("develop");
         fixture.MakeACommit();
-        fixture.BranchTo("release/1.0");
+        fixture.BranchTo("release/1.0.0");
         fixture.MakeACommit();
 
         // merge release into develop
         fixture.Checkout("develop");
-        fixture.MergeNoFF("release/1.0");
+        fixture.MergeNoFF("release/1.0.0");
         fixture.AssertFullSemver("1.1.0-alpha.2");
 
         // create a feature branch from develop and verify the version
@@ -317,7 +317,7 @@ public class FeatureBranchScenarios : TestBase
             using var fixture = new EmptyRepositoryFixture();
             // Create release branch
             fixture.MakeACommit();
-            fixture.BranchTo("release/1.0");
+            fixture.BranchTo("release/1.0.0");
             fixture.MakeACommit();
             fixture.Checkout(MainBranch);
             fixture.MakeACommit();
@@ -348,12 +348,12 @@ public class FeatureBranchScenarios : TestBase
             using var fixture = new EmptyRepositoryFixture();
             // Create release branch
             fixture.MakeACommit();
-            fixture.BranchTo("release/1.0");
+            fixture.BranchTo("release/1.0.0");
             fixture.MakeACommit();
 
             // merge release into main
             fixture.Checkout(MainBranch);
-            fixture.MergeNoFF("release/1.0");
+            fixture.MergeNoFF("release/1.0.0");
             fixture.AssertFullSemver("1.0.1+2", config);
 
             // create a feature branch from main and verify the version
@@ -372,7 +372,7 @@ public class FeatureBranchScenarios : TestBase
             fixture.MakeACommit();
             fixture.BranchTo("develop");
             fixture.MakeACommit();
-            fixture.BranchTo("release/1.0");
+            fixture.BranchTo("release/1.0.0");
             fixture.MakeACommit();
             fixture.Checkout("develop");
             fixture.MakeACommit();
@@ -391,12 +391,12 @@ public class FeatureBranchScenarios : TestBase
             fixture.MakeACommit();
             fixture.BranchTo("develop");
             fixture.MakeACommit();
-            fixture.BranchTo("release/1.0");
+            fixture.BranchTo("release/1.0.0");
             fixture.MakeACommit();
 
             // merge release into develop
             fixture.Checkout("develop");
-            fixture.MergeNoFF("release/1.0");
+            fixture.MergeNoFF("release/1.0.0");
             fixture.AssertFullSemver("1.1.0-alpha.2");
 
             // create a misnamed feature branch (i.e. it uses the default config) from develop and verify the version
@@ -427,7 +427,7 @@ public class FeatureBranchScenarios : TestBase
                 using var fixture = new EmptyRepositoryFixture();
                 // Create release branch
                 fixture.MakeACommit();
-                fixture.BranchTo("release/1.0");
+                fixture.BranchTo("release/1.0.0");
                 fixture.MakeACommit();
                 fixture.Checkout(MainBranch);
                 fixture.MakeACommit();
@@ -458,12 +458,12 @@ public class FeatureBranchScenarios : TestBase
                 using var fixture = new EmptyRepositoryFixture();
                 // Create release branch
                 fixture.MakeACommit();
-                fixture.BranchTo("release/1.0");
+                fixture.BranchTo("release/1.0.0");
                 fixture.MakeACommit();
 
                 // merge release into main
                 fixture.Checkout(MainBranch);
-                fixture.MergeNoFF("release/1.0");
+                fixture.MergeNoFF("release/1.0.0");
                 fixture.AssertFullSemver("1.0.1+2", config);
 
                 // create a misnamed feature branch (i.e. it uses the default config) from main and verify the version
@@ -525,9 +525,6 @@ public class FeatureBranchScenarios : TestBase
             VersioningMode = VersioningMode.ContinuousDeployment,
             AssemblyVersioningScheme = AssemblyVersioningScheme.Major,
             AssemblyFileVersioningFormat = "{MajorMinorPatch}.{env:WeightedPreReleaseNumber ?? 0}",
-            LegacySemVerPadding = 4,
-            BuildMetaDataPadding = 4,
-            CommitsSinceVersionSourcePadding = 4,
             CommitMessageIncrementing = CommitMessageIncrementMode.Disabled,
             Branches = new Dictionary<string, BranchConfig>
             {

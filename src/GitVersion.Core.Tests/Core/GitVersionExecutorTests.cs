@@ -73,8 +73,6 @@ public class GitVersionExecutorTests : TestBase
     }
 
     [Test]
-    [Category(NoMono)]
-    [Description(NoMonoDescription)]
     public void CacheKeyForWorktree()
     {
         using var fixture = new EmptyRepositoryFixture();
@@ -121,12 +119,9 @@ public class GitVersionExecutorTests : TestBase
         PreReleaseNumber: 19
         WeightedPreReleaseNumber: 19
         BuildMetaData:
-        BuildMetaDataPadded:
         FullBuildMetaData: Branch.feature/test.Sha.dd2a29aff0c948e1bdf3dabbe13e1576e70d5f9f
         MajorMinorPatch: 4.10.3
         SemVer: 4.10.3-test.19
-        LegacySemVer: 4.10.3-test19
-        LegacySemVerPadded: 4.10.3-test0019
         AssemblySemVer: 4.10.3.0
         AssemblySemFileVer: 4.10.3.0
         FullSemVer: 4.10.3-test.19
@@ -135,13 +130,8 @@ public class GitVersionExecutorTests : TestBase
         EscapedBranchName: feature-test
         Sha: dd2a29aff0c948e1bdf3dabbe13e1576e70d5f9f
         ShortSha: dd2a29af
-        NuGetVersionV2: 4.10.3-test0019
-        NuGetVersion: 4.10.3-test0019
-        NuGetPreReleaseTagV2: test0019
-        NuGetPreReleaseTag: test0019
         VersionSourceSha: 4.10.2
         CommitsSinceVersionSource: 19
-        CommitsSinceVersionSourcePadded: 0019
         CommitDate: 2015-11-10
         UncommittedChanges: 0
         ";
@@ -184,12 +174,9 @@ public class GitVersionExecutorTests : TestBase
         PreReleaseLabelWithDash: -test
         PreReleaseNumber: 19
         BuildMetaData:
-        BuildMetaDataPadded:
         FullBuildMetaData: Branch.feature/test.Sha.dd2a29aff0c948e1bdf3dabbe13e1576e70d5f9f
         MajorMinorPatch: 4.10.3
         SemVer: 4.10.3-test.19
-        LegacySemVer: 4.10.3-test19
-        LegacySemVerPadded: 4.10.3-test0019
         AssemblySemVer: 4.10.3.0
         AssemblySemFileVer: 4.10.3.0
         FullSemVer: 4.10.3-test.19
@@ -198,12 +185,7 @@ public class GitVersionExecutorTests : TestBase
         EscapedBranchName: feature-test
         Sha: dd2a29aff0c948e1bdf3dabbe13e1576e70d5f9f
         ShortSha: dd2a29af
-        NuGetVersionV2: 4.10.3-test0019
-        NuGetVersion: 4.10.3-test0019
-        NuGetPreReleaseTagV2: test0019
-        NuGetPreReleaseTag: test0019
         CommitsSinceVersionSource: 19
-        CommitsSinceVersionSourcePadded: 0019
         CommitDate: 2015-11-10
         UncommittedChanges: 0
         ";
@@ -271,12 +253,9 @@ public class GitVersionExecutorTests : TestBase
         PreReleaseNumber: 19
         WeightedPreReleaseNumber: 19
         BuildMetaData:
-        BuildMetaDataPadded:
         FullBuildMetaData: Branch.feature/test.Sha.dd2a29aff0c948e1bdf3dabbe13e1576e70d5f9f
         MajorMinorPatch: 4.10.3
         SemVer: 4.10.3-test.19
-        LegacySemVer: 4.10.3-test19
-        LegacySemVerPadded: 4.10.3-test0019
         AssemblySemVer: 4.10.3.0
         AssemblySemFileVer: 4.10.3.0
         FullSemVer: 4.10.3-test.19
@@ -285,13 +264,8 @@ public class GitVersionExecutorTests : TestBase
         EscapedBranchName: feature-test
         Sha: dd2a29aff0c948e1bdf3dabbe13e1576e70d5f9f
         ShortSha: dd2a29af
-        NuGetVersionV2: 4.10.3-test0019
-        NuGetVersion: 4.10.3-test0019
-        NuGetPreReleaseTagV2: test0019
-        NuGetPreReleaseTag: test0019
         VersionSourceSha: 4.10.2
         CommitsSinceVersionSource: 19
-        CommitsSinceVersionSourcePadded: 0019
         CommitDate: 2015-11-10
         UncommittedChanges: 0
         ";
@@ -314,7 +288,7 @@ public class GitVersionExecutorTests : TestBase
         versionVariables.AssemblySemVer.ShouldBe("4.10.3.0");
 
         var configPath = PathHelper.Combine(fixture.RepositoryPath, ConfigFileLocator.DefaultFileName);
-        this.fileSystem.WriteAllText(configPath, "next-version: 5.0");
+        this.fileSystem.WriteAllText(configPath, "next-version: 5.0.0");
 
         gitVersionCalculator = GetGitVersionCalculator(gitVersionOptions, fs: this.fileSystem);
 
@@ -336,12 +310,9 @@ public class GitVersionExecutorTests : TestBase
         PreReleaseNumber: 19
         WeightedPreReleaseNumber: 19
         BuildMetaData:
-        BuildMetaDataPadded:
         FullBuildMetaData: Branch.feature/test.Sha.dd2a29aff0c948e1bdf3dabbe13e1576e70d5f9f
         MajorMinorPatch: 4.10.3
         SemVer: 4.10.3-test.19
-        LegacySemVer: 4.10.3-test19
-        LegacySemVerPadded: 4.10.3-test0019
         AssemblySemVer: 4.10.3.0
         AssemblySemFileVer: 4.10.3.0
         FullSemVer: 4.10.3-test.19
@@ -350,13 +321,8 @@ public class GitVersionExecutorTests : TestBase
         EscapedBranchName: feature-test
         Sha: dd2a29aff0c948e1bdf3dabbe13e1576e70d5f9f
         ShortSha: dd2a29af
-        NuGetVersionV2: 4.10.3-test0019
-        NuGetVersion: 4.10.3-test0019
-        NuGetPreReleaseTagV2: test0019
-        NuGetPreReleaseTag: test0019
         VersionSourceSha: 4.10.2
         CommitsSinceVersionSource: 19
-        CommitsSinceVersionSourcePadded: 0019
         CommitDate: 2015-11-10
         UncommittedChanges: 0
         ";
@@ -415,8 +381,6 @@ public class GitVersionExecutorTests : TestBase
     }
 
     [Test]
-    [Category(NoMono)]
-    [Description(NoMonoDescription)]
     public void GetProjectRootDirectoryWorkingDirectoryWithWorktree()
     {
         using var fixture = new EmptyRepositoryFixture();
@@ -484,8 +448,6 @@ public class GitVersionExecutorTests : TestBase
     }
 
     [Test]
-    [Category(NoMono)]
-    [Description(NoMonoDescription)]
     public void GetDotGitDirectoryWorktree()
     {
         using var fixture = new EmptyRepositoryFixture();
@@ -516,8 +478,6 @@ public class GitVersionExecutorTests : TestBase
     }
 
     [Test]
-    [Category(NoMono)]
-    [Description(NoMonoDescription)]
     public void CalculateVersionFromWorktreeHead()
     {
         // Setup
@@ -547,8 +507,6 @@ public class GitVersionExecutorTests : TestBase
     }
 
     [Test]
-    [Category(NoMono)]
-    [Description(NoMonoDescription)]
     public void CalculateVersionVariables_TwoBranchHasSameCommitHeadDetachedAndNotTagged_ThrowException()
     {
         // Setup
@@ -575,8 +533,6 @@ public class GitVersionExecutorTests : TestBase
     }
 
     [Test]
-    [Category(NoMono)]
-    [Description(NoMonoDescription)]
     public void CalculateVersionVariables_TwoBranchHasSameCommitHeadDetachedAndTagged_ReturnSemver()
     {
         // Setup

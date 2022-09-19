@@ -175,7 +175,7 @@ public class PullRequestInBuildAgentTest
 
         result.ExitCode.ShouldBe(0);
         result.OutputVariables.ShouldNotBeNull();
-        result.OutputVariables.FullSemVer.ShouldBe("1.0.4-PullRequest0005.3");
+        result.OutputVariables.FullSemVer.ShouldBe("1.0.4-PullRequest5.3");
 
         // Cleanup repository files
         DirectoryHelper.DeleteDirectory(remoteRepositoryPath);

@@ -38,8 +38,6 @@ public class ProjectFileUpdaterTests : TestBase
         this.projectFileUpdater = new ProjectFileUpdater(this.log, this.fileSystem);
     }
 
-    [Category(NoMono)]
-    [Description(NoMonoDescription)]
     [TestCase("Microsoft.NET.Sdk")]
     [TestCase("Microsoft.NET.Sdk.Worker")]
     [TestCase("Microsoft.NET.Sdk.Web")]
@@ -70,8 +68,6 @@ public class ProjectFileUpdaterTests : TestBase
   </PropertyGroup>
 </Project>
 ")]
-    [Category(NoMono)]
-    [Description(NoMonoDescription)]
     public void CannotUpdateProjectFileWithIncorrectProjectSdk(string xml)
     {
         var canUpdate = projectFileUpdater.CanUpdateProjectFile(XElement.Parse(xml));
@@ -91,8 +87,6 @@ public class ProjectFileUpdaterTests : TestBase
   </PropertyGroup>
 </Project>
 ")]
-    [Category(NoMono)]
-    [Description(NoMonoDescription)]
     public void CannotUpdateProjectFileWithMissingProjectSdk(string xml)
     {
         var canUpdate = projectFileUpdater.CanUpdateProjectFile(XElement.Parse(xml));
@@ -113,8 +107,6 @@ public class ProjectFileUpdaterTests : TestBase
   </PropertyGroup>
 </Project>
 ")]
-    [Category(NoMono)]
-    [Description(NoMonoDescription)]
     public void CannotUpdateProjectFileWithoutAssemblyInfoGeneration(string xml)
     {
         var canUpdate = projectFileUpdater.CanUpdateProjectFile(XElement.Parse(xml));
@@ -130,8 +122,6 @@ public class ProjectFileUpdaterTests : TestBase
 <Project Sdk=""Microsoft.NET.Sdk"">
 </Project>
 ")]
-    [Category(NoMono)]
-    [Description(NoMonoDescription)]
     public void CannotUpdateProjectFileWithoutAPropertyGroup(string xml)
     {
         var canUpdate = projectFileUpdater.CanUpdateProjectFile(XElement.Parse(xml));
@@ -151,8 +141,6 @@ public class ProjectFileUpdaterTests : TestBase
   </PropertyGroup>
 </Project>"
     )]
-    [Category(NoMono)]
-    [Description(NoMonoDescription)]
     public void UpdateProjectXmlVersionElementWithStandardXmlInsertsElement(string xml)
     {
         var variables = this.variableProvider.GetVariablesFor(SemanticVersion.Parse("2.0.0", "v"), new TestEffectiveConfiguration(), false);
@@ -180,8 +168,6 @@ public class ProjectFileUpdaterTests : TestBase
   </PropertyGroup>
 </Project>"
     )]
-    [Category(NoMono)]
-    [Description(NoMonoDescription)]
     public void UpdateProjectXmlVersionElementWithStandardXmlModifiesElement(string xml)
     {
         var variables = this.variableProvider.GetVariablesFor(SemanticVersion.Parse("2.0.0", "v"), new TestEffectiveConfiguration(), false);
@@ -212,8 +198,6 @@ public class ProjectFileUpdaterTests : TestBase
   </PropertyGroup>
 </Project>"
     )]
-    [Category(NoMono)]
-    [Description(NoMonoDescription)]
     public void UpdateProjectXmlVersionElementWithDuplicatePropertyGroupsModifiesLastElement(string xml)
     {
         var variables = this.variableProvider.GetVariablesFor(SemanticVersion.Parse("2.0.0", "v"), new TestEffectiveConfiguration(), false);
@@ -245,8 +229,6 @@ public class ProjectFileUpdaterTests : TestBase
   </PropertyGroup>
 </Project>"
     )]
-    [Category(NoMono)]
-    [Description(NoMonoDescription)]
     public void UpdateProjectXmlVersionElementWithMultipleVersionElementsLastOneIsModified(string xml)
     {
         var variables = this.variableProvider.GetVariablesFor(SemanticVersion.Parse("2.0.0", "v"), new TestEffectiveConfiguration(), false);
@@ -273,8 +255,6 @@ public class ProjectFileUpdaterTests : TestBase
     <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
 </Project>")]
-    [Category(NoMono)]
-    [Description(NoMonoDescription)]
     public void UpdateProjectFileAddsVersionToFile(string xml)
     {
         var fileName = PathHelper.Combine(Path.GetTempPath(), "TestProject.csproj");

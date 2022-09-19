@@ -42,8 +42,6 @@ public class UpdateAssemblyInfoTaskTest : TestTaskBase
     }
 
     [Test]
-    [Category(NoNet48)]
-    [Category(NoMono)]
     public void UpdateAssemblyInfoTaskShouldCreateFileWhenRunWithMsBuild()
     {
         const string taskName = nameof(UpdateAssemblyInfo);
@@ -65,8 +63,6 @@ public class UpdateAssemblyInfoTaskTest : TestTaskBase
     }
 
     [Test]
-    [Category(NoNet48)]
-    [Category(NoMono)]
     public void UpdateAssemblyInfoTaskShouldCreateFileWhenRunWithMsBuildInBuildServer()
     {
         const string taskName = nameof(UpdateAssemblyInfo);
@@ -118,8 +114,6 @@ public class UpdateAssemblyInfoTaskTest : TestTaskBase
     }
 
     [Test]
-    [Category(NoNet48)]
-    [Category(NoMono)]
     public void UpdateAssemblyInfoTaskShouldCreateFileWhenRunWithMsBuildAndIntermediateOutputPathDoesNotExist()
     {
         const string taskName = nameof(UpdateAssemblyInfo);
@@ -142,8 +136,6 @@ public class UpdateAssemblyInfoTaskTest : TestTaskBase
     }
 
     [Test]
-    [Category(NoNet48)]
-    [Category(NoMono)]
     public void UpdateAssemblyInfoTaskShouldCreateFileWhenRunWithMsBuildAndIntermediateOutputPathDoesNotExistInBuildServer()
     {
         const string taskName = nameof(UpdateAssemblyInfo);

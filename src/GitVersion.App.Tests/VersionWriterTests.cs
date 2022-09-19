@@ -32,13 +32,13 @@ public class VersionWriterTests : TestBase
     [Test]
     public void WriteVersionShouldWriteFileVersionWithPrereleaseTag()
     {
-        var asm = GenerateAssembly(new Version(1, 0, 0), "-beta0004");
+        var asm = GenerateAssembly(new Version(1, 0, 0), "-beta4");
 
         string? version = string.Empty;
         this.versionWriter.WriteTo(asm, v => version = v);
 
         Assert.IsNotNull(asm);
-        Assert.AreEqual("1.0.0-beta0004", version);
+        Assert.AreEqual("1.0.0-beta4", version);
     }
 
     private static Assembly GenerateAssembly(Version fileVersion, string prereleaseInfo)

@@ -115,13 +115,10 @@ Following options are supported:
 3.  `assembly-informational-format`
 4.  `assembly-versioning-format`
 5.  `assembly-versioning-scheme`
-6.  `build-metadata-padding`
 7.  `commit-date-format`
 8.  `commit-message-incrementing`
-9.  `commits-since-version-source-padding`
 10. `continuous-delivery-fallback-tag`
 11. `increment`
-12. `legacy-semver-padding`
 13. `major-version-bump-message`
 14. `minor-version-bump-message`
 15. `mode`

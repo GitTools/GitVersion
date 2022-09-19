@@ -5,7 +5,7 @@ namespace Docker.Tasks;
 [TaskName(nameof(DockerManifest))]
 [TaskDescription("Publish the docker manifest containing the images for amd64 and arm64")]
 [TaskArgument(Arguments.DockerRegistry, Constants.DockerHub, Constants.GitHub)]
-[TaskArgument(Arguments.DockerDotnetVersion, Constants.Version50, Constants.Version60, Constants.Version31)]
+[TaskArgument(Arguments.DockerDotnetVersion, Constants.Version60, Constants.Version31)]
 [TaskArgument(Arguments.DockerDistro, Constants.Alpine312, Constants.Debian10, Constants.Ubuntu2004)]
 [IsDependentOn(typeof(DockerManifestInternal))]
 public class DockerManifest : FrostingTask<BuildContext>
@@ -44,9 +44,12 @@ public class DockerManifestInternal : FrostingTask<BuildContext>
     {
         foreach (var group in context.Images.GroupBy(x => new { x.Distro, x.TargetFramework }))
         {
+            // TODO skip this because of https://github.com/GitTools/GitVersion/pull/3148, remove after .net core 3.1 is removed
+            if (group.Key.Distro == Constants.Ubuntu2204 && group.Key.TargetFramework == Constants.Version31) continue;
+
             var amd64DockerImage = group.First(x => x.Architecture == Architecture.Amd64);
             var arm64DockerImage = group.First(x => x.Architecture == Architecture.Arm64);
-            context.DockerCreateManifest(amd64DockerImage, context.SkipArm64Image(arm64DockerImage));
+            context.DockerCreateManifest(amd64DockerImage, context.SkipImage(arm64DockerImage));
             context.DockerPushManifest(amd64DockerImage);
         }
     }

@@ -485,11 +485,11 @@ public class ReleaseBranchScenarios : TestBase
     public void ReleaseBranchWithACommitShouldUseBranchNameVersionDespiteBumpInPreviousCommit()
     {
         using var fixture = new EmptyRepositoryFixture();
-        fixture.Repository.MakeATaggedCommit("1.0");
+        fixture.Repository.MakeATaggedCommit("1.0.0");
         fixture.Repository.MakeACommit("+semver:major");
         fixture.Repository.MakeACommit();
 
-        fixture.BranchTo("release/2.0");
+        fixture.BranchTo("release/2.0.0");
 
         fixture.Repository.MakeACommit();
 
@@ -500,10 +500,10 @@ public class ReleaseBranchScenarios : TestBase
     public void ReleaseBranchedAtCommitWithSemverMessageShouldUseBranchNameVersion()
     {
         using var fixture = new EmptyRepositoryFixture();
-        fixture.Repository.MakeATaggedCommit("1.0");
+        fixture.Repository.MakeATaggedCommit("1.0.0");
         fixture.Repository.MakeACommit("+semver:major");
 
-        fixture.BranchTo("release/2.0");
+        fixture.BranchTo("release/2.0.0");
 
         fixture.AssertFullSemver("2.0.0-beta.1+1");
     }

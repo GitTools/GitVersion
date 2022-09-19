@@ -62,15 +62,6 @@ public class Config
     [YamlMember(Alias = "no-bump-message")]
     public string? NoBumpMessage { get; set; }
 
-    [YamlMember(Alias = "legacy-semver-padding")]
-    public int? LegacySemVerPadding { get; set; }
-
-    [YamlMember(Alias = "build-metadata-padding")]
-    public int? BuildMetaDataPadding { get; set; }
-
-    [YamlMember(Alias = "commits-since-version-source-padding")]
-    public int? CommitsSinceVersionSourcePadding { get; set; }
-
     [YamlMember(Alias = "tag-pre-release-weight")]
     public int? TagPreReleaseWeight { get; set; }
 
@@ -95,6 +86,9 @@ public class Config
     [YamlMember(Alias = "update-build-number")]
     public bool? UpdateBuildNumber { get; set; }
 
+    [YamlMember(Alias = "semver-format")]
+    public SemanticVersionFormat SemanticVersionFormat { get; set; } = SemanticVersionFormat.Strict;
+
     public override string ToString()
     {
         var stringBuilder = new StringBuilder();
@@ -112,6 +106,7 @@ public class Config
     public const string SupportBranchRegex = "^support[/-]";
     public const string DevelopBranchRegex = "^dev(elop)?(ment)?$";
     public const string MainBranchRegex = "^master$|^main$";
+
     public const string MainBranchKey = "main";
     public const string MasterBranchKey = "master";
     public const string ReleaseBranchKey = "release";

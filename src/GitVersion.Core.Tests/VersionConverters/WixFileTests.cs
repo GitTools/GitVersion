@@ -18,8 +18,6 @@ internal class WixFileTests : TestBase
     public void Setup() => ShouldlyConfiguration.ShouldMatchApprovedDefaults.LocateTestMethodUsingAttribute<TestAttribute>();
 
     [Test]
-    [Category(NoMono)]
-    [Description(NoMonoDescription)]
     public void UpdateWixVersionFile()
     {
         var workingDir = Path.GetTempPath();
@@ -36,7 +34,7 @@ internal class WixFileTests : TestBase
         semVer.BuildMetaData.ShortSha = "commitShortSha";
         semVer.BuildMetaData.CommitDate = DateTimeOffset.Parse("2019-02-20 23:59:59Z");
 
-        var config = new TestEffectiveConfiguration(buildMetaDataPadding: 2, legacySemVerPadding: 5);
+        var config = new TestEffectiveConfiguration();
 
         var stringBuilder = new StringBuilder();
         void Action(string s) => stringBuilder.AppendLine(s);
@@ -61,8 +59,6 @@ internal class WixFileTests : TestBase
     }
 
     [Test]
-    [Category(NoMono)]
-    [Description(NoMonoDescription)]
     public void UpdateWixVersionFileWhenFileAlreadyExists()
     {
         var workingDir = Path.GetTempPath();
@@ -79,7 +75,7 @@ internal class WixFileTests : TestBase
         semVer.BuildMetaData.ShortSha = "commitShortSha";
         semVer.BuildMetaData.CommitDate = DateTimeOffset.Parse("2019-02-20 23:59:59Z");
 
-        var config = new TestEffectiveConfiguration(buildMetaDataPadding: 2, legacySemVerPadding: 5);
+        var config = new TestEffectiveConfiguration();
 
         var stringBuilder = new StringBuilder();
         void Action(string s) => stringBuilder.AppendLine(s);

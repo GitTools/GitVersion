@@ -28,7 +28,7 @@ public class MyGet : BuildAgentBase
             $"##myget[setParameter name='GitVersion.{name}' value='{ServiceMessageEscapeHelper.EscapeValue(value)}']"
         };
 
-        if (string.Equals(name, "LegacySemVerPadded", StringComparison.InvariantCultureIgnoreCase))
+        if (string.Equals(name, "SemVer", StringComparison.InvariantCultureIgnoreCase))
         {
             messages.Add($"##myget[buildNumber '{ServiceMessageEscapeHelper.EscapeValue(value)}']");
         }

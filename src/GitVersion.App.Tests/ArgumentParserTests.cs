@@ -409,14 +409,14 @@ public class ArgumentParserTests : TestBase
         };
     }
 
-    [TestCaseSource(nameof(OverrideconfigWithSingleOptionTestData))]
-    public void OverrideconfigWithSingleOptions(string options, Config expected)
+    [TestCaseSource(nameof(OverrideConfigWithSingleOptionTestData))]
+    public void OverrideConfigWithSingleOptions(string options, Config expected)
     {
         var arguments = this.argumentParser.ParseArguments($"/overrideconfig {options}");
         arguments.OverrideConfig.ShouldBeEquivalentTo(expected);
     }
 
-    private static IEnumerable<TestCaseData> OverrideconfigWithSingleOptionTestData()
+    private static IEnumerable<TestCaseData> OverrideConfigWithSingleOptionTestData()
     {
         yield return new TestCaseData(
             "assembly-versioning-scheme=MajorMinor",
@@ -507,27 +507,6 @@ public class ArgumentParserTests : TestBase
             new Config
             {
                 NoBumpMessage = "This is no bump message."
-            }
-        );
-        yield return new TestCaseData(
-            "legacy-semver-padding=99",
-            new Config
-            {
-                LegacySemVerPadding = 99
-            }
-        );
-        yield return new TestCaseData(
-            "build-metadata-padding=30",
-            new Config
-            {
-                BuildMetaDataPadding = 30
-            }
-        );
-        yield return new TestCaseData(
-            "commits-since-version-source-padding=5",
-            new Config
-            {
-                CommitsSinceVersionSourcePadding = 5
             }
         );
         yield return new TestCaseData(

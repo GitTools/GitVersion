@@ -40,7 +40,7 @@ public sealed class ProjectFileUpdater : IProjectFileUpdater
         var assemblyVersion = variables.AssemblySemVer;
         var assemblyInfoVersion = variables.InformationalVersion;
         var assemblyFileVersion = variables.AssemblySemFileVer;
-        var packageVersion = variables.NuGetVersion;
+        var packageVersion = variables.SemVer;
 
         foreach (var projectFile in projectFilesToUpdate)
         {

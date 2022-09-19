@@ -35,17 +35,11 @@ public class SemanticVersionFormatValues
 
     public string? BuildMetaData => this.semver.BuildMetaData;
 
-    public string? BuildMetaDataPadded => this.semver.BuildMetaData?.ToString("p" + this.config.BuildMetaDataPadding);
-
     public string? FullBuildMetaData => this.semver.BuildMetaData?.ToString("f");
 
     public string MajorMinorPatch => $"{this.semver.Major}.{this.semver.Minor}.{this.semver.Patch}";
 
     public string SemVer => this.semver.ToString();
-
-    public string LegacySemVer => this.semver.ToString("l");
-
-    public string LegacySemVerPadded => this.semver.ToString("lp" + this.config.LegacySemVerPadding);
 
     public string? AssemblySemVer => this.semver.GetAssemblyVersion(this.config.AssemblyVersioningScheme);
 
@@ -63,26 +57,11 @@ public class SemanticVersionFormatValues
 
     public string? CommitDate => this.semver.BuildMetaData?.CommitDate?.UtcDateTime.ToString(this.config.CommitDateFormat, CultureInfo.InvariantCulture);
 
-    // TODO When NuGet 3 is released: public string NuGetVersionV3 { get { return ??; } }
-
-    public string NuGetVersionV2 => LegacySemVerPadded.ToLower();
-
-    public string NuGetVersion => NuGetVersionV2;
-
-    public string? NuGetPreReleaseTagV2 => this.semver.PreReleaseTag?.HasTag() == true ? this.semver.PreReleaseTag?.ToString("lp").ToLower() : null;
-
-    public string? NuGetPreReleaseTag => NuGetPreReleaseTagV2;
-
     public string InformationalVersion => this.semver.ToString("i");
-
-    [Obsolete("Use InformationalVersion instead")]
-    public string DefaultInformationalVersion => InformationalVersion;
 
     public string? VersionSourceSha => this.semver.BuildMetaData?.VersionSourceSha;
 
     public string? CommitsSinceVersionSource => this.semver.BuildMetaData?.CommitsSinceVersionSource?.ToString(CultureInfo.InvariantCulture);
-
-    public string? CommitsSinceVersionSourcePadded => this.semver.BuildMetaData?.CommitsSinceVersionSource?.ToString(CultureInfo.InvariantCulture).PadLeft(this.config.CommitsSinceVersionSourcePadding, '0');
 
     public string? UncommittedChanges => this.semver.BuildMetaData?.UncommittedChanges.ToString(CultureInfo.InvariantCulture);
 

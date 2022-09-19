@@ -8,43 +8,44 @@ namespace GitVersion.Core.Tests;
 [TestFixture]
 public class SemanticVersionTests : TestBase
 {
-    [TestCase("1.2.3", 1, 2, 3, null, null, null, null, null, null, null, null)]
-    [TestCase("1.2", 1, 2, 0, null, null, null, null, null, null, "1.2.0", null)]
-    [TestCase("1.2.3-beta", 1, 2, 3, "beta", null, null, null, null, null, null, null)]
-    [TestCase("1.2.3-beta3", 1, 2, 3, "beta", 3, null, null, null, null, "1.2.3-beta.3", null)]
-    [TestCase("1.2.3-beta.3", 1, 2, 3, "beta", 3, null, null, null, null, "1.2.3-beta.3", null)]
-    [TestCase("1.2.3-beta-3", 1, 2, 3, "beta-3", null, null, null, null, null, "1.2.3-beta-3", null)]
-    [TestCase("1.2.3-alpha", 1, 2, 3, "alpha", null, null, null, null, null, null, null)]
-    [TestCase("1.2-alpha4", 1, 2, 0, "alpha", 4, null, null, null, null, "1.2.0-alpha.4", null)]
-    [TestCase("1.2.3-rc", 1, 2, 3, "rc", null, null, null, null, null, null, null)]
-    [TestCase("1.2.3-rc3", 1, 2, 3, "rc", 3, null, null, null, null, "1.2.3-rc.3", null)]
-    [TestCase("1.2.3-3", 1, 2, 3, "", 3, null, null, null, null, "1.2.3-3", null)]
-    [TestCase("1.2.3-RC3", 1, 2, 3, "RC", 3, null, null, null, null, "1.2.3-RC.3", null)]
-    [TestCase("1.2.3-rc3.1", 1, 2, 3, "rc3", 1, null, null, null, null, "1.2.3-rc3.1", null)]
-    [TestCase("01.02.03-rc03", 1, 2, 3, "rc", 3, null, null, null, null, "1.2.3-rc.3", null)]
-    [TestCase("1.2.3-beta3f", 1, 2, 3, "beta3f", null, null, null, null, null, null, null)]
-    [TestCase("1.2.3-notAStability1", 1, 2, 3, "notAStability", 1, null, null, null, null, "1.2.3-notAStability.1", null)]
-    [TestCase("1.2.3.4", 1, 2, 3, null, null, 4, null, null, null, "1.2.3+4", null)]
-    [TestCase("1.2.3+4", 1, 2, 3, null, null, 4, null, null, null, null, null)]
-    [TestCase("1.2.3+4.Branch.Foo", 1, 2, 3, null, null, 4, "Foo", null, null, null, null)]
-    [TestCase("1.2.3+randomMetaData", 1, 2, 3, null, null, null, null, null, "randomMetaData", null, null)]
-    [TestCase("1.2.3-beta.1+4.Sha.12234.Othershiz", 1, 2, 3, "beta", 1, 4, null, "12234", "Othershiz", null, null)]
-    [TestCase("1.2.3", 1, 2, 3, null, null, null, null, null, null, null, Config.DefaultTagPrefix)]
-    [TestCase("v1.2.3", 1, 2, 3, null, null, null, null, null, null, "1.2.3", Config.DefaultTagPrefix)]
-    [TestCase("V1.2.3", 1, 2, 3, null, null, null, null, null, null, "1.2.3", Config.DefaultTagPrefix)]
-    [TestCase("version-1.2.3", 1, 2, 3, null, null, null, null, null, null, "1.2.3", "version-")]
-    [TestCase("1", 1, 0, 0, null, null, null, null, null, null, "1.0.0", null)]
-    [TestCase("1.1", 1, 1, 0, null, null, null, null, null, null, "1.1.0", null)]
-    [TestCase("1.0.0-develop-20201007113711", 1, 0, 0, "develop-20201007113711", null, null, null, null, null, "1.0.0-develop-20201007113711", null)]
-    [TestCase("20201007113711.658165168461351.64136516984163213-develop-20201007113711.98848747823+65416321321", 20201007113711, 658165168461351, 64136516984163213, "develop-20201007113711", 98848747823, 65416321321, null, null, null, "20201007113711.658165168461351.64136516984163213-develop-20201007113711.98848747823+65416321321", null)]
+    [TestCase("1.2.3", 1, 2, 3, null, null, null, null, null, null, null, null, SemanticVersionFormat.Strict)]
+    [TestCase("1.2.3-beta", 1, 2, 3, "beta", null, null, null, null, null, null, null, SemanticVersionFormat.Strict)]
+    [TestCase("1.2.3-beta3", 1, 2, 3, "beta", 3, null, null, null, null, "1.2.3-beta.3", null, SemanticVersionFormat.Strict)]
+    [TestCase("1.2.3-beta.3", 1, 2, 3, "beta", 3, null, null, null, null, "1.2.3-beta.3", null, SemanticVersionFormat.Strict)]
+    [TestCase("1.2.3-beta-3", 1, 2, 3, "beta-3", null, null, null, null, null, "1.2.3-beta-3", null, SemanticVersionFormat.Strict)]
+    [TestCase("1.2.3-alpha", 1, 2, 3, "alpha", null, null, null, null, null, null, null, SemanticVersionFormat.Strict)]
+    [TestCase("1.2.3-rc", 1, 2, 3, "rc", null, null, null, null, null, null, null, SemanticVersionFormat.Strict)]
+    [TestCase("1.2.3-rc3", 1, 2, 3, "rc", 3, null, null, null, null, "1.2.3-rc.3", null, SemanticVersionFormat.Strict)]
+    [TestCase("1.2.3-3", 1, 2, 3, "", 3, null, null, null, null, "1.2.3-3", null, SemanticVersionFormat.Strict)]
+    [TestCase("1.2.3-RC3", 1, 2, 3, "RC", 3, null, null, null, null, "1.2.3-RC.3", null, SemanticVersionFormat.Strict)]
+    [TestCase("1.2.3-rc3.1", 1, 2, 3, "rc3", 1, null, null, null, null, "1.2.3-rc3.1", null, SemanticVersionFormat.Strict)]
+    [TestCase("1.2.3-beta3f", 1, 2, 3, "beta3f", null, null, null, null, null, null, null, SemanticVersionFormat.Strict)]
+    [TestCase("1.2.3-notAStability1", 1, 2, 3, "notAStability", 1, null, null, null, null, "1.2.3-notAStability.1", null, SemanticVersionFormat.Strict)]
+    [TestCase("1.2.3+4", 1, 2, 3, null, null, 4, null, null, null, null, null, SemanticVersionFormat.Strict)]
+    [TestCase("1.2.3+4.Branch.Foo", 1, 2, 3, null, null, 4, "Foo", null, null, null, null, SemanticVersionFormat.Strict)]
+    [TestCase("1.2.3+randomMetaData", 1, 2, 3, null, null, null, null, null, "randomMetaData", null, null, SemanticVersionFormat.Strict)]
+    [TestCase("1.2.3-beta.1+4.Sha.12234.Othershiz", 1, 2, 3, "beta", 1, 4, null, "12234", "Othershiz", null, null, SemanticVersionFormat.Strict)]
+    [TestCase("1.2.3", 1, 2, 3, null, null, null, null, null, null, null, Config.DefaultTagPrefix, SemanticVersionFormat.Strict)]
+    [TestCase("v1.2.3", 1, 2, 3, null, null, null, null, null, null, "1.2.3", Config.DefaultTagPrefix, SemanticVersionFormat.Strict)]
+    [TestCase("V1.2.3", 1, 2, 3, null, null, null, null, null, null, "1.2.3", Config.DefaultTagPrefix, SemanticVersionFormat.Strict)]
+    [TestCase("version-1.2.3", 1, 2, 3, null, null, null, null, null, null, "1.2.3", "version-", SemanticVersionFormat.Strict)]
+    [TestCase("1.0.0-develop-20201007113711", 1, 0, 0, "develop-20201007113711", null, null, null, null, null, "1.0.0-develop-20201007113711", null, SemanticVersionFormat.Strict)]
+    [TestCase("20201007113711.658165168461351.64136516984163213-develop-20201007113711.98848747823+65416321321", 20201007113711, 658165168461351, 64136516984163213, "develop-20201007113711", 98848747823, 65416321321, null, null, null, "20201007113711.658165168461351.64136516984163213-develop-20201007113711.98848747823+65416321321", null, SemanticVersionFormat.Strict)]
+
+    [TestCase("1.2", 1, 2, 0, null, null, null, null, null, null, "1.2.0", null, SemanticVersionFormat.Loose)]
+    [TestCase("1.2-alpha4", 1, 2, 0, "alpha", 4, null, null, null, null, "1.2.0-alpha.4", null, SemanticVersionFormat.Loose)]
+    [TestCase("01.02.03-rc03", 1, 2, 3, "rc", 3, null, null, null, null, "1.2.3-rc.3", null, SemanticVersionFormat.Loose)]
+    [TestCase("1.2.3.4", 1, 2, 3, null, null, 4, null, null, null, "1.2.3+4", null, SemanticVersionFormat.Loose)]
+    [TestCase("1", 1, 0, 0, null, null, null, null, null, null, "1.0.0", null, SemanticVersionFormat.Loose)]
+    [TestCase("1.1", 1, 1, 0, null, null, null, null, null, null, "1.1.0", null, SemanticVersionFormat.Loose)]
     public void ValidateVersionParsing(
         string? versionString, long major, long minor, long patch, string? tag, long? tagNumber, long? numberOfBuilds,
-        string? branchName, string? sha, string? otherMetaData, string? fullFormattedVersionString, string? tagPrefixRegex)
+        string? branchName, string? sha, string? otherMetaData, string? fullFormattedVersionString, string? tagPrefixRegex, SemanticVersionFormat format = SemanticVersionFormat.Strict)
     {
         fullFormattedVersionString ??= versionString;
 
         versionString.ShouldNotBeNull();
-        SemanticVersion.TryParse(versionString, tagPrefixRegex, out var version).ShouldBe(true, versionString);
+        SemanticVersion.TryParse(versionString, tagPrefixRegex, out var version, format).ShouldBe(true, versionString);
 
         version.ShouldNotBeNull();
         Assert.AreEqual(major, version.Major);
@@ -67,16 +68,6 @@ public class SemanticVersionTests : TestBase
     [TestCase("v.1.2.3", "v")]
     public void ValidateInvalidVersionParsing(string versionString, string? tagPrefixRegex = null) =>
         Assert.IsFalse(SemanticVersion.TryParse(versionString, tagPrefixRegex, out _), "TryParse Result");
-
-    [Test]
-    public void LegacySemVerTest()
-    {
-        new SemanticVersionPreReleaseTag("TKT-2134_JiraDescription", null).ToString("l").ShouldBe("TKT-2134");
-        new SemanticVersionPreReleaseTag("AReallyReallyReallyLongBranchName", null).ToString("l").ShouldBe("AReallyReallyReallyL");
-        new SemanticVersionPreReleaseTag("TKT-2134_JiraDescription", 1).ToString("lp").ShouldBe("TKT-2134-0001");
-        new SemanticVersionPreReleaseTag("TKT-2134", 1).ToString("lp").ShouldBe("TKT-2134-0001");
-        new SemanticVersionPreReleaseTag("AReallyReallyReallyLongBranchName", 1).ToString("lp").ShouldBe("AReallyReallyRea0001");
-    }
 
     [Test]
     public void VersionSorting()
@@ -120,24 +111,6 @@ public class SemanticVersionTests : TestBase
     {
         var semVer = BuildSemVer(major, minor, patch, preReleaseName, preReleaseVersion, buildCount, branchName, sha, otherMetadata);
         return semVer.ToString("j");
-    }
-
-    [TestCase(1, 2, 3, null, null, null, null, null, null, ExpectedResult = "1.2.3")]
-    [TestCase(1, 2, 3, "beta", 4, null, null, null, null, ExpectedResult = "1.2.3-beta4")]
-    [TestCase(1, 2, 3, "beta", 4, 5, "theBranch", "theSha", "theOtherMetaData", ExpectedResult = "1.2.3-beta4")]
-    public string ToStringWithFormatLTests(int major, int minor, int patch, string preReleaseName, int preReleaseVersion, int? buildCount, string branchName, string sha, string otherMetadata)
-    {
-        var semVer = BuildSemVer(major, minor, patch, preReleaseName, preReleaseVersion, buildCount, branchName, sha, otherMetadata);
-        return semVer.ToString("l");
-    }
-
-    [TestCase(1, 2, 3, null, null, null, null, null, null, ExpectedResult = "1.2.3")]
-    [TestCase(1, 2, 3, "beta", 4, null, null, null, null, ExpectedResult = "1.2.3-beta0004")]
-    [TestCase(1, 2, 3, "beta", 4, 5, "theBranch", "theSha", "theOtherMetaData", ExpectedResult = "1.2.3-beta0004")]
-    public string ToStringWithFormatLpTests(int major, int minor, int patch, string preReleaseName, int preReleaseVersion, int? buildCount, string branchName, string sha, string otherMetadata)
-    {
-        var semVer = BuildSemVer(major, minor, patch, preReleaseName, preReleaseVersion, buildCount, branchName, sha, otherMetadata);
-        return semVer.ToString("lp");
     }
 
     [TestCase(1, 2, 3, null, null, null, null, null, null, ExpectedResult = "1.2.3")]

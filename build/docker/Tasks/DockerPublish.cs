@@ -5,7 +5,7 @@ namespace Docker.Tasks;
 [TaskName(nameof(DockerPublish))]
 [TaskDescription("Publish the docker images containing the GitVersion Tool")]
 [TaskArgument(Arguments.DockerRegistry, Constants.DockerHub, Constants.GitHub)]
-[TaskArgument(Arguments.DockerDotnetVersion, Constants.Version50, Constants.Version60, Constants.Version31)]
+[TaskArgument(Arguments.DockerDotnetVersion, Constants.Version60, Constants.Version31)]
 [TaskArgument(Arguments.DockerDistro, Constants.Alpine312, Constants.Debian10, Constants.Ubuntu2004)]
 [TaskArgument(Arguments.Architecture, Constants.Amd64, Constants.Arm64)]
 [IsDependentOn(typeof(DockerPublishInternal))]
@@ -45,7 +45,7 @@ public class DockerPublishInternal : FrostingTask<BuildContext>
     {
         foreach (var dockerImage in context.Images)
         {
-            if (context.SkipArm64Image(dockerImage)) continue;
+            if (context.SkipImage(dockerImage)) continue;
             context.DockerPushImage(dockerImage);
         }
     }

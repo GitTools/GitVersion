@@ -20,3 +20,11 @@ updates:
   directory: "/"
   schedule:
     interval: daily
+- package-ecosystem: npm
+  labels:
+    - "dependencies"
+  commit-message:
+    prefix: "(docs deps)"
+  directory: "/"
+  schedule:
+    interval: daily

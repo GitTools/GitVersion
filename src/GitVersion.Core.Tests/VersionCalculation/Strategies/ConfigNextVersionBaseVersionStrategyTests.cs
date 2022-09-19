@@ -19,8 +19,6 @@
 //    }
 
 //    [TestCase("1.0.0", "1.0.0")]
-//    [TestCase("2", "2.0.0")]
-//    [TestCase("2.118998723", "2.118998723.0")]
 //    [TestCase("2.12.654651698", "2.12.654651698")]
 //    public void ConfigNextVersionTest(string nextVersion, string expectedVersion)
 //    {
