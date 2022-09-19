@@ -6,7 +6,7 @@ using GitVersion.Model.Configuration;
 
 namespace GitVersion.VersionCalculation;
 
-internal sealed class EffectiveBranchConfigurationFinder : IEffectiveBranchConfigurationFinder
+public class EffectiveBranchConfigurationFinder : IEffectiveBranchConfigurationFinder
 {
     private readonly ILog log;
     private readonly IRepositoryStore repositoryStore;
@@ -17,7 +17,7 @@ internal sealed class EffectiveBranchConfigurationFinder : IEffectiveBranchConfi
         this.repositoryStore = repositoryStore.NotNull();
     }
 
-    public IEnumerable<EffectiveBranchConfiguration> GetConfigurations(IBranch branch, Config configuration)
+    public virtual IEnumerable<EffectiveBranchConfiguration> GetConfigurations(IBranch branch, Config configuration)
     {
         branch.NotNull();
         configuration.NotNull();
@@ -28,7 +28,7 @@ internal sealed class EffectiveBranchConfigurationFinder : IEffectiveBranchConfi
     private IEnumerable<EffectiveBranchConfiguration> GetEffectiveConfigurationsRecursive(
         IBranch branch, Config configuration, BranchConfig? childBranchConfiguration, HashSet<IBranch> traversedBranches)
     {
-        if (!traversedBranches.Add(branch)) yield break;
+        if (!traversedBranches.Add(branch)) yield break; // This should never happens!!
 
         var branchConfiguration = configuration.GetBranchConfiguration(branch);
         if (childBranchConfiguration != null)
@@ -40,7 +40,7 @@ internal sealed class EffectiveBranchConfigurationFinder : IEffectiveBranchConfi
         if (branchConfiguration.Increment == IncrementStrategy.Inherit)
         {
             // At this point we need to check if target branches are available.
-            targetBranches = repositoryStore.GetTargetBranches(branch, configuration, traversedBranches).ToArray();
+            targetBranches = this.repositoryStore.GetTargetBranches(branch, configuration, traversedBranches).ToArray();
 
             if (targetBranches.Length == 0)
             {

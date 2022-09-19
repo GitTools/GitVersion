@@ -23,6 +23,8 @@ GitVersion.RepositoryStore.GetTargetBranches(GitVersion.IBranch! branch, GitVers
 GitVersion.RepositoryStore.RepositoryStore(GitVersion.Logging.ILog! log, GitVersion.IGitRepository! repository) -> void
 GitVersion.SemanticVersion.BuildMetaData.get -> GitVersion.SemanticVersionBuildMetaData?
 GitVersion.SemanticVersion.BuildMetaData.set -> void
+GitVersion.VersionCalculation.EffectiveBranchConfigurationFinder
+GitVersion.VersionCalculation.EffectiveBranchConfigurationFinder.EffectiveBranchConfigurationFinder(GitVersion.Logging.ILog! log, GitVersion.Common.IRepositoryStore! repositoryStore) -> void
 GitVersion.VersionCalculation.FallbackVersionStrategy.FallbackVersionStrategy() -> void
 GitVersion.VersionCalculation.IEffectiveBranchConfigurationFinder
 GitVersion.VersionCalculation.IEffectiveBranchConfigurationFinder.GetConfigurations(GitVersion.IBranch! branch, GitVersion.Model.Configuration.Config! configuration) -> System.Collections.Generic.IEnumerable<GitVersion.Model.Configuration.EffectiveBranchConfiguration!>!
@@ -58,5 +60,6 @@ static GitVersion.Configuration.ConfigExtensions.GetFallbackBranchConfiguration(
 static GitVersion.Configuration.ConfigExtensions.GetUnknownBranchConfiguration(this GitVersion.Model.Configuration.Config! configuration) -> GitVersion.Model.Configuration.BranchConfig!
 static GitVersion.Extensions.CommonExtensions.NotNullOrEmpty(this string? value, string! name = "") -> string!
 static GitVersion.Extensions.CommonExtensions.NotNullOrWhitespace(this string? value, string! name = "") -> string!
+virtual GitVersion.VersionCalculation.EffectiveBranchConfigurationFinder.GetConfigurations(GitVersion.IBranch! branch, GitVersion.Model.Configuration.Config! configuration) -> System.Collections.Generic.IEnumerable<GitVersion.Model.Configuration.EffectiveBranchConfiguration!>!
 virtual GitVersion.VersionCalculation.FallbackVersionStrategy.GetBaseVersions(GitVersion.Model.Configuration.EffectiveBranchConfiguration! configuration) -> System.Collections.Generic.IEnumerable<GitVersion.VersionCalculation.BaseVersion!>!
 virtual GitVersion.VersionCalculation.NextVersionCalculator.FindVersion() -> GitVersion.VersionCalculation.NextVersion!

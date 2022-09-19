@@ -83,7 +83,7 @@ public class CreatingAFeatureBranchFromAReleaseBranchScenario
         // ✅ succeeds as expected
         fixture.AssertFullSemver("1.0.0-beta.1+3", configuration);
 
-        fixture.Repository.DumpGraph(Console.WriteLine);
+        fixture.Repository.DumpGraph();
     }
 
     [Test]
@@ -165,7 +165,7 @@ public class CreatingAFeatureBranchFromAReleaseBranchScenario
         // ✅ succeeds as expected
         fixture.AssertFullSemver("1.0.0-beta.1+3", configuration);
 
-        fixture.Repository.DumpGraph(Console.WriteLine);
+        fixture.Repository.DumpGraph();
     }
 
     [TestCase("main")]
@@ -235,7 +235,7 @@ public class CreatingAFeatureBranchFromAReleaseBranchScenario
         // ✅ succeeds as expected
         fixture.AssertFullSemver("1.0.0-beta.1+3", configuration);
 
-        fixture.Repository.DumpGraph(Console.WriteLine);
+        fixture.Repository.DumpGraph();
     }
 
     [TestCase("main")]
@@ -307,7 +307,7 @@ public class CreatingAFeatureBranchFromAReleaseBranchScenario
         // ✅ succeeds as expected
         fixture.AssertFullSemver("1.0.0-beta.1+4", configuration);
 
-        fixture.Repository.DumpGraph(Console.WriteLine);
+        fixture.Repository.DumpGraph();
     }
 
     [TestCase("main")]
@@ -379,7 +379,7 @@ public class CreatingAFeatureBranchFromAReleaseBranchScenario
         // ✅ succeeds as expected
         fixture.AssertFullSemver("1.0.0-beta.1+4", configuration);
 
-        fixture.Repository.DumpGraph(Console.WriteLine);
+        fixture.Repository.DumpGraph();
     }
 
     [Test]
@@ -442,7 +442,7 @@ public class CreatingAFeatureBranchFromAReleaseBranchScenario
         // ✅ succeeds as expected
         fixture.AssertFullSemver("1.0.0-beta.1+4", configuration);
 
-        fixture.Repository.DumpGraph(Console.WriteLine);
+        fixture.Repository.DumpGraph();
     }
 
     [Test]
@@ -517,7 +517,7 @@ public class CreatingAFeatureBranchFromAReleaseBranchScenario
         // ❌ expected: "0.1.0+7" because the release has been canceled and should be treated like it was never exisisting
         fixture.AssertFullSemver("1.1.0-alpha.5", configuration);
 
-        fixture.Repository.DumpGraph(Console.WriteLine);
+        fixture.Repository.DumpGraph();
     }
 
 
@@ -607,7 +607,7 @@ public class CreatingAFeatureBranchFromAReleaseBranchScenario
         // ❌ expected: "1.1.0-alpha.2" because only one commit and one merge has been pushed
         fixture.AssertFullSemver("1.1.0-alpha.6", configuration);
 
-        fixture.Repository.DumpGraph(Console.WriteLine);
+        fixture.Repository.DumpGraph();
     }
 
     [Test]
@@ -696,6 +696,6 @@ public class CreatingAFeatureBranchFromAReleaseBranchScenario
         // ✅ succeeds as expected
         fixture.AssertFullSemver("1.1.0-alpha.6", configuration);
 
-        fixture.Repository.DumpGraph(Console.WriteLine);
+        fixture.Repository.DumpGraph();
     }
 }

@@ -23,16 +23,16 @@ internal class MainlineVersionCalculator : IMainlineVersionCalculator
 
     public SemanticVersion FindMainlineModeVersion(BaseVersion baseVersion)
     {
-        var preReleaseTag = baseVersion.SemanticVersion.PreReleaseTag;
-        if (preReleaseTag != null)
-        {
-            // TODO: This needs to be refactored. It's a hack because mainline development doesn't support preReleaseTag.
-            preReleaseTag.DisableBeacuaseTheMainLineModeDoesntSupportPreReleaseTags();
-            //throw new NotSupportedException("Mainline development mode doesn't yet support pre-release tags on main");
-        }
-
         using (this.log.IndentLog("Using mainline development mode to calculate current version"))
         {
+            var preReleaseTag = baseVersion.SemanticVersion.PreReleaseTag;
+            if (preReleaseTag != null)
+            {
+                // TODO: This needs to be refactored. It's a hack because mainline development doesn't support preReleaseTag.
+                preReleaseTag.DisableBecauseTheMainLineModeDoesntSupportPreReleaseTags();
+                //throw new NotSupportedException("Mainline development mode doesn't yet support pre-release tags on main");
+            }
+
             var mainlineVersion = baseVersion.SemanticVersion;
 
             // Forward merge / PR
@@ -88,7 +88,7 @@ internal class MainlineVersionCalculator : IMainlineVersionCalculator
             if (preReleaseTag != null)
             {
                 // TODO: This needs to be refactored. It's a hack because mainline development doesn't support preReleaseTag.
-                preReleaseTag.EnableBeacuaseTheMainLineModeDoesntSupportPreReleaseTags();
+                preReleaseTag.EnableBecauseTheMainLineModeDoesntSupportPreReleaseTags();
                 mainlineVersion.PreReleaseTag = preReleaseTag;
             }
             return mainlineVersion;

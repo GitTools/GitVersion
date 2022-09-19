@@ -133,7 +133,7 @@ public class SemanticVersionPreReleaseTag :
     private bool? disabledPromotedFromCommits;
     private long? disabledNumber;
 
-    internal void DisableBeacuaseTheMainLineModeDoesntSupportPreReleaseTags()
+    internal void DisableBecauseTheMainLineModeDoesntSupportPreReleaseTags()
     {
         if (!HasTag()) return;
 
@@ -145,7 +145,7 @@ public class SemanticVersionPreReleaseTag :
         Number = 0;
     }
 
-    internal void EnableBeacuaseTheMainLineModeDoesntSupportPreReleaseTags()
+    internal void EnableBecauseTheMainLineModeDoesntSupportPreReleaseTags()
     {
         Name = disabledName;
         PromotedFromCommits = disabledPromotedFromCommits;
