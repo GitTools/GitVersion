@@ -1,11 +1,11 @@
 abstract GitVersion.VersionCalculation.VersionStrategyBase.GetBaseVersions(GitVersion.Model.Configuration.EffectiveBranchConfiguration! configuration) -> System.Collections.Generic.IEnumerable<GitVersion.VersionCalculation.BaseVersion!>!
 GitVersion.Common.IRepositoryStore.FindCommitBranchesWasBranchedFrom(GitVersion.IBranch! branch, GitVersion.Model.Configuration.Config! configuration, params GitVersion.IBranch![]! excludedBranches) -> System.Collections.Generic.IEnumerable<GitVersion.BranchCommit>!
 GitVersion.Common.IRepositoryStore.FindCommitBranchesWasBranchedFrom(GitVersion.IBranch! branch, GitVersion.Model.Configuration.Config! configuration, System.Collections.Generic.IEnumerable<GitVersion.IBranch!>! excludedBranches) -> System.Collections.Generic.IEnumerable<GitVersion.BranchCommit>!
-GitVersion.Common.IRepositoryStore.GetCurrentCommitTaggedVersion(GitVersion.ICommit? commit, string? tagPrefix) -> GitVersion.SemanticVersion!
+GitVersion.Common.IRepositoryStore.GetCurrentCommitTaggedVersion(GitVersion.ICommit? commit, string? tagPrefix) -> GitVersion.SemanticVersion?
 GitVersion.Common.IRepositoryStore.GetSourceBranches(GitVersion.IBranch! branch, GitVersion.Model.Configuration.Config! configuration, params GitVersion.IBranch![]! excludedBranches) -> System.Collections.Generic.IEnumerable<GitVersion.IBranch!>!
 GitVersion.Common.IRepositoryStore.GetSourceBranches(GitVersion.IBranch! branch, GitVersion.Model.Configuration.Config! configuration, System.Collections.Generic.IEnumerable<GitVersion.IBranch!>! excludedBranches) -> System.Collections.Generic.IEnumerable<GitVersion.IBranch!>!
 GitVersion.GitVersionContext.GetEffectiveConfiguration(GitVersion.IBranch! branch) -> GitVersion.Model.Configuration.EffectiveConfiguration!
-GitVersion.GitVersionContext.GitVersionContext(GitVersion.IBranch! currentBranch, GitVersion.ICommit? currentCommit, GitVersion.Model.Configuration.Config! configuration, GitVersion.SemanticVersion! currentCommitTaggedVersion, int numberOfUncommittedChanges) -> void
+GitVersion.GitVersionContext.GitVersionContext(GitVersion.IBranch! currentBranch, GitVersion.ICommit? currentCommit, GitVersion.Model.Configuration.Config! configuration, GitVersion.SemanticVersion? currentCommitTaggedVersion, int numberOfUncommittedChanges) -> void
 GitVersion.GitVersionContextFactory.GitVersionContextFactory(GitVersion.Configuration.IConfigProvider! configProvider, GitVersion.Common.IRepositoryStore! repositoryStore, Microsoft.Extensions.Options.IOptions<GitVersion.GitVersionOptions!>! options) -> void
 GitVersion.Model.Configuration.BranchConfig.Inherit(GitVersion.Model.Configuration.BranchConfig? parentConfig) -> GitVersion.Model.Configuration.BranchConfig!
 GitVersion.Model.Configuration.EffectiveBranchConfiguration
@@ -17,7 +17,7 @@ GitVersion.Model.Configuration.EffectiveConfiguration.EffectiveConfiguration(Git
 GitVersion.Model.Configuration.EffectiveConfiguration.IsMainline.get -> bool
 GitVersion.RepositoryStore.FindCommitBranchesWasBranchedFrom(GitVersion.IBranch! branch, GitVersion.Model.Configuration.Config! configuration, params GitVersion.IBranch![]! excludedBranches) -> System.Collections.Generic.IEnumerable<GitVersion.BranchCommit>!
 GitVersion.RepositoryStore.FindCommitBranchesWasBranchedFrom(GitVersion.IBranch! branch, GitVersion.Model.Configuration.Config! configuration, System.Collections.Generic.IEnumerable<GitVersion.IBranch!>! excludedBranches) -> System.Collections.Generic.IEnumerable<GitVersion.BranchCommit>!
-GitVersion.RepositoryStore.GetCurrentCommitTaggedVersion(GitVersion.ICommit? commit, string? tagPrefix) -> GitVersion.SemanticVersion!
+GitVersion.RepositoryStore.GetCurrentCommitTaggedVersion(GitVersion.ICommit? commit, string? tagPrefix) -> GitVersion.SemanticVersion?
 GitVersion.RepositoryStore.GetSourceBranches(GitVersion.IBranch! branch, GitVersion.Model.Configuration.Config! configuration, params GitVersion.IBranch![]! excludedBranches) -> System.Collections.Generic.IEnumerable<GitVersion.IBranch!>!
 GitVersion.RepositoryStore.GetSourceBranches(GitVersion.IBranch! branch, GitVersion.Model.Configuration.Config! configuration, System.Collections.Generic.IEnumerable<GitVersion.IBranch!>! excludedBranches) -> System.Collections.Generic.IEnumerable<GitVersion.IBranch!>!
 GitVersion.RepositoryStore.RepositoryStore(GitVersion.Logging.ILog! log, GitVersion.IGitRepository! repository) -> void

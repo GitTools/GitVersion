@@ -24,7 +24,7 @@ public class GitVersionContext
     public int NumberOfUncommittedChanges { get; }
 
     public GitVersionContext(IBranch currentBranch, ICommit? currentCommit,
-        Config configuration, SemanticVersion currentCommitTaggedVersion, int numberOfUncommittedChanges)
+        Config configuration, SemanticVersion? currentCommitTaggedVersion, int numberOfUncommittedChanges)
     {
         CurrentBranch = currentBranch;
         CurrentCommit = currentCommit;

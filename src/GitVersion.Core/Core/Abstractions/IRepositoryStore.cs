@@ -36,7 +36,7 @@ public interface IRepositoryStore
 
     IEnumerable<IBranch> GetSourceBranches(IBranch branch, Config configuration, IEnumerable<IBranch> excludedBranches);
 
-    SemanticVersion GetCurrentCommitTaggedVersion(ICommit? commit, string? tagPrefix);
+    SemanticVersion? GetCurrentCommitTaggedVersion(ICommit? commit, string? tagPrefix);
 
     IEnumerable<SemanticVersion> GetVersionTagsOnBranch(IBranch branch, string? tagPrefixRegex);
     IEnumerable<(ITag Tag, SemanticVersion Semver, ICommit Commit)> GetValidVersionTags(string? tagPrefixRegex, DateTimeOffset? olderThan = null);

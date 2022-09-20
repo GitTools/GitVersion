@@ -221,7 +221,7 @@ public class RepositoryStore : IRepositoryStore
         }
     }
 
-    public SemanticVersion GetCurrentCommitTaggedVersion(ICommit? commit, string? tagPrefix)
+    public SemanticVersion? GetCurrentCommitTaggedVersion(ICommit? commit, string? tagPrefix)
         => this.repository.Tags
             .SelectMany(t => GetCurrentCommitSemanticVersions(commit, tagPrefix, t))
             .Max();

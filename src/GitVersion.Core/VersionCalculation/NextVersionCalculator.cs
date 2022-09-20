@@ -230,7 +230,7 @@ public class NextVersionCalculator : INextVersionCalculator
 
         foreach (var effectiveBranchConfiguration in effectiveBranchConfigurationFinder.GetConfigurations(branch, configuration))
         {
-            foreach (var versionStrategy in versionStrategies)
+            foreach (var versionStrategy in this.versionStrategies)
             {
                 foreach (var baseVersion in versionStrategy.GetBaseVersions(effectiveBranchConfiguration))
                 {
