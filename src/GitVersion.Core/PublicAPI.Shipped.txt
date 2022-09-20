@@ -844,7 +844,7 @@ GitVersion.RepositoryInfo.TargetBranch -> string?
 GitVersion.RepositoryInfo.TargetUrl -> string?
 GitVersion.RepositoryStore
 GitVersion.RepositoryStore.DetermineIncrementedField(GitVersion.VersionCalculation.BaseVersion! baseVersion, GitVersion.GitVersionContext! context) -> GitVersion.VersionField?
-GitVersion.RepositoryStore.ExcludingBranches(System.Collections.Generic.IEnumerable<GitVersion.IBranch!>! branchesToExclude, bool excludeRemotes = false) -> System.Collections.Generic.IEnumerable<GitVersion.IBranch!>!
+GitVersion.RepositoryStore.ExcludingBranches(System.Collections.Generic.IEnumerable<GitVersion.IBranch!>! branchesToExclude, bool excludeRemotes) -> System.Collections.Generic.IEnumerable<GitVersion.IBranch!>!
 GitVersion.RepositoryStore.FindBranch(string? branchName) -> GitVersion.IBranch?
 GitVersion.RepositoryStore.FindCommitBranchWasBranchedFrom(GitVersion.IBranch? branch, GitVersion.Model.Configuration.Config! configuration, params GitVersion.IBranch![]! excludedBranches) -> GitVersion.BranchCommit
 GitVersion.RepositoryStore.FindMainBranch(GitVersion.Model.Configuration.Config! configuration) -> GitVersion.IBranch?

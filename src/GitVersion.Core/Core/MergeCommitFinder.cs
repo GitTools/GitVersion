@@ -16,7 +16,7 @@ internal class MergeCommitFinder
     {
         this.repositoryStore = repositoryStore.NotNull();
         this.configuration = configuration.NotNull();
-        this.excludedBranches = repositoryStore.ExcludingBranches(excludedBranches.NotNull());
+        this.excludedBranches = repositoryStore.ExcludingBranches(excludedBranches.NotNull(), excludeRemotes: false);
         this.log = log.NotNull();
     }
 
