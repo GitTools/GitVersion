@@ -1,4 +1,5 @@
 using GitVersion.Common;
+using GitVersion.Configuration;
 using GitVersion.Core.Tests.Helpers;
 using GitVersion.Logging;
 using GitVersion.Model.Configuration;
@@ -84,6 +85,94 @@ public class EffectiveBranchConfigurationFinderTests
         {
             actual[0].Value.VersioningMode.ShouldNotBe(versioningMode);
         }
+    }
+
+    [Test]
+    public void When_getting_configurations_of_a_branch_with_tag_alpha_Given_branch_which_inherits_from_parent_branch_Then_result_should_have_tag_alpha()
+    {
+        // Arrange
+        var mainBranchMock = GitToolsTestingExtensions.CreateMockBranch("main", GitToolsTestingExtensions.CreateMockCommit());
+        var developBranchMock = GitToolsTestingExtensions.CreateMockBranch("develop", GitToolsTestingExtensions.CreateMockCommit());
+        var configuration = ConfigBuilder.New.WithIncrement("develop", IncrementStrategy.Inherit)
+            .WithTag("main", string.Empty).WithTag("develop", "alpha").Build();
+
+        var repositoryStoreMock = Substitute.For<IRepositoryStore>();
+        repositoryStoreMock.GetSourceBranches(developBranchMock, configuration, Arg.Any<HashSet<IBranch>>()).Returns(new[] { mainBranchMock });
+
+        var unitUnderTest = new EffectiveBranchConfigurationFinder(Substitute.For<ILog>(), repositoryStoreMock);
+
+        // Act
+        var actual = unitUnderTest.GetConfigurations(developBranchMock, configuration).ToArray();
+
+
+        // Assert
+        actual.ShouldHaveSingleItem();
+        actual[0].Branch.ShouldBe(mainBranchMock);
+        actual[0].Value.Tag.ShouldBe("alpha");
+    }
+
+    [Test]
+    public void When_getting_configurations_of_a_branch_without_tag_Given_branch_which_inherits_from_parent_branch_Then_result_should_have_tag_from_parent()
+    {
+        // Arrange
+        var mainBranchMock = GitToolsTestingExtensions.CreateMockBranch("main", GitToolsTestingExtensions.CreateMockCommit());
+        var developBranchMock = GitToolsTestingExtensions.CreateMockBranch("develop", GitToolsTestingExtensions.CreateMockCommit());
+        var configuration = ConfigBuilder.New.WithIncrement("develop", IncrementStrategy.Inherit)
+            .WithTag("main", string.Empty).WithoutTag("develop").Build();
+
+        var repositoryStoreMock = Substitute.For<IRepositoryStore>();
+        repositoryStoreMock.GetSourceBranches(developBranchMock, configuration, Arg.Any<HashSet<IBranch>>()).Returns(new[] { mainBranchMock });
+
+        var unitUnderTest = new EffectiveBranchConfigurationFinder(Substitute.For<ILog>(), repositoryStoreMock);
+
+        // Act
+        var actual = unitUnderTest.GetConfigurations(developBranchMock, configuration).ToArray();
+
+        // Assert
+        actual.ShouldHaveSingleItem();
+        actual[0].Branch.ShouldBe(mainBranchMock);
+        actual[0].Value.Tag.ShouldBe(string.Empty);
+    }
+
+    [TestCase("release/latest", IncrementStrategy.None, "latest")]
+    [TestCase("release/1.0.0", IncrementStrategy.Patch, "not-latest")]
+    public void UsesFirstBranchConfigWhenMultipleMatch(string branchName, IncrementStrategy incrementStrategy, string tag)
+    {
+        // Arrange
+        var releaseBranchMock = GitToolsTestingExtensions.CreateMockBranch(branchName, GitToolsTestingExtensions.CreateMockCommit());
+        var branchConfig = new BranchConfig
+        {
+            VersioningMode = VersioningMode.Mainline,
+            Increment = IncrementStrategy.None,
+            PreventIncrementOfMergedBranchVersion = false,
+            TrackMergeTarget = false,
+            TracksReleaseBranches = false,
+            IsReleaseBranch = false,
+            SourceBranches = new HashSet<string>()
+        };
+        var configuration = new ConfigurationBuilder().Add(new Config
+        {
+            VersioningMode = VersioningMode.ContinuousDelivery,
+            Branches =
+            {
+                { "release/latest", new BranchConfig(branchConfig) { Increment = IncrementStrategy.None, Tag = "latest", Regex = "release/latest" } },
+                { "release", new BranchConfig(branchConfig) { Increment = IncrementStrategy.Patch, Tag = "not-latest", Regex = "releases?[/-]" } }
+            }
+        }).Build();
+
+        var repositoryStoreMock = Substitute.For<IRepositoryStore>();
+        repositoryStoreMock.GetSourceBranches(releaseBranchMock, configuration, Arg.Any<HashSet<IBranch>>()).Returns(Enumerable.Empty<IBranch>());
+
+        var unitUnderTest = new EffectiveBranchConfigurationFinder(Substitute.For<ILog>(), repositoryStoreMock);
+
+        // Act
+        var actual = unitUnderTest.GetConfigurations(releaseBranchMock, configuration).ToArray();
+
+        // Assert
+        actual.ShouldHaveSingleItem();
+        actual[0].Branch.ShouldBe(releaseBranchMock);
+        actual[0].Value.Increment.ShouldBe(incrementStrategy);
+        actual[0].Value.Tag.ShouldBe(tag);
     }
 
     [Test]

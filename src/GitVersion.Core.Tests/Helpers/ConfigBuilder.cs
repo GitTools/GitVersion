@@ -16,6 +16,7 @@ public sealed class ConfigBuilder
     private readonly Dictionary<string, bool> preventIncrementOfMergedBranchVersionDictionary = new();
     private IncrementStrategy? increment;
     private readonly Dictionary<string, IncrementStrategy> incrementDictionary = new();
+    private readonly Dictionary<string, string?> tagDictionary = new();
     private IgnoreConfig? ignoreConfig;
 
     private ConfigBuilder()
@@ -86,6 +87,18 @@ public sealed class ConfigBuilder
         return this;
     }
 
+    public ConfigBuilder WithoutTag(string branch)
+    {
+        tagDictionary[branch] = null;
+        return this;
+    }
+
+    public ConfigBuilder WithTag(string branch, string value)
+    {
+        tagDictionary[branch] = value;
+        return this;
+    }
+
     public ConfigBuilder WithIgnoreConfig(IgnoreConfig value)
     {
         ignoreConfig = value;
@@ -136,6 +149,11 @@ public sealed class ConfigBuilder
         foreach (var item in incrementDictionary)
         {
             configuration.Branches[item.Key].Increment = item.Value;
+        }
+
+        foreach (var item in tagDictionary)
+        {
+            configuration.Branches[item.Key].Tag = item.Value;
         }
 
         return configuration;
