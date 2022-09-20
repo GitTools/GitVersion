@@ -53,21 +53,6 @@ public class RepositoryStore : IRepositoryStore
         return currentCommit;
     }
 
-    public ICommit GetBaseVersionSource(ICommit currentBranchTip)
-    {
-        try
-        {
-            var filter = new CommitFilter { IncludeReachableFrom = currentBranchTip };
-            var commitCollection = this.repository.Commits.QueryBy(filter);
-
-            return commitCollection.First(c => !c.Parents.Any());
-        }
-        catch (Exception exception)
-        {
-            throw new GitVersionException($"Cannot find commit {currentBranchTip}. Please ensure that the repository is an unshallow clone with `git fetch --unshallow`.", exception);
-        }
-    }
-
     public IEnumerable<ICommit> GetMainlineCommitLog(ICommit? baseVersionSource, ICommit? mainlineTip)
     {
         if (mainlineTip is null)
@@ -136,29 +121,6 @@ public class RepositoryStore : IRepositoryStore
             Regex.IsMatch(b.Name.Friendly, mainBranchRegex, RegexOptions.IgnoreCase));
     }
 
-    public IBranch? GetChosenBranch(Config configuration)
-    {
-        var developBranchRegex = configuration.Branches[Config.DevelopBranchKey]?.Regex;
-        var mainBranchRegex = configuration.Branches[Config.MainBranchKey]?.Regex;
-
-        if (mainBranchRegex == null || developBranchRegex == null) return null;
-        var chosenBranch = this.repository.Branches.FirstOrDefault(b =>
-            Regex.IsMatch(b.Name.Friendly, developBranchRegex, RegexOptions.IgnoreCase)
-            || Regex.IsMatch(b.Name.Friendly, mainBranchRegex, RegexOptions.IgnoreCase));
-        return chosenBranch;
-    }
-
-    public IEnumerable<IBranch> GetBranchesForCommit(ICommit commit)
-        => this.repository.Branches.Where(b => !b.IsRemote && Equals(b.Tip, commit)).ToList();
-
-    //public IEnumerable<IBranch> GetExcludedInheritBranches(Config configuration)
-    //    => this.repository.Branches.Where(b =>
-    //    {
-    //        var branchConfig = configuration.FindConfigForBranch(b.Name.WithoutRemote);
-
-    //        return branchConfig == null || branchConfig.Increment == IncrementStrategy.Inherit;
-    //    }).ToList();
-
     public IEnumerable<IBranch> GetReleaseBranches(IEnumerable<KeyValuePair<string, BranchConfig>> releaseBranchConfig)
         => this.repository.Branches.Where(b => IsReleaseBranch(b, releaseBranchConfig));
 
@@ -176,10 +138,10 @@ public class RepositoryStore : IRepositoryStore
         return mainlineBranchFinder.FindMainlineBranches(commit);
     }
 
-    public IEnumerable<IBranch> GetTargetBranches(IBranch branch, Config configuration, params IBranch[] excludedBranches)
-        => GetTargetBranches(branch, configuration, (IEnumerable<IBranch>)excludedBranches);
+    public IEnumerable<IBranch> GetSourceBranches(IBranch branch, Config configuration, params IBranch[] excludedBranches)
+        => GetSourceBranches(branch, configuration, (IEnumerable<IBranch>)excludedBranches);
 
-    public IEnumerable<IBranch> GetTargetBranches(IBranch branch, Config configuration, IEnumerable<IBranch> excludedBranches)
+    public IEnumerable<IBranch> GetSourceBranches(IBranch branch, Config configuration, IEnumerable<IBranch> excludedBranches)
     {
         var referenceLookup = this.repository.Refs.ToLookup(r => r.TargetIdentifier);
 

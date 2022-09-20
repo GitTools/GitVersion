@@ -5,7 +5,12 @@ namespace GitVersion.VersionCalculation;
 
 public class NextVersion
 {
-    public BaseVersion BaseVersion { get; [Obsolete] set; }
+    public BaseVersion BaseVersion
+    {
+        get;
+        [Obsolete("This NextVersion class needs to be immutable.")]
+        set;
+    }
 
     public SemanticVersion IncrementedVersion { get; }
 
@@ -21,9 +26,9 @@ public class NextVersion
     public NextVersion(SemanticVersion incrementedVersion, BaseVersion baseVersion, IBranch branch, EffectiveConfiguration configuration)
     {
         IncrementedVersion = incrementedVersion.NotNull();
-#pragma warning disable CS0612 // Type or member is obsolete
+#pragma warning disable CS0618 // Type or member is obsolete
         BaseVersion = baseVersion.NotNull();
-#pragma warning restore CS0612 // Type or member is obsolete
+#pragma warning restore CS0618 // Type or member is obsolete
         Configuration = configuration.NotNull();
         Branch = branch.NotNull();
     }

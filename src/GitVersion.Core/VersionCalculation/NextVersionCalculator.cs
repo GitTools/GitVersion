@@ -11,7 +11,8 @@ public class NextVersionCalculator : INextVersionCalculator
     private readonly ILog log;
 
     private readonly IMainlineVersionCalculator mainlineVersionCalculator;
-    [Obsolete]
+
+    [Obsolete("It's better to have here not the dependency to the RepositoryStore because this part should get all information they need from the version strategy implementation or git version context.")]
     private readonly IRepositoryStore repositoryStore;
 
     private readonly Lazy<GitVersionContext> versionContext;
@@ -26,10 +27,10 @@ public class NextVersionCalculator : INextVersionCalculator
         IEffectiveBranchConfigurationFinder effectiveBranchConfigurationFinder, IIncrementStrategyFinder incrementStrategyFinder)
     {
         this.log = log.NotNull();
-#pragma warning disable CS0612 // Type or member is obsolete
         this.mainlineVersionCalculator = mainlineVersionCalculator.NotNull();
+#pragma warning disable CS0618 // Type or member is obsolete
         this.repositoryStore = repositoryStore.NotNull();
-#pragma warning restore CS0612 // Type or member is obsolete
+#pragma warning restore CS0618 // Type or member is obsolete
         this.versionContext = versionContext.NotNull();
         this.versionStrategies = versionStrategies.NotNull().ToArray();
         this.effectiveBranchConfigurationFinder = effectiveBranchConfigurationFinder.NotNull();
@@ -49,7 +50,7 @@ public class NextVersionCalculator : INextVersionCalculator
         }
 
 
-        // It is totally unimportant that the current commit has been tagged or not IMO. We can make a double check actually if the result
+        // TODO: It is totally unimportant that the current commit has been tagged or not IMO. We can make a double check actually if the result
         // is the same or make it configurable but each run should be deterministic.Even if the development process goes on the tagged commit
         // should always calculating the the same result. Otherwise something is wrong with the configuration or someone messed up the branching history.
 
@@ -110,6 +111,7 @@ public class NextVersionCalculator : INextVersionCalculator
 
         long? number = null;
 
+        // TODO: Please update the pre release-tag in the IVersionStrategy implementation.
         var lastTag = this.repositoryStore
             .GetVersionTagsOnBranch(context.CurrentBranch, context.FullConfiguration.TagPrefix)
             .FirstOrDefault(v => v.PreReleaseTag?.Name?.IsEquivalentTo(tagToUse) == true);
@@ -184,7 +186,7 @@ public class NextVersionCalculator : INextVersionCalculator
                 if (!maxVersion.IncrementedVersion.PreReleaseTag!.HasTag())
                 {
                     // If the maximal version has no pre-release tag defined than we want to determine just the latest previous
-                    // base source which are not comming from pre-release tag.
+                    // base source which are not coming from pre-release tag.
                     filteredVersions = filteredVersions.Where(v => !v.BaseVersion.SemanticVersion.PreReleaseTag!.HasTag());
                 }
 
@@ -228,9 +230,6 @@ public class NextVersionCalculator : INextVersionCalculator
 
         foreach (var effectiveBranchConfiguration in effectiveBranchConfigurationFinder.GetConfigurations(branch, configuration))
         {
-            //// Has been moved from BaseVersionCalculator because the effected configuration is only available in this class.
-            //context.Configuration = effectiveBranchConfiguration.Value;
-
             foreach (var versionStrategy in versionStrategies)
             {
                 foreach (var baseVersion in versionStrategy.GetBaseVersions(effectiveBranchConfiguration))
@@ -299,6 +298,7 @@ public class NextVersionCalculator : INextVersionCalculator
 
     private void FixTheBaseVersionSourceOfMergeMessageStrategyIfReleaseBranchWasMergedAndDeleted(IEnumerable<NextVersion> nextVersions)
     {
+        // TODO: Please us the mechanism per convention and configuration and make the decision in the IVersionStrategy implementation.
         if (ReleaseBranchExistsInRepo()) return;
 
         foreach (var nextVersion in nextVersions)
@@ -310,6 +310,8 @@ public class NextVersionCalculator : INextVersionCalculator
                 if (nextVersion.BaseVersion.BaseVersionSource != null)
                 {
                     var parents = nextVersion.BaseVersion.BaseVersionSource.Parents.ToList();
+
+                    // TODO: Please find the correct base version in the IVersionStrategy implementation.
                     nextVersion.BaseVersion = new BaseVersion(
                         nextVersion.BaseVersion.Source,
                         nextVersion.BaseVersion.ShouldIncrement,

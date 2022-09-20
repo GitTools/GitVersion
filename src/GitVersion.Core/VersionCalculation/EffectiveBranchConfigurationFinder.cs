@@ -28,7 +28,7 @@ public class EffectiveBranchConfigurationFinder : IEffectiveBranchConfigurationF
     private IEnumerable<EffectiveBranchConfiguration> GetEffectiveConfigurationsRecursive(
         IBranch branch, Config configuration, BranchConfig? childBranchConfiguration, HashSet<IBranch> traversedBranches)
     {
-        if (!traversedBranches.Add(branch)) yield break; // This should never happens!!
+        if (!traversedBranches.Add(branch)) yield break; // This should never happen!!
 
         var branchConfiguration = configuration.GetBranchConfiguration(branch);
         if (childBranchConfiguration != null)
@@ -40,7 +40,7 @@ public class EffectiveBranchConfigurationFinder : IEffectiveBranchConfigurationF
         if (branchConfiguration.Increment == IncrementStrategy.Inherit)
         {
             // At this point we need to check if target branches are available.
-            targetBranches = this.repositoryStore.GetTargetBranches(branch, configuration, traversedBranches).ToArray();
+            targetBranches = this.repositoryStore.GetSourceBranches(branch, configuration, traversedBranches).ToArray();
 
             if (targetBranches.Length == 0)
             {

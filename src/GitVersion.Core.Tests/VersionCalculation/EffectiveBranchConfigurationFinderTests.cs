@@ -19,7 +19,7 @@ public class EffectiveBranchConfigurationFinderTests
         var branchMock = GitToolsTestingExtensions.CreateMockBranch("develop", GitToolsTestingExtensions.CreateMockCommit());
         var configuration = ConfigBuilder.New.WithIncrement(null).WithIncrement("develop", IncrementStrategy.Inherit).Build();
         var repositoryStoreMock = Substitute.For<IRepositoryStore>();
-        repositoryStoreMock.GetTargetBranches(branchMock, configuration, Arg.Any<IBranch[]>()).Returns(Enumerable.Empty<IBranch>());
+        repositoryStoreMock.GetSourceBranches(branchMock, configuration, Arg.Any<IBranch[]>()).Returns(Enumerable.Empty<IBranch>());
 
         var unitUnderTest = new EffectiveBranchConfigurationFinder(Substitute.For<ILog>(), repositoryStoreMock);
 
@@ -37,7 +37,7 @@ public class EffectiveBranchConfigurationFinderTests
         var branchMock = GitToolsTestingExtensions.CreateMockBranch("develop", GitToolsTestingExtensions.CreateMockCommit());
         var configuration = ConfigBuilder.New.WithIncrement(IncrementStrategy.Inherit).WithIncrement("develop", IncrementStrategy.Inherit).Build();
         var repositoryStoreMock = Substitute.For<IRepositoryStore>();
-        repositoryStoreMock.GetTargetBranches(branchMock, configuration, Arg.Any<IBranch[]>()).Returns(Enumerable.Empty<IBranch>());
+        repositoryStoreMock.GetSourceBranches(branchMock, configuration, Arg.Any<IBranch[]>()).Returns(Enumerable.Empty<IBranch>());
 
         var unitUnderTest = new EffectiveBranchConfigurationFinder(Substitute.For<ILog>(), repositoryStoreMock);
 
@@ -61,7 +61,7 @@ public class EffectiveBranchConfigurationFinderTests
         var branchMock = GitToolsTestingExtensions.CreateMockBranch("develop", GitToolsTestingExtensions.CreateMockCommit());
         var configuration = ConfigBuilder.New.WithIncrement(fallbackIncrement).WithIncrement("develop", IncrementStrategy.Inherit).Build();
         var repositoryStoreMock = Substitute.For<IRepositoryStore>();
-        repositoryStoreMock.GetTargetBranches(branchMock, configuration, Arg.Any<IBranch[]>()).Returns(Enumerable.Empty<IBranch>());
+        repositoryStoreMock.GetSourceBranches(branchMock, configuration, Arg.Any<IBranch[]>()).Returns(Enumerable.Empty<IBranch>());
 
         var unitUnderTest = new EffectiveBranchConfigurationFinder(Substitute.For<ILog>(), repositoryStoreMock);
 
@@ -81,7 +81,7 @@ public class EffectiveBranchConfigurationFinderTests
         var branchMock = GitToolsTestingExtensions.CreateMockBranch("unknown", GitToolsTestingExtensions.CreateMockCommit());
         var configuration = ConfigBuilder.New.WithIncrement(null).Build();
         var repositoryStoreMock = Substitute.For<IRepositoryStore>();
-        repositoryStoreMock.GetTargetBranches(branchMock, configuration, Arg.Any<IBranch[]>()).Returns(Enumerable.Empty<IBranch>());
+        repositoryStoreMock.GetSourceBranches(branchMock, configuration, Arg.Any<IBranch[]>()).Returns(Enumerable.Empty<IBranch>());
 
         var unitUnderTest = new EffectiveBranchConfigurationFinder(Substitute.For<ILog>(), repositoryStoreMock);
 
@@ -104,7 +104,7 @@ public class EffectiveBranchConfigurationFinderTests
     //    var branchMock = GitToolsTestingExtensions.CreateMockBranch("unknown", GitToolsTestingExtensions.CreateMockCommit());
     //    var configuration = ConfigBuilder.New.WithIncrement(fallbackIncrement).Build();
     //    var repositoryStoreMock = Substitute.For<IRepositoryStore>();
-    //    repositoryStoreMock.GetTargetBranches(branchMock, configuration, Arg.Any<IBranch[]>()).Returns(Enumerable.Empty<IBranch>());
+    //    repositoryStoreMock.GetSourceBranches(branchMock, configuration, Arg.Any<IBranch[]>()).Returns(Enumerable.Empty<IBranch>());
 
     //    var unitUnderTest = new EffectiveBranchConfigurationFinder(Substitute.For<ILog>(), repositoryStoreMock);
 
@@ -128,7 +128,7 @@ public class EffectiveBranchConfigurationFinderTests
         var branchMock = GitToolsTestingExtensions.CreateMockBranch("unknown", GitToolsTestingExtensions.CreateMockCommit());
         var configuration = ConfigBuilder.New.WithIncrement(fallbackIncrement).Build();
         var repositoryStoreMock = Substitute.For<IRepositoryStore>();
-        repositoryStoreMock.GetTargetBranches(branchMock, configuration, Arg.Any<IBranch[]>()).Returns(Enumerable.Empty<IBranch>());
+        repositoryStoreMock.GetSourceBranches(branchMock, configuration, Arg.Any<IBranch[]>()).Returns(Enumerable.Empty<IBranch>());
 
         var unitUnderTest = new EffectiveBranchConfigurationFinder(Substitute.For<ILog>(), repositoryStoreMock);
 
@@ -165,7 +165,7 @@ public class EffectiveBranchConfigurationFinderTests
         var configuration = ConfigBuilder.New.WithIncrement(fallbackIncrement).WithIncrement("develop", developBranchIncrement).Build();
         var repositoryStoreMock = Substitute.For<IRepositoryStore>();
         var developBranchMock = GitToolsTestingExtensions.CreateMockBranch("develop", GitToolsTestingExtensions.CreateMockCommit());
-        repositoryStoreMock.GetTargetBranches(unknownBranchMock, configuration, Arg.Any<IBranch[]>()).Returns(new[] { developBranchMock });
+        repositoryStoreMock.GetSourceBranches(unknownBranchMock, configuration, Arg.Any<IBranch[]>()).Returns(new[] { developBranchMock });
 
         var unitUnderTest = new EffectiveBranchConfigurationFinder(Substitute.For<ILog>(), repositoryStoreMock);
 
@@ -190,7 +190,7 @@ public class EffectiveBranchConfigurationFinderTests
         var configuration = ConfigBuilder.New.WithIncrement(IncrementStrategy.Inherit).WithIncrement("develop", developBranchIncrement).Build();
         var repositoryStoreMock = Substitute.For<IRepositoryStore>();
         var developBranchMock = GitToolsTestingExtensions.CreateMockBranch("develop", GitToolsTestingExtensions.CreateMockCommit());
-        repositoryStoreMock.GetTargetBranches(Arg.Any<IBranch>(), Arg.Any<Config>(), Arg.Any<HashSet<IBranch>>()).Returns(new[] { developBranchMock });
+        repositoryStoreMock.GetSourceBranches(Arg.Any<IBranch>(), Arg.Any<Config>(), Arg.Any<HashSet<IBranch>>()).Returns(new[] { developBranchMock });
 
         var unitUnderTest = new EffectiveBranchConfigurationFinder(Substitute.For<ILog>(), repositoryStoreMock);
 
