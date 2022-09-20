@@ -12,7 +12,6 @@ public class NextVersionCalculator : INextVersionCalculator
 
     private readonly IMainlineVersionCalculator mainlineVersionCalculator;
 
-    [Obsolete("It's better to have here not the dependency to the RepositoryStore because this part should get all information they need from the version strategy implementation or git version context.")]
     private readonly IRepositoryStore repositoryStore;
 
     private readonly Lazy<GitVersionContext> versionContext;
@@ -28,9 +27,7 @@ public class NextVersionCalculator : INextVersionCalculator
     {
         this.log = log.NotNull();
         this.mainlineVersionCalculator = mainlineVersionCalculator.NotNull();
-#pragma warning disable CS0618 // Type or member is obsolete
         this.repositoryStore = repositoryStore.NotNull();
-#pragma warning restore CS0618 // Type or member is obsolete
         this.versionContext = versionContext.NotNull();
         this.versionStrategies = versionStrategies.NotNull().ToArray();
         this.effectiveBranchConfigurationFinder = effectiveBranchConfigurationFinder.NotNull();
@@ -196,12 +193,9 @@ public class NextVersionCalculator : INextVersionCalculator
                     .ThenByDescending(v => v.BaseVersion.BaseVersionSource!.When)
                     .FirstOrDefault();
 
-                if (version == null)
-                {
-                    version = filteredVersions.Where(v => v.BaseVersion.BaseVersionSource == null)
-                        .OrderByDescending(v => v.IncrementedVersion)
-                        .First();
-                }
+                version ??= filteredVersions.Where(v => v.BaseVersion.BaseVersionSource == null)
+                    .OrderByDescending(v => v.IncrementedVersion)
+                    .First();
                 latestBaseVersionSource = version.BaseVersion.BaseVersionSource;
             }
 
