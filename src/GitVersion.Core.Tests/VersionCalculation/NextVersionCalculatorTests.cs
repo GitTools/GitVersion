@@ -6,6 +6,7 @@ using GitVersion.Logging;
 using GitVersion.Model.Configuration;
 using GitVersion.VersionCalculation;
 using LibGit2Sharp;
+using Microsoft.Extensions.DependencyInjection;
 using NSubstitute;
 using NUnit.Framework;
 using Shouldly;
@@ -14,83 +15,54 @@ namespace GitVersion.Core.Tests.VersionCalculation;
 
 public class NextVersionCalculatorTests : TestBase
 {
-    //[Test]
-    //public void ShouldIncrementVersionBasedOnConfig()
-    //{
-    //    var semanticVersionBuildMetaData = new SemanticVersionBuildMetaData("ef7d0d7e1e700f1c7c9fa01ea6791bb778a5c37c", 1, MainBranch, "b1a34edbd80e141f7cc046c074f109be7d022074", "b1a34e", DateTimeOffset.Now, 0);
+    [Test]
+    public void ShouldIncrementVersionBasedOnConfig()
+    {
+        var contextBuilder = new GitVersionContextBuilder();
 
-    //    var contextBuilder = new GitVersionContextBuilder();
+        contextBuilder.Build();
 
-    //    contextBuilder
-    //        .OverrideServices(services =>
-    //        {
-    //            var testBaseVersionCalculator = new TestBaseVersionCalculator(true, new SemanticVersion(1), GitToolsTestingExtensions.CreateMockCommit());
-    //            services.AddSingleton<IBaseVersionCalculator>(testBaseVersionCalculator);
-    //            services.AddSingleton<IMainlineVersionCalculator>(new TestMainlineVersionCalculator(semanticVersionBuildMetaData));
-    //        })
-    //        .WithConfig(new Config())
-    //        .Build();
+        contextBuilder.ServicesProvider.ShouldNotBeNull();
+        var nextVersionCalculator = contextBuilder.ServicesProvider.GetRequiredService<INextVersionCalculator>();
+        nextVersionCalculator.ShouldNotBeNull();
 
-    //    contextBuilder.ServicesProvider.ShouldNotBeNull();
-    //    var nextVersionCalculator = contextBuilder.ServicesProvider.GetRequiredService<INextVersionCalculator>();
-    //    nextVersionCalculator.ShouldNotBeNull();
+        var nextVersion = nextVersionCalculator.FindVersion();
 
-    //    var version = nextVersionCalculator.FindVersion();
+        nextVersion.IncrementedVersion.ToString().ShouldBe("0.0.1");
+    }
 
-    //    version.ToString().ShouldBe("1.0.1");
-    //}
+    [Test]
+    public void DoesNotIncrementWhenBaseVersionSaysNotTo()
+    {
+        var contextBuilder = new GitVersionContextBuilder();
 
-    //[Test]
-    //public void DoesNotIncrementWhenBaseVersionSaysNotTo()
-    //{
-    //    var semanticVersionBuildMetaData = new SemanticVersionBuildMetaData("ef7d0d7e1e700f1c7c9fa01ea6791bb778a5c37c", 1, MainBranch, "b1a34edbd80e141f7cc046c074f109be7d022074", "b1a34e", DateTimeOffset.Now, 0);
+        contextBuilder.WithConfig(new Config() { NextVersion = "1.0.0" }).Build();
 
-    //    var contextBuilder = new GitVersionContextBuilder();
+        contextBuilder.ServicesProvider.ShouldNotBeNull();
+        var nextVersionCalculator = contextBuilder.ServicesProvider.GetRequiredService<INextVersionCalculator>();
 
-    //    contextBuilder
-    //        .OverrideServices(services =>
-    //        {
-    //            var testBaseVersionCalculator = new TestBaseVersionCalculator(false, new SemanticVersion(1), GitToolsTestingExtensions.CreateMockCommit());
-    //            services.AddSingleton<IBaseVersionCalculator>(testBaseVersionCalculator);
-    //            services.AddSingleton<IMainlineVersionCalculator>(new TestMainlineVersionCalculator(semanticVersionBuildMetaData));
-    //        })
-    //        .WithConfig(new Config())
-    //        .Build();
+        nextVersionCalculator.ShouldNotBeNull();
 
-    //    contextBuilder.ServicesProvider.ShouldNotBeNull();
-    //    var nextVersionCalculator = contextBuilder.ServicesProvider.GetRequiredService<INextVersionCalculator>();
+        var nextVersion = nextVersionCalculator.FindVersion();
 
-    //    nextVersionCalculator.ShouldNotBeNull();
+        nextVersion.IncrementedVersion.ToString().ShouldBe("1.0.0");
+    }
 
-    //    var version = nextVersionCalculator.FindVersion();
+    [Test]
+    public void AppliesBranchPreReleaseTag()
+    {
+        var contextBuilder = new GitVersionContextBuilder();
 
-    //    version.ToString().ShouldBe("1.0.0");
-    //}
+        contextBuilder.WithDevelopBranch().Build();
 
-    //[Test]
-    //public void AppliesBranchPreReleaseTag()
-    //{
-    //    var semanticVersionBuildMetaData = new SemanticVersionBuildMetaData("ef7d0d7e1e700f1c7c9fa01ea6791bb778a5c37c", 2, "develop", "b1a34edbd80e141f7cc046c074f109be7d022074", "b1a34e", DateTimeOffset.Now, 0);
-    //    var contextBuilder = new GitVersionContextBuilder();
+        contextBuilder.ServicesProvider.ShouldNotBeNull();
+        var nextVersionCalculator = contextBuilder.ServicesProvider.GetRequiredService<INextVersionCalculator>();
+        nextVersionCalculator.ShouldNotBeNull();
 
-    //    contextBuilder
-    //        .OverrideServices(services =>
-    //        {
-    //            var testBaseVersionCalculator = new TestBaseVersionCalculator(false, new SemanticVersion(1), GitToolsTestingExtensions.CreateMockCommit());
-    //            services.AddSingleton<IBaseVersionCalculator>(testBaseVersionCalculator);
-    //            services.AddSingleton<IMainlineVersionCalculator>(new TestMainlineVersionCalculator(semanticVersionBuildMetaData));
-    //        })
-    //        .WithDevelopBranch()
-    //        .Build();
+        var nextVersion = nextVersionCalculator.FindVersion();
 
-    //    contextBuilder.ServicesProvider.ShouldNotBeNull();
-    //    var nextVersionCalculator = contextBuilder.ServicesProvider.GetRequiredService<INextVersionCalculator>();
-    //    nextVersionCalculator.ShouldNotBeNull();
-
-    //    var version = nextVersionCalculator.FindVersion();
-
-    //    version.ToString("f").ShouldBe("1.0.0-alpha.1+2");
-    //}
+        nextVersion.IncrementedVersion.ToString("f").ShouldBe("0.1.0-alpha.1+0");
+    }
 
     [Test]
     public void PreReleaseTagCanUseBranchName()
@@ -112,11 +84,11 @@ public class NextVersionCalculatorTests : TestBase
         };
 
         using var fixture = new EmptyRepositoryFixture();
-        fixture.MakeACommit(); // <<<---
+        fixture.MakeACommit();
         fixture.BranchTo("develop");
-        fixture.MakeACommit(); // <<<---
+        fixture.MakeACommit();
         fixture.BranchTo("custom/foo");
-        fixture.MakeACommit(); // <<<---
+        fixture.MakeACommit();
 
         fixture.AssertFullSemver("1.0.0-foo.1+3", config); // I see three commits in line 113, 115 and 117 obove.
     }
@@ -268,11 +240,11 @@ public class NextVersionCalculatorTests : TestBase
         };
 
         using var fixture = new EmptyRepositoryFixture();
-        fixture.MakeACommit(); // <<<---
+        fixture.MakeACommit();
         fixture.BranchTo("develop");
-        fixture.MakeACommit(); // <<<---
+        fixture.MakeACommit();
         fixture.BranchTo("custom/foo");
-        fixture.MakeACommit(); // <<<---
+        fixture.MakeACommit();
 
         fixture.AssertFullSemver("1.0.0-alpha.foo.1+3", config); // I see three commits in line 269, 271 and 273 obove.
     }

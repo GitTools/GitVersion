@@ -255,7 +255,7 @@ public class EffectiveBranchConfigurationFinderTests
         actual.ShouldBeEmpty();
     }
 
-    // until now the fallback configuration increment is always IncrementStrategy.Inherit
+    //// until now the fallback configuration increment is always IncrementStrategy.Inherit
     //[TestCase(IncrementStrategy.None)]
     //[TestCase(IncrementStrategy.Patch)]
     //[TestCase(IncrementStrategy.Minor)]
@@ -277,7 +277,7 @@ public class EffectiveBranchConfigurationFinderTests
     //    // Assert
     //    actual.ShouldHaveSingleItem();
     //    actual[0].Branch.ShouldBe(branchMock);
-    //    actual[0].Configuration.Increment.ShouldBe(IncrementStrategy.None);
+    //    actual[0].Value.Increment.ShouldBe(IncrementStrategy.None);
     //}
 
     [TestCase(IncrementStrategy.None)]
