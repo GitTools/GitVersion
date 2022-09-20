@@ -9,7 +9,8 @@ public sealed class ConfigBuilder
     public static ConfigBuilder New => new();
 
     private string? nextVerson;
-    private VersioningMode versioningMode;
+    private VersioningMode? versioningMode;
+    private readonly Dictionary<string, VersioningMode?> versioningModeDictionary = new();
     private bool withoutAnyTrackMergeTargets;
     private readonly Dictionary<string, bool> trackMergeTargetsDictionary = new();
     private readonly Dictionary<string, bool> preventIncrementOfMergedBranchVersionDictionary = new();
@@ -33,6 +34,24 @@ public sealed class ConfigBuilder
     public ConfigBuilder WithVersioningMode(VersioningMode value)
     {
         versioningMode = value;
+        return this;
+    }
+
+    public ConfigBuilder WithoutVersioningMode()
+    {
+        versioningMode = null;
+        return this;
+    }
+
+    public ConfigBuilder WithVersioningMode(string branch, VersioningMode value)
+    {
+        versioningModeDictionary[branch] = value;
+        return this;
+    }
+
+    public ConfigBuilder WithoutVersioningMode(string branch)
+    {
+        versioningModeDictionary[branch] = null;
         return this;
     }
 
@@ -100,6 +119,11 @@ public sealed class ConfigBuilder
         foreach (var item in trackMergeTargetsDictionary)
         {
             configuration.Branches[item.Key].TrackMergeTarget = item.Value;
+        }
+
+        foreach (var item in versioningModeDictionary)
+        {
+            configuration.Branches[item.Key].VersioningMode = item.Value;
         }
 
         foreach (var item in preventIncrementOfMergedBranchVersionDictionary)

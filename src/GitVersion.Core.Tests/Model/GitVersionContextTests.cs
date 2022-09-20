@@ -13,34 +13,6 @@
 
 //public class GitVersionContextTests : TestBase
 //{
-//    [Test]
-//    [Theory]
-//    public void CanInheritVersioningMode(VersioningMode mode)
-//    {
-//        using var fixture = new EmptyRepositoryFixture();
-
-//        var config = new ConfigurationBuilder()
-//            .Add(new Config { VersioningMode = mode })
-//            .Build();
-
-//        const string branchName = MainBranch;
-
-//        var mockCommit = GitToolsTestingExtensions.CreateMockCommit();
-//        var mockBranch = GitToolsTestingExtensions.CreateMockBranch(branchName, mockCommit);
-
-//        var branches = Substitute.For<IBranchCollection>();
-//        branches.GetEnumerator().Returns(_ => ((IEnumerable<IBranch>)new[] { mockBranch }).GetEnumerator());
-
-//        var mockRepository = Substitute.For<IGitRepository>();
-//        mockRepository.Head.Returns(mockBranch);
-//        mockRepository.Branches.Returns(branches);
-//        mockRepository.Commits.Returns(mockBranch.Commits);
-
-//        var context = GetGitVersionContext(fixture.RepositoryPath, mockRepository, branchName, config);
-
-//        context.Configuration.VersioningMode.ShouldBe(mode);
-//    }
-
 //    //[TestCase(IncrementStrategy.Inherit, IncrementStrategy.Patch)] // Since it inherits, the increment strategy of main is used => Patch
 //    //[TestCase(IncrementStrategy.Patch, null)]
 //    //[TestCase(IncrementStrategy.Major, null)]

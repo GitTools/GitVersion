@@ -47,11 +47,12 @@ public class BranchConfig
     {
         if (parentConfig is null) return this;
 
-        var result = new BranchConfig(this)
-        {
-            Increment = parentConfig.Increment
-        };
+        var result = new BranchConfig(this);
 
+        if (result.Increment is null || result.Increment == IncrementStrategy.Inherit)
+        {
+            result.Increment = parentConfig.Increment;
+        }
         result.VersioningMode ??= parentConfig.VersioningMode;
         result.Tag ??= parentConfig.Tag;
         result.PreventIncrementOfMergedBranchVersion ??= parentConfig.PreventIncrementOfMergedBranchVersion;

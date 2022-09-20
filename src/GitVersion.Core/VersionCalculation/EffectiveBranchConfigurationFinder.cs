@@ -36,38 +36,33 @@ public class EffectiveBranchConfigurationFinder : IEffectiveBranchConfigurationF
             branchConfiguration = childBranchConfiguration.Inherit(branchConfiguration);
         }
 
-        var targetBranches = Array.Empty<IBranch>();
+        var fallbackBranchConfiguration = configuration.GetFallbackBranchConfiguration();
+
+        var sourceBranches = Array.Empty<IBranch>();
         if (branchConfiguration.Increment == IncrementStrategy.Inherit)
         {
             // At this point we need to check if target branches are available.
-            targetBranches = this.repositoryStore.GetSourceBranches(branch, configuration, traversedBranches).ToArray();
+            sourceBranches = this.repositoryStore.GetSourceBranches(branch, configuration, traversedBranches).ToArray();
 
-            if (targetBranches.Length == 0)
+            if (sourceBranches.Length == 0)
             {
                 // Because the actual branch is marked with the inherit increment strategy we need to either skip the iteration or go further
                 // while inheriting from the fallback branch configuration. This behavior is configurable via the increment settings of the configuration.
-                var fallbackBranchConfiguration = configuration.GetFallbackBranchConfiguration();
                 var skipTraversingOfOrphanedBranches = fallbackBranchConfiguration.Increment == null
                     || fallbackBranchConfiguration.Increment == IncrementStrategy.Inherit;
                 this.log.Info(
                     $"An orphaned branch '{branch}' has been detected and will be skipped={skipTraversingOfOrphanedBranches}."
                 );
                 if (skipTraversingOfOrphanedBranches) yield break;
-
-                if (fallbackBranchConfiguration.Increment == IncrementStrategy.Inherit)
-                {
-                    fallbackBranchConfiguration.Increment = IncrementStrategy.None;
-                }
-                branchConfiguration = branchConfiguration.Inherit(fallbackBranchConfiguration);
             }
         }
 
-        if (branchConfiguration.Increment == IncrementStrategy.Inherit)
+        if (branchConfiguration.Increment == IncrementStrategy.Inherit && sourceBranches.Any())
         {
-            foreach (var targetBranche in targetBranches)
+            foreach (var sourceBranche in sourceBranches)
             {
                 foreach (var effectiveConfiguration
-                    in GetEffectiveConfigurationsRecursive(targetBranche, configuration, branchConfiguration, traversedBranches))
+                    in GetEffectiveConfigurationsRecursive(sourceBranche, configuration, branchConfiguration, traversedBranches))
                 {
                     yield return effectiveConfiguration;
                 }
@@ -75,6 +70,7 @@ public class EffectiveBranchConfigurationFinder : IEffectiveBranchConfigurationF
         }
         else
         {
+            branchConfiguration = branchConfiguration.Inherit(fallbackBranchConfiguration);
             yield return new(branch, new EffectiveConfiguration(configuration, branchConfiguration));
         }
     }
