@@ -509,12 +509,12 @@ public class CreatingAFeatureBranchFromAReleaseBranchScenario
 
         fixture.Repository.Branches.Remove("release/1.0.0");
 
-        // ❌ expected: "0.1.0+6" because the release has been canceled and should be treated like it was never exisisting
+        // ❌ expected: "0.1.0+6" because the release has been canceled and should be treated like it was never existing
         fixture.AssertFullSemver("1.1.0-alpha.4", configuration);
 
         fixture.MakeACommit();
 
-        // ❌ expected: "0.1.0+7" because the release has been canceled and should be treated like it was never exisisting
+        // ❌ expected: "0.1.0+7" because the release has been canceled and should be treated like it was never existing
         fixture.AssertFullSemver("1.1.0-alpha.5", configuration);
 
         fixture.Repository.DumpGraph();

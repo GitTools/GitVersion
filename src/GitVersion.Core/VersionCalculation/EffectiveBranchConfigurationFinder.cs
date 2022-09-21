@@ -28,7 +28,7 @@ public class EffectiveBranchConfigurationFinder : IEffectiveBranchConfigurationF
     private IEnumerable<EffectiveBranchConfiguration> GetEffectiveConfigurationsRecursive(
         IBranch branch, Config configuration, BranchConfig? childBranchConfiguration, HashSet<IBranch> traversedBranches)
     {
-        if (!traversedBranches.Add(branch)) yield break; // This should never happen!!
+        if (!traversedBranches.Add(branch)) yield break; // This should never happen!! But it is good to have a circuit breaker.
 
         var branchConfiguration = configuration.GetBranchConfiguration(branch);
         if (childBranchConfiguration != null)
@@ -41,7 +41,7 @@ public class EffectiveBranchConfigurationFinder : IEffectiveBranchConfigurationF
         var sourceBranches = Array.Empty<IBranch>();
         if (branchConfiguration.Increment == IncrementStrategy.Inherit)
         {
-            // At this point we need to check if target branches are available.
+            // At this point we need to check if source branches are available.
             sourceBranches = this.repositoryStore.GetSourceBranches(branch, configuration, traversedBranches).ToArray();
 
             if (sourceBranches.Length == 0)
@@ -59,10 +59,10 @@ public class EffectiveBranchConfigurationFinder : IEffectiveBranchConfigurationF
 
         if (branchConfiguration.Increment == IncrementStrategy.Inherit && sourceBranches.Any())
         {
-            foreach (var sourceBranche in sourceBranches)
+            foreach (var sourceBranch in sourceBranches)
             {
                 foreach (var effectiveConfiguration
-                    in GetEffectiveConfigurationsRecursive(sourceBranche, configuration, branchConfiguration, traversedBranches))
+                    in GetEffectiveConfigurationsRecursive(sourceBranch, configuration, branchConfiguration, traversedBranches))
                 {
                     yield return effectiveConfiguration;
                 }
