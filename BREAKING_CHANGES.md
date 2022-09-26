@@ -1,3 +1,7 @@
+## Unreleased
+
+*   When using a commit message that matches **both** `*-version-bump-message` and `no-bump-message`, there is no increment for that commit. In other words, `no-bump-message` now takes precedence over `*-version-bump-message`.
+
 ## v5.0.0
 
 *   Version numbers in branches other than `release` branches are no longer
