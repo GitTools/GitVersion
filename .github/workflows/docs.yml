@@ -70,7 +70,7 @@ jobs:
         restore-keys: node-${{ runner.os }}
     -
       name: Install .NET SDK 6.0.x
-      uses: actions/setup-dotnet@v2
+      uses: actions/setup-dotnet@v3
       with:
         dotnet-version: '6.0.x'
     -
@@ -104,7 +104,7 @@ jobs:
         key: tools-${{ runner.os }}-${{ hashFiles('./build/**') }}
     -
       name: Install .NET SDK 6.0.x
-      uses: actions/setup-dotnet@v2
+      uses: actions/setup-dotnet@v3
       with:
         dotnet-version: '6.0.x'
     -
@@ -161,7 +161,7 @@ jobs:
         key: tools-${{ runner.os }}-${{ hashFiles('./build/**') }}
     -
       name: Install .NET SDK 6.0.x
-      uses: actions/setup-dotnet@v2
+      uses: actions/setup-dotnet@v3
       with:
         dotnet-version: '6.0.x'
     -
