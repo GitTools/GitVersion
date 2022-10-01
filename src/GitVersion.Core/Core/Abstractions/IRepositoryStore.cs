@@ -1,5 +1,4 @@
 using GitVersion.Model.Configuration;
-using GitVersion.VersionCalculation;
 
 namespace GitVersion.Common;
 
@@ -33,13 +32,11 @@ public interface IRepositoryStore
     /// </summary>
     BranchCommit FindCommitBranchWasBranchedFrom(IBranch? branch, Config configuration, params IBranch[] excludedBranches);
 
-    SemanticVersion GetCurrentCommitTaggedVersion(ICommit? commit, EffectiveConfiguration config);
-    SemanticVersion MaybeIncrement(BaseVersion baseVersion, GitVersionContext context);
+    SemanticVersion GetCurrentCommitTaggedVersion(ICommit? commit, string? tagPrefix);
     IEnumerable<SemanticVersion> GetVersionTagsOnBranch(IBranch branch, string? tagPrefixRegex);
     IEnumerable<(ITag Tag, SemanticVersion Semver, ICommit Commit)> GetValidVersionTags(string? tagPrefixRegex, DateTimeOffset? olderThan = null);
 
     bool IsCommitOnBranch(ICommit? baseVersionSource, IBranch branch, ICommit firstMatchingCommit);
-    VersionField? DetermineIncrementedField(BaseVersion baseVersion, GitVersionContext context);
 
     int GetNumberOfUncommittedChanges();
 }

@@ -2,6 +2,7 @@ using GitVersion.Common;
 using GitVersion.Configuration;
 using GitVersion.Extensions;
 using GitVersion.Logging;
+using GitVersion.Model.Configuration;
 
 namespace GitVersion.VersionCalculation;
 
@@ -11,21 +12,23 @@ public class NextVersionCalculator : INextVersionCalculator
     private readonly IBaseVersionCalculator baseVersionCalculator;
     private readonly IMainlineVersionCalculator mainlineVersionCalculator;
     private readonly IRepositoryStore repositoryStore;
+    private readonly IIncrementStrategyFinder incrementStrategyFinder;
     private readonly Lazy<GitVersionContext> versionContext;
     private GitVersionContext context => this.versionContext.Value;
 
     public NextVersionCalculator(ILog log, IBaseVersionCalculator baseVersionCalculator,
         IMainlineVersionCalculator mainlineVersionCalculator, IRepositoryStore repositoryStore,
-        Lazy<GitVersionContext> versionContext)
+        IIncrementStrategyFinder incrementStrategyFinder, Lazy<GitVersionContext> versionContext)
     {
         this.log = log.NotNull();
         this.baseVersionCalculator = baseVersionCalculator.NotNull();
         this.mainlineVersionCalculator = mainlineVersionCalculator.NotNull();
         this.repositoryStore = repositoryStore.NotNull();
+        this.incrementStrategyFinder = incrementStrategyFinder.NotNull();
         this.versionContext = versionContext.NotNull();
     }
 
-    public SemanticVersion FindVersion()
+    public NextVersion FindVersion()
     {
         this.log.Info($"Running against branch: {context.CurrentBranch} ({context.CurrentCommit?.ToString() ?? "-"})");
         if (context.IsCurrentCommitTagged)
@@ -49,10 +52,12 @@ public class NextVersionCalculator : INextVersionCalculator
             taggedSemanticVersion = semanticVersion;
         }
 
-        var baseVersion = this.baseVersionCalculator.GetBaseVersion();
+        var result = this.baseVersionCalculator.GetBaseVersion();
+        var baseVersion = result.Item1;
+        var configuration = result.Item2;
         baseVersion.SemanticVersion.BuildMetaData = this.mainlineVersionCalculator.CreateVersionBuildMetaData(baseVersion.BaseVersionSource);
         SemanticVersion semver;
-        if (context.Configuration.VersioningMode == VersioningMode.Mainline)
+        if (context.FullConfiguration.VersioningMode == VersioningMode.Mainline)
         {
             semver = this.mainlineVersionCalculator.FindMainlineModeVersion(baseVersion);
         }
@@ -60,7 +65,7 @@ public class NextVersionCalculator : INextVersionCalculator
         {
             if (taggedSemanticVersion?.BuildMetaData == null || (taggedSemanticVersion.BuildMetaData?.Sha != baseVersion.SemanticVersion.BuildMetaData.Sha))
             {
-                semver = PerformIncrement(baseVersion);
+                semver = PerformIncrement(baseVersion, configuration.Value);
                 semver.BuildMetaData = this.mainlineVersionCalculator.CreateVersionBuildMetaData(baseVersion.BaseVersionSource);
             }
             else
@@ -70,14 +75,12 @@ public class NextVersionCalculator : INextVersionCalculator
         }
 
         var hasPreReleaseTag = semver.PreReleaseTag?.HasTag() == true;
-        var tag = context.Configuration.Tag;
+        var tag = configuration.Value.Tag;
         var branchConfigHasPreReleaseTagConfigured = !tag.IsNullOrEmpty();
-#pragma warning disable CS8602 // Dereference of a possibly null reference. // context.Configuration.Tag not null when branchConfigHasPreReleaseTagConfigured is true
         var preReleaseTagDoesNotMatchConfiguration = hasPreReleaseTag && branchConfigHasPreReleaseTagConfigured && semver.PreReleaseTag?.Name != tag;
-#pragma warning restore CS8602 // Dereference of a possibly null reference.
         if (semver.PreReleaseTag?.HasTag() != true && branchConfigHasPreReleaseTagConfigured || preReleaseTagDoesNotMatchConfiguration)
         {
-            UpdatePreReleaseTag(semver, baseVersion.BranchNameOverride);
+            UpdatePreReleaseTag(configuration.Value, semver, baseVersion.BranchNameOverride);
         }
 
         if (taggedSemanticVersion != null)
@@ -94,29 +97,26 @@ public class NextVersionCalculator : INextVersionCalculator
             }
         }
 
-        return taggedSemanticVersion ?? semver;
+        var incrementedVersion = taggedSemanticVersion ?? semver;
+        return new(incrementedVersion, baseVersion, configuration);
     }
 
-    private SemanticVersion PerformIncrement(BaseVersion baseVersion)
+    private SemanticVersion PerformIncrement(BaseVersion baseVersion, EffectiveConfiguration configuration)
     {
         var semver = baseVersion.SemanticVersion;
-        var increment = this.repositoryStore.DetermineIncrementedField(baseVersion, context);
-        if (increment != null)
-        {
-            semver = semver.IncrementVersion(increment.Value);
-        }
-        else this.log.Info("Skipping version increment");
+        var increment = this.incrementStrategyFinder.DetermineIncrementedField(context, baseVersion, configuration);
+        semver = semver.IncrementVersion(increment);
         return semver;
     }
 
-    private void UpdatePreReleaseTag(SemanticVersion semanticVersion, string? branchNameOverride)
+    private void UpdatePreReleaseTag(EffectiveConfiguration configuration, SemanticVersion semanticVersion, string? branchNameOverride)
     {
-        var tagToUse = context.Configuration.GetBranchSpecificTag(this.log, context.CurrentBranch.Name.Friendly, branchNameOverride);
+        var tagToUse = configuration.GetBranchSpecificTag(this.log, context.CurrentBranch.Name.Friendly, branchNameOverride);
 
         long? number = null;
 
         var lastTag = this.repositoryStore
-            .GetVersionTagsOnBranch(context.CurrentBranch, context.Configuration.GitTagPrefix)
+            .GetVersionTagsOnBranch(context.CurrentBranch, context.FullConfiguration.TagPrefix)
             .FirstOrDefault(v => v.PreReleaseTag?.Name?.IsEquivalentTo(tagToUse) == true);
 
         if (lastTag != null && MajorMinorPatchEqual(lastTag, semanticVersion) && lastTag.PreReleaseTag?.HasTag() == true)

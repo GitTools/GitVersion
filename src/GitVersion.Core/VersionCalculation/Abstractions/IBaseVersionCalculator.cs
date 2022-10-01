@@ -1,6 +1,8 @@
+using GitVersion.Model.Configuration;
+
 namespace GitVersion.VersionCalculation;
 
 public interface IBaseVersionCalculator
 {
-    BaseVersion GetBaseVersion();
+    (BaseVersion, EffectiveBranchConfiguration) GetBaseVersion();
 }

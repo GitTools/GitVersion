@@ -57,10 +57,8 @@ branches:
     pre-release-weight: 30000
   feature:
     mode: ContinuousDelivery
-    tag: useBranchName
+    tag: '{BranchName}'
     increment: Inherit
-    prevent-increment-of-merged-branch-version: false
-    track-merge-target: false
     regex: ^features?[/-]
     source-branches:
     - develop
@@ -69,17 +67,12 @@ branches:
     - feature
     - support
     - hotfix
-    tracks-release-branches: false
-    is-release-branch: false
-    is-mainline: false
     pre-release-weight: 30000
   pull-request:
     mode: ContinuousDelivery
     tag: PullRequest
     increment: Inherit
-    prevent-increment-of-merged-branch-version: false
     tag-number-pattern: '[/-](?<number>\d+)'
-    track-merge-target: false
     regex: ^(pull|pull\-requests|pr)[/-]
     source-branches:
     - develop
@@ -88,9 +81,6 @@ branches:
     - feature
     - support
     - hotfix
-    tracks-release-branches: false
-    is-release-branch: false
-    is-mainline: false
     pre-release-weight: 30000
   hotfix:
     mode: ContinuousDelivery
@@ -100,9 +90,10 @@ branches:
     track-merge-target: false
     regex: ^hotfix(es)?[/-]
     source-branches:
-    - develop
+    - release
     - main
     - support
+    - hotfix
     tracks-release-branches: false
     is-release-branch: false
     is-mainline: false
@@ -122,6 +113,7 @@ branches:
     pre-release-weight: 55000
 ignore:
   sha: []
+increment: Inherit
 commit-date-format: yyyy-MM-dd
 merge-message-formats: {}
 update-build-number: true

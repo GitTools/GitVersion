@@ -26,10 +26,10 @@ public class BaseVersionCalculatorTests : TestBase
 
         var baseVersion = versionCalculator.GetBaseVersion();
 
-        baseVersion.SemanticVersion.ToString().ShouldBe("2.0.0");
-        baseVersion.ShouldIncrement.ShouldBe(true);
-        baseVersion.BaseVersionSource.ShouldNotBeNull();
-        baseVersion.BaseVersionSource.When.ShouldBe(dateTimeOffset);
+        baseVersion.Item1.SemanticVersion.ToString().ShouldBe("2.0.0");
+        baseVersion.Item1.ShouldIncrement.ShouldBe(true);
+        baseVersion.Item1.BaseVersionSource.ShouldNotBeNull();
+        baseVersion.Item1.BaseVersionSource.When.ShouldBe(dateTimeOffset);
     }
 
     [Test]
@@ -47,10 +47,10 @@ public class BaseVersionCalculatorTests : TestBase
 
         var baseVersion = versionCalculator.GetBaseVersion();
 
-        baseVersion.SemanticVersion.ToString().ShouldBe("2.0.0");
-        baseVersion.ShouldIncrement.ShouldBe(true);
-        baseVersion.BaseVersionSource.ShouldNotBeNull();
-        baseVersion.BaseVersionSource.When.ShouldBe(when);
+        baseVersion.Item1.SemanticVersion.ToString().ShouldBe("2.0.0");
+        baseVersion.Item1.ShouldIncrement.ShouldBe(true);
+        baseVersion.Item1.BaseVersionSource.ShouldNotBeNull();
+        baseVersion.Item1.BaseVersionSource.When.ShouldBe(when);
     }
 
     [Test]
@@ -68,10 +68,10 @@ public class BaseVersionCalculatorTests : TestBase
 
         var baseVersion = versionCalculator.GetBaseVersion();
 
-        baseVersion.SemanticVersion.ToString().ShouldBe("2.0.0");
-        baseVersion.ShouldIncrement.ShouldBe(true);
-        baseVersion.BaseVersionSource.ShouldNotBeNull();
-        baseVersion.BaseVersionSource.When.ShouldBe(when);
+        baseVersion.Item1.SemanticVersion.ToString().ShouldBe("2.0.0");
+        baseVersion.Item1.ShouldIncrement.ShouldBe(true);
+        baseVersion.Item1.BaseVersionSource.ShouldNotBeNull();
+        baseVersion.Item1.BaseVersionSource.When.ShouldBe(when);
     }
 
     [Test]
@@ -90,9 +90,9 @@ public class BaseVersionCalculatorTests : TestBase
 
         var baseVersion = versionCalculator.GetBaseVersion();
 
-        baseVersion.Source.ShouldBe(version.Source);
-        baseVersion.ShouldIncrement.ShouldBe(version.ShouldIncrement);
-        baseVersion.SemanticVersion.ShouldBe(version.SemanticVersion);
+        baseVersion.Item1.Source.ShouldBe(version.Source);
+        baseVersion.Item1.ShouldIncrement.ShouldBe(version.ShouldIncrement);
+        baseVersion.Item1.SemanticVersion.ShouldBe(version.SemanticVersion);
     }
 
     [Test]
@@ -112,10 +112,10 @@ public class BaseVersionCalculatorTests : TestBase
             }));
         var baseVersion = versionCalculator.GetBaseVersion();
 
-        baseVersion.Source.ShouldNotBe(higherVersion.Source);
-        baseVersion.SemanticVersion.ShouldNotBe(higherVersion.SemanticVersion);
-        baseVersion.Source.ShouldBe(lowerVersion.Source);
-        baseVersion.SemanticVersion.ShouldBe(lowerVersion.SemanticVersion);
+        baseVersion.Item1.Source.ShouldNotBe(higherVersion.Source);
+        baseVersion.Item1.SemanticVersion.ShouldNotBe(higherVersion.SemanticVersion);
+        baseVersion.Item1.Source.ShouldBe(lowerVersion.Source);
+        baseVersion.Item1.SemanticVersion.ShouldBe(lowerVersion.SemanticVersion);
     }
 
     [Test]
@@ -148,10 +148,10 @@ public class BaseVersionCalculatorTests : TestBase
             }));
         var baseVersion = versionCalculator.GetBaseVersion();
 
-        baseVersion.Source.ShouldNotBe(preReleaseVersion.Source);
-        baseVersion.SemanticVersion.ShouldNotBe(preReleaseVersion.SemanticVersion);
-        baseVersion.Source.ShouldBe(lowerVersion.Source);
-        baseVersion.SemanticVersion.ShouldBe(lowerVersion.SemanticVersion);
+        baseVersion.Item1.Source.ShouldNotBe(preReleaseVersion.Source);
+        baseVersion.Item1.SemanticVersion.ShouldNotBe(preReleaseVersion.SemanticVersion);
+        baseVersion.Item1.Source.ShouldBe(lowerVersion.Source);
+        baseVersion.Item1.SemanticVersion.ShouldBe(lowerVersion.SemanticVersion);
     }
 
     private static IBaseVersionCalculator GetBaseVersionCalculator(Action<GitVersionContextBuilder> contextBuilderAction)
@@ -209,7 +209,7 @@ public class BaseVersionCalculatorTests : TestBase
             }
         }
 
-        public IEnumerable<BaseVersion> GetVersions()
+        public IEnumerable<BaseVersion> GetBaseVersions(EffectiveBranchConfiguration configuration)
         {
             yield return new BaseVersion("Source 1", false, new SemanticVersion(1), this.when, null);
         }
@@ -232,7 +232,7 @@ public class BaseVersionCalculatorTests : TestBase
             }
         }
 
-        public IEnumerable<BaseVersion> GetVersions()
+        public IEnumerable<BaseVersion> GetBaseVersions(EffectiveBranchConfiguration configuration)
         {
             yield return new BaseVersion("Source 2", true, new SemanticVersion(2), this.when, null);
         }
@@ -240,10 +240,10 @@ public class BaseVersionCalculatorTests : TestBase
 
     private sealed class TestVersionStrategy : IVersionStrategy
     {
-        private readonly IEnumerable<BaseVersion> versions;
+        private readonly IEnumerable<BaseVersion> baseVersions;
 
-        public TestVersionStrategy(params BaseVersion[] versions) => this.versions = versions;
+        public TestVersionStrategy(params BaseVersion[] baseVersions) => this.baseVersions = baseVersions;
 
-        public IEnumerable<BaseVersion> GetVersions() => this.versions;
+        public IEnumerable<BaseVersion> GetBaseVersions(EffectiveBranchConfiguration configuration) => this.baseVersions;
     }
 }
