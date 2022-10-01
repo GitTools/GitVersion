@@ -28,7 +28,6 @@ public class VersionInBranchNameBaseVersionStrategyTests : TestBase
         var effectiveConfiguration = new EffectiveConfiguration(configuration, branchConfiguration);
         var baseVersion = strategy.GetBaseVersions(new(gitRepository.FindBranch(branchName)!, effectiveConfiguration)).Single();
 
-
         baseVersion.SemanticVersion.ToString().ShouldBe(expectedBaseVersion);
     }
 
@@ -48,7 +47,6 @@ public class VersionInBranchNameBaseVersionStrategyTests : TestBase
         var branchConfiguration = configuration.GetBranchConfiguration(branchName);
         var effectiveConfiguration = new EffectiveConfiguration(configuration, branchConfiguration);
         var baseVersions = strategy.GetBaseVersions(new(gitRepository.FindBranch(branchName)!, effectiveConfiguration));
-
 
         baseVersions.ShouldBeEmpty();
     }

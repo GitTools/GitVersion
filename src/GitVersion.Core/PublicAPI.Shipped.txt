@@ -654,17 +654,17 @@ GitVersion.Model.Configuration.EffectiveConfiguration.CommitDateFormat.get -> st
 GitVersion.Model.Configuration.EffectiveConfiguration.CommitMessageIncrementing.get -> GitVersion.VersionCalculation.CommitMessageIncrementMode
 GitVersion.Model.Configuration.EffectiveConfiguration.ContinuousDeploymentFallbackTag.get -> string?
 GitVersion.Model.Configuration.EffectiveConfiguration.EffectiveConfiguration(GitVersion.Model.Configuration.Config! configuration, GitVersion.Model.Configuration.BranchConfig! currentBranchConfig) -> void
-GitVersion.Model.Configuration.EffectiveConfiguration.GitTagPrefix.get -> string?
 GitVersion.Model.Configuration.EffectiveConfiguration.Increment.get -> GitVersion.IncrementStrategy
-GitVersion.Model.Configuration.EffectiveConfiguration.IsCurrentBranchRelease.get -> bool
+GitVersion.Model.Configuration.EffectiveConfiguration.IsReleaseBranch.get -> bool
 GitVersion.Model.Configuration.EffectiveConfiguration.MajorVersionBumpMessage.get -> string?
 GitVersion.Model.Configuration.EffectiveConfiguration.MinorVersionBumpMessage.get -> string?
 GitVersion.Model.Configuration.EffectiveConfiguration.NextVersion.get -> string?
 GitVersion.Model.Configuration.EffectiveConfiguration.NoBumpMessage.get -> string?
 GitVersion.Model.Configuration.EffectiveConfiguration.PatchVersionBumpMessage.get -> string?
 GitVersion.Model.Configuration.EffectiveConfiguration.PreReleaseWeight.get -> int
-GitVersion.Model.Configuration.EffectiveConfiguration.PreventIncrementForMergedBranchVersion.get -> bool
+GitVersion.Model.Configuration.EffectiveConfiguration.PreventIncrementOfMergedBranchVersion.get -> bool
 GitVersion.Model.Configuration.EffectiveConfiguration.Tag.get -> string?
+GitVersion.Model.Configuration.EffectiveConfiguration.TagPrefix.get -> string?
 GitVersion.Model.Configuration.EffectiveConfiguration.TagNumberPattern.get -> string?
 GitVersion.Model.Configuration.EffectiveConfiguration.TagPreReleaseWeight.get -> int
 GitVersion.Model.Configuration.EffectiveConfiguration.TrackMergeTarget.get -> bool

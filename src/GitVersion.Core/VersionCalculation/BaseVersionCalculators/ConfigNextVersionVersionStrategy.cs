@@ -10,8 +10,7 @@ namespace GitVersion.VersionCalculation;
 /// </summary>
 public class ConfigNextVersionVersionStrategy : VersionStrategyBase
 {
-    public ConfigNextVersionVersionStrategy(Lazy<GitVersionContext> versionContext)
-        : base(versionContext)
+    public ConfigNextVersionVersionStrategy(Lazy<GitVersionContext> versionContext) : base(versionContext)
     {
     }
 

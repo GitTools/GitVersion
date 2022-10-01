@@ -30,7 +30,7 @@ public class IncrementStrategyFinder : IIncrementStrategyFinder
     {
         configuration.NotNull();
 
-        var commitMessageIncrement = FindCommitMessageIncrement(repository, context, configuration, baseVersion.BaseVersionSource);
+        var commitMessageIncrement = FindCommitMessageIncrement(this.repository, context, configuration, baseVersion.BaseVersionSource);
 
         var defaultIncrement = configuration.Increment.ToVersionField();
 

@@ -405,7 +405,7 @@ branches:
         var config = this.configProvider.Provide(this.repoPath);
 
         config.Branches["feature"].SourceBranches.ShouldBe(
-            new List<string> { "develop", "release", MainBranch, "feature", "support", "hotfix" });
+            new List<string> { "develop", MainBranch, "release", "feature", "support", "hotfix" });
     }
 
     [Test]

@@ -11,6 +11,7 @@ public class EffectiveConfiguration
 {
     public EffectiveConfiguration(Config configuration, BranchConfig currentBranchConfig)
     {
+        configuration.NotNull();
         currentBranchConfig.NotNull();
 
         var name = currentBranchConfig.Name;
@@ -39,12 +40,12 @@ public class EffectiveConfiguration
         AssemblyVersioningFormat = configuration.AssemblyVersioningFormat;
         AssemblyFileVersioningFormat = configuration.AssemblyFileVersioningFormat;
         VersioningMode = currentBranchConfig.VersioningMode.Value;
-        GitTagPrefix = configuration.TagPrefix;
+        TagPrefix = configuration.TagPrefix;
         Tag = currentBranchConfig.Tag ?? @"{BranchName}";
         NextVersion = configuration.NextVersion;
         Increment = currentBranchConfig.Increment.Value;
         BranchPrefixToTrim = currentBranchConfig.Regex;
-        PreventIncrementForMergedBranchVersion = currentBranchConfig.PreventIncrementOfMergedBranchVersion ?? false;
+        PreventIncrementOfMergedBranchVersion = currentBranchConfig.PreventIncrementOfMergedBranchVersion ?? false;
         TagNumberPattern = currentBranchConfig.TagNumberPattern;
         ContinuousDeploymentFallbackTag = configuration.ContinuousDeploymentFallbackTag;
         TrackMergeTarget = currentBranchConfig.TrackMergeTarget ?? false;
@@ -55,7 +56,7 @@ public class EffectiveConfiguration
         CommitMessageIncrementing = currentBranchConfig.CommitMessageIncrementing ?? configuration.CommitMessageIncrementing.Value;
         VersionFilters = configuration.Ignore.ToFilters();
         TracksReleaseBranches = currentBranchConfig.TracksReleaseBranches ?? false;
-        IsCurrentBranchRelease = currentBranchConfig.IsReleaseBranch ?? false;
+        IsReleaseBranch = currentBranchConfig.IsReleaseBranch ?? false;
         IsMainline = currentBranchConfig.IsMainline ?? false;
         CommitDateFormat = configuration.CommitDateFormat;
         UpdateBuildNumber = configuration.UpdateBuildNumber ?? true;
@@ -70,12 +71,12 @@ public class EffectiveConfiguration
         string? assemblyVersioningFormat,
         string? assemblyFileVersioningFormat,
         VersioningMode versioningMode,
-        string? gitTagPrefix,
+        string? tagPrefix,
         string? tag,
         string? nextVersion,
         IncrementStrategy increment,
         string? branchPrefixToTrim,
-        bool preventIncrementForMergedBranchVersion,
+        bool preventIncrementOfMergedBranchVersion,
         string? tagNumberPattern,
         string? continuousDeploymentFallbackTag,
         bool trackMergeTarget,
@@ -86,7 +87,7 @@ public class EffectiveConfiguration
         CommitMessageIncrementMode commitMessageIncrementing,
         IEnumerable<IVersionFilter> versionFilters,
         bool tracksReleaseBranches,
-        bool isCurrentBranchRelease,
+        bool isReleaseBranch,
         bool isMainline,
         string? commitDateFormat,
         bool updateBuildNumber,
@@ -100,12 +101,12 @@ public class EffectiveConfiguration
         AssemblyVersioningFormat = assemblyVersioningFormat;
         AssemblyFileVersioningFormat = assemblyFileVersioningFormat;
         VersioningMode = versioningMode;
-        GitTagPrefix = gitTagPrefix;
+        TagPrefix = tagPrefix;
         Tag = tag;
         NextVersion = nextVersion;
         Increment = increment;
         BranchPrefixToTrim = branchPrefixToTrim;
-        PreventIncrementForMergedBranchVersion = preventIncrementForMergedBranchVersion;
+        PreventIncrementOfMergedBranchVersion = preventIncrementOfMergedBranchVersion;
         TagNumberPattern = tagNumberPattern;
         ContinuousDeploymentFallbackTag = continuousDeploymentFallbackTag;
         TrackMergeTarget = trackMergeTarget;
@@ -116,7 +117,7 @@ public class EffectiveConfiguration
         CommitMessageIncrementing = commitMessageIncrementing;
         VersionFilters = versionFilters;
         TracksReleaseBranches = tracksReleaseBranches;
-        IsCurrentBranchRelease = isCurrentBranchRelease;
+        IsReleaseBranch = isReleaseBranch;
         IsMainline = isMainline;
         CommitDateFormat = commitDateFormat;
         UpdateBuildNumber = updateBuildNumber;
@@ -126,7 +127,7 @@ public class EffectiveConfiguration
     }
 
     public bool TracksReleaseBranches { get; }
-    public bool IsCurrentBranchRelease { get; }
+    public bool IsReleaseBranch { get; }
     public bool IsMainline { get; }
     public VersioningMode VersioningMode { get; }
     public AssemblyVersioningScheme AssemblyVersioningScheme { get; }
@@ -138,7 +139,7 @@ public class EffectiveConfiguration
     /// <summary>
     ///     Git tag prefix
     /// </summary>
-    public string? GitTagPrefix { get; }
+    public string? TagPrefix { get; }
 
     /// <summary>
     ///     Tag to use when calculating SemVer
@@ -151,7 +152,7 @@ public class EffectiveConfiguration
 
     public string? BranchPrefixToTrim { get; }
 
-    public bool PreventIncrementForMergedBranchVersion { get; }
+    public bool PreventIncrementOfMergedBranchVersion { get; }
 
     public string? TagNumberPattern { get; }
 

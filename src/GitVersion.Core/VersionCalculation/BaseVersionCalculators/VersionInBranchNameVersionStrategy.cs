@@ -17,7 +17,6 @@ public class VersionInBranchNameVersionStrategy : VersionStrategyBase
     public VersionInBranchNameVersionStrategy(IRepositoryStore repositoryStore, Lazy<GitVersionContext> versionContext)
         : base(versionContext) => RepositoryStore = repositoryStore.NotNull();
 
-
     public override IEnumerable<BaseVersion> GetBaseVersions(EffectiveBranchConfiguration configuration)
     {
         string nameWithoutOrigin = NameWithoutOrigin(configuration.Branch);

@@ -1,4 +1,3 @@
-using GitVersion.Core.Tests.Extensions;
 using GitVersion.Core.Tests.Helpers;
 using GitVersion.Logging;
 using GitVersion.VersionCalculation;

@@ -3,6 +3,7 @@ using GitVersion.Configuration;
 using GitVersion.Extensions;
 using GitVersion.Helpers;
 using GitVersion.Logging;
+using GitVersion.Model.Configuration;
 using GitVersion.OutputVariables;
 
 namespace GitVersion.VersionCalculation;
@@ -18,11 +19,8 @@ public class VariableProvider : IVariableProvider
         this.log = log.NotNull();
     }
 
-    public VersionVariables GetVariablesFor(NextVersion nextVersion, bool isCurrentCommitTagged)
+    public VersionVariables GetVariablesFor(SemanticVersion semanticVersion, EffectiveConfiguration config, bool isCurrentCommitTagged)
     {
-        var semanticVersion = nextVersion.NotNull().IncrementedVersion;
-        var config = nextVersion.Configuration;
-
         var isContinuousDeploymentMode = config.VersioningMode == VersioningMode.ContinuousDeployment && !isCurrentCommitTagged;
         if (isContinuousDeploymentMode)
         {

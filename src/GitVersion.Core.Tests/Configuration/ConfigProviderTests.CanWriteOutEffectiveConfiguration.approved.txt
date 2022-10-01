@@ -14,21 +14,26 @@ branches:
     mode: ContinuousDeployment
     tag: alpha
     increment: Minor
+    prevent-increment-of-merged-branch-version: false
     track-merge-target: true
     regex: ^dev(elop)?(ment)?$
     source-branches: []
     tracks-release-branches: true
+    is-release-branch: false
+    is-mainline: false
     pre-release-weight: 0
   main:
     mode: ContinuousDelivery
     tag: ''
     increment: Patch
     prevent-increment-of-merged-branch-version: true
-    track-merge-target: true
+    track-merge-target: false
     regex: ^master$|^main$
     source-branches:
     - develop
     - release
+    tracks-release-branches: false
+    is-release-branch: false
     is-mainline: true
     pre-release-weight: 55000
   release:
@@ -36,13 +41,16 @@ branches:
     tag: beta
     increment: None
     prevent-increment-of-merged-branch-version: true
+    track-merge-target: false
     regex: ^releases?[/-]
     source-branches:
     - develop
     - main
     - support
     - release
+    tracks-release-branches: false
     is-release-branch: true
+    is-mainline: false
     pre-release-weight: 30000
   feature:
     mode: ContinuousDelivery
@@ -51,8 +59,8 @@ branches:
     regex: ^features?[/-]
     source-branches:
     - develop
-    - release
     - main
+    - release
     - feature
     - support
     - hotfix
@@ -84,6 +92,7 @@ branches:
     - support
     - hotfix
     tracks-release-branches: false
+    is-release-branch: false
     is-mainline: false
     pre-release-weight: 30000
   support:
@@ -91,10 +100,12 @@ branches:
     tag: ''
     increment: Patch
     prevent-increment-of-merged-branch-version: true
-    track-merge-target: true
+    track-merge-target: false
     regex: ^support[/-]
     source-branches:
     - main
+    tracks-release-branches: false
+    is-release-branch: false
     is-mainline: true
     pre-release-weight: 55000
 ignore:

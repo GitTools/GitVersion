@@ -50,7 +50,7 @@ public class GitVersionCalculateTool : IGitVersionCalculateTool
         if (versionVariables != null) return versionVariables;
 
         var nextVersion = this.nextVersionCalculator.FindVersion();
-        versionVariables = this.variableProvider.GetVariablesFor(nextVersion, context.IsCurrentCommitTagged);
+        versionVariables = this.variableProvider.GetVariablesFor(nextVersion.IncrementedVersion, nextVersion.Configuration, context.IsCurrentCommitTagged);
 
         if (gitVersionOptions.Settings.NoCache) return versionVariables;
         try
