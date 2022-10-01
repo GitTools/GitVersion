@@ -85,6 +85,15 @@ public class NextVersionCalculator : INextVersionCalculator
             }
         }
 
+        var hasPreReleaseTag = semver.PreReleaseTag?.HasTag() == true;
+        var tag = nextVersion.Configuration.Tag;
+        var branchConfigHasPreReleaseTagConfigured = !tag.IsNullOrEmpty();
+        var preReleaseTagDoesNotMatchConfiguration = hasPreReleaseTag && branchConfigHasPreReleaseTagConfigured && semver.PreReleaseTag?.Name != tag;
+        if (semver.PreReleaseTag?.HasTag() != true && branchConfigHasPreReleaseTagConfigured || preReleaseTagDoesNotMatchConfiguration)
+        {
+            UpdatePreReleaseTag(new(nextVersion.Branch, nextVersion.Configuration), semver, nextVersion.BaseVersion.BranchNameOverride);
+        }
+
         if (taggedSemanticVersion != null)
         {
             // replace calculated version with tagged version only if tagged version greater or equal to calculated version
@@ -247,19 +256,6 @@ public class NextVersionCalculator : INextVersionCalculator
                                 continue;
                             }
                         }
-
-                        foreach (var semanticVersion in new[] { baseVersion.SemanticVersion, incrementedVersion })
-                        {
-                            var hasPreReleaseTag = semanticVersion.PreReleaseTag?.HasTag() == true;
-                            var tag = effectiveBranchConfiguration.Value.Tag;
-                            var branchConfigHasPreReleaseTagConfigured = !tag.IsNullOrEmpty();
-                            var preReleaseTagDoesNotMatchConfiguration = hasPreReleaseTag && branchConfigHasPreReleaseTagConfigured && semanticVersion.PreReleaseTag?.Name != tag;
-                            if (semanticVersion.PreReleaseTag?.HasTag() != true && branchConfigHasPreReleaseTagConfigured || preReleaseTagDoesNotMatchConfiguration)
-                            {
-                                UpdatePreReleaseTag(effectiveBranchConfiguration, semanticVersion, baseVersion.BranchNameOverride);
-                            }
-                        }
-
 
                         yield return effectiveBranchConfiguration.CreateNextVersion(baseVersion, incrementedVersion);
                         atLeastOneBaseVersionReturned = true;
