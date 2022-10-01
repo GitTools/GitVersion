@@ -142,10 +142,10 @@ public class IncrementStrategyFinder : IIncrementStrategyFinder
 
     private static VersionField? GetIncrementFromMessage(string message, Regex majorRegex, Regex minorRegex, Regex patchRegex, Regex none)
     {
+        if (none.IsMatch(message)) return VersionField.None;
         if (majorRegex.IsMatch(message)) return VersionField.Major;
         if (minorRegex.IsMatch(message)) return VersionField.Minor;
         if (patchRegex.IsMatch(message)) return VersionField.Patch;
-        if (none.IsMatch(message)) return VersionField.None;
         return null;
     }
 

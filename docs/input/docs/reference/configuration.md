@@ -191,6 +191,9 @@ Used to tell GitVersion not to increment when in Mainline development mode.
 Default `\+semver:\s?(none|skip)`, which will match occurrences of `+semver:
 none` and `+semver: skip`
 
+When a commit matches **both** the `no-bump-message` **and** any combination of
+the `version-bump-message`, `no-bump-message` takes precedence and no increment is applied.
+
 ### tag-pre-release-weight
 
 The pre-release weight in case of tagged commits. If the value is not set in the

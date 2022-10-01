@@ -5,7 +5,7 @@ RedirectFrom: docs/more-info/how-it-works
 ---
 
 GitVersion v3 works very differently to v2. Version 2 had knowledge of both
-GitFlow and GitHubFlow hard coded into it, with each branch having it's own
+GitFlow and GitHubFlow hard coded into it, with each branch having its own
 class which calculated the version for that branch type.
 
 v3 is driven by [configuration](/docs/reference/configuration), meaning most of the
