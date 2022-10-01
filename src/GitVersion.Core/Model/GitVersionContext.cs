@@ -1,3 +1,4 @@
+using GitVersion.Configuration;
 using GitVersion.Model.Configuration;
 
 namespace GitVersion;
@@ -13,24 +14,28 @@ public class GitVersionContext
     public Config FullConfiguration { get; }
 
     public SemanticVersion? CurrentCommitTaggedVersion { get; }
-    public EffectiveConfiguration Configuration { get; }
+
     public IBranch CurrentBranch { get; }
+
     public ICommit? CurrentCommit { get; }
+
     public bool IsCurrentCommitTagged => CurrentCommitTaggedVersion != null;
 
     public int NumberOfUncommittedChanges { get; }
 
     public GitVersionContext(IBranch currentBranch, ICommit? currentCommit,
-        Config configuration, EffectiveConfiguration effectiveConfiguration,
-        SemanticVersion currentCommitTaggedVersion, int numberOfUncommittedChanges)
+        Config configuration, SemanticVersion? currentCommitTaggedVersion, int numberOfUncommittedChanges)
     {
         CurrentBranch = currentBranch;
         CurrentCommit = currentCommit;
-
         FullConfiguration = configuration;
-        Configuration = effectiveConfiguration;
-
         CurrentCommitTaggedVersion = currentCommitTaggedVersion;
         NumberOfUncommittedChanges = numberOfUncommittedChanges;
+    }
+
+    public EffectiveConfiguration GetEffectiveConfiguration(IBranch branch)
+    {
+        BranchConfig branchConfiguration = FullConfiguration.GetBranchConfiguration(branch);
+        return new EffectiveConfiguration(FullConfiguration, branchConfiguration);
     }
 }

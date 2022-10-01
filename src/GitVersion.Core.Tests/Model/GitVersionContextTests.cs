@@ -37,9 +37,9 @@ public class GitVersionContextTests : TestBase
         mockRepository.Branches.Returns(branches);
         mockRepository.Commits.Returns(mockBranch.Commits);
 
-        var context = GetGitVersionContext(fixture.RepositoryPath, mockRepository, branchName, config);
+        var effectiveConfiguration = GetEffectiveConfiguration(fixture.RepositoryPath, mockRepository, branchName, config);
 
-        context.Configuration.VersioningMode.ShouldBe(mode);
+        effectiveConfiguration.VersioningMode.ShouldBe(mode);
     }
 
     [TestCase(IncrementStrategy.Inherit, IncrementStrategy.Patch)] // Since it inherits, the increment strategy of main is used => Patch
@@ -61,9 +61,9 @@ public class GitVersionContextTests : TestBase
         fixture.BranchTo(dummyBranchName);
         fixture.MakeACommit();
 
-        var context = GetGitVersionContext(fixture.RepositoryPath, fixture.Repository.ToGitRepository(), dummyBranchName, config);
+        var effectiveConfiguration = GetEffectiveConfiguration(fixture.RepositoryPath, fixture.Repository.ToGitRepository(), dummyBranchName, config);
 
-        context.Configuration.Increment.ShouldBe(alternateExpected ?? increment);
+        effectiveConfiguration.Increment.ShouldBe(alternateExpected ?? increment);
     }
 
     [Test]
@@ -100,9 +100,9 @@ public class GitVersionContextTests : TestBase
         mockRepository.Branches.Returns(branches);
         mockRepository.Commits.Returns(develop.Commits);
 
-        var context = GetGitVersionContext(fixture.RepositoryPath, mockRepository, branchName, config);
+        var effectiveConfiguration = GetEffectiveConfiguration(fixture.RepositoryPath, mockRepository, branchName, config);
 
-        context.Configuration.Tag.ShouldBe("alpha");
+        effectiveConfiguration.Tag.ShouldBe("alpha");
     }
 
     [Test]
@@ -143,12 +143,12 @@ public class GitVersionContextTests : TestBase
         mockRepository.Head.Returns(releaseLatestBranch);
         mockRepository.Commits.Returns(releaseLatestBranch.Commits);
 
-        var latestContext = GetGitVersionContext(fixture.RepositoryPath, mockRepository, releaseLatestBranch.Name.Canonical, config);
-        latestContext.Configuration.Increment.ShouldBe(IncrementStrategy.None);
+        var latestEffectiveConfiguration = GetEffectiveConfiguration(fixture.RepositoryPath, mockRepository, releaseLatestBranch.Name.Canonical, config);
+        latestEffectiveConfiguration.Increment.ShouldBe(IncrementStrategy.None);
 
         mockRepository.Head.Returns(releaseVersionBranch);
-        var versionContext = GetGitVersionContext(fixture.RepositoryPath, mockRepository, releaseVersionBranch.Name.Canonical, config);
-        versionContext.Configuration.Increment.ShouldBe(IncrementStrategy.Patch);
+        var effectiveConfiguration = GetEffectiveConfiguration(fixture.RepositoryPath, mockRepository, releaseVersionBranch.Name.Canonical, config);
+        effectiveConfiguration.Increment.ShouldBe(IncrementStrategy.Patch);
     }
 
     [Test]
@@ -173,12 +173,12 @@ public class GitVersionContextTests : TestBase
         Commands.Checkout(fixture.Repository, featureBranch);
         fixture.Repository.MakeACommit();
 
-        var context = GetGitVersionContext(fixture.RepositoryPath, fixture.Repository.ToGitRepository(), "develop", config);
+        var effectiveConfiguration = GetEffectiveConfiguration(fixture.RepositoryPath, fixture.Repository.ToGitRepository(), "develop", config);
 
-        context.Configuration.Increment.ShouldBe(IncrementStrategy.Major);
+        effectiveConfiguration.Increment.ShouldBe(IncrementStrategy.Major);
     }
 
-    private static GitVersionContext GetGitVersionContext(string workingDirectory, IGitRepository repository, string branch, Config? config = null)
+    private static EffectiveConfiguration GetEffectiveConfiguration(string workingDirectory, IGitRepository repository, string branch, Config? config = null)
     {
         var options = Options.Create(new GitVersionOptions
         {
@@ -193,6 +193,12 @@ public class GitVersionContextTests : TestBase
             services.AddSingleton(repository);
         });
 
-        return sp.GetRequiredService<Lazy<GitVersionContext>>().Value;
+        var context = sp.GetRequiredService<Lazy<GitVersionContext>>().Value;
+        var branchConfigurationCalculator = sp.GetRequiredService<IBranchConfigurationCalculator>();
+        var configuration = context.FullConfiguration;
+        var currentBranchConfig = branchConfigurationCalculator.GetBranchConfiguration(
+            context.CurrentBranch, context.CurrentCommit, configuration
+        );
+        return new(configuration, currentBranchConfig);
     }
 }

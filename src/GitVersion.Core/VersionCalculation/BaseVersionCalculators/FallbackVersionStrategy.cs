@@ -1,4 +1,5 @@
 using GitVersion.Common;
+using GitVersion.Model.Configuration;
 
 namespace GitVersion.VersionCalculation;
 
@@ -12,7 +13,8 @@ public class FallbackVersionStrategy : VersionStrategyBase
     private readonly IRepositoryStore repositoryStore;
 
     public FallbackVersionStrategy(IRepositoryStore repositoryStore, Lazy<GitVersionContext> versionContext) : base(versionContext) => this.repositoryStore = repositoryStore;
-    public override IEnumerable<BaseVersion> GetVersions()
+
+    public override IEnumerable<BaseVersion> GetBaseVersions(EffectiveBranchConfiguration configuration)
     {
         var currentBranchTip = Context.CurrentBranch.Tip;
         if (currentBranchTip == null)
