@@ -155,9 +155,9 @@ public class RepositoryStore : IRepositoryStore
     public IEnumerable<IBranch> GetExcludedInheritBranches(Config configuration)
         => this.repository.Branches.Where(b =>
         {
-            var branchConfig = configuration.FindConfigurationForBranch(b.Name.WithoutRemote);
+            var branchConfiguration = configuration.ForBranch(b);
 
-            return branchConfig == null || branchConfig.Increment == IncrementStrategy.Inherit;
+            return branchConfiguration == null || branchConfiguration.Increment == IncrementStrategy.Inherit;
         }).ToList();
 
     public IEnumerable<IBranch> GetReleaseBranches(IEnumerable<KeyValuePair<string, BranchConfig>> releaseBranchConfig)

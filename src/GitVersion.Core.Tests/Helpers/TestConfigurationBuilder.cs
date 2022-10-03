@@ -4,9 +4,9 @@ using GitVersion.VersionCalculation;
 
 namespace GitVersion.Core.Tests.Helpers;
 
-public sealed class ConfigBuilder
+public sealed class TestConfigurationBuilder
 {
-    public static ConfigBuilder New => new();
+    public static TestConfigurationBuilder New => new();
 
     private string? nextVerson;
     private VersioningMode? versioningMode;
@@ -19,87 +19,87 @@ public sealed class ConfigBuilder
     private readonly Dictionary<string, string?> tagDictionary = new();
     private IgnoreConfig? ignoreConfig;
 
-    private ConfigBuilder()
+    private TestConfigurationBuilder()
     {
         withoutAnyTrackMergeTargets = false;
         increment = IncrementStrategy.Inherit;
         versioningMode = VersioningMode.ContinuousDelivery;
     }
 
-    public ConfigBuilder WithNextVersion(string? value)
+    public TestConfigurationBuilder WithNextVersion(string? value)
     {
         nextVerson = value;
         return this;
     }
 
-    public ConfigBuilder WithVersioningMode(VersioningMode value)
+    public TestConfigurationBuilder WithVersioningMode(VersioningMode value)
     {
         versioningMode = value;
         return this;
     }
 
-    public ConfigBuilder WithoutVersioningMode()
+    public TestConfigurationBuilder WithoutVersioningMode()
     {
         versioningMode = null;
         return this;
     }
 
-    public ConfigBuilder WithVersioningMode(string branch, VersioningMode value)
+    public TestConfigurationBuilder WithVersioningMode(string branch, VersioningMode value)
     {
         versioningModeDictionary[branch] = value;
         return this;
     }
 
-    public ConfigBuilder WithoutVersioningMode(string branch)
+    public TestConfigurationBuilder WithoutVersioningMode(string branch)
     {
         versioningModeDictionary[branch] = null;
         return this;
     }
 
-    public ConfigBuilder WithTrackMergeTarget(string branch, bool value)
+    public TestConfigurationBuilder WithTrackMergeTarget(string branch, bool value)
     {
         trackMergeTargetsDictionary[branch] = value;
         return this;
     }
 
-    public ConfigBuilder WithoutAnyTrackMergeTargets()
+    public TestConfigurationBuilder WithoutAnyTrackMergeTargets()
     {
         withoutAnyTrackMergeTargets = true;
         trackMergeTargetsDictionary.Clear();
         return this;
     }
 
-    public ConfigBuilder WithPreventIncrementOfMergedBranchVersion(string branch, bool value)
+    public TestConfigurationBuilder WithPreventIncrementOfMergedBranchVersion(string branch, bool value)
     {
         preventIncrementOfMergedBranchVersionDictionary[branch] = value;
         return this;
     }
 
-    public ConfigBuilder WithIncrement(IncrementStrategy? value)
+    public TestConfigurationBuilder WithIncrement(IncrementStrategy? value)
     {
         increment = value;
         return this;
     }
 
-    public ConfigBuilder WithIncrement(string branch, IncrementStrategy value)
+    public TestConfigurationBuilder WithIncrement(string branch, IncrementStrategy value)
     {
         incrementDictionary[branch] = value;
         return this;
     }
 
-    public ConfigBuilder WithoutTag(string branch)
+    public TestConfigurationBuilder WithoutTag(string branch)
     {
         tagDictionary[branch] = null;
         return this;
     }
 
-    public ConfigBuilder WithTag(string branch, string value)
+    public TestConfigurationBuilder WithTag(string branch, string value)
     {
         tagDictionary[branch] = value;
         return this;
     }
 
-    public ConfigBuilder WithIgnoreConfig(IgnoreConfig value)
+    public TestConfigurationBuilder WithIgnoreConfig(IgnoreConfig value)
     {
         ignoreConfig = value;
         return this;
