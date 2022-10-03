@@ -33,7 +33,7 @@
         <PackageVersion_LibGit2Sharp_NativeBinaries>2.0.315-alpha.0.9</PackageVersion_LibGit2Sharp_NativeBinaries>
 
         <PackageVersion_JetBrainsAnnotations>2022.1.0</PackageVersion_JetBrainsAnnotations>
-        <PackageVersion_YamlDotNet>12.0.0</PackageVersion_YamlDotNet>
+        <PackageVersion_YamlDotNet>12.0.1</PackageVersion_YamlDotNet>
         <PackageVersion_MicrosoftExtensions>6.0.0</PackageVersion_MicrosoftExtensions>
         <PackageVersion_MicrosoftJson>6.0.0</PackageVersion_MicrosoftJson>
         <PackageVersion_MicrosoftTextEncoding>6.0.0</PackageVersion_MicrosoftTextEncoding>
