@@ -12,10 +12,10 @@ namespace GitVersion.VersionCalculation;
 /// </summary>
 public class VersionInBranchNameVersionStrategy : VersionStrategyBase
 {
-    private IRepositoryStore RepositoryStore { get; }
+    private readonly IRepositoryStore repositoryStore;
 
     public VersionInBranchNameVersionStrategy(IRepositoryStore repositoryStore, Lazy<GitVersionContext> versionContext)
-        : base(versionContext) => RepositoryStore = repositoryStore.NotNull();
+        : base(versionContext) => this.repositoryStore = repositoryStore.NotNull();
 
     public override IEnumerable<BaseVersion> GetBaseVersions(EffectiveBranchConfiguration configuration)
     {
@@ -25,7 +25,7 @@ public class VersionInBranchNameVersionStrategy : VersionStrategyBase
             var versionInBranch = GetVersionInBranch(configuration.Branch.Name.Friendly, Context.FullConfiguration.TagPrefix);
             if (versionInBranch != null)
             {
-                var commitBranchWasBranchedFrom = RepositoryStore.FindCommitBranchWasBranchedFrom(configuration.Branch, Context.FullConfiguration);
+                var commitBranchWasBranchedFrom = this.repositoryStore.FindCommitBranchWasBranchedFrom(configuration.Branch, Context.FullConfiguration);
                 var branchNameOverride = Context.CurrentBranch.Name.Friendly.RegexReplace("[-/]" + versionInBranch.Item1, string.Empty);
                 yield return new BaseVersion("Version in branch name", false, versionInBranch.Item2, commitBranchWasBranchedFrom.Commit, branchNameOverride);
             }

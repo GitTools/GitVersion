@@ -34,7 +34,7 @@ public class BranchConfigurationCalculator : IBranchConfigurationCalculator
             throw new InfiniteLoopProtectionException($"Inherited branch configuration caused {recursions} recursions. Aborting!");
         }
 
-        var matchingBranches = configuration.FindConfigForBranch(targetBranch.Name.WithoutRemote);
+        var matchingBranches = configuration.FindConfigurationForBranch(targetBranch.Name.WithoutRemote);
 
         if (matchingBranches == null)
         {
