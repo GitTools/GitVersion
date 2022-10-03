@@ -63,7 +63,6 @@ jobs:
       with:
         dotnet-version: |
           3.1.x
-          5.0.x
           6.0.x
 
     -
@@ -74,7 +73,7 @@ jobs:
     -
       name: '[Build]'
       shell: pwsh
-      run: dotnet run/build.dll --target=Build
+      run: dotnet run/build.dll --target=Build --exclusive
 
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v2
