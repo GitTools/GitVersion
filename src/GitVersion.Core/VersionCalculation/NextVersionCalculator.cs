@@ -14,7 +14,8 @@ public class NextVersionCalculator : INextVersionCalculator
     private readonly IRepositoryStore repositoryStore;
     private readonly IIncrementStrategyFinder incrementStrategyFinder;
     private readonly Lazy<GitVersionContext> versionContext;
-    private GitVersionContext context => this.versionContext.Value;
+
+    private GitVersionContext Context => this.versionContext.Value;
 
     public NextVersionCalculator(
         ILog log,
@@ -34,32 +35,32 @@ public class NextVersionCalculator : INextVersionCalculator
 
     public NextVersion FindVersion()
     {
-        this.log.Info($"Running against branch: {context.CurrentBranch} ({context.CurrentCommit?.ToString() ?? "-"})");
-        if (context.IsCurrentCommitTagged)
+        this.log.Info($"Running against branch: {Context.CurrentBranch} ({Context.CurrentCommit?.ToString() ?? "-"})");
+        if (Context.IsCurrentCommitTagged)
         {
-            this.log.Info($"Current commit is tagged with version {context.CurrentCommitTaggedVersion}, " + "version calculation is for metadata only.");
+            this.log.Info($"Current commit is tagged with version {Context.CurrentCommitTaggedVersion}, " + "version calculation is for metadata only.");
         }
         else
         {
-            EnsureHeadIsNotDetached(context);
+            EnsureHeadIsNotDetached(Context);
         }
 
         SemanticVersion? taggedSemanticVersion = null;
 
-        if (context.IsCurrentCommitTagged)
+        if (Context.IsCurrentCommitTagged)
         {
             // Will always be 0, don't bother with the +0 on tags
-            var semanticVersionBuildMetaData = this.mainlineVersionCalculator.CreateVersionBuildMetaData(context.CurrentCommit);
+            var semanticVersionBuildMetaData = this.mainlineVersionCalculator.CreateVersionBuildMetaData(Context.CurrentCommit);
             semanticVersionBuildMetaData.CommitsSinceTag = null;
 
-            var semanticVersion = new SemanticVersion(context.CurrentCommitTaggedVersion) { BuildMetaData = semanticVersionBuildMetaData };
+            var semanticVersion = new SemanticVersion(Context.CurrentCommitTaggedVersion) { BuildMetaData = semanticVersionBuildMetaData };
             taggedSemanticVersion = semanticVersion;
         }
 
         var (baseVersion, configuration) = this.baseVersionCalculator.GetBaseVersion();
         baseVersion.SemanticVersion.BuildMetaData = this.mainlineVersionCalculator.CreateVersionBuildMetaData(baseVersion.BaseVersionSource);
         SemanticVersion semver;
-        if (context.FullConfiguration.VersioningMode == VersioningMode.Mainline)
+        if (Context.FullConfiguration.VersioningMode == VersioningMode.Mainline)
         {
             semver = this.mainlineVersionCalculator.FindMainlineModeVersion(baseVersion);
         }
@@ -106,19 +107,19 @@ public class NextVersionCalculator : INextVersionCalculator
     private SemanticVersion PerformIncrement(BaseVersion baseVersion, EffectiveConfiguration configuration)
     {
         var semver = baseVersion.SemanticVersion;
-        var increment = this.incrementStrategyFinder.DetermineIncrementedField(context, baseVersion, configuration);
+        var increment = this.incrementStrategyFinder.DetermineIncrementedField(Context, baseVersion, configuration);
         semver = semver.IncrementVersion(increment);
         return semver;
     }
 
     private void UpdatePreReleaseTag(EffectiveConfiguration configuration, SemanticVersion semanticVersion, string? branchNameOverride)
     {
-        var tagToUse = configuration.GetBranchSpecificTag(this.log, context.CurrentBranch.Name.Friendly, branchNameOverride);
+        var tagToUse = configuration.GetBranchSpecificTag(this.log, Context.CurrentBranch.Name.Friendly, branchNameOverride);
 
         long? number = null;
 
         var lastTag = this.repositoryStore
-            .GetVersionTagsOnBranch(context.CurrentBranch, context.FullConfiguration.TagPrefix)
+            .GetVersionTagsOnBranch(Context.CurrentBranch, Context.FullConfiguration.TagPrefix)
             .FirstOrDefault(v => v.PreReleaseTag?.Name?.IsEquivalentTo(tagToUse) == true);
 
         if (lastTag != null && MajorMinorPatchEqual(lastTag, semanticVersion) && lastTag.PreReleaseTag?.HasTag() == true)
