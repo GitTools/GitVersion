@@ -22,7 +22,7 @@ public class NextVersionCalculatorTests : TestBase
         contextBuilder
             .OverrideServices(services =>
             {
-                var configuration = ConfigBuilder.New.Build();
+                var configuration = TestConfigurationBuilder.New.Build();
                 var branchMock = GitToolsTestingExtensions.CreateMockBranch("main", GitToolsTestingExtensions.CreateMockCommit());
                 var effectiveConfiguration = new EffectiveConfiguration(configuration, configuration.GetBranchConfiguration("main"));
                 var effectiveBranchConfiguration = new EffectiveBranchConfiguration(branchMock, effectiveConfiguration);
@@ -54,7 +54,7 @@ public class NextVersionCalculatorTests : TestBase
         contextBuilder
             .OverrideServices(services =>
             {
-                var configuration = ConfigBuilder.New.Build();
+                var configuration = TestConfigurationBuilder.New.Build();
                 var branchMock = GitToolsTestingExtensions.CreateMockBranch("main", GitToolsTestingExtensions.CreateMockCommit());
                 var effectiveConfiguration = new EffectiveConfiguration(configuration, configuration.GetBranchConfiguration("main"));
                 var effectiveBranchConfiguration = new EffectiveBranchConfiguration(branchMock, effectiveConfiguration);
@@ -86,7 +86,7 @@ public class NextVersionCalculatorTests : TestBase
         contextBuilder
             .OverrideServices(services =>
             {
-                var configuration = ConfigBuilder.New.Build();
+                var configuration = TestConfigurationBuilder.New.Build();
                 var branchMock = GitToolsTestingExtensions.CreateMockBranch("develop", GitToolsTestingExtensions.CreateMockCommit());
                 var effectiveConfiguration = new EffectiveConfiguration(configuration, configuration.GetBranchConfiguration("develop"));
                 var effectiveBranchConfiguration = new EffectiveBranchConfiguration(branchMock, effectiveConfiguration);
