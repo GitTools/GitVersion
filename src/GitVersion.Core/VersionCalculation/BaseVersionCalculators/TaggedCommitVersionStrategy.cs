@@ -11,10 +11,10 @@ namespace GitVersion.VersionCalculation;
 /// </summary>
 public class TaggedCommitVersionStrategy : VersionStrategyBase
 {
-    private IRepositoryStore RepositoryStore { get; }
+    private readonly IRepositoryStore repositoryStore;
 
     public TaggedCommitVersionStrategy(IRepositoryStore repositoryStore, Lazy<GitVersionContext> versionContext)
-        : base(versionContext) => RepositoryStore = repositoryStore.NotNull();
+        : base(versionContext) => this.repositoryStore = repositoryStore.NotNull();
 
     public override IEnumerable<BaseVersion> GetBaseVersions(EffectiveBranchConfiguration configuration) =>
         GetTaggedVersions(Context.CurrentBranch, Context.CurrentCommit?.When);
@@ -23,7 +23,7 @@ public class TaggedCommitVersionStrategy : VersionStrategyBase
     {
         if (currentBranch is null)
             return Enumerable.Empty<BaseVersion>();
-        var versionTags = RepositoryStore.GetValidVersionTags(Context.FullConfiguration.TagPrefix, olderThan);
+        var versionTags = this.repositoryStore.GetValidVersionTags(Context.FullConfiguration.TagPrefix, olderThan);
         var versionTagsByCommit = versionTags.ToLookup(vt => vt.Item3.Id.Sha);
         var commitsOnBranch = currentBranch.Commits;
         if (commitsOnBranch == null)

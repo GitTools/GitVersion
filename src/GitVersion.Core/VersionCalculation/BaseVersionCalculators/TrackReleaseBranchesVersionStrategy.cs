@@ -26,12 +26,12 @@ public class TrackReleaseBranchesVersionStrategy : VersionStrategyBase
     private readonly VersionInBranchNameVersionStrategy releaseVersionStrategy;
     private readonly TaggedCommitVersionStrategy taggedCommitVersionStrategy;
 
-    private IRepositoryStore RepositoryStore { get; }
+    private readonly IRepositoryStore repositoryStore;
 
     public TrackReleaseBranchesVersionStrategy(IRepositoryStore repositoryStore, Lazy<GitVersionContext> versionContext)
         : base(versionContext)
     {
-        RepositoryStore = repositoryStore.NotNull();
+        this.repositoryStore = repositoryStore.NotNull();
         this.releaseVersionStrategy = new VersionInBranchNameVersionStrategy(repositoryStore, versionContext);
         this.taggedCommitVersionStrategy = new TaggedCommitVersionStrategy(repositoryStore, versionContext);
     }
@@ -42,7 +42,7 @@ public class TrackReleaseBranchesVersionStrategy : VersionStrategyBase
     private IEnumerable<BaseVersion> MainTagsVersions()
     {
         var configuration = Context.FullConfiguration;
-        var mainBranch = RepositoryStore.FindMainBranch(configuration);
+        var mainBranch = this.repositoryStore.FindMainBranch(configuration);
 
         return mainBranch != null
             ? this.taggedCommitVersionStrategy.GetTaggedVersions(mainBranch, null)
@@ -55,7 +55,7 @@ public class TrackReleaseBranchesVersionStrategy : VersionStrategyBase
         if (!releaseBranchConfig.Any())
             return Array.Empty<BaseVersion>();
 
-        var releaseBranches = RepositoryStore.GetReleaseBranches(releaseBranchConfig);
+        var releaseBranches = this.repositoryStore.GetReleaseBranches(releaseBranchConfig);
 
         return releaseBranches
             .SelectMany(b => GetReleaseVersion(b))
@@ -76,7 +76,7 @@ public class TrackReleaseBranchesVersionStrategy : VersionStrategyBase
     private IEnumerable<BaseVersion> GetReleaseVersion(IBranch releaseBranch)
     {
         // Find the commit where the child branch was created.
-        var baseSource = RepositoryStore.FindMergeBase(releaseBranch, Context.CurrentBranch);
+        var baseSource = this.repositoryStore.FindMergeBase(releaseBranch, Context.CurrentBranch);
         var configuration = Context.GetEffectiveConfiguration(releaseBranch);
         return this.releaseVersionStrategy
             .GetBaseVersions(new(releaseBranch, configuration))

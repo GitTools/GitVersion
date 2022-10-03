@@ -15,7 +15,7 @@ public class PreventDecrementationOfVersionsOnTheDevelopBranchScenario
     {
         using EmptyRepositoryFixture fixture = new("develop");
 
-        var configBuilder = ConfigBuilder.New;
+        var configBuilder = TestConfigurationBuilder.New;
 
         fixture.MakeACommit();
 

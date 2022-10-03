@@ -13,7 +13,7 @@ public class ContinuousDeploymentTestScenarios
     {
         // * 2373a87 58 minutes ago  (HEAD -> main)
 
-        var configuration = ConfigBuilder.New.WithVersioningMode(VersioningMode.ContinuousDeployment).Build();
+        var configuration = TestConfigurationBuilder.New.WithVersioningMode(VersioningMode.ContinuousDeployment).Build();
 
         using var fixture = new EmptyRepositoryFixture();
 
@@ -30,7 +30,7 @@ public class ContinuousDeploymentTestScenarios
     {
         // * a831d61 58 minutes ago  (HEAD -> develop)
 
-        var configuration = ConfigBuilder.New.WithVersioningMode(VersioningMode.ContinuousDeployment).Build();
+        var configuration = TestConfigurationBuilder.New.WithVersioningMode(VersioningMode.ContinuousDeployment).Build();
 
         using var fixture = new EmptyRepositoryFixture("develop");
 
@@ -47,7 +47,7 @@ public class ContinuousDeploymentTestScenarios
     {
         // * 8c64db3 58 minutes ago  (HEAD -> main)
 
-        var configuration = ConfigBuilder.New
+        var configuration = TestConfigurationBuilder.New
             .WithVersioningMode(VersioningMode.ContinuousDeployment)
             .WithNextVersion("1.0.0").Build();
 
@@ -66,7 +66,7 @@ public class ContinuousDeploymentTestScenarios
     {
         // * 858f71b 58 minutes ago  (HEAD -> main, tag: 1.0.0)
 
-        var configuration = ConfigBuilder.New
+        var configuration = TestConfigurationBuilder.New
             .WithVersioningMode(VersioningMode.ContinuousDeployment)
             .WithNextVersion("1.0.0").Build();
 
@@ -85,7 +85,7 @@ public class ContinuousDeploymentTestScenarios
     {
         // * ba74727 58 minutes ago  (HEAD -> main, tag: 1.1.0)
 
-        var configuration = ConfigBuilder.New
+        var configuration = TestConfigurationBuilder.New
             .WithVersioningMode(VersioningMode.ContinuousDeployment)
             .WithNextVersion("1.0.0").Build();
 
@@ -108,7 +108,7 @@ public class ContinuousDeploymentTestScenarios
         // |/
         // *ec77f9c 58 minutes ago
 
-        var configuration = ConfigBuilder.New.WithVersioningMode(VersioningMode.ContinuousDeployment).Build();
+        var configuration = TestConfigurationBuilder.New.WithVersioningMode(VersioningMode.ContinuousDeployment).Build();
 
         using var fixture = new EmptyRepositoryFixture();
 
@@ -154,7 +154,7 @@ public class ContinuousDeploymentTestScenarios
         // |/
         // *67acc03 58 minutes ago(main)
 
-        var configuration = ConfigBuilder.New.WithVersioningMode(VersioningMode.ContinuousDeployment).Build();
+        var configuration = TestConfigurationBuilder.New.WithVersioningMode(VersioningMode.ContinuousDeployment).Build();
 
         using var fixture = new EmptyRepositoryFixture();
 
@@ -202,7 +202,7 @@ public class ContinuousDeploymentTestScenarios
         // |/
         // *f63a536 58 minutes ago(main)
 
-        var configuration = ConfigBuilder.New.WithVersioningMode(VersioningMode.ContinuousDeployment).Build();
+        var configuration = TestConfigurationBuilder.New.WithVersioningMode(VersioningMode.ContinuousDeployment).Build();
 
         using var fixture = new EmptyRepositoryFixture();
 
@@ -252,7 +252,7 @@ public class ContinuousDeploymentTestScenarios
         // *f5640b3 56 minutes ago
         // *2099a07 58 minutes ago(main)
 
-        var configuration = ConfigBuilder.New
+        var configuration = TestConfigurationBuilder.New
             .WithVersioningMode(VersioningMode.ContinuousDeployment)
             .WithoutAnyTrackMergeTargets().Build();
 
@@ -328,7 +328,7 @@ public class ContinuousDeploymentTestScenarios
         // |/  
         // * 252971e 58 minutes ago
 
-        var configuration = ConfigBuilder.New
+        var configuration = TestConfigurationBuilder.New
             .WithVersioningMode(VersioningMode.ContinuousDeployment)
             .WithoutAnyTrackMergeTargets().Build();
 

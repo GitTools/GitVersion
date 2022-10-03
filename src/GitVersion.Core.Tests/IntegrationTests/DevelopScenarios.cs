@@ -356,7 +356,7 @@ public class DevelopScenarios : TestBase
     [Test]
     public void WhenPreventIncrementOfMergedBranchVersionIsSetToTrueForDevelopCommitsSinceVersionSourceShouldNotGoDownWhenMergingReleaseToDevelop()
     {
-        var configBuilder = ConfigBuilder.New.WithVersioningMode(VersioningMode.ContinuousDeployment)
+        var configBuilder = TestConfigurationBuilder.New.WithVersioningMode(VersioningMode.ContinuousDeployment)
             .WithPreventIncrementOfMergedBranchVersion("develop", true);
         var config = configBuilder.Build();
 

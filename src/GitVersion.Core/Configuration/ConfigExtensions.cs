@@ -12,7 +12,7 @@ public static class ConfigExtensions
 
     public static BranchConfig GetBranchConfiguration(this Config configuration, string branchName)
     {
-        var branchConfiguration = FindConfigForBranch(configuration, branchName);
+        var branchConfiguration = ForBranch(configuration, branchName);
         if (branchConfiguration is null)
         {
             branchConfiguration = GetUnknownBranchConfiguration(configuration);
@@ -54,9 +54,9 @@ public static class ConfigExtensions
         return result;
     }
 
-    private static BranchConfig? FindConfigForBranch(Config config, string branchName)
+    private static BranchConfig? ForBranch(Config configuration, string branchName)
     {
-        var matches = config.Branches
+        var matches = configuration.Branches
             .Where(b => b.Value?.Regex != null && Regex.IsMatch(branchName, b.Value.Regex, RegexOptions.IgnoreCase))
             .ToArray();
 
