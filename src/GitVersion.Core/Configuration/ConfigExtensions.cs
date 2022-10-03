@@ -55,7 +55,7 @@ public static class ConfigExtensions
     }
 
     internal static BranchConfig? ForBranch(this Config configuration, IBranch branch)
-    => GetBranchConfiguration(configuration, branch.NotNull().Name.WithoutRemote);
+        => ForBranch(configuration, branch.NotNull().Name.WithoutRemote);
 
     internal static BranchConfig? ForBranch(this Config configuration, string branchName)
     {
