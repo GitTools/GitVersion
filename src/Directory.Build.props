@@ -39,7 +39,7 @@
         <PackageVersion_MicrosoftTextEncoding>6.0.0</PackageVersion_MicrosoftTextEncoding>
         <PackageVersion_MsBuild>17.2.0</PackageVersion_MsBuild>
 
-        <PackageVersion_MicrosoftTestSdk>17.3.1</PackageVersion_MicrosoftTestSdk>
+        <PackageVersion_MicrosoftTestSdk>17.3.2</PackageVersion_MicrosoftTestSdk>
         <PackageVersion_NSubstitute>4.4.0</PackageVersion_NSubstitute>
         <PackageVersion_CoverletMsBuild>3.1.2</PackageVersion_CoverletMsBuild>
         <PackageVersion_NUnit>3.13.3</PackageVersion_NUnit>
