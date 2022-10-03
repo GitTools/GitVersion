@@ -16,9 +16,13 @@ public class NextVersionCalculator : INextVersionCalculator
     private readonly Lazy<GitVersionContext> versionContext;
     private GitVersionContext context => this.versionContext.Value;
 
-    public NextVersionCalculator(ILog log, IBaseVersionCalculator baseVersionCalculator,
-        IMainlineVersionCalculator mainlineVersionCalculator, IRepositoryStore repositoryStore,
-        IIncrementStrategyFinder incrementStrategyFinder, Lazy<GitVersionContext> versionContext)
+    public NextVersionCalculator(
+        ILog log,
+        IBaseVersionCalculator baseVersionCalculator,
+        IMainlineVersionCalculator mainlineVersionCalculator,
+        IRepositoryStore repositoryStore,
+        IIncrementStrategyFinder incrementStrategyFinder,
+        Lazy<GitVersionContext> versionContext)
     {
         this.log = log.NotNull();
         this.baseVersionCalculator = baseVersionCalculator.NotNull();
@@ -52,9 +56,7 @@ public class NextVersionCalculator : INextVersionCalculator
             taggedSemanticVersion = semanticVersion;
         }
 
-        var result = this.baseVersionCalculator.GetBaseVersion();
-        var baseVersion = result.Item1;
-        var configuration = result.Item2;
+        var (baseVersion, configuration) = this.baseVersionCalculator.GetBaseVersion();
         baseVersion.SemanticVersion.BuildMetaData = this.mainlineVersionCalculator.CreateVersionBuildMetaData(baseVersion.BaseVersionSource);
         SemanticVersion semver;
         if (context.FullConfiguration.VersioningMode == VersioningMode.Mainline)
