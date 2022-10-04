@@ -14,7 +14,7 @@ jobs:
     name: Bump Homebrew formula
     runs-on: macos-latest
     steps:
-    - uses: dawidd6/action-homebrew-bump-formula@v3.8.0
+    - uses: dawidd6/action-homebrew-bump-formula@v3.8.3
       with:
         # GitHub token, required, not the default one
         token: ${{secrets.RELEASE_GITHUB_TOKEN}}

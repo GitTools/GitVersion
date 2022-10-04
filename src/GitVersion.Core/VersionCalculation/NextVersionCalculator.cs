@@ -28,6 +28,7 @@ public class NextVersionCalculator : INextVersionCalculator
         this.log = log.NotNull();
         this.mainlineVersionCalculator = mainlineVersionCalculator.NotNull();
         this.repositoryStore = repositoryStore.NotNull();
+        this.incrementStrategyFinder = incrementStrategyFinder.NotNull();
         this.versionContext = versionContext.NotNull();
         this.versionStrategies = versionStrategies.NotNull().ToArray();
         this.effectiveBranchConfigurationFinder = effectiveBranchConfigurationFinder.NotNull();

@@ -8,6 +8,7 @@ public interface IRepositoryStore
     /// Find the merge base of the two branches, i.e. the best common ancestor of the two branches' tips.
     /// </summary>
     ICommit? FindMergeBase(IBranch? branch, IBranch? otherBranch);
+
     ICommit? FindMergeBase(ICommit commit, ICommit mainlineTip);
     ICommit? GetCurrentCommit(IBranch currentBranch, string? commitId);
     IEnumerable<ICommit> GetMainlineCommitLog(ICommit? baseVersionSource, ICommit? mainlineTip);

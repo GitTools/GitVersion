@@ -1,5 +1,6 @@
 using GitTools.Testing;
 using GitVersion.Core.Tests.Helpers;
+using GitVersion.Core.Tests.IntegrationTests;
 using GitVersion.VersionCalculation;
 using LibGit2Sharp;
 using Microsoft.Extensions.DependencyInjection;
@@ -60,11 +61,11 @@ public class VersionSourceTests : TestBase
 
         var nextVersionCalculator = GetNextVersionCalculator(fixture);
 
-        var version = nextVersionCalculator.FindVersion();
+        var nextVersion = nextVersionCalculator.FindVersion();
 
-        version.IncrementedVersion.BuildMetaData.ShouldNotBeNull();
-        version.IncrementedVersion.BuildMetaData.VersionSourceSha.ShouldBe(secondCommit.Sha);
-        version.IncrementedVersion.BuildMetaData.CommitsSinceVersionSource.ShouldBe(1);
+        nextVersion.IncrementedVersion.BuildMetaData.ShouldNotBeNull();
+        nextVersion.IncrementedVersion.BuildMetaData.VersionSourceSha.ShouldBe(secondCommit.Sha);
+        nextVersion.IncrementedVersion.BuildMetaData.CommitsSinceVersionSource.ShouldBe(1);
     }
 
     private static INextVersionCalculator GetNextVersionCalculator(RepositoryFixtureBase fixture)
