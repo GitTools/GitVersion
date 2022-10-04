@@ -166,12 +166,12 @@ jobs:
       shell: pwsh
       run: dotnet run/build.dll --target=Test --dotnet_target=${{ matrix.targetFramework }}
 
-    -
-      name: Test Summary
-      uses: test-summary/action@v1
-      with:
-        paths: artifacts/test-results/*.results.xml
-      if: always()
+    # -
+    #   name: Test Summary
+    #   uses: test-summary/action@v1
+    #   with:
+    #     paths: artifacts/test-results/*.results.xml
+    #   if: always()
 
   artifacts_windows_test:
     name: Test artifacts on windows
