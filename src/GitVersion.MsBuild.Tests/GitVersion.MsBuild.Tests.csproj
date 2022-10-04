@@ -1,24 +1,16 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFrameworks>netcoreapp3.1;net6.0</TargetFrameworks>
+        <TargetFrameworks>net6.0</TargetFrameworks>
 
         <IsTestProject>true</IsTestProject>
     </PropertyGroup>
 
-    <ItemGroup Condition=" '$(TargetFramework)' == 'netcoreapp3.1' ">
-        <PackageReference Include="Microsoft.Build" Version="16.9.0"/>
-        <PackageReference Include="MSBuild.ProjectCreation" Version="8.2.1"/>
-    </ItemGroup>
-
-    <ItemGroup Condition=" '$(TargetFramework)' == 'net6.0' ">
-        <PackageReference Include="Microsoft.Build" Version="$(PackageVersion_MsBuild)"/>
-        <PackageReference Include="MSBuild.ProjectCreation" Version="8.3.0"/>
-    </ItemGroup>
-
     <ItemGroup>
+        <PackageReference Include="MSBuild.ProjectCreation" Version="8.3.0"/>
         <PackageReference Include="Buildalyzer" Version="4.1.5"/>
         <PackageReference Include="LibGit2Sharp" Version="$(PackageVersion_LibGit2Sharp)"/>
+        <PackageReference Include="Microsoft.Build" Version="$(PackageVersion_MsBuild)"/>
     </ItemGroup>
 
     <ItemGroup>
