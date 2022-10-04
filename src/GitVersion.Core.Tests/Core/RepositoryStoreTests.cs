@@ -3,7 +3,6 @@ using GitVersion.Core.Tests.Helpers;
 using GitVersion.Core.Tests.IntegrationTests;
 using GitVersion.Logging;
 using GitVersion.Model.Configuration;
-using GitVersion.VersionCalculation;
 using Microsoft.Extensions.DependencyInjection;
 using NUnit.Framework;
 using Shouldly;
@@ -14,13 +13,11 @@ namespace GitVersion.Core.Tests;
 public class RepositoryStoreTests : TestBase
 {
     private readonly ILog log;
-    private readonly IIncrementStrategyFinder incrementStrategyFinder;
 
     public RepositoryStoreTests()
     {
         var sp = ConfigureServices();
         this.log = sp.GetRequiredService<ILog>();
-        this.incrementStrategyFinder = sp.GetRequiredService<IIncrementStrategyFinder>();
     }
 
     [Test]
@@ -65,7 +62,7 @@ public class RepositoryStoreTests : TestBase
 
         var develop = fixtureRepository.FindBranch("develop");
         var release = fixtureRepository.FindBranch("release-2.0.0");
-        var gitRepoMetadataProvider = new RepositoryStore(this.log, fixtureRepository, this.incrementStrategyFinder);
+        var gitRepoMetadataProvider = new RepositoryStore(this.log, fixtureRepository);
 
         var releaseBranchMergeBase = gitRepoMetadataProvider.FindMergeBase(release, develop);
 
@@ -121,7 +118,7 @@ public class RepositoryStoreTests : TestBase
 
         var develop = fixtureRepository.FindBranch("develop");
         var release = fixtureRepository.FindBranch("release-2.0.0");
-        var gitRepoMetadataProvider = new RepositoryStore(this.log, fixtureRepository, this.incrementStrategyFinder);
+        var gitRepoMetadataProvider = new RepositoryStore(this.log, fixtureRepository);
 
         var releaseBranchMergeBase = gitRepoMetadataProvider.FindMergeBase(release, develop);
 
@@ -196,7 +193,7 @@ public class RepositoryStoreTests : TestBase
         var develop = fixtureRepository.FindBranch("develop");
         var release = fixtureRepository.FindBranch("release-2.0.0");
 
-        var gitRepoMetadataProvider = new RepositoryStore(this.log, fixtureRepository, this.incrementStrategyFinder);
+        var gitRepoMetadataProvider = new RepositoryStore(this.log, fixtureRepository);
 
         var releaseBranchMergeBase = gitRepoMetadataProvider.FindMergeBase(release, develop);
 
@@ -213,7 +210,7 @@ public class RepositoryStoreTests : TestBase
     {
         using var fixture = new EmptyRepositoryFixture();
         var fixtureRepository = fixture.Repository.ToGitRepository();
-        var gitRepoMetadataProvider = new RepositoryStore(this.log, fixtureRepository, this.incrementStrategyFinder);
+        var gitRepoMetadataProvider = new RepositoryStore(this.log, fixtureRepository);
 
         Assert.Throws<ArgumentNullException>(() => gitRepoMetadataProvider.GetBranchesContainingCommit(null));
     }
@@ -227,7 +224,7 @@ public class RepositoryStoreTests : TestBase
 
         var localRepository = fixture.LocalRepositoryFixture.Repository.ToGitRepository();
 
-        var gitRepoMetadataProvider = new RepositoryStore(this.log, localRepository, this.incrementStrategyFinder);
+        var gitRepoMetadataProvider = new RepositoryStore(this.log, localRepository);
 
         var branch = localRepository.FindBranch("main");
         branch.ShouldNotBeNull();

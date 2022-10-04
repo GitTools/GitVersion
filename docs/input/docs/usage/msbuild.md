@@ -258,6 +258,16 @@ For SDK-style projects, `UpdateVersionProperties` controls setting the default
 variables: `Version`, `VersionPrefix`, `VersionSuffix`, `PackageVersion`,
 `InformationalVersion`, `AssemblyVersion` and `FileVersion`.
 
+## Extra properties
+
+There are properties that correspont to certain 
+[command line arguments](/docs/usage/cli/arguments) for GetVersion task.
+In particular, setting `GitVersion_NoFetchEnabled` to `true` disables `git fetch` 
+during version calculation, setting `GitVersion_NoNormalizeEnabled` to `true` disables 
+normalize step on a build server, setting `GitVersion_NoCacheEnabled` to `true`
+makes GetVersion ignore cache. All the rest command line arguments can be passed via 
+`GitVersion_CommandLineArguments` variable.
+
 ## My Git repository requires authentication. What should I do?
 
 Set the environment variables `GITVERSION_REMOTE_USERNAME` and

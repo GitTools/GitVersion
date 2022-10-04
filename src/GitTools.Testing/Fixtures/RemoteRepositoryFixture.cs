@@ -12,7 +12,12 @@ public class RemoteRepositoryFixture : RepositoryFixtureBase
     public RemoteRepositoryFixture(Func<string, IRepository> builder)
         : base(builder) => CreateLocalRepository();
 
-    public RemoteRepositoryFixture() : this(CreateNewRepository)
+    public RemoteRepositoryFixture() : this("main")
+    {
+    }
+
+    public RemoteRepositoryFixture(string branchName) :
+        this(path => CreateNewRepository(path, branchName))
     {
     }
 
@@ -21,9 +26,9 @@ public class RemoteRepositoryFixture : RepositoryFixtureBase
     /// </summary>
     public LocalRepositoryFixture LocalRepositoryFixture { get; private set; }
 
-    private static IRepository CreateNewRepository(string path)
+    private static IRepository CreateNewRepository(string path, string branchName)
     {
-        Init(path);
+        Init(path, branchName);
         Console.WriteLine("Created git repository at '{0}'", path);
 
         var repo = new Repository(path);

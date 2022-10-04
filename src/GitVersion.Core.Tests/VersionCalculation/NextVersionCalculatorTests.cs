@@ -1,4 +1,5 @@
 using GitTools.Testing;
+using GitVersion.Configuration;
 using GitVersion.Core.Tests.Helpers;
 using GitVersion.Core.Tests.IntegrationTests;
 using GitVersion.Model.Configuration;
@@ -18,11 +19,16 @@ public class NextVersionCalculatorTests : TestBase
         var semanticVersionBuildMetaData = new SemanticVersionBuildMetaData("ef7d0d7e1e700f1c7c9fa01ea6791bb778a5c37c", 1, MainBranch, "b1a34edbd80e141f7cc046c074f109be7d022074", "b1a34e", DateTimeOffset.Now, 0);
 
         var contextBuilder = new GitVersionContextBuilder();
-
         contextBuilder
             .OverrideServices(services =>
             {
-                var testBaseVersionCalculator = new TestBaseVersionCalculator(true, new SemanticVersion(1), GitToolsTestingExtensions.CreateMockCommit());
+                var configuration = TestConfigurationBuilder.New.Build();
+                var branchMock = GitToolsTestingExtensions.CreateMockBranch("main", GitToolsTestingExtensions.CreateMockCommit());
+                var effectiveConfiguration = new EffectiveConfiguration(configuration, configuration.GetBranchConfiguration("main"));
+                var effectiveBranchConfiguration = new EffectiveBranchConfiguration(branchMock, effectiveConfiguration);
+                var testBaseVersionCalculator = new TestBaseVersionCalculator(
+                    true, new SemanticVersion(1), GitToolsTestingExtensions.CreateMockCommit(), effectiveBranchConfiguration
+                );
                 services.AddSingleton<IBaseVersionCalculator>(testBaseVersionCalculator);
                 services.AddSingleton<IMainlineVersionCalculator>(new TestMainlineVersionCalculator(semanticVersionBuildMetaData));
             })
@@ -33,9 +39,9 @@ public class NextVersionCalculatorTests : TestBase
         var nextVersionCalculator = contextBuilder.ServicesProvider.GetRequiredService<INextVersionCalculator>();
         nextVersionCalculator.ShouldNotBeNull();
 
-        var version = nextVersionCalculator.FindVersion();
+        var nextVersion = nextVersionCalculator.FindVersion();
 
-        version.ToString().ShouldBe("1.0.1");
+        nextVersion.IncrementedVersion.ToString().ShouldBe("1.0.1");
     }
 
     [Test]
@@ -48,7 +54,13 @@ public class NextVersionCalculatorTests : TestBase
         contextBuilder
             .OverrideServices(services =>
             {
-                var testBaseVersionCalculator = new TestBaseVersionCalculator(false, new SemanticVersion(1), GitToolsTestingExtensions.CreateMockCommit());
+                var configuration = TestConfigurationBuilder.New.Build();
+                var branchMock = GitToolsTestingExtensions.CreateMockBranch("main", GitToolsTestingExtensions.CreateMockCommit());
+                var effectiveConfiguration = new EffectiveConfiguration(configuration, configuration.GetBranchConfiguration("main"));
+                var effectiveBranchConfiguration = new EffectiveBranchConfiguration(branchMock, effectiveConfiguration);
+                var testBaseVersionCalculator = new TestBaseVersionCalculator(
+                    false, new SemanticVersion(1), GitToolsTestingExtensions.CreateMockCommit(), effectiveBranchConfiguration
+                );
                 services.AddSingleton<IBaseVersionCalculator>(testBaseVersionCalculator);
                 services.AddSingleton<IMainlineVersionCalculator>(new TestMainlineVersionCalculator(semanticVersionBuildMetaData));
             })
@@ -60,9 +72,9 @@ public class NextVersionCalculatorTests : TestBase
 
         nextVersionCalculator.ShouldNotBeNull();
 
-        var version = nextVersionCalculator.FindVersion();
+        var nextVersion = nextVersionCalculator.FindVersion();
 
-        version.ToString().ShouldBe("1.0.0");
+        nextVersion.IncrementedVersion.ToString().ShouldBe("1.0.0");
     }
 
     [Test]
@@ -74,7 +86,13 @@ public class NextVersionCalculatorTests : TestBase
         contextBuilder
             .OverrideServices(services =>
             {
-                var testBaseVersionCalculator = new TestBaseVersionCalculator(false, new SemanticVersion(1), GitToolsTestingExtensions.CreateMockCommit());
+                var configuration = TestConfigurationBuilder.New.Build();
+                var branchMock = GitToolsTestingExtensions.CreateMockBranch("develop", GitToolsTestingExtensions.CreateMockCommit());
+                var effectiveConfiguration = new EffectiveConfiguration(configuration, configuration.GetBranchConfiguration("develop"));
+                var effectiveBranchConfiguration = new EffectiveBranchConfiguration(branchMock, effectiveConfiguration);
+                var testBaseVersionCalculator = new TestBaseVersionCalculator(
+                    false, new SemanticVersion(1), GitToolsTestingExtensions.CreateMockCommit(), effectiveBranchConfiguration
+                );
                 services.AddSingleton<IBaseVersionCalculator>(testBaseVersionCalculator);
                 services.AddSingleton<IMainlineVersionCalculator>(new TestMainlineVersionCalculator(semanticVersionBuildMetaData));
             })
@@ -85,9 +103,9 @@ public class NextVersionCalculatorTests : TestBase
         var nextVersionCalculator = contextBuilder.ServicesProvider.GetRequiredService<INextVersionCalculator>();
         nextVersionCalculator.ShouldNotBeNull();
 
-        var version = nextVersionCalculator.FindVersion();
+        var nextVersion = nextVersionCalculator.FindVersion();
 
-        version.ToString("f").ShouldBe("1.0.0-alpha.1+2");
+        nextVersion.IncrementedVersion.ToString("f").ShouldBe("1.0.0-alpha.1+2");
     }
 
     [Test]
