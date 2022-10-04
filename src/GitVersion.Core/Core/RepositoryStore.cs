@@ -4,23 +4,20 @@ using GitVersion.Configuration;
 using GitVersion.Extensions;
 using GitVersion.Logging;
 using GitVersion.Model.Configuration;
-using GitVersion.VersionCalculation;
 
 namespace GitVersion;
 
 public class RepositoryStore : IRepositoryStore
 {
-    private readonly IIncrementStrategyFinder incrementStrategyFinder;
     private readonly ILog log;
     private readonly IGitRepository repository;
     private readonly Dictionary<IBranch, List<SemanticVersion>> semanticVersionTagsOnBranchCache = new();
     private readonly MergeBaseFinder mergeBaseFinder;
 
-    public RepositoryStore(ILog log, IGitRepository repository, IIncrementStrategyFinder incrementStrategyFinder)
+    public RepositoryStore(ILog log, IGitRepository repository)
     {
         this.log = log.NotNull();
         this.repository = repository.NotNull();
-        this.incrementStrategyFinder = incrementStrategyFinder.NotNull();
         this.mergeBaseFinder = new MergeBaseFinder(this, repository, log);
     }
 
@@ -158,9 +155,9 @@ public class RepositoryStore : IRepositoryStore
     public IEnumerable<IBranch> GetExcludedInheritBranches(Config configuration)
         => this.repository.Branches.Where(b =>
         {
-            var branchConfig = configuration.GetConfigForBranch(b.Name.WithoutRemote);
+            var branchConfiguration = configuration.ForBranch(b);
 
-            return branchConfig == null || branchConfig.Increment == IncrementStrategy.Inherit;
+            return branchConfiguration == null || branchConfiguration.Increment == IncrementStrategy.Inherit;
         }).ToList();
 
     public IEnumerable<IBranch> GetReleaseBranches(IEnumerable<KeyValuePair<string, BranchConfig>> releaseBranchConfig)
@@ -213,16 +210,10 @@ public class RepositoryStore : IRepositoryStore
         }
     }
 
-    public SemanticVersion GetCurrentCommitTaggedVersion(ICommit? commit, EffectiveConfiguration config)
+    public SemanticVersion GetCurrentCommitTaggedVersion(ICommit? commit, string? tagPrefix)
         => this.repository.Tags
-            .SelectMany(t => GetCurrentCommitSemanticVersions(commit, config, t))
+            .SelectMany(t => GetCurrentCommitSemanticVersions(commit, tagPrefix, t))
             .Max();
-
-    public SemanticVersion MaybeIncrement(BaseVersion baseVersion, GitVersionContext context)
-    {
-        var increment = this.incrementStrategyFinder.DetermineIncrementedField(this.repository, context, baseVersion);
-        return increment != null ? baseVersion.SemanticVersion.IncrementVersion(increment.Value) : baseVersion.SemanticVersion;
-    }
 
     public IEnumerable<SemanticVersion> GetVersionTagsOnBranch(IBranch branch, string? tagPrefixRegex)
     {
@@ -276,9 +267,6 @@ public class RepositoryStore : IRepositoryStore
         return this.repository.Commits.QueryBy(filter);
     }
 
-    public VersionField? DetermineIncrementedField(BaseVersion baseVersion, GitVersionContext context) =>
-        this.incrementStrategyFinder.DetermineIncrementedField(this.repository, context, baseVersion);
-
     public bool IsCommitOnBranch(ICommit? baseVersionSource, IBranch branch, ICommit firstMatchingCommit)
     {
         var filter = new CommitFilter { IncludeReachableFrom = branch, ExcludeReachableFrom = baseVersionSource, FirstParentOnly = true };
@@ -293,12 +281,12 @@ public class RepositoryStore : IRepositoryStore
     private static bool IsReleaseBranch(INamedReference branch, IEnumerable<KeyValuePair<string, BranchConfig>> releaseBranchConfig)
         => releaseBranchConfig.Any(c => c.Value?.Regex != null && Regex.IsMatch(branch.Name.Friendly, c.Value.Regex));
 
-    private static IEnumerable<SemanticVersion> GetCurrentCommitSemanticVersions(ICommit? commit, EffectiveConfiguration config, ITag tag)
+    private static IEnumerable<SemanticVersion> GetCurrentCommitSemanticVersions(ICommit? commit, string? tagPrefix, ITag tag)
     {
         var targetCommit = tag.PeeledTargetCommit();
         var tagName = tag.Name.Friendly;
 
-        return targetCommit != null && Equals(targetCommit, commit) && SemanticVersion.TryParse(tagName, config.GitTagPrefix, out var version)
+        return targetCommit != null && Equals(targetCommit, commit) && SemanticVersion.TryParse(tagName, tagPrefix, out var version)
             ? new[] { version }
             : Array.Empty<SemanticVersion>();
     }

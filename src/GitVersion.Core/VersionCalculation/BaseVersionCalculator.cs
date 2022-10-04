@@ -2,6 +2,7 @@ using GitVersion.Common;
 using GitVersion.Configuration;
 using GitVersion.Extensions;
 using GitVersion.Logging;
+using GitVersion.Model.Configuration;
 
 namespace GitVersion.VersionCalculation;
 
@@ -9,36 +10,52 @@ public class BaseVersionCalculator : IBaseVersionCalculator
 {
     private readonly ILog log;
     private readonly IRepositoryStore repositoryStore;
+    private readonly IBranchConfigurationCalculator branchConfigurationCalculator;
+    private readonly IIncrementStrategyFinder incrementStrategyFinder;
     private readonly IVersionStrategy[] strategies;
     private readonly Lazy<GitVersionContext> versionContext;
     private GitVersionContext context => this.versionContext.Value;
 
-    public BaseVersionCalculator(ILog log, IRepositoryStore repositoryStore, Lazy<GitVersionContext> versionContext, IEnumerable<IVersionStrategy> strategies)
+    public BaseVersionCalculator(ILog log, IRepositoryStore repositoryStore,
+        IBranchConfigurationCalculator branchConfigurationCalculator, IIncrementStrategyFinder incrementStrategyFinder, Lazy<GitVersionContext> versionContext, IEnumerable<IVersionStrategy> strategies)
     {
         this.log = log.NotNull();
         this.repositoryStore = repositoryStore.NotNull();
+        this.branchConfigurationCalculator = branchConfigurationCalculator.NotNull();
+        this.incrementStrategyFinder = incrementStrategyFinder.NotNull();
         this.strategies = strategies.ToArray();
         this.versionContext = versionContext.NotNull();
     }
 
-    public BaseVersion GetBaseVersion()
+    public (BaseVersion, EffectiveBranchConfiguration) GetBaseVersion()
     {
         using (this.log.IndentLog("Calculating base versions"))
         {
+            if (this.context.CurrentBranch.Tip == null)
+                throw new GitVersionException("No commits found on the current branch.");
+
+            var currentBranchConfig = this.branchConfigurationCalculator.GetBranchConfiguration(
+                targetBranch: this.context.CurrentBranch,
+                currentCommit: this.context.CurrentCommit,
+                configuration: this.context.FullConfiguration
+            );
+            var effectiveConfiguration = new EffectiveConfiguration(this.context.FullConfiguration, currentBranchConfig);
+            var effectiveBranchConfiguration = new EffectiveBranchConfiguration(this.context.CurrentBranch, effectiveConfiguration);
+
             var allVersions = new List<BaseVersion>();
             foreach (var strategy in this.strategies)
             {
-                var baseVersions = GetBaseVersions(strategy).ToList();
+                var baseVersions = GetBaseVersions(strategy, effectiveBranchConfiguration).ToList();
                 allVersions.AddRange(baseVersions);
             }
 
             var versions = allVersions
-                .Select(baseVersion => new Versions { IncrementedVersion = this.repositoryStore.MaybeIncrement(baseVersion, context), Version = baseVersion })
+                .Select(baseVersion => new Versions { IncrementedVersion = MaybeIncrement(baseVersion, effectiveConfiguration), Version = baseVersion })
                 .ToList();
 
             FixTheBaseVersionSourceOfMergeMessageStrategyIfReleaseBranchWasMergedAndDeleted(versions);
 
-            if (context.Configuration.VersioningMode == VersioningMode.Mainline)
+            if (context.FullConfiguration.VersioningMode == VersioningMode.Mainline)
             {
                 versions = versions
                     .Where(b => b.IncrementedVersion.PreReleaseTag?.HasTag() != true)
@@ -94,12 +111,25 @@ public class BaseVersionCalculator : IBaseVersionCalculator
 
             this.log.Info($"Base version used: {calculatedBase}");
 
-            return calculatedBase;
+            return new(calculatedBase, effectiveBranchConfiguration);
         }
     }
-    private IEnumerable<BaseVersion> GetBaseVersions(IVersionStrategy strategy)
+
+    private SemanticVersion MaybeIncrement(BaseVersion baseVersion, EffectiveConfiguration configuration)
     {
-        foreach (var version in strategy.GetVersions())
+        var incrementStrategy = this.incrementStrategyFinder.DetermineIncrementedField(
+            context: context,
+            baseVersion: baseVersion,
+            configuration: configuration
+        );
+        return incrementStrategy == VersionField.None
+            ? baseVersion.SemanticVersion
+            : baseVersion.SemanticVersion.IncrementVersion(incrementStrategy);
+    }
+
+    private IEnumerable<BaseVersion> GetBaseVersions(IVersionStrategy strategy, EffectiveBranchConfiguration configuration)
+    {
+        foreach (var version in strategy.GetBaseVersions(configuration))
         {
             if (version == null) continue;
 
@@ -112,7 +142,7 @@ public class BaseVersionCalculator : IBaseVersionCalculator
     }
     private bool IncludeVersion(BaseVersion version)
     {
-        foreach (var filter in context.Configuration.VersionFilters)
+        foreach (var filter in context.FullConfiguration.Ignore.ToFilters())
         {
             if (filter.Exclude(version, out var reason))
             {

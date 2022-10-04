@@ -1,7 +1,6 @@
 using GitVersion.Common;
 using GitVersion.Configuration;
 using GitVersion.Extensions;
-using GitVersion.Model.Configuration;
 using Microsoft.Extensions.Options;
 
 namespace GitVersion;
@@ -10,14 +9,12 @@ public class GitVersionContextFactory : IGitVersionContextFactory
 {
     private readonly IConfigProvider configProvider;
     private readonly IRepositoryStore repositoryStore;
-    private readonly IBranchConfigurationCalculator branchConfigurationCalculator;
     private readonly IOptions<GitVersionOptions> options;
 
-    public GitVersionContextFactory(IConfigProvider configProvider, IRepositoryStore repositoryStore, IBranchConfigurationCalculator branchConfigurationCalculator, IOptions<GitVersionOptions> options)
+    public GitVersionContextFactory(IConfigProvider configProvider, IRepositoryStore repositoryStore, IOptions<GitVersionOptions> options)
     {
         this.configProvider = configProvider.NotNull();
         this.repositoryStore = repositoryStore.NotNull();
-        this.branchConfigurationCalculator = branchConfigurationCalculator.NotNull();
         this.options = options.NotNull();
     }
 
@@ -36,11 +33,9 @@ public class GitVersionContextFactory : IGitVersionContextFactory
             currentBranch = branchForCommit ?? currentBranch;
         }
 
-        var currentBranchConfig = this.branchConfigurationCalculator.GetBranchConfiguration(currentBranch, currentCommit, configuration);
-        var effectiveConfiguration = new EffectiveConfiguration(configuration, currentBranchConfig);
-        var currentCommitTaggedVersion = this.repositoryStore.GetCurrentCommitTaggedVersion(currentCommit, effectiveConfiguration);
+        var currentCommitTaggedVersion = this.repositoryStore.GetCurrentCommitTaggedVersion(currentCommit, configuration.TagPrefix);
         var numberOfUncommittedChanges = this.repositoryStore.GetNumberOfUncommittedChanges();
 
-        return new GitVersionContext(currentBranch, currentCommit, configuration, effectiveConfiguration, currentCommitTaggedVersion, numberOfUncommittedChanges);
+        return new GitVersionContext(currentBranch, currentCommit, configuration, currentCommitTaggedVersion, numberOfUncommittedChanges);
     }
 }

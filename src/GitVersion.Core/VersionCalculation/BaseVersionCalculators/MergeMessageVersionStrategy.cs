@@ -3,21 +3,23 @@ using System.Text.RegularExpressions;
 using GitVersion.Configuration;
 using GitVersion.Extensions;
 using GitVersion.Logging;
+using GitVersion.Model.Configuration;
 
 namespace GitVersion.VersionCalculation;
 
 /// <summary>
 /// Version is extracted from older commits' merge messages.
 /// BaseVersionSource is the commit where the message was found.
-/// Increments if PreventIncrementForMergedBranchVersion (from the branch config) is false.
+/// Increments if PreventIncrementOfMergedBranchVersion (from the branch config) is false.
 /// </summary>
 public class MergeMessageVersionStrategy : VersionStrategyBase
 {
     private readonly ILog log;
 
-    public MergeMessageVersionStrategy(ILog log, Lazy<GitVersionContext> versionContext) : base(versionContext) => this.log = log.NotNull();
+    public MergeMessageVersionStrategy(ILog log, Lazy<GitVersionContext> versionContext)
+        : base(versionContext) => this.log = log.NotNull();
 
-    public override IEnumerable<BaseVersion> GetVersions()
+    public override IEnumerable<BaseVersion> GetBaseVersions(EffectiveBranchConfiguration configuration)
     {
         if (Context.CurrentBranch.Commits == null || Context.CurrentCommit == null)
             return Enumerable.Empty<BaseVersion>();
@@ -31,7 +33,7 @@ public class MergeMessageVersionStrategy : VersionStrategyBase
                     Context.FullConfiguration.IsReleaseBranch(TrimRemote(mergeMessage.MergedBranch)))
                 {
                     this.log.Info($"Found commit [{Context.CurrentCommit}] matching merge message format: {mergeMessage.FormatName}");
-                    var shouldIncrement = Context.Configuration.PreventIncrementForMergedBranchVersion != true;
+                    var shouldIncrement = !configuration.Value.PreventIncrementOfMergedBranchVersion;
                     return new[]
                     {
                         new BaseVersion($"{MergeMessageStrategyPrefix} '{c.Message.Trim()}'", shouldIncrement, mergeMessage.Version, c, null)

@@ -11,19 +11,25 @@ public class ReferenceName : IEquatable<ReferenceName?>, IComparable<ReferenceNa
     private const string LocalBranchPrefix = "refs/heads/";
     private const string RemoteTrackingBranchPrefix = "refs/remotes/";
     private const string TagPrefix = "refs/tags/";
-    private const string PullRequestPrefix1 = "refs/pull/";
-    private const string PullRequestPrefix2 = "refs/pull-requests/";
+    private static readonly string[] PullRequestPrefixes =
+    {
+        "refs/pull/",
+        "refs/pull-requests/",
+        "refs/remotes/pull/",
+        "refs/remotes/pull-requests/"
+    };
 
     public ReferenceName(string canonical)
     {
         Canonical = canonical.NotNull();
-        Friendly = Shorten();
-        WithoutRemote = RemoveRemote();
 
         IsBranch = IsPrefixedBy(Canonical, LocalBranchPrefix);
         IsRemoteBranch = IsPrefixedBy(Canonical, RemoteTrackingBranchPrefix);
         IsTag = IsPrefixedBy(Canonical, TagPrefix);
-        IsPullRequest = IsPrefixedBy(Canonical, PullRequestPrefix1) || IsPrefixedBy(Canonical, PullRequestPrefix2);
+        IsPullRequest = IsPrefixedBy(Canonical, PullRequestPrefixes);
+
+        Friendly = Shorten();
+        WithoutRemote = RemoveRemote();
     }
 
     public static ReferenceName Parse(string canonicalName)
@@ -31,11 +37,11 @@ public class ReferenceName : IEquatable<ReferenceName?>, IComparable<ReferenceNa
         if (IsPrefixedBy(canonicalName, LocalBranchPrefix)
             || IsPrefixedBy(canonicalName, RemoteTrackingBranchPrefix)
             || IsPrefixedBy(canonicalName, TagPrefix)
-            || IsPrefixedBy(canonicalName, PullRequestPrefix1)
-            || IsPrefixedBy(canonicalName, PullRequestPrefix2))
+            || IsPrefixedBy(canonicalName, PullRequestPrefixes))
         {
             return new ReferenceName(canonicalName);
         }
+
         throw new ArgumentException($"The {nameof(canonicalName)} is not a Canonical name");
     }
 
@@ -62,22 +68,30 @@ public class ReferenceName : IEquatable<ReferenceName?>, IComparable<ReferenceNa
 
     private string Shorten()
     {
-        if (IsPrefixedBy(Canonical, LocalBranchPrefix))
+        if (IsBranch)
             return Canonical.Substring(LocalBranchPrefix.Length);
-        if (IsPrefixedBy(Canonical, RemoteTrackingBranchPrefix))
+
+        if (IsRemoteBranch)
             return Canonical.Substring(RemoteTrackingBranchPrefix.Length);
-        if (IsPrefixedBy(Canonical, TagPrefix))
+
+        if (IsTag)
             return Canonical.Substring(TagPrefix.Length);
+
         return Canonical;
     }
 
     private string RemoveRemote()
     {
-        var isRemote = IsPrefixedBy(Canonical, RemoteTrackingBranchPrefix);
+        if (IsRemoteBranch)
+        {
+            if (!IsPullRequest)
+                return Friendly.Substring(Friendly.IndexOf("/", StringComparison.Ordinal) + 1);
+        }
 
-        return isRemote
-            ? Friendly.Substring(Friendly.IndexOf("/", StringComparison.Ordinal) + 1)
-            : Friendly;
+        return Friendly;
     }
+
     private static bool IsPrefixedBy(string input, string prefix) => input.StartsWith(prefix, StringComparison.Ordinal);
+
+    private static bool IsPrefixedBy(string input, string[] prefixes) => prefixes.Any(prefix => IsPrefixedBy(input, prefix));
 }
