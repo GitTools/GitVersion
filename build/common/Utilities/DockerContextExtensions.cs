@@ -13,9 +13,6 @@ public static class DockerContextExtensions
     {
         var (distro, targetFramework, architecture, _, _) = dockerImage;
 
-        // TODO skip this because of https://github.com/GitTools/GitVersion/pull/3148, remove after .net core 3.1 is removed
-        if (distro == Constants.Ubuntu2204 && targetFramework == Constants.Version31) return true;
-
         if (architecture != Architecture.Arm64) return false;
         if (!Constants.DistrosToSkip.Contains(distro)) return false;
 
