@@ -14,7 +14,7 @@ public class ShaVersionFilterTests : TestBase
         var commit = GitToolsTestingExtensions.CreateMockCommit();
         var sut = new ShaVersionFilter(new[] { commit.Sha });
 
-        Should.Throw<ArgumentNullException>(() => sut.Exclude(null, out _));
+        Should.Throw<ArgumentNullException>(() => sut.Exclude(null!, out _));
     }
 
     [Test]

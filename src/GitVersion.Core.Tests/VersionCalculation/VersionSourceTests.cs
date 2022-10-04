@@ -24,11 +24,11 @@ public class VersionSourceTests : TestBase
 
         var nextVersionCalculator = GetNextVersionCalculator(fixture);
 
-        var version = nextVersionCalculator.FindVersion();
+        var nextVersion = nextVersionCalculator.FindVersion();
 
-        version.BuildMetaData.ShouldNotBeNull();
-        version.BuildMetaData.VersionSourceSha.ShouldBe(initialCommit.Sha);
-        version.BuildMetaData.CommitsSinceVersionSource.ShouldBe(2);
+        nextVersion.IncrementedVersion.BuildMetaData.ShouldNotBeNull();
+        nextVersion.IncrementedVersion.BuildMetaData.VersionSourceSha.ShouldBe(initialCommit.Sha);
+        nextVersion.IncrementedVersion.BuildMetaData.CommitsSinceVersionSource.ShouldBe(2);
     }
 
     [Test]
@@ -39,11 +39,11 @@ public class VersionSourceTests : TestBase
 
         var nextVersionCalculator = GetNextVersionCalculator(fixture);
 
-        var version = nextVersionCalculator.FindVersion();
+        var nextVersion = nextVersionCalculator.FindVersion();
 
-        version.BuildMetaData.ShouldNotBeNull();
-        version.BuildMetaData.VersionSourceSha.ShouldBe(initialCommit.Sha);
-        version.BuildMetaData.CommitsSinceVersionSource.ShouldBe(0);
+        nextVersion.IncrementedVersion.BuildMetaData.ShouldNotBeNull();
+        nextVersion.IncrementedVersion.BuildMetaData.VersionSourceSha.ShouldBe(initialCommit.Sha);
+        nextVersion.IncrementedVersion.BuildMetaData.CommitsSinceVersionSource.ShouldBe(0);
     }
 
     [Test]
@@ -60,11 +60,11 @@ public class VersionSourceTests : TestBase
 
         var nextVersionCalculator = GetNextVersionCalculator(fixture);
 
-        var version = nextVersionCalculator.FindVersion();
+        var nextVersion = nextVersionCalculator.FindVersion();
 
-        version.BuildMetaData.ShouldNotBeNull();
-        version.BuildMetaData.VersionSourceSha.ShouldBe(secondCommit.Sha);
-        version.BuildMetaData.CommitsSinceVersionSource.ShouldBe(1);
+        nextVersion.IncrementedVersion.BuildMetaData.ShouldNotBeNull();
+        nextVersion.IncrementedVersion.BuildMetaData.VersionSourceSha.ShouldBe(secondCommit.Sha);
+        nextVersion.IncrementedVersion.BuildMetaData.CommitsSinceVersionSource.ShouldBe(1);
     }
 
     private static INextVersionCalculator GetNextVersionCalculator(RepositoryFixtureBase fixture)

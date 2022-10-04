@@ -86,7 +86,7 @@ public class ConfigurationBuilder
                 var branchName = name == Config.MasterBranchKey ? Config.MainBranchKey : name;
                 if (!targetConfigBranches.TryGetValue(branchName, out var target))
                 {
-                    target = BranchConfig.CreateDefaultBranchConfig(branchName);
+                    target = new BranchConfig() { Name = branchName };
                 }
 
                 branchConfig.MergeTo(target);
@@ -187,41 +187,59 @@ public class ConfigurationBuilder
             CommitDateFormat = "yyyy-MM-dd",
             UpdateBuildNumber = true,
             SemanticVersionFormat = SemanticVersionFormat.Strict,
-            TagPreReleaseWeight = DefaultTagPreReleaseWeight
+            TagPreReleaseWeight = DefaultTagPreReleaseWeight,
+            Increment = IncrementStrategy.Inherit
         };
 
         AddBranchConfig(Config.DevelopBranchKey,
             new BranchConfig
             {
+                Increment = IncrementStrategy.Minor,
                 Regex = Config.DevelopBranchRegex,
                 SourceBranches = new HashSet<string>(),
                 Tag = "alpha",
-                Increment = IncrementStrategy.Minor,
+                PreventIncrementOfMergedBranchVersion = false,
                 TrackMergeTarget = true,
                 TracksReleaseBranches = true,
+                IsMainline = false,
+                IsReleaseBranch = false,
                 PreReleaseWeight = 0
             });
 
         AddBranchConfig(Config.MainBranchKey,
             new BranchConfig
             {
+                Increment = IncrementStrategy.Patch,
                 Regex = Config.MainBranchRegex,
-                SourceBranches = new HashSet<string> { Config.DevelopBranchKey, Config.ReleaseBranchKey },
+                SourceBranches = new HashSet<string> {
+                    Config.DevelopBranchKey,
+                    Config.ReleaseBranchKey
+                },
                 Tag = string.Empty,
                 PreventIncrementOfMergedBranchVersion = true,
-                Increment = IncrementStrategy.Patch,
+                TrackMergeTarget = false,
+                TracksReleaseBranches = false,
                 IsMainline = true,
+                IsReleaseBranch = false,
                 PreReleaseWeight = 55000
             });
 
         AddBranchConfig(Config.ReleaseBranchKey,
             new BranchConfig
             {
+                Increment = IncrementStrategy.None,
                 Regex = Config.ReleaseBranchRegex,
-                SourceBranches = new HashSet<string> { Config.DevelopBranchKey, Config.MainBranchKey, Config.SupportBranchKey, Config.ReleaseBranchKey },
+                SourceBranches = new HashSet<string> {
+                    Config.DevelopBranchKey,
+                    Config.MainBranchKey,
+                    Config.SupportBranchKey,
+                    Config.ReleaseBranchKey
+                },
                 Tag = "beta",
                 PreventIncrementOfMergedBranchVersion = true,
-                Increment = IncrementStrategy.None,
+                TrackMergeTarget = false,
+                TracksReleaseBranches = false,
+                IsMainline = false,
                 IsReleaseBranch = true,
                 PreReleaseWeight = 30000
             });
@@ -229,47 +247,79 @@ public class ConfigurationBuilder
         AddBranchConfig(Config.FeatureBranchKey,
             new BranchConfig
             {
-                Regex = Config.FeatureBranchRegex,
-                SourceBranches = new HashSet<string> { Config.DevelopBranchKey, Config.MainBranchKey, Config.ReleaseBranchKey, Config.FeatureBranchKey, Config.SupportBranchKey, Config.HotfixBranchKey },
                 Increment = IncrementStrategy.Inherit,
+                Regex = Config.FeatureBranchRegex,
+                SourceBranches = new HashSet<string> {
+                    Config.DevelopBranchKey,
+                    Config.MainBranchKey,
+                    Config.ReleaseBranchKey,
+                    Config.FeatureBranchKey,
+                    Config.SupportBranchKey,
+                    Config.HotfixBranchKey
+                },
+                Tag = "{BranchName}",
                 PreReleaseWeight = 30000
             });
 
         AddBranchConfig(Config.PullRequestBranchKey,
             new BranchConfig
             {
+                Increment = IncrementStrategy.Inherit,
                 Regex = Config.PullRequestRegex,
-                SourceBranches = new HashSet<string> { Config.DevelopBranchKey, Config.MainBranchKey, Config.ReleaseBranchKey, Config.FeatureBranchKey, Config.SupportBranchKey, Config.HotfixBranchKey },
+                SourceBranches = new HashSet<string> {
+                    Config.DevelopBranchKey,
+                    Config.MainBranchKey,
+                    Config.ReleaseBranchKey,
+                    Config.FeatureBranchKey,
+                    Config.SupportBranchKey,
+                    Config.HotfixBranchKey
+                },
                 Tag = "PullRequest",
                 TagNumberPattern = @"[/-](?<number>\d+)",
-                Increment = IncrementStrategy.Inherit,
                 PreReleaseWeight = 30000
             });
 
         AddBranchConfig(Config.HotfixBranchKey,
             new BranchConfig
             {
-                Regex = Config.HotfixBranchRegex,
-                SourceBranches = new HashSet<string> { Config.DevelopBranchKey, Config.MainBranchKey, Config.SupportBranchKey },
-                Tag = "beta",
                 Increment = IncrementStrategy.Patch,
+                Regex = Config.HotfixBranchRegex,
+                SourceBranches = new HashSet<string> {
+                    Config.ReleaseBranchKey,
+                    Config.MainBranchKey,
+                    Config.SupportBranchKey,
+                    Config.HotfixBranchKey
+                },
+                Tag = "beta",
+                PreventIncrementOfMergedBranchVersion = false,
+                TrackMergeTarget = false,
+                TracksReleaseBranches = false,
+                IsMainline = false,
+                IsReleaseBranch = false,
                 PreReleaseWeight = 30000
             });
 
         AddBranchConfig(Config.SupportBranchKey,
             new BranchConfig
             {
+                Increment = IncrementStrategy.Patch,
                 Regex = Config.SupportBranchRegex,
                 SourceBranches = new HashSet<string> { Config.MainBranchKey },
                 Tag = string.Empty,
                 PreventIncrementOfMergedBranchVersion = true,
-                Increment = IncrementStrategy.Patch,
+                TrackMergeTarget = false,
+                TracksReleaseBranches = false,
                 IsMainline = true,
+                IsReleaseBranch = false,
                 PreReleaseWeight = 55000
             });
 
         return config;
 
-        void AddBranchConfig(string name, BranchConfig overrides) => config.Branches[name] = BranchConfig.CreateDefaultBranchConfig(name).Apply(overrides);
+        void AddBranchConfig(string name, BranchConfig overrides)
+        {
+            var emptyBranchConfiguration = new BranchConfig() { Name = name };
+            config.Branches[name] = emptyBranchConfiguration.Apply(overrides);
+        }
     }
 }

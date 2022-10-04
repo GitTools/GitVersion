@@ -330,14 +330,6 @@ public class SemanticVersion : IFormattable, IComparable<SemanticVersion>, IEqua
     }
 }
 
-public enum VersionField
-{
-    None,
-    Patch,
-    Minor,
-    Major
-}
-
 public enum SemanticVersionFormat
 {
     Strict,

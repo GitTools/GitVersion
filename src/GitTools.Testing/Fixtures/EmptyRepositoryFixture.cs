@@ -4,13 +4,18 @@ namespace GitTools.Testing;
 
 public class EmptyRepositoryFixture : RepositoryFixtureBase
 {
-    public EmptyRepositoryFixture() : base(CreateNewRepository)
+    public EmptyRepositoryFixture() : this("main")
     {
     }
 
-    private static IRepository CreateNewRepository(string path)
+    public EmptyRepositoryFixture(string branchName)
+        : base(path => CreateNewRepository(path, branchName))
     {
-        Init(path);
+    }
+
+    private static IRepository CreateNewRepository(string path, string branchName)
+    {
+        Init(path, branchName);
         Console.WriteLine("Created git repository at '{0}'", path);
 
         return new Repository(path);

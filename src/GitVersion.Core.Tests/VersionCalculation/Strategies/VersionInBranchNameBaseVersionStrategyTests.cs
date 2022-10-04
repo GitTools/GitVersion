@@ -21,8 +21,12 @@ public class VersionInBranchNameBaseVersionStrategyTests : TestBase
         fixture.Repository.MakeACommit();
         fixture.Repository.CreateBranch(branchName);
 
-        var strategy = GetVersionStrategy(fixture.RepositoryPath, fixture.Repository.ToGitRepository(), branchName);
-        var baseVersion = strategy.GetVersions().Single();
+        var gitRepository = fixture.Repository.ToGitRepository();
+        var strategy = GetVersionStrategy(fixture.RepositoryPath, gitRepository, branchName);
+        var configuration = TestConfigurationBuilder.New.Build();
+        var branchConfiguration = configuration.GetBranchConfiguration(branchName);
+        var effectiveConfiguration = new EffectiveConfiguration(configuration, branchConfiguration);
+        var baseVersion = strategy.GetBaseVersions(new(gitRepository.FindBranch(branchName)!, effectiveConfiguration)).Single();
 
         baseVersion.SemanticVersion.ToString().ShouldBe(expectedBaseVersion);
     }
@@ -37,8 +41,12 @@ public class VersionInBranchNameBaseVersionStrategyTests : TestBase
         fixture.Repository.MakeACommit();
         fixture.Repository.CreateBranch(branchName);
 
-        var strategy = GetVersionStrategy(fixture.RepositoryPath, fixture.Repository.ToGitRepository(), branchName);
-        var baseVersions = strategy.GetVersions();
+        var gitRepository = fixture.Repository.ToGitRepository();
+        var strategy = GetVersionStrategy(fixture.RepositoryPath, gitRepository, branchName);
+        var configuration = TestConfigurationBuilder.New.Build();
+        var branchConfiguration = configuration.GetBranchConfiguration(branchName);
+        var effectiveConfiguration = new EffectiveConfiguration(configuration, branchConfiguration);
+        var baseVersions = strategy.GetBaseVersions(new(gitRepository.FindBranch(branchName)!, effectiveConfiguration));
 
         baseVersions.ShouldBeEmpty();
     }
@@ -55,9 +63,13 @@ public class VersionInBranchNameBaseVersionStrategyTests : TestBase
             .Add(new Config { Branches = { { "support", new BranchConfig { IsReleaseBranch = true } } } })
             .Build();
 
-        var strategy = GetVersionStrategy(fixture.RepositoryPath, fixture.Repository.ToGitRepository(), branchName, config);
+        var gitRepository = fixture.Repository.ToGitRepository();
+        var strategy = GetVersionStrategy(fixture.RepositoryPath, gitRepository, branchName, config);
 
-        var baseVersion = strategy.GetVersions().Single();
+        var configuration = TestConfigurationBuilder.New.Build();
+        var branchConfiguration = configuration.GetBranchConfiguration(branchName);
+        var effectiveConfiguration = new EffectiveConfiguration(configuration, branchConfiguration);
+        var baseVersion = strategy.GetBaseVersions(new(gitRepository.FindBranch(branchName)!, effectiveConfiguration)).Single();
 
         baseVersion.SemanticVersion.ToString().ShouldBe(expectedBaseVersion);
     }
@@ -74,8 +86,13 @@ public class VersionInBranchNameBaseVersionStrategyTests : TestBase
         Commands.Fetch((Repository)fixture.LocalRepositoryFixture.Repository, fixture.LocalRepositoryFixture.Repository.Network.Remotes.First().Name, Array.Empty<string>(), new FetchOptions(), null);
         fixture.LocalRepositoryFixture.Checkout($"origin/{branchName}");
 
-        var strategy = GetVersionStrategy(fixture.RepositoryPath, fixture.Repository.ToGitRepository(), branchName);
-        var baseVersion = strategy.GetVersions().Single();
+        var gitRepository = fixture.Repository.ToGitRepository();
+        var strategy = GetVersionStrategy(fixture.RepositoryPath, gitRepository, branchName);
+
+        var configuration = TestConfigurationBuilder.New.Build();
+        var branchConfiguration = configuration.GetBranchConfiguration(branchName);
+        var effectiveConfiguration = new EffectiveConfiguration(configuration, branchConfiguration);
+        var baseVersion = strategy.GetBaseVersions(new(gitRepository.FindBranch(branchName)!, effectiveConfiguration)).Single();
 
         baseVersion.SemanticVersion.ToString().ShouldBe(expectedBaseVersion);
     }
