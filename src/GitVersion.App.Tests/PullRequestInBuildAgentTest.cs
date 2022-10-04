@@ -15,7 +15,9 @@ public class PullRequestInBuildAgentTest
     {
         "refs/pull-requests/5/merge",
         "refs/pull/5/merge",
-        "refs/heads/pull/5/head"
+        "refs/heads/pull/5/head",
+        "refs/remotes/pull/5/merge",
+        "refs/remotes/pull-requests/5/merge"
     };
 
     [TestCaseSource(nameof(PrMergeRefs))]
@@ -48,7 +50,6 @@ public class PullRequestInBuildAgentTest
         };
         await VerifyPullRequestVersionIsCalculatedProperly(pullRequestRef, env);
     }
-
 
     [TestCaseSource(nameof(PrMergeRefs))]
     public async Task VerifyDronePullRequest(string pullRequestRef)
@@ -128,7 +129,6 @@ public class PullRequestInBuildAgentTest
         await VerifyPullRequestVersionIsCalculatedProperly(pullRequestRef, env);
     }
 
-
     [TestCaseSource(nameof(PrMergeRefs))]
     public async Task VerifyBitBucketPipelinesPullRequest(string pullRequestRef)
     {
@@ -143,9 +143,9 @@ public class PullRequestInBuildAgentTest
 
     private static async Task VerifyPullRequestVersionIsCalculatedProperly(string pullRequestRef, Dictionary<string, string> env)
     {
-        using var fixture = new EmptyRepositoryFixture();
+        using var fixture = new EmptyRepositoryFixture("main");
         var remoteRepositoryPath = ExecutableHelper.GetTempPath();
-        RepositoryFixtureBase.Init(remoteRepositoryPath);
+        RepositoryFixtureBase.Init(remoteRepositoryPath, "main");
         using (var remoteRepository = new Repository(remoteRepositoryPath))
         {
             remoteRepository.Config.Set("user.name", "Test");
@@ -179,5 +179,24 @@ public class PullRequestInBuildAgentTest
 
         // Cleanup repository files
         DirectoryHelper.DeleteDirectory(remoteRepositoryPath);
+    }
+
+    private static readonly object[] PrMergeRefInputs =
+    {
+        new object[] { "refs/pull-requests/5/merge", "refs/pull-requests/5/merge", false, true, false },
+        new object[] { "refs/pull/5/merge", "refs/pull/5/merge", false, true, false},
+        new object[] { "refs/heads/pull/5/head", "pull/5/head", true, false, false },
+        new object[] { "refs/remotes/pull/5/merge", "pull/5/merge", false, true, true },
+    };
+
+    [TestCaseSource(nameof(PrMergeRefInputs))]
+    public void VerifyPullRequestInput(string pullRequestRef, string friendly, bool isBranch, bool isPullRequest, bool isRemote)
+    {
+        var refName = new ReferenceName(pullRequestRef);
+
+        Assert.AreEqual(friendly, refName.Friendly);
+        Assert.AreEqual(isBranch, refName.IsBranch);
+        Assert.AreEqual(isPullRequest, refName.IsPullRequest);
+        Assert.AreEqual(isRemote, refName.IsRemoteBranch);
     }
 }

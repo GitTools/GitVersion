@@ -523,6 +523,28 @@ public class MainlineDevelopmentMode : TestBase
         exception.ShouldNotBeNull();
         exception.Message.ShouldMatch("No branches can be found matching the commit .* in the configured Mainline branches: main, support");
     }
+
+    [TestCase("feat!: Break stuff +semver: none")]
+    [TestCase("feat: Add stuff +semver: none")]
+    [TestCase("fix: Fix stuff +semver: none")]
+    public void NoBumpMessageTakesPrecedenceOverBumpMessage(string commitMessage)
+    {
+        // Same configuration as found here: https://gitversion.net/docs/reference/version-increments#conventional-commit-messages
+        var conventionalCommitsConfig = new Config
+        {
+            VersioningMode = VersioningMode.Mainline,
+            MajorVersionBumpMessage = "^(build|chore|ci|docs|feat|fix|perf|refactor|revert|style|test)(\\([\\w\\s-]*\\))?(!:|:.*\\n\\n((.+\\n)+\\n)?BREAKING CHANGE:\\s.+)",
+            MinorVersionBumpMessage = "^(feat)(\\([\\w\\s-]*\\))?:",
+            PatchVersionBumpMessage = "^(build|chore|ci|docs|fix|perf|refactor|revert|style|test)(\\([\\w\\s-]*\\))?:",
+        };
+        using var fixture = new EmptyRepositoryFixture();
+        fixture.MakeATaggedCommit("1.0.0");
+
+        fixture.MakeACommit(commitMessage);
+
+        fixture.AssertFullSemver("1.0.0", conventionalCommitsConfig);
+    }
+
 }
 
 internal static class CommitExtensions

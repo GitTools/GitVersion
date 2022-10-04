@@ -24,7 +24,7 @@ public class BaseVersionCalculatorTests : TestBase
                 services.AddSingleton<IVersionStrategy>(new V2Strategy(dateTimeOffset));
             }));
 
-        var baseVersion = versionCalculator.GetBaseVersion();
+        var (baseVersion, _) = versionCalculator.GetBaseVersion();
 
         baseVersion.SemanticVersion.ToString().ShouldBe("2.0.0");
         baseVersion.ShouldIncrement.ShouldBe(true);
@@ -45,7 +45,7 @@ public class BaseVersionCalculatorTests : TestBase
                 services.AddSingleton<IVersionStrategy>(new V2Strategy(null));
             }));
 
-        var baseVersion = versionCalculator.GetBaseVersion();
+        var (baseVersion, _) = versionCalculator.GetBaseVersion();
 
         baseVersion.SemanticVersion.ToString().ShouldBe("2.0.0");
         baseVersion.ShouldIncrement.ShouldBe(true);
@@ -66,7 +66,7 @@ public class BaseVersionCalculatorTests : TestBase
                 services.AddSingleton<IVersionStrategy>(new V2Strategy(when));
             }));
 
-        var baseVersion = versionCalculator.GetBaseVersion();
+        var (baseVersion, _) = versionCalculator.GetBaseVersion();
 
         baseVersion.SemanticVersion.ToString().ShouldBe("2.0.0");
         baseVersion.ShouldIncrement.ShouldBe(true);
@@ -88,7 +88,7 @@ public class BaseVersionCalculatorTests : TestBase
                 services.AddSingleton<IVersionStrategy>(new TestVersionStrategy(version));
             }));
 
-        var baseVersion = versionCalculator.GetBaseVersion();
+        var (baseVersion, _) = versionCalculator.GetBaseVersion();
 
         baseVersion.Source.ShouldBe(version.Source);
         baseVersion.ShouldIncrement.ShouldBe(version.ShouldIncrement);
@@ -110,7 +110,7 @@ public class BaseVersionCalculatorTests : TestBase
                 services.RemoveAll<IVersionStrategy>();
                 services.AddSingleton<IVersionStrategy>(new TestVersionStrategy(higherVersion, lowerVersion));
             }));
-        var baseVersion = versionCalculator.GetBaseVersion();
+        var (baseVersion, _) = versionCalculator.GetBaseVersion();
 
         baseVersion.Source.ShouldNotBe(higherVersion.Source);
         baseVersion.SemanticVersion.ShouldNotBe(higherVersion.SemanticVersion);
@@ -146,7 +146,7 @@ public class BaseVersionCalculatorTests : TestBase
                 services.RemoveAll<IVersionStrategy>();
                 services.AddSingleton<IVersionStrategy>(new TestVersionStrategy(preReleaseVersion, lowerVersion));
             }));
-        var baseVersion = versionCalculator.GetBaseVersion();
+        var (baseVersion, _) = versionCalculator.GetBaseVersion();
 
         baseVersion.Source.ShouldNotBe(preReleaseVersion.Source);
         baseVersion.SemanticVersion.ShouldNotBe(preReleaseVersion.SemanticVersion);
@@ -209,7 +209,7 @@ public class BaseVersionCalculatorTests : TestBase
             }
         }
 
-        public IEnumerable<BaseVersion> GetVersions()
+        public IEnumerable<BaseVersion> GetBaseVersions(EffectiveBranchConfiguration configuration)
         {
             yield return new BaseVersion("Source 1", false, new SemanticVersion(1), this.when, null);
         }
@@ -232,7 +232,7 @@ public class BaseVersionCalculatorTests : TestBase
             }
         }
 
-        public IEnumerable<BaseVersion> GetVersions()
+        public IEnumerable<BaseVersion> GetBaseVersions(EffectiveBranchConfiguration configuration)
         {
             yield return new BaseVersion("Source 2", true, new SemanticVersion(2), this.when, null);
         }
@@ -240,10 +240,10 @@ public class BaseVersionCalculatorTests : TestBase
 
     private sealed class TestVersionStrategy : IVersionStrategy
     {
-        private readonly IEnumerable<BaseVersion> versions;
+        private readonly IEnumerable<BaseVersion> baseVersions;
 
-        public TestVersionStrategy(params BaseVersion[] versions) => this.versions = versions;
+        public TestVersionStrategy(params BaseVersion[] baseVersions) => this.baseVersions = baseVersions;
 
-        public IEnumerable<BaseVersion> GetVersions() => this.versions;
+        public IEnumerable<BaseVersion> GetBaseVersions(EffectiveBranchConfiguration configuration) => this.baseVersions;
     }
 }
