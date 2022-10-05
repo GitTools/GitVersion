@@ -132,9 +132,9 @@ public class RepositoryStore : IRepositoryStore
         return branchesContainingCommitFinder.GetBranchesContainingCommit(commit, branches, onlyTrackedBranches);
     }
 
-    public IDictionary<string, List<IBranch>> GetMainlineBranches(ICommit commit, Config configuration, IEnumerable<KeyValuePair<string, BranchConfig>>? mainlineBranchConfigs)
+    public IDictionary<string, List<IBranch>> GetMainlineBranches(ICommit commit, Config configuration)
     {
-        var mainlineBranchFinder = new MainlineBranchFinder(this, this.repository, configuration, mainlineBranchConfigs, this.log);
+        var mainlineBranchFinder = new MainlineBranchFinder(this, this.repository, configuration, this.log);
         return mainlineBranchFinder.FindMainlineBranches(commit);
     }
 
@@ -199,25 +199,23 @@ public class RepositoryStore : IRepositoryStore
 
     public IEnumerable<BranchCommit> FindCommitBranchesWasBranchedFrom(IBranch branch, Config configuration, IEnumerable<IBranch> excludedBranches)
     {
-        using (this.log.IndentLog($"Finding branch source of '{branch}'"))
+        using (this.log.IndentLog($"Finding branches source of '{branch}'"))
         {
             if (branch.Tip == null)
             {
                 this.log.Warning($"{branch} has no tip.");
-                return Enumerable.Empty<BranchCommit>();
+                yield break;
             }
 
-            var list = new List<BranchCommit>();
             DateTimeOffset? when = null;
             var branchCommits = new MergeCommitFinder(this, configuration, excludedBranches, this.log)
                 .FindMergeCommitsFor(branch).ToList();
             foreach (var branchCommit in branchCommits)
             {
                 if (when != null && branchCommit.Commit.When != when) break;
-                list.Add(branchCommit);
+                yield return branchCommit;
                 when = branchCommit.Commit.When;
             }
-            return list;
         }
     }
 

@@ -373,7 +373,6 @@ public class GitVersionExecutorTests : TestBase
             var gitVersionCalculator = GetGitVersionCalculator(gitVersionOptions);
             gitVersionCalculator.CalculateVersionVariables();
         });
-
         exception?.Message.ShouldContain("No commits found on the current branch.");
     }
 

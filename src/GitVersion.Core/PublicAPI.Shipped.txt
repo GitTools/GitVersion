@@ -154,7 +154,6 @@ GitVersion.Common.IRepositoryStore.FindMergeBase(GitVersion.ICommit! commit, Git
 GitVersion.Common.IRepositoryStore.GetBranchesContainingCommit(GitVersion.ICommit? commit, System.Collections.Generic.IEnumerable<GitVersion.IBranch!>? branches = null, bool onlyTrackedBranches = false) -> System.Collections.Generic.IEnumerable<GitVersion.IBranch!>!
 GitVersion.Common.IRepositoryStore.GetCommitLog(GitVersion.ICommit? baseVersionSource, GitVersion.ICommit? currentCommit) -> System.Collections.Generic.IEnumerable<GitVersion.ICommit!>!
 GitVersion.Common.IRepositoryStore.GetCurrentCommit(GitVersion.IBranch! currentBranch, string? commitId) -> GitVersion.ICommit?
-GitVersion.Common.IRepositoryStore.GetMainlineBranches(GitVersion.ICommit! commit, GitVersion.Model.Configuration.Config! configuration, System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<string!, GitVersion.Model.Configuration.BranchConfig!>>? mainlineBranchConfigs) -> System.Collections.Generic.IDictionary<string!, System.Collections.Generic.List<GitVersion.IBranch!>!>!
 GitVersion.Common.IRepositoryStore.GetMainlineCommitLog(GitVersion.ICommit? baseVersionSource, GitVersion.ICommit? mainlineTip) -> System.Collections.Generic.IEnumerable<GitVersion.ICommit!>!
 GitVersion.Common.IRepositoryStore.GetMergeBaseCommits(GitVersion.ICommit? mergeCommit, GitVersion.ICommit? mergedHead, GitVersion.ICommit? findMergeBase) -> System.Collections.Generic.IEnumerable<GitVersion.ICommit!>!
 GitVersion.Common.IRepositoryStore.GetNumberOfUncommittedChanges() -> int
@@ -816,7 +815,6 @@ GitVersion.RepositoryStore.FindMergeBase(GitVersion.ICommit! commit, GitVersion.
 GitVersion.RepositoryStore.GetBranchesContainingCommit(GitVersion.ICommit? commit, System.Collections.Generic.IEnumerable<GitVersion.IBranch!>? branches = null, bool onlyTrackedBranches = false) -> System.Collections.Generic.IEnumerable<GitVersion.IBranch!>!
 GitVersion.RepositoryStore.GetCommitLog(GitVersion.ICommit? baseVersionSource, GitVersion.ICommit? currentCommit) -> System.Collections.Generic.IEnumerable<GitVersion.ICommit!>!
 GitVersion.RepositoryStore.GetCurrentCommit(GitVersion.IBranch! currentBranch, string? commitId) -> GitVersion.ICommit?
-GitVersion.RepositoryStore.GetMainlineBranches(GitVersion.ICommit! commit, GitVersion.Model.Configuration.Config! configuration, System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<string!, GitVersion.Model.Configuration.BranchConfig!>>? mainlineBranchConfigs) -> System.Collections.Generic.IDictionary<string!, System.Collections.Generic.List<GitVersion.IBranch!>!>!
 GitVersion.RepositoryStore.GetMainlineCommitLog(GitVersion.ICommit? baseVersionSource, GitVersion.ICommit? mainlineTip) -> System.Collections.Generic.IEnumerable<GitVersion.ICommit!>!
 GitVersion.RepositoryStore.GetMergeBaseCommits(GitVersion.ICommit? mergeCommit, GitVersion.ICommit? mergedHead, GitVersion.ICommit? findMergeBase) -> System.Collections.Generic.IEnumerable<GitVersion.ICommit!>!
 GitVersion.RepositoryStore.GetNumberOfUncommittedChanges() -> int

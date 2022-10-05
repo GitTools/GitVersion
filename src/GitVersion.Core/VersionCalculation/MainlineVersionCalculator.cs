@@ -143,16 +143,15 @@ internal class MainlineVersionCalculator : IMainlineVersionCalculator
 
         IDictionary<string, List<IBranch>>? mainlineBranches = null;
 
-        List<KeyValuePair<string, Model.Configuration.BranchConfig>>? mainlineBranchConfigs = context.FullConfiguration.Branches.Where(b => b.Value.IsMainline != null && b.Value.IsMainline.Value).ToList();
         if (context.CurrentCommit != null)
         {
-            mainlineBranches = this.repositoryStore.GetMainlineBranches(context.CurrentCommit, context.FullConfiguration, mainlineBranchConfigs);
+            mainlineBranches = this.repositoryStore.GetMainlineBranches(context.CurrentCommit, context.FullConfiguration);
         }
         mainlineBranches ??= new Dictionary<string, List<IBranch>>();
 
         if (!mainlineBranches.Any())
         {
-            var mainlineBranchConfigsString = string.Join(", ", mainlineBranchConfigs.Where(x => x.Value != null).Select(b => b.Value?.Name));
+            var mainlineBranchConfigsString = string.Join(", ", context.FullConfiguration.Branches.Where(b => b.Value?.IsMainline == true).Select(b => b.Value.Name));
             throw new WarningException($"No branches can be found matching the commit {context.CurrentCommit?.Sha} in the configured Mainline branches: {mainlineBranchConfigsString}");
         }
 
