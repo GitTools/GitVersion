@@ -102,4 +102,6 @@ public static class StringExtensions
 
     /// <inheritdoc cref="string.IsNullOrWhiteSpace"/>
     public static bool IsNullOrWhiteSpace([NotNullWhen(false)] this string? value) => string.IsNullOrWhiteSpace(value);
+
+    public static bool IsEmpty([NotNullWhen(false)] this string? value) => string.Empty.Equals(value);
 }
