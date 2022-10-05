@@ -1,6 +1,9 @@
 ## Unreleased
 
 *   When using a commit message that matches **both** `*-version-bump-message` and `no-bump-message`, there is no increment for that commit. In other words, `no-bump-message` now takes precedence over `*-version-bump-message`.
+*   The fallback version strategy returns always 0.0.0 and is flagged with should increment true. This gives you the version 0.1.0 on develop branch (IncrementStrategy.Minor) and 0.0.1 on main branch (IncremetnStrategy.Patch).
+*   We have not one effected branch configuration we have one or more effected branch configurations. In case of inheriting from parent branches this gives you the possiblity to solve stupid edge cases.
+*   The current branch (child) inherits from source branch (parent branch) if the increment strategy is set to inherit. This is highly recursive and can be configured via the configuration file.
 
 ## v5.0.0
 

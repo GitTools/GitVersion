@@ -90,7 +90,7 @@ public class NextVersionCalculatorTests : TestBase
         fixture.BranchTo("custom/foo");
         fixture.MakeACommit();
 
-        fixture.AssertFullSemver("1.0.0-foo.1+3", config); // I see three commits in line 113, 115 and 117 obove.
+        fixture.AssertFullSemver("1.0.0-foo.1+3", config);
     }
 
     [Test]
@@ -246,7 +246,7 @@ public class NextVersionCalculatorTests : TestBase
         fixture.BranchTo("custom/foo");
         fixture.MakeACommit();
 
-        fixture.AssertFullSemver("1.0.0-alpha.foo.1+3", config); // I see three commits in line 269, 271 and 273 obove.
+        fixture.AssertFullSemver("1.0.0-alpha.foo.1+3", config);
     }
 
     [Test]
