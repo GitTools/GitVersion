@@ -34,17 +34,7 @@ public class MergeMessageBaseVersionStrategyTests : TestBase
         mockRepository.Branches.Returns(branches);
         mockRepository.Commits.Returns(mockBranch.Commits);
 
-        var contextBuilder = new GitVersionContextBuilder().WithRepository(mockRepository).WithConfig(new Config()
-        {
-            Branches = new Dictionary<string, BranchConfig>()
-            {
-                {
-                    "main", new BranchConfig() {
-                        TrackMergeTarget = true
-                    }
-                }
-            }
-        });
+        var contextBuilder = new GitVersionContextBuilder().WithRepository(mockRepository);
         contextBuilder.Build();
         contextBuilder.ServicesProvider.ShouldNotBeNull();
         var strategy = contextBuilder.ServicesProvider.GetServiceForType<IVersionStrategy, MergeMessageVersionStrategy>();
@@ -133,15 +123,13 @@ public class MergeMessageBaseVersionStrategyTests : TestBase
     }
 
     [TestCase(@"Merge pull request #1 in FOO/bar from feature/ISSUE-1 to develop
-
-    * commit '38560a7eed06e8d3f3f1aaf091befcdf8bf50fea':
-      Updated jQuery to v2.1.3")]
+* commit '38560a7eed06e8d3f3f1aaf091befcdf8bf50fea':
+  Updated jQuery to v2.1.3")]
     [TestCase(@"Merge pull request #45 in BRIKKS/brikks from feature/NOX-68 to develop
-
-    * commit '38560a7eed06e8d3f3f1aaf091befcdf8bf50fea':
-      Another commit message
-      Commit message including a IP-number https://10.50.1.1
-      A commit message")]
+* commit '38560a7eed06e8d3f3f1aaf091befcdf8bf50fea':
+  Another commit message
+  Commit message including a IP-number https://10.50.1.1
+  A commit message")]
     [TestCase("Merge branch 'release/Sprint_2.0_Holdings_Computed_Balances'")]
     [TestCase("Merge branch 'develop' of http://10.0.6.3/gitblit/r/... into develop")]
     [TestCase("Merge branch " + MainBranch + " of http://172.16.3.10:8082/r/asu_tk/p_sd")]
@@ -159,17 +147,7 @@ public class MergeMessageBaseVersionStrategyTests : TestBase
     [TestCase("Merge branch 'release/2.0.0'", null, "2.0.0")]
     public void TakesVersionFromMergeOfConfiguredReleaseBranch(string message, string? releaseBranch, string expectedVersion)
     {
-        var config = new Config()
-        {
-            Branches = new Dictionary<string, BranchConfig>()
-                {
-                    {
-                        "main", new BranchConfig() {
-                            TrackMergeTarget = true
-                        }
-                    }
-                }
-        };
+        var config = new Config();
         if (releaseBranch != null) config.Branches[releaseBranch] = new BranchConfig { IsReleaseBranch = true };
         var parents = GetParents(true);
 
@@ -189,17 +167,7 @@ public class MergeMessageBaseVersionStrategyTests : TestBase
         mockRepository.Commits.Returns(mockBranch.Commits);
 
         var contextBuilder = new GitVersionContextBuilder()
-            .WithConfig(config ?? new Config()
-            {
-                Branches = new Dictionary<string, BranchConfig>()
-                {
-                        {
-                            "main", new BranchConfig() {
-                                TrackMergeTarget = true
-                            }
-                        }
-                }
-            }).WithRepository(mockRepository);
+            .WithConfig(config ?? new Config()).WithRepository(mockRepository);
         contextBuilder.Build();
         contextBuilder.ServicesProvider.ShouldNotBeNull();
         var strategy = contextBuilder.ServicesProvider.GetServiceForType<IVersionStrategy, MergeMessageVersionStrategy>();

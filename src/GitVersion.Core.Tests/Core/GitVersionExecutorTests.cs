@@ -364,19 +364,16 @@ public class GitVersionExecutorTests : TestBase
     [Test]
     public void WorkingDirectoryWithoutCommits()
     {
-        // Setup
         using var fixture = new EmptyRepositoryFixture();
 
         var gitVersionOptions = new GitVersionOptions { WorkingDirectory = fixture.RepositoryPath };
 
         var exception = Assert.Throws<GitVersionException>(() =>
         {
-            // Execute
             var gitVersionCalculator = GetGitVersionCalculator(gitVersionOptions);
             gitVersionCalculator.CalculateVersionVariables();
         });
 
-        // Verify
         exception?.Message.ShouldContain("No commits found on the current branch.");
     }
 

@@ -10,8 +10,7 @@ GitVersion.RepositoryStore.FindCommitBranchesWasBranchedFrom(GitVersion.IBranch!
 GitVersion.RepositoryStore.GetCurrentCommitTaggedVersion(GitVersion.ICommit? commit, string? tagPrefix) -> GitVersion.SemanticVersion?
 GitVersion.RepositoryStore.GetSourceBranches(GitVersion.IBranch! branch, GitVersion.Model.Configuration.Config! configuration, params GitVersion.IBranch![]! excludedBranches) -> System.Collections.Generic.IEnumerable<GitVersion.IBranch!>!
 GitVersion.RepositoryStore.GetSourceBranches(GitVersion.IBranch! branch, GitVersion.Model.Configuration.Config! configuration, System.Collections.Generic.IEnumerable<GitVersion.IBranch!>! excludedBranches) -> System.Collections.Generic.IEnumerable<GitVersion.IBranch!>!
-GitVersion.SemanticVersion.BuildMetaData.get -> GitVersion.SemanticVersionBuildMetaData?
-GitVersion.SemanticVersion.BuildMetaData.set -> void
+GitVersion.SemanticVersion.BuildMetaData -> GitVersion.SemanticVersionBuildMetaData?
 GitVersion.VersionCalculation.EffectiveBranchConfigurationFinder
 GitVersion.VersionCalculation.EffectiveBranchConfigurationFinder.EffectiveBranchConfigurationFinder(GitVersion.Logging.ILog! log, GitVersion.Common.IRepositoryStore! repositoryStore) -> void
 GitVersion.VersionCalculation.FallbackVersionStrategy.FallbackVersionStrategy() -> void

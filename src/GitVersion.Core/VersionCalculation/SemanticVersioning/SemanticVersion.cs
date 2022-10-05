@@ -22,20 +22,15 @@ public class SemanticVersion : IFormattable, IComparable<SemanticVersion>, IEqua
     public long Minor;
     public long Patch;
     public SemanticVersionPreReleaseTag? PreReleaseTag;
-    private SemanticVersionBuildMetaData? _buildMetaData;
+    public SemanticVersionBuildMetaData? BuildMetaData;
 
-    public SemanticVersionBuildMetaData? BuildMetaData
-    {
-        get => _buildMetaData;
-        set => _buildMetaData = value;
-    }
     public SemanticVersion(long major = 0, long minor = 0, long patch = 0)
     {
         this.Major = major;
         this.Minor = minor;
         this.Patch = patch;
         this.PreReleaseTag = new SemanticVersionPreReleaseTag();
-        this._buildMetaData = new SemanticVersionBuildMetaData();
+        this.BuildMetaData = new SemanticVersionBuildMetaData();
     }
 
     public SemanticVersion(SemanticVersion? semanticVersion)
@@ -45,7 +40,7 @@ public class SemanticVersion : IFormattable, IComparable<SemanticVersion>, IEqua
         this.Patch = semanticVersion?.Patch ?? 0;
 
         this.PreReleaseTag = new SemanticVersionPreReleaseTag(semanticVersion?.PreReleaseTag);
-        this._buildMetaData = new SemanticVersionBuildMetaData(semanticVersion?.BuildMetaData);
+        this.BuildMetaData = new SemanticVersionBuildMetaData(semanticVersion?.BuildMetaData);
     }
 
     public bool Equals(SemanticVersion? obj)
@@ -205,7 +200,7 @@ public class SemanticVersion : IFormattable, IComparable<SemanticVersion>, IEqua
             Minor = parsed.Groups["Minor"].Success ? long.Parse(parsed.Groups["Minor"].Value) : 0,
             Patch = parsed.Groups["Patch"].Success ? long.Parse(parsed.Groups["Patch"].Value) : 0,
             PreReleaseTag = SemanticVersionPreReleaseTag.Parse(parsed.Groups["Tag"].Value),
-            _buildMetaData = semanticVersionBuildMetaData
+            BuildMetaData = semanticVersionBuildMetaData
         };
 
         return true;
