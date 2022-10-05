@@ -504,7 +504,7 @@ public class MainlineDevelopmentMode : TestBase
     public void GivenARemoteGitRepositoryWithCommitsThenClonedLocalDevelopShouldMatchRemoteVersion()
     {
         using var fixture = new RemoteRepositoryFixture();
-        fixture.AssertFullSemver("0.0.5", config); // oh a remote repository with let me guess five commits!? It makes sense right? ;)
+        fixture.AssertFullSemver("0.0.5", config); // RemoteRepositoryFixture creates 5 commits.
         fixture.BranchTo("develop");
         fixture.AssertFullSemver("0.1.0-alpha.0", config);
         Console.WriteLine(fixture.SequenceDiagram.GetDiagram());

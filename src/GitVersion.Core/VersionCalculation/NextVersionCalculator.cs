@@ -9,21 +9,22 @@ namespace GitVersion.VersionCalculation;
 public class NextVersionCalculator : INextVersionCalculator
 {
     private readonly ILog log;
-
     private readonly IMainlineVersionCalculator mainlineVersionCalculator;
-
     private readonly IRepositoryStore repositoryStore;
-
     private readonly Lazy<GitVersionContext> versionContext;
-    private GitVersionContext context => this.versionContext.Value;
-
     private readonly IVersionStrategy[] versionStrategies;
     private readonly IEffectiveBranchConfigurationFinder effectiveBranchConfigurationFinder;
     private readonly IIncrementStrategyFinder incrementStrategyFinder;
 
-    public NextVersionCalculator(ILog log, IMainlineVersionCalculator mainlineVersionCalculator, IRepositoryStore repositoryStore,
-        Lazy<GitVersionContext> versionContext, IEnumerable<IVersionStrategy> versionStrategies,
-        IEffectiveBranchConfigurationFinder effectiveBranchConfigurationFinder, IIncrementStrategyFinder incrementStrategyFinder)
+    private GitVersionContext Context => this.versionContext.Value;
+
+    public NextVersionCalculator(ILog log,
+                                 IMainlineVersionCalculator mainlineVersionCalculator,
+                                 IRepositoryStore repositoryStore,
+                                 Lazy<GitVersionContext> versionContext,
+                                 IEnumerable<IVersionStrategy> versionStrategies,
+                                 IEffectiveBranchConfigurationFinder effectiveBranchConfigurationFinder,
+                                 IIncrementStrategyFinder incrementStrategyFinder)
     {
         this.log = log.NotNull();
         this.mainlineVersionCalculator = mainlineVersionCalculator.NotNull();
@@ -37,14 +38,14 @@ public class NextVersionCalculator : INextVersionCalculator
 
     public virtual NextVersion FindVersion()
     {
-        this.log.Info($"Running against branch: {context.CurrentBranch} ({context.CurrentCommit?.ToString() ?? "-"})");
-        if (context.IsCurrentCommitTagged)
+        this.log.Info($"Running against branch: {Context.CurrentBranch} ({Context.CurrentCommit?.ToString() ?? "-"})");
+        if (Context.IsCurrentCommitTagged)
         {
-            this.log.Info($"Current commit is tagged with version {context.CurrentCommitTaggedVersion}, " + "version calculation is for metadata only.");
+            this.log.Info($"Current commit is tagged with version {Context.CurrentCommitTaggedVersion}, " + "version calculation is for metadata only.");
         }
         else
         {
-            EnsureHeadIsNotDetached(context);
+            EnsureHeadIsNotDetached(Context);
         }
 
 
@@ -54,22 +55,22 @@ public class NextVersionCalculator : INextVersionCalculator
 
         SemanticVersion? taggedSemanticVersion = null;
 
-        if (context.IsCurrentCommitTagged)
+        if (Context.IsCurrentCommitTagged)
         {
             // Will always be 0, don't bother with the +0 on tags
-            var semanticVersionBuildMetaData = this.mainlineVersionCalculator.CreateVersionBuildMetaData(context.CurrentCommit);
+            var semanticVersionBuildMetaData = this.mainlineVersionCalculator.CreateVersionBuildMetaData(Context.CurrentCommit);
             semanticVersionBuildMetaData.CommitsSinceTag = null;
 
-            var semanticVersion = new SemanticVersion(context.CurrentCommitTaggedVersion) { BuildMetaData = semanticVersionBuildMetaData };
+            var semanticVersion = new SemanticVersion(Context.CurrentCommitTaggedVersion) { BuildMetaData = semanticVersionBuildMetaData };
             taggedSemanticVersion = semanticVersion;
         }
 
         //
 
-        var nextVersion = Calculate(context.CurrentBranch, context.FullConfiguration);
+        var nextVersion = Calculate(Context.CurrentBranch, Context.FullConfiguration);
         nextVersion.BaseVersion.SemanticVersion.BuildMetaData = this.mainlineVersionCalculator.CreateVersionBuildMetaData(nextVersion.BaseVersion.BaseVersionSource);
         SemanticVersion semver;
-        if (context.FullConfiguration.VersioningMode == VersioningMode.Mainline)
+        if (Context.FullConfiguration.VersioningMode == VersioningMode.Mainline)
         {
             semver = this.mainlineVersionCalculator.FindMainlineModeVersion(nextVersion.BaseVersion);
         }
@@ -114,13 +115,13 @@ public class NextVersionCalculator : INextVersionCalculator
 
     private void UpdatePreReleaseTag(EffectiveBranchConfiguration configuration, SemanticVersion semanticVersion, string? branchNameOverride)
     {
-        var tagToUse = configuration.Value.GetBranchSpecificTag(this.log, context.CurrentBranch.Name.Friendly, branchNameOverride);
+        var tagToUse = configuration.Value.GetBranchSpecificTag(this.log, Context.CurrentBranch.Name.Friendly, branchNameOverride);
 
         long? number = null;
 
         // TODO: Please update the pre release-tag in the IVersionStrategy implementation.
         var lastTag = this.repositoryStore
-            .GetVersionTagsOnBranch(context.CurrentBranch, context.FullConfiguration.TagPrefix)
+            .GetVersionTagsOnBranch(Context.CurrentBranch, Context.FullConfiguration.TagPrefix)
             .FirstOrDefault(v => v.PreReleaseTag?.Name?.IsEquivalentTo(tagToUse) == true);
 
         if (lastTag != null && MajorMinorPatchEqual(lastTag, semanticVersion) && lastTag.PreReleaseTag?.HasTag() == true)
@@ -152,7 +153,7 @@ public class NextVersionCalculator : INextVersionCalculator
     {
         using (log.IndentLog("Calculating the base versions"))
         {
-            var nextVersions = GetPotentialNextVersions(branch, configuration).ToArray();
+            var nextVersions = GetNextVersions(branch, configuration).ToArray();
 
             FixTheBaseVersionSourceOfMergeMessageStrategyIfReleaseBranchWasMergedAndDeleted(nextVersions);
 
@@ -225,7 +226,7 @@ public class NextVersionCalculator : INextVersionCalculator
         }
     }
 
-    private IEnumerable<NextVersion> GetPotentialNextVersions(IBranch branch, Config configuration)
+    private IEnumerable<NextVersion> GetNextVersions(IBranch branch, Config configuration)
     {
         if (branch.Tip == null)
             throw new GitVersionException("No commits found on the current branch.");
@@ -242,7 +243,7 @@ public class NextVersionCalculator : INextVersionCalculator
                     if (IncludeVersion(baseVersion, configuration.Ignore))
                     {
                         var incrementStrategy = incrementStrategyFinder.DetermineIncrementedField(
-                            context: context,
+                            context: Context,
                             baseVersion: baseVersion,
                             configuration: effectiveBranchConfiguration.Value
                         );
@@ -316,7 +317,7 @@ public class NextVersionCalculator : INextVersionCalculator
 
     private bool ReleaseBranchExistsInRepo()
     {
-        var releaseBranchConfig = context.FullConfiguration.GetReleaseBranchConfig();
+        var releaseBranchConfig = Context.FullConfiguration.GetReleaseBranchConfig();
         var releaseBranches = this.repositoryStore.GetReleaseBranches(releaseBranchConfig);
         return releaseBranches.Any();
     }

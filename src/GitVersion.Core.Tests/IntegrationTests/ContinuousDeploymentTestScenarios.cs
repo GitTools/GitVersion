@@ -81,7 +81,7 @@ public class ContinuousDeploymentTestScenarios
     }
 
     [Test]
-    public void ShouldNotMatterWhenConfiguredNextVersionIsGreaterThanTheTaggedVersion()
+    public void ShouldUseTaggedVersionWhenGreaterThanConfiguredNextVersion()
     {
         // * ba74727 58 minutes ago  (HEAD -> main, tag: 1.1.0)
 
@@ -306,14 +306,14 @@ public class ContinuousDeploymentTestScenarios
         // cancel the release 1.0.0
         fixture.Repository.Branches.Remove("release/1.0.0");
 
-        // ❌ expected: "0.1.0-alpha.6"
+        // ❔ expected: "0.1.0-alpha.6"
         fixture.AssertFullSemver("1.1.0-alpha.4", configuration);
 
         fixture.Repository.DumpGraph();
     }
 
     [Test]
-    public void ShouldConsiderTheMergeCommitFromMainToDevelopWhenReleaseHasBeenShippedToProduction()
+    public void ShouldConsiderTheMergeCommitFromMainToDevelopWhenReleaseHasBeenMergedAndTaggedOnMain()
     {
         // *   5d13120 48 minutes ago  (HEAD -> develop)
         // |\  
@@ -377,7 +377,7 @@ public class ContinuousDeploymentTestScenarios
         fixture.Checkout("main");
         fixture.MergeNoFF("release/1.0.0");
 
-        // ❌ expected: "0.0.1-ci.5"
+        // ❔ expected: "0.0.1-ci.5"
         fixture.AssertFullSemver("1.0.0-ci.0", configuration);
 
         fixture.ApplyTag("1.0.0");
@@ -392,12 +392,12 @@ public class ContinuousDeploymentTestScenarios
 
         fixture.MergeNoFF("main");
 
-        // ❌ expected: "1.1.0-alpha.2"
+        // ❔ expected: "1.1.0-alpha.2"
         fixture.AssertFullSemver("1.1.0-alpha.6", configuration);
 
         fixture.Repository.Branches.Remove("release/1.0.0");
 
-        // ❌ expected: "1.1.0-alpha.2"
+        // ❔ expected: "1.1.0-alpha.2
         fixture.AssertFullSemver("1.1.0-alpha.6", configuration);
 
         fixture.Repository.DumpGraph();

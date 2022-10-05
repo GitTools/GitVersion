@@ -140,7 +140,7 @@ public class DevelopScenarios : TestBase
     }
 
     [Test]
-    public void InheritVersionFromReleaseBranch()
+    public void InheritVersionFromParentReleaseBranch()
     {
         using var fixture = new EmptyRepositoryFixture();
         fixture.MakeATaggedCommit("1.0.0");
@@ -161,7 +161,7 @@ public class DevelopScenarios : TestBase
     }
 
     [Test]
-    public void InheritVersionFromReleaseBranch2Insteadof3()
+    public void InheritVersionFromParentReleaseBranchWithVersion2InsteadOfVersion3()
     {
         using var fixture = new EmptyRepositoryFixture();
         fixture.MakeATaggedCommit("1.0.0");
@@ -356,9 +356,10 @@ public class DevelopScenarios : TestBase
     [Test]
     public void WhenPreventIncrementOfMergedBranchVersionIsSetToTrueForDevelopCommitsSinceVersionSourceShouldNotGoDownWhenMergingReleaseToDevelop()
     {
-        var configBuilder = TestConfigurationBuilder.New.WithVersioningMode(VersioningMode.ContinuousDeployment)
-            .WithPreventIncrementOfMergedBranchVersion("develop", true);
-        var config = configBuilder.Build();
+        var configuration = TestConfigurationBuilder.New
+            .WithVersioningMode(VersioningMode.ContinuousDeployment)
+            .WithPreventIncrementOfMergedBranchVersion("develop", true)
+            .Build();
 
         using var fixture = new EmptyRepositoryFixture();
         const string ReleaseBranch = "release/1.1.0";
@@ -382,15 +383,15 @@ public class DevelopScenarios : TestBase
 
         // Version numbers will still be correct when the release branch is around.
         fixture.AssertFullSemver("1.2.0-alpha.6");
-        fixture.AssertFullSemver("1.2.0-alpha.6", config);
+        fixture.AssertFullSemver("1.2.0-alpha.6", configuration);
 
-        var versionSourceBeforeReleaseBranchIsRemoved = fixture.GetVersion(config).Sha;
+        var versionSourceBeforeReleaseBranchIsRemoved = fixture.GetVersion(configuration).Sha;
 
         fixture.Repository.Branches.Remove(ReleaseBranch);
-        var versionSourceAfterReleaseBranchIsRemoved = fixture.GetVersion(config).Sha;
+        var versionSourceAfterReleaseBranchIsRemoved = fixture.GetVersion(configuration).Sha;
         Assert.AreEqual(versionSourceBeforeReleaseBranchIsRemoved, versionSourceAfterReleaseBranchIsRemoved);
         fixture.AssertFullSemver("1.2.0-alpha.6");
-        fixture.AssertFullSemver("1.2.0-alpha.3", config);
+        fixture.AssertFullSemver("1.2.0-alpha.3", configuration);
     }
 
     [Test]

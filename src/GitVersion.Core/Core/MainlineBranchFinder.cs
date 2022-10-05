@@ -15,11 +15,10 @@ internal class MainlineBranchFinder
     private readonly IRepositoryStore repositoryStore;
 
 
-    public MainlineBranchFinder(
-        IRepositoryStore repositoryStore,
-        IGitRepository repository,
-        Config configuration,
-        ILog log)
+    public MainlineBranchFinder(IRepositoryStore repositoryStore,
+                                IGitRepository repository,
+                                Config configuration,
+                                ILog log)
     {
         this.repositoryStore = repositoryStore.NotNull();
         this.repository = repository.NotNull();

@@ -255,37 +255,12 @@ public class EffectiveBranchConfigurationFinderTests
         actual.ShouldBeEmpty();
     }
 
-    //// until now the fallback configuration increment is always IncrementStrategy.Inherit
-    //[TestCase(IncrementStrategy.None)]
-    //[TestCase(IncrementStrategy.Patch)]
-    //[TestCase(IncrementStrategy.Minor)]
-    //[TestCase(IncrementStrategy.Major)]
-    //public void When_getting_configurations_of_an_unknown_branch_Given_fallback_configuaration_with_increment_and_unknown_configuration_with_increment_none_Then_result_should_have_increment_none(
-    //    IncrementStrategy fallbackIncrement)
-    //{
-    //    // Arrange
-    //    var branchMock = GitToolsTestingExtensions.CreateMockBranch("unknown", GitToolsTestingExtensions.CreateMockCommit());
-    //    var configuration = ConfigBuilder.New.WithIncrement(fallbackIncrement).Build();
-    //    var repositoryStoreMock = Substitute.For<IRepositoryStore>();
-    //    repositoryStoreMock.GetSourceBranches(branchMock, configuration, Arg.Any<HashSet<IBranch>>()).Returns(Enumerable.Empty<IBranch>());
-
-    //    var unitUnderTest = new EffectiveBranchConfigurationFinder(Substitute.For<ILog>(), repositoryStoreMock);
-
-    //    // Act
-    //    var actual = unitUnderTest.GetConfigurations(branchMock, configuration).ToArray();
-
-    //    // Assert
-    //    actual.ShouldHaveSingleItem();
-    //    actual[0].Branch.ShouldBe(branchMock);
-    //    actual[0].Value.Increment.ShouldBe(IncrementStrategy.None);
-    //}
-
     [TestCase(IncrementStrategy.None)]
     [TestCase(IncrementStrategy.Patch)]
     [TestCase(IncrementStrategy.Minor)]
     [TestCase(IncrementStrategy.Major)]
     public void When_getting_configurations_of_an_unknown_branch_Given_fallback_configuaration_with_increment_and_unknown_configuration_with_increment_inherit_Then_result_should_have_fallback_increment(
-        IncrementStrategy fallbackIncrement)
+    IncrementStrategy fallbackIncrement)
     {
         // Arrange
         var branchMock = GitToolsTestingExtensions.CreateMockBranch("unknown", GitToolsTestingExtensions.CreateMockCommit());

@@ -84,9 +84,9 @@ public class MainScenarios : TestBase
     {
         using var fixture = new EmptyRepositoryFixture();
         // Given
-        fixture.Repository.MakeACommit(); // one
-        fixture.Repository.MakeACommit(); // two
-        fixture.Repository.MakeACommit(); // three
+        fixture.Repository.MakeACommit("one");
+        fixture.Repository.MakeACommit("two");
+        fixture.Repository.MakeACommit("three");
 
         var commit = fixture.Repository.Head.Tip;
         fixture.Repository.MakeACommit();
@@ -231,14 +231,14 @@ public class MainScenarios : TestBase
         var config = new Config { TagPrefix = "" };
         using var fixture = new EmptyRepositoryFixture();
         var taggedVersion = "version-1.0.3";
-        fixture.Repository.MakeATaggedCommit(taggedVersion); // one
-        fixture.Repository.MakeCommits(5); // two, thre, four, five, six right?
+        fixture.Repository.MakeATaggedCommit(taggedVersion);
+        fixture.Repository.MakeCommits(5);
 
-        fixture.AssertFullSemver("0.0.1+6", config);    // 6 commits
+        fixture.AssertFullSemver("0.0.1+6", config);
 
         taggedVersion = "bad/1.0.3";
-        fixture.Repository.MakeATaggedCommit(taggedVersion); // seven
+        fixture.Repository.MakeATaggedCommit(taggedVersion);
 
-        fixture.AssertFullSemver("0.0.1+7", config);   // 7 commits
+        fixture.AssertFullSemver("0.0.1+7", config);
     }
 }
