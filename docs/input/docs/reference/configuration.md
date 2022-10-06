@@ -331,7 +331,6 @@ branches:
     mode: ContinuousDelivery
     tag: '{BranchName}'
     increment: Inherit
-    prevent-increment-of-merged-branch-version: false
     source-branches: [ 'develop', 'main', 'release', 'feature', 'support', 'hotfix' ]
     pre-release-weight: 30000	
   pull-request:
@@ -339,7 +338,6 @@ branches:
     mode: ContinuousDelivery
     tag: PullRequest
     increment: Inherit
-    prevent-increment-of-merged-branch-version: false
     tag-number-pattern: '[/-](?<number>\d+)[-/]'
     source-branches: [ 'develop', 'main', 'release', 'feature', 'support', 'hotfix' ]
     pre-release-weight: 30000
@@ -348,12 +346,7 @@ branches:
     mode: ContinuousDelivery
     tag: beta
     increment: Inherit
-    prevent-increment-of-merged-branch-version: false
-    track-merge-target: false
     source-branches: [ 'release', 'main', 'support', 'hotfix' ]
-    tracks-release-branches: false
-    is-release-branch: false
-    is-mainline: false
     pre-release-weight: 30000
   support:
     regex: ^support[/-]

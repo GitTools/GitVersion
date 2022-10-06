@@ -292,11 +292,6 @@ public class ConfigurationBuilder
                     Config.HotfixBranchKey
                 },
                 Tag = "beta",
-                PreventIncrementOfMergedBranchVersion = false,
-                TrackMergeTarget = false,
-                TracksReleaseBranches = false,
-                IsMainline = false,
-                IsReleaseBranch = false,
                 PreReleaseWeight = 30000
             });
 
