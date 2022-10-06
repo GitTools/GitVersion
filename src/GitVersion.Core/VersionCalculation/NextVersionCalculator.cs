@@ -97,6 +97,12 @@ public class NextVersionCalculator : INextVersionCalculator
             {
                 // set the commit count on the tagged ver
                 taggedSemanticVersion.BuildMetaData.CommitsSinceVersionSource = semver.BuildMetaData?.CommitsSinceVersionSource;
+
+                // set the updated prerelease tag when it doesn't match with prerelease tag defined in branch configuration
+                if (preReleaseTagDoesNotMatchConfiguration)
+                {
+                    taggedSemanticVersion.PreReleaseTag = semver.PreReleaseTag;
+                }
             }
         }
 
