@@ -551,12 +551,12 @@ public class DevelopScenarios : TestBase
         // ❔ expected: "0.0.1+4"
         // This behavior needs to be changed for the git flow workflow using the track-merge-message or track-merge-target options.
         // [Bug] track-merge-changes produces unexpected result when combining hotfix and support branches #3052
-        fixture.AssertFullSemver("1.0.0+4", configurationBuilder.Build());
+        fixture.AssertFullSemver("1.0.0+0", configurationBuilder.Build());
 
         configurationBuilder.WithNextVersion("1.0.0");
 
         // ✅ succeeds as expected
-        fixture.AssertFullSemver("1.0.0+4", configurationBuilder.Build());
+        fixture.AssertFullSemver("1.0.0+0", configurationBuilder.Build());
 
         // Mark this version as RTM
         fixture.ApplyTag("1.0.0");

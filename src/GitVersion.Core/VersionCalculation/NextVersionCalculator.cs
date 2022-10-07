@@ -48,19 +48,17 @@ public class NextVersionCalculator : INextVersionCalculator
             EnsureHeadIsNotDetached(Context);
         }
 
-
         // TODO: It is totally unimportant that the current commit has been tagged or not IMO. We can make a double check actually if the result
         // is the same or make it configurable but each run should be deterministic.Even if the development process goes on the tagged commit
-        // should always calculating the the same result. Otherwise something is wrong with the configuration or someone messed up the branching history.
+        // should always calculating the same result. Otherwise something is wrong with the configuration or someone messed up the branching history.
 
         SemanticVersion? taggedSemanticVersion = null;
 
         if (Context.IsCurrentCommitTagged)
         {
             // Will always be 0, don't bother with the +0 on tags
-            var semanticVersionBuildMetaData = this.mainlineVersionCalculator.CreateVersionBuildMetaData(Context.CurrentCommit);
+            var semanticVersionBuildMetaData = this.mainlineVersionCalculator.CreateVersionBuildMetaData(Context.CurrentCommit!);
             semanticVersionBuildMetaData.CommitsSinceTag = null;
-
             var semanticVersion = new SemanticVersion(Context.CurrentCommitTaggedVersion) { BuildMetaData = semanticVersionBuildMetaData };
             taggedSemanticVersion = semanticVersion;
         }
@@ -87,7 +85,7 @@ public class NextVersionCalculator : INextVersionCalculator
             }
         }
 
-        var hasPreReleaseTag = semver.PreReleaseTag?.HasTag() == true;
+        var hasPreReleaseTag = semver.HasPreReleaseTagWithLabel;
         var tag = nextVersion.Configuration.Tag;
         var branchConfigHasPreReleaseTagConfigured = !tag.IsNullOrEmpty();
         var preReleaseTagDoesNotMatchConfiguration = hasPreReleaseTag && branchConfigHasPreReleaseTagConfigured && semver.PreReleaseTag?.Name != tag;
@@ -124,9 +122,9 @@ public class NextVersionCalculator : INextVersionCalculator
             .GetVersionTagsOnBranch(Context.CurrentBranch, Context.FullConfiguration.TagPrefix)
             .FirstOrDefault(v => v.PreReleaseTag?.Name?.IsEquivalentTo(tagToUse) == true);
 
-        if (lastTag != null && MajorMinorPatchEqual(lastTag, semanticVersion) && lastTag.PreReleaseTag?.HasTag() == true)
+        if (lastTag != null && MajorMinorPatchEqual(lastTag, semanticVersion) && lastTag.HasPreReleaseTagWithLabel)
         {
-            number = lastTag.PreReleaseTag.Number + 1;
+            number = lastTag.PreReleaseTag!.Number + 1;
         }
 
         number ??= 1;
@@ -154,10 +152,8 @@ public class NextVersionCalculator : INextVersionCalculator
         using (log.IndentLog("Calculating the base versions"))
         {
             var nextVersions = GetNextVersions(branch, configuration).ToArray();
+            var maxVersion = nextVersions.Max();
 
-            FixTheBaseVersionSourceOfMergeMessageStrategyIfReleaseBranchWasMergedAndDeleted(nextVersions);
-
-            var maxVersion = nextVersions.Aggregate((v1, v2) => v1.IncrementedVersion > v2.IncrementedVersion ? v1 : v2);
             var matchingVersionsOnceIncremented = nextVersions
                 .Where(v => v.BaseVersion.BaseVersionSource != null && v.IncrementedVersion == maxVersion.IncrementedVersion)
                 .ToList();
@@ -191,11 +187,11 @@ public class NextVersionCalculator : INextVersionCalculator
             else
             {
                 IEnumerable<NextVersion> filteredVersions = nextVersions;
-                if (!maxVersion.IncrementedVersion.PreReleaseTag!.HasTag())
+                if (!maxVersion.IncrementedVersion.HasPreReleaseTagWithLabel)
                 {
                     // If the maximal version has no pre-release tag defined than we want to determine just the latest previous
                     // base source which are not coming from pre-release tag.
-                    filteredVersions = filteredVersions.Where(v => !v.BaseVersion.SemanticVersion.PreReleaseTag!.HasTag());
+                    filteredVersions = filteredVersions.Where(v => !v.BaseVersion.SemanticVersion.HasPreReleaseTagWithLabel);
                 }
 
                 var version = filteredVersions
@@ -286,39 +282,5 @@ public class NextVersionCalculator : INextVersionCalculator
             }
         }
         return true;
-    }
-
-    private void FixTheBaseVersionSourceOfMergeMessageStrategyIfReleaseBranchWasMergedAndDeleted(IEnumerable<NextVersion> nextVersions)
-    {
-        // TODO: Please us the mechanism per convention and configuration and make the decision in the IVersionStrategy implementation.
-        if (ReleaseBranchExistsInRepo()) return;
-
-        foreach (var nextVersion in nextVersions)
-        {
-            if (nextVersion.BaseVersion.Source.Contains(MergeMessageVersionStrategy.MergeMessageStrategyPrefix)
-                && nextVersion.BaseVersion.Source.Contains("Merge branch")
-                && nextVersion.BaseVersion.Source.Contains("release"))
-            {
-                if (nextVersion.BaseVersion.BaseVersionSource != null)
-                {
-                    var parents = nextVersion.BaseVersion.BaseVersionSource.Parents.ToList();
-
-                    // TODO: Please find the correct base version in the IVersionStrategy implementation.
-                    nextVersion.BaseVersion = new BaseVersion(
-                        nextVersion.BaseVersion.Source,
-                        nextVersion.BaseVersion.ShouldIncrement,
-                        nextVersion.BaseVersion.SemanticVersion,
-                        this.repositoryStore.FindMergeBase(parents[0], parents[1]),
-                        nextVersion.BaseVersion.BranchNameOverride);
-                }
-            }
-        }
-    }
-
-    private bool ReleaseBranchExistsInRepo()
-    {
-        var releaseBranchConfig = Context.FullConfiguration.GetReleaseBranchConfig();
-        var releaseBranches = this.repositoryStore.GetReleaseBranches(releaseBranchConfig);
-        return releaseBranches.Any();
     }
 }

@@ -1,5 +1,6 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Text.RegularExpressions;
+using GitVersion.Common;
 using GitVersion.Configuration;
 using GitVersion.Extensions;
 using GitVersion.Logging;
@@ -15,9 +16,13 @@ namespace GitVersion.VersionCalculation;
 public class MergeMessageVersionStrategy : VersionStrategyBase
 {
     private readonly ILog log;
+    private readonly IRepositoryStore repositoryStore;
 
-    public MergeMessageVersionStrategy(ILog log, Lazy<GitVersionContext> versionContext)
-        : base(versionContext) => this.log = log.NotNull();
+    public MergeMessageVersionStrategy(ILog log, Lazy<GitVersionContext> versionContext, IRepositoryStore repositoryStore) : base(versionContext)
+    {
+        this.log = log.NotNull();
+        this.repositoryStore = repositoryStore.NotNull();
+    }
 
     public override IEnumerable<BaseVersion> GetBaseVersions(EffectiveBranchConfiguration configuration)
     {
@@ -34,10 +39,28 @@ public class MergeMessageVersionStrategy : VersionStrategyBase
                 {
                     this.log.Info($"Found commit [{Context.CurrentCommit}] matching merge message format: {mergeMessage.FormatName}");
                     var shouldIncrement = !configuration.Value.PreventIncrementOfMergedBranchVersion;
-                    return new[]
+
+                    var message = c.Message.Trim();
+
+                    var baseVersionSource = c;
+
+                    if (shouldIncrement)
                     {
-                        new BaseVersion($"{MergeMessageStrategyPrefix} '{c.Message.Trim()}'", shouldIncrement, mergeMessage.Version, c, null)
-                    };
+                        var parents = c.Parents.ToArray();
+                        if (parents.Length == 2 && message.Contains("Merge branch") && message.Contains("release"))
+                        {
+                            baseVersionSource = this.repositoryStore.FindMergeBase(parents[0], parents[1]);
+                        }
+                    }
+
+                    var baseVersion = new BaseVersion(
+                        source: $"{MergeMessageStrategyPrefix} '{message}'",
+                        shouldIncrement: shouldIncrement,
+                        semanticVersion: mergeMessage.Version,
+                        baseVersionSource: baseVersionSource,
+                        branchNameOverride: null
+                    );
+                    return new[] { baseVersion };
                 }
                 return Enumerable.Empty<BaseVersion>();
             })

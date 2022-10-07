@@ -679,7 +679,7 @@ public class CreatingAFeatureBranchFromAReleaseBranchScenario
         fixture.Repository.Branches.Remove("release/1.0.0");
 
         // ❔ expected: "0.0.1+4" because until the commit is not tagged it's a hotfix
-        fixture.AssertFullSemver("1.0.0+4", configuration);
+        fixture.AssertFullSemver("1.0.0+0", configuration);
 
         fixture.ApplyTag("1.0.0");
 

@@ -843,6 +843,7 @@ GitVersion.SemanticVersion.BuildMetaData -> GitVersion.SemanticVersionBuildMetaD
 GitVersion.SemanticVersion.CompareTo(GitVersion.SemanticVersion! value) -> int
 GitVersion.SemanticVersion.CompareTo(GitVersion.SemanticVersion? value, bool includePrerelease) -> int
 GitVersion.SemanticVersion.Equals(GitVersion.SemanticVersion? obj) -> bool
+GitVersion.SemanticVersion.HasPreReleaseTagWithLabel.get -> bool
 GitVersion.SemanticVersion.IncrementVersion(GitVersion.VersionField incrementStrategy) -> GitVersion.SemanticVersion!
 GitVersion.SemanticVersion.IsEmpty() -> bool
 GitVersion.SemanticVersion.Major -> long
@@ -972,15 +973,16 @@ GitVersion.VersionCalculation.IVersionFilter.Exclude(GitVersion.VersionCalculati
 GitVersion.VersionCalculation.IVersionStrategy
 GitVersion.VersionCalculation.IVersionStrategy.GetBaseVersions(GitVersion.Model.Configuration.EffectiveBranchConfiguration! configuration) -> System.Collections.Generic.IEnumerable<GitVersion.VersionCalculation.BaseVersion!>!
 GitVersion.VersionCalculation.MergeMessageVersionStrategy
-GitVersion.VersionCalculation.MergeMessageVersionStrategy.MergeMessageVersionStrategy(GitVersion.Logging.ILog! log, System.Lazy<GitVersion.GitVersionContext!>! versionContext) -> void
+GitVersion.VersionCalculation.MergeMessageVersionStrategy.MergeMessageVersionStrategy(GitVersion.Logging.ILog! log, System.Lazy<GitVersion.GitVersionContext!>! versionContext, GitVersion.Common.IRepositoryStore! repositoryStore) -> void
 GitVersion.VersionCalculation.MinDateVersionFilter
 GitVersion.VersionCalculation.MinDateVersionFilter.Exclude(GitVersion.VersionCalculation.BaseVersion! version, out string? reason) -> bool
 GitVersion.VersionCalculation.MinDateVersionFilter.MinDateVersionFilter(System.DateTimeOffset minimum) -> void
 GitVersion.VersionCalculation.NextVersion
 GitVersion.VersionCalculation.NextVersion.BaseVersion.get -> GitVersion.VersionCalculation.BaseVersion!
-GitVersion.VersionCalculation.NextVersion.BaseVersion.set -> void
 GitVersion.VersionCalculation.NextVersion.Branch.get -> GitVersion.IBranch!
+GitVersion.VersionCalculation.NextVersion.CompareTo(GitVersion.VersionCalculation.NextVersion! other) -> int
 GitVersion.VersionCalculation.NextVersion.Configuration.get -> GitVersion.Model.Configuration.EffectiveConfiguration!
+GitVersion.VersionCalculation.NextVersion.Equals(GitVersion.VersionCalculation.NextVersion! other) -> bool
 GitVersion.VersionCalculation.NextVersion.IncrementedVersion.get -> GitVersion.SemanticVersion!
 GitVersion.VersionCalculation.NextVersion.NextVersion(GitVersion.SemanticVersion! incrementedVersion, GitVersion.VersionCalculation.BaseVersion! baseVersion, GitVersion.IBranch! branch, GitVersion.Model.Configuration.EffectiveConfiguration! configuration) -> void
 GitVersion.VersionCalculation.NextVersion.NextVersion(GitVersion.SemanticVersion! incrementedVersion, GitVersion.VersionCalculation.BaseVersion! baseVersion, GitVersion.Model.Configuration.EffectiveBranchConfiguration! configuration) -> void
@@ -1235,6 +1237,8 @@ override GitVersion.SemanticVersionPreReleaseTag.ToString() -> string!
 override GitVersion.VersionCalculation.BaseVersion.ToString() -> string!
 override GitVersion.VersionCalculation.ConfigNextVersionVersionStrategy.GetBaseVersions(GitVersion.Model.Configuration.EffectiveBranchConfiguration! configuration) -> System.Collections.Generic.IEnumerable<GitVersion.VersionCalculation.BaseVersion!>!
 override GitVersion.VersionCalculation.MergeMessageVersionStrategy.GetBaseVersions(GitVersion.Model.Configuration.EffectiveBranchConfiguration! configuration) -> System.Collections.Generic.IEnumerable<GitVersion.VersionCalculation.BaseVersion!>!
+override GitVersion.VersionCalculation.NextVersion.Equals(object! other) -> bool
+override GitVersion.VersionCalculation.NextVersion.GetHashCode() -> int
 override GitVersion.VersionCalculation.NextVersion.ToString() -> string!
 override GitVersion.VersionCalculation.TaggedCommitVersionStrategy.GetBaseVersions(GitVersion.Model.Configuration.EffectiveBranchConfiguration! configuration) -> System.Collections.Generic.IEnumerable<GitVersion.VersionCalculation.BaseVersion!>!
 override GitVersion.VersionCalculation.TaggedCommitVersionStrategy.VersionTaggedCommit.ToString() -> string!
@@ -1354,6 +1358,12 @@ static GitVersion.SemanticVersionPreReleaseTag.operator ==(GitVersion.SemanticVe
 static GitVersion.SemanticVersionPreReleaseTag.operator >(GitVersion.SemanticVersionPreReleaseTag? left, GitVersion.SemanticVersionPreReleaseTag? right) -> bool
 static GitVersion.SemanticVersionPreReleaseTag.operator >=(GitVersion.SemanticVersionPreReleaseTag? left, GitVersion.SemanticVersionPreReleaseTag? right) -> bool
 static GitVersion.SemanticVersionPreReleaseTag.Parse(string? preReleaseTag) -> GitVersion.SemanticVersionPreReleaseTag!
+static GitVersion.VersionCalculation.NextVersion.operator !=(GitVersion.VersionCalculation.NextVersion! left, GitVersion.VersionCalculation.NextVersion! right) -> bool
+static GitVersion.VersionCalculation.NextVersion.operator <(GitVersion.VersionCalculation.NextVersion! left, GitVersion.VersionCalculation.NextVersion! right) -> bool
+static GitVersion.VersionCalculation.NextVersion.operator <=(GitVersion.VersionCalculation.NextVersion! left, GitVersion.VersionCalculation.NextVersion! right) -> bool
+static GitVersion.VersionCalculation.NextVersion.operator ==(GitVersion.VersionCalculation.NextVersion! left, GitVersion.VersionCalculation.NextVersion! right) -> bool
+static GitVersion.VersionCalculation.NextVersion.operator >(GitVersion.VersionCalculation.NextVersion! left, GitVersion.VersionCalculation.NextVersion! right) -> bool
+static GitVersion.VersionCalculation.NextVersion.operator >=(GitVersion.VersionCalculation.NextVersion! left, GitVersion.VersionCalculation.NextVersion! right) -> bool
 static readonly GitVersion.BranchCommit.Empty -> GitVersion.BranchCommit
 static readonly GitVersion.Helpers.StringComparerUtils.IgnoreCaseComparer -> System.StringComparer!
 static readonly GitVersion.Helpers.StringComparerUtils.OsDependentComparer -> System.StringComparer!

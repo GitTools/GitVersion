@@ -196,6 +196,8 @@ public class ReleaseBranchScenarios : TestBase
         fixture.Repository.MergeNoFF("release-2.0.0", Generate.SignatureNow());
 
         fixture.AssertFullSemver("2.0.0+0");
+        fixture.Repository.Branches.Remove("release-2.0.0");
+        fixture.AssertFullSemver("2.0.0+0");
         fixture.Repository.ApplyTag("2.0.0");
         fixture.Repository.MakeCommits(1);
         fixture.AssertFullSemver("2.0.1+1");
