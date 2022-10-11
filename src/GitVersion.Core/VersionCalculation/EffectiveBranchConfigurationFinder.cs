@@ -36,8 +36,6 @@ public class EffectiveBranchConfigurationFinder : IEffectiveBranchConfigurationF
             branchConfiguration = childBranchConfiguration.Inherit(branchConfiguration);
         }
 
-        var fallbackBranchConfiguration = configuration.GetFallbackBranchConfiguration();
-
         var sourceBranches = Array.Empty<IBranch>();
         if (branchConfiguration.Increment == IncrementStrategy.Inherit)
         {
@@ -48,6 +46,7 @@ public class EffectiveBranchConfigurationFinder : IEffectiveBranchConfigurationF
             {
                 // Because the actual branch is marked with the inherit increment strategy we need to either skip the iteration or go further
                 // while inheriting from the fallback branch configuration. This behavior is configurable via the increment settings of the configuration.
+                var fallbackBranchConfiguration = configuration.GetFallbackBranchConfiguration();
                 var skipTraversingOfOrphanedBranches = fallbackBranchConfiguration.Increment == null
                     || fallbackBranchConfiguration.Increment == IncrementStrategy.Inherit;
                 this.log.Info(
@@ -70,6 +69,7 @@ public class EffectiveBranchConfigurationFinder : IEffectiveBranchConfigurationF
         }
         else
         {
+            var fallbackBranchConfiguration = configuration.GetFallbackBranchConfiguration();
             branchConfiguration = branchConfiguration.Inherit(fallbackBranchConfiguration);
             yield return new(branch, new EffectiveConfiguration(configuration, branchConfiguration));
         }

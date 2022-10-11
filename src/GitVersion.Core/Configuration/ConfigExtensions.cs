@@ -86,7 +86,7 @@ public static class ConfigExtensions
 
     public static string GetBranchSpecificTag(this EffectiveConfiguration configuration, ILog log, string? branchFriendlyName, string? branchNameOverride)
     {
-        var tagToUse = configuration.Tag ?? "{BranchName}";
+        var tagToUse = configuration.Tag;
         if (tagToUse == "useBranchName")
         {
             tagToUse = "{BranchName}";

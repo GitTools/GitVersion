@@ -10,11 +10,11 @@ public class ConfigurationBuilder
 
     private readonly List<Config> overrides = new();
 
-    public ConfigurationBuilder Add(Config config)
+    public ConfigurationBuilder Add(Config configuration)
     {
-        if (config == null) throw new ArgumentNullException(nameof(config));
+        if (configuration == null) throw new ArgumentNullException(nameof(configuration));
 
-        this.overrides.Add(config);
+        this.overrides.Add(configuration);
         return this;
     }
 
@@ -312,10 +312,10 @@ public class ConfigurationBuilder
 
         return config;
 
-        void AddBranchConfig(string name, BranchConfig overrides)
+        void AddBranchConfig(string name, BranchConfig branchConfiguration)
         {
-            var emptyBranchConfiguration = new BranchConfig() { Name = name };
-            config.Branches[name] = emptyBranchConfiguration.Apply(overrides);
+            branchConfiguration.Name = name;
+            config.Branches[name] = branchConfiguration;
         }
     }
 }

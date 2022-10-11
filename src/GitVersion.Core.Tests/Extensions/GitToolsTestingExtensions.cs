@@ -106,8 +106,7 @@ public static class GitToolsTestingExtensions
 
     public static void AssertFullSemver(this RepositoryFixtureBase fixture, string fullSemver, Config? configuration = null, IRepository? repository = null, string? commitId = null, bool onlyTrackedBranches = true, string? targetBranch = null)
     {
-        configuration ??= new Config();
-        configuration = new ConfigurationBuilder().Add(configuration).Build();
+        configuration ??= new ConfigurationBuilder().Build();
         Console.WriteLine("---------");
 
         try
