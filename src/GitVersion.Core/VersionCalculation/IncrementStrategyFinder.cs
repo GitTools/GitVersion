@@ -53,7 +53,7 @@ public class IncrementStrategyFinder : IIncrementStrategyFinder
             return defaultIncrement;
         }
 
-        return (VersionField)commitMessageIncrement;
+        return commitMessageIncrement ?? VersionField.None;
     }
 
     public VersionField? GetIncrementForCommits(Config configuration, IEnumerable<ICommit> commits)
@@ -97,7 +97,7 @@ public class IncrementStrategyFinder : IIncrementStrategyFinder
             commits = commits.Where(c => c.Parents.Count() > 1);
         }
 
-        return GetIncrementForCommits(context.FullConfiguration, commits);
+        return GetIncrementForCommits(context.Configuration, commits);
     }
 
     private static Regex TryGetRegexOrDefault(string? messageRegex, Regex defaultRegex) =>

@@ -23,7 +23,7 @@ public class TaggedCommitVersionStrategy : VersionStrategyBase
     {
         if (currentBranch is null)
             return Enumerable.Empty<BaseVersion>();
-        var versionTags = this.repositoryStore.GetValidVersionTags(Context.FullConfiguration.TagPrefix, olderThan);
+        var versionTags = this.repositoryStore.GetValidVersionTags(Context.Configuration.TagPrefix, olderThan);
         var versionTagsByCommit = versionTags.ToLookup(vt => vt.Item3.Id.Sha);
         var commitsOnBranch = currentBranch.Commits;
         if (commitsOnBranch == null)

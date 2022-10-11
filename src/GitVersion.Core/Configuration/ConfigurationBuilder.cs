@@ -10,11 +10,11 @@ public class ConfigurationBuilder
 
     private readonly List<Config> overrides = new();
 
-    public ConfigurationBuilder Add(Config config)
+    public ConfigurationBuilder Add(Config configuration)
     {
-        if (config == null) throw new ArgumentNullException(nameof(config));
+        if (configuration == null) throw new ArgumentNullException(nameof(configuration));
 
-        this.overrides.Add(config);
+        this.overrides.Add(configuration);
         return this;
     }
 
@@ -127,6 +127,7 @@ public class ConfigurationBuilder
         {
             if (name == Config.DevelopBranchKey)
             {
+                // Why this applies only on develop branch? I'm surprised that the value not coming from configuration.
                 branchConfig.VersioningMode = config.VersioningMode == VersioningMode.Mainline ? VersioningMode.Mainline : VersioningMode.ContinuousDeployment;
             }
             else
@@ -282,7 +283,7 @@ public class ConfigurationBuilder
         AddBranchConfig(Config.HotfixBranchKey,
             new BranchConfig
             {
-                Increment = IncrementStrategy.Patch,
+                Increment = IncrementStrategy.Inherit,
                 Regex = Config.HotfixBranchRegex,
                 SourceBranches = new HashSet<string> {
                     Config.ReleaseBranchKey,
@@ -291,11 +292,6 @@ public class ConfigurationBuilder
                     Config.HotfixBranchKey
                 },
                 Tag = "beta",
-                PreventIncrementOfMergedBranchVersion = false,
-                TrackMergeTarget = false,
-                TracksReleaseBranches = false,
-                IsMainline = false,
-                IsReleaseBranch = false,
                 PreReleaseWeight = 30000
             });
 
@@ -316,10 +312,10 @@ public class ConfigurationBuilder
 
         return config;
 
-        void AddBranchConfig(string name, BranchConfig overrides)
+        void AddBranchConfig(string name, BranchConfig branchConfiguration)
         {
-            var emptyBranchConfiguration = new BranchConfig() { Name = name };
-            config.Branches[name] = emptyBranchConfiguration.Apply(overrides);
+            branchConfiguration.Name = name;
+            config.Branches[name] = branchConfiguration;
         }
     }
 }

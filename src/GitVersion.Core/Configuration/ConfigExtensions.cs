@@ -54,10 +54,7 @@ public static class ConfigExtensions
         return result;
     }
 
-    internal static BranchConfig? ForBranch(this Config configuration, IBranch branch)
-        => ForBranch(configuration, branch.NotNull().Name.WithoutRemote);
-
-    internal static BranchConfig? ForBranch(this Config configuration, string branchName)
+    private static BranchConfig? ForBranch(Config configuration, string branchName)
     {
         var matches = configuration.Branches
             .Where(b => b.Value?.Regex != null && Regex.IsMatch(branchName, b.Value.Regex, RegexOptions.IgnoreCase))
@@ -89,7 +86,7 @@ public static class ConfigExtensions
 
     public static string GetBranchSpecificTag(this EffectiveConfiguration configuration, ILog log, string? branchFriendlyName, string? branchNameOverride)
     {
-        var tagToUse = configuration.Tag ?? "{BranchName}";
+        var tagToUse = configuration.Tag;
         if (tagToUse == "useBranchName")
         {
             tagToUse = "{BranchName}";

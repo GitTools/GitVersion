@@ -8,7 +8,7 @@ public sealed class TestConfigurationBuilder
 {
     public static TestConfigurationBuilder New => new();
 
-    private string? nextVerson;
+    private string? nextVersion;
     private VersioningMode? versioningMode;
     private readonly Dictionary<string, VersioningMode?> versioningModeDictionary = new();
     private bool withoutAnyTrackMergeTargets;
@@ -28,7 +28,7 @@ public sealed class TestConfigurationBuilder
 
     public TestConfigurationBuilder WithNextVersion(string? value)
     {
-        nextVerson = value;
+        nextVersion = value;
         return this;
     }
 
@@ -109,7 +109,7 @@ public sealed class TestConfigurationBuilder
     {
         Config configuration = new()
         {
-            NextVersion = nextVerson,
+            NextVersion = nextVersion,
             VersioningMode = versioningMode
         };
 

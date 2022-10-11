@@ -10,7 +10,7 @@ internal class MainlineBranchFinder
 {
     private readonly Config configuration;
     private readonly ILog log;
-    private readonly IEnumerable<KeyValuePair<string, BranchConfig>>? mainlineBranchConfigs;
+    private readonly List<BranchConfig> mainlineBranchConfigurations;
     private readonly IGitRepository repository;
     private readonly IRepositoryStore repositoryStore;
 
@@ -18,13 +18,12 @@ internal class MainlineBranchFinder
     public MainlineBranchFinder(IRepositoryStore repositoryStore,
                                 IGitRepository repository,
                                 Config configuration,
-                                IEnumerable<KeyValuePair<string, BranchConfig>>? mainlineBranchConfigs,
                                 ILog log)
     {
         this.repositoryStore = repositoryStore.NotNull();
         this.repository = repository.NotNull();
         this.configuration = configuration.NotNull();
-        this.mainlineBranchConfigs = mainlineBranchConfigs;
+        mainlineBranchConfigurations = configuration.Branches.Select(e => e.Value).Where(b => b?.IsMainline == true).ToList();
         this.log = log.NotNull();
     }
 
@@ -44,7 +43,7 @@ internal class MainlineBranchFinder
     private bool BranchIsMainline(INamedReference branch)
     {
         var matcher = new MainlineConfigBranchMatcher(branch, this.log);
-        return this.mainlineBranchConfigs?.Any(matcher.IsMainline) == true;
+        return this.mainlineBranchConfigurations.Any(matcher.IsMainline) == true;
     }
 
     private class MainlineConfigBranchMatcher
@@ -58,9 +57,8 @@ internal class MainlineBranchFinder
             this.log = log;
         }
 
-        public bool IsMainline(KeyValuePair<string, BranchConfig> mainlineBranchConfig)
+        public bool IsMainline(BranchConfig value)
         {
-            var (_, value) = mainlineBranchConfig;
             if (value?.Regex == null)
                 return false;
 

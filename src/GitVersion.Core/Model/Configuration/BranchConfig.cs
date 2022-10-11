@@ -43,6 +43,33 @@ public class BranchConfig
     [YamlMember(Alias = "increment")]
     public IncrementStrategy? Increment { get; set; }
 
+    public BranchConfig Inherit(BranchConfig? parentConfig)
+    {
+        if (parentConfig is null) return this;
+
+        var result = new BranchConfig(this);
+
+        if (result.Increment is null || result.Increment == IncrementStrategy.Inherit)
+        {
+            result.Increment = parentConfig.Increment;
+        }
+        result.VersioningMode ??= parentConfig.VersioningMode;
+        result.Tag ??= parentConfig.Tag;
+        result.PreventIncrementOfMergedBranchVersion ??= parentConfig.PreventIncrementOfMergedBranchVersion;
+        result.TagNumberPattern ??= parentConfig.TagNumberPattern;
+        result.TrackMergeTarget ??= parentConfig.TrackMergeTarget;
+        result.CommitMessageIncrementing ??= parentConfig.CommitMessageIncrementing;
+        result.Regex ??= parentConfig.Regex;
+        result.SourceBranches ??= parentConfig.SourceBranches;
+        result.IsSourceBranchFor ??= parentConfig.IsSourceBranchFor;
+        result.TracksReleaseBranches ??= parentConfig.TracksReleaseBranches;
+        result.IsReleaseBranch ??= parentConfig.IsReleaseBranch;
+        result.IsMainline ??= parentConfig.IsMainline;
+        result.PreReleaseWeight ??= parentConfig.PreReleaseWeight;
+
+        return result;
+    }
+
     [YamlMember(Alias = "prevent-increment-of-merged-branch-version")]
     public bool? PreventIncrementOfMergedBranchVersion { get; set; }
 
@@ -109,15 +136,4 @@ public class BranchConfig
         overrides.MergeTo(this);
         return this;
     }
-
-    public static BranchConfig CreateDefaultBranchConfig(string name) => new()
-    {
-        Name = name,
-        Tag = "useBranchName",
-        PreventIncrementOfMergedBranchVersion = false,
-        TrackMergeTarget = false,
-        TracksReleaseBranches = false,
-        IsReleaseBranch = false,
-        IsMainline = false
-    };
 }

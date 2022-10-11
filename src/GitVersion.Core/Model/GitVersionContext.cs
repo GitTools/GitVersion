@@ -11,7 +11,7 @@ public class GitVersionContext
     /// <summary>
     /// Contains the raw configuration, use Configuration for specific config based on the current GitVersion context.
     /// </summary>
-    public Config FullConfiguration { get; }
+    public Config Configuration { get; }
 
     public SemanticVersion? CurrentCommitTaggedVersion { get; }
 
@@ -28,14 +28,14 @@ public class GitVersionContext
     {
         CurrentBranch = currentBranch;
         CurrentCommit = currentCommit;
-        FullConfiguration = configuration;
+        Configuration = configuration;
         CurrentCommitTaggedVersion = currentCommitTaggedVersion;
         NumberOfUncommittedChanges = numberOfUncommittedChanges;
     }
 
     public EffectiveConfiguration GetEffectiveConfiguration(IBranch branch)
     {
-        BranchConfig branchConfiguration = FullConfiguration.GetBranchConfiguration(branch);
-        return new EffectiveConfiguration(FullConfiguration, branchConfiguration);
+        BranchConfig branchConfiguration = Configuration.GetBranchConfiguration(branch);
+        return new EffectiveConfiguration(Configuration, branchConfiguration);
     }
 }

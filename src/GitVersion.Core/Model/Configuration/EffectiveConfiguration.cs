@@ -41,7 +41,7 @@ public class EffectiveConfiguration
         AssemblyFileVersioningFormat = configuration.AssemblyFileVersioningFormat;
         VersioningMode = currentBranchConfig.VersioningMode.Value;
         TagPrefix = configuration.TagPrefix;
-        Tag = currentBranchConfig.Tag ?? @"{BranchName}";
+        Tag = currentBranchConfig.Tag ?? string.Empty;
         NextVersion = configuration.NextVersion;
         Increment = currentBranchConfig.Increment.Value;
         BranchPrefixToTrim = currentBranchConfig.Regex;
@@ -72,7 +72,7 @@ public class EffectiveConfiguration
         string? assemblyFileVersioningFormat,
         VersioningMode versioningMode,
         string? tagPrefix,
-        string? tag,
+        string tag,
         string? nextVersion,
         IncrementStrategy increment,
         string? branchPrefixToTrim,
@@ -144,7 +144,7 @@ public class EffectiveConfiguration
     /// <summary>
     ///     Tag to use when calculating SemVer
     /// </summary>
-    public string? Tag { get; }
+    public string Tag { get; }
 
     public string? NextVersion { get; }
 

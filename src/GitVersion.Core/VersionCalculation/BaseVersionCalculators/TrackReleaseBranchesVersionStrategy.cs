@@ -41,7 +41,7 @@ public class TrackReleaseBranchesVersionStrategy : VersionStrategyBase
 
     private IEnumerable<BaseVersion> MainTagsVersions()
     {
-        var configuration = Context.FullConfiguration;
+        var configuration = Context.Configuration;
         var mainBranch = this.repositoryStore.FindMainBranch(configuration);
 
         return mainBranch != null
@@ -51,7 +51,7 @@ public class TrackReleaseBranchesVersionStrategy : VersionStrategyBase
 
     private IEnumerable<BaseVersion> ReleaseBranchBaseVersions()
     {
-        var releaseBranchConfig = Context.FullConfiguration.GetReleaseBranchConfig();
+        var releaseBranchConfig = Context.Configuration.GetReleaseBranchConfig();
         if (!releaseBranchConfig.Any())
             return Array.Empty<BaseVersion>();
 
@@ -77,12 +77,6 @@ public class TrackReleaseBranchesVersionStrategy : VersionStrategyBase
     {
         // Find the commit where the child branch was created.
         var baseSource = this.repositoryStore.FindMergeBase(releaseBranch, Context.CurrentBranch);
-        if (Equals(baseSource, Context.CurrentCommit))
-        {
-            // Ignore the branch if it has no commits.
-            return Array.Empty<BaseVersion>();
-        }
-
         var configuration = Context.GetEffectiveConfiguration(releaseBranch);
         return this.releaseVersionStrategy
             .GetBaseVersions(new(releaseBranch, configuration))

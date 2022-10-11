@@ -150,7 +150,7 @@ public class GitVersionExecutorTests : TestBase
         var gitVersionCalculator = GetGitVersionCalculator(gitVersionOptions, this.log);
 
         var versionVariables = gitVersionCalculator.CalculateVersionVariables();
-        versionVariables.AssemblySemVer.ShouldBe("0.1.0.0");
+        versionVariables.AssemblySemVer.ShouldBe("0.0.1.0");
 
         this.fileSystem.WriteAllText(versionVariables.FileName, versionCacheFileContent);
         versionVariables = gitVersionCalculator.CalculateVersionVariables();
@@ -197,7 +197,7 @@ public class GitVersionExecutorTests : TestBase
         var gitVersionCalculator = GetGitVersionCalculator(gitVersionOptions, this.log);
 
         var versionVariables = gitVersionCalculator.CalculateVersionVariables();
-        versionVariables.AssemblySemVer.ShouldBe("0.1.0.0");
+        versionVariables.AssemblySemVer.ShouldBe("0.0.1.0");
 
         this.fileSystem.WriteAllText(versionVariables.FileName, versionCacheFileContent);
 
@@ -211,7 +211,7 @@ public class GitVersionExecutorTests : TestBase
         gitVersionCalculator = GetGitVersionCalculator(gitVersionOptions);
         versionVariables = gitVersionCalculator.CalculateVersionVariables();
 
-        versionVariables.AssemblySemVer.ShouldBe("0.1.0.0");
+        versionVariables.AssemblySemVer.ShouldBe("0.0.1.0");
 
         var cachedDirectoryTimestampAfter = this.fileSystem.GetLastDirectoryWrite(cacheDirectory);
         cachedDirectoryTimestampAfter.ShouldBe(cacheDirectoryTimestamp, "Cache was updated when override config was set");
@@ -279,7 +279,7 @@ public class GitVersionExecutorTests : TestBase
         var gitVersionCalculator = GetGitVersionCalculator(gitVersionOptions);
         var versionVariables = gitVersionCalculator.CalculateVersionVariables();
 
-        versionVariables.AssemblySemVer.ShouldBe("0.1.0.0");
+        versionVariables.AssemblySemVer.ShouldBe("0.0.1.0");
         versionVariables.FileName.ShouldNotBeNullOrEmpty();
 
         this.fileSystem.WriteAllText(versionVariables.FileName, versionCacheFileContent);
@@ -336,7 +336,7 @@ public class GitVersionExecutorTests : TestBase
 
         var versionVariables = gitVersionCalculator.CalculateVersionVariables();
 
-        versionVariables.AssemblySemVer.ShouldBe("0.1.0.0");
+        versionVariables.AssemblySemVer.ShouldBe("0.0.1.0");
         versionVariables.FileName.ShouldNotBeNullOrEmpty();
 
         this.fileSystem.WriteAllText(versionVariables.FileName, versionCacheFileContent);
@@ -345,7 +345,7 @@ public class GitVersionExecutorTests : TestBase
 
         gitVersionOptions.Settings.NoCache = true;
         versionVariables = gitVersionCalculator.CalculateVersionVariables();
-        versionVariables.AssemblySemVer.ShouldBe("0.1.0.0");
+        versionVariables.AssemblySemVer.ShouldBe("0.0.1.0");
     }
 
     [Test]

@@ -11,7 +11,6 @@ public interface IRepositoryStore
 
     ICommit? FindMergeBase(ICommit commit, ICommit mainlineTip);
     ICommit? GetCurrentCommit(IBranch currentBranch, string? commitId);
-    ICommit GetBaseVersionSource(ICommit currentBranchTip);
     IEnumerable<ICommit> GetMainlineCommitLog(ICommit? baseVersionSource, ICommit? mainlineTip);
     IEnumerable<ICommit> GetMergeBaseCommits(ICommit? mergeCommit, ICommit? mergedHead, ICommit? findMergeBase);
     IEnumerable<ICommit> GetCommitLog(ICommit? baseVersionSource, ICommit? currentCommit);
@@ -19,13 +18,11 @@ public interface IRepositoryStore
     IBranch GetTargetBranch(string? targetBranchName);
     IBranch? FindBranch(string? branchName);
     IBranch? FindMainBranch(Config configuration);
-    IBranch? GetChosenBranch(Config configuration);
-    IEnumerable<IBranch> GetBranchesForCommit(ICommit commit);
-    IEnumerable<IBranch> GetExcludedInheritBranches(Config configuration);
     IEnumerable<IBranch> GetReleaseBranches(IEnumerable<KeyValuePair<string, BranchConfig>> releaseBranchConfig);
     IEnumerable<IBranch> ExcludingBranches(IEnumerable<IBranch> branchesToExclude);
     IEnumerable<IBranch> GetBranchesContainingCommit(ICommit? commit, IEnumerable<IBranch>? branches = null, bool onlyTrackedBranches = false);
-    IDictionary<string, List<IBranch>> GetMainlineBranches(ICommit commit, Config configuration, IEnumerable<KeyValuePair<string, BranchConfig>>? mainlineBranchConfigs);
+
+    IDictionary<string, List<IBranch>> GetMainlineBranches(ICommit commit, Config configuration);
 
     /// <summary>
     /// Find the commit where the given branch was branched from another branch.
@@ -33,7 +30,16 @@ public interface IRepositoryStore
     /// </summary>
     BranchCommit FindCommitBranchWasBranchedFrom(IBranch? branch, Config configuration, params IBranch[] excludedBranches);
 
-    SemanticVersion GetCurrentCommitTaggedVersion(ICommit? commit, string? tagPrefix);
+    IEnumerable<BranchCommit> FindCommitBranchesWasBranchedFrom(IBranch branch, Config configuration, params IBranch[] excludedBranches);
+
+    IEnumerable<BranchCommit> FindCommitBranchesWasBranchedFrom(IBranch branch, Config configuration, IEnumerable<IBranch> excludedBranches);
+
+    IEnumerable<IBranch> GetSourceBranches(IBranch branch, Config configuration, params IBranch[] excludedBranches);
+
+    IEnumerable<IBranch> GetSourceBranches(IBranch branch, Config configuration, IEnumerable<IBranch> excludedBranches);
+
+    SemanticVersion? GetCurrentCommitTaggedVersion(ICommit? commit, string? tagPrefix);
+
     IEnumerable<SemanticVersion> GetVersionTagsOnBranch(IBranch branch, string? tagPrefixRegex);
     IEnumerable<(ITag Tag, SemanticVersion Semver, ICommit Commit)> GetValidVersionTags(string? tagPrefixRegex, DateTimeOffset? olderThan = null);
 

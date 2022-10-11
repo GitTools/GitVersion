@@ -39,8 +39,8 @@ public class MergeMessageBaseVersionStrategyTests : TestBase
         contextBuilder.ServicesProvider.ShouldNotBeNull();
         var strategy = contextBuilder.ServicesProvider.GetServiceForType<IVersionStrategy, MergeMessageVersionStrategy>();
         var context = contextBuilder.ServicesProvider.GetRequiredService<Lazy<GitVersionContext>>().Value;
-        var branchConfiguration = context.FullConfiguration.GetBranchConfiguration(mockBranch);
-        var effectiveConfiguration = new EffectiveConfiguration(context.FullConfiguration, branchConfiguration);
+        var branchConfiguration = context.Configuration.GetBranchConfiguration(mockBranch);
+        var effectiveConfiguration = new EffectiveConfiguration(context.Configuration, branchConfiguration);
         var baseVersion = strategy.GetBaseVersions(new(mockBranch, effectiveConfiguration)).Single();
 
         baseVersion.ShouldIncrement.ShouldBe(false);
@@ -123,11 +123,9 @@ public class MergeMessageBaseVersionStrategyTests : TestBase
     }
 
     [TestCase(@"Merge pull request #1 in FOO/bar from feature/ISSUE-1 to develop
-
 * commit '38560a7eed06e8d3f3f1aaf091befcdf8bf50fea':
   Updated jQuery to v2.1.3")]
     [TestCase(@"Merge pull request #45 in BRIKKS/brikks from feature/NOX-68 to develop
-
 * commit '38560a7eed06e8d3f3f1aaf091befcdf8bf50fea':
   Another commit message
   Commit message including a IP-number https://10.50.1.1
@@ -169,14 +167,13 @@ public class MergeMessageBaseVersionStrategyTests : TestBase
         mockRepository.Commits.Returns(mockBranch.Commits);
 
         var contextBuilder = new GitVersionContextBuilder()
-            .WithConfig(config ?? new Config())
-            .WithRepository(mockRepository);
+            .WithConfig(config ?? new Config()).WithRepository(mockRepository);
         contextBuilder.Build();
         contextBuilder.ServicesProvider.ShouldNotBeNull();
         var strategy = contextBuilder.ServicesProvider.GetServiceForType<IVersionStrategy, MergeMessageVersionStrategy>();
         var context = contextBuilder.ServicesProvider.GetRequiredService<Lazy<GitVersionContext>>().Value;
-        var branchConfiguration = context.FullConfiguration.GetBranchConfiguration(mockBranch);
-        var effectiveConfiguration = new EffectiveConfiguration(context.FullConfiguration, branchConfiguration);
+        var branchConfiguration = context.Configuration.GetBranchConfiguration(mockBranch);
+        var effectiveConfiguration = new EffectiveConfiguration(context.Configuration, branchConfiguration);
         var baseVersion = strategy.GetBaseVersions(new(mockBranch, effectiveConfiguration)).SingleOrDefault();
 
         if (expectedVersion == null)
@@ -192,7 +189,7 @@ public class MergeMessageBaseVersionStrategyTests : TestBase
 
     private static List<ICommit> GetParents(bool isMergeCommit) =>
         isMergeCommit
-            ? new List<ICommit> { new MockCommit(), new MockCommit(), }
+            ? new List<ICommit> { new MockCommit(), new MockCommit() }
             : new List<ICommit> { new MockCommit(), };
 
     private class MockCommit : ICommit

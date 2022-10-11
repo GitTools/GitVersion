@@ -329,39 +329,24 @@ branches:
   feature:
     regex: ^features?[/-]
     mode: ContinuousDelivery
-    tag: useBranchName
+    tag: '{BranchName}'
     increment: Inherit
-    prevent-increment-of-merged-branch-version: false
-    track-merge-target: false
     source-branches: [ 'develop', 'main', 'release', 'feature', 'support', 'hotfix' ]
-    tracks-release-branches: false
-    is-release-branch: false
-    is-mainline: false
-    pre-release-weight: 30000
+    pre-release-weight: 30000	
   pull-request:
     regex: ^(pull|pull\-requests|pr)[/-]
     mode: ContinuousDelivery
     tag: PullRequest
     increment: Inherit
-    prevent-increment-of-merged-branch-version: false
     tag-number-pattern: '[/-](?<number>\d+)[-/]'
-    track-merge-target: false
     source-branches: [ 'develop', 'main', 'release', 'feature', 'support', 'hotfix' ]
-    tracks-release-branches: false
-    is-release-branch: false
-    is-mainline: false
     pre-release-weight: 30000
   hotfix:
     regex: ^hotfix(es)?[/-]
     mode: ContinuousDelivery
     tag: beta
-    increment: Patch
-    prevent-increment-of-merged-branch-version: false
-    track-merge-target: false
-    source-branches: [ 'develop', 'main', 'support' ]
-    tracks-release-branches: false
-    is-release-branch: false
-    is-mainline: false
+    increment: Inherit
+    source-branches: [ 'release', 'main', 'support', 'hotfix' ]
     pre-release-weight: 30000
   support:
     regex: ^support[/-]

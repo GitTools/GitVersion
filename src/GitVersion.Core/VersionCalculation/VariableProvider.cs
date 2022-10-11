@@ -31,6 +31,8 @@ public class VariableProvider : IVariableProvider
                 semanticVersion.PreReleaseTag.Name = config.GetBranchSpecificTag(this.log, semanticVersion.BuildMetaData?.Branch, null);
                 if (semanticVersion.PreReleaseTag.Name.IsNullOrEmpty())
                 {
+                    // TODO: Why do we manipulating the semantic version here in the VariableProvider? The method name is GET not MANIPULATE.
+                    // What is about the separation of concern and single-responsibility principle?
                     semanticVersion.PreReleaseTag.Name = config.ContinuousDeploymentFallbackTag;
                 }
             }
@@ -46,6 +48,8 @@ public class VariableProvider : IVariableProvider
                 var numberGroup = match.Groups["number"];
                 if (numberGroup.Success && semanticVersion.PreReleaseTag != null)
                 {
+                    // TODO: Why do we manipulating the semantic version here in the VariableProvider? The method name is GET not MANIPULATE.
+                    // What is about the separation of concern and single-responsibility principle?
                     semanticVersion.PreReleaseTag.Name += numberGroup.Value;
                 }
             }
@@ -53,6 +57,8 @@ public class VariableProvider : IVariableProvider
 
         if (isContinuousDeploymentMode || appendTagNumberPattern || config.VersioningMode == VersioningMode.Mainline)
         {
+            // TODO: Why do we manipulating the semantic version here in the VariableProvider? The method name is GET not MANIPULATE.
+            // What is about the separation of concern and single-responsibility principle?
             PromoteNumberOfCommitsToTagNumber(semanticVersion);
         }
 

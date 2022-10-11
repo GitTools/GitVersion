@@ -33,7 +33,9 @@ public class SemanticVersionPreReleaseTag :
     }
 
     public string? Name { get; set; }
+
     public long? Number { get; set; }
+
     public bool? PromotedFromCommits { get; set; }
 
     public override bool Equals(object? obj) => Equals(obj as SemanticVersionPreReleaseTag);

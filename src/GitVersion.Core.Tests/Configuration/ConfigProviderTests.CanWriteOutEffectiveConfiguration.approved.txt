@@ -82,18 +82,13 @@ branches:
   hotfix:
     mode: ContinuousDelivery
     tag: beta
-    increment: Patch
-    prevent-increment-of-merged-branch-version: false
-    track-merge-target: false
+    increment: Inherit
     regex: ^hotfix(es)?[/-]
     source-branches:
     - release
     - main
     - support
     - hotfix
-    tracks-release-branches: false
-    is-release-branch: false
-    is-mainline: false
     pre-release-weight: 30000
   support:
     mode: ContinuousDelivery

@@ -68,7 +68,7 @@ public class RepositoryStoreTests : TestBase
 
         var developMergeBase = gitRepoMetadataProvider.FindMergeBase(develop, release);
 
-        fixtureRepository.DumpGraph(Console.WriteLine);
+        fixtureRepository.DumpGraph();
 
         releaseBranchMergeBase.ShouldBe(expectedReleaseMergeBase);
         developMergeBase.ShouldBe(expectedDevelopMergeBase);
@@ -124,7 +124,7 @@ public class RepositoryStoreTests : TestBase
 
         var developMergeBase = gitRepoMetadataProvider.FindMergeBase(develop, release);
 
-        fixtureRepository.DumpGraph(Console.WriteLine);
+        fixtureRepository.DumpGraph();
 
         releaseBranchMergeBase.ShouldBe(expectedReleaseMergeBase);
         developMergeBase.ShouldBe(expectedDevelopMergeBase);
@@ -199,7 +199,7 @@ public class RepositoryStoreTests : TestBase
 
         var developMergeBase = gitRepoMetadataProvider.FindMergeBase(develop, release);
 
-        fixtureRepository.DumpGraph(Console.WriteLine);
+        fixtureRepository.DumpGraph();
 
         releaseBranchMergeBase.ShouldBe(expectedReleaseMergeBase);
         developMergeBase.ShouldBe(expectedDevelopMergeBase);

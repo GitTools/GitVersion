@@ -47,12 +47,12 @@ public class ReleaseBranchScenarios : TestBase
 
         // Merge to develop
         fixture.Checkout("develop");
+        fixture.AssertFullSemver("1.1.0-alpha.0");
         fixture.Repository.MergeNoFF("release/1.0.0");
         fixture.AssertFullSemver("1.1.0-alpha.2");
-
         fixture.Repository.MakeACommit();
+        fixture.AssertFullSemver("1.1.0-alpha.3");
         fixture.Repository.Branches.Remove("release/1.0.0");
-
         fixture.AssertFullSemver("1.1.0-alpha.3");
     }
 
@@ -195,6 +195,8 @@ public class ReleaseBranchScenarios : TestBase
         fixture.Checkout(MainBranch);
         fixture.Repository.MergeNoFF("release-2.0.0", Generate.SignatureNow());
 
+        fixture.AssertFullSemver("2.0.0+0");
+        fixture.Repository.Branches.Remove("release-2.0.0");
         fixture.AssertFullSemver("2.0.0+0");
         fixture.Repository.ApplyTag("2.0.0");
         fixture.Repository.MakeCommits(1);

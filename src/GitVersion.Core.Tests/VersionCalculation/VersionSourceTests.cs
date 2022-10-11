@@ -1,5 +1,6 @@
 using GitTools.Testing;
 using GitVersion.Core.Tests.Helpers;
+using GitVersion.Core.Tests.IntegrationTests;
 using GitVersion.VersionCalculation;
 using LibGit2Sharp;
 using Microsoft.Extensions.DependencyInjection;
@@ -27,8 +28,8 @@ public class VersionSourceTests : TestBase
         var nextVersion = nextVersionCalculator.FindVersion();
 
         nextVersion.IncrementedVersion.BuildMetaData.ShouldNotBeNull();
-        nextVersion.IncrementedVersion.BuildMetaData.VersionSourceSha.ShouldBe(initialCommit.Sha);
-        nextVersion.IncrementedVersion.BuildMetaData.CommitsSinceVersionSource.ShouldBe(2);
+        nextVersion.IncrementedVersion.BuildMetaData.VersionSourceSha.ShouldBeNull();
+        nextVersion.IncrementedVersion.BuildMetaData.CommitsSinceVersionSource.ShouldBe(3);
     }
 
     [Test]
@@ -42,8 +43,8 @@ public class VersionSourceTests : TestBase
         var nextVersion = nextVersionCalculator.FindVersion();
 
         nextVersion.IncrementedVersion.BuildMetaData.ShouldNotBeNull();
-        nextVersion.IncrementedVersion.BuildMetaData.VersionSourceSha.ShouldBe(initialCommit.Sha);
-        nextVersion.IncrementedVersion.BuildMetaData.CommitsSinceVersionSource.ShouldBe(0);
+        nextVersion.IncrementedVersion.BuildMetaData.VersionSourceSha.ShouldBeNull();
+        nextVersion.IncrementedVersion.BuildMetaData.CommitsSinceVersionSource.ShouldBe(1);
     }
 
     [Test]

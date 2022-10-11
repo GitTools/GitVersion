@@ -335,6 +335,7 @@ public class MainlineDevelopmentMode : TestBase
     {
         using var fixture = new EmptyRepositoryFixture();
         fixture.MakeACommit();
+        fixture.AssertFullSemver("0.0.1", this.config);
         fixture.BranchTo("feature/branch2");
         fixture.BranchTo("feature/branch1");
         fixture.MakeACommit();
@@ -342,7 +343,7 @@ public class MainlineDevelopmentMode : TestBase
 
         fixture.Checkout(MainBranch);
         fixture.MergeNoFF("feature/branch1");
-        fixture.AssertFullSemver("0.1.1", this.config);
+        fixture.AssertFullSemver("0.0.2", this.config);
 
         fixture.Checkout("feature/branch2");
         fixture.MakeACommit();
@@ -350,7 +351,7 @@ public class MainlineDevelopmentMode : TestBase
         fixture.MakeACommit();
         fixture.MergeNoFF(MainBranch);
 
-        fixture.AssertFullSemver("0.1.2-branch2.4", this.config);
+        fixture.AssertFullSemver("0.0.3-branch2.4", this.config);
     }
 
     [Test]
@@ -488,24 +489,27 @@ public class MainlineDevelopmentMode : TestBase
 
         using var fixture = new EmptyRepositoryFixture();
         fixture.Repository.MakeACommit();
+        fixture.AssertFullSemver("0.0.1", currentConfig);
         Commands.Checkout(fixture.Repository, fixture.Repository.CreateBranch("master"));
         fixture.Repository.Branches.Remove(fixture.Repository.Branches["main"]);
+        fixture.AssertFullSemver("0.0.1", currentConfig);
         fixture.Repository.MakeCommits(2);
+        fixture.AssertFullSemver("0.0.3", currentConfig);
         Commands.Checkout(fixture.Repository, fixture.Repository.CreateBranch("issue-branch"));
         fixture.Repository.MakeACommit();
-        fixture.AssertFullSemver("0.1.3-issue-branch.1", currentConfig);
+        fixture.AssertFullSemver("0.0.4-issue-branch.1", currentConfig);
     }
 
     [Test]
     public void GivenARemoteGitRepositoryWithCommitsThenClonedLocalDevelopShouldMatchRemoteVersion()
     {
         using var fixture = new RemoteRepositoryFixture();
-        fixture.AssertFullSemver("0.1.4", config);
+        fixture.AssertFullSemver("0.0.5", config); // RemoteRepositoryFixture creates 5 commits.
         fixture.BranchTo("develop");
-        fixture.AssertFullSemver("0.2.0-alpha.0", config);
+        fixture.AssertFullSemver("0.1.0-alpha.0", config);
         Console.WriteLine(fixture.SequenceDiagram.GetDiagram());
         var local = fixture.CloneRepository();
-        fixture.AssertFullSemver("0.2.0-alpha.0", config, repository: local.Repository);
+        fixture.AssertFullSemver("0.1.0-alpha.0", config, repository: local.Repository);
         local.Repository.DumpGraph();
     }
 

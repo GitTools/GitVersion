@@ -47,7 +47,9 @@ Currently we have the following strategies:
     GitVersion.yaml file
 *   `MergeMessageBaseVersionStrategy` - Finds version numbers from merge messages
     (e.g., `Merge 'release/3.0.0' into 'main'` will return `3.0.0`)
-*   `FallbackBaseVersionStrategy` - Always returns 0.1.0 for new repositories
+*   `FallbackBaseVersionStrategy` - Always returns 0.0.0 and will be used for
+    calculating the next version which is dependent on the increment strategy of 
+	the effected branch (e.g. on main the next version is 0.0.1 or on develop it is 0.1.0)
 
 Each strategy needs to return an instance of `BaseVersion` which has the
 following properties:
