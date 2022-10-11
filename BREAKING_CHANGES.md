@@ -5,20 +5,13 @@
 *   The current branch (child) inherits its configuration from the source (parent) branch if the `increment` strategy is set to `Inherit`. This makes branch configuration recursive, simpler, more intuitive, more flexible, and more robust.
 *   Instead of having a single effective configuration, we now have one effective configuration per branch where the increment strategy is not set to `inherit`.
 *   The new implementation of the branch configuration inheritance affects per default only the pull-requests, hotfix and feature branches. In this case the next version will be generated like the child branch is not existing and the commits have been made on the source branch.
-    *   The following example illustrates this behavior:
-
-```
-* 8df9b9f 52 minutes ago  (HEAD -> feature/just-a-test)
-*   999e22a 54 minutes ago 
-|\  
-| * 26d759f 55 minutes ago  (develop)
-* | b5addb0 57 minutes ago  (release/1.1.0)
-|/  
-* 065c6eb 59 minutes ago 
-* 73835c8 61 minutes ago  (tag: 1.0.0, main)
-```
-
-    *   On the feature branch the semantic version 1.1.0 will be generated instead of version 1.2.0.
+    *   The following example illustrates this behavior. On the feature branch the semantic version 1.1.0-just-a-test.1+2 will be generated instead of version 1.0.0-just-a-test.1+3:
+	```
+    * 1f1cfb4 52 minutes ago  (HEAD -> feature/just-a-test)
+	* 1f9654d 54 minutes ago  (release/1.1.0)
+	* be72411 56 minutes ago  (develop)
+	* 14800ff 58 minutes ago  (tag: 1.0.0, main)
+	```
 
 ## v5.0.0
 
