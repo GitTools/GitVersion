@@ -1,9 +1,10 @@
 ## Unreleased
 
 *   When using a commit message that matches **both** `*-version-bump-message` and `no-bump-message`, there is no increment for that commit. In other words, `no-bump-message` now takes precedence over `*-version-bump-message`.
-*   The fallback version strategy returns always 0.0.0 and is flagged with should increment true. This gives you the version 0.1.0 on develop branch (IncrementStrategy.Minor) and 0.0.1 on main branch (IncremetnStrategy.Patch).
-*   We have not one effected branch configuration we have one or more effected branch configurations. In case of inheriting from parent branches this gives you the possiblity to solve stupid edge cases.
-*   The current branch (child) inherits from source branch (parent branch) if the increment strategy is set to inherit. This is highly recursive and can be configured via the configuration file.
+*   The fallback version strategy now returns `0.0.0` and is flagged with `ShouldIncrement` equal to `true`. This yields the version `0.1.0` on the `develop` branch (`IncrementStrategy.Minor` by default) and `0.0.1` on the `main` branch (`IncremetnStrategy.Patch` by default).
+*   The current branch (child) inherits its configuration from the source (parent) branch if the `increment` strategy is set to `Inherit`. This makes branch configuration recursive, simpler, more intuitive, more flexible, and more robust.
+*   Instead of having a single effective configuration, we now have one effective configuration per branch where the increment strategy is not set to `increment`. 
+*   The new implementation of the branch configuration inheritance affects per default only the pull-requests, hotfix and feature branches. In this case the next version will be generated like the child branch is not existing and the commits have been made on the source branch.
 
 ## v5.0.0
 
