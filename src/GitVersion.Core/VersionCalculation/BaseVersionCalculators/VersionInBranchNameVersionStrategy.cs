@@ -20,12 +20,12 @@ public class VersionInBranchNameVersionStrategy : VersionStrategyBase
     public override IEnumerable<BaseVersion> GetBaseVersions(EffectiveBranchConfiguration configuration)
     {
         string nameWithoutOrigin = NameWithoutOrigin(configuration.Branch);
-        if (Context.FullConfiguration.IsReleaseBranch(nameWithoutOrigin))
+        if (Context.Configuration.IsReleaseBranch(nameWithoutOrigin))
         {
-            var versionInBranch = GetVersionInBranch(configuration.Branch.Name.Friendly, Context.FullConfiguration.TagPrefix);
+            var versionInBranch = GetVersionInBranch(configuration.Branch.Name.Friendly, Context.Configuration.TagPrefix);
             if (versionInBranch != null)
             {
-                var commitBranchWasBranchedFrom = this.repositoryStore.FindCommitBranchWasBranchedFrom(configuration.Branch, Context.FullConfiguration);
+                var commitBranchWasBranchedFrom = this.repositoryStore.FindCommitBranchWasBranchedFrom(configuration.Branch, Context.Configuration);
                 var branchNameOverride = Context.CurrentBranch.Name.Friendly.RegexReplace("[-/]" + versionInBranch.Item1, string.Empty);
                 yield return new BaseVersion("Version in branch name", false, versionInBranch.Item2, commitBranchWasBranchedFrom.Commit, branchNameOverride);
             }

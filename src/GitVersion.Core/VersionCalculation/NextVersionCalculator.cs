@@ -65,10 +65,10 @@ public class NextVersionCalculator : INextVersionCalculator
 
         //
 
-        var nextVersion = Calculate(Context.CurrentBranch, Context.FullConfiguration);
+        var nextVersion = Calculate(Context.CurrentBranch, Context.Configuration);
         nextVersion.BaseVersion.SemanticVersion.BuildMetaData = this.mainlineVersionCalculator.CreateVersionBuildMetaData(nextVersion.BaseVersion.BaseVersionSource);
         SemanticVersion semver;
-        if (Context.FullConfiguration.VersioningMode == VersioningMode.Mainline)
+        if (Context.Configuration.VersioningMode == VersioningMode.Mainline)
         {
             semver = this.mainlineVersionCalculator.FindMainlineModeVersion(nextVersion.BaseVersion);
         }
@@ -119,7 +119,7 @@ public class NextVersionCalculator : INextVersionCalculator
 
         // TODO: Please update the pre release-tag in the IVersionStrategy implementation.
         var lastTag = this.repositoryStore
-            .GetVersionTagsOnBranch(Context.CurrentBranch, Context.FullConfiguration.TagPrefix)
+            .GetVersionTagsOnBranch(Context.CurrentBranch, Context.Configuration.TagPrefix)
             .FirstOrDefault(v => v.PreReleaseTag?.Name?.IsEquivalentTo(tagToUse) == true);
 
         if (lastTag != null && MajorMinorPatchEqual(lastTag, semanticVersion) && lastTag.HasPreReleaseTagWithLabel)

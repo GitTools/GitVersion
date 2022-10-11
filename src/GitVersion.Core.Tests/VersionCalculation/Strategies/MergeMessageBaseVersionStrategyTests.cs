@@ -39,8 +39,8 @@ public class MergeMessageBaseVersionStrategyTests : TestBase
         contextBuilder.ServicesProvider.ShouldNotBeNull();
         var strategy = contextBuilder.ServicesProvider.GetServiceForType<IVersionStrategy, MergeMessageVersionStrategy>();
         var context = contextBuilder.ServicesProvider.GetRequiredService<Lazy<GitVersionContext>>().Value;
-        var branchConfiguration = context.FullConfiguration.GetBranchConfiguration(mockBranch);
-        var effectiveConfiguration = new EffectiveConfiguration(context.FullConfiguration, branchConfiguration);
+        var branchConfiguration = context.Configuration.GetBranchConfiguration(mockBranch);
+        var effectiveConfiguration = new EffectiveConfiguration(context.Configuration, branchConfiguration);
         var baseVersion = strategy.GetBaseVersions(new(mockBranch, effectiveConfiguration)).Single();
 
         baseVersion.ShouldIncrement.ShouldBe(false);
@@ -172,8 +172,8 @@ public class MergeMessageBaseVersionStrategyTests : TestBase
         contextBuilder.ServicesProvider.ShouldNotBeNull();
         var strategy = contextBuilder.ServicesProvider.GetServiceForType<IVersionStrategy, MergeMessageVersionStrategy>();
         var context = contextBuilder.ServicesProvider.GetRequiredService<Lazy<GitVersionContext>>().Value;
-        var branchConfiguration = context.FullConfiguration.GetBranchConfiguration(mockBranch);
-        var effectiveConfiguration = new EffectiveConfiguration(context.FullConfiguration, branchConfiguration);
+        var branchConfiguration = context.Configuration.GetBranchConfiguration(mockBranch);
+        var effectiveConfiguration = new EffectiveConfiguration(context.Configuration, branchConfiguration);
         var baseVersion = strategy.GetBaseVersions(new(mockBranch, effectiveConfiguration)).SingleOrDefault();
 
         if (expectedVersion == null)

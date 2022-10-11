@@ -35,7 +35,7 @@ public class MergeMessageVersionStrategy : VersionStrategyBase
             {
                 if (TryParse(c, Context, out var mergeMessage) &&
                     mergeMessage.Version != null &&
-                    Context.FullConfiguration.IsReleaseBranch(TrimRemote(mergeMessage.MergedBranch)))
+                    Context.Configuration.IsReleaseBranch(TrimRemote(mergeMessage.MergedBranch)))
                 {
                     this.log.Info($"Found commit [{Context.CurrentCommit}] matching merge message format: {mergeMessage.FormatName}");
                     var shouldIncrement = !configuration.Value.PreventIncrementOfMergedBranchVersion;
@@ -84,7 +84,7 @@ public class MergeMessageVersionStrategy : VersionStrategyBase
             return null;
         }
 
-        var mergeMessage = new MergeMessage(mergeCommit.Message, context.FullConfiguration);
+        var mergeMessage = new MergeMessage(mergeCommit.Message, context.Configuration);
         return mergeMessage;
     }
 

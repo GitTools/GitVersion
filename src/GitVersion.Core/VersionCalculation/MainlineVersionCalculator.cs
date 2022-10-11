@@ -52,7 +52,7 @@ internal class MainlineVersionCalculator : IMainlineVersionCalculator
             var mainlineCommitLog = this.repositoryStore.GetMainlineCommitLog(baseVersion.BaseVersionSource, mainlineTip).ToList();
             var directCommits = new List<ICommit>(mainlineCommitLog.Count);
 
-            var nextVersion = context.FullConfiguration.NextVersion;
+            var nextVersion = context.Configuration.NextVersion;
             if (nextVersion.IsNullOrEmpty())
             {
                 // Scans commit log in reverse, aggregating merge commits
@@ -90,7 +90,7 @@ internal class MainlineVersionCalculator : IMainlineVersionCalculator
         {
             var commitLogs = this.repositoryStore.GetCommitLog(baseVersionSource, context.CurrentCommit);
 
-            var ignore = context.FullConfiguration.Ignore;
+            var ignore = context.Configuration.Ignore;
             if (!ignore.IsEmpty)
             {
                 var shasToIgnore = new HashSet<string>(ignore.ShAs);
@@ -135,7 +135,7 @@ internal class MainlineVersionCalculator : IMainlineVersionCalculator
 
     private IBranch GetMainline(ICommit? baseVersionSource)
     {
-        if (context.FullConfiguration.Branches.TryGetValue(context.CurrentBranch.Name.Friendly, out var branchConfig)
+        if (context.Configuration.Branches.TryGetValue(context.CurrentBranch.Name.Friendly, out var branchConfig)
             && branchConfig.IsMainline == true)
         {
             return context.CurrentBranch;
@@ -145,13 +145,13 @@ internal class MainlineVersionCalculator : IMainlineVersionCalculator
 
         if (context.CurrentCommit != null)
         {
-            mainlineBranches = this.repositoryStore.GetMainlineBranches(context.CurrentCommit, context.FullConfiguration);
+            mainlineBranches = this.repositoryStore.GetMainlineBranches(context.CurrentCommit, context.Configuration);
         }
         mainlineBranches ??= new Dictionary<string, List<IBranch>>();
 
         if (!mainlineBranches.Any())
         {
-            var mainlineBranchConfigsString = string.Join(", ", context.FullConfiguration.Branches.Where(b => b.Value?.IsMainline == true).Select(b => b.Value.Name));
+            var mainlineBranchConfigsString = string.Join(", ", context.Configuration.Branches.Where(b => b.Value?.IsMainline == true).Select(b => b.Value.Name));
             throw new WarningException($"No branches can be found matching the commit {context.CurrentCommit?.Sha} in the configured Mainline branches: {mainlineBranchConfigsString}");
         }
 
@@ -277,7 +277,7 @@ internal class MainlineVersionCalculator : IMainlineVersionCalculator
     {
         foreach (var directCommit in directCommits)
         {
-            var directCommitIncrement = this.incrementStrategyFinder.GetIncrementForCommits(context.FullConfiguration, new[] { directCommit })
+            var directCommitIncrement = this.incrementStrategyFinder.GetIncrementForCommits(context.Configuration, new[] { directCommit })
                 ?? FindDefaultIncrementForBranch(context, mainline.Name.Friendly);
             mainlineVersion = mainlineVersion.IncrementVersion(directCommitIncrement);
             this.log.Info($"Direct commit on main {directCommit} incremented base versions {directCommitIncrement}, now {mainlineVersion}");
@@ -290,7 +290,7 @@ internal class MainlineVersionCalculator : IMainlineVersionCalculator
     {
         var commits = this.repositoryStore.GetMergeBaseCommits(mergeCommit, mergedHead, findMergeBase);
         commitLog.RemoveAll(c => commits.Any(c1 => c1.Sha == c.Sha));
-        return this.incrementStrategyFinder.GetIncrementForCommits(context.FullConfiguration, commits)
+        return this.incrementStrategyFinder.GetIncrementForCommits(context.Configuration, commits)
             ?? TryFindIncrementFromMergeMessage(mergeCommit);
     }
 
@@ -298,11 +298,11 @@ internal class MainlineVersionCalculator : IMainlineVersionCalculator
     {
         if (mergeCommit != null)
         {
-            var mergeMessage = new MergeMessage(mergeCommit.Message, context.FullConfiguration);
-            var config = context.FullConfiguration.GetBranchConfiguration(mergeMessage.MergedBranch);
-            if (config.Increment != null && config.Increment != IncrementStrategy.Inherit)
+            var mergeMessage = new MergeMessage(mergeCommit.Message, context.Configuration);
+            var configuration = context.Configuration.GetBranchConfiguration(mergeMessage.MergedBranch);
+            if (configuration.Increment != null && configuration.Increment != IncrementStrategy.Inherit)
             {
-                return config.Increment.Value.ToVersionField();
+                return configuration.Increment.Value.ToVersionField();
             }
         }
 
@@ -312,10 +312,10 @@ internal class MainlineVersionCalculator : IMainlineVersionCalculator
 
     private static VersionField FindDefaultIncrementForBranch(GitVersionContext context, string? branchName = null)
     {
-        var config = context.FullConfiguration.GetBranchConfiguration(branchName ?? context.CurrentBranch.Name.WithoutRemote);
-        if (config.Increment != null && config.Increment != IncrementStrategy.Inherit)
+        var configuration = context.Configuration.GetBranchConfiguration(branchName ?? context.CurrentBranch.Name.WithoutRemote);
+        if (configuration.Increment != null && configuration.Increment != IncrementStrategy.Inherit)
         {
-            return config.Increment.Value.ToVersionField();
+            return configuration.Increment.Value.ToVersionField();
         }
 
         // TODO: Hardcoded fallback values are not so good. It might be better to get this information either from the fallback or the unknown

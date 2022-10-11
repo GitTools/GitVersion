@@ -16,10 +16,10 @@ public class ConfigNextVersionVersionStrategy : VersionStrategyBase
 
     public override IEnumerable<BaseVersion> GetBaseVersions(EffectiveBranchConfiguration configuration)
     {
-        var nextVersion = Context.FullConfiguration.NextVersion;
+        var nextVersion = Context.Configuration.NextVersion;
         if (!nextVersion.IsNullOrEmpty() && !Context.IsCurrentCommitTagged)
         {
-            var semanticVersion = SemanticVersion.Parse(nextVersion, Context.FullConfiguration.TagPrefix);
+            var semanticVersion = SemanticVersion.Parse(nextVersion, Context.Configuration.TagPrefix);
             yield return new BaseVersion("NextVersion in GitVersion configuration file", false, semanticVersion, null, null);
         }
     }

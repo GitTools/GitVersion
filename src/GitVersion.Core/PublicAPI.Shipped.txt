@@ -322,10 +322,10 @@ GitVersion.GitVersionCalculateTool
 GitVersion.GitVersionCalculateTool.CalculateVersionVariables() -> GitVersion.OutputVariables.VersionVariables!
 GitVersion.GitVersionCalculateTool.GitVersionCalculateTool(GitVersion.Logging.ILog! log, GitVersion.VersionCalculation.INextVersionCalculator! nextVersionCalculator, GitVersion.VersionCalculation.IVariableProvider! variableProvider, GitVersion.IGitPreparer! gitPreparer, GitVersion.VersionCalculation.Cache.IGitVersionCache! gitVersionCache, GitVersion.VersionCalculation.Cache.IGitVersionCacheKeyFactory! cacheKeyFactory, Microsoft.Extensions.Options.IOptions<GitVersion.GitVersionOptions!>! options, System.Lazy<GitVersion.GitVersionContext!>! versionContext) -> void
 GitVersion.GitVersionContext
+GitVersion.GitVersionContext.Configuration.get -> GitVersion.Model.Configuration.Config!
 GitVersion.GitVersionContext.CurrentBranch.get -> GitVersion.IBranch!
 GitVersion.GitVersionContext.CurrentCommit.get -> GitVersion.ICommit?
 GitVersion.GitVersionContext.CurrentCommitTaggedVersion.get -> GitVersion.SemanticVersion?
-GitVersion.GitVersionContext.FullConfiguration.get -> GitVersion.Model.Configuration.Config!
 GitVersion.GitVersionContext.GetEffectiveConfiguration(GitVersion.IBranch! branch) -> GitVersion.Model.Configuration.EffectiveConfiguration!
 GitVersion.GitVersionContext.GitVersionContext(GitVersion.IBranch! currentBranch, GitVersion.ICommit? currentCommit, GitVersion.Model.Configuration.Config! configuration, GitVersion.SemanticVersion? currentCommitTaggedVersion, int numberOfUncommittedChanges) -> void
 GitVersion.GitVersionContext.IsCurrentCommitTagged.get -> bool
