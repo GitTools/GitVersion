@@ -30,12 +30,12 @@ public class GitVersionCacheKeyFactory : IGitVersionCacheKeyFactory
         this.repositoryInfo = repositoryInfo.NotNull();
     }
 
-    public GitVersionCacheKey Create(GitVersionConfiguration? overrideConfig)
+    public GitVersionCacheKey Create(GitVersionConfiguration? overrideConfiguration)
     {
         var gitSystemHash = GetGitSystemHash();
         var configFileHash = GetConfigFileHash();
         var repositorySnapshotHash = GetRepositorySnapshotHash();
-        var overrideConfigHash = GetOverrideConfigHash(overrideConfig);
+        var overrideConfigHash = GetOverrideConfigHash(overrideConfiguration);
 
         var compositeHash = GetHash(gitSystemHash, configFileHash, repositorySnapshotHash, overrideConfigHash);
         return new GitVersionCacheKey(compositeHash);
@@ -152,9 +152,9 @@ public class GitVersionCacheKeyFactory : IGitVersionCacheKeyFactory
         return GetHash(hash);
     }
 
-    private static string GetOverrideConfigHash(GitVersionConfiguration? overrideConfig)
+    private static string GetOverrideConfigHash(GitVersionConfiguration? overrideConfiguration)
     {
-        if (overrideConfig == null)
+        if (overrideConfiguration == null)
         {
             return string.Empty;
         }
@@ -164,7 +164,7 @@ public class GitVersionCacheKeyFactory : IGitVersionCacheKeyFactory
         var stringBuilder = new StringBuilder();
         using (var stream = new StringWriter(stringBuilder))
         {
-            ConfigSerializer.Write(overrideConfig, stream);
+            ConfigSerializer.Write(overrideConfiguration, stream);
             stream.Flush();
         }
         var configContent = stringBuilder.ToString();

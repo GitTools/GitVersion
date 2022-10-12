@@ -22,9 +22,9 @@ public class ConfigurationBuilder
     {
         var configuration = CreateDefaultConfiguration();
 
-        foreach (var overrideConfig in this.overrides)
+        foreach (var overrideConfiguration in this.overrides)
         {
-            ApplyOverrides(configuration, overrideConfig);
+            ApplyOverrides(configuration, overrideConfiguration);
         }
 
         FinalizeConfiguration(configuration);
@@ -33,40 +33,40 @@ public class ConfigurationBuilder
         return configuration;
     }
 
-    private static void ApplyOverrides(GitVersionConfiguration targetConfig, GitVersionConfiguration overrideConfig)
+    private static void ApplyOverrides(GitVersionConfiguration targetConfig, GitVersionConfiguration overrideConfiguration)
     {
-        targetConfig.AssemblyVersioningScheme = overrideConfig.AssemblyVersioningScheme ?? targetConfig.AssemblyVersioningScheme;
-        targetConfig.AssemblyFileVersioningScheme = overrideConfig.AssemblyFileVersioningScheme ?? targetConfig.AssemblyFileVersioningScheme;
-        targetConfig.AssemblyInformationalFormat = overrideConfig.AssemblyInformationalFormat ?? targetConfig.AssemblyInformationalFormat;
-        targetConfig.AssemblyVersioningFormat = overrideConfig.AssemblyVersioningFormat ?? targetConfig.AssemblyVersioningFormat;
-        targetConfig.AssemblyFileVersioningFormat = overrideConfig.AssemblyFileVersioningFormat ?? targetConfig.AssemblyFileVersioningFormat;
-        targetConfig.VersioningMode = overrideConfig.VersioningMode ?? targetConfig.VersioningMode;
-        targetConfig.TagPrefix = overrideConfig.TagPrefix ?? targetConfig.TagPrefix;
-        targetConfig.ContinuousDeploymentFallbackTag = overrideConfig.ContinuousDeploymentFallbackTag ?? targetConfig.ContinuousDeploymentFallbackTag;
-        targetConfig.NextVersion = overrideConfig.NextVersion ?? targetConfig.NextVersion;
-        targetConfig.MajorVersionBumpMessage = overrideConfig.MajorVersionBumpMessage ?? targetConfig.MajorVersionBumpMessage;
-        targetConfig.MinorVersionBumpMessage = overrideConfig.MinorVersionBumpMessage ?? targetConfig.MinorVersionBumpMessage;
-        targetConfig.PatchVersionBumpMessage = overrideConfig.PatchVersionBumpMessage ?? targetConfig.PatchVersionBumpMessage;
-        targetConfig.NoBumpMessage = overrideConfig.NoBumpMessage ?? targetConfig.NoBumpMessage;
-        targetConfig.TagPreReleaseWeight = overrideConfig.TagPreReleaseWeight ?? targetConfig.TagPreReleaseWeight;
-        targetConfig.CommitMessageIncrementing = overrideConfig.CommitMessageIncrementing ?? targetConfig.CommitMessageIncrementing;
-        targetConfig.Increment = overrideConfig.Increment ?? targetConfig.Increment;
-        targetConfig.CommitDateFormat = overrideConfig.CommitDateFormat ?? targetConfig.CommitDateFormat;
-        targetConfig.MergeMessageFormats = overrideConfig.MergeMessageFormats.Any() ? overrideConfig.MergeMessageFormats : targetConfig.MergeMessageFormats;
-        targetConfig.UpdateBuildNumber = overrideConfig.UpdateBuildNumber ?? targetConfig.UpdateBuildNumber;
-        targetConfig.SemanticVersionFormat = overrideConfig.SemanticVersionFormat;
+        targetConfig.AssemblyVersioningScheme = overrideConfiguration.AssemblyVersioningScheme ?? targetConfig.AssemblyVersioningScheme;
+        targetConfig.AssemblyFileVersioningScheme = overrideConfiguration.AssemblyFileVersioningScheme ?? targetConfig.AssemblyFileVersioningScheme;
+        targetConfig.AssemblyInformationalFormat = overrideConfiguration.AssemblyInformationalFormat ?? targetConfig.AssemblyInformationalFormat;
+        targetConfig.AssemblyVersioningFormat = overrideConfiguration.AssemblyVersioningFormat ?? targetConfig.AssemblyVersioningFormat;
+        targetConfig.AssemblyFileVersioningFormat = overrideConfiguration.AssemblyFileVersioningFormat ?? targetConfig.AssemblyFileVersioningFormat;
+        targetConfig.VersioningMode = overrideConfiguration.VersioningMode ?? targetConfig.VersioningMode;
+        targetConfig.TagPrefix = overrideConfiguration.TagPrefix ?? targetConfig.TagPrefix;
+        targetConfig.ContinuousDeploymentFallbackTag = overrideConfiguration.ContinuousDeploymentFallbackTag ?? targetConfig.ContinuousDeploymentFallbackTag;
+        targetConfig.NextVersion = overrideConfiguration.NextVersion ?? targetConfig.NextVersion;
+        targetConfig.MajorVersionBumpMessage = overrideConfiguration.MajorVersionBumpMessage ?? targetConfig.MajorVersionBumpMessage;
+        targetConfig.MinorVersionBumpMessage = overrideConfiguration.MinorVersionBumpMessage ?? targetConfig.MinorVersionBumpMessage;
+        targetConfig.PatchVersionBumpMessage = overrideConfiguration.PatchVersionBumpMessage ?? targetConfig.PatchVersionBumpMessage;
+        targetConfig.NoBumpMessage = overrideConfiguration.NoBumpMessage ?? targetConfig.NoBumpMessage;
+        targetConfig.TagPreReleaseWeight = overrideConfiguration.TagPreReleaseWeight ?? targetConfig.TagPreReleaseWeight;
+        targetConfig.CommitMessageIncrementing = overrideConfiguration.CommitMessageIncrementing ?? targetConfig.CommitMessageIncrementing;
+        targetConfig.Increment = overrideConfiguration.Increment ?? targetConfig.Increment;
+        targetConfig.CommitDateFormat = overrideConfiguration.CommitDateFormat ?? targetConfig.CommitDateFormat;
+        targetConfig.MergeMessageFormats = overrideConfiguration.MergeMessageFormats.Any() ? overrideConfiguration.MergeMessageFormats : targetConfig.MergeMessageFormats;
+        targetConfig.UpdateBuildNumber = overrideConfiguration.UpdateBuildNumber ?? targetConfig.UpdateBuildNumber;
+        targetConfig.SemanticVersionFormat = overrideConfiguration.SemanticVersionFormat;
 
-        if (overrideConfig.Ignore is { IsEmpty: false })
+        if (overrideConfiguration.Ignore is { IsEmpty: false })
         {
-            targetConfig.Ignore = overrideConfig.Ignore;
+            targetConfig.Ignore = overrideConfiguration.Ignore;
         }
 
-        ApplyBranchOverrides(targetConfig, overrideConfig);
+        ApplyBranchOverrides(targetConfig, overrideConfiguration);
     }
 
-    private static void ApplyBranchOverrides(GitVersionConfiguration targetConfig, GitVersionConfiguration overrideConfig)
+    private static void ApplyBranchOverrides(GitVersionConfiguration targetConfig, GitVersionConfiguration overrideConfiguration)
     {
-        if (overrideConfig.Branches is { Count: > 0 })
+        if (overrideConfiguration.Branches is { Count: > 0 })
         {
             // We can't just add new configs to the targetConfig.Branches, and have to create a new dictionary.
             // The reason is that GitVersion 5.3.x (and earlier) merges default configs into overrides. The new approach is opposite: we merge overrides into default configuration.
@@ -80,7 +80,7 @@ public class ConfigurationBuilder
 
             var targetConfigBranches = targetConfig.Branches;
 
-            foreach (var (name, branchConfiguration) in overrideConfig.Branches)
+            foreach (var (name, branchConfiguration) in overrideConfiguration.Branches)
             {
                 // for compatibility reason we check if it's master, we rename it to main
                 var branchName = name == GitVersionConfiguration.MasterBranchKey ? GitVersionConfiguration.MainBranchKey : name;

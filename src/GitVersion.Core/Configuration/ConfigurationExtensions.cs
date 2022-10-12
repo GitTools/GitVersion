@@ -5,7 +5,7 @@ using GitVersion.Model.Configuration;
 
 namespace GitVersion.Configuration;
 
-public static class ConfigExtensions
+public static class ConfigurationExtensions
 {
     public static BranchConfiguration GetBranchConfiguration(this GitVersionConfiguration configuration, IBranch branch)
         => GetBranchConfiguration(configuration, branch.NotNull().Name.WithoutRemote);

@@ -26,23 +26,23 @@ public class ConfigurationProvider : IConfigurationProvider
         this.repositoryInfo = repositoryInfo.NotNull();
     }
 
-    public GitVersionConfiguration Provide(GitVersionConfiguration? overrideConfig = null)
+    public GitVersionConfiguration Provide(GitVersionConfiguration? overrideConfiguration = null)
     {
         var gitVersionOptions = this.options.Value;
         var workingDirectory = gitVersionOptions.WorkingDirectory;
         var projectRootDirectory = this.repositoryInfo.ProjectRootDirectory;
 
         var rootDirectory = this.configFileLocator.HasConfigFileAt(workingDirectory) ? workingDirectory : projectRootDirectory;
-        return Provide(rootDirectory, overrideConfig);
+        return Provide(rootDirectory, overrideConfiguration);
     }
 
-    public GitVersionConfiguration Provide(string? workingDirectory, GitVersionConfiguration? overrideConfig = null)
+    public GitVersionConfiguration Provide(string? workingDirectory, GitVersionConfiguration? overrideConfiguration = null)
     {
         var configurationBuilder = new ConfigurationBuilder();
         if (workingDirectory != null)
             configurationBuilder = configurationBuilder.Add(this.configFileLocator.ReadConfig(workingDirectory));
         return configurationBuilder
-            .Add(overrideConfig ?? new GitVersionConfiguration())
+            .Add(overrideConfiguration ?? new GitVersionConfiguration())
             .Build();
     }
 
