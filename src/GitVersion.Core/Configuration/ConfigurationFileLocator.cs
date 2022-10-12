@@ -46,7 +46,7 @@ public class ConfigurationFileLocator : IConfigurationFileLocator
         if (configFilePath != null && this.fileSystem.Exists(configFilePath))
         {
             var readAllText = this.fileSystem.ReadAllText(configFilePath);
-            var readConfig = ConfigSerializer.Read(new StringReader(readAllText));
+            var readConfig = ConfigurationSerializer.Read(new StringReader(readAllText));
 
             VerifyReadConfig(readConfig);
 

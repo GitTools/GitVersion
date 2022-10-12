@@ -93,7 +93,7 @@ public class GitVersionConfiguration
     {
         var stringBuilder = new StringBuilder();
         using var stream = new StringWriter(stringBuilder);
-        ConfigSerializer.Write(this, stream);
+        ConfigurationSerializer.Write(this, stream);
         stream.Flush();
         return stringBuilder.ToString();
     }

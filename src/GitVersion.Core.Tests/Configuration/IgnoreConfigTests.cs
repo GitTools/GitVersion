@@ -20,7 +20,7 @@ ignore:
 ";
 
         using var reader = new StringReader(yaml);
-        var configuration = ConfigSerializer.Read(reader);
+        var configuration = ConfigurationSerializer.Read(reader);
 
         configuration.Ignore.ShouldNotBeNull();
         configuration.Ignore.ShAs.ShouldNotBeEmpty();
@@ -39,7 +39,7 @@ ignore:
 ";
 
         using var reader = new StringReader(yaml);
-        var configuration = ConfigSerializer.Read(reader);
+        var configuration = ConfigurationSerializer.Read(reader);
 
         configuration.Ignore.ShouldNotBeNull();
         configuration.Ignore.ShAs.ShouldNotBeEmpty();
@@ -54,7 +54,7 @@ next-version: 1.0
 ";
 
         using var reader = new StringReader(yaml);
-        var configuration = ConfigSerializer.Read(reader);
+        var configuration = ConfigurationSerializer.Read(reader);
 
         configuration.Ignore.ShouldNotBeNull();
         configuration.Ignore.ShAs.ShouldBeEmpty();
@@ -70,7 +70,7 @@ ignore:
 ";
 
         using var reader = new StringReader(yaml);
-        Should.Throw<YamlException>(() => ConfigSerializer.Read(reader));
+        Should.Throw<YamlException>(() => ConfigurationSerializer.Read(reader));
     }
 
     [Test]

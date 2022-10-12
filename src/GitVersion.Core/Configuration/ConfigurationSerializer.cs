@@ -4,7 +4,7 @@ using YamlDotNet.Serialization.NamingConventions;
 
 namespace GitVersion.Configuration;
 
-public class ConfigSerializer
+public class ConfigurationSerializer
 {
     public static GitVersionConfiguration Read(TextReader reader)
     {

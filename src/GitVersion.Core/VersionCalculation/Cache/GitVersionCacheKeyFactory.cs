@@ -164,7 +164,7 @@ public class GitVersionCacheKeyFactory : IGitVersionCacheKeyFactory
         var stringBuilder = new StringBuilder();
         using (var stream = new StringWriter(stringBuilder))
         {
-            ConfigSerializer.Write(overrideConfiguration, stream);
+            ConfigurationSerializer.Write(overrideConfiguration, stream);
             stream.Flush();
         }
         var configContent = stringBuilder.ToString();

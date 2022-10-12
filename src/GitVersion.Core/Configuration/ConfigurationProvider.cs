@@ -57,7 +57,7 @@ public class ConfigurationProvider : IConfigurationProvider
         using var stream = this.fileSystem.OpenWrite(configFilePath);
         using var writer = new StreamWriter(stream);
         this.log.Info("Saving configuration file");
-        ConfigSerializer.Write(configuration, writer);
+        ConfigurationSerializer.Write(configuration, writer);
         stream.Flush();
     }
 }
