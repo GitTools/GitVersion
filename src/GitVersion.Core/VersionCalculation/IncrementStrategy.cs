@@ -1,3 +1,5 @@
+using GitVersion.Configuration;
+
 namespace GitVersion;
 
 public enum IncrementStrategy
@@ -7,7 +9,7 @@ public enum IncrementStrategy
     Minor,
     Patch,
     /// <summary>
-    /// Uses the <see cref="Model.Configuration.BranchConfiguration.Increment"/>, <see cref="Model.Configuration.BranchConfiguration.PreventIncrementOfMergedBranchVersion"/> and <see cref="Model.Configuration.BranchConfiguration.TracksReleaseBranches"/>
+    /// Uses the <see cref="BranchConfiguration.Increment"/>, <see cref="BranchConfiguration.PreventIncrementOfMergedBranchVersion"/> and <see cref="BranchConfiguration.TracksReleaseBranches"/>
     /// of the "parent" branch (i.e. the branch where the current branch was branched from).
     /// </summary>
     Inherit

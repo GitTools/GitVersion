@@ -1,6 +1,6 @@
+using GitVersion.Configuration;
 using GitVersion.Core.Tests.Helpers;
 using GitVersion.Helpers;
-using GitVersion.Model.Configuration;
 using GitVersion.OutputVariables;
 using NUnit.Framework;
 using Shouldly;

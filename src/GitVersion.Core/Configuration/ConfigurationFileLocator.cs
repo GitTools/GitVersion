@@ -1,6 +1,5 @@
 using GitVersion.Extensions;
 using GitVersion.Helpers;
-using GitVersion.Model.Configuration;
 using GitVersion.VersionCalculation;
 using Microsoft.Extensions.Options;
 

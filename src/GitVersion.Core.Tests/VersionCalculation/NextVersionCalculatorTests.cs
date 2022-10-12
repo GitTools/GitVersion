@@ -1,9 +1,9 @@
 using GitTools.Testing;
 using GitVersion.Common;
+using GitVersion.Configuration;
 using GitVersion.Core.Tests.Helpers;
 using GitVersion.Core.Tests.IntegrationTests;
 using GitVersion.Logging;
-using GitVersion.Model.Configuration;
 using GitVersion.VersionCalculation;
 using LibGit2Sharp;
 using Microsoft.Extensions.DependencyInjection;

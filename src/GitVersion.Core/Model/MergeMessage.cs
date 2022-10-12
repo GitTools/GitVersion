@@ -1,5 +1,5 @@
 using System.Text.RegularExpressions;
-using GitVersion.Model.Configuration;
+using GitVersion.Configuration;
 
 namespace GitVersion;
 

@@ -2,7 +2,6 @@ using GitVersion.Common;
 using GitVersion.Configuration;
 using GitVersion.Core.Tests.Helpers;
 using GitVersion.Logging;
-using GitVersion.Model.Configuration;
 using GitVersion.VersionCalculation;
 using NSubstitute;
 using NUnit.Framework;

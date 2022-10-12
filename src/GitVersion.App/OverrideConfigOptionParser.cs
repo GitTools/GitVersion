@@ -1,4 +1,4 @@
-using GitVersion.Model.Configuration;
+using GitVersion.Configuration;
 using YamlDotNet.Serialization;
 
 namespace GitVersion;

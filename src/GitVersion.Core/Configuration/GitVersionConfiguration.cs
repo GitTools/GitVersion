@@ -1,10 +1,9 @@
 using System.Globalization;
-using GitVersion.Configuration;
 using GitVersion.Extensions;
 using GitVersion.VersionCalculation;
 using YamlDotNet.Serialization;
 
-namespace GitVersion.Model.Configuration;
+namespace GitVersion.Configuration;
 
 public class GitVersionConfiguration
 {
@@ -43,9 +42,9 @@ public class GitVersionConfiguration
     [YamlMember(Alias = "next-version")]
     public string? NextVersion
     {
-        get => this.nextVersion;
+        get => nextVersion;
         set =>
-            this.nextVersion = int.TryParse(value, NumberStyles.Any, NumberFormatInfo.InvariantInfo, out var major)
+            nextVersion = int.TryParse(value, NumberStyles.Any, NumberFormatInfo.InvariantInfo, out var major)
                 ? $"{major}.0"
                 : value;
     }

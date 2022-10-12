@@ -1,7 +1,6 @@
 using GitVersion.Configuration.Init.Wizard;
 using GitVersion.Extensions;
 using GitVersion.Logging;
-using GitVersion.Model.Configuration;
 using Microsoft.Extensions.Options;
 
 namespace GitVersion.Configuration;

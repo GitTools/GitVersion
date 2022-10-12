@@ -1,7 +1,7 @@
 using GitVersion.Extensions;
 using GitVersion.VersionCalculation;
 
-namespace GitVersion.Model.Configuration;
+namespace GitVersion.Configuration;
 
 /// <summary>
 ///     Configuration can be applied to different things, effective configuration is the result after applying the

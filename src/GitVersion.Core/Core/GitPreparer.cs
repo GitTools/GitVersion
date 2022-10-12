@@ -1,8 +1,8 @@
 using GitVersion.BuildAgents;
+using GitVersion.Configuration;
 using GitVersion.Extensions;
 using GitVersion.Helpers;
 using GitVersion.Logging;
-using GitVersion.Model.Configuration;
 using Microsoft.Extensions.Options;
 
 namespace GitVersion;

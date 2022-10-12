@@ -3,7 +3,6 @@ using GitVersion.BuildAgents;
 using GitVersion.Configuration;
 using GitVersion.Core.Tests.Helpers;
 using GitVersion.Extensions;
-using GitVersion.Model.Configuration;
 using GitVersion.OutputVariables;
 using GitVersion.VersionCalculation;
 using LibGit2Sharp;

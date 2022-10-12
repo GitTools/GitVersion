@@ -1,5 +1,3 @@
-using GitVersion.Model.Configuration;
-
 namespace GitVersion.Configuration;
 
 public interface IConfigurationProvider

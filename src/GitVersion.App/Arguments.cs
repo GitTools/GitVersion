@@ -1,6 +1,6 @@
+using GitVersion.Configuration;
 using GitVersion.Logging;
 using GitVersion.Model;
-using GitVersion.Model.Configuration;
 
 namespace GitVersion;
 

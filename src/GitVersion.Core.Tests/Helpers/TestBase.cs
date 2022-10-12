@@ -1,6 +1,5 @@
 using GitVersion.Configuration;
 using GitVersion.Extensions;
-using GitVersion.Model.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 

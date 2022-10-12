@@ -1,5 +1,5 @@
+using GitVersion.Configuration;
 using GitVersion.Core.Tests.Helpers;
-using GitVersion.Model.Configuration;
 using NUnit.Framework;
 using Shouldly;
 

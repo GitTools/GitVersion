@@ -1,5 +1,5 @@
 using GitVersion.Cache;
-using GitVersion.Model.Configuration;
+using GitVersion.Configuration;
 
 namespace GitVersion.VersionCalculation.Cache;
 

@@ -1,8 +1,8 @@
 using System.Text.RegularExpressions;
 using GitVersion.Common;
+using GitVersion.Configuration;
 using GitVersion.Extensions;
 using GitVersion.Logging;
-using GitVersion.Model.Configuration;
 
 namespace GitVersion;
 

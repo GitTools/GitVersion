@@ -1,6 +1,6 @@
 using System.Globalization;
+using GitVersion.Configuration;
 using GitVersion.Extensions;
-using GitVersion.Model.Configuration;
 
 namespace GitVersion;
 
