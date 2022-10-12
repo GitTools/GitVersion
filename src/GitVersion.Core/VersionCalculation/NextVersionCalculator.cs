@@ -268,7 +268,7 @@ public class NextVersionCalculator : INextVersionCalculator
         }
     }
 
-    private bool IncludeVersion(BaseVersion baseVersion, IgnoreConfig ignoreConfiguration)
+    private bool IncludeVersion(BaseVersion baseVersion, IgnoreConfiguration ignoreConfiguration)
     {
         foreach (var versionFilter in ignoreConfiguration.ToFilters())
         {

@@ -13,7 +13,7 @@ public class GitVersionConfiguration
     public GitVersionConfiguration()
     {
         Branches = new Dictionary<string, BranchConfiguration>();
-        Ignore = new IgnoreConfig();
+        Ignore = new IgnoreConfiguration();
     }
 
     [YamlMember(Alias = "assembly-versioning-scheme")]
@@ -72,7 +72,7 @@ public class GitVersionConfiguration
     public Dictionary<string, BranchConfiguration> Branches { get; set; }
 
     [YamlMember(Alias = "ignore")]
-    public IgnoreConfig Ignore { get; set; }
+    public IgnoreConfiguration Ignore { get; set; }
 
     [YamlMember(Alias = "increment")]
     public IncrementStrategy? Increment { get; set; }

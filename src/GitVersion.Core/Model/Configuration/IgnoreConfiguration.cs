@@ -3,9 +3,9 @@ using YamlDotNet.Serialization;
 
 namespace GitVersion.Model.Configuration;
 
-public class IgnoreConfig
+public class IgnoreConfiguration
 {
-    public IgnoreConfig() => ShAs = Enumerable.Empty<string>();
+    public IgnoreConfiguration() => ShAs = Enumerable.Empty<string>();
 
     [YamlMember(Alias = "commits-before")]
     public DateTimeOffset? Before { get; set; }

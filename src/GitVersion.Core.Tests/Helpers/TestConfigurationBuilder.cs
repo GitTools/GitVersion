@@ -17,7 +17,7 @@ public sealed class TestConfigurationBuilder
     private IncrementStrategy? increment;
     private readonly Dictionary<string, IncrementStrategy> incrementDictionary = new();
     private readonly Dictionary<string, string?> tagDictionary = new();
-    private IgnoreConfig? ignoreConfig;
+    private IgnoreConfiguration? ignoreConfig;
 
     private TestConfigurationBuilder()
     {
@@ -99,7 +99,7 @@ public sealed class TestConfigurationBuilder
         return this;
     }
 
-    public TestConfigurationBuilder WithIgnoreConfig(IgnoreConfig value)
+    public TestConfigurationBuilder WithIgnoreConfig(IgnoreConfiguration value)
     {
         ignoreConfig = value;
         return this;

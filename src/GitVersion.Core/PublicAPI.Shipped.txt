@@ -665,7 +665,7 @@ GitVersion.Model.Configuration.GitVersionConfiguration.CommitMessageIncrementing
 GitVersion.Model.Configuration.GitVersionConfiguration.ContinuousDeploymentFallbackTag.get -> string?
 GitVersion.Model.Configuration.GitVersionConfiguration.ContinuousDeploymentFallbackTag.set -> void
 GitVersion.Model.Configuration.GitVersionConfiguration.GitVersionConfiguration() -> void
-GitVersion.Model.Configuration.GitVersionConfiguration.Ignore.get -> GitVersion.Model.Configuration.IgnoreConfig!
+GitVersion.Model.Configuration.GitVersionConfiguration.Ignore.get -> GitVersion.Model.Configuration.IgnoreConfiguration!
 GitVersion.Model.Configuration.GitVersionConfiguration.Ignore.set -> void
 GitVersion.Model.Configuration.GitVersionConfiguration.Increment.get -> GitVersion.IncrementStrategy?
 GitVersion.Model.Configuration.GitVersionConfiguration.Increment.set -> void
@@ -691,12 +691,12 @@ GitVersion.Model.Configuration.GitVersionConfiguration.UpdateBuildNumber.get -> 
 GitVersion.Model.Configuration.GitVersionConfiguration.UpdateBuildNumber.set -> void
 GitVersion.Model.Configuration.GitVersionConfiguration.VersioningMode.get -> GitVersion.VersionCalculation.VersioningMode?
 GitVersion.Model.Configuration.GitVersionConfiguration.VersioningMode.set -> void
-GitVersion.Model.Configuration.IgnoreConfig
-GitVersion.Model.Configuration.IgnoreConfig.Before.get -> System.DateTimeOffset?
-GitVersion.Model.Configuration.IgnoreConfig.Before.set -> void
-GitVersion.Model.Configuration.IgnoreConfig.IgnoreConfig() -> void
-GitVersion.Model.Configuration.IgnoreConfig.ShAs.get -> System.Collections.Generic.IEnumerable<string!>!
-GitVersion.Model.Configuration.IgnoreConfig.ShAs.set -> void
+GitVersion.Model.Configuration.IgnoreConfiguration
+GitVersion.Model.Configuration.IgnoreConfiguration.Before.get -> System.DateTimeOffset?
+GitVersion.Model.Configuration.IgnoreConfiguration.Before.set -> void
+GitVersion.Model.Configuration.IgnoreConfiguration.IgnoreConfiguration() -> void
+GitVersion.Model.Configuration.IgnoreConfiguration.ShAs.get -> System.Collections.Generic.IEnumerable<string!>!
+GitVersion.Model.Configuration.IgnoreConfiguration.ShAs.set -> void
 GitVersion.Model.Exceptions.InfiniteLoopProtectionException
 GitVersion.Model.Exceptions.InfiniteLoopProtectionException.InfiniteLoopProtectionException(string! messageFormat) -> void
 GitVersion.Model.OutputType
@@ -1377,8 +1377,8 @@ virtual GitVersion.BuildAgents.BuildAgentBase.GetCurrentBranch(bool usingDynamic
 virtual GitVersion.BuildAgents.BuildAgentBase.PreventFetch() -> bool
 virtual GitVersion.BuildAgents.BuildAgentBase.ShouldCleanUpRemotes() -> bool
 virtual GitVersion.BuildAgents.BuildAgentBase.WriteIntegration(System.Action<string?>! writer, GitVersion.OutputVariables.VersionVariables! variables, bool updateBuildNumber = true) -> void
-virtual GitVersion.Model.Configuration.IgnoreConfig.IsEmpty.get -> bool
-virtual GitVersion.Model.Configuration.IgnoreConfig.ToFilters() -> System.Collections.Generic.IEnumerable<GitVersion.VersionCalculation.IVersionFilter!>!
+virtual GitVersion.Model.Configuration.IgnoreConfiguration.IsEmpty.get -> bool
+virtual GitVersion.Model.Configuration.IgnoreConfiguration.ToFilters() -> System.Collections.Generic.IEnumerable<GitVersion.VersionCalculation.IVersionFilter!>!
 virtual GitVersion.VersionCalculation.EffectiveBranchConfigurationFinder.GetConfigurations(GitVersion.IBranch! branch, GitVersion.Model.Configuration.GitVersionConfiguration! configuration) -> System.Collections.Generic.IEnumerable<GitVersion.Model.Configuration.EffectiveBranchConfiguration!>!
 virtual GitVersion.VersionCalculation.FallbackVersionStrategy.GetBaseVersions(GitVersion.Model.Configuration.EffectiveBranchConfiguration! configuration) -> System.Collections.Generic.IEnumerable<GitVersion.VersionCalculation.BaseVersion!>!
 virtual GitVersion.VersionCalculation.NextVersionCalculator.FindVersion() -> GitVersion.VersionCalculation.NextVersion!

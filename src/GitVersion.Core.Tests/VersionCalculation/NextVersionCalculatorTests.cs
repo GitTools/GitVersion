@@ -162,7 +162,7 @@ public class NextVersionCalculatorTests : TestBase
             {
                 { "feature", new BranchConfiguration { Increment = IncrementStrategy.Minor } }
             },
-            Ignore = new IgnoreConfig { ShAs = new List<string>() },
+            Ignore = new IgnoreConfiguration { ShAs = new List<string>() },
             MergeMessageFormats = new Dictionary<string, string>()
         };
 
@@ -191,7 +191,7 @@ public class NextVersionCalculatorTests : TestBase
             {
                 { "feature", new BranchConfiguration { Increment = IncrementStrategy.Minor } }
             },
-            Ignore = new IgnoreConfig { ShAs = new List<string>() },
+            Ignore = new IgnoreConfiguration { ShAs = new List<string>() },
             MergeMessageFormats = new Dictionary<string, string>()
         };
 
@@ -490,7 +490,7 @@ public class NextVersionCalculatorTests : TestBase
         nextVersion.BaseVersion.SemanticVersion.ShouldBe(lowerVersion.SemanticVersion);
     }
 
-    private class TestIgnoreConfig : IgnoreConfig
+    private class TestIgnoreConfig : IgnoreConfiguration
     {
         private readonly IVersionFilter filter;
 
