@@ -2,22 +2,21 @@ using System.Text.RegularExpressions;
 using GitVersion.Common;
 using GitVersion.Extensions;
 using GitVersion.Logging;
-using GitVersion.Model.Configuration;
+using GitVersion.Model.Configurations;
 
 namespace GitVersion;
 
 internal class MainlineBranchFinder
 {
-    private readonly Config configuration;
+    private readonly Configuration configuration;
     private readonly ILog log;
     private readonly List<BranchConfig> mainlineBranchConfigurations;
     private readonly IGitRepository repository;
     private readonly IRepositoryStore repositoryStore;
 
-
     public MainlineBranchFinder(IRepositoryStore repositoryStore,
                                 IGitRepository repository,
-                                Config configuration,
+                                Model.Configurations.Configuration configuration,
                                 ILog log)
     {
         this.repositoryStore = repositoryStore.NotNull();
@@ -74,11 +73,11 @@ internal class MainlineBranchFinder
     private class BranchOriginFinder
     {
         private readonly ICommit commit;
-        private readonly Config configuration;
+        private readonly Model.Configurations.Configuration configuration;
         private readonly ILog log;
         private readonly IRepositoryStore repositoryStore;
 
-        public BranchOriginFinder(ICommit commit, IRepositoryStore repositoryStore, Config configuration, ILog log)
+        public BranchOriginFinder(ICommit commit, IRepositoryStore repositoryStore, Model.Configurations.Configuration configuration, ILog log)
         {
             this.repositoryStore = repositoryStore;
             this.commit = commit;

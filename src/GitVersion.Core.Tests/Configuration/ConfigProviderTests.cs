@@ -1,10 +1,9 @@
 using System.Runtime.CompilerServices;
-using GitVersion.Configuration;
+using GitVersion.Configurations;
 using GitVersion.Core.Tests.Helpers;
 using GitVersion.Extensions;
 using GitVersion.Helpers;
 using GitVersion.Logging;
-using GitVersion.Model.Configuration;
 using GitVersion.VersionCalculation;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
@@ -125,8 +124,8 @@ branches:
     }
 
     [Test(Description = "Well-known branches may not be present in the configuration file. This test confirms the validation check succeeds when the source-branches configuration contain these well-known branches.")]
-    [TestCase(Config.MainBranchKey)]
-    [TestCase(Config.DevelopBranchKey)]
+    [TestCase(Model.Configurations.Configuration.MainBranchKey)]
+    [TestCase(Model.Configurations.Configuration.DevelopBranchKey)]
     public void SourceBranchesValidationShouldSucceedForWellKnownBranches(string wellKnownBranchKey)
     {
         var text = $@"
@@ -297,14 +296,14 @@ branches: {}";
         config.AssemblyInformationalFormat.ShouldBe(null);
         config.Branches["develop"].Tag.ShouldBe("alpha");
         config.Branches["release"].Tag.ShouldBe("beta");
-        config.TagPrefix.ShouldBe(Config.DefaultTagPrefix);
+        config.TagPrefix.ShouldBe(Model.Configurations.Configuration.DefaultTagPrefix);
         config.NextVersion.ShouldBe(null);
     }
 
     [Test]
     public void VerifyAliases()
     {
-        var config = typeof(Config);
+        var config = typeof(Model.Configurations.Configuration);
         var propertiesMissingAlias = config.GetProperties()
             .Where(p => p.GetCustomAttribute<ObsoleteAttribute>() == null)
             .Where(p => p.GetCustomAttribute(typeof(YamlMemberAttribute)) == null)
@@ -417,7 +416,7 @@ tag-prefix: custom-tag-prefix-from-yml";
         SetupConfigFileContent(text);
 
         var expectedConfig = this.configProvider.Provide(this.repoPath);
-        var overridenConfig = this.configProvider.Provide(this.repoPath, new Config());
+        var overridenConfig = this.configProvider.Provide(this.repoPath, new Model.Configurations.Configuration());
 
         overridenConfig.AssemblyVersioningScheme.ShouldBe(expectedConfig.AssemblyVersioningScheme);
         overridenConfig.AssemblyFileVersioningScheme.ShouldBe(expectedConfig.AssemblyFileVersioningScheme);
@@ -474,7 +473,7 @@ tag-prefix: custom-tag-prefix-from-yml";
     {
         var text = tagPrefixSetAtYmlFile ? "tag-prefix: custom-tag-prefix-from-yml" : "";
         SetupConfigFileContent(text);
-        var config = this.configProvider.Provide(this.repoPath, new Config { TagPrefix = "tag-prefix-from-override-config" });
+        var config = this.configProvider.Provide(this.repoPath, new Model.Configurations.Configuration { TagPrefix = "tag-prefix-from-override-config" });
 
         config.TagPrefix.ShouldBe("tag-prefix-from-override-config");
     }
@@ -484,7 +483,7 @@ tag-prefix: custom-tag-prefix-from-yml";
     {
         const string text = "";
         SetupConfigFileContent(text);
-        var config = this.configProvider.Provide(this.repoPath, new Config { TagPrefix = null });
+        var config = this.configProvider.Provide(this.repoPath, new Model.Configurations.Configuration { TagPrefix = null });
 
         config.TagPrefix.ShouldBe("[vV]");
     }
@@ -494,7 +493,7 @@ tag-prefix: custom-tag-prefix-from-yml";
     {
         const string text = "tag-prefix: custom-tag-prefix-from-yml";
         SetupConfigFileContent(text);
-        var config = this.configProvider.Provide(this.repoPath, new Config { TagPrefix = null });
+        var config = this.configProvider.Provide(this.repoPath, new Model.Configurations.Configuration { TagPrefix = null });
 
         config.TagPrefix.ShouldBe("custom-tag-prefix-from-yml");
     }

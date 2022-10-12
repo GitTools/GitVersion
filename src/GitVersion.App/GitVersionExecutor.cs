@@ -1,4 +1,4 @@
-using GitVersion.Configuration;
+using GitVersion.Configurations;
 using GitVersion.Extensions;
 using GitVersion.Logging;
 using GitVersion.Model;

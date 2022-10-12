@@ -1,7 +1,7 @@
 using GitTools.Testing;
 using GitVersion.Core.Tests.Helpers;
 using GitVersion.Extensions;
-using GitVersion.Model.Configuration;
+using GitVersion.Model.Configurations;
 using GitVersion.VersionCalculation;
 using LibGit2Sharp;
 using NUnit.Framework;
@@ -39,7 +39,7 @@ public class FeatureBranchScenarios : TestBase
     [Test]
     public void BranchCreatedAfterFastForwardMergeShouldInheritCorrectly()
     {
-        var config = new Config
+        var config = new Model.Configurations.Configuration
         {
             Branches =
             {
@@ -168,14 +168,14 @@ public class FeatureBranchScenarios : TestBase
         Commands.Checkout(fixture.Repository, branchName);
         fixture.Repository.Merge(fixture.Repository.Branches["develop"], Generate.SignatureNow());
 
-        var configuration = new Config { VersioningMode = VersioningMode.ContinuousDeployment };
+        var configuration = new Model.Configurations.Configuration { VersioningMode = VersioningMode.ContinuousDeployment };
         fixture.AssertFullSemver("1.2.0-longrunning.2", configuration);
     }
 
     [Test]
     public void CanUseBranchNameOffAReleaseBranch()
     {
-        var config = new Config
+        var config = new Model.Configurations.Configuration
         {
             Branches =
             {
@@ -200,7 +200,7 @@ public class FeatureBranchScenarios : TestBase
     [TestCase("alpha.{BranchName}", "JIRA-123", "alpha.JIRA-123")]
     public void ShouldUseConfiguredTag(string tag, string featureName, string preReleaseTagName)
     {
-        var config = new Config
+        var config = new Model.Configurations.Configuration
         {
             Branches =
             {
@@ -300,7 +300,7 @@ public class FeatureBranchScenarios : TestBase
         [Test]
         public void ShouldPickUpVersionFromMainAfterReleaseBranchCreated()
         {
-            var config = new Config
+            var config = new Model.Configurations.Configuration
             {
                 Branches = new Dictionary<string, BranchConfig>
                 {
@@ -331,7 +331,7 @@ public class FeatureBranchScenarios : TestBase
         [Test]
         public void ShouldPickUpVersionFromMainAfterReleaseBranchMergedBack()
         {
-            var config = new Config
+            var config = new Model.Configurations.Configuration
             {
                 Branches = new Dictionary<string, BranchConfig>
                 {
@@ -410,7 +410,7 @@ public class FeatureBranchScenarios : TestBase
             [Test]
             public void ShouldPickUpVersionFromMainAfterReleaseBranchCreated()
             {
-                var config = new Config
+                var config = new Model.Configurations.Configuration
                 {
                     Branches = new Dictionary<string, BranchConfig>
                     {
@@ -441,7 +441,7 @@ public class FeatureBranchScenarios : TestBase
             [Test]
             public void ShouldPickUpVersionFromMainAfterReleaseBranchMergedBack()
             {
-                var config = new Config
+                var config = new Model.Configurations.Configuration
                 {
                     Branches = new Dictionary<string, BranchConfig>
                     {
@@ -476,7 +476,7 @@ public class FeatureBranchScenarios : TestBase
     [Test]
     public void PickUpVersionFromMainMarkedWithIsTracksReleaseBranches()
     {
-        var config = new Config
+        var config = new Model.Configurations.Configuration
         {
             VersioningMode = VersioningMode.ContinuousDelivery,
             Branches = new Dictionary<string, BranchConfig>
@@ -520,7 +520,7 @@ public class FeatureBranchScenarios : TestBase
     [Test]
     public void ShouldHaveAGreaterSemVerAfterDevelopIsMergedIntoFeature()
     {
-        var config = new Config
+        var config = new Model.Configurations.Configuration
         {
             VersioningMode = VersioningMode.ContinuousDeployment,
             AssemblyVersioningScheme = AssemblyVersioningScheme.Major,

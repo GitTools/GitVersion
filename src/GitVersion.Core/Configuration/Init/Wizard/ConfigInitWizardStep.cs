@@ -1,8 +1,7 @@
 using GitVersion.Extensions;
 using GitVersion.Logging;
-using GitVersion.Model.Configuration;
 
-namespace GitVersion.Configuration.Init.Wizard;
+namespace GitVersion.Configurations.Init.Wizard;
 
 public abstract class ConfigInitWizardStep
 {
@@ -19,7 +18,7 @@ public abstract class ConfigInitWizardStep
         this.StepFactory = stepFactory.NotNull();
     }
 
-    public bool Apply(Queue<ConfigInitWizardStep> steps, Config config, string workingDirectory)
+    public bool Apply(Queue<ConfigInitWizardStep> steps, Model.Configurations.Configuration config, string workingDirectory)
     {
         this.Console.WriteLine();
         this.Console.WriteLine(GetPrompt(config, workingDirectory));
@@ -64,7 +63,7 @@ public abstract class ConfigInitWizardStep
         steps.Enqueue(this);
     }
 
-    protected abstract StepResult HandleResult(string? result, Queue<ConfigInitWizardStep> steps, Config config, string workingDirectory);
-    protected abstract string GetPrompt(Config config, string workingDirectory);
+    protected abstract StepResult HandleResult(string? result, Queue<ConfigInitWizardStep> steps, Model.Configurations.Configuration config, string workingDirectory);
+    protected abstract string GetPrompt(Model.Configurations.Configuration config, string workingDirectory);
     protected abstract string? DefaultResult { get; }
 }

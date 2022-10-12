@@ -1,6 +1,6 @@
 using GitVersion.Core.Tests.Helpers;
 using GitVersion.Helpers;
-using GitVersion.Model.Configuration;
+using GitVersion.Model.Configurations;
 using GitVersion.OutputVariables;
 using NUnit.Framework;
 using Shouldly;
@@ -22,7 +22,7 @@ public class DocumentationTests : TestBase
         var configurationDocumentationFile = ReadDocumentationFile("input/docs/reference/configuration.md");
 
         const BindingFlags bindingFlags = BindingFlags.Public | BindingFlags.DeclaredOnly | BindingFlags.Instance;
-        var configProperties = typeof(Config)
+        var configProperties = typeof(Model.Configurations.Configuration)
             .GetProperties(bindingFlags)
             .Union(typeof(BranchConfig).GetProperties(bindingFlags))
             .Select(p => p.GetCustomAttribute<YamlMemberAttribute>())

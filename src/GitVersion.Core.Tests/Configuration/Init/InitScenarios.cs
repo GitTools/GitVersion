@@ -1,5 +1,5 @@
 using System.Runtime.InteropServices;
-using GitVersion.Configuration;
+using GitVersion.Configurations;
 using GitVersion.Core.Tests.Helpers;
 using GitVersion.Helpers;
 using GitVersion.Logging;

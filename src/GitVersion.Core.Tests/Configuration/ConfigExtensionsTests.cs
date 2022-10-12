@@ -1,6 +1,6 @@
-using GitVersion.Configuration;
+using GitVersion.Configurations;
 using GitVersion.Core.Tests.Helpers;
-using GitVersion.Model.Configuration;
+using GitVersion.Model.Configurations;
 using NUnit.Framework;
 using Shouldly;
 
@@ -12,7 +12,7 @@ public class ConfigExtensionsTests : TestBase
     [Test]
     public void GetReleaseBranchConfigReturnsAllReleaseBranches()
     {
-        var config = new Config()
+        var config = new Model.Configurations.Configuration()
         {
             Branches = new Dictionary<string, BranchConfig>
             {

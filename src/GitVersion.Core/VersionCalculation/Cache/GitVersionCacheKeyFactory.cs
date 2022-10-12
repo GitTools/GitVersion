@@ -1,10 +1,9 @@
 using System.Security.Cryptography;
 using GitVersion.Cache;
-using GitVersion.Configuration;
+using GitVersion.Configurations;
 using GitVersion.Extensions;
 using GitVersion.Helpers;
 using GitVersion.Logging;
-using GitVersion.Model.Configuration;
 using Microsoft.Extensions.Options;
 
 namespace GitVersion.VersionCalculation.Cache;
@@ -30,7 +29,7 @@ public class GitVersionCacheKeyFactory : IGitVersionCacheKeyFactory
         this.repositoryInfo = repositoryInfo.NotNull();
     }
 
-    public GitVersionCacheKey Create(Config? overrideConfig)
+    public GitVersionCacheKey Create(Model.Configurations.Configuration? overrideConfig)
     {
         var gitSystemHash = GetGitSystemHash();
         var configFileHash = GetConfigFileHash();
@@ -152,7 +151,7 @@ public class GitVersionCacheKeyFactory : IGitVersionCacheKeyFactory
         return GetHash(hash);
     }
 
-    private static string GetOverrideConfigHash(Config? overrideConfig)
+    private static string GetOverrideConfigHash(Model.Configurations.Configuration? overrideConfig)
     {
         if (overrideConfig == null)
         {

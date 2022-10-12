@@ -1,10 +1,8 @@
-using GitVersion.Model.Configuration;
-
 namespace GitVersion;
 
 public class ConfigInfo
 {
     public string? ConfigFile;
-    public Config? OverrideConfig;
+    public Model.Configurations.Configuration? OverrideConfig;
     public bool ShowConfig;
 }

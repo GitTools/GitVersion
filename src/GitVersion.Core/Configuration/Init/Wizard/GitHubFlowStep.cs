@@ -1,8 +1,7 @@
-using GitVersion.Configuration.Init.SetConfig;
+using GitVersion.Configurations.Init.SetConfig;
 using GitVersion.Logging;
-using GitVersion.Model.Configuration;
 
-namespace GitVersion.Configuration.Init.Wizard;
+namespace GitVersion.Configurations.Init.Wizard;
 
 public class GitHubFlowStep : GlobalModeSetting
 {
@@ -10,5 +9,5 @@ public class GitHubFlowStep : GlobalModeSetting
     {
     }
 
-    protected override string GetPrompt(Config config, string workingDirectory) => $"By default GitVersion will only increment the version when tagged{System.Environment.NewLine}{System.Environment.NewLine}" + base.GetPrompt(config, workingDirectory);
+    protected override string GetPrompt(Model.Configurations.Configuration config, string workingDirectory) => $"By default GitVersion will only increment the version when tagged{System.Environment.NewLine}{System.Environment.NewLine}" + base.GetPrompt(config, workingDirectory);
 }

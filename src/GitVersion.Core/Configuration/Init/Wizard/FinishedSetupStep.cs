@@ -1,7 +1,6 @@
 using GitVersion.Logging;
-using GitVersion.Model.Configuration;
 
-namespace GitVersion.Configuration.Init.Wizard;
+namespace GitVersion.Configurations.Init.Wizard;
 
 public class FinishedSetupStep : EditConfigStep
 {
@@ -9,5 +8,5 @@ public class FinishedSetupStep : EditConfigStep
     {
     }
 
-    protected override string GetPrompt(Config config, string workingDirectory) => $"Questions are all done, you can now edit GitVersion's configuration further{System.Environment.NewLine}" + base.GetPrompt(config, workingDirectory);
+    protected override string GetPrompt(Model.Configurations.Configuration config, string workingDirectory) => $"Questions are all done, you can now edit GitVersion's configuration further{System.Environment.NewLine}" + base.GetPrompt(config, workingDirectory);
 }

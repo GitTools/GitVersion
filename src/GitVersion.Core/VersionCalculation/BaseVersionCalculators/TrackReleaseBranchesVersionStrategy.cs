@@ -1,7 +1,7 @@
 using GitVersion.Common;
-using GitVersion.Configuration;
+using GitVersion.Configurations;
 using GitVersion.Extensions;
-using GitVersion.Model.Configuration;
+using GitVersion.Model.Configurations;
 
 namespace GitVersion.VersionCalculation;
 

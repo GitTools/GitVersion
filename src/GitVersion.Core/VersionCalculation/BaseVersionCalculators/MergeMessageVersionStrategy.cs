@@ -1,10 +1,10 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Text.RegularExpressions;
 using GitVersion.Common;
-using GitVersion.Configuration;
+using GitVersion.Configurations;
 using GitVersion.Extensions;
 using GitVersion.Logging;
-using GitVersion.Model.Configuration;
+using GitVersion.Model.Configurations;
 
 namespace GitVersion.VersionCalculation;
 

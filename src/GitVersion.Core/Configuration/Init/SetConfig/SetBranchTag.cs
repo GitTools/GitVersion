@@ -1,9 +1,9 @@
-using GitVersion.Configuration.Init.Wizard;
+using GitVersion.Configurations.Init.Wizard;
 using GitVersion.Extensions;
 using GitVersion.Logging;
-using GitVersion.Model.Configuration;
+using GitVersion.Model.Configurations;
 
-namespace GitVersion.Configuration.Init.SetConfig;
+namespace GitVersion.Configurations.Init.SetConfig;
 
 public class SetBranchTag : ConfigInitWizardStep
 {
@@ -21,7 +21,7 @@ public class SetBranchTag : ConfigInitWizardStep
         return this;
     }
 
-    protected override StepResult HandleResult(string? result, Queue<ConfigInitWizardStep> steps, Config config, string workingDirectory)
+    protected override StepResult HandleResult(string? result, Queue<ConfigInitWizardStep> steps, Model.Configurations.Configuration config, string workingDirectory)
     {
         if (result.IsNullOrWhiteSpace())
         {
@@ -45,7 +45,7 @@ public class SetBranchTag : ConfigInitWizardStep
         }
     }
 
-    protected override string GetPrompt(Config config, string workingDirectory) => @"This sets the pre-release tag which will be used for versions on this branch (beta, rc etc)
+    protected override string GetPrompt(Model.Configurations.Configuration config, string workingDirectory) => @"This sets the pre-release tag which will be used for versions on this branch (beta, rc etc)
 
 0) Go Back
 1) No tag

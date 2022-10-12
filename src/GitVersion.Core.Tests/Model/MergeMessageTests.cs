@@ -1,5 +1,4 @@
 using GitVersion.Core.Tests.Helpers;
-using GitVersion.Model.Configuration;
 using NUnit.Framework;
 using Shouldly;
 
@@ -8,7 +7,7 @@ namespace GitVersion.Core.Tests;
 [TestFixture]
 public class MergeMessageTests : TestBase
 {
-    private readonly Config config = new() { TagPrefix = "[vV]" };
+    private readonly Model.Configurations.Configuration config = new() { TagPrefix = "[vV]" };
 
     [Test]
     public void NullMessageStringThrows() =>
@@ -37,7 +36,7 @@ public class MergeMessageTests : TestBase
     {
         // Arrange
         const string message = "Updated some code.";
-        var conf = new Config { TagPrefix = prefix };
+        var conf = new Model.Configurations.Configuration { TagPrefix = prefix };
 
         // Act
         var sut = new MergeMessage(message, conf);

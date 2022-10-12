@@ -1,10 +1,9 @@
 using GitTools.Testing;
 using GitVersion.BuildAgents;
-using GitVersion.Configuration;
+using GitVersion.Configurations;
 using GitVersion.Core.Tests.Helpers;
 using GitVersion.Helpers;
 using GitVersion.Logging;
-using GitVersion.Model.Configuration;
 using GitVersion.VersionCalculation.Cache;
 using LibGit2Sharp;
 using Microsoft.Extensions.DependencyInjection;
@@ -205,7 +204,7 @@ public class GitVersionExecutorTests : TestBase
 
         var cacheDirectoryTimestamp = this.fileSystem.GetLastDirectoryWrite(cacheDirectory);
 
-        var config = new ConfigurationBuilder().Add(new Config { TagPrefix = "prefix" }).Build();
+        var config = new ConfigurationBuilder().Add(new Model.Configurations.Configuration { TagPrefix = "prefix" }).Build();
         gitVersionOptions = new GitVersionOptions { WorkingDirectory = fixture.RepositoryPath, ConfigInfo = { OverrideConfig = config } };
 
         gitVersionCalculator = GetGitVersionCalculator(gitVersionOptions);

@@ -1,7 +1,7 @@
 using GitTools.Testing;
 using GitVersion.Core.Tests.Helpers;
 using GitVersion.Extensions;
-using GitVersion.Model.Configuration;
+using GitVersion.Model.Configurations;
 using GitVersion.VersionCalculation;
 using LibGit2Sharp;
 using NUnit.Framework;
@@ -11,7 +11,7 @@ namespace GitVersion.Core.Tests.IntegrationTests;
 
 public class MainlineDevelopmentMode : TestBase
 {
-    private readonly Config config = new() { VersioningMode = VersioningMode.Mainline };
+    private readonly Model.Configurations.Configuration config = new() { VersioningMode = VersioningMode.Mainline };
 
     [Test]
     public void VerifyNonMainMainlineVersionIdenticalAsMain()
@@ -388,7 +388,7 @@ public class MainlineDevelopmentMode : TestBase
     [Test]
     public void MergingFeatureBranchThatIncrementsMinorNumberIncrementsMinorVersionOfMain()
     {
-        var currentConfig = new Config { VersioningMode = VersioningMode.Mainline, Branches = new Dictionary<string, BranchConfig> { { "feature", new BranchConfig { VersioningMode = VersioningMode.ContinuousDeployment, Increment = IncrementStrategy.Minor } } } };
+        var currentConfig = new Model.Configurations.Configuration { VersioningMode = VersioningMode.Mainline, Branches = new Dictionary<string, BranchConfig> { { "feature", new BranchConfig { VersioningMode = VersioningMode.ContinuousDeployment, Increment = IncrementStrategy.Minor } } } };
 
         using var fixture = new EmptyRepositoryFixture();
         fixture.MakeACommit($"first in {MainBranch}");
@@ -408,7 +408,7 @@ public class MainlineDevelopmentMode : TestBase
     [Test]
     public void VerifyIncrementConfigIsHonoured()
     {
-        var minorIncrementConfig = new Config
+        var minorIncrementConfig = new Model.Configurations.Configuration
         {
             VersioningMode = VersioningMode.Mainline,
             Increment = IncrementStrategy.Minor,
@@ -485,7 +485,7 @@ public class MainlineDevelopmentMode : TestBase
     [Test]
     public void BranchWithoutMergeBaseMainlineBranchIsFound()
     {
-        var currentConfig = new Config { VersioningMode = VersioningMode.Mainline, AssemblyFileVersioningScheme = AssemblyFileVersioningScheme.MajorMinorPatchTag };
+        var currentConfig = new Model.Configurations.Configuration { VersioningMode = VersioningMode.Mainline, AssemblyFileVersioningScheme = AssemblyFileVersioningScheme.MajorMinorPatchTag };
 
         using var fixture = new EmptyRepositoryFixture();
         fixture.Repository.MakeACommit();
@@ -534,7 +534,7 @@ public class MainlineDevelopmentMode : TestBase
     public void NoBumpMessageTakesPrecedenceOverBumpMessage(string commitMessage)
     {
         // Same configuration as found here: https://gitversion.net/docs/reference/version-increments#conventional-commit-messages
-        var conventionalCommitsConfig = new Config
+        var conventionalCommitsConfig = new Model.Configurations.Configuration
         {
             VersioningMode = VersioningMode.Mainline,
             MajorVersionBumpMessage = "^(build|chore|ci|docs|feat|fix|perf|refactor|revert|style|test)(\\([\\w\\s-]*\\))?(!:|:.*\\n\\n((.+\\n)+\\n)?BREAKING CHANGE:\\s.+)",

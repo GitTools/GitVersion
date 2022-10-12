@@ -1,4 +1,4 @@
-namespace GitVersion.Configuration;
+namespace GitVersion.Configurations;
 
 [Serializable]
 public class ConfigurationException : GitVersionException

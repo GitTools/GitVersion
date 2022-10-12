@@ -1,7 +1,7 @@
 using GitVersion.Extensions;
 using GitVersion.VersionCalculation;
 
-namespace GitVersion.Model.Configuration;
+namespace GitVersion.Model.Configurations;
 
 public class EffectiveBranchConfiguration
 {

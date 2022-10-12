@@ -1,9 +1,8 @@
-using GitVersion.Configuration.Init.Wizard;
+using GitVersion.Configurations.Init.Wizard;
 using GitVersion.Extensions;
 using GitVersion.Logging;
-using GitVersion.Model.Configuration;
 
-namespace GitVersion.Configuration.Init;
+namespace GitVersion.Configurations.Init;
 
 public class SetNextVersion : ConfigInitWizardStep
 {
@@ -11,7 +10,7 @@ public class SetNextVersion : ConfigInitWizardStep
     {
     }
 
-    protected override StepResult HandleResult(string? result, Queue<ConfigInitWizardStep> steps, Config config, string workingDirectory)
+    protected override StepResult HandleResult(string? result, Queue<ConfigInitWizardStep> steps, Model.Configurations.Configuration config, string workingDirectory)
     {
         var editConfigStep = this.StepFactory.CreateStep<EditConfigStep>();
         if (result.IsNullOrEmpty())
@@ -28,7 +27,7 @@ public class SetNextVersion : ConfigInitWizardStep
         return StepResult.Ok();
     }
 
-    protected override string GetPrompt(Config config, string workingDirectory) => "What would you like to set the next version to (enter nothing to cancel)?";
+    protected override string GetPrompt(Model.Configurations.Configuration config, string workingDirectory) => "What would you like to set the next version to (enter nothing to cancel)?";
 
     protected override string? DefaultResult => null;
 }

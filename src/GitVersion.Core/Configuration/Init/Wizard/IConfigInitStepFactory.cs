@@ -1,4 +1,4 @@
-namespace GitVersion.Configuration.Init.Wizard;
+namespace GitVersion.Configurations.Init.Wizard;
 
 public interface IConfigInitStepFactory
 {

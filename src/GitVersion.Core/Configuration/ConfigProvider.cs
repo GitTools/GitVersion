@@ -1,10 +1,10 @@
-using GitVersion.Configuration.Init.Wizard;
+using GitVersion.Configurations.Init.Wizard;
 using GitVersion.Extensions;
 using GitVersion.Logging;
-using GitVersion.Model.Configuration;
+using GitVersion.Model.Configurations;
 using Microsoft.Extensions.Options;
 
-namespace GitVersion.Configuration;
+namespace GitVersion.Configurations;
 
 public class ConfigProvider : IConfigProvider
 {
@@ -26,7 +26,7 @@ public class ConfigProvider : IConfigProvider
         this.repositoryInfo = repositoryInfo.NotNull();
     }
 
-    public Config Provide(Config? overrideConfig = null)
+    public Configuration Provide(Configuration? overrideConfig = null)
     {
         var gitVersionOptions = this.options.Value;
         var workingDirectory = gitVersionOptions.WorkingDirectory;
@@ -36,13 +36,13 @@ public class ConfigProvider : IConfigProvider
         return Provide(rootDirectory, overrideConfig);
     }
 
-    public Config Provide(string? workingDirectory, Config? overrideConfig = null)
+    public Configuration Provide(string? workingDirectory, Configuration? overrideConfig = null)
     {
         var configurationBuilder = new ConfigurationBuilder();
         if (workingDirectory != null)
             configurationBuilder = configurationBuilder.Add(this.configFileLocator.ReadConfig(workingDirectory));
         return configurationBuilder
-            .Add(overrideConfig ?? new Config())
+            .Add(overrideConfig ?? new Model.Configurations.Configuration())
             .Build();
     }
 

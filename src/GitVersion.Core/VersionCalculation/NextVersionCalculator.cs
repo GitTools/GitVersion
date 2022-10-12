@@ -1,8 +1,8 @@
 using GitVersion.Common;
-using GitVersion.Configuration;
+using GitVersion.Configurations;
 using GitVersion.Extensions;
 using GitVersion.Logging;
-using GitVersion.Model.Configuration;
+using GitVersion.Model.Configurations;
 
 namespace GitVersion.VersionCalculation;
 
@@ -147,7 +147,7 @@ public class NextVersionCalculator : INextVersionCalculator
 
     private static bool MajorMinorPatchEqual(SemanticVersion lastTag, SemanticVersion baseVersion) => lastTag.Major == baseVersion.Major && lastTag.Minor == baseVersion.Minor && lastTag.Patch == baseVersion.Patch;
 
-    private NextVersion Calculate(IBranch branch, Config configuration)
+    private NextVersion Calculate(IBranch branch, Model.Configurations.Configuration configuration)
     {
         using (log.IndentLog("Calculating the base versions"))
         {
@@ -222,7 +222,7 @@ public class NextVersionCalculator : INextVersionCalculator
         }
     }
 
-    private IEnumerable<NextVersion> GetNextVersions(IBranch branch, Config configuration)
+    private IEnumerable<NextVersion> GetNextVersions(IBranch branch, Model.Configurations.Configuration configuration)
     {
         if (branch.Tip == null)
             throw new GitVersionException("No commits found on the current branch.");

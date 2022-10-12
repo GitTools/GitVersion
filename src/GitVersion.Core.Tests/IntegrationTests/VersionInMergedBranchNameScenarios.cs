@@ -1,6 +1,6 @@
 using GitTools.Testing;
 using GitVersion.Core.Tests.Helpers;
-using GitVersion.Model.Configuration;
+using GitVersion.Model.Configurations;
 using LibGit2Sharp;
 using NUnit.Framework;
 
@@ -31,7 +31,7 @@ public class VersionInMergedBranchNameScenarios : TestBase
     [Test]
     public void TakesVersionFromNameOfBranchThatIsReleaseByConfig()
     {
-        var config = new Config
+        var config = new Model.Configurations.Configuration
         {
             Branches = new Dictionary<string, BranchConfig> { { "support", new BranchConfig { IsReleaseBranch = true } } }
         };

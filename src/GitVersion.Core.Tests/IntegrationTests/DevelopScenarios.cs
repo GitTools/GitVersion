@@ -1,6 +1,6 @@
 using GitTools.Testing;
 using GitVersion.Core.Tests.Helpers;
-using GitVersion.Model.Configuration;
+using GitVersion.Model.Configurations;
 using GitVersion.VersionCalculation;
 using LibGit2Sharp;
 using NUnit.Framework;
@@ -54,7 +54,7 @@ public class DevelopScenarios : TestBase
     [Test]
     public void CanChangeDevelopTagViaConfig()
     {
-        var config = new Config
+        var config = new Model.Configurations.Configuration
         {
             Branches =
             {
@@ -115,7 +115,7 @@ public class DevelopScenarios : TestBase
     [Test]
     public void CanHandleContinuousDelivery()
     {
-        var config = new Config
+        var config = new Model.Configurations.Configuration
         {
             Branches = { { "develop", new BranchConfig { VersioningMode = VersioningMode.ContinuousDelivery } } }
         };
@@ -222,7 +222,7 @@ public class DevelopScenarios : TestBase
     [Test]
     public void CommitsSinceVersionSourceShouldNotGoDownUponGitFlowReleaseFinish()
     {
-        var config = new Config
+        var config = new Model.Configurations.Configuration
         {
             VersioningMode = VersioningMode.ContinuousDeployment
         };
@@ -263,7 +263,7 @@ public class DevelopScenarios : TestBase
     [Test]
     public void CommitsSinceVersionSourceShouldNotGoDownUponMergingFeatureOnlyToDevelop()
     {
-        var config = new Config
+        var config = new Model.Configurations.Configuration
         {
             VersioningMode = VersioningMode.ContinuousDeployment
         };
@@ -311,7 +311,7 @@ public class DevelopScenarios : TestBase
     [Test]
     public void WhenPreventIncrementOfMergedBranchVersionIsSetToFalseForDevelopCommitsSinceVersionSourceShouldNotGoDownWhenMergingReleaseToDevelop()
     {
-        var config = new Config
+        var config = new Model.Configurations.Configuration
         {
             VersioningMode = VersioningMode.ContinuousDeployment,
             Branches = new Dictionary<string, BranchConfig>
@@ -397,7 +397,7 @@ public class DevelopScenarios : TestBase
     [Test]
     public void WhenPreventIncrementOfMergedBranchVersionIsSetToFalseForDevelopCommitsSinceVersionSourceShouldNotGoDownWhenMergingHotfixToDevelop()
     {
-        var config = new Config
+        var config = new Model.Configurations.Configuration
         {
             VersioningMode = VersioningMode.ContinuousDeployment,
             Branches = new Dictionary<string, BranchConfig>

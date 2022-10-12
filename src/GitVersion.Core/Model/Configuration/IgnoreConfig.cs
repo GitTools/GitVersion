@@ -1,7 +1,7 @@
 using GitVersion.VersionCalculation;
 using YamlDotNet.Serialization;
 
-namespace GitVersion.Model.Configuration;
+namespace GitVersion.Model.Configurations;
 
 public class IgnoreConfig
 {

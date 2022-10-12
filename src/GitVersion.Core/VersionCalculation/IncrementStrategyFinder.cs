@@ -1,7 +1,7 @@
 using System.Collections.Concurrent;
 using System.Text.RegularExpressions;
 using GitVersion.Extensions;
-using GitVersion.Model.Configuration;
+using GitVersion.Model.Configurations;
 
 namespace GitVersion.VersionCalculation;
 
@@ -56,7 +56,7 @@ public class IncrementStrategyFinder : IIncrementStrategyFinder
         return commitMessageIncrement ?? VersionField.None;
     }
 
-    public VersionField? GetIncrementForCommits(Config configuration, IEnumerable<ICommit> commits)
+    public VersionField? GetIncrementForCommits(Model.Configurations.Configuration configuration, IEnumerable<ICommit> commits)
     {
         var majorRegex = TryGetRegexOrDefault(configuration.MajorVersionBumpMessage, DefaultMajorPatternRegex);
         var minorRegex = TryGetRegexOrDefault(configuration.MinorVersionBumpMessage, DefaultMinorPatternRegex);

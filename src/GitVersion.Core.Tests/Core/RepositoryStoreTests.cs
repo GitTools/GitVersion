@@ -2,7 +2,6 @@ using GitTools.Testing;
 using GitVersion.Core.Tests.Helpers;
 using GitVersion.Core.Tests.IntegrationTests;
 using GitVersion.Logging;
-using GitVersion.Model.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using NUnit.Framework;
 using Shouldly;
@@ -228,7 +227,7 @@ public class RepositoryStoreTests : TestBase
 
         var branch = localRepository.FindBranch("main");
         branch.ShouldNotBeNull();
-        var branchedCommit = gitRepoMetadataProvider.FindCommitBranchWasBranchedFrom(branch, new Config(), Array.Empty<IBranch>());
+        var branchedCommit = gitRepoMetadataProvider.FindCommitBranchWasBranchedFrom(branch, new Model.Configurations.Configuration(), Array.Empty<IBranch>());
 
         Assert.IsNull(branchedCommit.Branch);
         Assert.IsNull(branchedCommit.Commit);

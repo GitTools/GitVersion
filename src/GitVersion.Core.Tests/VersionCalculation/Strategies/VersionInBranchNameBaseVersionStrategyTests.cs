@@ -1,8 +1,8 @@
 using GitTools.Testing;
-using GitVersion.Configuration;
+using GitVersion.Configurations;
 using GitVersion.Core.Tests.Helpers;
 using GitVersion.Extensions;
-using GitVersion.Model.Configuration;
+using GitVersion.Model.Configurations;
 using GitVersion.VersionCalculation;
 using LibGit2Sharp;
 using NUnit.Framework;
@@ -60,7 +60,7 @@ public class VersionInBranchNameBaseVersionStrategyTests : TestBase
         fixture.Repository.CreateBranch(branchName);
 
         var config = new ConfigurationBuilder()
-            .Add(new Config { Branches = { { "support", new BranchConfig { IsReleaseBranch = true } } } })
+            .Add(new Model.Configurations.Configuration { Branches = { { "support", new BranchConfig { IsReleaseBranch = true } } } })
             .Build();
 
         var gitRepository = fixture.Repository.ToGitRepository();
@@ -97,7 +97,7 @@ public class VersionInBranchNameBaseVersionStrategyTests : TestBase
         baseVersion.SemanticVersion.ToString().ShouldBe(expectedBaseVersion);
     }
 
-    private static IVersionStrategy GetVersionStrategy(string workingDirectory, IGitRepository repository, string branch, Config? config = null)
+    private static IVersionStrategy GetVersionStrategy(string workingDirectory, IGitRepository repository, string branch, Model.Configurations.Configuration? config = null)
     {
         var sp = BuildServiceProvider(workingDirectory, repository, branch, config);
         return sp.GetServiceForType<IVersionStrategy, VersionInBranchNameVersionStrategy>();

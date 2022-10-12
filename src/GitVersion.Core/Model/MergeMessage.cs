@@ -1,5 +1,4 @@
 using System.Text.RegularExpressions;
-using GitVersion.Model.Configuration;
 
 namespace GitVersion;
 
@@ -15,7 +14,7 @@ public class MergeMessage
         new("RemoteTracking", @"^Merge remote-tracking branch '(?<SourceBranch>[^\s]*)'(?: into (?<TargetBranch>[^\s]*))*")
     };
 
-    public MergeMessage(string? mergeMessage, Config config)
+    public MergeMessage(string? mergeMessage, Model.Configurations.Configuration config)
     {
         if (mergeMessage == null)
             throw new NullReferenceException();

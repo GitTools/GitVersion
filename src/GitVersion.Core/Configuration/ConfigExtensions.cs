@@ -1,16 +1,16 @@
 using System.Text.RegularExpressions;
 using GitVersion.Extensions;
 using GitVersion.Logging;
-using GitVersion.Model.Configuration;
+using GitVersion.Model.Configurations;
 
-namespace GitVersion.Configuration;
+namespace GitVersion.Configurations;
 
 public static class ConfigExtensions
 {
-    public static BranchConfig GetBranchConfiguration(this Config configuration, IBranch branch)
+    public static BranchConfig GetBranchConfiguration(this Configuration configuration, IBranch branch)
         => GetBranchConfiguration(configuration, branch.NotNull().Name.WithoutRemote);
 
-    public static BranchConfig GetBranchConfiguration(this Config configuration, string branchName)
+    public static BranchConfig GetBranchConfiguration(this Configuration configuration, string branchName)
     {
         var branchConfiguration = ForBranch(configuration, branchName);
         if (branchConfiguration is null)
@@ -22,7 +22,7 @@ public static class ConfigExtensions
     }
 
     // TODO: Please make the unknown settings also configurable in the yaml.
-    public static BranchConfig GetUnknownBranchConfiguration(this Config configuration) => new()
+    public static BranchConfig GetUnknownBranchConfiguration(this Configuration configuration) => new()
     {
         Name = "Unknown",
         Regex = "",
@@ -32,7 +32,7 @@ public static class ConfigExtensions
     };
 
     // TODO: Please make the fallback settings also configurable in the yaml.
-    public static BranchConfig GetFallbackBranchConfiguration(this Config configuration)
+    public static BranchConfig GetFallbackBranchConfiguration(this Configuration configuration)
     {
         var result = new BranchConfig()
         {
@@ -54,7 +54,7 @@ public static class ConfigExtensions
         return result;
     }
 
-    private static BranchConfig? ForBranch(Config configuration, string branchName)
+    private static BranchConfig? ForBranch(Model.Configurations.Configuration configuration, string branchName)
     {
         var matches = configuration.Branches
             .Where(b => b.Value?.Regex != null && Regex.IsMatch(branchName, b.Value.Regex, RegexOptions.IgnoreCase))
@@ -82,7 +82,7 @@ public static class ConfigExtensions
         }
     }
 
-    public static bool IsReleaseBranch(this Config config, string branchName) => config.GetBranchConfiguration(branchName).IsReleaseBranch ?? false;
+    public static bool IsReleaseBranch(this Configuration config, string branchName) => config.GetBranchConfiguration(branchName).IsReleaseBranch ?? false;
 
     public static string GetBranchSpecificTag(this EffectiveConfiguration configuration, ILog log, string? branchFriendlyName, string? branchNameOverride)
     {
@@ -108,7 +108,7 @@ public static class ConfigExtensions
         return tagToUse;
     }
 
-    public static List<KeyValuePair<string, BranchConfig>> GetReleaseBranchConfig(this Config configuration) =>
+    public static List<KeyValuePair<string, BranchConfig>> GetReleaseBranchConfig(this Configuration configuration) =>
         configuration.Branches
             .Where(b => b.Value.IsReleaseBranch == true)
             .ToList();

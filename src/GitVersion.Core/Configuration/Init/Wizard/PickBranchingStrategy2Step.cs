@@ -1,7 +1,6 @@
 using GitVersion.Logging;
-using GitVersion.Model.Configuration;
 
-namespace GitVersion.Configuration.Init.Wizard;
+namespace GitVersion.Configurations.Init.Wizard;
 
 public class PickBranchingStrategy2Step : ConfigInitWizardStep
 {
@@ -9,7 +8,7 @@ public class PickBranchingStrategy2Step : ConfigInitWizardStep
     {
     }
 
-    protected override StepResult HandleResult(string? result, Queue<ConfigInitWizardStep> steps, Config config, string workingDirectory)
+    protected override StepResult HandleResult(string? result, Queue<ConfigInitWizardStep> steps, Model.Configurations.Configuration config, string workingDirectory)
     {
         switch (result?.ToLower())
         {
@@ -30,7 +29,7 @@ public class PickBranchingStrategy2Step : ConfigInitWizardStep
         return StepResult.InvalidResponseSelected();
     }
 
-    protected override string GetPrompt(Config config, string workingDirectory) => "Do you stabilise releases while continuing work on the next version? (y/n)";
+    protected override string GetPrompt(Model.Configurations.Configuration config, string workingDirectory) => "Do you stabilise releases while continuing work on the next version? (y/n)";
 
     protected override string? DefaultResult => null;
 }

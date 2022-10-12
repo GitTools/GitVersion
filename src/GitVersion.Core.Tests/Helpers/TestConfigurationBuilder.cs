@@ -1,5 +1,5 @@
-using GitVersion.Configuration;
-using GitVersion.Model.Configuration;
+using GitVersion.Configurations;
+using GitVersion.Model.Configurations;
 using GitVersion.VersionCalculation;
 
 namespace GitVersion.Core.Tests.Helpers;
@@ -105,9 +105,9 @@ public sealed class TestConfigurationBuilder
         return this;
     }
 
-    public Config Build()
+    public Model.Configurations.Configuration Build()
     {
-        Config configuration = new()
+        Model.Configurations.Configuration configuration = new()
         {
             NextVersion = nextVersion,
             VersioningMode = versioningMode

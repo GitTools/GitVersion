@@ -1,9 +1,9 @@
 using System.Text.RegularExpressions;
-using GitVersion.Configuration;
+using GitVersion.Configurations;
 using GitVersion.Extensions;
 using GitVersion.Helpers;
 using GitVersion.Logging;
-using GitVersion.Model.Configuration;
+using GitVersion.Model.Configurations;
 using GitVersion.OutputVariables;
 
 namespace GitVersion.VersionCalculation;

@@ -1,15 +1,8 @@
-using GitVersion.Configuration.Init.Wizard;
+using GitVersion.Configurations.Init.Wizard;
 using GitVersion.Helpers;
 using GitVersion.Logging;
-using GitVersion.Model.Configuration;
 
-namespace GitVersion.Configuration.Init.BuildServer;
-
-internal enum ProjectVisibility
-{
-    Public = 0,
-    Private = 1
-}
+namespace GitVersion.Configurations.Init.BuildServer;
 
 internal class AppVeyorSetup : ConfigInitWizardStep
 {
@@ -25,7 +18,7 @@ internal class AppVeyorSetup : ConfigInitWizardStep
         return this;
     }
 
-    protected override StepResult HandleResult(string? result, Queue<ConfigInitWizardStep> steps, Config config, string workingDirectory)
+    protected override StepResult HandleResult(string? result, Queue<ConfigInitWizardStep> steps, Model.Configurations.Configuration config, string workingDirectory)
     {
         var editConfigStep = this.StepFactory.CreateStep<EditConfigStep>();
         switch (result)
@@ -87,7 +80,7 @@ after_build:
         this.Log.Info($"AppVeyor sample config file written to {outputFilename}");
     }
 
-    protected override string GetPrompt(Config config, string workingDirectory)
+    protected override string GetPrompt(Model.Configurations.Configuration config, string workingDirectory)
     {
         var prompt = new StringBuilder();
         if (AppVeyorConfigExists(workingDirectory, this.FileSystem))
