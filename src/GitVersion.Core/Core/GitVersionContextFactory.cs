@@ -7,11 +7,11 @@ namespace GitVersion;
 
 public class GitVersionContextFactory : IGitVersionContextFactory
 {
-    private readonly IConfigProvider configProvider;
+    private readonly IConfigurationProvider configProvider;
     private readonly IRepositoryStore repositoryStore;
     private readonly IOptions<GitVersionOptions> options;
 
-    public GitVersionContextFactory(IConfigProvider configProvider, IRepositoryStore repositoryStore, IOptions<GitVersionOptions> options)
+    public GitVersionContextFactory(IConfigurationProvider configProvider, IRepositoryStore repositoryStore, IOptions<GitVersionOptions> options)
     {
         this.configProvider = configProvider.NotNull();
         this.repositoryStore = repositoryStore.NotNull();

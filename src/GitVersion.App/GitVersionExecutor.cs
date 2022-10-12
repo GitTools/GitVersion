@@ -12,13 +12,13 @@ public class GitVersionExecutor : IGitVersionExecutor
     private readonly IConfigurationFileLocator configFileLocator;
     private readonly IHelpWriter helpWriter;
     private readonly IGitRepositoryInfo repositoryInfo;
-    private readonly IConfigProvider configProvider;
+    private readonly IConfigurationProvider configProvider;
     private readonly IGitVersionCalculateTool gitVersionCalculateTool;
     private readonly IGitVersionOutputTool gitVersionOutputTool;
     private readonly IVersionWriter versionWriter;
 
     public GitVersionExecutor(ILog log, IConsole console,
-        IConfigurationFileLocator configFileLocator, IConfigProvider configProvider,
+        IConfigurationFileLocator configFileLocator, IConfigurationProvider configProvider,
         IGitVersionCalculateTool gitVersionCalculateTool, IGitVersionOutputTool gitVersionOutputTool,
         IVersionWriter versionWriter, IHelpWriter helpWriter, IGitRepositoryInfo repositoryInfo)
     {

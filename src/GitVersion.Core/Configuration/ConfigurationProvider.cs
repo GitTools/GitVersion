@@ -6,7 +6,7 @@ using Microsoft.Extensions.Options;
 
 namespace GitVersion.Configuration;
 
-public class ConfigProvider : IConfigProvider
+public class ConfigurationProvider : IConfigurationProvider
 {
     private readonly IFileSystem fileSystem;
     private readonly ILog log;
@@ -15,7 +15,7 @@ public class ConfigProvider : IConfigProvider
     private readonly IConfigInitWizard configInitWizard;
     private readonly IGitRepositoryInfo repositoryInfo;
 
-    public ConfigProvider(IFileSystem fileSystem, ILog log, IConfigurationFileLocator configFileLocator,
+    public ConfigurationProvider(IFileSystem fileSystem, ILog log, IConfigurationFileLocator configFileLocator,
         IOptions<GitVersionOptions> options, IConfigInitWizard configInitWizard, IGitRepositoryInfo repositoryInfo)
     {
         this.fileSystem = fileSystem.NotNull();

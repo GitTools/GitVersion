@@ -21,7 +21,7 @@ public class ConfigFileLocatorTests
         private string repoPath;
         private string workingPath;
         private IFileSystem fileSystem;
-        private IConfigProvider configurationProvider;
+        private IConfigurationProvider configurationProvider;
         private IConfigurationFileLocator configFileLocator;
 
         [SetUp]
@@ -34,7 +34,7 @@ public class ConfigFileLocatorTests
             var sp = ConfigureServices(services => services.AddSingleton(options));
 
             this.fileSystem = sp.GetRequiredService<IFileSystem>();
-            this.configurationProvider = sp.GetRequiredService<IConfigProvider>();
+            this.configurationProvider = sp.GetRequiredService<IConfigurationProvider>();
             this.configFileLocator = sp.GetRequiredService<IConfigurationFileLocator>();
 
             ShouldlyConfiguration.ShouldMatchApprovedDefaults.LocateTestMethodUsingAttribute<TestAttribute>();
@@ -167,7 +167,7 @@ public class ConfigFileLocatorTests
 
             SetupConfigFileContent(string.Empty);
 
-            var configurationProvider = sp.GetRequiredService<IConfigProvider>();
+            var configurationProvider = sp.GetRequiredService<IConfigurationProvider>();
 
             configurationProvider.Provide(this.repoPath);
             stringLogger.Length.ShouldBe(0);
@@ -188,7 +188,7 @@ public class ConfigFileLocatorTests
 
             SetupConfigFileContent(string.Empty, path: @"c:\\Unrelated\\path");
 
-            var configurationProvider = sp.GetRequiredService<IConfigProvider>();
+            var configurationProvider = sp.GetRequiredService<IConfigurationProvider>();
 
             configurationProvider.Provide(this.repoPath);
             stringLogger.Length.ShouldBe(0);

@@ -20,7 +20,7 @@ public class ConfigProviderTests : TestBase
     private const string DefaultRepoPath = @"c:\MyGitRepo";
 
     private string repoPath;
-    private IConfigProvider configProvider;
+    private IConfigurationProvider configProvider;
     private IFileSystem fileSystem;
 
     [SetUp]
@@ -29,7 +29,7 @@ public class ConfigProviderTests : TestBase
         this.repoPath = DefaultRepoPath;
         var options = Options.Create(new GitVersionOptions { WorkingDirectory = repoPath });
         var sp = ConfigureServices(services => services.AddSingleton(options));
-        this.configProvider = sp.GetRequiredService<IConfigProvider>();
+        this.configProvider = sp.GetRequiredService<IConfigurationProvider>();
         this.fileSystem = sp.GetRequiredService<IFileSystem>();
 
         ShouldlyConfiguration.ShouldMatchApprovedDefaults.LocateTestMethodUsingAttribute<TestAttribute>();
@@ -330,7 +330,7 @@ branches: {}";
             services.AddSingleton(options);
             services.AddSingleton<ILog>(log);
         });
-        this.configProvider = sp.GetRequiredService<IConfigProvider>();
+        this.configProvider = sp.GetRequiredService<IConfigurationProvider>();
 
         this.configProvider.Provide(this.repoPath);
 

@@ -2,7 +2,7 @@ using GitVersion.Model.Configuration;
 
 namespace GitVersion.Configuration;
 
-public interface IConfigProvider
+public interface IConfigurationProvider
 {
     GitVersionConfiguration Provide(GitVersionConfiguration? overrideConfig = null);
     GitVersionConfiguration Provide(string workingDirectory, GitVersionConfiguration? overrideConfig = null);
