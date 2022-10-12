@@ -60,7 +60,7 @@ public class OtherBranchScenarios : TestBase
     [TestCase("alpha.{BranchName}", "JIRA-123", "alpha.JIRA-123")]
     public void TagIsBranchNameForBranchesWithoutPrefixedBranchName(string tag, string branchName, string preReleaseTagName)
     {
-        var configuration = new Model.Configuration.GitVersionConfiguration
+        var configuration = new GitVersionConfiguration
         {
             Branches =
             {

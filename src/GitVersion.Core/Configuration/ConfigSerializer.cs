@@ -6,7 +6,7 @@ namespace GitVersion.Configuration;
 
 public class ConfigSerializer
 {
-    public static Model.Configuration.GitVersionConfiguration Read(TextReader reader)
+    public static GitVersionConfiguration Read(TextReader reader)
     {
         var deserializer = new DeserializerBuilder()
             .WithNamingConvention(HyphenatedNamingConvention.Instance)

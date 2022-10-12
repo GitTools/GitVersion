@@ -54,7 +54,7 @@ public static class ConfigExtensions
         return result;
     }
 
-    private static BranchConfiguration? ForBranch(Model.Configuration.GitVersionConfiguration configuration, string branchName)
+    private static BranchConfiguration? ForBranch(GitVersionConfiguration configuration, string branchName)
     {
         var matches = configuration.Branches
             .Where(b => b.Value?.Regex != null && Regex.IsMatch(branchName, b.Value.Regex, RegexOptions.IgnoreCase))

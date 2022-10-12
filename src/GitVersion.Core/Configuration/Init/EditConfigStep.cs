@@ -2,6 +2,7 @@ using GitVersion.Configuration.Init.BuildServer;
 using GitVersion.Configuration.Init.SetConfig;
 using GitVersion.Configuration.Init.Wizard;
 using GitVersion.Logging;
+using GitVersion.Model.Configuration;
 
 namespace GitVersion.Configuration.Init;
 
@@ -11,7 +12,7 @@ public class EditConfigStep : ConfigInitWizardStep
     {
     }
 
-    protected override StepResult HandleResult(string? result, Queue<ConfigInitWizardStep> steps, Model.Configuration.GitVersionConfiguration configuration, string workingDirectory)
+    protected override StepResult HandleResult(string? result, Queue<ConfigInitWizardStep> steps, GitVersionConfiguration configuration, string workingDirectory)
     {
         switch (result)
         {
@@ -45,7 +46,7 @@ public class EditConfigStep : ConfigInitWizardStep
         return StepResult.InvalidResponseSelected();
     }
 
-    protected override string GetPrompt(Model.Configuration.GitVersionConfiguration configuration, string workingDirectory) => $@"Which would you like to change?
+    protected override string GetPrompt(GitVersionConfiguration configuration, string workingDirectory) => $@"Which would you like to change?
 
 0) Save changes and exit
 1) Exit without saving

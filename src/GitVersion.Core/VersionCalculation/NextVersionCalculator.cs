@@ -147,7 +147,7 @@ public class NextVersionCalculator : INextVersionCalculator
 
     private static bool MajorMinorPatchEqual(SemanticVersion lastTag, SemanticVersion baseVersion) => lastTag.Major == baseVersion.Major && lastTag.Minor == baseVersion.Minor && lastTag.Patch == baseVersion.Patch;
 
-    private NextVersion Calculate(IBranch branch, Model.Configuration.GitVersionConfiguration configuration)
+    private NextVersion Calculate(IBranch branch, GitVersionConfiguration configuration)
     {
         using (log.IndentLog("Calculating the base versions"))
         {
@@ -222,7 +222,7 @@ public class NextVersionCalculator : INextVersionCalculator
         }
     }
 
-    private IEnumerable<NextVersion> GetNextVersions(IBranch branch, Model.Configuration.GitVersionConfiguration configuration)
+    private IEnumerable<NextVersion> GetNextVersions(IBranch branch, GitVersionConfiguration configuration)
     {
         if (branch.Tip == null)
             throw new GitVersionException("No commits found on the current branch.");

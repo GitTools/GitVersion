@@ -1,5 +1,6 @@
 using GitVersion.Extensions;
 using GitVersion.Logging;
+using GitVersion.Model.Configuration;
 
 namespace GitVersion;
 
@@ -9,9 +10,9 @@ internal class MergeCommitFinder
     private readonly ILog log;
     private readonly Dictionary<IBranch?, List<BranchCommit>> mergeBaseCommitsCache = new();
     private readonly RepositoryStore repositoryStore;
-    private readonly Model.Configuration.GitVersionConfiguration configuration;
+    private readonly GitVersionConfiguration configuration;
 
-    public MergeCommitFinder(RepositoryStore repositoryStore, Model.Configuration.GitVersionConfiguration configuration, IEnumerable<IBranch> excludedBranches, ILog log)
+    public MergeCommitFinder(RepositoryStore repositoryStore, GitVersionConfiguration configuration, IEnumerable<IBranch> excludedBranches, ILog log)
     {
         this.repositoryStore = repositoryStore.NotNull();
         this.configuration = configuration.NotNull();

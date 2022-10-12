@@ -14,7 +14,7 @@ internal class OverrideConfigOptionParser
 
     /// <summary>
     /// Dynamically creates <see cref="System.Linq.ILookup{TKey, TElement}"/> of
-    /// <see cref="Model.Configuration.GitVersionConfiguration"/> properties supported as a part of command line '/overrideconfig' option.
+    /// <see cref="GitVersionConfiguration"/> properties supported as a part of command line '/overrideconfig' option.
     /// </summary>
     /// <returns></returns>
     /// <remarks>
@@ -33,7 +33,7 @@ internal class OverrideConfigOptionParser
         );
 
     /// <summary>
-    /// Checks if property <see cref="Type"/> of <see cref="Model.Configuration.GitVersionConfiguration"/>
+    /// Checks if property <see cref="Type"/> of <see cref="GitVersionConfiguration"/>
     /// is supported as a part of command line '/overrideconfig' option.
     /// </summary>
     /// <param name="propertyType">Type we want to check.</param>

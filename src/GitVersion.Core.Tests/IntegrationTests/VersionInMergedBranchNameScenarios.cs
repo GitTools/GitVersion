@@ -31,7 +31,7 @@ public class VersionInMergedBranchNameScenarios : TestBase
     [Test]
     public void TakesVersionFromNameOfBranchThatIsReleaseByConfig()
     {
-        var configuration = new Model.Configuration.GitVersionConfiguration
+        var configuration = new GitVersionConfiguration
         {
             Branches = new Dictionary<string, BranchConfiguration> { { "support", new BranchConfiguration { IsReleaseBranch = true } } }
         };

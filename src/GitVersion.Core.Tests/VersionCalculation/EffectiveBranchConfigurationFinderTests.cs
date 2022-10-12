@@ -150,7 +150,7 @@ public class EffectiveBranchConfigurationFinderTests
             IsReleaseBranch = false,
             SourceBranches = new HashSet<string>()
         };
-        var configuration = new ConfigurationBuilder().Add(new Model.Configuration.GitVersionConfiguration
+        var configuration = new ConfigurationBuilder().Add(new GitVersionConfiguration
         {
             VersioningMode = VersioningMode.ContinuousDelivery,
             Branches =
@@ -353,7 +353,7 @@ public class EffectiveBranchConfigurationFinderTests
         var configuration = TestConfigurationBuilder.New.WithIncrement(IncrementStrategy.Inherit).WithIncrement("develop", developBranchIncrement).Build();
         var repositoryStoreMock = Substitute.For<IRepositoryStore>();
         var developBranchMock = GitToolsTestingExtensions.CreateMockBranch("develop", GitToolsTestingExtensions.CreateMockCommit());
-        repositoryStoreMock.GetSourceBranches(Arg.Any<IBranch>(), Arg.Any<Model.Configuration.GitVersionConfiguration>(), Arg.Any<HashSet<IBranch>>()).Returns(new[] { developBranchMock });
+        repositoryStoreMock.GetSourceBranches(Arg.Any<IBranch>(), Arg.Any<GitVersionConfiguration>(), Arg.Any<HashSet<IBranch>>()).Returns(new[] { developBranchMock });
 
         var unitUnderTest = new EffectiveBranchConfigurationFinder(Substitute.For<ILog>(), repositoryStoreMock);
 

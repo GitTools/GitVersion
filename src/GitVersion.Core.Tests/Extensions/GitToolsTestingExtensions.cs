@@ -3,6 +3,7 @@ using GitVersion.BuildAgents;
 using GitVersion.Configuration;
 using GitVersion.Core.Tests.Helpers;
 using GitVersion.Extensions;
+using GitVersion.Model.Configuration;
 using GitVersion.OutputVariables;
 using GitVersion.VersionCalculation;
 using LibGit2Sharp;
@@ -53,7 +54,7 @@ public static class GitToolsTestingExtensions
 
     public static void DumpGraph(this IRepository repository, Action<string>? writer = null, int? maxCommits = null) => GitExtensions.DumpGraph(repository.ToGitRepository().Path, writer, maxCommits);
 
-    public static VersionVariables GetVersion(this RepositoryFixtureBase fixture, Model.Configuration.GitVersionConfiguration? configuration = null, IRepository? repository = null, string? commitId = null, bool onlyTrackedBranches = true, string? branch = null)
+    public static VersionVariables GetVersion(this RepositoryFixtureBase fixture, GitVersionConfiguration? configuration = null, IRepository? repository = null, string? commitId = null, bool onlyTrackedBranches = true, string? branch = null)
     {
         configuration ??= new ConfigurationBuilder().Build();
 
@@ -103,7 +104,7 @@ public static class GitToolsTestingExtensions
         writer.Write(versionInfo.ToString());
     }
 
-    public static void AssertFullSemver(this RepositoryFixtureBase fixture, string fullSemver, Model.Configuration.GitVersionConfiguration? configuration = null, IRepository? repository = null, string? commitId = null, bool onlyTrackedBranches = true, string? targetBranch = null)
+    public static void AssertFullSemver(this RepositoryFixtureBase fixture, string fullSemver, GitVersionConfiguration? configuration = null, IRepository? repository = null, string? commitId = null, bool onlyTrackedBranches = true, string? targetBranch = null)
     {
         Console.WriteLine("---------");
 

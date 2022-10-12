@@ -1,5 +1,6 @@
 using GitVersion.Configuration.Init.Wizard;
 using GitVersion.Logging;
+using GitVersion.Model.Configuration;
 
 namespace GitVersion.Configuration.Init.BuildServer;
 
@@ -9,7 +10,7 @@ internal class AppveyorPublicPrivate : ConfigInitWizardStep
     {
     }
 
-    protected override StepResult HandleResult(string? result, Queue<ConfigInitWizardStep> steps, Model.Configuration.GitVersionConfiguration configuration, string workingDirectory)
+    protected override StepResult HandleResult(string? result, Queue<ConfigInitWizardStep> steps, GitVersionConfiguration configuration, string workingDirectory)
     {
         switch (result)
         {
@@ -26,7 +27,7 @@ internal class AppveyorPublicPrivate : ConfigInitWizardStep
         return StepResult.Ok();
     }
 
-    protected override string GetPrompt(Model.Configuration.GitVersionConfiguration configuration, string workingDirectory) => @"Is your project public or private?
+    protected override string GetPrompt(GitVersionConfiguration configuration, string workingDirectory) => @"Is your project public or private?
 
 That is ... does it require authentication to clone/pull?
 

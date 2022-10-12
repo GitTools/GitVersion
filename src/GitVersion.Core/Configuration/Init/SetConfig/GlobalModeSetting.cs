@@ -1,5 +1,6 @@
 using GitVersion.Configuration.Init.Wizard;
 using GitVersion.Logging;
+using GitVersion.Model.Configuration;
 using GitVersion.VersionCalculation;
 
 namespace GitVersion.Configuration.Init.SetConfig;
@@ -20,7 +21,7 @@ public class GlobalModeSetting : ConfigInitWizardStep
         return this;
     }
 
-    protected override StepResult HandleResult(string? result, Queue<ConfigInitWizardStep> steps, Model.Configuration.GitVersionConfiguration configuration, string workingDirectory)
+    protected override StepResult HandleResult(string? result, Queue<ConfigInitWizardStep> steps, GitVersionConfiguration configuration, string workingDirectory)
     {
         switch (result)
         {
@@ -45,7 +46,7 @@ public class GlobalModeSetting : ConfigInitWizardStep
         return StepResult.InvalidResponseSelected();
     }
 
-    protected override string GetPrompt(Model.Configuration.GitVersionConfiguration configuration, string workingDirectory) => $@"What do you want the default increment mode to be (can be override per branch):
+    protected override string GetPrompt(GitVersionConfiguration configuration, string workingDirectory) => $@"What do you want the default increment mode to be (can be override per branch):
 {(!this.isPartOfWizard ? "0) Go Back" : string.Empty)}
 1) Follow SemVer and only increment when a release has been tagged (continuous delivery mode)
 2) Increment based on branch configuration every commit (continuous deployment mode)

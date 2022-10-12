@@ -1,6 +1,7 @@
 using GitTools.Testing;
 using GitVersion.Core.Tests.Helpers;
 using GitVersion.Extensions;
+using GitVersion.Model.Configuration;
 using GitVersion.VersionCalculation;
 using LibGit2Sharp;
 using NUnit.Framework;
@@ -126,7 +127,7 @@ public class HotfixBranchScenarios : TestBase
     [Test]
     public void FeatureOnHotfixFeatureBranchDeleted()
     {
-        var configuration = new Model.Configuration.GitVersionConfiguration
+        var configuration = new GitVersionConfiguration
         {
             AssemblyVersioningScheme = AssemblyVersioningScheme.MajorMinorPatchTag,
             VersioningMode = VersioningMode.ContinuousDeployment
@@ -179,7 +180,7 @@ public class HotfixBranchScenarios : TestBase
     [Test]
     public void FeatureOnHotfixFeatureBranchNotDeleted()
     {
-        var configuration = new Model.Configuration.GitVersionConfiguration
+        var configuration = new GitVersionConfiguration
         {
             AssemblyVersioningScheme = AssemblyVersioningScheme.MajorMinorPatchTag,
             VersioningMode = VersioningMode.ContinuousDeployment

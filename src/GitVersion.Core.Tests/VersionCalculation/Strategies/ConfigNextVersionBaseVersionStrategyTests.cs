@@ -24,7 +24,7 @@ public class ConfigNextVersionBaseVersionStrategyTests : TestBase
     [TestCase("2.12.654651698", "2.12.654651698")]
     public void ConfigNextVersionTest(string nextVersion, string expectedVersion)
     {
-        var baseVersion = GetBaseVersion(new Model.Configuration.GitVersionConfiguration
+        var baseVersion = GetBaseVersion(new GitVersionConfiguration
         {
             NextVersion = nextVersion
         });
@@ -34,7 +34,7 @@ public class ConfigNextVersionBaseVersionStrategyTests : TestBase
         baseVersion.SemanticVersion.ToString().ShouldBe(expectedVersion);
     }
 
-    private static BaseVersion? GetBaseVersion(Model.Configuration.GitVersionConfiguration? configuration = null)
+    private static BaseVersion? GetBaseVersion(GitVersionConfiguration? configuration = null)
     {
         var contextBuilder = new GitVersionContextBuilder();
 

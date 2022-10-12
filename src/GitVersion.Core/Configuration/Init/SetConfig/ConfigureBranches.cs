@@ -10,7 +10,7 @@ public class ConfigureBranches : ConfigInitWizardStep
     {
     }
 
-    protected override StepResult HandleResult(string? result, Queue<ConfigInitWizardStep> steps, Model.Configuration.GitVersionConfiguration configuration, string workingDirectory)
+    protected override StepResult HandleResult(string? result, Queue<ConfigInitWizardStep> steps, GitVersionConfiguration configuration, string workingDirectory)
     {
         if (int.TryParse(result, out var parsed))
         {
@@ -44,7 +44,7 @@ public class ConfigureBranches : ConfigInitWizardStep
 0) Go Back
 " + string.Join(System.Environment.NewLine, OrderedBranches(configuration).Select((c, i) => $"{i + 1}) {c.Key}"));
 
-    private static IOrderedEnumerable<KeyValuePair<string, BranchConfiguration>> OrderedBranches(Model.Configuration.GitVersionConfiguration configuration)
+    private static IOrderedEnumerable<KeyValuePair<string, BranchConfiguration>> OrderedBranches(GitVersionConfiguration configuration)
     {
         var defaultConfig = new ConfigurationBuilder().Build();
 

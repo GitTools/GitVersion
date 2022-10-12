@@ -22,7 +22,7 @@ public class DocumentationTests : TestBase
         var configurationDocumentationFile = ReadDocumentationFile("input/docs/reference/configuration.md");
 
         const BindingFlags bindingFlags = BindingFlags.Public | BindingFlags.DeclaredOnly | BindingFlags.Instance;
-        var configProperties = typeof(Model.Configuration.GitVersionConfiguration)
+        var configProperties = typeof(GitVersionConfiguration)
             .GetProperties(bindingFlags)
             .Union(typeof(BranchConfiguration).GetProperties(bindingFlags))
             .Select(p => p.GetCustomAttribute<YamlMemberAttribute>())

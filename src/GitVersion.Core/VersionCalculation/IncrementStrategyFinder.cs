@@ -56,7 +56,7 @@ public class IncrementStrategyFinder : IIncrementStrategyFinder
         return commitMessageIncrement ?? VersionField.None;
     }
 
-    public VersionField? GetIncrementForCommits(Model.Configuration.GitVersionConfiguration configuration, IEnumerable<ICommit> commits)
+    public VersionField? GetIncrementForCommits(GitVersionConfiguration configuration, IEnumerable<ICommit> commits)
     {
         var majorRegex = TryGetRegexOrDefault(configuration.MajorVersionBumpMessage, DefaultMajorPatternRegex);
         var minorRegex = TryGetRegexOrDefault(configuration.MinorVersionBumpMessage, DefaultMinorPatternRegex);

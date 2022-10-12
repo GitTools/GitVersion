@@ -42,7 +42,7 @@ public class ConfigProvider : IConfigProvider
         if (workingDirectory != null)
             configurationBuilder = configurationBuilder.Add(this.configFileLocator.ReadConfig(workingDirectory));
         return configurationBuilder
-            .Add(overrideConfig ?? new Model.Configuration.GitVersionConfiguration())
+            .Add(overrideConfig ?? new GitVersionConfiguration())
             .Build();
     }
 

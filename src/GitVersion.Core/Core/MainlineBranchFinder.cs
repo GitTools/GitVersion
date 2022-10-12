@@ -16,7 +16,7 @@ internal class MainlineBranchFinder
 
     public MainlineBranchFinder(IRepositoryStore repositoryStore,
                                 IGitRepository repository,
-                                Model.Configuration.GitVersionConfiguration configuration,
+                                GitVersionConfiguration configuration,
                                 ILog log)
     {
         this.repositoryStore = repositoryStore.NotNull();
@@ -73,11 +73,11 @@ internal class MainlineBranchFinder
     private class BranchOriginFinder
     {
         private readonly ICommit commit;
-        private readonly Model.Configuration.GitVersionConfiguration configuration;
+        private readonly GitVersionConfiguration configuration;
         private readonly ILog log;
         private readonly IRepositoryStore repositoryStore;
 
-        public BranchOriginFinder(ICommit commit, IRepositoryStore repositoryStore, Model.Configuration.GitVersionConfiguration configuration, ILog log)
+        public BranchOriginFinder(ICommit commit, IRepositoryStore repositoryStore, GitVersionConfiguration configuration, ILog log)
         {
             this.repositoryStore = repositoryStore;
             this.commit = commit;

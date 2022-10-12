@@ -1,15 +1,16 @@
 using System.Text.RegularExpressions;
 using GitVersion.Configuration;
 using GitVersion.Extensions;
+using GitVersion.Model.Configuration;
 
 namespace GitVersion;
 
 internal class SourceBranchFinder
 {
-    private readonly Model.Configuration.GitVersionConfiguration configuration;
+    private readonly GitVersionConfiguration configuration;
     private readonly IEnumerable<IBranch> excludedBranches;
 
-    public SourceBranchFinder(IEnumerable<IBranch> excludedBranches, Model.Configuration.GitVersionConfiguration configuration)
+    public SourceBranchFinder(IEnumerable<IBranch> excludedBranches, GitVersionConfiguration configuration)
     {
         this.excludedBranches = excludedBranches.NotNull();
         this.configuration = configuration.NotNull();
@@ -26,7 +27,7 @@ internal class SourceBranchFinder
         private readonly IBranch branch;
         private readonly IEnumerable<string> sourceBranchRegexes;
 
-        public SourceBranchPredicate(IBranch branch, Model.Configuration.GitVersionConfiguration configuration)
+        public SourceBranchPredicate(IBranch branch, GitVersionConfiguration configuration)
         {
             this.branch = branch;
             this.sourceBranchRegexes = GetSourceBranchRegexes(branch, configuration);
@@ -43,7 +44,7 @@ internal class SourceBranchFinder
                 .Any(regex => Regex.IsMatch(branchName, regex));
         }
 
-        private static IEnumerable<string> GetSourceBranchRegexes(INamedReference branch, Model.Configuration.GitVersionConfiguration configuration)
+        private static IEnumerable<string> GetSourceBranchRegexes(INamedReference branch, GitVersionConfiguration configuration)
         {
             var branchName = branch.Name.WithoutRemote;
             var currentBranchConfig = configuration.GetBranchConfiguration(branchName);

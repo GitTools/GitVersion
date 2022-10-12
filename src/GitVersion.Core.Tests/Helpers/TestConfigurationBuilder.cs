@@ -105,9 +105,9 @@ public sealed class TestConfigurationBuilder
         return this;
     }
 
-    public Model.Configuration.GitVersionConfiguration Build()
+    public GitVersionConfiguration Build()
     {
-        Model.Configuration.GitVersionConfiguration configuration = new()
+        GitVersionConfiguration configuration = new()
         {
             NextVersion = nextVersion,
             VersioningMode = versioningMode

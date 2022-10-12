@@ -39,7 +39,7 @@ public class FeatureBranchScenarios : TestBase
     [Test]
     public void BranchCreatedAfterFastForwardMergeShouldInheritCorrectly()
     {
-        var configuration = new Model.Configuration.GitVersionConfiguration
+        var configuration = new GitVersionConfiguration
         {
             Branches =
             {
@@ -168,14 +168,14 @@ public class FeatureBranchScenarios : TestBase
         Commands.Checkout(fixture.Repository, branchName);
         fixture.Repository.Merge(fixture.Repository.Branches["develop"], Generate.SignatureNow());
 
-        var configuration = new Model.Configuration.GitVersionConfiguration { VersioningMode = VersioningMode.ContinuousDeployment };
+        var configuration = new GitVersionConfiguration { VersioningMode = VersioningMode.ContinuousDeployment };
         fixture.AssertFullSemver("1.2.0-longrunning.2", configuration);
     }
 
     [Test]
     public void CanUseBranchNameOffAReleaseBranch()
     {
-        var configuration = new Model.Configuration.GitVersionConfiguration
+        var configuration = new GitVersionConfiguration
         {
             Branches =
             {
@@ -200,7 +200,7 @@ public class FeatureBranchScenarios : TestBase
     [TestCase("alpha.{BranchName}", "JIRA-123", "alpha.JIRA-123")]
     public void ShouldUseConfiguredTag(string tag, string featureName, string preReleaseTagName)
     {
-        var configuration = new Model.Configuration.GitVersionConfiguration
+        var configuration = new GitVersionConfiguration
         {
             Branches =
             {
@@ -300,7 +300,7 @@ public class FeatureBranchScenarios : TestBase
         [Test]
         public void ShouldPickUpVersionFromMainAfterReleaseBranchCreated()
         {
-            var configuration = new Model.Configuration.GitVersionConfiguration
+            var configuration = new GitVersionConfiguration
             {
                 Branches = new Dictionary<string, BranchConfiguration>
                 {
@@ -331,7 +331,7 @@ public class FeatureBranchScenarios : TestBase
         [Test]
         public void ShouldPickUpVersionFromMainAfterReleaseBranchMergedBack()
         {
-            var configuration = new Model.Configuration.GitVersionConfiguration
+            var configuration = new GitVersionConfiguration
             {
                 Branches = new Dictionary<string, BranchConfiguration>
                 {
@@ -410,7 +410,7 @@ public class FeatureBranchScenarios : TestBase
             [Test]
             public void ShouldPickUpVersionFromMainAfterReleaseBranchCreated()
             {
-                var configuration = new Model.Configuration.GitVersionConfiguration
+                var configuration = new GitVersionConfiguration
                 {
                     Branches = new Dictionary<string, BranchConfiguration>
                     {
@@ -441,7 +441,7 @@ public class FeatureBranchScenarios : TestBase
             [Test]
             public void ShouldPickUpVersionFromMainAfterReleaseBranchMergedBack()
             {
-                var configuration = new Model.Configuration.GitVersionConfiguration
+                var configuration = new GitVersionConfiguration
                 {
                     Branches = new Dictionary<string, BranchConfiguration>
                     {
@@ -476,7 +476,7 @@ public class FeatureBranchScenarios : TestBase
     [Test]
     public void PickUpVersionFromMainMarkedWithIsTracksReleaseBranches()
     {
-        var configuration = new Model.Configuration.GitVersionConfiguration
+        var configuration = new GitVersionConfiguration
         {
             VersioningMode = VersioningMode.ContinuousDelivery,
             Branches = new Dictionary<string, BranchConfiguration>
@@ -520,7 +520,7 @@ public class FeatureBranchScenarios : TestBase
     [Test]
     public void ShouldHaveAGreaterSemVerAfterDevelopIsMergedIntoFeature()
     {
-        var configuration = new Model.Configuration.GitVersionConfiguration
+        var configuration = new GitVersionConfiguration
         {
             VersioningMode = VersioningMode.ContinuousDeployment,
             AssemblyVersioningScheme = AssemblyVersioningScheme.Major,

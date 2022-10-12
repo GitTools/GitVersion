@@ -1,6 +1,7 @@
 using GitTools.Testing;
 using GitVersion.Configuration;
 using GitVersion.Core.Tests.Helpers;
+using GitVersion.Model.Configuration;
 using GitVersion.VersionCalculation;
 using NUnit.Framework;
 using Shouldly;
@@ -15,7 +16,7 @@ internal class VersionInTagScenarios
     {
         // Arrange
         var configuration = new ConfigurationBuilder()
-            .Add(new Model.Configuration.GitVersionConfiguration
+            .Add(new GitVersionConfiguration
             {
                 AssemblyFileVersioningFormat = "{Major}.{Minor}.{Patch}.{WeightedPreReleaseNumber}"
             })
@@ -35,7 +36,7 @@ internal class VersionInTagScenarios
     {
         // Arrange
         var configuration = new ConfigurationBuilder()
-            .Add(new Model.Configuration.GitVersionConfiguration
+            .Add(new GitVersionConfiguration
             {
                 AssemblyFileVersioningFormat = "{Major}.{Minor}.{Patch}.{WeightedPreReleaseNumber}",
                 TagPreReleaseWeight = 65535
@@ -56,7 +57,7 @@ internal class VersionInTagScenarios
     {
         // Arrange
         var configuration = new ConfigurationBuilder()
-            .Add(new Model.Configuration.GitVersionConfiguration
+            .Add(new GitVersionConfiguration
             {
                 AssemblyFileVersioningFormat = "{Major}.{Minor}.{Patch}.{WeightedPreReleaseNumber}",
                 TagPreReleaseWeight = 65535,
@@ -85,7 +86,7 @@ internal class VersionInTagScenarios
     {
         // Arrange
         var configuration = new ConfigurationBuilder()
-            .Add(new Model.Configuration.GitVersionConfiguration
+            .Add(new GitVersionConfiguration
             {
                 AssemblyFileVersioningFormat = "{Major}.{Minor}.{Patch}.{WeightedPreReleaseNumber}",
                 VersioningMode = VersioningMode.ContinuousDeployment
