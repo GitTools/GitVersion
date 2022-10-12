@@ -11,6 +11,6 @@ public class ConfigurationModule : IGitVersionModule
         services.AddModule(new GitVersionInitModule());
 
         services.AddSingleton<IConfigProvider, ConfigProvider>();
-        services.AddSingleton<IConfigFileLocator, ConfigFileLocator>();
+        services.AddSingleton<IConfigurationFileLocator, ConfigurationFileLocator>();
     }
 }

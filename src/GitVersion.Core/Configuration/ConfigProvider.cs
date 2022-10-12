@@ -10,12 +10,12 @@ public class ConfigProvider : IConfigProvider
 {
     private readonly IFileSystem fileSystem;
     private readonly ILog log;
-    private readonly IConfigFileLocator configFileLocator;
+    private readonly IConfigurationFileLocator configFileLocator;
     private readonly IOptions<GitVersionOptions> options;
     private readonly IConfigInitWizard configInitWizard;
     private readonly IGitRepositoryInfo repositoryInfo;
 
-    public ConfigProvider(IFileSystem fileSystem, ILog log, IConfigFileLocator configFileLocator,
+    public ConfigProvider(IFileSystem fileSystem, ILog log, IConfigurationFileLocator configFileLocator,
         IOptions<GitVersionOptions> options, IConfigInitWizard configInitWizard, IGitRepositoryInfo repositoryInfo)
     {
         this.fileSystem = fileSystem.NotNull();

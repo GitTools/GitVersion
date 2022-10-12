@@ -14,12 +14,12 @@ public class GitVersionCacheKeyFactory : IGitVersionCacheKeyFactory
     private readonly IFileSystem fileSystem;
     private readonly ILog log;
     private readonly IOptions<GitVersionOptions> options;
-    private readonly IConfigFileLocator configFileLocator;
+    private readonly IConfigurationFileLocator configFileLocator;
     private readonly IGitRepository gitRepository;
     private readonly IGitRepositoryInfo repositoryInfo;
 
     public GitVersionCacheKeyFactory(IFileSystem fileSystem, ILog log,
-        IOptions<GitVersionOptions> options, IConfigFileLocator configFileLocator,
+        IOptions<GitVersionOptions> options, IConfigurationFileLocator configFileLocator,
         IGitRepository gitRepository, IGitRepositoryInfo repositoryInfo)
     {
         this.fileSystem = fileSystem.NotNull();

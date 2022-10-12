@@ -287,7 +287,7 @@ public class GitVersionExecutorTests : TestBase
         versionVariables = gitVersionCalculator.CalculateVersionVariables();
         versionVariables.AssemblySemVer.ShouldBe("4.10.3.0");
 
-        var configPath = PathHelper.Combine(fixture.RepositoryPath, ConfigFileLocator.DefaultFileName);
+        var configPath = PathHelper.Combine(fixture.RepositoryPath, ConfigurationFileLocator.DefaultFileName);
         this.fileSystem.WriteAllText(configPath, "next-version: 5.0.0");
 
         gitVersionCalculator = GetGitVersionCalculator(gitVersionOptions, fs: this.fileSystem);

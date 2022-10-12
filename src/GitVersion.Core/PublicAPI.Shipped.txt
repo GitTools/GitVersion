@@ -27,7 +27,7 @@ const GitVersion.BuildAgents.MyGet.EnvironmentVariableName = "BuildRunner" -> st
 const GitVersion.BuildAgents.SpaceAutomation.EnvironmentVariableName = "JB_SPACE_PROJECT_KEY" -> string!
 const GitVersion.BuildAgents.TeamCity.EnvironmentVariableName = "TEAMCITY_VERSION" -> string!
 const GitVersion.BuildAgents.TravisCi.EnvironmentVariableName = "TRAVIS" -> string!
-const GitVersion.Configuration.ConfigFileLocator.DefaultFileName = "GitVersion.yml" -> string!
+const GitVersion.Configuration.ConfigurationFileLocator.DefaultFileName = "GitVersion.yml" -> string!
 const GitVersion.Model.Configuration.GitVersionConfiguration.DefaultTagPrefix = "[vV]" -> string!
 const GitVersion.Model.Configuration.GitVersionConfiguration.DevelopBranchKey = "develop" -> string!
 const GitVersion.Model.Configuration.GitVersionConfiguration.DevelopBranchRegex = "^dev(elop)?(ment)?$" -> string!
@@ -174,17 +174,17 @@ GitVersion.ConfigInfo.ConfigInfo() -> void
 GitVersion.ConfigInfo.OverrideConfig -> GitVersion.Model.Configuration.GitVersionConfiguration?
 GitVersion.ConfigInfo.ShowConfig -> bool
 GitVersion.Configuration.ConfigExtensions
-GitVersion.Configuration.ConfigFileLocator
-GitVersion.Configuration.ConfigFileLocator.ConfigFileLocator(GitVersion.IFileSystem! fileSystem, Microsoft.Extensions.Options.IOptions<GitVersion.GitVersionOptions!>! options) -> void
-GitVersion.Configuration.ConfigFileLocator.FilePath.get -> string!
-GitVersion.Configuration.ConfigFileLocator.GetConfigFilePath(string? workingDirectory) -> string?
-GitVersion.Configuration.ConfigFileLocator.HasConfigFileAt(string! workingDirectory) -> bool
-GitVersion.Configuration.ConfigFileLocator.ReadConfig(string! workingDirectory) -> GitVersion.Model.Configuration.GitVersionConfiguration!
-GitVersion.Configuration.ConfigFileLocator.SelectConfigFilePath(GitVersion.GitVersionOptions! gitVersionOptions, GitVersion.IGitRepositoryInfo! repositoryInfo) -> string?
-GitVersion.Configuration.ConfigFileLocator.Verify(GitVersion.GitVersionOptions! gitVersionOptions, GitVersion.IGitRepositoryInfo! repositoryInfo) -> void
-GitVersion.Configuration.ConfigFileLocator.Verify(string? workingDirectory, string? projectRootDirectory) -> void
+GitVersion.Configuration.ConfigurationFileLocator
+GitVersion.Configuration.ConfigurationFileLocator.ConfigurationFileLocator(GitVersion.IFileSystem! fileSystem, Microsoft.Extensions.Options.IOptions<GitVersion.GitVersionOptions!>! options) -> void
+GitVersion.Configuration.ConfigurationFileLocator.FilePath.get -> string!
+GitVersion.Configuration.ConfigurationFileLocator.GetConfigFilePath(string? workingDirectory) -> string?
+GitVersion.Configuration.ConfigurationFileLocator.HasConfigFileAt(string! workingDirectory) -> bool
+GitVersion.Configuration.ConfigurationFileLocator.ReadConfig(string! workingDirectory) -> GitVersion.Model.Configuration.GitVersionConfiguration!
+GitVersion.Configuration.ConfigurationFileLocator.SelectConfigFilePath(GitVersion.GitVersionOptions! gitVersionOptions, GitVersion.IGitRepositoryInfo! repositoryInfo) -> string?
+GitVersion.Configuration.ConfigurationFileLocator.Verify(GitVersion.GitVersionOptions! gitVersionOptions, GitVersion.IGitRepositoryInfo! repositoryInfo) -> void
+GitVersion.Configuration.ConfigurationFileLocator.Verify(string? workingDirectory, string? projectRootDirectory) -> void
 GitVersion.Configuration.ConfigProvider
-GitVersion.Configuration.ConfigProvider.ConfigProvider(GitVersion.IFileSystem! fileSystem, GitVersion.Logging.ILog! log, GitVersion.Configuration.IConfigFileLocator! configFileLocator, Microsoft.Extensions.Options.IOptions<GitVersion.GitVersionOptions!>! options, GitVersion.Configuration.Init.Wizard.IConfigInitWizard! configInitWizard, GitVersion.IGitRepositoryInfo! repositoryInfo) -> void
+GitVersion.Configuration.ConfigProvider.ConfigProvider(GitVersion.IFileSystem! fileSystem, GitVersion.Logging.ILog! log, GitVersion.Configuration.IConfigurationFileLocator! configFileLocator, Microsoft.Extensions.Options.IOptions<GitVersion.GitVersionOptions!>! options, GitVersion.Configuration.Init.Wizard.IConfigInitWizard! configInitWizard, GitVersion.IGitRepositoryInfo! repositoryInfo) -> void
 GitVersion.Configuration.ConfigProvider.Init(string! workingDirectory) -> void
 GitVersion.Configuration.ConfigProvider.Provide(GitVersion.Model.Configuration.GitVersionConfiguration? overrideConfig = null) -> GitVersion.Model.Configuration.GitVersionConfiguration!
 GitVersion.Configuration.ConfigProvider.Provide(string? workingDirectory, GitVersion.Model.Configuration.GitVersionConfiguration? overrideConfig = null) -> GitVersion.Model.Configuration.GitVersionConfiguration!
@@ -199,14 +199,14 @@ GitVersion.Configuration.ConfigurationException.ConfigurationException(string! m
 GitVersion.Configuration.ConfigurationModule
 GitVersion.Configuration.ConfigurationModule.ConfigurationModule() -> void
 GitVersion.Configuration.ConfigurationModule.RegisterTypes(Microsoft.Extensions.DependencyInjection.IServiceCollection! services) -> void
-GitVersion.Configuration.IConfigFileLocator
-GitVersion.Configuration.IConfigFileLocator.FilePath.get -> string!
-GitVersion.Configuration.IConfigFileLocator.GetConfigFilePath(string! workingDirectory) -> string?
-GitVersion.Configuration.IConfigFileLocator.HasConfigFileAt(string! workingDirectory) -> bool
-GitVersion.Configuration.IConfigFileLocator.ReadConfig(string! workingDirectory) -> GitVersion.Model.Configuration.GitVersionConfiguration!
-GitVersion.Configuration.IConfigFileLocator.SelectConfigFilePath(GitVersion.GitVersionOptions! gitVersionOptions, GitVersion.IGitRepositoryInfo! repositoryInfo) -> string?
-GitVersion.Configuration.IConfigFileLocator.Verify(GitVersion.GitVersionOptions! gitVersionOptions, GitVersion.IGitRepositoryInfo! repositoryInfo) -> void
-GitVersion.Configuration.IConfigFileLocator.Verify(string! workingDirectory, string! projectRootDirectory) -> void
+GitVersion.Configuration.IConfigurationFileLocator
+GitVersion.Configuration.IConfigurationFileLocator.FilePath.get -> string!
+GitVersion.Configuration.IConfigurationFileLocator.GetConfigFilePath(string! workingDirectory) -> string?
+GitVersion.Configuration.IConfigurationFileLocator.HasConfigFileAt(string! workingDirectory) -> bool
+GitVersion.Configuration.IConfigurationFileLocator.ReadConfig(string! workingDirectory) -> GitVersion.Model.Configuration.GitVersionConfiguration!
+GitVersion.Configuration.IConfigurationFileLocator.SelectConfigFilePath(GitVersion.GitVersionOptions! gitVersionOptions, GitVersion.IGitRepositoryInfo! repositoryInfo) -> string?
+GitVersion.Configuration.IConfigurationFileLocator.Verify(GitVersion.GitVersionOptions! gitVersionOptions, GitVersion.IGitRepositoryInfo! repositoryInfo) -> void
+GitVersion.Configuration.IConfigurationFileLocator.Verify(string! workingDirectory, string! projectRootDirectory) -> void
 GitVersion.Configuration.IConfigProvider
 GitVersion.Configuration.IConfigProvider.Init(string! workingDirectory) -> void
 GitVersion.Configuration.IConfigProvider.Provide(GitVersion.Model.Configuration.GitVersionConfiguration? overrideConfig = null) -> GitVersion.Model.Configuration.GitVersionConfiguration!
@@ -935,7 +935,7 @@ GitVersion.VersionCalculation.Cache.GitVersionCache.LoadVersionVariablesFromDisk
 GitVersion.VersionCalculation.Cache.GitVersionCache.WriteVariablesToDiskCache(GitVersion.Cache.GitVersionCacheKey! cacheKey, GitVersion.OutputVariables.VersionVariables! variablesFromCache) -> void
 GitVersion.VersionCalculation.Cache.GitVersionCacheKeyFactory
 GitVersion.VersionCalculation.Cache.GitVersionCacheKeyFactory.Create(GitVersion.Model.Configuration.GitVersionConfiguration? overrideConfig) -> GitVersion.Cache.GitVersionCacheKey!
-GitVersion.VersionCalculation.Cache.GitVersionCacheKeyFactory.GitVersionCacheKeyFactory(GitVersion.IFileSystem! fileSystem, GitVersion.Logging.ILog! log, Microsoft.Extensions.Options.IOptions<GitVersion.GitVersionOptions!>! options, GitVersion.Configuration.IConfigFileLocator! configFileLocator, GitVersion.IGitRepository! gitRepository, GitVersion.IGitRepositoryInfo! repositoryInfo) -> void
+GitVersion.VersionCalculation.Cache.GitVersionCacheKeyFactory.GitVersionCacheKeyFactory(GitVersion.IFileSystem! fileSystem, GitVersion.Logging.ILog! log, Microsoft.Extensions.Options.IOptions<GitVersion.GitVersionOptions!>! options, GitVersion.Configuration.IConfigurationFileLocator! configFileLocator, GitVersion.IGitRepository! gitRepository, GitVersion.IGitRepositoryInfo! repositoryInfo) -> void
 GitVersion.VersionCalculation.Cache.IGitVersionCache
 GitVersion.VersionCalculation.Cache.IGitVersionCache.GetCacheDirectory() -> string!
 GitVersion.VersionCalculation.Cache.IGitVersionCache.LoadVersionVariablesFromDiskCache(GitVersion.Cache.GitVersionCacheKey! key) -> GitVersion.OutputVariables.VersionVariables?

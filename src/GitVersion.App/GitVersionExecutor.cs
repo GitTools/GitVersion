@@ -9,7 +9,7 @@ public class GitVersionExecutor : IGitVersionExecutor
 {
     private readonly ILog log;
     private readonly IConsole console;
-    private readonly IConfigFileLocator configFileLocator;
+    private readonly IConfigurationFileLocator configFileLocator;
     private readonly IHelpWriter helpWriter;
     private readonly IGitRepositoryInfo repositoryInfo;
     private readonly IConfigProvider configProvider;
@@ -18,7 +18,7 @@ public class GitVersionExecutor : IGitVersionExecutor
     private readonly IVersionWriter versionWriter;
 
     public GitVersionExecutor(ILog log, IConsole console,
-        IConfigFileLocator configFileLocator, IConfigProvider configProvider,
+        IConfigurationFileLocator configFileLocator, IConfigProvider configProvider,
         IGitVersionCalculateTool gitVersionCalculateTool, IGitVersionOutputTool gitVersionOutputTool,
         IVersionWriter versionWriter, IHelpWriter helpWriter, IGitRepositoryInfo repositoryInfo)
     {

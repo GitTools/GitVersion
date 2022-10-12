@@ -2,7 +2,7 @@ using GitVersion.Model.Configuration;
 
 namespace GitVersion.Configuration;
 
-public interface IConfigFileLocator
+public interface IConfigurationFileLocator
 {
     string FilePath { get; }
     bool HasConfigFileAt(string workingDirectory);

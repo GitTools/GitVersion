@@ -6,11 +6,11 @@ using Microsoft.Extensions.Options;
 
 namespace GitVersion.Configuration;
 
-public class ConfigFileLocator : IConfigFileLocator
+public class ConfigurationFileLocator : IConfigurationFileLocator
 {
     public const string DefaultFileName = "GitVersion.yml";
     private readonly IFileSystem fileSystem;
-    public ConfigFileLocator(IFileSystem fileSystem, IOptions<GitVersionOptions> options)
+    public ConfigurationFileLocator(IFileSystem fileSystem, IOptions<GitVersionOptions> options)
     {
         this.fileSystem = fileSystem;
         var configFile = options.Value.ConfigInfo.ConfigFile;
