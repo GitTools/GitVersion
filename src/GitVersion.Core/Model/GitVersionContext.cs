@@ -1,5 +1,5 @@
-using GitVersion.Configurations;
-using GitVersion.Model.Configurations;
+using GitVersion.Configuration;
+using GitVersion.Model.Configuration;
 
 namespace GitVersion;
 
@@ -11,7 +11,7 @@ public class GitVersionContext
     /// <summary>
     /// Contains the raw configuration, use Configuration for specific configuration based on the current GitVersion context.
     /// </summary>
-    public Model.Configurations.Configuration Configuration { get; }
+    public GitVersionConfiguration Configuration { get; }
 
     public SemanticVersion? CurrentCommitTaggedVersion { get; }
 
@@ -24,7 +24,7 @@ public class GitVersionContext
     public int NumberOfUncommittedChanges { get; }
 
     public GitVersionContext(IBranch currentBranch, ICommit? currentCommit,
-        Model.Configurations.Configuration configuration, SemanticVersion? currentCommitTaggedVersion, int numberOfUncommittedChanges)
+        GitVersionConfiguration configuration, SemanticVersion? currentCommitTaggedVersion, int numberOfUncommittedChanges)
     {
         CurrentBranch = currentBranch;
         CurrentCommit = currentCommit;

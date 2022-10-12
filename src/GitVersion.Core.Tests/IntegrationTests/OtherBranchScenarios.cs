@@ -1,6 +1,6 @@
 using GitTools.Testing;
 using GitVersion.Core.Tests.Helpers;
-using GitVersion.Model.Configurations;
+using GitVersion.Model.Configuration;
 using LibGit2Sharp;
 using NUnit.Framework;
 using Shouldly;
@@ -60,7 +60,7 @@ public class OtherBranchScenarios : TestBase
     [TestCase("alpha.{BranchName}", "JIRA-123", "alpha.JIRA-123")]
     public void TagIsBranchNameForBranchesWithoutPrefixedBranchName(string tag, string branchName, string preReleaseTagName)
     {
-        var configuration = new Model.Configurations.Configuration
+        var configuration = new Model.Configuration.GitVersionConfiguration
         {
             Branches =
             {

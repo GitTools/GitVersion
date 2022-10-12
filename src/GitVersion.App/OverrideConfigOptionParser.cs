@@ -1,4 +1,4 @@
-using GitVersion.Model.Configurations;
+using GitVersion.Model.Configuration;
 using YamlDotNet.Serialization;
 
 namespace GitVersion;
@@ -8,20 +8,20 @@ internal class OverrideConfigOptionParser
     private static readonly Lazy<ILookup<string?, PropertyInfo>> _lazySupportedProperties =
         new(GetSupportedProperties, true);
 
-    private readonly Lazy<Configuration> lazyConfig = new();
+    private readonly Lazy<GitVersionConfiguration> lazyConfig = new();
 
     internal static ILookup<string?, PropertyInfo> SupportedProperties => _lazySupportedProperties.Value;
 
     /// <summary>
     /// Dynamically creates <see cref="System.Linq.ILookup{TKey, TElement}"/> of
-    /// <see cref="Model.Configurations.Configuration"/> properties supported as a part of command line '/overrideconfig' option.
+    /// <see cref="Model.Configuration.GitVersionConfiguration"/> properties supported as a part of command line '/overrideconfig' option.
     /// </summary>
     /// <returns></returns>
     /// <remarks>
     /// Lookup keys are created from <see cref="YamlDotNet.Serialization.YamlMemberAttribute"/> to match 'GitVersion.yml'
     /// options as close as possible.
     /// </remarks>
-    private static ILookup<string?, PropertyInfo> GetSupportedProperties() => typeof(Configuration).GetProperties(BindingFlags.Public | BindingFlags.Instance)
+    private static ILookup<string?, PropertyInfo> GetSupportedProperties() => typeof(GitVersionConfiguration).GetProperties(BindingFlags.Public | BindingFlags.Instance)
         .Where(
             pi => IsSupportedPropertyType(pi.PropertyType)
                   && pi.CanWrite
@@ -33,7 +33,7 @@ internal class OverrideConfigOptionParser
         );
 
     /// <summary>
-    /// Checks if property <see cref="Type"/> of <see cref="Model.Configurations.Configuration"/>
+    /// Checks if property <see cref="Type"/> of <see cref="Model.Configuration.GitVersionConfiguration"/>
     /// is supported as a part of command line '/overrideconfig' option.
     /// </summary>
     /// <param name="propertyType">Type we want to check.</param>
@@ -97,5 +97,5 @@ internal class OverrideConfigOptionParser
         }
     }
 
-    internal Configuration? GetConfig() => this.lazyConfig.IsValueCreated ? this.lazyConfig.Value : null;
+    internal GitVersionConfiguration? GetConfig() => this.lazyConfig.IsValueCreated ? this.lazyConfig.Value : null;
 }

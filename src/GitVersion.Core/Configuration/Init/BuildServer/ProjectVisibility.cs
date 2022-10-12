@@ -1,4 +1,4 @@
-namespace GitVersion.Configurations.Init.BuildServer;
+namespace GitVersion.Configuration.Init.BuildServer;
 
 internal enum ProjectVisibility
 {

@@ -1,7 +1,7 @@
-using GitVersion.Configurations.Init.Wizard;
+using GitVersion.Configuration.Init.Wizard;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace GitVersion.Configurations.Init;
+namespace GitVersion.Configuration.Init;
 
 public class GitVersionInitModule : GitVersionModule
 {

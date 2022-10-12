@@ -1,4 +1,4 @@
-namespace GitVersion.Configurations;
+namespace GitVersion.Configuration;
 
 public interface IConfigFileLocator
 {
@@ -8,5 +8,5 @@ public interface IConfigFileLocator
     void Verify(GitVersionOptions gitVersionOptions, IGitRepositoryInfo repositoryInfo);
     void Verify(string workingDirectory, string projectRootDirectory);
     string? SelectConfigFilePath(GitVersionOptions gitVersionOptions, IGitRepositoryInfo repositoryInfo);
-    Model.Configurations.Configuration ReadConfig(string workingDirectory);
+    Model.Configuration.GitVersionConfiguration ReadConfig(string workingDirectory);
 }

@@ -1,8 +1,8 @@
-using GitVersion.Configurations.Init.Wizard;
+using GitVersion.Configuration.Init.Wizard;
 using GitVersion.Extensions;
 using GitVersion.Logging;
 
-namespace GitVersion.Configurations.Init.SetConfig;
+namespace GitVersion.Configuration.Init.SetConfig;
 
 public class AssemblyVersioningSchemeSetting : ConfigInitWizardStep
 {
@@ -10,7 +10,7 @@ public class AssemblyVersioningSchemeSetting : ConfigInitWizardStep
     {
     }
 
-    protected override StepResult HandleResult(string? result, Queue<ConfigInitWizardStep> steps, Model.Configurations.Configuration configuration, string workingDirectory)
+    protected override StepResult HandleResult(string? result, Queue<ConfigInitWizardStep> steps, Model.Configuration.GitVersionConfiguration configuration, string workingDirectory)
     {
         var editConfigStep = this.StepFactory.CreateStep<EditConfigStep>();
         switch (result)
@@ -43,7 +43,7 @@ public class AssemblyVersioningSchemeSetting : ConfigInitWizardStep
         return StepResult.InvalidResponseSelected();
     }
 
-    protected override string GetPrompt(Model.Configurations.Configuration configuration, string workingDirectory) => @"What assembly versioning scheme do you want to use:
+    protected override string GetPrompt(Model.Configuration.GitVersionConfiguration configuration, string workingDirectory) => @"What assembly versioning scheme do you want to use:
 
 0) Go Back
 1) Major.0.0.0

@@ -1,8 +1,10 @@
-namespace GitVersion.Configurations;
+using GitVersion.Model.Configuration;
+
+namespace GitVersion.Configuration;
 
 public interface IConfigProvider
 {
-    Model.Configurations.Configuration Provide(Model.Configurations.Configuration? overrideConfig = null);
-    Model.Configurations.Configuration Provide(string workingDirectory, Model.Configurations.Configuration? overrideConfig = null);
+    GitVersionConfiguration Provide(GitVersionConfiguration? overrideConfig = null);
+    GitVersionConfiguration Provide(string workingDirectory, GitVersionConfiguration? overrideConfig = null);
     void Init(string workingDirectory);
 }

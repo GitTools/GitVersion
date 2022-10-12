@@ -1,6 +1,6 @@
 using GitTools.Testing;
 using GitVersion.BuildAgents;
-using GitVersion.Configurations;
+using GitVersion.Configuration;
 using GitVersion.Core.Tests.Helpers;
 using GitVersion.Helpers;
 using GitVersion.MsBuild.Tests.Helpers;

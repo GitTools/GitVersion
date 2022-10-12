@@ -1,16 +1,16 @@
 using GitVersion.Extensions;
-using GitVersion.Model.Configurations;
+using GitVersion.Model.Configuration;
 using GitVersion.VersionCalculation;
 
-namespace GitVersion.Configurations;
+namespace GitVersion.Configuration;
 
 public class ConfigurationBuilder
 {
     private const int DefaultTagPreReleaseWeight = 60000;
 
-    private readonly List<Configuration> overrides = new();
+    private readonly List<GitVersionConfiguration> overrides = new();
 
-    public ConfigurationBuilder Add(Configuration configuration)
+    public ConfigurationBuilder Add(GitVersionConfiguration configuration)
     {
         if (configuration == null) throw new ArgumentNullException(nameof(configuration));
 
@@ -18,7 +18,7 @@ public class ConfigurationBuilder
         return this;
     }
 
-    public Configuration Build()
+    public GitVersionConfiguration Build()
     {
         var configuration = CreateDefaultConfiguration();
 
@@ -33,7 +33,7 @@ public class ConfigurationBuilder
         return configuration;
     }
 
-    private static void ApplyOverrides(Configuration targetConfig, Configuration overrideConfig)
+    private static void ApplyOverrides(GitVersionConfiguration targetConfig, GitVersionConfiguration overrideConfig)
     {
         targetConfig.AssemblyVersioningScheme = overrideConfig.AssemblyVersioningScheme ?? targetConfig.AssemblyVersioningScheme;
         targetConfig.AssemblyFileVersioningScheme = overrideConfig.AssemblyFileVersioningScheme ?? targetConfig.AssemblyFileVersioningScheme;
@@ -64,7 +64,7 @@ public class ConfigurationBuilder
         ApplyBranchOverrides(targetConfig, overrideConfig);
     }
 
-    private static void ApplyBranchOverrides(Configuration targetConfig, Configuration overrideConfig)
+    private static void ApplyBranchOverrides(GitVersionConfiguration targetConfig, GitVersionConfiguration overrideConfig)
     {
         if (overrideConfig.Branches is { Count: > 0 })
         {
@@ -83,17 +83,17 @@ public class ConfigurationBuilder
             foreach (var (name, branchConfiguration) in overrideConfig.Branches)
             {
                 // for compatibility reason we check if it's master, we rename it to main
-                var branchName = name == Configuration.MasterBranchKey ? Configuration.MainBranchKey : name;
+                var branchName = name == GitVersionConfiguration.MasterBranchKey ? GitVersionConfiguration.MainBranchKey : name;
                 if (!targetConfigBranches.TryGetValue(branchName, out var target))
                 {
                     target = new BranchConfiguration() { Name = branchName };
                 }
 
                 branchConfiguration.MergeTo(target);
-                if (target.SourceBranches != null && target.SourceBranches.Contains(Configuration.MasterBranchKey))
+                if (target.SourceBranches != null && target.SourceBranches.Contains(GitVersionConfiguration.MasterBranchKey))
                 {
-                    target.SourceBranches.Remove(Configuration.MasterBranchKey);
-                    target.SourceBranches.Add(Configuration.MainBranchKey);
+                    target.SourceBranches.Remove(GitVersionConfiguration.MasterBranchKey);
+                    target.SourceBranches.Add(GitVersionConfiguration.MainBranchKey);
                 }
                 newBranches[branchName] = target;
             }
@@ -110,7 +110,7 @@ public class ConfigurationBuilder
         }
     }
 
-    private static void FinalizeConfiguration(Configuration configuration)
+    private static void FinalizeConfiguration(GitVersionConfiguration configuration)
     {
         foreach (var (name, branchConfiguration) in configuration.Branches)
         {
@@ -118,14 +118,14 @@ public class ConfigurationBuilder
         }
     }
 
-    private static void FinalizeBranchConfiguration(Configuration configuration, string name, BranchConfiguration branchConfiguration)
+    private static void FinalizeBranchConfiguration(GitVersionConfiguration configuration, string name, BranchConfiguration branchConfiguration)
     {
         branchConfiguration.Name = name;
         branchConfiguration.Increment ??= configuration.Increment ?? IncrementStrategy.Inherit;
 
         if (branchConfiguration.VersioningMode == null)
         {
-            if (name == Configuration.DevelopBranchKey)
+            if (name == GitVersionConfiguration.DevelopBranchKey)
             {
                 // Why this applies only on develop branch? I'm surprised that the value not coming from configuration.
                 branchConfiguration.VersioningMode = configuration.VersioningMode == VersioningMode.Mainline ? VersioningMode.Mainline : VersioningMode.ContinuousDeployment;
@@ -147,7 +147,7 @@ public class ConfigurationBuilder
         }
     }
 
-    private static void ValidateConfiguration(Configuration configuration)
+    private static void ValidateConfiguration(GitVersionConfiguration configuration)
     {
         foreach (var (name, branchConfiguration) in configuration.Branches)
         {
@@ -171,13 +171,13 @@ public class ConfigurationBuilder
         }
     }
 
-    private static Configuration CreateDefaultConfiguration()
+    private static GitVersionConfiguration CreateDefaultConfiguration()
     {
-        var configuration = new Configuration
+        var configuration = new GitVersionConfiguration
         {
             AssemblyVersioningScheme = AssemblyVersioningScheme.MajorMinorPatch,
             AssemblyFileVersioningScheme = AssemblyFileVersioningScheme.MajorMinorPatch,
-            TagPrefix = Configuration.DefaultTagPrefix,
+            TagPrefix = GitVersionConfiguration.DefaultTagPrefix,
             VersioningMode = VersioningMode.ContinuousDelivery,
             ContinuousDeploymentFallbackTag = "ci",
             MajorVersionBumpMessage = IncrementStrategyFinder.DefaultMajorPattern,
@@ -192,11 +192,11 @@ public class ConfigurationBuilder
             Increment = IncrementStrategy.Inherit
         };
 
-        AddBranchConfig(Configuration.DevelopBranchKey,
+        AddBranchConfig(GitVersionConfiguration.DevelopBranchKey,
             new BranchConfiguration
             {
                 Increment = IncrementStrategy.Minor,
-                Regex = Configuration.DevelopBranchRegex,
+                Regex = GitVersionConfiguration.DevelopBranchRegex,
                 SourceBranches = new HashSet<string>(),
                 Tag = "alpha",
                 PreventIncrementOfMergedBranchVersion = false,
@@ -207,14 +207,14 @@ public class ConfigurationBuilder
                 PreReleaseWeight = 0
             });
 
-        AddBranchConfig(Configuration.MainBranchKey,
+        AddBranchConfig(GitVersionConfiguration.MainBranchKey,
             new BranchConfiguration
             {
                 Increment = IncrementStrategy.Patch,
-                Regex = Configuration.MainBranchRegex,
+                Regex = GitVersionConfiguration.MainBranchRegex,
                 SourceBranches = new HashSet<string> {
-                    Configuration.DevelopBranchKey,
-                    Configuration.ReleaseBranchKey
+                    GitVersionConfiguration.DevelopBranchKey,
+                    GitVersionConfiguration.ReleaseBranchKey
                 },
                 Tag = string.Empty,
                 PreventIncrementOfMergedBranchVersion = true,
@@ -225,16 +225,16 @@ public class ConfigurationBuilder
                 PreReleaseWeight = 55000
             });
 
-        AddBranchConfig(Configuration.ReleaseBranchKey,
+        AddBranchConfig(GitVersionConfiguration.ReleaseBranchKey,
             new BranchConfiguration
             {
                 Increment = IncrementStrategy.None,
-                Regex = Configuration.ReleaseBranchRegex,
+                Regex = GitVersionConfiguration.ReleaseBranchRegex,
                 SourceBranches = new HashSet<string> {
-                    Configuration.DevelopBranchKey,
-                    Configuration.MainBranchKey,
-                    Configuration.SupportBranchKey,
-                    Configuration.ReleaseBranchKey
+                    GitVersionConfiguration.DevelopBranchKey,
+                    GitVersionConfiguration.MainBranchKey,
+                    GitVersionConfiguration.SupportBranchKey,
+                    GitVersionConfiguration.ReleaseBranchKey
                 },
                 Tag = "beta",
                 PreventIncrementOfMergedBranchVersion = true,
@@ -245,62 +245,62 @@ public class ConfigurationBuilder
                 PreReleaseWeight = 30000
             });
 
-        AddBranchConfig(Configuration.FeatureBranchKey,
+        AddBranchConfig(GitVersionConfiguration.FeatureBranchKey,
             new BranchConfiguration
             {
                 Increment = IncrementStrategy.Inherit,
-                Regex = Configuration.FeatureBranchRegex,
+                Regex = GitVersionConfiguration.FeatureBranchRegex,
                 SourceBranches = new HashSet<string> {
-                    Configuration.DevelopBranchKey,
-                    Configuration.MainBranchKey,
-                    Configuration.ReleaseBranchKey,
-                    Configuration.FeatureBranchKey,
-                    Configuration.SupportBranchKey,
-                    Configuration.HotfixBranchKey
+                    GitVersionConfiguration.DevelopBranchKey,
+                    GitVersionConfiguration.MainBranchKey,
+                    GitVersionConfiguration.ReleaseBranchKey,
+                    GitVersionConfiguration.FeatureBranchKey,
+                    GitVersionConfiguration.SupportBranchKey,
+                    GitVersionConfiguration.HotfixBranchKey
                 },
                 Tag = "{BranchName}",
                 PreReleaseWeight = 30000
             });
 
-        AddBranchConfig(Configuration.PullRequestBranchKey,
+        AddBranchConfig(GitVersionConfiguration.PullRequestBranchKey,
             new BranchConfiguration
             {
                 Increment = IncrementStrategy.Inherit,
-                Regex = Configuration.PullRequestRegex,
+                Regex = GitVersionConfiguration.PullRequestRegex,
                 SourceBranches = new HashSet<string> {
-                    Configuration.DevelopBranchKey,
-                    Configuration.MainBranchKey,
-                    Configuration.ReleaseBranchKey,
-                    Configuration.FeatureBranchKey,
-                    Configuration.SupportBranchKey,
-                    Configuration.HotfixBranchKey
+                    GitVersionConfiguration.DevelopBranchKey,
+                    GitVersionConfiguration.MainBranchKey,
+                    GitVersionConfiguration.ReleaseBranchKey,
+                    GitVersionConfiguration.FeatureBranchKey,
+                    GitVersionConfiguration.SupportBranchKey,
+                    GitVersionConfiguration.HotfixBranchKey
                 },
                 Tag = "PullRequest",
                 TagNumberPattern = @"[/-](?<number>\d+)",
                 PreReleaseWeight = 30000
             });
 
-        AddBranchConfig(Configuration.HotfixBranchKey,
+        AddBranchConfig(GitVersionConfiguration.HotfixBranchKey,
             new BranchConfiguration
             {
                 Increment = IncrementStrategy.Inherit,
-                Regex = Configuration.HotfixBranchRegex,
+                Regex = GitVersionConfiguration.HotfixBranchRegex,
                 SourceBranches = new HashSet<string> {
-                    Configuration.ReleaseBranchKey,
-                    Configuration.MainBranchKey,
-                    Configuration.SupportBranchKey,
-                    Configuration.HotfixBranchKey
+                    GitVersionConfiguration.ReleaseBranchKey,
+                    GitVersionConfiguration.MainBranchKey,
+                    GitVersionConfiguration.SupportBranchKey,
+                    GitVersionConfiguration.HotfixBranchKey
                 },
                 Tag = "beta",
                 PreReleaseWeight = 30000
             });
 
-        AddBranchConfig(Configuration.SupportBranchKey,
+        AddBranchConfig(GitVersionConfiguration.SupportBranchKey,
             new BranchConfiguration
             {
                 Increment = IncrementStrategy.Patch,
-                Regex = Configuration.SupportBranchRegex,
-                SourceBranches = new HashSet<string> { Configuration.MainBranchKey },
+                Regex = GitVersionConfiguration.SupportBranchRegex,
+                SourceBranches = new HashSet<string> { GitVersionConfiguration.MainBranchKey },
                 Tag = string.Empty,
                 PreventIncrementOfMergedBranchVersion = true,
                 TrackMergeTarget = false,

@@ -1,9 +1,9 @@
-using GitVersion.Model.Configurations;
+using GitVersion.Model.Configuration;
 
 namespace GitVersion.VersionCalculation
 {
     public interface IEffectiveBranchConfigurationFinder
     {
-        IEnumerable<EffectiveBranchConfiguration> GetConfigurations(IBranch branch, Configuration configuration);
+        IEnumerable<EffectiveBranchConfiguration> GetConfigurations(IBranch branch, GitVersionConfiguration configuration);
     }
 }

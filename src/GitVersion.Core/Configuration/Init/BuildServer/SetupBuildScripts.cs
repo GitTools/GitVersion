@@ -1,7 +1,7 @@
-using GitVersion.Configurations.Init.Wizard;
+using GitVersion.Configuration.Init.Wizard;
 using GitVersion.Logging;
 
-namespace GitVersion.Configurations.Init.BuildServer;
+namespace GitVersion.Configuration.Init.BuildServer;
 
 internal class SetupBuildScripts : ConfigInitWizardStep
 {
@@ -9,7 +9,7 @@ internal class SetupBuildScripts : ConfigInitWizardStep
     {
     }
 
-    protected override StepResult HandleResult(string? result, Queue<ConfigInitWizardStep> steps, Model.Configurations.Configuration configuration, string workingDirectory)
+    protected override StepResult HandleResult(string? result, Queue<ConfigInitWizardStep> steps, Model.Configuration.GitVersionConfiguration configuration, string workingDirectory)
     {
         switch (result)
         {
@@ -23,7 +23,7 @@ internal class SetupBuildScripts : ConfigInitWizardStep
         return StepResult.Ok();
     }
 
-    protected override string GetPrompt(Model.Configurations.Configuration configuration, string workingDirectory) => @"What build server are you using?
+    protected override string GetPrompt(Model.Configuration.GitVersionConfiguration configuration, string workingDirectory) => @"What build server are you using?
 
 Want to see more? Contribute a pull request!
 

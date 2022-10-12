@@ -1,8 +1,8 @@
 using GitVersion.Common;
-using GitVersion.Configurations;
+using GitVersion.Configuration;
 using GitVersion.Extensions;
 using GitVersion.Logging;
-using GitVersion.Model.Configurations;
+using GitVersion.Model.Configuration;
 
 namespace GitVersion.VersionCalculation;
 
@@ -17,7 +17,7 @@ public class EffectiveBranchConfigurationFinder : IEffectiveBranchConfigurationF
         this.repositoryStore = repositoryStore.NotNull();
     }
 
-    public virtual IEnumerable<EffectiveBranchConfiguration> GetConfigurations(IBranch branch, Model.Configurations.Configuration configuration)
+    public virtual IEnumerable<EffectiveBranchConfiguration> GetConfigurations(IBranch branch, Model.Configuration.GitVersionConfiguration configuration)
     {
         branch.NotNull();
         configuration.NotNull();
@@ -26,7 +26,7 @@ public class EffectiveBranchConfigurationFinder : IEffectiveBranchConfigurationF
     }
 
     private IEnumerable<EffectiveBranchConfiguration> GetEffectiveConfigurationsRecursive(
-        IBranch branch, Model.Configurations.Configuration configuration, BranchConfiguration? childBranchConfiguration, HashSet<IBranch> traversedBranches)
+        IBranch branch, Model.Configuration.GitVersionConfiguration configuration, BranchConfiguration? childBranchConfiguration, HashSet<IBranch> traversedBranches)
     {
         if (!traversedBranches.Add(branch)) yield break; // This should never happen!! But it is good to have a circuit breaker.
 

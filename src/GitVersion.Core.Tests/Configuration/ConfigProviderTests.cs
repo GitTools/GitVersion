@@ -1,5 +1,5 @@
 using System.Runtime.CompilerServices;
-using GitVersion.Configurations;
+using GitVersion.Configuration;
 using GitVersion.Core.Tests.Helpers;
 using GitVersion.Extensions;
 using GitVersion.Helpers;
@@ -124,8 +124,8 @@ branches:
     }
 
     [Test(Description = "Well-known branches may not be present in the configuration file. This test confirms the validation check succeeds when the source-branches configuration contain these well-known branches.")]
-    [TestCase(Model.Configurations.Configuration.MainBranchKey)]
-    [TestCase(Model.Configurations.Configuration.DevelopBranchKey)]
+    [TestCase(Model.Configuration.GitVersionConfiguration.MainBranchKey)]
+    [TestCase(Model.Configuration.GitVersionConfiguration.DevelopBranchKey)]
     public void SourceBranchesValidationShouldSucceedForWellKnownBranches(string wellKnownBranchKey)
     {
         var text = $@"
@@ -296,14 +296,14 @@ branches: {}";
         configuration.AssemblyInformationalFormat.ShouldBe(null);
         configuration.Branches["develop"].Tag.ShouldBe("alpha");
         configuration.Branches["release"].Tag.ShouldBe("beta");
-        configuration.TagPrefix.ShouldBe(Model.Configurations.Configuration.DefaultTagPrefix);
+        configuration.TagPrefix.ShouldBe(Model.Configuration.GitVersionConfiguration.DefaultTagPrefix);
         configuration.NextVersion.ShouldBe(null);
     }
 
     [Test]
     public void VerifyAliases()
     {
-        var configuration = typeof(Model.Configurations.Configuration);
+        var configuration = typeof(Model.Configuration.GitVersionConfiguration);
         var propertiesMissingAlias = configuration.GetProperties()
             .Where(p => p.GetCustomAttribute<ObsoleteAttribute>() == null)
             .Where(p => p.GetCustomAttribute(typeof(YamlMemberAttribute)) == null)
@@ -416,7 +416,7 @@ tag-prefix: custom-tag-prefix-from-yml";
         SetupConfigFileContent(text);
 
         var expectedConfig = this.configProvider.Provide(this.repoPath);
-        var overridenConfig = this.configProvider.Provide(this.repoPath, new Model.Configurations.Configuration());
+        var overridenConfig = this.configProvider.Provide(this.repoPath, new Model.Configuration.GitVersionConfiguration());
 
         overridenConfig.AssemblyVersioningScheme.ShouldBe(expectedConfig.AssemblyVersioningScheme);
         overridenConfig.AssemblyFileVersioningScheme.ShouldBe(expectedConfig.AssemblyFileVersioningScheme);
@@ -473,7 +473,7 @@ tag-prefix: custom-tag-prefix-from-yml";
     {
         var text = tagPrefixSetAtYmlFile ? "tag-prefix: custom-tag-prefix-from-yml" : "";
         SetupConfigFileContent(text);
-        var configuration = this.configProvider.Provide(this.repoPath, new Model.Configurations.Configuration { TagPrefix = "tag-prefix-from-override-configuration" });
+        var configuration = this.configProvider.Provide(this.repoPath, new Model.Configuration.GitVersionConfiguration { TagPrefix = "tag-prefix-from-override-configuration" });
 
         configuration.TagPrefix.ShouldBe("tag-prefix-from-override-configuration");
     }
@@ -483,7 +483,7 @@ tag-prefix: custom-tag-prefix-from-yml";
     {
         const string text = "";
         SetupConfigFileContent(text);
-        var configuration = this.configProvider.Provide(this.repoPath, new Model.Configurations.Configuration { TagPrefix = null });
+        var configuration = this.configProvider.Provide(this.repoPath, new Model.Configuration.GitVersionConfiguration { TagPrefix = null });
 
         configuration.TagPrefix.ShouldBe("[vV]");
     }
@@ -493,7 +493,7 @@ tag-prefix: custom-tag-prefix-from-yml";
     {
         const string text = "tag-prefix: custom-tag-prefix-from-yml";
         SetupConfigFileContent(text);
-        var configuration = this.configProvider.Provide(this.repoPath, new Model.Configurations.Configuration { TagPrefix = null });
+        var configuration = this.configProvider.Provide(this.repoPath, new Model.Configuration.GitVersionConfiguration { TagPrefix = null });
 
         configuration.TagPrefix.ShouldBe("custom-tag-prefix-from-yml");
     }

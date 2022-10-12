@@ -3,7 +3,7 @@ using GitVersion.Common;
 using GitVersion.Core.Tests.Helpers;
 using GitVersion.Core.Tests.IntegrationTests;
 using GitVersion.Logging;
-using GitVersion.Model.Configurations;
+using GitVersion.Model.Configuration;
 using GitVersion.VersionCalculation;
 using LibGit2Sharp;
 using Microsoft.Extensions.DependencyInjection;
@@ -36,7 +36,7 @@ public class NextVersionCalculatorTests : TestBase
     {
         var contextBuilder = new GitVersionContextBuilder();
 
-        contextBuilder.WithConfig(new Model.Configurations.Configuration() { NextVersion = "1.0.0" }).Build();
+        contextBuilder.WithConfig(new Model.Configuration.GitVersionConfiguration() { NextVersion = "1.0.0" }).Build();
 
         contextBuilder.ServicesProvider.ShouldNotBeNull();
         var nextVersionCalculator = contextBuilder.ServicesProvider.GetRequiredService<INextVersionCalculator>();
@@ -67,7 +67,7 @@ public class NextVersionCalculatorTests : TestBase
     [Test]
     public void PreReleaseTagCanUseBranchName()
     {
-        var configuration = new Model.Configurations.Configuration
+        var configuration = new Model.Configuration.GitVersionConfiguration
         {
             NextVersion = "1.0.0",
             Branches = new Dictionary<string, BranchConfiguration>
@@ -96,7 +96,7 @@ public class NextVersionCalculatorTests : TestBase
     [Test]
     public void PreReleaseVersionMainline()
     {
-        var configuration = new Model.Configurations.Configuration
+        var configuration = new Model.Configuration.GitVersionConfiguration
         {
             VersioningMode = VersioningMode.Mainline,
             NextVersion = "1.0.0"
@@ -113,7 +113,7 @@ public class NextVersionCalculatorTests : TestBase
     [Test]
     public void MergeIntoMainline()
     {
-        var configuration = new Model.Configurations.Configuration
+        var configuration = new Model.Configuration.GitVersionConfiguration
         {
             VersioningMode = VersioningMode.Mainline,
             NextVersion = "1.0.0"
@@ -132,7 +132,7 @@ public class NextVersionCalculatorTests : TestBase
     [Test]
     public void MergeFeatureIntoMainline()
     {
-        var configuration = new Model.Configurations.Configuration
+        var configuration = new Model.Configuration.GitVersionConfiguration
         {
             VersioningMode = VersioningMode.Mainline
         };
@@ -155,7 +155,7 @@ public class NextVersionCalculatorTests : TestBase
     [Test]
     public void MergeFeatureIntoMainlineWithMinorIncrement()
     {
-        var configuration = new Model.Configurations.Configuration
+        var configuration = new Model.Configuration.GitVersionConfiguration
         {
             VersioningMode = VersioningMode.Mainline,
             Branches = new Dictionary<string, BranchConfiguration>
@@ -184,7 +184,7 @@ public class NextVersionCalculatorTests : TestBase
     [Test]
     public void MergeFeatureIntoMainlineWithMinorIncrementAndThenMergeHotfix()
     {
-        var configuration = new Model.Configurations.Configuration
+        var configuration = new Model.Configuration.GitVersionConfiguration
         {
             VersioningMode = VersioningMode.Mainline,
             Branches = new Dictionary<string, BranchConfiguration>
@@ -223,7 +223,7 @@ public class NextVersionCalculatorTests : TestBase
     [Test]
     public void PreReleaseTagCanUseBranchNameVariable()
     {
-        var configuration = new Model.Configurations.Configuration
+        var configuration = new Model.Configuration.GitVersionConfiguration
         {
             NextVersion = "1.0.0",
             Branches = new Dictionary<string, BranchConfiguration>
@@ -252,7 +252,7 @@ public class NextVersionCalculatorTests : TestBase
     [Test]
     public void PreReleaseNumberShouldBeScopeToPreReleaseLabelInContinuousDelivery()
     {
-        var configuration = new Model.Configurations.Configuration
+        var configuration = new Model.Configuration.GitVersionConfiguration
         {
             VersioningMode = VersioningMode.ContinuousDelivery,
             Branches = new Dictionary<string, BranchConfiguration>
@@ -285,7 +285,7 @@ public class NextVersionCalculatorTests : TestBase
     [Test]
     public void GetNextVersionOnNonMainlineBranchWithoutCommitsShouldWorkNormally()
     {
-        var configuration = new Model.Configurations.Configuration
+        var configuration = new Model.Configuration.GitVersionConfiguration
         {
             VersioningMode = VersioningMode.Mainline,
             NextVersion = "1.0.0"

@@ -227,7 +227,7 @@ public class RepositoryStoreTests : TestBase
 
         var branch = localRepository.FindBranch("main");
         branch.ShouldNotBeNull();
-        var branchedCommit = gitRepoMetadataProvider.FindCommitBranchWasBranchedFrom(branch, new Model.Configurations.Configuration(), Array.Empty<IBranch>());
+        var branchedCommit = gitRepoMetadataProvider.FindCommitBranchWasBranchedFrom(branch, new Model.Configuration.GitVersionConfiguration(), Array.Empty<IBranch>());
 
         Assert.IsNull(branchedCommit.Branch);
         Assert.IsNull(branchedCommit.Commit);

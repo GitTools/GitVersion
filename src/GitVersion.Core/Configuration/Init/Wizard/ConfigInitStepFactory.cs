@@ -1,7 +1,7 @@
 using GitVersion.Extensions;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace GitVersion.Configurations.Init.Wizard;
+namespace GitVersion.Configuration.Init.Wizard;
 
 public class ConfigInitStepFactory : IConfigInitStepFactory
 {

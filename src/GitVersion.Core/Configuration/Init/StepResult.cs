@@ -1,4 +1,4 @@
-namespace GitVersion.Configurations.Init;
+namespace GitVersion.Configuration.Init;
 
 public class StepResult
 {

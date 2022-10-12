@@ -1,8 +1,8 @@
 using GitTools.Testing;
-using GitVersion.Configurations;
+using GitVersion.Configuration;
 using GitVersion.Core.Tests.Helpers;
 using GitVersion.Extensions;
-using GitVersion.Model.Configurations;
+using GitVersion.Model.Configuration;
 using GitVersion.VersionCalculation;
 using LibGit2Sharp;
 using NUnit.Framework;
@@ -100,7 +100,7 @@ public class ReleaseBranchScenarios : TestBase
     [Test]
     public void ReleaseBranchWithNextVersionSetInConfig()
     {
-        var configuration = new Model.Configurations.Configuration
+        var configuration = new Model.Configuration.GitVersionConfiguration
         {
             NextVersion = "2.0.0"
         };
@@ -116,7 +116,7 @@ public class ReleaseBranchScenarios : TestBase
     [Test]
     public void CanTakeVersionFromReleaseBranchWithTagOverridden()
     {
-        var configuration = new Model.Configurations.Configuration
+        var configuration = new Model.Configuration.GitVersionConfiguration
         {
             Branches =
             {
@@ -315,7 +315,7 @@ public class ReleaseBranchScenarios : TestBase
     [Test]
     public void HotfixOffReleaseBranchShouldNotResetCount()
     {
-        var configuration = new Model.Configurations.Configuration
+        var configuration = new Model.Configuration.GitVersionConfiguration
         {
             VersioningMode = VersioningMode.ContinuousDeployment
         };
@@ -352,7 +352,7 @@ public class ReleaseBranchScenarios : TestBase
     [Test]
     public void MergeOnReleaseBranchShouldNotResetCount()
     {
-        var configuration = new Model.Configurations.Configuration
+        var configuration = new Model.Configuration.GitVersionConfiguration
         {
             AssemblyVersioningScheme = AssemblyVersioningScheme.MajorMinorPatchTag,
             VersioningMode = VersioningMode.ContinuousDeployment
@@ -382,7 +382,7 @@ public class ReleaseBranchScenarios : TestBase
     [Test]
     public void CommitOnDevelopAfterReleaseBranchMergeToDevelopShouldNotResetCount()
     {
-        var configuration = new Model.Configurations.Configuration
+        var configuration = new Model.Configuration.GitVersionConfiguration
         {
             VersioningMode = VersioningMode.ContinuousDeployment
         };
@@ -438,7 +438,7 @@ public class ReleaseBranchScenarios : TestBase
     [Test]
     public void CommitBeetweenMergeReleaseToDevelopShouldNotResetCount()
     {
-        var configuration = new Model.Configurations.Configuration
+        var configuration = new Model.Configuration.GitVersionConfiguration
         {
             VersioningMode = VersioningMode.ContinuousDeployment
         };
@@ -513,7 +513,7 @@ public class ReleaseBranchScenarios : TestBase
     [Test]
     public void FeatureFromReleaseBranchShouldNotResetCount()
     {
-        var configuration = new Model.Configurations.Configuration
+        var configuration = new Model.Configuration.GitVersionConfiguration
         {
             VersioningMode = VersioningMode.ContinuousDeployment
         };
@@ -561,7 +561,7 @@ public class ReleaseBranchScenarios : TestBase
     public void AssemblySemFileVerShouldBeWeightedByPreReleaseWeight()
     {
         var configuration = new ConfigurationBuilder()
-            .Add(new Model.Configurations.Configuration
+            .Add(new Model.Configuration.GitVersionConfiguration
             {
                 AssemblyFileVersioningFormat = "{Major}.{Minor}.{Patch}.{WeightedPreReleaseNumber}",
                 Branches =
@@ -589,7 +589,7 @@ public class ReleaseBranchScenarios : TestBase
     public void AssemblySemFileVerShouldBeWeightedByDefaultPreReleaseWeight()
     {
         var configuration = new ConfigurationBuilder()
-            .Add(new Model.Configurations.Configuration
+            .Add(new Model.Configuration.GitVersionConfiguration
             {
                 AssemblyFileVersioningFormat = "{Major}.{Minor}.{Patch}.{WeightedPreReleaseNumber}"
             })
@@ -610,7 +610,7 @@ public class ReleaseBranchScenarios : TestBase
     [Test]
     public void FeatureOnReleaseFeatureBranchDeleted()
     {
-        var configuration = new Model.Configurations.Configuration
+        var configuration = new Model.Configuration.GitVersionConfiguration
         {
             AssemblyVersioningScheme = AssemblyVersioningScheme.MajorMinorPatchTag,
             VersioningMode = VersioningMode.ContinuousDeployment
@@ -645,7 +645,7 @@ public class ReleaseBranchScenarios : TestBase
     [Test]
     public void FeatureOnReleaseFeatureBranchNotDeleted()
     {
-        var configuration = new Model.Configurations.Configuration
+        var configuration = new Model.Configuration.GitVersionConfiguration
         {
             AssemblyVersioningScheme = AssemblyVersioningScheme.MajorMinorPatchTag,
             VersioningMode = VersioningMode.ContinuousDeployment

@@ -1,6 +1,6 @@
 using GitTools.Testing;
 using GitVersion.Core.Tests.Helpers;
-using GitVersion.Model.Configurations;
+using GitVersion.Model.Configuration;
 using LibGit2Sharp;
 using NUnit.Framework;
 
@@ -30,7 +30,7 @@ public class VersionInCurrentBranchNameScenarios : TestBase
     [Test]
     public void TakesVersionFromNameOfBranchThatIsReleaseByConfig()
     {
-        var configuration = new Model.Configurations.Configuration
+        var configuration = new Model.Configuration.GitVersionConfiguration
         {
             Branches = new Dictionary<string, BranchConfiguration> { { "support", new BranchConfiguration { IsReleaseBranch = true } } }
         };

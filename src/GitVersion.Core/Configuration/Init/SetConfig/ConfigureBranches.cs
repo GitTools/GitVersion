@@ -1,8 +1,8 @@
-using GitVersion.Configurations.Init.Wizard;
+using GitVersion.Configuration.Init.Wizard;
 using GitVersion.Logging;
-using GitVersion.Model.Configurations;
+using GitVersion.Model.Configuration;
 
-namespace GitVersion.Configurations.Init.SetConfig;
+namespace GitVersion.Configuration.Init.SetConfig;
 
 public class ConfigureBranches : ConfigInitWizardStep
 {
@@ -10,7 +10,7 @@ public class ConfigureBranches : ConfigInitWizardStep
     {
     }
 
-    protected override StepResult HandleResult(string? result, Queue<ConfigInitWizardStep> steps, Model.Configurations.Configuration configuration, string workingDirectory)
+    protected override StepResult HandleResult(string? result, Queue<ConfigInitWizardStep> steps, Model.Configuration.GitVersionConfiguration configuration, string workingDirectory)
     {
         if (int.TryParse(result, out var parsed))
         {
@@ -39,12 +39,12 @@ public class ConfigureBranches : ConfigInitWizardStep
         return StepResult.InvalidResponseSelected();
     }
 
-    protected override string GetPrompt(Configuration configuration, string workingDirectory) => @"Which branch would you like to configure:
+    protected override string GetPrompt(GitVersionConfiguration configuration, string workingDirectory) => @"Which branch would you like to configure:
 
 0) Go Back
 " + string.Join(System.Environment.NewLine, OrderedBranches(configuration).Select((c, i) => $"{i + 1}) {c.Key}"));
 
-    private static IOrderedEnumerable<KeyValuePair<string, BranchConfiguration>> OrderedBranches(Model.Configurations.Configuration configuration)
+    private static IOrderedEnumerable<KeyValuePair<string, BranchConfiguration>> OrderedBranches(Model.Configuration.GitVersionConfiguration configuration)
     {
         var defaultConfig = new ConfigurationBuilder().Build();
 

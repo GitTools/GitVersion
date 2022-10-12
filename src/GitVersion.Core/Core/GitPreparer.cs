@@ -249,11 +249,11 @@ Please run `git {GitExtensions.CreateGitLogArgs(100)}` and submit it along with 
         const string moveBranchMsg = "Move one of the branches along a commit to remove warning";
 
         this.log.Warning($"Found more than one local branch pointing at the commit '{headSha}' ({csvNames}).");
-        var mainBranch = localBranches.SingleOrDefault(n => n.Name.EquivalentTo(Model.Configurations.Configuration.MainBranchKey));
+        var mainBranch = localBranches.SingleOrDefault(n => n.Name.EquivalentTo(Model.Configuration.GitVersionConfiguration.MainBranchKey));
         if (mainBranch != null)
         {
             this.log.Warning("Because one of the branches is 'main', will build main." + moveBranchMsg);
-            Checkout(Model.Configurations.Configuration.MainBranchKey);
+            Checkout(Model.Configuration.GitVersionConfiguration.MainBranchKey);
         }
         else
         {

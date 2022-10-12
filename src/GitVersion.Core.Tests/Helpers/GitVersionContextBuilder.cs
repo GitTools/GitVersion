@@ -1,5 +1,5 @@
 using GitTools.Testing;
-using GitVersion.Configurations;
+using GitVersion.Configuration;
 using GitVersion.Core.Tests.Helpers;
 using GitVersion.Extensions;
 using Microsoft.Extensions.DependencyInjection;
@@ -11,7 +11,7 @@ namespace GitVersion.Core.Tests;
 public class GitVersionContextBuilder
 {
     private IGitRepository? repository;
-    private Model.Configurations.Configuration? configuration;
+    private Model.Configuration.GitVersionConfiguration? configuration;
     public IServiceProvider? ServicesProvider;
     private Action<IServiceCollection>? overrideServices;
 
@@ -21,7 +21,7 @@ public class GitVersionContextBuilder
         return this;
     }
 
-    public GitVersionContextBuilder WithConfig(Model.Configurations.Configuration configuration)
+    public GitVersionContextBuilder WithConfig(Model.Configuration.GitVersionConfiguration configuration)
     {
         this.configuration = configuration;
         return this;
@@ -60,7 +60,7 @@ public class GitVersionContextBuilder
         var repo = this.repository ?? CreateRepository();
 
         var configuration = new ConfigurationBuilder()
-            .Add(this.configuration ?? new Model.Configurations.Configuration())
+            .Add(this.configuration ?? new Model.Configuration.GitVersionConfiguration())
             .Build();
 
         var options = Options.Create(new GitVersionOptions

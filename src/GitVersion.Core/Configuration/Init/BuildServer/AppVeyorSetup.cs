@@ -1,8 +1,8 @@
-using GitVersion.Configurations.Init.Wizard;
+using GitVersion.Configuration.Init.Wizard;
 using GitVersion.Helpers;
 using GitVersion.Logging;
 
-namespace GitVersion.Configurations.Init.BuildServer;
+namespace GitVersion.Configuration.Init.BuildServer;
 
 internal class AppVeyorSetup : ConfigInitWizardStep
 {
@@ -18,7 +18,7 @@ internal class AppVeyorSetup : ConfigInitWizardStep
         return this;
     }
 
-    protected override StepResult HandleResult(string? result, Queue<ConfigInitWizardStep> steps, Model.Configurations.Configuration configuration, string workingDirectory)
+    protected override StepResult HandleResult(string? result, Queue<ConfigInitWizardStep> steps, Model.Configuration.GitVersionConfiguration configuration, string workingDirectory)
     {
         var editConfigStep = this.StepFactory.CreateStep<EditConfigStep>();
         switch (result)
@@ -80,7 +80,7 @@ after_build:
         this.Log.Info($"AppVeyor sample configuration file written to {outputFilename}");
     }
 
-    protected override string GetPrompt(Model.Configurations.Configuration configuration, string workingDirectory)
+    protected override string GetPrompt(Model.Configuration.GitVersionConfiguration configuration, string workingDirectory)
     {
         var prompt = new StringBuilder();
         if (AppVeyorConfigExists(workingDirectory, this.FileSystem))

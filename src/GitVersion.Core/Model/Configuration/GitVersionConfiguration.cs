@@ -1,16 +1,16 @@
 using System.Globalization;
-using GitVersion.Configurations;
+using GitVersion.Configuration;
 using GitVersion.Extensions;
 using GitVersion.VersionCalculation;
 using YamlDotNet.Serialization;
 
-namespace GitVersion.Model.Configurations;
+namespace GitVersion.Model.Configuration;
 
-public class Configuration
+public class GitVersionConfiguration
 {
     private string? nextVersion;
 
-    public Configuration()
+    public GitVersionConfiguration()
     {
         Branches = new Dictionary<string, BranchConfiguration>();
         Ignore = new IgnoreConfig();

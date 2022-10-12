@@ -1,8 +1,8 @@
-using GitVersion.Configurations.Init.Wizard;
+using GitVersion.Configuration.Init.Wizard;
 using GitVersion.Logging;
-using GitVersion.Model.Configurations;
+using GitVersion.Model.Configuration;
 
-namespace GitVersion.Configurations.Init.SetConfig;
+namespace GitVersion.Configuration.Init.SetConfig;
 
 public class ConfigureBranch : ConfigInitWizardStep
 {
@@ -20,7 +20,7 @@ public class ConfigureBranch : ConfigInitWizardStep
         return this;
     }
 
-    protected override StepResult HandleResult(string? result, Queue<ConfigInitWizardStep> steps, Configuration configuration, string workingDirectory)
+    protected override StepResult HandleResult(string? result, Queue<ConfigInitWizardStep> steps, GitVersionConfiguration configuration, string workingDirectory)
     {
         switch (result)
         {
@@ -38,7 +38,7 @@ public class ConfigureBranch : ConfigInitWizardStep
         return StepResult.InvalidResponseSelected();
     }
 
-    protected override string GetPrompt(Configuration configuration, string workingDirectory) => $@"What would you like to change for '{this.name}':
+    protected override string GetPrompt(GitVersionConfiguration configuration, string workingDirectory) => $@"What would you like to change for '{this.name}':
 
 0) Go Back
 1) Branch Pr-release tag (Current: {this.branchConfiguration.Tag})

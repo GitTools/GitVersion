@@ -1,7 +1,7 @@
-using GitVersion.Configurations;
+using GitVersion.Configuration;
 using GitVersion.Core.Tests.Helpers;
 using GitVersion.Extensions;
-using GitVersion.Model.Configurations;
+using GitVersion.Model.Configuration;
 using GitVersion.VersionCalculation;
 using Microsoft.Extensions.DependencyInjection;
 using NSubstitute;
@@ -147,14 +147,14 @@ public class MergeMessageBaseVersionStrategyTests : TestBase
     [TestCase("Merge branch 'release/2.0.0'", null, "2.0.0")]
     public void TakesVersionFromMergeOfConfiguredReleaseBranch(string message, string? releaseBranch, string expectedVersion)
     {
-        var configuration = new Model.Configurations.Configuration();
+        var configuration = new Model.Configuration.GitVersionConfiguration();
         if (releaseBranch != null) configuration.Branches[releaseBranch] = new BranchConfiguration { IsReleaseBranch = true };
         var parents = GetParents(true);
 
         AssertMergeMessage(message, expectedVersion, parents, configuration);
     }
 
-    private static void AssertMergeMessage(string message, string? expectedVersion, IEnumerable<ICommit?> parents, Model.Configurations.Configuration? configuration = null)
+    private static void AssertMergeMessage(string message, string? expectedVersion, IEnumerable<ICommit?> parents, Model.Configuration.GitVersionConfiguration? configuration = null)
     {
         var commit = GitToolsTestingExtensions.CreateMockCommit();
         commit.Message.Returns(message);
@@ -167,7 +167,7 @@ public class MergeMessageBaseVersionStrategyTests : TestBase
         mockRepository.Commits.Returns(mockBranch.Commits);
 
         var contextBuilder = new GitVersionContextBuilder()
-            .WithConfig(configuration ?? new Model.Configurations.Configuration()).WithRepository(mockRepository);
+            .WithConfig(configuration ?? new Model.Configuration.GitVersionConfiguration()).WithRepository(mockRepository);
         contextBuilder.Build();
         contextBuilder.ServicesProvider.ShouldNotBeNull();
         var strategy = contextBuilder.ServicesProvider.GetServiceForType<IVersionStrategy, MergeMessageVersionStrategy>();

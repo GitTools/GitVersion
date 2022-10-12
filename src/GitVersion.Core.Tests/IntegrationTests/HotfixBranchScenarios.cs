@@ -126,7 +126,7 @@ public class HotfixBranchScenarios : TestBase
     [Test]
     public void FeatureOnHotfixFeatureBranchDeleted()
     {
-        var configuration = new Model.Configurations.Configuration
+        var configuration = new Model.Configuration.GitVersionConfiguration
         {
             AssemblyVersioningScheme = AssemblyVersioningScheme.MajorMinorPatchTag,
             VersioningMode = VersioningMode.ContinuousDeployment
@@ -179,7 +179,7 @@ public class HotfixBranchScenarios : TestBase
     [Test]
     public void FeatureOnHotfixFeatureBranchNotDeleted()
     {
-        var configuration = new Model.Configurations.Configuration
+        var configuration = new Model.Configuration.GitVersionConfiguration
         {
             AssemblyVersioningScheme = AssemblyVersioningScheme.MajorMinorPatchTag,
             VersioningMode = VersioningMode.ContinuousDeployment

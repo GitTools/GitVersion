@@ -1,6 +1,6 @@
 using GitTools.Testing;
 using GitVersion.Core.Tests.Helpers;
-using GitVersion.Model.Configurations;
+using GitVersion.Model.Configuration;
 using GitVersion.VersionCalculation;
 using LibGit2Sharp;
 using NUnit.Framework;
@@ -13,7 +13,7 @@ public class MainScenarios : TestBase
     [Test]
     public void CanHandleContinuousDelivery()
     {
-        var configuaration = new Model.Configurations.Configuration
+        var configuaration = new Model.Configuration.GitVersionConfiguration
         {
             Branches =
             {
@@ -34,7 +34,7 @@ public class MainScenarios : TestBase
     [Test]
     public void CanHandleContinuousDeployment()
     {
-        var configuration = new Model.Configurations.Configuration
+        var configuration = new Model.Configuration.GitVersionConfiguration
         {
             Branches =
             {
@@ -100,7 +100,7 @@ public class MainScenarios : TestBase
     public void GivenARepositoryWithTagAndNextVersionInConfigVersionShouldMatchVersionTxtFile()
     {
         const string expectedNextVersion = "1.1.0";
-        var configuration = new Model.Configurations.Configuration { NextVersion = expectedNextVersion };
+        var configuration = new Model.Configuration.GitVersionConfiguration { NextVersion = expectedNextVersion };
         using var fixture = new EmptyRepositoryFixture();
         const string taggedVersion = "1.0.3";
         fixture.Repository.MakeATaggedCommit(taggedVersion);
@@ -116,7 +116,7 @@ public class MainScenarios : TestBase
         const string taggedVersion = "1.0.3";
         fixture.Repository.MakeATaggedCommit(taggedVersion);
         fixture.AssertFullSemver("1.0.3");
-        fixture.AssertFullSemver("1.0.3", new Model.Configurations.Configuration { NextVersion = "1.1.0" });
+        fixture.AssertFullSemver("1.0.3", new Model.Configuration.GitVersionConfiguration { NextVersion = "1.1.0" });
     }
 
     [Test]
@@ -130,7 +130,7 @@ public class MainScenarios : TestBase
 
         // I'm not sure if the postfix +1 is correct here...
         // but the next version configuration property is something for the user to manipulate the resulting version.
-        fixture.AssertFullSemver("1.1.0+1", new Model.Configurations.Configuration { NextVersion = "1.1.0" });
+        fixture.AssertFullSemver("1.1.0+1", new Model.Configuration.GitVersionConfiguration { NextVersion = "1.1.0" });
     }
 
     [Test]
@@ -140,7 +140,7 @@ public class MainScenarios : TestBase
         const string taggedVersion = "1.0.3";
         fixture.Repository.MakeATaggedCommit(taggedVersion);
         fixture.AssertFullSemver("1.0.3");
-        fixture.AssertFullSemver("1.0.3", new Model.Configurations.Configuration { NextVersion = "1.0.2" });
+        fixture.AssertFullSemver("1.0.3", new Model.Configuration.GitVersionConfiguration { NextVersion = "1.0.2" });
     }
 
     [Test]
@@ -151,7 +151,7 @@ public class MainScenarios : TestBase
         fixture.Repository.MakeATaggedCommit(taggedVersion);
         fixture.Repository.MakeACommit();
         fixture.AssertFullSemver("1.0.4+1");
-        fixture.AssertFullSemver("1.0.4+1", new Model.Configurations.Configuration { NextVersion = "1.0.4" });
+        fixture.AssertFullSemver("1.0.4+1", new Model.Configuration.GitVersionConfiguration { NextVersion = "1.0.4" });
     }
 
     [Test]
@@ -183,7 +183,7 @@ public class MainScenarios : TestBase
         fixture.Repository.MakeATaggedCommit(taggedVersion);
         fixture.Repository.MakeCommits(5);
 
-        fixture.AssertFullSemver("1.1.1+5", new Model.Configurations.Configuration { NextVersion = "1.0.0" });
+        fixture.AssertFullSemver("1.1.1+5", new Model.Configuration.GitVersionConfiguration { NextVersion = "1.0.0" });
     }
 
     [Test]
@@ -193,7 +193,7 @@ public class MainScenarios : TestBase
         const string taggedVersion = "1.1.0";
         fixture.Repository.MakeATaggedCommit(taggedVersion);
 
-        fixture.AssertFullSemver("1.1.0", new Model.Configurations.Configuration { NextVersion = "1.0.0" });
+        fixture.AssertFullSemver("1.1.0", new Model.Configuration.GitVersionConfiguration { NextVersion = "1.0.0" });
     }
 
     [Test]
@@ -204,13 +204,13 @@ public class MainScenarios : TestBase
         fixture.Repository.MakeATaggedCommit(taggedVersion);
         fixture.Repository.MakeCommits(5);
 
-        fixture.AssertFullSemver("1.0.4+5", new Model.Configurations.Configuration { TagPrefix = "version-" });
+        fixture.AssertFullSemver("1.0.4+5", new Model.Configuration.GitVersionConfiguration { TagPrefix = "version-" });
     }
 
     [Test]
     public void CanSpecifyTagPrefixesAsRegex()
     {
-        var configuration = new Model.Configurations.Configuration { TagPrefix = "version-|[vV]" };
+        var configuration = new Model.Configuration.GitVersionConfiguration { TagPrefix = "version-|[vV]" };
         using var fixture = new EmptyRepositoryFixture();
         var taggedVersion = "v1.0.3";
         fixture.Repository.MakeATaggedCommit(taggedVersion);
@@ -228,7 +228,7 @@ public class MainScenarios : TestBase
     [Test]
     public void AreTagsNotAdheringToTagPrefixIgnored()
     {
-        var configuration = new Model.Configurations.Configuration { TagPrefix = "" };
+        var configuration = new Model.Configuration.GitVersionConfiguration { TagPrefix = "" };
         using var fixture = new EmptyRepositoryFixture();
         var taggedVersion = "version-1.0.3";
         fixture.Repository.MakeATaggedCommit(taggedVersion);

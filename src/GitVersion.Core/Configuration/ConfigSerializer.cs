@@ -1,21 +1,21 @@
-using GitVersion.Model.Configurations;
+using GitVersion.Model.Configuration;
 using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
 
-namespace GitVersion.Configurations;
+namespace GitVersion.Configuration;
 
 public class ConfigSerializer
 {
-    public static Model.Configurations.Configuration Read(TextReader reader)
+    public static Model.Configuration.GitVersionConfiguration Read(TextReader reader)
     {
         var deserializer = new DeserializerBuilder()
             .WithNamingConvention(HyphenatedNamingConvention.Instance)
             .Build();
-        var configuration = deserializer.Deserialize<Configuration?>(reader);
-        return configuration ?? new Configuration();
+        var configuration = deserializer.Deserialize<GitVersionConfiguration?>(reader);
+        return configuration ?? new GitVersionConfiguration();
     }
 
-    public static void Write(Configuration configuration, TextWriter writer)
+    public static void Write(GitVersionConfiguration configuration, TextWriter writer)
     {
         var serializer = new SerializerBuilder()
             .ConfigureDefaultValuesHandling(DefaultValuesHandling.OmitDefaults)

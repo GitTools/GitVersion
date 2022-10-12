@@ -1,6 +1,6 @@
 using GitVersion.BuildAgents;
 using GitVersion.Common;
-using GitVersion.Configurations;
+using GitVersion.Configuration;
 using GitVersion.Extensions;
 using GitVersion.Logging;
 using GitVersion.VersionCalculation;

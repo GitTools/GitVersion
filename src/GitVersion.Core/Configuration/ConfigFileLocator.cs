@@ -3,7 +3,7 @@ using GitVersion.Helpers;
 using GitVersion.VersionCalculation;
 using Microsoft.Extensions.Options;
 
-namespace GitVersion.Configurations;
+namespace GitVersion.Configuration;
 
 public class ConfigFileLocator : IConfigFileLocator
 {
@@ -38,7 +38,7 @@ public class ConfigFileLocator : IConfigFileLocator
         return GetConfigFilePath(HasConfigFileAt(workingDirectory) ? workingDirectory : projectRootDirectory);
     }
 
-    public Model.Configurations.Configuration ReadConfig(string workingDirectory)
+    public Model.Configuration.GitVersionConfiguration ReadConfig(string workingDirectory)
     {
         var configFilePath = GetConfigFilePath(workingDirectory);
 
@@ -52,7 +52,7 @@ public class ConfigFileLocator : IConfigFileLocator
             return readConfig;
         }
 
-        return new Model.Configurations.Configuration();
+        return new Model.Configuration.GitVersionConfiguration();
     }
 
     public void Verify(GitVersionOptions gitVersionOptions, IGitRepositoryInfo repositoryInfo)
@@ -70,7 +70,7 @@ public class ConfigFileLocator : IConfigFileLocator
         Verify(workingDirectory, projectRootDirectory);
     }
 
-    private static void VerifyReadConfig(Model.Configurations.Configuration configuration)
+    private static void VerifyReadConfig(Model.Configuration.GitVersionConfiguration configuration)
     {
         // Verify no branches are set to mainline mode
         if (configuration.Branches.Any(b => b.Value?.VersioningMode == VersioningMode.Mainline))
