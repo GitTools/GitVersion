@@ -70,10 +70,10 @@ public class ConfigFileLocator : IConfigFileLocator
         Verify(workingDirectory, projectRootDirectory);
     }
 
-    private static void VerifyReadConfig(Model.Configurations.Configuration config)
+    private static void VerifyReadConfig(Model.Configurations.Configuration configuration)
     {
         // Verify no branches are set to mainline mode
-        if (config.Branches.Any(b => b.Value?.VersioningMode == VersioningMode.Mainline))
+        if (configuration.Branches.Any(b => b.Value?.VersioningMode == VersioningMode.Mainline))
         {
             throw new ConfigurationException(@"Mainline mode only works at the repository level, a single branch cannot be put into mainline mode
 
@@ -93,7 +93,7 @@ If the docs do not help you decide on the mode open an issue to discuss what you
 
         if (hasConfigInProjectRootDirectory && hasConfigInWorkingDirectory)
         {
-            throw new WarningException($"Ambiguous config file selection from '{workingConfigFile}' and '{projectRootConfigFile}'");
+            throw new WarningException($"Ambiguous configuration file selection from '{workingConfigFile}' and '{projectRootConfigFile}'");
         }
 
         if (!hasConfigInProjectRootDirectory && !hasConfigInWorkingDirectory)

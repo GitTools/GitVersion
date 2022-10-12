@@ -24,7 +24,7 @@ public class DocumentationTests : TestBase
         const BindingFlags bindingFlags = BindingFlags.Public | BindingFlags.DeclaredOnly | BindingFlags.Instance;
         var configProperties = typeof(Model.Configurations.Configuration)
             .GetProperties(bindingFlags)
-            .Union(typeof(BranchConfig).GetProperties(bindingFlags))
+            .Union(typeof(BranchConfiguration).GetProperties(bindingFlags))
             .Select(p => p.GetCustomAttribute<YamlMemberAttribute>())
             .Where(a => a != null)
             .Select(a => a?.Alias)

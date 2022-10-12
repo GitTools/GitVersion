@@ -51,7 +51,7 @@ public class TrackReleaseBranchesVersionStrategy : VersionStrategyBase
 
     private IEnumerable<BaseVersion> ReleaseBranchBaseVersions()
     {
-        var releaseBranchConfig = Context.Configuration.GetReleaseBranchConfig();
+        var releaseBranchConfig = Context.Configuration.GetReleaseBranchConfiguration();
         if (!releaseBranchConfig.Any())
             return Array.Empty<BaseVersion>();
 

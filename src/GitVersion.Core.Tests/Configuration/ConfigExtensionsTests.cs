@@ -12,17 +12,17 @@ public class ConfigExtensionsTests : TestBase
     [Test]
     public void GetReleaseBranchConfigReturnsAllReleaseBranches()
     {
-        var config = new Model.Configurations.Configuration()
+        var configuration = new Model.Configurations.Configuration()
         {
-            Branches = new Dictionary<string, BranchConfig>
+            Branches = new Dictionary<string, BranchConfiguration>
             {
-                { "foo", new BranchConfig { Name = "foo" } },
-                { "bar", new BranchConfig { Name = "bar", IsReleaseBranch = true } },
-                { "baz", new BranchConfig { Name = "baz", IsReleaseBranch = true } }
+                { "foo", new BranchConfiguration { Name = "foo" } },
+                { "bar", new BranchConfiguration { Name = "bar", IsReleaseBranch = true } },
+                { "baz", new BranchConfiguration { Name = "baz", IsReleaseBranch = true } }
             }
         };
 
-        var result = config.GetReleaseBranchConfig();
+        var result = configuration.GetReleaseBranchConfiguration();
 
         result.Count.ShouldBe(2);
         result.ShouldNotContain(b => b.Key == "foo");

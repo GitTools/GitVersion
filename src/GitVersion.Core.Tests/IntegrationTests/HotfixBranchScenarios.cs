@@ -126,7 +126,7 @@ public class HotfixBranchScenarios : TestBase
     [Test]
     public void FeatureOnHotfixFeatureBranchDeleted()
     {
-        var config = new Model.Configurations.Configuration
+        var configuration = new Model.Configurations.Configuration
         {
             AssemblyVersioningScheme = AssemblyVersioningScheme.MajorMinorPatchTag,
             VersioningMode = VersioningMode.ContinuousDeployment
@@ -146,7 +146,7 @@ public class HotfixBranchScenarios : TestBase
         // create release branch
         fixture.Repository.CreateBranch(release450);
         Commands.Checkout(fixture.Repository, release450);
-        fixture.AssertFullSemver("4.5.0-beta.0", config);
+        fixture.AssertFullSemver("4.5.0-beta.0", configuration);
         fixture.Repository.MakeACommit("blabla");
         Commands.Checkout(fixture.Repository, "develop");
         fixture.Repository.MergeNoFF(release450, Generate.SignatureNow());
@@ -157,7 +157,7 @@ public class HotfixBranchScenarios : TestBase
         fixture.Repository.CreateBranch(support45);
         Commands.Checkout(fixture.Repository, support45);
         fixture.Repository.ApplyTag(tag450);
-        fixture.AssertFullSemver("4.5.0", config);
+        fixture.AssertFullSemver("4.5.0", configuration);
 
         // create hotfix branch
         fixture.Repository.CreateBranch(hotfix451);
@@ -170,7 +170,7 @@ public class HotfixBranchScenarios : TestBase
         Commands.Checkout(fixture.Repository, hotfix451);
         fixture.Repository.MergeNoFF(featureBranch, Generate.SignatureNow()); // commit 2
         fixture.Repository.Branches.Remove(featureBranch);
-        fixture.AssertFullSemver("4.5.1-beta.2", config);
+        fixture.AssertFullSemver("4.5.1-beta.2", configuration);
     }
 
     /// <summary>
@@ -179,7 +179,7 @@ public class HotfixBranchScenarios : TestBase
     [Test]
     public void FeatureOnHotfixFeatureBranchNotDeleted()
     {
-        var config = new Model.Configurations.Configuration
+        var configuration = new Model.Configurations.Configuration
         {
             AssemblyVersioningScheme = AssemblyVersioningScheme.MajorMinorPatchTag,
             VersioningMode = VersioningMode.ContinuousDeployment
@@ -199,7 +199,7 @@ public class HotfixBranchScenarios : TestBase
         // create release branch
         fixture.Repository.CreateBranch(release450);
         Commands.Checkout(fixture.Repository, release450);
-        fixture.AssertFullSemver("4.5.0-beta.0", config);
+        fixture.AssertFullSemver("4.5.0-beta.0", configuration);
         fixture.Repository.MakeACommit("blabla");
         Commands.Checkout(fixture.Repository, "develop");
         fixture.Repository.MergeNoFF(release450, Generate.SignatureNow());
@@ -210,7 +210,7 @@ public class HotfixBranchScenarios : TestBase
         fixture.Repository.CreateBranch(support45);
         Commands.Checkout(fixture.Repository, support45);
         fixture.Repository.ApplyTag(tag450);
-        fixture.AssertFullSemver("4.5.0", config);
+        fixture.AssertFullSemver("4.5.0", configuration);
 
         // create hotfix branch
         fixture.Repository.CreateBranch(hotfix451);
@@ -222,7 +222,7 @@ public class HotfixBranchScenarios : TestBase
         fixture.Repository.MakeACommit("blabla"); // commit 1
         Commands.Checkout(fixture.Repository, hotfix451);
         fixture.Repository.MergeNoFF(featureBranch, Generate.SignatureNow()); // commit 2
-        fixture.AssertFullSemver("4.5.1-beta.2", config);
+        fixture.AssertFullSemver("4.5.1-beta.2", configuration);
     }
 
 }

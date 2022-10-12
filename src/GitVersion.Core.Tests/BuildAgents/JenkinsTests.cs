@@ -139,11 +139,11 @@ public class JenkinsTests : TestBase
         semanticVersion.BuildMetaData.CommitDate = DateTimeOffset.Parse("2014-03-06 23:59:59Z");
         semanticVersion.BuildMetaData.Sha = "commitSha";
 
-        var config = new TestEffectiveConfiguration();
+        var configuration = new TestEffectiveConfiguration();
 
         var variableProvider = this.sp.GetRequiredService<IVariableProvider>();
 
-        var variables = variableProvider.GetVariablesFor(semanticVersion, config, false);
+        var variables = variableProvider.GetVariablesFor(semanticVersion, configuration, false);
 
         this.buildServer.WithPropertyFile(file);
 

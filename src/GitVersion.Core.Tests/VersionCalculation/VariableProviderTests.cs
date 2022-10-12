@@ -47,9 +47,9 @@ public class VariableProviderTests : TestBase
         semVer.BuildMetaData.CommitDate = DateTimeOffset.Parse("2014-03-06 23:59:59Z");
 
 
-        var config = new TestEffectiveConfiguration();
+        var configuration = new TestEffectiveConfiguration();
 
-        var vars = this.variableProvider.GetVariablesFor(semVer, config, false);
+        var vars = this.variableProvider.GetVariablesFor(semVer, configuration, false);
 
         vars.ToString().ShouldMatchApproved(c => c.SubFolder("Approved"));
     }
@@ -71,9 +71,9 @@ public class VariableProviderTests : TestBase
         semVer.BuildMetaData.ShortSha = "commitShortSha";
         semVer.BuildMetaData.CommitDate = DateTimeOffset.Parse("2014-03-06 23:59:59Z");
 
-        var config = new TestEffectiveConfiguration(versioningMode: VersioningMode.ContinuousDeployment);
+        var configuration = new TestEffectiveConfiguration(versioningMode: VersioningMode.ContinuousDeployment);
 
-        var vars = this.variableProvider.GetVariablesFor(semVer, config, false);
+        var vars = this.variableProvider.GetVariablesFor(semVer, configuration, false);
 
         vars.ToString().ShouldMatchApproved(c => c.SubFolder("Approved"));
     }
@@ -94,9 +94,9 @@ public class VariableProviderTests : TestBase
         semVer.BuildMetaData.ShortSha = "commitShortSha";
         semVer.BuildMetaData.CommitDate = DateTimeOffset.Parse("2014-03-06 23:59:59Z");
 
-        var config = new TestEffectiveConfiguration();
+        var configuration = new TestEffectiveConfiguration();
 
-        var vars = this.variableProvider.GetVariablesFor(semVer, config, false);
+        var vars = this.variableProvider.GetVariablesFor(semVer, configuration, false);
 
         vars.ToString().ShouldMatchApproved(c => c.SubFolder("Approved"));
     }
@@ -117,9 +117,9 @@ public class VariableProviderTests : TestBase
         semVer.BuildMetaData.ShortSha = "commitShortSha";
         semVer.BuildMetaData.CommitDate = DateTimeOffset.Parse("2014-03-06 23:59:59Z");
 
-        var config = new TestEffectiveConfiguration(versioningMode: VersioningMode.ContinuousDeployment);
+        var configuration = new TestEffectiveConfiguration(versioningMode: VersioningMode.ContinuousDeployment);
 
-        var vars = this.variableProvider.GetVariablesFor(semVer, config, false);
+        var vars = this.variableProvider.GetVariablesFor(semVer, configuration, false);
 
         vars.ToString().ShouldMatchApproved(c => c.SubFolder("Approved"));
     }
@@ -143,9 +143,9 @@ public class VariableProviderTests : TestBase
             }
         };
 
-        var config = new TestEffectiveConfiguration(versioningMode: VersioningMode.ContinuousDeployment);
+        var configuration = new TestEffectiveConfiguration(versioningMode: VersioningMode.ContinuousDeployment);
 
-        var vars = this.variableProvider.GetVariablesFor(semVer, config, true);
+        var vars = this.variableProvider.GetVariablesFor(semVer, configuration, true);
 
         vars.ToString().ShouldMatchApproved(c => c.SubFolder("Approved"));
     }
@@ -167,8 +167,8 @@ public class VariableProviderTests : TestBase
         semVer.BuildMetaData.ShortSha = "commitShortSha";
         semVer.BuildMetaData.CommitDate = DateTimeOffset.Parse("2014-03-06 23:59:59Z");
 
-        var config = new TestEffectiveConfiguration(versioningMode: VersioningMode.ContinuousDeployment, tagNumberPattern: @"[/-](?<number>\d+)[-/]");
-        var vars = this.variableProvider.GetVariablesFor(semVer, config, false);
+        var configuration = new TestEffectiveConfiguration(versioningMode: VersioningMode.ContinuousDeployment, tagNumberPattern: @"[/-](?<number>\d+)[-/]");
+        var vars = this.variableProvider.GetVariablesFor(semVer, configuration, false);
 
         vars.FullSemVer.ShouldBe("1.2.3-PullRequest2.5");
     }
@@ -189,8 +189,8 @@ public class VariableProviderTests : TestBase
         semVer.BuildMetaData.ShortSha = "commitShortSha";
         semVer.BuildMetaData.CommitDate = DateTimeOffset.Parse("2014-03-06 23:59:59Z");
 
-        var config = new TestEffectiveConfiguration(versioningMode: VersioningMode.ContinuousDeployment, tag: "useBranchName");
-        var vars = this.variableProvider.GetVariablesFor(semVer, config, false);
+        var configuration = new TestEffectiveConfiguration(versioningMode: VersioningMode.ContinuousDeployment, tag: "useBranchName");
+        var vars = this.variableProvider.GetVariablesFor(semVer, configuration, false);
 
         vars.FullSemVer.ShouldBe("1.2.3-feature.5");
     }
@@ -213,9 +213,9 @@ public class VariableProviderTests : TestBase
         semVer.BuildMetaData.CommitDate = DateTimeOffset.Parse("2014-03-06 23:59:59Z");
 
 
-        var config = new TestEffectiveConfiguration();
+        var configuration = new TestEffectiveConfiguration();
 
-        var vars = this.variableProvider.GetVariablesFor(semVer, config, false);
+        var vars = this.variableProvider.GetVariablesFor(semVer, configuration, false);
 
         vars.ToString().ShouldMatchApproved(c => c.SubFolder("Approved"));
     }
@@ -238,9 +238,9 @@ public class VariableProviderTests : TestBase
         semVer.BuildMetaData.CommitDate = DateTimeOffset.Parse("2014-03-06 23:59:59Z");
 
 
-        var config = new TestEffectiveConfiguration(assemblyInformationalFormat: "{Major}.{Minor}.{Patch}+{CommitsSinceVersionSource}.Branch.{BranchName}.Sha.{ShortSha}");
+        var configuration = new TestEffectiveConfiguration(assemblyInformationalFormat: "{Major}.{Minor}.{Patch}+{CommitsSinceVersionSource}.Branch.{BranchName}.Sha.{ShortSha}");
 
-        var vars = this.variableProvider.GetVariablesFor(semVer, config, false);
+        var vars = this.variableProvider.GetVariablesFor(semVer, configuration, false);
 
         vars.ToString().ShouldMatchApproved(c => c.SubFolder("Approved"));
     }

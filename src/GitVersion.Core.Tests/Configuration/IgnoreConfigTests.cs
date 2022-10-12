@@ -20,12 +20,12 @@ ignore:
 ";
 
         using var reader = new StringReader(yaml);
-        var config = ConfigSerializer.Read(reader);
+        var configuration = ConfigSerializer.Read(reader);
 
-        config.Ignore.ShouldNotBeNull();
-        config.Ignore.ShAs.ShouldNotBeEmpty();
-        config.Ignore.ShAs.ShouldBe(new[] { "b6c0c9fda88830ebcd563e500a5a7da5a1658e98" });
-        config.Ignore.Before.ShouldBe(DateTimeOffset.Parse("2015-10-23T12:23:15"));
+        configuration.Ignore.ShouldNotBeNull();
+        configuration.Ignore.ShAs.ShouldNotBeEmpty();
+        configuration.Ignore.ShAs.ShouldBe(new[] { "b6c0c9fda88830ebcd563e500a5a7da5a1658e98" });
+        configuration.Ignore.Before.ShouldBe(DateTimeOffset.Parse("2015-10-23T12:23:15"));
     }
 
     [Test]
@@ -39,11 +39,11 @@ ignore:
 ";
 
         using var reader = new StringReader(yaml);
-        var config = ConfigSerializer.Read(reader);
+        var configuration = ConfigSerializer.Read(reader);
 
-        config.Ignore.ShouldNotBeNull();
-        config.Ignore.ShAs.ShouldNotBeEmpty();
-        config.Ignore.ShAs.ShouldBe(new[] { "b6c0c9fda88830ebcd563e500a5a7da5a1658e98", "6c19c7c219ecf8dbc468042baefa73a1b213e8b1" });
+        configuration.Ignore.ShouldNotBeNull();
+        configuration.Ignore.ShAs.ShouldNotBeEmpty();
+        configuration.Ignore.ShAs.ShouldBe(new[] { "b6c0c9fda88830ebcd563e500a5a7da5a1658e98", "6c19c7c219ecf8dbc468042baefa73a1b213e8b1" });
     }
 
     [Test]
@@ -54,11 +54,11 @@ next-version: 1.0
 ";
 
         using var reader = new StringReader(yaml);
-        var config = ConfigSerializer.Read(reader);
+        var configuration = ConfigSerializer.Read(reader);
 
-        config.Ignore.ShouldNotBeNull();
-        config.Ignore.ShAs.ShouldBeEmpty();
-        config.Ignore.Before.ShouldBe(null);
+        configuration.Ignore.ShouldNotBeNull();
+        configuration.Ignore.ShAs.ShouldBeEmpty();
+        configuration.Ignore.Before.ShouldBe(null);
     }
 
     [Test]

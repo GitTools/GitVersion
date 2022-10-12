@@ -10,7 +10,7 @@ public class SetNextVersion : ConfigInitWizardStep
     {
     }
 
-    protected override StepResult HandleResult(string? result, Queue<ConfigInitWizardStep> steps, Model.Configurations.Configuration config, string workingDirectory)
+    protected override StepResult HandleResult(string? result, Queue<ConfigInitWizardStep> steps, Model.Configurations.Configuration configuration, string workingDirectory)
     {
         var editConfigStep = this.StepFactory.CreateStep<EditConfigStep>();
         if (result.IsNullOrEmpty())
@@ -22,12 +22,12 @@ public class SetNextVersion : ConfigInitWizardStep
         if (!SemanticVersion.TryParse(result, string.Empty, out var semVer))
             return StepResult.InvalidResponseSelected();
 
-        config.NextVersion = semVer.ToString("t");
+        configuration.NextVersion = semVer.ToString("t");
         steps.Enqueue(editConfigStep);
         return StepResult.Ok();
     }
 
-    protected override string GetPrompt(Model.Configurations.Configuration config, string workingDirectory) => "What would you like to set the next version to (enter nothing to cancel)?";
+    protected override string GetPrompt(Model.Configurations.Configuration configuration, string workingDirectory) => "What would you like to set the next version to (enter nothing to cancel)?";
 
     protected override string? DefaultResult => null;
 }

@@ -34,13 +34,13 @@ public class ConfigNextVersionBaseVersionStrategyTests : TestBase
         baseVersion.SemanticVersion.ToString().ShouldBe(expectedVersion);
     }
 
-    private static BaseVersion? GetBaseVersion(Model.Configurations.Configuration? config = null)
+    private static BaseVersion? GetBaseVersion(Model.Configurations.Configuration? configuration = null)
     {
         var contextBuilder = new GitVersionContextBuilder();
 
-        if (config != null)
+        if (configuration != null)
         {
-            contextBuilder = contextBuilder.WithConfig(config);
+            contextBuilder = contextBuilder.WithConfig(configuration);
         }
 
         contextBuilder.Build();

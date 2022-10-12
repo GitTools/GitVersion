@@ -51,13 +51,13 @@ public class ConfigProvider : IConfigProvider
         var configFilePath = this.configFileLocator.GetConfigFilePath(workingDirectory);
         var currentConfiguration = this.configFileLocator.ReadConfig(workingDirectory);
 
-        var config = this.configInitWizard.Run(currentConfiguration, workingDirectory);
-        if (config == null || configFilePath == null) return;
+        var configuration = this.configInitWizard.Run(currentConfiguration, workingDirectory);
+        if (configuration == null || configFilePath == null) return;
 
         using var stream = this.fileSystem.OpenWrite(configFilePath);
         using var writer = new StreamWriter(stream);
-        this.log.Info("Saving config file");
-        ConfigSerializer.Write(config, writer);
+        this.log.Info("Saving configuration file");
+        ConfigSerializer.Write(configuration, writer);
         stream.Flush();
     }
 }

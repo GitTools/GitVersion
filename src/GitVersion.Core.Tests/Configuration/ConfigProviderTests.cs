@@ -45,13 +45,13 @@ branches:
         mode: ContinuousDeployment
         tag: dev";
         SetupConfigFileContent(text);
-        var config = this.configProvider.Provide(this.repoPath);
+        var configuration = this.configProvider.Provide(this.repoPath);
 
-        config.NextVersion.ShouldBe("2.0.0");
-        config.Branches.ShouldNotBeNull();
-        config.Branches["develop"].Increment.ShouldBe(defaultConfig.Branches["develop"].Increment);
-        config.Branches["develop"].VersioningMode.ShouldBe(defaultConfig.Branches["develop"].VersioningMode);
-        config.Branches["develop"].Tag.ShouldBe("dev");
+        configuration.NextVersion.ShouldBe("2.0.0");
+        configuration.Branches.ShouldNotBeNull();
+        configuration.Branches["develop"].Increment.ShouldBe(defaultConfig.Branches["develop"].Increment);
+        configuration.Branches["develop"].VersioningMode.ShouldBe(defaultConfig.Branches["develop"].VersioningMode);
+        configuration.Branches["develop"].Tag.ShouldBe("dev");
     }
 
     [Test]
@@ -59,8 +59,8 @@ branches:
     {
         const string text = "mode: Mainline";
         SetupConfigFileContent(text);
-        var config = this.configProvider.Provide(this.repoPath);
-        var branches = config.Branches.Select(x => x.Value);
+        var configuration = this.configProvider.Provide(this.repoPath);
+        var branches = configuration.Branches.Select(x => x.Value);
         branches.All(branch => branch.VersioningMode == VersioningMode.Mainline).ShouldBe(true);
     }
 
@@ -73,10 +73,10 @@ branches:
     release:
         tag: """"";
         SetupConfigFileContent(text);
-        var config = this.configProvider.Provide(this.repoPath);
+        var configuration = this.configProvider.Provide(this.repoPath);
 
-        config.NextVersion.ShouldBe("2.0.0");
-        config.Branches["release"].Tag.ShouldBe(string.Empty);
+        configuration.NextVersion.ShouldBe("2.0.0");
+        configuration.Branches["release"].Tag.ShouldBe(string.Empty);
     }
 
     [Test]
@@ -135,9 +135,9 @@ branches:
         tag: bugfix
         source-branches: [{wellKnownBranchKey}]";
         SetupConfigFileContent(text);
-        var config = this.configProvider.Provide(this.repoPath);
+        var configuration = this.configProvider.Provide(this.repoPath);
 
-        config.Branches["bug"].SourceBranches.ShouldBe(new List<string> { wellKnownBranchKey });
+        configuration.Branches["bug"].SourceBranches.ShouldBe(new List<string> { wellKnownBranchKey });
     }
 
     [Test]
@@ -151,10 +151,10 @@ branches:
         tag: bugfix
         source-branches: []";
         SetupConfigFileContent(text);
-        var config = this.configProvider.Provide(this.repoPath);
+        var configuration = this.configProvider.Provide(this.repoPath);
 
-        config.Branches["bug"].Regex.ShouldBe("bug[/-]");
-        config.Branches["bug"].Tag.ShouldBe("bugfix");
+        configuration.Branches["bug"].Regex.ShouldBe("bug[/-]");
+        configuration.Branches["bug"].Tag.ShouldBe("bugfix");
     }
 
     [Test]
@@ -168,10 +168,10 @@ branches:
         tag: beta";
         SetupConfigFileContent(text);
 
-        var config = this.configProvider.Provide(this.repoPath);
+        var configuration = this.configProvider.Provide(this.repoPath);
 
-        config.Branches[MainBranch].Regex.ShouldBe("^master$|^main$");
-        config.Branches[MainBranch].Tag.ShouldBe("beta");
+        configuration.Branches[MainBranch].Regex.ShouldBe("^master$|^main$");
+        configuration.Branches[MainBranch].Tag.ShouldBe("beta");
     }
 
     [Test]
@@ -188,11 +188,11 @@ branches:
         is-release-branch: false";
         SetupConfigFileContent(text);
 
-        var config = this.configProvider.Provide(this.repoPath);
+        var configuration = this.configProvider.Provide(this.repoPath);
 
-        config.Branches["breaking"].Regex.ShouldBe("breaking[/]");
-        config.Branches["breaking"].SourceBranches.ShouldHaveSingleItem();
-        config.Branches["breaking"].SourceBranches?.ShouldContain(MainBranch);
+        configuration.Branches["breaking"].Regex.ShouldBe("breaking[/]");
+        configuration.Branches["breaking"].SourceBranches.ShouldHaveSingleItem();
+        configuration.Branches["breaking"].SourceBranches?.ShouldContain(MainBranch);
     }
 
     [Test]
@@ -200,9 +200,9 @@ branches:
     {
         const string text = "next-version: 2";
         SetupConfigFileContent(text);
-        var config = this.configProvider.Provide(this.repoPath);
+        var configuration = this.configProvider.Provide(this.repoPath);
 
-        config.NextVersion.ShouldBe("2.0");
+        configuration.NextVersion.ShouldBe("2.0");
     }
 
     [Test]
@@ -210,9 +210,9 @@ branches:
     {
         const string text = "next-version: 2.118998723";
         SetupConfigFileContent(text);
-        var config = this.configProvider.Provide(this.repoPath);
+        var configuration = this.configProvider.Provide(this.repoPath);
 
-        config.NextVersion.ShouldBe("2.118998723");
+        configuration.NextVersion.ShouldBe("2.118998723");
     }
 
     [Test]
@@ -220,18 +220,18 @@ branches:
     {
         const string text = "next-version: 2.12.654651698";
         SetupConfigFileContent(text);
-        var config = this.configProvider.Provide(this.repoPath);
+        var configuration = this.configProvider.Provide(this.repoPath);
 
-        config.NextVersion.ShouldBe("2.12.654651698");
+        configuration.NextVersion.ShouldBe("2.12.654651698");
     }
 
     [Test]
     [MethodImpl(MethodImplOptions.NoInlining)]
     public void CanWriteOutEffectiveConfiguration()
     {
-        var config = this.configProvider.Provide(this.repoPath);
+        var configuration = this.configProvider.Provide(this.repoPath);
 
-        config.ToString().ShouldMatchApproved();
+        configuration.ToString().ShouldMatchApproved();
     }
 
     [Test]
@@ -244,10 +244,10 @@ assembly-informational-format: '{NugetVersion}'";
 
         SetupConfigFileContent(text);
 
-        var config = this.configProvider.Provide(this.repoPath);
-        config.AssemblyVersioningScheme.ShouldBe(AssemblyVersioningScheme.MajorMinor);
-        config.AssemblyFileVersioningScheme.ShouldBe(AssemblyFileVersioningScheme.MajorMinorPatch);
-        config.AssemblyInformationalFormat.ShouldBe("{NugetVersion}");
+        var configuration = this.configProvider.Provide(this.repoPath);
+        configuration.AssemblyVersioningScheme.ShouldBe(AssemblyVersioningScheme.MajorMinor);
+        configuration.AssemblyFileVersioningScheme.ShouldBe(AssemblyFileVersioningScheme.MajorMinorPatch);
+        configuration.AssemblyInformationalFormat.ShouldBe("{NugetVersion}");
     }
 
     [Test]
@@ -260,10 +260,10 @@ assembly-informational-format: '{Major}.{Minor}.{Patch}'";
 
         SetupConfigFileContent(text);
 
-        var config = this.configProvider.Provide(this.repoPath);
-        config.AssemblyVersioningScheme.ShouldBe(AssemblyVersioningScheme.MajorMinor);
-        config.AssemblyFileVersioningScheme.ShouldBe(AssemblyFileVersioningScheme.MajorMinorPatch);
-        config.AssemblyInformationalFormat.ShouldBe("{Major}.{Minor}.{Patch}");
+        var configuration = this.configProvider.Provide(this.repoPath);
+        configuration.AssemblyVersioningScheme.ShouldBe(AssemblyVersioningScheme.MajorMinor);
+        configuration.AssemblyFileVersioningScheme.ShouldBe(AssemblyFileVersioningScheme.MajorMinorPatch);
+        configuration.AssemblyInformationalFormat.ShouldBe("{Major}.{Minor}.{Patch}");
     }
 
 
@@ -279,10 +279,10 @@ branches: {}";
 
         SetupConfigFileContent(text);
 
-        var config = this.configProvider.Provide(this.repoPath);
-        config.AssemblyVersioningScheme.ShouldBe(AssemblyVersioningScheme.MajorMinorPatch);
-        config.AssemblyFileVersioningScheme.ShouldBe(AssemblyFileVersioningScheme.MajorMinorPatch);
-        config.AssemblyInformationalFormat.ShouldBe("{FullSemVer}");
+        var configuration = this.configProvider.Provide(this.repoPath);
+        configuration.AssemblyVersioningScheme.ShouldBe(AssemblyVersioningScheme.MajorMinorPatch);
+        configuration.AssemblyFileVersioningScheme.ShouldBe(AssemblyFileVersioningScheme.MajorMinorPatch);
+        configuration.AssemblyInformationalFormat.ShouldBe("{FullSemVer}");
     }
 
     [Test]
@@ -290,21 +290,21 @@ branches: {}";
     {
         const string text = "";
         SetupConfigFileContent(text);
-        var config = this.configProvider.Provide(this.repoPath);
-        config.AssemblyVersioningScheme.ShouldBe(AssemblyVersioningScheme.MajorMinorPatch);
-        config.AssemblyFileVersioningScheme.ShouldBe(AssemblyFileVersioningScheme.MajorMinorPatch);
-        config.AssemblyInformationalFormat.ShouldBe(null);
-        config.Branches["develop"].Tag.ShouldBe("alpha");
-        config.Branches["release"].Tag.ShouldBe("beta");
-        config.TagPrefix.ShouldBe(Model.Configurations.Configuration.DefaultTagPrefix);
-        config.NextVersion.ShouldBe(null);
+        var configuration = this.configProvider.Provide(this.repoPath);
+        configuration.AssemblyVersioningScheme.ShouldBe(AssemblyVersioningScheme.MajorMinorPatch);
+        configuration.AssemblyFileVersioningScheme.ShouldBe(AssemblyFileVersioningScheme.MajorMinorPatch);
+        configuration.AssemblyInformationalFormat.ShouldBe(null);
+        configuration.Branches["develop"].Tag.ShouldBe("alpha");
+        configuration.Branches["release"].Tag.ShouldBe("beta");
+        configuration.TagPrefix.ShouldBe(Model.Configurations.Configuration.DefaultTagPrefix);
+        configuration.NextVersion.ShouldBe(null);
     }
 
     [Test]
     public void VerifyAliases()
     {
-        var config = typeof(Model.Configurations.Configuration);
-        var propertiesMissingAlias = config.GetProperties()
+        var configuration = typeof(Model.Configurations.Configuration);
+        var propertiesMissingAlias = configuration.GetProperties()
             .Where(p => p.GetCustomAttribute<ObsoleteAttribute>() == null)
             .Where(p => p.GetCustomAttribute(typeof(YamlMemberAttribute)) == null)
             .Select(p => p.Name);
@@ -355,9 +355,9 @@ branches:
         source-branches: ['develop']
         tag: dev";
         SetupConfigFileContent(text);
-        var config = this.configProvider.Provide(this.repoPath);
+        var configuration = this.configProvider.Provide(this.repoPath);
 
-        config.Branches["develop"].SourceBranches.ShouldBe(new List<string> { "develop" });
+        configuration.Branches["develop"].SourceBranches.ShouldBe(new List<string> { "develop" });
     }
 
     [Test]
@@ -370,9 +370,9 @@ branches:
         mode: ContinuousDeployment
         tag: dev";
         SetupConfigFileContent(text);
-        var config = this.configProvider.Provide(this.repoPath);
+        var configuration = this.configProvider.Provide(this.repoPath);
 
-        config.Branches["develop"].SourceBranches.ShouldBe(new List<string>());
+        configuration.Branches["develop"].SourceBranches.ShouldBe(new List<string>());
     }
 
     [Test]
@@ -386,9 +386,9 @@ branches:
         source-branches: ['develop', 'release']
         tag: dev";
         SetupConfigFileContent(text);
-        var config = this.configProvider.Provide(this.repoPath);
+        var configuration = this.configProvider.Provide(this.repoPath);
 
-        config.Branches["feature"].SourceBranches.ShouldBe(new List<string> { "develop", "release" });
+        configuration.Branches["feature"].SourceBranches.ShouldBe(new List<string> { "develop", "release" });
     }
 
     [Test]
@@ -401,9 +401,9 @@ branches:
         mode: ContinuousDeployment
         tag: dev";
         SetupConfigFileContent(text);
-        var config = this.configProvider.Provide(this.repoPath);
+        var configuration = this.configProvider.Provide(this.repoPath);
 
-        config.Branches["feature"].SourceBranches.ShouldBe(
+        configuration.Branches["feature"].SourceBranches.ShouldBe(
             new List<string> { "develop", MainBranch, "release", "feature", "support", "hotfix" });
     }
 
@@ -453,9 +453,9 @@ tag-prefix: custom-tag-prefix-from-yml";
     {
         const string text = "";
         SetupConfigFileContent(text);
-        var config = this.configProvider.Provide(this.repoPath);
+        var configuration = this.configProvider.Provide(this.repoPath);
 
-        config.TagPrefix.ShouldBe("[vV]");
+        configuration.TagPrefix.ShouldBe("[vV]");
     }
 
     [Test]
@@ -463,9 +463,9 @@ tag-prefix: custom-tag-prefix-from-yml";
     {
         const string text = "tag-prefix: custom-tag-prefix-from-yml";
         SetupConfigFileContent(text);
-        var config = this.configProvider.Provide(this.repoPath);
+        var configuration = this.configProvider.Provide(this.repoPath);
 
-        config.TagPrefix.ShouldBe("custom-tag-prefix-from-yml");
+        configuration.TagPrefix.ShouldBe("custom-tag-prefix-from-yml");
     }
 
     [Test]
@@ -473,9 +473,9 @@ tag-prefix: custom-tag-prefix-from-yml";
     {
         var text = tagPrefixSetAtYmlFile ? "tag-prefix: custom-tag-prefix-from-yml" : "";
         SetupConfigFileContent(text);
-        var config = this.configProvider.Provide(this.repoPath, new Model.Configurations.Configuration { TagPrefix = "tag-prefix-from-override-config" });
+        var configuration = this.configProvider.Provide(this.repoPath, new Model.Configurations.Configuration { TagPrefix = "tag-prefix-from-override-configuration" });
 
-        config.TagPrefix.ShouldBe("tag-prefix-from-override-config");
+        configuration.TagPrefix.ShouldBe("tag-prefix-from-override-configuration");
     }
 
     [Test]
@@ -483,9 +483,9 @@ tag-prefix: custom-tag-prefix-from-yml";
     {
         const string text = "";
         SetupConfigFileContent(text);
-        var config = this.configProvider.Provide(this.repoPath, new Model.Configurations.Configuration { TagPrefix = null });
+        var configuration = this.configProvider.Provide(this.repoPath, new Model.Configurations.Configuration { TagPrefix = null });
 
-        config.TagPrefix.ShouldBe("[vV]");
+        configuration.TagPrefix.ShouldBe("[vV]");
     }
 
     [Test]
@@ -493,8 +493,8 @@ tag-prefix: custom-tag-prefix-from-yml";
     {
         const string text = "tag-prefix: custom-tag-prefix-from-yml";
         SetupConfigFileContent(text);
-        var config = this.configProvider.Provide(this.repoPath, new Model.Configurations.Configuration { TagPrefix = null });
+        var configuration = this.configProvider.Provide(this.repoPath, new Model.Configurations.Configuration { TagPrefix = null });
 
-        config.TagPrefix.ShouldBe("custom-tag-prefix-from-yml");
+        configuration.TagPrefix.ShouldBe("custom-tag-prefix-from-yml");
     }
 }

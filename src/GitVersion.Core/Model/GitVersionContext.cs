@@ -9,7 +9,7 @@ namespace GitVersion;
 public class GitVersionContext
 {
     /// <summary>
-    /// Contains the raw configuration, use Configuration for specific config based on the current GitVersion context.
+    /// Contains the raw configuration, use Configuration for specific configuration based on the current GitVersion context.
     /// </summary>
     public Model.Configurations.Configuration Configuration { get; }
 
@@ -35,7 +35,7 @@ public class GitVersionContext
 
     public EffectiveConfiguration GetEffectiveConfiguration(IBranch branch)
     {
-        BranchConfig branchConfiguration = Configuration.GetBranchConfiguration(branch);
+        BranchConfiguration branchConfiguration = Configuration.GetBranchConfiguration(branch);
         return new EffectiveConfiguration(Configuration, branchConfiguration);
     }
 }

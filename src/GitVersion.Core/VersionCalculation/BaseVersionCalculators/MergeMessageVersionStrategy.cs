@@ -11,7 +11,7 @@ namespace GitVersion.VersionCalculation;
 /// <summary>
 /// Version is extracted from older commits' merge messages.
 /// BaseVersionSource is the commit where the message was found.
-/// Increments if PreventIncrementOfMergedBranchVersion (from the branch config) is false.
+/// Increments if PreventIncrementOfMergedBranchVersion (from the branch configuration) is false.
 /// </summary>
 public class MergeMessageVersionStrategy : VersionStrategyBase
 {

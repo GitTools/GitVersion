@@ -140,7 +140,7 @@ public class EffectiveBranchConfigurationFinderTests
     {
         // Arrange
         var releaseBranchMock = GitToolsTestingExtensions.CreateMockBranch(branchName, GitToolsTestingExtensions.CreateMockCommit());
-        var branchConfig = new BranchConfig
+        var branchConfiguration = new BranchConfiguration
         {
             VersioningMode = VersioningMode.Mainline,
             Increment = IncrementStrategy.None,
@@ -155,8 +155,8 @@ public class EffectiveBranchConfigurationFinderTests
             VersioningMode = VersioningMode.ContinuousDelivery,
             Branches =
             {
-                { "release/latest", new BranchConfig(branchConfig) { Increment = IncrementStrategy.None, Tag = "latest", Regex = "release/latest" } },
-                { "release", new BranchConfig(branchConfig) { Increment = IncrementStrategy.Patch, Tag = "not-latest", Regex = "releases?[/-]" } }
+                { "release/latest", new BranchConfiguration(branchConfiguration) { Increment = IncrementStrategy.None, Tag = "latest", Regex = "release/latest" } },
+                { "release", new BranchConfiguration(branchConfiguration) { Increment = IncrementStrategy.Patch, Tag = "not-latest", Regex = "releases?[/-]" } }
             }
         }).Build();
 

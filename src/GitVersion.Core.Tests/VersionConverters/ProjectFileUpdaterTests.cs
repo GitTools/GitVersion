@@ -302,8 +302,8 @@ public class ProjectFileUpdaterTests : TestBase
             this.fileSystem.ReadAllText(fileName).Returns(projectFileContent);
         });
 
-        var config = new TestEffectiveConfiguration(versioningScheme);
-        var variables = this.variableProvider.GetVariablesFor(version, config, false);
+        var configuration = new TestEffectiveConfiguration(versioningScheme);
+        var variables = this.variableProvider.GetVariablesFor(version, configuration, false);
 
         verify?.Invoke(this.fileSystem, variables);
     }

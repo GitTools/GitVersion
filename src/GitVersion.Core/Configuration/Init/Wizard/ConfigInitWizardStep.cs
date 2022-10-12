@@ -18,10 +18,10 @@ public abstract class ConfigInitWizardStep
         this.StepFactory = stepFactory.NotNull();
     }
 
-    public bool Apply(Queue<ConfigInitWizardStep> steps, Model.Configurations.Configuration config, string workingDirectory)
+    public bool Apply(Queue<ConfigInitWizardStep> steps, Model.Configurations.Configuration configuration, string workingDirectory)
     {
         this.Console.WriteLine();
-        this.Console.WriteLine(GetPrompt(config, workingDirectory));
+        this.Console.WriteLine(GetPrompt(configuration, workingDirectory));
         this.Console.WriteLine();
         this.Console.Write("> ");
         var input = this.Console.ReadLine();
@@ -40,7 +40,7 @@ public abstract class ConfigInitWizardStep
             return true;
         }
         var resultWithDefaultApplied = input.IsNullOrEmpty() ? DefaultResult : input;
-        var stepResult = HandleResult(resultWithDefaultApplied, steps, config, workingDirectory);
+        var stepResult = HandleResult(resultWithDefaultApplied, steps, configuration, workingDirectory);
         if (stepResult.InvalidResponse)
         {
             InvalidResponse(steps);
@@ -63,7 +63,7 @@ public abstract class ConfigInitWizardStep
         steps.Enqueue(this);
     }
 
-    protected abstract StepResult HandleResult(string? result, Queue<ConfigInitWizardStep> steps, Model.Configurations.Configuration config, string workingDirectory);
-    protected abstract string GetPrompt(Model.Configurations.Configuration config, string workingDirectory);
+    protected abstract StepResult HandleResult(string? result, Queue<ConfigInitWizardStep> steps, Model.Configurations.Configuration configuration, string workingDirectory);
+    protected abstract string GetPrompt(Model.Configurations.Configuration configuration, string workingDirectory);
     protected abstract string? DefaultResult { get; }
 }

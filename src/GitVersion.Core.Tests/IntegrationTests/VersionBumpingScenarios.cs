@@ -18,7 +18,7 @@ public class VersionBumpingScenarios : TestBase
             Branches =
             {
                 {
-                    MainBranch, new BranchConfig
+                    MainBranch, new BranchConfiguration
                     {
                         Tag = "pre",
                         SourceBranches = new HashSet<string>()

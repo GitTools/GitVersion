@@ -19,32 +19,32 @@ public class VariableProvider : IVariableProvider
         this.log = log.NotNull();
     }
 
-    public VersionVariables GetVariablesFor(SemanticVersion semanticVersion, EffectiveConfiguration config, bool isCurrentCommitTagged)
+    public VersionVariables GetVariablesFor(SemanticVersion semanticVersion, EffectiveConfiguration configuration, bool isCurrentCommitTagged)
     {
-        var isContinuousDeploymentMode = config.VersioningMode == VersioningMode.ContinuousDeployment && !isCurrentCommitTagged;
+        var isContinuousDeploymentMode = configuration.VersioningMode == VersioningMode.ContinuousDeployment && !isCurrentCommitTagged;
         if (isContinuousDeploymentMode)
         {
             semanticVersion = new SemanticVersion(semanticVersion);
             // Continuous Deployment always requires a pre-release tag unless the commit is tagged
             if (semanticVersion.PreReleaseTag != null && semanticVersion.PreReleaseTag.HasTag() != true)
             {
-                semanticVersion.PreReleaseTag.Name = config.GetBranchSpecificTag(this.log, semanticVersion.BuildMetaData?.Branch, null);
+                semanticVersion.PreReleaseTag.Name = configuration.GetBranchSpecificTag(this.log, semanticVersion.BuildMetaData?.Branch, null);
                 if (semanticVersion.PreReleaseTag.Name.IsNullOrEmpty())
                 {
                     // TODO: Why do we manipulating the semantic version here in the VariableProvider? The method name is GET not MANIPULATE.
                     // What is about the separation of concern and single-responsibility principle?
-                    semanticVersion.PreReleaseTag.Name = config.ContinuousDeploymentFallbackTag;
+                    semanticVersion.PreReleaseTag.Name = configuration.ContinuousDeploymentFallbackTag;
                 }
             }
         }
 
         // Evaluate tag number pattern and append to prerelease tag, preserving build metadata
-        var appendTagNumberPattern = !config.TagNumberPattern.IsNullOrEmpty() && semanticVersion.PreReleaseTag?.HasTag() == true;
+        var appendTagNumberPattern = !configuration.TagNumberPattern.IsNullOrEmpty() && semanticVersion.PreReleaseTag?.HasTag() == true;
         if (appendTagNumberPattern)
         {
-            if (semanticVersion.BuildMetaData?.Branch != null && config.TagNumberPattern != null)
+            if (semanticVersion.BuildMetaData?.Branch != null && configuration.TagNumberPattern != null)
             {
-                var match = Regex.Match(semanticVersion.BuildMetaData.Branch, config.TagNumberPattern);
+                var match = Regex.Match(semanticVersion.BuildMetaData.Branch, configuration.TagNumberPattern);
                 var numberGroup = match.Groups["number"];
                 if (numberGroup.Success && semanticVersion.PreReleaseTag != null)
                 {
@@ -55,20 +55,20 @@ public class VariableProvider : IVariableProvider
             }
         }
 
-        if (isContinuousDeploymentMode || appendTagNumberPattern || config.VersioningMode == VersioningMode.Mainline)
+        if (isContinuousDeploymentMode || appendTagNumberPattern || configuration.VersioningMode == VersioningMode.Mainline)
         {
             // TODO: Why do we manipulating the semantic version here in the VariableProvider? The method name is GET not MANIPULATE.
             // What is about the separation of concern and single-responsibility principle?
             PromoteNumberOfCommitsToTagNumber(semanticVersion);
         }
 
-        var semverFormatValues = new SemanticVersionFormatValues(semanticVersion, config);
+        var semverFormatValues = new SemanticVersionFormatValues(semanticVersion, configuration);
 
-        var informationalVersion = CheckAndFormatString(config.AssemblyInformationalFormat, semverFormatValues, semverFormatValues.InformationalVersion, "AssemblyInformationalVersion");
+        var informationalVersion = CheckAndFormatString(configuration.AssemblyInformationalFormat, semverFormatValues, semverFormatValues.InformationalVersion, "AssemblyInformationalVersion");
 
-        var assemblyFileSemVer = CheckAndFormatString(config.AssemblyFileVersioningFormat, semverFormatValues, semverFormatValues.AssemblyFileSemVer, "AssemblyFileVersioningFormat");
+        var assemblyFileSemVer = CheckAndFormatString(configuration.AssemblyFileVersioningFormat, semverFormatValues, semverFormatValues.AssemblyFileSemVer, "AssemblyFileVersioningFormat");
 
-        var assemblySemVer = CheckAndFormatString(config.AssemblyVersioningFormat, semverFormatValues, semverFormatValues.AssemblySemVer, "AssemblyVersioningFormat");
+        var assemblySemVer = CheckAndFormatString(configuration.AssemblyVersioningFormat, semverFormatValues, semverFormatValues.AssemblySemVer, "AssemblyVersioningFormat");
 
         var variables = new VersionVariables(
             semverFormatValues.Major,

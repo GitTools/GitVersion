@@ -8,20 +8,20 @@ namespace GitVersion.Configurations.Init.SetConfig;
 public class SetBranchTag : ConfigInitWizardStep
 {
     private string name;
-    private BranchConfig branchConfig;
+    private BranchConfiguration branchConfiguration;
 
     public SetBranchTag(IConsole console, IFileSystem fileSystem, ILog log, IConfigInitStepFactory stepFactory) : base(console, fileSystem, log, stepFactory)
     {
     }
 
-    public SetBranchTag WithData(string configName, BranchConfig config)
+    public SetBranchTag WithData(string configName, BranchConfiguration configuration)
     {
-        this.branchConfig = config;
+        this.branchConfiguration = configuration;
         this.name = configName;
         return this;
     }
 
-    protected override StepResult HandleResult(string? result, Queue<ConfigInitWizardStep> steps, Model.Configurations.Configuration config, string workingDirectory)
+    protected override StepResult HandleResult(string? result, Queue<ConfigInitWizardStep> steps, Model.Configurations.Configuration configuration, string workingDirectory)
     {
         if (result.IsNullOrWhiteSpace())
         {
@@ -32,20 +32,20 @@ public class SetBranchTag : ConfigInitWizardStep
         switch (result)
         {
             case "0":
-                steps.Enqueue(configureBranchStep.WithData(this.name, this.branchConfig));
+                steps.Enqueue(configureBranchStep.WithData(this.name, this.branchConfiguration));
                 return StepResult.Ok();
             case "1":
-                this.branchConfig.Tag = string.Empty;
-                steps.Enqueue(configureBranchStep.WithData(name, this.branchConfig));
+                this.branchConfiguration.Tag = string.Empty;
+                steps.Enqueue(configureBranchStep.WithData(name, this.branchConfiguration));
                 return StepResult.Ok();
             default:
-                this.branchConfig.Tag = result;
-                steps.Enqueue(configureBranchStep.WithData(name, this.branchConfig));
+                this.branchConfiguration.Tag = result;
+                steps.Enqueue(configureBranchStep.WithData(name, this.branchConfiguration));
                 return StepResult.Ok();
         }
     }
 
-    protected override string GetPrompt(Model.Configurations.Configuration config, string workingDirectory) => @"This sets the pre-release tag which will be used for versions on this branch (beta, rc etc)
+    protected override string GetPrompt(Configuration configuration, string workingDirectory) => @"This sets the per-release tag which will be used for versions on this branch (beta, rc etc)
 
 0) Go Back
 1) No tag

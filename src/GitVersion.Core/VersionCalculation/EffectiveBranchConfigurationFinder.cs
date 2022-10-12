@@ -26,7 +26,7 @@ public class EffectiveBranchConfigurationFinder : IEffectiveBranchConfigurationF
     }
 
     private IEnumerable<EffectiveBranchConfiguration> GetEffectiveConfigurationsRecursive(
-        IBranch branch, Model.Configurations.Configuration configuration, BranchConfig? childBranchConfiguration, HashSet<IBranch> traversedBranches)
+        IBranch branch, Model.Configurations.Configuration configuration, BranchConfiguration? childBranchConfiguration, HashSet<IBranch> traversedBranches)
     {
         if (!traversedBranches.Add(branch)) yield break; // This should never happen!! But it is good to have a circuit breaker.
 

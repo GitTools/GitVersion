@@ -173,8 +173,8 @@ public class GitVersionCacheKeyFactory : IGitVersionCacheKeyFactory
 
     private string GetConfigFileHash()
     {
-        // will return the same hash even when config file will be moved
-        // from workingDirectory to rootProjectDirectory. It's OK. Config essentially is the same.
+        // will return the same hash even when configuration file will be moved
+        // from workingDirectory to rootProjectDirectory. It's OK. Configuration essentially is the same.
         var configFilePath = this.configFileLocator.SelectConfigFilePath(this.options.Value, this.repositoryInfo);
         if (configFilePath == null || !this.fileSystem.Exists(configFilePath))
         {

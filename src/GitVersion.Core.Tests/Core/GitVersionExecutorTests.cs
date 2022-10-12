@@ -204,8 +204,8 @@ public class GitVersionExecutorTests : TestBase
 
         var cacheDirectoryTimestamp = this.fileSystem.GetLastDirectoryWrite(cacheDirectory);
 
-        var config = new ConfigurationBuilder().Add(new Model.Configurations.Configuration { TagPrefix = "prefix" }).Build();
-        gitVersionOptions = new GitVersionOptions { WorkingDirectory = fixture.RepositoryPath, ConfigInfo = { OverrideConfig = config } };
+        var configuration = new ConfigurationBuilder().Add(new Model.Configurations.Configuration { TagPrefix = "prefix" }).Build();
+        gitVersionOptions = new GitVersionOptions { WorkingDirectory = fixture.RepositoryPath, ConfigInfo = { OverrideConfig = configuration } };
 
         gitVersionCalculator = GetGitVersionCalculator(gitVersionOptions);
         versionVariables = gitVersionCalculator.CalculateVersionVariables();
@@ -213,7 +213,7 @@ public class GitVersionExecutorTests : TestBase
         versionVariables.AssemblySemVer.ShouldBe("0.0.1.0");
 
         var cachedDirectoryTimestampAfter = this.fileSystem.GetLastDirectoryWrite(cacheDirectory);
-        cachedDirectoryTimestampAfter.ShouldBe(cacheDirectoryTimestamp, "Cache was updated when override config was set");
+        cachedDirectoryTimestampAfter.ShouldBe(cacheDirectoryTimestamp, "Cache was updated when override configuration was set");
     }
 
     [Test]

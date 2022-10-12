@@ -20,7 +20,7 @@ GitVersion.Arguments.NoFetch -> bool
 GitVersion.Arguments.NoNormalize -> bool
 GitVersion.Arguments.Output -> System.Collections.Generic.ISet<GitVersion.Model.OutputType>!
 GitVersion.Arguments.OutputFile -> string?
-GitVersion.Arguments.OverrideConfig -> GitVersion.Model.Configuration.Config?
+GitVersion.Arguments.OverrideConfig -> GitVersion.Model.Configurations.Configuration?
 GitVersion.Arguments.ShowConfig -> bool
 GitVersion.Arguments.ShowVariable -> string?
 GitVersion.Arguments.TargetBranch -> string?
@@ -37,7 +37,7 @@ GitVersion.GitVersionAppModule.GitVersionAppModule() -> void
 GitVersion.GitVersionAppModule.RegisterTypes(Microsoft.Extensions.DependencyInjection.IServiceCollection! services) -> void
 GitVersion.GitVersionExecutor
 GitVersion.GitVersionExecutor.Execute(GitVersion.GitVersionOptions! gitVersionOptions) -> int
-GitVersion.GitVersionExecutor.GitVersionExecutor(GitVersion.Logging.ILog! log, GitVersion.Logging.IConsole! console, GitVersion.Configuration.IConfigFileLocator! configFileLocator, GitVersion.Configuration.IConfigProvider! configProvider, GitVersion.IGitVersionCalculateTool! gitVersionCalculateTool, GitVersion.IGitVersionOutputTool! gitVersionOutputTool, GitVersion.IVersionWriter! versionWriter, GitVersion.IHelpWriter! helpWriter, GitVersion.IGitRepositoryInfo! repositoryInfo) -> void
+GitVersion.GitVersionExecutor.GitVersionExecutor(GitVersion.Logging.ILog! log, GitVersion.Logging.IConsole! console, GitVersion.Configurations.IConfigFileLocator! configFileLocator, GitVersion.Configurations.IConfigProvider! configProvider, GitVersion.IGitVersionCalculateTool! gitVersionCalculateTool, GitVersion.IGitVersionOutputTool! gitVersionOutputTool, GitVersion.IVersionWriter! versionWriter, GitVersion.IHelpWriter! helpWriter, GitVersion.IGitRepositoryInfo! repositoryInfo) -> void
 GitVersion.GlobbingResolver
 GitVersion.GlobbingResolver.GlobbingResolver() -> void
 GitVersion.GlobbingResolver.Resolve(string! workingDirectory, string! pattern) -> System.Collections.Generic.IEnumerable<string!>!

@@ -10,7 +10,7 @@ internal class MainlineBranchFinder
 {
     private readonly Configuration configuration;
     private readonly ILog log;
-    private readonly List<BranchConfig> mainlineBranchConfigurations;
+    private readonly List<BranchConfiguration> mainlineBranchConfigurations;
     private readonly IGitRepository repository;
     private readonly IRepositoryStore repositoryStore;
 
@@ -56,7 +56,7 @@ internal class MainlineBranchFinder
             this.log = log;
         }
 
-        public bool IsMainline(BranchConfig value)
+        public bool IsMainline(BranchConfiguration value)
         {
             if (value?.Regex == null)
                 return false;

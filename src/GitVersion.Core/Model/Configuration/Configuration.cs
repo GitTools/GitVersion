@@ -12,7 +12,7 @@ public class Configuration
 
     public Configuration()
     {
-        Branches = new Dictionary<string, BranchConfig>();
+        Branches = new Dictionary<string, BranchConfiguration>();
         Ignore = new IgnoreConfig();
     }
 
@@ -69,7 +69,7 @@ public class Configuration
     public CommitMessageIncrementMode? CommitMessageIncrementing { get; set; }
 
     [YamlMember(Alias = "branches")]
-    public Dictionary<string, BranchConfig> Branches { get; set; }
+    public Dictionary<string, BranchConfiguration> Branches { get; set; }
 
     [YamlMember(Alias = "ignore")]
     public IgnoreConfig Ignore { get; set; }

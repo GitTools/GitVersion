@@ -67,13 +67,13 @@ public class NextVersionCalculatorTests : TestBase
     [Test]
     public void PreReleaseTagCanUseBranchName()
     {
-        var config = new Model.Configurations.Configuration
+        var configuration = new Model.Configurations.Configuration
         {
             NextVersion = "1.0.0",
-            Branches = new Dictionary<string, BranchConfig>
+            Branches = new Dictionary<string, BranchConfiguration>
             {
                 {
-                    "custom", new BranchConfig
+                    "custom", new BranchConfiguration
                     {
                         Regex = "custom/",
                         Tag = "useBranchName",
@@ -90,13 +90,13 @@ public class NextVersionCalculatorTests : TestBase
         fixture.BranchTo("custom/foo");
         fixture.MakeACommit();
 
-        fixture.AssertFullSemver("1.0.0-foo.1+3", config);
+        fixture.AssertFullSemver("1.0.0-foo.1+3", configuration);
     }
 
     [Test]
     public void PreReleaseVersionMainline()
     {
-        var config = new Model.Configurations.Configuration
+        var configuration = new Model.Configurations.Configuration
         {
             VersioningMode = VersioningMode.Mainline,
             NextVersion = "1.0.0"
@@ -107,13 +107,13 @@ public class NextVersionCalculatorTests : TestBase
         fixture.BranchTo("foo");
         fixture.MakeACommit();
 
-        fixture.AssertFullSemver("1.0.0-foo.1", config);
+        fixture.AssertFullSemver("1.0.0-foo.1", configuration);
     }
 
     [Test]
     public void MergeIntoMainline()
     {
-        var config = new Model.Configurations.Configuration
+        var configuration = new Model.Configurations.Configuration
         {
             VersioningMode = VersioningMode.Mainline,
             NextVersion = "1.0.0"
@@ -126,13 +126,13 @@ public class NextVersionCalculatorTests : TestBase
         fixture.Checkout(MainBranch);
         fixture.MergeNoFF("foo");
 
-        fixture.AssertFullSemver("1.0.0", config);
+        fixture.AssertFullSemver("1.0.0", configuration);
     }
 
     [Test]
     public void MergeFeatureIntoMainline()
     {
-        var config = new Model.Configurations.Configuration
+        var configuration = new Model.Configurations.Configuration
         {
             VersioningMode = VersioningMode.Mainline
         };
@@ -140,27 +140,27 @@ public class NextVersionCalculatorTests : TestBase
         using var fixture = new EmptyRepositoryFixture();
         fixture.MakeACommit();
         fixture.ApplyTag("1.0.0");
-        fixture.AssertFullSemver("1.0.0", config);
+        fixture.AssertFullSemver("1.0.0", configuration);
 
         fixture.BranchTo("feature/foo");
         fixture.MakeACommit();
-        fixture.AssertFullSemver("1.0.1-foo.1", config);
+        fixture.AssertFullSemver("1.0.1-foo.1", configuration);
         fixture.ApplyTag("1.0.1-foo.1");
 
         fixture.Checkout(MainBranch);
         fixture.MergeNoFF("feature/foo");
-        fixture.AssertFullSemver("1.0.1", config);
+        fixture.AssertFullSemver("1.0.1", configuration);
     }
 
     [Test]
     public void MergeFeatureIntoMainlineWithMinorIncrement()
     {
-        var config = new Model.Configurations.Configuration
+        var configuration = new Model.Configurations.Configuration
         {
             VersioningMode = VersioningMode.Mainline,
-            Branches = new Dictionary<string, BranchConfig>
+            Branches = new Dictionary<string, BranchConfiguration>
             {
-                { "feature", new BranchConfig { Increment = IncrementStrategy.Minor } }
+                { "feature", new BranchConfiguration { Increment = IncrementStrategy.Minor } }
             },
             Ignore = new IgnoreConfig { ShAs = new List<string>() },
             MergeMessageFormats = new Dictionary<string, string>()
@@ -169,27 +169,27 @@ public class NextVersionCalculatorTests : TestBase
         using var fixture = new EmptyRepositoryFixture();
         fixture.MakeACommit();
         fixture.ApplyTag("1.0.0");
-        fixture.AssertFullSemver("1.0.0", config);
+        fixture.AssertFullSemver("1.0.0", configuration);
 
         fixture.BranchTo("feature/foo");
         fixture.MakeACommit();
-        fixture.AssertFullSemver("1.1.0-foo.1", config);
+        fixture.AssertFullSemver("1.1.0-foo.1", configuration);
         fixture.ApplyTag("1.1.0-foo.1");
 
         fixture.Checkout(MainBranch);
         fixture.MergeNoFF("feature/foo");
-        fixture.AssertFullSemver("1.1.0", config);
+        fixture.AssertFullSemver("1.1.0", configuration);
     }
 
     [Test]
     public void MergeFeatureIntoMainlineWithMinorIncrementAndThenMergeHotfix()
     {
-        var config = new Model.Configurations.Configuration
+        var configuration = new Model.Configurations.Configuration
         {
             VersioningMode = VersioningMode.Mainline,
-            Branches = new Dictionary<string, BranchConfig>
+            Branches = new Dictionary<string, BranchConfiguration>
             {
-                { "feature", new BranchConfig { Increment = IncrementStrategy.Minor } }
+                { "feature", new BranchConfiguration { Increment = IncrementStrategy.Minor } }
             },
             Ignore = new IgnoreConfig { ShAs = new List<string>() },
             MergeMessageFormats = new Dictionary<string, string>()
@@ -198,38 +198,38 @@ public class NextVersionCalculatorTests : TestBase
         using var fixture = new EmptyRepositoryFixture();
         fixture.MakeACommit();
         fixture.ApplyTag("1.0.0");
-        fixture.AssertFullSemver("1.0.0", config);
+        fixture.AssertFullSemver("1.0.0", configuration);
 
         fixture.BranchTo("feature/foo");
         fixture.MakeACommit();
-        fixture.AssertFullSemver("1.1.0-foo.1", config);
+        fixture.AssertFullSemver("1.1.0-foo.1", configuration);
         fixture.ApplyTag("1.1.0-foo.1");
 
         fixture.Checkout(MainBranch);
         fixture.MergeNoFF("feature/foo");
-        fixture.AssertFullSemver("1.1.0", config);
+        fixture.AssertFullSemver("1.1.0", configuration);
         fixture.ApplyTag("1.1.0");
 
         fixture.BranchTo("hotfix/bar");
         fixture.MakeACommit();
-        fixture.AssertFullSemver("1.1.1-beta.1", config);
+        fixture.AssertFullSemver("1.1.1-beta.1", configuration);
         fixture.ApplyTag("1.1.1-beta.1");
 
         fixture.Checkout(MainBranch);
         fixture.MergeNoFF("hotfix/bar");
-        fixture.AssertFullSemver("1.1.1", config);
+        fixture.AssertFullSemver("1.1.1", configuration);
     }
 
     [Test]
     public void PreReleaseTagCanUseBranchNameVariable()
     {
-        var config = new Model.Configurations.Configuration
+        var configuration = new Model.Configurations.Configuration
         {
             NextVersion = "1.0.0",
-            Branches = new Dictionary<string, BranchConfig>
+            Branches = new Dictionary<string, BranchConfiguration>
             {
                 {
-                    "custom", new BranchConfig
+                    "custom", new BranchConfiguration
                     {
                         Regex = "custom/",
                         Tag = "alpha.{BranchName}",
@@ -246,19 +246,19 @@ public class NextVersionCalculatorTests : TestBase
         fixture.BranchTo("custom/foo");
         fixture.MakeACommit();
 
-        fixture.AssertFullSemver("1.0.0-alpha.foo.1+3", config);
+        fixture.AssertFullSemver("1.0.0-alpha.foo.1+3", configuration);
     }
 
     [Test]
     public void PreReleaseNumberShouldBeScopeToPreReleaseLabelInContinuousDelivery()
     {
-        var config = new Model.Configurations.Configuration
+        var configuration = new Model.Configurations.Configuration
         {
             VersioningMode = VersioningMode.ContinuousDelivery,
-            Branches = new Dictionary<string, BranchConfig>
+            Branches = new Dictionary<string, BranchConfiguration>
             {
                 {
-                    MainBranch, new BranchConfig
+                    MainBranch, new BranchConfiguration
                     {
                         Tag = "beta"
                     }
@@ -274,18 +274,18 @@ public class NextVersionCalculatorTests : TestBase
         fixture.Repository.MakeATaggedCommit("0.1.0-test.1");
         fixture.Repository.MakeACommit();
 
-        fixture.AssertFullSemver("0.1.0-test.2+1", config);
+        fixture.AssertFullSemver("0.1.0-test.2+1", configuration);
 
         Commands.Checkout(fixture.Repository, MainBranch);
         fixture.Repository.Merge("feature/test", Generate.SignatureNow());
 
-        fixture.AssertFullSemver("0.1.0-beta.1+1", config); // just one commit no fast forward merge here.
+        fixture.AssertFullSemver("0.1.0-beta.1+1", configuration); // just one commit no fast forward merge here.
     }
 
     [Test]
     public void GetNextVersionOnNonMainlineBranchWithoutCommitsShouldWorkNormally()
     {
-        var config = new Model.Configurations.Configuration
+        var configuration = new Model.Configurations.Configuration
         {
             VersioningMode = VersioningMode.Mainline,
             NextVersion = "1.0.0"
@@ -294,7 +294,7 @@ public class NextVersionCalculatorTests : TestBase
         using var fixture = new EmptyRepositoryFixture();
         fixture.MakeACommit("initial commit");
         fixture.BranchTo("feature/f1");
-        fixture.AssertFullSemver("1.0.0-f1.0", config);
+        fixture.AssertFullSemver("1.0.0-f1.0", configuration);
     }
 
     [Test]

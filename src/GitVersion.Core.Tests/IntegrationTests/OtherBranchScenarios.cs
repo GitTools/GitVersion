@@ -60,13 +60,13 @@ public class OtherBranchScenarios : TestBase
     [TestCase("alpha.{BranchName}", "JIRA-123", "alpha.JIRA-123")]
     public void TagIsBranchNameForBranchesWithoutPrefixedBranchName(string tag, string branchName, string preReleaseTagName)
     {
-        var config = new Model.Configurations.Configuration
+        var configuration = new Model.Configurations.Configuration
         {
             Branches =
             {
                 {
                     "other",
-                    new BranchConfig
+                    new BranchConfiguration
                     {
                         Increment = IncrementStrategy.Patch,
                         Regex = ".*",
@@ -84,6 +84,6 @@ public class OtherBranchScenarios : TestBase
         fixture.Repository.MakeCommits(5);
 
         var expectedFullSemVer = $"1.0.1-{preReleaseTagName}.1+5";
-        fixture.AssertFullSemver(expectedFullSemVer, config);
+        fixture.AssertFullSemver(expectedFullSemVer, configuration);
     }
 }

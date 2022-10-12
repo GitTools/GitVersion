@@ -8,5 +8,5 @@ public class FinishedSetupStep : EditConfigStep
     {
     }
 
-    protected override string GetPrompt(Model.Configurations.Configuration config, string workingDirectory) => $"Questions are all done, you can now edit GitVersion's configuration further{System.Environment.NewLine}" + base.GetPrompt(config, workingDirectory);
+    protected override string GetPrompt(Model.Configurations.Configuration configuration, string workingDirectory) => $"Questions are all done, you can now edit GitVersion's configuration further{System.Environment.NewLine}" + base.GetPrompt(configuration, workingDirectory);
 }

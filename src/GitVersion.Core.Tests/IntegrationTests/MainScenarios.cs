@@ -13,12 +13,12 @@ public class MainScenarios : TestBase
     [Test]
     public void CanHandleContinuousDelivery()
     {
-        var config = new Model.Configurations.Configuration
+        var configuaration = new Model.Configurations.Configuration
         {
             Branches =
             {
                 {
-                    MainBranch, new BranchConfig
+                    MainBranch, new BranchConfiguration
                     {
                         VersioningMode = VersioningMode.ContinuousDelivery
                     }
@@ -28,18 +28,18 @@ public class MainScenarios : TestBase
         using var fixture = new EmptyRepositoryFixture();
         fixture.Repository.MakeATaggedCommit("1.0.0");
         fixture.Repository.MakeCommits(2);
-        fixture.AssertFullSemver("1.0.1+2", config);
+        fixture.AssertFullSemver("1.0.1+2", configuaration);
     }
 
     [Test]
     public void CanHandleContinuousDeployment()
     {
-        var config = new Model.Configurations.Configuration
+        var configuration = new Model.Configurations.Configuration
         {
             Branches =
             {
                 {
-                    MainBranch, new BranchConfig
+                    MainBranch, new BranchConfiguration
                     {
                         VersioningMode = VersioningMode.ContinuousDeployment
                     }
@@ -49,7 +49,7 @@ public class MainScenarios : TestBase
         using var fixture = new EmptyRepositoryFixture();
         fixture.Repository.MakeATaggedCommit("1.0.0");
         fixture.Repository.MakeCommits(2);
-        fixture.AssertFullSemver("1.0.1-ci.2", config);
+        fixture.AssertFullSemver("1.0.1-ci.2", configuration);
     }
 
     [Test]
@@ -100,13 +100,13 @@ public class MainScenarios : TestBase
     public void GivenARepositoryWithTagAndNextVersionInConfigVersionShouldMatchVersionTxtFile()
     {
         const string expectedNextVersion = "1.1.0";
-        var config = new Model.Configurations.Configuration { NextVersion = expectedNextVersion };
+        var configuration = new Model.Configurations.Configuration { NextVersion = expectedNextVersion };
         using var fixture = new EmptyRepositoryFixture();
         const string taggedVersion = "1.0.3";
         fixture.Repository.MakeATaggedCommit(taggedVersion);
         fixture.Repository.MakeCommits(5);
 
-        fixture.AssertFullSemver("1.1.0+5", config);
+        fixture.AssertFullSemver("1.1.0+5", configuration);
     }
 
     [Test]
@@ -210,36 +210,36 @@ public class MainScenarios : TestBase
     [Test]
     public void CanSpecifyTagPrefixesAsRegex()
     {
-        var config = new Model.Configurations.Configuration { TagPrefix = "version-|[vV]" };
+        var configuration = new Model.Configurations.Configuration { TagPrefix = "version-|[vV]" };
         using var fixture = new EmptyRepositoryFixture();
         var taggedVersion = "v1.0.3";
         fixture.Repository.MakeATaggedCommit(taggedVersion);
         fixture.Repository.MakeCommits(5);
 
-        fixture.AssertFullSemver("1.0.4+5", config);
+        fixture.AssertFullSemver("1.0.4+5", configuration);
 
         taggedVersion = "version-1.0.5";
         fixture.Repository.MakeATaggedCommit(taggedVersion);
         fixture.Repository.MakeCommits(5);
 
-        fixture.AssertFullSemver("1.0.6+5", config);
+        fixture.AssertFullSemver("1.0.6+5", configuration);
     }
 
     [Test]
     public void AreTagsNotAdheringToTagPrefixIgnored()
     {
-        var config = new Model.Configurations.Configuration { TagPrefix = "" };
+        var configuration = new Model.Configurations.Configuration { TagPrefix = "" };
         using var fixture = new EmptyRepositoryFixture();
         var taggedVersion = "version-1.0.3";
         fixture.Repository.MakeATaggedCommit(taggedVersion);
         fixture.Repository.MakeCommits(5);
 
-        fixture.AssertFullSemver("0.0.1+6", config);
+        fixture.AssertFullSemver("0.0.1+6", configuration);
 
         taggedVersion = "bad/1.0.3";
         fixture.Repository.MakeATaggedCommit(taggedVersion);
 
-        fixture.AssertFullSemver("0.0.1+7", config);
+        fixture.AssertFullSemver("0.0.1+7", configuration);
     }
 
     [Test]

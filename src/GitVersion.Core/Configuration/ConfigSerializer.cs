@@ -11,16 +11,16 @@ public class ConfigSerializer
         var deserializer = new DeserializerBuilder()
             .WithNamingConvention(HyphenatedNamingConvention.Instance)
             .Build();
-        var config = deserializer.Deserialize<Configuration?>(reader);
-        return config ?? new Configuration();
+        var configuration = deserializer.Deserialize<Configuration?>(reader);
+        return configuration ?? new Configuration();
     }
 
-    public static void Write(Model.Configurations.Configuration config, TextWriter writer)
+    public static void Write(Configuration configuration, TextWriter writer)
     {
         var serializer = new SerializerBuilder()
             .ConfigureDefaultValuesHandling(DefaultValuesHandling.OmitDefaults)
             .WithNamingConvention(HyphenatedNamingConvention.Instance)
             .Build();
-        serializer.Serialize(writer, config);
+        serializer.Serialize(writer, configuration);
     }
 }

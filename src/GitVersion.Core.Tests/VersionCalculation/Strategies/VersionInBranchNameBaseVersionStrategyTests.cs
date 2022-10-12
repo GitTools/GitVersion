@@ -59,12 +59,11 @@ public class VersionInBranchNameBaseVersionStrategyTests : TestBase
         fixture.Repository.MakeACommit();
         fixture.Repository.CreateBranch(branchName);
 
-        var config = new ConfigurationBuilder()
-            .Add(new Model.Configurations.Configuration { Branches = { { "support", new BranchConfig { IsReleaseBranch = true } } } })
-            .Build();
+        var configurationBuilder = new ConfigurationBuilder()
+            .Add(new Model.Configurations.Configuration { Branches = { { "support", new BranchConfiguration { IsReleaseBranch = true } } } });
 
         var gitRepository = fixture.Repository.ToGitRepository();
-        var strategy = GetVersionStrategy(fixture.RepositoryPath, gitRepository, branchName, config);
+        var strategy = GetVersionStrategy(fixture.RepositoryPath, gitRepository, branchName, configurationBuilder.Build());
 
         var configuration = TestConfigurationBuilder.New.Build();
         var branchConfiguration = configuration.GetBranchConfiguration(branchName);
@@ -97,9 +96,9 @@ public class VersionInBranchNameBaseVersionStrategyTests : TestBase
         baseVersion.SemanticVersion.ToString().ShouldBe(expectedBaseVersion);
     }
 
-    private static IVersionStrategy GetVersionStrategy(string workingDirectory, IGitRepository repository, string branch, Model.Configurations.Configuration? config = null)
+    private static IVersionStrategy GetVersionStrategy(string workingDirectory, IGitRepository repository, string branch, Model.Configurations.Configuration? configuration = null)
     {
-        var sp = BuildServiceProvider(workingDirectory, repository, branch, config);
+        var sp = BuildServiceProvider(workingDirectory, repository, branch, configuration);
         return sp.GetServiceForType<IVersionStrategy, VersionInBranchNameVersionStrategy>();
     }
 }

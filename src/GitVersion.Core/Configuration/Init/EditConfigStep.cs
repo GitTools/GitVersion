@@ -11,7 +11,7 @@ public class EditConfigStep : ConfigInitWizardStep
     {
     }
 
-    protected override StepResult HandleResult(string? result, Queue<ConfigInitWizardStep> steps, Model.Configurations.Configuration config, string workingDirectory)
+    protected override StepResult HandleResult(string? result, Queue<ConfigInitWizardStep> steps, Model.Configurations.Configuration configuration, string workingDirectory)
     {
         switch (result)
         {
@@ -45,7 +45,7 @@ public class EditConfigStep : ConfigInitWizardStep
         return StepResult.InvalidResponseSelected();
     }
 
-    protected override string GetPrompt(Model.Configurations.Configuration config, string workingDirectory) => $@"Which would you like to change?
+    protected override string GetPrompt(Model.Configurations.Configuration configuration, string workingDirectory) => $@"Which would you like to change?
 
 0) Save changes and exit
 1) Exit without saving
@@ -54,8 +54,8 @@ public class EditConfigStep : ConfigInitWizardStep
 
 3) Set next version number
 4) Branch specific configuration
-5) Branch Increment mode (per commit/after tag) (Current: {config.VersioningMode})
-6) Assembly versioning scheme (Current: {config.AssemblyVersioningScheme})
+5) Branch Increment mode (per commit/after tag) (Current: {configuration.VersioningMode})
+6) Assembly versioning scheme (Current: {configuration.AssemblyVersioningScheme})
 7) Setup build scripts";
 
     protected override string? DefaultResult => null;

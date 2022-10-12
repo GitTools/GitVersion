@@ -3,16 +3,16 @@ using YamlDotNet.Serialization;
 
 namespace GitVersion.Model.Configurations;
 
-public class BranchConfig
+public class BranchConfiguration
 {
-    public BranchConfig()
+    public BranchConfiguration()
     {
     }
 
     /// <summary>
     /// Creates a clone of the given <paramref name="branchConfiguration"/>.
     /// </summary>
-    public BranchConfig(BranchConfig branchConfiguration)
+    public BranchConfiguration(BranchConfiguration branchConfiguration)
     {
         VersioningMode = branchConfiguration.VersioningMode;
         Tag = branchConfiguration.Tag;
@@ -43,11 +43,11 @@ public class BranchConfig
     [YamlMember(Alias = "increment")]
     public IncrementStrategy? Increment { get; set; }
 
-    public BranchConfig Inherit(BranchConfig? parentConfig)
+    public BranchConfiguration Inherit(BranchConfiguration? parentConfig)
     {
         if (parentConfig is null) return this;
 
-        var result = new BranchConfig(this);
+        var result = new BranchConfiguration(this);
 
         if (result.Increment is null || result.Increment == IncrementStrategy.Inherit)
         {
@@ -104,12 +104,12 @@ public class BranchConfig
     public int? PreReleaseWeight { get; set; }
 
     /// <summary>
-    /// The name given to this configuration in the config file.
+    /// The name given to this configuration in the configuration file.
     /// </summary>
     [YamlIgnore]
     public string Name { get; set; }
 
-    public void MergeTo(BranchConfig targetConfig)
+    public void MergeTo(BranchConfiguration targetConfig)
     {
         if (targetConfig == null) throw new ArgumentNullException(nameof(targetConfig));
 
@@ -129,7 +129,7 @@ public class BranchConfig
         targetConfig.PreReleaseWeight = this.PreReleaseWeight ?? targetConfig.PreReleaseWeight;
     }
 
-    public BranchConfig Apply(BranchConfig overrides)
+    public BranchConfiguration Apply(BranchConfiguration overrides)
     {
         if (overrides == null) throw new ArgumentNullException(nameof(overrides));
 

@@ -20,17 +20,17 @@ public class ConfigurationBuilder
 
     public Configuration Build()
     {
-        var config = CreateDefaultConfiguration();
+        var configuration = CreateDefaultConfiguration();
 
         foreach (var overrideConfig in this.overrides)
         {
-            ApplyOverrides(config, overrideConfig);
+            ApplyOverrides(configuration, overrideConfig);
         }
 
-        FinalizeConfiguration(config);
-        ValidateConfiguration(config);
+        FinalizeConfiguration(configuration);
+        ValidateConfiguration(configuration);
 
-        return config;
+        return configuration;
     }
 
     private static void ApplyOverrides(Configuration targetConfig, Configuration overrideConfig)
@@ -69,27 +69,27 @@ public class ConfigurationBuilder
         if (overrideConfig.Branches is { Count: > 0 })
         {
             // We can't just add new configs to the targetConfig.Branches, and have to create a new dictionary.
-            // The reason is that GitVersion 5.3.x (and earlier) merges default configs into overrides. The new approach is opposite: we merge overrides into default config.
+            // The reason is that GitVersion 5.3.x (and earlier) merges default configs into overrides. The new approach is opposite: we merge overrides into default configuration.
             // The important difference of these approaches is the order of branches in a dictionary (we should not rely on Dictionary's implementation details, but we already did that):
             // Old approach: { new-branch-1, new-branch-2, default-branch-1, default-branch-2, ... }
             // New approach: { default-branch-1, default-branch-2, ..., new-branch-1, new-branch-2 }
             // In case when several branch configurations match the current branch (by regex), we choose the first one.
             // So we have to add new branches to the beginning of a dictionary to preserve 5.3.x behavior.
 
-            var newBranches = new Dictionary<string, BranchConfig>();
+            var newBranches = new Dictionary<string, BranchConfiguration>();
 
             var targetConfigBranches = targetConfig.Branches;
 
-            foreach (var (name, branchConfig) in overrideConfig.Branches)
+            foreach (var (name, branchConfiguration) in overrideConfig.Branches)
             {
                 // for compatibility reason we check if it's master, we rename it to main
                 var branchName = name == Configuration.MasterBranchKey ? Configuration.MainBranchKey : name;
                 if (!targetConfigBranches.TryGetValue(branchName, out var target))
                 {
-                    target = new BranchConfig() { Name = branchName };
+                    target = new BranchConfiguration() { Name = branchName };
                 }
 
-                branchConfig.MergeTo(target);
+                branchConfiguration.MergeTo(target);
                 if (target.SourceBranches != null && target.SourceBranches.Contains(Configuration.MasterBranchKey))
                 {
                     target.SourceBranches.Remove(Configuration.MasterBranchKey);
@@ -98,11 +98,11 @@ public class ConfigurationBuilder
                 newBranches[branchName] = target;
             }
 
-            foreach (var (name, branchConfig) in targetConfigBranches)
+            foreach (var (name, branchConfiguration) in targetConfigBranches)
             {
                 if (!newBranches.ContainsKey(name))
                 {
-                    newBranches[name] = branchConfig;
+                    newBranches[name] = branchConfiguration;
                 }
             }
 
@@ -110,48 +110,48 @@ public class ConfigurationBuilder
         }
     }
 
-    private static void FinalizeConfiguration(Configuration config)
+    private static void FinalizeConfiguration(Configuration configuration)
     {
-        foreach (var (name, branchConfig) in config.Branches)
+        foreach (var (name, branchConfiguration) in configuration.Branches)
         {
-            FinalizeBranchConfiguration(config, name, branchConfig);
+            FinalizeBranchConfiguration(configuration, name, branchConfiguration);
         }
     }
 
-    private static void FinalizeBranchConfiguration(Configuration config, string name, BranchConfig branchConfig)
+    private static void FinalizeBranchConfiguration(Configuration configuration, string name, BranchConfiguration branchConfiguration)
     {
-        branchConfig.Name = name;
-        branchConfig.Increment ??= config.Increment ?? IncrementStrategy.Inherit;
+        branchConfiguration.Name = name;
+        branchConfiguration.Increment ??= configuration.Increment ?? IncrementStrategy.Inherit;
 
-        if (branchConfig.VersioningMode == null)
+        if (branchConfiguration.VersioningMode == null)
         {
             if (name == Configuration.DevelopBranchKey)
             {
                 // Why this applies only on develop branch? I'm surprised that the value not coming from configuration.
-                branchConfig.VersioningMode = config.VersioningMode == VersioningMode.Mainline ? VersioningMode.Mainline : VersioningMode.ContinuousDeployment;
+                branchConfiguration.VersioningMode = configuration.VersioningMode == VersioningMode.Mainline ? VersioningMode.Mainline : VersioningMode.ContinuousDeployment;
             }
             else
             {
-                branchConfig.VersioningMode = config.VersioningMode;
+                branchConfiguration.VersioningMode = configuration.VersioningMode;
             }
         }
 
-        if (branchConfig.IsSourceBranchFor == null)
+        if (branchConfiguration.IsSourceBranchFor == null)
             return;
 
-        foreach (var targetBranchName in branchConfig.IsSourceBranchFor)
+        foreach (var targetBranchName in branchConfiguration.IsSourceBranchFor)
         {
-            var targetBranchConfig = config.Branches[targetBranchName];
+            var targetBranchConfig = configuration.Branches[targetBranchName];
             targetBranchConfig.SourceBranches ??= new HashSet<string>();
             targetBranchConfig.SourceBranches.Add(name);
         }
     }
 
-    private static void ValidateConfiguration(Configuration config)
+    private static void ValidateConfiguration(Configuration configuration)
     {
-        foreach (var (name, branchConfig) in config.Branches)
+        foreach (var (name, branchConfiguration) in configuration.Branches)
         {
-            var regex = branchConfig?.Regex;
+            var regex = branchConfiguration?.Regex;
             var helpUrl = $"{System.Environment.NewLine}See https://gitversion.net/docs/reference/configuration for more info";
 
             if (regex == null)
@@ -159,13 +159,13 @@ public class ConfigurationBuilder
                 throw new ConfigurationException($"Branch configuration '{name}' is missing required configuration 'regex'{helpUrl}");
             }
 
-            var sourceBranches = branchConfig?.SourceBranches;
+            var sourceBranches = branchConfiguration?.SourceBranches;
             if (sourceBranches == null)
             {
                 throw new ConfigurationException($"Branch configuration '{name}' is missing required configuration 'source-branches'{helpUrl}");
             }
 
-            var missingSourceBranches = sourceBranches.Where(sb => !config.Branches.ContainsKey(sb)).ToArray();
+            var missingSourceBranches = sourceBranches.Where(sb => !configuration.Branches.ContainsKey(sb)).ToArray();
             if (missingSourceBranches.Any())
                 throw new ConfigurationException($"Branch configuration '{name}' defines these 'source-branches' that are not configured: '[{string.Join(",", missingSourceBranches)}]'{helpUrl}");
         }
@@ -173,7 +173,7 @@ public class ConfigurationBuilder
 
     private static Configuration CreateDefaultConfiguration()
     {
-        var config = new Configuration
+        var configuration = new Configuration
         {
             AssemblyVersioningScheme = AssemblyVersioningScheme.MajorMinorPatch,
             AssemblyFileVersioningScheme = AssemblyFileVersioningScheme.MajorMinorPatch,
@@ -193,7 +193,7 @@ public class ConfigurationBuilder
         };
 
         AddBranchConfig(Configuration.DevelopBranchKey,
-            new BranchConfig
+            new BranchConfiguration
             {
                 Increment = IncrementStrategy.Minor,
                 Regex = Configuration.DevelopBranchRegex,
@@ -208,7 +208,7 @@ public class ConfigurationBuilder
             });
 
         AddBranchConfig(Configuration.MainBranchKey,
-            new BranchConfig
+            new BranchConfiguration
             {
                 Increment = IncrementStrategy.Patch,
                 Regex = Configuration.MainBranchRegex,
@@ -226,7 +226,7 @@ public class ConfigurationBuilder
             });
 
         AddBranchConfig(Configuration.ReleaseBranchKey,
-            new BranchConfig
+            new BranchConfiguration
             {
                 Increment = IncrementStrategy.None,
                 Regex = Configuration.ReleaseBranchRegex,
@@ -246,7 +246,7 @@ public class ConfigurationBuilder
             });
 
         AddBranchConfig(Configuration.FeatureBranchKey,
-            new BranchConfig
+            new BranchConfiguration
             {
                 Increment = IncrementStrategy.Inherit,
                 Regex = Configuration.FeatureBranchRegex,
@@ -263,7 +263,7 @@ public class ConfigurationBuilder
             });
 
         AddBranchConfig(Configuration.PullRequestBranchKey,
-            new BranchConfig
+            new BranchConfiguration
             {
                 Increment = IncrementStrategy.Inherit,
                 Regex = Configuration.PullRequestRegex,
@@ -281,7 +281,7 @@ public class ConfigurationBuilder
             });
 
         AddBranchConfig(Configuration.HotfixBranchKey,
-            new BranchConfig
+            new BranchConfiguration
             {
                 Increment = IncrementStrategy.Inherit,
                 Regex = Configuration.HotfixBranchRegex,
@@ -296,7 +296,7 @@ public class ConfigurationBuilder
             });
 
         AddBranchConfig(Configuration.SupportBranchKey,
-            new BranchConfig
+            new BranchConfiguration
             {
                 Increment = IncrementStrategy.Patch,
                 Regex = Configuration.SupportBranchRegex,
@@ -310,12 +310,12 @@ public class ConfigurationBuilder
                 PreReleaseWeight = 55000
             });
 
-        return config;
+        return configuration;
 
-        void AddBranchConfig(string name, BranchConfig branchConfiguration)
+        void AddBranchConfig(string name, BranchConfiguration branchConfiguration)
         {
             branchConfiguration.Name = name;
-            config.Branches[name] = branchConfiguration;
+            configuration.Branches[name] = branchConfiguration;
         }
     }
 }

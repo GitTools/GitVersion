@@ -9,5 +9,5 @@ public class GitHubFlowStep : GlobalModeSetting
     {
     }
 
-    protected override string GetPrompt(Model.Configurations.Configuration config, string workingDirectory) => $"By default GitVersion will only increment the version when tagged{System.Environment.NewLine}{System.Environment.NewLine}" + base.GetPrompt(config, workingDirectory);
+    protected override string GetPrompt(Model.Configurations.Configuration configuration, string workingDirectory) => $"By default GitVersion will only increment the version when tagged{System.Environment.NewLine}{System.Environment.NewLine}" + base.GetPrompt(configuration, workingDirectory);
 }

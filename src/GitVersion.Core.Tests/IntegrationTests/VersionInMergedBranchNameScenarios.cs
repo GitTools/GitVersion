@@ -31,15 +31,15 @@ public class VersionInMergedBranchNameScenarios : TestBase
     [Test]
     public void TakesVersionFromNameOfBranchThatIsReleaseByConfig()
     {
-        var config = new Model.Configurations.Configuration
+        var configuration = new Model.Configurations.Configuration
         {
-            Branches = new Dictionary<string, BranchConfig> { { "support", new BranchConfig { IsReleaseBranch = true } } }
+            Branches = new Dictionary<string, BranchConfiguration> { { "support", new BranchConfiguration { IsReleaseBranch = true } } }
         };
 
         using var fixture = new BaseGitFlowRepositoryFixture("1.0.0");
         fixture.CreateAndMergeBranchIntoDevelop("support/2.0.0");
 
-        fixture.AssertFullSemver("2.1.0-alpha.2", config);
+        fixture.AssertFullSemver("2.1.0-alpha.2", configuration);
     }
 
     [Test]

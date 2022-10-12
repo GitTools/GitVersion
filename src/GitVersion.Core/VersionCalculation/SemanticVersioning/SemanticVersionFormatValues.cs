@@ -7,12 +7,12 @@ namespace GitVersion;
 public class SemanticVersionFormatValues
 {
     private readonly SemanticVersion semver;
-    private readonly EffectiveConfiguration config;
+    private readonly EffectiveConfiguration configuration;
 
-    public SemanticVersionFormatValues(SemanticVersion semver, EffectiveConfiguration config)
+    public SemanticVersionFormatValues(SemanticVersion semver, EffectiveConfiguration configuration)
     {
         this.semver = semver;
-        this.config = config;
+        this.configuration = configuration;
     }
 
     public string Major => this.semver.Major.ToString();
@@ -41,9 +41,9 @@ public class SemanticVersionFormatValues
 
     public string SemVer => this.semver.ToString();
 
-    public string? AssemblySemVer => this.semver.GetAssemblyVersion(this.config.AssemblyVersioningScheme);
+    public string? AssemblySemVer => this.semver.GetAssemblyVersion(this.configuration.AssemblyVersioningScheme);
 
-    public string? AssemblyFileSemVer => this.semver.GetAssemblyFileVersion(this.config.AssemblyFileVersioningScheme);
+    public string? AssemblyFileSemVer => this.semver.GetAssemblyFileVersion(this.configuration.AssemblyFileVersioningScheme);
 
     public string FullSemVer => this.semver.ToString("f");
 
@@ -55,7 +55,7 @@ public class SemanticVersionFormatValues
 
     public string? ShortSha => this.semver.BuildMetaData?.ShortSha;
 
-    public string? CommitDate => this.semver.BuildMetaData?.CommitDate?.UtcDateTime.ToString(this.config.CommitDateFormat, CultureInfo.InvariantCulture);
+    public string? CommitDate => this.semver.BuildMetaData?.CommitDate?.UtcDateTime.ToString(this.configuration.CommitDateFormat, CultureInfo.InvariantCulture);
 
     public string InformationalVersion => this.semver.ToString("i");
 
@@ -68,10 +68,10 @@ public class SemanticVersionFormatValues
     private string GetWeightedPreReleaseNumber()
     {
         var weightedPreReleaseNumber =
-            this.semver.PreReleaseTag?.HasTag() == true ? (this.semver.PreReleaseTag.Number + this.config.PreReleaseWeight).ToString() : null;
+            this.semver.PreReleaseTag?.HasTag() == true ? (this.semver.PreReleaseTag.Number + this.configuration.PreReleaseWeight).ToString() : null;
 
         return weightedPreReleaseNumber.IsNullOrEmpty()
-            ? $"{this.config.TagPreReleaseWeight}"
+            ? $"{this.configuration.TagPreReleaseWeight}"
             : weightedPreReleaseNumber;
     }
 }

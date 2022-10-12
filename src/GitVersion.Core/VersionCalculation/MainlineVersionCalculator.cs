@@ -135,8 +135,8 @@ internal class MainlineVersionCalculator : IMainlineVersionCalculator
 
     private IBranch GetMainline(ICommit? baseVersionSource)
     {
-        if (context.Configuration.Branches.TryGetValue(context.CurrentBranch.Name.Friendly, out var branchConfig)
-            && branchConfig.IsMainline == true)
+        if (context.Configuration.Branches.TryGetValue(context.CurrentBranch.Name.Friendly, out var branchConfiguration)
+            && branchConfiguration.IsMainline == true)
         {
             return context.CurrentBranch;
         }
@@ -306,7 +306,7 @@ internal class MainlineVersionCalculator : IMainlineVersionCalculator
             }
         }
 
-        // Fallback to config increment value
+        // Fallback to configuration increment value
         return FindDefaultIncrementForBranch(context);
     }
 

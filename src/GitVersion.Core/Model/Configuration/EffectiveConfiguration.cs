@@ -9,7 +9,7 @@ namespace GitVersion.Model.Configurations;
 /// </summary>
 public class EffectiveConfiguration
 {
-    public EffectiveConfiguration(Configuration configuration, BranchConfig currentBranchConfig)
+    public EffectiveConfiguration(Configuration configuration, BranchConfiguration currentBranchConfig)
     {
         configuration.NotNull();
         currentBranchConfig.NotNull();
