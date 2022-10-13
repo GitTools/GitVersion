@@ -11,7 +11,7 @@ using Shouldly;
 namespace GitVersion.Core.Tests;
 
 [TestFixture]
-public class ConfigFileLocatorTests
+public class ConfigurationFileLocatorTests
 {
     public class DefaultConfigFileLocatorTests : TestBase
     {
@@ -72,7 +72,7 @@ public class ConfigFileLocatorTests
         }
     }
 
-    public class NamedConfigFileLocatorTests : TestBase
+    public class NamedConfigurationFileLocatorTests : TestBase
     {
         private const string DefaultRepoPath = @"c:\MyGitRepo";
         private const string DefaultWorkingPath = @"c:\MyGitRepo\Working";
