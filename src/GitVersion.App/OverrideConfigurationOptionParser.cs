@@ -3,7 +3,7 @@ using YamlDotNet.Serialization;
 
 namespace GitVersion;
 
-internal class OverrideConfigOptionParser
+internal class OverrideConfigurationOptionParser
 {
     private static readonly Lazy<ILookup<string?, PropertyInfo>> _lazySupportedProperties =
         new(GetSupportedProperties, true);

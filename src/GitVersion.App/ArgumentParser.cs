@@ -420,7 +420,7 @@ public class ArgumentParser : IArgumentParser
         if (values == null || values.Count == 0)
             return;
 
-        var parser = new OverrideConfigOptionParser();
+        var parser = new OverrideConfigurationOptionParser();
 
         // key=value
         foreach (var keyValueOption in values)
@@ -432,7 +432,7 @@ public class ArgumentParser : IArgumentParser
             }
 
             var optionKey = keyAndValue[0].ToLowerInvariant();
-            if (!OverrideConfigOptionParser.SupportedProperties.Contains(optionKey))
+            if (!OverrideConfigurationOptionParser.SupportedProperties.Contains(optionKey))
             {
                 throw new WarningException($"Could not parse /overrideconfig option: {keyValueOption}. Unsupported 'key'.");
             }
