@@ -458,7 +458,7 @@ GitVersion.GitVersionContext.IsCurrentCommitTagged.get -> bool
 GitVersion.GitVersionContext.NumberOfUncommittedChanges.get -> int
 GitVersion.GitVersionContextFactory
 GitVersion.GitVersionContextFactory.Create(GitVersion.GitVersionOptions! gitVersionOptions) -> GitVersion.GitVersionContext!
-GitVersion.GitVersionContextFactory.GitVersionContextFactory(GitVersion.Configuration.IConfigurationProvider! configProvider, GitVersion.Common.IRepositoryStore! repositoryStore, Microsoft.Extensions.Options.IOptions<GitVersion.GitVersionOptions!>! options) -> void
+GitVersion.GitVersionContextFactory.GitVersionContextFactory(GitVersion.Configuration.IConfigurationProvider! configurationProvider, GitVersion.Common.IRepositoryStore! repositoryStore, Microsoft.Extensions.Options.IOptions<GitVersion.GitVersionOptions!>! options) -> void
 GitVersion.GitVersionCoreModule
 GitVersion.GitVersionCoreModule.GitVersionCoreModule() -> void
 GitVersion.GitVersionCoreModule.RegisterTypes(Microsoft.Extensions.DependencyInjection.IServiceCollection! services) -> void

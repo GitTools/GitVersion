@@ -7,13 +7,13 @@ namespace GitVersion;
 
 public class GitVersionContextFactory : IGitVersionContextFactory
 {
-    private readonly IConfigurationProvider configProvider;
+    private readonly IConfigurationProvider configurationProvider;
     private readonly IRepositoryStore repositoryStore;
     private readonly IOptions<GitVersionOptions> options;
 
-    public GitVersionContextFactory(IConfigurationProvider configProvider, IRepositoryStore repositoryStore, IOptions<GitVersionOptions> options)
+    public GitVersionContextFactory(IConfigurationProvider configurationProvider, IRepositoryStore repositoryStore, IOptions<GitVersionOptions> options)
     {
-        this.configProvider = configProvider.NotNull();
+        this.configurationProvider = configurationProvider.NotNull();
         this.repositoryStore = repositoryStore.NotNull();
         this.options = options.NotNull();
     }
@@ -26,7 +26,7 @@ public class GitVersionContextFactory : IGitVersionContextFactory
 
         var currentCommit = this.repositoryStore.GetCurrentCommit(currentBranch, gitVersionOptions.RepositoryInfo.CommitId);
 
-        var configuration = this.configProvider.Provide(this.options.Value.ConfigInfo.OverrideConfig);
+        var configuration = this.configurationProvider.Provide(this.options.Value.ConfigInfo.OverrideConfig);
         if (currentBranch.IsDetachedHead)
         {
             var branchForCommit = this.repositoryStore.GetBranchesContainingCommit(currentCommit, onlyTrackedBranches: gitVersionOptions.Settings.OnlyTrackedBranches).OnlyOrDefault();

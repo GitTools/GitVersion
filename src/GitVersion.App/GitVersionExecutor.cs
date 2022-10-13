@@ -12,20 +12,20 @@ public class GitVersionExecutor : IGitVersionExecutor
     private readonly IConfigurationFileLocator configFileLocator;
     private readonly IHelpWriter helpWriter;
     private readonly IGitRepositoryInfo repositoryInfo;
-    private readonly IConfigurationProvider configProvider;
+    private readonly IConfigurationProvider configurationProvider;
     private readonly IGitVersionCalculateTool gitVersionCalculateTool;
     private readonly IGitVersionOutputTool gitVersionOutputTool;
     private readonly IVersionWriter versionWriter;
 
     public GitVersionExecutor(ILog log, IConsole console,
-        IConfigurationFileLocator configFileLocator, IConfigurationProvider configProvider,
+        IConfigurationFileLocator configFileLocator, IConfigurationProvider configurationProvider,
         IGitVersionCalculateTool gitVersionCalculateTool, IGitVersionOutputTool gitVersionOutputTool,
         IVersionWriter versionWriter, IHelpWriter helpWriter, IGitRepositoryInfo repositoryInfo)
     {
         this.log = log.NotNull();
         this.console = console.NotNull();
         this.configFileLocator = configFileLocator.NotNull();
-        this.configProvider = configProvider.NotNull();
+        this.configurationProvider = configurationProvider.NotNull();
 
         this.gitVersionCalculateTool = gitVersionCalculateTool.NotNull();
         this.gitVersionOutputTool = gitVersionOutputTool.NotNull();
@@ -65,7 +65,7 @@ public class GitVersionExecutor : IGitVersionExecutor
 
             var variables = this.gitVersionCalculateTool.CalculateVersionVariables();
 
-            var configuration = this.configProvider.Provide(gitVersionOptions.ConfigInfo.OverrideConfig);
+            var configuration = this.configurationProvider.Provide(gitVersionOptions.ConfigInfo.OverrideConfig);
 
             this.gitVersionOutputTool.OutputVariables(variables, configuration.UpdateBuildNumber ?? true);
             this.gitVersionOutputTool.UpdateAssemblyInfo(variables);
@@ -148,14 +148,14 @@ public class GitVersionExecutor : IGitVersionExecutor
 
         if (gitVersionOptions.Init)
         {
-            this.configProvider.Init(workingDirectory);
+            this.configurationProvider.Init(workingDirectory);
             exitCode = 0;
             return true;
         }
 
         if (gitVersionOptions.ConfigInfo.ShowConfig)
         {
-            var configuration = this.configProvider.Provide(workingDirectory);
+            var configuration = this.configurationProvider.Provide(workingDirectory);
             this.console.WriteLine(configuration.ToString());
             exitCode = 0;
             return true;
