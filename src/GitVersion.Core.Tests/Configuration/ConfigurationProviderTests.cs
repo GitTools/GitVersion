@@ -14,7 +14,7 @@ using YamlDotNet.Serialization;
 namespace GitVersion.Core.Tests;
 
 [TestFixture]
-public class ConfigProviderTests : TestBase
+public class ConfigurationProviderTests : TestBase
 {
     private const string DefaultRepoPath = @"c:\MyGitRepo";
 
