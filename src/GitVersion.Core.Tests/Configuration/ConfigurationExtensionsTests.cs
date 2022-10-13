@@ -6,7 +6,7 @@ using Shouldly;
 namespace GitVersion.Core.Tests.Configuration;
 
 [TestFixture]
-public class ConfigExtensionsTests : TestBase
+public class ConfigurationExtensionsTests : TestBase
 {
     [Test]
     public void GetReleaseBranchConfigReturnsAllReleaseBranches()
