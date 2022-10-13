@@ -231,8 +231,8 @@ GitVersion.Configuration.ConfigurationModule.RegisterTypes(Microsoft.Extensions.
 GitVersion.Configuration.ConfigurationProvider
 GitVersion.Configuration.ConfigurationProvider.ConfigurationProvider(GitVersion.IFileSystem! fileSystem, GitVersion.Logging.ILog! log, GitVersion.Configuration.IConfigurationFileLocator! configFileLocator, Microsoft.Extensions.Options.IOptions<GitVersion.GitVersionOptions!>! options, GitVersion.Configuration.Init.Wizard.IConfigInitWizard! configInitWizard, GitVersion.IGitRepositoryInfo! repositoryInfo) -> void
 GitVersion.Configuration.ConfigurationProvider.Init(string! workingDirectory) -> void
-GitVersion.Configuration.ConfigurationProvider.Provide(GitVersion.Configuration.GitVersionConfiguration? overrideConfiguration = null) -> GitVersion.Configuration.GitVersionConfiguration!
-GitVersion.Configuration.ConfigurationProvider.Provide(string? workingDirectory, GitVersion.Configuration.GitVersionConfiguration? overrideConfiguration = null) -> GitVersion.Configuration.GitVersionConfiguration!
+GitVersion.Configuration.ConfigurationProvider.Provide(GitVersion.Configuration.GitVersionConfiguration? overrideConfiguration) -> GitVersion.Configuration.GitVersionConfiguration!
+GitVersion.Configuration.ConfigurationProvider.Provide(string? workingDirectory, GitVersion.Configuration.GitVersionConfiguration? overrideConfiguration) -> GitVersion.Configuration.GitVersionConfiguration!
 GitVersion.Configuration.ConfigurationSerializer
 GitVersion.Configuration.ConfigurationSerializer.ConfigurationSerializer() -> void
 GitVersion.Configuration.EffectiveBranchConfiguration

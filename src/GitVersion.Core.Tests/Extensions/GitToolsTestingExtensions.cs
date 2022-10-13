@@ -55,8 +55,6 @@ public static class GitToolsTestingExtensions
 
     public static VersionVariables GetVersion(this RepositoryFixtureBase fixture, GitVersionConfiguration? configuration = null, IRepository? repository = null, string? commitId = null, bool onlyTrackedBranches = true, string? branch = null)
     {
-        configuration ??= new ConfigurationBuilder().Build();
-
         repository ??= fixture.Repository;
 
         var options = Options.Create(new GitVersionOptions
