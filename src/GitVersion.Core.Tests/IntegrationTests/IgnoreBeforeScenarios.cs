@@ -18,7 +18,7 @@ public class IgnoreBeforeScenarios : TestBase
         fixture.MakeACommit();
 
         var configuration = TestConfigurationBuilder.New.WithNextVersion(nextVersion)
-            .WithIgnoreConfig(new() { Before = dateTimeNow.AddDays(1) }).Build();
+            .WithIgnoreConfiguration(new() { Before = dateTimeNow.AddDays(1) }).Build();
 
         fixture.AssertFullSemver(expectedFullSemVer, configuration);
     }
@@ -34,7 +34,7 @@ public class IgnoreBeforeScenarios : TestBase
         fixture.MakeACommit();
 
         var configuration = TestConfigurationBuilder.New.WithNextVersion(nextVersion)
-            .WithIgnoreConfig(new() { Before = dateTimeNow.AddDays(-1) }).Build();
+            .WithIgnoreConfiguration(new() { Before = dateTimeNow.AddDays(-1) }).Build();
 
         fixture.AssertFullSemver(expectedFullSemVer, configuration);
     }

@@ -3,158 +3,66 @@ using GitVersion.VersionCalculation;
 
 namespace GitVersion.Core.Tests.Helpers;
 
-public sealed class TestConfigurationBuilder
+// Please use GitFlowConfigurationBuilder or ScratchConfigurationBuilder class instead of this class.
+internal sealed class TestConfigurationBuilder : TestConfigurationBuilderBase<TestConfigurationBuilder>
 {
     public static TestConfigurationBuilder New => new();
 
-    private string? nextVersion;
-    private VersioningMode? versioningMode;
-    private readonly Dictionary<string, VersioningMode?> versioningModeDictionary = new();
-    private bool withoutAnyTrackMergeTargets;
-    private readonly Dictionary<string, bool> trackMergeTargetsDictionary = new();
-    private readonly Dictionary<string, bool> preventIncrementOfMergedBranchVersionDictionary = new();
-    private IncrementStrategy? increment;
-    private readonly Dictionary<string, IncrementStrategy> incrementDictionary = new();
-    private readonly Dictionary<string, string?> tagDictionary = new();
-    private IgnoreConfiguration? ignoreConfig;
-
     private TestConfigurationBuilder()
     {
-        withoutAnyTrackMergeTargets = false;
-        increment = IncrementStrategy.Inherit;
-        versioningMode = VersioningMode.ContinuousDelivery;
+        ConfigurationBuilder configurationBuilder = new();
+        var configuration = configurationBuilder.Build();
+        WithConfiguration(configuration);
     }
 
-    public TestConfigurationBuilder WithNextVersion(string? value)
+    public TestConfigurationBuilder WithPreventIncrementOfMergedBranchVersion(string branchName, bool? value)
     {
-        nextVersion = value;
+        WithBranch(branchName).WithPreventIncrementOfMergedBranchVersion(value);
         return this;
     }
 
-    public TestConfigurationBuilder WithVersioningMode(VersioningMode value)
+    public TestConfigurationBuilder WithVersioningMode(string branchName, VersioningMode? value)
     {
-        versioningMode = value;
+        WithBranch(branchName).WithVersioningMode(value);
         return this;
     }
 
-    public TestConfigurationBuilder WithoutVersioningMode()
+    public TestConfigurationBuilder WithoutTag(string branchName)
     {
-        versioningMode = null;
+        WithBranch(branchName).WithTag(null);
         return this;
     }
 
-    public TestConfigurationBuilder WithVersioningMode(string branch, VersioningMode value)
+    public TestConfigurationBuilder WithTag(string branchName, string value)
     {
-        versioningModeDictionary[branch] = value;
+        WithBranch(branchName).WithTag(value);
         return this;
     }
 
-    public TestConfigurationBuilder WithoutVersioningMode(string branch)
+    public TestConfigurationBuilder WithoutVersioningMode(string branchName)
     {
-        versioningModeDictionary[branch] = null;
+        WithBranch(branchName).WithVersioningMode(null);
         return this;
     }
 
-    public TestConfigurationBuilder WithTrackMergeTarget(string branch, bool value)
+    public TestConfigurationBuilder WithoutIncrement(string branchName)
     {
-        trackMergeTargetsDictionary[branch] = value;
+        WithBranch(branchName).WithIncrement(null);
+        return this;
+    }
+
+    public TestConfigurationBuilder WithIncrement(string branchName, IncrementStrategy value)
+    {
+        WithBranch(branchName).WithIncrement(value);
         return this;
     }
 
     public TestConfigurationBuilder WithoutAnyTrackMergeTargets()
     {
-        withoutAnyTrackMergeTargets = true;
-        trackMergeTargetsDictionary.Clear();
-        return this;
-    }
-
-    public TestConfigurationBuilder WithPreventIncrementOfMergedBranchVersion(string branch, bool value)
-    {
-        preventIncrementOfMergedBranchVersionDictionary[branch] = value;
-        return this;
-    }
-
-    public TestConfigurationBuilder WithIncrement(IncrementStrategy? value)
-    {
-        increment = value;
-        return this;
-    }
-
-    public TestConfigurationBuilder WithIncrement(string branch, IncrementStrategy value)
-    {
-        incrementDictionary[branch] = value;
-        return this;
-    }
-
-    public TestConfigurationBuilder WithoutTag(string branch)
-    {
-        tagDictionary[branch] = null;
-        return this;
-    }
-
-    public TestConfigurationBuilder WithTag(string branch, string value)
-    {
-        tagDictionary[branch] = value;
-        return this;
-    }
-
-    public TestConfigurationBuilder WithIgnoreConfig(IgnoreConfiguration value)
-    {
-        ignoreConfig = value;
-        return this;
-    }
-
-    public GitVersionConfiguration Build()
-    {
-        GitVersionConfiguration configuration = new()
+        foreach (var item in base.branchConfigurationBuilders)
         {
-            NextVersion = nextVersion,
-            VersioningMode = versioningMode
-        };
-
-        if (ignoreConfig != null)
-        {
-            configuration.Ignore = ignoreConfig;
+            item.Value.WithTrackMergeTarget(false);
         }
-
-        ConfigurationBuilder configurationBuilder = new();
-        configuration = configurationBuilder.Add(configuration).Build();
-
-        if (withoutAnyTrackMergeTargets)
-        {
-            foreach (var branchConfiguration in configuration.Branches.Values)
-            {
-                branchConfiguration.TrackMergeTarget = false;
-            }
-        }
-
-        foreach (var item in trackMergeTargetsDictionary)
-        {
-            configuration.Branches[item.Key].TrackMergeTarget = item.Value;
-        }
-
-        foreach (var item in versioningModeDictionary)
-        {
-            configuration.Branches[item.Key].VersioningMode = item.Value;
-        }
-
-        foreach (var item in preventIncrementOfMergedBranchVersionDictionary)
-        {
-            configuration.Branches[item.Key].PreventIncrementOfMergedBranchVersion = item.Value;
-        }
-
-        configuration.Increment = increment;
-
-        foreach (var item in incrementDictionary)
-        {
-            configuration.Branches[item.Key].Increment = item.Value;
-        }
-
-        foreach (var item in tagDictionary)
-        {
-            configuration.Branches[item.Key].Tag = item.Value;
-        }
-
-        return configuration;
+        return this;
     }
 }

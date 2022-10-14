@@ -13,7 +13,10 @@ public class ContinuousDeploymentTestScenarios
     {
         // * 2373a87 58 minutes ago  (HEAD -> main)
 
-        var configuration = TestConfigurationBuilder.New.WithVersioningMode(VersioningMode.ContinuousDeployment).Build();
+        var configuration = TestConfigurationBuilder.New
+            .WithVersioningMode(VersioningMode.ContinuousDeployment)
+            .WithBranch("main", builder => builder.WithVersioningMode(VersioningMode.ContinuousDeployment))
+            .Build();
 
         using var fixture = new EmptyRepositoryFixture();
 
@@ -48,8 +51,9 @@ public class ContinuousDeploymentTestScenarios
         // * 8c64db3 58 minutes ago  (HEAD -> main)
 
         var configuration = TestConfigurationBuilder.New
-            .WithVersioningMode(VersioningMode.ContinuousDeployment)
-            .WithNextVersion("1.0.0").Build();
+            .WithNextVersion("1.0.0").WithVersioningMode(VersioningMode.ContinuousDeployment)
+            .WithBranch("main", builder => builder.WithVersioningMode(VersioningMode.ContinuousDeployment))
+            .Build();
 
         using var fixture = new EmptyRepositoryFixture();
 
@@ -108,7 +112,11 @@ public class ContinuousDeploymentTestScenarios
         // |/
         // *ec77f9c 58 minutes ago
 
-        var configuration = TestConfigurationBuilder.New.WithVersioningMode(VersioningMode.ContinuousDeployment).Build();
+        var configuration = TestConfigurationBuilder.New
+            .WithVersioningMode(VersioningMode.ContinuousDeployment)
+            .WithBranch("main", builder => builder.WithVersioningMode(VersioningMode.ContinuousDeployment))
+            .WithBranch("feature", builder => builder.WithVersioningMode(VersioningMode.ContinuousDeployment))
+            .Build();
 
         using var fixture = new EmptyRepositoryFixture();
 
@@ -154,7 +162,11 @@ public class ContinuousDeploymentTestScenarios
         // |/
         // *67acc03 58 minutes ago(main)
 
-        var configuration = TestConfigurationBuilder.New.WithVersioningMode(VersioningMode.ContinuousDeployment).Build();
+        var configuration = TestConfigurationBuilder.New
+            .WithVersioningMode(VersioningMode.ContinuousDeployment)
+            .WithBranch("develop", builder => builder.WithVersioningMode(VersioningMode.ContinuousDeployment))
+            .WithBranch("feature", builder => builder.WithVersioningMode(VersioningMode.ContinuousDeployment))
+            .Build();
 
         using var fixture = new EmptyRepositoryFixture();
 
@@ -202,7 +214,12 @@ public class ContinuousDeploymentTestScenarios
         // |/
         // *f63a536 58 minutes ago(main)
 
-        var configuration = TestConfigurationBuilder.New.WithVersioningMode(VersioningMode.ContinuousDeployment).Build();
+        var configuration = TestConfigurationBuilder.New
+            .WithVersioningMode(VersioningMode.ContinuousDeployment)
+            .WithBranch("main", builder => builder.WithVersioningMode(VersioningMode.ContinuousDeployment))
+            .WithBranch("release", builder => builder.WithVersioningMode(VersioningMode.ContinuousDeployment))
+            .WithBranch("feature", builder => builder.WithVersioningMode(VersioningMode.ContinuousDeployment))
+            .Build();
 
         using var fixture = new EmptyRepositoryFixture();
 
@@ -253,7 +270,9 @@ public class ContinuousDeploymentTestScenarios
         // *2099a07 58 minutes ago(main)
 
         var configuration = TestConfigurationBuilder.New
-            .WithVersioningMode(VersioningMode.ContinuousDeployment)
+            .WithBranch("main", builder => builder.WithVersioningMode(VersioningMode.ContinuousDeployment))
+            .WithBranch("develop", builder => builder.WithVersioningMode(VersioningMode.ContinuousDeployment))
+            .WithBranch("release", builder => builder.WithVersioningMode(VersioningMode.ContinuousDeployment))
             .WithoutAnyTrackMergeTargets().Build();
 
         using var fixture = new EmptyRepositoryFixture();
@@ -329,7 +348,9 @@ public class ContinuousDeploymentTestScenarios
         // * 252971e 58 minutes ago
 
         var configuration = TestConfigurationBuilder.New
-            .WithVersioningMode(VersioningMode.ContinuousDeployment)
+            .WithBranch("main", builder => builder.WithVersioningMode(VersioningMode.ContinuousDeployment))
+            .WithBranch("develop", builder => builder.WithVersioningMode(VersioningMode.ContinuousDeployment))
+            .WithBranch("release", builder => builder.WithVersioningMode(VersioningMode.ContinuousDeployment))
             .WithoutAnyTrackMergeTargets().Build();
 
         using var fixture = new EmptyRepositoryFixture();

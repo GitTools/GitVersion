@@ -390,7 +390,7 @@ public class NextVersionCalculatorTests : TestBase
         // Arrange
         var branchMock = GitToolsTestingExtensions.CreateMockBranch("main", GitToolsTestingExtensions.CreateMockCommit());
         var fakeIgnoreConfig = new TestIgnoreConfig(new ExcludeSourcesContainingExclude());
-        var configuration = TestConfigurationBuilder.New.WithIgnoreConfig(fakeIgnoreConfig).Build();
+        var configuration = TestConfigurationBuilder.New.WithIgnoreConfiguration(fakeIgnoreConfig).Build();
         var context = new GitVersionContext(branchMock, null, configuration, null, 0);
         var repositoryStoreMock = Substitute.For<IRepositoryStore>();
         var effectiveConfiguration = context.GetEffectiveConfiguration(branchMock);
@@ -419,7 +419,7 @@ public class NextVersionCalculatorTests : TestBase
         // Arrange
         var branchMock = GitToolsTestingExtensions.CreateMockBranch("main", GitToolsTestingExtensions.CreateMockCommit());
         var fakeIgnoreConfig = new TestIgnoreConfig(new ExcludeSourcesContainingExclude());
-        var configuration = TestConfigurationBuilder.New.WithIgnoreConfig(fakeIgnoreConfig).Build();
+        var configuration = TestConfigurationBuilder.New.WithIgnoreConfiguration(fakeIgnoreConfig).Build();
         var context = new GitVersionContext(branchMock, null, configuration, null, 0);
         var repositoryStoreMock = Substitute.For<IRepositoryStore>();
         var effectiveConfiguration = context.GetEffectiveConfiguration(branchMock);
@@ -450,7 +450,7 @@ public class NextVersionCalculatorTests : TestBase
         // Arrange
         var branchMock = GitToolsTestingExtensions.CreateMockBranch("main", GitToolsTestingExtensions.CreateMockCommit());
         var fakeIgnoreConfig = new TestIgnoreConfig(new ExcludeSourcesContainingExclude());
-        var configuration = TestConfigurationBuilder.New.WithIgnoreConfig(fakeIgnoreConfig).WithVersioningMode(VersioningMode.Mainline).Build();
+        var configuration = TestConfigurationBuilder.New.WithIgnoreConfiguration(fakeIgnoreConfig).WithVersioningMode(VersioningMode.Mainline).Build();
         var context = new GitVersionContext(branchMock, null, configuration, null, 0);
         var repositoryStoreMock = Substitute.For<IRepositoryStore>();
         var effectiveConfiguration = context.GetEffectiveConfiguration(branchMock);
