@@ -1,4 +1,4 @@
-﻿namespace GitVersion.Core.Tests.Helpers;
+namespace GitVersion.Core.Tests.Helpers;
 
 internal sealed class ScratchConfigurationBuilder : TestConfigurationBuilderBase<ScratchConfigurationBuilder>
 {
