@@ -1,5 +1,4 @@
 using System.Security.Cryptography;
-using GitVersion.Cache;
 using GitVersion.Configuration;
 using GitVersion.Extensions;
 using GitVersion.Helpers;

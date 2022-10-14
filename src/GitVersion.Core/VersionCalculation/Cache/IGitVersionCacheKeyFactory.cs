@@ -1,4 +1,3 @@
-using GitVersion.Cache;
 using GitVersion.Configuration;
 
 namespace GitVersion.VersionCalculation.Cache;

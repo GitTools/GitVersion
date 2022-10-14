@@ -126,9 +126,9 @@ GitVersion.BuildAgents.TeamCity
 GitVersion.BuildAgents.TeamCity.TeamCity(GitVersion.IEnvironment! environment, GitVersion.Logging.ILog! log) -> void
 GitVersion.BuildAgents.TravisCi
 GitVersion.BuildAgents.TravisCi.TravisCi(GitVersion.IEnvironment! environment, GitVersion.Logging.ILog! log) -> void
-GitVersion.Cache.GitVersionCacheKey
-GitVersion.Cache.GitVersionCacheKey.GitVersionCacheKey(string! value) -> void
-GitVersion.Cache.GitVersionCacheKey.Value.get -> string!
+GitVersion.VersionCalculation.Cache.GitVersionCacheKey
+GitVersion.VersionCalculation.Cache.GitVersionCacheKey.GitVersionCacheKey(string! value) -> void
+GitVersion.VersionCalculation.Cache.GitVersionCacheKey.Value.get -> string!
 GitVersion.CommitFilter
 GitVersion.CommitFilter.CommitFilter() -> void
 GitVersion.CommitFilter.ExcludeReachableFrom.get -> object?
@@ -477,7 +477,7 @@ GitVersion.GitVersionOptions.Init -> bool
 GitVersion.GitVersionOptions.IsHelp -> bool
 GitVersion.GitVersionOptions.IsVersion -> bool
 GitVersion.GitVersionOptions.LogFilePath -> string?
-GitVersion.GitVersionOptions.Output -> System.Collections.Generic.ISet<GitVersion.Model.OutputType>!
+GitVersion.GitVersionOptions.Output -> System.Collections.Generic.ISet<GitVersion.OutputType>!
 GitVersion.GitVersionOptions.OutputFile -> string?
 GitVersion.GitVersionOptions.RepositoryInfo.get -> GitVersion.RepositoryInfo!
 GitVersion.GitVersionOptions.Settings.get -> GitVersion.Settings!
@@ -697,12 +697,10 @@ GitVersion.MergeMessage.MergeMessage(string? mergeMessage, GitVersion.Configurat
 GitVersion.MergeMessage.PullRequestNumber.get -> int?
 GitVersion.MergeMessage.TargetBranch.get -> string?
 GitVersion.MergeMessage.Version.get -> GitVersion.SemanticVersion?
-GitVersion.Model.Exceptions.InfiniteLoopProtectionException
-GitVersion.Model.Exceptions.InfiniteLoopProtectionException.InfiniteLoopProtectionException(string! messageFormat) -> void
-GitVersion.Model.OutputType
-GitVersion.Model.OutputType.BuildServer = 0 -> GitVersion.Model.OutputType
-GitVersion.Model.OutputType.File = 2 -> GitVersion.Model.OutputType
-GitVersion.Model.OutputType.Json = 1 -> GitVersion.Model.OutputType
+GitVersion.OutputType
+GitVersion.OutputType.BuildServer = 0 -> GitVersion.OutputType
+GitVersion.OutputType.File = 2 -> GitVersion.OutputType
+GitVersion.OutputType.Json = 1 -> GitVersion.OutputType
 GitVersion.OutputVariables.VersionVariables
 GitVersion.OutputVariables.VersionVariables.AssemblySemFileVer.get -> string?
 GitVersion.OutputVariables.VersionVariables.AssemblySemVer.get -> string?
@@ -931,17 +929,17 @@ GitVersion.VersionCalculation.BaseVersion.Source.get -> string!
 GitVersion.VersionCalculation.Cache.GitVersionCache
 GitVersion.VersionCalculation.Cache.GitVersionCache.GetCacheDirectory() -> string!
 GitVersion.VersionCalculation.Cache.GitVersionCache.GitVersionCache(GitVersion.IFileSystem! fileSystem, GitVersion.Logging.ILog! log, GitVersion.IGitRepositoryInfo! repositoryInfo) -> void
-GitVersion.VersionCalculation.Cache.GitVersionCache.LoadVersionVariablesFromDiskCache(GitVersion.Cache.GitVersionCacheKey! key) -> GitVersion.OutputVariables.VersionVariables?
-GitVersion.VersionCalculation.Cache.GitVersionCache.WriteVariablesToDiskCache(GitVersion.Cache.GitVersionCacheKey! cacheKey, GitVersion.OutputVariables.VersionVariables! variablesFromCache) -> void
+GitVersion.VersionCalculation.Cache.GitVersionCache.LoadVersionVariablesFromDiskCache(GitVersion.VersionCalculation.Cache.GitVersionCacheKey! key) -> GitVersion.OutputVariables.VersionVariables?
+GitVersion.VersionCalculation.Cache.GitVersionCache.WriteVariablesToDiskCache(GitVersion.VersionCalculation.Cache.GitVersionCacheKey! cacheKey, GitVersion.OutputVariables.VersionVariables! variablesFromCache) -> void
 GitVersion.VersionCalculation.Cache.GitVersionCacheKeyFactory
-GitVersion.VersionCalculation.Cache.GitVersionCacheKeyFactory.Create(GitVersion.Configuration.GitVersionConfiguration? overrideConfiguration) -> GitVersion.Cache.GitVersionCacheKey!
+GitVersion.VersionCalculation.Cache.GitVersionCacheKeyFactory.Create(GitVersion.Configuration.GitVersionConfiguration? overrideConfiguration) -> GitVersion.VersionCalculation.Cache.GitVersionCacheKey!
 GitVersion.VersionCalculation.Cache.GitVersionCacheKeyFactory.GitVersionCacheKeyFactory(GitVersion.IFileSystem! fileSystem, GitVersion.Logging.ILog! log, Microsoft.Extensions.Options.IOptions<GitVersion.GitVersionOptions!>! options, GitVersion.Configuration.IConfigurationFileLocator! configFileLocator, GitVersion.IGitRepository! gitRepository, GitVersion.IGitRepositoryInfo! repositoryInfo) -> void
 GitVersion.VersionCalculation.Cache.IGitVersionCache
 GitVersion.VersionCalculation.Cache.IGitVersionCache.GetCacheDirectory() -> string!
-GitVersion.VersionCalculation.Cache.IGitVersionCache.LoadVersionVariablesFromDiskCache(GitVersion.Cache.GitVersionCacheKey! key) -> GitVersion.OutputVariables.VersionVariables?
-GitVersion.VersionCalculation.Cache.IGitVersionCache.WriteVariablesToDiskCache(GitVersion.Cache.GitVersionCacheKey! cacheKey, GitVersion.OutputVariables.VersionVariables! variablesFromCache) -> void
+GitVersion.VersionCalculation.Cache.IGitVersionCache.LoadVersionVariablesFromDiskCache(GitVersion.VersionCalculation.Cache.GitVersionCacheKey! key) -> GitVersion.OutputVariables.VersionVariables?
+GitVersion.VersionCalculation.Cache.IGitVersionCache.WriteVariablesToDiskCache(GitVersion.VersionCalculation.Cache.GitVersionCacheKey! cacheKey, GitVersion.OutputVariables.VersionVariables! variablesFromCache) -> void
 GitVersion.VersionCalculation.Cache.IGitVersionCacheKeyFactory
-GitVersion.VersionCalculation.Cache.IGitVersionCacheKeyFactory.Create(GitVersion.Configuration.GitVersionConfiguration? overrideConfiguration) -> GitVersion.Cache.GitVersionCacheKey!
+GitVersion.VersionCalculation.Cache.IGitVersionCacheKeyFactory.Create(GitVersion.Configuration.GitVersionConfiguration? overrideConfiguration) -> GitVersion.VersionCalculation.Cache.GitVersionCacheKey!
 GitVersion.VersionCalculation.CommitMessageIncrementMode
 GitVersion.VersionCalculation.CommitMessageIncrementMode.Disabled = 1 -> GitVersion.VersionCalculation.CommitMessageIncrementMode
 GitVersion.VersionCalculation.CommitMessageIncrementMode.Enabled = 0 -> GitVersion.VersionCalculation.CommitMessageIncrementMode

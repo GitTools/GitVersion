@@ -18,7 +18,7 @@ GitVersion.Arguments.LogFilePath -> string?
 GitVersion.Arguments.NoCache -> bool
 GitVersion.Arguments.NoFetch -> bool
 GitVersion.Arguments.NoNormalize -> bool
-GitVersion.Arguments.Output -> System.Collections.Generic.ISet<GitVersion.Model.OutputType>!
+GitVersion.Arguments.Output -> System.Collections.Generic.ISet<GitVersion.OutputType>!
 GitVersion.Arguments.OutputFile -> string?
 GitVersion.Arguments.OverrideConfig -> GitVersion.Configuration.GitVersionConfiguration?
 GitVersion.Arguments.ShowConfig -> bool
