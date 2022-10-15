@@ -1,6 +1,5 @@
 using GitTools.Testing;
 using GitVersion.Core.Tests.Helpers;
-using GitVersion.Core.Tests.IntegrationTests;
 using GitVersion.VersionCalculation;
 using LibGit2Sharp;
 using Microsoft.Extensions.DependencyInjection;
@@ -16,7 +15,7 @@ public class VersionSourceTests : TestBase
     public void VersionSourceSha()
     {
         using var fixture = new EmptyRepositoryFixture();
-        var initialCommit = fixture.Repository.MakeACommit();
+        _ = fixture.Repository.MakeACommit();
         Commands.Checkout(fixture.Repository, fixture.Repository.CreateBranch("develop"));
         _ = fixture.Repository.MakeACommit();
         var featureBranch = fixture.Repository.CreateBranch("feature/foo");
@@ -36,7 +35,7 @@ public class VersionSourceTests : TestBase
     public void VersionSourceShaOneCommit()
     {
         using var fixture = new EmptyRepositoryFixture();
-        var initialCommit = fixture.Repository.MakeACommit();
+        _ = fixture.Repository.MakeACommit();
 
         var nextVersionCalculator = GetNextVersionCalculator(fixture);
 

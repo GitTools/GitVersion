@@ -14,32 +14,26 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Polly" Version="7.2.3" />
-        <PackageReference Include="System.Net.Requests" Version="4.3.0" />
+        <PackageReference Include="Polly"/>
+        <PackageReference Include="System.Net.Requests"/>
 
-        <PackageReference Include="JetBrains.Annotations" Version="$(PackageVersion_JetBrainsAnnotations)" PrivateAssets="All" />
-        <PackageReference Include="System.Text.Json" Version="$(PackageVersion_MicrosoftJson)" />
-        <PackageReference Include="System.Text.Encodings.Web" Version="$(PackageVersion_MicrosoftJson)" />
-        <PackageReference Include="Microsoft.CodeAnalysis.PublicApiAnalyzers" Version="$(PackageVersion_MicrosoftPublicApiAnalyzers)">
-            <PrivateAssets>all</PrivateAssets>
-            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-        </PackageReference>
-        <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="$(PackageVersion_MicrosoftExtensions)" />
-        <PackageReference Include="Microsoft.Extensions.Options" Version="$(PackageVersion_MicrosoftExtensions)" />
-        <PackageReference Include="YamlDotNet" Version="$(PackageVersion_YamlDotNet)" />
+        <PackageReference Include="JetBrains.Annotations" PrivateAssets="All"/>
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions"/>
+        <PackageReference Include="Microsoft.Extensions.Options"/>
+        <PackageReference Include="YamlDotNet"/>
     </ItemGroup>
 
     <ItemGroup>
-        <Compile Remove="VersionConverters\*\AddFormats\**\*.*" />
-        <Compile Remove="VersionConverters\*\Templates\**\*.*" />
-        <EmbeddedResource Include="VersionConverters\*\AddFormats\**\*.*" />
-        <EmbeddedResource Include="VersionConverters\*\Templates\**\*.*" />
+        <Compile Remove="VersionConverters\*\AddFormats\**\*.*"/>
+        <Compile Remove="VersionConverters\*\Templates\**\*.*"/>
+        <EmbeddedResource Include="VersionConverters\*\AddFormats\**\*.*"/>
+        <EmbeddedResource Include="VersionConverters\*\Templates\**\*.*"/>
     </ItemGroup>
-    
+
     <ItemGroup>
-        <InternalsVisibleTo Include="GitVersion.Core.Tests" />
-        <InternalsVisibleTo Include="GitVersion.App.Tests" />
-        <InternalsVisibleTo Include="GitVersion.MsBuild.Tests" />
+        <InternalsVisibleTo Include="GitVersion.Core.Tests"/>
+        <InternalsVisibleTo Include="GitVersion.App.Tests"/>
+        <InternalsVisibleTo Include="GitVersion.MsBuild.Tests"/>
     </ItemGroup>
 
 </Project>
