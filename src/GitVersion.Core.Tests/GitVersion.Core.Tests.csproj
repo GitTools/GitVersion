@@ -11,10 +11,10 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="FluentDateTime" Version="2.1.0" />
-        <PackageReference Include="LibGit2Sharp.NativeBinaries" Version="$(PackageVersion_LibGit2Sharp_NativeBinaries)" />
-        <PackageReference Include="Microsoft.Extensions.Options" Version="$(PackageVersion_MicrosoftExtensions)" />
-        <PackageReference Include="YamlDotNet" Version="$(PackageVersion_YamlDotNet)" />
+        <PackageReference Include="FluentDateTime" />
+        <PackageReference Include="LibGit2Sharp.NativeBinaries" />
+        <PackageReference Include="Microsoft.Extensions.Options"  />
+        <PackageReference Include="YamlDotNet"  />
     </ItemGroup>
     <ItemGroup>
         <ProjectReference Include="..\GitVersion.LibGit2Sharp\GitVersion.LibGit2Sharp.csproj" />

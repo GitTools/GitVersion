@@ -37,5 +37,14 @@
     <ItemGroup>
         <Using Include="Common.Utilities.Constants" Alias="Constants"/>
     </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="Cake.Common" />
+        <PackageReference Include="Cake.Compression" />
+        <PackageReference Include="Cake.Frosting" />
+        <PackageReference Include="Cake.Incubator" />
+        <PackageReference Include="Cake.DotNetLocalTools.Module"  />
+
+        <PackageReference Include="Cake.Docker"  />
+    </ItemGroup>
 
 </Project>
