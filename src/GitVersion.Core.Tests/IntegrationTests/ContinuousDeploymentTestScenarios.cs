@@ -13,7 +13,7 @@ public class ContinuousDeploymentTestScenarios
     {
         // * 2373a87 58 minutes ago  (HEAD -> main)
 
-        var configuration = TestConfigurationBuilder.New
+        var configuration = GitFlowConfigurationBuilder.New
             .WithVersioningMode(VersioningMode.ContinuousDeployment)
             .WithBranch("main", builder => builder.WithVersioningMode(VersioningMode.ContinuousDeployment))
             .Build();
@@ -33,7 +33,7 @@ public class ContinuousDeploymentTestScenarios
     {
         // * a831d61 58 minutes ago  (HEAD -> develop)
 
-        var configuration = TestConfigurationBuilder.New.WithVersioningMode(VersioningMode.ContinuousDeployment).Build();
+        var configuration = GitFlowConfigurationBuilder.New.WithVersioningMode(VersioningMode.ContinuousDeployment).Build();
 
         using var fixture = new EmptyRepositoryFixture("develop");
 
@@ -50,7 +50,7 @@ public class ContinuousDeploymentTestScenarios
     {
         // * 8c64db3 58 minutes ago  (HEAD -> main)
 
-        var configuration = TestConfigurationBuilder.New
+        var configuration = GitFlowConfigurationBuilder.New
             .WithNextVersion("1.0.0").WithVersioningMode(VersioningMode.ContinuousDeployment)
             .WithBranch("main", builder => builder.WithVersioningMode(VersioningMode.ContinuousDeployment))
             .Build();
@@ -70,7 +70,7 @@ public class ContinuousDeploymentTestScenarios
     {
         // * 858f71b 58 minutes ago  (HEAD -> main, tag: 1.0.0)
 
-        var configuration = TestConfigurationBuilder.New
+        var configuration = GitFlowConfigurationBuilder.New
             .WithVersioningMode(VersioningMode.ContinuousDeployment)
             .WithNextVersion("1.0.0").Build();
 
@@ -89,7 +89,7 @@ public class ContinuousDeploymentTestScenarios
     {
         // * ba74727 58 minutes ago  (HEAD -> main, tag: 1.1.0)
 
-        var configuration = TestConfigurationBuilder.New
+        var configuration = GitFlowConfigurationBuilder.New
             .WithVersioningMode(VersioningMode.ContinuousDeployment)
             .WithNextVersion("1.0.0").Build();
 
@@ -112,7 +112,7 @@ public class ContinuousDeploymentTestScenarios
         // |/
         // *ec77f9c 58 minutes ago
 
-        var configuration = TestConfigurationBuilder.New
+        var configuration = GitFlowConfigurationBuilder.New
             .WithVersioningMode(VersioningMode.ContinuousDeployment)
             .WithBranch("main", builder => builder.WithVersioningMode(VersioningMode.ContinuousDeployment))
             .WithBranch("feature", builder => builder.WithVersioningMode(VersioningMode.ContinuousDeployment))
@@ -162,7 +162,7 @@ public class ContinuousDeploymentTestScenarios
         // |/
         // *67acc03 58 minutes ago(main)
 
-        var configuration = TestConfigurationBuilder.New
+        var configuration = GitFlowConfigurationBuilder.New
             .WithVersioningMode(VersioningMode.ContinuousDeployment)
             .WithBranch("develop", builder => builder.WithVersioningMode(VersioningMode.ContinuousDeployment))
             .WithBranch("feature", builder => builder.WithVersioningMode(VersioningMode.ContinuousDeployment))
@@ -214,7 +214,7 @@ public class ContinuousDeploymentTestScenarios
         // |/
         // *f63a536 58 minutes ago(main)
 
-        var configuration = TestConfigurationBuilder.New
+        var configuration = GitFlowConfigurationBuilder.New
             .WithVersioningMode(VersioningMode.ContinuousDeployment)
             .WithBranch("main", builder => builder.WithVersioningMode(VersioningMode.ContinuousDeployment))
             .WithBranch("release", builder => builder.WithVersioningMode(VersioningMode.ContinuousDeployment))
@@ -269,11 +269,17 @@ public class ContinuousDeploymentTestScenarios
         // *f5640b3 56 minutes ago
         // *2099a07 58 minutes ago(main)
 
-        var configuration = TestConfigurationBuilder.New
-            .WithBranch("main", builder => builder.WithVersioningMode(VersioningMode.ContinuousDeployment))
-            .WithBranch("develop", builder => builder.WithVersioningMode(VersioningMode.ContinuousDeployment))
-            .WithBranch("release", builder => builder.WithVersioningMode(VersioningMode.ContinuousDeployment))
-            .WithoutAnyTrackMergeTargets().Build();
+        var configuration = GitFlowConfigurationBuilder.New
+            .WithBranch("main", builder => builder
+                .WithVersioningMode(VersioningMode.ContinuousDeployment).WithTrackMergeTarget(false)
+            )
+            .WithBranch("develop", builder => builder
+                .WithVersioningMode(VersioningMode.ContinuousDeployment).WithTrackMergeTarget(false)
+            )
+            .WithBranch("release", builder => builder
+                .WithVersioningMode(VersioningMode.ContinuousDeployment).WithTrackMergeTarget(false)
+            )
+            .Build();
 
         using var fixture = new EmptyRepositoryFixture();
 
@@ -347,11 +353,17 @@ public class ContinuousDeploymentTestScenarios
         // |/  
         // * 252971e 58 minutes ago
 
-        var configuration = TestConfigurationBuilder.New
-            .WithBranch("main", builder => builder.WithVersioningMode(VersioningMode.ContinuousDeployment))
-            .WithBranch("develop", builder => builder.WithVersioningMode(VersioningMode.ContinuousDeployment))
-            .WithBranch("release", builder => builder.WithVersioningMode(VersioningMode.ContinuousDeployment))
-            .WithoutAnyTrackMergeTargets().Build();
+        var configuration = GitFlowConfigurationBuilder.New
+            .WithBranch("main", builder => builder
+                .WithVersioningMode(VersioningMode.ContinuousDeployment).WithTrackMergeTarget(false)
+            )
+            .WithBranch("develop", builder => builder
+                .WithVersioningMode(VersioningMode.ContinuousDeployment).WithTrackMergeTarget(false)
+            )
+            .WithBranch("release", builder => builder
+                .WithVersioningMode(VersioningMode.ContinuousDeployment).WithTrackMergeTarget(false)
+            )
+            .Build();
 
         using var fixture = new EmptyRepositoryFixture();
 

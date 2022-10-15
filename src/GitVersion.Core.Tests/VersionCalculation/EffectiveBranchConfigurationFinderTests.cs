@@ -18,7 +18,10 @@ public class EffectiveBranchConfigurationFinderTests
     {
         // Arrange
         var branchMock = GitToolsTestingExtensions.CreateMockBranch("main", GitToolsTestingExtensions.CreateMockCommit());
-        var configuration = TestConfigurationBuilder.New.WithVersioningMode(versioningMode).WithoutVersioningMode("main").Build();
+        var configuration = GitFlowConfigurationBuilder.New
+            .WithVersioningMode(versioningMode)
+            .WithBranch("main", builder => builder.WithVersioningMode(null))
+            .Build();
         var repositoryStoreMock = Substitute.For<IRepositoryStore>();
         repositoryStoreMock.GetSourceBranches(branchMock, configuration, Arg.Any<HashSet<IBranch>>()).Returns(Enumerable.Empty<IBranch>());
 
@@ -40,8 +43,13 @@ public class EffectiveBranchConfigurationFinderTests
         // Arrange
         var mainBranchMock = GitToolsTestingExtensions.CreateMockBranch("main", GitToolsTestingExtensions.CreateMockCommit());
         var developBranchMock = GitToolsTestingExtensions.CreateMockBranch("develop", GitToolsTestingExtensions.CreateMockCommit());
-        var configuration = TestConfigurationBuilder.New.WithoutVersioningMode().WithVersioningMode("main", versioningMode)
-            .WithoutVersioningMode("develop").WithIncrement("develop", IncrementStrategy.Inherit).Build();
+        var configuration = GitFlowConfigurationBuilder.New
+            .WithoutVersioningMode()
+            .WithBranch("main", builder => builder.WithVersioningMode(versioningMode))
+            .WithBranch("develop", builder => builder
+                .WithVersioningMode(null).WithIncrement(IncrementStrategy.Inherit)
+            )
+            .Build();
         var repositoryStoreMock = Substitute.For<IRepositoryStore>();
         repositoryStoreMock.GetSourceBranches(developBranchMock, configuration, Arg.Any<HashSet<IBranch>>()).Returns(new[] { mainBranchMock });
 
@@ -63,8 +71,13 @@ public class EffectiveBranchConfigurationFinderTests
         // Arrange
         var mainBranchMock = GitToolsTestingExtensions.CreateMockBranch("main", GitToolsTestingExtensions.CreateMockCommit());
         var developBranchMock = GitToolsTestingExtensions.CreateMockBranch("develop", GitToolsTestingExtensions.CreateMockCommit());
-        var configuration = TestConfigurationBuilder.New.WithoutVersioningMode().WithVersioningMode("main", versioningMode)
-            .WithVersioningMode("develop", VersioningMode.ContinuousDelivery).WithIncrement("develop", IncrementStrategy.Inherit).Build();
+        var configuration = GitFlowConfigurationBuilder.New.WithoutVersioningMode()
+            .WithBranch("main", builder => builder.WithVersioningMode(versioningMode))
+            .WithBranch("develop", builder => builder
+                .WithVersioningMode(VersioningMode.ContinuousDelivery).WithIncrement(IncrementStrategy.Inherit)
+            )
+            .Build();
+
         var repositoryStoreMock = Substitute.For<IRepositoryStore>();
         repositoryStoreMock.GetSourceBranches(developBranchMock, configuration, Arg.Any<HashSet<IBranch>>()).Returns(new[] { mainBranchMock });
 
@@ -92,8 +105,12 @@ public class EffectiveBranchConfigurationFinderTests
         // Arrange
         var mainBranchMock = GitToolsTestingExtensions.CreateMockBranch("main", GitToolsTestingExtensions.CreateMockCommit());
         var developBranchMock = GitToolsTestingExtensions.CreateMockBranch("develop", GitToolsTestingExtensions.CreateMockCommit());
-        var configuration = TestConfigurationBuilder.New.WithIncrement("develop", IncrementStrategy.Inherit)
-            .WithTag("main", string.Empty).WithTag("develop", "alpha").Build();
+        var configuration = GitFlowConfigurationBuilder.New
+            .WithBranch("main", builder => builder.WithTag(string.Empty))
+            .WithBranch("develop", builder => builder
+                .WithIncrement(IncrementStrategy.Inherit).WithTag("alpha")
+            )
+            .Build();
 
         var repositoryStoreMock = Substitute.For<IRepositoryStore>();
         repositoryStoreMock.GetSourceBranches(developBranchMock, configuration, Arg.Any<HashSet<IBranch>>()).Returns(new[] { mainBranchMock });
@@ -116,8 +133,12 @@ public class EffectiveBranchConfigurationFinderTests
         // Arrange
         var mainBranchMock = GitToolsTestingExtensions.CreateMockBranch("main", GitToolsTestingExtensions.CreateMockCommit());
         var developBranchMock = GitToolsTestingExtensions.CreateMockBranch("develop", GitToolsTestingExtensions.CreateMockCommit());
-        var configuration = TestConfigurationBuilder.New.WithIncrement("develop", IncrementStrategy.Inherit)
-            .WithTag("main", string.Empty).WithoutTag("develop").Build();
+        var configuration = GitFlowConfigurationBuilder.New
+            .WithBranch("main", builder => builder.WithTag(string.Empty))
+            .WithBranch("develop", builder => builder
+                .WithIncrement(IncrementStrategy.Inherit).WithTag(null)
+            )
+            .Build();
 
         var repositoryStoreMock = Substitute.For<IRepositoryStore>();
         repositoryStoreMock.GetSourceBranches(developBranchMock, configuration, Arg.Any<HashSet<IBranch>>()).Returns(new[] { mainBranchMock });
@@ -179,7 +200,10 @@ public class EffectiveBranchConfigurationFinderTests
     {
         // Arrange
         var branchMock = GitToolsTestingExtensions.CreateMockBranch("develop", GitToolsTestingExtensions.CreateMockCommit());
-        var configuration = TestConfigurationBuilder.New.WithIncrement(null).WithIncrement("develop", IncrementStrategy.Inherit).Build();
+        var configuration = GitFlowConfigurationBuilder.New
+            .WithIncrement(null)
+            .WithBranch("develop", builder => builder.WithIncrement(IncrementStrategy.Inherit))
+            .Build();
         var repositoryStoreMock = Substitute.For<IRepositoryStore>();
         repositoryStoreMock.GetSourceBranches(branchMock, configuration, Arg.Any<HashSet<IBranch>>()).Returns(Enumerable.Empty<IBranch>());
 
@@ -197,7 +221,10 @@ public class EffectiveBranchConfigurationFinderTests
     {
         // Arrange
         var branchMock = GitToolsTestingExtensions.CreateMockBranch("develop", GitToolsTestingExtensions.CreateMockCommit());
-        var configuration = TestConfigurationBuilder.New.WithIncrement(IncrementStrategy.Inherit).WithIncrement("develop", IncrementStrategy.Inherit).Build();
+        var configuration = GitFlowConfigurationBuilder.New
+            .WithIncrement(IncrementStrategy.Inherit)
+            .WithBranch("develop", builder => builder.WithIncrement(IncrementStrategy.Inherit))
+            .Build();
         var repositoryStoreMock = Substitute.For<IRepositoryStore>();
         repositoryStoreMock.GetSourceBranches(branchMock, configuration, Arg.Any<HashSet<IBranch>>()).Returns(Enumerable.Empty<IBranch>());
 
@@ -221,7 +248,10 @@ public class EffectiveBranchConfigurationFinderTests
     {
         // Arrange
         var branchMock = GitToolsTestingExtensions.CreateMockBranch("develop", GitToolsTestingExtensions.CreateMockCommit());
-        var configuration = TestConfigurationBuilder.New.WithIncrement(fallbackIncrement).WithIncrement("develop", IncrementStrategy.Inherit).Build();
+        var configuration = GitFlowConfigurationBuilder.New
+            .WithIncrement(fallbackIncrement)
+            .WithBranch("develop", builder => builder.WithIncrement(IncrementStrategy.Inherit))
+            .Build();
         var repositoryStoreMock = Substitute.For<IRepositoryStore>();
         repositoryStoreMock.GetSourceBranches(branchMock, configuration, Arg.Any<HashSet<IBranch>>()).Returns(Enumerable.Empty<IBranch>());
 
@@ -241,7 +271,7 @@ public class EffectiveBranchConfigurationFinderTests
     {
         // Arrange
         var branchMock = GitToolsTestingExtensions.CreateMockBranch("unknown", GitToolsTestingExtensions.CreateMockCommit());
-        var configuration = TestConfigurationBuilder.New.WithIncrement(null).Build();
+        var configuration = GitFlowConfigurationBuilder.New.WithIncrement(null).Build();
         var repositoryStoreMock = Substitute.For<IRepositoryStore>();
         repositoryStoreMock.GetSourceBranches(branchMock, configuration, Arg.Any<HashSet<IBranch>>()).Returns(Enumerable.Empty<IBranch>());
 
@@ -263,7 +293,7 @@ public class EffectiveBranchConfigurationFinderTests
     {
         // Arrange
         var branchMock = GitToolsTestingExtensions.CreateMockBranch("unknown", GitToolsTestingExtensions.CreateMockCommit());
-        var configuration = TestConfigurationBuilder.New.WithIncrement(fallbackIncrement).Build();
+        var configuration = GitFlowConfigurationBuilder.New.WithIncrement(fallbackIncrement).Build();
         var repositoryStoreMock = Substitute.For<IRepositoryStore>();
         repositoryStoreMock.GetSourceBranches(branchMock, configuration, Arg.Any<HashSet<IBranch>>()).Returns(Enumerable.Empty<IBranch>());
 
@@ -284,7 +314,10 @@ public class EffectiveBranchConfigurationFinderTests
     {
         // Arrange
         var unknownBranchMock = GitToolsTestingExtensions.CreateMockBranch("unknown", GitToolsTestingExtensions.CreateMockCommit());
-        var configuration = TestConfigurationBuilder.New.WithIncrement(fallbackIncrement).WithIncrement("develop", developBranchIncrement).Build();
+        var configuration = GitFlowConfigurationBuilder.New
+            .WithIncrement(fallbackIncrement)
+            .WithBranch("develop", builder => builder.WithIncrement(developBranchIncrement))
+            .Build();
         var repositoryStoreMock = Substitute.For<IRepositoryStore>();
         var developBranchMock = GitToolsTestingExtensions.CreateMockBranch("develop", GitToolsTestingExtensions.CreateMockCommit());
         repositoryStoreMock.GetSourceBranches(unknownBranchMock, configuration, Arg.Any<HashSet<IBranch>>()).Returns(new[] { developBranchMock });
@@ -319,7 +352,10 @@ public class EffectiveBranchConfigurationFinderTests
     {
         // Arrange
         var unknownBranchMock = GitToolsTestingExtensions.CreateMockBranch("unknown", GitToolsTestingExtensions.CreateMockCommit());
-        var configuration = TestConfigurationBuilder.New.WithIncrement(fallbackIncrement).WithIncrement("develop", IncrementStrategy.Inherit).Build();
+        var configuration = GitFlowConfigurationBuilder.New
+            .WithIncrement(fallbackIncrement)
+            .WithBranch("develop", builder => builder.WithIncrement(IncrementStrategy.Inherit))
+            .Build();
         var repositoryStoreMock = Substitute.For<IRepositoryStore>();
         var developBranchMock = GitToolsTestingExtensions.CreateMockBranch("develop", GitToolsTestingExtensions.CreateMockCommit());
         repositoryStoreMock.GetSourceBranches(unknownBranchMock, configuration, Arg.Any<HashSet<IBranch>>()).Returns(new[] { developBranchMock });
@@ -349,7 +385,10 @@ public class EffectiveBranchConfigurationFinderTests
     {
         // Arrange
         var unknownBranchMock = GitToolsTestingExtensions.CreateMockBranch("unknown", GitToolsTestingExtensions.CreateMockCommit());
-        var configuration = TestConfigurationBuilder.New.WithIncrement(IncrementStrategy.Inherit).WithIncrement("develop", developBranchIncrement).Build();
+        var configuration = GitFlowConfigurationBuilder.New
+            .WithIncrement(IncrementStrategy.Inherit)
+            .WithBranch("develop", builder => builder.WithIncrement(developBranchIncrement))
+            .Build();
         var repositoryStoreMock = Substitute.For<IRepositoryStore>();
         var developBranchMock = GitToolsTestingExtensions.CreateMockBranch("develop", GitToolsTestingExtensions.CreateMockCommit());
         repositoryStoreMock.GetSourceBranches(Arg.Any<IBranch>(), Arg.Any<GitVersionConfiguration>(), Arg.Any<HashSet<IBranch>>()).Returns(new[] { developBranchMock });

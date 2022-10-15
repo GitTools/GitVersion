@@ -22,7 +22,7 @@ public class VersionInBranchNameBaseVersionStrategyTests : TestBase
 
         var gitRepository = fixture.Repository.ToGitRepository();
         var strategy = GetVersionStrategy(fixture.RepositoryPath, gitRepository, branchName);
-        var configuration = TestConfigurationBuilder.New.Build();
+        var configuration = GitFlowConfigurationBuilder.New.Build();
         var branchConfiguration = configuration.GetBranchConfiguration(branchName);
         var effectiveConfiguration = new EffectiveConfiguration(configuration, branchConfiguration);
         var baseVersion = strategy.GetBaseVersions(new(gitRepository.FindBranch(branchName)!, effectiveConfiguration)).Single();
@@ -42,7 +42,7 @@ public class VersionInBranchNameBaseVersionStrategyTests : TestBase
 
         var gitRepository = fixture.Repository.ToGitRepository();
         var strategy = GetVersionStrategy(fixture.RepositoryPath, gitRepository, branchName);
-        var configuration = TestConfigurationBuilder.New.Build();
+        var configuration = GitFlowConfigurationBuilder.New.Build();
         var branchConfiguration = configuration.GetBranchConfiguration(branchName);
         var effectiveConfiguration = new EffectiveConfiguration(configuration, branchConfiguration);
         var baseVersions = strategy.GetBaseVersions(new(gitRepository.FindBranch(branchName)!, effectiveConfiguration));
@@ -64,7 +64,7 @@ public class VersionInBranchNameBaseVersionStrategyTests : TestBase
         var gitRepository = fixture.Repository.ToGitRepository();
         var strategy = GetVersionStrategy(fixture.RepositoryPath, gitRepository, branchName, configurationBuilder.Build());
 
-        var configuration = TestConfigurationBuilder.New.Build();
+        var configuration = GitFlowConfigurationBuilder.New.Build();
         var branchConfiguration = configuration.GetBranchConfiguration(branchName);
         var effectiveConfiguration = new EffectiveConfiguration(configuration, branchConfiguration);
         var baseVersion = strategy.GetBaseVersions(new(gitRepository.FindBranch(branchName)!, effectiveConfiguration)).Single();
@@ -87,7 +87,7 @@ public class VersionInBranchNameBaseVersionStrategyTests : TestBase
         var gitRepository = fixture.Repository.ToGitRepository();
         var strategy = GetVersionStrategy(fixture.RepositoryPath, gitRepository, branchName);
 
-        var configuration = TestConfigurationBuilder.New.Build();
+        var configuration = GitFlowConfigurationBuilder.New.Build();
         var branchConfiguration = configuration.GetBranchConfiguration(branchName);
         var effectiveConfiguration = new EffectiveConfiguration(configuration, branchConfiguration);
         var baseVersion = strategy.GetBaseVersions(new(gitRepository.FindBranch(branchName)!, effectiveConfiguration)).Single();

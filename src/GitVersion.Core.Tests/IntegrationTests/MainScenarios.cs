@@ -247,7 +247,7 @@ public class MainScenarios : TestBase
     {
         using EmptyRepositoryFixture fixture = new("develop");
 
-        var configurationBuilder = TestConfigurationBuilder.New;
+        var configurationBuilder = GitFlowConfigurationBuilder.New;
 
         fixture.MakeACommit();
 
@@ -280,7 +280,7 @@ public class MainScenarios : TestBase
     {
         using EmptyRepositoryFixture fixture = new("develop");
 
-        var configurationBuilder = TestConfigurationBuilder.New;
+        var configurationBuilder = GitFlowConfigurationBuilder.New;
 
         configurationBuilder.WithNextVersion("1.0.0");
         fixture.MakeACommit();

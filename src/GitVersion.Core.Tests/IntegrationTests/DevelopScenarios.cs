@@ -356,9 +356,11 @@ public class DevelopScenarios : TestBase
     [Test]
     public void WhenPreventIncrementOfMergedBranchVersionIsSetToTrueForDevelopCommitsSinceVersionSourceShouldNotGoDownWhenMergingReleaseToDevelop()
     {
-        var configuration = TestConfigurationBuilder.New
+        var configuration = GitFlowConfigurationBuilder.New
             .WithVersioningMode(VersioningMode.ContinuousDeployment)
-            .WithPreventIncrementOfMergedBranchVersion("develop", true)
+            .WithBranch("develop", builder => builder
+                .WithPreventIncrementOfMergedBranchVersion(true)
+            )
             .Build();
 
         using var fixture = new EmptyRepositoryFixture();
@@ -463,7 +465,7 @@ public class DevelopScenarios : TestBase
     {
         using EmptyRepositoryFixture fixture = new("main");
 
-        var configurationBuilder = TestConfigurationBuilder.New;
+        var configurationBuilder = GitFlowConfigurationBuilder.New;
 
         fixture.MakeACommit();
 
@@ -496,7 +498,7 @@ public class DevelopScenarios : TestBase
     {
         using EmptyRepositoryFixture fixture = new("develop");
 
-        var configurationBuilder = TestConfigurationBuilder.New;
+        var configurationBuilder = GitFlowConfigurationBuilder.New;
 
         fixture.MakeACommit();
         configurationBuilder.WithNextVersion("1.0.0");

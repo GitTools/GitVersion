@@ -170,23 +170,6 @@ internal abstract class TestConfigurationBuilderBase<TConfigurationBuilder>
         return (TConfigurationBuilder)this;
     }
 
-    public virtual TConfigurationBuilder WithBranchConfigurations(IEnumerable<BranchConfiguration> values)
-    {
-        WithBranchConfigurations(values.ToArray());
-        return (TConfigurationBuilder)this;
-    }
-
-    public virtual TConfigurationBuilder WithBranchConfigurations(params BranchConfiguration[] values)
-    {
-        this.branchConfigurationBuilders.Clear();
-        foreach (var value in values)
-        {
-            var branchConfigurationBuilder = this.branchConfigurationBuilders.GetOrAdd(value.Name, () => TestBranchConfigurationBuilder.New);
-            branchConfigurationBuilder.WithConfiguration(value);
-        }
-        return (TConfigurationBuilder)this;
-    }
-
     public virtual TestBranchConfigurationBuilder WithBranch(string value)
     {
         var result = this.branchConfigurationBuilders.GetOrAdd(value, () => TestBranchConfigurationBuilder.New);
@@ -232,7 +215,10 @@ internal abstract class TestConfigurationBuilderBase<TConfigurationBuilder>
         WithUpdateBuildNumber(value.UpdateBuildNumber);
         WithSemanticVersionFormat(value.SemanticVersionFormat);
         WithMergeMessageFormats(value.MergeMessageFormats);
-        WithBranchConfigurations(value.Branches.Values);
+        foreach (var item in value.Branches)
+        {
+            WithBranch(item.Key).WithConfiguration(item.Value);
+        }
         return (TConfigurationBuilder)this;
     }
 
@@ -269,5 +255,12 @@ internal abstract class TestConfigurationBuilderBase<TConfigurationBuilder>
         }
         result.Branches = branches;
         return result;
+    }
+
+    public record BranchMetaData
+    {
+        public string Name { get; init; }
+
+        public string RegexPattern { get; init; }
     }
 }
