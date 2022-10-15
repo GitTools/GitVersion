@@ -215,16 +215,16 @@ internal abstract class TestConfigurationBuilderBase<TConfigurationBuilder>
         WithUpdateBuildNumber(value.UpdateBuildNumber);
         WithSemanticVersionFormat(value.SemanticVersionFormat);
         WithMergeMessageFormats(value.MergeMessageFormats);
-        foreach (var item in value.Branches)
+        foreach (var (name, branchConfiguration) in value.Branches)
         {
-            WithBranch(item.Key).WithConfiguration(item.Value);
+            WithBranch(name).WithConfiguration(branchConfiguration);
         }
         return (TConfigurationBuilder)this;
     }
 
     public virtual GitVersionConfiguration Build()
     {
-        GitVersionConfiguration result = new()
+        GitVersionConfiguration configuration = new()
         {
             AssemblyVersioningScheme = this.assemblyVersioningScheme,
             AssemblyFileVersioningScheme = this.assemblyFileVersioningScheme,
@@ -249,12 +249,63 @@ internal abstract class TestConfigurationBuilderBase<TConfigurationBuilder>
             MergeMessageFormats = this.mergeMessageFormats ?? new()
         };
         Dictionary<string, BranchConfiguration> branches = new();
-        foreach (var item in this.branchConfigurationBuilders)
+        foreach (var (name, branchConfigurationBuilder) in this.branchConfigurationBuilders)
         {
-            branches.Add(item.Key, item.Value.Build());
+            branches.Add(name, branchConfigurationBuilder.Build());
         }
-        result.Branches = branches;
-        return result;
+
+        FinalizeConfiguration(configuration);
+        ValidateConfiguration(configuration);
+
+        configuration.Branches = branches;
+        return configuration;
+    }
+
+    private static void FinalizeConfiguration(GitVersionConfiguration configuration)
+    {
+        foreach (var (name, branchConfiguration) in configuration.Branches)
+        {
+            FinalizeBranchConfiguration(configuration, name, branchConfiguration);
+        }
+    }
+
+    private static void FinalizeBranchConfiguration(GitVersionConfiguration configuration, string name, BranchConfiguration branchConfiguration)
+    {
+        branchConfiguration.Name = name;
+        if (branchConfiguration.IsSourceBranchFor == null)
+            return;
+
+        foreach (var targetBranchName in branchConfiguration.IsSourceBranchFor)
+        {
+            var targetBranchConfig = configuration.Branches[targetBranchName];
+            targetBranchConfig.SourceBranches ??= new HashSet<string>();
+            targetBranchConfig.SourceBranches.Add(name);
+        }
+    }
+
+    private static void ValidateConfiguration(GitVersionConfiguration configuration)
+    {
+        foreach (var (name, branchConfiguration) in configuration.Branches)
+        {
+            var helpUrl = $"{System.Environment.NewLine}See https://gitversion.net/docs/reference/configuration for more info";
+
+            if (branchConfiguration.Regex == null)
+            {
+                throw new ConfigurationException($"Branch configuration '{name}' is missing required configuration 'regex'{helpUrl}");
+            }
+
+            var sourceBranches = branchConfiguration?.SourceBranches;
+            if (sourceBranches == null)
+            {
+                throw new ConfigurationException($"Branch configuration '{name}' is missing required configuration 'source-branches'{helpUrl}");
+            }
+
+            var missingSourceBranches = sourceBranches.Where(sb => !configuration.Branches.ContainsKey(sb)).ToArray();
+            if (missingSourceBranches.Any())
+            {
+                throw new ConfigurationException($"Branch configuration '{name}' defines these 'source-branches' that are not configured: '[{string.Join(",", missingSourceBranches)}]'{helpUrl}");
+            }
+        }
     }
 
     public record BranchMetaData
