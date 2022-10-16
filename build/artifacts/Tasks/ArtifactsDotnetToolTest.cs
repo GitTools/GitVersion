@@ -6,7 +6,7 @@ namespace Artifacts.Tasks;
 [TaskDescription("Tests the dotnet global tool in docker container")]
 [TaskArgument(Arguments.DockerRegistry, Constants.DockerHub, Constants.GitHub)]
 [TaskArgument(Arguments.DockerDotnetVersion, Constants.Version60)]
-[TaskArgument(Arguments.DockerDistro, Constants.Alpine312, Constants.Debian10, Constants.Ubuntu2004)]
+[TaskArgument(Arguments.DockerDistro, Constants.Alpine313, Constants.Debian10, Constants.Ubuntu2004)]
 [IsDependentOn(typeof(ArtifactsPrepare))]
 public class ArtifactsDotnetToolTest : FrostingTask<BuildContext>
 {
