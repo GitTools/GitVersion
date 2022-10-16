@@ -150,7 +150,7 @@ public class RepositoryStore : IRepositoryStore
         {
             foreach (var branchCommit in FindCommitBranchesWasBranchedFrom(branch, configuration, excludedBranches))
             {
-                foreach (var item in referenceLookup[branchCommit.Commit.Sha]
+                foreach (var _ in referenceLookup[branchCommit.Commit.Sha]
                     .Where(r => r.Name.Friendly == branchCommit.Branch.Name.Friendly))
                 {
                     if (returnedBranches.Add(branchCommit.Branch))

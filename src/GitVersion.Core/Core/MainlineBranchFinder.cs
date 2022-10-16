@@ -42,7 +42,7 @@ internal class MainlineBranchFinder
     private bool BranchIsMainline(INamedReference branch)
     {
         var matcher = new MainlineConfigBranchMatcher(branch, this.log);
-        return this.mainlineBranchConfigurations.Any(matcher.IsMainline) == true;
+        return this.mainlineBranchConfigurations.Any(matcher.IsMainline);
     }
 
     private class MainlineConfigBranchMatcher
