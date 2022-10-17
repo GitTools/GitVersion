@@ -6,7 +6,7 @@ namespace Docker.Tasks;
 [TaskDescription("Publish the docker manifest containing the images for amd64 and arm64")]
 [TaskArgument(Arguments.DockerRegistry, Constants.DockerHub, Constants.GitHub)]
 [TaskArgument(Arguments.DockerDotnetVersion, Constants.Version60)]
-[TaskArgument(Arguments.DockerDistro, Constants.Alpine312, Constants.Debian10, Constants.Ubuntu2004)]
+[TaskArgument(Arguments.DockerDistro, Constants.Alpine313, Constants.Debian10, Constants.Ubuntu2004)]
 [IsDependentOn(typeof(DockerManifestInternal))]
 public class DockerManifest : FrostingTask<BuildContext>
 {

@@ -11,7 +11,7 @@ public class Constants
 
     public static readonly string[] VersionsToBuild = { Version60 };
     public static readonly Architecture[] ArchToBuild = { Architecture.Amd64, Architecture.Arm64 };
-    public static readonly string[] DistrosToSkip = { Alpine312, Alpine313, Alpine314, Centos7 };
+    public static readonly string[] DistrosToSkip = { Alpine313, Alpine314, Centos7 };
 
     public const string DockerBaseImageName = "gittools/build-images";
     public const string DockerImageName = "gittools/gitversion";
@@ -24,12 +24,10 @@ public class Constants
     public const string Arm64 = "arm64";
     public const string Amd64 = "amd64";
 
-    public const string Alpine312 = "alpine.3.12";
     public const string Alpine313 = "alpine.3.13";
     public const string Alpine314 = "alpine.3.14";
     public const string Centos7 = "centos.7";
     public const string Centos8 = "centos.8";
-    public const string Debian9 = "debian.9";
     public const string Debian10 = "debian.10";
     public const string Debian11 = "debian.11";
     public const string Fedora33 = "fedora.33";
@@ -39,12 +37,10 @@ public class Constants
     public const string DockerDistroLatest = Debian10;
     public static readonly string[] DockerDistrosToBuild =
     {
-        Alpine312,
         Alpine313,
         Alpine314,
         Centos7,
         Centos8,
-        Debian9,
         Debian10,
         Debian11,
         Fedora33,
