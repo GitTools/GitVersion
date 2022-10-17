@@ -27,6 +27,7 @@ internal abstract class TestConfigurationBuilderBase<TConfigurationBuilder>
     private string? commitDateFormat;
     private bool? updateBuildNumber;
     private SemanticVersionFormat semanticVersionFormat = SemanticVersionFormat.Strict;
+    private bool? handleDetachedBranch;
     private Dictionary<string, string>? mergeMessageFormats;
     protected readonly Dictionary<string, TestBranchConfigurationBuilder> branchConfigurationBuilders = new();
 
@@ -164,6 +165,12 @@ internal abstract class TestConfigurationBuilderBase<TConfigurationBuilder>
         return (TConfigurationBuilder)this;
     }
 
+    public virtual TConfigurationBuilder WithHandleDetachedBranch(bool? value)
+    {
+        this.handleDetachedBranch = value;
+        return (TConfigurationBuilder)this;
+    }
+
     public virtual TConfigurationBuilder WithMergeMessageFormats(Dictionary<string, string> value)
     {
         this.mergeMessageFormats = value;
@@ -214,6 +221,7 @@ internal abstract class TestConfigurationBuilderBase<TConfigurationBuilder>
         WithCommitDateFormat(value.CommitDateFormat);
         WithUpdateBuildNumber(value.UpdateBuildNumber);
         WithSemanticVersionFormat(value.SemanticVersionFormat);
+        WithHandleDetachedBranch(value.HandleDetachedBranch);
         WithMergeMessageFormats(value.MergeMessageFormats);
         foreach (var (name, branchConfiguration) in value.Branches)
         {
@@ -246,6 +254,7 @@ internal abstract class TestConfigurationBuilderBase<TConfigurationBuilder>
             CommitDateFormat = this.commitDateFormat,
             UpdateBuildNumber = this.updateBuildNumber,
             SemanticVersionFormat = this.semanticVersionFormat,
+            HandleDetachedBranch = this.handleDetachedBranch,
             MergeMessageFormats = this.mergeMessageFormats ?? new()
         };
         Dictionary<string, BranchConfiguration> branches = new();

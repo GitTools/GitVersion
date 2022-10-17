@@ -24,6 +24,7 @@ internal sealed class GitFlowConfigurationBuilder : TestConfigurationBuilderBase
             CommitDateFormat = "yyyy-MM-dd",
             UpdateBuildNumber = true,
             SemanticVersionFormat = SemanticVersionFormat.Strict,
+            HandleDetachedBranch = false,
             TagPreReleaseWeight = 60000,
             Increment = IncrementStrategy.Inherit
         });
