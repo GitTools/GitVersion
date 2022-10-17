@@ -294,9 +294,9 @@ public class RepositoryStore : IRepositoryStore
         var targetCommit = tag.PeeledTargetCommit();
         if (targetCommit == null)
             return Array.Empty<SemanticVersion>();
-        
+
         var commitToCompare = handleDetachedBranch ? FindMergeBase(commit, targetCommit) : commit;
-    
+
         var tagName = tag.Name.Friendly;
 
         return Equals(targetCommit, commitToCompare) && SemanticVersion.TryParse(tagName, tagPrefix, out var version)
