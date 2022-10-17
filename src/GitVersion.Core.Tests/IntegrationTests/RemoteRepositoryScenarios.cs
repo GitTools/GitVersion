@@ -110,7 +110,7 @@ public class RemoteRepositoryScenarios : TestBase
             fixture.LocalRepositoryFixture.Repository.Head.Tip);
 
         var configuration = new GitVersionConfiguration { HandleDetachedBranch = handleDetachedBranch };
-        if(handleDetachedBranch)
+        if (handleDetachedBranch)
             fixture.AssertFullSemver("0.0.1--no-branch-.1+5", configuration: configuration, repository: fixture.LocalRepositoryFixture.Repository, onlyTrackedBranches: false);
         else
             Should.Throw<WarningException>(() => fixture.AssertFullSemver("0.1.0+4", repository: fixture.LocalRepositoryFixture.Repository, onlyTrackedBranches: false),
