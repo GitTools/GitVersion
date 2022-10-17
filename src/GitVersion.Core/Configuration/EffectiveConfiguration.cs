@@ -1,7 +1,7 @@
 using GitVersion.Extensions;
 using GitVersion.VersionCalculation;
 
-namespace GitVersion.Model.Configuration;
+namespace GitVersion.Configuration;
 
 /// <summary>
 ///     Configuration can be applied to different things, effective configuration is the result after applying the
@@ -9,7 +9,7 @@ namespace GitVersion.Model.Configuration;
 /// </summary>
 public class EffectiveConfiguration
 {
-    public EffectiveConfiguration(Config configuration, BranchConfig currentBranchConfig)
+    public EffectiveConfiguration(GitVersionConfiguration configuration, BranchConfiguration currentBranchConfig)
     {
         configuration.NotNull();
         currentBranchConfig.NotNull();

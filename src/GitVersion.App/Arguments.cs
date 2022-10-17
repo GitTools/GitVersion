@@ -1,6 +1,5 @@
+using GitVersion.Configuration;
 using GitVersion.Logging;
-using GitVersion.Model;
-using GitVersion.Model.Configuration;
 
 namespace GitVersion;
 
@@ -9,7 +8,7 @@ public class Arguments
     public AuthenticationInfo Authentication = new();
 
     public string? ConfigFile;
-    public Config? OverrideConfig;
+    public GitVersionConfiguration? OverrideConfig;
     public bool ShowConfig;
 
     public string? TargetPath;

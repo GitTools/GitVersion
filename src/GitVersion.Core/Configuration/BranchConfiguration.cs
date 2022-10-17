@@ -1,18 +1,18 @@
 using GitVersion.VersionCalculation;
 using YamlDotNet.Serialization;
 
-namespace GitVersion.Model.Configuration;
+namespace GitVersion.Configuration;
 
-public class BranchConfig
+public class BranchConfiguration
 {
-    public BranchConfig()
+    public BranchConfiguration()
     {
     }
 
     /// <summary>
     /// Creates a clone of the given <paramref name="branchConfiguration"/>.
     /// </summary>
-    public BranchConfig(BranchConfig branchConfiguration)
+    public BranchConfiguration(BranchConfiguration branchConfiguration)
     {
         VersioningMode = branchConfiguration.VersioningMode;
         Tag = branchConfiguration.Tag;
@@ -43,16 +43,14 @@ public class BranchConfig
     [YamlMember(Alias = "increment")]
     public IncrementStrategy? Increment { get; set; }
 
-    public BranchConfig Inherit(BranchConfig? parentConfig)
+    public BranchConfiguration Inherit(BranchConfiguration? parentConfig)
     {
         if (parentConfig is null) return this;
 
-        var result = new BranchConfig(this);
+        var result = new BranchConfiguration(this);
 
         if (result.Increment is null || result.Increment == IncrementStrategy.Inherit)
-        {
             result.Increment = parentConfig.Increment;
-        }
         result.VersioningMode ??= parentConfig.VersioningMode;
         result.Tag ??= parentConfig.Tag;
         result.PreventIncrementOfMergedBranchVersion ??= parentConfig.PreventIncrementOfMergedBranchVersion;
@@ -104,32 +102,32 @@ public class BranchConfig
     public int? PreReleaseWeight { get; set; }
 
     /// <summary>
-    /// The name given to this configuration in the config file.
+    /// The name given to this configuration in the configuration file.
     /// </summary>
     [YamlIgnore]
     public string Name { get; set; }
 
-    public void MergeTo(BranchConfig targetConfig)
+    public void MergeTo(BranchConfiguration targetConfig)
     {
         if (targetConfig == null) throw new ArgumentNullException(nameof(targetConfig));
 
-        targetConfig.VersioningMode = this.VersioningMode ?? targetConfig.VersioningMode;
-        targetConfig.Tag = this.Tag ?? targetConfig.Tag;
-        targetConfig.Increment = this.Increment ?? targetConfig.Increment;
-        targetConfig.PreventIncrementOfMergedBranchVersion = this.PreventIncrementOfMergedBranchVersion ?? targetConfig.PreventIncrementOfMergedBranchVersion;
-        targetConfig.TagNumberPattern = this.TagNumberPattern ?? targetConfig.TagNumberPattern;
-        targetConfig.TrackMergeTarget = this.TrackMergeTarget ?? targetConfig.TrackMergeTarget;
-        targetConfig.CommitMessageIncrementing = this.CommitMessageIncrementing ?? targetConfig.CommitMessageIncrementing;
-        targetConfig.Regex = this.Regex ?? targetConfig.Regex;
-        targetConfig.SourceBranches = this.SourceBranches ?? targetConfig.SourceBranches;
-        targetConfig.IsSourceBranchFor = this.IsSourceBranchFor ?? targetConfig.IsSourceBranchFor;
-        targetConfig.TracksReleaseBranches = this.TracksReleaseBranches ?? targetConfig.TracksReleaseBranches;
-        targetConfig.IsReleaseBranch = this.IsReleaseBranch ?? targetConfig.IsReleaseBranch;
-        targetConfig.IsMainline = this.IsMainline ?? targetConfig.IsMainline;
-        targetConfig.PreReleaseWeight = this.PreReleaseWeight ?? targetConfig.PreReleaseWeight;
+        targetConfig.VersioningMode = VersioningMode ?? targetConfig.VersioningMode;
+        targetConfig.Tag = Tag ?? targetConfig.Tag;
+        targetConfig.Increment = Increment ?? targetConfig.Increment;
+        targetConfig.PreventIncrementOfMergedBranchVersion = PreventIncrementOfMergedBranchVersion ?? targetConfig.PreventIncrementOfMergedBranchVersion;
+        targetConfig.TagNumberPattern = TagNumberPattern ?? targetConfig.TagNumberPattern;
+        targetConfig.TrackMergeTarget = TrackMergeTarget ?? targetConfig.TrackMergeTarget;
+        targetConfig.CommitMessageIncrementing = CommitMessageIncrementing ?? targetConfig.CommitMessageIncrementing;
+        targetConfig.Regex = Regex ?? targetConfig.Regex;
+        targetConfig.SourceBranches = SourceBranches ?? targetConfig.SourceBranches;
+        targetConfig.IsSourceBranchFor = IsSourceBranchFor ?? targetConfig.IsSourceBranchFor;
+        targetConfig.TracksReleaseBranches = TracksReleaseBranches ?? targetConfig.TracksReleaseBranches;
+        targetConfig.IsReleaseBranch = IsReleaseBranch ?? targetConfig.IsReleaseBranch;
+        targetConfig.IsMainline = IsMainline ?? targetConfig.IsMainline;
+        targetConfig.PreReleaseWeight = PreReleaseWeight ?? targetConfig.PreReleaseWeight;
     }
 
-    public BranchConfig Apply(BranchConfig overrides)
+    public BranchConfiguration Apply(BranchConfiguration overrides)
     {
         if (overrides == null) throw new ArgumentNullException(nameof(overrides));
 

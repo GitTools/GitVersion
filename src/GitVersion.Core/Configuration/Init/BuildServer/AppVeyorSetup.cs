@@ -1,15 +1,8 @@
 using GitVersion.Configuration.Init.Wizard;
 using GitVersion.Helpers;
 using GitVersion.Logging;
-using GitVersion.Model.Configuration;
 
 namespace GitVersion.Configuration.Init.BuildServer;
-
-internal enum ProjectVisibility
-{
-    Public = 0,
-    Private = 1
-}
 
 internal class AppVeyorSetup : ConfigInitWizardStep
 {
@@ -25,7 +18,7 @@ internal class AppVeyorSetup : ConfigInitWizardStep
         return this;
     }
 
-    protected override StepResult HandleResult(string? result, Queue<ConfigInitWizardStep> steps, Config config, string workingDirectory)
+    protected override StepResult HandleResult(string? result, Queue<ConfigInitWizardStep> steps, GitVersionConfiguration configuration, string workingDirectory)
     {
         var editConfigStep = this.StepFactory.CreateStep<EditConfigStep>();
         switch (result)
@@ -84,19 +77,19 @@ after_build:
     {
         var outputFilename = GetOutputFilename(workingDirectory, fileSystem);
         fileSystem.WriteAllText(outputFilename, configContents);
-        this.Log.Info($"AppVeyor sample config file written to {outputFilename}");
+        this.Log.Info($"AppVeyor sample configuration file written to {outputFilename}");
     }
 
-    protected override string GetPrompt(Config config, string workingDirectory)
+    protected override string GetPrompt(GitVersionConfiguration configuration, string workingDirectory)
     {
         var prompt = new StringBuilder();
         if (AppVeyorConfigExists(workingDirectory, this.FileSystem))
         {
-            prompt.AppendLine("GitVersion doesn't support modifying existing appveyor config files. We will generate appveyor.gitversion.yml instead");
+            prompt.AppendLine("GitVersion doesn't support modifying existing appveyor configuration files. We will generate appveyor.gitversion.yml instead");
             prompt.AppendLine();
         }
 
-        prompt.Append(@"What sort of config template would you like generated?
+        prompt.Append(@"What sort of configuration template would you like generated?
 
 0) Go Back
 1) Generate basic (gitversion + msbuild) configuration

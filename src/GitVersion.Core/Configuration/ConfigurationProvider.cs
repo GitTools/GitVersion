@@ -1,21 +1,20 @@
 using GitVersion.Configuration.Init.Wizard;
 using GitVersion.Extensions;
 using GitVersion.Logging;
-using GitVersion.Model.Configuration;
 using Microsoft.Extensions.Options;
 
 namespace GitVersion.Configuration;
 
-public class ConfigProvider : IConfigProvider
+public class ConfigurationProvider : IConfigurationProvider
 {
     private readonly IFileSystem fileSystem;
     private readonly ILog log;
-    private readonly IConfigFileLocator configFileLocator;
+    private readonly IConfigurationFileLocator configFileLocator;
     private readonly IOptions<GitVersionOptions> options;
     private readonly IConfigInitWizard configInitWizard;
     private readonly IGitRepositoryInfo repositoryInfo;
 
-    public ConfigProvider(IFileSystem fileSystem, ILog log, IConfigFileLocator configFileLocator,
+    public ConfigurationProvider(IFileSystem fileSystem, ILog log, IConfigurationFileLocator configFileLocator,
         IOptions<GitVersionOptions> options, IConfigInitWizard configInitWizard, IGitRepositoryInfo repositoryInfo)
     {
         this.fileSystem = fileSystem.NotNull();
@@ -26,24 +25,27 @@ public class ConfigProvider : IConfigProvider
         this.repositoryInfo = repositoryInfo.NotNull();
     }
 
-    public Config Provide(Config? overrideConfig = null)
+    public GitVersionConfiguration Provide(GitVersionConfiguration? overrideConfiguration)
     {
         var gitVersionOptions = this.options.Value;
         var workingDirectory = gitVersionOptions.WorkingDirectory;
         var projectRootDirectory = this.repositoryInfo.ProjectRootDirectory;
 
         var rootDirectory = this.configFileLocator.HasConfigFileAt(workingDirectory) ? workingDirectory : projectRootDirectory;
-        return Provide(rootDirectory, overrideConfig);
+        return Provide(rootDirectory, overrideConfiguration);
     }
 
-    public Config Provide(string? workingDirectory, Config? overrideConfig = null)
+    public GitVersionConfiguration Provide(string? workingDirectory, GitVersionConfiguration? overrideConfiguration)
     {
         var configurationBuilder = new ConfigurationBuilder();
+
         if (workingDirectory != null)
             configurationBuilder = configurationBuilder.Add(this.configFileLocator.ReadConfig(workingDirectory));
-        return configurationBuilder
-            .Add(overrideConfig ?? new Config())
-            .Build();
+
+        if (overrideConfiguration != null)
+            configurationBuilder.Add(overrideConfiguration);
+
+        return configurationBuilder.Build();
     }
 
     public void Init(string workingDirectory)
@@ -51,13 +53,13 @@ public class ConfigProvider : IConfigProvider
         var configFilePath = this.configFileLocator.GetConfigFilePath(workingDirectory);
         var currentConfiguration = this.configFileLocator.ReadConfig(workingDirectory);
 
-        var config = this.configInitWizard.Run(currentConfiguration, workingDirectory);
-        if (config == null || configFilePath == null) return;
+        var configuration = this.configInitWizard.Run(currentConfiguration, workingDirectory);
+        if (configuration == null || configFilePath == null) return;
 
         using var stream = this.fileSystem.OpenWrite(configFilePath);
         using var writer = new StreamWriter(stream);
-        this.log.Info("Saving config file");
-        ConfigSerializer.Write(config, writer);
+        this.log.Info("Saving configuration file");
+        ConfigurationSerializer.Write(configuration, writer);
         stream.Flush();
     }
 }

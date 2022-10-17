@@ -4,7 +4,6 @@ using GitVersion.Configuration;
 using GitVersion.Core.Tests.Helpers;
 using GitVersion.Helpers;
 using GitVersion.Logging;
-using GitVersion.Model.Configuration;
 using GitVersion.VersionCalculation.Cache;
 using LibGit2Sharp;
 using Microsoft.Extensions.DependencyInjection;
@@ -205,8 +204,8 @@ public class GitVersionExecutorTests : TestBase
 
         var cacheDirectoryTimestamp = this.fileSystem.GetLastDirectoryWrite(cacheDirectory);
 
-        var config = new ConfigurationBuilder().Add(new Config { TagPrefix = "prefix" }).Build();
-        gitVersionOptions = new GitVersionOptions { WorkingDirectory = fixture.RepositoryPath, ConfigInfo = { OverrideConfig = config } };
+        var configuration = new ConfigurationBuilder().Add(new GitVersionConfiguration { TagPrefix = "prefix" }).Build();
+        gitVersionOptions = new GitVersionOptions { WorkingDirectory = fixture.RepositoryPath, ConfigInfo = { OverrideConfig = configuration } };
 
         gitVersionCalculator = GetGitVersionCalculator(gitVersionOptions);
         versionVariables = gitVersionCalculator.CalculateVersionVariables();
@@ -214,7 +213,7 @@ public class GitVersionExecutorTests : TestBase
         versionVariables.AssemblySemVer.ShouldBe("0.0.1.0");
 
         var cachedDirectoryTimestampAfter = this.fileSystem.GetLastDirectoryWrite(cacheDirectory);
-        cachedDirectoryTimestampAfter.ShouldBe(cacheDirectoryTimestamp, "Cache was updated when override config was set");
+        cachedDirectoryTimestampAfter.ShouldBe(cacheDirectoryTimestamp, "Cache was updated when override configuration was set");
     }
 
     [Test]
@@ -287,7 +286,7 @@ public class GitVersionExecutorTests : TestBase
         versionVariables = gitVersionCalculator.CalculateVersionVariables();
         versionVariables.AssemblySemVer.ShouldBe("4.10.3.0");
 
-        var configPath = PathHelper.Combine(fixture.RepositoryPath, ConfigFileLocator.DefaultFileName);
+        var configPath = PathHelper.Combine(fixture.RepositoryPath, ConfigurationFileLocator.DefaultFileName);
         this.fileSystem.WriteAllText(configPath, "next-version: 5.0.0");
 
         gitVersionCalculator = GetGitVersionCalculator(gitVersionOptions, fs: this.fileSystem);

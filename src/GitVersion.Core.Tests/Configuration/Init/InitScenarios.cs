@@ -28,7 +28,7 @@ public class InitScenarios : TestBase
             services.AddSingleton(options);
         });
 
-        var configurationProvider = sp.GetRequiredService<IConfigProvider>();
+        var configurationProvider = sp.GetRequiredService<IConfigurationProvider>();
         var fileSystem = sp.GetRequiredService<IFileSystem>();
         configurationProvider.Init(workingDirectory);
 

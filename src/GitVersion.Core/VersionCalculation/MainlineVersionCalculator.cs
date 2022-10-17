@@ -93,7 +93,7 @@ internal class MainlineVersionCalculator : IMainlineVersionCalculator
             var ignore = context.Configuration.Ignore;
             if (!ignore.IsEmpty)
             {
-                var shasToIgnore = new HashSet<string>(ignore.ShAs);
+                var shasToIgnore = new HashSet<string>(ignore.Shas);
                 commitLogs = commitLogs
                     .Where(c => ignore.Before is null || c.When > ignore.Before && !shasToIgnore.Contains(c.Sha));
             }
@@ -135,8 +135,8 @@ internal class MainlineVersionCalculator : IMainlineVersionCalculator
 
     private IBranch GetMainline(ICommit? baseVersionSource)
     {
-        if (context.Configuration.Branches.TryGetValue(context.CurrentBranch.Name.Friendly, out var branchConfig)
-            && branchConfig.IsMainline == true)
+        if (context.Configuration.Branches.TryGetValue(context.CurrentBranch.Name.Friendly, out var branchConfiguration)
+            && branchConfiguration.IsMainline == true)
         {
             return context.CurrentBranch;
         }
@@ -306,7 +306,7 @@ internal class MainlineVersionCalculator : IMainlineVersionCalculator
             }
         }
 
-        // Fallback to config increment value
+        // Fallback to configuration increment value
         return FindDefaultIncrementForBranch(context);
     }
 

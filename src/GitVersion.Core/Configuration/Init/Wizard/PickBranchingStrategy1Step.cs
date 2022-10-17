@@ -1,5 +1,4 @@
 using GitVersion.Logging;
-using GitVersion.Model.Configuration;
 
 namespace GitVersion.Configuration.Init.Wizard;
 
@@ -9,7 +8,7 @@ public class PickBranchingStrategy1Step : ConfigInitWizardStep
     {
     }
 
-    protected override StepResult HandleResult(string? result, Queue<ConfigInitWizardStep> steps, Config config, string workingDirectory)
+    protected override StepResult HandleResult(string? result, Queue<ConfigInitWizardStep> steps, GitVersionConfiguration configuration, string workingDirectory)
     {
         switch (result?.ToLower())
         {
@@ -27,7 +26,7 @@ GitFlow allows you to have new development happening on the 'develop' branch, pa
         return StepResult.InvalidResponseSelected();
     }
 
-    protected override string GetPrompt(Config config, string workingDirectory) => @"GitVersion can try to recommend you a branching strategy based on a few questions.
+    protected override string GetPrompt(GitVersionConfiguration configuration, string workingDirectory) => @"GitVersion can try to recommend you a branching strategy based on a few questions.
 
 Do you need to maintain multiple versions of your application simultaneously in production? (y/n)";
 

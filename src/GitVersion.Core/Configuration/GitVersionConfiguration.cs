@@ -1,19 +1,18 @@
 using System.Globalization;
-using GitVersion.Configuration;
 using GitVersion.Extensions;
 using GitVersion.VersionCalculation;
 using YamlDotNet.Serialization;
 
-namespace GitVersion.Model.Configuration;
+namespace GitVersion.Configuration;
 
-public class Config
+public class GitVersionConfiguration
 {
     private string? nextVersion;
 
-    public Config()
+    public GitVersionConfiguration()
     {
-        Branches = new Dictionary<string, BranchConfig>();
-        Ignore = new IgnoreConfig();
+        Branches = new Dictionary<string, BranchConfiguration>();
+        Ignore = new IgnoreConfiguration();
     }
 
     [YamlMember(Alias = "assembly-versioning-scheme")]
@@ -43,9 +42,9 @@ public class Config
     [YamlMember(Alias = "next-version")]
     public string? NextVersion
     {
-        get => this.nextVersion;
+        get => nextVersion;
         set =>
-            this.nextVersion = int.TryParse(value, NumberStyles.Any, NumberFormatInfo.InvariantInfo, out var major)
+            nextVersion = int.TryParse(value, NumberStyles.Any, NumberFormatInfo.InvariantInfo, out var major)
                 ? $"{major}.0"
                 : value;
     }
@@ -69,10 +68,10 @@ public class Config
     public CommitMessageIncrementMode? CommitMessageIncrementing { get; set; }
 
     [YamlMember(Alias = "branches")]
-    public Dictionary<string, BranchConfig> Branches { get; set; }
+    public Dictionary<string, BranchConfiguration> Branches { get; set; }
 
     [YamlMember(Alias = "ignore")]
-    public IgnoreConfig Ignore { get; set; }
+    public IgnoreConfiguration Ignore { get; set; }
 
     [YamlMember(Alias = "increment")]
     public IncrementStrategy? Increment { get; set; }
@@ -93,7 +92,7 @@ public class Config
     {
         var stringBuilder = new StringBuilder();
         using var stream = new StringWriter(stringBuilder);
-        ConfigSerializer.Write(this, stream);
+        ConfigurationSerializer.Write(this, stream);
         stream.Flush();
         return stringBuilder.ToString();
     }

@@ -118,7 +118,7 @@ public class TestTaskBase : TestBase
 
     private static void CreateConfiguration(string repoFolder, string content)
     {
-        var configFilePath = PathHelper.Combine(repoFolder, ConfigFileLocator.DefaultFileName);
+        var configFilePath = PathHelper.Combine(repoFolder, ConfigurationFileLocator.DefaultFileName);
         File.WriteAllText(configFilePath, content);
     }
 }

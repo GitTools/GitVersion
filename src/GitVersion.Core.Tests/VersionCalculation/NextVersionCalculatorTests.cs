@@ -1,9 +1,9 @@
 using GitTools.Testing;
 using GitVersion.Common;
+using GitVersion.Configuration;
 using GitVersion.Core.Tests.Helpers;
 using GitVersion.Core.Tests.IntegrationTests;
 using GitVersion.Logging;
-using GitVersion.Model.Configuration;
 using GitVersion.VersionCalculation;
 using LibGit2Sharp;
 using Microsoft.Extensions.DependencyInjection;
@@ -36,7 +36,7 @@ public class NextVersionCalculatorTests : TestBase
     {
         var contextBuilder = new GitVersionContextBuilder();
 
-        contextBuilder.WithConfig(new Config() { NextVersion = "1.0.0" }).Build();
+        contextBuilder.WithConfig(new GitVersionConfiguration() { NextVersion = "1.0.0" }).Build();
 
         contextBuilder.ServicesProvider.ShouldNotBeNull();
         var nextVersionCalculator = contextBuilder.ServicesProvider.GetRequiredService<INextVersionCalculator>();
@@ -67,13 +67,13 @@ public class NextVersionCalculatorTests : TestBase
     [Test]
     public void PreReleaseTagCanUseBranchName()
     {
-        var config = new Config
+        var configuration = new GitVersionConfiguration
         {
             NextVersion = "1.0.0",
-            Branches = new Dictionary<string, BranchConfig>
+            Branches = new Dictionary<string, BranchConfiguration>
             {
                 {
-                    "custom", new BranchConfig
+                    "custom", new BranchConfiguration
                     {
                         Regex = "custom/",
                         Tag = "useBranchName",
@@ -90,13 +90,13 @@ public class NextVersionCalculatorTests : TestBase
         fixture.BranchTo("custom/foo");
         fixture.MakeACommit();
 
-        fixture.AssertFullSemver("1.0.0-foo.1+3", config);
+        fixture.AssertFullSemver("1.0.0-foo.1+3", configuration);
     }
 
     [Test]
     public void PreReleaseVersionMainline()
     {
-        var config = new Config
+        var configuration = new GitVersionConfiguration
         {
             VersioningMode = VersioningMode.Mainline,
             NextVersion = "1.0.0"
@@ -107,13 +107,13 @@ public class NextVersionCalculatorTests : TestBase
         fixture.BranchTo("foo");
         fixture.MakeACommit();
 
-        fixture.AssertFullSemver("1.0.0-foo.1", config);
+        fixture.AssertFullSemver("1.0.0-foo.1", configuration);
     }
 
     [Test]
     public void MergeIntoMainline()
     {
-        var config = new Config
+        var configuration = new GitVersionConfiguration
         {
             VersioningMode = VersioningMode.Mainline,
             NextVersion = "1.0.0"
@@ -126,13 +126,13 @@ public class NextVersionCalculatorTests : TestBase
         fixture.Checkout(MainBranch);
         fixture.MergeNoFF("foo");
 
-        fixture.AssertFullSemver("1.0.0", config);
+        fixture.AssertFullSemver("1.0.0", configuration);
     }
 
     [Test]
     public void MergeFeatureIntoMainline()
     {
-        var config = new Config
+        var configuration = new GitVersionConfiguration
         {
             VersioningMode = VersioningMode.Mainline
         };
@@ -140,96 +140,96 @@ public class NextVersionCalculatorTests : TestBase
         using var fixture = new EmptyRepositoryFixture();
         fixture.MakeACommit();
         fixture.ApplyTag("1.0.0");
-        fixture.AssertFullSemver("1.0.0", config);
+        fixture.AssertFullSemver("1.0.0", configuration);
 
         fixture.BranchTo("feature/foo");
         fixture.MakeACommit();
-        fixture.AssertFullSemver("1.0.1-foo.1", config);
+        fixture.AssertFullSemver("1.0.1-foo.1", configuration);
         fixture.ApplyTag("1.0.1-foo.1");
 
         fixture.Checkout(MainBranch);
         fixture.MergeNoFF("feature/foo");
-        fixture.AssertFullSemver("1.0.1", config);
+        fixture.AssertFullSemver("1.0.1", configuration);
     }
 
     [Test]
     public void MergeFeatureIntoMainlineWithMinorIncrement()
     {
-        var config = new Config
+        var configuration = new GitVersionConfiguration
         {
             VersioningMode = VersioningMode.Mainline,
-            Branches = new Dictionary<string, BranchConfig>
+            Branches = new Dictionary<string, BranchConfiguration>
             {
-                { "feature", new BranchConfig { Increment = IncrementStrategy.Minor } }
+                { "feature", new BranchConfiguration { Increment = IncrementStrategy.Minor } }
             },
-            Ignore = new IgnoreConfig { ShAs = new List<string>() },
+            Ignore = new IgnoreConfiguration { Shas = new List<string>() },
             MergeMessageFormats = new Dictionary<string, string>()
         };
 
         using var fixture = new EmptyRepositoryFixture();
         fixture.MakeACommit();
         fixture.ApplyTag("1.0.0");
-        fixture.AssertFullSemver("1.0.0", config);
+        fixture.AssertFullSemver("1.0.0", configuration);
 
         fixture.BranchTo("feature/foo");
         fixture.MakeACommit();
-        fixture.AssertFullSemver("1.1.0-foo.1", config);
+        fixture.AssertFullSemver("1.1.0-foo.1", configuration);
         fixture.ApplyTag("1.1.0-foo.1");
 
         fixture.Checkout(MainBranch);
         fixture.MergeNoFF("feature/foo");
-        fixture.AssertFullSemver("1.1.0", config);
+        fixture.AssertFullSemver("1.1.0", configuration);
     }
 
     [Test]
     public void MergeFeatureIntoMainlineWithMinorIncrementAndThenMergeHotfix()
     {
-        var config = new Config
+        var configuration = new GitVersionConfiguration
         {
             VersioningMode = VersioningMode.Mainline,
-            Branches = new Dictionary<string, BranchConfig>
+            Branches = new Dictionary<string, BranchConfiguration>
             {
-                { "feature", new BranchConfig { Increment = IncrementStrategy.Minor } }
+                { "feature", new BranchConfiguration { Increment = IncrementStrategy.Minor } }
             },
-            Ignore = new IgnoreConfig { ShAs = new List<string>() },
+            Ignore = new IgnoreConfiguration { Shas = new List<string>() },
             MergeMessageFormats = new Dictionary<string, string>()
         };
 
         using var fixture = new EmptyRepositoryFixture();
         fixture.MakeACommit();
         fixture.ApplyTag("1.0.0");
-        fixture.AssertFullSemver("1.0.0", config);
+        fixture.AssertFullSemver("1.0.0", configuration);
 
         fixture.BranchTo("feature/foo");
         fixture.MakeACommit();
-        fixture.AssertFullSemver("1.1.0-foo.1", config);
+        fixture.AssertFullSemver("1.1.0-foo.1", configuration);
         fixture.ApplyTag("1.1.0-foo.1");
 
         fixture.Checkout(MainBranch);
         fixture.MergeNoFF("feature/foo");
-        fixture.AssertFullSemver("1.1.0", config);
+        fixture.AssertFullSemver("1.1.0", configuration);
         fixture.ApplyTag("1.1.0");
 
         fixture.BranchTo("hotfix/bar");
         fixture.MakeACommit();
-        fixture.AssertFullSemver("1.1.1-beta.1", config);
+        fixture.AssertFullSemver("1.1.1-beta.1", configuration);
         fixture.ApplyTag("1.1.1-beta.1");
 
         fixture.Checkout(MainBranch);
         fixture.MergeNoFF("hotfix/bar");
-        fixture.AssertFullSemver("1.1.1", config);
+        fixture.AssertFullSemver("1.1.1", configuration);
     }
 
     [Test]
     public void PreReleaseTagCanUseBranchNameVariable()
     {
-        var config = new Config
+        var configuration = new GitVersionConfiguration
         {
             NextVersion = "1.0.0",
-            Branches = new Dictionary<string, BranchConfig>
+            Branches = new Dictionary<string, BranchConfiguration>
             {
                 {
-                    "custom", new BranchConfig
+                    "custom", new BranchConfiguration
                     {
                         Regex = "custom/",
                         Tag = "alpha.{BranchName}",
@@ -246,19 +246,19 @@ public class NextVersionCalculatorTests : TestBase
         fixture.BranchTo("custom/foo");
         fixture.MakeACommit();
 
-        fixture.AssertFullSemver("1.0.0-alpha.foo.1+3", config);
+        fixture.AssertFullSemver("1.0.0-alpha.foo.1+3", configuration);
     }
 
     [Test]
     public void PreReleaseNumberShouldBeScopeToPreReleaseLabelInContinuousDelivery()
     {
-        var config = new Config
+        var configuration = new GitVersionConfiguration
         {
             VersioningMode = VersioningMode.ContinuousDelivery,
-            Branches = new Dictionary<string, BranchConfig>
+            Branches = new Dictionary<string, BranchConfiguration>
             {
                 {
-                    MainBranch, new BranchConfig
+                    MainBranch, new BranchConfiguration
                     {
                         Tag = "beta"
                     }
@@ -274,18 +274,18 @@ public class NextVersionCalculatorTests : TestBase
         fixture.Repository.MakeATaggedCommit("0.1.0-test.1");
         fixture.Repository.MakeACommit();
 
-        fixture.AssertFullSemver("0.1.0-test.2+1", config);
+        fixture.AssertFullSemver("0.1.0-test.2+1", configuration);
 
         Commands.Checkout(fixture.Repository, MainBranch);
         fixture.Repository.Merge("feature/test", Generate.SignatureNow());
 
-        fixture.AssertFullSemver("0.1.0-beta.1+1", config); // just one commit no fast forward merge here.
+        fixture.AssertFullSemver("0.1.0-beta.1+1", configuration); // just one commit no fast forward merge here.
     }
 
     [Test]
     public void GetNextVersionOnNonMainlineBranchWithoutCommitsShouldWorkNormally()
     {
-        var config = new Config
+        var configuration = new GitVersionConfiguration
         {
             VersioningMode = VersioningMode.Mainline,
             NextVersion = "1.0.0"
@@ -294,7 +294,7 @@ public class NextVersionCalculatorTests : TestBase
         using var fixture = new EmptyRepositoryFixture();
         fixture.MakeACommit("initial commit");
         fixture.BranchTo("feature/f1");
-        fixture.AssertFullSemver("1.0.0-f1.0", config);
+        fixture.AssertFullSemver("1.0.0-f1.0", configuration);
     }
 
     [Test]
@@ -302,7 +302,7 @@ public class NextVersionCalculatorTests : TestBase
     {
         // Arrange
         var branchMock = GitToolsTestingExtensions.CreateMockBranch("main", GitToolsTestingExtensions.CreateMockCommit());
-        var configuration = TestConfigurationBuilder.New.Build();
+        var configuration = GitFlowConfigurationBuilder.New.Build();
         var context = new GitVersionContext(branchMock, null, configuration, null, 0);
         var repositoryStoreMock = Substitute.For<IRepositoryStore>();
         var effectiveConfiguration = context.GetEffectiveConfiguration(branchMock);
@@ -331,7 +331,7 @@ public class NextVersionCalculatorTests : TestBase
     {
         // Arrange
         var branchMock = GitToolsTestingExtensions.CreateMockBranch("main", GitToolsTestingExtensions.CreateMockCommit());
-        var configuration = TestConfigurationBuilder.New.Build();
+        var configuration = GitFlowConfigurationBuilder.New.Build();
         var context = new GitVersionContext(branchMock, null, configuration, null, 0);
         var repositoryStoreMock = Substitute.For<IRepositoryStore>();
         var effectiveConfiguration = context.GetEffectiveConfiguration(branchMock);
@@ -360,7 +360,7 @@ public class NextVersionCalculatorTests : TestBase
     {
         // Arrange
         var branchMock = GitToolsTestingExtensions.CreateMockBranch("main", GitToolsTestingExtensions.CreateMockCommit());
-        var configuration = TestConfigurationBuilder.New.Build();
+        var configuration = GitFlowConfigurationBuilder.New.Build();
         var context = new GitVersionContext(branchMock, null, configuration, null, 0);
         var repositoryStoreMock = Substitute.For<IRepositoryStore>();
         var effectiveConfiguration = context.GetEffectiveConfiguration(branchMock);
@@ -390,7 +390,7 @@ public class NextVersionCalculatorTests : TestBase
         // Arrange
         var branchMock = GitToolsTestingExtensions.CreateMockBranch("main", GitToolsTestingExtensions.CreateMockCommit());
         var fakeIgnoreConfig = new TestIgnoreConfig(new ExcludeSourcesContainingExclude());
-        var configuration = TestConfigurationBuilder.New.WithIgnoreConfig(fakeIgnoreConfig).Build();
+        var configuration = GitFlowConfigurationBuilder.New.WithIgnoreConfiguration(fakeIgnoreConfig).Build();
         var context = new GitVersionContext(branchMock, null, configuration, null, 0);
         var repositoryStoreMock = Substitute.For<IRepositoryStore>();
         var effectiveConfiguration = context.GetEffectiveConfiguration(branchMock);
@@ -419,7 +419,7 @@ public class NextVersionCalculatorTests : TestBase
         // Arrange
         var branchMock = GitToolsTestingExtensions.CreateMockBranch("main", GitToolsTestingExtensions.CreateMockCommit());
         var fakeIgnoreConfig = new TestIgnoreConfig(new ExcludeSourcesContainingExclude());
-        var configuration = TestConfigurationBuilder.New.WithIgnoreConfig(fakeIgnoreConfig).Build();
+        var configuration = GitFlowConfigurationBuilder.New.WithIgnoreConfiguration(fakeIgnoreConfig).Build();
         var context = new GitVersionContext(branchMock, null, configuration, null, 0);
         var repositoryStoreMock = Substitute.For<IRepositoryStore>();
         var effectiveConfiguration = context.GetEffectiveConfiguration(branchMock);
@@ -450,7 +450,7 @@ public class NextVersionCalculatorTests : TestBase
         // Arrange
         var branchMock = GitToolsTestingExtensions.CreateMockBranch("main", GitToolsTestingExtensions.CreateMockCommit());
         var fakeIgnoreConfig = new TestIgnoreConfig(new ExcludeSourcesContainingExclude());
-        var configuration = TestConfigurationBuilder.New.WithIgnoreConfig(fakeIgnoreConfig).WithVersioningMode(VersioningMode.Mainline).Build();
+        var configuration = GitFlowConfigurationBuilder.New.WithIgnoreConfiguration(fakeIgnoreConfig).WithVersioningMode(VersioningMode.Mainline).Build();
         var context = new GitVersionContext(branchMock, null, configuration, null, 0);
         var repositoryStoreMock = Substitute.For<IRepositoryStore>();
         var effectiveConfiguration = context.GetEffectiveConfiguration(branchMock);
@@ -490,7 +490,7 @@ public class NextVersionCalculatorTests : TestBase
         nextVersion.BaseVersion.SemanticVersion.ShouldBe(lowerVersion.SemanticVersion);
     }
 
-    private class TestIgnoreConfig : IgnoreConfig
+    private class TestIgnoreConfig : IgnoreConfiguration
     {
         private readonly IVersionFilter filter;
 

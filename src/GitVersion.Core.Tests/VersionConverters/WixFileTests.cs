@@ -33,7 +33,7 @@ internal class WixFileTests : TestBase
         semVer.BuildMetaData.ShortSha = "commitShortSha";
         semVer.BuildMetaData.CommitDate = DateTimeOffset.Parse("2019-02-20 23:59:59Z");
 
-        var config = new TestEffectiveConfiguration();
+        var configuration = new TestEffectiveConfiguration();
 
         var stringBuilder = new StringBuilder();
         void Action(string s) => stringBuilder.AppendLine(s);
@@ -45,7 +45,7 @@ internal class WixFileTests : TestBase
 
         var fileSystem = sp.GetRequiredService<IFileSystem>();
         var variableProvider = sp.GetRequiredService<IVariableProvider>();
-        var versionVariables = variableProvider.GetVariablesFor(semVer, config, false);
+        var versionVariables = variableProvider.GetVariablesFor(semVer, configuration, false);
 
         using var wixVersionFileUpdater = sp.GetRequiredService<IWixVersionFileUpdater>();
 
@@ -74,7 +74,7 @@ internal class WixFileTests : TestBase
         semVer.BuildMetaData.ShortSha = "commitShortSha";
         semVer.BuildMetaData.CommitDate = DateTimeOffset.Parse("2019-02-20 23:59:59Z");
 
-        var config = new TestEffectiveConfiguration();
+        var configuration = new TestEffectiveConfiguration();
 
         var stringBuilder = new StringBuilder();
         void Action(string s) => stringBuilder.AppendLine(s);
@@ -86,7 +86,7 @@ internal class WixFileTests : TestBase
 
         var fileSystem = sp.GetRequiredService<IFileSystem>();
         var variableProvider = sp.GetRequiredService<IVariableProvider>();
-        var versionVariables = variableProvider.GetVariablesFor(semVer, config, false);
+        var versionVariables = variableProvider.GetVariablesFor(semVer, configuration, false);
 
         using var wixVersionFileUpdater = sp.GetRequiredService<IWixVersionFileUpdater>();
 

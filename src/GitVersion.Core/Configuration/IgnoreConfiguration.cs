@@ -1,24 +1,24 @@
 using GitVersion.VersionCalculation;
 using YamlDotNet.Serialization;
 
-namespace GitVersion.Model.Configuration;
+namespace GitVersion.Configuration;
 
-public class IgnoreConfig
+public class IgnoreConfiguration
 {
-    public IgnoreConfig() => ShAs = Enumerable.Empty<string>();
+    public IgnoreConfiguration() => Shas = Enumerable.Empty<string>();
 
     [YamlMember(Alias = "commits-before")]
     public DateTimeOffset? Before { get; set; }
 
     [YamlMember(Alias = "sha")]
-    public IEnumerable<string> ShAs { get; set; }
+    public IEnumerable<string> Shas { get; set; }
 
     [YamlIgnore]
-    public virtual bool IsEmpty => Before == null && ShAs.Any() == false;
+    public virtual bool IsEmpty => Before == null && Shas.Any() == false;
 
     public virtual IEnumerable<IVersionFilter> ToFilters()
     {
-        if (ShAs.Any()) yield return new ShaVersionFilter(ShAs);
+        if (Shas.Any()) yield return new ShaVersionFilter(Shas);
         if (Before.HasValue) yield return new MinDateVersionFilter(Before.Value);
     }
 }

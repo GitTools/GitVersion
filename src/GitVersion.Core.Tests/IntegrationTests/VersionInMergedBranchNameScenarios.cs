@@ -1,6 +1,6 @@
 using GitTools.Testing;
+using GitVersion.Configuration;
 using GitVersion.Core.Tests.Helpers;
-using GitVersion.Model.Configuration;
 using LibGit2Sharp;
 using NUnit.Framework;
 
@@ -31,15 +31,15 @@ public class VersionInMergedBranchNameScenarios : TestBase
     [Test]
     public void TakesVersionFromNameOfBranchThatIsReleaseByConfig()
     {
-        var config = new Config
+        var configuration = new GitVersionConfiguration
         {
-            Branches = new Dictionary<string, BranchConfig> { { "support", new BranchConfig { IsReleaseBranch = true } } }
+            Branches = new Dictionary<string, BranchConfiguration> { { "support", new BranchConfiguration { IsReleaseBranch = true } } }
         };
 
         using var fixture = new BaseGitFlowRepositoryFixture("1.0.0");
         fixture.CreateAndMergeBranchIntoDevelop("support/2.0.0");
 
-        fixture.AssertFullSemver("2.1.0-alpha.2", config);
+        fixture.AssertFullSemver("2.1.0-alpha.2", configuration);
     }
 
     [Test]

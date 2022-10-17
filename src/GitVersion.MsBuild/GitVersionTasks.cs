@@ -1,7 +1,6 @@
 using GitVersion.BuildAgents;
 using GitVersion.Extensions;
 using GitVersion.Logging;
-using GitVersion.Model;
 using GitVersion.MsBuild.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;

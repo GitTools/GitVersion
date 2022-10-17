@@ -1,16 +1,15 @@
 using GitVersion.Extensions;
 using GitVersion.Helpers;
-using GitVersion.Model.Configuration;
 using GitVersion.VersionCalculation;
 using Microsoft.Extensions.Options;
 
 namespace GitVersion.Configuration;
 
-public class ConfigFileLocator : IConfigFileLocator
+public class ConfigurationFileLocator : IConfigurationFileLocator
 {
     public const string DefaultFileName = "GitVersion.yml";
     private readonly IFileSystem fileSystem;
-    public ConfigFileLocator(IFileSystem fileSystem, IOptions<GitVersionOptions> options)
+    public ConfigurationFileLocator(IFileSystem fileSystem, IOptions<GitVersionOptions> options)
     {
         this.fileSystem = fileSystem;
         var configFile = options.Value.ConfigInfo.ConfigFile;
@@ -39,21 +38,21 @@ public class ConfigFileLocator : IConfigFileLocator
         return GetConfigFilePath(HasConfigFileAt(workingDirectory) ? workingDirectory : projectRootDirectory);
     }
 
-    public Config ReadConfig(string workingDirectory)
+    public GitVersionConfiguration ReadConfig(string workingDirectory)
     {
         var configFilePath = GetConfigFilePath(workingDirectory);
 
         if (configFilePath != null && this.fileSystem.Exists(configFilePath))
         {
             var readAllText = this.fileSystem.ReadAllText(configFilePath);
-            var readConfig = ConfigSerializer.Read(new StringReader(readAllText));
+            var readConfig = ConfigurationSerializer.Read(new StringReader(readAllText));
 
             VerifyReadConfig(readConfig);
 
             return readConfig;
         }
 
-        return new Config();
+        return new GitVersionConfiguration();
     }
 
     public void Verify(GitVersionOptions gitVersionOptions, IGitRepositoryInfo repositoryInfo)
@@ -71,10 +70,10 @@ public class ConfigFileLocator : IConfigFileLocator
         Verify(workingDirectory, projectRootDirectory);
     }
 
-    private static void VerifyReadConfig(Config config)
+    private static void VerifyReadConfig(GitVersionConfiguration configuration)
     {
         // Verify no branches are set to mainline mode
-        if (config.Branches.Any(b => b.Value?.VersioningMode == VersioningMode.Mainline))
+        if (configuration.Branches.Any(b => b.Value?.VersioningMode == VersioningMode.Mainline))
         {
             throw new ConfigurationException(@"Mainline mode only works at the repository level, a single branch cannot be put into mainline mode
 
@@ -94,7 +93,7 @@ If the docs do not help you decide on the mode open an issue to discuss what you
 
         if (hasConfigInProjectRootDirectory && hasConfigInWorkingDirectory)
         {
-            throw new WarningException($"Ambiguous config file selection from '{workingConfigFile}' and '{projectRootConfigFile}'");
+            throw new WarningException($"Ambiguous configuration file selection from '{workingConfigFile}' and '{projectRootConfigFile}'");
         }
 
         if (!hasConfigInProjectRootDirectory && !hasConfigInWorkingDirectory)

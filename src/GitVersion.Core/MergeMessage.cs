@@ -1,5 +1,5 @@
 using System.Text.RegularExpressions;
-using GitVersion.Model.Configuration;
+using GitVersion.Configuration;
 
 namespace GitVersion;
 
@@ -15,14 +15,14 @@ public class MergeMessage
         new("RemoteTracking", @"^Merge remote-tracking branch '(?<SourceBranch>[^\s]*)'(?: into (?<TargetBranch>[^\s]*))*")
     };
 
-    public MergeMessage(string? mergeMessage, Config config)
+    public MergeMessage(string? mergeMessage, GitVersionConfiguration configuration)
     {
         if (mergeMessage == null)
             throw new NullReferenceException();
 
-        // Concat config formats with the defaults.
-        // Ensure configs are processed first.
-        var allFormats = config.MergeMessageFormats
+        // Concatenate configuration formats with the defaults.
+        // Ensure configurations are processed first.
+        var allFormats = configuration.MergeMessageFormats
             .Select(x => new MergeMessageFormat(x.Key, x.Value))
             .Concat(DefaultFormats);
 
@@ -44,7 +44,7 @@ public class MergeMessage
                     PullRequestNumber = pullNumber;
                 }
 
-                Version = ParseVersion(config.TagPrefix);
+                Version = ParseVersion(configuration.TagPrefix);
 
                 break;
             }

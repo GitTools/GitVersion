@@ -1,5 +1,4 @@
 using GitVersion.Extensions;
-using GitVersion.Model.Configuration;
 using GitVersion.VersionCalculation;
 
 namespace GitVersion.Configuration;
@@ -8,9 +7,9 @@ public class ConfigurationBuilder
 {
     private const int DefaultTagPreReleaseWeight = 60000;
 
-    private readonly List<Config> overrides = new();
+    private readonly List<GitVersionConfiguration> overrides = new();
 
-    public ConfigurationBuilder Add(Config configuration)
+    public ConfigurationBuilder Add(GitVersionConfiguration configuration)
     {
         if (configuration == null) throw new ArgumentNullException(nameof(configuration));
 
@@ -18,91 +17,91 @@ public class ConfigurationBuilder
         return this;
     }
 
-    public Config Build()
+    public GitVersionConfiguration Build()
     {
-        var config = CreateDefaultConfiguration();
+        var configuration = CreateDefaultConfiguration();
 
-        foreach (var overrideConfig in this.overrides)
+        foreach (var overrideConfiguration in this.overrides)
         {
-            ApplyOverrides(config, overrideConfig);
+            ApplyOverrides(configuration, overrideConfiguration);
         }
 
-        FinalizeConfiguration(config);
-        ValidateConfiguration(config);
+        FinalizeConfiguration(configuration);
+        ValidateConfiguration(configuration);
 
-        return config;
+        return configuration;
     }
 
-    private static void ApplyOverrides(Config targetConfig, Config overrideConfig)
+    private static void ApplyOverrides(GitVersionConfiguration targetConfig, GitVersionConfiguration overrideConfiguration)
     {
-        targetConfig.AssemblyVersioningScheme = overrideConfig.AssemblyVersioningScheme ?? targetConfig.AssemblyVersioningScheme;
-        targetConfig.AssemblyFileVersioningScheme = overrideConfig.AssemblyFileVersioningScheme ?? targetConfig.AssemblyFileVersioningScheme;
-        targetConfig.AssemblyInformationalFormat = overrideConfig.AssemblyInformationalFormat ?? targetConfig.AssemblyInformationalFormat;
-        targetConfig.AssemblyVersioningFormat = overrideConfig.AssemblyVersioningFormat ?? targetConfig.AssemblyVersioningFormat;
-        targetConfig.AssemblyFileVersioningFormat = overrideConfig.AssemblyFileVersioningFormat ?? targetConfig.AssemblyFileVersioningFormat;
-        targetConfig.VersioningMode = overrideConfig.VersioningMode ?? targetConfig.VersioningMode;
-        targetConfig.TagPrefix = overrideConfig.TagPrefix ?? targetConfig.TagPrefix;
-        targetConfig.ContinuousDeploymentFallbackTag = overrideConfig.ContinuousDeploymentFallbackTag ?? targetConfig.ContinuousDeploymentFallbackTag;
-        targetConfig.NextVersion = overrideConfig.NextVersion ?? targetConfig.NextVersion;
-        targetConfig.MajorVersionBumpMessage = overrideConfig.MajorVersionBumpMessage ?? targetConfig.MajorVersionBumpMessage;
-        targetConfig.MinorVersionBumpMessage = overrideConfig.MinorVersionBumpMessage ?? targetConfig.MinorVersionBumpMessage;
-        targetConfig.PatchVersionBumpMessage = overrideConfig.PatchVersionBumpMessage ?? targetConfig.PatchVersionBumpMessage;
-        targetConfig.NoBumpMessage = overrideConfig.NoBumpMessage ?? targetConfig.NoBumpMessage;
-        targetConfig.TagPreReleaseWeight = overrideConfig.TagPreReleaseWeight ?? targetConfig.TagPreReleaseWeight;
-        targetConfig.CommitMessageIncrementing = overrideConfig.CommitMessageIncrementing ?? targetConfig.CommitMessageIncrementing;
-        targetConfig.Increment = overrideConfig.Increment ?? targetConfig.Increment;
-        targetConfig.CommitDateFormat = overrideConfig.CommitDateFormat ?? targetConfig.CommitDateFormat;
-        targetConfig.MergeMessageFormats = overrideConfig.MergeMessageFormats.Any() ? overrideConfig.MergeMessageFormats : targetConfig.MergeMessageFormats;
-        targetConfig.UpdateBuildNumber = overrideConfig.UpdateBuildNumber ?? targetConfig.UpdateBuildNumber;
-        targetConfig.SemanticVersionFormat = overrideConfig.SemanticVersionFormat;
+        targetConfig.AssemblyVersioningScheme = overrideConfiguration.AssemblyVersioningScheme ?? targetConfig.AssemblyVersioningScheme;
+        targetConfig.AssemblyFileVersioningScheme = overrideConfiguration.AssemblyFileVersioningScheme ?? targetConfig.AssemblyFileVersioningScheme;
+        targetConfig.AssemblyInformationalFormat = overrideConfiguration.AssemblyInformationalFormat ?? targetConfig.AssemblyInformationalFormat;
+        targetConfig.AssemblyVersioningFormat = overrideConfiguration.AssemblyVersioningFormat ?? targetConfig.AssemblyVersioningFormat;
+        targetConfig.AssemblyFileVersioningFormat = overrideConfiguration.AssemblyFileVersioningFormat ?? targetConfig.AssemblyFileVersioningFormat;
+        targetConfig.VersioningMode = overrideConfiguration.VersioningMode ?? targetConfig.VersioningMode;
+        targetConfig.TagPrefix = overrideConfiguration.TagPrefix ?? targetConfig.TagPrefix;
+        targetConfig.ContinuousDeploymentFallbackTag = overrideConfiguration.ContinuousDeploymentFallbackTag ?? targetConfig.ContinuousDeploymentFallbackTag;
+        targetConfig.NextVersion = overrideConfiguration.NextVersion ?? targetConfig.NextVersion;
+        targetConfig.MajorVersionBumpMessage = overrideConfiguration.MajorVersionBumpMessage ?? targetConfig.MajorVersionBumpMessage;
+        targetConfig.MinorVersionBumpMessage = overrideConfiguration.MinorVersionBumpMessage ?? targetConfig.MinorVersionBumpMessage;
+        targetConfig.PatchVersionBumpMessage = overrideConfiguration.PatchVersionBumpMessage ?? targetConfig.PatchVersionBumpMessage;
+        targetConfig.NoBumpMessage = overrideConfiguration.NoBumpMessage ?? targetConfig.NoBumpMessage;
+        targetConfig.TagPreReleaseWeight = overrideConfiguration.TagPreReleaseWeight ?? targetConfig.TagPreReleaseWeight;
+        targetConfig.CommitMessageIncrementing = overrideConfiguration.CommitMessageIncrementing ?? targetConfig.CommitMessageIncrementing;
+        targetConfig.Increment = overrideConfiguration.Increment ?? targetConfig.Increment;
+        targetConfig.CommitDateFormat = overrideConfiguration.CommitDateFormat ?? targetConfig.CommitDateFormat;
+        targetConfig.MergeMessageFormats = overrideConfiguration.MergeMessageFormats.Any() ? overrideConfiguration.MergeMessageFormats : targetConfig.MergeMessageFormats;
+        targetConfig.UpdateBuildNumber = overrideConfiguration.UpdateBuildNumber ?? targetConfig.UpdateBuildNumber;
+        targetConfig.SemanticVersionFormat = overrideConfiguration.SemanticVersionFormat;
 
-        if (overrideConfig.Ignore is { IsEmpty: false })
+        if (overrideConfiguration.Ignore is { IsEmpty: false })
         {
-            targetConfig.Ignore = overrideConfig.Ignore;
+            targetConfig.Ignore = overrideConfiguration.Ignore;
         }
 
-        ApplyBranchOverrides(targetConfig, overrideConfig);
+        ApplyBranchOverrides(targetConfig, overrideConfiguration);
     }
 
-    private static void ApplyBranchOverrides(Config targetConfig, Config overrideConfig)
+    private static void ApplyBranchOverrides(GitVersionConfiguration targetConfig, GitVersionConfiguration overrideConfiguration)
     {
-        if (overrideConfig.Branches is { Count: > 0 })
+        if (overrideConfiguration.Branches is { Count: > 0 })
         {
             // We can't just add new configs to the targetConfig.Branches, and have to create a new dictionary.
-            // The reason is that GitVersion 5.3.x (and earlier) merges default configs into overrides. The new approach is opposite: we merge overrides into default config.
+            // The reason is that GitVersion 5.3.x (and earlier) merges default configs into overrides. The new approach is opposite: we merge overrides into default configuration.
             // The important difference of these approaches is the order of branches in a dictionary (we should not rely on Dictionary's implementation details, but we already did that):
             // Old approach: { new-branch-1, new-branch-2, default-branch-1, default-branch-2, ... }
             // New approach: { default-branch-1, default-branch-2, ..., new-branch-1, new-branch-2 }
             // In case when several branch configurations match the current branch (by regex), we choose the first one.
             // So we have to add new branches to the beginning of a dictionary to preserve 5.3.x behavior.
 
-            var newBranches = new Dictionary<string, BranchConfig>();
+            var newBranches = new Dictionary<string, BranchConfiguration>();
 
             var targetConfigBranches = targetConfig.Branches;
 
-            foreach (var (name, branchConfig) in overrideConfig.Branches)
+            foreach (var (name, branchConfiguration) in overrideConfiguration.Branches)
             {
                 // for compatibility reason we check if it's master, we rename it to main
-                var branchName = name == Config.MasterBranchKey ? Config.MainBranchKey : name;
+                var branchName = name == GitVersionConfiguration.MasterBranchKey ? GitVersionConfiguration.MainBranchKey : name;
                 if (!targetConfigBranches.TryGetValue(branchName, out var target))
                 {
-                    target = new BranchConfig() { Name = branchName };
+                    target = new BranchConfiguration() { Name = branchName };
                 }
 
-                branchConfig.MergeTo(target);
-                if (target.SourceBranches != null && target.SourceBranches.Contains(Config.MasterBranchKey))
+                branchConfiguration.MergeTo(target);
+                if (target.SourceBranches != null && target.SourceBranches.Contains(GitVersionConfiguration.MasterBranchKey))
                 {
-                    target.SourceBranches.Remove(Config.MasterBranchKey);
-                    target.SourceBranches.Add(Config.MainBranchKey);
+                    target.SourceBranches.Remove(GitVersionConfiguration.MasterBranchKey);
+                    target.SourceBranches.Add(GitVersionConfiguration.MainBranchKey);
                 }
                 newBranches[branchName] = target;
             }
 
-            foreach (var (name, branchConfig) in targetConfigBranches)
+            foreach (var (name, branchConfiguration) in targetConfigBranches)
             {
                 if (!newBranches.ContainsKey(name))
                 {
-                    newBranches[name] = branchConfig;
+                    newBranches[name] = branchConfiguration;
                 }
             }
 
@@ -110,48 +109,48 @@ public class ConfigurationBuilder
         }
     }
 
-    private static void FinalizeConfiguration(Config config)
+    private static void FinalizeConfiguration(GitVersionConfiguration configuration)
     {
-        foreach (var (name, branchConfig) in config.Branches)
+        foreach (var (name, branchConfiguration) in configuration.Branches)
         {
-            FinalizeBranchConfiguration(config, name, branchConfig);
+            FinalizeBranchConfiguration(configuration, name, branchConfiguration);
         }
     }
 
-    private static void FinalizeBranchConfiguration(Config config, string name, BranchConfig branchConfig)
+    private static void FinalizeBranchConfiguration(GitVersionConfiguration configuration, string name, BranchConfiguration branchConfiguration)
     {
-        branchConfig.Name = name;
-        branchConfig.Increment ??= config.Increment ?? IncrementStrategy.Inherit;
+        branchConfiguration.Name = name;
+        branchConfiguration.Increment ??= configuration.Increment ?? IncrementStrategy.Inherit;
 
-        if (branchConfig.VersioningMode == null)
+        if (branchConfiguration.VersioningMode == null)
         {
-            if (name == Config.DevelopBranchKey)
+            if (name == GitVersionConfiguration.DevelopBranchKey)
             {
                 // Why this applies only on develop branch? I'm surprised that the value not coming from configuration.
-                branchConfig.VersioningMode = config.VersioningMode == VersioningMode.Mainline ? VersioningMode.Mainline : VersioningMode.ContinuousDeployment;
+                branchConfiguration.VersioningMode = configuration.VersioningMode == VersioningMode.Mainline ? VersioningMode.Mainline : VersioningMode.ContinuousDeployment;
             }
             else
             {
-                branchConfig.VersioningMode = config.VersioningMode;
+                branchConfiguration.VersioningMode = configuration.VersioningMode;
             }
         }
 
-        if (branchConfig.IsSourceBranchFor == null)
+        if (branchConfiguration.IsSourceBranchFor == null)
             return;
 
-        foreach (var targetBranchName in branchConfig.IsSourceBranchFor)
+        foreach (var targetBranchName in branchConfiguration.IsSourceBranchFor)
         {
-            var targetBranchConfig = config.Branches[targetBranchName];
+            var targetBranchConfig = configuration.Branches[targetBranchName];
             targetBranchConfig.SourceBranches ??= new HashSet<string>();
             targetBranchConfig.SourceBranches.Add(name);
         }
     }
 
-    private static void ValidateConfiguration(Config config)
+    private static void ValidateConfiguration(GitVersionConfiguration configuration)
     {
-        foreach (var (name, branchConfig) in config.Branches)
+        foreach (var (name, branchConfiguration) in configuration.Branches)
         {
-            var regex = branchConfig?.Regex;
+            var regex = branchConfiguration?.Regex;
             var helpUrl = $"{System.Environment.NewLine}See https://gitversion.net/docs/reference/configuration for more info";
 
             if (regex == null)
@@ -159,25 +158,25 @@ public class ConfigurationBuilder
                 throw new ConfigurationException($"Branch configuration '{name}' is missing required configuration 'regex'{helpUrl}");
             }
 
-            var sourceBranches = branchConfig?.SourceBranches;
+            var sourceBranches = branchConfiguration?.SourceBranches;
             if (sourceBranches == null)
             {
                 throw new ConfigurationException($"Branch configuration '{name}' is missing required configuration 'source-branches'{helpUrl}");
             }
 
-            var missingSourceBranches = sourceBranches.Where(sb => !config.Branches.ContainsKey(sb)).ToArray();
+            var missingSourceBranches = sourceBranches.Where(sb => !configuration.Branches.ContainsKey(sb)).ToArray();
             if (missingSourceBranches.Any())
                 throw new ConfigurationException($"Branch configuration '{name}' defines these 'source-branches' that are not configured: '[{string.Join(",", missingSourceBranches)}]'{helpUrl}");
         }
     }
 
-    private static Config CreateDefaultConfiguration()
+    private static GitVersionConfiguration CreateDefaultConfiguration()
     {
-        var config = new Config
+        var configuration = new GitVersionConfiguration
         {
             AssemblyVersioningScheme = AssemblyVersioningScheme.MajorMinorPatch,
             AssemblyFileVersioningScheme = AssemblyFileVersioningScheme.MajorMinorPatch,
-            TagPrefix = Config.DefaultTagPrefix,
+            TagPrefix = GitVersionConfiguration.DefaultTagPrefix,
             VersioningMode = VersioningMode.ContinuousDelivery,
             ContinuousDeploymentFallbackTag = "ci",
             MajorVersionBumpMessage = IncrementStrategyFinder.DefaultMajorPattern,
@@ -192,11 +191,11 @@ public class ConfigurationBuilder
             Increment = IncrementStrategy.Inherit
         };
 
-        AddBranchConfig(Config.DevelopBranchKey,
-            new BranchConfig
+        AddBranchConfig(GitVersionConfiguration.DevelopBranchKey,
+            new BranchConfiguration
             {
                 Increment = IncrementStrategy.Minor,
-                Regex = Config.DevelopBranchRegex,
+                Regex = GitVersionConfiguration.DevelopBranchRegex,
                 SourceBranches = new HashSet<string>(),
                 Tag = "alpha",
                 PreventIncrementOfMergedBranchVersion = false,
@@ -207,14 +206,14 @@ public class ConfigurationBuilder
                 PreReleaseWeight = 0
             });
 
-        AddBranchConfig(Config.MainBranchKey,
-            new BranchConfig
+        AddBranchConfig(GitVersionConfiguration.MainBranchKey,
+            new BranchConfiguration
             {
                 Increment = IncrementStrategy.Patch,
-                Regex = Config.MainBranchRegex,
+                Regex = GitVersionConfiguration.MainBranchRegex,
                 SourceBranches = new HashSet<string> {
-                    Config.DevelopBranchKey,
-                    Config.ReleaseBranchKey
+                    GitVersionConfiguration.DevelopBranchKey,
+                    GitVersionConfiguration.ReleaseBranchKey
                 },
                 Tag = string.Empty,
                 PreventIncrementOfMergedBranchVersion = true,
@@ -225,16 +224,16 @@ public class ConfigurationBuilder
                 PreReleaseWeight = 55000
             });
 
-        AddBranchConfig(Config.ReleaseBranchKey,
-            new BranchConfig
+        AddBranchConfig(GitVersionConfiguration.ReleaseBranchKey,
+            new BranchConfiguration
             {
                 Increment = IncrementStrategy.None,
-                Regex = Config.ReleaseBranchRegex,
+                Regex = GitVersionConfiguration.ReleaseBranchRegex,
                 SourceBranches = new HashSet<string> {
-                    Config.DevelopBranchKey,
-                    Config.MainBranchKey,
-                    Config.SupportBranchKey,
-                    Config.ReleaseBranchKey
+                    GitVersionConfiguration.DevelopBranchKey,
+                    GitVersionConfiguration.MainBranchKey,
+                    GitVersionConfiguration.SupportBranchKey,
+                    GitVersionConfiguration.ReleaseBranchKey
                 },
                 Tag = "beta",
                 PreventIncrementOfMergedBranchVersion = true,
@@ -245,62 +244,62 @@ public class ConfigurationBuilder
                 PreReleaseWeight = 30000
             });
 
-        AddBranchConfig(Config.FeatureBranchKey,
-            new BranchConfig
+        AddBranchConfig(GitVersionConfiguration.FeatureBranchKey,
+            new BranchConfiguration
             {
                 Increment = IncrementStrategy.Inherit,
-                Regex = Config.FeatureBranchRegex,
+                Regex = GitVersionConfiguration.FeatureBranchRegex,
                 SourceBranches = new HashSet<string> {
-                    Config.DevelopBranchKey,
-                    Config.MainBranchKey,
-                    Config.ReleaseBranchKey,
-                    Config.FeatureBranchKey,
-                    Config.SupportBranchKey,
-                    Config.HotfixBranchKey
+                    GitVersionConfiguration.DevelopBranchKey,
+                    GitVersionConfiguration.MainBranchKey,
+                    GitVersionConfiguration.ReleaseBranchKey,
+                    GitVersionConfiguration.FeatureBranchKey,
+                    GitVersionConfiguration.SupportBranchKey,
+                    GitVersionConfiguration.HotfixBranchKey
                 },
                 Tag = "{BranchName}",
                 PreReleaseWeight = 30000
             });
 
-        AddBranchConfig(Config.PullRequestBranchKey,
-            new BranchConfig
+        AddBranchConfig(GitVersionConfiguration.PullRequestBranchKey,
+            new BranchConfiguration
             {
                 Increment = IncrementStrategy.Inherit,
-                Regex = Config.PullRequestRegex,
+                Regex = GitVersionConfiguration.PullRequestRegex,
                 SourceBranches = new HashSet<string> {
-                    Config.DevelopBranchKey,
-                    Config.MainBranchKey,
-                    Config.ReleaseBranchKey,
-                    Config.FeatureBranchKey,
-                    Config.SupportBranchKey,
-                    Config.HotfixBranchKey
+                    GitVersionConfiguration.DevelopBranchKey,
+                    GitVersionConfiguration.MainBranchKey,
+                    GitVersionConfiguration.ReleaseBranchKey,
+                    GitVersionConfiguration.FeatureBranchKey,
+                    GitVersionConfiguration.SupportBranchKey,
+                    GitVersionConfiguration.HotfixBranchKey
                 },
                 Tag = "PullRequest",
                 TagNumberPattern = @"[/-](?<number>\d+)",
                 PreReleaseWeight = 30000
             });
 
-        AddBranchConfig(Config.HotfixBranchKey,
-            new BranchConfig
+        AddBranchConfig(GitVersionConfiguration.HotfixBranchKey,
+            new BranchConfiguration
             {
                 Increment = IncrementStrategy.Inherit,
-                Regex = Config.HotfixBranchRegex,
+                Regex = GitVersionConfiguration.HotfixBranchRegex,
                 SourceBranches = new HashSet<string> {
-                    Config.ReleaseBranchKey,
-                    Config.MainBranchKey,
-                    Config.SupportBranchKey,
-                    Config.HotfixBranchKey
+                    GitVersionConfiguration.ReleaseBranchKey,
+                    GitVersionConfiguration.MainBranchKey,
+                    GitVersionConfiguration.SupportBranchKey,
+                    GitVersionConfiguration.HotfixBranchKey
                 },
                 Tag = "beta",
                 PreReleaseWeight = 30000
             });
 
-        AddBranchConfig(Config.SupportBranchKey,
-            new BranchConfig
+        AddBranchConfig(GitVersionConfiguration.SupportBranchKey,
+            new BranchConfiguration
             {
                 Increment = IncrementStrategy.Patch,
-                Regex = Config.SupportBranchRegex,
-                SourceBranches = new HashSet<string> { Config.MainBranchKey },
+                Regex = GitVersionConfiguration.SupportBranchRegex,
+                SourceBranches = new HashSet<string> { GitVersionConfiguration.MainBranchKey },
                 Tag = string.Empty,
                 PreventIncrementOfMergedBranchVersion = true,
                 TrackMergeTarget = false,
@@ -310,12 +309,12 @@ public class ConfigurationBuilder
                 PreReleaseWeight = 55000
             });
 
-        return config;
+        return configuration;
 
-        void AddBranchConfig(string name, BranchConfig branchConfiguration)
+        void AddBranchConfig(string name, BranchConfiguration branchConfiguration)
         {
             branchConfiguration.Name = name;
-            config.Branches[name] = branchConfiguration;
+            configuration.Branches[name] = branchConfiguration;
         }
     }
 }

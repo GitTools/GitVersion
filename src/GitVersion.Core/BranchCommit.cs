@@ -32,7 +32,7 @@ public readonly struct BranchCommit : IEquatable<BranchCommit?>
     {
         unchecked
         {
-            return ((Branch != null ? Branch.GetHashCode() : 0) * 397) ^ (Commit != null ? Commit.GetHashCode() : 0);
+            return (Branch != null ? Branch.GetHashCode() : 0) * 397 ^ (Commit != null ? Commit.GetHashCode() : 0);
         }
     }
 

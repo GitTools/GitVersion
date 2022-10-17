@@ -1,7 +1,6 @@
 using GitVersion.Common;
 using GitVersion.Configuration;
 using GitVersion.Extensions;
-using GitVersion.Model.Configuration;
 
 namespace GitVersion.VersionCalculation;
 
@@ -51,7 +50,7 @@ public class TrackReleaseBranchesVersionStrategy : VersionStrategyBase
 
     private IEnumerable<BaseVersion> ReleaseBranchBaseVersions()
     {
-        var releaseBranchConfig = Context.Configuration.GetReleaseBranchConfig();
+        var releaseBranchConfig = Context.Configuration.GetReleaseBranchConfiguration();
         if (!releaseBranchConfig.Any())
             return Array.Empty<BaseVersion>();
 

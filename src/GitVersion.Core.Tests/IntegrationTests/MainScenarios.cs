@@ -1,6 +1,6 @@
 using GitTools.Testing;
+using GitVersion.Configuration;
 using GitVersion.Core.Tests.Helpers;
-using GitVersion.Model.Configuration;
 using GitVersion.VersionCalculation;
 using LibGit2Sharp;
 using NUnit.Framework;
@@ -13,12 +13,12 @@ public class MainScenarios : TestBase
     [Test]
     public void CanHandleContinuousDelivery()
     {
-        var config = new Config
+        var configuaration = new GitVersionConfiguration
         {
             Branches =
             {
                 {
-                    MainBranch, new BranchConfig
+                    MainBranch, new BranchConfiguration
                     {
                         VersioningMode = VersioningMode.ContinuousDelivery
                     }
@@ -28,18 +28,18 @@ public class MainScenarios : TestBase
         using var fixture = new EmptyRepositoryFixture();
         fixture.Repository.MakeATaggedCommit("1.0.0");
         fixture.Repository.MakeCommits(2);
-        fixture.AssertFullSemver("1.0.1+2", config);
+        fixture.AssertFullSemver("1.0.1+2", configuaration);
     }
 
     [Test]
     public void CanHandleContinuousDeployment()
     {
-        var config = new Config
+        var configuration = new GitVersionConfiguration
         {
             Branches =
             {
                 {
-                    MainBranch, new BranchConfig
+                    MainBranch, new BranchConfiguration
                     {
                         VersioningMode = VersioningMode.ContinuousDeployment
                     }
@@ -49,7 +49,7 @@ public class MainScenarios : TestBase
         using var fixture = new EmptyRepositoryFixture();
         fixture.Repository.MakeATaggedCommit("1.0.0");
         fixture.Repository.MakeCommits(2);
-        fixture.AssertFullSemver("1.0.1-ci.2", config);
+        fixture.AssertFullSemver("1.0.1-ci.2", configuration);
     }
 
     [Test]
@@ -100,13 +100,13 @@ public class MainScenarios : TestBase
     public void GivenARepositoryWithTagAndNextVersionInConfigVersionShouldMatchVersionTxtFile()
     {
         const string expectedNextVersion = "1.1.0";
-        var config = new Config { NextVersion = expectedNextVersion };
+        var configuration = new GitVersionConfiguration { NextVersion = expectedNextVersion };
         using var fixture = new EmptyRepositoryFixture();
         const string taggedVersion = "1.0.3";
         fixture.Repository.MakeATaggedCommit(taggedVersion);
         fixture.Repository.MakeCommits(5);
 
-        fixture.AssertFullSemver("1.1.0+5", config);
+        fixture.AssertFullSemver("1.1.0+5", configuration);
     }
 
     [Test]
@@ -116,7 +116,7 @@ public class MainScenarios : TestBase
         const string taggedVersion = "1.0.3";
         fixture.Repository.MakeATaggedCommit(taggedVersion);
         fixture.AssertFullSemver("1.0.3");
-        fixture.AssertFullSemver("1.0.3", new Config { NextVersion = "1.1.0" });
+        fixture.AssertFullSemver("1.0.3", new GitVersionConfiguration { NextVersion = "1.1.0" });
     }
 
     [Test]
@@ -130,7 +130,7 @@ public class MainScenarios : TestBase
 
         // I'm not sure if the postfix +1 is correct here...
         // but the next version configuration property is something for the user to manipulate the resulting version.
-        fixture.AssertFullSemver("1.1.0+1", new Config { NextVersion = "1.1.0" });
+        fixture.AssertFullSemver("1.1.0+1", new GitVersionConfiguration { NextVersion = "1.1.0" });
     }
 
     [Test]
@@ -140,7 +140,7 @@ public class MainScenarios : TestBase
         const string taggedVersion = "1.0.3";
         fixture.Repository.MakeATaggedCommit(taggedVersion);
         fixture.AssertFullSemver("1.0.3");
-        fixture.AssertFullSemver("1.0.3", new Config { NextVersion = "1.0.2" });
+        fixture.AssertFullSemver("1.0.3", new GitVersionConfiguration { NextVersion = "1.0.2" });
     }
 
     [Test]
@@ -151,7 +151,7 @@ public class MainScenarios : TestBase
         fixture.Repository.MakeATaggedCommit(taggedVersion);
         fixture.Repository.MakeACommit();
         fixture.AssertFullSemver("1.0.4+1");
-        fixture.AssertFullSemver("1.0.4+1", new Config { NextVersion = "1.0.4" });
+        fixture.AssertFullSemver("1.0.4+1", new GitVersionConfiguration { NextVersion = "1.0.4" });
     }
 
     [Test]
@@ -183,7 +183,7 @@ public class MainScenarios : TestBase
         fixture.Repository.MakeATaggedCommit(taggedVersion);
         fixture.Repository.MakeCommits(5);
 
-        fixture.AssertFullSemver("1.1.1+5", new Config { NextVersion = "1.0.0" });
+        fixture.AssertFullSemver("1.1.1+5", new GitVersionConfiguration { NextVersion = "1.0.0" });
     }
 
     [Test]
@@ -193,7 +193,7 @@ public class MainScenarios : TestBase
         const string taggedVersion = "1.1.0";
         fixture.Repository.MakeATaggedCommit(taggedVersion);
 
-        fixture.AssertFullSemver("1.1.0", new Config { NextVersion = "1.0.0" });
+        fixture.AssertFullSemver("1.1.0", new GitVersionConfiguration { NextVersion = "1.0.0" });
     }
 
     [Test]
@@ -204,42 +204,42 @@ public class MainScenarios : TestBase
         fixture.Repository.MakeATaggedCommit(taggedVersion);
         fixture.Repository.MakeCommits(5);
 
-        fixture.AssertFullSemver("1.0.4+5", new Config { TagPrefix = "version-" });
+        fixture.AssertFullSemver("1.0.4+5", new GitVersionConfiguration { TagPrefix = "version-" });
     }
 
     [Test]
     public void CanSpecifyTagPrefixesAsRegex()
     {
-        var config = new Config { TagPrefix = "version-|[vV]" };
+        var configuration = new GitVersionConfiguration { TagPrefix = "version-|[vV]" };
         using var fixture = new EmptyRepositoryFixture();
         var taggedVersion = "v1.0.3";
         fixture.Repository.MakeATaggedCommit(taggedVersion);
         fixture.Repository.MakeCommits(5);
 
-        fixture.AssertFullSemver("1.0.4+5", config);
+        fixture.AssertFullSemver("1.0.4+5", configuration);
 
         taggedVersion = "version-1.0.5";
         fixture.Repository.MakeATaggedCommit(taggedVersion);
         fixture.Repository.MakeCommits(5);
 
-        fixture.AssertFullSemver("1.0.6+5", config);
+        fixture.AssertFullSemver("1.0.6+5", configuration);
     }
 
     [Test]
     public void AreTagsNotAdheringToTagPrefixIgnored()
     {
-        var config = new Config { TagPrefix = "" };
+        var configuration = new GitVersionConfiguration { TagPrefix = "" };
         using var fixture = new EmptyRepositoryFixture();
         var taggedVersion = "version-1.0.3";
         fixture.Repository.MakeATaggedCommit(taggedVersion);
         fixture.Repository.MakeCommits(5);
 
-        fixture.AssertFullSemver("0.0.1+6", config);
+        fixture.AssertFullSemver("0.0.1+6", configuration);
 
         taggedVersion = "bad/1.0.3";
         fixture.Repository.MakeATaggedCommit(taggedVersion);
 
-        fixture.AssertFullSemver("0.0.1+7", config);
+        fixture.AssertFullSemver("0.0.1+7", configuration);
     }
 
     [Test]
@@ -247,7 +247,7 @@ public class MainScenarios : TestBase
     {
         using EmptyRepositoryFixture fixture = new("develop");
 
-        var configurationBuilder = TestConfigurationBuilder.New;
+        var configurationBuilder = GitFlowConfigurationBuilder.New;
 
         fixture.MakeACommit();
 
@@ -280,7 +280,7 @@ public class MainScenarios : TestBase
     {
         using EmptyRepositoryFixture fixture = new("develop");
 
-        var configurationBuilder = TestConfigurationBuilder.New;
+        var configurationBuilder = GitFlowConfigurationBuilder.New;
 
         configurationBuilder.WithNextVersion("1.0.0");
         fixture.MakeACommit();

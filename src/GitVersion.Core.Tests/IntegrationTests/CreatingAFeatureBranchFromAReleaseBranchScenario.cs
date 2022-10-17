@@ -22,7 +22,7 @@ public class CreatingAFeatureBranchFromAReleaseBranchScenario
         // |/
         // *e0b5034 6 seconds ago
 
-        var configuration = TestConfigurationBuilder.New.Build();
+        var configuration = GitFlowConfigurationBuilder.New.Build();
 
         using var fixture = new EmptyRepositoryFixture("main");
 
@@ -98,7 +98,7 @@ public class CreatingAFeatureBranchFromAReleaseBranchScenario
         // |/
         // *d5ac9aa in the future
 
-        var configuration = TestConfigurationBuilder.New.Build();
+        var configuration = GitFlowConfigurationBuilder.New.Build();
 
         using var fixture = new EmptyRepositoryFixture("develop");
 
@@ -182,7 +182,7 @@ public class CreatingAFeatureBranchFromAReleaseBranchScenario
         // |/
         // *e00f53d 49 minutes ago
 
-        var configuration = TestConfigurationBuilder.New.Build();
+        var configuration = GitFlowConfigurationBuilder.New.Build();
 
         using var fixture = new EmptyRepositoryFixture(branchName);
 
@@ -253,7 +253,7 @@ public class CreatingAFeatureBranchFromAReleaseBranchScenario
         // |/
         // *22596b8 47 minutes ago
 
-        var configuration = TestConfigurationBuilder.New.Build();
+        var configuration = GitFlowConfigurationBuilder.New.Build();
 
         using var fixture = new EmptyRepositoryFixture(branchName);
         fixture.Repository.MakeACommit();
@@ -325,7 +325,7 @@ public class CreatingAFeatureBranchFromAReleaseBranchScenario
         // |/
         // *22596b8 47 minutes ago
 
-        var configuration = TestConfigurationBuilder.New.Build();
+        var configuration = GitFlowConfigurationBuilder.New.Build();
 
         using var fixture = new EmptyRepositoryFixture(branchName);
         fixture.Repository.MakeACommit();
@@ -393,7 +393,7 @@ public class CreatingAFeatureBranchFromAReleaseBranchScenario
         // *9e557cd in the future
         // *2e022d7 in the future(main)
 
-        var configuration = TestConfigurationBuilder.New.Build();
+        var configuration = GitFlowConfigurationBuilder.New.Build();
 
         using var fixture = new EmptyRepositoryFixture();
 
@@ -458,7 +458,7 @@ public class CreatingAFeatureBranchFromAReleaseBranchScenario
         // *9dc9b22 in the future
         // *f708abd in the future(main)
 
-        var configuration = TestConfigurationBuilder.New.Build();
+        var configuration = GitFlowConfigurationBuilder.New.Build();
 
         using var fixture = new EmptyRepositoryFixture();
 
@@ -537,7 +537,7 @@ public class CreatingAFeatureBranchFromAReleaseBranchScenario
         // |/
         // *838a95b in the future
 
-        var configuration = TestConfigurationBuilder.New.Build();
+        var configuration = GitFlowConfigurationBuilder.New.Build();
 
         using var fixture = new EmptyRepositoryFixture();
 
@@ -626,7 +626,7 @@ public class CreatingAFeatureBranchFromAReleaseBranchScenario
         // |/
         // *42db9ba in the future
 
-        var configuration = TestConfigurationBuilder.New.Build();
+        var configuration = GitFlowConfigurationBuilder.New.Build();
 
         using var fixture = new EmptyRepositoryFixture();
 

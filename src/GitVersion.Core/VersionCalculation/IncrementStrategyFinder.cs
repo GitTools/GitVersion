@@ -1,7 +1,7 @@
 using System.Collections.Concurrent;
 using System.Text.RegularExpressions;
+using GitVersion.Configuration;
 using GitVersion.Extensions;
-using GitVersion.Model.Configuration;
 
 namespace GitVersion.VersionCalculation;
 
@@ -34,7 +34,7 @@ public class IncrementStrategyFinder : IIncrementStrategyFinder
 
         var defaultIncrement = configuration.Increment.ToVersionField();
 
-        // use the default branch config increment strategy if there are no commit message overrides
+        // use the default branch configuration increment strategy if there are no commit message overrides
         if (commitMessageIncrement == null)
         {
             return baseVersion.ShouldIncrement ? defaultIncrement : VersionField.None;
@@ -46,7 +46,7 @@ public class IncrementStrategyFinder : IIncrementStrategyFinder
             commitMessageIncrement = VersionField.Minor;
         }
 
-        // don't increment for less than the branch config increment, if the absence of commit messages would have
+        // don't increment for less than the branch configuration increment, if the absence of commit messages would have
         // still resulted in an increment of configuration.Increment
         if (baseVersion.ShouldIncrement && commitMessageIncrement < defaultIncrement)
         {
@@ -56,7 +56,7 @@ public class IncrementStrategyFinder : IIncrementStrategyFinder
         return commitMessageIncrement.Value;
     }
 
-    public VersionField? GetIncrementForCommits(Config configuration, IEnumerable<ICommit> commits)
+    public VersionField? GetIncrementForCommits(GitVersionConfiguration configuration, IEnumerable<ICommit> commits)
     {
         var majorRegex = TryGetRegexOrDefault(configuration.MajorVersionBumpMessage, DefaultMajorPatternRegex);
         var minorRegex = TryGetRegexOrDefault(configuration.MinorVersionBumpMessage, DefaultMinorPatternRegex);

@@ -1,6 +1,6 @@
 using GitTools.Testing;
+using GitVersion.Configuration;
 using GitVersion.Core.Tests.Helpers;
-using GitVersion.Model.Configuration;
 using GitVersion.VersionCalculation;
 using LibGit2Sharp;
 using NUnit.Framework;
@@ -54,13 +54,13 @@ public class DevelopScenarios : TestBase
     [Test]
     public void CanChangeDevelopTagViaConfig()
     {
-        var config = new Config
+        var configuration = new GitVersionConfiguration
         {
             Branches =
             {
                 {
                     "develop",
-                    new BranchConfig
+                    new BranchConfiguration
                     {
                         Tag = "alpha",
                         SourceBranches = new HashSet<string>()
@@ -72,7 +72,7 @@ public class DevelopScenarios : TestBase
         fixture.Repository.MakeATaggedCommit("1.0.0");
         Commands.Checkout(fixture.Repository, fixture.Repository.CreateBranch("develop"));
         fixture.Repository.MakeACommit();
-        fixture.AssertFullSemver("1.1.0-alpha.1", config);
+        fixture.AssertFullSemver("1.1.0-alpha.1", configuration);
     }
 
     [Test]
@@ -115,15 +115,15 @@ public class DevelopScenarios : TestBase
     [Test]
     public void CanHandleContinuousDelivery()
     {
-        var config = new Config
+        var configuration = new GitVersionConfiguration
         {
-            Branches = { { "develop", new BranchConfig { VersioningMode = VersioningMode.ContinuousDelivery } } }
+            Branches = { { "develop", new BranchConfiguration { VersioningMode = VersioningMode.ContinuousDelivery } } }
         };
         using var fixture = new EmptyRepositoryFixture();
         fixture.Repository.MakeATaggedCommit("1.0.0");
         Commands.Checkout(fixture.Repository, fixture.Repository.CreateBranch("develop"));
         fixture.Repository.MakeATaggedCommit("1.1.0-alpha7");
-        fixture.AssertFullSemver("1.1.0-alpha.7", config);
+        fixture.AssertFullSemver("1.1.0-alpha.7", configuration);
     }
 
     [Test]
@@ -222,7 +222,7 @@ public class DevelopScenarios : TestBase
     [Test]
     public void CommitsSinceVersionSourceShouldNotGoDownUponGitFlowReleaseFinish()
     {
-        var config = new Config
+        var configuration = new GitVersionConfiguration
         {
             VersioningMode = VersioningMode.ContinuousDeployment
         };
@@ -257,13 +257,13 @@ public class DevelopScenarios : TestBase
         fixture.Repository.Branches.Remove("release/1.2.0");
 
         const string expectedFullSemVer = "1.3.0-alpha.9";
-        fixture.AssertFullSemver(expectedFullSemVer, config);
+        fixture.AssertFullSemver(expectedFullSemVer, configuration);
     }
 
     [Test]
     public void CommitsSinceVersionSourceShouldNotGoDownUponMergingFeatureOnlyToDevelop()
     {
-        var config = new Config
+        var configuration = new GitVersionConfiguration
         {
             VersioningMode = VersioningMode.ContinuousDeployment
         };
@@ -289,7 +289,7 @@ public class DevelopScenarios : TestBase
         fixture.Repository.Branches.Remove("release/1.2.0");
 
         const string expectedFullSemVer = "1.3.0-alpha.5";
-        fixture.AssertFullSemver(expectedFullSemVer, config);
+        fixture.AssertFullSemver(expectedFullSemVer, configuration);
     }
 
     [Test]
@@ -311,12 +311,12 @@ public class DevelopScenarios : TestBase
     [Test]
     public void WhenPreventIncrementOfMergedBranchVersionIsSetToFalseForDevelopCommitsSinceVersionSourceShouldNotGoDownWhenMergingReleaseToDevelop()
     {
-        var config = new Config
+        var configuration = new GitVersionConfiguration
         {
             VersioningMode = VersioningMode.ContinuousDeployment,
-            Branches = new Dictionary<string, BranchConfig>
+            Branches = new Dictionary<string, BranchConfiguration>
             {
-                { "develop", new BranchConfig { PreventIncrementOfMergedBranchVersion = false } }
+                { "develop", new BranchConfiguration { PreventIncrementOfMergedBranchVersion = false } }
             }
         };
 
@@ -342,23 +342,25 @@ public class DevelopScenarios : TestBase
 
         // Version numbers will still be correct when the release branch is around.
         fixture.AssertFullSemver("1.2.0-alpha.6");
-        fixture.AssertFullSemver("1.2.0-alpha.6", config);
+        fixture.AssertFullSemver("1.2.0-alpha.6", configuration);
 
-        var versionSourceBeforeReleaseBranchIsRemoved = fixture.GetVersion(config).Sha;
+        var versionSourceBeforeReleaseBranchIsRemoved = fixture.GetVersion(configuration).Sha;
 
         fixture.Repository.Branches.Remove(ReleaseBranch);
-        var versionSourceAfterReleaseBranchIsRemoved = fixture.GetVersion(config).Sha;
+        var versionSourceAfterReleaseBranchIsRemoved = fixture.GetVersion(configuration).Sha;
         Assert.AreEqual(versionSourceBeforeReleaseBranchIsRemoved, versionSourceAfterReleaseBranchIsRemoved);
         fixture.AssertFullSemver("1.2.0-alpha.6");
-        fixture.AssertFullSemver("1.2.0-alpha.6", config);
+        fixture.AssertFullSemver("1.2.0-alpha.6", configuration);
     }
 
     [Test]
     public void WhenPreventIncrementOfMergedBranchVersionIsSetToTrueForDevelopCommitsSinceVersionSourceShouldNotGoDownWhenMergingReleaseToDevelop()
     {
-        var configuration = TestConfigurationBuilder.New
+        var configuration = GitFlowConfigurationBuilder.New
             .WithVersioningMode(VersioningMode.ContinuousDeployment)
-            .WithPreventIncrementOfMergedBranchVersion("develop", true)
+            .WithBranch("develop", builder => builder
+                .WithPreventIncrementOfMergedBranchVersion(true)
+            )
             .Build();
 
         using var fixture = new EmptyRepositoryFixture();
@@ -397,13 +399,13 @@ public class DevelopScenarios : TestBase
     [Test]
     public void WhenPreventIncrementOfMergedBranchVersionIsSetToFalseForDevelopCommitsSinceVersionSourceShouldNotGoDownWhenMergingHotfixToDevelop()
     {
-        var config = new Config
+        var configuration = new GitVersionConfiguration
         {
             VersioningMode = VersioningMode.ContinuousDeployment,
-            Branches = new Dictionary<string, BranchConfig>
+            Branches = new Dictionary<string, BranchConfiguration>
             {
-                { "develop", new BranchConfig { PreventIncrementOfMergedBranchVersion = false } },
-                { "hotfix", new BranchConfig { PreventIncrementOfMergedBranchVersion = true, Regex = "^(origin/)?hotfix[/-]" } }
+                { "develop", new BranchConfiguration { PreventIncrementOfMergedBranchVersion = false } },
+                { "hotfix", new BranchConfiguration { PreventIncrementOfMergedBranchVersion = true, Regex = "^(origin/)?hotfix[/-]" } }
 
             }
         };
@@ -416,12 +418,12 @@ public class DevelopScenarios : TestBase
 
         fixture.Checkout("develop");
         fixture.Repository.MakeCommits(3);
-        fixture.AssertFullSemver("1.1.0-alpha.4", config);
+        fixture.AssertFullSemver("1.1.0-alpha.4", configuration);
 
         const string ReleaseBranch = "release/1.1.0";
         Commands.Checkout(fixture.Repository, fixture.Repository.CreateBranch(ReleaseBranch));
         fixture.Repository.MakeCommits(3);
-        fixture.AssertFullSemver("1.1.0-beta.3", config);
+        fixture.AssertFullSemver("1.1.0-beta.3", configuration);
 
         // Simulate a GitFlow release finish.
         fixture.Checkout(MainBranch);
@@ -433,7 +435,7 @@ public class DevelopScenarios : TestBase
         fixture.Repository.MakeCommits(2);
         fixture.MergeNoFF(ReleaseBranch);
         fixture.Repository.Branches.Remove(ReleaseBranch);
-        fixture.AssertFullSemver("1.2.0-alpha.6", config);
+        fixture.AssertFullSemver("1.2.0-alpha.6", configuration);
 
         // Create hotfix for defects found in release/1.1.0
         const string HotfixBranch = "hotfix/1.1.1";
@@ -450,12 +452,12 @@ public class DevelopScenarios : TestBase
         fixture.Checkout("develop");
         // Simulate some work done on develop while the hotfix branch was open.
         fixture.Repository.MakeCommits(3);
-        fixture.AssertFullSemver("1.2.0-alpha.9", config);
+        fixture.AssertFullSemver("1.2.0-alpha.9", configuration);
         fixture.Repository.MergeNoFF(HotfixBranch);
-        fixture.AssertFullSemver("1.2.0-alpha.19", config);
+        fixture.AssertFullSemver("1.2.0-alpha.19", configuration);
 
         fixture.Repository.Branches.Remove(HotfixBranch);
-        fixture.AssertFullSemver("1.2.0-alpha.19", config);
+        fixture.AssertFullSemver("1.2.0-alpha.19", configuration);
     }
 
     [Test]
@@ -463,7 +465,7 @@ public class DevelopScenarios : TestBase
     {
         using EmptyRepositoryFixture fixture = new("main");
 
-        var configurationBuilder = TestConfigurationBuilder.New;
+        var configurationBuilder = GitFlowConfigurationBuilder.New;
 
         fixture.MakeACommit();
 
@@ -496,7 +498,7 @@ public class DevelopScenarios : TestBase
     {
         using EmptyRepositoryFixture fixture = new("develop");
 
-        var configurationBuilder = TestConfigurationBuilder.New;
+        var configurationBuilder = GitFlowConfigurationBuilder.New;
 
         fixture.MakeACommit();
         configurationBuilder.WithNextVersion("1.0.0");
