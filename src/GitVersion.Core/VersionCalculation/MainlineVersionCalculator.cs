@@ -93,7 +93,7 @@ internal class MainlineVersionCalculator : IMainlineVersionCalculator
             var ignore = context.Configuration.Ignore;
             if (!ignore.IsEmpty)
             {
-                var shasToIgnore = new HashSet<string>(ignore.ShAs);
+                var shasToIgnore = new HashSet<string>(ignore.Shas);
                 commitLogs = commitLogs
                     .Where(c => ignore.Before is null || c.When > ignore.Before && !shasToIgnore.Contains(c.Sha));
             }

@@ -22,8 +22,8 @@ ignore:
         var configuration = ConfigurationSerializer.Read(reader);
 
         configuration.Ignore.ShouldNotBeNull();
-        configuration.Ignore.ShAs.ShouldNotBeEmpty();
-        configuration.Ignore.ShAs.ShouldBe(new[] { "b6c0c9fda88830ebcd563e500a5a7da5a1658e98" });
+        configuration.Ignore.Shas.ShouldNotBeEmpty();
+        configuration.Ignore.Shas.ShouldBe(new[] { "b6c0c9fda88830ebcd563e500a5a7da5a1658e98" });
         configuration.Ignore.Before.ShouldBe(DateTimeOffset.Parse("2015-10-23T12:23:15"));
     }
 
@@ -41,8 +41,8 @@ ignore:
         var configuration = ConfigurationSerializer.Read(reader);
 
         configuration.Ignore.ShouldNotBeNull();
-        configuration.Ignore.ShAs.ShouldNotBeEmpty();
-        configuration.Ignore.ShAs.ShouldBe(new[] { "b6c0c9fda88830ebcd563e500a5a7da5a1658e98", "6c19c7c219ecf8dbc468042baefa73a1b213e8b1" });
+        configuration.Ignore.Shas.ShouldNotBeEmpty();
+        configuration.Ignore.Shas.ShouldBe(new[] { "b6c0c9fda88830ebcd563e500a5a7da5a1658e98", "6c19c7c219ecf8dbc468042baefa73a1b213e8b1" });
     }
 
     [Test]
@@ -56,7 +56,7 @@ next-version: 1.0
         var configuration = ConfigurationSerializer.Read(reader);
 
         configuration.Ignore.ShouldNotBeNull();
-        configuration.Ignore.ShAs.ShouldBeEmpty();
+        configuration.Ignore.Shas.ShouldBeEmpty();
         configuration.Ignore.Before.ShouldBe(null);
     }
 

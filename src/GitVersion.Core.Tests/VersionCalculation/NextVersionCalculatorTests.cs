@@ -162,7 +162,7 @@ public class NextVersionCalculatorTests : TestBase
             {
                 { "feature", new BranchConfiguration { Increment = IncrementStrategy.Minor } }
             },
-            Ignore = new IgnoreConfiguration { ShAs = new List<string>() },
+            Ignore = new IgnoreConfiguration { Shas = new List<string>() },
             MergeMessageFormats = new Dictionary<string, string>()
         };
 
@@ -191,7 +191,7 @@ public class NextVersionCalculatorTests : TestBase
             {
                 { "feature", new BranchConfiguration { Increment = IncrementStrategy.Minor } }
             },
-            Ignore = new IgnoreConfiguration { ShAs = new List<string>() },
+            Ignore = new IgnoreConfiguration { Shas = new List<string>() },
             MergeMessageFormats = new Dictionary<string, string>()
         };
 
