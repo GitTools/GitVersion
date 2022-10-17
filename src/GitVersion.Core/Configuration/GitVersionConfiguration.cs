@@ -88,6 +88,9 @@ public class GitVersionConfiguration
     [YamlMember(Alias = "semver-format")]
     public SemanticVersionFormat SemanticVersionFormat { get; set; } = SemanticVersionFormat.Strict;
 
+    [YamlMember(Alias = "handle-detached-branch")]
+    public bool? HandleDetachedBranch { get; set; }
+
     public override string ToString()
     {
         var stringBuilder = new StringBuilder();

@@ -552,6 +552,11 @@ Example of invalid `Strict`, but valid `Loose`
 1.2.3.4
 ```
 
+### handle-detached-branch
+
+Avoid to strickly request to refer to a branch. If detached, the `no-branch`
+reference will be used.
+
 [1145]: https://github.com/GitTools/GitVersion/issues/1145
 [1366]: https://github.com/GitTools/GitVersion/issues/1366
 [2506]: https://github.com/GitTools/GitVersion/pull/2506#issuecomment-754754037

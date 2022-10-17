@@ -133,7 +133,7 @@ public class NextVersionCalculator : INextVersionCalculator
 
     private static void EnsureHeadIsNotDetached(GitVersionContext context)
     {
-        if (context.CurrentBranch.IsDetachedHead != true)
+        if (context.CurrentBranch.IsDetachedHead != true || (context.Configuration.HandleDetachedBranch ?? false))
         {
             return;
         }

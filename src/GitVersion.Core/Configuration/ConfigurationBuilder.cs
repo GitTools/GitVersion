@@ -54,6 +54,7 @@ public class ConfigurationBuilder
         targetConfig.MergeMessageFormats = overrideConfiguration.MergeMessageFormats.Any() ? overrideConfiguration.MergeMessageFormats : targetConfig.MergeMessageFormats;
         targetConfig.UpdateBuildNumber = overrideConfiguration.UpdateBuildNumber ?? targetConfig.UpdateBuildNumber;
         targetConfig.SemanticVersionFormat = overrideConfiguration.SemanticVersionFormat;
+        targetConfig.HandleDetachedBranch = overrideConfiguration.HandleDetachedBranch ?? targetConfig.HandleDetachedBranch;
 
         if (overrideConfiguration.Ignore is { IsEmpty: false })
         {
@@ -187,6 +188,7 @@ public class ConfigurationBuilder
             CommitDateFormat = "yyyy-MM-dd",
             UpdateBuildNumber = true,
             SemanticVersionFormat = SemanticVersionFormat.Strict,
+            HandleDetachedBranch = false,
             TagPreReleaseWeight = DefaultTagPreReleaseWeight,
             Increment = IncrementStrategy.Inherit
         };

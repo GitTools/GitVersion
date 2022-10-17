@@ -146,17 +146,16 @@ public class RepositoryStore : IRepositoryStore
         var referenceLookup = this.repository.Refs.ToLookup(r => r.TargetIdentifier);
 
         var returnedBranches = new HashSet<IBranch>();
-        if (referenceLookup.Any())
+        if (!referenceLookup.Any())
+            yield break;
+        foreach (var branchCommit in FindCommitBranchesWasBranchedFrom(branch, configuration, excludedBranches))
         {
-            foreach (var branchCommit in FindCommitBranchesWasBranchedFrom(branch, configuration, excludedBranches))
+            foreach (var _ in referenceLookup[branchCommit.Commit.Sha]
+                         .Where(r => r.Name.Friendly == branchCommit.Branch.Name.Friendly))
             {
-                foreach (var _ in referenceLookup[branchCommit.Commit.Sha]
-                    .Where(r => r.Name.Friendly == branchCommit.Branch.Name.Friendly))
+                if (returnedBranches.Add(branchCommit.Branch))
                 {
-                    if (returnedBranches.Add(branchCommit.Branch))
-                    {
-                        yield return branchCommit.Branch;
-                    }
+                    yield return branchCommit.Branch;
                 }
             }
         }
@@ -219,9 +218,9 @@ public class RepositoryStore : IRepositoryStore
         }
     }
 
-    public SemanticVersion? GetCurrentCommitTaggedVersion(ICommit? commit, string? tagPrefix)
+    public SemanticVersion? GetCurrentCommitTaggedVersion(ICommit? commit, GitVersionConfiguration configuration)
         => this.repository.Tags
-            .SelectMany(t => GetCurrentCommitSemanticVersions(commit, tagPrefix, t))
+            .SelectMany(t => GetCurrentCommitSemanticVersions(commit, configuration.TagPrefix, t, configuration.HandleDetachedBranch ?? false))
             .Max();
 
     public IEnumerable<SemanticVersion> GetVersionTagsOnBranch(IBranch branch, string? tagPrefixRegex)
@@ -290,12 +289,17 @@ public class RepositoryStore : IRepositoryStore
     private static bool IsReleaseBranch(INamedReference branch, IEnumerable<KeyValuePair<string, BranchConfiguration>> releaseBranchConfig)
         => releaseBranchConfig.Any(c => c.Value?.Regex != null && Regex.IsMatch(branch.Name.Friendly, c.Value.Regex));
 
-    private static IEnumerable<SemanticVersion> GetCurrentCommitSemanticVersions(ICommit? commit, string? tagPrefix, ITag tag)
+    private IEnumerable<SemanticVersion> GetCurrentCommitSemanticVersions(ICommit? commit, string? tagPrefix, ITag tag, bool handleDetachedBranch)
     {
         var targetCommit = tag.PeeledTargetCommit();
+        if (targetCommit == null)
+            return Array.Empty<SemanticVersion>();
+        
+        var commitToCompare = handleDetachedBranch ? FindMergeBase(commit, targetCommit) : commit;
+    
         var tagName = tag.Name.Friendly;
 
-        return targetCommit != null && Equals(targetCommit, commit) && SemanticVersion.TryParse(tagName, tagPrefix, out var version)
+        return Equals(targetCommit, commitToCompare) && SemanticVersion.TryParse(tagName, tagPrefix, out var version)
             ? new[] { version }
             : Array.Empty<SemanticVersion>();
     }
