@@ -291,12 +291,14 @@ public class RepositoryStore : IRepositoryStore
 
     private IEnumerable<SemanticVersion> GetCurrentCommitSemanticVersions(ICommit? commit, string? tagPrefix, ITag tag, bool handleDetachedBranch)
     {
+        if (commit == null)
+            return Array.Empty<SemanticVersion>();
+
         var targetCommit = tag.PeeledTargetCommit();
         if (targetCommit == null)
             return Array.Empty<SemanticVersion>();
-
+        
         var commitToCompare = handleDetachedBranch ? FindMergeBase(commit, targetCommit) : commit;
-
         var tagName = tag.Name.Friendly;
 
         return Equals(targetCommit, commitToCompare) && SemanticVersion.TryParse(tagName, tagPrefix, out var version)
