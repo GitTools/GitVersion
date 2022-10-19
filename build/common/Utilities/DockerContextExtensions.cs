@@ -13,7 +13,7 @@ public static class DockerContextExtensions
     {
         var (distro, targetFramework, architecture, _, _) = dockerImage;
 
-        if (architecture != Architecture.Arm64) return false;
+        if (architecture == Architecture.Amd64) return false;
         if (!Constants.DistrosToSkip.Contains(distro)) return false;
 
         context.Information($"Skipping Target: {targetFramework}, Distro: {distro}, Arch: {architecture}");
