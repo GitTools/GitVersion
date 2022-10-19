@@ -105,9 +105,7 @@ public class RemoteRepositoryScenarios : TestBase
     public void GivenARemoteGitRepositoryWhenCheckingOutDetachedHeadUsingExistingImplementationHandleDetachedBranch(bool handleDetachedBranch)
     {
         using var fixture = new RemoteRepositoryFixture();
-        Commands.Checkout(
-            fixture.LocalRepositoryFixture.Repository,
-            fixture.LocalRepositoryFixture.Repository.Head.Tip);
+        fixture.LocalRepositoryFixture.Checkout(fixture.LocalRepositoryFixture.Repository.Head.Tip.Sha);
 
         var configuration = new GitVersionConfiguration { HandleDetachedBranch = handleDetachedBranch };
         if (handleDetachedBranch)
