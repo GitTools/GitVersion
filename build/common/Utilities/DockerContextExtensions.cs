@@ -145,7 +145,8 @@ public static class DockerContextExtensions
         var output = context.DockerRunImage(settings, image, command, args);
         context.Information("Output : " + output);
 
-        Assert.Contains(context.Version?.GitVersion.FullSemVer, output);
+        Assert.NotNull(context.Version?.GitVersion);
+        Assert.Contains(context.Version.GitVersion.FullSemVer!, output);
     }
     private static IEnumerable<string> GetDockerTags(this BuildContextBase context, DockerImage dockerImage, Architecture? arch = null)
     {

@@ -5,7 +5,7 @@ namespace Docker.Tasks;
 [TaskName(nameof(DockerBuild))]
 [TaskDescription("Build the docker images containing the GitVersion Tool")]
 [TaskArgument(Arguments.DockerRegistry, Constants.DockerHub, Constants.GitHub)]
-[TaskArgument(Arguments.DockerDotnetVersion, Constants.Version60)]
+[TaskArgument(Arguments.DockerDotnetVersion, Constants.Version60, Constants.Version70)]
 [TaskArgument(Arguments.DockerDistro, Constants.Alpine313, Constants.Debian10, Constants.Ubuntu2004)]
 [TaskArgument(Arguments.Architecture, Constants.Amd64, Constants.Arm64)]
 public class DockerBuild : FrostingTask<BuildContext>

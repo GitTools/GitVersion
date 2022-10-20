@@ -69,10 +69,11 @@ jobs:
         key: node-${{ runner.os }}-${{ hashFiles('./package-lock.json') }}
         restore-keys: node-${{ runner.os }}
     -
-      name: Install .NET SDK 6.0.x
-      uses: actions/setup-dotnet@v3
+      name: Setup .NET SDK
+      uses: actions/setup-dotnet@v3.0.2
       with:
-        dotnet-version: '6.0.x'
+        dotnet-version: '7.0.x'
+        dotnet-quality: 'preview'
     -
       name: '[Prepare]'
       if: steps.cache-cake.outputs.cache-hit != 'true'
@@ -103,10 +104,11 @@ jobs:
         path: tools
         key: tools-${{ runner.os }}-${{ hashFiles('./build/**') }}
     -
-      name: Install .NET SDK 6.0.x
-      uses: actions/setup-dotnet@v3
+      name: Setup .NET SDK
+      uses: actions/setup-dotnet@v3.0.2
       with:
-        dotnet-version: '6.0.x'
+        dotnet-version: '7.0.x'
+        dotnet-quality: 'preview'
     -
       name: '[Build Documentation]'
       shell: pwsh
@@ -160,10 +162,11 @@ jobs:
         path: tools
         key: tools-${{ runner.os }}-${{ hashFiles('./build/**') }}
     -
-      name: Install .NET SDK 6.0.x
-      uses: actions/setup-dotnet@v3
+      name: Setup .NET SDK
+      uses: actions/setup-dotnet@v3.0.2
       with:
-        dotnet-version: '6.0.x'
+        dotnet-version: '7.0.x'
+        dotnet-quality: 'preview'
     -
       name: '[Publish Documentation]'
       if: ${{ github.event_name == 'push' }}

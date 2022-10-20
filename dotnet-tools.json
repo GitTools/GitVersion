@@ -20,7 +20,7 @@
                 "dotnet-gitreleasemanager"
             ]
         },
-        "Wyam2.Tool": {
+        "Wyam2": {
             "version": "3.0.0",
             "commands": [
                 "wyam2"

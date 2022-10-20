@@ -4,14 +4,14 @@
         <OutputType>Exe</OutputType>
         <RootNamespace>GitVersion</RootNamespace>
         <AssemblyName>gitversion</AssemblyName>
-        <TargetFrameworks>net6.0</TargetFrameworks>
+        <TargetFrameworks>net6.0;net7.0</TargetFrameworks>
         <PlatformTarget>AnyCPU</PlatformTarget>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
     </PropertyGroup>
 
     <!-- workaround for https://github.com/dotnet/runtime/issues/49508 -->
     <PropertyGroup Condition=" '$(OsxArm64)' == 'true'">
-        <TargetFrameworks>net6.0</TargetFrameworks>
+        <TargetFrameworks>net6.0;net7.0</TargetFrameworks>
     </PropertyGroup>
 
     <PropertyGroup Condition=" '$(PackAsTool)' == 'true' ">
