@@ -58,11 +58,11 @@ jobs:
         key: run-${{ runner.os }}-${{ hashFiles('./build/**') }}
 
     -
-      name: Install .NET SDKs
-      uses: actions/setup-dotnet@v3
+      name: Setup .NET SDK
+      uses: actions/setup-dotnet@v3.0.2
       with:
-        dotnet-version: |
-          6.0.x
+        dotnet-version: '7.0.x'
+        dotnet-quality: 'preview'
 
     -
       name: '[Prepare]'

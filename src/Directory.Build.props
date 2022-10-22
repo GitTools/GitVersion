@@ -18,7 +18,7 @@
 
         <NoWarn>1591,8618</NoWarn>
         <DebugType>embedded</DebugType>
-        <LangVersion>10</LangVersion>
+        <LangVersion>11</LangVersion>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
 

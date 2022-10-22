@@ -6,10 +6,12 @@ public class Constants
     public const string Repository = "GitVersion";
 
     public const string Version60 = "6.0";
+    public const string Version70 = "7.0";
 
-    public const string NetVersion60 = "net6.0";
+    public const string NetVersion60 = $"net{Version60}";
+    public const string NetVersion70 = $"net{Version70}";
 
-    public static readonly string[] VersionsToBuild = { Version60 };
+    public static readonly string[] VersionsToBuild = { Version60, Version70 };
     public static readonly Architecture[] ArchToBuild = { Architecture.Amd64, Architecture.Arm64 };
     public static readonly string[] DistrosToSkip = { Alpine313, Alpine314, Centos7 };
 
@@ -26,6 +28,7 @@ public class Constants
 
     public const string Alpine313 = "alpine.3.13";
     public const string Alpine314 = "alpine.3.14";
+    public const string Alpine315 = "alpine.3.15";
     public const string Centos7 = "centos.7";
     public const string Centos8 = "centos.8";
     public const string Debian10 = "debian.10";
@@ -39,6 +42,7 @@ public class Constants
     {
         Alpine313,
         Alpine314,
+        Alpine315,
         Centos7,
         Centos8,
         Debian10,

@@ -6,6 +6,6 @@ public class Tools
 
     public static readonly Dictionary<string, string> Versions = new()
     {
-        { NugetCmd, "6.1.0" },
+        { NugetCmd, "6.3.1" },
     };
 }
