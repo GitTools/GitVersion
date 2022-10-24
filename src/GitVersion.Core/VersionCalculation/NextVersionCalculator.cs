@@ -126,19 +126,21 @@ public class NextVersionCalculator : INextVersionCalculator
             return;
         }
 
-        long? number = null;
-
         // TODO: Please update the pre release-tag in the IVersionStrategy implementation.
         var lastTag = this.repositoryStore
             .GetVersionTagsOnBranch(Context.CurrentBranch, Context.Configuration.LabelPrefix, Context.Configuration.SemanticVersionFormat)
             .FirstOrDefault(v => v.PreReleaseTag?.Name?.IsEquivalentTo(tagToUse) == true);
 
+        long? number = null;
+
         if (lastTag != null && MajorMinorPatchEqual(lastTag, semanticVersion) && lastTag.HasPreReleaseTagWithLabel)
         {
             number = lastTag.PreReleaseTag?.Number + 1;
         }
-
-        number ??= 1;
+        else
+        {
+            number = 1;
+        }
 
         semanticVersion.PreReleaseTag = new SemanticVersionPreReleaseTag(tagToUse, number);
     }
