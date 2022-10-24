@@ -61,7 +61,7 @@ public class NextVersionCalculator : INextVersionCalculator
         //
 
         var nextVersion = Calculate(Context.CurrentBranch, Context.Configuration);
-        nextVersion.BaseVersion.SemanticVersion.BuildMetaData = this.mainlineVersionCalculator.CreateVersionBuildMetaData(nextVersion.BaseVersion.BaseVersionSource);
+
         SemanticVersion semver;
         if (Context.Configuration.VersioningMode == VersioningMode.Mainline)
         {
@@ -69,10 +69,12 @@ public class NextVersionCalculator : INextVersionCalculator
         }
         else
         {
+            nextVersion.BaseVersion.SemanticVersion.BuildMetaData = this.mainlineVersionCalculator.CreateVersionBuildMetaData(nextVersion.BaseVersion.BaseVersionSource);
+
             if (taggedSemanticVersion?.BuildMetaData == null || (taggedSemanticVersion.BuildMetaData?.Sha != nextVersion.BaseVersion.SemanticVersion.BuildMetaData.Sha))
             {
                 semver = nextVersion.IncrementedVersion;
-                semver.BuildMetaData = this.mainlineVersionCalculator.CreateVersionBuildMetaData(nextVersion.BaseVersion.BaseVersionSource);
+                semver.BuildMetaData = nextVersion.BaseVersion.SemanticVersion.BuildMetaData;
             }
             else
             {
