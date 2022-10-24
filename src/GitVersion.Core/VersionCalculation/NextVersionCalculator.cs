@@ -118,31 +118,31 @@ public class NextVersionCalculator : INextVersionCalculator
 
     private void UpdatePreReleaseTag(EffectiveBranchConfiguration configuration, SemanticVersion semanticVersion, string? branchNameOverride)
     {
-        var tagToUse = configuration.Value.GetBranchSpecificTag(this.log, Context.CurrentBranch.Name.Friendly, branchNameOverride);
+        var preReleaseTagName = configuration.Value.GetBranchSpecificTag(this.log, Context.CurrentBranch.Name.Friendly, branchNameOverride);
 
-        if (configuration.Value.IsMainline && tagToUse.IsEmpty())
+        if (configuration.Value.IsMainline && preReleaseTagName.IsEmpty())
         {
-            semanticVersion.PreReleaseTag = new SemanticVersionPreReleaseTag(tagToUse, null);
+            semanticVersion.PreReleaseTag = new SemanticVersionPreReleaseTag(preReleaseTagName, null);
             return;
         }
 
         // TODO: Please update the pre release-tag in the IVersionStrategy implementation.
-        var lastTag = this.repositoryStore
-            .GetVersionTagsOnBranch(Context.CurrentBranch, Context.Configuration.LabelPrefix, Context.Configuration.SemanticVersionFormat)
-            .FirstOrDefault(v => v.PreReleaseTag?.Name?.IsEquivalentTo(tagToUse) == true);
+        var lastPrefixedSemver = this.repositoryStore
+            .GetVersionTagsOnBranch(Context.CurrentBranch, Context.Configuration.LabelPrefix)
+            .FirstOrDefault(v => v.PreReleaseTag?.Name?.IsEquivalentTo(preReleaseTagName) == true);
 
         long? number = null;
 
-        if (lastTag != null && MajorMinorPatchEqual(lastTag, semanticVersion) && lastTag.HasPreReleaseTagWithLabel)
+        if (lastPrefixedSemver != null && MajorMinorPatchEqual(lastPrefixedSemver, semanticVersion) && lastPrefixedSemver.HasPreReleaseTagWithLabel)
         {
-            number = lastTag.PreReleaseTag?.Number + 1;
+            number = lastPrefixedSemver.PreReleaseTag!.Number + 1;
         }
         else
         {
             number = 1;
         }
 
-        semanticVersion.PreReleaseTag = new SemanticVersionPreReleaseTag(tagToUse, number);
+        semanticVersion.PreReleaseTag = new SemanticVersionPreReleaseTag(preReleaseTagName, number);
     }
 
     private static bool MajorMinorPatchEqual(SemanticVersion lastTag, SemanticVersion baseVersion) =>
