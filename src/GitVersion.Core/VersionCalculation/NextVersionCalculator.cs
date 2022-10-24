@@ -69,17 +69,18 @@ public class NextVersionCalculator : INextVersionCalculator
         }
         else
         {
-            nextVersion.BaseVersion.SemanticVersion.BuildMetaData = this.mainlineVersionCalculator.CreateVersionBuildMetaData(nextVersion.BaseVersion.BaseVersionSource);
+            var baseVersionBuildMetaData = this.mainlineVersionCalculator.CreateVersionBuildMetaData(nextVersion.BaseVersion.BaseVersionSource);
 
-            if (taggedSemanticVersion?.BuildMetaData == null || (taggedSemanticVersion.BuildMetaData?.Sha != nextVersion.BaseVersion.SemanticVersion.BuildMetaData.Sha))
+            if (baseVersionBuildMetaData == null || baseVersionBuildMetaData.Sha != nextVersion.IncrementedVersion.BuildMetaData?.Sha)
             {
                 semver = nextVersion.IncrementedVersion;
-                semver.BuildMetaData = nextVersion.BaseVersion.SemanticVersion.BuildMetaData;
             }
             else
             {
                 semver = nextVersion.BaseVersion.SemanticVersion;
             }
+
+            semver.BuildMetaData = baseVersionBuildMetaData;
         }
 
         var hasPreReleaseTag = semver.HasPreReleaseTagWithLabel;
