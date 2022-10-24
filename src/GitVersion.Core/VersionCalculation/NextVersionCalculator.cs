@@ -129,11 +129,12 @@ public class NextVersionCalculator : INextVersionCalculator
         // TODO: Please update the pre release-tag in the IVersionStrategy implementation.
         var lastPrefixedSemver = this.repositoryStore
             .GetVersionTagsOnBranch(Context.CurrentBranch, Context.Configuration.LabelPrefix)
+            .Where(v => MajorMinorPatchEqual(v, semanticVersion) && v.HasPreReleaseTagWithLabel)
             .FirstOrDefault(v => v.PreReleaseTag?.Name?.IsEquivalentTo(preReleaseTagName) == true);
 
         long? number = null;
 
-        if (lastPrefixedSemver != null && MajorMinorPatchEqual(lastPrefixedSemver, semanticVersion) && lastPrefixedSemver.HasPreReleaseTagWithLabel)
+        if (lastPrefixedSemver != null)
         {
             number = lastPrefixedSemver.PreReleaseTag!.Number + 1;
         }
