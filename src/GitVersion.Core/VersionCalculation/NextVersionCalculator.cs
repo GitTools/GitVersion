@@ -145,8 +145,7 @@ public class NextVersionCalculator : INextVersionCalculator
         semanticVersion.PreReleaseTag = new SemanticVersionPreReleaseTag(preReleaseTagName, number);
     }
 
-    private static bool MajorMinorPatchEqual(SemanticVersion lastTag, SemanticVersion baseVersion) =>
-        lastTag.Major == baseVersion.Major && lastTag.Minor == baseVersion.Minor && lastTag.Patch == baseVersion.Patch;
+    private static bool MajorMinorPatchEqual(SemanticVersion version, SemanticVersion other) => version.CompareTo(other, false) == 0;
 
     private NextVersion Calculate(IBranch branch, GitVersionConfiguration configuration)
     {
