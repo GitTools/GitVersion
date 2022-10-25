@@ -36,11 +36,11 @@ public class GitHubActions : BuildAgentBase
         {
             writer($"Writing version variables to $GITHUB_ENV file for '{GetType().Name}'.");
             using var streamWriter = File.AppendText(gitHubSetEnvFilePath);
-            foreach (var variable in variables)
+            foreach (var (key, value) in variables)
             {
-                if (!variable.Value.IsNullOrEmpty())
+                if (!value.IsNullOrEmpty())
                 {
-                    streamWriter.WriteLine($"GitVersion_{variable.Key}={variable.Value}");
+                    streamWriter.WriteLine($"GitVersion_{key}={value}");
                 }
             }
         }

@@ -16,64 +16,56 @@
         <RepositoryUrl>https://github.com/GitTools/GitVersion</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
 
-        <NoWarn>1591</NoWarn>
+        <NoWarn>1591,8618</NoWarn>
         <DebugType>embedded</DebugType>
-        <LangVersion>10</LangVersion>
+        <LangVersion>11</LangVersion>
         <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+
+        <EnableNETAnalyzers>True</EnableNETAnalyzers>
+        <!-- Latest = version of the analyzers included in latest installed SDK -->
+        <AnalysisLevel>latest</AnalysisLevel>
+        <EnforceCodeStyleInBuild>True</EnforceCodeStyleInBuild>
+
     </PropertyGroup>
-    <PropertyGroup>
-        <PackageVersion_LibGit2Sharp>0.27.0-preview-0158</PackageVersion_LibGit2Sharp>
-        <PackageVersion_LibGit2Sharp_NativeBinaries>2.0.315-alpha.0.9</PackageVersion_LibGit2Sharp_NativeBinaries>
-
-        <PackageVersion_JetBrainsAnnotations>2021.3.0</PackageVersion_JetBrainsAnnotations>
-        <PackageVersion_YamlDotNet>11.2.1</PackageVersion_YamlDotNet>
-        <PackageVersion_MicrosoftExtensions>6.0.0</PackageVersion_MicrosoftExtensions>
-        <PackageVersion_MicrosoftJson>6.0.0</PackageVersion_MicrosoftJson>
-        <PackageVersion_MicrosoftTextEncoding>6.0.0</PackageVersion_MicrosoftTextEncoding>
-        <PackageVersion_MsBuild>17.0.0</PackageVersion_MsBuild>
-
-        <PackageVersion_MicrosoftTestSdk>17.1.0</PackageVersion_MicrosoftTestSdk>
-        <PackageVersion_NSubstitute>4.3.0</PackageVersion_NSubstitute>
-        <PackageVersion_CoverletMsBuild>3.1.2</PackageVersion_CoverletMsBuild>
-        <PackageVersion_NUnit>3.13.2</PackageVersion_NUnit>
-        <PackageVersion_NUnit3TestAdapter>4.2.1</PackageVersion_NUnit3TestAdapter>
-        <PackageVersion_NunitXmlTestLogger>3.0.117</PackageVersion_NunitXmlTestLogger>
-        <PackageVersion_Shouldly>4.0.3</PackageVersion_Shouldly>
-
-        <PackageVersion_MicrosoftCodeStyle>4.0.1</PackageVersion_MicrosoftCodeStyle>
-        <PackageVersion_MicrosoftNetAnalyzers>6.0.0</PackageVersion_MicrosoftNetAnalyzers>
-    </PropertyGroup>
-
+    <ItemGroup>
+        <PackageReference Include="System.Text.Json"/>
+        <PackageReference Include="System.Text.Encodings.Web"/>
+    </ItemGroup>
+    <ItemGroup Condition=" '$(IsTestProject)' == 'false' ">
+        <PackageReference Include="Microsoft.CodeAnalysis.PublicApiAnalyzers">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+    </ItemGroup>
     <ItemGroup Condition=" '$(IsTestProject)' == 'true' ">
-        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="$(PackageVersion_MicrosoftTestSdk)" />
-        <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="$(PackageVersion_MicrosoftExtensions)" />
-        <PackageReference Include="System.Text.Json" Version="$(PackageVersion_MicrosoftJson)" />
-        <PackageReference Include="System.Text.Encodings.Web" Version="$(PackageVersion_MicrosoftTextEncoding)" />
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection"/>
+        <PackageReference Include="Microsoft.NET.Test.Sdk"/>
 
-        <PackageReference Include="JetBrains.Annotations" Version="$(PackageVersion_JetBrainsAnnotations)" />
-        <PackageReference Include="NSubstitute" Version="$(PackageVersion_NSubstitute)" />
+        <PackageReference Include="JetBrains.Annotations"/>
+        <PackageReference Include="NSubstitute"/>
 
-        <PackageReference Include="NUnit" Version="$(PackageVersion_NUnit)" />
-        <PackageReference Include="NUnit3TestAdapter" Version="$(PackageVersion_NUnit3TestAdapter)" />
-        <PackageReference Include="NunitXml.TestLogger" Version="$(PackageVersion_NunitXmlTestLogger)" />
-        <PackageReference Include="Shouldly" Version="$(PackageVersion_Shouldly)" />
+        <PackageReference Include="NUnit"/>
+        <PackageReference Include="NUnit3TestAdapter"/>
+        <PackageReference Include="JunitXml.TestLogger"/>
+        <PackageReference Include="Shouldly"/>
 
-        <PackageReference Include="coverlet.msbuild" Version="$(PackageVersion_CoverletMsBuild)">
+        <PackageReference Include="coverlet.msbuild">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
         </PackageReference>
 
-        <ProjectReference Include="..\GitTools.Testing\GitTools.Testing.csproj" />
+        <ProjectReference Include="..\GitTools.Testing\GitTools.Testing.csproj"/>
 
     </ItemGroup>
 
     <ItemGroup>
-        <Using Include="System.Collections" />
-        <Using Include="System.Collections.Specialized" />
-        <Using Include="System.Diagnostics" />
-        <Using Include="System.Reflection" />
-        <Using Include="System.Text" />
-        <Using Include="System.Xml" />
+        <Using Include="System.Collections"/>
+        <Using Include="System.Collections.Specialized"/>
+        <Using Include="System.Diagnostics"/>
+        <Using Include="System.Reflection"/>
+        <Using Include="System.Text"/>
+        <Using Include="System.Xml"/>
     </ItemGroup>
 
     <ItemGroup>
@@ -81,24 +73,9 @@
         <None Include="../../build/nuspec/README.md" Pack="true" PackagePath="/"/>
     </ItemGroup>
 
-    <ItemGroup Condition=" '$(TargetFramework)' == 'net48' ">
-        <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.2" PrivateAssets="All" />
-    </ItemGroup>
-
     <!-- Workaround to enable .editorconfig based analyzer configuration until dotnet compilers support .editorconfig based configuration -->
     <PropertyGroup>
         <SkipDefaultEditorConfigAsAdditionalFile>true</SkipDefaultEditorConfigAsAdditionalFile>
     </PropertyGroup>
 
-    <!-- Common code quality and styling analyzers -->
-    <ItemGroup>
-        <PackageReference Include="Microsoft.CodeAnalysis.CSharp.CodeStyle" Version="$(PackageVersion_MicrosoftCodeStyle)">
-            <PrivateAssets>all</PrivateAssets>
-            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-        </PackageReference>
-        <PackageReference Include="Microsoft.CodeAnalysis.NetAnalyzers" Version="$(PackageVersion_MicrosoftNetAnalyzers)">
-            <PrivateAssets>all</PrivateAssets>
-            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-        </PackageReference>
-    </ItemGroup>
 </Project>

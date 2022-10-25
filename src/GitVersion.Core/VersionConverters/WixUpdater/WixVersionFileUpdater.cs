@@ -1,4 +1,5 @@
 using GitVersion.Extensions;
+using GitVersion.Helpers;
 using GitVersion.Logging;
 using GitVersion.OutputVariables;
 
@@ -22,7 +23,7 @@ public sealed class WixVersionFileUpdater : IWixVersionFileUpdater
 
     public void Execute(VersionVariables variables, WixVersionContext context)
     {
-        this.wixVersionFile = Path.Combine(context.WorkingDirectory, WixVersionFileName);
+        this.wixVersionFile = PathHelper.Combine(context.WorkingDirectory, WixVersionFileName);
         this.log.Info("Updating GitVersion_WixVersion.wxi");
 
         var doc = new XmlDocument();

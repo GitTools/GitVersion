@@ -1,7 +1,10 @@
+using GitVersion.Configuration;
+
 namespace GitVersion.VersionCalculation;
 
 public interface IIncrementStrategyFinder
 {
-    VersionField? DetermineIncrementedField(IGitRepository repository, GitVersionContext context, BaseVersion baseVersion);
-    VersionField? GetIncrementForCommits(GitVersionContext context, IEnumerable<ICommit> commits);
+    VersionField DetermineIncrementedField(GitVersionContext context, BaseVersion baseVersion, EffectiveConfiguration configuration);
+
+    VersionField? GetIncrementForCommits(GitVersionConfiguration configuration, IEnumerable<ICommit> commits);
 }

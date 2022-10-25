@@ -5,7 +5,7 @@ namespace GitVersion.Configuration.Init.Wizard;
 
 public class ConfigInitStepFactory : IConfigInitStepFactory
 {
-    private readonly IServiceProvider? sp;
+    private readonly IServiceProvider sp;
 
     public ConfigInitStepFactory()
     {
@@ -13,5 +13,5 @@ public class ConfigInitStepFactory : IConfigInitStepFactory
 
     public ConfigInitStepFactory(IServiceProvider sp) => this.sp = sp.NotNull();
 
-    public T? CreateStep<T>() => this.sp!.GetService<T>();
+    public T CreateStep<T>() where T : notnull => this.sp.GetRequiredService<T>();
 }

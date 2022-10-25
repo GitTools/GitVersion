@@ -1,6 +1,8 @@
 using GitTools.Testing;
+using GitVersion.Configuration;
 using GitVersion.Core.Tests.Helpers;
-using GitVersion.Model.Configuration;
+using GitVersion.VersionCalculation;
+using LibGit2Sharp;
 using NUnit.Framework;
 
 namespace GitVersion.Core.Tests.IntegrationTests;
@@ -11,12 +13,12 @@ public class VersionBumpingScenarios : TestBase
     [Test]
     public void AppliedPrereleaseTagCausesBump()
     {
-        var configuration = new Config
+        var configuration = new GitVersionConfiguration
         {
             Branches =
             {
                 {
-                    MainBranch, new BranchConfig
+                    MainBranch, new BranchConfiguration
                     {
                         Tag = "pre",
                         SourceBranches = new HashSet<string>()
@@ -47,6 +49,23 @@ public class VersionBumpingScenarios : TestBase
         fixture.AssertFullSemver("2.0.0+2");
     }
 
+    [Test]
+    public void CanUseCommitMessagesToBumpVersion_TagTakesPriority()
+    {
+        using var fixture = new EmptyRepositoryFixture();
+        var repo = fixture.Repository;
+
+        repo.MakeATaggedCommit("1.0.0");
+        repo.MakeACommit("+semver:major");
+        fixture.AssertFullSemver("2.0.0+1");
+
+        repo.ApplyTag("1.1.0");
+        fixture.AssertFullSemver("1.1.0");
+
+        repo.MakeACommit();
+        fixture.AssertFullSemver("1.1.1+1");
+    }
+
     [Theory]
     [TestCase("build: Cleaned up various things", "1.0.1")]
     [TestCase("build: Cleaned up various things\n\nSome descriptive text", "1.0.1")]
@@ -71,9 +90,9 @@ public class VersionBumpingScenarios : TestBase
     [TestCase("feat: Major update\n\nSome descriptive text\nWith a second line\n\nBREAKING CHANGE: A reason", "2.0.0")]
     public void CanUseConventionalCommitsToBumpVersion(string commitMessage, string expectedVersion)
     {
-        var configuration = new Config
+        var configuration = new GitVersionConfiguration
         {
-            VersioningMode = GitVersion.VersionCalculation.VersioningMode.Mainline,
+            VersioningMode = VersioningMode.Mainline,
 
             // For future debugging of this regex: https://regex101.com/r/CRoBol/2
             MajorVersionBumpMessage = "^(build|chore|ci|docs|feat|fix|perf|refactor|revert|style|test)(\\([\\w\\s-]*\\))?(!:|:.*\\n\\n((.+\\n)+\\n)?BREAKING CHANGE:\\s.+)",

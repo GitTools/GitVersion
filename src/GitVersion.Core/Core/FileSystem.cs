@@ -22,11 +22,21 @@ public class FileSystem : IFileSystem
         WriteAllText(file, fileContents, encoding);
     }
 
-    public void WriteAllText(string? file, string fileContents, Encoding encoding) =>
-        File.WriteAllText(file, fileContents, encoding);
+    public void WriteAllText(string? file, string fileContents, Encoding encoding)
+    {
+        if (string.IsNullOrEmpty(file))
+            throw new ArgumentNullException(nameof(file));
 
-    public IEnumerable<string> DirectoryEnumerateFiles(string? directory, string searchPattern, SearchOption searchOption) =>
-        Directory.EnumerateFiles(directory, searchPattern, searchOption);
+        File.WriteAllText(file, fileContents, encoding);
+    }
+
+    public IEnumerable<string> DirectoryEnumerateFiles(string? directory, string searchPattern, SearchOption searchOption)
+    {
+        if (string.IsNullOrEmpty(directory))
+            throw new ArgumentNullException(nameof(directory));
+
+        return Directory.EnumerateFiles(directory, searchPattern, searchOption);
+    }
 
     public Stream OpenWrite(string path) => File.OpenWrite(path);
 
@@ -45,7 +55,7 @@ public class FileSystem : IFileSystem
 
     public bool PathsEqual(string? path, string? otherPath) =>
         string.Equals(
-            Path.GetFullPath(path).TrimEnd('\\').TrimEnd('/'),
-            Path.GetFullPath(otherPath).TrimEnd('\\').TrimEnd('/'),
+            PathHelper.GetFullPath(path).TrimEnd('\\').TrimEnd('/'),
+            PathHelper.GetFullPath(otherPath).TrimEnd('\\').TrimEnd('/'),
             StringComparerUtils.OsDependentComparison);
 }

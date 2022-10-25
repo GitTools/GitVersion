@@ -1,4 +1,5 @@
 using GitVersion.Core.Tests.Helpers;
+using GitVersion.Helpers;
 using GitVersion.VersionCalculation;
 using GitVersion.VersionConverters.GitVersionInfo;
 using Microsoft.Extensions.DependencyInjection;
@@ -17,13 +18,11 @@ public class GitVersionInfoGeneratorTests : TestBase
     [TestCase("cs")]
     [TestCase("fs")]
     [TestCase("vb")]
-    [Category(NoMono)]
-    [Description(NoMonoDescription)]
     public void ShouldCreateFile(string fileExtension)
     {
         var directory = Path.GetTempPath();
         var fileName = "GitVersionInformation.g." + fileExtension;
-        var fullPath = Path.Combine(directory, fileName);
+        var fullPath = PathHelper.Combine(directory, fileName);
 
         var semanticVersion = new SemanticVersion
         {
@@ -45,6 +44,6 @@ public class GitVersionInfoGeneratorTests : TestBase
 
         generator.Execute(variables, new GitVersionInfoContext(directory, fileName, fileExtension));
 
-        fileSystem.ReadAllText(fullPath).ShouldMatchApproved(c => c.SubFolder(Path.Combine("Approved", fileExtension)));
+        fileSystem.ReadAllText(fullPath).ShouldMatchApproved(c => c.SubFolder(PathHelper.Combine("Approved", fileExtension)));
     }
 }

@@ -1,6 +1,5 @@
 using GitVersion.Configuration.Init.Wizard;
 using GitVersion.Logging;
-using GitVersion.Model.Configuration;
 
 namespace GitVersion.Configuration.Init.SetConfig;
 
@@ -10,26 +9,26 @@ public class ConfigureBranches : ConfigInitWizardStep
     {
     }
 
-    protected override StepResult HandleResult(string? result, Queue<ConfigInitWizardStep> steps, Config config, string workingDirectory)
+    protected override StepResult HandleResult(string? result, Queue<ConfigInitWizardStep> steps, GitVersionConfiguration configuration, string workingDirectory)
     {
         if (int.TryParse(result, out var parsed))
         {
             if (parsed == 0)
             {
-                steps.Enqueue(this.StepFactory.CreateStep<EditConfigStep>()!);
+                steps.Enqueue(this.StepFactory.CreateStep<EditConfigStep>());
                 return StepResult.Ok();
             }
 
             try
             {
-                var foundBranch = OrderedBranches(config).ElementAt(parsed - 1);
-                var branchConfig = foundBranch.Value;
-                if (branchConfig == null)
+                var foundBranch = OrderedBranches(configuration).ElementAt(parsed - 1);
+                var branchConfiguration = foundBranch.Value;
+                if (branchConfiguration == null)
                 {
-                    branchConfig = new BranchConfig { Name = foundBranch.Key };
-                    config.Branches.Add(foundBranch.Key, branchConfig);
+                    branchConfiguration = new BranchConfiguration { Name = foundBranch.Key };
+                    configuration.Branches.Add(foundBranch.Key, branchConfiguration);
                 }
-                steps.Enqueue(this.StepFactory.CreateStep<ConfigureBranch>()!.WithData(foundBranch.Key, branchConfig));
+                steps.Enqueue(this.StepFactory.CreateStep<ConfigureBranch>().WithData(foundBranch.Key, branchConfiguration));
                 return StepResult.Ok();
             }
             catch (ArgumentOutOfRangeException)
@@ -39,20 +38,20 @@ public class ConfigureBranches : ConfigInitWizardStep
         return StepResult.InvalidResponseSelected();
     }
 
-    protected override string GetPrompt(Config config, string workingDirectory) => @"Which branch would you like to configure:
+    protected override string GetPrompt(GitVersionConfiguration configuration, string workingDirectory) => @"Which branch would you like to configure:
 
 0) Go Back
-" + string.Join(System.Environment.NewLine, OrderedBranches(config).Select((c, i) => $"{i + 1}) {c.Key}"));
+" + string.Join(System.Environment.NewLine, OrderedBranches(configuration).Select((c, i) => $"{i + 1}) {c.Key}"));
 
-    private static IOrderedEnumerable<KeyValuePair<string, BranchConfig?>> OrderedBranches(Config config)
+    private static IOrderedEnumerable<KeyValuePair<string, BranchConfiguration>> OrderedBranches(GitVersionConfiguration configuration)
     {
         var defaultConfig = new ConfigurationBuilder().Build();
 
         var defaultConfigurationBranches = defaultConfig.Branches
-            .Where(k => !config.Branches.ContainsKey(k.Key))
-            // Return an empty branch config
-            .Select(v => new KeyValuePair<string, BranchConfig?>(v.Key, null));
-        return config.Branches.Union(defaultConfigurationBranches).OrderBy(b => b.Key);
+            .Where(k => !configuration.Branches.ContainsKey(k.Key))
+            // Return an empty branch configuration
+            .Select(v => new KeyValuePair<string, BranchConfiguration>(v.Key, new BranchConfiguration()));
+        return configuration.Branches.Union(defaultConfigurationBranches).OrderBy(b => b.Key);
     }
 
     protected override string DefaultResult => "0";

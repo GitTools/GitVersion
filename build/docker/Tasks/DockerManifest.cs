@@ -5,8 +5,8 @@ namespace Docker.Tasks;
 [TaskName(nameof(DockerManifest))]
 [TaskDescription("Publish the docker manifest containing the images for amd64 and arm64")]
 [TaskArgument(Arguments.DockerRegistry, Constants.DockerHub, Constants.GitHub)]
-[TaskArgument(Arguments.DockerDotnetVersion, Constants.Version50, Constants.Version60, Constants.Version31)]
-[TaskArgument(Arguments.DockerDistro, Constants.Alpine312, Constants.Debian10, Constants.Ubuntu2004)]
+[TaskArgument(Arguments.DockerDotnetVersion, Constants.Version60, Constants.Version70)]
+[TaskArgument(Arguments.DockerDistro, Constants.Alpine313, Constants.Debian10, Constants.Ubuntu2004)]
 [IsDependentOn(typeof(DockerManifestInternal))]
 public class DockerManifest : FrostingTask<BuildContext>
 {
@@ -46,7 +46,7 @@ public class DockerManifestInternal : FrostingTask<BuildContext>
         {
             var amd64DockerImage = group.First(x => x.Architecture == Architecture.Amd64);
             var arm64DockerImage = group.First(x => x.Architecture == Architecture.Arm64);
-            context.DockerCreateManifest(amd64DockerImage, context.SkipArm64Image(arm64DockerImage));
+            context.DockerCreateManifest(amd64DockerImage, context.SkipImage(arm64DockerImage));
             context.DockerPushManifest(amd64DockerImage);
         }
     }

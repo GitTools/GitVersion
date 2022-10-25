@@ -6,7 +6,7 @@ on:
     - main
     - 'fix/*'
     - 'feature/*'
-    - 'release/*'
+    - 'support/*'
     paths:
     - '**'
     - '!docs/**'
@@ -14,7 +14,7 @@ on:
   pull_request:
     branches:
     - main
-    - 'release/*'
+    - 'support/*'
     paths:
     - '**'
     - '!docs/**'
@@ -30,6 +30,10 @@ env:
 
   ENABLED_DIAGNOSTICS: ${{ secrets.ENABLED_DIAGNOSTICS }}
 
+permissions:
+  contents: read
+  packages: write
+
 jobs:
   prepare:
     name: Prepare Build
@@ -42,19 +46,20 @@ jobs:
     steps:
     -
       name: Checkout
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
     -
       name: Cache cake frosting
       id: cache-cake
-      uses: actions/cache@v2.1.7
+      uses: actions/cache@v3.0.11
       with:
         path: run
         key: run-${{ runner.os }}-${{ hashFiles('./build/**') }}
     -
-      name: Install .NET SDK 6.0.x
-      uses: actions/setup-dotnet@v2
+      name: Setup .NET SDK
+      uses: actions/setup-dotnet@v3.0.2
       with:
-        dotnet-version: '6.0.x'
+        dotnet-version: '7.0.x'
+        dotnet-quality: 'preview'
     -
       name: '[Prepare]'
       if: steps.cache-cake.outputs.cache-hit != 'true'
@@ -72,49 +77,50 @@ jobs:
     steps:
     -
       name: Checkout
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
       with:
         fetch-depth: 0
     -
       name: Use cached cake frosting
       id: cache-cake
-      uses: actions/cache@v2.1.7
+      uses: actions/cache@v3.0.11
       with:
         path: run
         key: run-${{ runner.os }}-${{ hashFiles('./build/**') }}
     -
       name: Use cached tools
       id: cache-tools
-      uses: actions/cache@v2.1.7
+      uses: actions/cache@v3.0.11
       with:
         path: tools
         key: tools-${{ runner.os }}-${{ hashFiles('./build/**') }}
     -
-      name: Install .NET SDK 6.0.x
-      uses: actions/setup-dotnet@v2
+      name: Setup .NET SDK
+      uses: actions/setup-dotnet@v3.0.2
       with:
-        dotnet-version: '6.0.x'
+        dotnet-version: '7.0.x'
+        dotnet-quality: 'preview'
     -
       name: '[Build]'
       shell: pwsh
       run: dotnet run/build.dll --target=Package
     -
       name: 'Upload nuget packages'
-      uses: actions/upload-artifact@v2.3.1
+      uses: actions/upload-artifact@v3
       if: matrix.os == 'windows-latest'
       with:
         name: nuget
         path: ${{ github.workspace }}/artifacts/packages/nuget
     -
       name: 'Upload native packages'
-      uses: actions/upload-artifact@v2.3.1
+      uses: actions/upload-artifact@v3
       if: matrix.os == 'windows-latest'
       with:
         name: native-${{ runner.os }}
         path: ${{ github.workspace }}/artifacts/packages/native/*.zip
     -
       name: 'Upload native packages'
-      uses: actions/upload-artifact@v2.3.1
+      uses: actions/upload-artifact@v3
       if: matrix.os != 'windows-latest'
       with:
         name: native-${{ runner.os }}
@@ -129,38 +135,46 @@ jobs:
     strategy:
       matrix:
         os: [windows-latest, ubuntu-latest, macos-latest]
-        targetFramework: [net48, net5.0, net6.0, netcoreapp3.1]
+        targetFramework: [net7.0, net6.0]
       fail-fast: false
 
     steps:
     -
       name: Checkout
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
       with:
         fetch-depth: 0
     -
       name: Use cached cake frosting
       id: cache-cake
-      uses: actions/cache@v2.1.7
+      uses: actions/cache@v3.0.11
       with:
         path: run
         key: run-${{ runner.os }}-${{ hashFiles('./build/**') }}
     -
       name: Use cached tools
       id: cache-tools
-      uses: actions/cache@v2.1.7
+      uses: actions/cache@v3.0.11
       with:
         path: tools
         key: tools-${{ runner.os }}-${{ hashFiles('./build/**') }}
     -
-      name: Install .NET SDK 6.0.x
-      uses: actions/setup-dotnet@v2
+      name: Setup .NET SDK
+      uses: actions/setup-dotnet@v3.0.2
       with:
-        dotnet-version: '6.0.x'
+        dotnet-version: '7.0.x'
+        dotnet-quality: 'preview'
     -
       name: '[Unit Test]'
       shell: pwsh
       run: dotnet run/build.dll --target=Test --dotnet_target=${{ matrix.targetFramework }}
+
+    -
+      name: Test Summary
+      uses: test-summary/action@v2
+      with:
+        paths: artifacts/test-results/*.results.xml
+      if: always()
 
   artifacts_windows_test:
     name: Test artifacts on windows
@@ -174,34 +188,35 @@ jobs:
     steps:
     -
       name: Checkout
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
       with:
         fetch-depth: 0
     -
       name: Use cached cake frosting
       id: cache-cake
-      uses: actions/cache@v2.1.7
+      uses: actions/cache@v3.0.11
       with:
         path: run
         key: run-${{ runner.os }}-${{ hashFiles('./build/**') }}
     -
       name: Use cached tools
       id: cache-tools
-      uses: actions/cache@v2.1.7
+      uses: actions/cache@v3.0.11
       with:
         path: tools
         key: tools-${{ runner.os }}-${{ hashFiles('./build/**') }}
     -
-      uses: actions/download-artifact@v2.1.0
+      uses: actions/download-artifact@v3
       name: Download nuget packages
       with:
         name: nuget
         path: ${{ github.workspace }}/artifacts/packages/nuget
     -
-      name: Install .NET SDK 6.0.x
-      uses: actions/setup-dotnet@v2
+      name: Setup .NET SDK
+      uses: actions/setup-dotnet@v3.0.2
       with:
-        dotnet-version: '6.0.x'
+        dotnet-version: '7.0.x'
+        dotnet-quality: 'preview'
     -
       name: '[Test Artifacts]'
       shell: pwsh
@@ -213,55 +228,56 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        targetFramework: [ '3.1', '5.0', '6.0' ]
-        distro: [ alpine.3.12, alpine.3.13, alpine.3.14, centos.7, centos.8, debian.9, debian.10, debian.11, fedora.33, ubuntu.18.04, ubuntu.20.04 ]
+        targetFramework: [ '7.0', '6.0' ]
+        distro: [ alpine.3.13, alpine.3.14, centos.7, centos.8, debian.10, debian.11, fedora.33, ubuntu.18.04, ubuntu.20.04, ubuntu.22.04 ]
       fail-fast: false
 
     steps:
     -
       name: Checkout
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
       with:
         fetch-depth: 0
     -
       name: Use cached cake frosting
       id: cache-cake
-      uses: actions/cache@v2.1.7
+      uses: actions/cache@v3.0.11
       with:
         path: run
         key: run-${{ runner.os }}-${{ hashFiles('./build/**') }}
     -
       name: Use cached tools
       id: cache-tools
-      uses: actions/cache@v2.1.7
+      uses: actions/cache@v3.0.11
       with:
         path: tools
         key: tools-${{ runner.os }}-${{ hashFiles('./build/**') }}
     -
-      uses: actions/download-artifact@v2.1.0
+      uses: actions/download-artifact@v3
       name: Download nuget packages
       with:
         name: nuget
         path: ${{ github.workspace }}/artifacts/packages/nuget
     -
-      uses: actions/download-artifact@v2.1.0
+      uses: actions/download-artifact@v3
       name: Download native packages
       with:
         name: native-${{ runner.os }}
         path: ${{ github.workspace }}/artifacts/packages/native
     -
       name: Setup QEMU
-      uses: docker/setup-qemu-action@v1
+      uses: docker/setup-qemu-action@v2
     -
       name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v1
+      uses: docker/setup-buildx-action@v2
       with:
         install: true
     -
-      name: Install .NET SDK 6.0.x
-      uses: actions/setup-dotnet@v2
+      name: Setup .NET SDK
+      uses: actions/setup-dotnet@v3.0.2
       with:
-        dotnet-version: '6.0.x'
+        dotnet-version: '7.0.x'
+        dotnet-quality: 'preview'
     -
       name: '[Test Artifacts (amd64)]'
       shell: pwsh
@@ -277,93 +293,94 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        targetFramework: [ '3.1', '5.0', '6.0' ]
-        distro: [ alpine.3.12, alpine.3.13, alpine.3.14, centos.7, centos.8, debian.9, debian.10, debian.11, fedora.33, ubuntu.18.04, ubuntu.20.04 ]
+        targetFramework: [ '7.0', '6.0' ]
+        distro: [ alpine.3.13, alpine.3.14, centos.7, centos.8, debian.10, debian.11, fedora.33, ubuntu.18.04, ubuntu.20.04, ubuntu.22.04 ]
       fail-fast: false
 
     steps:
     -
       name: Checkout
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
       with:
         fetch-depth: 0
     -
       name: Use cached cake frosting
       id: cache-cake
-      uses: actions/cache@v2.1.7
+      uses: actions/cache@v3.0.11
       with:
         path: run
         key: run-${{ runner.os }}-${{ hashFiles('./build/**') }}
     -
       name: Use cached tools
       id: cache-tools
-      uses: actions/cache@v2.1.7
+      uses: actions/cache@v3.0.11
       with:
         path: tools
         key: tools-${{ runner.os }}-${{ hashFiles('./build/**') }}
     -
-      uses: actions/download-artifact@v2.1.0
+      uses: actions/download-artifact@v3
       name: Download nuget packages
       with:
         name: nuget
         path: ${{ github.workspace }}/artifacts/packages/nuget
     -
       name: Setup QEMU
-      uses: docker/setup-qemu-action@v1
+      uses: docker/setup-qemu-action@v2
     -
       name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v1
+      uses: docker/setup-buildx-action@v2
       with:
         install: true
     -
-      name: Install .NET SDK 6.0.x
-      uses: actions/setup-dotnet@v2
+      name: Setup .NET SDK
+      uses: actions/setup-dotnet@v3.0.2
       with:
-        dotnet-version: '6.0.x'
+        dotnet-version: '7.0.x'
+        dotnet-quality: 'preview'
     -
       name: Login to DockerHub
-      if: success() && github.event_name != 'pull_request'
-      uses: docker/login-action@v1
+      if: success() && github.event_name != 'pull_request' && github.repository_owner == 'GitTools'
+      uses: docker/login-action@v2
       with:
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_PASSWORD }}
     -
       name: '[Docker Build/Test/Publish (amd64)] DockerHub'
-      if: success() && github.event_name != 'pull_request'
+      if: success() && github.event_name != 'pull_request' && github.repository_owner == 'GitTools'
       shell: pwsh
       run: dotnet run/docker.dll --target=DockerPublish --arch amd64 --docker_dotnetversion=${{ matrix.targetFramework }} --docker_distro=${{ matrix.distro }} --docker_registry dockerhub
     -
       name: '[Docker Build/Test/Publish (arm64)] DockerHub'
-      if: success() && github.event_name != 'pull_request'
+      if: success() && github.event_name != 'pull_request' && github.repository_owner == 'GitTools'
       shell: pwsh
       run: dotnet run/docker.dll --target=DockerPublish --arch arm64 --docker_dotnetversion=${{ matrix.targetFramework }} --docker_distro=${{ matrix.distro }} --docker_registry dockerhub
     -
       name: '[Docker Publish Manifest] DockerHub'
-      if: success() && github.event_name != 'pull_request'
+      if: success() && github.event_name != 'pull_request' && github.repository_owner == 'GitTools'
       shell: pwsh
       run: dotnet run/docker.dll --target=DockerManifest --docker_dotnetversion=${{ matrix.targetFramework }} --docker_distro=${{ matrix.distro }} --docker_registry dockerhub
 
     -
       name: Login to GitHub Container Registry
-      if: success() && github.event_name != 'pull_request' && github.repository == 'GitTools/GitVersion'
-      uses: docker/login-action@v1
+      if: success() && github.event_name != 'pull_request' && github.repository_owner == 'GitTools'
+      uses: docker/login-action@v2
       with:
         registry: ghcr.io
         username: ${{ github.repository_owner }}
         password: ${{ secrets.DOCKER_GITHUB_TOKEN }}
     -
       name: '[Docker Build/Test/Publish (amd64)] GitHub Container Registry'
-      if: success() && github.event_name != 'pull_request' && github.repository == 'GitTools/GitVersion'
+      if: success() && github.event_name != 'pull_request' && github.repository_owner == 'GitTools'
       shell: pwsh
       run: dotnet run/docker.dll --target=DockerPublish --arch amd64 --docker_dotnetversion=${{ matrix.targetFramework }} --docker_distro=${{ matrix.distro }} --docker_registry github
     -
       name: '[Docker Build/Test/Publish (arm64)] GitHub Container Registry'
-      if: success() && github.event_name != 'pull_request' && github.repository == 'GitTools/GitVersion'
+      if: success() && github.event_name != 'pull_request' && github.repository_owner == 'GitTools'
       shell: pwsh
       run: dotnet run/docker.dll --target=DockerPublish --arch arm64 --docker_dotnetversion=${{ matrix.targetFramework }} --docker_distro=${{ matrix.distro }} --docker_registry github
     -
       name: '[Docker Publish Manifest] GitHub Container Registry'
-      if: success() && github.event_name != 'pull_request' && github.repository == 'GitTools/GitVersion'
+      if: success() && github.event_name != 'pull_request' && github.repository_owner == 'GitTools'
       shell: pwsh
       run: dotnet run/docker.dll --target=DockerManifest --docker_dotnetversion=${{ matrix.targetFramework }} --docker_distro=${{ matrix.distro }} --docker_registry github
 
@@ -382,34 +399,35 @@ jobs:
     steps:
     -
       name: Checkout
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
       with:
         fetch-depth: 0
     -
       name: Use cached cake frosting
       id: cache-cake
-      uses: actions/cache@v2.1.7
+      uses: actions/cache@v3.0.11
       with:
         path: run
         key: run-${{ runner.os }}-${{ hashFiles('./build/**') }}
     -
       name: Use cached tools
       id: cache-tools
-      uses: actions/cache@v2.1.7
+      uses: actions/cache@v3.0.11
       with:
         path: tools
         key: tools-${{ runner.os }}-${{ hashFiles('./build/**') }}
     -
-      uses: actions/download-artifact@v2.1.0
+      uses: actions/download-artifact@v3
       name: Download nuget packages
       with:
         name: nuget
         path: ${{ github.workspace }}/artifacts/packages/nuget
     -
-      name: Install .NET SDK 6.0.x
-      uses: actions/setup-dotnet@v2
+      name: Setup .NET SDK
+      uses: actions/setup-dotnet@v3.0.2
       with:
-        dotnet-version: '6.0.x'
+        dotnet-version: '7.0.x'
+        dotnet-quality: 'preview'
     -
       name: '[Publish]'
       shell: pwsh
@@ -420,50 +438,51 @@ jobs:
     needs: [publish]
     runs-on: windows-latest
     env:
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      GITHUB_TOKEN: ${{ secrets.RELEASE_GITHUB_TOKEN }}
     steps:
     -
       name: Checkout
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
       with:
         fetch-depth: 0
     -
       name: Use cached cake frosting
       id: cache-cake
-      uses: actions/cache@v2.1.7
+      uses: actions/cache@v3.0.11
       with:
         path: run
         key: run-${{ runner.os }}-${{ hashFiles('./build/**') }}
     -
       name: Use cached tools
       id: cache-tools
-      uses: actions/cache@v2.1.7
+      uses: actions/cache@v3.0.11
       with:
         path: tools
         key: tools-${{ runner.os }}-${{ hashFiles('./build/**') }}
     -
-      uses: actions/download-artifact@v2.1.0
+      uses: actions/download-artifact@v3
       name: Download native linux packages
       with:
         name: native-Linux
         path: ${{ github.workspace }}/artifacts/packages/native
     -
-      uses: actions/download-artifact@v2.1.0
+      uses: actions/download-artifact@v3
       name: Download native windows packages
       with:
         name: native-Windows
         path: ${{ github.workspace }}/artifacts/packages/native
     -
-      uses: actions/download-artifact@v2.1.0
+      uses: actions/download-artifact@v3
       name: Download native macos packages
       with:
         name: native-macOS
         path: ${{ github.workspace }}/artifacts/packages/native
     -
-      name: Install .NET SDK 6.0.x
-      uses: actions/setup-dotnet@v2
+      name: Setup .NET SDK
+      uses: actions/setup-dotnet@v3.0.2
       with:
-        dotnet-version: '6.0.x'
+        dotnet-version: '7.0.x'
+        dotnet-quality: 'preview'
     -
       name: '[Release]'
       shell: pwsh

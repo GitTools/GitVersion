@@ -9,9 +9,9 @@ namespace GitVersion.App.Tests;
 public sealed class ProgramFixture
 {
     private readonly IEnvironment environment;
-    public List<Action<IServiceCollection>> Overrides { get; } = new();
+    private List<Action<IServiceCollection>> Overrides { get; } = new();
     private readonly Lazy<string> logger;
-    private readonly Lazy<string> output;
+    private readonly Lazy<string?> output;
 
     private readonly string workingDirectory;
 
@@ -35,14 +35,14 @@ public sealed class ProgramFixture
         });
 
         this.logger = new Lazy<string>(() => logBuilder.ToString());
-        this.output = new Lazy<string>(() => consoleAdapter.ToString());
+        this.output = new Lazy<string?>(() => consoleAdapter.ToString());
     }
 
     public void WithEnv(params KeyValuePair<string, string>[] envs)
     {
-        foreach (var env in envs)
+        foreach (var (key, value) in envs)
         {
-            this.environment.SetEnvironmentVariable(env.Key, env.Value);
+            this.environment.SetEnvironmentVariable(key, value);
         }
     }
 
@@ -75,10 +75,10 @@ public sealed class ProgramFixture
 public class ProgramFixtureResult
 {
     public int ExitCode { get; set; }
-    public string Output { get; set; }
+    public string? Output { get; set; }
     public string Log { get; set; }
 
-    public VersionVariables OutputVariables
+    public VersionVariables? OutputVariables
     {
         get
         {

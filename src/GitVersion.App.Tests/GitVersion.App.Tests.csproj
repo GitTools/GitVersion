@@ -1,12 +1,12 @@
 <Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
-        <TargetFrameworks>net48;netcoreapp3.1;net5.0;net6.0</TargetFrameworks>
+        <TargetFrameworks>net6.0;net7.0</TargetFrameworks>
 
         <IsTestProject>true</IsTestProject>
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Mono.Cecil" Version="0.11.4" />
+        <PackageReference Include="Mono.Cecil"/>
     </ItemGroup>
     <ItemGroup>
         <ProjectReference Include="..\GitVersion.Core\GitVersion.Core.csproj" />
@@ -20,8 +20,7 @@
     </ItemGroup>
     <ItemGroup>
         <Compile Include="..\GitVersion.Core.Tests\Helpers\DirectoryHelper.cs" Link="Helpers\DirectoryHelper.cs" />
-        <Compile Include="..\GitVersion.Core.Tests\Helpers\PathHelper.cs" Link="Helpers\PathHelper.cs" />
-        <Compile Include="..\GitVersion.Core.Tests\Helpers\RuntimeHelper.cs" Link="Helpers\RuntimeHelper.cs" />
+        <Compile Include="..\GitVersion.Core.Tests\Helpers\ExecutableHelper.cs" Link="Helpers\ExecutableHelper.cs" />
         <Compile Include="..\GitVersion.Core.Tests\Helpers\TestEffectiveConfiguration.cs" Link="Helpers\TestEffectiveConfiguration.cs" />
         <Compile Include="..\GitVersion.Core.Tests\Helpers\TestEnvironment.cs" Link="Helpers\TestEnvironment.cs" />
         <Compile Include="..\GitVersion.Core.Tests\Helpers\TestFileSystem.cs" Link="Helpers\TestFileSystem.cs" />

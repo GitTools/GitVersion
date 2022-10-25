@@ -75,9 +75,9 @@ public static class ProcessHelper
     }
 
     // http://csharptest.net/532/using-processstart-to-capture-console-output/
-    public static int Run(Action<string> output, Action<string> errorOutput, TextReader? input, string exe, string args, string workingDirectory, params KeyValuePair<string, string>[] environmentalVariables)
+    public static int Run(Action<string> output, Action<string> errorOutput, TextReader? input, string exe, string args, string workingDirectory, params KeyValuePair<string, string?>[] environmentalVariables)
     {
-        if (exe.IsNullOrEmpty())
+        if (string.IsNullOrEmpty(exe))
             throw new ArgumentNullException(nameof(exe));
         if (output == null)
             throw new ArgumentNullException(nameof(output));
@@ -95,19 +95,20 @@ public static class ProcessHelper
             FileName = exe,
             Arguments = args
         };
-        foreach (var environmentalVariable in environmentalVariables)
+        foreach (var (key, value) in environmentalVariables)
         {
-            if (psi.EnvironmentVariables.ContainsKey(environmentalVariable.Key))
+            var psiEnvironmentVariables = psi.EnvironmentVariables;
+            if (psiEnvironmentVariables.ContainsKey(key) && string.IsNullOrEmpty(value))
             {
-                psi.EnvironmentVariables[environmentalVariable.Key] = environmentalVariable.Value;
+                psiEnvironmentVariables.Remove(key);
+            }
+            else if (psiEnvironmentVariables.ContainsKey(key))
+            {
+                psiEnvironmentVariables[key] = value;
             }
             else
             {
-                psi.EnvironmentVariables.Add(environmentalVariable.Key, environmentalVariable.Value);
-            }
-            if (psi.EnvironmentVariables.ContainsKey(environmentalVariable.Key) && environmentalVariable.Value == null)
-            {
-                psi.EnvironmentVariables.Remove(environmentalVariable.Key);
+                psiEnvironmentVariables.Add(key, value);
             }
         }
 
@@ -141,8 +142,8 @@ public static class ProcessHelper
         };
         process.BeginErrorReadLine();
 
-        string line;
-        while (input != null && null != (line = input.ReadLine()))
+        string? line;
+        while ((line = input?.ReadLine()) != null)
             process.StandardInput.WriteLine(line);
 
         process.StandardInput.Close();
@@ -166,7 +167,7 @@ public static class ProcessHelper
     }
 
     [Flags]
-    public enum ErrorModes
+    private enum ErrorModes
     {
         Default = 0x0,
         FailCriticalErrors = 0x1,

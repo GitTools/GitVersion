@@ -6,7 +6,7 @@ on:
     - main
     - 'fix/*'
     - 'feature/*'
-    - 'release/*'
+    - 'support/*'
     paths:
     - '**'
     - '!docs/**'
@@ -14,22 +14,26 @@ on:
   pull_request:
     branches:
     - main
-    - 'release/*'
+    - 'support/*'
     paths:
     - '**'
     - '!docs/**'
+
+permissions:
+  contents: read
 
 jobs:
   format:
     runs-on: ubuntu-latest
     name: DotNet Format
     steps:
-      - uses: actions/checkout@v2.3.4
+      - uses: actions/checkout@v3
       -
         name: Setup .NET SDK
-        uses: actions/setup-dotnet@v2
+        uses: actions/setup-dotnet@v3.0.2
         with:
-          dotnet-version: '6.0.x'
+          dotnet-version: '7.0.x'
+          dotnet-quality: 'preview'
       -
         name: Run Format Build solution
         run: dotnet format ./build/ --verify-no-changes

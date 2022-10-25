@@ -14,21 +14,21 @@ public class SemanticVersionBuildMetaData : IFormattable, IEquatable<SemanticVer
     private static readonly LambdaEqualityHelper<SemanticVersionBuildMetaData> EqualityHelper =
         new(x => x.CommitsSinceTag, x => x.Branch, x => x.Sha);
 
-    public int? CommitsSinceTag;
+    public long? CommitsSinceTag;
     public string? Branch;
     public string? Sha;
     public string? ShortSha;
     public string? OtherMetaData;
     public DateTimeOffset? CommitDate;
     public string? VersionSourceSha;
-    public int? CommitsSinceVersionSource;
-    public int UncommittedChanges;
+    public long? CommitsSinceVersionSource;
+    public long UncommittedChanges;
 
     public SemanticVersionBuildMetaData()
     {
     }
 
-    public SemanticVersionBuildMetaData(string? versionSourceSha, int? commitsSinceTag, string? branch, string? commitSha, string? commitShortSha, DateTimeOffset? commitDate, int numbeerOfUncommitedChanges, string? otherMetadata = null)
+    public SemanticVersionBuildMetaData(string? versionSourceSha, int? commitsSinceTag, string? branch, string? commitSha, string? commitShortSha, DateTimeOffset? commitDate, int numberOfUnCommittedChanges, string? otherMetadata = null)
     {
         this.Sha = commitSha;
         this.ShortSha = commitShortSha;
@@ -38,7 +38,7 @@ public class SemanticVersionBuildMetaData : IFormattable, IEquatable<SemanticVer
         this.OtherMetaData = otherMetadata;
         this.VersionSourceSha = versionSourceSha;
         this.CommitsSinceVersionSource = commitsSinceTag ?? 0;
-        this.UncommittedChanges = numbeerOfUncommitedChanges;
+        this.UncommittedChanges = numberOfUnCommittedChanges;
     }
 
     public SemanticVersionBuildMetaData(SemanticVersionBuildMetaData? buildMetaData)
@@ -68,7 +68,6 @@ public class SemanticVersionBuildMetaData : IFormattable, IEquatable<SemanticVer
     /// <para>b - Formats just the build number</para>
     /// <para>s - Formats the build number and the Git Sha</para>
     /// <para>f - Formats the full build metadata</para>
-    /// <para>p - Formats the padded build number. Can specify an integer for padding, default is 4. (i.e., p5)</para>
     /// </summary>
     public string ToString(string? format, IFormatProvider? formatProvider)
     {
@@ -79,25 +78,9 @@ public class SemanticVersionBuildMetaData : IFormattable, IEquatable<SemanticVer
             format = "b";
 
         format = format.ToLower();
-        if (format.StartsWith("p", StringComparison.Ordinal))
-        {
-            // Handle format
-            var padding = 4;
-            if (format.Length > 1)
-            {
-                // try to parse
-                if (int.TryParse(format.Substring(1), out var p))
-                {
-                    padding = p;
-                }
-            }
-
-            return this.CommitsSinceTag != null ? this.CommitsSinceTag.Value.ToString("D" + padding) : string.Empty;
-        }
-
         return format.ToLower() switch
         {
-            "b" => this.CommitsSinceTag.ToString(),
+            "b" => $"{this.CommitsSinceTag}",
             "s" => $"{this.CommitsSinceTag}{(this.Sha.IsNullOrEmpty() ? null : ".Sha." + this.Sha)}".TrimStart('.'),
             "f" => $"{this.CommitsSinceTag}{(this.Branch.IsNullOrEmpty() ? null : ".Branch." + FormatMetaDataPart(this.Branch))}{(this.Sha.IsNullOrEmpty() ? null : ".Sha." + this.Sha)}{(this.OtherMetaData.IsNullOrEmpty() ? null : "." + FormatMetaDataPart(this.OtherMetaData))}".TrimStart('.'),
             _ => throw new FormatException($"Unknown format '{format}'.")
@@ -124,7 +107,7 @@ public class SemanticVersionBuildMetaData : IFormattable, IEquatable<SemanticVer
 
         if (parsed.Groups["BuildNumber"].Success)
         {
-            semanticVersionBuildMetaData.CommitsSinceTag = int.Parse(parsed.Groups["BuildNumber"].Value);
+            semanticVersionBuildMetaData.CommitsSinceTag = long.Parse(parsed.Groups["BuildNumber"].Value);
             semanticVersionBuildMetaData.CommitsSinceVersionSource = semanticVersionBuildMetaData.CommitsSinceTag ?? 0;
         }
 

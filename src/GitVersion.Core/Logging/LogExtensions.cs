@@ -53,7 +53,7 @@ public static class LogExtensions
         log.Write(verbosity, level, format, args);
     }
 
-    public static void Write(this ILog log, Verbosity verbosity, LogLevel level, LogAction? logAction)
+    private static void Write(this ILog log, Verbosity verbosity, LogLevel level, LogAction? logAction)
     {
         if (logAction == null)
             return;
@@ -67,7 +67,7 @@ public static class LogExtensions
         logAction(ActionEntry);
     }
 
-    public static void Write(this ILog log, LogLevel level, LogAction? logAction)
+    private static void Write(this ILog log, LogLevel level, LogAction? logAction)
     {
         if (logAction == null)
             return;
@@ -92,7 +92,7 @@ public static class LogExtensions
 
     public static IDisposable DiagnosticVerbosity(this ILog log) => log.WithVerbosity(Verbosity.Diagnostic);
 
-    public static IDisposable WithVerbosity(this ILog log, Verbosity verbosity)
+    private static IDisposable WithVerbosity(this ILog log, Verbosity verbosity)
     {
         if (log == null)
         {

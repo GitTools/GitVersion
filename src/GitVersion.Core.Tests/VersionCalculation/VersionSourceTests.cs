@@ -15,7 +15,7 @@ public class VersionSourceTests : TestBase
     public void VersionSourceSha()
     {
         using var fixture = new EmptyRepositoryFixture();
-        var initialCommit = fixture.Repository.MakeACommit();
+        _ = fixture.Repository.MakeACommit();
         Commands.Checkout(fixture.Repository, fixture.Repository.CreateBranch("develop"));
         _ = fixture.Repository.MakeACommit();
         var featureBranch = fixture.Repository.CreateBranch("feature/foo");
@@ -24,24 +24,26 @@ public class VersionSourceTests : TestBase
 
         var nextVersionCalculator = GetNextVersionCalculator(fixture);
 
-        var version = nextVersionCalculator.FindVersion();
+        var nextVersion = nextVersionCalculator.FindVersion();
 
-        version.BuildMetaData.VersionSourceSha.ShouldBe(initialCommit.Sha);
-        version.BuildMetaData.CommitsSinceVersionSource.ShouldBe(2);
+        nextVersion.IncrementedVersion.BuildMetaData.ShouldNotBeNull();
+        nextVersion.IncrementedVersion.BuildMetaData.VersionSourceSha.ShouldBeNull();
+        nextVersion.IncrementedVersion.BuildMetaData.CommitsSinceVersionSource.ShouldBe(3);
     }
 
     [Test]
     public void VersionSourceShaOneCommit()
     {
         using var fixture = new EmptyRepositoryFixture();
-        var initialCommit = fixture.Repository.MakeACommit();
+        _ = fixture.Repository.MakeACommit();
 
         var nextVersionCalculator = GetNextVersionCalculator(fixture);
 
-        var version = nextVersionCalculator.FindVersion();
+        var nextVersion = nextVersionCalculator.FindVersion();
 
-        version.BuildMetaData.VersionSourceSha.ShouldBe(initialCommit.Sha);
-        version.BuildMetaData.CommitsSinceVersionSource.ShouldBe(0);
+        nextVersion.IncrementedVersion.BuildMetaData.ShouldNotBeNull();
+        nextVersion.IncrementedVersion.BuildMetaData.VersionSourceSha.ShouldBeNull();
+        nextVersion.IncrementedVersion.BuildMetaData.CommitsSinceVersionSource.ShouldBe(1);
     }
 
     [Test]
@@ -51,17 +53,18 @@ public class VersionSourceTests : TestBase
         _ = fixture.Repository.MakeACommit();
         Commands.Checkout(fixture.Repository, fixture.Repository.CreateBranch("develop"));
         var secondCommit = fixture.Repository.MakeACommit();
-        _ = fixture.Repository.Tags.Add("1.0", secondCommit);
+        _ = fixture.Repository.Tags.Add("1.0.0", secondCommit);
         var featureBranch = fixture.Repository.CreateBranch("feature/foo");
         Commands.Checkout(fixture.Repository, featureBranch);
         _ = fixture.Repository.MakeACommit();
 
         var nextVersionCalculator = GetNextVersionCalculator(fixture);
 
-        var version = nextVersionCalculator.FindVersion();
+        var nextVersion = nextVersionCalculator.FindVersion();
 
-        version.BuildMetaData.VersionSourceSha.ShouldBe(secondCommit.Sha);
-        version.BuildMetaData.CommitsSinceVersionSource.ShouldBe(1);
+        nextVersion.IncrementedVersion.BuildMetaData.ShouldNotBeNull();
+        nextVersion.IncrementedVersion.BuildMetaData.VersionSourceSha.ShouldBe(secondCommit.Sha);
+        nextVersion.IncrementedVersion.BuildMetaData.CommitsSinceVersionSource.ShouldBe(1);
     }
 
     private static INextVersionCalculator GetNextVersionCalculator(RepositoryFixtureBase fixture)

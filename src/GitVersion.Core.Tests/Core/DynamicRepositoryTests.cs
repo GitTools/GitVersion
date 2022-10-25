@@ -1,4 +1,5 @@
 using GitVersion.Core.Tests.Helpers;
+using GitVersion.Helpers;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using NUnit.Framework;
@@ -8,11 +9,10 @@ namespace GitVersion.Core.Tests;
 [TestFixture]
 public class DynamicRepositoryTests : TestBase
 {
-    private string workDirectory;
+    private string? workDirectory;
 
     private static void ClearReadOnly(DirectoryInfo parentDirectory)
     {
-        if (parentDirectory == null) return;
         parentDirectory.Attributes = FileAttributes.Normal;
         foreach (var fi in parentDirectory.GetFiles())
         {
@@ -28,7 +28,7 @@ public class DynamicRepositoryTests : TestBase
     public void CreateTemporaryRepository()
     {
         // Note: we can't use guid because paths will be too long
-        this.workDirectory = Path.Combine(Path.GetTempPath(), "GV");
+        this.workDirectory = PathHelper.Combine(Path.GetTempPath(), "GV");
 
         // Clean directory upfront, some build agents are having troubles
         if (Directory.Exists(this.workDirectory))
@@ -42,11 +42,9 @@ public class DynamicRepositoryTests : TestBase
         Directory.CreateDirectory(this.workDirectory);
     }
 
-
     [OneTimeTearDown]
     public void Cleanup()
     {
-
     }
 
     // Note: use same name twice to see if changing commits works on same (cached) repository
@@ -55,15 +53,15 @@ public class DynamicRepositoryTests : TestBase
     [TestCase("GV_main", "https://github.com/GitTools/GitVersion", MainBranch, "2dc142a4a4df77db61a00d9fb7510b18b3c2c85a", "5.8.2+47")]
     public void FindsVersionInDynamicRepo(string name, string url, string targetBranch, string commitId, string expectedFullSemVer)
     {
-        var root = Path.Combine(this.workDirectory, name);
-        var dynamicDirectory = Path.Combine(root, "D"); // dynamic, keeping directory as short as possible
-        var workingDirectory = Path.Combine(root, "W"); // working, keeping directory as short as possible
+        var root = PathHelper.Combine(this.workDirectory, name);
+        var dynamicDirectory = PathHelper.Combine(root, "D"); // dynamic, keeping directory as short as possible
+        var workingDirectory = PathHelper.Combine(root, "W"); // working, keeping directory as short as possible
         var gitVersionOptions = new GitVersionOptions
         {
             RepositoryInfo =
             {
                 TargetUrl = url,
-                DynamicRepositoryClonePath = dynamicDirectory,
+                ClonePath = dynamicDirectory,
                 TargetBranch = targetBranch,
                 CommitId = commitId
             },

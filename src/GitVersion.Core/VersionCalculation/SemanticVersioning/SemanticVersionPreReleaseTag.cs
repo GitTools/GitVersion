@@ -8,6 +8,10 @@ namespace GitVersion;
 public class SemanticVersionPreReleaseTag :
     IFormattable, IComparable<SemanticVersionPreReleaseTag>, IEquatable<SemanticVersionPreReleaseTag?>
 {
+    private static readonly Regex ParseRegex = new(
+        @"(?<name>.*?)\.?(?<number>\d+)?$",
+        RegexOptions.Compiled | RegexOptions.IgnoreCase);
+
     private static readonly LambdaEqualityHelper<SemanticVersionPreReleaseTag> EqualityHelper =
         new(x => x.Name, x => x.Number);
 
@@ -15,7 +19,7 @@ public class SemanticVersionPreReleaseTag :
     {
     }
 
-    public SemanticVersionPreReleaseTag(string? name, int? number)
+    public SemanticVersionPreReleaseTag(string? name, long? number)
     {
         Name = name;
         Number = number;
@@ -29,7 +33,9 @@ public class SemanticVersionPreReleaseTag :
     }
 
     public string? Name { get; set; }
-    public int? Number { get; set; }
+
+    public long? Number { get; set; }
+
     public bool? PromotedFromCommits { get; set; }
 
     public override bool Equals(object? obj) => Equals(obj as SemanticVersionPreReleaseTag);
@@ -67,7 +73,7 @@ public class SemanticVersionPreReleaseTag :
             return new SemanticVersionPreReleaseTag();
         }
 
-        var match = Regex.Match(preReleaseTag, @"(?<name>.*?)\.?(?<number>\d+)?$");
+        var match = ParseRegex.Match(preReleaseTag);
         if (!match.Success)
         {
             // TODO check how to log this
@@ -76,11 +82,10 @@ public class SemanticVersionPreReleaseTag :
         }
 
         var value = match.Groups["name"].Value;
-        var number = match.Groups["number"].Success ? int.Parse(match.Groups["number"].Value) : (int?)null;
-        if (value.EndsWith("-"))
-            return new SemanticVersionPreReleaseTag(preReleaseTag, null);
-
-        return new SemanticVersionPreReleaseTag(value, number);
+        var number = match.Groups["number"].Success ? long.Parse(match.Groups["number"].Value) : (long?)null;
+        return value.EndsWith("-")
+            ? new SemanticVersionPreReleaseTag(preReleaseTag, null)
+            : new SemanticVersionPreReleaseTag(value, number);
     }
 
     public int CompareTo(SemanticVersionPreReleaseTag? other)
@@ -105,8 +110,6 @@ public class SemanticVersionPreReleaseTag :
     /// <summary>
     /// Default formats:
     /// <para>t - SemVer 2.0 formatted tag [beta.1]</para>
-    /// <para>l - Legacy SemVer tag with the tag number padded. [beta1]</para>
-    /// <para>lp - Legacy SemVer tag with the tag number padded. [beta0001]. Can specify an integer to control padding (i.e., lp5)</para>
     /// </summary>
     public string ToString(string? format, IFormatProvider? formatProvider)
     {
@@ -117,47 +120,12 @@ public class SemanticVersionPreReleaseTag :
             format = "t";
 
         format = format.ToLower();
-        if (format.StartsWith("lp", StringComparison.Ordinal))
-        {
-            // Handle format
-            var padding = 4;
-            if (format.Length > 2)
-            {
-                // try to parse
-                if (int.TryParse(format.Substring(2), out var p))
-                {
-                    padding = p;
-                }
-            }
-
-            return Number.HasValue ? FormatLegacy(GetLegacyName(), Number.Value.ToString("D" + padding)) : FormatLegacy(GetLegacyName());
-        }
 
         return format switch
         {
             "t" => (Number.HasValue ? Name.IsNullOrEmpty() ? $"{Number}" : $"{Name}.{Number}" : Name ?? string.Empty),
-            "l" => (Number.HasValue ? FormatLegacy(GetLegacyName(), Number.Value.ToString()) : FormatLegacy(GetLegacyName())),
             _ => throw new FormatException($"Unknown format '{format}'.")
         };
-    }
-
-    private static string FormatLegacy(string tag, string number = "")
-    {
-        var tagEndsWithANumber = char.IsNumber(tag.LastOrDefault());
-        if (tagEndsWithANumber && number.Length > 0)
-            number = "-" + number;
-
-        return tag.Length + number.Length > 20 ? $"{tag.Substring(0, 20 - number.Length)}{number}" : $"{tag}{number}";
-    }
-
-    private string GetLegacyName()
-    {
-        if (Name.IsNullOrEmpty())
-        {
-            return string.Empty;
-        }
-        var firstPart = Name.Split('_')[0];
-        return firstPart.Replace(".", string.Empty);
     }
 
     public bool HasTag() =>

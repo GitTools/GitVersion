@@ -43,7 +43,7 @@ internal class MainlineVersionCalculator : IMainlineVersionCalculator
             var mainlineTip = mainline.Tip;
 
             // when the current branch is not mainline, find the effective mainline tip for versioning the branch
-            if (!context.CurrentBranch!.Equals(mainline))
+            if (!context.CurrentBranch.Equals(mainline))
             {
                 (mergeBase, mainlineTip) = FindMergeBaseBeforeForwardMerge(baseVersion.BaseVersionSource, mainline);
                 this.log.Info($"Current branch ({context.CurrentBranch}) was branch from {mergeBase}");
@@ -52,7 +52,7 @@ internal class MainlineVersionCalculator : IMainlineVersionCalculator
             var mainlineCommitLog = this.repositoryStore.GetMainlineCommitLog(baseVersion.BaseVersionSource, mainlineTip).ToList();
             var directCommits = new List<ICommit>(mainlineCommitLog.Count);
 
-            var nextVersion = context.Configuration?.NextVersion;
+            var nextVersion = context.Configuration.NextVersion;
             if (nextVersion.IsNullOrEmpty())
             {
                 // Scans commit log in reverse, aggregating merge commits
@@ -79,22 +79,34 @@ internal class MainlineVersionCalculator : IMainlineVersionCalculator
 
                 mainlineVersion = mainlineVersion.IncrementVersion(branchIncrement);
             }
-
             return mainlineVersion;
         }
     }
 
     public SemanticVersionBuildMetaData CreateVersionBuildMetaData(ICommit? baseVersionSource)
     {
-        var commitLog = this.repositoryStore.GetCommitLog(baseVersionSource, context.CurrentCommit);
-        var commitsSinceTag = commitLog.Count();
-        this.log.Info($"{commitsSinceTag} commits found between {baseVersionSource} and {context.CurrentCommit}");
+        int commitsSinceTag = 0;
+        if (context.CurrentCommit != null)
+        {
+            var commitLogs = this.repositoryStore.GetCommitLog(baseVersionSource, context.CurrentCommit);
+
+            var ignore = context.Configuration.Ignore;
+            if (!ignore.IsEmpty)
+            {
+                var shasToIgnore = new HashSet<string>(ignore.Shas);
+                commitLogs = commitLogs
+                    .Where(c => ignore.Before is null || c.When > ignore.Before && !shasToIgnore.Contains(c.Sha));
+            }
+            commitsSinceTag = commitLogs.Count();
+
+            this.log.Info($"{commitsSinceTag} commits found between {baseVersionSource} and {context.CurrentCommit}");
+        }
 
         var shortSha = context.CurrentCommit?.Id.ToString(7);
         return new SemanticVersionBuildMetaData(
             baseVersionSource?.Sha,
             commitsSinceTag,
-            context.CurrentBranch?.Name.Friendly,
+            context.CurrentBranch.Name.Friendly,
             context.CurrentCommit?.Sha,
             shortSha,
             context.CurrentCommit?.When,
@@ -123,26 +135,38 @@ internal class MainlineVersionCalculator : IMainlineVersionCalculator
 
     private IBranch GetMainline(ICommit? baseVersionSource)
     {
-        var mainlineBranchConfigs = context.FullConfiguration?.Branches.Where(b => b.Value?.IsMainline == true).ToList();
-        var mainlineBranches = this.repositoryStore.GetMainlineBranches(context.CurrentCommit!, mainlineBranchConfigs);
+        if (context.Configuration.Branches.TryGetValue(context.CurrentBranch.Name.Friendly, out var branchConfiguration)
+            && branchConfiguration.IsMainline == true)
+        {
+            return context.CurrentBranch;
+        }
+
+        IDictionary<string, List<IBranch>>? mainlineBranches = null;
+
+        if (context.CurrentCommit != null)
+        {
+            mainlineBranches = this.repositoryStore.GetMainlineBranches(context.CurrentCommit, context.Configuration);
+        }
+        mainlineBranches ??= new Dictionary<string, List<IBranch>>();
 
         if (!mainlineBranches.Any())
         {
-            throw new WarningException("No mainline branches found!");
+            var mainlineBranchConfigsString = string.Join(", ", context.Configuration.Branches.Where(b => b.Value?.IsMainline == true).Select(b => b.Value.Name));
+            throw new WarningException($"No branches can be found matching the commit {context.CurrentCommit?.Sha} in the configured Mainline branches: {mainlineBranchConfigsString}");
         }
 
         var mainlineBranchNames = mainlineBranches.Values.SelectMany(branches => branches.Select(b => b.Name.Friendly));
         this.log.Info("Found possible mainline branches: " + string.Join(", ", mainlineBranchNames));
 
         // Find closest mainline branch
-        var firstMatchingCommit = context.CurrentBranch?.Commits.FirstOrDefault(c => mainlineBranches.ContainsKey(c.Sha));
+        var firstMatchingCommit = context.CurrentBranch.Commits?.FirstOrDefault(c => mainlineBranches.ContainsKey(c.Sha));
         if (firstMatchingCommit is null)
         {
             var mainlineBranchList = mainlineBranches.Values.SelectMany(x => x).ToList();
             return FindMainlineBranch(mainlineBranchList, baseVersionSource, context.CurrentCommit);
         }
 
-        var possibleMainlineBranches = mainlineBranches[firstMatchingCommit!.Sha];
+        var possibleMainlineBranches = mainlineBranches[firstMatchingCommit.Sha];
         return FindMainlineBranch(possibleMainlineBranches, baseVersionSource, firstMatchingCommit);
     }
 
@@ -156,10 +180,10 @@ internal class MainlineVersionCalculator : IMainlineVersionCalculator
         }
 
         // prefer current branch, if it is a mainline branch
-        if (possibleMainlineBranches.Any(context.CurrentBranch!.Equals))
+        if (possibleMainlineBranches.Any(context.CurrentBranch.Equals))
         {
             this.log.Info($"Choosing {context.CurrentBranch} as mainline because it is the current branch");
-            return context.CurrentBranch!;
+            return context.CurrentBranch;
         }
 
         // prefer a branch on which the merge base was a direct commit, if there is such a branch
@@ -221,9 +245,9 @@ internal class MainlineVersionCalculator : IMainlineVersionCalculator
         var mainlineCommitLog = this.repositoryStore.GetMainlineCommitLog(baseVersionSource, mainlineTipCurrent).ToList();
 
         // find the mainline commit effective for versioning the current branch
-        if (context.CurrentCommit != null)
+        if (context.CurrentCommit != null && mainlineTipCurrent != null)
         {
-            var mergeBase = this.repositoryStore.FindMergeBase(context.CurrentCommit, mainlineTipCurrent!);
+            var mergeBase = this.repositoryStore.FindMergeBase(context.CurrentCommit, mainlineTipCurrent);
             if (mergeBase != null)
             {
                 var mainlineTip = GetEffectiveMainlineTip(mainlineCommitLog, mergeBase, mainlineTipCurrent);
@@ -249,12 +273,12 @@ internal class MainlineVersionCalculator : IMainlineVersionCalculator
         return (null, null);
     }
 
-    private SemanticVersion IncrementForEachCommit(IEnumerable<ICommit> directCommits, SemanticVersion mainlineVersion, IBranch mainline)
+    private SemanticVersion IncrementForEachCommit(IEnumerable<ICommit> directCommits, SemanticVersion mainlineVersion, INamedReference mainline)
     {
         foreach (var directCommit in directCommits)
         {
-            var directCommitIncrement = this.incrementStrategyFinder.GetIncrementForCommits(context, new[] { directCommit })
-                                        ?? FindDefaultIncrementForBranch(context, mainline.Name.Friendly);
+            var directCommitIncrement = this.incrementStrategyFinder.GetIncrementForCommits(context.Configuration, new[] { directCommit })
+                ?? FindDefaultIncrementForBranch(context, mainline.Name.Friendly);
             mainlineVersion = mainlineVersion.IncrementVersion(directCommitIncrement);
             this.log.Info($"Direct commit on main {directCommit} incremented base versions {directCommitIncrement}, now {mainlineVersion}");
         }
@@ -266,32 +290,36 @@ internal class MainlineVersionCalculator : IMainlineVersionCalculator
     {
         var commits = this.repositoryStore.GetMergeBaseCommits(mergeCommit, mergedHead, findMergeBase);
         commitLog.RemoveAll(c => commits.Any(c1 => c1.Sha == c.Sha));
-        return this.incrementStrategyFinder.GetIncrementForCommits(context, commits) ?? TryFindIncrementFromMergeMessage(mergeCommit);
+        return this.incrementStrategyFinder.GetIncrementForCommits(context.Configuration, commits)
+            ?? TryFindIncrementFromMergeMessage(mergeCommit);
     }
 
     private VersionField TryFindIncrementFromMergeMessage(ICommit? mergeCommit)
     {
         if (mergeCommit != null)
         {
-            var mergeMessage = new MergeMessage(mergeCommit.Message, context.FullConfiguration);
-            var config = context.FullConfiguration?.GetConfigForBranch(mergeMessage.MergedBranch);
-            if (config?.Increment != null && config.Increment != IncrementStrategy.Inherit)
+            var mergeMessage = new MergeMessage(mergeCommit.Message, context.Configuration);
+            var configuration = context.Configuration.GetBranchConfiguration(mergeMessage.MergedBranch);
+            if (configuration.Increment != null && configuration.Increment != IncrementStrategy.Inherit)
             {
-                return config.Increment.Value.ToVersionField();
+                return configuration.Increment.Value.ToVersionField();
             }
         }
 
-        // Fallback to config increment value
+        // Fallback to configuration increment value
         return FindDefaultIncrementForBranch(context);
     }
 
-    private static VersionField FindDefaultIncrementForBranch(GitVersionContext context, string? branch = null)
+    private static VersionField FindDefaultIncrementForBranch(GitVersionContext context, string? branchName = null)
     {
-        var config = context.FullConfiguration?.GetConfigForBranch(branch ?? context.CurrentBranch?.Name.WithoutRemote);
-        if (config?.Increment != null && config.Increment != IncrementStrategy.Inherit)
+        var configuration = context.Configuration.GetBranchConfiguration(branchName ?? context.CurrentBranch.Name.WithoutRemote);
+        if (configuration.Increment != null && configuration.Increment != IncrementStrategy.Inherit)
         {
-            return config.Increment.Value.ToVersionField();
+            return configuration.Increment.Value.ToVersionField();
         }
+
+        // TODO: Hardcoded fallback values are not so good. It might be better to get this information either from the fallback or the unknown
+        // branch configuration settings I have introduced. We should think about it: This is a cooking machine... the ingredients are coming from the user. ;)
 
         // Fallback to patch
         return VersionField.Patch;

@@ -1,3 +1,4 @@
+using GitVersion.Extensions;
 using GitVersion.Helpers;
 
 namespace GitVersion;
@@ -9,6 +10,7 @@ internal class GitObject : IGitObject
 
     internal GitObject(LibGit2Sharp.GitObject innerGitObject)
     {
+        innerGitObject = innerGitObject.NotNull();
         Id = new ObjectId(innerGitObject.Id);
         Sha = innerGitObject.Sha;
     }

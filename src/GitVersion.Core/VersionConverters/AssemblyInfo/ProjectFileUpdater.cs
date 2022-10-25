@@ -1,5 +1,6 @@
 using System.Xml.Linq;
 using GitVersion.Extensions;
+using GitVersion.Helpers;
 using GitVersion.Logging;
 using GitVersion.OutputVariables;
 
@@ -39,7 +40,7 @@ public sealed class ProjectFileUpdater : IProjectFileUpdater
         var assemblyVersion = variables.AssemblySemVer;
         var assemblyInfoVersion = variables.InformationalVersion;
         var assemblyFileVersion = variables.AssemblySemFileVer;
-        var packageVersion = variables.NuGetVersion;
+        var packageVersion = variables.SemVer;
 
         foreach (var projectFile in projectFilesToUpdate)
         {
@@ -182,7 +183,7 @@ public sealed class ProjectFileUpdater : IProjectFileUpdater
         {
             foreach (var item in assemblyInfoFileNames)
             {
-                var fullPath = Path.Combine(workingDirectory, item);
+                var fullPath = PathHelper.Combine(workingDirectory, item);
 
                 if (this.fileSystem.Exists(fullPath))
                 {

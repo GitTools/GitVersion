@@ -8,7 +8,6 @@ namespace GitTools.Testing;
 /// </summary>
 public abstract class RepositoryFixtureBase : IDisposable
 {
-    private readonly SequenceDiagram sequenceDiagram;
 
     protected RepositoryFixtureBase(Func<string, IRepository> repoBuilder)
         : this(repoBuilder(PathHelper.GetTempPath()))
@@ -17,7 +16,7 @@ public abstract class RepositoryFixtureBase : IDisposable
 
     protected RepositoryFixtureBase(IRepository repository)
     {
-        this.sequenceDiagram = new SequenceDiagram();
+        this.SequenceDiagram = new SequenceDiagram();
         Repository = repository;
         Repository.Config.Set("user.name", "Test");
         Repository.Config.Set("user.email", "test@email.com");
@@ -27,7 +26,8 @@ public abstract class RepositoryFixtureBase : IDisposable
 
     public string RepositoryPath => Repository.Info.WorkingDirectory.TrimEnd('\\');
 
-    public SequenceDiagram SequenceDiagram => this.sequenceDiagram;
+    public SequenceDiagram SequenceDiagram { get; }
+
 
     /// <summary>
     ///     Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
@@ -57,15 +57,15 @@ public abstract class RepositoryFixtureBase : IDisposable
                 e.Message);
         }
 
-        this.sequenceDiagram.End();
+        this.SequenceDiagram.End();
         Console.WriteLine("**Visualisation of test:**");
         Console.WriteLine(string.Empty);
-        Console.WriteLine(this.sequenceDiagram.GetDiagram());
+        Console.WriteLine(this.SequenceDiagram.GetDiagram());
     }
 
     public void Checkout(string branch) => Commands.Checkout(Repository, branch);
 
-    public static void Init(string path) => GitTestExtensions.ExecuteGitCmd($"init {path} -b main");
+    public static void Init(string path, string branchName) => GitTestExtensions.ExecuteGitCmd($"init {path} -b {branchName}");
 
     public void MakeATaggedCommit(string tag)
     {
@@ -75,20 +75,20 @@ public abstract class RepositoryFixtureBase : IDisposable
 
     public void ApplyTag(string tag)
     {
-        this.sequenceDiagram.ApplyTag(tag, Repository.Head.FriendlyName);
+        this.SequenceDiagram.ApplyTag(tag, Repository.Head.FriendlyName);
         Repository.ApplyTag(tag);
     }
 
-    public void BranchTo(string branchName, string @as = null)
+    public void BranchTo(string branchName, string? @as = null)
     {
-        this.sequenceDiagram.BranchTo(branchName, Repository.Head.FriendlyName, @as);
+        this.SequenceDiagram.BranchTo(branchName, Repository.Head.FriendlyName, @as);
         var branch = Repository.CreateBranch(branchName);
         Commands.Checkout(Repository, branch);
     }
 
-    public void BranchToFromTag(string branchName, string fromTag, string onBranch, string @as = null)
+    public void BranchToFromTag(string branchName, string fromTag, string onBranch, string? @as = null)
     {
-        this.sequenceDiagram.BranchToFromTag(branchName, fromTag, onBranch, @as);
+        this.SequenceDiagram.BranchToFromTag(branchName, fromTag, onBranch, @as);
         var branch = Repository.CreateBranch(branchName);
         Commands.Checkout(Repository, branch);
     }
@@ -96,7 +96,7 @@ public abstract class RepositoryFixtureBase : IDisposable
     public void MakeACommit()
     {
         var to = Repository.Head.FriendlyName;
-        this.sequenceDiagram.MakeACommit(to);
+        this.SequenceDiagram.MakeACommit(to);
         Repository.MakeACommit();
     }
 
@@ -105,7 +105,7 @@ public abstract class RepositoryFixtureBase : IDisposable
     /// </summary>
     public void MergeNoFF(string mergeSource)
     {
-        this.sequenceDiagram.Merge(mergeSource, Repository.Head.FriendlyName);
+        this.SequenceDiagram.Merge(mergeSource, Repository.Head.FriendlyName);
         Repository.MergeNoFF(mergeSource, Generate.SignatureNow());
     }
 

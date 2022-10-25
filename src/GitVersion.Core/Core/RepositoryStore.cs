@@ -3,96 +3,28 @@ using GitVersion.Common;
 using GitVersion.Configuration;
 using GitVersion.Extensions;
 using GitVersion.Logging;
-using GitVersion.Model.Configuration;
-using GitVersion.VersionCalculation;
 
 namespace GitVersion;
 
 public class RepositoryStore : IRepositoryStore
 {
-    private readonly Dictionary<IBranch, List<BranchCommit>> mergeBaseCommitsCache = new();
-    private readonly Dictionary<Tuple<IBranch, IBranch?>, ICommit?> mergeBaseCache = new();
-    private readonly Dictionary<IBranch, List<SemanticVersion>> semanticVersionTagsOnBranchCache = new();
-    private const string MissingTipFormat = "{0} has no tip. Please see https://example.com/docs for information on how to fix this.";
-
     private readonly ILog log;
     private readonly IGitRepository repository;
-    private readonly IIncrementStrategyFinder incrementStrategyFinder;
+    private readonly Dictionary<IBranch, List<SemanticVersion>> semanticVersionTagsOnBranchCache = new();
+    private readonly MergeBaseFinder mergeBaseFinder;
 
-    public RepositoryStore(ILog log, IGitRepository repository, IIncrementStrategyFinder incrementStrategyFinder)
+    public RepositoryStore(ILog log, IGitRepository repository)
     {
         this.log = log.NotNull();
         this.repository = repository.NotNull();
-        this.incrementStrategyFinder = incrementStrategyFinder.NotNull();
+        this.mergeBaseFinder = new MergeBaseFinder(this, repository, log);
     }
 
     /// <summary>
-    /// Find the merge base of the two branches, i.e. the best common ancestor of the two branches' tips.
+    ///     Find the merge base of the two branches, i.e. the best common ancestor of the two branches' tips.
     /// </summary>
-    public ICommit? FindMergeBase(IBranch branch, IBranch? otherBranch)
-    {
-        var key = Tuple.Create(branch, otherBranch);
-
-        if (this.mergeBaseCache.ContainsKey(key))
-        {
-            this.log.Debug($"Cache hit for merge base between '{branch}' and '{otherBranch}'.");
-            return this.mergeBaseCache[key];
-        }
-
-        using (this.log.IndentLog($"Finding merge base between '{branch}' and '{otherBranch}'."))
-        {
-            // Other branch tip is a forward merge
-            var commitToFindCommonBase = otherBranch?.Tip;
-            var commit = branch.Tip!;
-            if (commitToFindCommonBase?.Parents.Contains(commit) == true)
-            {
-                commitToFindCommonBase = otherBranch!.Tip!.Parents.First();
-            }
-
-            var findMergeBase = FindMergeBase(commit, commitToFindCommonBase!);
-            if (findMergeBase != null)
-            {
-                this.log.Info($"Found merge base of {findMergeBase}");
-                // We do not want to include merge base commits which got forward merged into the other branch
-                ICommit? forwardMerge;
-                do
-                {
-                    // Now make sure that the merge base is not a forward merge
-                    forwardMerge = GetForwardMerge(commitToFindCommonBase, findMergeBase);
-
-                    if (forwardMerge != null)
-                    {
-                        // TODO Fix the logging up in this section
-                        var second = forwardMerge.Parents.First();
-                        this.log.Debug($"Second {second}");
-                        var mergeBase = FindMergeBase(commit, second);
-                        if (mergeBase == null)
-                        {
-                            this.log.Warning("Could not find merge base for " + commit);
-                        }
-                        else
-                        {
-                            this.log.Debug($"New Merge base {mergeBase}");
-                        }
-                        if (Equals(mergeBase, findMergeBase))
-                        {
-                            this.log.Debug("Breaking");
-                            break;
-                        }
-                        findMergeBase = mergeBase;
-                        commitToFindCommonBase = second;
-                        this.log.Info($"Merge base was due to a forward merge, next merge base is {findMergeBase}");
-                    }
-                } while (forwardMerge != null);
-            }
-
-            // Store in cache.
-            this.mergeBaseCache.Add(key, findMergeBase);
-
-            this.log.Info($"Merge base of {branch}' and '{otherBranch} is {findMergeBase}");
-            return findMergeBase;
-        }
-    }
+    public ICommit? FindMergeBase(IBranch? branch, IBranch? otherBranch)
+        => this.mergeBaseFinder.FindMergeBaseOf(branch, otherBranch);
 
     public ICommit? GetCurrentCommit(IBranch currentBranch, string? commitId)
     {
@@ -112,30 +44,13 @@ public class RepositoryStore : IRepositoryStore
             }
         }
 
-        if (currentCommit == null)
-        {
-            this.log.Info("Using latest commit on specified branch");
-            currentCommit = currentBranch.Tip;
-        }
+        if (currentCommit != null)
+            return currentCommit;
+
+        this.log.Info("Using latest commit on specified branch");
+        currentCommit = currentBranch.Tip;
 
         return currentCommit;
-    }
-    public ICommit GetBaseVersionSource(ICommit currentBranchTip)
-    {
-        try
-        {
-            var filter = new CommitFilter
-            {
-                IncludeReachableFrom = currentBranchTip
-            };
-            var commitCollection = this.repository.Commits.QueryBy(filter);
-
-            return commitCollection.First(c => !c.Parents.Any());
-        }
-        catch (Exception exception)
-        {
-            throw new GitVersionException($"Cannot find commit {currentBranchTip}. Please ensure that the repository is an unshallow clone with `git fetch --unshallow`.", exception);
-        }
     }
 
     public IEnumerable<ICommit> GetMainlineCommitLog(ICommit? baseVersionSource, ICommit? mainlineTip)
@@ -145,31 +60,18 @@ public class RepositoryStore : IRepositoryStore
             return Enumerable.Empty<ICommit>();
         }
 
-        var filter = new CommitFilter
-        {
-            IncludeReachableFrom = mainlineTip,
-            ExcludeReachableFrom = baseVersionSource,
-            SortBy = CommitSortStrategies.Reverse,
-            FirstParentOnly = true
-        };
+        var filter = new CommitFilter { IncludeReachableFrom = mainlineTip, ExcludeReachableFrom = baseVersionSource, SortBy = CommitSortStrategies.Reverse, FirstParentOnly = true };
 
         return this.repository.Commits.QueryBy(filter);
     }
 
     public IEnumerable<ICommit> GetMergeBaseCommits(ICommit? mergeCommit, ICommit? mergedHead, ICommit? findMergeBase)
     {
-        var filter = new CommitFilter
-        {
-            IncludeReachableFrom = mergedHead,
-            ExcludeReachableFrom = findMergeBase
-        };
+        var filter = new CommitFilter { IncludeReachableFrom = mergedHead, ExcludeReachableFrom = findMergeBase };
         var commitCollection = this.repository.Commits.QueryBy(filter);
 
         var commits = mergeCommit != null
-            ? new[]
-            {
-                mergeCommit
-            }.Union(commitCollection)
+            ? new[] { mergeCommit }.Union(commitCollection)
             : commitCollection;
         return commits;
     }
@@ -180,189 +82,152 @@ public class RepositoryStore : IRepositoryStore
         var desiredBranch = this.repository.Head;
 
         // Make sure the desired branch has been specified
-        if (!targetBranchName.IsNullOrEmpty())
-        {
-            // There are some edge cases where HEAD is not pointing to the desired branch.
-            // Therefore it's important to verify if 'currentBranch' is indeed the desired branch.
+        if (targetBranchName.IsNullOrEmpty())
+            return desiredBranch;
 
-            var targetBranch = FindBranch(targetBranchName);
-            // CanonicalName can be "refs/heads/develop", so we need to check for "/{TargetBranch}" as well
-            if (!desiredBranch.Equals(targetBranch))
-            {
-                // In the case where HEAD is not the desired branch, try to find the branch with matching name
-                desiredBranch = this.repository.Branches
-                    .Where(b => b.Name.EquivalentTo(targetBranchName))
-                    .OrderBy(b => b.IsRemote)
-                    .FirstOrDefault();
+        // There are some edge cases where HEAD is not pointing to the desired branch.
+        // Therefore it's important to verify if 'currentBranch' is indeed the desired branch.
+        var targetBranch = FindBranch(targetBranchName);
 
-                // Failsafe in case the specified branch is invalid
-                desiredBranch ??= this.repository.Head;
-            }
-        }
+        // CanonicalName can be "refs/heads/develop", so we need to check for "/{TargetBranch}" as well
+        if (desiredBranch.Equals(targetBranch))
+            return desiredBranch;
+
+        // In the case where HEAD is not the desired branch, try to find the branch with matching name
+        desiredBranch = this.repository.Branches
+            .Where(b => b.Name.EquivalentTo(targetBranchName))
+            .OrderBy(b => b.IsRemote)
+            .FirstOrDefault();
+
+        // Failsafe in case the specified branch is invalid
+        desiredBranch ??= this.repository.Head;
 
         return desiredBranch;
     }
 
     public IBranch? FindBranch(string? branchName) => this.repository.Branches.FirstOrDefault(x => x.Name.EquivalentTo(branchName));
 
-    public IBranch? GetChosenBranch(Config configuration)
+    public IBranch? FindMainBranch(GitVersionConfiguration configuration)
     {
-        var developBranchRegex = configuration.Branches[Config.DevelopBranchKey]?.Regex;
-        var mainBranchRegex = configuration.Branches[Config.MainBranchKey]?.Regex;
+        var mainBranchRegex = configuration.Branches[GitVersionConfiguration.MainBranchKey]?.Regex
+                              ?? configuration.Branches[GitVersionConfiguration.MasterBranchKey]?.Regex;
 
-        if (mainBranchRegex == null || developBranchRegex == null) return null;
-        var chosenBranch = this.repository.Branches.FirstOrDefault(b =>
-            Regex.IsMatch(b.Name.Friendly, developBranchRegex, RegexOptions.IgnoreCase)
-            || Regex.IsMatch(b.Name.Friendly, mainBranchRegex, RegexOptions.IgnoreCase));
-        return chosenBranch;
+        if (mainBranchRegex == null)
+        {
+            return FindBranch(GitVersionConfiguration.MainBranchKey) ?? FindBranch(GitVersionConfiguration.MasterBranchKey);
+        }
+
+        return this.repository.Branches.FirstOrDefault(b =>
+            Regex.IsMatch(b.Name.Friendly, mainBranchRegex, RegexOptions.IgnoreCase));
     }
 
-    public IEnumerable<IBranch> GetBranchesForCommit(ICommit commit) => this.repository.Branches.Where(b => !b.IsRemote && Equals(b.Tip, commit)).ToList();
-
-    public IEnumerable<IBranch> GetExcludedInheritBranches(Config configuration) => this.repository.Branches.Where(b =>
-    {
-        var branchConfig = configuration.GetConfigForBranch(b.Name.WithoutRemote);
-
-        return branchConfig == null || branchConfig.Increment == IncrementStrategy.Inherit;
-    }).ToList();
-
-    public IEnumerable<IBranch> GetReleaseBranches(IEnumerable<KeyValuePair<string, BranchConfig?>>? releaseBranchConfig) =>
-        this.repository.Branches
-            .Where(b => releaseBranchConfig?.Any(c => c.Value?.Regex != null && Regex.IsMatch(b.Name.Friendly, c.Value.Regex)) == true);
+    public IEnumerable<IBranch> GetReleaseBranches(IEnumerable<KeyValuePair<string, BranchConfiguration>> releaseBranchConfig)
+        => this.repository.Branches.Where(b => IsReleaseBranch(b, releaseBranchConfig));
 
     public IEnumerable<IBranch> ExcludingBranches(IEnumerable<IBranch> branchesToExclude) => this.repository.Branches.ExcludeBranches(branchesToExclude);
 
-    // TODO Should we cache this?
     public IEnumerable<IBranch> GetBranchesContainingCommit(ICommit? commit, IEnumerable<IBranch>? branches = null, bool onlyTrackedBranches = false)
     {
-        if (commit == null)
+        var branchesContainingCommitFinder = new BranchesContainingCommitFinder(this.repository, this.log);
+        return branchesContainingCommitFinder.GetBranchesContainingCommit(commit, branches, onlyTrackedBranches);
+    }
+
+    public IDictionary<string, List<IBranch>> GetMainlineBranches(ICommit commit, GitVersionConfiguration configuration)
+    {
+        var mainlineBranchFinder = new MainlineBranchFinder(this, this.repository, configuration, this.log);
+        return mainlineBranchFinder.FindMainlineBranches(commit);
+    }
+
+    public IEnumerable<IBranch> GetSourceBranches(IBranch branch, GitVersionConfiguration configuration, params IBranch[] excludedBranches)
+        => GetSourceBranches(branch, configuration, (IEnumerable<IBranch>)excludedBranches);
+
+    public IEnumerable<IBranch> GetSourceBranches(IBranch branch, GitVersionConfiguration configuration, IEnumerable<IBranch> excludedBranches)
+    {
+        var referenceLookup = this.repository.Refs.ToLookup(r => r.TargetIdentifier);
+
+        var returnedBranches = new HashSet<IBranch>();
+        if (referenceLookup.Any())
         {
-            throw new ArgumentNullException(nameof(commit));
-        }
-
-        return InnerGetBranchesContainingCommit(commit, branches, onlyTrackedBranches, this.repository, this.log);
-
-        static bool IncludeTrackedBranches(IBranch branch, bool includeOnlyTracked) => includeOnlyTracked && branch.IsTracking || !includeOnlyTracked;
-
-        // Yielding part is split from the main part of the method to avoid having the exception check performed lazily.
-        // Details at https://github.com/GitTools/GitVersion/issues/2755
-        static IEnumerable<IBranch> InnerGetBranchesContainingCommit(ICommit commit, IEnumerable<IBranch>? branches, bool onlyTrackedBranches, IGitRepository repository, ILog log)
-        {
-            branches ??= repository.Branches.ToList();
-
-            using (log.IndentLog($"Getting branches containing the commit '{commit.Id}'."))
+            foreach (var branchCommit in FindCommitBranchesWasBranchedFrom(branch, configuration, excludedBranches))
             {
-                var directBranchHasBeenFound = false;
-                log.Info("Trying to find direct branches.");
-                // TODO: It looks wasteful looping through the branches twice. Can't these loops be merged somehow? @asbjornu
-                var branchList = branches.ToList();
-                foreach (var branch in branchList)
+                foreach (var _ in referenceLookup[branchCommit.Commit.Sha]
+                    .Where(r => r.Name.Friendly == branchCommit.Branch.Name.Friendly))
                 {
-                    if (branch.Tip != null && branch.Tip.Sha != commit.Sha || IncludeTrackedBranches(branch, onlyTrackedBranches))
+                    if (returnedBranches.Add(branchCommit.Branch))
                     {
-                        continue;
+                        yield return branchCommit.Branch;
                     }
-
-                    directBranchHasBeenFound = true;
-                    log.Info($"Direct branch found: '{branch}'.");
-                    yield return branch;
-                }
-
-                if (directBranchHasBeenFound)
-                {
-                    yield break;
-                }
-
-                log.Info($"No direct branches found, searching through {(onlyTrackedBranches ? "tracked" : "all")} branches.");
-                foreach (var branch in branchList.Where(b => IncludeTrackedBranches(b, onlyTrackedBranches)))
-                {
-                    log.Info($"Searching for commits reachable from '{branch}'.");
-
-                    var commits = GetCommitsReacheableFrom(repository, commit, branch);
-
-                    if (!commits.Any())
-                    {
-                        log.Info($"The branch '{branch}' has no matching commits.");
-                        continue;
-                    }
-
-                    log.Info($"The branch '{branch}' has a matching commit.");
-                    yield return branch;
                 }
             }
         }
     }
 
-    public Dictionary<string, List<IBranch>> GetMainlineBranches(ICommit commit, IEnumerable<KeyValuePair<string, BranchConfig?>>? mainlineBranchConfigs) =>
-        this.repository.Branches
-            .Where(b => mainlineBranchConfigs?.Any(c => c.Value?.Regex != null && Regex.IsMatch(b.Name.Friendly, c.Value.Regex)) == true)
-            .Select(b => new { Origin = FindBranchOrigin(b, commit), Branch = b })
-            .Where(a => a.Origin != null)
-            .GroupBy(b => b.Origin?.Sha, b => b.Branch)
-            .ToDictionary(b => b.Key, b => b.ToList());
-
-    private ICommit FindBranchOrigin(IBranch branch, ICommit commit) =>
-        FindMergeBase(branch.Tip!, commit) ?? FindCommitBranchWasBranchedFrom(branch, null).Commit;
-
-
     /// <summary>
-    /// Find the commit where the given branch was branched from another branch.
-    /// If there are multiple such commits and branches, tries to guess based on commit histories.
+    ///     Find the commit where the given branch was branched from another branch.
+    ///     If there are multiple such commits and branches, tries to guess based on commit histories.
     /// </summary>
-    public BranchCommit FindCommitBranchWasBranchedFrom(IBranch branch, Config? configuration, params IBranch[] excludedBranches)
+    public BranchCommit FindCommitBranchWasBranchedFrom(IBranch? branch, GitVersionConfiguration configuration, params IBranch[] excludedBranches)
     {
-        if (branch == null)
-        {
-            throw new ArgumentNullException(nameof(branch));
-        }
+        branch = branch.NotNull();
 
         using (this.log.IndentLog($"Finding branch source of '{branch}'"))
         {
             if (branch.Tip == null)
             {
-                this.log.Warning(string.Format(MissingTipFormat, branch));
+                this.log.Warning($"{branch} has no tip.");
                 return BranchCommit.Empty;
             }
 
-            var possibleBranches = GetMergeCommitsForBranch(branch, configuration, excludedBranches)
-                .Where(b => !branch.Name.EquivalentTo(b.Branch.Name.WithoutRemote))
-                .ToList();
+            var possibleBranches =
+                new MergeCommitFinder(this, configuration, excludedBranches, this.log)
+                    .FindMergeCommitsFor(branch)
+                    .ToList();
 
-            if (possibleBranches.Count > 1)
-            {
-                var first = possibleBranches.First();
-                this.log.Info($"Multiple source branches have been found, picking the first one ({first.Branch}).{System.Environment.NewLine}" +
-                              $"This may result in incorrect commit counting.{System.Environment.NewLine}Options were:{System.Environment.NewLine}" +
-                              string.Join(", ", possibleBranches.Select(b => b.Branch.ToString())));
-                return first;
-            }
+            if (possibleBranches.Count <= 1)
+                return possibleBranches.SingleOrDefault();
 
-            return possibleBranches.SingleOrDefault();
+            var first = possibleBranches.First();
+            this.log.Info($"Multiple source branches have been found, picking the first one ({first.Branch}).{System.Environment.NewLine}" +
+                          $"This may result in incorrect commit counting.{System.Environment.NewLine}Options were:{System.Environment.NewLine}" +
+                          string.Join(", ", possibleBranches.Select(b => b.Branch.ToString())));
+            return first;
         }
     }
 
-    public SemanticVersion GetCurrentCommitTaggedVersion(ICommit? commit, EffectiveConfiguration config) =>
-        this.repository.Tags
-            .SelectMany(t =>
-            {
-                var targetCommit = t.PeeledTargetCommit();
-                if (targetCommit != null && Equals(targetCommit, commit) && SemanticVersion.TryParse(t.Name.Friendly, config.GitTagPrefix, out var version))
-                    return new[]
-                    {
-                        version
-                    };
-                return Array.Empty<SemanticVersion>();
-            })
-            .Max();
+    public IEnumerable<BranchCommit> FindCommitBranchesWasBranchedFrom(IBranch branch, GitVersionConfiguration configuration, params IBranch[] excludedBranches)
+        => FindCommitBranchesWasBranchedFrom(branch, configuration, (IEnumerable<IBranch>)excludedBranches);
 
-    public SemanticVersion MaybeIncrement(BaseVersion baseVersion, GitVersionContext context)
+    public IEnumerable<BranchCommit> FindCommitBranchesWasBranchedFrom(IBranch branch, GitVersionConfiguration configuration, IEnumerable<IBranch> excludedBranches)
     {
-        var increment = this.incrementStrategyFinder.DetermineIncrementedField(this.repository, context, baseVersion);
-        return increment != null ? baseVersion.SemanticVersion.IncrementVersion(increment.Value) : baseVersion.SemanticVersion;
+        using (this.log.IndentLog($"Finding branches source of '{branch}'"))
+        {
+            if (branch.Tip == null)
+            {
+                this.log.Warning($"{branch} has no tip.");
+                yield break;
+            }
+
+            DateTimeOffset? when = null;
+            var branchCommits = new MergeCommitFinder(this, configuration, excludedBranches, this.log)
+                .FindMergeCommitsFor(branch).ToList();
+            foreach (var branchCommit in branchCommits)
+            {
+                if (when != null && branchCommit.Commit.When != when) break;
+                yield return branchCommit;
+                when = branchCommit.Commit.When;
+            }
+        }
     }
+
+    public SemanticVersion? GetCurrentCommitTaggedVersion(ICommit? commit, string? tagPrefix)
+        => this.repository.Tags
+            .SelectMany(t => GetCurrentCommitSemanticVersions(commit, tagPrefix, t))
+            .Max();
 
     public IEnumerable<SemanticVersion> GetVersionTagsOnBranch(IBranch branch, string? tagPrefixRegex)
     {
+        branch = branch.NotNull();
+
         if (this.semanticVersionTagsOnBranchCache.ContainsKey(branch))
         {
             this.log.Debug($"Cache hit for version tags on branch '{branch.Name.Canonical}");
@@ -406,95 +271,32 @@ public class RepositoryStore : IRepositoryStore
 
     public IEnumerable<ICommit> GetCommitLog(ICommit? baseVersionSource, ICommit? currentCommit)
     {
-        var filter = new CommitFilter
-        {
-            IncludeReachableFrom = currentCommit,
-            ExcludeReachableFrom = baseVersionSource,
-            SortBy = CommitSortStrategies.Topological | CommitSortStrategies.Time
-        };
+        var filter = new CommitFilter { IncludeReachableFrom = currentCommit, ExcludeReachableFrom = baseVersionSource, SortBy = CommitSortStrategies.Topological | CommitSortStrategies.Time };
 
         return this.repository.Commits.QueryBy(filter);
     }
 
-    public VersionField? DetermineIncrementedField(BaseVersion baseVersion, GitVersionContext context) =>
-        this.incrementStrategyFinder.DetermineIncrementedField(this.repository, context, baseVersion);
-
     public bool IsCommitOnBranch(ICommit? baseVersionSource, IBranch branch, ICommit firstMatchingCommit)
     {
-        var filter = new CommitFilter
-        {
-            IncludeReachableFrom = branch,
-            ExcludeReachableFrom = baseVersionSource,
-            FirstParentOnly = true
-        };
+        var filter = new CommitFilter { IncludeReachableFrom = branch, ExcludeReachableFrom = baseVersionSource, FirstParentOnly = true };
         var commitCollection = this.repository.Commits.QueryBy(filter);
         return commitCollection.Contains(firstMatchingCommit);
-    }
-
-    private IEnumerable<BranchCommit> GetMergeCommitsForBranch(IBranch branch, Config configuration, IEnumerable<IBranch> excludedBranches)
-    {
-        if (this.mergeBaseCommitsCache.ContainsKey(branch))
-        {
-            this.log.Debug($"Cache hit for getting merge commits for branch {branch.Name.Canonical}.");
-            return this.mergeBaseCommitsCache[branch];
-        }
-
-        var currentBranchConfig = configuration.GetConfigForBranch(branch.Name.WithoutRemote);
-        var regexesToCheck = currentBranchConfig?.SourceBranches == null
-                    ? new[] { ".*" } // Match anything if we can't find a branch config
-                    : currentBranchConfig.SourceBranches.Select(sb => configuration.Branches[sb]?.Regex);
-        var branchMergeBases = ExcludingBranches(excludedBranches)
-            .Where(b =>
-            {
-                if (Equals(b, branch)) return false;
-                var branchCanBeMergeBase = regexesToCheck.Any(regex => regex != null && Regex.IsMatch(b.Name.Friendly, regex));
-
-                return branchCanBeMergeBase;
-            })
-            .Select(otherBranch =>
-            {
-                if (otherBranch.Tip == null)
-                {
-                    this.log.Warning(string.Format(MissingTipFormat, otherBranch));
-                    return BranchCommit.Empty;
-                }
-
-                var findMergeBase = FindMergeBase(branch, otherBranch);
-                return findMergeBase == null ? BranchCommit.Empty : new BranchCommit(findMergeBase, otherBranch);
-
-            })
-            .Where(b => b.Commit is not null)
-            .OrderByDescending(b => b.Commit.When)
-            .ToList();
-        this.mergeBaseCommitsCache.Add(branch, branchMergeBases);
-
-        return branchMergeBases;
-    }
-
-    private static IEnumerable<ICommit> GetCommitsReacheableFrom(IGitRepository repository, ICommit commit, IBranch branch)
-    {
-        var filter = new CommitFilter
-        {
-            IncludeReachableFrom = branch
-        };
-        var commitCollection = repository.Commits.QueryBy(filter);
-
-        return commitCollection.Where(c => c.Sha == commit.Sha);
-    }
-
-    private ICommit? GetForwardMerge(ICommit? commitToFindCommonBase, ICommit? findMergeBase)
-    {
-        var filter = new CommitFilter
-        {
-            IncludeReachableFrom = commitToFindCommonBase,
-            ExcludeReachableFrom = findMergeBase
-        };
-        var commitCollection = this.repository.Commits.QueryBy(filter);
-
-        return commitCollection.FirstOrDefault(c => c.Parents.Contains(findMergeBase));
     }
 
     public ICommit? FindMergeBase(ICommit commit, ICommit mainlineTip) => this.repository.FindMergeBase(commit, mainlineTip);
 
     public int GetNumberOfUncommittedChanges() => this.repository.GetNumberOfUncommittedChanges();
+
+    private static bool IsReleaseBranch(INamedReference branch, IEnumerable<KeyValuePair<string, BranchConfiguration>> releaseBranchConfig)
+        => releaseBranchConfig.Any(c => c.Value?.Regex != null && Regex.IsMatch(branch.Name.Friendly, c.Value.Regex));
+
+    private static IEnumerable<SemanticVersion> GetCurrentCommitSemanticVersions(ICommit? commit, string? tagPrefix, ITag tag)
+    {
+        var targetCommit = tag.PeeledTargetCommit();
+        var tagName = tag.Name.Friendly;
+
+        return targetCommit != null && Equals(targetCommit, commit) && SemanticVersion.TryParse(tagName, tagPrefix, out var version)
+            ? new[] { version }
+            : Array.Empty<SemanticVersion>();
+    }
 }

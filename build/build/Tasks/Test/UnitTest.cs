@@ -8,7 +8,7 @@ namespace Build.Tasks;
 
 [TaskName(nameof(UnitTest))]
 [TaskDescription("Run the unit tests")]
-[TaskArgument(Arguments.DotnetTarget, Constants.NetVersion50, Constants.NetVersion60, Constants.CoreFxVersion31, Constants.FullFxVersion48)]
+[TaskArgument(Arguments.DotnetTarget, Constants.NetVersion60, Constants.NetVersion70)]
 [IsDependentOn(typeof(Build))]
 public class UnitTest : FrostingTask<BuildContext>
 {
@@ -17,7 +17,7 @@ public class UnitTest : FrostingTask<BuildContext>
     public override void Run(BuildContext context)
     {
         var dotnetTarget = context.Argument(Arguments.DotnetTarget, string.Empty);
-        var frameworks = new[] { Constants.CoreFxVersion31, Constants.FullFxVersion48, Constants.NetVersion50, Constants.NetVersion60 };
+        var frameworks = new[] { Constants.NetVersion60, Constants.NetVersion70 };
         if (!string.IsNullOrWhiteSpace(dotnetTarget))
         {
             if (!frameworks.Contains(dotnetTarget, StringComparer.OrdinalIgnoreCase))
@@ -54,7 +54,7 @@ public class UnitTest : FrostingTask<BuildContext>
         {
             TestResultsFiles = testResultsFiles.ToArray(),
             Platform = context.Environment.Platform.Family.ToString(),
-            TestRunner = AzurePipelinesTestRunnerType.NUnit
+            TestRunner = AzurePipelinesTestRunnerType.JUnit
         };
         context.BuildSystem().AzurePipelines.Commands.PublishTestResults(data);
     }
@@ -69,14 +69,11 @@ public class UnitTest : FrostingTask<BuildContext>
             NoBuild = true,
             NoRestore = true,
             Configuration = context.MsBuildConfiguration,
+            TestAdapterPath = new DirectoryPath(".")
         };
 
-        if (!context.IsRunningOnMacOs())
-        {
-            settings.TestAdapterPath = new DirectoryPath(".");
-            var resultsPath = context.MakeAbsolute(testResultsPath.CombineWithFilePath($"{projectName}.results.xml"));
-            settings.Loggers = new[] { $"nunit;LogFilePath={resultsPath}" };
-        }
+        var resultsPath = context.MakeAbsolute(testResultsPath.CombineWithFilePath($"{projectName}.results.xml"));
+        settings.Loggers = new[] { $"junit;LogFilePath={resultsPath}" };
 
         var coverletSettings = new CoverletSettings
         {
@@ -86,11 +83,6 @@ public class UnitTest : FrostingTask<BuildContext>
             CoverletOutputName = $"{projectName}.coverage.xml",
             Exclude = new List<string> { "[GitVersion*.Tests]*", "[GitTools.Testing]*" }
         };
-
-        if (string.Equals(framework, Constants.FullFxVersion48))
-        {
-            settings.Filter = context.IsRunningOnUnix() ? $"TestCategory!={Constants.NoMono}" : $"TestCategory!={Constants.NoNet48}";
-        }
 
         context.DotNetTest(project.FullPath, settings, coverletSettings);
     }

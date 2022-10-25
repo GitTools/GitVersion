@@ -17,7 +17,7 @@ public class BranchWithoutCommitScenarios : TestBase
         fixture.Repository.CreateBranch("release-4.0.123");
         fixture.Checkout(commit.Sha);
 
-        fixture.AssertFullSemver("4.0.123-beta.1+0", null, fixture.Repository, commit.Sha, onlyTrackedBranches: false, targetBranch: "release-4.0.123");
+        fixture.AssertFullSemver("4.0.123-beta.1+0", null, fixture.Repository, commit.Sha, false, "release-4.0.123");
     }
 
     [Test]
@@ -31,8 +31,8 @@ public class BranchWithoutCommitScenarios : TestBase
         fixture.Checkout("develop");
         fixture.MakeATaggedCommit("0.1.0-alpha.1"); // simulate merge from feature branch
 
-        fixture.Repository.CreateBranch("release/1.0");
-        fixture.Checkout("release/1.0");
+        fixture.Repository.CreateBranch("release/1.0.0");
+        fixture.Checkout("release/1.0.0");
 
         fixture.AssertFullSemver("1.0.0-beta.1+0");
     }

@@ -36,5 +36,6 @@ public class BuildLifetime : BuildLifetimeBase<BuildContext>
         msBuildSettings.WithProperty("RepositoryBranch", version.GitVersion.BranchName);
         msBuildSettings.WithProperty("RepositoryCommit", version.GitVersion.Sha);
         msBuildSettings.WithProperty("NoPackageAnalysis", "true");
+        msBuildSettings.WithProperty("UseSharedCompilation", "false");
     }
 }

@@ -26,7 +26,7 @@ public class HelpWriterTests : TestBase
             { nameof(Arguments.TargetBranch), "/b" },
             { nameof(Arguments.LogFilePath) , "/l" },
             { nameof(Arguments.OutputFile) , "/outputfile" },
-            { nameof(Arguments.DynamicRepositoryClonePath), "/dynamicRepoLocation" },
+            { nameof(Arguments.ClonePath), "/dynamicRepoLocation" },
             { nameof(Arguments.IsHelp), "/?" },
             { nameof(Arguments.IsVersion), "/version" },
             { nameof(Arguments.UpdateWixVersionFile), "/updatewixversionfile" },
@@ -34,7 +34,7 @@ public class HelpWriterTests : TestBase
             { nameof(Arguments.Verbosity), "/verbosity" },
             { nameof(Arguments.CommitId), "/c" }
         };
-        string helpText = null;
+        string helpText = string.Empty;
 
         this.helpWriter.WriteTo(s => helpText = s);
 

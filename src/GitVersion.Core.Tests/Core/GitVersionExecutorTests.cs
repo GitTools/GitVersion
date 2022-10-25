@@ -2,8 +2,8 @@ using GitTools.Testing;
 using GitVersion.BuildAgents;
 using GitVersion.Configuration;
 using GitVersion.Core.Tests.Helpers;
+using GitVersion.Helpers;
 using GitVersion.Logging;
-using GitVersion.Model.Configuration;
 using GitVersion.VersionCalculation.Cache;
 using LibGit2Sharp;
 using Microsoft.Extensions.DependencyInjection;
@@ -72,13 +72,11 @@ public class GitVersionExecutorTests : TestBase
     }
 
     [Test]
-    [Category(NoMono)]
-    [Description(NoMonoDescription)]
     public void CacheKeyForWorktree()
     {
         using var fixture = new EmptyRepositoryFixture();
         fixture.Repository.MakeACommit();
-        var worktreePath = Path.Combine(Directory.GetParent(fixture.RepositoryPath).FullName, Guid.NewGuid().ToString());
+        var worktreePath = PathHelper.Combine(Directory.GetParent(fixture.RepositoryPath)?.FullName, Guid.NewGuid().ToString());
         try
         {
             // create a branch and a new worktree for it
@@ -120,12 +118,9 @@ public class GitVersionExecutorTests : TestBase
         PreReleaseNumber: 19
         WeightedPreReleaseNumber: 19
         BuildMetaData:
-        BuildMetaDataPadded:
         FullBuildMetaData: Branch.feature/test.Sha.dd2a29aff0c948e1bdf3dabbe13e1576e70d5f9f
         MajorMinorPatch: 4.10.3
         SemVer: 4.10.3-test.19
-        LegacySemVer: 4.10.3-test19
-        LegacySemVerPadded: 4.10.3-test0019
         AssemblySemVer: 4.10.3.0
         AssemblySemFileVer: 4.10.3.0
         FullSemVer: 4.10.3-test.19
@@ -134,13 +129,8 @@ public class GitVersionExecutorTests : TestBase
         EscapedBranchName: feature-test
         Sha: dd2a29aff0c948e1bdf3dabbe13e1576e70d5f9f
         ShortSha: dd2a29af
-        NuGetVersionV2: 4.10.3-test0019
-        NuGetVersion: 4.10.3-test0019
-        NuGetPreReleaseTagV2: test0019
-        NuGetPreReleaseTag: test0019
         VersionSourceSha: 4.10.2
         CommitsSinceVersionSource: 19
-        CommitsSinceVersionSourcePadded: 0019
         CommitDate: 2015-11-10
         UncommittedChanges: 0
         ";
@@ -159,7 +149,7 @@ public class GitVersionExecutorTests : TestBase
         var gitVersionCalculator = GetGitVersionCalculator(gitVersionOptions, this.log);
 
         var versionVariables = gitVersionCalculator.CalculateVersionVariables();
-        versionVariables.AssemblySemVer.ShouldBe("0.1.0.0");
+        versionVariables.AssemblySemVer.ShouldBe("0.0.1.0");
 
         this.fileSystem.WriteAllText(versionVariables.FileName, versionCacheFileContent);
         versionVariables = gitVersionCalculator.CalculateVersionVariables();
@@ -183,12 +173,9 @@ public class GitVersionExecutorTests : TestBase
         PreReleaseLabelWithDash: -test
         PreReleaseNumber: 19
         BuildMetaData:
-        BuildMetaDataPadded:
         FullBuildMetaData: Branch.feature/test.Sha.dd2a29aff0c948e1bdf3dabbe13e1576e70d5f9f
         MajorMinorPatch: 4.10.3
         SemVer: 4.10.3-test.19
-        LegacySemVer: 4.10.3-test19
-        LegacySemVerPadded: 4.10.3-test0019
         AssemblySemVer: 4.10.3.0
         AssemblySemFileVer: 4.10.3.0
         FullSemVer: 4.10.3-test.19
@@ -197,12 +184,7 @@ public class GitVersionExecutorTests : TestBase
         EscapedBranchName: feature-test
         Sha: dd2a29aff0c948e1bdf3dabbe13e1576e70d5f9f
         ShortSha: dd2a29af
-        NuGetVersionV2: 4.10.3-test0019
-        NuGetVersion: 4.10.3-test0019
-        NuGetPreReleaseTagV2: test0019
-        NuGetPreReleaseTag: test0019
         CommitsSinceVersionSource: 19
-        CommitsSinceVersionSourcePadded: 0019
         CommitDate: 2015-11-10
         UncommittedChanges: 0
         ";
@@ -214,7 +196,7 @@ public class GitVersionExecutorTests : TestBase
         var gitVersionCalculator = GetGitVersionCalculator(gitVersionOptions, this.log);
 
         var versionVariables = gitVersionCalculator.CalculateVersionVariables();
-        versionVariables.AssemblySemVer.ShouldBe("0.1.0.0");
+        versionVariables.AssemblySemVer.ShouldBe("0.0.1.0");
 
         this.fileSystem.WriteAllText(versionVariables.FileName, versionCacheFileContent);
 
@@ -222,16 +204,16 @@ public class GitVersionExecutorTests : TestBase
 
         var cacheDirectoryTimestamp = this.fileSystem.GetLastDirectoryWrite(cacheDirectory);
 
-        var config = new ConfigurationBuilder().Add(new Config { TagPrefix = "prefix" }).Build();
-        gitVersionOptions = new GitVersionOptions { WorkingDirectory = fixture.RepositoryPath, ConfigInfo = { OverrideConfig = config } };
+        var configuration = new ConfigurationBuilder().Add(new GitVersionConfiguration { TagPrefix = "prefix" }).Build();
+        gitVersionOptions = new GitVersionOptions { WorkingDirectory = fixture.RepositoryPath, ConfigInfo = { OverrideConfig = configuration } };
 
         gitVersionCalculator = GetGitVersionCalculator(gitVersionOptions);
         versionVariables = gitVersionCalculator.CalculateVersionVariables();
 
-        versionVariables.AssemblySemVer.ShouldBe("0.1.0.0");
+        versionVariables.AssemblySemVer.ShouldBe("0.0.1.0");
 
         var cachedDirectoryTimestampAfter = this.fileSystem.GetLastDirectoryWrite(cacheDirectory);
-        cachedDirectoryTimestampAfter.ShouldBe(cacheDirectoryTimestamp, "Cache was updated when override config was set");
+        cachedDirectoryTimestampAfter.ShouldBe(cacheDirectoryTimestamp, "Cache was updated when override configuration was set");
     }
 
     [Test]
@@ -270,12 +252,9 @@ public class GitVersionExecutorTests : TestBase
         PreReleaseNumber: 19
         WeightedPreReleaseNumber: 19
         BuildMetaData:
-        BuildMetaDataPadded:
         FullBuildMetaData: Branch.feature/test.Sha.dd2a29aff0c948e1bdf3dabbe13e1576e70d5f9f
         MajorMinorPatch: 4.10.3
         SemVer: 4.10.3-test.19
-        LegacySemVer: 4.10.3-test19
-        LegacySemVerPadded: 4.10.3-test0019
         AssemblySemVer: 4.10.3.0
         AssemblySemFileVer: 4.10.3.0
         FullSemVer: 4.10.3-test.19
@@ -284,13 +263,8 @@ public class GitVersionExecutorTests : TestBase
         EscapedBranchName: feature-test
         Sha: dd2a29aff0c948e1bdf3dabbe13e1576e70d5f9f
         ShortSha: dd2a29af
-        NuGetVersionV2: 4.10.3-test0019
-        NuGetVersion: 4.10.3-test0019
-        NuGetPreReleaseTagV2: test0019
-        NuGetPreReleaseTag: test0019
         VersionSourceSha: 4.10.2
         CommitsSinceVersionSource: 19
-        CommitsSinceVersionSourcePadded: 0019
         CommitDate: 2015-11-10
         UncommittedChanges: 0
         ";
@@ -304,7 +278,7 @@ public class GitVersionExecutorTests : TestBase
         var gitVersionCalculator = GetGitVersionCalculator(gitVersionOptions);
         var versionVariables = gitVersionCalculator.CalculateVersionVariables();
 
-        versionVariables.AssemblySemVer.ShouldBe("0.1.0.0");
+        versionVariables.AssemblySemVer.ShouldBe("0.0.1.0");
         versionVariables.FileName.ShouldNotBeNullOrEmpty();
 
         this.fileSystem.WriteAllText(versionVariables.FileName, versionCacheFileContent);
@@ -312,8 +286,8 @@ public class GitVersionExecutorTests : TestBase
         versionVariables = gitVersionCalculator.CalculateVersionVariables();
         versionVariables.AssemblySemVer.ShouldBe("4.10.3.0");
 
-        var configPath = Path.Combine(fixture.RepositoryPath, ConfigFileLocator.DefaultFileName);
-        this.fileSystem.WriteAllText(configPath, "next-version: 5.0");
+        var configPath = PathHelper.Combine(fixture.RepositoryPath, ConfigurationFileLocator.DefaultFileName);
+        this.fileSystem.WriteAllText(configPath, "next-version: 5.0.0");
 
         gitVersionCalculator = GetGitVersionCalculator(gitVersionOptions, fs: this.fileSystem);
 
@@ -335,12 +309,9 @@ public class GitVersionExecutorTests : TestBase
         PreReleaseNumber: 19
         WeightedPreReleaseNumber: 19
         BuildMetaData:
-        BuildMetaDataPadded:
         FullBuildMetaData: Branch.feature/test.Sha.dd2a29aff0c948e1bdf3dabbe13e1576e70d5f9f
         MajorMinorPatch: 4.10.3
         SemVer: 4.10.3-test.19
-        LegacySemVer: 4.10.3-test19
-        LegacySemVerPadded: 4.10.3-test0019
         AssemblySemVer: 4.10.3.0
         AssemblySemFileVer: 4.10.3.0
         FullSemVer: 4.10.3-test.19
@@ -349,13 +320,8 @@ public class GitVersionExecutorTests : TestBase
         EscapedBranchName: feature-test
         Sha: dd2a29aff0c948e1bdf3dabbe13e1576e70d5f9f
         ShortSha: dd2a29af
-        NuGetVersionV2: 4.10.3-test0019
-        NuGetVersion: 4.10.3-test0019
-        NuGetPreReleaseTagV2: test0019
-        NuGetPreReleaseTag: test0019
         VersionSourceSha: 4.10.2
         CommitsSinceVersionSource: 19
-        CommitsSinceVersionSourcePadded: 0019
         CommitDate: 2015-11-10
         UncommittedChanges: 0
         ";
@@ -369,7 +335,7 @@ public class GitVersionExecutorTests : TestBase
 
         var versionVariables = gitVersionCalculator.CalculateVersionVariables();
 
-        versionVariables.AssemblySemVer.ShouldBe("0.1.0.0");
+        versionVariables.AssemblySemVer.ShouldBe("0.0.1.0");
         versionVariables.FileName.ShouldNotBeNullOrEmpty();
 
         this.fileSystem.WriteAllText(versionVariables.FileName, versionCacheFileContent);
@@ -378,7 +344,7 @@ public class GitVersionExecutorTests : TestBase
 
         gitVersionOptions.Settings.NoCache = true;
         versionVariables = gitVersionCalculator.CalculateVersionVariables();
-        versionVariables.AssemblySemVer.ShouldBe("0.1.0.0");
+        versionVariables.AssemblySemVer.ShouldBe("0.0.1.0");
     }
 
     [Test]
@@ -410,14 +376,12 @@ public class GitVersionExecutorTests : TestBase
     }
 
     [Test]
-    [Category(NoMono)]
-    [Description(NoMonoDescription)]
     public void GetProjectRootDirectoryWorkingDirectoryWithWorktree()
     {
         using var fixture = new EmptyRepositoryFixture();
         fixture.Repository.MakeACommit();
 
-        var worktreePath = Path.Combine(Directory.GetParent(fixture.RepositoryPath).FullName, Guid.NewGuid().ToString());
+        var worktreePath = PathHelper.Combine(Directory.GetParent(fixture.RepositoryPath)?.FullName, Guid.NewGuid().ToString());
         try
         {
             // create a branch and a new worktree for it
@@ -474,19 +438,17 @@ public class GitVersionExecutorTests : TestBase
         this.sp = GetServiceProvider(gitVersionOptions);
         var repositoryInfo = this.sp.GetRequiredService<IGitRepositoryInfo>();
 
-        var expectedPath = Path.Combine(fixture.RepositoryPath, ".git");
+        var expectedPath = PathHelper.Combine(fixture.RepositoryPath, ".git");
         repositoryInfo.DotGitDirectory.ShouldBe(expectedPath);
     }
 
     [Test]
-    [Category(NoMono)]
-    [Description(NoMonoDescription)]
     public void GetDotGitDirectoryWorktree()
     {
         using var fixture = new EmptyRepositoryFixture();
         fixture.Repository.MakeACommit();
 
-        var worktreePath = Path.Combine(Directory.GetParent(fixture.RepositoryPath).FullName, Guid.NewGuid().ToString());
+        var worktreePath = PathHelper.Combine(Directory.GetParent(fixture.RepositoryPath)?.FullName, Guid.NewGuid().ToString());
         try
         {
             // create a branch and a new worktree for it
@@ -501,7 +463,7 @@ public class GitVersionExecutorTests : TestBase
             this.sp = GetServiceProvider(gitVersionOptions);
             var repositoryInfo = this.sp.GetRequiredService<IGitRepositoryInfo>();
 
-            var expectedPath = Path.Combine(fixture.RepositoryPath, ".git");
+            var expectedPath = PathHelper.Combine(fixture.RepositoryPath, ".git");
             repositoryInfo.DotGitDirectory.ShouldBe(expectedPath);
         }
         finally
@@ -511,14 +473,12 @@ public class GitVersionExecutorTests : TestBase
     }
 
     [Test]
-    [Category(NoMono)]
-    [Description(NoMonoDescription)]
     public void CalculateVersionFromWorktreeHead()
     {
         // Setup
         using var fixture = new EmptyRepositoryFixture();
         var repoDir = new DirectoryInfo(fixture.RepositoryPath);
-        var worktreePath = Path.Combine(repoDir.Parent.FullName, $"{repoDir.Name}-v1");
+        var worktreePath = PathHelper.Combine(repoDir.Parent?.FullName, $"{repoDir.Name}-v1");
 
         fixture.Repository.MakeATaggedCommit("v1.0.0");
         var branchV1 = fixture.Repository.CreateBranch("support/1.0");
@@ -542,8 +502,6 @@ public class GitVersionExecutorTests : TestBase
     }
 
     [Test]
-    [Category(NoMono)]
-    [Description(NoMonoDescription)]
     public void CalculateVersionVariables_TwoBranchHasSameCommitHeadDetachedAndNotTagged_ThrowException()
     {
         // Setup
@@ -562,9 +520,6 @@ public class GitVersionExecutorTests : TestBase
         environment.SetEnvironmentVariable(AzurePipelines.EnvironmentVariableName, "true");
 
         this.sp = GetServiceProvider(gitVersionOptions, environment: environment);
-
-        var _ = this.sp.GetRequiredService<Lazy<GitVersionContext>>()?.Value;
-
         var sut = sp.GetRequiredService<IGitVersionCalculateTool>();
 
         // Execute & Verify
@@ -573,8 +528,6 @@ public class GitVersionExecutorTests : TestBase
     }
 
     [Test]
-    [Category(NoMono)]
-    [Description(NoMonoDescription)]
     public void CalculateVersionVariables_TwoBranchHasSameCommitHeadDetachedAndTagged_ReturnSemver()
     {
         // Setup
@@ -594,9 +547,6 @@ public class GitVersionExecutorTests : TestBase
         environment.SetEnvironmentVariable(AzurePipelines.EnvironmentVariableName, "true");
 
         this.sp = GetServiceProvider(gitVersionOptions, environment: environment);
-
-        var _ = this.sp.GetRequiredService<Lazy<GitVersionContext>>()?.Value;
-
         var sut = sp.GetRequiredService<IGitVersionCalculateTool>();
 
         // Execute
@@ -608,7 +558,7 @@ public class GitVersionExecutorTests : TestBase
         version.Sha.ShouldBe(commits.First().Sha);
     }
 
-    private IGitVersionCalculateTool GetGitVersionCalculator(GitVersionOptions gitVersionOptions, ILog logger = null, IGitRepository repository = null, IFileSystem fs = null)
+    private IGitVersionCalculateTool GetGitVersionCalculator(GitVersionOptions gitVersionOptions, ILog? logger = null, IGitRepository? repository = null, IFileSystem? fs = null)
     {
         this.sp = GetServiceProvider(gitVersionOptions, logger, repository, fs);
 
@@ -619,7 +569,7 @@ public class GitVersionExecutorTests : TestBase
         return this.sp.GetRequiredService<IGitVersionCalculateTool>();
     }
 
-    private static IServiceProvider GetServiceProvider(GitVersionOptions gitVersionOptions, ILog log = null, IGitRepository repository = null, IFileSystem fileSystem = null, IEnvironment environment = null) =>
+    private static IServiceProvider GetServiceProvider(GitVersionOptions gitVersionOptions, ILog? log = null, IGitRepository? repository = null, IFileSystem? fileSystem = null, IEnvironment? environment = null) =>
         ConfigureServices(services =>
         {
             services.AddSingleton<IGitVersionContextFactory, GitVersionContextFactory>();
@@ -627,7 +577,7 @@ public class GitVersionExecutorTests : TestBase
             {
                 var options = sp.GetRequiredService<IOptions<GitVersionOptions>>();
                 var contextFactory = sp.GetRequiredService<IGitVersionContextFactory>();
-                return new Lazy<GitVersionContext>(() => contextFactory.Create(options?.Value));
+                return new Lazy<GitVersionContext>(() => contextFactory.Create(options.Value));
             });
             if (log != null) services.AddSingleton(log);
             if (fileSystem != null) services.AddSingleton(fileSystem);

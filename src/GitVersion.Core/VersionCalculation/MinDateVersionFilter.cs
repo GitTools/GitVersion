@@ -14,13 +14,10 @@ public class MinDateVersionFilter : IVersionFilter
 
         reason = null;
 
-        if (version.BaseVersionSource != null &&
-            version.BaseVersionSource.When < this.minimum)
-        {
-            reason = "Source was ignored due to commit date being outside of configured range";
-            return true;
-        }
+        if (version.BaseVersionSource == null || version.BaseVersionSource.When >= this.minimum)
+            return false;
 
-        return false;
+        reason = "Source was ignored due to commit date being outside of configured range";
+        return true;
     }
 }

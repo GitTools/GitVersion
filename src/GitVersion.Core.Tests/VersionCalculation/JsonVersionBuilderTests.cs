@@ -13,8 +13,6 @@ public class JsonVersionBuilderTests : TestBase
     public void Setup() => ShouldlyConfiguration.ShouldMatchApprovedDefaults.LocateTestMethodUsingAttribute<TestAttribute>();
 
     [Test]
-    [Category(NoMono)]
-    [Description(NoMonoDescription)]
     public void Json()
     {
         var semanticVersion = new SemanticVersion
@@ -26,12 +24,12 @@ public class JsonVersionBuilderTests : TestBase
             BuildMetaData = new SemanticVersionBuildMetaData("versionSourceSha", 5, "feature1", "commitSha", "commitShortSha", DateTimeOffset.Parse("2014-03-06 23:59:59Z"), 0)
         };
 
-        var config = new TestEffectiveConfiguration();
+        var configuration = new TestEffectiveConfiguration();
 
-        var sp = ConfigureServices();
+        var serviceProvider = ConfigureServices();
 
-        var variableProvider = sp.GetRequiredService<IVariableProvider>();
-        var variables = variableProvider.GetVariablesFor(semanticVersion, config, false);
+        var variableProvider = serviceProvider.GetRequiredService<IVariableProvider>();
+        var variables = variableProvider.GetVariablesFor(semanticVersion, configuration, false);
         var json = variables.ToString();
         json.ShouldMatchApproved(c => c.SubFolder("Approved"));
     }

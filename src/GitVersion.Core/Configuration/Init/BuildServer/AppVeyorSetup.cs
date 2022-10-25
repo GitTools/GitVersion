@@ -1,14 +1,8 @@
 using GitVersion.Configuration.Init.Wizard;
+using GitVersion.Helpers;
 using GitVersion.Logging;
-using GitVersion.Model.Configuration;
 
 namespace GitVersion.Configuration.Init.BuildServer;
-
-internal enum ProjectVisibility
-{
-    Public = 0,
-    Private = 1
-}
 
 internal class AppVeyorSetup : ConfigInitWizardStep
 {
@@ -24,9 +18,9 @@ internal class AppVeyorSetup : ConfigInitWizardStep
         return this;
     }
 
-    protected override StepResult HandleResult(string? result, Queue<ConfigInitWizardStep> steps, Config config, string workingDirectory)
+    protected override StepResult HandleResult(string? result, Queue<ConfigInitWizardStep> steps, GitVersionConfiguration configuration, string workingDirectory)
     {
-        var editConfigStep = this.StepFactory.CreateStep<EditConfigStep>()!;
+        var editConfigStep = this.StepFactory.CreateStep<EditConfigStep>();
         switch (result)
         {
             case "0":
@@ -83,19 +77,19 @@ after_build:
     {
         var outputFilename = GetOutputFilename(workingDirectory, fileSystem);
         fileSystem.WriteAllText(outputFilename, configContents);
-        this.Log.Info($"AppVeyor sample config file written to {outputFilename}");
+        this.Log.Info($"AppVeyor sample configuration file written to {outputFilename}");
     }
 
-    protected override string GetPrompt(Config config, string workingDirectory)
+    protected override string GetPrompt(GitVersionConfiguration configuration, string workingDirectory)
     {
         var prompt = new StringBuilder();
         if (AppVeyorConfigExists(workingDirectory, this.FileSystem))
         {
-            prompt.AppendLine("GitVersion doesn't support modifying existing appveyor config files. We will generate appveyor.gitversion.yml instead");
+            prompt.AppendLine("GitVersion doesn't support modifying existing appveyor configuration files. We will generate appveyor.gitversion.yml instead");
             prompt.AppendLine();
         }
 
-        prompt.Append(@"What sort of config template would you like generated?
+        prompt.Append(@"What sort of configuration template would you like generated?
 
 0) Go Back
 1) Generate basic (gitversion + msbuild) configuration
@@ -111,7 +105,7 @@ after_build:
             var count = 0;
             do
             {
-                var path = Path.Combine(workingDirectory, $"appveyor.gitversion{(count == 0 ? string.Empty : "." + count)}.yml");
+                var path = PathHelper.Combine(workingDirectory, $"appveyor.gitversion{(count == 0 ? string.Empty : "." + count)}.yml");
 
                 if (!fileSystem.Exists(path))
                 {
@@ -123,10 +117,10 @@ after_build:
             throw new Exception("appveyor.gitversion.yml -> appveyor.gitversion.9.yml all exist. Pretty sure you have enough templates");
         }
 
-        return Path.Combine(workingDirectory, "appveyor.yml");
+        return PathHelper.Combine(workingDirectory, "appveyor.yml");
     }
 
-    private static bool AppVeyorConfigExists(string workingDirectory, IFileSystem fileSystem) => fileSystem.Exists(Path.Combine(workingDirectory, "appveyor.yml"));
+    private static bool AppVeyorConfigExists(string workingDirectory, IFileSystem fileSystem) => fileSystem.Exists(PathHelper.Combine(workingDirectory, "appveyor.yml"));
 
     protected override string DefaultResult => "0";
 }
