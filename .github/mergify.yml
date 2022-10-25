@@ -1,0 +1,26 @@
+pull_request_rules:
+  - name: Automatic approve on dependabot PR
+    conditions:
+      - author~=^dependabot(|-preview)\[bot\]$
+    actions:
+      review:
+        type: APPROVE
+  - name: Automatic merge on dependabot PR after success CI
+    conditions:
+      - author~=^dependabot(|-preview)\[bot\]$
+      - '#commits-behind=0' # Only merge up to date pull requests
+      - check-success=DotNet Format
+      - check-success=Release
+      - check-success=Unit Test code (windows-latest, net6.0)
+      - check-success=Unit Test code (windows-latest, net6.0)
+      - check-success=Unit Test code (windows-latest, net6.0)
+      - repository-full-name=GitTools/GitVersion # Don't auto-merge PRs in forks
+    actions:
+      merge:
+  - name: Thank contributor
+    conditions:
+      - merged
+      - -author~=^dependabot(|-preview)\[bot\]$
+    actions:
+      comment:
+        message: "Thank you @{{author}} for your contribution!"

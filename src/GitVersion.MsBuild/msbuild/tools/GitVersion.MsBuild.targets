@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+    <UsingTask TaskName="GetVersion" AssemblyFile="$(GitVersionAssemblyFile)"/>
+    <UsingTask TaskName="GenerateGitVersionInformation" AssemblyFile="$(GitVersionAssemblyFile)"/>
+    <UsingTask TaskName="WriteVersionInfoToBuildLog" AssemblyFile="$(GitVersionAssemblyFile)"/>
+    <UsingTask TaskName="UpdateAssemblyInfo" AssemblyFile="$(GitVersionAssemblyFile)"/>
+
+    <Target Name="RunGitVersion" Condition="'$(DisableGitVersionTask)' == 'false'">
+        <Exec Command="$(GitVersionFileExe) &quot;$(MSBuildProjectDirectory)&quot; $(GitVersion_ToolArgments)" />
+    </Target>
+
+    <Target Name="WriteVersionInfoToBuildLog" DependsOnTargets="RunGitVersion" BeforeTargets="$(GitVersionTargetsBefore)" Condition="$(WriteVersionInfoToBuildLog) == 'true'">
+        <WriteVersionInfoToBuildLog SolutionDirectory="$(GitVersionPath)" VersionFile="$(GitVersionOutputFile)" />
+    </Target>
+
+    <Target Name="GetVersion" DependsOnTargets="RunGitVersion" BeforeTargets="$(GitVersionTargetsBefore)" Condition="'$(DisableGitVersionTask)' == 'false'">
+
+        <GetVersion SolutionDirectory="$(GitVersionPath)" VersionFile="$(GitVersionOutputFile)">
+            <Output TaskParameter="Major" PropertyName="GitVersion_Major" />
+            <Output TaskParameter="Minor" PropertyName="GitVersion_Minor" />
+            <Output TaskParameter="Patch" PropertyName="GitVersion_Patch" />
+            <Output TaskParameter="PreReleaseTag" PropertyName="GitVersion_PreReleaseTag" />
+            <Output TaskParameter="PreReleaseTagWithDash" PropertyName="GitVersion_PreReleaseTagWithDash" />
+            <Output TaskParameter="PreReleaseLabel" PropertyName="GitVersion_PreReleaseLabel" />
+            <Output TaskParameter="PreReleaseLabelWithDash" PropertyName="GitVersion_PreReleaseLabelWithDash" />
+            <Output TaskParameter="PreReleaseNumber" PropertyName="GitVersion_PreReleaseNumber" />
+            <Output TaskParameter="WeightedPreReleaseNumber" PropertyName="GitVersion_WeightedPreReleaseNumber" />
+            <Output TaskParameter="BuildMetaData" PropertyName="GitVersion_BuildMetaData" />
+            <Output TaskParameter="FullBuildMetaData" PropertyName="GitVersion_FullBuildMetaData" />
+            <Output TaskParameter="MajorMinorPatch" PropertyName="GitVersion_MajorMinorPatch" />
+            <Output TaskParameter="SemVer" PropertyName="GitVersion_SemVer" />
+            <Output TaskParameter="AssemblySemVer" PropertyName="GitVersion_AssemblySemVer" />
+            <Output TaskParameter="AssemblySemFileVer" PropertyName="GitVersion_AssemblySemFileVer" />
+            <Output TaskParameter="FullSemVer" PropertyName="GitVersion_FullSemVer" />
+            <Output TaskParameter="InformationalVersion" PropertyName="GitVersion_InformationalVersion" />
+            <Output TaskParameter="BranchName" PropertyName="GitVersion_BranchName" />
+            <Output TaskParameter="EscapedBranchName" PropertyName="GitVersion_EscapedBranchName" />
+            <Output TaskParameter="Sha" PropertyName="GitVersion_Sha" />
+            <Output TaskParameter="ShortSha" PropertyName="GitVersion_ShortSha" />
+            <Output TaskParameter="CommitDate" PropertyName="GitVersion_CommitDate" />
+            <Output TaskParameter="VersionSourceSha" PropertyName="GitVersion_VersionSourceSha" />
+            <Output TaskParameter="CommitsSinceVersionSource" PropertyName="GitVersion_CommitsSinceVersionSource" />
+            <Output TaskParameter="UncommittedChanges" PropertyName="GitVersion_UncommittedChanges" />
+        </GetVersion>
+
+        <PropertyGroup Condition=" '$(UpdateVersionProperties)' == 'true' ">
+            <Version>$(GitVersion_SemVer)</Version>
+            <VersionPrefix>$(GitVersion_MajorMinorPatch)</VersionPrefix>
+            <VersionSuffix Condition=" '$(UseFullSemVerForNuGet)' == 'true' ">$(GitVersion_PreReleaseTag)</VersionSuffix>
+            <PackageVersion Condition=" '$(UseFullSemVerForNuGet)' == 'true' ">$(GitVersion_FullSemVer)</PackageVersion>
+            <InformationalVersion Condition=" '$(InformationalVersion)' == '' ">$(GitVersion_InformationalVersion)</InformationalVersion>
+            <AssemblyVersion Condition=" '$(AssemblyVersion)' == '' ">$(GitVersion_AssemblySemVer)</AssemblyVersion>
+            <FileVersion Condition=" '$(FileVersion)' == '' ">$(GitVersion_AssemblySemFileVer)</FileVersion>
+            <RepositoryBranch Condition=" '$(RepositoryBranch)' == '' ">$(GitVersion_BranchName)</RepositoryBranch>
+            <RepositoryCommit Condition=" '$(RepositoryCommit)' == '' ">$(GitVersion_Sha)</RepositoryCommit>
+        </PropertyGroup>
+
+        <PropertyGroup Condition=" '$(WixTargetsImported)' == 'true' And '$(GenerateGitVersionWixDefines)' == 'true' ">
+            <DefineConstants Condition=" '$(GitVersion_Major)' != '' ">GitVersion_Major=$(GitVersion_Major);$(DefineConstants)</DefineConstants>
+            <DefineConstants Condition=" '$(GitVersion_Minor)' != '' ">GitVersion_Minor=$(GitVersion_Minor);$(DefineConstants)</DefineConstants>
+            <DefineConstants Condition=" '$(GitVersion_Patch)' != '' ">GitVersion_Patch=$(GitVersion_Patch);$(DefineConstants)</DefineConstants>
+            <DefineConstants Condition=" '$(GitVersion_PreReleaseTag)' != '' ">GitVersion_PreReleaseTag=$(GitVersion_PreReleaseTag);$(DefineConstants)</DefineConstants>
+            <DefineConstants Condition=" '$(GitVersion_PreReleaseTagWithDash)' != '' ">GitVersion_PreReleaseTagWithDash=$(GitVersion_PreReleaseTagWithDash);$(DefineConstants)</DefineConstants>
+            <DefineConstants Condition=" '$(GitVersion_PreReleaseLabel)' != '' ">GitVersion_PreReleaseLabel=$(GitVersion_PreReleaseLabel);$(DefineConstants)</DefineConstants>
+            <DefineConstants Condition=" '$(GitVersion_PreReleaseLabelWithDash)' != '' ">GitVersion_PreReleaseLabelWithDash=$(GitVersion_PreReleaseLabeWithDashl);$(DefineConstants)</DefineConstants>
+            <DefineConstants Condition=" '$(GitVersion_PreReleaseNumber)' != '' ">GitVersion_PreReleaseNumber=$(GitVersion_PreReleaseNumber);$(DefineConstants)</DefineConstants>
+            <DefineConstants Condition=" '$(GitVersion_WeightedPreReleaseNumber)' != '' ">GitVersion_WeightedPreReleaseNumber=$(GitVersion_WeightedPreReleaseNumber);$(DefineConstants)</DefineConstants>
+            <DefineConstants Condition=" '$(GitVersion_BuildMetaData)' != '' ">GitVersion_BuildMetaData=$(GitVersion_BuildMetaData);$(DefineConstants)</DefineConstants>
+            <DefineConstants Condition=" '$(GitVersion_FullBuildMetaData)' != '' ">GitVersion_FullBuildMetaData=$(GitVersion_FullBuildMetaData);$(DefineConstants)</DefineConstants>
+            <DefineConstants Condition=" '$(GitVersion_MajorMinorPatch)' != '' ">GitVersion_MajorMinorPatch=$(GitVersion_MajorMinorPatch);$(DefineConstants)</DefineConstants>
+            <DefineConstants Condition=" '$(GitVersion_SemVer)' != '' ">GitVersion_SemVer=$(GitVersion_SemVer);$(DefineConstants)</DefineConstants>
+            <DefineConstants Condition=" '$(GitVersion_AssemblySemVer)' != '' ">GitVersion_AssemblySemVer=$(GitVersion_AssemblySemVer);$(DefineConstants)</DefineConstants>
+            <DefineConstants Condition=" '$(GitVersion_AssemblySemFileVer)' != '' ">GitVersion_AssemblySemFileVer=$(GitVersion_AssemblySemFileVer);$(DefineConstants)</DefineConstants>
+            <DefineConstants Condition=" '$(GitVersion_FullSemVer)' != '' ">GitVersion_FullSemVer=$(GitVersion_FullSemVer);$(DefineConstants)</DefineConstants>
+            <DefineConstants Condition=" '$(GitVersion_InformationalVersion)' != '' ">GitVersion_InformationalVersion=$(GitVersion_InformationalVersion);$(DefineConstants)</DefineConstants>
+            <DefineConstants Condition=" '$(GitVersion_BranchName)' != '' ">GitVersion_BranchName=$(GitVersion_BranchName);$(DefineConstants)</DefineConstants>
+            <DefineConstants Condition=" '$(GitVersion_EscapedBranchName)' != '' ">GitVersion_EscapedBranchName=$(GitVersion_EscapedBranchName);$(DefineConstants)</DefineConstants>
+            <DefineConstants Condition=" '$(GitVersion_Sha)' != '' ">GitVersion_Sha=$(GitVersion_Sha);$(DefineConstants)</DefineConstants>
+            <DefineConstants Condition=" '$(GitVersion_ShortSha)' != '' ">GitVersion_ShortSha=$(GitVersion_ShortSha);$(DefineConstants)</DefineConstants>
+            <DefineConstants Condition=" '$(GitVersion_CommitDate)' != '' ">GitVersion_CommitDate=$(GitVersion_CommitDate);$(DefineConstants)</DefineConstants>
+            <DefineConstants Condition=" '$(GitVersion_VersionSourceSha)' != '' ">GitVersion_VersionSourceSha=$(GitVersion_VersionSourceSha);$(DefineConstants)</DefineConstants>
+            <DefineConstants Condition=" '$(GitVersion_CommitsSinceVersionSource)' != '' ">GitVersion_CommitsSinceVersionSource=$(GitVersion_CommitsSinceVersionSource);$(DefineConstants)</DefineConstants>
+            <DefineConstants Condition=" '$(GitVersion_UncommittedChanges)' != '' ">GitVersion_UncommittedChanges=$(GitVersion_UncommittedChanges);$(DefineConstants)</DefineConstants>
+        </PropertyGroup>
+
+        <!-- <Message Importance="High" Text="$(GitVersion_FullSemVer)" /> -->
+        <!-- <Message Importance="High" Text="$(GitVersion_Sha)" /> -->
+    </Target>
+
+    <Target Name="GenerateGitVersionInformation" DependsOnTargets="RunGitVersion" BeforeTargets="$(GitVersionTargetsBefore)" Condition="$(GenerateGitVersionInformation) == 'true'">
+
+        <GenerateGitVersionInformation SolutionDirectory="$(GitVersionPath)" VersionFile="$(GitVersionOutputFile)"
+                                       ProjectFile="$(MSBuildProjectFullPath)"
+                                       IntermediateOutputPath="$(IntermediateOutputPath)"
+                                       Language="$(Language)">
+
+            <Output TaskParameter="GitVersionInformationFilePath" PropertyName="GitVersionInformationFilePath" />
+        </GenerateGitVersionInformation>
+        <!-- <Message Importance="High" Text="Info: $(GitVersionInformationFilePath)" /> -->
+
+        <ItemGroup Condition="'$(Language)' == 'F#'">
+            <CompileBefore Include="$(GitVersionInformationFilePath)" />
+        </ItemGroup>
+        <ItemGroup Condition="'$(Language)' != 'F#'">
+            <Compile Include="$(GitVersionInformationFilePath)" />
+        </ItemGroup>
+        <ItemGroup>
+            <FileWrites Include="$(GitVersionInformationFilePath)" />
+            <_GeneratedCodeFiles Include="$(GitVersionInformationFilePath)" />
+        </ItemGroup>
+
+    </Target>
+
+    <Target Name="UpdateAssemblyInfo" DependsOnTargets="RunGitVersion" BeforeTargets="$(GitVersionTargetsBefore)" Condition="$(UpdateAssemblyInfo) == 'true'">
+
+        <UpdateAssemblyInfo SolutionDirectory="$(GitVersionPath)" VersionFile="$(GitVersionOutputFile)"
+                            ProjectFile="$(MSBuildProjectFullPath)"
+                            IntermediateOutputPath="$(IntermediateOutputPath)"
+                            Language="$(Language)"
+                            CompileFiles ="@(Compile)">
+
+            <Output TaskParameter="AssemblyInfoTempFilePath" PropertyName="AssemblyInfoTempFilePath" />
+        </UpdateAssemblyInfo>
+        <!-- <Message Importance="High" Text="Assembly: $(AssemblyInfoTempFilePath)" /> -->
+        <ItemGroup Condition="'$(Language)' == 'F#'">
+            <CompileBefore Include="$(AssemblyInfoTempFilePath)" />
+        </ItemGroup>
+        <ItemGroup Condition="'$(Language)' != 'F#'">
+            <Compile Include="$(AssemblyInfoTempFilePath)" />
+        </ItemGroup>
+        <ItemGroup>
+            <FileWrites Include="$(AssemblyInfoTempFilePath)" />
+            <_GeneratedCodeFiles Include="$(AssemblyInfoTempFilePath)" />
+        </ItemGroup>
+
+    </Target>
+</Project>

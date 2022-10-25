@@ -1,0 +1,41 @@
+<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+
+        <OutputType>Exe</OutputType>
+        <RootNamespace>GitVersion</RootNamespace>
+        <AssemblyName>gitversion</AssemblyName>
+        <TargetFrameworks>net6.0;net7.0</TargetFrameworks>
+        <PlatformTarget>AnyCPU</PlatformTarget>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    </PropertyGroup>
+
+    <!-- workaround for https://github.com/dotnet/runtime/issues/49508 -->
+    <PropertyGroup Condition=" '$(OsxArm64)' == 'true'">
+        <TargetFrameworks>net6.0;net7.0</TargetFrameworks>
+    </PropertyGroup>
+
+    <PropertyGroup Condition=" '$(PackAsTool)' == 'true' ">
+        <ToolCommandName>dotnet-gitversion</ToolCommandName>
+        <PackageId>GitVersion.Tool</PackageId>
+        <RollForward>LatestMajor</RollForward>
+        <PackageDescription>Derives SemVer information from a repository following GitFlow or GitHubFlow. This is the .NET Core Global Tool allowing usage of GitVersion from command line.</PackageDescription>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.Extensions.Hosting"/>
+        <PackageReference Include="Microsoft.Extensions.FileSystemGlobbing"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\GitVersion.LibGit2Sharp\GitVersion.LibGit2Sharp.csproj"/>
+        <ProjectReference Include="..\GitVersion.Core\GitVersion.Core.csproj"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <EmbeddedResource Include="../../docs/input/docs/usage/cli/arguments.md"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <InternalsVisibleTo Include="GitVersion.App.Tests"/>
+    </ItemGroup>
+</Project>

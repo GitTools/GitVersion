@@ -1,0 +1,78 @@
+name: CodeQL
+
+on:
+  push:
+    branches:
+    - main
+    - 'support/*'
+    paths:
+    - '**'
+    - '!docs/**'
+
+  pull_request:
+    branches:
+    - main
+    - 'support/*'
+    paths:
+    - '**'
+    - '!docs/**'
+
+  schedule:
+    - cron: '0 12 * * *'
+
+permissions:
+  contents: read
+
+jobs:
+  analyze:
+    permissions:
+      actions: read  # for github/codeql-action/init to get workflow details
+      contents: read  # for actions/checkout to fetch code
+      security-events: write  # for github/codeql-action/analyze to upload SARIF results
+    name: Analyze
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        language: [ 'csharp' ]
+
+    steps:
+    -
+      name: Checkout
+      uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+
+    - name: Initialize CodeQL
+      uses: github/codeql-action/init@v2
+      with:
+        languages: ${{ matrix.language }}
+
+    -
+      name: Cache cake frosting
+      id: cache-cake
+      uses: actions/cache@v3.0.11
+      with:
+        path: run
+        key: run-${{ runner.os }}-${{ hashFiles('./build/**') }}
+
+    -
+      name: Setup .NET SDK
+      uses: actions/setup-dotnet@v3.0.2
+      with:
+        dotnet-version: '7.0.x'
+        dotnet-quality: 'preview'
+
+    -
+      name: '[Prepare]'
+      if: steps.cache-cake.outputs.cache-hit != 'true'
+      run: dotnet build build/CI.sln --configuration=Release
+
+    -
+      name: '[Build]'
+      shell: pwsh
+      run: dotnet run/build.dll --target=Build --exclusive
+
+    - name: Perform CodeQL Analysis
+      uses: github/codeql-action/analyze@v2

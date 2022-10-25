@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <AssemblyName>chores</AssemblyName>
+        <RootNamespace>Chores</RootNamespace>
+    </PropertyGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\common\common.csproj" />
+    </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="Cake.Json" />
+    </ItemGroup>
+</Project>

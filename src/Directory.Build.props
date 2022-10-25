@@ -1,72 +1,81 @@
 <Project>
     <PropertyGroup>
-        <BaseIntermediateOutputPath>$(MSBuildThisFileDirectory)obj\$(MSBuildProjectName)\</BaseIntermediateOutputPath>
-
+        <EndYear>$([System.DateTime]::Today.Year)</EndYear>
         <Authors>GitTools and Contributors</Authors>
+        <Copyright>Copyright GitTools $(EndYear).</Copyright>
+        <Company>$(Authors)</Company>
+
         <PackageProjectUrl>https://github.com/GitTools/GitVersion</PackageProjectUrl>
         <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
         <PackageTags>Git;Versioning;GitVersion;GitFlowVersion;GitFlow;GitHubFlow;SemVer</PackageTags>
-        <Copyright>Copyright GitTools 2020.</Copyright>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <PackageIcon>package_icon.png</PackageIcon>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
         <PackageReleaseNotes>https://github.com/GitTools/GitVersion/releases</PackageReleaseNotes>
+
         <RepositoryUrl>https://github.com/GitTools/GitVersion</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
-        <PackageReleaseNotes>https://github.com/GitTools/GitVersion/releases</PackageReleaseNotes>
-        <Company>$(Authors)</Company>
 
-        <LangVersion>8.0</LangVersion>
+        <NoWarn>1591,8618</NoWarn>
+        <DebugType>embedded</DebugType>
+        <LangVersion>11</LangVersion>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
 
-    </PropertyGroup>
-    <PropertyGroup>
-        <PackageVersion_LibGit2Sharp>0.27.0-preview-0034</PackageVersion_LibGit2Sharp>
-        <PackageVersion_LibGit2Sharp_NativeBinaries>2.0.298</PackageVersion_LibGit2Sharp_NativeBinaries>
-
-        <PackageVersion_JetBrainsAnnotations>2020.1.0</PackageVersion_JetBrainsAnnotations>
-        <PackageVersion_YamlDotNet>8.1.2</PackageVersion_YamlDotNet>
-        <PackageVersion_NewtonsoftJson>12.0.3</PackageVersion_NewtonsoftJson>
-        <PackageVersion_MicrosoftExtensions>3.0.0</PackageVersion_MicrosoftExtensions>
-        <PackageVersion_MsBuild>16.6.0</PackageVersion_MsBuild>
-
-        <PackageVersion_MicrosoftTestSdk>16.6.1</PackageVersion_MicrosoftTestSdk>
-        <PackageVersion_NSubstitute>4.2.2</PackageVersion_NSubstitute>
-        <PackageVersion_CoverletMsBuild>2.9.0</PackageVersion_CoverletMsBuild>
-        <PackageVersion_NUnit>3.12.0</PackageVersion_NUnit>
-        <PackageVersion_GitToolsTesting>1.2.0</PackageVersion_GitToolsTesting>
-        <PackageVersion_NUnit3TestAdapter>3.16.1</PackageVersion_NUnit3TestAdapter>
-        <PackageVersion_NunitXmlTestLogger>2.1.62</PackageVersion_NunitXmlTestLogger>
-        <PackageVersion_Shouldly>4.0.0-beta0002</PackageVersion_Shouldly>
+        <EnableNETAnalyzers>True</EnableNETAnalyzers>
+        <!-- Latest = version of the analyzers included in latest installed SDK -->
+        <AnalysisLevel>latest</AnalysisLevel>
+        <EnforceCodeStyleInBuild>True</EnforceCodeStyleInBuild>
 
     </PropertyGroup>
-
+    <ItemGroup>
+        <PackageReference Include="System.Text.Json"/>
+        <PackageReference Include="System.Text.Encodings.Web"/>
+    </ItemGroup>
+    <ItemGroup Condition=" '$(IsTestProject)' == 'false' ">
+        <PackageReference Include="Microsoft.CodeAnalysis.PublicApiAnalyzers">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+    </ItemGroup>
     <ItemGroup Condition=" '$(IsTestProject)' == 'true' ">
-        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="$(PackageVersion_MicrosoftTestSdk)" />
-        <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="$(PackageVersion_MicrosoftExtensions)" />
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection"/>
+        <PackageReference Include="Microsoft.NET.Test.Sdk"/>
 
-        <PackageReference Include="JetBrains.Annotations" Version="$(PackageVersion_JetBrainsAnnotations)" />
-        <PackageReference Include="Newtonsoft.Json" Version="$(PackageVersion_NewtonsoftJson)" />
-        <PackageReference Include="NSubstitute" Version="$(PackageVersion_NSubstitute)" />
+        <PackageReference Include="JetBrains.Annotations"/>
+        <PackageReference Include="NSubstitute"/>
 
-        <PackageReference Include="NUnit" Version="$(PackageVersion_NUnit)" />
-        <PackageReference Include="NUnit3TestAdapter" Version="$(PackageVersion_NUnit3TestAdapter)" />
-        <PackageReference Include="NunitXml.TestLogger" Version="$(PackageVersion_NunitXmlTestLogger)" />
-        <PackageReference Include="Shouldly" Version="$(PackageVersion_Shouldly)" />
-        <PackageReference Include="GitTools.Testing" Version="$(PackageVersion_GitToolsTesting)" />
+        <PackageReference Include="NUnit"/>
+        <PackageReference Include="NUnit3TestAdapter"/>
+        <PackageReference Include="JunitXml.TestLogger"/>
+        <PackageReference Include="Shouldly"/>
 
-        <PackageReference Include="coverlet.msbuild" Version="$(PackageVersion_CoverletMsBuild)">
+        <PackageReference Include="coverlet.msbuild">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
         </PackageReference>
+
+        <ProjectReference Include="..\GitTools.Testing\GitTools.Testing.csproj"/>
+
     </ItemGroup>
 
     <ItemGroup>
-        <None Include="../../docs/input/docs/img/package_icon.png">
-            <Pack>true</Pack>
-            <PackagePath>/</PackagePath>
-        </None>
+        <Using Include="System.Collections"/>
+        <Using Include="System.Collections.Specialized"/>
+        <Using Include="System.Diagnostics"/>
+        <Using Include="System.Reflection"/>
+        <Using Include="System.Text"/>
+        <Using Include="System.Xml"/>
     </ItemGroup>
 
-    <ItemGroup Condition=" '$(TargetFramework)' == 'net48' ">
-        <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.0" PrivateAssets="All" />
+    <ItemGroup>
+        <None Include="../../docs/input/docs/img/package_icon.png" Pack="true" PackagePath="/"/>
+        <None Include="../../build/nuspec/README.md" Pack="true" PackagePath="/"/>
     </ItemGroup>
+
+    <!-- Workaround to enable .editorconfig based analyzer configuration until dotnet compilers support .editorconfig based configuration -->
+    <PropertyGroup>
+        <SkipDefaultEditorConfigAsAdditionalFile>true</SkipDefaultEditorConfigAsAdditionalFile>
+    </PropertyGroup>
+
 </Project>

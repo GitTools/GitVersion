@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>netstandard2.0</TargetFramework>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="LibGit2Sharp"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\GitVersion.Core\GitVersion.Core.csproj"/>
+    </ItemGroup>
+</Project>

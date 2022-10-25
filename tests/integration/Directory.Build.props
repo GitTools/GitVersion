@@ -14,7 +14,7 @@
         <Compile Include="..\Program.cs" />
     </ItemGroup>
     <ItemGroup>
-        <PackageReference Include="GitVersionTask" Version="$(GitVersionTaskVersion)">
+        <PackageReference Include="GitVersion.MsBuild" Version="$(GitVersionMsBuildVersion)">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>

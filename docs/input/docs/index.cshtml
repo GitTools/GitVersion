@@ -1,0 +1,73 @@
+---
+Title: Documentation
+RedirectFrom:
+ - docs/reference/pull-requests
+ - docs/reference/feature-branches
+---
+
+@{
+    var children = Model.DocumentList(Keys.Children);
+
+    // TODO: There must be a better way to retrieve a specific document.
+    var usageDocument = children
+        .Single(x => x.String(Keys.RelativeFilePathBase) == "docs/usage/index");
+
+    // TODO: There must be a better way to retrieve the children of a specific document.
+    var usageDocuments = usageDocument
+        .DocumentList(Keys.Children)
+        .Where(x => x.ContainsKey("CardIcon"))
+        .OrderBy(x => x.Get<int>(DocsKeys.Order, 1000));
+
+    var otherDocuments = children
+        .Where(x => x != usageDocument)
+        .OrderBy(x => x.Get<int>(DocsKeys.Order, 1000));
+
+    /*
+    TODO: It would be nice if the entire below description could be sourced from
+          the content of "docs/usage/index", but it only renders unprocessed
+          Razor code.
+    */
+}
+
+<p>
+    GitVersion is a tool that generates a <a href="https://semver.org/">Semantic
+    Version number</a> based on your Git history. The version number generated
+    from GitVersion can then be used for various different purposes, such as:
+</p>
+
+<ol>
+    <li>Stamping a version number on artifacts (packages) produced during build.</li>
+    <li>Exposing the version number to the build server to version the build itself.</li>
+    <li>
+        Patching <code>AssemblyInfo.cs</code> (and similar) files with the
+        version number during the build, so the version number is embedded
+        within the compiled binaries themselves.
+    </li>
+</ol>
+
+<h2>Consuming GitVersion</h2>
+
+<p>@Html.Raw(usageDocument.String(DocsKeys.Description))</p>
+
+<div class="card-container">
+    @foreach (var card in usageDocuments)
+    {
+        @Html.Partial("_Card", card)
+    }
+</div>
+
+<p>
+    If you're unsure about how you should consume GitVersion or want to learn
+    more about how it works, read the sections below.
+</p>
+
+@foreach (var child in otherDocuments)
+{
+    if (child.ContainsKey(DocsKeys.Description))
+    {
+        <h1><a href="/@child.String(Keys.RelativeFilePathBase)">@(child.String(Keys.Title))</a></h1>
+        <p>@Html.Raw(child.String(DocsKeys.Description))</p>
+    }
+
+    @Html.Partial("_ChildPages", child)
+}
