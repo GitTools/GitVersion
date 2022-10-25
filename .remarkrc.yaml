@@ -25,12 +25,12 @@ plugins:
   - remark-lint-no-blockquote-without-marker
   - remark-lint-no-consecutive-blank-lines
   - remark-lint-no-duplicate-definitions
-  - remark-lint-no-duplicate-headings
+  - remark-lint-no-duplicate-headings: ["warn"]
   - remark-lint-no-emphasis-as-heading
   - remark-lint-no-empty-url
   - remark-lint-no-file-name-articles
   - remark-lint-no-file-name-consecutive-dashes
-  - remark-lint-no-file-name-irregular-characters
+  - remark-lint-no-file-name-irregular-characters: ["warn"]
   - remark-lint-no-file-name-mixed-case
   - remark-lint-no-file-name-outer-dashes
   - remark-lint-no-heading-content-indent

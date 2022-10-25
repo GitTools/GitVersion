@@ -30,7 +30,7 @@ be a good primer to read before reading [SemVer.org][semver].
 ## I can't use the build number for NuGet
 
 If you have used NuGet you would notice the versions above are not compatible
-with NuGet. GitVersion solves this by providing [variables].
+with NuGet. GitVersion solves this by providing [variables][variables].
 
 What you have seen above is the `SemVer` variable. You can use the
 `NuGetVersion` variable to have the version formatted in a NuGet compatible way.

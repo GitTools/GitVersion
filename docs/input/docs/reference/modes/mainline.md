@@ -62,7 +62,7 @@ slowing down.
 By default GitVersion is set up to do [Continuous Delivery][continuous-delivery]
 versioning on all branches but `develop` (which does [Continuous
 Deployment][continuous-deployment] by default). To change the [versioning
-mode][modes] to Mainline Development, just change the [configuration] as such:
+mode][modes] to Mainline Development, just change the [configuration][configuration] as such:
 
 ```yaml
 mode: Mainline

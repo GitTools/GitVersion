@@ -25,10 +25,10 @@ Integrating GitVersion into your Jenkins build varies based on the project type:
 
 Injecting environment variables is not supported in Jenkins natively, but
 Jenkins plugins exist that provide this functionality. Of these plugins
-[EnvInject] appears to be the most popular with over 20k downloads per month.
+[EnvInject][env-inject] appears to be the most popular with over 20k downloads per month.
 
 To inject the GitVersion variables as environment variables for a build job
-using [EnvInject], do the following:
+using [EnvInject][env-inject], do the following:
 
 1.  Add an **Execute Windows batch command** build step with _Command_:
     `gitversion /output buildserver`
@@ -51,7 +51,7 @@ You can verify correct injection of environment variables by adding another
 
 ### Pipeline Projects
 
-For pipeline projects, GitVersion variables can be accessed by reading the `gitversion.properties` file using the [Pipeline Utility Steps] plugin. Variables from a property file are not automatically merged with the environment variables, but they can be accessed within a script block.
+For pipeline projects, GitVersion variables can be accessed by reading the `gitversion.properties` file using the [Pipeline Utility Steps][pipeline-utility-steps] plugin. Variables from a property file are not automatically merged with the environment variables, but they can be accessed within a script block.
 
 In a pipeline stage:
 
@@ -75,5 +75,5 @@ script {
 }
 ```
 
-[EnvInject]: https://wiki.jenkins-ci.org/display/JENKINS/EnvInject+Plugin
-[Pipeline Utility Steps]: https://plugins.jenkins.io/pipeline-utility-steps
+[env-inject]: https://wiki.jenkins-ci.org/display/JENKINS/EnvInject+Plugin
+[pipeline-utility-steps]: https://plugins.jenkins.io/pipeline-utility-steps

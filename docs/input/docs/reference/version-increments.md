@@ -130,7 +130,7 @@ explicitly tagged as stable.
 Then the build metadata (which is the commit count) is promoted to the
 pre-release tag. Applying these rules, the above commit-graph would produce:
 
-```
+```log
 e137e9 -> 1.0.0+0
 a5f6c5 -> 1.0.1-ci.1
 adb29a -> 1.0.1-feature-foo.1 (PR #5 Version: `1.0.1-PullRequest.5+2`)
