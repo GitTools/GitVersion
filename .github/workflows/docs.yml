@@ -59,10 +59,7 @@ jobs:
     -
       name: Get npm cache directory
       id: cache-node-dir
-      shell: pwsh
-      run: |
-        $cacheDir = $(npm config get cache)
-        echo "dir=$cacheDir" >> $GITHUB_OUTPUT
+      run: echo "dir=$(npm config get cache)" >> $GITHUB_OUTPUT
     -
       name: Cache Node Modules
       id: cache-node
