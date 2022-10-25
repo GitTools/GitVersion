@@ -46,11 +46,6 @@ public sealed class GitVersion
     public string? BuildMetaData { get; set; }
 
     /// <summary>
-    /// Gets or sets the build metadata padded.
-    /// </summary>
-    public string? BuildMetaDataPadded { get; set; }
-
-    /// <summary>
     /// Gets or sets the major version.
     /// </summary>
     public string? FullBuildMetaData { get; set; }
@@ -64,16 +59,6 @@ public sealed class GitVersion
     /// Gets or sets the Semantic Version.
     /// </summary>
     public string? SemVer { get; set; }
-
-    /// <summary>
-    /// Gets or sets the legacy Semantic Version.
-    /// </summary>
-    public string? LegacySemVer { get; set; }
-
-    /// <summary>
-    /// Gets or sets the padded legacy Semantic Version.
-    /// </summary>
-    public string? LegacySemVerPadded { get; set; }
 
     /// <summary>
     /// Gets or sets the assembly Semantic Version.
@@ -106,24 +91,9 @@ public sealed class GitVersion
     public string? Sha { get; set; }
 
     /// <summary>
-    /// Gets or sets the NuGet version for v2.
-    /// </summary>
-    public string? NuGetVersionV2 { get; set; }
-
-    /// <summary>
-    /// Gets or sets the NuGet version.
-    /// </summary>
-    public string? NuGetVersion { get; set; }
-
-    /// <summary>
     /// Gets or sets the commits since version source.
     /// </summary>
     public int? CommitsSinceVersionSource { get; set; }
-
-    /// <summary>
-    /// Gets or sets the commits since version source padded.
-    /// </summary>
-    public string? CommitsSinceVersionSourcePadded { get; set; }
 
     /// <summary>
     /// Gets or sets the commit date.

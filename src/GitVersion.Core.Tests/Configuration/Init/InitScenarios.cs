@@ -1,6 +1,7 @@
 using System.Runtime.InteropServices;
 using GitVersion.Configuration;
 using GitVersion.Core.Tests.Helpers;
+using GitVersion.Helpers;
 using GitVersion.Logging;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
@@ -16,8 +17,6 @@ public class InitScenarios : TestBase
     public void Setup() => ShouldlyConfiguration.ShouldMatchApprovedDefaults.LocateTestMethodUsingAttribute<TestAttribute>();
 
     [Test]
-    [Category(NoMono)]
-    [Description(NoMonoDescription)]
     public void CanSetNextVersion()
     {
         var workingDirectory = RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? "c:\\proj" : "/proj";
@@ -29,10 +28,10 @@ public class InitScenarios : TestBase
             services.AddSingleton(options);
         });
 
-        var configurationProvider = sp.GetRequiredService<IConfigProvider>();
+        var configurationProvider = sp.GetRequiredService<IConfigurationProvider>();
         var fileSystem = sp.GetRequiredService<IFileSystem>();
         configurationProvider.Init(workingDirectory);
 
-        fileSystem.ReadAllText(Path.Combine(workingDirectory, "GitVersion.yml")).ShouldMatchApproved();
+        fileSystem.ReadAllText(PathHelper.Combine(workingDirectory, "GitVersion.yml")).ShouldMatchApproved();
     }
 }

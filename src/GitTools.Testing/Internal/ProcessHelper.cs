@@ -8,9 +8,9 @@ public static class ProcessHelper
     private static readonly object LockObject = new();
 
     // http://social.msdn.microsoft.com/Forums/en/netfxbcl/thread/f6069441-4ab1-4299-ad6a-b8bb9ed36be3
-    private static Process Start(ProcessStartInfo startInfo)
+    private static Process? Start(ProcessStartInfo startInfo)
     {
-        Process process;
+        Process? process;
 
         lock (LockObject)
         {
@@ -74,14 +74,12 @@ public static class ProcessHelper
     }
 
     // http://csharptest.net/532/using-processstart-to-capture-console-output/
-    public static int Run(Action<string> output, Action<string> errorOutput, TextReader input, string exe, string args, string workingDirectory, params KeyValuePair<string, string>[] environmentalVariables)
+    public static int Run(Action<string> output, Action<string> errorOutput, TextReader? input, string exe, string args, string workingDirectory, params KeyValuePair<string, string>[] environmentalVariables)
     {
         if (string.IsNullOrEmpty(exe))
             throw new ArgumentNullException(nameof(exe));
         if (output == null)
             throw new ArgumentNullException(nameof(output));
-
-        workingDirectory ??= Environment.CurrentDirectory;
 
         var psi = new ProcessStartInfo
         {
@@ -96,23 +94,31 @@ public static class ProcessHelper
             FileName = exe,
             Arguments = args
         };
-        foreach (var environmentalVariable in environmentalVariables)
+        foreach (var (key, value) in environmentalVariables)
         {
-            if (psi.EnvironmentVariables.ContainsKey(environmentalVariable.Key))
+            var psiEnvironmentVariables = psi.EnvironmentVariables;
+            if (psiEnvironmentVariables.ContainsKey(key) && string.IsNullOrEmpty(value))
             {
-                psi.EnvironmentVariables[environmentalVariable.Key] = environmentalVariable.Value;
+                psiEnvironmentVariables.Remove(key);
+            }
+            else if (psiEnvironmentVariables.ContainsKey(key))
+            {
+                psiEnvironmentVariables[key] = value;
             }
             else
             {
-                psi.EnvironmentVariables.Add(environmentalVariable.Key, environmentalVariable.Value);
-            }
-            if (psi.EnvironmentVariables.ContainsKey(environmentalVariable.Key) && environmentalVariable.Value == null)
-            {
-                psi.EnvironmentVariables.Remove(environmentalVariable.Key);
+                psiEnvironmentVariables.Add(key, value);
             }
         }
 
         using var process = Start(psi);
+
+        if (process is null)
+        {
+            // FIX ME: What error code do you want to return?
+            return -1;
+        }
+
         using var mreOut = new ManualResetEvent(false);
         using var mreErr = new ManualResetEvent(false);
         process.EnableRaisingEvents = true;
@@ -135,8 +141,8 @@ public static class ProcessHelper
         };
         process.BeginErrorReadLine();
 
-        string line;
-        while (input != null && null != (line = input.ReadLine()))
+        string? line;
+        while ((line = input?.ReadLine()) != null)
             process.StandardInput.WriteLine(line);
 
         process.StandardInput.Close();
@@ -160,7 +166,7 @@ public static class ProcessHelper
     }
 
     [Flags]
-    public enum ErrorModes
+    private enum ErrorModes
     {
         Default = 0x0,
         FailCriticalErrors = 0x1,
@@ -169,7 +175,7 @@ public static class ProcessHelper
         NoOpenFileErrorBox = 0x8000
     }
 
-    private struct ChangeErrorMode : IDisposable
+    private readonly struct ChangeErrorMode : IDisposable
     {
         private readonly int oldMode;
 

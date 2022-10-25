@@ -2,7 +2,6 @@ using GitTools.Testing;
 using GitVersion.Configuration;
 using GitVersion.Core.Tests.Helpers;
 using GitVersion.Extensions;
-using GitVersion.Model.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using NSubstitute;
@@ -11,10 +10,10 @@ namespace GitVersion.Core.Tests;
 
 public class GitVersionContextBuilder
 {
-    private IGitRepository repository;
-    private Config configuration;
-    public IServiceProvider ServicesProvider;
-    private Action<IServiceCollection> overrideServices;
+    private IGitRepository? repository;
+    private GitVersionConfiguration? configuration;
+    public IServiceProvider? ServicesProvider;
+    private Action<IServiceCollection>? overrideServices;
 
     public GitVersionContextBuilder WithRepository(IGitRepository gitRepository)
     {
@@ -22,13 +21,13 @@ public class GitVersionContextBuilder
         return this;
     }
 
-    public GitVersionContextBuilder WithConfig(Config config)
+    public GitVersionContextBuilder WithConfig(GitVersionConfiguration configuration)
     {
-        this.configuration = config;
+        this.configuration = configuration;
         return this;
     }
 
-    public GitVersionContextBuilder OverrideServices(Action<IServiceCollection> overrides = null)
+    public GitVersionContextBuilder OverrideServices(Action<IServiceCollection>? overrides = null)
     {
         this.overrideServices = overrides;
         return this;
@@ -47,6 +46,8 @@ public class GitVersionContextBuilder
         var mockCommit = GitToolsTestingExtensions.CreateMockCommit();
         var mockBranch = GitToolsTestingExtensions.CreateMockBranch(branchName, mockCommit);
 
+        this.repository ??= CreateRepository();
+
         var branches = this.repository.Branches.ToList();
         branches.Add(mockBranch);
         this.repository.Branches.GetEnumerator().Returns(_ => ((IEnumerable<IBranch>)branches).GetEnumerator());
@@ -58,14 +59,14 @@ public class GitVersionContextBuilder
     {
         var repo = this.repository ?? CreateRepository();
 
-        var config = new ConfigurationBuilder()
-            .Add(this.configuration ?? new Config())
+        var configuration = new ConfigurationBuilder()
+            .Add(this.configuration ?? new GitVersionConfiguration())
             .Build();
 
         var options = Options.Create(new GitVersionOptions
         {
             WorkingDirectory = new EmptyRepositoryFixture().RepositoryPath,
-            ConfigInfo = { OverrideConfig = config }
+            ConfigInfo = { OverrideConfig = configuration }
         });
 
         this.ServicesProvider = ConfigureServices(services =>
@@ -91,7 +92,7 @@ public class GitVersionContextBuilder
         return mockRepository;
     }
 
-    private static IServiceProvider ConfigureServices(Action<IServiceCollection> overrideServices = null)
+    private static IServiceProvider ConfigureServices(Action<IServiceCollection>? overrideServices = null)
     {
         var services = new ServiceCollection()
             .AddModule(new GitVersionCoreTestModule());

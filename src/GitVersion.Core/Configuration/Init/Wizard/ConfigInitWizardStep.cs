@@ -1,6 +1,5 @@
 using GitVersion.Extensions;
 using GitVersion.Logging;
-using GitVersion.Model.Configuration;
 
 namespace GitVersion.Configuration.Init.Wizard;
 
@@ -19,10 +18,10 @@ public abstract class ConfigInitWizardStep
         this.StepFactory = stepFactory.NotNull();
     }
 
-    public bool Apply(Queue<ConfigInitWizardStep> steps, Config config, string workingDirectory)
+    public bool Apply(Queue<ConfigInitWizardStep> steps, GitVersionConfiguration configuration, string workingDirectory)
     {
         this.Console.WriteLine();
-        this.Console.WriteLine(GetPrompt(config, workingDirectory));
+        this.Console.WriteLine(GetPrompt(configuration, workingDirectory));
         this.Console.WriteLine();
         this.Console.Write("> ");
         var input = this.Console.ReadLine();
@@ -41,7 +40,7 @@ public abstract class ConfigInitWizardStep
             return true;
         }
         var resultWithDefaultApplied = input.IsNullOrEmpty() ? DefaultResult : input;
-        var stepResult = HandleResult(resultWithDefaultApplied, steps, config, workingDirectory);
+        var stepResult = HandleResult(resultWithDefaultApplied, steps, configuration, workingDirectory);
         if (stepResult.InvalidResponse)
         {
             InvalidResponse(steps);
@@ -64,7 +63,7 @@ public abstract class ConfigInitWizardStep
         steps.Enqueue(this);
     }
 
-    protected abstract StepResult HandleResult(string? result, Queue<ConfigInitWizardStep> steps, Config config, string workingDirectory);
-    protected abstract string GetPrompt(Config config, string workingDirectory);
+    protected abstract StepResult HandleResult(string? result, Queue<ConfigInitWizardStep> steps, GitVersionConfiguration configuration, string workingDirectory);
+    protected abstract string GetPrompt(GitVersionConfiguration configuration, string workingDirectory);
     protected abstract string? DefaultResult { get; }
 }

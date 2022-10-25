@@ -23,7 +23,7 @@ public class ArtifactsMsBuildFullTest : FrostingTask<BuildContext>
         var nugetSource = context.MakeAbsolute(Paths.Nuget).FullPath;
 
         context.Information("\nTesting msbuild task with dotnet build (for .net core)\n");
-        var frameworks = new[] { Constants.CoreFxVersion31, Constants.NetVersion50, Constants.NetVersion60 };
+        var frameworks = new[] { Constants.NetVersion60, Constants.NetVersion70 };
         foreach (var framework in frameworks)
         {
             var dotnetMsBuildSettings = new DotNetMSBuildSettings();
@@ -43,21 +43,5 @@ public class ArtifactsMsBuildFullTest : FrostingTask<BuildContext>
             var netcoreExe = Paths.Integration.Combine("core").Combine("build").Combine(framework).CombineWithFilePath("app.dll");
             context.ValidateOutput("dotnet", netcoreExe.FullPath, context.Version.GitVersion.FullSemVer);
         }
-
-        context.Information("\nTesting msbuild task with msbuild (for full framework)\n");
-
-        var msBuildSettings = new MSBuildSettings
-        {
-            Verbosity = Verbosity.Minimal,
-            Restore = true
-        };
-
-        msBuildSettings.WithProperty("GitVersionMsBuildVersion", version);
-        msBuildSettings.WithProperty("RestoreSource", nugetSource);
-
-        context.MSBuild("./tests/integration/full", msBuildSettings);
-
-        var fullExe = Paths.Integration.Combine("full").Combine("build").CombineWithFilePath("app.exe");
-        context.ValidateOutput(fullExe.FullPath, null, context.Version.GitVersion.FullSemVer);
     }
 }

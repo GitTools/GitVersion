@@ -1,9 +1,8 @@
 using GitVersion.BuildAgents;
-using GitVersion.Common;
+using GitVersion.Configuration;
 using GitVersion.Extensions;
 using GitVersion.Helpers;
 using GitVersion.Logging;
-using GitVersion.Model.Configuration;
 using Microsoft.Extensions.Options;
 
 namespace GitVersion;
@@ -15,34 +14,27 @@ public class GitPreparer : IGitPreparer
     private readonly IMutatingGitRepository repository;
     private readonly IOptions<GitVersionOptions> options;
     private readonly IGitRepositoryInfo repositoryInfo;
-    private readonly IRepositoryStore repositoryStore;
     private readonly ICurrentBuildAgent buildAgent;
     private readonly RetryAction<LockedFileException> retryAction;
-
+    private readonly Lazy<GitVersionContext> versionContext;
     private const string DefaultRemoteName = "origin";
 
     public GitPreparer(ILog log, IEnvironment environment, ICurrentBuildAgent buildAgent, IOptions<GitVersionOptions> options,
-        IMutatingGitRepository repository, IGitRepositoryInfo repositoryInfo, IRepositoryStore repositoryStore)
+        IMutatingGitRepository repository, IGitRepositoryInfo repositoryInfo, Lazy<GitVersionContext> versionContext)
     {
         this.log = log.NotNull();
         this.environment = environment.NotNull();
         this.repository = repository.NotNull();
         this.options = options.NotNull();
         this.repositoryInfo = repositoryInfo.NotNull();
-        this.repositoryStore = repositoryStore.NotNull();
         this.buildAgent = buildAgent.NotNull();
         this.retryAction = new RetryAction<LockedFileException>();
+        this.versionContext = versionContext.NotNull();
     }
 
     public void Prepare()
     {
         var gitVersionOptions = this.options.Value;
-
-        // Normalize if we are running on build server
-        var normalizeGitDirectory = !gitVersionOptions.Settings.NoNormalize && this.buildAgent is not LocalBuild;
-        var shouldCleanUpRemotes = this.buildAgent.ShouldCleanUpRemotes();
-        var currentBranch = ResolveCurrentBranch();
-
         var dotGitDirectory = this.repositoryInfo.DotGitDirectory;
         var projectRoot = this.repositoryInfo.ProjectRootDirectory;
 
@@ -53,20 +45,23 @@ public class GitPreparer : IGitPreparer
             throw new Exception($"Failed to prepare or find the .git directory in path '{gitVersionOptions.WorkingDirectory}'.");
         }
 
-        PrepareInternal(normalizeGitDirectory, currentBranch, shouldCleanUpRemotes);
+        PrepareInternal(gitVersionOptions);
     }
 
-    private void PrepareInternal(bool normalizeGitDirectory, string? currentBranch, bool shouldCleanUpRemotes = false)
+    private void PrepareInternal(GitVersionOptions gitVersionOptions)
     {
-        var gitVersionOptions = this.options.Value;
+        var currentBranch = ResolveCurrentBranch();
+
         if (!gitVersionOptions.RepositoryInfo.TargetUrl.IsNullOrWhiteSpace())
         {
             CreateDynamicRepository(currentBranch);
+            NormalizeGitDirectory(currentBranch, true);
         }
         else
         {
-            if (!normalizeGitDirectory) return;
-            if (shouldCleanUpRemotes)
+            // Normalize if we are running on build server
+            if (gitVersionOptions.Settings.NoNormalize || this.buildAgent is LocalBuild) return;
+            if (this.buildAgent.ShouldCleanUpRemotes())
             {
                 CleanupDuplicateOrigin();
             }
@@ -80,7 +75,7 @@ public class GitPreparer : IGitPreparer
         var gitVersionOptions = this.options.Value;
         var targetBranch = gitVersionOptions.RepositoryInfo.TargetBranch;
 
-        var isDynamicRepository = !gitVersionOptions.RepositoryInfo.DynamicRepositoryClonePath.IsNullOrWhiteSpace();
+        var isDynamicRepository = !gitVersionOptions.RepositoryInfo.ClonePath.IsNullOrWhiteSpace();
         var currentBranch = this.buildAgent.GetCurrentBranch(isDynamicRepository) ?? targetBranch;
         this.log.Info("Branch from build environment: " + currentBranch);
 
@@ -109,7 +104,6 @@ public class GitPreparer : IGitPreparer
 
     private void CreateDynamicRepository(string? targetBranch)
     {
-        var gitVersionOptions = this.options.Value;
         if (targetBranch.IsNullOrWhiteSpace())
         {
             throw new Exception("Dynamic Git repositories must have a target branch (/b)");
@@ -119,6 +113,7 @@ public class GitPreparer : IGitPreparer
 
         using (this.log.IndentLog($"Creating dynamic repository at '{gitDirectory}'"))
         {
+            var gitVersionOptions = this.options.Value;
             var authentication = gitVersionOptions.Authentication;
             if (!Directory.Exists(gitDirectory))
             {
@@ -128,7 +123,6 @@ public class GitPreparer : IGitPreparer
             {
                 this.log.Info("Git repository already exists");
             }
-            NormalizeGitDirectory(targetBranch, true);
         }
     }
 
@@ -166,97 +160,27 @@ public class GitPreparer : IGitPreparer
         {
             var remote = EnsureOnlyOneRemoteIsDefined();
 
-            //If noFetch is enabled, then GitVersion will assume that the git repository is normalized before execution, so that fetching from remotes is not required.
-            if (noFetch)
-            {
-                this.log.Info("Skipping fetching, if GitVersion does not calculate your version as expected you might need to allow fetching or use dynamic repositories");
-            }
-            else
-            {
-                var refSpecs = string.Join(", ", remote.FetchRefSpecs.Select(r => r.Specification));
-                this.log.Info($"Fetching from remote '{remote.Name}' using the following refspecs: {refSpecs}.");
-                this.retryAction.Execute(() => this.repository.Fetch(remote.Name, Enumerable.Empty<string>(), authentication, null));
-            }
-
+            FetchRemotesIfRequired(remote, noFetch, authentication);
             EnsureLocalBranchExistsForCurrentBranch(remote, currentBranchName);
             CreateOrUpdateLocalBranchesFromRemoteTrackingOnes(remote.Name);
 
-            var currentBranch = this.repositoryStore.FindBranch(currentBranchName);
+            var currentBranch = this.repository.Branches.FirstOrDefault(x => x.Name.EquivalentTo(currentBranchName));
             // Bug fix for https://github.com/GitTools/GitVersion/issues/1754, head maybe have been changed
             // if this is a dynamic repository. But only allow this in case the branches are different (branch switch)
-            if (expectedSha != this.repository.Head.Tip?.Sha &&
-                (isDynamicRepository || currentBranch is null || !this.repository.Head.Equals(currentBranch)))
+            if (expectedSha != this.repository.Head.Tip?.Sha)
             {
-                var newExpectedSha = this.repository.Head.Tip?.Sha;
-                var newExpectedBranchName = this.repository.Head.Name.Canonical;
-
-                this.log.Info($"Head has moved from '{expectedBranchName} | {expectedSha}' => '{newExpectedBranchName} | {newExpectedSha}', allowed since this is a dynamic repository");
-
-                expectedSha = newExpectedSha;
-            }
-
-            var headSha = this.repository.Refs.Head?.TargetIdentifier;
-
-            if (!this.repository.IsHeadDetached)
-            {
-                this.log.Info($"HEAD points at branch '{headSha}'.");
-                return;
-            }
-
-            this.log.Info($"HEAD is detached and points at commit '{headSha}'.");
-            this.log.Info($"Local Refs:{System.Environment.NewLine}" + string.Join(System.Environment.NewLine, this.repository.Refs.FromGlob("*").Select(r => $"{r.Name.Canonical} ({r.TargetIdentifier})")));
-
-            // In order to decide whether a fake branch is required or not, first check to see if any local branches have the same commit SHA of the head SHA.
-            // If they do, go ahead and checkout that branch
-            // If no, go ahead and check out a new branch, using the known commit SHA as the pointer
-            var localBranchesWhereCommitShaIsHead = this.repository.Branches.Where(b => !b.IsRemote && b.Tip?.Sha == headSha).ToList();
-
-            var matchingCurrentBranch = !currentBranchName.IsNullOrEmpty()
-                ? localBranchesWhereCommitShaIsHead.SingleOrDefault(b => b.Name.Canonical.Replace("/heads/", "/") == currentBranchName.Replace("/heads/", "/"))
-                : null;
-            if (matchingCurrentBranch != null)
-            {
-                this.log.Info($"Checking out local branch '{currentBranchName}'.");
-                Checkout(matchingCurrentBranch.Name.Canonical);
-            }
-            else if (localBranchesWhereCommitShaIsHead.Count > 1)
-            {
-                var branchNames = localBranchesWhereCommitShaIsHead.Select(r => r.Name.Canonical);
-                var csvNames = string.Join(", ", branchNames);
-                const string moveBranchMsg = "Move one of the branches along a commit to remove warning";
-
-                this.log.Warning($"Found more than one local branch pointing at the commit '{headSha}' ({csvNames}).");
-                var main = localBranchesWhereCommitShaIsHead.SingleOrDefault(n => n.Name.EquivalentTo(Config.MainBranchKey));
-                if (main != null)
+                if (isDynamicRepository || currentBranch is null || !this.repository.Head.Equals(currentBranch))
                 {
-                    this.log.Warning("Because one of the branches is 'main', will build main." + moveBranchMsg);
-                    Checkout(Config.MainBranchKey);
-                }
-                else
-                {
-                    var branchesWithoutSeparators = localBranchesWhereCommitShaIsHead.Where(b => !b.Name.Friendly.Contains('/') && !b.Name.Friendly.Contains('-')).ToList();
-                    if (branchesWithoutSeparators.Count == 1)
-                    {
-                        var branchWithoutSeparator = branchesWithoutSeparators[0];
-                        this.log.Warning($"Choosing {branchWithoutSeparator.Name.Canonical} as it is the only branch without / or - in it. " + moveBranchMsg);
-                        Checkout(branchWithoutSeparator.Name.Canonical);
-                    }
-                    else
-                    {
-                        throw new WarningException("Failed to try and guess branch to use. " + moveBranchMsg);
-                    }
+                    var newExpectedSha = this.repository.Head.Tip?.Sha;
+                    var newExpectedBranchName = this.repository.Head.Name.Canonical;
+
+                    this.log.Info($"Head has moved from '{expectedBranchName} | {expectedSha}' => '{newExpectedBranchName} | {newExpectedSha}', allowed since this is a dynamic repository");
+
+                    expectedSha = newExpectedSha;
                 }
             }
-            else if (localBranchesWhereCommitShaIsHead.Count == 0)
-            {
-                this.log.Info($"No local branch pointing at the commit '{headSha}'. Fake branch needs to be created.");
-                this.retryAction.Execute(() => this.repository.CreateBranchForPullRequestBranch(authentication));
-            }
-            else
-            {
-                this.log.Info($"Checking out local branch 'refs/heads/{localBranchesWhereCommitShaIsHead[0]}'.");
-                Checkout(localBranchesWhereCommitShaIsHead[0].Name.Friendly);
-            }
+
+            EnsureHeadIsAttachedToBranch(currentBranchName, authentication);
         }
         finally
         {
@@ -272,6 +196,93 @@ To disable this error set an environmental variable called IGNORE_NORMALISATION_
 Please run `git {GitExtensions.CreateGitLogArgs(100)}` and submit it along with your build log (with personal info removed) in a new issue at https://github.com/GitTools/GitVersion");
                 }
             }
+        }
+    }
+
+    private void EnsureHeadIsAttachedToBranch(string? currentBranchName, AuthenticationInfo authentication)
+    {
+        var headSha = this.repository.Refs.Head?.TargetIdentifier;
+        if (!this.repository.IsHeadDetached)
+        {
+            this.log.Info($"HEAD points at branch '{headSha}'.");
+            return;
+        }
+
+        this.log.Info($"HEAD is detached and points at commit '{headSha}'.");
+        var localRefs = this.repository.Refs.FromGlob("*").Select(r => $"{r.Name.Canonical} ({r.TargetIdentifier})");
+        this.log.Info($"Local Refs:{System.Environment.NewLine}" + string.Join(System.Environment.NewLine, localRefs));
+
+        // In order to decide whether a fake branch is required or not, first check to see if any local branches have the same commit SHA of the head SHA.
+        // If they do, go ahead and checkout that branch
+        // If no, go ahead and check out a new branch, using the known commit SHA as the pointer
+        var localBranchesWhereCommitShaIsHead = this.repository.Branches.Where(b => !b.IsRemote && b.Tip?.Sha == headSha).ToList();
+
+        var matchingCurrentBranch = !currentBranchName.IsNullOrEmpty()
+            ? localBranchesWhereCommitShaIsHead.SingleOrDefault(b => b.Name.Canonical.Replace("/heads/", "/") == currentBranchName.Replace("/heads/", "/"))
+            : null;
+        if (matchingCurrentBranch != null)
+        {
+            this.log.Info($"Checking out local branch '{currentBranchName}'.");
+            Checkout(matchingCurrentBranch.Name.Canonical);
+        }
+        else
+        {
+            switch (localBranchesWhereCommitShaIsHead.Count)
+            {
+                case > 1:
+                    ChooseLocalBranchToAttach(headSha, localBranchesWhereCommitShaIsHead);
+                    break;
+                case 0:
+                    this.log.Info($"No local branch pointing at the commit '{headSha}'. Fake branch needs to be created.");
+                    this.retryAction.Execute(() => this.repository.CreateBranchForPullRequestBranch(authentication));
+                    break;
+                default:
+                    this.log.Info($"Checking out local branch 'refs/heads/{localBranchesWhereCommitShaIsHead[0]}'.");
+                    Checkout(localBranchesWhereCommitShaIsHead[0].Name.Friendly);
+                    break;
+            }
+        }
+    }
+    private void ChooseLocalBranchToAttach(string? headSha, IReadOnlyCollection<IBranch> localBranches)
+    {
+        var branchNames = localBranches.Select(r => r.Name.Canonical);
+        var csvNames = string.Join(", ", branchNames);
+        const string moveBranchMsg = "Move one of the branches along a commit to remove warning";
+
+        this.log.Warning($"Found more than one local branch pointing at the commit '{headSha}' ({csvNames}).");
+        var mainBranch = localBranches.SingleOrDefault(n => n.Name.EquivalentTo(GitVersionConfiguration.MainBranchKey));
+        if (mainBranch != null)
+        {
+            this.log.Warning("Because one of the branches is 'main', will build main." + moveBranchMsg);
+            Checkout(GitVersionConfiguration.MainBranchKey);
+        }
+        else
+        {
+            var branchesWithoutSeparators = localBranches.Where(b => !b.Name.Friendly.Contains('/') && !b.Name.Friendly.Contains('-')).ToList();
+            if (branchesWithoutSeparators.Count == 1)
+            {
+                var branchWithoutSeparator = branchesWithoutSeparators[0];
+                this.log.Warning($"Choosing {branchWithoutSeparator.Name.Canonical} as it is the only branch without / or - in it. " + moveBranchMsg);
+                Checkout(branchWithoutSeparator.Name.Canonical);
+            }
+            else if (!this.versionContext.Value.IsCurrentCommitTagged)
+            {
+                throw new WarningException("Failed to try and guess branch to use. " + moveBranchMsg);
+            }
+        }
+    }
+    private void FetchRemotesIfRequired(IRemote remote, bool noFetch, AuthenticationInfo authentication)
+    {
+        //If noFetch is enabled, then GitVersion will assume that the git repository is normalized before execution, so that fetching from remotes is not required.
+        if (noFetch)
+        {
+            this.log.Info("Skipping fetching, if GitVersion does not calculate your version as expected you might need to allow fetching or use dynamic repositories");
+        }
+        else
+        {
+            var refSpecs = string.Join(", ", remote.FetchRefSpecs.Select(r => r.Specification));
+            this.log.Info($"Fetching from remote '{remote.Name}' using the following refspecs: {refSpecs}.");
+            this.retryAction.Execute(() => this.repository.Fetch(remote.Name, Enumerable.Empty<string>(), authentication, null));
         }
     }
 
@@ -315,34 +326,37 @@ Please run `git {GitExtensions.CreateGitLogArgs(100)}` and submit it along with 
             // We do not want to touch our current branch
             if (this.repository.Head.Name.EquivalentTo(branchName)) continue;
 
-            if (this.repository.Refs[localReferenceName] is not null)
+            var localRef = this.repository.Refs[localReferenceName];
+            if (localRef != null)
             {
-                var localRef = this.repository.Refs[localReferenceName]!;
                 if (localRef.TargetIdentifier == remoteTrackingReference.TargetIdentifier)
                 {
                     this.log.Info($"Skipping update of '{remoteTrackingReference.Name.Canonical}' as it already matches the remote ref.");
                     continue;
                 }
-                var remoteRefTipId = remoteTrackingReference.ReferenceTargetId!;
-                this.log.Info($"Updating local ref '{localRef.Name.Canonical}' to point at {remoteRefTipId}.");
-                this.retryAction.Execute(() => this.repository.Refs.UpdateTarget(localRef, remoteRefTipId));
+                var remoteRefTipId = remoteTrackingReference.ReferenceTargetId;
+                if (remoteRefTipId != null)
+                {
+                    this.log.Info($"Updating local ref '{localRef.Name.Canonical}' to point at {remoteRefTipId}.");
+                    this.retryAction.Execute(() => this.repository.Refs.UpdateTarget(localRef, remoteRefTipId));
+                }
                 continue;
             }
 
             this.log.Info($"Creating local branch from remote tracking '{remoteTrackingReference.Name.Canonical}'.");
             this.repository.Refs.Add(localReferenceName.Canonical, remoteTrackingReference.TargetIdentifier, true);
 
-            var branch = this.repository.Branches[branchName]!;
-            this.repository.Branches.UpdateTrackedBranch(branch, remoteTrackingReferenceName);
+            var branch = this.repository.Branches[branchName];
+            if (branch != null)
+            {
+                this.repository.Branches.UpdateTrackedBranch(branch, remoteTrackingReferenceName);
+            }
         }
     }
 
     public void EnsureLocalBranchExistsForCurrentBranch(IRemote? remote, string? currentBranch)
     {
-        if (remote is null)
-        {
-            throw new ArgumentNullException(nameof(remote));
-        }
+        remote.NotNull();
 
         if (currentBranch.IsNullOrEmpty()) return;
 
@@ -364,23 +378,30 @@ Please run `git {GitExtensions.CreateGitLogArgs(100)}` and submit it along with 
             repoTip = originBranch.Tip;
         }
 
-        var repoTipId = repoTip!.Id;
+        var repoTipId = repoTip?.Id;
 
-        var referenceName = ReferenceName.Parse(localCanonicalName);
-        if (this.repository.Branches.All(b => !b.Name.Equals(referenceName)))
+        if (repoTipId != null)
         {
-            this.log.Info(isBranch ? $"Creating local branch {referenceName}"
-                : $"Creating local branch {referenceName} pointing at {repoTipId}");
-            this.repository.Refs.Add(localCanonicalName, repoTipId.Sha);
+            var referenceName = ReferenceName.Parse(localCanonicalName);
+            if (this.repository.Branches.All(b => !b.Name.Equals(referenceName)))
+            {
+                this.log.Info(isBranch
+                    ? $"Creating local branch {referenceName}"
+                    : $"Creating local branch {referenceName} pointing at {repoTipId}");
+                this.repository.Refs.Add(localCanonicalName, repoTipId.Sha);
+            }
+            else
+            {
+                this.log.Info(isBranch
+                    ? $"Updating local branch {referenceName} to point at {repoTipId}"
+                    : $"Updating local branch {referenceName} to match ref {currentBranch}");
+                var localRef = this.repository.Refs[localCanonicalName];
+                if (localRef != null)
+                {
+                    this.retryAction.Execute(() => this.repository.Refs.UpdateTarget(localRef, repoTipId));
+                }
+            }
         }
-        else
-        {
-            this.log.Info(isBranch ? $"Updating local branch {referenceName} to point at {repoTip}"
-                : $"Updating local branch {referenceName} to match ref {currentBranch}");
-            var localRef = this.repository.Refs[localCanonicalName]!;
-            this.retryAction.Execute(() => this.repository.Refs.UpdateTarget(localRef, repoTipId));
-        }
-
         Checkout(localCanonicalName);
     }
 

@@ -1,7 +1,7 @@
 using GitVersion.BuildAgents;
 using GitVersion.Extensions;
+using GitVersion.Helpers;
 using GitVersion.Logging;
-using GitVersion.Model;
 using GitVersion.OutputVariables;
 
 namespace GitVersion;
@@ -104,7 +104,7 @@ public class ArgumentParser : IArgumentParser
         arguments.TargetPath = arguments.TargetPath.TrimEnd('/', '\\');
 
         if (!arguments.EnsureAssemblyInfo) arguments.UpdateAssemblyInfoFileName = ResolveFiles(arguments.TargetPath, arguments.UpdateAssemblyInfoFileName).ToHashSet();
-        arguments.NoFetch = arguments.NoFetch || this.buildAgent != null && this.buildAgent.PreventFetch();
+        arguments.NoFetch = arguments.NoFetch || this.buildAgent.PreventFetch();
 
         return arguments;
     }
@@ -135,7 +135,7 @@ public class ArgumentParser : IArgumentParser
         }
     }
 
-    private IEnumerable<string> ResolveFiles(string workingDirectory, ISet<string> assemblyInfoFiles)
+    private IEnumerable<string> ResolveFiles(string workingDirectory, ISet<string>? assemblyInfoFiles)
     {
         if (assemblyInfoFiles == null) yield break;
 
@@ -145,12 +145,12 @@ public class ArgumentParser : IArgumentParser
 
             foreach (var path in paths)
             {
-                yield return Path.GetFullPath(Path.Combine(workingDirectory, path));
+                yield return Path.GetFullPath(PathHelper.Combine(workingDirectory, path));
             }
         }
     }
 
-    private void ParseTargetPath(Arguments arguments, string name, IReadOnlyList<string> values, string value, bool parseEnded)
+    private void ParseTargetPath(Arguments arguments, string? name, IReadOnlyList<string>? values, string? value, bool parseEnded)
     {
         if (name.IsSwitch("targetpath"))
         {
@@ -169,7 +169,7 @@ public class ArgumentParser : IArgumentParser
         // If we've reached through all argument switches without a match, we can relatively safely assume that the first argument isn't a switch, but the target path.
         if (parseEnded)
         {
-            if (name.StartsWith("/"))
+            if (name != null && name.StartsWith("/"))
             {
                 if (Path.DirectorySeparatorChar == '/' && name.IsValidPath())
                 {
@@ -189,7 +189,7 @@ public class ArgumentParser : IArgumentParser
         throw new WarningException(couldNotParseMessage);
     }
 
-    private static bool ParseSwitches(Arguments arguments, string name, string[] values, string value)
+    private static bool ParseSwitches(Arguments arguments, string? name, IReadOnlyList<string>? values, string? value)
     {
         if (name.IsSwitch("l"))
         {
@@ -282,7 +282,7 @@ public class ArgumentParser : IArgumentParser
         return false;
     }
 
-    private static bool ParseConfigArguments(Arguments arguments, string name, IReadOnlyList<string> values, string value)
+    private static bool ParseConfigArguments(Arguments arguments, string? name, IReadOnlyList<string>? values, string? value)
     {
         if (name.IsSwitch("config"))
         {
@@ -305,12 +305,12 @@ public class ArgumentParser : IArgumentParser
 
     }
 
-    private static bool ParseRemoteArguments(Arguments arguments, string name, IReadOnlyList<string> values, string value)
+    private static bool ParseRemoteArguments(Arguments arguments, string? name, IReadOnlyList<string>? values, string? value)
     {
         if (name.IsSwitch("dynamicRepoLocation"))
         {
             EnsureArgumentValueCount(values);
-            arguments.DynamicRepositoryClonePath = value;
+            arguments.ClonePath = value;
             return true;
         }
 
@@ -352,9 +352,9 @@ public class ArgumentParser : IArgumentParser
         return false;
     }
 
-    private static void ParseShowVariable(Arguments arguments, string value, string name)
+    private static void ParseShowVariable(Arguments arguments, string? value, string? name)
     {
-        string versionVariable = null;
+        string? versionVariable = null;
 
         if (!value.IsNullOrWhiteSpace())
         {
@@ -371,7 +371,7 @@ public class ArgumentParser : IArgumentParser
         arguments.ShowVariable = versionVariable;
     }
 
-    private static void ParseEnsureAssemblyInfo(Arguments arguments, string value)
+    private static void ParseEnsureAssemblyInfo(Arguments arguments, string? value)
     {
         arguments.EnsureAssemblyInfo = true;
         if (value.IsFalse())
@@ -390,8 +390,11 @@ public class ArgumentParser : IArgumentParser
         }
     }
 
-    private static void ParseOutput(Arguments arguments, IEnumerable<string> values)
+    private static void ParseOutput(Arguments arguments, IEnumerable<string>? values)
     {
+        if (values == null)
+            return;
+
         foreach (var v in values)
         {
             if (!Enum.TryParse(v, true, out OutputType outputType))
@@ -403,25 +406,20 @@ public class ArgumentParser : IArgumentParser
         }
     }
 
-    private static void ParseVerbosity(Arguments arguments, string value)
+    private static void ParseVerbosity(Arguments arguments, string? value)
     {
-        // first try the old version, this check will be removed in version 6.0.0, making it a breaking change
-        if (Enum.TryParse(value, true, out LogLevel logLevel))
-        {
-            arguments.Verbosity = LogExtensions.GetVerbosityForLevel(logLevel);
-        }
-        else if (!Enum.TryParse(value, true, out arguments.Verbosity))
+        if (!Enum.TryParse(value, true, out arguments.Verbosity))
         {
             throw new WarningException($"Could not parse Verbosity value '{value}'");
         }
     }
 
-    private static void ParseOverrideConfig(Arguments arguments, IReadOnlyCollection<string> values)
+    private static void ParseOverrideConfig(Arguments arguments, IReadOnlyCollection<string>? values)
     {
         if (values == null || values.Count == 0)
             return;
 
-        var parser = new OverrideConfigOptionParser();
+        var parser = new OverrideConfigurationOptionParser();
 
         // key=value
         foreach (var keyValueOption in values)
@@ -433,7 +431,7 @@ public class ArgumentParser : IArgumentParser
             }
 
             var optionKey = keyAndValue[0].ToLowerInvariant();
-            if (!OverrideConfigOptionParser.SupportedProperties.Contains(optionKey))
+            if (!OverrideConfigurationOptionParser.SupportedProperties.Contains(optionKey))
             {
                 throw new WarningException($"Could not parse /overrideconfig option: {keyValueOption}. Unsupported 'key'.");
             }
@@ -442,7 +440,7 @@ public class ArgumentParser : IArgumentParser
         arguments.OverrideConfig = parser.GetConfig();
     }
 
-    private static void ParseUpdateAssemblyInfo(Arguments arguments, string value, IReadOnlyCollection<string> values)
+    private static void ParseUpdateAssemblyInfo(Arguments arguments, string? value, IReadOnlyCollection<string>? values)
     {
         if (value.IsTrue())
         {
@@ -452,7 +450,7 @@ public class ArgumentParser : IArgumentParser
         {
             arguments.UpdateAssemblyInfo = false;
         }
-        else if (values != null && values.Count > 1)
+        else if (values is { Count: > 1 })
         {
             arguments.UpdateAssemblyInfo = true;
             foreach (var v in values)
@@ -483,7 +481,7 @@ public class ArgumentParser : IArgumentParser
         }
     }
 
-    private static void ParseUpdateProjectInfo(Arguments arguments, string value, IReadOnlyCollection<string> values)
+    private static void ParseUpdateProjectInfo(Arguments arguments, string? value, IReadOnlyCollection<string>? values)
     {
         if (value.IsTrue())
         {
@@ -493,7 +491,7 @@ public class ArgumentParser : IArgumentParser
         {
             arguments.UpdateProjectFiles = false;
         }
-        else if (values != null && values.Count > 1)
+        else if (values is { Count: > 1 })
         {
             arguments.UpdateProjectFiles = true;
             foreach (var v in values)
@@ -524,9 +522,9 @@ public class ArgumentParser : IArgumentParser
         }
     }
 
-    private static void EnsureArgumentValueCount(IReadOnlyList<string> values)
+    private static void EnsureArgumentValueCount(IReadOnlyList<string>? values)
     {
-        if (values != null && values.Count > 1)
+        if (values is { Count: > 1 })
         {
             throw new WarningException($"Could not parse command line parameter '{values[1]}'.");
         }
@@ -536,7 +534,7 @@ public class ArgumentParser : IArgumentParser
     {
         firstArgumentIsSwitch = true;
         var switchesAndValues = new NameValueCollection();
-        string currentKey = null;
+        string? currentKey = null;
         var argumentRequiresValue = false;
 
         for (var i = 0; i < namedArguments.Count; i += 1)

@@ -1,6 +1,5 @@
+using GitVersion.Configuration;
 using GitVersion.Logging;
-using GitVersion.Model;
-using GitVersion.Model.Configuration;
 
 namespace GitVersion;
 
@@ -8,18 +7,18 @@ public class Arguments
 {
     public AuthenticationInfo Authentication = new();
 
-    public string ConfigFile;
-    public Config OverrideConfig;
+    public string? ConfigFile;
+    public GitVersionConfiguration? OverrideConfig;
     public bool ShowConfig;
 
-    public string TargetPath;
+    public string? TargetPath;
 
     public bool UpdateWixVersionFile;
 
-    public string TargetUrl;
-    public string TargetBranch;
-    public string CommitId;
-    public string DynamicRepositoryClonePath;
+    public string? TargetUrl;
+    public string? TargetBranch;
+    public string? CommitId;
+    public string? ClonePath;
 
     public bool Init;
     public bool Diag;
@@ -30,9 +29,9 @@ public class Arguments
     public bool NoCache;
     public bool NoNormalize;
 
-    public string LogFilePath;
-    public string ShowVariable;
-    public string OutputFile;
+    public string? LogFilePath;
+    public string? ShowVariable;
+    public string? OutputFile;
     public ISet<OutputType> Output = new HashSet<OutputType>();
     public Verbosity Verbosity = Verbosity.Normal;
 
@@ -72,7 +71,7 @@ public class Arguments
                 TargetUrl = TargetUrl,
                 TargetBranch = TargetBranch,
                 CommitId = CommitId,
-                DynamicRepositoryClonePath = DynamicRepositoryClonePath
+                ClonePath = ClonePath
             },
 
             Settings =

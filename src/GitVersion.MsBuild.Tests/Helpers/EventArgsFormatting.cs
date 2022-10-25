@@ -73,7 +73,7 @@ internal static class EventArgsFormatting
     /// <param name="e">Message to format</param>
     /// <param name="showProjectFile">Show project file or not</param>
     /// <returns>The formatted message string.</returns>
-    internal static string FormatEventMessage(BuildMessageEventArgs e, bool showProjectFile) =>
+    private static string FormatEventMessage(BuildMessageEventArgs e, bool showProjectFile) =>
         // "message" should not be localized
         FormatEventMessage("message", e.Subcategory, e.Message,
             e.Code, e.File, showProjectFile ? e.ProjectFile : null, e.LineNumber, e.EndLineNumber, e.ColumnNumber, e.EndColumnNumber, e.ThreadId);
@@ -123,14 +123,14 @@ internal static class EventArgsFormatting
     /// <param name="endColumnNumber">end column number (0 if n/a)</param>
     /// <param name="threadId">thread id</param>
     /// <returns>The formatted message string.</returns>
-    internal static string FormatEventMessage
+    private static string FormatEventMessage
     (
         string category,
         string subcategory,
-        string message,
-        string code,
-        string file,
-        string projectFile,
+        string? message,
+        string? code,
+        string? file,
+        string? projectFile,
         int lineNumber,
         int endLineNumber,
         int columnNumber,
@@ -164,44 +164,23 @@ internal static class EventArgsFormatting
             {
                 if (columnNumber == 0)
                 {
-                    if (endLineNumber == 0)
-                    {
-                        format.Append("({2}): ");
-                    }
-                    else
-                    {
-                        format.Append("({2}-{7}): ");
-                    }
+                    format.Append(endLineNumber == 0 ? "({2}): " : "({2}-{7}): ");
                 }
                 else
                 {
                     if (endLineNumber == 0)
                     {
-                        if (endColumnNumber == 0)
-                        {
-                            format.Append("({2},{3}): ");
-                        }
-                        else
-                        {
-                            format.Append("({2},{3}-{8}): ");
-                        }
+                        format.Append(endColumnNumber == 0 ? "({2},{3}): " : "({2},{3}-{8}): ");
                     }
                     else
                     {
-                        if (endColumnNumber == 0)
-                        {
-                            format.Append("({2}-{7},{3}): ");
-                        }
-                        else
-                        {
-                            format.Append("({2},{3},{7},{8}): ");
-                        }
+                        format.Append(endColumnNumber == 0 ? "({2}-{7},{3}): " : "({2},{3},{7},{8}): ");
                     }
                 }
             }
         }
 
-        if ((subcategory != null) && (subcategory.Length != 0))
+        if (!string.IsNullOrWhiteSpace(subcategory))
         {
             format.Append("{9} ");
         }
@@ -210,14 +189,7 @@ internal static class EventArgsFormatting
         format.Append("{4} ");
 
         // Put a code in, if available and necessary.
-        if (code == null)
-        {
-            format.Append(": ");
-        }
-        else
-        {
-            format.Append("{5}: ");
-        }
+        format.Append(code == null ? ": " : "{5}: ");
 
         // Put the message in, if available.
         if (message != null)
@@ -232,10 +204,7 @@ internal static class EventArgsFormatting
         }
 
         // A null message is allowed and is to be treated as a blank line.
-        if (null == message)
-        {
-            message = string.Empty;
-        }
+        message ??= string.Empty;
 
         var finalFormat = format.ToString();
 

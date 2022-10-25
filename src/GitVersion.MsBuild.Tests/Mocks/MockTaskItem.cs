@@ -6,9 +6,9 @@ internal class MockTaskItem : ITaskItem
 {
     public string ItemSpec { get; set; }
 
-    public int MetadataCount { get; private set; }
+    public int MetadataCount { get; set; }
 
-    public ICollection MetadataNames { get; private set; }
+    public ICollection MetadataNames { get; set; }
 
     public IDictionary CloneCustomMetadata() => throw new NotImplementedException();
 

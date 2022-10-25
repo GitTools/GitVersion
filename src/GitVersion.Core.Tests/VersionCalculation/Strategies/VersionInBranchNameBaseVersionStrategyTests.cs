@@ -2,7 +2,6 @@ using GitTools.Testing;
 using GitVersion.Configuration;
 using GitVersion.Core.Tests.Helpers;
 using GitVersion.Extensions;
-using GitVersion.Model.Configuration;
 using GitVersion.VersionCalculation;
 using LibGit2Sharp;
 using NUnit.Framework;
@@ -21,8 +20,12 @@ public class VersionInBranchNameBaseVersionStrategyTests : TestBase
         fixture.Repository.MakeACommit();
         fixture.Repository.CreateBranch(branchName);
 
-        var strategy = GetVersionStrategy(fixture.RepositoryPath, fixture.Repository.ToGitRepository(), branchName);
-        var baseVersion = strategy.GetVersions().Single();
+        var gitRepository = fixture.Repository.ToGitRepository();
+        var strategy = GetVersionStrategy(fixture.RepositoryPath, gitRepository, branchName);
+        var configuration = GitFlowConfigurationBuilder.New.Build();
+        var branchConfiguration = configuration.GetBranchConfiguration(branchName);
+        var effectiveConfiguration = new EffectiveConfiguration(configuration, branchConfiguration);
+        var baseVersion = strategy.GetBaseVersions(new(gitRepository.FindBranch(branchName)!, effectiveConfiguration)).Single();
 
         baseVersion.SemanticVersion.ToString().ShouldBe(expectedBaseVersion);
     }
@@ -37,8 +40,12 @@ public class VersionInBranchNameBaseVersionStrategyTests : TestBase
         fixture.Repository.MakeACommit();
         fixture.Repository.CreateBranch(branchName);
 
-        var strategy = GetVersionStrategy(fixture.RepositoryPath, fixture.Repository.ToGitRepository(), branchName);
-        var baseVersions = strategy.GetVersions();
+        var gitRepository = fixture.Repository.ToGitRepository();
+        var strategy = GetVersionStrategy(fixture.RepositoryPath, gitRepository, branchName);
+        var configuration = GitFlowConfigurationBuilder.New.Build();
+        var branchConfiguration = configuration.GetBranchConfiguration(branchName);
+        var effectiveConfiguration = new EffectiveConfiguration(configuration, branchConfiguration);
+        var baseVersions = strategy.GetBaseVersions(new(gitRepository.FindBranch(branchName)!, effectiveConfiguration));
 
         baseVersions.ShouldBeEmpty();
     }
@@ -51,13 +58,16 @@ public class VersionInBranchNameBaseVersionStrategyTests : TestBase
         fixture.Repository.MakeACommit();
         fixture.Repository.CreateBranch(branchName);
 
-        var config = new ConfigurationBuilder()
-            .Add(new Config { Branches = { { "support", new BranchConfig { IsReleaseBranch = true } } } })
-            .Build();
+        var configurationBuilder = new ConfigurationBuilder()
+            .Add(new GitVersionConfiguration { Branches = { { "support", new BranchConfiguration { IsReleaseBranch = true } } } });
 
-        var strategy = GetVersionStrategy(fixture.RepositoryPath, fixture.Repository.ToGitRepository(), branchName, config);
+        var gitRepository = fixture.Repository.ToGitRepository();
+        var strategy = GetVersionStrategy(fixture.RepositoryPath, gitRepository, branchName, configurationBuilder.Build());
 
-        var baseVersion = strategy.GetVersions().Single();
+        var configuration = GitFlowConfigurationBuilder.New.Build();
+        var branchConfiguration = configuration.GetBranchConfiguration(branchName);
+        var effectiveConfiguration = new EffectiveConfiguration(configuration, branchConfiguration);
+        var baseVersion = strategy.GetBaseVersions(new(gitRepository.FindBranch(branchName)!, effectiveConfiguration)).Single();
 
         baseVersion.SemanticVersion.ToString().ShouldBe(expectedBaseVersion);
     }
@@ -74,15 +84,20 @@ public class VersionInBranchNameBaseVersionStrategyTests : TestBase
         Commands.Fetch((Repository)fixture.LocalRepositoryFixture.Repository, fixture.LocalRepositoryFixture.Repository.Network.Remotes.First().Name, Array.Empty<string>(), new FetchOptions(), null);
         fixture.LocalRepositoryFixture.Checkout($"origin/{branchName}");
 
-        var strategy = GetVersionStrategy(fixture.RepositoryPath, fixture.Repository.ToGitRepository(), branchName);
-        var baseVersion = strategy.GetVersions().Single();
+        var gitRepository = fixture.Repository.ToGitRepository();
+        var strategy = GetVersionStrategy(fixture.RepositoryPath, gitRepository, branchName);
+
+        var configuration = GitFlowConfigurationBuilder.New.Build();
+        var branchConfiguration = configuration.GetBranchConfiguration(branchName);
+        var effectiveConfiguration = new EffectiveConfiguration(configuration, branchConfiguration);
+        var baseVersion = strategy.GetBaseVersions(new(gitRepository.FindBranch(branchName)!, effectiveConfiguration)).Single();
 
         baseVersion.SemanticVersion.ToString().ShouldBe(expectedBaseVersion);
     }
 
-    private static IVersionStrategy GetVersionStrategy(string workingDirectory, IGitRepository repository, string branch, Config config = null)
+    private static IVersionStrategy GetVersionStrategy(string workingDirectory, IGitRepository repository, string branch, GitVersionConfiguration? configuration = null)
     {
-        var sp = BuildServiceProvider(workingDirectory, repository, branch, config);
+        var sp = BuildServiceProvider(workingDirectory, repository, branch, configuration);
         return sp.GetServiceForType<IVersionStrategy, VersionInBranchNameVersionStrategy>();
     }
 }

@@ -7,6 +7,6 @@
         <ProjectReference Include="..\common\common.csproj" />
     </ItemGroup>
     <ItemGroup>
-        <PackageReference Include="Cake.Json" Version="7.0.1" />
+        <PackageReference Include="Cake.Json" />
     </ItemGroup>
 </Project>

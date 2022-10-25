@@ -35,9 +35,6 @@ public class GetVersion : GitVersionTaskBase
     public string BuildMetaData { get; set; }
 
     [Output]
-    public string BuildMetaDataPadded { get; set; }
-
-    [Output]
     public string FullBuildMetaData { get; set; }
 
     [Output]
@@ -45,12 +42,6 @@ public class GetVersion : GitVersionTaskBase
 
     [Output]
     public string SemVer { get; set; }
-
-    [Output]
-    public string LegacySemVer { get; set; }
-
-    [Output]
-    public string LegacySemVerPadded { get; set; }
 
     [Output]
     public string AssemblySemVer { get; set; }
@@ -77,18 +68,6 @@ public class GetVersion : GitVersionTaskBase
     public string ShortSha { get; set; }
 
     [Output]
-    public string NuGetVersionV2 { get; set; }
-
-    [Output]
-    public string NuGetVersion { get; set; }
-
-    [Output]
-    public string NuGetPreReleaseTagV2 { get; set; }
-
-    [Output]
-    public string NuGetPreReleaseTag { get; set; }
-
-    [Output]
     public string CommitDate { get; set; }
 
     [Output]
@@ -96,10 +75,6 @@ public class GetVersion : GitVersionTaskBase
 
     [Output]
     public string CommitsSinceVersionSource { get; set; }
-
-    [Output]
-    public string CommitsSinceVersionSourcePadded { get; set; }
-
 
     [Output]
     public string UncommittedChanges { get; set; }

@@ -1,7 +1,6 @@
 using GitVersion.BuildAgents;
 using GitVersion.Extensions;
 using GitVersion.Logging;
-using GitVersion.Model;
 using GitVersion.MsBuild.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
@@ -36,7 +35,7 @@ public static class GitVersionTasks
         }
         catch (Exception exception)
         {
-            taskLog.LogErrorFromException(exception, showStackTrace: true, showDetail: true, null);
+            taskLog.LogErrorFromException(exception, true, true, null);
             return false;
         }
 
@@ -55,7 +54,7 @@ public static class GitVersionTasks
         {
             gitVersionOptions.Output.Add(OutputType.BuildServer);
         }
-        gitVersionOptions.Settings.NoFetch = gitVersionOptions.Settings.NoFetch || buildAgent != null && buildAgent.PreventFetch();
+        gitVersionOptions.Settings.NoFetch = gitVersionOptions.Settings.NoFetch || buildAgent.PreventFetch();
     }
 
     private static IServiceProvider BuildServiceProvider(GitVersionTaskBase task)

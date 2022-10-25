@@ -36,9 +36,9 @@ public class TagCheckoutInBuildAgentTests
 
     private static async Task VerifyTagCheckoutVersionIsCalculatedProperly(Dictionary<string, string> env)
     {
-        using var fixture = new EmptyRepositoryFixture();
-        var remoteRepositoryPath = PathHelper.GetTempPath();
-        RepositoryFixtureBase.Init(remoteRepositoryPath);
+        using var fixture = new EmptyRepositoryFixture("main");
+        var remoteRepositoryPath = ExecutableHelper.GetTempPath();
+        RepositoryFixtureBase.Init(remoteRepositoryPath, "main");
         using (var remoteRepository = new Repository(remoteRepositoryPath))
         {
             remoteRepository.Config.Set("user.name", "Test");
@@ -64,6 +64,7 @@ public class TagCheckoutInBuildAgentTests
         var result = await programFixture.Run();
 
         result.ExitCode.ShouldBe(0);
+        result.OutputVariables.ShouldNotBeNull();
         result.OutputVariables.FullSemVer.ShouldBe("0.2.0");
 
         // Cleanup repository files

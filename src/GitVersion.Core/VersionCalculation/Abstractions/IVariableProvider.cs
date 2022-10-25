@@ -1,9 +1,9 @@
-using GitVersion.Model.Configuration;
+using GitVersion.Configuration;
 using GitVersion.OutputVariables;
 
 namespace GitVersion.VersionCalculation;
 
 public interface IVariableProvider
 {
-    VersionVariables GetVariablesFor(SemanticVersion semanticVersion, EffectiveConfiguration config, bool isCurrentCommitTagged);
+    VersionVariables GetVariablesFor(SemanticVersion semanticVersion, EffectiveConfiguration configuration, bool isCurrentCommitTagged);
 }

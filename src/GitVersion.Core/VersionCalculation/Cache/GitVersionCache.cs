@@ -1,4 +1,3 @@
-using GitVersion.Cache;
 using GitVersion.Extensions;
 using GitVersion.Helpers;
 using GitVersion.Logging;
@@ -44,14 +43,14 @@ public class GitVersionCache : IGitVersionCache
             }
         }
 
-        var retryOperation = new RetryAction<IOException>(maxRetries: 6);
+        var retryOperation = new RetryAction<IOException>(6);
         retryOperation.Execute(WriteCacheOperation);
     }
 
     public string GetCacheDirectory()
     {
         var gitDir = this.repositoryInfo.DotGitDirectory;
-        return Path.Combine(gitDir, "gitversion_cache");
+        return PathHelper.Combine(gitDir, "gitversion_cache");
     }
 
     public VersionVariables? LoadVersionVariablesFromDiskCache(GitVersionCacheKey key)
@@ -103,5 +102,5 @@ public class GitVersionCache : IGitVersionCache
         return cacheDir;
     }
 
-    private static string GetCacheFileName(GitVersionCacheKey key, string cacheDir) => Path.Combine(cacheDir, string.Concat(key.Value, ".yml"));
+    private static string GetCacheFileName(GitVersionCacheKey key, string cacheDir) => PathHelper.Combine(cacheDir, string.Concat(key.Value, ".yml"));
 }

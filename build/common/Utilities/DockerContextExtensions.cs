@@ -9,12 +9,14 @@ public enum Architecture
 }
 public static class DockerContextExtensions
 {
-    public static bool SkipArm64Image(this ICakeContext context, DockerImage dockerImage)
+    public static bool SkipImage(this ICakeContext context, DockerImage dockerImage)
     {
-        if (dockerImage.Architecture != Architecture.Arm64) return false;
-        if (!Constants.DistrosToSkip.Contains(dockerImage.Distro)) return false;
+        var (distro, targetFramework, architecture, _, _) = dockerImage;
 
-        context.Information($"Skipping Target: {dockerImage.TargetFramework}, Distro: {dockerImage.Distro}, Arch: {dockerImage.Architecture}");
+        if (architecture == Architecture.Amd64) return false;
+        if (!Constants.DistrosToSkip.Contains(distro)) return false;
+
+        context.Information($"Skipping Target: {targetFramework}, Distro: {distro}, Arch: {architecture}");
         return true;
     }
 
@@ -143,7 +145,8 @@ public static class DockerContextExtensions
         var output = context.DockerRunImage(settings, image, command, args);
         context.Information("Output : " + output);
 
-        Assert.Contains(context.Version?.GitVersion.FullSemVer, output);
+        Assert.NotNull(context.Version?.GitVersion);
+        Assert.Contains(context.Version.GitVersion.FullSemVer!, output);
     }
     private static IEnumerable<string> GetDockerTags(this BuildContextBase context, DockerImage dockerImage, Architecture? arch = null)
     {
@@ -158,7 +161,7 @@ public static class DockerContextExtensions
             $"{name}:{context.Version.SemVersion}-{distro}-{targetFramework}",
         };
 
-        if (distro == Constants.DockerDistroLatest && targetFramework == Constants.Version50)
+        if (distro == Constants.DockerDistroLatest && targetFramework == Constants.Version60)
         {
             tags.AddRange(new[]
             {

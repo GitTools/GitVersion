@@ -1,5 +1,6 @@
 using GitVersion.BuildAgents;
 using GitVersion.Core.Tests.Helpers;
+using GitVersion.Helpers;
 using GitVersion.VersionCalculation;
 using Microsoft.Extensions.DependencyInjection;
 using NUnit.Framework;
@@ -31,14 +32,14 @@ public class JenkinsTests : TestBase
     private void ClearEnvironmentVariableForDetection() => this.environment.SetEnvironmentVariable(key, null);
 
     [Test]
-    public void CanApplyCurrentContextWhenenvironmentVariableIsSet()
+    public void CanApplyCurrentContextWhenEnvironmentVariableIsSet()
     {
         SetEnvironmentVariableForDetection();
         this.buildServer.CanApplyToCurrentContext().ShouldBe(true);
     }
 
     [Test]
-    public void CanNotApplyCurrentContextWhenenvironmentVariableIsNotSet()
+    public void CanNotApplyCurrentContextWhenEnvironmentVariableIsNotSet()
     {
         ClearEnvironmentVariableForDetection();
         this.buildServer.CanApplyToCurrentContext().ShouldBe(false);
@@ -110,7 +111,8 @@ public class JenkinsTests : TestBase
     public void WriteAllVariablesToTheTextWriter()
     {
         var assemblyLocation = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-        var f = Path.Combine(assemblyLocation, "gitlab_this_file_should_be_deleted.properties");
+        assemblyLocation.ShouldNotBeNull();
+        var f = PathHelper.Combine(assemblyLocation, "gitlab_this_file_should_be_deleted.properties");
 
         try
         {
@@ -124,7 +126,7 @@ public class JenkinsTests : TestBase
 
     private void AssertVariablesAreWrittenToFile(string file)
     {
-        var writes = new List<string>();
+        var writes = new List<string?>();
         var semanticVersion = new SemanticVersion
         {
             Major = 1,
@@ -137,11 +139,11 @@ public class JenkinsTests : TestBase
         semanticVersion.BuildMetaData.CommitDate = DateTimeOffset.Parse("2014-03-06 23:59:59Z");
         semanticVersion.BuildMetaData.Sha = "commitSha";
 
-        var config = new TestEffectiveConfiguration();
+        var configuration = new TestEffectiveConfiguration();
 
         var variableProvider = this.sp.GetRequiredService<IVariableProvider>();
 
-        var variables = variableProvider.GetVariablesFor(semanticVersion, config, false);
+        var variables = variableProvider.GetVariablesFor(semanticVersion, configuration, false);
 
         this.buildServer.WithPropertyFile(file);
 

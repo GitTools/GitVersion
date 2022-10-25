@@ -1,4 +1,5 @@
 using GitVersion.Extensions;
+using GitVersion.Helpers;
 using Microsoft.Extensions.Options;
 
 namespace GitVersion;
@@ -34,11 +35,11 @@ internal class GitRepositoryInfo : IGitRepositoryInfo
         if (repositoryInfo.TargetUrl.IsNullOrWhiteSpace()) return null;
 
         var targetUrl = repositoryInfo.TargetUrl;
-        var dynamicRepositoryClonePath = repositoryInfo.DynamicRepositoryClonePath;
+        var clonePath = repositoryInfo.ClonePath;
 
-        var userTemp = dynamicRepositoryClonePath ?? Path.GetTempPath();
+        var userTemp = clonePath ?? Path.GetTempPath();
         var repositoryName = targetUrl.Split('/', '\\').Last().Replace(".git", string.Empty);
-        var possiblePath = Path.Combine(userTemp, repositoryName);
+        var possiblePath = PathHelper.Combine(userTemp, repositoryName);
 
         // Verify that the existing directory is ok for us to use
         if (Directory.Exists(possiblePath) && !GitRepoHasMatchingRemote(possiblePath, targetUrl))
@@ -53,7 +54,7 @@ internal class GitRepositoryInfo : IGitRepositoryInfo
             } while (possiblePathExists && !GitRepoHasMatchingRemote(possiblePath, targetUrl));
         }
 
-        var repositoryPath = Path.Combine(possiblePath, ".git");
+        var repositoryPath = PathHelper.Combine(possiblePath, ".git");
         return repositoryPath;
     }
 
@@ -67,8 +68,13 @@ internal class GitRepositoryInfo : IGitRepositoryInfo
         if (gitDirectory.IsNullOrEmpty())
             throw new DirectoryNotFoundException("Cannot find the .git directory");
 
-        return gitDirectory.Contains(Path.Combine(".git", "worktrees"))
-            ? Directory.GetParent(Directory.GetParent(gitDirectory).FullName).FullName
+        var directoryInfo = Directory.GetParent(gitDirectory);
+        if (directoryInfo == null)
+        {
+            throw new DirectoryNotFoundException("Cannot find the .git directory");
+        }
+        return gitDirectory.Contains(PathHelper.Combine(".git", "worktrees"))
+            ? Directory.GetParent(directoryInfo.FullName)?.FullName
             : gitDirectory;
     }
 

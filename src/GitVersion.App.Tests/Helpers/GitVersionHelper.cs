@@ -8,38 +8,38 @@ namespace GitVersion.App.Tests;
 public static class GitVersionHelper
 {
     public static ExecutionResults ExecuteIn(string workingDirectory,
-        string exec = null,
-        string execArgs = null,
-        string projectFile = null,
-        string projectArgs = null,
+        string? exec = null,
+        string? execArgs = null,
+        string? projectFile = null,
+        string? projectArgs = null,
         bool logToFile = true,
-        params KeyValuePair<string, string>[] environments
+        params KeyValuePair<string, string?>[] environments
     )
     {
-        var logFile = logToFile ? Path.Combine(workingDirectory, "log.txt") : null;
+        var logFile = logToFile ? PathHelper.Combine(workingDirectory, "log.txt") : null;
         var args = new ArgumentBuilder(workingDirectory, exec, execArgs, projectFile, projectArgs, logFile);
         return ExecuteIn(args, environments);
     }
 
     public static ExecutionResults ExecuteIn(
         string workingDirectory,
-        string arguments,
+        string? arguments,
         bool logToFile = true,
-        params KeyValuePair<string, string>[] environments)
+        params KeyValuePair<string, string?>[] environments)
     {
-        var logFile = logToFile ? Path.Combine(workingDirectory, "log.txt") : null;
+        var logFile = logToFile ? PathHelper.Combine(workingDirectory, "log.txt") : null;
         var args = new ArgumentBuilder(workingDirectory, arguments, logFile);
         return ExecuteIn(args, environments);
     }
 
     private static ExecutionResults ExecuteIn(ArgumentBuilder arguments,
-        params KeyValuePair<string, string>[] environments
+        params KeyValuePair<string, string?>[] environments
     )
     {
-        var executable = PathHelper.GetExecutable();
+        var executable = ExecutableHelper.GetDotNetExecutable();
         var output = new StringBuilder();
 
-        var environmentalVariables = new Dictionary<string, string>
+        var environmentalVariables = new Dictionary<string, string?>
         {
             { TeamCity.EnvironmentVariableName, null },
             { AppVeyor.EnvironmentVariableName, null },
@@ -50,15 +50,15 @@ public static class GitVersionHelper
             { SpaceAutomation.EnvironmentVariableName, null }
         };
 
-        foreach (var environment in environments)
+        foreach (var (key, value) in environments)
         {
-            if (environmentalVariables.ContainsKey(environment.Key))
+            if (environmentalVariables.ContainsKey(key))
             {
-                environmentalVariables[environment.Key] = environment.Value;
+                environmentalVariables[key] = value;
             }
             else
             {
-                environmentalVariables.Add(environment.Key, environment.Value);
+                environmentalVariables.Add(key, value);
             }
         }
 
@@ -66,7 +66,7 @@ public static class GitVersionHelper
 
         try
         {
-            var args = PathHelper.GetExecutableArgs(arguments.ToString());
+            var args = ExecutableHelper.GetExecutableArgs(arguments.ToString());
 
             Console.WriteLine("Executing: {0} {1}", executable, args);
             Console.WriteLine();

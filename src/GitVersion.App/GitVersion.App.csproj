@@ -4,19 +4,14 @@
         <OutputType>Exe</OutputType>
         <RootNamespace>GitVersion</RootNamespace>
         <AssemblyName>gitversion</AssemblyName>
-        <TargetFrameworks>netcoreapp3.1;net5.0;net6.0</TargetFrameworks>
+        <TargetFrameworks>net6.0;net7.0</TargetFrameworks>
         <PlatformTarget>AnyCPU</PlatformTarget>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
-        <DocumentationFile>bin\$(Configuration)\GitVersion.xml</DocumentationFile>
-    </PropertyGroup>
-
-    <PropertyGroup Condition=" '$(PackAsTool)' != 'true'">
-        <TargetFrameworks>net48;$(TargetFrameworks);</TargetFrameworks>
     </PropertyGroup>
 
     <!-- workaround for https://github.com/dotnet/runtime/issues/49508 -->
     <PropertyGroup Condition=" '$(OsxArm64)' == 'true'">
-        <TargetFrameworks>net6.0</TargetFrameworks>
+        <TargetFrameworks>net6.0;net7.0</TargetFrameworks>
     </PropertyGroup>
 
     <PropertyGroup Condition=" '$(PackAsTool)' == 'true' ">
@@ -26,24 +21,21 @@
         <PackageDescription>Derives SemVer information from a repository following GitFlow or GitHubFlow. This is the .NET Core Global Tool allowing usage of GitVersion from command line.</PackageDescription>
     </PropertyGroup>
 
-    <ItemGroup Condition="'$(TargetFramework)'=='net48'">
-        <PackageReference Include="JetBrains.Annotations" Version="$(PackageVersion_JetBrainsAnnotations)" />
-        <PackageReference Include="LibGit2Sharp.NativeBinaries" Version="$(PackageVersion_LibGit2Sharp_NativeBinaries)" />
+    <ItemGroup>
+        <PackageReference Include="Microsoft.Extensions.Hosting"/>
+        <PackageReference Include="Microsoft.Extensions.FileSystemGlobbing"/>
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="System.Text.Json" Version="$(PackageVersion_MicrosoftJson)" />
-        <PackageReference Include="System.Text.Encodings.Web" Version="$(PackageVersion_MicrosoftJson)" />
-        <PackageReference Include="Microsoft.Extensions.Hosting" Version="$(PackageVersion_MicrosoftExtensions)" />
-        <PackageReference Include="Microsoft.Extensions.FileSystemGlobbing" Version="$(PackageVersion_MicrosoftExtensions)" />
+        <ProjectReference Include="..\GitVersion.LibGit2Sharp\GitVersion.LibGit2Sharp.csproj"/>
+        <ProjectReference Include="..\GitVersion.Core\GitVersion.Core.csproj"/>
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\GitVersion.LibGit2Sharp\GitVersion.LibGit2Sharp.csproj" />
-        <ProjectReference Include="..\GitVersion.Core\GitVersion.Core.csproj" />
+        <EmbeddedResource Include="../../docs/input/docs/usage/cli/arguments.md"/>
     </ItemGroup>
 
     <ItemGroup>
-        <EmbeddedResource Include="../../docs/input/docs/usage/cli/arguments.md" />
+        <InternalsVisibleTo Include="GitVersion.App.Tests"/>
     </ItemGroup>
 </Project>

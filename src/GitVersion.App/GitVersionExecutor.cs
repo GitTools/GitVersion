@@ -1,7 +1,6 @@
 using GitVersion.Configuration;
 using GitVersion.Extensions;
 using GitVersion.Logging;
-using GitVersion.Model;
 
 namespace GitVersion;
 
@@ -9,23 +8,23 @@ public class GitVersionExecutor : IGitVersionExecutor
 {
     private readonly ILog log;
     private readonly IConsole console;
-    private readonly IConfigFileLocator configFileLocator;
+    private readonly IConfigurationFileLocator configFileLocator;
     private readonly IHelpWriter helpWriter;
     private readonly IGitRepositoryInfo repositoryInfo;
-    private readonly IConfigProvider configProvider;
+    private readonly IConfigurationProvider configurationProvider;
     private readonly IGitVersionCalculateTool gitVersionCalculateTool;
     private readonly IGitVersionOutputTool gitVersionOutputTool;
     private readonly IVersionWriter versionWriter;
 
     public GitVersionExecutor(ILog log, IConsole console,
-        IConfigFileLocator configFileLocator, IConfigProvider configProvider,
+        IConfigurationFileLocator configFileLocator, IConfigurationProvider configurationProvider,
         IGitVersionCalculateTool gitVersionCalculateTool, IGitVersionOutputTool gitVersionOutputTool,
         IVersionWriter versionWriter, IHelpWriter helpWriter, IGitRepositoryInfo repositoryInfo)
     {
         this.log = log.NotNull();
         this.console = console.NotNull();
         this.configFileLocator = configFileLocator.NotNull();
-        this.configProvider = configProvider.NotNull();
+        this.configurationProvider = configurationProvider.NotNull();
 
         this.gitVersionCalculateTool = gitVersionCalculateTool.NotNull();
         this.gitVersionOutputTool = gitVersionOutputTool.NotNull();
@@ -53,7 +52,7 @@ public class GitVersionExecutor : IGitVersionExecutor
 
     private int RunGitVersionTool(GitVersionOptions gitVersionOptions)
     {
-        var mutexName = this.repositoryInfo.DotGitDirectory.Replace(Path.DirectorySeparatorChar.ToString(), "");
+        var mutexName = this.repositoryInfo.DotGitDirectory?.Replace(Path.DirectorySeparatorChar.ToString(), "") ?? string.Empty;
         using var mutex = new Mutex(true, $@"Global\gitversion{mutexName}", out var acquired);
 
         try
@@ -65,7 +64,7 @@ public class GitVersionExecutor : IGitVersionExecutor
 
             var variables = this.gitVersionCalculateTool.CalculateVersionVariables();
 
-            var configuration = this.configProvider.Provide(overrideConfig: gitVersionOptions.ConfigInfo.OverrideConfig);
+            var configuration = this.configurationProvider.Provide(gitVersionOptions.ConfigInfo.OverrideConfig);
 
             this.gitVersionOutputTool.OutputVariables(variables, configuration.UpdateBuildNumber ?? true);
             this.gitVersionOutputTool.UpdateAssemblyInfo(variables);
@@ -81,8 +80,6 @@ public class GitVersionExecutor : IGitVersionExecutor
         {
             var error = $"An unexpected error occurred:{System.Environment.NewLine}{exception}";
             this.log.Error(error);
-
-            if (gitVersionOptions == null) return 1;
 
             this.log.Info("Attempting to show the current git graph (please include in issue): ");
             this.log.Info("Showing max of 100 commits");
@@ -107,14 +104,6 @@ public class GitVersionExecutor : IGitVersionExecutor
 
     private bool HandleNonMainCommand(GitVersionOptions gitVersionOptions, out int exitCode)
     {
-        if (gitVersionOptions == null)
-        {
-            this.helpWriter.Write();
-            exitCode = 1;
-            return true;
-        }
-
-
         if (gitVersionOptions.IsVersion)
         {
             var assembly = Assembly.GetExecutingAssembly();
@@ -158,15 +147,15 @@ public class GitVersionExecutor : IGitVersionExecutor
 
         if (gitVersionOptions.Init)
         {
-            this.configProvider.Init(workingDirectory);
+            this.configurationProvider.Init(workingDirectory);
             exitCode = 0;
             return true;
         }
 
         if (gitVersionOptions.ConfigInfo.ShowConfig)
         {
-            var config = this.configProvider.Provide(workingDirectory);
-            this.console.WriteLine(config.ToString());
+            var configuration = this.configurationProvider.Provide(workingDirectory);
+            this.console.WriteLine(configuration.ToString());
             exitCode = 0;
             return true;
         }

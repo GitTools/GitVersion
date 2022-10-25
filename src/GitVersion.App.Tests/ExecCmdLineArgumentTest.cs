@@ -27,7 +27,7 @@ public class ExecCmdLineArgumentTest
         fixture.MakeATaggedCommit("1.2.3");
         fixture.MakeACommit();
 
-        var result = GitVersionHelper.ExecuteIn(fixture.RepositoryPath, arguments: @" /l ""/tmp/path""", logToFile: false);
+        var result = GitVersionHelper.ExecuteIn(fixture.RepositoryPath, @" /l ""/tmp/path""", false);
 
         result.ExitCode.ShouldBe(0);
         result.Output.ShouldContain(@"""MajorMinorPatch"": ""1.2.4""");
@@ -43,7 +43,7 @@ public class ExecCmdLineArgumentTest
         fixture.MakeATaggedCommit("1.2.3");
         fixture.MakeACommit();
 
-        var result = GitVersionHelper.ExecuteIn(fixture.RepositoryPath, arguments: $@" {verbosityArg} -output buildserver /l ""/tmp/path""", logToFile: false);
+        var result = GitVersionHelper.ExecuteIn(fixture.RepositoryPath, $@" {verbosityArg} -output buildserver /l ""/tmp/path""", false);
 
         result.ExitCode.ShouldBe(0);
         result.Output.ShouldContain(expectedOutput);
@@ -52,7 +52,7 @@ public class ExecCmdLineArgumentTest
     [Test]
     public void WorkingDirectoryWithoutGitFolderFailsWithInformativeMessage()
     {
-        var result = GitVersionHelper.ExecuteIn(System.Environment.SystemDirectory, arguments: null, logToFile: false);
+        var result = GitVersionHelper.ExecuteIn(System.Environment.SystemDirectory, null, false);
 
         result.ExitCode.ShouldNotBe(0);
         result.Output.ShouldContain("Cannot find the .git directory");
@@ -63,7 +63,7 @@ public class ExecCmdLineArgumentTest
     {
         using var fixture = new EmptyRepositoryFixture();
 
-        var result = GitVersionHelper.ExecuteIn(fixture.RepositoryPath, arguments: null, logToFile: false);
+        var result = GitVersionHelper.ExecuteIn(fixture.RepositoryPath, null, false);
 
         result.ExitCode.ShouldNotBe(0);
         result.Output.ShouldContain("No commits found on the current branch.");
@@ -72,11 +72,11 @@ public class ExecCmdLineArgumentTest
     [Test]
     public void WorkingDirectoryDoesNotExistFailsWithInformativeMessage()
     {
-        var workingDirectory = Path.Combine(PathHelper.GetCurrentDirectory(), Guid.NewGuid().ToString("N"));
-        var executable = PathHelper.GetExecutable();
+        var workingDirectory = PathHelper.Combine(ExecutableHelper.GetCurrentDirectory(), Guid.NewGuid().ToString("N"));
+        var executable = ExecutableHelper.GetDotNetExecutable();
 
         var output = new StringBuilder();
-        var args = PathHelper.GetExecutableArgs($" /targetpath {workingDirectory} ");
+        var args = ExecutableHelper.GetExecutableArgs($" /targetpath {workingDirectory} ");
 
         var exitCode = ProcessHelper.Run(
             s => output.AppendLine(s),
@@ -84,7 +84,7 @@ public class ExecCmdLineArgumentTest
             null,
             executable,
             args,
-            PathHelper.GetCurrentDirectory());
+            ExecutableHelper.GetCurrentDirectory());
 
         exitCode.ShouldNotBe(0);
         var outputString = output.ToString();

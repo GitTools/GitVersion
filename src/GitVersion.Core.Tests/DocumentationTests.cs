@@ -1,5 +1,6 @@
+using GitVersion.Configuration;
 using GitVersion.Core.Tests.Helpers;
-using GitVersion.Model.Configuration;
+using GitVersion.Helpers;
 using GitVersion.OutputVariables;
 using NUnit.Framework;
 using Shouldly;
@@ -21,12 +22,12 @@ public class DocumentationTests : TestBase
         var configurationDocumentationFile = ReadDocumentationFile("input/docs/reference/configuration.md");
 
         const BindingFlags bindingFlags = BindingFlags.Public | BindingFlags.DeclaredOnly | BindingFlags.Instance;
-        var configProperties = typeof(Config)
+        var configProperties = typeof(GitVersionConfiguration)
             .GetProperties(bindingFlags)
-            .Union(typeof(BranchConfig).GetProperties(bindingFlags))
+            .Union(typeof(BranchConfiguration).GetProperties(bindingFlags))
             .Select(p => p.GetCustomAttribute<YamlMemberAttribute>())
             .Where(a => a != null)
-            .Select(a => a.Alias)
+            .Select(a => a?.Alias)
             .ToList();
 
         configProperties.ShouldNotBeEmpty();
@@ -57,7 +58,7 @@ public class DocumentationTests : TestBase
 
     private string ReadDocumentationFile(string relativeDocumentationFilePath)
     {
-        var documentationFilePath = Path.Combine(this.docsDirectory.FullName, relativeDocumentationFilePath);
+        var documentationFilePath = PathHelper.Combine(this.docsDirectory.FullName, relativeDocumentationFilePath);
         // Normalize path separators and such.
         documentationFilePath = new FileInfo(documentationFilePath).FullName;
 

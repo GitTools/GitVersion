@@ -70,7 +70,7 @@ namespace GitVersion.Core.Tests.IntegrationTests
             fixture.Checkout(MainBranch);
             fixture.BranchTo(hotfixBranch);
             fixture.MakeACommit("added hotfix");
-            fixture.AssertFullSemver("1.2.1-beta.1+7");
+            fixture.AssertFullSemver("1.2.1-beta.1+1");
             fixture.Checkout(MainBranch);
             fixture.MergeNoFF(hotfixBranch);
             fixture.AssertFullSemver("1.2.1+2");

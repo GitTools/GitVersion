@@ -1,23 +1,5 @@
 namespace GitVersion.Extensions;
 
-public enum AssemblyFileVersioningScheme
-{
-    MajorMinorPatchTag,
-    MajorMinorPatch,
-    MajorMinor,
-    Major,
-    None
-}
-
-public enum AssemblyVersioningScheme
-{
-    MajorMinorPatchTag,
-    MajorMinorPatch,
-    MajorMinor,
-    Major,
-    None
-}
-
 public static class AssemblyVersionsGeneratorExtensions
 {
     public static string? GetAssemblyVersion(this SemanticVersion sv, AssemblyVersioningScheme scheme) =>

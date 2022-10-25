@@ -19,7 +19,7 @@ public class PullRequestScenarios : TestBase
         fixture.Repository.CreatePullRequestRef("feature/Foo", MainBranch, normalise: true);
 
         fixture.Repository.DumpGraph();
-        fixture.AssertFullSemver("0.1.1-PullRequest0002.2");
+        fixture.AssertFullSemver("0.1.1-PullRequest2.2");
     }
 
     [Test]
@@ -32,10 +32,10 @@ public class PullRequestScenarios : TestBase
         Commands.Checkout(fixture.Repository, fixture.Repository.CreateBranch("feature/Foo"));
         fixture.Repository.MakeACommit();
 
-        fixture.Repository.CreatePullRequestRef("feature/Foo", "develop", 44, normalise: true);
+        fixture.Repository.CreatePullRequestRef("feature/Foo", "develop", 44, true);
 
         fixture.Repository.DumpGraph();
-        fixture.AssertFullSemver("0.2.0-PullRequest0044.3");
+        fixture.AssertFullSemver("0.2.0-PullRequest44.3");
     }
 
     [Test]
@@ -50,7 +50,7 @@ public class PullRequestScenarios : TestBase
         fixture.Repository.CreatePullRequestRef("feature/Foo", MainBranch, normalise: true);
 
         fixture.Repository.DumpGraph();
-        fixture.AssertFullSemver("0.1.1-PullRequest0002.2");
+        fixture.AssertFullSemver("0.1.1-PullRequest2.2");
     }
 
     [Test]
@@ -65,7 +65,7 @@ public class PullRequestScenarios : TestBase
 
         fixture.Repository.CreatePullRequestRef("feature/Foo", "develop", normalise: true);
 
-        fixture.AssertFullSemver("0.2.0-PullRequest0002.3");
+        fixture.AssertFullSemver("0.2.0-PullRequest2.3");
     }
 
     [Test]
@@ -81,7 +81,7 @@ public class PullRequestScenarios : TestBase
 
         fixture.Repository.CreatePullRequestRef("feature/Foo", "develop", normalise: true);
 
-        fixture.AssertFullSemver("0.2.0-PullRequest0002.3");
+        fixture.AssertFullSemver("0.2.0-PullRequest2.3");
     }
 
     [Test]
@@ -89,13 +89,13 @@ public class PullRequestScenarios : TestBase
     {
         using var fixture = new EmptyRepositoryFixture();
         fixture.Repository.MakeATaggedCommit("1.0.0");
-        fixture.Repository.MakeACommit();
+        fixture.Repository.MakeACommit("one");
         Commands.Checkout(fixture.Repository, fixture.Repository.CreateBranch("release/2.0.0"));
-        fixture.Repository.MakeACommit();
-        fixture.Repository.MakeACommit();
+        fixture.Repository.MakeACommit("two");
+        fixture.Repository.MakeACommit("three");
 
         fixture.Repository.CreatePullRequestRef("release/2.0.0", MainBranch, normalise: true);
 
-        fixture.AssertFullSemver("2.0.0-PullRequest0002.0");
+        fixture.AssertFullSemver("2.0.0-PullRequest2.3");
     }
 }

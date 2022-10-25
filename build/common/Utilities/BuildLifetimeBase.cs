@@ -13,9 +13,10 @@ public class BuildLifetimeBase<T> : FrostingLifetime<T> where T : BuildContextBa
         context.IsGitHubActionsBuild = buildSystem.IsRunningOnGitHubActions;
 
         context.IsPullRequest = buildSystem.IsPullRequest;
+        context.BranchName = context.GetBranchName();
         context.IsOriginalRepo = context.IsOriginalRepo();
         context.IsMainBranch = context.IsMainBranch();
-        context.IsReleaseBranch = context.IsReleaseBranch();
+        context.IsSupportBranch = context.IsSupportBranch();
         context.IsTagged = context.IsTagged();
 
         context.IsOnWindows = context.IsRunningOnWindows();
@@ -38,8 +39,9 @@ public class BuildLifetimeBase<T> : FrostingLifetime<T> where T : BuildContextBa
 
             context.Information("Pull Request:      {0}", context.IsPullRequest);
             context.Information("Original Repo:     {0}", context.IsOriginalRepo);
+            context.Information("Branch Name:       {0}", context.BranchName);
             context.Information("Main Branch:       {0}", context.IsMainBranch);
-            context.Information("Release Branch:    {0}", context.IsReleaseBranch);
+            context.Information("Support Branch:    {0}", context.IsSupportBranch);
             context.Information("Tagged:            {0}", context.IsTagged);
 
             context.Information("Finished running tasks.");
@@ -61,8 +63,9 @@ public class BuildLifetimeBase<T> : FrostingLifetime<T> where T : BuildContextBa
         context.Information("OS:                {0}", context.GetOS());
         context.Information("Pull Request:      {0}", context.IsPullRequest);
         context.Information("Original Repo:     {0}", context.IsOriginalRepo);
+        context.Information("Branch Name:       {0}", context.BranchName);
         context.Information("Main Branch:       {0}", context.IsMainBranch);
-        context.Information("Release Branch:    {0}", context.IsReleaseBranch);
+        context.Information("Support Branch:    {0}", context.IsSupportBranch);
         context.Information("Tagged:            {0}", context.IsTagged);
     }
 }

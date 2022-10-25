@@ -9,10 +9,7 @@ namespace GitVersion.MsBuild.Tests.Tasks;
 [TestFixture]
 public class WriteVersionInfoTest : TestTaskBase
 {
-    protected string GitHubEnvFilePath { get; set; }
-
-    [OneTimeSetUp]
-    public void OneTimeSetUp() => GitHubEnvFilePath = Path.GetTempFileName();
+    private string GitHubEnvFilePath { get; set; } = Path.GetTempFileName();
 
     [OneTimeTearDown]
     public void OneTimeTearDown()
@@ -54,7 +51,7 @@ public class WriteVersionInfoTest : TestTaskBase
         var task = new WriteVersionInfoToBuildLog();
         const string content = "update-build-number: false";
 
-        using var result = ExecuteMsBuildTaskInAzurePipeline(task, buildNumber: buildNumber, configurationText: content);
+        using var result = ExecuteMsBuildTaskInAzurePipeline(task, buildNumber, content);
 
         result.Success.ShouldBe(true);
         result.Errors.ShouldBe(0);
@@ -78,7 +75,6 @@ public class WriteVersionInfoTest : TestTaskBase
         result.Log.ShouldContain($"##vso[build.updatebuildnumber]{expected}");
     }
 
-
     [Test]
     public void WriteVersionInfoTaskShouldLogOutputVariablesToBuildOutputInGitHubActions()
     {
@@ -93,8 +89,6 @@ public class WriteVersionInfoTest : TestTaskBase
     }
 
     [Test]
-    [Category(NoNet48)]
-    [Category(NoMono)]
     public void WriteVersionInfoTaskShouldNotLogOutputVariablesToBuildOutputWhenRunWithMsBuild()
     {
         const string taskName = nameof(WriteVersionInfoToBuildLog);
@@ -110,8 +104,6 @@ public class WriteVersionInfoTest : TestTaskBase
     }
 
     [Test]
-    [Category(NoNet48)]
-    [Category(NoMono)]
     public void WriteVersionInfoTaskShouldLogOutputVariablesToBuildOutputWhenRunWithMsBuildInAzurePipeline()
     {
         const string taskName = nameof(WriteVersionInfoToBuildLog);
@@ -132,7 +124,7 @@ public class WriteVersionInfoTest : TestTaskBase
         project.UsingTaskAssemblyFile(taskName, assemblyFileLocation)
             .Property("GenerateAssemblyInfo", "false")
             .Target(targetToRun, beforeTargets: "CoreCompile;GetAssemblyVersion;GenerateNuspec")
-            .Task(taskName, parameters: new Dictionary<string, string>
+            .Task(taskName, parameters: new Dictionary<string, string?>
             {
                 { "SolutionDirectory", "$(MSBuildProjectDirectory)" },
                 { "VersionFile", "$(MSBuildProjectDirectory)/gitversion.json" }

@@ -26,7 +26,7 @@ public class PublishNugetInternal : FrostingTask<BuildContext>
     public override void Run(BuildContext context)
     {
         // publish to github packages for commits on main and on original repo
-        if (context.IsGitHubActionsBuild && context.IsOnMainOrReleaseBranchOriginalRepo)
+        if (context.IsGitHubActionsBuild && context.IsOnMainOrSupportBranchOriginalRepo)
         {
             var apiKey = context.Credentials?.GitHub?.Token;
             if (string.IsNullOrEmpty(apiKey))

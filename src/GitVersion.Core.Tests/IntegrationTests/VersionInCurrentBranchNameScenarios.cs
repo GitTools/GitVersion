@@ -1,6 +1,6 @@
 using GitTools.Testing;
+using GitVersion.Configuration;
 using GitVersion.Core.Tests.Helpers;
-using GitVersion.Model.Configuration;
 using LibGit2Sharp;
 using NUnit.Framework;
 
@@ -30,15 +30,15 @@ public class VersionInCurrentBranchNameScenarios : TestBase
     [Test]
     public void TakesVersionFromNameOfBranchThatIsReleaseByConfig()
     {
-        var config = new Config
+        var configuration = new GitVersionConfiguration
         {
-            Branches = new Dictionary<string, BranchConfig> { { "support", new BranchConfig { IsReleaseBranch = true } } }
+            Branches = new Dictionary<string, BranchConfiguration> { { "support", new BranchConfiguration { IsReleaseBranch = true } } }
         };
 
         using var fixture = new BaseGitFlowRepositoryFixture("1.0.0");
         fixture.BranchTo("support/2.0.0");
 
-        fixture.AssertFullSemver("2.0.0+1", config);
+        fixture.AssertFullSemver("2.0.0+1", configuration);
     }
 
     [Test]
@@ -65,6 +65,6 @@ public class VersionInCurrentBranchNameScenarios : TestBase
 
         fixture.LocalRepositoryFixture.Checkout("upstream/release/2.0.0");
 
-        fixture.LocalRepositoryFixture.AssertFullSemver("0.1.0-beta.1+5");
+        fixture.LocalRepositoryFixture.AssertFullSemver("0.0.0-beta.1+6");
     }
 }

@@ -1,6 +1,7 @@
 using System.Xml.Linq;
 using GitVersion.Core.Tests.Helpers;
 using GitVersion.Extensions;
+using GitVersion.Helpers;
 using GitVersion.Logging;
 using GitVersion.OutputVariables;
 using GitVersion.VersionCalculation;
@@ -33,11 +34,9 @@ public class ProjectFileUpdaterTests : TestBase
 
         this.fileSystem = sp.GetRequiredService<IFileSystem>();
         this.variableProvider = sp.GetRequiredService<IVariableProvider>();
-        this.projectFileUpdater = new ProjectFileUpdater(this.log, this.fileSystem!);
+        this.projectFileUpdater = new ProjectFileUpdater(this.log, this.fileSystem);
     }
 
-    [Category(NoMono)]
-    [Description(NoMonoDescription)]
     [TestCase("Microsoft.NET.Sdk")]
     [TestCase("Microsoft.NET.Sdk.Worker")]
     [TestCase("Microsoft.NET.Sdk.Web")]
@@ -50,7 +49,7 @@ public class ProjectFileUpdaterTests : TestBase
 <Project Sdk=""{sdk}"">
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
   </PropertyGroup>
 </Project>
 ";
@@ -64,12 +63,10 @@ public class ProjectFileUpdaterTests : TestBase
 <Project Sdk=""SomeOtherProject.Sdk"">
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
   </PropertyGroup>
 </Project>
 ")]
-    [Category(NoMono)]
-    [Description(NoMonoDescription)]
     public void CannotUpdateProjectFileWithIncorrectProjectSdk(string xml)
     {
         var canUpdate = projectFileUpdater.CanUpdateProjectFile(XElement.Parse(xml));
@@ -85,12 +82,10 @@ public class ProjectFileUpdaterTests : TestBase
 <Project>
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
   </PropertyGroup>
 </Project>
 ")]
-    [Category(NoMono)]
-    [Description(NoMonoDescription)]
     public void CannotUpdateProjectFileWithMissingProjectSdk(string xml)
     {
         var canUpdate = projectFileUpdater.CanUpdateProjectFile(XElement.Parse(xml));
@@ -106,13 +101,11 @@ public class ProjectFileUpdaterTests : TestBase
 <Project Sdk=""Microsoft.NET.Sdk"">
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
   </PropertyGroup>
 </Project>
 ")]
-    [Category(NoMono)]
-    [Description(NoMonoDescription)]
     public void CannotUpdateProjectFileWithoutAssemblyInfoGeneration(string xml)
     {
         var canUpdate = projectFileUpdater.CanUpdateProjectFile(XElement.Parse(xml));
@@ -128,8 +121,6 @@ public class ProjectFileUpdaterTests : TestBase
 <Project Sdk=""Microsoft.NET.Sdk"">
 </Project>
 ")]
-    [Category(NoMono)]
-    [Description(NoMonoDescription)]
     public void CannotUpdateProjectFileWithoutAPropertyGroup(string xml)
     {
         var canUpdate = projectFileUpdater.CanUpdateProjectFile(XElement.Parse(xml));
@@ -145,23 +136,22 @@ public class ProjectFileUpdaterTests : TestBase
 <Project Sdk=""Microsoft.NET.Sdk"">
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
   </PropertyGroup>
 </Project>"
     )]
-    [Category(NoMono)]
-    [Description(NoMonoDescription)]
     public void UpdateProjectXmlVersionElementWithStandardXmlInsertsElement(string xml)
     {
         var variables = this.variableProvider.GetVariablesFor(SemanticVersion.Parse("2.0.0", "v"), new TestEffectiveConfiguration(), false);
         var xmlRoot = XElement.Parse(xml);
-        ProjectFileUpdater.UpdateProjectVersionElement(xmlRoot, ProjectFileUpdater.AssemblyVersionElement, variables.AssemblySemVer!);
+        variables.AssemblySemVer.ShouldNotBeNull();
+        ProjectFileUpdater.UpdateProjectVersionElement(xmlRoot, ProjectFileUpdater.AssemblyVersionElement, variables.AssemblySemVer);
 
         var expectedXml = XElement.Parse(@"
 <Project Sdk=""Microsoft.NET.Sdk"">
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
     <AssemblyVersion>2.0.0.0</AssemblyVersion>
   </PropertyGroup>
 </Project>");
@@ -172,24 +162,23 @@ public class ProjectFileUpdaterTests : TestBase
 <Project Sdk=""Microsoft.NET.Sdk"">
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
     <AssemblyVersion>1.0.0.0</AssemblyVersion>
   </PropertyGroup>
 </Project>"
     )]
-    [Category(NoMono)]
-    [Description(NoMonoDescription)]
     public void UpdateProjectXmlVersionElementWithStandardXmlModifiesElement(string xml)
     {
         var variables = this.variableProvider.GetVariablesFor(SemanticVersion.Parse("2.0.0", "v"), new TestEffectiveConfiguration(), false);
         var xmlRoot = XElement.Parse(xml);
-        ProjectFileUpdater.UpdateProjectVersionElement(xmlRoot, ProjectFileUpdater.AssemblyVersionElement, variables.AssemblySemVer!);
+        variables.AssemblySemVer.ShouldNotBeNull();
+        ProjectFileUpdater.UpdateProjectVersionElement(xmlRoot, ProjectFileUpdater.AssemblyVersionElement, variables.AssemblySemVer);
 
         var expectedXml = XElement.Parse(@"
 <Project Sdk=""Microsoft.NET.Sdk"">
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
     <AssemblyVersion>2.0.0.0</AssemblyVersion>
   </PropertyGroup>
 </Project>");
@@ -200,7 +189,7 @@ public class ProjectFileUpdaterTests : TestBase
 <Project Sdk=""Microsoft.NET.Sdk"">
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
     <AssemblyVersion>1.0.0.0</AssemblyVersion>
   </PropertyGroup>
   <PropertyGroup>
@@ -208,19 +197,18 @@ public class ProjectFileUpdaterTests : TestBase
   </PropertyGroup>
 </Project>"
     )]
-    [Category(NoMono)]
-    [Description(NoMonoDescription)]
     public void UpdateProjectXmlVersionElementWithDuplicatePropertyGroupsModifiesLastElement(string xml)
     {
         var variables = this.variableProvider.GetVariablesFor(SemanticVersion.Parse("2.0.0", "v"), new TestEffectiveConfiguration(), false);
         var xmlRoot = XElement.Parse(xml);
-        ProjectFileUpdater.UpdateProjectVersionElement(xmlRoot, ProjectFileUpdater.AssemblyVersionElement, variables.AssemblySemVer!);
+        variables.AssemblySemVer.ShouldNotBeNull();
+        ProjectFileUpdater.UpdateProjectVersionElement(xmlRoot, ProjectFileUpdater.AssemblyVersionElement, variables.AssemblySemVer);
 
         var expectedXml = XElement.Parse(@"
 <Project Sdk=""Microsoft.NET.Sdk"">
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
     <AssemblyVersion>1.0.0.0</AssemblyVersion>
   </PropertyGroup>
   <PropertyGroup>
@@ -234,25 +222,24 @@ public class ProjectFileUpdaterTests : TestBase
 <Project Sdk=""Microsoft.NET.Sdk"">
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
     <AssemblyVersion>1.0.0.0</AssemblyVersion>
     <AssemblyVersion>1.0.0.0</AssemblyVersion>
   </PropertyGroup>
 </Project>"
     )]
-    [Category(NoMono)]
-    [Description(NoMonoDescription)]
     public void UpdateProjectXmlVersionElementWithMultipleVersionElementsLastOneIsModified(string xml)
     {
         var variables = this.variableProvider.GetVariablesFor(SemanticVersion.Parse("2.0.0", "v"), new TestEffectiveConfiguration(), false);
         var xmlRoot = XElement.Parse(xml);
-        ProjectFileUpdater.UpdateProjectVersionElement(xmlRoot, ProjectFileUpdater.AssemblyVersionElement, variables.AssemblySemVer!);
+        variables.AssemblySemVer.ShouldNotBeNull();
+        ProjectFileUpdater.UpdateProjectVersionElement(xmlRoot, ProjectFileUpdater.AssemblyVersionElement, variables.AssemblySemVer);
 
         var expectedXml = XElement.Parse(@"
 <Project Sdk=""Microsoft.NET.Sdk"">
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
     <AssemblyVersion>1.0.0.0</AssemblyVersion>
     <AssemblyVersion>2.0.0.0</AssemblyVersion>
   </PropertyGroup>
@@ -264,16 +251,14 @@ public class ProjectFileUpdaterTests : TestBase
 <Project Sdk=""Microsoft.NET.Sdk"">
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
   </PropertyGroup>
 </Project>")]
-    [Category(NoMono)]
-    [Description(NoMonoDescription)]
     public void UpdateProjectFileAddsVersionToFile(string xml)
     {
-        var fileName = Path.Combine(Path.GetTempPath(), "TestProject.csproj");
+        var fileName = PathHelper.Combine(Path.GetTempPath(), "TestProject.csproj");
 
-        VerifyAssemblyInfoFile(xml, fileName, AssemblyVersioningScheme.MajorMinorPatch, verify: (fs, variables) =>
+        VerifyAssemblyInfoFile(xml, fileName, AssemblyVersioningScheme.MajorMinorPatch, (fs, variables) =>
         {
             using var projFileUpdater = new ProjectFileUpdater(this.log, fs);
             projFileUpdater.Execute(variables, new AssemblyInfoContext(Path.GetTempPath(), false, fileName));
@@ -282,7 +267,7 @@ public class ProjectFileUpdaterTests : TestBase
 <Project Sdk=""Microsoft.NET.Sdk"">
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
     <AssemblyVersion>2.3.1.0</AssemblyVersion>
     <FileVersion>2.3.1.0</FileVersion>
     <InformationalVersion>2.3.1+3.Branch.foo.Sha.hash</InformationalVersion>
@@ -298,7 +283,7 @@ public class ProjectFileUpdaterTests : TestBase
         string projectFileContent,
         string fileName,
         AssemblyVersioningScheme versioningScheme = AssemblyVersioningScheme.MajorMinorPatch,
-        Action<IFileSystem, VersionVariables> verify = null)
+        Action<IFileSystem, VersionVariables>? verify = null)
     {
         this.fileSystem = Substitute.For<IFileSystem>();
         var version = new SemanticVersion
@@ -317,8 +302,8 @@ public class ProjectFileUpdaterTests : TestBase
             this.fileSystem.ReadAllText(fileName).Returns(projectFileContent);
         });
 
-        var config = new TestEffectiveConfiguration(assemblyVersioningScheme: versioningScheme);
-        var variables = this.variableProvider.GetVariablesFor(version, config, false);
+        var configuration = new TestEffectiveConfiguration(versioningScheme);
+        var variables = this.variableProvider.GetVariablesFor(version, configuration, false);
 
         verify?.Invoke(this.fileSystem, variables);
     }
