@@ -58,8 +58,11 @@ jobs:
         key: tools-${{ runner.os }}-${{ hashFiles('./build/**') }}
     -
       name: Get npm cache directory
+      shell: bash
       id: cache-node-dir
-      run: echo "::set-output name=dir::$(npm config get cache)"
+      run: |
+        cacheDir=$(npm config get cache)
+        echo "dir=$cacheDir" >> $GITHUB_OUTPUT
     -
       name: Cache Node Modules
       id: cache-node
