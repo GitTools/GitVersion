@@ -104,9 +104,9 @@ Sorry
 
 *   [Continuous Delivery Setup in TeamCity][cd]
 
-[cd]: http://jake.ginnivan.net/blog/2014/07/09/my-typical-teamcity-build-setup
+[cd]: https://jake.ginnivan.net/blog/2014/07/09/my-typical-teamcity-build-setup
 [dynamic-repo]: /docs/learn/dynamic-repositories
-[general-settings]: https://www.jetbrains.com/help/teamcity/git.html#Git-GeneralSettings
-[parameter]: http://confluence.jetbrains.com/display/TCD8/Configuring+Build+Parameters
+[general-settings]: https://www.jetbrains.com/help/teamcity/git.html#General+Settings
+[parameter]: https://confluence.jetbrains.com/display/TCD8/Configuring+Build+Parameters
 [teamcity]: https://www.jetbrains.com/teamcity/
 [meta-runner]: https://github.com/JetBrains/meta-runner-power-pack/tree/master/gitversion

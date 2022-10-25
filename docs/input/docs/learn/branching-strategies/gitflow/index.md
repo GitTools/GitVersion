@@ -12,13 +12,13 @@ SemVer compatible versions from this structure.
 
 ## Assumptions:
 
-*   Using [GitFlow branching model](http://nvie.com/git-model/) which always has a
+*   Using [GitFlow branching model](https://nvie.com/git-model/) which always has a
     main and a develop branch
-*   Following [Semantic Versioning](http://semver.org/)
+*   Following [Semantic Versioning](https://semver.org/)
 *   Planned releases (bumps in major or minor) are done on release branches
     prefixed with release-. Eg: release-4.1 (or release-4.1.0)
 *   Hotfixes are prefixed with hotfix- Eg. hotfix-4.0.4
-*   The original [GitFlow model](http://nvie.com/posts/a-successful-git-branching-model/)
+*   The original [GitFlow model](https://nvie.com/posts/a-successful-git-branching-model/)
     specifies branches with a "-" separator while the [git flow extensions](https://github.com/nvie/gitflow)
     default to a "/" separator.  Either work with GitVersion.
 *   Tags are used on the main branch and reflects the SemVer of each stable

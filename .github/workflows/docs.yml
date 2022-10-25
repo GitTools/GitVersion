@@ -121,7 +121,7 @@ jobs:
       uses: chabad360/htmlproofer@master
       with:
         directory: ./artifacts/docs/preview
-        arguments: --url-ignore /api/ --allow-hash-href --assume-extension --disable-external
+        arguments: --ignore-urls /api/,/docs/ --allow-hash-href --assume-extension --disable-external
     -
       name: Reviewdog Reporter
       uses: haya14busa/action-cond@v1

@@ -148,7 +148,7 @@ will produce a stable `2.0.0` package.
 For more information/background on why we have come to this conclusion, read
 [Xavier Decoster's blog post on the subject][auto-incremented-nuget-package].
 
-[auto-incremented-nuget-package]: http://www.xavierdecoster.com/semantic-versioning-auto-incremented-nuget-package-versions
+[auto-incremented-nuget-package]: https://www.xavierdecoster.com/semantic-versioning-auto-incremented-nuget-package-versions
 [continuous-delivery]: /docs/reference/modes/continuous-delivery
 [conventional-commits]: https://www.conventionalcommits.org/
 [faq-branch-name-source]: /docs/learn/faq#merged-branch-names-as-version-source

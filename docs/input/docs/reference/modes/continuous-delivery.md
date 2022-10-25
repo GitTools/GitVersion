@@ -69,8 +69,8 @@ an external manual process.
 *   [Continuous Delivery on Wikipedia][wikipedia]
 *   [Continuous Delivery, the book][book]
 
-[book]: http://www.amazon.com/Continuous-Delivery-Deployment-Automation-Addison-Wesley/dp/0321601912
+[book]: https://www.amazon.com/Continuous-Delivery-Deployment-Automation-Addison-Wesley/dp/0321601912
 [configuration]: /docs/reference/configuration
-[continuous-deployment]: continuous-deployment
+[continuous-deployment]: /docs/reference/modes/continuous-deployment
 [mainline]: /docs/reference/modes/mainline
 [wikipedia]: https://en.wikipedia.org/wiki/Continuous_delivery
