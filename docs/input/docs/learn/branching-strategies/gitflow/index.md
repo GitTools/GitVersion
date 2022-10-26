@@ -8,17 +8,15 @@ RedirectFrom: docs/git-branching-strategies/gitflow
 Git Flow allows more structured releases, and GitVersion will derive sensible
 SemVer compatible versions from this structure.
 
-## Resources
-
 ## Assumptions:
 
-*   Using [GitFlow branching model](http://nvie.com/git-model/) which always has a
+*   Using [GitFlow branching model](https://nvie.com/git-model/) which always has a
     main and a develop branch
-*   Following [Semantic Versioning](http://semver.org/)
+*   Following [Semantic Versioning](https://semver.org/)
 *   Planned releases (bumps in major or minor) are done on release branches
     prefixed with release-. Eg: release-4.1 (or release-4.1.0)
 *   Hotfixes are prefixed with hotfix- Eg. hotfix-4.0.4
-*   The original [GitFlow model](http://nvie.com/posts/a-successful-git-branching-model/)
+*   The original [GitFlow model](https://nvie.com/posts/a-successful-git-branching-model/)
     specifies branches with a "-" separator while the [git flow extensions](https://github.com/nvie/gitflow)
     default to a "/" separator.  Either work with GitVersion.
 *   Tags are used on the main branch and reflects the SemVer of each stable
@@ -58,7 +56,7 @@ Optional Tags (only when transitioning existing repository):
 
 Long version:
 
-```
+```txt
 {major}.{minor}.{patch} Sha:'{sha}'
 1.2.3 Sha:'a682956dccae752aa24597a0f5cd939f93614509'
 ```
@@ -78,7 +76,7 @@ Long version:
 
 Long version:
 
-```
+```txt
 {major}.{minor}.{patch}-{pre-release} Branch:'{branchName}' Sha:'{sha}'
 1.2.3-alpha.645 Branch:'develop' Sha:'a682956dccae752aa24597a0f5cd939f93614509'
 ```
@@ -97,7 +95,7 @@ Named: `hotfix-{versionNumber}` eg `hotfix-1.2`
 
 Long version:
 
-```
+```txt
 {major}.{minor}.{patch}-{pre-release} Branch:'{branchName}' Sha:'{sha}'
 1.2.3-beta645 Branch:'hotfix-foo' Sha:'a682956dccae752aa24597a0f5cd939f93614509'
 ```
@@ -125,7 +123,7 @@ that tag the version would be `1.2.0-alpha1.4`
 
 Long version:
 
-```
+```txt
 {major}.{minor}.{patch}-{pre-release} Branch:'{branchName}' Sha:'{sha}'
 1.2.3-alpha2.4 Branch:'release-1.2' Sha:'a682956dccae752aa24597a0f5cd939f93614509'
 1.2.3-rc2 Branch:'release-1.2' Sha:'a682956dccae752aa24597a0f5cd939f93614509'
@@ -149,7 +147,7 @@ branches named like "4.0.3"
 
 Long version:
 
-```
+```txt
 {major}.{minor}.{patch}-{pre-release} Branch:'{branchName}' Sha:'{sha}'
 1.2.3-alpha.feature-a682956d Branch:'feature1' Sha:'a682956dccae752aa24597a0f5cd939f93614509'
 ```

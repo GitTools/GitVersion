@@ -4,7 +4,7 @@ Title: Intro to SemVer
 RedirectFrom: docs/reference/intro-to-semver
 ---
 
-For the official Semantic Version docs head to [semver.org](http://semver.org). This is just a quick guide for people  getting started and how SemVer is used in GitVersion.
+For the official Semantic Version docs head to [semver.org](https://semver.org). This is just a quick guide for people  getting started and how SemVer is used in GitVersion.
 
 ## Why SemVer?
 
@@ -25,10 +25,10 @@ SemVer introduces conventions about breaking changes into our version numbers so
 
 Only one number should be incremented per release, and all lower parts should be reset to 0 (if `{major}` is incremented, then `{minor}` and `{patch}` should become 0).
 
-For a more complete explanation check out [semver.org](http://semver.org) which is the official spec. Remember this is a brief introduction and does not cover all parts of semantic versioning, just the important parts to get started.
+For a more complete explanation check out [semver.org](https://semver.org) which is the official spec. Remember this is a brief introduction and does not cover all parts of semantic versioning, just the important parts to get started.
 
 ## SemVer in GitVersion
 
-GitVersion makes it easy to follow semantic versioning in your library by automatically calculating the next semantic version which your library/application is likely to use. In [GitFlow](https://www.atlassian.com/git/tutorials/comparing-workflows/gitflow-workflow/) the develop branch will bump the _minor_ when main is tagged, while [GitHubFlow](https://guides.github.com/introduction/flow/) will bump the _patch_.
+GitVersion makes it easy to follow semantic versioning in your library by automatically calculating the next semantic version which your library/application is likely to use. In [GitFlow](https://www.atlassian.com/git/tutorials/comparing-workflows/gitflow-workflow/) the develop branch will bump the _minor_ when main is tagged, while [GitHubFlow](https://docs.github.com/en/get-started/quickstart/github-flow#introduction) will bump the _patch_.
 
 Because one size does not always fit all, GitVersion provides many [Variables](/docs/reference/variables) for you to use which contain different variations of the version. For example SemVer will be in the format `{major}.{minor}.{patch}-{tag}`, but `FullSemVer` will also include build metadata: `{major}.{minor}.{patch}-{tag}+{buildmetadata}`

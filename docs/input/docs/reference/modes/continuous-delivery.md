@@ -42,7 +42,7 @@ to deploy to production at any time.
 By default, GitVersion is set up to do Continuous Delivery on all branches but
 `develop`, which is set up with [Continuous Deployment][continuous-deployment].
 To change the mode to Continuous Delivery, change your
-[configuration] to:
+[configuration][configuration] to:
 
 ```yaml
 mode: ContinuousDelivery
@@ -69,8 +69,8 @@ an external manual process.
 *   [Continuous Delivery on Wikipedia][wikipedia]
 *   [Continuous Delivery, the book][book]
 
-[book]: http://www.amazon.com/Continuous-Delivery-Deployment-Automation-Addison-Wesley/dp/0321601912
+[book]: https://www.amazon.com/Continuous-Delivery-Deployment-Automation-Addison-Wesley/dp/0321601912
 [configuration]: /docs/reference/configuration
-[continuous-deployment]: continuous-deployment
+[continuous-deployment]: /docs/reference/modes/continuous-deployment
 [mainline]: /docs/reference/modes/mainline
 [wikipedia]: https://en.wikipedia.org/wiki/Continuous_delivery

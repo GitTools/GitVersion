@@ -15,7 +15,6 @@ that we know about today.
 *   [NUKE](https://nuke.build)
 *   [Orc.\* packages](https://github.com/wildgums?query=orc)
 *   [Orchestra](https://github.com/wildgums/orchestra)
-*   [Pomona](http://pomona.io/)
 *   [Shouldly](https://github.com/shouldly/shouldly)
 *   [Akavache](https://github.com/akavache/akavache)
 *   [Splat](https://github.com/paulcbetts/splat)

@@ -38,7 +38,7 @@ giving you the features of GitVersion with continuous deployment:
 mode: ContinuousDeployment
 ```
 
-[blog]: http://www.xavierdecoster.com/semantic-versioning-auto-incremented-nuget-package-versions
+[blog]: https://www.xavierdecoster.com/semantic-versioning-auto-incremented-nuget-package-versions
 [configuration]: /docs/reference/configuration
 [continuous-delivery]: /docs/reference/modes/continuous-delivery
 [mainline]: /docs/reference/modes/mainline

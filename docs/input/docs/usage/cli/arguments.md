@@ -15,7 +15,7 @@ Example: `-output json` vs. `/output json`
 Below is the output from `gitversion /help` as a best effort to provide
 documentation for which arguments GitVersion supports and their meaning.
 
-```
+```bash
 Use convention to derive a SemVer product version from a GitFlow or GitHub based
 repository.
 

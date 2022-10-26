@@ -37,7 +37,7 @@ the MS Build Task.
 5.  If you want the GitVersionTask to update AssemblyInfo files add
     `updateAssemblyInfo true` to the Arguments parameter.
 6.  If you want to update the build number you need to send a
-    [logging command](https://github.com/Microsoft/azure-pipelines-tasks/blob/main/docs/authoring/commands.md)
+    [logging command](https://github.com/microsoft/azure-pipelines-tasks/blob/main/docs/authoring/commands.md)
     to TFS.
 
 ### Using the custom GitVersion build step
@@ -57,12 +57,12 @@ to install the GitVersion extension:
 If you run TFS 2015 RTM or Update 1 or don't want to install the GitVersion
 extension you can install the build task manually:
 
-1.  Install the `tfx` command line tool as shown [here](https://github.com/Microsoft/tfs-cli/blob/main/README.md#install).
-2.  For TFS 2015 On-Prem configure Basic Authentication in TFS as shown [here](https://github.com/Microsoft/tfs-cli/blob/main/docs/configureBasicAuth.md).
+1.  Install the `tfx` command line tool as shown [here](https://github.com/microsoft/tfs-cli/blob/master/README.md#setup).
+2.  For TFS 2015 On-Prem configure Basic Authentication in TFS as shown [here](https://github.com/microsoft/tfs-cli/blob/master/docs/configureBasicAuth.md).
 3.  Download the GitVersion TFS build task from the latest release on the
     [GitVersion releases page](https://github.com/GitTools/GitVersion/releases) and
     unzip.
-4.  Run `tfx login` as shown [here](https://github.com/Microsoft/tfs-cli/blob/main/README.md#login).
+4.  Run `tfx login` as shown [here](https://github.com/microsoft/tfs-cli/blob/master/README.md#login).
 5.  From the directory outside of where you unzipped the task, run
     `tfx build tasks upload --task-path .\GitVersionVsixTask --overwrite` where
     GitVersionVsixTask is the directory containing the files.
@@ -166,7 +166,7 @@ variables.
     build but makes sure that all tags are fetched. In the future it is planned to
     allow using `git.exe` instead of current `libgit2sharp` for syncing the repos
     which might allow other possibilities to solve this issue. For details see this
-    [GitHub issue](https://github.com/Microsoft/azure-pipelines-tasks/issues/1218).
+    [GitHub issue](https://github.com/microsoft/azure-pipelines-tasks/issues/1218).
 *   If running a build for a certain commit (through passing the commit SHA while
     queueing the build) all tags from the repository will be fetched, even the ones
     newer than the commit.  This can lead to different version numbers while

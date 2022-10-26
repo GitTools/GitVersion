@@ -14,7 +14,7 @@ works out the [Semantic Version][semver] of the commit being built.
 | **GitVersion.Portable**    |                     [![Chocolatey][choco-badge]][choco]            |
 | **GitVersion.Tool**        |                           [![NuGet][gvgt-badge]][gvgt]             |
 | **GitVersion.CommandLine** |                           [![NuGet][gvcl-badge]][gvcl]             |
-| **GitVersion.MsBuild**     |                            [![NuGet][gvt-badge]][gvt]              | Known as [GitVersionTask] before v5.6.0 |
+| **GitVersion.MsBuild**     |                            [![NuGet][gvt-badge]][gvt]              | Known as [GitVersionTask][gitversiontask] before v5.6.0 |
 | **Homebrew**               |                        [![homebrew][brew-badge]][brew]             |
 | **Azure Pipeline Task**    | [![Azure Pipeline Task][az-pipeline-task-badge]][az-pipeline-task] |
 | **Github Action**          |             [![Github Action][gh-actions-badge]][gh-actions]       |
