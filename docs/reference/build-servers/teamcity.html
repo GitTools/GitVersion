@@ -242,7 +242,7 @@ variable called <code>Git_Branch</code></p>
 <code>{vcsid}</code> is your VCS root id. You should get auto completion for this.</p>
 <p>For GitVersion to work with any mode requiring other than the currently built
 branch to calculate the version number, you need to set the configuration
-parameter <a href="https://www.jetbrains.com/help/teamcity/git.html#Git-GeneralSettings"><code>teamcity.git.fetchAllHeads = true</code> in TeamCity</a>,
+parameter <a href="https://www.jetbrains.com/help/teamcity/git.html#General+Settings"><code>teamcity.git.fetchAllHeads = true</code> in TeamCity</a>,
 because TeamCity by default fetches only the current branch for building.</p>
 <p>To add this configuration parameter to your build configuration, go to
 <em>Parameters</em>, click <em>Add</em>, <em>Name</em> should be <code>teamcity.git.fetchAllHeads</code> and the
@@ -263,7 +263,7 @@ as msbuild/environmental variables to other build steps</li>
 </ul>
 <h3 id="nuget-in-teamcity">NuGet in TeamCity</h3>
 <ul>
-<li>Add a dummy <a href="http://confluence.jetbrains.com/display/TCD8/Configuring+Build+Parameters">parameter</a> to the project called <code>GitVersion.NuGetVersion</code>. If
+<li>Add a dummy <a href="https://confluence.jetbrains.com/display/TCD8/Configuring+Build+Parameters">parameter</a> to the project called <code>GitVersion.NuGetVersion</code>. If
 many of your projects uses git-flow and SemVer you can add the parameter to
 the "root-project" (TeamCity 8.x+). You need a dummy param because
 GitVersion creates the variables at runtime, and you cannot reference a
@@ -290,7 +290,7 @@ Sorry
 </code></pre>
 <h2 id="guides">Guides</h2>
 <ul>
-<li><a href="http://jake.ginnivan.net/blog/2014/07/09/my-typical-teamcity-build-setup">Continuous Delivery Setup in TeamCity</a></li>
+<li><a href="https://jake.ginnivan.net/blog/2014/07/09/my-typical-teamcity-build-setup">Continuous Delivery Setup in TeamCity</a></li>
 </ul>
 
 	</section>

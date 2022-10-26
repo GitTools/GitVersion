@@ -212,7 +212,7 @@
 			<h1>Intro to SemVer</h1>
 		</section>
 	<section class="content">
-		<p>For the official Semantic Version docs head to <a href="http://semver.org">semver.org</a>. This is just a quick guide for people  getting started and how SemVer is used in GitVersion.</p>
+		<p>For the official Semantic Version docs head to <a href="https://semver.org">semver.org</a>. This is just a quick guide for people  getting started and how SemVer is used in GitVersion.</p>
 <h2 id="why-semver">Why SemVer?</h2>
 <p>The quick reason is to solve two problems: Version Lock and Version promiscuity. To explain these things, let's imagine the scenario where I am building an app which authenticates with Facebook (v1.0.0) and Twitter (v1.0.0). Both the Facebook and Twitter libraries use a JSON library (v1.0.0).</p>
 <p>Version lock is when we rely on absolute versions, both <strong>FacebookApi</strong> and <strong>TwitterApi</strong> rely on <em>v1.0.0</em> of <strong>JsonLibrary</strong>. <strong>JsonLibrary</strong> <em>v1.1.0</em> comes out and <strong>FacebookApi</strong> decides to upgrade. If our dependency management relies on exact versions we cannot upgrade our application to use <strong>FacebookApi</strong> because <strong>TwitterApi</strong> references <em>v1.0.0</em>. The only way we can upgrade is if <strong>TwitterApi</strong> also upgrades to <em>v1.1.0</em> of <strong>JsonLibrary</strong>.</p>
@@ -227,9 +227,9 @@
 <li><code>{buildmetadata}</code> is optional and contains additional information about the version, but <strong>does not affect</strong> the semantic version preceding it.</li>
 </ul>
 <p>Only one number should be incremented per release, and all lower parts should be reset to 0 (if <code>{major}</code> is incremented, then <code>{minor}</code> and <code>{patch}</code> should become 0).</p>
-<p>For a more complete explanation check out <a href="http://semver.org">semver.org</a> which is the official spec. Remember this is a brief introduction and does not cover all parts of semantic versioning, just the important parts to get started.</p>
+<p>For a more complete explanation check out <a href="https://semver.org">semver.org</a> which is the official spec. Remember this is a brief introduction and does not cover all parts of semantic versioning, just the important parts to get started.</p>
 <h2 id="semver-in-gitversion">SemVer in GitVersion</h2>
-<p>GitVersion makes it easy to follow semantic versioning in your library by automatically calculating the next semantic version which your library/application is likely to use. In <a href="https://www.atlassian.com/git/tutorials/comparing-workflows/gitflow-workflow/">GitFlow</a> the develop branch will bump the <em>minor</em> when main is tagged, while <a href="https://guides.github.com/introduction/flow/">GitHubFlow</a> will bump the <em>patch</em>.</p>
+<p>GitVersion makes it easy to follow semantic versioning in your library by automatically calculating the next semantic version which your library/application is likely to use. In <a href="https://www.atlassian.com/git/tutorials/comparing-workflows/gitflow-workflow/">GitFlow</a> the develop branch will bump the <em>minor</em> when main is tagged, while <a href="https://docs.github.com/en/get-started/quickstart/github-flow#introduction">GitHubFlow</a> will bump the <em>patch</em>.</p>
 <p>Because one size does not always fit all, GitVersion provides many <a href="/docs/reference/variables">Variables</a> for you to use which contain different variations of the version. For example SemVer will be in the format <code>{major}.{minor}.{patch}-{tag}</code>, but <code>FullSemVer</code> will also include build metadata: <code>{major}.{minor}.{patch}-{tag}+{buildmetadata}</code></p>
 
 	</section>

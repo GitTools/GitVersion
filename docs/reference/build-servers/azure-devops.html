@@ -239,7 +239,7 @@ other build steps.</li>
 <li>If you want the GitVersionTask to update AssemblyInfo files add
 <code>updateAssemblyInfo true</code> to the Arguments parameter.</li>
 <li>If you want to update the build number you need to send a
-<a href="https://github.com/Microsoft/azure-pipelines-tasks/blob/main/docs/authoring/commands.md">logging command</a>
+<a href="https://github.com/microsoft/azure-pipelines-tasks/blob/main/docs/authoring/commands.md">logging command</a>
 to TFS.</li>
 </ol>
 <h3 id="using-the-custom-gitversion-build-step">Using the custom GitVersion build step</h3>
@@ -255,12 +255,12 @@ to install the GitVersion extension:</p>
 <p>If you run TFS 2015 RTM or Update 1 or don't want to install the GitVersion
 extension you can install the build task manually:</p>
 <ol>
-<li>Install the <code>tfx</code> command line tool as shown <a href="https://github.com/Microsoft/tfs-cli/blob/main/README.md#install">here</a>.</li>
-<li>For TFS 2015 On-Prem configure Basic Authentication in TFS as shown <a href="https://github.com/Microsoft/tfs-cli/blob/main/docs/configureBasicAuth.md">here</a>.</li>
+<li>Install the <code>tfx</code> command line tool as shown <a href="https://github.com/microsoft/tfs-cli/blob/master/README.md#setup">here</a>.</li>
+<li>For TFS 2015 On-Prem configure Basic Authentication in TFS as shown <a href="https://github.com/microsoft/tfs-cli/blob/master/docs/configureBasicAuth.md">here</a>.</li>
 <li>Download the GitVersion TFS build task from the latest release on the
 <a href="https://github.com/GitTools/GitVersion/releases">GitVersion releases page</a> and
 unzip.</li>
-<li>Run <code>tfx login</code> as shown <a href="https://github.com/Microsoft/tfs-cli/blob/main/README.md#login">here</a>.</li>
+<li>Run <code>tfx login</code> as shown <a href="https://github.com/microsoft/tfs-cli/blob/master/README.md#login">here</a>.</li>
 <li>From the directory outside of where you unzipped the task, run
 <code>tfx build tasks upload --task-path .\GitVersionVsixTask --overwrite</code> where
 GitVersionVsixTask is the directory containing the files.</li>
@@ -342,7 +342,7 @@ settings the variable <code>Build.Clean</code> to <code>all</code>. This will ta
 build but makes sure that all tags are fetched. In the future it is planned to
 allow using <code>git.exe</code> instead of current <code>libgit2sharp</code> for syncing the repos
 which might allow other possibilities to solve this issue. For details see this
-<a href="https://github.com/Microsoft/azure-pipelines-tasks/issues/1218">GitHub issue</a>.</li>
+<a href="https://github.com/microsoft/azure-pipelines-tasks/issues/1218">GitHub issue</a>.</li>
 <li>If running a build for a certain commit (through passing the commit SHA while
 queueing the build) all tags from the repository will be fetched, even the ones
 newer than the commit.  This can lead to different version numbers while

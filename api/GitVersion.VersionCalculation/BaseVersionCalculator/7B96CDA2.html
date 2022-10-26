@@ -146,7 +146,7 @@
 		<li><a href="/api/GitVersion.VersionCalculation/BaseVersionCalculator">Base<wbr>Version<wbr>Calculator</a></li>
 		<li role="separator" class="divider"></li>
 			<li class="header">Constructors</li>
-				<li><a href="/api/GitVersion.VersionCalculation/BaseVersionCalculator/13CE694E">Base<wbr>Version<wbr>Calculator<wbr>(ILog, <wbr>IRepositoryStore, <wbr>Lazy<wbr>&lt;<wbr>Git<wbr>Version<wbr>Context&gt;<wbr>, <wbr>IEnumerable<wbr>&lt;<wbr>I<wbr>Version<wbr>Strategy&gt;<wbr>)<wbr></a></li>
+				<li><a href="/api/GitVersion.VersionCalculation/BaseVersionCalculator/CAA85532">Base<wbr>Version<wbr>Calculator<wbr>(ILog, <wbr>IRepositoryStore, <wbr>I<wbr>Branch<wbr>Configuration<wbr>Calculator, <wbr>I<wbr>Increment<wbr>Strategy<wbr>Finder, <wbr>Lazy<wbr>&lt;<wbr>Git<wbr>Version<wbr>Context&gt;<wbr>, <wbr>IEnumerable<wbr>&lt;<wbr>I<wbr>Version<wbr>Strategy&gt;<wbr>)<wbr></a></li>
 			<li class="header">Method Members</li>
 				<li class="selected"><a href="/api/GitVersion.VersionCalculation/BaseVersionCalculator/7B96CDA2">GetBaseVersion<wbr>()<wbr></a></li>
 
@@ -185,7 +185,7 @@
 		</div>
 
 	<h1 id="Syntax">Syntax</h1>
-	<pre><code>public BaseVersion GetBaseVersion()</code></pre>
+	<pre><code>public (BaseVersion, EffectiveBranchConfiguration) GetBaseVersion()</code></pre>
 
 
 
@@ -203,7 +203,7 @@
 					</tr>
 				</thead>
 				<tbody><tr>
-					<td><a href="/api/GitVersion.VersionCalculation/BaseVersion">BaseVersion</a></td>
+					<td><wbr>(BaseVersion, <wbr>Effective<wbr>Branch<wbr>Configuration)<wbr></td>
 					<td></td>
 				</tr>
 			</tbody></table>

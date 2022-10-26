@@ -150,6 +150,7 @@
 			<li class="header">Class Types</li>
 				<li><a href="/api/GitVersion.Model.Configuration/BranchConfig">BranchConfig</a></li>
 				<li class="selected"><a href="/api/GitVersion.Model.Configuration/Config">Config</a></li>
+				<li><a href="/api/GitVersion.Model.Configuration/EffectiveBranchConfiguration">Effective<wbr>Branch<wbr>Configuration</a></li>
 				<li><a href="/api/GitVersion.Model.Configuration/EffectiveConfiguration">Effective<wbr>Configuration</a></li>
 				<li><a href="/api/GitVersion.Model.Configuration/IgnoreConfig">IgnoreConfig</a></li>
 
@@ -247,7 +248,7 @@ class Type type-node
 						</thead>
 							<tbody><tr>
 								<td><a href="/api/GitVersion.Model.Configuration/Config/381994F1">DefaultTagPrefix</a></td>
-								<td>[vV]</td>
+								<td>[vV]?</td>
 								<td>
 									<div></div>
 											<div><small><em>static</em></small></div>
@@ -598,7 +599,23 @@ class Type type-node
 							</tr>
 						</thead>
 							<tbody><tr>
-								<td><a href="/api/GitVersion.Configuration/ConfigExtensions/969A1286">GetConfigForBranch<wbr>(string)<wbr></a></td>
+								<td><a href="/api/GitVersion.Configuration/ConfigExtensions/EA784BC0">Get<wbr>Branch<wbr>Configuration<wbr>(IBranch)<wbr></a></td>
+								<td><a href="/api/GitVersion.Model.Configuration/BranchConfig">BranchConfig</a></td>
+								<td>
+									<div></div>
+										<div><small><em>From <a href="/api/GitVersion.Configuration/ConfigExtensions">ConfigExtensions</a></em></small></div>
+								</td>
+							</tr>
+							<tr>
+								<td><a href="/api/GitVersion.Configuration/ConfigExtensions/4F7235C8">Get<wbr>Branch<wbr>Configuration<wbr>(string)<wbr></a></td>
+								<td><a href="/api/GitVersion.Model.Configuration/BranchConfig">BranchConfig</a></td>
+								<td>
+									<div></div>
+										<div><small><em>From <a href="/api/GitVersion.Configuration/ConfigExtensions">ConfigExtensions</a></em></small></div>
+								</td>
+							</tr>
+							<tr>
+								<td><a href="/api/GitVersion.Configuration/ConfigExtensions/EA17AF75">Get<wbr>Fallback<wbr>Branch<wbr>Configuration<wbr>()<wbr></a></td>
 								<td><a href="/api/GitVersion.Model.Configuration/BranchConfig">BranchConfig</a></td>
 								<td>
 									<div></div>
@@ -616,6 +633,14 @@ class Type type-node
 							<tr>
 								<td><a href="/api/GitVersion.Configuration/ConfigExtensions/3630161D">Get<wbr>Release<wbr>Branch<wbr>Config<wbr>()<wbr></a></td>
 								<td>List<wbr>&lt;KeyValuePair<wbr>&lt;string, <wbr><a href="/api/GitVersion.Model.Configuration/BranchConfig">BranchConfig</a>&gt;<wbr>&gt;<wbr></td>
+								<td>
+									<div></div>
+										<div><small><em>From <a href="/api/GitVersion.Configuration/ConfigExtensions">ConfigExtensions</a></em></small></div>
+								</td>
+							</tr>
+							<tr>
+								<td><a href="/api/GitVersion.Configuration/ConfigExtensions/C198F24E">Get<wbr>Unknown<wbr>Branch<wbr>Configuration<wbr>()<wbr></a></td>
+								<td><a href="/api/GitVersion.Model.Configuration/BranchConfig">BranchConfig</a></td>
 								<td>
 									<div></div>
 										<div><small><em>From <a href="/api/GitVersion.Configuration/ConfigExtensions">ConfigExtensions</a></em></small></div>

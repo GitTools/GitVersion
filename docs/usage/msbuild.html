@@ -84,6 +84,7 @@
     <div id="infobar-headings"><h6>On This Page</h6><p><a href="#tldr">TL;DR</a></p>
 <p><a href="#how-does-it-work">How does it work?</a></p>
 <p><a href="#conditional-control-tasks">Conditional control tasks</a></p>
+<p><a href="#extra-properties">Extra properties</a></p>
 <p><a href="#my-git-repository-requires-authentication.what-should-i-do">My Git repository requires authentication. What should I do?</a></p>
 <hr class="infobar-hidden">
 </div>
@@ -399,6 +400,14 @@ this:</p>
 <p>For SDK-style projects, <code>UpdateVersionProperties</code> controls setting the default
 variables: <code>Version</code>, <code>VersionPrefix</code>, <code>VersionSuffix</code>, <code>PackageVersion</code>,
 <code>InformationalVersion</code>, <code>AssemblyVersion</code> and <code>FileVersion</code>.</p>
+<h2 id="extra-properties">Extra properties</h2>
+<p>There are properties that correspont to certain
+<a href="/docs/usage/cli/arguments">command line arguments</a> for GetVersion task.
+In particular, setting <code>GitVersion_NoFetchEnabled</code> to <code>true</code> disables <code>git fetch</code>
+during version calculation, setting <code>GitVersion_NoNormalizeEnabled</code> to <code>true</code> disables
+normalize step on a build server, setting <code>GitVersion_NoCacheEnabled</code> to <code>true</code>
+makes GetVersion ignore cache. All the rest command line arguments can be passed via
+<code>GitVersion_CommandLineArguments</code> variable.</p>
 <h2 id="my-git-repository-requires-authentication.what-should-i-do">My Git repository requires authentication. What should I do?</h2>
 <p>Set the environment variables <code>GITVERSION_REMOTE_USERNAME</code> and
 <code>GITVERSION_REMOTE_PASSWORD</code> before the build is initiated.</p>

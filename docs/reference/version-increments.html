@@ -299,7 +299,7 @@ commit) all builds <em>must</em> have a pre-release tag, except for builds that 
 explicitly tagged as stable.</p>
 <p>Then the build metadata (which is the commit count) is promoted to the
 pre-release tag. Applying these rules, the above commit-graph would produce:</p>
-<pre><code>e137e9 -&gt; 1.0.0+0
+<pre><code class="language-log">e137e9 -&gt; 1.0.0+0
 a5f6c5 -&gt; 1.0.1-ci.1
 adb29a -&gt; 1.0.1-feature-foo.1 (PR #5 Version: `1.0.1-PullRequest.5+2`)
 7c2438 -&gt; 1.0.1-feature-foo.2 (PR #5 Version: `1.0.1-PullRequest.5+3`)
@@ -312,7 +312,7 @@ b5d142 -&gt; 2.0.0-ci.0 (2.0.0 branch was merged, so main is now at 2.0.0)
 stable <code>2.0.0</code> release you simply <code>git tag 2.0.0</code>, then build the tag, and it
 will produce a stable <code>2.0.0</code> package.</p>
 <p>For more information/background on why we have come to this conclusion, read
-<a href="http://www.xavierdecoster.com/semantic-versioning-auto-incremented-nuget-package-versions">Xavier Decoster's blog post on the subject</a>.</p>
+<a href="https://www.xavierdecoster.com/semantic-versioning-auto-incremented-nuget-package-versions">Xavier Decoster's blog post on the subject</a>.</p>
 
 	</section>
                 

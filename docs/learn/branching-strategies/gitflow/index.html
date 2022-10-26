@@ -81,8 +81,7 @@
                 <section class="infobar" data-spy="affix" data-offset-top="60" data-offset-bottom="200"> 
                     	
         <div><p><a href="https://github.com/gittools/GitVersion/tree/main/docs/input/docs/learn/branching-strategies/gitflow/index.md"><i class="fa fa-pencil-square" aria-hidden="true"></i> Edit Content</a></p></div>
-    <div id="infobar-headings"><h6>On This Page</h6><p><a href="#resources">Resources</a></p>
-<p><a href="#assumptions">Assumptions:</a></p>
+    <div id="infobar-headings"><h6>On This Page</h6><p><a href="#assumptions">Assumptions:</a></p>
 <p><a href="#how-branches-are-handled">How Branches are handled</a></p>
 <p><a href="#nightly-builds">Nightly Builds</a></p>
 <p><a href="#release-candidates">Release Candidates</a></p>
@@ -217,16 +216,15 @@
 	<section class="content">
 		<p>Git Flow allows more structured releases, and GitVersion will derive sensible
 SemVer compatible versions from this structure.</p>
-<h2 id="resources">Resources</h2>
 <h2 id="assumptions">Assumptions:</h2>
 <ul>
-<li>Using <a href="http://nvie.com/git-model/">GitFlow branching model</a> which always has a
+<li>Using <a href="https://nvie.com/git-model/">GitFlow branching model</a> which always has a
 main and a develop branch</li>
-<li>Following <a href="http://semver.org/">Semantic Versioning</a></li>
+<li>Following <a href="https://semver.org/">Semantic Versioning</a></li>
 <li>Planned releases (bumps in major or minor) are done on release branches
 prefixed with release-. Eg: release-4.1 (or release-4.1.0)</li>
 <li>Hotfixes are prefixed with hotfix- Eg. hotfix-4.0.4</li>
-<li>The original <a href="http://nvie.com/posts/a-successful-git-branching-model/">GitFlow model</a>
+<li>The original <a href="https://nvie.com/posts/a-successful-git-branching-model/">GitFlow model</a>
 specifies branches with a "-" separator while the <a href="https://github.com/nvie/gitflow">git flow extensions</a>
 default to a "/" separator.  Either work with GitVersion.</li>
 <li>Tags are used on the main branch and reflects the SemVer of each stable
@@ -261,7 +259,7 @@ message.</p>
 <li>TagOnHeadCommit.Name= =&gt; overrides the version to be </li>
 </ul>
 <p>Long version:</p>
-<pre><code>{major}.{minor}.{patch} Sha:'{sha}'
+<pre><code class="language-txt">{major}.{minor}.{patch} Sha:'{sha}'
 1.2.3 Sha:'a682956dccae752aa24597a0f5cd939f93614509'
 </code></pre>
 <h3 id="develop-branch">Develop branch</h3>
@@ -277,7 +275,7 @@ message.</p>
 <code>mainVersionCommit.Date</code> ('0' padded to 4 characters)</li>
 </ul>
 <p>Long version:</p>
-<pre><code>{major}.{minor}.{patch}-{pre-release} Branch:'{branchName}' Sha:'{sha}'
+<pre><code class="language-txt">{major}.{minor}.{patch}-{pre-release} Branch:'{branchName}' Sha:'{sha}'
 1.2.3-alpha.645 Branch:'develop' Sha:'a682956dccae752aa24597a0f5cd939f93614509'
 </code></pre>
 <h3 id="hotfix-branches">Hotfix branches</h3>
@@ -291,7 +289,7 @@ message.</p>
 4 characters)</li>
 </ul>
 <p>Long version:</p>
-<pre><code>{major}.{minor}.{patch}-{pre-release} Branch:'{branchName}' Sha:'{sha}'
+<pre><code class="language-txt">{major}.{minor}.{patch}-{pre-release} Branch:'{branchName}' Sha:'{sha}'
 1.2.3-beta645 Branch:'hotfix-foo' Sha:'a682956dccae752aa24597a0f5cd939f93614509'
 </code></pre>
 <h3 id="release-branches">Release branches</h3>
@@ -315,7 +313,7 @@ since <code>releaseTag</code>.</li>
 <p>So on a branch named <code>release-1.2</code> with a tag <code>1.2.0-alpha1</code> and 4 commits after
 that tag the version would be <code>1.2.0-alpha1.4</code></p>
 <p>Long version:</p>
-<pre><code>{major}.{minor}.{patch}-{pre-release} Branch:'{branchName}' Sha:'{sha}'
+<pre><code class="language-txt">{major}.{minor}.{patch}-{pre-release} Branch:'{branchName}' Sha:'{sha}'
 1.2.3-alpha2.4 Branch:'release-1.2' Sha:'a682956dccae752aa24597a0f5cd939f93614509'
 1.2.3-rc2 Branch:'release-1.2' Sha:'a682956dccae752aa24597a0f5cd939f93614509'
 </code></pre>
@@ -334,7 +332,7 @@ branches named like "4.0.3"</p>
 SHA of the first commit</li>
 </ul>
 <p>Long version:</p>
-<pre><code>{major}.{minor}.{patch}-{pre-release} Branch:'{branchName}' Sha:'{sha}'
+<pre><code class="language-txt">{major}.{minor}.{patch}-{pre-release} Branch:'{branchName}' Sha:'{sha}'
 1.2.3-alpha.feature-a682956d Branch:'feature1' Sha:'a682956dccae752aa24597a0f5cd939f93614509'
 </code></pre>
 <h3 id="pull-request-branches">Pull-request branches</h3>

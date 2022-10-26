@@ -152,6 +152,7 @@
 				<li><a href="/api/GitVersion.VersionCalculation/IncrementStrategyFinder">Increment<wbr>Strategy<wbr>Finder</a></li>
 				<li><a href="/api/GitVersion.VersionCalculation/MergeMessageVersionStrategy">Merge<wbr>Message<wbr>Version<wbr>Strategy</a></li>
 				<li><a href="/api/GitVersion.VersionCalculation/MinDateVersionFilter">MinDateVersionFilter</a></li>
+				<li><a href="/api/GitVersion.VersionCalculation/NextVersion">NextVersion</a></li>
 				<li><a href="/api/GitVersion.VersionCalculation/NextVersionCalculator">Next<wbr>Version<wbr>Calculator</a></li>
 				<li><a href="/api/GitVersion.VersionCalculation/ShaVersionFilter">ShaVersionFilter</a></li>
 				<li><a href="/api/GitVersion.VersionCalculation/TaggedCommitVersionStrategy">Tagged<wbr>Commit<wbr>Version<wbr>Strategy</a></li>
@@ -207,8 +208,8 @@
 								<dt>Implementing Types</dt>
 								<dd>
 									<ul class="list-unstyled">
-											<li><a href="/api/GitVersion.VersionCalculation/MinDateVersionFilter">MinDateVersionFilter</a></li>								
 											<li><a href="/api/GitVersion.VersionCalculation/ShaVersionFilter">ShaVersionFilter</a></li>								
+											<li><a href="/api/GitVersion.VersionCalculation/MinDateVersionFilter">MinDateVersionFilter</a></li>								
 									</ul>
 								</dd>				
 						</dl>
@@ -218,10 +219,10 @@
 							graph BT
 	Type["IVersionFilter"]
 class Type type-node
-	Implementing0["MinDateVersionFilter"]-.-&gt;Type
-	click Implementing0 "/api/GitVersion.VersionCalculation/MinDateVersionFilter"
-	Implementing1["ShaVersionFilter"]-.-&gt;Type
-	click Implementing1 "/api/GitVersion.VersionCalculation/ShaVersionFilter"
+	Implementing0["ShaVersionFilter"]-.-&gt;Type
+	click Implementing0 "/api/GitVersion.VersionCalculation/ShaVersionFilter"
+	Implementing1["MinDateVersionFilter"]-.-&gt;Type
+	click Implementing1 "/api/GitVersion.VersionCalculation/MinDateVersionFilter"
 
 						</div>
 					</div>
