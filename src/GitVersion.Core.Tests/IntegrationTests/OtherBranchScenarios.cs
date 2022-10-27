@@ -1,6 +1,6 @@
 using GitTools.Testing;
+using GitVersion.Configuration;
 using GitVersion.Core.Tests.Helpers;
-using GitVersion.Model.Configuration;
 using LibGit2Sharp;
 using NUnit.Framework;
 using Shouldly;
@@ -60,13 +60,13 @@ public class OtherBranchScenarios : TestBase
     [TestCase("alpha.{BranchName}", "JIRA-123", "alpha.JIRA-123")]
     public void TagIsBranchNameForBranchesWithoutPrefixedBranchName(string tag, string branchName, string preReleaseTagName)
     {
-        var config = new Config
+        var configuration = new GitVersionConfiguration
         {
             Branches =
             {
                 {
                     "other",
-                    new BranchConfig
+                    new BranchConfiguration
                     {
                         Increment = IncrementStrategy.Patch,
                         Regex = ".*",
@@ -84,6 +84,6 @@ public class OtherBranchScenarios : TestBase
         fixture.Repository.MakeCommits(5);
 
         var expectedFullSemVer = $"1.0.1-{preReleaseTagName}.1+5";
-        fixture.AssertFullSemver(expectedFullSemVer, config);
+        fixture.AssertFullSemver(expectedFullSemVer, configuration);
     }
 }

@@ -1,5 +1,6 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Text.RegularExpressions;
+using GitVersion.Common;
 using GitVersion.Configuration;
 using GitVersion.Extensions;
 using GitVersion.Logging;
@@ -9,15 +10,20 @@ namespace GitVersion.VersionCalculation;
 /// <summary>
 /// Version is extracted from older commits' merge messages.
 /// BaseVersionSource is the commit where the message was found.
-/// Increments if PreventIncrementForMergedBranchVersion (from the branch config) is false.
+/// Increments if PreventIncrementOfMergedBranchVersion (from the branch configuration) is false.
 /// </summary>
 public class MergeMessageVersionStrategy : VersionStrategyBase
 {
     private readonly ILog log;
+    private readonly IRepositoryStore repositoryStore;
 
-    public MergeMessageVersionStrategy(ILog log, Lazy<GitVersionContext> versionContext) : base(versionContext) => this.log = log.NotNull();
+    public MergeMessageVersionStrategy(ILog log, Lazy<GitVersionContext> versionContext, IRepositoryStore repositoryStore) : base(versionContext)
+    {
+        this.log = log.NotNull();
+        this.repositoryStore = repositoryStore.NotNull();
+    }
 
-    public override IEnumerable<BaseVersion> GetVersions()
+    public override IEnumerable<BaseVersion> GetBaseVersions(EffectiveBranchConfiguration configuration)
     {
         if (Context.CurrentBranch.Commits == null || Context.CurrentCommit == null)
             return Enumerable.Empty<BaseVersion>();
@@ -28,14 +34,32 @@ public class MergeMessageVersionStrategy : VersionStrategyBase
             {
                 if (TryParse(c, Context, out var mergeMessage) &&
                     mergeMessage.Version != null &&
-                    Context.FullConfiguration.IsReleaseBranch(TrimRemote(mergeMessage.MergedBranch)))
+                    Context.Configuration.IsReleaseBranch(TrimRemote(mergeMessage.MergedBranch)))
                 {
                     this.log.Info($"Found commit [{Context.CurrentCommit}] matching merge message format: {mergeMessage.FormatName}");
-                    var shouldIncrement = Context.Configuration.PreventIncrementForMergedBranchVersion != true;
-                    return new[]
+                    var shouldIncrement = !configuration.Value.PreventIncrementOfMergedBranchVersion;
+
+                    var message = c.Message.Trim();
+
+                    var baseVersionSource = c;
+
+                    if (shouldIncrement)
                     {
-                        new BaseVersion($"{MergeMessageStrategyPrefix} '{c.Message.Trim()}'", shouldIncrement, mergeMessage.Version, c, null)
-                    };
+                        var parents = c.Parents.ToArray();
+                        if (parents.Length == 2 && message.Contains("Merge branch") && message.Contains("release"))
+                        {
+                            baseVersionSource = this.repositoryStore.FindMergeBase(parents[0], parents[1]);
+                        }
+                    }
+
+                    var baseVersion = new BaseVersion(
+                        source: $"{MergeMessageStrategyPrefix} '{message}'",
+                        shouldIncrement: shouldIncrement,
+                        semanticVersion: mergeMessage.Version,
+                        baseVersionSource: baseVersionSource,
+                        branchNameOverride: null
+                    );
+                    return new[] { baseVersion };
                 }
                 return Enumerable.Empty<BaseVersion>();
             })
@@ -59,7 +83,7 @@ public class MergeMessageVersionStrategy : VersionStrategyBase
             return null;
         }
 
-        var mergeMessage = new MergeMessage(mergeCommit.Message, context.FullConfiguration);
+        var mergeMessage = new MergeMessage(mergeCommit.Message, context.Configuration);
         return mergeMessage;
     }
 

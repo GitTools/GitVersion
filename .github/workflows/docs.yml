@@ -45,14 +45,14 @@ jobs:
     -
       name: Cache cake frosting
       id: cache-cake
-      uses: actions/cache@v3.0.8
+      uses: actions/cache@v3.0.11
       with:
         path: run
         key: run-${{ runner.os }}-${{ hashFiles('./build/**') }}
     -
       name: Use cached tools
       id: cache-tools
-      uses: actions/cache@v3.0.8
+      uses: actions/cache@v3.0.11
       with:
         path: tools
         key: tools-${{ runner.os }}-${{ hashFiles('./build/**') }}
@@ -63,16 +63,17 @@ jobs:
     -
       name: Cache Node Modules
       id: cache-node
-      uses: actions/cache@v3.0.8
+      uses: actions/cache@v3.0.11
       with:
         path: ${{ steps.cache-node-dir.outputs.dir }}
         key: node-${{ runner.os }}-${{ hashFiles('./package-lock.json') }}
         restore-keys: node-${{ runner.os }}
     -
-      name: Install .NET SDK 6.0.x
-      uses: actions/setup-dotnet@v2
+      name: Setup .NET SDK
+      uses: actions/setup-dotnet@v3.0.2
       with:
-        dotnet-version: '6.0.x'
+        dotnet-version: '7.0.x'
+        dotnet-quality: 'preview'
     -
       name: '[Prepare]'
       if: steps.cache-cake.outputs.cache-hit != 'true'
@@ -91,22 +92,23 @@ jobs:
     -
       name: Use cached cake frosting
       id: cache-cake
-      uses: actions/cache@v3.0.8
+      uses: actions/cache@v3.0.11
       with:
         path: run
         key: run-${{ runner.os }}-${{ hashFiles('./build/**') }}
     -
       name: Use cached tools
       id: cache-tools
-      uses: actions/cache@v3.0.8
+      uses: actions/cache@v3.0.11
       with:
         path: tools
         key: tools-${{ runner.os }}-${{ hashFiles('./build/**') }}
     -
-      name: Install .NET SDK 6.0.x
-      uses: actions/setup-dotnet@v2
+      name: Setup .NET SDK
+      uses: actions/setup-dotnet@v3.0.2
       with:
-        dotnet-version: '6.0.x'
+        dotnet-version: '7.0.x'
+        dotnet-quality: 'preview'
     -
       name: '[Build Documentation]'
       shell: pwsh
@@ -148,22 +150,23 @@ jobs:
     -
       name: Use cached cake frosting
       id: cache-cake
-      uses: actions/cache@v3.0.8
+      uses: actions/cache@v3.0.11
       with:
         path: run
         key: run-${{ runner.os }}-${{ hashFiles('./build/**') }}
     -
       name: Use cached tools
       id: cache-tools
-      uses: actions/cache@v3.0.8
+      uses: actions/cache@v3.0.11
       with:
         path: tools
         key: tools-${{ runner.os }}-${{ hashFiles('./build/**') }}
     -
-      name: Install .NET SDK 6.0.x
-      uses: actions/setup-dotnet@v2
+      name: Setup .NET SDK
+      uses: actions/setup-dotnet@v3.0.2
       with:
-        dotnet-version: '6.0.x'
+        dotnet-version: '7.0.x'
+        dotnet-quality: 'preview'
     -
       name: '[Publish Documentation]'
       if: ${{ github.event_name == 'push' }}

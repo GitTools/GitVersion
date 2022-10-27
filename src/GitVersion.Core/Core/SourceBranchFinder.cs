@@ -1,16 +1,15 @@
 using System.Text.RegularExpressions;
 using GitVersion.Configuration;
 using GitVersion.Extensions;
-using GitVersion.Model.Configuration;
 
 namespace GitVersion;
 
 internal class SourceBranchFinder
 {
-    private readonly Config configuration;
+    private readonly GitVersionConfiguration configuration;
     private readonly IEnumerable<IBranch> excludedBranches;
 
-    public SourceBranchFinder(IEnumerable<IBranch> excludedBranches, Config configuration)
+    public SourceBranchFinder(IEnumerable<IBranch> excludedBranches, GitVersionConfiguration configuration)
     {
         this.excludedBranches = excludedBranches.NotNull();
         this.configuration = configuration.NotNull();
@@ -27,7 +26,7 @@ internal class SourceBranchFinder
         private readonly IBranch branch;
         private readonly IEnumerable<string> sourceBranchRegexes;
 
-        public SourceBranchPredicate(IBranch branch, Config configuration)
+        public SourceBranchPredicate(IBranch branch, GitVersionConfiguration configuration)
         {
             this.branch = branch;
             this.sourceBranchRegexes = GetSourceBranchRegexes(branch, configuration);
@@ -44,11 +43,11 @@ internal class SourceBranchFinder
                 .Any(regex => Regex.IsMatch(branchName, regex));
         }
 
-        private static IEnumerable<string> GetSourceBranchRegexes(INamedReference branch, Config configuration)
+        private static IEnumerable<string> GetSourceBranchRegexes(INamedReference branch, GitVersionConfiguration configuration)
         {
             var branchName = branch.Name.WithoutRemote;
-            var currentBranchConfig = configuration.GetConfigForBranch(branchName);
-            if (currentBranchConfig?.SourceBranches == null)
+            var currentBranchConfig = configuration.GetBranchConfiguration(branchName);
+            if (currentBranchConfig.SourceBranches == null)
             {
                 yield return ".*";
             }

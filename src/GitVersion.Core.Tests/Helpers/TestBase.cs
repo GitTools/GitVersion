@@ -1,6 +1,5 @@
 using GitVersion.Configuration;
 using GitVersion.Extensions;
-using GitVersion.Model.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
@@ -20,13 +19,13 @@ public class TestBase
         return services.BuildServiceProvider();
     }
 
-    protected static IServiceProvider BuildServiceProvider(string workingDirectory, IGitRepository repository, string branch, Config? config = null)
+    protected static IServiceProvider BuildServiceProvider(string workingDirectory, IGitRepository repository, string branch, GitVersionConfiguration? configuration = null)
     {
-        config ??= new ConfigurationBuilder().Build();
+        configuration ??= new ConfigurationBuilder().Build();
         var options = Options.Create(new GitVersionOptions
         {
             WorkingDirectory = workingDirectory,
-            ConfigInfo = { OverrideConfig = config },
+            ConfigInfo = { OverrideConfig = configuration },
             RepositoryInfo = { TargetBranch = branch }
         });
 

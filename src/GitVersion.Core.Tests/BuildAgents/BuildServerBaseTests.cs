@@ -38,9 +38,9 @@ public class BuildServerBaseTests : TestBase
         semanticVersion.BuildMetaData.CommitDate = DateTimeOffset.Parse("2014-03-06 23:59:59Z");
         semanticVersion.BuildMetaData.Sha = "commitSha";
 
-        var config = new TestEffectiveConfiguration();
+        var configuration = new TestEffectiveConfiguration();
 
-        var variables = this.buildServer.GetVariablesFor(semanticVersion, config, false);
+        var variables = this.buildServer.GetVariablesFor(semanticVersion, configuration, false);
         var buildAgent = this.sp.GetRequiredService<BuildAgent>();
         buildAgent.WriteIntegration(writes.Add, variables);
 

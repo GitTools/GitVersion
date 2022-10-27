@@ -3,24 +3,20 @@ using GitVersion.Common;
 using GitVersion.Configuration;
 using GitVersion.Extensions;
 using GitVersion.Logging;
-using GitVersion.Model.Configuration;
-using GitVersion.VersionCalculation;
 
 namespace GitVersion;
 
 public class RepositoryStore : IRepositoryStore
 {
-    private readonly IIncrementStrategyFinder incrementStrategyFinder;
     private readonly ILog log;
     private readonly IGitRepository repository;
     private readonly Dictionary<IBranch, List<SemanticVersion>> semanticVersionTagsOnBranchCache = new();
     private readonly MergeBaseFinder mergeBaseFinder;
 
-    public RepositoryStore(ILog log, IGitRepository repository, IIncrementStrategyFinder incrementStrategyFinder)
+    public RepositoryStore(ILog log, IGitRepository repository)
     {
         this.log = log.NotNull();
         this.repository = repository.NotNull();
-        this.incrementStrategyFinder = incrementStrategyFinder.NotNull();
         this.mergeBaseFinder = new MergeBaseFinder(this, repository, log);
     }
 
@@ -55,21 +51,6 @@ public class RepositoryStore : IRepositoryStore
         currentCommit = currentBranch.Tip;
 
         return currentCommit;
-    }
-
-    public ICommit GetBaseVersionSource(ICommit currentBranchTip)
-    {
-        try
-        {
-            var filter = new CommitFilter { IncludeReachableFrom = currentBranchTip };
-            var commitCollection = this.repository.Commits.QueryBy(filter);
-
-            return commitCollection.First(c => !c.Parents.Any());
-        }
-        catch (Exception exception)
-        {
-            throw new GitVersionException($"Cannot find commit {currentBranchTip}. Please ensure that the repository is an unshallow clone with `git fetch --unshallow`.", exception);
-        }
     }
 
     public IEnumerable<ICommit> GetMainlineCommitLog(ICommit? baseVersionSource, ICommit? mainlineTip)
@@ -126,44 +107,21 @@ public class RepositoryStore : IRepositoryStore
 
     public IBranch? FindBranch(string? branchName) => this.repository.Branches.FirstOrDefault(x => x.Name.EquivalentTo(branchName));
 
-    public IBranch? FindMainBranch(Config configuration)
+    public IBranch? FindMainBranch(GitVersionConfiguration configuration)
     {
-        var mainBranchRegex = configuration.Branches[Config.MainBranchKey]?.Regex
-                              ?? configuration.Branches[Config.MasterBranchKey]?.Regex;
+        var mainBranchRegex = configuration.Branches[GitVersionConfiguration.MainBranchKey]?.Regex
+                              ?? configuration.Branches[GitVersionConfiguration.MasterBranchKey]?.Regex;
 
         if (mainBranchRegex == null)
         {
-            return FindBranch(Config.MainBranchKey) ?? FindBranch(Config.MasterBranchKey);
+            return FindBranch(GitVersionConfiguration.MainBranchKey) ?? FindBranch(GitVersionConfiguration.MasterBranchKey);
         }
 
         return this.repository.Branches.FirstOrDefault(b =>
             Regex.IsMatch(b.Name.Friendly, mainBranchRegex, RegexOptions.IgnoreCase));
     }
 
-    public IBranch? GetChosenBranch(Config configuration)
-    {
-        var developBranchRegex = configuration.Branches[Config.DevelopBranchKey]?.Regex;
-        var mainBranchRegex = configuration.Branches[Config.MainBranchKey]?.Regex;
-
-        if (mainBranchRegex == null || developBranchRegex == null) return null;
-        var chosenBranch = this.repository.Branches.FirstOrDefault(b =>
-            Regex.IsMatch(b.Name.Friendly, developBranchRegex, RegexOptions.IgnoreCase)
-            || Regex.IsMatch(b.Name.Friendly, mainBranchRegex, RegexOptions.IgnoreCase));
-        return chosenBranch;
-    }
-
-    public IEnumerable<IBranch> GetBranchesForCommit(ICommit commit)
-        => this.repository.Branches.Where(b => !b.IsRemote && Equals(b.Tip, commit)).ToList();
-
-    public IEnumerable<IBranch> GetExcludedInheritBranches(Config configuration)
-        => this.repository.Branches.Where(b =>
-        {
-            var branchConfig = configuration.GetConfigForBranch(b.Name.WithoutRemote);
-
-            return branchConfig == null || branchConfig.Increment == IncrementStrategy.Inherit;
-        }).ToList();
-
-    public IEnumerable<IBranch> GetReleaseBranches(IEnumerable<KeyValuePair<string, BranchConfig>> releaseBranchConfig)
+    public IEnumerable<IBranch> GetReleaseBranches(IEnumerable<KeyValuePair<string, BranchConfiguration>> releaseBranchConfig)
         => this.repository.Branches.Where(b => IsReleaseBranch(b, releaseBranchConfig));
 
     public IEnumerable<IBranch> ExcludingBranches(IEnumerable<IBranch> branchesToExclude) => this.repository.Branches.ExcludeBranches(branchesToExclude);
@@ -174,18 +132,41 @@ public class RepositoryStore : IRepositoryStore
         return branchesContainingCommitFinder.GetBranchesContainingCommit(commit, branches, onlyTrackedBranches);
     }
 
-    public IDictionary<string, List<IBranch>> GetMainlineBranches(ICommit commit, Config configuration, IEnumerable<KeyValuePair<string, BranchConfig>>? mainlineBranchConfigs)
+    public IDictionary<string, List<IBranch>> GetMainlineBranches(ICommit commit, GitVersionConfiguration configuration)
     {
-        var mainlineBranchFinder = new MainlineBranchFinder(this, this.repository, configuration, mainlineBranchConfigs, this.log);
+        var mainlineBranchFinder = new MainlineBranchFinder(this, this.repository, configuration, this.log);
         return mainlineBranchFinder.FindMainlineBranches(commit);
     }
 
+    public IEnumerable<IBranch> GetSourceBranches(IBranch branch, GitVersionConfiguration configuration, params IBranch[] excludedBranches)
+        => GetSourceBranches(branch, configuration, (IEnumerable<IBranch>)excludedBranches);
+
+    public IEnumerable<IBranch> GetSourceBranches(IBranch branch, GitVersionConfiguration configuration, IEnumerable<IBranch> excludedBranches)
+    {
+        var referenceLookup = this.repository.Refs.ToLookup(r => r.TargetIdentifier);
+
+        var returnedBranches = new HashSet<IBranch>();
+        if (referenceLookup.Any())
+        {
+            foreach (var branchCommit in FindCommitBranchesWasBranchedFrom(branch, configuration, excludedBranches))
+            {
+                foreach (var _ in referenceLookup[branchCommit.Commit.Sha]
+                    .Where(r => r.Name.Friendly == branchCommit.Branch.Name.Friendly))
+                {
+                    if (returnedBranches.Add(branchCommit.Branch))
+                    {
+                        yield return branchCommit.Branch;
+                    }
+                }
+            }
+        }
+    }
 
     /// <summary>
     ///     Find the commit where the given branch was branched from another branch.
     ///     If there are multiple such commits and branches, tries to guess based on commit histories.
     /// </summary>
-    public BranchCommit FindCommitBranchWasBranchedFrom(IBranch? branch, Config configuration, params IBranch[] excludedBranches)
+    public BranchCommit FindCommitBranchWasBranchedFrom(IBranch? branch, GitVersionConfiguration configuration, params IBranch[] excludedBranches)
     {
         branch = branch.NotNull();
 
@@ -213,16 +194,35 @@ public class RepositoryStore : IRepositoryStore
         }
     }
 
-    public SemanticVersion GetCurrentCommitTaggedVersion(ICommit? commit, EffectiveConfiguration config)
-        => this.repository.Tags
-            .SelectMany(t => GetCurrentCommitSemanticVersions(commit, config, t))
-            .Max();
+    public IEnumerable<BranchCommit> FindCommitBranchesWasBranchedFrom(IBranch branch, GitVersionConfiguration configuration, params IBranch[] excludedBranches)
+        => FindCommitBranchesWasBranchedFrom(branch, configuration, (IEnumerable<IBranch>)excludedBranches);
 
-    public SemanticVersion MaybeIncrement(BaseVersion baseVersion, GitVersionContext context)
+    public IEnumerable<BranchCommit> FindCommitBranchesWasBranchedFrom(IBranch branch, GitVersionConfiguration configuration, IEnumerable<IBranch> excludedBranches)
     {
-        var increment = this.incrementStrategyFinder.DetermineIncrementedField(this.repository, context, baseVersion);
-        return increment != null ? baseVersion.SemanticVersion.IncrementVersion(increment.Value) : baseVersion.SemanticVersion;
+        using (this.log.IndentLog($"Finding branches source of '{branch}'"))
+        {
+            if (branch.Tip == null)
+            {
+                this.log.Warning($"{branch} has no tip.");
+                yield break;
+            }
+
+            DateTimeOffset? when = null;
+            var branchCommits = new MergeCommitFinder(this, configuration, excludedBranches, this.log)
+                .FindMergeCommitsFor(branch).ToList();
+            foreach (var branchCommit in branchCommits)
+            {
+                if (when != null && branchCommit.Commit.When != when) break;
+                yield return branchCommit;
+                when = branchCommit.Commit.When;
+            }
+        }
     }
+
+    public SemanticVersion? GetCurrentCommitTaggedVersion(ICommit? commit, string? tagPrefix)
+        => this.repository.Tags
+            .SelectMany(t => GetCurrentCommitSemanticVersions(commit, tagPrefix, t))
+            .Max();
 
     public IEnumerable<SemanticVersion> GetVersionTagsOnBranch(IBranch branch, string? tagPrefixRegex)
     {
@@ -276,9 +276,6 @@ public class RepositoryStore : IRepositoryStore
         return this.repository.Commits.QueryBy(filter);
     }
 
-    public VersionField? DetermineIncrementedField(BaseVersion baseVersion, GitVersionContext context) =>
-        this.incrementStrategyFinder.DetermineIncrementedField(this.repository, context, baseVersion);
-
     public bool IsCommitOnBranch(ICommit? baseVersionSource, IBranch branch, ICommit firstMatchingCommit)
     {
         var filter = new CommitFilter { IncludeReachableFrom = branch, ExcludeReachableFrom = baseVersionSource, FirstParentOnly = true };
@@ -290,15 +287,15 @@ public class RepositoryStore : IRepositoryStore
 
     public int GetNumberOfUncommittedChanges() => this.repository.GetNumberOfUncommittedChanges();
 
-    private static bool IsReleaseBranch(INamedReference branch, IEnumerable<KeyValuePair<string, BranchConfig>> releaseBranchConfig)
+    private static bool IsReleaseBranch(INamedReference branch, IEnumerable<KeyValuePair<string, BranchConfiguration>> releaseBranchConfig)
         => releaseBranchConfig.Any(c => c.Value?.Regex != null && Regex.IsMatch(branch.Name.Friendly, c.Value.Regex));
 
-    private static IEnumerable<SemanticVersion> GetCurrentCommitSemanticVersions(ICommit? commit, EffectiveConfiguration config, ITag tag)
+    private static IEnumerable<SemanticVersion> GetCurrentCommitSemanticVersions(ICommit? commit, string? tagPrefix, ITag tag)
     {
         var targetCommit = tag.PeeledTargetCommit();
         var tagName = tag.Name.Friendly;
 
-        return targetCommit != null && Equals(targetCommit, commit) && SemanticVersion.TryParse(tagName, config.GitTagPrefix, out var version)
+        return targetCommit != null && Equals(targetCommit, commit) && SemanticVersion.TryParse(tagName, tagPrefix, out var version)
             ? new[] { version }
             : Array.Empty<SemanticVersion>();
     }

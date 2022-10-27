@@ -1,5 +1,4 @@
 using GitVersion.Logging;
-using GitVersion.Model.Configuration;
 
 namespace GitVersion.Configuration.Init.Wizard;
 
@@ -9,7 +8,7 @@ public class PickBranchingStrategy3Step : ConfigInitWizardStep
     {
     }
 
-    protected override StepResult HandleResult(string? result, Queue<ConfigInitWizardStep> steps, Config config, string workingDirectory)
+    protected override StepResult HandleResult(string? result, Queue<ConfigInitWizardStep> steps, GitVersionConfiguration configuration, string workingDirectory)
     {
         switch (result?.ToLower())
         {
@@ -31,7 +30,7 @@ public class PickBranchingStrategy3Step : ConfigInitWizardStep
         return StepResult.Ok();
     }
 
-    protected override string GetPrompt(Config config, string workingDirectory) => "Do you need to build nightly or consume packages the CI build creates without releasing those versions? (y/n)";
+    protected override string GetPrompt(GitVersionConfiguration configuration, string workingDirectory) => "Do you need to build nightly or consume packages the CI build creates without releasing those versions? (y/n)";
 
     protected override string? DefaultResult => null;
 }

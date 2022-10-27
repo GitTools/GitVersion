@@ -79,16 +79,28 @@ internal class MainlineVersionCalculator : IMainlineVersionCalculator
 
                 mainlineVersion = mainlineVersion.IncrementVersion(branchIncrement);
             }
-
             return mainlineVersion;
         }
     }
 
     public SemanticVersionBuildMetaData CreateVersionBuildMetaData(ICommit? baseVersionSource)
     {
-        var commitLog = this.repositoryStore.GetCommitLog(baseVersionSource, context.CurrentCommit);
-        var commitsSinceTag = commitLog.Count();
-        this.log.Info($"{commitsSinceTag} commits found between {baseVersionSource} and {context.CurrentCommit}");
+        int commitsSinceTag = 0;
+        if (context.CurrentCommit != null)
+        {
+            var commitLogs = this.repositoryStore.GetCommitLog(baseVersionSource, context.CurrentCommit);
+
+            var ignore = context.Configuration.Ignore;
+            if (!ignore.IsEmpty)
+            {
+                var shasToIgnore = new HashSet<string>(ignore.Shas);
+                commitLogs = commitLogs
+                    .Where(c => ignore.Before is null || c.When > ignore.Before && !shasToIgnore.Contains(c.Sha));
+            }
+            commitsSinceTag = commitLogs.Count();
+
+            this.log.Info($"{commitsSinceTag} commits found between {baseVersionSource} and {context.CurrentCommit}");
+        }
 
         var shortSha = context.CurrentCommit?.Id.ToString(7);
         return new SemanticVersionBuildMetaData(
@@ -123,17 +135,23 @@ internal class MainlineVersionCalculator : IMainlineVersionCalculator
 
     private IBranch GetMainline(ICommit? baseVersionSource)
     {
-        var mainlineBranchConfigs = context.FullConfiguration.Branches.Where(b => b.Value?.IsMainline == true).ToList();
+        if (context.Configuration.Branches.TryGetValue(context.CurrentBranch.Name.Friendly, out var branchConfiguration)
+            && branchConfiguration.IsMainline == true)
+        {
+            return context.CurrentBranch;
+        }
 
-        IDictionary<string, List<IBranch>> mainlineBranches = new Dictionary<string, List<IBranch>>();
+        IDictionary<string, List<IBranch>>? mainlineBranches = null;
+
         if (context.CurrentCommit != null)
         {
-            mainlineBranches = this.repositoryStore.GetMainlineBranches(context.CurrentCommit, context.FullConfiguration, mainlineBranchConfigs);
+            mainlineBranches = this.repositoryStore.GetMainlineBranches(context.CurrentCommit, context.Configuration);
         }
+        mainlineBranches ??= new Dictionary<string, List<IBranch>>();
 
         if (!mainlineBranches.Any())
         {
-            var mainlineBranchConfigsString = string.Join(", ", mainlineBranchConfigs.Where(x => x.Value != null).Select(b => b.Value?.Name));
+            var mainlineBranchConfigsString = string.Join(", ", context.Configuration.Branches.Where(b => b.Value?.IsMainline == true).Select(b => b.Value.Name));
             throw new WarningException($"No branches can be found matching the commit {context.CurrentCommit?.Sha} in the configured Mainline branches: {mainlineBranchConfigsString}");
         }
 
@@ -259,8 +277,8 @@ internal class MainlineVersionCalculator : IMainlineVersionCalculator
     {
         foreach (var directCommit in directCommits)
         {
-            var directCommitIncrement = this.incrementStrategyFinder.GetIncrementForCommits(context, new[] { directCommit })
-                                        ?? FindDefaultIncrementForBranch(context, mainline.Name.Friendly);
+            var directCommitIncrement = this.incrementStrategyFinder.GetIncrementForCommits(context.Configuration, new[] { directCommit })
+                ?? FindDefaultIncrementForBranch(context, mainline.Name.Friendly);
             mainlineVersion = mainlineVersion.IncrementVersion(directCommitIncrement);
             this.log.Info($"Direct commit on main {directCommit} incremented base versions {directCommitIncrement}, now {mainlineVersion}");
         }
@@ -272,32 +290,36 @@ internal class MainlineVersionCalculator : IMainlineVersionCalculator
     {
         var commits = this.repositoryStore.GetMergeBaseCommits(mergeCommit, mergedHead, findMergeBase);
         commitLog.RemoveAll(c => commits.Any(c1 => c1.Sha == c.Sha));
-        return this.incrementStrategyFinder.GetIncrementForCommits(context, commits) ?? TryFindIncrementFromMergeMessage(mergeCommit);
+        return this.incrementStrategyFinder.GetIncrementForCommits(context.Configuration, commits)
+            ?? TryFindIncrementFromMergeMessage(mergeCommit);
     }
 
     private VersionField TryFindIncrementFromMergeMessage(ICommit? mergeCommit)
     {
         if (mergeCommit != null)
         {
-            var mergeMessage = new MergeMessage(mergeCommit.Message, context.FullConfiguration);
-            var config = context.FullConfiguration.GetConfigForBranch(mergeMessage.MergedBranch);
-            if (config?.Increment != null && config.Increment != IncrementStrategy.Inherit)
+            var mergeMessage = new MergeMessage(mergeCommit.Message, context.Configuration);
+            var configuration = context.Configuration.GetBranchConfiguration(mergeMessage.MergedBranch);
+            if (configuration.Increment != null && configuration.Increment != IncrementStrategy.Inherit)
             {
-                return config.Increment.Value.ToVersionField();
+                return configuration.Increment.Value.ToVersionField();
             }
         }
 
-        // Fallback to config increment value
+        // Fallback to configuration increment value
         return FindDefaultIncrementForBranch(context);
     }
 
-    private static VersionField FindDefaultIncrementForBranch(GitVersionContext context, string? branch = null)
+    private static VersionField FindDefaultIncrementForBranch(GitVersionContext context, string? branchName = null)
     {
-        var config = context.FullConfiguration.GetConfigForBranch(branch ?? context.CurrentBranch.Name.WithoutRemote);
-        if (config?.Increment != null && config.Increment != IncrementStrategy.Inherit)
+        var configuration = context.Configuration.GetBranchConfiguration(branchName ?? context.CurrentBranch.Name.WithoutRemote);
+        if (configuration.Increment != null && configuration.Increment != IncrementStrategy.Inherit)
         {
-            return config.Increment.Value.ToVersionField();
+            return configuration.Increment.Value.ToVersionField();
         }
+
+        // TODO: Hardcoded fallback values are not so good. It might be better to get this information either from the fallback or the unknown
+        // branch configuration settings I have introduced. We should think about it: This is a cooking machine... the ingredients are coming from the user. ;)
 
         // Fallback to patch
         return VersionField.Patch;

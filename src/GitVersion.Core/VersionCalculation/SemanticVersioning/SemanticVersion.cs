@@ -24,6 +24,8 @@ public class SemanticVersion : IFormattable, IComparable<SemanticVersion>, IEqua
     public SemanticVersionPreReleaseTag? PreReleaseTag;
     public SemanticVersionBuildMetaData? BuildMetaData;
 
+    public bool HasPreReleaseTagWithLabel => PreReleaseTag?.HasTag() == true;
+
     public SemanticVersion(long major = 0, long minor = 0, long patch = 0)
     {
         this.Major = major;
@@ -328,18 +330,4 @@ public class SemanticVersion : IFormattable, IComparable<SemanticVersion>, IEqua
 
         return incremented;
     }
-}
-
-public enum VersionField
-{
-    None,
-    Patch,
-    Minor,
-    Major
-}
-
-public enum SemanticVersionFormat
-{
-    Strict,
-    Loose
 }

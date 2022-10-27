@@ -1,7 +1,6 @@
 using GitTools.Testing;
 using GitVersion.Configuration;
 using GitVersion.Core.Tests.Helpers;
-using GitVersion.Model.Configuration;
 using GitVersion.VersionCalculation;
 using NUnit.Framework;
 using Shouldly;
@@ -15,8 +14,8 @@ internal class VersionInTagScenarios
     public void TagPreReleaseWeightIsNotConfigured_HeadIsATaggedCommit_WeightedPreReleaseNumberShouldBeTheDefaultValue()
     {
         // Arrange
-        var config = new ConfigurationBuilder()
-            .Add(new Config
+        var configuration = new ConfigurationBuilder()
+            .Add(new GitVersionConfiguration
             {
                 AssemblyFileVersioningFormat = "{Major}.{Minor}.{Patch}.{WeightedPreReleaseNumber}"
             })
@@ -25,7 +24,7 @@ internal class VersionInTagScenarios
         // Act
         using var fixture = new BaseGitFlowRepositoryFixture("1.0.0");
         fixture.MakeATaggedCommit("1.1.0");
-        var version = fixture.GetVersion(config);
+        var version = fixture.GetVersion(configuration);
 
         // Assert
         version.AssemblySemFileVer.ShouldBe("1.1.0.60000");
@@ -35,8 +34,8 @@ internal class VersionInTagScenarios
     public void TagPreReleaseWeightIsConfigured_HeadIsATaggedCommit_WeightedPreReleaseNumberShouldBeTheSameAsTheTagPreReleaseWeight()
     {
         // Arrange
-        var config = new ConfigurationBuilder()
-            .Add(new Config
+        var configuration = new ConfigurationBuilder()
+            .Add(new GitVersionConfiguration
             {
                 AssemblyFileVersioningFormat = "{Major}.{Minor}.{Patch}.{WeightedPreReleaseNumber}",
                 TagPreReleaseWeight = 65535
@@ -46,7 +45,7 @@ internal class VersionInTagScenarios
         // Act
         using var fixture = new BaseGitFlowRepositoryFixture("1.0.0");
         fixture.MakeATaggedCommit("1.1.0");
-        var version = fixture.GetVersion(config);
+        var version = fixture.GetVersion(configuration);
 
         // Assert
         version.AssemblySemFileVer.ShouldBe("1.1.0.65535");
@@ -56,8 +55,8 @@ internal class VersionInTagScenarios
     public void TagPreReleaseWeightIsConfigured_GitFlowReleaseIsFinished_WeightedPreReleaseNumberShouldBeTheSameAsTheTagPreReleaseWeight()
     {
         // Arrange
-        var config = new ConfigurationBuilder()
-            .Add(new Config
+        var configuration = new ConfigurationBuilder()
+            .Add(new GitVersionConfiguration
             {
                 AssemblyFileVersioningFormat = "{Major}.{Minor}.{Patch}.{WeightedPreReleaseNumber}",
                 TagPreReleaseWeight = 65535,
@@ -73,9 +72,9 @@ internal class VersionInTagScenarios
         fixture.MakeACommit("Feature commit 1");
         fixture.BranchTo("release/1.1.0");
         fixture.MakeACommit("Release commit 1");
-        fixture.AssertFullSemver("1.1.0-beta.1", config);
+        fixture.AssertFullSemver("1.1.0-beta.1", configuration);
         fixture.ApplyTag("1.1.0");
-        var version = fixture.GetVersion(config);
+        var version = fixture.GetVersion(configuration);
 
         // Assert
         version.AssemblySemFileVer.ShouldBe("1.1.0.65535");
@@ -85,8 +84,8 @@ internal class VersionInTagScenarios
     public void TagPreReleaseWeightIsNotConfigured_GitFlowReleaseIsFinished_WeightedPreReleaseNumberShouldBeTheDefaultValue()
     {
         // Arrange
-        var config = new ConfigurationBuilder()
-            .Add(new Config
+        var configuration = new ConfigurationBuilder()
+            .Add(new GitVersionConfiguration
             {
                 AssemblyFileVersioningFormat = "{Major}.{Minor}.{Patch}.{WeightedPreReleaseNumber}",
                 VersioningMode = VersioningMode.ContinuousDeployment
@@ -101,9 +100,9 @@ internal class VersionInTagScenarios
         fixture.MakeACommit("Feature commit 1");
         fixture.BranchTo("release/1.1.0");
         fixture.MakeACommit("Release commit 1");
-        fixture.AssertFullSemver("1.1.0-beta.1", config);
+        fixture.AssertFullSemver("1.1.0-beta.1", configuration);
         fixture.ApplyTag("1.1.0");
-        var version = fixture.GetVersion(config);
+        var version = fixture.GetVersion(configuration);
 
         // Assert
         version.AssemblySemFileVer.ShouldBe("1.1.0.60000");

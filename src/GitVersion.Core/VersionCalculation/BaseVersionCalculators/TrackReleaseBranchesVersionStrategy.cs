@@ -22,11 +22,10 @@ namespace GitVersion.VersionCalculation;
 /// </summary>
 public class TrackReleaseBranchesVersionStrategy : VersionStrategyBase
 {
-    private readonly IRepositoryStore repositoryStore;
     private readonly VersionInBranchNameVersionStrategy releaseVersionStrategy;
     private readonly TaggedCommitVersionStrategy taggedCommitVersionStrategy;
-    private readonly Lazy<GitVersionContext> context;
 
+    private readonly IRepositoryStore repositoryStore;
 
     public TrackReleaseBranchesVersionStrategy(IRepositoryStore repositoryStore, Lazy<GitVersionContext> versionContext)
         : base(versionContext)
@@ -34,34 +33,31 @@ public class TrackReleaseBranchesVersionStrategy : VersionStrategyBase
         this.repositoryStore = repositoryStore.NotNull();
         this.releaseVersionStrategy = new VersionInBranchNameVersionStrategy(repositoryStore, versionContext);
         this.taggedCommitVersionStrategy = new TaggedCommitVersionStrategy(repositoryStore, versionContext);
-        this.context = versionContext.NotNull();
     }
 
-    public override IEnumerable<BaseVersion> GetVersions() =>
-        Context.Configuration.TracksReleaseBranches
-            ? ReleaseBranchBaseVersions().Union(MainTagsVersions())
-            : Array.Empty<BaseVersion>();
+    public override IEnumerable<BaseVersion> GetBaseVersions(EffectiveBranchConfiguration configuration) =>
+        configuration.Value.TracksReleaseBranches ? ReleaseBranchBaseVersions().Union(MainTagsVersions()) : Array.Empty<BaseVersion>();
 
     private IEnumerable<BaseVersion> MainTagsVersions()
     {
-        var configuration = this.context.Value.Configuration.Configuration;
-        var main = this.repositoryStore.FindMainBranch(configuration);
+        var configuration = Context.Configuration;
+        var mainBranch = this.repositoryStore.FindMainBranch(configuration);
 
-        return main != null
-            ? this.taggedCommitVersionStrategy.GetTaggedVersions(main, null)
+        return mainBranch != null
+            ? this.taggedCommitVersionStrategy.GetTaggedVersions(mainBranch, null)
             : Array.Empty<BaseVersion>();
     }
 
     private IEnumerable<BaseVersion> ReleaseBranchBaseVersions()
     {
-        var releaseBranchConfig = Context.FullConfiguration.GetReleaseBranchConfig();
+        var releaseBranchConfig = Context.Configuration.GetReleaseBranchConfiguration();
         if (!releaseBranchConfig.Any())
             return Array.Empty<BaseVersion>();
 
         var releaseBranches = this.repositoryStore.GetReleaseBranches(releaseBranchConfig);
 
         return releaseBranches
-            .SelectMany(b => GetReleaseVersion(Context, b))
+            .SelectMany(b => GetReleaseVersion(b))
             .Select(baseVersion =>
             {
                 // Need to drop branch overrides and give a bit more context about
@@ -76,20 +72,13 @@ public class TrackReleaseBranchesVersionStrategy : VersionStrategyBase
             .ToList();
     }
 
-    private IEnumerable<BaseVersion> GetReleaseVersion(GitVersionContext context, IBranch? releaseBranch)
+    private IEnumerable<BaseVersion> GetReleaseVersion(IBranch releaseBranch)
     {
-        var tagPrefixRegex = context.Configuration.GitTagPrefix;
-
         // Find the commit where the child branch was created.
-        var baseSource = this.repositoryStore.FindMergeBase(releaseBranch, context.CurrentBranch);
-        if (Equals(baseSource, context.CurrentCommit))
-        {
-            // Ignore the branch if it has no commits.
-            return Array.Empty<BaseVersion>();
-        }
-
+        var baseSource = this.repositoryStore.FindMergeBase(releaseBranch, Context.CurrentBranch);
+        var configuration = Context.GetEffectiveConfiguration(releaseBranch);
         return this.releaseVersionStrategy
-            .GetVersions(tagPrefixRegex, releaseBranch)
+            .GetBaseVersions(new(releaseBranch, configuration))
             .Select(b => new BaseVersion(b.Source, true, b.SemanticVersion, baseSource, b.BranchNameOverride));
     }
 }

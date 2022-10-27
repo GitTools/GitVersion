@@ -1,12 +1,12 @@
 <Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
-        <TargetFrameworks>netcoreapp3.1;net6.0</TargetFrameworks>
+        <TargetFrameworks>net6.0;net7.0</TargetFrameworks>
 
         <IsTestProject>true</IsTestProject>
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Mono.Cecil" Version="0.11.4" />
+        <PackageReference Include="Mono.Cecil"/>
     </ItemGroup>
     <ItemGroup>
         <ProjectReference Include="..\GitVersion.Core\GitVersion.Core.csproj" />

@@ -13,10 +13,7 @@ public static class DockerContextExtensions
     {
         var (distro, targetFramework, architecture, _, _) = dockerImage;
 
-        // TODO skip this because of https://github.com/GitTools/GitVersion/pull/3148, remove after .net core 3.1 is removed
-        if (distro == Constants.Ubuntu2204 && targetFramework == Constants.Version31) return true;
-
-        if (architecture != Architecture.Arm64) return false;
+        if (architecture == Architecture.Amd64) return false;
         if (!Constants.DistrosToSkip.Contains(distro)) return false;
 
         context.Information($"Skipping Target: {targetFramework}, Distro: {distro}, Arch: {architecture}");
@@ -148,7 +145,8 @@ public static class DockerContextExtensions
         var output = context.DockerRunImage(settings, image, command, args);
         context.Information("Output : " + output);
 
-        Assert.Contains(context.Version?.GitVersion.FullSemVer, output);
+        Assert.NotNull(context.Version?.GitVersion);
+        Assert.Contains(context.Version.GitVersion.FullSemVer!, output);
     }
     private static IEnumerable<string> GetDockerTags(this BuildContextBase context, DockerImage dockerImage, Architecture? arch = null)
     {

@@ -52,19 +52,17 @@ jobs:
     -
       name: Cache cake frosting
       id: cache-cake
-      uses: actions/cache@v3.0.8
+      uses: actions/cache@v3.0.11
       with:
         path: run
         key: run-${{ runner.os }}-${{ hashFiles('./build/**') }}
 
     -
-      name: Install .NET SDKs
-      uses: actions/setup-dotnet@v2
+      name: Setup .NET SDK
+      uses: actions/setup-dotnet@v3.0.2
       with:
-        dotnet-version: |
-          3.1.x
-          5.0.x
-          6.0.x
+        dotnet-version: '7.0.x'
+        dotnet-quality: 'preview'
 
     -
       name: '[Prepare]'
@@ -74,7 +72,7 @@ jobs:
     -
       name: '[Build]'
       shell: pwsh
-      run: dotnet run/build.dll --target=Build
+      run: dotnet run/build.dll --target=Build --exclusive
 
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v2
