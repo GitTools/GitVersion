@@ -44,16 +44,17 @@ public class NextVersionCalculator : INextVersionCalculator
         }
 
         var nextVersion = Calculate(Context.CurrentBranch, Context.Configuration);
-        var preReleaseTagName = nextVersion.Configuration.GetBranchSpecificTag(this.log, Context.CurrentBranch.Name.Friendly, nextVersion.BaseVersion.BranchNameOverride);
+        var baseVersion = nextVersion.BaseVersion;
+        var preReleaseTagName = nextVersion.Configuration.GetBranchSpecificTag(this.log, Context.CurrentBranch.Name.Friendly, baseVersion.BranchNameOverride);
 
         SemanticVersion semver;
         if (Context.Configuration.VersioningMode == VersioningMode.Mainline)
         {
-            semver = this.mainlineVersionCalculator.FindMainlineModeVersion(nextVersion.BaseVersion);
+            semver = this.mainlineVersionCalculator.FindMainlineModeVersion(baseVersion);
         }
         else
         {
-            var baseVersionBuildMetaData = this.mainlineVersionCalculator.CreateVersionBuildMetaData(nextVersion.BaseVersion.BaseVersionSource);
+            var baseVersionBuildMetaData = this.mainlineVersionCalculator.CreateVersionBuildMetaData(baseVersion.BaseVersionSource);
 
             if (baseVersionBuildMetaData == null || baseVersionBuildMetaData.Sha != nextVersion.IncrementedVersion.BuildMetaData?.Sha)
             {
@@ -61,7 +62,7 @@ public class NextVersionCalculator : INextVersionCalculator
             }
             else
             {
-                semver = nextVersion.BaseVersion.SemanticVersion;
+                semver = baseVersion.SemanticVersion;
             }
 
             semver.BuildMetaData = baseVersionBuildMetaData;
@@ -103,7 +104,7 @@ public class NextVersionCalculator : INextVersionCalculator
             semver.PreReleaseTag = new SemanticVersionPreReleaseTag();
         }
 
-        return new(semver, nextVersion.BaseVersion, new(nextVersion.Branch, nextVersion.Configuration));
+        return new(semver, baseVersion, new(nextVersion.Branch, nextVersion.Configuration));
     }
 
     private static bool MajorMinorPatchEqual(SemanticVersion version, SemanticVersion other) => version.CompareTo(other, false) == 0;
