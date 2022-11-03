@@ -22,7 +22,7 @@
         <PackageVersion Include="Mono.Cecil" Version="0.11.4"/>
 
         <PackageVersion Include="Buildalyzer" Version="4.1.5"/>
-        <PackageVersion Include="coverlet.msbuild" Version="3.1.2"/>
+        <PackageVersion Include="coverlet.msbuild" Version="3.2.0"/>
         <PackageVersion Include="MSBuild.ProjectCreation" Version="8.3.0"/>
         <PackageVersion Include="NSubstitute" Version="4.4.0"/>
         <PackageVersion Include="NUnit" Version="3.13.3"/>
