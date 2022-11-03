@@ -26,7 +26,7 @@
         <PackageVersion Include="MSBuild.ProjectCreation" Version="8.3.0"/>
         <PackageVersion Include="NSubstitute" Version="4.4.0"/>
         <PackageVersion Include="NUnit" Version="3.13.3"/>
-        <PackageVersion Include="NUnit3TestAdapter" Version="4.2.1"/>
+        <PackageVersion Include="NUnit3TestAdapter" Version="4.3.0"/>
         <PackageVersion Include="JunitXml.TestLogger" Version="3.0.114"/>
         <PackageVersion Include="Shouldly" Version="4.1.0"/>
 
