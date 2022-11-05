@@ -1,3 +1,4 @@
+using GitVersion.Configuration;
 using GitVersion.Extensions;
 using GitVersion.VersionCalculation;
 
@@ -13,7 +14,7 @@ internal sealed class GitFlowConfigurationBuilder : TestConfigurationBuilderBase
         {
             AssemblyVersioningScheme = AssemblyVersioningScheme.MajorMinorPatch,
             AssemblyFileVersioningScheme = AssemblyFileVersioningScheme.MajorMinorPatch,
-            TagPrefix = "[vV]",
+            TagPrefix = GitVersionConfiguration.DefaultTagPrefix,
             VersioningMode = VersioningMode.ContinuousDelivery,
             ContinuousDeploymentFallbackTag = "ci",
             MajorVersionBumpMessage = IncrementStrategyFinder.DefaultMajorPattern,

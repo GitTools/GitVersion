@@ -2,6 +2,10 @@
   "name": "gitversion",
   "description": "From `git log` to SemVer in no time",
   "main": "index.js",
+  "scripts": {
+    "check": "remark . --quiet --frail",
+    "format": "remark . --output"
+  },
   "directories": {
     "doc": "docs",
     "test": "tests"

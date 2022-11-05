@@ -210,7 +210,7 @@ public class MainScenarios : TestBase
     [Test]
     public void CanSpecifyTagPrefixesAsRegex()
     {
-        var configuration = new GitVersionConfiguration { TagPrefix = "version-|[vV]" };
+        var configuration = new GitVersionConfiguration { TagPrefix = $"version-|{GitVersionConfiguration.DefaultTagPrefix}" };
         using var fixture = new EmptyRepositoryFixture();
         var taggedVersion = "v1.0.3";
         fixture.Repository.MakeATaggedCommit(taggedVersion);

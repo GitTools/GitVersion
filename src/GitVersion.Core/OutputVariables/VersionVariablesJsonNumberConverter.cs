@@ -34,7 +34,7 @@ public class VersionVariablesJsonNumberConverter : JsonConverter<string>
         {
             writer.WriteNullValue();
         }
-        else if (int.TryParse(value, out var number))
+        else if (long.TryParse(value, out var number))
         {
             writer.WriteNumberValue(number);
         }

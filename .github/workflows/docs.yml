@@ -58,8 +58,11 @@ jobs:
         key: tools-${{ runner.os }}-${{ hashFiles('./build/**') }}
     -
       name: Get npm cache directory
+      shell: bash
       id: cache-node-dir
-      run: echo "::set-output name=dir::$(npm config get cache)"
+      run: |
+        cacheDir=$(npm config get cache)
+        echo "dir=$cacheDir" >> $GITHUB_OUTPUT
     -
       name: Cache Node Modules
       id: cache-node
@@ -118,15 +121,13 @@ jobs:
       uses: chabad360/htmlproofer@master
       with:
         directory: ./artifacts/docs/preview
-        arguments: --url-ignore /api/ --allow-hash-href --assume-extension --disable-external
+        arguments: --ignore-urls /api/,/docs/ --allow-hash-href --assume-extension --disable-external
     -
-      name: Reviewdog Reporter
-      uses: haya14busa/action-cond@v1
+      name: '[Reviewdog Reporter]'
       id: reporter
-      with:
-        cond: ${{ github.event_name == 'pull_request' }}
-        if_true: github-pr-review
-        if_false: github-check
+      run: |
+        value=$([ ${{ github.event_name == 'pull_request' }} ] && echo "github-pr-review" || echo "github-check")
+        echo "value=$value" >> $GITHUB_OUTPUT
     -
       name: '[Remark Lint]'
       uses: reviewdog/action-remark-lint@v5.6

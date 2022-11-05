@@ -97,7 +97,7 @@ public class GitVersionConfiguration
         return stringBuilder.ToString();
     }
 
-    public const string DefaultTagPrefix = "[vV]";
+    public const string DefaultTagPrefix = "[vV]?";
     public const string ReleaseBranchRegex = "^releases?[/-]";
     public const string FeatureBranchRegex = "^features?[/-]";
     public const string PullRequestRegex = @"^(pull|pull\-requests|pr)[/-]";

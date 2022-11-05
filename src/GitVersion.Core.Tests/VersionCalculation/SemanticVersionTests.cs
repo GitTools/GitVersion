@@ -66,6 +66,7 @@ public class SemanticVersionTests : TestBase
     [TestCase("someText")]
     [TestCase("some-T-ext")]
     [TestCase("v.1.2.3", "v")]
+    [TestCase("1.2.3", "v")]
     public void ValidateInvalidVersionParsing(string versionString, string? tagPrefixRegex = null) =>
         Assert.IsFalse(SemanticVersion.TryParse(versionString, tagPrefixRegex, out _), "TryParse Result");
 

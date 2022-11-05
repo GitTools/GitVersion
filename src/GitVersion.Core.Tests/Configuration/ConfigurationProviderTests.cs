@@ -455,7 +455,7 @@ tag-prefix: custom-tag-prefix-from-yml";
         SetupConfigFileContent(text);
         var configuration = this.configurationProvider.Provide(this.repoPath);
 
-        configuration.TagPrefix.ShouldBe("[vV]");
+        configuration.TagPrefix.ShouldBe(GitVersionConfiguration.DefaultTagPrefix);
     }
 
     [Test]
@@ -485,7 +485,7 @@ tag-prefix: custom-tag-prefix-from-yml";
         SetupConfigFileContent(text);
         var configuration = this.configurationProvider.Provide(this.repoPath, new GitVersionConfiguration { TagPrefix = null });
 
-        configuration.TagPrefix.ShouldBe("[vV]");
+        configuration.TagPrefix.ShouldBe(GitVersionConfiguration.DefaultTagPrefix);
     }
 
     [Test]

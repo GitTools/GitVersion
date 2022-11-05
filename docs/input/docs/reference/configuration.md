@@ -32,7 +32,7 @@ To see the effective configuration (defaults and overrides), you can run
 `gitversion /showConfig`.
 
 To create your config file just type `gitversion init` in your repo directory,
-after [installing]. A minimal `GitVersion.yml` configuration file will be
+after [installing][installing]. A minimal `GitVersion.yml` configuration file will be
 created. Modify this to suit your needs.
 
 ## Global configuration
@@ -100,7 +100,7 @@ skip updating the `AssemblyFileVersion` while still updating the
 Specifies the format of `AssemblyFileVersion` and
 overwrites the value of `assembly-file-versioning-scheme`.
 
-Expressions in curly braces reference one of the [variables]
+Expressions in curly braces reference one of the [variables][variables]
 or a process-scoped environment variable (when prefixed with `env:`).  For example,
 
 ```yaml
@@ -263,9 +263,9 @@ merge-message-formats:
 
 The regular expression should contain the following capture groups:
 
-* `SourceBranch` - Identifies the source branch of the merge
-* `TargetBranch` - Identifies the target branch of the merge
-* `PullRequestNumber` - Captures the pull-request number
+*   `SourceBranch` - Identifies the source branch of the merge
+*   `TargetBranch` - Identifies the target branch of the merge
+*   `PullRequestNumber` - Captures the pull-request number
 
 Custom merge message formats are evaluated _before_ any built in formats.
 Support for [Conventional Commits][conventional-commits] can be
@@ -391,16 +391,16 @@ Take this commit graph
 
 By looking at this graph, you cannot tell which of these scenarios happened:
 
-* feature/foo branches off release/v1.0.0
-  * Branch release/v1.0.0 from main
-  * Branch feature/foo from release/v1.0.0
-  * Add a commit to both release/v1.0.0 and feature/foo
-  * release/v1.0.0 is the base for feature/foo
-* release/v1.0.0 branches off feature/foo
-  * Branch feature/foo from main
-  * Branch release/v1.0.0 from feature/foo
-  * Add a commit to both release/v1.0.0 and feature/foo
-  * feature/foo is the base for release/v1.0.0
+*   feature/foo branches off release/v1.0.0
+    *   Branch release/v1.0.0 from main
+    *   Branch feature/foo from release/v1.0.0
+    *   Add a commit to both release/v1.0.0 and feature/foo
+    *   release/v1.0.0 is the base for feature/foo
+*   release/v1.0.0 branches off feature/foo
+    *   Branch feature/foo from main
+    *   Branch release/v1.0.0 from feature/foo
+    *   Add a commit to both release/v1.0.0 and feature/foo
+    *   feature/foo is the base for release/v1.0.0
 
 Or put more simply, you cannot tell which branch was created first,
 `release/v1.0.0` or `feature/foo`.
@@ -527,7 +527,7 @@ default `main` and `support/*` are mainlines.
 
 ### pre-release-weight
 
-Provides a way to translate the `PreReleaseLabel` ([variables]) to a numeric
+Provides a way to translate the `PreReleaseLabel` ([variables][variables]) to a numeric
 value in order to avoid version collisions across different branches. For
 example, a release branch created after "1.2.3-alpha.55" results in
 "1.2.3-beta.1" and thus e.g. "1.2.3-alpha.4" and "1.2.3-beta.4" would have the
@@ -536,8 +536,8 @@ same file version: "1.2.3.4". One of the ways to use this value is to set
 {Major}.{Minor}.{Patch}.{WeightedPreReleaseNumber}`. If the `pre-release-weight`
 is set, it would be added to the `PreReleaseNumber` to get a final
 `AssemblySemFileVer`, otherwise a branch specific default for
-`pre-release-weight` will be used in the calculation. Related Issues [1145]
-and [1366].
+`pre-release-weight` will be used in the calculation. Related Issues [1145][1145]
+and [1366][1366].
 
 ### semver-format
 

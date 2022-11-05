@@ -87,10 +87,6 @@ patch _will not_ automatically bump, meaning you have to use hotfix branches.
 
 See [contributing examples](/docs/learn/branching-strategies/contribute-examples).
 
-## Complete Example
-
-![GitFlow](http://uml.mvnsearch.org/gist/cf053d7f5d336ae9f7bb)
-
 ### Source
 
 See `DocumentationSamples.GitFlowExample`. To update, modify then run test.
