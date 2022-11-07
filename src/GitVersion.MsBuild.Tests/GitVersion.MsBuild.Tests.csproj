@@ -8,19 +8,19 @@
 
     <ItemGroup Condition=" '$(TargetFramework)' == 'netcoreapp3.1' ">
         <PackageReference Include="Buildalyzer" Version="3.2.2" />
-        <PackageReference Include="MSBuild.ProjectCreation" Version="8.0.0" />
+        <PackageReference Include="MSBuild.ProjectCreation" Version="8.3.0" />
         <PackageReference Include="Microsoft.Build" Version="17.2.0" />
     </ItemGroup>
 
     <ItemGroup Condition=" '$(TargetFramework)' == 'net5.0' ">
         <PackageReference Include="Buildalyzer" Version="3.2.8" />
-        <PackageReference Include="MSBuild.ProjectCreation" Version="8.0.0" />
+        <PackageReference Include="MSBuild.ProjectCreation" Version="8.3.0" />
         <PackageReference Include="Microsoft.Build" Version="17.2.0" />
     </ItemGroup>
 
     <ItemGroup Condition=" '$(TargetFramework)' == 'net48' or '$(TargetFramework)' == 'net6.0' ">
         <PackageReference Include="Buildalyzer" Version="3.2.8" />
-        <PackageReference Include="MSBuild.ProjectCreation" Version="8.0.0" />
+        <PackageReference Include="MSBuild.ProjectCreation" Version="8.3.0" />
         <PackageReference Include="Microsoft.Build" Version="$(PackageVersion_MsBuild)" />
     </ItemGroup>
 
