@@ -15,7 +15,7 @@
         <PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="6.0.0"/>
         <PackageVersion Include="Microsoft.Extensions.Hosting" Version="6.0.1"/>
         <PackageVersion Include="Microsoft.Extensions.FileSystemGlobbing" Version="6.0.0"/>
-        <PackageVersion Include="Microsoft.Extensions.Options" Version="6.0.0"/>
+        <PackageVersion Include="Microsoft.Extensions.Options" Version="7.0.0"/>
         <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.3.2"/>
         <PackageVersion Include="Microsoft.Win32.Registry" Version="6.0.0-preview.5.21301.5"/>
 
