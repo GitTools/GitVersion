@@ -43,7 +43,7 @@
         <PackageVersion_NSubstitute>4.3.0</PackageVersion_NSubstitute>
         <PackageVersion_CoverletMsBuild>3.1.2</PackageVersion_CoverletMsBuild>
         <PackageVersion_NUnit>3.13.3</PackageVersion_NUnit>
-        <PackageVersion_NUnit3TestAdapter>4.2.1</PackageVersion_NUnit3TestAdapter>
+        <PackageVersion_NUnit3TestAdapter>4.3.0</PackageVersion_NUnit3TestAdapter>
         <PackageVersion_JunitXmlTestLogger>3.0.114</PackageVersion_JunitXmlTestLogger>
         <PackageVersion_Shouldly>4.0.3</PackageVersion_Shouldly>
         <PackageVersion_MicrosoftPublicApiAnalyzers>3.3.3</PackageVersion_MicrosoftPublicApiAnalyzers>
