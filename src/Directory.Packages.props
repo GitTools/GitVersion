@@ -11,7 +11,7 @@
         <PackageVersion Include="Microsoft.Build.Utilities.Core" Version="17.3.2"/>
         <PackageVersion Include="Microsoft.Build" Version="17.3.2"/>
         <PackageVersion Include="Microsoft.CodeAnalysis.PublicApiAnalyzers" Version="3.3.3"/>
-        <PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="6.0.1"/>
+        <PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="7.0.0"/>
         <PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="6.0.0"/>
         <PackageVersion Include="Microsoft.Extensions.Hosting" Version="6.0.1"/>
         <PackageVersion Include="Microsoft.Extensions.FileSystemGlobbing" Version="6.0.0"/>
