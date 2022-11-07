@@ -73,7 +73,7 @@ jobs:
         restore-keys: node-${{ runner.os }}
     -
       name: Setup .NET SDK
-      uses: actions/setup-dotnet@v3.0.2
+      uses: actions/setup-dotnet@v3.0.3
       with:
         dotnet-version: '7.0.x'
         dotnet-quality: 'preview'
@@ -108,7 +108,7 @@ jobs:
         key: tools-${{ runner.os }}-${{ hashFiles('./build/**') }}
     -
       name: Setup .NET SDK
-      uses: actions/setup-dotnet@v3.0.2
+      uses: actions/setup-dotnet@v3.0.3
       with:
         dotnet-version: '7.0.x'
         dotnet-quality: 'preview'
@@ -164,7 +164,7 @@ jobs:
         key: tools-${{ runner.os }}-${{ hashFiles('./build/**') }}
     -
       name: Setup .NET SDK
-      uses: actions/setup-dotnet@v3.0.2
+      uses: actions/setup-dotnet@v3.0.3
       with:
         dotnet-version: '7.0.x'
         dotnet-quality: 'preview'
