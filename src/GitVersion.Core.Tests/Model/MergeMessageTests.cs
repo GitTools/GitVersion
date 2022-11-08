@@ -8,7 +8,7 @@ namespace GitVersion.Core.Tests;
 [TestFixture]
 public class MergeMessageTests : TestBase
 {
-    private readonly Config config = new() { TagPrefix = Config.DefaultTagPrefix };
+    private readonly Config config = new() { TagPrefix = "[vV]" };
 
     [Test]
     public void NullMessageStringThrows() =>
