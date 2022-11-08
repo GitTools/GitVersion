@@ -76,7 +76,6 @@ jobs:
       uses: actions/setup-dotnet@v3.0.3
       with:
         dotnet-version: '7.0.x'
-        dotnet-quality: 'preview'
     -
       name: '[Prepare]'
       if: steps.cache-cake.outputs.cache-hit != 'true'
@@ -111,7 +110,6 @@ jobs:
       uses: actions/setup-dotnet@v3.0.3
       with:
         dotnet-version: '7.0.x'
-        dotnet-quality: 'preview'
     -
       name: '[Build Documentation]'
       shell: pwsh
@@ -167,7 +165,6 @@ jobs:
       uses: actions/setup-dotnet@v3.0.3
       with:
         dotnet-version: '7.0.x'
-        dotnet-quality: 'preview'
     -
       name: '[Publish Documentation]'
       if: ${{ github.event_name == 'push' }}

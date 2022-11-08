@@ -59,7 +59,6 @@ jobs:
       uses: actions/setup-dotnet@v3.0.3
       with:
         dotnet-version: '7.0.x'
-        dotnet-quality: 'preview'
     -
       name: '[Prepare]'
       if: steps.cache-cake.outputs.cache-hit != 'true'
@@ -99,7 +98,6 @@ jobs:
       uses: actions/setup-dotnet@v3.0.3
       with:
         dotnet-version: '7.0.x'
-        dotnet-quality: 'preview'
     -
       name: '[Build]'
       shell: pwsh
@@ -163,7 +161,6 @@ jobs:
       uses: actions/setup-dotnet@v3.0.3
       with:
         dotnet-version: '7.0.x'
-        dotnet-quality: 'preview'
     -
       name: '[Unit Test]'
       shell: pwsh
@@ -216,7 +213,6 @@ jobs:
       uses: actions/setup-dotnet@v3.0.3
       with:
         dotnet-version: '7.0.x'
-        dotnet-quality: 'preview'
     -
       name: '[Test Artifacts]'
       shell: pwsh
@@ -277,7 +273,6 @@ jobs:
       uses: actions/setup-dotnet@v3.0.3
       with:
         dotnet-version: '7.0.x'
-        dotnet-quality: 'preview'
     -
       name: '[Test Artifacts (amd64)]'
       shell: pwsh
@@ -336,7 +331,6 @@ jobs:
       uses: actions/setup-dotnet@v3.0.3
       with:
         dotnet-version: '7.0.x'
-        dotnet-quality: 'preview'
     -
       name: Login to DockerHub
       if: success() && github.event_name != 'pull_request' && github.repository_owner == 'GitTools'
@@ -427,7 +421,6 @@ jobs:
       uses: actions/setup-dotnet@v3.0.3
       with:
         dotnet-version: '7.0.x'
-        dotnet-quality: 'preview'
     -
       name: '[Publish]'
       shell: pwsh
@@ -482,7 +475,6 @@ jobs:
       uses: actions/setup-dotnet@v3.0.3
       with:
         dotnet-version: '7.0.x'
-        dotnet-quality: 'preview'
     -
       name: '[Release]'
       shell: pwsh
