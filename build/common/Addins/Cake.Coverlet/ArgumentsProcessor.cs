@@ -4,13 +4,13 @@ namespace Common.Addins.Cake.Coverlet;
 
 internal static class ArgumentsProcessor
 {
-    public static ProcessArgumentBuilder ProcessMSBuildArguments(
+    public static ProcessArgumentBuilder ProcessMsBuildArguments(
         CoverletSettings settings,
         ICakeEnvironment cakeEnvironment,
         ProcessArgumentBuilder builder,
         FilePath project)
     {
-        builder.AppendMSBuildProperty(nameof(CoverletSettings.CollectCoverage), settings.CollectCoverage.ToString());
+        builder.AppendMsBuildProperty(nameof(CoverletSettings.CollectCoverage), settings.CollectCoverage.ToString());
         builder.AppendPropertyList(nameof(CoverletSettings.CoverletOutputFormat), SplitFlagEnum(settings.CoverletOutputFormat));
 
         if (settings.Threshold.HasValue)
@@ -20,7 +20,7 @@ internal static class ArgumentsProcessor
                 throw new Exception("Threshold Percentage cannot be set as greater than 100%");
             }
 
-            builder.AppendMSBuildProperty(nameof(CoverletSettings.Threshold), settings.Threshold.ToString()!);
+            builder.AppendMsBuildProperty(nameof(CoverletSettings.Threshold), settings.Threshold.ToString()!);
 
             if (settings.ThresholdType != ThresholdType.NotSet)
             {
@@ -33,7 +33,7 @@ internal static class ArgumentsProcessor
             var directoryPath = settings.CoverletOutputDirectory
                 .MakeAbsolute(cakeEnvironment).FullPath;
 
-            builder.AppendMSBuildPropertyQuoted("CoverletOutput", directoryPath);
+            builder.AppendMsBuildPropertyQuoted("CoverletOutput", directoryPath);
         }
         else if (!string.IsNullOrEmpty(settings.CoverletOutputName))
         {
@@ -42,7 +42,7 @@ internal static class ArgumentsProcessor
 
             var filepath = FilePath.FromString(settings.OutputTransformer(settings.CoverletOutputName, directoryPath));
 
-            builder.AppendMSBuildPropertyQuoted("CoverletOutput", filepath.MakeAbsolute(cakeEnvironment).FullPath);
+            builder.AppendMsBuildPropertyQuoted("CoverletOutput", filepath.MakeAbsolute(cakeEnvironment).FullPath);
         }
 
         if (settings.ExcludeByFile.Count > 0)
@@ -69,12 +69,12 @@ internal static class ArgumentsProcessor
 
         if (settings.MergeWithFile != null && settings.MergeWithFile.GetExtension() == ".json")
         {
-            builder.AppendMSBuildPropertyQuoted("MergeWith", settings.MergeWithFile.MakeAbsolute(cakeEnvironment).FullPath);
+            builder.AppendMsBuildPropertyQuoted("MergeWith", settings.MergeWithFile.MakeAbsolute(cakeEnvironment).FullPath);
         }
 
         if (settings.IncludeTestAssembly.HasValue)
         {
-            builder.AppendMSBuildProperty(nameof(CoverletSettings.IncludeTestAssembly), settings.IncludeTestAssembly.Value ? bool.TrueString : bool.FalseString);
+            builder.AppendMsBuildProperty(nameof(CoverletSettings.IncludeTestAssembly), settings.IncludeTestAssembly.Value ? bool.TrueString : bool.FalseString);
         }
 
         return builder;

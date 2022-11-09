@@ -2,13 +2,13 @@ namespace Common.Addins.Cake.Coverlet;
 
 internal static class BuilderExtension
 {
-    internal static ProcessArgumentBuilder AppendMSBuildProperty(this ProcessArgumentBuilder builder, string propertyName, string value)
+    internal static ProcessArgumentBuilder AppendMsBuildProperty(this ProcessArgumentBuilder builder, string propertyName, string value)
     {
         builder.AppendSwitch($"/property:{propertyName}", "=", value);
         return builder;
     }
 
-    internal static ProcessArgumentBuilder AppendMSBuildPropertyQuoted(this ProcessArgumentBuilder builder, string propertyName, string value)
+    internal static ProcessArgumentBuilder AppendMsBuildPropertyQuoted(this ProcessArgumentBuilder builder, string propertyName, string value)
     {
         builder.AppendSwitchQuoted($"/property:{propertyName}", "=", value);
         return builder;

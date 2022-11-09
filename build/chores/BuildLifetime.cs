@@ -4,7 +4,7 @@ namespace Chores;
 
 public class BuildLifetime : FrostingLifetime<BuildContext>
 {
-    public override void Setup(BuildContext context)
+    public override void Setup(BuildContext context, ISetupContext info)
     {
         context.StartGroup("Build Setup");
         context.EndGroup();

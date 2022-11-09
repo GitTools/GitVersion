@@ -1,7 +1,7 @@
 using Cake.Common.Tools.DotNet.Test;
-using Cake.Coverlet;
 using Common.Addins.Cake.Coverlet;
 using Xunit;
+using CoverletSettings = Common.Addins.Cake.Coverlet.CoverletSettings;
 
 namespace Common.Utilities;
 
@@ -18,7 +18,7 @@ public static class ContextExtensions
             throw new ArgumentNullException(nameof(context));
         }
         var currentCustomization = settings.ArgumentCustomization;
-        settings.ArgumentCustomization = (args) => ArgumentsProcessor.ProcessMSBuildArguments(
+        settings.ArgumentCustomization = (args) => ArgumentsProcessor.ProcessMsBuildArguments(
             coverletSettings,
             context.Environment,
             currentCustomization?.Invoke(args) ?? args,
