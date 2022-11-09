@@ -4,9 +4,9 @@ namespace Docker;
 
 public class BuildLifetime : BuildLifetimeBase<BuildContext>
 {
-    public override void Setup(BuildContext context)
+    public override void Setup(BuildContext context, ISetupContext info)
     {
-        base.Setup(context);
+        base.Setup(context, info);
 
         context.IsDockerOnLinux = context.DockerCustomCommand("info --format '{{.OSType}}'").First().Replace("'", "") == "linux";
 

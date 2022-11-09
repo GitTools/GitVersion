@@ -5,7 +5,7 @@ namespace Common.Utilities;
 
 public class BuildLifetimeBase<T> : FrostingLifetime<T> where T : BuildContextBase
 {
-    public override void Setup(T context)
+    public override void Setup(T context, ISetupContext info)
     {
         var buildSystem = context.BuildSystem();
         context.IsLocalBuild = buildSystem.IsLocalBuild;
