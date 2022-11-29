@@ -40,10 +40,6 @@ public class NextVersionCalculator : INextVersionCalculator
         {
             this.log.Info($"Current commit is tagged with version {Context.CurrentCommitTaggedVersion}, " + "version calculation is for metadata only.");
         }
-        else
-        {
-            EnsureHeadIsNotDetached(Context);
-        }
 
         SemanticVersion? taggedSemanticVersion = null;
 

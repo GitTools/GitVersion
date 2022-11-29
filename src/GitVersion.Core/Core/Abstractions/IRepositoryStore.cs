@@ -33,7 +33,7 @@ public interface IRepositoryStore
     /// </summary>
     BranchCommit FindCommitBranchWasBranchedFrom(IBranch? branch, Config configuration, params IBranch[] excludedBranches);
 
-    SemanticVersion GetCurrentCommitTaggedVersion(ICommit? commit, string? tagPrefix);
+    SemanticVersion GetCurrentCommitTaggedVersion(ICommit? commit, string? tagPrefix, bool handleDetachedBranch);
     IEnumerable<SemanticVersion> GetVersionTagsOnBranch(IBranch branch, string? tagPrefixRegex);
     IEnumerable<(ITag Tag, SemanticVersion Semver, ICommit Commit)> GetValidVersionTags(string? tagPrefixRegex, DateTimeOffset? olderThan = null);
 
