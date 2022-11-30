@@ -56,7 +56,7 @@ public class NextVersionCalculator : INextVersionCalculator
         {
             var baseVersionBuildMetaData = this.mainlineVersionCalculator.CreateVersionBuildMetaData(baseVersion.BaseVersionSource);
 
-            if (baseVersionBuildMetaData == null || baseVersionBuildMetaData.Sha != nextVersion.IncrementedVersion.BuildMetaData?.Sha)
+            if (baseVersionBuildMetaData.Sha != nextVersion.IncrementedVersion.BuildMetaData?.Sha)
             {
                 semver = nextVersion.IncrementedVersion;
             }

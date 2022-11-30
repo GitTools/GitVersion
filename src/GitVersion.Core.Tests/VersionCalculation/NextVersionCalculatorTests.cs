@@ -309,7 +309,9 @@ public class NextVersionCalculatorTests : TestBase
         repositoryStoreMock.GetSourceBranches(branchMock, configuration, Arg.Any<HashSet<IBranch>>()).Returns(Enumerable.Empty<IBranch>());
         var dateTimeOffset = DateTimeOffset.Now;
         var versionStrategies = new IVersionStrategy[] { new V1Strategy(DateTimeOffset.Now), new V2Strategy(dateTimeOffset) };
-        var unitUnderTest = new NextVersionCalculator(Substitute.For<ILog>(), Substitute.For<IMainlineVersionCalculator>(),
+        var mainlineVersionCalculatorMock = Substitute.For<IMainlineVersionCalculator>();
+        mainlineVersionCalculatorMock.CreateVersionBuildMetaData(Arg.Any<ICommit?>()).Returns(new SemanticVersionBuildMetaData());
+        var unitUnderTest = new NextVersionCalculator(Substitute.For<ILog>(), mainlineVersionCalculatorMock,
             repositoryStoreMock, new(context), versionStrategies, effectiveBranchConfigurationFinderMock, incrementStrategyFinderMock);
 
         // Act
@@ -338,7 +340,9 @@ public class NextVersionCalculatorTests : TestBase
         repositoryStoreMock.GetSourceBranches(branchMock, configuration, Arg.Any<HashSet<IBranch>>()).Returns(Enumerable.Empty<IBranch>());
         var when = DateTimeOffset.Now;
         var versionStrategies = new IVersionStrategy[] { new V1Strategy(when), new V2Strategy(null) };
-        var unitUnderTest = new NextVersionCalculator(Substitute.For<ILog>(), Substitute.For<IMainlineVersionCalculator>(),
+        var mainlineVersionCalculatorMock = Substitute.For<IMainlineVersionCalculator>();
+        mainlineVersionCalculatorMock.CreateVersionBuildMetaData(Arg.Any<ICommit?>()).Returns(new SemanticVersionBuildMetaData());
+        var unitUnderTest = new NextVersionCalculator(Substitute.For<ILog>(), mainlineVersionCalculatorMock,
             repositoryStoreMock, new(context), versionStrategies, effectiveBranchConfigurationFinderMock, incrementStrategyFinderMock);
 
         // Act
@@ -367,7 +371,9 @@ public class NextVersionCalculatorTests : TestBase
         repositoryStoreMock.GetSourceBranches(branchMock, configuration, Arg.Any<HashSet<IBranch>>()).Returns(Enumerable.Empty<IBranch>());
         var when = DateTimeOffset.Now;
         var versionStrategies = new IVersionStrategy[] { new V2Strategy(null), new V1Strategy(when) };
-        var unitUnderTest = new NextVersionCalculator(Substitute.For<ILog>(), Substitute.For<IMainlineVersionCalculator>(),
+        var mainlineVersionCalculatorMock = Substitute.For<IMainlineVersionCalculator>();
+        mainlineVersionCalculatorMock.CreateVersionBuildMetaData(Arg.Any<ICommit?>()).Returns(new SemanticVersionBuildMetaData());
+        var unitUnderTest = new NextVersionCalculator(Substitute.For<ILog>(), mainlineVersionCalculatorMock,
             repositoryStoreMock, new(context), versionStrategies, effectiveBranchConfigurationFinderMock, incrementStrategyFinderMock);
 
         // Act
@@ -397,7 +403,9 @@ public class NextVersionCalculatorTests : TestBase
         repositoryStoreMock.GetSourceBranches(branchMock, configuration, Arg.Any<HashSet<IBranch>>()).Returns(Enumerable.Empty<IBranch>());
         var version = new BaseVersion("dummy", false, new SemanticVersion(2), GitToolsTestingExtensions.CreateMockCommit(), null);
         var versionStrategies = new IVersionStrategy[] { new TestVersionStrategy(version) };
-        var unitUnderTest = new NextVersionCalculator(Substitute.For<ILog>(), Substitute.For<IMainlineVersionCalculator>(),
+        var mainlineVersionCalculatorMock = Substitute.For<IMainlineVersionCalculator>();
+        mainlineVersionCalculatorMock.CreateVersionBuildMetaData(Arg.Any<ICommit?>()).Returns(new SemanticVersionBuildMetaData());
+        var unitUnderTest = new NextVersionCalculator(Substitute.For<ILog>(), mainlineVersionCalculatorMock,
             repositoryStoreMock, new(context), versionStrategies, effectiveBranchConfigurationFinderMock, incrementStrategyFinderMock);
 
         // Act
@@ -427,7 +435,9 @@ public class NextVersionCalculatorTests : TestBase
         var higherVersion = new BaseVersion("exclude", false, new SemanticVersion(2), GitToolsTestingExtensions.CreateMockCommit(), null);
         var lowerVersion = new BaseVersion("dummy", false, new SemanticVersion(1), GitToolsTestingExtensions.CreateMockCommit(), null);
         var versionStrategies = new IVersionStrategy[] { new TestVersionStrategy(higherVersion, lowerVersion) };
-        var unitUnderTest = new NextVersionCalculator(Substitute.For<ILog>(), Substitute.For<IMainlineVersionCalculator>(),
+        var mainlineVersionCalculatorMock = Substitute.For<IMainlineVersionCalculator>();
+        mainlineVersionCalculatorMock.CreateVersionBuildMetaData(Arg.Any<ICommit?>()).Returns(new SemanticVersionBuildMetaData());
+        var unitUnderTest = new NextVersionCalculator(Substitute.For<ILog>(), mainlineVersionCalculatorMock,
             repositoryStoreMock, new(context), versionStrategies, effectiveBranchConfigurationFinderMock, incrementStrategyFinderMock);
 
         // Act
