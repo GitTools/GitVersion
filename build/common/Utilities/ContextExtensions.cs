@@ -1,32 +1,9 @@
-using Cake.Common.Tools.DotNet.Test;
-using Common.Addins.Cake.Coverlet;
 using Xunit;
-using CoverletSettings = Common.Addins.Cake.Coverlet.CoverletSettings;
 
 namespace Common.Utilities;
 
 public static class ContextExtensions
 {
-    public static void DotNetTest(
-        this ICakeContext context,
-        FilePath project,
-        DotNetTestSettings settings,
-        CoverletSettings coverletSettings)
-    {
-        if (context == null)
-        {
-            throw new ArgumentNullException(nameof(context));
-        }
-        var currentCustomization = settings.ArgumentCustomization;
-        settings.ArgumentCustomization = (args) => ArgumentsProcessor.ProcessMsBuildArguments(
-            coverletSettings,
-            context.Environment,
-            currentCustomization?.Invoke(args) ?? args,
-            project);
-
-        context.DotNetTest(project.FullPath, settings);
-    }
-
     public static IEnumerable<string> ExecuteCommand(this ICakeContext context, FilePath exe, string? args, DirectoryPath? workDir = null)
     {
         var processSettings = new ProcessSettings { Arguments = args, RedirectStandardOutput = true };

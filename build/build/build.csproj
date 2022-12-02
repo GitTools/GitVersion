@@ -7,7 +7,7 @@
         <ProjectReference Include="..\common\common.csproj" />
     </ItemGroup>
     <ItemGroup>
-        <PackageReference Include="Cake.Codecov"  />
+        <PackageReference Include="Cake.Codecov" />
         <PackageReference Include="Cake.Coverlet" />
     </ItemGroup>
 </Project>

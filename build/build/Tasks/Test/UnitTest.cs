@@ -3,7 +3,6 @@ using Cake.Common.Tools.DotNet.Test;
 using Cake.Coverlet;
 using Cake.Incubator.LoggingExtensions;
 using Common.Utilities;
-using CoverletSettings = Common.Addins.Cake.Coverlet.CoverletSettings;
 
 namespace Build.Tasks;
 
