@@ -1,3 +1,4 @@
+using Cake.Common.Build.AzurePipelines;
 using Xunit;
 
 namespace Common.Utilities;
@@ -109,30 +110,27 @@ public static class ContextExtensions
     public static void StartGroup(this ICakeContext context, string title)
     {
         var buildSystem = context.BuildSystem();
-        var startGroup = "[group]";
         if (buildSystem.IsRunningOnAzurePipelines)
         {
-            startGroup = "##[group]";
+            context.AzurePipelines().Commands.StartGroup(context, title);
         }
         else if (buildSystem.IsRunningOnGitHubActions)
         {
-            startGroup = "::group::";
+            context.GitHubActions().Commands.StartGroup(title);
         }
-        context.Information($"{startGroup}{title}");
     }
+
     public static void EndGroup(this ICakeContext context)
     {
         var buildSystem = context.BuildSystem();
-        var endgroup = "[endgroup]";
         if (buildSystem.IsRunningOnAzurePipelines)
         {
-            endgroup = "##[endgroup]";
+            context.AzurePipelines().Commands.EndGroup(context);
         }
         else if (buildSystem.IsRunningOnGitHubActions)
         {
-            endgroup = "::endgroup::";
+            context.GitHubActions().Commands.EndGroup();
         }
-        context.Information($"{endgroup}");
     }
 
     public static bool ShouldRun(this ICakeContext context, bool criteria, string skipMessage)
@@ -161,4 +159,8 @@ public static class ContextExtensions
         }
         return repositoryBranch;
     }
+
+    private static void StartGroup(this IAzurePipelinesCommands _, ICakeContext context, string title) => context.Information("##[group]{0}", title);
+
+    private static void EndGroup(this IAzurePipelinesCommands _, ICakeContext context) => context.Information("##[endgroup]");
 }
