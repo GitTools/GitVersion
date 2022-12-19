@@ -204,7 +204,7 @@ public class GitVersionExecutorTests : TestBase
 
         var cacheDirectoryTimestamp = this.fileSystem.GetLastDirectoryWrite(cacheDirectory);
 
-        var configuration = new ConfigurationBuilder().Add(new GitVersionConfiguration { TagPrefix = "prefix" }).Build();
+        var configuration = new ConfigurationBuilder().Add(new GitVersionConfiguration { LabelPrefix = "prefix" }).Build();
         gitVersionOptions = new GitVersionOptions { WorkingDirectory = fixture.RepositoryPath, ConfigInfo = { OverrideConfig = configuration } };
 
         gitVersionCalculator = GetGitVersionCalculator(gitVersionOptions);

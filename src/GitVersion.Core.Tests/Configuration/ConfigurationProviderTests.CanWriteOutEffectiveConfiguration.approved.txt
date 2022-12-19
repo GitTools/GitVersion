@@ -1,18 +1,18 @@
 assembly-versioning-scheme: MajorMinorPatch
 assembly-file-versioning-scheme: MajorMinorPatch
 mode: ContinuousDelivery
-tag-prefix: '[vV]?'
-continuous-delivery-fallback-tag: ci
+label-prefix: '[vV]?'
+continuous-delivery-fallback-label: ci
 major-version-bump-message: '\+semver:\s?(breaking|major)'
 minor-version-bump-message: '\+semver:\s?(feature|minor)'
 patch-version-bump-message: '\+semver:\s?(fix|patch)'
 no-bump-message: '\+semver:\s?(none|skip)'
-tag-pre-release-weight: 60000
+label-pre-release-weight: 60000
 commit-message-incrementing: Enabled
 branches:
   develop:
     mode: ContinuousDeployment
-    tag: alpha
+    label: alpha
     increment: Minor
     prevent-increment-of-merged-branch-version: false
     track-merge-target: true
@@ -24,7 +24,7 @@ branches:
     pre-release-weight: 0
   main:
     mode: ContinuousDelivery
-    tag: ''
+    label: ''
     increment: Patch
     prevent-increment-of-merged-branch-version: true
     track-merge-target: false
@@ -38,7 +38,7 @@ branches:
     pre-release-weight: 55000
   release:
     mode: ContinuousDelivery
-    tag: beta
+    label: beta
     increment: None
     prevent-increment-of-merged-branch-version: true
     track-merge-target: false
@@ -54,7 +54,7 @@ branches:
     pre-release-weight: 30000
   feature:
     mode: ContinuousDelivery
-    tag: '{BranchName}'
+    label: '{BranchName}'
     increment: Inherit
     regex: ^features?[/-]
     source-branches:
@@ -67,9 +67,9 @@ branches:
     pre-release-weight: 30000
   pull-request:
     mode: ContinuousDelivery
-    tag: PullRequest
+    label: PullRequest
     increment: Inherit
-    tag-number-pattern: '[/-](?<number>\d+)'
+    label-number-pattern: '[/-](?<number>\d+)'
     regex: ^(pull|pull\-requests|pr)[/-]
     source-branches:
     - develop
@@ -81,7 +81,7 @@ branches:
     pre-release-weight: 30000
   hotfix:
     mode: ContinuousDelivery
-    tag: beta
+    label: beta
     increment: Inherit
     regex: ^hotfix(es)?[/-]
     source-branches:
@@ -92,7 +92,7 @@ branches:
     pre-release-weight: 30000
   support:
     mode: ContinuousDelivery
-    tag: ''
+    label: ''
     increment: Patch
     prevent-increment-of-merged-branch-version: true
     track-merge-target: false

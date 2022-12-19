@@ -14,9 +14,9 @@ internal sealed class GitFlowConfigurationBuilder : TestConfigurationBuilderBase
         {
             AssemblyVersioningScheme = AssemblyVersioningScheme.MajorMinorPatch,
             AssemblyFileVersioningScheme = AssemblyFileVersioningScheme.MajorMinorPatch,
-            TagPrefix = GitVersionConfiguration.DefaultTagPrefix,
+            LabelPrefix = GitVersionConfiguration.DefaultLabelPrefix,
             VersioningMode = VersioningMode.ContinuousDelivery,
-            ContinuousDeploymentFallbackTag = "ci",
+            ContinuousDeploymentFallbackLabel = "ci",
             MajorVersionBumpMessage = IncrementStrategyFinder.DefaultMajorPattern,
             MinorVersionBumpMessage = IncrementStrategyFinder.DefaultMinorPattern,
             PatchVersionBumpMessage = IncrementStrategyFinder.DefaultPatchPattern,
@@ -25,7 +25,7 @@ internal sealed class GitFlowConfigurationBuilder : TestConfigurationBuilderBase
             CommitDateFormat = "yyyy-MM-dd",
             UpdateBuildNumber = true,
             SemanticVersionFormat = SemanticVersionFormat.Strict,
-            TagPreReleaseWeight = 60000,
+            LabelPreReleaseWeight = 60000,
             Increment = IncrementStrategy.Inherit
         });
 
@@ -35,7 +35,7 @@ internal sealed class GitFlowConfigurationBuilder : TestConfigurationBuilderBase
             Increment = IncrementStrategy.Minor,
             Regex = DevelopBranch.RegexPattern,
             SourceBranches = new HashSet<string>(),
-            Tag = "alpha",
+            Label = "alpha",
             PreventIncrementOfMergedBranchVersion = false,
             TrackMergeTarget = true,
             TracksReleaseBranches = true,
@@ -53,7 +53,7 @@ internal sealed class GitFlowConfigurationBuilder : TestConfigurationBuilderBase
                 DevelopBranch.Name,
                 ReleaseBranch.Name
             },
-            Tag = string.Empty,
+            Label = string.Empty,
             PreventIncrementOfMergedBranchVersion = true,
             TrackMergeTarget = false,
             TracksReleaseBranches = false,
@@ -73,7 +73,7 @@ internal sealed class GitFlowConfigurationBuilder : TestConfigurationBuilderBase
                 SupportBranch.Name,
                 ReleaseBranch.Name
             },
-            Tag = "beta",
+            Label = "beta",
             PreventIncrementOfMergedBranchVersion = true,
             TrackMergeTarget = false,
             TracksReleaseBranches = false,
@@ -95,7 +95,7 @@ internal sealed class GitFlowConfigurationBuilder : TestConfigurationBuilderBase
                 SupportBranch.Name,
                 HotfixBranch.Name
             },
-            Tag = "{BranchName}",
+            Label = "{BranchName}",
             PreReleaseWeight = 30000
         });
 
@@ -112,8 +112,8 @@ internal sealed class GitFlowConfigurationBuilder : TestConfigurationBuilderBase
                 SupportBranch.Name,
                 HotfixBranch.Name
             },
-            Tag = "PullRequest",
-            TagNumberPattern = @"[/-](?<number>\d+)",
+            Label = "PullRequest",
+            LabelNumberPattern = @"[/-](?<number>\d+)",
             PreReleaseWeight = 30000
         });
 
@@ -128,7 +128,7 @@ internal sealed class GitFlowConfigurationBuilder : TestConfigurationBuilderBase
                 SupportBranch.Name,
                 HotfixBranch.Name
             },
-            Tag = "beta",
+            Label = "beta",
             PreReleaseWeight = 30000
         });
 
@@ -138,7 +138,7 @@ internal sealed class GitFlowConfigurationBuilder : TestConfigurationBuilderBase
             Increment = IncrementStrategy.Patch,
             Regex = SupportBranch.RegexPattern,
             SourceBranches = new HashSet<string> { MainBranch.Name },
-            Tag = string.Empty,
+            Label = string.Empty,
             PreventIncrementOfMergedBranchVersion = true,
             TrackMergeTarget = false,
             TracksReleaseBranches = false,

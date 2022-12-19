@@ -69,9 +69,9 @@ Will result in command line argument error
 Will iterate through each file and update known attributes (`AssemblyVersion`,
 `AssemblyFileVersion`, `AssemblyInformationalVersion`).
 
-## Example: How to override configuration option 'tag-prefix' to use prefix 'custom'
+## Example: How to override configuration option 'label-prefix' to use prefix 'custom'
 
-`GitVersion.exe /output json /overrideconfig tag-prefix=custom`
+`GitVersion.exe /output json /overrideconfig label-prefix=custom`
 
 ## Writing version metadata in WiX format
 
