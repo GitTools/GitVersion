@@ -204,13 +204,13 @@ public class MainScenarios : TestBase
         fixture.Repository.MakeATaggedCommit(taggedVersion);
         fixture.Repository.MakeCommits(5);
 
-        fixture.AssertFullSemver("1.0.4+5", new GitVersionConfiguration { TagPrefix = "version-" });
+        fixture.AssertFullSemver("1.0.4+5", new GitVersionConfiguration { LabelPrefix = "version-" });
     }
 
     [Test]
     public void CanSpecifyTagPrefixesAsRegex()
     {
-        var configuration = new GitVersionConfiguration { TagPrefix = $"version-|{GitVersionConfiguration.DefaultTagPrefix}" };
+        var configuration = new GitVersionConfiguration { LabelPrefix = $"version-|{GitVersionConfiguration.DefaultLabelPrefix}" };
         using var fixture = new EmptyRepositoryFixture();
         var taggedVersion = "v1.0.3";
         fixture.Repository.MakeATaggedCommit(taggedVersion);
@@ -228,7 +228,7 @@ public class MainScenarios : TestBase
     [Test]
     public void AreTagsNotAdheringToTagPrefixIgnored()
     {
-        var configuration = new GitVersionConfiguration { TagPrefix = "" };
+        var configuration = new GitVersionConfiguration { LabelPrefix = "" };
         using var fixture = new EmptyRepositoryFixture();
         var taggedVersion = "version-1.0.3";
         fixture.Repository.MakeATaggedCommit(taggedVersion);

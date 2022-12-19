@@ -44,7 +44,7 @@ public class MergeMessage
                     PullRequestNumber = pullNumber;
                 }
 
-                Version = ParseVersion(configuration.TagPrefix);
+                Version = ParseVersion(configuration.LabelPrefix);
 
                 break;
             }
