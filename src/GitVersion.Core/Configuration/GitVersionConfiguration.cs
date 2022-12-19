@@ -33,11 +33,11 @@ public class GitVersionConfiguration
     [YamlMember(Alias = "mode")]
     public VersioningMode? VersioningMode { get; set; }
 
-    [YamlMember(Alias = "tag-prefix")]
-    public string? TagPrefix { get; set; }
+    [YamlMember(Alias = "label-prefix")]
+    public string? LabelPrefix { get; set; }
 
-    [YamlMember(Alias = "continuous-delivery-fallback-tag")]
-    public string? ContinuousDeploymentFallbackTag { get; set; }
+    [YamlMember(Alias = "continuous-delivery-fallback-label")]
+    public string? ContinuousDeploymentFallbackLabel { get; set; }
 
     [YamlMember(Alias = "next-version")]
     public string? NextVersion
@@ -61,8 +61,8 @@ public class GitVersionConfiguration
     [YamlMember(Alias = "no-bump-message")]
     public string? NoBumpMessage { get; set; }
 
-    [YamlMember(Alias = "tag-pre-release-weight")]
-    public int? TagPreReleaseWeight { get; set; }
+    [YamlMember(Alias = "label-pre-release-weight")]
+    public int? LabelPreReleaseWeight { get; set; }
 
     [YamlMember(Alias = "commit-message-incrementing")]
     public CommitMessageIncrementMode? CommitMessageIncrementing { get; set; }
@@ -97,7 +97,7 @@ public class GitVersionConfiguration
         return stringBuilder.ToString();
     }
 
-    public const string DefaultTagPrefix = "[vV]?";
+    public const string DefaultLabelPrefix = "[vV]?";
     public const string ReleaseBranchRegex = "^releases?[/-]";
     public const string FeatureBranchRegex = "^features?[/-]";
     public const string PullRequestRegex = @"^(pull|pull\-requests|pr)[/-]";

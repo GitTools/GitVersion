@@ -32,18 +32,18 @@ public class VariableProvider : IVariableProvider
                 {
                     // TODO: Why do we manipulating the semantic version here in the VariableProvider? The method name is GET not MANIPULATE.
                     // What is about the separation of concern and single-responsibility principle?
-                    semanticVersion.PreReleaseTag.Name = configuration.ContinuousDeploymentFallbackTag;
+                    semanticVersion.PreReleaseTag.Name = configuration.ContinuousDeploymentFallbackLabel;
                 }
             }
         }
 
         // Evaluate tag number pattern and append to prerelease tag, preserving build metadata
-        var appendTagNumberPattern = !configuration.TagNumberPattern.IsNullOrEmpty() && semanticVersion.PreReleaseTag?.HasTag() == true;
+        var appendTagNumberPattern = !configuration.LabelNumberPattern.IsNullOrEmpty() && semanticVersion.PreReleaseTag?.HasTag() == true;
         if (appendTagNumberPattern)
         {
-            if (semanticVersion.BuildMetaData?.Branch != null && configuration.TagNumberPattern != null)
+            if (semanticVersion.BuildMetaData?.Branch != null && configuration.LabelNumberPattern != null)
             {
-                var match = Regex.Match(semanticVersion.BuildMetaData.Branch, configuration.TagNumberPattern);
+                var match = Regex.Match(semanticVersion.BuildMetaData.Branch, configuration.LabelNumberPattern);
                 var numberGroup = match.Groups["number"];
                 if (numberGroup.Success && semanticVersion.PreReleaseTag != null)
                 {

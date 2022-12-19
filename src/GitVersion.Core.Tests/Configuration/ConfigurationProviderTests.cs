@@ -43,7 +43,7 @@ next-version: 2.0.0
 branches:
     develop:
         mode: ContinuousDeployment
-        tag: dev";
+        label: dev";
         SetupConfigFileContent(text);
         var configuration = this.configurationProvider.Provide(this.repoPath);
 
@@ -51,7 +51,7 @@ branches:
         configuration.Branches.ShouldNotBeNull();
         configuration.Branches["develop"].Increment.ShouldBe(defaultConfig.Branches["develop"].Increment);
         configuration.Branches["develop"].VersioningMode.ShouldBe(defaultConfig.Branches["develop"].VersioningMode);
-        configuration.Branches["develop"].Tag.ShouldBe("dev");
+        configuration.Branches["develop"].Label.ShouldBe("dev");
     }
 
     [Test]
@@ -65,18 +65,18 @@ branches:
     }
 
     [Test]
-    public void CanRemoveTag()
+    public void CanRemoveLabel()
     {
         const string text = @"
 next-version: 2.0.0
 branches:
     release:
-        tag: """"";
+        label: """"";
         SetupConfigFileContent(text);
         var configuration = this.configurationProvider.Provide(this.repoPath);
 
         configuration.NextVersion.ShouldBe("2.0.0");
-        configuration.Branches["release"].Tag.ShouldBe(string.Empty);
+        configuration.Branches["release"].Label.ShouldBe(string.Empty);
     }
 
     [Test]
@@ -86,7 +86,7 @@ branches:
 next-version: 2.0.0
 branches:
     bug:
-        tag: bugfix";
+        label: bugfix";
         SetupConfigFileContent(text);
         var ex = Should.Throw<ConfigurationException>(() => this.configurationProvider.Provide(this.repoPath));
         ex.Message.ShouldBe($"Branch configuration 'bug' is missing required configuration 'regex'{System.Environment.NewLine}" +
@@ -101,7 +101,7 @@ next-version: 2.0.0
 branches:
     bug:
         regex: 'bug[/-]'
-        tag: bugfix";
+        label: bugfix";
         SetupConfigFileContent(text);
         var ex = Should.Throw<ConfigurationException>(() => this.configurationProvider.Provide(this.repoPath));
         ex.Message.ShouldBe($"Branch configuration 'bug' is missing required configuration 'source-branches'{System.Environment.NewLine}" +
@@ -115,7 +115,7 @@ branches:
 branches:
     bug:
         regex: 'bug[/-]'
-        tag: bugfix
+        label: bugfix
         source-branches: [notconfigured]";
         SetupConfigFileContent(text);
         var ex = Should.Throw<ConfigurationException>(() => this.configurationProvider.Provide(this.repoPath));
@@ -132,7 +132,7 @@ branches:
 branches:
     bug:
         regex: 'bug[/-]'
-        tag: bugfix
+        label: bugfix
         source-branches: [{wellKnownBranchKey}]";
         SetupConfigFileContent(text);
         var configuration = this.configurationProvider.Provide(this.repoPath);
@@ -148,13 +148,13 @@ next-version: 2.0.0
 branches:
     bug:
         regex: 'bug[/-]'
-        tag: bugfix
+        label: bugfix
         source-branches: []";
         SetupConfigFileContent(text);
         var configuration = this.configurationProvider.Provide(this.repoPath);
 
         configuration.Branches["bug"].Regex.ShouldBe("bug[/-]");
-        configuration.Branches["bug"].Tag.ShouldBe("bugfix");
+        configuration.Branches["bug"].Label.ShouldBe("bugfix");
     }
 
     [Test]
@@ -165,13 +165,13 @@ next-version: 2.0.0
 branches:
     master:
         regex: '^master$|^main$'
-        tag: beta";
+        label: beta";
         SetupConfigFileContent(text);
 
         var configuration = this.configurationProvider.Provide(this.repoPath);
 
         configuration.Branches[MainBranch].Regex.ShouldBe("^master$|^main$");
-        configuration.Branches[MainBranch].Tag.ShouldBe("beta");
+        configuration.Branches[MainBranch].Label.ShouldBe("beta");
     }
 
     [Test]
@@ -294,9 +294,9 @@ branches: {}";
         configuration.AssemblyVersioningScheme.ShouldBe(AssemblyVersioningScheme.MajorMinorPatch);
         configuration.AssemblyFileVersioningScheme.ShouldBe(AssemblyFileVersioningScheme.MajorMinorPatch);
         configuration.AssemblyInformationalFormat.ShouldBe(null);
-        configuration.Branches["develop"].Tag.ShouldBe("alpha");
-        configuration.Branches["release"].Tag.ShouldBe("beta");
-        configuration.TagPrefix.ShouldBe(GitVersionConfiguration.DefaultTagPrefix);
+        configuration.Branches["develop"].Label.ShouldBe("alpha");
+        configuration.Branches["release"].Label.ShouldBe("beta");
+        configuration.LabelPrefix.ShouldBe(GitVersionConfiguration.DefaultLabelPrefix);
         configuration.NextVersion.ShouldBe(null);
     }
 
@@ -353,7 +353,7 @@ branches:
     develop:
         mode: ContinuousDeployment
         source-branches: ['develop']
-        tag: dev";
+        label: dev";
         SetupConfigFileContent(text);
         var configuration = this.configurationProvider.Provide(this.repoPath);
 
@@ -368,7 +368,7 @@ next-version: 2.0.0
 branches:
     develop:
         mode: ContinuousDeployment
-        tag: dev";
+        label: dev";
         SetupConfigFileContent(text);
         var configuration = this.configurationProvider.Provide(this.repoPath);
 
@@ -384,7 +384,7 @@ branches:
     feature:
         mode: ContinuousDeployment
         source-branches: ['develop', 'release']
-        tag: dev";
+        label: dev";
         SetupConfigFileContent(text);
         var configuration = this.configurationProvider.Provide(this.repoPath);
 
@@ -399,7 +399,7 @@ next-version: 2.0.0
 branches:
     feature:
         mode: ContinuousDeployment
-        tag: dev";
+        label: dev";
         SetupConfigFileContent(text);
         var configuration = this.configurationProvider.Provide(this.repoPath);
 
@@ -412,7 +412,7 @@ branches:
     {
         const string text = @"
 next-version: 1.2.3
-tag-prefix: custom-tag-prefix-from-yml";
+label-prefix: custom-label-prefix-from-yml";
         SetupConfigFileContent(text);
 
         var expectedConfig = this.configurationProvider.Provide(this.repoPath);
@@ -424,14 +424,14 @@ tag-prefix: custom-tag-prefix-from-yml";
         overridenConfig.AssemblyVersioningFormat.ShouldBe(expectedConfig.AssemblyVersioningFormat);
         overridenConfig.AssemblyFileVersioningFormat.ShouldBe(expectedConfig.AssemblyFileVersioningFormat);
         overridenConfig.VersioningMode.ShouldBe(expectedConfig.VersioningMode);
-        overridenConfig.TagPrefix.ShouldBe(expectedConfig.TagPrefix);
-        overridenConfig.ContinuousDeploymentFallbackTag.ShouldBe(expectedConfig.ContinuousDeploymentFallbackTag);
+        overridenConfig.LabelPrefix.ShouldBe(expectedConfig.LabelPrefix);
+        overridenConfig.ContinuousDeploymentFallbackLabel.ShouldBe(expectedConfig.ContinuousDeploymentFallbackLabel);
         overridenConfig.NextVersion.ShouldBe(expectedConfig.NextVersion);
         overridenConfig.MajorVersionBumpMessage.ShouldBe(expectedConfig.MajorVersionBumpMessage);
         overridenConfig.MinorVersionBumpMessage.ShouldBe(expectedConfig.MinorVersionBumpMessage);
         overridenConfig.PatchVersionBumpMessage.ShouldBe(expectedConfig.PatchVersionBumpMessage);
         overridenConfig.NoBumpMessage.ShouldBe(expectedConfig.NoBumpMessage);
-        overridenConfig.TagPreReleaseWeight.ShouldBe(expectedConfig.TagPreReleaseWeight);
+        overridenConfig.LabelPreReleaseWeight.ShouldBe(expectedConfig.LabelPreReleaseWeight);
         overridenConfig.CommitMessageIncrementing.ShouldBe(expectedConfig.CommitMessageIncrementing);
         overridenConfig.Increment.ShouldBe(expectedConfig.Increment);
         overridenConfig.CommitDateFormat.ShouldBe(expectedConfig.CommitDateFormat);
@@ -455,27 +455,27 @@ tag-prefix: custom-tag-prefix-from-yml";
         SetupConfigFileContent(text);
         var configuration = this.configurationProvider.Provide(this.repoPath);
 
-        configuration.TagPrefix.ShouldBe(GitVersionConfiguration.DefaultTagPrefix);
+        configuration.LabelPrefix.ShouldBe(GitVersionConfiguration.DefaultLabelPrefix);
     }
 
     [Test]
     public void ShouldUseTagPrefixFromConfigFileWhenProvided()
     {
-        const string text = "tag-prefix: custom-tag-prefix-from-yml";
+        const string text = "label-prefix: custom-label-prefix-from-yml";
         SetupConfigFileContent(text);
         var configuration = this.configurationProvider.Provide(this.repoPath);
 
-        configuration.TagPrefix.ShouldBe("custom-tag-prefix-from-yml");
+        configuration.LabelPrefix.ShouldBe("custom-label-prefix-from-yml");
     }
 
     [Test]
     public void ShouldOverrideTagPrefixWithOverrideConfigValue([Values] bool tagPrefixSetAtYmlFile)
     {
-        var text = tagPrefixSetAtYmlFile ? "tag-prefix: custom-tag-prefix-from-yml" : "";
+        var text = tagPrefixSetAtYmlFile ? "label-prefix: custom-label-prefix-from-yml" : "";
         SetupConfigFileContent(text);
-        var configuration = this.configurationProvider.Provide(this.repoPath, new GitVersionConfiguration { TagPrefix = "tag-prefix-from-override-configuration" });
+        var configuration = this.configurationProvider.Provide(this.repoPath, new GitVersionConfiguration { LabelPrefix = "label-prefix-from-override-configuration" });
 
-        configuration.TagPrefix.ShouldBe("tag-prefix-from-override-configuration");
+        configuration.LabelPrefix.ShouldBe("label-prefix-from-override-configuration");
     }
 
     [Test]
@@ -483,18 +483,18 @@ tag-prefix: custom-tag-prefix-from-yml";
     {
         const string text = "";
         SetupConfigFileContent(text);
-        var configuration = this.configurationProvider.Provide(this.repoPath, new GitVersionConfiguration { TagPrefix = null });
+        var configuration = this.configurationProvider.Provide(this.repoPath, new GitVersionConfiguration { LabelPrefix = null });
 
-        configuration.TagPrefix.ShouldBe(GitVersionConfiguration.DefaultTagPrefix);
+        configuration.LabelPrefix.ShouldBe(GitVersionConfiguration.DefaultLabelPrefix);
     }
 
     [Test]
     public void ShouldNotOverrideTagPrefixFromConfigFileWhenNotSetInOverrideConfig()
     {
-        const string text = "tag-prefix: custom-tag-prefix-from-yml";
+        const string text = "label-prefix: custom-label-prefix-from-yml";
         SetupConfigFileContent(text);
-        var configuration = this.configurationProvider.Provide(this.repoPath, new GitVersionConfiguration { TagPrefix = null });
+        var configuration = this.configurationProvider.Provide(this.repoPath, new GitVersionConfiguration { LabelPrefix = null });
 
-        configuration.TagPrefix.ShouldBe("custom-tag-prefix-from-yml");
+        configuration.LabelPrefix.ShouldBe("custom-label-prefix-from-yml");
     }
 }

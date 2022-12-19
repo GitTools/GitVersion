@@ -27,52 +27,52 @@ public class QuotedStringHelpersTests
         {
             ExpectedResult = new[] { "one", "\"two three" }
         };
-        yield return new TestCaseData("/overrideconfig tag-prefix=Sample", ' ')
+        yield return new TestCaseData("/overrideconfig label-prefix=Sample", ' ')
         {
             ExpectedResult = new[]
             {
                 "/overrideconfig",
-                "tag-prefix=Sample"
+                "label-prefix=Sample"
             }
         };
-        yield return new TestCaseData("/overrideconfig tag-prefix=Sample 2", ' ')
+        yield return new TestCaseData("/overrideconfig label-prefix=Sample 2", ' ')
         {
             ExpectedResult = new[]
             {
                 "/overrideconfig",
-                "tag-prefix=Sample",
+                "label-prefix=Sample",
                 "2"
             }
         };
-        yield return new TestCaseData("/overrideconfig tag-prefix=\"Sample 2\"", ' ')
+        yield return new TestCaseData("/overrideconfig label-prefix=\"Sample 2\"", ' ')
         {
             ExpectedResult = new[]
             {
                 "/overrideconfig",
-                "tag-prefix=\"Sample 2\""
+                "label-prefix=\"Sample 2\""
             }
         };
-        yield return new TestCaseData("/overrideconfig tag-prefix=\"Sample \\\"quoted\\\"\"", ' ')
+        yield return new TestCaseData("/overrideconfig label-prefix=\"Sample \\\"quoted\\\"\"", ' ')
         {
             ExpectedResult = new[]
             {
                 "/overrideconfig",
-                "tag-prefix=\"Sample \\\"quoted\\\"\""
+                "label-prefix=\"Sample \\\"quoted\\\"\""
             }
         };
-        yield return new TestCaseData("/overrideconfig tag-prefix=sample;assembly-versioning-format=\"{Major}.{Minor}.{Patch}.{env:CI_JOB_ID ?? 0}\"", ' ')
+        yield return new TestCaseData("/overrideconfig label-prefix=sample;assembly-versioning-format=\"{Major}.{Minor}.{Patch}.{env:CI_JOB_ID ?? 0}\"", ' ')
         {
             ExpectedResult = new[]
             {
                 "/overrideconfig",
-                "tag-prefix=sample;assembly-versioning-format=\"{Major}.{Minor}.{Patch}.{env:CI_JOB_ID ?? 0}\""
+                "label-prefix=sample;assembly-versioning-format=\"{Major}.{Minor}.{Patch}.{env:CI_JOB_ID ?? 0}\""
             }
         };
-        yield return new TestCaseData("tag-prefix=sample;assembly-versioning-format=\"{Major}.{Minor}.{Patch}.{env:CI_JOB_ID ?? 0}\"", ';')
+        yield return new TestCaseData("label-prefix=sample;assembly-versioning-format=\"{Major}.{Minor}.{Patch}.{env:CI_JOB_ID ?? 0}\"", ';')
         {
             ExpectedResult = new[]
             {
-                "tag-prefix=sample",
+                "label-prefix=sample",
                 "assembly-versioning-format=\"{Major}.{Minor}.{Patch}.{env:CI_JOB_ID ?? 0}\""
             }
         };

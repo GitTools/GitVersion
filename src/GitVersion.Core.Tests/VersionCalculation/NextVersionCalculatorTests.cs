@@ -76,7 +76,7 @@ public class NextVersionCalculatorTests : TestBase
                     "custom", new BranchConfiguration
                     {
                         Regex = "custom/",
-                        Tag = "useBranchName",
+                        Label = "useBranchName",
                         SourceBranches = new HashSet<string>()
                     }
                 }
@@ -232,7 +232,7 @@ public class NextVersionCalculatorTests : TestBase
                     "custom", new BranchConfiguration
                     {
                         Regex = "custom/",
-                        Tag = "alpha.{BranchName}",
+                        Label = "alpha.{BranchName}",
                         SourceBranches = new HashSet<string>()
                     }
                 }
@@ -260,7 +260,7 @@ public class NextVersionCalculatorTests : TestBase
                 {
                     MainBranch, new BranchConfiguration
                     {
-                        Tag = "beta"
+                        Label = "beta"
                     }
                 }
             }

@@ -62,7 +62,7 @@ public class DevelopScenarios : TestBase
                     "develop",
                     new BranchConfiguration
                     {
-                        Tag = "alpha",
+                        Label = "alpha",
                         SourceBranches = new HashSet<string>()
                     }
                 }

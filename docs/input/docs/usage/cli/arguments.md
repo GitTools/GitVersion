@@ -43,8 +43,8 @@ GitVersion [path]
                     from GitVersion.yml) in yaml format
     /overrideconfig Overrides GitVersion config values inline (semicolon-
                     separated key value pairs e.g. /overrideconfig
-                    tag-prefix=Foo)
-                    Currently supported config overrides: tag-prefix
+                    label-prefix=Foo)
+                    Currently supported config overrides: label-prefix
     /nocache        Bypasses the cache, result will not be written to the cache.
     /nonormalize    Disables normalize step on a build server.
     /verbosity      Specifies the amount of information to be displayed.
@@ -117,7 +117,7 @@ Following options are supported:
 5.  `assembly-versioning-scheme`
 7.  `commit-date-format`
 8.  `commit-message-incrementing`
-10. `continuous-delivery-fallback-tag`
+10. `continuous-delivery-fallback-label`
 11. `increment`
 13. `major-version-bump-message`
 14. `minor-version-bump-message`
@@ -125,17 +125,17 @@ Following options are supported:
 16. `next-version`
 17. `no-bump-message`
 18. `patch-version-bump-message`
-19. `tag-prefix`
-20. `tag-pre-release-weight`
+19. `label-prefix`
+20. `label-pre-release-weight`
 21. `update-build-number`
 
 Read more about [Configuration](/docs/reference/configuration).
 
 Using `override-config` on the command line will not change the contents of the config file `GitVersion.yml`.
 
-### Example: How to override configuration option 'tag-prefix' to use prefix 'custom'
+### Example: How to override configuration option 'label-prefix' to use prefix 'custom'
 
-`GitVersion.exe /output json /overrideconfig tag-prefix=custom`
+`GitVersion.exe /output json /overrideconfig label-prefix=custom`
 
 ### Example: How to override configuration option 'assembly-versioning-format'
 
@@ -151,7 +151,7 @@ Will use only major and minor version numbers for assembly version. Assembly bui
 
 ### Example: How to override multiple configuration options
 
-`GitVersion.exe /output json /overrideconfig tag-prefix=custom /overrideconfig assembly-versioning-scheme=MajorMinor`
+`GitVersion.exe /output json /overrideconfig label-prefix=custom /overrideconfig assembly-versioning-scheme=MajorMinor`
 
 ### Example: How to override configuration option 'update-build-number'
 

@@ -131,10 +131,10 @@ public class TestBranchConfigurationBuilder
     {
         WithName(value.Name);
         WithVersioningMode(value.VersioningMode);
-        WithTag(value.Tag);
+        WithTag(value.Label);
         WithIncrement(value.Increment);
         WithPreventIncrementOfMergedBranchVersion(value.PreventIncrementOfMergedBranchVersion);
-        WithTagNumberPattern(value.TagNumberPattern);
+        WithTagNumberPattern(value.LabelNumberPattern);
         WithTrackMergeTarget(value.TrackMergeTarget);
         WithCommitMessageIncrementing(value.CommitMessageIncrementing);
         WithRegex(value.Regex);
@@ -153,7 +153,7 @@ public class TestBranchConfigurationBuilder
         {
             Name = name,
             VersioningMode = versioningMode,
-            Tag = tag,
+            Label = tag,
             Increment = increment,
             Regex = regex,
             TracksReleaseBranches = tracksReleaseBranches,
@@ -161,7 +161,7 @@ public class TestBranchConfigurationBuilder
             CommitMessageIncrementing = commitMessageIncrementing,
             IsMainline = isMainline,
             IsReleaseBranch = isReleaseBranch,
-            TagNumberPattern = tagNumberPattern,
+            LabelNumberPattern = tagNumberPattern,
             PreventIncrementOfMergedBranchVersion = preventIncrementOfMergedBranchVersion,
             PreReleaseWeight = preReleaseWeight,
             SourceBranches = sourceBranches,
