@@ -8,7 +8,7 @@ namespace GitVersion.Core.Tests;
 [TestFixture]
 public class MergeMessageTests : TestBase
 {
-    private readonly GitVersionConfiguration configuration = new() { TagPrefix = GitVersionConfiguration.DefaultTagPrefix };
+    private readonly GitVersionConfiguration configuration = new() { LabelPrefix = GitVersionConfiguration.DefaultLabelPrefix };
 
     [Test]
     public void NullMessageStringThrows() =>
@@ -37,7 +37,7 @@ public class MergeMessageTests : TestBase
     {
         // Arrange
         const string message = "Updated some code.";
-        var conf = new GitVersionConfiguration { TagPrefix = prefix };
+        var conf = new GitVersionConfiguration { LabelPrefix = prefix };
 
         // Act
         var sut = new MergeMessage(message, conf);

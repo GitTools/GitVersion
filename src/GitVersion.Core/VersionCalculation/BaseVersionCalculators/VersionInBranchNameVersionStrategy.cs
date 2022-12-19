@@ -21,7 +21,7 @@ public class VersionInBranchNameVersionStrategy : VersionStrategyBase
         string nameWithoutOrigin = NameWithoutOrigin(configuration.Branch);
         if (Context.Configuration.IsReleaseBranch(nameWithoutOrigin))
         {
-            var versionInBranch = GetVersionInBranch(configuration.Branch.Name.Friendly, Context.Configuration.TagPrefix);
+            var versionInBranch = GetVersionInBranch(configuration.Branch.Name.Friendly, Context.Configuration.LabelPrefix);
             if (versionInBranch != null)
             {
                 var commitBranchWasBranchedFrom = this.repositoryStore.FindCommitBranchWasBranchedFrom(configuration.Branch, Context.Configuration);

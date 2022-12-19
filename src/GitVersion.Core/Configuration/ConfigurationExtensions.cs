@@ -25,7 +25,7 @@ public static class ConfigurationExtensions
     {
         Name = "Unknown",
         Regex = "",
-        Tag = "{BranchName}",
+        Label = "{BranchName}",
         VersioningMode = configuration.VersioningMode,
         Increment = IncrementStrategy.Inherit
     };
@@ -37,7 +37,7 @@ public static class ConfigurationExtensions
         {
             Name = "Fallback",
             Regex = "",
-            Tag = "{BranchName}",
+            Label = "{BranchName}",
             VersioningMode = configuration.VersioningMode,
             Increment = configuration.Increment,
             PreventIncrementOfMergedBranchVersion = false,
@@ -85,7 +85,7 @@ public static class ConfigurationExtensions
 
     public static string GetBranchSpecificTag(this EffectiveConfiguration configuration, ILog log, string? branchFriendlyName, string? branchNameOverride)
     {
-        var tagToUse = configuration.Tag;
+        var tagToUse = configuration.Label;
         if (tagToUse == "useBranchName")
         {
             tagToUse = "{BranchName}";

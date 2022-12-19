@@ -200,14 +200,14 @@ internal abstract class TestConfigurationBuilderBase<TConfigurationBuilder>
         {
             WithoutVersioningMode();
         }
-        WithTagPrefix(value.TagPrefix);
-        WithContinuousDeploymentFallbackTag(value.ContinuousDeploymentFallbackTag);
+        WithTagPrefix(value.LabelPrefix);
+        WithContinuousDeploymentFallbackTag(value.ContinuousDeploymentFallbackLabel);
         WithNextVersion(value.NextVersion);
         WithMajorVersionBumpMessage(value.MajorVersionBumpMessage);
         WithMinorVersionBumpMessage(value.MinorVersionBumpMessage);
         WithPatchVersionBumpMessage(value.PatchVersionBumpMessage);
         WithNoBumpMessage(value.NoBumpMessage);
-        WithTagPreReleaseWeight(value.TagPreReleaseWeight);
+        WithTagPreReleaseWeight(value.LabelPreReleaseWeight);
         WithCommitMessageIncrementing(value.CommitMessageIncrementing);
         WithIgnoreConfiguration(value.Ignore);
         WithIncrement(value.Increment);
@@ -232,14 +232,14 @@ internal abstract class TestConfigurationBuilderBase<TConfigurationBuilder>
             AssemblyVersioningFormat = this.assemblyVersioningFormat,
             AssemblyFileVersioningFormat = this.assemblyFileVersioningFormat,
             VersioningMode = this.versioningMode,
-            TagPrefix = this.tagPrefix,
-            ContinuousDeploymentFallbackTag = this.continuousDeploymentFallbackTag,
+            LabelPrefix = this.tagPrefix,
+            ContinuousDeploymentFallbackLabel = this.continuousDeploymentFallbackTag,
             NextVersion = this.nextVersion,
             MajorVersionBumpMessage = this.majorVersionBumpMessage,
             MinorVersionBumpMessage = this.minorVersionBumpMessage,
             PatchVersionBumpMessage = this.patchVersionBumpMessage,
             NoBumpMessage = this.noBumpMessage,
-            TagPreReleaseWeight = this.tagPreReleaseWeight,
+            LabelPreReleaseWeight = this.tagPreReleaseWeight,
             CommitMessageIncrementing = this.commitMessageIncrementing,
             Ignore = this.ignore,
             Increment = this.increment,

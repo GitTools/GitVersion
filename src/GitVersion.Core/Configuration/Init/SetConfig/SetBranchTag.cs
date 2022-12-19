@@ -34,11 +34,11 @@ public class SetBranchTag : ConfigInitWizardStep
                 steps.Enqueue(configureBranchStep.WithData(this.name, this.branchConfiguration));
                 return StepResult.Ok();
             case "1":
-                this.branchConfiguration.Tag = string.Empty;
+                this.branchConfiguration.Label = string.Empty;
                 steps.Enqueue(configureBranchStep.WithData(name, this.branchConfiguration));
                 return StepResult.Ok();
             default:
-                this.branchConfiguration.Tag = result;
+                this.branchConfiguration.Label = result;
                 steps.Enqueue(configureBranchStep.WithData(name, this.branchConfiguration));
                 return StepResult.Ok();
         }

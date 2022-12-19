@@ -119,7 +119,7 @@ public class ReleaseBranchScenarios : TestBase
         {
             Branches =
             {
-                { "release", new BranchConfiguration { Tag = "rc" } }
+                { "release", new BranchConfiguration { Label = "rc" } }
             }
         };
         using var fixture = new EmptyRepositoryFixture();
