@@ -14,9 +14,9 @@ internal sealed class GitHubFlowConfigurationBuilder : TestConfigurationBuilderB
         {
             AssemblyVersioningScheme = AssemblyVersioningScheme.MajorMinorPatch,
             AssemblyFileVersioningScheme = AssemblyFileVersioningScheme.MajorMinorPatch,
-            LabelPrefix = GitVersionConfiguration.DefaultLabelPrefix,
+            TagPrefix = GitVersionConfiguration.DefaultTagPrefix,
             VersioningMode = VersioningMode.ContinuousDelivery,
-            ContinuousDeploymentFallbackLabel = "ci",
+            ContinuousDeploymentFallbackTag = "ci",
             MajorVersionBumpMessage = IncrementStrategyFinder.DefaultMajorPattern,
             MinorVersionBumpMessage = IncrementStrategyFinder.DefaultMinorPattern,
             PatchVersionBumpMessage = IncrementStrategyFinder.DefaultPatchPattern,
@@ -25,7 +25,7 @@ internal sealed class GitHubFlowConfigurationBuilder : TestConfigurationBuilderB
             CommitDateFormat = "yyyy-MM-dd",
             UpdateBuildNumber = true,
             SemanticVersionFormat = SemanticVersionFormat.Strict,
-            LabelPreReleaseWeight = 60000,
+            TagPreReleaseWeight = 60000,
             Increment = IncrementStrategy.Inherit
         });
 
@@ -37,7 +37,7 @@ internal sealed class GitHubFlowConfigurationBuilder : TestConfigurationBuilderB
             SourceBranches = new HashSet<string> {
                 ReleaseBranch.Name
             },
-            Label = string.Empty,
+            Tag = string.Empty,
             PreventIncrementOfMergedBranchVersion = true,
             TrackMergeTarget = false,
             TracksReleaseBranches = false,
@@ -55,7 +55,7 @@ internal sealed class GitHubFlowConfigurationBuilder : TestConfigurationBuilderB
                 MainBranch.Name,
                 ReleaseBranch.Name
             },
-            Label = "beta",
+            Tag = "beta",
             PreventIncrementOfMergedBranchVersion = true,
             TrackMergeTarget = false,
             TracksReleaseBranches = false,
@@ -74,7 +74,7 @@ internal sealed class GitHubFlowConfigurationBuilder : TestConfigurationBuilderB
                 ReleaseBranch.Name,
                 FeatureBranch.Name
             },
-            Label = "{BranchName}",
+            Tag = "{BranchName}",
             PreReleaseWeight = 30000
         });
 
@@ -88,8 +88,8 @@ internal sealed class GitHubFlowConfigurationBuilder : TestConfigurationBuilderB
                 ReleaseBranch.Name,
                 FeatureBranch.Name
             },
-            Label = "PullRequest",
-            LabelNumberPattern = @"[/-](?<number>\d+)",
+            Tag = "PullRequest",
+            TagNumberPattern = @"[/-](?<number>\d+)",
             PreReleaseWeight = 30000
         });
     }

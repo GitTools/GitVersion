@@ -71,7 +71,7 @@ public class OtherBranchScenarios : TestBase
                         Increment = IncrementStrategy.Patch,
                         Regex = ".*",
                         SourceBranches = new HashSet<string>(),
-                        Label = tag
+                        Tag = tag
                     }
                 }
             }

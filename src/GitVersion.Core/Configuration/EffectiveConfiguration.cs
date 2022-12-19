@@ -31,8 +31,8 @@ public class EffectiveConfiguration
         if (!configuration.CommitMessageIncrementing.HasValue)
             throw new Exception("Configuration value for 'CommitMessageIncrementing' has no value. (this should not happen, please report an issue)");
 
-        if (!configuration.LabelPreReleaseWeight.HasValue)
-            throw new Exception("Configuration value for 'LabelPreReleaseWeight' has no value. (this should not happen, please report an issue)");
+        if (!configuration.TagPreReleaseWeight.HasValue)
+            throw new Exception("Configuration value for 'TagPreReleaseWeight' has no value. (this should not happen, please report an issue)");
 
         AssemblyVersioningScheme = configuration.AssemblyVersioningScheme.Value;
         AssemblyFileVersioningScheme = configuration.AssemblyFileVersioningScheme.Value;
@@ -40,14 +40,14 @@ public class EffectiveConfiguration
         AssemblyVersioningFormat = configuration.AssemblyVersioningFormat;
         AssemblyFileVersioningFormat = configuration.AssemblyFileVersioningFormat;
         VersioningMode = currentBranchConfig.VersioningMode.Value;
-        LabelPrefix = configuration.LabelPrefix;
-        Label = currentBranchConfig.Label ?? string.Empty;
+        TagPrefix = configuration.TagPrefix;
+        Tag = currentBranchConfig.Tag ?? string.Empty;
         NextVersion = configuration.NextVersion;
         Increment = currentBranchConfig.Increment.Value;
         BranchPrefixToTrim = currentBranchConfig.Regex;
         PreventIncrementOfMergedBranchVersion = currentBranchConfig.PreventIncrementOfMergedBranchVersion ?? false;
-        LabelNumberPattern = currentBranchConfig.LabelNumberPattern;
-        ContinuousDeploymentFallbackLabel = configuration.ContinuousDeploymentFallbackLabel;
+        TagNumberPattern = currentBranchConfig.TagNumberPattern;
+        ContinuousDeploymentFallbackTag = configuration.ContinuousDeploymentFallbackTag;
         TrackMergeTarget = currentBranchConfig.TrackMergeTarget ?? false;
         MajorVersionBumpMessage = configuration.MajorVersionBumpMessage;
         MinorVersionBumpMessage = configuration.MinorVersionBumpMessage;
@@ -62,7 +62,7 @@ public class EffectiveConfiguration
         UpdateBuildNumber = configuration.UpdateBuildNumber ?? true;
         SemanticVersionFormat = configuration.SemanticVersionFormat;
         PreReleaseWeight = currentBranchConfig.PreReleaseWeight ?? 0;
-        LabelPreReleaseWeight = configuration.LabelPreReleaseWeight.Value;
+        TagPreReleaseWeight = configuration.TagPreReleaseWeight.Value;
     }
 
     protected EffectiveConfiguration(AssemblyVersioningScheme assemblyVersioningScheme,
@@ -71,14 +71,14 @@ public class EffectiveConfiguration
         string? assemblyVersioningFormat,
         string? assemblyFileVersioningFormat,
         VersioningMode versioningMode,
-        string? labelPrefix,
-        string label,
+        string? tagPrefix,
+        string tag,
         string? nextVersion,
         IncrementStrategy increment,
         string? branchPrefixToTrim,
         bool preventIncrementOfMergedBranchVersion,
-        string? labelNumberPattern,
-        string? continuousDeploymentFallbackLabel,
+        string? tagNumberPattern,
+        string? continuousDeploymentFallbackTag,
         bool trackMergeTarget,
         string? majorVersionBumpMessage,
         string? minorVersionBumpMessage,
@@ -93,7 +93,7 @@ public class EffectiveConfiguration
         bool updateBuildNumber,
         SemanticVersionFormat semanticVersionFormat,
         int preReleaseWeight,
-        int labelPreReleaseWeight)
+        int tagPreReleaseWeight)
     {
         AssemblyVersioningScheme = assemblyVersioningScheme;
         AssemblyFileVersioningScheme = assemblyFileVersioningScheme;
@@ -101,14 +101,14 @@ public class EffectiveConfiguration
         AssemblyVersioningFormat = assemblyVersioningFormat;
         AssemblyFileVersioningFormat = assemblyFileVersioningFormat;
         VersioningMode = versioningMode;
-        LabelPrefix = labelPrefix;
-        Label = label;
+        TagPrefix = tagPrefix;
+        Tag = tag;
         NextVersion = nextVersion;
         Increment = increment;
         BranchPrefixToTrim = branchPrefixToTrim;
         PreventIncrementOfMergedBranchVersion = preventIncrementOfMergedBranchVersion;
-        LabelNumberPattern = labelNumberPattern;
-        ContinuousDeploymentFallbackLabel = continuousDeploymentFallbackLabel;
+        TagNumberPattern = tagNumberPattern;
+        ContinuousDeploymentFallbackTag = continuousDeploymentFallbackTag;
         TrackMergeTarget = trackMergeTarget;
         MajorVersionBumpMessage = majorVersionBumpMessage;
         MinorVersionBumpMessage = minorVersionBumpMessage;
@@ -123,7 +123,7 @@ public class EffectiveConfiguration
         UpdateBuildNumber = updateBuildNumber;
         SemanticVersionFormat = semanticVersionFormat;
         PreReleaseWeight = preReleaseWeight;
-        LabelPreReleaseWeight = labelPreReleaseWeight;
+        TagPreReleaseWeight = tagPreReleaseWeight;
     }
 
     public bool TracksReleaseBranches { get; }
@@ -139,12 +139,12 @@ public class EffectiveConfiguration
     /// <summary>
     ///     Git tag prefix
     /// </summary>
-    public string? LabelPrefix { get; }
+    public string? TagPrefix { get; }
 
     /// <summary>
-    ///     Label to use when calculating SemVer
+    ///     Tag to use when calculating SemVer
     /// </summary>
-    public string Label { get; }
+    public string Tag { get; }
 
     public string? NextVersion { get; }
 
@@ -154,9 +154,9 @@ public class EffectiveConfiguration
 
     public bool PreventIncrementOfMergedBranchVersion { get; }
 
-    public string? LabelNumberPattern { get; }
+    public string? TagNumberPattern { get; }
 
-    public string? ContinuousDeploymentFallbackLabel { get; }
+    public string? ContinuousDeploymentFallbackTag { get; }
 
     public bool TrackMergeTarget { get; }
 
@@ -180,5 +180,5 @@ public class EffectiveConfiguration
 
     public int PreReleaseWeight { get; }
 
-    public int LabelPreReleaseWeight { get; }
+    public int TagPreReleaseWeight { get; }
 }

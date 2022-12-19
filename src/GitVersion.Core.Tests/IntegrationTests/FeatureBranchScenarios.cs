@@ -179,8 +179,8 @@ public class FeatureBranchScenarios : TestBase
         {
             Branches =
             {
-                { "release", new BranchConfiguration { Label = "build" } },
-                { "feature", new BranchConfiguration { Label = "useBranchName" } }
+                { "release", new BranchConfiguration { Tag = "build" } },
+                { "feature", new BranchConfiguration { Tag = "useBranchName" } }
             }
         };
 
@@ -204,7 +204,7 @@ public class FeatureBranchScenarios : TestBase
         {
             Branches =
             {
-                { "feature", new BranchConfiguration { Label = tag } }
+                { "feature", new BranchConfiguration { Tag = tag } }
             }
         };
 
@@ -484,7 +484,7 @@ public class FeatureBranchScenarios : TestBase
                 {
                     MainBranch, new BranchConfiguration
                     {
-                        Label = "pre",
+                        Tag = "pre",
                         TracksReleaseBranches = true
                     }
                 },
@@ -492,7 +492,7 @@ public class FeatureBranchScenarios : TestBase
                     "release", new BranchConfiguration
                     {
                         IsReleaseBranch = true,
-                        Label = "rc"
+                        Tag = "rc"
                     }
                 }
             }
@@ -537,7 +537,7 @@ public class FeatureBranchScenarios : TestBase
                 {
                     "feature", new BranchConfiguration
                     {
-                        Label = "feat-{BranchName}"
+                        Tag = "feat-{BranchName}"
                     }
                 }
             }

@@ -40,7 +40,7 @@ public class ConfigureBranch : ConfigInitWizardStep
     protected override string GetPrompt(GitVersionConfiguration configuration, string workingDirectory) => $@"What would you like to change for '{this.name}':
 
 0) Go Back
-1) Branch Pr-release tag (Current: {this.branchConfiguration.Label})
+1) Branch Pr-release tag (Current: {this.branchConfiguration.Tag})
 2) Branch Increment mode (per commit/after tag) (Current: {this.branchConfiguration.VersioningMode})";
 
     protected override string DefaultResult => "0";

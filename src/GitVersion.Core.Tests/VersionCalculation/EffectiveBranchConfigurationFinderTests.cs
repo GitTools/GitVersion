@@ -124,7 +124,7 @@ public class EffectiveBranchConfigurationFinderTests
         // Assert
         actual.ShouldHaveSingleItem();
         actual[0].Branch.ShouldBe(mainBranchMock);
-        actual[0].Value.Label.ShouldBe("alpha");
+        actual[0].Value.Tag.ShouldBe("alpha");
     }
 
     [Test]
@@ -151,7 +151,7 @@ public class EffectiveBranchConfigurationFinderTests
         // Assert
         actual.ShouldHaveSingleItem();
         actual[0].Branch.ShouldBe(mainBranchMock);
-        actual[0].Value.Label.ShouldBe(string.Empty);
+        actual[0].Value.Tag.ShouldBe(string.Empty);
     }
 
     [TestCase("release/latest", IncrementStrategy.None, "latest")]
@@ -175,8 +175,8 @@ public class EffectiveBranchConfigurationFinderTests
             VersioningMode = VersioningMode.ContinuousDelivery,
             Branches =
             {
-                { "release/latest", new BranchConfiguration(branchConfiguration) { Increment = IncrementStrategy.None, Label = "latest", Regex = "release/latest" } },
-                { "release", new BranchConfiguration(branchConfiguration) { Increment = IncrementStrategy.Patch, Label = "not-latest", Regex = "releases?[/-]" } }
+                { "release/latest", new BranchConfiguration(branchConfiguration) { Increment = IncrementStrategy.None, Tag = "latest", Regex = "release/latest" } },
+                { "release", new BranchConfiguration(branchConfiguration) { Increment = IncrementStrategy.Patch, Tag = "not-latest", Regex = "releases?[/-]" } }
             }
         }).Build();
 
@@ -192,7 +192,7 @@ public class EffectiveBranchConfigurationFinderTests
         actual.ShouldHaveSingleItem();
         actual[0].Branch.ShouldBe(releaseBranchMock);
         actual[0].Value.Increment.ShouldBe(incrementStrategy);
-        actual[0].Value.Label.ShouldBe(tag);
+        actual[0].Value.Tag.ShouldBe(tag);
     }
 
     [Test]

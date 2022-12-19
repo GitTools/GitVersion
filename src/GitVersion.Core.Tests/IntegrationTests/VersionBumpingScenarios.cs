@@ -20,7 +20,7 @@ public class VersionBumpingScenarios : TestBase
                 {
                     MainBranch, new BranchConfiguration
                     {
-                        Label = "pre",
+                        Tag = "pre",
                         SourceBranches = new HashSet<string>()
                     }
                 }

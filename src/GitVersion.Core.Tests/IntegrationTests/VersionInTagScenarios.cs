@@ -38,7 +38,7 @@ internal class VersionInTagScenarios
             .Add(new GitVersionConfiguration
             {
                 AssemblyFileVersioningFormat = "{Major}.{Minor}.{Patch}.{WeightedPreReleaseNumber}",
-                LabelPreReleaseWeight = 65535
+                TagPreReleaseWeight = 65535
             })
             .Build();
 
@@ -59,7 +59,7 @@ internal class VersionInTagScenarios
             .Add(new GitVersionConfiguration
             {
                 AssemblyFileVersioningFormat = "{Major}.{Minor}.{Patch}.{WeightedPreReleaseNumber}",
-                LabelPreReleaseWeight = 65535,
+                TagPreReleaseWeight = 65535,
                 VersioningMode = VersioningMode.ContinuousDeployment
             })
             .Build();

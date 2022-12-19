@@ -85,7 +85,7 @@ public class NextVersionCalculator : INextVersionCalculator
         }
 
         var hasPreReleaseTag = semver.HasPreReleaseTagWithLabel;
-        var tag = nextVersion.Configuration.Label;
+        var tag = nextVersion.Configuration.Tag;
         var branchConfigHasPreReleaseTagConfigured = !tag.IsNullOrEmpty();
         var preReleaseTagDoesNotMatchConfiguration = hasPreReleaseTag && branchConfigHasPreReleaseTagConfigured && semver.PreReleaseTag?.Name != tag;
         if (semver.PreReleaseTag?.HasTag() != true && branchConfigHasPreReleaseTagConfigured || preReleaseTagDoesNotMatchConfiguration)
@@ -118,7 +118,7 @@ public class NextVersionCalculator : INextVersionCalculator
 
         // TODO: Please update the pre release-tag in the IVersionStrategy implementation.
         var lastTag = this.repositoryStore
-            .GetVersionTagsOnBranch(Context.CurrentBranch, Context.Configuration.LabelPrefix)
+            .GetVersionTagsOnBranch(Context.CurrentBranch, Context.Configuration.TagPrefix)
             .FirstOrDefault(v => v.PreReleaseTag?.Name?.IsEquivalentTo(tagToUse) == true);
 
         if (lastTag != null && MajorMinorPatchEqual(lastTag, semanticVersion) && lastTag.HasPreReleaseTagWithLabel)

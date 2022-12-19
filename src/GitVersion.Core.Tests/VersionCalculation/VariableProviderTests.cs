@@ -167,7 +167,7 @@ public class VariableProviderTests : TestBase
         semVer.BuildMetaData.ShortSha = "commitShortSha";
         semVer.BuildMetaData.CommitDate = DateTimeOffset.Parse("2014-03-06 23:59:59Z");
 
-        var configuration = new TestEffectiveConfiguration(versioningMode: VersioningMode.ContinuousDeployment, labelNumberPattern: @"[/-](?<number>\d+)[-/]");
+        var configuration = new TestEffectiveConfiguration(versioningMode: VersioningMode.ContinuousDeployment, tagNumberPattern: @"[/-](?<number>\d+)[-/]");
         var vars = this.variableProvider.GetVariablesFor(semVer, configuration, false);
 
         vars.FullSemVer.ShouldBe("1.2.3-PullRequest2.5");
@@ -189,7 +189,7 @@ public class VariableProviderTests : TestBase
         semVer.BuildMetaData.ShortSha = "commitShortSha";
         semVer.BuildMetaData.CommitDate = DateTimeOffset.Parse("2014-03-06 23:59:59Z");
 
-        var configuration = new TestEffectiveConfiguration(versioningMode: VersioningMode.ContinuousDeployment, label: "useBranchName");
+        var configuration = new TestEffectiveConfiguration(versioningMode: VersioningMode.ContinuousDeployment, tag: "useBranchName");
         var vars = this.variableProvider.GetVariablesFor(semVer, configuration, false);
 
         vars.FullSemVer.ShouldBe("1.2.3-feature.5");

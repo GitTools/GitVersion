@@ -46,13 +46,13 @@ assembly-file-versioning-scheme: MajorMinorPatch
 assembly-informational-format: '{InformationalVersion}'
 mode: ContinuousDelivery
 increment: Inherit
-continuous-delivery-fallback-label: ci
-label-prefix: '[vV]'
+continuous-delivery-fallback-tag: ci
+tag-prefix: '[vV]'
 major-version-bump-message: '\+semver:\s?(breaking|major)'
 minor-version-bump-message: '\+semver:\s?(feature|minor)'
 patch-version-bump-message: '\+semver:\s?(fix|patch)'
 no-bump-message: '\+semver:\s?(none|skip)'
-label-pre-release-weight: 60000
+tag-pre-release-weight: 60000
 commit-message-incrementing: Enabled
 ignore:
   sha: []
@@ -142,26 +142,26 @@ for [increment](#increment),
 [prevent-increment-of-merged-branch-version](#prevent-increment-of-merged-branch-version)
 and [tracks-release-branches](#tracks-release-branches).
 
-### continuous-delivery-fallback-label
+### continuous-delivery-fallback-tag
 
 When using `mode: ContinuousDeployment`, the value specified in
-`continuous-delivery-fallback-label` will be used as the pre-release label for
+`continuous-delivery-fallback-tag` will be used as the pre-release tag for
 branches which do not have one specified. Default set to `ci`.
 
 Just to clarify: For a build name without `...-ci-<buildnumber>` or in other
 words without a `PreReleaseTag` (ergo `"PreReleaseTag":""` in GitVersion's JSON output)
-at the end you would need to set `continuous-delivery-fallback-label` to an empty
+at the end you would need to set `continuous-delivery-fallback-tag` to an empty
 string (`''`):
 
 ```yaml
 mode: ContinuousDeployment
-continuous-delivery-fallback-label: ''
+continuous-delivery-fallback-tag: ''
 ...
 ```
 
 Doing so can be helpful if you use your `main` branch as a `release` branch.
 
-### label-prefix
+### tag-prefix
 
 A regex which is used to trim Git tags before processing (e.g., v1.0.0). Default
 is `[vV]`, although this is just for illustrative purposes as we do a IgnoreCase
@@ -194,7 +194,7 @@ none` and `+semver: skip`
 When a commit matches **both** the `no-bump-message` **and** any combination of
 the `version-bump-message`, `no-bump-message` takes precedence and no increment is applied.
 
-### label-pre-release-weight
+### tag-pre-release-weight
 
 The pre-release weight in case of tagged commits. If the value is not set in the
 configuration, a default weight of 60000 is used instead. If the
@@ -293,7 +293,7 @@ branches:
   main:
     regex: ^master$|^main$
     mode: ContinuousDelivery
-    label: ''
+    tag: ''
     increment: Patch
     prevent-increment-of-merged-branch-version: true
     track-merge-target: false
@@ -305,7 +305,7 @@ branches:
   develop:
     regex: ^dev(elop)?(ment)?$
     mode: ContinuousDeployment
-    label: alpha
+    tag: alpha
     increment: Minor
     prevent-increment-of-merged-branch-version: false
     track-merge-target: true
@@ -317,7 +317,7 @@ branches:
   release:
     regex: ^releases?[/-]
     mode: ContinuousDelivery
-    label: beta
+    tag: beta
     increment: None
     prevent-increment-of-merged-branch-version: true
     track-merge-target: false
@@ -329,29 +329,29 @@ branches:
   feature:
     regex: ^features?[/-]
     mode: ContinuousDelivery
-    label: '{BranchName}'
+    tag: '{BranchName}'
     increment: Inherit
     source-branches: [ 'develop', 'main', 'release', 'feature', 'support', 'hotfix' ]
-    pre-release-weight: 30000
+    pre-release-weight: 30000	
   pull-request:
     regex: ^(pull|pull\-requests|pr)[/-]
     mode: ContinuousDelivery
-    label: PullRequest
+    tag: PullRequest
     increment: Inherit
-    label-number-pattern: '[/-](?<number>\d+)[-/]'
+    tag-number-pattern: '[/-](?<number>\d+)[-/]'
     source-branches: [ 'develop', 'main', 'release', 'feature', 'support', 'hotfix' ]
     pre-release-weight: 30000
   hotfix:
     regex: ^hotfix(es)?[/-]
     mode: ContinuousDelivery
-    label: beta
+    tag: beta
     increment: Inherit
     source-branches: [ 'release', 'main', 'support', 'hotfix' ]
     pre-release-weight: 30000
   support:
     regex: ^support[/-]
     mode: ContinuousDelivery
-    label: ''
+    tag: ''
     increment: Patch
     prevent-increment-of-merged-branch-version: true
     track-merge-target: false
@@ -457,15 +457,15 @@ The header for all the individual branch configuration.
 
 Same as for the [global configuration, explained above](#mode).
 
-### label
+### tag
 
-The pre release label to use for this branch. Use the value `useBranchName` to use
+The pre release tag to use for this branch. Use the value `useBranchName` to use
 the branch name instead. For example `feature/foo` would become a pre-release
-label of `foo` with this value. Use the value `{BranchName}` as a placeholder to
-insert the branch name. For example `feature/foo` would become a pre-release label
+tag of `foo` with this value. Use the value `{BranchName}` as a placeholder to
+insert the branch name. For example `feature/foo` would become a pre-release tag
 of `alpha.foo` with the value of `alpha.{BranchName}`.
 
-**Note:** To clear a default use an empty string: `label: ''`
+**Note:** To clear a default use an empty string: `tag: ''`
 
 ### increment
 
@@ -482,15 +482,15 @@ In a GitFlow-based repository, setting this option can have implications on the
 better version source proposed by the `MergeMessageBaseVersionStrategy`. For
 more details and an in-depth analysis, please see [the discussion][2506].
 
-### label-number-pattern
+### tag-number-pattern
 
 Pull requests require us to extract the pre-release number out of the branch
 name so `refs/pulls/534/merge` builds as `PullRequest.534`. This is a regex with
 a named capture group called `number`.
 
 If the branch `mode` is set to `ContinuousDeployment`, then the extracted
-`number` is appended to the name of the pre-release label and the number portion
-is the number of commits since the last label. This enables consecutive commits to
+`number` is appended to the name of the pre-release tag and the number portion
+is the number of commits since the last tag. This enables consecutive commits to
 the pull request branch to generate unique full semantic version numbers when
 the branch is configured to use ContinuousDeployment mode.
 
@@ -500,10 +500,10 @@ the branch is configured to use ContinuousDeployment mode.
 branches:
   pull-request:
     mode: ContinuousDeployment
-    label: PullRequest
+    tag: PullRequest
     increment: Inherit
     track-merge-target: true
-    label-number-pattern: '[/-](?<number>\d+)[-/]'
+    tag-number-pattern: '[/-](?<number>\d+)[-/]'
 ```
 
 ### track-merge-target

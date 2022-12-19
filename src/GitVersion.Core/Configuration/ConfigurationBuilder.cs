@@ -5,7 +5,7 @@ namespace GitVersion.Configuration;
 
 public class ConfigurationBuilder
 {
-    private const int DefaultLabelPreReleaseWeight = 60000;
+    private const int DefaultTagPreReleaseWeight = 60000;
 
     private readonly List<GitVersionConfiguration> overrides = new();
 
@@ -40,14 +40,14 @@ public class ConfigurationBuilder
         targetConfig.AssemblyVersioningFormat = overrideConfiguration.AssemblyVersioningFormat ?? targetConfig.AssemblyVersioningFormat;
         targetConfig.AssemblyFileVersioningFormat = overrideConfiguration.AssemblyFileVersioningFormat ?? targetConfig.AssemblyFileVersioningFormat;
         targetConfig.VersioningMode = overrideConfiguration.VersioningMode ?? targetConfig.VersioningMode;
-        targetConfig.LabelPrefix = overrideConfiguration.LabelPrefix ?? targetConfig.LabelPrefix;
-        targetConfig.ContinuousDeploymentFallbackLabel = overrideConfiguration.ContinuousDeploymentFallbackLabel ?? targetConfig.ContinuousDeploymentFallbackLabel;
+        targetConfig.TagPrefix = overrideConfiguration.TagPrefix ?? targetConfig.TagPrefix;
+        targetConfig.ContinuousDeploymentFallbackTag = overrideConfiguration.ContinuousDeploymentFallbackTag ?? targetConfig.ContinuousDeploymentFallbackTag;
         targetConfig.NextVersion = overrideConfiguration.NextVersion ?? targetConfig.NextVersion;
         targetConfig.MajorVersionBumpMessage = overrideConfiguration.MajorVersionBumpMessage ?? targetConfig.MajorVersionBumpMessage;
         targetConfig.MinorVersionBumpMessage = overrideConfiguration.MinorVersionBumpMessage ?? targetConfig.MinorVersionBumpMessage;
         targetConfig.PatchVersionBumpMessage = overrideConfiguration.PatchVersionBumpMessage ?? targetConfig.PatchVersionBumpMessage;
         targetConfig.NoBumpMessage = overrideConfiguration.NoBumpMessage ?? targetConfig.NoBumpMessage;
-        targetConfig.LabelPreReleaseWeight = overrideConfiguration.LabelPreReleaseWeight ?? targetConfig.LabelPreReleaseWeight;
+        targetConfig.TagPreReleaseWeight = overrideConfiguration.TagPreReleaseWeight ?? targetConfig.TagPreReleaseWeight;
         targetConfig.CommitMessageIncrementing = overrideConfiguration.CommitMessageIncrementing ?? targetConfig.CommitMessageIncrementing;
         targetConfig.Increment = overrideConfiguration.Increment ?? targetConfig.Increment;
         targetConfig.CommitDateFormat = overrideConfiguration.CommitDateFormat ?? targetConfig.CommitDateFormat;
@@ -176,9 +176,9 @@ public class ConfigurationBuilder
         {
             AssemblyVersioningScheme = AssemblyVersioningScheme.MajorMinorPatch,
             AssemblyFileVersioningScheme = AssemblyFileVersioningScheme.MajorMinorPatch,
-            LabelPrefix = GitVersionConfiguration.DefaultLabelPrefix,
+            TagPrefix = GitVersionConfiguration.DefaultTagPrefix,
             VersioningMode = VersioningMode.ContinuousDelivery,
-            ContinuousDeploymentFallbackLabel = "ci",
+            ContinuousDeploymentFallbackTag = "ci",
             MajorVersionBumpMessage = IncrementStrategyFinder.DefaultMajorPattern,
             MinorVersionBumpMessage = IncrementStrategyFinder.DefaultMinorPattern,
             PatchVersionBumpMessage = IncrementStrategyFinder.DefaultPatchPattern,
@@ -187,7 +187,7 @@ public class ConfigurationBuilder
             CommitDateFormat = "yyyy-MM-dd",
             UpdateBuildNumber = true,
             SemanticVersionFormat = SemanticVersionFormat.Strict,
-            LabelPreReleaseWeight = DefaultLabelPreReleaseWeight,
+            TagPreReleaseWeight = DefaultTagPreReleaseWeight,
             Increment = IncrementStrategy.Inherit
         };
 
@@ -197,7 +197,7 @@ public class ConfigurationBuilder
                 Increment = IncrementStrategy.Minor,
                 Regex = GitVersionConfiguration.DevelopBranchRegex,
                 SourceBranches = new HashSet<string>(),
-                Label = "alpha",
+                Tag = "alpha",
                 PreventIncrementOfMergedBranchVersion = false,
                 TrackMergeTarget = true,
                 TracksReleaseBranches = true,
@@ -215,7 +215,7 @@ public class ConfigurationBuilder
                     GitVersionConfiguration.DevelopBranchKey,
                     GitVersionConfiguration.ReleaseBranchKey
                 },
-                Label = string.Empty,
+                Tag = string.Empty,
                 PreventIncrementOfMergedBranchVersion = true,
                 TrackMergeTarget = false,
                 TracksReleaseBranches = false,
@@ -235,7 +235,7 @@ public class ConfigurationBuilder
                     GitVersionConfiguration.SupportBranchKey,
                     GitVersionConfiguration.ReleaseBranchKey
                 },
-                Label = "beta",
+                Tag = "beta",
                 PreventIncrementOfMergedBranchVersion = true,
                 TrackMergeTarget = false,
                 TracksReleaseBranches = false,
@@ -257,7 +257,7 @@ public class ConfigurationBuilder
                     GitVersionConfiguration.SupportBranchKey,
                     GitVersionConfiguration.HotfixBranchKey
                 },
-                Label = "{BranchName}",
+                Tag = "{BranchName}",
                 PreReleaseWeight = 30000
             });
 
@@ -274,8 +274,8 @@ public class ConfigurationBuilder
                     GitVersionConfiguration.SupportBranchKey,
                     GitVersionConfiguration.HotfixBranchKey
                 },
-                Label = "PullRequest",
-                LabelNumberPattern = @"[/-](?<number>\d+)",
+                Tag = "PullRequest",
+                TagNumberPattern = @"[/-](?<number>\d+)",
                 PreReleaseWeight = 30000
             });
 
@@ -290,7 +290,7 @@ public class ConfigurationBuilder
                     GitVersionConfiguration.SupportBranchKey,
                     GitVersionConfiguration.HotfixBranchKey
                 },
-                Label = "beta",
+                Tag = "beta",
                 PreReleaseWeight = 30000
             });
 
@@ -300,7 +300,7 @@ public class ConfigurationBuilder
                 Increment = IncrementStrategy.Patch,
                 Regex = GitVersionConfiguration.SupportBranchRegex,
                 SourceBranches = new HashSet<string> { GitVersionConfiguration.MainBranchKey },
-                Label = string.Empty,
+                Tag = string.Empty,
                 PreventIncrementOfMergedBranchVersion = true,
                 TrackMergeTarget = false,
                 TracksReleaseBranches = false,

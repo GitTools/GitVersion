@@ -15,10 +15,10 @@ public class BranchConfiguration
     public BranchConfiguration(BranchConfiguration branchConfiguration)
     {
         VersioningMode = branchConfiguration.VersioningMode;
-        Label = branchConfiguration.Label;
+        Tag = branchConfiguration.Tag;
         Increment = branchConfiguration.Increment;
         PreventIncrementOfMergedBranchVersion = branchConfiguration.PreventIncrementOfMergedBranchVersion;
-        LabelNumberPattern = branchConfiguration.LabelNumberPattern;
+        TagNumberPattern = branchConfiguration.TagNumberPattern;
         TrackMergeTarget = branchConfiguration.TrackMergeTarget;
         CommitMessageIncrementing = branchConfiguration.CommitMessageIncrementing;
         TracksReleaseBranches = branchConfiguration.TracksReleaseBranches;
@@ -37,8 +37,8 @@ public class BranchConfiguration
     /// <summary>
     /// Special value 'useBranchName' will extract the tag from the branch name
     /// </summary>
-    [YamlMember(Alias = "label")]
-    public string? Label { get; set; }
+    [YamlMember(Alias = "tag")]
+    public string? Tag { get; set; }
 
     [YamlMember(Alias = "increment")]
     public IncrementStrategy? Increment { get; set; }
@@ -52,9 +52,9 @@ public class BranchConfiguration
         if (result.Increment is null || result.Increment == IncrementStrategy.Inherit)
             result.Increment = parentConfig.Increment;
         result.VersioningMode ??= parentConfig.VersioningMode;
-        result.Label ??= parentConfig.Label;
+        result.Tag ??= parentConfig.Tag;
         result.PreventIncrementOfMergedBranchVersion ??= parentConfig.PreventIncrementOfMergedBranchVersion;
-        result.LabelNumberPattern ??= parentConfig.LabelNumberPattern;
+        result.TagNumberPattern ??= parentConfig.TagNumberPattern;
         result.TrackMergeTarget ??= parentConfig.TrackMergeTarget;
         result.CommitMessageIncrementing ??= parentConfig.CommitMessageIncrementing;
         result.Regex ??= parentConfig.Regex;
@@ -71,8 +71,8 @@ public class BranchConfiguration
     [YamlMember(Alias = "prevent-increment-of-merged-branch-version")]
     public bool? PreventIncrementOfMergedBranchVersion { get; set; }
 
-    [YamlMember(Alias = "label-number-pattern")]
-    public string? LabelNumberPattern { get; set; }
+    [YamlMember(Alias = "tag-number-pattern")]
+    public string? TagNumberPattern { get; set; }
 
     [YamlMember(Alias = "track-merge-target")]
     public bool? TrackMergeTarget { get; set; }
@@ -112,10 +112,10 @@ public class BranchConfiguration
         if (targetConfig == null) throw new ArgumentNullException(nameof(targetConfig));
 
         targetConfig.VersioningMode = VersioningMode ?? targetConfig.VersioningMode;
-        targetConfig.Label = Label ?? targetConfig.Label;
+        targetConfig.Tag = Tag ?? targetConfig.Tag;
         targetConfig.Increment = Increment ?? targetConfig.Increment;
         targetConfig.PreventIncrementOfMergedBranchVersion = PreventIncrementOfMergedBranchVersion ?? targetConfig.PreventIncrementOfMergedBranchVersion;
-        targetConfig.LabelNumberPattern = LabelNumberPattern ?? targetConfig.LabelNumberPattern;
+        targetConfig.TagNumberPattern = TagNumberPattern ?? targetConfig.TagNumberPattern;
         targetConfig.TrackMergeTarget = TrackMergeTarget ?? targetConfig.TrackMergeTarget;
         targetConfig.CommitMessageIncrementing = CommitMessageIncrementing ?? targetConfig.CommitMessageIncrementing;
         targetConfig.Regex = Regex ?? targetConfig.Regex;
