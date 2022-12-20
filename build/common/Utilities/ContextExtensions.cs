@@ -75,7 +75,7 @@ public static class ContextExtensions
         var outputStr = string.Concat(output);
         context.Information(outputStr);
 
-        Assert.Equal(expected, expected);
+        Assert.Equal(expected, outputStr);
     }
 
     public static bool IsEnabled(this ICakeContext context, string envVar, bool nullOrEmptyAsEnabled = true)
