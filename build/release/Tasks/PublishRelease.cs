@@ -47,7 +47,7 @@ public class PublishReleaseInternal : FrostingTask<BuildContext>
             Milestone = milestone,
             Name = milestone,
             Prerelease = false,
-            TargetCommitish = "main"
+            TargetCommitish = Constants.DefaultBranch
         });
 
         context.GitReleaseManagerAddAssets(token, Constants.RepoOwner, Constants.Repository, milestone, assets);

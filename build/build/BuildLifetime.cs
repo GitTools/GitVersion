@@ -1,4 +1,5 @@
 using Build.Utilities;
+using Common.Lifetime;
 using Common.Utilities;
 
 namespace Build;
@@ -9,7 +10,7 @@ public class BuildLifetime : BuildLifetimeBase<BuildContext>
     {
         base.Setup(context, info);
 
-        context.MsBuildConfiguration = context.Argument(Arguments.Configuration, "Release");
+        context.MsBuildConfiguration = context.Argument(Arguments.Configuration, Constants.DefaultConfiguration);
         context.EnabledUnitTests = context.IsEnabled(EnvVars.EnabledUnitTests);
 
         context.Credentials = Credentials.GetCredentials(context);

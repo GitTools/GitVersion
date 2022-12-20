@@ -1,4 +1,5 @@
 using Cake.Wyam;
+using Common.Lifetime;
 using Common.Utilities;
 using Docs.Utilities;
 

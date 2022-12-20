@@ -52,7 +52,7 @@ public static class ContextExtensions
     public static bool IsMainBranch(this ICakeContext context)
     {
         var repositoryBranch = GetBranchName(context);
-        return !string.IsNullOrWhiteSpace(repositoryBranch) && StringComparer.OrdinalIgnoreCase.Equals("main", repositoryBranch);
+        return !string.IsNullOrWhiteSpace(repositoryBranch) && StringComparer.OrdinalIgnoreCase.Equals(Constants.DefaultBranch, repositoryBranch);
     }
 
     public static bool IsSupportBranch(this ICakeContext context)
@@ -163,4 +163,7 @@ public static class ContextExtensions
     private static void StartGroup(this IAzurePipelinesCommands _, ICakeContext context, string title) => context.Information("##[group]{0}", title);
 
     private static void EndGroup(this IAzurePipelinesCommands _, ICakeContext context) => context.Information("##[endgroup]");
+
+    public static FilePath? GetGitVersionToolLocation(this ICakeContext context) =>
+        context.GetFiles($"src/GitVersion.App/bin/{Constants.DefaultConfiguration}/{Constants.NetVersion60}/gitversion.dll").SingleOrDefault();
 }

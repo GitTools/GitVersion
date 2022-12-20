@@ -1,7 +1,8 @@
 using Cake.Incubator.LoggingExtensions;
 using Common.Addins.GitVersion;
+using Common.Utilities;
 
-namespace Common.Utilities;
+namespace Common.Lifetime;
 
 public class BuildLifetimeBase<T> : FrostingLifetime<T> where T : BuildContextBase
 {

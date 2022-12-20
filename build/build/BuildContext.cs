@@ -5,7 +5,7 @@ namespace Build;
 
 public class BuildContext : BuildContextBase
 {
-    public string MsBuildConfiguration { get; set; } = "Release";
+    public string MsBuildConfiguration { get; set; } = Constants.DefaultConfiguration;
 
     public readonly Dictionary<PlatformFamily, string[]> NativeRuntimes = new()
     {
