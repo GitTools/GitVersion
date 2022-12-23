@@ -1,5 +1,5 @@
 using Cake.Git;
-using Cake.Wyam;
+using Common.Addins.Cake.Wyam;
 using Common.Utilities;
 
 namespace Docs.Tasks;

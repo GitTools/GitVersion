@@ -1,4 +1,4 @@
-using Cake.Wyam;
+using Common.Addins.Cake.Wyam;
 using Common.Utilities;
 using Docs.Utilities;
 

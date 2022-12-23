@@ -2,10 +2,11 @@ name: Verify & Publish Docs
 
 on:
   workflow_dispatch:
+  repository_dispatch:
+    types: [release]
   push:
     branches:
-    # - main
-    - 'support/*'
+    - main
     paths:
     - docs/**
     - package*.json
@@ -15,8 +16,7 @@ on:
     - .github/workflows/docs.yml
   pull_request:
     branches:
-    # - main
-    - 'support/*'
+    - main
     paths:
     - docs/**
     - package*.json

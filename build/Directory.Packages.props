@@ -12,7 +12,6 @@
     <PackageVersion Include="Cake.Docker" Version="1.1.2" />
     <PackageVersion Include="Cake.Git" Version="2.0.0" />
     <PackageVersion Include="Cake.Json" Version="7.0.1" />
-    <PackageVersion Include="Cake.Wyam2" Version="3.0.0" />
     <PackageVersion Include="xunit.assert" Version="2.4.2" />
   </ItemGroup>
 </Project>

@@ -8,6 +8,5 @@
     </ItemGroup>
     <ItemGroup>
         <PackageReference Include="Cake.Git" />
-        <PackageReference Include="Cake.Wyam2" />
     </ItemGroup>
 </Project>
