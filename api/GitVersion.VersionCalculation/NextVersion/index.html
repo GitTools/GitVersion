@@ -84,6 +84,7 @@
 <p><a href="#Constructors">Constructors</a></p>
 <p><a href="#Properties">Properties</a></p>
 <p><a href="#Methods">Methods</a></p>
+<p><a href="#Operators">Operators</a></p>
 <p><a href="#ExtensionMethods">Extension Methods</a></p>
 <hr class="infobar-hidden">
 </div>
@@ -146,18 +147,10 @@
 			<li class="header">Namespace</li>
 		<li><a href="/api/GitVersion.VersionCalculation">GitVersion<wbr>.VersionCalculation</a></li>
 		<li role="separator" class="divider"></li>
-			<li class="header">Interface Types</li>
-				<li><a href="/api/GitVersion.VersionCalculation/IBaseVersionCalculator">I<wbr>Base<wbr>Version<wbr>Calculator</a></li>
-				<li><a href="/api/GitVersion.VersionCalculation/IIncrementStrategyFinder">I<wbr>Increment<wbr>Strategy<wbr>Finder</a></li>
-				<li><a href="/api/GitVersion.VersionCalculation/IMainlineVersionCalculator">I<wbr>Mainline<wbr>Version<wbr>Calculator</a></li>
-				<li><a href="/api/GitVersion.VersionCalculation/INextVersionCalculator">I<wbr>Next<wbr>Version<wbr>Calculator</a></li>
-				<li><a href="/api/GitVersion.VersionCalculation/IVariableProvider">IVariableProvider</a></li>
-				<li><a href="/api/GitVersion.VersionCalculation/IVersionFilter">IVersionFilter</a></li>
-				<li><a href="/api/GitVersion.VersionCalculation/IVersionStrategy">IVersionStrategy</a></li>
 			<li class="header">Class Types</li>
 				<li><a href="/api/GitVersion.VersionCalculation/BaseVersion">BaseVersion</a></li>
-				<li><a href="/api/GitVersion.VersionCalculation/BaseVersionCalculator">Base<wbr>Version<wbr>Calculator</a></li>
 				<li><a href="/api/GitVersion.VersionCalculation/ConfigNextVersionVersionStrategy">Config<wbr>Next<wbr>Version<wbr>Version<wbr>Strategy</a></li>
+				<li><a href="/api/GitVersion.VersionCalculation/EffectiveBranchConfigurationFinder">Effective<wbr>Branch<wbr>Configuration<wbr>Finder</a></li>
 				<li><a href="/api/GitVersion.VersionCalculation/FallbackVersionStrategy">Fallback<wbr>Version<wbr>Strategy</a></li>
 				<li><a href="/api/GitVersion.VersionCalculation/IncrementStrategyFinder">Increment<wbr>Strategy<wbr>Finder</a></li>
 				<li><a href="/api/GitVersion.VersionCalculation/MergeMessageVersionStrategy">Merge<wbr>Message<wbr>Version<wbr>Strategy</a></li>
@@ -172,6 +165,14 @@
 				<li><a href="/api/GitVersion.VersionCalculation/VersionInBranchNameVersionStrategy">Version<wbr>In<wbr>Branch<wbr>Name<wbr>Version<wbr>Strategy</a></li>
 				<li><a href="/api/GitVersion.VersionCalculation/VersionStrategyBase">VersionStrategyBase</a></li>
 				<li><a href="/api/GitVersion.VersionCalculation/VersionStrategyModule">Version<wbr>Strategy<wbr>Module</a></li>
+			<li class="header">Interface Types</li>
+				<li><a href="/api/GitVersion.VersionCalculation/IEffectiveBranchConfigurationFinder">I<wbr>Effective<wbr>Branch<wbr>Configuration<wbr>Finder</a></li>
+				<li><a href="/api/GitVersion.VersionCalculation/IIncrementStrategyFinder">I<wbr>Increment<wbr>Strategy<wbr>Finder</a></li>
+				<li><a href="/api/GitVersion.VersionCalculation/IMainlineVersionCalculator">I<wbr>Mainline<wbr>Version<wbr>Calculator</a></li>
+				<li><a href="/api/GitVersion.VersionCalculation/INextVersionCalculator">I<wbr>Next<wbr>Version<wbr>Calculator</a></li>
+				<li><a href="/api/GitVersion.VersionCalculation/IVariableProvider">IVariableProvider</a></li>
+				<li><a href="/api/GitVersion.VersionCalculation/IVersionFilter">IVersionFilter</a></li>
+				<li><a href="/api/GitVersion.VersionCalculation/IVersionStrategy">IVersionStrategy</a></li>
 			<li class="header">Enum Types</li>
 				<li><a href="/api/GitVersion.VersionCalculation/CommitMessageIncrementMode">Commit<wbr>Message<wbr>Increment<wbr>Mode</a></li>
 				<li><a href="/api/GitVersion.VersionCalculation/VersioningMode">VersioningMode</a></li>
@@ -204,11 +205,17 @@
 								<dt>Namespace</dt>
 								<dd><a href="/api/GitVersion.VersionCalculation">GitVersion<wbr>.VersionCalculation</a></dd>
 											
+								<dt>Interfaces</dt>
+								<dd>
+									<ul class="list-unstyled">
+											<li>IEquatable<wbr>&lt;<a href="/api/GitVersion.VersionCalculation/NextVersion">NextVersion</a>&gt;<wbr></li>								
+									</ul>
+								</dd>
 							
 								<dt>Base Types</dt>
 								<dd>
 									<ul class="list-unstyled">										
-											<li>object</li>								
+											<li>IComparable<wbr>&lt;<a href="/api/GitVersion.VersionCalculation/NextVersion">NextVersion</a>&gt;<wbr></li>								
 									</ul>
 								</dd>				
 							
@@ -218,7 +225,8 @@
 					<div class="col-md-6">
 						<div class="mermaid">
 							graph BT
-	Type--&gt;Base0["object"]
+	Type--&gt;Base0["IComparable&lt;NextVersion&gt;"]
+	Type-.-&gt;Interface0["IEquatable&lt;NextVersion&gt;"]
 	Type["NextVersion"]
 class Type type-node
 
@@ -229,7 +237,7 @@ class Type type-node
 		</div>
 
 	<h1 id="Syntax">Syntax</h1>
-	<pre><code>public class NextVersion</code></pre>
+	<pre><code>public class NextVersion : IComparable&lt;NextVersion&gt;, IEquatable&lt;NextVersion&gt;</code></pre>
 
 
 
@@ -248,11 +256,11 @@ class Type type-node
 							</tr>
 						</thead>
 							<tbody><tr>
-								<td><a href="/api/GitVersion.VersionCalculation/NextVersion/8ADB2101">NextVersion<wbr>(SemanticVersion, <wbr>BaseVersion, <wbr>Effective<wbr>Branch<wbr>Configuration)<wbr></a></td>
+								<td><a href="/api/GitVersion.VersionCalculation/NextVersion/4FF14D6D">NextVersion<wbr>(SemanticVersion, <wbr>BaseVersion, <wbr>Effective<wbr>Branch<wbr>Configuration)<wbr></a></td>
 									<td></td>
 							</tr>
 							<tr>
-								<td><a href="/api/GitVersion.VersionCalculation/NextVersion/A7EAE6FE">NextVersion<wbr>(SemanticVersion, <wbr>BaseVersion, <wbr>IBranch, <wbr>Effective<wbr>Configuration)<wbr></a></td>
+								<td><a href="/api/GitVersion.VersionCalculation/NextVersion/AABBF75F">NextVersion<wbr>(SemanticVersion, <wbr>BaseVersion, <wbr>IBranch, <wbr>Effective<wbr>Configuration)<wbr></a></td>
 									<td></td>
 							</tr>
 					</tbody></table>
@@ -289,7 +297,7 @@ class Type type-node
 							</tr>
 							<tr>
 								<td><a href="/api/GitVersion.VersionCalculation/NextVersion/D1312F17">Configuration</a></td>
-								<td><a href="/api/GitVersion.Model.Configuration/EffectiveConfiguration">Effective<wbr>Configuration</a></td>
+								<td><a href="/api/GitVersion.Configuration/EffectiveConfiguration">Effective<wbr>Configuration</a></td>
 								<td>
 									<div></div>
 								</td>
@@ -318,6 +326,34 @@ class Type type-node
 							</tr>
 						</thead>
 							<tbody><tr>
+								<td><a href="/api/GitVersion.VersionCalculation/NextVersion/2438A125">CompareTo<wbr>(NextVersion)<wbr></a></td>
+								<td>int</td>
+								<td>
+									<div></div>
+								</td>
+							</tr>
+							<tr>
+								<td><a href="/api/GitVersion.VersionCalculation/NextVersion/7A4BC219">Equals<wbr>(NextVersion)<wbr></a></td>
+								<td>bool</td>
+								<td>
+									<div></div>
+								</td>
+							</tr>
+							<tr>
+								<td><a href="/api/GitVersion.VersionCalculation/NextVersion/FEEC8331">Equals<wbr>(object)<wbr></a></td>
+								<td>bool</td>
+								<td>
+									<div></div>
+								</td>
+							</tr>
+							<tr>
+								<td><a href="/api/GitVersion.VersionCalculation/NextVersion/BD1ED454">GetHashCode<wbr>()<wbr></a></td>
+								<td>int</td>
+								<td>
+									<div></div>
+								</td>
+							</tr>
+							<tr>
 								<td><a href="/api/GitVersion.VersionCalculation/NextVersion/F8EA5A1E">ToString<wbr>()<wbr></a></td>
 								<td>string</td>
 								<td>
@@ -329,6 +365,63 @@ class Type type-node
 			</div>
 		
 
+			<h1 id="Operators">Operators</h1>
+			<div class="box">
+				<div class="box-body no-padding table-responsive">
+					<table class="table table-striped table-hover three-cols">
+						<thead>
+							<tr>
+								<th>Name</th>
+								<th>Value</th>
+								<th>Summary</th>
+							</tr>
+						</thead>
+							<tbody><tr>
+								<td>operator !=<wbr>(NextVersion, <wbr>NextVersion)<wbr></td>
+								<td>bool</td>
+								<td>
+									<div></div>
+								</td>
+							</tr>
+							<tr>
+								<td>operator <wbr>&lt;<wbr>(NextVersion, <wbr>NextVersion)<wbr></td>
+								<td>bool</td>
+								<td>
+									<div></div>
+								</td>
+							</tr>
+							<tr>
+								<td>operator <wbr>&lt;=<wbr>(NextVersion, <wbr>NextVersion)<wbr></td>
+								<td>bool</td>
+								<td>
+									<div></div>
+								</td>
+							</tr>
+							<tr>
+								<td>operator ==<wbr>(NextVersion, <wbr>NextVersion)<wbr></td>
+								<td>bool</td>
+								<td>
+									<div></div>
+								</td>
+							</tr>
+							<tr>
+								<td>operator &gt;<wbr><wbr>(NextVersion, <wbr>NextVersion)<wbr></td>
+								<td>bool</td>
+								<td>
+									<div></div>
+								</td>
+							</tr>
+							<tr>
+								<td>operator &gt;<wbr>=<wbr>(NextVersion, <wbr>NextVersion)<wbr></td>
+								<td>bool</td>
+								<td>
+									<div></div>
+								</td>
+							</tr>
+					</tbody></table>
+				</div>
+			</div>
+		
 
 			<h1 id="ExtensionMethods">Extension Methods</h1>
 			<div class="box">

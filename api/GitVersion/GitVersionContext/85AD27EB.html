@@ -80,7 +80,8 @@
             <aside class="main-sidebar ">
                 <section class="infobar" data-spy="affix" data-offset-top="60" data-offset-bottom="200"> 
                     	
-	<div id="infobar-headings"><h6>On This Page</h6><p><a href="#Syntax">Syntax</a></p>
+	<div id="infobar-headings"><h6>On This Page</h6><p><a href="#Summary">Summary</a></p>
+<p><a href="#Syntax">Syntax</a></p>
 <p><a href="#Value">Value</a></p>
 <hr class="infobar-hidden">
 </div>
@@ -146,15 +147,16 @@
 		<li><a href="/api/GitVersion/GitVersionContext">GitVersionContext</a></li>
 		<li role="separator" class="divider"></li>
 			<li class="header">Constructors</li>
-				<li><a href="/api/GitVersion/GitVersionContext/A67F3498">GitVersionContext<wbr>(IBranch, <wbr>ICommit, <wbr>Config, <wbr>Effective<wbr>Configuration, <wbr>SemanticVersion, <wbr>int)<wbr></a></li>
+				<li><a href="/api/GitVersion/GitVersionContext/30E24DCE">GitVersionContext<wbr>(IBranch, <wbr>ICommit, <wbr>Git<wbr>Version<wbr>Configuration, <wbr>SemanticVersion, <wbr>int)<wbr></a></li>
 			<li class="header">Property Members</li>
 				<li class="selected"><a href="/api/GitVersion/GitVersionContext/85AD27EB">Configuration</a></li>
 				<li><a href="/api/GitVersion/GitVersionContext/E38DC9DC">CurrentBranch</a></li>
 				<li><a href="/api/GitVersion/GitVersionContext/51B89B29">CurrentCommit</a></li>
 				<li><a href="/api/GitVersion/GitVersionContext/DF677C7F">Current<wbr>Commit<wbr>Tagged<wbr>Version</a></li>
-				<li><a href="/api/GitVersion/GitVersionContext/1AFCF448">FullConfiguration</a></li>
 				<li><a href="/api/GitVersion/GitVersionContext/BD1F424D">Is<wbr>Current<wbr>Commit<wbr>Tagged</a></li>
 				<li><a href="/api/GitVersion/GitVersionContext/FBF54ECC">Number<wbr>Of<wbr>Uncommitted<wbr>Changes</a></li>
+			<li class="header">Method Members</li>
+				<li><a href="/api/GitVersion/GitVersionContext/CADDE005">Get<wbr>Effective<wbr>Configuration<wbr>(IBranch)<wbr></a></li>
 
 
                     </ul>
@@ -175,7 +177,11 @@
 <section class="content">
 	
 	
-	
+		<h1 id="Summary">Summary</h1>
+	<div class="lead">
+    Contains the raw configuration, use Configuration for specific configuration based on the current GitVersion context.
+    </div>
+
 		<div class="panel panel-default">
   			<div class="panel-body">
 				<dl class="dl-horizontal">	
@@ -191,7 +197,7 @@
 		</div>
 
 	<h1 id="Syntax">Syntax</h1>
-	<pre><code>public EffectiveConfiguration Configuration { get; }</code></pre>
+	<pre><code>public GitVersionConfiguration Configuration { get; }</code></pre>
 
 
 
@@ -208,7 +214,7 @@
 					</tr>
 				</thead>
 				<tbody><tr>
-					<td><a href="/api/GitVersion.Model.Configuration/EffectiveConfiguration">Effective<wbr>Configuration</a></td>
+					<td><a href="/api/GitVersion.Configuration/GitVersionConfiguration">Git<wbr>Version<wbr>Configuration</a></td>
 					<td></td>
 				</tr>
 			</tbody></table>
