@@ -3,15 +3,10 @@
         <TargetFramework>net7.0</TargetFramework>
         <RootNamespace>GitVersion</RootNamespace>
 
-        <LangVersion>preview</LangVersion>
+        <LangVersion>latest</LangVersion>
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
         <NoWarn>8625;2254</NoWarn>
-    </PropertyGroup>
-
-    <PropertyGroup>
-        <PackageVersion_LibGit2Sharp>0.27.0-preview-0175</PackageVersion_LibGit2Sharp>
-        <PackageVersion_LibGit2Sharp_NativeBinaries>2.0.315-alpha.0.9</PackageVersion_LibGit2Sharp_NativeBinaries>
     </PropertyGroup>
 
     <ItemGroup>
