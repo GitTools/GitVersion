@@ -47,7 +47,7 @@ assembly-informational-format: '{InformationalVersion}'
 mode: ContinuousDelivery
 increment: Inherit
 continuous-delivery-fallback-label: ci
-label-prefix: '[vV]'
+tag-prefix: '[vV]'
 major-version-bump-message: '\+semver:\s?(breaking|major)'
 minor-version-bump-message: '\+semver:\s?(feature|minor)'
 patch-version-bump-message: '\+semver:\s?(fix|patch)'
@@ -161,7 +161,7 @@ continuous-delivery-fallback-label: ''
 
 Doing so can be helpful if you use your `main` branch as a `release` branch.
 
-### label-prefix
+### tag-prefix
 
 A regex which is used to trim Git tags before processing (e.g., v1.0.0). Default
 is `[vV]`, although this is just for illustrative purposes as we do a IgnoreCase
