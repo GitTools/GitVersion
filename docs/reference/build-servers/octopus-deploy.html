@@ -270,7 +270,7 @@ will tag and push the tag.</p>
 <pre><code class="language-powershell">[CmdletBinding()]
 param()
 
-##### Config #####
+##### <a href="/api/GitVersion.Model.Configuration/Config">Config</a> #####
 # Path to GitVersion.exe
 $gitversion = "tools\GitVersion\GitVersion.exe"
 function Create-AdditionalReleaseArtifacts
@@ -279,7 +279,7 @@ function Create-AdditionalReleaseArtifacts
 
  # Put any custom release logic here (like generating release notes?)
 }
-### END Config ###
+### END <a href="/api/GitVersion.Model.Configuration/Config">Config</a> ###
 
 $ErrorActionPreference = "Stop"
 trap

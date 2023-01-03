@@ -147,6 +147,7 @@
 				<a href="/api/GitVersion">GitVersion</a> <a href="#" class="expand"></a>
 				<ul class="treeview-menu">
 						<li><a href="/api/GitVersion.BuildAgents">GitVersion<wbr>.BuildAgents</a></li>
+			<li><a href="/api/GitVersion.Cache">GitVersion<wbr>.Cache</a></li>
 			<li><a href="/api/GitVersion.Common">GitVersion<wbr>.Common</a></li>
 
 				<li class="treeview active selected">
@@ -162,6 +163,12 @@
 			<li><a href="/api/GitVersion.Helpers">GitVersion<wbr>.Helpers</a></li>
 			<li><a href="/api/GitVersion.Logging">GitVersion<wbr>.Logging</a></li>
 
+				<li class="treeview">
+				<a href="/api/GitVersion.Model">GitVersion<wbr>.Model</a> <a href="#" class="expand"></a>
+				<ul class="treeview-menu">
+						<li><a href="/api/GitVersion.Model.Configuration">GitVersion<wbr>.Model<wbr>.Configuration</a></li>
+			<li><a href="/api/GitVersion.Model.Exceptions">GitVersion<wbr>.Model<wbr>.Exceptions</a></li>
+</ul></li>
 				<li class="treeview">
 				<a href="/api/GitVersion.MsBuild">GitVersion<wbr>.MsBuild</a> <a href="#" class="expand"></a>
 				<ul class="treeview-menu">
@@ -223,11 +230,15 @@
 							</tr>
 						</thead>
 							<tbody><tr>
-								<td><a href="/api/GitVersion.Configuration/IConfigurationFileLocator">I<wbr>Configuration<wbr>File<wbr>Locator</a></td>
+								<td><a href="/api/GitVersion.Configuration/IBranchConfigurationCalculator">I<wbr>Branch<wbr>Configuration<wbr>Calculator</a></td>
 									<td></td>
 							</tr>
 							<tr>
-								<td><a href="/api/GitVersion.Configuration/IConfigurationProvider">I<wbr>Configuration<wbr>Provider</a></td>
+								<td><a href="/api/GitVersion.Configuration/IConfigFileLocator">IConfigFileLocator</a></td>
+									<td></td>
+							</tr>
+							<tr>
+								<td><a href="/api/GitVersion.Configuration/IConfigProvider">IConfigProvider</a></td>
 									<td></td>
 							</tr>
 					</tbody></table>
@@ -246,7 +257,23 @@
 							</tr>
 						</thead>
 							<tbody><tr>
-								<td><a href="/api/GitVersion.Configuration/BranchConfiguration">BranchConfiguration</a></td>
+								<td><a href="/api/GitVersion.Configuration/BranchConfigurationCalculator">Branch<wbr>Configuration<wbr>Calculator</a></td>
+									<td></td>
+							</tr>
+							<tr>
+								<td><a href="/api/GitVersion.Configuration/ConfigExtensions">ConfigExtensions</a></td>
+									<td></td>
+							</tr>
+							<tr>
+								<td><a href="/api/GitVersion.Configuration/ConfigFileLocator">ConfigFileLocator</a></td>
+									<td></td>
+							</tr>
+							<tr>
+								<td><a href="/api/GitVersion.Configuration/ConfigProvider">ConfigProvider</a></td>
+									<td></td>
+							</tr>
+							<tr>
+								<td><a href="/api/GitVersion.Configuration/ConfigSerializer">ConfigSerializer</a></td>
 									<td></td>
 							</tr>
 							<tr>
@@ -258,42 +285,7 @@
 									<td></td>
 							</tr>
 							<tr>
-								<td><a href="/api/GitVersion.Configuration/ConfigurationExtensions">Configuration<wbr>Extensions</a></td>
-									<td></td>
-							</tr>
-							<tr>
-								<td><a href="/api/GitVersion.Configuration/ConfigurationFileLocator">Configuration<wbr>File<wbr>Locator</a></td>
-									<td></td>
-							</tr>
-							<tr>
 								<td><a href="/api/GitVersion.Configuration/ConfigurationModule">ConfigurationModule</a></td>
-									<td></td>
-							</tr>
-							<tr>
-								<td><a href="/api/GitVersion.Configuration/ConfigurationProvider">Configuration<wbr>Provider</a></td>
-									<td></td>
-							</tr>
-							<tr>
-								<td><a href="/api/GitVersion.Configuration/ConfigurationSerializer">Configuration<wbr>Serializer</a></td>
-									<td></td>
-							</tr>
-							<tr>
-								<td><a href="/api/GitVersion.Configuration/EffectiveBranchConfiguration">Effective<wbr>Branch<wbr>Configuration</a></td>
-									<td></td>
-							</tr>
-							<tr>
-								<td><a href="/api/GitVersion.Configuration/EffectiveConfiguration">Effective<wbr>Configuration</a></td>
-									<td>
-        Configuration can be applied to different things, effective configuration is the result after applying the
-        appropriate configuration
-    </td>
-							</tr>
-							<tr>
-								<td><a href="/api/GitVersion.Configuration/GitVersionConfiguration">Git<wbr>Version<wbr>Configuration</a></td>
-									<td></td>
-							</tr>
-							<tr>
-								<td><a href="/api/GitVersion.Configuration/IgnoreConfiguration">IgnoreConfiguration</a></td>
 									<td></td>
 							</tr>
 					</tbody></table>

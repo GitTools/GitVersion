@@ -148,6 +148,7 @@
 				<a href="/api/GitVersion">GitVersion</a> <a href="#" class="expand"></a>
 				<ul class="treeview-menu">
 						<li><a href="/api/GitVersion.BuildAgents">GitVersion<wbr>.BuildAgents</a></li>
+			<li><a href="/api/GitVersion.Cache">GitVersion<wbr>.Cache</a></li>
 			<li><a href="/api/GitVersion.Common">GitVersion<wbr>.Common</a></li>
 
 				<li class="treeview">
@@ -163,6 +164,12 @@
 			<li><a href="/api/GitVersion.Helpers">GitVersion<wbr>.Helpers</a></li>
 			<li><a href="/api/GitVersion.Logging">GitVersion<wbr>.Logging</a></li>
 
+				<li class="treeview">
+				<a href="/api/GitVersion.Model">GitVersion<wbr>.Model</a> <a href="#" class="expand"></a>
+				<ul class="treeview-menu">
+						<li><a href="/api/GitVersion.Model.Configuration">GitVersion<wbr>.Model<wbr>.Configuration</a></li>
+			<li><a href="/api/GitVersion.Model.Exceptions">GitVersion<wbr>.Model<wbr>.Exceptions</a></li>
+</ul></li>
 				<li class="treeview">
 				<a href="/api/GitVersion.MsBuild">GitVersion<wbr>.MsBuild</a> <a href="#" class="expand"></a>
 				<ul class="treeview-menu">
@@ -228,16 +235,16 @@
 									<td></td>
 							</tr>
 							<tr>
+								<td><a href="/api/GitVersion.VersionCalculation/BaseVersionCalculator">Base<wbr>Version<wbr>Calculator</a></td>
+									<td></td>
+							</tr>
+							<tr>
 								<td><a href="/api/GitVersion.VersionCalculation/ConfigNextVersionVersionStrategy">Config<wbr>Next<wbr>Version<wbr>Version<wbr>Strategy</a></td>
 									<td>
     Version is from NextVersion (the configuration value), unless the current commit is tagged.
     BaseVersionSource is null.
     Does not increment.
     </td>
-							</tr>
-							<tr>
-								<td><a href="/api/GitVersion.VersionCalculation/EffectiveBranchConfigurationFinder">Effective<wbr>Branch<wbr>Configuration<wbr>Finder</a></td>
-									<td></td>
 							</tr>
 							<tr>
 								<td><a href="/api/GitVersion.VersionCalculation/FallbackVersionStrategy">Fallback<wbr>Version<wbr>Strategy</a></td>
@@ -256,7 +263,7 @@
 									<td>
     Version is extracted from older commits' merge messages.
     BaseVersionSource is the commit where the message was found.
-    Increments if PreventIncrementOfMergedBranchVersion (from the branch configuration) is false.
+    Increments if PreventIncrementOfMergedBranchVersion (from the branch config) is false.
     </td>
 							</tr>
 							<tr>
@@ -342,7 +349,7 @@
 							</tr>
 						</thead>
 							<tbody><tr>
-								<td><a href="/api/GitVersion.VersionCalculation/IEffectiveBranchConfigurationFinder">I<wbr>Effective<wbr>Branch<wbr>Configuration<wbr>Finder</a></td>
+								<td><a href="/api/GitVersion.VersionCalculation/IBaseVersionCalculator">I<wbr>Base<wbr>Version<wbr>Calculator</a></td>
 									<td></td>
 							</tr>
 							<tr>

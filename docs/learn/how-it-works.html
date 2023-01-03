@@ -212,7 +212,7 @@
 		</section>
 	<section class="content">
 		<p>GitVersion v3 works very differently to v2. Version 2 had knowledge of both
-GitFlow and GitHubFlow hard coded into it, with each branch having its own
+GitFlow and GitHubFlow hard coded into it, with each branch having it's own
 class which calculated the version for that branch type.</p>
 <p>v3 is driven by <a href="/docs/reference/configuration">configuration</a>, meaning most of the
 behaviors in GitVersion can be tweaked to work the way you want. This also makes
@@ -246,9 +246,7 @@ branch name (e.g., <code>release/3.0.0</code> will find <code>3.0.0</code>)</li>
 GitVersion.yaml file</li>
 <li><code>MergeMessageBaseVersionStrategy</code> - Finds version numbers from merge messages
 (e.g., <code>Merge 'release/3.0.0' into 'main'</code> will return <code>3.0.0</code>)</li>
-<li><code>FallbackBaseVersionStrategy</code> - Always returns 0.0.0 and will be used for
-calculating the next version which is dependent on the increment strategy of
-the effected branch (e.g. on main the next version is 0.0.1 or on develop it is 0.1.0)</li>
+<li><code>FallbackBaseVersionStrategy</code> - Always returns 0.1.0 for new repositories</li>
 </ul>
 <p>Each strategy needs to return an instance of <code><a href="/api/GitVersion.VersionCalculation/BaseVersion">BaseVersion</a></code> which has the
 following properties:</p>
