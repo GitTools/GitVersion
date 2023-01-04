@@ -258,7 +258,7 @@ e.g.
 
 ```yaml
 merge-message-formats:
-    tfs: ^Merged (?:PR (?<PullRequestNumber>\d+)): Merge (?<SourceBranch>.+) to (?<TargetBranch>.+)
+    tfs: '^Merged (?:PR (?<PullRequestNumber>\d+)): Merge (?<SourceBranch>.+) to (?<TargetBranch>.+)'
 ```
 
 The regular expression should contain the following capture groups:
