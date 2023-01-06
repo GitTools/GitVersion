@@ -25,9 +25,9 @@ public class VariableProvider : IVariableProvider
         {
             semanticVersion = new SemanticVersion(semanticVersion);
             // Continuous Deployment always requires a pre-release tag unless the commit is tagged
-            if (semanticVersion.PreReleaseTag != null && semanticVersion.PreReleaseTag.HasTag() != true)
+            if (semanticVersion.PreReleaseTag.HasTag() != true)
             {
-                semanticVersion.PreReleaseTag.Name = configuration.GetBranchSpecificTag(this.log, semanticVersion.BuildMetaData?.Branch, null);
+                semanticVersion.PreReleaseTag.Name = configuration.GetBranchSpecificTag(this.log, semanticVersion.BuildMetaData.Branch, null);
                 if (semanticVersion.PreReleaseTag.Name.IsNullOrEmpty())
                 {
                     // TODO: Why do we manipulating the semantic version here in the VariableProvider? The method name is GET not MANIPULATE.
@@ -38,14 +38,14 @@ public class VariableProvider : IVariableProvider
         }
 
         // Evaluate tag number pattern and append to prerelease tag, preserving build metadata
-        var appendTagNumberPattern = !configuration.LabelNumberPattern.IsNullOrEmpty() && semanticVersion.PreReleaseTag?.HasTag() == true;
+        var appendTagNumberPattern = !configuration.LabelNumberPattern.IsNullOrEmpty() && semanticVersion.PreReleaseTag.HasTag() == true;
         if (appendTagNumberPattern)
         {
-            if (semanticVersion.BuildMetaData?.Branch != null && configuration.LabelNumberPattern != null)
+            if (semanticVersion.BuildMetaData.Branch != null && configuration.LabelNumberPattern != null)
             {
                 var match = Regex.Match(semanticVersion.BuildMetaData.Branch, configuration.LabelNumberPattern);
                 var numberGroup = match.Groups["number"];
-                if (numberGroup.Success && semanticVersion.PreReleaseTag != null)
+                if (numberGroup.Success)
                 {
                     // TODO: Why do we manipulating the semantic version here in the VariableProvider? The method name is GET not MANIPULATE.
                     // What is about the separation of concern and single-responsibility principle?
@@ -101,29 +101,26 @@ public class VariableProvider : IVariableProvider
 
     private static void PromoteNumberOfCommitsToTagNumber(SemanticVersion semanticVersion)
     {
-        if (semanticVersion.PreReleaseTag != null && semanticVersion.BuildMetaData != null)
+        // For continuous deployment the commits since tag gets promoted to the pre-release number
+        if (!semanticVersion.BuildMetaData.CommitsSinceTag.HasValue)
         {
-            // For continuous deployment the commits since tag gets promoted to the pre-release number
-            if (!semanticVersion.BuildMetaData.CommitsSinceTag.HasValue)
+            semanticVersion.PreReleaseTag.Number = null;
+            semanticVersion.BuildMetaData.CommitsSinceVersionSource = 0;
+        }
+        else
+        {
+            // Number of commits since last tag should be added to PreRelease number if given. Remember to deduct automatic version bump.
+            if (semanticVersion.PreReleaseTag.Number.HasValue)
             {
-                semanticVersion.PreReleaseTag.Number = null;
-                semanticVersion.BuildMetaData.CommitsSinceVersionSource = 0;
+                semanticVersion.PreReleaseTag.Number += semanticVersion.BuildMetaData.CommitsSinceTag - 1;
             }
             else
             {
-                // Number of commits since last tag should be added to PreRelease number if given. Remember to deduct automatic version bump.
-                if (semanticVersion.PreReleaseTag.Number.HasValue)
-                {
-                    semanticVersion.PreReleaseTag.Number += semanticVersion.BuildMetaData.CommitsSinceTag - 1;
-                }
-                else
-                {
-                    semanticVersion.PreReleaseTag.Number = semanticVersion.BuildMetaData.CommitsSinceTag;
-                    semanticVersion.PreReleaseTag.PromotedFromCommits = true;
-                }
-                semanticVersion.BuildMetaData.CommitsSinceVersionSource = semanticVersion.BuildMetaData.CommitsSinceTag.Value;
-                semanticVersion.BuildMetaData.CommitsSinceTag = null; // why is this set to null ?
+                semanticVersion.PreReleaseTag.Number = semanticVersion.BuildMetaData.CommitsSinceTag;
+                semanticVersion.PreReleaseTag.PromotedFromCommits = true;
             }
+            semanticVersion.BuildMetaData.CommitsSinceVersionSource = semanticVersion.BuildMetaData.CommitsSinceTag.Value;
+            semanticVersion.BuildMetaData.CommitsSinceTag = null; // why is this set to null ?
         }
     }
 

@@ -49,11 +49,9 @@ public class SemanticVersionTests : TestBase
         Assert.AreEqual(major, version.Major);
         Assert.AreEqual(minor, version.Minor);
         Assert.AreEqual(patch, version.Patch);
-        version.PreReleaseTag.ShouldNotBeNull();
         Assert.AreEqual(tag, version.PreReleaseTag.Name);
         Assert.AreEqual(tagNumber, version.PreReleaseTag.Number);
 
-        version.BuildMetaData.ShouldNotBeNull();
         Assert.AreEqual(numberOfBuilds, version.BuildMetaData.CommitsSinceTag);
         Assert.AreEqual(branchName, version.BuildMetaData.Branch);
         Assert.AreEqual(sha, version.BuildMetaData.Sha);

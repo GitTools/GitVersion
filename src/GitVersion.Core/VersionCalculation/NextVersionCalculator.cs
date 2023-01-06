@@ -56,7 +56,7 @@ public class NextVersionCalculator : INextVersionCalculator
         {
             var baseVersionBuildMetaData = this.mainlineVersionCalculator.CreateVersionBuildMetaData(baseVersion.BaseVersionSource);
 
-            if (baseVersionBuildMetaData.Sha != nextVersion.IncrementedVersion.BuildMetaData?.Sha)
+            if (baseVersionBuildMetaData.Sha != nextVersion.IncrementedVersion.BuildMetaData.Sha)
             {
                 semver = nextVersion.IncrementedVersion;
             }
@@ -69,8 +69,8 @@ public class NextVersionCalculator : INextVersionCalculator
 
             var lastPrefixedSemver = this.repositoryStore
                 .GetVersionTagsOnBranch(Context.CurrentBranch, Context.Configuration.LabelPrefix, Context.Configuration.SemanticVersionFormat)
-                .Where(v => MajorMinorPatchEqual(v, semver) && v.PreReleaseTag?.HasTag() == true)
-                .FirstOrDefault(v => v.PreReleaseTag?.Name?.IsEquivalentTo(preReleaseTagName) == true);
+                .Where(v => MajorMinorPatchEqual(v, semver) && v.PreReleaseTag.HasTag() == true)
+                .FirstOrDefault(v => v.PreReleaseTag.Name?.IsEquivalentTo(preReleaseTagName) == true);
 
             if (lastPrefixedSemver != null)
             {
@@ -87,7 +87,7 @@ public class NextVersionCalculator : INextVersionCalculator
         {
             long? number;
 
-            if (semver.PreReleaseTag?.Name == preReleaseTagName)
+            if (semver.PreReleaseTag.Name == preReleaseTagName)
             {
                 number = semver.PreReleaseTag.Number + 1;
             }
@@ -214,7 +214,7 @@ public class NextVersionCalculator : INextVersionCalculator
 
                         if (configuration.VersioningMode == VersioningMode.Mainline)
                         {
-                            if (incrementedVersion.PreReleaseTag?.HasTag() == true)
+                            if (!(incrementedVersion.PreReleaseTag.HasTag() != true))
                             {
                                 continue;
                             }
