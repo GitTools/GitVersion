@@ -4,7 +4,6 @@
         <OutputType>Exe</OutputType>
         <RootNamespace>GitVersion</RootNamespace>
         <AssemblyName>gitversion</AssemblyName>
-        <TargetFrameworks>net6.0;net7.0</TargetFrameworks>
         <PlatformTarget>AnyCPU</PlatformTarget>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
     </PropertyGroup>

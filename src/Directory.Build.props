@@ -1,5 +1,7 @@
 <Project>
     <PropertyGroup>
+        <TargetFrameworks>net6.0;net7.0</TargetFrameworks>
+
         <EndYear>$([System.DateTime]::Today.Year)</EndYear>
         <Authors>GitTools and Contributors</Authors>
         <Copyright>Copyright GitTools $(EndYear).</Copyright>

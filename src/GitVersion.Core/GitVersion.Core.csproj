@@ -1,7 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>netstandard2.0</TargetFramework>
         <RootNamespace>GitVersion</RootNamespace>
         <DocumentationFile>bin\$(Configuration)\GitVersionCore.xml</DocumentationFile>
 
@@ -14,26 +13,26 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Polly"/>
-        <PackageReference Include="System.Net.Requests"/>
+        <PackageReference Include="Polly" />
+        <PackageReference Include="System.Net.Requests" />
 
-        <PackageReference Include="JetBrains.Annotations" PrivateAssets="All"/>
-        <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions"/>
-        <PackageReference Include="Microsoft.Extensions.Options"/>
-        <PackageReference Include="YamlDotNet"/>
+        <PackageReference Include="JetBrains.Annotations" PrivateAssets="All" />
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" />
+        <PackageReference Include="Microsoft.Extensions.Options" />
+        <PackageReference Include="YamlDotNet" />
     </ItemGroup>
 
     <ItemGroup>
-        <Compile Remove="VersionConverters\*\AddFormats\**\*.*"/>
-        <Compile Remove="VersionConverters\*\Templates\**\*.*"/>
-        <EmbeddedResource Include="VersionConverters\*\AddFormats\**\*.*"/>
-        <EmbeddedResource Include="VersionConverters\*\Templates\**\*.*"/>
+        <Compile Remove="VersionConverters\*\AddFormats\**\*.*" />
+        <Compile Remove="VersionConverters\*\Templates\**\*.*" />
+        <EmbeddedResource Include="VersionConverters\*\AddFormats\**\*.*" />
+        <EmbeddedResource Include="VersionConverters\*\Templates\**\*.*" />
     </ItemGroup>
 
     <ItemGroup>
-        <InternalsVisibleTo Include="GitVersion.Core.Tests"/>
-        <InternalsVisibleTo Include="GitVersion.App.Tests"/>
-        <InternalsVisibleTo Include="GitVersion.MsBuild.Tests"/>
+        <InternalsVisibleTo Include="GitVersion.Core.Tests" />
+        <InternalsVisibleTo Include="GitVersion.App.Tests" />
+        <InternalsVisibleTo Include="GitVersion.MsBuild.Tests" />
     </ItemGroup>
 
 </Project>

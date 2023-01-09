@@ -7,13 +7,13 @@
         <Target_net70>tools/net7.0</Target_net70>
     </PropertyGroup>
     <ItemGroup Condition="$(IsPackaging) != ''">
-        <None Include="msbuild/tools/*.*"                                        Pack="true" PackagePath="tools" />
-        <None Include="msbuild/build/*.*"                                        Pack="true" PackagePath="build" />
-        <None Include="msbuild/buildMultiTargeting/*.*"                          Pack="true" PackagePath="buildMultiTargeting" />
+        <None Include="msbuild/tools/*.*"                                Pack="true" PackagePath="tools" />
+        <None Include="msbuild/build/*.*"                                Pack="true" PackagePath="build" />
+        <None Include="msbuild/buildMultiTargeting/*.*"                  Pack="true" PackagePath="buildMultiTargeting" />
 
-        <None Include="$(PublishTask_net60)/**/*"                                Pack="true" PackagePath="$(Target_net60)" />
-        <None Include="$(PublishTask_net70)/**/*"                                Pack="true" PackagePath="$(Target_net70)" />
-        <None Include="bin/$(Configuration)/netstandard2.0/GitVersion.MsBuild.*" Pack="true" PackagePath="$(Target_net60)" />
-        <None Include="bin/$(Configuration)/netstandard2.0/GitVersion.MsBuild.*" Pack="true" PackagePath="$(Target_net70)" />
+        <None Include="$(PublishTask_net60)/**/*"                        Pack="true" PackagePath="$(Target_net60)" />
+        <None Include="$(PublishTask_net70)/**/*"                        Pack="true" PackagePath="$(Target_net70)" />
+        <None Include="bin/$(Configuration)/net6.0/GitVersion.MsBuild.*" Pack="true" PackagePath="$(Target_net60)" />
+        <None Include="bin/$(Configuration)/net7.0/GitVersion.MsBuild.*" Pack="true" PackagePath="$(Target_net70)" />
     </ItemGroup>
 </Project>
