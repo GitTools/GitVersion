@@ -86,7 +86,7 @@ public class RemoteRepositoryScenarios : TestBase
     }
 
     [Test]
-    public void GivenARemoteGitRepositoryWhenCheckingOutDetachedHeadUsingExistingImplementationThrowsException()
+    public void GivenARemoteGitRepositoryWhenCheckingOutDetachedHeadUsingExistingImplementationHandleDetachedBranch()
     {
         using var fixture = new RemoteRepositoryFixture();
         Commands.Checkout(
