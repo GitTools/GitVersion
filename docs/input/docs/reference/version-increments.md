@@ -115,6 +115,11 @@ If you create a branch with the version number in the branch name, such as
 from the branch name as a source. However, GitVersion can't use the [branch
 name as a version source for _other branches_][faq-branch-name-source].
 
+### Detached HEAD
+If HEAD is in detached state tag will be `-no-branch-`. 
+
+Example: `0.1.0--no-branch-.1+4`
+
 ### Tagging commit
 
 By tagging a commit, GitVersion will use that tag for the version of that
