@@ -71,4 +71,31 @@ public class SupportBranchScenarios : TestBase
 
         fixture.AssertFullSemver("1.3.1+2");
     }
+
+    [Test]
+    public void WhenSupportIsBranchedFromMainWithSpecificTag()
+    {
+        using var fixture = new EmptyRepositoryFixture();
+        fixture.Repository.MakeACommit();
+        fixture.AssertFullSemver("0.1.0+0");
+
+        fixture.Repository.ApplyTag("1.4.0-rc");
+        fixture.Repository.MakeACommit();
+        fixture.Repository.CreateBranch("support/1");
+        Commands.Checkout(fixture.Repository, "support/1");
+        fixture.AssertFullSemver("1.4.0+1");
+    }
+
+    [Test]
+    public void WhenSupportIsBranchedFromMainWithSpecificTagOnCommit()
+    {
+        using var fixture = new EmptyRepositoryFixture();
+        fixture.Repository.MakeACommit();
+        fixture.AssertFullSemver("0.1.0+0");
+
+        fixture.Repository.ApplyTag("1.4.0-rc");
+        fixture.Repository.CreateBranch("support/1");
+        Commands.Checkout(fixture.Repository, "support/1");
+        fixture.AssertFullSemver("1.4.0");
+    }
 }

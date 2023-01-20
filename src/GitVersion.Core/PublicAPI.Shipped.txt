@@ -1325,6 +1325,7 @@ static GitVersion.Extensions.StringExtensions.IsHelp(this string! singleArgument
 static GitVersion.Extensions.StringExtensions.IsInit(this string! singleArgument) -> bool
 static GitVersion.Extensions.StringExtensions.IsNullOrEmpty(this string? value) -> bool
 static GitVersion.Extensions.StringExtensions.IsNullOrWhiteSpace(this string? value) -> bool
+static GitVersion.Extensions.StringExtensions.IsEmpty(this string? value) -> bool
 static GitVersion.Extensions.StringExtensions.IsSwitch(this string? value, string! switchName) -> bool
 static GitVersion.Extensions.StringExtensions.IsSwitchArgument(this string? value) -> bool
 static GitVersion.Extensions.StringExtensions.IsTrue(this string? value) -> bool

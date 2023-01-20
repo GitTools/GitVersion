@@ -76,8 +76,12 @@ public class NextVersionCalculator : INextVersionCalculator
         var hasPreReleaseTag = semver.PreReleaseTag?.HasTag() == true;
         var tag = configuration.Value.Tag;
         var branchConfigHasPreReleaseTagConfigured = !tag.IsNullOrEmpty();
-        var preReleaseTagDoesNotMatchConfiguration = hasPreReleaseTag && branchConfigHasPreReleaseTagConfigured && semver.PreReleaseTag?.Name != tag;
-        if (semver.PreReleaseTag?.HasTag() != true && branchConfigHasPreReleaseTagConfigured || preReleaseTagDoesNotMatchConfiguration)
+        var branchConfigIsMainlineAndHasEmptyPreReleaseTagConfigured = configuration.Value.IsMainline && tag.IsEmpty();
+        var preReleaseTagDoesNotMatchConfiguration = hasPreReleaseTag
+                                                     && (branchConfigHasPreReleaseTagConfigured || branchConfigIsMainlineAndHasEmptyPreReleaseTagConfigured)
+                                                     && semver.PreReleaseTag?.Name != tag;
+        var preReleaseTagOnlyInBranchConfig = !hasPreReleaseTag && branchConfigHasPreReleaseTagConfigured;
+        if (preReleaseTagOnlyInBranchConfig || preReleaseTagDoesNotMatchConfiguration)
         {
             UpdatePreReleaseTag(configuration.Value, semver, baseVersion.BranchNameOverride);
         }
@@ -93,6 +97,12 @@ public class NextVersionCalculator : INextVersionCalculator
             {
                 // set the commit count on the tagged ver
                 taggedSemanticVersion.BuildMetaData.CommitsSinceVersionSource = semver.BuildMetaData?.CommitsSinceVersionSource;
+
+                // set the updated prerelease tag when it doesn't match with prerelease tag defined in branch configuration
+                if (preReleaseTagDoesNotMatchConfiguration)
+                {
+                    taggedSemanticVersion.PreReleaseTag = semver.PreReleaseTag;
+                }
             }
         }
 
@@ -111,6 +121,12 @@ public class NextVersionCalculator : INextVersionCalculator
     private void UpdatePreReleaseTag(EffectiveConfiguration configuration, SemanticVersion semanticVersion, string? branchNameOverride)
     {
         var tagToUse = configuration.GetBranchSpecificTag(this.log, Context.CurrentBranch.Name.Friendly, branchNameOverride);
+
+        if (configuration.IsMainline && tagToUse.IsEmpty())
+        {
+            semanticVersion.PreReleaseTag = new SemanticVersionPreReleaseTag(tagToUse, null);
+            return;
+        }
 
         long? number = null;
 
