@@ -6,7 +6,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="shortcut icon" href="/assets/img/favicon.ico" type="image/x-icon">
         <link rel="icon" href="/assets/img/favicon.ico" type="image/x-icon">
-        <title>GitVersion - API - StringExtensions Class</title>
+        <title>GitVersion - API - StringExtensions.IsEmpty(string) Method</title>
         <link href="/assets/css/highlight.css" rel="stylesheet">
         <link href="/assets/css/bootstrap/bootstrap.css" rel="stylesheet">
         <link href="/assets/css/adminlte/AdminLTE.css" rel="stylesheet">
@@ -81,8 +81,8 @@
                 <section class="infobar" data-spy="affix" data-offset-top="60" data-offset-bottom="200"> 
                     	
 	<div id="infobar-headings"><h6>On This Page</h6><p><a href="#Syntax">Syntax</a></p>
-<p><a href="#Methods">Methods</a></p>
-<p><a href="#ExtensionMethods">Extension Methods</a></p>
+<p><a href="#Parameters">Parameters</a></p>
+<p><a href="#ReturnValue">Return Value</a></p>
 <hr class="infobar-hidden">
 </div>
 
@@ -143,20 +143,24 @@
                         
 			<li class="header">Namespace</li>
 		<li><a href="/api/GitVersion.Extensions">GitVersion<wbr>.Extensions</a></li>
+		<li class="header">Type</li>
+		<li><a href="/api/GitVersion.Extensions/StringExtensions">StringExtensions</a></li>
 		<li role="separator" class="divider"></li>
-			<li class="header">Class Types</li>
-				<li><a href="/api/GitVersion.Extensions/AssemblyVersionsGeneratorExtensions">Assembly<wbr>Versions<wbr>Generator<wbr>Extensions</a></li>
-				<li><a href="/api/GitVersion.Extensions/CommonExtensions">CommonExtensions</a></li>
-				<li><a href="/api/GitVersion.Extensions/DictionaryExtensions">DictionaryExtensions</a></li>
-				<li><a href="/api/GitVersion.Extensions/EnumerableExtensions">EnumerableExtensions</a></li>
-				<li><a href="/api/GitVersion.Extensions/GitExtensions">GitExtensions</a></li>
-				<li><a href="/api/GitVersion.Extensions/ObjectExtensions">ObjectExtensions</a></li>
-				<li><a href="/api/GitVersion.Extensions/ReadEmbeddedResourceExtensions">Read<wbr>Embedded<wbr>Resource<wbr>Extensions</a></li>
-				<li><a href="/api/GitVersion.Extensions/ServiceCollectionExtensions">Service<wbr>Collection<wbr>Extensions</a></li>
-				<li class="selected"><a href="/api/GitVersion.Extensions/StringExtensions">StringExtensions</a></li>
-			<li class="header">Enum Types</li>
-				<li><a href="/api/GitVersion.Extensions/AssemblyFileVersioningScheme">Assembly<wbr>File<wbr>Versioning<wbr>Scheme</a></li>
-				<li><a href="/api/GitVersion.Extensions/AssemblyVersioningScheme">Assembly<wbr>Versioning<wbr>Scheme</a></li>
+			<li class="header">Method Members</li>
+				<li><a href="/api/GitVersion.Extensions/StringExtensions/EC3821AC">AppendLineFormat<wbr>(StringBuilder, <wbr>string, <wbr>object[])<wbr></a></li>
+				<li><a href="/api/GitVersion.Extensions/StringExtensions/108A4613">Argument<wbr>Requires<wbr>Value<wbr>(string, <wbr>int)<wbr></a></li>
+				<li class="selected"><a href="/api/GitVersion.Extensions/StringExtensions/483BC788">IsEmpty<wbr>(string)<wbr></a></li>
+				<li><a href="/api/GitVersion.Extensions/StringExtensions/8030236F">IsEquivalentTo<wbr>(string, <wbr>string)<wbr></a></li>
+				<li><a href="/api/GitVersion.Extensions/StringExtensions/EAD26A94">IsFalse<wbr>(string)<wbr></a></li>
+				<li><a href="/api/GitVersion.Extensions/StringExtensions/CCD71060">IsHelp<wbr>(string)<wbr></a></li>
+				<li><a href="/api/GitVersion.Extensions/StringExtensions/F184BA6A">IsInit<wbr>(string)<wbr></a></li>
+				<li><a href="/api/GitVersion.Extensions/StringExtensions/69F0FD1D">IsNullOrEmpty<wbr>(string)<wbr></a></li>
+				<li><a href="/api/GitVersion.Extensions/StringExtensions/DAAFA9C6">IsNullOrWhiteSpace<wbr>(string)<wbr></a></li>
+				<li><a href="/api/GitVersion.Extensions/StringExtensions/EEBE6048">IsSwitch<wbr>(string, <wbr>string)<wbr></a></li>
+				<li><a href="/api/GitVersion.Extensions/StringExtensions/A4028649">IsSwitchArgument<wbr>(string)<wbr></a></li>
+				<li><a href="/api/GitVersion.Extensions/StringExtensions/F5548FB6">IsTrue<wbr>(string)<wbr></a></li>
+				<li><a href="/api/GitVersion.Extensions/StringExtensions/A5029D51">IsValidPath<wbr>(string)<wbr></a></li>
+				<li><a href="/api/GitVersion.Extensions/StringExtensions/57599035">RegexReplace<wbr>(string, <wbr>string, <wbr>string, <wbr>RegexOptions)<wbr></a></li>
 
 
                     </ul>
@@ -171,210 +175,72 @@
 
 
 <section class="content-header">
-	<h1>StringExtensions <small>Class</small></h1>
+			<h3><a href="/api/GitVersion.Extensions/StringExtensions">StringExtensions</a>.</h3>
+	<h1>IsEmpty<wbr>(string)<wbr> <small>Method</small></h1>
 </section>
 <section class="content">
 	
 	
 	
 		<div class="panel panel-default">
-  			<div class="panel-body">
-				<div class="row">
-					<div class="col-md-6">
-						<dl class="dl-horizontal">		
-
-								<dt>Namespace</dt>
-								<dd><a href="/api/GitVersion.Extensions">GitVersion<wbr>.Extensions</a></dd>
-											
-							
-								<dt>Base Types</dt>
-								<dd>
-									<ul class="list-unstyled">										
-											<li>object</li>								
-									</ul>
-								</dd>				
-							
-							
-						</dl>
-					</div>		
-					<div class="col-md-6">
-						<div class="mermaid">
-							graph BT
-	Type--&gt;Base0["object"]
-	Type["StringExtensions"]
-class Type type-node
-
-						</div>
-					</div>
-				</div>
+  			<div class="panel-body">	
+				<dl class="dl-horizontal">	
+						
+						<dt>Namespace</dt>
+						<dd><a href="/api/GitVersion.Extensions">GitVersion<wbr>.Extensions</a></dd>
+					
+						<dt>Containing Type</dt>
+						<dd><a href="/api/GitVersion.Extensions/StringExtensions">StringExtensions</a></dd>		
+					
+				</dl>
   			</div>
 		</div>
 
 	<h1 id="Syntax">Syntax</h1>
-	<pre><code>public static class StringExtensions</code></pre>
+	<pre><code>public static bool IsEmpty(this string value)</code></pre>
 
 
 
 
 
+	<h1 id="Parameters">Parameters</h1>
+	<div class="box">
+		<div class="box-body no-padding table-responsive">
+			<table class="table table-striped table-hover three-cols">
+				<thead>
+					<tr>
+						<th>Name</th>
+						<th>Type</th>
+						<th>Description</th>
+					</tr>
+				</thead>
+					<tbody><tr>
+						<td>value</td>
+						<td>string</td>
+						<td></td>
+					</tr>
+			</tbody></table>
+		</div>
+	</div>	
 
+	<h1 id="ReturnValue">Return Value</h1>
+	<div class="box">
+		<div class="box-body no-padding table-responsive">
+			<table class="table table-striped table-hover two-cols">
+				<thead>
+					<tr>
+						<th>Type</th>
+						<th>Description</th>
+					</tr>
+				</thead>
+				<tbody><tr>
+					<td>bool</td>
+					<td></td>
+				</tr>
+			</tbody></table>
+		</div>
+	</div>	
 
-
-
-
-
-			<h1 id="Methods">Methods</h1>
-			<div class="box">
-				<div class="box-body no-padding table-responsive">
-					<table class="table table-striped table-hover three-cols">
-						<thead>
-							<tr>
-								<th>Name</th>
-								<th>Value</th>
-								<th>Summary</th>
-							</tr>
-						</thead>
-							<tbody><tr>
-								<td><a href="/api/GitVersion.Extensions/StringExtensions/EC3821AC">AppendLineFormat<wbr>(StringBuilder, <wbr>string, <wbr>object[])<wbr></a></td>
-								<td>void</td>
-								<td>
-									<div></div>
-											<div><small><em>static</em></small></div>
-								</td>
-							</tr>
-							<tr>
-								<td><a href="/api/GitVersion.Extensions/StringExtensions/108A4613">Argument<wbr>Requires<wbr>Value<wbr>(string, <wbr>int)<wbr></a></td>
-								<td>bool</td>
-								<td>
-									<div></div>
-											<div><small><em>static</em></small></div>
-								</td>
-							</tr>
-							<tr>
-								<td><a href="/api/GitVersion.Extensions/StringExtensions/483BC788">IsEmpty<wbr>(string)<wbr></a></td>
-								<td>bool</td>
-								<td>
-									<div></div>
-											<div><small><em>static</em></small></div>
-								</td>
-							</tr>
-							<tr>
-								<td><a href="/api/GitVersion.Extensions/StringExtensions/8030236F">IsEquivalentTo<wbr>(string, <wbr>string)<wbr></a></td>
-								<td>bool</td>
-								<td>
-									<div></div>
-											<div><small><em>static</em></small></div>
-								</td>
-							</tr>
-							<tr>
-								<td><a href="/api/GitVersion.Extensions/StringExtensions/EAD26A94">IsFalse<wbr>(string)<wbr></a></td>
-								<td>bool</td>
-								<td>
-									<div></div>
-											<div><small><em>static</em></small></div>
-								</td>
-							</tr>
-							<tr>
-								<td><a href="/api/GitVersion.Extensions/StringExtensions/CCD71060">IsHelp<wbr>(string)<wbr></a></td>
-								<td>bool</td>
-								<td>
-									<div></div>
-											<div><small><em>static</em></small></div>
-								</td>
-							</tr>
-							<tr>
-								<td><a href="/api/GitVersion.Extensions/StringExtensions/F184BA6A">IsInit<wbr>(string)<wbr></a></td>
-								<td>bool</td>
-								<td>
-									<div></div>
-											<div><small><em>static</em></small></div>
-								</td>
-							</tr>
-							<tr>
-								<td><a href="/api/GitVersion.Extensions/StringExtensions/69F0FD1D">IsNullOrEmpty<wbr>(string)<wbr></a></td>
-								<td>bool</td>
-								<td>
-									<div></div>
-											<div><small><em>static</em></small></div>
-								</td>
-							</tr>
-							<tr>
-								<td><a href="/api/GitVersion.Extensions/StringExtensions/DAAFA9C6">IsNullOrWhiteSpace<wbr>(string)<wbr></a></td>
-								<td>bool</td>
-								<td>
-									<div></div>
-											<div><small><em>static</em></small></div>
-								</td>
-							</tr>
-							<tr>
-								<td><a href="/api/GitVersion.Extensions/StringExtensions/EEBE6048">IsSwitch<wbr>(string, <wbr>string)<wbr></a></td>
-								<td>bool</td>
-								<td>
-									<div></div>
-											<div><small><em>static</em></small></div>
-								</td>
-							</tr>
-							<tr>
-								<td><a href="/api/GitVersion.Extensions/StringExtensions/A4028649">IsSwitchArgument<wbr>(string)<wbr></a></td>
-								<td>bool</td>
-								<td>
-									<div></div>
-											<div><small><em>static</em></small></div>
-								</td>
-							</tr>
-							<tr>
-								<td><a href="/api/GitVersion.Extensions/StringExtensions/F5548FB6">IsTrue<wbr>(string)<wbr></a></td>
-								<td>bool</td>
-								<td>
-									<div></div>
-											<div><small><em>static</em></small></div>
-								</td>
-							</tr>
-							<tr>
-								<td><a href="/api/GitVersion.Extensions/StringExtensions/A5029D51">IsValidPath<wbr>(string)<wbr></a></td>
-								<td>bool</td>
-								<td>
-									<div></div>
-											<div><small><em>static</em></small></div>
-								</td>
-							</tr>
-							<tr>
-								<td><a href="/api/GitVersion.Extensions/StringExtensions/57599035">RegexReplace<wbr>(string, <wbr>string, <wbr>string, <wbr>RegexOptions)<wbr></a></td>
-								<td>string</td>
-								<td>
-									<div></div>
-											<div><small><em>static</em></small></div>
-								</td>
-							</tr>
-					</tbody></table>
-				</div>
-			</div>
-		
-
-
-			<h1 id="ExtensionMethods">Extension Methods</h1>
-			<div class="box">
-				<div class="box-body no-padding table-responsive">
-					<table class="table table-striped table-hover three-cols">
-						<thead>
-							<tr>
-								<th>Name</th>
-								<th>Value</th>
-								<th>Summary</th>
-							</tr>
-						</thead>
-							<tbody><tr>
-								<td><a href="/api/GitVersion.Extensions/ObjectExtensions/F42B194D">GetProperties<wbr>()<wbr></a></td>
-								<td>IEnumerable<wbr>&lt;KeyValuePair<wbr>&lt;string, <wbr>string&gt;<wbr>&gt;<wbr></td>
-								<td>
-									<div></div>
-										<div><small><em>From <a href="/api/GitVersion.Extensions/ObjectExtensions">ObjectExtensions</a></em></small></div>
-								</td>
-							</tr>
-					</tbody></table>
-				</div>
-			</div>
-		
 
 	
 </section>
