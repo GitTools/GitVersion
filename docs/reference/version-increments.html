@@ -289,6 +289,9 @@ This property only serves as a base version,</p>
 <code>release-1.2.0</code> or <code>hotfix/1.0.1</code> then GitVersion will take the version number
 from the branch name as a source. However, GitVersion can't use the <a href="/docs/learn/faq#merged-branch-names-as-version-source">branch
 name as a version source for <em>other branches</em></a>.</p>
+<h3 id="detached-head">Detached HEAD</h3>
+<p>If HEAD is in detached state tag will be <code>-no-branch-</code>.</p>
+<p>Example: <code>0.1.0--no-branch-.1+4</code></p>
 <h3 id="tagging-commit">Tagging commit</h3>
 <p>By tagging a commit, GitVersion will use that tag for the version of that
 commit, then increment the next commit automatically based on the increment

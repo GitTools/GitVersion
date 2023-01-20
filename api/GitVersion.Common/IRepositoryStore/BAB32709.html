@@ -6,7 +6,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="shortcut icon" href="/assets/img/favicon.ico" type="image/x-icon">
         <link rel="icon" href="/assets/img/favicon.ico" type="image/x-icon">
-        <title>GitVersion - API - IRepositoryStore.GetVersionTagsOnBranch(IBranch, string) Method</title>
+        <title>GitVersion - API - IRepositoryStore.GetCurrentCommitTaggedVersion(ICommit, string, bool) Method</title>
         <link href="/assets/css/highlight.css" rel="stylesheet">
         <link href="/assets/css/bootstrap/bootstrap.css" rel="stylesheet">
         <link href="/assets/css/adminlte/AdminLTE.css" rel="stylesheet">
@@ -159,7 +159,7 @@
 				<li><a href="/api/GitVersion.Common/IRepositoryStore/0DA5D5DB">GetChosenBranch<wbr>(Config)<wbr></a></li>
 				<li><a href="/api/GitVersion.Common/IRepositoryStore/C4CEACB6">GetCommitLog<wbr>(ICommit, <wbr>ICommit)<wbr></a></li>
 				<li><a href="/api/GitVersion.Common/IRepositoryStore/E2A05D12">GetCurrentCommit<wbr>(IBranch, <wbr>string)<wbr></a></li>
-				<li><a href="/api/GitVersion.Common/IRepositoryStore/BAB32709">Get<wbr>Current<wbr>Commit<wbr>Tagged<wbr>Version<wbr>(ICommit, <wbr>string, <wbr>bool)<wbr></a></li>
+				<li class="selected"><a href="/api/GitVersion.Common/IRepositoryStore/BAB32709">Get<wbr>Current<wbr>Commit<wbr>Tagged<wbr>Version<wbr>(ICommit, <wbr>string, <wbr>bool)<wbr></a></li>
 				<li><a href="/api/GitVersion.Common/IRepositoryStore/F6351D6B">Get<wbr>Excluded<wbr>Inherit<wbr>Branches<wbr>(Config)<wbr></a></li>
 				<li><a href="/api/GitVersion.Common/IRepositoryStore/93369EDB">GetMainlineBranches<wbr>(ICommit, <wbr>Config, <wbr>IEnumerable<wbr>&lt;KeyValuePair<wbr>&lt;string, <wbr>BranchConfig&gt;<wbr>&gt;<wbr>?)<wbr></a></li>
 				<li><a href="/api/GitVersion.Common/IRepositoryStore/083A9742">GetMainlineCommitLog<wbr>(ICommit, <wbr>ICommit)<wbr></a></li>
@@ -168,7 +168,7 @@
 				<li><a href="/api/GitVersion.Common/IRepositoryStore/BE49DF0E">GetReleaseBranches<wbr>(IEnumerable<wbr>&lt;KeyValuePair<wbr>&lt;string, <wbr>BranchConfig&gt;<wbr>&gt;<wbr>)<wbr></a></li>
 				<li><a href="/api/GitVersion.Common/IRepositoryStore/6BD33CFE">GetTargetBranch<wbr>(string)<wbr></a></li>
 				<li><a href="/api/GitVersion.Common/IRepositoryStore/6DFD9063">GetValidVersionTags<wbr>(string, <wbr>DateTimeOffset?)<wbr></a></li>
-				<li class="selected"><a href="/api/GitVersion.Common/IRepositoryStore/33ED4CB9">Get<wbr>Version<wbr>Tags<wbr>On<wbr>Branch<wbr>(IBranch, <wbr>string)<wbr></a></li>
+				<li><a href="/api/GitVersion.Common/IRepositoryStore/33ED4CB9">Get<wbr>Version<wbr>Tags<wbr>On<wbr>Branch<wbr>(IBranch, <wbr>string)<wbr></a></li>
 				<li><a href="/api/GitVersion.Common/IRepositoryStore/6D7E379E">IsCommitOnBranch<wbr>(ICommit, <wbr>IBranch, <wbr>ICommit)<wbr></a></li>
 
 
@@ -185,7 +185,7 @@
 
 <section class="content-header">
 			<h3><a href="/api/GitVersion.Common/IRepositoryStore">IRepositoryStore</a>.</h3>
-	<h1>Get<wbr>Version<wbr>Tags<wbr>On<wbr>Branch<wbr>(IBranch, <wbr>string)<wbr> <small>Method</small></h1>
+	<h1>Get<wbr>Current<wbr>Commit<wbr>Tagged<wbr>Version<wbr>(ICommit, <wbr>string, <wbr>bool)<wbr> <small>Method</small></h1>
 </section>
 <section class="content">
 	
@@ -206,7 +206,7 @@
 		</div>
 
 	<h1 id="Syntax">Syntax</h1>
-	<pre><code>IEnumerable&lt;SemanticVersion&gt; GetVersionTagsOnBranch(IBranch branch, string tagPrefixRegex)</code></pre>
+	<pre><code>SemanticVersion GetCurrentCommitTaggedVersion(ICommit commit, string tagPrefix, bool handleDetachedBranch)</code></pre>
 
 
 
@@ -224,13 +224,18 @@
 					</tr>
 				</thead>
 					<tbody><tr>
-						<td>branch</td>
-						<td><a href="/api/GitVersion/IBranch">IBranch</a></td>
+						<td>commit</td>
+						<td><a href="/api/GitVersion/ICommit">ICommit</a></td>
 						<td></td>
 					</tr>
 					<tr>
-						<td>tagPrefixRegex</td>
+						<td>tagPrefix</td>
 						<td>string</td>
+						<td></td>
+					</tr>
+					<tr>
+						<td>handleDetachedBranch</td>
+						<td>bool</td>
 						<td></td>
 					</tr>
 			</tbody></table>
@@ -248,7 +253,7 @@
 					</tr>
 				</thead>
 				<tbody><tr>
-					<td>IEnumerable<wbr>&lt;<a href="/api/GitVersion/SemanticVersion">SemanticVersion</a>&gt;<wbr></td>
+					<td><a href="/api/GitVersion/SemanticVersion">SemanticVersion</a></td>
 					<td></td>
 				</tr>
 			</tbody></table>
