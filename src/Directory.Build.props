@@ -46,7 +46,7 @@
         <PackageVersion_NUnit3TestAdapter>4.2.1</PackageVersion_NUnit3TestAdapter>
         <PackageVersion_JunitXmlTestLogger>3.0.114</PackageVersion_JunitXmlTestLogger>
         <PackageVersion_Shouldly>4.0.3</PackageVersion_Shouldly>
-        <PackageVersion_MicrosoftPublicApiAnalyzers>3.3.3</PackageVersion_MicrosoftPublicApiAnalyzers>
+        <PackageVersion_MicrosoftPublicApiAnalyzers>3.3.4</PackageVersion_MicrosoftPublicApiAnalyzers>
     </PropertyGroup>
 
     <ItemGroup Condition=" '$(IsTestProject)' == 'true' ">
