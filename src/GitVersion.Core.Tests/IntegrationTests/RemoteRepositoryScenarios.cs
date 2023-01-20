@@ -5,7 +5,6 @@ using LibGit2Sharp;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using NUnit.Framework;
-using Shouldly;
 
 namespace GitVersion.Core.Tests.IntegrationTests;
 
@@ -87,15 +86,14 @@ public class RemoteRepositoryScenarios : TestBase
     }
 
     [Test]
-    public void GivenARemoteGitRepositoryWhenCheckingOutDetachedHeadUsingExistingImplementationThrowsException()
+    public void GivenARemoteGitRepositoryWhenCheckingOutDetachedHeadUsingExistingImplementationHandleDetachedBranch()
     {
         using var fixture = new RemoteRepositoryFixture();
         Commands.Checkout(
             fixture.LocalRepositoryFixture.Repository,
             fixture.LocalRepositoryFixture.Repository.Head.Tip);
 
-        Should.Throw<WarningException>(() => fixture.AssertFullSemver("0.1.0+4", repository: fixture.LocalRepositoryFixture.Repository, onlyTrackedBranches: false),
-            $"It looks like the branch being examined is a detached Head pointing to commit '{fixture.LocalRepositoryFixture.Repository.Head.Tip.Id.ToString(7)}'. Without a proper branch name GitVersion cannot determine the build version.");
+        fixture.AssertFullSemver("0.1.0--no-branch-.1+4", repository: fixture.LocalRepositoryFixture.Repository, onlyTrackedBranches: false);
     }
 
     [Test]

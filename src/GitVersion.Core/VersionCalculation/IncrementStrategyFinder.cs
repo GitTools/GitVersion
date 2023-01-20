@@ -53,7 +53,7 @@ public class IncrementStrategyFinder : IIncrementStrategyFinder
             return defaultIncrement;
         }
 
-        return commitMessageIncrement ?? VersionField.None;
+        return commitMessageIncrement.Value;
     }
 
     public VersionField? GetIncrementForCommits(Config configuration, IEnumerable<ICommit> commits)
