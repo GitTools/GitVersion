@@ -20,9 +20,13 @@ internal class GitVersionApp
                 EnrichLogger(context);
                 await next(context);
             })
-            .UseDefaults()
+            .UseDefaults() // this will also register for dotnet-suggest
             .Build()
             .InvokeAsync(args);
+
+    // Note: there are 2 locations to watch for dotnet-suggest
+    // - sentinel file: $env:TEMP\system-commandline-sentinel-files\ and
+    // - registration file: $env:LOCALAPPDATA\.dotnet-suggest-registration.txt
 
     private static void EnrichLogger(InvocationContext context)
     {
