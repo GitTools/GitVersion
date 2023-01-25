@@ -1,7 +1,7 @@
 using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
 using Scriban;
-
+// ReSharper disable InconsistentNaming
 namespace GitVersion;
 
 [Generator(LanguageNames.CSharp)]
@@ -83,10 +83,13 @@ public class CommandImplGenerator : IIncrementalGenerator
         var commandAttribute = classSymbol.GetAttributeData(CommandAttributeFullName) ?? classSymbol.GetAttributeData(CommandAttributeGenericFullName);
         if (commandAttribute is null) return null;
 
-        var ctorArguments = commandAttribute.ConstructorArguments.ToImmutableArray();
+        var ctorArguments = commandAttribute.ConstructorArguments;
 
         var name = Convert.ToString(ctorArguments[0].Value);
         var description = Convert.ToString(ctorArguments[1].Value);
+
+        ArgumentNullException.ThrowIfNull(name);
+        ArgumentNullException.ThrowIfNull(description);
 
         ITypeSymbol? parentCommandType = null;
         if (commandAttribute.AttributeClass != null && commandAttribute.AttributeClass.TypeArguments.Any())
@@ -122,14 +125,16 @@ public class CommandImplGenerator : IIncrementalGenerator
     }
     private static SettingsPropertyInfo MapToPropertyInfo(IPropertySymbol propertySymbol, AttributeData attribute)
     {
-        var ctorArguments = attribute.ConstructorArguments.ToImmutableArray();
+        var ctorArguments = attribute.ConstructorArguments;
 
         var aliases = (ctorArguments[0].Kind == TypedConstantKind.Array
             ? ctorArguments[0].Values.Select(x => Convert.ToString(x.Value)).ToArray()
-            : new[] { Convert.ToString(ctorArguments[0].Value) }).Select(x => $@"""{x.Trim()}""");
+            : new[] { Convert.ToString(ctorArguments[0].Value) }).Select(x => $@"""{x?.Trim()}""");
 
         var alias = string.Join(", ", aliases);
         var description = Convert.ToString(ctorArguments[1].Value);
+        ArgumentNullException.ThrowIfNull(description);
+
         var isRequired = propertySymbol.Type.NullableAnnotation == NullableAnnotation.NotAnnotated;
         return new SettingsPropertyInfo
         {

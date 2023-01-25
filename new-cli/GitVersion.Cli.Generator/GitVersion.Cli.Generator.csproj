@@ -1,7 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>netstandard2.0</TargetFramework>
         <IsRoslynComponent>true</IsRoslynComponent>
         <PackageScribanIncludeSource>true</PackageScribanIncludeSource>
         <SatelliteResourceLanguages>en</SatelliteResourceLanguages>
