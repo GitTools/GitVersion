@@ -1,4 +1,4 @@
-namespace GitVersion.Project;
+namespace GitVersion.Commands;
 
 public record OutputProjectSettings : OutputSettings
 {

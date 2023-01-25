@@ -1,7 +1,9 @@
 using GitVersion.Git;
 using GitVersion.Infrastructure;
 
-namespace GitVersion;
+namespace GitVersion.Commands;
+
+public record CalculateSettings : GitVersionSettings;
 
 [Command("calculate", "Calculates the version object from the git history.")]
 public class CalculateCommand : ICommand<CalculateSettings>

@@ -13,6 +13,7 @@ ProjectSection(SolutionItems) = preProject
 	Directory.Build.props = Directory.Build.props
 	..\command.md = ..\command.md
 	Directory.Packages.props = Directory.Packages.props
+	.editorconfig = .editorconfig
 EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GitVersion.Normalization", "GitVersion.Normalization\GitVersion.Normalization.csproj", "{45776CC1-7FDA-4299-86A7-9F11E7855CE4}"

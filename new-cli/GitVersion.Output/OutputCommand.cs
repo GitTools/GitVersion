@@ -1,6 +1,6 @@
 using GitVersion.Infrastructure;
 
-namespace GitVersion;
+namespace GitVersion.Commands;
 
 [Command("output", "Outputs the version object.")]
 public class OutputCommand : ICommand<OutputSettings>

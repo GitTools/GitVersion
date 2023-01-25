@@ -8,7 +8,7 @@ var assemblies = new IGitVersionModule[]
     new LibGit2SharpCoreModule(),
 };
 
-using var serviceProvider = LoadGitVersionModules(assemblies);
+using var serviceProvider = RegisterModules(assemblies);
 var app = serviceProvider.GetRequiredService<GitVersionApp>();
 var result = await app.RunAsync(args);
 
@@ -16,7 +16,7 @@ if (!Console.IsInputRedirected) Console.ReadKey();
 
 return result;
 
-static IContainer LoadGitVersionModules(IEnumerable<IGitVersionModule> gitVersionModules)
+static IContainer RegisterModules(IEnumerable<IGitVersionModule> gitVersionModules)
 {
     var serviceProvider = new ContainerRegistrar()
         .RegisterModules(gitVersionModules)

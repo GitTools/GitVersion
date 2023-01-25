@@ -49,9 +49,9 @@ internal class GitVersionApp
         LoggingEnricher.LogLevel.MinimumLevel = GetLevelForVerbosity(verbosity);
     }
 
-    private static LogEventLevel GetLevelForVerbosity(Verbosity verbosity) => VerbosityMaps[verbosity];
+    private static LogEventLevel GetLevelForVerbosity(Verbosity verbosity) => verbosityMaps[verbosity];
 
-    private static readonly Dictionary<Verbosity, LogEventLevel> VerbosityMaps = new()
+    private static readonly Dictionary<Verbosity, LogEventLevel> verbosityMaps = new()
     {
         { Verbosity.Verbose, LogEventLevel.Verbose },
         { Verbosity.Diagnostic, LogEventLevel.Debug },

@@ -1,6 +1,8 @@
 using GitVersion.Infrastructure;
 
-namespace GitVersion.Init;
+namespace GitVersion.Commands;
+
+public record ConfigInitSettings : ConfigSettings;
 
 [Command<ConfigCommand>("init", "Inits the configuration for current repository.")]
 public class ConfigInitCommand : ICommand<ConfigInitSettings>

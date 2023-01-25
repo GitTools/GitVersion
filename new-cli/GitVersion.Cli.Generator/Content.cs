@@ -110,6 +110,7 @@ public class RootCommandImpl : RootCommand
 {{{GeneratedHeader}}}
 using System.CommandLine;
 using {{DependencyInjectionNamespaceName}};
+using {{CommandNamespaceName}};
 using {{InfraNamespaceName}};
 
 namespace {{Namespace}};
@@ -121,7 +122,9 @@ public class CommandsImplModule : IGitVersionModule
         {{- $commands = Model | array.sort "CommandTypeName" }}
         services.AddSingleton<RootCommandImpl>();
         {{~ for $command in $commands ~}}
+        services.AddSingleton<{{$command.CommandTypeName}}>();
         services.AddSingleton<ICommandImpl, {{$command.CommandTypeName}}Impl>();
+
         {{~ end ~}}
     }
 }

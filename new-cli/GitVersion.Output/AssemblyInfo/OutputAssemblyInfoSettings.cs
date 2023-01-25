@@ -1,4 +1,4 @@
-namespace GitVersion.AssemblyInfo;
+namespace GitVersion.Commands;
 
 public record OutputAssemblyInfoSettings : OutputSettings
 {

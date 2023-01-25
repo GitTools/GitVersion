@@ -1,6 +1,8 @@
 using GitVersion.Infrastructure;
 
-namespace GitVersion;
+namespace GitVersion.Commands;
+
+public record ConfigSettings : GitVersionSettings;
 
 [Command("config", "Manages the GitVersion configuration file.")]
 public class ConfigCommand : ICommand<ConfigSettings>

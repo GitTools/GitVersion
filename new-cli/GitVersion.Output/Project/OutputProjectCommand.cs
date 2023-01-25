@@ -1,6 +1,6 @@
 using GitVersion.Infrastructure;
 
-namespace GitVersion.Project;
+namespace GitVersion.Commands;
 
 [Command<OutputCommand>("project", "Outputs version to project")]
 public class OutputProjectCommand : ICommand<OutputProjectSettings>

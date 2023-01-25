@@ -1,4 +1,4 @@
-namespace GitVersion.Wix;
+namespace GitVersion.Commands;
 
 public record OutputWixSettings : OutputSettings
 {

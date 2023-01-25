@@ -1,4 +1,4 @@
-namespace GitVersion;
+namespace GitVersion.Commands;
 
 public record OutputSettings : GitVersionSettings
 {

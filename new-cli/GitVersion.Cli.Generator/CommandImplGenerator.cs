@@ -10,6 +10,7 @@ public class CommandImplGenerator : IIncrementalGenerator
     private const string GeneratedNamespaceName = "GitVersion.Generated";
     private const string InfraNamespaceName = "GitVersion";
     private const string DependencyInjectionNamespaceName = "GitVersion.Infrastructure";
+    private const string CommandNamespaceName = "GitVersion.Commands";
     private const string CommandInterfaceFullName = $"{InfraNamespaceName}.ICommand<T>";
     private const string CommandAttributeFullName = $"{InfraNamespaceName}.CommandAttribute";
     private const string CommandAttributeGenericFullName = $"{InfraNamespaceName}.CommandAttribute<T>";
@@ -62,7 +63,8 @@ public class CommandImplGenerator : IIncrementalGenerator
             Model = commandInfos,
             Namespace = GeneratedNamespaceName,
             InfraNamespaceName,
-            DependencyInjectionNamespaceName
+            DependencyInjectionNamespaceName,
+            CommandNamespaceName
         }, member => member.Name);
         context.AddSource("CommandsModule.g.cs", string.Join("\n", commandHandlersModuleSource));
 

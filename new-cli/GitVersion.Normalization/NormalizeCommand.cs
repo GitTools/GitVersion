@@ -1,6 +1,8 @@
 using GitVersion.Infrastructure;
 
-namespace GitVersion;
+namespace GitVersion.Commands;
+
+public record NormalizeSettings : GitVersionSettings;
 
 [Command("normalize", "Normalizes the git repository for GitVersion calculations.")]
 public class NormalizeCommand : ICommand<NormalizeSettings>
