@@ -130,6 +130,7 @@ public class BranchConfigurationCalculator : IBranchConfigurationCalculator
                     {
                         Increment = branchConfig.Increment,
                         PreventIncrementOfMergedBranchVersion = branchConfig.PreventIncrementOfMergedBranchVersion,
+                        PreventIncrementOfTrackedReleaseBranchVersion = branchConfig.PreventIncrementOfTrackedReleaseBranchVersion,
                         // If we are inheriting from develop then we should behave like develop
                         TracksReleaseBranches = branchConfig.TracksReleaseBranches
                     };
@@ -182,6 +183,7 @@ public class BranchConfigurationCalculator : IBranchConfigurationCalculator
             {
                 Increment = configIncrement,
                 PreventIncrementOfMergedBranchVersion = inheritingBranchConfig.PreventIncrementOfMergedBranchVersion,
+                PreventIncrementOfTrackedReleaseBranchVersion = inheritingBranchConfig.PreventIncrementOfTrackedReleaseBranchVersion,
                 // If we are inheriting from develop then we should behave like develop
                 TracksReleaseBranches = inheritingBranchConfig.TracksReleaseBranches
             };

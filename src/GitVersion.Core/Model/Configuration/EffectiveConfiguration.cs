@@ -55,6 +55,7 @@ public class EffectiveConfiguration
         Increment = currentBranchConfig.Increment.Value;
         BranchPrefixToTrim = currentBranchConfig.Regex;
         PreventIncrementOfMergedBranchVersion = currentBranchConfig.PreventIncrementOfMergedBranchVersion ?? false;
+        PreventIncrementOfTrackedReleaseBranchVersion = currentBranchConfig.PreventIncrementOfTrackedReleaseBranchVersion ?? false;
         TagNumberPattern = currentBranchConfig.TagNumberPattern;
         ContinuousDeploymentFallbackTag = configuration.ContinuousDeploymentFallbackTag;
         TrackMergeTarget = currentBranchConfig.TrackMergeTarget ?? false;
@@ -88,6 +89,7 @@ public class EffectiveConfiguration
         IncrementStrategy increment,
         string? branchPrefixToTrim,
         bool preventIncrementOfMergedBranchVersion,
+        bool preventIncrementOfTrackedReleaseBranchVersion,
         string? tagNumberPattern,
         string? continuousDeploymentFallbackTag,
         bool trackMergeTarget,
@@ -120,6 +122,7 @@ public class EffectiveConfiguration
         Increment = increment;
         BranchPrefixToTrim = branchPrefixToTrim;
         PreventIncrementOfMergedBranchVersion = preventIncrementOfMergedBranchVersion;
+        PreventIncrementOfTrackedReleaseBranchVersion = preventIncrementOfTrackedReleaseBranchVersion;
         TagNumberPattern = tagNumberPattern;
         ContinuousDeploymentFallbackTag = continuousDeploymentFallbackTag;
         TrackMergeTarget = trackMergeTarget;
@@ -168,6 +171,8 @@ public class EffectiveConfiguration
     public string? BranchPrefixToTrim { get; }
 
     public bool PreventIncrementOfMergedBranchVersion { get; }
+
+    public bool PreventIncrementOfTrackedReleaseBranchVersion { get; }
 
     public string? TagNumberPattern { get; }
 

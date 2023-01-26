@@ -83,9 +83,12 @@ public class TrackReleaseBranchesVersionStrategy : VersionStrategyBase
             return Array.Empty<BaseVersion>();
         }
 
-        var configuration = Context.GetEffectiveConfiguration(releaseBranch);
+        var currentBranchConfiguration = Context.GetEffectiveConfiguration(Context.CurrentBranch);
+        var shouldIncrement = !currentBranchConfiguration.PreventIncrementOfTrackedReleaseBranchVersion;
+
+        var releaseBranchConfiguration = Context.GetEffectiveConfiguration(releaseBranch);
         return this.releaseVersionStrategy
-            .GetBaseVersions(new(releaseBranch, configuration))
-            .Select(b => new BaseVersion(b.Source, true, b.SemanticVersion, baseSource, b.BranchNameOverride));
+            .GetBaseVersions(new(releaseBranch, releaseBranchConfiguration))
+            .Select(b => new BaseVersion(b.Source, shouldIncrement, b.SemanticVersion, baseSource, b.BranchNameOverride));
     }
 }

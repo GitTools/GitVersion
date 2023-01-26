@@ -42,6 +42,7 @@ public static class ConfigExtensions
             VersioningMode = configuration.VersioningMode,
             Increment = configuration.Increment,
             PreventIncrementOfMergedBranchVersion = false,
+            PreventIncrementOfTrackedReleaseBranchVersion = false,
             TrackMergeTarget = false,
             TracksReleaseBranches = false,
             IsReleaseBranch = false,

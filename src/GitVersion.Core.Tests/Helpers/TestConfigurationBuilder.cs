@@ -14,6 +14,7 @@ public sealed class TestConfigurationBuilder
     private bool withoutAnyTrackMergeTargets;
     private readonly Dictionary<string, bool> trackMergeTargetsDictionary = new();
     private readonly Dictionary<string, bool> preventIncrementOfMergedBranchVersionDictionary = new();
+    private readonly Dictionary<string, bool> preventIncrementOfTrackedReleaseBranchVersionDictionary = new();
     private IncrementStrategy? increment;
     private readonly Dictionary<string, IncrementStrategy> incrementDictionary = new();
     private readonly Dictionary<string, string?> tagDictionary = new();
@@ -72,6 +73,12 @@ public sealed class TestConfigurationBuilder
     public TestConfigurationBuilder WithPreventIncrementOfMergedBranchVersion(string branch, bool value)
     {
         preventIncrementOfMergedBranchVersionDictionary[branch] = value;
+        return this;
+    }
+
+    public TestConfigurationBuilder WithPreventIncrementOfTrackedReleaseBranchVersion(string branch, bool value)
+    {
+        preventIncrementOfTrackedReleaseBranchVersionDictionary[branch] = value;
         return this;
     }
 
@@ -142,6 +149,11 @@ public sealed class TestConfigurationBuilder
         foreach (var item in preventIncrementOfMergedBranchVersionDictionary)
         {
             configuration.Branches[item.Key].PreventIncrementOfMergedBranchVersion = item.Value;
+        }
+
+        foreach (var item in preventIncrementOfTrackedReleaseBranchVersionDictionary)
+        {
+            configuration.Branches[item.Key].PreventIncrementOfTrackedReleaseBranchVersion = item.Value;
         }
 
         configuration.Increment = increment;

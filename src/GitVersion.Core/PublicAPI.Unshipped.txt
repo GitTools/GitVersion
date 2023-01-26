@@ -1,0 +1,3 @@
+GitVersion.Model.Configuration.BranchConfig.PreventIncrementOfTrackedReleaseBranchVersion.get -> bool?
+GitVersion.Model.Configuration.BranchConfig.PreventIncrementOfTrackedReleaseBranchVersion.set -> void
+GitVersion.Model.Configuration.EffectiveConfiguration.PreventIncrementOfTrackedReleaseBranchVersion.get -> bool

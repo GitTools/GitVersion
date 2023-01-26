@@ -18,6 +18,7 @@ public class BranchConfig
         Tag = branchConfiguration.Tag;
         Increment = branchConfiguration.Increment;
         PreventIncrementOfMergedBranchVersion = branchConfiguration.PreventIncrementOfMergedBranchVersion;
+        PreventIncrementOfTrackedReleaseBranchVersion = branchConfiguration.PreventIncrementOfTrackedReleaseBranchVersion;
         TagNumberPattern = branchConfiguration.TagNumberPattern;
         TrackMergeTarget = branchConfiguration.TrackMergeTarget;
         CommitMessageIncrementing = branchConfiguration.CommitMessageIncrementing;
@@ -45,6 +46,9 @@ public class BranchConfig
 
     [YamlMember(Alias = "prevent-increment-of-merged-branch-version")]
     public bool? PreventIncrementOfMergedBranchVersion { get; set; }
+
+    [YamlMember(Alias = "prevent-increment-of-tracked-release-branch-version")]
+    public bool? PreventIncrementOfTrackedReleaseBranchVersion { get; set; }
 
     [YamlMember(Alias = "tag-number-pattern")]
     public string? TagNumberPattern { get; set; }
@@ -90,6 +94,7 @@ public class BranchConfig
         targetConfig.Tag = this.Tag ?? targetConfig.Tag;
         targetConfig.Increment = this.Increment ?? targetConfig.Increment;
         targetConfig.PreventIncrementOfMergedBranchVersion = this.PreventIncrementOfMergedBranchVersion ?? targetConfig.PreventIncrementOfMergedBranchVersion;
+        targetConfig.PreventIncrementOfTrackedReleaseBranchVersion = this.PreventIncrementOfTrackedReleaseBranchVersion ?? targetConfig.PreventIncrementOfTrackedReleaseBranchVersion;
         targetConfig.TagNumberPattern = this.TagNumberPattern ?? targetConfig.TagNumberPattern;
         targetConfig.TrackMergeTarget = this.TrackMergeTarget ?? targetConfig.TrackMergeTarget;
         targetConfig.CommitMessageIncrementing = this.CommitMessageIncrementing ?? targetConfig.CommitMessageIncrementing;
@@ -115,6 +120,7 @@ public class BranchConfig
         Name = name,
         Tag = "useBranchName",
         PreventIncrementOfMergedBranchVersion = false,
+        PreventIncrementOfTrackedReleaseBranchVersion = false,
         TrackMergeTarget = false,
         TracksReleaseBranches = false,
         IsReleaseBranch = false,
