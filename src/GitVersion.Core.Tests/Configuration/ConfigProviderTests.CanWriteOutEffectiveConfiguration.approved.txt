@@ -18,6 +18,7 @@ branches:
     tag: alpha
     increment: Minor
     prevent-increment-of-merged-branch-version: false
+    prevent-increment-of-tracked-release-branch-version: false
     track-merge-target: true
     regex: ^dev(elop)?(ment)?$
     source-branches: []
@@ -30,6 +31,7 @@ branches:
     tag: ''
     increment: Patch
     prevent-increment-of-merged-branch-version: true
+    prevent-increment-of-tracked-release-branch-version: false
     track-merge-target: false
     regex: ^master$|^main$
     source-branches:
@@ -44,6 +46,7 @@ branches:
     tag: beta
     increment: None
     prevent-increment-of-merged-branch-version: true
+    prevent-increment-of-tracked-release-branch-version: false
     track-merge-target: false
     regex: ^releases?[/-]
     source-branches:
@@ -87,6 +90,7 @@ branches:
     tag: beta
     increment: Patch
     prevent-increment-of-merged-branch-version: false
+    prevent-increment-of-tracked-release-branch-version: false
     track-merge-target: false
     regex: ^hotfix(es)?[/-]
     source-branches:
@@ -103,6 +107,7 @@ branches:
     tag: ''
     increment: Patch
     prevent-increment-of-merged-branch-version: true
+    prevent-increment-of-tracked-release-branch-version: false
     track-merge-target: false
     regex: ^support[/-]
     source-branches:

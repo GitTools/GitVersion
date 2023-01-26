@@ -314,6 +314,7 @@ branches:
     tag: ''
     increment: Patch
     prevent-increment-of-merged-branch-version: true
+    prevent-increment-of-tracked-release-branch-version: false
     track-merge-target: false
     source-branches: [ 'develop', 'release' ]
     tracks-release-branches: false
@@ -326,6 +327,7 @@ branches:
     tag: alpha
     increment: Minor
     prevent-increment-of-merged-branch-version: false
+    prevent-increment-of-tracked-release-branch-version: false
     track-merge-target: true
     source-branches: []
     tracks-release-branches: true
@@ -338,6 +340,7 @@ branches:
     tag: beta
     increment: None
     prevent-increment-of-merged-branch-version: true
+    prevent-increment-of-tracked-release-branch-version: false
     track-merge-target: false
     source-branches: [ 'develop', 'main', 'support', 'release' ]
     tracks-release-branches: false
@@ -350,6 +353,7 @@ branches:
     tag: useBranchName
     increment: Inherit
     prevent-increment-of-merged-branch-version: false
+    prevent-increment-of-tracked-release-branch-version: false
     track-merge-target: false
     source-branches: [ 'develop', 'main', 'release', 'feature', 'support', 'hotfix' ]
     tracks-release-branches: false
@@ -362,6 +366,7 @@ branches:
     tag: PullRequest
     increment: Inherit
     prevent-increment-of-merged-branch-version: false
+    prevent-increment-of-tracked-release-branch-version: false
     tag-number-pattern: '[/-](?<number>\d+)[-/]'
     track-merge-target: false
     source-branches: [ 'develop', 'main', 'release', 'feature', 'support', 'hotfix' ]
@@ -375,6 +380,7 @@ branches:
     tag: beta
     increment: Patch
     prevent-increment-of-merged-branch-version: false
+    prevent-increment-of-tracked-release-branch-version: false
     track-merge-target: false
     source-branches: [ 'develop', 'main', 'support' ]
     tracks-release-branches: false
@@ -387,6 +393,7 @@ branches:
     tag: ''
     increment: Patch
     prevent-increment-of-merged-branch-version: true
+    prevent-increment-of-tracked-release-branch-version: false
     track-merge-target: false
     source-branches: [ 'main' ]
     tracks-release-branches: false
@@ -514,6 +521,11 @@ In a GitFlow-based repository, setting this option can have implications on the
 `CommitsSinceVersionSource` output variable. It can rule out a potentially
 better version source proposed by the `MergeMessageBaseVersionStrategy`. For
 more details and an in-depth analysis, please see [the discussion][2506].
+
+### prevent-increment-of-tracked-release-branch-version
+
+If a branch `fix/bug` is branched from `release/v2.0` and has set `tracks-release-branches`
+to `true`, it should build `2.0.0`, instead of incrementing it.
 
 ### tag-number-pattern
 
