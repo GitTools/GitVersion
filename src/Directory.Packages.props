@@ -33,7 +33,7 @@
         <PackageVersion Include="Polly" Version="7.2.3"/>
 
         <PackageVersion Include="System.Net.Requests" Version="4.3.0"/>
-        <PackageVersion Include="System.Text.Json" Version="7.0.1"/>
+        <PackageVersion Include="System.Text.Json" Version="7.0.2"/>
         <PackageVersion Include="System.Text.Encodings.Web" Version="7.0.0"/>
         <PackageVersion Include="YamlDotNet" Version="13.0.0"/>
     </ItemGroup>
