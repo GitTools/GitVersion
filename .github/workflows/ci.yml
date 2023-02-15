@@ -58,7 +58,7 @@ jobs:
       name: Setup .NET SDK
       uses: actions/setup-dotnet@v3.0.3
       with:
-        dotnet-version: '7.0.x'
+        dotnet-version: '7.0.102'
     -
       name: '[Prepare]'
       if: steps.cache-cake.outputs.cache-hit != 'true'
@@ -97,7 +97,7 @@ jobs:
       name: Setup .NET SDK
       uses: actions/setup-dotnet@v3.0.3
       with:
-        dotnet-version: '7.0.x'
+        dotnet-version: '7.0.102'
     -
       name: '[Build]'
       shell: pwsh
@@ -160,7 +160,7 @@ jobs:
       name: Setup .NET SDK
       uses: actions/setup-dotnet@v3.0.3
       with:
-        dotnet-version: '7.0.x'
+        dotnet-version: '7.0.102'
     -
       name: '[Unit Test]'
       shell: pwsh
@@ -212,7 +212,7 @@ jobs:
       name: Setup .NET SDK
       uses: actions/setup-dotnet@v3.0.3
       with:
-        dotnet-version: '7.0.x'
+        dotnet-version: '7.0.102'
     -
       name: '[Test Artifacts]'
       shell: pwsh
@@ -272,7 +272,7 @@ jobs:
       name: Setup .NET SDK
       uses: actions/setup-dotnet@v3.0.3
       with:
-        dotnet-version: '7.0.x'
+        dotnet-version: '7.0.102'
     -
       name: '[Test Artifacts (amd64)]'
       shell: pwsh
@@ -330,7 +330,7 @@ jobs:
       name: Setup .NET SDK
       uses: actions/setup-dotnet@v3.0.3
       with:
-        dotnet-version: '7.0.x'
+        dotnet-version: '7.0.102'
     -
       name: Login to DockerHub
       if: success() && github.event_name != 'pull_request' && github.repository_owner == 'GitTools'
@@ -420,7 +420,7 @@ jobs:
       name: Setup .NET SDK
       uses: actions/setup-dotnet@v3.0.3
       with:
-        dotnet-version: '7.0.x'
+        dotnet-version: '7.0.102'
     -
       name: '[Publish]'
       shell: pwsh
@@ -474,7 +474,7 @@ jobs:
       name: Setup .NET SDK
       uses: actions/setup-dotnet@v3.0.3
       with:
-        dotnet-version: '7.0.x'
+        dotnet-version: '7.0.102'
     -
       name: '[Release]'
       shell: pwsh
