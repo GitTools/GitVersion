@@ -247,7 +247,7 @@ public class NextVersionCalculator : INextVersionCalculator
 
                         if (configuration.VersioningMode == VersioningMode.Mainline)
                         {
-                            if (!(incrementedVersion.PreReleaseTag?.HasTag() != true))
+                            if (incrementedVersion.PreReleaseTag?.HasTag() == true)
                             {
                                 continue;
                             }
