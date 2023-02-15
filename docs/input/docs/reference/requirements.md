@@ -28,11 +28,6 @@ The repository needs to have an existing local `master` or `main` branch.
 For some branch strategies (such as [Git Flow][gitflow]), a local `develop`
 branch needs to exist.
 
-### Switched branch
-
-The repository should be [switched][git-switch] to a named, existing branch
-pointing to the commit being built (i.e. no detached `HEAD`).
-
 ### Configuration
 
 If using a `GitVersion.yml` [configuration][configuration] file, that file
