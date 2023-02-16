@@ -187,6 +187,8 @@
 				<li><a href="/api/GitVersion/VersionWriter">VersionWriter</a></li>
 				<li><a href="/api/GitVersion/WarningException">WarningException</a></li>
 				<li><a href="/api/GitVersion/WixInfo">WixInfo</a></li>
+			<li class="header">Struct Types</li>
+				<li><a href="/api/GitVersion/BranchCommit">BranchCommit</a></li>
 			<li class="header">Interface Types</li>
 				<li><a href="/api/GitVersion/IArgumentParser">IArgumentParser</a></li>
 				<li><a href="/api/GitVersion/IBranch">IBranch</a></li>
@@ -221,12 +223,8 @@
 			<li class="header">Enum Types</li>
 				<li><a href="/api/GitVersion/CommitSortStrategies">CommitSortStrategies</a></li>
 				<li><a href="/api/GitVersion/IncrementStrategy">IncrementStrategy</a></li>
-				<li><a href="/api/GitVersion/OutputType">OutputType</a></li>
 				<li><a href="/api/GitVersion/RefSpecDirection">RefSpecDirection</a></li>
-				<li><a href="/api/GitVersion/SemanticVersionFormat">Semantic<wbr>Version<wbr>Format</a></li>
 				<li><a href="/api/GitVersion/VersionField">VersionField</a></li>
-			<li class="header">Struct Types</li>
-				<li><a href="/api/GitVersion/BranchCommit">BranchCommit</a></li>
 
 
                     </ul>
@@ -274,8 +272,8 @@
 								<dd>
 									<ul class="list-unstyled">
 											<li><a href="/api/GitVersion.BuildAgents/BuildServerModule">BuildServerModule</a></li>								
-											<li><a href="/api/GitVersion.VersionCalculation/VersionStrategyModule">Version<wbr>Strategy<wbr>Module</a></li>								
 											<li><a href="/api/GitVersion.Configuration.Init/GitVersionInitModule">GitVersionInitModule</a></li>								
+											<li><a href="/api/GitVersion.VersionCalculation/VersionStrategyModule">Version<wbr>Strategy<wbr>Module</a></li>								
 									</ul>
 								</dd>			
 							
@@ -291,10 +289,10 @@
 class Type type-node
 	Derived0["BuildServerModule"]--&gt;Type
 	click Derived0 "/api/GitVersion.BuildAgents/BuildServerModule"
-	Derived1["VersionStrategyModule"]--&gt;Type
-	click Derived1 "/api/GitVersion.VersionCalculation/VersionStrategyModule"
-	Derived2["GitVersionInitModule"]--&gt;Type
-	click Derived2 "/api/GitVersion.Configuration.Init/GitVersionInitModule"
+	Derived1["GitVersionInitModule"]--&gt;Type
+	click Derived1 "/api/GitVersion.Configuration.Init/GitVersionInitModule"
+	Derived2["VersionStrategyModule"]--&gt;Type
+	click Derived2 "/api/GitVersion.VersionCalculation/VersionStrategyModule"
 
 						</div>
 					</div>

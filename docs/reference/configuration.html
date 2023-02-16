@@ -241,13 +241,16 @@ assembly-file-versioning-scheme: MajorMinorPatch
 assembly-informational-format: '{InformationalVersion}'
 mode: ContinuousDelivery
 increment: Inherit
-continuous-delivery-fallback-label: ci
-label-prefix: '[vV]'
+continuous-delivery-fallback-tag: ci
+tag-prefix: '[vV]'
 major-version-bump-message: '\+semver:\s?(breaking|major)'
 minor-version-bump-message: '\+semver:\s?(feature|minor)'
 patch-version-bump-message: '\+semver:\s?(fix|patch)'
 no-bump-message: '\+semver:\s?(none|skip)'
-label-pre-release-weight: 60000
+legacy-semver-padding: 4
+build-metadata-padding: 4
+commits-since-version-source-padding: 4
+tag-pre-release-weight: 60000
 commit-message-incrementing: Enabled
 ignore:
   sha: []
@@ -313,20 +316,20 @@ increased, such as for commits after a tag: <code>Major</code>, <code>Minor</cod
 for <a href="#increment">increment</a>,
 <a href="#prevent-increment-of-merged-branch-version">prevent-increment-of-merged-branch-version</a>
 and <a href="#tracks-release-branches">tracks-release-branches</a>.</p>
-<h3 id="continuous-delivery-fallback-label">continuous-delivery-fallback-label</h3>
+<h3 id="continuous-delivery-fallback-tag">continuous-delivery-fallback-tag</h3>
 <p>When using <code>mode: ContinuousDeployment</code>, the value specified in
-<code>continuous-delivery-fallback-label</code> will be used as the pre-release label for
+<code>continuous-delivery-fallback-tag</code> will be used as the pre-release tag for
 branches which do not have one specified. Default set to <code>ci</code>.</p>
 <p>Just to clarify: For a build name without <code>...-ci-&lt;buildnumber&gt;</code> or in other
 words without a <code>PreReleaseTag</code> (ergo <code>"PreReleaseTag":""</code> in GitVersion's JSON output)
-at the end you would need to set <code>continuous-delivery-fallback-label</code> to an empty
+at the end you would need to set <code>continuous-delivery-fallback-tag</code> to an empty
 string (<code>''</code>):</p>
 <pre><code class="language-yaml">mode: ContinuousDeployment
-continuous-delivery-fallback-label: ''
+continuous-delivery-fallback-tag: ''
 ...
 </code></pre>
 <p>Doing so can be helpful if you use your <code>main</code> branch as a <code>release</code> branch.</p>
-<h3 id="label-prefix">label-prefix</h3>
+<h3 id="tag-prefix">tag-prefix</h3>
 <p>A regex which is used to trim Git tags before processing (e.g., v1.0.0). Default
 is <code>[vV]</code>, although this is just for illustrative purposes as we do a IgnoreCase
 match and could be <code>v</code>.</p>
@@ -345,9 +348,19 @@ Default set to <code>'\+semver:\s?(fix|patch)'</code>, which will match occurren
 <h3 id="no-bump-message">no-bump-message</h3>
 <p>Used to tell GitVersion not to increment when in Mainline development mode.
 Default <code>\+semver:\s?(none|skip)</code>, which will match occurrences of <code>+semver: none</code> and <code>+semver: skip</code></p>
-<p>When a commit matches <strong>both</strong> the <code>no-bump-message</code> <strong>and</strong> any combination of
-the <code>version-bump-message</code>, <code>no-bump-message</code> takes precedence and no increment is applied.</p>
-<h3 id="label-pre-release-weight">label-pre-release-weight</h3>
+<h3 id="legacy-semver-padding">legacy-semver-padding</h3>
+<p>The number of characters to pad <code>LegacySemVer</code> to in the <code>LegacySemVerPadded</code>
+<a href="/docs/reference/variables">variable</a>. Default is <code>4</code>, which will pad the <code>LegacySemVer</code> value
+of <code>3.0.0-beta1</code> to <code>3.0.0-beta0001</code>.</p>
+<h3 id="build-metadata-padding">build-metadata-padding</h3>
+<p>The number of characters to pad <code>BuildMetaData</code> to in the <code>BuildMetaDataPadded</code>
+<a href="/docs/reference/variables">variable</a>. Default is <code>4</code>, which will pad the <code>BuildMetaData</code> value
+of <code>1</code> to <code>0001</code>.</p>
+<h3 id="commits-since-version-source-padding">commits-since-version-source-padding</h3>
+<p>The number of characters to pad <code>CommitsSinceVersionSource</code> to in the
+<code>CommitsSinceVersionSourcePadded</code> <a href="/docs/reference/variables">variable</a>. Default is <code>4</code>, which
+will pad the <code>CommitsSinceVersionSource</code> value of <code>1</code> to <code>0001</code>.</p>
+<h3 id="tag-pre-release-weight">tag-pre-release-weight</h3>
 <p>The pre-release weight in case of tagged commits. If the value is not set in the
 configuration, a default weight of 60000 is used instead. If the
 <code>WeightedPreReleaseNumber</code> <a href="/docs/reference/variables">variable</a> is 0 and this parameter is set,
@@ -388,7 +401,7 @@ follow the built-in conventions.  Entries should be added as key-value pairs whe
 the value is a regular expression.
 e.g.</p>
 <pre><code class="language-yaml">merge-message-formats:
-    tfs: '^Merged (?:PR (?&lt;PullRequestNumber&gt;\d+)): Merge (?&lt;SourceBranch&gt;.+) to (?&lt;TargetBranch&gt;.+)'
+    tfs: ^Merged (?:PR (?&lt;PullRequestNumber&gt;\d+)): Merge (?&lt;SourceBranch&gt;.+) to (?&lt;TargetBranch&gt;.+)
 </code></pre>
 <p>The regular expression should contain the following capture groups:</p>
 <ul>
@@ -412,7 +425,7 @@ upgrade.</p>
   main:
     regex: ^master$|^main$
     mode: ContinuousDelivery
-    label: ''
+    tag: ''
     increment: Patch
     prevent-increment-of-merged-branch-version: true
     track-merge-target: false
@@ -424,7 +437,7 @@ upgrade.</p>
   develop:
     regex: ^dev(elop)?(ment)?$
     mode: ContinuousDeployment
-    label: alpha
+    tag: alpha
     increment: Minor
     prevent-increment-of-merged-branch-version: false
     track-merge-target: true
@@ -436,7 +449,7 @@ upgrade.</p>
   release:
     regex: ^releases?[/-]
     mode: ContinuousDelivery
-    label: beta
+    tag: beta
     increment: None
     prevent-increment-of-merged-branch-version: true
     track-merge-target: false
@@ -448,29 +461,44 @@ upgrade.</p>
   feature:
     regex: ^features?[/-]
     mode: ContinuousDelivery
-    label: '{BranchName}'
+    tag: useBranchName
     increment: Inherit
+    prevent-increment-of-merged-branch-version: false
+    track-merge-target: false
     source-branches: [ 'develop', 'main', 'release', 'feature', 'support', 'hotfix' ]
+    tracks-release-branches: false
+    is-release-branch: false
+    is-mainline: false
     pre-release-weight: 30000
   pull-request:
     regex: ^(pull|pull\-requests|pr)[/-]
     mode: ContinuousDelivery
-    label: PullRequest
+    tag: PullRequest
     increment: Inherit
-    label-number-pattern: '[/-](?&lt;number&gt;\d+)[-/]'
+    prevent-increment-of-merged-branch-version: false
+    tag-number-pattern: '[/-](?&lt;number&gt;\d+)[-/]'
+    track-merge-target: false
     source-branches: [ 'develop', 'main', 'release', 'feature', 'support', 'hotfix' ]
+    tracks-release-branches: false
+    is-release-branch: false
+    is-mainline: false
     pre-release-weight: 30000
   hotfix:
     regex: ^hotfix(es)?[/-]
     mode: ContinuousDelivery
-    label: beta
-    increment: Inherit
-    source-branches: [ 'release', 'main', 'support', 'hotfix' ]
+    tag: beta
+    increment: Patch
+    prevent-increment-of-merged-branch-version: false
+    track-merge-target: false
+    source-branches: [ 'develop', 'main', 'support' ]
+    tracks-release-branches: false
+    is-release-branch: false
+    is-mainline: false
     pre-release-weight: 30000
   support:
     regex: ^support[/-]
     mode: ContinuousDelivery
-    label: ''
+    tag: ''
     increment: Patch
     prevent-increment-of-merged-branch-version: true
     track-merge-target: false
@@ -555,13 +583,13 @@ branch.</p>
 <p>The header for all the individual branch configuration.</p>
 <h3 id="mode-1">mode</h3>
 <p>Same as for the <a href="#mode">global configuration, explained above</a>.</p>
-<h3 id="label">label</h3>
-<p>The pre release label to use for this branch. Use the value <code>useBranchName</code> to use
+<h3 id="tag">tag</h3>
+<p>The pre release tag to use for this branch. Use the value <code>useBranchName</code> to use
 the branch name instead. For example <code>feature/foo</code> would become a pre-release
-label of <code>foo</code> with this value. Use the value <code>{BranchName}</code> as a placeholder to
-insert the branch name. For example <code>feature/foo</code> would become a pre-release label
+tag of <code>foo</code> with this value. Use the value <code>{BranchName}</code> as a placeholder to
+insert the branch name. For example <code>feature/foo</code> would become a pre-release tag
 of <code>alpha.foo</code> with the value of <code>alpha.{BranchName}</code>.</p>
-<p><strong>Note:</strong> To clear a default use an empty string: <code>label: ''</code></p>
+<p><strong>Note:</strong> To clear a default use an empty string: <code>tag: ''</code></p>
 <h3 id="increment-1">increment</h3>
 <p>Same as for the <a href="#increment">global configuration, explained above</a>.</p>
 <h3 id="prevent-increment-of-merged-branch-version">prevent-increment-of-merged-branch-version</h3>
@@ -572,23 +600,23 @@ prevents incrementing after a versioned branch is merged.</p>
 <code>CommitsSinceVersionSource</code> output variable. It can rule out a potentially
 better version source proposed by the <code>MergeMessageBaseVersionStrategy</code>. For
 more details and an in-depth analysis, please see <a href="https://github.com/GitTools/GitVersion/pull/2506#issuecomment-754754037">the discussion</a>.</p>
-<h3 id="label-number-pattern">label-number-pattern</h3>
+<h3 id="tag-number-pattern">tag-number-pattern</h3>
 <p>Pull requests require us to extract the pre-release number out of the branch
 name so <code>refs/pulls/534/merge</code> builds as <code>PullRequest.534</code>. This is a regex with
 a named capture group called <code>number</code>.</p>
 <p>If the branch <code>mode</code> is set to <code>ContinuousDeployment</code>, then the extracted
-<code>number</code> is appended to the name of the pre-release label and the number portion
-is the number of commits since the last label. This enables consecutive commits to
+<code>number</code> is appended to the name of the pre-release tag and the number portion
+is the number of commits since the last tag. This enables consecutive commits to
 the pull request branch to generate unique full semantic version numbers when
 the branch is configured to use ContinuousDeployment mode.</p>
 <p><strong>Example usage:</strong></p>
 <pre><code class="language-yaml">branches:
   pull-request:
     mode: ContinuousDeployment
-    label: PullRequest
+    tag: PullRequest
     increment: Inherit
     track-merge-target: true
-    label-number-pattern: '[/-](?&lt;number&gt;\d+)[-/]'
+    tag-number-pattern: '[/-](?&lt;number&gt;\d+)[-/]'
 </code></pre>
 <h3 id="track-merge-target">track-merge-target</h3>
 <p>Strategy which will look for tagged merge commits directly off the current
@@ -612,15 +640,6 @@ is set, it would be added to the <code>PreReleaseNumber</code> to get a final
 <code>AssemblySemFileVer</code>, otherwise a branch specific default for
 <code>pre-release-weight</code> will be used in the calculation. Related Issues <a href="https://github.com/GitTools/GitVersion/issues/1145">1145</a>
 and <a href="https://github.com/GitTools/GitVersion/issues/1366">1366</a>.</p>
-<h3 id="semver-format">semver-format</h3>
-<p>Specifies the semver format that is used when parsing the string.
-Can be <code>Strict</code> - using the <a href="https://regex101.com/r/Ly7O1x/3/">regex</a>
-or <code>Loose</code> the old way of parsing. The default if not specified is <code>Strict</code>
-Example of invalid <code>Strict</code>, but valid <code>Loose</code></p>
-<pre><code>1.2-alpha4
-01.02.03-rc03
-1.2.3.4
-</code></pre>
 
 	</section>
                 

@@ -239,21 +239,7 @@ class Type type-node
 								</td>
 							</tr>
 							<tr>
-								<td><a href="/api/GitVersion.Common/IRepositoryStore/657AEA2E">Find<wbr>Commit<wbr>Branches<wbr>Was<wbr>Branched<wbr>From<wbr>(IBranch, <wbr>Git<wbr>Version<wbr>Configuration, <wbr>IBranch[])<wbr></a></td>
-								<td>IEnumerable<wbr>&lt;<a href="/api/GitVersion/BranchCommit">BranchCommit</a>&gt;<wbr></td>
-								<td>
-									<div></div>
-								</td>
-							</tr>
-							<tr>
-								<td><a href="/api/GitVersion.Common/IRepositoryStore/19B03FD7">Find<wbr>Commit<wbr>Branches<wbr>Was<wbr>Branched<wbr>From<wbr>(IBranch, <wbr>Git<wbr>Version<wbr>Configuration, <wbr>IEnumerable<wbr>&lt;IBranch&gt;<wbr>)<wbr></a></td>
-								<td>IEnumerable<wbr>&lt;<a href="/api/GitVersion/BranchCommit">BranchCommit</a>&gt;<wbr></td>
-								<td>
-									<div></div>
-								</td>
-							</tr>
-							<tr>
-								<td><a href="/api/GitVersion.Common/IRepositoryStore/2D932A70">Find<wbr>Commit<wbr>Branch<wbr>Was<wbr>Branched<wbr>From<wbr>(IBranch, <wbr>Git<wbr>Version<wbr>Configuration, <wbr>IBranch[])<wbr></a></td>
+								<td><a href="/api/GitVersion.Common/IRepositoryStore/3A5AE0A9">Find<wbr>Commit<wbr>Branch<wbr>Was<wbr>Branched<wbr>From<wbr>(IBranch, <wbr>Config, <wbr>IBranch[])<wbr></a></td>
 								<td><a href="/api/GitVersion/BranchCommit">BranchCommit</a></td>
 								<td>
 									<div>
@@ -263,7 +249,7 @@ class Type type-node
 								</td>
 							</tr>
 							<tr>
-								<td><a href="/api/GitVersion.Common/IRepositoryStore/1E7978BE">FindMainBranch<wbr>(<wbr>Git<wbr>Version<wbr>Configuration)<wbr></a></td>
+								<td><a href="/api/GitVersion.Common/IRepositoryStore/6CD2F471">FindMainBranch<wbr>(Config)<wbr></a></td>
 								<td><a href="/api/GitVersion/IBranch">IBranch</a></td>
 								<td>
 									<div></div>
@@ -286,8 +272,29 @@ class Type type-node
 								</td>
 							</tr>
 							<tr>
+								<td><a href="/api/GitVersion.Common/IRepositoryStore/CBD10A44">GetBaseVersionSource<wbr>(ICommit)<wbr></a></td>
+								<td><a href="/api/GitVersion/ICommit">ICommit</a></td>
+								<td>
+									<div></div>
+								</td>
+							</tr>
+							<tr>
 								<td><a href="/api/GitVersion.Common/IRepositoryStore/C7C3B01D">Get<wbr>Branches<wbr>Containing<wbr>Commit<wbr>(ICommit, <wbr>IEnumerable<wbr>&lt;IBranch&gt;<wbr>?, <wbr>bool)<wbr></a></td>
 								<td>IEnumerable<wbr>&lt;<a href="/api/GitVersion/IBranch">IBranch</a>&gt;<wbr></td>
+								<td>
+									<div></div>
+								</td>
+							</tr>
+							<tr>
+								<td><a href="/api/GitVersion.Common/IRepositoryStore/00C9E6E5">GetBranchesForCommit<wbr>(ICommit)<wbr></a></td>
+								<td>IEnumerable<wbr>&lt;<a href="/api/GitVersion/IBranch">IBranch</a>&gt;<wbr></td>
+								<td>
+									<div></div>
+								</td>
+							</tr>
+							<tr>
+								<td><a href="/api/GitVersion.Common/IRepositoryStore/0DA5D5DB">GetChosenBranch<wbr>(Config)<wbr></a></td>
+								<td><a href="/api/GitVersion/IBranch">IBranch</a></td>
 								<td>
 									<div></div>
 								</td>
@@ -314,7 +321,14 @@ class Type type-node
 								</td>
 							</tr>
 							<tr>
-								<td><a href="/api/GitVersion.Common/IRepositoryStore/01394232">GetMainlineBranches<wbr>(ICommit, <wbr>Git<wbr>Version<wbr>Configuration)<wbr></a></td>
+								<td><a href="/api/GitVersion.Common/IRepositoryStore/F6351D6B">Get<wbr>Excluded<wbr>Inherit<wbr>Branches<wbr>(Config)<wbr></a></td>
+								<td>IEnumerable<wbr>&lt;<a href="/api/GitVersion/IBranch">IBranch</a>&gt;<wbr></td>
+								<td>
+									<div></div>
+								</td>
+							</tr>
+							<tr>
+								<td><a href="/api/GitVersion.Common/IRepositoryStore/93369EDB">GetMainlineBranches<wbr>(ICommit, <wbr>Config, <wbr>IEnumerable<wbr>&lt;KeyValuePair<wbr>&lt;string, <wbr>BranchConfig&gt;<wbr>&gt;<wbr>?)<wbr></a></td>
 								<td>IDictionary<wbr>&lt;string, <wbr>List<wbr>&lt;<a href="/api/GitVersion/IBranch">IBranch</a>&gt;<wbr>&gt;<wbr></td>
 								<td>
 									<div></div>
@@ -342,21 +356,7 @@ class Type type-node
 								</td>
 							</tr>
 							<tr>
-								<td><a href="/api/GitVersion.Common/IRepositoryStore/1B8F6697">GetReleaseBranches<wbr>(IEnumerable<wbr>&lt;KeyValuePair<wbr>&lt;string, <wbr>Branch<wbr>Configuration&gt;<wbr>&gt;<wbr>)<wbr></a></td>
-								<td>IEnumerable<wbr>&lt;<a href="/api/GitVersion/IBranch">IBranch</a>&gt;<wbr></td>
-								<td>
-									<div></div>
-								</td>
-							</tr>
-							<tr>
-								<td><a href="/api/GitVersion.Common/IRepositoryStore/EA68133F">GetSourceBranches<wbr>(IBranch, <wbr>Git<wbr>Version<wbr>Configuration, <wbr>IBranch[])<wbr></a></td>
-								<td>IEnumerable<wbr>&lt;<a href="/api/GitVersion/IBranch">IBranch</a>&gt;<wbr></td>
-								<td>
-									<div></div>
-								</td>
-							</tr>
-							<tr>
-								<td><a href="/api/GitVersion.Common/IRepositoryStore/E164399A">GetSourceBranches<wbr>(IBranch, <wbr>Git<wbr>Version<wbr>Configuration, <wbr>IEnumerable<wbr>&lt;IBranch&gt;<wbr>)<wbr></a></td>
+								<td><a href="/api/GitVersion.Common/IRepositoryStore/BE49DF0E">GetReleaseBranches<wbr>(IEnumerable<wbr>&lt;KeyValuePair<wbr>&lt;string, <wbr>BranchConfig&gt;<wbr>&gt;<wbr>)<wbr></a></td>
 								<td>IEnumerable<wbr>&lt;<a href="/api/GitVersion/IBranch">IBranch</a>&gt;<wbr></td>
 								<td>
 									<div></div>

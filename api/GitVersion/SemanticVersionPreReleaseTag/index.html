@@ -190,6 +190,8 @@
 				<li><a href="/api/GitVersion/VersionWriter">VersionWriter</a></li>
 				<li><a href="/api/GitVersion/WarningException">WarningException</a></li>
 				<li><a href="/api/GitVersion/WixInfo">WixInfo</a></li>
+			<li class="header">Struct Types</li>
+				<li><a href="/api/GitVersion/BranchCommit">BranchCommit</a></li>
 			<li class="header">Interface Types</li>
 				<li><a href="/api/GitVersion/IArgumentParser">IArgumentParser</a></li>
 				<li><a href="/api/GitVersion/IBranch">IBranch</a></li>
@@ -224,12 +226,8 @@
 			<li class="header">Enum Types</li>
 				<li><a href="/api/GitVersion/CommitSortStrategies">CommitSortStrategies</a></li>
 				<li><a href="/api/GitVersion/IncrementStrategy">IncrementStrategy</a></li>
-				<li><a href="/api/GitVersion/OutputType">OutputType</a></li>
 				<li><a href="/api/GitVersion/RefSpecDirection">RefSpecDirection</a></li>
-				<li><a href="/api/GitVersion/SemanticVersionFormat">Semantic<wbr>Version<wbr>Format</a></li>
 				<li><a href="/api/GitVersion/VersionField">VersionField</a></li>
-			<li class="header">Struct Types</li>
-				<li><a href="/api/GitVersion/BranchCommit">BranchCommit</a></li>
 
 
                     </ul>
@@ -443,6 +441,8 @@ class Type type-node
 									<div>
     Default formats:
     <p>t - SemVer 2.0 formatted tag [beta.1]</p>
+    <p>l - Legacy SemVer tag with the tag number padded. [beta1]</p>
+    <p>lp - Legacy SemVer tag with the tag number padded. [beta0001]. Can specify an integer to control padding (i.e., lp5)</p>
     </div>
 								</td>
 							</tr>

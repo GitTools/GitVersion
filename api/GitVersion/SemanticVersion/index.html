@@ -83,7 +83,6 @@
 	<div id="infobar-headings"><h6>On This Page</h6><p><a href="#Syntax">Syntax</a></p>
 <p><a href="#Constructors">Constructors</a></p>
 <p><a href="#fields">Fields</a></p>
-<p><a href="#Properties">Properties</a></p>
 <p><a href="#Methods">Methods</a></p>
 <p><a href="#Operators">Operators</a></p>
 <p><a href="#ExtensionMethods">Extension Methods</a></p>
@@ -191,6 +190,8 @@
 				<li><a href="/api/GitVersion/VersionWriter">VersionWriter</a></li>
 				<li><a href="/api/GitVersion/WarningException">WarningException</a></li>
 				<li><a href="/api/GitVersion/WixInfo">WixInfo</a></li>
+			<li class="header">Struct Types</li>
+				<li><a href="/api/GitVersion/BranchCommit">BranchCommit</a></li>
 			<li class="header">Interface Types</li>
 				<li><a href="/api/GitVersion/IArgumentParser">IArgumentParser</a></li>
 				<li><a href="/api/GitVersion/IBranch">IBranch</a></li>
@@ -225,12 +226,8 @@
 			<li class="header">Enum Types</li>
 				<li><a href="/api/GitVersion/CommitSortStrategies">CommitSortStrategies</a></li>
 				<li><a href="/api/GitVersion/IncrementStrategy">IncrementStrategy</a></li>
-				<li><a href="/api/GitVersion/OutputType">OutputType</a></li>
 				<li><a href="/api/GitVersion/RefSpecDirection">RefSpecDirection</a></li>
-				<li><a href="/api/GitVersion/SemanticVersionFormat">Semantic<wbr>Version<wbr>Format</a></li>
 				<li><a href="/api/GitVersion/VersionField">VersionField</a></li>
-			<li class="header">Struct Types</li>
-				<li><a href="/api/GitVersion/BranchCommit">BranchCommit</a></li>
 
 
                     </ul>
@@ -378,28 +375,6 @@ class Type type-node
 			</div>
 		
 
-			<h1 id="Properties">Properties</h1>
-			<div class="box">
-				<div class="box-body no-padding table-responsive">
-					<table class="table table-striped table-hover three-cols">
-						<thead>
-							<tr>
-								<th>Name</th>
-								<th>Value</th>
-								<th>Summary</th>
-							</tr>
-						</thead>
-							<tbody><tr>
-								<td><a href="/api/GitVersion/SemanticVersion/649DBFC2">Has<wbr>Pre<wbr>Release<wbr>Tag<wbr>With<wbr>Label</a></td>
-								<td>bool</td>
-								<td>
-									<div></div>
-								</td>
-							</tr>
-					</tbody></table>
-				</div>
-			</div>
-		
 
 			<h1 id="Methods">Methods</h1>
 			<div class="box">
@@ -462,7 +437,7 @@ class Type type-node
 								</td>
 							</tr>
 							<tr>
-								<td><a href="/api/GitVersion/SemanticVersion/07CCF2B0">Parse<wbr>(string, <wbr>string, <wbr>Semantic<wbr>Version<wbr>Format)<wbr></a></td>
+								<td><a href="/api/GitVersion/SemanticVersion/DB68CBB0">Parse<wbr>(string, <wbr>string)<wbr></a></td>
 								<td><a href="/api/GitVersion/SemanticVersion">SemanticVersion</a></td>
 								<td>
 									<div></div>
@@ -493,11 +468,13 @@ class Type type-node
     <p>i - Informational SemVer [1.2.3-beta.4+5.Branch.main.BranchType.main.Sha.000000]</p>
     <p>j - Just the SemVer part [1.2.3]</p>
     <p>t - SemVer with the tag [1.2.3-beta.4]</p>
+    <p>l - Legacy SemVer tag for systems which do not support SemVer 2.0 properly [1.2.3-beta4]</p>
+    <p>lp - Legacy SemVer tag for systems which do not support SemVer 2.0 properly (padded) [1.2.3-beta0004]</p>
     </div>
 								</td>
 							</tr>
 							<tr>
-								<td><a href="/api/GitVersion/SemanticVersion/CEA27259">TryParse<wbr>(string, <wbr>string, <wbr>SemanticVersion, <wbr>Semantic<wbr>Version<wbr>Format)<wbr></a></td>
+								<td><a href="/api/GitVersion/SemanticVersion/550F1A3B">TryParse<wbr>(string, <wbr>string, <wbr>SemanticVersion)<wbr></a></td>
 								<td>bool</td>
 								<td>
 									<div></div>

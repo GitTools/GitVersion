@@ -190,6 +190,8 @@
 				<li><a href="/api/GitVersion/VersionWriter">VersionWriter</a></li>
 				<li><a href="/api/GitVersion/WarningException">WarningException</a></li>
 				<li><a href="/api/GitVersion/WixInfo">WixInfo</a></li>
+			<li class="header">Struct Types</li>
+				<li><a href="/api/GitVersion/BranchCommit">BranchCommit</a></li>
 			<li class="header">Interface Types</li>
 				<li><a href="/api/GitVersion/IArgumentParser">IArgumentParser</a></li>
 				<li><a href="/api/GitVersion/IBranch">IBranch</a></li>
@@ -224,12 +226,8 @@
 			<li class="header">Enum Types</li>
 				<li><a href="/api/GitVersion/CommitSortStrategies">CommitSortStrategies</a></li>
 				<li><a href="/api/GitVersion/IncrementStrategy">IncrementStrategy</a></li>
-				<li><a href="/api/GitVersion/OutputType">OutputType</a></li>
 				<li><a href="/api/GitVersion/RefSpecDirection">RefSpecDirection</a></li>
-				<li><a href="/api/GitVersion/SemanticVersionFormat">Semantic<wbr>Version<wbr>Format</a></li>
 				<li><a href="/api/GitVersion/VersionField">VersionField</a></li>
-			<li class="header">Struct Types</li>
-				<li><a href="/api/GitVersion/BranchCommit">BranchCommit</a></li>
 
 
                     </ul>
@@ -307,7 +305,7 @@ class Type type-node
 							</tr>
 						</thead>
 							<tbody><tr>
-								<td><a href="/api/GitVersion/GitVersionContext/30E24DCE">GitVersionContext<wbr>(IBranch, <wbr>ICommit, <wbr>Git<wbr>Version<wbr>Configuration, <wbr>SemanticVersion, <wbr>int)<wbr></a></td>
+								<td><a href="/api/GitVersion/GitVersionContext/618E7D23">GitVersionContext<wbr>(IBranch, <wbr>ICommit, <wbr>Config, <wbr>SemanticVersion, <wbr>int)<wbr></a></td>
 									<td></td>
 							</tr>
 					</tbody></table>
@@ -329,15 +327,6 @@ class Type type-node
 							</tr>
 						</thead>
 							<tbody><tr>
-								<td><a href="/api/GitVersion/GitVersionContext/85AD27EB">Configuration</a></td>
-								<td><a href="/api/GitVersion.Configuration/GitVersionConfiguration">Git<wbr>Version<wbr>Configuration</a></td>
-								<td>
-									<div>
-    Contains the raw configuration, use Configuration for specific configuration based on the current GitVersion context.
-    </div>
-								</td>
-							</tr>
-							<tr>
 								<td><a href="/api/GitVersion/GitVersionContext/E38DC9DC">CurrentBranch</a></td>
 								<td><a href="/api/GitVersion/IBranch">IBranch</a></td>
 								<td>
@@ -356,6 +345,15 @@ class Type type-node
 								<td><a href="/api/GitVersion/SemanticVersion">SemanticVersion</a></td>
 								<td>
 									<div></div>
+								</td>
+							</tr>
+							<tr>
+								<td><a href="/api/GitVersion/GitVersionContext/1AFCF448">FullConfiguration</a></td>
+								<td><a href="/api/GitVersion.Model.Configuration/Config">Config</a></td>
+								<td>
+									<div>
+    Contains the raw configuration, use Configuration for specific config based on the current GitVersion context.
+    </div>
 								</td>
 							</tr>
 							<tr>
@@ -390,7 +388,7 @@ class Type type-node
 						</thead>
 							<tbody><tr>
 								<td><a href="/api/GitVersion/GitVersionContext/CADDE005">Get<wbr>Effective<wbr>Configuration<wbr>(IBranch)<wbr></a></td>
-								<td><a href="/api/GitVersion.Configuration/EffectiveConfiguration">Effective<wbr>Configuration</a></td>
+								<td><a href="/api/GitVersion.Model.Configuration/EffectiveConfiguration">Effective<wbr>Configuration</a></td>
 								<td>
 									<div></div>
 								</td>

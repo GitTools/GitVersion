@@ -85,7 +85,7 @@
 <p><a href="#example-when-assemblyinfo.cs-already-exists">Example: When AssemblyInfo.cs already exists</a></p>
 <p><a href="#example-when-assemblyinfo.cs-and-assemblyversioninfo.cs-do-not-exist">Example: When AssemblyInfo.cs and AssemblyVersionInfo.cs do not exist</a></p>
 <p><a href="#example-when-assemblyinfo.cs-and-assemblyversioninfo.cs-already-exist">Example: When AssemblyInfo.cs and AssemblyVersionInfo.cs already exist</a></p>
-<p><a href="#example-how-to-override-configuration-option-label-prefix-to-use-prefix-custom">Example: How to override configuration option 'label-prefix' to use prefix 'custom'</a></p>
+<p><a href="#example-how-to-override-configuration-option-tag-prefix-to-use-prefix-custom">Example: How to override configuration option 'tag-prefix' to use prefix 'custom'</a></p>
 <p><a href="#writing-version-metadata-in-wix-format">Writing version metadata in WiX format</a></p>
 <hr class="infobar-hidden">
 </div>
@@ -263,8 +263,8 @@ same assembly version attributes.  If this occurs your build will fail.</p>
 <p><code>GitVersion.exe /updateassemblyinfo AssemblyInfo.cs AssemblyVersionInfo.cs</code></p>
 <p>Will iterate through each file and update known attributes (<code>AssemblyVersion</code>,
 <code>AssemblyFileVersion</code>, <code>AssemblyInformationalVersion</code>).</p>
-<h2 id="example-how-to-override-configuration-option-label-prefix-to-use-prefix-custom">Example: How to override configuration option 'label-prefix' to use prefix 'custom'</h2>
-<p><code>GitVersion.exe /output json /overrideconfig label-prefix=custom</code></p>
+<h2 id="example-how-to-override-configuration-option-tag-prefix-to-use-prefix-custom">Example: How to override configuration option 'tag-prefix' to use prefix 'custom'</h2>
+<p><code>GitVersion.exe /output json /overrideconfig tag-prefix=custom</code></p>
 <h2 id="writing-version-metadata-in-wix-format">Writing version metadata in WiX format</h2>
 <p>To support integration with WiX projects, use <code>GitVersion.exe /updatewixversionfile</code>. All the <a href="/docs/reference/variables">variables</a> are written to
 <code>GitVersion_WixVersion.wxi</code> under the current working directory and can be
