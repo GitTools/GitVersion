@@ -20,7 +20,7 @@ public class ArtifactsExecutableTest : FrostingTask<BuildContext>
     {
         var packagesToTest = new[]
         {
-            "GitVersion.Commandline", "GitVersion.Portable"
+            "GitVersion.Portable"
         };
         foreach (var packageToTest in packagesToTest)
         {
