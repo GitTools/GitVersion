@@ -24,7 +24,11 @@ public record BuildVersion(GitVersion GitVersion, string? Version, string? Miles
 
         if (!string.IsNullOrWhiteSpace(gitVersion.PreReleaseTag))
         {
-            chocolateyVersion += $"-{gitVersion.PreReleaseTag?.Replace(".", "-")}";
+            // Chocolatey does not support pre-release tags with dots, so we replace them with dashes
+            // if the pre-release tag is a number, we add a "a" prefix to the pre-release tag
+            // the trick should be removed when Chocolatey supports semver 2.0
+            var prefix = int.TryParse(gitVersion.PreReleaseLabel, out _) ? "a" : string.Empty;
+            chocolateyVersion += $"-{prefix}{gitVersion.PreReleaseTag?.Replace(".", "-")}";
         }
 
         if (!string.IsNullOrWhiteSpace(gitVersion.BuildMetaData))
