@@ -15,7 +15,10 @@ public class BuildLifetime : BuildLifetimeBase<BuildContext>
 
         context.Credentials = Credentials.GetCredentials(context);
 
-        SetMsBuildSettingsVersion(context);
+        if (context.Version is not null)
+        {
+            SetMsBuildSettingsVersion(context);
+        }
 
         context.StartGroup("Build Setup");
         LogBuildInformation(context);

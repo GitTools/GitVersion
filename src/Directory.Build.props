@@ -21,7 +21,7 @@
         <LangVersion>11</LangVersion>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
-
+        <SatelliteResourceLanguages>en</SatelliteResourceLanguages>
         <EnableNETAnalyzers>True</EnableNETAnalyzers>
         <!-- Latest = version of the analyzers included in latest installed SDK -->
         <AnalysisLevel>latest</AnalysisLevel>
