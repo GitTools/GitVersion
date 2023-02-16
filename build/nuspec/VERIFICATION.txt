@@ -4,4 +4,4 @@ in verifying that this package's contents are trustworthy.
 
 This package is published by the GitTools organization itself. The binaries are
 identical to other package types published by the project, in particular
-the GitVersion.Portable nuget package.
+the GitVersion.Portable and GitVersion nuget package.

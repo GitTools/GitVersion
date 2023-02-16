@@ -20,7 +20,9 @@ public class BuildLifetime : BuildLifetimeBase<BuildContext>
             foreach (var packageFile in nugetPackagesFiles)
             {
                 var packageName = packageFile.GetFilenameWithoutExtension().ToString()[..^(nugetVersion.Length + 1)].ToLower();
-                context.Packages.Add(new NugetPackage(packageName, packageFile, packageName.Contains("Portable", StringComparison.OrdinalIgnoreCase)));
+                var isChocoPackage = packageName.Equals("GitVersion.Portable", StringComparison.OrdinalIgnoreCase) ||
+                                     packageName.Equals("GitVersion", StringComparison.OrdinalIgnoreCase);
+                context.Packages.Add(new NugetPackage(packageName, packageFile, isChocoPackage));
             }
         }
         context.StartGroup("Build Setup");
