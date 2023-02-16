@@ -20,6 +20,6 @@ public class BuildContextBase : FrostingContext
     public bool IsOnLinux { get; set; }
     public bool IsOnMacOS { get; set; }
     public bool IsOnMainOrSupportBranchOriginalRepo => !IsLocalBuild && IsOriginalRepo && (IsMainBranch || IsSupportBranch) && !IsPullRequest;
-    public bool IsStableRelease => IsOnMainOrSupportBranchOriginalRepo && IsTagged;
+    public bool IsStableRelease => IsOnMainOrSupportBranchOriginalRepo && IsTagged && Version?.IsPreRelease == false;
     public bool IsPreRelease => IsOnMainOrSupportBranchOriginalRepo && !IsTagged;
 }

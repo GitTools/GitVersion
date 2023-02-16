@@ -27,7 +27,7 @@ public sealed class PublishDocsInternal : FrostingTask<BuildContext>
     {
         var shouldRun = true;
         shouldRun &= context.ShouldRun(context.DirectoryExists(Paths.Docs), "Wyam documentation directory is missing");
-        shouldRun &= context.ShouldRun(context.IsStableRelease || context.IsPreRelease || context.ForcePublish, $"{nameof(PublishDocs)} works only for releases.");
+        shouldRun &= context.ShouldRun(context.IsStableRelease || context.ForcePublish, $"{nameof(PublishDocs)} works only for releases.");
 
         return shouldRun;
     }

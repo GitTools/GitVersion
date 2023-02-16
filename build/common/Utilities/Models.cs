@@ -1,3 +1,4 @@
+using Cake.Incubator.AssertExtensions;
 using Common.Addins.GitVersion;
 
 namespace Common.Utilities;
@@ -12,7 +13,7 @@ public record NugetCredentials(string ApiKey);
 
 public record ChocolateyCredentials(string ApiKey);
 
-public record BuildVersion(GitVersion GitVersion, string? Version, string? Milestone, string? SemVersion, string? NugetVersion, string? ChocolateyVersion)
+public record BuildVersion(GitVersion GitVersion, string? Version, string? Milestone, string? SemVersion, string? NugetVersion, string? ChocolateyVersion, bool IsPreRelease)
 {
     public static BuildVersion Calculate(GitVersion gitVersion)
     {
@@ -39,7 +40,8 @@ public record BuildVersion(GitVersion GitVersion, string? Version, string? Miles
             Milestone: version,
             SemVersion: semVersion,
             NugetVersion: nugetVersion?.ToLowerInvariant(),
-            ChocolateyVersion: chocolateyVersion?.ToLowerInvariant()
+            ChocolateyVersion: chocolateyVersion?.ToLowerInvariant(),
+            IsPreRelease: !gitVersion.PreReleaseLabel.IsNullOrEmpty()
         );
     }
 }

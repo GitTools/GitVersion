@@ -161,15 +161,12 @@ public static class DockerContextExtensions
             $"{name}:{context.Version.SemVersion}-{distro}-{targetFramework}",
         };
 
-        if (distro == Constants.DockerDistroLatest && targetFramework == Constants.Version60)
+        if (distro == Constants.DockerDistroLatest && targetFramework == Constants.VersionLatest)
         {
             tags.AddRange(new[]
             {
                 $"{name}:{context.Version.Version}",
                 $"{name}:{context.Version.SemVersion}",
-
-                $"{name}:{context.Version.Version}-{distro}",
-                $"{name}:{context.Version.SemVersion}-{distro}"
             });
 
             if (context.IsStableRelease)

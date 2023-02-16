@@ -7,6 +7,7 @@ public class Constants
 
     public const string Version60 = "6.0";
     public const string Version70 = "7.0";
+    public const string VersionLatest = Version70;
 
     public const string NetVersion60 = $"net{Version60}";
     public const string NetVersion70 = $"net{Version70}";
@@ -40,7 +41,7 @@ public class Constants
     public const string Ubuntu1804 = "ubuntu.18.04";
     public const string Ubuntu2004 = "ubuntu.20.04";
     public const string Ubuntu2204 = "ubuntu.22.04";
-    public const string DockerDistroLatest = Debian10;
+    public const string DockerDistroLatest = Debian11;
     public static readonly string[] DockerDistrosToBuild =
     {
         Alpine313,
