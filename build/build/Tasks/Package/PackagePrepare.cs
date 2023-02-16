@@ -15,11 +15,6 @@ public class PackagePrepare : FrostingTask<BuildContext>
         var sourceDir = Paths.Native.Combine(PlatformFamily.Windows.ToString()).Combine("win-x64");
         var sourceFiles = context.GetFiles(sourceDir + "/*.*");
 
-        var cmdlineDir = Paths.ArtifactsBinCmdline.Combine("tools");
-
-        context.EnsureDirectoryExists(cmdlineDir);
-        context.CopyFiles(sourceFiles, cmdlineDir);
-
         var portableDir = Paths.ArtifactsBinPortable.Combine("tools");
         context.EnsureDirectoryExists(portableDir);
 
