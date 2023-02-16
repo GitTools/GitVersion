@@ -26,7 +26,7 @@ public sealed class BuildPrepare : FrostingTask<BuildContext>
                 Verbosity = DotNetVerbosity.Minimal,
                 Configuration = Constants.DefaultConfiguration,
                 OutputDirectory = Paths.Dogfood,
-                Framework = Constants.NetVersion70,
+                Framework = Constants.NetVersionLatest,
                 NoRestore = true,
             });
     }

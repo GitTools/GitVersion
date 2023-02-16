@@ -11,6 +11,7 @@ public class Constants
 
     public const string NetVersion60 = $"net{Version60}";
     public const string NetVersion70 = $"net{Version70}";
+    public const string NetVersionLatest = $"net{VersionLatest}";
 
     public const string DefaultBranch = "main";
     public const string DefaultConfiguration = "Release";
