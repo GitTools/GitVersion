@@ -42,10 +42,6 @@ public class NextVersionCalculator : INextVersionCalculator
         {
             this.log.Info($"Current commit is tagged with version {Context.CurrentCommitTaggedVersion}, " + "version calculation is for metadata only.");
         }
-        else
-        {
-            EnsureHeadIsNotDetached(Context);
-        }
 
         // TODO: It is totally unimportant that the current commit has been tagged or not IMO. We can make a double check actually if the result
         // is the same or make it configurable but each run should be deterministic.Even if the development process goes on the tagged commit
@@ -87,8 +83,12 @@ public class NextVersionCalculator : INextVersionCalculator
         var hasPreReleaseTag = semver.HasPreReleaseTagWithLabel;
         var tag = nextVersion.Configuration.Label;
         var branchConfigHasPreReleaseTagConfigured = !tag.IsNullOrEmpty();
-        var preReleaseTagDoesNotMatchConfiguration = hasPreReleaseTag && branchConfigHasPreReleaseTagConfigured && semver.PreReleaseTag?.Name != tag;
-        if (semver.PreReleaseTag?.HasTag() != true && branchConfigHasPreReleaseTagConfigured || preReleaseTagDoesNotMatchConfiguration)
+        var branchConfigIsMainlineAndHasEmptyPreReleaseTagConfigured = nextVersion.Configuration.IsMainline && tag.IsEmpty();
+        var preReleaseTagDoesNotMatchConfiguration = hasPreReleaseTag
+                                                     && (branchConfigHasPreReleaseTagConfigured || branchConfigIsMainlineAndHasEmptyPreReleaseTagConfigured)
+                                                     && semver.PreReleaseTag?.Name != tag;
+        var preReleaseTagOnlyInBranchConfig = !hasPreReleaseTag && branchConfigHasPreReleaseTagConfigured;
+        if (preReleaseTagOnlyInBranchConfig || preReleaseTagDoesNotMatchConfiguration)
         {
             UpdatePreReleaseTag(new(nextVersion.Branch, nextVersion.Configuration), semver, nextVersion.BaseVersion.BranchNameOverride);
         }
@@ -104,6 +104,12 @@ public class NextVersionCalculator : INextVersionCalculator
             {
                 // set the commit count on the tagged ver
                 taggedSemanticVersion.BuildMetaData.CommitsSinceVersionSource = semver.BuildMetaData?.CommitsSinceVersionSource;
+
+                // set the updated prerelease tag when it doesn't match with prerelease tag defined in branch configuration
+                if (preReleaseTagDoesNotMatchConfiguration)
+                {
+                    taggedSemanticVersion.PreReleaseTag = semver.PreReleaseTag;
+                }
             }
         }
 
@@ -113,6 +119,12 @@ public class NextVersionCalculator : INextVersionCalculator
     private void UpdatePreReleaseTag(EffectiveBranchConfiguration configuration, SemanticVersion semanticVersion, string? branchNameOverride)
     {
         var tagToUse = configuration.Value.GetBranchSpecificTag(this.log, Context.CurrentBranch.Name.Friendly, branchNameOverride);
+
+        if (configuration.Value.IsMainline && tagToUse.IsEmpty())
+        {
+            semanticVersion.PreReleaseTag = new SemanticVersionPreReleaseTag(tagToUse, null);
+            return;
+        }
 
         long? number = null;
 
@@ -129,19 +141,6 @@ public class NextVersionCalculator : INextVersionCalculator
         number ??= 1;
 
         semanticVersion.PreReleaseTag = new SemanticVersionPreReleaseTag(tagToUse, number);
-    }
-
-    private static void EnsureHeadIsNotDetached(GitVersionContext context)
-    {
-        if (context.CurrentBranch.IsDetachedHead != true)
-        {
-            return;
-        }
-
-        var message = string.Format(
-            "It looks like the branch being examined is a detached Head pointing to commit '{0}'. " + "Without a proper branch name GitVersion cannot determine the build version.",
-            context.CurrentCommit?.Id.ToString(7));
-        throw new WarningException(message);
     }
 
     private static bool MajorMinorPatchEqual(SemanticVersion lastTag, SemanticVersion baseVersion) => lastTag.Major == baseVersion.Major && lastTag.Minor == baseVersion.Minor && lastTag.Patch == baseVersion.Patch;
@@ -248,7 +247,7 @@ public class NextVersionCalculator : INextVersionCalculator
 
                         if (configuration.VersioningMode == VersioningMode.Mainline)
                         {
-                            if (!(incrementedVersion.PreReleaseTag?.HasTag() != true))
+                            if (incrementedVersion.PreReleaseTag?.HasTag() == true)
                             {
                                 continue;
                             }
