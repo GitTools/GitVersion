@@ -63,6 +63,16 @@ jobs:
       name: '[Prepare]'
       if: steps.cache-cake.outputs.cache-hit != 'true'
       run: dotnet build build/CI.sln --configuration=Release
+    -
+      name: '[DogFood]'
+      shell: pwsh
+      run: dotnet run/build.dll --target=BuildPrepare
+    -
+      name: 'Upload gitversion tool'
+      uses: actions/upload-artifact@v3
+      with:
+        name: tool
+        path: ${{ github.workspace }}/dogfood
 
   build:
     name: Build code & Package
@@ -93,6 +103,12 @@ jobs:
       with:
         path: tools
         key: tools-${{ runner.os }}-${{ hashFiles('./build/**') }}
+    -
+      uses: actions/download-artifact@v3
+      name: Download gitversion tool
+      with:
+        name: tool
+        path: ${{ github.workspace }}/dogfood
     -
       name: Setup .NET SDK
       uses: actions/setup-dotnet@v3.0.3
@@ -157,6 +173,12 @@ jobs:
         path: tools
         key: tools-${{ runner.os }}-${{ hashFiles('./build/**') }}
     -
+      uses: actions/download-artifact@v3
+      name: Download gitversion tool
+      with:
+        name: tool
+        path: ${{ github.workspace }}/dogfood
+    -
       name: Setup .NET SDK
       uses: actions/setup-dotnet@v3.0.3
       with:
@@ -208,6 +230,12 @@ jobs:
       with:
         name: nuget
         path: ${{ github.workspace }}/artifacts/packages/nuget
+    -
+      uses: actions/download-artifact@v3
+      name: Download gitversion tool
+      with:
+        name: tool
+        path: ${{ github.workspace }}/dogfood
     -
       name: Setup .NET SDK
       uses: actions/setup-dotnet@v3.0.3
@@ -269,6 +297,12 @@ jobs:
       with:
         install: true
     -
+      uses: actions/download-artifact@v3
+      name: Download gitversion tool
+      with:
+        name: tool
+        path: ${{ github.workspace }}/dogfood
+    -
       name: Setup .NET SDK
       uses: actions/setup-dotnet@v3.0.3
       with:
@@ -326,6 +360,12 @@ jobs:
       uses: docker/setup-buildx-action@v2
       with:
         install: true
+    -
+      uses: actions/download-artifact@v3
+      name: Download gitversion tool
+      with:
+        name: tool
+        path: ${{ github.workspace }}/dogfood
     -
       name: Setup .NET SDK
       uses: actions/setup-dotnet@v3.0.3
@@ -417,6 +457,12 @@ jobs:
         name: nuget
         path: ${{ github.workspace }}/artifacts/packages/nuget
     -
+      uses: actions/download-artifact@v3
+      name: Download gitversion tool
+      with:
+        name: tool
+        path: ${{ github.workspace }}/dogfood
+    -
       name: Setup .NET SDK
       uses: actions/setup-dotnet@v3.0.3
       with:
@@ -470,6 +516,12 @@ jobs:
       with:
         name: native-macOS
         path: ${{ github.workspace }}/artifacts/packages/native
+    -
+      uses: actions/download-artifact@v3
+      name: Download gitversion tool
+      with:
+        name: tool
+        path: ${{ github.workspace }}/dogfood
     -
       name: Setup .NET SDK
       uses: actions/setup-dotnet@v3.0.3

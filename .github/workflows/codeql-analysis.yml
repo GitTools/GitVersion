@@ -71,7 +71,7 @@ jobs:
     -
       name: '[Build]'
       shell: pwsh
-      run: dotnet run/build.dll --target=Build --exclusive
+      run: dotnet run/build.dll --target=BuildPrepare --exclusive
 
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v2

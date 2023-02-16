@@ -24,9 +24,12 @@ public class BuildLifetimeBase<T> : FrostingLifetime<T> where T : BuildContextBa
         context.IsOnLinux = context.IsRunningOnLinux();
         context.IsOnMacOS = context.IsRunningOnMacOs();
 
-        BuildSolution(context);
-
-        var gitversionTool = context.GetGitVersionToolLocation();
+        if (info.TargetTask.Name == "BuildPrepare")
+        {
+            context.Information("Running BuildPrepare...");
+            return;
+        }
+        var gitversionTool = context.GetDogFoodGitVersionToolLocation();
         var gitVersionSettings = new GitVersionSettings
         {
             OutputTypes = new HashSet<GitVersionOutput> { GitVersionOutput.Json, GitVersionOutput.BuildServer },
@@ -75,26 +78,5 @@ public class BuildLifetimeBase<T> : FrostingLifetime<T> where T : BuildContextBa
         context.Information("Main Branch:       {0}", context.IsMainBranch);
         context.Information("Support Branch:    {0}", context.IsSupportBranch);
         context.Information("Tagged:            {0}", context.IsTagged);
-    }
-    private static void BuildSolution(T context)
-    {
-        context.Information("Builds solution...");
-
-        const string sln = "./src/GitVersion.sln";
-
-        context.DotNetRestore(sln,
-            new()
-            {
-                Verbosity = DotNetVerbosity.Minimal,
-                Sources = new[] { "https://api.nuget.org/v3/index.json" },
-            });
-
-        context.DotNetBuild(sln,
-            new()
-            {
-                Verbosity = DotNetVerbosity.Minimal,
-                Configuration = Constants.DefaultConfiguration,
-                NoRestore = true,
-            });
     }
 }

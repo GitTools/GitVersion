@@ -166,4 +166,6 @@ public static class ContextExtensions
 
     public static FilePath? GetGitVersionToolLocation(this ICakeContext context) =>
         context.GetFiles($"src/GitVersion.App/bin/{Constants.DefaultConfiguration}/{Constants.NetVersion60}/gitversion.dll").SingleOrDefault();
+    public static FilePath? GetDogFoodGitVersionToolLocation(this ICakeContext context) =>
+        context.MakeAbsolute(Paths.Dogfood.CombineWithFilePath("gitversion.dll"));
 }
