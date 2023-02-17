@@ -8,7 +8,6 @@ works out the [Semantic Version][semver] of the commit being built.
 | Artifact                   |                Stable                                              |   |
 | :------------------------- | :----------------------------------------------------------------- | - |
 | **GitVersion.Tool**        |                           [![NuGet][gvgt-badge]][gvgt]             |
-| **GitVersion.CommandLine** |                           [![NuGet][gvcl-badge]][gvcl]             |
 | **GitVersion.MsBuild**     |                            [![NuGet][gvt-badge]][gvt]              | Known as [GitVersionTask][gitversiontask] before v5.6.0 |
 
 ## Compatibility

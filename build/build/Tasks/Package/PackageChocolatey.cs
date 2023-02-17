@@ -21,21 +21,50 @@ public class PackageChocolatey : FrostingTask<BuildContext>
     {
         context.EnsureDirectoryExists(Paths.Nuget);
 
-        var portableNuspecFile = Paths.Nuspec.CombineWithFilePath("GitVersion.Portable.nuspec");
-        if (!context.FileExists(portableNuspecFile))
-            return;
-
         var artifactPath = context.MakeAbsolute(Paths.ArtifactsBinPortable).FullPath;
 
+        var portableSettings = GetChocolateyPackSettings(context, "GitVersion.Portable");
+        portableSettings.Files = context.GetFiles(artifactPath + "/**/*.*")
+            .Select(file => new ChocolateyNuSpecContent { Source = file.FullPath, Target = file.FullPath.Replace(artifactPath, "") })
+            .ToArray();
+
+        context.ChocolateyPack(portableSettings);
+
+        var metaPackageSettings = GetChocolateyPackSettings(context, "GitVersion");
+        metaPackageSettings.Files = context.GetFiles(artifactPath + "/**/*.txt")
+            .Select(file => new ChocolateyNuSpecContent { Source = file.FullPath, Target = file.FullPath.Replace(artifactPath, "") })
+            .ToArray();
+
+        metaPackageSettings.Dependencies = new[]
+        {
+            new ChocolateyNuSpecDependency { Id = "GitVersion.Portable", Version = context.Version?.ChocolateyVersion }
+        };
+
+        context.ChocolateyPack(metaPackageSettings);
+    }
+
+    private static ChocolateyPackSettings GetChocolateyPackSettings(BuildContextBase context, string id)
+    {
         var chocolateySettings = new ChocolateyPackSettings
         {
-            LimitOutput = true,
+            Id = id,
             Version = context.Version?.ChocolateyVersion,
+            Title = "GitVersion",
+            Description = "Derives SemVer information from a repository following GitFlow or GitHubFlow.",
+            Authors = new[] { "GitTools and Contributors" },
+            Owners = new[] { "GitTools and Contributors" },
+            Copyright = $"Copyright GitTools {DateTime.Now.Year}",
+            DocsUrl = new Uri("https://gitversion.net/docs/"),
+            LicenseUrl = new Uri("https://opensource.org/license/mit/"),
+            ProjectUrl = new Uri("https://github.com/GitTools/GitVersion"),
+            ProjectSourceUrl = new Uri("https://github.com/GitTools/GitVersion"),
+            IconUrl = new Uri("https://raw.githubusercontent.com/GitTools/graphics/master/GitVersion/Color/icon_100x100.png"),
+            RequireLicenseAcceptance = false,
+            Tags = new[] { "Git", "Versioning", "GitVersion", "GitFlowVersion", "GitFlow", "GitHubFlow", "SemVer" },
+            ReleaseNotes = new[] { $"https://github.com/GitTools/GitVersion/releases/tag/{context.Version?.ChocolateyVersion}" },
             OutputDirectory = Paths.Nuget,
-            Files = context.GetFiles(artifactPath + "/**/*.*")
-                .Select(file => new ChocolateyNuSpecContent { Source = file.FullPath, Target = file.FullPath.Replace(artifactPath, "") })
-                .ToArray()
+            LimitOutput = true,
         };
-        context.ChocolateyPack(portableNuspecFile, chocolateySettings);
+        return chocolateySettings;
     }
 }
