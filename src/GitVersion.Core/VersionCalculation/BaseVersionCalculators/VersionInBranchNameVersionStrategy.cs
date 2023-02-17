@@ -19,24 +19,25 @@ public class VersionInBranchNameVersionStrategy : VersionStrategyBase
     public override IEnumerable<BaseVersion> GetBaseVersions(EffectiveBranchConfiguration configuration)
     {
         string nameWithoutOrigin = NameWithoutOrigin(configuration.Branch);
-        if (Context.Configuration.IsReleaseBranch(nameWithoutOrigin))
+        var contextConfiguration = Context.Configuration;
+        if (contextConfiguration.IsReleaseBranch(nameWithoutOrigin))
         {
-            var versionInBranch = GetVersionInBranch(configuration.Branch.Name.Friendly, Context.Configuration.LabelPrefix);
+            var versionInBranch = GetVersionInBranch(configuration.Branch.Name.Friendly, contextConfiguration.LabelPrefix, contextConfiguration.SemanticVersionFormat);
             if (versionInBranch != null)
             {
-                var commitBranchWasBranchedFrom = this.repositoryStore.FindCommitBranchWasBranchedFrom(configuration.Branch, Context.Configuration);
+                var commitBranchWasBranchedFrom = this.repositoryStore.FindCommitBranchWasBranchedFrom(configuration.Branch, contextConfiguration);
                 var branchNameOverride = Context.CurrentBranch.Name.Friendly.RegexReplace("[-/]" + versionInBranch.Item1, string.Empty);
                 yield return new BaseVersion("Version in branch name", false, versionInBranch.Item2, commitBranchWasBranchedFrom.Commit, branchNameOverride);
             }
         }
     }
 
-    private static Tuple<string, SemanticVersion>? GetVersionInBranch(string branchName, string? tagPrefixRegex)
+    private static Tuple<string, SemanticVersion>? GetVersionInBranch(string branchName, string? tagPrefixRegex, SemanticVersionFormat versionFormat)
     {
         var branchParts = branchName.Split('/', '-');
         foreach (var part in branchParts)
         {
-            if (SemanticVersion.TryParse(part, tagPrefixRegex, out var semanticVersion))
+            if (SemanticVersion.TryParse(part, tagPrefixRegex, out var semanticVersion, versionFormat))
             {
                 return Tuple.Create(part, semanticVersion);
             }
