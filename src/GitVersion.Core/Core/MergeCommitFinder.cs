@@ -8,7 +8,7 @@ internal class MergeCommitFinder
 {
     private readonly IEnumerable<IBranch> excludedBranches;
     private readonly ILog log;
-    private readonly Dictionary<IBranch?, List<BranchCommit>> mergeBaseCommitsCache = new();
+    private readonly Dictionary<IBranch, List<BranchCommit>> mergeBaseCommitsCache = new();
     private readonly RepositoryStore repositoryStore;
     private readonly GitVersionConfiguration configuration;
 
@@ -24,10 +24,10 @@ internal class MergeCommitFinder
     {
         branch = branch.NotNull();
 
-        if (this.mergeBaseCommitsCache.ContainsKey(branch))
+        if (this.mergeBaseCommitsCache.TryGetValue(branch, out var mergeCommitsFor))
         {
-            this.log.Debug($"Cache hit for getting merge commits for branch {branch?.Name.Canonical}.");
-            return this.mergeBaseCommitsCache[branch];
+            this.log.Debug($"Cache hit for getting merge commits for branch {branch.Name.Canonical}.");
+            return mergeCommitsFor;
         }
 
         var branchMergeBases = FindMergeBases(branch)

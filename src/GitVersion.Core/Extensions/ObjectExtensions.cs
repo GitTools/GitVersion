@@ -16,11 +16,11 @@ public static class ObjectExtensions
         value = kvp.Value;
     }
 
-    public static IEnumerable<KeyValuePair<string, string>> GetProperties(this object obj)
+    public static Dictionary<string, string> GetProperties(this object obj)
     {
         var type = typeof(string);
         return obj.GetType().GetProperties()
             .Where(p => p.PropertyType == type && !p.GetIndexParameters().Any() && !p.GetCustomAttributes(typeof(ReflectionIgnoreAttribute), false).Any())
-            .Select(p => new KeyValuePair<string, string>(p.Name, (string)p.GetValue(obj, null)));
+            .ToDictionary(p => p.Name, p => Convert.ToString(p.GetValue(obj, null))!);
     }
 }

@@ -30,7 +30,7 @@ public class IncrementStrategyFinder : IIncrementStrategyFinder
     {
         configuration.NotNull();
 
-        var commitMessageIncrement = FindCommitMessageIncrement(this.repository, context, configuration, baseVersion.BaseVersionSource);
+        var commitMessageIncrement = FindCommitMessageIncrement(context, configuration, baseVersion.BaseVersionSource);
 
         var defaultIncrement = configuration.Increment.ToVersionField();
 
@@ -73,8 +73,7 @@ public class IncrementStrategyFinder : IIncrementStrategyFinder
             : null;
     }
 
-    private VersionField? FindCommitMessageIncrement(IGitRepository repository, GitVersionContext context,
-        EffectiveConfiguration configuration, ICommit? baseCommit)
+    private VersionField? FindCommitMessageIncrement(GitVersionContext context, EffectiveConfiguration configuration, ICommit? baseCommit)
     {
         if (baseCommit == null) return null;
 
@@ -83,7 +82,7 @@ public class IncrementStrategyFinder : IIncrementStrategyFinder
             return null;
         }
 
-        var commits = GetIntermediateCommits(repository, baseCommit, context.CurrentCommit);
+        var commits = GetIntermediateCommits(baseCommit, context.CurrentCommit);
 
         // consider commit messages since latest tag only (see #3071)
         var tags = new HashSet<string?>(repository.Tags.Select(t => t.TargetSha));
@@ -106,33 +105,33 @@ public class IncrementStrategyFinder : IIncrementStrategyFinder
             : CompiledRegexCache.GetOrAdd(messageRegex, pattern => new Regex(pattern, RegexOptions.Compiled | RegexOptions.IgnoreCase));
 
     /// <summary>
-    /// Get the sequence of commits in a <paramref name="repository"/> between a <paramref name="baseCommit"/> (exclusive)
+    /// Get the sequence of commits in a repository between a <paramref name="baseCommit"/> (exclusive)
     /// and a particular <paramref name="headCommit"/> (inclusive)
     /// </summary>
-    private IEnumerable<ICommit> GetIntermediateCommits(IGitRepository repository, IGitObject baseCommit, ICommit? headCommit)
+    private IEnumerable<ICommit> GetIntermediateCommits(IGitObject baseCommit, ICommit? headCommit)
     {
-        var map = GetHeadCommitsMap(repository, headCommit);
+        var map = GetHeadCommitsMap(headCommit);
         if (!map.TryGetValue(baseCommit.Sha, out var baseIndex)) return Enumerable.Empty<ICommit>();
         var commitAfterBaseIndex = baseIndex + 1;
-        var headCommits = GetHeadCommits(repository, headCommit);
+        var headCommits = GetHeadCommits(headCommit);
         return new ArraySegment<ICommit>(headCommits, commitAfterBaseIndex, headCommits.Length - commitAfterBaseIndex);
     }
 
     /// <summary>
     /// Get a mapping of commit shas to their zero-based position in the sequence of commits from the beginning of a
-    /// <paramref name="repository"/> to a particular <paramref name="headCommit"/>
+    /// repository to a particular <paramref name="headCommit"/>
     /// </summary>
-    private Dictionary<string, int> GetHeadCommitsMap(IGitRepository repository, ICommit? headCommit) =>
+    private Dictionary<string, int> GetHeadCommitsMap(ICommit? headCommit) =>
         this.headCommitsMapCache.GetOrAdd(headCommit?.Sha ?? "NULL", () =>
-            GetHeadCommits(repository, headCommit)
+            GetHeadCommits(headCommit)
                 .Select((commit, index) => (commit.Sha, Index: index))
                 .ToDictionary(t => t.Sha, t => t.Index));
 
     /// <summary>
-    /// Get the sequence of commits from the beginning of a <paramref name="repository"/> to a particular
+    /// Get the sequence of commits from the beginning of a repository to a particular
     /// <paramref name="headCommit"/> (inclusive)
     /// </summary>
-    private ICommit[] GetHeadCommits(IGitRepository repository, ICommit? headCommit) =>
+    private ICommit[] GetHeadCommits(ICommit? headCommit) =>
         this.headCommitsCache.GetOrAdd(headCommit?.Sha ?? "NULL", () =>
             GetCommitsReacheableFromHead(repository, headCommit).ToArray());
 

@@ -11,5 +11,5 @@ public static class ServiceCollectionExtensions
     }
 
     public static TService GetServiceForType<TService, TType>(this IServiceProvider serviceProvider) =>
-        serviceProvider.GetServices<TService>().SingleOrDefault(t => t?.GetType() == typeof(TType));
+        serviceProvider.GetServices<TService>().Single(t => t?.GetType() == typeof(TType));
 }

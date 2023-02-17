@@ -26,9 +26,9 @@ public class NextVersion : IComparable<NextVersion>, IEquatable<NextVersion>
         Branch = branch.NotNull();
     }
 
-    public int CompareTo(NextVersion other) => IncrementedVersion.CompareTo(other.IncrementedVersion);
+    public int CompareTo(NextVersion? other) => IncrementedVersion.CompareTo(other?.IncrementedVersion);
 
-    public static bool operator ==(NextVersion left, NextVersion right) => left.CompareTo(right) == 0;
+    public static bool operator ==(NextVersion left, NextVersion? right) => left.CompareTo(right) == 0;
 
     public static bool operator !=(NextVersion left, NextVersion right) => left.CompareTo(right) != 0;
 
@@ -40,9 +40,9 @@ public class NextVersion : IComparable<NextVersion>, IEquatable<NextVersion>
 
     public static bool operator >=(NextVersion left, NextVersion right) => left.CompareTo(right) >= 0;
 
-    public bool Equals(NextVersion other) => this == other;
+    public bool Equals(NextVersion? other) => this == other;
 
-    public override bool Equals(object other) => other is NextVersion nextVersion && Equals(nextVersion);
+    public override bool Equals(object? other) => other is NextVersion nextVersion && Equals(nextVersion);
 
     public override string ToString() => $"{BaseVersion} | {IncrementedVersion}";
 

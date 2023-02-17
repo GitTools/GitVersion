@@ -7,7 +7,7 @@ public class VersionStrategyModule : GitVersionModule
     public override void RegisterTypes(IServiceCollection services)
     {
         var versionStrategies = FindAllDerivedTypes<IVersionStrategy>(Assembly.GetAssembly(GetType()))
-            .Where(x => !x.IsAbstract && !x.IsInterface);
+            .Where(x => x is { IsAbstract: false, IsInterface: false });
 
         foreach (var versionStrategy in versionStrategies)
         {

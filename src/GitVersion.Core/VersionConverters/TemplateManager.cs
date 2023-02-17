@@ -15,8 +15,8 @@ internal class TemplateManager
 
     public TemplateManager(TemplateType templateType)
     {
-        this.templates = GetEmbeddedTemplates(templateType, "Templates").ToDictionary(Path.GetExtension, v => v, StringComparer.OrdinalIgnoreCase);
-        this.addFormats = GetEmbeddedTemplates(templateType, "AddFormats").ToDictionary(Path.GetExtension, v => v, StringComparer.OrdinalIgnoreCase);
+        this.templates = GetEmbeddedTemplates(templateType, "Templates").ToDictionary(file => Path.GetExtension(file)!, v => v, StringComparer.OrdinalIgnoreCase);
+        this.addFormats = GetEmbeddedTemplates(templateType, "AddFormats").ToDictionary(file => Path.GetExtension(file)!, v => v, StringComparer.OrdinalIgnoreCase);
     }
 
     public string? GetTemplateFor(string fileExtension)
@@ -28,7 +28,7 @@ internal class TemplateManager
 
         string? result = null;
 
-        if (this.templates.TryGetValue(fileExtension, out var template) && template != null)
+        if (this.templates.TryGetValue(fileExtension, out var template))
         {
             result = template.ReadAsStringFromEmbeddedResource<TemplateManager>();
         }
@@ -45,7 +45,7 @@ internal class TemplateManager
 
         string? result = null;
 
-        if (this.addFormats.TryGetValue(fileExtension, out var addFormat) && addFormat != null)
+        if (this.addFormats.TryGetValue(fileExtension, out var addFormat))
         {
             result = addFormat.ReadAsStringFromEmbeddedResource<TemplateManager>().TrimEnd('\r', '\n');
         }
@@ -65,7 +65,6 @@ internal class TemplateManager
 
     private static IEnumerable<string> GetEmbeddedTemplates(TemplateType templateType, string templateCategory)
     {
-
         var assembly = typeof(TemplateManager).Assembly;
 
         foreach (var name in assembly.GetManifestResourceNames())

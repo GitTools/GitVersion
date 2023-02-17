@@ -21,8 +21,8 @@ namespace GitVersion
 
         public ReferenceName Name { get; }
         public IObjectId? ReferenceTargetId { get; }
-        public int CompareTo(IReference other) => comparerHelper.Compare(this, other);
-        public override bool Equals(object obj) => Equals(obj as IReference);
+        public int CompareTo(IReference? other) => comparerHelper.Compare(this, other);
+        public override bool Equals(object? obj) => Equals(obj as IReference);
         public bool Equals(IReference? other) => equalityHelper.Equals(this, other);
         public override int GetHashCode() => equalityHelper.GetHashCode(this);
         public override string ToString() => Name.ToString();

@@ -1,5 +1,6 @@
 using System.Text.Encodings.Web;
 using System.Text.Json;
+using GitVersion.Extensions;
 using GitVersion.Helpers;
 using YamlDotNet.Serialization;
 using static GitVersion.Extensions.ObjectExtensions;
@@ -115,7 +116,8 @@ public class VersionVariables : IEnumerable<KeyValuePair<string, string>>
             .Select(p => properties?.Single(v => string.Equals(v.Key, p.Name, StringComparison.InvariantCultureIgnoreCase)).Value)
             .Cast<object>()
             .ToArray();
-        return (VersionVariables)Activator.CreateInstance(type, ctorArgs);
+        var instance = Activator.CreateInstance(type, ctorArgs).NotNull();
+        return (VersionVariables)instance;
     }
 
     public static VersionVariables FromJson(string json)
