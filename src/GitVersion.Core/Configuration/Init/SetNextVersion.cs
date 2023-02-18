@@ -19,7 +19,7 @@ public class SetNextVersion : ConfigInitWizardStep
             return StepResult.Ok();
         }
 
-        if (!SemanticVersion.TryParse(result, string.Empty, out var semVer))
+        if (!SemanticVersion.TryParse(result, string.Empty, out var semVer, configuration.SemanticVersionFormat))
             return StepResult.InvalidResponseSelected();
 
         configuration.NextVersion = semVer.ToString("t");

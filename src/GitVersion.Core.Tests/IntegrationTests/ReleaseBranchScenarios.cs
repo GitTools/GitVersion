@@ -671,4 +671,19 @@ public class ReleaseBranchScenarios : TestBase
 
         fixture.AssertFullSemver("4.5.0-beta.2", configuration);
     }
+
+    [TestCase("release/1.2.0", "1.2.0-beta.1+1", SemanticVersionFormat.Loose)]
+    [TestCase("release/1.2.0", "1.2.0-beta.1+1", SemanticVersionFormat.Strict)]
+    [TestCase("release/1.2", "1.2.0-beta.1+1", SemanticVersionFormat.Loose)]
+    [TestCase("release/1", "1.0.0-beta.1+1", SemanticVersionFormat.Loose)]
+    public void ShouldDetectVersionInReleaseBranch(string branchName, string expectedVersion, SemanticVersionFormat semanticVersionFormat)
+    {
+        var configuration = GitFlowConfigurationBuilder.New
+            .WithSemanticVersionFormat(semanticVersionFormat)
+            .Build();
+
+        using var fixture = new EmptyRepositoryFixture(branchName);
+        fixture.MakeACommit();
+        fixture.AssertFullSemver(expectedVersion, configuration);
+    }
 }

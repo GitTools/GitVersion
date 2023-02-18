@@ -23,14 +23,14 @@ public class TaggedCommitVersionStrategy : VersionStrategyBase
     {
         if (currentBranch is null)
             return Enumerable.Empty<BaseVersion>();
-        var versionTags = this.repositoryStore.GetValidVersionTags(Context.Configuration.LabelPrefix, olderThan);
-        var versionTagsByCommit = versionTags.ToLookup(vt => vt.Item3.Id.Sha);
+        var versionTags = this.repositoryStore.GetValidVersionTags(Context.Configuration.LabelPrefix, Context.Configuration.SemanticVersionFormat, olderThan);
+        var versionTagsByCommit = versionTags.ToLookup(vt => vt.Commit.Id.Sha);
         var commitsOnBranch = currentBranch.Commits;
         if (commitsOnBranch == null)
             return Enumerable.Empty<BaseVersion>();
 
         var versionTagsOnBranch = commitsOnBranch.SelectMany(commit => versionTagsByCommit[commit.Id.Sha]);
-        var versionTaggedCommits = versionTagsOnBranch.Select(t => new VersionTaggedCommit(t.Item3, t.Item2, t.Item1.Name.Friendly));
+        var versionTaggedCommits = versionTagsOnBranch.Select(t => new VersionTaggedCommit(t.Commit, t.Semver, t.Tag.Name.Friendly));
         var taggedVersions = versionTaggedCommits.Select(versionTaggedCommit => CreateBaseVersion(Context, versionTaggedCommit)).ToList();
         var taggedVersionsOnCurrentCommit = taggedVersions.Where(version => !version.ShouldIncrement).ToList();
         return taggedVersionsOnCurrentCommit.Any() ? taggedVersionsOnCurrentCommit : taggedVersions;

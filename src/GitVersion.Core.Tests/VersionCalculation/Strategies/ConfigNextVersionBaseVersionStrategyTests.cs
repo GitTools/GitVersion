@@ -19,19 +19,31 @@ public class ConfigNextVersionBaseVersionStrategyTests : TestBase
         baseVersion.ShouldBe(null);
     }
 
-    [TestCase("1.0.0", "1.0.0")]
-    [TestCase("2.12.654651698", "2.12.654651698")]
-    public void ConfigNextVersionTest(string nextVersion, string expectedVersion)
+    [TestCase("1.0.0", "1.0.0", SemanticVersionFormat.Strict)]
+    [TestCase("1.0.0", "1.0.0", SemanticVersionFormat.Loose)]
+    [TestCase("2.12.654651698", "2.12.654651698", SemanticVersionFormat.Strict)]
+    [TestCase("2.12.654651698", "2.12.654651698", SemanticVersionFormat.Loose)]
+    [TestCase("0.1", "0.1.0", SemanticVersionFormat.Loose)]
+    public void ConfigNextVersionTest(string nextVersion, string expectedVersion, SemanticVersionFormat versionFormat)
     {
-        var baseVersion = GetBaseVersion(new GitVersionConfiguration
-        {
-            NextVersion = nextVersion
-        });
+        var baseVersion = GetBaseVersion(new GitVersionConfiguration { NextVersion = nextVersion, SemanticVersionFormat = versionFormat });
 
         baseVersion.ShouldNotBeNull();
         baseVersion.ShouldIncrement.ShouldBe(false);
         baseVersion.SemanticVersion.ToString().ShouldBe(expectedVersion);
     }
+
+    [TestCase("0.1", SemanticVersionFormat.Strict)]
+    public void ConfigNextVersionTestShouldFail(string nextVersion, SemanticVersionFormat versionFormat)
+        =>
+            Should.Throw<WarningException>(()
+                    => GetBaseVersion(new GitVersionConfiguration
+                    {
+                        NextVersion = nextVersion,
+                        SemanticVersionFormat = versionFormat
+                    }))
+                .Message.ShouldBe($"Failed to parse {nextVersion} into a Semantic Version");
+
 
     private static BaseVersion? GetBaseVersion(GitVersionConfiguration? configuration = null)
     {

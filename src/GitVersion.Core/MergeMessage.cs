@@ -29,25 +29,25 @@ public class MergeMessage
         foreach (var format in allFormats)
         {
             var match = format.Pattern.Match(mergeMessage);
-            if (match.Success)
+            if (!match.Success)
+                continue;
+
+            FormatName = format.Name;
+            MergedBranch = match.Groups["SourceBranch"].Value;
+
+            if (match.Groups["TargetBranch"].Success)
             {
-                FormatName = format.Name;
-                MergedBranch = match.Groups["SourceBranch"].Value;
-
-                if (match.Groups["TargetBranch"].Success)
-                {
-                    TargetBranch = match.Groups["TargetBranch"].Value;
-                }
-
-                if (int.TryParse(match.Groups["PullRequestNumber"].Value, out var pullNumber))
-                {
-                    PullRequestNumber = pullNumber;
-                }
-
-                Version = ParseVersion(configuration.LabelPrefix);
-
-                break;
+                TargetBranch = match.Groups["TargetBranch"].Value;
             }
+
+            if (int.TryParse(match.Groups["PullRequestNumber"].Value, out var pullNumber))
+            {
+                PullRequestNumber = pullNumber;
+            }
+
+            Version = ParseVersion(configuration.LabelPrefix, configuration.SemanticVersionFormat);
+
+            break;
         }
     }
 
@@ -58,7 +58,7 @@ public class MergeMessage
     public int? PullRequestNumber { get; }
     public SemanticVersion? Version { get; }
 
-    private SemanticVersion? ParseVersion(string? tagPrefix)
+    private SemanticVersion? ParseVersion(string? tagPrefix, SemanticVersionFormat versionFormat)
     {
         if (tagPrefix is null)
             return null;
@@ -69,7 +69,7 @@ public class MergeMessage
         var versionMatch = new Regex(@"^(?<!://)\d+\.\d+(\.*\d+)*");
         var version = versionMatch.Match(toMatch);
 
-        if (version.Success && SemanticVersion.TryParse(version.Value, tagPrefix, out var val))
+        if (version.Success && SemanticVersion.TryParse(version.Value, tagPrefix, out var val, versionFormat))
         {
             return val;
         }

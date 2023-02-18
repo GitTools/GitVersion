@@ -219,24 +219,24 @@ public class RepositoryStore : IRepositoryStore
         }
     }
 
-    public SemanticVersion? GetCurrentCommitTaggedVersion(ICommit? commit, string? tagPrefix, bool handleDetachedBranch)
+    public SemanticVersion? GetCurrentCommitTaggedVersion(ICommit? commit, string? tagPrefix, SemanticVersionFormat versionFormat, bool handleDetachedBranch)
         => this.repository.Tags
-            .SelectMany(t => GetCurrentCommitSemanticVersions(commit, tagPrefix, t, handleDetachedBranch))
+            .SelectMany(tag => GetCurrentCommitSemanticVersions(commit, tagPrefix, tag, versionFormat, handleDetachedBranch))
             .Max();
 
-    public IEnumerable<SemanticVersion> GetVersionTagsOnBranch(IBranch branch, string? tagPrefixRegex)
+    public IEnumerable<SemanticVersion> GetVersionTagsOnBranch(IBranch branch, string? tagPrefixRegex, SemanticVersionFormat versionFormat)
     {
         branch = branch.NotNull();
 
-        if (this.semanticVersionTagsOnBranchCache.ContainsKey(branch))
+        if (this.semanticVersionTagsOnBranchCache.TryGetValue(branch, out var onBranch))
         {
             this.log.Debug($"Cache hit for version tags on branch '{branch.Name.Canonical}");
-            return this.semanticVersionTagsOnBranchCache[branch];
+            return onBranch;
         }
 
         using (this.log.IndentLog($"Getting version tags from branch '{branch.Name.Canonical}'."))
         {
-            var tags = GetValidVersionTags(tagPrefixRegex);
+            var tags = GetValidVersionTags(tagPrefixRegex, versionFormat);
             var tagsBySha = tags.Where(t => t.Tag.TargetSha != null).ToLookup(t => t.Tag.TargetSha, t => t);
 
             var versionTags = (branch.Commits?.SelectMany(c => tagsBySha[c.Sha].Select(t => t.Semver)) ?? Enumerable.Empty<SemanticVersion>()).ToList();
@@ -246,13 +246,13 @@ public class RepositoryStore : IRepositoryStore
         }
     }
 
-    public IEnumerable<(ITag Tag, SemanticVersion Semver, ICommit Commit)> GetValidVersionTags(string? tagPrefixRegex, DateTimeOffset? olderThan = null)
+    public IEnumerable<(ITag Tag, SemanticVersion Semver, ICommit Commit)> GetValidVersionTags(string? tagPrefixRegex, SemanticVersionFormat versionFormat, DateTimeOffset? olderThan = null)
     {
         var tags = new List<(ITag, SemanticVersion, ICommit)>();
 
         foreach (var tag in this.repository.Tags)
         {
-            if (!SemanticVersion.TryParse(tag.Name.Friendly, tagPrefixRegex, out var semver))
+            if (!SemanticVersion.TryParse(tag.Name.Friendly, tagPrefixRegex, out var semver, versionFormat))
                 continue;
 
             var commit = tag.PeeledTargetCommit();
@@ -290,7 +290,7 @@ public class RepositoryStore : IRepositoryStore
     private static bool IsReleaseBranch(INamedReference branch, IEnumerable<KeyValuePair<string, BranchConfiguration>> releaseBranchConfig)
         => releaseBranchConfig.Any(c => c.Value?.Regex != null && Regex.IsMatch(branch.Name.Friendly, c.Value.Regex));
 
-    private IEnumerable<SemanticVersion> GetCurrentCommitSemanticVersions(ICommit? commit, string? tagPrefix, ITag tag, bool handleDetachedBranch)
+    private IEnumerable<SemanticVersion> GetCurrentCommitSemanticVersions(ICommit? commit, string? tagPrefix, ITag tag, SemanticVersionFormat versionFormat, bool handleDetachedBranch)
     {
         if (commit == null)
             return Array.Empty<SemanticVersion>();
@@ -303,7 +303,7 @@ public class RepositoryStore : IRepositoryStore
 
         var tagName = tag.Name.Friendly;
 
-        return Equals(targetCommit, commitToCompare) && SemanticVersion.TryParse(tagName, tagPrefix, out var version)
+        return Equals(targetCommit, commitToCompare) && SemanticVersion.TryParse(tagName, tagPrefix, out var version, versionFormat)
             ? new[] { version }
             : Array.Empty<SemanticVersion>();
     }

@@ -130,7 +130,7 @@ public class NextVersionCalculator : INextVersionCalculator
 
         // TODO: Please update the pre release-tag in the IVersionStrategy implementation.
         var lastTag = this.repositoryStore
-            .GetVersionTagsOnBranch(Context.CurrentBranch, Context.Configuration.LabelPrefix)
+            .GetVersionTagsOnBranch(Context.CurrentBranch, Context.Configuration.LabelPrefix, Context.Configuration.SemanticVersionFormat)
             .FirstOrDefault(v => v.PreReleaseTag?.Name?.IsEquivalentTo(tagToUse) == true);
 
         if (lastTag != null && MajorMinorPatchEqual(lastTag, semanticVersion) && lastTag.HasPreReleaseTagWithLabel)
