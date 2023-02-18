@@ -4,7 +4,7 @@ using GitVersion.Configuration;
 using GitVersion.Extensions;
 using GitVersion.Logging;
 using GitVersion.VersionCalculation;
-using GitVersion.VersionCalculation.Cache;
+using GitVersion.VersionCalculation.Caching;
 using GitVersion.VersionConverters;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;

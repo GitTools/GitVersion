@@ -1,6 +1,6 @@
 using GitVersion.Extensions;
 
-namespace GitVersion.VersionCalculation.Cache;
+namespace GitVersion.VersionCalculation.Caching;
 
 public class GitVersionCacheKey
 {

@@ -1,6 +1,6 @@
 using GitVersion.Configuration;
 
-namespace GitVersion.VersionCalculation.Cache;
+namespace GitVersion.VersionCalculation.Caching;
 
 public interface IGitVersionCacheKeyFactory
 {

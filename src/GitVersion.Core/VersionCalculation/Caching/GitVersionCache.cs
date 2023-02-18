@@ -4,7 +4,7 @@ using GitVersion.Logging;
 using GitVersion.OutputVariables;
 using YamlDotNet.Serialization;
 
-namespace GitVersion.VersionCalculation.Cache;
+namespace GitVersion.VersionCalculation.Caching;
 
 public class GitVersionCache : IGitVersionCache
 {
