@@ -182,6 +182,12 @@ jobs:
       with:
         dotnet-version: '7.0.x'
     -
+      uses: actions/download-artifact@v3
+      name: Download gitversion tool
+      with:
+        name: tool
+        path: ${{ github.workspace }}/dogfood
+    -
       name: '[Publish Documentation]'
       if: ${{ github.event_name == 'push' }}
       shell: pwsh
