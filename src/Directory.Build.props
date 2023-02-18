@@ -24,14 +24,15 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <SatelliteResourceLanguages>en</SatelliteResourceLanguages>
+
         <EnableNETAnalyzers>True</EnableNETAnalyzers>
-        <!-- Latest = version of the analyzers included in latest installed SDK -->
         <AnalysisLevel>latest</AnalysisLevel>
         <EnforceCodeStyleInBuild>True</EnforceCodeStyleInBuild>
 
         <IsUnitTestProject>false</IsUnitTestProject>
-        <IsUnitTestProject>$(MSBuildProjectName.EndsWith('.Tests'))</IsUnitTestProject>
+        <IsUnitTestProject Condition="$(MSBuildProjectName.EndsWith('.Tests')) or $(MSBuildProjectName.EndsWith('.Testing'))">True</IsUnitTestProject>
     </PropertyGroup>
+
     <ItemGroup>
         <PackageReference Include="System.Text.Json"/>
         <PackageReference Include="System.Text.Encodings.Web"/>
@@ -46,7 +47,7 @@
         <PackageReference Include="Microsoft.Extensions.DependencyInjection"/>
         <PackageReference Include="Microsoft.NET.Test.Sdk"/>
 
-        <PackageReference Include="JetBrains.Annotations"/>
+        <PackageReference Include="JetBrains.Annotations" PrivateAssets="All"/>
         <PackageReference Include="NSubstitute"/>
 
         <PackageReference Include="NUnit"/>
@@ -59,7 +60,7 @@
             <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
         </PackageReference>
 
-        <ProjectReference Include="..\GitTools.Testing\GitTools.Testing.csproj"/>
+        <ProjectReference Condition="$(MSBuildProjectName.EndsWith('.Tests'))" Include="..\GitTools.Testing\GitTools.Testing.csproj"/>
 
     </ItemGroup>
 
