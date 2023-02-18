@@ -5,7 +5,7 @@ using GitVersion.Helpers;
 using GitVersion.Logging;
 using Microsoft.Extensions.Options;
 
-namespace GitVersion.VersionCalculation.Cache;
+namespace GitVersion.VersionCalculation.Caching;
 
 public class GitVersionCacheKeyFactory : IGitVersionCacheKeyFactory
 {

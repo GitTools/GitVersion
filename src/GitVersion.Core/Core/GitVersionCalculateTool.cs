@@ -2,7 +2,7 @@ using GitVersion.Extensions;
 using GitVersion.Logging;
 using GitVersion.OutputVariables;
 using GitVersion.VersionCalculation;
-using GitVersion.VersionCalculation.Cache;
+using GitVersion.VersionCalculation.Caching;
 using Microsoft.Extensions.Options;
 
 namespace GitVersion;

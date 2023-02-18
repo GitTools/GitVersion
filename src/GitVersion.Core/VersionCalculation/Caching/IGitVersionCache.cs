@@ -1,6 +1,6 @@
 using GitVersion.OutputVariables;
 
-namespace GitVersion.VersionCalculation.Cache;
+namespace GitVersion.VersionCalculation.Caching;
 
 public interface IGitVersionCache
 {
