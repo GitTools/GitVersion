@@ -82,9 +82,11 @@ jobs:
     -
       name: '[Prepare]'
       if: steps.cache-cake.outputs.cache-hit != 'true'
-      run: |
-        dotnet build build/CI.sln --configuration=Release
-        dotnet run/build.dll --target=BuildPrepare
+      run: dotnet build build/CI.sln --configuration=Release
+    -
+      name: '[DogFood]'
+      shell: pwsh
+      run: dotnet run/build.dll --target=BuildPrepare
     -
       name: 'Upload gitversion tool'
       uses: actions/upload-artifact@v3
