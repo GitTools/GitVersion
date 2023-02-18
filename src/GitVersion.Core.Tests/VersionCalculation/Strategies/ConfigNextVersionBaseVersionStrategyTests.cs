@@ -49,6 +49,8 @@ public class ConfigNextVersionBaseVersionStrategyTests : TestBase
         var branchMock = GitToolsTestingExtensions.CreateMockBranch("main", GitToolsTestingExtensions.CreateMockCommit());
         var branchConfiguration = context.Configuration.GetBranchConfiguration(branchMock);
         var effectiveConfiguration = new EffectiveConfiguration(context.Configuration, branchConfiguration);
+
+        strategy.ShouldNotBeNull();
         return strategy.GetBaseVersions(new(branchMock, effectiveConfiguration)).SingleOrDefault();
     }
 }

@@ -40,6 +40,8 @@ public class MergeMessageBaseVersionStrategyTests : TestBase
         var context = contextBuilder.ServicesProvider.GetRequiredService<Lazy<GitVersionContext>>().Value;
         var branchConfiguration = context.Configuration.GetBranchConfiguration(mockBranch);
         var effectiveConfiguration = new EffectiveConfiguration(context.Configuration, branchConfiguration);
+
+        strategy.ShouldNotBeNull();
         var baseVersion = strategy.GetBaseVersions(new(mockBranch, effectiveConfiguration)).Single();
 
         baseVersion.ShouldIncrement.ShouldBe(false);
@@ -173,6 +175,8 @@ public class MergeMessageBaseVersionStrategyTests : TestBase
         var context = contextBuilder.ServicesProvider.GetRequiredService<Lazy<GitVersionContext>>().Value;
         var branchConfiguration = context.Configuration.GetBranchConfiguration(mockBranch);
         var effectiveConfiguration = new EffectiveConfiguration(context.Configuration, branchConfiguration);
+
+        strategy.ShouldNotBeNull();
         var baseVersion = strategy.GetBaseVersions(new(mockBranch, effectiveConfiguration)).SingleOrDefault();
 
         if (expectedVersion == null)

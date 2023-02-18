@@ -1,6 +1,5 @@
 using System.ComponentModel;
 using System.Runtime.InteropServices;
-using GitVersion.Extensions;
 
 namespace GitVersion.Helpers;
 

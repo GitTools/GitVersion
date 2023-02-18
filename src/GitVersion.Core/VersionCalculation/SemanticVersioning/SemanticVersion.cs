@@ -208,7 +208,7 @@ public class SemanticVersion : IFormattable, IComparable<SemanticVersion>, IEqua
         return true;
     }
 
-    public int CompareTo(SemanticVersion value) => CompareTo(value, true);
+    public int CompareTo(SemanticVersion? value) => CompareTo(value, true);
 
     public int CompareTo(SemanticVersion? value, bool includePrerelease)
     {

@@ -54,7 +54,7 @@ public class SemanticVersionBuildMetaData : IFormattable, IEquatable<SemanticVer
         this.UncommittedChanges = buildMetaData?.UncommittedChanges ?? 0;
     }
 
-    public override bool Equals(object obj) => Equals(obj as SemanticVersionBuildMetaData);
+    public override bool Equals(object? obj) => Equals(obj as SemanticVersionBuildMetaData);
 
     public bool Equals(SemanticVersionBuildMetaData? other) => EqualityHelper.Equals(this, other);
 

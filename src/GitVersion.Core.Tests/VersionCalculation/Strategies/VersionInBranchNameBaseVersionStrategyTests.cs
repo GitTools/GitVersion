@@ -25,6 +25,8 @@ public class VersionInBranchNameBaseVersionStrategyTests : TestBase
         var configuration = GitFlowConfigurationBuilder.New.Build();
         var branchConfiguration = configuration.GetBranchConfiguration(branchName);
         var effectiveConfiguration = new EffectiveConfiguration(configuration, branchConfiguration);
+
+        strategy.ShouldNotBeNull();
         var baseVersion = strategy.GetBaseVersions(new(gitRepository.FindBranch(branchName)!, effectiveConfiguration)).Single();
 
         baseVersion.SemanticVersion.ToString().ShouldBe(expectedBaseVersion);
@@ -45,6 +47,8 @@ public class VersionInBranchNameBaseVersionStrategyTests : TestBase
         var configuration = GitFlowConfigurationBuilder.New.Build();
         var branchConfiguration = configuration.GetBranchConfiguration(branchName);
         var effectiveConfiguration = new EffectiveConfiguration(configuration, branchConfiguration);
+
+        strategy.ShouldNotBeNull();
         var baseVersions = strategy.GetBaseVersions(new(gitRepository.FindBranch(branchName)!, effectiveConfiguration));
 
         baseVersions.ShouldBeEmpty();
@@ -67,6 +71,9 @@ public class VersionInBranchNameBaseVersionStrategyTests : TestBase
         var configuration = GitFlowConfigurationBuilder.New.Build();
         var branchConfiguration = configuration.GetBranchConfiguration(branchName);
         var effectiveConfiguration = new EffectiveConfiguration(configuration, branchConfiguration);
+
+        strategy.ShouldNotBeNull();
+
         var baseVersion = strategy.GetBaseVersions(new(gitRepository.FindBranch(branchName)!, effectiveConfiguration)).Single();
 
         baseVersion.SemanticVersion.ToString().ShouldBe(expectedBaseVersion);
@@ -90,6 +97,9 @@ public class VersionInBranchNameBaseVersionStrategyTests : TestBase
         var configuration = GitFlowConfigurationBuilder.New.Build();
         var branchConfiguration = configuration.GetBranchConfiguration(branchName);
         var effectiveConfiguration = new EffectiveConfiguration(configuration, branchConfiguration);
+
+        strategy.ShouldNotBeNull();
+
         var baseVersion = strategy.GetBaseVersions(new(gitRepository.FindBranch(branchName)!, effectiveConfiguration)).Single();
 
         baseVersion.SemanticVersion.ToString().ShouldBe(expectedBaseVersion);

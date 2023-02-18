@@ -15,9 +15,7 @@ public static class CommonExtensions
             throw new ArgumentException("The parameter is null or empty.", name);
         }
 
-#pragma warning disable CS8777 // Parameter must have a non-null value when exiting.
-        return value!;
-#pragma warning restore CS8777 // Parameter must have a non-null value when exiting.
+        return value;
     }
 
     public static string NotNullOrWhitespace([NotNull] this string? value, [CallerArgumentExpression("value")] string name = "")
@@ -27,8 +25,6 @@ public static class CommonExtensions
             throw new ArgumentException("The parameter is null or empty or contains only white space.", name);
         }
 
-#pragma warning disable CS8777 // Parameter must have a non-null value when exiting.
-        return value!;
-#pragma warning restore CS8777 // Parameter must have a non-null value when exiting.
+        return value;
     }
 }

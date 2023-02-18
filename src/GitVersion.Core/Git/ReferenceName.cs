@@ -56,8 +56,8 @@ public class ReferenceName : IEquatable<ReferenceName?>, IComparable<ReferenceNa
     public bool IsPullRequest { get; }
 
     public bool Equals(ReferenceName? other) => equalityHelper.Equals(this, other);
-    public int CompareTo(ReferenceName other) => comparerHelper.Compare(this, other);
-    public override bool Equals(object obj) => Equals((obj as ReferenceName));
+    public int CompareTo(ReferenceName? other) => comparerHelper.Compare(this, other);
+    public override bool Equals(object? obj) => Equals((obj as ReferenceName));
     public override int GetHashCode() => equalityHelper.GetHashCode(this);
     public override string ToString() => Friendly;
 

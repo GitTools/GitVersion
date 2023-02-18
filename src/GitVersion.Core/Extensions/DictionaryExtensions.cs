@@ -6,7 +6,8 @@ public static class DictionaryExtensions
     {
         if (dict is null) throw new ArgumentNullException(nameof(dict));
         if (getValue is null) throw new ArgumentNullException(nameof(getValue));
-        if (!dict.TryGetValue(key, out TValue value))
+
+        if (!dict.TryGetValue(key, out var value))
         {
             value = getValue();
             dict.Add(key, value);

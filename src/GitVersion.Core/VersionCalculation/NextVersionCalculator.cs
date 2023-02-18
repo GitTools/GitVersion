@@ -52,7 +52,7 @@ public class NextVersionCalculator : INextVersionCalculator
         if (Context.IsCurrentCommitTagged)
         {
             // Will always be 0, don't bother with the +0 on tags
-            var semanticVersionBuildMetaData = this.mainlineVersionCalculator.CreateVersionBuildMetaData(Context.CurrentCommit!);
+            var semanticVersionBuildMetaData = this.mainlineVersionCalculator.CreateVersionBuildMetaData(Context.CurrentCommit);
             semanticVersionBuildMetaData.CommitsSinceTag = null;
             var semanticVersion = new SemanticVersion(Context.CurrentCommitTaggedVersion) { BuildMetaData = semanticVersionBuildMetaData };
             taggedSemanticVersion = semanticVersion;
@@ -135,7 +135,7 @@ public class NextVersionCalculator : INextVersionCalculator
 
         if (lastTag != null && MajorMinorPatchEqual(lastTag, semanticVersion) && lastTag.HasPreReleaseTagWithLabel)
         {
-            number = lastTag.PreReleaseTag!.Number + 1;
+            number = lastTag.PreReleaseTag?.Number + 1;
         }
 
         number ??= 1;
@@ -143,7 +143,8 @@ public class NextVersionCalculator : INextVersionCalculator
         semanticVersion.PreReleaseTag = new SemanticVersionPreReleaseTag(tagToUse, number);
     }
 
-    private static bool MajorMinorPatchEqual(SemanticVersion lastTag, SemanticVersion baseVersion) => lastTag.Major == baseVersion.Major && lastTag.Minor == baseVersion.Minor && lastTag.Patch == baseVersion.Patch;
+    private static bool MajorMinorPatchEqual(SemanticVersion lastTag, SemanticVersion baseVersion) =>
+        lastTag.Major == baseVersion.Major && lastTag.Minor == baseVersion.Minor && lastTag.Patch == baseVersion.Patch;
 
     private NextVersion Calculate(IBranch branch, GitVersionConfiguration configuration)
     {
@@ -151,6 +152,8 @@ public class NextVersionCalculator : INextVersionCalculator
         {
             var nextVersions = GetNextVersions(branch, configuration).ToArray();
             var maxVersion = nextVersions.Max();
+
+            maxVersion.NotNull();
 
             var matchingVersionsOnceIncremented = nextVersions
                 .Where(v => v.BaseVersion.BaseVersionSource != null && v.IncrementedVersion == maxVersion.IncrementedVersion)
@@ -192,13 +195,14 @@ public class NextVersionCalculator : INextVersionCalculator
                     filteredVersions = filteredVersions.Where(v => !v.BaseVersion.SemanticVersion.HasPreReleaseTagWithLabel);
                 }
 
-                var version = filteredVersions
+                var versions = filteredVersions as NextVersion[] ?? filteredVersions.ToArray();
+                var version = versions
                     .Where(v => v.BaseVersion.BaseVersionSource != null)
                     .OrderByDescending(v => v.IncrementedVersion)
-                    .ThenByDescending(v => v.BaseVersion.BaseVersionSource!.When)
+                    .ThenByDescending(v => v.BaseVersion.BaseVersionSource?.When)
                     .FirstOrDefault();
 
-                version ??= filteredVersions.Where(v => v.BaseVersion.BaseVersionSource == null)
+                version ??= versions.Where(v => v.BaseVersion.BaseVersionSource == null)
                     .OrderByDescending(v => v.IncrementedVersion)
                     .First();
                 latestBaseVersionSource = version.BaseVersion.BaseVersionSource;
