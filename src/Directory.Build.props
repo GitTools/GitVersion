@@ -29,18 +29,20 @@
         <AnalysisLevel>latest</AnalysisLevel>
         <EnforceCodeStyleInBuild>True</EnforceCodeStyleInBuild>
 
+        <IsUnitTestProject>false</IsUnitTestProject>
+        <IsUnitTestProject>$(MSBuildProjectName.EndsWith('.Tests'))</IsUnitTestProject>
     </PropertyGroup>
     <ItemGroup>
         <PackageReference Include="System.Text.Json"/>
         <PackageReference Include="System.Text.Encodings.Web"/>
     </ItemGroup>
-    <ItemGroup Condition=" '$(IsTestProject)' == 'false' ">
+    <ItemGroup Condition=" '$(IsUnitTestProject)' == 'false' ">
         <PackageReference Include="Microsoft.CodeAnalysis.PublicApiAnalyzers">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
     </ItemGroup>
-    <ItemGroup Condition=" '$(IsTestProject)' == 'true' ">
+    <ItemGroup Condition=" '$(IsUnitTestProject)' == 'true' ">
         <PackageReference Include="Microsoft.Extensions.DependencyInjection"/>
         <PackageReference Include="Microsoft.NET.Test.Sdk"/>
 

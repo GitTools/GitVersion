@@ -4,8 +4,6 @@
         <DebugType>full</DebugType>
         <Optimize>false</Optimize>
         <DebugSymbols>true</DebugSymbols>
-
-        <IsTestProject>true</IsTestProject>
     </PropertyGroup>
 
     <ItemGroup>

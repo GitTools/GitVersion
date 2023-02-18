@@ -28,7 +28,7 @@ const GitVersion.BuildAgents.SpaceAutomation.EnvironmentVariableName = "JB_SPACE
 const GitVersion.BuildAgents.TeamCity.EnvironmentVariableName = "TEAMCITY_VERSION" -> string!
 const GitVersion.BuildAgents.TravisCi.EnvironmentVariableName = "TRAVIS" -> string!
 const GitVersion.Configuration.ConfigurationFileLocator.DefaultFileName = "GitVersion.yml" -> string!
-const GitVersion.Configuration.GitVersionConfiguration.DefaultTagPrefix = "[vV]?" -> string!
+const GitVersion.Configuration.GitVersionConfiguration.DefaultLabelPrefix = "[vV]?" -> string!
 const GitVersion.Configuration.GitVersionConfiguration.DevelopBranchKey = "develop" -> string!
 const GitVersion.Configuration.GitVersionConfiguration.DevelopBranchRegex = "^dev(elop)?(ment)?$" -> string!
 const GitVersion.Configuration.GitVersionConfiguration.FeatureBranchKey = "feature" -> string!
@@ -126,9 +126,6 @@ GitVersion.BuildAgents.TeamCity
 GitVersion.BuildAgents.TeamCity.TeamCity(GitVersion.IEnvironment! environment, GitVersion.Logging.ILog! log) -> void
 GitVersion.BuildAgents.TravisCi
 GitVersion.BuildAgents.TravisCi.TravisCi(GitVersion.IEnvironment! environment, GitVersion.Logging.ILog! log) -> void
-GitVersion.VersionCalculation.Cache.GitVersionCacheKey
-GitVersion.VersionCalculation.Cache.GitVersionCacheKey.GitVersionCacheKey(string! value) -> void
-GitVersion.VersionCalculation.Cache.GitVersionCacheKey.Value.get -> string!
 GitVersion.CommitFilter
 GitVersion.CommitFilter.CommitFilter() -> void
 GitVersion.CommitFilter.ExcludeReachableFrom.get -> object?
@@ -156,7 +153,7 @@ GitVersion.Common.IRepositoryStore.FindMergeBase(GitVersion.ICommit! commit, Git
 GitVersion.Common.IRepositoryStore.GetBranchesContainingCommit(GitVersion.ICommit? commit, System.Collections.Generic.IEnumerable<GitVersion.IBranch!>? branches = null, bool onlyTrackedBranches = false) -> System.Collections.Generic.IEnumerable<GitVersion.IBranch!>!
 GitVersion.Common.IRepositoryStore.GetCommitLog(GitVersion.ICommit? baseVersionSource, GitVersion.ICommit? currentCommit) -> System.Collections.Generic.IEnumerable<GitVersion.ICommit!>!
 GitVersion.Common.IRepositoryStore.GetCurrentCommit(GitVersion.IBranch! currentBranch, string? commitId) -> GitVersion.ICommit?
-GitVersion.Common.IRepositoryStore.GetCurrentCommitTaggedVersion(GitVersion.ICommit? commit, string? tagPrefix, bool handleDetachedBranch) -> GitVersion.SemanticVersion?
+GitVersion.Common.IRepositoryStore.GetCurrentCommitTaggedVersion(GitVersion.ICommit? commit, string? tagPrefix, GitVersion.SemanticVersionFormat versionFormat, bool handleDetachedBranch) -> GitVersion.SemanticVersion?
 GitVersion.Common.IRepositoryStore.GetMainlineBranches(GitVersion.ICommit! commit, GitVersion.Configuration.GitVersionConfiguration! configuration) -> System.Collections.Generic.IDictionary<string!, System.Collections.Generic.List<GitVersion.IBranch!>!>!
 GitVersion.Common.IRepositoryStore.GetMainlineCommitLog(GitVersion.ICommit? baseVersionSource, GitVersion.ICommit? mainlineTip) -> System.Collections.Generic.IEnumerable<GitVersion.ICommit!>!
 GitVersion.Common.IRepositoryStore.GetMergeBaseCommits(GitVersion.ICommit? mergeCommit, GitVersion.ICommit? mergedHead, GitVersion.ICommit? findMergeBase) -> System.Collections.Generic.IEnumerable<GitVersion.ICommit!>!
@@ -165,8 +162,8 @@ GitVersion.Common.IRepositoryStore.GetReleaseBranches(System.Collections.Generic
 GitVersion.Common.IRepositoryStore.GetSourceBranches(GitVersion.IBranch! branch, GitVersion.Configuration.GitVersionConfiguration! configuration, params GitVersion.IBranch![]! excludedBranches) -> System.Collections.Generic.IEnumerable<GitVersion.IBranch!>!
 GitVersion.Common.IRepositoryStore.GetSourceBranches(GitVersion.IBranch! branch, GitVersion.Configuration.GitVersionConfiguration! configuration, System.Collections.Generic.IEnumerable<GitVersion.IBranch!>! excludedBranches) -> System.Collections.Generic.IEnumerable<GitVersion.IBranch!>!
 GitVersion.Common.IRepositoryStore.GetTargetBranch(string? targetBranchName) -> GitVersion.IBranch!
-GitVersion.Common.IRepositoryStore.GetValidVersionTags(string? tagPrefixRegex, System.DateTimeOffset? olderThan = null) -> System.Collections.Generic.IEnumerable<(GitVersion.ITag! Tag, GitVersion.SemanticVersion! Semver, GitVersion.ICommit! Commit)>!
-GitVersion.Common.IRepositoryStore.GetVersionTagsOnBranch(GitVersion.IBranch! branch, string? tagPrefixRegex) -> System.Collections.Generic.IEnumerable<GitVersion.SemanticVersion!>!
+GitVersion.Common.IRepositoryStore.GetValidVersionTags(string? tagPrefixRegex, GitVersion.SemanticVersionFormat versionFormat, System.DateTimeOffset? olderThan = null) -> System.Collections.Generic.IEnumerable<(GitVersion.ITag! Tag, GitVersion.SemanticVersion! Semver, GitVersion.ICommit! Commit)>!
+GitVersion.Common.IRepositoryStore.GetVersionTagsOnBranch(GitVersion.IBranch! branch, string? tagPrefixRegex, GitVersion.SemanticVersionFormat versionFormat) -> System.Collections.Generic.IEnumerable<GitVersion.SemanticVersion!>!
 GitVersion.Common.IRepositoryStore.IsCommitOnBranch(GitVersion.ICommit? baseVersionSource, GitVersion.IBranch! branch, GitVersion.ICommit! firstMatchingCommit) -> bool
 GitVersion.ConfigInfo
 GitVersion.ConfigInfo.ConfigFile -> string?
@@ -199,10 +196,10 @@ GitVersion.Configuration.BranchConfiguration.Regex.get -> string?
 GitVersion.Configuration.BranchConfiguration.Regex.set -> void
 GitVersion.Configuration.BranchConfiguration.SourceBranches.get -> System.Collections.Generic.HashSet<string!>?
 GitVersion.Configuration.BranchConfiguration.SourceBranches.set -> void
-GitVersion.Configuration.BranchConfiguration.Tag.get -> string?
-GitVersion.Configuration.BranchConfiguration.Tag.set -> void
-GitVersion.Configuration.BranchConfiguration.TagNumberPattern.get -> string?
-GitVersion.Configuration.BranchConfiguration.TagNumberPattern.set -> void
+GitVersion.Configuration.BranchConfiguration.Label.get -> string?
+GitVersion.Configuration.BranchConfiguration.Label.set -> void
+GitVersion.Configuration.BranchConfiguration.LabelNumberPattern.get -> string?
+GitVersion.Configuration.BranchConfiguration.LabelNumberPattern.set -> void
 GitVersion.Configuration.BranchConfiguration.TrackMergeTarget.get -> bool?
 GitVersion.Configuration.BranchConfiguration.TrackMergeTarget.set -> void
 GitVersion.Configuration.BranchConfiguration.TracksReleaseBranches.get -> bool?
@@ -249,9 +246,9 @@ GitVersion.Configuration.EffectiveConfiguration.AssemblyVersioningScheme.get -> 
 GitVersion.Configuration.EffectiveConfiguration.BranchPrefixToTrim.get -> string?
 GitVersion.Configuration.EffectiveConfiguration.CommitDateFormat.get -> string?
 GitVersion.Configuration.EffectiveConfiguration.CommitMessageIncrementing.get -> GitVersion.VersionCalculation.CommitMessageIncrementMode
-GitVersion.Configuration.EffectiveConfiguration.ContinuousDeploymentFallbackTag.get -> string?
+GitVersion.Configuration.EffectiveConfiguration.ContinuousDeploymentFallbackLabel.get -> string?
 GitVersion.Configuration.EffectiveConfiguration.EffectiveConfiguration(GitVersion.Configuration.GitVersionConfiguration! configuration, GitVersion.Configuration.BranchConfiguration! currentBranchConfig) -> void
-GitVersion.Configuration.EffectiveConfiguration.EffectiveConfiguration(GitVersion.Extensions.AssemblyVersioningScheme assemblyVersioningScheme, GitVersion.Extensions.AssemblyFileVersioningScheme assemblyFileVersioningScheme, string? assemblyInformationalFormat, string? assemblyVersioningFormat, string? assemblyFileVersioningFormat, GitVersion.VersionCalculation.VersioningMode versioningMode, string? tagPrefix, string! tag, string? nextVersion, GitVersion.IncrementStrategy increment, string? branchPrefixToTrim, bool preventIncrementOfMergedBranchVersion, string? tagNumberPattern, string? continuousDeploymentFallbackTag, bool trackMergeTarget, string? majorVersionBumpMessage, string? minorVersionBumpMessage, string? patchVersionBumpMessage, string? noBumpMessage, GitVersion.VersionCalculation.CommitMessageIncrementMode commitMessageIncrementing, System.Collections.Generic.IEnumerable<GitVersion.VersionCalculation.IVersionFilter!>! versionFilters, bool tracksReleaseBranches, bool isReleaseBranch, bool isMainline, string? commitDateFormat, bool updateBuildNumber, GitVersion.SemanticVersionFormat semanticVersionFormat, int preReleaseWeight, int tagPreReleaseWeight) -> void
+GitVersion.Configuration.EffectiveConfiguration.EffectiveConfiguration(GitVersion.Extensions.AssemblyVersioningScheme assemblyVersioningScheme, GitVersion.Extensions.AssemblyFileVersioningScheme assemblyFileVersioningScheme, string? assemblyInformationalFormat, string? assemblyVersioningFormat, string? assemblyFileVersioningFormat, GitVersion.VersionCalculation.VersioningMode versioningMode, string? labelPrefix, string! label, string? nextVersion, GitVersion.IncrementStrategy increment, string? branchPrefixToTrim, bool preventIncrementOfMergedBranchVersion, string? labelNumberPattern, string? continuousDeploymentFallbackLabel, bool trackMergeTarget, string? majorVersionBumpMessage, string? minorVersionBumpMessage, string? patchVersionBumpMessage, string? noBumpMessage, GitVersion.VersionCalculation.CommitMessageIncrementMode commitMessageIncrementing, System.Collections.Generic.IEnumerable<GitVersion.VersionCalculation.IVersionFilter!>! versionFilters, bool tracksReleaseBranches, bool isReleaseBranch, bool isMainline, string? commitDateFormat, bool updateBuildNumber, GitVersion.SemanticVersionFormat semanticVersionFormat, int preReleaseWeight, int labelPreReleaseWeight) -> void
 GitVersion.Configuration.EffectiveConfiguration.Increment.get -> GitVersion.IncrementStrategy
 GitVersion.Configuration.EffectiveConfiguration.IsMainline.get -> bool
 GitVersion.Configuration.EffectiveConfiguration.IsReleaseBranch.get -> bool
@@ -264,10 +261,10 @@ GitVersion.Configuration.EffectiveConfiguration.PreReleaseWeight.get -> int
 GitVersion.Configuration.EffectiveConfiguration.PreventIncrementOfMergedBranchVersion.get -> bool
 GitVersion.Configuration.EffectiveConfiguration.SemanticVersionFormat.get -> GitVersion.SemanticVersionFormat
 GitVersion.Configuration.EffectiveConfiguration.SemanticVersionFormat.set -> void
-GitVersion.Configuration.EffectiveConfiguration.Tag.get -> string!
-GitVersion.Configuration.EffectiveConfiguration.TagNumberPattern.get -> string?
-GitVersion.Configuration.EffectiveConfiguration.TagPrefix.get -> string?
-GitVersion.Configuration.EffectiveConfiguration.TagPreReleaseWeight.get -> int
+GitVersion.Configuration.EffectiveConfiguration.Label.get -> string!
+GitVersion.Configuration.EffectiveConfiguration.LabelNumberPattern.get -> string?
+GitVersion.Configuration.EffectiveConfiguration.LabelPrefix.get -> string?
+GitVersion.Configuration.EffectiveConfiguration.LabelPreReleaseWeight.get -> int
 GitVersion.Configuration.EffectiveConfiguration.TrackMergeTarget.get -> bool
 GitVersion.Configuration.EffectiveConfiguration.TracksReleaseBranches.get -> bool
 GitVersion.Configuration.EffectiveConfiguration.UpdateBuildNumber.get -> bool
@@ -290,8 +287,8 @@ GitVersion.Configuration.GitVersionConfiguration.CommitDateFormat.get -> string?
 GitVersion.Configuration.GitVersionConfiguration.CommitDateFormat.set -> void
 GitVersion.Configuration.GitVersionConfiguration.CommitMessageIncrementing.get -> GitVersion.VersionCalculation.CommitMessageIncrementMode?
 GitVersion.Configuration.GitVersionConfiguration.CommitMessageIncrementing.set -> void
-GitVersion.Configuration.GitVersionConfiguration.ContinuousDeploymentFallbackTag.get -> string?
-GitVersion.Configuration.GitVersionConfiguration.ContinuousDeploymentFallbackTag.set -> void
+GitVersion.Configuration.GitVersionConfiguration.ContinuousDeploymentFallbackLabel.get -> string?
+GitVersion.Configuration.GitVersionConfiguration.ContinuousDeploymentFallbackLabel.set -> void
 GitVersion.Configuration.GitVersionConfiguration.GitVersionConfiguration() -> void
 GitVersion.Configuration.GitVersionConfiguration.Ignore.get -> GitVersion.Configuration.IgnoreConfiguration!
 GitVersion.Configuration.GitVersionConfiguration.Ignore.set -> void
@@ -311,10 +308,10 @@ GitVersion.Configuration.GitVersionConfiguration.PatchVersionBumpMessage.get -> 
 GitVersion.Configuration.GitVersionConfiguration.PatchVersionBumpMessage.set -> void
 GitVersion.Configuration.GitVersionConfiguration.SemanticVersionFormat.get -> GitVersion.SemanticVersionFormat
 GitVersion.Configuration.GitVersionConfiguration.SemanticVersionFormat.set -> void
-GitVersion.Configuration.GitVersionConfiguration.TagPrefix.get -> string?
-GitVersion.Configuration.GitVersionConfiguration.TagPrefix.set -> void
-GitVersion.Configuration.GitVersionConfiguration.TagPreReleaseWeight.get -> int?
-GitVersion.Configuration.GitVersionConfiguration.TagPreReleaseWeight.set -> void
+GitVersion.Configuration.GitVersionConfiguration.LabelPrefix.get -> string?
+GitVersion.Configuration.GitVersionConfiguration.LabelPrefix.set -> void
+GitVersion.Configuration.GitVersionConfiguration.LabelPreReleaseWeight.get -> int?
+GitVersion.Configuration.GitVersionConfiguration.LabelPreReleaseWeight.set -> void
 GitVersion.Configuration.GitVersionConfiguration.UpdateBuildNumber.get -> bool?
 GitVersion.Configuration.GitVersionConfiguration.UpdateBuildNumber.set -> void
 GitVersion.Configuration.GitVersionConfiguration.VersioningMode.get -> GitVersion.VersionCalculation.VersioningMode?
@@ -335,8 +332,8 @@ GitVersion.Configuration.IgnoreConfiguration
 GitVersion.Configuration.IgnoreConfiguration.Before.get -> System.DateTimeOffset?
 GitVersion.Configuration.IgnoreConfiguration.Before.set -> void
 GitVersion.Configuration.IgnoreConfiguration.IgnoreConfiguration() -> void
-GitVersion.Configuration.IgnoreConfiguration.ShAs.get -> System.Collections.Generic.IEnumerable<string!>!
-GitVersion.Configuration.IgnoreConfiguration.ShAs.set -> void
+GitVersion.Configuration.IgnoreConfiguration.Shas.get -> System.Collections.Generic.IEnumerable<string!>!
+GitVersion.Configuration.IgnoreConfiguration.Shas.set -> void
 GitVersion.Configuration.Init.EditConfigStep
 GitVersion.Configuration.Init.EditConfigStep.EditConfigStep(GitVersion.Logging.IConsole! console, GitVersion.IFileSystem! fileSystem, GitVersion.Logging.ILog! log, GitVersion.Configuration.Init.Wizard.IConfigInitStepFactory! stepFactory) -> void
 GitVersion.Configuration.Init.GitVersionInitModule
@@ -446,7 +443,7 @@ GitVersion.GitToolsException.GitToolsException(string! message, System.Exception
 GitVersion.GitToolsException.GitToolsException(string! messageFormat, params object![]! args) -> void
 GitVersion.GitVersionCalculateTool
 GitVersion.GitVersionCalculateTool.CalculateVersionVariables() -> GitVersion.OutputVariables.VersionVariables!
-GitVersion.GitVersionCalculateTool.GitVersionCalculateTool(GitVersion.Logging.ILog! log, GitVersion.VersionCalculation.INextVersionCalculator! nextVersionCalculator, GitVersion.VersionCalculation.IVariableProvider! variableProvider, GitVersion.IGitPreparer! gitPreparer, GitVersion.VersionCalculation.Cache.IGitVersionCache! gitVersionCache, GitVersion.VersionCalculation.Cache.IGitVersionCacheKeyFactory! cacheKeyFactory, Microsoft.Extensions.Options.IOptions<GitVersion.GitVersionOptions!>! options, System.Lazy<GitVersion.GitVersionContext!>! versionContext) -> void
+GitVersion.GitVersionCalculateTool.GitVersionCalculateTool(GitVersion.Logging.ILog! log, GitVersion.VersionCalculation.INextVersionCalculator! nextVersionCalculator, GitVersion.VersionCalculation.IVariableProvider! variableProvider, GitVersion.IGitPreparer! gitPreparer, GitVersion.VersionCalculation.Caching.IGitVersionCache! gitVersionCache, GitVersion.VersionCalculation.Caching.IGitVersionCacheKeyFactory! cacheKeyFactory, Microsoft.Extensions.Options.IOptions<GitVersion.GitVersionOptions!>! options, System.Lazy<GitVersion.GitVersionContext!>! versionContext) -> void
 GitVersion.GitVersionContext
 GitVersion.GitVersionContext.Configuration.get -> GitVersion.Configuration.GitVersionConfiguration!
 GitVersion.GitVersionContext.CurrentBranch.get -> GitVersion.IBranch!
@@ -792,7 +789,7 @@ GitVersion.OutputVariables.VersionVariablesJsonStringConverter
 GitVersion.OutputVariables.VersionVariablesJsonStringConverter.VersionVariablesJsonStringConverter() -> void
 GitVersion.ReferenceName
 GitVersion.ReferenceName.Canonical.get -> string!
-GitVersion.ReferenceName.CompareTo(GitVersion.ReferenceName! other) -> int
+GitVersion.ReferenceName.CompareTo(GitVersion.ReferenceName? other) -> int
 GitVersion.ReferenceName.Equals(GitVersion.ReferenceName? other) -> bool
 GitVersion.ReferenceName.EquivalentTo(string? name) -> bool
 GitVersion.ReferenceName.Friendly.get -> string!
@@ -823,7 +820,7 @@ GitVersion.RepositoryStore.FindMergeBase(GitVersion.ICommit! commit, GitVersion.
 GitVersion.RepositoryStore.GetBranchesContainingCommit(GitVersion.ICommit? commit, System.Collections.Generic.IEnumerable<GitVersion.IBranch!>? branches = null, bool onlyTrackedBranches = false) -> System.Collections.Generic.IEnumerable<GitVersion.IBranch!>!
 GitVersion.RepositoryStore.GetCommitLog(GitVersion.ICommit? baseVersionSource, GitVersion.ICommit? currentCommit) -> System.Collections.Generic.IEnumerable<GitVersion.ICommit!>!
 GitVersion.RepositoryStore.GetCurrentCommit(GitVersion.IBranch! currentBranch, string? commitId) -> GitVersion.ICommit?
-GitVersion.RepositoryStore.GetCurrentCommitTaggedVersion(GitVersion.ICommit? commit, string? tagPrefix, bool handleDetachedBranch) -> GitVersion.SemanticVersion?
+GitVersion.RepositoryStore.GetCurrentCommitTaggedVersion(GitVersion.ICommit? commit, string? tagPrefix, GitVersion.SemanticVersionFormat versionFormat, bool handleDetachedBranch) -> GitVersion.SemanticVersion?
 GitVersion.RepositoryStore.GetMainlineBranches(GitVersion.ICommit! commit, GitVersion.Configuration.GitVersionConfiguration! configuration) -> System.Collections.Generic.IDictionary<string!, System.Collections.Generic.List<GitVersion.IBranch!>!>!
 GitVersion.RepositoryStore.GetMainlineCommitLog(GitVersion.ICommit? baseVersionSource, GitVersion.ICommit? mainlineTip) -> System.Collections.Generic.IEnumerable<GitVersion.ICommit!>!
 GitVersion.RepositoryStore.GetMergeBaseCommits(GitVersion.ICommit? mergeCommit, GitVersion.ICommit? mergedHead, GitVersion.ICommit? findMergeBase) -> System.Collections.Generic.IEnumerable<GitVersion.ICommit!>!
@@ -832,13 +829,13 @@ GitVersion.RepositoryStore.GetReleaseBranches(System.Collections.Generic.IEnumer
 GitVersion.RepositoryStore.GetSourceBranches(GitVersion.IBranch! branch, GitVersion.Configuration.GitVersionConfiguration! configuration, params GitVersion.IBranch![]! excludedBranches) -> System.Collections.Generic.IEnumerable<GitVersion.IBranch!>!
 GitVersion.RepositoryStore.GetSourceBranches(GitVersion.IBranch! branch, GitVersion.Configuration.GitVersionConfiguration! configuration, System.Collections.Generic.IEnumerable<GitVersion.IBranch!>! excludedBranches) -> System.Collections.Generic.IEnumerable<GitVersion.IBranch!>!
 GitVersion.RepositoryStore.GetTargetBranch(string? targetBranchName) -> GitVersion.IBranch!
-GitVersion.RepositoryStore.GetValidVersionTags(string? tagPrefixRegex, System.DateTimeOffset? olderThan = null) -> System.Collections.Generic.IEnumerable<(GitVersion.ITag! Tag, GitVersion.SemanticVersion! Semver, GitVersion.ICommit! Commit)>!
-GitVersion.RepositoryStore.GetVersionTagsOnBranch(GitVersion.IBranch! branch, string? tagPrefixRegex) -> System.Collections.Generic.IEnumerable<GitVersion.SemanticVersion!>!
+GitVersion.RepositoryStore.GetValidVersionTags(string? tagPrefixRegex, GitVersion.SemanticVersionFormat versionFormat, System.DateTimeOffset? olderThan = null) -> System.Collections.Generic.IEnumerable<(GitVersion.ITag! Tag, GitVersion.SemanticVersion! Semver, GitVersion.ICommit! Commit)>!
+GitVersion.RepositoryStore.GetVersionTagsOnBranch(GitVersion.IBranch! branch, string? tagPrefixRegex, GitVersion.SemanticVersionFormat versionFormat) -> System.Collections.Generic.IEnumerable<GitVersion.SemanticVersion!>!
 GitVersion.RepositoryStore.IsCommitOnBranch(GitVersion.ICommit? baseVersionSource, GitVersion.IBranch! branch, GitVersion.ICommit! firstMatchingCommit) -> bool
 GitVersion.RepositoryStore.RepositoryStore(GitVersion.Logging.ILog! log, GitVersion.IGitRepository! repository) -> void
 GitVersion.SemanticVersion
 GitVersion.SemanticVersion.BuildMetaData -> GitVersion.SemanticVersionBuildMetaData?
-GitVersion.SemanticVersion.CompareTo(GitVersion.SemanticVersion! value) -> int
+GitVersion.SemanticVersion.CompareTo(GitVersion.SemanticVersion? value) -> int
 GitVersion.SemanticVersion.CompareTo(GitVersion.SemanticVersion? value, bool includePrerelease) -> int
 GitVersion.SemanticVersion.Equals(GitVersion.SemanticVersion? obj) -> bool
 GitVersion.SemanticVersion.HasPreReleaseTagWithLabel.get -> bool
@@ -926,20 +923,23 @@ GitVersion.VersionCalculation.BaseVersion.BranchNameOverride.get -> string?
 GitVersion.VersionCalculation.BaseVersion.SemanticVersion.get -> GitVersion.SemanticVersion!
 GitVersion.VersionCalculation.BaseVersion.ShouldIncrement.get -> bool
 GitVersion.VersionCalculation.BaseVersion.Source.get -> string!
-GitVersion.VersionCalculation.Cache.GitVersionCache
-GitVersion.VersionCalculation.Cache.GitVersionCache.GetCacheDirectory() -> string!
-GitVersion.VersionCalculation.Cache.GitVersionCache.GitVersionCache(GitVersion.IFileSystem! fileSystem, GitVersion.Logging.ILog! log, GitVersion.IGitRepositoryInfo! repositoryInfo) -> void
-GitVersion.VersionCalculation.Cache.GitVersionCache.LoadVersionVariablesFromDiskCache(GitVersion.VersionCalculation.Cache.GitVersionCacheKey! key) -> GitVersion.OutputVariables.VersionVariables?
-GitVersion.VersionCalculation.Cache.GitVersionCache.WriteVariablesToDiskCache(GitVersion.VersionCalculation.Cache.GitVersionCacheKey! cacheKey, GitVersion.OutputVariables.VersionVariables! variablesFromCache) -> void
-GitVersion.VersionCalculation.Cache.GitVersionCacheKeyFactory
-GitVersion.VersionCalculation.Cache.GitVersionCacheKeyFactory.Create(GitVersion.Configuration.GitVersionConfiguration? overrideConfiguration) -> GitVersion.VersionCalculation.Cache.GitVersionCacheKey!
-GitVersion.VersionCalculation.Cache.GitVersionCacheKeyFactory.GitVersionCacheKeyFactory(GitVersion.IFileSystem! fileSystem, GitVersion.Logging.ILog! log, Microsoft.Extensions.Options.IOptions<GitVersion.GitVersionOptions!>! options, GitVersion.Configuration.IConfigurationFileLocator! configFileLocator, GitVersion.IGitRepository! gitRepository, GitVersion.IGitRepositoryInfo! repositoryInfo) -> void
-GitVersion.VersionCalculation.Cache.IGitVersionCache
-GitVersion.VersionCalculation.Cache.IGitVersionCache.GetCacheDirectory() -> string!
-GitVersion.VersionCalculation.Cache.IGitVersionCache.LoadVersionVariablesFromDiskCache(GitVersion.VersionCalculation.Cache.GitVersionCacheKey! key) -> GitVersion.OutputVariables.VersionVariables?
-GitVersion.VersionCalculation.Cache.IGitVersionCache.WriteVariablesToDiskCache(GitVersion.VersionCalculation.Cache.GitVersionCacheKey! cacheKey, GitVersion.OutputVariables.VersionVariables! variablesFromCache) -> void
-GitVersion.VersionCalculation.Cache.IGitVersionCacheKeyFactory
-GitVersion.VersionCalculation.Cache.IGitVersionCacheKeyFactory.Create(GitVersion.Configuration.GitVersionConfiguration? overrideConfiguration) -> GitVersion.VersionCalculation.Cache.GitVersionCacheKey!
+GitVersion.VersionCalculation.Caching.GitVersionCache
+GitVersion.VersionCalculation.Caching.GitVersionCache.GetCacheDirectory() -> string!
+GitVersion.VersionCalculation.Caching.GitVersionCache.GitVersionCache(GitVersion.IFileSystem! fileSystem, GitVersion.Logging.ILog! log, GitVersion.IGitRepositoryInfo! repositoryInfo) -> void
+GitVersion.VersionCalculation.Caching.GitVersionCache.LoadVersionVariablesFromDiskCache(GitVersion.VersionCalculation.Caching.GitVersionCacheKey! key) -> GitVersion.OutputVariables.VersionVariables?
+GitVersion.VersionCalculation.Caching.GitVersionCache.WriteVariablesToDiskCache(GitVersion.VersionCalculation.Caching.GitVersionCacheKey! cacheKey, GitVersion.OutputVariables.VersionVariables! variablesFromCache) -> void
+GitVersion.VersionCalculation.Caching.GitVersionCacheKey
+GitVersion.VersionCalculation.Caching.GitVersionCacheKey.GitVersionCacheKey(string! value) -> void
+GitVersion.VersionCalculation.Caching.GitVersionCacheKey.Value.get -> string!
+GitVersion.VersionCalculation.Caching.GitVersionCacheKeyFactory
+GitVersion.VersionCalculation.Caching.GitVersionCacheKeyFactory.Create(GitVersion.Configuration.GitVersionConfiguration? overrideConfiguration) -> GitVersion.VersionCalculation.Caching.GitVersionCacheKey!
+GitVersion.VersionCalculation.Caching.GitVersionCacheKeyFactory.GitVersionCacheKeyFactory(GitVersion.IFileSystem! fileSystem, GitVersion.Logging.ILog! log, Microsoft.Extensions.Options.IOptions<GitVersion.GitVersionOptions!>! options, GitVersion.Configuration.IConfigurationFileLocator! configFileLocator, GitVersion.IGitRepository! gitRepository, GitVersion.IGitRepositoryInfo! repositoryInfo) -> void
+GitVersion.VersionCalculation.Caching.IGitVersionCache
+GitVersion.VersionCalculation.Caching.IGitVersionCache.GetCacheDirectory() -> string!
+GitVersion.VersionCalculation.Caching.IGitVersionCache.LoadVersionVariablesFromDiskCache(GitVersion.VersionCalculation.Caching.GitVersionCacheKey! key) -> GitVersion.OutputVariables.VersionVariables?
+GitVersion.VersionCalculation.Caching.IGitVersionCache.WriteVariablesToDiskCache(GitVersion.VersionCalculation.Caching.GitVersionCacheKey! cacheKey, GitVersion.OutputVariables.VersionVariables! variablesFromCache) -> void
+GitVersion.VersionCalculation.Caching.IGitVersionCacheKeyFactory
+GitVersion.VersionCalculation.Caching.IGitVersionCacheKeyFactory.Create(GitVersion.Configuration.GitVersionConfiguration? overrideConfiguration) -> GitVersion.VersionCalculation.Caching.GitVersionCacheKey!
 GitVersion.VersionCalculation.CommitMessageIncrementMode
 GitVersion.VersionCalculation.CommitMessageIncrementMode.Disabled = 1 -> GitVersion.VersionCalculation.CommitMessageIncrementMode
 GitVersion.VersionCalculation.CommitMessageIncrementMode.Enabled = 0 -> GitVersion.VersionCalculation.CommitMessageIncrementMode
@@ -978,9 +978,9 @@ GitVersion.VersionCalculation.MinDateVersionFilter.MinDateVersionFilter(System.D
 GitVersion.VersionCalculation.NextVersion
 GitVersion.VersionCalculation.NextVersion.BaseVersion.get -> GitVersion.VersionCalculation.BaseVersion!
 GitVersion.VersionCalculation.NextVersion.Branch.get -> GitVersion.IBranch!
-GitVersion.VersionCalculation.NextVersion.CompareTo(GitVersion.VersionCalculation.NextVersion! other) -> int
+GitVersion.VersionCalculation.NextVersion.CompareTo(GitVersion.VersionCalculation.NextVersion? other) -> int
 GitVersion.VersionCalculation.NextVersion.Configuration.get -> GitVersion.Configuration.EffectiveConfiguration!
-GitVersion.VersionCalculation.NextVersion.Equals(GitVersion.VersionCalculation.NextVersion! other) -> bool
+GitVersion.VersionCalculation.NextVersion.Equals(GitVersion.VersionCalculation.NextVersion? other) -> bool
 GitVersion.VersionCalculation.NextVersion.IncrementedVersion.get -> GitVersion.SemanticVersion!
 GitVersion.VersionCalculation.NextVersion.NextVersion(GitVersion.SemanticVersion! incrementedVersion, GitVersion.VersionCalculation.BaseVersion! baseVersion, GitVersion.Configuration.EffectiveBranchConfiguration! configuration) -> void
 GitVersion.VersionCalculation.NextVersion.NextVersion(GitVersion.SemanticVersion! incrementedVersion, GitVersion.VersionCalculation.BaseVersion! baseVersion, GitVersion.IBranch! branch, GitVersion.Configuration.EffectiveConfiguration! configuration) -> void
@@ -1220,13 +1220,13 @@ override GitVersion.OutputVariables.VersionVariablesJsonStringConverter.CanConve
 override GitVersion.OutputVariables.VersionVariablesJsonStringConverter.HandleNull.get -> bool
 override GitVersion.OutputVariables.VersionVariablesJsonStringConverter.Read(ref System.Text.Json.Utf8JsonReader reader, System.Type! typeToConvert, System.Text.Json.JsonSerializerOptions! options) -> string!
 override GitVersion.OutputVariables.VersionVariablesJsonStringConverter.Write(System.Text.Json.Utf8JsonWriter! writer, string? value, System.Text.Json.JsonSerializerOptions! options) -> void
-override GitVersion.ReferenceName.Equals(object! obj) -> bool
+override GitVersion.ReferenceName.Equals(object? obj) -> bool
 override GitVersion.ReferenceName.GetHashCode() -> int
 override GitVersion.ReferenceName.ToString() -> string!
 override GitVersion.SemanticVersion.Equals(object? obj) -> bool
 override GitVersion.SemanticVersion.GetHashCode() -> int
 override GitVersion.SemanticVersion.ToString() -> string!
-override GitVersion.SemanticVersionBuildMetaData.Equals(object! obj) -> bool
+override GitVersion.SemanticVersionBuildMetaData.Equals(object? obj) -> bool
 override GitVersion.SemanticVersionBuildMetaData.GetHashCode() -> int
 override GitVersion.SemanticVersionBuildMetaData.ToString() -> string!
 override GitVersion.SemanticVersionPreReleaseTag.Equals(object? obj) -> bool
@@ -1235,7 +1235,7 @@ override GitVersion.SemanticVersionPreReleaseTag.ToString() -> string!
 override GitVersion.VersionCalculation.BaseVersion.ToString() -> string!
 override GitVersion.VersionCalculation.ConfigNextVersionVersionStrategy.GetBaseVersions(GitVersion.Configuration.EffectiveBranchConfiguration! configuration) -> System.Collections.Generic.IEnumerable<GitVersion.VersionCalculation.BaseVersion!>!
 override GitVersion.VersionCalculation.MergeMessageVersionStrategy.GetBaseVersions(GitVersion.Configuration.EffectiveBranchConfiguration! configuration) -> System.Collections.Generic.IEnumerable<GitVersion.VersionCalculation.BaseVersion!>!
-override GitVersion.VersionCalculation.NextVersion.Equals(object! other) -> bool
+override GitVersion.VersionCalculation.NextVersion.Equals(object? other) -> bool
 override GitVersion.VersionCalculation.NextVersion.GetHashCode() -> int
 override GitVersion.VersionCalculation.NextVersion.ToString() -> string!
 override GitVersion.VersionCalculation.TaggedCommitVersionStrategy.GetBaseVersions(GitVersion.Configuration.EffectiveBranchConfiguration! configuration) -> System.Collections.Generic.IEnumerable<GitVersion.VersionCalculation.BaseVersion!>!
@@ -1273,7 +1273,7 @@ static GitVersion.Extensions.EnumerableExtensions.OnlyOrDefault<T>(this System.C
 static GitVersion.Extensions.GitExtensions.CreateGitLogArgs(int? maxCommits) -> string!
 static GitVersion.Extensions.GitExtensions.DumpGraph(string! workingDirectory, System.Action<string!>? writer = null, int? maxCommits = null) -> void
 static GitVersion.Extensions.ObjectExtensions.Deconstruct<TKey, TValue>(this System.Collections.Generic.KeyValuePair<TKey, TValue> kvp, out TKey key, out TValue value) -> void
-static GitVersion.Extensions.ObjectExtensions.GetProperties(this object! obj) -> System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<string!, string!>>!
+static GitVersion.Extensions.ObjectExtensions.GetProperties(this object! obj) -> System.Collections.Generic.Dictionary<string!, string!>!
 static GitVersion.Extensions.ReadEmbeddedResourceExtensions.ReadAsStringFromEmbeddedResource<T>(this string! resourceName) -> string!
 static GitVersion.Extensions.ServiceCollectionExtensions.AddModule(this Microsoft.Extensions.DependencyInjection.IServiceCollection! serviceCollection, GitVersion.IGitVersionModule! gitVersionModule) -> Microsoft.Extensions.DependencyInjection.IServiceCollection!
 static GitVersion.Extensions.ServiceCollectionExtensions.GetServiceForType<TService, TType>(this System.IServiceProvider! serviceProvider) -> TService
@@ -1291,7 +1291,7 @@ static GitVersion.Extensions.StringExtensions.IsSwitchArgument(this string? valu
 static GitVersion.Extensions.StringExtensions.IsTrue(this string? value) -> bool
 static GitVersion.Extensions.StringExtensions.IsValidPath(this string? path) -> bool
 static GitVersion.Extensions.StringExtensions.RegexReplace(this string! input, string! pattern, string! replace, System.Text.RegularExpressions.RegexOptions options = System.Text.RegularExpressions.RegexOptions.None) -> string!
-static GitVersion.GitVersionModule.FindAllDerivedTypes<T>(System.Reflection.Assembly! assembly) -> System.Collections.Generic.IEnumerable<System.Type!>!
+static GitVersion.GitVersionModule.FindAllDerivedTypes<T>(System.Reflection.Assembly? assembly) -> System.Collections.Generic.IEnumerable<System.Type!>!
 static GitVersion.Helpers.EncodingHelper.DetectEncoding(string? filename) -> System.Text.Encoding?
 static GitVersion.Helpers.EncodingHelper.DetectEncoding(System.Collections.Generic.IList<byte>! bytes) -> System.Text.Encoding?
 static GitVersion.Helpers.PathHelper.Combine(string? path1) -> string!
@@ -1341,7 +1341,7 @@ static GitVersion.SemanticVersion.operator <=(GitVersion.SemanticVersion! v1, Gi
 static GitVersion.SemanticVersion.operator ==(GitVersion.SemanticVersion? v1, GitVersion.SemanticVersion? v2) -> bool
 static GitVersion.SemanticVersion.operator >(GitVersion.SemanticVersion! v1, GitVersion.SemanticVersion! v2) -> bool
 static GitVersion.SemanticVersion.operator >=(GitVersion.SemanticVersion! v1, GitVersion.SemanticVersion! v2) -> bool
-static GitVersion.SemanticVersion.Parse(string! version, string? tagPrefixRegex, GitVersion.SemanticVersionFormat format = GitVersion.SemanticVersionFormat.Strict) -> GitVersion.SemanticVersion!
+static GitVersion.SemanticVersion.Parse(string! version, string? tagPrefixRegex, GitVersion.SemanticVersionFormat versionFormat = GitVersion.SemanticVersionFormat.Strict) -> GitVersion.SemanticVersion!
 static GitVersion.SemanticVersion.TryParse(string! version, string? tagPrefixRegex, out GitVersion.SemanticVersion? semanticVersion, GitVersion.SemanticVersionFormat format = GitVersion.SemanticVersionFormat.Strict) -> bool
 static GitVersion.SemanticVersionBuildMetaData.implicit operator GitVersion.SemanticVersionBuildMetaData!(string! preReleaseTag) -> GitVersion.SemanticVersionBuildMetaData!
 static GitVersion.SemanticVersionBuildMetaData.implicit operator string?(GitVersion.SemanticVersionBuildMetaData? preReleaseTag) -> string?
@@ -1360,7 +1360,7 @@ static GitVersion.SemanticVersionPreReleaseTag.Parse(string? preReleaseTag) -> G
 static GitVersion.VersionCalculation.NextVersion.operator !=(GitVersion.VersionCalculation.NextVersion! left, GitVersion.VersionCalculation.NextVersion! right) -> bool
 static GitVersion.VersionCalculation.NextVersion.operator <(GitVersion.VersionCalculation.NextVersion! left, GitVersion.VersionCalculation.NextVersion! right) -> bool
 static GitVersion.VersionCalculation.NextVersion.operator <=(GitVersion.VersionCalculation.NextVersion! left, GitVersion.VersionCalculation.NextVersion! right) -> bool
-static GitVersion.VersionCalculation.NextVersion.operator ==(GitVersion.VersionCalculation.NextVersion! left, GitVersion.VersionCalculation.NextVersion! right) -> bool
+static GitVersion.VersionCalculation.NextVersion.operator ==(GitVersion.VersionCalculation.NextVersion! left, GitVersion.VersionCalculation.NextVersion? right) -> bool
 static GitVersion.VersionCalculation.NextVersion.operator >(GitVersion.VersionCalculation.NextVersion! left, GitVersion.VersionCalculation.NextVersion! right) -> bool
 static GitVersion.VersionCalculation.NextVersion.operator >=(GitVersion.VersionCalculation.NextVersion! left, GitVersion.VersionCalculation.NextVersion! right) -> bool
 static readonly GitVersion.BranchCommit.Empty -> GitVersion.BranchCommit
@@ -1368,9 +1368,6 @@ static readonly GitVersion.Helpers.StringComparerUtils.IgnoreCaseComparer -> Sys
 static readonly GitVersion.Helpers.StringComparerUtils.OsDependentComparer -> System.StringComparer!
 static readonly GitVersion.Helpers.StringComparerUtils.OsDependentComparison -> System.StringComparison
 static readonly GitVersion.Logging.Disposable.Empty -> System.IDisposable!
-System.Runtime.CompilerServices.CallerArgumentExpressionAttribute
-System.Runtime.CompilerServices.CallerArgumentExpressionAttribute.CallerArgumentExpressionAttribute(string! parameterName) -> void
-System.Runtime.CompilerServices.CallerArgumentExpressionAttribute.ParameterName.get -> string!
 virtual GitVersion.BuildAgents.BuildAgentBase.CanApplyToCurrentContext() -> bool
 virtual GitVersion.BuildAgents.BuildAgentBase.GetCurrentBranch(bool usingDynamicRepos) -> string?
 virtual GitVersion.BuildAgents.BuildAgentBase.PreventFetch() -> bool
