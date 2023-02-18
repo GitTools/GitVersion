@@ -1,6 +1,3 @@
-using GitTools.Testing;
-using NUnit.Framework;
-
 namespace GitVersion.Core.Tests.IntegrationTests;
 
 /// <summary>

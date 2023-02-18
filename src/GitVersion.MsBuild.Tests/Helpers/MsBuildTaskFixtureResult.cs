@@ -1,4 +1,3 @@
-using GitTools.Testing;
 using Microsoft.Build.Framework;
 
 namespace GitVersion.MsBuild.Tests.Helpers;

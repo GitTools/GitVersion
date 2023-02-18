@@ -1,9 +1,6 @@
-using GitTools.Testing;
 using GitVersion.BuildAgents;
 using GitVersion.Helpers;
 using GitVersion.OutputVariables;
-using NUnit.Framework;
-using Shouldly;
 
 namespace GitVersion.App.Tests;
 

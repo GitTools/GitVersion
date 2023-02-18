@@ -2,8 +2,6 @@ using GitVersion.BuildAgents;
 using GitVersion.Core.Tests.Helpers;
 using GitVersion.OutputVariables;
 using Microsoft.Extensions.DependencyInjection;
-using NUnit.Framework;
-using Shouldly;
 
 namespace GitVersion.App.Tests;
 

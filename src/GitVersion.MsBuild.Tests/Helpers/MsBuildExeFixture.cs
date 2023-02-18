@@ -1,6 +1,5 @@
 using Buildalyzer;
 using Buildalyzer.Environment;
-using GitTools.Testing;
 using GitVersion.Core.Tests;
 using GitVersion.Helpers;
 using Microsoft.Build.Framework;

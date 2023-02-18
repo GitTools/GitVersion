@@ -1,6 +1,4 @@
 using GitVersion.Core.Tests.Helpers;
-using NSubstitute;
-using NUnit.Framework;
 
 namespace GitVersion.Core.Tests;
 

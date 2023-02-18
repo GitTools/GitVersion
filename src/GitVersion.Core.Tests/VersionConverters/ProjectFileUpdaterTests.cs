@@ -8,9 +8,6 @@ using GitVersion.OutputVariables;
 using GitVersion.VersionCalculation;
 using GitVersion.VersionConverters.AssemblyInfo;
 using Microsoft.Extensions.DependencyInjection;
-using NSubstitute;
-using NUnit.Framework;
-using Shouldly;
 
 namespace GitVersion.Core.Tests;
 

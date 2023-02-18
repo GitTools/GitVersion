@@ -1,8 +1,6 @@
-using GitTools.Testing;
 using GitVersion.Helpers;
 using GitVersion.OutputVariables;
 using GitVersion.VersionConverters.WixUpdater;
-using NUnit.Framework;
 
 namespace GitVersion.App.Tests;
 

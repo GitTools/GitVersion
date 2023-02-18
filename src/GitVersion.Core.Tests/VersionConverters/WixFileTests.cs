@@ -4,8 +4,6 @@ using GitVersion.Logging;
 using GitVersion.VersionCalculation;
 using GitVersion.VersionConverters.WixUpdater;
 using Microsoft.Extensions.DependencyInjection;
-using NUnit.Framework;
-using Shouldly;
 
 namespace GitVersion.Core.Tests;
 

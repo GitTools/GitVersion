@@ -1,7 +1,6 @@
 using System.Collections.Concurrent;
 using GitVersion.MsBuild.Tests.Helpers;
 using Microsoft.Build.Framework;
-using Shouldly;
 
 namespace GitVersion.MsBuild.Tests.Mocks;
 

@@ -1,10 +1,7 @@
-using GitTools.Testing;
 using GitVersion.Core.Tests.Helpers;
 using GitVersion.VersionCalculation;
 using LibGit2Sharp;
 using Microsoft.Extensions.DependencyInjection;
-using NUnit.Framework;
-using Shouldly;
 
 namespace GitVersion.Core.Tests;
 

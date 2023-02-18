@@ -1,6 +1,4 @@
-using GitTools.Testing;
 using GitVersion.Core.Tests.Helpers;
-using NUnit.Framework;
 
 namespace GitVersion.Core.Tests.IntegrationTests
 {

@@ -1,7 +1,5 @@
 using GitVersion.Configuration;
 using GitVersion.Core.Tests.Helpers;
-using NUnit.Framework;
-using Shouldly;
 using YamlDotNet.Core;
 
 namespace GitVersion.Core.Tests.Configuration;

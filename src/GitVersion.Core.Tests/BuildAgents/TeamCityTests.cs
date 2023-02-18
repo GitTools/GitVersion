@@ -1,7 +1,6 @@
 using GitVersion.BuildAgents;
 using GitVersion.Core.Tests.Helpers;
 using Microsoft.Extensions.DependencyInjection;
-using NUnit.Framework;
 
 namespace GitVersion.Core.Tests.BuildAgents;
 

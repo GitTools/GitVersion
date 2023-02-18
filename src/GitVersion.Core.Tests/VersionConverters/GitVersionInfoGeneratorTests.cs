@@ -3,8 +3,6 @@ using GitVersion.Helpers;
 using GitVersion.VersionCalculation;
 using GitVersion.VersionConverters.GitVersionInfo;
 using Microsoft.Extensions.DependencyInjection;
-using NUnit.Framework;
-using Shouldly;
 
 namespace GitVersion.Core.Tests;
 

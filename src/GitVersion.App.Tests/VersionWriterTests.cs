@@ -2,7 +2,6 @@ using GitVersion.Core.Tests.Helpers;
 using GitVersion.Extensions;
 using Microsoft.Extensions.DependencyInjection;
 using Mono.Cecil;
-using NUnit.Framework;
 
 namespace GitVersion.App.Tests;
 

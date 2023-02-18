@@ -1,4 +1,3 @@
-using GitTools.Testing;
 using GitVersion.BuildAgents;
 using GitVersion.Configuration;
 using GitVersion.Core.Tests.Helpers;
@@ -8,8 +7,6 @@ using GitVersion.VersionCalculation.Caching;
 using LibGit2Sharp;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
-using NUnit.Framework;
-using Shouldly;
 
 namespace GitVersion.Core.Tests;
 

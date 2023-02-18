@@ -1,5 +1,3 @@
-using NUnit.Framework;
-
 namespace GitVersion.MsBuild.Tests;
 
 [TestFixture]

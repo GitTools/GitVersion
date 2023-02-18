@@ -3,7 +3,6 @@ using GitVersion.Helpers;
 using LibGit2Sharp;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
-using NUnit.Framework;
 
 namespace GitVersion.Core.Tests;
 

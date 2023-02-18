@@ -3,9 +3,6 @@ using GitVersion.Configuration;
 using GitVersion.Core.Tests.Helpers;
 using GitVersion.Logging;
 using GitVersion.VersionCalculation;
-using NSubstitute;
-using NUnit.Framework;
-using Shouldly;
 
 namespace GitVersion.Core.Tests.VersionCalculation;
 

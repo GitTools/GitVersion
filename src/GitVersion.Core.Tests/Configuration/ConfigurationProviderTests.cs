@@ -7,8 +7,6 @@ using GitVersion.Logging;
 using GitVersion.VersionCalculation;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
-using NUnit.Framework;
-using Shouldly;
 using YamlDotNet.Serialization;
 
 namespace GitVersion.Core.Tests;

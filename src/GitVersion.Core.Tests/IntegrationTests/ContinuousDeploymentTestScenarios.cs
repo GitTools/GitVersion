@@ -1,7 +1,5 @@
-using GitTools.Testing;
 using GitVersion.Core.Tests.Helpers;
 using GitVersion.VersionCalculation;
-using NUnit.Framework;
 
 namespace GitVersion.Core.Tests.IntegrationTests;
 

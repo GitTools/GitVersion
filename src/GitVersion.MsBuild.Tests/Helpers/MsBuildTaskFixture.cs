@@ -1,4 +1,3 @@
-using GitTools.Testing;
 using GitVersion.BuildAgents;
 using GitVersion.Core.Tests;
 using GitVersion.Helpers;
