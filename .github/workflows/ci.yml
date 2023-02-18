@@ -58,7 +58,7 @@ jobs:
       name: Setup .NET SDK
       uses: actions/setup-dotnet@v3.0.3
       with:
-        dotnet-version: '7.0.102'
+        dotnet-version: '7.0.x'
     -
       name: '[Prepare]'
       if: steps.cache-cake.outputs.cache-hit != 'true'
@@ -75,7 +75,7 @@ jobs:
         path: ${{ github.workspace }}/dogfood
 
   build:
-    name: Build code & Package
+    name: Build & Package
     needs: [prepare]
     runs-on: ${{ matrix.os }}
     strategy:
@@ -113,7 +113,7 @@ jobs:
       name: Setup .NET SDK
       uses: actions/setup-dotnet@v3.0.3
       with:
-        dotnet-version: '7.0.102'
+        dotnet-version: '7.0.x'
     -
       name: '[Build]'
       shell: pwsh
@@ -141,7 +141,7 @@ jobs:
         path: ${{ github.workspace }}/artifacts/packages/native/*.tar.gz
 
   unit_test:
-    name: Unit Test code
+    name: Test
     needs: [prepare]
     runs-on: ${{ matrix.os }}
     env:
@@ -182,7 +182,7 @@ jobs:
       name: Setup .NET SDK
       uses: actions/setup-dotnet@v3.0.3
       with:
-        dotnet-version: '7.0.102'
+        dotnet-version: '7.0.x'
     -
       name: '[Unit Test]'
       shell: pwsh
@@ -196,7 +196,7 @@ jobs:
       if: always()
 
   artifacts_windows_test:
-    name: Test artifacts on windows
+    name: Artifacts
     needs: [build]
     runs-on: windows-latest
     strategy:
@@ -240,20 +240,20 @@ jobs:
       name: Setup .NET SDK
       uses: actions/setup-dotnet@v3.0.3
       with:
-        dotnet-version: '7.0.102'
+        dotnet-version: '7.0.x'
     -
       name: '[Test Artifacts]'
       shell: pwsh
       run: dotnet run/artifacts.dll --target=Artifacts${{ matrix.package }}Test
 
   artifacts_linux_test:
-    name: Test artifacts in docker
+    name: Artifacts
     needs: [build]
     runs-on: ubuntu-latest
     strategy:
       matrix:
         targetFramework: [ '7.0', '6.0' ]
-        distro: [ alpine.3.13, alpine.3.14, centos.7, centos.8, debian.10, debian.11, fedora.33, ubuntu.18.04, ubuntu.20.04, ubuntu.22.04 ]
+        distro: [ alpine.3.15, alpine.3.16, alpine.3.17, centos.7, centos.stream.8, fedora.36, debian.10, debian.11, ubuntu.18.04, ubuntu.20.04, ubuntu.22.04 ]
       fail-fast: false
 
     steps:
@@ -306,7 +306,7 @@ jobs:
       name: Setup .NET SDK
       uses: actions/setup-dotnet@v3.0.3
       with:
-        dotnet-version: '7.0.102'
+        dotnet-version: '7.0.x'
     -
       name: '[Test Artifacts (amd64)]'
       shell: pwsh
@@ -317,13 +317,13 @@ jobs:
       run: dotnet run/artifacts.dll --target=ArtifactsTest --arch arm64 --docker_dotnetversion=${{ matrix.targetFramework }} --docker_distro=${{ matrix.distro }}
 
   docker_linux_images:
-    name: Build, Test and Publish Docker Images
+    name: Docker Images
     needs: [build]
     runs-on: ubuntu-latest
     strategy:
       matrix:
         targetFramework: [ '7.0', '6.0' ]
-        distro: [ alpine.3.13, alpine.3.14, centos.7, centos.8, debian.10, debian.11, fedora.33, ubuntu.18.04, ubuntu.20.04, ubuntu.22.04 ]
+        distro: [ alpine.3.15, alpine.3.16, alpine.3.17, centos.7, centos.stream.8, fedora.36, debian.10, debian.11, ubuntu.18.04, ubuntu.20.04, ubuntu.22.04 ]
       fail-fast: false
 
     steps:
@@ -370,7 +370,7 @@ jobs:
       name: Setup .NET SDK
       uses: actions/setup-dotnet@v3.0.3
       with:
-        dotnet-version: '7.0.102'
+        dotnet-version: '7.0.x'
     -
       name: Login to DockerHub
       if: success() && github.event_name != 'pull_request' && github.repository_owner == 'GitTools'
@@ -466,7 +466,7 @@ jobs:
       name: Setup .NET SDK
       uses: actions/setup-dotnet@v3.0.3
       with:
-        dotnet-version: '7.0.102'
+        dotnet-version: '7.0.x'
     -
       name: '[Publish]'
       shell: pwsh
@@ -526,7 +526,7 @@ jobs:
       name: Setup .NET SDK
       uses: actions/setup-dotnet@v3.0.3
       with:
-        dotnet-version: '7.0.102'
+        dotnet-version: '7.0.x'
     -
       name: '[Release]'
       shell: pwsh

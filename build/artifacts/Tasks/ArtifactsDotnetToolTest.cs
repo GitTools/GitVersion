@@ -6,7 +6,7 @@ namespace Artifacts.Tasks;
 [TaskDescription("Tests the dotnet global tool in docker container")]
 [TaskArgument(Arguments.DockerRegistry, Constants.DockerHub, Constants.GitHub)]
 [TaskArgument(Arguments.DockerDotnetVersion, Constants.Version60, Constants.Version70)]
-[TaskArgument(Arguments.DockerDistro, Constants.Alpine313, Constants.Debian10, Constants.Ubuntu2004)]
+[TaskArgument(Arguments.DockerDistro, Constants.Alpine315, Constants.Debian11, Constants.Ubuntu2204)]
 [IsDependentOn(typeof(ArtifactsPrepare))]
 public class ArtifactsDotnetToolTest : FrostingTask<BuildContext>
 {
@@ -27,7 +27,7 @@ public class ArtifactsDotnetToolTest : FrostingTask<BuildContext>
 
         foreach (var dockerImage in context.Images)
         {
-            if (context.SkipImage(dockerImage)) continue;
+            if (context.SkipImageForArtifacts(dockerImage)) continue;
 
             var cmd = $"{rootPrefix}/scripts/test-global-tool.sh --version {version} --nugetPath {rootPrefix}/nuget --repoPath {rootPrefix}/repo";
 

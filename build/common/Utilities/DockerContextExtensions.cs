@@ -9,12 +9,23 @@ public enum Architecture
 }
 public static class DockerContextExtensions
 {
-    public static bool SkipImage(this ICakeContext context, DockerImage dockerImage)
+    public static bool SkipImageForArtifacts(this ICakeContext context, DockerImage dockerImage)
     {
         var (distro, targetFramework, architecture, _, _) = dockerImage;
 
         if (architecture == Architecture.Amd64) return false;
-        if (!Constants.DistrosToSkip.Contains(distro)) return false;
+        if (!Constants.DistrosToSkipForArtifacts.Contains(distro)) return false;
+
+        context.Information($"Skipping Target: {targetFramework}, Distro: {distro}, Arch: {architecture}");
+        return true;
+    }
+
+    public static bool SkipImageForDocker(this ICakeContext context, DockerImage dockerImage)
+    {
+        var (distro, targetFramework, architecture, _, _) = dockerImage;
+
+        if (architecture == Architecture.Amd64) return false;
+        if (!Constants.DistrosToSkipForDocker.Contains(distro)) return false;
 
         context.Information($"Skipping Target: {targetFramework}, Distro: {distro}, Arch: {architecture}");
         return true;
@@ -63,7 +74,7 @@ public static class DockerContextExtensions
         }
     }
 
-    public static void DockerCreateManifest(this BuildContextBase context, DockerImage dockerImage, bool skipArm64Image)
+    public static void DockerCreateManifest(this BuildContextBase context, DockerImage dockerImage, bool skipArm64Image = false)
     {
         var manifestTags = context.GetDockerTags(dockerImage);
         foreach (var tag in manifestTags)

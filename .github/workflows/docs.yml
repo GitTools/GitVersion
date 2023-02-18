@@ -26,6 +26,9 @@ on:
     - .github/workflows/docs.yml
 env:
   DOTNET_ROLL_FORWARD_ON_NO_CANDIDATE_FX: 2
+  DOTNET_CLI_TELEMETRY_OPTOUT: 1
+  DOTNET_SKIP_FIRST_TIME_EXPERIENCE: 1
+  DOTNET_NOLOGO: 1
 
 jobs:
   prepare:
@@ -75,12 +78,19 @@ jobs:
       name: Setup .NET SDK
       uses: actions/setup-dotnet@v3.0.3
       with:
-        dotnet-version: '7.0.102'
+        dotnet-version: '7.0.x'
     -
       name: '[Prepare]'
       if: steps.cache-cake.outputs.cache-hit != 'true'
-      run: dotnet build build/CI.sln --configuration=Release
-
+      run: |
+        dotnet build build/CI.sln --configuration=Release
+        dotnet run/build.dll --target=BuildPrepare
+    -
+      name: 'Upload gitversion tool'
+      uses: actions/upload-artifact@v3
+      with:
+        name: tool
+        path: ${{ github.workspace }}/dogfood
   validate:
     name: Validates Html
     needs: [prepare]
@@ -109,7 +119,13 @@ jobs:
       name: Setup .NET SDK
       uses: actions/setup-dotnet@v3.0.3
       with:
-        dotnet-version: '7.0.102'
+        dotnet-version: '7.0.x'
+    -
+      uses: actions/download-artifact@v3
+      name: Download gitversion tool
+      with:
+        name: tool
+        path: ${{ github.workspace }}/dogfood
     -
       name: '[Build Documentation]'
       shell: pwsh
@@ -164,7 +180,7 @@ jobs:
       name: Setup .NET SDK
       uses: actions/setup-dotnet@v3.0.3
       with:
-        dotnet-version: '7.0.102'
+        dotnet-version: '7.0.x'
     -
       name: '[Publish Documentation]'
       if: ${{ github.event_name == 'push' }}

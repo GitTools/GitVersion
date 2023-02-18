@@ -22,6 +22,12 @@ on:
 permissions:
   contents: read
 
+env:
+  DOTNET_ROLL_FORWARD_ON_NO_CANDIDATE_FX: 2
+  DOTNET_CLI_TELEMETRY_OPTOUT: 1
+  DOTNET_SKIP_FIRST_TIME_EXPERIENCE: 1
+  DOTNET_NOLOGO: 1
+
 jobs:
   format:
     runs-on: windows-latest
