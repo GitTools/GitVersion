@@ -88,10 +88,10 @@ public class ReleaseBranchScenarios : TestBase
         fixture.Repository.MakeCommits(5);
         fixture.Repository.CreateBranch("releases/2.0.0");
         fixture.Checkout("releases/2.0.0");
-        fixture.Repository.ApplyTag("v2.0.0-1");
+        fixture.Repository.ApplyTag("v2.0.0-beta.1");
 
         var variables = fixture.GetVersion();
-        Assert.AreEqual("2.0.0-1", variables.FullSemVer);
+        Assert.AreEqual("2.0.0-beta.1", variables.FullSemVer);
     }
 
     [Test]

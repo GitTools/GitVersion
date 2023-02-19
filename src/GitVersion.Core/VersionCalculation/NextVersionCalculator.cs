@@ -43,108 +43,71 @@ public class NextVersionCalculator : INextVersionCalculator
             this.log.Info($"Current commit is tagged with version {Context.CurrentCommitTaggedVersion}, " + "version calculation is for metadata only.");
         }
 
-        // TODO: It is totally unimportant that the current commit has been tagged or not IMO. We can make a double check actually if the result
-        // is the same or make it configurable but each run should be deterministic.Even if the development process goes on the tagged commit
-        // should always calculating the same result. Otherwise something is wrong with the configuration or someone messed up the branching history.
-
-        SemanticVersion? taggedSemanticVersion = null;
-
-        if (Context.IsCurrentCommitTagged)
-        {
-            // Will always be 0, don't bother with the +0 on tags
-            var semanticVersionBuildMetaData = this.mainlineVersionCalculator.CreateVersionBuildMetaData(Context.CurrentCommit);
-            semanticVersionBuildMetaData.CommitsSinceTag = null;
-            var semanticVersion = new SemanticVersion(Context.CurrentCommitTaggedVersion) { BuildMetaData = semanticVersionBuildMetaData };
-            taggedSemanticVersion = semanticVersion;
-        }
-
-        //
-
         var nextVersion = Calculate(Context.CurrentBranch, Context.Configuration);
-        nextVersion.BaseVersion.SemanticVersion.BuildMetaData = this.mainlineVersionCalculator.CreateVersionBuildMetaData(nextVersion.BaseVersion.BaseVersionSource);
+        var baseVersion = nextVersion.BaseVersion;
+        var preReleaseTagName = nextVersion.Configuration.GetBranchSpecificTag(this.log, Context.CurrentBranch.Name.Friendly, baseVersion.BranchNameOverride);
+
         SemanticVersion semver;
         if (Context.Configuration.VersioningMode == VersioningMode.Mainline)
         {
-            semver = this.mainlineVersionCalculator.FindMainlineModeVersion(nextVersion.BaseVersion);
+            semver = this.mainlineVersionCalculator.FindMainlineModeVersion(baseVersion);
         }
         else
         {
-            if (taggedSemanticVersion?.BuildMetaData == null || (taggedSemanticVersion.BuildMetaData?.Sha != nextVersion.BaseVersion.SemanticVersion.BuildMetaData.Sha))
+            var baseVersionBuildMetaData = this.mainlineVersionCalculator.CreateVersionBuildMetaData(baseVersion.BaseVersionSource);
+
+            if (baseVersionBuildMetaData.Sha != nextVersion.IncrementedVersion.BuildMetaData.Sha)
             {
                 semver = nextVersion.IncrementedVersion;
-                semver.BuildMetaData = this.mainlineVersionCalculator.CreateVersionBuildMetaData(nextVersion.BaseVersion.BaseVersionSource);
             }
             else
             {
-                semver = nextVersion.BaseVersion.SemanticVersion;
+                semver = baseVersion.SemanticVersion;
             }
-        }
 
-        var hasPreReleaseTag = semver.HasPreReleaseTagWithLabel;
-        var tag = nextVersion.Configuration.Label;
-        var branchConfigHasPreReleaseTagConfigured = !tag.IsNullOrEmpty();
-        var branchConfigIsMainlineAndHasEmptyPreReleaseTagConfigured = nextVersion.Configuration.IsMainline && tag.IsEmpty();
-        var preReleaseTagDoesNotMatchConfiguration = hasPreReleaseTag
-                                                     && (branchConfigHasPreReleaseTagConfigured || branchConfigIsMainlineAndHasEmptyPreReleaseTagConfigured)
-                                                     && semver.PreReleaseTag?.Name != tag;
-        var preReleaseTagOnlyInBranchConfig = !hasPreReleaseTag && branchConfigHasPreReleaseTagConfigured;
-        if (preReleaseTagOnlyInBranchConfig || preReleaseTagDoesNotMatchConfiguration)
-        {
-            UpdatePreReleaseTag(new(nextVersion.Branch, nextVersion.Configuration), semver, nextVersion.BaseVersion.BranchNameOverride);
-        }
+            semver.BuildMetaData = baseVersionBuildMetaData;
 
-        if (taggedSemanticVersion != null)
-        {
-            // replace calculated version with tagged version only if tagged version greater or equal to calculated version
-            if (semver.CompareTo(taggedSemanticVersion, false) > 0)
+            var lastPrefixedSemver = this.repositoryStore
+                .GetVersionTagsOnBranch(Context.CurrentBranch, Context.Configuration.LabelPrefix, Context.Configuration.SemanticVersionFormat)
+                .Where(v => MajorMinorPatchEqual(v, semver) && v.PreReleaseTag.HasTag() == true)
+                .FirstOrDefault(v => v.PreReleaseTag.Name?.IsEquivalentTo(preReleaseTagName) == true);
+
+            if (lastPrefixedSemver != null)
             {
-                taggedSemanticVersion = null;
-            }
-            else if (taggedSemanticVersion.BuildMetaData != null)
-            {
-                // set the commit count on the tagged ver
-                taggedSemanticVersion.BuildMetaData.CommitsSinceVersionSource = semver.BuildMetaData?.CommitsSinceVersionSource;
-
-                // set the updated prerelease tag when it doesn't match with prerelease tag defined in branch configuration
-                if (preReleaseTagDoesNotMatchConfiguration)
-                {
-                    taggedSemanticVersion.PreReleaseTag = semver.PreReleaseTag;
-                }
+                semver.PreReleaseTag = lastPrefixedSemver.PreReleaseTag;
             }
         }
 
-        return new(taggedSemanticVersion ?? semver, nextVersion.BaseVersion, new(nextVersion.Branch, nextVersion.Configuration));
+        if (semver.CompareTo(Context.CurrentCommitTaggedVersion) == 0)
+        {
+            // Will always be 0, don't bother with the +0 on tags
+            semver.BuildMetaData.CommitsSinceTag = null;
+        }
+        else
+        {
+            long? number;
+
+            if (semver.PreReleaseTag.Name == preReleaseTagName)
+            {
+                number = semver.PreReleaseTag.Number + 1;
+            }
+            else
+            {
+                number = 1;
+            }
+
+            semver.PreReleaseTag = new SemanticVersionPreReleaseTag(preReleaseTagName, number);
+        }
+
+        if (string.IsNullOrEmpty(preReleaseTagName))
+        {
+            semver.PreReleaseTag = new SemanticVersionPreReleaseTag();
+        }
+
+        return new(semver, baseVersion, new(nextVersion.Branch, nextVersion.Configuration));
     }
 
-    private void UpdatePreReleaseTag(EffectiveBranchConfiguration configuration, SemanticVersion semanticVersion, string? branchNameOverride)
-    {
-        var tagToUse = configuration.Value.GetBranchSpecificTag(this.log, Context.CurrentBranch.Name.Friendly, branchNameOverride);
-
-        if (configuration.Value.IsMainline && tagToUse.IsEmpty())
-        {
-            semanticVersion.PreReleaseTag = new SemanticVersionPreReleaseTag(tagToUse, null);
-            return;
-        }
-
-        long? number = null;
-
-        // TODO: Please update the pre release-tag in the IVersionStrategy implementation.
-        var lastTag = this.repositoryStore
-            .GetVersionTagsOnBranch(Context.CurrentBranch, Context.Configuration.LabelPrefix, Context.Configuration.SemanticVersionFormat)
-            .FirstOrDefault(v => v.PreReleaseTag?.Name?.IsEquivalentTo(tagToUse) == true);
-
-        if (lastTag != null && MajorMinorPatchEqual(lastTag, semanticVersion) && lastTag.HasPreReleaseTagWithLabel)
-        {
-            number = lastTag.PreReleaseTag?.Number + 1;
-        }
-
-        number ??= 1;
-
-        semanticVersion.PreReleaseTag = new SemanticVersionPreReleaseTag(tagToUse, number);
-    }
-
-    private static bool MajorMinorPatchEqual(SemanticVersion lastTag, SemanticVersion baseVersion) =>
-        lastTag.Major == baseVersion.Major && lastTag.Minor == baseVersion.Minor && lastTag.Patch == baseVersion.Patch;
+    private static bool MajorMinorPatchEqual(SemanticVersion version, SemanticVersion other) => version.CompareTo(other, false) == 0;
 
     private NextVersion Calculate(IBranch branch, GitVersionConfiguration configuration)
     {
@@ -251,7 +214,7 @@ public class NextVersionCalculator : INextVersionCalculator
 
                         if (configuration.VersioningMode == VersioningMode.Mainline)
                         {
-                            if (incrementedVersion.PreReleaseTag?.HasTag() == true)
+                            if (!(incrementedVersion.PreReleaseTag.HasTag() != true))
                             {
                                 continue;
                             }
