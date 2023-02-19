@@ -4,6 +4,16 @@ updates:
   labels:
     - "dependencies"
   commit-message:
+    prefix: "(ci deps)"
+  directory: "/build"
+  schedule:
+    interval: daily
+  open-pull-requests-limit: 10
+
+- package-ecosystem: nuget
+  labels:
+    - "dependencies"
+  commit-message:
     prefix: "(deps)"
   directory: "/"
   schedule:
