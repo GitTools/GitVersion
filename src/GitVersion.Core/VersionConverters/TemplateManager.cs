@@ -15,8 +15,8 @@ internal class TemplateManager
 
     public TemplateManager(TemplateType templateType)
     {
-        this.templates = GetEmbeddedTemplates(templateType, "Templates").ToDictionary(file => Path.GetExtension(file)!, v => v, StringComparer.OrdinalIgnoreCase);
-        this.addFormats = GetEmbeddedTemplates(templateType, "AddFormats").ToDictionary(file => Path.GetExtension(file)!, v => v, StringComparer.OrdinalIgnoreCase);
+        this.templates = GetEmbeddedTemplates(templateType, "Templates").ToDictionary(tuple => tuple.ext, tuple => tuple.name, StringComparer.OrdinalIgnoreCase);
+        this.addFormats = GetEmbeddedTemplates(templateType, "AddFormats").ToDictionary(tuple => tuple.ext, tuple => tuple.name, StringComparer.OrdinalIgnoreCase);
     }
 
     public string? GetTemplateFor(string fileExtension)
@@ -63,7 +63,7 @@ internal class TemplateManager
         return this.templates.ContainsKey(fileExtension);
     }
 
-    private static IEnumerable<string> GetEmbeddedTemplates(TemplateType templateType, string templateCategory)
+    private static IEnumerable<(string ext, string name)> GetEmbeddedTemplates(TemplateType templateType, string templateCategory)
     {
         var assembly = typeof(TemplateManager).Assembly;
 
@@ -71,7 +71,7 @@ internal class TemplateManager
         {
             if (name.Contains(templateType.ToString()) && name.Contains(templateCategory))
             {
-                yield return name;
+                yield return (ext: Path.GetExtension(name), name);
             }
         }
     }

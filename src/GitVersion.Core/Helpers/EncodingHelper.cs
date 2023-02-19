@@ -34,7 +34,7 @@ public static class EncodingHelper
         var length = stream.Length > maxPreambleLength ? maxPreambleLength : stream.Length;
 
         var bytes = new byte[length];
-        stream.Read(bytes, 0, (int)length);
+        _ = stream.Read(bytes, 0, (int)length);
         return DetectEncoding(bytes);
     }
 

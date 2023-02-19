@@ -15,7 +15,7 @@ public class BitBucketPipelines : BuildAgentBase
 
     protected override string EnvironmentVariable => EnvironmentVariableName;
 
-    public override string? GenerateSetVersionMessage(VersionVariables variables) => variables.FullSemVer;
+    public override string GenerateSetVersionMessage(VersionVariables variables) => variables.FullSemVer;
 
     public void WithPropertyFile(string propertiesFileName) => this.file = propertiesFileName;
 
@@ -59,7 +59,7 @@ public class BitBucketPipelines : BuildAgentBase
     private string? EvaluateEnvironmentVariable(string variableName)
     {
         var branchName = Environment.GetEnvironmentVariable(variableName);
-        Log.Info("Evaluating environment variable {0} : {1}", variableName, branchName!);
+        Log.Info("Evaluating environment variable {0} : {1}", variableName, branchName ?? "(null)");
         return branchName;
     }
 }

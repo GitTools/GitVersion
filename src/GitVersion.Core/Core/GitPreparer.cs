@@ -320,7 +320,7 @@ Please run `git {GitExtensions.CreateGitLogArgs(100)}` and submit it along with 
         foreach (var remoteTrackingReference in remoteTrackingReferences)
         {
             var remoteTrackingReferenceName = remoteTrackingReference.Name.Canonical;
-            var branchName = remoteTrackingReferenceName.Substring(prefix.Length);
+            var branchName = remoteTrackingReferenceName[prefix.Length..];
             var localReferenceName = ReferenceName.FromBranchName(branchName);
 
             // We do not want to touch our current branch

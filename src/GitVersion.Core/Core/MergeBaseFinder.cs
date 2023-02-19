@@ -25,16 +25,16 @@ internal class MergeBaseFinder
 
         var key = Tuple.Create(first, second);
 
-        if (this.mergeBaseCache.ContainsKey(key))
+        if (this.mergeBaseCache.TryGetValue(key, out var mergeBase))
         {
             this.log.Debug($"Cache hit for merge base between '{first}' and '{second}'.");
-            return this.mergeBaseCache[key];
+            return mergeBase;
         }
 
         using (this.log.IndentLog($"Finding merge base between '{first}' and '{second}'."))
         {
             // Other branch tip is a forward merge
-            var commitToFindCommonBase = second?.Tip;
+            var commitToFindCommonBase = second.Tip;
             var commit = first.Tip;
 
             if (commit == null)

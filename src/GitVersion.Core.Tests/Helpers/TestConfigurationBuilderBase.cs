@@ -294,7 +294,7 @@ internal abstract class TestConfigurationBuilderBase<TConfigurationBuilder>
                 throw new ConfigurationException($"Branch configuration '{name}' is missing required configuration 'regex'{helpUrl}");
             }
 
-            var sourceBranches = branchConfiguration?.SourceBranches;
+            var sourceBranches = branchConfiguration.SourceBranches;
             if (sourceBranches == null)
             {
                 throw new ConfigurationException($"Branch configuration '{name}' is missing required configuration 'source-branches'{helpUrl}");

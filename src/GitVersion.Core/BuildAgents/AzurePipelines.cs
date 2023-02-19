@@ -51,7 +51,7 @@ public class AzurePipelines : BuildAgentBase
     private static string ReplaceVariables(string buildNumberEnv, KeyValuePair<string, string> variable)
     {
         var pattern = $@"\$\(GITVERSION[_\.]{variable.Key}\)";
-        var replacement = variable.Value ?? string.Empty;
+        var replacement = variable.Value;
         return buildNumberEnv.RegexReplace(pattern, replacement, RegexOptions.IgnoreCase);
     }
 }

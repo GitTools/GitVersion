@@ -348,7 +348,7 @@ GitVersion.Configuration.Init.SetConfig.GlobalModeSetting.GlobalModeSetting(GitV
 GitVersion.Configuration.Init.SetConfig.GlobalModeSetting.WithData(GitVersion.Configuration.Init.Wizard.ConfigInitWizardStep! returnStep, bool isPartOfTheWizard) -> GitVersion.Configuration.Init.SetConfig.GlobalModeSetting!
 GitVersion.Configuration.Init.SetConfig.SetBranchIncrementMode
 GitVersion.Configuration.Init.SetConfig.SetBranchIncrementMode.SetBranchIncrementMode(GitVersion.Logging.IConsole! console, GitVersion.IFileSystem! fileSystem, GitVersion.Logging.ILog! log, GitVersion.Configuration.Init.Wizard.IConfigInitStepFactory! stepFactory) -> void
-GitVersion.Configuration.Init.SetConfig.SetBranchIncrementMode.WithData(string! configName, GitVersion.Configuration.BranchConfiguration! branchConfiguration) -> GitVersion.Configuration.Init.SetConfig.SetBranchIncrementMode!
+GitVersion.Configuration.Init.SetConfig.SetBranchIncrementMode.WithData(string! configName, GitVersion.Configuration.BranchConfiguration! configuration) -> GitVersion.Configuration.Init.SetConfig.SetBranchIncrementMode!
 GitVersion.Configuration.Init.SetConfig.SetBranchTag
 GitVersion.Configuration.Init.SetConfig.SetBranchTag.SetBranchTag(GitVersion.Logging.IConsole! console, GitVersion.IFileSystem! fileSystem, GitVersion.Logging.ILog! log, GitVersion.Configuration.Init.Wizard.IConfigInitStepFactory! stepFactory) -> void
 GitVersion.Configuration.Init.SetConfig.SetBranchTag.WithData(string! configName, GitVersion.Configuration.BranchConfiguration! configuration) -> GitVersion.Configuration.Init.SetConfig.SetBranchTag!
@@ -874,7 +874,7 @@ GitVersion.SemanticVersionFormatValues.BuildMetaData.get -> string?
 GitVersion.SemanticVersionFormatValues.CommitDate.get -> string?
 GitVersion.SemanticVersionFormatValues.CommitsSinceVersionSource.get -> string?
 GitVersion.SemanticVersionFormatValues.EscapedBranchName.get -> string?
-GitVersion.SemanticVersionFormatValues.FullBuildMetaData.get -> string?
+GitVersion.SemanticVersionFormatValues.FullBuildMetaData.get -> string!
 GitVersion.SemanticVersionFormatValues.FullSemVer.get -> string!
 GitVersion.SemanticVersionFormatValues.InformationalVersion.get -> string!
 GitVersion.SemanticVersionFormatValues.Major.get -> string!
@@ -890,7 +890,7 @@ GitVersion.SemanticVersionFormatValues.SemanticVersionFormatValues(GitVersion.Se
 GitVersion.SemanticVersionFormatValues.SemVer.get -> string!
 GitVersion.SemanticVersionFormatValues.Sha.get -> string?
 GitVersion.SemanticVersionFormatValues.ShortSha.get -> string?
-GitVersion.SemanticVersionFormatValues.UncommittedChanges.get -> string?
+GitVersion.SemanticVersionFormatValues.UncommittedChanges.get -> string!
 GitVersion.SemanticVersionFormatValues.VersionSourceSha.get -> string?
 GitVersion.SemanticVersionFormatValues.WeightedPreReleaseNumber.get -> string!
 GitVersion.SemanticVersionPreReleaseTag
@@ -971,7 +971,7 @@ GitVersion.VersionCalculation.IVersionStrategy.GetBaseVersions(GitVersion.Config
 GitVersion.VersionCalculation.MergeMessageVersionStrategy
 GitVersion.VersionCalculation.MergeMessageVersionStrategy.MergeMessageVersionStrategy(GitVersion.Logging.ILog! log, System.Lazy<GitVersion.GitVersionContext!>! versionContext, GitVersion.Common.IRepositoryStore! repositoryStore) -> void
 GitVersion.VersionCalculation.MinDateVersionFilter
-GitVersion.VersionCalculation.MinDateVersionFilter.Exclude(GitVersion.VersionCalculation.BaseVersion! version, out string? reason) -> bool
+GitVersion.VersionCalculation.MinDateVersionFilter.Exclude(GitVersion.VersionCalculation.BaseVersion? version, out string? reason) -> bool
 GitVersion.VersionCalculation.MinDateVersionFilter.MinDateVersionFilter(System.DateTimeOffset minimum) -> void
 GitVersion.VersionCalculation.NextVersion
 GitVersion.VersionCalculation.NextVersion.BaseVersion.get -> GitVersion.VersionCalculation.BaseVersion!
@@ -985,7 +985,7 @@ GitVersion.VersionCalculation.NextVersion.NextVersion(GitVersion.SemanticVersion
 GitVersion.VersionCalculation.NextVersionCalculator
 GitVersion.VersionCalculation.NextVersionCalculator.NextVersionCalculator(GitVersion.Logging.ILog! log, GitVersion.VersionCalculation.IMainlineVersionCalculator! mainlineVersionCalculator, GitVersion.Common.IRepositoryStore! repositoryStore, System.Lazy<GitVersion.GitVersionContext!>! versionContext, System.Collections.Generic.IEnumerable<GitVersion.VersionCalculation.IVersionStrategy!>! versionStrategies, GitVersion.VersionCalculation.IEffectiveBranchConfigurationFinder! effectiveBranchConfigurationFinder, GitVersion.VersionCalculation.IIncrementStrategyFinder! incrementStrategyFinder) -> void
 GitVersion.VersionCalculation.ShaVersionFilter
-GitVersion.VersionCalculation.ShaVersionFilter.Exclude(GitVersion.VersionCalculation.BaseVersion! version, out string? reason) -> bool
+GitVersion.VersionCalculation.ShaVersionFilter.Exclude(GitVersion.VersionCalculation.BaseVersion? version, out string? reason) -> bool
 GitVersion.VersionCalculation.ShaVersionFilter.ShaVersionFilter(System.Collections.Generic.IEnumerable<string!>! shas) -> void
 GitVersion.VersionCalculation.TaggedCommitVersionStrategy
 GitVersion.VersionCalculation.TaggedCommitVersionStrategy.TaggedCommitVersionStrategy(GitVersion.Common.IRepositoryStore! repositoryStore, System.Lazy<GitVersion.GitVersionContext!>! versionContext) -> void
@@ -1093,7 +1093,7 @@ override GitVersion.BuildAgents.AzurePipelines.GetCurrentBranch(bool usingDynami
 override GitVersion.BuildAgents.AzurePipelines.PreventFetch() -> bool
 override GitVersion.BuildAgents.BitBucketPipelines.EnvironmentVariable.get -> string!
 override GitVersion.BuildAgents.BitBucketPipelines.GenerateSetParameterMessage(string! name, string! value) -> string![]!
-override GitVersion.BuildAgents.BitBucketPipelines.GenerateSetVersionMessage(GitVersion.OutputVariables.VersionVariables! variables) -> string?
+override GitVersion.BuildAgents.BitBucketPipelines.GenerateSetVersionMessage(GitVersion.OutputVariables.VersionVariables! variables) -> string!
 override GitVersion.BuildAgents.BitBucketPipelines.GetCurrentBranch(bool usingDynamicRepos) -> string?
 override GitVersion.BuildAgents.BitBucketPipelines.WriteIntegration(System.Action<string?>! writer, GitVersion.OutputVariables.VersionVariables! variables, bool updateBuildNumber = true) -> void
 override GitVersion.BuildAgents.BuildKite.CanApplyToCurrentContext() -> bool

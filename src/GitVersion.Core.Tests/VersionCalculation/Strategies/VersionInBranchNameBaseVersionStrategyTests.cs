@@ -24,7 +24,7 @@ public class VersionInBranchNameBaseVersionStrategyTests : TestBase
         var effectiveConfiguration = new EffectiveConfiguration(configuration, branchConfiguration);
 
         strategy.ShouldNotBeNull();
-        var baseVersion = strategy.GetBaseVersions(new(gitRepository.FindBranch(branchName)!, effectiveConfiguration)).Single();
+        var baseVersion = strategy.GetBaseVersions(new(gitRepository.FindBranch(branchName), effectiveConfiguration)).Single();
 
         baseVersion.SemanticVersion.ToString().ShouldBe(expectedBaseVersion);
     }
@@ -46,7 +46,7 @@ public class VersionInBranchNameBaseVersionStrategyTests : TestBase
         var effectiveConfiguration = new EffectiveConfiguration(configuration, branchConfiguration);
 
         strategy.ShouldNotBeNull();
-        var baseVersions = strategy.GetBaseVersions(new(gitRepository.FindBranch(branchName)!, effectiveConfiguration));
+        var baseVersions = strategy.GetBaseVersions(new(gitRepository.FindBranch(branchName), effectiveConfiguration));
 
         baseVersions.ShouldBeEmpty();
     }
@@ -70,8 +70,7 @@ public class VersionInBranchNameBaseVersionStrategyTests : TestBase
         var effectiveConfiguration = new EffectiveConfiguration(configuration, branchConfiguration);
 
         strategy.ShouldNotBeNull();
-
-        var baseVersion = strategy.GetBaseVersions(new(gitRepository.FindBranch(branchName)!, effectiveConfiguration)).Single();
+        var baseVersion = strategy.GetBaseVersions(new(gitRepository.FindBranch(branchName), effectiveConfiguration)).Single();
 
         baseVersion.SemanticVersion.ToString().ShouldBe(expectedBaseVersion);
     }
@@ -96,8 +95,7 @@ public class VersionInBranchNameBaseVersionStrategyTests : TestBase
         var effectiveConfiguration = new EffectiveConfiguration(configuration, branchConfiguration);
 
         strategy.ShouldNotBeNull();
-
-        var baseVersion = strategy.GetBaseVersions(new(gitRepository.FindBranch(branchName)!, effectiveConfiguration)).Single();
+        var baseVersion = strategy.GetBaseVersions(new(gitRepository.FindBranch(branchName), effectiveConfiguration)).Single();
 
         baseVersion.SemanticVersion.ToString().ShouldBe(expectedBaseVersion);
     }

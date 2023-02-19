@@ -35,7 +35,7 @@ public class SemanticVersionFormatValues
 
     public string? BuildMetaData => this.semver.BuildMetaData;
 
-    public string? FullBuildMetaData => this.semver.BuildMetaData.ToString("f");
+    public string FullBuildMetaData => this.semver.BuildMetaData.ToString("f");
 
     public string MajorMinorPatch => $"{this.semver.Major}.{this.semver.Minor}.{this.semver.Patch}";
 
@@ -63,7 +63,7 @@ public class SemanticVersionFormatValues
 
     public string? CommitsSinceVersionSource => this.semver.BuildMetaData.CommitsSinceVersionSource?.ToString(CultureInfo.InvariantCulture);
 
-    public string? UncommittedChanges => this.semver.BuildMetaData.UncommittedChanges.ToString(CultureInfo.InvariantCulture);
+    public string UncommittedChanges => this.semver.BuildMetaData.UncommittedChanges.ToString(CultureInfo.InvariantCulture);
 
     private string GetWeightedPreReleaseNumber()
     {

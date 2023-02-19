@@ -73,7 +73,7 @@ public class ConfigurationFileLocator : IConfigurationFileLocator
     private static void VerifyReadConfig(GitVersionConfiguration configuration)
     {
         // Verify no branches are set to mainline mode
-        if (configuration.Branches.Any(b => b.Value?.VersioningMode == VersioningMode.Mainline))
+        if (configuration.Branches.Any(b => b.Value.VersioningMode == VersioningMode.Mainline))
         {
             throw new ConfigurationException(@"Mainline mode only works at the repository level, a single branch cannot be put into mainline mode
 

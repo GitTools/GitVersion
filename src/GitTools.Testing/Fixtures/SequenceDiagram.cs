@@ -105,7 +105,7 @@ end note",
     /// </summary>
     public void Merge(string from, string to) => this.diagramBuilder.AppendLineFormat("{0} -> {1}: merge", GetParticipant(from), GetParticipant(to));
 
-    private string GetParticipant(string branch) => this.participants.ContainsKey(branch) ? this.participants[branch] : branch;
+    private string GetParticipant(string branch) => participants.TryGetValue(branch, out var value) ? value : branch;
 
     /// <summary>
     /// Ends the sequence diagram

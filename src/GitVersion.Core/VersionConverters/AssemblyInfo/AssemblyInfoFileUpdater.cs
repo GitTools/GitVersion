@@ -141,7 +141,7 @@ public sealed class AssemblyInfoFileUpdater : IAssemblyInfoFileUpdater
             var assemblyMatches = assemblyRegex.Matches(inputString);
             if (assemblyMatches.Count > 0)
             {
-                var lastMatch = assemblyMatches[assemblyMatches.Count - 1];
+                var lastMatch = assemblyMatches[^1];
                 var replacementString = lastMatch.Value;
                 if (!lastMatch.Value.EndsWith(NewLine)) replacementString += NewLine;
                 if (assemblyAddFormat != null)

@@ -55,7 +55,7 @@ internal class SourceBranchFinder
             {
                 foreach (var sourceBranch in currentBranchConfig.SourceBranches)
                 {
-                    var regex = configuration.Branches[sourceBranch]?.Regex;
+                    var regex = configuration.Branches[sourceBranch].Regex;
                     if (regex != null)
                         yield return regex;
                 }

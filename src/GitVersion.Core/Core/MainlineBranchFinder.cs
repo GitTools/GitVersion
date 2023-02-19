@@ -22,7 +22,7 @@ internal class MainlineBranchFinder
         this.repositoryStore = repositoryStore.NotNull();
         this.repository = repository.NotNull();
         this.configuration = configuration.NotNull();
-        mainlineBranchConfigurations = configuration.Branches.Select(e => e.Value).Where(b => b?.IsMainline == true).ToList();
+        mainlineBranchConfigurations = configuration.Branches.Select(e => e.Value).Where(b => b.IsMainline == true).ToList();
         this.log = log.NotNull();
     }
 
@@ -58,7 +58,7 @@ internal class MainlineBranchFinder
 
         public bool IsMainline(BranchConfiguration value)
         {
-            if (value?.Regex == null)
+            if (value.Regex == null)
                 return false;
 
             var mainlineRegex = value.Regex;

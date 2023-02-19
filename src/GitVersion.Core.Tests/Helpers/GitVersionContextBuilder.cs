@@ -19,9 +19,9 @@ public class GitVersionContextBuilder
         return this;
     }
 
-    public GitVersionContextBuilder WithConfig(GitVersionConfiguration configuration)
+    public GitVersionContextBuilder WithConfig(GitVersionConfiguration configurationInfo)
     {
-        this.configuration = configuration;
+        this.configuration = configurationInfo;
         return this;
     }
 
@@ -57,14 +57,14 @@ public class GitVersionContextBuilder
     {
         var repo = this.repository ?? CreateRepository();
 
-        var configuration = new ConfigurationBuilder()
+        var configurationInfo = new ConfigurationBuilder()
             .Add(this.configuration ?? new GitVersionConfiguration())
             .Build();
 
         var options = Options.Create(new GitVersionOptions
         {
             WorkingDirectory = new EmptyRepositoryFixture().RepositoryPath,
-            ConfigInfo = { OverrideConfig = configuration }
+            ConfigInfo = { OverrideConfig = configurationInfo }
         });
 
         this.ServicesProvider = ConfigureServices(services =>

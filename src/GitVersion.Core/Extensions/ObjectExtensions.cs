@@ -21,6 +21,6 @@ public static class ObjectExtensions
         var type = typeof(string);
         return obj.GetType().GetProperties()
             .Where(p => p.PropertyType == type && !p.GetIndexParameters().Any() && !p.GetCustomAttributes(typeof(ReflectionIgnoreAttribute), false).Any())
-            .ToDictionary(p => p.Name, p => Convert.ToString(p.GetValue(obj, null))!);
+            .ToDictionary(p => p.Name, p => Convert.ToString(p.GetValue(obj, null)) ?? string.Empty);
     }
 }

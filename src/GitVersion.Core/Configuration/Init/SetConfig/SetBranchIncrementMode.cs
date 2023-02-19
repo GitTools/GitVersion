@@ -13,9 +13,9 @@ public class SetBranchIncrementMode : ConfigInitWizardStep
     {
     }
 
-    public SetBranchIncrementMode WithData(string configName, BranchConfiguration branchConfiguration)
+    public SetBranchIncrementMode WithData(string configName, BranchConfiguration configuration)
     {
-        this.branchConfiguration = branchConfiguration;
+        this.branchConfiguration = configuration;
         this.name = configName;
         return this;
     }

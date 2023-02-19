@@ -12,7 +12,7 @@ public class MinDateVersionFilterTests : TestBase
         var dummy = DateTimeOffset.UtcNow.AddSeconds(1.0);
         var sut = new MinDateVersionFilter(dummy);
 
-        Should.Throw<ArgumentNullException>(() => sut.Exclude(null!, out _));
+        Should.Throw<ArgumentNullException>(() => sut.Exclude(null, out _));
     }
 
     [Test]

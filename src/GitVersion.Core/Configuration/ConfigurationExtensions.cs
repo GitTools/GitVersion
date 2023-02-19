@@ -56,7 +56,7 @@ public static class ConfigurationExtensions
     private static BranchConfiguration? ForBranch(GitVersionConfiguration configuration, string branchName)
     {
         var matches = configuration.Branches
-            .Where(b => b.Value?.Regex != null && Regex.IsMatch(branchName, b.Value.Regex, RegexOptions.IgnoreCase))
+            .Where(b => b.Value.Regex != null && Regex.IsMatch(branchName, b.Value.Regex, RegexOptions.IgnoreCase))
             .ToArray();
 
         try
@@ -75,7 +75,7 @@ public static class ConfigurationExtensions
             // TODO check how to log this
             Console.WriteLine(
                 $"Multiple branch configurations match the current branch branchName of '{branchName}'. " +
-                $"Using the first matching configuration, '{picked?.Name}'. Matching configurations include:'{matchingConfigs}'");
+                $"Using the first matching configuration, '{picked.Name}'. Matching configurations include:'{matchingConfigs}'");
 
             return picked;
         }

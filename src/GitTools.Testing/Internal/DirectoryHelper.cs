@@ -23,7 +23,7 @@ internal static class DirectoryHelper
         }
     }
 
-    private static string Rename(string name) => ToRename.ContainsKey(name) ? ToRename[name] : name;
+    private static string Rename(string name) => ToRename.TryGetValue(name, out var value) ? value : name;
 
     public static void DeleteSubDirectories(string parentPath)
     {

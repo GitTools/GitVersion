@@ -99,10 +99,7 @@ public class ConfigurationBuilder
 
             foreach (var (name, branchConfiguration) in targetConfigBranches)
             {
-                if (!newBranches.ContainsKey(name))
-                {
-                    newBranches[name] = branchConfiguration;
-                }
+                newBranches.TryAdd(name, branchConfiguration);
             }
 
             targetConfig.Branches = newBranches;
@@ -150,7 +147,7 @@ public class ConfigurationBuilder
     {
         foreach (var (name, branchConfiguration) in configuration.Branches)
         {
-            var regex = branchConfiguration?.Regex;
+            var regex = branchConfiguration.Regex;
             var helpUrl = $"{System.Environment.NewLine}See https://gitversion.net/docs/reference/configuration for more info";
 
             if (regex == null)
@@ -158,7 +155,7 @@ public class ConfigurationBuilder
                 throw new ConfigurationException($"Branch configuration '{name}' is missing required configuration 'regex'{helpUrl}");
             }
 
-            var sourceBranches = branchConfiguration?.SourceBranches;
+            var sourceBranches = branchConfiguration.SourceBranches;
             if (sourceBranches == null)
             {
                 throw new ConfigurationException($"Branch configuration '{name}' is missing required configuration 'source-branches'{helpUrl}");

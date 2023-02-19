@@ -94,10 +94,7 @@ public class RepositoryStore : IRepositoryStore
             return desiredBranch;
 
         // In the case where HEAD is not the desired branch, try to find the branch with matching name
-        desiredBranch = this.repository.Branches
-            .Where(b => b.Name.EquivalentTo(targetBranchName))
-            .OrderBy(b => b.IsRemote)
-            .FirstOrDefault();
+        desiredBranch = this.repository.Branches.Where(b => b.Name.EquivalentTo(targetBranchName)).MinBy(b => b.IsRemote);
 
         // Failsafe in case the specified branch is invalid
         desiredBranch ??= this.repository.Head;
@@ -109,8 +106,8 @@ public class RepositoryStore : IRepositoryStore
 
     public IBranch? FindMainBranch(GitVersionConfiguration configuration)
     {
-        var mainBranchRegex = configuration.Branches[GitVersionConfiguration.MainBranchKey]?.Regex
-                              ?? configuration.Branches[GitVersionConfiguration.MasterBranchKey]?.Regex;
+        var mainBranchRegex = configuration.Branches[GitVersionConfiguration.MainBranchKey].Regex
+                              ?? configuration.Branches[GitVersionConfiguration.MasterBranchKey].Regex;
 
         if (mainBranchRegex == null)
         {
@@ -288,7 +285,7 @@ public class RepositoryStore : IRepositoryStore
     public int GetNumberOfUncommittedChanges() => this.repository.GetNumberOfUncommittedChanges();
 
     private static bool IsReleaseBranch(INamedReference branch, IEnumerable<KeyValuePair<string, BranchConfiguration>> releaseBranchConfig)
-        => releaseBranchConfig.Any(c => c.Value?.Regex != null && Regex.IsMatch(branch.Name.Friendly, c.Value.Regex));
+        => releaseBranchConfig.Any(c => c.Value.Regex != null && Regex.IsMatch(branch.Name.Friendly, c.Value.Regex));
 
     private IEnumerable<SemanticVersion> GetCurrentCommitSemanticVersions(ICommit? commit, string? tagPrefix, ITag tag, SemanticVersionFormat versionFormat, bool handleDetachedBranch)
     {

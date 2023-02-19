@@ -19,6 +19,6 @@ public static class ReadEmbeddedResourceExtensions
     {
         var assembly = typeof(T).Assembly;
 
-        return assembly?.GetManifestResourceStream(resourceName) ?? throw new InvalidOperationException($"Could not find embedded resource {resourceName}");
+        return assembly.GetManifestResourceStream(resourceName) ?? throw new InvalidOperationException($"Could not find embedded resource {resourceName}");
     }
 }

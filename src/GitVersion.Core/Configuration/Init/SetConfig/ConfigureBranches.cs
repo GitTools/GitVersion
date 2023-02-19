@@ -23,7 +23,7 @@ public class ConfigureBranches : ConfigInitWizardStep
             {
                 var foundBranch = OrderedBranches(configuration).ElementAt(parsed - 1);
                 var branchConfiguration = foundBranch.Value;
-                if (branchConfiguration == null)
+                if (branchConfiguration is null)
                 {
                     branchConfiguration = new BranchConfiguration { Name = foundBranch.Key };
                     configuration.Branches.Add(foundBranch.Key, branchConfiguration);

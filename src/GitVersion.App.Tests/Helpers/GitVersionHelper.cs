@@ -52,14 +52,7 @@ public static class GitVersionHelper
 
         foreach (var (key, value) in environments)
         {
-            if (environmentalVariables.ContainsKey(key))
-            {
-                environmentalVariables[key] = value;
-            }
-            else
-            {
-                environmentalVariables.Add(key, value);
-            }
+            environmentalVariables[key] = value;
         }
 
         var exitCode = -1;
