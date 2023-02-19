@@ -5,7 +5,6 @@ namespace Build.Tasks;
 
 [TaskName(nameof(PackageNuget))]
 [TaskDescription("Creates the nuget packages")]
-[IsDependentOn(typeof(PackagePrepare))]
 public class PackageNuget : FrostingTask<BuildContext>
 {
     public override void Run(BuildContext context)

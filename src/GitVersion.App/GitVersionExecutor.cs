@@ -8,22 +8,22 @@ public class GitVersionExecutor : IGitVersionExecutor
 {
     private readonly ILog log;
     private readonly IConsole console;
-    private readonly IConfigurationFileLocator configFileLocator;
-    private readonly IHelpWriter helpWriter;
-    private readonly IGitRepositoryInfo repositoryInfo;
+    private readonly IConfigurationFileLocator configurationFileLocator;
     private readonly IConfigurationProvider configurationProvider;
     private readonly IGitVersionCalculateTool gitVersionCalculateTool;
     private readonly IGitVersionOutputTool gitVersionOutputTool;
     private readonly IVersionWriter versionWriter;
+    private readonly IHelpWriter helpWriter;
+    private readonly IGitRepositoryInfo repositoryInfo;
 
     public GitVersionExecutor(ILog log, IConsole console,
-        IConfigurationFileLocator configFileLocator, IConfigurationProvider configurationProvider,
+        IConfigurationFileLocator configurationFileLocator, IConfigurationProvider configurationProvider,
         IGitVersionCalculateTool gitVersionCalculateTool, IGitVersionOutputTool gitVersionOutputTool,
         IVersionWriter versionWriter, IHelpWriter helpWriter, IGitRepositoryInfo repositoryInfo)
     {
         this.log = log.NotNull();
         this.console = console.NotNull();
-        this.configFileLocator = configFileLocator.NotNull();
+        this.configurationFileLocator = configurationFileLocator.NotNull();
         this.configurationProvider = configurationProvider.NotNull();
 
         this.gitVersionCalculateTool = gitVersionCalculateTool.NotNull();
@@ -143,7 +143,7 @@ public class GitVersionExecutor : IGitVersionExecutor
             this.log.Info("Working directory: " + workingDirectory);
         }
 
-        this.configFileLocator.Verify(gitVersionOptions, this.repositoryInfo);
+        this.configurationFileLocator.Verify(gitVersionOptions, this.repositoryInfo);
 
         if (gitVersionOptions.Init)
         {

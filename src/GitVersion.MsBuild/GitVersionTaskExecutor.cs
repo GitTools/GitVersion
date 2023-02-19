@@ -1,3 +1,4 @@
+using GitVersion.Configuration;
 using GitVersion.Extensions;
 using GitVersion.Helpers;
 using GitVersion.MsBuild.Tasks;
@@ -10,12 +11,15 @@ public class GitVersionTaskExecutor : IGitVersionTaskExecutor
 {
     private readonly IFileSystem fileSystem;
     private readonly IGitVersionOutputTool gitVersionOutputTool;
+    private readonly IConfigurationProvider configurationProvider;
     private readonly IOptions<GitVersionOptions> options;
 
-    public GitVersionTaskExecutor(IFileSystem fileSystem, IGitVersionOutputTool gitVersionOutputTool, IOptions<GitVersionOptions> options)
+    public GitVersionTaskExecutor(IFileSystem fileSystem, IGitVersionOutputTool gitVersionOutputTool,
+                                  IConfigurationProvider configurationProvider, IOptions<GitVersionOptions> options)
     {
         this.fileSystem = fileSystem.NotNull();
         this.gitVersionOutputTool = gitVersionOutputTool.NotNull();
+        this.configurationProvider = configurationProvider.NotNull();
         this.options = options.NotNull();
     }
 
@@ -75,6 +79,10 @@ public class GitVersionTaskExecutor : IGitVersionTaskExecutor
     public void WriteVersionInfoToBuildLog(WriteVersionInfoToBuildLog task)
     {
         var versionVariables = VersionVariables.FromFile(task.VersionFile, fileSystem);
-        gitVersionOutputTool.OutputVariables(versionVariables, false);
+
+        var gitVersionOptions = this.options.Value;
+        var configuration = this.configurationProvider.Provide(gitVersionOptions.ConfigInfo.OverrideConfig);
+
+        gitVersionOutputTool.OutputVariables(versionVariables, configuration.UpdateBuildNumber ?? true);
     }
 }

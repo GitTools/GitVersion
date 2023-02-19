@@ -66,9 +66,9 @@ public static class GitVersionTasks
             WorkingDirectory = task.SolutionDirectory
         };
 
-        gitVersionOptions.Output.Add(OutputType.BuildServer);
-
         services.AddSingleton(Options.Create(gitVersionOptions));
+        services.AddModule(new GitVersionCoreModule());
+        services.AddModule(new GitVersionBuildAgentsModule());
         services.AddModule(new GitVersionMsBuildModule());
         services.AddSingleton<IConsole>(new MsBuildAdapter(task.Log));
         task.Overrides?.Invoke(services);

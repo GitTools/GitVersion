@@ -21,7 +21,7 @@ GitVersion.MsBuild.GitVersionTaskBase.WithOverrides(System.Action<Microsoft.Exte
 GitVersion.MsBuild.GitVersionTaskExecutor
 GitVersion.MsBuild.GitVersionTaskExecutor.GenerateGitVersionInformation(GitVersion.MsBuild.Tasks.GenerateGitVersionInformation! task) -> void
 GitVersion.MsBuild.GitVersionTaskExecutor.GetVersion(GitVersion.MsBuild.Tasks.GetVersion! task) -> void
-GitVersion.MsBuild.GitVersionTaskExecutor.GitVersionTaskExecutor(GitVersion.IFileSystem! fileSystem, GitVersion.IGitVersionOutputTool! gitVersionOutputTool, Microsoft.Extensions.Options.IOptions<GitVersion.GitVersionOptions!>! options) -> void
+GitVersion.MsBuild.GitVersionTaskExecutor.GitVersionTaskExecutor(GitVersion.IFileSystem! fileSystem, GitVersion.IGitVersionOutputTool! gitVersionOutputTool, GitVersion.Configuration.IConfigurationProvider! configurationProvider, Microsoft.Extensions.Options.IOptions<GitVersion.GitVersionOptions!>! options) -> void
 GitVersion.MsBuild.GitVersionTaskExecutor.UpdateAssemblyInfo(GitVersion.MsBuild.Tasks.UpdateAssemblyInfo! task) -> void
 GitVersion.MsBuild.GitVersionTaskExecutor.WriteVersionInfoToBuildLog(GitVersion.MsBuild.Tasks.WriteVersionInfoToBuildLog! task) -> void
 GitVersion.MsBuild.GitVersionTasks

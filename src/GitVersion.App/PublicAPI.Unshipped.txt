@@ -37,7 +37,7 @@ GitVersion.GitVersionAppModule.GitVersionAppModule() -> void
 GitVersion.GitVersionAppModule.RegisterTypes(Microsoft.Extensions.DependencyInjection.IServiceCollection! services) -> void
 GitVersion.GitVersionExecutor
 GitVersion.GitVersionExecutor.Execute(GitVersion.GitVersionOptions! gitVersionOptions) -> int
-GitVersion.GitVersionExecutor.GitVersionExecutor(GitVersion.Logging.ILog! log, GitVersion.Logging.IConsole! console, GitVersion.Configuration.IConfigurationFileLocator! configFileLocator, GitVersion.Configuration.IConfigurationProvider! configurationProvider, GitVersion.IGitVersionCalculateTool! gitVersionCalculateTool, GitVersion.IGitVersionOutputTool! gitVersionOutputTool, GitVersion.IVersionWriter! versionWriter, GitVersion.IHelpWriter! helpWriter, GitVersion.IGitRepositoryInfo! repositoryInfo) -> void
+GitVersion.GitVersionExecutor.GitVersionExecutor(GitVersion.Logging.ILog! log, GitVersion.Logging.IConsole! console, GitVersion.Configuration.IConfigurationFileLocator! configurationFileLocator, GitVersion.Configuration.IConfigurationProvider! configurationProvider, GitVersion.IGitVersionCalculateTool! gitVersionCalculateTool, GitVersion.IGitVersionOutputTool! gitVersionOutputTool, GitVersion.IVersionWriter! versionWriter, GitVersion.IHelpWriter! helpWriter, GitVersion.IGitRepositoryInfo! repositoryInfo) -> void
 GitVersion.GlobbingResolver
 GitVersion.GlobbingResolver.GlobbingResolver() -> void
 GitVersion.GlobbingResolver.Resolve(string! workingDirectory, string! pattern) -> System.Collections.Generic.IEnumerable<string!>!
