@@ -1,6 +1,6 @@
 using LibGit2Sharp;
 
-namespace GitTools.Testing;
+namespace GitVersion.Testing;
 
 /// <summary>
 /// Creates a repo with a develop branch off main which is a single commit ahead of main

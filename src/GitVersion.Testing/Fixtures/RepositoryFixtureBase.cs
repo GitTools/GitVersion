@@ -1,7 +1,7 @@
-using GitTools.Testing.Internal;
+using GitVersion.Testing.Internal;
 using LibGit2Sharp;
 
-namespace GitTools.Testing;
+namespace GitVersion.Testing;
 
 /// <summary>
 ///     Fixture abstracting a git repository

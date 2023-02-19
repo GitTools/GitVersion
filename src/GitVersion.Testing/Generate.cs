@@ -1,6 +1,6 @@
 using LibGit2Sharp;
 
-namespace GitTools.Testing;
+namespace GitVersion.Testing;
 
 /// <summary>
 /// Static helper class for generating data git needs, like signatures

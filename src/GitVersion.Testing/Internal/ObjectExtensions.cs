@@ -1,4 +1,4 @@
-namespace GitTools.Testing.Internal;
+namespace GitVersion.Testing.Internal;
 
 public static class ObjectExtensions
 {

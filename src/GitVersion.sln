@@ -28,7 +28,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GitVersion.MsBuild", "GitVe
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GitVersion.MsBuild.Tests", "GitVersion.MsBuild.Tests\GitVersion.MsBuild.Tests.csproj", "{B35EF742-95D4-4E6A-B782-BE1C3E5CF9AE}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GitTools.Testing", "GitTools.Testing\GitTools.Testing.csproj", "{6138640B-5C05-4070-BE32-6B17BEFDF63C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GitVersion.Testing", "GitVersion.Testing\GitVersion.Testing.csproj", "{6138640B-5C05-4070-BE32-6B17BEFDF63C}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GitVersion.LibGit2Sharp", "GitVersion.LibGit2Sharp\GitVersion.LibGit2Sharp.csproj", "{093AFCF2-68F4-49B1-8173-7CB88467E783}"
 EndProject

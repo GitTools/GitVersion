@@ -1,4 +1,4 @@
-namespace GitTools.Testing;
+namespace GitVersion.Testing;
 
 /// <summary>
 /// VirtualTime starts at an hour before now, then each time it is called increments by a minute

@@ -68,9 +68,9 @@
 
     </ItemGroup>
     <ItemGroup Condition=" '$(IsUnitTestProject)' == 'true' and $(MSBuildProjectName.EndsWith('.Tests'))">
-        <ProjectReference Include="..\GitTools.Testing\GitTools.Testing.csproj"/>
+        <ProjectReference Include="..\GitVersion.Testing\GitVersion.Testing.csproj"/>
 
-        <Using Include="GitTools.Testing"/>
+        <Using Include="GitVersion.Testing"/>
         <Using Include="NSubstitute"/>
         <Using Include="NUnit.Framework"/>
         <Using Include="Shouldly"/>

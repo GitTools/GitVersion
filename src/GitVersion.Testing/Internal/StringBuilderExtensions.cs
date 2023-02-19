@@ -1,6 +1,6 @@
 using JetBrains.Annotations;
 
-namespace GitTools.Testing.Internal;
+namespace GitVersion.Testing.Internal;
 
 internal static class StringBuilderExtensions
 {

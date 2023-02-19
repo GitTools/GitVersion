@@ -1,6 +1,6 @@
 using LibGit2Sharp;
 
-namespace GitTools.Testing;
+namespace GitVersion.Testing;
 
 public class LocalRepositoryFixture : RepositoryFixtureBase
 {

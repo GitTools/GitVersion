@@ -1,6 +1,6 @@
 using LibGit2Sharp;
 
-namespace GitTools.Testing;
+namespace GitVersion.Testing;
 
 /// <summary>
 ///     Creates a remote repository then clones it

@@ -1,6 +1,6 @@
-using GitTools.Testing.Internal;
+using GitVersion.Testing.Internal;
 
-namespace GitTools.Testing;
+namespace GitVersion.Testing;
 
 /// <summary>
 /// Creates an abstraction over a PlantUML Sequence diagram to draw a sequence diagram of a git repository being created
