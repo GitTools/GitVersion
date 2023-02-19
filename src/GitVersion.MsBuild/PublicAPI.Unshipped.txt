@@ -1,6 +1,8 @@
 #nullable enable
-abstract GitVersion.MsBuild.GitVersionTaskBase.OnExecute() -> bool
 GitVersion.MsBuild.FileHelper
+GitVersion.MsBuild.GitVersionMsBuildModule
+GitVersion.MsBuild.GitVersionMsBuildModule.GitVersionMsBuildModule() -> void
+GitVersion.MsBuild.GitVersionMsBuildModule.RegisterTypes(Microsoft.Extensions.DependencyInjection.IServiceCollection! services) -> void
 GitVersion.MsBuild.GitVersionTaskBase
 GitVersion.MsBuild.GitVersionTaskBase.BuildEngine.get -> Microsoft.Build.Framework.IBuildEngine!
 GitVersion.MsBuild.GitVersionTaskBase.BuildEngine.set -> void
@@ -9,19 +11,19 @@ GitVersion.MsBuild.GitVersionTaskBase.GitVersionTaskBase() -> void
 GitVersion.MsBuild.GitVersionTaskBase.HostObject.get -> Microsoft.Build.Framework.ITaskHost!
 GitVersion.MsBuild.GitVersionTaskBase.HostObject.set -> void
 GitVersion.MsBuild.GitVersionTaskBase.Log.get -> Microsoft.Build.Utilities.TaskLoggingHelper!
+GitVersion.MsBuild.GitVersionTaskBase.Overrides.get -> System.Action<Microsoft.Extensions.DependencyInjection.IServiceCollection!>?
+GitVersion.MsBuild.GitVersionTaskBase.Overrides.set -> void
 GitVersion.MsBuild.GitVersionTaskBase.SolutionDirectory.get -> string!
 GitVersion.MsBuild.GitVersionTaskBase.SolutionDirectory.set -> void
 GitVersion.MsBuild.GitVersionTaskBase.VersionFile.get -> string!
 GitVersion.MsBuild.GitVersionTaskBase.VersionFile.set -> void
+GitVersion.MsBuild.GitVersionTaskBase.WithOverrides(System.Action<Microsoft.Extensions.DependencyInjection.IServiceCollection!>! overrides) -> void
 GitVersion.MsBuild.GitVersionTaskExecutor
 GitVersion.MsBuild.GitVersionTaskExecutor.GenerateGitVersionInformation(GitVersion.MsBuild.Tasks.GenerateGitVersionInformation! task) -> void
 GitVersion.MsBuild.GitVersionTaskExecutor.GetVersion(GitVersion.MsBuild.Tasks.GetVersion! task) -> void
 GitVersion.MsBuild.GitVersionTaskExecutor.GitVersionTaskExecutor(GitVersion.IFileSystem! fileSystem, GitVersion.IGitVersionOutputTool! gitVersionOutputTool, Microsoft.Extensions.Options.IOptions<GitVersion.GitVersionOptions!>! options) -> void
 GitVersion.MsBuild.GitVersionTaskExecutor.UpdateAssemblyInfo(GitVersion.MsBuild.Tasks.UpdateAssemblyInfo! task) -> void
 GitVersion.MsBuild.GitVersionTaskExecutor.WriteVersionInfoToBuildLog(GitVersion.MsBuild.Tasks.WriteVersionInfoToBuildLog! task) -> void
-GitVersion.MsBuild.GitVersionTaskModule
-GitVersion.MsBuild.GitVersionTaskModule.GitVersionTaskModule() -> void
-GitVersion.MsBuild.GitVersionTaskModule.RegisterTypes(Microsoft.Extensions.DependencyInjection.IServiceCollection! services) -> void
 GitVersion.MsBuild.GitVersionTasks
 GitVersion.MsBuild.IGitVersionTaskExecutor
 GitVersion.MsBuild.IGitVersionTaskExecutor.GenerateGitVersionInformation(GitVersion.MsBuild.Tasks.GenerateGitVersionInformation! task) -> void
@@ -107,6 +109,7 @@ GitVersion.MsBuild.Tasks.UpdateAssemblyInfo.ProjectFile.set -> void
 GitVersion.MsBuild.Tasks.UpdateAssemblyInfo.UpdateAssemblyInfo() -> void
 GitVersion.MsBuild.Tasks.WriteVersionInfoToBuildLog
 GitVersion.MsBuild.Tasks.WriteVersionInfoToBuildLog.WriteVersionInfoToBuildLog() -> void
+abstract GitVersion.MsBuild.GitVersionTaskBase.OnExecute() -> bool
 override GitVersion.MsBuild.Tasks.GenerateGitVersionInformation.OnExecute() -> bool
 override GitVersion.MsBuild.Tasks.GetVersion.OnExecute() -> bool
 override GitVersion.MsBuild.Tasks.UpdateAssemblyInfo.OnExecute() -> bool

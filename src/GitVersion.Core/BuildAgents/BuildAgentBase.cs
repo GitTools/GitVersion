@@ -16,6 +16,7 @@ public abstract class BuildAgentBase : ICurrentBuildAgent
     }
 
     protected abstract string EnvironmentVariable { get; }
+    public virtual bool IsDefault => false;
 
     public abstract string? GenerateSetVersionMessage(VersionVariables variables);
     public abstract string[] GenerateSetParameterMessage(string name, string value);

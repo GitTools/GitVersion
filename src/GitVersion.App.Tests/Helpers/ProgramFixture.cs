@@ -27,7 +27,7 @@ public sealed class ProgramFixture
 
         this.environment = new TestEnvironment();
 
-        Overrides.Add(services =>
+        WithOverrides(services =>
         {
             services.AddSingleton(log);
             services.AddSingleton(consoleAdapter);
@@ -45,6 +45,8 @@ public sealed class ProgramFixture
             this.environment.SetEnvironmentVariable(key, value);
         }
     }
+
+    public void WithOverrides(Action<IServiceCollection> action) => Overrides.Add(action);
 
     public Task<ProgramFixtureResult> Run(string arg)
     {

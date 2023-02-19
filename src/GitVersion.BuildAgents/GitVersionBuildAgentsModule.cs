@@ -2,7 +2,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace GitVersion.BuildAgents;
 
-public class BuildServerModule : GitVersionModule
+public class GitVersionBuildAgentsModule : GitVersionModule
 {
     public override void RegisterTypes(IServiceCollection services)
     {
@@ -12,8 +12,5 @@ public class BuildServerModule : GitVersionModule
         {
             services.AddSingleton(typeof(IBuildAgent), buildAgent);
         }
-
-        services.AddSingleton<IBuildAgentResolver, BuildAgentResolver>();
-        services.AddSingleton(sp => sp.GetRequiredService<IBuildAgentResolver>().Resolve());
     }
 }

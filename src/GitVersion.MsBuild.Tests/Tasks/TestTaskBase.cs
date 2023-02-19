@@ -1,6 +1,7 @@
 using GitVersion.BuildAgents;
 using GitVersion.Configuration;
 using GitVersion.Core.Tests.Helpers;
+using GitVersion.Extensions;
 using GitVersion.Helpers;
 using GitVersion.MsBuild.Tests.Helpers;
 using LibGit2Sharp;
@@ -20,7 +21,7 @@ public class TestTaskBase : TestBase
     {
         var fixture = CreateLocalRepositoryFixture();
         task.SolutionDirectory = fixture.RepositoryPath;
-
+        task.WithOverrides(services => services.AddModule(new GitVersionBuildAgentsModule()));
         var msbuildFixture = new MsBuildTaskFixture(fixture);
         var result = msbuildFixture.Execute(task);
         if (result.Success == false) Console.WriteLine(result.Log);
@@ -44,6 +45,7 @@ public class TestTaskBase : TestBase
     {
         var fixture = CreateRemoteRepositoryFixture();
         task.SolutionDirectory = fixture.LocalRepositoryFixture.RepositoryPath;
+        task.WithOverrides(services => services.AddModule(new GitVersionBuildAgentsModule()));
         var msbuildFixture = new MsBuildTaskFixture(fixture);
         var environmentVariables = new List<KeyValuePair<string, string?>>(env.ToArray());
         if (buildNumber != null)
@@ -66,6 +68,7 @@ public class TestTaskBase : TestBase
     {
         var fixture = CreateRemoteRepositoryFixture();
         task.SolutionDirectory = fixture.LocalRepositoryFixture.RepositoryPath;
+        task.WithOverrides(services => services.AddModule(new GitVersionBuildAgentsModule()));
         var msbuildFixture = new MsBuildTaskFixture(fixture);
         msbuildFixture.WithEnv(
             new KeyValuePair<string, string?>("GITHUB_ACTIONS", "true"),

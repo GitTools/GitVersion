@@ -1,5 +1,5 @@
 #!/usr/bin/sh
-# sh /scripts/test-msbuild-task.sh --version 5.7.1-beta1.56 --nugetPath /nuget --repoPath /repo/tests/integration/core --targetframework net5.0
+# sh /scripts/test-msbuild-task.sh --version 5.7.1-beta1.56 --nugetPath /nuget --repoPath /repo/tests/integration --targetframework net7.0
 while test "$#" -gt 0
 do
     case $1 in

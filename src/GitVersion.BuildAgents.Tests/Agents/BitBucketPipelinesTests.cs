@@ -1,10 +1,9 @@
-using GitVersion.BuildAgents;
 using GitVersion.Core.Tests.Helpers;
 using GitVersion.Helpers;
 using GitVersion.VersionCalculation;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace GitVersion.Core.Tests.BuildAgents;
+namespace GitVersion.BuildAgents.Tests;
 
 [TestFixture]
 public class BitBucketPipelinesTests : TestBase
@@ -17,8 +16,8 @@ public class BitBucketPipelinesTests : TestBase
     public void SetEnvironmentVariableForTest()
     {
         this.sp = ConfigureServices(services => services.AddSingleton<BitBucketPipelines>());
-        this.environment = sp.GetRequiredService<IEnvironment>();
-        this.buildServer = sp.GetRequiredService<BitBucketPipelines>();
+        this.environment = this.sp.GetRequiredService<IEnvironment>();
+        this.buildServer = this.sp.GetRequiredService<BitBucketPipelines>();
 
         this.environment.SetEnvironmentVariable(BitBucketPipelines.EnvironmentVariableName, "MyWorkspace");
     }
