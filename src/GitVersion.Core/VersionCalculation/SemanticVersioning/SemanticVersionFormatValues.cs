@@ -23,13 +23,13 @@ public class SemanticVersionFormatValues
 
     public string? PreReleaseTag => this.semver.PreReleaseTag;
 
-    public string? PreReleaseTagWithDash => this.semver.PreReleaseTag.HasTag() == true ? "-" + this.semver.PreReleaseTag : null;
+    public string? PreReleaseTagWithDash => this.semver.PreReleaseTag.HasTag() ? "-" + this.semver.PreReleaseTag : null;
 
-    public string? PreReleaseLabel => this.semver.PreReleaseTag.HasTag() == true ? this.semver.PreReleaseTag.Name : null;
+    public string? PreReleaseLabel => this.semver.PreReleaseTag.HasTag() ? this.semver.PreReleaseTag.Name : null;
 
-    public string? PreReleaseLabelWithDash => this.semver.PreReleaseTag.HasTag() == true ? "-" + this.semver.PreReleaseTag.Name : null;
+    public string? PreReleaseLabelWithDash => this.semver.PreReleaseTag.HasTag() ? "-" + this.semver.PreReleaseTag.Name : null;
 
-    public string? PreReleaseNumber => this.semver.PreReleaseTag.HasTag() == true ? this.semver.PreReleaseTag.Number.ToString() : null;
+    public string? PreReleaseNumber => this.semver.PreReleaseTag.HasTag() ? this.semver.PreReleaseTag.Number.ToString() : null;
 
     public string WeightedPreReleaseNumber => GetWeightedPreReleaseNumber();
 
@@ -68,7 +68,7 @@ public class SemanticVersionFormatValues
     private string GetWeightedPreReleaseNumber()
     {
         var weightedPreReleaseNumber =
-            this.semver.PreReleaseTag.HasTag() == true ? (this.semver.PreReleaseTag.Number + this.configuration.PreReleaseWeight).ToString() : null;
+            this.semver.PreReleaseTag.HasTag() ? (this.semver.PreReleaseTag.Number + this.configuration.PreReleaseWeight).ToString() : null;
 
         return weightedPreReleaseNumber.IsNullOrEmpty()
             ? $"{this.configuration.LabelPreReleaseWeight}"

@@ -23,7 +23,7 @@ internal class MainlineVersionCalculator : IMainlineVersionCalculator
 
     public SemanticVersion FindMainlineModeVersion(BaseVersion baseVersion)
     {
-        if (baseVersion.SemanticVersion.PreReleaseTag.HasTag() == true)
+        if (baseVersion.SemanticVersion.PreReleaseTag.HasTag())
         {
             throw new NotSupportedException("Mainline development mode doesn't yet support pre-release tags on main");
         }

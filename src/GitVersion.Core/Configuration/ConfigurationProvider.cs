@@ -32,20 +32,7 @@ public class ConfigurationProvider : IConfigurationProvider
         var projectRootDirectory = this.repositoryInfo.ProjectRootDirectory;
 
         var rootDirectory = this.configFileLocator.HasConfigFileAt(workingDirectory) ? workingDirectory : projectRootDirectory;
-        return Provide(rootDirectory, overrideConfiguration);
-    }
-
-    public GitVersionConfiguration Provide(string? workingDirectory, GitVersionConfiguration? overrideConfiguration)
-    {
-        var configurationBuilder = new ConfigurationBuilder();
-
-        if (workingDirectory != null)
-            configurationBuilder = configurationBuilder.Add(this.configFileLocator.ReadConfig(workingDirectory));
-
-        if (overrideConfiguration != null)
-            configurationBuilder.Add(overrideConfiguration);
-
-        return configurationBuilder.Build();
+        return ProvideInternal(rootDirectory, overrideConfiguration);
     }
 
     public void Init(string workingDirectory)
@@ -61,5 +48,18 @@ public class ConfigurationProvider : IConfigurationProvider
         this.log.Info("Saving configuration file");
         ConfigurationSerializer.Write(configuration, writer);
         stream.Flush();
+    }
+
+    internal GitVersionConfiguration ProvideInternal(string? workingDirectory, GitVersionConfiguration? overrideConfiguration = null)
+    {
+        var configurationBuilder = new ConfigurationBuilder();
+
+        if (workingDirectory != null)
+            configurationBuilder = configurationBuilder.Add(this.configFileLocator.ReadConfig(workingDirectory));
+
+        if (overrideConfiguration != null)
+            configurationBuilder.Add(overrideConfiguration);
+
+        return configurationBuilder.Build();
     }
 }

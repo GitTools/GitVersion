@@ -38,7 +38,7 @@ public class VariableProvider : IVariableProvider
         }
 
         // Evaluate tag number pattern and append to prerelease tag, preserving build metadata
-        var appendTagNumberPattern = !configuration.LabelNumberPattern.IsNullOrEmpty() && semanticVersion.PreReleaseTag.HasTag() == true;
+        var appendTagNumberPattern = !configuration.LabelNumberPattern.IsNullOrEmpty() && semanticVersion.PreReleaseTag.HasTag();
         if (appendTagNumberPattern)
         {
             if (semanticVersion.BuildMetaData.Branch != null && configuration.LabelNumberPattern != null)

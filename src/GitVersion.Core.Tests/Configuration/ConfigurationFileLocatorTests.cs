@@ -19,7 +19,7 @@ public class ConfigurationFileLocatorTests
         private string repoPath;
         private string workingPath;
         private IFileSystem fileSystem;
-        private IConfigurationProvider configurationProvider;
+        private ConfigurationProvider configurationProvider;
         private IConfigurationFileLocator configFileLocator;
 
         [SetUp]
@@ -32,7 +32,7 @@ public class ConfigurationFileLocatorTests
             var sp = ConfigureServices(services => services.AddSingleton(options));
 
             this.fileSystem = sp.GetRequiredService<IFileSystem>();
-            this.configurationProvider = sp.GetRequiredService<IConfigurationProvider>();
+            this.configurationProvider = (ConfigurationProvider)sp.GetRequiredService<IConfigurationProvider>();
             this.configFileLocator = sp.GetRequiredService<IConfigurationFileLocator>();
 
             ShouldlyConfiguration.ShouldMatchApprovedDefaults.LocateTestMethodUsingAttribute<TestAttribute>();
@@ -55,11 +55,11 @@ public class ConfigurationFileLocatorTests
         {
             SetupConfigFileContent(string.Empty, ConfigurationFileLocator.DefaultFileName, this.repoPath);
 
-            Should.NotThrow(() => this.configurationProvider.Provide(this.repoPath));
+            Should.NotThrow(() => this.configurationProvider.ProvideInternal(this.repoPath));
         }
 
         [Test]
-        public void NoWarnOnNoGitVersionYmlFile() => Should.NotThrow(() => this.configurationProvider.Provide(this.repoPath));
+        public void NoWarnOnNoGitVersionYmlFile() => Should.NotThrow(() => this.configurationProvider.ProvideInternal(this.repoPath));
 
         private string SetupConfigFileContent(string text, string fileName, string path)
         {
@@ -165,9 +165,9 @@ public class ConfigurationFileLocatorTests
 
             SetupConfigFileContent(string.Empty);
 
-            var configurationProvider = sp.GetRequiredService<IConfigurationProvider>();
+            var configurationProvider = (ConfigurationProvider)sp.GetRequiredService<IConfigurationProvider>();
 
-            configurationProvider.Provide(this.repoPath);
+            configurationProvider.ProvideInternal(this.repoPath);
             stringLogger.Length.ShouldBe(0);
         }
 
@@ -186,9 +186,9 @@ public class ConfigurationFileLocatorTests
 
             SetupConfigFileContent(string.Empty, path: @"c:\\Unrelated\\path");
 
-            var configurationProvider = sp.GetRequiredService<IConfigurationProvider>();
+            var configurationProvider = (ConfigurationProvider)sp.GetRequiredService<IConfigurationProvider>();
 
-            configurationProvider.Provide(this.repoPath);
+            configurationProvider.ProvideInternal(this.repoPath);
             stringLogger.Length.ShouldBe(0);
         }
 

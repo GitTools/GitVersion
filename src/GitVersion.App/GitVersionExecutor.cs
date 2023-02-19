@@ -154,7 +154,7 @@ public class GitVersionExecutor : IGitVersionExecutor
 
         if (gitVersionOptions.ConfigInfo.ShowConfig)
         {
-            var configuration = this.configurationProvider.Provide(workingDirectory);
+            var configuration = this.configurationProvider.Provide();
             this.console.WriteLine(configuration.ToString());
             exitCode = 0;
             return true;

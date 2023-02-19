@@ -69,7 +69,7 @@ public class NextVersionCalculator : INextVersionCalculator
 
             var lastPrefixedSemver = this.repositoryStore
                 .GetVersionTagsOnBranch(Context.CurrentBranch, Context.Configuration.LabelPrefix, Context.Configuration.SemanticVersionFormat)
-                .Where(v => MajorMinorPatchEqual(v, semver) && v.PreReleaseTag.HasTag() == true)
+                .Where(v => MajorMinorPatchEqual(v, semver) && v.PreReleaseTag.HasTag())
                 .FirstOrDefault(v => v.PreReleaseTag.Name?.IsEquivalentTo(preReleaseTagName) == true);
 
             if (lastPrefixedSemver != null)

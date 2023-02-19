@@ -24,7 +24,7 @@ public class SemanticVersion : IFormattable, IComparable<SemanticVersion>, IEqua
     public SemanticVersionPreReleaseTag PreReleaseTag;
     public SemanticVersionBuildMetaData BuildMetaData;
 
-    public bool HasPreReleaseTagWithLabel => PreReleaseTag.HasTag() == true;
+    public bool HasPreReleaseTagWithLabel => this.PreReleaseTag.HasTag();
 
     public SemanticVersion(long major = 0, long minor = 0, long patch = 0)
     {
@@ -278,9 +278,9 @@ public class SemanticVersion : IFormattable, IComparable<SemanticVersion>, IEqua
             case "j":
                 return $"{this.Major}.{this.Minor}.{this.Patch}";
             case "s":
-                return this.PreReleaseTag.HasTag() == true ? $"{ToString("j")}-{this.PreReleaseTag}" : ToString("j");
+                return this.PreReleaseTag.HasTag() ? $"{ToString("j")}-{this.PreReleaseTag}" : ToString("j");
             case "t":
-                return this.PreReleaseTag.HasTag() == true ? $"{ToString("j")}-{this.PreReleaseTag.ToString("t")}" : ToString("j");
+                return this.PreReleaseTag.HasTag() ? $"{ToString("j")}-{this.PreReleaseTag.ToString("t")}" : ToString("j");
             case "f":
                 {
                     var buildMetadata = this.BuildMetaData.ToString();
