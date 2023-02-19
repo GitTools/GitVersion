@@ -1,52 +1,36 @@
-using GitVersion.BuildAgents;
 using GitVersion.Core.Tests.Helpers;
 using GitVersion.Helpers;
 using GitVersion.VersionCalculation;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace GitVersion.Core.Tests.BuildAgents;
+namespace GitVersion.BuildAgents.Tests;
 
 [TestFixture]
-public sealed class CodeBuildTests : TestBase
+public class GitLabCiTests : TestBase
 {
-    private IEnvironment environment;
+    private GitLabCi buildServer;
     private IServiceProvider sp;
-    private CodeBuild buildServer;
 
     [SetUp]
     public void SetUp()
     {
-        this.sp = ConfigureServices(services => services.AddSingleton<CodeBuild>());
-        this.environment = this.sp.GetRequiredService<IEnvironment>();
-        this.buildServer = this.sp.GetRequiredService<CodeBuild>();
+        this.sp = ConfigureServices(services => services.AddSingleton<GitLabCi>());
+        this.buildServer = this.sp.GetRequiredService<GitLabCi>();
     }
 
     [Test]
-    public void CorrectlyIdentifiesCodeBuildPresenceFromSourceVersion()
+    public void GenerateSetVersionMessageReturnsVersionAsIsAlthoughThisIsNotUsedByJenkins()
     {
-        this.environment.SetEnvironmentVariable(CodeBuild.SourceVersionEnvironmentVariableName, "a value");
-        this.buildServer.CanApplyToCurrentContext().ShouldBe(true);
+        var vars = new TestableVersionVariables(fullSemVer: "0.0.0-Beta4.7");
+        this.buildServer.GenerateSetVersionMessage(vars).ShouldBe("0.0.0-Beta4.7");
     }
 
     [Test]
-    public void PicksUpBranchNameFromEnvironmentFromSourceVersion()
+    public void GenerateMessageTest()
     {
-        this.environment.SetEnvironmentVariable(CodeBuild.SourceVersionEnvironmentVariableName, $"refs/heads/{MainBranch}");
-        this.buildServer.GetCurrentBranch(false).ShouldBe($"refs/heads/{MainBranch}");
-    }
-
-    [Test]
-    public void CorrectlyIdentifiesCodeBuildPresenceFromWebHook()
-    {
-        this.environment.SetEnvironmentVariable(CodeBuild.WebHookEnvironmentVariableName, "a value");
-        this.buildServer.CanApplyToCurrentContext().ShouldBe(true);
-    }
-
-    [Test]
-    public void PicksUpBranchNameFromEnvironmentFromWebHook()
-    {
-        this.environment.SetEnvironmentVariable(CodeBuild.WebHookEnvironmentVariableName, $"refs/heads/{MainBranch}");
-        this.buildServer.GetCurrentBranch(false).ShouldBe($"refs/heads/{MainBranch}");
+        var generatedParameterMessages = this.buildServer.GenerateSetParameterMessage("name", "value");
+        generatedParameterMessages.Length.ShouldBe(1);
+        generatedParameterMessages[0].ShouldBe("GitVersion_name=value");
     }
 
     [Test]
@@ -54,7 +38,7 @@ public sealed class CodeBuildTests : TestBase
     {
         var assemblyLocation = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
         assemblyLocation.ShouldNotBeNull();
-        var f = PathHelper.Combine(assemblyLocation, "codebuild_this_file_should_be_deleted.properties");
+        var f = PathHelper.Combine(assemblyLocation, "jenkins_this_file_should_be_deleted.properties");
 
         try
         {
@@ -82,7 +66,6 @@ public sealed class CodeBuildTests : TestBase
         semanticVersion.BuildMetaData.Sha = "commitSha";
 
         var configuration = new TestEffectiveConfiguration();
-
         var variableProvider = this.sp.GetRequiredService<IVariableProvider>();
 
         var variables = variableProvider.GetVariablesFor(semanticVersion, configuration, false);

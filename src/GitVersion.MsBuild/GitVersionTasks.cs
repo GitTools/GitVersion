@@ -69,9 +69,9 @@ public static class GitVersionTasks
         gitVersionOptions.Output.Add(OutputType.BuildServer);
 
         services.AddSingleton(Options.Create(gitVersionOptions));
-        services.AddModule(new GitVersionTaskModule());
-
+        services.AddModule(new GitVersionMsBuildModule());
         services.AddSingleton<IConsole>(new MsBuildAdapter(task.Log));
+        task.Overrides?.Invoke(services);
 
         var sp = services.BuildServiceProvider();
         Configure(sp, task);

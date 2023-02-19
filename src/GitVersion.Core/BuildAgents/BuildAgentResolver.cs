@@ -17,11 +17,10 @@ public class BuildAgentResolver : IBuildAgentResolver
 
     private ICurrentBuildAgent ResolveInternal()
     {
-        ICurrentBuildAgent instance = (ICurrentBuildAgent)this.buildAgents.Single(x => x is LocalBuild);
+        ICurrentBuildAgent instance = (ICurrentBuildAgent)this.buildAgents.Single(x => x.IsDefault);
 
-        foreach (var buildAgent in this.buildAgents.Where(x => x is not LocalBuild))
+        foreach (var buildAgent in this.buildAgents.Where(x => x.IsDefault == false))
         {
-            var agentName = buildAgent.GetType().Name;
             try
             {
                 if (!buildAgent.CanApplyToCurrentContext()) continue;
@@ -29,6 +28,7 @@ public class BuildAgentResolver : IBuildAgentResolver
             }
             catch (Exception ex)
             {
+                var agentName = buildAgent.GetType().Name;
                 this.log.Warning($"Failed to check build agent '{agentName}': {ex.Message}");
             }
         }

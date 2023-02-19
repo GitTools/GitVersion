@@ -19,10 +19,7 @@ public class BitBucketPipelines : BuildAgentBase
 
     public void WithPropertyFile(string propertiesFileName) => this.file = propertiesFileName;
 
-    public override string[] GenerateSetParameterMessage(string name, string value) => new[]
-    {
-        $"GITVERSION_{name.ToUpperInvariant()}={value}"
-    };
+    public override string[] GenerateSetParameterMessage(string name, string value) => new[] { $"GITVERSION_{name.ToUpperInvariant()}={value}" };
 
     public override void WriteIntegration(Action<string?> writer, VersionVariables variables, bool updateBuildNumber = true)
     {
@@ -59,7 +56,7 @@ public class BitBucketPipelines : BuildAgentBase
     private string? EvaluateEnvironmentVariable(string variableName)
     {
         var branchName = Environment.GetEnvironmentVariable(variableName);
-        Log.Info("Evaluating environment variable {0} : {1}", variableName, branchName ?? "(null)");
+        this.Log.Info("Evaluating environment variable {0} : {1}", variableName, branchName ?? "(null)");
         return branchName;
     }
 }

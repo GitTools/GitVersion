@@ -37,7 +37,7 @@ public class ArtifactsMsBuildCoreTest : FrostingTask<BuildContext>
                 _ => targetFramework
             };
 
-            var cmd = $"{rootPrefix}/scripts/test-msbuild-task.sh --version {version} --nugetPath {rootPrefix}/nuget --repoPath {rootPrefix}/repo/tests/integration/core --targetframework {targetFramework}";
+            var cmd = $"{rootPrefix}/scripts/test-msbuild-task.sh --version {version} --nugetPath {rootPrefix}/nuget --repoPath {rootPrefix}/repo/tests/integration --targetframework {targetFramework}";
 
             context.DockerTestArtifact(dockerImage, cmd);
         }

@@ -56,8 +56,7 @@ public class TestFileSystem : IFileSystem
     public void WriteAllText(string? file, string fileContents)
     {
         var path = Path.GetFullPath(file ?? throw new ArgumentNullException(nameof(file)));
-        var encoding = this.fileSystem.ContainsKey(path)
-            ? EncodingHelper.DetectEncoding(this.fileSystem[path]) ?? Encoding.UTF8
+        var encoding = fileSystem.TryGetValue(path, out var value) ? EncodingHelper.DetectEncoding(value) ?? Encoding.UTF8
             : Encoding.UTF8;
         WriteAllText(path, fileContents, encoding);
     }

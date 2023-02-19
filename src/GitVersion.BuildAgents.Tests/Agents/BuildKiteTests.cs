@@ -1,27 +1,25 @@
-using GitVersion;
-using GitVersion.BuildAgents;
 using GitVersion.Core.Tests.Helpers;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace GitVersionCore.Tests.BuildAgents;
+namespace GitVersion.BuildAgents.Tests;
 
 [TestFixture]
-public class SpaceAutomationTests : TestBase
+public class BuildKiteTests : TestBase
 {
     private IEnvironment environment;
-    private SpaceAutomation buildServer;
+    private BuildKite buildServer;
 
     [SetUp]
     public void SetUp()
     {
-        var sp = ConfigureServices(services => services.AddSingleton<SpaceAutomation>());
+        var sp = ConfigureServices(services => services.AddSingleton<BuildKite>());
         this.environment = sp.GetRequiredService<IEnvironment>();
-        this.buildServer = sp.GetRequiredService<SpaceAutomation>();
-        this.environment.SetEnvironmentVariable(SpaceAutomation.EnvironmentVariableName, "true");
+        this.buildServer = sp.GetRequiredService<BuildKite>();
+        this.environment.SetEnvironmentVariable(BuildKite.EnvironmentVariableName, "true");
     }
 
     [TearDown]
-    public void TearDown() => this.environment.SetEnvironmentVariable(SpaceAutomation.EnvironmentVariableName, null);
+    public void TearDown() => this.environment.SetEnvironmentVariable(BuildKite.EnvironmentVariableName, null);
 
     [Test]
     public void CanApplyToCurrentContextShouldBeTrueWhenEnvironmentVariableIsSet()
@@ -37,7 +35,7 @@ public class SpaceAutomationTests : TestBase
     public void CanApplyToCurrentContextShouldBeFalseWhenEnvironmentVariableIsNotSet()
     {
         // Arrange
-        this.environment.SetEnvironmentVariable(SpaceAutomation.EnvironmentVariableName, "");
+        this.environment.SetEnvironmentVariable(BuildKite.EnvironmentVariableName, "");
 
         // Act
         var result = this.buildServer.CanApplyToCurrentContext();
@@ -50,39 +48,38 @@ public class SpaceAutomationTests : TestBase
     public void GetCurrentBranchShouldHandleBranches()
     {
         // Arrange
-        this.environment.SetEnvironmentVariable("JB_SPACE_GIT_BRANCH", "refs/heads/master");
+        this.environment.SetEnvironmentVariable("BUILDKITE_BRANCH", MainBranch);
+        this.environment.SetEnvironmentVariable("BUILDKITE_PULL_REQUEST", "false");
 
         // Act
         var result = this.buildServer.GetCurrentBranch(false);
 
         // Assert
-        result.ShouldBe("refs/heads/master");
-    }
-
-    [Test]
-    public void GetCurrentBranchShouldHandleTags()
-    {
-        // Arrange
-        this.environment.SetEnvironmentVariable("JB_SPACE_GIT_BRANCH", "refs/tags/1.0.0");
-
-        // Act
-        var result = this.buildServer.GetCurrentBranch(false);
-
-        // Assert
-        result.ShouldBe("refs/tags/1.0.0");
+        result.ShouldBe(MainBranch);
     }
 
     [Test]
     public void GetCurrentBranchShouldHandlePullRequests()
     {
         // Arrange
-        this.environment.SetEnvironmentVariable("JB_SPACE_GIT_BRANCH", "refs/pull/1/merge");
+        this.environment.SetEnvironmentVariable("BUILDKITE_BRANCH", "feature/new");
+        this.environment.SetEnvironmentVariable("BUILDKITE_PULL_REQUEST", "55");
 
         // Act
         var result = this.buildServer.GetCurrentBranch(false);
 
         // Assert
-        result.ShouldBe("refs/pull/1/merge");
+        result.ShouldBe("refs/pull/55/head");
+    }
+
+    [Test]
+    public void GetSetParameterMessageShouldReturnEmptyArray()
+    {
+        // Act
+        var result = this.buildServer.GenerateSetParameterMessage("Foo", "Bar");
+
+        // Assert
+        result.ShouldBeEmpty();
     }
 
     [Test]

@@ -1,4 +1,3 @@
-using GitVersion.BuildAgents;
 using GitVersion.Core.Tests.Helpers;
 using LibGit2Sharp;
 using Microsoft.Extensions.DependencyInjection;
@@ -55,7 +54,7 @@ public class RemoteRepositoryScenarios : TestBase
         };
         var options = Options.Create(gitVersionOptions);
         var environment = new TestEnvironment();
-        environment.SetEnvironmentVariable(AzurePipelines.EnvironmentVariableName, "true");
+        environment.SetEnvironmentVariable("TF_BUILD", "true");
 
         var sp = ConfigureServices(services =>
         {

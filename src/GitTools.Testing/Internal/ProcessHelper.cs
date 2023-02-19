@@ -196,7 +196,7 @@ public static class ProcessHelper
         {
             try
             {
-                SetErrorMode(this.oldMode);
+                _ = SetErrorMode(this.oldMode);
             }
             catch (Exception ex) when (ex is EntryPointNotFoundException or DllNotFoundException)
             {

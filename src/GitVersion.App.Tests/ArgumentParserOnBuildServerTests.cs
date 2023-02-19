@@ -31,6 +31,7 @@ public class ArgumentParserOnBuildServerTests : TestBase
 
     private class MockBuildAgent : ICurrentBuildAgent
     {
+        public bool IsDefault => false;
         public bool CanApplyToCurrentContext() => throw new NotImplementedException();
 
         public void WriteIntegration(Action<string> writer, VersionVariables variables, bool updateBuildNumber = true) => throw new NotImplementedException();

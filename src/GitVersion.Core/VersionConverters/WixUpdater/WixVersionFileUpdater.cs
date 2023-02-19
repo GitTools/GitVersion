@@ -15,7 +15,7 @@ public sealed class WixVersionFileUpdater : IWixVersionFileUpdater
     private string? wixVersionFile;
     public const string WixVersionFileName = "GitVersion_WixVersion.wxi";
 
-    public WixVersionFileUpdater(IFileSystem fileSystem, ILog log)
+    public WixVersionFileUpdater(ILog log, IFileSystem fileSystem)
     {
         this.fileSystem = fileSystem.NotNull();
         this.log = log.NotNull();

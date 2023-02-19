@@ -1,0 +1,138 @@
+#nullable enable
+GitVersion.BuildAgents.AppVeyor
+GitVersion.BuildAgents.AppVeyor.AppVeyor(GitVersion.IEnvironment! environment, GitVersion.Logging.ILog! log) -> void
+GitVersion.BuildAgents.AzurePipelines
+GitVersion.BuildAgents.AzurePipelines.AzurePipelines(GitVersion.IEnvironment! environment, GitVersion.Logging.ILog! log) -> void
+GitVersion.BuildAgents.BitBucketPipelines
+GitVersion.BuildAgents.BitBucketPipelines.BitBucketPipelines(GitVersion.IEnvironment! environment, GitVersion.Logging.ILog! log) -> void
+GitVersion.BuildAgents.BitBucketPipelines.WithPropertyFile(string! propertiesFileName) -> void
+GitVersion.BuildAgents.BuildKite
+GitVersion.BuildAgents.BuildKite.BuildKite(GitVersion.IEnvironment! environment, GitVersion.Logging.ILog! log) -> void
+GitVersion.BuildAgents.CodeBuild
+GitVersion.BuildAgents.CodeBuild.CodeBuild(GitVersion.IEnvironment! environment, GitVersion.Logging.ILog! log) -> void
+GitVersion.BuildAgents.CodeBuild.WithPropertyFile(string! propertiesFileName) -> void
+GitVersion.BuildAgents.ContinuaCi
+GitVersion.BuildAgents.ContinuaCi.ContinuaCi(GitVersion.IEnvironment! environment, GitVersion.Logging.ILog! log) -> void
+GitVersion.BuildAgents.Drone
+GitVersion.BuildAgents.Drone.Drone(GitVersion.IEnvironment! environment, GitVersion.Logging.ILog! log) -> void
+GitVersion.BuildAgents.EnvRun
+GitVersion.BuildAgents.EnvRun.EnvRun(GitVersion.IEnvironment! environment, GitVersion.Logging.ILog! log) -> void
+GitVersion.BuildAgents.GitHubActions
+GitVersion.BuildAgents.GitHubActions.GitHubActions(GitVersion.IEnvironment! environment, GitVersion.Logging.ILog! log) -> void
+GitVersion.BuildAgents.GitLabCi
+GitVersion.BuildAgents.GitLabCi.GitLabCi(GitVersion.IEnvironment! environment, GitVersion.Logging.ILog! log) -> void
+GitVersion.BuildAgents.GitLabCi.WithPropertyFile(string! propertiesFileName) -> void
+GitVersion.BuildAgents.GitVersionBuildAgentsModule
+GitVersion.BuildAgents.GitVersionBuildAgentsModule.GitVersionBuildAgentsModule() -> void
+GitVersion.BuildAgents.Jenkins
+GitVersion.BuildAgents.Jenkins.Jenkins(GitVersion.IEnvironment! environment, GitVersion.Logging.ILog! log) -> void
+GitVersion.BuildAgents.Jenkins.WithPropertyFile(string! propertiesFileName) -> void
+GitVersion.BuildAgents.MyGet
+GitVersion.BuildAgents.MyGet.MyGet(GitVersion.IEnvironment! environment, GitVersion.Logging.ILog! log) -> void
+GitVersion.BuildAgents.SpaceAutomation
+GitVersion.BuildAgents.SpaceAutomation.SpaceAutomation(GitVersion.IEnvironment! environment, GitVersion.Logging.ILog! log) -> void
+GitVersion.BuildAgents.TeamCity
+GitVersion.BuildAgents.TeamCity.TeamCity(GitVersion.IEnvironment! environment, GitVersion.Logging.ILog! log) -> void
+GitVersion.BuildAgents.TravisCi
+GitVersion.BuildAgents.TravisCi.TravisCi(GitVersion.IEnvironment! environment, GitVersion.Logging.ILog! log) -> void
+const GitVersion.BuildAgents.AppVeyor.EnvironmentVariableName = "APPVEYOR" -> string!
+const GitVersion.BuildAgents.AzurePipelines.EnvironmentVariableName = "TF_BUILD" -> string!
+const GitVersion.BuildAgents.BitBucketPipelines.BranchEnvironmentVariableName = "BITBUCKET_BRANCH" -> string!
+const GitVersion.BuildAgents.BitBucketPipelines.EnvironmentVariableName = "BITBUCKET_WORKSPACE" -> string!
+const GitVersion.BuildAgents.BitBucketPipelines.PullRequestEnvironmentVariableName = "BITBUCKET_PR_ID" -> string!
+const GitVersion.BuildAgents.BitBucketPipelines.TagEnvironmentVariableName = "BITBUCKET_TAG" -> string!
+const GitVersion.BuildAgents.BuildKite.EnvironmentVariableName = "BUILDKITE" -> string!
+const GitVersion.BuildAgents.CodeBuild.SourceVersionEnvironmentVariableName = "CODEBUILD_SOURCE_VERSION" -> string!
+const GitVersion.BuildAgents.CodeBuild.WebHookEnvironmentVariableName = "CODEBUILD_WEBHOOK_HEAD_REF" -> string!
+const GitVersion.BuildAgents.ContinuaCi.EnvironmentVariableName = "ContinuaCI.Version" -> string!
+const GitVersion.BuildAgents.Drone.EnvironmentVariableName = "DRONE" -> string!
+const GitVersion.BuildAgents.EnvRun.EnvironmentVariableName = "ENVRUN_DATABASE" -> string!
+const GitVersion.BuildAgents.GitHubActions.EnvironmentVariableName = "GITHUB_ACTIONS" -> string!
+const GitVersion.BuildAgents.GitHubActions.GitHubSetEnvTempFileEnvironmentVariableName = "GITHUB_ENV" -> string!
+const GitVersion.BuildAgents.GitLabCi.EnvironmentVariableName = "GITLAB_CI" -> string!
+const GitVersion.BuildAgents.Jenkins.EnvironmentVariableName = "JENKINS_URL" -> string!
+const GitVersion.BuildAgents.MyGet.EnvironmentVariableName = "BuildRunner" -> string!
+const GitVersion.BuildAgents.SpaceAutomation.EnvironmentVariableName = "JB_SPACE_PROJECT_KEY" -> string!
+const GitVersion.BuildAgents.TeamCity.EnvironmentVariableName = "TEAMCITY_VERSION" -> string!
+const GitVersion.BuildAgents.TravisCi.EnvironmentVariableName = "TRAVIS" -> string!
+override GitVersion.BuildAgents.AppVeyor.EnvironmentVariable.get -> string!
+override GitVersion.BuildAgents.AppVeyor.GenerateSetParameterMessage(string! name, string! value) -> string![]!
+override GitVersion.BuildAgents.AppVeyor.GenerateSetVersionMessage(GitVersion.OutputVariables.VersionVariables! variables) -> string!
+override GitVersion.BuildAgents.AppVeyor.GetCurrentBranch(bool usingDynamicRepos) -> string?
+override GitVersion.BuildAgents.AppVeyor.PreventFetch() -> bool
+override GitVersion.BuildAgents.AzurePipelines.EnvironmentVariable.get -> string!
+override GitVersion.BuildAgents.AzurePipelines.GenerateSetParameterMessage(string! name, string! value) -> string![]!
+override GitVersion.BuildAgents.AzurePipelines.GenerateSetVersionMessage(GitVersion.OutputVariables.VersionVariables! variables) -> string!
+override GitVersion.BuildAgents.AzurePipelines.GetCurrentBranch(bool usingDynamicRepos) -> string?
+override GitVersion.BuildAgents.AzurePipelines.PreventFetch() -> bool
+override GitVersion.BuildAgents.BitBucketPipelines.EnvironmentVariable.get -> string!
+override GitVersion.BuildAgents.BitBucketPipelines.GenerateSetParameterMessage(string! name, string! value) -> string![]!
+override GitVersion.BuildAgents.BitBucketPipelines.GenerateSetVersionMessage(GitVersion.OutputVariables.VersionVariables! variables) -> string!
+override GitVersion.BuildAgents.BitBucketPipelines.GetCurrentBranch(bool usingDynamicRepos) -> string?
+override GitVersion.BuildAgents.BitBucketPipelines.WriteIntegration(System.Action<string?>! writer, GitVersion.OutputVariables.VersionVariables! variables, bool updateBuildNumber = true) -> void
+override GitVersion.BuildAgents.BuildKite.CanApplyToCurrentContext() -> bool
+override GitVersion.BuildAgents.BuildKite.EnvironmentVariable.get -> string!
+override GitVersion.BuildAgents.BuildKite.GenerateSetParameterMessage(string! name, string! value) -> string![]!
+override GitVersion.BuildAgents.BuildKite.GenerateSetVersionMessage(GitVersion.OutputVariables.VersionVariables! variables) -> string!
+override GitVersion.BuildAgents.BuildKite.GetCurrentBranch(bool usingDynamicRepos) -> string?
+override GitVersion.BuildAgents.BuildKite.PreventFetch() -> bool
+override GitVersion.BuildAgents.CodeBuild.CanApplyToCurrentContext() -> bool
+override GitVersion.BuildAgents.CodeBuild.GenerateSetParameterMessage(string! name, string! value) -> string![]!
+override GitVersion.BuildAgents.CodeBuild.GenerateSetVersionMessage(GitVersion.OutputVariables.VersionVariables! variables) -> string!
+override GitVersion.BuildAgents.CodeBuild.GetCurrentBranch(bool usingDynamicRepos) -> string?
+override GitVersion.BuildAgents.CodeBuild.PreventFetch() -> bool
+override GitVersion.BuildAgents.CodeBuild.WriteIntegration(System.Action<string?>! writer, GitVersion.OutputVariables.VersionVariables! variables, bool updateBuildNumber = true) -> void
+override GitVersion.BuildAgents.ContinuaCi.EnvironmentVariable.get -> string!
+override GitVersion.BuildAgents.ContinuaCi.GenerateSetParameterMessage(string! name, string! value) -> string![]!
+override GitVersion.BuildAgents.ContinuaCi.GenerateSetVersionMessage(GitVersion.OutputVariables.VersionVariables! variables) -> string!
+override GitVersion.BuildAgents.ContinuaCi.PreventFetch() -> bool
+override GitVersion.BuildAgents.Drone.CanApplyToCurrentContext() -> bool
+override GitVersion.BuildAgents.Drone.EnvironmentVariable.get -> string!
+override GitVersion.BuildAgents.Drone.GenerateSetParameterMessage(string! name, string! value) -> string![]!
+override GitVersion.BuildAgents.Drone.GenerateSetVersionMessage(GitVersion.OutputVariables.VersionVariables! variables) -> string!
+override GitVersion.BuildAgents.Drone.GetCurrentBranch(bool usingDynamicRepos) -> string?
+override GitVersion.BuildAgents.Drone.PreventFetch() -> bool
+override GitVersion.BuildAgents.EnvRun.CanApplyToCurrentContext() -> bool
+override GitVersion.BuildAgents.EnvRun.EnvironmentVariable.get -> string!
+override GitVersion.BuildAgents.EnvRun.GenerateSetParameterMessage(string! name, string! value) -> string![]!
+override GitVersion.BuildAgents.EnvRun.GenerateSetVersionMessage(GitVersion.OutputVariables.VersionVariables! variables) -> string!
+override GitVersion.BuildAgents.EnvRun.PreventFetch() -> bool
+override GitVersion.BuildAgents.GitHubActions.EnvironmentVariable.get -> string!
+override GitVersion.BuildAgents.GitHubActions.GenerateSetParameterMessage(string! name, string! value) -> string![]!
+override GitVersion.BuildAgents.GitHubActions.GenerateSetVersionMessage(GitVersion.OutputVariables.VersionVariables! variables) -> string!
+override GitVersion.BuildAgents.GitHubActions.GetCurrentBranch(bool usingDynamicRepos) -> string?
+override GitVersion.BuildAgents.GitHubActions.PreventFetch() -> bool
+override GitVersion.BuildAgents.GitHubActions.WriteIntegration(System.Action<string?>! writer, GitVersion.OutputVariables.VersionVariables! variables, bool updateBuildNumber = true) -> void
+override GitVersion.BuildAgents.GitLabCi.EnvironmentVariable.get -> string!
+override GitVersion.BuildAgents.GitLabCi.GenerateSetParameterMessage(string! name, string! value) -> string![]!
+override GitVersion.BuildAgents.GitLabCi.GenerateSetVersionMessage(GitVersion.OutputVariables.VersionVariables! variables) -> string!
+override GitVersion.BuildAgents.GitLabCi.GetCurrentBranch(bool usingDynamicRepos) -> string?
+override GitVersion.BuildAgents.GitLabCi.PreventFetch() -> bool
+override GitVersion.BuildAgents.GitLabCi.WriteIntegration(System.Action<string?>! writer, GitVersion.OutputVariables.VersionVariables! variables, bool updateBuildNumber = true) -> void
+override GitVersion.BuildAgents.GitVersionBuildAgentsModule.RegisterTypes(Microsoft.Extensions.DependencyInjection.IServiceCollection! services) -> void
+override GitVersion.BuildAgents.Jenkins.EnvironmentVariable.get -> string!
+override GitVersion.BuildAgents.Jenkins.GenerateSetParameterMessage(string! name, string! value) -> string![]!
+override GitVersion.BuildAgents.Jenkins.GenerateSetVersionMessage(GitVersion.OutputVariables.VersionVariables! variables) -> string!
+override GitVersion.BuildAgents.Jenkins.GetCurrentBranch(bool usingDynamicRepos) -> string?
+override GitVersion.BuildAgents.Jenkins.PreventFetch() -> bool
+override GitVersion.BuildAgents.Jenkins.ShouldCleanUpRemotes() -> bool
+override GitVersion.BuildAgents.Jenkins.WriteIntegration(System.Action<string?>! writer, GitVersion.OutputVariables.VersionVariables! variables, bool updateBuildNumber = true) -> void
+override GitVersion.BuildAgents.MyGet.CanApplyToCurrentContext() -> bool
+override GitVersion.BuildAgents.MyGet.EnvironmentVariable.get -> string!
+override GitVersion.BuildAgents.MyGet.GenerateSetParameterMessage(string! name, string! value) -> string![]!
+override GitVersion.BuildAgents.MyGet.GenerateSetVersionMessage(GitVersion.OutputVariables.VersionVariables! variables) -> string?
+override GitVersion.BuildAgents.MyGet.PreventFetch() -> bool
+override GitVersion.BuildAgents.SpaceAutomation.EnvironmentVariable.get -> string!
+override GitVersion.BuildAgents.SpaceAutomation.GenerateSetParameterMessage(string! name, string! value) -> string![]!
+override GitVersion.BuildAgents.SpaceAutomation.GenerateSetVersionMessage(GitVersion.OutputVariables.VersionVariables! variables) -> string!
+override GitVersion.BuildAgents.SpaceAutomation.GetCurrentBranch(bool usingDynamicRepos) -> string?
+override GitVersion.BuildAgents.TeamCity.EnvironmentVariable.get -> string!
+override GitVersion.BuildAgents.TeamCity.GenerateSetParameterMessage(string! name, string! value) -> string![]!
+override GitVersion.BuildAgents.TeamCity.GenerateSetVersionMessage(GitVersion.OutputVariables.VersionVariables! variables) -> string!
+override GitVersion.BuildAgents.TeamCity.GetCurrentBranch(bool usingDynamicRepos) -> string?
+override GitVersion.BuildAgents.TeamCity.PreventFetch() -> bool
+override GitVersion.BuildAgents.TravisCi.CanApplyToCurrentContext() -> bool
+override GitVersion.BuildAgents.TravisCi.EnvironmentVariable.get -> string!
+override GitVersion.BuildAgents.TravisCi.GenerateSetParameterMessage(string! name, string! value) -> string![]!
+override GitVersion.BuildAgents.TravisCi.GenerateSetVersionMessage(GitVersion.OutputVariables.VersionVariables! variables) -> string!
+override GitVersion.BuildAgents.TravisCi.PreventFetch() -> bool
