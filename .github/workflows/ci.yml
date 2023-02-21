@@ -36,314 +36,56 @@ permissions:
 
 jobs:
   prepare:
-    name: Prepare Build
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [windows-latest, ubuntu-latest, macos-latest]
-      fail-fast: false
-
-    steps:
-    -
-      name: Checkout
-      uses: actions/checkout@v3
-    -
-      name: Cache cake frosting
-      id: cache-cake
-      uses: actions/cache@v3.2.5
-      with:
-        path: run
-        key: run-${{ runner.os }}-${{ hashFiles('./build/**') }}
-    -
-      name: Setup .NET SDK
-      uses: actions/setup-dotnet@v3.0.3
-      with:
-        dotnet-version: '7.0.x'
-    -
-      name: '[Prepare]'
-      if: steps.cache-cake.outputs.cache-hit != 'true'
-      run: dotnet build build/CI.sln --configuration=Release
-    -
-      name: '[DogFood]'
-      shell: pwsh
-      run: dotnet run/build.dll --target=BuildPrepare
-    -
-      name: 'Upload gitversion tool'
-      uses: actions/upload-artifact@v3
-      with:
-        name: tool
-        path: ${{ github.workspace }}/dogfood
+    name: Prepare
+    uses: ./.github/workflows/_prepare.yml
 
   build:
     name: Build & Package
-    needs: [prepare]
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [windows-latest, ubuntu-latest, macos-latest]
-      fail-fast: false
-
-    steps:
-    -
-      name: Checkout
-      uses: actions/checkout@v3
-      with:
-        fetch-depth: 0
-    -
-      name: Restore State
-      uses: ./.github/actions/artifacts-restore
-    -
-      name: '[Build]'
-      shell: pwsh
-      run: dotnet run/build.dll --target=Package
-    -
-      name: 'Upload nuget packages'
-      uses: actions/upload-artifact@v3
-      if: matrix.os == 'windows-latest'
-      with:
-        name: nuget
-        path: ${{ github.workspace }}/artifacts/packages/nuget
-    -
-      name: 'Upload native packages'
-      uses: actions/upload-artifact@v3
-      if: matrix.os == 'windows-latest'
-      with:
-        name: native-${{ runner.os }}
-        path: ${{ github.workspace }}/artifacts/packages/native/*.zip
-    -
-      name: 'Upload native packages'
-      uses: actions/upload-artifact@v3
-      if: matrix.os != 'windows-latest'
-      with:
-        name: native-${{ runner.os }}
-        path: ${{ github.workspace }}/artifacts/packages/native/*.tar.gz
+    needs: [ prepare ]
+    uses: ./.github/workflows/_build.yml
 
   unit_test:
     name: Test
-    needs: [prepare]
-    runs-on: ${{ matrix.os }}
-    env:
-      CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
-    strategy:
-      matrix:
-        os: [windows-latest, ubuntu-latest, macos-latest]
-        targetFramework: [net7.0, net6.0]
-      fail-fast: false
-
-    steps:
-    -
-      name: Checkout
-      uses: actions/checkout@v3
-      with:
-        fetch-depth: 0
-    -
-      name: Restore State
-      uses: ./.github/actions/artifacts-restore
-    -
-      name: '[Unit Test]'
-      shell: pwsh
-      run: dotnet run/build.dll --target=Test --dotnet_target=${{ matrix.targetFramework }}
-
-    -
-      name: Test Summary
-      uses: test-summary/action@v2
-      with:
-        paths: artifacts/test-results/*.results.xml
-      if: always()
+    needs: [ prepare ]
+    uses: ./.github/workflows/_unit_tests.yml
 
   artifacts_windows_test:
-    name: Artifacts
-    needs: [build]
-    runs-on: windows-latest
-    strategy:
-      matrix:
-        package: [ Executable, MsBuildFull ]
-      fail-fast: false
-
-    steps:
-    -
-      name: Checkout
-      uses: actions/checkout@v3
-      with:
-        fetch-depth: 0
-    -
-      name: Restore State
-      uses: ./.github/actions/artifacts-restore
-    -
-      uses: actions/download-artifact@v3
-      name: Download nuget packages
-      with:
-        name: nuget
-        path: ${{ github.workspace }}/artifacts/packages/nuget
-    -
-      name: '[Test Artifacts]'
-      shell: pwsh
-      run: dotnet run/artifacts.dll --target=Artifacts${{ matrix.package }}Test
+    name: Artifacts Windows
+    needs: [ build ]
+    uses: ./.github/workflows/_artifacts_windows.yml
 
   artifacts_linux_test:
-    name: Artifacts
-    needs: [build]
-    runs-on: ubuntu-latest
+    needs: [ build ]
+    name: Artifacts Linux (${{ matrix.arch }})
     strategy:
       matrix:
-        targetFramework: [ '7.0', '6.0' ]
-        distro: [ alpine.3.15, alpine.3.16, alpine.3.17, centos.7, centos.stream.8, fedora.36, debian.10, debian.11, ubuntu.18.04, ubuntu.20.04, ubuntu.22.04 ]
-      fail-fast: false
-
-    steps:
-    -
-      name: Checkout
-      uses: actions/checkout@v3
-      with:
-        fetch-depth: 0
-    -
-      name: Restore State
-      uses: ./.github/actions/artifacts-restore
-    -
-      uses: actions/download-artifact@v3
-      name: Download nuget packages
-      with:
-        name: nuget
-        path: ${{ github.workspace }}/artifacts/packages/nuget
-    -
-      uses: actions/download-artifact@v3
-      name: Download native packages
-      with:
-        name: native-${{ runner.os }}
-        path: ${{ github.workspace }}/artifacts/packages/native
-    -
-      name: Setup QEMU
-      uses: docker/setup-qemu-action@v2
-    -
-      name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v2
-      with:
-        install: true
-
-    -
-      name: '[Test Artifacts (amd64)]'
-      shell: pwsh
-      run: dotnet run/artifacts.dll --target=ArtifactsTest --arch amd64 --docker_dotnetversion=${{ matrix.targetFramework }} --docker_distro=${{ matrix.distro }}
-    -
-      name: '[Test Artifacts (arm64)]'
-      shell: pwsh
-      run: dotnet run/artifacts.dll --target=ArtifactsTest --arch arm64 --docker_dotnetversion=${{ matrix.targetFramework }} --docker_distro=${{ matrix.distro }}
+        arch: [ amd64, arm64 ]
+    uses: ./.github/workflows/_artifacts_linux.yml
+    with:
+      runner: ubuntu-latest
+      arch: ${{ matrix.arch }}
 
   docker_linux_images:
-    name: Docker Images
-    needs: [build]
-    runs-on: ubuntu-latest
+    needs:  [ build ]
+    name: Docker Images (${{ matrix.arch }})
     strategy:
       matrix:
-        targetFramework: [ '7.0', '6.0' ]
-        distro: [ alpine.3.15, alpine.3.16, alpine.3.17, centos.7, centos.stream.8, fedora.36, debian.10, debian.11, ubuntu.18.04, ubuntu.20.04, ubuntu.22.04 ]
-      fail-fast: false
-
-    steps:
-    -
-      name: Checkout
-      uses: actions/checkout@v3
-      with:
-        fetch-depth: 0
-    -
-      name: Restore State
-      uses: ./.github/actions/artifacts-restore
-    -
-      uses: actions/download-artifact@v3
-      name: Download nuget packages
-      with:
-        name: nuget
-        path: ${{ github.workspace }}/artifacts/packages/nuget
-    -
-      name: Setup QEMU
-      uses: docker/setup-qemu-action@v2
-    -
-      name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v2
-      with:
-        install: true
-    -
-      name: Login to DockerHub
-      if: success() && github.event_name != 'pull_request' && github.repository_owner == 'GitTools'
-      uses: docker/login-action@v2
-      with:
-        username: ${{ secrets.DOCKER_USERNAME }}
-        password: ${{ secrets.DOCKER_PASSWORD }}
-    -
-      name: '[Docker Build/Test/Publish (amd64)] DockerHub'
-      if: success() && github.event_name != 'pull_request' && github.repository_owner == 'GitTools'
-      shell: pwsh
-      run: dotnet run/docker.dll --target=DockerPublish --arch amd64 --docker_dotnetversion=${{ matrix.targetFramework }} --docker_distro=${{ matrix.distro }} --docker_registry dockerhub
-    -
-      name: '[Docker Build/Test/Publish (arm64)] DockerHub'
-      if: success() && github.event_name != 'pull_request' && github.repository_owner == 'GitTools'
-      shell: pwsh
-      run: dotnet run/docker.dll --target=DockerPublish --arch arm64 --docker_dotnetversion=${{ matrix.targetFramework }} --docker_distro=${{ matrix.distro }} --docker_registry dockerhub
-    -
-      name: '[Docker Publish Manifest] DockerHub'
-      if: success() && github.event_name != 'pull_request' && github.repository_owner == 'GitTools'
-      shell: pwsh
-      run: dotnet run/docker.dll --target=DockerManifest --docker_dotnetversion=${{ matrix.targetFramework }} --docker_distro=${{ matrix.distro }} --docker_registry dockerhub
-
-    -
-      name: Login to GitHub Container Registry
-      if: success() && github.event_name != 'pull_request' && github.repository_owner == 'GitTools'
-      uses: docker/login-action@v2
-      with:
-        registry: ghcr.io
-        username: ${{ github.repository_owner }}
-        password: ${{ secrets.DOCKER_GITHUB_TOKEN }}
-    -
-      name: '[Docker Build/Test/Publish (amd64)] GitHub Container Registry'
-      if: success() && github.event_name != 'pull_request' && github.repository_owner == 'GitTools'
-      shell: pwsh
-      run: dotnet run/docker.dll --target=DockerPublish --arch amd64 --docker_dotnetversion=${{ matrix.targetFramework }} --docker_distro=${{ matrix.distro }} --docker_registry github
-    -
-      name: '[Docker Build/Test/Publish (arm64)] GitHub Container Registry'
-      if: success() && github.event_name != 'pull_request' && github.repository_owner == 'GitTools'
-      shell: pwsh
-      run: dotnet run/docker.dll --target=DockerPublish --arch arm64 --docker_dotnetversion=${{ matrix.targetFramework }} --docker_distro=${{ matrix.distro }} --docker_registry github
-    -
-      name: '[Docker Publish Manifest] GitHub Container Registry'
-      if: success() && github.event_name != 'pull_request' && github.repository_owner == 'GitTools'
-      shell: pwsh
-      run: dotnet run/docker.dll --target=DockerManifest --docker_dotnetversion=${{ matrix.targetFramework }} --docker_distro=${{ matrix.distro }} --docker_registry github
+        arch: [ amd64, arm64 ]
+    uses: ./.github/workflows/_docker.yml
+    with:
+      runner: ubuntu-latest
+      arch: ${{ matrix.arch }}
+    secrets: inherit
 
   publish:
     name: Publish
-    needs: [artifacts_windows_test, artifacts_linux_test, docker_linux_images]
-    runs-on: windows-latest
-    strategy:
-      matrix:
-        taskName: [NuGet, Chocolatey]
-      fail-fast: false
-    env:
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
-      CHOCOLATEY_API_KEY: ${{ secrets.CHOCOLATEY_API_KEY }}
-    steps:
-    -
-      name: Checkout
-      uses: actions/checkout@v3
-      with:
-        fetch-depth: 0
-    -
-      name: Restore State
-      uses: ./.github/actions/artifacts-restore
-    -
-      uses: actions/download-artifact@v3
-      name: Download nuget packages
-      with:
-        name: nuget
-        path: ${{ github.workspace }}/artifacts/packages/nuget
-    -
-      name: '[Publish]'
-      shell: pwsh
-      run: dotnet run/publish.dll --target=Publish${{ matrix.taskName }}
+    needs: [ artifacts_windows_test, artifacts_linux_test, docker_linux_images ]
+    uses: ./.github/workflows/_publish.yml
+    secrets: inherit
 
   release:
     name: Release
-    needs: [publish]
+    needs: [ publish ]
     runs-on: windows-latest
     env:
       GITHUB_TOKEN: ${{ secrets.RELEASE_GITHUB_TOKEN }}

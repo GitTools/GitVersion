@@ -57,14 +57,14 @@ jobs:
     -
       name: Cache cake frosting
       id: cache-cake
-      uses: actions/cache@v3.2.5
+      uses: actions/cache@v3
       with:
         path: run
         key: run-${{ runner.os }}-${{ hashFiles('./build/**') }}
 
     -
       name: Setup .NET SDK
-      uses: actions/setup-dotnet@v3.0.3
+      uses: actions/setup-dotnet@v3
       with:
         dotnet-version: '7.0.x'
 
