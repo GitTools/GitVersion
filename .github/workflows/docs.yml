@@ -104,30 +104,8 @@ jobs:
       with:
         fetch-depth: 0
     -
-      name: Use cached cake frosting
-      id: cache-cake
-      uses: actions/cache@v3.2.5
-      with:
-        path: run
-        key: run-${{ runner.os }}-${{ hashFiles('./build/**') }}
-    -
-      name: Use cached tools
-      id: cache-tools
-      uses: actions/cache@v3.2.5
-      with:
-        path: tools
-        key: tools-${{ runner.os }}-${{ hashFiles('./build/**') }}
-    -
-      name: Setup .NET SDK
-      uses: actions/setup-dotnet@v3.0.3
-      with:
-        dotnet-version: '7.0.x'
-    -
-      uses: actions/download-artifact@v3
-      name: Download gitversion tool
-      with:
-        name: tool
-        path: ${{ github.workspace }}/dogfood
+      name: Restore State
+      uses: ./.github/actions/artifacts-restore
     -
       name: '[Build Documentation]'
       shell: pwsh
@@ -165,30 +143,8 @@ jobs:
       with:
         fetch-depth: 0
     -
-      name: Use cached cake frosting
-      id: cache-cake
-      uses: actions/cache@v3.2.5
-      with:
-        path: run
-        key: run-${{ runner.os }}-${{ hashFiles('./build/**') }}
-    -
-      name: Use cached tools
-      id: cache-tools
-      uses: actions/cache@v3.2.5
-      with:
-        path: tools
-        key: tools-${{ runner.os }}-${{ hashFiles('./build/**') }}
-    -
-      name: Setup .NET SDK
-      uses: actions/setup-dotnet@v3.0.3
-      with:
-        dotnet-version: '7.0.x'
-    -
-      uses: actions/download-artifact@v3
-      name: Download gitversion tool
-      with:
-        name: tool
-        path: ${{ github.workspace }}/dogfood
+      name: Restore State
+      uses: ./.github/actions/artifacts-restore
     -
       name: '[Publish Documentation]'
       if: ${{ github.event_name == 'push' }}
