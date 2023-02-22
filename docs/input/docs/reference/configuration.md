@@ -40,25 +40,134 @@ created. Modify this to suit your needs.
 The global configuration looks like this:
 
 ```yaml
-next-version: 1.0
 assembly-versioning-scheme: MajorMinorPatch
 assembly-file-versioning-scheme: MajorMinorPatch
-assembly-informational-format: '{InformationalVersion}'
-mode: ContinuousDelivery
-increment: Inherit
-continuous-delivery-fallback-label: ci
-label-prefix: '[vV]'
+label-prefix: '[vV]?'
 major-version-bump-message: '\+semver:\s?(breaking|major)'
 minor-version-bump-message: '\+semver:\s?(feature|minor)'
 patch-version-bump-message: '\+semver:\s?(fix|patch)'
 no-bump-message: '\+semver:\s?(none|skip)'
 label-pre-release-weight: 60000
-commit-message-incrementing: Enabled
-ignore:
-  sha: []
-  commits-before: yyyy-MM-ddTHH:mm:ss
+commit-date-format: yyyy-MM-dd
 merge-message-formats: {}
 update-build-number: true
+semantic-version-format: Strict
+branches:
+  develop:
+    mode: ContinuousDeployment
+    label: alpha
+    increment: Minor
+    prevent-increment-of-merged-branch-version: false
+    track-merge-target: true
+    regex: ^dev(elop)?(ment)?$
+    source-branches: []
+    tracks-release-branches: true
+    is-release-branch: false
+    is-mainline: false
+    pre-release-weight: 0
+  main:
+    label: ''
+    increment: Patch
+    prevent-increment-of-merged-branch-version: true
+    track-merge-target: false
+    regex: ^master$|^main$
+    source-branches:
+    - develop
+    - release
+    tracks-release-branches: false
+    is-release-branch: false
+    is-mainline: true
+    pre-release-weight: 55000
+  release:
+    label: beta
+    increment: None
+    prevent-increment-of-merged-branch-version: true
+    track-merge-target: false
+    regex: ^releases?[/-]
+    source-branches:
+    - develop
+    - main
+    - support
+    - release
+    tracks-release-branches: false
+    is-release-branch: true
+    is-mainline: false
+    pre-release-weight: 30000
+  feature:
+    mode: ContinuousDelivery
+    label: '{BranchName}'
+    increment: Inherit
+    regex: ^features?[/-]
+    source-branches:
+    - develop
+    - main
+    - release
+    - feature
+    - support
+    - hotfix
+    pre-release-weight: 30000
+  pull-request:
+    mode: ContinuousDelivery
+    label: PullRequest
+    increment: Inherit
+    label-number-pattern: '[/-](?<number>\d+)'
+    regex: ^(pull|pull\-requests|pr)[/-]
+    source-branches:
+    - develop
+    - main
+    - release
+    - feature
+    - support
+    - hotfix
+    pre-release-weight: 30000
+  hotfix:
+    mode: ContinuousDelivery
+    label: beta
+    increment: Inherit
+    regex: ^hotfix(es)?[/-]
+    source-branches:
+    - release
+    - main
+    - support
+    - hotfix
+    pre-release-weight: 30000
+  support:
+    label: ''
+    increment: Patch
+    prevent-increment-of-merged-branch-version: true
+    track-merge-target: false
+    regex: ^support[/-]
+    source-branches:
+    - main
+    tracks-release-branches: false
+    is-release-branch: false
+    is-mainline: true
+    pre-release-weight: 55000
+  unknown:
+    mode: ContinuousDelivery
+    label: '{BranchName}'
+    increment: Inherit
+    regex: .*
+    source-branches:
+    - main
+    - develop
+    - release
+    - feature
+    - pull-request
+    - hotfix
+    - support
+ignore:
+  sha: []
+mode: ContinuousDelivery
+label: '{BranchName}'
+increment: Inherit
+prevent-increment-of-merged-branch-version: false
+track-merge-target: false
+commit-message-incrementing: Enabled
+regex: ''
+tracks-release-branches: false
+is-release-branch: false
+is-mainline: false
 ```
 
 The details of the available options are as follows:
@@ -142,25 +251,6 @@ for [increment](#increment),
 [prevent-increment-of-merged-branch-version](#prevent-increment-of-merged-branch-version)
 and [tracks-release-branches](#tracks-release-branches).
 
-### continuous-delivery-fallback-label
-
-When using `mode: ContinuousDeployment`, the value specified in
-`continuous-delivery-fallback-label` will be used as the pre-release label for
-branches which do not have one specified. Default set to `ci`.
-
-Just to clarify: For a build name without `...-ci-<buildnumber>` or in other
-words without a `PreReleaseTag` (ergo `"PreReleaseTag":""` in GitVersion's JSON output)
-at the end you would need to set `continuous-delivery-fallback-label` to an empty
-string (`''`):
-
-```yaml
-mode: ContinuousDeployment
-continuous-delivery-fallback-label: ''
-...
-```
-
-Doing so can be helpful if you use your `main` branch as a `release` branch.
-
 ### label-prefix
 
 A regex which is used to trim Git tags before processing (e.g., v1.0.0). Default
@@ -200,7 +290,7 @@ The pre-release weight in case of tagged commits. If the value is not set in the
 configuration, a default weight of 60000 is used instead. If the
 `WeightedPreReleaseNumber` [variable][variables] is 0 and this parameter is set,
 its value is used. This helps if your branching model is GitFlow and the last
-release build, which is often tagged, can utilise this parameter to produce a
+release build, which is often tagged, can utilize this parameter to produce a
 monotonically increasing build number.
 
 ### commit-message-incrementing
@@ -441,7 +531,7 @@ Without this configuration value you would have to do:
 ```yaml
 branches:
   unstable:
-    regex: ...
+    regex:
   feature:
     source-branches: ['unstable', 'develop', 'feature', 'hotfix', 'support']
   release:
@@ -539,9 +629,9 @@ is set, it would be added to the `PreReleaseNumber` to get a final
 `pre-release-weight` will be used in the calculation. Related Issues [1145][1145]
 and [1366][1366].
 
-### semver-format
+### semantic-version-format
 
-Specifies the semver format that is used when parsing the string.
+Specifies the semantic version format that is used when parsing the string.
 Can be `Strict` - using the [regex](https://regex101.com/r/Ly7O1x/3/)
 or `Loose` the old way of parsing. The default if not specified is `Strict`
 Example of invalid `Strict`, but valid `Loose`

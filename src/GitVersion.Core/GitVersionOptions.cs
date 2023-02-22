@@ -8,7 +8,7 @@ public class GitVersionOptions
 
     public AssemblyInfoData AssemblyInfo { get; } = new();
     public AuthenticationInfo Authentication { get; } = new();
-    public ConfigInfo ConfigInfo { get; } = new();
+    public ConfigurationContext ConfigInfo { get; } = new();
     public RepositoryInfo RepositoryInfo { get; } = new();
     public WixInfo WixInfo { get; } = new();
     public Settings Settings { get; } = new();

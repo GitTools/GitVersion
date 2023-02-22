@@ -12,7 +12,7 @@ public class ConfigurationFileLocator : IConfigurationFileLocator
     public ConfigurationFileLocator(IFileSystem fileSystem, IOptions<GitVersionOptions> options)
     {
         this.fileSystem = fileSystem;
-        var configFile = options.Value.ConfigInfo.ConfigFile;
+        var configFile = options.Value.ConfigInfo.ConfigurationFile;
         FilePath = !configFile.IsNullOrWhiteSpace() ? configFile : DefaultFileName;
     }
 
@@ -53,6 +53,21 @@ public class ConfigurationFileLocator : IConfigurationFileLocator
         }
 
         return new GitVersionConfiguration();
+    }
+
+    public IReadOnlyDictionary<object, object?>? ReadOverrideConfiguration(string? workingDirectory)
+    {
+        var configFilePath = GetConfigFilePath(workingDirectory);
+
+        Dictionary<object, object?>? configuration = null;
+        if (configFilePath != null && this.fileSystem.Exists(configFilePath))
+        {
+            var readAllText = this.fileSystem.ReadAllText(configFilePath);
+
+            configuration = ConfigurationSerializer.Deserialize<Dictionary<object, object?>>(readAllText);
+        }
+
+        return configuration;
     }
 
     public void Verify(GitVersionOptions gitVersionOptions, IGitRepositoryInfo repositoryInfo)

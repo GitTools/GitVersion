@@ -2,6 +2,7 @@ using GitVersion.Configuration.Init.Wizard;
 using GitVersion.Extensions;
 using GitVersion.Logging;
 using Microsoft.Extensions.Options;
+using YamlDotNet.Core;
 
 namespace GitVersion.Configuration;
 
@@ -23,7 +24,7 @@ public class ConfigurationProvider : IConfigurationProvider
         this.configInitWizard = configInitWizard.NotNull();
     }
 
-    public GitVersionConfiguration Provide(GitVersionConfiguration? overrideConfiguration)
+    public GitVersionConfiguration Provide(IReadOnlyDictionary<object, object?>? overrideConfiguration)
     {
         var gitVersionOptions = this.options.Value;
         var workingDirectory = gitVersionOptions.WorkingDirectory;
@@ -48,17 +49,28 @@ public class ConfigurationProvider : IConfigurationProvider
         stream.Flush();
     }
 
-    internal GitVersionConfiguration ProvideInternal(string? workingDirectory, GitVersionConfiguration? overrideConfiguration = null)
+    internal GitVersionConfiguration ProvideInternal(
+        string? workingDirectory, IReadOnlyDictionary<object, object?>? overrideConfiguration = null)
     {
-        var configurationBuilder = new ConfigurationBuilder();
+        var overrideConfigurationFromFile = this.configFileLocator.ReadOverrideConfiguration(workingDirectory);
 
-        if (workingDirectory != null)
-            configurationBuilder = configurationBuilder.Add(this.configFileLocator.ReadConfig(workingDirectory));
+        var configurationBuilder = GitFlowConfigurationBuilder.New;
+        foreach (var item in new[] { overrideConfigurationFromFile, overrideConfiguration })
+        {
+            if (item != null) configurationBuilder.AddOverride(item);
+        }
 
-        if (overrideConfiguration != null)
-            configurationBuilder.Add(overrideConfiguration);
-
-        return configurationBuilder.Build();
+        try
+        {
+            return configurationBuilder.Build();
+        }
+        catch (YamlException exception)
+        {
+            throw new WarningException(
+                $"Could not build the configuration instance because following exception occurred: '{exception.Message}' " +
+                $"Please ensure that the /overrideconfig parameters are correct and the configuration file is in the correct format."
+            );
+        }
     }
 
     private static string? ReadGitDirFromFile(string fileName)

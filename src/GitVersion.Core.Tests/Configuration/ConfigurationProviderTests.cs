@@ -4,7 +4,6 @@ using GitVersion.Core.Tests.Helpers;
 using GitVersion.Extensions;
 using GitVersion.Helpers;
 using GitVersion.Logging;
-using GitVersion.VersionCalculation;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using YamlDotNet.Serialization;
@@ -50,16 +49,6 @@ branches:
         configuration.Branches["develop"].Increment.ShouldBe(defaultConfig.Branches["develop"].Increment);
         configuration.Branches["develop"].VersioningMode.ShouldBe(defaultConfig.Branches["develop"].VersioningMode);
         configuration.Branches["develop"].Label.ShouldBe("dev");
-    }
-
-    [Test]
-    public void AllBranchesModeWhenUsingMainline()
-    {
-        const string text = "mode: Mainline";
-        SetupConfigFileContent(text);
-        var configuration = this.configurationProvider.ProvideInternal(this.repoPath);
-        var branches = configuration.Branches.Select(x => x.Value);
-        branches.All(branch => branch.VersioningMode == VersioningMode.Mainline).ShouldBe(true);
     }
 
     [Test]
@@ -153,44 +142,6 @@ branches:
 
         configuration.Branches["bug"].Regex.ShouldBe("bug[/-]");
         configuration.Branches["bug"].Label.ShouldBe("bugfix");
-    }
-
-    [Test]
-    public void MasterConfigReplacedWithMain()
-    {
-        const string text = @"
-next-version: 2.0.0
-branches:
-    master:
-        regex: '^master$|^main$'
-        label: beta";
-        SetupConfigFileContent(text);
-
-        var configuration = this.configurationProvider.ProvideInternal(this.repoPath);
-
-        configuration.Branches[MainBranch].Regex.ShouldBe("^master$|^main$");
-        configuration.Branches[MainBranch].Label.ShouldBe("beta");
-    }
-
-    [Test]
-    public void MasterConfigReplacedWithMainInSourceBranches()
-    {
-        const string text = @"
-next-version: 2.0.0
-branches:
-    breaking:
-        regex: breaking[/]
-        mode: ContinuousDeployment
-        increment: Major
-        source-branches: ['master']
-        is-release-branch: false";
-        SetupConfigFileContent(text);
-
-        var configuration = this.configurationProvider.ProvideInternal(this.repoPath);
-
-        configuration.Branches["breaking"].Regex.ShouldBe("breaking[/]");
-        configuration.Branches["breaking"].SourceBranches.ShouldHaveSingleItem();
-        configuration.Branches["breaking"].SourceBranches?.ShouldContain(MainBranch);
     }
 
     [Test]
@@ -304,6 +255,7 @@ branches: {}";
         var configuration = typeof(GitVersionConfiguration);
         var propertiesMissingAlias = configuration.GetProperties()
             .Where(p => p.GetCustomAttribute<ObsoleteAttribute>() == null)
+            .Where(p => p.GetCustomAttribute<YamlIgnoreAttribute>() == null)
             .Where(p => p.GetCustomAttribute(typeof(YamlMemberAttribute)) == null)
             .Select(p => p.Name);
 
@@ -413,25 +365,24 @@ next-version: 1.2.3
 label-prefix: custom-label-prefix-from-yml";
         SetupConfigFileContent(text);
 
-        var expectedConfig = this.configurationProvider.ProvideInternal(this.repoPath);
-        var overridenConfig = this.configurationProvider.ProvideInternal(this.repoPath, new GitVersionConfiguration());
+        var expectedConfig = GitFlowConfigurationBuilder.New
+            .WithNextVersion("1.2.3")
+            .WithLabelPrefix("custom-label-prefix-from-yml")
+            .Build();
+        var overridenConfig = this.configurationProvider.ProvideInternal(this.repoPath);
 
         overridenConfig.AssemblyVersioningScheme.ShouldBe(expectedConfig.AssemblyVersioningScheme);
         overridenConfig.AssemblyFileVersioningScheme.ShouldBe(expectedConfig.AssemblyFileVersioningScheme);
         overridenConfig.AssemblyInformationalFormat.ShouldBe(expectedConfig.AssemblyInformationalFormat);
         overridenConfig.AssemblyVersioningFormat.ShouldBe(expectedConfig.AssemblyVersioningFormat);
         overridenConfig.AssemblyFileVersioningFormat.ShouldBe(expectedConfig.AssemblyFileVersioningFormat);
-        overridenConfig.VersioningMode.ShouldBe(expectedConfig.VersioningMode);
         overridenConfig.LabelPrefix.ShouldBe(expectedConfig.LabelPrefix);
-        overridenConfig.ContinuousDeploymentFallbackLabel.ShouldBe(expectedConfig.ContinuousDeploymentFallbackLabel);
         overridenConfig.NextVersion.ShouldBe(expectedConfig.NextVersion);
         overridenConfig.MajorVersionBumpMessage.ShouldBe(expectedConfig.MajorVersionBumpMessage);
         overridenConfig.MinorVersionBumpMessage.ShouldBe(expectedConfig.MinorVersionBumpMessage);
         overridenConfig.PatchVersionBumpMessage.ShouldBe(expectedConfig.PatchVersionBumpMessage);
         overridenConfig.NoBumpMessage.ShouldBe(expectedConfig.NoBumpMessage);
         overridenConfig.LabelPreReleaseWeight.ShouldBe(expectedConfig.LabelPreReleaseWeight);
-        overridenConfig.CommitMessageIncrementing.ShouldBe(expectedConfig.CommitMessageIncrementing);
-        overridenConfig.Increment.ShouldBe(expectedConfig.Increment);
         overridenConfig.CommitDateFormat.ShouldBe(expectedConfig.CommitDateFormat);
         overridenConfig.MergeMessageFormats.ShouldBe(expectedConfig.MergeMessageFormats);
         overridenConfig.UpdateBuildNumber.ShouldBe(expectedConfig.UpdateBuildNumber);
@@ -471,7 +422,11 @@ label-prefix: custom-label-prefix-from-yml";
     {
         var text = tagPrefixSetAtYmlFile ? "label-prefix: custom-label-prefix-from-yml" : "";
         SetupConfigFileContent(text);
-        var configuration = this.configurationProvider.ProvideInternal(this.repoPath, new GitVersionConfiguration { LabelPrefix = "label-prefix-from-override-configuration" });
+        var overrideConfiguration = new Dictionary<object, object?>()
+        {
+            { "label-prefix", "label-prefix-from-override-configuration" }
+        };
+        var configuration = this.configurationProvider.ProvideInternal(this.repoPath, overrideConfiguration);
 
         configuration.LabelPrefix.ShouldBe("label-prefix-from-override-configuration");
     }
@@ -481,7 +436,12 @@ label-prefix: custom-label-prefix-from-yml";
     {
         const string text = "";
         SetupConfigFileContent(text);
-        var configuration = this.configurationProvider.ProvideInternal(this.repoPath, new GitVersionConfiguration { LabelPrefix = null });
+        var overrideConfiguration = new Dictionary<object, object?>()
+        {
+            { "next-version", "1.0.0" }
+        };
+
+        var configuration = this.configurationProvider.ProvideInternal(this.repoPath, overrideConfiguration);
 
         configuration.LabelPrefix.ShouldBe(GitVersionConfiguration.DefaultLabelPrefix);
     }
@@ -491,8 +451,26 @@ label-prefix: custom-label-prefix-from-yml";
     {
         const string text = "label-prefix: custom-label-prefix-from-yml";
         SetupConfigFileContent(text);
-        var configuration = this.configurationProvider.ProvideInternal(this.repoPath, new GitVersionConfiguration { LabelPrefix = null });
+        var overrideConfiguration = new Dictionary<object, object?>()
+        {
+            { "next-version", "1.0.0" }
+        };
+        var configuration = this.configurationProvider.ProvideInternal(this.repoPath, overrideConfiguration);
 
         configuration.LabelPrefix.ShouldBe("custom-label-prefix-from-yml");
+    }
+
+    [Test]
+    public void ShouldOverrideTagPrefixFromConfigFileWhenSetInOverrideConfig()
+    {
+        const string text = "label-prefix: custom-label-prefix-from-yml";
+        SetupConfigFileContent(text);
+        var overrideConfiguration = new Dictionary<object, object?>()
+        {
+            { "label-prefix", "custom-label-prefix-from-console" }
+        };
+        var configuration = this.configurationProvider.ProvideInternal(this.repoPath, overrideConfiguration);
+
+        configuration.LabelPrefix.ShouldBe("custom-label-prefix-from-console");
     }
 }

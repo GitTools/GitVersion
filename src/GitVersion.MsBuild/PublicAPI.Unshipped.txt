@@ -1,4 +1,5 @@
 #nullable enable
+abstract GitVersion.MsBuild.GitVersionTaskBase.OnExecute() -> bool
 GitVersion.MsBuild.FileHelper
 GitVersion.MsBuild.GitVersionMsBuildModule
 GitVersion.MsBuild.GitVersionMsBuildModule.GitVersionMsBuildModule() -> void
@@ -109,7 +110,6 @@ GitVersion.MsBuild.Tasks.UpdateAssemblyInfo.ProjectFile.set -> void
 GitVersion.MsBuild.Tasks.UpdateAssemblyInfo.UpdateAssemblyInfo() -> void
 GitVersion.MsBuild.Tasks.WriteVersionInfoToBuildLog
 GitVersion.MsBuild.Tasks.WriteVersionInfoToBuildLog.WriteVersionInfoToBuildLog() -> void
-abstract GitVersion.MsBuild.GitVersionTaskBase.OnExecute() -> bool
 override GitVersion.MsBuild.Tasks.GenerateGitVersionInformation.OnExecute() -> bool
 override GitVersion.MsBuild.Tasks.GetVersion.OnExecute() -> bool
 override GitVersion.MsBuild.Tasks.UpdateAssemblyInfo.OnExecute() -> bool

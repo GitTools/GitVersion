@@ -24,7 +24,12 @@ public class ConfigNextVersionBaseVersionStrategyTests : TestBase
     [TestCase("0.1", "0.1.0", SemanticVersionFormat.Loose)]
     public void ConfigNextVersionTest(string nextVersion, string expectedVersion, SemanticVersionFormat versionFormat)
     {
-        var baseVersion = GetBaseVersion(new GitVersionConfiguration { NextVersion = nextVersion, SemanticVersionFormat = versionFormat });
+        var overrideConfiguration = new Dictionary<object, object?>()
+        {
+            { "next-version", nextVersion },
+            { "semantic-version-format", versionFormat }
+        };
+        var baseVersion = GetBaseVersion(overrideConfiguration);
 
         baseVersion.ShouldNotBeNull();
         baseVersion.ShouldIncrement.ShouldBe(false);
@@ -33,25 +38,20 @@ public class ConfigNextVersionBaseVersionStrategyTests : TestBase
 
     [TestCase("0.1", SemanticVersionFormat.Strict)]
     public void ConfigNextVersionTestShouldFail(string nextVersion, SemanticVersionFormat versionFormat)
-        =>
-            Should.Throw<WarningException>(()
-                    => GetBaseVersion(new GitVersionConfiguration
-                    {
-                        NextVersion = nextVersion,
-                        SemanticVersionFormat = versionFormat
-                    }))
-                .Message.ShouldBe($"Failed to parse {nextVersion} into a Semantic Version");
-
-
-    private static BaseVersion? GetBaseVersion(GitVersionConfiguration? configuration = null)
     {
-        var contextBuilder = new GitVersionContextBuilder();
-
-        if (configuration != null)
+        var overrideConfiguration = new Dictionary<object, object?>()
         {
-            contextBuilder = contextBuilder.WithConfig(configuration);
-        }
+            { "next-version", nextVersion },
+            { "semantic-version-format", versionFormat }
+        };
 
+        Should.Throw<WarningException>(() => GetBaseVersion(overrideConfiguration))
+            .Message.ShouldBe($"Failed to parse {nextVersion} into a Semantic Version");
+    }
+
+    private static BaseVersion? GetBaseVersion(IReadOnlyDictionary<object, object?>? overrideConfiguration = null)
+    {
+        var contextBuilder = new GitVersionContextBuilder().WithOverrideConfiguration(overrideConfiguration);
         contextBuilder.Build();
         contextBuilder.ServicesProvider.ShouldNotBeNull();
         var strategy = contextBuilder.ServicesProvider.GetServiceForType<IVersionStrategy, ConfigNextVersionVersionStrategy>();

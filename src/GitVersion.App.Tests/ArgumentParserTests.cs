@@ -386,30 +386,15 @@ public class ArgumentParserTests : TestBase
         {
             ExpectedResult = "Could not parse /overrideconfig option: unknown-option=25. Unsupported 'key'."
         };
-        yield return new TestCaseData("update-build-number=1")
-        {
-            ExpectedResult = "Could not parse /overrideconfig option: update-build-number=1. Ensure that 'value' is 'true' or 'false'."
-        };
-        yield return new TestCaseData("label-pre-release-weight=invalid-value")
-        {
-            ExpectedResult = "Could not parse /overrideconfig option: label-pre-release-weight=invalid-value. Ensure that 'value' is valid integer number."
-        };
-        yield return new TestCaseData("assembly-versioning-scheme=WrongEnumValue")
-        {
-            ExpectedResult = $"Could not parse /overrideconfig option: assembly-versioning-scheme=WrongEnumValue. Ensure that 'value' is valid for specified 'key' enumeration: {System.Environment.NewLine}" +
-                             $"MajorMinorPatchTag{System.Environment.NewLine}" +
-                             $"MajorMinorPatch{System.Environment.NewLine}" +
-                             $"MajorMinor{System.Environment.NewLine}" +
-                             $"Major{System.Environment.NewLine}" +
-                             $"None{System.Environment.NewLine}"
-        };
     }
 
     [TestCaseSource(nameof(OverrideConfigWithSingleOptionTestData))]
     public void OverrideConfigWithSingleOptions(string options, GitVersionConfiguration expected)
     {
         var arguments = this.argumentParser.ParseArguments($"/overrideconfig {options}");
-        arguments.OverrideConfig.ShouldBeEquivalentTo(expected);
+
+        ConfigurationHelper configruationHelper = new(arguments.OverrideConfig);
+        configruationHelper.Configuration.ShouldBeEquivalentTo(expected);
     }
 
     private static IEnumerable<TestCaseData> OverrideConfigWithSingleOptionTestData()
@@ -464,10 +449,10 @@ public class ArgumentParserTests : TestBase
             }
         );
         yield return new TestCaseData(
-            "continuous-delivery-fallback-label=cd-label",
+            "label=cd-label",
             new GitVersionConfiguration
             {
-                ContinuousDeploymentFallbackLabel = "cd-label"
+                Label = "cd-label"
             }
         );
         yield return new TestCaseData(
@@ -546,7 +531,8 @@ public class ArgumentParserTests : TestBase
     public void OverrideConfigWithMultipleOptions(string options, GitVersionConfiguration expected)
     {
         var arguments = this.argumentParser.ParseArguments(options);
-        arguments.OverrideConfig.ShouldBeEquivalentTo(expected);
+        ConfigurationHelper configruationHelper = new(arguments.OverrideConfig);
+        configruationHelper.Configuration.ShouldBeEquivalentTo(expected);
     }
 
     private static IEnumerable<TestCaseData> OverrideConfigWithMultipleOptionsTestData()

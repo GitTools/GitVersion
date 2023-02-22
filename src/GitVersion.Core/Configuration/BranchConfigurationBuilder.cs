@@ -1,18 +1,17 @@
-using GitVersion.Configuration;
 using GitVersion.VersionCalculation;
 
-namespace GitVersion.Core.Tests.Helpers;
+namespace GitVersion.Configuration;
 
-public class TestBranchConfigurationBuilder
+public class BranchConfigurationBuilder
 {
-    public static TestBranchConfigurationBuilder New => new();
+    public static BranchConfigurationBuilder New => new();
 
     private string name;
     private VersioningMode? versioningMode;
-    private string? tag;
+    private string? label;
     private IncrementStrategy? increment;
     private bool? preventIncrementOfMergedBranchVersion;
-    private string? tagNumberPattern;
+    private string? labelNumberPattern;
     private bool? trackMergeTarget;
     private CommitMessageIncrementMode? commitMessageIncrementing;
     private string? regex;
@@ -23,118 +22,120 @@ public class TestBranchConfigurationBuilder
     private bool? isMainline;
     private int? preReleaseWeight;
 
-    private TestBranchConfigurationBuilder() => this.name = "Just-A-Test";
+    private BranchConfigurationBuilder()
+    {
+    }
 
-    public virtual TestBranchConfigurationBuilder WithName(string value)
+    public virtual BranchConfigurationBuilder WithName(string value)
     {
         this.name = value;
         return this;
     }
 
-    public virtual TestBranchConfigurationBuilder WithVersioningMode(VersioningMode? value)
+    public virtual BranchConfigurationBuilder WithVersioningMode(VersioningMode? value)
     {
         this.versioningMode = value;
         return this;
     }
 
-    public virtual TestBranchConfigurationBuilder WithTag(string? value)
+    public virtual BranchConfigurationBuilder WithLabel(string? value)
     {
-        this.tag = value;
+        this.label = value;
         return this;
     }
 
-    public virtual TestBranchConfigurationBuilder WithIncrement(IncrementStrategy? value)
+    public virtual BranchConfigurationBuilder WithIncrement(IncrementStrategy? value)
     {
         this.increment = value;
         return this;
     }
 
-    public virtual TestBranchConfigurationBuilder WithPreventIncrementOfMergedBranchVersion(bool? value)
+    public virtual BranchConfigurationBuilder WithPreventIncrementOfMergedBranchVersion(bool? value)
     {
         this.preventIncrementOfMergedBranchVersion = value;
         return this;
     }
 
-    public virtual TestBranchConfigurationBuilder WithTagNumberPattern(string? value)
+    public virtual BranchConfigurationBuilder WithLabelNumberPattern(string? value)
     {
-        this.tagNumberPattern = value;
+        this.labelNumberPattern = value;
         return this;
     }
 
-    public virtual TestBranchConfigurationBuilder WithTrackMergeTarget(bool? value)
+    public virtual BranchConfigurationBuilder WithTrackMergeTarget(bool? value)
     {
         this.trackMergeTarget = value;
         return this;
     }
 
-    public virtual TestBranchConfigurationBuilder WithCommitMessageIncrementing(CommitMessageIncrementMode? value)
+    public virtual BranchConfigurationBuilder WithCommitMessageIncrementing(CommitMessageIncrementMode? value)
     {
         this.commitMessageIncrementing = value;
         return this;
     }
 
-    public virtual TestBranchConfigurationBuilder WithRegex(string? value)
+    public virtual BranchConfigurationBuilder WithRegex(string? value)
     {
         this.regex = value;
         return this;
     }
 
-    public virtual TestBranchConfigurationBuilder WithSourceBranches(IEnumerable<string> values)
+    public virtual BranchConfigurationBuilder WithSourceBranches(IEnumerable<string>? values)
     {
-        WithSourceBranches(values.ToArray());
+        WithSourceBranches(values?.ToArray());
         return this;
     }
 
-    public virtual TestBranchConfigurationBuilder WithSourceBranches(params string[] values)
+    public virtual BranchConfigurationBuilder WithSourceBranches(params string[]? values)
     {
-        this.sourceBranches = new HashSet<string>(values);
+        this.sourceBranches = values == null ? null : new HashSet<string>(values);
         return this;
     }
 
-    public virtual TestBranchConfigurationBuilder WithIsSourceBranchFor(IEnumerable<string> values)
+    public virtual BranchConfigurationBuilder WithIsSourceBranchFor(IEnumerable<string>? values)
     {
-        WithIsSourceBranchFor(values.ToArray());
+        WithIsSourceBranchFor(values?.ToArray());
         return this;
     }
 
-    public virtual TestBranchConfigurationBuilder WithIsSourceBranchFor(params string[] values)
+    public virtual BranchConfigurationBuilder WithIsSourceBranchFor(params string[]? values)
     {
-        this.isSourceBranchFor = new HashSet<string>(values);
+        this.isSourceBranchFor = values == null ? null : new HashSet<string>(values);
         return this;
     }
 
-    public virtual TestBranchConfigurationBuilder WithTracksReleaseBranches(bool? value)
+    public virtual BranchConfigurationBuilder WithTracksReleaseBranches(bool? value)
     {
         this.tracksReleaseBranches = value;
         return this;
     }
 
-    public virtual TestBranchConfigurationBuilder WithIsReleaseBranch(bool? value)
+    public virtual BranchConfigurationBuilder WithIsReleaseBranch(bool? value)
     {
         this.isReleaseBranch = value;
         return this;
     }
 
-    public virtual TestBranchConfigurationBuilder WithIsMainline(bool? value)
+    public virtual BranchConfigurationBuilder WithIsMainline(bool? value)
     {
         this.isMainline = value;
         return this;
     }
 
-    public virtual TestBranchConfigurationBuilder WithPreReleaseWeight(int? value)
+    public virtual BranchConfigurationBuilder WithPreReleaseWeight(int? value)
     {
         this.preReleaseWeight = value;
         return this;
     }
 
-    public virtual TestBranchConfigurationBuilder WithConfiguration(BranchConfiguration value)
+    public virtual BranchConfigurationBuilder WithConfiguration(BranchConfiguration value)
     {
         WithName(value.Name);
         WithVersioningMode(value.VersioningMode);
-        WithTag(value.Label);
+        WithLabel(value.Label);
         WithIncrement(value.Increment);
         WithPreventIncrementOfMergedBranchVersion(value.PreventIncrementOfMergedBranchVersion);
-        WithTagNumberPattern(value.LabelNumberPattern);
+        WithLabelNumberPattern(value.LabelNumberPattern);
         WithTrackMergeTarget(value.TrackMergeTarget);
         WithCommitMessageIncrementing(value.CommitMessageIncrementing);
         WithRegex(value.Regex);
@@ -142,8 +143,8 @@ public class TestBranchConfigurationBuilder
         WithIsReleaseBranch(value.IsReleaseBranch);
         WithIsMainline(value.IsMainline);
         WithPreReleaseWeight(value.PreReleaseWeight);
-        WithSourceBranches(value.SourceBranches ?? Enumerable.Empty<string>());
-        WithIsSourceBranchFor(value.IsSourceBranchFor ?? Enumerable.Empty<string>());
+        WithSourceBranches(value.SourceBranches);
+        WithIsSourceBranchFor(value.IsSourceBranchFor);
         return this;
     }
 
@@ -153,7 +154,7 @@ public class TestBranchConfigurationBuilder
         {
             Name = name,
             VersioningMode = versioningMode,
-            Label = tag,
+            Label = label,
             Increment = increment,
             Regex = regex,
             TracksReleaseBranches = tracksReleaseBranches,
@@ -161,7 +162,7 @@ public class TestBranchConfigurationBuilder
             CommitMessageIncrementing = commitMessageIncrementing,
             IsMainline = isMainline,
             IsReleaseBranch = isReleaseBranch,
-            LabelNumberPattern = tagNumberPattern,
+            LabelNumberPattern = labelNumberPattern,
             PreventIncrementOfMergedBranchVersion = preventIncrementOfMergedBranchVersion,
             PreReleaseWeight = preReleaseWeight,
             SourceBranches = sourceBranches,

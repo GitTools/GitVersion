@@ -3,23 +3,25 @@ using YamlDotNet.Serialization.NamingConventions;
 
 namespace GitVersion.Configuration;
 
-public class ConfigurationSerializer
+public static class ConfigurationSerializer
 {
+    private static IDeserializer Deserializer
+        => new DeserializerBuilder().WithNamingConvention(HyphenatedNamingConvention.Instance).Build();
+
+    public static T Deserialize<T>(string input) => Deserializer.Deserialize<T>(input);
+
+    public static string Serialize(object graph) => Serializer.Serialize(graph);
+
+    private static ISerializer Serializer
+        => new SerializerBuilder().ConfigureDefaultValuesHandling(DefaultValuesHandling.OmitNull)
+        .WithNamingConvention(HyphenatedNamingConvention.Instance).Build();
+
     public static GitVersionConfiguration Read(TextReader reader)
     {
-        var deserializer = new DeserializerBuilder()
-            .WithNamingConvention(HyphenatedNamingConvention.Instance)
-            .Build();
-        var configuration = deserializer.Deserialize<GitVersionConfiguration?>(reader);
+        var configuration = Deserializer.Deserialize<GitVersionConfiguration?>(reader);
         return configuration ?? new GitVersionConfiguration();
     }
 
     public static void Write(GitVersionConfiguration configuration, TextWriter writer)
-    {
-        var serializer = new SerializerBuilder()
-            .ConfigureDefaultValuesHandling(DefaultValuesHandling.OmitDefaults)
-            .WithNamingConvention(HyphenatedNamingConvention.Instance)
-            .Build();
-        serializer.Serialize(writer, configuration);
-    }
+        => Serializer.Serialize(writer, configuration);
 }

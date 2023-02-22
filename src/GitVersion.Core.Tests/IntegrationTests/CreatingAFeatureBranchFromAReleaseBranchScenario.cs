@@ -1,4 +1,4 @@
-using GitVersion.Core.Tests.Helpers;
+using GitVersion.Configuration;
 
 namespace GitVersion.Core.Tests.IntegrationTests;
 

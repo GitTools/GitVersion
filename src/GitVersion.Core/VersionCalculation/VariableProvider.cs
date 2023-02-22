@@ -32,7 +32,7 @@ public class VariableProvider : IVariableProvider
                 {
                     // TODO: Why do we manipulating the semantic version here in the VariableProvider? The method name is GET not MANIPULATE.
                     // What is about the separation of concern and single-responsibility principle?
-                    semanticVersion.PreReleaseTag.Name = configuration.ContinuousDeploymentFallbackLabel;
+                    semanticVersion.PreReleaseTag.Name = configuration.Label;
                 }
             }
         }

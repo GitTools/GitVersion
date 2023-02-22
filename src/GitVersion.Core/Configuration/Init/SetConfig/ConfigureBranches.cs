@@ -45,7 +45,7 @@ public class ConfigureBranches : ConfigInitWizardStep
 
     private static IOrderedEnumerable<KeyValuePair<string, BranchConfiguration>> OrderedBranches(GitVersionConfiguration configuration)
     {
-        var defaultConfig = new ConfigurationBuilder().Build();
+        var defaultConfig = GitFlowConfigurationBuilder.New.Build();
 
         var defaultConfigurationBranches = defaultConfig.Branches
             .Where(k => !configuration.Branches.ContainsKey(k.Key))

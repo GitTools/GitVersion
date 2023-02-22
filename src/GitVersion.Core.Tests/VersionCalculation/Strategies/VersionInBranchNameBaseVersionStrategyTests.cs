@@ -43,6 +43,7 @@ public class VersionInBranchNameBaseVersionStrategyTests : TestBase
         var strategy = GetVersionStrategy(fixture.RepositoryPath, gitRepository, branchName);
         var configuration = GitFlowConfigurationBuilder.New.Build();
         var branchConfiguration = configuration.GetBranchConfiguration(branchName);
+        branchConfiguration = branchConfiguration.Inherit(configuration.GetFallbackBranchConfiguration());
         var effectiveConfiguration = new EffectiveConfiguration(configuration, branchConfiguration);
 
         strategy.ShouldNotBeNull();
@@ -59,11 +60,12 @@ public class VersionInBranchNameBaseVersionStrategyTests : TestBase
         fixture.Repository.MakeACommit();
         fixture.Repository.CreateBranch(branchName);
 
-        var configurationBuilder = new ConfigurationBuilder()
-            .Add(new GitVersionConfiguration { Branches = { { "support", new BranchConfiguration { IsReleaseBranch = true } } } });
+        var configurationBuilder = GitFlowConfigurationBuilder.New
+            .WithBranch("support", builder => builder.WithIsReleaseBranch(true));
+        ConfigurationHelper configurationHelper = new(configurationBuilder.Build());
 
         var gitRepository = fixture.Repository.ToGitRepository();
-        var strategy = GetVersionStrategy(fixture.RepositoryPath, gitRepository, branchName, configurationBuilder.Build());
+        var strategy = GetVersionStrategy(fixture.RepositoryPath, gitRepository, branchName, configurationHelper.Dictionary);
 
         var configuration = GitFlowConfigurationBuilder.New.Build();
         var branchConfiguration = configuration.GetBranchConfiguration(branchName);
@@ -100,9 +102,9 @@ public class VersionInBranchNameBaseVersionStrategyTests : TestBase
         baseVersion.SemanticVersion.ToString().ShouldBe(expectedBaseVersion);
     }
 
-    private static IVersionStrategy GetVersionStrategy(string workingDirectory, IGitRepository repository, string branch, GitVersionConfiguration? configuration = null)
+    private static IVersionStrategy GetVersionStrategy(string workingDirectory, IGitRepository repository, string branch, IReadOnlyDictionary<object, object?>? overrideConfiguration = null)
     {
-        var sp = BuildServiceProvider(workingDirectory, repository, branch, configuration);
+        var sp = BuildServiceProvider(workingDirectory, repository, branch, overrideConfiguration);
         return sp.GetServiceForType<IVersionStrategy, VersionInBranchNameVersionStrategy>();
     }
 }

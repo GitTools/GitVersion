@@ -1,4 +1,4 @@
-using GitVersion.Core.Tests.Helpers;
+using GitVersion.Configuration;
 using GitVersion.VersionCalculation;
 
 namespace GitVersion.Core.Tests.IntegrationTests;
@@ -13,7 +13,10 @@ public class ContinuousDeploymentTestScenarios
 
         var configuration = GitFlowConfigurationBuilder.New
             .WithVersioningMode(VersioningMode.ContinuousDeployment)
-            .WithBranch("main", builder => builder.WithVersioningMode(VersioningMode.ContinuousDeployment))
+            .WithBranch("main", builder => builder
+                .WithLabel("ci")
+                .WithVersioningMode(VersioningMode.ContinuousDeployment)
+            )
             .Build();
 
         using var fixture = new EmptyRepositoryFixture();
@@ -31,7 +34,9 @@ public class ContinuousDeploymentTestScenarios
     {
         // * a831d61 58 minutes ago  (HEAD -> develop)
 
-        var configuration = GitFlowConfigurationBuilder.New.WithVersioningMode(VersioningMode.ContinuousDeployment).Build();
+        var configuration = GitFlowConfigurationBuilder.New
+            .WithVersioningMode(VersioningMode.ContinuousDeployment)
+            .Build();
 
         using var fixture = new EmptyRepositoryFixture("develop");
 
@@ -49,8 +54,12 @@ public class ContinuousDeploymentTestScenarios
         // * 8c64db3 58 minutes ago  (HEAD -> main)
 
         var configuration = GitFlowConfigurationBuilder.New
-            .WithNextVersion("1.0.0").WithVersioningMode(VersioningMode.ContinuousDeployment)
-            .WithBranch("main", builder => builder.WithVersioningMode(VersioningMode.ContinuousDeployment))
+            .WithNextVersion("1.0.0")
+            .WithVersioningMode(VersioningMode.ContinuousDeployment)
+            .WithBranch("main", builder => builder
+                .WithLabel("ci")
+                .WithVersioningMode(VersioningMode.ContinuousDeployment)
+            )
             .Build();
 
         using var fixture = new EmptyRepositoryFixture();
@@ -69,8 +78,9 @@ public class ContinuousDeploymentTestScenarios
         // * 858f71b 58 minutes ago  (HEAD -> main, tag: 1.0.0)
 
         var configuration = GitFlowConfigurationBuilder.New
+            .WithNextVersion("1.0.0")
             .WithVersioningMode(VersioningMode.ContinuousDeployment)
-            .WithNextVersion("1.0.0").Build();
+            .Build();
 
         using var fixture = new EmptyRepositoryFixture();
 
@@ -112,7 +122,10 @@ public class ContinuousDeploymentTestScenarios
 
         var configuration = GitFlowConfigurationBuilder.New
             .WithVersioningMode(VersioningMode.ContinuousDeployment)
-            .WithBranch("main", builder => builder.WithVersioningMode(VersioningMode.ContinuousDeployment))
+            .WithBranch("main", builder => builder
+                .WithLabel("ci")
+                .WithVersioningMode(VersioningMode.ContinuousDeployment)
+            )
             .WithBranch("feature", builder => builder.WithVersioningMode(VersioningMode.ContinuousDeployment))
             .Build();
 
@@ -269,7 +282,9 @@ public class ContinuousDeploymentTestScenarios
 
         var configuration = GitFlowConfigurationBuilder.New
             .WithBranch("main", builder => builder
-                .WithVersioningMode(VersioningMode.ContinuousDeployment).WithTrackMergeTarget(false)
+                .WithLabel("ci")
+                .WithVersioningMode(VersioningMode.ContinuousDeployment)
+                .WithTrackMergeTarget(false)
             )
             .WithBranch("develop", builder => builder
                 .WithVersioningMode(VersioningMode.ContinuousDeployment).WithTrackMergeTarget(false)
@@ -353,13 +368,17 @@ public class ContinuousDeploymentTestScenarios
 
         var configuration = GitFlowConfigurationBuilder.New
             .WithBranch("main", builder => builder
-                .WithVersioningMode(VersioningMode.ContinuousDeployment).WithTrackMergeTarget(false)
+                .WithLabel("ci")
+                .WithVersioningMode(VersioningMode.ContinuousDeployment)
+                .WithTrackMergeTarget(false)
             )
             .WithBranch("develop", builder => builder
-                .WithVersioningMode(VersioningMode.ContinuousDeployment).WithTrackMergeTarget(false)
+                .WithVersioningMode(VersioningMode.ContinuousDeployment)
+                .WithTrackMergeTarget(false)
             )
             .WithBranch("release", builder => builder
-                .WithVersioningMode(VersioningMode.ContinuousDeployment).WithTrackMergeTarget(false)
+                .WithVersioningMode(VersioningMode.ContinuousDeployment)
+                .WithTrackMergeTarget(false)
             )
             .Build();
 

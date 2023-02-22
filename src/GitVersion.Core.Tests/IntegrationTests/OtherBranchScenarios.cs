@@ -55,24 +55,15 @@ public class OtherBranchScenarios : TestBase
     [TestCase("alpha", "JIRA-123", "alpha")]
     [TestCase("useBranchName", "JIRA-123", "JIRA-123")]
     [TestCase("alpha.{BranchName}", "JIRA-123", "alpha.JIRA-123")]
-    public void TagIsBranchNameForBranchesWithoutPrefixedBranchName(string tag, string branchName, string preReleaseTagName)
+    public void LabelIsBranchNameForBranchesWithoutPrefixedBranchName(string label, string branchName, string preReleaseTagName)
     {
-        var configuration = new GitVersionConfiguration
-        {
-            Branches =
-            {
-                {
-                    "other",
-                    new BranchConfiguration
-                    {
-                        Increment = IncrementStrategy.Patch,
-                        Regex = ".*",
-                        SourceBranches = new HashSet<string>(),
-                        Label = tag
-                    }
-                }
-            }
-        };
+        var configuration = GitFlowConfigurationBuilder.New
+            .WithBranch("other", builder => builder
+                .WithIncrement(IncrementStrategy.Patch)
+                .WithRegex(".*")
+                .WithSourceBranches()
+                .WithLabel(label))
+            .Build();
 
         using var fixture = new EmptyRepositoryFixture();
         fixture.Repository.MakeATaggedCommit("1.0.0");

@@ -11,11 +11,8 @@ internal class VersionInTagScenarios
     public void TagPreReleaseWeightIsNotConfigured_HeadIsATaggedCommit_WeightedPreReleaseNumberShouldBeTheDefaultValue()
     {
         // Arrange
-        var configuration = new ConfigurationBuilder()
-            .Add(new GitVersionConfiguration
-            {
-                AssemblyFileVersioningFormat = "{Major}.{Minor}.{Patch}.{WeightedPreReleaseNumber}"
-            })
+        var configuration = GitFlowConfigurationBuilder.New
+            .WithAssemblyFileVersioningFormat("{Major}.{Minor}.{Patch}.{WeightedPreReleaseNumber}")
             .Build();
 
         // Act
@@ -28,15 +25,12 @@ internal class VersionInTagScenarios
     }
 
     [Test]
-    public void TagPreReleaseWeightIsConfigured_HeadIsATaggedCommit_WeightedPreReleaseNumberShouldBeTheSameAsTheTagPreReleaseWeight()
+    public void LabelPreReleaseWeightIsConfigured_HeadIsATaggedCommit_WeightedPreReleaseNumberShouldBeTheSameAsTheLabelPreReleaseWeight()
     {
         // Arrange
-        var configuration = new ConfigurationBuilder()
-            .Add(new GitVersionConfiguration
-            {
-                AssemblyFileVersioningFormat = "{Major}.{Minor}.{Patch}.{WeightedPreReleaseNumber}",
-                LabelPreReleaseWeight = 65535
-            })
+        var configuration = GitFlowConfigurationBuilder.New
+            .WithAssemblyFileVersioningFormat("{Major}.{Minor}.{Patch}.{WeightedPreReleaseNumber}")
+            .WithLabelPreReleaseWeight(65535)
             .Build();
 
         // Act
@@ -49,16 +43,13 @@ internal class VersionInTagScenarios
     }
 
     [Test]
-    public void TagPreReleaseWeightIsConfigured_GitFlowReleaseIsFinished_WeightedPreReleaseNumberShouldBeTheSameAsTheTagPreReleaseWeight()
+    public void LabelPreReleaseWeightIsConfigured_GitFlowReleaseIsFinished_WeightedPreReleaseNumberShouldBeTheSameAsTheLabelPreReleaseWeight()
     {
         // Arrange
-        var configuration = new ConfigurationBuilder()
-            .Add(new GitVersionConfiguration
-            {
-                AssemblyFileVersioningFormat = "{Major}.{Minor}.{Patch}.{WeightedPreReleaseNumber}",
-                LabelPreReleaseWeight = 65535,
-                VersioningMode = VersioningMode.ContinuousDeployment
-            })
+        var configuration = GitFlowConfigurationBuilder.New
+            .WithAssemblyFileVersioningFormat("{Major}.{Minor}.{Patch}.{WeightedPreReleaseNumber}")
+            .WithLabelPreReleaseWeight(65535)
+            .WithVersioningMode(VersioningMode.ContinuousDeployment)
             .Build();
 
         // Act
@@ -81,12 +72,9 @@ internal class VersionInTagScenarios
     public void TagPreReleaseWeightIsNotConfigured_GitFlowReleaseIsFinished_WeightedPreReleaseNumberShouldBeTheDefaultValue()
     {
         // Arrange
-        var configuration = new ConfigurationBuilder()
-            .Add(new GitVersionConfiguration
-            {
-                AssemblyFileVersioningFormat = "{Major}.{Minor}.{Patch}.{WeightedPreReleaseNumber}",
-                VersioningMode = VersioningMode.ContinuousDeployment
-            })
+        var configuration = GitFlowConfigurationBuilder.New
+            .WithAssemblyFileVersioningFormat("{Major}.{Minor}.{Patch}.{WeightedPreReleaseNumber}")
+            .WithVersioningMode(VersioningMode.ContinuousDeployment)
             .Build();
 
         // Act

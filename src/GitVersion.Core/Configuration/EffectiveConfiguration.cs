@@ -28,7 +28,7 @@ public class EffectiveConfiguration
         if (!configuration.AssemblyFileVersioningScheme.HasValue)
             throw new Exception("Configuration value for 'AssemblyFileVersioningScheme' has no value. (this should not happen, please report an issue)");
 
-        if (!configuration.CommitMessageIncrementing.HasValue)
+        if (!currentBranchConfig.CommitMessageIncrementing.HasValue)
             throw new Exception("Configuration value for 'CommitMessageIncrementing' has no value. (this should not happen, please report an issue)");
 
         if (!configuration.LabelPreReleaseWeight.HasValue)
@@ -47,19 +47,18 @@ public class EffectiveConfiguration
         BranchPrefixToTrim = currentBranchConfig.Regex;
         PreventIncrementOfMergedBranchVersion = currentBranchConfig.PreventIncrementOfMergedBranchVersion ?? false;
         LabelNumberPattern = currentBranchConfig.LabelNumberPattern;
-        ContinuousDeploymentFallbackLabel = configuration.ContinuousDeploymentFallbackLabel;
         TrackMergeTarget = currentBranchConfig.TrackMergeTarget ?? false;
         MajorVersionBumpMessage = configuration.MajorVersionBumpMessage;
         MinorVersionBumpMessage = configuration.MinorVersionBumpMessage;
         PatchVersionBumpMessage = configuration.PatchVersionBumpMessage;
         NoBumpMessage = configuration.NoBumpMessage;
-        CommitMessageIncrementing = currentBranchConfig.CommitMessageIncrementing ?? configuration.CommitMessageIncrementing.Value;
+        CommitMessageIncrementing = currentBranchConfig.CommitMessageIncrementing.Value;
         VersionFilters = configuration.Ignore.ToFilters();
         TracksReleaseBranches = currentBranchConfig.TracksReleaseBranches ?? false;
         IsReleaseBranch = currentBranchConfig.IsReleaseBranch ?? false;
         IsMainline = currentBranchConfig.IsMainline ?? false;
         CommitDateFormat = configuration.CommitDateFormat;
-        UpdateBuildNumber = configuration.UpdateBuildNumber ?? true;
+        UpdateBuildNumber = configuration.UpdateBuildNumber;
         SemanticVersionFormat = configuration.SemanticVersionFormat;
         PreReleaseWeight = currentBranchConfig.PreReleaseWeight ?? 0;
         LabelPreReleaseWeight = configuration.LabelPreReleaseWeight.Value;
@@ -78,7 +77,6 @@ public class EffectiveConfiguration
         string? branchPrefixToTrim,
         bool preventIncrementOfMergedBranchVersion,
         string? labelNumberPattern,
-        string? continuousDeploymentFallbackLabel,
         bool trackMergeTarget,
         string? majorVersionBumpMessage,
         string? minorVersionBumpMessage,
@@ -108,7 +106,6 @@ public class EffectiveConfiguration
         BranchPrefixToTrim = branchPrefixToTrim;
         PreventIncrementOfMergedBranchVersion = preventIncrementOfMergedBranchVersion;
         LabelNumberPattern = labelNumberPattern;
-        ContinuousDeploymentFallbackLabel = continuousDeploymentFallbackLabel;
         TrackMergeTarget = trackMergeTarget;
         MajorVersionBumpMessage = majorVersionBumpMessage;
         MinorVersionBumpMessage = minorVersionBumpMessage;
@@ -155,8 +152,6 @@ public class EffectiveConfiguration
     public bool PreventIncrementOfMergedBranchVersion { get; }
 
     public string? LabelNumberPattern { get; }
-
-    public string? ContinuousDeploymentFallbackLabel { get; }
 
     public bool TrackMergeTarget { get; }
 

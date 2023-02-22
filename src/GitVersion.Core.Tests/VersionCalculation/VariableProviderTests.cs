@@ -115,7 +115,9 @@ public class VariableProviderTests : TestBase
         semVer.BuildMetaData.ShortSha = "commitShortSha";
         semVer.BuildMetaData.CommitDate = DateTimeOffset.Parse("2014-03-06 23:59:59Z");
 
-        var configuration = new TestEffectiveConfiguration(versioningMode: VersioningMode.ContinuousDeployment);
+        var configuration = new TestEffectiveConfiguration(
+            label: "ci", versioningMode: VersioningMode.ContinuousDeployment
+        );
 
         var vars = this.variableProvider.GetVariablesFor(semVer, configuration, false);
 

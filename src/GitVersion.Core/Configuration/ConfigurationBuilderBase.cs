@@ -1,36 +1,46 @@
-using GitVersion.Configuration;
 using GitVersion.Extensions;
 using GitVersion.VersionCalculation;
 
-namespace GitVersion.Core.Tests.Helpers;
+namespace GitVersion.Configuration;
 
-internal abstract class TestConfigurationBuilderBase<TConfigurationBuilder>
-    where TConfigurationBuilder : TestConfigurationBuilderBase<TConfigurationBuilder>
+internal abstract class ConfigurationBuilderBase<TConfigurationBuilder>
+    where TConfigurationBuilder : ConfigurationBuilderBase<TConfigurationBuilder>
 {
     private AssemblyVersioningScheme? assemblyVersioningScheme;
     private AssemblyFileVersioningScheme? assemblyFileVersioningScheme;
     private string? assemblyInformationalFormat;
     private string? assemblyVersioningFormat;
     private string? assemblyFileVersioningFormat;
-    private VersioningMode? versioningMode;
-    private string? tagPrefix;
-    private string? continuousDeploymentFallbackTag;
+    private string? labelPrefix;
     private string? nextVersion;
     private string? majorVersionBumpMessage;
     private string? minorVersionBumpMessage;
     private string? patchVersionBumpMessage;
     private string? noBumpMessage;
-    private int? tagPreReleaseWeight;
-    private CommitMessageIncrementMode? commitMessageIncrementing;
+    private int? labelPreReleaseWeight;
     private IgnoreConfiguration ignore;
-    private IncrementStrategy? increment;
     private string? commitDateFormat;
-    private bool? updateBuildNumber;
-    private SemanticVersionFormat semanticVersionFormat = SemanticVersionFormat.Strict;
+    private bool updateBuildNumber;
+    private SemanticVersionFormat semanticVersionFormat;
     private Dictionary<string, string>? mergeMessageFormats;
-    protected readonly Dictionary<string, TestBranchConfigurationBuilder> branchConfigurationBuilders = new();
+    private readonly List<IReadOnlyDictionary<object, object?>> overrides = new();
+    private readonly Dictionary<string, BranchConfigurationBuilder> branchConfigurationBuilders = new();
+    private VersioningMode? versioningMode;
+    private string? label;
+    private IncrementStrategy? increment;
+    private bool? preventIncrementOfMergedBranchVersion;
+    private string? labelNumberPattern;
+    private bool? trackMergeTarget;
+    private CommitMessageIncrementMode? commitMessageIncrementing;
+    private string? regex;
+    private HashSet<string>? sourceBranches;
+    private HashSet<string>? isSourceBranchFor;
+    private bool? tracksReleaseBranches;
+    private bool? isReleaseBranch;
+    private bool? isMainline;
+    private int? preReleaseWeight;
 
-    protected TestConfigurationBuilderBase()
+    protected ConfigurationBuilderBase()
     {
         if (GetType() != typeof(TConfigurationBuilder))
         {
@@ -68,27 +78,9 @@ internal abstract class TestConfigurationBuilderBase<TConfigurationBuilder>
         return (TConfigurationBuilder)this;
     }
 
-    public virtual TConfigurationBuilder WithoutVersioningMode()
+    public virtual TConfigurationBuilder WithLabelPrefix(string? value)
     {
-        this.versioningMode = null;
-        return (TConfigurationBuilder)this;
-    }
-
-    public virtual TConfigurationBuilder WithVersioningMode(VersioningMode value)
-    {
-        this.versioningMode = value;
-        return (TConfigurationBuilder)this;
-    }
-
-    public virtual TConfigurationBuilder WithTagPrefix(string? value)
-    {
-        this.tagPrefix = value;
-        return (TConfigurationBuilder)this;
-    }
-
-    public virtual TConfigurationBuilder WithContinuousDeploymentFallbackTag(string? value)
-    {
-        this.continuousDeploymentFallbackTag = value;
+        this.labelPrefix = value;
         return (TConfigurationBuilder)this;
     }
 
@@ -122,15 +114,9 @@ internal abstract class TestConfigurationBuilderBase<TConfigurationBuilder>
         return (TConfigurationBuilder)this;
     }
 
-    public virtual TConfigurationBuilder WithTagPreReleaseWeight(int? value)
+    public virtual TConfigurationBuilder WithLabelPreReleaseWeight(int? value)
     {
-        this.tagPreReleaseWeight = value;
-        return (TConfigurationBuilder)this;
-    }
-
-    public virtual TConfigurationBuilder WithCommitMessageIncrementing(CommitMessageIncrementMode? value)
-    {
-        this.commitMessageIncrementing = value;
+        this.labelPreReleaseWeight = value;
         return (TConfigurationBuilder)this;
     }
 
@@ -140,19 +126,13 @@ internal abstract class TestConfigurationBuilderBase<TConfigurationBuilder>
         return (TConfigurationBuilder)this;
     }
 
-    public virtual TConfigurationBuilder WithIncrement(IncrementStrategy? value)
-    {
-        this.increment = value;
-        return (TConfigurationBuilder)this;
-    }
-
     public virtual TConfigurationBuilder WithCommitDateFormat(string? value)
     {
         this.commitDateFormat = value;
         return (TConfigurationBuilder)this;
     }
 
-    public virtual TConfigurationBuilder WithUpdateBuildNumber(bool? value)
+    public virtual TConfigurationBuilder WithUpdateBuildNumber(bool value)
     {
         this.updateBuildNumber = value;
         return (TConfigurationBuilder)this;
@@ -170,18 +150,120 @@ internal abstract class TestConfigurationBuilderBase<TConfigurationBuilder>
         return (TConfigurationBuilder)this;
     }
 
-    public virtual TestBranchConfigurationBuilder WithBranch(string value)
+    public virtual TConfigurationBuilder WithoutBranches()
     {
-        var result = this.branchConfigurationBuilders.GetOrAdd(value, () => TestBranchConfigurationBuilder.New);
+        this.branchConfigurationBuilders.Clear();
+        return (TConfigurationBuilder)this;
+    }
+
+    public virtual BranchConfigurationBuilder WithBranch(string value)
+    {
+        var result = this.branchConfigurationBuilders.GetOrAdd(value, () => BranchConfigurationBuilder.New);
         result.WithName(value);
         return result;
     }
 
-    public virtual TConfigurationBuilder WithBranch(string value, Action<TestBranchConfigurationBuilder> action)
+    public virtual TConfigurationBuilder WithBranch(string value, Action<BranchConfigurationBuilder> action)
     {
-        var result = this.branchConfigurationBuilders.GetOrAdd(value, () => TestBranchConfigurationBuilder.New);
+        var result = this.branchConfigurationBuilders.GetOrAdd(value, () => BranchConfigurationBuilder.New);
         result.WithName(value);
         action(result);
+        return (TConfigurationBuilder)this;
+    }
+
+    public virtual TConfigurationBuilder WithVersioningMode(VersioningMode? value)
+    {
+        this.versioningMode = value;
+        return (TConfigurationBuilder)this;
+    }
+
+    public virtual TConfigurationBuilder WithLabel(string? value)
+    {
+        this.label = value;
+        return (TConfigurationBuilder)this;
+    }
+
+    public virtual TConfigurationBuilder WithIncrement(IncrementStrategy? value)
+    {
+        this.increment = value;
+        return (TConfigurationBuilder)this;
+    }
+
+    public virtual TConfigurationBuilder WithPreventIncrementOfMergedBranchVersion(bool? value)
+    {
+        this.preventIncrementOfMergedBranchVersion = value;
+        return (TConfigurationBuilder)this;
+    }
+
+    public virtual TConfigurationBuilder WithLabelNumberPattern(string? value)
+    {
+        this.labelNumberPattern = value;
+        return (TConfigurationBuilder)this;
+    }
+
+    public virtual TConfigurationBuilder WithTrackMergeTarget(bool? value)
+    {
+        this.trackMergeTarget = value;
+        return (TConfigurationBuilder)this;
+    }
+
+    public virtual TConfigurationBuilder WithCommitMessageIncrementing(CommitMessageIncrementMode? value)
+    {
+        this.commitMessageIncrementing = value;
+        return (TConfigurationBuilder)this;
+    }
+
+    public virtual TConfigurationBuilder WithRegex(string? value)
+    {
+        this.regex = value;
+        return (TConfigurationBuilder)this;
+    }
+
+    public virtual TConfigurationBuilder WithSourceBranches(IEnumerable<string>? values)
+    {
+        WithSourceBranches(values?.ToArray());
+        return (TConfigurationBuilder)this;
+    }
+
+    public virtual TConfigurationBuilder WithSourceBranches(params string[]? values)
+    {
+        this.sourceBranches = values == null ? null : new HashSet<string>(values);
+        return (TConfigurationBuilder)this;
+    }
+
+    public virtual TConfigurationBuilder WithIsSourceBranchFor(IEnumerable<string>? values)
+    {
+        WithIsSourceBranchFor(values?.ToArray());
+        return (TConfigurationBuilder)this;
+    }
+
+    public virtual TConfigurationBuilder WithIsSourceBranchFor(params string[]? values)
+    {
+        this.isSourceBranchFor = values == null ? null : new HashSet<string>(values);
+        return (TConfigurationBuilder)this;
+    }
+
+    public virtual TConfigurationBuilder WithTracksReleaseBranches(bool? value)
+    {
+        this.tracksReleaseBranches = value;
+        return (TConfigurationBuilder)this;
+    }
+
+    public virtual TConfigurationBuilder WithIsReleaseBranch(bool? value)
+    {
+        this.isReleaseBranch = value;
+        return (TConfigurationBuilder)this;
+    }
+
+    public virtual TConfigurationBuilder WithIsMainline(bool? value)
+    {
+        this.isMainline = value;
+        return (TConfigurationBuilder)this;
+    }
+
+    public virtual TConfigurationBuilder WithPreReleaseWeight(int? value)
+    {
+        this.preReleaseWeight = value;
         return (TConfigurationBuilder)this;
     }
 
@@ -192,25 +274,14 @@ internal abstract class TestConfigurationBuilderBase<TConfigurationBuilder>
         WithAssemblyInformationalFormat(value.AssemblyInformationalFormat);
         WithAssemblyVersioningFormat(value.AssemblyVersioningFormat);
         WithAssemblyFileVersioningFormat(value.AssemblyFileVersioningFormat);
-        if (value.VersioningMode.HasValue)
-        {
-            WithVersioningMode(value.VersioningMode.Value);
-        }
-        else
-        {
-            WithoutVersioningMode();
-        }
-        WithTagPrefix(value.LabelPrefix);
-        WithContinuousDeploymentFallbackTag(value.ContinuousDeploymentFallbackLabel);
+        WithLabelPrefix(value.LabelPrefix);
         WithNextVersion(value.NextVersion);
         WithMajorVersionBumpMessage(value.MajorVersionBumpMessage);
         WithMinorVersionBumpMessage(value.MinorVersionBumpMessage);
         WithPatchVersionBumpMessage(value.PatchVersionBumpMessage);
         WithNoBumpMessage(value.NoBumpMessage);
-        WithTagPreReleaseWeight(value.LabelPreReleaseWeight);
-        WithCommitMessageIncrementing(value.CommitMessageIncrementing);
+        WithLabelPreReleaseWeight(value.LabelPreReleaseWeight);
         WithIgnoreConfiguration(value.Ignore);
-        WithIncrement(value.Increment);
         WithCommitDateFormat(value.CommitDateFormat);
         WithUpdateBuildNumber(value.UpdateBuildNumber);
         WithSemanticVersionFormat(value.SemanticVersionFormat);
@@ -218,6 +289,29 @@ internal abstract class TestConfigurationBuilderBase<TConfigurationBuilder>
         foreach (var (name, branchConfiguration) in value.Branches)
         {
             WithBranch(name).WithConfiguration(branchConfiguration);
+        }
+        WithVersioningMode(value.VersioningMode);
+        WithLabel(value.Label);
+        WithIncrement(value.Increment);
+        WithPreventIncrementOfMergedBranchVersion(value.PreventIncrementOfMergedBranchVersion);
+        WithLabelNumberPattern(value.LabelNumberPattern);
+        WithTrackMergeTarget(value.TrackMergeTarget);
+        WithCommitMessageIncrementing(value.CommitMessageIncrementing);
+        WithRegex(value.Regex);
+        WithTracksReleaseBranches(value.TracksReleaseBranches);
+        WithIsReleaseBranch(value.IsReleaseBranch);
+        WithIsMainline(value.IsMainline);
+        WithPreReleaseWeight(value.PreReleaseWeight);
+        WithSourceBranches(value.SourceBranches);
+        WithIsSourceBranchFor(value.IsSourceBranchFor);
+        return (TConfigurationBuilder)this;
+    }
+
+    public TConfigurationBuilder AddOverride(IReadOnlyDictionary<object, object?> value)
+    {
+        if (value.Any())
+        {
+            this.overrides.Add(value);
         }
         return (TConfigurationBuilder)this;
     }
@@ -231,33 +325,54 @@ internal abstract class TestConfigurationBuilderBase<TConfigurationBuilder>
             AssemblyInformationalFormat = this.assemblyInformationalFormat,
             AssemblyVersioningFormat = this.assemblyVersioningFormat,
             AssemblyFileVersioningFormat = this.assemblyFileVersioningFormat,
-            VersioningMode = this.versioningMode,
-            LabelPrefix = this.tagPrefix,
-            ContinuousDeploymentFallbackLabel = this.continuousDeploymentFallbackTag,
+            LabelPrefix = this.labelPrefix,
             NextVersion = this.nextVersion,
             MajorVersionBumpMessage = this.majorVersionBumpMessage,
             MinorVersionBumpMessage = this.minorVersionBumpMessage,
             PatchVersionBumpMessage = this.patchVersionBumpMessage,
             NoBumpMessage = this.noBumpMessage,
-            LabelPreReleaseWeight = this.tagPreReleaseWeight,
-            CommitMessageIncrementing = this.commitMessageIncrementing,
+            LabelPreReleaseWeight = this.labelPreReleaseWeight,
             Ignore = this.ignore,
-            Increment = this.increment,
             CommitDateFormat = this.commitDateFormat,
             UpdateBuildNumber = this.updateBuildNumber,
             SemanticVersionFormat = this.semanticVersionFormat,
-            MergeMessageFormats = this.mergeMessageFormats ?? new()
+            MergeMessageFormats = this.mergeMessageFormats ?? new(),
+            VersioningMode = this.versioningMode,
+            Label = this.label,
+            Increment = this.increment,
+            Regex = this.regex,
+            TracksReleaseBranches = this.tracksReleaseBranches,
+            TrackMergeTarget = this.trackMergeTarget,
+            CommitMessageIncrementing = this.commitMessageIncrementing,
+            IsMainline = this.isMainline,
+            IsReleaseBranch = this.isReleaseBranch,
+            LabelNumberPattern = this.labelNumberPattern,
+            PreventIncrementOfMergedBranchVersion = this.preventIncrementOfMergedBranchVersion,
+            PreReleaseWeight = this.preReleaseWeight,
+            SourceBranches = this.sourceBranches,
+            IsSourceBranchFor = this.isSourceBranchFor
         };
+
         Dictionary<string, BranchConfiguration> branches = new();
         foreach (var (name, branchConfigurationBuilder) in this.branchConfigurationBuilders)
         {
             branches.Add(name, branchConfigurationBuilder.Build());
         }
+        configuration.Branches = branches;
+
+        if (this.overrides.Any())
+        {
+            ConfigurationHelper configurationHelper = new(configuration);
+            foreach (var item in this.overrides)
+            {
+                configurationHelper.Override(item);
+            }
+            configuration = configurationHelper.Configuration;
+        }
 
         FinalizeConfiguration(configuration);
         ValidateConfiguration(configuration);
 
-        configuration.Branches = branches;
         return configuration;
     }
 

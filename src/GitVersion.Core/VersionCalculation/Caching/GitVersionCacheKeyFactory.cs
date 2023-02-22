@@ -28,7 +28,7 @@ public class GitVersionCacheKeyFactory : IGitVersionCacheKeyFactory
         this.repositoryInfo = repositoryInfo.NotNull();
     }
 
-    public GitVersionCacheKey Create(GitVersionConfiguration? overrideConfiguration)
+    public GitVersionCacheKey Create(IReadOnlyDictionary<object, object?>? overrideConfiguration)
     {
         var gitSystemHash = GetGitSystemHash();
         var configFileHash = GetConfigFileHash();
@@ -150,22 +150,16 @@ public class GitVersionCacheKeyFactory : IGitVersionCacheKeyFactory
         return GetHash(hash);
     }
 
-    private static string GetOverrideConfigHash(GitVersionConfiguration? overrideConfiguration)
+    private static string GetOverrideConfigHash(IReadOnlyDictionary<object, object?>? overrideConfiguration)
     {
-        if (overrideConfiguration == null)
+        if (overrideConfiguration == null || !overrideConfiguration.Any())
         {
             return string.Empty;
         }
 
         // Doesn't depend on command line representation and
         // includes possible changes in default values of Config per se.
-        var stringBuilder = new StringBuilder();
-        using (var stream = new StringWriter(stringBuilder))
-        {
-            ConfigurationSerializer.Write(overrideConfiguration, stream);
-            stream.Flush();
-        }
-        var configContent = stringBuilder.ToString();
+        var configContent = ConfigurationSerializer.Serialize(overrideConfiguration);
 
         return GetHash(configContent);
     }

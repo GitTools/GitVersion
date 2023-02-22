@@ -32,7 +32,11 @@ public class NextVersionCalculatorTests : TestBase
     {
         var contextBuilder = new GitVersionContextBuilder();
 
-        contextBuilder.WithConfig(new GitVersionConfiguration() { NextVersion = "1.0.0" }).Build();
+        var overrideConfiguration = new Dictionary<object, object?>()
+        {
+            { "next-version", "1.0.0" }
+        };
+        contextBuilder.WithOverrideConfiguration(overrideConfiguration).Build();
 
         contextBuilder.ServicesProvider.ShouldNotBeNull();
         var nextVersionCalculator = contextBuilder.ServicesProvider.GetRequiredService<INextVersionCalculator>();
@@ -61,23 +65,16 @@ public class NextVersionCalculatorTests : TestBase
     }
 
     [Test]
-    public void PreReleaseTagCanUseBranchName()
+    public void PreReleaseLabelCanUseBranchName()
     {
-        var configuration = new GitVersionConfiguration
-        {
-            NextVersion = "1.0.0",
-            Branches = new Dictionary<string, BranchConfiguration>
-            {
-                {
-                    "custom", new BranchConfiguration
-                    {
-                        Regex = "custom/",
-                        Label = "useBranchName",
-                        SourceBranches = new HashSet<string>()
-                    }
-                }
-            }
-        };
+        var configuration = GitFlowConfigurationBuilder.New
+            .WithNextVersion("1.0.0")
+            .WithBranch("custom", builder => builder
+                .WithRegex("custom/")
+                .WithLabel("{BranchName}")
+                .WithSourceBranches()
+            )
+            .Build();
 
         using var fixture = new EmptyRepositoryFixture();
         fixture.MakeACommit();
@@ -92,11 +89,11 @@ public class NextVersionCalculatorTests : TestBase
     [Test]
     public void PreReleaseVersionMainline()
     {
-        var configuration = new GitVersionConfiguration
-        {
-            VersioningMode = VersioningMode.Mainline,
-            NextVersion = "1.0.0"
-        };
+        var configuration = GitFlowConfigurationBuilder.New
+            .WithNextVersion("1.0.0")
+            .WithBranch("unknown", builder => builder.WithVersioningMode(VersioningMode.Mainline))
+            .WithBranch("main", builder => builder.WithVersioningMode(VersioningMode.Mainline))
+            .Build();
 
         using var fixture = new EmptyRepositoryFixture();
         fixture.MakeACommit();
@@ -109,11 +106,10 @@ public class NextVersionCalculatorTests : TestBase
     [Test]
     public void MergeIntoMainline()
     {
-        var configuration = new GitVersionConfiguration
-        {
-            VersioningMode = VersioningMode.Mainline,
-            NextVersion = "1.0.0"
-        };
+        var configuration = GitFlowConfigurationBuilder.New
+            .WithNextVersion("1.0.0")
+            .WithBranch("main", builder => builder.WithVersioningMode(VersioningMode.Mainline))
+            .Build();
 
         using var fixture = new EmptyRepositoryFixture();
         fixture.MakeACommit();
@@ -128,10 +124,10 @@ public class NextVersionCalculatorTests : TestBase
     [Test]
     public void MergeFeatureIntoMainline()
     {
-        var configuration = new GitVersionConfiguration
-        {
-            VersioningMode = VersioningMode.Mainline
-        };
+        var configuration = GitFlowConfigurationBuilder.New
+            .WithBranch("main", builder => builder.WithVersioningMode(VersioningMode.Mainline))
+            .WithBranch("feature", builder => builder.WithVersioningMode(VersioningMode.Mainline))
+            .Build();
 
         using var fixture = new EmptyRepositoryFixture();
         fixture.MakeACommit();
@@ -151,16 +147,15 @@ public class NextVersionCalculatorTests : TestBase
     [Test]
     public void MergeFeatureIntoMainlineWithMinorIncrement()
     {
-        var configuration = new GitVersionConfiguration
-        {
-            VersioningMode = VersioningMode.Mainline,
-            Branches = new Dictionary<string, BranchConfiguration>
-            {
-                { "feature", new BranchConfiguration { Increment = IncrementStrategy.Minor } }
-            },
-            Ignore = new IgnoreConfiguration { Shas = new List<string>() },
-            MergeMessageFormats = new Dictionary<string, string>()
-        };
+        var configuration = GitFlowConfigurationBuilder.New
+            .WithIgnoreConfiguration(new())
+            .WithMergeMessageFormats(new())
+            .WithBranch("main", builder => builder.WithVersioningMode(VersioningMode.Mainline))
+            .WithBranch("feature", builder => builder
+                .WithVersioningMode(VersioningMode.Mainline)
+                .WithIncrement(IncrementStrategy.Minor)
+            )
+            .Build();
 
         using var fixture = new EmptyRepositoryFixture();
         fixture.MakeACommit();
@@ -180,16 +175,15 @@ public class NextVersionCalculatorTests : TestBase
     [Test]
     public void MergeFeatureIntoMainlineWithMinorIncrementAndThenMergeHotfix()
     {
-        var configuration = new GitVersionConfiguration
-        {
-            VersioningMode = VersioningMode.Mainline,
-            Branches = new Dictionary<string, BranchConfiguration>
-            {
-                { "feature", new BranchConfiguration { Increment = IncrementStrategy.Minor } }
-            },
-            Ignore = new IgnoreConfiguration { Shas = new List<string>() },
-            MergeMessageFormats = new Dictionary<string, string>()
-        };
+        var configuration = GitFlowConfigurationBuilder.New
+            .WithIgnoreConfiguration(new())
+            .WithMergeMessageFormats(new())
+            .WithVersioningMode(VersioningMode.Mainline)
+            .WithBranch("feature", builder => builder
+                .WithIncrement(IncrementStrategy.Minor)
+                .WithVersioningMode(VersioningMode.Mainline))
+            .WithBranch("hotfix", builder => builder.WithVersioningMode(VersioningMode.Mainline))
+            .Build();
 
         using var fixture = new EmptyRepositoryFixture();
         fixture.MakeACommit();
@@ -217,23 +211,16 @@ public class NextVersionCalculatorTests : TestBase
     }
 
     [Test]
-    public void PreReleaseTagCanUseBranchNameVariable()
+    public void PreReleaseLabelCanUseBranchNameVariable()
     {
-        var configuration = new GitVersionConfiguration
-        {
-            NextVersion = "1.0.0",
-            Branches = new Dictionary<string, BranchConfiguration>
-            {
-                {
-                    "custom", new BranchConfiguration
-                    {
-                        Regex = "custom/",
-                        Label = "alpha.{BranchName}",
-                        SourceBranches = new HashSet<string>()
-                    }
-                }
-            }
-        };
+        var configuration = GitFlowConfigurationBuilder.New
+            .WithNextVersion("1.0.0")
+            .WithBranch("custom", builder => builder
+                .WithRegex("custom/")
+                .WithLabel("alpha.{BranchName}")
+                .WithSourceBranches()
+            )
+            .Build();
 
         using var fixture = new EmptyRepositoryFixture();
         fixture.MakeACommit();
@@ -248,19 +235,12 @@ public class NextVersionCalculatorTests : TestBase
     [Test]
     public void PreReleaseNumberShouldBeScopeToPreReleaseLabelInContinuousDelivery()
     {
-        var configuration = new GitVersionConfiguration
-        {
-            VersioningMode = VersioningMode.ContinuousDelivery,
-            Branches = new Dictionary<string, BranchConfiguration>
-            {
-                {
-                    MainBranch, new BranchConfiguration
-                    {
-                        Label = "beta"
-                    }
-                }
-            }
-        };
+        var configuration = GitFlowConfigurationBuilder.New
+            .WithBranch("main", builder => builder.WithLabel("beta"))
+            .WithBranch("feature", builder => builder
+                .WithVersioningMode(VersioningMode.ContinuousDelivery)
+            )
+            .Build();
 
         using var fixture = new EmptyRepositoryFixture();
         fixture.Repository.MakeACommit();
@@ -281,11 +261,10 @@ public class NextVersionCalculatorTests : TestBase
     [Test]
     public void GetNextVersionOnNonMainlineBranchWithoutCommitsShouldWorkNormally()
     {
-        var configuration = new GitVersionConfiguration
-        {
-            VersioningMode = VersioningMode.Mainline,
-            NextVersion = "1.0.0"
-        };
+        var configuration = GitFlowConfigurationBuilder.New
+            .WithNextVersion("1.0.0")
+            .WithBranch("feature", builder => builder.WithVersioningMode(VersioningMode.Mainline))
+            .Build();
 
         using var fixture = new EmptyRepositoryFixture();
         fixture.MakeACommit("initial commit");
@@ -456,7 +435,9 @@ public class NextVersionCalculatorTests : TestBase
         // Arrange
         var branchMock = GitToolsTestingExtensions.CreateMockBranch("main", GitToolsTestingExtensions.CreateMockCommit());
         var fakeIgnoreConfig = new TestIgnoreConfig(new ExcludeSourcesContainingExclude());
-        var configuration = GitFlowConfigurationBuilder.New.WithIgnoreConfiguration(fakeIgnoreConfig).WithVersioningMode(VersioningMode.Mainline).Build();
+        var configuration = GitFlowConfigurationBuilder.New.WithIgnoreConfiguration(fakeIgnoreConfig)
+            .WithBranch("main", builder => builder.WithVersioningMode(VersioningMode.Mainline))
+            .Build();
         var context = new GitVersionContext(branchMock, null, configuration, null, 0);
         var repositoryStoreMock = Substitute.For<IRepositoryStore>();
         var effectiveConfiguration = context.GetEffectiveConfiguration(branchMock);

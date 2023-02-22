@@ -42,7 +42,7 @@ public static class GitTestExtensions
     {
         var commit = repository.MakeACommit();
         var existingTag = repository.Tags.SingleOrDefault(t => t.FriendlyName == tag);
-        return existingTag != null ? existingTag : repository.Tags.Add(tag, commit);
+        return existingTag ?? repository.Tags.Add(tag, commit);
     }
 
     public static Commit CreatePullRequestRef(this IRepository repository, string from, string to, int prNumber = 2, bool normalise = false, bool allowFastForwardMerge = false)

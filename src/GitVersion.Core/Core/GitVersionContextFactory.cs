@@ -26,7 +26,8 @@ public class GitVersionContextFactory : IGitVersionContextFactory
 
         var currentCommit = this.repositoryStore.GetCurrentCommit(currentBranch, gitVersionOptions.RepositoryInfo.CommitId);
 
-        var configuration = this.configurationProvider.Provide(this.options.Value.ConfigInfo.OverrideConfig);
+        var overrideConfiguration = this.options.Value.ConfigInfo.OverrideConfiguration;
+        var configuration = this.configurationProvider.Provide(overrideConfiguration);
         if (currentBranch.IsDetachedHead)
         {
             var branchForCommit = this.repositoryStore.GetBranchesContainingCommit(currentCommit, onlyTrackedBranches: gitVersionOptions.Settings.OnlyTrackedBranches).OnlyOrDefault();

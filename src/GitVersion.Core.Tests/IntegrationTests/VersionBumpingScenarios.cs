@@ -9,21 +9,12 @@ namespace GitVersion.Core.Tests.IntegrationTests;
 public class VersionBumpingScenarios : TestBase
 {
     [Test]
-    public void AppliedPrereleaseTagCausesBump()
+    public void AppliedPreReleaseLabelCausesBump()
     {
-        var configuration = new GitVersionConfiguration
-        {
-            Branches =
-            {
-                {
-                    MainBranch, new BranchConfiguration
-                    {
-                        Label = "pre",
-                        SourceBranches = new HashSet<string>()
-                    }
-                }
-            }
-        };
+        var configuration = GitFlowConfigurationBuilder.New
+            .WithBranch(MainBranch, builder => builder.WithLabel("pre").WithSourceBranches())
+            .Build();
+
         using var fixture = new EmptyRepositoryFixture();
         fixture.Repository.MakeACommit();
         fixture.Repository.MakeATaggedCommit("1.0.0-pre.1");
@@ -88,19 +79,17 @@ public class VersionBumpingScenarios : TestBase
     [TestCase("feat: Major update\n\nSome descriptive text\nWith a second line\n\nBREAKING CHANGE: A reason", "2.0.0")]
     public void CanUseConventionalCommitsToBumpVersion(string commitMessage, string expectedVersion)
     {
-        var configuration = new GitVersionConfiguration
-        {
-            VersioningMode = VersioningMode.Mainline,
-
+        var configuration = GitFlowConfigurationBuilder.New
             // For future debugging of this regex: https://regex101.com/r/CRoBol/2
-            MajorVersionBumpMessage = "^(build|chore|ci|docs|feat|fix|perf|refactor|revert|style|test)(\\([\\w\\s-]*\\))?(!:|:.*\\n\\n((.+\\n)+\\n)?BREAKING CHANGE:\\s.+)",
-
+            .WithMajorVersionBumpMessage("^(build|chore|ci|docs|feat|fix|perf|refactor|revert|style|test)(\\([\\w\\s-]*\\))?(!:|:.*\\n\\n((.+\\n)+\\n)?BREAKING CHANGE:\\s.+)")
             // For future debugging of this regex: https://regex101.com/r/9ccNam/3
-            MinorVersionBumpMessage = "^(feat)(\\([\\w\\s-]*\\))?:",
-
+            .WithMinorVersionBumpMessage("^(feat)(\\([\\w\\s-]*\\))?:")
             // For future debugging of this regex: https://regex101.com/r/oFpqxA/2
-            PatchVersionBumpMessage = "^(build|chore|ci|docs|fix|perf|refactor|revert|style|test)(\\([\\w\\s-]*\\))?:"
-        };
+            .WithPatchVersionBumpMessage("^(build|chore|ci|docs|fix|perf|refactor|revert|style|test)(\\([\\w\\s-]*\\))?:")
+            .WithVersioningMode(VersioningMode.Mainline)
+            .WithBranch("develop", builder => builder.WithVersioningMode(null))
+            .Build();
+
         using var fixture = new EmptyRepositoryFixture();
         fixture.Repository.MakeACommit();
         fixture.MakeATaggedCommit("1.0.0");

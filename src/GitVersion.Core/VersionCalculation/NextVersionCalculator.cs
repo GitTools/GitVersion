@@ -48,7 +48,7 @@ public class NextVersionCalculator : INextVersionCalculator
         var preReleaseTagName = nextVersion.Configuration.GetBranchSpecificTag(this.log, Context.CurrentBranch.Name.Friendly, baseVersion.BranchNameOverride);
 
         SemanticVersion semver;
-        if (Context.Configuration.VersioningMode == VersioningMode.Mainline)
+        if (nextVersion.Configuration.VersioningMode == VersioningMode.Mainline)
         {
             semver = this.mainlineVersionCalculator.FindMainlineModeVersion(baseVersion);
         }
@@ -212,7 +212,7 @@ public class NextVersionCalculator : INextVersionCalculator
                             ? baseVersion.SemanticVersion
                             : baseVersion.SemanticVersion.IncrementVersion(incrementStrategy);
 
-                        if (configuration.VersioningMode == VersioningMode.Mainline)
+                        if (effectiveBranchConfiguration.Value.VersioningMode == VersioningMode.Mainline)
                         {
                             if (!(incrementedVersion.PreReleaseTag.HasTag() != true))
                             {

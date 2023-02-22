@@ -5,13 +5,13 @@ namespace GitVersion.Configuration;
 
 public class IgnoreConfiguration
 {
-    public IgnoreConfiguration() => Shas = Enumerable.Empty<string>();
+    public IgnoreConfiguration() => Shas = Array.Empty<string>();
 
     [YamlMember(Alias = "commits-before")]
     public DateTimeOffset? Before { get; set; }
 
     [YamlMember(Alias = "sha")]
-    public IEnumerable<string> Shas { get; set; }
+    public string[] Shas { get; set; }
 
     [YamlIgnore]
     public virtual bool IsEmpty => Before == null && Shas.Any() == false;
