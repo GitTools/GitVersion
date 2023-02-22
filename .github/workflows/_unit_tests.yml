@@ -1,0 +1,33 @@
+on:
+  workflow_call:
+
+jobs:
+  unit_test:
+    name: ${{ matrix.os }} - ${{ matrix.targetFramework }}
+    strategy:
+      matrix:
+        os: [windows-latest, ubuntu-latest, macos-latest]
+        targetFramework: [net7.0, net6.0]
+      fail-fast: false
+
+    runs-on: ${{ matrix.os }}
+    steps:
+    -
+      name: Checkout
+      uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+    -
+      name: Restore State
+      uses: ./.github/actions/artifacts-restore
+    -
+      name: '[Unit Test]'
+      shell: pwsh
+      run: dotnet run/build.dll --target=Test --dotnet_target=${{ matrix.targetFramework }}
+
+    -
+      name: Test Summary
+      uses: test-summary/action@v2
+      with:
+        paths: artifacts/test-results/*.results.xml
+      if: always()

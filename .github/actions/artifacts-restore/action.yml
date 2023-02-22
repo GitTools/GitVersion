@@ -1,21 +1,23 @@
-name: "Artifacts restore"
+name: 'Artifacts restore'
+description: 'Artifacts restore'
 inputs:
   dotnet-version:
+    description: 'The version of the dotnet'
     default: '7.0.x'
 runs:
-  using: "composite"
+  using: 'composite'
   steps:
   -
     name: Use cached cake frosting
     id: cache-cake
-    uses: actions/cache@v3.2.5
+    uses: actions/cache@v3
     with:
       path: run
       key: run-${{ runner.os }}-${{ hashFiles('./build/**') }}
   -
     name: Use cached tools
     id: cache-tools
-    uses: actions/cache@v3.2.5
+    uses: actions/cache@v3
     with:
       path: tools
       key: tools-${{ runner.os }}-${{ hashFiles('./build/**') }}
@@ -27,6 +29,6 @@ runs:
       path: ${{ github.workspace }}/dogfood
   -
     name: Setup .NET SDK
-    uses: actions/setup-dotnet@v3.0.3
+    uses: actions/setup-dotnet@v3
     with:
       dotnet-version: ${{ inputs.dotnet-version }}

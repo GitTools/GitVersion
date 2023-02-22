@@ -1,0 +1,52 @@
+on:
+  workflow_call:
+    inputs:
+      runner:
+        required: true
+        type: string
+      arch:
+        required: true
+        type: string
+
+env:
+  DOTNET_INSTALL_DIR: "./.dotnet"
+
+jobs:
+  artifacts:
+    name: ${{ matrix.distro }} - net${{ matrix.targetFramework }}
+    runs-on: ${{ inputs.runner }}
+    strategy:
+      matrix:
+        distro: [ alpine.3.15, alpine.3.16, alpine.3.17, centos.7, centos.stream.8, fedora.36, debian.10, debian.11, ubuntu.18.04, ubuntu.20.04, ubuntu.22.04 ]
+        targetFramework: [ '7.0', '6.0' ]
+      fail-fast: false
+
+    steps:
+    -
+      name: Checkout
+      uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+    -
+      name: Restore State
+      uses: ./.github/actions/artifacts-restore
+    -
+      uses: actions/download-artifact@v3
+      name: Download nuget packages
+      with:
+        name: nuget
+        path: ${{ github.workspace }}/artifacts/packages/nuget
+    -
+      uses: actions/download-artifact@v3
+      name: Download native packages
+      with:
+        name: native-${{ runner.os }}
+        path: ${{ github.workspace }}/artifacts/packages/native
+    -
+      name: Setup QEMU
+      if: inputs.arch == 'arm64'
+      uses: docker/setup-qemu-action@v2
+    -
+      name: '[Test Artifacts]'
+      shell: pwsh
+      run: dotnet run/artifacts.dll --target=ArtifactsTest --arch ${{ inputs.arch }} --docker_dotnetversion=${{ matrix.targetFramework }} --docker_distro=${{ matrix.distro }}

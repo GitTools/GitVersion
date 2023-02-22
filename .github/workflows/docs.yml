@@ -48,14 +48,14 @@ jobs:
     -
       name: Cache cake frosting
       id: cache-cake
-      uses: actions/cache@v3.2.5
+      uses: actions/cache@v3
       with:
         path: run
         key: run-${{ runner.os }}-${{ hashFiles('./build/**') }}
     -
       name: Use cached tools
       id: cache-tools
-      uses: actions/cache@v3.2.5
+      uses: actions/cache@v3
       with:
         path: tools
         key: tools-${{ runner.os }}-${{ hashFiles('./build/**') }}
@@ -69,14 +69,14 @@ jobs:
     -
       name: Cache Node Modules
       id: cache-node
-      uses: actions/cache@v3.2.5
+      uses: actions/cache@v3
       with:
         path: ${{ steps.cache-node-dir.outputs.dir }}
         key: node-${{ runner.os }}-${{ hashFiles('./package-lock.json') }}
         restore-keys: node-${{ runner.os }}
     -
       name: Setup .NET SDK
-      uses: actions/setup-dotnet@v3.0.3
+      uses: actions/setup-dotnet@v3
       with:
         dotnet-version: '7.0.x'
     -
@@ -124,7 +124,7 @@ jobs:
         echo "value=$value" >> $GITHUB_OUTPUT
     -
       name: '[Remark Lint]'
-      uses: reviewdog/action-remark-lint@v5.6
+      uses: reviewdog/action-remark-lint@v5
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
         reporter: ${{ steps.reporter.outputs.value }}

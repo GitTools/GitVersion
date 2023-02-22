@@ -1,0 +1,34 @@
+on:
+  workflow_call:
+
+jobs:
+  publish:
+    name: ${{ matrix.taskName }}
+    runs-on: windows-latest
+    strategy:
+      matrix:
+        taskName: [ NuGet, Chocolatey ]
+      fail-fast: false
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
+      CHOCOLATEY_API_KEY: ${{ secrets.CHOCOLATEY_API_KEY }}
+    steps:
+    -
+      name: Checkout
+      uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+    -
+      name: Restore State
+      uses: ./.github/actions/artifacts-restore
+    -
+      uses: actions/download-artifact@v3
+      name: Download nuget packages
+      with:
+        name: nuget
+        path: ${{ github.workspace }}/artifacts/packages/nuget
+    -
+      name: '[Publish]'
+      shell: pwsh
+      run: dotnet run/publish.dll --target=Publish${{ matrix.taskName }}      
