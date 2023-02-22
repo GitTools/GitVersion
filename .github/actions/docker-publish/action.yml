@@ -39,6 +39,7 @@ runs:
     name: Login to GitHub
     uses: docker/login-action@v2
     with:
+      registry: ghcr.io
       username: ${{ inputs.github_registry_username }}
       password: ${{ inputs.github_registry_password }}    
   -
