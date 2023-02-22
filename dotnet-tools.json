@@ -2,12 +2,6 @@
   "version": 1,
   "isRoot": true,
   "tools": {
-    "codecov.tool": {
-      "version": "1.13.0",
-      "commands": [
-        "codecov"
-      ]
-    },
     "gitreleasemanager.tool": {
       "version": "0.13.0",
       "commands": [

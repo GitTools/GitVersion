@@ -19,7 +19,6 @@ jobs:
       matrix:
         distro: [ alpine.3.15, alpine.3.16, alpine.3.17, centos.7, centos.stream.8, fedora.36, debian.10, debian.11, ubuntu.18.04, ubuntu.20.04, ubuntu.22.04 ]
         targetFramework: [ '7.0', '6.0' ]
-      fail-fast: false
 
     steps:
     -

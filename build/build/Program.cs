@@ -8,5 +8,4 @@ return new CakeHost()
     .UseTaskLifetime<BuildTaskLifetime>()
     .UseRootDirectory()
     .InstallToolsFromRootManifest()
-    .InstallNugetTool(Tools.NugetCmd, Tools.Versions[Tools.NugetCmd])
     .Run(args);

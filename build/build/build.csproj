@@ -9,5 +9,6 @@
     <ItemGroup>
         <PackageReference Include="Cake.Codecov" />
         <PackageReference Include="Cake.Coverlet" />
+        <PackageReference Include="CodecovUploader" />
     </ItemGroup>
 </Project>
