@@ -6,7 +6,7 @@ namespace Artifacts.Tasks;
 [TaskDescription("Pulls the docker images needed for testing the artifacts")]
 [TaskArgument(Arguments.DockerRegistry, Constants.DockerHub, Constants.GitHub)]
 [TaskArgument(Arguments.DockerDotnetVersion, Constants.Version60, Constants.Version70)]
-[TaskArgument(Arguments.DockerDistro, Constants.Alpine315, Constants.Debian11, Constants.Ubuntu2204)]
+[TaskArgument(Arguments.DockerDistro, Constants.AlpineLatest, Constants.DebianLatest, Constants.UbuntuLatest)]
 public class ArtifactsPrepare : FrostingTask<BuildContext>
 {
     public override bool ShouldRun(BuildContext context)

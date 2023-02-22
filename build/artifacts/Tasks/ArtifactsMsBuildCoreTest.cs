@@ -6,7 +6,7 @@ namespace Artifacts.Tasks;
 [TaskDescription("Tests the msbuild package in docker container")]
 [TaskArgument(Arguments.DockerRegistry, Constants.DockerHub, Constants.GitHub)]
 [TaskArgument(Arguments.DockerDotnetVersion, Constants.Version60, Constants.Version70)]
-[TaskArgument(Arguments.DockerDistro, Constants.Alpine315, Constants.Debian11, Constants.Ubuntu2204)]
+[TaskArgument(Arguments.DockerDistro, Constants.AlpineLatest, Constants.DebianLatest, Constants.UbuntuLatest)]
 [IsDependentOn(typeof(ArtifactsPrepare))]
 public class ArtifactsMsBuildCoreTest : FrostingTask<BuildContext>
 {
@@ -29,12 +29,12 @@ public class ArtifactsMsBuildCoreTest : FrostingTask<BuildContext>
         {
             if (context.SkipImageForArtifacts(dockerImage)) continue;
 
-            string targetFramework = dockerImage.TargetFramework;
+            var framework = dockerImage.TargetFramework;
 
-            targetFramework = targetFramework switch
+            var targetFramework = framework switch
             {
-                Constants.Version60 or Constants.Version70 => $"net{targetFramework}",
-                _ => targetFramework
+                Constants.Version60 or Constants.Version70 => $"net{framework}",
+                _ => framework
             };
 
             var cmd = $"{rootPrefix}/scripts/test-msbuild-task.sh --version {version} --nugetPath {rootPrefix}/nuget --repoPath {rootPrefix}/repo/tests/integration --targetframework {targetFramework}";

@@ -18,7 +18,7 @@ public class Constants
 
     public static readonly Architecture[] ArchToBuild = { Architecture.Amd64, Architecture.Arm64 };
     public static readonly string[] VersionsToBuild = { Version60, Version70 };
-    public static readonly string[] DistrosToSkipForArtifacts = { Alpine315, Alpine316, Alpine317, Centos7, Ubuntu2204 };
+    public static readonly string[] DistrosToSkipForArtifacts = { Alpine316, Alpine317, Centos7, Ubuntu2204 };
     public static readonly string[] DistrosToSkipForDocker = { Centos7 };
 
     public const string DockerBaseImageName = "gittools/build-images";
@@ -32,29 +32,27 @@ public class Constants
     public const string Arm64 = "arm64";
     public const string Amd64 = "amd64";
 
-    public const string Alpine315 = "alpine.3.15";
     public const string Alpine316 = "alpine.3.16";
     public const string Alpine317 = "alpine.3.17";
     public const string Centos7 = "centos.7";
     public const string CentosStream8 = "centos.stream.8";
     public const string Fedora36 = "fedora.36";
-    public const string Debian10 = "debian.10";
     public const string Debian11 = "debian.11";
-    public const string Ubuntu1804 = "ubuntu.18.04";
     public const string Ubuntu2004 = "ubuntu.20.04";
     public const string Ubuntu2204 = "ubuntu.22.04";
     public const string DockerDistroLatest = Debian11;
+    public const string DebianLatest = Debian11;
+    public const string UbuntuLatest = Ubuntu2204;
+    public const string AlpineLatest = Alpine317;
+
     public static readonly string[] DockerDistrosToBuild =
     {
-        Alpine315,
         Alpine316,
         Alpine317,
         Centos7,
         CentosStream8,
         Fedora36,
-        Debian10,
         Debian11,
-        Ubuntu1804,
         Ubuntu2004,
         Ubuntu2204
     };

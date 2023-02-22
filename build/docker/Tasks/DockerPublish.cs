@@ -6,7 +6,7 @@ namespace Docker.Tasks;
 [TaskDescription("Publish the docker images containing the GitVersion Tool")]
 [TaskArgument(Arguments.DockerRegistry, Constants.DockerHub, Constants.GitHub)]
 [TaskArgument(Arguments.DockerDotnetVersion, Constants.Version60, Constants.Version70)]
-[TaskArgument(Arguments.DockerDistro, Constants.Alpine315, Constants.Debian11, Constants.Ubuntu2204)]
+[TaskArgument(Arguments.DockerDistro, Constants.AlpineLatest, Constants.DebianLatest, Constants.UbuntuLatest)]
 [TaskArgument(Arguments.Architecture, Constants.Amd64, Constants.Arm64)]
 [IsDependentOn(typeof(DockerPublishInternal))]
 public class DockerPublish : FrostingTask<BuildContext>

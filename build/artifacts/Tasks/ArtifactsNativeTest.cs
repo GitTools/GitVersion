@@ -6,7 +6,7 @@ namespace Artifacts.Tasks;
 [TaskDescription("Tests the native executables in docker container")]
 [TaskArgument(Arguments.DockerRegistry, Constants.DockerHub, Constants.GitHub)]
 [TaskArgument(Arguments.DockerDotnetVersion, Constants.Version60, Constants.Version70)]
-[TaskArgument(Arguments.DockerDistro, Constants.Alpine315, Constants.Debian11, Constants.Ubuntu2204)]
+[TaskArgument(Arguments.DockerDistro, Constants.AlpineLatest, Constants.DebianLatest, Constants.UbuntuLatest)]
 [IsDependentOn(typeof(ArtifactsPrepare))]
 public class ArtifactsNativeTest : FrostingTask<BuildContext>
 {
