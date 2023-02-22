@@ -31,6 +31,7 @@ internal abstract class ConfigurationBuilderBase<TConfigurationBuilder>
     private bool? preventIncrementOfMergedBranchVersion;
     private string? labelNumberPattern;
     private bool? trackMergeTarget;
+    private bool? trackMergeMessage;
     private CommitMessageIncrementMode? commitMessageIncrementing;
     private string? regex;
     private HashSet<string>? sourceBranches;
@@ -207,6 +208,12 @@ internal abstract class ConfigurationBuilderBase<TConfigurationBuilder>
         return (TConfigurationBuilder)this;
     }
 
+    public virtual TConfigurationBuilder WithTrackMergeMessage(bool? value)
+    {
+        this.trackMergeMessage = value;
+        return (TConfigurationBuilder)this;
+    }
+
     public virtual TConfigurationBuilder WithCommitMessageIncrementing(CommitMessageIncrementMode? value)
     {
         this.commitMessageIncrementing = value;
@@ -296,6 +303,7 @@ internal abstract class ConfigurationBuilderBase<TConfigurationBuilder>
         WithPreventIncrementOfMergedBranchVersion(value.PreventIncrementOfMergedBranchVersion);
         WithLabelNumberPattern(value.LabelNumberPattern);
         WithTrackMergeTarget(value.TrackMergeTarget);
+        WithTrackMergeMessage(value.TrackMergeMessage);
         WithCommitMessageIncrementing(value.CommitMessageIncrementing);
         WithRegex(value.Regex);
         WithTracksReleaseBranches(value.TracksReleaseBranches);
@@ -343,6 +351,7 @@ internal abstract class ConfigurationBuilderBase<TConfigurationBuilder>
             Regex = this.regex,
             TracksReleaseBranches = this.tracksReleaseBranches,
             TrackMergeTarget = this.trackMergeTarget,
+            TrackMergeMessage = this.trackMergeMessage,
             CommitMessageIncrementing = this.commitMessageIncrementing,
             IsMainline = this.isMainline,
             IsReleaseBranch = this.isReleaseBranch,

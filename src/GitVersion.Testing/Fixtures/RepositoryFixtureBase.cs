@@ -65,6 +65,8 @@ public abstract class RepositoryFixtureBase : IDisposable
 
     public void Checkout(string branch) => Commands.Checkout(Repository, branch);
 
+    public void Remove(string branch) => Repository.Branches.Remove(branch);
+
     public static void Init(string path, string branchName) => GitTestExtensions.ExecuteGitCmd($"init {path} -b {branchName}");
 
     public void MakeATaggedCommit(string tag)

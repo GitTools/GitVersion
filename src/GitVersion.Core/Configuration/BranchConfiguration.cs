@@ -17,6 +17,7 @@ public class BranchConfiguration
         PreventIncrementOfMergedBranchVersion = branchConfiguration.PreventIncrementOfMergedBranchVersion;
         LabelNumberPattern = branchConfiguration.LabelNumberPattern;
         TrackMergeTarget = branchConfiguration.TrackMergeTarget;
+        TrackMergeMessage = branchConfiguration.TrackMergeMessage;
         CommitMessageIncrementing = branchConfiguration.CommitMessageIncrementing;
         TracksReleaseBranches = branchConfiguration.TracksReleaseBranches;
         Regex = branchConfiguration.Regex;
@@ -48,6 +49,9 @@ public class BranchConfiguration
 
     [YamlMember(Alias = "track-merge-target")]
     public bool? TrackMergeTarget { get; set; }
+
+    [YamlMember(Alias = "track-merge-message")]
+    public bool? TrackMergeMessage { get; set; }
 
     [YamlMember(Alias = "commit-message-incrementing")]
     public CommitMessageIncrementMode? CommitMessageIncrementing { get; set; }
@@ -92,6 +96,7 @@ public class BranchConfiguration
         result.PreventIncrementOfMergedBranchVersion ??= parentConfig.PreventIncrementOfMergedBranchVersion;
         result.LabelNumberPattern ??= parentConfig.LabelNumberPattern;
         result.TrackMergeTarget ??= parentConfig.TrackMergeTarget;
+        result.TrackMergeMessage ??= parentConfig.TrackMergeMessage;
         result.CommitMessageIncrementing ??= parentConfig.CommitMessageIncrementing;
         result.Regex ??= parentConfig.Regex;
         result.SourceBranches ??= parentConfig.SourceBranches;
