@@ -19,7 +19,9 @@ public class PublishCoverage : FrostingTask<BuildContext>
 
     public override void Run(BuildContext context)
     {
-        var coverageFiles = context.GetFiles($"{Paths.TestOutput}/*.coverage.*.xml");
+        var coverageFiles = context
+            .GetFiles($"{Paths.TestOutput}/*.coverage.*.xml")
+            .Select(file =>  context.MakeRelative(file).ToString()).ToArray();
 
         var token = context.Credentials?.CodeCov?.Token;
         if (string.IsNullOrEmpty(token))
@@ -27,13 +29,10 @@ public class PublishCoverage : FrostingTask<BuildContext>
             throw new InvalidOperationException("Could not resolve CodeCov token.");
         }
 
-        foreach (var coverageFile in coverageFiles)
+        context.Codecov(new CodecovSettings
         {
-            context.Codecov(new CodecovSettings
-            {
-                Files = new[] { coverageFile.ToString() },
-                Token = token
-            });
-        }
+            Files = coverageFiles,
+            Token = token
+        });
     }
 }
