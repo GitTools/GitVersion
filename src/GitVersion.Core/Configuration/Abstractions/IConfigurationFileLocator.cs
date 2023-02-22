@@ -9,4 +9,5 @@ public interface IConfigurationFileLocator
     void Verify(string workingDirectory, string projectRootDirectory);
     string? SelectConfigFilePath(GitVersionOptions gitVersionOptions, IGitRepositoryInfo repositoryInfo);
     GitVersionConfiguration ReadConfig(string workingDirectory);
+    IReadOnlyDictionary<object, object?>? ReadOverrideConfiguration(string? workingDirectory);
 }

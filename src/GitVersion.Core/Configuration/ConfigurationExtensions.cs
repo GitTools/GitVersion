@@ -1,6 +1,7 @@
 using System.Text.RegularExpressions;
 using GitVersion.Extensions;
 using GitVersion.Logging;
+using GitVersion.VersionCalculation;
 
 namespace GitVersion.Configuration;
 
@@ -11,41 +12,60 @@ public static class ConfigurationExtensions
 
     public static BranchConfiguration GetBranchConfiguration(this GitVersionConfiguration configuration, string branchName)
     {
-        var branchConfiguration = ForBranch(configuration, branchName);
-        if (branchConfiguration is null)
+        var branchConfiguration = GetBranchConfigurations(configuration, branchName).FirstOrDefault();
+        branchConfiguration ??= new()
         {
-            branchConfiguration = GetUnknownBranchConfiguration(configuration);
-            branchConfiguration.Name = branchName;
+            Name = branchName,
+            Regex = string.Empty,
+            Label = "{BranchName}",
+            Increment = IncrementStrategy.Inherit
+        };
+
+        if (branchConfiguration.Increment == IncrementStrategy.Inherit)
+            return branchConfiguration;
+
+        var fallbackBranchConfiguration = GetFallbackBranchConfiguration(configuration);
+        branchConfiguration.Increment ??= fallbackBranchConfiguration.Increment;
+        if (branchConfiguration.Increment != IncrementStrategy.Inherit)
+        {
+            branchConfiguration = branchConfiguration.Inherit(fallbackBranchConfiguration);
         }
         return branchConfiguration;
     }
 
-    // TODO: Please make the unknown settings also configurable in the yaml.
-    public static BranchConfiguration GetUnknownBranchConfiguration(this GitVersionConfiguration configuration) => new()
+    private static IEnumerable<BranchConfiguration> GetBranchConfigurations(GitVersionConfiguration configuration, string branchName)
     {
-        Name = "Unknown",
-        Regex = "",
-        Label = "{BranchName}",
-        VersioningMode = configuration.VersioningMode,
-        Increment = IncrementStrategy.Inherit
-    };
+        BranchConfiguration? unknownBranchConfiguration = null;
+        foreach (var item in configuration.Branches.Values.Where(b => b.Regex != null))
+        {
+            if (item.Regex != null && Regex.IsMatch(branchName, item.Regex, RegexOptions.IgnoreCase))
+            {
+                if (item.Name == "unknown")
+                {
+                    unknownBranchConfiguration = item;
+                }
+                else
+                {
+                    yield return item;
+                }
+            }
+        }
+        if (unknownBranchConfiguration != null) yield return unknownBranchConfiguration;
+    }
 
-    // TODO: Please make the fallback settings also configurable in the yaml.
     public static BranchConfiguration GetFallbackBranchConfiguration(this GitVersionConfiguration configuration)
     {
-        var result = new BranchConfiguration()
-        {
-            Name = "Fallback",
-            Regex = "",
-            Label = "{BranchName}",
-            VersioningMode = configuration.VersioningMode,
-            Increment = configuration.Increment,
-            PreventIncrementOfMergedBranchVersion = false,
-            TrackMergeTarget = false,
-            TracksReleaseBranches = false,
-            IsReleaseBranch = false,
-            IsMainline = false
-        };
+        BranchConfiguration result = new(configuration);
+        result.Name ??= "fallback";
+        result.Regex ??= "";
+        result.Label ??= "{BranchName}";
+        result.VersioningMode ??= VersioningMode.ContinuousDelivery;
+        result.PreventIncrementOfMergedBranchVersion ??= false;
+        result.TrackMergeTarget ??= false;
+        result.TracksReleaseBranches ??= false;
+        result.IsReleaseBranch ??= false;
+        result.IsMainline ??= false;
+        result.CommitMessageIncrementing ??= CommitMessageIncrementMode.Enabled;
         if (result.Increment == IncrementStrategy.Inherit)
         {
             result.Increment = IncrementStrategy.None;
@@ -59,26 +79,7 @@ public static class ConfigurationExtensions
             .Where(b => b.Value.Regex != null && Regex.IsMatch(branchName, b.Value.Regex, RegexOptions.IgnoreCase))
             .ToArray();
 
-        try
-        {
-            return matches
-                .Select(kvp => kvp.Value)
-                .SingleOrDefault();
-        }
-        catch (InvalidOperationException)
-        {
-            var matchingConfigs = string.Concat(matches.Select(m => $"{System.Environment.NewLine} - {m.Key}"));
-            var picked = matches
-                .Select(kvp => kvp.Value)
-                .First();
-
-            // TODO check how to log this
-            Console.WriteLine(
-                $"Multiple branch configurations match the current branch branchName of '{branchName}'. " +
-                $"Using the first matching configuration, '{picked.Name}'. Matching configurations include:'{matchingConfigs}'");
-
-            return picked;
-        }
+        return matches.Select(kvp => kvp.Value).FirstOrDefault();
     }
 
     public static bool IsReleaseBranch(this GitVersionConfiguration configuration, string branchName) => configuration.GetBranchConfiguration(branchName).IsReleaseBranch ?? false;

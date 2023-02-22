@@ -1,3 +1,4 @@
+using GitVersion.Configuration;
 using GitVersion.Core.Tests.Helpers;
 
 namespace GitVersion.Core.Tests.IntegrationTests;

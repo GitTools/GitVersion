@@ -28,10 +28,9 @@ public class VersionInCurrentBranchNameScenarios : TestBase
     [Test]
     public void TakesVersionFromNameOfBranchThatIsReleaseByConfig()
     {
-        var configuration = new GitVersionConfiguration
-        {
-            Branches = new Dictionary<string, BranchConfiguration> { { "support", new BranchConfiguration { IsReleaseBranch = true } } }
-        };
+        var configuration = GitFlowConfigurationBuilder.New
+            .WithBranch("support", builder => builder.WithIsReleaseBranch(true))
+            .Build();
 
         using var fixture = new BaseGitFlowRepositoryFixture("1.0.0");
         fixture.BranchTo("support/2.0.0");

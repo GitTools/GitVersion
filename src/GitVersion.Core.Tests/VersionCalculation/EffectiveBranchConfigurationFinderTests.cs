@@ -1,6 +1,5 @@
 using GitVersion.Common;
 using GitVersion.Configuration;
-using GitVersion.Core.Tests.Helpers;
 using GitVersion.Logging;
 using GitVersion.VersionCalculation;
 
@@ -41,11 +40,9 @@ public class EffectiveBranchConfigurationFinderTests
         var mainBranchMock = GitToolsTestingExtensions.CreateMockBranch("main", GitToolsTestingExtensions.CreateMockCommit());
         var developBranchMock = GitToolsTestingExtensions.CreateMockBranch("develop", GitToolsTestingExtensions.CreateMockCommit());
         var configuration = GitFlowConfigurationBuilder.New
-            .WithoutVersioningMode()
+            .WithVersioningMode(null)
             .WithBranch("main", builder => builder.WithVersioningMode(versioningMode))
-            .WithBranch("develop", builder => builder
-                .WithVersioningMode(null).WithIncrement(IncrementStrategy.Inherit)
-            )
+            .WithBranch("develop", builder => builder.WithVersioningMode(null).WithIncrement(IncrementStrategy.Inherit))
             .Build();
         var repositoryStoreMock = Substitute.For<IRepositoryStore>();
         repositoryStoreMock.GetSourceBranches(developBranchMock, configuration, Arg.Any<HashSet<IBranch>>()).Returns(new[] { mainBranchMock });
@@ -68,7 +65,8 @@ public class EffectiveBranchConfigurationFinderTests
         // Arrange
         var mainBranchMock = GitToolsTestingExtensions.CreateMockBranch("main", GitToolsTestingExtensions.CreateMockCommit());
         var developBranchMock = GitToolsTestingExtensions.CreateMockBranch("develop", GitToolsTestingExtensions.CreateMockCommit());
-        var configuration = GitFlowConfigurationBuilder.New.WithoutVersioningMode()
+        var configuration = GitFlowConfigurationBuilder.New
+            .WithVersioningMode(null)
             .WithBranch("main", builder => builder.WithVersioningMode(versioningMode))
             .WithBranch("develop", builder => builder
                 .WithVersioningMode(VersioningMode.ContinuousDelivery).WithIncrement(IncrementStrategy.Inherit)
@@ -103,9 +101,9 @@ public class EffectiveBranchConfigurationFinderTests
         var mainBranchMock = GitToolsTestingExtensions.CreateMockBranch("main", GitToolsTestingExtensions.CreateMockCommit());
         var developBranchMock = GitToolsTestingExtensions.CreateMockBranch("develop", GitToolsTestingExtensions.CreateMockCommit());
         var configuration = GitFlowConfigurationBuilder.New
-            .WithBranch("main", builder => builder.WithTag(string.Empty))
+            .WithBranch("main", builder => builder.WithLabel(string.Empty))
             .WithBranch("develop", builder => builder
-                .WithIncrement(IncrementStrategy.Inherit).WithTag("alpha")
+                .WithIncrement(IncrementStrategy.Inherit).WithLabel("alpha")
             )
             .Build();
 
@@ -131,9 +129,9 @@ public class EffectiveBranchConfigurationFinderTests
         var mainBranchMock = GitToolsTestingExtensions.CreateMockBranch("main", GitToolsTestingExtensions.CreateMockCommit());
         var developBranchMock = GitToolsTestingExtensions.CreateMockBranch("develop", GitToolsTestingExtensions.CreateMockCommit());
         var configuration = GitFlowConfigurationBuilder.New
-            .WithBranch("main", builder => builder.WithTag(string.Empty))
+            .WithBranch("main", builder => builder.WithLabel(string.Empty))
             .WithBranch("develop", builder => builder
-                .WithIncrement(IncrementStrategy.Inherit).WithTag(null)
+                .WithIncrement(IncrementStrategy.Inherit).WithLabel(null)
             )
             .Build();
 
@@ -153,7 +151,7 @@ public class EffectiveBranchConfigurationFinderTests
 
     [TestCase("release/latest", IncrementStrategy.None, "latest")]
     [TestCase("release/1.0.0", IncrementStrategy.Patch, "not-latest")]
-    public void UsesFirstBranchConfigWhenMultipleMatch(string branchName, IncrementStrategy incrementStrategy, string tag)
+    public void UsesFirstBranchConfigWhenMultipleMatch(string branchName, IncrementStrategy incrementStrategy, string label)
     {
         // Arrange
         var releaseBranchMock = GitToolsTestingExtensions.CreateMockBranch(branchName, GitToolsTestingExtensions.CreateMockCommit());
@@ -167,15 +165,24 @@ public class EffectiveBranchConfigurationFinderTests
             IsReleaseBranch = false,
             SourceBranches = new HashSet<string>()
         };
-        var configuration = new ConfigurationBuilder().Add(new GitVersionConfiguration
-        {
-            VersioningMode = VersioningMode.ContinuousDelivery,
-            Branches =
-            {
-                { "release/latest", new BranchConfiguration(branchConfiguration) { Increment = IncrementStrategy.None, Label = "latest", Regex = "release/latest" } },
-                { "release", new BranchConfiguration(branchConfiguration) { Increment = IncrementStrategy.Patch, Label = "not-latest", Regex = "releases?[/-]" } }
-            }
-        }).Build();
+
+        var configuration = GitFlowConfigurationBuilder.New
+            .WithoutBranches()
+            .WithBranch("release/latest", builder => builder
+                .WithConfiguration(branchConfiguration)
+                .WithVersioningMode(VersioningMode.ContinuousDeployment)
+                .WithIncrement(IncrementStrategy.None)
+                .WithLabel("latest")
+                .WithRegex("release/latest")
+            )
+            .WithBranch("release", builder => builder
+                .WithConfiguration(branchConfiguration)
+                .WithVersioningMode(VersioningMode.ContinuousDeployment)
+                .WithIncrement(IncrementStrategy.Patch)
+                .WithLabel("not-latest")
+                .WithRegex("releases?[/-]")
+            )
+            .Build();
 
         var repositoryStoreMock = Substitute.For<IRepositoryStore>();
         repositoryStoreMock.GetSourceBranches(releaseBranchMock, configuration, Arg.Any<HashSet<IBranch>>()).Returns(Enumerable.Empty<IBranch>());
@@ -189,7 +196,7 @@ public class EffectiveBranchConfigurationFinderTests
         actual.ShouldHaveSingleItem();
         actual[0].Branch.ShouldBe(releaseBranchMock);
         actual[0].Value.Increment.ShouldBe(incrementStrategy);
-        actual[0].Value.Label.ShouldBe(tag);
+        actual[0].Value.Label.ShouldBe(label);
     }
 
     [Test]
@@ -268,7 +275,9 @@ public class EffectiveBranchConfigurationFinderTests
     {
         // Arrange
         var branchMock = GitToolsTestingExtensions.CreateMockBranch("unknown", GitToolsTestingExtensions.CreateMockCommit());
-        var configuration = GitFlowConfigurationBuilder.New.WithIncrement(null).Build();
+        var configuration = GitFlowConfigurationBuilder.New
+            .WithIncrement(null)
+            .Build();
         var repositoryStoreMock = Substitute.For<IRepositoryStore>();
         repositoryStoreMock.GetSourceBranches(branchMock, configuration, Arg.Any<HashSet<IBranch>>()).Returns(Enumerable.Empty<IBranch>());
 
@@ -290,7 +299,9 @@ public class EffectiveBranchConfigurationFinderTests
     {
         // Arrange
         var branchMock = GitToolsTestingExtensions.CreateMockBranch("unknown", GitToolsTestingExtensions.CreateMockCommit());
-        var configuration = GitFlowConfigurationBuilder.New.WithIncrement(fallbackIncrement).Build();
+        var configuration = GitFlowConfigurationBuilder.New
+            .WithIncrement(fallbackIncrement)
+            .Build();
         var repositoryStoreMock = Substitute.For<IRepositoryStore>();
         repositoryStoreMock.GetSourceBranches(branchMock, configuration, Arg.Any<HashSet<IBranch>>()).Returns(Enumerable.Empty<IBranch>());
 

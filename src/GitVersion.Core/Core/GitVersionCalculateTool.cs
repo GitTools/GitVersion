@@ -44,7 +44,7 @@ public class GitVersionCalculateTool : IGitVersionCalculateTool
 
         var gitVersionOptions = this.options.Value;
 
-        var cacheKey = this.cacheKeyFactory.Create(gitVersionOptions.ConfigInfo.OverrideConfig);
+        var cacheKey = this.cacheKeyFactory.Create(gitVersionOptions.ConfigInfo.OverrideConfiguration);
         var versionVariables = gitVersionOptions.Settings.NoCache ? default : this.gitVersionCache.LoadVersionVariablesFromDiskCache(cacheKey);
 
         if (versionVariables != null) return versionVariables;

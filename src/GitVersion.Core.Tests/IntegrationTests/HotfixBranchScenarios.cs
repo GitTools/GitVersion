@@ -125,11 +125,14 @@ public class HotfixBranchScenarios : TestBase
     [Test]
     public void FeatureOnHotfixFeatureBranchDeleted()
     {
-        var configuration = new GitVersionConfiguration
-        {
-            AssemblyVersioningScheme = AssemblyVersioningScheme.MajorMinorPatchTag,
-            VersioningMode = VersioningMode.ContinuousDeployment
-        };
+        var configuration = GitFlowConfigurationBuilder.New
+            .WithAssemblyVersioningScheme(AssemblyVersioningScheme.MajorMinorPatchTag)
+            .WithVersioningMode(VersioningMode.ContinuousDeployment)
+            .WithBranch("feature", builder => builder
+                .WithVersioningMode(VersioningMode.ContinuousDeployment))
+            .WithBranch("hotfix", builder => builder
+                .WithVersioningMode(VersioningMode.ContinuousDeployment))
+            .Build();
 
         using var fixture = new EmptyRepositoryFixture();
         const string release450 = "release/4.5.0";
@@ -138,36 +141,31 @@ public class HotfixBranchScenarios : TestBase
         const string tag450 = "4.5.0";
         const string featureBranch = "feature/some-bug-fix";
 
-        fixture.Repository.MakeACommit("initial");
-        fixture.Repository.CreateBranch("develop");
-        Commands.Checkout(fixture.Repository, "develop");
+        fixture.MakeACommit("initial");
+        fixture.BranchTo("develop");
 
         // create release branch
-        fixture.Repository.CreateBranch(release450);
-        Commands.Checkout(fixture.Repository, release450);
+        fixture.BranchTo(release450);
         fixture.AssertFullSemver("4.5.0-beta.0", configuration);
-        fixture.Repository.MakeACommit("blabla");
-        Commands.Checkout(fixture.Repository, "develop");
-        fixture.Repository.MergeNoFF(release450, Generate.SignatureNow());
-        Commands.Checkout(fixture.Repository, MainBranch);
-        fixture.Repository.MergeNoFF(release450, Generate.SignatureNow());
+        fixture.MakeACommit("blabla");
+        fixture.Checkout("develop");
+        fixture.MergeNoFF(release450);
+        fixture.Checkout(MainBranch);
+        fixture.MergeNoFF(release450);
 
         // create support branch
-        fixture.Repository.CreateBranch(support45);
-        Commands.Checkout(fixture.Repository, support45);
-        fixture.Repository.ApplyTag(tag450);
+        fixture.BranchTo(support45);
+        fixture.ApplyTag(tag450);
         fixture.AssertFullSemver("4.5.0", configuration);
 
         // create hotfix branch
-        fixture.Repository.CreateBranch(hotfix451);
-        Commands.Checkout(fixture.Repository, hotfix451);
+        fixture.BranchTo(hotfix451);
 
         // feature branch from hotfix
-        fixture.Repository.CreateBranch(featureBranch);
-        Commands.Checkout(fixture.Repository, featureBranch);
-        fixture.Repository.MakeACommit("blabla"); // commit 1
-        Commands.Checkout(fixture.Repository, hotfix451);
-        fixture.Repository.MergeNoFF(featureBranch, Generate.SignatureNow()); // commit 2
+        fixture.BranchTo(featureBranch);
+        fixture.MakeACommit("blabla"); // commit 1
+        fixture.Checkout(hotfix451);
+        fixture.MergeNoFF(featureBranch); // commit 2
         fixture.Repository.Branches.Remove(featureBranch);
         fixture.AssertFullSemver("4.5.1-beta.2", configuration);
     }
@@ -178,11 +176,14 @@ public class HotfixBranchScenarios : TestBase
     [Test]
     public void FeatureOnHotfixFeatureBranchNotDeleted()
     {
-        var configuration = new GitVersionConfiguration
-        {
-            AssemblyVersioningScheme = AssemblyVersioningScheme.MajorMinorPatchTag,
-            VersioningMode = VersioningMode.ContinuousDeployment
-        };
+        var configuration = GitFlowConfigurationBuilder.New
+            .WithAssemblyVersioningScheme(AssemblyVersioningScheme.MajorMinorPatchTag)
+            .WithVersioningMode(VersioningMode.ContinuousDeployment)
+            .WithBranch("feature", builder => builder
+                .WithVersioningMode(VersioningMode.ContinuousDeployment))
+            .WithBranch("hotfix", builder => builder
+                .WithVersioningMode(VersioningMode.ContinuousDeployment))
+            .Build();
 
         using var fixture = new EmptyRepositoryFixture();
         const string release450 = "release/4.5.0";
@@ -191,37 +192,31 @@ public class HotfixBranchScenarios : TestBase
         const string tag450 = "4.5.0";
         const string featureBranch = "feature/some-bug-fix";
 
-        fixture.Repository.MakeACommit("initial");
-        fixture.Repository.CreateBranch("develop");
-        Commands.Checkout(fixture.Repository, "develop");
+        fixture.MakeACommit("initial");
+        fixture.BranchTo("develop");
 
         // create release branch
-        fixture.Repository.CreateBranch(release450);
-        Commands.Checkout(fixture.Repository, release450);
+        fixture.BranchTo(release450);
         fixture.AssertFullSemver("4.5.0-beta.0", configuration);
-        fixture.Repository.MakeACommit("blabla");
-        Commands.Checkout(fixture.Repository, "develop");
-        fixture.Repository.MergeNoFF(release450, Generate.SignatureNow());
-        Commands.Checkout(fixture.Repository, MainBranch);
-        fixture.Repository.MergeNoFF(release450, Generate.SignatureNow());
+        fixture.MakeACommit("blabla");
+        fixture.Checkout("develop");
+        fixture.MergeNoFF(release450);
+        fixture.Checkout(MainBranch);
+        fixture.MergeNoFF(release450);
 
         // create support branch
-        fixture.Repository.CreateBranch(support45);
-        Commands.Checkout(fixture.Repository, support45);
-        fixture.Repository.ApplyTag(tag450);
+        fixture.BranchTo(support45);
+        fixture.ApplyTag(tag450);
         fixture.AssertFullSemver("4.5.0", configuration);
 
         // create hotfix branch
-        fixture.Repository.CreateBranch(hotfix451);
-        Commands.Checkout(fixture.Repository, hotfix451);
+        fixture.BranchTo(hotfix451);
 
         // feature branch from hotfix
-        fixture.Repository.CreateBranch(featureBranch);
-        Commands.Checkout(fixture.Repository, featureBranch);
-        fixture.Repository.MakeACommit("blabla"); // commit 1
-        Commands.Checkout(fixture.Repository, hotfix451);
-        fixture.Repository.MergeNoFF(featureBranch, Generate.SignatureNow()); // commit 2
+        fixture.BranchTo(featureBranch);
+        fixture.MakeACommit("blabla"); // commit 1
+        fixture.Checkout(hotfix451);
+        fixture.MergeNoFF(featureBranch); // commit 2
         fixture.AssertFullSemver("4.5.1-beta.2", configuration);
     }
-
 }

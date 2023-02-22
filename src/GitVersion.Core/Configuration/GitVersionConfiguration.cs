@@ -1,11 +1,10 @@
 using System.Globalization;
 using GitVersion.Extensions;
-using GitVersion.VersionCalculation;
 using YamlDotNet.Serialization;
 
 namespace GitVersion.Configuration;
 
-public class GitVersionConfiguration
+public class GitVersionConfiguration : BranchConfiguration
 {
     private string? nextVersion;
 
@@ -30,14 +29,8 @@ public class GitVersionConfiguration
     [YamlMember(Alias = "assembly-file-versioning-format")]
     public string? AssemblyFileVersioningFormat { get; set; }
 
-    [YamlMember(Alias = "mode")]
-    public VersioningMode? VersioningMode { get; set; }
-
     [YamlMember(Alias = "label-prefix")]
     public string? LabelPrefix { get; set; }
-
-    [YamlMember(Alias = "continuous-delivery-fallback-label")]
-    public string? ContinuousDeploymentFallbackLabel { get; set; }
 
     [YamlMember(Alias = "next-version")]
     public string? NextVersion
@@ -64,18 +57,6 @@ public class GitVersionConfiguration
     [YamlMember(Alias = "label-pre-release-weight")]
     public int? LabelPreReleaseWeight { get; set; }
 
-    [YamlMember(Alias = "commit-message-incrementing")]
-    public CommitMessageIncrementMode? CommitMessageIncrementing { get; set; }
-
-    [YamlMember(Alias = "branches")]
-    public Dictionary<string, BranchConfiguration> Branches { get; set; }
-
-    [YamlMember(Alias = "ignore")]
-    public IgnoreConfiguration Ignore { get; set; }
-
-    [YamlMember(Alias = "increment")]
-    public IncrementStrategy? Increment { get; set; }
-
     [YamlMember(Alias = "commit-date-format")]
     public string? CommitDateFormat { get; set; }
 
@@ -83,10 +64,16 @@ public class GitVersionConfiguration
     public Dictionary<string, string> MergeMessageFormats { get; set; } = new();
 
     [YamlMember(Alias = "update-build-number")]
-    public bool? UpdateBuildNumber { get; set; }
+    public bool UpdateBuildNumber { get; set; } = true;
 
-    [YamlMember(Alias = "semver-format")]
-    public SemanticVersionFormat SemanticVersionFormat { get; set; } = SemanticVersionFormat.Strict;
+    [YamlMember(Alias = "semantic-version-format")]
+    public SemanticVersionFormat SemanticVersionFormat { get; set; }
+
+    [YamlMember(Alias = "branches")]
+    public Dictionary<string, BranchConfiguration> Branches { get; set; }
+
+    [YamlMember(Alias = "ignore")]
+    public IgnoreConfiguration Ignore { get; set; }
 
     public override string ToString()
     {

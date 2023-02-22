@@ -6,12 +6,22 @@
 *   Instead of having a single effective configuration, we now have one effective configuration per branch where the increment strategy is not set to `inherit`.
 *   The new implementation of the branch configuration inheritance affects per default only the pull-requests, hotfix and feature branches. In this case the next version will be generated like the child branch is not existing and the commits have been made on the source branch.
     *   The following example illustrates this behavior. On the feature branch the semantic version `1.1.0-just-a-test.1+2` will now be generated instead of version `1.0.0-just-a-test.1+3` previously:
-	```
+    ```
     * 1f1cfb4 52 minutes ago  (HEAD -> feature/just-a-test)
-	* 1f9654d 54 minutes ago  (release/1.1.0)
-	* be72411 56 minutes ago  (develop)
-	* 14800ff 58 minutes ago  (tag: 1.0.0, main)
-	```
+    * 1f9654d 54 minutes ago  (release/1.1.0)
+    * be72411 56 minutes ago  (develop)
+    * 14800ff 58 minutes ago  (tag: 1.0.0, main)
+    ```
+*   A new `unknown` branch magic string has been introduced to give the user the possibility to specify the branch configuration for a branch which is not known. A branch is not known if only the regular expression of the branch configuration with the name `unknown` is matching. Please notice that this branch configuration behaves like any other branch configurations.
+*   Additional `fallback` branch configuration properties have been introduced at the root to define base properties which will be inherit to the branch configurations. That means if no other branch configuration in the inheritance line defines the given property the fallback property applies. Notice that the inheritance tree can be controlled using the increment strategy property in the branch configuration section.
+    *   The following example illustrates this behavior. The hotfix branch configuration overrides the main branch configuration and the result overrides the fallback branch configuration.
+    ```
+    * 1f1cfb4 52 minutes ago  (HEAD -> hotfix/just-a-test)
+    * 14800ff 58 minutes ago  (tag: 1.0.0, main)
+    ```
+*   When overriding the configuration with e.g. GitVersion.yaml the software distinguishes between properties who are not existent and properties who are `null`. This is especially important if the user wants to define branch related configuration which are marked with `increment` strategy `Inherit`.
+*   Following root configuration properties have been removed:
+    *   continuous-delivery-fallback-tag
 
 ## v5.0.0
 

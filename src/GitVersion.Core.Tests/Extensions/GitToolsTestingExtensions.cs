@@ -49,40 +49,45 @@ public static class GitToolsTestingExtensions
 
     public static void DumpGraph(this IRepository repository, Action<string>? writer = null, int? maxCommits = null) => GitExtensions.DumpGraph(repository.ToGitRepository().Path, writer, maxCommits);
 
-    public static VersionVariables GetVersion(this RepositoryFixtureBase fixture, GitVersionConfiguration? configuration = null, IRepository? repository = null, string? commitId = null, bool onlyTrackedBranches = true, string? branch = null)
+    public static VersionVariables GetVersion(this RepositoryFixtureBase fixture, GitVersionConfiguration? configuration = null, IRepository? repository = null, string? commitId = null, bool onlyTrackedBranches = true, string? targetBranch = null)
     {
         repository ??= fixture.Repository;
+        configuration ??= GitFlowConfigurationBuilder.New.Build();
+        Console.WriteLine("---------");
 
+        var overrideConfiguration = new Dictionary<object, object?>();
         var options = Options.Create(new GitVersionOptions
         {
             WorkingDirectory = repository.Info.WorkingDirectory,
-            ConfigInfo = { OverrideConfig = configuration },
+            ConfigInfo = { OverrideConfiguration = overrideConfiguration },
             RepositoryInfo =
             {
-                TargetBranch = branch,
+                TargetBranch = targetBranch,
                 CommitId = commitId
             },
             Settings = { OnlyTrackedBranches = onlyTrackedBranches }
         });
 
-        var sp = ConfigureServices(services => services.AddSingleton(options));
-
-        var variableProvider = sp.GetRequiredService<IVariableProvider>();
-        var nextVersionCalculator = sp.GetRequiredService<INextVersionCalculator>();
-        var contextOptions = sp.GetRequiredService<Lazy<GitVersionContext>>();
-
-        var context = contextOptions.Value;
-
         try
         {
-            var nextVersion = nextVersionCalculator.FindVersion();
-            var variables = variableProvider.GetVariablesFor(nextVersion.IncrementedVersion, nextVersion.Configuration, context.IsCurrentCommitTagged);
+            var configurationProviderMock = Substitute.For<IConfigurationProvider>();
+            configurationProviderMock.Provide(overrideConfiguration).Returns(configuration);
+            var sp = ConfigureServices(services =>
+            {
+                services.AddSingleton(options);
+                services.AddSingleton(configurationProviderMock);
+            });
+            var variableProvider = sp.GetRequiredService<IVariableProvider>();
+            var nextVersionCalculator = sp.GetRequiredService<INextVersionCalculator>();
+            var contextOptions = sp.GetRequiredService<Lazy<GitVersionContext>>();
 
-            return variables;
+            var context = contextOptions.Value;
+
+            var nextVersion = nextVersionCalculator.FindVersion();
+            return variableProvider.GetVariablesFor(nextVersion.IncrementedVersion, nextVersion.Configuration, context.IsCurrentCommitTagged);
         }
         catch (Exception)
         {
-            Console.WriteLine("Test failing, dumping repository graph");
             repository.DumpGraph();
             throw;
         }
@@ -99,21 +104,13 @@ public static class GitToolsTestingExtensions
 
     public static void AssertFullSemver(this RepositoryFixtureBase fixture, string fullSemver, GitVersionConfiguration? configuration = null, IRepository? repository = null, string? commitId = null, bool onlyTrackedBranches = true, string? targetBranch = null)
     {
-        Console.WriteLine("---------");
+        repository ??= fixture.Repository;
 
-        try
-        {
-            var variables = fixture.GetVersion(configuration, repository, commitId, onlyTrackedBranches, targetBranch);
-            variables.FullSemVer.ShouldBe(fullSemver);
-        }
-        catch (Exception)
-        {
-            (repository ?? fixture.Repository).DumpGraph();
-            throw;
-        }
+        var variables = GetVersion(fixture, configuration, repository, commitId, onlyTrackedBranches, targetBranch);
+        variables.FullSemVer.ShouldBe(fullSemver);
         if (commitId == null)
         {
-            fixture.SequenceDiagram.NoteOver(fullSemver, fixture.Repository.Head.FriendlyName, color: "#D3D3D3");
+            fixture.SequenceDiagram.NoteOver(fullSemver, repository.Head.FriendlyName, color: "#D3D3D3");
         }
     }
 

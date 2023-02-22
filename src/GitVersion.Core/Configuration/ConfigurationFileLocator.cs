@@ -55,6 +55,21 @@ public class ConfigurationFileLocator : IConfigurationFileLocator
         return new GitVersionConfiguration();
     }
 
+    public IReadOnlyDictionary<object, object?>? ReadOverrideConfiguration(string? workingDirectory)
+    {
+        var configFilePath = GetConfigFilePath(workingDirectory);
+
+        Dictionary<object, object?>? configuration = null;
+        if (configFilePath != null && this.fileSystem.Exists(configFilePath))
+        {
+            var readAllText = this.fileSystem.ReadAllText(configFilePath);
+
+            configuration = ConfigurationSerializer.Deserialize<Dictionary<object, object?>>(readAllText);
+        }
+
+        return configuration;
+    }
+
     public void Verify(GitVersionOptions gitVersionOptions, IGitRepositoryInfo repositoryInfo)
     {
         if (!gitVersionOptions.RepositoryInfo.TargetUrl.IsNullOrWhiteSpace())

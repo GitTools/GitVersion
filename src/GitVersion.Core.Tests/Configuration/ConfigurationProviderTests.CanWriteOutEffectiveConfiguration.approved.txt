@@ -1,14 +1,15 @@
 assembly-versioning-scheme: MajorMinorPatch
 assembly-file-versioning-scheme: MajorMinorPatch
-mode: ContinuousDelivery
 label-prefix: '[vV]?'
-continuous-delivery-fallback-label: ci
 major-version-bump-message: '\+semver:\s?(breaking|major)'
 minor-version-bump-message: '\+semver:\s?(feature|minor)'
 patch-version-bump-message: '\+semver:\s?(fix|patch)'
 no-bump-message: '\+semver:\s?(none|skip)'
 label-pre-release-weight: 60000
-commit-message-incrementing: Enabled
+commit-date-format: yyyy-MM-dd
+merge-message-formats: {}
+update-build-number: true
+semantic-version-format: Strict
 branches:
   develop:
     mode: ContinuousDeployment
@@ -23,7 +24,6 @@ branches:
     is-mainline: false
     pre-release-weight: 0
   main:
-    mode: ContinuousDelivery
     label: ''
     increment: Patch
     prevent-increment-of-merged-branch-version: true
@@ -37,7 +37,6 @@ branches:
     is-mainline: true
     pre-release-weight: 55000
   release:
-    mode: ContinuousDelivery
     label: beta
     increment: None
     prevent-increment-of-merged-branch-version: true
@@ -91,7 +90,6 @@ branches:
     - hotfix
     pre-release-weight: 30000
   support:
-    mode: ContinuousDelivery
     label: ''
     increment: Patch
     prevent-increment-of-merged-branch-version: true
@@ -103,9 +101,28 @@ branches:
     is-release-branch: false
     is-mainline: true
     pre-release-weight: 55000
+  unknown:
+    mode: ContinuousDelivery
+    label: '{BranchName}'
+    increment: Inherit
+    regex: .*
+    source-branches:
+    - main
+    - develop
+    - release
+    - feature
+    - pull-request
+    - hotfix
+    - support
 ignore:
   sha: []
+mode: ContinuousDelivery
+label: '{BranchName}'
 increment: Inherit
-commit-date-format: yyyy-MM-dd
-merge-message-formats: {}
-update-build-number: true
+prevent-increment-of-merged-branch-version: false
+track-merge-target: false
+commit-message-incrementing: Enabled
+regex: ''
+tracks-release-branches: false
+is-release-branch: false
+is-mainline: false

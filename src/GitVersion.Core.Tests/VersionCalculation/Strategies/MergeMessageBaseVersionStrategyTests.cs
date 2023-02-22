@@ -145,14 +145,18 @@ public class MergeMessageBaseVersionStrategyTests : TestBase
     [TestCase("Merge branch 'release/2.0.0'", null, "2.0.0")]
     public void TakesVersionFromMergeOfConfiguredReleaseBranch(string message, string? releaseBranch, string expectedVersion)
     {
-        var configuration = new GitVersionConfiguration();
-        if (releaseBranch != null) configuration.Branches[releaseBranch] = new BranchConfiguration { IsReleaseBranch = true };
+        var configurationBuilder = GitFlowConfigurationBuilder.New;
+        if (releaseBranch != null)
+        {
+            configurationBuilder.WithBranch(releaseBranch, builder => builder.WithIsReleaseBranch(true));
+        }
+        ConfigurationHelper configurationHelper = new(configurationBuilder.Build());
         var parents = GetParents(true);
 
-        AssertMergeMessage(message, expectedVersion, parents, configuration);
+        AssertMergeMessage(message, expectedVersion, parents, configurationHelper.Dictionary);
     }
 
-    private static void AssertMergeMessage(string message, string? expectedVersion, IEnumerable<ICommit?> parents, GitVersionConfiguration? configuration = null)
+    private static void AssertMergeMessage(string message, string? expectedVersion, IEnumerable<ICommit?> parents, IReadOnlyDictionary<object, object?>? configuration = null)
     {
         var commit = GitToolsTestingExtensions.CreateMockCommit();
         commit.Message.Returns(message);
@@ -165,7 +169,8 @@ public class MergeMessageBaseVersionStrategyTests : TestBase
         mockRepository.Commits.Returns(mockBranch.Commits);
 
         var contextBuilder = new GitVersionContextBuilder()
-            .WithConfig(configuration ?? new GitVersionConfiguration()).WithRepository(mockRepository);
+            .WithOverrideConfiguration(configuration)
+            .WithRepository(mockRepository);
         contextBuilder.Build();
         contextBuilder.ServicesProvider.ShouldNotBeNull();
         var strategy = contextBuilder.ServicesProvider.GetServiceForType<IVersionStrategy, MergeMessageVersionStrategy>();

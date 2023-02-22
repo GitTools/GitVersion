@@ -81,8 +81,8 @@ public class GitVersionTaskExecutor : IGitVersionTaskExecutor
         var versionVariables = VersionVariables.FromFile(task.VersionFile, fileSystem);
 
         var gitVersionOptions = this.options.Value;
-        var configuration = this.configurationProvider.Provide(gitVersionOptions.ConfigInfo.OverrideConfig);
+        var configuration = this.configurationProvider.Provide(gitVersionOptions.ConfigInfo.OverrideConfiguration);
 
-        gitVersionOutputTool.OutputVariables(versionVariables, configuration.UpdateBuildNumber ?? true);
+        gitVersionOutputTool.OutputVariables(versionVariables, configuration.UpdateBuildNumber);
     }
 }

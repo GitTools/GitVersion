@@ -20,7 +20,7 @@ GitVersion.Arguments.NoFetch -> bool
 GitVersion.Arguments.NoNormalize -> bool
 GitVersion.Arguments.Output -> System.Collections.Generic.ISet<GitVersion.OutputType>!
 GitVersion.Arguments.OutputFile -> string?
-GitVersion.Arguments.OverrideConfig -> GitVersion.Configuration.GitVersionConfiguration?
+GitVersion.Arguments.OverrideConfig -> System.Collections.Generic.IReadOnlyDictionary<object!, object?>!
 GitVersion.Arguments.ShowConfig -> bool
 GitVersion.Arguments.ShowVariable -> string?
 GitVersion.Arguments.TargetBranch -> string?

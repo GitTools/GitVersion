@@ -97,10 +97,7 @@ public class ReleaseBranchScenarios : TestBase
     [Test]
     public void ReleaseBranchWithNextVersionSetInConfig()
     {
-        var configuration = new GitVersionConfiguration
-        {
-            NextVersion = "2.0.0"
-        };
+        var configuration = GitFlowConfigurationBuilder.New.WithNextVersion("2.0.0").Build();
         using var fixture = new EmptyRepositoryFixture();
         fixture.Repository.MakeCommits(5);
         fixture.BranchTo("release-2.0.0");
@@ -111,15 +108,12 @@ public class ReleaseBranchScenarios : TestBase
     }
 
     [Test]
-    public void CanTakeVersionFromReleaseBranchWithTagOverridden()
+    public void CanTakeVersionFromReleaseBranchWithLabelOverridden()
     {
-        var configuration = new GitVersionConfiguration
-        {
-            Branches =
-            {
-                { "release", new BranchConfiguration { Label = "rc" } }
-            }
-        };
+        var configuration = GitFlowConfigurationBuilder.New
+            .WithBranch("release", builder => builder.WithLabel("rc"))
+            .Build();
+
         using var fixture = new EmptyRepositoryFixture();
         fixture.Repository.MakeATaggedCommit("1.0.3");
         fixture.Repository.MakeCommits(5);
@@ -312,10 +306,9 @@ public class ReleaseBranchScenarios : TestBase
     [Test]
     public void HotfixOffReleaseBranchShouldNotResetCount()
     {
-        var configuration = new GitVersionConfiguration
-        {
-            VersioningMode = VersioningMode.ContinuousDeployment
-        };
+        var configuration = GitFlowConfigurationBuilder.New
+            .WithVersioningMode(VersioningMode.ContinuousDeployment)
+            .Build();
         using var fixture = new EmptyRepositoryFixture();
         const string taggedVersion = "1.0.3";
         fixture.Repository.MakeATaggedCommit(taggedVersion);
@@ -349,11 +342,11 @@ public class ReleaseBranchScenarios : TestBase
     [Test]
     public void MergeOnReleaseBranchShouldNotResetCount()
     {
-        var configuration = new GitVersionConfiguration
-        {
-            AssemblyVersioningScheme = AssemblyVersioningScheme.MajorMinorPatchTag,
-            VersioningMode = VersioningMode.ContinuousDeployment
-        };
+        var configuration = GitFlowConfigurationBuilder.New
+            .WithAssemblyVersioningScheme(AssemblyVersioningScheme.MajorMinorPatchTag)
+            .WithVersioningMode(VersioningMode.ContinuousDeployment)
+            .Build();
+
         using var fixture = new EmptyRepositoryFixture();
         const string taggedVersion = "1.0.3";
         fixture.Repository.MakeATaggedCommit(taggedVersion);
@@ -379,10 +372,9 @@ public class ReleaseBranchScenarios : TestBase
     [Test]
     public void CommitOnDevelopAfterReleaseBranchMergeToDevelopShouldNotResetCount()
     {
-        var configuration = new GitVersionConfiguration
-        {
-            VersioningMode = VersioningMode.ContinuousDeployment
-        };
+        var configuration = GitFlowConfigurationBuilder.New
+            .WithVersioningMode(VersioningMode.ContinuousDeployment)
+            .Build();
 
         using var fixture = new EmptyRepositoryFixture();
         fixture.MakeACommit("initial");
@@ -435,10 +427,9 @@ public class ReleaseBranchScenarios : TestBase
     [Test]
     public void CommitBeetweenMergeReleaseToDevelopShouldNotResetCount()
     {
-        var configuration = new GitVersionConfiguration
-        {
-            VersioningMode = VersioningMode.ContinuousDeployment
-        };
+        var configuration = GitFlowConfigurationBuilder.New
+            .WithVersioningMode(VersioningMode.ContinuousDeployment)
+            .Build();
 
         using var fixture = new EmptyRepositoryFixture();
         fixture.Repository.MakeACommit("initial");
@@ -510,10 +501,9 @@ public class ReleaseBranchScenarios : TestBase
     [Test]
     public void FeatureFromReleaseBranchShouldNotResetCount()
     {
-        var configuration = new GitVersionConfiguration
-        {
-            VersioningMode = VersioningMode.ContinuousDeployment
-        };
+        var configuration = GitFlowConfigurationBuilder.New
+            .WithVersioningMode(VersioningMode.ContinuousDeployment)
+            .Build();
 
         using var fixture = new EmptyRepositoryFixture();
         fixture.Repository.MakeACommit("initial");
@@ -557,21 +547,11 @@ public class ReleaseBranchScenarios : TestBase
     [Test]
     public void AssemblySemFileVerShouldBeWeightedByPreReleaseWeight()
     {
-        var configuration = new ConfigurationBuilder()
-            .Add(new GitVersionConfiguration
-            {
-                AssemblyFileVersioningFormat = "{Major}.{Minor}.{Patch}.{WeightedPreReleaseNumber}",
-                Branches =
-                {
-                    {
-                        "release", new BranchConfiguration
-                        {
-                            PreReleaseWeight = 1000
-                        }
-                    }
-                }
-            })
+        var configuration = GitFlowConfigurationBuilder.New
+            .WithAssemblyFileVersioningFormat("{Major}.{Minor}.{Patch}.{WeightedPreReleaseNumber}")
+            .WithBranch("release", builder => builder.WithPreReleaseWeight(1000))
             .Build();
+
         using var fixture = new EmptyRepositoryFixture();
         fixture.Repository.MakeATaggedCommit("1.0.3");
         fixture.Repository.MakeCommits(5);
@@ -585,11 +565,8 @@ public class ReleaseBranchScenarios : TestBase
     [Test]
     public void AssemblySemFileVerShouldBeWeightedByDefaultPreReleaseWeight()
     {
-        var configuration = new ConfigurationBuilder()
-            .Add(new GitVersionConfiguration
-            {
-                AssemblyFileVersioningFormat = "{Major}.{Minor}.{Patch}.{WeightedPreReleaseNumber}"
-            })
+        var configuration = GitFlowConfigurationBuilder.New
+            .WithAssemblyFileVersioningFormat("{Major}.{Minor}.{Patch}.{WeightedPreReleaseNumber}")
             .Build();
 
         using var fixture = new EmptyRepositoryFixture();
@@ -607,11 +584,10 @@ public class ReleaseBranchScenarios : TestBase
     [Test]
     public void FeatureOnReleaseFeatureBranchDeleted()
     {
-        var configuration = new GitVersionConfiguration
-        {
-            AssemblyVersioningScheme = AssemblyVersioningScheme.MajorMinorPatchTag,
-            VersioningMode = VersioningMode.ContinuousDeployment
-        };
+        var configuration = GitFlowConfigurationBuilder.New
+            .WithAssemblyVersioningScheme(AssemblyVersioningScheme.MajorMinorPatchTag)
+            .WithVersioningMode(VersioningMode.ContinuousDeployment)
+            .Build();
 
         using var fixture = new EmptyRepositoryFixture();
         const string release450 = "release/4.5.0";
@@ -642,11 +618,10 @@ public class ReleaseBranchScenarios : TestBase
     [Test]
     public void FeatureOnReleaseFeatureBranchNotDeleted()
     {
-        var configuration = new GitVersionConfiguration
-        {
-            AssemblyVersioningScheme = AssemblyVersioningScheme.MajorMinorPatchTag,
-            VersioningMode = VersioningMode.ContinuousDeployment
-        };
+        var configuration = GitFlowConfigurationBuilder.New
+            .WithAssemblyVersioningScheme(AssemblyVersioningScheme.MajorMinorPatchTag)
+            .WithVersioningMode(VersioningMode.ContinuousDeployment)
+            .Build();
 
         using var fixture = new EmptyRepositoryFixture();
         const string release450 = "release/4.5.0";

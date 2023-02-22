@@ -437,7 +437,7 @@ public class ArgumentParser : IArgumentParser
             }
             parser.SetValue(optionKey, keyAndValue[1]);
         }
-        arguments.OverrideConfig = parser.GetConfig();
+        arguments.OverrideConfig = parser.GetOverrideConfiguration();
     }
 
     private static void ParseUpdateAssemblyInfo(Arguments arguments, string? value, IReadOnlyCollection<string>? values)

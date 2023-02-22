@@ -54,7 +54,7 @@ public class EditConfigStep : ConfigInitWizardStep
 
 3) Set next version number
 4) Branch specific configuration
-5) Branch Increment mode (per commit/after tag) (Current: {configuration.VersioningMode})
+5) Branch Increment mode (per commit/after tag) (Current: {configuration.VersioningMode ?? VersionCalculation.VersioningMode.ContinuousDeployment})
 6) Assembly versioning scheme (Current: {configuration.AssemblyVersioningScheme})
 7) Setup build scripts";
 

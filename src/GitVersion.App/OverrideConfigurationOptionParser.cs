@@ -5,10 +5,10 @@ namespace GitVersion;
 
 internal class OverrideConfigurationOptionParser
 {
+    private readonly Dictionary<object, object?> overrideConfiguration = new();
+
     private static readonly Lazy<ILookup<string?, PropertyInfo>> _lazySupportedProperties =
         new(GetSupportedProperties, true);
-
-    private readonly Lazy<GitVersionConfiguration> lazyConfig = new();
 
     internal static ILookup<string?, PropertyInfo> SupportedProperties => _lazySupportedProperties.Value;
 
@@ -49,53 +49,7 @@ internal class OverrideConfigurationOptionParser
                || unwrappedType == typeof(bool);
     }
 
-    internal void SetValue(string key, string value)
-    {
-        if (!SupportedProperties.Contains(key))
-            return;
+    internal void SetValue(string key, string value) => overrideConfiguration[key] = QuotedStringHelpers.UnquoteText(value);
 
-        var unwrappedText = QuotedStringHelpers.UnquoteText(value);
-        foreach (var pi in SupportedProperties[key])
-        {
-            Type unwrapped = Nullable.GetUnderlyingType(pi.PropertyType) ?? pi.PropertyType;
-
-            if (unwrapped == typeof(string))
-                pi.SetValue(this.lazyConfig.Value, unwrappedText);
-            else if (unwrapped.IsEnum)
-            {
-                try
-                {
-                    var parsedEnum = Enum.Parse(unwrapped, unwrappedText);
-                    pi.SetValue(this.lazyConfig.Value, parsedEnum);
-                }
-                catch (ArgumentException)
-                {
-                    var sb = new StringBuilder();
-
-                    sb.Append($"Could not parse /overrideconfig option: {key}={value}.");
-                    sb.AppendLine(" Ensure that 'value' is valid for specified 'key' enumeration: ");
-                    foreach (var name in Enum.GetNames(unwrapped))
-                        sb.AppendLine(name);
-
-                    throw new WarningException(sb.ToString());
-                }
-            }
-            else if (unwrapped == typeof(int))
-            {
-                if (int.TryParse(unwrappedText, out int parsedInt))
-                    pi.SetValue(this.lazyConfig.Value, parsedInt);
-                else
-                    throw new WarningException($"Could not parse /overrideconfig option: {key}={value}. Ensure that 'value' is valid integer number.");
-            }
-            else if (unwrapped == typeof(bool))
-            {
-                if (bool.TryParse(unwrappedText, out bool parsedBool))
-                    pi.SetValue(this.lazyConfig.Value, parsedBool);
-                else
-                    throw new WarningException($"Could not parse /overrideconfig option: {key}={value}. Ensure that 'value' is 'true' or 'false'.");
-            }
-        }
-    }
-
-    internal GitVersionConfiguration? GetConfig() => this.lazyConfig.IsValueCreated ? this.lazyConfig.Value : null;
+    internal IReadOnlyDictionary<object, object?> GetOverrideConfiguration() => this.overrideConfiguration;
 }

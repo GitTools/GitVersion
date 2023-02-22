@@ -1,4 +1,3 @@
-using GitVersion.Configuration;
 using GitVersion.Logging;
 
 namespace GitVersion;
@@ -8,7 +7,7 @@ public class Arguments
     public AuthenticationInfo Authentication = new();
 
     public string? ConfigFile;
-    public GitVersionConfiguration? OverrideConfig;
+    public IReadOnlyDictionary<object, object?> OverrideConfig;
     public bool ShowConfig;
 
     public string? TargetPath;
@@ -62,7 +61,7 @@ public class Arguments
             ConfigInfo =
             {
                 ConfigFile = ConfigFile,
-                OverrideConfig = OverrideConfig,
+                OverrideConfiguration = OverrideConfig,
                 ShowConfig = ShowConfig
             },
 

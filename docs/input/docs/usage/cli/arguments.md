@@ -117,7 +117,7 @@ Following options are supported:
 5.  `assembly-versioning-scheme`
 7.  `commit-date-format`
 8.  `commit-message-incrementing`
-10. `continuous-delivery-fallback-label`
+10. `label`
 11. `increment`
 13. `major-version-bump-message`
 14. `minor-version-bump-message`

@@ -64,9 +64,9 @@ public class GitVersionExecutor : IGitVersionExecutor
 
             var variables = this.gitVersionCalculateTool.CalculateVersionVariables();
 
-            var configuration = this.configurationProvider.Provide(gitVersionOptions.ConfigInfo.OverrideConfig);
+            var configuration = this.configurationProvider.Provide(gitVersionOptions.ConfigInfo.OverrideConfiguration);
 
-            this.gitVersionOutputTool.OutputVariables(variables, configuration.UpdateBuildNumber ?? true);
+            this.gitVersionOutputTool.OutputVariables(variables, configuration.UpdateBuildNumber);
             this.gitVersionOutputTool.UpdateAssemblyInfo(variables);
             this.gitVersionOutputTool.UpdateWixVersionFile(variables);
         }
