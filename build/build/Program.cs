@@ -8,4 +8,5 @@ return new CakeHost()
     .UseTaskLifetime<BuildTaskLifetime>()
     .UseRootDirectory()
     .InstallToolsFromRootManifest()
+    .InstallNugetTool(Tools.CodecovUploaderCmd, Tools.Versions[Tools.CodecovUploaderCmd])
     .Run(args);

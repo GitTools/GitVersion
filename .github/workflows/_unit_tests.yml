@@ -10,6 +10,7 @@ jobs:
       matrix:
         os: [windows-latest, ubuntu-latest, macos-latest]
         targetFramework: [net7.0, net6.0]
+      fail-fast: false
 
     runs-on: ${{ matrix.os }}
     steps:

@@ -8,6 +8,7 @@ jobs:
     strategy:
       matrix:
         package: [ Executable, MsBuildFull ]
+      fail-fast: false
 
     steps:
     -

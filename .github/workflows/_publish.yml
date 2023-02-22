@@ -8,7 +8,7 @@ jobs:
     strategy:
       matrix:
         taskName: [ NuGet, Chocolatey ]
-
+      fail-fast: false
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
