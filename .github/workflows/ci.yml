@@ -48,6 +48,7 @@ jobs:
     name: Test
     needs: [ prepare ]
     uses: ./.github/workflows/_unit_tests.yml
+    secrets: inherit
 
   artifacts_windows_test:
     name: Artifacts Windows
