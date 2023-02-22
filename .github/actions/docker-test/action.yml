@@ -9,7 +9,8 @@ inputs:
     default: 'debian.11'
   targetFramework:
     description: '.net version'
-    default: '7.0'    
+    default: '7.0'
+
 runs:
   using: 'composite'
   steps:

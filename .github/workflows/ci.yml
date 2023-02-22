@@ -78,15 +78,21 @@ jobs:
       arch: ${{ matrix.arch }}
     secrets: inherit
 
+  docker_linux_manifests:
+    needs:  [ docker_linux_images ]
+    name: Docker Manifests
+    uses: ./.github/workflows/_docker_manifests.yml
+    secrets: inherit
+
   publish:
     name: Publish
-    needs: [ artifacts_windows_test, artifacts_linux_test, docker_linux_images ]
+    needs: [ artifacts_windows_test, artifacts_linux_test ]
     uses: ./.github/workflows/_publish.yml
     secrets: inherit
 
   release:
     name: Release
-    needs: [ publish ]
+    needs: [ publish, docker_linux_manifests ]
     runs-on: windows-latest
     env:
       GITHUB_TOKEN: ${{ secrets.RELEASE_GITHUB_TOKEN }}

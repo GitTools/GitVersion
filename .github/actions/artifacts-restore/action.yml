@@ -4,6 +4,7 @@ inputs:
   dotnet-version:
     description: 'The version of the dotnet'
     default: '7.0.x'
+
 runs:
   using: 'composite'
   steps:

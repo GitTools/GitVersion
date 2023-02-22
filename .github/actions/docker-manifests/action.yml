@@ -1,9 +1,6 @@
-name: 'Docker Publish'
-description: 'Docker Publish Images'
+name: 'Docker Manifests'
+description: 'Docker Publish Manifests'
 inputs:
-  arch:
-    description: 'Docker architecture'
-    required: true
   distro:
     description: 'Linux Distro'
     required: true
@@ -22,7 +19,7 @@ inputs:
   github_registry_password:
     description: 'GitHub Registry Password'
     required: true
-    
+
 runs:
   using: 'composite'
   steps:
@@ -33,9 +30,9 @@ runs:
       username: ${{ inputs.docker_registry_username }}
       password: ${{ inputs.docker_registry_password }}
   -
-    name: '[Docker Publish] DockerHub'
+    name: '[Docker Publish Manifests] DockerHub'
     shell: pwsh
-    run: dotnet run/docker.dll --target=DockerPublish --arch ${{ inputs.arch }} --docker_dotnetversion=${{ inputs.targetFramework }} --docker_distro=${{ inputs.distro }} --docker_registry dockerhub
+    run: dotnet run/docker.dll --target=DockerManifest --docker_dotnetversion=${{ inputs.targetFramework }} --docker_distro=${{ inputs.distro }} --docker_registry dockerhub
   -
     name: Login to GitHub
     uses: docker/login-action@v2
@@ -44,6 +41,6 @@ runs:
       username: ${{ inputs.github_registry_username }}
       password: ${{ inputs.github_registry_password }}
   -
-    name: '[Docker Publish] GitHub'
+    name: '[Docker Publish Manifests] GitHub'
     shell: pwsh
-    run: dotnet run/docker.dll --target=DockerPublish --arch ${{ inputs.arch }} --docker_dotnetversion=${{ inputs.targetFramework }} --docker_distro=${{ inputs.distro }} --docker_registry github
+    run: dotnet run/docker.dll --target=DockerManifest --docker_dotnetversion=${{ inputs.targetFramework }} --docker_distro=${{ inputs.distro }} --docker_registry github
