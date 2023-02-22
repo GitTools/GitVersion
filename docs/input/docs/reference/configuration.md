@@ -48,6 +48,10 @@ minor-version-bump-message: '\+semver:\s?(feature|minor)'
 patch-version-bump-message: '\+semver:\s?(fix|patch)'
 no-bump-message: '\+semver:\s?(none|skip)'
 label-pre-release-weight: 60000
+commit-date-format: yyyy-MM-dd
+merge-message-formats: {}
+update-build-number: true
+semantic-version-format: Strict
 branches:
   develop:
     mode: ContinuousDeployment
@@ -154,9 +158,6 @@ branches:
     - support
 ignore:
   sha: []
-commit-date-format: yyyy-MM-dd
-merge-message-formats: {}
-update-build-number: true
 mode: ContinuousDelivery
 label: '{BranchName}'
 increment: Inherit
@@ -167,7 +168,6 @@ regex: ''
 tracks-release-branches: false
 is-release-branch: false
 is-mainline: false
-
 ```
 
 The details of the available options are as follows:

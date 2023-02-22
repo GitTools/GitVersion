@@ -425,8 +425,8 @@ internal abstract class ConfigurationBuilderBase<TConfigurationBuilder>
 
     public record BranchMetaData
     {
-        public string Name { get; set; }
+        public string Name { get; init; }
 
-        public string RegexPattern { get; set; }
+        public string RegexPattern { get; init; }
     }
 }
