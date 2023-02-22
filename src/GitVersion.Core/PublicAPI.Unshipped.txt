@@ -79,11 +79,6 @@ GitVersion.Common.IRepositoryStore.GetTargetBranch(string? targetBranchName) -> 
 GitVersion.Common.IRepositoryStore.GetValidVersionTags(string? tagPrefixRegex, GitVersion.SemanticVersionFormat versionFormat, System.DateTimeOffset? olderThan = null) -> System.Collections.Generic.IEnumerable<(GitVersion.ITag! Tag, GitVersion.SemanticVersion! Semver, GitVersion.ICommit! Commit)>!
 GitVersion.Common.IRepositoryStore.GetVersionTagsOnBranch(GitVersion.IBranch! branch, string? tagPrefixRegex, GitVersion.SemanticVersionFormat versionFormat) -> System.Collections.Generic.IEnumerable<GitVersion.SemanticVersion!>!
 GitVersion.Common.IRepositoryStore.IsCommitOnBranch(GitVersion.ICommit? baseVersionSource, GitVersion.IBranch! branch, GitVersion.ICommit! firstMatchingCommit) -> bool
-GitVersion.ConfigInfo
-GitVersion.ConfigInfo.ConfigFile -> string?
-GitVersion.ConfigInfo.ConfigInfo() -> void
-GitVersion.ConfigInfo.OverrideConfiguration -> System.Collections.Generic.IReadOnlyDictionary<object!, object?>?
-GitVersion.ConfigInfo.ShowConfig -> bool
 GitVersion.Configuration.BranchConfiguration
 GitVersion.Configuration.BranchConfiguration.BranchConfiguration() -> void
 GitVersion.Configuration.BranchConfiguration.BranchConfiguration(GitVersion.Configuration.BranchConfiguration! branchConfiguration) -> void
@@ -288,6 +283,11 @@ GitVersion.Configuration.Init.Wizard.PickBranchingStrategy3Step
 GitVersion.Configuration.Init.Wizard.PickBranchingStrategy3Step.PickBranchingStrategy3Step(GitVersion.Logging.IConsole! console, GitVersion.IFileSystem! fileSystem, GitVersion.Logging.ILog! log, GitVersion.Configuration.Init.Wizard.IConfigInitStepFactory! stepFactory) -> void
 GitVersion.Configuration.Init.Wizard.PickBranchingStrategyStep
 GitVersion.Configuration.Init.Wizard.PickBranchingStrategyStep.PickBranchingStrategyStep(GitVersion.Logging.IConsole! console, GitVersion.IFileSystem! fileSystem, GitVersion.Logging.ILog! log, GitVersion.Configuration.Init.Wizard.IConfigInitStepFactory! stepFactory) -> void
+GitVersion.ConfigurationContext
+GitVersion.ConfigurationContext.ConfigurationContext() -> void
+GitVersion.ConfigurationContext.ConfigurationFile -> string?
+GitVersion.ConfigurationContext.OverrideConfiguration -> System.Collections.Generic.IReadOnlyDictionary<object!, object?>?
+GitVersion.ConfigurationContext.ShowConfiguration -> bool
 GitVersion.Environment
 GitVersion.Environment.Environment() -> void
 GitVersion.Environment.GetEnvironmentVariable(string! variableName) -> string?
@@ -370,7 +370,7 @@ GitVersion.GitVersionModule.GitVersionModule() -> void
 GitVersion.GitVersionOptions
 GitVersion.GitVersionOptions.AssemblyInfo.get -> GitVersion.AssemblyInfoData!
 GitVersion.GitVersionOptions.Authentication.get -> GitVersion.AuthenticationInfo!
-GitVersion.GitVersionOptions.ConfigInfo.get -> GitVersion.ConfigInfo!
+GitVersion.GitVersionOptions.ConfigInfo.get -> GitVersion.ConfigurationContext!
 GitVersion.GitVersionOptions.Diag -> bool
 GitVersion.GitVersionOptions.GitVersionOptions() -> void
 GitVersion.GitVersionOptions.Init -> bool

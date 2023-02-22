@@ -84,7 +84,7 @@ public class ConfigurationFileLocatorTests
         [SetUp]
         public void Setup()
         {
-            this.gitVersionOptions = new GitVersionOptions { ConfigInfo = { ConfigFile = "my-config.yaml" } };
+            this.gitVersionOptions = new GitVersionOptions { ConfigInfo = { ConfigurationFile = "my-config.yaml" } };
             this.repoPath = DefaultRepoPath;
             this.workingPath = DefaultWorkingPath;
 
@@ -140,7 +140,7 @@ public class ConfigurationFileLocatorTests
         {
             this.workingPath = DefaultRepoPath;
 
-            this.gitVersionOptions = new GitVersionOptions { ConfigInfo = { ConfigFile = "./src/my-config.yaml" } };
+            this.gitVersionOptions = new GitVersionOptions { ConfigInfo = { ConfigurationFile = "./src/my-config.yaml" } };
             var sp = GetServiceProvider(this.gitVersionOptions);
             this.configFileLocator = sp.GetRequiredService<IConfigurationFileLocator>();
             this.fileSystem = sp.GetRequiredService<IFileSystem>();
@@ -200,8 +200,8 @@ public class ConfigurationFileLocatorTests
 
             var exception = Should.Throw<WarningException>(() => this.configFileLocator.Verify(this.workingPath, this.repoPath));
 
-            var workingPathFileConfig = PathHelper.Combine(this.workingPath, this.gitVersionOptions.ConfigInfo.ConfigFile);
-            var repoPathFileConfig = PathHelper.Combine(this.repoPath, this.gitVersionOptions.ConfigInfo.ConfigFile);
+            var workingPathFileConfig = PathHelper.Combine(this.workingPath, this.gitVersionOptions.ConfigInfo.ConfigurationFile);
+            var repoPathFileConfig = PathHelper.Combine(this.repoPath, this.gitVersionOptions.ConfigInfo.ConfigurationFile);
             var expectedMessage = $"The configuration file was not found at '{workingPathFileConfig}' or '{repoPathFileConfig}'";
             exception.Message.ShouldBe(expectedMessage);
         }

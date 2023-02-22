@@ -60,9 +60,9 @@ public class Arguments
 
             ConfigInfo =
             {
-                ConfigFile = ConfigFile,
+                ConfigurationFile = ConfigFile,
                 OverrideConfiguration = OverrideConfig,
-                ShowConfig = ShowConfig
+                ShowConfiguration = ShowConfig
             },
 
             RepositoryInfo =

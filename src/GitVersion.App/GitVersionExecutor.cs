@@ -152,7 +152,7 @@ public class GitVersionExecutor : IGitVersionExecutor
             return true;
         }
 
-        if (gitVersionOptions.ConfigInfo.ShowConfig)
+        if (gitVersionOptions.ConfigInfo.ShowConfiguration)
         {
             var configuration = this.configurationProvider.Provide();
             this.console.WriteLine(configuration.ToString());
