@@ -48,6 +48,7 @@ public class EffectiveConfiguration
         PreventIncrementOfMergedBranchVersion = currentBranchConfig.PreventIncrementOfMergedBranchVersion ?? false;
         LabelNumberPattern = currentBranchConfig.LabelNumberPattern;
         TrackMergeTarget = currentBranchConfig.TrackMergeTarget ?? false;
+        TrackMergeMessage = currentBranchConfig.TrackMergeMessage ?? true;
         MajorVersionBumpMessage = configuration.MajorVersionBumpMessage;
         MinorVersionBumpMessage = configuration.MinorVersionBumpMessage;
         PatchVersionBumpMessage = configuration.PatchVersionBumpMessage;
@@ -154,6 +155,8 @@ public class EffectiveConfiguration
     public string? LabelNumberPattern { get; }
 
     public bool TrackMergeTarget { get; }
+
+    public bool TrackMergeMessage { get; }
 
     public string? MajorVersionBumpMessage { get; }
 

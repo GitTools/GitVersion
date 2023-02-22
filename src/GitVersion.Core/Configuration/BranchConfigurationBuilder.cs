@@ -13,6 +13,7 @@ public class BranchConfigurationBuilder
     private bool? preventIncrementOfMergedBranchVersion;
     private string? labelNumberPattern;
     private bool? trackMergeTarget;
+    private bool? trackMergeMessage;
     private CommitMessageIncrementMode? commitMessageIncrementing;
     private string? regex;
     private HashSet<string>? sourceBranches;
@@ -65,6 +66,12 @@ public class BranchConfigurationBuilder
     public virtual BranchConfigurationBuilder WithTrackMergeTarget(bool? value)
     {
         this.trackMergeTarget = value;
+        return this;
+    }
+
+    public virtual BranchConfigurationBuilder WithTrackMergeMessage(bool? value)
+    {
+        this.trackMergeMessage = value;
         return this;
     }
 
@@ -137,6 +144,7 @@ public class BranchConfigurationBuilder
         WithPreventIncrementOfMergedBranchVersion(value.PreventIncrementOfMergedBranchVersion);
         WithLabelNumberPattern(value.LabelNumberPattern);
         WithTrackMergeTarget(value.TrackMergeTarget);
+        WithTrackMergeMessage(value.TrackMergeMessage);
         WithCommitMessageIncrementing(value.CommitMessageIncrementing);
         WithRegex(value.Regex);
         WithTracksReleaseBranches(value.TracksReleaseBranches);
@@ -159,6 +167,7 @@ public class BranchConfigurationBuilder
             Regex = regex,
             TracksReleaseBranches = tracksReleaseBranches,
             TrackMergeTarget = trackMergeTarget,
+            TrackMergeMessage = trackMergeMessage,
             CommitMessageIncrementing = commitMessageIncrementing,
             IsMainline = isMainline,
             IsReleaseBranch = isReleaseBranch,

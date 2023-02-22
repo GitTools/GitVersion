@@ -371,4 +371,39 @@ public class MainScenarios : TestBase
         // ✅ succeeds as expected
         fixture.AssertFullSemver("1.1.0-alpha.3", configurationBuilder.Build());
     }
+
+    [TestCase(true, "1.1.0+0")]
+    [TestCase(false, "1.0.1+4")]
+    public void TrackMergeMessageShouldBeConsideredOnTheMainBranch(bool trackMergeMessage, string expectedSemanticVersion)
+    {
+        using EmptyRepositoryFixture fixture = new("main");
+
+        var configuration = GitFlowConfigurationBuilder.New
+            .WithBranch("main", branchBuilder => branchBuilder.WithTrackMergeMessage(trackMergeMessage))
+            .Build();
+
+        fixture.MakeATaggedCommit("1.0.0");
+        fixture.BranchTo("release/1.1.0");
+        fixture.MakeACommit();
+        fixture.MakeACommit();
+
+        // ✅ succeeds as expected
+        fixture.AssertFullSemver("1.1.0-beta.1+2", configuration);
+
+        fixture.Checkout("main");
+        fixture.MakeACommit();
+
+        // ✅ succeeds as expected
+        fixture.AssertFullSemver("1.0.1+1", configuration);
+
+        fixture.MergeNoFF("release/1.1.0");
+
+        // ✅ succeeds as expected
+        fixture.AssertFullSemver(expectedSemanticVersion, configuration);
+
+        fixture.Remove("release/1.0.0");
+
+        // ✅ succeeds as expected
+        fixture.AssertFullSemver(expectedSemanticVersion, configuration);
+    }
 }

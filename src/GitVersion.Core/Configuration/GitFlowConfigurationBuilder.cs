@@ -29,6 +29,7 @@ internal sealed class GitFlowConfigurationBuilder : ConfigurationBuilderBase<Git
             CommitMessageIncrementing = CommitMessageIncrementMode.Enabled,
             PreventIncrementOfMergedBranchVersion = false,
             TrackMergeTarget = false,
+            TrackMergeMessage = true,
             TracksReleaseBranches = false,
             IsReleaseBranch = false,
             IsMainline = false

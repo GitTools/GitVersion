@@ -107,6 +107,8 @@ GitVersion.Configuration.BranchConfiguration.Regex.get -> string?
 GitVersion.Configuration.BranchConfiguration.Regex.set -> void
 GitVersion.Configuration.BranchConfiguration.SourceBranches.get -> System.Collections.Generic.HashSet<string!>?
 GitVersion.Configuration.BranchConfiguration.SourceBranches.set -> void
+GitVersion.Configuration.BranchConfiguration.TrackMergeMessage.get -> bool?
+GitVersion.Configuration.BranchConfiguration.TrackMergeMessage.set -> void
 GitVersion.Configuration.BranchConfiguration.TrackMergeTarget.get -> bool?
 GitVersion.Configuration.BranchConfiguration.TrackMergeTarget.set -> void
 GitVersion.Configuration.BranchConfiguration.TracksReleaseBranches.get -> bool?
@@ -168,6 +170,7 @@ GitVersion.Configuration.EffectiveConfiguration.PreReleaseWeight.get -> int
 GitVersion.Configuration.EffectiveConfiguration.PreventIncrementOfMergedBranchVersion.get -> bool
 GitVersion.Configuration.EffectiveConfiguration.SemanticVersionFormat.get -> GitVersion.SemanticVersionFormat
 GitVersion.Configuration.EffectiveConfiguration.SemanticVersionFormat.set -> void
+GitVersion.Configuration.EffectiveConfiguration.TrackMergeMessage.get -> bool
 GitVersion.Configuration.EffectiveConfiguration.TrackMergeTarget.get -> bool
 GitVersion.Configuration.EffectiveConfiguration.TracksReleaseBranches.get -> bool
 GitVersion.Configuration.EffectiveConfiguration.UpdateBuildNumber.get -> bool
@@ -1245,6 +1248,7 @@ virtual GitVersion.Configuration.BranchConfigurationBuilder.WithPreventIncrement
 virtual GitVersion.Configuration.BranchConfigurationBuilder.WithRegex(string? value) -> GitVersion.Configuration.BranchConfigurationBuilder!
 virtual GitVersion.Configuration.BranchConfigurationBuilder.WithSourceBranches(System.Collections.Generic.IEnumerable<string!>? values) -> GitVersion.Configuration.BranchConfigurationBuilder!
 virtual GitVersion.Configuration.BranchConfigurationBuilder.WithSourceBranches(params string![]? values) -> GitVersion.Configuration.BranchConfigurationBuilder!
+virtual GitVersion.Configuration.BranchConfigurationBuilder.WithTrackMergeMessage(bool? value) -> GitVersion.Configuration.BranchConfigurationBuilder!
 virtual GitVersion.Configuration.BranchConfigurationBuilder.WithTrackMergeTarget(bool? value) -> GitVersion.Configuration.BranchConfigurationBuilder!
 virtual GitVersion.Configuration.BranchConfigurationBuilder.WithTracksReleaseBranches(bool? value) -> GitVersion.Configuration.BranchConfigurationBuilder!
 virtual GitVersion.Configuration.BranchConfigurationBuilder.WithVersioningMode(GitVersion.VersionCalculation.VersioningMode? value) -> GitVersion.Configuration.BranchConfigurationBuilder!

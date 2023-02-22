@@ -1,7 +1,6 @@
 using System.Text.RegularExpressions;
 using GitVersion.Extensions;
 using GitVersion.Logging;
-using GitVersion.VersionCalculation;
 
 namespace GitVersion.Configuration;
 
@@ -56,30 +55,8 @@ public static class ConfigurationExtensions
     public static BranchConfiguration GetFallbackBranchConfiguration(this GitVersionConfiguration configuration)
     {
         BranchConfiguration result = new(configuration);
-        result.Name ??= "fallback";
-        result.Regex ??= "";
-        result.Label ??= "{BranchName}";
-        result.VersioningMode ??= VersioningMode.ContinuousDelivery;
-        result.PreventIncrementOfMergedBranchVersion ??= false;
-        result.TrackMergeTarget ??= false;
-        result.TracksReleaseBranches ??= false;
-        result.IsReleaseBranch ??= false;
-        result.IsMainline ??= false;
-        result.CommitMessageIncrementing ??= CommitMessageIncrementMode.Enabled;
-        if (result.Increment == IncrementStrategy.Inherit)
-        {
-            result.Increment = IncrementStrategy.None;
-        }
+        if (result.Increment == IncrementStrategy.Inherit) result.Increment = IncrementStrategy.None;
         return result;
-    }
-
-    private static BranchConfiguration? ForBranch(GitVersionConfiguration configuration, string branchName)
-    {
-        var matches = configuration.Branches
-            .Where(b => b.Value.Regex != null && Regex.IsMatch(branchName, b.Value.Regex, RegexOptions.IgnoreCase))
-            .ToArray();
-
-        return matches.Select(kvp => kvp.Value).FirstOrDefault();
     }
 
     public static bool IsReleaseBranch(this GitVersionConfiguration configuration, string branchName) => configuration.GetBranchConfiguration(branchName).IsReleaseBranch ?? false;

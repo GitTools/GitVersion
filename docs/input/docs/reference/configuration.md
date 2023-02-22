@@ -163,6 +163,7 @@ label: '{BranchName}'
 increment: Inherit
 prevent-increment-of-merged-branch-version: false
 track-merge-target: false
+track-merge-message: true
 commit-message-incrementing: Enabled
 regex: ''
 tracks-release-branches: false
@@ -601,6 +602,13 @@ branches:
 Strategy which will look for tagged merge commits directly off the current
 branch. For example `develop` → `release/1.0.0` → merge into `main` and tag
 `1.0.0`. The tag is _not_ on develop, but develop should be version `1.0.0` now.
+
+### track-merge-message
+
+This property is a branch related property and gives the user the possibility to control the behavior of whether the merge
+commit message will be interpreted as a next version or not. Consider we have a main branch and a `release/1.0.0` branch and
+merge changes from `release/1.0.0` to the `main` branch. If `track-merge-message` is set to `true` then the next version will
+be `1.0.0` otherwise `0.0.1`.
 
 ### tracks-release-branches
 
