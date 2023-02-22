@@ -10,6 +10,8 @@ on:
     paths:
     - '**'
     - '!docs/**'
+    - '!.github/**'
+    - .github/workflows/format.yml
 
   pull_request:
     branches:
@@ -18,6 +20,8 @@ on:
     paths:
     - '**'
     - '!docs/**'
+    - '!.github/**'
+    - .github/workflows/format.yml
 
 permissions:
   contents: read

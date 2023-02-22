@@ -8,6 +8,8 @@ on:
     paths:
     - '**'
     - '!docs/**'
+    - '!.github/**'
+    - .github/workflows/codeql-analysis.yml
 
   pull_request:
     branches:
@@ -16,6 +18,8 @@ on:
     paths:
     - '**'
     - '!docs/**'
+    - '!.github/**'
+    - .github/workflows/codeql-analysis.yml
 
   schedule:
     - cron: '0 12 * * *'
