@@ -21,7 +21,7 @@ public class PublishCoverage : FrostingTask<BuildContext>
     {
         var coverageFiles = context
             .GetFiles($"{Paths.TestOutput}/*.coverage.*.xml")
-            .Select(file =>  context.MakeRelative(file).ToString()).ToArray();
+            .Select(file => context.MakeRelative(file).ToString()).ToArray();
 
         var token = context.Credentials?.CodeCov?.Token;
         if (string.IsNullOrEmpty(token))
