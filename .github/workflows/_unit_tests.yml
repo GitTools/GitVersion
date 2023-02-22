@@ -4,6 +4,8 @@ on:
 jobs:
   unit_test:
     name: ${{ matrix.os }} - ${{ matrix.targetFramework }}
+    env:
+      CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
     strategy:
       matrix:
         os: [windows-latest, ubuntu-latest, macos-latest]
