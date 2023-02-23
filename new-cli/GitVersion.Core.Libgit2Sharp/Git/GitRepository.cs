@@ -7,7 +7,7 @@ namespace GitVersion;
 public sealed class GitRepository : IGitRepository
 {
     private Lazy<IRepository>? repositoryLazy;
-    private IRepository Instance
+    private IRepository RepositoryInstance
     {
         get
         {
@@ -25,19 +25,19 @@ public sealed class GitRepository : IGitRepository
     public void Dispose()
     {
         var lazy = this.repositoryLazy;
-        if (lazy is { IsValueCreated: true }) Instance.Dispose();
+        if (lazy is { IsValueCreated: true }) RepositoryInstance.Dispose();
     }
 
-    public string Path => Instance.Info.Path;
-    public string WorkingDirectory => Instance.Info.WorkingDirectory;
-    public bool IsHeadDetached => Instance.Info.IsHeadDetached;
+    public string Path => RepositoryInstance.Info.Path;
+    public string WorkingDirectory => RepositoryInstance.Info.WorkingDirectory;
+    public bool IsHeadDetached => RepositoryInstance.Info.IsHeadDetached;
 
-    public IBranch Head => new Branch(Instance.Head);
-    public ITagCollection Tags => new TagCollection(Instance.Tags);
-    public IReferenceCollection Refs => new ReferenceCollection(Instance.Refs);
-    public IBranchCollection Branches => new BranchCollection(Instance.Branches);
-    public ICommitCollection Commits => new CommitCollection(Instance.Commits);
-    public IRemoteCollection Remotes => new RemoteCollection(Instance.Network.Remotes);
+    public IBranch Head => new Branch(RepositoryInstance.Head);
+    public ITagCollection Tags => new TagCollection(RepositoryInstance.Tags);
+    public IReferenceCollection Refs => new ReferenceCollection(RepositoryInstance.Refs);
+    public IBranchCollection Branches => new BranchCollection(RepositoryInstance.Branches);
+    public ICommitCollection Commits => new CommitCollection(RepositoryInstance.Commits);
+    public IRemoteCollection Remotes => new RemoteCollection(RepositoryInstance.Network.Remotes);
 
     public ICommit? FindMergeBase(ICommit commit, ICommit otherCommit)
     {
@@ -47,7 +47,7 @@ public sealed class GitRepository : IGitRepository
         var retryAction = new RetryAction<LockedFileException, ICommit?>();
         return retryAction.Execute(() =>
         {
-            var mergeBase = Instance.ObjectDatabase.FindMergeBase((Commit)commit, (Commit)otherCommit);
+            var mergeBase = RepositoryInstance.ObjectDatabase.FindMergeBase((Commit)commit, (Commit)otherCommit);
             return mergeBase == null ? null : new Commit(mergeBase);
         });
     }
@@ -61,14 +61,14 @@ public sealed class GitRepository : IGitRepository
         // check if we have a branch tip at all to behave properly with empty repos
         // => return that we have actually un-committed changes because we are apparently
         // running GitVersion on something which lives inside this brand new repo _/\Ö/\_
-        if (Instance.Head?.Tip == null || Instance.Diff == null)
+        if (RepositoryInstance.Head?.Tip == null || RepositoryInstance.Diff == null)
         {
             // this is a somewhat cumbersome way of figuring out the number of changes in the repo
             // which is more expensive than to use the Diff as it gathers more info, but
             // we can't use the other method when we are dealing with a new/empty repo
             try
             {
-                var status = Instance.RetrieveStatus();
+                var status = RepositoryInstance.RetrieveStatus();
                 return status.Untracked.Count() + status.Staged.Count();
             }
             catch (Exception)
@@ -80,7 +80,7 @@ public sealed class GitRepository : IGitRepository
         }
 
         // gets all changes of the last commit vs Staging area and WT
-        var changes = Instance.Diff.Compare<TreeChanges>(Instance.Head.Tip.Tree,
+        var changes = RepositoryInstance.Diff.Compare<TreeChanges>(RepositoryInstance.Head.Tip.Tree,
             DiffTargets.Index | DiffTargets.WorkingDirectory);
 
         return changes.Count;

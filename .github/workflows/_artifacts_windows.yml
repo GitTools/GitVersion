@@ -6,9 +6,9 @@ jobs:
     name: ${{ matrix.package }}
     runs-on: windows-latest
     strategy:
+      fail-fast: false
       matrix:
         package: [ Executable, MsBuildFull ]
-      fail-fast: false
 
     steps:
     -

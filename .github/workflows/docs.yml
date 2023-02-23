@@ -35,9 +35,9 @@ jobs:
     name: Prepare Build
     runs-on: ${{ matrix.os }}
     strategy:
+      fail-fast: false
       matrix:
         os: [windows-latest, ubuntu-latest]
-      fail-fast: false
 
     steps:
     -
@@ -78,7 +78,7 @@ jobs:
       name: Setup .NET SDK
       uses: actions/setup-dotnet@v3
       with:
-        dotnet-version: '7.0.x'
+        global-json-file: global.json
     -
       name: '[Prepare]'
       if: steps.cache-cake.outputs.cache-hit != 'true'

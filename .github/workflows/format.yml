@@ -43,7 +43,7 @@ jobs:
         name: Setup .NET SDK
         uses: actions/setup-dotnet@v3
         with:
-          dotnet-version: '7.0.103'
+          global-json-file: global.json
       -
         name: Run Format 'ci' solution
         run: dotnet format ./build/ --verify-no-changes

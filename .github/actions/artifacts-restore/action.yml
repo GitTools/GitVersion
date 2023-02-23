@@ -1,9 +1,5 @@
 name: 'Artifacts restore'
 description: 'Artifacts restore'
-inputs:
-  dotnet-version:
-    description: 'The version of the dotnet'
-    default: '7.0.x'
 
 runs:
   using: 'composite'
@@ -32,4 +28,4 @@ runs:
     name: Setup .NET SDK
     uses: actions/setup-dotnet@v3
     with:
-      dotnet-version: ${{ inputs.dotnet-version }}
+      global-json-file: global.json

@@ -62,8 +62,10 @@ jobs:
     needs: [ build ]
     name: Artifacts Linux (${{ matrix.arch }})
     strategy:
+      fail-fast: false
       matrix:
         arch: [ amd64, arm64 ]
+
     uses: ./.github/workflows/_artifacts_linux.yml
     with:
       runner: ubuntu-latest
@@ -73,8 +75,10 @@ jobs:
     needs:  [ build ]
     name: Docker Images (${{ matrix.arch }})
     strategy:
+      fail-fast: false
       matrix:
         arch: [ amd64, arm64 ]
+
     uses: ./.github/workflows/_docker.yml
     with:
       runner: ubuntu-latest
