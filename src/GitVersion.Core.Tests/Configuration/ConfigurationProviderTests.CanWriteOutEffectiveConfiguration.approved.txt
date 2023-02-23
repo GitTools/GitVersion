@@ -118,7 +118,7 @@ ignore:
   sha: []
 mode: ContinuousDelivery
 label: '{BranchName}'
-increment: Inherit
+increment: Patch
 prevent-increment-of-merged-branch-version: false
 track-merge-target: false
 track-merge-message: true

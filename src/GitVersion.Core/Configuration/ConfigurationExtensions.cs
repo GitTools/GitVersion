@@ -7,8 +7,11 @@ namespace GitVersion.Configuration;
 public static class ConfigurationExtensions
 {
     public static EffectiveConfiguration GetEffectiveConfiguration(this GitVersionConfiguration configuration, IBranch branch)
+        => GetEffectiveConfiguration(configuration, branch.NotNull().Name.WithoutRemote);
+
+    public static EffectiveConfiguration GetEffectiveConfiguration(this GitVersionConfiguration configuration, string branchName)
     {
-        var branchConfiguration = configuration.GetBranchConfiguration(branch);
+        BranchConfiguration branchConfiguration = configuration.GetBranchConfiguration(branchName);
         return new EffectiveConfiguration(configuration, branchConfiguration);
     }
 
@@ -25,16 +28,6 @@ public static class ConfigurationExtensions
             Label = ConfigurationConstants.BranchNamePlaceholder,
             Increment = IncrementStrategy.Inherit
         };
-
-        if (branchConfiguration.Increment == IncrementStrategy.Inherit)
-            return branchConfiguration;
-
-        var fallbackBranchConfiguration = GetFallbackBranchConfiguration(configuration);
-        branchConfiguration.Increment ??= fallbackBranchConfiguration.Increment;
-        if (branchConfiguration.Increment != IncrementStrategy.Inherit)
-        {
-            branchConfiguration = branchConfiguration.Inherit(fallbackBranchConfiguration);
-        }
         return branchConfiguration;
     }
 

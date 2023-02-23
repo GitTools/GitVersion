@@ -9,17 +9,20 @@ namespace GitVersion.Configuration;
 /// </summary>
 public class EffectiveConfiguration
 {
-    public EffectiveConfiguration(GitVersionConfiguration configuration, BranchConfiguration currentBranchConfig)
+    public EffectiveConfiguration(GitVersionConfiguration configuration, BranchConfiguration branchConfiguration)
     {
         configuration.NotNull();
-        currentBranchConfig.NotNull();
+        branchConfiguration.NotNull();
 
-        var name = currentBranchConfig.Name;
+        var fallbackBranchConfiguration = configuration.GetFallbackBranchConfiguration();
+        branchConfiguration = branchConfiguration.Inherit(fallbackBranchConfiguration);
 
-        if (!currentBranchConfig.VersioningMode.HasValue)
+        var name = branchConfiguration.Name;
+
+        if (!branchConfiguration.VersioningMode.HasValue)
             throw new Exception($"Configuration value for 'Versioning mode' for branch {name} has no value. (this should not happen, please report an issue)");
 
-        if (!currentBranchConfig.Increment.HasValue)
+        if (!branchConfiguration.Increment.HasValue)
             throw new Exception($"Configuration value for 'Increment' for branch {name} has no value. (this should not happen, please report an issue)");
 
         if (!configuration.AssemblyVersioningScheme.HasValue)
@@ -28,7 +31,7 @@ public class EffectiveConfiguration
         if (!configuration.AssemblyFileVersioningScheme.HasValue)
             throw new Exception("Configuration value for 'AssemblyFileVersioningScheme' has no value. (this should not happen, please report an issue)");
 
-        if (!currentBranchConfig.CommitMessageIncrementing.HasValue)
+        if (!branchConfiguration.CommitMessageIncrementing.HasValue)
             throw new Exception("Configuration value for 'CommitMessageIncrementing' has no value. (this should not happen, please report an issue)");
 
         if (!configuration.LabelPreReleaseWeight.HasValue)
@@ -39,29 +42,29 @@ public class EffectiveConfiguration
         AssemblyInformationalFormat = configuration.AssemblyInformationalFormat;
         AssemblyVersioningFormat = configuration.AssemblyVersioningFormat;
         AssemblyFileVersioningFormat = configuration.AssemblyFileVersioningFormat;
-        VersioningMode = currentBranchConfig.VersioningMode.Value;
+        VersioningMode = branchConfiguration.VersioningMode.Value;
         LabelPrefix = configuration.LabelPrefix;
-        Label = currentBranchConfig.Label ?? string.Empty;
+        Label = branchConfiguration.Label ?? string.Empty;
         NextVersion = configuration.NextVersion;
-        Increment = currentBranchConfig.Increment.Value;
-        BranchPrefixToTrim = currentBranchConfig.Regex;
-        PreventIncrementOfMergedBranchVersion = currentBranchConfig.PreventIncrementOfMergedBranchVersion ?? false;
-        LabelNumberPattern = currentBranchConfig.LabelNumberPattern;
-        TrackMergeTarget = currentBranchConfig.TrackMergeTarget ?? false;
-        TrackMergeMessage = currentBranchConfig.TrackMergeMessage ?? true;
+        Increment = branchConfiguration.Increment.Value;
+        BranchPrefixToTrim = branchConfiguration.Regex;
+        PreventIncrementOfMergedBranchVersion = branchConfiguration.PreventIncrementOfMergedBranchVersion ?? false;
+        LabelNumberPattern = branchConfiguration.LabelNumberPattern;
+        TrackMergeTarget = branchConfiguration.TrackMergeTarget ?? false;
+        TrackMergeMessage = branchConfiguration.TrackMergeMessage ?? true;
         MajorVersionBumpMessage = configuration.MajorVersionBumpMessage;
         MinorVersionBumpMessage = configuration.MinorVersionBumpMessage;
         PatchVersionBumpMessage = configuration.PatchVersionBumpMessage;
         NoBumpMessage = configuration.NoBumpMessage;
-        CommitMessageIncrementing = currentBranchConfig.CommitMessageIncrementing.Value;
+        CommitMessageIncrementing = branchConfiguration.CommitMessageIncrementing.Value;
         VersionFilters = configuration.Ignore.ToFilters();
-        TracksReleaseBranches = currentBranchConfig.TracksReleaseBranches ?? false;
-        IsReleaseBranch = currentBranchConfig.IsReleaseBranch ?? false;
-        IsMainline = currentBranchConfig.IsMainline ?? false;
+        TracksReleaseBranches = branchConfiguration.TracksReleaseBranches ?? false;
+        IsReleaseBranch = branchConfiguration.IsReleaseBranch ?? false;
+        IsMainline = branchConfiguration.IsMainline ?? false;
         CommitDateFormat = configuration.CommitDateFormat;
         UpdateBuildNumber = configuration.UpdateBuildNumber;
         SemanticVersionFormat = configuration.SemanticVersionFormat;
-        PreReleaseWeight = currentBranchConfig.PreReleaseWeight ?? 0;
+        PreReleaseWeight = branchConfiguration.PreReleaseWeight ?? 0;
         LabelPreReleaseWeight = configuration.LabelPreReleaseWeight.Value;
     }
 
@@ -174,7 +177,7 @@ public class EffectiveConfiguration
 
     public bool UpdateBuildNumber { get; }
 
-    public SemanticVersionFormat SemanticVersionFormat { get; set; } = SemanticVersionFormat.Strict;
+    public SemanticVersionFormat SemanticVersionFormat { get; set; }
 
     public int PreReleaseWeight { get; }
 

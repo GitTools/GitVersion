@@ -45,8 +45,7 @@ public class EffectiveBranchConfigurationFinder : IEffectiveBranchConfigurationF
             {
                 // Because the actual branch is marked with the inherit increment strategy we need to either skip the iteration or go further
                 // while inheriting from the fallback branch configuration. This behavior is configurable via the increment settings of the configuration.
-                var fallbackBranchConfiguration = configuration.GetFallbackBranchConfiguration();
-                var skipTraversingOfOrphanedBranches = fallbackBranchConfiguration.Increment == null;
+                var skipTraversingOfOrphanedBranches = configuration.Increment == null;
                 this.log.Info(
                     $"An orphaned branch '{branch}' has been detected and will be skipped={skipTraversingOfOrphanedBranches}."
                 );
@@ -67,8 +66,6 @@ public class EffectiveBranchConfigurationFinder : IEffectiveBranchConfigurationF
         }
         else
         {
-            var fallbackBranchConfiguration = configuration.GetFallbackBranchConfiguration();
-            branchConfiguration = branchConfiguration.Inherit(fallbackBranchConfiguration);
             yield return new(branch, new EffectiveConfiguration(configuration, branchConfiguration));
         }
     }

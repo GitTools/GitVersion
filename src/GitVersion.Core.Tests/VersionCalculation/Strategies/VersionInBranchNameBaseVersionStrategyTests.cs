@@ -60,14 +60,14 @@ public class VersionInBranchNameBaseVersionStrategyTests : TestBase
         fixture.Repository.MakeACommit();
         fixture.Repository.CreateBranch(branchName);
 
-        var configurationBuilder = GitFlowConfigurationBuilder.New
-            .WithBranch("support", builder => builder.WithIsReleaseBranch(true));
-        ConfigurationHelper configurationHelper = new(configurationBuilder.Build());
+        var configuration = GitFlowConfigurationBuilder.New
+            .WithBranch("support", builder => builder.WithIsReleaseBranch(true))
+            .Build();
+        ConfigurationHelper configurationHelper = new(configuration);
 
         var gitRepository = fixture.Repository.ToGitRepository();
         var strategy = GetVersionStrategy(fixture.RepositoryPath, gitRepository, branchName, configurationHelper.Dictionary);
 
-        var configuration = GitFlowConfigurationBuilder.New.Build();
         var branchConfiguration = configuration.GetBranchConfiguration(branchName);
         var effectiveConfiguration = new EffectiveConfiguration(configuration, branchConfiguration);
 

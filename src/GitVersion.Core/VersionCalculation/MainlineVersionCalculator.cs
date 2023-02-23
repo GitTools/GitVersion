@@ -273,12 +273,12 @@ internal class MainlineVersionCalculator : IMainlineVersionCalculator
         return (null, null);
     }
 
-    private SemanticVersion IncrementForEachCommit(IEnumerable<ICommit> directCommits, SemanticVersion mainlineVersion, INamedReference mainline)
+    private SemanticVersion IncrementForEachCommit(IEnumerable<ICommit> directCommits, SemanticVersion mainlineVersion, IBranch mainline)
     {
         foreach (var directCommit in directCommits)
         {
             var directCommitIncrement = this.incrementStrategyFinder.GetIncrementForCommits(context.Configuration, new[] { directCommit })
-                ?? FindDefaultIncrementForBranch(context, mainline.Name.Friendly);
+                ?? FindDefaultIncrementForBranch(context, mainline);
             mainlineVersion = mainlineVersion.IncrementVersion(directCommitIncrement);
             this.log.Info($"Direct commit on main {directCommit} incremented base versions {directCommitIncrement}, now {mainlineVersion}");
         }
@@ -310,20 +310,11 @@ internal class MainlineVersionCalculator : IMainlineVersionCalculator
         return FindDefaultIncrementForBranch(context);
     }
 
-    private static VersionField FindDefaultIncrementForBranch(GitVersionContext context, string? branchName = null)
-    {
-        var configuration = context.Configuration.GetBranchConfiguration(branchName ?? context.CurrentBranch.Name.WithoutRemote);
-        if (configuration.Increment != null && configuration.Increment != IncrementStrategy.Inherit)
-        {
-            return configuration.Increment.Value.ToVersionField();
-        }
+    private static VersionField FindDefaultIncrementForBranch(GitVersionContext context)
+        => FindDefaultIncrementForBranch(context, context.CurrentBranch);
 
-        // TODO: Hardcoded fallback values are not so good. It might be better to get this information either from the fallback or the unknown
-        // branch configuration settings I have introduced. We should think about it: This is a cooking machine... the ingredients are coming from the user. ;)
-
-        // Fallback to patch
-        return VersionField.Patch;
-    }
+    private static VersionField FindDefaultIncrementForBranch(GitVersionContext context, IBranch branch)
+        => context.Configuration.GetEffectiveConfiguration(branch).Increment.ToVersionField();
 
     private static ICommit GetMergedHead(ICommit mergeCommit)
     {
