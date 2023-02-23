@@ -9,7 +9,15 @@ updates:
   schedule:
     interval: daily
   open-pull-requests-limit: 10
-
+- package-ecosystem: nuget
+  labels:
+    - "dependencies"
+  commit-message:
+    prefix: "(new-cli deps)"
+  directory: "/new-cli"
+  schedule:
+    interval: daily
+  open-pull-requests-limit: 10  
 - package-ecosystem: nuget
   labels:
     - "dependencies"
