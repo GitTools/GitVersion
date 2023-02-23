@@ -1,4 +1,4 @@
-namespace GitVersion.Git;
+namespace GitVersion;
 
 public interface IGitObject : IEquatable<IGitObject?>, IComparable<IGitObject>
 {

@@ -1,4 +1,3 @@
-using GitVersion.Git;
 using GitVersion.Infrastructure;
 
 namespace GitVersion;

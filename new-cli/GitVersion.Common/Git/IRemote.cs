@@ -1,4 +1,4 @@
-namespace GitVersion.Git;
+namespace GitVersion;
 
 public interface IRemote : IEquatable<IRemote?>, IComparable<IRemote>
 {

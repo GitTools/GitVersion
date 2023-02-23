@@ -1,5 +1,5 @@
 using GitVersion.Extensions;
-using GitVersion.Git;
+using GitVersion;
 using GitVersion.Helpers;
 using LibGit2Sharp;
 

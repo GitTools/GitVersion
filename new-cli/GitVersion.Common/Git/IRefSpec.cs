@@ -1,4 +1,4 @@
-namespace GitVersion.Git;
+namespace GitVersion;
 
 public interface IRefSpec : IEquatable<IRefSpec?>, IComparable<IRefSpec>
 {

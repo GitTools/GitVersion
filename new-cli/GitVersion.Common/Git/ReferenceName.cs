@@ -1,7 +1,7 @@
 using GitVersion.Extensions;
 using GitVersion.Helpers;
 
-namespace GitVersion.Git;
+namespace GitVersion;
 
 public class ReferenceName : IEquatable<ReferenceName?>, IComparable<ReferenceName>
 {

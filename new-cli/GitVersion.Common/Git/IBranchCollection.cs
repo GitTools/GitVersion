@@ -1,4 +1,4 @@
-namespace GitVersion.Git;
+namespace GitVersion;
 
 public interface IBranchCollection : IEnumerable<IBranch>
 {

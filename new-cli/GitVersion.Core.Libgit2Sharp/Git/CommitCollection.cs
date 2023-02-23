@@ -1,7 +1,5 @@
 using GitVersion.Extensions;
-using GitVersion.Git;
 using LibGit2Sharp;
-using CommitFilter = GitVersion.Git.CommitFilter;
 
 namespace GitVersion;
 
