@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <IsRoslynComponent>true</IsRoslynComponent>
+        <PackageScribanIncludeSource>true</PackageScribanIncludeSource>
+        <SatelliteResourceLanguages>en</SatelliteResourceLanguages>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.CSharp" />
+        <PackageReference Include="Microsoft.CodeAnalysis.CSharp" PrivateAssets="all" />
+        <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" PrivateAssets="all" />
+        <PackageReference Include="Scriban" IncludeAssets="Build" />
+        <PackageReference Include="System.Threading.Tasks.Extensions" />
+    </ItemGroup>
+</Project>

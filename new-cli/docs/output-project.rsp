@@ -1,0 +1,1 @@
+output -l c:\logs\log.txt --output-dir C:\Projects\OSS\GitTools\GitVersion --input-file version.json project --project-file project.csproj

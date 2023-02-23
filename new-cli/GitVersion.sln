@@ -1,0 +1,107 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GitVersion.Cli", "GitVersion.Cli\GitVersion.Cli.csproj", "{E2520F2D-A6FF-4079-85A4-584AA0CC8594}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GitVersion.Common", "GitVersion.Common\GitVersion.Common.csproj", "{02332393-1F38-4819-8D6F-3D1968B38919}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GitVersion.Calculation", "GitVersion.Calculation\GitVersion.Calculation.csproj", "{8F6D4830-B870-4365-9662-457F1A13894B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GitVersion.Output", "GitVersion.Output\GitVersion.Output.csproj", "{9543A475-06BA-4C8D-A3CE-E2792FE663DA}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "sln", "sln", "{610883EF-A96B-4A86-8A3F-1F1601FFDC7D}"
+ProjectSection(SolutionItems) = preProject
+	Directory.Build.props = Directory.Build.props
+	..\command.md = ..\command.md
+	Directory.Packages.props = Directory.Packages.props
+	.editorconfig = .editorconfig
+EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GitVersion.Normalization", "GitVersion.Normalization\GitVersion.Normalization.csproj", "{45776CC1-7FDA-4299-86A7-9F11E7855CE4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GitVersion.Configuration", "GitVersion.Configuration\GitVersion.Configuration.csproj", "{2127F18A-F52B-4024-A0FD-B4D9F75FD85F}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Plugins", "Plugins", "{511CE16D-A65E-48F4-9A95-BB521A9048AF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GitVersion.Core", "GitVersion.Core\GitVersion.Core.csproj", "{2167C815-3A7E-4758-9F45-03EFE1E8EB1F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GitVersion.Common.Command", "GitVersion.Common.Command\GitVersion.Common.Command.csproj", "{CB8166C6-2621-4B65-BEB4-4485F27B2368}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "cmds", "cmds", "{ABF3B56F-CF60-418F-A729-05388BD064B7}"
+	ProjectSection(SolutionItems) = preProject
+		docs\calculate.rsp = docs\calculate.rsp
+		docs\config-help.rsp = docs\config-help.rsp
+		docs\config-init.rsp = docs\config-init.rsp
+		docs\config-show.rsp = docs\config-show.rsp
+		docs\help.rsp = docs\help.rsp
+		docs\normalize.rsp = docs\normalize.rsp
+		docs\output-assemblyinfo.rsp = docs\output-assemblyinfo.rsp
+		docs\output-help.rsp = docs\output-help.rsp
+		docs\output-project.rsp = docs\output-project.rsp
+		docs\output-wix.rsp = docs\output-wix.rsp
+		docs\version.rsp = docs\version.rsp
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GitVersion.Core.Tester", "GitVersion.Core.Tester\GitVersion.Core.Tester.csproj", "{DE951A86-1B65-4C7B-B6BE-7B5A233D7AF1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GitVersion.Core.Libgit2Sharp", "GitVersion.Core.Libgit2Sharp\GitVersion.Core.Libgit2Sharp.csproj", "{69E72521-9B30-48CD-A674-BC26A25A0906}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GitVersion.Cli.Generator", "GitVersion.Cli.Generator\GitVersion.Cli.Generator.csproj", "{AF22F642-625A-4A33-92A5-161EE4E2B0CE}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{E2520F2D-A6FF-4079-85A4-584AA0CC8594}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E2520F2D-A6FF-4079-85A4-584AA0CC8594}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E2520F2D-A6FF-4079-85A4-584AA0CC8594}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E2520F2D-A6FF-4079-85A4-584AA0CC8594}.Release|Any CPU.Build.0 = Release|Any CPU
+		{02332393-1F38-4819-8D6F-3D1968B38919}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{02332393-1F38-4819-8D6F-3D1968B38919}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{02332393-1F38-4819-8D6F-3D1968B38919}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{02332393-1F38-4819-8D6F-3D1968B38919}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8F6D4830-B870-4365-9662-457F1A13894B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8F6D4830-B870-4365-9662-457F1A13894B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8F6D4830-B870-4365-9662-457F1A13894B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8F6D4830-B870-4365-9662-457F1A13894B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9543A475-06BA-4C8D-A3CE-E2792FE663DA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9543A475-06BA-4C8D-A3CE-E2792FE663DA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9543A475-06BA-4C8D-A3CE-E2792FE663DA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9543A475-06BA-4C8D-A3CE-E2792FE663DA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{45776CC1-7FDA-4299-86A7-9F11E7855CE4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{45776CC1-7FDA-4299-86A7-9F11E7855CE4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{45776CC1-7FDA-4299-86A7-9F11E7855CE4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{45776CC1-7FDA-4299-86A7-9F11E7855CE4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2127F18A-F52B-4024-A0FD-B4D9F75FD85F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2127F18A-F52B-4024-A0FD-B4D9F75FD85F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2127F18A-F52B-4024-A0FD-B4D9F75FD85F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2127F18A-F52B-4024-A0FD-B4D9F75FD85F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2167C815-3A7E-4758-9F45-03EFE1E8EB1F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2167C815-3A7E-4758-9F45-03EFE1E8EB1F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2167C815-3A7E-4758-9F45-03EFE1E8EB1F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2167C815-3A7E-4758-9F45-03EFE1E8EB1F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CB8166C6-2621-4B65-BEB4-4485F27B2368}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CB8166C6-2621-4B65-BEB4-4485F27B2368}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CB8166C6-2621-4B65-BEB4-4485F27B2368}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CB8166C6-2621-4B65-BEB4-4485F27B2368}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DE951A86-1B65-4C7B-B6BE-7B5A233D7AF1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DE951A86-1B65-4C7B-B6BE-7B5A233D7AF1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DE951A86-1B65-4C7B-B6BE-7B5A233D7AF1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DE951A86-1B65-4C7B-B6BE-7B5A233D7AF1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{69E72521-9B30-48CD-A674-BC26A25A0906}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{69E72521-9B30-48CD-A674-BC26A25A0906}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{69E72521-9B30-48CD-A674-BC26A25A0906}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{69E72521-9B30-48CD-A674-BC26A25A0906}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AF22F642-625A-4A33-92A5-161EE4E2B0CE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AF22F642-625A-4A33-92A5-161EE4E2B0CE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AF22F642-625A-4A33-92A5-161EE4E2B0CE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AF22F642-625A-4A33-92A5-161EE4E2B0CE}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{8F6D4830-B870-4365-9662-457F1A13894B} = {511CE16D-A65E-48F4-9A95-BB521A9048AF}
+		{2127F18A-F52B-4024-A0FD-B4D9F75FD85F} = {511CE16D-A65E-48F4-9A95-BB521A9048AF}
+		{45776CC1-7FDA-4299-86A7-9F11E7855CE4} = {511CE16D-A65E-48F4-9A95-BB521A9048AF}
+		{9543A475-06BA-4C8D-A3CE-E2792FE663DA} = {511CE16D-A65E-48F4-9A95-BB521A9048AF}
+	EndGlobalSection
+EndGlobal
