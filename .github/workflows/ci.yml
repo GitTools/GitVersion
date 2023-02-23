@@ -10,7 +10,8 @@ on:
     paths:
     - '**'
     - '!docs/**'
-
+    - '!new-cli/**'
+    
   pull_request:
     branches:
     - main
@@ -18,6 +19,7 @@ on:
     paths:
     - '**'
     - '!docs/**'
+    - '!new-cli/**'
 
   repository_dispatch:
     types: [release]

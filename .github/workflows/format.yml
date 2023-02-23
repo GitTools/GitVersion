@@ -10,6 +10,7 @@ on:
     paths:
     - '**'
     - '!docs/**'
+    - '!new-cli/**'
     - '!.github/**'
     - .github/workflows/format.yml
 
@@ -20,6 +21,7 @@ on:
     paths:
     - '**'
     - '!docs/**'
+    - '!new-cli/**'
     - '!.github/**'
     - .github/workflows/format.yml
 
