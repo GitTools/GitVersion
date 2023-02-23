@@ -48,7 +48,9 @@ jobs:
         run: dotnet format ./build/ --verify-no-changes
       -
         name: Run Format 'new-cli' solution
-        run: dotnet format ./new-cli/ --verify-no-changes
+        run: |
+          dotnet build ./new-cli
+          dotnet format ./new-cli/ --verify-no-changes
       -
         name: Run Format 'GitVersion' solution
         run: dotnet format ./src/ --exclude **/AddFormats/ --verify-no-changes

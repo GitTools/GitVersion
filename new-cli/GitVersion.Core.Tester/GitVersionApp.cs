@@ -13,7 +13,9 @@ public class GitVersionApp
         this.repository = repository;
     }
 
+#pragma warning disable IDE0060
     public Task<int> RunAsync(string[] args)
+#pragma warning restore IDE0060
     {
         repository.Discover(Directory.GetCurrentDirectory());
         var branches = repository.Branches.ToList();

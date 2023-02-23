@@ -4,6 +4,8 @@
         <IsRoslynComponent>true</IsRoslynComponent>
         <PackageScribanIncludeSource>true</PackageScribanIncludeSource>
         <SatelliteResourceLanguages>en</SatelliteResourceLanguages>
+        <EnforceExtendedAnalyzerRules>true</EnforceExtendedAnalyzerRules>
+        <NoWarn>$(NoWarn);RS1035</NoWarn>
     </PropertyGroup>
 
     <ItemGroup>
