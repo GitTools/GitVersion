@@ -6,12 +6,13 @@ on:
     - main
     - 'fix/*'
     - 'feature/*'
+    - 'poc/*'
     - 'support/*'
     paths:
     - '**'
     - '!docs/**'
     - '!new-cli/**'
-    
+
   pull_request:
     branches:
     - main
