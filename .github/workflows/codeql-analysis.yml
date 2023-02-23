@@ -8,6 +8,7 @@ on:
     paths:
     - '**'
     - '!docs/**'
+    - '!new-cli/**'
     - '!.github/**'
     - .github/workflows/codeql-analysis.yml
 

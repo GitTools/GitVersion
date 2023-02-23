@@ -10,7 +10,6 @@ on:
     paths:
     - '**'
     - '!docs/**'
-    - '!new-cli/**'
     - '!.github/**'
     - .github/workflows/format.yml
 
@@ -21,7 +20,6 @@ on:
     paths:
     - '**'
     - '!docs/**'
-    - '!new-cli/**'
     - '!.github/**'
     - .github/workflows/format.yml
 
@@ -46,8 +44,11 @@ jobs:
         with:
           dotnet-version: '7.0.103'
       -
-        name: Run Format Build solution
+        name: Run Format 'ci' solution
         run: dotnet format ./build/ --verify-no-changes
       -
-        name: Run Format GitVersion solution
+        name: Run Format 'new-cli' solution
+        run: dotnet format ./new-cli/ --verify-no-changes
+      -
+        name: Run Format 'GitVersion' solution
         run: dotnet format ./src/ --exclude **/AddFormats/ --verify-no-changes
