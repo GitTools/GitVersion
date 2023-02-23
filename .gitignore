@@ -133,3 +133,4 @@ docs/output
 node_modules
 
 dogfood/
+new-cli/log.txt
