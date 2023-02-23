@@ -94,13 +94,12 @@ public class RemoteRepositoryScenarios : TestBase
     }
 
     [Test]
-    [Ignore("Needs more investigations.")]
     public void GivenARemoteGitRepositoryWhenCheckingOutDetachedHeadUsingTrackingBranchOnlyBehaviourShouldReturnVersion014Plus5()
     {
         using var fixture = new RemoteRepositoryFixture();
         Commands.Checkout(fixture.LocalRepositoryFixture.Repository, fixture.LocalRepositoryFixture.Repository.Head.Tip);
 
-        fixture.AssertFullSemver("0.1.0+4", repository: fixture.LocalRepositoryFixture.Repository);
+        fixture.AssertFullSemver("0.0.1--no-branch-.1+5", repository: fixture.LocalRepositoryFixture.Repository);
     }
 
     [Test]
