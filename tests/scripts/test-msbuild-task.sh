@@ -27,3 +27,5 @@ then
 else
     echo $result
 fi
+rm -rf $repoPath/build >/dev/null
+rm -rf $repoPath/obj >/dev/null
