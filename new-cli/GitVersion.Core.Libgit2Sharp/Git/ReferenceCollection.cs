@@ -1,3 +1,4 @@
+using GitVersion.Extensions;
 using GitVersion.Git;
 
 namespace GitVersion;
@@ -5,7 +6,7 @@ namespace GitVersion;
 internal sealed class ReferenceCollection : IReferenceCollection
 {
     private readonly LibGit2Sharp.ReferenceCollection innerCollection;
-    internal ReferenceCollection(LibGit2Sharp.ReferenceCollection collection) => this.innerCollection = collection;
+    internal ReferenceCollection(LibGit2Sharp.ReferenceCollection collection) => this.innerCollection = collection.NotNull();
 
     public IEnumerator<IReference> GetEnumerator() => this.innerCollection.Select(reference => new Reference(reference)).GetEnumerator();
 

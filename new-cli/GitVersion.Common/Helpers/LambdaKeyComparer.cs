@@ -1,3 +1,5 @@
+using GitVersion.Extensions;
+
 namespace GitVersion.Helpers;
 
 public class LambdaKeyComparer<TSource, TKey> : Comparer<TSource> where TSource : class
@@ -7,10 +9,10 @@ public class LambdaKeyComparer<TSource, TKey> : Comparer<TSource> where TSource 
 
     public LambdaKeyComparer(
         Func<TSource, TKey> keySelector,
-        IComparer<TKey>? innerComparer = null)
+        IComparer<TKey>? comparer = null)
     {
-        this.keySelector = keySelector;
-        this.innerComparer = innerComparer ?? Comparer<TKey>.Default;
+        this.keySelector = keySelector.NotNull();
+        this.innerComparer = comparer ?? Comparer<TKey>.Default;
     }
 
     public override int Compare(TSource? x, TSource? y)

@@ -1,3 +1,4 @@
+using GitVersion.Extensions;
 using GitVersion.Git;
 using GitVersion.Helpers;
 
@@ -8,10 +9,13 @@ internal class GitObject : IGitObject
     private static readonly LambdaEqualityHelper<IGitObject> EqualityHelper = new(x => x.Id);
     private static readonly LambdaKeyComparer<IGitObject, string> ComparerHelper = new(x => x.Sha);
 
-    internal GitObject(LibGit2Sharp.GitObject innerGitObject)
+    private readonly LibGit2Sharp.GitObject innerGitObject;
+
+    internal GitObject(LibGit2Sharp.GitObject gitObject)
     {
-        Id = new ObjectId(innerGitObject.Id);
-        Sha = innerGitObject.Sha;
+        this.innerGitObject = gitObject.NotNull();
+        Id = new ObjectId(gitObject.Id);
+        Sha = gitObject.Sha;
     }
 
     public int CompareTo(IGitObject? other) => ComparerHelper.Compare(this, other);
@@ -22,4 +26,5 @@ internal class GitObject : IGitObject
 
     public IObjectId Id { get; }
     public string Sha { get; }
+    public static implicit operator LibGit2Sharp.GitObject(GitObject d) => d.NotNull().innerGitObject;
 }

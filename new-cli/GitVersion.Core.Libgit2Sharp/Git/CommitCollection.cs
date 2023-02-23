@@ -1,3 +1,4 @@
+using GitVersion.Extensions;
 using GitVersion.Git;
 using LibGit2Sharp;
 using CommitFilter = GitVersion.Git.CommitFilter;
@@ -7,13 +8,14 @@ namespace GitVersion;
 internal sealed class CommitCollection : ICommitCollection
 {
     private readonly ICommitLog innerCollection;
-    internal CommitCollection(ICommitLog collection) => this.innerCollection = collection;
+    internal CommitCollection(ICommitLog collection) => this.innerCollection = collection.NotNull();
 
     public IEnumerator<ICommit> GetEnumerator() => this.innerCollection.Select(commit => new Commit(commit)).GetEnumerator();
 
     IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
     public IEnumerable<ICommit> GetCommitsPriorTo(DateTimeOffset olderThan) => this.SkipWhile(c => c.When > olderThan);
+
     public IEnumerable<ICommit> QueryBy(CommitFilter commitFilter)
     {
         static object? GetReacheableFrom(object? item) =>

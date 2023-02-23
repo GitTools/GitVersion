@@ -1,3 +1,4 @@
+using GitVersion.Extensions;
 using GitVersion.Git;
 
 namespace GitVersion;
@@ -5,7 +6,7 @@ namespace GitVersion;
 internal sealed class RemoteCollection : IRemoteCollection
 {
     private readonly LibGit2Sharp.RemoteCollection innerCollection;
-    internal RemoteCollection(LibGit2Sharp.RemoteCollection collection) => this.innerCollection = collection;
+    internal RemoteCollection(LibGit2Sharp.RemoteCollection collection) => this.innerCollection = collection.NotNull();
 
     public IEnumerator<IRemote> GetEnumerator() => this.innerCollection.Select(reference => new Remote(reference)).GetEnumerator();
     IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();

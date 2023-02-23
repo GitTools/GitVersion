@@ -1,3 +1,4 @@
+using GitVersion.Extensions;
 using GitVersion.Git;
 using GitVersion.Helpers;
 
@@ -12,7 +13,7 @@ internal sealed class Branch : IBranch
 
     internal Branch(LibGit2Sharp.Branch branch)
     {
-        this.innerBranch = branch;
+        this.innerBranch = branch.NotNull();
         Name = new ReferenceName(branch.CanonicalName);
 
         var commit = this.innerBranch.Tip;
@@ -27,13 +28,11 @@ internal sealed class Branch : IBranch
 
     public int CompareTo(IBranch? other) => ComparerHelper.Compare(this, other);
     public bool Equals(IBranch? other) => EqualityHelper.Equals(this, other);
+    public bool IsDetachedHead => Name.Canonical.Equals("(no branch)", StringComparison.OrdinalIgnoreCase);
+    public bool IsRemote => this.innerBranch.IsRemote;
+    public bool IsTracking => this.innerBranch.IsTracking;
     public override bool Equals(object? obj) => Equals((obj as IBranch));
     public override int GetHashCode() => EqualityHelper.GetHashCode(this);
     public override string ToString() => Name.ToString();
-    public static implicit operator LibGit2Sharp.Branch(Branch d) => d.innerBranch;
-
-    public bool IsDetachedHead => Name.Canonical.Equals("(no branch)", StringComparison.OrdinalIgnoreCase);
-
-    public bool IsRemote => this.innerBranch.IsRemote;
-    public bool IsTracking => this.innerBranch.IsTracking;
+    public static implicit operator LibGit2Sharp.Branch(Branch d) => d.NotNull().innerBranch;
 }
