@@ -1,9 +1,9 @@
 using GitVersion.Logging;
 using GitVersion.OutputVariables;
 
-namespace GitVersion.BuildAgents;
+namespace GitVersion.Agents;
 
-public class GitLabCi : BuildAgentBase
+internal class GitLabCi : BuildAgentBase
 {
     public const string EnvironmentVariableName = "GITLAB_CI";
     private string? file;

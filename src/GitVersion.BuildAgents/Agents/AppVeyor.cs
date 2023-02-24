@@ -3,9 +3,9 @@ using GitVersion.Extensions;
 using GitVersion.Logging;
 using GitVersion.OutputVariables;
 
-namespace GitVersion.BuildAgents;
+namespace GitVersion.Agents;
 
-public class AppVeyor : BuildAgentBase
+internal class AppVeyor : BuildAgentBase
 {
     public AppVeyor(IEnvironment environment, ILog log) : base(environment, log)
     {

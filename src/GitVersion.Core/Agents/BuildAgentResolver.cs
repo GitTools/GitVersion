@@ -1,7 +1,7 @@
 using GitVersion.Extensions;
 using GitVersion.Logging;
 
-namespace GitVersion.BuildAgents;
+namespace GitVersion.Agents;
 
 public class BuildAgentResolver : IBuildAgentResolver
 {

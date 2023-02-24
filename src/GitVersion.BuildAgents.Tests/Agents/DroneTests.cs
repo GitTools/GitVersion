@@ -1,7 +1,7 @@
 using GitVersion.Core.Tests.Helpers;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace GitVersion.BuildAgents.Tests;
+namespace GitVersion.Agents.Tests;
 
 [TestFixture]
 public class DroneTests : TestBase

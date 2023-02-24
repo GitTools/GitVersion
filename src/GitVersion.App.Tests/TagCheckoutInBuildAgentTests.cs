@@ -1,4 +1,4 @@
-using GitVersion.BuildAgents;
+using GitVersion.Agents;
 using GitVersion.Core.Tests.Helpers;
 using LibGit2Sharp;
 

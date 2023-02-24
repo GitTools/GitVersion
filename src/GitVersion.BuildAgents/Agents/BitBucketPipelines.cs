@@ -1,9 +1,9 @@
 using GitVersion.Logging;
 using GitVersion.OutputVariables;
 
-namespace GitVersion.BuildAgents;
+namespace GitVersion.Agents;
 
-public class BitBucketPipelines : BuildAgentBase
+internal class BitBucketPipelines : BuildAgentBase
 {
     public const string EnvironmentVariableName = "BITBUCKET_WORKSPACE";
     public const string BranchEnvironmentVariableName = "BITBUCKET_BRANCH";

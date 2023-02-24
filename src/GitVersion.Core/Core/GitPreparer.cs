@@ -1,4 +1,4 @@
-using GitVersion.BuildAgents;
+using GitVersion.Agents;
 using GitVersion.Configuration;
 using GitVersion.Extensions;
 using GitVersion.Helpers;

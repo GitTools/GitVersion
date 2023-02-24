@@ -1,7 +1,7 @@
 using GitVersion.Logging;
 using GitVersion.OutputVariables;
 
-namespace GitVersion.BuildAgents;
+namespace GitVersion.Agents;
 
 public class LocalBuild : BuildAgentBase
 {

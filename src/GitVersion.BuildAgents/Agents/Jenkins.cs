@@ -2,9 +2,9 @@ using GitVersion.Extensions;
 using GitVersion.Logging;
 using GitVersion.OutputVariables;
 
-namespace GitVersion.BuildAgents;
+namespace GitVersion.Agents;
 
-public class Jenkins : BuildAgentBase
+internal class Jenkins : BuildAgentBase
 {
     public const string EnvironmentVariableName = "JENKINS_URL";
     private string? file;

@@ -1,3 +1,4 @@
+using GitVersion.Agents;
 using GitVersion.Configuration;
 using GitVersion.Core.Tests.Helpers;
 using GitVersion.Extensions;
@@ -127,7 +128,7 @@ public static class GitToolsTestingExtensions
         var options = Options.Create(gitVersionOptions);
 
         var environment = new TestEnvironment();
-        environment.SetEnvironmentVariable("TF_BUILD", "true");
+        environment.SetEnvironmentVariable(AzurePipelines.EnvironmentVariableName, "true");
 
         var serviceProvider = ConfigureServices(services =>
         {

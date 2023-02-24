@@ -1,3 +1,4 @@
+using GitVersion.Agents;
 using GitVersion.Configuration;
 using GitVersion.Core.Tests.Helpers;
 using GitVersion.Helpers;
@@ -13,7 +14,6 @@ namespace GitVersion.Core.Tests;
 [Parallelizable(ParallelScope.None)]
 public class GitVersionExecutorTests : TestBase
 {
-    private const string AzurePipelines = "TF_BUILD";
     private IFileSystem fileSystem;
     private ILog log;
     private IGitVersionCache gitVersionCache;
@@ -34,7 +34,7 @@ public class GitVersionExecutorTests : TestBase
         };
 
         var environment = new TestEnvironment();
-        environment.SetEnvironmentVariable(AzurePipelines, "true");
+        environment.SetEnvironmentVariable(AzurePipelines.EnvironmentVariableName, "true");
 
         this.sp = GetServiceProvider(gitVersionOptions, environment: environment);
 
@@ -520,7 +520,7 @@ public class GitVersionExecutorTests : TestBase
         var gitVersionOptions = new GitVersionOptions { WorkingDirectory = worktreeFixture.RepositoryPath };
 
         var environment = new TestEnvironment();
-        environment.SetEnvironmentVariable(AzurePipelines, "true");
+        environment.SetEnvironmentVariable(AzurePipelines.EnvironmentVariableName, "true");
 
         this.sp = GetServiceProvider(gitVersionOptions, environment: environment);
         var sut = sp.GetRequiredService<IGitVersionCalculateTool>();
@@ -547,7 +547,7 @@ public class GitVersionExecutorTests : TestBase
         var gitVersionOptions = new GitVersionOptions { WorkingDirectory = worktreeFixture.RepositoryPath };
 
         var environment = new TestEnvironment();
-        environment.SetEnvironmentVariable(AzurePipelines, "true");
+        environment.SetEnvironmentVariable(AzurePipelines.EnvironmentVariableName, "true");
 
         this.sp = GetServiceProvider(gitVersionOptions, environment: environment);
         var sut = sp.GetRequiredService<IGitVersionCalculateTool>();

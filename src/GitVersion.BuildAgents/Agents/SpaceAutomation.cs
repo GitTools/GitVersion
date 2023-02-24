@@ -1,9 +1,9 @@
 using GitVersion.Logging;
 using GitVersion.OutputVariables;
 
-namespace GitVersion.BuildAgents;
+namespace GitVersion.Agents;
 
-public class SpaceAutomation : BuildAgentBase
+internal class SpaceAutomation : BuildAgentBase
 {
     public SpaceAutomation(IEnvironment environment, ILog log) : base(environment, log)
     {

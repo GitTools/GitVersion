@@ -2,9 +2,9 @@ using GitVersion.Extensions;
 using GitVersion.Logging;
 using GitVersion.OutputVariables;
 
-namespace GitVersion.BuildAgents;
+namespace GitVersion.Agents;
 
-public sealed class CodeBuild : BuildAgentBase
+internal sealed class CodeBuild : BuildAgentBase
 {
     private string? file;
     public const string WebHookEnvironmentVariableName = "CODEBUILD_WEBHOOK_HEAD_REF";

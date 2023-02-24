@@ -47,7 +47,7 @@ GitVersion.Output.OutputGenerator.OutputContext.WorkingDirectory.get -> string!
 GitVersion.Output.OutputGenerator.OutputGenerator
 GitVersion.Output.OutputGenerator.OutputGenerator.Dispose() -> void
 GitVersion.Output.OutputGenerator.OutputGenerator.Execute(GitVersion.OutputVariables.VersionVariables! variables, GitVersion.Output.OutputGenerator.OutputContext context) -> void
-GitVersion.Output.OutputGenerator.OutputGenerator.OutputGenerator(GitVersion.BuildAgents.ICurrentBuildAgent! buildAgent, GitVersion.Logging.IConsole! console, GitVersion.IFileSystem! fileSystem, Microsoft.Extensions.Options.IOptions<GitVersion.GitVersionOptions!>! options) -> void
+GitVersion.Output.OutputGenerator.OutputGenerator.OutputGenerator(GitVersion.Agents.ICurrentBuildAgent! buildAgent, GitVersion.Logging.IConsole! console, GitVersion.IFileSystem! fileSystem, Microsoft.Extensions.Options.IOptions<GitVersion.GitVersionOptions!>! options) -> void
 GitVersion.Output.WixUpdater.IWixVersionFileUpdater
 GitVersion.Output.WixUpdater.WixVersionContext
 GitVersion.Output.WixUpdater.WixVersionContext.WixVersionContext() -> void

@@ -4,7 +4,7 @@ using GitVersion.OutputVariables;
 using GitVersion.VersionCalculation;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace GitVersion.BuildAgents.Tests;
+namespace GitVersion.Agents.Tests;
 
 [TestFixture]
 public class BuildServerBaseTests : TestBase

@@ -1,4 +1,4 @@
-using GitVersion.BuildAgents;
+using GitVersion.Agents;
 using GitVersion.Logging;
 using Microsoft.Extensions.DependencyInjection;
 

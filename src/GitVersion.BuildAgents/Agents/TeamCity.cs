@@ -3,9 +3,9 @@ using GitVersion.Helpers;
 using GitVersion.Logging;
 using GitVersion.OutputVariables;
 
-namespace GitVersion.BuildAgents;
+namespace GitVersion.Agents;
 
-public class TeamCity : BuildAgentBase
+internal class TeamCity : BuildAgentBase
 {
     public TeamCity(IEnvironment environment, ILog log) : base(environment, log)
     {

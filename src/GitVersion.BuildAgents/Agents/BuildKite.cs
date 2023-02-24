@@ -1,9 +1,9 @@
 using GitVersion.Logging;
 using GitVersion.OutputVariables;
 
-namespace GitVersion.BuildAgents;
+namespace GitVersion.Agents;
 
-public class BuildKite : BuildAgentBase
+internal class BuildKite : BuildAgentBase
 {
     public BuildKite(IEnvironment environment, ILog log) : base(environment, log)
     {

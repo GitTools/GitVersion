@@ -2,7 +2,7 @@ using GitVersion.Core.Tests.Helpers;
 using GitVersion.Helpers;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace GitVersion.BuildAgents.Tests;
+namespace GitVersion.Agents.Tests;
 
 [TestFixture]
 public class EnvRunTests : TestBase

@@ -1,6 +1,6 @@
 #nullable enable
 GitVersion.ArgumentParser
-GitVersion.ArgumentParser.ArgumentParser(GitVersion.IEnvironment! environment, GitVersion.BuildAgents.ICurrentBuildAgent! buildAgent, GitVersion.Logging.IConsole! console, GitVersion.IGlobbingResolver! globbingResolver) -> void
+GitVersion.ArgumentParser.ArgumentParser(GitVersion.IEnvironment! environment, GitVersion.Agents.ICurrentBuildAgent! buildAgent, GitVersion.Logging.IConsole! console, GitVersion.IGlobbingResolver! globbingResolver) -> void
 GitVersion.ArgumentParser.ParseArguments(string! commandLineArguments) -> GitVersion.Arguments!
 GitVersion.ArgumentParser.ParseArguments(string![]! commandLineArguments) -> GitVersion.Arguments!
 GitVersion.Arguments

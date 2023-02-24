@@ -3,9 +3,9 @@ using GitVersion.Extensions;
 using GitVersion.Logging;
 using GitVersion.OutputVariables;
 
-namespace GitVersion.BuildAgents;
+namespace GitVersion.Agents;
 
-public class AzurePipelines : BuildAgentBase
+internal class AzurePipelines : BuildAgentBase
 {
     public AzurePipelines(IEnvironment environment, ILog log) : base(environment, log)
     {
