@@ -1,6 +1,6 @@
 using GitVersion.Helpers;
+using GitVersion.Output.WixUpdater;
 using GitVersion.OutputVariables;
-using GitVersion.VersionConverters.WixUpdater;
 
 namespace GitVersion.App.Tests;
 

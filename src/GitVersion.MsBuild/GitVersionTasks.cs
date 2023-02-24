@@ -2,6 +2,7 @@ using GitVersion.BuildAgents;
 using GitVersion.Extensions;
 using GitVersion.Logging;
 using GitVersion.MsBuild.Tasks;
+using GitVersion.Output;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
@@ -69,6 +70,7 @@ public static class GitVersionTasks
         services.AddSingleton(Options.Create(gitVersionOptions));
         services.AddModule(new GitVersionCoreModule());
         services.AddModule(new GitVersionBuildAgentsModule());
+        services.AddModule(new GitVersionOutputModule());
         services.AddModule(new GitVersionMsBuildModule());
         services.AddSingleton<IConsole>(new MsBuildAdapter(task.Log));
         task.Overrides?.Invoke(services);

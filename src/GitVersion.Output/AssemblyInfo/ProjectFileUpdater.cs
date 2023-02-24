@@ -4,7 +4,7 @@ using GitVersion.Helpers;
 using GitVersion.Logging;
 using GitVersion.OutputVariables;
 
-namespace GitVersion.VersionConverters.AssemblyInfo;
+namespace GitVersion.Output.AssemblyInfo;
 
 public interface IProjectFileUpdater : IVersionConverter<AssemblyInfoContext>
 {

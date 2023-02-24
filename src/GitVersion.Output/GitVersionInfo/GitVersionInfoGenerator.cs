@@ -2,7 +2,7 @@ using GitVersion.Extensions;
 using GitVersion.Helpers;
 using GitVersion.OutputVariables;
 
-namespace GitVersion.VersionConverters.GitVersionInfo;
+namespace GitVersion.Output.GitVersionInfo;
 
 public interface IGitVersionInfoGenerator : IVersionConverter<GitVersionInfoContext>
 {

@@ -1,6 +1,6 @@
 using GitVersion.OutputVariables;
 
-namespace GitVersion.VersionConverters;
+namespace GitVersion;
 
 public interface IVersionConverter<in T> : IDisposable where T : IConverterContext
 {

@@ -1,9 +1,9 @@
 using GitVersion.Extensions;
+using GitVersion.Output.AssemblyInfo;
+using GitVersion.Output.GitVersionInfo;
+using GitVersion.Output.OutputGenerator;
+using GitVersion.Output.WixUpdater;
 using GitVersion.OutputVariables;
-using GitVersion.VersionConverters.AssemblyInfo;
-using GitVersion.VersionConverters.GitVersionInfo;
-using GitVersion.VersionConverters.OutputGenerator;
-using GitVersion.VersionConverters.WixUpdater;
 using Microsoft.Extensions.Options;
 
 namespace GitVersion;

@@ -3,7 +3,6 @@ using GitVersion.Configuration;
 using GitVersion.Extensions;
 using GitVersion.VersionCalculation;
 using GitVersion.VersionCalculation.Caching;
-using GitVersion.VersionConverters;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
@@ -32,6 +31,5 @@ public class GitVersionCoreModule : IGitVersionModule
         services.AddModule(new GitVersionCommonModule());
         services.AddModule(new ConfigurationModule());
         services.AddModule(new VersionCalculationModule());
-        services.AddModule(new VersionConvertersModule());
     }
 }

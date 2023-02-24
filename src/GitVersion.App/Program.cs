@@ -1,5 +1,6 @@
 using GitVersion.BuildAgents;
 using GitVersion.Extensions;
+using GitVersion.Output;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -25,6 +26,7 @@ internal class Program
                 services.AddModule(new GitVersionCoreModule());
                 services.AddModule(new GitVersionLibGit2SharpModule());
                 services.AddModule(new GitVersionBuildAgentsModule());
+                services.AddModule(new GitVersionOutputModule());
                 services.AddModule(new GitVersionAppModule());
 
                 services.AddSingleton(sp =>

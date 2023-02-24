@@ -389,12 +389,6 @@ GitVersion.GitVersionOptions.Verbosity -> GitVersion.Logging.Verbosity
 GitVersion.GitVersionOptions.WixInfo.get -> GitVersion.WixInfo!
 GitVersion.GitVersionOptions.WorkingDirectory.get -> string!
 GitVersion.GitVersionOptions.WorkingDirectory.set -> void
-GitVersion.GitVersionOutputTool
-GitVersion.GitVersionOutputTool.GenerateGitVersionInformation(GitVersion.OutputVariables.VersionVariables! variables, GitVersion.FileWriteInfo! fileWriteInfo) -> void
-GitVersion.GitVersionOutputTool.GitVersionOutputTool(Microsoft.Extensions.Options.IOptions<GitVersion.GitVersionOptions!>! options, GitVersion.VersionConverters.OutputGenerator.IOutputGenerator! outputGenerator, GitVersion.VersionConverters.WixUpdater.IWixVersionFileUpdater! wixVersionFileUpdater, GitVersion.VersionConverters.GitVersionInfo.IGitVersionInfoGenerator! gitVersionInfoGenerator, GitVersion.VersionConverters.AssemblyInfo.IAssemblyInfoFileUpdater! assemblyInfoFileUpdater, GitVersion.VersionConverters.AssemblyInfo.IProjectFileUpdater! projectFileUpdater) -> void
-GitVersion.GitVersionOutputTool.OutputVariables(GitVersion.OutputVariables.VersionVariables! variables, bool updateBuildNumber) -> void
-GitVersion.GitVersionOutputTool.UpdateAssemblyInfo(GitVersion.OutputVariables.VersionVariables! variables) -> void
-GitVersion.GitVersionOutputTool.UpdateWixVersionFile(GitVersion.OutputVariables.VersionVariables! variables) -> void
 GitVersion.Helpers.EncodingHelper
 GitVersion.Helpers.LambdaEqualityHelper<T>
 GitVersion.Helpers.LambdaEqualityHelper<T>.Equals(T? instance, T? other) -> bool
@@ -601,6 +595,10 @@ GitVersion.MergeMessage.MergedBranch.get -> string!
 GitVersion.MergeMessage.PullRequestNumber.get -> int?
 GitVersion.MergeMessage.TargetBranch.get -> string?
 GitVersion.MergeMessage.Version.get -> GitVersion.SemanticVersion?
+GitVersion.IConverterContext
+GitVersion.IConverterContext.WorkingDirectory.get -> string!
+GitVersion.IVersionConverter<T>
+GitVersion.IVersionConverter<T>.Execute(GitVersion.OutputVariables.VersionVariables! variables, T context) -> void
 GitVersion.OutputType
 GitVersion.OutputType.BuildServer = 0 -> GitVersion.OutputType
 GitVersion.OutputType.File = 2 -> GitVersion.OutputType
@@ -922,62 +920,6 @@ GitVersion.VersionCalculation.VersioningMode
 GitVersion.VersionCalculation.VersioningMode.ContinuousDelivery = 0 -> GitVersion.VersionCalculation.VersioningMode
 GitVersion.VersionCalculation.VersioningMode.ContinuousDeployment = 1 -> GitVersion.VersionCalculation.VersioningMode
 GitVersion.VersionCalculation.VersioningMode.Mainline = 2 -> GitVersion.VersionCalculation.VersioningMode
-GitVersion.VersionConverters.AssemblyInfo.AssemblyInfoContext
-GitVersion.VersionConverters.AssemblyInfo.AssemblyInfoContext.AssemblyInfoContext() -> void
-GitVersion.VersionConverters.AssemblyInfo.AssemblyInfoContext.AssemblyInfoContext(string! workingDirectory, bool ensureAssemblyInfo, params string![]! assemblyInfoFiles) -> void
-GitVersion.VersionConverters.AssemblyInfo.AssemblyInfoContext.AssemblyInfoFiles.get -> string![]!
-GitVersion.VersionConverters.AssemblyInfo.AssemblyInfoContext.EnsureAssemblyInfo.get -> bool
-GitVersion.VersionConverters.AssemblyInfo.AssemblyInfoContext.WorkingDirectory.get -> string!
-GitVersion.VersionConverters.AssemblyInfo.AssemblyInfoFileUpdater
-GitVersion.VersionConverters.AssemblyInfo.AssemblyInfoFileUpdater.AssemblyInfoFileUpdater(GitVersion.Logging.ILog! log, GitVersion.IFileSystem! fileSystem) -> void
-GitVersion.VersionConverters.AssemblyInfo.AssemblyInfoFileUpdater.Dispose() -> void
-GitVersion.VersionConverters.AssemblyInfo.AssemblyInfoFileUpdater.Execute(GitVersion.OutputVariables.VersionVariables! variables, GitVersion.VersionConverters.AssemblyInfo.AssemblyInfoContext context) -> void
-GitVersion.VersionConverters.AssemblyInfo.IAssemblyInfoFileUpdater
-GitVersion.VersionConverters.AssemblyInfo.IProjectFileUpdater
-GitVersion.VersionConverters.AssemblyInfo.IProjectFileUpdater.CanUpdateProjectFile(System.Xml.Linq.XElement! xmlRoot) -> bool
-GitVersion.VersionConverters.AssemblyInfo.ProjectFileUpdater
-GitVersion.VersionConverters.AssemblyInfo.ProjectFileUpdater.CanUpdateProjectFile(System.Xml.Linq.XElement! xmlRoot) -> bool
-GitVersion.VersionConverters.AssemblyInfo.ProjectFileUpdater.Dispose() -> void
-GitVersion.VersionConverters.AssemblyInfo.ProjectFileUpdater.Execute(GitVersion.OutputVariables.VersionVariables! variables, GitVersion.VersionConverters.AssemblyInfo.AssemblyInfoContext context) -> void
-GitVersion.VersionConverters.AssemblyInfo.ProjectFileUpdater.ProjectFileUpdater(GitVersion.Logging.ILog! log, GitVersion.IFileSystem! fileSystem) -> void
-GitVersion.VersionConverters.GitVersionInfo.GitVersionInfoContext
-GitVersion.VersionConverters.GitVersionInfo.GitVersionInfoContext.FileExtension.get -> string!
-GitVersion.VersionConverters.GitVersionInfo.GitVersionInfoContext.FileName.get -> string!
-GitVersion.VersionConverters.GitVersionInfo.GitVersionInfoContext.GitVersionInfoContext() -> void
-GitVersion.VersionConverters.GitVersionInfo.GitVersionInfoContext.GitVersionInfoContext(string! workingDirectory, string! fileName, string! fileExtension) -> void
-GitVersion.VersionConverters.GitVersionInfo.GitVersionInfoContext.WorkingDirectory.get -> string!
-GitVersion.VersionConverters.GitVersionInfo.GitVersionInfoGenerator
-GitVersion.VersionConverters.GitVersionInfo.GitVersionInfoGenerator.Dispose() -> void
-GitVersion.VersionConverters.GitVersionInfo.GitVersionInfoGenerator.Execute(GitVersion.OutputVariables.VersionVariables! variables, GitVersion.VersionConverters.GitVersionInfo.GitVersionInfoContext context) -> void
-GitVersion.VersionConverters.GitVersionInfo.GitVersionInfoGenerator.GitVersionInfoGenerator(GitVersion.IFileSystem! fileSystem) -> void
-GitVersion.VersionConverters.GitVersionInfo.IGitVersionInfoGenerator
-GitVersion.VersionConverters.IConverterContext
-GitVersion.VersionConverters.IConverterContext.WorkingDirectory.get -> string!
-GitVersion.VersionConverters.IVersionConverter<T>
-GitVersion.VersionConverters.IVersionConverter<T>.Execute(GitVersion.OutputVariables.VersionVariables! variables, T context) -> void
-GitVersion.VersionConverters.OutputGenerator.IOutputGenerator
-GitVersion.VersionConverters.OutputGenerator.OutputContext
-GitVersion.VersionConverters.OutputGenerator.OutputContext.OutputContext() -> void
-GitVersion.VersionConverters.OutputGenerator.OutputContext.OutputContext(string! workingDirectory, string? outputFile, bool? updateBuildNumber) -> void
-GitVersion.VersionConverters.OutputGenerator.OutputContext.OutputFile.get -> string?
-GitVersion.VersionConverters.OutputGenerator.OutputContext.UpdateBuildNumber.get -> bool?
-GitVersion.VersionConverters.OutputGenerator.OutputContext.WorkingDirectory.get -> string!
-GitVersion.VersionConverters.OutputGenerator.OutputGenerator
-GitVersion.VersionConverters.OutputGenerator.OutputGenerator.Dispose() -> void
-GitVersion.VersionConverters.OutputGenerator.OutputGenerator.Execute(GitVersion.OutputVariables.VersionVariables! variables, GitVersion.VersionConverters.OutputGenerator.OutputContext context) -> void
-GitVersion.VersionConverters.OutputGenerator.OutputGenerator.OutputGenerator(GitVersion.BuildAgents.ICurrentBuildAgent! buildAgent, GitVersion.Logging.IConsole! console, GitVersion.IFileSystem! fileSystem, Microsoft.Extensions.Options.IOptions<GitVersion.GitVersionOptions!>! options) -> void
-GitVersion.VersionConverters.VersionConvertersModule
-GitVersion.VersionConverters.VersionConvertersModule.RegisterTypes(Microsoft.Extensions.DependencyInjection.IServiceCollection! services) -> void
-GitVersion.VersionConverters.VersionConvertersModule.VersionConvertersModule() -> void
-GitVersion.VersionConverters.WixUpdater.IWixVersionFileUpdater
-GitVersion.VersionConverters.WixUpdater.WixVersionContext
-GitVersion.VersionConverters.WixUpdater.WixVersionContext.WixVersionContext() -> void
-GitVersion.VersionConverters.WixUpdater.WixVersionContext.WixVersionContext(string! workingDirectory) -> void
-GitVersion.VersionConverters.WixUpdater.WixVersionContext.WorkingDirectory.get -> string!
-GitVersion.VersionConverters.WixUpdater.WixVersionFileUpdater
-GitVersion.VersionConverters.WixUpdater.WixVersionFileUpdater.Dispose() -> void
-GitVersion.VersionConverters.WixUpdater.WixVersionFileUpdater.Execute(GitVersion.OutputVariables.VersionVariables! variables, GitVersion.VersionConverters.WixUpdater.WixVersionContext context) -> void
-GitVersion.VersionConverters.WixUpdater.WixVersionFileUpdater.WixVersionFileUpdater(GitVersion.Logging.ILog! log, GitVersion.IFileSystem! fileSystem) -> void
 GitVersion.VersionField
 GitVersion.VersionField.Major = 3 -> GitVersion.VersionField
 GitVersion.VersionField.Minor = 2 -> GitVersion.VersionField
@@ -1018,7 +960,6 @@ const GitVersion.VersionCalculation.IncrementStrategyFinder.DefaultMinorPattern 
 const GitVersion.VersionCalculation.IncrementStrategyFinder.DefaultNoBumpPattern = "\\+semver:\\s?(none|skip)" -> string!
 const GitVersion.VersionCalculation.IncrementStrategyFinder.DefaultPatchPattern = "\\+semver:\\s?(fix|patch)" -> string!
 const GitVersion.VersionCalculation.MergeMessageVersionStrategy.MergeMessageStrategyPrefix = "Merge message" -> string!
-const GitVersion.VersionConverters.WixUpdater.WixVersionFileUpdater.WixVersionFileName = "GitVersion_WixVersion.wxi" -> string!
 override GitVersion.BranchCommit.Equals(object? obj) -> bool
 override GitVersion.BranchCommit.GetHashCode() -> int
 override GitVersion.BuildAgents.LocalBuild.CanApplyToCurrentContext() -> bool

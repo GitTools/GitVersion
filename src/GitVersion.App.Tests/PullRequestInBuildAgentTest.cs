@@ -1,6 +1,7 @@
 using GitVersion.BuildAgents;
 using GitVersion.Core.Tests.Helpers;
 using GitVersion.Extensions;
+using GitVersion.Output;
 using LibGit2Sharp;
 
 namespace GitVersion.App.Tests;
@@ -167,7 +168,11 @@ public class PullRequestInBuildAgentTest
         }
 
         var programFixture = new ProgramFixture(fixture.RepositoryPath);
-        programFixture.WithOverrides(services => services.AddModule(new GitVersionBuildAgentsModule()));
+        programFixture.WithOverrides(services =>
+        {
+            services.AddModule(new GitVersionBuildAgentsModule());
+            services.AddModule(new GitVersionOutputModule());
+        });
         programFixture.WithEnv(env.ToArray());
 
         var result = await programFixture.Run();

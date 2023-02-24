@@ -1,6 +1,6 @@
 using GitVersion.Extensions;
 
-namespace GitVersion.VersionConverters;
+namespace GitVersion.Output;
 
 internal enum TemplateType
 {

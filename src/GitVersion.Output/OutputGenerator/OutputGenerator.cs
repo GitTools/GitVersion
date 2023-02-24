@@ -5,7 +5,7 @@ using GitVersion.Logging;
 using GitVersion.OutputVariables;
 using Microsoft.Extensions.Options;
 
-namespace GitVersion.VersionConverters.OutputGenerator;
+namespace GitVersion.Output.OutputGenerator;
 
 public interface IOutputGenerator : IVersionConverter<OutputContext>
 {
