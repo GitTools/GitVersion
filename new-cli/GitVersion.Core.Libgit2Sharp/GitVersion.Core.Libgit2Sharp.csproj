@@ -8,4 +8,55 @@
       <ProjectReference Include="..\GitVersion.Common\GitVersion.Common.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Compile Include="..\..\src\GitVersion.LibGit2Sharp\Git\Branch.cs">
+        <Link>Git\Branch.cs</Link>
+      </Compile>
+      <Compile Include="..\..\src\GitVersion.LibGit2Sharp\Git\BranchCollection.cs">
+        <Link>Git\BranchCollection.cs</Link>
+      </Compile>
+      <Compile Include="..\..\src\GitVersion.LibGit2Sharp\Git\Commit.cs">
+        <Link>Git\Commit.cs</Link>
+      </Compile>
+      <Compile Include="..\..\src\GitVersion.LibGit2Sharp\Git\CommitCollection.cs">
+        <Link>Git\CommitCollection.cs</Link>
+      </Compile>
+      <Compile Include="..\..\src\GitVersion.LibGit2Sharp\Git\GitObject.cs">
+        <Link>Git\GitObject.cs</Link>
+      </Compile>
+      <Compile Include="..\..\src\GitVersion.LibGit2Sharp\Git\GitRepository.cs">
+        <Link>Git\GitRepository.cs</Link>
+      </Compile>
+      <Compile Include="..\..\src\GitVersion.LibGit2Sharp\Git\ObjectId.cs">
+        <Link>Git\ObjectId.cs</Link>
+      </Compile>
+      <Compile Include="..\..\src\GitVersion.LibGit2Sharp\Git\Reference.cs">
+        <Link>Git\Reference.cs</Link>
+      </Compile>
+      <Compile Include="..\..\src\GitVersion.LibGit2Sharp\Git\ReferenceCollection.cs">
+        <Link>Git\ReferenceCollection.cs</Link>
+      </Compile>
+      <Compile Include="..\..\src\GitVersion.LibGit2Sharp\Git\RefSpec.cs">
+        <Link>Git\RefSpec.cs</Link>
+      </Compile>
+      <Compile Include="..\..\src\GitVersion.LibGit2Sharp\Git\RefSpecCollection.cs">
+        <Link>Git\RefSpecCollection.cs</Link>
+      </Compile>
+      <Compile Include="..\..\src\GitVersion.LibGit2Sharp\Git\Remote.cs">
+        <Link>Git\Remote.cs</Link>
+      </Compile>
+      <Compile Include="..\..\src\GitVersion.LibGit2Sharp\Git\RemoteCollection.cs">
+        <Link>Git\RemoteCollection.cs</Link>
+      </Compile>
+      <Compile Include="..\..\src\GitVersion.LibGit2Sharp\Git\RepositoryExtensions.cs">
+        <Link>Git\RepositoryExtensions.cs</Link>
+      </Compile>
+      <Compile Include="..\..\src\GitVersion.LibGit2Sharp\Git\Tag.cs">
+        <Link>Git\Tag.cs</Link>
+      </Compile>
+      <Compile Include="..\..\src\GitVersion.LibGit2Sharp\Git\TagCollection.cs">
+        <Link>Git\TagCollection.cs</Link>
+      </Compile>
+    </ItemGroup>
+
 </Project>

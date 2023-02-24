@@ -1,11 +1,11 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <ItemGroup>
-        <PackageReference Include="LibGit2Sharp"/>
+        <PackageReference Include="LibGit2Sharp" />
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\GitVersion.Core\GitVersion.Core.csproj"/>
+        <ProjectReference Include="..\GitVersion.Core\GitVersion.Core.csproj" />
     </ItemGroup>
 
     <ItemGroup>

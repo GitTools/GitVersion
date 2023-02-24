@@ -21,7 +21,7 @@ public class CalculateCommand : ICommand<CalculateSettings>
     public Task<int> InvokeAsync(CalculateSettings settings)
     {
         var value = service.Call();
-        this.repository.Discover(settings.WorkDir.FullName);
+        this.repository.DiscoverRepository(settings.WorkDir.FullName);
         var branches = this.repository.Branches.ToList();
         logger.LogInformation("Command : 'calculate', LogFile : '{logFile}', WorkDir : '{workDir}' ", settings.LogFile, settings.WorkDir);
         logger.LogInformation("Found {count} branches", branches.Count);

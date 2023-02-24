@@ -1,6 +1,6 @@
 namespace GitVersion;
 
-public interface IGitRepository
+public interface IGitRepository : IDisposable
 {
     string Path { get; }
     string WorkingDirectory { get; }
