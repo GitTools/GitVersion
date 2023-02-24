@@ -1,5 +1,6 @@
 using GitVersion.Extensions;
 using GitVersion.Helpers;
+using LibGit2Sharp;
 using Microsoft.Extensions.Options;
 
 namespace GitVersion;
@@ -90,7 +91,7 @@ internal class GitRepositoryInfo : IGitRepositoryInfo
         if (gitDirectory.IsNullOrEmpty())
             throw new DirectoryNotFoundException("Cannot find the .git directory");
 
-        return new GitRepository(gitDirectory).WorkingDirectory;
+        return new Repository(gitDirectory).Info.WorkingDirectory;
     }
 
     private string? GetGitRootPath()
@@ -105,8 +106,8 @@ internal class GitRepositoryInfo : IGitRepositoryInfo
     {
         try
         {
-            var gitRepository = new GitRepository(possiblePath);
-            return gitRepository.Remotes.Any(r => r.Url == targetUrl);
+            var gitRepository = new Repository(possiblePath);
+            return gitRepository.Network.Remotes.Any(r => r.Url == targetUrl);
         }
         catch (Exception)
         {

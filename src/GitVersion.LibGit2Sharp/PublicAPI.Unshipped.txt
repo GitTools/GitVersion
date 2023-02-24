@@ -3,7 +3,3 @@ GitVersion.GitVersionLibGit2SharpModule
 GitVersion.GitVersionLibGit2SharpModule.GitVersionLibGit2SharpModule() -> void
 GitVersion.GitVersionLibGit2SharpModule.RegisterTypes(Microsoft.Extensions.DependencyInjection.IServiceCollection! services) -> void
 GitVersion.RepositoryExtensions
-static GitVersion.RepositoryExtensions.RunSafe(System.Action! operation) -> void
-static GitVersion.RepositoryExtensions.RunSafe<T>(System.Func<T>! operation) -> T
-static GitVersion.RepositoryExtensions.ToGitRepository(this LibGit2Sharp.IRepository! repository) -> GitVersion.IGitRepository!
-static GitVersion.RepositoryExtensions.ToGitRepositoryInfo(Microsoft.Extensions.Options.IOptions<GitVersion.GitVersionOptions!>! options) -> GitVersion.IGitRepositoryInfo!

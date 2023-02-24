@@ -55,7 +55,7 @@ public class HotfixBranchScenarios : TestBase
         });
         // Merge hotfix branch to support
         Commands.Checkout(fixture.Repository, MainBranch);
-        Commands.Checkout(fixture.Repository, fixture.Repository.CreateBranch("support-1.1", (Commit)fixture.Repository.Tags.Single(t => t.FriendlyName == "1.1.0").Target));
+        Commands.Checkout(fixture.Repository, fixture.Repository.CreateBranch("support-1.1", (LibGit2Sharp.Commit)fixture.Repository.Tags.Single(t => t.FriendlyName == "1.1.0").Target));
         fixture.AssertFullSemver("1.1.0");
 
         // create hotfix branch
@@ -80,7 +80,7 @@ public class HotfixBranchScenarios : TestBase
         // Merge hotfix branch to support
         Commands.Checkout(fixture.Repository, MainBranch);
         var tag = fixture.Repository.Tags.Single(t => t.FriendlyName == "1.1.0");
-        var supportBranch = fixture.Repository.CreateBranch("support-1.1", (Commit)tag.Target);
+        var supportBranch = fixture.Repository.CreateBranch("support-1.1", (LibGit2Sharp.Commit)tag.Target);
         Commands.Checkout(fixture.Repository, supportBranch);
         fixture.AssertFullSemver("1.1.0");
 

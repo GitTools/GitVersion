@@ -1,14 +1,8 @@
-using LibGit2Sharp;
-using Microsoft.Extensions.Options;
-
 namespace GitVersion;
 
 public static class RepositoryExtensions
 {
-    public static IGitRepository ToGitRepository(this IRepository repository) => new GitRepository(repository);
-    public static IGitRepositoryInfo ToGitRepositoryInfo(IOptions<GitVersionOptions> options) => new GitRepositoryInfo(options);
-
-    public static void RunSafe(Action operation)
+    internal static void RunSafe(Action operation)
     {
         try
         {
@@ -21,7 +15,7 @@ public static class RepositoryExtensions
         }
     }
 
-    public static T RunSafe<T>(Func<T> operation)
+    internal static T RunSafe<T>(Func<T> operation)
     {
         try
         {

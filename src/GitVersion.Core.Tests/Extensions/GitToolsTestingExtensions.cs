@@ -1,6 +1,7 @@
 using GitVersion.Configuration;
 using GitVersion.Core.Tests.Helpers;
 using GitVersion.Extensions;
+using GitVersion.Logging;
 using GitVersion.OutputVariables;
 using GitVersion.VersionCalculation;
 using LibGit2Sharp;
@@ -136,6 +137,13 @@ public static class GitToolsTestingExtensions
 
         var gitPreparer = serviceProvider.GetRequiredService<IGitPreparer>();
         gitPreparer.Prepare();
+    }
+
+    internal static IGitRepository ToGitRepository(this IRepository repository)
+    {
+        var gitRepository = new GitRepository(new NullLog());
+        gitRepository.DiscoverRepository(repository.Info.Path);
+        return gitRepository;
     }
 
     private static IServiceProvider ConfigureServices(Action<IServiceCollection>? servicesOverrides = null)

@@ -9,32 +9,28 @@ namespace GitVersion;
 internal sealed class GitRepository : IMutatingGitRepository
 {
     private readonly ILog log;
-    private readonly Lazy<IRepository> repositoryLazy;
+    private Lazy<IRepository> repositoryLazy;
 
-    public GitRepository(ILog log, IGitRepositoryInfo repositoryInfo)
-        : this(log, () => repositoryInfo.GitRootPath)
+    public GitRepository(ILog log) => this.log = log;
+
+    public void DiscoverRepository(string? gitDirectory)
     {
+        if (gitDirectory != null && !gitDirectory.EndsWith(".git"))
+        {
+            gitDirectory = Repository.Discover(gitDirectory);
+        }
+        this.repositoryLazy = new Lazy<IRepository>(() => new Repository(gitDirectory));
     }
 
-    internal GitRepository(string gitRootDirectory)
-        : this(new NullLog(), () => gitRootDirectory)
+    private IRepository RepositoryInstance
     {
+        get
+        {
+            var lazy = this.repositoryLazy ?? throw new NullReferenceException("Repository not initialized. Call DiscoverRepository() first.");
+            return lazy.Value;
+        }
     }
 
-    internal GitRepository(IRepository repository)
-    {
-        repository = repository.NotNull();
-        this.log = new NullLog();
-        this.repositoryLazy = new Lazy<IRepository>(() => repository);
-    }
-
-    private GitRepository(ILog log, Func<string?> getGitRootDirectory)
-    {
-        this.log = log.NotNull();
-        this.repositoryLazy = new Lazy<IRepository>(() => new Repository(getGitRootDirectory()));
-    }
-
-    private IRepository RepositoryInstance => this.repositoryLazy.Value;
     public string Path => RepositoryInstance.Info.Path;
     public string WorkingDirectory => RepositoryInstance.Info.WorkingDirectory;
     public bool IsHeadDetached => RepositoryInstance.Info.IsHeadDetached;

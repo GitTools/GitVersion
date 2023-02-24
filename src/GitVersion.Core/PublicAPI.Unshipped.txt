@@ -457,6 +457,7 @@ GitVersion.IGitPreparer.Prepare() -> void
 GitVersion.IGitRepository
 GitVersion.IGitRepository.Branches.get -> GitVersion.IBranchCollection!
 GitVersion.IGitRepository.Commits.get -> GitVersion.ICommitCollection!
+GitVersion.IGitRepository.DiscoverRepository(string? gitDirectory) -> void
 GitVersion.IGitRepository.FindMergeBase(GitVersion.ICommit! commit, GitVersion.ICommit! otherCommit) -> GitVersion.ICommit?
 GitVersion.IGitRepository.GetNumberOfUncommittedChanges() -> int
 GitVersion.IGitRepository.Head.get -> GitVersion.IBranch!

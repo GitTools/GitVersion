@@ -14,4 +14,5 @@ public interface IGitRepository
 
     ICommit? FindMergeBase(ICommit commit, ICommit otherCommit);
     int GetNumberOfUncommittedChanges();
+    void DiscoverRepository(string? gitDirectory);
 }
