@@ -71,7 +71,7 @@ public class NextVersionCalculatorTests : TestBase
             .WithNextVersion("1.0.0")
             .WithBranch("custom", builder => builder
                 .WithRegex("custom/")
-                .WithLabel("{BranchName}")
+                .WithLabel(ConfigurationConstants.BranchNamePlaceholder)
                 .WithSourceBranches()
             )
             .Build();
@@ -217,7 +217,7 @@ public class NextVersionCalculatorTests : TestBase
             .WithNextVersion("1.0.0")
             .WithBranch("custom", builder => builder
                 .WithRegex("custom/")
-                .WithLabel("alpha.{BranchName}")
+                .WithLabel($"alpha.{ConfigurationConstants.BranchNamePlaceholder}")
                 .WithSourceBranches()
             )
             .Build();

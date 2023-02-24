@@ -169,7 +169,7 @@ public class FeatureBranchScenarios : TestBase
     {
         var configuration = GitFlowConfigurationBuilder.New
             .WithBranch("release", builder => builder.WithLabel("build"))
-            .WithBranch("feature", builder => builder.WithLabel("{BranchName}"))
+            .WithBranch("feature", builder => builder.WithLabel(ConfigurationConstants.BranchNamePlaceholder))
             .Build();
 
         using var fixture = new EmptyRepositoryFixture();
@@ -185,7 +185,7 @@ public class FeatureBranchScenarios : TestBase
 
     [TestCase("alpha", "JIRA-123", "alpha")]
     [TestCase("useBranchName", "JIRA-123", "JIRA-123")]
-    [TestCase("alpha.{BranchName}", "JIRA-123", "alpha.JIRA-123")]
+    [TestCase($"alpha.{ConfigurationConstants.BranchNamePlaceholder}", "JIRA-123", "alpha.JIRA-123")]
     public void ShouldUseConfiguredTag(string tag, string featureName, string preReleaseTagName)
     {
         var configuration = GitFlowConfigurationBuilder.New
@@ -454,7 +454,7 @@ public class FeatureBranchScenarios : TestBase
             .WithBranch("main", builder => builder.WithVersioningMode(VersioningMode.ContinuousDeployment))
             .WithBranch("develop", builder => builder.WithPreventIncrementOfMergedBranchVersion(true))
             .WithBranch("feature", builder => builder
-                .WithLabel("feat-{BranchName}")
+                .WithLabel($"feat-{ConfigurationConstants.BranchNamePlaceholder}")
                 .WithVersioningMode(VersioningMode.ContinuousDeployment)
             )
             .WithCommitMessageIncrementing(CommitMessageIncrementMode.Disabled)

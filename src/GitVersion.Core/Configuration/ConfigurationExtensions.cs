@@ -16,7 +16,7 @@ public static class ConfigurationExtensions
         {
             Name = branchName,
             Regex = string.Empty,
-            Label = "{BranchName}",
+            Label = ConfigurationConstants.BranchNamePlaceholder,
             Increment = IncrementStrategy.Inherit
         };
 
@@ -66,9 +66,9 @@ public static class ConfigurationExtensions
         var tagToUse = configuration.Label;
         if (tagToUse == "useBranchName")
         {
-            tagToUse = "{BranchName}";
+            tagToUse = ConfigurationConstants.BranchNamePlaceholder;
         }
-        if (tagToUse.Contains("{BranchName}"))
+        if (tagToUse.Contains(ConfigurationConstants.BranchNamePlaceholder))
         {
             log.Info("Using branch name to calculate version tag");
 
@@ -80,7 +80,7 @@ public static class ConfigurationExtensions
             }
             branchName = branchName?.RegexReplace("[^a-zA-Z0-9-]", "-");
 
-            tagToUse = tagToUse.Replace("{BranchName}", branchName);
+            tagToUse = tagToUse.Replace(ConfigurationConstants.BranchNamePlaceholder, branchName);
         }
         return tagToUse;
     }

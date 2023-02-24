@@ -19,12 +19,12 @@ internal sealed class GitFlowConfigurationBuilder : ConfigurationBuilderBase<Git
             NoBumpMessage = IncrementStrategyFinder.DefaultNoBumpPattern,
             PatchVersionBumpMessage = IncrementStrategyFinder.DefaultPatchPattern,
             SemanticVersionFormat = SemanticVersionFormat.Strict,
-            LabelPrefix = GitVersionConfiguration.DefaultLabelPrefix,
+            LabelPrefix = ConfigurationConstants.DefaultLabelPrefix,
             LabelPreReleaseWeight = 60000,
             UpdateBuildNumber = true,
             VersioningMode = VersioningMode.ContinuousDelivery,
             Regex = string.Empty,
-            Label = "{BranchName}",
+            Label = ConfigurationConstants.BranchNamePlaceholder,
             Increment = IncrementStrategy.Inherit,
             CommitMessageIncrementing = CommitMessageIncrementMode.Enabled,
             PreventIncrementOfMergedBranchVersion = false,
@@ -99,7 +99,7 @@ internal sealed class GitFlowConfigurationBuilder : ConfigurationBuilderBase<Git
                 SupportBranch.Name,
                 HotfixBranch.Name
             },
-            Label = "{BranchName}",
+            Label = ConfigurationConstants.BranchNamePlaceholder,
             PreReleaseWeight = 30000
         });
 
@@ -153,7 +153,7 @@ internal sealed class GitFlowConfigurationBuilder : ConfigurationBuilderBase<Git
         WithBranch(UnknownBranch.Name).WithConfiguration(new()
         {
             Regex = UnknownBranch.RegexPattern,
-            Label = "{BranchName}",
+            Label = ConfigurationConstants.BranchNamePlaceholder,
             VersioningMode = VersioningMode.ContinuousDelivery,
             Increment = IncrementStrategy.Inherit,
             SourceBranches = new HashSet<string> {
@@ -170,49 +170,49 @@ internal sealed class GitFlowConfigurationBuilder : ConfigurationBuilderBase<Git
 
     public static readonly BranchMetaData MainBranch = new()
     {
-        Name = "main",
-        RegexPattern = "^master$|^main$"
+        Name = ConfigurationConstants.MainBranchKey,
+        RegexPattern = ConfigurationConstants.MainBranchRegex
     };
 
     public static readonly BranchMetaData DevelopBranch = new()
     {
-        Name = "develop",
-        RegexPattern = "^dev(elop)?(ment)?$"
+        Name = ConfigurationConstants.DevelopBranchKey,
+        RegexPattern = ConfigurationConstants.DevelopBranchRegex
     };
 
     public static readonly BranchMetaData ReleaseBranch = new()
     {
-        Name = "release",
-        RegexPattern = "^releases?[/-]"
+        Name = ConfigurationConstants.ReleaseBranchKey,
+        RegexPattern = ConfigurationConstants.ReleaseBranchRegex
     };
 
     public static readonly BranchMetaData FeatureBranch = new()
     {
-        Name = "feature",
-        RegexPattern = "^features?[/-]"
+        Name = ConfigurationConstants.FeatureBranchKey,
+        RegexPattern = ConfigurationConstants.FeatureBranchRegex
     };
 
     public static readonly BranchMetaData PullRequestBranch = new()
     {
-        Name = "pull-request",
-        RegexPattern = @"^(pull|pull\-requests|pr)[/-]"
+        Name = ConfigurationConstants.PullRequestBranchKey,
+        RegexPattern = ConfigurationConstants.PullRequestBranchRegex
     };
 
     public static readonly BranchMetaData HotfixBranch = new()
     {
-        Name = "hotfix",
-        RegexPattern = "^hotfix(es)?[/-]"
+        Name = ConfigurationConstants.HotfixBranchKey,
+        RegexPattern = ConfigurationConstants.HotfixBranchRegex
     };
 
     public static readonly BranchMetaData SupportBranch = new()
     {
-        Name = "support",
-        RegexPattern = "^support[/-]"
+        Name = ConfigurationConstants.SupportBranchKey,
+        RegexPattern = ConfigurationConstants.SupportBranchRegex
     };
 
     public static readonly BranchMetaData UnknownBranch = new()
     {
-        Name = "unknown",
-        RegexPattern = ".*"
+        Name = ConfigurationConstants.UnknownBranchKey,
+        RegexPattern = ConfigurationConstants.UnknownBranchRegex
     };
 }

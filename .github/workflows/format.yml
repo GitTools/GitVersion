@@ -35,7 +35,7 @@ env:
 
 jobs:
   format:
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
     name: DotNet Format
     steps:
       - uses: actions/checkout@v3

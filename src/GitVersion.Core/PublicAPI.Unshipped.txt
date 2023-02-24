@@ -117,6 +117,8 @@ GitVersion.Configuration.BranchConfiguration.VersioningMode.get -> GitVersion.Ve
 GitVersion.Configuration.BranchConfiguration.VersioningMode.set -> void
 GitVersion.Configuration.BranchConfigurationBuilder
 GitVersion.Configuration.BranchConfigurationBuilder.Build() -> GitVersion.Configuration.BranchConfiguration!
+GitVersion.Configuration.ConfigurationConstants
+GitVersion.Configuration.ConfigurationConstants.ConfigurationConstants() -> void
 GitVersion.Configuration.ConfigurationException
 GitVersion.Configuration.ConfigurationException.ConfigurationException(string! msg) -> void
 GitVersion.Configuration.ConfigurationExtensions
@@ -938,23 +940,26 @@ abstract GitVersion.Configuration.Init.Wizard.ConfigInitWizardStep.GetPrompt(Git
 abstract GitVersion.Configuration.Init.Wizard.ConfigInitWizardStep.HandleResult(string? result, System.Collections.Generic.Queue<GitVersion.Configuration.Init.Wizard.ConfigInitWizardStep!>! steps, GitVersion.Configuration.GitVersionConfiguration! configuration, string! workingDirectory) -> GitVersion.Configuration.Init.StepResult!
 abstract GitVersion.GitVersionModule.RegisterTypes(Microsoft.Extensions.DependencyInjection.IServiceCollection! services) -> void
 abstract GitVersion.VersionCalculation.VersionStrategyBase.GetBaseVersions(GitVersion.Configuration.EffectiveBranchConfiguration! configuration) -> System.Collections.Generic.IEnumerable<GitVersion.VersionCalculation.BaseVersion!>!
+const GitVersion.Configuration.ConfigurationConstants.BranchNamePlaceholder = "{BranchName}" -> string!
+const GitVersion.Configuration.ConfigurationConstants.DefaultLabelPrefix = "[vV]?" -> string!
+const GitVersion.Configuration.ConfigurationConstants.DevelopBranchKey = "develop" -> string!
+const GitVersion.Configuration.ConfigurationConstants.DevelopBranchRegex = "^dev(elop)?(ment)?$" -> string!
+const GitVersion.Configuration.ConfigurationConstants.FeatureBranchKey = "feature" -> string!
+const GitVersion.Configuration.ConfigurationConstants.FeatureBranchRegex = "^features?[/-]" -> string!
+const GitVersion.Configuration.ConfigurationConstants.HotfixBranchKey = "hotfix" -> string!
+const GitVersion.Configuration.ConfigurationConstants.HotfixBranchRegex = "^hotfix(es)?[/-]" -> string!
+const GitVersion.Configuration.ConfigurationConstants.MainBranchKey = "main" -> string!
+const GitVersion.Configuration.ConfigurationConstants.MainBranchRegex = "^master$|^main$" -> string!
+const GitVersion.Configuration.ConfigurationConstants.MasterBranchKey = "master" -> string!
+const GitVersion.Configuration.ConfigurationConstants.PullRequestBranchKey = "pull-request" -> string!
+const GitVersion.Configuration.ConfigurationConstants.PullRequestBranchRegex = "^(pull|pull\\-requests|pr)[/-]" -> string!
+const GitVersion.Configuration.ConfigurationConstants.ReleaseBranchKey = "release" -> string!
+const GitVersion.Configuration.ConfigurationConstants.ReleaseBranchRegex = "^releases?[/-]" -> string!
+const GitVersion.Configuration.ConfigurationConstants.SupportBranchKey = "support" -> string!
+const GitVersion.Configuration.ConfigurationConstants.SupportBranchRegex = "^support[/-]" -> string!
+const GitVersion.Configuration.ConfigurationConstants.UnknownBranchKey = "unknown" -> string!
+const GitVersion.Configuration.ConfigurationConstants.UnknownBranchRegex = ".*" -> string!
 const GitVersion.Configuration.ConfigurationFileLocator.DefaultFileName = "GitVersion.yml" -> string!
-const GitVersion.Configuration.GitVersionConfiguration.DefaultLabelPrefix = "[vV]?" -> string!
-const GitVersion.Configuration.GitVersionConfiguration.DevelopBranchKey = "develop" -> string!
-const GitVersion.Configuration.GitVersionConfiguration.DevelopBranchRegex = "^dev(elop)?(ment)?$" -> string!
-const GitVersion.Configuration.GitVersionConfiguration.FeatureBranchKey = "feature" -> string!
-const GitVersion.Configuration.GitVersionConfiguration.FeatureBranchRegex = "^features?[/-]" -> string!
-const GitVersion.Configuration.GitVersionConfiguration.HotfixBranchKey = "hotfix" -> string!
-const GitVersion.Configuration.GitVersionConfiguration.HotfixBranchRegex = "^hotfix(es)?[/-]" -> string!
-const GitVersion.Configuration.GitVersionConfiguration.MainBranchKey = "main" -> string!
-const GitVersion.Configuration.GitVersionConfiguration.MainBranchRegex = "^master$|^main$" -> string!
-const GitVersion.Configuration.GitVersionConfiguration.MasterBranchKey = "master" -> string!
-const GitVersion.Configuration.GitVersionConfiguration.PullRequestBranchKey = "pull-request" -> string!
-const GitVersion.Configuration.GitVersionConfiguration.PullRequestRegex = "^(pull|pull\\-requests|pr)[/-]" -> string!
-const GitVersion.Configuration.GitVersionConfiguration.ReleaseBranchKey = "release" -> string!
-const GitVersion.Configuration.GitVersionConfiguration.ReleaseBranchRegex = "^releases?[/-]" -> string!
-const GitVersion.Configuration.GitVersionConfiguration.SupportBranchKey = "support" -> string!
-const GitVersion.Configuration.GitVersionConfiguration.SupportBranchRegex = "^support[/-]" -> string!
 const GitVersion.VersionCalculation.IncrementStrategyFinder.DefaultMajorPattern = "\\+semver:\\s?(breaking|major)" -> string!
 const GitVersion.VersionCalculation.IncrementStrategyFinder.DefaultMinorPattern = "\\+semver:\\s?(feature|minor)" -> string!
 const GitVersion.VersionCalculation.IncrementStrategyFinder.DefaultNoBumpPattern = "\\+semver:\\s?(none|skip)" -> string!

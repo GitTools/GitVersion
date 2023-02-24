@@ -106,12 +106,12 @@ public class RepositoryStore : IRepositoryStore
 
     public IBranch? FindMainBranch(GitVersionConfiguration configuration)
     {
-        var mainBranchRegex = configuration.Branches[GitVersionConfiguration.MainBranchKey].Regex
-                              ?? configuration.Branches[GitVersionConfiguration.MasterBranchKey].Regex;
+        var mainBranchRegex = configuration.Branches[ConfigurationConstants.MainBranchKey].Regex
+                              ?? configuration.Branches[ConfigurationConstants.MasterBranchKey].Regex;
 
         if (mainBranchRegex == null)
         {
-            return FindBranch(GitVersionConfiguration.MainBranchKey) ?? FindBranch(GitVersionConfiguration.MasterBranchKey);
+            return FindBranch(ConfigurationConstants.MainBranchKey) ?? FindBranch(ConfigurationConstants.MasterBranchKey);
         }
 
         return this.repository.Branches.FirstOrDefault(b =>

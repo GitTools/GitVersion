@@ -13,7 +13,7 @@ public class TestEffectiveConfiguration : EffectiveConfiguration
         string? assemblyFileVersioningFormat = null,
         string? assemblyInformationalFormat = null,
         VersioningMode versioningMode = VersioningMode.ContinuousDelivery,
-        string labelPrefix = GitVersionConfiguration.DefaultLabelPrefix,
+        string labelPrefix = ConfigurationConstants.DefaultLabelPrefix,
         string label = "ci",
         string? nextVersion = null,
         string branchPrefixToTrim = "",

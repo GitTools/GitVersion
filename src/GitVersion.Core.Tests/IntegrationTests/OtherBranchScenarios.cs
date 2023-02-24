@@ -54,7 +54,7 @@ public class OtherBranchScenarios : TestBase
 
     [TestCase("alpha", "JIRA-123", "alpha")]
     [TestCase("useBranchName", "JIRA-123", "JIRA-123")]
-    [TestCase("alpha.{BranchName}", "JIRA-123", "alpha.JIRA-123")]
+    [TestCase($"alpha.{ConfigurationConstants.BranchNamePlaceholder}", "JIRA-123", "alpha.JIRA-123")]
     public void LabelIsBranchNameForBranchesWithoutPrefixedBranchName(string label, string branchName, string preReleaseTagName)
     {
         var configuration = GitFlowConfigurationBuilder.New

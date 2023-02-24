@@ -111,8 +111,8 @@ branches:
     }
 
     [Test(Description = "Well-known branches may not be present in the configuration file. This test confirms the validation check succeeds when the source-branches configuration contain these well-known branches.")]
-    [TestCase(GitVersionConfiguration.MainBranchKey)]
-    [TestCase(GitVersionConfiguration.DevelopBranchKey)]
+    [TestCase(ConfigurationConstants.MainBranchKey)]
+    [TestCase(ConfigurationConstants.DevelopBranchKey)]
     public void SourceBranchesValidationShouldSucceedForWellKnownBranches(string wellKnownBranchKey)
     {
         var text = $@"
@@ -245,7 +245,7 @@ branches: {}";
         configuration.AssemblyInformationalFormat.ShouldBe(null);
         configuration.Branches["develop"].Label.ShouldBe("alpha");
         configuration.Branches["release"].Label.ShouldBe("beta");
-        configuration.LabelPrefix.ShouldBe(GitVersionConfiguration.DefaultLabelPrefix);
+        configuration.LabelPrefix.ShouldBe(ConfigurationConstants.DefaultLabelPrefix);
         configuration.NextVersion.ShouldBe(null);
     }
 
@@ -404,7 +404,7 @@ label-prefix: custom-label-prefix-from-yml";
         SetupConfigFileContent(text);
         var configuration = this.configurationProvider.ProvideInternal(this.repoPath);
 
-        configuration.LabelPrefix.ShouldBe(GitVersionConfiguration.DefaultLabelPrefix);
+        configuration.LabelPrefix.ShouldBe(ConfigurationConstants.DefaultLabelPrefix);
     }
 
     [Test]
@@ -443,7 +443,7 @@ label-prefix: custom-label-prefix-from-yml";
 
         var configuration = this.configurationProvider.ProvideInternal(this.repoPath, overrideConfiguration);
 
-        configuration.LabelPrefix.ShouldBe(GitVersionConfiguration.DefaultLabelPrefix);
+        configuration.LabelPrefix.ShouldBe(ConfigurationConstants.DefaultLabelPrefix);
     }
 
     [Test]

@@ -6,7 +6,7 @@ namespace GitVersion.Core.Tests;
 [TestFixture]
 public class MergeMessageTests : TestBase
 {
-    private readonly GitVersionConfiguration configuration = new() { LabelPrefix = GitVersionConfiguration.DefaultLabelPrefix };
+    private readonly GitVersionConfiguration configuration = new() { LabelPrefix = ConfigurationConstants.DefaultLabelPrefix };
 
     [Test]
     public void NullMessageStringThrows() =>
