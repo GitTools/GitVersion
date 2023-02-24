@@ -41,6 +41,54 @@ internal abstract class ConfigurationBuilderBase<TConfigurationBuilder>
     private bool? isMainline;
     private int? preReleaseWeight;
 
+    protected readonly BranchMetaData MainBranch = new()
+    {
+        Name = ConfigurationConstants.MainBranchKey,
+        RegexPattern = ConfigurationConstants.MainBranchRegex
+    };
+
+    protected readonly BranchMetaData DevelopBranch = new()
+    {
+        Name = ConfigurationConstants.DevelopBranchKey,
+        RegexPattern = ConfigurationConstants.DevelopBranchRegex
+    };
+
+    protected readonly BranchMetaData ReleaseBranch = new()
+    {
+        Name = ConfigurationConstants.ReleaseBranchKey,
+        RegexPattern = ConfigurationConstants.ReleaseBranchRegex
+    };
+
+    protected readonly BranchMetaData FeatureBranch = new()
+    {
+        Name = ConfigurationConstants.FeatureBranchKey,
+        RegexPattern = ConfigurationConstants.FeatureBranchRegex
+    };
+
+    protected readonly BranchMetaData PullRequestBranch = new()
+    {
+        Name = ConfigurationConstants.PullRequestBranchKey,
+        RegexPattern = ConfigurationConstants.PullRequestBranchRegex
+    };
+
+    protected readonly BranchMetaData HotfixBranch = new()
+    {
+        Name = ConfigurationConstants.HotfixBranchKey,
+        RegexPattern = ConfigurationConstants.HotfixBranchRegex
+    };
+
+    protected readonly BranchMetaData SupportBranch = new()
+    {
+        Name = ConfigurationConstants.SupportBranchKey,
+        RegexPattern = ConfigurationConstants.SupportBranchRegex
+    };
+
+    protected readonly BranchMetaData UnknownBranch = new()
+    {
+        Name = ConfigurationConstants.UnknownBranchKey,
+        RegexPattern = ConfigurationConstants.UnknownBranchRegex
+    };
+
     protected ConfigurationBuilderBase()
     {
         if (GetType() != typeof(TConfigurationBuilder))
@@ -432,7 +480,7 @@ internal abstract class ConfigurationBuilderBase<TConfigurationBuilder>
         }
     }
 
-    public record BranchMetaData
+    protected record BranchMetaData
     {
         public string Name { get; init; }
 

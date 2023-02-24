@@ -111,34 +111,4 @@ internal sealed class GitHubFlowConfigurationBuilder : ConfigurationBuilderBase<
             }
         });
     }
-
-    public static readonly BranchMetaData MainBranch = new()
-    {
-        Name = ConfigurationConstants.MainBranchKey,
-        RegexPattern = ConfigurationConstants.MainBranchRegex
-    };
-
-    public static readonly BranchMetaData ReleaseBranch = new()
-    {
-        Name = ConfigurationConstants.ReleaseBranchKey,
-        RegexPattern = ConfigurationConstants.ReleaseBranchRegex
-    };
-
-    public static readonly BranchMetaData FeatureBranch = new()
-    {
-        Name = ConfigurationConstants.FeatureBranchKey,
-        RegexPattern = ConfigurationConstants.FeatureBranchRegex
-    };
-
-    public static readonly BranchMetaData PullRequestBranch = new()
-    {
-        Name = ConfigurationConstants.PullRequestBranchKey,
-        RegexPattern = ConfigurationConstants.PullRequestBranchRegex
-    };
-
-    public static readonly BranchMetaData UnknownBranch = new()
-    {
-        Name = ConfigurationConstants.UnknownBranchKey,
-        RegexPattern = ConfigurationConstants.UnknownBranchRegex
-    };
 }
