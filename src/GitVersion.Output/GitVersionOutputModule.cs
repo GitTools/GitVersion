@@ -1,15 +1,16 @@
-using GitVersion.VersionConverters.AssemblyInfo;
-using GitVersion.VersionConverters.GitVersionInfo;
-using GitVersion.VersionConverters.OutputGenerator;
-using GitVersion.VersionConverters.WixUpdater;
+using GitVersion.Output.AssemblyInfo;
+using GitVersion.Output.GitVersionInfo;
+using GitVersion.Output.OutputGenerator;
+using GitVersion.Output.WixUpdater;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace GitVersion.VersionConverters;
+namespace GitVersion.Output;
 
-public class VersionConvertersModule : IGitVersionModule
+public class GitVersionOutputModule : IGitVersionModule
 {
     public void RegisterTypes(IServiceCollection services)
     {
+        services.AddSingleton<IGitVersionOutputTool, GitVersionOutputTool>();
         services.AddSingleton<IOutputGenerator, OutputGenerator.OutputGenerator>();
         services.AddSingleton<IGitVersionInfoGenerator, GitVersionInfoGenerator>();
         services.AddSingleton<IWixVersionFileUpdater, WixVersionFileUpdater>();

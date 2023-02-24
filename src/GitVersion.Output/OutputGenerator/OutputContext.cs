@@ -1,4 +1,4 @@
-namespace GitVersion.VersionConverters.OutputGenerator;
+namespace GitVersion.Output.OutputGenerator;
 
 public readonly struct OutputContext : IConverterContext
 {

@@ -1,7 +1,7 @@
 using GitVersion.Core.Tests.Helpers;
 using GitVersion.Helpers;
+using GitVersion.Output.GitVersionInfo;
 using GitVersion.VersionCalculation;
-using GitVersion.VersionConverters.GitVersionInfo;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace GitVersion.Core.Tests;

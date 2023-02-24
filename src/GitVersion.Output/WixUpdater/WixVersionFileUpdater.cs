@@ -3,7 +3,7 @@ using GitVersion.Helpers;
 using GitVersion.Logging;
 using GitVersion.OutputVariables;
 
-namespace GitVersion.VersionConverters.WixUpdater;
+namespace GitVersion.Output.WixUpdater;
 
 public interface IWixVersionFileUpdater : IVersionConverter<WixVersionContext>
 {

@@ -13,8 +13,6 @@ public class GitVersionCommonModule : IGitVersionModule
         services.AddSingleton<IEnvironment, Environment>();
         services.AddSingleton<IConsole, ConsoleAdapter>();
 
-        services.AddSingleton<IGitVersionOutputTool, GitVersionOutputTool>();
-
         services.AddSingleton<IBuildAgent, LocalBuild>();
         services.AddSingleton<IBuildAgentResolver, BuildAgentResolver>();
         services.AddSingleton(sp => sp.GetRequiredService<IBuildAgentResolver>().Resolve());

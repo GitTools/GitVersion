@@ -1,8 +1,8 @@
 using GitVersion.Core.Tests.Helpers;
 using GitVersion.Helpers;
 using GitVersion.Logging;
+using GitVersion.Output.WixUpdater;
 using GitVersion.VersionCalculation;
-using GitVersion.VersionConverters.WixUpdater;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace GitVersion.Core.Tests;

@@ -393,8 +393,8 @@ public class ArgumentParserTests : TestBase
     {
         var arguments = this.argumentParser.ParseArguments($"/overrideconfig {options}");
 
-        ConfigurationHelper configruationHelper = new(arguments.OverrideConfig);
-        configruationHelper.Configuration.ShouldBeEquivalentTo(expected);
+        ConfigurationHelper configurationHelper = new(arguments.OverrideConfig);
+        configurationHelper.Configuration.ShouldBeEquivalentTo(expected);
     }
 
     private static IEnumerable<TestCaseData> OverrideConfigWithSingleOptionTestData()

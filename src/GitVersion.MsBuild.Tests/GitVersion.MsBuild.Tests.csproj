@@ -12,6 +12,7 @@
         <ProjectReference Include="..\GitVersion.LibGit2Sharp\GitVersion.LibGit2Sharp.csproj" />
         <ProjectReference Include="..\GitVersion.MsBuild\GitVersion.MsBuild.csproj" />
         <ProjectReference Include="..\GitVersion.Core\GitVersion.Core.csproj" />
+        <ProjectReference Include="..\GitVersion.Output\GitVersion.Output.csproj" />
     </ItemGroup>
     <ItemGroup>
         <Compile Include="..\GitVersion.Core.Tests\Helpers\DirectoryHelper.cs" Link="Helpers\DirectoryHelper.cs" />

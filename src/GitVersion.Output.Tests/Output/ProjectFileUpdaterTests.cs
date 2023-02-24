@@ -4,9 +4,9 @@ using GitVersion.Core.Tests.Helpers;
 using GitVersion.Extensions;
 using GitVersion.Helpers;
 using GitVersion.Logging;
+using GitVersion.Output.AssemblyInfo;
 using GitVersion.OutputVariables;
 using GitVersion.VersionCalculation;
-using GitVersion.VersionConverters.AssemblyInfo;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace GitVersion.Core.Tests;

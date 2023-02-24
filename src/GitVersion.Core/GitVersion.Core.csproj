@@ -22,13 +22,6 @@
     </ItemGroup>
 
     <ItemGroup>
-        <Compile Remove="VersionConverters\*\AddFormats\**\*.*" />
-        <Compile Remove="VersionConverters\*\Templates\**\*.*" />
-        <EmbeddedResource Include="VersionConverters\*\AddFormats\**\*.*" />
-        <EmbeddedResource Include="VersionConverters\*\Templates\**\*.*" />
-    </ItemGroup>
-
-    <ItemGroup>
         <InternalsVisibleTo Include="GitVersion.Core.Tests" />
         <InternalsVisibleTo Include="GitVersion.App.Tests" />
         <InternalsVisibleTo Include="GitVersion.MsBuild.Tests" />
