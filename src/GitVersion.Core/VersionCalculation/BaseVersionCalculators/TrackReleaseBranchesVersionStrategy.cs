@@ -57,7 +57,7 @@ public class TrackReleaseBranchesVersionStrategy : VersionStrategyBase
         var releaseBranches = this.repositoryStore.GetReleaseBranches(releaseBranchConfig);
 
         return releaseBranches
-            .SelectMany(b => GetReleaseVersion(b))
+            .SelectMany(GetReleaseVersion)
             .Select(baseVersion =>
             {
                 // Need to drop branch overrides and give a bit more context about
@@ -76,7 +76,7 @@ public class TrackReleaseBranchesVersionStrategy : VersionStrategyBase
     {
         // Find the commit where the child branch was created.
         var baseSource = this.repositoryStore.FindMergeBase(releaseBranch, Context.CurrentBranch);
-        var configuration = Context.GetEffectiveConfiguration(releaseBranch);
+        var configuration = Context.Configuration.GetEffectiveConfiguration(releaseBranch);
         return this.releaseVersionStrategy
             .GetBaseVersions(new(releaseBranch, configuration))
             .Select(b => new BaseVersion(b.Source, true, b.SemanticVersion, baseSource, b.BranchNameOverride));

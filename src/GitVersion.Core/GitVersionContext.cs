@@ -31,10 +31,4 @@ public class GitVersionContext
         CurrentCommitTaggedVersion = currentCommitTaggedVersion;
         NumberOfUncommittedChanges = numberOfUncommittedChanges;
     }
-
-    public EffectiveConfiguration GetEffectiveConfiguration(IBranch branch)
-    {
-        BranchConfiguration branchConfiguration = Configuration.GetBranchConfiguration(branch);
-        return new EffectiveConfiguration(Configuration, branchConfiguration);
-    }
 }

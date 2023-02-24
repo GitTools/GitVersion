@@ -280,7 +280,7 @@ public class NextVersionCalculatorTests : TestBase
         var configuration = GitFlowConfigurationBuilder.New.Build();
         var context = new GitVersionContext(branchMock, null, configuration, null, 0);
         var repositoryStoreMock = Substitute.For<IRepositoryStore>();
-        var effectiveConfiguration = context.GetEffectiveConfiguration(branchMock);
+        var effectiveConfiguration = context.Configuration.GetEffectiveConfiguration(branchMock);
         var effectiveBranchConfiguration = new EffectiveBranchConfiguration(branchMock, effectiveConfiguration);
         var effectiveBranchConfigurationFinderMock = Substitute.For<IEffectiveBranchConfigurationFinder>();
         effectiveBranchConfigurationFinderMock.GetConfigurations(branchMock, configuration).Returns(new[] { effectiveBranchConfiguration });
@@ -311,7 +311,7 @@ public class NextVersionCalculatorTests : TestBase
         var configuration = GitFlowConfigurationBuilder.New.Build();
         var context = new GitVersionContext(branchMock, null, configuration, null, 0);
         var repositoryStoreMock = Substitute.For<IRepositoryStore>();
-        var effectiveConfiguration = context.GetEffectiveConfiguration(branchMock);
+        var effectiveConfiguration = context.Configuration.GetEffectiveConfiguration(branchMock);
         var effectiveBranchConfiguration = new EffectiveBranchConfiguration(branchMock, effectiveConfiguration);
         var effectiveBranchConfigurationFinderMock = Substitute.For<IEffectiveBranchConfigurationFinder>();
         effectiveBranchConfigurationFinderMock.GetConfigurations(branchMock, configuration).Returns(new[] { effectiveBranchConfiguration });
@@ -342,7 +342,7 @@ public class NextVersionCalculatorTests : TestBase
         var configuration = GitFlowConfigurationBuilder.New.Build();
         var context = new GitVersionContext(branchMock, null, configuration, null, 0);
         var repositoryStoreMock = Substitute.For<IRepositoryStore>();
-        var effectiveConfiguration = context.GetEffectiveConfiguration(branchMock);
+        var effectiveConfiguration = context.Configuration.GetEffectiveConfiguration(branchMock);
         var effectiveBranchConfiguration = new EffectiveBranchConfiguration(branchMock, effectiveConfiguration);
         var effectiveBranchConfigurationFinderMock = Substitute.For<IEffectiveBranchConfigurationFinder>();
         effectiveBranchConfigurationFinderMock.GetConfigurations(branchMock, configuration).Returns(new[] { effectiveBranchConfiguration });
@@ -374,7 +374,7 @@ public class NextVersionCalculatorTests : TestBase
         var configuration = GitFlowConfigurationBuilder.New.WithIgnoreConfiguration(fakeIgnoreConfig).Build();
         var context = new GitVersionContext(branchMock, null, configuration, null, 0);
         var repositoryStoreMock = Substitute.For<IRepositoryStore>();
-        var effectiveConfiguration = context.GetEffectiveConfiguration(branchMock);
+        var effectiveConfiguration = context.Configuration.GetEffectiveConfiguration(branchMock);
         var effectiveBranchConfiguration = new EffectiveBranchConfiguration(branchMock, effectiveConfiguration);
         var effectiveBranchConfigurationFinderMock = Substitute.For<IEffectiveBranchConfigurationFinder>();
         effectiveBranchConfigurationFinderMock.GetConfigurations(branchMock, configuration).Returns(new[] { effectiveBranchConfiguration });
@@ -405,7 +405,7 @@ public class NextVersionCalculatorTests : TestBase
         var configuration = GitFlowConfigurationBuilder.New.WithIgnoreConfiguration(fakeIgnoreConfig).Build();
         var context = new GitVersionContext(branchMock, null, configuration, null, 0);
         var repositoryStoreMock = Substitute.For<IRepositoryStore>();
-        var effectiveConfiguration = context.GetEffectiveConfiguration(branchMock);
+        var effectiveConfiguration = context.Configuration.GetEffectiveConfiguration(branchMock);
         var effectiveBranchConfiguration = new EffectiveBranchConfiguration(branchMock, effectiveConfiguration);
         var effectiveBranchConfigurationFinderMock = Substitute.For<IEffectiveBranchConfigurationFinder>();
         effectiveBranchConfigurationFinderMock.GetConfigurations(branchMock, configuration).Returns(new[] { effectiveBranchConfiguration });
@@ -440,7 +440,7 @@ public class NextVersionCalculatorTests : TestBase
             .Build();
         var context = new GitVersionContext(branchMock, null, configuration, null, 0);
         var repositoryStoreMock = Substitute.For<IRepositoryStore>();
-        var effectiveConfiguration = context.GetEffectiveConfiguration(branchMock);
+        var effectiveConfiguration = context.Configuration.GetEffectiveConfiguration(branchMock);
         var effectiveBranchConfiguration = new EffectiveBranchConfiguration(branchMock, effectiveConfiguration);
         var effectiveBranchConfigurationFinderMock = Substitute.For<IEffectiveBranchConfigurationFinder>();
         effectiveBranchConfigurationFinderMock.GetConfigurations(branchMock, configuration).Returns(new[] { effectiveBranchConfiguration });

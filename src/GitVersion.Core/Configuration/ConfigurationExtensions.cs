@@ -6,6 +6,12 @@ namespace GitVersion.Configuration;
 
 public static class ConfigurationExtensions
 {
+    public static EffectiveConfiguration GetEffectiveConfiguration(this GitVersionConfiguration configuration, IBranch branch)
+    {
+        var branchConfiguration = configuration.GetBranchConfiguration(branch);
+        return new EffectiveConfiguration(configuration, branchConfiguration);
+    }
+
     public static BranchConfiguration GetBranchConfiguration(this GitVersionConfiguration configuration, IBranch branch)
         => GetBranchConfiguration(configuration, branch.NotNull().Name.WithoutRemote);
 

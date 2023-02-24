@@ -214,7 +214,7 @@ public class NextVersionCalculator : INextVersionCalculator
 
                         if (effectiveBranchConfiguration.Value.VersioningMode == VersioningMode.Mainline)
                         {
-                            if (!(incrementedVersion.PreReleaseTag.HasTag() != true))
+                            if (incrementedVersion.PreReleaseTag.HasTag())
                             {
                                 continue;
                             }
