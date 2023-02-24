@@ -1,6 +1,6 @@
 namespace GitVersion;
 
-public static class RepositoryExtensions
+internal static class RepositoryExtensions
 {
     internal static void RunSafe(Action operation)
     {

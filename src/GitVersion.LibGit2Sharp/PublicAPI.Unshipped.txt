@@ -2,4 +2,3 @@
 GitVersion.GitVersionLibGit2SharpModule
 GitVersion.GitVersionLibGit2SharpModule.GitVersionLibGit2SharpModule() -> void
 GitVersion.GitVersionLibGit2SharpModule.RegisterTypes(Microsoft.Extensions.DependencyInjection.IServiceCollection! services) -> void
-GitVersion.RepositoryExtensions
