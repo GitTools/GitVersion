@@ -40,6 +40,7 @@ created. Modify this to suit your needs.
 The global configuration looks like this:
 
 ```yaml
+remote-name-in-git: origin
 assembly-versioning-scheme: MajorMinorPatch
 assembly-file-versioning-scheme: MajorMinorPatch
 label-prefix: '[vV]?'
@@ -160,7 +161,7 @@ ignore:
   sha: []
 mode: ContinuousDelivery
 label: '{BranchName}'
-increment: Inherit
+increment: Patch
 prevent-increment-of-merged-branch-version: false
 track-merge-target: false
 track-merge-message: true
@@ -172,6 +173,12 @@ is-mainline: false
 ```
 
 The details of the available options are as follows:
+
+### remote-name-in-git
+
+The user can define the name of the remote (in moste cases it's `origin`) which
+will be considered when generating a semantic version on a remote branch. If the
+actual remote name doesn't match this pattern an error will be thrown.
 
 ### next-version
 

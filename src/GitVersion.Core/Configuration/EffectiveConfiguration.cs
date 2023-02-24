@@ -37,6 +37,7 @@ public class EffectiveConfiguration
         if (!configuration.LabelPreReleaseWeight.HasValue)
             throw new Exception("Configuration value for 'LabelPreReleaseWeight' has no value. (this should not happen, please report an issue)");
 
+        RemoteNameInGit = configuration.RemoteNameInGit;
         AssemblyVersioningScheme = configuration.AssemblyVersioningScheme.Value;
         AssemblyFileVersioningScheme = configuration.AssemblyFileVersioningScheme.Value;
         AssemblyInformationalFormat = configuration.AssemblyInformationalFormat;
@@ -68,7 +69,8 @@ public class EffectiveConfiguration
         LabelPreReleaseWeight = configuration.LabelPreReleaseWeight.Value;
     }
 
-    protected EffectiveConfiguration(AssemblyVersioningScheme assemblyVersioningScheme,
+    protected EffectiveConfiguration(string remoteNameInGit,
+        AssemblyVersioningScheme assemblyVersioningScheme,
         AssemblyFileVersioningScheme assemblyFileVersioningScheme,
         string? assemblyInformationalFormat,
         string? assemblyVersioningFormat,
@@ -97,6 +99,7 @@ public class EffectiveConfiguration
         int preReleaseWeight,
         int labelPreReleaseWeight)
     {
+        RemoteNameInGit = remoteNameInGit;
         AssemblyVersioningScheme = assemblyVersioningScheme;
         AssemblyFileVersioningScheme = assemblyFileVersioningScheme;
         AssemblyInformationalFormat = assemblyInformationalFormat;
@@ -127,6 +130,7 @@ public class EffectiveConfiguration
         LabelPreReleaseWeight = labelPreReleaseWeight;
     }
 
+    public string? RemoteNameInGit { get; }
     public bool TracksReleaseBranches { get; }
     public bool IsReleaseBranch { get; }
     public bool IsMainline { get; }

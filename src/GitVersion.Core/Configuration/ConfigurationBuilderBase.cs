@@ -6,6 +6,7 @@ namespace GitVersion.Configuration;
 internal abstract class ConfigurationBuilderBase<TConfigurationBuilder>
     where TConfigurationBuilder : ConfigurationBuilderBase<TConfigurationBuilder>
 {
+    private string? remoteNameInGit;
     private AssemblyVersioningScheme? assemblyVersioningScheme;
     private AssemblyFileVersioningScheme? assemblyFileVersioningScheme;
     private string? assemblyInformationalFormat;
@@ -96,6 +97,13 @@ internal abstract class ConfigurationBuilderBase<TConfigurationBuilder>
             throw new ArgumentException("The generic type parameter is not equal to the instance type.");
         }
     }
+
+    public virtual TConfigurationBuilder WithRemoteNameInGit(string? value)
+    {
+        this.remoteNameInGit = value;
+        return (TConfigurationBuilder)this;
+    }
+
 
     public virtual TConfigurationBuilder WithAssemblyVersioningScheme(AssemblyVersioningScheme? value)
     {
@@ -324,6 +332,7 @@ internal abstract class ConfigurationBuilderBase<TConfigurationBuilder>
 
     public virtual TConfigurationBuilder WithConfiguration(GitVersionConfiguration value)
     {
+        WithRemoteNameInGit(value.RemoteNameInGit);
         WithAssemblyVersioningScheme(value.AssemblyVersioningScheme);
         WithAssemblyFileVersioningScheme(value.AssemblyFileVersioningScheme);
         WithAssemblyInformationalFormat(value.AssemblyInformationalFormat);
@@ -376,6 +385,7 @@ internal abstract class ConfigurationBuilderBase<TConfigurationBuilder>
     {
         GitVersionConfiguration configuration = new()
         {
+            RemoteNameInGit = this.remoteNameInGit,
             AssemblyVersioningScheme = this.assemblyVersioningScheme,
             AssemblyFileVersioningScheme = this.assemblyFileVersioningScheme,
             AssemblyInformationalFormat = this.assemblyInformationalFormat,

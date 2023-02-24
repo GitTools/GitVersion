@@ -38,17 +38,26 @@ public class VersionInCurrentBranchNameScenarios : TestBase
         fixture.AssertFullSemver("2.0.0+1", configuration);
     }
 
-    [Test]
-    public void TakesVersionFromNameOfRemoteReleaseBranchInOrigin()
+    [TestCase("origin")]
+    [TestCase("upstream")]
+    public void TakesVersionFromNameOfRemoteReleaseBranchInOrigin(string remoteNameInGit)
     {
+        var configuration = GitFlowConfigurationBuilder.New
+            .WithRemoteNameInGit(remoteNameInGit)
+            .Build();
+
         using var fixture = new RemoteRepositoryFixture();
+        if (remoteNameInGit != "origin")
+        {
+            fixture.LocalRepositoryFixture.Repository.Network.Remotes.Rename("origin", remoteNameInGit);
+        }
         fixture.BranchTo("release/2.0.0");
         fixture.MakeACommit();
         Commands.Fetch((Repository)fixture.LocalRepositoryFixture.Repository, fixture.LocalRepositoryFixture.Repository.Network.Remotes.First().Name, Array.Empty<string>(), new FetchOptions(), null);
 
-        fixture.LocalRepositoryFixture.Checkout("origin/release/2.0.0");
+        fixture.LocalRepositoryFixture.Checkout($"{remoteNameInGit}/release/2.0.0");
 
-        fixture.LocalRepositoryFixture.AssertFullSemver("2.0.0-beta.1+1");
+        fixture.LocalRepositoryFixture.AssertFullSemver("2.0.0-beta.1+1", configuration);
     }
 
     [Test]
@@ -61,7 +70,8 @@ public class VersionInCurrentBranchNameScenarios : TestBase
         Commands.Fetch((Repository)fixture.LocalRepositoryFixture.Repository, fixture.LocalRepositoryFixture.Repository.Network.Remotes.First().Name, Array.Empty<string>(), new FetchOptions(), null);
 
         fixture.LocalRepositoryFixture.Checkout("upstream/release/2.0.0");
+        Action action = () => fixture.LocalRepositoryFixture.GetVersion();
 
-        fixture.LocalRepositoryFixture.AssertFullSemver("0.0.0-beta.1+6"); // This test fails with 2.0.0-beta.1+1
+        action.ShouldThrow<InvalidOperationException>();
     }
 }

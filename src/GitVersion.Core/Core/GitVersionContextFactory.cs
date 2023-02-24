@@ -1,8 +1,3 @@
-using GitVersion.Common;
-using GitVersion.Configuration;
-using GitVersion.Extensions;
-using Microsoft.Extensions.Options;
-
 namespace GitVersion;
 
 public class GitVersionContextFactory : IGitVersionContextFactory
@@ -29,6 +24,17 @@ public class GitVersionContextFactory : IGitVersionContextFactory
         {
             var branchForCommit = this.repositoryStore.GetBranchesContainingCommit(currentCommit, onlyTrackedBranches: gitVersionOptions.Settings.OnlyTrackedBranches).OnlyOrDefault();
             currentBranch = branchForCommit ?? currentBranch;
+        }
+
+        if (currentBranch.IsRemote)
+        {
+            var remoteNameInGit = configuration.RemoteNameInGit;
+            if (string.IsNullOrEmpty(remoteNameInGit) || !currentBranch.Name.Friendly.StartsWith(remoteNameInGit))
+            {
+                throw new InvalidOperationException(
+                    $"The remote branch name '{currentBranch.Name.Friendly}' is not valid. Please use another branch or change the configuration."
+                );
+            }
         }
 
         var currentCommitTaggedVersion = this.repositoryStore.GetCurrentCommitTaggedVersion(currentCommit, configuration.LabelPrefix, configuration.SemanticVersionFormat, handleDetachedBranch: currentBranch.IsDetachedHead);

@@ -165,7 +165,7 @@ GitVersion.Configuration.EffectiveConfiguration.BranchPrefixToTrim.get -> string
 GitVersion.Configuration.EffectiveConfiguration.CommitDateFormat.get -> string?
 GitVersion.Configuration.EffectiveConfiguration.CommitMessageIncrementing.get -> GitVersion.VersionCalculation.CommitMessageIncrementMode
 GitVersion.Configuration.EffectiveConfiguration.EffectiveConfiguration(GitVersion.Configuration.GitVersionConfiguration! configuration, GitVersion.Configuration.BranchConfiguration! branchConfiguration) -> void
-GitVersion.Configuration.EffectiveConfiguration.EffectiveConfiguration(GitVersion.Extensions.AssemblyVersioningScheme assemblyVersioningScheme, GitVersion.Extensions.AssemblyFileVersioningScheme assemblyFileVersioningScheme, string? assemblyInformationalFormat, string? assemblyVersioningFormat, string? assemblyFileVersioningFormat, GitVersion.VersionCalculation.VersioningMode versioningMode, string? labelPrefix, string! label, string? nextVersion, GitVersion.IncrementStrategy increment, string? branchPrefixToTrim, bool preventIncrementOfMergedBranchVersion, string? labelNumberPattern, bool trackMergeTarget, string? majorVersionBumpMessage, string? minorVersionBumpMessage, string? patchVersionBumpMessage, string? noBumpMessage, GitVersion.VersionCalculation.CommitMessageIncrementMode commitMessageIncrementing, System.Collections.Generic.IEnumerable<GitVersion.VersionCalculation.IVersionFilter!>! versionFilters, bool tracksReleaseBranches, bool isReleaseBranch, bool isMainline, string? commitDateFormat, bool updateBuildNumber, GitVersion.SemanticVersionFormat semanticVersionFormat, int preReleaseWeight, int labelPreReleaseWeight) -> void
+GitVersion.Configuration.EffectiveConfiguration.EffectiveConfiguration(string! remoteNameInGit, GitVersion.Extensions.AssemblyVersioningScheme assemblyVersioningScheme, GitVersion.Extensions.AssemblyFileVersioningScheme assemblyFileVersioningScheme, string? assemblyInformationalFormat, string? assemblyVersioningFormat, string? assemblyFileVersioningFormat, GitVersion.VersionCalculation.VersioningMode versioningMode, string? labelPrefix, string! label, string? nextVersion, GitVersion.IncrementStrategy increment, string? branchPrefixToTrim, bool preventIncrementOfMergedBranchVersion, string? labelNumberPattern, bool trackMergeTarget, string? majorVersionBumpMessage, string? minorVersionBumpMessage, string? patchVersionBumpMessage, string? noBumpMessage, GitVersion.VersionCalculation.CommitMessageIncrementMode commitMessageIncrementing, System.Collections.Generic.IEnumerable<GitVersion.VersionCalculation.IVersionFilter!>! versionFilters, bool tracksReleaseBranches, bool isReleaseBranch, bool isMainline, string? commitDateFormat, bool updateBuildNumber, GitVersion.SemanticVersionFormat semanticVersionFormat, int preReleaseWeight, int labelPreReleaseWeight) -> void
 GitVersion.Configuration.EffectiveConfiguration.Increment.get -> GitVersion.IncrementStrategy
 GitVersion.Configuration.EffectiveConfiguration.IsMainline.get -> bool
 GitVersion.Configuration.EffectiveConfiguration.IsReleaseBranch.get -> bool
@@ -180,6 +180,7 @@ GitVersion.Configuration.EffectiveConfiguration.NoBumpMessage.get -> string?
 GitVersion.Configuration.EffectiveConfiguration.PatchVersionBumpMessage.get -> string?
 GitVersion.Configuration.EffectiveConfiguration.PreReleaseWeight.get -> int
 GitVersion.Configuration.EffectiveConfiguration.PreventIncrementOfMergedBranchVersion.get -> bool
+GitVersion.Configuration.EffectiveConfiguration.RemoteNameInGit.get -> string?
 GitVersion.Configuration.EffectiveConfiguration.SemanticVersionFormat.get -> GitVersion.SemanticVersionFormat
 GitVersion.Configuration.EffectiveConfiguration.SemanticVersionFormat.set -> void
 GitVersion.Configuration.EffectiveConfiguration.TrackMergeMessage.get -> bool
@@ -206,9 +207,9 @@ GitVersion.Configuration.GitVersionConfiguration.CommitDateFormat.set -> void
 GitVersion.Configuration.GitVersionConfiguration.GitVersionConfiguration() -> void
 GitVersion.Configuration.GitVersionConfiguration.Ignore.get -> GitVersion.Configuration.IgnoreConfiguration!
 GitVersion.Configuration.GitVersionConfiguration.Ignore.set -> void
+GitVersion.Configuration.GitVersionConfiguration.LabelPrefix.get -> string?
 GitVersion.Configuration.GitVersionConfiguration.LabelPreReleaseWeight.get -> int?
 GitVersion.Configuration.GitVersionConfiguration.LabelPreReleaseWeight.set -> void
-GitVersion.Configuration.GitVersionConfiguration.LabelPrefix.get -> string?
 GitVersion.Configuration.GitVersionConfiguration.LabelPrefix.set -> void
 GitVersion.Configuration.GitVersionConfiguration.MajorVersionBumpMessage.get -> string?
 GitVersion.Configuration.GitVersionConfiguration.MajorVersionBumpMessage.set -> void
@@ -222,6 +223,8 @@ GitVersion.Configuration.GitVersionConfiguration.NoBumpMessage.get -> string?
 GitVersion.Configuration.GitVersionConfiguration.NoBumpMessage.set -> void
 GitVersion.Configuration.GitVersionConfiguration.PatchVersionBumpMessage.get -> string?
 GitVersion.Configuration.GitVersionConfiguration.PatchVersionBumpMessage.set -> void
+GitVersion.Configuration.GitVersionConfiguration.RemoteNameInGit.get -> string?
+GitVersion.Configuration.GitVersionConfiguration.RemoteNameInGit.set -> void
 GitVersion.Configuration.GitVersionConfiguration.SemanticVersionFormat.get -> GitVersion.SemanticVersionFormat
 GitVersion.Configuration.GitVersionConfiguration.SemanticVersionFormat.set -> void
 GitVersion.Configuration.GitVersionConfiguration.UpdateBuildNumber.get -> bool
