@@ -12,7 +12,7 @@ public class ConfigurationFileLocator : IConfigurationFileLocator
     public ConfigurationFileLocator(IFileSystem fileSystem, IOptions<GitVersionOptions> options)
     {
         this.fileSystem = fileSystem;
-        var configFile = options.Value.ConfigInfo.ConfigurationFile;
+        var configFile = options.Value.ConfigurationInfo.ConfigurationFile;
         FilePath = !configFile.IsNullOrWhiteSpace() ? configFile : DefaultFileName;
     }
 

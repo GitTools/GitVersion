@@ -5,10 +5,10 @@ namespace GitVersion;
 public class GitVersionOptions
 {
     public string WorkingDirectory { get; set; } = System.Environment.CurrentDirectory;
+    public AssemblySettingsInfo AssemblySettingsInfo { get; } = new();
+    public AuthenticationInfo AuthenticationInfo { get; } = new();
 
-    public AssemblyInfoData AssemblyInfo { get; } = new();
-    public AuthenticationInfo Authentication { get; } = new();
-    public ConfigurationContext ConfigInfo { get; } = new();
+    public ConfigurationInfo ConfigurationInfo { get; } = new();
     public RepositoryInfo RepositoryInfo { get; } = new();
     public WixInfo WixInfo { get; } = new();
     public Settings Settings { get; } = new();

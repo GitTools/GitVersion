@@ -4,48 +4,33 @@ namespace GitVersion.Configuration;
 
 internal class ConfigurationHelper
 {
-    public string Yaml
+    private string Yaml => this._yaml ??= this._dictionary == null
+        ? ConfigurationSerializer.Serialize(this._configuration!)
+        : ConfigurationSerializer.Serialize(this._dictionary);
+    private string? _yaml;
+
+    internal IReadOnlyDictionary<object, object?> Dictionary
     {
         get
         {
-            if (this.yaml == null)
+            if (this._dictionary == null)
             {
-                if (this.dictionary == null)
-                {
-                    this.yaml = ConfigurationSerializer.Serialize(this.configuration!);
-                }
-                else
-                {
-                    this.yaml = ConfigurationSerializer.Serialize(this.dictionary);
-                }
+                this._yaml ??= ConfigurationSerializer.Serialize(this._configuration!);
+                this._dictionary = ConfigurationSerializer.Deserialize<Dictionary<object, object?>>(this._yaml!);
             }
-            return this.yaml;
+            return this._dictionary;
         }
     }
-    private string? yaml;
+    private IReadOnlyDictionary<object, object?>? _dictionary;
 
-    public IReadOnlyDictionary<object, object?> Dictionary
-    {
-        get
-        {
-            if (this.dictionary == null)
-            {
-                this.yaml ??= ConfigurationSerializer.Serialize(this.configuration!);
-                this.dictionary = ConfigurationSerializer.Deserialize<Dictionary<object, object?>>(this.yaml!);
-            }
-            return this.dictionary;
-        }
-    }
-    private IReadOnlyDictionary<object, object?>? dictionary;
+    public GitVersionConfiguration Configuration => this._configuration ??= ConfigurationSerializer.Deserialize<GitVersionConfiguration>(Yaml);
+    private GitVersionConfiguration? _configuration;
 
-    public GitVersionConfiguration Configuration => this.configuration ??= ConfigurationSerializer.Deserialize<GitVersionConfiguration>(Yaml);
-    private GitVersionConfiguration? configuration;
+    internal ConfigurationHelper(string yaml) => this._yaml = yaml.NotNull();
 
-    public ConfigurationHelper(string yaml) => this.yaml = yaml.NotNull();
+    internal ConfigurationHelper(IReadOnlyDictionary<object, object?> dictionary) => this._dictionary = dictionary.NotNull();
 
-    public ConfigurationHelper(IReadOnlyDictionary<object, object?> dictionary) => this.dictionary = dictionary.NotNull();
-
-    public ConfigurationHelper(GitVersionConfiguration configuration) => this.configuration = configuration.NotNull();
+    public ConfigurationHelper(GitVersionConfiguration configuration) => this._configuration = configuration.NotNull();
 
     public void Override(IReadOnlyDictionary<object, object?> value)
     {
@@ -55,9 +40,9 @@ internal class ConfigurationHelper
         {
             var dictionary = Dictionary.ToDictionary(element => element.Key, element => element.Value);
             Merge(dictionary, value);
-            this.dictionary = dictionary;
-            this.yaml = null;
-            this.configuration = null;
+            this._dictionary = dictionary;
+            this._yaml = null;
+            this._configuration = null;
         }
     }
 
@@ -72,7 +57,7 @@ internal class ConfigurationHelper
                     Merge(anotherDictionaryValue, dictionaryValue);
                 }
             }
-            else if (item.Value is null || item.Value is string || item.Value is IList<object>)
+            else if (item.Value is null or string or IList<object>)
             {
                 if (anotherDictionary.TryGetValue(item.Key, out var value))
                 {
@@ -92,7 +77,7 @@ internal class ConfigurationHelper
                     dictionary.Add(item.Key, anotherDictionaryValue);
                 }
             }
-            else if (item.Value is null || item.Value is string || item.Value is IList<object>)
+            else if (item.Value is null or string or IList<object>)
             {
                 if (!dictionary.ContainsKey(item.Key))
                 {

@@ -49,10 +49,10 @@ public class GitVersionTaskExecutor : IGitVersionTaskExecutor
         task.AssemblyInfoTempFilePath = PathHelper.Combine(fileWriteInfo.WorkingDirectory, fileWriteInfo.FileName);
 
         var gitVersionOptions = this.options.Value;
-        gitVersionOptions.AssemblyInfo.UpdateAssemblyInfo = true;
-        gitVersionOptions.AssemblyInfo.EnsureAssemblyInfo = true;
+        gitVersionOptions.AssemblySettingsInfo.UpdateAssemblyInfo = true;
+        gitVersionOptions.AssemblySettingsInfo.EnsureAssemblyInfo = true;
         gitVersionOptions.WorkingDirectory = fileWriteInfo.WorkingDirectory;
-        gitVersionOptions.AssemblyInfo.Files.Add(fileWriteInfo.FileName);
+        gitVersionOptions.AssemblySettingsInfo.Files.Add(fileWriteInfo.FileName);
 
         gitVersionOutputTool.UpdateAssemblyInfo(versionVariables);
     }
@@ -81,7 +81,7 @@ public class GitVersionTaskExecutor : IGitVersionTaskExecutor
         var versionVariables = VersionVariables.FromFile(task.VersionFile, fileSystem);
 
         var gitVersionOptions = this.options.Value;
-        var configuration = this.configurationProvider.Provide(gitVersionOptions.ConfigInfo.OverrideConfiguration);
+        var configuration = this.configurationProvider.Provide(gitVersionOptions.ConfigurationInfo.OverrideConfiguration);
 
         gitVersionOutputTool.OutputVariables(versionVariables, configuration.UpdateBuildNumber);
     }

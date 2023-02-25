@@ -114,7 +114,7 @@ public class GitPreparer : IGitPreparer
         using (this.log.IndentLog($"Creating dynamic repository at '{gitDirectory}'"))
         {
             var gitVersionOptions = this.options.Value;
-            var authentication = gitVersionOptions.Authentication;
+            var authentication = gitVersionOptions.AuthenticationInfo;
             if (!Directory.Exists(gitDirectory))
             {
                 CloneRepository(gitVersionOptions.RepositoryInfo.TargetUrl, gitDirectory, authentication);
@@ -151,7 +151,7 @@ public class GitPreparer : IGitPreparer
     /// </summary>
     private void NormalizeGitDirectory(bool noFetch, string? currentBranchName, bool isDynamicRepository)
     {
-        var authentication = this.options.Value.Authentication;
+        var authentication = this.options.Value.AuthenticationInfo;
         // Need to ensure the HEAD does not move, this is essentially a BugCheck
         var expectedSha = this.repository.Head.Tip?.Sha;
         var expectedBranchName = this.repository.Head.Name.Canonical;

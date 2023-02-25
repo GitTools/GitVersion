@@ -466,12 +466,7 @@ internal abstract class ConfigurationBuilderBase<TConfigurationBuilder>
                 throw new ConfigurationException($"Branch configuration '{name}' is missing required configuration 'regex'{helpUrl}");
             }
 
-            var sourceBranches = branchConfiguration.SourceBranches;
-            if (sourceBranches == null)
-            {
-                throw new ConfigurationException($"Branch configuration '{name}' is missing required configuration 'source-branches'{helpUrl}");
-            }
-
+            var sourceBranches = branchConfiguration.SourceBranches ?? throw new ConfigurationException($"Branch configuration '{name}' is missing required configuration 'source-branches'{helpUrl}");
             var missingSourceBranches = sourceBranches.Where(sb => !configuration.Branches.ContainsKey(sb)).ToArray();
             if (missingSourceBranches.Any())
             {

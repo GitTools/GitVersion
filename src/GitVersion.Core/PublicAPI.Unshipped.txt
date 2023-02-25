@@ -18,12 +18,12 @@ GitVersion.Agents.IBuildAgentResolver.Resolve() -> GitVersion.Agents.ICurrentBui
 GitVersion.Agents.ICurrentBuildAgent
 GitVersion.Agents.LocalBuild
 GitVersion.Agents.LocalBuild.LocalBuild(GitVersion.IEnvironment! environment, GitVersion.Logging.ILog! log) -> void
-GitVersion.AssemblyInfoData
-GitVersion.AssemblyInfoData.AssemblyInfoData() -> void
-GitVersion.AssemblyInfoData.EnsureAssemblyInfo -> bool
-GitVersion.AssemblyInfoData.Files -> System.Collections.Generic.ISet<string!>!
-GitVersion.AssemblyInfoData.UpdateAssemblyInfo -> bool
-GitVersion.AssemblyInfoData.UpdateProjectFiles -> bool
+GitVersion.AssemblySettingsInfo
+GitVersion.AssemblySettingsInfo.AssemblySettingsInfo() -> void
+GitVersion.AssemblySettingsInfo.EnsureAssemblyInfo -> bool
+GitVersion.AssemblySettingsInfo.Files -> System.Collections.Generic.ISet<string!>!
+GitVersion.AssemblySettingsInfo.UpdateAssemblyInfo -> bool
+GitVersion.AssemblySettingsInfo.UpdateProjectFiles -> bool
 GitVersion.AuthenticationInfo
 GitVersion.AuthenticationInfo.AuthenticationInfo() -> void
 GitVersion.AuthenticationInfo.Password.get -> string?
@@ -288,11 +288,11 @@ GitVersion.Configuration.Init.Wizard.PickBranchingStrategy3Step
 GitVersion.Configuration.Init.Wizard.PickBranchingStrategy3Step.PickBranchingStrategy3Step(GitVersion.Logging.IConsole! console, GitVersion.IFileSystem! fileSystem, GitVersion.Logging.ILog! log, GitVersion.Configuration.Init.Wizard.IConfigInitStepFactory! stepFactory) -> void
 GitVersion.Configuration.Init.Wizard.PickBranchingStrategyStep
 GitVersion.Configuration.Init.Wizard.PickBranchingStrategyStep.PickBranchingStrategyStep(GitVersion.Logging.IConsole! console, GitVersion.IFileSystem! fileSystem, GitVersion.Logging.ILog! log, GitVersion.Configuration.Init.Wizard.IConfigInitStepFactory! stepFactory) -> void
-GitVersion.ConfigurationContext
-GitVersion.ConfigurationContext.ConfigurationContext() -> void
-GitVersion.ConfigurationContext.ConfigurationFile -> string?
-GitVersion.ConfigurationContext.OverrideConfiguration -> System.Collections.Generic.IReadOnlyDictionary<object!, object?>?
-GitVersion.ConfigurationContext.ShowConfiguration -> bool
+GitVersion.ConfigurationInfo
+GitVersion.ConfigurationInfo.ConfigurationFile -> string?
+GitVersion.ConfigurationInfo.ConfigurationInfo() -> void
+GitVersion.ConfigurationInfo.OverrideConfiguration -> System.Collections.Generic.IReadOnlyDictionary<object!, object?>?
+GitVersion.ConfigurationInfo.ShowConfiguration -> bool
 GitVersion.Environment
 GitVersion.Environment.Environment() -> void
 GitVersion.Environment.GetEnvironmentVariable(string! variableName) -> string?
@@ -372,9 +372,9 @@ GitVersion.GitVersionException.GitVersionException(string! message, System.Excep
 GitVersion.GitVersionModule
 GitVersion.GitVersionModule.GitVersionModule() -> void
 GitVersion.GitVersionOptions
-GitVersion.GitVersionOptions.AssemblyInfo.get -> GitVersion.AssemblyInfoData!
-GitVersion.GitVersionOptions.Authentication.get -> GitVersion.AuthenticationInfo!
-GitVersion.GitVersionOptions.ConfigInfo.get -> GitVersion.ConfigurationContext!
+GitVersion.GitVersionOptions.AssemblySettingsInfo.get -> GitVersion.AssemblySettingsInfo!
+GitVersion.GitVersionOptions.AuthenticationInfo.get -> GitVersion.AuthenticationInfo!
+GitVersion.GitVersionOptions.ConfigurationInfo.get -> GitVersion.ConfigurationInfo!
 GitVersion.GitVersionOptions.Diag -> bool
 GitVersion.GitVersionOptions.GitVersionOptions() -> void
 GitVersion.GitVersionOptions.Init -> bool

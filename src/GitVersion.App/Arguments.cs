@@ -6,7 +6,7 @@ public class Arguments
 {
     public AuthenticationInfo Authentication = new();
 
-    public string? ConfigFile;
+    public string? ConfigurationFile;
     public IReadOnlyDictionary<object, object?> OverrideConfig;
     public bool ShowConfig;
 
@@ -43,7 +43,7 @@ public class Arguments
     {
         var gitVersionOptions = new GitVersionOptions
         {
-            AssemblyInfo =
+            AssemblySettingsInfo =
             {
                 UpdateProjectFiles = UpdateProjectFiles,
                 UpdateAssemblyInfo = UpdateAssemblyInfo,
@@ -51,16 +51,16 @@ public class Arguments
                 Files = UpdateAssemblyInfoFileName
             },
 
-            Authentication =
+            AuthenticationInfo =
             {
                 Username = this.Authentication.Username,
                 Password = this.Authentication.Password,
                 Token = this.Authentication.Token
             },
 
-            ConfigInfo =
+            ConfigurationInfo =
             {
-                ConfigurationFile = ConfigFile,
+                ConfigurationFile = ConfigurationFile,
                 OverrideConfiguration = OverrideConfig,
                 ShowConfiguration = ShowConfig
             },

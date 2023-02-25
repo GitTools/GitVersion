@@ -59,7 +59,7 @@ public class GitVersionContextBuilder
         var options = Options.Create(new GitVersionOptions
         {
             WorkingDirectory = new EmptyRepositoryFixture().RepositoryPath,
-            ConfigInfo = { OverrideConfiguration = this.overrideConfiguration }
+            ConfigurationInfo = { OverrideConfiguration = this.overrideConfiguration }
         });
 
         this.ServicesProvider = ConfigureServices(services =>

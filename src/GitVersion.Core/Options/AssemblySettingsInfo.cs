@@ -1,6 +1,6 @@
 namespace GitVersion;
 
-public class AssemblyInfoData
+public class AssemblySettingsInfo
 {
     public bool UpdateAssemblyInfo;
     public bool UpdateProjectFiles;

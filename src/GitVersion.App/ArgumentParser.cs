@@ -287,7 +287,7 @@ public class ArgumentParser : IArgumentParser
         if (name.IsSwitch("config"))
         {
             EnsureArgumentValueCount(values);
-            arguments.ConfigFile = value;
+            arguments.ConfigurationFile = value;
             return true;
         }
 

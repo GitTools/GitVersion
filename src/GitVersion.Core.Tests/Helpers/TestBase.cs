@@ -23,7 +23,7 @@ public class TestBase
         var options = Options.Create(new GitVersionOptions
         {
             WorkingDirectory = workingDirectory,
-            ConfigInfo = { OverrideConfiguration = configuration },
+            ConfigurationInfo = { OverrideConfiguration = configuration },
             RepositoryInfo = { TargetBranch = branch }
         });
 

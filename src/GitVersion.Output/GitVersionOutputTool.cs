@@ -42,16 +42,16 @@ public class GitVersionOutputTool : IGitVersionOutputTool
 
     public void UpdateAssemblyInfo(VersionVariables variables)
     {
-        var assemblyInfoContext = new AssemblyInfoContext(gitVersionOptions.WorkingDirectory, gitVersionOptions.AssemblyInfo.EnsureAssemblyInfo, gitVersionOptions.AssemblyInfo.Files.ToArray());
+        var assemblyInfoContext = new AssemblyInfoContext(gitVersionOptions.WorkingDirectory, gitVersionOptions.AssemblySettingsInfo.EnsureAssemblyInfo, gitVersionOptions.AssemblySettingsInfo.Files.ToArray());
 
-        if (gitVersionOptions.AssemblyInfo.UpdateProjectFiles)
+        if (gitVersionOptions.AssemblySettingsInfo.UpdateProjectFiles)
         {
             using (this.projectFileUpdater)
             {
                 this.projectFileUpdater.Execute(variables, assemblyInfoContext);
             }
         }
-        else if (gitVersionOptions.AssemblyInfo.UpdateAssemblyInfo)
+        else if (gitVersionOptions.AssemblySettingsInfo.UpdateAssemblyInfo)
         {
             using (this.assemblyInfoFileUpdater)
             {

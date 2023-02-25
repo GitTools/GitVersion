@@ -28,7 +28,7 @@ public class HelpWriterTests : TestBase
             { nameof(Arguments.IsHelp), "/?" },
             { nameof(Arguments.IsVersion), "/version" },
             { nameof(Arguments.UpdateWixVersionFile), "/updatewixversionfile" },
-            { nameof(Arguments.ConfigFile), "/config" },
+            { nameof(Arguments.ConfigurationFile), "/config" },
             { nameof(Arguments.Verbosity), "/verbosity" },
             { nameof(Arguments.CommitId), "/c" }
         };

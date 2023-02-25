@@ -8,7 +8,7 @@ GitVersion.Arguments.Arguments() -> void
 GitVersion.Arguments.Authentication -> GitVersion.AuthenticationInfo!
 GitVersion.Arguments.ClonePath -> string?
 GitVersion.Arguments.CommitId -> string?
-GitVersion.Arguments.ConfigFile -> string?
+GitVersion.Arguments.ConfigurationFile -> string?
 GitVersion.Arguments.Diag -> bool
 GitVersion.Arguments.EnsureAssemblyInfo -> bool
 GitVersion.Arguments.Init -> bool

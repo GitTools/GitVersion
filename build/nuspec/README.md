@@ -5,10 +5,10 @@ works out the [Semantic Version][semver] of the commit being built.
 
 [![Gitter][gitter-badge]][gitter]
 
-| Artifact                   |                Stable                                              |   |
-| :------------------------- | :----------------------------------------------------------------- | - |
-| **GitVersion.Tool**        |                           [![NuGet][gvgt-badge]][gvgt]             |
-| **GitVersion.MsBuild**     |                            [![NuGet][gvt-badge]][gvt]              | Known as [GitVersionTask][gitversiontask] before v5.6.0 |
+| Artifact               | Stable                       |                                                         |
+|:-----------------------|:-----------------------------|---------------------------------------------------------|
+| **GitVersion.Tool**    | [![NuGet][gvgt-badge]][gvgt] |
+| **GitVersion.MsBuild** | [![NuGet][gvt-badge]][gvt]   | Known as [GitVersionTask][gitversiontask] before v5.6.0 |
 
 ## Compatibility
 

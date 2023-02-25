@@ -20,13 +20,10 @@ public class GitVersionContextFactory : IGitVersionContextFactory
 
     public GitVersionContext Create(GitVersionOptions gitVersionOptions)
     {
-        var currentBranch = this.repositoryStore.GetTargetBranch(gitVersionOptions.RepositoryInfo.TargetBranch);
-        if (currentBranch == null)
-            throw new InvalidOperationException("Need a branch to operate on");
-
+        var currentBranch = this.repositoryStore.GetTargetBranch(gitVersionOptions.RepositoryInfo.TargetBranch) ?? throw new InvalidOperationException("Need a branch to operate on");
         var currentCommit = this.repositoryStore.GetCurrentCommit(currentBranch, gitVersionOptions.RepositoryInfo.CommitId);
 
-        var overrideConfiguration = this.options.Value.ConfigInfo.OverrideConfiguration;
+        var overrideConfiguration = this.options.Value.ConfigurationInfo.OverrideConfiguration;
         var configuration = this.configurationProvider.Provide(overrideConfiguration);
         if (currentBranch.IsDetachedHead)
         {

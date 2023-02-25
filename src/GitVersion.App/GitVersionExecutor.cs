@@ -64,7 +64,7 @@ public class GitVersionExecutor : IGitVersionExecutor
 
             var variables = this.gitVersionCalculateTool.CalculateVersionVariables();
 
-            var configuration = this.configurationProvider.Provide(gitVersionOptions.ConfigInfo.OverrideConfiguration);
+            var configuration = this.configurationProvider.Provide(gitVersionOptions.ConfigurationInfo.OverrideConfiguration);
 
             this.gitVersionOutputTool.OutputVariables(variables, configuration.UpdateBuildNumber);
             this.gitVersionOutputTool.UpdateAssemblyInfo(variables);
@@ -152,7 +152,7 @@ public class GitVersionExecutor : IGitVersionExecutor
             return true;
         }
 
-        if (gitVersionOptions.ConfigInfo.ShowConfiguration)
+        if (gitVersionOptions.ConfigurationInfo.ShowConfiguration)
         {
             var configuration = this.configurationProvider.Provide();
             this.console.WriteLine(configuration.ToString());

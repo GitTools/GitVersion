@@ -207,7 +207,7 @@ public class GitVersionExecutorTests : TestBase
         gitVersionOptions = new GitVersionOptions
         {
             WorkingDirectory = fixture.RepositoryPath,
-            ConfigInfo = { OverrideConfiguration = overrideConfiguration }
+            ConfigurationInfo = { OverrideConfiguration = overrideConfiguration }
         };
 
         gitVersionCalculator = GetGitVersionCalculator(gitVersionOptions);

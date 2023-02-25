@@ -61,7 +61,7 @@ public static class GitToolsTestingExtensions
         var options = Options.Create(new GitVersionOptions
         {
             WorkingDirectory = repository.Info.WorkingDirectory,
-            ConfigInfo = { OverrideConfiguration = overrideConfiguration },
+            ConfigurationInfo = { OverrideConfiguration = overrideConfiguration },
             RepositoryInfo =
             {
                 TargetBranch = targetBranch,
