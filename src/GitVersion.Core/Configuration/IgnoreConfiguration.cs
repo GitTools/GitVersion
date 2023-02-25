@@ -1,5 +1,4 @@
 using GitVersion.VersionCalculation;
-using YamlDotNet.Serialization;
 
 namespace GitVersion.Configuration;
 
@@ -7,13 +6,13 @@ public class IgnoreConfiguration
 {
     public IgnoreConfiguration() => Shas = Array.Empty<string>();
 
-    [YamlMember(Alias = "commits-before")]
+    [JsonPropertyName("commits-before")]
     public DateTimeOffset? Before { get; set; }
 
-    [YamlMember(Alias = "sha")]
+    [JsonPropertyName("sha")]
     public string[] Shas { get; set; }
 
-    [YamlIgnore]
+    [JsonIgnore]
     public virtual bool IsEmpty => Before == null && Shas.Any() == false;
 
     public virtual IEnumerable<IVersionFilter> ToFilters()

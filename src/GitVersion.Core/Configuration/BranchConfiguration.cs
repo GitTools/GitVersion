@@ -1,5 +1,4 @@
 using GitVersion.VersionCalculation;
-using YamlDotNet.Serialization;
 
 namespace GitVersion.Configuration;
 
@@ -29,58 +28,58 @@ public class BranchConfiguration
         PreReleaseWeight = branchConfiguration.PreReleaseWeight;
     }
 
-    [YamlMember(Alias = "mode")]
+    [JsonPropertyName("mode")]
     public VersioningMode? VersioningMode { get; set; }
 
     /// <summary>
     /// Special value 'useBranchName' will extract the tag from the branch name
     /// </summary>
-    [YamlMember(Alias = "label")]
+    [JsonPropertyName("label")]
     public string? Label { get; set; }
 
-    [YamlMember(Alias = "increment")]
+    [JsonPropertyName("increment")]
     public IncrementStrategy? Increment { get; set; }
 
-    [YamlMember(Alias = "prevent-increment-of-merged-branch-version")]
+    [JsonPropertyName("prevent-increment-of-merged-branch-version")]
     public bool? PreventIncrementOfMergedBranchVersion { get; set; }
 
-    [YamlMember(Alias = "label-number-pattern")]
+    [JsonPropertyName("label-number-pattern")]
     public string? LabelNumberPattern { get; set; }
 
-    [YamlMember(Alias = "track-merge-target")]
+    [JsonPropertyName("track-merge-target")]
     public bool? TrackMergeTarget { get; set; }
 
-    [YamlMember(Alias = "track-merge-message")]
+    [JsonPropertyName("track-merge-message")]
     public bool? TrackMergeMessage { get; set; }
 
-    [YamlMember(Alias = "commit-message-incrementing")]
+    [JsonPropertyName("commit-message-incrementing")]
     public CommitMessageIncrementMode? CommitMessageIncrementing { get; set; }
 
-    [YamlMember(Alias = "regex")]
+    [JsonPropertyName("regex")]
     public string? Regex { get; set; }
 
-    [YamlMember(Alias = "source-branches")]
+    [JsonPropertyName("source-branches")]
     public HashSet<string>? SourceBranches { get; set; }
 
-    [YamlMember(Alias = "is-source-branch-for")]
+    [JsonPropertyName("is-source-branch-for")]
     public HashSet<string>? IsSourceBranchFor { get; set; }
 
-    [YamlMember(Alias = "tracks-release-branches")]
+    [JsonPropertyName("tracks-release-branches")]
     public bool? TracksReleaseBranches { get; set; }
 
-    [YamlMember(Alias = "is-release-branch")]
+    [JsonPropertyName("is-release-branch")]
     public bool? IsReleaseBranch { get; set; }
 
-    [YamlMember(Alias = "is-mainline")]
+    [JsonPropertyName("is-mainline")]
     public bool? IsMainline { get; set; }
 
-    [YamlMember(Alias = "pre-release-weight")]
+    [JsonPropertyName("pre-release-weight")]
     public int? PreReleaseWeight { get; set; }
 
     /// <summary>
     /// The name given to this configuration in the configuration file.
     /// </summary>
-    [YamlIgnore]
+    [JsonIgnore]
     public string Name { get; set; }
 
     public BranchConfiguration Inherit(BranchConfiguration? parentConfig)

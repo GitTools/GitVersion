@@ -2,7 +2,6 @@ using GitVersion.Configuration;
 using GitVersion.Core.Tests.Helpers;
 using GitVersion.Helpers;
 using GitVersion.OutputVariables;
-using YamlDotNet.Serialization;
 
 namespace GitVersion.Core.Tests;
 
@@ -23,9 +22,9 @@ public class DocumentationTests : TestBase
         var configProperties = typeof(GitVersionConfiguration)
             .GetProperties(bindingFlags)
             .Union(typeof(BranchConfiguration).GetProperties(bindingFlags))
-            .Select(p => p.GetCustomAttribute<YamlMemberAttribute>())
+            .Select(p => p.GetCustomAttribute<JsonPropertyNameAttribute>())
             .Where(a => a != null)
-            .Select(a => a?.Alias)
+            .Select(a => a?.Name)
             .ToList();
 
         configProperties.ShouldNotBeEmpty();

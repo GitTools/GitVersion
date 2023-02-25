@@ -6,7 +6,6 @@ using GitVersion.Helpers;
 using GitVersion.Logging;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
-using YamlDotNet.Serialization;
 
 namespace GitVersion.Core.Tests;
 
@@ -255,8 +254,8 @@ branches: {}";
         var configuration = typeof(GitVersionConfiguration);
         var propertiesMissingAlias = configuration.GetProperties()
             .Where(p => p.GetCustomAttribute<ObsoleteAttribute>() == null)
-            .Where(p => p.GetCustomAttribute<YamlIgnoreAttribute>() == null)
-            .Where(p => p.GetCustomAttribute(typeof(YamlMemberAttribute)) == null)
+            .Where(p => p.GetCustomAttribute<JsonIgnoreAttribute>() == null)
+            .Where(p => p.GetCustomAttribute<JsonPropertyNameAttribute>() == null)
             .Select(p => p.Name);
 
         propertiesMissingAlias.ShouldBeEmpty();

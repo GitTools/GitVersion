@@ -27,12 +27,12 @@
         <Nullable>enable</Nullable>
         <SatelliteResourceLanguages>en</SatelliteResourceLanguages>
 
-        <EnableNETAnalyzers>True</EnableNETAnalyzers>
+        <EnableNETAnalyzers>true</EnableNETAnalyzers>
         <AnalysisLevel>latest</AnalysisLevel>
-        <EnforceCodeStyleInBuild>True</EnforceCodeStyleInBuild>
+        <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
 
         <IsUnitTestProject>false</IsUnitTestProject>
-        <IsUnitTestProject Condition="$(MSBuildProjectName.EndsWith('.Tests')) or $(MSBuildProjectName.EndsWith('.Testing'))">True</IsUnitTestProject>
+        <IsUnitTestProject Condition="$(MSBuildProjectName.EndsWith('.Tests')) or $(MSBuildProjectName.EndsWith('.Testing'))">true</IsUnitTestProject>
     </PropertyGroup>
 
     <PropertyGroup Condition="'$(GITHUB_ACTIONS)' == 'true'">
@@ -82,6 +82,8 @@
         <Using Include="System.Diagnostics"/>
         <Using Include="System.Reflection"/>
         <Using Include="System.Text"/>
+        <Using Include="System.Text.Json"/>
+        <Using Include="System.Text.Json.Serialization"/>
         <Using Include="System.Xml"/>
     </ItemGroup>
 

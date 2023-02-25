@@ -1,5 +1,4 @@
 using GitVersion.Configuration;
-using YamlDotNet.Serialization;
 
 namespace GitVersion;
 
@@ -18,17 +17,17 @@ internal class OverrideConfigurationOptionParser
     /// </summary>
     /// <returns></returns>
     /// <remarks>
-    /// Lookup keys are created from <see cref="YamlDotNet.Serialization.YamlMemberAttribute"/> to match 'GitVersion.yml'
+    /// Lookup keys are created from <see cref="System.Text.Json.Serialization.JsonPropertyNameAttribute"/> to match 'GitVersion.yml'
     /// options as close as possible.
     /// </remarks>
     private static ILookup<string?, PropertyInfo> GetSupportedProperties() => typeof(GitVersionConfiguration).GetProperties(BindingFlags.Public | BindingFlags.Instance)
         .Where(
             pi => IsSupportedPropertyType(pi.PropertyType)
                   && pi.CanWrite
-                  && pi.GetCustomAttributes(typeof(YamlMemberAttribute), false).Length > 0
+                  && pi.GetCustomAttributes(typeof(JsonPropertyNameAttribute), false).Length > 0
         )
         .ToLookup(
-            pi => (pi.GetCustomAttributes(typeof(YamlMemberAttribute), false)[0] as YamlMemberAttribute)?.Alias,
+            pi => (pi.GetCustomAttributes(typeof(JsonPropertyNameAttribute), false)[0] as JsonPropertyNameAttribute)?.Name,
             pi => pi
         );
 
