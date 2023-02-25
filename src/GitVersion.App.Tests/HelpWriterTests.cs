@@ -30,7 +30,9 @@ public class HelpWriterTests : TestBase
             { nameof(Arguments.UpdateWixVersionFile), "/updatewixversionfile" },
             { nameof(Arguments.ConfigurationFile), "/config" },
             { nameof(Arguments.Verbosity), "/verbosity" },
-            { nameof(Arguments.CommitId), "/c" }
+            { nameof(Arguments.CommitId), "/c" },
+            { nameof(Arguments.ShowConfiguration), "/showconfig" },
+            { nameof(Arguments.OverrideConfiguration), "/overrideconfig" }
         };
         string helpText = string.Empty;
 

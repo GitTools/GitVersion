@@ -929,7 +929,7 @@ GitVersion.VersionField.Patch = 1 -> GitVersion.VersionField
 GitVersion.WarningException
 GitVersion.WarningException.WarningException(string! message) -> void
 GitVersion.WixInfo
-GitVersion.WixInfo.ShouldUpdate -> bool
+GitVersion.WixInfo.UpdateWixVersionFile -> bool
 GitVersion.WixInfo.WixInfo() -> void
 abstract GitVersion.Agents.BuildAgentBase.EnvironmentVariable.get -> string!
 abstract GitVersion.Agents.BuildAgentBase.GenerateSetParameterMessage(string! name, string! value) -> string![]!

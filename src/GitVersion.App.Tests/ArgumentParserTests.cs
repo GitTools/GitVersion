@@ -365,7 +365,7 @@ public class ArgumentParserTests : TestBase
     public void OverrideconfigWithNoOptions()
     {
         var arguments = this.argumentParser.ParseArguments("/overrideconfig");
-        arguments.OverrideConfig.ShouldBeNull();
+        arguments.OverrideConfiguration.ShouldBeNull();
     }
 
     [TestCaseSource(nameof(OverrideconfigWithInvalidOptionTestData))]
@@ -393,7 +393,7 @@ public class ArgumentParserTests : TestBase
     {
         var arguments = this.argumentParser.ParseArguments($"/overrideconfig {options}");
 
-        ConfigurationHelper configurationHelper = new(arguments.OverrideConfig);
+        ConfigurationHelper configurationHelper = new(arguments.OverrideConfiguration);
         configurationHelper.Configuration.ShouldBeEquivalentTo(expected);
     }
 
@@ -531,7 +531,7 @@ public class ArgumentParserTests : TestBase
     public void OverrideConfigWithMultipleOptions(string options, GitVersionConfiguration expected)
     {
         var arguments = this.argumentParser.ParseArguments(options);
-        ConfigurationHelper configruationHelper = new(arguments.OverrideConfig);
+        ConfigurationHelper configruationHelper = new(arguments.OverrideConfiguration);
         configruationHelper.Configuration.ShouldBeEquivalentTo(expected);
     }
 

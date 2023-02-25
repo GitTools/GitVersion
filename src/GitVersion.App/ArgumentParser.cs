@@ -300,7 +300,7 @@ public class ArgumentParser : IArgumentParser
         if (!name.IsSwitch("showConfig"))
             return false;
 
-        arguments.ShowConfig = value.IsTrue() || !value.IsFalse();
+        arguments.ShowConfiguration = value.IsTrue() || !value.IsFalse();
         return true;
 
     }
@@ -437,7 +437,7 @@ public class ArgumentParser : IArgumentParser
             }
             parser.SetValue(optionKey, keyAndValue[1]);
         }
-        arguments.OverrideConfig = parser.GetOverrideConfiguration();
+        arguments.OverrideConfiguration = parser.GetOverrideConfiguration();
     }
 
     private static void ParseUpdateAssemblyInfo(Arguments arguments, string? value, IReadOnlyCollection<string>? values)

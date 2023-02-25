@@ -62,7 +62,7 @@ public class GitVersionOutputTool : IGitVersionOutputTool
 
     public void UpdateWixVersionFile(VersionVariables variables)
     {
-        if (gitVersionOptions.WixInfo.ShouldUpdate)
+        if (gitVersionOptions.WixInfo.UpdateWixVersionFile)
         {
             using (this.wixVersionFileUpdater)
             {

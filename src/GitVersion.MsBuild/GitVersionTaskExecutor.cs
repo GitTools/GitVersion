@@ -49,9 +49,9 @@ public class GitVersionTaskExecutor : IGitVersionTaskExecutor
         task.AssemblyInfoTempFilePath = PathHelper.Combine(fileWriteInfo.WorkingDirectory, fileWriteInfo.FileName);
 
         var gitVersionOptions = this.options.Value;
+        gitVersionOptions.WorkingDirectory = fileWriteInfo.WorkingDirectory;
         gitVersionOptions.AssemblySettingsInfo.UpdateAssemblyInfo = true;
         gitVersionOptions.AssemblySettingsInfo.EnsureAssemblyInfo = true;
-        gitVersionOptions.WorkingDirectory = fileWriteInfo.WorkingDirectory;
         gitVersionOptions.AssemblySettingsInfo.Files.Add(fileWriteInfo.FileName);
 
         gitVersionOutputTool.UpdateAssemblyInfo(versionVariables);

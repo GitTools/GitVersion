@@ -7,8 +7,8 @@ public class Arguments
     public AuthenticationInfo Authentication = new();
 
     public string? ConfigurationFile;
-    public IReadOnlyDictionary<object, object?> OverrideConfig;
-    public bool ShowConfig;
+    public IReadOnlyDictionary<object, object?> OverrideConfiguration;
+    public bool ShowConfiguration;
 
     public string? TargetPath;
 
@@ -61,8 +61,8 @@ public class Arguments
             ConfigurationInfo =
             {
                 ConfigurationFile = ConfigurationFile,
-                OverrideConfiguration = OverrideConfig,
-                ShowConfiguration = ShowConfig
+                OverrideConfiguration = OverrideConfiguration,
+                ShowConfiguration = ShowConfiguration
             },
 
             RepositoryInfo =
@@ -82,7 +82,7 @@ public class Arguments
 
             WixInfo =
             {
-                ShouldUpdate = UpdateWixVersionFile
+                UpdateWixVersionFile = UpdateWixVersionFile
             },
 
             Init = Init,
