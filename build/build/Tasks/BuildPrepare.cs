@@ -12,7 +12,6 @@ public sealed class BuildPrepare : FrostingTask<BuildContext>
         context.Information("Builds solution...");
 
         const string sln = "./src/GitVersion.sln";
-        const string project = "./src/GitVersion.App/GitVersion.App.csproj";
         context.DotNetRestore(sln,
             new()
             {
@@ -20,12 +19,22 @@ public sealed class BuildPrepare : FrostingTask<BuildContext>
                 Sources = new[] { Constants.NugetOrgUrl },
             });
 
-        context.DotNetBuild(project,
+        context.DotNetBuild("./src/GitVersion.App/GitVersion.App.csproj",
             new()
             {
                 Verbosity = DotNetVerbosity.Minimal,
                 Configuration = Constants.DefaultConfiguration,
-                OutputDirectory = Paths.Dogfood,
+                OutputDirectory = Paths.Tools.Combine("gitversion"),
+                Framework = Constants.NetVersionLatest,
+                NoRestore = true,
+            });
+
+        context.DotNetBuild("./src/GitVersion.Schema/GitVersion.Schema.csproj",
+            new()
+            {
+                Verbosity = DotNetVerbosity.Minimal,
+                Configuration = Constants.DefaultConfiguration,
+                OutputDirectory = Paths.Tools.Combine("schema"),
                 Framework = Constants.NetVersionLatest,
                 NoRestore = true,
             });

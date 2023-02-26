@@ -9,7 +9,7 @@ public class Paths
     public static readonly DirectoryPath Docs = Root.Combine("docs");
     public static readonly DirectoryPath Build = Root.Combine("build");
     public static readonly DirectoryPath Schemas = Root.Combine("schemas");
-    public static readonly DirectoryPath Dogfood = Root.Combine("dogfood");
+    public static readonly DirectoryPath Tools = Root.Combine("tools");
     public static readonly DirectoryPath Integration = Root.Combine("tests").Combine("integration");
 
     public static readonly DirectoryPath TestOutput = Artifacts.Combine("test-results");
