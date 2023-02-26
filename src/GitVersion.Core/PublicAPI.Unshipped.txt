@@ -386,6 +386,7 @@ GitVersion.GitVersionOptions.AssemblySettingsInfo.get -> GitVersion.AssemblySett
 GitVersion.GitVersionOptions.AuthenticationInfo.get -> GitVersion.AuthenticationInfo!
 GitVersion.GitVersionOptions.ConfigurationInfo.get -> GitVersion.ConfigurationInfo!
 GitVersion.GitVersionOptions.Diag -> bool
+GitVersion.GitVersionOptions.Format -> string?
 GitVersion.GitVersionOptions.GitVersionOptions() -> void
 GitVersion.GitVersionOptions.Init -> bool
 GitVersion.GitVersionOptions.IsHelp -> bool

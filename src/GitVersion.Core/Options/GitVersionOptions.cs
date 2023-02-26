@@ -20,6 +20,7 @@ public class GitVersionOptions
 
     public string? LogFilePath;
     public string? ShowVariable;
+    public string? Format;
     public string? OutputFile;
     public ISet<OutputType> Output = new HashSet<OutputType>();
     public Verbosity Verbosity = Verbosity.Normal;

@@ -30,6 +30,7 @@ public class Arguments
 
     public string? LogFilePath;
     public string? ShowVariable;
+    public string? Format;
     public string? OutputFile;
     public ISet<OutputType> Output = new HashSet<OutputType>();
     public Verbosity Verbosity = Verbosity.Normal;
@@ -92,6 +93,7 @@ public class Arguments
 
             LogFilePath = LogFilePath,
             ShowVariable = ShowVariable,
+            Format = Format,
             Verbosity = Verbosity,
             Output = Output,
             OutputFile = OutputFile

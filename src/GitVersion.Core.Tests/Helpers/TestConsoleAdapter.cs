@@ -1,6 +1,6 @@
 using GitVersion.Logging;
 
-namespace GitVersion.App.Tests;
+namespace GitVersion.Core.Tests.Helpers;
 
 public class TestConsoleAdapter : IConsole
 {

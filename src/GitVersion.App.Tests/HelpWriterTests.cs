@@ -32,7 +32,9 @@ public class HelpWriterTests : TestBase
             { nameof(Arguments.Verbosity), "/verbosity" },
             { nameof(Arguments.CommitId), "/c" },
             { nameof(Arguments.ShowConfiguration), "/showconfig" },
-            { nameof(Arguments.OverrideConfiguration), "/overrideconfig" }
+            { nameof(Arguments.OverrideConfiguration), "/overrideconfig" },
+            { nameof(Arguments.ShowVariable), "/showvariable" },
+            { nameof(Arguments.Format), "/format" }
         };
         string helpText = string.Empty;
 

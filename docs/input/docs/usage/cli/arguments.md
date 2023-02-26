@@ -37,6 +37,10 @@ GitVersion [path]
     /showvariable   Used in conjuntion with /output json, will output just a
                     particular variable. E.g. /output json /showvariable SemVer
                     - will output `1.2.3+beta.4`
+    /format         Used in conjuntion with /output json, will output a format
+                    containing version variables.
+                    E.g. /output json /format {SemVer} - will output `1.2.3+beta.4`
+                         /output json /format {Major}.{Minor} - will output `1.2`
     /l              Path to logfile.
     /config         Path to config file (defaults to GitVersion.yml)
     /showconfig     Outputs the effective GitVersion config (defaults + custom

@@ -11,6 +11,7 @@ GitVersion.Arguments.CommitId -> string?
 GitVersion.Arguments.ConfigurationFile -> string?
 GitVersion.Arguments.Diag -> bool
 GitVersion.Arguments.EnsureAssemblyInfo -> bool
+GitVersion.Arguments.Format -> string?
 GitVersion.Arguments.Init -> bool
 GitVersion.Arguments.IsHelp -> bool
 GitVersion.Arguments.IsVersion -> bool
