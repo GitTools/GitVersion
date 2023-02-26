@@ -19,12 +19,6 @@ runs:
       path: tools
       key: tools-${{ runner.os }}-${{ hashFiles('./build/**') }}
   -
-    uses: actions/download-artifact@v3
-    name: Download gitversion tool
-    with:
-      name: tool
-      path: ${{ github.workspace }}/dogfood
-  -
     name: Setup .NET SDK
     uses: actions/setup-dotnet@v3
     with:

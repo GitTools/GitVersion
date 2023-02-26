@@ -1,0 +1,21 @@
+using Common.Utilities;
+
+namespace Docs.Tasks;
+
+[TaskName(nameof(GenerateSchemas))]
+[TaskDescription("Generate schemas")]
+public sealed class GenerateSchemas : FrostingTask<BuildContext>
+{
+    public override void Run(BuildContext context)
+    {
+        var schemaTool = context.GetSchemaDotnetToolLocation();
+        var gitVersion = context.Version!.GitVersion;
+        var version = $"{gitVersion.Major}.{gitVersion.Minor}";
+        var schemaTargetDir = context.MakeAbsolute(Paths.Root.Combine("schemas"));
+        context.EnsureDirectoryExists(schemaTargetDir);
+        context.Information("Schema tool: {0}", schemaTool);
+        context.Information("Schema target dir: {0}", schemaTargetDir);
+        context.Information("Schema version: {0}", version);
+        context.DotNetExecute(schemaTool, $"--Version {version} --OutputDirectory {schemaTargetDir}");
+    }
+}

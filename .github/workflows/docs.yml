@@ -80,19 +80,14 @@ jobs:
       with:
         global-json-file: global.json
     -
-      name: '[Prepare]'
+      name: '[Build]'
       if: steps.cache-cake.outputs.cache-hit != 'true'
       run: dotnet build build/CI.sln --configuration=Release
     -
-      name: '[DogFood]'
+      name: '[Prepare]'
       shell: pwsh
       run: dotnet run/build.dll --target=BuildPrepare
-    -
-      name: 'Upload gitversion tool'
-      uses: actions/upload-artifact@v3
-      with:
-        name: tool
-        path: ${{ github.workspace }}/dogfood
+
   validate:
     name: Validates Html
     needs: [prepare]
@@ -145,6 +140,11 @@ jobs:
     -
       name: Restore State
       uses: ./.github/actions/artifacts-restore
+    -
+      name: '[Build Schemas]'
+      shell: pwsh
+      run: |
+        dotnet run/docs.dll --target=GenerateSchemas
     -
       name: '[Publish Documentation]'
       if: ${{ github.event_name == 'push' }}

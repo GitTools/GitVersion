@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <AssemblyName>schema</AssemblyName>
+    </PropertyGroup>
+    <ItemGroup>
+        <PackageReference Include="JsonSchema.Net.Generation" />
+        <PackageReference Include="Microsoft.Extensions.Configuration.CommandLine" />
+    </ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\GitVersion.Core\GitVersion.Core.csproj" />
+    </ItemGroup>
+</Project>

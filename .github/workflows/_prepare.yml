@@ -21,22 +21,22 @@ jobs:
       with:
         path: run
         key: run-${{ runner.os }}-${{ hashFiles('./build/**') }}
+    - name: Use cached tools
+      id: cache-tools
+      uses: actions/cache@v3
+      with:
+        path: tools
+        key: tools-${{ runner.os }}-${{ hashFiles('./build/**') }}
     -
       name: Setup .NET SDK
       uses: actions/setup-dotnet@v3
       with:
         global-json-file: global.json
     -
-      name: '[Prepare]'
+      name: '[Build]'
       if: steps.cache-cake.outputs.cache-hit != 'true'
       run: dotnet build build/CI.sln --configuration=Release
     -
-      name: '[DogFood]'
+      name: '[Prepare]'
       shell: pwsh
       run: dotnet run/build.dll --target=BuildPrepare
-    -
-      name: 'Upload gitversion tool'
-      uses: actions/upload-artifact@v3
-      with:
-        name: tool
-        path: ${{ github.workspace }}/dogfood

@@ -29,7 +29,7 @@ public class BuildLifetimeBase<T> : FrostingLifetime<T> where T : BuildContextBa
             context.Information("Running BuildPrepare...");
             return;
         }
-        var gitversionTool = context.GetDogFoodGitVersionToolLocation();
+        var gitversionTool = context.GetGitVersionDotnetToolLocation();
         var gitVersionSettings = new GitVersionSettings
         {
             OutputTypes = new HashSet<GitVersionOutput> { GitVersionOutput.Json, GitVersionOutput.BuildServer },

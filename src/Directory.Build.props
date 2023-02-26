@@ -43,7 +43,7 @@
         <PackageReference Include="System.Text.Json"/>
         <PackageReference Include="System.Text.Encodings.Web"/>
     </ItemGroup>
-    <ItemGroup Condition=" '$(IsUnitTestProject)' == 'false' ">
+    <ItemGroup Condition=" '$(IsUnitTestProject)' == 'false' and $(MSBuildProjectName.EndsWith('.Schema')) == 'false'">
         <PackageReference Include="Microsoft.CodeAnalysis.PublicApiAnalyzers">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>

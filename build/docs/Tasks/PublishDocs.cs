@@ -82,6 +82,10 @@ public sealed class PublishDocsInternal : FrostingTask<BuildContext>
             context.Wyam(context.WyamSettings);
         }
 
+        var schemaTargetDir = publishFolder.Combine("schemas");
+        context.EnsureDirectoryExists(schemaTargetDir);
+        context.CopyDirectory(Paths.Schemas, schemaTargetDir);
+
         if (!context.GitHasUncommitedChanges(publishFolder)) return;
 
         context.Information("Stage all changes...");
