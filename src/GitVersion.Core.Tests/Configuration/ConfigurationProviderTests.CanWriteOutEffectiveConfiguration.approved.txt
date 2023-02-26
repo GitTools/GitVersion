@@ -1,4 +1,3 @@
-remote-name-in-git: origin
 assembly-versioning-scheme: MajorMinorPatch
 assembly-file-versioning-scheme: MajorMinorPatch
 label-prefix: '[vV]?'

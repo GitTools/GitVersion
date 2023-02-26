@@ -11,7 +11,6 @@ internal sealed class GitHubFlowConfigurationBuilder : ConfigurationBuilderBase<
     {
         WithConfiguration(new()
         {
-            RemoteNameInGit = GitVersionConfiguration.DefaultRemoteNameInGit,
             AssemblyFileVersioningScheme = AssemblyFileVersioningScheme.MajorMinorPatch,
             AssemblyVersioningScheme = AssemblyVersioningScheme.MajorMinorPatch,
             CommitDateFormat = "yyyy-MM-dd",

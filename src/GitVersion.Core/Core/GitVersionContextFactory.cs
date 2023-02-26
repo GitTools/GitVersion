@@ -26,17 +26,6 @@ public class GitVersionContextFactory : IGitVersionContextFactory
             currentBranch = branchForCommit ?? currentBranch;
         }
 
-        if (currentBranch.IsRemote)
-        {
-            var remoteNameInGit = configuration.RemoteNameInGit;
-            if (string.IsNullOrEmpty(remoteNameInGit) || !currentBranch.Name.Friendly.StartsWith(remoteNameInGit))
-            {
-                throw new InvalidOperationException(
-                    $"The remote branch name '{currentBranch.Name.Friendly}' is not valid. Please use another branch or change the configuration."
-                );
-            }
-        }
-
         var currentCommitTaggedVersion = this.repositoryStore.GetCurrentCommitTaggedVersion(currentCommit, configuration.LabelPrefix, configuration.SemanticVersionFormat, handleDetachedBranch: currentBranch.IsDetachedHead);
         var numberOfUncommittedChanges = this.repositoryStore.GetNumberOfUncommittedChanges();
 

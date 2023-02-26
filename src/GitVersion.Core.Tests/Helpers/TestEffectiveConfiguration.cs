@@ -7,7 +7,6 @@ namespace GitVersion.Core.Tests.Helpers;
 public class TestEffectiveConfiguration : EffectiveConfiguration
 {
     public TestEffectiveConfiguration(
-        string remoteNameInGit = GitVersionConfiguration.DefaultRemoteNameInGit,
         AssemblyVersioningScheme assemblyVersioningScheme = AssemblyVersioningScheme.MajorMinorPatch,
         AssemblyFileVersioningScheme assemblyFileVersioningScheme = AssemblyFileVersioningScheme.MajorMinorPatch,
         string? assemblyVersioningFormat = null,
@@ -32,8 +31,7 @@ public class TestEffectiveConfiguration : EffectiveConfiguration
         bool isMainline = false,
         string commitDateFormat = "yyyy-MM-dd",
         bool updateBuildNumber = false) :
-        base(remoteNameInGit,
-            assemblyVersioningScheme,
+        base(assemblyVersioningScheme,
             assemblyFileVersioningScheme,
             assemblyInformationalFormat,
             assemblyVersioningFormat,

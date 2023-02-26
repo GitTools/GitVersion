@@ -442,7 +442,7 @@ public class AssemblyInfoFileUpdaterTests : TestBase
             this.fileSystem.ReadAllText(fileName).Returns(assemblyFileContent);
         });
 
-        var configuration = new TestEffectiveConfiguration(assemblyVersioningScheme: versioningScheme);
+        var configuration = new TestEffectiveConfiguration(versioningScheme);
         var variables = this.variableProvider.GetVariablesFor(version, configuration, false);
 
         verify?.Invoke(this.fileSystem, variables);
