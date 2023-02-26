@@ -9,30 +9,30 @@ namespace GitVersion.OutputVariables;
 public class VersionVariables : IEnumerable<KeyValuePair<string, string>>
 {
     public VersionVariables(string major,
-        string minor,
-        string patch,
-        string? buildMetaData,
-        string? fullBuildMetaData,
-        string? branchName,
-        string? escapedBranchName,
-        string? sha,
-        string? shortSha,
-        string majorMinorPatch,
-        string semVer,
-        string fullSemVer,
-        string? assemblySemVer,
-        string? assemblySemFileVer,
-        string? preReleaseTag,
-        string? preReleaseTagWithDash,
-        string? preReleaseLabel,
-        string? preReleaseLabelWithDash,
-        string? preReleaseNumber,
-        string weightedPreReleaseNumber,
-        string? informationalVersion,
-        string? commitDate,
-        string? versionSourceSha,
-        string? commitsSinceVersionSource,
-        string? uncommittedChanges)
+                            string minor,
+                            string patch,
+                            string? buildMetaData,
+                            string? fullBuildMetaData,
+                            string? branchName,
+                            string? escapedBranchName,
+                            string? sha,
+                            string? shortSha,
+                            string majorMinorPatch,
+                            string semVer,
+                            string fullSemVer,
+                            string? assemblySemVer,
+                            string? assemblySemFileVer,
+                            string? preReleaseTag,
+                            string? preReleaseTagWithDash,
+                            string? preReleaseLabel,
+                            string? preReleaseLabelWithDash,
+                            string? preReleaseNumber,
+                            string weightedPreReleaseNumber,
+                            string? informationalVersion,
+                            string? commitDate,
+                            string? versionSourceSha,
+                            string? commitsSinceVersionSource,
+                            string? uncommittedChanges)
     {
         Major = major;
         Minor = minor;
@@ -97,8 +97,10 @@ public class VersionVariables : IEnumerable<KeyValuePair<string, string>>
     [ReflectionIgnore]
     public string? FileName { get; set; }
 
+
     [ReflectionIgnore]
     public string? this[string variable] => typeof(VersionVariables).GetProperty(variable)?.GetValue(this, null) as string;
+
 
     public IEnumerator<KeyValuePair<string, string>> GetEnumerator() => this.GetProperties().GetEnumerator();
 
@@ -174,7 +176,8 @@ public class VersionVariables : IEnumerable<KeyValuePair<string, string>>
 
         foreach (var (key, value) in this.GetProperties())
         {
-            variablesType.GetProperty(key)?.SetValue(variables, value);
+            var propertyInfo = variablesType.GetProperty(key);
+            propertyInfo?.SetValue(variables, ChangeType(value, propertyInfo.PropertyType));
         }
 
         var serializeOptions = JsonSerializerOptions();
@@ -191,5 +194,20 @@ public class VersionVariables : IEnumerable<KeyValuePair<string, string>>
             Converters = { new VersionVariablesJsonStringConverter() }
         };
         return serializeOptions;
+    }
+
+    private static object? ChangeType(object? value, Type type)
+    {
+        if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>))
+        {
+            if (value == null || value.ToString() == string.Empty)
+            {
+                return null;
+            }
+
+            type = Nullable.GetUnderlyingType(type)!;
+        }
+
+        return Convert.ChangeType(value, type);
     }
 }

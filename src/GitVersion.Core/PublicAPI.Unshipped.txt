@@ -24,6 +24,16 @@ GitVersion.AssemblySettingsInfo.EnsureAssemblyInfo -> bool
 GitVersion.AssemblySettingsInfo.Files -> System.Collections.Generic.ISet<string!>!
 GitVersion.AssemblySettingsInfo.UpdateAssemblyInfo -> bool
 GitVersion.AssemblySettingsInfo.UpdateProjectFiles -> bool
+GitVersion.Attributes.JsonPropertyDescriptionAttribute
+GitVersion.Attributes.JsonPropertyDescriptionAttribute.Description.get -> string!
+GitVersion.Attributes.JsonPropertyDescriptionAttribute.JsonPropertyDescriptionAttribute(string! description) -> void
+GitVersion.Attributes.JsonPropertyPatternAttribute
+GitVersion.Attributes.JsonPropertyPatternAttribute.Format.get -> GitVersion.Attributes.PatternFormat
+GitVersion.Attributes.JsonPropertyPatternAttribute.JsonPropertyPatternAttribute(string! pattern, GitVersion.Attributes.PatternFormat format = GitVersion.Attributes.PatternFormat.Regex) -> void
+GitVersion.Attributes.JsonPropertyPatternAttribute.Pattern.get -> string!
+GitVersion.Attributes.PatternFormat
+GitVersion.Attributes.PatternFormat.DateTime = 1 -> GitVersion.Attributes.PatternFormat
+GitVersion.Attributes.PatternFormat.Regex = 0 -> GitVersion.Attributes.PatternFormat
 GitVersion.AuthenticationInfo
 GitVersion.AuthenticationInfo.AuthenticationInfo() -> void
 GitVersion.AuthenticationInfo.Password.get -> string?
@@ -644,11 +654,11 @@ GitVersion.OutputVariables.VersionVariablesJsonModel.AssemblySemVer.get -> strin
 GitVersion.OutputVariables.VersionVariablesJsonModel.AssemblySemVer.set -> void
 GitVersion.OutputVariables.VersionVariablesJsonModel.BranchName.get -> string?
 GitVersion.OutputVariables.VersionVariablesJsonModel.BranchName.set -> void
-GitVersion.OutputVariables.VersionVariablesJsonModel.BuildMetaData.get -> string?
+GitVersion.OutputVariables.VersionVariablesJsonModel.BuildMetaData.get -> int?
 GitVersion.OutputVariables.VersionVariablesJsonModel.BuildMetaData.set -> void
 GitVersion.OutputVariables.VersionVariablesJsonModel.CommitDate.get -> string?
 GitVersion.OutputVariables.VersionVariablesJsonModel.CommitDate.set -> void
-GitVersion.OutputVariables.VersionVariablesJsonModel.CommitsSinceVersionSource.get -> string?
+GitVersion.OutputVariables.VersionVariablesJsonModel.CommitsSinceVersionSource.get -> int?
 GitVersion.OutputVariables.VersionVariablesJsonModel.CommitsSinceVersionSource.set -> void
 GitVersion.OutputVariables.VersionVariablesJsonModel.EscapedBranchName.get -> string?
 GitVersion.OutputVariables.VersionVariablesJsonModel.EscapedBranchName.set -> void
@@ -658,19 +668,19 @@ GitVersion.OutputVariables.VersionVariablesJsonModel.FullSemVer.get -> string?
 GitVersion.OutputVariables.VersionVariablesJsonModel.FullSemVer.set -> void
 GitVersion.OutputVariables.VersionVariablesJsonModel.InformationalVersion.get -> string?
 GitVersion.OutputVariables.VersionVariablesJsonModel.InformationalVersion.set -> void
-GitVersion.OutputVariables.VersionVariablesJsonModel.Major.get -> string?
+GitVersion.OutputVariables.VersionVariablesJsonModel.Major.get -> int?
 GitVersion.OutputVariables.VersionVariablesJsonModel.Major.set -> void
 GitVersion.OutputVariables.VersionVariablesJsonModel.MajorMinorPatch.get -> string?
 GitVersion.OutputVariables.VersionVariablesJsonModel.MajorMinorPatch.set -> void
-GitVersion.OutputVariables.VersionVariablesJsonModel.Minor.get -> string?
+GitVersion.OutputVariables.VersionVariablesJsonModel.Minor.get -> int?
 GitVersion.OutputVariables.VersionVariablesJsonModel.Minor.set -> void
-GitVersion.OutputVariables.VersionVariablesJsonModel.Patch.get -> string?
+GitVersion.OutputVariables.VersionVariablesJsonModel.Patch.get -> int?
 GitVersion.OutputVariables.VersionVariablesJsonModel.Patch.set -> void
 GitVersion.OutputVariables.VersionVariablesJsonModel.PreReleaseLabel.get -> string?
 GitVersion.OutputVariables.VersionVariablesJsonModel.PreReleaseLabel.set -> void
 GitVersion.OutputVariables.VersionVariablesJsonModel.PreReleaseLabelWithDash.get -> string?
 GitVersion.OutputVariables.VersionVariablesJsonModel.PreReleaseLabelWithDash.set -> void
-GitVersion.OutputVariables.VersionVariablesJsonModel.PreReleaseNumber.get -> string?
+GitVersion.OutputVariables.VersionVariablesJsonModel.PreReleaseNumber.get -> int?
 GitVersion.OutputVariables.VersionVariablesJsonModel.PreReleaseNumber.set -> void
 GitVersion.OutputVariables.VersionVariablesJsonModel.PreReleaseTag.get -> string?
 GitVersion.OutputVariables.VersionVariablesJsonModel.PreReleaseTag.set -> void
@@ -682,15 +692,13 @@ GitVersion.OutputVariables.VersionVariablesJsonModel.Sha.get -> string?
 GitVersion.OutputVariables.VersionVariablesJsonModel.Sha.set -> void
 GitVersion.OutputVariables.VersionVariablesJsonModel.ShortSha.get -> string?
 GitVersion.OutputVariables.VersionVariablesJsonModel.ShortSha.set -> void
-GitVersion.OutputVariables.VersionVariablesJsonModel.UncommittedChanges.get -> string?
+GitVersion.OutputVariables.VersionVariablesJsonModel.UncommittedChanges.get -> int?
 GitVersion.OutputVariables.VersionVariablesJsonModel.UncommittedChanges.set -> void
 GitVersion.OutputVariables.VersionVariablesJsonModel.VersionSourceSha.get -> string?
 GitVersion.OutputVariables.VersionVariablesJsonModel.VersionSourceSha.set -> void
 GitVersion.OutputVariables.VersionVariablesJsonModel.VersionVariablesJsonModel() -> void
-GitVersion.OutputVariables.VersionVariablesJsonModel.WeightedPreReleaseNumber.get -> string?
+GitVersion.OutputVariables.VersionVariablesJsonModel.WeightedPreReleaseNumber.get -> int?
 GitVersion.OutputVariables.VersionVariablesJsonModel.WeightedPreReleaseNumber.set -> void
-GitVersion.OutputVariables.VersionVariablesJsonNumberConverter
-GitVersion.OutputVariables.VersionVariablesJsonNumberConverter.VersionVariablesJsonNumberConverter() -> void
 GitVersion.OutputVariables.VersionVariablesJsonStringConverter
 GitVersion.OutputVariables.VersionVariablesJsonStringConverter.VersionVariablesJsonStringConverter() -> void
 GitVersion.RefSpecDirection
@@ -1015,10 +1023,6 @@ override GitVersion.Configuration.Init.Wizard.PickBranchingStrategyStep.HandleRe
 override GitVersion.Helpers.LambdaKeyComparer<TSource, TKey>.Compare(TSource? x, TSource? y) -> int
 override GitVersion.Logging.Log.ToString() -> string!
 override GitVersion.OutputVariables.VersionVariables.ToString() -> string!
-override GitVersion.OutputVariables.VersionVariablesJsonNumberConverter.CanConvert(System.Type! typeToConvert) -> bool
-override GitVersion.OutputVariables.VersionVariablesJsonNumberConverter.HandleNull.get -> bool
-override GitVersion.OutputVariables.VersionVariablesJsonNumberConverter.Read(ref System.Text.Json.Utf8JsonReader reader, System.Type! typeToConvert, System.Text.Json.JsonSerializerOptions! options) -> string!
-override GitVersion.OutputVariables.VersionVariablesJsonNumberConverter.Write(System.Text.Json.Utf8JsonWriter! writer, string? value, System.Text.Json.JsonSerializerOptions! options) -> void
 override GitVersion.OutputVariables.VersionVariablesJsonStringConverter.CanConvert(System.Type! typeToConvert) -> bool
 override GitVersion.OutputVariables.VersionVariablesJsonStringConverter.HandleNull.get -> bool
 override GitVersion.OutputVariables.VersionVariablesJsonStringConverter.Read(ref System.Text.Json.Utf8JsonReader reader, System.Type! typeToConvert, System.Text.Json.JsonSerializerOptions! options) -> string!
