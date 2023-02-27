@@ -1,3 +1,8 @@
+using GitVersion.Common;
+using GitVersion.Configuration;
+using GitVersion.Extensions;
+using Microsoft.Extensions.Options;
+
 namespace GitVersion;
 
 public class GitVersionContextFactory : IGitVersionContextFactory

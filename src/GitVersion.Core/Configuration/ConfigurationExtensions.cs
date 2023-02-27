@@ -54,7 +54,6 @@ public static class ConfigurationExtensions
     public static BranchConfiguration GetFallbackBranchConfiguration(this GitVersionConfiguration configuration)
     {
         BranchConfiguration result = new(configuration);
-        if (result.Increment == IncrementStrategy.Inherit) result.Increment = IncrementStrategy.None;
         return result;
     }
 

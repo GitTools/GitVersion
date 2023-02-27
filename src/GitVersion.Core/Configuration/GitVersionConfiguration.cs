@@ -1,3 +1,7 @@
+using System.Globalization;
+using GitVersion.Attributes;
+using GitVersion.Extensions;
+
 namespace GitVersion.Configuration;
 
 public class GitVersionConfiguration : BranchConfiguration

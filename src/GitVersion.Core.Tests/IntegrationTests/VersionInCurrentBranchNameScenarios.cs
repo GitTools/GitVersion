@@ -52,7 +52,7 @@ public class VersionInCurrentBranchNameScenarios : TestBase
     }
 
     [Test]
-    public void DoesNotTakeVersionFromNameOfRemoteReleaseBranchInCustomRemote()
+    public void TakesVersionFromNameOfRemoteReleaseBranchInCustom()
     {
         using var fixture = new RemoteRepositoryFixture();
         fixture.LocalRepositoryFixture.Repository.Network.Remotes.Rename("origin", "upstream");
@@ -62,6 +62,6 @@ public class VersionInCurrentBranchNameScenarios : TestBase
 
         fixture.LocalRepositoryFixture.Checkout("upstream/release/2.0.0");
 
-        fixture.LocalRepositoryFixture.AssertFullSemver("0.0.0-beta.1+6"); // This test fails with 2.0.0-beta.1+1
+        fixture.LocalRepositoryFixture.AssertFullSemver("2.0.0-beta.1+1");
     }
 }

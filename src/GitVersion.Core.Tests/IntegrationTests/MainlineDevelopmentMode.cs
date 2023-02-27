@@ -443,11 +443,11 @@ public class MainlineDevelopmentMode : TestBase
             .WithIncrement(IncrementStrategy.Minor)
             .WithBranch("main", builder => builder
                 .WithVersioningMode(VersioningMode.Mainline)
-                .WithIncrement(null)
+                .WithIncrement(IncrementStrategy.Inherit)
             )
             .WithBranch("feature", builder => builder
                 .WithVersioningMode(VersioningMode.Mainline)
-                .WithIncrement(null)
+                .WithIncrement(IncrementStrategy.Inherit)
             )
             .Build();
 

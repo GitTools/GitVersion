@@ -300,13 +300,12 @@ internal class MainlineVersionCalculator : IMainlineVersionCalculator
         {
             var mergeMessage = new MergeMessage(mergeCommit.Message, context.Configuration);
             var configuration = context.Configuration.GetBranchConfiguration(mergeMessage.MergedBranch);
-            if (configuration.Increment != null && configuration.Increment != IncrementStrategy.Inherit)
+            if (configuration.Increment != IncrementStrategy.Inherit)
             {
-                return configuration.Increment.Value.ToVersionField();
+                return configuration.Increment.ToVersionField();
             }
         }
 
-        // Fallback to configuration increment value
         return FindDefaultIncrementForBranch(context);
     }
 
@@ -314,7 +313,11 @@ internal class MainlineVersionCalculator : IMainlineVersionCalculator
         => FindDefaultIncrementForBranch(context, context.CurrentBranch);
 
     private static VersionField FindDefaultIncrementForBranch(GitVersionContext context, IBranch branch)
-        => context.Configuration.GetEffectiveConfiguration(branch).Increment.ToVersionField();
+    {
+        var increment = context.Configuration.GetEffectiveConfiguration(branch).Increment;
+        if (increment == IncrementStrategy.Inherit) increment = IncrementStrategy.Patch;
+        return increment.ToVersionField();
+    }
 
     private static ICommit GetMergedHead(ICommit mergeCommit)
     {

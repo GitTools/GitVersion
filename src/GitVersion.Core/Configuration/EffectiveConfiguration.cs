@@ -22,9 +22,6 @@ public class EffectiveConfiguration
         if (!branchConfiguration.VersioningMode.HasValue)
             throw new Exception($"Configuration value for 'Versioning mode' for branch {name} has no value. (this should not happen, please report an issue)");
 
-        if (!branchConfiguration.Increment.HasValue)
-            throw new Exception($"Configuration value for 'Increment' for branch {name} has no value. (this should not happen, please report an issue)");
-
         if (!configuration.AssemblyVersioningScheme.HasValue)
             throw new Exception("Configuration value for 'AssemblyVersioningScheme' has no value. (this should not happen, please report an issue)");
 
@@ -46,7 +43,7 @@ public class EffectiveConfiguration
         LabelPrefix = configuration.LabelPrefix;
         Label = branchConfiguration.Label ?? string.Empty;
         NextVersion = configuration.NextVersion;
-        Increment = branchConfiguration.Increment.Value;
+        Increment = branchConfiguration.Increment;
         BranchPrefixToTrim = branchConfiguration.Regex;
         PreventIncrementOfMergedBranchVersion = branchConfiguration.PreventIncrementOfMergedBranchVersion ?? false;
         LabelNumberPattern = branchConfiguration.LabelNumberPattern;

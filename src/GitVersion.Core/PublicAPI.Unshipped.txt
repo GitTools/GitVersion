@@ -94,7 +94,7 @@ GitVersion.Configuration.BranchConfiguration.BranchConfiguration() -> void
 GitVersion.Configuration.BranchConfiguration.BranchConfiguration(GitVersion.Configuration.BranchConfiguration! branchConfiguration) -> void
 GitVersion.Configuration.BranchConfiguration.CommitMessageIncrementing.get -> GitVersion.VersionCalculation.CommitMessageIncrementMode?
 GitVersion.Configuration.BranchConfiguration.CommitMessageIncrementing.set -> void
-GitVersion.Configuration.BranchConfiguration.Increment.get -> GitVersion.IncrementStrategy?
+GitVersion.Configuration.BranchConfiguration.Increment.get -> GitVersion.IncrementStrategy
 GitVersion.Configuration.BranchConfiguration.Increment.set -> void
 GitVersion.Configuration.BranchConfiguration.Inherit(GitVersion.Configuration.BranchConfiguration? parentConfig) -> GitVersion.Configuration.BranchConfiguration!
 GitVersion.Configuration.BranchConfiguration.IsMainline.get -> bool?
@@ -1188,7 +1188,7 @@ virtual GitVersion.Agents.BuildAgentBase.ShouldCleanUpRemotes() -> bool
 virtual GitVersion.Agents.BuildAgentBase.WriteIntegration(System.Action<string?>! writer, GitVersion.OutputVariables.VersionVariables! variables, bool updateBuildNumber = true) -> void
 virtual GitVersion.Configuration.BranchConfigurationBuilder.WithCommitMessageIncrementing(GitVersion.VersionCalculation.CommitMessageIncrementMode? value) -> GitVersion.Configuration.BranchConfigurationBuilder!
 virtual GitVersion.Configuration.BranchConfigurationBuilder.WithConfiguration(GitVersion.Configuration.BranchConfiguration! value) -> GitVersion.Configuration.BranchConfigurationBuilder!
-virtual GitVersion.Configuration.BranchConfigurationBuilder.WithIncrement(GitVersion.IncrementStrategy? value) -> GitVersion.Configuration.BranchConfigurationBuilder!
+virtual GitVersion.Configuration.BranchConfigurationBuilder.WithIncrement(GitVersion.IncrementStrategy value) -> GitVersion.Configuration.BranchConfigurationBuilder!
 virtual GitVersion.Configuration.BranchConfigurationBuilder.WithIsMainline(bool? value) -> GitVersion.Configuration.BranchConfigurationBuilder!
 virtual GitVersion.Configuration.BranchConfigurationBuilder.WithIsReleaseBranch(bool? value) -> GitVersion.Configuration.BranchConfigurationBuilder!
 virtual GitVersion.Configuration.BranchConfigurationBuilder.WithIsSourceBranchFor(System.Collections.Generic.IEnumerable<string!>? values) -> GitVersion.Configuration.BranchConfigurationBuilder!

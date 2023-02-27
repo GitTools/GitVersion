@@ -27,7 +27,7 @@ internal abstract class ConfigurationBuilderBase<TConfigurationBuilder>
     private readonly Dictionary<string, BranchConfigurationBuilder> branchConfigurationBuilders = new();
     private VersioningMode? versioningMode;
     private string? label;
-    private IncrementStrategy? increment;
+    private IncrementStrategy increment = IncrementStrategy.Inherit;
     private bool? preventIncrementOfMergedBranchVersion;
     private string? labelNumberPattern;
     private bool? trackMergeTarget;
@@ -232,7 +232,7 @@ internal abstract class ConfigurationBuilderBase<TConfigurationBuilder>
         return (TConfigurationBuilder)this;
     }
 
-    public virtual TConfigurationBuilder WithIncrement(IncrementStrategy? value)
+    public virtual TConfigurationBuilder WithIncrement(IncrementStrategy value)
     {
         this.increment = value;
         return (TConfigurationBuilder)this;

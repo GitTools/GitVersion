@@ -9,7 +9,7 @@ public class BranchConfigurationBuilder
     private string name;
     private VersioningMode? versioningMode;
     private string? label;
-    private IncrementStrategy? increment;
+    private IncrementStrategy increment;
     private bool? preventIncrementOfMergedBranchVersion;
     private string? labelNumberPattern;
     private bool? trackMergeTarget;
@@ -45,7 +45,7 @@ public class BranchConfigurationBuilder
         return this;
     }
 
-    public virtual BranchConfigurationBuilder WithIncrement(IncrementStrategy? value)
+    public virtual BranchConfigurationBuilder WithIncrement(IncrementStrategy value)
     {
         this.increment = value;
         return this;
