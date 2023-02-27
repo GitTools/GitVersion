@@ -236,6 +236,12 @@ public class ArgumentParser : IArgumentParser
             return true;
         }
 
+        if (name.IsSwitch("format"))
+        {
+            ParseFormat(arguments, value);
+            return true;
+        }
+
         if (name.IsSwitch("output"))
         {
             ParseOutput(arguments, values);
@@ -369,6 +375,23 @@ public class ArgumentParser : IArgumentParser
         }
 
         arguments.ShowVariable = versionVariable;
+    }
+
+    private static void ParseFormat(Arguments arguments, string? value)
+    {
+        if (value.IsNullOrWhiteSpace())
+        {
+            throw new WarningException("Format requires a valid format string. Available variables are: " + string.Join(", ", VersionVariables.AvailableVariables));
+        }
+
+        var foundVariable = VersionVariables.AvailableVariables.Any(variable => value.Contains(variable, StringComparison.CurrentCultureIgnoreCase));
+
+        if (!foundVariable)
+        {
+            throw new WarningException("Format requires a valid format string. Available variables are: " + string.Join(", ", VersionVariables.AvailableVariables));
+        }
+
+        arguments.Format = value;
     }
 
     private static void ParseEnsureAssemblyInfo(Arguments arguments, string? value)

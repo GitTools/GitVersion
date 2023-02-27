@@ -726,4 +726,18 @@ public class ArgumentParserTests : TestBase
         var arguments = this.argumentParser.ParseArguments("-nocache");
         arguments.Authentication.Password.ShouldBe("value");
     }
+
+    [Test]
+    public void EnsureShowVariableIsSet()
+    {
+        var arguments = this.argumentParser.ParseArguments("-showvariable SemVer");
+        arguments.ShowVariable.ShouldBe("SemVer");
+    }
+
+    [Test]
+    public void EnsureFormatIsSet()
+    {
+        var arguments = this.argumentParser.ParseArguments("-format {Major}.{Minor}.{Patch}");
+        arguments.Format.ShouldBe("{Major}.{Minor}.{Patch}");
+    }
 }

@@ -16,6 +16,9 @@
     <ItemGroup>
         <Compile Include="..\GitVersion.Core.Tests\Helpers\DirectoryHelper.cs" Link="Helpers\DirectoryHelper.cs" />
         <Compile Include="..\GitVersion.Core.Tests\Helpers\ExecutableHelper.cs" Link="Helpers\ExecutableHelper.cs" />
+        <Compile Include="..\GitVersion.Core.Tests\Helpers\TestConsoleAdapter.cs">
+          <Link>Helpers\TestConsoleAdapter.cs</Link>
+        </Compile>
         <Compile Include="..\GitVersion.Core.Tests\Helpers\TestEffectiveConfiguration.cs" Link="Helpers\TestEffectiveConfiguration.cs" />
         <Compile Include="..\GitVersion.Core.Tests\Helpers\TestEnvironment.cs" Link="Helpers\TestEnvironment.cs" />
         <Compile Include="..\GitVersion.Core.Tests\Helpers\TestFileSystem.cs" Link="Helpers\TestFileSystem.cs" />

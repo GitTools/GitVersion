@@ -24,5 +24,6 @@
     </ItemGroup>
     <ItemGroup>
         <InternalsVisibleTo Include="GitVersion.BuildAgents.Tests" />
+        <InternalsVisibleTo Include="GitVersion.Output.Tests" />
     </ItemGroup>
 </Project>
