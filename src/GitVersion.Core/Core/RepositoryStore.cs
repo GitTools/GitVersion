@@ -140,20 +140,30 @@ public class RepositoryStore : IRepositoryStore
 
     public IEnumerable<IBranch> GetSourceBranches(IBranch branch, GitVersionConfiguration configuration, IEnumerable<IBranch> excludedBranches)
     {
+        var returnedBranches = new HashSet<IBranch>();
+
         var referenceLookup = this.repository.Refs.ToLookup(r => r.TargetIdentifier);
 
-        var returnedBranches = new HashSet<IBranch>();
-        if (referenceLookup.Any())
+        foreach (var branchGrouping in FindCommitBranchesWasBranchedFrom(branch, configuration, excludedBranches)
+            .GroupBy(element => element.Commit, element => element.Branch))
         {
-            foreach (var branchCommit in FindCommitBranchesWasBranchedFrom(branch, configuration, excludedBranches))
+            bool referenceMatchFound = false;
+            var referenceNames = referenceLookup[branchGrouping.Key.Sha].Select(element => element.Name).ToHashSet();
+
+            foreach (var item in branchGrouping)
             {
-                foreach (var _ in referenceLookup[branchCommit.Commit.Sha]
-                    .Where(r => r.Name.Friendly == branchCommit.Branch.Name.Friendly))
+                if (referenceNames.Contains(item.Name))
                 {
-                    if (returnedBranches.Add(branchCommit.Branch))
-                    {
-                        yield return branchCommit.Branch;
-                    }
+                    if (returnedBranches.Add(item)) yield return item;
+                    referenceMatchFound = true;
+                }
+            }
+
+            if (!referenceMatchFound)
+            {
+                foreach (var item in branchGrouping)
+                {
+                    if (returnedBranches.Add(item)) yield return item;
                 }
             }
         }

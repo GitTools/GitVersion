@@ -18,17 +18,18 @@ public class VersionInBranchNameVersionStrategy : VersionStrategyBase
 
     public override IEnumerable<BaseVersion> GetBaseVersions(EffectiveBranchConfiguration configuration)
     {
-        string nameWithoutOrigin = NameWithoutOrigin(configuration.Branch);
-        var contextConfiguration = Context.Configuration;
-        if (contextConfiguration.IsReleaseBranch(nameWithoutOrigin))
+        if (!configuration.Value.IsReleaseBranch) yield break;
+
+        var versionInBranch = GetVersionInBranch(
+            configuration.Branch.Name.Friendly, configuration.Value.LabelPrefix, configuration.Value.SemanticVersionFormat
+        );
+        if (versionInBranch != null)
         {
-            var versionInBranch = GetVersionInBranch(configuration.Branch.Name.Friendly, contextConfiguration.LabelPrefix, contextConfiguration.SemanticVersionFormat);
-            if (versionInBranch != null)
-            {
-                var commitBranchWasBranchedFrom = this.repositoryStore.FindCommitBranchWasBranchedFrom(configuration.Branch, contextConfiguration);
-                var branchNameOverride = Context.CurrentBranch.Name.Friendly.RegexReplace("[-/]" + versionInBranch.Item1, string.Empty);
-                yield return new BaseVersion("Version in branch name", false, versionInBranch.Item2, commitBranchWasBranchedFrom.Commit, branchNameOverride);
-            }
+            var commitBranchWasBranchedFrom = this.repositoryStore.FindCommitBranchWasBranchedFrom(
+                configuration.Branch, Context.Configuration
+            );
+            var branchNameOverride = Context.CurrentBranch.Name.Friendly.RegexReplace("[-/]" + versionInBranch.Item1, string.Empty);
+            yield return new BaseVersion("Version in branch name", false, versionInBranch.Item2, commitBranchWasBranchedFrom.Commit, branchNameOverride);
         }
     }
 
@@ -45,8 +46,4 @@ public class VersionInBranchNameVersionStrategy : VersionStrategyBase
 
         return null;
     }
-
-    private static string NameWithoutOrigin(IBranch branch) => branch.IsRemote && branch.Name.Friendly.StartsWith("origin/")
-        ? branch.Name.Friendly.Substring("origin/".Length)
-        : branch.Name.Friendly;
 }

@@ -42,7 +42,7 @@ public class BranchConfiguration
 
     [JsonPropertyName("increment")]
     [JsonPropertyDescription("The increment strategy for this branch. Can be 'Inherit', 'Patch', 'Minor', 'Major', 'None'.")]
-    public IncrementStrategy? Increment { get; set; }
+    public IncrementStrategy Increment { get; set; }
 
     [JsonPropertyName("prevent-increment-of-merged-branch-version")]
     [JsonPropertyDescription("Prevent increment of merged branch version.")]
@@ -105,7 +105,7 @@ public class BranchConfiguration
 
         var result = new BranchConfiguration(this);
 
-        if (result.Increment is null || result.Increment == IncrementStrategy.Inherit)
+        if (result.Increment == IncrementStrategy.Inherit)
             result.Increment = parentConfig.Increment;
         result.VersioningMode ??= parentConfig.VersioningMode;
         result.Label ??= parentConfig.Label;

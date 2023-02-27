@@ -5,3 +5,4 @@ semantic-version-format: Strict
 branches: {}
 ignore:
   sha: []
+increment: None
