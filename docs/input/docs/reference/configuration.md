@@ -173,7 +173,7 @@ is-mainline: false
 
 The details of the available options are as follows:
 
-### workflows
+### workflow
 
 The base template of the configuration to use. Possible values are: GitFlow/v1 or GitHubFlow/v1
 
