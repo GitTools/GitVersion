@@ -1,4 +1,4 @@
-﻿namespace GitVersion;
+namespace GitVersion;
 
 public sealed record SemanticVersionWithTag(SemanticVersion Value, ITag Tag)
 {
