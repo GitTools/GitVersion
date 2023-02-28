@@ -36,17 +36,7 @@ public class TrackReleaseBranchesVersionStrategy : VersionStrategyBase
     }
 
     public override IEnumerable<BaseVersion> GetBaseVersions(EffectiveBranchConfiguration configuration) =>
-        configuration.Value.TracksReleaseBranches ? ReleaseBranchBaseVersions().Union(MainTagsVersions()) : Array.Empty<BaseVersion>();
-
-    private IEnumerable<BaseVersion> MainTagsVersions()
-    {
-        var configuration = Context.Configuration;
-        var mainBranch = this.repositoryStore.FindMainBranch(configuration);
-
-        return mainBranch != null
-            ? this.taggedCommitVersionStrategy.GetTaggedVersions(mainBranch, null)
-            : Array.Empty<BaseVersion>();
-    }
+        configuration.Value.TracksReleaseBranches ? ReleaseBranchBaseVersions() : Array.Empty<BaseVersion>();
 
     private IEnumerable<BaseVersion> ReleaseBranchBaseVersions()
     {

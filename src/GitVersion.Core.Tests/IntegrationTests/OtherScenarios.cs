@@ -1,4 +1,5 @@
 using System.Globalization;
+using GitVersion.Configuration;
 using GitVersion.Core.Tests.Helpers;
 using GitVersion.Helpers;
 using LibGit2Sharp;
@@ -126,5 +127,39 @@ public class OtherScenarios : TestBase
         var version = fixture.GetVersion();
         const int zero = 0;
         version.UncommittedChanges.ShouldBe(zero.ToString(CultureInfo.InvariantCulture));
+    }
+
+    [TestCase(false, "1.1.0-alpha.2")]
+    [TestCase(true, "1.2.0-alpha.1")]
+    public void EnusreTrackMergeTargetStrategyWhichWillLookForTaggedMergecommits(bool trackMergeTarget, string expectedVersion)
+    {
+        // * 9daa6ea 53 minutes ago  (HEAD -> develop)
+        // | *   85536f2 55 minutes ago  (tag: 1.1.0, main)
+        // | |\  
+        // | |/  
+        // |/|   
+        // * | 4a5ef1a 56 minutes ago
+        // |/  
+        // * c7f68af 58 minutes ago  (tag: 1.0.0)
+
+        var configuration = GitFlowConfigurationBuilder.New
+            .WithBranch("main", builder => builder.WithIsMainline(false))
+            .WithBranch("develop", builder => builder
+                .WithTrackMergeTarget(trackMergeTarget).WithTracksReleaseBranches(false)
+            ).Build();
+
+        using var fixture = new EmptyRepositoryFixture();
+        fixture.MakeATaggedCommit("1.0.0");
+        fixture.BranchTo("develop");
+        fixture.MakeACommit();
+        fixture.Checkout("main");
+        fixture.MergeNoFF("develop");
+        fixture.ApplyTag("1.1.0");
+        fixture.Checkout("develop");
+        fixture.MakeACommit();
+
+        fixture.AssertFullSemver(expectedVersion, configuration);
+
+        fixture.Repository.DumpGraph();
     }
 }

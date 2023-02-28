@@ -1,4 +1,5 @@
 using GitVersion.Configuration;
+using GitVersion.Extensions;
 
 namespace GitVersion;
 
@@ -25,9 +26,9 @@ public class GitVersionContext
     public GitVersionContext(IBranch currentBranch, ICommit? currentCommit,
         GitVersionConfiguration configuration, SemanticVersion? currentCommitTaggedVersion, int numberOfUncommittedChanges)
     {
-        CurrentBranch = currentBranch;
+        CurrentBranch = currentBranch.NotNull();
         CurrentCommit = currentCommit;
-        Configuration = configuration;
+        Configuration = configuration.NotNull();
         CurrentCommitTaggedVersion = currentCommitTaggedVersion;
         NumberOfUncommittedChanges = numberOfUncommittedChanges;
     }

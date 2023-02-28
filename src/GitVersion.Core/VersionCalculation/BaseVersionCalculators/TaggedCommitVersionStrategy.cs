@@ -16,48 +16,80 @@ public class TaggedCommitVersionStrategy : VersionStrategyBase
     public TaggedCommitVersionStrategy(IRepositoryStore repositoryStore, Lazy<GitVersionContext> versionContext)
         : base(versionContext) => this.repositoryStore = repositoryStore.NotNull();
 
-    public override IEnumerable<BaseVersion> GetBaseVersions(EffectiveBranchConfiguration configuration) =>
-        GetTaggedVersions(Context.CurrentBranch, Context.CurrentCommit?.When);
-
-    internal IEnumerable<BaseVersion> GetTaggedVersions(IBranch currentBranch, DateTimeOffset? olderThan)
+    public override IEnumerable<BaseVersion> GetBaseVersions(EffectiveBranchConfiguration configuration)
     {
-        if (currentBranch is null)
-            return Enumerable.Empty<BaseVersion>();
-        var versionTags = this.repositoryStore.GetValidVersionTags(Context.Configuration.LabelPrefix, Context.Configuration.SemanticVersionFormat, olderThan);
-        var versionTagsByCommit = versionTags.ToLookup(vt => vt.Commit.Id.Sha);
-        var commitsOnBranch = currentBranch.Commits;
-        if (commitsOnBranch == null)
-            return Enumerable.Empty<BaseVersion>();
-
-        var versionTagsOnBranch = commitsOnBranch.SelectMany(commit => versionTagsByCommit[commit.Id.Sha]);
-        var versionTaggedCommits = versionTagsOnBranch.Select(t => new VersionTaggedCommit(t.Commit, t.Semver, t.Tag.Name.Friendly));
-        var taggedVersions = versionTaggedCommits.Select(versionTaggedCommit => CreateBaseVersion(Context, versionTaggedCommit)).ToList();
+        var taggedVersions = GetSemanticVersions(configuration)
+            .Select(versionTaggedCommit => CreateBaseVersion(Context, versionTaggedCommit))
+            .ToList();
         var taggedVersionsOnCurrentCommit = taggedVersions.Where(version => !version.ShouldIncrement).ToList();
         return taggedVersionsOnCurrentCommit.Any() ? taggedVersionsOnCurrentCommit : taggedVersions;
     }
 
-    private BaseVersion CreateBaseVersion(GitVersionContext context, VersionTaggedCommit version)
+    private IEnumerable<SemanticVersionWithTag> GetSemanticVersions(EffectiveBranchConfiguration configuration)
     {
-        var shouldUpdateVersion = version.Commit.Sha != context.CurrentCommit?.Sha;
-        var baseVersion = new BaseVersion(FormatSource(version), shouldUpdateVersion, version.SemVer, version.Commit, null);
+        var alreadyReturnedValues = new HashSet<SemanticVersionWithTag>();
+
+        var olderThan = Context.CurrentCommit?.When;
+
+        var semanticVersions = this.repositoryStore.GetSemanticVersionFromTags(
+            Context.Configuration.LabelPrefix, Context.Configuration.SemanticVersionFormat
+        ).ToList();
+        ILookup<string, SemanticVersionWithTag> semanticVersionsByCommit = semanticVersions.ToLookup(element => element.Tag.Commit.Id.Sha);
+
+        var commitsOnCurrentBranch = Context.CurrentBranch.Commits?.ToArray() ?? Array.Empty<ICommit>();
+        if (commitsOnCurrentBranch.Any())
+        {
+            foreach (var commit in commitsOnCurrentBranch)
+            {
+                foreach (var semanticVersion in semanticVersionsByCommit[commit.Id.Sha])
+                {
+                    if (commit.When <= olderThan)
+                    {
+                        if (alreadyReturnedValues.Add(semanticVersion)) yield return semanticVersion;
+                    }
+                }
+            }
+
+            if (configuration.Value.TrackMergeTarget)
+            {
+                var commitsOnCurrentBranchByCommit = commitsOnCurrentBranch.ToLookup(commit => commit.Id.Sha);
+                foreach (var semanticVersion in semanticVersions)
+                {
+                    if (semanticVersion.Tag.Commit.When > olderThan) continue;
+
+                    var parentCommits = semanticVersion.Tag.Commit.Parents ?? Array.Empty<ICommit>();
+                    if (parentCommits.Any(element => commitsOnCurrentBranchByCommit.Contains(element.Id.Sha)))
+                    {
+                        if (alreadyReturnedValues.Add(semanticVersion)) yield return semanticVersion;
+                    }
+                }
+            }
+        }
+
+        if (configuration.Value.TracksReleaseBranches)
+        {
+            var mainBranches = this.repositoryStore.FindMainlineBranches(Context.Configuration);
+            foreach (var mainBranche in mainBranches)
+            {
+                var commitsOnMainBranch = mainBranche.Commits?.ToArray() ?? Array.Empty<ICommit>();
+                foreach (var commit in commitsOnMainBranch)
+                {
+                    foreach (var semanticVersion in semanticVersionsByCommit[commit.Id.Sha])
+                    {
+                        if (alreadyReturnedValues.Add(semanticVersion)) yield return semanticVersion;
+                    }
+                }
+            }
+        }
+    }
+
+    private BaseVersion CreateBaseVersion(GitVersionContext context, SemanticVersionWithTag semanticVersion)
+    {
+        var tagCommit = semanticVersion.Tag.Commit;
+        var shouldUpdateVersion = tagCommit.Sha != context.CurrentCommit?.Sha;
+        var baseVersion = new BaseVersion(FormatSource(semanticVersion), shouldUpdateVersion, semanticVersion.Value, tagCommit, null);
         return baseVersion;
     }
 
-    protected virtual string FormatSource(VersionTaggedCommit version) => $"Git tag '{version.Tag}'";
-
-    protected class VersionTaggedCommit
-    {
-        public string Tag;
-        public ICommit Commit;
-        public SemanticVersion SemVer;
-
-        public VersionTaggedCommit(ICommit commit, SemanticVersion semVer, string tag)
-        {
-            this.Tag = tag;
-            this.Commit = commit;
-            this.SemVer = semVer;
-        }
-
-        public override string ToString() => $"{this.Tag} | {this.Commit} | {this.SemVer}";
-    }
+    protected virtual string FormatSource(SemanticVersionWithTag semanticVersion) => $"Git tag '{semanticVersion.Tag.Name.Friendly}'";
 }
