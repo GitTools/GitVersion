@@ -106,7 +106,26 @@ public class ArgumentParser : IArgumentParser
         if (!arguments.EnsureAssemblyInfo) arguments.UpdateAssemblyInfoFileName = ResolveFiles(arguments.TargetPath, arguments.UpdateAssemblyInfoFileName).ToHashSet();
         arguments.NoFetch = arguments.NoFetch || this.buildAgent.PreventFetch();
 
+        ValidateConfigurationFile(arguments);
+
         return arguments;
+    }
+
+    private static void ValidateConfigurationFile(Arguments arguments)
+    {
+        if (arguments.ConfigurationFile.IsNullOrWhiteSpace()) return;
+
+        if (Path.IsPathRooted(arguments.ConfigurationFile))
+        {
+            if (!File.Exists(arguments.ConfigurationFile)) throw new WarningException($"Could not find config file at '{arguments.ConfigurationFile}'");
+            arguments.ConfigurationFile = Path.GetFullPath(arguments.ConfigurationFile);
+        }
+        else
+        {
+            var configFilePath = Path.GetFullPath(Path.Combine(arguments.TargetPath!, arguments.ConfigurationFile));
+            if (!File.Exists(configFilePath)) throw new WarningException($"Could not find config file at '{configFilePath}'");
+            arguments.ConfigurationFile = configFilePath;
+        }
     }
 
     private void ParseSwitchArguments(Arguments arguments, NameValueCollection switchesAndValues, int i)
