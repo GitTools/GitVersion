@@ -107,7 +107,7 @@ public class RepositoryStore : IRepositoryStore
     public IBranch? FindMainBranch(GitVersionConfiguration configuration)
     {
         var mainBranchRegex = configuration.Branches[ConfigurationConstants.MainBranchKey].Regex
-                              ?? configuration.Branches[ConfigurationConstants.MasterBranchKey].Regex;
+            ?? configuration.Branches[ConfigurationConstants.MasterBranchKey].Regex;
 
         if (mainBranchRegex == null)
         {
@@ -116,6 +116,20 @@ public class RepositoryStore : IRepositoryStore
 
         return this.repository.Branches.FirstOrDefault(b =>
             Regex.IsMatch(b.Name.Friendly, mainBranchRegex, RegexOptions.IgnoreCase));
+    }
+
+    public IEnumerable<IBranch> FindMainlineBranches(GitVersionConfiguration configuration)
+    {
+        configuration.NotNull();
+
+        foreach (var branch in this.repository.Branches)
+        {
+            var branchConfiguration = configuration.GetBranchConfiguration(branch);
+            if (branchConfiguration.IsMainline == true)
+            {
+                yield return branch;
+            }
+        }
     }
 
     public IEnumerable<IBranch> GetReleaseBranches(IEnumerable<KeyValuePair<string, BranchConfiguration>> releaseBranchConfig)
@@ -243,37 +257,25 @@ public class RepositoryStore : IRepositoryStore
 
         using (this.log.IndentLog($"Getting version tags from branch '{branch.Name.Canonical}'."))
         {
-            var tags = GetValidVersionTags(tagPrefixRegex, versionFormat);
-            var tagsBySha = tags.Where(t => t.Tag.TargetSha != null).ToLookup(t => t.Tag.TargetSha, t => t);
+            var semanticVersions = GetSemanticVersionFromTags(tagPrefixRegex, versionFormat);
+            var tagsBySha = semanticVersions.Where(t => t.Tag.TargetSha != null).ToLookup(t => t.Tag.TargetSha, t => t);
 
-            var versionTags = (branch.Commits?.SelectMany(c => tagsBySha[c.Sha].Select(t => t.Semver)) ?? Enumerable.Empty<SemanticVersion>()).ToList();
+            var versionTags = (branch.Commits?.SelectMany(c => tagsBySha[c.Sha].Select(t => t.Value)) ?? Enumerable.Empty<SemanticVersion>()).ToList();
 
             this.semanticVersionTagsOnBranchCache.Add(branch, versionTags);
             return versionTags;
         }
     }
 
-    public IEnumerable<(ITag Tag, SemanticVersion Semver, ICommit Commit)> GetValidVersionTags(string? tagPrefixRegex, SemanticVersionFormat versionFormat, DateTimeOffset? olderThan = null)
+    public IEnumerable<SemanticVersionWithTag> GetSemanticVersionFromTags(string? tagPrefixRegex, SemanticVersionFormat semanticVersionFormat)
     {
-        var tags = new List<(ITag, SemanticVersion, ICommit)>();
-
         foreach (var tag in this.repository.Tags)
         {
-            if (!SemanticVersion.TryParse(tag.Name.Friendly, tagPrefixRegex, out var semver, versionFormat))
-                continue;
-
-            var commit = tag.PeeledTargetCommit();
-
-            if (commit == null)
-                continue;
-
-            if (olderThan.HasValue && commit.When > olderThan.Value)
-                continue;
-
-            tags.Add((tag, semver, commit));
+            if (SemanticVersion.TryParse(tag.Name.Friendly, tagPrefixRegex, out var semanticVersion, semanticVersionFormat))
+            {
+                yield return new SemanticVersionWithTag(semanticVersion, tag);
+            }
         }
-
-        return tags;
     }
 
     public IEnumerable<ICommit> GetCommitLog(ICommit? baseVersionSource, ICommit? currentCommit)
@@ -302,15 +304,11 @@ public class RepositoryStore : IRepositoryStore
         if (commit == null)
             return Array.Empty<SemanticVersion>();
 
-        var targetCommit = tag.PeeledTargetCommit();
-        if (targetCommit == null)
-            return Array.Empty<SemanticVersion>();
-
-        var commitToCompare = handleDetachedBranch ? FindMergeBase(commit, targetCommit) : commit;
+        var commitToCompare = handleDetachedBranch ? FindMergeBase(commit, tag.Commit) : commit;
 
         var tagName = tag.Name.Friendly;
 
-        return Equals(targetCommit, commitToCompare) && SemanticVersion.TryParse(tagName, tagPrefix, out var version, versionFormat)
+        return Equals(tag.Commit, commitToCompare) && SemanticVersion.TryParse(tagName, tagPrefix, out var version, versionFormat)
             ? new[] { version }
             : Array.Empty<SemanticVersion>();
     }

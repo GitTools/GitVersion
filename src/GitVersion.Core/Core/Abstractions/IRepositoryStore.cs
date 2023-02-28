@@ -18,6 +18,7 @@ public interface IRepositoryStore
     IBranch GetTargetBranch(string? targetBranchName);
     IBranch? FindBranch(string? branchName);
     IBranch? FindMainBranch(GitVersionConfiguration configuration);
+    IEnumerable<IBranch> FindMainlineBranches(GitVersionConfiguration configuration);
     IEnumerable<IBranch> GetReleaseBranches(IEnumerable<KeyValuePair<string, BranchConfiguration>> releaseBranchConfig);
     IEnumerable<IBranch> ExcludingBranches(IEnumerable<IBranch> branchesToExclude);
     IEnumerable<IBranch> GetBranchesContainingCommit(ICommit? commit, IEnumerable<IBranch>? branches = null, bool onlyTrackedBranches = false);
@@ -41,8 +42,7 @@ public interface IRepositoryStore
     SemanticVersion? GetCurrentCommitTaggedVersion(ICommit? commit, string? tagPrefix, SemanticVersionFormat versionFormat, bool handleDetachedBranch);
 
     IEnumerable<SemanticVersion> GetVersionTagsOnBranch(IBranch branch, string? tagPrefixRegex, SemanticVersionFormat versionFormat);
-    IEnumerable<(ITag Tag, SemanticVersion Semver, ICommit Commit)> GetValidVersionTags(string? tagPrefixRegex, SemanticVersionFormat versionFormat, DateTimeOffset? olderThan = null);
-
+    IEnumerable<SemanticVersionWithTag> GetSemanticVersionFromTags(string? tagPrefixRegex, SemanticVersionFormat semanticVersionFormat);
     bool IsCommitOnBranch(ICommit? baseVersionSource, IBranch branch, ICommit firstMatchingCommit);
 
     int GetNumberOfUncommittedChanges();

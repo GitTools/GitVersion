@@ -36,20 +36,28 @@ public class OtherBranchScenarios : TestBase
     [Test]
     public void ShouldNotGetVersionFromFeatureBranchIfNotMerged()
     {
+        // * 1c08923 54 minutes ago  (HEAD -> develop)
+        // | * 03dd6d5 56 minutes ago  (tag: 1.0.1-feature.1, feature)
+        // |/  
+        // * e2ff13b 58 minutes ago  (tag: 1.0.0-unstable.0, main)
+
+        var configuration = GitFlowConfigurationBuilder.New
+            .WithBranch("develop", builder => builder.WithTrackMergeTarget(false))
+            .Build();
+
         using var fixture = new EmptyRepositoryFixture();
-        fixture.Repository.MakeATaggedCommit("1.0.0-unstable.0"); // initial commit in main
 
-        fixture.Repository.CreateBranch("feature");
-        Commands.Checkout(fixture.Repository, "feature");
-        fixture.Repository.MakeATaggedCommit("1.0.1-feature.1");
+        fixture.MakeATaggedCommit("1.0.0-unstable.0"); // initial commit in main
 
-        Commands.Checkout(fixture.Repository, MainBranch);
-        fixture.Repository.CreateBranch("develop");
-        Commands.Checkout(fixture.Repository, "develop");
+        fixture.BranchTo("feature");
+        fixture.MakeATaggedCommit("1.0.1-feature.1");
+        fixture.Checkout(MainBranch);
+        fixture.BranchTo("develop");
         fixture.Repository.MakeACommit();
 
-        var version = fixture.GetVersion();
-        version.SemVer.ShouldBe("1.0.0-alpha.1");
+        fixture.AssertFullSemver("1.0.0-alpha.1", configuration);
+
+        fixture.Repository.DumpGraph();
     }
 
     [TestCase("alpha", "JIRA-123", "alpha")]
