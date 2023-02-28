@@ -23,7 +23,6 @@ namespace GitVersion.VersionCalculation;
 public class TrackReleaseBranchesVersionStrategy : VersionStrategyBase
 {
     private readonly VersionInBranchNameVersionStrategy releaseVersionStrategy;
-    private readonly TaggedCommitVersionStrategy taggedCommitVersionStrategy;
 
     private readonly IRepositoryStore repositoryStore;
 
@@ -32,7 +31,6 @@ public class TrackReleaseBranchesVersionStrategy : VersionStrategyBase
     {
         this.repositoryStore = repositoryStore.NotNull();
         this.releaseVersionStrategy = new VersionInBranchNameVersionStrategy(repositoryStore, versionContext);
-        this.taggedCommitVersionStrategy = new TaggedCommitVersionStrategy(repositoryStore, versionContext);
     }
 
     public override IEnumerable<BaseVersion> GetBaseVersions(EffectiveBranchConfiguration configuration) =>

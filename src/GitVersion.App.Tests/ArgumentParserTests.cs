@@ -531,8 +531,8 @@ public class ArgumentParserTests : TestBase
     public void OverrideConfigWithMultipleOptions(string options, GitVersionConfiguration expected)
     {
         var arguments = this.argumentParser.ParseArguments(options);
-        ConfigurationHelper configruationHelper = new(arguments.OverrideConfiguration);
-        configruationHelper.Configuration.ShouldBeEquivalentTo(expected);
+        ConfigurationHelper configurationHelper = new(arguments.OverrideConfiguration);
+        configurationHelper.Configuration.ShouldBeEquivalentTo(expected);
     }
 
     private static IEnumerable<TestCaseData> OverrideConfigWithMultipleOptionsTestData()
@@ -739,5 +739,20 @@ public class ArgumentParserTests : TestBase
     {
         var arguments = this.argumentParser.ParseArguments("-format {Major}.{Minor}.{Patch}");
         arguments.Format.ShouldBe("{Major}.{Minor}.{Patch}");
+    }
+
+    [TestCase("custom-config.yaml")]
+    [TestCase(@"c:\custom-config.yaml")]
+    public void ThrowIfConfigurationFileDoesNotExist(string configFile) =>
+        Should.Throw<WarningException>(() => _ = this.argumentParser.ParseArguments($"-config {configFile}"));
+
+    [Test]
+    public void EnsureConfigurationFileIsSet()
+    {
+        var configFile = Path.GetTempPath() + Guid.NewGuid() + ".yaml";
+        File.WriteAllText(configFile, "next-version: 1.0.0");
+        var arguments = this.argumentParser.ParseArguments($"-config {configFile}");
+        arguments.ConfigurationFile.ShouldBe(configFile);
+        File.Delete(configFile);
     }
 }
