@@ -3,7 +3,7 @@ using GitVersion.VersionCalculation;
 
 namespace GitVersion.Configuration;
 
-internal abstract class ConfigurationBuilderBase<TConfigurationBuilder>
+internal abstract class ConfigurationBuilderBase<TConfigurationBuilder> : IConfigurationBuilder
     where TConfigurationBuilder : ConfigurationBuilderBase<TConfigurationBuilder>
 {
     private AssemblyVersioningScheme? assemblyVersioningScheme;
@@ -363,13 +363,12 @@ internal abstract class ConfigurationBuilderBase<TConfigurationBuilder>
         return (TConfigurationBuilder)this;
     }
 
-    public TConfigurationBuilder AddOverride(IReadOnlyDictionary<object, object?> value)
+    public void AddOverride(IReadOnlyDictionary<object, object?> value)
     {
         if (value.Any())
         {
             this.overrides.Add(value);
         }
-        return (TConfigurationBuilder)this;
     }
 
     public virtual GitVersionConfiguration Build()

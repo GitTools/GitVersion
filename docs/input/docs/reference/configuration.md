@@ -173,6 +173,10 @@ is-mainline: false
 
 The details of the available options are as follows:
 
+### workflows
+
+The base template of the configuration to use. Possible values are: GitFlow/v1 or GitHubFlow/v1
+
 ### next-version
 
 Allows you to bump the next version explicitly. Useful for bumping `main` or a

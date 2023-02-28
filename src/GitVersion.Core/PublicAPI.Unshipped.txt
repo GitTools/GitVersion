@@ -227,6 +227,8 @@ GitVersion.Configuration.GitVersionConfiguration.SemanticVersionFormat.get -> Gi
 GitVersion.Configuration.GitVersionConfiguration.SemanticVersionFormat.set -> void
 GitVersion.Configuration.GitVersionConfiguration.UpdateBuildNumber.get -> bool
 GitVersion.Configuration.GitVersionConfiguration.UpdateBuildNumber.set -> void
+GitVersion.Configuration.GitVersionConfiguration.Workflow.get -> string?
+GitVersion.Configuration.GitVersionConfiguration.Workflow.set -> void
 GitVersion.Configuration.IConfigurationFileLocator
 GitVersion.Configuration.IConfigurationFileLocator.FilePath.get -> string!
 GitVersion.Configuration.IConfigurationFileLocator.GetConfigFilePath(string! workingDirectory) -> string?

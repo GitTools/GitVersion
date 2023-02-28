@@ -1,6 +1,7 @@
 using GitVersion.Configuration.Init.Wizard;
 using GitVersion.Extensions;
 using GitVersion.Logging;
+using GitVersion.Properties;
 using Microsoft.Extensions.Options;
 using YamlDotNet.Core;
 
@@ -54,8 +55,24 @@ public class ConfigurationProvider : IConfigurationProvider
     {
         var overrideConfigurationFromFile = this.configFileLocator.ReadOverrideConfiguration(workingDirectory);
 
-        var configurationBuilder = GitFlowConfigurationBuilder.New;
-        foreach (var item in new[] { overrideConfigurationFromFile, overrideConfiguration })
+        var workflow = GetWorkflow(overrideConfiguration, overrideConfigurationFromFile);
+
+        Dictionary<object, object?>? overrideConfigurationFromWorkflow = null;
+
+        if (!string.IsNullOrEmpty(workflow))
+        {
+            var workflowResource = (byte[]?)Resources.ResourceManager.GetObject(workflow, Resources.Culture);
+            if (workflowResource != null)
+            {
+                overrideConfigurationFromWorkflow = ConfigurationSerializer.Deserialize<Dictionary<object, object?>>(
+                    Encoding.UTF8.GetString(workflowResource)
+                );
+            }
+        }
+
+        IConfigurationBuilder configurationBuilder = (workflow is null)
+            ? GitFlowConfigurationBuilder.New : ConfigurationBuilder.New;
+        foreach (var item in new[] { overrideConfigurationFromWorkflow, overrideConfigurationFromFile, overrideConfiguration })
         {
             if (item != null) configurationBuilder.AddOverride(item);
         }
@@ -71,6 +88,20 @@ public class ConfigurationProvider : IConfigurationProvider
                 $"Please ensure that the /overrideconfig parameters are correct and the configuration file is in the correct format."
             );
         }
+    }
+
+    private static string? GetWorkflow(IReadOnlyDictionary<object, object?>? overrideConfiguration, IReadOnlyDictionary<object, object?>? overrideConfigurationFromFile)
+    {
+        string? workflow = null;
+        foreach (var item in new[] { overrideConfigurationFromFile, overrideConfiguration })
+        {
+            if (item?.TryGetValue("workflow", out object? value) == true && value != null)
+            {
+                workflow = (string)value;
+            }
+        }
+
+        return workflow;
     }
 
     private static string? ReadGitDirFromFile(string fileName)

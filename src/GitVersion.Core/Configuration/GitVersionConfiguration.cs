@@ -14,6 +14,10 @@ public class GitVersionConfiguration : BranchConfiguration
         Ignore = new IgnoreConfiguration();
     }
 
+    [JsonPropertyName("workflow")]
+    [JsonPropertyDescription("The base template of the configuration to use. Possible values are: GitFlow/v1 or GitHubFlow/v1")]
+    public string? Workflow { get; set; }
+
     [JsonPropertyName("assembly-versioning-scheme")]
     [JsonPropertyDescription("The scheme to use when setting AssemblyVersion attribute. Can be 'MajorMinorPatchTag', 'MajorMinorPatch', 'MajorMinor', 'Major', 'None'.")]
     public AssemblyVersioningScheme? AssemblyVersioningScheme { get; set; }

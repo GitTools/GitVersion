@@ -219,4 +219,27 @@ public class HotfixBranchScenarios : TestBase
         fixture.MergeNoFF(featureBranch); // commit 2
         fixture.AssertFullSemver("4.5.1-beta.2", configuration);
     }
+
+    [Test]
+    public void IsVersionTakenFromHotfixBranchName()
+    {
+        var configuration = GitFlowConfigurationBuilder.New.Build();
+
+        using var fixture = new BaseGitFlowRepositoryFixture("4.20.4");
+
+        fixture.Checkout("develop");
+        fixture.AssertFullSemver("4.21.0-alpha.1", configuration);
+
+        fixture.BranchTo("release/4.21.1");
+        fixture.AssertFullSemver("4.21.1-beta.1+0", configuration);
+
+        fixture.MakeACommit();
+        fixture.AssertFullSemver("4.21.1-beta.1+1", configuration);
+
+        fixture.BranchTo("hotfix/4.21.1");
+        fixture.AssertFullSemver("4.21.1-beta.1+1", configuration);
+
+        fixture.MakeACommit();
+        fixture.AssertFullSemver("4.21.1-beta.1+2", configuration);
+    }
 }
