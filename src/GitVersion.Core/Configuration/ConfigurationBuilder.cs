@@ -1,4 +1,4 @@
-﻿namespace GitVersion.Configuration;
+namespace GitVersion.Configuration;
 
 internal sealed class ConfigurationBuilder : ConfigurationBuilderBase<ConfigurationBuilder>
 {
