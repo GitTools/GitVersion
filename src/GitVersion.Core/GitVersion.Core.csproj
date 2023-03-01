@@ -12,11 +12,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <None Remove="Configuration\SupportedWorkflows\GitFlowV1.yml" />
-      <None Remove="Configuration\SupportedWorkflows\GitHubFlowV1.yml" />
-    </ItemGroup>
-
-    <ItemGroup>
       <EmbeddedResource Include="Configuration\SupportedWorkflows\GitFlow\v1.yml" />
       <EmbeddedResource Include="Configuration\SupportedWorkflows\GitHubFlow\v1.yml" />
     </ItemGroup>
