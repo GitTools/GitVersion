@@ -1,4 +1,5 @@
 using GitVersion.Configuration.Init.Wizard;
+using GitVersion.Configuration.SupportedWorkflows;
 using GitVersion.Extensions;
 using GitVersion.Logging;
 using Microsoft.Extensions.Options;
@@ -54,8 +55,13 @@ public class ConfigurationProvider : IConfigurationProvider
     {
         var overrideConfigurationFromFile = this.configFileLocator.ReadOverrideConfiguration(workingDirectory);
 
-        var configurationBuilder = GitFlowConfigurationBuilder.New;
-        foreach (var item in new[] { overrideConfigurationFromFile, overrideConfiguration })
+        var workflow = GetWorkflow(overrideConfiguration, overrideConfigurationFromFile);
+
+        IConfigurationBuilder configurationBuilder = (workflow is null)
+            ? GitFlowConfigurationBuilder.New : ConfigurationBuilder.New;
+
+        var overrideConfigurationFromWorkflow = WorkflowManager.GetOverrideConfiguration(workflow);
+        foreach (var item in new[] { overrideConfigurationFromWorkflow, overrideConfigurationFromFile, overrideConfiguration })
         {
             if (item != null) configurationBuilder.AddOverride(item);
         }
@@ -71,6 +77,20 @@ public class ConfigurationProvider : IConfigurationProvider
                 $"Please ensure that the /overrideconfig parameters are correct and the configuration file is in the correct format."
             );
         }
+    }
+
+    private static string? GetWorkflow(IReadOnlyDictionary<object, object?>? overrideConfiguration, IReadOnlyDictionary<object, object?>? overrideConfigurationFromFile)
+    {
+        string? workflow = null;
+        foreach (var item in new[] { overrideConfigurationFromFile, overrideConfiguration })
+        {
+            if (item?.TryGetValue("workflow", out object? value) == true && value != null)
+            {
+                workflow = (string)value;
+            }
+        }
+
+        return workflow;
     }
 
     private static string? ReadGitDirFromFile(string fileName)

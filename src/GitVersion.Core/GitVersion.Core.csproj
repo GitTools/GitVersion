@@ -12,6 +12,11 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <EmbeddedResource Include="Configuration\SupportedWorkflows\GitFlow\v1.yml" />
+      <EmbeddedResource Include="Configuration\SupportedWorkflows\GitHubFlow\v1.yml" />
+    </ItemGroup>
+
+    <ItemGroup>
         <PackageReference Include="Polly" />
         <PackageReference Include="System.Net.Requests" />
 

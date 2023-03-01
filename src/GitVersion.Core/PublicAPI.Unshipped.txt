@@ -227,6 +227,8 @@ GitVersion.Configuration.GitVersionConfiguration.SemanticVersionFormat.get -> Gi
 GitVersion.Configuration.GitVersionConfiguration.SemanticVersionFormat.set -> void
 GitVersion.Configuration.GitVersionConfiguration.UpdateBuildNumber.get -> bool
 GitVersion.Configuration.GitVersionConfiguration.UpdateBuildNumber.set -> void
+GitVersion.Configuration.GitVersionConfiguration.Workflow.get -> string?
+GitVersion.Configuration.GitVersionConfiguration.Workflow.set -> void
 GitVersion.Configuration.IConfigurationFileLocator
 GitVersion.Configuration.IConfigurationFileLocator.FilePath.get -> string!
 GitVersion.Configuration.IConfigurationFileLocator.GetConfigFilePath(string! workingDirectory) -> string?
@@ -1089,6 +1091,7 @@ static GitVersion.Extensions.GitExtensions.CreateGitLogArgs(int? maxCommits) -> 
 static GitVersion.Extensions.GitExtensions.DumpGraph(string! workingDirectory, System.Action<string!>? writer = null, int? maxCommits = null) -> void
 static GitVersion.Extensions.ObjectExtensions.Deconstruct<TKey, TValue>(this System.Collections.Generic.KeyValuePair<TKey, TValue> kvp, out TKey key, out TValue value) -> void
 static GitVersion.Extensions.ObjectExtensions.GetProperties(this object! obj) -> System.Collections.Generic.Dictionary<string!, string!>!
+static GitVersion.Extensions.ReadEmbeddedResourceExtensions.ReadAsStringFromEmbeddedResource(this string! resourceName, System.Reflection.Assembly! assembly) -> string!
 static GitVersion.Extensions.ReadEmbeddedResourceExtensions.ReadAsStringFromEmbeddedResource<T>(this string! resourceName) -> string!
 static GitVersion.Extensions.ServiceCollectionExtensions.AddModule(this Microsoft.Extensions.DependencyInjection.IServiceCollection! serviceCollection, GitVersion.IGitVersionModule! gitVersionModule) -> Microsoft.Extensions.DependencyInjection.IServiceCollection!
 static GitVersion.Extensions.ServiceCollectionExtensions.GetServiceForType<TService, TType>(this System.IServiceProvider! serviceProvider) -> TService
