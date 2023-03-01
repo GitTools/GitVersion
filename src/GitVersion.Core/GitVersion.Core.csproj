@@ -39,8 +39,4 @@
         <InternalsVisibleTo Include="GitVersion.MsBuild.Tests" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="Properties\" />
-    </ItemGroup>
-
 </Project>
