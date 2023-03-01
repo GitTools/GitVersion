@@ -118,6 +118,7 @@ releaseArtifacts
 artifacts
 !build/artifacts
 src/Docker/**/content
+src/PublicAPI.empty.txt
 
 !**/*.cake
 .DS_Store
