@@ -1,7 +1,7 @@
 using GitVersion.Configuration.Init.Wizard;
+using GitVersion.Configuration.SupportedWorkflows;
 using GitVersion.Extensions;
 using GitVersion.Logging;
-using GitVersion.Properties;
 using Microsoft.Extensions.Options;
 using YamlDotNet.Core;
 
@@ -57,21 +57,10 @@ public class ConfigurationProvider : IConfigurationProvider
 
         var workflow = GetWorkflow(overrideConfiguration, overrideConfigurationFromFile);
 
-        Dictionary<object, object?>? overrideConfigurationFromWorkflow = null;
-
-        if (!string.IsNullOrEmpty(workflow))
-        {
-            var workflowResource = (byte[]?)Resources.ResourceManager.GetObject(workflow, Resources.Culture);
-            if (workflowResource != null)
-            {
-                overrideConfigurationFromWorkflow = ConfigurationSerializer.Deserialize<Dictionary<object, object?>>(
-                    Encoding.UTF8.GetString(workflowResource)
-                );
-            }
-        }
-
         IConfigurationBuilder configurationBuilder = (workflow is null)
             ? GitFlowConfigurationBuilder.New : ConfigurationBuilder.New;
+
+        var overrideConfigurationFromWorkflow = WorkflowManager.GetOverrideConfiguration(workflow);
         foreach (var item in new[] { overrideConfigurationFromWorkflow, overrideConfigurationFromFile, overrideConfiguration })
         {
             if (item != null) configurationBuilder.AddOverride(item);
