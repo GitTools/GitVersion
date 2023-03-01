@@ -11,16 +11,14 @@ public static class ConfigurationSerializer
         .WithTypeInspector(inspector => new JsonPropertyNameInspector(inspector))
         .Build();
 
-
-    public static T Deserialize<T>(string input) => Deserializer.Deserialize<T>(input);
-
-    public static string Serialize(object graph) => Serializer.Serialize(graph);
-
     private static ISerializer Serializer => new SerializerBuilder()
         .ConfigureDefaultValuesHandling(DefaultValuesHandling.OmitNull)
         .WithTypeInspector(inspector => new JsonPropertyNameInspector(inspector))
         .WithNamingConvention(HyphenatedNamingConvention.Instance).Build();
 
+    public static T Deserialize<T>(string input) => Deserializer.Deserialize<T>(input);
+
+    public static string Serialize(object graph) => Serializer.Serialize(graph);
 
     public static GitVersionConfiguration Read(TextReader reader)
     {

@@ -58,7 +58,7 @@
       "type": "object",
       "properties": {
         "commits-before": {
-          "$ref": "#/$defs/Nullable\u0060110"
+          "$ref": "#/$defs/Nullable\u006019"
         },
         "sha": {
           "$ref": "#/$defs/array2"
@@ -66,13 +66,13 @@
       }
     },
     "increment": {
-      "$ref": "#/$defs/Nullable\u006011"
+      "$ref": "#/$defs/IncrementStrategy"
     },
     "is-mainline": {
-      "$ref": "#/$defs/Nullable\u006012"
+      "$ref": "#/$defs/Nullable\u006011"
     },
     "is-release-branch": {
-      "$ref": "#/$defs/Nullable\u006013"
+      "$ref": "#/$defs/Nullable\u006012"
     },
     "is-source-branch-for": {
       "$ref": "#/$defs/array"
@@ -130,10 +130,10 @@
       "type": "string"
     },
     "pre-release-weight": {
-      "$ref": "#/$defs/Nullable\u006014"
+      "$ref": "#/$defs/Nullable\u006013"
     },
     "prevent-increment-of-merged-branch-version": {
-      "$ref": "#/$defs/Nullable\u006015"
+      "$ref": "#/$defs/Nullable\u006014"
     },
     "regex": {
       "$ref": "#/$defs/string2"
@@ -149,20 +149,24 @@
       "$ref": "#/$defs/array1"
     },
     "track-merge-message": {
-      "$ref": "#/$defs/Nullable\u006016"
+      "$ref": "#/$defs/Nullable\u006015"
     },
     "track-merge-target": {
-      "$ref": "#/$defs/Nullable\u006017"
+      "$ref": "#/$defs/Nullable\u006016"
     },
     "tracks-release-branches": {
-      "$ref": "#/$defs/Nullable\u006018"
+      "$ref": "#/$defs/Nullable\u006017"
     },
     "update-build-number": {
       "description": "Whether to update the build number in the project file. Defaults to true.",
       "type": "boolean"
     },
     "mode": {
-      "$ref": "#/$defs/Nullable\u006019"
+      "$ref": "#/$defs/Nullable\u006018"
+    },
+    "workflow": {
+      "description": "The base template of the configuration to use. Possible values are: GitFlow/v1 or GitHubFlow/v1",
+      "type": "string"
     }
   },
   "$defs": {
@@ -173,13 +177,13 @@
           "$ref": "#/$defs/Nullable\u00601"
         },
         "increment": {
-          "$ref": "#/$defs/Nullable\u006011"
+          "$ref": "#/$defs/IncrementStrategy"
         },
         "is-mainline": {
-          "$ref": "#/$defs/Nullable\u006012"
+          "$ref": "#/$defs/Nullable\u006011"
         },
         "is-release-branch": {
-          "$ref": "#/$defs/Nullable\u006013"
+          "$ref": "#/$defs/Nullable\u006012"
         },
         "is-source-branch-for": {
           "$ref": "#/$defs/array"
@@ -191,10 +195,10 @@
           "$ref": "#/$defs/string1"
         },
         "pre-release-weight": {
-          "$ref": "#/$defs/Nullable\u006014"
+          "$ref": "#/$defs/Nullable\u006013"
         },
         "prevent-increment-of-merged-branch-version": {
-          "$ref": "#/$defs/Nullable\u006015"
+          "$ref": "#/$defs/Nullable\u006014"
         },
         "regex": {
           "$ref": "#/$defs/string2"
@@ -203,16 +207,16 @@
           "$ref": "#/$defs/array1"
         },
         "track-merge-message": {
-          "$ref": "#/$defs/Nullable\u006016"
+          "$ref": "#/$defs/Nullable\u006015"
         },
         "track-merge-target": {
-          "$ref": "#/$defs/Nullable\u006017"
+          "$ref": "#/$defs/Nullable\u006016"
         },
         "tracks-release-branches": {
-          "$ref": "#/$defs/Nullable\u006018"
+          "$ref": "#/$defs/Nullable\u006017"
         },
         "mode": {
-          "$ref": "#/$defs/Nullable\u006019"
+          "$ref": "#/$defs/Nullable\u006018"
         }
       }
     },
@@ -224,7 +228,7 @@
         "MergeMessageOnly"
       ]
     },
-    "Nullable\u006011": {
+    "IncrementStrategy": {
       "description": "The increment strategy for this branch. Can be \u0027Inherit\u0027, \u0027Patch\u0027, \u0027Minor\u0027, \u0027Major\u0027, \u0027None\u0027.",
       "enum": [
         "None",
@@ -234,14 +238,14 @@
         "Inherit"
       ]
     },
-    "Nullable\u006012": {
+    "Nullable\u006011": {
       "description": "When using Mainline mode, this indicates that this branch is a mainline. By default main and support/* are mainlines.",
       "type": [
         "boolean",
         "null"
       ]
     },
-    "Nullable\u006013": {
+    "Nullable\u006012": {
       "description": "Indicates this branch config represents a release branch in GitFlow.",
       "type": [
         "boolean",
@@ -266,14 +270,14 @@
       "description": "The regex pattern to use to extract the number from the branch name. Defaults to \u0027[/-](?\u003Cnumber\u003E\\d\u002B)[-/]\u0027.",
       "type": "string"
     },
-    "Nullable\u006014": {
+    "Nullable\u006013": {
       "description": "Provides a way to translate the PreReleaseLabel to a number.",
       "type": [
         "integer",
         "null"
       ]
     },
-    "Nullable\u006015": {
+    "Nullable\u006014": {
       "description": "Prevent increment of merged branch version.",
       "type": [
         "boolean",
@@ -292,28 +296,28 @@
         "type": "string"
       }
     },
-    "Nullable\u006016": {
+    "Nullable\u006015": {
       "description": "This property is a branch related property and gives the user the possibility to control the behavior of whether the merge commit message will be interpreted as a next version or not.",
       "type": [
         "boolean",
         "null"
       ]
     },
-    "Nullable\u006017": {
+    "Nullable\u006016": {
       "description": "Strategy which will look for tagged merge commits directly off the current branch.",
       "type": [
         "boolean",
         "null"
       ]
     },
-    "Nullable\u006018": {
+    "Nullable\u006017": {
       "description": "Indicates this branch config represents develop in GitFlow.",
       "type": [
         "boolean",
         "null"
       ]
     },
-    "Nullable\u006019": {
+    "Nullable\u006018": {
       "description": "The versioning mode for this branch. Can be \u0027ContinuousDelivery\u0027, \u0027ContinuousDeployment\u0027, \u0027Mainline\u0027.",
       "enum": [
         "ContinuousDelivery",
@@ -463,7 +467,7 @@
       },
       "readOnly": true
     },
-    "Nullable\u0060110": {
+    "Nullable\u006019": {
       "format": "date-time",
       "pattern": "\u0027yyyy-MM-ddTHH:mm:ss\u0027",
       "description": "Commits before this date will be ignored. Format: yyyy-MM-ddTHH:mm:ss.",

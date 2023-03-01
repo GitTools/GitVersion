@@ -9,7 +9,7 @@ namespace GitVersion.Configuration.SupportedWorkflows
         private static string DetermineResourceNameTemplate()
         {
             var fullClassName = typeof(WorkflowManager).FullName!;
-            var resourceNamePrefix = fullClassName.Substring(0, fullClassName.Length - nameof(WorkflowManager).Length - 1);
+            var resourceNamePrefix = fullClassName[..(fullClassName.Length - nameof(WorkflowManager).Length - 1)];
             return $"{resourceNamePrefix}.{{0}}.yml";
         }
 
@@ -18,9 +18,7 @@ namespace GitVersion.Configuration.SupportedWorkflows
             if (string.IsNullOrEmpty(workflow)) return null;
 
             var resourceName = GetResourceName(workflow);
-            var embeddedResource = ReadEmbeddedResourceExtensions.ReadAsStringFromEmbeddedResource(
-                resourceName, typeof(WorkflowManager).Assembly
-            );
+            var embeddedResource = resourceName.ReadAsStringFromEmbeddedResource(typeof(WorkflowManager).Assembly);
             return ConfigurationSerializer.Deserialize<Dictionary<object, object?>>(embeddedResource);
         }
 
