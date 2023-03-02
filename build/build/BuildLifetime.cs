@@ -22,7 +22,7 @@ public class BuildLifetime : BuildLifetimeBase<BuildContext>
 
         context.StartGroup("Build Setup");
         LogBuildInformation(context);
-        context.Information("Configuration:     {0}", context.MsBuildConfiguration);
+        context.Information($"Configuration:        {context.MsBuildConfiguration}");
         context.EndGroup();
     }
 

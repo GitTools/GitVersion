@@ -28,23 +28,26 @@ public class PublishNugetInternal : FrostingTask<BuildContext>
         // publish to github packages for commits on main and on original repo
         if (context.IsInternalPreRelease)
         {
+            context.StartGroup("Publishing to GitHub Packages");
             var apiKey = context.Credentials?.GitHub?.Token;
             if (string.IsNullOrEmpty(apiKey))
             {
                 throw new InvalidOperationException("Could not resolve NuGet GitHub Packages API key.");
             }
             PublishToNugetRepo(context, apiKey, Constants.GithubPackagesUrl);
+            context.EndGroup();
         }
         // publish to nuget.org for tagged releases
         if (context.IsStableRelease || context.IsTaggedPreRelease)
         {
+            context.StartGroup("Publishing to Nuget.org");
             var apiKey = context.Credentials?.Nuget?.ApiKey;
             if (string.IsNullOrEmpty(apiKey))
             {
                 throw new InvalidOperationException("Could not resolve NuGet org API key.");
             }
-
             PublishToNugetRepo(context, apiKey, Constants.NugetOrgUrl);
+            context.EndGroup();
         }
     }
     private static void PublishToNugetRepo(BuildContext context, string apiKey, string apiUrl)

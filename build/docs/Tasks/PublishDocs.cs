@@ -68,7 +68,7 @@ public sealed class PublishDocsInternal : FrostingTask<BuildContext>
         var sourceCommit = context.GitLogTip("./");
 
         var publishFolder = context.MakeAbsolute(Paths.ArtifactsDocs.Combine("_published").Combine(DateTime.Now.ToString("yyyyMMdd_HHmmss")));
-        context.Information("Publishing Folder: {0}", publishFolder);
+        context.Information($"Publishing Folder: {publishFolder}");
         context.Information("Getting publish branch...");
         context.GitClone($"https://github.com/{Constants.RepoOwner}/{Constants.Repository}", publishFolder, new GitCloneSettings
         {

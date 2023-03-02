@@ -30,7 +30,7 @@ public class BuildLifetime : BuildLifetimeBase<BuildContext>
 
         LogBuildInformation(context);
 
-        context.Information("IsDockerOnLinux:   {0}", context.IsDockerOnLinux);
+        context.Information($"IsDockerOnLinux:      {context.IsDockerOnLinux}");
         context.Information($"Building for Version: {dotnetVersion}, Distro: {dockerDistro}");
         context.EndGroup();
     }

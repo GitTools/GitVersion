@@ -30,22 +30,7 @@ public static class ContextExtensions
 
     public static bool IsOriginalRepo(this ICakeContext context)
     {
-        var buildSystem = context.BuildSystem();
-        string repositoryName = string.Empty;
-        if (buildSystem.IsRunningOnAppVeyor)
-        {
-            repositoryName = buildSystem.AppVeyor.Environment.Repository.Name;
-        }
-        else if (buildSystem.IsRunningOnAzurePipelines)
-        {
-            repositoryName = buildSystem.AzurePipelines.Environment.Repository.RepoName;
-        }
-        else if (buildSystem.IsRunningOnGitHubActions)
-        {
-            repositoryName = buildSystem.GitHubActions.Environment.Workflow.Repository;
-        }
-        context.Information("Repository Name:   {0}", repositoryName);
-
+        var repositoryName = context.GetRepositoryName();
         return !string.IsNullOrWhiteSpace(repositoryName) && StringComparer.OrdinalIgnoreCase.Equals("gittools/GitVersion", repositoryName);
     }
 
@@ -158,6 +143,25 @@ public static class ContextExtensions
             repositoryBranch = buildSystem.GitHubActions.Environment.Workflow.Ref.Replace("refs/heads/", "");
         }
         return repositoryBranch;
+    }
+
+    public static string GetRepositoryName(this ICakeContext context)
+    {
+        var buildSystem = context.BuildSystem();
+        string repositoryName = string.Empty;
+        if (buildSystem.IsRunningOnAppVeyor)
+        {
+            repositoryName = buildSystem.AppVeyor.Environment.Repository.Name;
+        }
+        else if (buildSystem.IsRunningOnAzurePipelines)
+        {
+            repositoryName = buildSystem.AzurePipelines.Environment.Repository.RepoName;
+        }
+        else if (buildSystem.IsRunningOnGitHubActions)
+        {
+            repositoryName = buildSystem.GitHubActions.Environment.Workflow.Repository;
+        }
+        return repositoryName;
     }
 
     private static void StartGroup(this IAzurePipelinesCommands _, ICakeContext context, string title) => context.Information("##[group]{0}", title);

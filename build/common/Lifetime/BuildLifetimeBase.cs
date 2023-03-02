@@ -15,6 +15,7 @@ public class BuildLifetimeBase<T> : FrostingLifetime<T> where T : BuildContextBa
 
         context.IsPullRequest = buildSystem.IsPullRequest;
         context.BranchName = context.GetBranchName();
+        context.RepositoryName = context.GetRepositoryName();
         context.IsOriginalRepo = context.IsOriginalRepo();
         context.IsMainBranch = context.IsMainBranch();
         context.IsSupportBranch = context.IsSupportBranch();
@@ -48,12 +49,7 @@ public class BuildLifetimeBase<T> : FrostingLifetime<T> where T : BuildContextBa
         {
             context.Information("Starting Teardown...");
 
-            context.Information("Pull Request:      {0}", context.IsPullRequest);
-            context.Information("Original Repo:     {0}", context.IsOriginalRepo);
-            context.Information("Branch Name:       {0}", context.BranchName);
-            context.Information("Main Branch:       {0}", context.IsMainBranch);
-            context.Information("Support Branch:    {0}", context.IsSupportBranch);
-            context.Information("Tagged:            {0}", context.IsTagged);
+            LogBuildInformation(context);
 
             context.Information("Finished running tasks.");
         }
@@ -67,16 +63,23 @@ public class BuildLifetimeBase<T> : FrostingLifetime<T> where T : BuildContextBa
     {
         if (context.HasArgument(Arguments.Target))
         {
-            context.Information("Target:            {0}", context.Argument<string>(Arguments.Target));
+            context.Information($"Target:               {context.Argument<string>(Arguments.Target)}");
         }
-        context.Information("Version:           {0}", context.Version?.SemVersion);
-        context.Information("Build Agent:       {0}", context.GetBuildAgent());
-        context.Information("OS:                {0}", context.GetOS());
-        context.Information("Pull Request:      {0}", context.IsPullRequest);
-        context.Information("Original Repo:     {0}", context.IsOriginalRepo);
-        context.Information("Branch Name:       {0}", context.BranchName);
-        context.Information("Main Branch:       {0}", context.IsMainBranch);
-        context.Information("Support Branch:    {0}", context.IsSupportBranch);
-        context.Information("Tagged:            {0}", context.IsTagged);
+        if (context.Version is not null)
+        {
+            context.Information($"Version:              {context.Version.SemVersion}");
+        }
+        context.Information($"Build Agent:          {context.GetBuildAgent()}");
+        context.Information($"OS:                   {context.GetOS()}");
+        context.Information($"Pull Request:         {context.IsPullRequest}");
+        context.Information($"Repository Name:      {context.RepositoryName}");
+        context.Information($"Original Repository:  {context.IsOriginalRepo}");
+        context.Information($"Branch Name:          {context.BranchName}");
+        context.Information($"Main Branch:          {context.IsMainBranch}");
+        context.Information($"Support Branch:       {context.IsSupportBranch}");
+        context.Information($"Tagged:               {context.IsTagged}");
+        context.Information($"IsStableRelease:      {context.IsStableRelease}");
+        context.Information($"IsTaggedPreRelease:   {context.IsTaggedPreRelease}");
+        context.Information($"IsInternalPreRelease: {context.IsInternalPreRelease}");
     }
 }

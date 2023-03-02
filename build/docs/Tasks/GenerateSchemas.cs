@@ -13,9 +13,9 @@ public sealed class GenerateSchemas : FrostingTask<BuildContext>
         var version = $"{gitVersion.Major}.{gitVersion.Minor}";
         var schemaTargetDir = context.MakeAbsolute(Paths.Root.Combine("schemas"));
         context.EnsureDirectoryExists(schemaTargetDir);
-        context.Information("Schema tool: {0}", schemaTool);
-        context.Information("Schema target dir: {0}", schemaTargetDir);
-        context.Information("Schema version: {0}", version);
+        context.Information($"Schema tool: {schemaTool}");
+        context.Information($"Schema target dir: {schemaTargetDir}");
+        context.Information($"Schema version: {version}");
         context.DotNetExecute(schemaTool, $"--Version {version} --OutputDirectory {schemaTargetDir}");
     }
 }
