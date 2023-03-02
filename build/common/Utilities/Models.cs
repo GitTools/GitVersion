@@ -41,7 +41,7 @@ public record BuildVersion(GitVersion GitVersion, string? Version, string? Miles
         return new BuildVersion(
             GitVersion: gitVersion,
             Version: version,
-            Milestone: version,
+            Milestone: semVersion,
             SemVersion: semVersion,
             NugetVersion: nugetVersion?.ToLowerInvariant(),
             ChocolateyVersion: chocolateyVersion?.ToLowerInvariant(),
