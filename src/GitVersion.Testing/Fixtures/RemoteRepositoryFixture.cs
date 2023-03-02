@@ -9,15 +9,15 @@ namespace GitVersion.Testing;
 /// </summary>
 public class RemoteRepositoryFixture : RepositoryFixtureBase
 {
-    public RemoteRepositoryFixture(Func<string, IRepository> builder)
+    public RemoteRepositoryFixture(Func<string, Repository> builder)
         : base(builder) => CreateLocalRepository();
 
     public RemoteRepositoryFixture() : this("main")
     {
     }
 
-    public RemoteRepositoryFixture(string branchName) :
-        this(path => CreateNewRepository(path, branchName))
+    public RemoteRepositoryFixture(string branchName)
+        : this(path => CreateNewRepository(path, branchName))
     {
     }
 
@@ -26,14 +26,14 @@ public class RemoteRepositoryFixture : RepositoryFixtureBase
     /// </summary>
     public LocalRepositoryFixture LocalRepositoryFixture { get; private set; }
 
-    private static IRepository CreateNewRepository(string path, string branchName)
+    private static Repository CreateNewRepository(string path, string branchName)
     {
         Init(path, branchName);
         Console.WriteLine("Created git repository at '{0}'", path);
 
-        var repo = new Repository(path);
-        repo.MakeCommits(5);
-        return repo;
+        var repository = new Repository(path);
+        repository.MakeCommits(5);
+        return repository;
     }
 
     private void CreateLocalRepository() => LocalRepositoryFixture = CloneRepository();

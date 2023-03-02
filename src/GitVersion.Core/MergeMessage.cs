@@ -89,4 +89,14 @@ public class MergeMessage
 
         public Regex Pattern { get; }
     }
+
+    public ReferenceName GetMergedBranchName()
+    {
+        var mergedBranch = MergedBranch;
+        if (FormatName == "RemoteTracking" && !mergedBranch.StartsWith(ReferenceName.RemoteTrackingBranchPrefix))
+        {
+            mergedBranch = $"{ReferenceName.RemoteTrackingBranchPrefix}{mergedBranch}";
+        }
+        return ReferenceName.FromBranchName(mergedBranch);
+    }
 }

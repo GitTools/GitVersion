@@ -79,7 +79,7 @@ public class RemoteRepositoryScenarios : TestBase
         fixture.AssertFullSemver("0.0.1+6");
         fixture.AssertFullSemver("0.0.1+5", repository: fixture.LocalRepositoryFixture.Repository);
         var buildSignature = fixture.LocalRepositoryFixture.Repository.Config.BuildSignature(new DateTimeOffset(DateTime.Now));
-        Commands.Pull((Repository)fixture.LocalRepositoryFixture.Repository, buildSignature, new PullOptions());
+        Commands.Pull(fixture.LocalRepositoryFixture.Repository, buildSignature, new PullOptions());
         fixture.AssertFullSemver("0.0.1+6", repository: fixture.LocalRepositoryFixture.Repository);
     }
 
@@ -134,5 +134,23 @@ public class RemoteRepositoryScenarios : TestBase
                 }
             }
         }
+    }
+
+    [TestCase("origin", "release-2.0.0", "2.1.0-alpha.0")]
+    [TestCase("custom", "release-2.0.0", "0.1.0-alpha.5")]
+    [TestCase("origin", "release/3.0.0", "3.1.0-alpha.0")]
+    [TestCase("custom", "release/3.0.0", "0.1.0-alpha.5")]
+    public void EnsureRemoteReleaseBranchesAreTracked(string origin, string branchName, string expectedVersion)
+    {
+        using var fixture = new RemoteRepositoryFixture("develop");
+
+        fixture.CreateBranch(branchName);
+        fixture.MakeACommit();
+
+        if (origin != "origin") fixture.LocalRepositoryFixture.Repository.Network.Remotes.Rename("origin", origin);
+        fixture.LocalRepositoryFixture.Fetch(origin);
+        fixture.LocalRepositoryFixture.Checkout("develop");
+
+        fixture.LocalRepositoryFixture.AssertFullSemver(expectedVersion);
     }
 }

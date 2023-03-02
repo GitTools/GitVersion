@@ -37,16 +37,14 @@ internal class SourceBranchFinder
             if (Equals(sourceBranchCandidate, this.branch))
                 return false;
 
-            var branchName = sourceBranchCandidate.Name.Friendly;
+            var branchName = sourceBranchCandidate.Name.WithoutRemote;
 
-            return this.sourceBranchRegexes
-                .Any(regex => Regex.IsMatch(branchName, regex));
+            return this.sourceBranchRegexes.Any(regex => Regex.IsMatch(branchName, regex));
         }
 
         private static IEnumerable<string> GetSourceBranchRegexes(INamedReference branch, GitVersionConfiguration configuration)
         {
-            var branchName = branch.Name.WithoutRemote;
-            var currentBranchConfig = configuration.GetBranchConfiguration(branchName);
+            var currentBranchConfig = configuration.GetBranchConfiguration(branch.Name);
             if (currentBranchConfig.SourceBranches == null)
             {
                 yield return ".*";

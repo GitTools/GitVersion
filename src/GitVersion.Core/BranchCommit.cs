@@ -5,6 +5,7 @@ namespace GitVersion;
 /// <summary>
 /// A commit, together with the branch to which the commit belongs.
 /// </summary>
+[DebuggerDisplay("{Branch} {Commit}")]
 public readonly struct BranchCommit : IEquatable<BranchCommit?>
 {
     public static readonly BranchCommit Empty = new();

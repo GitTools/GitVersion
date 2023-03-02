@@ -225,9 +225,12 @@ public class RepositoryStoreTests : TestBase
 
         var branch = localRepository.FindBranch("main");
         branch.ShouldNotBeNull();
-        var branchedCommit = gitRepoMetadataProvider.FindCommitBranchWasBranchedFrom(branch, new GitVersionConfiguration(), Array.Empty<IBranch>());
 
-        Assert.IsNull(branchedCommit.Branch);
-        Assert.IsNull(branchedCommit.Commit);
+        var configuration = GitFlowConfigurationBuilder.New.Build();
+        var branchedCommit = gitRepoMetadataProvider.FindCommitBranchWasBranchedFrom(branch, configuration, Array.Empty<IBranch>());
+        branchedCommit.ShouldBe(BranchCommit.Empty);
+
+        var branchedCommits = gitRepoMetadataProvider.FindCommitBranchesWasBranchedFrom(branch, configuration).ToArray();
+        branchedCommits.ShouldBeEmpty();
     }
 }
