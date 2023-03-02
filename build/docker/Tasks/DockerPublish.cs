@@ -31,11 +31,11 @@ public class DockerPublishInternal : FrostingTask<BuildContext>
         shouldRun &= context.ShouldRun(context.IsDockerOnLinux, $"{nameof(DockerPublish)} works only on Docker on Linux agents.");
         if (context.DockerRegistry == DockerRegistry.GitHub)
         {
-            shouldRun &= context.ShouldRun(context.IsStableRelease || context.IsPreRelease, $"{nameof(DockerPublish)} to GitHub Package Registry works only for releases.");
+            shouldRun &= context.ShouldRun(context.IsInternalPreRelease, $"{nameof(DockerPublish)} to GitHub Package Registry works only for internal releases.");
         }
         if (context.DockerRegistry == DockerRegistry.DockerHub)
         {
-            shouldRun &= context.ShouldRun(context.IsStableRelease, $"{nameof(DockerPublish)} DockerHub works only for tagged releases.");
+            shouldRun &= context.ShouldRun(context.IsStableRelease || context.IsTaggedPreRelease, $"{nameof(DockerPublish)} to DockerHub works only for tagged releases.");
         }
 
         return shouldRun;

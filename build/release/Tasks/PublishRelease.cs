@@ -20,7 +20,7 @@ public class PublishReleaseInternal : FrostingTask<BuildContext>
     {
         var shouldRun = true;
         shouldRun &= context.ShouldRun(context.IsGitHubActionsBuild, $"{nameof(PublishRelease)} works only on GitHub Actions.");
-        shouldRun &= context.ShouldRun(context.IsStableRelease, $"{nameof(PublishRelease)} works only for releases.");
+        shouldRun &= context.ShouldRun(context.IsStableRelease || context.IsTaggedPreRelease, $"{nameof(PublishRelease)} works only for tagged releases.");
 
         return shouldRun;
     }

@@ -18,7 +18,7 @@ public class PublishNugetInternal : FrostingTask<BuildContext>
     {
         var shouldRun = true;
         shouldRun &= context.ShouldRun(context.IsGitHubActionsBuild, $"{nameof(PublishNuget)} works only on GitHub Actions.");
-        shouldRun &= context.ShouldRun(context.IsPreRelease || context.IsStableRelease, $"{nameof(PublishNuget)} works only for releases.");
+        shouldRun &= context.ShouldRun(context.IsStableRelease || context.IsTaggedPreRelease || context.IsInternalPreRelease, $"{nameof(PublishNuget)} works only for releases.");
 
         return shouldRun;
     }
@@ -26,7 +26,7 @@ public class PublishNugetInternal : FrostingTask<BuildContext>
     public override void Run(BuildContext context)
     {
         // publish to github packages for commits on main and on original repo
-        if (context is { IsGitHubActionsBuild: true, IsOnMainOrSupportBranchOriginalRepo: true })
+        if (context.IsInternalPreRelease)
         {
             var apiKey = context.Credentials?.GitHub?.Token;
             if (string.IsNullOrEmpty(apiKey))
@@ -35,8 +35,8 @@ public class PublishNugetInternal : FrostingTask<BuildContext>
             }
             PublishToNugetRepo(context, apiKey, Constants.GithubPackagesUrl);
         }
-        // publish to nuget.org for stable releases
-        if (context.IsStableRelease)
+        // publish to nuget.org for tagged releases
+        if (context.IsStableRelease || context.IsTaggedPreRelease)
         {
             var apiKey = context.Credentials?.Nuget?.ApiKey;
             if (string.IsNullOrEmpty(apiKey))

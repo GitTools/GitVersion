@@ -19,7 +19,8 @@ public class BuildContextBase : FrostingContext
     public bool IsOnWindows { get; set; }
     public bool IsOnLinux { get; set; }
     public bool IsOnMacOS { get; set; }
-    public bool IsOnMainOrSupportBranchOriginalRepo => !IsLocalBuild && IsOriginalRepo && (IsMainBranch || IsSupportBranch) && !IsPullRequest;
-    public bool IsStableRelease => IsOnMainOrSupportBranchOriginalRepo && IsTagged && Version?.IsPreRelease == false;
-    public bool IsPreRelease => IsOnMainOrSupportBranchOriginalRepo && !IsTagged;
+    public bool IsReleaseBranchOriginalRepo => !IsLocalBuild && IsOriginalRepo && (IsMainBranch || IsSupportBranch) && !IsPullRequest;
+    public bool IsStableRelease => IsReleaseBranchOriginalRepo && IsTagged && Version?.IsPreRelease == false;
+    public bool IsTaggedPreRelease => IsReleaseBranchOriginalRepo && IsTagged && Version?.IsPreRelease == true;
+    public bool IsInternalPreRelease => IsReleaseBranchOriginalRepo && IsGitHubActionsBuild;
 }

@@ -12,7 +12,7 @@ public class PublishCoverage : FrostingTask<BuildContext>
     {
         var shouldRun = true;
         shouldRun &= context.ShouldRun(context.IsOnWindows, $"{nameof(PublishCoverage)} works only on Windows agents.");
-        shouldRun &= context.ShouldRun(context.IsOnMainOrSupportBranchOriginalRepo, $"{nameof(PublishCoverage)} works only for on main or release branch original repository.");
+        shouldRun &= context.ShouldRun(context.IsReleaseBranchOriginalRepo, $"{nameof(PublishCoverage)} works only for main or release branch, original repository.");
 
         return shouldRun;
     }

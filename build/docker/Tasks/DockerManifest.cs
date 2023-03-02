@@ -30,11 +30,11 @@ public class DockerManifestInternal : FrostingTask<BuildContext>
 
         if (context.DockerRegistry == DockerRegistry.GitHub)
         {
-            shouldRun &= context.ShouldRun(context.IsStableRelease || context.IsPreRelease, $"{nameof(DockerPublish)} to GitHub Package Registry works only for releases.");
+            shouldRun &= context.ShouldRun(context.IsInternalPreRelease, $"{nameof(DockerPublish)} to GitHub Package Registry works only internal releases.");
         }
         if (context.DockerRegistry == DockerRegistry.DockerHub)
         {
-            shouldRun &= context.ShouldRun(context.IsStableRelease, $"{nameof(DockerPublish)} DockerHub works only for tagged releases.");
+            shouldRun &= context.ShouldRun(context.IsStableRelease || context.IsTaggedPreRelease, $"{nameof(DockerPublish)} to DockerHub works only for tagged releases.");
         }
 
         return shouldRun;
