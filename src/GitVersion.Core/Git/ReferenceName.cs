@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using GitVersion.Extensions;
 using GitVersion.Helpers;
 
@@ -8,9 +9,11 @@ public class ReferenceName : IEquatable<ReferenceName?>, IComparable<ReferenceNa
     private static readonly LambdaEqualityHelper<ReferenceName> equalityHelper = new(x => x.Canonical);
     private static readonly LambdaKeyComparer<ReferenceName, string> comparerHelper = new(x => x.Canonical);
 
-    private const string LocalBranchPrefix = "refs/heads/";
-    private const string RemoteTrackingBranchPrefix = "refs/remotes/";
-    private const string TagPrefix = "refs/tags/";
+    public const string LocalBranchPrefix = "refs/heads/";
+    public const string RemoteTrackingBranchPrefix = "refs/remotes/";
+    public const string TagPrefix = "refs/tags/";
+    public const string RemotePrefix = "origin/";
+
     private static readonly string[] PullRequestPrefixes =
     {
         "refs/pull/",
@@ -23,7 +26,7 @@ public class ReferenceName : IEquatable<ReferenceName?>, IComparable<ReferenceNa
     {
         Canonical = canonical.NotNull();
 
-        IsBranch = IsPrefixedBy(Canonical, LocalBranchPrefix);
+        IsLocalBranch = IsPrefixedBy(Canonical, LocalBranchPrefix);
         IsRemoteBranch = IsPrefixedBy(Canonical, RemoteTrackingBranchPrefix);
         IsTag = IsPrefixedBy(Canonical, TagPrefix);
         IsPullRequest = IsPrefixedBy(Canonical, PullRequestPrefixes);
@@ -34,23 +37,35 @@ public class ReferenceName : IEquatable<ReferenceName?>, IComparable<ReferenceNa
 
     public static ReferenceName Parse(string canonicalName)
     {
+        if (TryParse(out ReferenceName? value, canonicalName)) return value;
+        throw new ArgumentException($"The {nameof(canonicalName)} is not a Canonical name");
+    }
+
+    public static bool TryParse([NotNullWhen(true)] out ReferenceName? value, string canonicalName)
+    {
+        value = null;
+
         if (IsPrefixedBy(canonicalName, LocalBranchPrefix)
             || IsPrefixedBy(canonicalName, RemoteTrackingBranchPrefix)
             || IsPrefixedBy(canonicalName, TagPrefix)
             || IsPrefixedBy(canonicalName, PullRequestPrefixes))
         {
-            return new ReferenceName(canonicalName);
+            value = new ReferenceName(canonicalName);
         }
 
-        throw new ArgumentException($"The {nameof(canonicalName)} is not a Canonical name");
+        return value != null;
     }
 
-    public static ReferenceName FromBranchName(string branchName) => Parse(LocalBranchPrefix + branchName);
+    public static ReferenceName FromBranchName(string branchName)
+    {
+        if (TryParse(out ReferenceName? value, branchName)) return value;
+        return Parse(LocalBranchPrefix + branchName);
+    }
 
     public string Canonical { get; }
     public string Friendly { get; }
     public string WithoutRemote { get; }
-    public bool IsBranch { get; }
+    public bool IsLocalBranch { get; }
     public bool IsRemoteBranch { get; }
     public bool IsTag { get; }
     public bool IsPullRequest { get; }
@@ -68,7 +83,7 @@ public class ReferenceName : IEquatable<ReferenceName?>, IComparable<ReferenceNa
 
     private string Shorten()
     {
-        if (IsBranch)
+        if (IsLocalBranch)
             return Canonical.Substring(LocalBranchPrefix.Length);
 
         if (IsRemoteBranch)
@@ -82,12 +97,10 @@ public class ReferenceName : IEquatable<ReferenceName?>, IComparable<ReferenceNa
 
     private string RemoveRemote()
     {
-        if (IsRemoteBranch)
+        if (IsRemoteBranch && !IsPullRequest && Friendly.StartsWith(RemotePrefix, StringComparison.Ordinal))
         {
-            if (!IsPullRequest)
-                return Friendly.Substring(Friendly.IndexOf("/", StringComparison.Ordinal) + 1);
+            return Friendly.Substring(RemotePrefix.Length);
         }
-
         return Friendly;
     }
 

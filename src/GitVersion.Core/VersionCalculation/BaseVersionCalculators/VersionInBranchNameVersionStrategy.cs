@@ -21,7 +21,7 @@ public class VersionInBranchNameVersionStrategy : VersionStrategyBase
         if (!configuration.Value.IsReleaseBranch) yield break;
 
         var versionInBranch = GetVersionInBranch(
-            configuration.Branch.Name.Friendly, configuration.Value.LabelPrefix, configuration.Value.SemanticVersionFormat
+            configuration.Branch.Name, configuration.Value.LabelPrefix, configuration.Value.SemanticVersionFormat
         );
         if (versionInBranch != null)
         {
@@ -33,9 +33,10 @@ public class VersionInBranchNameVersionStrategy : VersionStrategyBase
         }
     }
 
-    private static Tuple<string, SemanticVersion>? GetVersionInBranch(string branchName, string? tagPrefixRegex, SemanticVersionFormat versionFormat)
+    private static Tuple<string, SemanticVersion>? GetVersionInBranch(
+        ReferenceName branchName, string? tagPrefixRegex, SemanticVersionFormat versionFormat)
     {
-        var branchParts = branchName.Split('/', '-');
+        var branchParts = branchName.WithoutRemote.Split('/', '-');
         foreach (var part in branchParts)
         {
             if (SemanticVersion.TryParse(part, tagPrefixRegex, out var semanticVersion, versionFormat))

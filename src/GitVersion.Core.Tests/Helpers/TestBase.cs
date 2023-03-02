@@ -18,13 +18,14 @@ public class TestBase
         return services.BuildServiceProvider();
     }
 
-    protected static IServiceProvider BuildServiceProvider(string workingDirectory, IGitRepository repository, string branch, IReadOnlyDictionary<object, object?>? configuration = null)
+    protected static IServiceProvider BuildServiceProvider(IGitRepository repository,
+        string? targetBranch = null, IReadOnlyDictionary<object, object?>? configuration = null)
     {
         var options = Options.Create(new GitVersionOptions
         {
-            WorkingDirectory = workingDirectory,
+            WorkingDirectory = repository.Path,
             ConfigurationInfo = { OverrideConfiguration = configuration },
-            RepositoryInfo = { TargetBranch = branch }
+            RepositoryInfo = { TargetBranch = targetBranch }
         });
 
         var sp = ConfigureServices(services =>

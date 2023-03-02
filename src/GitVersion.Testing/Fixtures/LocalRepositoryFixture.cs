@@ -4,7 +4,7 @@ namespace GitVersion.Testing;
 
 public class LocalRepositoryFixture : RepositoryFixtureBase
 {
-    public LocalRepositoryFixture(IRepository repository) : base(repository)
+    public LocalRepositoryFixture(Repository repository) : base(repository)
     {
     }
 }

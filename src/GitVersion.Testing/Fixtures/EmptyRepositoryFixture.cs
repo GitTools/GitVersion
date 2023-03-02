@@ -13,7 +13,7 @@ public class EmptyRepositoryFixture : RepositoryFixtureBase
     {
     }
 
-    private static IRepository CreateNewRepository(string path, string branchName)
+    private static Repository CreateNewRepository(string path, string branchName)
     {
         Init(path, branchName);
         Console.WriteLine("Created git repository at '{0}'", path);

@@ -115,7 +115,7 @@ public class RepositoryStore : IRepositoryStore
         }
 
         return this.repository.Branches.FirstOrDefault(b =>
-            Regex.IsMatch(b.Name.Friendly, mainBranchRegex, RegexOptions.IgnoreCase));
+            Regex.IsMatch(b.Name.WithoutRemote, mainBranchRegex, RegexOptions.IgnoreCase));
     }
 
     public IEnumerable<IBranch> FindMainlineBranches(GitVersionConfiguration configuration)
@@ -134,6 +134,9 @@ public class RepositoryStore : IRepositoryStore
 
     public IEnumerable<IBranch> GetReleaseBranches(IEnumerable<KeyValuePair<string, BranchConfiguration>> releaseBranchConfig)
         => this.repository.Branches.Where(b => IsReleaseBranch(b, releaseBranchConfig));
+
+    private static bool IsReleaseBranch(INamedReference branch, IEnumerable<KeyValuePair<string, BranchConfiguration>> releaseBranchConfig)
+        => releaseBranchConfig.Any(c => c.Value.Regex != null && Regex.IsMatch(branch.Name.WithoutRemote, c.Value.Regex));
 
     public IEnumerable<IBranch> ExcludingBranches(IEnumerable<IBranch> branchesToExclude) => this.repository.Branches.ExcludeBranches(branchesToExclude);
 
@@ -295,9 +298,6 @@ public class RepositoryStore : IRepositoryStore
     public ICommit? FindMergeBase(ICommit commit, ICommit mainlineTip) => this.repository.FindMergeBase(commit, mainlineTip);
 
     public int GetNumberOfUncommittedChanges() => this.repository.GetNumberOfUncommittedChanges();
-
-    private static bool IsReleaseBranch(INamedReference branch, IEnumerable<KeyValuePair<string, BranchConfiguration>> releaseBranchConfig)
-        => releaseBranchConfig.Any(c => c.Value.Regex != null && Regex.IsMatch(branch.Name.Friendly, c.Value.Regex));
 
     private IEnumerable<SemanticVersion> GetCurrentCommitSemanticVersions(ICommit? commit, string? tagPrefix, ITag tag, SemanticVersionFormat versionFormat, bool handleDetachedBranch)
     {

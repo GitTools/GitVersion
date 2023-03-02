@@ -1,4 +1,8 @@
 #nullable enable
+const GitVersion.ReferenceName.LocalBranchPrefix = "refs/heads/" -> string!
+const GitVersion.ReferenceName.RemotePrefix = "origin/" -> string!
+const GitVersion.ReferenceName.RemoteTrackingBranchPrefix = "refs/remotes/" -> string!
+const GitVersion.ReferenceName.TagPrefix = "refs/tags/" -> string!
 GitVersion.Agents.BuildAgentBase
 GitVersion.Agents.BuildAgentBase.BuildAgentBase(GitVersion.IEnvironment! environment, GitVersion.Logging.ILog! log) -> void
 GitVersion.Agents.BuildAgentBase.Environment.get -> GitVersion.IEnvironment!
@@ -608,6 +612,7 @@ GitVersion.Logging.Verbosity.Quiet = 0 -> GitVersion.Logging.Verbosity
 GitVersion.Logging.Verbosity.Verbose = 3 -> GitVersion.Logging.Verbosity
 GitVersion.MergeMessage
 GitVersion.MergeMessage.FormatName.get -> string?
+GitVersion.MergeMessage.GetMergedBranchName() -> GitVersion.ReferenceName!
 GitVersion.MergeMessage.IsMergedPullRequest.get -> bool
 GitVersion.MergeMessage.MergeMessage(string? mergeMessage, GitVersion.Configuration.GitVersionConfiguration! configuration) -> void
 GitVersion.MergeMessage.MergedBranch.get -> string!
@@ -705,6 +710,7 @@ GitVersion.OutputVariables.VersionVariablesJsonModel.WeightedPreReleaseNumber.ge
 GitVersion.OutputVariables.VersionVariablesJsonModel.WeightedPreReleaseNumber.set -> void
 GitVersion.OutputVariables.VersionVariablesJsonStringConverter
 GitVersion.OutputVariables.VersionVariablesJsonStringConverter.VersionVariablesJsonStringConverter() -> void
+GitVersion.ReferenceName.IsLocalBranch.get -> bool
 GitVersion.RefSpecDirection
 GitVersion.RefSpecDirection.Fetch = 0 -> GitVersion.RefSpecDirection
 GitVersion.RefSpecDirection.Push = 1 -> GitVersion.RefSpecDirection
@@ -714,7 +720,6 @@ GitVersion.ReferenceName.CompareTo(GitVersion.ReferenceName? other) -> int
 GitVersion.ReferenceName.Equals(GitVersion.ReferenceName? other) -> bool
 GitVersion.ReferenceName.EquivalentTo(string? name) -> bool
 GitVersion.ReferenceName.Friendly.get -> string!
-GitVersion.ReferenceName.IsBranch.get -> bool
 GitVersion.ReferenceName.IsPullRequest.get -> bool
 GitVersion.ReferenceName.IsRemoteBranch.get -> bool
 GitVersion.ReferenceName.IsTag.get -> bool
@@ -977,7 +982,6 @@ const GitVersion.VersionCalculation.IncrementStrategyFinder.DefaultMajorPattern 
 const GitVersion.VersionCalculation.IncrementStrategyFinder.DefaultMinorPattern = "\\+semver:\\s?(feature|minor)" -> string!
 const GitVersion.VersionCalculation.IncrementStrategyFinder.DefaultNoBumpPattern = "\\+semver:\\s?(none|skip)" -> string!
 const GitVersion.VersionCalculation.IncrementStrategyFinder.DefaultPatchPattern = "\\+semver:\\s?(fix|patch)" -> string!
-const GitVersion.VersionCalculation.MergeMessageVersionStrategy.MergeMessageStrategyPrefix = "Merge message" -> string!
 override GitVersion.Agents.LocalBuild.CanApplyToCurrentContext() -> bool
 override GitVersion.Agents.LocalBuild.EnvironmentVariable.get -> string!
 override GitVersion.Agents.LocalBuild.GenerateSetParameterMessage(string! name, string! value) -> string![]!
@@ -1065,13 +1069,14 @@ static GitVersion.BranchCommit.operator !=(GitVersion.BranchCommit left, GitVers
 static GitVersion.BranchCommit.operator ==(GitVersion.BranchCommit left, GitVersion.BranchCommit right) -> bool
 static GitVersion.Configuration.BranchConfigurationBuilder.New.get -> GitVersion.Configuration.BranchConfigurationBuilder!
 static GitVersion.Configuration.ConfigurationExtensions.GetBranchConfiguration(this GitVersion.Configuration.GitVersionConfiguration! configuration, GitVersion.IBranch! branch) -> GitVersion.Configuration.BranchConfiguration!
-static GitVersion.Configuration.ConfigurationExtensions.GetBranchConfiguration(this GitVersion.Configuration.GitVersionConfiguration! configuration, string! branchName) -> GitVersion.Configuration.BranchConfiguration!
+static GitVersion.Configuration.ConfigurationExtensions.GetBranchConfiguration(this GitVersion.Configuration.GitVersionConfiguration! configuration, GitVersion.ReferenceName! branchName) -> GitVersion.Configuration.BranchConfiguration!
 static GitVersion.Configuration.ConfigurationExtensions.GetBranchSpecificTag(this GitVersion.Configuration.EffectiveConfiguration! configuration, GitVersion.Logging.ILog! log, string? branchFriendlyName, string? branchNameOverride) -> string!
 static GitVersion.Configuration.ConfigurationExtensions.GetEffectiveConfiguration(this GitVersion.Configuration.GitVersionConfiguration! configuration, GitVersion.IBranch! branch) -> GitVersion.Configuration.EffectiveConfiguration!
-static GitVersion.Configuration.ConfigurationExtensions.GetEffectiveConfiguration(this GitVersion.Configuration.GitVersionConfiguration! configuration, string! branchName) -> GitVersion.Configuration.EffectiveConfiguration!
+static GitVersion.Configuration.ConfigurationExtensions.GetEffectiveConfiguration(this GitVersion.Configuration.GitVersionConfiguration! configuration, GitVersion.ReferenceName! branchName) -> GitVersion.Configuration.EffectiveConfiguration!
 static GitVersion.Configuration.ConfigurationExtensions.GetFallbackBranchConfiguration(this GitVersion.Configuration.GitVersionConfiguration! configuration) -> GitVersion.Configuration.BranchConfiguration!
 static GitVersion.Configuration.ConfigurationExtensions.GetReleaseBranchConfiguration(this GitVersion.Configuration.GitVersionConfiguration! configuration) -> System.Collections.Generic.List<System.Collections.Generic.KeyValuePair<string!, GitVersion.Configuration.BranchConfiguration!>>!
-static GitVersion.Configuration.ConfigurationExtensions.IsReleaseBranch(this GitVersion.Configuration.GitVersionConfiguration! configuration, string! branchName) -> bool
+static GitVersion.Configuration.ConfigurationExtensions.IsReleaseBranch(this GitVersion.Configuration.GitVersionConfiguration! configuration, GitVersion.IBranch! branch) -> bool
+static GitVersion.Configuration.ConfigurationExtensions.IsReleaseBranch(this GitVersion.Configuration.GitVersionConfiguration! configuration, GitVersion.ReferenceName! branchName) -> bool
 static GitVersion.Configuration.ConfigurationSerializer.Deserialize<T>(string! input) -> T
 static GitVersion.Configuration.ConfigurationSerializer.Read(System.IO.TextReader! reader) -> GitVersion.Configuration.GitVersionConfiguration!
 static GitVersion.Configuration.ConfigurationSerializer.Serialize(object! graph) -> string!
@@ -1153,6 +1158,7 @@ static GitVersion.OutputVariables.VersionVariables.FromFile(string! filePath, Gi
 static GitVersion.OutputVariables.VersionVariables.FromJson(string! json) -> GitVersion.OutputVariables.VersionVariables!
 static GitVersion.ReferenceName.FromBranchName(string! branchName) -> GitVersion.ReferenceName!
 static GitVersion.ReferenceName.Parse(string! canonicalName) -> GitVersion.ReferenceName!
+static GitVersion.ReferenceName.TryParse(out GitVersion.ReferenceName? value, string! canonicalName) -> bool
 static GitVersion.SemanticVersion.Parse(string! version, string? tagPrefixRegex, GitVersion.SemanticVersionFormat versionFormat = GitVersion.SemanticVersionFormat.Strict) -> GitVersion.SemanticVersion!
 static GitVersion.SemanticVersion.TryParse(string! version, string? tagPrefixRegex, out GitVersion.SemanticVersion? semanticVersion, GitVersion.SemanticVersionFormat format = GitVersion.SemanticVersionFormat.Strict) -> bool
 static GitVersion.SemanticVersion.operator !=(GitVersion.SemanticVersion? v1, GitVersion.SemanticVersion? v2) -> bool

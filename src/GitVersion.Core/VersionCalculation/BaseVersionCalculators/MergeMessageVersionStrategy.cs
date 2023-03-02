@@ -1,5 +1,4 @@
 using System.Diagnostics.CodeAnalysis;
-using System.Text.RegularExpressions;
 using GitVersion.Common;
 using GitVersion.Configuration;
 using GitVersion.Extensions;
@@ -32,9 +31,8 @@ public class MergeMessageVersionStrategy : VersionStrategyBase
         var baseVersions = commitsPriorToThan
             .SelectMany(c =>
             {
-                if (TryParse(c, Context, out var mergeMessage) &&
-                    mergeMessage.Version != null &&
-                    Context.Configuration.IsReleaseBranch(TrimRemote(mergeMessage.MergedBranch)))
+                if (TryParse(c, Context, out var mergeMessage) && mergeMessage.Version != null
+                    && Context.Configuration.IsReleaseBranch(mergeMessage.GetMergedBranchName()))
                 {
                     this.log.Info($"Found commit [{Context.CurrentCommit}] matching merge message format: {mergeMessage.FormatName}");
                     var shouldIncrement = !configuration.Value.PreventIncrementOfMergedBranchVersion;
@@ -53,7 +51,7 @@ public class MergeMessageVersionStrategy : VersionStrategyBase
                     }
 
                     var baseVersion = new BaseVersion(
-                        source: $"{MergeMessageStrategyPrefix} '{message}'",
+                        source: $"Merge message '{message}'",
                         shouldIncrement: shouldIncrement,
                         semanticVersion: mergeMessage.Version,
                         baseVersionSource: baseVersionSource,
@@ -67,8 +65,6 @@ public class MergeMessageVersionStrategy : VersionStrategyBase
             .ToList();
         return baseVersions;
     }
-
-    public const string MergeMessageStrategyPrefix = "Merge message";
 
     private static bool TryParse(ICommit mergeCommit, GitVersionContext context, [NotNullWhen(true)] out MergeMessage? mergeMessage)
     {
@@ -86,8 +82,4 @@ public class MergeMessageVersionStrategy : VersionStrategyBase
         var mergeMessage = new MergeMessage(mergeCommit.Message, context.Configuration);
         return mergeMessage;
     }
-
-    private static string TrimRemote(string branchName) => branchName
-        .RegexReplace("^refs/remotes/", string.Empty, RegexOptions.IgnoreCase)
-        .RegexReplace("^origin/", string.Empty, RegexOptions.IgnoreCase);
 }

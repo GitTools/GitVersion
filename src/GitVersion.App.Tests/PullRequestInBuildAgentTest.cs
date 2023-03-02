@@ -163,7 +163,7 @@ public class PullRequestInBuildAgentTest
             remoteRepository.Refs.Add(pullRequestRef, new ObjectId(mergeCommitSha));
 
             // Checkout PR commit
-            Commands.Fetch((Repository)fixture.Repository, "origin", Array.Empty<string>(), new FetchOptions(), null);
+            Commands.Fetch(fixture.Repository, "origin", Array.Empty<string>(), new FetchOptions(), null);
             Commands.Checkout(fixture.Repository, mergeCommitSha);
         }
 
@@ -199,7 +199,7 @@ public class PullRequestInBuildAgentTest
         var refName = new ReferenceName(pullRequestRef);
 
         Assert.AreEqual(friendly, refName.Friendly);
-        Assert.AreEqual(isBranch, refName.IsBranch);
+        Assert.AreEqual(isBranch, refName.IsLocalBranch);
         Assert.AreEqual(isPullRequest, refName.IsPullRequest);
         Assert.AreEqual(isRemote, refName.IsRemoteBranch);
     }

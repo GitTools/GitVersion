@@ -45,7 +45,9 @@ public static class GitToolsTestingExtensions
         return branch;
     }
 
-    public static IBranch FindBranch(this IGitRepository repository, string branchName) => repository.Branches.First(x => x.Name.WithoutRemote == branchName) ?? throw new GitVersionException($"Branch {branchName} not found");
+    public static IBranch FindBranch(this IGitRepository repository, string branchName)
+        => repository.Branches.FirstOrDefault(branch => branch.Name.WithoutRemote == branchName)
+            ?? throw new GitVersionException($"Branch {branchName} not found");
 
     public static void DumpGraph(this IGitRepository repository, Action<string>? writer = null, int? maxCommits = null) => GitExtensions.DumpGraph(repository.Path, writer, maxCommits);
 

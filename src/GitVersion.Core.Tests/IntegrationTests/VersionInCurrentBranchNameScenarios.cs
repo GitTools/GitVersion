@@ -44,7 +44,7 @@ public class VersionInCurrentBranchNameScenarios : TestBase
         using var fixture = new RemoteRepositoryFixture();
         fixture.BranchTo("release/2.0.0");
         fixture.MakeACommit();
-        Commands.Fetch((Repository)fixture.LocalRepositoryFixture.Repository, fixture.LocalRepositoryFixture.Repository.Network.Remotes.First().Name, Array.Empty<string>(), new FetchOptions(), null);
+        Commands.Fetch(fixture.LocalRepositoryFixture.Repository, fixture.LocalRepositoryFixture.Repository.Network.Remotes.First().Name, Array.Empty<string>(), new FetchOptions(), null);
 
         fixture.LocalRepositoryFixture.Checkout("origin/release/2.0.0");
 
@@ -52,16 +52,16 @@ public class VersionInCurrentBranchNameScenarios : TestBase
     }
 
     [Test]
-    public void TakesVersionFromNameOfRemoteReleaseBranchInCustom()
+    public void DoesNotTakeVersionFromNameOfRemoteReleaseBranchInCustomRemote()
     {
         using var fixture = new RemoteRepositoryFixture();
         fixture.LocalRepositoryFixture.Repository.Network.Remotes.Rename("origin", "upstream");
         fixture.BranchTo("release/2.0.0");
         fixture.MakeACommit();
-        Commands.Fetch((Repository)fixture.LocalRepositoryFixture.Repository, fixture.LocalRepositoryFixture.Repository.Network.Remotes.First().Name, Array.Empty<string>(), new FetchOptions(), null);
+        Commands.Fetch(fixture.LocalRepositoryFixture.Repository, fixture.LocalRepositoryFixture.Repository.Network.Remotes.First().Name, Array.Empty<string>(), new FetchOptions(), null);
 
         fixture.LocalRepositoryFixture.Checkout("upstream/release/2.0.0");
 
-        fixture.LocalRepositoryFixture.AssertFullSemver("2.0.0-beta.1+1");
+        fixture.LocalRepositoryFixture.AssertFullSemver("0.0.1-upstream-release-2-0-0.1+6");
     }
 }
