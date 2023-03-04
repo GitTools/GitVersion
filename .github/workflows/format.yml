@@ -1,5 +1,4 @@
-name: Validate Commit
-
+name: Code Format
 on:
   push:
     branches:
