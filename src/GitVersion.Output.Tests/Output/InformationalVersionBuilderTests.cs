@@ -31,7 +31,7 @@ public class InformationalVersionBuilderTests : TestBase
         };
         var informationalVersion = semanticVersion.ToString("i");
 
-        Assert.AreEqual(versionString, informationalVersion);
+        Assert.That(informationalVersion, Is.EqualTo(versionString));
     }
 
 }

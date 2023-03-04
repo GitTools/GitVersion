@@ -46,24 +46,27 @@ public class SemanticVersionTests : TestBase
         SemanticVersion.TryParse(versionString, tagPrefixRegex, out var version, format).ShouldBe(true, versionString);
 
         version.ShouldNotBeNull();
-        Assert.AreEqual(major, version.Major);
-        Assert.AreEqual(minor, version.Minor);
-        Assert.AreEqual(patch, version.Patch);
-        Assert.AreEqual(tag, version.PreReleaseTag.Name);
-        Assert.AreEqual(tagNumber, version.PreReleaseTag.Number);
+        Assert.Multiple(() =>
+        {
+            Assert.That(version.Major, Is.EqualTo(major));
+            Assert.That(version.Minor, Is.EqualTo(minor));
+            Assert.That(version.Patch, Is.EqualTo(patch));
+            Assert.That(version.PreReleaseTag.Name, Is.EqualTo(tag));
+            Assert.That(version.PreReleaseTag.Number, Is.EqualTo(tagNumber));
 
-        Assert.AreEqual(numberOfBuilds, version.BuildMetaData.CommitsSinceTag);
-        Assert.AreEqual(branchName, version.BuildMetaData.Branch);
-        Assert.AreEqual(sha, version.BuildMetaData.Sha);
-        Assert.AreEqual(otherMetaData, version.BuildMetaData.OtherMetaData);
-        Assert.AreEqual(fullFormattedVersionString, version.ToString("i"));
+            Assert.That(version.BuildMetaData.CommitsSinceTag, Is.EqualTo(numberOfBuilds));
+            Assert.That(version.BuildMetaData.Branch, Is.EqualTo(branchName));
+            Assert.That(version.BuildMetaData.Sha, Is.EqualTo(sha));
+            Assert.That(version.BuildMetaData.OtherMetaData, Is.EqualTo(otherMetaData));
+            Assert.That(version.ToString("i"), Is.EqualTo(fullFormattedVersionString));
+        });
     }
 
     [TestCase("someText")]
     [TestCase("some-T-ext")]
     [TestCase("v.1.2.3", ConfigurationConstants.DefaultLabelPrefix)]
     public void ValidateInvalidVersionParsing(string versionString, string? tagPrefixRegex = null) =>
-        Assert.IsFalse(SemanticVersion.TryParse(versionString, tagPrefixRegex, out _), "TryParse Result");
+        Assert.That(SemanticVersion.TryParse(versionString, tagPrefixRegex, out _), Is.False, "TryParse Result");
 
     [Test]
     public void VersionSorting()
@@ -84,7 +87,7 @@ public class SemanticVersionTests : TestBase
     [TestCase(1, 2, 3, "beta", 4, null, null, null, null, ExpectedResult = "1.2.3-beta.4")]
     [TestCase(1, 2, 3, "beta", 4, 5, "theBranch", "theSha", "theOtherMetaData", ExpectedResult = "1.2.3-beta.4")]
     [TestCase(1, 2, 3, "", 4, 5, "theBranch", "theSha", "theOtherMetaData", ExpectedResult = "1.2.3-4")]
-    public string ToStringTests(int major, int minor, int patch, string preReleaseName, int preReleaseVersion, int? buildCount, string branchName, string sha, string otherMetadata)
+    public string ToStringTests(int major, int minor, int patch, string preReleaseName, int? preReleaseVersion, int? buildCount, string branchName, string sha, string otherMetadata)
     {
         var semVer = BuildSemVer(major, minor, patch, preReleaseName, preReleaseVersion, buildCount, branchName, sha, otherMetadata);
         return semVer.ToString();
@@ -94,7 +97,7 @@ public class SemanticVersionTests : TestBase
     [TestCase(1, 2, 3, "beta", 4, null, null, null, null, ExpectedResult = "1.2.3-beta.4")]
     [TestCase(1, 2, 3, "beta", 4, 5, "theBranch", "theSha", "theOtherMetaData", ExpectedResult = "1.2.3-beta.4")]
     [TestCase(1, 2, 3, "", 4, 10, "theBranch", "theSha", "theOtherMetaData", ExpectedResult = "1.2.3-4")]
-    public string ToStringWithSFormatTests(int major, int minor, int patch, string preReleaseName, int preReleaseVersion, int? buildCount, string branchName, string sha, string otherMetadata)
+    public string ToStringWithSFormatTests(int major, int minor, int patch, string preReleaseName, int? preReleaseVersion, int? buildCount, string branchName, string sha, string otherMetadata)
     {
         var semVer = BuildSemVer(major, minor, patch, preReleaseName, preReleaseVersion, buildCount, branchName, sha, otherMetadata);
         return semVer.ToString("s");
@@ -103,7 +106,7 @@ public class SemanticVersionTests : TestBase
     [TestCase(1, 2, 3, null, null, null, null, null, null, ExpectedResult = "1.2.3")]
     [TestCase(1, 2, 3, "beta", 4, null, null, null, null, ExpectedResult = "1.2.3")]
     [TestCase(1, 2, 3, "beta", 4, 5, "theBranch", "theSha", "theOtherMetaData", ExpectedResult = "1.2.3")]
-    public string ToStringWithFormatJTests(int major, int minor, int patch, string preReleaseName, int preReleaseVersion, int? buildCount, string branchName, string sha, string otherMetadata)
+    public string ToStringWithFormatJTests(int major, int minor, int patch, string preReleaseName, int? preReleaseVersion, int? buildCount, string branchName, string sha, string otherMetadata)
     {
         var semVer = BuildSemVer(major, minor, patch, preReleaseName, preReleaseVersion, buildCount, branchName, sha, otherMetadata);
         return semVer.ToString("j");
@@ -113,7 +116,7 @@ public class SemanticVersionTests : TestBase
     [TestCase(1, 2, 3, "beta", 4, null, null, null, null, ExpectedResult = "1.2.3-beta.4")]
     [TestCase(1, 2, 3, "beta", 4, 5, null, null, null, ExpectedResult = "1.2.3-beta.4+5")]
     [TestCase(1, 2, 3, "", 4, 5, "theBranch", "theSha", "theOtherMetaData", ExpectedResult = "1.2.3-4+5")]
-    public string ToStringWithFormatFTests(int major, int minor, int patch, string preReleaseName, int preReleaseVersion, int? buildCount, string branchName, string sha, string otherMetadata)
+    public string ToStringWithFormatFTests(int major, int minor, int patch, string preReleaseName, int? preReleaseVersion, int? buildCount, string branchName, string sha, string otherMetadata)
     {
         var semVer = BuildSemVer(major, minor, patch, preReleaseName, preReleaseVersion, buildCount, branchName, sha, otherMetadata);
         return semVer.ToString("f");
@@ -123,13 +126,13 @@ public class SemanticVersionTests : TestBase
     [TestCase(1, 2, 3, "beta", 4, null, null, null, null, ExpectedResult = "1.2.3-beta.4")]
     [TestCase(1, 2, 3, "beta", 4, 5, null, null, null, ExpectedResult = "1.2.3-beta.4+5")]
     [TestCase(1, 2, 3, "beta", 4, 5, "theBranch", "theSha", "theOtherMetaData", ExpectedResult = "1.2.3-beta.4+5.Branch.theBranch.Sha.theSha.theOtherMetaData")]
-    public string ToStringWithFormatITests(int major, int minor, int patch, string preReleaseName, int preReleaseVersion, int? buildCount, string branchName, string sha, string otherMetadata)
+    public string ToStringWithFormatITests(int major, int minor, int patch, string preReleaseName, int? preReleaseVersion, int? buildCount, string branchName, string sha, string otherMetadata)
     {
         var semVer = BuildSemVer(major, minor, patch, preReleaseName, preReleaseVersion, buildCount, branchName, sha, otherMetadata);
         return semVer.ToString("i");
     }
 
-    private static SemanticVersion BuildSemVer(int major, int minor, int patch, string? preReleaseName, int preReleaseVersion, int? buildCount, string? branchName = null, string? sha = null, string? otherMetadata = null)
+    private static SemanticVersion BuildSemVer(int major, int minor, int patch, string? preReleaseName, int? preReleaseVersion, int? buildCount, string? branchName = null, string? sha = null, string? otherMetadata = null)
     {
         var semVer = new SemanticVersion(major, minor, patch);
         if (preReleaseName != null)

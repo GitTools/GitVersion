@@ -340,7 +340,7 @@ public class DevelopScenarios : TestBase
 
         fixture.Repository.Branches.Remove(ReleaseBranch);
         var versionSourceAfterReleaseBranchIsRemoved = fixture.GetVersion(configuration).Sha;
-        Assert.AreEqual(versionSourceBeforeReleaseBranchIsRemoved, versionSourceAfterReleaseBranchIsRemoved);
+        Assert.That(versionSourceAfterReleaseBranchIsRemoved, Is.EqualTo(versionSourceBeforeReleaseBranchIsRemoved));
         fixture.AssertFullSemver("1.2.0-alpha.6");
         fixture.AssertFullSemver("1.2.0-alpha.6", configuration);
     }
@@ -381,7 +381,7 @@ public class DevelopScenarios : TestBase
 
         fixture.Repository.Branches.Remove(ReleaseBranch);
         var versionSourceAfterReleaseBranchIsRemoved = fixture.GetVersion(configuration).Sha;
-        Assert.AreEqual(versionSourceBeforeReleaseBranchIsRemoved, versionSourceAfterReleaseBranchIsRemoved);
+        Assert.That(versionSourceAfterReleaseBranchIsRemoved, Is.EqualTo(versionSourceBeforeReleaseBranchIsRemoved));
         fixture.AssertFullSemver("1.2.0-alpha.6");
         fixture.AssertFullSemver("1.2.0-alpha.3", configuration);
     }

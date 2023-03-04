@@ -17,7 +17,7 @@ public class StringFormatWithExtensionTests
         var propertyObject = new { };
         const string expected = "Some String without tokens";
         var actual = expected.FormatWith(propertyObject, this.environment);
-        Assert.AreEqual(expected, actual);
+        Assert.That(actual, Is.EqualTo(expected));
     }
 
     [Test]
@@ -27,7 +27,7 @@ public class StringFormatWithExtensionTests
         const string target = "{SomeProperty}";
         const string expected = "SomeValue";
         var actual = target.FormatWith(propertyObject, this.environment);
-        Assert.AreEqual(expected, actual);
+        Assert.That(actual, Is.EqualTo(expected));
     }
 
     [Test]
@@ -37,7 +37,7 @@ public class StringFormatWithExtensionTests
         const string target = "{SomeProperty} some text {AnotherProperty}";
         const string expected = "SomeValue some text Other Value";
         var actual = target.FormatWith(propertyObject, this.environment);
-        Assert.AreEqual(expected, actual);
+        Assert.That(actual, Is.EqualTo(expected));
     }
 
     [Test]
@@ -48,7 +48,7 @@ public class StringFormatWithExtensionTests
         const string target = "{env:GIT_VERSION_TEST_VAR}";
         const string expected = "Env Var Value";
         var actual = target.FormatWith(propertyObject, this.environment);
-        Assert.AreEqual(expected, actual);
+        Assert.That(actual, Is.EqualTo(expected));
     }
 
     [Test]
@@ -59,7 +59,7 @@ public class StringFormatWithExtensionTests
         const string target = "{env:GIT_VERSION_TEST_VAR ?? fallback}";
         const string expected = "Env Var Value";
         var actual = target.FormatWith(propertyObject, this.environment);
-        Assert.AreEqual(expected, actual);
+        Assert.That(actual, Is.EqualTo(expected));
     }
 
     [Test]
@@ -70,7 +70,7 @@ public class StringFormatWithExtensionTests
         const string target = "{env:GIT_VERSION_UNSET_TEST_VAR ?? fallback}";
         const string expected = "fallback";
         var actual = target.FormatWith(propertyObject, this.environment);
-        Assert.AreEqual(expected, actual);
+        Assert.That(actual, Is.EqualTo(expected));
     }
 
     [Test]
@@ -91,7 +91,7 @@ public class StringFormatWithExtensionTests
         const string target = "{env:GIT_VERSION_TEST_VAR_1} and {env:GIT_VERSION_TEST_VAR_2}";
         const string expected = "Val-1 and Val-2";
         var actual = target.FormatWith(propertyObject, this.environment);
-        Assert.AreEqual(expected, actual);
+        Assert.That(actual, Is.EqualTo(expected));
     }
 
     [Test]
@@ -102,7 +102,7 @@ public class StringFormatWithExtensionTests
         const string target = "{env:env:GIT_VERSION_TEST_VAR_1} and {env:DUMMY_VAR ?? fallback}";
         const string expected = "{env:env:GIT_VERSION_TEST_VAR_1} and fallback";
         var actual = target.FormatWith(propertyObject, this.environment);
-        Assert.AreEqual(expected, actual);
+        Assert.That(actual, Is.EqualTo(expected));
     }
 
     [Test]
@@ -112,7 +112,7 @@ public class StringFormatWithExtensionTests
         //Test the greediness of the regex in matching env: and ?? chars
         const string target = "{env:env:GIT_VERSION_TEST_VAR_1} and {env:DUMMY_VAR ??? fallback}";
         var actual = target.FormatWith(propertyObject, this.environment);
-        Assert.AreEqual(target, actual);
+        Assert.That(actual, Is.EqualTo(target));
     }
 
     [Test]
@@ -123,7 +123,7 @@ public class StringFormatWithExtensionTests
         //Test the sanity of the regex when there is a grammar mismatch
         const string target = "{en:DUMMY_ENV_VAR} and {env:DUMMY_ENV_VAR??fallback}";
         var actual = target.FormatWith(propertyObject, this.environment);
-        Assert.AreEqual(target, actual);
+        Assert.That(actual, Is.EqualTo(target));
     }
 
     [Test]
@@ -133,7 +133,7 @@ public class StringFormatWithExtensionTests
         const string target = "{SomeProperty} and {env:DUMMY_ENV_VAR  ??  fallback}";
         const string expected = "Some Value and fallback";
         var actual = target.FormatWith(propertyObject, this.environment);
-        Assert.AreEqual(expected, actual);
+        Assert.That(actual, Is.EqualTo(expected));
     }
 
     [Test]

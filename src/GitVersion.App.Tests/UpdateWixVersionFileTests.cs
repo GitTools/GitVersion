@@ -39,7 +39,7 @@ internal class UpdateWixVersionFileTests
         var gitVersionVarsInWix = GetGitVersionVarsInWixFile(PathHelper.Combine(fixture.RepositoryPath, this.wixVersionFileName));
         var gitVersionVars = VersionVariables.AvailableVariables;
 
-        Assert.AreEqual(gitVersionVars.Count(), gitVersionVarsInWix.Count);
+        Assert.That(gitVersionVarsInWix, Has.Count.EqualTo(gitVersionVars.Count()));
     }
 
     [Test]
@@ -60,10 +60,13 @@ internal class UpdateWixVersionFileTests
         foreach (var variable in gitVersionVars)
         {
             vars.TryGetValue(variable, out var value);
-            //Make sure the variable is present in the Wix file
-            Assert.IsTrue(gitVersionVarsInWix.ContainsKey(variable));
-            //Make sure the values are equal
-            Assert.AreEqual(value, gitVersionVarsInWix[variable]);
+            Assert.Multiple(() =>
+            {
+                //Make sure the variable is present in the Wix file
+                Assert.That(gitVersionVarsInWix.ContainsKey(variable), Is.True);
+                //Make sure the values are equal
+                Assert.That(gitVersionVarsInWix[variable], Is.EqualTo(value));
+            });
         }
     }
 

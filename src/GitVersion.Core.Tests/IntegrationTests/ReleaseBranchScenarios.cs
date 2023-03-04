@@ -91,7 +91,7 @@ public class ReleaseBranchScenarios : TestBase
         fixture.Repository.ApplyTag("v2.0.0-beta.1");
 
         var variables = fixture.GetVersion();
-        Assert.AreEqual("2.0.0-beta.1", variables.FullSemVer);
+        Assert.That(variables.FullSemVer, Is.EqualTo("2.0.0-beta.1"));
     }
 
     [Test]
@@ -559,7 +559,7 @@ public class ReleaseBranchScenarios : TestBase
         fixture.Checkout("release-2.0.0");
 
         var variables = fixture.GetVersion(configuration);
-        Assert.AreEqual("2.0.0.1001", variables.AssemblySemFileVer);
+        Assert.That(variables.AssemblySemFileVer, Is.EqualTo("2.0.0.1001"));
     }
 
     [Test]
@@ -575,7 +575,7 @@ public class ReleaseBranchScenarios : TestBase
         fixture.Repository.CreateBranch("release-2.0.0");
         fixture.Checkout("release-2.0.0");
         var variables = fixture.GetVersion(configuration);
-        Assert.AreEqual("2.0.0.30001", variables.AssemblySemFileVer);
+        Assert.That(variables.AssemblySemFileVer, Is.EqualTo("2.0.0.30001"));
     }
 
     /// <summary>

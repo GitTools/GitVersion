@@ -197,10 +197,12 @@ public class PullRequestInBuildAgentTest
     public void VerifyPullRequestInput(string pullRequestRef, string friendly, bool isBranch, bool isPullRequest, bool isRemote)
     {
         var refName = new ReferenceName(pullRequestRef);
-
-        Assert.AreEqual(friendly, refName.Friendly);
-        Assert.AreEqual(isBranch, refName.IsLocalBranch);
-        Assert.AreEqual(isPullRequest, refName.IsPullRequest);
-        Assert.AreEqual(isRemote, refName.IsRemoteBranch);
+        Assert.Multiple(() =>
+        {
+            Assert.That(refName.Friendly, Is.EqualTo(friendly));
+            Assert.That(refName.IsLocalBranch, Is.EqualTo(isBranch));
+            Assert.That(refName.IsPullRequest, Is.EqualTo(isPullRequest));
+            Assert.That(refName.IsRemoteBranch, Is.EqualTo(isRemote));
+        });
     }
 }

@@ -81,6 +81,6 @@ public class DynamicRepositoryTests : TestBase
 
         var versionVariables = gitVersionCalculator.CalculateVersionVariables();
 
-        Assert.AreEqual(expectedFullSemVer, versionVariables.FullSemVer);
+        Assert.That(versionVariables.FullSemVer, Is.EqualTo(expectedFullSemVer));
     }
 }

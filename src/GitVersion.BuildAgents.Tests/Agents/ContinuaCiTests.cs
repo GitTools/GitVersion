@@ -17,6 +17,6 @@ public class ContinuaCiTests : TestBase
         var buildServer = this.sp.GetRequiredService<ContinuaCi>();
         var vars = new TestableVersionVariables(fullSemVer: "0.0.0-Beta4.7");
         var continuaCiVersion = buildServer.GenerateSetVersionMessage(vars);
-        Assert.AreEqual("@@continua[setBuildVersion value='0.0.0-Beta4.7']", continuaCiVersion);
+        Assert.That(continuaCiVersion, Is.EqualTo("@@continua[setBuildVersion value='0.0.0-Beta4.7']"));
     }
 }

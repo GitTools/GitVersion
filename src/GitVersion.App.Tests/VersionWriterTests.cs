@@ -23,9 +23,11 @@ public class VersionWriterTests : TestBase
 
         string? version = string.Empty;
         this.versionWriter.WriteTo(asm, v => version = v);
-
-        Assert.IsNotNull(asm);
-        Assert.AreEqual("1.0.0", version);
+        Assert.Multiple(() =>
+        {
+            Assert.That(asm, Is.Not.Null);
+            Assert.That(version, Is.EqualTo("1.0.0"));
+        });
     }
 
     [Test]
@@ -35,9 +37,11 @@ public class VersionWriterTests : TestBase
 
         string? version = string.Empty;
         this.versionWriter.WriteTo(asm, v => version = v);
-
-        Assert.IsNotNull(asm);
-        Assert.AreEqual("1.0.0-beta4", version);
+        Assert.Multiple(() =>
+        {
+            Assert.That(asm, Is.Not.Null);
+            Assert.That(version, Is.EqualTo("1.0.0-beta4"));
+        });
     }
 
     private static Assembly GenerateAssembly(Version fileVersion, string prereleaseInfo)
