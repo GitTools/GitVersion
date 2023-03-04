@@ -29,8 +29,8 @@ public abstract class ConfigInitWizardStep
         {
             this.Console.WriteLine("Would you like to save changes? (y/n)");
             input = this.Console.ReadLine();
-            if (input == null || input.ToLower() == "n") return false;
-            if (input.ToLower() == "y")
+            if (input == null || string.Equals(input, "n", StringComparison.OrdinalIgnoreCase)) return false;
+            if (string.Equals(input, "y", StringComparison.OrdinalIgnoreCase))
             {
                 steps.Clear();
                 return true;

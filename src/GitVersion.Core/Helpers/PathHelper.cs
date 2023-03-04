@@ -1,6 +1,6 @@
 namespace GitVersion.Helpers;
 
-public class PathHelper
+public static class PathHelper
 {
     public static string GetFullPath(string? path)
     {

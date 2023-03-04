@@ -60,7 +60,7 @@ public sealed class GitVersionInfoGenerator : IGitVersionInfoGenerator
     // Whereas in the C# and F# cases, 1 tab is enough.
     private static string GetIndentation(string fileExtension)
     {
-        var tabs = fileExtension.ToLowerInvariant().EndsWith("vb") ? 2 : 1;
+        var tabs = fileExtension.EndsWith("vb", StringComparison.InvariantCultureIgnoreCase) ? 2 : 1;
         return new string(' ', tabs * 4);
     }
 }

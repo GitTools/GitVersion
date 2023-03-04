@@ -13,4 +13,12 @@ public class GitVersionException : GitToolsException
         : base(message, innerException)
     {
     }
+
+    public GitVersionException(string messageFormat, params object[] args) : base(messageFormat, args)
+    {
+    }
+
+    public GitVersionException()
+    {
+    }
 }

@@ -12,4 +12,12 @@ public class GitToolsException : Exception
         : base(message, innerException)
     {
     }
+
+    public GitToolsException()
+    {
+    }
+
+    public GitToolsException(string? message) : base(message)
+    {
+    }
 }

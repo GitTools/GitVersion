@@ -53,7 +53,9 @@ GitVersion.BranchCommit.BranchCommit(GitVersion.ICommit! commit, GitVersion.IBra
 GitVersion.BranchCommit.Commit.get -> GitVersion.ICommit!
 GitVersion.BranchCommit.Equals(GitVersion.BranchCommit? other) -> bool
 GitVersion.BugException
+GitVersion.BugException.BugException() -> void
 GitVersion.BugException.BugException(string! message) -> void
+GitVersion.BugException.BugException(string? message, System.Exception? innerException) -> void
 GitVersion.CommitFilter
 GitVersion.CommitFilter.CommitFilter() -> void
 GitVersion.CommitFilter.ExcludeReachableFrom.get -> object?
@@ -133,8 +135,10 @@ GitVersion.Configuration.BranchConfiguration.VersioningMode.set -> void
 GitVersion.Configuration.BranchConfigurationBuilder
 GitVersion.Configuration.BranchConfigurationBuilder.Build() -> GitVersion.Configuration.BranchConfiguration!
 GitVersion.Configuration.ConfigurationConstants
-GitVersion.Configuration.ConfigurationConstants.ConfigurationConstants() -> void
 GitVersion.Configuration.ConfigurationException
+GitVersion.Configuration.ConfigurationException.ConfigurationException() -> void
+GitVersion.Configuration.ConfigurationException.ConfigurationException(string! message, System.Exception! innerException) -> void
+GitVersion.Configuration.ConfigurationException.ConfigurationException(string! messageFormat, params object![]! args) -> void
 GitVersion.Configuration.ConfigurationException.ConfigurationException(string! msg) -> void
 GitVersion.Configuration.ConfigurationExtensions
 GitVersion.Configuration.ConfigurationFileLocator
@@ -361,8 +365,10 @@ GitVersion.GitPreparer.EnsureLocalBranchExistsForCurrentBranch(GitVersion.IRemot
 GitVersion.GitPreparer.GitPreparer(GitVersion.Logging.ILog! log, GitVersion.IEnvironment! environment, GitVersion.Agents.ICurrentBuildAgent! buildAgent, Microsoft.Extensions.Options.IOptions<GitVersion.GitVersionOptions!>! options, GitVersion.IMutatingGitRepository! repository, GitVersion.IGitRepositoryInfo! repositoryInfo, System.Lazy<GitVersion.GitVersionContext!>! versionContext) -> void
 GitVersion.GitPreparer.Prepare() -> void
 GitVersion.GitToolsException
+GitVersion.GitToolsException.GitToolsException() -> void
 GitVersion.GitToolsException.GitToolsException(string! message, System.Exception! innerException) -> void
 GitVersion.GitToolsException.GitToolsException(string! messageFormat, params object![]! args) -> void
+GitVersion.GitToolsException.GitToolsException(string? message) -> void
 GitVersion.GitVersionCalculateTool
 GitVersion.GitVersionCalculateTool.CalculateVersionVariables() -> GitVersion.OutputVariables.VersionVariables!
 GitVersion.GitVersionCalculateTool.GitVersionCalculateTool(GitVersion.Logging.ILog! log, GitVersion.VersionCalculation.INextVersionCalculator! nextVersionCalculator, GitVersion.VersionCalculation.IVariableProvider! variableProvider, GitVersion.IGitPreparer! gitPreparer, GitVersion.VersionCalculation.Caching.IGitVersionCache! gitVersionCache, GitVersion.VersionCalculation.Caching.IGitVersionCacheKeyFactory! cacheKeyFactory, Microsoft.Extensions.Options.IOptions<GitVersion.GitVersionOptions!>! options, System.Lazy<GitVersion.GitVersionContext!>! versionContext) -> void
@@ -384,8 +390,10 @@ GitVersion.GitVersionCoreModule
 GitVersion.GitVersionCoreModule.GitVersionCoreModule() -> void
 GitVersion.GitVersionCoreModule.RegisterTypes(Microsoft.Extensions.DependencyInjection.IServiceCollection! services) -> void
 GitVersion.GitVersionException
+GitVersion.GitVersionException.GitVersionException() -> void
 GitVersion.GitVersionException.GitVersionException(string! message) -> void
 GitVersion.GitVersionException.GitVersionException(string! message, System.Exception! innerException) -> void
+GitVersion.GitVersionException.GitVersionException(string! messageFormat, params object![]! args) -> void
 GitVersion.GitVersionModule
 GitVersion.GitVersionModule.GitVersionModule() -> void
 GitVersion.GitVersionOptions
@@ -416,7 +424,6 @@ GitVersion.Helpers.LambdaEqualityHelper<T>.LambdaEqualityHelper(params System.Fu
 GitVersion.Helpers.LambdaKeyComparer<TSource, TKey>
 GitVersion.Helpers.LambdaKeyComparer<TSource, TKey>.LambdaKeyComparer(System.Func<TSource!, TKey>! keySelector, System.Collections.Generic.IComparer<TKey>? innerComparer = null) -> void
 GitVersion.Helpers.PathHelper
-GitVersion.Helpers.PathHelper.PathHelper() -> void
 GitVersion.Helpers.ProcessHelper
 GitVersion.Helpers.RetryAction<T, Result>
 GitVersion.Helpers.RetryAction<T, Result>.Execute(System.Func<Result>! operation) -> Result
@@ -548,6 +555,9 @@ GitVersion.IncrementStrategy.None = 0 -> GitVersion.IncrementStrategy
 GitVersion.IncrementStrategy.Patch = 3 -> GitVersion.IncrementStrategy
 GitVersion.IncrementStrategyExtensions
 GitVersion.LockedFileException
+GitVersion.LockedFileException.LockedFileException() -> void
+GitVersion.LockedFileException.LockedFileException(string? message) -> void
+GitVersion.LockedFileException.LockedFileException(string? message, System.Exception? innerException) -> void
 GitVersion.LockedFileException.LockedFileException(System.Exception! inner) -> void
 GitVersion.Logging.ConsoleAdapter
 GitVersion.Logging.ConsoleAdapter.ConsoleAdapter() -> void
@@ -946,7 +956,9 @@ GitVersion.VersionField.Minor = 2 -> GitVersion.VersionField
 GitVersion.VersionField.None = 0 -> GitVersion.VersionField
 GitVersion.VersionField.Patch = 1 -> GitVersion.VersionField
 GitVersion.WarningException
+GitVersion.WarningException.WarningException() -> void
 GitVersion.WarningException.WarningException(string! message) -> void
+GitVersion.WarningException.WarningException(string? message, System.Exception? innerException) -> void
 GitVersion.WixInfo
 GitVersion.WixInfo.UpdateWixVersionFile -> bool
 GitVersion.WixInfo.WixInfo() -> void

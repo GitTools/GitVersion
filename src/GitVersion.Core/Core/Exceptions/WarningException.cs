@@ -7,4 +7,12 @@ public class WarningException : Exception
         : base(message)
     {
     }
+
+    public WarningException()
+    {
+    }
+
+    public WarningException(string? message, Exception? innerException) : base(message, innerException)
+    {
+    }
 }

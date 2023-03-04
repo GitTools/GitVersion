@@ -9,7 +9,7 @@ using Microsoft.Extensions.Options;
 namespace GitVersion.Core.Tests;
 
 [TestFixture]
-public class ConfigurationFileLocatorTests
+public static class ConfigurationFileLocatorTests
 {
     public class DefaultConfigFileLocatorTests : TestBase
     {

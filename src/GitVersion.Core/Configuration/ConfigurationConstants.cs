@@ -1,6 +1,6 @@
 namespace GitVersion.Configuration;
 
-public class ConfigurationConstants
+public static class ConfigurationConstants
 {
     public const string DefaultLabelPrefix = "[vV]?";
     public const string BranchNamePlaceholder = "{BranchName}";

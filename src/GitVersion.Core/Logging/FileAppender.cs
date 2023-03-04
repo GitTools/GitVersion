@@ -23,7 +23,7 @@ public class FileAppender : ILogAppender
         {
             WriteLogEntry(this.filePath, message);
         }
-        catch (Exception)
+        catch
         {
             //
         }

@@ -15,7 +15,7 @@ public class MsBuildAppender : ILogAppender
         {
             WriteLogEntry(level, message);
         }
-        catch (Exception)
+        catch
         {
             //
         }
