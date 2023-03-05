@@ -117,7 +117,7 @@ releaseArtifacts
 .dotnet
 artifacts
 !build/artifacts
-src/Docker/**/content
+build/docker/content
 src/PublicAPI.empty.txt
 
 !**/*.cake

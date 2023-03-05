@@ -6,4 +6,13 @@
     <ItemGroup>
         <ProjectReference Include="..\common\common.csproj" />
     </ItemGroup>
+    <ItemGroup>
+      <PackageReference Include="Cake.Http" />
+      <PackageReference Include="Cake.Json" />
+    </ItemGroup>
+    <ItemGroup>
+      <Compile Remove="content\**" />
+      <EmbeddedResource Remove="content\**" />
+      <None Remove="content\**" />
+    </ItemGroup>
 </Project>

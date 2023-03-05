@@ -39,7 +39,7 @@ public static class DockerContextExtensions
 
         context.Information($"Building image: {dockerImage}");
 
-        var workDir = Paths.Src.Combine("Docker");
+        var workDir = Paths.Build.Combine("docker");
         var tags = context.GetDockerTags(dockerImage, arch);
 
         var suffix = arch.ToSuffix();

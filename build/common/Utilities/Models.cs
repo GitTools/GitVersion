@@ -11,6 +11,8 @@ public record GitHubCredentials(string Token, string? UserName = null);
 
 public record NugetCredentials(string ApiKey);
 
+public record DockerHubCredentials(string Username, string Password);
+
 public record ChocolateyCredentials(string ApiKey);
 
 public record BuildVersion(GitVersion GitVersion, string? Version, string? Milestone, string? SemVersion, string? NugetVersion, string? ChocolateyVersion, bool IsPreRelease)
