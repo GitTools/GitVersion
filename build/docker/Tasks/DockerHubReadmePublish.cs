@@ -5,6 +5,7 @@ using Common.Utilities;
 namespace Docker.Tasks;
 
 [TaskName(nameof(DockerHubReadmePublish))]
+[IsDependentOn(typeof(DockerHubReadmePublishInternal))]
 [TaskDescription("Publish the DockerHub updated README.md")]
 public class DockerHubReadmePublish : FrostingTask<BuildContext>
 {
@@ -18,7 +19,11 @@ public class DockerHubReadmePublish : FrostingTask<BuildContext>
 
         return shouldRun;
     }
-
+}
+[TaskName(nameof(DockerHubReadmePublishInternal))]
+[TaskDescription("Publish the DockerHub updated README.md")]
+public class DockerHubReadmePublishInternal : FrostingTask<BuildContext>
+{
     public override void Run(BuildContext context)
     {
         var readme = GetReadmeContent(context);
