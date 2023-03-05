@@ -40,7 +40,7 @@ public class VersionVariablesJsonModel
     [JsonPropertyDescription("Major, Minor and Patch joined together, separated by '.'.")]
     public string? MajorMinorPatch { get; set; }
 
-    [JsonPropertyDescription("The semantical version number, including PreReleaseTagWithDash for pre-release version numbers.")]
+    [JsonPropertyDescription("The semantic version number, including PreReleaseTagWithDash for pre-release version numbers.")]
     public string? SemVer { get; set; }
 
     [JsonPropertyDescription("Suitable for .NET AssemblyVersion. Defaults to Major.Minor.0.0")]
@@ -73,9 +73,9 @@ public class VersionVariablesJsonModel
     [JsonPropertyDescription("The number of commits since the version source.")]
     public int? CommitsSinceVersionSource { get; set; }
 
+    [JsonPropertyDescription("The ISO-8601 formatted date of the commit identified by Sha.")]
+    public string? CommitDate { set; get; }
+
     [JsonPropertyDescription("The number of uncommitted changes present in the repository.")]
     public int? UncommittedChanges { get; set; }
-
-    [JsonPropertyDescription("The ISO-8601 formatted date of the commit identified by Sha.")]
-    public string? CommitDate { get; set; }
 }
