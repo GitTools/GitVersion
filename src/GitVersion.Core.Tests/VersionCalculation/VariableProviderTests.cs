@@ -44,7 +44,6 @@ public class VariableProviderTests : TestBase
         semVer.BuildMetaData.ShortSha = "commitShortSha";
         semVer.BuildMetaData.CommitDate = DateTimeOffset.Parse("2014-03-06 23:59:59Z");
 
-
         var configuration = new TestEffectiveConfiguration();
 
         var vars = this.variableProvider.GetVariablesFor(semVer, configuration, false);
@@ -115,9 +114,7 @@ public class VariableProviderTests : TestBase
         semVer.BuildMetaData.ShortSha = "commitShortSha";
         semVer.BuildMetaData.CommitDate = DateTimeOffset.Parse("2014-03-06 23:59:59Z");
 
-        var configuration = new TestEffectiveConfiguration(
-            label: "ci", versioningMode: VersioningMode.ContinuousDeployment
-        );
+        var configuration = new TestEffectiveConfiguration(versioningMode: VersioningMode.ContinuousDeployment, label: "ci");
 
         var vars = this.variableProvider.GetVariablesFor(semVer, configuration, false);
 
@@ -212,7 +209,6 @@ public class VariableProviderTests : TestBase
         semVer.BuildMetaData.ShortSha = "commitShortSha";
         semVer.BuildMetaData.CommitDate = DateTimeOffset.Parse("2014-03-06 23:59:59Z");
 
-
         var configuration = new TestEffectiveConfiguration();
 
         var vars = this.variableProvider.GetVariablesFor(semVer, configuration, false);
@@ -236,7 +232,6 @@ public class VariableProviderTests : TestBase
         semVer.BuildMetaData.Sha = "commitSha";
         semVer.BuildMetaData.ShortSha = "commitShortSha";
         semVer.BuildMetaData.CommitDate = DateTimeOffset.Parse("2014-03-06 23:59:59Z");
-
 
         var configuration = new TestEffectiveConfiguration(assemblyInformationalFormat: "{Major}.{Minor}.{Patch}+{CommitsSinceVersionSource}.Branch.{BranchName}.Sha.{ShortSha}");
 

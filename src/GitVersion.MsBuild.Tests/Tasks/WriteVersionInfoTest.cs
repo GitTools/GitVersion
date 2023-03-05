@@ -7,7 +7,7 @@ namespace GitVersion.MsBuild.Tests.Tasks;
 [TestFixture]
 public class WriteVersionInfoTest : TestTaskBase
 {
-    private string GitHubEnvFilePath { get; set; } = Path.GetTempFileName();
+    private string GitHubEnvFilePath { get; } = Path.GetTempFileName();
 
     [OneTimeTearDown]
     public void OneTimeTearDown()
@@ -42,7 +42,6 @@ public class WriteVersionInfoTest : TestTaskBase
         result.Log.ShouldContain("##vso[task.setvariable variable=GitVersion.FullSemVer]1.0.1+1");
     }
 
-
     [TestCase("2021-02-14.1")]
     public void WriteVersionInfoTaskShouldNotUpdateBuildNumberInAzurePipeline(string buildNumber)
     {
@@ -55,7 +54,6 @@ public class WriteVersionInfoTest : TestTaskBase
         result.Errors.ShouldBe(0);
         result.Log.ShouldNotContain("##vso[build.updatebuildnumber]");
     }
-
 
     [TestCase("2021-02-14.1-$(GITVERSION.FullSemVer)", "2021-02-14.1-1.0.1+1")]
     [TestCase("2021-02-14.1-$(GITVERSION.SemVer)", "2021-02-14.1-1.0.1")]

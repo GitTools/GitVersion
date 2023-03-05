@@ -98,5 +98,4 @@ internal class WixFileTests : TestBase
             .ReadAllText(file)
             .ShouldMatchApproved(c => c.SubFolder(PathHelper.Combine("Approved")));
     }
-
 }

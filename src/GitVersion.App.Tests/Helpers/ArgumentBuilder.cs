@@ -31,31 +31,31 @@ public class ArgumentBuilder
     {
         var arguments = new StringBuilder();
 
-        arguments.Append($" /targetpath \"{this.WorkingDirectory}\"");
+        arguments.Append(" /targetpath \"").Append(this.WorkingDirectory).Append('\"');
 
         if (!this.exec.IsNullOrWhiteSpace())
         {
-            arguments.Append($" /exec \"{this.exec}\"");
+            arguments.Append(" /exec \"").Append(this.exec).Append('\"');
         }
 
         if (!this.execArgs.IsNullOrWhiteSpace())
         {
-            arguments.Append($" /execArgs \"{this.execArgs}\"");
+            arguments.Append(" /execArgs \"").Append(this.execArgs).Append('\"');
         }
 
         if (!this.projectFile.IsNullOrWhiteSpace())
         {
-            arguments.Append($" /proj \"{this.projectFile}\"");
+            arguments.Append(" /proj \"").Append(this.projectFile).Append('\"');
         }
 
         if (!this.projectArgs.IsNullOrWhiteSpace())
         {
-            arguments.Append($" /projargs \"{this.projectArgs}\"");
+            arguments.Append(" /projargs \"").Append(this.projectArgs).Append('\"');
         }
 
         if (!this.LogFile.IsNullOrWhiteSpace())
         {
-            arguments.Append($" /l \"{this.LogFile}\"");
+            arguments.Append(" /l \"").Append(this.LogFile).Append('\"');
         }
 
         arguments.Append(this.additionalArguments);

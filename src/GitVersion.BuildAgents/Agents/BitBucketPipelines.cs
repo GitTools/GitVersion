@@ -45,7 +45,7 @@ internal class BitBucketPipelines : BuildAgentBase
     public override string? GetCurrentBranch(bool usingDynamicRepos)
     {
         var branchName = EvaluateEnvironmentVariable(BranchEnvironmentVariableName);
-        if (branchName != null && branchName.StartsWith("refs/heads/"))
+        if (branchName?.StartsWith("refs/heads/") == true)
         {
             return branchName;
         }

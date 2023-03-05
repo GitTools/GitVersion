@@ -192,44 +192,49 @@ public class NextVersionCalculator : INextVersionCalculator
         if (branch.Tip == null)
             throw new GitVersionException("No commits found on the current branch.");
 
-        bool atLeastOneBaseVersionReturned = false;
+        return GetNextVersions();
 
-        foreach (var effectiveBranchConfiguration in effectiveBranchConfigurationFinder.GetConfigurations(branch, configuration))
+        IEnumerable<NextVersion> GetNextVersions()
         {
-            foreach (var versionStrategy in this.versionStrategies)
+            var atLeastOneBaseVersionReturned = false;
+
+            foreach (var effectiveBranchConfiguration in effectiveBranchConfigurationFinder.GetConfigurations(branch, configuration))
             {
-                foreach (var baseVersion in versionStrategy.GetBaseVersions(effectiveBranchConfiguration))
+                foreach (var versionStrategy in this.versionStrategies)
                 {
-                    log.Info(baseVersion.ToString());
-                    if (IncludeVersion(baseVersion, configuration.Ignore))
+                    foreach (var baseVersion in versionStrategy.GetBaseVersions(effectiveBranchConfiguration))
                     {
-                        var incrementStrategy = incrementStrategyFinder.DetermineIncrementedField(
-                            context: Context,
-                            baseVersion: baseVersion,
-                            configuration: effectiveBranchConfiguration.Value
-                        );
-                        var incrementedVersion = incrementStrategy == VersionField.None
-                            ? baseVersion.SemanticVersion
-                            : baseVersion.SemanticVersion.IncrementVersion(incrementStrategy);
-
-                        if (effectiveBranchConfiguration.Value.VersioningMode == VersioningMode.Mainline)
+                        log.Info(baseVersion.ToString());
+                        if (IncludeVersion(baseVersion, configuration.Ignore))
                         {
-                            if (incrementedVersion.PreReleaseTag.HasTag())
-                            {
-                                continue;
-                            }
-                        }
+                            var incrementStrategy = incrementStrategyFinder.DetermineIncrementedField(
+                                context: Context,
+                                baseVersion: baseVersion,
+                                configuration: effectiveBranchConfiguration.Value
+                            );
+                            var incrementedVersion = incrementStrategy == VersionField.None
+                                ? baseVersion.SemanticVersion
+                                : baseVersion.SemanticVersion.IncrementVersion(incrementStrategy);
 
-                        yield return effectiveBranchConfiguration.CreateNextVersion(baseVersion, incrementedVersion);
-                        atLeastOneBaseVersionReturned = true;
+                            if (effectiveBranchConfiguration.Value.VersioningMode == VersioningMode.Mainline)
+                            {
+                                if (incrementedVersion.PreReleaseTag.HasTag())
+                                {
+                                    continue;
+                                }
+                            }
+
+                            yield return effectiveBranchConfiguration.CreateNextVersion(baseVersion, incrementedVersion);
+                            atLeastOneBaseVersionReturned = true;
+                        }
                     }
                 }
             }
-        }
 
-        if (!atLeastOneBaseVersionReturned)
-        {
-            throw new GitVersionException("No base versions determined on the current branch.");
+            if (!atLeastOneBaseVersionReturned)
+            {
+                throw new GitVersionException("No base versions determined on the current branch.");
+            }
         }
     }
 

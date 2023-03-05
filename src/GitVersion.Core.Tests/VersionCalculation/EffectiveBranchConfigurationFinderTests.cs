@@ -115,7 +115,6 @@ public class EffectiveBranchConfigurationFinderTests
         // Act
         var actual = unitUnderTest.GetConfigurations(developBranchMock, configuration).ToArray();
 
-
         // Assert
         actual.ShouldHaveSingleItem();
         actual[0].Branch.ShouldBe(mainBranchMock);

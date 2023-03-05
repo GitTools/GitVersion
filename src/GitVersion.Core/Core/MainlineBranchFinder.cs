@@ -26,7 +26,6 @@ internal class MainlineBranchFinder
         this.log = log.NotNull();
     }
 
-
     public IDictionary<string, List<IBranch>> FindMainlineBranches(ICommit commit)
     {
         var branchOriginFinder = new BranchOriginFinder(commit, this.repositoryStore, this.configuration, this.log);
@@ -37,7 +36,6 @@ internal class MainlineBranchFinder
             .GroupBy(bc => bc.Commit.Sha, bc => bc.Branch)
             .ToDictionary(group => group.Key, x => x.ToList());
     }
-
 
     private bool BranchIsMainline(INamedReference branch)
     {
@@ -69,7 +67,6 @@ internal class MainlineBranchFinder
         }
     }
 
-
     private class BranchOriginFinder
     {
         private readonly ICommit commit;
@@ -92,7 +89,6 @@ internal class MainlineBranchFinder
                 ? BranchCommit.Empty
                 : new BranchCommit(branchOrigin, branch);
         }
-
 
         private ICommit? FindBranchOrigin(IBranch branch)
         {

@@ -8,7 +8,6 @@ namespace GitVersion.Testing;
 /// </summary>
 public abstract class RepositoryFixtureBase : IDisposable
 {
-
     protected RepositoryFixtureBase(Func<string, Repository> repositoryBuilder)
         : this(repositoryBuilder(PathHelper.GetTempPath()))
     {

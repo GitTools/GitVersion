@@ -44,7 +44,6 @@ public class PullRequestScenarios : TestBase
         Commands.Checkout(fixture.Repository, fixture.Repository.CreateBranch("feature/Foo"));
         fixture.Repository.MakeACommit();
 
-
         fixture.Repository.CreatePullRequestRef("feature/Foo", MainBranch, normalise: true);
 
         fixture.Repository.DumpGraph();

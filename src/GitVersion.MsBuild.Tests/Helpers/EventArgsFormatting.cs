@@ -25,7 +25,7 @@ internal static class EventArgsFormatting
     /// a single string.
     /// </summary>
     /// <param name="e">Error to format</param>
-    /// <param name="showProjectFile"><code>true</code> to show the project file which issued the event, otherwise <code>false</code>.</param>
+    /// <param name="showProjectFile"><c>true</c> to show the project file which issued the event, otherwise <c>false</c>.</param>
     /// <returns>The formatted message string.</returns>
     internal static string FormatEventMessage(BuildErrorEventArgs e, bool showProjectFile) =>
         // "error" should not be localized
@@ -50,7 +50,7 @@ internal static class EventArgsFormatting
     /// single string.
     /// </summary>
     /// <param name="e">Warning to format</param>
-    /// <param name="showProjectFile"><code>true</code> to show the project file which issued the event, otherwise <code>false</code>.</param>
+    /// <param name="showProjectFile"><c>true</c> to show the project file which issued the event, otherwise <c>false</c>.</param>
     /// <returns>The formatted message string.</returns>
     internal static string FormatEventMessage(BuildWarningEventArgs e, bool showProjectFile) =>
         // "warning" should not be localized
@@ -148,7 +148,7 @@ internal static class EventArgsFormatting
         }
         */
 
-        if ((file == null) || (file.Length == 0))
+        if (string.IsNullOrEmpty(file))
         {
             format.Append("MSBUILD : ");    // Should not be localized.
         }
@@ -214,12 +214,12 @@ internal static class EventArgsFormatting
 
         for (var i = 0; i < lines.Length; i++)
         {
-            formattedMessage.Append(string.Format(
+            formattedMessage.AppendFormat(
                 CultureInfo.CurrentCulture, finalFormat,
                 threadId, file,
                 lineNumber, columnNumber, category, code,
                 lines[i], endLineNumber, endColumnNumber,
-                subcategory, projectFile));
+                subcategory, projectFile);
 
             if (i < (lines.Length - 1))
             {
@@ -229,7 +229,6 @@ internal static class EventArgsFormatting
 
         return formattedMessage.ToString();
     }
-
 
     /// <summary>
     /// Splits strings on 'newLines' with tolerance for Everett and Dogfood builds.

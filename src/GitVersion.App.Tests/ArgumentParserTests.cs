@@ -57,8 +57,11 @@ public class ArgumentParserTests : TestBase
     public void HelpSwitchTest()
     {
         var arguments = this.argumentParser.ParseArguments("-h");
-        Assert.IsNull(arguments.TargetPath);
-        Assert.IsNull(arguments.LogFilePath);
+        Assert.Multiple(() =>
+        {
+            Assert.That(arguments.TargetPath, Is.Null);
+            Assert.That(arguments.LogFilePath, Is.Null);
+        });
         arguments.IsHelp.ShouldBe(true);
     }
 
@@ -66,8 +69,11 @@ public class ArgumentParserTests : TestBase
     public void VersionSwitchTest()
     {
         var arguments = this.argumentParser.ParseArguments("-version");
-        Assert.IsNull(arguments.TargetPath);
-        Assert.IsNull(arguments.LogFilePath);
+        Assert.Multiple(() =>
+        {
+            Assert.That(arguments.TargetPath, Is.Null);
+            Assert.That(arguments.LogFilePath, Is.Null);
+        });
         arguments.IsVersion.ShouldBe(true);
     }
 

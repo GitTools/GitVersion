@@ -153,7 +153,7 @@ public class GitVersionCacheKeyFactory : IGitVersionCacheKeyFactory
 
     private static string GetOverrideConfigHash(IReadOnlyDictionary<object, object?>? overrideConfiguration)
     {
-        if (overrideConfiguration == null || !overrideConfiguration.Any())
+        if (overrideConfiguration?.Any() != true)
         {
             return string.Empty;
         }

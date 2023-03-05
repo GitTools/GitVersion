@@ -297,7 +297,6 @@ public class DocumentationSamples : TestBase
         Console.WriteLine(fixture.SequenceDiagram.GetDiagram());
     }
 
-
     [Test]
     public void GitHubFlowFeatureBranch()
     {

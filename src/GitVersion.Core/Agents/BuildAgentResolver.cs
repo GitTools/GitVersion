@@ -19,7 +19,7 @@ public class BuildAgentResolver : IBuildAgentResolver
     {
         ICurrentBuildAgent instance = (ICurrentBuildAgent)this.buildAgents.Single(x => x.IsDefault);
 
-        foreach (var buildAgent in this.buildAgents.Where(x => x.IsDefault == false))
+        foreach (var buildAgent in this.buildAgents.Where(x => !x.IsDefault))
         {
             try
             {

@@ -106,7 +106,7 @@ public class GitHubActionsTests : TestBase
         var result = this.buildServer.GenerateSetParameterMessage("GitVersion_Something", "1.0.0");
 
         // Assert
-        result.ShouldContain(s => true, 0);
+        result.ShouldContain(_ => true, 0);
     }
 
     [Test]

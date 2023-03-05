@@ -93,5 +93,4 @@ public class ProgramFixtureResult
             return VersionVariables.FromJson(json);
         }
     }
-
 }

@@ -191,7 +191,6 @@ public static class ProcessHelper
             }
         }
 
-
         void IDisposable.Dispose()
         {
             try

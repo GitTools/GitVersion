@@ -72,7 +72,7 @@ public class ReferenceName : IEquatable<ReferenceName?>, IComparable<ReferenceNa
 
     public bool Equals(ReferenceName? other) => equalityHelper.Equals(this, other);
     public int CompareTo(ReferenceName? other) => comparerHelper.Compare(this, other);
-    public override bool Equals(object? obj) => Equals((obj as ReferenceName));
+    public override bool Equals(object? obj) => Equals(obj as ReferenceName);
     public override int GetHashCode() => equalityHelper.GetHashCode(this);
     public override string ToString() => Friendly;
 
@@ -84,13 +84,13 @@ public class ReferenceName : IEquatable<ReferenceName?>, IComparable<ReferenceNa
     private string Shorten()
     {
         if (IsLocalBranch)
-            return Canonical.Substring(LocalBranchPrefix.Length);
+            return Canonical[LocalBranchPrefix.Length..];
 
         if (IsRemoteBranch)
-            return Canonical.Substring(RemoteTrackingBranchPrefix.Length);
+            return Canonical[RemoteTrackingBranchPrefix.Length..];
 
         if (IsTag)
-            return Canonical.Substring(TagPrefix.Length);
+            return Canonical[TagPrefix.Length..];
 
         return Canonical;
     }
@@ -99,7 +99,7 @@ public class ReferenceName : IEquatable<ReferenceName?>, IComparable<ReferenceNa
     {
         if (IsRemoteBranch && !IsPullRequest && Friendly.StartsWith(RemotePrefix, StringComparison.Ordinal))
         {
-            return Friendly.Substring(RemotePrefix.Length);
+            return Friendly[RemotePrefix.Length..];
         }
         return Friendly;
     }

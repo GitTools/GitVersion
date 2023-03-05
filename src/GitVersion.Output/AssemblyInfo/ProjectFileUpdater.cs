@@ -119,7 +119,7 @@ public sealed class ProjectFileUpdater : IProjectFileUpdater
         }
 
         var sdkAttribute = xmlRoot.Attribute("Sdk");
-        if (sdkAttribute == null || !sdkAttribute.Value.StartsWith("Microsoft.NET.Sdk"))
+        if (sdkAttribute?.Value.StartsWith("Microsoft.NET.Sdk") != true)
         {
             this.log.Warning($"Specified project file Sdk ({sdkAttribute?.Value}) is not supported, please ensure the project sdk starts with 'Microsoft.NET.Sdk'");
             return false;
@@ -147,7 +147,7 @@ public sealed class ProjectFileUpdater : IProjectFileUpdater
         var propertyGroups = xmlRoot.Descendants("PropertyGroup").ToList();
 
         var propertyGroupToModify = propertyGroups.LastOrDefault(l => l.Element(versionElement) != null)
-                                    ?? propertyGroups.First();
+                                    ?? propertyGroups[0];
 
         var versionXmlElement = propertyGroupToModify.Elements(versionElement).LastOrDefault();
         if (versionXmlElement != null)

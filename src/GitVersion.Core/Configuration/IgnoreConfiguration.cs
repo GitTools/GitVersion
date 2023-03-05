@@ -9,7 +9,7 @@ public class IgnoreConfiguration
 
     [JsonPropertyName("commits-before")]
     [JsonPropertyDescription("Commits before this date will be ignored. Format: yyyy-MM-ddTHH:mm:ss.")]
-    [JsonPropertyPattern(@"'yyyy-MM-ddTHH:mm:ss'", PatternFormat.DateTime)]
+    [JsonPropertyPattern("'yyyy-MM-ddTHH:mm:ss'", PatternFormat.DateTime)]
     public DateTimeOffset? Before { get; set; }
 
     [JsonPropertyName("sha")]
@@ -17,7 +17,7 @@ public class IgnoreConfiguration
     public string[] Shas { get; set; }
 
     [JsonIgnore]
-    public virtual bool IsEmpty => Before == null && Shas.Any() == false;
+    public virtual bool IsEmpty => Before == null && !Shas.Any();
 
     public virtual IEnumerable<IVersionFilter> ToFilters()
     {

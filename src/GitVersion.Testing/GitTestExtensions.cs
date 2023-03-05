@@ -81,13 +81,8 @@ public static class GitTestExtensions
                 gitCmd,
                 ".");
         }
-        catch (FileNotFoundException exception)
+        catch (FileNotFoundException exception) when (exception.FileName == "git")
         {
-            if (exception.FileName != "git")
-            {
-                throw;
-            }
-
             output.AppendLine("Could not execute 'git log' due to the following error:");
             output.AppendLine(exception.ToString());
         }

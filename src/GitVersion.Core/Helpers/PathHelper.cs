@@ -1,11 +1,12 @@
+using GitVersion.Extensions;
+
 namespace GitVersion.Helpers;
 
 public static class PathHelper
 {
     public static string GetFullPath(string? path)
     {
-        if (path == null)
-            throw new ArgumentNullException(nameof(path));
+        path.NotNull();
 
         return Path.GetFullPath(path);
     }
@@ -19,8 +20,7 @@ public static class PathHelper
 
     public static string Combine(string? path1)
     {
-        if (path1 == null)
-            throw new ArgumentNullException(nameof(path1));
+        path1.NotNull();
 
         return Path.Combine(path1);
     }

@@ -131,7 +131,6 @@ public class PullRequestInBuildAgentTest
     [TestCaseSource(nameof(PrMergeRefs))]
     public async Task VerifyBitBucketPipelinesPullRequest(string pullRequestRef)
     {
-
         var env = new Dictionary<string, string>
         {
             { BitBucketPipelines.EnvironmentVariableName, "MyWorkspace" },

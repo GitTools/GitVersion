@@ -48,9 +48,7 @@ public class RepositoryStore : IRepositoryStore
             return currentCommit;
 
         this.log.Info("Using latest commit on specified branch");
-        currentCommit = currentBranch.Tip;
-
-        return currentCommit;
+        return currentBranch.Tip;
     }
 
     public IEnumerable<ICommit> GetMainlineCommitLog(ICommit? baseVersionSource, ICommit? mainlineTip)
@@ -210,7 +208,7 @@ public class RepositoryStore : IRepositoryStore
             if (possibleBranches.Count <= 1)
                 return possibleBranches.SingleOrDefault();
 
-            var first = possibleBranches.First();
+            var first = possibleBranches[0];
             this.log.Info($"Multiple source branches have been found, picking the first one ({first.Branch}).{System.Environment.NewLine}" +
                           $"This may result in incorrect commit counting.{System.Environment.NewLine}Options were:{System.Environment.NewLine}" +
                           string.Join(", ", possibleBranches.Select(b => b.Branch.ToString())));

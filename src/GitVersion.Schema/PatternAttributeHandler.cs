@@ -3,6 +3,7 @@ using Json.Schema;
 using Json.Schema.Generation;
 using Json.Schema.Generation.Intents;
 
+namespace GitVersion.Schema;
 internal class PatternAttributeHandler : IAttributeHandler<JsonPropertyPatternAttribute>
 {
     void IAttributeHandler.AddConstraints(SchemaGenerationContextBase context, Attribute attribute)
@@ -19,6 +20,5 @@ internal class PatternAttributeHandler : IAttributeHandler<JsonPropertyPatternAt
             context.Intents.Insert(0, new PatternIntent(patternAttribute.Pattern));
             context.Intents.Insert(0, new FormatIntent(format));
         }
-
     }
 }

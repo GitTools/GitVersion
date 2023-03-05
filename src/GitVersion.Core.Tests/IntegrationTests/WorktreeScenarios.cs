@@ -26,5 +26,4 @@ public class WorktreeScenarios : TestBase
         using var worktreeFixture = new LocalRepositoryFixture(new Repository(worktreePath));
         worktreeFixture.AssertFullSemver("1.0.0");
     }
-
 }

@@ -518,7 +518,6 @@ public class CreatingAFeatureBranchFromAReleaseBranchScenario
         fixture.Repository.DumpGraph();
     }
 
-
     [Test]
     public void ShouldOnlyTrackTheCommitsOnDevelopBranchForNextReleaseWhenReleaseHasBeenShippedToProduction()
     {

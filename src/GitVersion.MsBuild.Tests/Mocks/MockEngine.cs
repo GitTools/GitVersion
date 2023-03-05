@@ -90,7 +90,6 @@ internal sealed class MockEngine : IBuildEngine4
         bool useResultsCache,
         bool unloadProjectsOnCompletion) => false;
 
-
     public BuildEngineResult BuildProjectFilesInParallel(
         string[] projectFileNames,
         string[] targetNames,

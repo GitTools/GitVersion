@@ -45,5 +45,4 @@ internal class Jenkins : BuildAgentBase
         writer($"Outputting variables to '{this.file}' ... ");
         File.WriteAllLines(this.file, GenerateBuildLogOutput(variables));
     }
-
 }

@@ -214,7 +214,6 @@ assembly-informational-format: '{Major}.{Minor}.{Patch}'";
         configuration.AssemblyInformationalFormat.ShouldBe("{Major}.{Minor}.{Patch}");
     }
 
-
     [Test]
     public void CanUpdateAssemblyInformationalVersioningSchemeWithFullSemVer()
     {
@@ -253,9 +252,9 @@ branches: {}";
     {
         var configuration = typeof(GitVersionConfiguration);
         var propertiesMissingAlias = configuration.GetProperties()
-            .Where(p => p.GetCustomAttribute<ObsoleteAttribute>() == null)
-            .Where(p => p.GetCustomAttribute<JsonIgnoreAttribute>() == null)
-            .Where(p => p.GetCustomAttribute<JsonPropertyNameAttribute>() == null)
+            .Where(p => p.GetCustomAttribute<ObsoleteAttribute>() == null
+                && p.GetCustomAttribute<JsonIgnoreAttribute>() == null
+                && p.GetCustomAttribute<JsonPropertyNameAttribute>() == null)
             .Select(p => p.Name);
 
         propertiesMissingAlias.ShouldBeEmpty();

@@ -46,7 +46,7 @@ public sealed class WixVersionFileUpdater : IWixVersionFileUpdater
         foreach (var variable in availableVariables)
         {
             variables.TryGetValue(variable, out var value);
-            builder.Append($"\t<?define {variable}=\"{value}\"?>\n");
+            builder.Append("\t<?define ").Append(variable).Append("=\"").Append(value).Append("\"?>\n");
         }
         builder.Append("</Include>\n");
         return builder.ToString();

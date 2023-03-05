@@ -36,7 +36,7 @@ internal sealed class Tag : ITag
         return target is LibGit2Sharp.Commit commit ? new Commit(commit) : null;
     }
 
-    public override bool Equals(object? obj) => Equals((obj as ITag));
+    public override bool Equals(object? obj) => Equals(obj as ITag);
     public override int GetHashCode() => equalityHelper.GetHashCode(this);
     public override string ToString() => Name.ToString();
 }

@@ -29,7 +29,7 @@ internal sealed partial class GitRepository
 
     public void DiscoverRepository(string? gitDirectory)
     {
-        if (gitDirectory != null && !gitDirectory.EndsWith(".git"))
+        if (gitDirectory?.EndsWith(".git") == false)
         {
             gitDirectory = Repository.Discover(gitDirectory);
         }

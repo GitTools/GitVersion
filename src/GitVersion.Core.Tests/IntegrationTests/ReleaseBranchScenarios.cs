@@ -459,7 +459,9 @@ public class ReleaseBranchScenarios : TestBase
         fixture.AssertFullSemver("2.0.0-beta.4", configuration);
     }
 
-    public static void ReleaseBranchShouldUseBranchNameVersionDespiteBumpInPreviousCommit()
+    [Test]
+    [Ignore("Needs investigation")]
+    public void ReleaseBranchShouldUseBranchNameVersionDespiteBumpInPreviousCommit()
     {
         using var fixture = new EmptyRepositoryFixture();
         fixture.Repository.MakeATaggedCommit("1.0");

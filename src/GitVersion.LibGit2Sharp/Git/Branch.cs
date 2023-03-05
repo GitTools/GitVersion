@@ -30,7 +30,7 @@ internal sealed class Branch : IBranch
     public bool IsDetachedHead => Name.Canonical.Equals("(no branch)", StringComparison.OrdinalIgnoreCase);
     public bool IsRemote => this.innerBranch.IsRemote;
     public bool IsTracking => this.innerBranch.IsTracking;
-    public override bool Equals(object? obj) => Equals((obj as IBranch));
+    public override bool Equals(object? obj) => Equals(obj as IBranch);
     public override int GetHashCode() => equalityHelper.GetHashCode(this);
     public override string ToString() => Name.ToString();
     public static implicit operator LibGit2Sharp.Branch(Branch d) => d.innerBranch;

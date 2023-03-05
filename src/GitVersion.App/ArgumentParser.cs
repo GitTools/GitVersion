@@ -47,7 +47,7 @@ public class ArgumentParser : IArgumentParser
             return args;
         }
 
-        var firstArgument = commandLineArguments.First();
+        var firstArgument = commandLineArguments[0];
 
         if (firstArgument.IsInit())
         {
@@ -188,7 +188,7 @@ public class ArgumentParser : IArgumentParser
         // If we've reached through all argument switches without a match, we can relatively safely assume that the first argument isn't a switch, but the target path.
         if (parseEnded)
         {
-            if (name != null && name.StartsWith("/"))
+            if (name?.StartsWith("/") == true)
             {
                 if (Path.DirectorySeparatorChar == '/' && name.IsValidPath())
                 {
@@ -223,7 +223,7 @@ public class ArgumentParser : IArgumentParser
 
         if (name.IsSwitch("diag"))
         {
-            if (value == null || value.IsTrue())
+            if (value?.IsTrue() != false)
             {
                 arguments.Diag = true;
             }
@@ -327,7 +327,6 @@ public class ArgumentParser : IArgumentParser
 
         arguments.ShowConfiguration = value.IsTrue() || !value.IsFalse();
         return true;
-
     }
 
     private static bool ParseRemoteArguments(Arguments arguments, string? name, IReadOnlyList<string>? values, string? value)
@@ -579,7 +578,7 @@ public class ArgumentParser : IArgumentParser
         string? currentKey = null;
         var argumentRequiresValue = false;
 
-        for (var i = 0; i < namedArguments.Count; i += 1)
+        for (var i = 0; i < namedArguments.Count; ++i)
         {
             var arg = namedArguments[i];
 

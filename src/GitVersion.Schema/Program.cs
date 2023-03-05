@@ -1,5 +1,6 @@
 using GitVersion.Configuration;
 using GitVersion.OutputVariables;
+using GitVersion.Schema;
 using Json.Schema;
 using Json.Schema.Generation;
 using Microsoft.Extensions.Configuration;

@@ -1,6 +1,8 @@
 using Json.More;
 using Json.Schema;
 
+namespace GitVersion.Schema;
+
 internal static class Extensions
 {
     public static void WriteToFile(this JsonSchema jsonSchema, string outputFileName)

@@ -22,7 +22,6 @@ public class BitBucketPipelinesTests : TestBase
         this.environment.SetEnvironmentVariable(BitBucketPipelines.EnvironmentVariableName, "MyWorkspace");
     }
 
-
     [Test]
     public void CanNotApplyToCurrentContextWhenEnvironmentVariableNotSet()
     {
@@ -113,7 +112,6 @@ public class BitBucketPipelinesTests : TestBase
         // Assert
         result.ShouldBeNull();
     }
-
 
     [Test]
     public void WriteAllVariablesToTheTextWriter()

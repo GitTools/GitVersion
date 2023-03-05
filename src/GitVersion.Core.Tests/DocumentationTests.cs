@@ -37,7 +37,6 @@ public class DocumentationTests : TestBase
         }
     }
 
-
     [Test]
     public void VariableDocumentationIsUpToDate()
     {
@@ -85,7 +84,7 @@ public class DocumentationTests : TestBase
             currentDirectory = currentDirectory.Parent;
         }
 
-        if (currentDirectory == null || !currentDirectory.Name.Equals("docs", StringComparison.Ordinal))
+        if (currentDirectory?.Name.Equals("docs", StringComparison.Ordinal) != true)
         {
             throw new DirectoryNotFoundException("Couldn't find the 'docs' directory.");
         }

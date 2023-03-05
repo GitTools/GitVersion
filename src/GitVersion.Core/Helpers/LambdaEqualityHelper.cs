@@ -47,7 +47,7 @@ public class LambdaEqualityHelper<T>
             foreach (var accessor in this.equalityContributorAccessors)
             {
                 var item = accessor(instance);
-                hashCode = (hashCode * 397) ^ (item != null ? item.GetHashCode() : 0);
+                hashCode = (hashCode * 397) ^ ((item?.GetHashCode()) ?? 0);
             }
         }
 

@@ -24,19 +24,23 @@ public class FileHelperTests
     public void GetFileWriteInfoShouldCreateConstantNamedFileWhenIntermediateOutputPath()
     {
         var fileInfo = "MyIntermediateOutputPath".GetFileWriteInfo("C#", "MyProject.csproj", "GeneratedVersionInformation");
-
-        Assert.That(fileInfo.WorkingDirectory, Is.EqualTo("MyIntermediateOutputPath"));
-        Assert.That(fileInfo.FileName, Is.EqualTo("GeneratedVersionInformation.g.cs"));
-        Assert.That(fileInfo.FileExtension, Is.EqualTo("cs"));
+        Assert.Multiple(() =>
+        {
+            Assert.That(fileInfo.WorkingDirectory, Is.EqualTo("MyIntermediateOutputPath"));
+            Assert.That(fileInfo.FileName, Is.EqualTo("GeneratedVersionInformation.g.cs"));
+            Assert.That(fileInfo.FileExtension, Is.EqualTo("cs"));
+        });
     }
 
     [Test]
     public void GetFileWriteInfoShouldCreateRandomNamedFileWhenNoIntermediateOutputPath()
     {
         var fileInfo = FileHelper.GetFileWriteInfo(null, "C#", "MyProject.csproj", "GeneratedVersionInformation");
-
-        Assert.That(fileInfo.WorkingDirectory, Is.EqualTo(FileHelper.TempPath));
-        Assert.That(fileInfo.FileName, Does.StartWith("GeneratedVersionInformation_MyProject_").And.EndsWith(".g.cs"));
-        Assert.That(fileInfo.FileExtension, Is.EqualTo("cs"));
+        Assert.Multiple(() =>
+        {
+            Assert.That(fileInfo.WorkingDirectory, Is.EqualTo(FileHelper.TempPath));
+            Assert.That(fileInfo.FileName, Does.StartWith("GeneratedVersionInformation_MyProject_").And.EndsWith(".g.cs"));
+            Assert.That(fileInfo.FileExtension, Is.EqualTo("cs"));
+        });
     }
 }

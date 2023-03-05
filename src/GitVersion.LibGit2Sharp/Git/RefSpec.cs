@@ -16,7 +16,7 @@ internal class RefSpec : IRefSpec
     public RefSpecDirection Direction => (RefSpecDirection)this.innerRefSpec.Direction;
     public string Source => this.innerRefSpec.Source;
     public string Destination => this.innerRefSpec.Destination;
-    public override bool Equals(object? obj) => Equals((obj as IRefSpec));
+    public override bool Equals(object? obj) => Equals(obj as IRefSpec);
     public override int GetHashCode() => equalityHelper.GetHashCode(this);
     public override string ToString() => Specification;
 }

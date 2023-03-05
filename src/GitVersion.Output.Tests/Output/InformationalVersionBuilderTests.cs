@@ -33,5 +33,4 @@ public class InformationalVersionBuilderTests : TestBase
 
         Assert.That(informationalVersion, Is.EqualTo(versionString));
     }
-
 }

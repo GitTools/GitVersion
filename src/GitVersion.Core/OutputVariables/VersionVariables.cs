@@ -97,10 +97,8 @@ public class VersionVariables : IEnumerable<KeyValuePair<string, string>>
     [ReflectionIgnore]
     public string? FileName { get; set; }
 
-
     [ReflectionIgnore]
     public string? this[string variable] => typeof(VersionVariables).GetProperty(variable)?.GetValue(this, null) as string;
-
 
     public IEnumerator<KeyValuePair<string, string>> GetEnumerator() => this.GetProperties().GetEnumerator();
 
@@ -200,7 +198,7 @@ public class VersionVariables : IEnumerable<KeyValuePair<string, string>>
     {
         if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>))
         {
-            if (value == null || value.ToString() == string.Empty)
+            if (value == null || value.ToString()?.Length == 0)
             {
                 return null;
             }

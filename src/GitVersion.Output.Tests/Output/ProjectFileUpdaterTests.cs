@@ -73,7 +73,7 @@ public class ProjectFileUpdaterTests : TestBase
 
         logMessages.ShouldNotBeEmpty();
         logMessages.Count.ShouldBe(1);
-        logMessages.First().ShouldContain("Specified project file Sdk (SomeOtherProject.Sdk) is not supported, please ensure the project sdk starts with 'Microsoft.NET.Sdk'");
+        logMessages[0].ShouldContain("Specified project file Sdk (SomeOtherProject.Sdk) is not supported, please ensure the project sdk starts with 'Microsoft.NET.Sdk'");
     }
 
     [TestCase(@"
@@ -92,7 +92,7 @@ public class ProjectFileUpdaterTests : TestBase
 
         logMessages.ShouldNotBeEmpty();
         logMessages.Count.ShouldBe(1);
-        logMessages.First().ShouldContain("Specified project file Sdk () is not supported, please ensure the project sdk starts with 'Microsoft.NET.Sdk'");
+        logMessages[0].ShouldContain("Specified project file Sdk () is not supported, please ensure the project sdk starts with 'Microsoft.NET.Sdk'");
     }
 
     [TestCase(@"
@@ -112,7 +112,7 @@ public class ProjectFileUpdaterTests : TestBase
 
         logMessages.ShouldNotBeEmpty();
         logMessages.Count.ShouldBe(1);
-        logMessages.First().ShouldContain("Project file specifies <GenerateAssemblyInfo>false</GenerateAssemblyInfo>: versions set in this project file will not affect the output artifacts");
+        logMessages[0].ShouldContain("Project file specifies <GenerateAssemblyInfo>false</GenerateAssemblyInfo>: versions set in this project file will not affect the output artifacts");
     }
 
     [TestCase(@"
@@ -127,7 +127,7 @@ public class ProjectFileUpdaterTests : TestBase
 
         logMessages.ShouldNotBeEmpty();
         logMessages.Count.ShouldBe(1);
-        logMessages.First().ShouldContain("Unable to locate any <PropertyGroup> elements in specified project file. Are you sure it is in a correct format?");
+        logMessages[0].ShouldContain("Unable to locate any <PropertyGroup> elements in specified project file. Are you sure it is in a correct format?");
     }
 
     [TestCase(@"

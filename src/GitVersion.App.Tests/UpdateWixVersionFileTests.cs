@@ -21,7 +21,7 @@ internal class UpdateWixVersionFileTests
         fixture.MakeACommit();
 
         GitVersionHelper.ExecuteIn(fixture.RepositoryPath, arguments: " /updatewixversionfile");
-        Assert.IsTrue(File.Exists(PathHelper.Combine(fixture.RepositoryPath, this.wixVersionFileName)));
+        Assert.That(File.Exists(PathHelper.Combine(fixture.RepositoryPath, this.wixVersionFileName)), Is.True);
     }
 
     [Test]

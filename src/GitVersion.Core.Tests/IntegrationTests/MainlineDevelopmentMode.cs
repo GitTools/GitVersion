@@ -118,7 +118,7 @@ public class MainlineDevelopmentMode : TestBase
         fixture.AssertFullSemver("1.0.2-foo.0", configuration);
         fixture.MakeACommit();
         fixture.MakeACommit();
-        fixture.Repository.CreatePullRequestRef("feature/foo", MainBranch, normalise: true, prNumber: 8);
+        fixture.Repository.CreatePullRequestRef("feature/foo", MainBranch, prNumber: 8, normalise: true);
         fixture.AssertFullSemver("1.0.2-PullRequest8.3", configuration);
     }
 
@@ -153,7 +153,7 @@ public class MainlineDevelopmentMode : TestBase
         fixture.AssertFullSemver("1.0.5-foo.1", configuration);
         fixture.MakeACommit();
         fixture.AssertFullSemver("1.0.5-foo.2", configuration);
-        fixture.Repository.CreatePullRequestRef("feature/foo", "support/1.0", normalise: true, prNumber: 7);
+        fixture.Repository.CreatePullRequestRef("feature/foo", "support/1.0", prNumber: 7, normalise: true);
         fixture.AssertFullSemver("1.0.5-PullRequest7.3", configuration);
     }
 
