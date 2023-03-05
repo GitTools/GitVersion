@@ -7,8 +7,8 @@ namespace Common.Utilities;
 [AttributeUsage(AttributeTargets.Class, Inherited = false, AllowMultiple = true)]
 public class TaskArgumentAttribute : Attribute
 {
-    public string Name { get; set; }
-    public string[] PossibleValues { get; set; }
+    public string Name { get; }
+    public string[] PossibleValues { get; }
     public TaskArgumentAttribute(string name, params string[] possibleValues)
     {
         Name = name;
