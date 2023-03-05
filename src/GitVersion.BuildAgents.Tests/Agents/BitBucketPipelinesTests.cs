@@ -82,7 +82,7 @@ public class BitBucketPipelinesTests : TestBase
         var result = this.buildServer.GetCurrentBranch(false);
 
         // Assert
-        result.ShouldBe($"refs/heads/feature/my-work");
+        result.ShouldBe("refs/heads/feature/my-work");
     }
 
     [Test]

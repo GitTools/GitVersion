@@ -42,9 +42,9 @@ GitVersion [path]
                     E.g. /output json /format {SemVer} - will output `1.2.3+beta.4`
                          /output json /format {Major}.{Minor} - will output `1.2`
     /l              Path to logfile.
-    /config         Path to config file (defaults to GitVersion.yml)
+    /config         Path to config file (defaults to GitVersion.yml or GitVersion.yaml)
     /showconfig     Outputs the effective GitVersion config (defaults + custom
-                    from GitVersion.yml) in yaml format
+                    from GitVersion.yml or GitVersion.yaml) in yaml format
     /overrideconfig Overrides GitVersion config values inline (semicolon-
                     separated key value pairs e.g. /overrideconfig
                     label-prefix=Foo)
@@ -103,7 +103,7 @@ gitversion init     Configuration utility for gitversion
 
 ## Override config
 
-`/overrideconfig [key=value]` will override appropriate `key` from 'GitVersion.yml'.
+`/overrideconfig [key=value]` will override appropriate `key` from 'GitVersion.yml' or 'GitVersion.yaml'.
 
 To specify multiple options add multiple `/overrideconfig [key=value]` entries:
 `/overrideconfig key1=value1 /overrideconfig key2=value2`.
@@ -135,7 +135,7 @@ Following options are supported:
 
 Read more about [Configuration](/docs/reference/configuration).
 
-Using `override-config` on the command line will not change the contents of the config file `GitVersion.yml`.
+Using `override-config` on the command line will not change the contents of the config file `GitVersion.yml` or `GitVersion.yaml`.
 
 ### Example: How to override configuration option 'label-prefix' to use prefix 'custom'
 

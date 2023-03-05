@@ -30,6 +30,7 @@ public class InitScenarios : TestBase
         var fileSystem = sp.GetRequiredService<IFileSystem>();
         configurationProvider.Init(workingDirectory);
 
-        fileSystem.ReadAllText(PathHelper.Combine(workingDirectory, "GitVersion.yml")).ShouldMatchApproved();
+        var configFile = PathHelper.Combine(workingDirectory, ConfigurationFileLocator.DefaultFileName);
+        fileSystem.ReadAllText(configFile).ShouldMatchApproved();
     }
 }

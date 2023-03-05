@@ -110,9 +110,8 @@ internal partial class GitRepository : IMutatingGitRepository
                 }
         }
 
-        return refs.First();
+        return refs[0];
     }
-    internal static string? Discover(string? path) => Repository.Discover(path);
     private static FetchOptions GetFetchOptions(AuthenticationInfo auth) =>
         new() { CredentialsProvider = GetCredentialsProvider(auth) };
     private static CloneOptions GetCloneOptions(AuthenticationInfo auth) =>

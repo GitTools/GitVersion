@@ -17,8 +17,8 @@ public class GitVersionCacheKeyFactory : IGitVersionCacheKeyFactory
     private readonly IGitRepositoryInfo repositoryInfo;
 
     public GitVersionCacheKeyFactory(IFileSystem fileSystem, ILog log,
-        IOptions<GitVersionOptions> options, IConfigurationFileLocator configFileLocator,
-        IGitRepository gitRepository, IGitRepositoryInfo repositoryInfo)
+                                     IOptions<GitVersionOptions> options, IConfigurationFileLocator configFileLocator,
+                                     IGitRepository gitRepository, IGitRepositoryInfo repositoryInfo)
     {
         this.fileSystem = fileSystem.NotNull();
         this.log = log.NotNull();
@@ -146,6 +146,7 @@ public class GitVersionCacheKeyFactory : IGitVersionCacheKeyFactory
         {
             return head.Name.Canonical;
         }
+
         var hash = string.Join(":", head.Name.Canonical, head.Tip.Sha);
         return GetHash(hash);
     }
@@ -168,11 +169,13 @@ public class GitVersionCacheKeyFactory : IGitVersionCacheKeyFactory
     {
         // will return the same hash even when configuration file will be moved
         // from workingDirectory to rootProjectDirectory. It's OK. Configuration essentially is the same.
-        var configFilePath = this.configFileLocator.SelectConfigFilePath(this.options.Value, this.repositoryInfo);
-        if (configFilePath == null || !this.fileSystem.Exists(configFilePath))
-        {
+        var workingDirectory = this.options.Value.WorkingDirectory;
+        var projectRootDirectory = this.repositoryInfo.ProjectRootDirectory;
+
+        if (!this.configFileLocator.TryGetConfigurationFile(workingDirectory, projectRootDirectory, out var configFilePath))
             return string.Empty;
-        }
+        if (configFilePath == null) return string.Empty;
+        if (!this.fileSystem.Exists(configFilePath)) return string.Empty;
 
         var configFileContent = this.fileSystem.ReadAllText(configFilePath);
         return GetHash(configFileContent);
@@ -190,6 +193,7 @@ public class GitVersionCacheKeyFactory : IGitVersionCacheKeyFactory
         {
             return string.Empty;
         }
+
         var bytes = Encoding.UTF8.GetBytes(textToHash);
         var hashedBytes = SHA1.HashData(bytes);
         var hashedString = BitConverter.ToString(hashedBytes);

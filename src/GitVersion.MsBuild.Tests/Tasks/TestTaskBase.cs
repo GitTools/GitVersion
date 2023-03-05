@@ -25,7 +25,7 @@ public class TestTaskBase : TestBase
         AddOverrides(task);
         var msbuildFixture = new MsBuildTaskFixture(fixture);
         var result = msbuildFixture.Execute(task);
-        if (result.Success == false) Console.WriteLine(result.Log);
+        if (!result.Success) Console.WriteLine(result.Log);
         return result;
     }
 
@@ -38,7 +38,7 @@ public class TestTaskBase : TestBase
         msbuildFixture.CreateTestProject(extendProject);
 
         var result = msbuildFixture.Execute();
-        if (result.MsBuild.OverallSuccess == false) Console.WriteLine(result.Output);
+        if (!result.MsBuild.OverallSuccess) Console.WriteLine(result.Output);
         return result;
     }
 
@@ -61,7 +61,7 @@ public class TestTaskBase : TestBase
 
         var result = msbuildFixture.Execute(task);
 
-        if (result.Success == false) Console.WriteLine(result.Log);
+        if (!result.Success) Console.WriteLine(result.Log);
         return result;
     }
 
@@ -76,7 +76,7 @@ public class TestTaskBase : TestBase
             new KeyValuePair<string, string?>("GITHUB_ENV", envFilePath)
         );
         var result = msbuildFixture.Execute(task);
-        if (result.Success == false)
+        if (!result.Success)
             Console.WriteLine(result.Log);
         return result;
     }
@@ -91,7 +91,7 @@ public class TestTaskBase : TestBase
         msbuildFixture.WithEnv(env.ToArray());
 
         var result = msbuildFixture.Execute();
-        if (result.MsBuild.OverallSuccess == false) Console.WriteLine(result.Output);
+        if (!result.MsBuild.OverallSuccess) Console.WriteLine(result.Output);
         return result;
     }
     private static void AddOverrides(GitVersionTaskBase task) =>

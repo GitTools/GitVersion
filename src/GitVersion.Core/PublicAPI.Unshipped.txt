@@ -1,8 +1,4 @@
 #nullable enable
-const GitVersion.ReferenceName.LocalBranchPrefix = "refs/heads/" -> string!
-const GitVersion.ReferenceName.RemotePrefix = "origin/" -> string!
-const GitVersion.ReferenceName.RemoteTrackingBranchPrefix = "refs/remotes/" -> string!
-const GitVersion.ReferenceName.TagPrefix = "refs/tags/" -> string!
 GitVersion.Agents.BuildAgentBase
 GitVersion.Agents.BuildAgentBase.BuildAgentBase(GitVersion.IEnvironment! environment, GitVersion.Logging.ILog! log) -> void
 GitVersion.Agents.BuildAgentBase.Environment.get -> GitVersion.IEnvironment!
@@ -143,13 +139,9 @@ GitVersion.Configuration.ConfigurationException.ConfigurationException(string! m
 GitVersion.Configuration.ConfigurationExtensions
 GitVersion.Configuration.ConfigurationFileLocator
 GitVersion.Configuration.ConfigurationFileLocator.ConfigurationFileLocator(GitVersion.IFileSystem! fileSystem, Microsoft.Extensions.Options.IOptions<GitVersion.GitVersionOptions!>! options) -> void
-GitVersion.Configuration.ConfigurationFileLocator.FilePath.get -> string!
-GitVersion.Configuration.ConfigurationFileLocator.GetConfigFilePath(string? workingDirectory) -> string?
-GitVersion.Configuration.ConfigurationFileLocator.HasConfigFileAt(string! workingDirectory) -> bool
-GitVersion.Configuration.ConfigurationFileLocator.ReadConfig(string! workingDirectory) -> GitVersion.Configuration.GitVersionConfiguration!
-GitVersion.Configuration.ConfigurationFileLocator.ReadOverrideConfiguration(string? workingDirectory) -> System.Collections.Generic.IReadOnlyDictionary<object!, object?>?
-GitVersion.Configuration.ConfigurationFileLocator.SelectConfigFilePath(GitVersion.GitVersionOptions! gitVersionOptions, GitVersion.IGitRepositoryInfo! repositoryInfo) -> string?
-GitVersion.Configuration.ConfigurationFileLocator.Verify(GitVersion.GitVersionOptions! gitVersionOptions, GitVersion.IGitRepositoryInfo! repositoryInfo) -> void
+GitVersion.Configuration.ConfigurationFileLocator.ReadConfiguration(string? configFilePath) -> GitVersion.Configuration.GitVersionConfiguration!
+GitVersion.Configuration.ConfigurationFileLocator.ReadOverrideConfiguration(string? configFilePath) -> System.Collections.Generic.IReadOnlyDictionary<object!, object?>?
+GitVersion.Configuration.ConfigurationFileLocator.TryGetConfigurationFile(string? workingDirectory, string? projectRootDirectory, out string? configFilePath) -> bool
 GitVersion.Configuration.ConfigurationFileLocator.Verify(string? workingDirectory, string? projectRootDirectory) -> void
 GitVersion.Configuration.ConfigurationModule
 GitVersion.Configuration.ConfigurationModule.ConfigurationModule() -> void
@@ -238,14 +230,10 @@ GitVersion.Configuration.GitVersionConfiguration.UpdateBuildNumber.set -> void
 GitVersion.Configuration.GitVersionConfiguration.Workflow.get -> string?
 GitVersion.Configuration.GitVersionConfiguration.Workflow.set -> void
 GitVersion.Configuration.IConfigurationFileLocator
-GitVersion.Configuration.IConfigurationFileLocator.FilePath.get -> string!
-GitVersion.Configuration.IConfigurationFileLocator.GetConfigFilePath(string! workingDirectory) -> string?
-GitVersion.Configuration.IConfigurationFileLocator.HasConfigFileAt(string! workingDirectory) -> bool
-GitVersion.Configuration.IConfigurationFileLocator.ReadConfig(string! workingDirectory) -> GitVersion.Configuration.GitVersionConfiguration!
-GitVersion.Configuration.IConfigurationFileLocator.ReadOverrideConfiguration(string? workingDirectory) -> System.Collections.Generic.IReadOnlyDictionary<object!, object?>?
-GitVersion.Configuration.IConfigurationFileLocator.SelectConfigFilePath(GitVersion.GitVersionOptions! gitVersionOptions, GitVersion.IGitRepositoryInfo! repositoryInfo) -> string?
-GitVersion.Configuration.IConfigurationFileLocator.Verify(GitVersion.GitVersionOptions! gitVersionOptions, GitVersion.IGitRepositoryInfo! repositoryInfo) -> void
-GitVersion.Configuration.IConfigurationFileLocator.Verify(string! workingDirectory, string! projectRootDirectory) -> void
+GitVersion.Configuration.IConfigurationFileLocator.ReadConfiguration(string? configFilePath) -> GitVersion.Configuration.GitVersionConfiguration!
+GitVersion.Configuration.IConfigurationFileLocator.ReadOverrideConfiguration(string? configFilePath) -> System.Collections.Generic.IReadOnlyDictionary<object!, object?>?
+GitVersion.Configuration.IConfigurationFileLocator.TryGetConfigurationFile(string? workingDirectory, string? projectRootDirectory, out string? configFilePath) -> bool
+GitVersion.Configuration.IConfigurationFileLocator.Verify(string? workingDirectory, string? projectRootDirectory) -> void
 GitVersion.Configuration.IConfigurationProvider
 GitVersion.Configuration.IConfigurationProvider.Init(string! workingDirectory) -> void
 GitVersion.Configuration.IConfigurationProvider.Provide(System.Collections.Generic.IReadOnlyDictionary<object!, object?>? overrideConfiguration = null) -> GitVersion.Configuration.GitVersionConfiguration!
@@ -556,9 +544,9 @@ GitVersion.IncrementStrategy.Patch = 3 -> GitVersion.IncrementStrategy
 GitVersion.IncrementStrategyExtensions
 GitVersion.LockedFileException
 GitVersion.LockedFileException.LockedFileException() -> void
+GitVersion.LockedFileException.LockedFileException(System.Exception! inner) -> void
 GitVersion.LockedFileException.LockedFileException(string? message) -> void
 GitVersion.LockedFileException.LockedFileException(string? message, System.Exception? innerException) -> void
-GitVersion.LockedFileException.LockedFileException(System.Exception! inner) -> void
 GitVersion.Logging.ConsoleAdapter
 GitVersion.Logging.ConsoleAdapter.ConsoleAdapter() -> void
 GitVersion.Logging.ConsoleAdapter.ReadLine() -> string?
@@ -720,7 +708,6 @@ GitVersion.OutputVariables.VersionVariablesJsonModel.WeightedPreReleaseNumber.ge
 GitVersion.OutputVariables.VersionVariablesJsonModel.WeightedPreReleaseNumber.set -> void
 GitVersion.OutputVariables.VersionVariablesJsonStringConverter
 GitVersion.OutputVariables.VersionVariablesJsonStringConverter.VersionVariablesJsonStringConverter() -> void
-GitVersion.ReferenceName.IsLocalBranch.get -> bool
 GitVersion.RefSpecDirection
 GitVersion.RefSpecDirection.Fetch = 0 -> GitVersion.RefSpecDirection
 GitVersion.RefSpecDirection.Push = 1 -> GitVersion.RefSpecDirection
@@ -730,6 +717,7 @@ GitVersion.ReferenceName.CompareTo(GitVersion.ReferenceName? other) -> int
 GitVersion.ReferenceName.Equals(GitVersion.ReferenceName? other) -> bool
 GitVersion.ReferenceName.EquivalentTo(string? name) -> bool
 GitVersion.ReferenceName.Friendly.get -> string!
+GitVersion.ReferenceName.IsLocalBranch.get -> bool
 GitVersion.ReferenceName.IsPullRequest.get -> bool
 GitVersion.ReferenceName.IsRemoteBranch.get -> bool
 GitVersion.ReferenceName.IsTag.get -> bool
@@ -989,7 +977,12 @@ const GitVersion.Configuration.ConfigurationConstants.SupportBranchKey = "suppor
 const GitVersion.Configuration.ConfigurationConstants.SupportBranchRegex = "^support[/-]" -> string!
 const GitVersion.Configuration.ConfigurationConstants.UnknownBranchKey = "unknown" -> string!
 const GitVersion.Configuration.ConfigurationConstants.UnknownBranchRegex = ".*" -> string!
+const GitVersion.Configuration.ConfigurationFileLocator.DefaultAlternativeFileName = "GitVersion.yaml" -> string!
 const GitVersion.Configuration.ConfigurationFileLocator.DefaultFileName = "GitVersion.yml" -> string!
+const GitVersion.ReferenceName.LocalBranchPrefix = "refs/heads/" -> string!
+const GitVersion.ReferenceName.RemotePrefix = "origin/" -> string!
+const GitVersion.ReferenceName.RemoteTrackingBranchPrefix = "refs/remotes/" -> string!
+const GitVersion.ReferenceName.TagPrefix = "refs/tags/" -> string!
 const GitVersion.VersionCalculation.IncrementStrategyFinder.DefaultMajorPattern = "\\+semver:\\s?(breaking|major)" -> string!
 const GitVersion.VersionCalculation.IncrementStrategyFinder.DefaultMinorPattern = "\\+semver:\\s?(feature|minor)" -> string!
 const GitVersion.VersionCalculation.IncrementStrategyFinder.DefaultNoBumpPattern = "\\+semver:\\s?(none|skip)" -> string!
@@ -1080,11 +1073,11 @@ readonly GitVersion.Configuration.Init.Wizard.ConfigInitWizardStep.StepFactory -
 static GitVersion.BranchCommit.operator !=(GitVersion.BranchCommit left, GitVersion.BranchCommit right) -> bool
 static GitVersion.BranchCommit.operator ==(GitVersion.BranchCommit left, GitVersion.BranchCommit right) -> bool
 static GitVersion.Configuration.BranchConfigurationBuilder.New.get -> GitVersion.Configuration.BranchConfigurationBuilder!
+static GitVersion.Configuration.ConfigurationExtensions.FindGitDir(this string! path) -> (string! GitDirectory, string! WorkingTreeDirectory)?
 static GitVersion.Configuration.ConfigurationExtensions.GetBranchConfiguration(this GitVersion.Configuration.GitVersionConfiguration! configuration, GitVersion.IBranch! branch) -> GitVersion.Configuration.BranchConfiguration!
 static GitVersion.Configuration.ConfigurationExtensions.GetBranchConfiguration(this GitVersion.Configuration.GitVersionConfiguration! configuration, GitVersion.ReferenceName! branchName) -> GitVersion.Configuration.BranchConfiguration!
 static GitVersion.Configuration.ConfigurationExtensions.GetBranchSpecificTag(this GitVersion.Configuration.EffectiveConfiguration! configuration, GitVersion.Logging.ILog! log, string? branchFriendlyName, string? branchNameOverride) -> string!
 static GitVersion.Configuration.ConfigurationExtensions.GetEffectiveConfiguration(this GitVersion.Configuration.GitVersionConfiguration! configuration, GitVersion.IBranch! branch) -> GitVersion.Configuration.EffectiveConfiguration!
-static GitVersion.Configuration.ConfigurationExtensions.GetEffectiveConfiguration(this GitVersion.Configuration.GitVersionConfiguration! configuration, GitVersion.ReferenceName! branchName) -> GitVersion.Configuration.EffectiveConfiguration!
 static GitVersion.Configuration.ConfigurationExtensions.GetFallbackBranchConfiguration(this GitVersion.Configuration.GitVersionConfiguration! configuration) -> GitVersion.Configuration.BranchConfiguration!
 static GitVersion.Configuration.ConfigurationExtensions.GetReleaseBranchConfiguration(this GitVersion.Configuration.GitVersionConfiguration! configuration) -> System.Collections.Generic.List<System.Collections.Generic.KeyValuePair<string!, GitVersion.Configuration.BranchConfiguration!>>!
 static GitVersion.Configuration.ConfigurationExtensions.IsReleaseBranch(this GitVersion.Configuration.GitVersionConfiguration! configuration, GitVersion.IBranch! branch) -> bool
