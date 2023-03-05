@@ -241,8 +241,9 @@ public class GitVersionExecutorTests : TestBase
         logsMessages.ShouldContain("yml not found", Case.Insensitive, logsMessages);
     }
 
-    [Test]
-    public void ConfigChangeInvalidatesCache()
+    [TestCase(ConfigurationFileLocator.DefaultFileName)]
+    [TestCase(ConfigurationFileLocator.DefaultAlternativeFileName)]
+    public void ConfigChangeInvalidatesCache(string configFileName)
     {
         const string versionCacheFileContent = @"
         Major: 4
@@ -289,7 +290,7 @@ public class GitVersionExecutorTests : TestBase
         versionVariables = gitVersionCalculator.CalculateVersionVariables();
         versionVariables.AssemblySemVer.ShouldBe("4.10.3.0");
 
-        var configPath = PathHelper.Combine(fixture.RepositoryPath, ConfigurationFileLocator.DefaultFileName);
+        var configPath = PathHelper.Combine(fixture.RepositoryPath, configFileName);
         this.fileSystem.WriteAllText(configPath, "next-version: 5.0.0");
 
         gitVersionCalculator = GetGitVersionCalculator(gitVersionOptions, fs: this.fileSystem);

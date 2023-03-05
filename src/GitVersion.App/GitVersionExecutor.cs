@@ -143,7 +143,10 @@ public class GitVersionExecutor : IGitVersionExecutor
             this.log.Info("Working directory: " + workingDirectory);
         }
 
-        this.configurationFileLocator.Verify(gitVersionOptions, this.repositoryInfo);
+        if (gitVersionOptions.RepositoryInfo.TargetUrl.IsNullOrWhiteSpace())
+        {
+            this.configurationFileLocator.Verify(workingDirectory, this.repositoryInfo.ProjectRootDirectory);
+        }
 
         if (gitVersionOptions.Init)
         {

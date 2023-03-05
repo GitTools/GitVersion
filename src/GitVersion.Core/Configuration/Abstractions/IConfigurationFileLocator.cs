@@ -2,12 +2,8 @@ namespace GitVersion.Configuration;
 
 public interface IConfigurationFileLocator
 {
-    string FilePath { get; }
-    bool HasConfigFileAt(string workingDirectory);
-    string? GetConfigFilePath(string workingDirectory);
-    void Verify(GitVersionOptions gitVersionOptions, IGitRepositoryInfo repositoryInfo);
-    void Verify(string workingDirectory, string projectRootDirectory);
-    string? SelectConfigFilePath(GitVersionOptions gitVersionOptions, IGitRepositoryInfo repositoryInfo);
-    GitVersionConfiguration ReadConfig(string workingDirectory);
-    IReadOnlyDictionary<object, object?>? ReadOverrideConfiguration(string? workingDirectory);
+    bool TryGetConfigurationFile(string? workingDirectory, string? projectRootDirectory, out string? configFilePath);
+    GitVersionConfiguration ReadConfiguration(string? configFilePath);
+    IReadOnlyDictionary<object, object?>? ReadOverrideConfiguration(string? configFilePath);
+    void Verify(string? workingDirectory, string? projectRootDirectory);
 }

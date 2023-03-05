@@ -1,6 +1,7 @@
 using GitVersion.Configuration.Init.Wizard;
 using GitVersion.Configuration.SupportedWorkflows;
 using GitVersion.Extensions;
+using GitVersion.Helpers;
 using GitVersion.Logging;
 using Microsoft.Extensions.Options;
 using YamlDotNet.Core;
@@ -29,19 +30,22 @@ public class ConfigurationProvider : IConfigurationProvider
     {
         var gitVersionOptions = this.options.Value;
         var workingDirectory = gitVersionOptions.WorkingDirectory;
-        var projectRootDirectory = FindGitDir(workingDirectory)?.WorkingTreeDirectory;
+        var projectRootDirectory = workingDirectory.FindGitDir()?.WorkingTreeDirectory;
 
-        var rootDirectory = this.configFileLocator.HasConfigFileAt(workingDirectory) ? workingDirectory : projectRootDirectory;
-        return ProvideInternal(rootDirectory, overrideConfiguration);
+        return this.configFileLocator.TryGetConfigurationFile(workingDirectory, projectRootDirectory, out var configFilePath)
+            ? ProvideConfiguration(configFilePath, overrideConfiguration)
+            : ProvideForDirectory(null, overrideConfiguration);
     }
 
     public void Init(string workingDirectory)
     {
-        var configFilePath = this.configFileLocator.GetConfigFilePath(workingDirectory);
-        var currentConfiguration = this.configFileLocator.ReadConfig(workingDirectory);
+        var gitVersionOptions = this.options.Value;
+        var fileName = gitVersionOptions.ConfigurationInfo.ConfigurationFile ?? ConfigurationFileLocator.DefaultFileName;
+        var configFilePath = PathHelper.Combine(workingDirectory, fileName);
+        var currentConfiguration = this.configFileLocator.ReadConfiguration(configFilePath);
 
         var configuration = this.configInitWizard.Run(currentConfiguration, workingDirectory);
-        if (configuration == null || configFilePath == null) return;
+        if (configuration == null) return;
 
         using var stream = this.fileSystem.OpenWrite(configFilePath);
         using var writer = new StreamWriter(stream);
@@ -50,15 +54,23 @@ public class ConfigurationProvider : IConfigurationProvider
         stream.Flush();
     }
 
-    internal GitVersionConfiguration ProvideInternal(
-        string? workingDirectory, IReadOnlyDictionary<object, object?>? overrideConfiguration = null)
+    internal GitVersionConfiguration ProvideForDirectory(string? workingDirectory,
+                                                         IReadOnlyDictionary<object, object?>? overrideConfiguration = null)
     {
-        var overrideConfigurationFromFile = this.configFileLocator.ReadOverrideConfiguration(workingDirectory);
+        this.configFileLocator.TryGetConfigurationFile(workingDirectory, null, out var configFilePath);
+        return ProvideConfiguration(configFilePath, overrideConfiguration);
+    }
+
+    private GitVersionConfiguration ProvideConfiguration(string? configFile,
+                                                         IReadOnlyDictionary<object, object?>? overrideConfiguration = null)
+    {
+        var overrideConfigurationFromFile = this.configFileLocator.ReadOverrideConfiguration(configFile);
 
         var workflow = GetWorkflow(overrideConfiguration, overrideConfigurationFromFile);
 
         IConfigurationBuilder configurationBuilder = (workflow is null)
-            ? GitFlowConfigurationBuilder.New : ConfigurationBuilder.New;
+            ? GitFlowConfigurationBuilder.New
+            : ConfigurationBuilder.New;
 
         var overrideConfigurationFromWorkflow = WorkflowManager.GetOverrideConfiguration(workflow);
         foreach (var item in new[] { overrideConfigurationFromWorkflow, overrideConfigurationFromFile, overrideConfiguration })
@@ -74,7 +86,7 @@ public class ConfigurationProvider : IConfigurationProvider
         {
             throw new WarningException(
                 $"Could not build the configuration instance because following exception occurred: '{exception.Message}' " +
-                $"Please ensure that the /overrideconfig parameters are correct and the configuration file is in the correct format."
+                "Please ensure that the /overrideconfig parameters are correct and the configuration file is in the correct format."
             );
         }
     }
@@ -91,46 +103,5 @@ public class ConfigurationProvider : IConfigurationProvider
         }
 
         return workflow;
-    }
-
-    private static string? ReadGitDirFromFile(string fileName)
-    {
-        const string expectedPrefix = "gitdir: ";
-        var firstLineOfFile = File.ReadLines(fileName).FirstOrDefault();
-        if (firstLineOfFile?.StartsWith(expectedPrefix) ?? false)
-        {
-            return firstLineOfFile[expectedPrefix.Length..]; // strip off the prefix, leaving just the path
-        }
-
-        return null;
-    }
-
-    private static (string GitDirectory, string WorkingTreeDirectory)? FindGitDir(string path)
-    {
-        string? startingDir = path;
-        while (startingDir is not null)
-        {
-            var dirOrFilePath = Path.Combine(startingDir, ".git");
-            if (Directory.Exists(dirOrFilePath))
-            {
-                return (dirOrFilePath, Path.GetDirectoryName(dirOrFilePath)!);
-            }
-            if (File.Exists(dirOrFilePath))
-            {
-                string? relativeGitDirPath = ReadGitDirFromFile(dirOrFilePath);
-                if (!string.IsNullOrWhiteSpace(relativeGitDirPath))
-                {
-                    var fullGitDirPath = Path.GetFullPath(Path.Combine(startingDir, relativeGitDirPath));
-                    if (Directory.Exists(fullGitDirPath))
-                    {
-                        return (fullGitDirPath, Path.GetDirectoryName(dirOrFilePath)!);
-                    }
-                }
-            }
-
-            startingDir = Path.GetDirectoryName(startingDir);
-        }
-
-        return null;
     }
 }

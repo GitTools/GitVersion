@@ -8,81 +8,66 @@ namespace GitVersion.Configuration;
 public class ConfigurationFileLocator : IConfigurationFileLocator
 {
     public const string DefaultFileName = "GitVersion.yml";
+    public const string DefaultAlternativeFileName = "GitVersion.yaml";
+
     private readonly IFileSystem fileSystem;
+    private readonly string? configurationFile;
+
     public ConfigurationFileLocator(IFileSystem fileSystem, IOptions<GitVersionOptions> options)
     {
         this.fileSystem = fileSystem;
-        var configFile = options.Value.ConfigurationInfo.ConfigurationFile;
-        FilePath = !configFile.IsNullOrWhiteSpace() ? configFile : DefaultFileName;
+        this.configurationFile = options.Value.ConfigurationInfo.ConfigurationFile;
     }
 
-    public string FilePath { get; }
-
-    public bool HasConfigFileAt(string workingDirectory) => this.fileSystem.Exists(PathHelper.Combine(workingDirectory, FilePath));
-
-    public string? GetConfigFilePath(string? workingDirectory) => workingDirectory != null ? PathHelper.Combine(workingDirectory, FilePath) : null;
+    public bool TryGetConfigurationFile(string? workingDirectory, string? projectRootDirectory, out string? configFilePath)
+        =>
+            HasConfigurationFile(workingDirectory, out configFilePath)
+            || HasConfigurationFile(projectRootDirectory, out configFilePath);
 
     public void Verify(string? workingDirectory, string? projectRootDirectory)
     {
-        if (!Path.IsPathRooted(FilePath) && !this.fileSystem.PathsEqual(workingDirectory, projectRootDirectory))
-        {
+        if (!Path.IsPathRooted(this.configurationFile) && !this.fileSystem.PathsEqual(workingDirectory, projectRootDirectory))
             WarnAboutAmbiguousConfigFileSelection(workingDirectory, projectRootDirectory);
-        }
     }
 
-    public string? SelectConfigFilePath(GitVersionOptions gitVersionOptions, IGitRepositoryInfo repositoryInfo)
+    public GitVersionConfiguration ReadConfiguration(string? configFilePath)
     {
-        var workingDirectory = gitVersionOptions.WorkingDirectory;
-        var projectRootDirectory = repositoryInfo.ProjectRootDirectory;
+        if (configFilePath == null || !this.fileSystem.Exists(configFilePath)) return new GitVersionConfiguration();
 
-        return GetConfigFilePath(HasConfigFileAt(workingDirectory) ? workingDirectory : projectRootDirectory);
+        var readAllText = this.fileSystem.ReadAllText(configFilePath);
+        var readConfig = ConfigurationSerializer.Read(new StringReader(readAllText));
+
+        VerifyReadConfig(readConfig);
+
+        return readConfig;
     }
 
-    public GitVersionConfiguration ReadConfig(string workingDirectory)
+    public IReadOnlyDictionary<object, object?>? ReadOverrideConfiguration(string? configFilePath)
     {
-        var configFilePath = GetConfigFilePath(workingDirectory);
+        if (configFilePath == null || !this.fileSystem.Exists(configFilePath)) return null;
 
-        if (configFilePath != null && this.fileSystem.Exists(configFilePath))
+        var readAllText = this.fileSystem.ReadAllText(configFilePath);
+
+        return ConfigurationSerializer.Deserialize<Dictionary<object, object?>>(readAllText);
+    }
+
+    private bool HasConfigurationFile(string? workingDirectory, out string? path)
+    {
+        bool HasConfigurationFileAt(string fileName, out string? configFile)
         {
-            var readAllText = this.fileSystem.ReadAllText(configFilePath);
-            var readConfig = ConfigurationSerializer.Read(new StringReader(readAllText));
+            configFile = null;
+            if (!this.fileSystem.Exists(PathHelper.Combine(workingDirectory, fileName))) return false;
 
-            VerifyReadConfig(readConfig);
-
-            return readConfig;
+            configFile = PathHelper.Combine(workingDirectory, fileName);
+            return true;
         }
 
-        return new GitVersionConfiguration();
-    }
-
-    public IReadOnlyDictionary<object, object?>? ReadOverrideConfiguration(string? workingDirectory)
-    {
-        var configFilePath = GetConfigFilePath(workingDirectory);
-
-        Dictionary<object, object?>? configuration = null;
-        if (configFilePath != null && this.fileSystem.Exists(configFilePath))
-        {
-            var readAllText = this.fileSystem.ReadAllText(configFilePath);
-
-            configuration = ConfigurationSerializer.Deserialize<Dictionary<object, object?>>(readAllText);
-        }
-
-        return configuration;
-    }
-
-    public void Verify(GitVersionOptions gitVersionOptions, IGitRepositoryInfo repositoryInfo)
-    {
-        if (!gitVersionOptions.RepositoryInfo.TargetUrl.IsNullOrWhiteSpace())
-        {
-            // Assuming this is a dynamic repository. At this stage it's unsure whether we have
-            // any .git info so we need to skip verification
-            return;
-        }
-
-        var workingDirectory = gitVersionOptions.WorkingDirectory;
-        var projectRootDirectory = repositoryInfo.ProjectRootDirectory;
-
-        Verify(workingDirectory, projectRootDirectory);
+        path = null;
+        if (workingDirectory is null) return false;
+        return !this.configurationFile.IsNullOrWhiteSpace()
+            ? HasConfigurationFileAt(this.configurationFile, out path)
+            : HasConfigurationFileAt(DefaultFileName, out path)
+              || HasConfigurationFileAt(DefaultAlternativeFileName, out path);
     }
 
     private static void VerifyReadConfig(GitVersionConfiguration configuration)
@@ -100,8 +85,8 @@ If the docs do not help you decide on the mode open an issue to discuss what you
 
     private void WarnAboutAmbiguousConfigFileSelection(string? workingDirectory, string? projectRootDirectory)
     {
-        var workingConfigFile = GetConfigFilePath(workingDirectory);
-        var projectRootConfigFile = GetConfigFilePath(projectRootDirectory);
+        TryGetConfigurationFile(workingDirectory, null, out var workingConfigFile);
+        TryGetConfigurationFile(null, projectRootDirectory, out var projectRootConfigFile);
 
         var hasConfigInWorkingDirectory = workingConfigFile != null && this.fileSystem.Exists(workingConfigFile);
         var hasConfigInProjectRootDirectory = projectRootConfigFile != null && this.fileSystem.Exists(projectRootConfigFile);
@@ -113,8 +98,12 @@ If the docs do not help you decide on the mode open an issue to discuss what you
 
         if (!hasConfigInProjectRootDirectory && !hasConfigInWorkingDirectory)
         {
-            if (FilePath != DefaultFileName)
+            if (this.configurationFile != DefaultFileName && this.configurationFile != DefaultAlternativeFileName)
+            {
+                workingConfigFile = PathHelper.Combine(workingDirectory, this.configurationFile);
+                projectRootConfigFile = PathHelper.Combine(projectRootDirectory, this.configurationFile);
                 throw new WarningException($"The configuration file was not found at '{workingConfigFile}' or '{projectRootConfigFile}'");
+            }
         }
     }
 }

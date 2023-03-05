@@ -33,7 +33,7 @@ public class ConfigurationProviderTests : TestBase
     [Test]
     public void OverwritesDefaultsWithProvidedConfig()
     {
-        var defaultConfig = this.configurationProvider.ProvideInternal(this.repoPath);
+        var defaultConfig = this.configurationProvider.ProvideForDirectory(this.repoPath);
         const string text = @"
 next-version: 2.0.0
 branches:
@@ -41,7 +41,7 @@ branches:
         mode: ContinuousDeployment
         label: dev";
         SetupConfigFileContent(text);
-        var configuration = this.configurationProvider.ProvideInternal(this.repoPath);
+        var configuration = this.configurationProvider.ProvideForDirectory(this.repoPath);
 
         configuration.NextVersion.ShouldBe("2.0.0");
         configuration.Branches.ShouldNotBeNull();
@@ -59,7 +59,7 @@ branches:
     release:
         label: """"";
         SetupConfigFileContent(text);
-        var configuration = this.configurationProvider.ProvideInternal(this.repoPath);
+        var configuration = this.configurationProvider.ProvideForDirectory(this.repoPath);
 
         configuration.NextVersion.ShouldBe("2.0.0");
         configuration.Branches["release"].Label.ShouldBe(string.Empty);
@@ -74,7 +74,7 @@ branches:
     bug:
         label: bugfix";
         SetupConfigFileContent(text);
-        var ex = Should.Throw<ConfigurationException>(() => this.configurationProvider.ProvideInternal(this.repoPath));
+        var ex = Should.Throw<ConfigurationException>(() => this.configurationProvider.ProvideForDirectory(this.repoPath));
         ex.Message.ShouldBe($"Branch configuration 'bug' is missing required configuration 'regex'{System.Environment.NewLine}" +
                             "See https://gitversion.net/docs/reference/configuration for more info");
     }
@@ -89,7 +89,7 @@ branches:
         regex: 'bug[/-]'
         label: bugfix";
         SetupConfigFileContent(text);
-        var ex = Should.Throw<ConfigurationException>(() => this.configurationProvider.ProvideInternal(this.repoPath));
+        var ex = Should.Throw<ConfigurationException>(() => this.configurationProvider.ProvideForDirectory(this.repoPath));
         ex.Message.ShouldBe($"Branch configuration 'bug' is missing required configuration 'source-branches'{System.Environment.NewLine}" +
                             "See https://gitversion.net/docs/reference/configuration for more info");
     }
@@ -104,7 +104,7 @@ branches:
         label: bugfix
         source-branches: [notconfigured]";
         SetupConfigFileContent(text);
-        var ex = Should.Throw<ConfigurationException>(() => this.configurationProvider.ProvideInternal(this.repoPath));
+        var ex = Should.Throw<ConfigurationException>(() => this.configurationProvider.ProvideForDirectory(this.repoPath));
         ex.Message.ShouldBe($"Branch configuration 'bug' defines these 'source-branches' that are not configured: '[notconfigured]'{System.Environment.NewLine}" +
                             "See https://gitversion.net/docs/reference/configuration for more info");
     }
@@ -121,7 +121,7 @@ branches:
         label: bugfix
         source-branches: [{wellKnownBranchKey}]";
         SetupConfigFileContent(text);
-        var configuration = this.configurationProvider.ProvideInternal(this.repoPath);
+        var configuration = this.configurationProvider.ProvideForDirectory(this.repoPath);
 
         configuration.Branches["bug"].SourceBranches.ShouldBe(new List<string> { wellKnownBranchKey });
     }
@@ -137,7 +137,7 @@ branches:
         label: bugfix
         source-branches: []";
         SetupConfigFileContent(text);
-        var configuration = this.configurationProvider.ProvideInternal(this.repoPath);
+        var configuration = this.configurationProvider.ProvideForDirectory(this.repoPath);
 
         configuration.Branches["bug"].Regex.ShouldBe("bug[/-]");
         configuration.Branches["bug"].Label.ShouldBe("bugfix");
@@ -148,7 +148,7 @@ branches:
     {
         const string text = "next-version: 2";
         SetupConfigFileContent(text);
-        var configuration = this.configurationProvider.ProvideInternal(this.repoPath);
+        var configuration = this.configurationProvider.ProvideForDirectory(this.repoPath);
 
         configuration.NextVersion.ShouldBe("2.0");
     }
@@ -158,7 +158,7 @@ branches:
     {
         const string text = "next-version: 2.118998723";
         SetupConfigFileContent(text);
-        var configuration = this.configurationProvider.ProvideInternal(this.repoPath);
+        var configuration = this.configurationProvider.ProvideForDirectory(this.repoPath);
 
         configuration.NextVersion.ShouldBe("2.118998723");
     }
@@ -168,7 +168,7 @@ branches:
     {
         const string text = "next-version: 2.12.654651698";
         SetupConfigFileContent(text);
-        var configuration = this.configurationProvider.ProvideInternal(this.repoPath);
+        var configuration = this.configurationProvider.ProvideForDirectory(this.repoPath);
 
         configuration.NextVersion.ShouldBe("2.12.654651698");
     }
@@ -177,7 +177,7 @@ branches:
     [MethodImpl(MethodImplOptions.NoInlining)]
     public void CanWriteOutEffectiveConfiguration()
     {
-        var configuration = this.configurationProvider.ProvideInternal(this.repoPath);
+        var configuration = this.configurationProvider.ProvideForDirectory(this.repoPath);
 
         configuration.ToString().ShouldMatchApproved();
     }
@@ -192,7 +192,7 @@ assembly-informational-format: '{NugetVersion}'";
 
         SetupConfigFileContent(text);
 
-        var configuration = this.configurationProvider.ProvideInternal(this.repoPath);
+        var configuration = this.configurationProvider.ProvideForDirectory(this.repoPath);
         configuration.AssemblyVersioningScheme.ShouldBe(AssemblyVersioningScheme.MajorMinor);
         configuration.AssemblyFileVersioningScheme.ShouldBe(AssemblyFileVersioningScheme.MajorMinorPatch);
         configuration.AssemblyInformationalFormat.ShouldBe("{NugetVersion}");
@@ -208,7 +208,7 @@ assembly-informational-format: '{Major}.{Minor}.{Patch}'";
 
         SetupConfigFileContent(text);
 
-        var configuration = this.configurationProvider.ProvideInternal(this.repoPath);
+        var configuration = this.configurationProvider.ProvideForDirectory(this.repoPath);
         configuration.AssemblyVersioningScheme.ShouldBe(AssemblyVersioningScheme.MajorMinor);
         configuration.AssemblyFileVersioningScheme.ShouldBe(AssemblyFileVersioningScheme.MajorMinorPatch);
         configuration.AssemblyInformationalFormat.ShouldBe("{Major}.{Minor}.{Patch}");
@@ -227,7 +227,7 @@ branches: {}";
 
         SetupConfigFileContent(text);
 
-        var configuration = this.configurationProvider.ProvideInternal(this.repoPath);
+        var configuration = this.configurationProvider.ProvideForDirectory(this.repoPath);
         configuration.AssemblyVersioningScheme.ShouldBe(AssemblyVersioningScheme.MajorMinorPatch);
         configuration.AssemblyFileVersioningScheme.ShouldBe(AssemblyFileVersioningScheme.MajorMinorPatch);
         configuration.AssemblyInformationalFormat.ShouldBe("{FullSemVer}");
@@ -238,7 +238,7 @@ branches: {}";
     {
         const string text = "";
         SetupConfigFileContent(text);
-        var configuration = this.configurationProvider.ProvideInternal(this.repoPath);
+        var configuration = this.configurationProvider.ProvideForDirectory(this.repoPath);
         configuration.AssemblyVersioningScheme.ShouldBe(AssemblyVersioningScheme.MajorMinorPatch);
         configuration.AssemblyFileVersioningScheme.ShouldBe(AssemblyFileVersioningScheme.MajorMinorPatch);
         configuration.AssemblyInformationalFormat.ShouldBe(null);
@@ -280,12 +280,13 @@ branches: {}";
         });
         this.configurationProvider = (ConfigurationProvider)sp.GetRequiredService<IConfigurationProvider>();
 
-        this.configurationProvider.ProvideInternal(this.repoPath);
+        this.configurationProvider.ProvideForDirectory(this.repoPath);
 
         stringLogger.Length.ShouldBe(0);
     }
 
-    private void SetupConfigFileContent(string text, string fileName = ConfigurationFileLocator.DefaultFileName) => SetupConfigFileContent(text, fileName, this.repoPath);
+    private void SetupConfigFileContent(string text, string fileName = ConfigurationFileLocator.DefaultFileName)
+        => SetupConfigFileContent(text, fileName, this.repoPath);
 
     private void SetupConfigFileContent(string text, string fileName, string path)
     {
@@ -304,7 +305,7 @@ branches:
         source-branches: ['develop']
         label: dev";
         SetupConfigFileContent(text);
-        var configuration = this.configurationProvider.ProvideInternal(this.repoPath);
+        var configuration = this.configurationProvider.ProvideForDirectory(this.repoPath);
 
         configuration.Branches["develop"].SourceBranches.ShouldBe(new List<string> { "develop" });
     }
@@ -319,7 +320,7 @@ branches:
         mode: ContinuousDeployment
         label: dev";
         SetupConfigFileContent(text);
-        var configuration = this.configurationProvider.ProvideInternal(this.repoPath);
+        var configuration = this.configurationProvider.ProvideForDirectory(this.repoPath);
 
         configuration.Branches["develop"].SourceBranches.ShouldBe(new List<string>());
     }
@@ -335,7 +336,7 @@ branches:
         source-branches: ['develop', 'release']
         label: dev";
         SetupConfigFileContent(text);
-        var configuration = this.configurationProvider.ProvideInternal(this.repoPath);
+        var configuration = this.configurationProvider.ProvideForDirectory(this.repoPath);
 
         configuration.Branches["feature"].SourceBranches.ShouldBe(new List<string> { "develop", "release" });
     }
@@ -350,7 +351,7 @@ branches:
         mode: ContinuousDeployment
         label: dev";
         SetupConfigFileContent(text);
-        var configuration = this.configurationProvider.ProvideInternal(this.repoPath);
+        var configuration = this.configurationProvider.ProvideForDirectory(this.repoPath);
 
         configuration.Branches["feature"].SourceBranches.ShouldBe(
             new List<string> { "develop", MainBranch, "release", "feature", "support", "hotfix" });
@@ -368,7 +369,7 @@ label-prefix: custom-label-prefix-from-yml";
             .WithNextVersion("1.2.3")
             .WithLabelPrefix("custom-label-prefix-from-yml")
             .Build();
-        var overridenConfig = this.configurationProvider.ProvideInternal(this.repoPath);
+        var overridenConfig = this.configurationProvider.ProvideForDirectory(this.repoPath);
 
         overridenConfig.AssemblyVersioningScheme.ShouldBe(expectedConfig.AssemblyVersioningScheme);
         overridenConfig.AssemblyFileVersioningScheme.ShouldBe(expectedConfig.AssemblyFileVersioningScheme);
@@ -401,7 +402,7 @@ label-prefix: custom-label-prefix-from-yml";
     {
         const string text = "";
         SetupConfigFileContent(text);
-        var configuration = this.configurationProvider.ProvideInternal(this.repoPath);
+        var configuration = this.configurationProvider.ProvideForDirectory(this.repoPath);
 
         configuration.LabelPrefix.ShouldBe(ConfigurationConstants.DefaultLabelPrefix);
     }
@@ -411,7 +412,7 @@ label-prefix: custom-label-prefix-from-yml";
     {
         const string text = "label-prefix: custom-label-prefix-from-yml";
         SetupConfigFileContent(text);
-        var configuration = this.configurationProvider.ProvideInternal(this.repoPath);
+        var configuration = this.configurationProvider.ProvideForDirectory(this.repoPath);
 
         configuration.LabelPrefix.ShouldBe("custom-label-prefix-from-yml");
     }
@@ -425,7 +426,7 @@ label-prefix: custom-label-prefix-from-yml";
         {
             { "label-prefix", "label-prefix-from-override-configuration" }
         };
-        var configuration = this.configurationProvider.ProvideInternal(this.repoPath, overrideConfiguration);
+        var configuration = this.configurationProvider.ProvideForDirectory(this.repoPath, overrideConfiguration);
 
         configuration.LabelPrefix.ShouldBe("label-prefix-from-override-configuration");
     }
@@ -440,7 +441,7 @@ label-prefix: custom-label-prefix-from-yml";
             { "next-version", "1.0.0" }
         };
 
-        var configuration = this.configurationProvider.ProvideInternal(this.repoPath, overrideConfiguration);
+        var configuration = this.configurationProvider.ProvideForDirectory(this.repoPath, overrideConfiguration);
 
         configuration.LabelPrefix.ShouldBe(ConfigurationConstants.DefaultLabelPrefix);
     }
@@ -454,7 +455,7 @@ label-prefix: custom-label-prefix-from-yml";
         {
             { "next-version", "1.0.0" }
         };
-        var configuration = this.configurationProvider.ProvideInternal(this.repoPath, overrideConfiguration);
+        var configuration = this.configurationProvider.ProvideForDirectory(this.repoPath, overrideConfiguration);
 
         configuration.LabelPrefix.ShouldBe("custom-label-prefix-from-yml");
     }
@@ -468,7 +469,7 @@ label-prefix: custom-label-prefix-from-yml";
         {
             { "label-prefix", "custom-label-prefix-from-console" }
         };
-        var configuration = this.configurationProvider.ProvideInternal(this.repoPath, overrideConfiguration);
+        var configuration = this.configurationProvider.ProvideForDirectory(this.repoPath, overrideConfiguration);
 
         configuration.LabelPrefix.ShouldBe("custom-label-prefix-from-console");
     }

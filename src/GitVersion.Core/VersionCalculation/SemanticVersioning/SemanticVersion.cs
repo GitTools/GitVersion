@@ -301,7 +301,7 @@ public class SemanticVersion : IFormattable, IComparable<SemanticVersion>, IEqua
     public SemanticVersion IncrementVersion(VersionField incrementStrategy)
     {
         var incremented = new SemanticVersion(this);
-        if (incremented.PreReleaseTag.HasTag() != true)
+        if (!incremented.PreReleaseTag.HasTag())
         {
             switch (incrementStrategy)
             {

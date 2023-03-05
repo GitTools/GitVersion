@@ -133,7 +133,7 @@ public sealed class ProjectFileUpdater : IProjectFileUpdater
         }
 
         var lastGenerateAssemblyInfoElement = propertyGroups.SelectMany(s => s.Elements("GenerateAssemblyInfo")).LastOrDefault();
-        if (lastGenerateAssemblyInfoElement != null && (bool)lastGenerateAssemblyInfoElement == false)
+        if (lastGenerateAssemblyInfoElement != null && !(bool)lastGenerateAssemblyInfoElement)
         {
             this.log.Warning("Project file specifies <GenerateAssemblyInfo>false</GenerateAssemblyInfo>: versions set in this project file will not affect the output artifacts.");
             return false;

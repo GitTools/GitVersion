@@ -9,7 +9,7 @@ public static class ConfigurationExtensions
     public static EffectiveConfiguration GetEffectiveConfiguration(this GitVersionConfiguration configuration, IBranch branch)
         => GetEffectiveConfiguration(configuration, branch.NotNull().Name);
 
-    public static EffectiveConfiguration GetEffectiveConfiguration(this GitVersionConfiguration configuration, ReferenceName branchName)
+    private static EffectiveConfiguration GetEffectiveConfiguration(this GitVersionConfiguration configuration, ReferenceName branchName)
     {
         BranchConfiguration branchConfiguration = configuration.GetBranchConfiguration(branchName);
         return new EffectiveConfiguration(configuration, branchConfiguration);
@@ -21,13 +21,7 @@ public static class ConfigurationExtensions
     public static BranchConfiguration GetBranchConfiguration(this GitVersionConfiguration configuration, ReferenceName branchName)
     {
         var branchConfiguration = GetBranchConfigurations(configuration, branchName.WithoutRemote).FirstOrDefault();
-        branchConfiguration ??= new()
-        {
-            Name = branchName.WithoutRemote,
-            Regex = string.Empty,
-            Label = ConfigurationConstants.BranchNamePlaceholder,
-            Increment = IncrementStrategy.Inherit
-        };
+        branchConfiguration ??= new() { Name = branchName.WithoutRemote, Regex = string.Empty, Label = ConfigurationConstants.BranchNamePlaceholder, Increment = IncrementStrategy.Inherit };
         return branchConfiguration;
     }
 
@@ -48,6 +42,7 @@ public static class ConfigurationExtensions
                 }
             }
         }
+
         if (unknownBranchConfiguration != null) yield return unknownBranchConfiguration;
     }
 
@@ -70,6 +65,7 @@ public static class ConfigurationExtensions
         {
             tagToUse = ConfigurationConstants.BranchNamePlaceholder;
         }
+
         if (tagToUse.Contains(ConfigurationConstants.BranchNamePlaceholder))
         {
             log.Info("Using branch name to calculate version tag");
@@ -80,11 +76,55 @@ public static class ConfigurationExtensions
                 var branchNameTrimmed = branchName?.RegexReplace(configuration.BranchPrefixToTrim, string.Empty, RegexOptions.IgnoreCase);
                 branchName = branchNameTrimmed.IsNullOrEmpty() ? branchName : branchNameTrimmed;
             }
+
             branchName = branchName?.RegexReplace("[^a-zA-Z0-9-]", "-");
 
             tagToUse = tagToUse.Replace(ConfigurationConstants.BranchNamePlaceholder, branchName);
         }
+
         return tagToUse;
+    }
+
+    public static (string GitDirectory, string WorkingTreeDirectory)? FindGitDir(this string path)
+    {
+        string? startingDir = path;
+        while (startingDir is not null)
+        {
+            var dirOrFilePath = Path.Combine(startingDir, ".git");
+            if (Directory.Exists(dirOrFilePath))
+            {
+                return (dirOrFilePath, Path.GetDirectoryName(dirOrFilePath)!);
+            }
+
+            if (File.Exists(dirOrFilePath))
+            {
+                string? relativeGitDirPath = ReadGitDirFromFile(dirOrFilePath);
+                if (!string.IsNullOrWhiteSpace(relativeGitDirPath))
+                {
+                    var fullGitDirPath = Path.GetFullPath(Path.Combine(startingDir, relativeGitDirPath));
+                    if (Directory.Exists(fullGitDirPath))
+                    {
+                        return (fullGitDirPath, Path.GetDirectoryName(dirOrFilePath)!);
+                    }
+                }
+            }
+
+            startingDir = Path.GetDirectoryName(startingDir);
+        }
+
+        return null;
+    }
+
+    private static string? ReadGitDirFromFile(string fileName)
+    {
+        const string expectedPrefix = "gitdir: ";
+        var firstLineOfFile = File.ReadLines(fileName).FirstOrDefault();
+        if (firstLineOfFile?.StartsWith(expectedPrefix) ?? false)
+        {
+            return firstLineOfFile[expectedPrefix.Length..]; // strip off the prefix, leaving just the path
+        }
+
+        return null;
     }
 
     public static List<KeyValuePair<string, BranchConfiguration>> GetReleaseBranchConfiguration(this GitVersionConfiguration configuration) =>
