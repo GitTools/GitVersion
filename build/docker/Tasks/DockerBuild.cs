@@ -21,7 +21,7 @@ public class DockerBuild : FrostingTask<BuildContext>
     public override void Run(BuildContext context)
     {
         var tool = Paths.Nuget.CombineWithFilePath("GitVersion.Tool*");
-        var dest = Paths.Src.Combine("Docker").Combine("content");
+        var dest = Paths.Build.Combine("docker").Combine("content");
         context.EnsureDirectoryExists(dest);
         context.CopyFiles(tool.FullPath, dest);
 

@@ -4,7 +4,7 @@ namespace Artifacts;
 
 public class BuildContext : BuildContextBase
 {
-    public string MsBuildConfiguration { get; set; } = Constants.DefaultConfiguration;
+    public string MsBuildConfiguration { get; } = Constants.DefaultConfiguration;
 
     public bool IsDockerOnLinux { get; set; }
 

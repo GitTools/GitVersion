@@ -4,9 +4,9 @@ namespace Publish.Utilities;
 
 public class Credentials
 {
-    public GitHubCredentials? GitHub { get; private set; }
-    public NugetCredentials? Nuget { get; private set; }
-    public ChocolateyCredentials? Chocolatey { get; private set; }
+    public GitHubCredentials? GitHub { get; private init; }
+    public NugetCredentials? Nuget { get; private init; }
+    public ChocolateyCredentials? Chocolatey { get; private init; }
 
     public static Credentials GetCredentials(ICakeContext context) => new()
     {
