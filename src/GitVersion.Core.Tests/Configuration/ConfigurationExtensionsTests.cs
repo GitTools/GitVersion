@@ -40,7 +40,7 @@ public class ConfigurationExtensionsTests : TestBase
     [TestCase("refs/remotes/origin/release/2.0.0",
         "refs/remotes/origin/release/2.0.0", "origin/release/2.0.0", "release/2.0.0",
         false, false, true, false, true)]
-    public void EnsureIsReleaseBranchWithReferenceNameWorksAsExpected(string branchName, string expectedCanonical, string expectedFriendly, string expectedWithoutRemote,
+    public void EnsureIsReleaseBranchWithReferenceNameWorksAsExpected(string branchName, string expectedCanonical, string expectedFriendly, string expectedWithoutOrigin,
         bool expectedIsLocalBranch, bool expectedIsPullRequest, bool expectedIsRemoteBranch, bool expectedIsTag, bool expectedIsReleaseBranch)
     {
         var configuration = GitFlowConfigurationBuilder.New.Build();
@@ -50,7 +50,7 @@ public class ConfigurationExtensionsTests : TestBase
 
         actual.Canonical.ShouldBe(expectedCanonical);
         actual.Friendly.ShouldBe(expectedFriendly);
-        actual.WithoutRemote.ShouldBe(expectedWithoutRemote);
+        actual.WithoutOrigin.ShouldBe(expectedWithoutOrigin);
         actual.IsLocalBranch.ShouldBe(expectedIsLocalBranch);
         actual.IsPullRequest.ShouldBe(expectedIsPullRequest);
         actual.IsRemoteBranch.ShouldBe(expectedIsRemoteBranch);

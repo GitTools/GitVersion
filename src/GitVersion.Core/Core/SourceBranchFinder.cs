@@ -37,7 +37,7 @@ internal class SourceBranchFinder
             if (Equals(sourceBranchCandidate, this.branch))
                 return false;
 
-            var branchName = sourceBranchCandidate.Name.WithoutRemote;
+            var branchName = sourceBranchCandidate.Name.WithoutOrigin;
 
             return this.sourceBranchRegexes.Any(regex => Regex.IsMatch(branchName, regex));
         }

@@ -36,7 +36,7 @@ internal class MergeCommitFinder
 
         this.mergeBaseCommitsCache.Add(branch, branchMergeBases);
 
-        return branchMergeBases.Where(b => !branch.Name.EquivalentTo(b.Branch.Name.WithoutRemote));
+        return branchMergeBases.Where(b => !branch.Name.EquivalentTo(b.Branch.Name.WithoutOrigin));
     }
 
     private IEnumerable<BranchCommit> FindMergeBases(IBranch branch)

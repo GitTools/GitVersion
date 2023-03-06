@@ -113,7 +113,7 @@ public class RepositoryStore : IRepositoryStore
         }
 
         return this.repository.Branches.FirstOrDefault(b =>
-            Regex.IsMatch(b.Name.WithoutRemote, mainBranchRegex, RegexOptions.IgnoreCase));
+            Regex.IsMatch(b.Name.WithoutOrigin, mainBranchRegex, RegexOptions.IgnoreCase));
     }
 
     public IEnumerable<IBranch> FindMainlineBranches(GitVersionConfiguration configuration)
@@ -134,7 +134,7 @@ public class RepositoryStore : IRepositoryStore
         => this.repository.Branches.Where(b => IsReleaseBranch(b, releaseBranchConfig));
 
     private static bool IsReleaseBranch(INamedReference branch, IEnumerable<KeyValuePair<string, BranchConfiguration>> releaseBranchConfig)
-        => releaseBranchConfig.Any(c => c.Value.Regex != null && Regex.IsMatch(branch.Name.WithoutRemote, c.Value.Regex));
+        => releaseBranchConfig.Any(c => c.Value.Regex != null && Regex.IsMatch(branch.Name.WithoutOrigin, c.Value.Regex));
 
     public IEnumerable<IBranch> ExcludingBranches(IEnumerable<IBranch> branchesToExclude) => this.repository.Branches.ExcludeBranches(branchesToExclude);
 

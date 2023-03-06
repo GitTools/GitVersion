@@ -20,8 +20,14 @@ public static class ConfigurationExtensions
 
     public static BranchConfiguration GetBranchConfiguration(this GitVersionConfiguration configuration, ReferenceName branchName)
     {
-        var branchConfiguration = GetBranchConfigurations(configuration, branchName.WithoutRemote).FirstOrDefault();
-        branchConfiguration ??= new() { Name = branchName.WithoutRemote, Regex = string.Empty, Label = ConfigurationConstants.BranchNamePlaceholder, Increment = IncrementStrategy.Inherit };
+        var branchConfiguration = GetBranchConfigurations(configuration, branchName.WithoutOrigin).FirstOrDefault();
+        branchConfiguration ??= new()
+        {
+            Name = branchName.WithoutOrigin,
+            Regex = string.Empty,
+            Label = ConfigurationConstants.BranchNamePlaceholder,
+            Increment = IncrementStrategy.Inherit
+        };
         return branchConfiguration;
     }
 

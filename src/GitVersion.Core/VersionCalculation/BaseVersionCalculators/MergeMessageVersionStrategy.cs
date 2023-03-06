@@ -32,7 +32,7 @@ public class MergeMessageVersionStrategy : VersionStrategyBase
             .SelectMany(c =>
             {
                 if (TryParse(c, Context, out var mergeMessage) && mergeMessage.Version != null
-                    && Context.Configuration.IsReleaseBranch(mergeMessage.GetMergedBranchName()))
+                    && Context.Configuration.IsReleaseBranch(mergeMessage.MergedBranch!))
                 {
                     this.log.Info($"Found commit [{Context.CurrentCommit}] matching merge message format: {mergeMessage.FormatName}");
                     var shouldIncrement = !configuration.Value.PreventIncrementOfMergedBranchVersion;
