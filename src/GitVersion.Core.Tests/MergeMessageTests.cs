@@ -11,7 +11,7 @@ public class MergeMessageTests : TestBase
     [Test]
     public void NullMessageStringThrows() =>
         // Act / Assert
-        Should.Throw<NullReferenceException>(() => new MergeMessage(null, this.configuration));
+        Should.Throw<ArgumentNullException>(() => new MergeMessage(null!, this.configuration));
 
     [TestCase("")]
     [TestCase("\t\t  ")]
@@ -22,7 +22,7 @@ public class MergeMessageTests : TestBase
 
         // Assert
         sut.TargetBranch.ShouldBeNull();
-        sut.MergedBranch.ShouldBeEmpty();
+        sut.MergedBranch.ShouldBeNull();
         sut.IsMergedPullRequest.ShouldBeFalse();
         sut.PullRequestNumber.ShouldBe(null);
         sut.Version.ShouldBeNull();
@@ -42,7 +42,7 @@ public class MergeMessageTests : TestBase
 
         // Assert
         sut.TargetBranch.ShouldBeNull();
-        sut.MergedBranch.ShouldBeEmpty();
+        sut.MergedBranch.ShouldBeNull();
         sut.IsMergedPullRequest.ShouldBeFalse();
         sut.PullRequestNumber.ShouldBe(null);
         sut.Version.ShouldBeNull();
@@ -72,7 +72,8 @@ public class MergeMessageTests : TestBase
         // Assert
         sut.FormatName.ShouldBe("Default");
         sut.TargetBranch.ShouldBe(expectedTargetBranch);
-        sut.MergedBranch.ShouldBe(expectedMergedBranch);
+        sut.MergedBranch.ShouldNotBeNull();
+        sut.MergedBranch.Friendly.ShouldBe(expectedMergedBranch);
         sut.IsMergedPullRequest.ShouldBeFalse();
         sut.PullRequestNumber.ShouldBe(null);
         sut.Version.ShouldBe(expectedVersion);
@@ -80,13 +81,11 @@ public class MergeMessageTests : TestBase
 
     private static readonly object?[] GitHubPullPullMergeMessages =
     {
-        new object?[] { "Merge pull request #1234 from feature/one", "feature/one", null, null, 1234 },
-        new object?[] { "Merge pull request #1234 in feature/one", "feature/one", null, null, 1234  },
+        new object?[] { "Merge pull request #1234 from organization/feature/one", "feature/one", null, null, 1234 },
+        new object?[] { "Merge pull request #1234 in organization/feature/one", "feature/one", null, null, 1234  },
         new object?[] { "Merge pull request #1234 in v4.0.0", "v4.0.0", null, new SemanticVersion(4), 1234  },
-        new object?[] { "Merge pull request #1234 from origin/feature/one", "origin/feature/one", null, null, 1234  },
-        new object?[] { "Merge pull request #1234 in feature/4.1.0/one", "feature/4.1.0/one", null, new SemanticVersion(4,1), 1234  },
-        new object?[] { "Merge pull request #1234 in V://10.10.10.10", "V://10.10.10.10", null, null, 1234 },
-        new object?[] { "Merge pull request #1234 from feature/one into dev", "feature/one", "dev", null, 1234  }
+        new object?[] { "Merge pull request #1234 in organization/feature/4.1.0/one", "feature/4.1.0/one", null, new SemanticVersion(4,1), 1234  },
+        new object?[] { "Merge pull request #1234 from organization/feature/one into dev", "feature/one", "dev", null, 1234 }
     };
 
     [TestCaseSource(nameof(GitHubPullPullMergeMessages))]
@@ -103,7 +102,8 @@ public class MergeMessageTests : TestBase
         // Assert
         sut.FormatName.ShouldBe("GitHubPull");
         sut.TargetBranch.ShouldBe(expectedTargetBranch);
-        sut.MergedBranch.ShouldBe(expectedMergedBranch);
+        sut.MergedBranch.ShouldNotBeNull();
+        sut.MergedBranch.Friendly.ShouldBe(expectedMergedBranch);
         sut.IsMergedPullRequest.ShouldBeTrue();
         sut.PullRequestNumber.ShouldBe(expectedPullRequestNumber);
         sut.Version.ShouldBe(expectedVersion);
@@ -137,7 +137,8 @@ public class MergeMessageTests : TestBase
         // Assert
         sut.FormatName.ShouldBe("BitBucketPull");
         sut.TargetBranch.ShouldBe(expectedTargetBranch);
-        sut.MergedBranch.ShouldBe(expectedMergedBranch);
+        sut.MergedBranch.ShouldNotBeNull();
+        sut.MergedBranch.Friendly.ShouldBe(expectedMergedBranch);
         sut.IsMergedPullRequest.ShouldBeTrue();
         sut.PullRequestNumber.ShouldBe(expectedPullRequestNumber);
         sut.Version.ShouldBe(expectedVersion);
@@ -166,7 +167,8 @@ Merge in aaa/777 from release/2.2.0 to {MainBranch}
         // Assert
         sut.FormatName.ShouldBe("BitBucketPullv7");
         sut.TargetBranch.ShouldBe(expectedTargetBranch);
-        sut.MergedBranch.ShouldBe(expectedMergedBranch);
+        sut.MergedBranch.ShouldNotBeNull();
+        sut.MergedBranch.Friendly.ShouldBe(expectedMergedBranch);
         sut.IsMergedPullRequest.ShouldBeTrue();
         sut.PullRequestNumber.ShouldBe(expectedPullRequestNumber);
         sut.Version.ShouldBe(expectedVersion);
@@ -196,7 +198,8 @@ Merge in aaa/777 from release/2.2.0 to {MainBranch}
         // Assert
         sut.FormatName.ShouldBe("SmartGit");
         sut.TargetBranch.ShouldBe(expectedTargetBranch);
-        sut.MergedBranch.ShouldBe(expectedMergedBranch);
+        sut.MergedBranch.ShouldNotBeNull();
+        sut.MergedBranch.Friendly.ShouldBe(expectedMergedBranch);
         sut.IsMergedPullRequest.ShouldBeFalse();
         sut.PullRequestNumber.ShouldBe(null);
         sut.Version.ShouldBe(expectedVersion);
@@ -226,7 +229,8 @@ Merge in aaa/777 from release/2.2.0 to {MainBranch}
         // Assert
         sut.FormatName.ShouldBe("RemoteTracking");
         sut.TargetBranch.ShouldBe(expectedTargetBranch);
-        sut.MergedBranch.ShouldBe(expectedMergedBranch);
+        sut.MergedBranch.ShouldNotBeNull();
+        sut.MergedBranch.Friendly.ShouldBe(expectedMergedBranch);
         sut.IsMergedPullRequest.ShouldBeFalse();
         sut.PullRequestNumber.ShouldBe(null);
         sut.Version.ShouldBe(expectedVersion);
@@ -234,29 +238,24 @@ Merge in aaa/777 from release/2.2.0 to {MainBranch}
 
     private static readonly object?[] InvalidMergeMessages =
     {
-        new object?[] { "Merge pull request # from feature/one", "", null, null, null },
-        new object?[] { $"Merge pull request # in feature/one from feature/two to {MainBranch}" , "", null, null, null },
-        new object?[] { $"Zusammengeführter PR : feature/one mit {MainBranch} mergen", "", null, null, null }
+        new object?[] { "Merge pull request # from feature/one" },
+        new object?[] { $"Merge pull request # in feature/one from feature/two to {MainBranch}" },
+        new object?[] { $"Zusammengeführter PR : feature/one mit {MainBranch} mergen" }
     };
 
     [TestCaseSource(nameof(InvalidMergeMessages))]
-    public void ParsesInvalidMergeMessage(
-        string message,
-        string expectedMergedBranch,
-        string expectedTargetBranch,
-        SemanticVersion expectedVersion,
-        int? expectedPullRequestNumber)
+    public void ParsesInvalidMergeMessage(string message)
     {
         // Act
         var sut = new MergeMessage(message, this.configuration);
 
         // Assert
         sut.FormatName.ShouldBeNull();
-        sut.TargetBranch.ShouldBe(expectedTargetBranch);
-        sut.MergedBranch.ShouldBe(expectedMergedBranch);
+        sut.TargetBranch.ShouldBeNull();
+        sut.MergedBranch.ShouldBeNull();
         sut.IsMergedPullRequest.ShouldBeFalse();
-        sut.PullRequestNumber.ShouldBe(expectedPullRequestNumber);
-        sut.Version.ShouldBe(expectedVersion);
+        sut.PullRequestNumber.ShouldBeNull();
+        sut.Version.ShouldBeNull();
     }
 
     [Test]
@@ -276,7 +275,8 @@ Merge in aaa/777 from release/2.2.0 to {MainBranch}
         // Assert
         sut.FormatName.ShouldBe(definition);
         sut.TargetBranch.ShouldBeNull();
-        sut.MergedBranch.ShouldBeEmpty();
+        sut.MergedBranch.ShouldNotBeNull();
+        sut.MergedBranch.Friendly.ShouldBeEmpty();
         sut.IsMergedPullRequest.ShouldBeFalse();
         sut.PullRequestNumber.ShouldBe(null);
         sut.Version.ShouldBeNull();
@@ -301,7 +301,8 @@ Merge in aaa/777 from release/2.2.0 to {MainBranch}
         // Assert
         sut.FormatName.ShouldBe(definition);
         sut.TargetBranch.ShouldBeNull();
-        sut.MergedBranch.ShouldBeEmpty();
+        sut.MergedBranch.ShouldNotBeNull();
+        sut.MergedBranch.Friendly.ShouldBeEmpty();
         sut.IsMergedPullRequest.ShouldBeFalse();
         sut.PullRequestNumber.ShouldBe(null);
         sut.Version.ShouldBeNull();
@@ -327,7 +328,8 @@ Merge in aaa/777 from release/2.2.0 to {MainBranch}
         // Assert
         sut.FormatName.ShouldBe(definition);
         sut.TargetBranch.ShouldBe(target);
-        sut.MergedBranch.ShouldBe(source);
+        sut.MergedBranch.ShouldNotBeNull();
+        sut.MergedBranch.Friendly.ShouldBe(source);
         sut.IsMergedPullRequest.ShouldBeTrue();
         sut.PullRequestNumber.ShouldBe(pr);
         sut.Version.ShouldBe(new SemanticVersion(2));
@@ -352,7 +354,8 @@ Merge in aaa/777 from release/2.2.0 to {MainBranch}
         // Assert
         sut.FormatName.ShouldBe(definition);
         sut.TargetBranch.ShouldBeNull();
-        sut.MergedBranch.ShouldBe("this");
+        sut.MergedBranch.ShouldNotBeNull();
+        sut.MergedBranch.Friendly.ShouldBe("this");
         sut.IsMergedPullRequest.ShouldBeFalse();
         sut.PullRequestNumber.ShouldBe(null);
         sut.Version.ShouldBeNull();

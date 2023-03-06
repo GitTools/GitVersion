@@ -60,7 +60,7 @@ internal class MainlineBranchFinder
                 return false;
 
             var mainlineRegex = value.Regex;
-            var branchName = this.branch.Name.WithoutRemote;
+            var branchName = this.branch.Name.WithoutOrigin;
             var match = Regex.IsMatch(branchName, mainlineRegex);
             this.log.Info($"'{mainlineRegex}' {(match ? "matches" : "does not match")} '{branchName}'.");
             return match;

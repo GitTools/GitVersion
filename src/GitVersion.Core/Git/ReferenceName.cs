@@ -12,7 +12,7 @@ public class ReferenceName : IEquatable<ReferenceName?>, IComparable<ReferenceNa
     public const string LocalBranchPrefix = "refs/heads/";
     public const string RemoteTrackingBranchPrefix = "refs/remotes/";
     public const string TagPrefix = "refs/tags/";
-    public const string RemotePrefix = "origin/";
+    public const string OriginPrefix = "origin/";
 
     private static readonly string[] PullRequestPrefixes =
     {
@@ -32,7 +32,7 @@ public class ReferenceName : IEquatable<ReferenceName?>, IComparable<ReferenceNa
         IsPullRequest = IsPrefixedBy(Canonical, PullRequestPrefixes);
 
         Friendly = Shorten();
-        WithoutRemote = RemoveRemote();
+        WithoutOrigin = RemoveOrigin();
     }
 
     public static ReferenceName Parse(string canonicalName)
@@ -64,7 +64,7 @@ public class ReferenceName : IEquatable<ReferenceName?>, IComparable<ReferenceNa
 
     public string Canonical { get; }
     public string Friendly { get; }
-    public string WithoutRemote { get; }
+    public string WithoutOrigin { get; }
     public bool IsLocalBranch { get; }
     public bool IsRemoteBranch { get; }
     public bool IsTag { get; }
@@ -79,7 +79,7 @@ public class ReferenceName : IEquatable<ReferenceName?>, IComparable<ReferenceNa
     public bool EquivalentTo(string? name) =>
         Canonical.Equals(name, StringComparison.OrdinalIgnoreCase)
         || Friendly.Equals(name, StringComparison.OrdinalIgnoreCase)
-        || WithoutRemote.Equals(name, StringComparison.OrdinalIgnoreCase);
+        || WithoutOrigin.Equals(name, StringComparison.OrdinalIgnoreCase);
 
     private string Shorten()
     {
@@ -95,11 +95,11 @@ public class ReferenceName : IEquatable<ReferenceName?>, IComparable<ReferenceNa
         return Canonical;
     }
 
-    private string RemoveRemote()
+    private string RemoveOrigin()
     {
-        if (IsRemoteBranch && !IsPullRequest && Friendly.StartsWith(RemotePrefix, StringComparison.Ordinal))
+        if (IsRemoteBranch && !IsPullRequest && Friendly.StartsWith(OriginPrefix, StringComparison.Ordinal))
         {
-            return Friendly[RemotePrefix.Length..];
+            return Friendly[OriginPrefix.Length..];
         }
         return Friendly;
     }

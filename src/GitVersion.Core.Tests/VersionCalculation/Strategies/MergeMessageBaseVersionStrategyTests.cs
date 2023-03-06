@@ -104,9 +104,9 @@ public class MergeMessageBaseVersionStrategyTests : TestBase
         AssertMergeMessage(message + "\n ", null, parents);
     }
 
-    [TestCase("Merge pull request #165 from Particular/release-1.0.0", true)]
-    [TestCase("Merge pull request #165 in Particular/release-1.0.0", true)]
-    [TestCase("Merge pull request #500 in FOO/bar from Particular/release-1.0.0 to develop)", true)]
+    [TestCase("Merge pull request #165 from organization/Particular/release-1.0.0", true)]
+    [TestCase("Merge pull request #165 in organization/Particular/release-1.0.0", true)]
+    [TestCase("Merge pull request #500 in FOO/bar from organization/Particular/release-1.0.0 to develop)", true)]
     public void ShouldNotTakeVersionFromMergeOfReleaseBranchWithRemoteOtherThanOrigin(string message, bool isMergeCommit)
     {
         var parents = GetParents(isMergeCommit);

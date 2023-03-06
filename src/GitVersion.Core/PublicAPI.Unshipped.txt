@@ -610,10 +610,9 @@ GitVersion.Logging.Verbosity.Quiet = 0 -> GitVersion.Logging.Verbosity
 GitVersion.Logging.Verbosity.Verbose = 3 -> GitVersion.Logging.Verbosity
 GitVersion.MergeMessage
 GitVersion.MergeMessage.FormatName.get -> string?
-GitVersion.MergeMessage.GetMergedBranchName() -> GitVersion.ReferenceName!
 GitVersion.MergeMessage.IsMergedPullRequest.get -> bool
-GitVersion.MergeMessage.MergeMessage(string? mergeMessage, GitVersion.Configuration.GitVersionConfiguration! configuration) -> void
-GitVersion.MergeMessage.MergedBranch.get -> string!
+GitVersion.MergeMessage.MergeMessage(string! mergeMessage, GitVersion.Configuration.GitVersionConfiguration! configuration) -> void
+GitVersion.MergeMessage.MergedBranch.get -> GitVersion.ReferenceName?
 GitVersion.MergeMessage.PullRequestNumber.get -> int?
 GitVersion.MergeMessage.TargetBranch.get -> string?
 GitVersion.MergeMessage.Version.get -> GitVersion.SemanticVersion?
@@ -722,7 +721,7 @@ GitVersion.ReferenceName.IsPullRequest.get -> bool
 GitVersion.ReferenceName.IsRemoteBranch.get -> bool
 GitVersion.ReferenceName.IsTag.get -> bool
 GitVersion.ReferenceName.ReferenceName(string! canonical) -> void
-GitVersion.ReferenceName.WithoutRemote.get -> string!
+GitVersion.ReferenceName.WithoutOrigin.get -> string!
 GitVersion.RepositoryInfo
 GitVersion.RepositoryInfo.ClonePath -> string?
 GitVersion.RepositoryInfo.CommitId -> string?
@@ -980,7 +979,7 @@ const GitVersion.Configuration.ConfigurationConstants.UnknownBranchRegex = ".*" 
 const GitVersion.Configuration.ConfigurationFileLocator.DefaultAlternativeFileName = "GitVersion.yaml" -> string!
 const GitVersion.Configuration.ConfigurationFileLocator.DefaultFileName = "GitVersion.yml" -> string!
 const GitVersion.ReferenceName.LocalBranchPrefix = "refs/heads/" -> string!
-const GitVersion.ReferenceName.RemotePrefix = "origin/" -> string!
+const GitVersion.ReferenceName.OriginPrefix = "origin/" -> string!
 const GitVersion.ReferenceName.RemoteTrackingBranchPrefix = "refs/remotes/" -> string!
 const GitVersion.ReferenceName.TagPrefix = "refs/tags/" -> string!
 const GitVersion.VersionCalculation.IncrementStrategyFinder.DefaultMajorPattern = "\\+semver:\\s?(breaking|major)" -> string!

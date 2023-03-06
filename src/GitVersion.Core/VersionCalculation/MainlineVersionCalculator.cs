@@ -297,11 +297,14 @@ internal class MainlineVersionCalculator : IMainlineVersionCalculator
         if (mergeCommit != null)
         {
             var mergeMessage = new MergeMessage(mergeCommit.Message, Context.Configuration);
-            var branchName = mergeMessage.GetMergedBranchName();
-            var configuration = Context.Configuration.GetBranchConfiguration(branchName);
-            if (configuration.Increment != IncrementStrategy.Inherit)
+            var branchName = mergeMessage.MergedBranch;
+            if (branchName != null)
             {
-                return configuration.Increment.ToVersionField();
+                var configuration = Context.Configuration.GetBranchConfiguration(branchName);
+                if (configuration.Increment != IncrementStrategy.Inherit)
+                {
+                    return configuration.Increment.ToVersionField();
+                }
             }
         }
 

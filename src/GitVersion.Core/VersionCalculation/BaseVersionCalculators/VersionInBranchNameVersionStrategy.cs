@@ -36,7 +36,7 @@ public class VersionInBranchNameVersionStrategy : VersionStrategyBase
     private static Tuple<string, SemanticVersion>? GetVersionInBranch(
         ReferenceName branchName, string? tagPrefixRegex, SemanticVersionFormat versionFormat)
     {
-        var branchParts = branchName.WithoutRemote.Split('/', '-');
+        var branchParts = branchName.WithoutOrigin.Split('/', '-');
         foreach (var part in branchParts)
         {
             if (SemanticVersion.TryParse(part, tagPrefixRegex, out var semanticVersion, versionFormat))
