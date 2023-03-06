@@ -22,6 +22,6 @@
   "ShortSha": "commitShortSha",
   "VersionSourceSha": "versionSourceSha",
   "CommitsSinceVersionSource": 5,
-  "UncommittedChanges": 0,
-  "CommitDate": "2014-03-06"
+  "CommitDate": "2014-03-06",
+  "UncommittedChanges": 0
 }

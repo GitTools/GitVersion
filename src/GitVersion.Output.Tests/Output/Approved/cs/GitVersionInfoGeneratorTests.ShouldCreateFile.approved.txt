@@ -51,6 +51,6 @@ static class GitVersionInformation
     public const string ShortSha = "commitShortSha";
     public const string VersionSourceSha = "versionSourceSha";
     public const string CommitsSinceVersionSource = "5";
-    public const string UncommittedChanges = "0";
     public const string CommitDate = "2014-03-06";
+    public const string UncommittedChanges = "0";
 }

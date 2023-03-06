@@ -100,7 +100,7 @@
       "type": "string"
     },
     "SemVer": {
-      "description": "The semantical version number, including PreReleaseTagWithDash for pre-release version numbers.",
+      "description": "The semantic version number, including PreReleaseTagWithDash for pre-release version numbers.",
       "type": "string"
     },
     "Sha": {

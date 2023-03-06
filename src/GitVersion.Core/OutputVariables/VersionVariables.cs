@@ -84,8 +84,8 @@ public class VersionVariables : IEnumerable<KeyValuePair<string, string>>
     public string? ShortSha { get; }
     public string? VersionSourceSha { get; }
     public string? CommitsSinceVersionSource { get; }
-    public string? UncommittedChanges { get; }
     public string? CommitDate { get; set; }
+    public string? UncommittedChanges { get; }
 
     [ReflectionIgnore]
     public static IEnumerable<string> AvailableVariables => typeof(VersionVariables)

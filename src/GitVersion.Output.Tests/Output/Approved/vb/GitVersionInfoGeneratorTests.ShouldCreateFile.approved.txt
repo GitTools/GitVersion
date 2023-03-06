@@ -54,8 +54,8 @@ Namespace Global
         Public Shared ShortSha As String = "commitShortSha"
         Public Shared VersionSourceSha As String = "versionSourceSha"
         Public Shared CommitsSinceVersionSource As String = "5"
-        Public Shared UncommittedChanges As String = "0"
         Public Shared CommitDate As String = "2014-03-06"
+        Public Shared UncommittedChanges As String = "0"
     End Class
 
 End Namespace
