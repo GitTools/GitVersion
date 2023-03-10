@@ -8,12 +8,8 @@ namespace GitVersion.Configuration
 
         IReadOnlyList<string> Shas { get; }
 
-        public IEnumerable<IVersionFilter> ToFilters()
-        {
-            if (Shas.Any()) yield return new ShaVersionFilter(Shas);
-            if (Before.HasValue) yield return new MinDateVersionFilter(Before.Value);
-        }
+        IEnumerable<IVersionFilter> ToFilters();
 
-        public bool IsEmpty => Before == null && !Shas.Any();
+        bool IsEmpty { get; }
     }
 }
