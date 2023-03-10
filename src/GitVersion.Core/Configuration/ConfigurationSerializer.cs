@@ -26,7 +26,7 @@ public static class ConfigurationSerializer
         return configuration ?? new GitVersionConfiguration();
     }
 
-    public static void Write(GitVersionConfiguration configuration, TextWriter writer)
+    public static void Write(IGitVersionConfiguration configuration, TextWriter writer)
         => Serializer.Serialize(writer, configuration);
 }
 

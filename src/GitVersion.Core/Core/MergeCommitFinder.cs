@@ -10,9 +10,9 @@ internal class MergeCommitFinder
     private readonly ILog log;
     private readonly Dictionary<IBranch, List<BranchCommit>> mergeBaseCommitsCache = new();
     private readonly RepositoryStore repositoryStore;
-    private readonly GitVersionConfiguration configuration;
+    private readonly IGitVersionConfiguration configuration;
 
-    public MergeCommitFinder(RepositoryStore repositoryStore, GitVersionConfiguration configuration, IEnumerable<IBranch> excludedBranches, ILog log)
+    public MergeCommitFinder(RepositoryStore repositoryStore, IGitVersionConfiguration configuration, IEnumerable<IBranch> excludedBranches, ILog log)
     {
         this.repositoryStore = repositoryStore.NotNull();
         this.configuration = configuration.NotNull();

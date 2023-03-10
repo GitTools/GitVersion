@@ -70,7 +70,7 @@ public class ConfigurationFileLocator : IConfigurationFileLocator
               || HasConfigurationFileAt(DefaultAlternativeFileName, out path);
     }
 
-    private static void VerifyReadConfig(GitVersionConfiguration configuration)
+    private static void VerifyReadConfig(IGitVersionConfiguration configuration)
     {
         // Verify no branches are set to mainline mode
         if (configuration.Branches.Any(b => b.Value.VersioningMode == VersioningMode.Mainline))

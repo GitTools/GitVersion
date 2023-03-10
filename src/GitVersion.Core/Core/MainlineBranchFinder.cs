@@ -8,7 +8,7 @@ namespace GitVersion;
 
 internal class MainlineBranchFinder
 {
-    private readonly GitVersionConfiguration configuration;
+    private readonly IGitVersionConfiguration configuration;
     private readonly ILog log;
     private readonly List<IBranchConfiguration> mainlineBranchConfigurations;
     private readonly IGitRepository repository;
@@ -16,13 +16,13 @@ internal class MainlineBranchFinder
 
     public MainlineBranchFinder(IRepositoryStore repositoryStore,
                                 IGitRepository repository,
-                                GitVersionConfiguration configuration,
+                                IGitVersionConfiguration configuration,
                                 ILog log)
     {
         this.repositoryStore = repositoryStore.NotNull();
         this.repository = repository.NotNull();
         this.configuration = configuration.NotNull();
-        mainlineBranchConfigurations = ((IGitVersionConfiguration)configuration).Branches.Select(e => e.Value).Where(b => b.IsMainline == true).ToList();
+        mainlineBranchConfigurations = configuration.Branches.Select(e => e.Value).Where(b => b.IsMainline == true).ToList();
         this.log = log.NotNull();
     }
 
@@ -70,11 +70,11 @@ internal class MainlineBranchFinder
     private class BranchOriginFinder
     {
         private readonly ICommit commit;
-        private readonly GitVersionConfiguration configuration;
+        private readonly IGitVersionConfiguration configuration;
         private readonly ILog log;
         private readonly IRepositoryStore repositoryStore;
 
-        public BranchOriginFinder(ICommit commit, IRepositoryStore repositoryStore, GitVersionConfiguration configuration, ILog log)
+        public BranchOriginFinder(ICommit commit, IRepositoryStore repositoryStore, IGitVersionConfiguration configuration, ILog log)
         {
             this.repositoryStore = repositoryStore;
             this.commit = commit;

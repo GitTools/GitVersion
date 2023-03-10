@@ -191,7 +191,7 @@ internal abstract class ConfigurationBuilderBase<TConfigurationBuilder> : IConfi
         return (TConfigurationBuilder)this;
     }
 
-    public virtual TConfigurationBuilder WithMergeMessageFormats(Dictionary<string, string> value)
+    public virtual TConfigurationBuilder WithMergeMessageFormats(IReadOnlyDictionary<string, string> value)
     {
         this.mergeMessageFormats = new(value);
         return (TConfigurationBuilder)this;

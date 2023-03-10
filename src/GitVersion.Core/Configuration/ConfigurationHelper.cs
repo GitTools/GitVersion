@@ -5,7 +5,7 @@ namespace GitVersion.Configuration;
 internal class ConfigurationHelper
 {
     private string Yaml => this._yaml ??= this._dictionary == null
-        ? ConfigurationSerializer.Serialize(this._configuration!)
+        ? ConfigurationSerializer.Serialize(this.configuration!)
         : ConfigurationSerializer.Serialize(this._dictionary);
     private string? _yaml;
 
@@ -15,7 +15,7 @@ internal class ConfigurationHelper
         {
             if (this._dictionary == null)
             {
-                this._yaml ??= ConfigurationSerializer.Serialize(this._configuration!);
+                this._yaml ??= ConfigurationSerializer.Serialize(this.configuration!);
                 this._dictionary = ConfigurationSerializer.Deserialize<Dictionary<object, object?>>(this._yaml!);
             }
             return this._dictionary;
@@ -23,14 +23,14 @@ internal class ConfigurationHelper
     }
     private IReadOnlyDictionary<object, object?>? _dictionary;
 
-    public GitVersionConfiguration Configuration => this._configuration ??= ConfigurationSerializer.Deserialize<GitVersionConfiguration>(Yaml);
-    private GitVersionConfiguration? _configuration;
+    public GitVersionConfiguration Configuration => this.configuration ??= ConfigurationSerializer.Deserialize<GitVersionConfiguration>(Yaml);
+    private GitVersionConfiguration? configuration;
 
     internal ConfigurationHelper(string yaml) => this._yaml = yaml.NotNull();
 
     internal ConfigurationHelper(IReadOnlyDictionary<object, object?> dictionary) => this._dictionary = dictionary.NotNull();
 
-    public ConfigurationHelper(GitVersionConfiguration configuration) => this._configuration = configuration.NotNull();
+    public ConfigurationHelper(GitVersionConfiguration configuration) => this.configuration = configuration.NotNull();
 
     public void Override(IReadOnlyDictionary<object, object?> value)
     {
@@ -42,7 +42,7 @@ internal class ConfigurationHelper
             Merge(dictionary, value);
             this._dictionary = dictionary;
             this._yaml = null;
-            this._configuration = null;
+            this.configuration = null;
         }
     }
 

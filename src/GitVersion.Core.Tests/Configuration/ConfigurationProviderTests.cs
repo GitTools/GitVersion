@@ -164,7 +164,7 @@ branches:
     {
         var configuration = this.configurationProvider.ProvideForDirectory(this.repoPath);
 
-        configuration.ToString().ShouldMatchApproved();
+        configuration.ToString()!.ShouldMatchApproved();
     }
 
     [Test]

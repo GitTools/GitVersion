@@ -477,11 +477,11 @@ public class NextVersionCalculatorTests : TestBase
     {
         private readonly IVersionFilter filter;
 
-        public override bool IsEmpty => false;
+        public virtual bool IsEmpty => false;
 
         public TestIgnoreConfig(IVersionFilter filter) => this.filter = filter;
 
-        public override IEnumerable<IVersionFilter> ToFilters()
+        public virtual IEnumerable<IVersionFilter> ToFilters()
         {
             yield return this.filter;
         }
