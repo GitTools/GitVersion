@@ -79,21 +79,6 @@ branches:
                             "See https://gitversion.net/docs/reference/configuration for more info");
     }
 
-    [Test]
-    public void SourceBranchIsRequired()
-    {
-        const string text = @"
-next-version: 2.0.0
-branches:
-    bug:
-        regex: 'bug[/-]'
-        label: bugfix";
-        SetupConfigFileContent(text);
-        var ex = Should.Throw<ConfigurationException>(() => this.configurationProvider.ProvideForDirectory(this.repoPath));
-        ex.Message.ShouldBe($"Branch configuration 'bug' is missing required configuration 'source-branches'{System.Environment.NewLine}" +
-                            "See https://gitversion.net/docs/reference/configuration for more info");
-    }
-
     [Test(Description = "This test proves the configuration validation will fail early with a helpful message when a branch listed in source-branches has no configuration.")]
     public void SourceBranchesValidationShouldFailWhenMatchingBranchConfigurationIsMissing()
     {

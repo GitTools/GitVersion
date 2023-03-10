@@ -6,7 +6,6 @@ public class BranchConfigurationBuilder
 {
     public static BranchConfigurationBuilder New => new();
 
-    private string name;
     private VersioningMode? versioningMode;
     private string? label;
     private IncrementStrategy increment;
@@ -16,8 +15,8 @@ public class BranchConfigurationBuilder
     private bool? trackMergeMessage;
     private CommitMessageIncrementMode? commitMessageIncrementing;
     private string? regex;
-    private HashSet<string>? sourceBranches;
-    private HashSet<string>? isSourceBranchFor;
+    private HashSet<string> sourceBranches = new();
+    private HashSet<string> isSourceBranchFor = new();
     private bool? tracksReleaseBranches;
     private bool? isReleaseBranch;
     private bool? isMainline;
@@ -25,12 +24,6 @@ public class BranchConfigurationBuilder
 
     private BranchConfigurationBuilder()
     {
-    }
-
-    public virtual BranchConfigurationBuilder WithName(string value)
-    {
-        this.name = value;
-        return this;
     }
 
     public virtual BranchConfigurationBuilder WithVersioningMode(VersioningMode? value)
@@ -87,27 +80,27 @@ public class BranchConfigurationBuilder
         return this;
     }
 
-    public virtual BranchConfigurationBuilder WithSourceBranches(IEnumerable<string>? values)
+    public virtual BranchConfigurationBuilder WithSourceBranches(IEnumerable<string> values)
     {
-        WithSourceBranches(values?.ToArray());
+        WithSourceBranches(values.ToArray());
         return this;
     }
 
-    public virtual BranchConfigurationBuilder WithSourceBranches(params string[]? values)
+    public virtual BranchConfigurationBuilder WithSourceBranches(params string[] values)
     {
-        this.sourceBranches = values == null ? null : new HashSet<string>(values);
+        this.sourceBranches = new HashSet<string>(values);
         return this;
     }
 
-    public virtual BranchConfigurationBuilder WithIsSourceBranchFor(IEnumerable<string>? values)
+    public virtual BranchConfigurationBuilder WithIsSourceBranchFor(IEnumerable<string> values)
     {
-        WithIsSourceBranchFor(values?.ToArray());
+        WithIsSourceBranchFor(values.ToArray());
         return this;
     }
 
-    public virtual BranchConfigurationBuilder WithIsSourceBranchFor(params string[]? values)
+    public virtual BranchConfigurationBuilder WithIsSourceBranchFor(params string[] values)
     {
-        this.isSourceBranchFor = values == null ? null : new HashSet<string>(values);
+        this.isSourceBranchFor = new HashSet<string>(values);
         return this;
     }
 
@@ -137,7 +130,6 @@ public class BranchConfigurationBuilder
 
     public virtual BranchConfigurationBuilder WithConfiguration(BranchConfiguration value)
     {
-        WithName(value.Name);
         WithVersioningMode(value.VersioningMode);
         WithLabel(value.Label);
         WithIncrement(value.Increment);
@@ -156,27 +148,22 @@ public class BranchConfigurationBuilder
         return this;
     }
 
-    public BranchConfiguration Build()
+    public BranchConfiguration Build() => new()
     {
-        var result = new BranchConfiguration()
-        {
-            Name = name,
-            VersioningMode = versioningMode,
-            Label = label,
-            Increment = increment,
-            Regex = regex,
-            TracksReleaseBranches = tracksReleaseBranches,
-            TrackMergeTarget = trackMergeTarget,
-            TrackMergeMessage = trackMergeMessage,
-            CommitMessageIncrementing = commitMessageIncrementing,
-            IsMainline = isMainline,
-            IsReleaseBranch = isReleaseBranch,
-            LabelNumberPattern = labelNumberPattern,
-            PreventIncrementOfMergedBranchVersion = preventIncrementOfMergedBranchVersion,
-            PreReleaseWeight = preReleaseWeight,
-            SourceBranches = sourceBranches,
-            IsSourceBranchFor = isSourceBranchFor
-        };
-        return result;
-    }
+        VersioningMode = versioningMode,
+        Label = label,
+        Increment = increment,
+        Regex = regex,
+        TracksReleaseBranches = tracksReleaseBranches,
+        TrackMergeTarget = trackMergeTarget,
+        TrackMergeMessage = trackMergeMessage,
+        CommitMessageIncrementing = commitMessageIncrementing,
+        IsMainline = isMainline,
+        IsReleaseBranch = isReleaseBranch,
+        LabelNumberPattern = labelNumberPattern,
+        PreventIncrementOfMergedBranchVersion = preventIncrementOfMergedBranchVersion,
+        PreReleaseWeight = preReleaseWeight,
+        SourceBranches = sourceBranches,
+        IsSourceBranchFor = isSourceBranchFor
+    };
 }

@@ -148,8 +148,6 @@ public class NextVersionCalculatorTests : TestBase
     public void MergeFeatureIntoMainlineWithMinorIncrement()
     {
         var configuration = GitFlowConfigurationBuilder.New
-            .WithIgnoreConfiguration(new())
-            .WithMergeMessageFormats(new())
             .WithBranch("main", builder => builder.WithVersioningMode(VersioningMode.Mainline))
             .WithBranch("feature", builder => builder
                 .WithVersioningMode(VersioningMode.Mainline)
@@ -176,8 +174,6 @@ public class NextVersionCalculatorTests : TestBase
     public void MergeFeatureIntoMainlineWithMinorIncrementAndThenMergeHotfix()
     {
         var configuration = GitFlowConfigurationBuilder.New
-            .WithIgnoreConfiguration(new())
-            .WithMergeMessageFormats(new())
             .WithVersioningMode(VersioningMode.Mainline)
             .WithBranch("feature", builder => builder
                 .WithIncrement(IncrementStrategy.Minor)
@@ -477,7 +473,7 @@ public class NextVersionCalculatorTests : TestBase
         nextVersion.BaseVersion.SemanticVersion.ShouldBe(lowerVersion.SemanticVersion);
     }
 
-    private class TestIgnoreConfig : IgnoreConfiguration
+    private record TestIgnoreConfig : IgnoreConfiguration
     {
         private readonly IVersionFilter filter;
 

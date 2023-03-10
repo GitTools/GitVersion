@@ -23,7 +23,6 @@ public static class ConfigurationExtensions
         var branchConfiguration = GetBranchConfigurations(configuration, branchName.WithoutOrigin).FirstOrDefault();
         branchConfiguration ??= new()
         {
-            Name = branchName.WithoutOrigin,
             Regex = string.Empty,
             Label = ConfigurationConstants.BranchNamePlaceholder,
             Increment = IncrementStrategy.Inherit
@@ -34,17 +33,17 @@ public static class ConfigurationExtensions
     private static IEnumerable<BranchConfiguration> GetBranchConfigurations(GitVersionConfiguration configuration, string branchName)
     {
         BranchConfiguration? unknownBranchConfiguration = null;
-        foreach (var item in configuration.Branches.Values.Where(branch => branch.Regex != null))
+        foreach ((string key, BranchConfiguration branchConfiguration) in configuration.Branches)
         {
-            if (item.Regex != null && Regex.IsMatch(branchName, item.Regex, RegexOptions.IgnoreCase))
+            if (((IBranchConfiguration)branchConfiguration).IsMatch(branchName))
             {
-                if (item.Name == "unknown")
+                if (key == "unknown")
                 {
-                    unknownBranchConfiguration = item;
+                    unknownBranchConfiguration = branchConfiguration;
                 }
                 else
                 {
-                    yield return item;
+                    yield return branchConfiguration;
                 }
             }
         }
@@ -52,11 +51,7 @@ public static class ConfigurationExtensions
         if (unknownBranchConfiguration != null) yield return unknownBranchConfiguration;
     }
 
-    public static BranchConfiguration GetFallbackBranchConfiguration(this GitVersionConfiguration configuration)
-    {
-        BranchConfiguration result = new(configuration);
-        return result;
-    }
+    public static BranchConfiguration GetFallbackBranchConfiguration(this GitVersionConfiguration configuration) => configuration;
 
     public static bool IsReleaseBranch(this GitVersionConfiguration configuration, IBranch branch)
         => IsReleaseBranch(configuration, branch.NotNull().Name);
@@ -64,7 +59,8 @@ public static class ConfigurationExtensions
     public static bool IsReleaseBranch(this GitVersionConfiguration configuration, ReferenceName branchName)
         => configuration.GetBranchConfiguration(branchName).IsReleaseBranch ?? false;
 
-    public static string GetBranchSpecificTag(this EffectiveConfiguration configuration, ILog log, string? branchFriendlyName, string? branchNameOverride)
+    public static string GetBranchSpecificTag(this EffectiveConfiguration configuration, ILog log, string? branchFriendlyName,
+        string? branchNameOverride)
     {
         var tagToUse = configuration.Label;
         if (tagToUse == "useBranchName")

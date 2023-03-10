@@ -25,7 +25,7 @@ public class ConfigureBranches : ConfigInitWizardStep
                 var branchConfiguration = foundBranch.Value;
                 if (branchConfiguration is null)
                 {
-                    branchConfiguration = new BranchConfiguration { Name = foundBranch.Key };
+                    branchConfiguration = new BranchConfiguration();
                     configuration.Branches.Add(foundBranch.Key, branchConfiguration);
                 }
                 steps.Enqueue(this.StepFactory.CreateStep<ConfigureBranch>().WithData(foundBranch.Key, branchConfiguration));

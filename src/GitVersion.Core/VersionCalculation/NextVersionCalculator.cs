@@ -45,7 +45,9 @@ public class NextVersionCalculator : INextVersionCalculator
 
         var nextVersion = Calculate(Context.CurrentBranch, Context.Configuration);
         var baseVersion = nextVersion.BaseVersion;
-        var preReleaseTagName = nextVersion.Configuration.GetBranchSpecificTag(this.log, Context.CurrentBranch.Name.Friendly, baseVersion.BranchNameOverride);
+        var preReleaseTagName = nextVersion.Configuration.GetBranchSpecificTag(
+            this.log, Context.CurrentBranch.Name.WithoutOrigin, baseVersion.BranchNameOverride
+        );
 
         SemanticVersion semver;
         if (nextVersion.Configuration.VersioningMode == VersioningMode.Mainline)

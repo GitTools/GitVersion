@@ -17,10 +17,8 @@ public class EffectiveConfiguration
         var fallbackBranchConfiguration = configuration.GetFallbackBranchConfiguration();
         branchConfiguration = branchConfiguration.Inherit(fallbackBranchConfiguration);
 
-        var name = branchConfiguration.Name;
-
         if (!branchConfiguration.VersioningMode.HasValue)
-            throw new Exception($"Configuration value for 'Versioning mode' for branch {name} has no value. (this should not happen, please report an issue)");
+            throw new Exception("Configuration value for 'Versioning mode' has no value. (this should not happen, please report an issue)");
 
         if (!configuration.AssemblyVersioningScheme.HasValue)
             throw new Exception("Configuration value for 'AssemblyVersioningScheme' has no value. (this should not happen, please report an issue)");

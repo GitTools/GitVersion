@@ -84,8 +84,9 @@ public class ConfigurationProvider : IConfigurationProvider
         }
         catch (YamlException exception)
         {
+            var baseException = exception.GetBaseException();
             throw new WarningException(
-                $"Could not build the configuration instance because following exception occurred: '{exception.Message}' " +
+                $"Could not build the configuration instance because following exception occurred: '{baseException.Message}' " +
                 "Please ensure that the /overrideconfig parameters are correct and the configuration file is in the correct format."
             );
         }

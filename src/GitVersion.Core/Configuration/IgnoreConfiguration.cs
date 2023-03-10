@@ -3,18 +3,19 @@ using GitVersion.VersionCalculation;
 
 namespace GitVersion.Configuration;
 
-public class IgnoreConfiguration
+public record IgnoreConfiguration : IIgnoreConfiguration
 {
-    public IgnoreConfiguration() => Shas = Array.Empty<string>();
-
     [JsonPropertyName("commits-before")]
     [JsonPropertyDescription("Commits before this date will be ignored. Format: yyyy-MM-ddTHH:mm:ss.")]
     [JsonPropertyPattern("'yyyy-MM-ddTHH:mm:ss'", PatternFormat.DateTime)]
-    public DateTimeOffset? Before { get; set; }
+    public DateTimeOffset? Before { get; init; }
+
+    [JsonIgnore]
+    IReadOnlyList<string> IIgnoreConfiguration.Shas => Shas;
 
     [JsonPropertyName("sha")]
     [JsonPropertyDescription("A sequence of SHAs to be excluded from the version calculations.")]
-    public string[] Shas { get; set; }
+    public List<string> Shas { get; init; } = new();
 
     [JsonIgnore]
     public virtual bool IsEmpty => Before == null && !Shas.Any();

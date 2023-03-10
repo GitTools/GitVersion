@@ -22,7 +22,7 @@ internal abstract class ConfigurationBuilderBase<TConfigurationBuilder> : IConfi
     private string? commitDateFormat;
     private bool updateBuildNumber;
     private SemanticVersionFormat semanticVersionFormat;
-    private Dictionary<string, string>? mergeMessageFormats;
+    private Dictionary<string, string> mergeMessageFormats = new();
     private readonly List<IReadOnlyDictionary<object, object?>> overrides = new();
     private readonly Dictionary<string, BranchConfigurationBuilder> branchConfigurationBuilders = new();
     private VersioningMode? versioningMode;
@@ -34,8 +34,6 @@ internal abstract class ConfigurationBuilderBase<TConfigurationBuilder> : IConfi
     private bool? trackMergeMessage;
     private CommitMessageIncrementMode? commitMessageIncrementing;
     private string? regex;
-    private HashSet<string>? sourceBranches;
-    private HashSet<string>? isSourceBranchFor;
     private bool? tracksReleaseBranches;
     private bool? isReleaseBranch;
     private bool? isMainline;
@@ -195,7 +193,7 @@ internal abstract class ConfigurationBuilderBase<TConfigurationBuilder> : IConfi
 
     public virtual TConfigurationBuilder WithMergeMessageFormats(Dictionary<string, string> value)
     {
-        this.mergeMessageFormats = value;
+        this.mergeMessageFormats = new(value);
         return (TConfigurationBuilder)this;
     }
 
@@ -206,16 +204,11 @@ internal abstract class ConfigurationBuilderBase<TConfigurationBuilder> : IConfi
     }
 
     public virtual BranchConfigurationBuilder WithBranch(string value)
-    {
-        var result = this.branchConfigurationBuilders.GetOrAdd(value, () => BranchConfigurationBuilder.New);
-        result.WithName(value);
-        return result;
-    }
+        => this.branchConfigurationBuilders.GetOrAdd(value, () => BranchConfigurationBuilder.New);
 
     public virtual TConfigurationBuilder WithBranch(string value, Action<BranchConfigurationBuilder> action)
     {
         var result = this.branchConfigurationBuilders.GetOrAdd(value, () => BranchConfigurationBuilder.New);
-        result.WithName(value);
         action(result);
         return (TConfigurationBuilder)this;
     }
@@ -271,30 +264,6 @@ internal abstract class ConfigurationBuilderBase<TConfigurationBuilder> : IConfi
     public virtual TConfigurationBuilder WithRegex(string? value)
     {
         this.regex = value;
-        return (TConfigurationBuilder)this;
-    }
-
-    public virtual TConfigurationBuilder WithSourceBranches(IEnumerable<string>? values)
-    {
-        WithSourceBranches(values?.ToArray());
-        return (TConfigurationBuilder)this;
-    }
-
-    public virtual TConfigurationBuilder WithSourceBranches(params string[]? values)
-    {
-        this.sourceBranches = values == null ? null : new HashSet<string>(values);
-        return (TConfigurationBuilder)this;
-    }
-
-    public virtual TConfigurationBuilder WithIsSourceBranchFor(IEnumerable<string>? values)
-    {
-        WithIsSourceBranchFor(values?.ToArray());
-        return (TConfigurationBuilder)this;
-    }
-
-    public virtual TConfigurationBuilder WithIsSourceBranchFor(params string[]? values)
-    {
-        this.isSourceBranchFor = values == null ? null : new HashSet<string>(values);
         return (TConfigurationBuilder)this;
     }
 
@@ -358,8 +327,6 @@ internal abstract class ConfigurationBuilderBase<TConfigurationBuilder> : IConfi
         WithIsReleaseBranch(value.IsReleaseBranch);
         WithIsMainline(value.IsMainline);
         WithPreReleaseWeight(value.PreReleaseWeight);
-        WithSourceBranches(value.SourceBranches);
-        WithIsSourceBranchFor(value.IsSourceBranchFor);
         return (TConfigurationBuilder)this;
     }
 
@@ -373,6 +340,12 @@ internal abstract class ConfigurationBuilderBase<TConfigurationBuilder> : IConfi
 
     public virtual GitVersionConfiguration Build()
     {
+        Dictionary<string, BranchConfiguration> branches = new();
+        foreach (var (name, branchConfigurationBuilder) in this.branchConfigurationBuilders)
+        {
+            branches.Add(name, branchConfigurationBuilder.Build());
+        }
+
         GitVersionConfiguration configuration = new()
         {
             AssemblyVersioningScheme = this.assemblyVersioningScheme,
@@ -391,7 +364,8 @@ internal abstract class ConfigurationBuilderBase<TConfigurationBuilder> : IConfi
             CommitDateFormat = this.commitDateFormat,
             UpdateBuildNumber = this.updateBuildNumber,
             SemanticVersionFormat = this.semanticVersionFormat,
-            MergeMessageFormats = this.mergeMessageFormats ?? new(),
+            Branches = branches,
+            MergeMessageFormats = this.mergeMessageFormats,
             VersioningMode = this.versioningMode,
             Label = this.label,
             Increment = this.increment,
@@ -404,17 +378,8 @@ internal abstract class ConfigurationBuilderBase<TConfigurationBuilder> : IConfi
             IsReleaseBranch = this.isReleaseBranch,
             LabelNumberPattern = this.labelNumberPattern,
             PreventIncrementOfMergedBranchVersion = this.preventIncrementOfMergedBranchVersion,
-            PreReleaseWeight = this.preReleaseWeight,
-            SourceBranches = this.sourceBranches,
-            IsSourceBranchFor = this.isSourceBranchFor
+            PreReleaseWeight = this.preReleaseWeight
         };
-
-        Dictionary<string, BranchConfiguration> branches = new();
-        foreach (var (name, branchConfigurationBuilder) in this.branchConfigurationBuilders)
-        {
-            branches.Add(name, branchConfigurationBuilder.Build());
-        }
-        configuration.Branches = branches;
 
         if (this.overrides.Any())
         {
@@ -440,17 +405,15 @@ internal abstract class ConfigurationBuilderBase<TConfigurationBuilder> : IConfi
         }
     }
 
-    private static void FinalizeBranchConfiguration(GitVersionConfiguration configuration, string name, BranchConfiguration branchConfiguration)
+    private static void FinalizeBranchConfiguration(GitVersionConfiguration configuration, string branchName,
+        BranchConfiguration branchConfiguration)
     {
-        branchConfiguration.Name = name;
-        if (branchConfiguration.IsSourceBranchFor == null)
-            return;
 
+        var branches = new Dictionary<string, BranchConfiguration>(configuration.Branches);
         foreach (var targetBranchName in branchConfiguration.IsSourceBranchFor)
         {
-            var targetBranchConfig = configuration.Branches[targetBranchName];
-            targetBranchConfig.SourceBranches ??= new HashSet<string>();
-            targetBranchConfig.SourceBranches.Add(name);
+            var targetBranchConfiguration = branches[targetBranchName];
+            targetBranchConfiguration.SourceBranches.Add(branchName);
         }
     }
 

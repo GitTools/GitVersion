@@ -104,8 +104,9 @@ public class RepositoryStore : IRepositoryStore
 
     public IBranch? FindMainBranch(GitVersionConfiguration configuration)
     {
+        var branches = configuration.Branches;
         var mainBranchRegex = configuration.Branches[ConfigurationConstants.MainBranchKey].Regex
-            ?? configuration.Branches[ConfigurationConstants.MasterBranchKey].Regex;
+            ?? branches[ConfigurationConstants.MasterBranchKey].Regex;
 
         if (mainBranchRegex == null)
         {

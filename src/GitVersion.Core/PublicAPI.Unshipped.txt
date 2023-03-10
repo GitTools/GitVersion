@@ -1,4 +1,5 @@
 #nullable enable
+abstract GitVersion.Configuration.Init.Wizard.ConfigInitWizardStep.HandleResult(string? result, System.Collections.Generic.Queue<GitVersion.Configuration.Init.Wizard.ConfigInitWizardStep!>! steps, GitVersion.Configuration.GitVersionConfiguration! configuration, string! workingDirectory) -> GitVersion.Configuration.Init.StepResult!
 GitVersion.Agents.BuildAgentBase
 GitVersion.Agents.BuildAgentBase.BuildAgentBase(GitVersion.IEnvironment! environment, GitVersion.Logging.ILog! log) -> void
 GitVersion.Agents.BuildAgentBase.Environment.get -> GitVersion.IEnvironment!
@@ -93,41 +94,21 @@ GitVersion.Common.IRepositoryStore.GetTargetBranch(string? targetBranchName) -> 
 GitVersion.Common.IRepositoryStore.GetVersionTagsOnBranch(GitVersion.IBranch! branch, string? tagPrefixRegex, GitVersion.SemanticVersionFormat versionFormat) -> System.Collections.Generic.IEnumerable<GitVersion.SemanticVersion!>!
 GitVersion.Common.IRepositoryStore.IsCommitOnBranch(GitVersion.ICommit? baseVersionSource, GitVersion.IBranch! branch, GitVersion.ICommit! firstMatchingCommit) -> bool
 GitVersion.Configuration.BranchConfiguration
-GitVersion.Configuration.BranchConfiguration.BranchConfiguration() -> void
-GitVersion.Configuration.BranchConfiguration.BranchConfiguration(GitVersion.Configuration.BranchConfiguration! branchConfiguration) -> void
 GitVersion.Configuration.BranchConfiguration.CommitMessageIncrementing.get -> GitVersion.VersionCalculation.CommitMessageIncrementMode?
-GitVersion.Configuration.BranchConfiguration.CommitMessageIncrementing.set -> void
 GitVersion.Configuration.BranchConfiguration.Increment.get -> GitVersion.IncrementStrategy
-GitVersion.Configuration.BranchConfiguration.Increment.set -> void
-GitVersion.Configuration.BranchConfiguration.Inherit(GitVersion.Configuration.BranchConfiguration? parentConfig) -> GitVersion.Configuration.BranchConfiguration!
 GitVersion.Configuration.BranchConfiguration.IsMainline.get -> bool?
-GitVersion.Configuration.BranchConfiguration.IsMainline.set -> void
 GitVersion.Configuration.BranchConfiguration.IsReleaseBranch.get -> bool?
-GitVersion.Configuration.BranchConfiguration.IsReleaseBranch.set -> void
-GitVersion.Configuration.BranchConfiguration.IsSourceBranchFor.get -> System.Collections.Generic.HashSet<string!>?
-GitVersion.Configuration.BranchConfiguration.IsSourceBranchFor.set -> void
+GitVersion.Configuration.BranchConfiguration.IsSourceBranchFor.get -> System.Collections.Generic.HashSet<string!>!
 GitVersion.Configuration.BranchConfiguration.Label.get -> string?
-GitVersion.Configuration.BranchConfiguration.Label.set -> void
 GitVersion.Configuration.BranchConfiguration.LabelNumberPattern.get -> string?
-GitVersion.Configuration.BranchConfiguration.LabelNumberPattern.set -> void
-GitVersion.Configuration.BranchConfiguration.Name.get -> string!
-GitVersion.Configuration.BranchConfiguration.Name.set -> void
 GitVersion.Configuration.BranchConfiguration.PreReleaseWeight.get -> int?
-GitVersion.Configuration.BranchConfiguration.PreReleaseWeight.set -> void
 GitVersion.Configuration.BranchConfiguration.PreventIncrementOfMergedBranchVersion.get -> bool?
-GitVersion.Configuration.BranchConfiguration.PreventIncrementOfMergedBranchVersion.set -> void
 GitVersion.Configuration.BranchConfiguration.Regex.get -> string?
-GitVersion.Configuration.BranchConfiguration.Regex.set -> void
-GitVersion.Configuration.BranchConfiguration.SourceBranches.get -> System.Collections.Generic.HashSet<string!>?
-GitVersion.Configuration.BranchConfiguration.SourceBranches.set -> void
+GitVersion.Configuration.BranchConfiguration.SourceBranches.get -> System.Collections.Generic.HashSet<string!>!
 GitVersion.Configuration.BranchConfiguration.TrackMergeMessage.get -> bool?
-GitVersion.Configuration.BranchConfiguration.TrackMergeMessage.set -> void
 GitVersion.Configuration.BranchConfiguration.TrackMergeTarget.get -> bool?
-GitVersion.Configuration.BranchConfiguration.TrackMergeTarget.set -> void
 GitVersion.Configuration.BranchConfiguration.TracksReleaseBranches.get -> bool?
-GitVersion.Configuration.BranchConfiguration.TracksReleaseBranches.set -> void
 GitVersion.Configuration.BranchConfiguration.VersioningMode.get -> GitVersion.VersionCalculation.VersioningMode?
-GitVersion.Configuration.BranchConfiguration.VersioningMode.set -> void
 GitVersion.Configuration.BranchConfigurationBuilder
 GitVersion.Configuration.BranchConfigurationBuilder.Build() -> GitVersion.Configuration.BranchConfiguration!
 GitVersion.Configuration.ConfigurationConstants
@@ -191,44 +172,42 @@ GitVersion.Configuration.EffectiveConfiguration.VersionFilters.get -> System.Col
 GitVersion.Configuration.EffectiveConfiguration.VersioningMode.get -> GitVersion.VersionCalculation.VersioningMode
 GitVersion.Configuration.GitVersionConfiguration
 GitVersion.Configuration.GitVersionConfiguration.AssemblyFileVersioningFormat.get -> string?
-GitVersion.Configuration.GitVersionConfiguration.AssemblyFileVersioningFormat.set -> void
 GitVersion.Configuration.GitVersionConfiguration.AssemblyFileVersioningScheme.get -> GitVersion.Extensions.AssemblyFileVersioningScheme?
-GitVersion.Configuration.GitVersionConfiguration.AssemblyFileVersioningScheme.set -> void
 GitVersion.Configuration.GitVersionConfiguration.AssemblyInformationalFormat.get -> string?
-GitVersion.Configuration.GitVersionConfiguration.AssemblyInformationalFormat.set -> void
 GitVersion.Configuration.GitVersionConfiguration.AssemblyVersioningFormat.get -> string?
-GitVersion.Configuration.GitVersionConfiguration.AssemblyVersioningFormat.set -> void
 GitVersion.Configuration.GitVersionConfiguration.AssemblyVersioningScheme.get -> GitVersion.Extensions.AssemblyVersioningScheme?
-GitVersion.Configuration.GitVersionConfiguration.AssemblyVersioningScheme.set -> void
 GitVersion.Configuration.GitVersionConfiguration.Branches.get -> System.Collections.Generic.Dictionary<string!, GitVersion.Configuration.BranchConfiguration!>!
-GitVersion.Configuration.GitVersionConfiguration.Branches.set -> void
 GitVersion.Configuration.GitVersionConfiguration.CommitDateFormat.get -> string?
-GitVersion.Configuration.GitVersionConfiguration.CommitDateFormat.set -> void
-GitVersion.Configuration.GitVersionConfiguration.GitVersionConfiguration() -> void
 GitVersion.Configuration.GitVersionConfiguration.Ignore.get -> GitVersion.Configuration.IgnoreConfiguration!
-GitVersion.Configuration.GitVersionConfiguration.Ignore.set -> void
 GitVersion.Configuration.GitVersionConfiguration.LabelPreReleaseWeight.get -> int?
-GitVersion.Configuration.GitVersionConfiguration.LabelPreReleaseWeight.set -> void
 GitVersion.Configuration.GitVersionConfiguration.LabelPrefix.get -> string?
-GitVersion.Configuration.GitVersionConfiguration.LabelPrefix.set -> void
 GitVersion.Configuration.GitVersionConfiguration.MajorVersionBumpMessage.get -> string?
-GitVersion.Configuration.GitVersionConfiguration.MajorVersionBumpMessage.set -> void
 GitVersion.Configuration.GitVersionConfiguration.MergeMessageFormats.get -> System.Collections.Generic.Dictionary<string!, string!>!
-GitVersion.Configuration.GitVersionConfiguration.MergeMessageFormats.set -> void
 GitVersion.Configuration.GitVersionConfiguration.MinorVersionBumpMessage.get -> string?
-GitVersion.Configuration.GitVersionConfiguration.MinorVersionBumpMessage.set -> void
 GitVersion.Configuration.GitVersionConfiguration.NextVersion.get -> string?
-GitVersion.Configuration.GitVersionConfiguration.NextVersion.set -> void
 GitVersion.Configuration.GitVersionConfiguration.NoBumpMessage.get -> string?
-GitVersion.Configuration.GitVersionConfiguration.NoBumpMessage.set -> void
 GitVersion.Configuration.GitVersionConfiguration.PatchVersionBumpMessage.get -> string?
-GitVersion.Configuration.GitVersionConfiguration.PatchVersionBumpMessage.set -> void
 GitVersion.Configuration.GitVersionConfiguration.SemanticVersionFormat.get -> GitVersion.SemanticVersionFormat
-GitVersion.Configuration.GitVersionConfiguration.SemanticVersionFormat.set -> void
 GitVersion.Configuration.GitVersionConfiguration.UpdateBuildNumber.get -> bool
-GitVersion.Configuration.GitVersionConfiguration.UpdateBuildNumber.set -> void
 GitVersion.Configuration.GitVersionConfiguration.Workflow.get -> string?
-GitVersion.Configuration.GitVersionConfiguration.Workflow.set -> void
+GitVersion.Configuration.IBranchConfiguration
+GitVersion.Configuration.IBranchConfiguration.CommitMessageIncrementing.get -> GitVersion.VersionCalculation.CommitMessageIncrementMode?
+GitVersion.Configuration.IBranchConfiguration.Increment.get -> GitVersion.IncrementStrategy
+GitVersion.Configuration.IBranchConfiguration.Inherit(GitVersion.Configuration.BranchConfiguration! configuration) -> GitVersion.Configuration.BranchConfiguration!
+GitVersion.Configuration.IBranchConfiguration.IsMainline.get -> bool?
+GitVersion.Configuration.IBranchConfiguration.IsMatch(string! branchName) -> bool
+GitVersion.Configuration.IBranchConfiguration.IsReleaseBranch.get -> bool?
+GitVersion.Configuration.IBranchConfiguration.IsSourceBranchFor.get -> System.Collections.Generic.IReadOnlyCollection<string!>!
+GitVersion.Configuration.IBranchConfiguration.Label.get -> string?
+GitVersion.Configuration.IBranchConfiguration.LabelNumberPattern.get -> string?
+GitVersion.Configuration.IBranchConfiguration.PreReleaseWeight.get -> int?
+GitVersion.Configuration.IBranchConfiguration.PreventIncrementOfMergedBranchVersion.get -> bool?
+GitVersion.Configuration.IBranchConfiguration.RegularExpression.get -> string?
+GitVersion.Configuration.IBranchConfiguration.SourceBranches.get -> System.Collections.Generic.IReadOnlyCollection<string!>!
+GitVersion.Configuration.IBranchConfiguration.TrackMergeMessage.get -> bool?
+GitVersion.Configuration.IBranchConfiguration.TrackMergeTarget.get -> bool?
+GitVersion.Configuration.IBranchConfiguration.TracksReleaseBranches.get -> bool?
+GitVersion.Configuration.IBranchConfiguration.VersioningMode.get -> GitVersion.VersionCalculation.VersioningMode?
 GitVersion.Configuration.IConfigurationFileLocator
 GitVersion.Configuration.IConfigurationFileLocator.ReadConfiguration(string? configFilePath) -> GitVersion.Configuration.GitVersionConfiguration!
 GitVersion.Configuration.IConfigurationFileLocator.ReadOverrideConfiguration(string? configFilePath) -> System.Collections.Generic.IReadOnlyDictionary<object!, object?>?
@@ -237,12 +216,34 @@ GitVersion.Configuration.IConfigurationFileLocator.Verify(string? workingDirecto
 GitVersion.Configuration.IConfigurationProvider
 GitVersion.Configuration.IConfigurationProvider.Init(string! workingDirectory) -> void
 GitVersion.Configuration.IConfigurationProvider.Provide(System.Collections.Generic.IReadOnlyDictionary<object!, object?>? overrideConfiguration = null) -> GitVersion.Configuration.GitVersionConfiguration!
+GitVersion.Configuration.IGitVersionConfiguration
+GitVersion.Configuration.IGitVersionConfiguration.AssemblyFileVersioningFormat.get -> string?
+GitVersion.Configuration.IGitVersionConfiguration.AssemblyFileVersioningScheme.get -> GitVersion.Extensions.AssemblyFileVersioningScheme?
+GitVersion.Configuration.IGitVersionConfiguration.AssemblyInformationalFormat.get -> string?
+GitVersion.Configuration.IGitVersionConfiguration.AssemblyVersioningFormat.get -> string?
+GitVersion.Configuration.IGitVersionConfiguration.AssemblyVersioningScheme.get -> GitVersion.Extensions.AssemblyVersioningScheme?
+GitVersion.Configuration.IGitVersionConfiguration.Branches.get -> System.Collections.Generic.IReadOnlyDictionary<string!, GitVersion.Configuration.BranchConfiguration!>!
+GitVersion.Configuration.IGitVersionConfiguration.CommitDateFormat.get -> string?
+GitVersion.Configuration.IGitVersionConfiguration.Ignore.get -> GitVersion.Configuration.IIgnoreConfiguration!
+GitVersion.Configuration.IGitVersionConfiguration.LabelPrefix.get -> string?
+GitVersion.Configuration.IGitVersionConfiguration.LabelPreReleaseWeight.get -> int?
+GitVersion.Configuration.IGitVersionConfiguration.MajorVersionBumpMessage.get -> string?
+GitVersion.Configuration.IGitVersionConfiguration.MergeMessageFormats.get -> System.Collections.Generic.IReadOnlyDictionary<string!, string!>!
+GitVersion.Configuration.IGitVersionConfiguration.MinorVersionBumpMessage.get -> string?
+GitVersion.Configuration.IGitVersionConfiguration.NextVersion.get -> string?
+GitVersion.Configuration.IGitVersionConfiguration.NoBumpMessage.get -> string?
+GitVersion.Configuration.IGitVersionConfiguration.PatchVersionBumpMessage.get -> string?
+GitVersion.Configuration.IGitVersionConfiguration.SemanticVersionFormat.get -> GitVersion.SemanticVersionFormat
+GitVersion.Configuration.IGitVersionConfiguration.UpdateBuildNumber.get -> bool
+GitVersion.Configuration.IGitVersionConfiguration.Workflow.get -> string?
 GitVersion.Configuration.IgnoreConfiguration
 GitVersion.Configuration.IgnoreConfiguration.Before.get -> System.DateTimeOffset?
-GitVersion.Configuration.IgnoreConfiguration.Before.set -> void
-GitVersion.Configuration.IgnoreConfiguration.IgnoreConfiguration() -> void
-GitVersion.Configuration.IgnoreConfiguration.Shas.get -> string![]!
-GitVersion.Configuration.IgnoreConfiguration.Shas.set -> void
+GitVersion.Configuration.IgnoreConfiguration.Before.init -> void
+GitVersion.Configuration.IgnoreConfiguration.Shas.get -> System.Collections.Generic.List<string!>!
+GitVersion.Configuration.IgnoreConfiguration.Shas.init -> void
+GitVersion.Configuration.IIgnoreConfiguration
+GitVersion.Configuration.IIgnoreConfiguration.Before.get -> System.DateTimeOffset?
+GitVersion.Configuration.IIgnoreConfiguration.Shas.get -> System.Collections.Generic.IReadOnlyList<string!>!
 GitVersion.Configuration.Init.EditConfigStep
 GitVersion.Configuration.Init.EditConfigStep.EditConfigStep(GitVersion.Logging.IConsole! console, GitVersion.IFileSystem! fileSystem, GitVersion.Logging.ILog! log, GitVersion.Configuration.Init.Wizard.IConfigInitStepFactory! stepFactory) -> void
 GitVersion.Configuration.Init.GitVersionInitModule
@@ -954,7 +955,6 @@ abstract GitVersion.Agents.BuildAgentBase.GenerateSetParameterMessage(string! na
 abstract GitVersion.Agents.BuildAgentBase.GenerateSetVersionMessage(GitVersion.OutputVariables.VersionVariables! variables) -> string?
 abstract GitVersion.Configuration.Init.Wizard.ConfigInitWizardStep.DefaultResult.get -> string?
 abstract GitVersion.Configuration.Init.Wizard.ConfigInitWizardStep.GetPrompt(GitVersion.Configuration.GitVersionConfiguration! configuration, string! workingDirectory) -> string!
-abstract GitVersion.Configuration.Init.Wizard.ConfigInitWizardStep.HandleResult(string? result, System.Collections.Generic.Queue<GitVersion.Configuration.Init.Wizard.ConfigInitWizardStep!>! steps, GitVersion.Configuration.GitVersionConfiguration! configuration, string! workingDirectory) -> GitVersion.Configuration.Init.StepResult!
 abstract GitVersion.GitVersionModule.RegisterTypes(Microsoft.Extensions.DependencyInjection.IServiceCollection! services) -> void
 abstract GitVersion.VersionCalculation.VersionStrategyBase.GetBaseVersions(GitVersion.Configuration.EffectiveBranchConfiguration! configuration) -> System.Collections.Generic.IEnumerable<GitVersion.VersionCalculation.BaseVersion!>!
 const GitVersion.Configuration.ConfigurationConstants.BranchNamePlaceholder = "{BranchName}" -> string!
@@ -993,6 +993,7 @@ override GitVersion.Agents.LocalBuild.GenerateSetVersionMessage(GitVersion.Outpu
 override GitVersion.Agents.LocalBuild.IsDefault.get -> bool
 override GitVersion.BranchCommit.Equals(object? obj) -> bool
 override GitVersion.BranchCommit.GetHashCode() -> int
+override GitVersion.Configuration.GitVersionConfiguration.Inherit(GitVersion.Configuration.BranchConfiguration! configuration) -> GitVersion.Configuration.BranchConfiguration!
 override GitVersion.Configuration.GitVersionConfiguration.ToString() -> string!
 override GitVersion.Configuration.Init.EditConfigStep.DefaultResult.get -> string?
 override GitVersion.Configuration.Init.EditConfigStep.GetPrompt(GitVersion.Configuration.GitVersionConfiguration! configuration, string! workingDirectory) -> string!
@@ -1202,21 +1203,21 @@ virtual GitVersion.Agents.BuildAgentBase.IsDefault.get -> bool
 virtual GitVersion.Agents.BuildAgentBase.PreventFetch() -> bool
 virtual GitVersion.Agents.BuildAgentBase.ShouldCleanUpRemotes() -> bool
 virtual GitVersion.Agents.BuildAgentBase.WriteIntegration(System.Action<string?>! writer, GitVersion.OutputVariables.VersionVariables! variables, bool updateBuildNumber = true) -> void
+virtual GitVersion.Configuration.BranchConfiguration.Inherit(GitVersion.Configuration.BranchConfiguration! configuration) -> GitVersion.Configuration.BranchConfiguration!
 virtual GitVersion.Configuration.BranchConfigurationBuilder.WithCommitMessageIncrementing(GitVersion.VersionCalculation.CommitMessageIncrementMode? value) -> GitVersion.Configuration.BranchConfigurationBuilder!
 virtual GitVersion.Configuration.BranchConfigurationBuilder.WithConfiguration(GitVersion.Configuration.BranchConfiguration! value) -> GitVersion.Configuration.BranchConfigurationBuilder!
 virtual GitVersion.Configuration.BranchConfigurationBuilder.WithIncrement(GitVersion.IncrementStrategy value) -> GitVersion.Configuration.BranchConfigurationBuilder!
 virtual GitVersion.Configuration.BranchConfigurationBuilder.WithIsMainline(bool? value) -> GitVersion.Configuration.BranchConfigurationBuilder!
 virtual GitVersion.Configuration.BranchConfigurationBuilder.WithIsReleaseBranch(bool? value) -> GitVersion.Configuration.BranchConfigurationBuilder!
-virtual GitVersion.Configuration.BranchConfigurationBuilder.WithIsSourceBranchFor(System.Collections.Generic.IEnumerable<string!>? values) -> GitVersion.Configuration.BranchConfigurationBuilder!
-virtual GitVersion.Configuration.BranchConfigurationBuilder.WithIsSourceBranchFor(params string![]? values) -> GitVersion.Configuration.BranchConfigurationBuilder!
+virtual GitVersion.Configuration.BranchConfigurationBuilder.WithIsSourceBranchFor(params string![]! values) -> GitVersion.Configuration.BranchConfigurationBuilder!
+virtual GitVersion.Configuration.BranchConfigurationBuilder.WithIsSourceBranchFor(System.Collections.Generic.IEnumerable<string!>! values) -> GitVersion.Configuration.BranchConfigurationBuilder!
 virtual GitVersion.Configuration.BranchConfigurationBuilder.WithLabel(string? value) -> GitVersion.Configuration.BranchConfigurationBuilder!
 virtual GitVersion.Configuration.BranchConfigurationBuilder.WithLabelNumberPattern(string? value) -> GitVersion.Configuration.BranchConfigurationBuilder!
-virtual GitVersion.Configuration.BranchConfigurationBuilder.WithName(string! value) -> GitVersion.Configuration.BranchConfigurationBuilder!
 virtual GitVersion.Configuration.BranchConfigurationBuilder.WithPreReleaseWeight(int? value) -> GitVersion.Configuration.BranchConfigurationBuilder!
 virtual GitVersion.Configuration.BranchConfigurationBuilder.WithPreventIncrementOfMergedBranchVersion(bool? value) -> GitVersion.Configuration.BranchConfigurationBuilder!
 virtual GitVersion.Configuration.BranchConfigurationBuilder.WithRegex(string? value) -> GitVersion.Configuration.BranchConfigurationBuilder!
-virtual GitVersion.Configuration.BranchConfigurationBuilder.WithSourceBranches(System.Collections.Generic.IEnumerable<string!>? values) -> GitVersion.Configuration.BranchConfigurationBuilder!
-virtual GitVersion.Configuration.BranchConfigurationBuilder.WithSourceBranches(params string![]? values) -> GitVersion.Configuration.BranchConfigurationBuilder!
+virtual GitVersion.Configuration.BranchConfigurationBuilder.WithSourceBranches(params string![]! values) -> GitVersion.Configuration.BranchConfigurationBuilder!
+virtual GitVersion.Configuration.BranchConfigurationBuilder.WithSourceBranches(System.Collections.Generic.IEnumerable<string!>! values) -> GitVersion.Configuration.BranchConfigurationBuilder!
 virtual GitVersion.Configuration.BranchConfigurationBuilder.WithTrackMergeMessage(bool? value) -> GitVersion.Configuration.BranchConfigurationBuilder!
 virtual GitVersion.Configuration.BranchConfigurationBuilder.WithTrackMergeTarget(bool? value) -> GitVersion.Configuration.BranchConfigurationBuilder!
 virtual GitVersion.Configuration.BranchConfigurationBuilder.WithTracksReleaseBranches(bool? value) -> GitVersion.Configuration.BranchConfigurationBuilder!
