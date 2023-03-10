@@ -19,7 +19,7 @@ public interface IRepositoryStore
     IBranch? FindBranch(string? branchName);
     IBranch? FindMainBranch(GitVersionConfiguration configuration);
     IEnumerable<IBranch> FindMainlineBranches(GitVersionConfiguration configuration);
-    IEnumerable<IBranch> GetReleaseBranches(IEnumerable<KeyValuePair<string, BranchConfiguration>> releaseBranchConfig);
+    IEnumerable<IBranch> GetReleaseBranches(IEnumerable<KeyValuePair<string, IBranchConfiguration>> releaseBranchConfig);
     IEnumerable<IBranch> ExcludingBranches(IEnumerable<IBranch> branchesToExclude);
     IEnumerable<IBranch> GetBranchesContainingCommit(ICommit? commit, IEnumerable<IBranch>? branches = null, bool onlyTrackedBranches = false);
 

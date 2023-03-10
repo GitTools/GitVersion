@@ -124,7 +124,7 @@ branches:
         SetupConfigFileContent(text);
         var configuration = this.configurationProvider.ProvideForDirectory(this.repoPath);
 
-        configuration.Branches["bug"].Regex.ShouldBe("bug[/-]");
+        configuration.Branches["bug"].RegularExpression.ShouldBe("bug[/-]");
         configuration.Branches["bug"].Label.ShouldBe("bugfix");
     }
 

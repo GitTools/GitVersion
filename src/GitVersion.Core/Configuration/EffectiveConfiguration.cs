@@ -9,7 +9,7 @@ namespace GitVersion.Configuration;
 /// </summary>
 public class EffectiveConfiguration
 {
-    public EffectiveConfiguration(GitVersionConfiguration configuration, BranchConfiguration branchConfiguration)
+    public EffectiveConfiguration(GitVersionConfiguration configuration, IBranchConfiguration branchConfiguration)
     {
         configuration.NotNull();
         branchConfiguration.NotNull();
@@ -42,7 +42,7 @@ public class EffectiveConfiguration
         Label = branchConfiguration.Label ?? string.Empty;
         NextVersion = configuration.NextVersion;
         Increment = branchConfiguration.Increment;
-        BranchPrefixToTrim = branchConfiguration.Regex;
+        BranchPrefixToTrim = branchConfiguration.RegularExpression;
         PreventIncrementOfMergedBranchVersion = branchConfiguration.PreventIncrementOfMergedBranchVersion ?? false;
         LabelNumberPattern = branchConfiguration.LabelNumberPattern;
         TrackMergeTarget = branchConfiguration.TrackMergeTarget ?? false;

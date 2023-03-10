@@ -84,7 +84,7 @@
       "$ref": "#/$defs/string1"
     },
     "label-prefix": {
-      "description": "A regex which is used to trim Git tags before processing. Defaults to [vV]?",
+      "description": "A regular expression which is used to trim Git tags before processing. Defaults to [vV]?",
       "type": "string"
     },
     "label-pre-release-weight": {
@@ -97,7 +97,7 @@
     "major-version-bump-message": {
       "format": "regex",
       "pattern": "\u0027\\\u002Bsemver:\\s?(breaking|major)\u0027",
-      "description": "The regex to match commit messages with to perform a major version increment. Default set to \u0027\\\u002Bsemver:\\s?(breaking|major)\u0027",
+      "description": "The regular expression to match commit messages with to perform a major version increment. Default set to \u0027\\\u002Bsemver:\\s?(breaking|major)\u0027",
       "type": "string"
     },
     "merge-message-formats": {
@@ -110,7 +110,7 @@
     "minor-version-bump-message": {
       "format": "regex",
       "pattern": "\u0027\\\u002Bsemver:\\s?(feature|minor)\u0027",
-      "description": "The regex to match commit messages with to perform a minor version increment. Default set to \u0027\\\u002Bsemver:\\s?(feature|minor)\u0027",
+      "description": "The regular expression to match commit messages with to perform a minor version increment. Default set to \u0027\\\u002Bsemver:\\s?(feature|minor)\u0027",
       "type": "string"
     },
     "next-version": {
@@ -126,7 +126,7 @@
     "patch-version-bump-message": {
       "format": "regex",
       "pattern": "\u0027\\\u002Bsemver:\\s?(fix|patch)\u0027",
-      "description": "The regex to match commit messages with to perform a patch version increment. Default set to \u0027\\\u002Bsemver:\\s?(fix|patch)\u0027",
+      "description": "The regular expression to match commit messages with to perform a patch version increment. Default set to \u0027\\\u002Bsemver:\\s?(fix|patch)\u0027",
       "type": "string"
     },
     "pre-release-weight": {
@@ -246,7 +246,7 @@
       ]
     },
     "Nullable\u006012": {
-      "description": "Indicates this branch config represents a release branch in GitFlow.",
+      "description": "Indicates this branch configuration represents a release branch in GitFlow.",
       "type": [
         "boolean",
         "null"
@@ -267,7 +267,7 @@
     "string1": {
       "format": "regex",
       "pattern": "[/-](?\u003Cnumber\u003E\\d\u002B)[-/]",
-      "description": "The regex pattern to use to extract the number from the branch name. Defaults to \u0027[/-](?\u003Cnumber\u003E\\d\u002B)[-/]\u0027.",
+      "description": "The regular expression pattern to use to extract the number from the branch name. Defaults to \u0027[/-](?\u003Cnumber\u003E\\d\u002B)[-/]\u0027.",
       "type": "string"
     },
     "Nullable\u006013": {
@@ -285,7 +285,7 @@
       ]
     },
     "string2": {
-      "description": "The regex pattern to use to match this branch.",
+      "description": "The regular expression pattern to use to match this branch.",
       "type": "string"
     },
     "array1": {
@@ -311,7 +311,7 @@
       ]
     },
     "Nullable\u006017": {
-      "description": "Indicates this branch config represents develop in GitFlow.",
+      "description": "Indicates this branch configuration represents develop in GitFlow.",
       "type": [
         "boolean",
         "null"

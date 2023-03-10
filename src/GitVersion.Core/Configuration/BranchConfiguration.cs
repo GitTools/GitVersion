@@ -41,10 +41,10 @@ public record BranchConfiguration : IBranchConfiguration
 
     [JsonPropertyName("regex")]
     [JsonPropertyDescription("The regular expression pattern to use to match this branch.")]
-    public string? Regex { get; internal set; }
+    public string? RegularExpression { get; internal set; }
 
     [JsonIgnore]
-    string? IBranchConfiguration.RegularExpression => Regex;
+    string? IBranchConfiguration.RegularExpression => RegularExpression;
 
     [JsonPropertyName("source-branches")]
     [JsonPropertyDescription("The source branches for this branch.")]
@@ -76,7 +76,7 @@ public record BranchConfiguration : IBranchConfiguration
     [JsonPropertyDescription("Provides a way to translate the PreReleaseLabel to a number.")]
     public int? PreReleaseWeight { get; internal set; }
 
-    public virtual BranchConfiguration Inherit(BranchConfiguration configuration)
+    public virtual IBranchConfiguration Inherit(IBranchConfiguration configuration)
     {
         configuration.NotNull();
 
@@ -91,7 +91,7 @@ public record BranchConfiguration : IBranchConfiguration
             TrackMergeTarget = TrackMergeTarget ?? configuration.TrackMergeTarget,
             TrackMergeMessage = TrackMergeMessage ?? configuration.TrackMergeMessage,
             CommitMessageIncrementing = CommitMessageIncrementing ?? configuration.CommitMessageIncrementing,
-            Regex = Regex ?? configuration.Regex,
+            RegularExpression = RegularExpression ?? configuration.RegularExpression,
             TracksReleaseBranches = TracksReleaseBranches ?? configuration.TracksReleaseBranches,
             IsReleaseBranch = IsReleaseBranch ?? configuration.IsReleaseBranch,
             IsMainline = IsMainline ?? configuration.IsMainline,

@@ -11,31 +11,31 @@ public static class ConfigurationExtensions
 
     private static EffectiveConfiguration GetEffectiveConfiguration(this GitVersionConfiguration configuration, ReferenceName branchName)
     {
-        BranchConfiguration branchConfiguration = configuration.GetBranchConfiguration(branchName);
+        IBranchConfiguration branchConfiguration = configuration.GetBranchConfiguration(branchName);
         return new EffectiveConfiguration(configuration, branchConfiguration);
     }
 
-    public static BranchConfiguration GetBranchConfiguration(this GitVersionConfiguration configuration, IBranch branch)
+    public static IBranchConfiguration GetBranchConfiguration(this GitVersionConfiguration configuration, IBranch branch)
         => GetBranchConfiguration(configuration, branch.NotNull().Name);
 
-    public static BranchConfiguration GetBranchConfiguration(this GitVersionConfiguration configuration, ReferenceName branchName)
+    public static IBranchConfiguration GetBranchConfiguration(this GitVersionConfiguration configuration, ReferenceName branchName)
     {
         var branchConfiguration = GetBranchConfigurations(configuration, branchName.WithoutOrigin).FirstOrDefault();
-        branchConfiguration ??= new()
+        branchConfiguration ??= new BranchConfiguration()
         {
-            Regex = string.Empty,
+            RegularExpression = string.Empty,
             Label = ConfigurationConstants.BranchNamePlaceholder,
             Increment = IncrementStrategy.Inherit
         };
         return branchConfiguration;
     }
 
-    private static IEnumerable<BranchConfiguration> GetBranchConfigurations(GitVersionConfiguration configuration, string branchName)
+    private static IEnumerable<IBranchConfiguration> GetBranchConfigurations(GitVersionConfiguration configuration, string branchName)
     {
-        BranchConfiguration? unknownBranchConfiguration = null;
-        foreach ((string key, BranchConfiguration branchConfiguration) in configuration.Branches)
+        IBranchConfiguration? unknownBranchConfiguration = null;
+        foreach ((string key, IBranchConfiguration branchConfiguration) in configuration.Branches)
         {
-            if (((IBranchConfiguration)branchConfiguration).IsMatch(branchName))
+            if (branchConfiguration.IsMatch(branchName))
             {
                 if (key == "unknown")
                 {
@@ -129,8 +129,6 @@ public static class ConfigurationExtensions
         return null;
     }
 
-    public static List<KeyValuePair<string, BranchConfiguration>> GetReleaseBranchConfiguration(this GitVersionConfiguration configuration) =>
-        configuration.Branches
-            .Where(b => b.Value.IsReleaseBranch == true)
-            .ToList();
+    public static List<KeyValuePair<string, IBranchConfiguration>> GetReleaseBranchConfiguration(this GitVersionConfiguration configuration) =>
+        ((IGitVersionConfiguration)configuration).Branches.Where(b => b.Value.IsReleaseBranch == true).ToList();
 }

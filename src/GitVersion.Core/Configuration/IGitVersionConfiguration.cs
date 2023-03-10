@@ -38,7 +38,7 @@ public interface IGitVersionConfiguration : IBranchConfiguration
 
     SemanticVersionFormat SemanticVersionFormat { get; }
 
-    IReadOnlyDictionary<string, BranchConfiguration> Branches { get; }
+    IReadOnlyDictionary<string, IBranchConfiguration> Branches { get; }
 
     IIgnoreConfiguration Ignore { get; }
 }

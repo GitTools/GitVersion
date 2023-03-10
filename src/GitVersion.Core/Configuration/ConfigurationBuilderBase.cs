@@ -33,7 +33,7 @@ internal abstract class ConfigurationBuilderBase<TConfigurationBuilder> : IConfi
     private bool? trackMergeTarget;
     private bool? trackMergeMessage;
     private CommitMessageIncrementMode? commitMessageIncrementing;
-    private string? regex;
+    private string? regularExpression;
     private bool? tracksReleaseBranches;
     private bool? isReleaseBranch;
     private bool? isMainline;
@@ -261,9 +261,9 @@ internal abstract class ConfigurationBuilderBase<TConfigurationBuilder> : IConfi
         return (TConfigurationBuilder)this;
     }
 
-    public virtual TConfigurationBuilder WithRegex(string? value)
+    public virtual TConfigurationBuilder WithRegularExpression(string? value)
     {
-        this.regex = value;
+        this.regularExpression = value;
         return (TConfigurationBuilder)this;
     }
 
@@ -322,7 +322,7 @@ internal abstract class ConfigurationBuilderBase<TConfigurationBuilder> : IConfi
         WithTrackMergeTarget(value.TrackMergeTarget);
         WithTrackMergeMessage(value.TrackMergeMessage);
         WithCommitMessageIncrementing(value.CommitMessageIncrementing);
-        WithRegex(value.Regex);
+        WithRegularExpression(value.RegularExpression);
         WithTracksReleaseBranches(value.TracksReleaseBranches);
         WithIsReleaseBranch(value.IsReleaseBranch);
         WithIsMainline(value.IsMainline);
@@ -369,7 +369,7 @@ internal abstract class ConfigurationBuilderBase<TConfigurationBuilder> : IConfi
             VersioningMode = this.versioningMode,
             Label = this.label,
             Increment = this.increment,
-            Regex = this.regex,
+            RegularExpression = this.regularExpression,
             TracksReleaseBranches = this.tracksReleaseBranches,
             TrackMergeTarget = this.trackMergeTarget,
             TrackMergeMessage = this.trackMergeMessage,
@@ -406,7 +406,7 @@ internal abstract class ConfigurationBuilderBase<TConfigurationBuilder> : IConfi
     }
 
     private static void FinalizeBranchConfiguration(GitVersionConfiguration configuration, string branchName,
-        BranchConfiguration branchConfiguration)
+        IBranchConfiguration branchConfiguration)
     {
 
         var branches = new Dictionary<string, BranchConfiguration>(configuration.Branches);
@@ -423,7 +423,7 @@ internal abstract class ConfigurationBuilderBase<TConfigurationBuilder> : IConfi
         {
             var helpUrl = $"{System.Environment.NewLine}See https://gitversion.net/docs/reference/configuration for more info";
 
-            if (branchConfiguration.Regex == null)
+            if (branchConfiguration.RegularExpression == null)
             {
                 throw new ConfigurationException($"Branch configuration '{name}' is missing required configuration 'regex'{helpUrl}");
             }

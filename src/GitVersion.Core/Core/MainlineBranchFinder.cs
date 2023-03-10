@@ -10,7 +10,7 @@ internal class MainlineBranchFinder
 {
     private readonly GitVersionConfiguration configuration;
     private readonly ILog log;
-    private readonly List<BranchConfiguration> mainlineBranchConfigurations;
+    private readonly List<IBranchConfiguration> mainlineBranchConfigurations;
     private readonly IGitRepository repository;
     private readonly IRepositoryStore repositoryStore;
 
@@ -22,7 +22,7 @@ internal class MainlineBranchFinder
         this.repositoryStore = repositoryStore.NotNull();
         this.repository = repository.NotNull();
         this.configuration = configuration.NotNull();
-        mainlineBranchConfigurations = configuration.Branches.Select(e => e.Value).Where(b => b.IsMainline == true).ToList();
+        mainlineBranchConfigurations = ((IGitVersionConfiguration)configuration).Branches.Select(e => e.Value).Where(b => b.IsMainline == true).ToList();
         this.log = log.NotNull();
     }
 
@@ -54,12 +54,12 @@ internal class MainlineBranchFinder
             this.log = log;
         }
 
-        public bool IsMainline(BranchConfiguration value)
+        public bool IsMainline(IBranchConfiguration value)
         {
-            if (value.Regex == null)
+            if (value.RegularExpression == null)
                 return false;
 
-            var mainlineRegex = value.Regex;
+            var mainlineRegex = value.RegularExpression;
             var branchName = this.branch.Name.WithoutOrigin;
             var match = Regex.IsMatch(branchName, mainlineRegex);
             this.log.Info($"'{mainlineRegex}' {(match ? "matches" : "does not match")} '{branchName}'.");

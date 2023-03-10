@@ -68,7 +68,7 @@ public class OtherBranchScenarios : TestBase
         var configuration = GitFlowConfigurationBuilder.New
             .WithBranch("other", builder => builder
                 .WithIncrement(IncrementStrategy.Patch)
-                .WithRegex(".*")
+                .WithRegularExpression(".*")
                 .WithSourceBranches()
                 .WithLabel(label))
             .Build();

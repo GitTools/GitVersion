@@ -91,7 +91,8 @@ public sealed record GitVersionConfiguration : BranchConfiguration, IGitVersionC
     public SemanticVersionFormat SemanticVersionFormat { get; internal set; }
 
     [JsonIgnore]
-    IReadOnlyDictionary<string, BranchConfiguration> IGitVersionConfiguration.Branches => Branches;
+    IReadOnlyDictionary<string, IBranchConfiguration> IGitVersionConfiguration.Branches
+        => Branches.ToDictionary(element => element.Key, element => (IBranchConfiguration)element.Value);
 
     [JsonPropertyName("branches")]
     [JsonPropertyDescription("The header for all the individual branch configuration.")]
@@ -104,7 +105,7 @@ public sealed record GitVersionConfiguration : BranchConfiguration, IGitVersionC
     [JsonPropertyDescription("The header property for the ignore configuration.")]
     public IgnoreConfiguration Ignore { get; internal set; } = new();
 
-    public override BranchConfiguration Inherit(BranchConfiguration configuration) => throw new NotSupportedException();
+    public override IBranchConfiguration Inherit(IBranchConfiguration configuration) => throw new NotSupportedException();
 
     public override string ToString()
     {

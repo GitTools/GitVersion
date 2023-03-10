@@ -70,7 +70,7 @@ public class NextVersionCalculatorTests : TestBase
         var configuration = GitFlowConfigurationBuilder.New
             .WithNextVersion("1.0.0")
             .WithBranch("custom", builder => builder
-                .WithRegex("custom/")
+                .WithRegularExpression("custom/")
                 .WithLabel(ConfigurationConstants.BranchNamePlaceholder)
                 .WithSourceBranches()
             )
@@ -212,7 +212,7 @@ public class NextVersionCalculatorTests : TestBase
         var configuration = GitFlowConfigurationBuilder.New
             .WithNextVersion("1.0.0")
             .WithBranch("custom", builder => builder
-                .WithRegex("custom/")
+                .WithRegularExpression("custom/")
                 .WithLabel($"alpha.{ConfigurationConstants.BranchNamePlaceholder}")
                 .WithSourceBranches()
             )

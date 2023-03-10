@@ -105,8 +105,8 @@ public class RepositoryStore : IRepositoryStore
     public IBranch? FindMainBranch(GitVersionConfiguration configuration)
     {
         var branches = configuration.Branches;
-        var mainBranchRegex = configuration.Branches[ConfigurationConstants.MainBranchKey].Regex
-            ?? branches[ConfigurationConstants.MasterBranchKey].Regex;
+        var mainBranchRegex = branches[ConfigurationConstants.MainBranchKey].RegularExpression
+            ?? branches[ConfigurationConstants.MasterBranchKey].RegularExpression;
 
         if (mainBranchRegex == null)
         {
@@ -131,11 +131,11 @@ public class RepositoryStore : IRepositoryStore
         }
     }
 
-    public IEnumerable<IBranch> GetReleaseBranches(IEnumerable<KeyValuePair<string, BranchConfiguration>> releaseBranchConfig)
+    public IEnumerable<IBranch> GetReleaseBranches(IEnumerable<KeyValuePair<string, IBranchConfiguration>> releaseBranchConfig)
         => this.repository.Branches.Where(b => IsReleaseBranch(b, releaseBranchConfig));
 
-    private static bool IsReleaseBranch(INamedReference branch, IEnumerable<KeyValuePair<string, BranchConfiguration>> releaseBranchConfig)
-        => releaseBranchConfig.Any(c => c.Value.Regex != null && Regex.IsMatch(branch.Name.WithoutOrigin, c.Value.Regex));
+    private static bool IsReleaseBranch(INamedReference branch, IEnumerable<KeyValuePair<string, IBranchConfiguration>> releaseBranchConfig)
+        => releaseBranchConfig.Any(c => c.Value.RegularExpression != null && Regex.IsMatch(branch.Name.WithoutOrigin, c.Value.RegularExpression));
 
     public IEnumerable<IBranch> ExcludingBranches(IEnumerable<IBranch> branchesToExclude) => this.repository.Branches.ExcludeBranches(branchesToExclude);
 
