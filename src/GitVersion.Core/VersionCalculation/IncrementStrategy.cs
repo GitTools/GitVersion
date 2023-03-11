@@ -9,7 +9,7 @@ public enum IncrementStrategy
     Minor,
     Patch,
     /// <summary>
-    /// Uses the <see cref="BranchConfiguration.Increment"/>, <see cref="BranchConfiguration.PreventIncrementOfMergedBranchVersion"/> and <see cref="BranchConfiguration.TracksReleaseBranches"/>
+    /// Uses the <see cref="IBranchConfiguration.Increment"/>, <see cref="IBranchConfiguration.PreventIncrementOfMergedBranchVersion"/> and <see cref="IBranchConfiguration.TracksReleaseBranches"/>
     /// of the "parent" branch (i.e. the branch where the current branch was branched from).
     /// </summary>
     Inherit

@@ -73,7 +73,7 @@ ignore:
     [Test]
     public void NewInstanceShouldBeEmpty()
     {
-        var ignoreConfig = new IgnoreConfiguration();
+        IIgnoreConfiguration ignoreConfig = new IgnoreConfiguration();
 
         ignoreConfig.IsEmpty.ShouldBeTrue();
     }

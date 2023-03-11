@@ -9,7 +9,7 @@ namespace GitVersion.Configuration;
 /// </summary>
 public class EffectiveConfiguration
 {
-    public EffectiveConfiguration(GitVersionConfiguration configuration, BranchConfiguration branchConfiguration)
+    public EffectiveConfiguration(IGitVersionConfiguration configuration, IBranchConfiguration branchConfiguration)
     {
         configuration.NotNull();
         branchConfiguration.NotNull();
@@ -17,10 +17,8 @@ public class EffectiveConfiguration
         var fallbackBranchConfiguration = configuration.GetFallbackBranchConfiguration();
         branchConfiguration = branchConfiguration.Inherit(fallbackBranchConfiguration);
 
-        var name = branchConfiguration.Name;
-
         if (!branchConfiguration.VersioningMode.HasValue)
-            throw new Exception($"Configuration value for 'Versioning mode' for branch {name} has no value. (this should not happen, please report an issue)");
+            throw new Exception("Configuration value for 'Versioning mode' has no value. (this should not happen, please report an issue)");
 
         if (!configuration.AssemblyVersioningScheme.HasValue)
             throw new Exception("Configuration value for 'AssemblyVersioningScheme' has no value. (this should not happen, please report an issue)");
@@ -44,7 +42,7 @@ public class EffectiveConfiguration
         Label = branchConfiguration.Label ?? string.Empty;
         NextVersion = configuration.NextVersion;
         Increment = branchConfiguration.Increment;
-        BranchPrefixToTrim = branchConfiguration.Regex;
+        BranchPrefixToTrim = branchConfiguration.RegularExpression;
         PreventIncrementOfMergedBranchVersion = branchConfiguration.PreventIncrementOfMergedBranchVersion ?? false;
         LabelNumberPattern = branchConfiguration.LabelNumberPattern;
         TrackMergeTarget = branchConfiguration.TrackMergeTarget ?? false;

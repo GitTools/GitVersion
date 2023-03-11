@@ -17,27 +17,27 @@ public interface IRepositoryStore
 
     IBranch GetTargetBranch(string? targetBranchName);
     IBranch? FindBranch(string? branchName);
-    IBranch? FindMainBranch(GitVersionConfiguration configuration);
-    IEnumerable<IBranch> FindMainlineBranches(GitVersionConfiguration configuration);
-    IEnumerable<IBranch> GetReleaseBranches(IEnumerable<KeyValuePair<string, BranchConfiguration>> releaseBranchConfig);
+    IBranch? FindMainBranch(IGitVersionConfiguration configuration);
+    IEnumerable<IBranch> FindMainlineBranches(IGitVersionConfiguration configuration);
+    IEnumerable<IBranch> GetReleaseBranches(IEnumerable<KeyValuePair<string, IBranchConfiguration>> releaseBranchConfig);
     IEnumerable<IBranch> ExcludingBranches(IEnumerable<IBranch> branchesToExclude);
     IEnumerable<IBranch> GetBranchesContainingCommit(ICommit? commit, IEnumerable<IBranch>? branches = null, bool onlyTrackedBranches = false);
 
-    IDictionary<string, List<IBranch>> GetMainlineBranches(ICommit commit, GitVersionConfiguration configuration);
+    IDictionary<string, List<IBranch>> GetMainlineBranches(ICommit commit, IGitVersionConfiguration configuration);
 
     /// <summary>
     /// Find the commit where the given branch was branched from another branch.
     /// If there are multiple such commits and branches, tries to guess based on commit histories.
     /// </summary>
-    BranchCommit FindCommitBranchWasBranchedFrom(IBranch? branch, GitVersionConfiguration configuration, params IBranch[] excludedBranches);
+    BranchCommit FindCommitBranchWasBranchedFrom(IBranch? branch, IGitVersionConfiguration configuration, params IBranch[] excludedBranches);
 
-    IEnumerable<BranchCommit> FindCommitBranchesWasBranchedFrom(IBranch branch, GitVersionConfiguration configuration, params IBranch[] excludedBranches);
+    IEnumerable<BranchCommit> FindCommitBranchesWasBranchedFrom(IBranch branch, IGitVersionConfiguration configuration, params IBranch[] excludedBranches);
 
-    IEnumerable<BranchCommit> FindCommitBranchesWasBranchedFrom(IBranch branch, GitVersionConfiguration configuration, IEnumerable<IBranch> excludedBranches);
+    IEnumerable<BranchCommit> FindCommitBranchesWasBranchedFrom(IBranch branch, IGitVersionConfiguration configuration, IEnumerable<IBranch> excludedBranches);
 
-    IEnumerable<IBranch> GetSourceBranches(IBranch branch, GitVersionConfiguration configuration, params IBranch[] excludedBranches);
+    IEnumerable<IBranch> GetSourceBranches(IBranch branch, IGitVersionConfiguration configuration, params IBranch[] excludedBranches);
 
-    IEnumerable<IBranch> GetSourceBranches(IBranch branch, GitVersionConfiguration configuration, IEnumerable<IBranch> excludedBranches);
+    IEnumerable<IBranch> GetSourceBranches(IBranch branch, IGitVersionConfiguration configuration, IEnumerable<IBranch> excludedBranches);
 
     SemanticVersion? GetCurrentCommitTaggedVersion(ICommit? commit, string? tagPrefix, SemanticVersionFormat versionFormat, bool handleDetachedBranch);
 

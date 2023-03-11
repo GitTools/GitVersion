@@ -8,15 +8,15 @@ namespace GitVersion;
 
 internal class MainlineBranchFinder
 {
-    private readonly GitVersionConfiguration configuration;
+    private readonly IGitVersionConfiguration configuration;
     private readonly ILog log;
-    private readonly List<BranchConfiguration> mainlineBranchConfigurations;
+    private readonly List<IBranchConfiguration> mainlineBranchConfigurations;
     private readonly IGitRepository repository;
     private readonly IRepositoryStore repositoryStore;
 
     public MainlineBranchFinder(IRepositoryStore repositoryStore,
                                 IGitRepository repository,
-                                GitVersionConfiguration configuration,
+                                IGitVersionConfiguration configuration,
                                 ILog log)
     {
         this.repositoryStore = repositoryStore.NotNull();
@@ -54,12 +54,12 @@ internal class MainlineBranchFinder
             this.log = log;
         }
 
-        public bool IsMainline(BranchConfiguration value)
+        public bool IsMainline(IBranchConfiguration value)
         {
-            if (value.Regex == null)
+            if (value.RegularExpression == null)
                 return false;
 
-            var mainlineRegex = value.Regex;
+            var mainlineRegex = value.RegularExpression;
             var branchName = this.branch.Name.WithoutOrigin;
             var match = Regex.IsMatch(branchName, mainlineRegex);
             this.log.Info($"'{mainlineRegex}' {(match ? "matches" : "does not match")} '{branchName}'.");
@@ -70,11 +70,11 @@ internal class MainlineBranchFinder
     private class BranchOriginFinder
     {
         private readonly ICommit commit;
-        private readonly GitVersionConfiguration configuration;
+        private readonly IGitVersionConfiguration configuration;
         private readonly ILog log;
         private readonly IRepositoryStore repositoryStore;
 
-        public BranchOriginFinder(ICommit commit, IRepositoryStore repositoryStore, GitVersionConfiguration configuration, ILog log)
+        public BranchOriginFinder(ICommit commit, IRepositoryStore repositoryStore, IGitVersionConfiguration configuration, ILog log)
         {
             this.repositoryStore = repositoryStore;
             this.commit = commit;

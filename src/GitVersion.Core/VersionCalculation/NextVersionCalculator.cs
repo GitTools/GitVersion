@@ -45,7 +45,9 @@ public class NextVersionCalculator : INextVersionCalculator
 
         var nextVersion = Calculate(Context.CurrentBranch, Context.Configuration);
         var baseVersion = nextVersion.BaseVersion;
-        var preReleaseTagName = nextVersion.Configuration.GetBranchSpecificTag(this.log, Context.CurrentBranch.Name.Friendly, baseVersion.BranchNameOverride);
+        var preReleaseTagName = nextVersion.Configuration.GetBranchSpecificTag(
+            this.log, Context.CurrentBranch.Name.WithoutOrigin, baseVersion.BranchNameOverride
+        );
 
         SemanticVersion semver;
         if (nextVersion.Configuration.VersioningMode == VersioningMode.Mainline)
@@ -109,7 +111,7 @@ public class NextVersionCalculator : INextVersionCalculator
 
     private static bool MajorMinorPatchEqual(SemanticVersion version, SemanticVersion other) => version.CompareTo(other, false) == 0;
 
-    private NextVersion Calculate(IBranch branch, GitVersionConfiguration configuration)
+    private NextVersion Calculate(IBranch branch, IGitVersionConfiguration configuration)
     {
         using (log.IndentLog("Calculating the base versions"))
         {
@@ -187,7 +189,7 @@ public class NextVersionCalculator : INextVersionCalculator
         }
     }
 
-    private IEnumerable<NextVersion> GetNextVersions(IBranch branch, GitVersionConfiguration configuration)
+    private IEnumerable<NextVersion> GetNextVersions(IBranch branch, IGitVersionConfiguration configuration)
     {
         if (branch.Tip == null)
             throw new GitVersionException("No commits found on the current branch.");
@@ -238,7 +240,7 @@ public class NextVersionCalculator : INextVersionCalculator
         }
     }
 
-    private bool IncludeVersion(BaseVersion baseVersion, IgnoreConfiguration ignoreConfiguration)
+    private bool IncludeVersion(BaseVersion baseVersion, IIgnoreConfiguration ignoreConfiguration)
     {
         foreach (var versionFilter in ignoreConfiguration.ToFilters())
         {

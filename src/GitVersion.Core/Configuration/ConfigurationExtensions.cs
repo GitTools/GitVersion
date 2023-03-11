@@ -6,45 +6,44 @@ namespace GitVersion.Configuration;
 
 public static class ConfigurationExtensions
 {
-    public static EffectiveConfiguration GetEffectiveConfiguration(this GitVersionConfiguration configuration, IBranch branch)
+    public static EffectiveConfiguration GetEffectiveConfiguration(this IGitVersionConfiguration configuration, IBranch branch)
         => GetEffectiveConfiguration(configuration, branch.NotNull().Name);
 
-    private static EffectiveConfiguration GetEffectiveConfiguration(this GitVersionConfiguration configuration, ReferenceName branchName)
+    private static EffectiveConfiguration GetEffectiveConfiguration(this IGitVersionConfiguration configuration, ReferenceName branchName)
     {
-        BranchConfiguration branchConfiguration = configuration.GetBranchConfiguration(branchName);
+        IBranchConfiguration branchConfiguration = configuration.GetBranchConfiguration(branchName);
         return new EffectiveConfiguration(configuration, branchConfiguration);
     }
 
-    public static BranchConfiguration GetBranchConfiguration(this GitVersionConfiguration configuration, IBranch branch)
+    public static IBranchConfiguration GetBranchConfiguration(this IGitVersionConfiguration configuration, IBranch branch)
         => GetBranchConfiguration(configuration, branch.NotNull().Name);
 
-    public static BranchConfiguration GetBranchConfiguration(this GitVersionConfiguration configuration, ReferenceName branchName)
+    public static IBranchConfiguration GetBranchConfiguration(this IGitVersionConfiguration configuration, ReferenceName branchName)
     {
         var branchConfiguration = GetBranchConfigurations(configuration, branchName.WithoutOrigin).FirstOrDefault();
-        branchConfiguration ??= new()
+        branchConfiguration ??= new BranchConfiguration()
         {
-            Name = branchName.WithoutOrigin,
-            Regex = string.Empty,
+            RegularExpression = string.Empty,
             Label = ConfigurationConstants.BranchNamePlaceholder,
             Increment = IncrementStrategy.Inherit
         };
         return branchConfiguration;
     }
 
-    private static IEnumerable<BranchConfiguration> GetBranchConfigurations(GitVersionConfiguration configuration, string branchName)
+    private static IEnumerable<IBranchConfiguration> GetBranchConfigurations(IGitVersionConfiguration configuration, string branchName)
     {
-        BranchConfiguration? unknownBranchConfiguration = null;
-        foreach (var item in configuration.Branches.Values.Where(branch => branch.Regex != null))
+        IBranchConfiguration? unknownBranchConfiguration = null;
+        foreach ((string key, IBranchConfiguration branchConfiguration) in configuration.Branches)
         {
-            if (item.Regex != null && Regex.IsMatch(branchName, item.Regex, RegexOptions.IgnoreCase))
+            if (branchConfiguration.IsMatch(branchName))
             {
-                if (item.Name == "unknown")
+                if (key == "unknown")
                 {
-                    unknownBranchConfiguration = item;
+                    unknownBranchConfiguration = branchConfiguration;
                 }
                 else
                 {
-                    yield return item;
+                    yield return branchConfiguration;
                 }
             }
         }
@@ -52,19 +51,16 @@ public static class ConfigurationExtensions
         if (unknownBranchConfiguration != null) yield return unknownBranchConfiguration;
     }
 
-    public static BranchConfiguration GetFallbackBranchConfiguration(this GitVersionConfiguration configuration)
-    {
-        BranchConfiguration result = new(configuration);
-        return result;
-    }
+    public static IBranchConfiguration GetFallbackBranchConfiguration(this IGitVersionConfiguration configuration) => configuration;
 
-    public static bool IsReleaseBranch(this GitVersionConfiguration configuration, IBranch branch)
+    public static bool IsReleaseBranch(this IGitVersionConfiguration configuration, IBranch branch)
         => IsReleaseBranch(configuration, branch.NotNull().Name);
 
-    public static bool IsReleaseBranch(this GitVersionConfiguration configuration, ReferenceName branchName)
+    public static bool IsReleaseBranch(this IGitVersionConfiguration configuration, ReferenceName branchName)
         => configuration.GetBranchConfiguration(branchName).IsReleaseBranch ?? false;
 
-    public static string GetBranchSpecificTag(this EffectiveConfiguration configuration, ILog log, string? branchFriendlyName, string? branchNameOverride)
+    public static string GetBranchSpecificTag(this EffectiveConfiguration configuration, ILog log, string? branchFriendlyName,
+        string? branchNameOverride)
     {
         var tagToUse = configuration.Label;
         if (tagToUse == "useBranchName")
@@ -133,8 +129,6 @@ public static class ConfigurationExtensions
         return null;
     }
 
-    public static List<KeyValuePair<string, BranchConfiguration>> GetReleaseBranchConfiguration(this GitVersionConfiguration configuration) =>
-        configuration.Branches
-            .Where(b => b.Value.IsReleaseBranch == true)
-            .ToList();
+    public static List<KeyValuePair<string, IBranchConfiguration>> GetReleaseBranchConfiguration(this IGitVersionConfiguration configuration) =>
+        configuration.Branches.Where(b => b.Value.IsReleaseBranch == true).ToList();
 }

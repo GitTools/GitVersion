@@ -40,7 +40,7 @@ public class FeatureBranchScenarios : TestBase
         var configuration = GitFlowConfigurationBuilder.New
             .WithBranch("unstable", builder => builder
                 .WithIncrement(IncrementStrategy.Minor)
-                .WithRegex("unstable")
+                .WithRegularExpression("unstable")
                 .WithSourceBranches()
                 .WithIsSourceBranchFor("feature"))
             .Build();

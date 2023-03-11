@@ -172,14 +172,14 @@ public class EffectiveBranchConfigurationFinderTests
                 .WithVersioningMode(VersioningMode.ContinuousDeployment)
                 .WithIncrement(IncrementStrategy.None)
                 .WithLabel("latest")
-                .WithRegex("release/latest")
+                .WithRegularExpression("release/latest")
             )
             .WithBranch("release", builder => builder
                 .WithConfiguration(branchConfiguration)
                 .WithVersioningMode(VersioningMode.ContinuousDeployment)
                 .WithIncrement(IncrementStrategy.Patch)
                 .WithLabel("not-latest")
-                .WithRegex("releases?[/-]")
+                .WithRegularExpression("releases?[/-]")
             )
             .Build();
 

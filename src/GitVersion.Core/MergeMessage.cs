@@ -16,7 +16,7 @@ public class MergeMessage
         new("RemoteTracking", @"^Merge remote-tracking branch '(?<SourceBranch>[^\s]*)'(?: into (?<TargetBranch>[^\s]*))*")
     };
 
-    public MergeMessage(string mergeMessage, GitVersionConfiguration configuration)
+    public MergeMessage(string mergeMessage, IGitVersionConfiguration configuration)
     {
         mergeMessage.NotNull();
 

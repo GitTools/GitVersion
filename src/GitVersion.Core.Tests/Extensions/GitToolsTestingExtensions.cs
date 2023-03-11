@@ -19,11 +19,11 @@ public static class GitToolsTestingExtensions
     public static ICommit CreateMockCommit()
     {
         var objectId = Substitute.For<IObjectId>();
-        objectId.Sha.Returns(Guid.NewGuid().ToString("n") + "00000000");
-
+        var sha = Guid.NewGuid().ToString("n") + "00000000";
+        objectId.Sha.Returns(sha);
         var commit = Substitute.For<ICommit>();
         commit.Id.Returns(objectId);
-        commit.Sha.Returns(objectId.Sha);
+        commit.Sha.Returns(sha);
         commit.Message.Returns("Commit " + commitCount++);
         commit.Parents.Returns(Enumerable.Empty<ICommit>());
         commit.When.Returns(when.AddSeconds(1));
@@ -49,11 +49,14 @@ public static class GitToolsTestingExtensions
         => repository.Branches.FirstOrDefault(branch => branch.Name.WithoutOrigin == branchName)
             ?? throw new GitVersionException($"Branch {branchName} not found");
 
-    public static void DumpGraph(this IGitRepository repository, Action<string>? writer = null, int? maxCommits = null) => GitExtensions.DumpGraph(repository.Path, writer, maxCommits);
+    public static void DumpGraph(this IGitRepository repository, Action<string>? writer = null, int? maxCommits = null)
+        => GitExtensions.DumpGraph(repository.Path, writer, maxCommits);
 
-    public static void DumpGraph(this IRepository repository, Action<string>? writer = null, int? maxCommits = null) => GitExtensions.DumpGraph(repository.ToGitRepository().Path, writer, maxCommits);
+    public static void DumpGraph(this IRepository repository, Action<string>? writer = null, int? maxCommits = null)
+        => GitExtensions.DumpGraph(repository.ToGitRepository().Path, writer, maxCommits);
 
-    public static VersionVariables GetVersion(this RepositoryFixtureBase fixture, GitVersionConfiguration? configuration = null, IRepository? repository = null, string? commitId = null, bool onlyTrackedBranches = true, string? targetBranch = null)
+    public static VersionVariables GetVersion(this RepositoryFixtureBase fixture, IGitVersionConfiguration? configuration = null,
+        IRepository? repository = null, string? commitId = null, bool onlyTrackedBranches = true, string? targetBranch = null)
     {
         repository ??= fixture.Repository;
         configuration ??= GitFlowConfigurationBuilder.New.Build();
@@ -106,7 +109,8 @@ public static class GitToolsTestingExtensions
         writer.Write(versionInfo.ToString());
     }
 
-    public static void AssertFullSemver(this RepositoryFixtureBase fixture, string fullSemver, GitVersionConfiguration? configuration = null, IRepository? repository = null, string? commitId = null, bool onlyTrackedBranches = true, string? targetBranch = null)
+    public static void AssertFullSemver(this RepositoryFixtureBase fixture, string fullSemver,
+        IGitVersionConfiguration? configuration = null, IRepository? repository = null, string? commitId = null, bool onlyTrackedBranches = true, string? targetBranch = null)
     {
         repository ??= fixture.Repository;
 

@@ -23,7 +23,7 @@ internal sealed class GitHubFlowConfigurationBuilder : ConfigurationBuilderBase<
             LabelPreReleaseWeight = 60000,
             UpdateBuildNumber = true,
             VersioningMode = VersioningMode.ContinuousDelivery,
-            Regex = string.Empty,
+            RegularExpression = string.Empty,
             Label = ConfigurationConstants.BranchNamePlaceholder,
             Increment = IncrementStrategy.Inherit,
             CommitMessageIncrementing = CommitMessageIncrementMode.Enabled,
@@ -35,10 +35,10 @@ internal sealed class GitHubFlowConfigurationBuilder : ConfigurationBuilderBase<
             IsMainline = false
         });
 
-        WithBranch(MainBranch.Name).WithConfiguration(new()
+        WithBranch(MainBranch.Name).WithConfiguration(new BranchConfiguration()
         {
             Increment = IncrementStrategy.Patch,
-            Regex = MainBranch.RegexPattern,
+            RegularExpression = MainBranch.RegexPattern,
             SourceBranches = new HashSet<string> {
                 ReleaseBranch.Name
             },
@@ -51,10 +51,10 @@ internal sealed class GitHubFlowConfigurationBuilder : ConfigurationBuilderBase<
             PreReleaseWeight = 55000
         });
 
-        WithBranch(ReleaseBranch.Name).WithConfiguration(new()
+        WithBranch(ReleaseBranch.Name).WithConfiguration(new BranchConfiguration()
         {
             Increment = IncrementStrategy.None,
-            Regex = ReleaseBranch.RegexPattern,
+            RegularExpression = ReleaseBranch.RegexPattern,
             SourceBranches = new HashSet<string> {
                 MainBranch.Name,
                 ReleaseBranch.Name
@@ -68,10 +68,10 @@ internal sealed class GitHubFlowConfigurationBuilder : ConfigurationBuilderBase<
             PreReleaseWeight = 30000
         });
 
-        WithBranch(FeatureBranch.Name).WithConfiguration(new()
+        WithBranch(FeatureBranch.Name).WithConfiguration(new BranchConfiguration()
         {
             Increment = IncrementStrategy.Inherit,
-            Regex = FeatureBranch.RegexPattern,
+            RegularExpression = FeatureBranch.RegexPattern,
             VersioningMode = VersioningMode.ContinuousDelivery,
             SourceBranches = new HashSet<string> {
                 MainBranch.Name,
@@ -82,10 +82,10 @@ internal sealed class GitHubFlowConfigurationBuilder : ConfigurationBuilderBase<
             PreReleaseWeight = 30000
         });
 
-        WithBranch(PullRequestBranch.Name).WithConfiguration(new()
+        WithBranch(PullRequestBranch.Name).WithConfiguration(new BranchConfiguration()
         {
             Increment = IncrementStrategy.Inherit,
-            Regex = PullRequestBranch.RegexPattern,
+            RegularExpression = PullRequestBranch.RegexPattern,
             VersioningMode = VersioningMode.ContinuousDelivery,
             SourceBranches = new HashSet<string> {
                 MainBranch.Name,
@@ -97,9 +97,9 @@ internal sealed class GitHubFlowConfigurationBuilder : ConfigurationBuilderBase<
             PreReleaseWeight = 30000
         });
 
-        WithBranch(UnknownBranch.Name).WithConfiguration(new()
+        WithBranch(UnknownBranch.Name).WithConfiguration(new BranchConfiguration()
         {
-            Regex = UnknownBranch.RegexPattern,
+            RegularExpression = UnknownBranch.RegexPattern,
             Label = ConfigurationConstants.BranchNamePlaceholder,
             VersioningMode = VersioningMode.ContinuousDelivery,
             Increment = IncrementStrategy.Inherit,

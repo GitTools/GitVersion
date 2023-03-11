@@ -26,7 +26,7 @@ public class ConfigurationProvider : IConfigurationProvider
         this.configInitWizard = configInitWizard.NotNull();
     }
 
-    public GitVersionConfiguration Provide(IReadOnlyDictionary<object, object?>? overrideConfiguration)
+    public IGitVersionConfiguration Provide(IReadOnlyDictionary<object, object?>? overrideConfiguration)
     {
         var gitVersionOptions = this.options.Value;
         var workingDirectory = gitVersionOptions.WorkingDirectory;
@@ -54,14 +54,14 @@ public class ConfigurationProvider : IConfigurationProvider
         stream.Flush();
     }
 
-    internal GitVersionConfiguration ProvideForDirectory(string? workingDirectory,
+    internal IGitVersionConfiguration ProvideForDirectory(string? workingDirectory,
                                                          IReadOnlyDictionary<object, object?>? overrideConfiguration = null)
     {
         this.configFileLocator.TryGetConfigurationFile(workingDirectory, null, out var configFilePath);
         return ProvideConfiguration(configFilePath, overrideConfiguration);
     }
 
-    private GitVersionConfiguration ProvideConfiguration(string? configFile,
+    private IGitVersionConfiguration ProvideConfiguration(string? configFile,
                                                          IReadOnlyDictionary<object, object?>? overrideConfiguration = null)
     {
         var overrideConfigurationFromFile = this.configFileLocator.ReadOverrideConfiguration(configFile);
@@ -84,8 +84,9 @@ public class ConfigurationProvider : IConfigurationProvider
         }
         catch (YamlException exception)
         {
+            var baseException = exception.GetBaseException();
             throw new WarningException(
-                $"Could not build the configuration instance because following exception occurred: '{exception.Message}' " +
+                $"Could not build the configuration instance because following exception occurred: '{baseException.Message}' " +
                 "Please ensure that the /overrideconfig parameters are correct and the configuration file is in the correct format."
             );
         }

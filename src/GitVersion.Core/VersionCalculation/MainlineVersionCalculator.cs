@@ -150,7 +150,7 @@ internal class MainlineVersionCalculator : IMainlineVersionCalculator
 
         if (!mainlineBranches.Any())
         {
-            var mainlineBranchConfigsString = string.Join(", ", Context.Configuration.Branches.Where(b => b.Value.IsMainline == true).Select(b => b.Value.Name));
+            var mainlineBranchConfigsString = string.Join(", ", Context.Configuration.Branches.Where(b => b.Value.IsMainline == true).Select(b => b.Key));
             throw new WarningException($"No branches can be found matching the commit {Context.CurrentCommit?.Sha} in the configured Mainline branches: {mainlineBranchConfigsString}");
         }
 

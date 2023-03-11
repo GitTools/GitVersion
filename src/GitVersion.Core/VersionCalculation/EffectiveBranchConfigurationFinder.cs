@@ -16,7 +16,7 @@ public class EffectiveBranchConfigurationFinder : IEffectiveBranchConfigurationF
         this.repositoryStore = repositoryStore.NotNull();
     }
 
-    public virtual IEnumerable<EffectiveBranchConfiguration> GetConfigurations(IBranch branch, GitVersionConfiguration configuration)
+    public virtual IEnumerable<EffectiveBranchConfiguration> GetConfigurations(IBranch branch, IGitVersionConfiguration configuration)
     {
         branch.NotNull();
         configuration.NotNull();
@@ -25,7 +25,7 @@ public class EffectiveBranchConfigurationFinder : IEffectiveBranchConfigurationF
     }
 
     private IEnumerable<EffectiveBranchConfiguration> GetEffectiveConfigurationsRecursive(
-        IBranch branch, GitVersionConfiguration configuration, BranchConfiguration? childBranchConfiguration, HashSet<IBranch> traversedBranches)
+        IBranch branch, IGitVersionConfiguration configuration, IBranchConfiguration? childBranchConfiguration, HashSet<IBranch> traversedBranches)
     {
         if (!traversedBranches.Add(branch)) yield break; // This should never happen!! But it is good to have a circuit breaker.
 

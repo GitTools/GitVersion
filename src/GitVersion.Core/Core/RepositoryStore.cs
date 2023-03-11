@@ -102,10 +102,11 @@ public class RepositoryStore : IRepositoryStore
 
     public IBranch? FindBranch(string? branchName) => this.repository.Branches.FirstOrDefault(x => x.Name.EquivalentTo(branchName));
 
-    public IBranch? FindMainBranch(GitVersionConfiguration configuration)
+    public IBranch? FindMainBranch(IGitVersionConfiguration configuration)
     {
-        var mainBranchRegex = configuration.Branches[ConfigurationConstants.MainBranchKey].Regex
-            ?? configuration.Branches[ConfigurationConstants.MasterBranchKey].Regex;
+        var branches = configuration.Branches;
+        var mainBranchRegex = branches[ConfigurationConstants.MainBranchKey].RegularExpression
+            ?? branches[ConfigurationConstants.MasterBranchKey].RegularExpression;
 
         if (mainBranchRegex == null)
         {
@@ -116,7 +117,7 @@ public class RepositoryStore : IRepositoryStore
             Regex.IsMatch(b.Name.WithoutOrigin, mainBranchRegex, RegexOptions.IgnoreCase));
     }
 
-    public IEnumerable<IBranch> FindMainlineBranches(GitVersionConfiguration configuration)
+    public IEnumerable<IBranch> FindMainlineBranches(IGitVersionConfiguration configuration)
     {
         configuration.NotNull();
 
@@ -130,11 +131,11 @@ public class RepositoryStore : IRepositoryStore
         }
     }
 
-    public IEnumerable<IBranch> GetReleaseBranches(IEnumerable<KeyValuePair<string, BranchConfiguration>> releaseBranchConfig)
+    public IEnumerable<IBranch> GetReleaseBranches(IEnumerable<KeyValuePair<string, IBranchConfiguration>> releaseBranchConfig)
         => this.repository.Branches.Where(b => IsReleaseBranch(b, releaseBranchConfig));
 
-    private static bool IsReleaseBranch(INamedReference branch, IEnumerable<KeyValuePair<string, BranchConfiguration>> releaseBranchConfig)
-        => releaseBranchConfig.Any(c => c.Value.Regex != null && Regex.IsMatch(branch.Name.WithoutOrigin, c.Value.Regex));
+    private static bool IsReleaseBranch(INamedReference branch, IEnumerable<KeyValuePair<string, IBranchConfiguration>> releaseBranchConfig)
+        => releaseBranchConfig.Any(c => c.Value.RegularExpression != null && Regex.IsMatch(branch.Name.WithoutOrigin, c.Value.RegularExpression));
 
     public IEnumerable<IBranch> ExcludingBranches(IEnumerable<IBranch> branchesToExclude) => this.repository.Branches.ExcludeBranches(branchesToExclude);
 
@@ -144,16 +145,17 @@ public class RepositoryStore : IRepositoryStore
         return branchesContainingCommitFinder.GetBranchesContainingCommit(commit, branches, onlyTrackedBranches);
     }
 
-    public IDictionary<string, List<IBranch>> GetMainlineBranches(ICommit commit, GitVersionConfiguration configuration)
+    public IDictionary<string, List<IBranch>> GetMainlineBranches(ICommit commit, IGitVersionConfiguration configuration)
     {
         var mainlineBranchFinder = new MainlineBranchFinder(this, this.repository, configuration, this.log);
         return mainlineBranchFinder.FindMainlineBranches(commit);
     }
 
-    public IEnumerable<IBranch> GetSourceBranches(IBranch branch, GitVersionConfiguration configuration, params IBranch[] excludedBranches)
+    public IEnumerable<IBranch> GetSourceBranches(IBranch branch, IGitVersionConfiguration configuration,
+            params IBranch[] excludedBranches)
         => GetSourceBranches(branch, configuration, (IEnumerable<IBranch>)excludedBranches);
 
-    public IEnumerable<IBranch> GetSourceBranches(IBranch branch, GitVersionConfiguration configuration, IEnumerable<IBranch> excludedBranches)
+    public IEnumerable<IBranch> GetSourceBranches(IBranch branch, IGitVersionConfiguration configuration, IEnumerable<IBranch> excludedBranches)
     {
         var returnedBranches = new HashSet<IBranch>();
 
@@ -188,7 +190,8 @@ public class RepositoryStore : IRepositoryStore
     ///     Find the commit where the given branch was branched from another branch.
     ///     If there are multiple such commits and branches, tries to guess based on commit histories.
     /// </summary>
-    public BranchCommit FindCommitBranchWasBranchedFrom(IBranch? branch, GitVersionConfiguration configuration, params IBranch[] excludedBranches)
+    public BranchCommit FindCommitBranchWasBranchedFrom(IBranch? branch, IGitVersionConfiguration configuration,
+        params IBranch[] excludedBranches)
     {
         branch = branch.NotNull();
 
@@ -216,10 +219,10 @@ public class RepositoryStore : IRepositoryStore
         }
     }
 
-    public IEnumerable<BranchCommit> FindCommitBranchesWasBranchedFrom(IBranch branch, GitVersionConfiguration configuration, params IBranch[] excludedBranches)
+    public IEnumerable<BranchCommit> FindCommitBranchesWasBranchedFrom(IBranch branch, IGitVersionConfiguration configuration, params IBranch[] excludedBranches)
         => FindCommitBranchesWasBranchedFrom(branch, configuration, (IEnumerable<IBranch>)excludedBranches);
 
-    public IEnumerable<BranchCommit> FindCommitBranchesWasBranchedFrom(IBranch branch, GitVersionConfiguration configuration, IEnumerable<IBranch> excludedBranches)
+    public IEnumerable<BranchCommit> FindCommitBranchesWasBranchedFrom(IBranch branch, IGitVersionConfiguration configuration, IEnumerable<IBranch> excludedBranches)
     {
         using (this.log.IndentLog($"Finding branches source of '{branch}'"))
         {

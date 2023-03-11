@@ -6,19 +6,19 @@ namespace GitVersion.Core.Tests;
 [TestFixture]
 public class MergeMessageTests : TestBase
 {
-    private readonly GitVersionConfiguration configuration = new() { LabelPrefix = ConfigurationConstants.DefaultLabelPrefix };
+    private readonly GitFlowConfigurationBuilder configurationBuilder = GitFlowConfigurationBuilder.New;
 
     [Test]
     public void NullMessageStringThrows() =>
         // Act / Assert
-        Should.Throw<ArgumentNullException>(() => new MergeMessage(null!, this.configuration));
+        Should.Throw<ArgumentNullException>(() => new MergeMessage(null!, this.configurationBuilder.Build()));
 
     [TestCase("")]
     [TestCase("\t\t  ")]
     public void EmptyMessageString(string message)
     {
         // Act
-        var sut = new MergeMessage(message, this.configuration);
+        var sut = new MergeMessage(message, this.configurationBuilder.Build());
 
         // Assert
         sut.TargetBranch.ShouldBeNull();
@@ -67,7 +67,7 @@ public class MergeMessageTests : TestBase
         SemanticVersion expectedVersion)
     {
         // Act
-        var sut = new MergeMessage(message, this.configuration);
+        var sut = new MergeMessage(message, this.configurationBuilder.Build());
 
         // Assert
         sut.FormatName.ShouldBe("Default");
@@ -97,7 +97,7 @@ public class MergeMessageTests : TestBase
         int? expectedPullRequestNumber)
     {
         // Act
-        var sut = new MergeMessage(message, this.configuration);
+        var sut = new MergeMessage(message, this.configurationBuilder.Build());
 
         // Assert
         sut.FormatName.ShouldBe("GitHubPull");
@@ -132,7 +132,7 @@ public class MergeMessageTests : TestBase
         int? expectedPullRequestNumber)
     {
         // Act
-        var sut = new MergeMessage(message, this.configuration);
+        var sut = new MergeMessage(message, this.configurationBuilder.Build());
 
         // Assert
         sut.FormatName.ShouldBe("BitBucketPull");
@@ -162,7 +162,7 @@ Merge in aaa/777 from release/2.2.0 to {MainBranch}
         int? expectedPullRequestNumber)
     {
         // Act
-        var sut = new MergeMessage(message, this.configuration);
+        var sut = new MergeMessage(message, this.configurationBuilder.Build());
 
         // Assert
         sut.FormatName.ShouldBe("BitBucketPullv7");
@@ -193,7 +193,7 @@ Merge in aaa/777 from release/2.2.0 to {MainBranch}
         SemanticVersion expectedVersion)
     {
         // Act
-        var sut = new MergeMessage(message, this.configuration);
+        var sut = new MergeMessage(message, this.configurationBuilder.Build());
 
         // Assert
         sut.FormatName.ShouldBe("SmartGit");
@@ -224,7 +224,7 @@ Merge in aaa/777 from release/2.2.0 to {MainBranch}
         SemanticVersion expectedVersion)
     {
         // Act
-        var sut = new MergeMessage(message, this.configuration);
+        var sut = new MergeMessage(message, this.configurationBuilder.Build());
 
         // Assert
         sut.FormatName.ShouldBe("RemoteTracking");
@@ -247,7 +247,7 @@ Merge in aaa/777 from release/2.2.0 to {MainBranch}
     public void ParsesInvalidMergeMessage(string message)
     {
         // Act
-        var sut = new MergeMessage(message, this.configuration);
+        var sut = new MergeMessage(message, this.configurationBuilder.Build());
 
         // Assert
         sut.FormatName.ShouldBeNull();
@@ -264,13 +264,13 @@ Merge in aaa/777 from release/2.2.0 to {MainBranch}
         // Arrange
         const string message = "My custom message";
         const string definition = "MyCustom";
-        this.configuration.MergeMessageFormats = new Dictionary<string, string>
+        this.configurationBuilder.WithMergeMessageFormats(new Dictionary<string, string>
         {
             [definition] = message
-        };
+        });
 
         // Act
-        var sut = new MergeMessage(message, this.configuration);
+        var sut = new MergeMessage(message, this.configurationBuilder.Build());
 
         // Assert
         sut.FormatName.ShouldBe(definition);
@@ -288,15 +288,15 @@ Merge in aaa/777 from release/2.2.0 to {MainBranch}
         // Arrange
         const string format = "My custom message";
         const string definition = "MyCustom";
-        this.configuration.MergeMessageFormats = new Dictionary<string, string>
+        this.configurationBuilder.WithMergeMessageFormats(new Dictionary<string, string>
         {
             ["Default2"] = "some example",
             ["Default3"] = "another example",
             [definition] = format
-        };
+        });
 
         // Act
-        var sut = new MergeMessage(format, this.configuration);
+        var sut = new MergeMessage(format, this.configurationBuilder.Build());
 
         // Assert
         sut.FormatName.ShouldBe(definition);
@@ -314,16 +314,16 @@ Merge in aaa/777 from release/2.2.0 to {MainBranch}
         // Arrange
         const string format = @"^Merged PR #(?<PullRequestNumber>\d+) into (?<TargetBranch>[^\s]*) from (?:(?<SourceBranch>[^\s]*))";
         const string definition = "MyCustom";
-        this.configuration.MergeMessageFormats = new Dictionary<string, string>
+        this.configurationBuilder.WithMergeMessageFormats(new Dictionary<string, string>
         {
             [definition] = format
-        };
+        });
         const int pr = 1234;
         const string target = MainBranch;
         const string source = "feature/2.0.0/example";
 
         // Act
-        var sut = new MergeMessage($"Merged PR #{pr} into {target} from {source}", this.configuration);
+        var sut = new MergeMessage($"Merged PR #{pr} into {target} from {source}", this.configurationBuilder.Build());
 
         // Assert
         sut.FormatName.ShouldBe(definition);
@@ -341,15 +341,15 @@ Merge in aaa/777 from release/2.2.0 to {MainBranch}
         // Arrange
         const string format = @"^Merge (branch|tag) '(?<SourceBranch>[^']*)'(?: into (?<TargetBranch>[^\s]*))*";
         const string definition = "MyCustom";
-        this.configuration.MergeMessageFormats = new Dictionary<string, string>
+        this.configurationBuilder.WithMergeMessageFormats(new Dictionary<string, string>
         {
             [definition] = format,
             ["Default2"] = format,
             ["Default3"] = format
-        };
+        });
 
         // Act
-        var sut = new MergeMessage("Merge branch 'this'", this.configuration);
+        var sut = new MergeMessage("Merge branch 'this'", this.configurationBuilder.Build());
 
         // Assert
         sut.FormatName.ShouldBe(definition);

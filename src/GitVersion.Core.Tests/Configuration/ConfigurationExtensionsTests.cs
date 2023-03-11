@@ -13,9 +13,9 @@ public class ConfigurationExtensionsTests : TestBase
         {
             Branches = new Dictionary<string, BranchConfiguration>
             {
-                { "foo", new BranchConfiguration { Name = "foo" } },
-                { "bar", new BranchConfiguration { Name = "bar", IsReleaseBranch = true } },
-                { "baz", new BranchConfiguration { Name = "baz", IsReleaseBranch = true } }
+                { "foo", new BranchConfiguration() },
+                { "bar", new BranchConfiguration { IsReleaseBranch = true } },
+                { "baz", new BranchConfiguration { IsReleaseBranch = true } }
             }
         };
 
