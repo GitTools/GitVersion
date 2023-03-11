@@ -19,11 +19,11 @@ public static class GitToolsTestingExtensions
     public static ICommit CreateMockCommit()
     {
         var objectId = Substitute.For<IObjectId>();
-        objectId.Sha.Returns(Guid.NewGuid().ToString("n") + "00000000");
-
+        var sha = Guid.NewGuid().ToString("n") + "00000000";
+        objectId.Sha.Returns(sha);
         var commit = Substitute.For<ICommit>();
         commit.Id.Returns(objectId);
-        commit.Sha.Returns(objectId.Sha);
+        commit.Sha.Returns(sha);
         commit.Message.Returns("Commit " + commitCount++);
         commit.Parents.Returns(Enumerable.Empty<ICommit>());
         commit.When.Returns(when.AddSeconds(1));

@@ -239,13 +239,13 @@ GitVersion.Configuration.IGitVersionConfiguration.Workflow.get -> string?
 GitVersion.Configuration.IgnoreConfiguration
 GitVersion.Configuration.IgnoreConfiguration.Before.get -> System.DateTimeOffset?
 GitVersion.Configuration.IgnoreConfiguration.Before.init -> void
-GitVersion.Configuration.IgnoreConfiguration.Shas.get -> System.Collections.Generic.List<string!>!
+GitVersion.Configuration.IgnoreConfiguration.Shas.get -> System.Collections.Generic.HashSet<string!>!
 GitVersion.Configuration.IgnoreConfiguration.Shas.init -> void
+GitVersion.Configuration.IgnoreConfigurationExtensions
 GitVersion.Configuration.IIgnoreConfiguration
 GitVersion.Configuration.IIgnoreConfiguration.Before.get -> System.DateTimeOffset?
 GitVersion.Configuration.IIgnoreConfiguration.IsEmpty.get -> bool
-GitVersion.Configuration.IIgnoreConfiguration.Shas.get -> System.Collections.Generic.IReadOnlyList<string!>!
-GitVersion.Configuration.IIgnoreConfiguration.ToFilters() -> System.Collections.Generic.IEnumerable<GitVersion.VersionCalculation.IVersionFilter!>!
+GitVersion.Configuration.IIgnoreConfiguration.Shas.get -> System.Collections.Generic.IReadOnlyCollection<string!>!
 GitVersion.Configuration.Init.EditConfigStep
 GitVersion.Configuration.Init.EditConfigStep.EditConfigStep(GitVersion.Logging.IConsole! console, GitVersion.IFileSystem! fileSystem, GitVersion.Logging.ILog! log, GitVersion.Configuration.Init.Wizard.IConfigInitStepFactory! stepFactory) -> void
 GitVersion.Configuration.Init.GitVersionInitModule
@@ -1088,6 +1088,7 @@ static GitVersion.Configuration.ConfigurationSerializer.Deserialize<T>(string! i
 static GitVersion.Configuration.ConfigurationSerializer.Read(System.IO.TextReader! reader) -> GitVersion.Configuration.GitVersionConfiguration!
 static GitVersion.Configuration.ConfigurationSerializer.Serialize(object! graph) -> string!
 static GitVersion.Configuration.ConfigurationSerializer.Write(GitVersion.Configuration.IGitVersionConfiguration! configuration, System.IO.TextWriter! writer) -> void
+static GitVersion.Configuration.IgnoreConfigurationExtensions.ToFilters(this GitVersion.Configuration.IIgnoreConfiguration! source) -> System.Collections.Generic.IEnumerable<GitVersion.VersionCalculation.IVersionFilter!>!
 static GitVersion.Configuration.Init.StepResult.ExitWithoutSaving() -> GitVersion.Configuration.Init.StepResult!
 static GitVersion.Configuration.Init.StepResult.InvalidResponseSelected() -> GitVersion.Configuration.Init.StepResult!
 static GitVersion.Configuration.Init.StepResult.Ok() -> GitVersion.Configuration.Init.StepResult!
@@ -1224,8 +1225,6 @@ virtual GitVersion.Configuration.BranchConfigurationBuilder.WithTrackMergeMessag
 virtual GitVersion.Configuration.BranchConfigurationBuilder.WithTrackMergeTarget(bool? value) -> GitVersion.Configuration.BranchConfigurationBuilder!
 virtual GitVersion.Configuration.BranchConfigurationBuilder.WithTracksReleaseBranches(bool? value) -> GitVersion.Configuration.BranchConfigurationBuilder!
 virtual GitVersion.Configuration.BranchConfigurationBuilder.WithVersioningMode(GitVersion.VersionCalculation.VersioningMode? value) -> GitVersion.Configuration.BranchConfigurationBuilder!
-virtual GitVersion.Configuration.IgnoreConfiguration.IsEmpty.get -> bool
-virtual GitVersion.Configuration.IgnoreConfiguration.ToFilters() -> System.Collections.Generic.IEnumerable<GitVersion.VersionCalculation.IVersionFilter!>!
 virtual GitVersion.VersionCalculation.EffectiveBranchConfigurationFinder.GetConfigurations(GitVersion.IBranch! branch, GitVersion.Configuration.IGitVersionConfiguration! configuration) -> System.Collections.Generic.IEnumerable<GitVersion.Configuration.EffectiveBranchConfiguration!>!
 virtual GitVersion.VersionCalculation.FallbackVersionStrategy.GetBaseVersions(GitVersion.Configuration.EffectiveBranchConfiguration! configuration) -> System.Collections.Generic.IEnumerable<GitVersion.VersionCalculation.BaseVersion!>!
 virtual GitVersion.VersionCalculation.NextVersionCalculator.FindVersion() -> GitVersion.VersionCalculation.NextVersion!

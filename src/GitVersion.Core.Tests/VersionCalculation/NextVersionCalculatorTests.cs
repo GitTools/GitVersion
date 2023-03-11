@@ -366,8 +366,7 @@ public class NextVersionCalculatorTests : TestBase
     {
         // Arrange
         var branchMock = GitToolsTestingExtensions.CreateMockBranch("main", GitToolsTestingExtensions.CreateMockCommit());
-        var fakeIgnoreConfig = new TestIgnoreConfig(new ExcludeSourcesContainingExclude());
-        var configuration = GitFlowConfigurationBuilder.New.WithIgnoreConfiguration(fakeIgnoreConfig).Build();
+        var configuration = GitFlowConfigurationBuilder.New.Build();
         var context = new GitVersionContext(branchMock, null, configuration, null, 0);
         var repositoryStoreMock = Substitute.For<IRepositoryStore>();
         var effectiveConfiguration = context.Configuration.GetEffectiveConfiguration(branchMock);
@@ -396,9 +395,10 @@ public class NextVersionCalculatorTests : TestBase
     public void ShouldFilterVersion()
     {
         // Arrange
+        var commitToExclude = GitToolsTestingExtensions.CreateMockCommit();
         var branchMock = GitToolsTestingExtensions.CreateMockBranch("main", GitToolsTestingExtensions.CreateMockCommit());
-        var fakeIgnoreConfig = new TestIgnoreConfig(new ExcludeSourcesContainingExclude());
-        var configuration = GitFlowConfigurationBuilder.New.WithIgnoreConfiguration(fakeIgnoreConfig).Build();
+        var ignoreConfiguration = IgnoreConfigurationBuilder.New.WithShas(commitToExclude.Sha).Build();
+        var configuration = GitFlowConfigurationBuilder.New.WithIgnoreConfiguration(ignoreConfiguration).Build();
         var context = new GitVersionContext(branchMock, null, configuration, null, 0);
         var repositoryStoreMock = Substitute.For<IRepositoryStore>();
         var effectiveConfiguration = context.Configuration.GetEffectiveConfiguration(branchMock);
@@ -407,7 +407,7 @@ public class NextVersionCalculatorTests : TestBase
         effectiveBranchConfigurationFinderMock.GetConfigurations(branchMock, configuration).Returns(new[] { effectiveBranchConfiguration });
         var incrementStrategyFinderMock = Substitute.For<IIncrementStrategyFinder>();
         repositoryStoreMock.GetSourceBranches(branchMock, configuration, Arg.Any<HashSet<IBranch>>()).Returns(Enumerable.Empty<IBranch>());
-        var higherVersion = new BaseVersion("exclude", false, new SemanticVersion(2), GitToolsTestingExtensions.CreateMockCommit(), null);
+        var higherVersion = new BaseVersion("exclude", false, new SemanticVersion(2), commitToExclude, null);
         var lowerVersion = new BaseVersion("dummy", false, new SemanticVersion(1), GitToolsTestingExtensions.CreateMockCommit(), null);
         var versionStrategies = new IVersionStrategy[] { new TestVersionStrategy(higherVersion, lowerVersion) };
         var mainlineVersionCalculatorMock = Substitute.For<IMainlineVersionCalculator>();
@@ -430,8 +430,7 @@ public class NextVersionCalculatorTests : TestBase
     {
         // Arrange
         var branchMock = GitToolsTestingExtensions.CreateMockBranch("main", GitToolsTestingExtensions.CreateMockCommit());
-        var fakeIgnoreConfig = new TestIgnoreConfig(new ExcludeSourcesContainingExclude());
-        var configuration = GitFlowConfigurationBuilder.New.WithIgnoreConfiguration(fakeIgnoreConfig)
+        var configuration = GitFlowConfigurationBuilder.New
             .WithBranch("main", builder => builder.WithVersioningMode(VersioningMode.Mainline))
             .Build();
         var context = new GitVersionContext(branchMock, null, configuration, null, 0);
@@ -471,34 +470,6 @@ public class NextVersionCalculatorTests : TestBase
         nextVersion.BaseVersion.SemanticVersion.ShouldNotBe(preReleaseVersion.SemanticVersion);
         nextVersion.BaseVersion.Source.ShouldBe(lowerVersion.Source);
         nextVersion.BaseVersion.SemanticVersion.ShouldBe(lowerVersion.SemanticVersion);
-    }
-
-    private record TestIgnoreConfig : IgnoreConfiguration
-    {
-        private readonly IVersionFilter filter;
-
-        public override bool IsEmpty => false;
-
-        public TestIgnoreConfig(IVersionFilter filter) => this.filter = filter;
-
-        public override IEnumerable<IVersionFilter> ToFilters()
-        {
-            yield return this.filter;
-        }
-    }
-
-    private class ExcludeSourcesContainingExclude : IVersionFilter
-    {
-        public bool Exclude(BaseVersion version, out string? reason)
-        {
-            reason = null;
-
-            if (!version.Source.Contains("exclude"))
-                return false;
-
-            reason = "was excluded";
-            return true;
-        }
     }
 
     private sealed class V1Strategy : IVersionStrategy
