@@ -408,7 +408,6 @@ internal abstract class ConfigurationBuilderBase<TConfigurationBuilder> : IConfi
     private static void FinalizeBranchConfiguration(GitVersionConfiguration configuration, string branchName,
         IBranchConfiguration branchConfiguration)
     {
-
         var branches = new Dictionary<string, BranchConfiguration>(configuration.Branches);
         foreach (var targetBranchName in branchConfiguration.IsSourceBranchFor)
         {

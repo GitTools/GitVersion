@@ -3,7 +3,6 @@ using GitVersion.VersionCalculation;
 
 namespace GitVersion.Configuration;
 
-
 public record IgnoreConfiguration : IIgnoreConfiguration
 {
     [JsonPropertyName("commits-before")]
@@ -26,5 +25,4 @@ public record IgnoreConfiguration : IIgnoreConfiguration
         if (Shas.Any()) yield return new ShaVersionFilter(Shas);
         if (Before.HasValue) yield return new MinDateVersionFilter(Before.Value);
     }
-
 }
