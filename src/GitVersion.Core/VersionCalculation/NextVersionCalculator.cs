@@ -58,21 +58,16 @@ public class NextVersionCalculator : INextVersionCalculator
         {
             var baseVersionBuildMetaData = this.mainlineVersionCalculator.CreateVersionBuildMetaData(baseVersion.BaseVersionSource);
 
-            if (baseVersionBuildMetaData.Sha != nextVersion.IncrementedVersion.BuildMetaData.Sha)
-            {
-                semver = nextVersion.IncrementedVersion;
-            }
-            else
-            {
-                semver = baseVersion.SemanticVersion;
-            }
+            semver = baseVersionBuildMetaData.Sha != nextVersion.IncrementedVersion.BuildMetaData.Sha
+                ? nextVersion.IncrementedVersion
+                : baseVersion.SemanticVersion;
 
             semver.BuildMetaData = baseVersionBuildMetaData;
 
             var lastPrefixedSemver = this.repositoryStore
                 .GetVersionTagsOnBranch(Context.CurrentBranch, Context.Configuration.LabelPrefix, Context.Configuration.SemanticVersionFormat)
                 .Where(v => MajorMinorPatchEqual(v, semver) && v.PreReleaseTag.HasTag())
-                .FirstOrDefault(v => v.PreReleaseTag.Name?.IsEquivalentTo(preReleaseTagName) == true);
+                .FirstOrDefault(v => v.PreReleaseTag.Name.IsEquivalentTo(preReleaseTagName));
 
             if (lastPrefixedSemver != null)
             {
@@ -198,9 +193,9 @@ public class NextVersionCalculator : INextVersionCalculator
         if (branch.Tip == null)
             throw new GitVersionException("No commits found on the current branch.");
 
-        return GetNextVersions();
+        return GetNextVersionsInternal();
 
-        IEnumerable<NextVersion> GetNextVersions()
+        IEnumerable<NextVersion> GetNextVersionsInternal()
         {
             var atLeastOneBaseVersionReturned = false;
 
