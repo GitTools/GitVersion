@@ -769,7 +769,7 @@ GitVersion.SemanticVersion.Major -> long
 GitVersion.SemanticVersion.Minor -> long
 GitVersion.SemanticVersion.Patch -> long
 GitVersion.SemanticVersion.PreReleaseTag -> GitVersion.SemanticVersionPreReleaseTag!
-GitVersion.SemanticVersion.SemanticVersion(GitVersion.SemanticVersion? semanticVersion) -> void
+GitVersion.SemanticVersion.SemanticVersion(GitVersion.SemanticVersion! semanticVersion) -> void
 GitVersion.SemanticVersion.SemanticVersion(long major = 0, long minor = 0, long patch = 0) -> void
 GitVersion.SemanticVersion.ToString(string! format) -> string!
 GitVersion.SemanticVersion.ToString(string? format, System.IFormatProvider? formatProvider) -> string!
@@ -823,15 +823,15 @@ GitVersion.SemanticVersionPreReleaseTag
 GitVersion.SemanticVersionPreReleaseTag.CompareTo(GitVersion.SemanticVersionPreReleaseTag? other) -> int
 GitVersion.SemanticVersionPreReleaseTag.Equals(GitVersion.SemanticVersionPreReleaseTag? other) -> bool
 GitVersion.SemanticVersionPreReleaseTag.HasTag() -> bool
-GitVersion.SemanticVersionPreReleaseTag.Name.get -> string?
+GitVersion.SemanticVersionPreReleaseTag.Name.get -> string!
 GitVersion.SemanticVersionPreReleaseTag.Name.set -> void
 GitVersion.SemanticVersionPreReleaseTag.Number.get -> long?
 GitVersion.SemanticVersionPreReleaseTag.Number.set -> void
 GitVersion.SemanticVersionPreReleaseTag.PromotedFromCommits.get -> bool?
 GitVersion.SemanticVersionPreReleaseTag.PromotedFromCommits.set -> void
 GitVersion.SemanticVersionPreReleaseTag.SemanticVersionPreReleaseTag() -> void
-GitVersion.SemanticVersionPreReleaseTag.SemanticVersionPreReleaseTag(GitVersion.SemanticVersionPreReleaseTag? preReleaseTag) -> void
-GitVersion.SemanticVersionPreReleaseTag.SemanticVersionPreReleaseTag(string? name, long? number) -> void
+GitVersion.SemanticVersionPreReleaseTag.SemanticVersionPreReleaseTag(GitVersion.SemanticVersionPreReleaseTag! preReleaseTag) -> void
+GitVersion.SemanticVersionPreReleaseTag.SemanticVersionPreReleaseTag(string! name, long? number) -> void
 GitVersion.SemanticVersionPreReleaseTag.ToString(string! format) -> string!
 GitVersion.SemanticVersionPreReleaseTag.ToString(string? format, System.IFormatProvider? formatProvider) -> string!
 GitVersion.SemanticVersionWithTag
@@ -878,8 +878,6 @@ GitVersion.VersionCalculation.ConfigNextVersionVersionStrategy
 GitVersion.VersionCalculation.ConfigNextVersionVersionStrategy.ConfigNextVersionVersionStrategy(System.Lazy<GitVersion.GitVersionContext!>! versionContext) -> void
 GitVersion.VersionCalculation.EffectiveBranchConfigurationFinder
 GitVersion.VersionCalculation.EffectiveBranchConfigurationFinder.EffectiveBranchConfigurationFinder(GitVersion.Logging.ILog! log, GitVersion.Common.IRepositoryStore! repositoryStore) -> void
-GitVersion.VersionCalculation.FallbackVersionStrategy
-GitVersion.VersionCalculation.FallbackVersionStrategy.FallbackVersionStrategy() -> void
 GitVersion.VersionCalculation.IEffectiveBranchConfigurationFinder
 GitVersion.VersionCalculation.IEffectiveBranchConfigurationFinder.GetConfigurations(GitVersion.IBranch! branch, GitVersion.Configuration.IGitVersionConfiguration! configuration) -> System.Collections.Generic.IEnumerable<GitVersion.Configuration.EffectiveBranchConfiguration!>!
 GitVersion.VersionCalculation.IIncrementStrategyFinder
@@ -1226,6 +1224,5 @@ virtual GitVersion.Configuration.BranchConfigurationBuilder.WithTrackMergeTarget
 virtual GitVersion.Configuration.BranchConfigurationBuilder.WithTracksReleaseBranches(bool? value) -> GitVersion.Configuration.BranchConfigurationBuilder!
 virtual GitVersion.Configuration.BranchConfigurationBuilder.WithVersioningMode(GitVersion.VersionCalculation.VersioningMode? value) -> GitVersion.Configuration.BranchConfigurationBuilder!
 virtual GitVersion.VersionCalculation.EffectiveBranchConfigurationFinder.GetConfigurations(GitVersion.IBranch! branch, GitVersion.Configuration.IGitVersionConfiguration! configuration) -> System.Collections.Generic.IEnumerable<GitVersion.Configuration.EffectiveBranchConfiguration!>!
-virtual GitVersion.VersionCalculation.FallbackVersionStrategy.GetBaseVersions(GitVersion.Configuration.EffectiveBranchConfiguration! configuration) -> System.Collections.Generic.IEnumerable<GitVersion.VersionCalculation.BaseVersion!>!
 virtual GitVersion.VersionCalculation.NextVersionCalculator.FindVersion() -> GitVersion.VersionCalculation.NextVersion!
 virtual GitVersion.VersionCalculation.TaggedCommitVersionStrategy.FormatSource(GitVersion.SemanticVersionWithTag! semanticVersion) -> string!

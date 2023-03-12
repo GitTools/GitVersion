@@ -131,7 +131,7 @@ public class OtherScenarios : TestBase
 
     [TestCase(false, "1.1.0-alpha.2")]
     [TestCase(true, "1.2.0-alpha.1")]
-    public void EnusreTrackMergeTargetStrategyWhichWillLookForTaggedMergecommits(bool trackMergeTarget, string expectedVersion)
+    public void EnsureTrackMergeTargetStrategyWhichWillLookForTaggedMergecommits(bool trackMergeTarget, string expectedVersion)
     {
         // * 9daa6ea 53 minutes ago  (HEAD -> develop)
         // | *   85536f2 55 minutes ago  (tag: 1.1.0, main)
@@ -159,6 +159,71 @@ public class OtherScenarios : TestBase
         fixture.MakeACommit();
 
         fixture.AssertFullSemver(expectedVersion, configuration);
+
+        fixture.Repository.DumpGraph();
+    }
+
+    [TestCase(1)]
+    [TestCase(2)]
+    public void EnsurePreReleaseTagLabelWillBeConsideredIfNoLabelIsDefined(long patchNumber)
+    {
+        var configuration = GitHubFlowConfigurationBuilder.New
+            .WithLabel(null)
+            .WithBranch("main", branchBuilder => branchBuilder
+                .WithLabel(null).WithIncrement(IncrementStrategy.Patch)
+            ).Build();
+
+        using var fixture = new EmptyRepositoryFixture("main");
+
+        fixture.MakeACommit();
+
+        // ✅ succeeds as expected
+        fixture.AssertFullSemver("0.0.1+1", configuration);
+
+        fixture.ApplyTag($"0.0.{patchNumber}-alpha.1");
+
+        // ✅ succeeds as expected
+        fixture.AssertFullSemver($"0.0.{patchNumber}-alpha.1", configuration);
+
+        fixture.MakeACommit();
+
+        // ✅ succeeds as expected
+        fixture.AssertFullSemver($"0.0.{patchNumber}-alpha.2+1", configuration);
+
+        fixture.MakeACommit();
+
+        // ✅ succeeds as expected
+        fixture.AssertFullSemver($"0.0.{patchNumber}-alpha.2+2", configuration);
+
+        fixture.MakeATaggedCommit($"0.0.{patchNumber}-beta.1");
+
+        // ✅ succeeds as expected
+        fixture.AssertFullSemver($"0.0.{patchNumber}-beta.1", configuration);
+
+        fixture.MakeACommit();
+
+        // ✅ succeeds as expected
+        fixture.AssertFullSemver($"0.0.{patchNumber}-beta.2+1", configuration);
+
+        fixture.MakeATaggedCommit($"0.0.{patchNumber}-beta.2");
+
+        // ✅ succeeds as expected
+        fixture.AssertFullSemver($"0.0.{patchNumber}-beta.2", configuration);
+
+        fixture.MakeACommit();
+
+        // ✅ succeeds as expected
+        fixture.AssertFullSemver($"0.0.{patchNumber}-beta.3+1", configuration);
+
+        fixture.ApplyTag($"0.0.{patchNumber}");
+
+        // ✅ succeeds as expected
+        fixture.AssertFullSemver($"0.0.{patchNumber}", configuration);
+
+        fixture.MakeACommit();
+
+        // ✅ succeeds as expected
+        fixture.AssertFullSemver($"0.0.{patchNumber + 1}+1", configuration);
 
         fixture.Repository.DumpGraph();
     }

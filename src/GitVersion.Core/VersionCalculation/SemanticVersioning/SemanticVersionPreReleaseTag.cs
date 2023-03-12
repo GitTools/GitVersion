@@ -5,7 +5,7 @@ using GitVersion.Helpers;
 
 namespace GitVersion;
 
-public class SemanticVersionPreReleaseTag :
+public sealed class SemanticVersionPreReleaseTag :
     IFormattable, IComparable<SemanticVersionPreReleaseTag>, IEquatable<SemanticVersionPreReleaseTag?>
 {
     private static readonly Regex ParseRegex = new(
@@ -15,24 +15,24 @@ public class SemanticVersionPreReleaseTag :
     private static readonly LambdaEqualityHelper<SemanticVersionPreReleaseTag> EqualityHelper =
         new(x => x.Name, x => x.Number);
 
-    public SemanticVersionPreReleaseTag()
-    {
-    }
+    public SemanticVersionPreReleaseTag() => Name = string.Empty;
 
-    public SemanticVersionPreReleaseTag(string? name, long? number)
+    public SemanticVersionPreReleaseTag(string name, long? number)
     {
-        Name = name;
+        Name = name.NotNullOrEmpty();
         Number = number;
     }
 
-    public SemanticVersionPreReleaseTag(SemanticVersionPreReleaseTag? preReleaseTag)
+    public SemanticVersionPreReleaseTag(SemanticVersionPreReleaseTag preReleaseTag)
     {
-        Name = preReleaseTag?.Name;
-        Number = preReleaseTag?.Number;
-        PromotedFromCommits = preReleaseTag?.PromotedFromCommits;
+        preReleaseTag.NotNull();
+
+        Name = preReleaseTag.Name;
+        Number = preReleaseTag.Number;
+        PromotedFromCommits = preReleaseTag.PromotedFromCommits;
     }
 
-    public string? Name { get; set; }
+    public string Name { get; set; }
 
     public long? Number { get; set; }
 
