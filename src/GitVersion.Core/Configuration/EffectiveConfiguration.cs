@@ -39,7 +39,7 @@ public class EffectiveConfiguration
         AssemblyFileVersioningFormat = configuration.AssemblyFileVersioningFormat;
         VersioningMode = branchConfiguration.VersioningMode.Value;
         LabelPrefix = configuration.LabelPrefix;
-        Label = branchConfiguration.Label ?? string.Empty;
+        Label = branchConfiguration.Label;
         NextVersion = configuration.NextVersion;
         Increment = branchConfiguration.Increment;
         BranchPrefixToTrim = branchConfiguration.RegularExpression;
@@ -140,7 +140,7 @@ public class EffectiveConfiguration
     /// <summary>
     ///     Label to use when calculating SemVer
     /// </summary>
-    public string Label { get; }
+    public string? Label { get; }
 
     public string? NextVersion { get; }
 

@@ -19,7 +19,7 @@ public sealed class SemanticVersionPreReleaseTag :
 
     public SemanticVersionPreReleaseTag(string name, long? number)
     {
-        Name = name.NotNullOrEmpty();
+        Name = name.NotNull();
         Number = number;
     }
 

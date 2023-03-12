@@ -59,32 +59,41 @@ public static class ConfigurationExtensions
     public static bool IsReleaseBranch(this IGitVersionConfiguration configuration, ReferenceName branchName)
         => configuration.GetBranchConfiguration(branchName).IsReleaseBranch ?? false;
 
-    public static string GetBranchSpecificTag(this EffectiveConfiguration configuration, ILog log, string? branchFriendlyName,
-        string? branchNameOverride)
+    public static string? GetBranchSpecificLabel(
+            this EffectiveConfiguration configuration, ILog log, ReferenceName branchName, string? branchNameOverride)
+        => GetBranchSpecificLabel(configuration, log, branchName.WithoutOrigin, branchNameOverride);
+
+    public static string? GetBranchSpecificLabel(
+        this EffectiveConfiguration configuration, ILog log, string? branchName, string? branchNameOverride)
     {
-        var tagToUse = configuration.Label;
-        if (tagToUse == "useBranchName")
+        configuration.NotNull();
+
+        var label = configuration.Label;
+        if (label == "useBranchName")
         {
-            tagToUse = ConfigurationConstants.BranchNamePlaceholder;
+            label = ConfigurationConstants.BranchNamePlaceholder;
         }
 
-        if (tagToUse.Contains(ConfigurationConstants.BranchNamePlaceholder))
+        if (label?.Contains(ConfigurationConstants.BranchNamePlaceholder) == true)
         {
             log.Info("Using branch name to calculate version tag");
 
-            var branchName = branchNameOverride ?? branchFriendlyName;
+            var value = branchNameOverride ?? branchName;
+
             if (!configuration.BranchPrefixToTrim.IsNullOrWhiteSpace())
             {
-                var branchNameTrimmed = branchName?.RegexReplace(configuration.BranchPrefixToTrim, string.Empty, RegexOptions.IgnoreCase);
-                branchName = branchNameTrimmed.IsNullOrEmpty() ? branchName : branchNameTrimmed;
+                var branchNameTrimmed = value?.RegexReplace(
+                    configuration.BranchPrefixToTrim, string.Empty, RegexOptions.IgnoreCase
+                );
+                value = branchNameTrimmed.IsNullOrEmpty() ? value : branchNameTrimmed;
             }
 
-            branchName = branchName?.RegexReplace("[^a-zA-Z0-9-]", "-");
+            value = value?.RegexReplace("[^a-zA-Z0-9-]", "-");
 
-            tagToUse = tagToUse.Replace(ConfigurationConstants.BranchNamePlaceholder, branchName);
+            label = label.Replace(ConfigurationConstants.BranchNamePlaceholder, value);
         }
 
-        return tagToUse;
+        return label;
     }
 
     public static (string GitDirectory, string WorkingTreeDirectory)? FindGitDir(this string path)

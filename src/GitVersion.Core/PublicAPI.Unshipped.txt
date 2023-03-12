@@ -151,7 +151,7 @@ GitVersion.Configuration.EffectiveConfiguration.EffectiveConfiguration(GitVersio
 GitVersion.Configuration.EffectiveConfiguration.Increment.get -> GitVersion.IncrementStrategy
 GitVersion.Configuration.EffectiveConfiguration.IsMainline.get -> bool
 GitVersion.Configuration.EffectiveConfiguration.IsReleaseBranch.get -> bool
-GitVersion.Configuration.EffectiveConfiguration.Label.get -> string!
+GitVersion.Configuration.EffectiveConfiguration.Label.get -> string?
 GitVersion.Configuration.EffectiveConfiguration.LabelNumberPattern.get -> string?
 GitVersion.Configuration.EffectiveConfiguration.LabelPreReleaseWeight.get -> int
 GitVersion.Configuration.EffectiveConfiguration.LabelPrefix.get -> string?
@@ -1076,7 +1076,8 @@ static GitVersion.Configuration.BranchConfigurationBuilder.New.get -> GitVersion
 static GitVersion.Configuration.ConfigurationExtensions.FindGitDir(this string! path) -> (string! GitDirectory, string! WorkingTreeDirectory)?
 static GitVersion.Configuration.ConfigurationExtensions.GetBranchConfiguration(this GitVersion.Configuration.IGitVersionConfiguration! configuration, GitVersion.IBranch! branch) -> GitVersion.Configuration.IBranchConfiguration!
 static GitVersion.Configuration.ConfigurationExtensions.GetBranchConfiguration(this GitVersion.Configuration.IGitVersionConfiguration! configuration, GitVersion.ReferenceName! branchName) -> GitVersion.Configuration.IBranchConfiguration!
-static GitVersion.Configuration.ConfigurationExtensions.GetBranchSpecificTag(this GitVersion.Configuration.EffectiveConfiguration! configuration, GitVersion.Logging.ILog! log, string? branchFriendlyName, string? branchNameOverride) -> string!
+static GitVersion.Configuration.ConfigurationExtensions.GetBranchSpecificLabel(this GitVersion.Configuration.EffectiveConfiguration! configuration, GitVersion.Logging.ILog! log, GitVersion.ReferenceName! branchName, string? branchNameOverride) -> string?
+static GitVersion.Configuration.ConfigurationExtensions.GetBranchSpecificLabel(this GitVersion.Configuration.EffectiveConfiguration! configuration, GitVersion.Logging.ILog! log, string? branchName, string? branchNameOverride) -> string?
 static GitVersion.Configuration.ConfigurationExtensions.GetEffectiveConfiguration(this GitVersion.Configuration.IGitVersionConfiguration! configuration, GitVersion.IBranch! branch) -> GitVersion.Configuration.EffectiveConfiguration!
 static GitVersion.Configuration.ConfigurationExtensions.GetFallbackBranchConfiguration(this GitVersion.Configuration.IGitVersionConfiguration! configuration) -> GitVersion.Configuration.IBranchConfiguration!
 static GitVersion.Configuration.ConfigurationExtensions.GetReleaseBranchConfiguration(this GitVersion.Configuration.IGitVersionConfiguration! configuration) -> System.Collections.Generic.List<System.Collections.Generic.KeyValuePair<string!, GitVersion.Configuration.IBranchConfiguration!>>!

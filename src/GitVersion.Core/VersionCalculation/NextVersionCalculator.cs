@@ -45,8 +45,8 @@ public class NextVersionCalculator : INextVersionCalculator
 
         var nextVersion = Calculate(Context.CurrentBranch, Context.Configuration);
         var baseVersion = nextVersion.BaseVersion;
-        var preReleaseTagName = nextVersion.Configuration.GetBranchSpecificTag(
-            this.log, Context.CurrentBranch.Name.WithoutOrigin, baseVersion.BranchNameOverride
+        var preReleaseTagName = nextVersion.Configuration.GetBranchSpecificLabel(
+            this.log, Context.CurrentBranch.Name, baseVersion.BranchNameOverride
         );
 
         SemanticVersion semver;
@@ -80,24 +80,36 @@ public class NextVersionCalculator : INextVersionCalculator
             }
         }
 
+        if (Context.CurrentCommitTaggedVersion is null || Context.CurrentCommitTaggedVersion?.HasPreReleaseTagWithLabel == true)
+        {
+            if (!string.IsNullOrEmpty(preReleaseTagName)
+                && Context.CurrentCommitTaggedVersion?.PreReleaseTag.Name == preReleaseTagName)
+            {
+                semver.PreReleaseTag = Context.CurrentCommitTaggedVersion.PreReleaseTag;
+            }
+            else if (preReleaseTagName == string.Empty)
+            {
+                semver.PreReleaseTag = new SemanticVersionPreReleaseTag();
+            }
+            else if (preReleaseTagName != null)
+            {
+                long? number;
+                if (semver.PreReleaseTag.Name == preReleaseTagName)
+                {
+                    number = semver.PreReleaseTag.Number + 1;
+                }
+                else
+                {
+                    number = 1;
+                }
+                semver.PreReleaseTag = new SemanticVersionPreReleaseTag(preReleaseTagName, number);
+            }
+        }
+
         if (semver.CompareTo(Context.CurrentCommitTaggedVersion) == 0)
         {
             // Will always be 0, don't bother with the +0 on tags
             semver.BuildMetaData.CommitsSinceTag = null;
-        }
-        else if (!string.IsNullOrEmpty(preReleaseTagName))
-        {
-            long? number;
-
-            if (semver.PreReleaseTag.Name == preReleaseTagName)
-            {
-                number = semver.PreReleaseTag.Number + 1;
-            }
-            else
-            {
-                number = 1;
-            }
-            semver.PreReleaseTag = new SemanticVersionPreReleaseTag(preReleaseTagName, number);
         }
 
         return new(semver, baseVersion, new(nextVersion.Branch, nextVersion.Configuration));
@@ -177,9 +189,7 @@ public class NextVersionCalculator : INextVersionCalculator
 
             log.Info($"Base version used: {calculatedBase}");
 
-            var nextVersion = new NextVersion(maxVersion.IncrementedVersion, calculatedBase, maxVersion.Branch, maxVersion.Configuration);
-
-            return nextVersion;
+            return new NextVersion(maxVersion.IncrementedVersion, calculatedBase, maxVersion.Branch, maxVersion.Configuration);
         }
     }
 
@@ -236,10 +246,9 @@ public class NextVersionCalculator : INextVersionCalculator
             baseVersion: baseVersion,
             configuration: effectiveBranchConfiguration.Value
         );
-        var incrementedVersion = incrementStrategy == VersionField.None
+        return incrementStrategy == VersionField.None
             ? baseVersion.SemanticVersion
             : baseVersion.SemanticVersion.IncrementVersion(incrementStrategy);
-        return incrementedVersion;
     }
 
     private bool IncludeVersion(BaseVersion baseVersion, IIgnoreConfiguration ignoreConfiguration)
