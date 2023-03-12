@@ -35,14 +35,16 @@ public class SemanticVersion : IFormattable, IComparable<SemanticVersion>, IEqua
         this.BuildMetaData = new SemanticVersionBuildMetaData();
     }
 
-    public SemanticVersion(SemanticVersion? semanticVersion)
+    public SemanticVersion(SemanticVersion semanticVersion)
     {
-        this.Major = semanticVersion?.Major ?? 0;
-        this.Minor = semanticVersion?.Minor ?? 0;
-        this.Patch = semanticVersion?.Patch ?? 0;
+        semanticVersion.NotNull();
 
-        this.PreReleaseTag = new SemanticVersionPreReleaseTag(semanticVersion?.PreReleaseTag);
-        this.BuildMetaData = new SemanticVersionBuildMetaData(semanticVersion?.BuildMetaData);
+        this.Major = semanticVersion.Major;
+        this.Minor = semanticVersion.Minor;
+        this.Patch = semanticVersion.Patch;
+
+        this.PreReleaseTag = new SemanticVersionPreReleaseTag(semanticVersion.PreReleaseTag);
+        this.BuildMetaData = new SemanticVersionBuildMetaData(semanticVersion.BuildMetaData);
     }
 
     public bool Equals(SemanticVersion? obj)

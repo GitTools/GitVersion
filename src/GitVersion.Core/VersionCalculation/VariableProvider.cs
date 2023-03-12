@@ -27,12 +27,13 @@ public class VariableProvider : IVariableProvider
             // Continuous Deployment always requires a pre-release tag unless the commit is tagged
             if (!semanticVersion.PreReleaseTag.HasTag())
             {
-                semanticVersion.PreReleaseTag.Name = configuration.GetBranchSpecificTag(this.log, semanticVersion.BuildMetaData.Branch, null);
+                var label = configuration.GetBranchSpecificLabel(this.log, semanticVersion.BuildMetaData.Branch, null);
+                semanticVersion.PreReleaseTag.Name = label ?? string.Empty;
                 if (semanticVersion.PreReleaseTag.Name.IsNullOrEmpty())
                 {
                     // TODO: Why do we manipulating the semantic version here in the VariableProvider? The method name is GET not MANIPULATE.
                     // What is about the separation of concern and single-responsibility principle?
-                    semanticVersion.PreReleaseTag.Name = configuration.Label;
+                    semanticVersion.PreReleaseTag.Name = configuration.Label ?? string.Empty;
                 }
             }
         }

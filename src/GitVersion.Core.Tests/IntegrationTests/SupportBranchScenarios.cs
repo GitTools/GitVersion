@@ -1,3 +1,4 @@
+using GitVersion.Configuration;
 using GitVersion.Core.Tests.Helpers;
 using LibGit2Sharp;
 
@@ -73,27 +74,33 @@ public class SupportBranchScenarios : TestBase
     [Test]
     public void WhenSupportIsBranchedFromMainWithSpecificTag()
     {
+        var configuration = GitFlowConfigurationBuilder.New.Build();
+
         using var fixture = new EmptyRepositoryFixture();
-        fixture.Repository.MakeACommit();
+
+        fixture.MakeACommit();
         fixture.AssertFullSemver("0.0.1+1");
 
-        fixture.Repository.ApplyTag("1.4.0-rc");
-        fixture.Repository.MakeACommit();
-        fixture.Repository.CreateBranch("support/1");
-        Commands.Checkout(fixture.Repository, "support/1");
-        fixture.AssertFullSemver("1.4.0+1");
+        fixture.ApplyTag("1.4.0-rc");
+        fixture.MakeACommit();
+        fixture.BranchTo("support/1");
+
+        fixture.AssertFullSemver("1.4.0+1", configuration);
     }
 
     [Test]
     public void WhenSupportIsBranchedFromMainWithSpecificTagOnCommit()
     {
-        using var fixture = new EmptyRepositoryFixture();
-        fixture.Repository.MakeACommit();
-        fixture.AssertFullSemver("0.0.1+1");
+        var configuration = GitFlowConfigurationBuilder.New.Build();
 
-        fixture.Repository.ApplyTag("1.4.0-rc");
-        fixture.Repository.CreateBranch("support/1");
-        Commands.Checkout(fixture.Repository, "support/1");
-        fixture.AssertFullSemver("1.4.0");
+        using var fixture = new EmptyRepositoryFixture();
+
+        fixture.MakeACommit();
+        fixture.AssertFullSemver("0.0.1+1", configuration);
+
+        fixture.ApplyTag("1.4.0-rc");
+        fixture.BranchTo("support/1");
+
+        fixture.AssertFullSemver("1.4.0+0", configuration);
     }
 }
