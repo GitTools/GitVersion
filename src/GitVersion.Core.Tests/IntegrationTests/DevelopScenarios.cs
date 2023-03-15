@@ -44,8 +44,8 @@ public class DevelopScenarios : TestBase
     public void WhenDevelopBranchedFromTaggedCommitOnMainVersionDoesNotChange()
     {
         using var fixture = new EmptyRepositoryFixture();
-        fixture.Repository.MakeATaggedCommit("1.0.0");
-        Commands.Checkout(fixture.Repository, fixture.Repository.CreateBranch("develop"));
+        fixture.MakeATaggedCommit("1.0.0");
+        fixture.BranchTo("develop");
         fixture.AssertFullSemver("1.0.0");
     }
 

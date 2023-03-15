@@ -330,7 +330,7 @@ public class MainScenarios : TestBase
         fixture.MergeNoFF("develop");
 
         // ✅ succeeds as expected
-        fixture.AssertFullSemver("1.0.0-beta.2+2", configurationBuilder.Build());
+        fixture.AssertFullSemver("1.0.0-beta.2+3", configurationBuilder.Build());
 
         fixture.Checkout("develop");
 

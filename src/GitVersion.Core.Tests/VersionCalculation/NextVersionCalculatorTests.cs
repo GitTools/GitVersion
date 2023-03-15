@@ -239,19 +239,18 @@ public class NextVersionCalculatorTests : TestBase
             .Build();
 
         using var fixture = new EmptyRepositoryFixture();
-        fixture.Repository.MakeACommit();
+        fixture.MakeACommit();
 
-        fixture.Repository.CreateBranch("feature/test");
-        Commands.Checkout(fixture.Repository, "feature/test");
-        fixture.Repository.MakeATaggedCommit("0.1.0-test.1");
-        fixture.Repository.MakeACommit();
+        fixture.BranchTo("feature/test");
+        fixture.MakeATaggedCommit("0.1.0-test.1");
+        fixture.MakeACommit();
 
         fixture.AssertFullSemver("0.1.0-test.2+1", configuration);
 
-        Commands.Checkout(fixture.Repository, MainBranch);
+        fixture.Checkout("main");
         fixture.Repository.Merge("feature/test", Generate.SignatureNow());
 
-        fixture.AssertFullSemver("0.1.0-beta.1+1", configuration); // just one commit no fast forward merge here.
+        fixture.AssertFullSemver("0.1.0-beta.1+3", configuration);
     }
 
     [Test]
@@ -457,7 +456,7 @@ public class NextVersionCalculatorTests : TestBase
             null
         );
         var mainlineVersionCalculatorMock = Substitute.For<IMainlineVersionCalculator>();
-        mainlineVersionCalculatorMock.FindMainlineModeVersion(Arg.Any<BaseVersion>()).Returns(lowerVersion.SemanticVersion);
+        mainlineVersionCalculatorMock.FindMainlineModeVersion(Arg.Any<NextVersion>()).Returns(lowerVersion.SemanticVersion);
         var versionStrategies = new IVersionStrategy[] { new TestVersionStrategy(preReleaseVersion, lowerVersion) };
         var unitUnderTest = new NextVersionCalculator(Substitute.For<ILog>(), mainlineVersionCalculatorMock,
             repositoryStoreMock, new(context), versionStrategies, effectiveBranchConfigurationFinderMock, incrementStrategyFinderMock);

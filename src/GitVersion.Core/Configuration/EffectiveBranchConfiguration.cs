@@ -16,5 +16,10 @@ public class EffectiveBranchConfiguration
     }
 
     public NextVersion CreateNextVersion(BaseVersion baseVersion, SemanticVersion incrementedVersion)
-        => new(incrementedVersion.NotNull(), baseVersion.NotNull(), new(Branch, Value));
+    {
+        incrementedVersion.NotNull();
+        baseVersion.NotNull();
+
+        return new NextVersion(incrementedVersion, baseVersion, new EffectiveBranchConfiguration(Branch, Value));
+    }
 }

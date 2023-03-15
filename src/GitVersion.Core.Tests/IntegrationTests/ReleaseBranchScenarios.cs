@@ -290,7 +290,7 @@ public class ReleaseBranchScenarios : TestBase
 
         fixture.Repository.MakeCommits(1);
 
-        fixture.AssertFullSemver("2.0.0-beta.2+2");
+        fixture.AssertFullSemver("2.0.0-beta.2+1");
 
         //merge down to develop
         fixture.Checkout("develop");
@@ -298,9 +298,9 @@ public class ReleaseBranchScenarios : TestBase
 
         //but keep working on the release
         fixture.Checkout("release-2.0.0");
-        fixture.AssertFullSemver("2.0.0-beta.2+2");
+        fixture.AssertFullSemver("2.0.0-beta.2+1");
         fixture.MakeACommit();
-        fixture.AssertFullSemver("2.0.0-beta.2+3");
+        fixture.AssertFullSemver("2.0.0-beta.2+2");
     }
 
     [Test]

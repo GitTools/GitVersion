@@ -21,8 +21,10 @@ internal class MainlineVersionCalculator : IMainlineVersionCalculator
         this.incrementStrategyFinder = incrementStrategyFinder.NotNull();
     }
 
-    public SemanticVersion FindMainlineModeVersion(BaseVersion baseVersion)
+    public SemanticVersion FindMainlineModeVersion(NextVersion nextVersion)
     {
+        var baseVersion = nextVersion.BaseVersion;
+
         if (baseVersion.SemanticVersion.PreReleaseTag.HasTag())
         {
             throw new NotSupportedException("Mainline development mode doesn't yet support pre-release tags on main");
@@ -52,8 +54,7 @@ internal class MainlineVersionCalculator : IMainlineVersionCalculator
             var mainlineCommitLog = this.repositoryStore.GetMainlineCommitLog(baseVersion.BaseVersionSource, mainlineTip).ToList();
             var directCommits = new List<ICommit>(mainlineCommitLog.Count);
 
-            var nextVersion = Context.Configuration.NextVersion;
-            if (nextVersion.IsNullOrEmpty())
+            if (Context.Configuration.NextVersion.IsNullOrEmpty())
             {
                 // Scans commit log in reverse, aggregating merge commits
                 foreach (var commit in mainlineCommitLog)
@@ -69,17 +70,22 @@ internal class MainlineVersionCalculator : IMainlineVersionCalculator
                 mainlineVersion = IncrementForEachCommit(directCommits, mainlineVersion, mainline);
             }
 
-            mainlineVersion.BuildMetaData = CreateVersionBuildMetaData(mergeBase);
+            var baseVersionBuildMetaData = CreateVersionBuildMetaData(mergeBase);
 
             // branches other than main always get a bump for the act of branching
-            if (!Context.CurrentBranch.Equals(mainline) && nextVersion.IsNullOrEmpty())
+            if (!Context.CurrentBranch.Equals(mainline) && Context.Configuration.NextVersion.IsNullOrEmpty())
             {
                 var branchIncrement = FindMessageIncrement(null, Context.CurrentCommit, mergeBase, mainlineCommitLog);
                 this.log.Info($"Performing {branchIncrement} increment for current branch ");
 
-                mainlineVersion = mainlineVersion.IncrementVersion(branchIncrement);
+                mainlineVersion = mainlineVersion.IncrementVersion(branchIncrement, null);
             }
-            return mainlineVersion;
+
+            return new SemanticVersion(mainlineVersion)
+            {
+                PreReleaseTag = new SemanticVersionPreReleaseTag(nextVersion.IncrementedVersion.PreReleaseTag),
+                BuildMetaData = baseVersionBuildMetaData
+            };
         }
     }
 
@@ -127,14 +133,14 @@ internal class MainlineVersionCalculator : IMainlineVersionCalculator
         directCommits.Clear();
 
         // Finally increment for the branch
-        mainlineVersion = mainlineVersion.IncrementVersion(findMessageIncrement);
+        mainlineVersion = mainlineVersion.IncrementVersion(findMessageIncrement, null);
         this.log.Info($"Merge commit {mergeCommit} incremented base versions {findMessageIncrement}, now {mainlineVersion}");
         return mainlineVersion;
     }
 
     private IBranch GetMainline(ICommit? baseVersionSource)
     {
-        if (Context.Configuration.Branches.TryGetValue(Context.CurrentBranch.Name.Friendly, out var branchConfiguration)
+        if (Context.Configuration.Branches.TryGetValue(Context.CurrentBranch.Name.WithoutOrigin, out var branchConfiguration)
             && branchConfiguration.IsMainline == true)
         {
             return Context.CurrentBranch;
@@ -277,7 +283,7 @@ internal class MainlineVersionCalculator : IMainlineVersionCalculator
         {
             var directCommitIncrement = this.incrementStrategyFinder.GetIncrementForCommits(Context.Configuration, new[] { directCommit })
                 ?? FindDefaultIncrementForBranch(Context, mainline);
-            mainlineVersion = mainlineVersion.IncrementVersion(directCommitIncrement);
+            mainlineVersion = mainlineVersion.IncrementVersion(directCommitIncrement, null);
             this.log.Info($"Direct commit on main {directCommit} incremented base versions {directCommitIncrement}, now {mainlineVersion}");
         }
 

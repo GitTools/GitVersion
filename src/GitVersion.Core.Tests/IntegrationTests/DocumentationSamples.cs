@@ -136,7 +136,7 @@ public class DocumentationSamples : TestBase
 
         // Make a commit after a tag should bump up the beta
         fixture.MakeACommit();
-        fixture.AssertFullSemver("1.3.0-beta.2+2");
+        fixture.AssertFullSemver("1.3.0-beta.2+1");
 
         // Complete release
         fixture.Checkout(MainBranch);
@@ -191,7 +191,7 @@ public class DocumentationSamples : TestBase
 
         // Make a commit after a tag should bump up the beta
         fixture.MakeACommit();
-        fixture.AssertFullSemver("2.0.0-beta.2+2");
+        fixture.AssertFullSemver("2.0.0-beta.2+1");
 
         // Complete release
         fixture.Checkout(MainBranch);
@@ -380,11 +380,11 @@ public class DocumentationSamples : TestBase
 
         // test that the CommitsSinceVersionSource should still return commit count
         var version = fixture.GetVersion();
-        version.CommitsSinceVersionSource.ShouldBe("2");
+        version.CommitsSinceVersionSource.ShouldBe("0");
 
         // Make a commit after a tag should bump up the beta
         fixture.MakeACommit();
-        fixture.AssertFullSemver("2.0.0-beta.2+3");
+        fixture.AssertFullSemver("2.0.0-beta.2+1");
 
         // Complete release
         fixture.Checkout(MainBranch);

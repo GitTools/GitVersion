@@ -16,7 +16,7 @@ internal class VersionInTagScenarios
             .Build();
 
         // Act
-        using var fixture = new BaseGitFlowRepositoryFixture("1.0.0");
+        using var fixture = new EmptyRepositoryFixture("main");
         fixture.MakeATaggedCommit("1.1.0");
         var version = fixture.GetVersion(configuration);
 
@@ -34,7 +34,7 @@ internal class VersionInTagScenarios
             .Build();
 
         // Act
-        using var fixture = new BaseGitFlowRepositoryFixture("1.0.0");
+        using var fixture = new EmptyRepositoryFixture("main");
         fixture.MakeATaggedCommit("1.1.0");
         var version = fixture.GetVersion(configuration);
 
@@ -61,6 +61,9 @@ internal class VersionInTagScenarios
         fixture.BranchTo("release/1.1.0");
         fixture.MakeACommit("Release commit 1");
         fixture.AssertFullSemver("1.1.0-beta.1", configuration);
+
+        fixture.Checkout("main");
+        fixture.MergeNoFF("release/1.1.0");
         fixture.ApplyTag("1.1.0");
         var version = fixture.GetVersion(configuration);
 
@@ -86,6 +89,9 @@ internal class VersionInTagScenarios
         fixture.BranchTo("release/1.1.0");
         fixture.MakeACommit("Release commit 1");
         fixture.AssertFullSemver("1.1.0-beta.1", configuration);
+
+        fixture.Checkout("main");
+        fixture.MergeNoFF("release/1.1.0");
         fixture.ApplyTag("1.1.0");
         var version = fixture.GetVersion(configuration);
 

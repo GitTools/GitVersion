@@ -85,7 +85,7 @@ public class SupportBranchScenarios : TestBase
         fixture.MakeACommit();
         fixture.BranchTo("support/1");
 
-        fixture.AssertFullSemver("1.4.0+1", configuration);
+        fixture.AssertFullSemver("1.4.0+2", configuration);
     }
 
     [Test]
@@ -101,6 +101,6 @@ public class SupportBranchScenarios : TestBase
         fixture.ApplyTag("1.4.0-rc");
         fixture.BranchTo("support/1");
 
-        fixture.AssertFullSemver("1.4.0+0", configuration);
+        fixture.AssertFullSemver("1.4.0+1", configuration);
     }
 }
