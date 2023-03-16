@@ -23,6 +23,8 @@
 *   Following root configuration properties have been removed:
     *   continuous-delivery-fallback-tag
 *   A new branch related property with name `track-merge-message` has been introduced. Consider we have a `main` branch and a `release/1.0.0` branch and merge changes from `release/1.0.0` to the main branch. In this scenario the merge message will be interpreted as a next version `1.0.0` when `track-merge-message` is set to `true` otherwise `0.0.1`.
+* The pre-release tags are only considered when they are matching with the label name of the branch. This has an effect on the way how the `CommitCountSource` will be determined.
+* The process of increasing the version with bump message when `CommitMessageIncrementing` is enabled and increment strategy is `None` has been changed.
 
 ## v5.0.0
 
