@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using GitVersion.Common;
 using GitVersion.Configuration;
 using GitVersion.Extensions;
@@ -194,75 +195,68 @@ public class NextVersionCalculator : INextVersionCalculator
         }
     }
 
-    private IEnumerable<NextVersion> GetNextVersions(IBranch branch, IGitVersionConfiguration configuration)
+    private IReadOnlyCollection<NextVersion> GetNextVersions(IBranch branch, IGitVersionConfiguration configuration)
     {
         if (branch.Tip == null)
             throw new GitVersionException("No commits found on the current branch.");
 
-        return GetNextVersionsInternal();
+        var nextVersions = GetNextVersionsInternal().ToList();
+        if (nextVersions.Count == 0)
+            throw new GitVersionException("No base versions determined on the current branch.");
+        return nextVersions;
 
         IEnumerable<NextVersion> GetNextVersionsInternal()
         {
-            var atLeastOneBaseVersionReturned = false;
-
-            var effectiveConfigurations = new List<EffectiveBranchConfiguration>();
             foreach (var effectiveConfiguration in effectiveBranchConfigurationFinder.GetConfigurations(branch, configuration))
             {
+                var atLeastOneBaseVersionReturned = false;
                 foreach (var versionStrategy in this.versionStrategies)
                 {
                     foreach (var baseVersion in versionStrategy.GetBaseVersions(effectiveConfiguration))
                     {
                         log.Info(baseVersion.ToString());
 
-                        if (IncludeVersion(baseVersion, configuration.Ignore))
+                        if (IncludeVersion(baseVersion, configuration.Ignore)
+                            && TryGetNextVersion(out var nextVersion, effectiveConfiguration, baseVersion))
                         {
-                            var label = effectiveConfiguration.Value.GetBranchSpecificLabel(
-                                Context.CurrentBranch.Name, baseVersion.BranchNameOverride
-                            );
-                            if (effectiveConfiguration.Value.Label != label)
-                                log.Info("Using current branch name to calculate version tag");
-
-                            var incrementedVersion = GetIncrementedVersion(effectiveConfiguration, baseVersion, label);
-                            if (incrementedVersion.IsMatchForBranchSpecificLabel(label))
-                            {
-                                yield return effectiveConfiguration.CreateNextVersion(baseVersion, incrementedVersion);
-                                atLeastOneBaseVersionReturned = true;
-                            }
+                            yield return nextVersion;
+                            atLeastOneBaseVersionReturned = true;
                         }
                     }
                 }
-                effectiveConfigurations.Add(effectiveConfiguration);
-            }
 
-            if (!atLeastOneBaseVersionReturned)
-            {
-                foreach (var effectiveConfiguration in effectiveConfigurations)
+                if (!atLeastOneBaseVersionReturned)
                 {
                     var baseVersion = new BaseVersion("Fallback base version", true, SemanticVersion.Empty, null, null);
-
-                    var label = effectiveConfiguration.Value.GetBranchSpecificLabel(
-                        Context.CurrentBranch.Name, baseVersion.BranchNameOverride
-                    );
-                    if (effectiveConfiguration.Value.Label != label)
-                        log.Info("Using current branch name to calculate version tag");
-
-                    var incrementedVersion = GetIncrementedVersion(effectiveConfiguration, baseVersion, label);
-                    if (incrementedVersion.IsMatchForBranchSpecificLabel(label))
-                    {
-                        yield return effectiveConfiguration.CreateNextVersion(baseVersion, incrementedVersion);
-                    }
+                    if (TryGetNextVersion(out var nextVersion, effectiveConfiguration, baseVersion)) yield return nextVersion;
                 }
-
-                if (effectiveConfigurations.Count == 0)
-                    throw new GitVersionException("No base versions determined on the current branch.");
             }
         }
+    }
+
+    private bool TryGetNextVersion([NotNullWhen(true)] out NextVersion? result,
+        EffectiveBranchConfiguration effectiveConfiguration, BaseVersion baseVersion)
+    {
+        result = null;
+
+        var label = effectiveConfiguration.Value.GetBranchSpecificLabel(
+            Context.CurrentBranch.Name, baseVersion.BranchNameOverride
+        );
+        if (effectiveConfiguration.Value.Label != label)
+            log.Info("Using current branch name to calculate version tag");
+
+        var incrementedVersion = GetIncrementedVersion(effectiveConfiguration, baseVersion, label);
+        if (incrementedVersion.IsMatchForBranchSpecificLabel(label))
+        {
+            result = effectiveConfiguration.CreateNextVersion(baseVersion, incrementedVersion);
+        }
+        return result is not null;
     }
 
     private SemanticVersion GetIncrementedVersion(EffectiveBranchConfiguration configuration, BaseVersion baseVersion, string? label)
     {
         var incrementStrategy = incrementStrategyFinder.DetermineIncrementedField(
-            context: Context,
+            currentCommit: Context.CurrentCommit,
             baseVersion: baseVersion,
             configuration: configuration.Value
         );

@@ -908,4 +908,84 @@ public class OtherScenarios : TestBase
         // ✅ succeeds as expected
         fixture.AssertFullSemver($"1.0.{patchNumber + 1}-gamma.1+1", configuration);
     }
+
+    [TestCase(null)]
+    [TestCase("")]
+    public void IncreaseVersionWithBumpMessageWhenCommitMessageIncrementIsEnabledAndIncrementStrategyIsNoneForBranchWithNoLabel(string? label)
+    {
+        var configuration = GitFlowConfigurationBuilder.New.WithLabel(null)
+            .WithBranch("main", _ => _
+                .WithCommitMessageIncrementing(CommitMessageIncrementMode.Enabled)
+                .WithVersioningMode(VersioningMode.ContinuousDeployment)
+                .WithIncrement(IncrementStrategy.None)
+                .WithLabel(label)
+            )
+            .Build();
+
+        using var fixture = new EmptyRepositoryFixture("main");
+        fixture.MakeACommit();
+
+        // ✅ succeeds as expected
+        fixture.AssertFullSemver("0.0.0", configuration);
+
+        fixture.MakeACommit("+semver: minor");
+
+        // ✅ succeeds as expected
+        fixture.AssertFullSemver("0.1.0", configuration);
+
+        fixture.ApplyTag("1.0.0");
+
+        // ✅ succeeds as expected
+        fixture.AssertFullSemver("1.0.0", configuration);
+
+        fixture.MakeACommit("+semver: major");
+
+        // ✅ succeeds as expected
+        fixture.AssertFullSemver("2.0.0", configuration);
+
+        fixture.ApplyTag("2.0.0");
+        fixture.MakeACommit();
+
+        // ✅ succeeds as expected
+        fixture.AssertFullSemver("2.0.0", configuration);
+    }
+
+    [Test]
+    public void IncreaseVersionWithBumpMessageWhenCommitMessageIncrementIsEnabledAndIncrementStrategyIsNoneForBranchWithAlphaLabel()
+    {
+        var configuration = GitFlowConfigurationBuilder.New
+            .WithBranch("main", _ => _
+                .WithCommitMessageIncrementing(CommitMessageIncrementMode.Enabled)
+                .WithVersioningMode(VersioningMode.ContinuousDeployment)
+                .WithIncrement(IncrementStrategy.None)
+                .WithLabel("pre")
+            ).Build();
+
+        using var fixture = new EmptyRepositoryFixture("main");
+        fixture.MakeACommit();
+
+        // ✅ succeeds as expected
+        fixture.AssertFullSemver("0.0.0-pre.1", configuration);
+
+        fixture.MakeACommit("+semver: minor");
+
+        // ✅ succeeds as expected
+        fixture.AssertFullSemver("0.1.0-pre.2", configuration);
+
+        fixture.ApplyTag("1.0.0");
+
+        // ✅ succeeds as expected
+        fixture.AssertFullSemver("1.0.0", configuration);
+
+        fixture.MakeACommit("+semver: major");
+
+        // ✅ succeeds as expected
+        fixture.AssertFullSemver("2.0.0-pre.1", configuration);
+
+        fixture.ApplyTag("2.0.0");
+        fixture.MakeACommit();
+
+        // ✅ succeeds as expected
+        fixture.AssertFullSemver("2.0.0-pre.1", configuration);
+    }
 }

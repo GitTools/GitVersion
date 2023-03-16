@@ -281,8 +281,13 @@ internal class MainlineVersionCalculator : IMainlineVersionCalculator
     {
         foreach (var directCommit in directCommits)
         {
-            var directCommitIncrement = this.incrementStrategyFinder.GetIncrementForCommits(Context.Configuration, new[] { directCommit })
-                ?? FindDefaultIncrementForBranch(Context, mainline);
+            var directCommitIncrement = this.incrementStrategyFinder.GetIncrementForCommits(
+                majorVersionBumpMessage: Context.Configuration.MajorVersionBumpMessage,
+                minorVersionBumpMessage: Context.Configuration.MinorVersionBumpMessage,
+                patchVersionBumpMessage: Context.Configuration.PatchVersionBumpMessage,
+                noBumpMessage: Context.Configuration.NoBumpMessage,
+                commits: new[] { directCommit }
+            ) ?? FindDefaultIncrementForBranch(Context, mainline);
             mainlineVersion = mainlineVersion.IncrementVersion(directCommitIncrement, null);
             this.log.Info($"Direct commit on main {directCommit} incremented base versions {directCommitIncrement}, now {mainlineVersion}");
         }
@@ -294,8 +299,15 @@ internal class MainlineVersionCalculator : IMainlineVersionCalculator
     {
         var commits = this.repositoryStore.GetMergeBaseCommits(mergeCommit, mergedHead, findMergeBase);
         commitLog.RemoveAll(c => commits.Any(c1 => c1.Sha == c.Sha));
-        return this.incrementStrategyFinder.GetIncrementForCommits(Context.Configuration, commits)
-            ?? TryFindIncrementFromMergeMessage(mergeCommit);
+
+        var messageIncrement = this.incrementStrategyFinder.GetIncrementForCommits(
+            majorVersionBumpMessage: Context.Configuration.MajorVersionBumpMessage,
+            minorVersionBumpMessage: Context.Configuration.MinorVersionBumpMessage,
+            patchVersionBumpMessage: Context.Configuration.PatchVersionBumpMessage,
+            noBumpMessage: Context.Configuration.NoBumpMessage,
+            commits: commits
+        );
+        return messageIncrement ?? TryFindIncrementFromMergeMessage(mergeCommit);
     }
 
     private VersionField TryFindIncrementFromMergeMessage(ICommit? mergeCommit)

@@ -890,12 +890,13 @@ GitVersion.VersionCalculation.EffectiveBranchConfigurationFinder.EffectiveBranch
 GitVersion.VersionCalculation.IEffectiveBranchConfigurationFinder
 GitVersion.VersionCalculation.IEffectiveBranchConfigurationFinder.GetConfigurations(GitVersion.IBranch! branch, GitVersion.Configuration.IGitVersionConfiguration! configuration) -> System.Collections.Generic.IEnumerable<GitVersion.Configuration.EffectiveBranchConfiguration!>!
 GitVersion.VersionCalculation.IIncrementStrategyFinder
-GitVersion.VersionCalculation.IIncrementStrategyFinder.DetermineIncrementedField(GitVersion.GitVersionContext! context, GitVersion.VersionCalculation.BaseVersion! baseVersion, GitVersion.Configuration.EffectiveConfiguration! configuration) -> GitVersion.VersionField
-GitVersion.VersionCalculation.IIncrementStrategyFinder.GetIncrementForCommits(GitVersion.Configuration.IGitVersionConfiguration! configuration, System.Collections.Generic.IEnumerable<GitVersion.ICommit!>! commits) -> GitVersion.VersionField?
+GitVersion.VersionCalculation.IIncrementStrategyFinder.DetermineIncrementedField(GitVersion.ICommit? currentCommit, GitVersion.VersionCalculation.BaseVersion! baseVersion, GitVersion.Configuration.EffectiveConfiguration! configuration) -> GitVersion.VersionField
+GitVersion.VersionCalculation.IIncrementStrategyFinder.GetIncrementForCommits(string? majorVersionBumpMessage, string? minorVersionBumpMessage, string? patchVersionBumpMessage, string? noBumpMessage, System.Collections.Generic.IEnumerable<GitVersion.ICommit!>! commits) -> GitVersion.VersionField?
 GitVersion.VersionCalculation.IMainlineVersionCalculator
 GitVersion.VersionCalculation.IMainlineVersionCalculator.CreateVersionBuildMetaData(GitVersion.ICommit? baseVersionSource) -> GitVersion.SemanticVersionBuildMetaData!
 GitVersion.VersionCalculation.IMainlineVersionCalculator.FindMainlineModeVersion(GitVersion.VersionCalculation.NextVersion! nextVersion) -> GitVersion.SemanticVersion!
-GitVersion.VersionCalculation.IncrementStrategyFinder.GetIncrementForCommits(GitVersion.Configuration.IGitVersionConfiguration! configuration, System.Collections.Generic.IEnumerable<GitVersion.ICommit!>! commits) -> GitVersion.VersionField?
+GitVersion.VersionCalculation.IncrementStrategyFinder.DetermineIncrementedField(GitVersion.ICommit? currentCommit, GitVersion.VersionCalculation.BaseVersion! baseVersion, GitVersion.Configuration.EffectiveConfiguration! configuration) -> GitVersion.VersionField
+GitVersion.VersionCalculation.IncrementStrategyFinder.GetIncrementForCommits(string? majorVersionBumpMessage, string? minorVersionBumpMessage, string? patchVersionBumpMessage, string? noBumpMessage, System.Collections.Generic.IEnumerable<GitVersion.ICommit!>! commits) -> GitVersion.VersionField?
 GitVersion.VersionCalculation.INextVersionCalculator
 GitVersion.VersionCalculation.INextVersionCalculator.FindVersion() -> GitVersion.VersionCalculation.NextVersion!
 GitVersion.VersionCalculation.IVariableProvider
@@ -905,7 +906,6 @@ GitVersion.VersionCalculation.IVersionFilter.Exclude(GitVersion.VersionCalculati
 GitVersion.VersionCalculation.IVersionStrategy
 GitVersion.VersionCalculation.IVersionStrategy.GetBaseVersions(GitVersion.Configuration.EffectiveBranchConfiguration! configuration) -> System.Collections.Generic.IEnumerable<GitVersion.VersionCalculation.BaseVersion!>!
 GitVersion.VersionCalculation.IncrementStrategyFinder
-GitVersion.VersionCalculation.IncrementStrategyFinder.DetermineIncrementedField(GitVersion.GitVersionContext! context, GitVersion.VersionCalculation.BaseVersion! baseVersion, GitVersion.Configuration.EffectiveConfiguration! configuration) -> GitVersion.VersionField
 GitVersion.VersionCalculation.IncrementStrategyFinder.IncrementStrategyFinder(GitVersion.IGitRepository! repository) -> void
 GitVersion.VersionCalculation.MergeMessageVersionStrategy
 GitVersion.VersionCalculation.MergeMessageVersionStrategy.MergeMessageVersionStrategy(GitVersion.Logging.ILog! log, System.Lazy<GitVersion.GitVersionContext!>! versionContext, GitVersion.Common.IRepositoryStore! repositoryStore) -> void
