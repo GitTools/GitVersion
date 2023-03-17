@@ -53,9 +53,9 @@ public class OtherBranchScenarios : TestBase
         fixture.MakeATaggedCommit("1.0.1-feature.1");
         fixture.Checkout(MainBranch);
         fixture.BranchTo("develop");
-        fixture.Repository.MakeACommit();
+        fixture.MakeACommit();
 
-        fixture.AssertFullSemver("1.0.0-alpha.1", configuration);
+        fixture.AssertFullSemver("1.0.0-alpha.2", configuration);
 
         fixture.Repository.DumpGraph();
     }

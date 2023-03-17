@@ -1,6 +1,5 @@
 using System.Text.RegularExpressions;
 using GitVersion.Extensions;
-using GitVersion.Logging;
 
 namespace GitVersion.Configuration;
 
@@ -60,11 +59,11 @@ public static class ConfigurationExtensions
         => configuration.GetBranchConfiguration(branchName).IsReleaseBranch ?? false;
 
     public static string? GetBranchSpecificLabel(
-            this EffectiveConfiguration configuration, ILog log, ReferenceName branchName, string? branchNameOverride)
-        => GetBranchSpecificLabel(configuration, log, branchName.WithoutOrigin, branchNameOverride);
+            this EffectiveConfiguration configuration, ReferenceName branchName, string? branchNameOverride)
+        => GetBranchSpecificLabel(configuration, branchName.WithoutOrigin, branchNameOverride);
 
     public static string? GetBranchSpecificLabel(
-        this EffectiveConfiguration configuration, ILog log, string? branchName, string? branchNameOverride)
+        this EffectiveConfiguration configuration, string? branchName, string? branchNameOverride)
     {
         configuration.NotNull();
 
@@ -76,10 +75,7 @@ public static class ConfigurationExtensions
 
         if (label?.Contains(ConfigurationConstants.BranchNamePlaceholder) == true)
         {
-            log.Info("Using branch name to calculate version tag");
-
             var value = branchNameOverride ?? branchName;
-
             if (!configuration.BranchPrefixToTrim.IsNullOrWhiteSpace())
             {
                 var branchNameTrimmed = value?.RegexReplace(

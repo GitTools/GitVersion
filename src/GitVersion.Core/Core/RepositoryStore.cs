@@ -10,7 +10,10 @@ public class RepositoryStore : IRepositoryStore
 {
     private readonly ILog log;
     private readonly IGitRepository repository;
-    private readonly Dictionary<IBranch, List<SemanticVersion>> semanticVersionTagsOnBranchCache = new();
+
+    private IReadOnlyList<SemanticVersionWithTag>? taggedSemanticVersionsCache;
+    private readonly Dictionary<IBranch, IReadOnlyList<SemanticVersionWithTag>> taggedSemanticVersionsOnBranchCache = new();
+
     private readonly MergeBaseFinder mergeBaseFinder;
 
     public RepositoryStore(ILog log, IGitRepository repository)
@@ -244,41 +247,81 @@ public class RepositoryStore : IRepositoryStore
         }
     }
 
-    public SemanticVersion? GetCurrentCommitTaggedVersion(ICommit? commit, string? tagPrefix, SemanticVersionFormat versionFormat, bool handleDetachedBranch)
+    public SemanticVersion? GetCurrentCommitTaggedVersion(ICommit? commit, string? tagPrefix, SemanticVersionFormat format, bool handleDetachedBranch)
         => this.repository.Tags
-            .SelectMany(tag => GetCurrentCommitSemanticVersions(commit, tagPrefix, tag, versionFormat, handleDetachedBranch))
+            .SelectMany(tag => GetCurrentCommitSemanticVersions(commit, tagPrefix, tag, format, handleDetachedBranch))
             .Max();
 
-    public IEnumerable<SemanticVersion> GetVersionTagsOnBranch(IBranch branch, string? tagPrefixRegex, SemanticVersionFormat versionFormat)
+    public IEnumerable<SemanticVersion> GetVersionTagsOnBranch(IBranch branch, string? labelPrefix, SemanticVersionFormat format)
     {
         branch = branch.NotNull();
 
-        if (this.semanticVersionTagsOnBranchCache.TryGetValue(branch, out var onBranch))
+        if (this.taggedSemanticVersionsOnBranchCache.TryGetValue(branch, out var onBranch))
         {
             this.log.Debug($"Cache hit for version tags on branch '{branch.Name.Canonical}");
-            return onBranch;
+            return onBranch.Select(element => element.Value);
         }
 
         using (this.log.IndentLog($"Getting version tags from branch '{branch.Name.Canonical}'."))
         {
-            var semanticVersions = GetSemanticVersionFromTags(tagPrefixRegex, versionFormat);
+            var semanticVersions = GetTaggedSemanticVersions(labelPrefix, format);
             var tagsBySha = semanticVersions.Where(t => t.Tag.TargetSha != null).ToLookup(t => t.Tag.TargetSha, t => t);
 
-            var versionTags = (branch.Commits?.SelectMany(c => tagsBySha[c.Sha].Select(t => t.Value)) ?? Enumerable.Empty<SemanticVersion>()).ToList();
+            var versionTags = (branch.Commits?.SelectMany(c => tagsBySha[c.Sha].Select(t => t))
+                ?? Enumerable.Empty<SemanticVersionWithTag>()).ToList();
 
-            this.semanticVersionTagsOnBranchCache.Add(branch, versionTags);
-            return versionTags;
+            this.taggedSemanticVersionsOnBranchCache.Add(branch, versionTags);
+            return versionTags.Select(element => element.Value);
         }
     }
 
-    public IEnumerable<SemanticVersionWithTag> GetSemanticVersionFromTags(string? tagPrefixRegex, SemanticVersionFormat semanticVersionFormat)
+    public IReadOnlyList<SemanticVersionWithTag> GetTaggedSemanticVersions(string? labelPrefix, SemanticVersionFormat format)
     {
-        foreach (var tag in this.repository.Tags)
+        if (this.taggedSemanticVersionsCache != null)
         {
-            if (SemanticVersion.TryParse(tag.Name.Friendly, tagPrefixRegex, out var semanticVersion, semanticVersionFormat))
+            this.log.Debug($"Returning cached tagged semantic versions. LabelPrefix: {labelPrefix} and Format: {format}");
+            return this.taggedSemanticVersionsCache;
+        }
+
+        using (this.log.IndentLog($"Getting tagged semantic versions. LabelPrefix: {labelPrefix} and Format: {format}"))
+        {
+            this.taggedSemanticVersionsCache = GetTaggedSemanticVersionsInternal().ToList();
+            return this.taggedSemanticVersionsCache;
+        }
+
+        IEnumerable<SemanticVersionWithTag> GetTaggedSemanticVersionsInternal()
+        {
+            foreach (var tag in this.repository.Tags)
             {
-                yield return new SemanticVersionWithTag(semanticVersion, tag);
+                if (SemanticVersion.TryParse(tag.Name.Friendly, labelPrefix, out var semanticVersion, format))
+                {
+                    yield return new SemanticVersionWithTag(semanticVersion, tag);
+                }
             }
+        }
+    }
+
+    public IReadOnlyList<SemanticVersionWithTag> GetTaggedSemanticVersionsOnBranch(
+        IBranch branch, string? labelPrefix, SemanticVersionFormat format)
+    {
+        branch = branch.NotNull();
+
+        if (this.taggedSemanticVersionsOnBranchCache.TryGetValue(branch, out var onBranch))
+        {
+            this.log.Debug($"Returning cached tagged semantic versions from '{branch.Name.Canonical}'. LabelPrefix: {labelPrefix} and Format: {format}");
+            return onBranch;
+        }
+
+        using (this.log.IndentLog($"Getting tagged semantic versions from '{branch.Name.Canonical}'.  LabelPrefix: {labelPrefix} and Format: {format}"))
+        {
+            var semanticVersions = GetTaggedSemanticVersions(labelPrefix, format);
+            var tagsBySha = semanticVersions.Where(t => t.Tag.TargetSha != null).ToLookup(t => t.Tag.TargetSha, t => t);
+
+            var versionTags = (branch.Commits?.SelectMany(c => tagsBySha[c.Sha].Select(t => t))
+                ?? Enumerable.Empty<SemanticVersionWithTag>()).ToList();
+
+            this.taggedSemanticVersionsOnBranchCache.Add(branch, versionTags);
+            return versionTags;
         }
     }
 

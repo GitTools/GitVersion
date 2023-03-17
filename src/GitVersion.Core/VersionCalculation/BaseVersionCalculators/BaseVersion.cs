@@ -1,3 +1,5 @@
+using GitVersion.Extensions;
+
 namespace GitVersion.VersionCalculation;
 
 public class BaseVersion
@@ -11,15 +13,26 @@ public class BaseVersion
         BranchNameOverride = branchNameOverride;
     }
 
-    public string Source { get; }
+    public BaseVersion(BaseVersion baseVersion)
+    {
+        baseVersion.NotNull();
 
-    public bool ShouldIncrement { get; }
+        Source = baseVersion.Source;
+        ShouldIncrement = baseVersion.ShouldIncrement;
+        SemanticVersion = baseVersion.SemanticVersion;
+        BaseVersionSource = baseVersion.BaseVersionSource;
+        BranchNameOverride = baseVersion.BranchNameOverride;
+    }
 
-    public SemanticVersion SemanticVersion { get; }
+    public string Source { get; init; }
 
-    public ICommit? BaseVersionSource { get; }
+    public bool ShouldIncrement { get; init; }
 
-    public string? BranchNameOverride { get; }
+    public SemanticVersion SemanticVersion { get; init; }
+
+    public ICommit? BaseVersionSource { get; init; }
+
+    public string? BranchNameOverride { get; init; }
 
     public override string ToString()
     {

@@ -7,7 +7,7 @@ namespace GitVersion;
 
 public class SemanticVersion : IFormattable, IComparable<SemanticVersion>, IEquatable<SemanticVersion?>
 {
-    private static readonly SemanticVersion Empty = new();
+    public static readonly SemanticVersion Empty = new();
 
     // uses the git-semver spec https://github.com/semver/semver/blob/master/semver.md
     private static readonly Regex ParseSemVerStrict = new(
@@ -24,7 +24,10 @@ public class SemanticVersion : IFormattable, IComparable<SemanticVersion>, IEqua
     public SemanticVersionPreReleaseTag PreReleaseTag;
     public SemanticVersionBuildMetaData BuildMetaData;
 
-    public bool HasPreReleaseTagWithLabel => this.PreReleaseTag.HasTag();
+    public bool IsLabeledWith(string value) => PreReleaseTag.HasTag() && PreReleaseTag.Name.IsEquivalentTo(value);
+
+    public bool IsMatchForBranchSpecificLabel(string? value)
+        => PreReleaseTag.Name == string.Empty || value is null || IsLabeledWith(value);
 
     public SemanticVersion(long major = 0, long minor = 0, long patch = 0)
     {
@@ -300,9 +303,10 @@ public class SemanticVersion : IFormattable, IComparable<SemanticVersion>, IEqua
         }
     }
 
-    public SemanticVersion IncrementVersion(VersionField incrementStrategy)
+    public SemanticVersion IncrementVersion(VersionField incrementStrategy, string? label)
     {
         var incremented = new SemanticVersion(this);
+
         if (!incremented.PreReleaseTag.HasTag())
         {
             switch (incrementStrategy)
@@ -325,9 +329,15 @@ public class SemanticVersion : IFormattable, IComparable<SemanticVersion>, IEqua
                     throw new ArgumentOutOfRangeException(nameof(incrementStrategy));
             }
         }
-        else if (incremented.PreReleaseTag.Number != null)
+
+        if (incremented.PreReleaseTag.HasTag() && incremented.PreReleaseTag.Number != null)
         {
             incremented.PreReleaseTag.Number++;
+        }
+
+        if (!PreReleaseTag.HasTag() && !label.IsNullOrEmpty())
+        {
+            incremented.PreReleaseTag = new SemanticVersionPreReleaseTag(label, 1);
         }
 
         return incremented;

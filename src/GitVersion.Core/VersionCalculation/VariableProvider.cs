@@ -27,7 +27,7 @@ public class VariableProvider : IVariableProvider
             // Continuous Deployment always requires a pre-release tag unless the commit is tagged
             if (!semanticVersion.PreReleaseTag.HasTag())
             {
-                var label = configuration.GetBranchSpecificLabel(this.log, semanticVersion.BuildMetaData.Branch, null);
+                var label = configuration.GetBranchSpecificLabel(semanticVersion.BuildMetaData.Branch, null);
                 semanticVersion.PreReleaseTag.Name = label ?? string.Empty;
                 if (semanticVersion.PreReleaseTag.Name.IsNullOrEmpty())
                 {

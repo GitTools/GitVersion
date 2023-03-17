@@ -2,6 +2,7 @@ using System.Globalization;
 using GitVersion.Configuration;
 using GitVersion.Core.Tests.Helpers;
 using GitVersion.Helpers;
+using GitVersion.VersionCalculation;
 using LibGit2Sharp;
 
 namespace GitVersion.Core.Tests.IntegrationTests;
@@ -163,13 +164,38 @@ public class OtherScenarios : TestBase
         fixture.Repository.DumpGraph();
     }
 
+    [Test]
+    public void EnsurePreReleaseTagLabelWillBeConsideredIfCurrentBranchIsRelease()
+    {
+        var configuration = GitHubFlowConfigurationBuilder.New.Build();
+
+        using var fixture = new EmptyRepositoryFixture("release/2.0.0");
+
+        fixture.MakeACommit();
+
+        // ✅ succeeds as expected
+        fixture.AssertFullSemver("2.0.0-beta.1+1", configuration);
+
+        fixture.ApplyTag("2.0.0-beta.1");
+
+        // ✅ succeeds as expected
+        fixture.AssertFullSemver("2.0.0-beta.1", configuration);
+
+        fixture.MakeACommit();
+
+        // ✅ succeeds as expected
+        fixture.AssertFullSemver("2.0.0-beta.2+1", configuration);
+    }
+
     [TestCase(1)]
     [TestCase(2)]
+    [TestCase(3)]
     public void EnsurePreReleaseTagLabelWillBeConsideredIfNoLabelIsDefined(long patchNumber)
     {
         var configuration = GitHubFlowConfigurationBuilder.New
             .WithLabel(null)
             .WithBranch("main", branchBuilder => branchBuilder
+                .WithVersioningMode(VersioningMode.ContinuousDelivery)
                 .WithLabel(null).WithIncrement(IncrementStrategy.Patch)
             ).Build();
 
@@ -226,5 +252,740 @@ public class OtherScenarios : TestBase
         fixture.AssertFullSemver($"0.0.{patchNumber + 1}+1", configuration);
 
         fixture.Repository.DumpGraph();
+    }
+
+    [Test]
+    public void EnsurePreReleaseTagLabelWithInitialTagForPatchNumberOneWillBeConsideredIfNoLabelIsDefined()
+    {
+        var configuration = GitHubFlowConfigurationBuilder.New
+            .WithLabel(null)
+            .WithBranch("main", branchBuilder => branchBuilder
+                .WithVersioningMode(VersioningMode.ContinuousDelivery)
+                .WithLabel(null).WithIncrement(IncrementStrategy.Patch)
+            ).Build();
+
+        using var fixture = new EmptyRepositoryFixture("main");
+
+        fixture.MakeATaggedCommit("1.0.0");
+        fixture.MakeACommit();
+
+        // ✅ succeeds as expected
+        fixture.AssertFullSemver("1.0.1+1", configuration);
+
+        fixture.ApplyTag($"1.0.1-alpha.1");
+
+        // ✅ succeeds as expected
+        fixture.AssertFullSemver($"1.0.1+1", configuration);
+
+        fixture.MakeACommit();
+
+        // ✅ succeeds as expected
+        fixture.AssertFullSemver($"1.0.1+2", configuration);
+
+        fixture.MakeACommit();
+
+        // ✅ succeeds as expected
+        fixture.AssertFullSemver($"1.0.1+3", configuration);
+
+        fixture.MakeATaggedCommit($"1.0.1-beta.1");
+
+        // ✅ succeeds as expected
+        fixture.AssertFullSemver($"1.0.1+4", configuration);
+
+        fixture.MakeACommit();
+
+        // ✅ succeeds as expected
+        fixture.AssertFullSemver($"1.0.1+5", configuration);
+
+        fixture.MakeATaggedCommit($"1.0.1-beta.2");
+
+        // ✅ succeeds as expected
+        fixture.AssertFullSemver($"1.0.1+6", configuration);
+
+        fixture.MakeACommit();
+
+        // ✅ succeeds as expected
+        fixture.AssertFullSemver($"1.0.1+7", configuration);
+
+        fixture.ApplyTag($"1.0.1");
+
+        // ✅ succeeds as expected
+        fixture.AssertFullSemver($"1.0.1", configuration);
+
+        fixture.MakeACommit();
+
+        // ✅ succeeds as expected
+        fixture.AssertFullSemver($"1.0.2+1", configuration);
+
+        fixture.Repository.DumpGraph();
+    }
+
+    [TestCase(2)]
+    [TestCase(3)]
+    public void EnsurePreReleaseTagLabelWithInitialTagForPatchNumberTwoAndThreeWillBeConsideredIfNoLabelIsDefined(long patchNumber)
+    {
+        var configuration = GitHubFlowConfigurationBuilder.New
+            .WithLabel(null)
+            .WithBranch("main", branchBuilder => branchBuilder
+                .WithVersioningMode(VersioningMode.ContinuousDelivery)
+                .WithLabel(null).WithIncrement(IncrementStrategy.Patch)
+            ).Build();
+
+        using var fixture = new EmptyRepositoryFixture("main");
+
+        fixture.MakeATaggedCommit("1.0.0");
+        fixture.MakeACommit();
+
+        // ✅ succeeds as expected
+        fixture.AssertFullSemver("1.0.1+1", configuration);
+
+        fixture.ApplyTag($"1.0.{patchNumber}-alpha.1");
+
+        // ✅ succeeds as expected
+        fixture.AssertFullSemver($"1.0.{patchNumber}-alpha.1", configuration);
+
+        fixture.MakeACommit();
+
+        // ✅ succeeds as expected
+        fixture.AssertFullSemver($"1.0.{patchNumber}-alpha.2+1", configuration);
+
+        fixture.MakeACommit();
+
+        // ✅ succeeds as expected
+        fixture.AssertFullSemver($"1.0.{patchNumber}-alpha.2+2", configuration);
+
+        fixture.MakeATaggedCommit($"1.0.{patchNumber}-beta.1");
+
+        // ✅ succeeds as expected
+        fixture.AssertFullSemver($"1.0.{patchNumber}-beta.1", configuration);
+
+        fixture.MakeACommit();
+
+        // ✅ succeeds as expected
+        fixture.AssertFullSemver($"1.0.{patchNumber}-beta.2+1", configuration);
+
+        fixture.MakeATaggedCommit($"1.0.{patchNumber}-beta.2");
+
+        // ✅ succeeds as expected
+        fixture.AssertFullSemver($"1.0.{patchNumber}-beta.2", configuration);
+
+        fixture.MakeACommit();
+
+        // ✅ succeeds as expected
+        fixture.AssertFullSemver($"1.0.{patchNumber}-beta.3+1", configuration);
+
+        fixture.ApplyTag($"1.0.{patchNumber}");
+
+        // ✅ succeeds as expected
+        fixture.AssertFullSemver($"1.0.{patchNumber}", configuration);
+
+        fixture.MakeACommit();
+
+        // ✅ succeeds as expected
+        fixture.AssertFullSemver($"1.0.{patchNumber + 1}+1", configuration);
+
+        fixture.Repository.DumpGraph();
+    }
+
+    [TestCase(1)]
+    [TestCase(2)]
+    [TestCase(3)]
+    public void EnsurePreReleaseTagLabelWillBeConsideredIfLabelIsEmpty(long patchNumber)
+    {
+        var configuration = GitHubFlowConfigurationBuilder.New
+            .WithBranch("main", branchBuilder => branchBuilder
+                .WithVersioningMode(VersioningMode.ContinuousDelivery)
+                .WithLabel(string.Empty).WithIncrement(IncrementStrategy.Patch)
+            ).Build();
+
+        using var fixture = new EmptyRepositoryFixture("main");
+
+        fixture.MakeACommit();
+
+        // ✅ succeeds as expected
+        fixture.AssertFullSemver("0.0.1+1", configuration);
+
+        fixture.ApplyTag($"0.0.{patchNumber}-alpha.1");
+
+        // ✅ succeeds as expected
+        fixture.AssertFullSemver($"0.0.{patchNumber}+1", configuration);
+
+        fixture.MakeACommit();
+
+        // ✅ succeeds as expected
+        fixture.AssertFullSemver($"0.0.{patchNumber}+2", configuration);
+
+        fixture.MakeACommit();
+
+        // ✅ succeeds as expected
+        fixture.AssertFullSemver($"0.0.{patchNumber}+3", configuration);
+
+        fixture.MakeATaggedCommit($"0.0.{patchNumber}-beta.1");
+
+        // ✅ succeeds as expected
+        fixture.AssertFullSemver($"0.0.{patchNumber}+4", configuration);
+
+        fixture.MakeACommit();
+
+        // ✅ succeeds as expected
+        fixture.AssertFullSemver($"0.0.{patchNumber}+5", configuration);
+
+        fixture.MakeATaggedCommit($"0.0.{patchNumber}-beta.2");
+
+        // ✅ succeeds as expected
+        fixture.AssertFullSemver($"0.0.{patchNumber}+6", configuration);
+
+        fixture.MakeACommit();
+
+        // ✅ succeeds as expected
+        fixture.AssertFullSemver($"0.0.{patchNumber}+7", configuration);
+
+        fixture.ApplyTag($"0.0.{patchNumber}");
+
+        // ✅ succeeds as expected
+        fixture.AssertFullSemver($"0.0.{patchNumber}", configuration);
+
+        fixture.MakeACommit();
+
+        // ✅ succeeds as expected
+        fixture.AssertFullSemver($"0.0.{patchNumber + 1}+1", configuration);
+    }
+
+    [TestCase(1)]
+    [TestCase(2)]
+    [TestCase(3)]
+    public void EnsurePreReleaseTagLabelWithInitialTagWillBeConsideredIfLabelIsEmpty(long patchNumber)
+    {
+        var configuration = GitHubFlowConfigurationBuilder.New
+            .WithBranch("main", branchBuilder => branchBuilder
+                .WithVersioningMode(VersioningMode.ContinuousDelivery)
+                .WithLabel(string.Empty).WithIncrement(IncrementStrategy.Patch)
+            ).Build();
+
+        using var fixture = new EmptyRepositoryFixture("main");
+
+        fixture.MakeATaggedCommit("1.0.0");
+        fixture.MakeACommit();
+
+        // ✅ succeeds as expected
+        fixture.AssertFullSemver("1.0.1+1", configuration);
+
+        fixture.ApplyTag($"1.0.{patchNumber}-alpha.1");
+
+        // ✅ succeeds as expected
+        fixture.AssertFullSemver($"1.0.{patchNumber}+1", configuration);
+
+        fixture.MakeACommit();
+
+        // ✅ succeeds as expected
+        fixture.AssertFullSemver($"1.0.{patchNumber}+2", configuration);
+
+        fixture.MakeACommit();
+
+        // ✅ succeeds as expected
+        fixture.AssertFullSemver($"1.0.{patchNumber}+3", configuration);
+
+        fixture.MakeATaggedCommit($"1.0.{patchNumber}-beta.1");
+
+        // ✅ succeeds as expected
+        fixture.AssertFullSemver($"1.0.{patchNumber}+4", configuration);
+
+        fixture.MakeACommit();
+
+        // ✅ succeeds as expected
+        fixture.AssertFullSemver($"1.0.{patchNumber}+5", configuration);
+
+        fixture.MakeATaggedCommit($"1.0.{patchNumber}-beta.2");
+
+        // ✅ succeeds as expected
+        fixture.AssertFullSemver($"1.0.{patchNumber}+6", configuration);
+
+        fixture.MakeACommit();
+
+        // ✅ succeeds as expected
+        fixture.AssertFullSemver($"1.0.{patchNumber}+7", configuration);
+
+        fixture.ApplyTag($"1.0.{patchNumber}");
+
+        // ✅ succeeds as expected
+        fixture.AssertFullSemver($"1.0.{patchNumber}", configuration);
+
+        fixture.MakeACommit();
+
+        // ✅ succeeds as expected
+        fixture.AssertFullSemver($"1.0.{patchNumber + 1}+1", configuration);
+    }
+
+    [TestCase(1)]
+    [TestCase(2)]
+    [TestCase(3)]
+    public void EnsurePreReleaseTagLabelWillBeConsideredIfAlphaLabelIsDefined(long patchNumber)
+    {
+        var configuration = GitHubFlowConfigurationBuilder.New
+            .WithLabel(null)
+            .WithBranch("main", branchBuilder => branchBuilder
+                .WithVersioningMode(VersioningMode.ContinuousDelivery)
+                .WithLabel("alpha").WithIncrement(IncrementStrategy.Patch)
+            ).Build();
+
+        using var fixture = new EmptyRepositoryFixture("main");
+
+        fixture.MakeACommit();
+
+        // ✅ succeeds as expected
+        fixture.AssertFullSemver("0.0.1-alpha.1+1", configuration);
+
+        fixture.ApplyTag($"0.0.{patchNumber}-alpha.1");
+
+        // ✅ succeeds as expected
+        fixture.AssertFullSemver($"0.0.{patchNumber}-alpha.1", configuration);
+
+        fixture.MakeACommit();
+
+        // ✅ succeeds as expected
+        fixture.AssertFullSemver($"0.0.{patchNumber}-alpha.2+1", configuration);
+
+        fixture.MakeACommit();
+
+        // ✅ succeeds as expected
+        fixture.AssertFullSemver($"0.0.{patchNumber}-alpha.2+2", configuration);
+
+        fixture.MakeATaggedCommit($"0.0.{patchNumber}-beta.1");
+
+        // ✅ succeeds as expected
+        fixture.AssertFullSemver($"0.0.{patchNumber}-alpha.2+3", configuration);
+
+        fixture.MakeACommit();
+
+        // ✅ succeeds as expected
+        fixture.AssertFullSemver($"0.0.{patchNumber}-alpha.2+4", configuration);
+
+        fixture.MakeATaggedCommit($"0.0.{patchNumber}-beta.2");
+
+        // ✅ succeeds as expected
+        fixture.AssertFullSemver($"0.0.{patchNumber}-alpha.2+5", configuration);
+
+        fixture.MakeACommit();
+
+        // ✅ succeeds as expected
+        fixture.AssertFullSemver($"0.0.{patchNumber}-alpha.2+6", configuration);
+
+        fixture.ApplyTag($"0.0.{patchNumber}");
+
+        // ✅ succeeds as expected
+        fixture.AssertFullSemver($"0.0.{patchNumber}", configuration);
+
+        fixture.MakeACommit();
+
+        // ✅ succeeds as expected
+        fixture.AssertFullSemver($"0.0.{patchNumber + 1}-alpha.1+1", configuration);
+
+        fixture.Repository.DumpGraph();
+    }
+
+    [TestCase(1)]
+    [TestCase(2)]
+    [TestCase(3)]
+    public void EnsurePreReleaseTagLabelWithInitialTagWillBeConsideredIfAlphaLabelIsDefined(long patchNumber)
+    {
+        var configuration = GitHubFlowConfigurationBuilder.New
+            .WithLabel(null)
+            .WithBranch("main", branchBuilder => branchBuilder
+                .WithVersioningMode(VersioningMode.ContinuousDelivery)
+                .WithLabel("alpha").WithIncrement(IncrementStrategy.Patch)
+            ).Build();
+
+        using var fixture = new EmptyRepositoryFixture("main");
+
+        fixture.MakeATaggedCommit("1.0.0");
+        fixture.MakeACommit();
+
+        // ✅ succeeds as expected
+        fixture.AssertFullSemver("1.0.1-alpha.1+1", configuration);
+
+        fixture.ApplyTag($"1.0.{patchNumber}-alpha.1");
+
+        // ✅ succeeds as expected
+        fixture.AssertFullSemver($"1.0.{patchNumber}-alpha.1", configuration);
+
+        fixture.MakeACommit();
+
+        // ✅ succeeds as expected
+        fixture.AssertFullSemver($"1.0.{patchNumber}-alpha.2+1", configuration);
+
+        fixture.MakeACommit();
+
+        // ✅ succeeds as expected
+        fixture.AssertFullSemver($"1.0.{patchNumber}-alpha.2+2", configuration);
+
+        fixture.MakeATaggedCommit($"1.0.{patchNumber}-beta.1");
+
+        // ✅ succeeds as expected
+        fixture.AssertFullSemver($"1.0.{patchNumber}-alpha.2+3", configuration);
+
+        fixture.MakeACommit();
+
+        // ✅ succeeds as expected
+        fixture.AssertFullSemver($"1.0.{patchNumber}-alpha.2+4", configuration);
+
+        fixture.MakeATaggedCommit($"1.0.{patchNumber}-beta.2");
+
+        // ✅ succeeds as expected
+        fixture.AssertFullSemver($"1.0.{patchNumber}-alpha.2+5", configuration);
+
+        fixture.MakeACommit();
+
+        // ✅ succeeds as expected
+        fixture.AssertFullSemver($"1.0.{patchNumber}-alpha.2+6", configuration);
+
+        fixture.ApplyTag($"1.0.{patchNumber}");
+
+        // ✅ succeeds as expected
+        fixture.AssertFullSemver($"1.0.{patchNumber}", configuration);
+
+        fixture.MakeACommit();
+
+        // ✅ succeeds as expected
+        fixture.AssertFullSemver($"1.0.{patchNumber + 1}-alpha.1+1", configuration);
+
+        fixture.Repository.DumpGraph();
+    }
+
+    [TestCase(1)]
+    [TestCase(2)]
+    [TestCase(3)]
+    public void EnsurePreReleaseTagLabelWillBeConsideredIfBetaLabelIsDefined(long patchNumber)
+    {
+        var configuration = GitHubFlowConfigurationBuilder.New
+            .WithBranch("main", branchBuilder => branchBuilder
+                .WithVersioningMode(VersioningMode.ContinuousDelivery)
+                .WithLabel("beta").WithIncrement(IncrementStrategy.Patch)
+            ).Build();
+
+        using var fixture = new EmptyRepositoryFixture("main");
+
+        fixture.MakeACommit();
+
+        // ✅ succeeds as expected
+        fixture.AssertFullSemver("0.0.1-beta.1+1", configuration);
+
+        fixture.ApplyTag($"0.0.{patchNumber}-alpha.1");
+
+        // ✅ succeeds as expected
+        fixture.AssertFullSemver($"0.0.{patchNumber}-beta.1+1", configuration);
+
+        fixture.MakeACommit();
+
+        // ✅ succeeds as expected
+        fixture.AssertFullSemver($"0.0.{patchNumber}-beta.1+2", configuration);
+
+        fixture.MakeACommit();
+
+        // ✅ succeeds as expected
+        fixture.AssertFullSemver($"0.0.{patchNumber}-beta.1+3", configuration);
+
+        fixture.MakeATaggedCommit($"0.0.{patchNumber}-beta.1");
+
+        // ✅ succeeds as expected
+        fixture.AssertFullSemver($"0.0.{patchNumber}-beta.1", configuration);
+
+        fixture.MakeACommit();
+
+        // ✅ succeeds as expected
+        fixture.AssertFullSemver($"0.0.{patchNumber}-beta.2+1", configuration);
+
+        fixture.MakeATaggedCommit($"0.0.{patchNumber}-beta.2");
+
+        // ✅ succeeds as expected
+        fixture.AssertFullSemver($"0.0.{patchNumber}-beta.2", configuration);
+
+        fixture.MakeACommit();
+
+        // ✅ succeeds as expected
+        fixture.AssertFullSemver($"0.0.{patchNumber}-beta.3+1", configuration);
+
+        fixture.ApplyTag($"0.0.{patchNumber}");
+
+        // ✅ succeeds as expected
+        fixture.AssertFullSemver($"0.0.{patchNumber}", configuration);
+
+        fixture.MakeACommit();
+
+        // ✅ succeeds as expected
+        fixture.AssertFullSemver($"0.0.{patchNumber + 1}-beta.1+1", configuration);
+    }
+
+    [TestCase(1)]
+    [TestCase(2)]
+    [TestCase(3)]
+    public void EnsurePreReleaseTagLabelWithInitialTagWillBeConsideredIfBetaLabelIsDefined(long patchNumber)
+    {
+        var configuration = GitHubFlowConfigurationBuilder.New
+            .WithBranch("main", branchBuilder => branchBuilder
+                .WithVersioningMode(VersioningMode.ContinuousDelivery)
+                .WithLabel("beta").WithIncrement(IncrementStrategy.Patch)
+            ).Build();
+
+        using var fixture = new EmptyRepositoryFixture("main");
+
+        fixture.MakeATaggedCommit("1.0.0");
+        fixture.MakeACommit();
+
+        // ✅ succeeds as expected
+        fixture.AssertFullSemver("1.0.1-beta.1+1", configuration);
+
+        fixture.ApplyTag($"1.0.{patchNumber}-alpha.1");
+
+        // ✅ succeeds as expected
+        fixture.AssertFullSemver($"1.0.{patchNumber}-beta.1+1", configuration);
+
+        fixture.MakeACommit();
+
+        // ✅ succeeds as expected
+        fixture.AssertFullSemver($"1.0.{patchNumber}-beta.1+2", configuration);
+
+        fixture.MakeACommit();
+
+        // ✅ succeeds as expected
+        fixture.AssertFullSemver($"1.0.{patchNumber}-beta.1+3", configuration);
+
+        fixture.MakeATaggedCommit($"1.0.{patchNumber}-beta.1");
+
+        // ✅ succeeds as expected
+        fixture.AssertFullSemver($"1.0.{patchNumber}-beta.1", configuration);
+
+        fixture.MakeACommit();
+
+        // ✅ succeeds as expected
+        fixture.AssertFullSemver($"1.0.{patchNumber}-beta.2+1", configuration);
+
+        fixture.MakeATaggedCommit($"1.0.{patchNumber}-beta.2");
+
+        // ✅ succeeds as expected
+        fixture.AssertFullSemver($"1.0.{patchNumber}-beta.2", configuration);
+
+        fixture.MakeACommit();
+
+        // ✅ succeeds as expected
+        fixture.AssertFullSemver($"1.0.{patchNumber}-beta.3+1", configuration);
+
+        fixture.ApplyTag($"1.0.{patchNumber}");
+
+        // ✅ succeeds as expected
+        fixture.AssertFullSemver($"1.0.{patchNumber}", configuration);
+
+        fixture.MakeACommit();
+
+        // ✅ succeeds as expected
+        fixture.AssertFullSemver($"1.0.{patchNumber + 1}-beta.1+1", configuration);
+    }
+
+    [TestCase(1)]
+    [TestCase(2)]
+    [TestCase(3)]
+    public void EnsurePreReleaseTagLabelWillBeConsideredIfGammaLabelIsDefined(long patchNumber)
+    {
+        var configuration = GitHubFlowConfigurationBuilder.New
+            .WithBranch("main", branchBuilder => branchBuilder
+                .WithVersioningMode(VersioningMode.ContinuousDelivery)
+                .WithLabel("gamma").WithIncrement(IncrementStrategy.Patch)
+            ).Build();
+
+        using var fixture = new EmptyRepositoryFixture("main");
+
+        fixture.MakeACommit();
+
+        // ✅ succeeds as expected
+        fixture.AssertFullSemver("0.0.1-gamma.1+1", configuration);
+
+        fixture.ApplyTag($"0.0.{patchNumber}-alpha.1");
+
+        // ✅ succeeds as expected
+        fixture.AssertFullSemver($"0.0.{patchNumber}-gamma.1+1", configuration);
+
+        fixture.MakeACommit();
+
+        // ✅ succeeds as expected
+        fixture.AssertFullSemver($"0.0.{patchNumber}-gamma.1+2", configuration);
+
+        fixture.MakeACommit();
+
+        // ✅ succeeds as expected
+        fixture.AssertFullSemver($"0.0.{patchNumber}-gamma.1+3", configuration);
+
+        fixture.MakeATaggedCommit($"0.0.{patchNumber}-beta.1");
+
+        // ✅ succeeds as expected
+        fixture.AssertFullSemver($"0.0.{patchNumber}-gamma.1+4", configuration);
+
+        fixture.MakeACommit();
+
+        // ✅ succeeds as expected
+        fixture.AssertFullSemver($"0.0.{patchNumber}-gamma.1+5", configuration);
+
+        fixture.MakeATaggedCommit($"0.0.{patchNumber}-beta.2");
+
+        // ✅ succeeds as expected
+        fixture.AssertFullSemver($"0.0.{patchNumber}-gamma.1+6", configuration);
+
+        fixture.MakeACommit();
+
+        // ✅ succeeds as expected
+        fixture.AssertFullSemver($"0.0.{patchNumber}-gamma.1+7", configuration);
+
+        fixture.ApplyTag($"0.0.{patchNumber}");
+
+        // ✅ succeeds as expected
+        fixture.AssertFullSemver($"0.0.{patchNumber}", configuration);
+
+        fixture.MakeACommit();
+
+        // ✅ succeeds as expected
+        fixture.AssertFullSemver($"0.0.{patchNumber + 1}-gamma.1+1", configuration);
+    }
+
+    [TestCase(1)]
+    [TestCase(2)]
+    [TestCase(3)]
+    public void EnsurePreReleaseTagLabelWithInitialTagWillBeConsideredIfGammaLabelIsDefined(long patchNumber)
+    {
+        var configuration = GitHubFlowConfigurationBuilder.New
+            .WithBranch("main", branchBuilder => branchBuilder
+                .WithVersioningMode(VersioningMode.ContinuousDelivery)
+                .WithLabel("gamma").WithIncrement(IncrementStrategy.Patch)
+            ).Build();
+
+        using var fixture = new EmptyRepositoryFixture("main");
+
+        fixture.MakeATaggedCommit("1.0.0");
+        fixture.MakeACommit();
+
+        // ✅ succeeds as expected
+        fixture.AssertFullSemver("1.0.1-gamma.1+1", configuration);
+
+        fixture.ApplyTag($"1.0.{patchNumber}-alpha.1");
+
+        // ✅ succeeds as expected
+        fixture.AssertFullSemver($"1.0.{patchNumber}-gamma.1+1", configuration);
+
+        fixture.MakeACommit();
+
+        // ✅ succeeds as expected
+        fixture.AssertFullSemver($"1.0.{patchNumber}-gamma.1+2", configuration);
+
+        fixture.MakeACommit();
+
+        // ✅ succeeds as expected
+        fixture.AssertFullSemver($"1.0.{patchNumber}-gamma.1+3", configuration);
+
+        fixture.MakeATaggedCommit($"1.0.{patchNumber}-beta.1");
+
+        // ✅ succeeds as expected
+        fixture.AssertFullSemver($"1.0.{patchNumber}-gamma.1+4", configuration);
+
+        fixture.MakeACommit();
+
+        // ✅ succeeds as expected
+        fixture.AssertFullSemver($"1.0.{patchNumber}-gamma.1+5", configuration);
+
+        fixture.MakeATaggedCommit($"1.0.{patchNumber}-beta.2");
+
+        // ✅ succeeds as expected
+        fixture.AssertFullSemver($"1.0.{patchNumber}-gamma.1+6", configuration);
+
+        fixture.MakeACommit();
+
+        // ✅ succeeds as expected
+        fixture.AssertFullSemver($"1.0.{patchNumber}-gamma.1+7", configuration);
+
+        fixture.ApplyTag($"1.0.{patchNumber}");
+
+        // ✅ succeeds as expected
+        fixture.AssertFullSemver($"1.0.{patchNumber}", configuration);
+
+        fixture.MakeACommit();
+
+        // ✅ succeeds as expected
+        fixture.AssertFullSemver($"1.0.{patchNumber + 1}-gamma.1+1", configuration);
+    }
+
+    [TestCase(null)]
+    [TestCase("")]
+    public void IncreaseVersionWithBumpMessageWhenCommitMessageIncrementIsEnabledAndIncrementStrategyIsNoneForBranchWithNoLabel(string? label)
+    {
+        var configuration = GitFlowConfigurationBuilder.New.WithLabel(null)
+            .WithBranch("main", _ => _
+                .WithCommitMessageIncrementing(CommitMessageIncrementMode.Enabled)
+                .WithVersioningMode(VersioningMode.ContinuousDeployment)
+                .WithIncrement(IncrementStrategy.None)
+                .WithLabel(label)
+            )
+            .Build();
+
+        using var fixture = new EmptyRepositoryFixture("main");
+        fixture.MakeACommit();
+
+        // ✅ succeeds as expected
+        fixture.AssertFullSemver("0.0.0", configuration);
+
+        fixture.MakeACommit("+semver: minor");
+
+        // ✅ succeeds as expected
+        fixture.AssertFullSemver("0.1.0", configuration);
+
+        fixture.ApplyTag("1.0.0");
+
+        // ✅ succeeds as expected
+        fixture.AssertFullSemver("1.0.0", configuration);
+
+        fixture.MakeACommit("+semver: major");
+
+        // ✅ succeeds as expected
+        fixture.AssertFullSemver("2.0.0", configuration);
+
+        fixture.ApplyTag("2.0.0");
+        fixture.MakeACommit();
+
+        // ✅ succeeds as expected
+        fixture.AssertFullSemver("2.0.0", configuration);
+    }
+
+    [Test]
+    public void IncreaseVersionWithBumpMessageWhenCommitMessageIncrementIsEnabledAndIncrementStrategyIsNoneForBranchWithAlphaLabel()
+    {
+        var configuration = GitFlowConfigurationBuilder.New
+            .WithBranch("main", _ => _
+                .WithCommitMessageIncrementing(CommitMessageIncrementMode.Enabled)
+                .WithVersioningMode(VersioningMode.ContinuousDeployment)
+                .WithIncrement(IncrementStrategy.None)
+                .WithLabel("pre")
+            ).Build();
+
+        using var fixture = new EmptyRepositoryFixture("main");
+        fixture.MakeACommit();
+
+        // ✅ succeeds as expected
+        fixture.AssertFullSemver("0.0.0-pre.1", configuration);
+
+        fixture.MakeACommit("+semver: minor");
+
+        // ✅ succeeds as expected
+        fixture.AssertFullSemver("0.1.0-pre.2", configuration);
+
+        fixture.ApplyTag("1.0.0");
+
+        // ✅ succeeds as expected
+        fixture.AssertFullSemver("1.0.0", configuration);
+
+        fixture.MakeACommit("+semver: major");
+
+        // ✅ succeeds as expected
+        fixture.AssertFullSemver("2.0.0-pre.1", configuration);
+
+        fixture.ApplyTag("2.0.0");
+        fixture.MakeACommit();
+
+        // ✅ succeeds as expected
+        fixture.AssertFullSemver("2.0.0-pre.1", configuration);
     }
 }
