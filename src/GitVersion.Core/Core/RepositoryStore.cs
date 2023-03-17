@@ -247,13 +247,12 @@ public class RepositoryStore : IRepositoryStore
         }
     }
 
-    public SemanticVersion? GetCurrentCommitTaggedVersion(ICommit? commit, string? tagPrefix, SemanticVersionFormat versionFormat, bool handleDetachedBranch)
+    public SemanticVersion? GetCurrentCommitTaggedVersion(ICommit? commit, string? tagPrefix, SemanticVersionFormat format, bool handleDetachedBranch)
         => this.repository.Tags
-            .SelectMany(tag => GetCurrentCommitSemanticVersions(commit, tagPrefix, tag, versionFormat, handleDetachedBranch))
+            .SelectMany(tag => GetCurrentCommitSemanticVersions(commit, tagPrefix, tag, format, handleDetachedBranch))
             .Max();
 
-    public IEnumerable<SemanticVersion> GetVersionTagsOnBranch(
-        IBranch branch, string? labelPrefix, SemanticVersionFormat semanticVersionFormat)
+    public IEnumerable<SemanticVersion> GetVersionTagsOnBranch(IBranch branch, string? labelPrefix, SemanticVersionFormat format)
     {
         branch = branch.NotNull();
 
@@ -265,7 +264,7 @@ public class RepositoryStore : IRepositoryStore
 
         using (this.log.IndentLog($"Getting version tags from branch '{branch.Name.Canonical}'."))
         {
-            var semanticVersions = GetTaggedSemanticVersions(labelPrefix, semanticVersionFormat);
+            var semanticVersions = GetTaggedSemanticVersions(labelPrefix, format);
             var tagsBySha = semanticVersions.Where(t => t.Tag.TargetSha != null).ToLookup(t => t.Tag.TargetSha, t => t);
 
             var versionTags = (branch.Commits?.SelectMany(c => tagsBySha[c.Sha].Select(t => t))

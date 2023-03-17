@@ -65,9 +65,9 @@ public sealed class TaggedCommitVersionStrategy : VersionStrategyBase
 
         if (configuration.Value.TracksReleaseBranches)
         {
-            foreach (var mainBranche in this.repositoryStore.FindMainlineBranches(Context.Configuration))
+            foreach (var mainBranch in this.repositoryStore.FindMainlineBranches(Context.Configuration))
             {
-                foreach (var commit in mainBranche.Commits?.ToArray() ?? Array.Empty<ICommit>())
+                foreach (var commit in mainBranch.Commits?.ToArray() ?? Array.Empty<ICommit>())
                 {
                     foreach (var semanticVersion in semanticVersionsByCommit[commit.Id.Sha])
                     {
