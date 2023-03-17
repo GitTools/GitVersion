@@ -57,8 +57,11 @@ public class DockerHubReadmePublishInternal : FrostingTask<BuildContext>
         // language=markdown
         var readme = $"""
 # GitVersion
+![GitVersion – From git log to SemVer in no time][banner]
 
-This repository contains the Docker images for [GitVersion](https://gitversion.net).
+Versioning when using Git, solved. GitVersion looks at your git history and works out the [Semantic Version][semver] of the commit being built.
+
+This repository contains the Docker images for [GitVersion][website]. Source code can be found at [src](https://github.com/GitTools/GitVersion)
 
 ## Usage
 
@@ -82,6 +85,28 @@ Most of the tags we provide have both arm64 and amd64 variants. If you need to p
 docker run --rm -v "$(pwd):/repo" gittools/gitversion:{tag}-amd64 /repo
 docker run --rm -v "$(pwd):/repo" gittools/gitversion:{tag}-arm64 /repo
 ```
+
+## Quick Links
+
+* [Documentation][docs]
+* [Contributing][contribute]
+* [Why GitVersion][why]
+* [Usage][usage]
+* [How it works][how]
+* [FAQ][faq]
+* [Who is using GitVersion][who]
+
+[website]:    https://gitversion.net
+[docs]:       https://gitversion.net/docs/
+[contribute]: https://github.com/GitTools/GitVersion/blob/main/CONTRIBUTING.md
+[why]:        https://gitversion.net/docs/learn/why
+[usage]:      https://gitversion.net/docs/usage
+[how]:        https://gitversion.net/docs/learn/how-it-works
+[faq]:        https://gitversion.net/docs/learn/faq
+[who]:        https://gitversion.net/docs/learn/who
+[src]:        https://github.com/GitTools/GitVersion
+[semver]:     https://semver.org
+[banner]:     https://raw.githubusercontent.com/GitTools/graphics/master/GitVersion/banner-1280x640.png
 """;
         return readme;
     }
