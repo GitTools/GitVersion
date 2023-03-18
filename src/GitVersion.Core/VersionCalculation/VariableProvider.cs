@@ -25,8 +25,6 @@ public class VariableProvider : IVariableProvider
             // Continuous Deployment always requires a pre-release tag unless the commit is tagged
             if (!semanticVersion.PreReleaseTag.HasTag())
             {
-                // TODO: Why do we manipulating the semantic version here in the VariableProvider? The method name is GET not MANIPULATE.
-                // What is about the separation of concern and single-responsibility principle?
                 preReleaseTagName = configuration.GetBranchSpecificLabel(semanticVersion.BuildMetaData.Branch, null);
                 if (preReleaseTagName.IsNullOrEmpty())
                 {
@@ -43,16 +41,12 @@ public class VariableProvider : IVariableProvider
             var numberGroup = match.Groups["number"];
             if (numberGroup.Success)
             {
-                // TODO: Why do we manipulating the semantic version here in the VariableProvider? The method name is GET not MANIPULATE.
-                // What is about the separation of concern and single-responsibility principle?
                 preReleaseTagName += numberGroup.Value;
             }
         }
 
         if (isContinuousDeploymentMode || appendTagNumberPattern || configuration.VersioningMode == VersioningMode.Mainline)
         {
-            // TODO: Why do we manipulating the semantic version here in the VariableProvider? The method name is GET not MANIPULATE.
-            // What is about the separation of concern and single-responsibility principle?
             semanticVersion = PromoteNumberOfCommitsToTagNumber(semanticVersion, preReleaseTagName);
         }
         else

@@ -7,8 +7,11 @@ namespace GitVersion.Core.Tests.IntegrationTests;
 [TestFixture]
 public class OtherBranchScenarios : TestBase
 {
+    /// <summary>
+    /// https://github.com/GitTools/GitVersion/issues/2340
+    /// </summary>
     [Test]
-    public void __Just_A_Test__()
+    public void ShouldOnlyConsiderTagsMatchingOfCurrentBranch()
     {
         var configuration = GitFlowConfigurationBuilder.New
             .WithBranch("develop", builder => builder.WithLabel("snapshot"))
