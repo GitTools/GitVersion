@@ -23,13 +23,14 @@ internal class WixFileTests : TestBase
             Major = 1,
             Minor = 2,
             Patch = 3,
-            BuildMetaData = "5.Branch.develop"
+            BuildMetaData = new SemanticVersionBuildMetaData("5.Branch.develop")
+            {
+                VersionSourceSha = "versionSourceSha",
+                Sha = "commitSha",
+                ShortSha = "commitShortSha",
+                CommitDate = DateTimeOffset.Parse("2019-02-20 23:59:59Z")
+            }
         };
-
-        semVer.BuildMetaData.VersionSourceSha = "versionSourceSha";
-        semVer.BuildMetaData.Sha = "commitSha";
-        semVer.BuildMetaData.ShortSha = "commitShortSha";
-        semVer.BuildMetaData.CommitDate = DateTimeOffset.Parse("2019-02-20 23:59:59Z");
 
         var configuration = new TestEffectiveConfiguration();
 
@@ -43,7 +44,7 @@ internal class WixFileTests : TestBase
 
         var fileSystem = sp.GetRequiredService<IFileSystem>();
         var variableProvider = sp.GetRequiredService<IVariableProvider>();
-        var versionVariables = variableProvider.GetVariablesFor(semVer, configuration, false);
+        var versionVariables = variableProvider.GetVariablesFor(semVer, configuration, null);
 
         using var wixVersionFileUpdater = sp.GetRequiredService<IWixVersionFileUpdater>();
 
@@ -64,13 +65,14 @@ internal class WixFileTests : TestBase
             Major = 1,
             Minor = 2,
             Patch = 3,
-            BuildMetaData = "5.Branch.develop"
+            BuildMetaData = new SemanticVersionBuildMetaData("5.Branch.develop")
+            {
+                VersionSourceSha = "versionSourceSha",
+                Sha = "commitSha",
+                ShortSha = "commitShortSha",
+                CommitDate = DateTimeOffset.Parse("2019-02-20 23:59:59Z")
+            }
         };
-
-        semVer.BuildMetaData.VersionSourceSha = "versionSourceSha";
-        semVer.BuildMetaData.Sha = "commitSha";
-        semVer.BuildMetaData.ShortSha = "commitShortSha";
-        semVer.BuildMetaData.CommitDate = DateTimeOffset.Parse("2019-02-20 23:59:59Z");
 
         var configuration = new TestEffectiveConfiguration();
 
@@ -84,7 +86,7 @@ internal class WixFileTests : TestBase
 
         var fileSystem = sp.GetRequiredService<IFileSystem>();
         var variableProvider = sp.GetRequiredService<IVariableProvider>();
-        var versionVariables = variableProvider.GetVariablesFor(semVer, configuration, false);
+        var versionVariables = variableProvider.GetVariablesFor(semVer, configuration, null);
 
         using var wixVersionFileUpdater = sp.GetRequiredService<IWixVersionFileUpdater>();
 

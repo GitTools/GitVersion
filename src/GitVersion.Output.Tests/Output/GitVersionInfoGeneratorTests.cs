@@ -37,7 +37,7 @@ public class GitVersionInfoGeneratorTests : TestBase
         var fileSystem = sp.GetRequiredService<IFileSystem>();
         var variableProvider = sp.GetRequiredService<IVariableProvider>();
 
-        var variables = variableProvider.GetVariablesFor(semanticVersion, new TestEffectiveConfiguration(), false);
+        var variables = variableProvider.GetVariablesFor(semanticVersion, new TestEffectiveConfiguration(), null);
         using var generator = sp.GetRequiredService<IGitVersionInfoGenerator>();
 
         generator.Execute(variables, new GitVersionInfoContext(directory, fileName, fileExtension));

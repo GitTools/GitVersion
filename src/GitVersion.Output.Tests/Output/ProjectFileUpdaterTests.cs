@@ -140,7 +140,9 @@ public class ProjectFileUpdaterTests : TestBase
     )]
     public void UpdateProjectXmlVersionElementWithStandardXmlInsertsElement(string xml)
     {
-        var variables = this.variableProvider.GetVariablesFor(SemanticVersion.Parse("2.0.0", ConfigurationConstants.DefaultLabelPrefix), new TestEffectiveConfiguration(), false);
+        var variables = this.variableProvider.GetVariablesFor(
+            SemanticVersion.Parse("2.0.0", ConfigurationConstants.DefaultLabelPrefix), new TestEffectiveConfiguration(), null
+        );
         var xmlRoot = XElement.Parse(xml);
         variables.AssemblySemVer.ShouldNotBeNull();
         ProjectFileUpdater.UpdateProjectVersionElement(xmlRoot, ProjectFileUpdater.AssemblyVersionElement, variables.AssemblySemVer);
@@ -167,7 +169,7 @@ public class ProjectFileUpdaterTests : TestBase
     )]
     public void UpdateProjectXmlVersionElementWithStandardXmlModifiesElement(string xml)
     {
-        var variables = this.variableProvider.GetVariablesFor(SemanticVersion.Parse("2.0.0", ConfigurationConstants.DefaultLabelPrefix), new TestEffectiveConfiguration(), false);
+        var variables = this.variableProvider.GetVariablesFor(SemanticVersion.Parse("2.0.0", ConfigurationConstants.DefaultLabelPrefix), new TestEffectiveConfiguration(), null);
         var xmlRoot = XElement.Parse(xml);
         variables.AssemblySemVer.ShouldNotBeNull();
         ProjectFileUpdater.UpdateProjectVersionElement(xmlRoot, ProjectFileUpdater.AssemblyVersionElement, variables.AssemblySemVer);
@@ -197,7 +199,7 @@ public class ProjectFileUpdaterTests : TestBase
     )]
     public void UpdateProjectXmlVersionElementWithDuplicatePropertyGroupsModifiesLastElement(string xml)
     {
-        var variables = this.variableProvider.GetVariablesFor(SemanticVersion.Parse("2.0.0", ConfigurationConstants.DefaultLabelPrefix), new TestEffectiveConfiguration(), false);
+        var variables = this.variableProvider.GetVariablesFor(SemanticVersion.Parse("2.0.0", ConfigurationConstants.DefaultLabelPrefix), new TestEffectiveConfiguration(), null);
         var xmlRoot = XElement.Parse(xml);
         variables.AssemblySemVer.ShouldNotBeNull();
         ProjectFileUpdater.UpdateProjectVersionElement(xmlRoot, ProjectFileUpdater.AssemblyVersionElement, variables.AssemblySemVer);
@@ -228,7 +230,7 @@ public class ProjectFileUpdaterTests : TestBase
     )]
     public void UpdateProjectXmlVersionElementWithMultipleVersionElementsLastOneIsModified(string xml)
     {
-        var variables = this.variableProvider.GetVariablesFor(SemanticVersion.Parse("2.0.0", ConfigurationConstants.DefaultLabelPrefix), new TestEffectiveConfiguration(), false);
+        var variables = this.variableProvider.GetVariablesFor(SemanticVersion.Parse("2.0.0", ConfigurationConstants.DefaultLabelPrefix), new TestEffectiveConfiguration(), null);
         var xmlRoot = XElement.Parse(xml);
         variables.AssemblySemVer.ShouldNotBeNull();
         ProjectFileUpdater.UpdateProjectVersionElement(xmlRoot, ProjectFileUpdater.AssemblyVersionElement, variables.AssemblySemVer);
@@ -301,7 +303,7 @@ public class ProjectFileUpdaterTests : TestBase
         });
 
         var configuration = new TestEffectiveConfiguration(versioningScheme);
-        var variables = this.variableProvider.GetVariablesFor(version, configuration, false);
+        var variables = this.variableProvider.GetVariablesFor(version, configuration, null);
 
         verify?.Invoke(this.fileSystem, variables);
     }

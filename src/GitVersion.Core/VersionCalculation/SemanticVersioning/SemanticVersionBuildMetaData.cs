@@ -7,6 +7,8 @@ namespace GitVersion;
 
 public class SemanticVersionBuildMetaData : IFormattable, IEquatable<SemanticVersionBuildMetaData?>
 {
+    public static readonly SemanticVersionBuildMetaData Empty = new();
+
     private static readonly Regex ParseRegex = new(
         @"(?<BuildNumber>\d+)?(\.?Branch(Name)?\.(?<BranchName>[^\.]+))?(\.?Sha?\.(?<Sha>[^\.]+))?(?<Other>.*)",
         RegexOptions.Compiled | RegexOptions.IgnoreCase);
@@ -14,21 +16,30 @@ public class SemanticVersionBuildMetaData : IFormattable, IEquatable<SemanticVer
     private static readonly LambdaEqualityHelper<SemanticVersionBuildMetaData> EqualityHelper =
         new(x => x.CommitsSinceTag, x => x.Branch, x => x.Sha);
 
-    public long? CommitsSinceTag;
-    public string? Branch;
-    public string? Sha;
-    public string? ShortSha;
-    public string? OtherMetaData;
-    public DateTimeOffset? CommitDate;
-    public string? VersionSourceSha;
-    public long? CommitsSinceVersionSource;
-    public long UncommittedChanges;
+    public long? CommitsSinceTag { get; init; }
+
+    public string? Branch { get; init; }
+
+    public string? Sha { get; init; }
+
+    public string? ShortSha { get; init; }
+
+    public string? OtherMetaData { get; init; }
+
+    public DateTimeOffset? CommitDate { get; init; }
+
+    public string? VersionSourceSha { get; init; }
+
+    public long? CommitsSinceVersionSource { get; init; }
+
+    public long UncommittedChanges { get; init; }
 
     public SemanticVersionBuildMetaData()
     {
     }
 
-    public SemanticVersionBuildMetaData(string? versionSourceSha, int? commitsSinceTag, string? branch, string? commitSha, string? commitShortSha, DateTimeOffset? commitDate, int numberOfUnCommittedChanges, string? otherMetadata = null)
+    public SemanticVersionBuildMetaData(string? versionSourceSha, int? commitsSinceTag, string? branch, string? commitSha,
+        string? commitShortSha, DateTimeOffset? commitDate, int numberOfUnCommittedChanges, string? otherMetadata = null)
     {
         this.Sha = commitSha;
         this.ShortSha = commitShortSha;
@@ -41,17 +52,19 @@ public class SemanticVersionBuildMetaData : IFormattable, IEquatable<SemanticVer
         this.UncommittedChanges = numberOfUnCommittedChanges;
     }
 
-    public SemanticVersionBuildMetaData(SemanticVersionBuildMetaData? buildMetaData)
+    public SemanticVersionBuildMetaData(SemanticVersionBuildMetaData buildMetaData)
     {
-        this.Sha = buildMetaData?.Sha;
-        this.ShortSha = buildMetaData?.ShortSha;
-        this.CommitsSinceTag = buildMetaData?.CommitsSinceTag;
-        this.Branch = buildMetaData?.Branch;
-        this.CommitDate = buildMetaData?.CommitDate;
-        this.OtherMetaData = buildMetaData?.OtherMetaData;
-        this.VersionSourceSha = buildMetaData?.VersionSourceSha;
-        this.CommitsSinceVersionSource = buildMetaData?.CommitsSinceVersionSource;
-        this.UncommittedChanges = buildMetaData?.UncommittedChanges ?? 0;
+        buildMetaData.NotNull();
+
+        this.Sha = buildMetaData.Sha;
+        this.ShortSha = buildMetaData.ShortSha;
+        this.CommitsSinceTag = buildMetaData.CommitsSinceTag;
+        this.Branch = buildMetaData.Branch;
+        this.CommitDate = buildMetaData.CommitDate;
+        this.OtherMetaData = buildMetaData.OtherMetaData;
+        this.VersionSourceSha = buildMetaData.VersionSourceSha;
+        this.CommitsSinceVersionSource = buildMetaData.CommitsSinceVersionSource;
+        this.UncommittedChanges = buildMetaData.UncommittedChanges;
     }
 
     public override bool Equals(object? obj) => Equals(obj as SemanticVersionBuildMetaData);
@@ -99,28 +112,39 @@ public class SemanticVersionBuildMetaData : IFormattable, IEquatable<SemanticVer
 
     public static SemanticVersionBuildMetaData Parse(string? buildMetaData)
     {
-        var semanticVersionBuildMetaData = new SemanticVersionBuildMetaData();
         if (buildMetaData.IsNullOrEmpty())
-            return semanticVersionBuildMetaData;
+            return Empty;
 
         var parsed = ParseRegex.Match(buildMetaData);
 
+        long? buildMetaDataCommitsSinceTag = null;
+        long? buildMetaDataCommitsSinceVersionSource = null;
         if (parsed.Groups["BuildNumber"].Success)
         {
-            semanticVersionBuildMetaData.CommitsSinceTag = long.Parse(parsed.Groups["BuildNumber"].Value);
-            semanticVersionBuildMetaData.CommitsSinceVersionSource = semanticVersionBuildMetaData.CommitsSinceTag ?? 0;
+            buildMetaDataCommitsSinceTag = long.Parse(parsed.Groups["BuildNumber"].Value);
+            buildMetaDataCommitsSinceVersionSource = buildMetaDataCommitsSinceTag ?? 0;
         }
 
+        string? buildMetaDataBranch = null;
         if (parsed.Groups["BranchName"].Success)
-            semanticVersionBuildMetaData.Branch = parsed.Groups["BranchName"].Value;
+            buildMetaDataBranch = parsed.Groups["BranchName"].Value;
 
+        string? buildMetaDataSha = null;
         if (parsed.Groups["Sha"].Success)
-            semanticVersionBuildMetaData.Sha = parsed.Groups["Sha"].Value;
+            buildMetaDataSha = parsed.Groups["Sha"].Value;
 
+        string? buildMetaDataOtherMetaData = null;
         if (parsed.Groups["Other"].Success && !parsed.Groups["Other"].Value.IsNullOrEmpty())
-            semanticVersionBuildMetaData.OtherMetaData = parsed.Groups["Other"].Value.TrimStart('.');
+            buildMetaDataOtherMetaData = parsed.Groups["Other"].Value.TrimStart('.');
 
-        return semanticVersionBuildMetaData;
+        return new()
+        {
+            CommitsSinceTag = buildMetaDataCommitsSinceTag,
+            CommitsSinceVersionSource = buildMetaDataCommitsSinceVersionSource,
+            Branch = buildMetaDataBranch,
+            Sha = buildMetaDataSha,
+            OtherMetaData = buildMetaDataOtherMetaData
+        };
     }
 
     private static string FormatMetaDataPart(string value)

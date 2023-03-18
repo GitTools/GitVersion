@@ -29,21 +29,21 @@ public class MergeMessageVersionStrategy : VersionStrategyBase
 
         var commitsPriorToThan = Context.CurrentBranch.Commits.GetCommitsPriorTo(Context.CurrentCommit.When);
         var baseVersions = commitsPriorToThan
-            .SelectMany(c =>
+            .SelectMany(commit =>
             {
-                if (TryParse(c, Context, out var mergeMessage) && mergeMessage.Version != null
+                if (TryParse(commit, Context, out var mergeMessage) && mergeMessage.Version != null
                     && Context.Configuration.IsReleaseBranch(mergeMessage.MergedBranch!))
                 {
-                    this.log.Info($"Found commit [{Context.CurrentCommit}] matching merge message format: {mergeMessage.FormatName}");
+                    this.log.Info($"Found commit [{commit}] matching merge message format: {mergeMessage.FormatName}");
                     var shouldIncrement = !configuration.Value.PreventIncrementOfMergedBranchVersion;
 
-                    var message = c.Message.Trim();
+                    var message = commit.Message.Trim();
 
-                    var baseVersionSource = c;
+                    var baseVersionSource = commit;
 
                     if (shouldIncrement)
                     {
-                        var parents = c.Parents.ToArray();
+                        var parents = commit.Parents.ToArray();
                         if (parents.Length == 2 && message.Contains("Merge branch") && message.Contains("release"))
                         {
                             baseVersionSource = this.repositoryStore.FindMergeBase(parents[0], parents[1]);

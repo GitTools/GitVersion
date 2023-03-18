@@ -5,5 +5,7 @@ namespace GitVersion.VersionCalculation;
 
 public interface IVariableProvider
 {
-    VersionVariables GetVariablesFor(SemanticVersion semanticVersion, EffectiveConfiguration configuration, bool isCurrentCommitTagged);
+    VersionVariables GetVariablesFor(
+        SemanticVersion semanticVersion, EffectiveConfiguration configuration, SemanticVersion? currentCommitTaggedVersion
+    );
 }
