@@ -131,16 +131,20 @@ public class SemanticVersionTests : TestBase
         return semVer.ToString("i");
     }
 
-    private static SemanticVersion BuildSemVer(int major, int minor, int patch, string? preReleaseName, int? preReleaseVersion, int? buildCount, string? branchName = null, string? sha = null, string? otherMetadata = null)
+    private static SemanticVersion BuildSemVer(int major, int minor, int patch, string? preReleaseName, int? preReleaseVersion,
+        int? buildCount, string? branchName = null, string? sha = null, string? otherMetadata = null)
     {
-        var semVer = new SemanticVersion(major, minor, patch);
+
+        SemanticVersionPreReleaseTag? preReleaseTag = null;
         if (preReleaseName != null)
         {
-            semVer.PreReleaseTag = new SemanticVersionPreReleaseTag(preReleaseName, preReleaseVersion);
+            preReleaseTag = new SemanticVersionPreReleaseTag(preReleaseName, preReleaseVersion);
         }
+
+        SemanticVersionBuildMetaData? buildMetaDate = null;
         if (buildCount.HasValue)
         {
-            semVer.BuildMetaData = new SemanticVersionBuildMetaData
+            buildMetaDate = new SemanticVersionBuildMetaData
             {
                 CommitsSinceTag = buildCount.Value,
                 Sha = sha,
@@ -149,6 +153,10 @@ public class SemanticVersionTests : TestBase
             };
         }
 
-        return semVer;
+        return new SemanticVersion(major, minor, patch)
+        {
+            PreReleaseTag = preReleaseTag ?? new(),
+            BuildMetaData = buildMetaDate ?? new()
+        };
     }
 }

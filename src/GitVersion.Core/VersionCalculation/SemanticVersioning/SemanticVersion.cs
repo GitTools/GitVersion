@@ -18,11 +18,15 @@ public class SemanticVersion : IFormattable, IComparable<SemanticVersion>, IEqua
         @"^(?<SemVer>(?<Major>\d+)(\.(?<Minor>\d+))?(\.(?<Patch>\d+))?)(\.(?<FourthPart>\d+))?(-(?<Tag>[^\+]*))?(\+(?<BuildMetaData>.*))?$",
         RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
-    public long Major;
-    public long Minor;
-    public long Patch;
-    public SemanticVersionPreReleaseTag PreReleaseTag;
-    public SemanticVersionBuildMetaData BuildMetaData;
+    public long Major { get; init; }
+
+    public long Minor { get; init; }
+
+    public long Patch { get; init; }
+
+    public SemanticVersionPreReleaseTag PreReleaseTag { get; init; }
+
+    public SemanticVersionBuildMetaData BuildMetaData { get; init; }
 
     public bool IsLabeledWith(string value) => PreReleaseTag.HasTag() && PreReleaseTag.Name.IsEquivalentTo(value);
 
@@ -198,7 +202,10 @@ public class SemanticVersion : IFormattable, IComparable<SemanticVersion>, IEqua
         var fourthPart = parsed.Groups["FourthPart"];
         if (fourthPart.Success && semanticVersionBuildMetaData.CommitsSinceTag == null)
         {
-            semanticVersionBuildMetaData.CommitsSinceTag = int.Parse(fourthPart.Value);
+            semanticVersionBuildMetaData = new(semanticVersionBuildMetaData)
+            {
+                CommitsSinceTag = int.Parse(fourthPart.Value)
+            };
         }
 
         semanticVersion = new SemanticVersion
@@ -305,41 +312,53 @@ public class SemanticVersion : IFormattable, IComparable<SemanticVersion>, IEqua
 
     public SemanticVersion IncrementVersion(VersionField incrementStrategy, string? label)
     {
-        var incremented = new SemanticVersion(this);
+        var major = Major;
+        var minor = Minor;
+        var patch = Patch;
 
-        if (!incremented.PreReleaseTag.HasTag())
+        if (!PreReleaseTag.HasTag())
         {
             switch (incrementStrategy)
             {
                 case VersionField.None:
                     break;
                 case VersionField.Major:
-                    incremented.Major++;
-                    incremented.Minor = 0;
-                    incremented.Patch = 0;
+                    major++;
+                    minor = 0;
+                    patch = 0;
                     break;
                 case VersionField.Minor:
-                    incremented.Minor++;
-                    incremented.Patch = 0;
+                    minor++;
+                    patch = 0;
                     break;
                 case VersionField.Patch:
-                    incremented.Patch++;
+                    patch++;
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(incrementStrategy));
             }
         }
 
-        if (incremented.PreReleaseTag.HasTag() && incremented.PreReleaseTag.Number != null)
+        var preReleaseTagName = PreReleaseTag.Name;
+        var preReleaseTagNumber = PreReleaseTag.Number;
+
+        if (PreReleaseTag.HasTag())
         {
-            incremented.PreReleaseTag.Number++;
+            preReleaseTagNumber++;
+        }
+        else if (!label.IsNullOrEmpty())
+        {
+            preReleaseTagNumber = 1;
+            preReleaseTagName = label;
         }
 
-        if (!PreReleaseTag.HasTag() && !label.IsNullOrEmpty())
+        return new()
         {
-            incremented.PreReleaseTag = new SemanticVersionPreReleaseTag(label, 1);
-        }
-
-        return incremented;
+            Major = major,
+            Minor = minor,
+            Patch = patch,
+            PreReleaseTag = new(preReleaseTagName, preReleaseTagNumber),
+            BuildMetaData = new(BuildMetaData)
+        };
     }
 }

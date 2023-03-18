@@ -2,7 +2,6 @@ using System.Text.RegularExpressions;
 using GitVersion.Configuration;
 using GitVersion.Extensions;
 using GitVersion.Helpers;
-using GitVersion.Logging;
 using GitVersion.OutputVariables;
 
 namespace GitVersion.VersionCalculation;
@@ -10,48 +9,43 @@ namespace GitVersion.VersionCalculation;
 public class VariableProvider : IVariableProvider
 {
     private readonly IEnvironment environment;
-    private readonly ILog log;
 
-    public VariableProvider(IEnvironment environment, ILog log)
-    {
-        this.environment = environment.NotNull();
-        this.log = log.NotNull();
-    }
+    public VariableProvider(IEnvironment environment) => this.environment = environment.NotNull();
 
-    public VersionVariables GetVariablesFor(SemanticVersion semanticVersion, EffectiveConfiguration configuration, bool isCurrentCommitTagged)
+    public VersionVariables GetVariablesFor(
+        SemanticVersion semanticVersion, EffectiveConfiguration configuration, SemanticVersion? currentCommitTaggedVersion)
     {
-        var isContinuousDeploymentMode = configuration.VersioningMode == VersioningMode.ContinuousDeployment && !isCurrentCommitTagged;
+        var preReleaseTagName = semanticVersion.PreReleaseTag.Name;
+
+        var isContinuousDeploymentMode = configuration.VersioningMode == VersioningMode.ContinuousDeployment
+            && currentCommitTaggedVersion is null;
         if (isContinuousDeploymentMode)
         {
             semanticVersion = new SemanticVersion(semanticVersion);
             // Continuous Deployment always requires a pre-release tag unless the commit is tagged
             if (!semanticVersion.PreReleaseTag.HasTag())
             {
-                var label = configuration.GetBranchSpecificLabel(semanticVersion.BuildMetaData.Branch, null);
-                semanticVersion.PreReleaseTag.Name = label ?? string.Empty;
-                if (semanticVersion.PreReleaseTag.Name.IsNullOrEmpty())
+                // TODO: Why do we manipulating the semantic version here in the VariableProvider? The method name is GET not MANIPULATE.
+                // What is about the separation of concern and single-responsibility principle?
+                preReleaseTagName = configuration.GetBranchSpecificLabel(semanticVersion.BuildMetaData.Branch, null);
+                if (preReleaseTagName.IsNullOrEmpty())
                 {
-                    // TODO: Why do we manipulating the semantic version here in the VariableProvider? The method name is GET not MANIPULATE.
-                    // What is about the separation of concern and single-responsibility principle?
-                    semanticVersion.PreReleaseTag.Name = configuration.Label ?? string.Empty;
+                    preReleaseTagName = configuration.Label ?? string.Empty;
                 }
             }
         }
 
         // Evaluate tag number pattern and append to prerelease tag, preserving build metadata
         var appendTagNumberPattern = !configuration.LabelNumberPattern.IsNullOrEmpty() && semanticVersion.PreReleaseTag.HasTag();
-        if (appendTagNumberPattern)
+        if (appendTagNumberPattern && semanticVersion.BuildMetaData.Branch != null && configuration.LabelNumberPattern != null)
         {
-            if (semanticVersion.BuildMetaData.Branch != null && configuration.LabelNumberPattern != null)
+            var match = Regex.Match(semanticVersion.BuildMetaData.Branch, configuration.LabelNumberPattern);
+            var numberGroup = match.Groups["number"];
+            if (numberGroup.Success)
             {
-                var match = Regex.Match(semanticVersion.BuildMetaData.Branch, configuration.LabelNumberPattern);
-                var numberGroup = match.Groups["number"];
-                if (numberGroup.Success)
-                {
-                    // TODO: Why do we manipulating the semantic version here in the VariableProvider? The method name is GET not MANIPULATE.
-                    // What is about the separation of concern and single-responsibility principle?
-                    semanticVersion.PreReleaseTag.Name += numberGroup.Value;
-                }
+                // TODO: Why do we manipulating the semantic version here in the VariableProvider? The method name is GET not MANIPULATE.
+                // What is about the separation of concern and single-responsibility principle?
+                preReleaseTagName += numberGroup.Value;
             }
         }
 
@@ -59,7 +53,29 @@ public class VariableProvider : IVariableProvider
         {
             // TODO: Why do we manipulating the semantic version here in the VariableProvider? The method name is GET not MANIPULATE.
             // What is about the separation of concern and single-responsibility principle?
-            PromoteNumberOfCommitsToTagNumber(semanticVersion);
+            semanticVersion = PromoteNumberOfCommitsToTagNumber(semanticVersion, preReleaseTagName);
+        }
+        else
+        {
+            semanticVersion = new(semanticVersion)
+            {
+                PreReleaseTag = new(semanticVersion.PreReleaseTag)
+                {
+                    Name = preReleaseTagName
+                }
+            };
+        }
+
+        if (semanticVersion.CompareTo(currentCommitTaggedVersion) == 0)
+        {
+            // Will always be 0, don't bother with the +0 on tags
+            semanticVersion = new(semanticVersion)
+            {
+                BuildMetaData = new(semanticVersion.BuildMetaData)
+                {
+                    CommitsSinceTag = null
+                }
+            };
         }
 
         var semverFormatValues = new SemanticVersionFormatValues(semanticVersion, configuration);
@@ -70,7 +86,7 @@ public class VariableProvider : IVariableProvider
 
         var assemblySemVer = CheckAndFormatString(configuration.AssemblyVersioningFormat, semverFormatValues, semverFormatValues.AssemblySemVer, "AssemblyVersioningFormat");
 
-        var variables = new VersionVariables(
+        return new VersionVariables(
             semverFormatValues.Major,
             semverFormatValues.Minor,
             semverFormatValues.Patch,
@@ -95,34 +111,53 @@ public class VariableProvider : IVariableProvider
             semverFormatValues.CommitDate,
             semverFormatValues.VersionSourceSha,
             semverFormatValues.CommitsSinceVersionSource,
-            semverFormatValues.UncommittedChanges);
-
-        return variables;
+            semverFormatValues.UncommittedChanges
+        );
     }
 
-    private static void PromoteNumberOfCommitsToTagNumber(SemanticVersion semanticVersion)
+    private static SemanticVersion PromoteNumberOfCommitsToTagNumber(SemanticVersion semanticVersion, string preReleaseTagName)
     {
+        var preReleaseTagNumber = semanticVersion.PreReleaseTag.Number;
+        var preReleaseTagPromotedFromCommits = semanticVersion.PreReleaseTag.PromotedFromCommits;
+        long buildMetaDataCommitsSinceVersionSource;
+        var buildMetaDataCommitsSinceTag = semanticVersion.BuildMetaData.CommitsSinceTag;
+
         // For continuous deployment the commits since tag gets promoted to the pre-release number
         if (!semanticVersion.BuildMetaData.CommitsSinceTag.HasValue)
         {
-            semanticVersion.PreReleaseTag.Number = null;
-            semanticVersion.BuildMetaData.CommitsSinceVersionSource = 0;
+            preReleaseTagNumber = null;
+            buildMetaDataCommitsSinceVersionSource = 0;
         }
         else
         {
             // Number of commits since last tag should be added to PreRelease number if given. Remember to deduct automatic version bump.
-            if (semanticVersion.PreReleaseTag.Number.HasValue)
+            if (preReleaseTagNumber.HasValue)
             {
-                semanticVersion.PreReleaseTag.Number += semanticVersion.BuildMetaData.CommitsSinceTag - 1;
+                preReleaseTagNumber += semanticVersion.BuildMetaData.CommitsSinceTag - 1;
             }
             else
             {
-                semanticVersion.PreReleaseTag.Number = semanticVersion.BuildMetaData.CommitsSinceTag;
-                semanticVersion.PreReleaseTag.PromotedFromCommits = true;
+                preReleaseTagNumber = semanticVersion.BuildMetaData.CommitsSinceTag;
+                preReleaseTagPromotedFromCommits = true;
             }
-            semanticVersion.BuildMetaData.CommitsSinceVersionSource = semanticVersion.BuildMetaData.CommitsSinceTag.Value;
-            semanticVersion.BuildMetaData.CommitsSinceTag = null; // why is this set to null ?
+            buildMetaDataCommitsSinceVersionSource = semanticVersion.BuildMetaData.CommitsSinceTag.Value;
+            buildMetaDataCommitsSinceTag = null; // why is this set to null ?
         }
+
+        return new SemanticVersion(semanticVersion)
+        {
+            PreReleaseTag = new(semanticVersion.PreReleaseTag)
+            {
+                Name = preReleaseTagName,
+                Number = preReleaseTagNumber,
+                PromotedFromCommits = preReleaseTagPromotedFromCommits
+            },
+            BuildMetaData = new(semanticVersion.BuildMetaData)
+            {
+                CommitsSinceVersionSource = buildMetaDataCommitsSinceVersionSource,
+                CommitsSinceTag = buildMetaDataCommitsSinceTag
+            }
+        };
     }
 
     private string? CheckAndFormatString<T>(string? formatString, T source, string? defaultValue, string formatVarName)

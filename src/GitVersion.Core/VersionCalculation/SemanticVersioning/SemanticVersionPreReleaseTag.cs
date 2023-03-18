@@ -8,12 +8,20 @@ namespace GitVersion;
 public sealed class SemanticVersionPreReleaseTag :
     IFormattable, IComparable<SemanticVersionPreReleaseTag>, IEquatable<SemanticVersionPreReleaseTag?>
 {
+    public static readonly SemanticVersionPreReleaseTag Empty = new();
+
     private static readonly Regex ParseRegex = new(
         @"(?<name>.*?)\.?(?<number>\d+)?$",
         RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
     private static readonly LambdaEqualityHelper<SemanticVersionPreReleaseTag> EqualityHelper =
         new(x => x.Name, x => x.Number);
+
+    public string Name { get; init; }
+
+    public long? Number { get; init; }
+
+    public bool? PromotedFromCommits { get; init; }
 
     public SemanticVersionPreReleaseTag() => Name = string.Empty;
 
@@ -31,12 +39,6 @@ public sealed class SemanticVersionPreReleaseTag :
         Number = preReleaseTag.Number;
         PromotedFromCommits = preReleaseTag.PromotedFromCommits;
     }
-
-    public string Name { get; set; }
-
-    public long? Number { get; set; }
-
-    public bool? PromotedFromCommits { get; set; }
 
     public override bool Equals(object? obj) => Equals(obj as SemanticVersionPreReleaseTag);
 

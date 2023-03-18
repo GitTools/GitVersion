@@ -29,15 +29,16 @@ public class BuildServerBaseTests : TestBase
             Minor = 2,
             Patch = 3,
             PreReleaseTag = "beta1",
-            BuildMetaData = "5"
+            BuildMetaData = new SemanticVersionBuildMetaData("5")
+            {
+                Sha = "commitSha",
+                CommitDate = DateTimeOffset.Parse("2014-03-06 23:59:59Z")
+            }
         };
-
-        semanticVersion.BuildMetaData.CommitDate = DateTimeOffset.Parse("2014-03-06 23:59:59Z");
-        semanticVersion.BuildMetaData.Sha = "commitSha";
 
         var configuration = new TestEffectiveConfiguration();
 
-        var variables = this.buildServer.GetVariablesFor(semanticVersion, configuration, false);
+        var variables = this.buildServer.GetVariablesFor(semanticVersion, configuration, null);
         var buildAgent = this.sp.GetRequiredService<BuildAgent>();
         buildAgent.WriteIntegration(writes.Add, variables);
 

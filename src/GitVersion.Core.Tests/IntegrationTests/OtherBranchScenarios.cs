@@ -8,6 +8,26 @@ namespace GitVersion.Core.Tests.IntegrationTests;
 public class OtherBranchScenarios : TestBase
 {
     [Test]
+    public void __Just_A_Test__()
+    {
+        var configuration = GitFlowConfigurationBuilder.New
+            .WithBranch("develop", builder => builder.WithLabel("snapshot"))
+            .WithBranch("release", builder => builder.WithLabel("rc"))
+            .Build();
+
+        using var fixture = new EmptyRepositoryFixture();
+
+        fixture.MakeACommit();
+        fixture.BranchTo("develop");
+        fixture.MakeACommit();
+        fixture.MakeATaggedCommit("0.1.2-snapshot.2");
+        fixture.BranchTo("release/0.1.2");
+
+        // ✅ succeeds as expected
+        fixture.AssertFullSemver("0.1.2-rc.1+0", configuration);
+    }
+
+    [Test]
     public void CanTakeVersionFromReleaseBranch()
     {
         using var fixture = new EmptyRepositoryFixture();

@@ -91,7 +91,9 @@ public static class GitToolsTestingExtensions
             var context = contextOptions.Value;
 
             var nextVersion = nextVersionCalculator.FindVersion();
-            return variableProvider.GetVariablesFor(nextVersion.IncrementedVersion, nextVersion.Configuration, context.IsCurrentCommitTagged);
+            return variableProvider.GetVariablesFor(
+                nextVersion.IncrementedVersion, nextVersion.Configuration, context.CurrentCommitTaggedVersion
+            );
         }
         catch (Exception)
         {

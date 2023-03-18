@@ -139,16 +139,17 @@ public class BitBucketPipelinesTests : TestBase
             Minor = 2,
             Patch = 3,
             PreReleaseTag = "beta1",
-            BuildMetaData = "5"
+            BuildMetaData = new SemanticVersionBuildMetaData("5")
+            {
+                Sha = "f28807e615e9f06aec8a33c87780374e0c1f6fb8",
+                CommitDate = new DateTimeOffset(2022, 4, 6, 16, 10, 59, TimeSpan.FromHours(10))
+            }
         };
-
-        semanticVersion.BuildMetaData.CommitDate = new DateTimeOffset(2022, 4, 6, 16, 10, 59, TimeSpan.FromHours(10));
-        semanticVersion.BuildMetaData.Sha = "f28807e615e9f06aec8a33c87780374e0c1f6fb8";
 
         var configuration = new TestEffectiveConfiguration();
         var variableProvider = this.sp.GetRequiredService<IVariableProvider>();
 
-        var variables = variableProvider.GetVariablesFor(semanticVersion, configuration, false);
+        var variables = variableProvider.GetVariablesFor(semanticVersion, configuration, null);
 
         this.buildServer.WithPropertyFile(file);
 

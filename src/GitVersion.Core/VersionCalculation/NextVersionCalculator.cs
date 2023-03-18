@@ -56,12 +56,6 @@ public class NextVersionCalculator : INextVersionCalculator
             semanticVersion = FindOtherModeVersion(nextVersion);
         }
 
-        if (semanticVersion.CompareTo(Context.CurrentCommitTaggedVersion) == 0)
-        {
-            // Will always be 0, don't bother with the +0 on tags
-            semanticVersion.BuildMetaData.CommitsSinceTag = null;
-        }
-
         return new(semanticVersion, nextVersion.BaseVersion, new(nextVersion.Branch, nextVersion.Configuration));
     }
 

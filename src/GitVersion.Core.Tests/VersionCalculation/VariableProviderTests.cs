@@ -36,17 +36,18 @@ public class VariableProviderTests : TestBase
             Minor = 2,
             Patch = 3,
             PreReleaseTag = "unstable.4",
-            BuildMetaData = "5.Branch.develop"
+            BuildMetaData = new SemanticVersionBuildMetaData("5.Branch.develop")
+            {
+                VersionSourceSha = "versionSourceSha",
+                Sha = "commitSha",
+                ShortSha = "commitShortSha",
+                CommitDate = DateTimeOffset.Parse("2014-03-06 23:59:59Z")
+            }
         };
-
-        semVer.BuildMetaData.VersionSourceSha = "versionSourceSha";
-        semVer.BuildMetaData.Sha = "commitSha";
-        semVer.BuildMetaData.ShortSha = "commitShortSha";
-        semVer.BuildMetaData.CommitDate = DateTimeOffset.Parse("2014-03-06 23:59:59Z");
 
         var configuration = new TestEffectiveConfiguration();
 
-        var vars = this.variableProvider.GetVariablesFor(semVer, configuration, false);
+        var vars = this.variableProvider.GetVariablesFor(semVer, configuration, null);
 
         vars.ToString().ShouldMatchApproved(c => c.SubFolder("Approved"));
     }
@@ -60,17 +61,18 @@ public class VariableProviderTests : TestBase
             Minor = 2,
             Patch = 3,
             PreReleaseTag = "unstable.4",
-            BuildMetaData = "5.Branch.develop"
+            BuildMetaData = new SemanticVersionBuildMetaData("5.Branch.develop")
+            {
+                VersionSourceSha = "versionSourceSha",
+                Sha = "commitSha",
+                ShortSha = "commitShortSha",
+                CommitDate = DateTimeOffset.Parse("2014-03-06 23:59:59Z")
+            }
         };
-
-        semVer.BuildMetaData.VersionSourceSha = "versionSourceSha";
-        semVer.BuildMetaData.Sha = "commitSha";
-        semVer.BuildMetaData.ShortSha = "commitShortSha";
-        semVer.BuildMetaData.CommitDate = DateTimeOffset.Parse("2014-03-06 23:59:59Z");
 
         var configuration = new TestEffectiveConfiguration(versioningMode: VersioningMode.ContinuousDeployment);
 
-        var vars = this.variableProvider.GetVariablesFor(semVer, configuration, false);
+        var vars = this.variableProvider.GetVariablesFor(semVer, configuration, null);
 
         vars.ToString().ShouldMatchApproved(c => c.SubFolder("Approved"));
     }
@@ -83,17 +85,18 @@ public class VariableProviderTests : TestBase
             Major = 1,
             Minor = 2,
             Patch = 3,
-            BuildMetaData = "5.Branch.develop"
+            BuildMetaData = new SemanticVersionBuildMetaData("5.Branch.develop")
+            {
+                VersionSourceSha = "versionSourceSha",
+                Sha = "commitSha",
+                ShortSha = "commitShortSha",
+                CommitDate = DateTimeOffset.Parse("2014-03-06 23:59:59Z")
+            }
         };
-
-        semVer.BuildMetaData.VersionSourceSha = "versionSourceSha";
-        semVer.BuildMetaData.Sha = "commitSha";
-        semVer.BuildMetaData.ShortSha = "commitShortSha";
-        semVer.BuildMetaData.CommitDate = DateTimeOffset.Parse("2014-03-06 23:59:59Z");
 
         var configuration = new TestEffectiveConfiguration();
 
-        var vars = this.variableProvider.GetVariablesFor(semVer, configuration, false);
+        var vars = this.variableProvider.GetVariablesFor(semVer, configuration, null);
 
         vars.ToString().ShouldMatchApproved(c => c.SubFolder("Approved"));
     }
@@ -106,17 +109,18 @@ public class VariableProviderTests : TestBase
             Major = 1,
             Minor = 2,
             Patch = 3,
-            BuildMetaData = "5.Branch.develop"
+            BuildMetaData = new SemanticVersionBuildMetaData("5.Branch.develop")
+            {
+                VersionSourceSha = "versionSourceSha",
+                Sha = "commitSha",
+                ShortSha = "commitShortSha",
+                CommitDate = DateTimeOffset.Parse("2014-03-06 23:59:59Z")
+            }
         };
-
-        semVer.BuildMetaData.VersionSourceSha = "versionSourceSha";
-        semVer.BuildMetaData.Sha = "commitSha";
-        semVer.BuildMetaData.ShortSha = "commitShortSha";
-        semVer.BuildMetaData.CommitDate = DateTimeOffset.Parse("2014-03-06 23:59:59Z");
 
         var configuration = new TestEffectiveConfiguration(versioningMode: VersioningMode.ContinuousDeployment, label: "ci");
 
-        var vars = this.variableProvider.GetVariablesFor(semVer, configuration, false);
+        var vars = this.variableProvider.GetVariablesFor(semVer, configuration, null);
 
         vars.ToString().ShouldMatchApproved(c => c.SubFolder("Approved"));
     }
@@ -142,7 +146,7 @@ public class VariableProviderTests : TestBase
 
         var configuration = new TestEffectiveConfiguration(versioningMode: VersioningMode.ContinuousDeployment);
 
-        var vars = this.variableProvider.GetVariablesFor(semVer, configuration, true);
+        var vars = this.variableProvider.GetVariablesFor(semVer, configuration, SemanticVersion.Empty);
 
         vars.ToString().ShouldMatchApproved(c => c.SubFolder("Approved"));
     }
@@ -156,16 +160,17 @@ public class VariableProviderTests : TestBase
             Minor = 2,
             Patch = 3,
             PreReleaseTag = "PullRequest",
-            BuildMetaData = "5.Branch.develop"
+            BuildMetaData = new SemanticVersionBuildMetaData("5.Branch.develop")
+            {
+                Branch = "pull/2/merge",
+                Sha = "commitSha",
+                ShortSha = "commitShortSha",
+                CommitDate = DateTimeOffset.Parse("2014-03-06 23:59:59Z")
+            }
         };
 
-        semVer.BuildMetaData.Branch = "pull/2/merge";
-        semVer.BuildMetaData.Sha = "commitSha";
-        semVer.BuildMetaData.ShortSha = "commitShortSha";
-        semVer.BuildMetaData.CommitDate = DateTimeOffset.Parse("2014-03-06 23:59:59Z");
-
         var configuration = new TestEffectiveConfiguration(versioningMode: VersioningMode.ContinuousDeployment, labelNumberPattern: @"[/-](?<number>\d+)[-/]");
-        var vars = this.variableProvider.GetVariablesFor(semVer, configuration, false);
+        var vars = this.variableProvider.GetVariablesFor(semVer, configuration, null);
 
         vars.FullSemVer.ShouldBe("1.2.3-PullRequest2.5");
     }
@@ -178,16 +183,17 @@ public class VariableProviderTests : TestBase
             Major = 1,
             Minor = 2,
             Patch = 3,
-            BuildMetaData = "5.Branch.develop"
+            BuildMetaData = new SemanticVersionBuildMetaData("5.Branch.develop")
+            {
+                Branch = "feature",
+                Sha = "commitSha",
+                ShortSha = "commitShortSha",
+                CommitDate = DateTimeOffset.Parse("2014-03-06 23:59:59Z")
+            }
         };
 
-        semVer.BuildMetaData.Branch = "feature";
-        semVer.BuildMetaData.Sha = "commitSha";
-        semVer.BuildMetaData.ShortSha = "commitShortSha";
-        semVer.BuildMetaData.CommitDate = DateTimeOffset.Parse("2014-03-06 23:59:59Z");
-
         var configuration = new TestEffectiveConfiguration(versioningMode: VersioningMode.ContinuousDeployment, label: "useBranchName");
-        var vars = this.variableProvider.GetVariablesFor(semVer, configuration, false);
+        var vars = this.variableProvider.GetVariablesFor(semVer, configuration, null);
 
         vars.FullSemVer.ShouldBe("1.2.3-feature.5");
     }
@@ -200,18 +206,19 @@ public class VariableProviderTests : TestBase
             Major = 1,
             Minor = 2,
             Patch = 3,
-            BuildMetaData = "5.Branch.feature/123"
+            BuildMetaData = new SemanticVersionBuildMetaData("5.Branch.feature/123")
+            {
+                Branch = "feature/123",
+                VersionSourceSha = "versionSourceSha",
+                Sha = "commitSha",
+                ShortSha = "commitShortSha",
+                CommitDate = DateTimeOffset.Parse("2014-03-06 23:59:59Z")
+            }
         };
-
-        semVer.BuildMetaData.Branch = "feature/123";
-        semVer.BuildMetaData.VersionSourceSha = "versionSourceSha";
-        semVer.BuildMetaData.Sha = "commitSha";
-        semVer.BuildMetaData.ShortSha = "commitShortSha";
-        semVer.BuildMetaData.CommitDate = DateTimeOffset.Parse("2014-03-06 23:59:59Z");
 
         var configuration = new TestEffectiveConfiguration();
 
-        var vars = this.variableProvider.GetVariablesFor(semVer, configuration, false);
+        var vars = this.variableProvider.GetVariablesFor(semVer, configuration, null);
 
         vars.ToString().ShouldMatchApproved(c => c.SubFolder("Approved"));
     }
@@ -224,18 +231,21 @@ public class VariableProviderTests : TestBase
             Major = 1,
             Minor = 2,
             Patch = 3,
-            BuildMetaData = "5.Branch.feature/123"
+            BuildMetaData = new SemanticVersionBuildMetaData("5.Branch.feature/123")
+            {
+                Branch = "feature/123",
+                VersionSourceSha = "versionSourceSha",
+                Sha = "commitSha",
+                ShortSha = "commitShortSha",
+                CommitDate = DateTimeOffset.Parse("2014-03-06 23:59:59Z")
+            }
         };
 
-        semVer.BuildMetaData.Branch = "feature/123";
-        semVer.BuildMetaData.VersionSourceSha = "versionSourceSha";
-        semVer.BuildMetaData.Sha = "commitSha";
-        semVer.BuildMetaData.ShortSha = "commitShortSha";
-        semVer.BuildMetaData.CommitDate = DateTimeOffset.Parse("2014-03-06 23:59:59Z");
+        var configuration = new TestEffectiveConfiguration(
+            assemblyInformationalFormat: "{Major}.{Minor}.{Patch}+{CommitsSinceVersionSource}.Branch.{BranchName}.Sha.{ShortSha}"
+        );
 
-        var configuration = new TestEffectiveConfiguration(assemblyInformationalFormat: "{Major}.{Minor}.{Patch}+{CommitsSinceVersionSource}.Branch.{BranchName}.Sha.{ShortSha}");
-
-        var vars = this.variableProvider.GetVariablesFor(semVer, configuration, false);
+        var vars = this.variableProvider.GetVariablesFor(semVer, configuration, null);
 
         vars.ToString().ShouldMatchApproved(c => c.SubFolder("Approved"));
     }
