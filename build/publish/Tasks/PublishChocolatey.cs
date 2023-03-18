@@ -13,7 +13,7 @@ public class PublishChocolatey : FrostingTask<BuildContext>
 
 [TaskName(nameof(PublishChocolateyInternal))]
 [TaskDescription("Publish chocolatey packages")]
-public class PublishChocolateyInternal : FrostingTask<BuildContext>
+public class PublishChocolateyInternal : AsyncFrostingTask<BuildContext>
 {
     public override bool ShouldRun(BuildContext context)
     {
@@ -25,7 +25,7 @@ public class PublishChocolateyInternal : FrostingTask<BuildContext>
         return shouldRun;
     }
 
-    public override void Run(BuildContext context)
+    public override async Task RunAsync(BuildContext context)
     {
         var apiKey = context.Credentials?.Chocolatey?.ApiKey;
         if (string.IsNullOrEmpty(apiKey))
@@ -34,26 +34,30 @@ public class PublishChocolateyInternal : FrostingTask<BuildContext>
         }
 
         var nugetVersion = context.Version!.NugetVersion;
-        foreach (var (packageName, filePath, _) in context.Packages.Where(x => x.IsChocoPackage))
+        var packages = context.Packages
+            .Where(x => x.IsChocoPackage)
+            .OrderByDescending(x => x.PackageName);
+        foreach (var (packageName, filePath, _) in packages)
         {
-            if (!IsPackagePublished(context, packageName, nugetVersion))
+            if (IsPackagePublished(context, packageName, nugetVersion)) continue;
+            try
             {
-                try
+                context.Information($"Package {packageName}, version {nugetVersion} is being published.");
+                context.ChocolateyPush(filePath.FullPath, new ChocolateyPushSettings
                 {
-                    context.Information($"Package {packageName}, version {nugetVersion} is being published.");
-                    context.ChocolateyPush(filePath.FullPath, new ChocolateyPushSettings
-                    {
-                        ApiKey = apiKey,
-                        Source = Constants.ChocolateyUrl,
-                        Force = true
-                    });
-                }
-                catch (Exception)
-                {
-                    context.Warning($"There is an exception publishing the Package {packageName}.");
-                    // chocolatey sometimes fails with an error, even if the package gets pushed
-                }
+                    ApiKey = apiKey,
+                    Source = Constants.ChocolateyUrl,
+                    Force = true
+                });
             }
+            catch (Exception)
+            {
+                context.Warning($"There is an exception publishing the Package {packageName}.");
+                // chocolatey sometimes fails with an error, even if the package gets pushed
+            }
+
+            // wait 5 seconds to avoid the meta-package to be published before the other packages
+            await Task.Delay(TimeSpan.FromSeconds(5));
         }
     }
 
