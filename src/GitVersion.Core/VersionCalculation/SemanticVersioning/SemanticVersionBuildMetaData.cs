@@ -121,7 +121,8 @@ public class SemanticVersionBuildMetaData : IFormattable, IEquatable<SemanticVer
         long? buildMetaDataCommitsSinceVersionSource = null;
         if (parsed.Groups["BuildNumber"].Success)
         {
-            buildMetaDataCommitsSinceTag = long.Parse(parsed.Groups["BuildNumber"].Value);
+            if (long.TryParse(parsed.Groups["BuildNumber"].Value, out var buildNumber))
+                buildMetaDataCommitsSinceTag = buildNumber;
             buildMetaDataCommitsSinceVersionSource = buildMetaDataCommitsSinceTag ?? 0;
         }
 
