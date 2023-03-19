@@ -134,7 +134,6 @@ public class SemanticVersionTests : TestBase
     private static SemanticVersion BuildSemVer(int major, int minor, int patch, string? preReleaseName, int? preReleaseVersion,
         int? buildCount, string? branchName = null, string? sha = null, string? otherMetadata = null)
     {
-
         SemanticVersionPreReleaseTag? preReleaseTag = null;
         if (preReleaseName != null)
         {
