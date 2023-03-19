@@ -410,32 +410,23 @@ public class MainScenarios : TestBase
     [Test]
     public void ShouldProvideTheCorrectVersionEvenIfPreReleaseLabelExistsInTheGitTag()
     {
-        var config = new Config
-        {
-            NextVersion = "5.0",
-            Branches =
-            {
-                {
-                    "master", new BranchConfig
-                    {
-                        Regex = "master",
-                        Tag = "beta",
-                        Increment = IncrementStrategy.Patch,
-                        VersioningMode = VersioningMode.ContinuousDeployment
-                    }
-                }
-            }
-        };
-        using (var fixture = new EmptyRepositoryFixture())
-        {
-            fixture.Repository.MakeACommit();
-            fixture.AssertFullSemver(config, "5.0.0-beta.0"); // why not "5.0.0-beta.1"?
-            fixture.Repository.MakeACommit();
-            fixture.AssertFullSemver(config, "5.0.0-beta.1");
-            fixture.Repository.MakeATaggedCommit("v5.0.0-rc.1");
-            fixture.AssertFullSemver(config, "5.0.0-rc.1");
-            fixture.Repository.MakeACommit();
-            fixture.AssertFullSemver(config, "5.0.1-beta.1"); // test fails here, it generates "5.0.0-beta.1" which is not unique and lower than "5.0.0-rc.1"
-        }
+        var configuration = GitFlowConfigurationBuilder.New
+            .WithSemanticVersionFormat(SemanticVersionFormat.Loose)
+            .WithNextVersion("5.0")
+            .WithBranch("main",
+                branchBuilder => branchBuilder.WithLabel("beta")
+                    .WithIncrement(IncrementStrategy.Patch)
+                    .WithVersioningMode(VersioningMode.ContinuousDeployment))
+            .Build();
+
+        using EmptyRepositoryFixture fixture = new("main");
+        fixture.Repository.MakeACommit();
+        fixture.AssertFullSemver("5.0.0-beta.0", configuration); // why not "5.0.0-beta.1"?
+        fixture.Repository.MakeACommit();
+        fixture.AssertFullSemver("5.0.0-beta.1", configuration);
+        fixture.Repository.MakeATaggedCommit("v5.0.0-rc.1");
+        fixture.AssertFullSemver("5.0.0-rc.1", configuration);
+        fixture.Repository.MakeACommit();
+        fixture.AssertFullSemver("5.0.1-beta.1", configuration); // test fails here, it generates "5.0.0-beta.1" which is not unique and lower than "5.0.0-rc.1"
     }
 }
