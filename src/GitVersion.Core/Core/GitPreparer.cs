@@ -156,47 +156,49 @@ public class GitPreparer : IGitPreparer
         var expectedSha = this.repository.Head.Tip?.Sha;
         var expectedBranchName = this.repository.Head.Name.Canonical;
 
-        try
+        var remote = EnsureOnlyOneRemoteIsDefined();
+        EnsureRepositoryHeadDuringNormalisation(nameof(EnsureOnlyOneRemoteIsDefined), expectedSha);
+        FetchRemotesIfRequired(remote, noFetch, authentication);
+        EnsureRepositoryHeadDuringNormalisation(nameof(FetchRemotesIfRequired), expectedSha);
+        EnsureLocalBranchExistsForCurrentBranch(remote, currentBranchName);
+        EnsureRepositoryHeadDuringNormalisation(nameof(EnsureLocalBranchExistsForCurrentBranch), expectedSha);
+        CreateOrUpdateLocalBranchesFromRemoteTrackingOnes(remote.Name);
+        EnsureRepositoryHeadDuringNormalisation(nameof(CreateOrUpdateLocalBranchesFromRemoteTrackingOnes), expectedSha);
+
+        var currentBranch = this.repository.Branches.FirstOrDefault(x => x.Name.EquivalentTo(currentBranchName));
+        // Bug fix for https://github.com/GitTools/GitVersion/issues/1754, head maybe have been changed
+        // if this is a dynamic repository. But only allow this in case the branches are different (branch switch)
+        if (expectedSha != this.repository.Head.Tip?.Sha)
         {
-            var remote = EnsureOnlyOneRemoteIsDefined();
-
-            FetchRemotesIfRequired(remote, noFetch, authentication);
-            EnsureLocalBranchExistsForCurrentBranch(remote, currentBranchName);
-            CreateOrUpdateLocalBranchesFromRemoteTrackingOnes(remote.Name);
-
-            var currentBranch = this.repository.Branches.FirstOrDefault(x => x.Name.EquivalentTo(currentBranchName));
-            // Bug fix for https://github.com/GitTools/GitVersion/issues/1754, head maybe have been changed
-            // if this is a dynamic repository. But only allow this in case the branches are different (branch switch)
-            if (expectedSha != this.repository.Head.Tip?.Sha)
+            if (isDynamicRepository || currentBranch is null || !this.repository.Head.Equals(currentBranch))
             {
-                if (isDynamicRepository || currentBranch is null || !this.repository.Head.Equals(currentBranch))
-                {
-                    var newExpectedSha = this.repository.Head.Tip?.Sha;
-                    var newExpectedBranchName = this.repository.Head.Name.Canonical;
+                var newExpectedSha = this.repository.Head.Tip?.Sha;
+                var newExpectedBranchName = this.repository.Head.Name.Canonical;
 
-                    this.log.Info($"Head has moved from '{expectedBranchName} | {expectedSha}' => '{newExpectedBranchName} | {newExpectedSha}', allowed since this is a dynamic repository");
+                this.log.Info($"Head has moved from '{expectedBranchName} | {expectedSha}' => '{newExpectedBranchName} | {newExpectedSha}', allowed since this is a dynamic repository");
 
-                    expectedSha = newExpectedSha;
-                }
+                expectedSha = newExpectedSha;
             }
-
-            EnsureHeadIsAttachedToBranch(currentBranchName, authentication);
         }
-        finally
-        {
-            if (this.repository.Head.Tip?.Sha != expectedSha)
-            {
-                if (this.environment.GetEnvironmentVariable("IGNORE_NORMALISATION_GIT_HEAD_MOVE") != "1")
-                {
-                    // Whoa, HEAD has moved, it shouldn't have. We need to blow up because there is a bug in normalisation
-                    throw new BugException($@"GitVersion has a bug, your HEAD has moved after repo normalisation.
 
+        EnsureHeadIsAttachedToBranch(currentBranchName, authentication);
+        EnsureRepositoryHeadDuringNormalisation(nameof(EnsureHeadIsAttachedToBranch), expectedSha);
+    }
+
+    private void EnsureRepositoryHeadDuringNormalisation(string occasion, string? expectedSha)
+    {
+        expectedSha.NotNull();
+        if (this.repository.Head.Tip?.Sha == expectedSha)
+            return;
+
+        if (this.environment.GetEnvironmentVariable("IGNORE_NORMALISATION_GIT_HEAD_MOVE") == "1")
+            return;
+
+        // Whoa, HEAD has moved, it shouldn't have. We need to blow up because there is a bug in normalisation
+        throw new BugException($@"
+GitVersion has a bug, your HEAD has moved after repo normalisation after step '{occasion}'
 To disable this error set an environmental variable called IGNORE_NORMALISATION_GIT_HEAD_MOVE to 1
-
 Please run `git {GitExtensions.CreateGitLogArgs(100)}` and submit it along with your build log (with personal info removed) in a new issue at https://github.com/GitTools/GitVersion");
-                }
-            }
-        }
     }
 
     private void EnsureHeadIsAttachedToBranch(string? currentBranchName, AuthenticationInfo authentication)
