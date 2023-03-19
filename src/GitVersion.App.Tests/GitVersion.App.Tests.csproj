@@ -4,6 +4,7 @@
         <PackageReference Include="Mono.Cecil" />
     </ItemGroup>
     <ItemGroup>
+        <ProjectReference Include="..\GitVersion.Abstractions\GitVersion.Abstractions.csproj" />
         <ProjectReference Include="..\GitVersion.Core\GitVersion.Core.csproj" />
         <ProjectReference Include="..\GitVersion.App\GitVersion.App.csproj" />
     </ItemGroup>
