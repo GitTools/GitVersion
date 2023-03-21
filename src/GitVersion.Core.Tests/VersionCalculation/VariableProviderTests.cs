@@ -146,9 +146,9 @@ public class VariableProviderTests : TestBase
 
         var configuration = new TestEffectiveConfiguration(versioningMode: VersioningMode.ContinuousDeployment);
 
-        var vars = this.variableProvider.GetVariablesFor(semVer, configuration, SemanticVersion.Empty);
+        var variables = this.variableProvider.GetVariablesFor(semVer, configuration, SemanticVersion.Empty);
 
-        vars.ToString().ShouldMatchApproved(c => c.SubFolder("Approved"));
+        variables.ToString().ShouldMatchApproved(c => c.SubFolder("Approved"));
     }
 
     [Test]
