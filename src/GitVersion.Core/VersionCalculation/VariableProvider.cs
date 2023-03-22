@@ -15,22 +15,19 @@ public class VariableProvider : IVariableProvider
     public VersionVariables GetVariablesFor(
         SemanticVersion semanticVersion, EffectiveConfiguration configuration, SemanticVersion? currentCommitTaggedVersion)
     {
-        var preReleaseTagName = semanticVersion.PreReleaseTag.Name;
+        semanticVersion.NotNull();
+        configuration.NotNull();
 
-        var isContinuousDeploymentMode = configuration.VersioningMode == VersioningMode.ContinuousDeployment
-            && currentCommitTaggedVersion is null;
-        if (isContinuousDeploymentMode)
+        var preReleaseTagName = semanticVersion.PreReleaseTag.Name;
+        var isContinuousDeploymentMode = configuration.VersioningMode == VersioningMode.ContinuousDeployment;
+
+        var label = configuration.GetBranchSpecificLabel(semanticVersion.BuildMetaData.Branch, null);
+        var isCommitTagged = currentCommitTaggedVersion is not null && currentCommitTaggedVersion.IsMatchForBranchSpecificLabel(label);
+
+        // Continuous Deployment always requires a pre-release tag unless the commit is tagged
+        if (isContinuousDeploymentMode && !isCommitTagged && !semanticVersion.PreReleaseTag.HasTag() && preReleaseTagName.IsNullOrEmpty())
         {
-            semanticVersion = new SemanticVersion(semanticVersion);
-            // Continuous Deployment always requires a pre-release tag unless the commit is tagged
-            if (!semanticVersion.PreReleaseTag.HasTag())
-            {
-                preReleaseTagName = configuration.GetBranchSpecificLabel(semanticVersion.BuildMetaData.Branch, null);
-                if (preReleaseTagName.IsNullOrEmpty())
-                {
-                    preReleaseTagName = configuration.Label ?? string.Empty;
-                }
-            }
+            preReleaseTagName = label ?? string.Empty;
         }
 
         // Evaluate tag number pattern and append to prerelease tag, preserving build metadata
@@ -45,7 +42,7 @@ public class VariableProvider : IVariableProvider
             }
         }
 
-        if (isContinuousDeploymentMode || appendTagNumberPattern || configuration.VersioningMode == VersioningMode.Mainline)
+        if ((!isCommitTagged && isContinuousDeploymentMode) || appendTagNumberPattern || configuration.VersioningMode == VersioningMode.Mainline)
         {
             semanticVersion = PromoteNumberOfCommitsToTagNumber(semanticVersion, preReleaseTagName);
         }

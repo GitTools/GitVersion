@@ -988,4 +988,43 @@ public class OtherScenarios : TestBase
         // ✅ succeeds as expected
         fixture.AssertFullSemver("2.0.0-pre.1", configuration);
     }
+
+    [Test]
+    public void ShouldProvideTheCorrectVersionEvenIfPreReleaseLabelExistsInTheGitTagMain()
+    {
+        var configuration = GitFlowConfigurationBuilder.New
+            .WithNextVersion("5.0")
+            .WithSemanticVersionFormat(SemanticVersionFormat.Loose)
+            .WithBranch("main", _ => _
+                .WithLabel("beta")
+                .WithIncrement(IncrementStrategy.Patch)
+                .WithVersioningMode(VersioningMode.ContinuousDeployment)
+            ).Build();
+
+        using EmptyRepositoryFixture fixture = new("main");
+        fixture.MakeACommit();
+
+        // ✅ succeeds as expected
+        fixture.AssertFullSemver("5.0.0-beta.1", configuration);
+
+        fixture.MakeACommit();
+
+        // ✅ succeeds as expected
+        fixture.AssertFullSemver("5.0.0-beta.2", configuration);
+
+        fixture.ApplyTag("5.0.0-beta.3");
+
+        // ✅ succeeds as expected
+        fixture.AssertFullSemver("5.0.0-beta.3", configuration);
+
+        fixture.MakeATaggedCommit("5.0.0-rc.1");
+
+        // ✅ succeeds as expected
+        fixture.AssertFullSemver("5.0.0-beta.4", configuration);
+
+        fixture.MakeACommit();
+
+        // ✅ succeeds as expected
+        fixture.AssertFullSemver("5.0.0-beta.5", configuration);
+    }
 }

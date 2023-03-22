@@ -118,9 +118,7 @@ public class NextVersionCalculator : INextVersionCalculator
         using (log.IndentLog("Calculating the base versions"))
         {
             var nextVersions = GetNextVersions(branch, configuration).ToArray();
-            var maxVersion = nextVersions.Max();
-
-            maxVersion.NotNull();
+            var maxVersion = nextVersions.Max()!;
 
             var matchingVersionsOnceIncremented = nextVersions
                 .Where(v => v.BaseVersion.BaseVersionSource != null && v.IncrementedVersion == maxVersion.IncrementedVersion)
