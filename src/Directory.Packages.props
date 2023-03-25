@@ -4,7 +4,7 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageVersion Include="FluentDateTime" Version="2.1.0" />
-    <PackageVersion Include="JsonSchema.Net.Generation" Version="3.0.3" />
+    <PackageVersion Include="JsonSchema.Net.Generation" Version="3.1.0" />
     <PackageVersion Include="LibGit2Sharp" Version="0.27.0-preview-0182" />
     <PackageVersion Include="LibGit2Sharp.NativeBinaries" Version="2.0.315-alpha.0.9" />
     <PackageVersion Include="JetBrains.Annotations" Version="2022.3.1" />
