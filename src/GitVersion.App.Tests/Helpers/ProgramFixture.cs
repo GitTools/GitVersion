@@ -90,7 +90,7 @@ public class ProgramFixtureResult
             var jsonEndIndex = Output.IndexOf("}", StringComparison.Ordinal);
             var json = Output.Substring(jsonStartIndex, jsonEndIndex - jsonStartIndex + 1);
 
-            return VersionVariables.FromJson(json);
+            return VersionVariablesHelper.FromJson(json);
         }
     }
 }

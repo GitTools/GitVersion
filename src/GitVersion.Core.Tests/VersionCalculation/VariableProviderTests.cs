@@ -1,5 +1,6 @@
 using GitVersion.Core.Tests.Helpers;
 using GitVersion.Logging;
+using GitVersion.OutputVariables;
 using GitVersion.VersionCalculation;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -49,7 +50,7 @@ public class VariableProviderTests : TestBase
 
         var vars = this.variableProvider.GetVariablesFor(semVer, configuration, null);
 
-        vars.ToString().ShouldMatchApproved(c => c.SubFolder("Approved"));
+        vars.ToJsonString().ShouldMatchApproved(c => c.SubFolder("Approved"));
     }
 
     [Test]
@@ -74,7 +75,7 @@ public class VariableProviderTests : TestBase
 
         var vars = this.variableProvider.GetVariablesFor(semVer, configuration, null);
 
-        vars.ToString().ShouldMatchApproved(c => c.SubFolder("Approved"));
+        vars.ToJsonString().ShouldMatchApproved(c => c.SubFolder("Approved"));
     }
 
     [Test]
@@ -98,7 +99,7 @@ public class VariableProviderTests : TestBase
 
         var vars = this.variableProvider.GetVariablesFor(semVer, configuration, null);
 
-        vars.ToString().ShouldMatchApproved(c => c.SubFolder("Approved"));
+        vars.ToJsonString().ShouldMatchApproved(c => c.SubFolder("Approved"));
     }
 
     [Test]
@@ -122,7 +123,7 @@ public class VariableProviderTests : TestBase
 
         var vars = this.variableProvider.GetVariablesFor(semVer, configuration, null);
 
-        vars.ToString().ShouldMatchApproved(c => c.SubFolder("Approved"));
+        vars.ToJsonString().ShouldMatchApproved(c => c.SubFolder("Approved"));
     }
 
     [Test]
@@ -148,7 +149,7 @@ public class VariableProviderTests : TestBase
 
         var variables = this.variableProvider.GetVariablesFor(semVer, configuration, SemanticVersion.Empty);
 
-        variables.ToString().ShouldMatchApproved(c => c.SubFolder("Approved"));
+        variables.ToJsonString().ShouldMatchApproved(c => c.SubFolder("Approved"));
     }
 
     [Test]
@@ -220,7 +221,7 @@ public class VariableProviderTests : TestBase
 
         var vars = this.variableProvider.GetVariablesFor(semVer, configuration, null);
 
-        vars.ToString().ShouldMatchApproved(c => c.SubFolder("Approved"));
+        vars.ToJsonString().ShouldMatchApproved(c => c.SubFolder("Approved"));
     }
 
     [Test]
@@ -247,6 +248,6 @@ public class VariableProviderTests : TestBase
 
         var vars = this.variableProvider.GetVariablesFor(semVer, configuration, null);
 
-        vars.ToString().ShouldMatchApproved(c => c.SubFolder("Approved"));
+        vars.ToJsonString().ShouldMatchApproved(c => c.SubFolder("Approved"));
     }
 }

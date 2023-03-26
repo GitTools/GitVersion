@@ -70,7 +70,7 @@ public class GitVersionCache : IGitVersionCache
             {
                 try
                 {
-                    var loadedVariables = VersionVariables.FromFile(cacheFileName, this.fileSystem);
+                    var loadedVariables = VersionVariablesHelper.FromFile(cacheFileName, this.fileSystem);
                     return loadedVariables;
                 }
                 catch (Exception ex)

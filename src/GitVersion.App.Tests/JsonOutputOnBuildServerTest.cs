@@ -61,7 +61,7 @@ public class JsonOutputOnBuildServerTest
         var filePath = PathHelper.Combine(fixture.LocalRepositoryFixture.RepositoryPath, fileName);
         var json = File.ReadAllText(filePath);
 
-        var outputVariables = VersionVariables.FromJson(json);
+        var outputVariables = VersionVariablesHelper.FromJson(json);
         outputVariables.ShouldNotBeNull();
         outputVariables.FullSemVer.ShouldBeEquivalentTo(expectedVersion);
     }

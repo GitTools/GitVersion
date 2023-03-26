@@ -1,7 +1,4 @@
-using System.Text.Encodings.Web;
 using GitVersion.Extensions;
-using GitVersion.Helpers;
-using YamlDotNet.Serialization;
 using static GitVersion.Extensions.ObjectExtensions;
 
 namespace GitVersion.OutputVariables;
@@ -97,115 +94,20 @@ public class VersionVariables : IEnumerable<KeyValuePair<string, string>>
     [ReflectionIgnore]
     public string? FileName { get; set; }
 
-    [ReflectionIgnore]
-    public string? this[string variable] => typeof(VersionVariables).GetProperty(variable)?.GetValue(this, null) as string;
-
     public IEnumerator<KeyValuePair<string, string>> GetEnumerator() => this.GetProperties().GetEnumerator();
 
     IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
-    // FIX ME: Shall we return an instance with no ctorArgs or explicitly fail when properties is null?
-    private static VersionVariables FromDictionary(IEnumerable<KeyValuePair<string, string>>? properties)
-    {
-        var type = typeof(VersionVariables);
-        var constructors = type.GetConstructors();
-
-        var ctor = constructors.Single();
-        var ctorArgs = ctor.GetParameters()
-            .Select(p => properties?.Single(v => string.Equals(v.Key, p.Name, StringComparison.InvariantCultureIgnoreCase)).Value)
-            .Cast<object>()
-            .ToArray();
-        var instance = Activator.CreateInstance(type, ctorArgs).NotNull();
-        return (VersionVariables)instance;
-    }
-
-    public static VersionVariables FromJson(string json)
-    {
-        var serializeOptions = JsonSerializerOptions();
-        var variablePairs = JsonSerializer.Deserialize<Dictionary<string, string>>(json, serializeOptions);
-        return FromDictionary(variablePairs);
-    }
-
-    public static VersionVariables FromFile(string filePath, IFileSystem fileSystem)
-    {
-        try
-        {
-            var retryAction = new RetryAction<IOException, VersionVariables>();
-            return retryAction.Execute(() => FromFileInternal(filePath, fileSystem));
-        }
-        catch (AggregateException ex)
-        {
-            var lastException = ex.InnerExceptions.LastOrDefault() ?? ex.InnerException;
-            if (lastException != null)
-            {
-                throw lastException;
-            }
-            throw;
-        }
-    }
-    private static VersionVariables FromFileInternal(string filePath, IFileSystem fileSystem)
-    {
-        using var stream = fileSystem.OpenRead(filePath);
-        using var reader = new StreamReader(stream);
-        var dictionary = new Deserializer().Deserialize<Dictionary<string, string>>(reader);
-        var versionVariables = FromDictionary(dictionary);
-        versionVariables.FileName = filePath;
-        return versionVariables;
-    }
-
     public bool TryGetValue(string variable, out string? variableValue)
     {
-        if (ContainsKey(variable))
+        var propertyInfo = typeof(VersionVariables).GetProperty(variable);
+        if (propertyInfo != null)
         {
-            variableValue = this[variable];
+            variableValue = propertyInfo.GetValue(this, null) as string;
             return true;
         }
 
         variableValue = null;
         return false;
-    }
-
-    private static bool ContainsKey(string variable) => typeof(VersionVariables).GetProperty(variable) != null;
-
-    public override string ToString()
-    {
-        var variablesType = typeof(VersionVariablesJsonModel);
-        var variables = new VersionVariablesJsonModel();
-
-        foreach (var (key, value) in this.GetProperties())
-        {
-            var propertyInfo = variablesType.GetProperty(key);
-            propertyInfo?.SetValue(variables, ChangeType(value, propertyInfo.PropertyType));
-        }
-
-        var serializeOptions = JsonSerializerOptions();
-
-        return JsonSerializer.Serialize(variables, serializeOptions);
-    }
-
-    private static JsonSerializerOptions JsonSerializerOptions()
-    {
-        var serializeOptions = new JsonSerializerOptions
-        {
-            WriteIndented = true,
-            Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
-            Converters = { new VersionVariablesJsonStringConverter() }
-        };
-        return serializeOptions;
-    }
-
-    private static object? ChangeType(object? value, Type type)
-    {
-        if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>))
-        {
-            if (value == null || value.ToString()?.Length == 0)
-            {
-                return null;
-            }
-
-            type = Nullable.GetUnderlyingType(type)!;
-        }
-
-        return Convert.ChangeType(value, type);
     }
 }

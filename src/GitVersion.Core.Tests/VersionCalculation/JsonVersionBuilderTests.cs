@@ -1,4 +1,5 @@
 using GitVersion.Core.Tests.Helpers;
+using GitVersion.OutputVariables;
 using GitVersion.VersionCalculation;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -28,7 +29,6 @@ public class JsonVersionBuilderTests : TestBase
 
         var variableProvider = serviceProvider.GetRequiredService<IVariableProvider>();
         var variables = variableProvider.GetVariablesFor(semanticVersion, configuration, null);
-        var json = variables.ToString();
-        json.ShouldMatchApproved(c => c.SubFolder("Approved"));
+        variables.ToJsonString().ShouldMatchApproved(c => c.SubFolder("Approved"));
     }
 }

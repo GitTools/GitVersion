@@ -38,14 +38,14 @@ public sealed class OutputGenerator : IOutputGenerator
         if (gitVersionOptions.Output.Contains(OutputType.File))
         {
             var retryOperation = new RetryAction<IOException>();
-            retryOperation.Execute(() => this.fileSystem.WriteAllText(context.OutputFile, variables.ToString()));
+            retryOperation.Execute(() => this.fileSystem.WriteAllText(context.OutputFile, variables.ToJsonString()));
         }
 
         if (!gitVersionOptions.Output.Contains(OutputType.Json)) return;
 
         if (gitVersionOptions.ShowVariable is null && gitVersionOptions.Format is null)
         {
-            this.console.WriteLine(variables.ToString());
+            this.console.WriteLine(variables.ToJsonString());
             return;
         }
 

@@ -25,7 +25,7 @@ public class GitVersionTaskExecutor : IGitVersionTaskExecutor
 
     public void GetVersion(GetVersion task)
     {
-        var versionVariables = VersionVariables.FromFile(task.VersionFile, fileSystem);
+        var versionVariables = VersionVariablesHelper.FromFile(task.VersionFile, fileSystem);
         var outputType = typeof(GetVersion);
         foreach (var (key, value) in versionVariables)
         {
@@ -35,7 +35,7 @@ public class GitVersionTaskExecutor : IGitVersionTaskExecutor
 
     public void UpdateAssemblyInfo(UpdateAssemblyInfo task)
     {
-        var versionVariables = VersionVariables.FromFile(task.VersionFile, fileSystem);
+        var versionVariables = VersionVariablesHelper.FromFile(task.VersionFile, fileSystem);
         FileHelper.DeleteTempFiles();
         FileHelper.CheckForInvalidFiles(task.CompileFiles, task.ProjectFile);
 
@@ -59,7 +59,7 @@ public class GitVersionTaskExecutor : IGitVersionTaskExecutor
 
     public void GenerateGitVersionInformation(GenerateGitVersionInformation task)
     {
-        var versionVariables = VersionVariables.FromFile(task.VersionFile, fileSystem);
+        var versionVariables = VersionVariablesHelper.FromFile(task.VersionFile, fileSystem);
 
         if (!string.IsNullOrEmpty(task.IntermediateOutputPath))
         {
@@ -78,7 +78,7 @@ public class GitVersionTaskExecutor : IGitVersionTaskExecutor
 
     public void WriteVersionInfoToBuildLog(WriteVersionInfoToBuildLog task)
     {
-        var versionVariables = VersionVariables.FromFile(task.VersionFile, fileSystem);
+        var versionVariables = VersionVariablesHelper.FromFile(task.VersionFile, fileSystem);
 
         var gitVersionOptions = this.options.Value;
         var configuration = this.configurationProvider.Provide(gitVersionOptions.ConfigurationInfo.OverrideConfiguration);

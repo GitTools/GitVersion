@@ -13,6 +13,7 @@ public class ArgumentParser : IArgumentParser
     private readonly IConsole console;
     private readonly IGlobbingResolver globbingResolver;
     private const string defaultOutputFileName = "GitVersion.json";
+    private static readonly IEnumerable<string> availableVariables = VersionVariables.AvailableVariables;
 
     public ArgumentParser(IEnvironment environment, ICurrentBuildAgent buildAgent, IConsole console, IGlobbingResolver globbingResolver)
     {
@@ -382,13 +383,13 @@ public class ArgumentParser : IArgumentParser
 
         if (!value.IsNullOrWhiteSpace())
         {
-            versionVariable = VersionVariables.AvailableVariables.SingleOrDefault(av => av.Equals(value.Replace("'", ""), StringComparison.CurrentCultureIgnoreCase));
+            versionVariable = availableVariables.SingleOrDefault(av => av.Equals(value.Replace("'", ""), StringComparison.CurrentCultureIgnoreCase));
         }
 
         if (versionVariable == null)
         {
             var message = $"{name} requires a valid version variable. Available variables are:{System.Environment.NewLine}" +
-                          string.Join(", ", VersionVariables.AvailableVariables.Select(x => string.Concat("'", x, "'")));
+                          string.Join(", ", availableVariables.Select(x => string.Concat("'", x, "'")));
             throw new WarningException(message);
         }
 
@@ -399,14 +400,14 @@ public class ArgumentParser : IArgumentParser
     {
         if (value.IsNullOrWhiteSpace())
         {
-            throw new WarningException("Format requires a valid format string. Available variables are: " + string.Join(", ", VersionVariables.AvailableVariables));
+            throw new WarningException("Format requires a valid format string. Available variables are: " + string.Join(", ", availableVariables));
         }
 
-        var foundVariable = VersionVariables.AvailableVariables.Any(variable => value.Contains(variable, StringComparison.CurrentCultureIgnoreCase));
+        var foundVariable = availableVariables.Any(variable => value.Contains(variable, StringComparison.CurrentCultureIgnoreCase));
 
         if (!foundVariable)
         {
-            throw new WarningException("Format requires a valid format string. Available variables are: " + string.Join(", ", VersionVariables.AvailableVariables));
+            throw new WarningException("Format requires a valid format string. Available variables are: " + string.Join(", ", availableVariables));
         }
 
         arguments.Format = value;

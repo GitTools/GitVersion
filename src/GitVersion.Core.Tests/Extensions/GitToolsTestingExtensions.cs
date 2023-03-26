@@ -104,11 +104,11 @@ public static class GitToolsTestingExtensions
 
     public static void WriteVersionVariables(this RepositoryFixtureBase fixture, string versionFile)
     {
-        var versionInfo = fixture.GetVersion();
+        var versionVariables = fixture.GetVersion();
 
         using var stream = File.Open(versionFile, FileMode.Create, FileAccess.ReadWrite, FileShare.ReadWrite);
         using var writer = new StreamWriter(stream);
-        writer.Write(versionInfo.ToString());
+        writer.Write(versionVariables.ToJsonString());
     }
 
     public static void AssertFullSemver(this RepositoryFixtureBase fixture, string fullSemver,
