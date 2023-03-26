@@ -1,5 +1,3 @@
-using static GitVersion.Extensions.ObjectExtensions;
-
 namespace GitVersion.OutputVariables;
 
 public record GitVersionVariables(string Major,
@@ -85,9 +83,6 @@ public record GitVersionVariables(string Major,
         { nameof(CommitsSinceVersionSource), CommitsSinceVersionSource },
         { nameof(UncommittedChanges), UncommittedChanges }
     };
-
-    [ReflectionIgnore]
-    public string? FileName { get; set; }
 
     public IEnumerator<KeyValuePair<string, string?>> GetEnumerator() => Instance.GetEnumerator();
 

@@ -69,7 +69,6 @@ public static class VersionVariablesHelper
         using var reader = new StreamReader(stream);
         var dictionary = new Deserializer().Deserialize<Dictionary<string, string>>(reader);
         var versionVariables = FromDictionary(dictionary);
-        versionVariables.FileName = filePath;
         return versionVariables;
     }
 

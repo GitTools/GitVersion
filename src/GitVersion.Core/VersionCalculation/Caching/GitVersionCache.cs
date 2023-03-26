@@ -21,10 +21,7 @@ public class GitVersionCache : IGitVersionCache
 
     public void WriteVariablesToDiskCache(GitVersionCacheKey cacheKey, GitVersionVariables variablesFromCache)
     {
-        var cacheDir = PrepareCacheDirectory();
-        var cacheFileName = GetCacheFileName(cacheKey, cacheDir);
-
-        variablesFromCache.FileName = cacheFileName;
+        var cacheFileName = GetCacheFileName(cacheKey);
 
         Dictionary<string, string?> dictionary;
         using (this.log.IndentLog("Creating dictionary"))
@@ -45,6 +42,13 @@ public class GitVersionCache : IGitVersionCache
 
         var retryOperation = new RetryAction<IOException>(6);
         retryOperation.Execute(WriteCacheOperation);
+    }
+
+    public string GetCacheFileName(GitVersionCacheKey cacheKey)
+    {
+        var cacheDir = PrepareCacheDirectory();
+        var cacheFileName = GetCacheFileName(cacheKey, cacheDir);
+        return cacheFileName;
     }
 
     public string GetCacheDirectory()
