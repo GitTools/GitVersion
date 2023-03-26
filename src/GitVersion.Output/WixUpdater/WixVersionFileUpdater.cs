@@ -42,11 +42,9 @@ public sealed class WixVersionFileUpdater : IWixVersionFileUpdater
     {
         var builder = new StringBuilder();
         builder.Append("<Include xmlns=\"http://schemas.microsoft.com/wix/2006/wi\">\n");
-        var availableVariables = GitVersionVariables.AvailableVariables;
-        foreach (var variable in availableVariables)
+        foreach (var (key, value) in variables.OrderBy(x => x.Key))
         {
-            variables.TryGetValue(variable, out var value);
-            builder.Append("\t<?define ").Append(variable).Append("=\"").Append(value).Append("\"?>\n");
+            builder.Append("\t<?define ").Append(key).Append("=\"").Append(value).Append("\"?>\n");
         }
         builder.Append("</Include>\n");
         return builder.ToString();

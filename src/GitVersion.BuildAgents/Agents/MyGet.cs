@@ -21,7 +21,7 @@ internal class MyGet : BuildAgentBase
                && buildRunner.Equals("MyGet", StringComparison.InvariantCultureIgnoreCase);
     }
 
-    public override string[] GenerateSetParameterMessage(string name, string value)
+    public override string[] GenerateSetParameterMessage(string name, string? value)
     {
         var messages = new List<string>
         {

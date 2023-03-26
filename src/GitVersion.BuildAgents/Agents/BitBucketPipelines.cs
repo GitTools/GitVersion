@@ -19,7 +19,7 @@ internal class BitBucketPipelines : BuildAgentBase
 
     public void WithPropertyFile(string propertiesFileName) => this.file = propertiesFileName;
 
-    public override string[] GenerateSetParameterMessage(string name, string value) => new[] { $"GITVERSION_{name.ToUpperInvariant()}={value}" };
+    public override string[] GenerateSetParameterMessage(string name, string? value) => new[] { $"GITVERSION_{name.ToUpperInvariant()}={value}" };
 
     public override void WriteIntegration(Action<string?> writer, GitVersionVariables variables, bool updateBuildNumber = true)
     {

@@ -58,7 +58,7 @@ public class EnvRunTests : TestBase
 
     [TestCase("Version", "1.2.3", "@@envrun[set name='GitVersion_Version' value='1.2.3']")]
     [TestCase("Version", "1.2.3-rc4", "@@envrun[set name='GitVersion_Version' value='1.2.3-rc4']")]
-    public void GenerateSetParameterMessage(string name, string value, string expected)
+    public void GenerateSetParameterMessage(string name, string? value, string expected)
     {
         var output = this.buildServer.GenerateSetParameterMessage(name, value);
         output.ShouldHaveSingleItem();

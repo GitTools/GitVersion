@@ -26,7 +26,7 @@ public class GitVersionCache : IGitVersionCache
 
         variablesFromCache.FileName = cacheFileName;
 
-        Dictionary<string, string> dictionary;
+        Dictionary<string, string?> dictionary;
         using (this.log.IndentLog("Creating dictionary"))
         {
             dictionary = variablesFromCache.ToDictionary(x => x.Key, x => x.Value);

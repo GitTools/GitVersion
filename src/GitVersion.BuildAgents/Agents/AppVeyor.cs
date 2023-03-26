@@ -41,7 +41,7 @@ internal class AppVeyor : BuildAgentBase
         return $"Set AppVeyor build number to '{variables.FullSemVer}'.";
     }
 
-    public override string[] GenerateSetParameterMessage(string name, string value)
+    public override string[] GenerateSetParameterMessage(string name, string? value)
     {
         var apiUrl = Environment.GetEnvironmentVariable("APPVEYOR_API_URL") ?? throw new Exception("APPVEYOR_API_URL environment variable not set");
         var httpClient = GetHttpClient(apiUrl);

@@ -19,7 +19,7 @@ public abstract class BuildAgentBase : ICurrentBuildAgent
     public virtual bool IsDefault => false;
 
     public abstract string? GenerateSetVersionMessage(GitVersionVariables variables);
-    public abstract string[] GenerateSetParameterMessage(string name, string value);
+    public abstract string[] GenerateSetParameterMessage(string name, string? value);
 
     public virtual bool CanApplyToCurrentContext() => !Environment.GetEnvironmentVariable(EnvironmentVariable).IsNullOrEmpty();
 

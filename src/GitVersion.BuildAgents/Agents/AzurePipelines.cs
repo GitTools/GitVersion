@@ -15,7 +15,7 @@ internal class AzurePipelines : BuildAgentBase
 
     protected override string EnvironmentVariable => EnvironmentVariableName;
 
-    public override string[] GenerateSetParameterMessage(string name, string value) => new[]
+    public override string[] GenerateSetParameterMessage(string name, string? value) => new[]
     {
         $"##vso[task.setvariable variable=GitVersion.{name}]{value}",
         $"##vso[task.setvariable variable=GitVersion.{name};isOutput=true]{value}"
@@ -33,7 +33,7 @@ internal class AzurePipelines : BuildAgentBase
         if (buildNumberEnv.IsNullOrWhiteSpace())
             return variables.FullSemVer;
 
-        var newBuildNumber = variables.Aggregate(buildNumberEnv, ReplaceVariables);
+        var newBuildNumber = variables.OrderBy(x => x.Key).Aggregate(buildNumberEnv, ReplaceVariables);
 
         // If no variable substitution has happened, use FullSemVer
         if (buildNumberEnv == newBuildNumber)
@@ -48,10 +48,14 @@ internal class AzurePipelines : BuildAgentBase
         return $"##vso[build.updatebuildnumber]{newBuildNumber}";
     }
 
-    private static string ReplaceVariables(string buildNumberEnv, KeyValuePair<string, string> variable)
+    private static string ReplaceVariables(string buildNumberEnv, KeyValuePair<string, string?> variable)
     {
         var pattern = $@"\$\(GITVERSION[_\.]{variable.Key}\)";
         var replacement = variable.Value;
-        return buildNumberEnv.RegexReplace(pattern, replacement, RegexOptions.IgnoreCase);
+        return replacement switch
+        {
+            null => buildNumberEnv,
+            _ => buildNumberEnv.RegexReplace(pattern, replacement, RegexOptions.IgnoreCase)
+        };
     }
 }

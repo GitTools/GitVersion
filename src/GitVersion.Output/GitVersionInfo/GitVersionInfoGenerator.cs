@@ -41,7 +41,8 @@ public sealed class GitVersionInfoGenerator : IGitVersionInfoGenerator
 
         var indentation = GetIndentation(fileExtension);
 
-        var members = string.Join(System.Environment.NewLine, variables.Select(v => string.Format(indentation + addFormat, v.Key, v.Value)));
+        var lines = variables.OrderBy(x => x.Key).Select(v => string.Format(indentation + addFormat, v.Key, v.Value));
+        var members = string.Join(System.Environment.NewLine, lines);
 
         var fileContents = string.Format(template, members);
 

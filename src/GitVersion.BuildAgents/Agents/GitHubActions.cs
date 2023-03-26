@@ -20,7 +20,7 @@ internal class GitHubActions : BuildAgentBase
     public override string GenerateSetVersionMessage(GitVersionVariables variables) =>
         string.Empty; // There is no equivalent function in GitHub Actions.
 
-    public override string[] GenerateSetParameterMessage(string name, string value) =>
+    public override string[] GenerateSetParameterMessage(string name, string? value) =>
         Array.Empty<string>(); // There is no equivalent function in GitHub Actions.
 
     public override void WriteIntegration(Action<string?> writer, GitVersionVariables variables, bool updateBuildNumber = true)

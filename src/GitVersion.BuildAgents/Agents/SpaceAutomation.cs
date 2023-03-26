@@ -15,7 +15,7 @@ internal class SpaceAutomation : BuildAgentBase
 
     public override string? GetCurrentBranch(bool usingDynamicRepos) => Environment.GetEnvironmentVariable("JB_SPACE_GIT_BRANCH");
 
-    public override string[] GenerateSetParameterMessage(string name, string value) => Array.Empty<string>();
+    public override string[] GenerateSetParameterMessage(string name, string? value) => Array.Empty<string>();
 
     public override string GenerateSetVersionMessage(GitVersionVariables variables) => string.Empty;
 }

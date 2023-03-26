@@ -13,7 +13,7 @@ internal class ContinuaCi : BuildAgentBase
 
     protected override string EnvironmentVariable => EnvironmentVariableName;
 
-    public override string[] GenerateSetParameterMessage(string name, string value) => new[]
+    public override string[] GenerateSetParameterMessage(string name, string? value) => new[]
     {
         $"@@continua[setVariable name='GitVersion_{name}' value='{value}' skipIfNotDefined='true']"
     };
