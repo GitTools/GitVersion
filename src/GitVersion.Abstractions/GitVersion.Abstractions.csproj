@@ -10,6 +10,16 @@
 
     <ItemGroup>
       <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" />
+      <PackageReference Include="Polly" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <InternalsVisibleTo Include="GitVersion.Core" />
+        <InternalsVisibleTo Include="GitVersion.Output" />
+        <InternalsVisibleTo Include="GitVersion.Schema" />
+        <InternalsVisibleTo Include="GitVersion.Core.Tests" />
+        <InternalsVisibleTo Include="GitVersion.App.Tests" />
+        <InternalsVisibleTo Include="GitVersion.MsBuild.Tests" />
     </ItemGroup>
 
 </Project>

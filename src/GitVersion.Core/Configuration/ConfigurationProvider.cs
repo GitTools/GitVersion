@@ -44,7 +44,7 @@ public class ConfigurationProvider : IConfigurationProvider
         var configFilePath = PathHelper.Combine(workingDirectory, fileName);
         var currentConfiguration = this.configFileLocator.ReadConfiguration(configFilePath);
 
-        var configuration = this.configInitWizard.Run(currentConfiguration, workingDirectory);
+        var configuration = this.configInitWizard.Run((GitVersionConfiguration) currentConfiguration, workingDirectory);
         if (configuration == null) return;
 
         using var stream = this.fileSystem.OpenWrite(configFilePath);

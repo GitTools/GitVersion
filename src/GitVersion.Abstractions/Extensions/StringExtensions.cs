@@ -1,6 +1,5 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Text.RegularExpressions;
-using GitVersion.Helpers;
 
 namespace GitVersion.Extensions;
 
@@ -24,7 +23,7 @@ public static class StringExtensions
         }
         catch
         {
-            path = PathHelper.Combine(System.Environment.CurrentDirectory, path);
+            path = Path.Combine(Environment.CurrentDirectory, path);
 
             try
             {
