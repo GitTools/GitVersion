@@ -8,4 +8,8 @@
         <Product>$(AssemblyName)</Product>
     </PropertyGroup>
 
+    <ItemGroup>
+      <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" />
+    </ItemGroup>
+
 </Project>
