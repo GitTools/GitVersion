@@ -18,7 +18,7 @@ public class MyGetTests : TestBase
     [Test]
     public void DevelopBranch()
     {
-        var vars = new TestableGitVersionVariables(fullSemVer: "0.0.0-Unstable4");
+        var vars = new TestableGitVersionVariables { FullSemVer = "0.0.0-Unstable4" };
         var message = this.buildServer.GenerateSetVersionMessage(vars);
         Assert.That(message, Is.EqualTo(null));
     }

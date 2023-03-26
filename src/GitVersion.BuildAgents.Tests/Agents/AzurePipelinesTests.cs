@@ -28,7 +28,7 @@ public class AzurePipelinesTests : TestBase
     [Test]
     public void DevelopBranch()
     {
-        var vars = new TestableGitVersionVariables(fullSemVer: "0.0.0-Unstable4");
+        var vars = new TestableGitVersionVariables { FullSemVer = "0.0.0-Unstable4" };
         var vsVersion = this.buildServer.GenerateSetVersionMessage(vars);
 
         vsVersion.ShouldBe("##vso[build.updatebuildnumber]Some Build_Value 0.0.0-Unstable4 20151310.3 $(UnknownVar) Release");
@@ -49,7 +49,7 @@ public class AzurePipelinesTests : TestBase
         this.environment.SetEnvironmentVariable(key, null);
 
         const string semver = "0.0.0-Unstable4";
-        var vars = new TestableGitVersionVariables(fullSemVer: semver);
+        var vars = new TestableGitVersionVariables { FullSemVer = semver };
         var vsVersion = this.buildServer.GenerateSetVersionMessage(vars);
         vsVersion.ShouldBe(semver);
     }
@@ -61,7 +61,7 @@ public class AzurePipelinesTests : TestBase
     public void AzurePipelinesBuildNumberWithFullSemVer(string buildNumberFormat, string myFullSemVer, string expectedBuildNumber)
     {
         this.environment.SetEnvironmentVariable(key, buildNumberFormat);
-        var vars = new TestableGitVersionVariables(fullSemVer: myFullSemVer);
+        var vars = new TestableGitVersionVariables { FullSemVer = myFullSemVer };
         var logMessage = this.buildServer.GenerateSetVersionMessage(vars);
         logMessage.ShouldBe(logPrefix + expectedBuildNumber);
     }
@@ -73,7 +73,7 @@ public class AzurePipelinesTests : TestBase
     public void AzurePipelinesBuildNumberWithSemVer(string buildNumberFormat, string mySemVer, string expectedBuildNumber)
     {
         this.environment.SetEnvironmentVariable(key, buildNumberFormat);
-        var vars = new TestableGitVersionVariables(semVer: mySemVer);
+        var vars = new TestableGitVersionVariables { SemVer = mySemVer };
         var logMessage = this.buildServer.GenerateSetVersionMessage(vars);
         logMessage.ShouldBe(logPrefix + expectedBuildNumber);
     }

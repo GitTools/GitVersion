@@ -41,7 +41,7 @@ public class BitBucketPipelinesTests : TestBase
         // Arrange
         this.environment.SetEnvironmentVariable(BitBucketPipelines.BranchEnvironmentVariableName, "refs/heads/main");
 
-        var vars = new TestableGitVersionVariables(fullSemVer: "1.2.3");
+        var vars = new TestableGitVersionVariables { FullSemVer = "1.2.3" };
         var vsVersion = this.buildServer.GenerateSetVersionMessage(vars);
 
         vsVersion.ShouldBe("1.2.3");
@@ -53,7 +53,7 @@ public class BitBucketPipelinesTests : TestBase
         // Arrange
         this.environment.SetEnvironmentVariable(BitBucketPipelines.BranchEnvironmentVariableName, "refs/heads/develop");
 
-        var vars = new TestableGitVersionVariables(fullSemVer: "1.2.3-unstable.4");
+        var vars = new TestableGitVersionVariables { FullSemVer = "1.2.3-unstable.4" };
         var vsVersion = this.buildServer.GenerateSetVersionMessage(vars);
 
         vsVersion.ShouldBe("1.2.3-unstable.4");
@@ -65,7 +65,7 @@ public class BitBucketPipelinesTests : TestBase
         // Arrange
         this.environment.SetEnvironmentVariable(BitBucketPipelines.BranchEnvironmentVariableName, "refs/heads/feature/my-work");
 
-        var vars = new TestableGitVersionVariables(fullSemVer: "1.2.3-beta.4");
+        var vars = new TestableGitVersionVariables { FullSemVer = "1.2.3-beta.4" };
         var vsVersion = this.buildServer.GenerateSetVersionMessage(vars);
 
         vsVersion.ShouldBe("1.2.3-beta.4");
@@ -139,11 +139,7 @@ public class BitBucketPipelinesTests : TestBase
             Minor = 2,
             Patch = 3,
             PreReleaseTag = "beta1",
-            BuildMetaData = new SemanticVersionBuildMetaData("5")
-            {
-                Sha = "f28807e615e9f06aec8a33c87780374e0c1f6fb8",
-                CommitDate = new DateTimeOffset(2022, 4, 6, 16, 10, 59, TimeSpan.FromHours(10))
-            }
+            BuildMetaData = new SemanticVersionBuildMetaData("5") { Sha = "f28807e615e9f06aec8a33c87780374e0c1f6fb8", CommitDate = new DateTimeOffset(2022, 4, 6, 16, 10, 59, TimeSpan.FromHours(10)) }
         };
 
         var configuration = new TestEffectiveConfiguration();

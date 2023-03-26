@@ -18,7 +18,7 @@ public class TeamCityTests : TestBase
     [Test]
     public void DevelopBranch()
     {
-        var vars = new TestableGitVersionVariables(fullSemVer: "0.0.0-Unstable4");
+        var vars = new TestableGitVersionVariables { FullSemVer = "0.0.0-Unstable4" };
         var tcVersion = this.buildServer.GenerateSetVersionMessage(vars);
         Assert.That(tcVersion, Is.EqualTo("##teamcity[buildNumber '0.0.0-Unstable4']"));
     }

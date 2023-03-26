@@ -123,7 +123,7 @@ public class GitHubActionsTests : TestBase
     public void ShouldWriteIntegration()
     {
         // Arrange
-        var vars = new TestableGitVersionVariables("1.0.0");
+        var vars = new TestableGitVersionVariables { Major = "1.0.0" };
 
         var list = new List<string?>();
 
@@ -134,21 +134,12 @@ public class GitHubActionsTests : TestBase
         this.buildServer.WriteIntegration(s => list.Add(s), vars);
 
         // Assert
-        var expected = new List<string>
-        {
-            "Executing GenerateSetVersionMessage for 'GitHubActions'.",
-            "",
-            "Executing GenerateBuildLogOutput for 'GitHubActions'.",
-            "Writing version variables to $GITHUB_ENV file for 'GitHubActions'."
-        };
+        var expected = new List<string> { "Executing GenerateSetVersionMessage for 'GitHubActions'.", "", "Executing GenerateBuildLogOutput for 'GitHubActions'.", "Writing version variables to $GITHUB_ENV file for 'GitHubActions'." };
 
         string.Join(System.Environment.NewLine, list)
             .ShouldBe(string.Join(System.Environment.NewLine, expected));
 
-        var expectedFileContents = new List<string>
-        {
-            "GitVersion_Major=1.0.0"
-        };
+        var expectedFileContents = new List<string> { "GitVersion_Major=1.0.0" };
 
         this.githubSetEnvironmentTempFilePath.ShouldNotBeNull();
         var actualFileContents = File.ReadAllLines(this.githubSetEnvironmentTempFilePath);
@@ -160,7 +151,7 @@ public class GitHubActionsTests : TestBase
     public void ShouldNotWriteIntegration()
     {
         // Arrange
-        var vars = new TestableGitVersionVariables("1.0.0");
+        var vars = new TestableGitVersionVariables { FullSemVer = "1.0.0" };
 
         var list = new List<string?>();
 
@@ -177,7 +168,7 @@ public class GitHubActionsTests : TestBase
     public void GetEmptyGenerateSetVersionMessage()
     {
         // Arrange
-        var vars = new TestableGitVersionVariables("1.0.0");
+        var vars = new TestableGitVersionVariables { FullSemVer = "1.0.0" };
 
         // Act
         var message = this.buildServer.GenerateSetVersionMessage(vars);

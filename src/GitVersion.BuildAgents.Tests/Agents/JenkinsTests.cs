@@ -92,7 +92,7 @@ public class JenkinsTests : TestBase
     [Test]
     public void GenerateSetVersionMessageReturnsVersionAsIsAlthoughThisIsNotUsedByJenkins()
     {
-        var vars = new TestableGitVersionVariables(fullSemVer: "0.0.0-Beta4.7");
+        var vars = new TestableGitVersionVariables { FullSemVer = "0.0.0-Beta4.7" };
         this.buildServer.GenerateSetVersionMessage(vars).ShouldBe("0.0.0-Beta4.7");
     }
 
@@ -130,11 +130,7 @@ public class JenkinsTests : TestBase
             Minor = 2,
             Patch = 3,
             PreReleaseTag = "beta1",
-            BuildMetaData = new SemanticVersionBuildMetaData("5")
-            {
-                Sha = "commitSha",
-                CommitDate = DateTimeOffset.Parse("2014-03-06 23:59:59Z")
-            }
+            BuildMetaData = new SemanticVersionBuildMetaData("5") { Sha = "commitSha", CommitDate = DateTimeOffset.Parse("2014-03-06 23:59:59Z") }
         };
 
         var configuration = new TestEffectiveConfiguration();
