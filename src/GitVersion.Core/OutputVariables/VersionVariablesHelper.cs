@@ -38,7 +38,7 @@ public static class VersionVariablesHelper
         var variablesType = typeof(VersionVariablesJsonModel);
         var variables = new VersionVariablesJsonModel();
 
-        foreach (var (key, value) in gitVersionVariables.GetProperties())
+        foreach (var (key, value) in gitVersionVariables.OrderBy(x => x.Key))
         {
             var propertyInfo = variablesType.GetProperty(key);
             propertyInfo?.SetValue(variables, ChangeType(value, propertyInfo.PropertyType));
