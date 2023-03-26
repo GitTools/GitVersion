@@ -17,5 +17,5 @@ internal class SpaceAutomation : BuildAgentBase
 
     public override string[] GenerateSetParameterMessage(string name, string value) => Array.Empty<string>();
 
-    public override string GenerateSetVersionMessage(VersionVariables variables) => string.Empty;
+    public override string GenerateSetVersionMessage(GitVersionVariables variables) => string.Empty;
 }

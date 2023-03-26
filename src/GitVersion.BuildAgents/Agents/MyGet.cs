@@ -36,7 +36,7 @@ internal class MyGet : BuildAgentBase
         return messages.ToArray();
     }
 
-    public override string? GenerateSetVersionMessage(VersionVariables variables) => null;
+    public override string? GenerateSetVersionMessage(GitVersionVariables variables) => null;
 
     public override bool PreventFetch() => false;
 }

@@ -21,7 +21,7 @@ public sealed class WixVersionFileUpdater : IWixVersionFileUpdater
         this.log = log.NotNull();
     }
 
-    public void Execute(VersionVariables variables, WixVersionContext context)
+    public void Execute(GitVersionVariables variables, WixVersionContext context)
     {
         this.wixVersionFile = PathHelper.Combine(context.WorkingDirectory, WixVersionFileName);
         this.log.Info("Updating GitVersion_WixVersion.wxi");
@@ -38,11 +38,11 @@ public sealed class WixVersionFileUpdater : IWixVersionFileUpdater
         doc.Save(fs);
     }
 
-    private static string GetWixFormatFromVersionVariables(VersionVariables variables)
+    private static string GetWixFormatFromVersionVariables(GitVersionVariables variables)
     {
         var builder = new StringBuilder();
         builder.Append("<Include xmlns=\"http://schemas.microsoft.com/wix/2006/wi\">\n");
-        var availableVariables = VersionVariables.AvailableVariables;
+        var availableVariables = GitVersionVariables.AvailableVariables;
         foreach (var variable in availableVariables)
         {
             variables.TryGetValue(variable, out var value);

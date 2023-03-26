@@ -13,7 +13,7 @@ public class ArgumentParser : IArgumentParser
     private readonly IConsole console;
     private readonly IGlobbingResolver globbingResolver;
     private const string defaultOutputFileName = "GitVersion.json";
-    private static readonly IEnumerable<string> availableVariables = VersionVariables.AvailableVariables;
+    private static readonly IEnumerable<string> availableVariables = GitVersionVariables.AvailableVariables;
 
     public ArgumentParser(IEnvironment environment, ICurrentBuildAgent buildAgent, IConsole console, IGlobbingResolver globbingResolver)
     {

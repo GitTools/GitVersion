@@ -4,7 +4,7 @@ namespace GitVersion.VersionCalculation.Caching;
 
 public interface IGitVersionCache
 {
-    void WriteVariablesToDiskCache(GitVersionCacheKey cacheKey, VersionVariables variablesFromCache);
+    void WriteVariablesToDiskCache(GitVersionCacheKey cacheKey, GitVersionVariables variablesFromCache);
     string GetCacheDirectory();
-    VersionVariables? LoadVersionVariablesFromDiskCache(GitVersionCacheKey key);
+    GitVersionVariables? LoadVersionVariablesFromDiskCache(GitVersionCacheKey key);
 }

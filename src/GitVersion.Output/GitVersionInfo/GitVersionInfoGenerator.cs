@@ -19,7 +19,7 @@ public sealed class GitVersionInfoGenerator : IGitVersionInfoGenerator
         this.templateManager = new TemplateManager(TemplateType.GitVersionInfo);
     }
 
-    public void Execute(VersionVariables variables, GitVersionInfoContext context)
+    public void Execute(GitVersionVariables variables, GitVersionInfoContext context)
     {
         var fileName = context.FileName;
         var directory = context.WorkingDirectory;

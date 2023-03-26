@@ -15,7 +15,7 @@ public class ExecutionResults
     public string Output { get; }
     public string? Log { get; }
 
-    public virtual VersionVariables OutputVariables
+    public virtual GitVersionVariables OutputVariables
     {
         get
         {

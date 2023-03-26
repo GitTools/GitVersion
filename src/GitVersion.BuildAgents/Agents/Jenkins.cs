@@ -14,7 +14,7 @@ internal class Jenkins : BuildAgentBase
 
     public void WithPropertyFile(string propertiesFileName) => this.file = propertiesFileName;
 
-    public override string GenerateSetVersionMessage(VersionVariables variables) => variables.FullSemVer;
+    public override string GenerateSetVersionMessage(GitVersionVariables variables) => variables.FullSemVer;
 
     public override string[] GenerateSetParameterMessage(string name, string value) => new[]
     {
@@ -36,7 +36,7 @@ internal class Jenkins : BuildAgentBase
     /// <returns></returns>
     public override bool ShouldCleanUpRemotes() => IsPipelineAsCode();
 
-    public override void WriteIntegration(Action<string?> writer, VersionVariables variables, bool updateBuildNumber = true)
+    public override void WriteIntegration(Action<string?> writer, GitVersionVariables variables, bool updateBuildNumber = true)
     {
         if (this.file is null)
             return;

@@ -7,7 +7,7 @@ public interface IBuildAgent
     bool IsDefault { get; }
 
     bool CanApplyToCurrentContext();
-    void WriteIntegration(Action<string?> writer, VersionVariables variables, bool updateBuildNumber = true);
+    void WriteIntegration(Action<string?> writer, GitVersionVariables variables, bool updateBuildNumber = true);
     string? GetCurrentBranch(bool usingDynamicRepos);
     bool PreventFetch();
     bool ShouldCleanUpRemotes();

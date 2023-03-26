@@ -17,13 +17,13 @@ internal class GitHubActions : BuildAgentBase
 
     protected override string EnvironmentVariable => EnvironmentVariableName;
 
-    public override string GenerateSetVersionMessage(VersionVariables variables) =>
+    public override string GenerateSetVersionMessage(GitVersionVariables variables) =>
         string.Empty; // There is no equivalent function in GitHub Actions.
 
     public override string[] GenerateSetParameterMessage(string name, string value) =>
         Array.Empty<string>(); // There is no equivalent function in GitHub Actions.
 
-    public override void WriteIntegration(Action<string?> writer, VersionVariables variables, bool updateBuildNumber = true)
+    public override void WriteIntegration(Action<string?> writer, GitVersionVariables variables, bool updateBuildNumber = true)
     {
         base.WriteIntegration(writer, variables, updateBuildNumber);
 

@@ -17,7 +17,7 @@ public class GetVersionTaskTests : TestTaskBase
             .Where(p => p.GetCustomAttributes(typeof(OutputAttribute), false).Any())
             .Select(p => p.Name);
 
-        var variablesProperties = VersionVariables.AvailableVariables;
+        var variablesProperties = GitVersionVariables.AvailableVariables;
 
         taskProperties.ShouldBe(variablesProperties, true);
     }
@@ -54,11 +54,11 @@ public class GetVersionTaskTests : TestTaskBase
         result.Task.FullSemVer.ShouldBe("1.0.1+1");
     }
 
-    [TestCase(nameof(VersionVariables.Major), "1")]
-    [TestCase(nameof(VersionVariables.Minor), "2")]
-    [TestCase(nameof(VersionVariables.Patch), "4")]
-    [TestCase(nameof(VersionVariables.MajorMinorPatch), "1.2.4")]
-    [TestCase(nameof(VersionVariables.FullSemVer), "1.2.4+1")]
+    [TestCase(nameof(GitVersionVariables.Major), "1")]
+    [TestCase(nameof(GitVersionVariables.Minor), "2")]
+    [TestCase(nameof(GitVersionVariables.Patch), "4")]
+    [TestCase(nameof(GitVersionVariables.MajorMinorPatch), "1.2.4")]
+    [TestCase(nameof(GitVersionVariables.FullSemVer), "1.2.4+1")]
     public void GetVersionTaskShouldReturnVersionOutputVariablesWhenRunWithMsBuild(string outputProperty, string version)
     {
         const string taskName = nameof(GetVersion);
@@ -73,11 +73,11 @@ public class GetVersionTaskTests : TestTaskBase
         result.Output.ShouldContain($"GitVersion_{outputProperty}: {version}");
     }
 
-    [TestCase(nameof(VersionVariables.Major), "1")]
-    [TestCase(nameof(VersionVariables.Minor), "0")]
-    [TestCase(nameof(VersionVariables.Patch), "1")]
-    [TestCase(nameof(VersionVariables.MajorMinorPatch), "1.0.1")]
-    [TestCase(nameof(VersionVariables.FullSemVer), "1.0.1+1")]
+    [TestCase(nameof(GitVersionVariables.Major), "1")]
+    [TestCase(nameof(GitVersionVariables.Minor), "0")]
+    [TestCase(nameof(GitVersionVariables.Patch), "1")]
+    [TestCase(nameof(GitVersionVariables.MajorMinorPatch), "1.0.1")]
+    [TestCase(nameof(GitVersionVariables.FullSemVer), "1.0.1+1")]
     public void GetVersionTaskShouldReturnVersionOutputVariablesWhenRunWithMsBuildInBuildServer(string outputProperty, string version)
     {
         const string taskName = nameof(GetVersion);

@@ -14,7 +14,7 @@ internal class Drone : BuildAgentBase
     protected override string EnvironmentVariable => EnvironmentVariableName;
     public override bool CanApplyToCurrentContext() => "true".Equals(Environment.GetEnvironmentVariable(EnvironmentVariable), StringComparison.OrdinalIgnoreCase);
 
-    public override string GenerateSetVersionMessage(VersionVariables variables) => variables.FullSemVer;
+    public override string GenerateSetVersionMessage(GitVersionVariables variables) => variables.FullSemVer;
 
     public override string[] GenerateSetParameterMessage(string name, string value) => new[]
     {

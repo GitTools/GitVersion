@@ -28,7 +28,7 @@ public sealed class OutputGenerator : IOutputGenerator
         this.buildAgent = buildAgent.NotNull();
     }
 
-    public void Execute(VersionVariables variables, OutputContext context)
+    public void Execute(GitVersionVariables variables, OutputContext context)
     {
         var gitVersionOptions = this.options.Value;
         if (gitVersionOptions.Output.Contains(OutputType.BuildServer))

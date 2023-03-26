@@ -14,7 +14,7 @@ internal class AppVeyor : BuildAgentBase
 
     protected override string EnvironmentVariable => EnvironmentVariableName;
 
-    public override string GenerateSetVersionMessage(VersionVariables variables)
+    public override string GenerateSetVersionMessage(GitVersionVariables variables)
     {
         var buildNumber = Environment.GetEnvironmentVariable("APPVEYOR_BUILD_NUMBER");
         var apiUrl = Environment.GetEnvironmentVariable("APPVEYOR_API_URL") ?? throw new Exception("APPVEYOR_API_URL environment variable not set");

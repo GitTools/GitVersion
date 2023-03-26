@@ -55,7 +55,7 @@ public static class GitToolsTestingExtensions
     public static void DumpGraph(this IRepository repository, Action<string>? writer = null, int? maxCommits = null)
         => GitExtensions.DumpGraph(repository.ToGitRepository().Path, writer, maxCommits);
 
-    public static VersionVariables GetVersion(this RepositoryFixtureBase fixture, IGitVersionConfiguration? configuration = null,
+    public static GitVersionVariables GetVersion(this RepositoryFixtureBase fixture, IGitVersionConfiguration? configuration = null,
         IRepository? repository = null, string? commitId = null, bool onlyTrackedBranches = true, string? targetBranch = null)
     {
         repository ??= fixture.Repository;

@@ -18,7 +18,7 @@ internal class ContinuaCi : BuildAgentBase
         $"@@continua[setVariable name='GitVersion_{name}' value='{value}' skipIfNotDefined='true']"
     };
 
-    public override string GenerateSetVersionMessage(VersionVariables variables) => $"@@continua[setBuildVersion value='{variables.FullSemVer}']";
+    public override string GenerateSetVersionMessage(GitVersionVariables variables) => $"@@continua[setBuildVersion value='{variables.FullSemVer}']";
 
     public override bool PreventFetch() => false;
 }

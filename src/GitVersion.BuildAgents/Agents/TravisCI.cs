@@ -14,7 +14,7 @@ internal class TravisCi : BuildAgentBase
 
     public override bool CanApplyToCurrentContext() => "true".Equals(Environment.GetEnvironmentVariable(EnvironmentVariable)) && "true".Equals(Environment.GetEnvironmentVariable("CI"));
 
-    public override string GenerateSetVersionMessage(VersionVariables variables) => variables.FullSemVer;
+    public override string GenerateSetVersionMessage(GitVersionVariables variables) => variables.FullSemVer;
 
     public override string[] GenerateSetParameterMessage(string name, string value) => new[]
     {

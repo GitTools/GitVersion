@@ -37,7 +37,7 @@ internal class UpdateWixVersionFileTests
         GitVersionHelper.ExecuteIn(fixture.RepositoryPath, arguments: " /updatewixversionfile");
 
         var gitVersionVarsInWix = GetGitVersionVarsInWixFile(PathHelper.Combine(fixture.RepositoryPath, this.wixVersionFileName));
-        var gitVersionVars = VersionVariables.AvailableVariables;
+        var gitVersionVars = GitVersionVariables.AvailableVariables;
 
         Assert.That(gitVersionVarsInWix, Has.Count.EqualTo(gitVersionVars.Count()));
     }
@@ -55,7 +55,7 @@ internal class UpdateWixVersionFileTests
         GitVersionHelper.ExecuteIn(fixture.RepositoryPath, arguments: " /updatewixversionfile");
 
         var gitVersionVarsInWix = GetGitVersionVarsInWixFile(PathHelper.Combine(fixture.RepositoryPath, this.wixVersionFileName));
-        var gitVersionVars = VersionVariables.AvailableVariables;
+        var gitVersionVars = GitVersionVariables.AvailableVariables;
 
         foreach (var variable in gitVersionVars)
         {

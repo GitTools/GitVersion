@@ -18,7 +18,7 @@ public abstract class BuildAgentBase : ICurrentBuildAgent
     protected abstract string EnvironmentVariable { get; }
     public virtual bool IsDefault => false;
 
-    public abstract string? GenerateSetVersionMessage(VersionVariables variables);
+    public abstract string? GenerateSetVersionMessage(GitVersionVariables variables);
     public abstract string[] GenerateSetParameterMessage(string name, string value);
 
     public virtual bool CanApplyToCurrentContext() => !Environment.GetEnvironmentVariable(EnvironmentVariable).IsNullOrEmpty();
@@ -28,7 +28,7 @@ public abstract class BuildAgentBase : ICurrentBuildAgent
     public virtual bool PreventFetch() => true;
     public virtual bool ShouldCleanUpRemotes() => false;
 
-    public virtual void WriteIntegration(Action<string?> writer, VersionVariables variables, bool updateBuildNumber = true)
+    public virtual void WriteIntegration(Action<string?> writer, GitVersionVariables variables, bool updateBuildNumber = true)
     {
         if (updateBuildNumber)
         {
@@ -42,7 +42,7 @@ public abstract class BuildAgentBase : ICurrentBuildAgent
         }
     }
 
-    protected IEnumerable<string> GenerateBuildLogOutput(VersionVariables variables)
+    protected IEnumerable<string> GenerateBuildLogOutput(GitVersionVariables variables)
     {
         var output = new List<string>();
 

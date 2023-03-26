@@ -92,7 +92,7 @@ public class JenkinsTests : TestBase
     [Test]
     public void GenerateSetVersionMessageReturnsVersionAsIsAlthoughThisIsNotUsedByJenkins()
     {
-        var vars = new TestableVersionVariables(fullSemVer: "0.0.0-Beta4.7");
+        var vars = new TestableGitVersionVariables(fullSemVer: "0.0.0-Beta4.7");
         this.buildServer.GenerateSetVersionMessage(vars).ShouldBe("0.0.0-Beta4.7");
     }
 

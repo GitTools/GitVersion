@@ -14,7 +14,7 @@ internal class GitLabCi : BuildAgentBase
 
     protected override string EnvironmentVariable => EnvironmentVariableName;
 
-    public override string GenerateSetVersionMessage(VersionVariables variables) => variables.FullSemVer;
+    public override string GenerateSetVersionMessage(GitVersionVariables variables) => variables.FullSemVer;
 
     public override string[] GenerateSetParameterMessage(string name, string value) => new[]
     {
@@ -25,7 +25,7 @@ internal class GitLabCi : BuildAgentBase
 
     public override bool PreventFetch() => true;
 
-    public override void WriteIntegration(Action<string?> writer, VersionVariables variables, bool updateBuildNumber = true)
+    public override void WriteIntegration(Action<string?> writer, GitVersionVariables variables, bool updateBuildNumber = true)
     {
         if (this.file is null)
             return;

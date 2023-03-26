@@ -41,7 +41,7 @@ public class BitBucketPipelinesTests : TestBase
         // Arrange
         this.environment.SetEnvironmentVariable(BitBucketPipelines.BranchEnvironmentVariableName, "refs/heads/main");
 
-        var vars = new TestableVersionVariables(fullSemVer: "1.2.3");
+        var vars = new TestableGitVersionVariables(fullSemVer: "1.2.3");
         var vsVersion = this.buildServer.GenerateSetVersionMessage(vars);
 
         vsVersion.ShouldBe("1.2.3");
@@ -53,7 +53,7 @@ public class BitBucketPipelinesTests : TestBase
         // Arrange
         this.environment.SetEnvironmentVariable(BitBucketPipelines.BranchEnvironmentVariableName, "refs/heads/develop");
 
-        var vars = new TestableVersionVariables(fullSemVer: "1.2.3-unstable.4");
+        var vars = new TestableGitVersionVariables(fullSemVer: "1.2.3-unstable.4");
         var vsVersion = this.buildServer.GenerateSetVersionMessage(vars);
 
         vsVersion.ShouldBe("1.2.3-unstable.4");
@@ -65,7 +65,7 @@ public class BitBucketPipelinesTests : TestBase
         // Arrange
         this.environment.SetEnvironmentVariable(BitBucketPipelines.BranchEnvironmentVariableName, "refs/heads/feature/my-work");
 
-        var vars = new TestableVersionVariables(fullSemVer: "1.2.3-beta.4");
+        var vars = new TestableGitVersionVariables(fullSemVer: "1.2.3-beta.4");
         var vsVersion = this.buildServer.GenerateSetVersionMessage(vars);
 
         vsVersion.ShouldBe("1.2.3-beta.4");

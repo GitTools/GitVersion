@@ -3,9 +3,9 @@ using static GitVersion.Extensions.ObjectExtensions;
 
 namespace GitVersion.OutputVariables;
 
-public class VersionVariables : IEnumerable<KeyValuePair<string, string>>
+public class GitVersionVariables : IEnumerable<KeyValuePair<string, string>>
 {
-    public VersionVariables(string major,
+    public GitVersionVariables(string major,
                             string minor,
                             string patch,
                             string? buildMetaData,
@@ -85,7 +85,7 @@ public class VersionVariables : IEnumerable<KeyValuePair<string, string>>
     public string? UncommittedChanges { get; }
 
     [ReflectionIgnore]
-    public static IEnumerable<string> AvailableVariables => typeof(VersionVariables)
+    public static IEnumerable<string> AvailableVariables => typeof(GitVersionVariables)
         .GetProperties()
         .Where(p => !p.GetCustomAttributes(typeof(ReflectionIgnoreAttribute), false).Any())
         .Select(p => p.Name)
@@ -100,7 +100,7 @@ public class VersionVariables : IEnumerable<KeyValuePair<string, string>>
 
     public bool TryGetValue(string variable, out string? variableValue)
     {
-        var propertyInfo = typeof(VersionVariables).GetProperty(variable);
+        var propertyInfo = typeof(GitVersionVariables).GetProperty(variable);
         if (propertyInfo != null)
         {
             variableValue = propertyInfo.GetValue(this, null) as string;

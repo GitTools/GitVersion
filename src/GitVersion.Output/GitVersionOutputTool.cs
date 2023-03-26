@@ -32,7 +32,7 @@ public class GitVersionOutputTool : IGitVersionOutputTool
         this.projectFileUpdater = projectFileUpdater.NotNull();
     }
 
-    public void OutputVariables(VersionVariables variables, bool updateBuildNumber)
+    public void OutputVariables(GitVersionVariables variables, bool updateBuildNumber)
     {
         using (this.outputGenerator)
         {
@@ -40,7 +40,7 @@ public class GitVersionOutputTool : IGitVersionOutputTool
         }
     }
 
-    public void UpdateAssemblyInfo(VersionVariables variables)
+    public void UpdateAssemblyInfo(GitVersionVariables variables)
     {
         var assemblyInfoContext = new AssemblyInfoContext(gitVersionOptions.WorkingDirectory, gitVersionOptions.AssemblySettingsInfo.EnsureAssemblyInfo, gitVersionOptions.AssemblySettingsInfo.Files.ToArray());
 
@@ -60,7 +60,7 @@ public class GitVersionOutputTool : IGitVersionOutputTool
         }
     }
 
-    public void UpdateWixVersionFile(VersionVariables variables)
+    public void UpdateWixVersionFile(GitVersionVariables variables)
     {
         if (gitVersionOptions.WixInfo.UpdateWixVersionFile)
         {
@@ -71,7 +71,7 @@ public class GitVersionOutputTool : IGitVersionOutputTool
         }
     }
 
-    public void GenerateGitVersionInformation(VersionVariables variables, FileWriteInfo fileWriteInfo)
+    public void GenerateGitVersionInformation(GitVersionVariables variables, FileWriteInfo fileWriteInfo)
     {
         using (this.gitVersionInfoGenerator)
         {

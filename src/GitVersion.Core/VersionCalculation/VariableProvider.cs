@@ -12,7 +12,7 @@ public class VariableProvider : IVariableProvider
 
     public VariableProvider(IEnvironment environment) => this.environment = environment.NotNull();
 
-    public VersionVariables GetVariablesFor(
+    public GitVersionVariables GetVariablesFor(
         SemanticVersion semanticVersion, EffectiveConfiguration configuration, SemanticVersion? currentCommitTaggedVersion)
     {
         semanticVersion.NotNull();
@@ -77,7 +77,7 @@ public class VariableProvider : IVariableProvider
 
         var assemblySemVer = CheckAndFormatString(configuration.AssemblyVersioningFormat, semverFormatValues, semverFormatValues.AssemblySemVer, "AssemblyVersioningFormat");
 
-        return new VersionVariables(
+        return new GitVersionVariables(
             semverFormatValues.Major,
             semverFormatValues.Minor,
             semverFormatValues.Patch,

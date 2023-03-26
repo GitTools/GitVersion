@@ -19,7 +19,7 @@ public class GitVersionCache : IGitVersionCache
         this.repositoryInfo = repositoryInfo.NotNull();
     }
 
-    public void WriteVariablesToDiskCache(GitVersionCacheKey cacheKey, VersionVariables variablesFromCache)
+    public void WriteVariablesToDiskCache(GitVersionCacheKey cacheKey, GitVersionVariables variablesFromCache)
     {
         var cacheDir = PrepareCacheDirectory();
         var cacheFileName = GetCacheFileName(cacheKey, cacheDir);
@@ -53,7 +53,7 @@ public class GitVersionCache : IGitVersionCache
         return PathHelper.Combine(gitDir, "gitversion_cache");
     }
 
-    public VersionVariables? LoadVersionVariablesFromDiskCache(GitVersionCacheKey key)
+    public GitVersionVariables? LoadVersionVariablesFromDiskCache(GitVersionCacheKey key)
     {
         using (this.log.IndentLog("Loading version variables from disk cache"))
         {

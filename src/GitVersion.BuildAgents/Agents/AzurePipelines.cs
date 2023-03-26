@@ -25,7 +25,7 @@ internal class AzurePipelines : BuildAgentBase
 
     public override bool PreventFetch() => true;
 
-    public override string GenerateSetVersionMessage(VersionVariables variables)
+    public override string GenerateSetVersionMessage(GitVersionVariables variables)
     {
         // For AzurePipelines, we'll get the Build Number and insert GitVersion variables where
         // specified

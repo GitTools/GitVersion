@@ -41,7 +41,7 @@ public class DocumentationTests : TestBase
     public void VariableDocumentationIsUpToDate()
     {
         var variableDocumentationFile = ReadDocumentationFile("input/docs/reference/variables.md");
-        var variables = VersionVariables.AvailableVariables.ToList();
+        var variables = GitVersionVariables.AvailableVariables.ToList();
 
         variables.ShouldNotBeEmpty();
 

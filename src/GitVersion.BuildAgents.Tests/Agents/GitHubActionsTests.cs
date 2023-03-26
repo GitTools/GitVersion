@@ -123,7 +123,7 @@ public class GitHubActionsTests : TestBase
     public void ShouldWriteIntegration()
     {
         // Arrange
-        var vars = new TestableVersionVariables("1.0.0");
+        var vars = new TestableGitVersionVariables("1.0.0");
 
         var list = new List<string?>();
 
@@ -160,7 +160,7 @@ public class GitHubActionsTests : TestBase
     public void ShouldNotWriteIntegration()
     {
         // Arrange
-        var vars = new TestableVersionVariables("1.0.0");
+        var vars = new TestableGitVersionVariables("1.0.0");
 
         var list = new List<string?>();
 
@@ -177,7 +177,7 @@ public class GitHubActionsTests : TestBase
     public void GetEmptyGenerateSetVersionMessage()
     {
         // Arrange
-        var vars = new TestableVersionVariables("1.0.0");
+        var vars = new TestableGitVersionVariables("1.0.0");
 
         // Act
         var message = this.buildServer.GenerateSetVersionMessage(vars);

@@ -283,7 +283,7 @@ public class ProjectFileUpdaterTests : TestBase
         string projectFileContent,
         string fileName,
         AssemblyVersioningScheme versioningScheme = AssemblyVersioningScheme.MajorMinorPatch,
-        Action<IFileSystem, VersionVariables>? verify = null)
+        Action<IFileSystem, GitVersionVariables>? verify = null)
     {
         this.fileSystem = Substitute.For<IFileSystem>();
         var version = new SemanticVersion

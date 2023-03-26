@@ -16,7 +16,7 @@ internal sealed class CodeBuild : BuildAgentBase
 
     protected override string EnvironmentVariable => WebHookEnvironmentVariableName;
 
-    public override string GenerateSetVersionMessage(VersionVariables variables) => variables.FullSemVer;
+    public override string GenerateSetVersionMessage(GitVersionVariables variables) => variables.FullSemVer;
 
     public override string[] GenerateSetParameterMessage(string name, string value) => new[]
     {
@@ -30,7 +30,7 @@ internal sealed class CodeBuild : BuildAgentBase
         return currentBranch.IsNullOrEmpty() ? Environment.GetEnvironmentVariable(SourceVersionEnvironmentVariableName) : currentBranch;
     }
 
-    public override void WriteIntegration(Action<string?> writer, VersionVariables variables, bool updateBuildNumber = true)
+    public override void WriteIntegration(Action<string?> writer, GitVersionVariables variables, bool updateBuildNumber = true)
     {
         if (this.file is null)
             return;

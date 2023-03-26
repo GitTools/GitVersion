@@ -34,7 +34,7 @@ public class ArgumentParserOnBuildServerTests : TestBase
         public bool IsDefault => false;
         public bool CanApplyToCurrentContext() => throw new NotImplementedException();
 
-        public void WriteIntegration(Action<string> writer, VersionVariables variables, bool updateBuildNumber = true) => throw new NotImplementedException();
+        public void WriteIntegration(Action<string> writer, GitVersionVariables variables, bool updateBuildNumber = true) => throw new NotImplementedException();
 
         public string GetCurrentBranch(bool usingDynamicRepos) => throw new NotImplementedException();
 

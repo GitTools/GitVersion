@@ -2,9 +2,9 @@ using GitVersion.OutputVariables;
 
 namespace GitVersion.Core.Tests.Helpers;
 
-internal class TestableVersionVariables : VersionVariables
+internal class TestableGitVersionVariables : GitVersionVariables
 {
-    public TestableVersionVariables(
+    public TestableGitVersionVariables(
         string major = "", string minor = "", string patch = "", string buildMetaData = "", string fullBuildMetaData = "", string branchName = "",
         string escapedBranchName = "", string sha = "", string shortSha = "", string majorMinorPatch = "",
         string semVer = "", string fullSemVer = "",

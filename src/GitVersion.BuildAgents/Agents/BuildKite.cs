@@ -15,7 +15,7 @@ internal class BuildKite : BuildAgentBase
 
     public override bool CanApplyToCurrentContext() => "true".Equals(Environment.GetEnvironmentVariable(EnvironmentVariable), StringComparison.OrdinalIgnoreCase);
 
-    public override string GenerateSetVersionMessage(VersionVariables variables) =>
+    public override string GenerateSetVersionMessage(GitVersionVariables variables) =>
         string.Empty; // There is no equivalent function in BuildKite.
 
     public override string[] GenerateSetParameterMessage(string name, string value) =>

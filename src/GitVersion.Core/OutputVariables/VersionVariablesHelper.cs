@@ -7,18 +7,18 @@ namespace GitVersion.OutputVariables;
 
 public static class VersionVariablesHelper
 {
-    public static VersionVariables FromJson(string json)
+    public static GitVersionVariables FromJson(string json)
     {
         var serializeOptions = JsonSerializerOptions();
         var variablePairs = JsonSerializer.Deserialize<Dictionary<string, string>>(json, serializeOptions);
         return FromDictionary(variablePairs);
     }
 
-    public static VersionVariables FromFile(string filePath, IFileSystem fileSystem)
+    public static GitVersionVariables FromFile(string filePath, IFileSystem fileSystem)
     {
         try
         {
-            var retryAction = new RetryAction<IOException, VersionVariables>();
+            var retryAction = new RetryAction<IOException, GitVersionVariables>();
             return retryAction.Execute(() => FromFileInternal(filePath, fileSystem));
         }
         catch (AggregateException ex)
@@ -33,12 +33,12 @@ public static class VersionVariablesHelper
         }
     }
 
-    public static string ToJsonString(this VersionVariables versionVariables)
+    public static string ToJsonString(this GitVersionVariables gitVersionVariables)
     {
         var variablesType = typeof(VersionVariablesJsonModel);
         var variables = new VersionVariablesJsonModel();
 
-        foreach (var (key, value) in versionVariables.GetProperties())
+        foreach (var (key, value) in gitVersionVariables.GetProperties())
         {
             var propertyInfo = variablesType.GetProperty(key);
             propertyInfo?.SetValue(variables, ChangeType(value, propertyInfo.PropertyType));
@@ -49,9 +49,9 @@ public static class VersionVariablesHelper
         return JsonSerializer.Serialize(variables, serializeOptions);
     }
 
-    private static VersionVariables FromDictionary(IEnumerable<KeyValuePair<string, string>>? properties)
+    private static GitVersionVariables FromDictionary(IEnumerable<KeyValuePair<string, string>>? properties)
     {
-        var type = typeof(VersionVariables);
+        var type = typeof(GitVersionVariables);
         var constructors = type.GetConstructors();
 
         var ctor = constructors.Single();
@@ -60,10 +60,10 @@ public static class VersionVariablesHelper
             .Cast<object>()
             .ToArray();
         var instance = Activator.CreateInstance(type, ctorArgs).NotNull();
-        return (VersionVariables)instance;
+        return (GitVersionVariables)instance;
     }
 
-    private static VersionVariables FromFileInternal(string filePath, IFileSystem fileSystem)
+    private static GitVersionVariables FromFileInternal(string filePath, IFileSystem fileSystem)
     {
         using var stream = fileSystem.OpenRead(filePath);
         using var reader = new StreamReader(stream);

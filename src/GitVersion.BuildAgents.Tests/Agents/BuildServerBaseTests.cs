@@ -59,7 +59,7 @@ public class BuildServerBaseTests : TestBase
 
         public override bool CanApplyToCurrentContext() => throw new NotImplementedException();
 
-        public override string GenerateSetVersionMessage(VersionVariables variables) => variables.FullSemVer;
+        public override string GenerateSetVersionMessage(GitVersionVariables variables) => variables.FullSemVer;
 
         public override string[] GenerateSetParameterMessage(string name, string value) => Array.Empty<string>();
     }

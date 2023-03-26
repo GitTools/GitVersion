@@ -4,8 +4,8 @@ namespace GitVersion;
 
 public interface IGitVersionOutputTool
 {
-    void OutputVariables(VersionVariables variables, bool updateBuildNumber);
-    void UpdateAssemblyInfo(VersionVariables variables);
-    void UpdateWixVersionFile(VersionVariables variables);
-    void GenerateGitVersionInformation(VersionVariables variables, FileWriteInfo fileWriteInfo);
+    void OutputVariables(GitVersionVariables variables, bool updateBuildNumber);
+    void UpdateAssemblyInfo(GitVersionVariables variables);
+    void UpdateWixVersionFile(GitVersionVariables variables);
+    void GenerateGitVersionInformation(GitVersionVariables variables, FileWriteInfo fileWriteInfo);
 }

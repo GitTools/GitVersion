@@ -51,7 +51,7 @@ public class EnvRunTests : TestBase
     [TestCase("1.2.3-rc4")]
     public void GenerateSetVersionMessage(string fullSemVer)
     {
-        var vars = new TestableVersionVariables(fullSemVer: fullSemVer);
+        var vars = new TestableGitVersionVariables(fullSemVer: fullSemVer);
         var version = this.buildServer.GenerateSetVersionMessage(vars);
         version.ShouldBe(fullSemVer);
     }

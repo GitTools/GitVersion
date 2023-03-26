@@ -80,7 +80,7 @@ public class ProgramFixtureResult
     public string? Output { get; set; }
     public string Log { get; set; }
 
-    public VersionVariables? OutputVariables
+    public GitVersionVariables? OutputVariables
     {
         get
         {

@@ -38,7 +38,7 @@ public class GitVersionCalculateTool : IGitVersionCalculateTool
         this.versionContext = versionContext.NotNull();
     }
 
-    public VersionVariables CalculateVersionVariables()
+    public GitVersionVariables CalculateVersionVariables()
     {
         this.gitPreparer.Prepare(); //we need to prepare the repository before using it for version calculation
 

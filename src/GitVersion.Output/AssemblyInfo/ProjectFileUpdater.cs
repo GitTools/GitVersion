@@ -30,7 +30,7 @@ public sealed class ProjectFileUpdater : IProjectFileUpdater
         this.log = log;
     }
 
-    public void Execute(VersionVariables variables, AssemblyInfoContext context)
+    public void Execute(GitVersionVariables variables, AssemblyInfoContext context)
     {
         if (context.EnsureAssemblyInfo)
             throw new WarningException($"Configuration setting {nameof(context.EnsureAssemblyInfo)} is not valid when updating project files!");

@@ -45,5 +45,5 @@ See https://gitversion.net/docs/reference/build-servers/teamcity for more info")
         $"##teamcity[setParameter name='system.GitVersion.{name}' value='{ServiceMessageEscapeHelper.EscapeValue(value)}']"
     };
 
-    public override string GenerateSetVersionMessage(VersionVariables variables) => $"##teamcity[buildNumber '{ServiceMessageEscapeHelper.EscapeValue(variables.FullSemVer)}']";
+    public override string GenerateSetVersionMessage(GitVersionVariables variables) => $"##teamcity[buildNumber '{ServiceMessageEscapeHelper.EscapeValue(variables.FullSemVer)}']";
 }

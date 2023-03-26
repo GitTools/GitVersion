@@ -39,7 +39,7 @@ public sealed class AssemblyInfoFileUpdater : IAssemblyInfoFileUpdater
         this.templateManager = new TemplateManager(TemplateType.AssemblyInfo);
     }
 
-    public void Execute(VersionVariables variables, AssemblyInfoContext context)
+    public void Execute(GitVersionVariables variables, AssemblyInfoContext context)
     {
         var assemblyInfoFiles = GetAssemblyInfoFiles(context).ToList();
         this.log.Info("Updating assembly info files");

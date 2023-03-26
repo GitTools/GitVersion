@@ -22,11 +22,11 @@ public class GenerateGitVersionInformationTest : TestTaskBase
         result.Task.GitVersionInformationFilePath.ShouldNotBeNull();
 
         var fileContent = File.ReadAllText(result.Task.GitVersionInformationFilePath);
-        fileContent.ShouldContain($@"{nameof(VersionVariables.Major)} = ""1""");
-        fileContent.ShouldContain($@"{nameof(VersionVariables.Minor)} = ""2""");
-        fileContent.ShouldContain($@"{nameof(VersionVariables.Patch)} = ""4""");
-        fileContent.ShouldContain($@"{nameof(VersionVariables.MajorMinorPatch)} = ""1.2.4""");
-        fileContent.ShouldContain($@"{nameof(VersionVariables.FullSemVer)} = ""1.2.4+1""");
+        fileContent.ShouldContain($@"{nameof(GitVersionVariables.Major)} = ""1""");
+        fileContent.ShouldContain($@"{nameof(GitVersionVariables.Minor)} = ""2""");
+        fileContent.ShouldContain($@"{nameof(GitVersionVariables.Patch)} = ""4""");
+        fileContent.ShouldContain($@"{nameof(GitVersionVariables.MajorMinorPatch)} = ""1.2.4""");
+        fileContent.ShouldContain($@"{nameof(GitVersionVariables.FullSemVer)} = ""1.2.4+1""");
     }
 
     [Test]
@@ -41,11 +41,11 @@ public class GenerateGitVersionInformationTest : TestTaskBase
         result.Task.GitVersionInformationFilePath.ShouldNotBeNull();
 
         var fileContent = File.ReadAllText(result.Task.GitVersionInformationFilePath);
-        fileContent.ShouldContain($@"{nameof(VersionVariables.Major)} = ""1""");
-        fileContent.ShouldContain($@"{nameof(VersionVariables.Minor)} = ""0""");
-        fileContent.ShouldContain($@"{nameof(VersionVariables.Patch)} = ""1""");
-        fileContent.ShouldContain($@"{nameof(VersionVariables.MajorMinorPatch)} = ""1.0.1""");
-        fileContent.ShouldContain($@"{nameof(VersionVariables.FullSemVer)} = ""1.0.1+1""");
+        fileContent.ShouldContain($@"{nameof(GitVersionVariables.Major)} = ""1""");
+        fileContent.ShouldContain($@"{nameof(GitVersionVariables.Minor)} = ""0""");
+        fileContent.ShouldContain($@"{nameof(GitVersionVariables.Patch)} = ""1""");
+        fileContent.ShouldContain($@"{nameof(GitVersionVariables.MajorMinorPatch)} = ""1.0.1""");
+        fileContent.ShouldContain($@"{nameof(GitVersionVariables.FullSemVer)} = ""1.0.1+1""");
     }
 
     [Test]
@@ -66,11 +66,11 @@ public class GenerateGitVersionInformationTest : TestTaskBase
         result.Output.ShouldContain($"{outputProperty}: {generatedFilePath}");
 
         var fileContent = File.ReadAllText(generatedFilePath);
-        fileContent.ShouldContain($@"{nameof(VersionVariables.Major)} = ""1""");
-        fileContent.ShouldContain($@"{nameof(VersionVariables.Minor)} = ""2""");
-        fileContent.ShouldContain($@"{nameof(VersionVariables.Patch)} = ""4""");
-        fileContent.ShouldContain($@"{nameof(VersionVariables.MajorMinorPatch)} = ""1.2.4""");
-        fileContent.ShouldContain($@"{nameof(VersionVariables.FullSemVer)} = ""1.2.4+1""");
+        fileContent.ShouldContain($@"{nameof(GitVersionVariables.Major)} = ""1""");
+        fileContent.ShouldContain($@"{nameof(GitVersionVariables.Minor)} = ""2""");
+        fileContent.ShouldContain($@"{nameof(GitVersionVariables.Patch)} = ""4""");
+        fileContent.ShouldContain($@"{nameof(GitVersionVariables.MajorMinorPatch)} = ""1.2.4""");
+        fileContent.ShouldContain($@"{nameof(GitVersionVariables.FullSemVer)} = ""1.2.4+1""");
     }
 
     [Test]
@@ -91,11 +91,11 @@ public class GenerateGitVersionInformationTest : TestTaskBase
         result.Output.ShouldContain($"{outputProperty}: {generatedFilePath}");
 
         var fileContent = File.ReadAllText(generatedFilePath);
-        fileContent.ShouldContain($@"{nameof(VersionVariables.Major)} = ""1""");
-        fileContent.ShouldContain($@"{nameof(VersionVariables.Minor)} = ""0""");
-        fileContent.ShouldContain($@"{nameof(VersionVariables.Patch)} = ""1""");
-        fileContent.ShouldContain($@"{nameof(VersionVariables.MajorMinorPatch)} = ""1.0.1""");
-        fileContent.ShouldContain($@"{nameof(VersionVariables.FullSemVer)} = ""1.0.1+1""");
+        fileContent.ShouldContain($@"{nameof(GitVersionVariables.Major)} = ""1""");
+        fileContent.ShouldContain($@"{nameof(GitVersionVariables.Minor)} = ""0""");
+        fileContent.ShouldContain($@"{nameof(GitVersionVariables.Patch)} = ""1""");
+        fileContent.ShouldContain($@"{nameof(GitVersionVariables.MajorMinorPatch)} = ""1.0.1""");
+        fileContent.ShouldContain($@"{nameof(GitVersionVariables.FullSemVer)} = ""1.0.1+1""");
     }
 
     [Test]
@@ -110,11 +110,11 @@ public class GenerateGitVersionInformationTest : TestTaskBase
         result.Task.GitVersionInformationFilePath.ShouldNotBeNull();
 
         var fileContent = File.ReadAllText(result.Task.GitVersionInformationFilePath);
-        fileContent.ShouldContain($@"{nameof(VersionVariables.Major)} = ""1""");
-        fileContent.ShouldContain($@"{nameof(VersionVariables.Minor)} = ""2""");
-        fileContent.ShouldContain($@"{nameof(VersionVariables.Patch)} = ""4""");
-        fileContent.ShouldContain($@"{nameof(VersionVariables.MajorMinorPatch)} = ""1.2.4""");
-        fileContent.ShouldContain($@"{nameof(VersionVariables.FullSemVer)} = ""1.2.4+1""");
+        fileContent.ShouldContain($@"{nameof(GitVersionVariables.Major)} = ""1""");
+        fileContent.ShouldContain($@"{nameof(GitVersionVariables.Minor)} = ""2""");
+        fileContent.ShouldContain($@"{nameof(GitVersionVariables.Patch)} = ""4""");
+        fileContent.ShouldContain($@"{nameof(GitVersionVariables.MajorMinorPatch)} = ""1.2.4""");
+        fileContent.ShouldContain($@"{nameof(GitVersionVariables.FullSemVer)} = ""1.2.4+1""");
     }
 
     [Test]
@@ -129,11 +129,11 @@ public class GenerateGitVersionInformationTest : TestTaskBase
         result.Task.GitVersionInformationFilePath.ShouldNotBeNull();
 
         var fileContent = File.ReadAllText(result.Task.GitVersionInformationFilePath);
-        fileContent.ShouldContain($@"{nameof(VersionVariables.Major)} = ""1""");
-        fileContent.ShouldContain($@"{nameof(VersionVariables.Minor)} = ""0""");
-        fileContent.ShouldContain($@"{nameof(VersionVariables.Patch)} = ""1""");
-        fileContent.ShouldContain($@"{nameof(VersionVariables.MajorMinorPatch)} = ""1.0.1""");
-        fileContent.ShouldContain($@"{nameof(VersionVariables.FullSemVer)} = ""1.0.1+1""");
+        fileContent.ShouldContain($@"{nameof(GitVersionVariables.Major)} = ""1""");
+        fileContent.ShouldContain($@"{nameof(GitVersionVariables.Minor)} = ""0""");
+        fileContent.ShouldContain($@"{nameof(GitVersionVariables.Patch)} = ""1""");
+        fileContent.ShouldContain($@"{nameof(GitVersionVariables.MajorMinorPatch)} = ""1.0.1""");
+        fileContent.ShouldContain($@"{nameof(GitVersionVariables.FullSemVer)} = ""1.0.1+1""");
     }
 
     [Test]
@@ -155,11 +155,11 @@ public class GenerateGitVersionInformationTest : TestTaskBase
         result.Output.ShouldContain($"{outputProperty}: {generatedFilePath}");
 
         var fileContent = File.ReadAllText(generatedFilePath);
-        fileContent.ShouldContain($@"{nameof(VersionVariables.Major)} = ""1""");
-        fileContent.ShouldContain($@"{nameof(VersionVariables.Minor)} = ""2""");
-        fileContent.ShouldContain($@"{nameof(VersionVariables.Patch)} = ""4""");
-        fileContent.ShouldContain($@"{nameof(VersionVariables.MajorMinorPatch)} = ""1.2.4""");
-        fileContent.ShouldContain($@"{nameof(VersionVariables.FullSemVer)} = ""1.2.4+1""");
+        fileContent.ShouldContain($@"{nameof(GitVersionVariables.Major)} = ""1""");
+        fileContent.ShouldContain($@"{nameof(GitVersionVariables.Minor)} = ""2""");
+        fileContent.ShouldContain($@"{nameof(GitVersionVariables.Patch)} = ""4""");
+        fileContent.ShouldContain($@"{nameof(GitVersionVariables.MajorMinorPatch)} = ""1.2.4""");
+        fileContent.ShouldContain($@"{nameof(GitVersionVariables.FullSemVer)} = ""1.2.4+1""");
     }
 
     [Test]
@@ -181,11 +181,11 @@ public class GenerateGitVersionInformationTest : TestTaskBase
         result.Output.ShouldContain($"{outputProperty}: {generatedFilePath}");
 
         var fileContent = File.ReadAllText(generatedFilePath);
-        fileContent.ShouldContain($@"{nameof(VersionVariables.Major)} = ""1""");
-        fileContent.ShouldContain($@"{nameof(VersionVariables.Minor)} = ""0""");
-        fileContent.ShouldContain($@"{nameof(VersionVariables.Patch)} = ""1""");
-        fileContent.ShouldContain($@"{nameof(VersionVariables.MajorMinorPatch)} = ""1.0.1""");
-        fileContent.ShouldContain($@"{nameof(VersionVariables.FullSemVer)} = ""1.0.1+1""");
+        fileContent.ShouldContain($@"{nameof(GitVersionVariables.Major)} = ""1""");
+        fileContent.ShouldContain($@"{nameof(GitVersionVariables.Minor)} = ""0""");
+        fileContent.ShouldContain($@"{nameof(GitVersionVariables.Patch)} = ""1""");
+        fileContent.ShouldContain($@"{nameof(GitVersionVariables.MajorMinorPatch)} = ""1.0.1""");
+        fileContent.ShouldContain($@"{nameof(GitVersionVariables.FullSemVer)} = ""1.0.1+1""");
     }
 
     private static void AddGenerateGitVersionInformationTask(ProjectCreator project, string targetToRun, string taskName, string outputProperty, string intermediateOutputPath = "$(MSBuildProjectDirectory)")
