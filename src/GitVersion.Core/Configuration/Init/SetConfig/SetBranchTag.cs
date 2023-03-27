@@ -4,7 +4,7 @@ using GitVersion.Logging;
 
 namespace GitVersion.Configuration.Init.SetConfig;
 
-public class SetBranchTag : ConfigInitWizardStep
+internal class SetBranchTag : ConfigInitWizardStep
 {
     private string name;
     private BranchConfiguration branchConfiguration;
@@ -20,7 +20,7 @@ public class SetBranchTag : ConfigInitWizardStep
         return this;
     }
 
-    protected override StepResult HandleResult(string? result, Queue<ConfigInitWizardStep> steps, GitVersionConfiguration configuration, string workingDirectory)
+    protected override StepResult HandleResult(string? result, Queue<ConfigInitWizardStep> steps, ConfigurationBuilder configurationBuilder, string workingDirectory)
     {
         if (result.IsNullOrWhiteSpace())
         {
@@ -44,7 +44,7 @@ public class SetBranchTag : ConfigInitWizardStep
         }
     }
 
-    protected override string GetPrompt(GitVersionConfiguration configuration, string workingDirectory) => @"This sets the per-release tag which will be used for versions on this branch (beta, rc etc)
+    protected override string GetPrompt(ConfigurationBuilder configurationBuilder, string workingDirectory) => @"This sets the per-release tag which will be used for versions on this branch (beta, rc etc)
 
 0) Go Back
 1) No tag

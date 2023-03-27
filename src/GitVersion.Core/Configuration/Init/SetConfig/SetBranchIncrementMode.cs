@@ -4,7 +4,7 @@ using GitVersion.VersionCalculation;
 
 namespace GitVersion.Configuration.Init.SetConfig;
 
-public class SetBranchIncrementMode : ConfigInitWizardStep
+internal class SetBranchIncrementMode : ConfigInitWizardStep
 {
     private string name;
     private BranchConfiguration branchConfiguration;
@@ -20,7 +20,7 @@ public class SetBranchIncrementMode : ConfigInitWizardStep
         return this;
     }
 
-    protected override StepResult HandleResult(string? result, Queue<ConfigInitWizardStep> steps, GitVersionConfiguration configuration, string workingDirectory)
+    protected override StepResult HandleResult(string? result, Queue<ConfigInitWizardStep> steps, ConfigurationBuilder configurationBuilder, string workingDirectory)
     {
         var configureBranchStep = this.StepFactory.CreateStep<ConfigureBranch>();
         switch (result)
@@ -41,7 +41,7 @@ public class SetBranchIncrementMode : ConfigInitWizardStep
         return StepResult.InvalidResponseSelected();
     }
 
-    protected override string GetPrompt(GitVersionConfiguration configuration, string workingDirectory) => $@"What do you want the increment mode for {this.name} to be?
+    protected override string GetPrompt(ConfigurationBuilder configurationBuilder, string workingDirectory) => $@"What do you want the increment mode for {this.name} to be?
 
 0) Go Back
 1) Follow SemVer and only increment when a release has been tagged (continuous delivery mode)

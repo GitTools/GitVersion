@@ -3,7 +3,7 @@ using GitVersion.Logging;
 
 namespace GitVersion.Configuration.Init.Wizard;
 
-public abstract class ConfigInitWizardStep
+internal abstract class ConfigInitWizardStep
 {
     protected readonly IConsole Console;
     protected readonly IFileSystem FileSystem;
@@ -18,10 +18,10 @@ public abstract class ConfigInitWizardStep
         this.StepFactory = stepFactory.NotNull();
     }
 
-    public bool Apply(Queue<ConfigInitWizardStep> steps, GitVersionConfiguration configuration, string workingDirectory)
+    public bool Apply(Queue<ConfigInitWizardStep> steps, ConfigurationBuilder configurationBuilder, string workingDirectory)
     {
         this.Console.WriteLine();
-        this.Console.WriteLine(GetPrompt(configuration, workingDirectory));
+        this.Console.WriteLine(GetPrompt(configurationBuilder, workingDirectory));
         this.Console.WriteLine();
         this.Console.Write("> ");
         var input = this.Console.ReadLine();
@@ -40,7 +40,7 @@ public abstract class ConfigInitWizardStep
             return true;
         }
         var resultWithDefaultApplied = input.IsNullOrEmpty() ? DefaultResult : input;
-        var stepResult = HandleResult(resultWithDefaultApplied, steps, configuration, workingDirectory);
+        var stepResult = HandleResult(resultWithDefaultApplied, steps, configurationBuilder, workingDirectory);
         if (stepResult.InvalidResponse)
         {
             InvalidResponse(steps);
@@ -63,7 +63,7 @@ public abstract class ConfigInitWizardStep
         steps.Enqueue(this);
     }
 
-    protected abstract StepResult HandleResult(string? result, Queue<ConfigInitWizardStep> steps, GitVersionConfiguration configuration, string workingDirectory);
-    protected abstract string GetPrompt(GitVersionConfiguration configuration, string workingDirectory);
+    protected abstract StepResult HandleResult(string? result, Queue<ConfigInitWizardStep> steps, ConfigurationBuilder configurationBuilder, string workingDirectory);
+    protected abstract string GetPrompt(ConfigurationBuilder configurationBuilder, string workingDirectory);
     protected abstract string? DefaultResult { get; }
 }

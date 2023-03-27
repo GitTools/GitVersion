@@ -3,13 +3,13 @@ using GitVersion.Logging;
 
 namespace GitVersion.Configuration.Init.SetConfig;
 
-public class ConfigureBranches : ConfigInitWizardStep
+internal class ConfigureBranches : ConfigInitWizardStep
 {
     public ConfigureBranches(IConsole console, IFileSystem fileSystem, ILog log, IConfigInitStepFactory stepFactory) : base(console, fileSystem, log, stepFactory)
     {
     }
 
-    protected override StepResult HandleResult(string? result, Queue<ConfigInitWizardStep> steps, GitVersionConfiguration configuration, string workingDirectory)
+    protected override StepResult HandleResult(string? result, Queue<ConfigInitWizardStep> steps, ConfigurationBuilder configurationBuilder, string workingDirectory)
     {
         if (int.TryParse(result, out var parsed))
         {
@@ -21,12 +21,13 @@ public class ConfigureBranches : ConfigInitWizardStep
 
             try
             {
+                var configuration = configurationBuilder.Build();
                 var foundBranch = OrderedBranches(configuration).ElementAt(parsed - 1);
                 var branchConfiguration = foundBranch.Value;
                 if (branchConfiguration is null)
                 {
                     branchConfiguration = new BranchConfiguration();
-                    configuration.Branches.Add(foundBranch.Key, branchConfiguration);
+                    configurationBuilder.WithBranch(foundBranch.Key, builder => builder.WithConfiguration(branchConfiguration));
                 }
                 steps.Enqueue(this.StepFactory.CreateStep<ConfigureBranch>().WithData(foundBranch.Key, branchConfiguration));
                 return StepResult.Ok();
@@ -38,10 +39,14 @@ public class ConfigureBranches : ConfigInitWizardStep
         return StepResult.InvalidResponseSelected();
     }
 
-    protected override string GetPrompt(GitVersionConfiguration configuration, string workingDirectory) => @"Which branch would you like to configure:
+    protected override string GetPrompt(ConfigurationBuilder configurationBuilder, string workingDirectory)
+    {
+        var configuration = configurationBuilder.Build();
+        return @"Which branch would you like to configure:
 
 0) Go Back
 " + string.Join(System.Environment.NewLine, OrderedBranches(configuration).Select((c, i) => $"{i + 1}) {c.Key}"));
+    }
 
     private static IOrderedEnumerable<KeyValuePair<string, BranchConfiguration>> OrderedBranches(GitVersionConfiguration configuration)
     {
