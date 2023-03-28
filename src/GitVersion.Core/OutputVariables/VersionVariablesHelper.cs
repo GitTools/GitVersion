@@ -1,3 +1,4 @@
+using System.Text.Encodings.Web;
 using GitVersion.Extensions;
 using GitVersion.Helpers;
 using YamlDotNet.Serialization;
@@ -8,7 +9,7 @@ public static class VersionVariablesHelper
 {
     public static GitVersionVariables FromJson(string json)
     {
-        var serializeOptions = GitVersionVariablesExtensions.GetJsonSerializerOptions();
+        var serializeOptions = JsonSerializerOptions();
         var variablePairs = JsonSerializer.Deserialize<Dictionary<string, string>>(json, serializeOptions);
         return FromDictionary(variablePairs);
     }
@@ -32,6 +33,22 @@ public static class VersionVariablesHelper
         }
     }
 
+    public static string ToJsonString(this GitVersionVariables gitVersionVariables)
+    {
+        var variablesType = typeof(VersionVariablesJsonModel);
+        var variables = new VersionVariablesJsonModel();
+
+        foreach (var (key, value) in gitVersionVariables.OrderBy(x => x.Key))
+        {
+            var propertyInfo = variablesType.GetProperty(key);
+            propertyInfo?.SetValue(variables, ChangeType(value, propertyInfo.PropertyType));
+        }
+
+        var serializeOptions = JsonSerializerOptions();
+
+        return JsonSerializer.Serialize(variables, serializeOptions);
+    }
+
     private static GitVersionVariables FromDictionary(IEnumerable<KeyValuePair<string, string>>? properties)
     {
         var type = typeof(GitVersionVariables);
@@ -53,5 +70,26 @@ public static class VersionVariablesHelper
         var dictionary = new Deserializer().Deserialize<Dictionary<string, string>>(reader);
         var versionVariables = FromDictionary(dictionary);
         return versionVariables;
+    }
+
+    private static JsonSerializerOptions JsonSerializerOptions()
+    {
+        var serializeOptions = new JsonSerializerOptions { WriteIndented = true, Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping, Converters = { new VersionVariablesJsonStringConverter() } };
+        return serializeOptions;
+    }
+
+    private static object? ChangeType(object? value, Type type)
+    {
+        if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>))
+        {
+            if (value == null || value.ToString()?.Length == 0)
+            {
+                return null;
+            }
+
+            type = Nullable.GetUnderlyingType(type)!;
+        }
+
+        return Convert.ChangeType(value, type);
     }
 }

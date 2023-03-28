@@ -2,11 +2,11 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace GitVersion.Agents;
 
-public class GitVersionBuildAgentsModule : IGitVersionModule
+public class GitVersionBuildAgentsModule : GitVersionModule
 {
-    public void RegisterTypes(IServiceCollection services)
+    public override void RegisterTypes(IServiceCollection services)
     {
-        var buildAgents = IGitVersionModule.FindAllDerivedTypes<BuildAgentBase>(Assembly.GetAssembly(GetType()));
+        var buildAgents = FindAllDerivedTypes<BuildAgentBase>(Assembly.GetAssembly(GetType()));
 
         foreach (var buildAgent in buildAgents)
         {

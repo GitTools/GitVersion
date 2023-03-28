@@ -3,14 +3,14 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace GitVersion.Configuration.Init;
 
-public class GitVersionInitModule : IGitVersionModule
+public class GitVersionInitModule : GitVersionModule
 {
-    public void RegisterTypes(IServiceCollection services)
+    public override void RegisterTypes(IServiceCollection services)
     {
         services.AddTransient<IConfigInitWizard, ConfigInitWizard>();
         services.AddTransient<IConfigInitStepFactory, ConfigInitStepFactory>();
 
-        var steps = IGitVersionModule.FindAllDerivedTypes<ConfigInitWizardStep>(Assembly.GetAssembly(GetType()));
+        var steps = FindAllDerivedTypes<ConfigInitWizardStep>(Assembly.GetAssembly(GetType()));
 
         foreach (var step in steps)
         {

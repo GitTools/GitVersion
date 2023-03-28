@@ -206,9 +206,6 @@ internal abstract class ConfigurationBuilderBase<TConfigurationBuilder> : IConfi
     public virtual BranchConfigurationBuilder WithBranch(string value)
         => this.branchConfigurationBuilders.GetOrAdd(value, () => BranchConfigurationBuilder.New);
 
-    public virtual BranchConfigurationBuilder WithBranch(string value, BranchConfigurationBuilder builder)
-        => this.branchConfigurationBuilders.GetOrAdd(value, () => builder);
-
     public virtual TConfigurationBuilder WithBranch(string value, Action<BranchConfigurationBuilder> action)
     {
         var result = this.branchConfigurationBuilders.GetOrAdd(value, () => BranchConfigurationBuilder.New);
@@ -341,7 +338,7 @@ internal abstract class ConfigurationBuilderBase<TConfigurationBuilder> : IConfi
         }
     }
 
-    public virtual IGitVersionConfiguration Build()
+    public virtual GitVersionConfiguration Build()
     {
         Dictionary<string, BranchConfiguration> branches = new();
         foreach (var (name, branchConfigurationBuilder) in this.branchConfigurationBuilders)
@@ -349,7 +346,7 @@ internal abstract class ConfigurationBuilderBase<TConfigurationBuilder> : IConfi
             branches.Add(name, branchConfigurationBuilder.Build());
         }
 
-        IGitVersionConfiguration configuration = new GitVersionConfiguration
+        GitVersionConfiguration configuration = new()
         {
             AssemblyVersioningScheme = this.assemblyVersioningScheme,
             AssemblyFileVersioningScheme = this.assemblyFileVersioningScheme,
@@ -400,7 +397,7 @@ internal abstract class ConfigurationBuilderBase<TConfigurationBuilder> : IConfi
         return configuration;
     }
 
-    private static void FinalizeConfiguration(IGitVersionConfiguration configuration)
+    private static void FinalizeConfiguration(GitVersionConfiguration configuration)
     {
         foreach (var (name, branchConfiguration) in configuration.Branches)
         {
@@ -408,10 +405,10 @@ internal abstract class ConfigurationBuilderBase<TConfigurationBuilder> : IConfi
         }
     }
 
-    private static void FinalizeBranchConfiguration(IGitVersionConfiguration configuration, string branchName,
+    private static void FinalizeBranchConfiguration(GitVersionConfiguration configuration, string branchName,
         IBranchConfiguration branchConfiguration)
     {
-        var branches = configuration.Branches.ToDictionary(x => x.Key, x => (BranchConfiguration)x.Value);
+        var branches = new Dictionary<string, BranchConfiguration>(configuration.Branches);
         foreach (var targetBranchName in branchConfiguration.IsSourceBranchFor)
         {
             var targetBranchConfiguration = branches[targetBranchName];
@@ -419,7 +416,7 @@ internal abstract class ConfigurationBuilderBase<TConfigurationBuilder> : IConfi
         }
     }
 
-    private static void ValidateConfiguration(IGitVersionConfiguration configuration)
+    private static void ValidateConfiguration(GitVersionConfiguration configuration)
     {
         foreach (var (name, branchConfiguration) in configuration.Branches)
         {

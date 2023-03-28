@@ -23,14 +23,14 @@ internal class ConfigurationHelper
     }
     private IReadOnlyDictionary<object, object?>? _dictionary;
 
-    public IGitVersionConfiguration Configuration => this.configuration ??= ConfigurationSerializer.Deserialize<GitVersionConfiguration>(Yaml);
-    private IGitVersionConfiguration? configuration;
+    public GitVersionConfiguration Configuration => this.configuration ??= ConfigurationSerializer.Deserialize<GitVersionConfiguration>(Yaml);
+    private GitVersionConfiguration? configuration;
 
     internal ConfigurationHelper(string yaml) => this._yaml = yaml.NotNull();
 
     internal ConfigurationHelper(IReadOnlyDictionary<object, object?> dictionary) => this._dictionary = dictionary.NotNull();
 
-    public ConfigurationHelper(IGitVersionConfiguration configuration) => this.configuration = configuration.NotNull();
+    public ConfigurationHelper(GitVersionConfiguration configuration) => this.configuration = configuration.NotNull();
 
     public void Override(IReadOnlyDictionary<object, object?> value)
     {
