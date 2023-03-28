@@ -7,15 +7,15 @@ namespace GitVersion.Configuration.Init.SetConfig;
 internal class SetBranchIncrementMode : ConfigInitWizardStep
 {
     private string name;
-    private BranchConfiguration branchConfiguration;
+    private BranchConfigurationBuilder branchConfigurationBuilder;
 
     public SetBranchIncrementMode(IConsole console, IFileSystem fileSystem, ILog log, IConfigInitStepFactory stepFactory) : base(console, fileSystem, log, stepFactory)
     {
     }
 
-    public SetBranchIncrementMode WithData(string configName, BranchConfiguration configuration)
+    public SetBranchIncrementMode WithData(string configName, BranchConfigurationBuilder configurationBuilder)
     {
-        this.branchConfiguration = configuration;
+        this.branchConfigurationBuilder = configurationBuilder;
         this.name = configName;
         return this;
     }
@@ -26,15 +26,15 @@ internal class SetBranchIncrementMode : ConfigInitWizardStep
         switch (result)
         {
             case "0":
-                steps.Enqueue(configureBranchStep.WithData(this.name, this.branchConfiguration));
+                steps.Enqueue(configureBranchStep.WithData(this.name, this.branchConfigurationBuilder));
                 return StepResult.Ok();
             case "1":
-                this.branchConfiguration.VersioningMode = VersioningMode.ContinuousDelivery;
-                steps.Enqueue(configureBranchStep.WithData(name, this.branchConfiguration));
+                this.branchConfigurationBuilder.WithVersioningMode(VersioningMode.ContinuousDelivery);
+                steps.Enqueue(configureBranchStep.WithData(name, this.branchConfigurationBuilder));
                 return StepResult.Ok();
             case "2":
-                this.branchConfiguration.VersioningMode = VersioningMode.ContinuousDeployment;
-                steps.Enqueue(configureBranchStep.WithData(name, this.branchConfiguration));
+                this.branchConfigurationBuilder.WithVersioningMode(VersioningMode.ContinuousDeployment);
+                steps.Enqueue(configureBranchStep.WithData(name, this.branchConfigurationBuilder));
                 return StepResult.Ok();
         }
 

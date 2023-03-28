@@ -22,14 +22,10 @@ internal class ConfigureBranches : ConfigInitWizardStep
             try
             {
                 var configuration = configurationBuilder.Build();
-                var foundBranch = OrderedBranches(configuration).ElementAt(parsed - 1);
-                var branchConfiguration = foundBranch.Value;
-                if (branchConfiguration is null)
-                {
-                    branchConfiguration = new BranchConfiguration();
-                    configurationBuilder.WithBranch(foundBranch.Key, builder => builder.WithConfiguration(branchConfiguration));
-                }
-                steps.Enqueue(this.StepFactory.CreateStep<ConfigureBranch>().WithData(foundBranch.Key, branchConfiguration));
+                var (name, branchConfiguration) = OrderedBranches(configuration).ElementAt(parsed - 1);
+                var branchConfigurationBuilder = BranchConfigurationBuilder.New.WithConfiguration(branchConfiguration);
+                configurationBuilder.WithBranch(name, branchConfigurationBuilder);
+                steps.Enqueue(this.StepFactory.CreateStep<ConfigureBranch>().WithData(name, branchConfigurationBuilder));
                 return StepResult.Ok();
             }
             catch (ArgumentOutOfRangeException)
@@ -48,15 +44,16 @@ internal class ConfigureBranches : ConfigInitWizardStep
 " + string.Join(System.Environment.NewLine, OrderedBranches(configuration).Select((c, i) => $"{i + 1}) {c.Key}"));
     }
 
-    private static IOrderedEnumerable<KeyValuePair<string, BranchConfiguration>> OrderedBranches(GitVersionConfiguration configuration)
+    private static IOrderedEnumerable<KeyValuePair<string, IBranchConfiguration>> OrderedBranches(IGitVersionConfiguration configuration)
     {
         var defaultConfig = GitFlowConfigurationBuilder.New.Build();
 
+        var configurationBranches = configuration.Branches;
         var defaultConfigurationBranches = defaultConfig.Branches
-            .Where(k => !configuration.Branches.ContainsKey(k.Key))
+            .Where(k => !configurationBranches.ContainsKey(k.Key))
             // Return an empty branch configuration
-            .Select(v => new KeyValuePair<string, BranchConfiguration>(v.Key, new BranchConfiguration()));
-        return configuration.Branches.Union(defaultConfigurationBranches).OrderBy(b => b.Key);
+            .Select(v => new KeyValuePair<string, IBranchConfiguration>(v.Key, new BranchConfiguration()));
+        return configurationBranches.Union(defaultConfigurationBranches).OrderBy(b => b.Key);
     }
 
     protected override string DefaultResult => "0";

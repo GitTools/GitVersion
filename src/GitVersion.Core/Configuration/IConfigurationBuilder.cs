@@ -4,5 +4,5 @@ internal interface IConfigurationBuilder
 {
     void AddOverride(IReadOnlyDictionary<object, object?> value);
 
-    GitVersionConfiguration Build();
+    IGitVersionConfiguration Build();
 }
