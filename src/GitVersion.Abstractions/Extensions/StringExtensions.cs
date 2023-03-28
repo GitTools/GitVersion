@@ -20,15 +20,15 @@ public static class StringExtensions
 
         try
         {
-            _ = Path.GetFullPath(path);
+            _ = PathHelper.GetFullPath(path);
         }
         catch
         {
-            path = PathHelper.Combine(System.Environment.CurrentDirectory, path);
+            path = PathHelper.Combine(Environment.CurrentDirectory, path);
 
             try
             {
-                _ = Path.GetFullPath(path);
+                _ = PathHelper.GetFullPath(path);
             }
             catch
             {

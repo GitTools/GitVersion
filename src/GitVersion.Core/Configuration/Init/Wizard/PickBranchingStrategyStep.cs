@@ -2,13 +2,13 @@ using GitVersion.Logging;
 
 namespace GitVersion.Configuration.Init.Wizard;
 
-public class PickBranchingStrategyStep : ConfigInitWizardStep
+internal class PickBranchingStrategyStep : ConfigInitWizardStep
 {
     public PickBranchingStrategyStep(IConsole console, IFileSystem fileSystem, ILog log, IConfigInitStepFactory stepFactory) : base(console, fileSystem, log, stepFactory)
     {
     }
 
-    protected override StepResult HandleResult(string? result, Queue<ConfigInitWizardStep> steps, GitVersionConfiguration configuration, string workingDirectory)
+    protected override StepResult HandleResult(string? result, Queue<ConfigInitWizardStep> steps, ConfigurationBuilder configurationBuilder, string workingDirectory)
     {
         var returnToStep = this.StepFactory.CreateStep<FinishedSetupStep>();
         switch (result)
@@ -29,7 +29,7 @@ public class PickBranchingStrategyStep : ConfigInitWizardStep
         return StepResult.Ok();
     }
 
-    protected override string GetPrompt(GitVersionConfiguration configuration, string workingDirectory) => @"The way you will use GitVersion will change a lot based on your branching strategy. What branching strategy will you be using:
+    protected override string GetPrompt(ConfigurationBuilder configurationBuilder, string workingDirectory) => @"The way you will use GitVersion will change a lot based on your branching strategy. What branching strategy will you be using:
 
 1) GitFlow (or similar)
 2) GitHubFlow

@@ -34,4 +34,8 @@
         <InternalsVisibleTo Include="GitVersion.MsBuild.Tests" />
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\GitVersion.Abstractions\GitVersion.Abstractions.csproj" />
+    </ItemGroup>
+
 </Project>

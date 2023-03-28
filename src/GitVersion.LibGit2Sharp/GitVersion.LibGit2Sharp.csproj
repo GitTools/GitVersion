@@ -5,7 +5,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\GitVersion.Core\GitVersion.Core.csproj" />
+        <ProjectReference Include="..\GitVersion.Abstractions\GitVersion.Abstractions.csproj"/>
     </ItemGroup>
 
     <ItemGroup>

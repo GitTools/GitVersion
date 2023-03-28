@@ -3,64 +3,64 @@
     <PackageReference Include="Polly" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\..\src\GitVersion.Core\Git\AuthenticationInfo.cs">
+    <Compile Include="..\..\src\GitVersion.Abstractions\Git\AuthenticationInfo.cs">
       <Link>Git\AuthenticationInfo.cs</Link>
     </Compile>
-    <Compile Include="..\..\src\GitVersion.Core\Git\CommitFilter.cs">
+    <Compile Include="..\..\src\GitVersion.Abstractions\Git\CommitFilter.cs">
       <Link>Git\CommitFilter.cs</Link>
     </Compile>
-    <Compile Include="..\..\src\GitVersion.Core\Git\IBranch.cs">
+    <Compile Include="..\..\src\GitVersion.Abstractions\Git\IBranch.cs">
       <Link>Git\IBranch.cs</Link>
     </Compile>
-    <Compile Include="..\..\src\GitVersion.Core\Git\IBranchCollection.cs">
+    <Compile Include="..\..\src\GitVersion.Abstractions\Git\IBranchCollection.cs">
       <Link>Git\IBranchCollection.cs</Link>
     </Compile>
-    <Compile Include="..\..\src\GitVersion.Core\Git\ICommit.cs">
+    <Compile Include="..\..\src\GitVersion.Abstractions\Git\ICommit.cs">
       <Link>Git\ICommit.cs</Link>
     </Compile>
-    <Compile Include="..\..\src\GitVersion.Core\Git\ICommitCollection.cs">
+    <Compile Include="..\..\src\GitVersion.Abstractions\Git\ICommitCollection.cs">
       <Link>Git\ICommitCollection.cs</Link>
     </Compile>
-    <Compile Include="..\..\src\GitVersion.Core\Git\IGitObject.cs">
+    <Compile Include="..\..\src\GitVersion.Abstractions\Git\IGitObject.cs">
       <Link>Git\IGitObject.cs</Link>
     </Compile>
-    <Compile Include="..\..\src\GitVersion.Core\Git\IGitRepository.cs">
+    <Compile Include="..\..\src\GitVersion.Abstractions\Git\IGitRepository.cs">
       <Link>Git\IGitRepository.cs</Link>
     </Compile>
-    <Compile Include="..\..\src\GitVersion.Core\Git\INamedReference.cs">
+    <Compile Include="..\..\src\GitVersion.Abstractions\Git\INamedReference.cs">
       <Link>Git\INamedReference.cs</Link>
     </Compile>
-    <Compile Include="..\..\src\GitVersion.Core\Git\IObjectId.cs">
+    <Compile Include="..\..\src\GitVersion.Abstractions\Git\IObjectId.cs">
       <Link>Git\IObjectId.cs</Link>
     </Compile>
-    <Compile Include="..\..\src\GitVersion.Core\Git\IReference.cs">
+    <Compile Include="..\..\src\GitVersion.Abstractions\Git\IReference.cs">
       <Link>Git\IReference.cs</Link>
     </Compile>
-    <Compile Include="..\..\src\GitVersion.Core\Git\IReferenceCollection.cs">
+    <Compile Include="..\..\src\GitVersion.Abstractions\Git\IReferenceCollection.cs">
       <Link>Git\IReferenceCollection.cs</Link>
     </Compile>
-    <Compile Include="..\..\src\GitVersion.Core\Git\IRefSpec.cs">
+    <Compile Include="..\..\src\GitVersion.Abstractions\Git\IRefSpec.cs">
       <Link>Git\IRefSpec.cs</Link>
     </Compile>
-    <Compile Include="..\..\src\GitVersion.Core\Git\IRefSpecCollection.cs">
+    <Compile Include="..\..\src\GitVersion.Abstractions\Git\IRefSpecCollection.cs">
       <Link>Git\IRefSpecCollection.cs</Link>
     </Compile>
-    <Compile Include="..\..\src\GitVersion.Core\Git\IRemote.cs">
+    <Compile Include="..\..\src\GitVersion.Abstractions\Git\IRemote.cs">
       <Link>Git\IRemote.cs</Link>
     </Compile>
-    <Compile Include="..\..\src\GitVersion.Core\Git\IRemoteCollection.cs">
+    <Compile Include="..\..\src\GitVersion.Abstractions\Git\IRemoteCollection.cs">
       <Link>Git\IRemoteCollection.cs</Link>
     </Compile>
-    <Compile Include="..\..\src\GitVersion.Core\Git\ITag.cs">
+    <Compile Include="..\..\src\GitVersion.Abstractions\Git\ITag.cs">
       <Link>Git\ITag.cs</Link>
     </Compile>
-    <Compile Include="..\..\src\GitVersion.Core\Git\ITagCollection.cs">
+    <Compile Include="..\..\src\GitVersion.Abstractions\Git\ITagCollection.cs">
       <Link>Git\ITagCollection.cs</Link>
     </Compile>
-    <Compile Include="..\..\src\GitVersion.Core\Git\ReferenceName.cs">
+    <Compile Include="..\..\src\GitVersion.Abstractions\Git\ReferenceName.cs">
       <Link>Git\ReferenceName.cs</Link>
     </Compile>
-    <Compile Include="..\..\src\GitVersion.Core\Git\RefSpecDirection.cs">
+    <Compile Include="..\..\src\GitVersion.Abstractions\Git\RefSpecDirection.cs">
       <Link>Git\RefSpecDirection.cs</Link>
     </Compile>
   </ItemGroup>

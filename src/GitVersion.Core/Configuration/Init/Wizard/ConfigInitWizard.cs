@@ -14,21 +14,22 @@ public class ConfigInitWizard : IConfigInitWizard
         this.stepFactory = stepFactory.NotNull();
     }
 
-    public GitVersionConfiguration? Run(GitVersionConfiguration configuration, string workingDirectory)
+    public IGitVersionConfiguration? Run(IGitVersionConfiguration configuration, string workingDirectory)
     {
         this.console.WriteLine("GitVersion init will guide you through setting GitVersion up to work for you");
         var steps = new Queue<ConfigInitWizardStep>();
         steps.Enqueue(this.stepFactory.CreateStep<EditConfigStep>());
 
+        var configurationBuilder = ConfigurationBuilder.New.WithConfiguration((GitVersionConfiguration)configuration);
         while (steps.Count > 0)
         {
             var currentStep = steps.Dequeue();
-            if (!currentStep.Apply(steps, configuration, workingDirectory))
+            if (!currentStep.Apply(steps, configurationBuilder, workingDirectory))
             {
                 return null;
             }
         }
 
-        return configuration;
+        return configurationBuilder.Build();
     }
 }

@@ -1,5 +1,5 @@
 using GitVersion.Core.Tests.Helpers;
-using GitVersion.OutputVariables;
+using GitVersion.Extensions;
 using GitVersion.VersionCalculation;
 using Microsoft.Extensions.DependencyInjection;
 

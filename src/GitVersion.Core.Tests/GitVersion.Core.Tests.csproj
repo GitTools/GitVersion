@@ -13,6 +13,7 @@
         <PackageReference Include="YamlDotNet" />
     </ItemGroup>
     <ItemGroup>
+        <ProjectReference Include="..\GitVersion.Abstractions\GitVersion.Abstractions.csproj" />
         <ProjectReference Include="..\GitVersion.BuildAgents\GitVersion.BuildAgents.csproj" />
         <ProjectReference Include="..\GitVersion.LibGit2Sharp\GitVersion.LibGit2Sharp.csproj" />
         <ProjectReference Include="..\GitVersion.Core\GitVersion.Core.csproj" />

@@ -3,11 +3,11 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace GitVersion;
 
-public abstract class GitVersionModule : IGitVersionModule
+public interface IGitVersionModule
 {
-    public abstract void RegisterTypes(IServiceCollection services);
+    void RegisterTypes(IServiceCollection services);
 
-    protected static IEnumerable<Type> FindAllDerivedTypes<T>(Assembly? assembly)
+    static IEnumerable<Type> FindAllDerivedTypes<T>(Assembly? assembly)
     {
         assembly.NotNull();
 

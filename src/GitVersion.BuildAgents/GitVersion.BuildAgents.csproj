@@ -1,6 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
     <ItemGroup>
-        <ProjectReference Include="..\GitVersion.Core\GitVersion.Core.csproj"/>
+        <ProjectReference Include="..\GitVersion.Abstractions\GitVersion.Abstractions.csproj"/>
     </ItemGroup>
     <ItemGroup>
         <InternalsVisibleTo Include="GitVersion.App.Tests"/>

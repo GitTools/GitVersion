@@ -395,7 +395,7 @@ public class ArgumentParserTests : TestBase
     }
 
     [TestCaseSource(nameof(OverrideConfigWithSingleOptionTestData))]
-    public void OverrideConfigWithSingleOptions(string options, GitVersionConfiguration expected)
+    public void OverrideConfigWithSingleOptions(string options, IGitVersionConfiguration expected)
     {
         var arguments = this.argumentParser.ParseArguments($"/overrideconfig {options}");
 
@@ -534,7 +534,7 @@ public class ArgumentParserTests : TestBase
     }
 
     [TestCaseSource(nameof(OverrideConfigWithMultipleOptionsTestData))]
-    public void OverrideConfigWithMultipleOptions(string options, GitVersionConfiguration expected)
+    public void OverrideConfigWithMultipleOptions(string options, IGitVersionConfiguration expected)
     {
         var arguments = this.argumentParser.ParseArguments(options);
         ConfigurationHelper configurationHelper = new(arguments.OverrideConfiguration);

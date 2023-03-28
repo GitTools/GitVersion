@@ -4,13 +4,13 @@ using GitVersion.Logging;
 
 namespace GitVersion.Configuration.Init.SetConfig;
 
-public class AssemblyVersioningSchemeSetting : ConfigInitWizardStep
+internal class AssemblyVersioningSchemeSetting : ConfigInitWizardStep
 {
     public AssemblyVersioningSchemeSetting(IConsole console, IFileSystem fileSystem, ILog log, IConfigInitStepFactory stepFactory) : base(console, fileSystem, log, stepFactory)
     {
     }
 
-    protected override StepResult HandleResult(string? result, Queue<ConfigInitWizardStep> steps, GitVersionConfiguration configuration, string workingDirectory)
+    protected override StepResult HandleResult(string? result, Queue<ConfigInitWizardStep> steps, ConfigurationBuilder configurationBuilder, string workingDirectory)
     {
         var editConfigStep = this.StepFactory.CreateStep<EditConfigStep>();
         switch (result)
@@ -19,23 +19,23 @@ public class AssemblyVersioningSchemeSetting : ConfigInitWizardStep
                 steps.Enqueue(editConfigStep);
                 return StepResult.Ok();
             case "1":
-                configuration.AssemblyVersioningScheme = AssemblyVersioningScheme.Major;
+                configurationBuilder.WithAssemblyVersioningScheme(AssemblyVersioningScheme.Major);
                 steps.Enqueue(editConfigStep);
                 return StepResult.Ok();
             case "2":
-                configuration.AssemblyVersioningScheme = AssemblyVersioningScheme.MajorMinor;
+                configurationBuilder.WithAssemblyVersioningScheme(AssemblyVersioningScheme.MajorMinor);
                 steps.Enqueue(editConfigStep);
                 return StepResult.Ok();
             case "3":
-                configuration.AssemblyVersioningScheme = AssemblyVersioningScheme.MajorMinorPatch;
+                configurationBuilder.WithAssemblyVersioningScheme(AssemblyVersioningScheme.MajorMinorPatch);
                 steps.Enqueue(editConfigStep);
                 return StepResult.Ok();
             case "4":
-                configuration.AssemblyVersioningScheme = AssemblyVersioningScheme.MajorMinorPatchTag;
+                configurationBuilder.WithAssemblyVersioningScheme(AssemblyVersioningScheme.MajorMinorPatchTag);
                 steps.Enqueue(editConfigStep);
                 return StepResult.Ok();
             case "5":
-                configuration.AssemblyVersioningScheme = AssemblyVersioningScheme.None;
+                configurationBuilder.WithAssemblyVersioningScheme(AssemblyVersioningScheme.None);
                 steps.Enqueue(editConfigStep);
                 return StepResult.Ok();
         }
@@ -43,7 +43,7 @@ public class AssemblyVersioningSchemeSetting : ConfigInitWizardStep
         return StepResult.InvalidResponseSelected();
     }
 
-    protected override string GetPrompt(GitVersionConfiguration configuration, string workingDirectory) => @"What assembly versioning scheme do you want to use:
+    protected override string GetPrompt(ConfigurationBuilder configurationBuilder, string workingDirectory) => @"What assembly versioning scheme do you want to use:
 
 0) Go Back
 1) Major.0.0.0

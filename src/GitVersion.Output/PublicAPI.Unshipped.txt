@@ -1,10 +1,15 @@
 #nullable enable
 GitVersion.GitVersionOutputTool
-GitVersion.GitVersionOutputTool.GenerateGitVersionInformation(GitVersion.OutputVariables.VersionVariables! variables, GitVersion.FileWriteInfo! fileWriteInfo) -> void
+GitVersion.GitVersionOutputTool.GenerateGitVersionInformation(GitVersion.OutputVariables.GitVersionVariables! variables, GitVersion.FileWriteInfo! fileWriteInfo) -> void
 GitVersion.GitVersionOutputTool.GitVersionOutputTool(Microsoft.Extensions.Options.IOptions<GitVersion.GitVersionOptions!>! options, GitVersion.Output.OutputGenerator.IOutputGenerator! outputGenerator, GitVersion.Output.WixUpdater.IWixVersionFileUpdater! wixVersionFileUpdater, GitVersion.Output.GitVersionInfo.IGitVersionInfoGenerator! gitVersionInfoGenerator, GitVersion.Output.AssemblyInfo.IAssemblyInfoFileUpdater! assemblyInfoFileUpdater, GitVersion.Output.AssemblyInfo.IProjectFileUpdater! projectFileUpdater) -> void
-GitVersion.GitVersionOutputTool.OutputVariables(GitVersion.OutputVariables.VersionVariables! variables, bool updateBuildNumber) -> void
-GitVersion.GitVersionOutputTool.UpdateAssemblyInfo(GitVersion.OutputVariables.VersionVariables! variables) -> void
-GitVersion.GitVersionOutputTool.UpdateWixVersionFile(GitVersion.OutputVariables.VersionVariables! variables) -> void
+GitVersion.GitVersionOutputTool.OutputVariables(GitVersion.OutputVariables.GitVersionVariables! variables, bool updateBuildNumber) -> void
+GitVersion.GitVersionOutputTool.UpdateAssemblyInfo(GitVersion.OutputVariables.GitVersionVariables! variables) -> void
+GitVersion.GitVersionOutputTool.UpdateWixVersionFile(GitVersion.OutputVariables.GitVersionVariables! variables) -> void
+GitVersion.IGitVersionOutputTool
+GitVersion.IGitVersionOutputTool.GenerateGitVersionInformation(GitVersion.OutputVariables.GitVersionVariables! variables, GitVersion.FileWriteInfo! fileWriteInfo) -> void
+GitVersion.IGitVersionOutputTool.OutputVariables(GitVersion.OutputVariables.GitVersionVariables! variables, bool updateBuildNumber) -> void
+GitVersion.IGitVersionOutputTool.UpdateAssemblyInfo(GitVersion.OutputVariables.GitVersionVariables! variables) -> void
+GitVersion.IGitVersionOutputTool.UpdateWixVersionFile(GitVersion.OutputVariables.GitVersionVariables! variables) -> void
 GitVersion.Output.AssemblyInfo.AssemblyInfoContext
 GitVersion.Output.AssemblyInfo.AssemblyInfoContext.AssemblyInfoContext() -> void
 GitVersion.Output.AssemblyInfo.AssemblyInfoContext.AssemblyInfoContext(string! workingDirectory, bool ensureAssemblyInfo, params string![]! assemblyInfoFiles) -> void
@@ -14,14 +19,14 @@ GitVersion.Output.AssemblyInfo.AssemblyInfoContext.WorkingDirectory.get -> strin
 GitVersion.Output.AssemblyInfo.AssemblyInfoFileUpdater
 GitVersion.Output.AssemblyInfo.AssemblyInfoFileUpdater.AssemblyInfoFileUpdater(GitVersion.Logging.ILog! log, GitVersion.IFileSystem! fileSystem) -> void
 GitVersion.Output.AssemblyInfo.AssemblyInfoFileUpdater.Dispose() -> void
-GitVersion.Output.AssemblyInfo.AssemblyInfoFileUpdater.Execute(GitVersion.OutputVariables.VersionVariables! variables, GitVersion.Output.AssemblyInfo.AssemblyInfoContext context) -> void
+GitVersion.Output.AssemblyInfo.AssemblyInfoFileUpdater.Execute(GitVersion.OutputVariables.GitVersionVariables! variables, GitVersion.Output.AssemblyInfo.AssemblyInfoContext context) -> void
 GitVersion.Output.AssemblyInfo.IAssemblyInfoFileUpdater
 GitVersion.Output.AssemblyInfo.IProjectFileUpdater
 GitVersion.Output.AssemblyInfo.IProjectFileUpdater.CanUpdateProjectFile(System.Xml.Linq.XElement! xmlRoot) -> bool
 GitVersion.Output.AssemblyInfo.ProjectFileUpdater
 GitVersion.Output.AssemblyInfo.ProjectFileUpdater.CanUpdateProjectFile(System.Xml.Linq.XElement! xmlRoot) -> bool
 GitVersion.Output.AssemblyInfo.ProjectFileUpdater.Dispose() -> void
-GitVersion.Output.AssemblyInfo.ProjectFileUpdater.Execute(GitVersion.OutputVariables.VersionVariables! variables, GitVersion.Output.AssemblyInfo.AssemblyInfoContext context) -> void
+GitVersion.Output.AssemblyInfo.ProjectFileUpdater.Execute(GitVersion.OutputVariables.GitVersionVariables! variables, GitVersion.Output.AssemblyInfo.AssemblyInfoContext context) -> void
 GitVersion.Output.AssemblyInfo.ProjectFileUpdater.ProjectFileUpdater(GitVersion.Logging.ILog! log, GitVersion.IFileSystem! fileSystem) -> void
 GitVersion.Output.GitVersionInfo.GitVersionInfoContext
 GitVersion.Output.GitVersionInfo.GitVersionInfoContext.FileExtension.get -> string!
@@ -31,7 +36,7 @@ GitVersion.Output.GitVersionInfo.GitVersionInfoContext.GitVersionInfoContext(str
 GitVersion.Output.GitVersionInfo.GitVersionInfoContext.WorkingDirectory.get -> string!
 GitVersion.Output.GitVersionInfo.GitVersionInfoGenerator
 GitVersion.Output.GitVersionInfo.GitVersionInfoGenerator.Dispose() -> void
-GitVersion.Output.GitVersionInfo.GitVersionInfoGenerator.Execute(GitVersion.OutputVariables.VersionVariables! variables, GitVersion.Output.GitVersionInfo.GitVersionInfoContext context) -> void
+GitVersion.Output.GitVersionInfo.GitVersionInfoGenerator.Execute(GitVersion.OutputVariables.GitVersionVariables! variables, GitVersion.Output.GitVersionInfo.GitVersionInfoContext context) -> void
 GitVersion.Output.GitVersionInfo.GitVersionInfoGenerator.GitVersionInfoGenerator(GitVersion.IFileSystem! fileSystem) -> void
 GitVersion.Output.GitVersionInfo.IGitVersionInfoGenerator
 GitVersion.Output.GitVersionOutputModule
@@ -46,7 +51,7 @@ GitVersion.Output.OutputGenerator.OutputContext.UpdateBuildNumber.get -> bool?
 GitVersion.Output.OutputGenerator.OutputContext.WorkingDirectory.get -> string!
 GitVersion.Output.OutputGenerator.OutputGenerator
 GitVersion.Output.OutputGenerator.OutputGenerator.Dispose() -> void
-GitVersion.Output.OutputGenerator.OutputGenerator.Execute(GitVersion.OutputVariables.VersionVariables! variables, GitVersion.Output.OutputGenerator.OutputContext context) -> void
+GitVersion.Output.OutputGenerator.OutputGenerator.Execute(GitVersion.OutputVariables.GitVersionVariables! variables, GitVersion.Output.OutputGenerator.OutputContext context) -> void
 GitVersion.Output.OutputGenerator.OutputGenerator.OutputGenerator(GitVersion.Agents.ICurrentBuildAgent! buildAgent, GitVersion.Logging.IConsole! console, GitVersion.IFileSystem! fileSystem, GitVersion.IEnvironment! environment, Microsoft.Extensions.Options.IOptions<GitVersion.GitVersionOptions!>! options) -> void
 GitVersion.Output.WixUpdater.IWixVersionFileUpdater
 GitVersion.Output.WixUpdater.WixVersionContext
@@ -55,6 +60,6 @@ GitVersion.Output.WixUpdater.WixVersionContext.WixVersionContext(string! working
 GitVersion.Output.WixUpdater.WixVersionContext.WorkingDirectory.get -> string!
 GitVersion.Output.WixUpdater.WixVersionFileUpdater
 GitVersion.Output.WixUpdater.WixVersionFileUpdater.Dispose() -> void
-GitVersion.Output.WixUpdater.WixVersionFileUpdater.Execute(GitVersion.OutputVariables.VersionVariables! variables, GitVersion.Output.WixUpdater.WixVersionContext context) -> void
+GitVersion.Output.WixUpdater.WixVersionFileUpdater.Execute(GitVersion.OutputVariables.GitVersionVariables! variables, GitVersion.Output.WixUpdater.WixVersionContext context) -> void
 GitVersion.Output.WixUpdater.WixVersionFileUpdater.WixVersionFileUpdater(GitVersion.Logging.ILog! log, GitVersion.IFileSystem! fileSystem) -> void
 const GitVersion.Output.WixUpdater.WixVersionFileUpdater.WixVersionFileName = "GitVersion_WixVersion.wxi" -> string!
