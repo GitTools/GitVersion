@@ -26,7 +26,7 @@ public class OtherScenarios : TestBase
         Commands.Checkout(fixture.LocalRepositoryFixture.Repository, fixture.Repository.Head.Tip);
         fixture.LocalRepositoryFixture.Repository.Branches.Remove(MainBranch);
         fixture.InitializeRepo();
-        fixture.AssertFullSemver("1.0.1+1");
+        fixture.AssertFullSemver("1.0.1-1");
     }
 
     [Test]
@@ -63,7 +63,7 @@ public class OtherScenarios : TestBase
         fixture.BranchTo("master");
         fixture.Repository.Branches.Remove("main");
 
-        fixture.AssertFullSemver("0.0.1+1");
+        fixture.AssertFullSemver("0.0.1-1");
     }
 
     [Test]
@@ -204,7 +204,7 @@ public class OtherScenarios : TestBase
         fixture.MakeACommit();
 
         // ✅ succeeds as expected
-        fixture.AssertFullSemver("0.0.1+1", configuration);
+        fixture.AssertFullSemver("0.0.1-1+1", configuration);
 
         fixture.ApplyTag($"0.0.{patchNumber}-alpha.1");
 
@@ -249,7 +249,7 @@ public class OtherScenarios : TestBase
         fixture.MakeACommit();
 
         // ✅ succeeds as expected
-        fixture.AssertFullSemver($"0.0.{patchNumber + 1}+1", configuration);
+        fixture.AssertFullSemver($"0.0.{patchNumber + 1}-1+1", configuration);
 
         fixture.Repository.DumpGraph();
     }
@@ -270,52 +270,52 @@ public class OtherScenarios : TestBase
         fixture.MakeACommit();
 
         // ✅ succeeds as expected
-        fixture.AssertFullSemver("1.0.1+1", configuration);
+        fixture.AssertFullSemver("1.0.1-1+1", configuration);
 
-        fixture.ApplyTag($"1.0.1-alpha.1");
+        fixture.ApplyTag("1.0.1-alpha.1");
 
         // ✅ succeeds as expected
-        fixture.AssertFullSemver($"1.0.1+1", configuration);
+        fixture.AssertFullSemver("1.0.1-alpha.1", configuration);
 
         fixture.MakeACommit();
 
         // ✅ succeeds as expected
-        fixture.AssertFullSemver($"1.0.1+2", configuration);
+        fixture.AssertFullSemver("1.0.1-alpha.2+1", configuration);
 
         fixture.MakeACommit();
 
         // ✅ succeeds as expected
-        fixture.AssertFullSemver($"1.0.1+3", configuration);
+        fixture.AssertFullSemver("1.0.1-alpha.2+2", configuration);
 
-        fixture.MakeATaggedCommit($"1.0.1-beta.1");
+        fixture.MakeATaggedCommit("1.0.1-beta.1");
 
         // ✅ succeeds as expected
-        fixture.AssertFullSemver($"1.0.1+4", configuration);
+        fixture.AssertFullSemver("1.0.1-beta.1", configuration);
 
         fixture.MakeACommit();
 
         // ✅ succeeds as expected
-        fixture.AssertFullSemver($"1.0.1+5", configuration);
+        fixture.AssertFullSemver("1.0.1-beta.2+1", configuration);
 
-        fixture.MakeATaggedCommit($"1.0.1-beta.2");
+        fixture.MakeATaggedCommit("1.0.1-beta.2");
 
         // ✅ succeeds as expected
-        fixture.AssertFullSemver($"1.0.1+6", configuration);
+        fixture.AssertFullSemver("1.0.1-beta.2", configuration);
 
         fixture.MakeACommit();
 
         // ✅ succeeds as expected
-        fixture.AssertFullSemver($"1.0.1+7", configuration);
+        fixture.AssertFullSemver("1.0.1-beta.3+1", configuration);
 
-        fixture.ApplyTag($"1.0.1");
+        fixture.ApplyTag("1.0.1");
 
         // ✅ succeeds as expected
-        fixture.AssertFullSemver($"1.0.1", configuration);
+        fixture.AssertFullSemver("1.0.1", configuration);
 
         fixture.MakeACommit();
 
         // ✅ succeeds as expected
-        fixture.AssertFullSemver($"1.0.2+1", configuration);
+        fixture.AssertFullSemver("1.0.2-1+1", configuration);
 
         fixture.Repository.DumpGraph();
     }
@@ -337,7 +337,7 @@ public class OtherScenarios : TestBase
         fixture.MakeACommit();
 
         // ✅ succeeds as expected
-        fixture.AssertFullSemver("1.0.1+1", configuration);
+        fixture.AssertFullSemver("1.0.1-1+1", configuration);
 
         fixture.ApplyTag($"1.0.{patchNumber}-alpha.1");
 
@@ -382,7 +382,7 @@ public class OtherScenarios : TestBase
         fixture.MakeACommit();
 
         // ✅ succeeds as expected
-        fixture.AssertFullSemver($"1.0.{patchNumber + 1}+1", configuration);
+        fixture.AssertFullSemver($"1.0.{patchNumber + 1}-1+1", configuration);
 
         fixture.Repository.DumpGraph();
     }
@@ -403,42 +403,42 @@ public class OtherScenarios : TestBase
         fixture.MakeACommit();
 
         // ✅ succeeds as expected
-        fixture.AssertFullSemver("0.0.1+1", configuration);
+        fixture.AssertFullSemver("0.0.1-1+1", configuration);
 
         fixture.ApplyTag($"0.0.{patchNumber}-alpha.1");
 
         // ✅ succeeds as expected
-        fixture.AssertFullSemver($"0.0.{patchNumber}+1", configuration);
+        fixture.AssertFullSemver($"0.0.{patchNumber}-1+1", configuration);
 
         fixture.MakeACommit();
 
         // ✅ succeeds as expected
-        fixture.AssertFullSemver($"0.0.{patchNumber}+2", configuration);
+        fixture.AssertFullSemver($"0.0.{patchNumber}-1+2", configuration);
 
         fixture.MakeACommit();
 
         // ✅ succeeds as expected
-        fixture.AssertFullSemver($"0.0.{patchNumber}+3", configuration);
+        fixture.AssertFullSemver($"0.0.{patchNumber}-1+3", configuration);
 
         fixture.MakeATaggedCommit($"0.0.{patchNumber}-beta.1");
 
         // ✅ succeeds as expected
-        fixture.AssertFullSemver($"0.0.{patchNumber}+4", configuration);
+        fixture.AssertFullSemver($"0.0.{patchNumber}-1+4", configuration);
 
         fixture.MakeACommit();
 
         // ✅ succeeds as expected
-        fixture.AssertFullSemver($"0.0.{patchNumber}+5", configuration);
+        fixture.AssertFullSemver($"0.0.{patchNumber}-1+5", configuration);
 
         fixture.MakeATaggedCommit($"0.0.{patchNumber}-beta.2");
 
         // ✅ succeeds as expected
-        fixture.AssertFullSemver($"0.0.{patchNumber}+6", configuration);
+        fixture.AssertFullSemver($"0.0.{patchNumber}-1+6", configuration);
 
         fixture.MakeACommit();
 
         // ✅ succeeds as expected
-        fixture.AssertFullSemver($"0.0.{patchNumber}+7", configuration);
+        fixture.AssertFullSemver($"0.0.{patchNumber}-1+7", configuration);
 
         fixture.ApplyTag($"0.0.{patchNumber}");
 
@@ -448,7 +448,7 @@ public class OtherScenarios : TestBase
         fixture.MakeACommit();
 
         // ✅ succeeds as expected
-        fixture.AssertFullSemver($"0.0.{patchNumber + 1}+1", configuration);
+        fixture.AssertFullSemver($"0.0.{patchNumber + 1}-1+1", configuration);
     }
 
     [TestCase(1)]
@@ -468,42 +468,42 @@ public class OtherScenarios : TestBase
         fixture.MakeACommit();
 
         // ✅ succeeds as expected
-        fixture.AssertFullSemver("1.0.1+1", configuration);
+        fixture.AssertFullSemver("1.0.1-1+1", configuration);
 
         fixture.ApplyTag($"1.0.{patchNumber}-alpha.1");
 
         // ✅ succeeds as expected
-        fixture.AssertFullSemver($"1.0.{patchNumber}+1", configuration);
+        fixture.AssertFullSemver($"1.0.{patchNumber}-1+1", configuration);
 
         fixture.MakeACommit();
 
         // ✅ succeeds as expected
-        fixture.AssertFullSemver($"1.0.{patchNumber}+2", configuration);
+        fixture.AssertFullSemver($"1.0.{patchNumber}-1+2", configuration);
 
         fixture.MakeACommit();
 
         // ✅ succeeds as expected
-        fixture.AssertFullSemver($"1.0.{patchNumber}+3", configuration);
+        fixture.AssertFullSemver($"1.0.{patchNumber}-1+3", configuration);
 
         fixture.MakeATaggedCommit($"1.0.{patchNumber}-beta.1");
 
         // ✅ succeeds as expected
-        fixture.AssertFullSemver($"1.0.{patchNumber}+4", configuration);
+        fixture.AssertFullSemver($"1.0.{patchNumber}-1+4", configuration);
 
         fixture.MakeACommit();
 
         // ✅ succeeds as expected
-        fixture.AssertFullSemver($"1.0.{patchNumber}+5", configuration);
+        fixture.AssertFullSemver($"1.0.{patchNumber}-1+5", configuration);
 
         fixture.MakeATaggedCommit($"1.0.{patchNumber}-beta.2");
 
         // ✅ succeeds as expected
-        fixture.AssertFullSemver($"1.0.{patchNumber}+6", configuration);
+        fixture.AssertFullSemver($"1.0.{patchNumber}-1+6", configuration);
 
         fixture.MakeACommit();
 
         // ✅ succeeds as expected
-        fixture.AssertFullSemver($"1.0.{patchNumber}+7", configuration);
+        fixture.AssertFullSemver($"1.0.{patchNumber}-1+7", configuration);
 
         fixture.ApplyTag($"1.0.{patchNumber}");
 
@@ -513,7 +513,7 @@ public class OtherScenarios : TestBase
         fixture.MakeACommit();
 
         // ✅ succeeds as expected
-        fixture.AssertFullSemver($"1.0.{patchNumber + 1}+1", configuration);
+        fixture.AssertFullSemver($"1.0.{patchNumber + 1}-1+1", configuration);
     }
 
     [TestCase(1)]
@@ -919,6 +919,7 @@ public class OtherScenarios : TestBase
                 .WithVersioningMode(VersioningMode.ContinuousDeployment)
                 .WithIncrement(IncrementStrategy.None)
                 .WithLabel(label)
+                .WithIsMainline(false)
             )
             .Build();
 
@@ -926,12 +927,12 @@ public class OtherScenarios : TestBase
         fixture.MakeACommit();
 
         // ✅ succeeds as expected
-        fixture.AssertFullSemver("0.0.0", configuration);
+        fixture.AssertFullSemver("0.0.0-1", configuration);
 
         fixture.MakeACommit("+semver: minor");
 
         // ✅ succeeds as expected
-        fixture.AssertFullSemver("0.1.0", configuration);
+        fixture.AssertFullSemver("0.1.0-2", configuration);
 
         fixture.ApplyTag("1.0.0");
 
@@ -941,13 +942,13 @@ public class OtherScenarios : TestBase
         fixture.MakeACommit("+semver: major");
 
         // ✅ succeeds as expected
-        fixture.AssertFullSemver("2.0.0", configuration);
+        fixture.AssertFullSemver("2.0.0-1", configuration);
 
         fixture.ApplyTag("2.0.0");
         fixture.MakeACommit();
 
         // ✅ succeeds as expected
-        fixture.AssertFullSemver("2.0.0", configuration);
+        fixture.AssertFullSemver("2.0.0-1", configuration);
     }
 
     [Test]
@@ -959,6 +960,7 @@ public class OtherScenarios : TestBase
                 .WithVersioningMode(VersioningMode.ContinuousDeployment)
                 .WithIncrement(IncrementStrategy.None)
                 .WithLabel("pre")
+                .WithIsMainline(false)
             ).Build();
 
         using var fixture = new EmptyRepositoryFixture("main");
@@ -999,6 +1001,7 @@ public class OtherScenarios : TestBase
                 .WithLabel("beta")
                 .WithIncrement(IncrementStrategy.Patch)
                 .WithVersioningMode(VersioningMode.ContinuousDeployment)
+                .WithIsMainline(false)
             ).Build();
 
         using EmptyRepositoryFixture fixture = new("main");
@@ -1026,5 +1029,25 @@ public class OtherScenarios : TestBase
 
         // ✅ succeeds as expected
         fixture.AssertFullSemver("5.0.0-beta.5", configuration);
+    }
+
+    /// <summary>
+    /// https://github.com/GitTools/GitVersion/issues/2347
+    /// </summary>
+    [Test]
+    public void EnsureThePreReleaseTagIsCorrectlyGeneratedWhenPreReleaseLabelIsEmpty()
+    {
+        var configuration = GitFlowConfigurationBuilder.New
+            .WithBranch("main", _ => _
+                .WithLabel(string.Empty).WithIsMainline(false)
+                .WithVersioningMode(VersioningMode.ContinuousDeployment)
+            ).Build();
+
+        using var fixture = new EmptyRepositoryFixture("main");
+        fixture.Repository.MakeCommits(5);
+
+        var variables = fixture.GetVersion(configuration);
+
+        fixture.AssertFullSemver("0.0.1-5", configuration);
     }
 }

@@ -1,7 +1,6 @@
 using GitVersion.Configuration;
 using GitVersion.Core.Tests.Helpers;
 using GitVersion.Extensions;
-using GitVersion.VersionCalculation;
 using LibGit2Sharp;
 
 namespace GitVersion.Core.Tests.IntegrationTests;
@@ -31,7 +30,7 @@ public class HotfixBranchScenarios : TestBase
         Commands.Checkout(fixture.Repository, MainBranch);
 
         fixture.Repository.MergeNoFF("hotfix-1.2.1", Generate.SignatureNow());
-        fixture.AssertFullSemver("1.2.1+4");
+        fixture.AssertFullSemver("1.2.1-4");
 
         fixture.Repository.ApplyTag("1.2.1");
         fixture.AssertFullSemver("1.2.1");
@@ -108,7 +107,7 @@ public class HotfixBranchScenarios : TestBase
         // Merge hotfix into support branch to complete hotfix
         fixture.Checkout("support-1.1");
         fixture.MergeNoFF("hotfix-1.1.1");
-        fixture.AssertFullSemver("1.1.1+5");
+        fixture.AssertFullSemver("1.1.1-5");
         fixture.ApplyTag("1.1.1");
         fixture.AssertFullSemver("1.1.1");
 
@@ -127,11 +126,6 @@ public class HotfixBranchScenarios : TestBase
     {
         var configuration = GitFlowConfigurationBuilder.New
             .WithAssemblyVersioningScheme(AssemblyVersioningScheme.MajorMinorPatchTag)
-            .WithVersioningMode(VersioningMode.ContinuousDeployment)
-            .WithBranch("feature", builder => builder
-                .WithVersioningMode(VersioningMode.ContinuousDeployment))
-            .WithBranch("hotfix", builder => builder
-                .WithVersioningMode(VersioningMode.ContinuousDeployment))
             .Build();
 
         using var fixture = new EmptyRepositoryFixture();
@@ -146,7 +140,7 @@ public class HotfixBranchScenarios : TestBase
 
         // create release branch
         fixture.BranchTo(release450);
-        fixture.AssertFullSemver("4.5.0-beta.0", configuration);
+        fixture.AssertFullSemver("4.5.0-beta.1+0", configuration);
         fixture.MakeACommit("blabla");
         fixture.Checkout("develop");
         fixture.MergeNoFF(release450);
@@ -167,7 +161,7 @@ public class HotfixBranchScenarios : TestBase
         fixture.Checkout(hotfix451);
         fixture.MergeNoFF(featureBranch); // commit 2
         fixture.Repository.Branches.Remove(featureBranch);
-        fixture.AssertFullSemver("4.5.1-beta.3", configuration);
+        fixture.AssertFullSemver("4.5.1-beta.1+3", configuration);
     }
 
     /// <summary>
@@ -178,11 +172,6 @@ public class HotfixBranchScenarios : TestBase
     {
         var configuration = GitFlowConfigurationBuilder.New
             .WithAssemblyVersioningScheme(AssemblyVersioningScheme.MajorMinorPatchTag)
-            .WithVersioningMode(VersioningMode.ContinuousDeployment)
-            .WithBranch("feature", builder => builder
-                .WithVersioningMode(VersioningMode.ContinuousDeployment))
-            .WithBranch("hotfix", builder => builder
-                .WithVersioningMode(VersioningMode.ContinuousDeployment))
             .Build();
 
         using var fixture = new EmptyRepositoryFixture();
@@ -197,7 +186,7 @@ public class HotfixBranchScenarios : TestBase
 
         // create release branch
         fixture.BranchTo(release450);
-        fixture.AssertFullSemver("4.5.0-beta.0", configuration);
+        fixture.AssertFullSemver("4.5.0-beta.1+0", configuration);
         fixture.MakeACommit("blabla");
         fixture.Checkout("develop");
         fixture.MergeNoFF(release450);
@@ -218,7 +207,7 @@ public class HotfixBranchScenarios : TestBase
         fixture.Checkout(hotfix451);
         fixture.MergeNoFF(featureBranch); // commit 2
 
-        fixture.AssertFullSemver("4.5.1-beta.3", configuration);
+        fixture.AssertFullSemver("4.5.1-beta.1+3", configuration);
     }
 
     [Test]

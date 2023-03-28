@@ -23,7 +23,7 @@ internal sealed class GitHubFlowConfigurationBuilder : ConfigurationBuilderBase<
             VersionInBranchPattern = ConfigurationConstants.DefaultVersionInBranchPattern,
             LabelPreReleaseWeight = 60000,
             UpdateBuildNumber = true,
-            VersioningMode = VersioningMode.ContinuousDelivery,
+            VersioningMode = VersioningMode.ContinuousDeployment,
             RegularExpression = string.Empty,
             Label = ConfigurationConstants.BranchNamePlaceholder,
             Increment = IncrementStrategy.Inherit,
@@ -56,6 +56,7 @@ internal sealed class GitHubFlowConfigurationBuilder : ConfigurationBuilderBase<
         {
             Increment = IncrementStrategy.None,
             RegularExpression = ReleaseBranch.RegexPattern,
+            VersioningMode = VersioningMode.ContinuousDelivery,
             SourceBranches = new HashSet<string> {
                 MainBranch.Name,
                 ReleaseBranch.Name
@@ -87,7 +88,7 @@ internal sealed class GitHubFlowConfigurationBuilder : ConfigurationBuilderBase<
         {
             Increment = IncrementStrategy.Inherit,
             RegularExpression = PullRequestBranch.RegexPattern,
-            VersioningMode = VersioningMode.ContinuousDelivery,
+            VersioningMode = VersioningMode.ContinuousDeployment,
             SourceBranches = new HashSet<string> {
                 MainBranch.Name,
                 ReleaseBranch.Name,

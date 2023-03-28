@@ -6,10 +6,10 @@ namespace GitVersion.Core.Tests.IntegrationTests;
 [TestFixture]
 public class IgnoreBeforeScenarios : TestBase
 {
-    [TestCase(null, "0.0.1+0")]
-    [TestCase("0.0.1", "0.0.1+0")]
-    [TestCase("0.1.0", "0.1.0+0")]
-    [TestCase("1.0.0", "1.0.0+0")]
+    [TestCase(null, "0.0.1-0")]
+    [TestCase("0.0.1", "0.0.1-0")]
+    [TestCase("0.1.0", "0.1.0-0")]
+    [TestCase("1.0.0", "1.0.0-0")]
     public void ShouldFallbackToBaseVersionWhenAllCommitsAreIgnored(string? nextVersion, string expectedFullSemVer)
     {
         using var fixture = new EmptyRepositoryFixture();
@@ -22,10 +22,10 @@ public class IgnoreBeforeScenarios : TestBase
         fixture.AssertFullSemver(expectedFullSemVer, configuration);
     }
 
-    [TestCase(null, "0.0.1+1")]
-    [TestCase("0.0.1", "0.0.1+1")]
-    [TestCase("0.1.0", "0.1.0+1")]
-    [TestCase("1.0.0", "1.0.0+1")]
+    [TestCase(null, "0.0.1-1")]
+    [TestCase("0.0.1", "0.0.1-1")]
+    [TestCase("0.1.0", "0.1.0-1")]
+    [TestCase("1.0.0", "1.0.0-1")]
     public void ShouldNotFallbackToBaseVersionWhenAllCommitsAreNotIgnored(string? nextVersion, string expectedFullSemVer)
     {
         using var fixture = new EmptyRepositoryFixture();

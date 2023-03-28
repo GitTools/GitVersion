@@ -294,7 +294,7 @@ public class FeatureBranchScenarios : TestBase
             fixture.MakeACommit();
             fixture.Checkout(MainBranch);
             fixture.MakeACommit();
-            fixture.AssertFullSemver("1.0.1+1", configuration);
+            fixture.AssertFullSemver("1.0.1-1", configuration);
 
             // create a feature branch from main and verify the version
             fixture.BranchTo("feature/test");
@@ -317,7 +317,7 @@ public class FeatureBranchScenarios : TestBase
             // merge release into main
             fixture.Checkout(MainBranch);
             fixture.MergeNoFF("release/1.0.0");
-            fixture.AssertFullSemver("1.0.1+2", configuration);
+            fixture.AssertFullSemver("1.0.1-2", configuration);
 
             // create a feature branch from main and verify the version
             fixture.BranchTo("feature/test");
@@ -384,7 +384,7 @@ public class FeatureBranchScenarios : TestBase
                 fixture.MakeACommit();
                 fixture.Checkout(MainBranch);
                 fixture.MakeACommit();
-                fixture.AssertFullSemver("1.0.1+1", configuration);
+                fixture.AssertFullSemver("1.0.1-1", configuration);
 
                 // create a misnamed feature branch (i.e. it uses the default configuration) from main and verify the version
                 fixture.BranchTo("misnamed");
@@ -407,7 +407,7 @@ public class FeatureBranchScenarios : TestBase
                 // merge release into main
                 fixture.Checkout(MainBranch);
                 fixture.MergeNoFF("release/1.0.0");
-                fixture.AssertFullSemver("1.0.1+2", configuration);
+                fixture.AssertFullSemver("1.0.1-2", configuration);
 
                 // create a misnamed feature branch (i.e. it uses the default configuration) from main and verify the version
                 fixture.BranchTo("misnamed");

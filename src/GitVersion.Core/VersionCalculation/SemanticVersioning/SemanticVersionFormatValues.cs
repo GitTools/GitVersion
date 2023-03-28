@@ -21,19 +21,19 @@ public class SemanticVersionFormatValues
 
     public string Patch => this.semver.Patch.ToString();
 
-    public string? PreReleaseTag => this.semver.PreReleaseTag;
+    public string PreReleaseTag => this.semver.PreReleaseTag.ToString();
 
-    public string? PreReleaseTagWithDash => this.semver.PreReleaseTag.HasTag() ? "-" + this.semver.PreReleaseTag : null;
+    public string PreReleaseTagWithDash => this.PreReleaseTag.WithPrefixIfNotNullOrEmpty("-");
 
-    public string? PreReleaseLabel => this.semver.PreReleaseTag.HasTag() ? this.semver.PreReleaseTag.Name : null;
+    public string PreReleaseLabel => this.semver.PreReleaseTag.Name;
 
-    public string? PreReleaseLabelWithDash => this.semver.PreReleaseTag.HasTag() ? "-" + this.semver.PreReleaseTag.Name : null;
+    public string PreReleaseLabelWithDash => this.PreReleaseLabel.WithPrefixIfNotNullOrEmpty("-");
 
-    public string? PreReleaseNumber => this.semver.PreReleaseTag.HasTag() ? this.semver.PreReleaseTag.Number.ToString() : null;
+    public string PreReleaseNumber => this.semver.PreReleaseTag.Number?.ToString() ?? string.Empty;
 
     public string WeightedPreReleaseNumber => GetWeightedPreReleaseNumber();
 
-    public string? BuildMetaData => this.semver.BuildMetaData;
+    public string BuildMetaData => this.semver.BuildMetaData.ToString();
 
     public string FullBuildMetaData => this.semver.BuildMetaData.ToString("f");
 
@@ -61,7 +61,7 @@ public class SemanticVersionFormatValues
 
     public string? VersionSourceSha => this.semver.BuildMetaData.VersionSourceSha;
 
-    public string? CommitsSinceVersionSource => this.semver.BuildMetaData.CommitsSinceVersionSource?.ToString(CultureInfo.InvariantCulture);
+    public string CommitsSinceVersionSource => this.semver.BuildMetaData.CommitsSinceVersionSource.ToString(CultureInfo.InvariantCulture);
 
     public string UncommittedChanges => this.semver.BuildMetaData.UncommittedChanges.ToString(CultureInfo.InvariantCulture);
 

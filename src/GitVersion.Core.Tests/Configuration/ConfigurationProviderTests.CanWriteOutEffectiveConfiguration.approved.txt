@@ -13,7 +13,6 @@ update-build-number: true
 semantic-version-format: Strict
 branches:
   develop:
-    mode: ContinuousDeployment
     label: alpha
     increment: Minor
     prevent-increment-of-merged-branch-version: false
@@ -40,6 +39,7 @@ branches:
     is-mainline: true
     pre-release-weight: 55000
   release:
+    mode: ContinuousDelivery
     label: beta
     increment: None
     prevent-increment-of-merged-branch-version: true
@@ -70,7 +70,7 @@ branches:
     is-source-branch-for: []
     pre-release-weight: 30000
   pull-request:
-    mode: ContinuousDelivery
+    mode: ContinuousDeployment
     label: PullRequest
     increment: Inherit
     label-number-pattern: '[/-](?<number>\d+)'
@@ -126,7 +126,7 @@ branches:
     is-source-branch-for: []
 ignore:
   sha: []
-mode: ContinuousDelivery
+mode: ContinuousDeployment
 label: '{BranchName}'
 increment: Inherit
 prevent-increment-of-merged-branch-version: false

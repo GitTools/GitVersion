@@ -35,7 +35,7 @@ public class GetVersionTaskTests : TestTaskBase
         result.Task.Minor.ShouldBe("2");
         result.Task.Patch.ShouldBe("4");
         result.Task.MajorMinorPatch.ShouldBe("1.2.4");
-        result.Task.FullSemVer.ShouldBe("1.2.4+1");
+        result.Task.FullSemVer.ShouldBe("1.2.4-1");
     }
 
     [Test]
@@ -51,14 +51,14 @@ public class GetVersionTaskTests : TestTaskBase
         result.Task.Minor.ShouldBe("0");
         result.Task.Patch.ShouldBe("1");
         result.Task.MajorMinorPatch.ShouldBe("1.0.1");
-        result.Task.FullSemVer.ShouldBe("1.0.1+1");
+        result.Task.FullSemVer.ShouldBe("1.0.1-1");
     }
 
     [TestCase(nameof(GitVersionVariables.Major), "1")]
     [TestCase(nameof(GitVersionVariables.Minor), "2")]
     [TestCase(nameof(GitVersionVariables.Patch), "4")]
     [TestCase(nameof(GitVersionVariables.MajorMinorPatch), "1.2.4")]
-    [TestCase(nameof(GitVersionVariables.FullSemVer), "1.2.4+1")]
+    [TestCase(nameof(GitVersionVariables.FullSemVer), "1.2.4-1")]
     public void GetVersionTaskShouldReturnVersionOutputVariablesWhenRunWithMsBuild(string outputProperty, string version)
     {
         const string taskName = nameof(GetVersion);
@@ -77,7 +77,7 @@ public class GetVersionTaskTests : TestTaskBase
     [TestCase(nameof(GitVersionVariables.Minor), "0")]
     [TestCase(nameof(GitVersionVariables.Patch), "1")]
     [TestCase(nameof(GitVersionVariables.MajorMinorPatch), "1.0.1")]
-    [TestCase(nameof(GitVersionVariables.FullSemVer), "1.0.1+1")]
+    [TestCase(nameof(GitVersionVariables.FullSemVer), "1.0.1-1")]
     public void GetVersionTaskShouldReturnVersionOutputVariablesWhenRunWithMsBuildInBuildServer(string outputProperty, string version)
     {
         const string taskName = nameof(GetVersion);

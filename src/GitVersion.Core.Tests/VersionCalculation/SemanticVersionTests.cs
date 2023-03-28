@@ -137,7 +137,7 @@ public class SemanticVersionTests : TestBase
         SemanticVersionPreReleaseTag? preReleaseTag = null;
         if (preReleaseName != null)
         {
-            preReleaseTag = new SemanticVersionPreReleaseTag(preReleaseName, preReleaseVersion);
+            preReleaseTag = new SemanticVersionPreReleaseTag(preReleaseName, preReleaseVersion, true);
         }
 
         SemanticVersionBuildMetaData? buildMetaDate = null;
@@ -154,8 +154,8 @@ public class SemanticVersionTests : TestBase
 
         return new SemanticVersion(major, minor, patch)
         {
-            PreReleaseTag = preReleaseTag ?? new(),
-            BuildMetaData = buildMetaDate ?? new()
+            PreReleaseTag = preReleaseTag ?? SemanticVersionPreReleaseTag.Empty,
+            BuildMetaData = buildMetaDate ?? SemanticVersionBuildMetaData.Empty
         };
     }
 }

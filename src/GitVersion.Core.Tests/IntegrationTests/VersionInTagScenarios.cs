@@ -1,6 +1,5 @@
 using GitVersion.Configuration;
 using GitVersion.Core.Tests.Helpers;
-using GitVersion.VersionCalculation;
 
 namespace GitVersion.Core.Tests.IntegrationTests;
 
@@ -49,7 +48,6 @@ internal class VersionInTagScenarios
         var configuration = GitFlowConfigurationBuilder.New
             .WithAssemblyFileVersioningFormat("{Major}.{Minor}.{Patch}.{WeightedPreReleaseNumber}")
             .WithLabelPreReleaseWeight(65535)
-            .WithVersioningMode(VersioningMode.ContinuousDeployment)
             .Build();
 
         // Act
@@ -60,7 +58,7 @@ internal class VersionInTagScenarios
         fixture.MakeACommit("Feature commit 1");
         fixture.BranchTo("release/1.1.0");
         fixture.MakeACommit("Release commit 1");
-        fixture.AssertFullSemver("1.1.0-beta.1", configuration);
+        fixture.AssertFullSemver("1.1.0-beta.1+1", configuration);
 
         fixture.Checkout("main");
         fixture.MergeNoFF("release/1.1.0");
@@ -77,7 +75,6 @@ internal class VersionInTagScenarios
         // Arrange
         var configuration = GitFlowConfigurationBuilder.New
             .WithAssemblyFileVersioningFormat("{Major}.{Minor}.{Patch}.{WeightedPreReleaseNumber}")
-            .WithVersioningMode(VersioningMode.ContinuousDeployment)
             .Build();
 
         // Act
@@ -88,7 +85,7 @@ internal class VersionInTagScenarios
         fixture.MakeACommit("Feature commit 1");
         fixture.BranchTo("release/1.1.0");
         fixture.MakeACommit("Release commit 1");
-        fixture.AssertFullSemver("1.1.0-beta.1", configuration);
+        fixture.AssertFullSemver("1.1.0-beta.1+1", configuration);
 
         fixture.Checkout("main");
         fixture.MergeNoFF("release/1.1.0");

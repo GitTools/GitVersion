@@ -38,8 +38,8 @@ public class SemanticVersion : IFormattable, IComparable<SemanticVersion>, IEqua
         this.Major = major;
         this.Minor = minor;
         this.Patch = patch;
-        this.PreReleaseTag = new SemanticVersionPreReleaseTag();
-        this.BuildMetaData = new SemanticVersionBuildMetaData();
+        this.PreReleaseTag = SemanticVersionPreReleaseTag.Empty;
+        this.BuildMetaData = SemanticVersionBuildMetaData.Empty;
     }
 
     public SemanticVersion(SemanticVersion semanticVersion)
@@ -50,8 +50,8 @@ public class SemanticVersion : IFormattable, IComparable<SemanticVersion>, IEqua
         this.Minor = semanticVersion.Minor;
         this.Patch = semanticVersion.Patch;
 
-        this.PreReleaseTag = new SemanticVersionPreReleaseTag(semanticVersion.PreReleaseTag);
-        this.BuildMetaData = new SemanticVersionBuildMetaData(semanticVersion.BuildMetaData);
+        this.PreReleaseTag = semanticVersion.PreReleaseTag;
+        this.BuildMetaData = semanticVersion.BuildMetaData;
     }
 
     public bool Equals(SemanticVersion? obj)
@@ -310,13 +310,19 @@ public class SemanticVersion : IFormattable, IComparable<SemanticVersion>, IEqua
         }
     }
 
+    public SemanticVersion IncrementVersion(VersionField incrementStrategy)
+        => IncrementVersion(incrementStrategy, null, isMainRelease: true);
+
     public SemanticVersion IncrementVersion(VersionField incrementStrategy, string? label)
+        => IncrementVersion(incrementStrategy, label, isMainRelease: false);
+
+    private SemanticVersion IncrementVersion(VersionField incrementStrategy, string? label, bool isMainRelease)
     {
         var major = Major;
         var minor = Minor;
         var patch = Patch;
 
-        if (!PreReleaseTag.HasTag())
+        if (isMainRelease || !PreReleaseTag.HasTag())
         {
             switch (incrementStrategy)
             {
@@ -339,26 +345,29 @@ public class SemanticVersion : IFormattable, IComparable<SemanticVersion>, IEqua
             }
         }
 
-        var preReleaseTagName = PreReleaseTag.Name;
-        var preReleaseTagNumber = PreReleaseTag.Number;
+        string preReleaseTagName = string.Empty;
+        long? preReleaseTagNumber = null;
 
-        if (PreReleaseTag.HasTag())
+        if (!isMainRelease)
         {
-            preReleaseTagNumber++;
-        }
-        else if (!label.IsNullOrEmpty())
-        {
-            preReleaseTagNumber = 1;
-            preReleaseTagName = label;
+            if (PreReleaseTag.HasTag())
+            {
+                preReleaseTagNumber = PreReleaseTag.Number + 1;
+                preReleaseTagName = PreReleaseTag.Name;
+            }
+            else
+            {
+                preReleaseTagNumber = 1;
+                preReleaseTagName = label ?? string.Empty;
+            }
         }
 
-        return new()
+        return new SemanticVersion(this)
         {
             Major = major,
             Minor = minor,
             Patch = patch,
-            PreReleaseTag = new(preReleaseTagName, preReleaseTagNumber),
-            BuildMetaData = new(BuildMetaData)
+            PreReleaseTag = new SemanticVersionPreReleaseTag(preReleaseTagName, preReleaseTagNumber, true)
         };
     }
 }

@@ -124,7 +124,7 @@ public class OtherBranchScenarios : TestBase
         Commands.Checkout(fixture.Repository, branchName);
         fixture.Repository.MakeCommits(5);
 
-        var expectedFullSemVer = $"1.0.1-{preReleaseTagName}.1+5";
+        var expectedFullSemVer = $"1.0.1-{preReleaseTagName}.5";
         fixture.AssertFullSemver(expectedFullSemVer, configuration);
     }
 }

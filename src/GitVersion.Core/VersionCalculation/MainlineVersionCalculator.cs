@@ -26,13 +26,17 @@ internal class MainlineVersionCalculator : IMainlineVersionCalculator
         var baseVersion = nextVersion.BaseVersion;
 
         if (baseVersion.SemanticVersion.PreReleaseTag.HasTag())
+        //if (!nextVersion.Configuration.Label.IsNullOrEmpty())
         {
             throw new NotSupportedException("Mainline development mode doesn't yet support pre-release tags on main");
         }
 
         using (this.log.IndentLog("Using mainline development mode to calculate current version"))
         {
-            var mainlineVersion = baseVersion.SemanticVersion;
+            SemanticVersion mainlineVersion = new(baseVersion.SemanticVersion)
+            {
+                PreReleaseTag = SemanticVersionPreReleaseTag.Empty
+            };
 
             // Forward merge / PR
             //          * feature/foo
@@ -78,12 +82,19 @@ internal class MainlineVersionCalculator : IMainlineVersionCalculator
                 var branchIncrement = FindMessageIncrement(null, Context.CurrentCommit, mergeBase, mainlineCommitLog);
                 this.log.Info($"Performing {branchIncrement} increment for current branch ");
 
-                mainlineVersion = mainlineVersion.IncrementVersion(branchIncrement, null);
+                mainlineVersion = mainlineVersion.IncrementVersion(branchIncrement);
+            }
+
+            var preReleaseTag = SemanticVersionPreReleaseTag.Empty;
+            var preReleaseTagName = nextVersion.IncrementedVersion.PreReleaseTag.Name;
+            if (!string.IsNullOrEmpty(preReleaseTagName))
+            {
+                preReleaseTag = new SemanticVersionPreReleaseTag(preReleaseTagName, 1, true);
             }
 
             return new SemanticVersion(mainlineVersion)
             {
-                PreReleaseTag = new SemanticVersionPreReleaseTag(nextVersion.IncrementedVersion.PreReleaseTag),
+                PreReleaseTag = preReleaseTag,
                 BuildMetaData = baseVersionBuildMetaData
             };
         }
@@ -133,7 +144,7 @@ internal class MainlineVersionCalculator : IMainlineVersionCalculator
         directCommits.Clear();
 
         // Finally increment for the branch
-        mainlineVersion = mainlineVersion.IncrementVersion(findMessageIncrement, null);
+        mainlineVersion = mainlineVersion.IncrementVersion(findMessageIncrement);
         this.log.Info($"Merge commit {mergeCommit} incremented base versions {findMessageIncrement}, now {mainlineVersion}");
         return mainlineVersion;
     }
@@ -288,7 +299,7 @@ internal class MainlineVersionCalculator : IMainlineVersionCalculator
                 noBumpMessage: Context.Configuration.NoBumpMessage,
                 commits: new[] { directCommit }
             ) ?? FindDefaultIncrementForBranch(Context, mainline);
-            mainlineVersion = mainlineVersion.IncrementVersion(directCommitIncrement, null);
+            mainlineVersion = mainlineVersion.IncrementVersion(directCommitIncrement);
             this.log.Info($"Direct commit on main {directCommit} incremented base versions {directCommitIncrement}, now {mainlineVersion}");
         }
 

@@ -21,14 +21,15 @@ public sealed class SemanticVersionPreReleaseTag :
 
     public long? Number { get; init; }
 
-    public bool? PromotedFromCommits { get; init; }
+    public bool PromoteTagEvenIfNameIsEmpty { get; init; }
 
     public SemanticVersionPreReleaseTag() => Name = string.Empty;
 
-    public SemanticVersionPreReleaseTag(string name, long? number)
+    public SemanticVersionPreReleaseTag(string name, long? number, bool promoteTagEvenIfNameIsEmpty)
     {
         Name = name.NotNull();
         Number = number;
+        PromoteTagEvenIfNameIsEmpty = promoteTagEvenIfNameIsEmpty;
     }
 
     public SemanticVersionPreReleaseTag(SemanticVersionPreReleaseTag preReleaseTag)
@@ -37,7 +38,7 @@ public sealed class SemanticVersionPreReleaseTag :
 
         Name = preReleaseTag.Name;
         Number = preReleaseTag.Number;
-        PromotedFromCommits = preReleaseTag.PromotedFromCommits;
+        PromoteTagEvenIfNameIsEmpty = preReleaseTag.PromoteTagEvenIfNameIsEmpty;
     }
 
     public override bool Equals(object? obj) => Equals(obj as SemanticVersionPreReleaseTag);
@@ -70,24 +71,21 @@ public sealed class SemanticVersionPreReleaseTag :
 
     public static SemanticVersionPreReleaseTag Parse(string? preReleaseTag)
     {
-        if (preReleaseTag.IsNullOrEmpty())
-        {
-            return new SemanticVersionPreReleaseTag();
-        }
+        if (preReleaseTag.IsNullOrEmpty()) return Empty;
 
         var match = ParseRegex.Match(preReleaseTag);
         if (!match.Success)
         {
             // TODO check how to log this
             Console.WriteLine($"Unable to successfully parse semver tag {preReleaseTag}");
-            return new SemanticVersionPreReleaseTag();
+            return Empty;
         }
 
         var value = match.Groups["name"].Value;
         var number = match.Groups["number"].Success ? long.Parse(match.Groups["number"].Value) : (long?)null;
         return value.EndsWith("-")
-            ? new SemanticVersionPreReleaseTag(preReleaseTag, null)
-            : new SemanticVersionPreReleaseTag(value, number);
+            ? new SemanticVersionPreReleaseTag(preReleaseTag, null, true)
+            : new SemanticVersionPreReleaseTag(value, number, true);
     }
 
     public int CompareTo(SemanticVersionPreReleaseTag? other)
@@ -130,6 +128,5 @@ public sealed class SemanticVersionPreReleaseTag :
         };
     }
 
-    public bool HasTag() =>
-        !Name.IsNullOrEmpty() || (Number.HasValue && PromotedFromCommits != true);
+    public bool HasTag() => !Name.IsNullOrEmpty() || Number.HasValue && PromoteTagEvenIfNameIsEmpty;
 }
