@@ -1,6 +1,6 @@
 namespace GitVersion.Output.OutputGenerator;
 
-public readonly struct OutputContext : IConverterContext
+internal readonly struct OutputContext : IConverterContext
 {
     public OutputContext(string workingDirectory, string? outputFile, bool? updateBuildNumber)
     {

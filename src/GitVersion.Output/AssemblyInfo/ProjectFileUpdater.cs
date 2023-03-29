@@ -6,12 +6,12 @@ using GitVersion.OutputVariables;
 
 namespace GitVersion.Output.AssemblyInfo;
 
-public interface IProjectFileUpdater : IVersionConverter<AssemblyInfoContext>
+internal interface IProjectFileUpdater : IVersionConverter<AssemblyInfoContext>
 {
     bool CanUpdateProjectFile(XElement xmlRoot);
 }
 
-public sealed class ProjectFileUpdater : IProjectFileUpdater
+internal sealed class ProjectFileUpdater : IProjectFileUpdater
 {
     internal const string AssemblyVersionElement = "AssemblyVersion";
     private const string FileVersionElement = "FileVersion";

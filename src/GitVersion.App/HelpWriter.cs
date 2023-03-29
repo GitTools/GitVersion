@@ -3,7 +3,7 @@ using GitVersion.Logging;
 
 namespace GitVersion;
 
-public class HelpWriter : IHelpWriter
+internal class HelpWriter : IHelpWriter
 {
     private readonly IVersionWriter versionWriter;
     private readonly IConsole console;

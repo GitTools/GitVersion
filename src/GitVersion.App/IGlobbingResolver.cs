@@ -1,6 +1,6 @@
 namespace GitVersion;
 
-public interface IGlobbingResolver
+internal interface IGlobbingResolver
 {
     public IEnumerable<string> Resolve(string workingDirectory, string pattern);
 }

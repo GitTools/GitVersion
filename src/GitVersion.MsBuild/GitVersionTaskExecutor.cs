@@ -7,7 +7,7 @@ using Microsoft.Extensions.Options;
 
 namespace GitVersion.MsBuild;
 
-public class GitVersionTaskExecutor : IGitVersionTaskExecutor
+internal class GitVersionTaskExecutor : IGitVersionTaskExecutor
 {
     private readonly IFileSystem fileSystem;
     private readonly IGitVersionOutputTool gitVersionOutputTool;

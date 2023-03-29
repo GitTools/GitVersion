@@ -6,7 +6,7 @@ using GitVersion.OutputVariables;
 
 namespace GitVersion;
 
-public class ArgumentParser : IArgumentParser
+internal class ArgumentParser : IArgumentParser
 {
     private readonly IEnvironment environment;
     private readonly ICurrentBuildAgent buildAgent;

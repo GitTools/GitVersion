@@ -8,7 +8,7 @@ using Microsoft.Extensions.Options;
 
 namespace GitVersion.MsBuild;
 
-public static class GitVersionTasks
+internal static class GitVersionTasks
 {
     public static bool GetVersion(GetVersion task) => ExecuteGitVersionTask(task, executor => executor.GetVersion(task));
 

@@ -4,7 +4,7 @@ using GitVersion.Logging;
 
 namespace GitVersion;
 
-public class GitVersionExecutor : IGitVersionExecutor
+internal class GitVersionExecutor : IGitVersionExecutor
 {
     private readonly ILog log;
     private readonly IConsole console;

@@ -1,6 +1,6 @@
 namespace GitVersion.Output.GitVersionInfo;
 
-public readonly struct GitVersionInfoContext : IConverterContext
+internal readonly struct GitVersionInfoContext : IConverterContext
 {
     public GitVersionInfoContext(string workingDirectory, string fileName, string fileExtension)
     {

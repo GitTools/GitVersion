@@ -22,6 +22,10 @@
         <ProjectReference Include="..\GitVersion.Output\GitVersion.Output.csproj" PrivateAssets="All" />
     </ItemGroup>
 
+    <ItemGroup>
+        <InternalsVisibleTo Include="GitVersion.MsBuild.Tests" />
+    </ItemGroup>
+
     <Import Project="nuget-files.props" />
 
 </Project>

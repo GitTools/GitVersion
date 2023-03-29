@@ -7,11 +7,11 @@ using Microsoft.Extensions.Options;
 
 namespace GitVersion.Output.OutputGenerator;
 
-public interface IOutputGenerator : IVersionConverter<OutputContext>
+internal interface IOutputGenerator : IVersionConverter<OutputContext>
 {
 }
 
-public sealed class OutputGenerator : IOutputGenerator
+internal sealed class OutputGenerator : IOutputGenerator
 {
     private readonly IConsole console;
     private readonly IFileSystem fileSystem;

@@ -3,7 +3,7 @@ using Microsoft.Build.Utilities;
 
 namespace GitVersion.MsBuild;
 
-public class MsBuildAppender : ILogAppender
+internal class MsBuildAppender : ILogAppender
 {
     private readonly TaskLoggingHelper taskLog;
 

@@ -4,7 +4,7 @@ using Microsoft.Build.Framework;
 
 namespace GitVersion.MsBuild;
 
-public static class FileHelper
+internal static class FileHelper
 {
     private static readonly Dictionary<string, Func<string, string, bool>> VersionAttributeFinders = new()
     {

@@ -6,11 +6,11 @@ using GitVersion.OutputVariables;
 
 namespace GitVersion.Output.AssemblyInfo;
 
-public interface IAssemblyInfoFileUpdater : IVersionConverter<AssemblyInfoContext>
+internal interface IAssemblyInfoFileUpdater : IVersionConverter<AssemblyInfoContext>
 {
 }
 
-public sealed class AssemblyInfoFileUpdater : IAssemblyInfoFileUpdater
+internal sealed class AssemblyInfoFileUpdater : IAssemblyInfoFileUpdater
 {
     private readonly List<Action> restoreBackupTasks = new();
     private readonly List<Action> cleanupBackupTasks = new();

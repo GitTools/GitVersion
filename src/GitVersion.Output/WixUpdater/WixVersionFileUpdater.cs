@@ -5,10 +5,10 @@ using GitVersion.OutputVariables;
 
 namespace GitVersion.Output.WixUpdater;
 
-public interface IWixVersionFileUpdater : IVersionConverter<WixVersionContext>
+internal interface IWixVersionFileUpdater : IVersionConverter<WixVersionContext>
 {
 }
-public sealed class WixVersionFileUpdater : IWixVersionFileUpdater
+internal sealed class WixVersionFileUpdater : IWixVersionFileUpdater
 {
     private readonly IFileSystem fileSystem;
     private readonly ILog log;

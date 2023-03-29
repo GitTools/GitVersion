@@ -4,11 +4,11 @@ using GitVersion.OutputVariables;
 
 namespace GitVersion.Output.GitVersionInfo;
 
-public interface IGitVersionInfoGenerator : IVersionConverter<GitVersionInfoContext>
+internal interface IGitVersionInfoGenerator : IVersionConverter<GitVersionInfoContext>
 {
 }
 
-public sealed class GitVersionInfoGenerator : IGitVersionInfoGenerator
+internal sealed class GitVersionInfoGenerator : IGitVersionInfoGenerator
 {
     private readonly IFileSystem fileSystem;
     private readonly TemplateManager templateManager;

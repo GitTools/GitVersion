@@ -1,6 +1,6 @@
 namespace GitVersion.Output.AssemblyInfo;
 
-public readonly struct AssemblyInfoContext : IConverterContext
+internal readonly struct AssemblyInfoContext : IConverterContext
 {
     public AssemblyInfoContext(string workingDirectory, bool ensureAssemblyInfo, params string[] assemblyInfoFiles)
     {

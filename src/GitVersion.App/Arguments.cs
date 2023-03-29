@@ -2,7 +2,7 @@ using GitVersion.Logging;
 
 namespace GitVersion;
 
-public class Arguments
+internal class Arguments
 {
     public AuthenticationInfo Authentication = new();
 

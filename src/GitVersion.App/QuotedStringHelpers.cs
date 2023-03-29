@@ -2,7 +2,7 @@ using GitVersion.Extensions;
 
 namespace GitVersion;
 
-public static class QuotedStringHelpers
+internal static class QuotedStringHelpers
 {
     /// <summary>
     /// Splits input string based on split-character, ignoring split-character in

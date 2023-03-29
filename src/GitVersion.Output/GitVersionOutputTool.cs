@@ -8,7 +8,7 @@ using Microsoft.Extensions.Options;
 
 namespace GitVersion;
 
-public class GitVersionOutputTool : IGitVersionOutputTool
+internal class GitVersionOutputTool : IGitVersionOutputTool
 {
     private readonly GitVersionOptions gitVersionOptions;
     private readonly IOutputGenerator outputGenerator;
