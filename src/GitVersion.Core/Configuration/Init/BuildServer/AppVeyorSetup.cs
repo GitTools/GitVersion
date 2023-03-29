@@ -18,7 +18,7 @@ internal class AppVeyorSetup : ConfigInitWizardStep
         return this;
     }
 
-    protected override StepResult HandleResult(string? result, Queue<ConfigInitWizardStep> steps, ConfigurationBuilder configurationBuilder, string workingDirectory)
+    protected override StepResult HandleResult(string? result, Queue<ConfigInitWizardStep> steps, GitVersionConfiguration configuration, string workingDirectory)
     {
         var editConfigStep = this.StepFactory.CreateStep<EditConfigStep>();
         switch (result)
@@ -80,7 +80,7 @@ after_build:
         this.Log.Info($"AppVeyor sample configuration file written to {outputFilename}");
     }
 
-    protected override string GetPrompt(ConfigurationBuilder configurationBuilder, string workingDirectory)
+    protected override string GetPrompt(GitVersionConfiguration configuration, string workingDirectory)
     {
         var prompt = new StringBuilder();
         if (AppVeyorConfigExists(workingDirectory, this.FileSystem))

@@ -4,7 +4,7 @@ using GitVersion.VersionCalculation;
 
 namespace GitVersion.Configuration.Init.SetConfig;
 
-internal class GlobalModeSetting : ConfigInitWizardStep
+public class GlobalModeSetting : ConfigInitWizardStep
 {
     private ConfigInitWizardStep returnToStep;
     private bool isPartOfWizard;
@@ -20,20 +20,20 @@ internal class GlobalModeSetting : ConfigInitWizardStep
         return this;
     }
 
-    protected override StepResult HandleResult(string? result, Queue<ConfigInitWizardStep> steps, ConfigurationBuilder configurationBuilder, string workingDirectory)
+    protected override StepResult HandleResult(string? result, Queue<ConfigInitWizardStep> steps, GitVersionConfiguration configuration, string workingDirectory)
     {
         switch (result)
         {
             case "1":
-                configurationBuilder.WithVersioningMode(VersioningMode.ContinuousDelivery);
+                configuration.VersioningMode = VersioningMode.ContinuousDelivery;
                 steps.Enqueue(this.returnToStep);
                 return StepResult.Ok();
             case "2":
-                configurationBuilder.WithVersioningMode(VersioningMode.ContinuousDeployment);
+                configuration.VersioningMode = VersioningMode.ContinuousDeployment;
                 steps.Enqueue(this.returnToStep);
                 return StepResult.Ok();
             case "3":
-                configurationBuilder.WithVersioningMode(VersioningMode.Mainline);
+                configuration.VersioningMode = VersioningMode.Mainline;
                 steps.Enqueue(this.returnToStep);
                 return StepResult.Ok();
             case "0":
@@ -45,7 +45,7 @@ internal class GlobalModeSetting : ConfigInitWizardStep
         return StepResult.InvalidResponseSelected();
     }
 
-    protected override string GetPrompt(ConfigurationBuilder configurationBuilder, string workingDirectory) => $@"What do you want the default increment mode to be (can be override per branch):
+    protected override string GetPrompt(GitVersionConfiguration configuration, string workingDirectory) => $@"What do you want the default increment mode to be (can be override per branch):
 {(!this.isPartOfWizard ? "0) Go Back" : string.Empty)}
 1) Follow SemVer and only increment when a release has been tagged (continuous delivery mode)
 2) Increment based on branch configuration every commit (continuous deployment mode)

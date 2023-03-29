@@ -7,12 +7,12 @@ namespace GitVersion.Agents;
 public abstract class BuildAgentBase : ICurrentBuildAgent
 {
     protected readonly ILog Log;
-    protected IEnvironment Environment;
+    protected IEnvironment Environment { get; }
 
     protected BuildAgentBase(IEnvironment environment, ILog log)
     {
         this.Log = log;
-        this.Environment = environment;
+        Environment = environment;
     }
 
     protected abstract string EnvironmentVariable { get; }

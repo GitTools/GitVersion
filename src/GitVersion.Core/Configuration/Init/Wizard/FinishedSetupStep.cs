@@ -2,11 +2,11 @@ using GitVersion.Logging;
 
 namespace GitVersion.Configuration.Init.Wizard;
 
-internal class FinishedSetupStep : EditConfigStep
+public class FinishedSetupStep : EditConfigStep
 {
     public FinishedSetupStep(IConsole console, IFileSystem fileSystem, ILog log, IConfigInitStepFactory stepFactory) : base(console, fileSystem, log, stepFactory)
     {
     }
 
-    protected override string GetPrompt(ConfigurationBuilder configurationBuilder, string workingDirectory) => $"Questions are all done, you can now edit GitVersion's configuration further{System.Environment.NewLine}" + base.GetPrompt(configurationBuilder, workingDirectory);
+    protected override string GetPrompt(GitVersionConfiguration configuration, string workingDirectory) => $"Questions are all done, you can now edit GitVersion's configuration further{System.Environment.NewLine}" + base.GetPrompt(configuration, workingDirectory);
 }

@@ -32,7 +32,7 @@
         <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
 
         <IsUnitTestProject>false</IsUnitTestProject>
-        <DisableApiAnalyzers>false</DisableApiAnalyzers>
+        <DisableApiAnalyzers>true</DisableApiAnalyzers>
         <IsUnitTestProject Condition="$(MSBuildProjectName.EndsWith('.Tests')) or $(MSBuildProjectName.EndsWith('.Testing'))">true</IsUnitTestProject>
     </PropertyGroup>
 

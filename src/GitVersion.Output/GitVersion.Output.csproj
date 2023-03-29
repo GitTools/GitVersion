@@ -1,15 +1,15 @@
 <Project Sdk="Microsoft.NET.Sdk">
     <ItemGroup>
-        <ProjectReference Include="..\GitVersion.Abstractions\GitVersion.Abstractions.csproj" />
+        <ProjectReference Include="..\GitVersion.Core\GitVersion.Core.csproj"/>
     </ItemGroup>
     <ItemGroup>
-        <Compile Remove="*\AddFormats\**\*.*" />
-        <Compile Remove="*\Templates\**\*.*" />
-        <EmbeddedResource Include="*\AddFormats\**\*.*" />
-        <EmbeddedResource Include="*\Templates\**\*.*" />
+        <Compile Remove="*\AddFormats\**\*.*"/>
+        <Compile Remove="*\Templates\**\*.*"/>
+        <EmbeddedResource Include="*\AddFormats\**\*.*"/>
+        <EmbeddedResource Include="*\Templates\**\*.*"/>
     </ItemGroup>
 
     <ItemGroup>
-        <InternalsVisibleTo Include="GitVersion.Output.Tests" />
+        <InternalsVisibleTo Include="GitVersion.Output.Tests"/>
     </ItemGroup>
 </Project>
