@@ -4,7 +4,7 @@ using YamlDotNet.Serialization.TypeInspectors;
 
 namespace GitVersion.Configuration;
 
-public static class ConfigurationSerializer
+internal static class ConfigurationSerializer
 {
     private static IDeserializer Deserializer => new DeserializerBuilder()
         .WithNamingConvention(HyphenatedNamingConvention.Instance)
@@ -20,7 +20,7 @@ public static class ConfigurationSerializer
 
     public static string Serialize(object graph) => Serializer.Serialize(graph);
 
-    public static GitVersionConfiguration Read(TextReader reader)
+    public static IGitVersionConfiguration Read(TextReader reader)
     {
         var configuration = Deserializer.Deserialize<GitVersionConfiguration?>(reader);
         return configuration ?? new GitVersionConfiguration();

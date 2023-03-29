@@ -30,7 +30,7 @@ public class ConfigurationFileLocator : IConfigurationFileLocator
             WarnAboutAmbiguousConfigFileSelection(workingDirectory, projectRootDirectory);
     }
 
-    public GitVersionConfiguration ReadConfiguration(string? configFilePath)
+    public IGitVersionConfiguration ReadConfiguration(string? configFilePath)
     {
         if (configFilePath == null || !this.fileSystem.Exists(configFilePath)) return new GitVersionConfiguration();
 

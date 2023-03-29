@@ -9,7 +9,7 @@ internal sealed class GitHubFlowConfigurationBuilder : ConfigurationBuilderBase<
 
     private GitHubFlowConfigurationBuilder()
     {
-        WithConfiguration(new()
+        WithConfiguration(new GitVersionConfiguration()
         {
             AssemblyFileVersioningScheme = AssemblyFileVersioningScheme.MajorMinorPatch,
             AssemblyVersioningScheme = AssemblyVersioningScheme.MajorMinorPatch,
