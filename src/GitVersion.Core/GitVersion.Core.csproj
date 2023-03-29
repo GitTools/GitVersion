@@ -27,8 +27,9 @@
     </ItemGroup>
 
     <ItemGroup>
+        <InternalsVisibleTo Include="schema" />
+        <InternalsVisibleTo Include="gitversion" />
         <InternalsVisibleTo Include="GitVersion.Output" />
-        <InternalsVisibleTo Include="GitVersion.Schema" />
         <InternalsVisibleTo Include="GitVersion.Core.Tests" />
         <InternalsVisibleTo Include="GitVersion.App.Tests" />
         <InternalsVisibleTo Include="GitVersion.MsBuild.Tests" />

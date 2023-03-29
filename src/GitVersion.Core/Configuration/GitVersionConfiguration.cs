@@ -4,7 +4,7 @@ using GitVersion.Extensions;
 
 namespace GitVersion.Configuration;
 
-public sealed record GitVersionConfiguration : BranchConfiguration, IGitVersionConfiguration
+internal sealed record GitVersionConfiguration : BranchConfiguration, IGitVersionConfiguration
 {
     [JsonPropertyName("workflow")]
     [JsonPropertyDescription("The base template of the configuration to use. Possible values are: GitFlow/v1 or GitHubFlow/v1")]

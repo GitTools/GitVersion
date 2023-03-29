@@ -20,7 +20,7 @@ public static class StringExtensions
 
         try
         {
-            _ = Path.GetFullPath(path);
+            _ = PathHelper.GetFullPath(path);
         }
         catch
         {
@@ -28,7 +28,7 @@ public static class StringExtensions
 
             try
             {
-                _ = Path.GetFullPath(path);
+                _ = PathHelper.GetFullPath(path);
             }
             catch
             {

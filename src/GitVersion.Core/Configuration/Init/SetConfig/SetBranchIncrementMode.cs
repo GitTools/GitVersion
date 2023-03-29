@@ -4,44 +4,44 @@ using GitVersion.VersionCalculation;
 
 namespace GitVersion.Configuration.Init.SetConfig;
 
-public class SetBranchIncrementMode : ConfigInitWizardStep
+internal class SetBranchIncrementMode : ConfigInitWizardStep
 {
     private string name;
-    private BranchConfiguration branchConfiguration;
+    private BranchConfigurationBuilder branchConfigurationBuilder;
 
     public SetBranchIncrementMode(IConsole console, IFileSystem fileSystem, ILog log, IConfigInitStepFactory stepFactory) : base(console, fileSystem, log, stepFactory)
     {
     }
 
-    public SetBranchIncrementMode WithData(string configName, BranchConfiguration configuration)
+    public SetBranchIncrementMode WithData(string configName, BranchConfigurationBuilder configurationBuilder)
     {
-        this.branchConfiguration = configuration;
+        this.branchConfigurationBuilder = configurationBuilder;
         this.name = configName;
         return this;
     }
 
-    protected override StepResult HandleResult(string? result, Queue<ConfigInitWizardStep> steps, GitVersionConfiguration configuration, string workingDirectory)
+    protected override StepResult HandleResult(string? result, Queue<ConfigInitWizardStep> steps, ConfigurationBuilder configurationBuilder, string workingDirectory)
     {
         var configureBranchStep = this.StepFactory.CreateStep<ConfigureBranch>();
         switch (result)
         {
             case "0":
-                steps.Enqueue(configureBranchStep.WithData(this.name, this.branchConfiguration));
+                steps.Enqueue(configureBranchStep.WithData(this.name, this.branchConfigurationBuilder));
                 return StepResult.Ok();
             case "1":
-                this.branchConfiguration.VersioningMode = VersioningMode.ContinuousDelivery;
-                steps.Enqueue(configureBranchStep.WithData(name, this.branchConfiguration));
+                this.branchConfigurationBuilder.WithVersioningMode(VersioningMode.ContinuousDelivery);
+                steps.Enqueue(configureBranchStep.WithData(name, this.branchConfigurationBuilder));
                 return StepResult.Ok();
             case "2":
-                this.branchConfiguration.VersioningMode = VersioningMode.ContinuousDeployment;
-                steps.Enqueue(configureBranchStep.WithData(name, this.branchConfiguration));
+                this.branchConfigurationBuilder.WithVersioningMode(VersioningMode.ContinuousDeployment);
+                steps.Enqueue(configureBranchStep.WithData(name, this.branchConfigurationBuilder));
                 return StepResult.Ok();
         }
 
         return StepResult.InvalidResponseSelected();
     }
 
-    protected override string GetPrompt(GitVersionConfiguration configuration, string workingDirectory) => $@"What do you want the increment mode for {this.name} to be?
+    protected override string GetPrompt(ConfigurationBuilder configurationBuilder, string workingDirectory) => $@"What do you want the increment mode for {this.name} to be?
 
 0) Go Back
 1) Follow SemVer and only increment when a release has been tagged (continuous delivery mode)
