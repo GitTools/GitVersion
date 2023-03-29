@@ -109,8 +109,6 @@ GitVersion.Configuration.BranchConfiguration.TrackMergeMessage.get -> bool?
 GitVersion.Configuration.BranchConfiguration.TrackMergeTarget.get -> bool?
 GitVersion.Configuration.BranchConfiguration.TracksReleaseBranches.get -> bool?
 GitVersion.Configuration.BranchConfiguration.VersioningMode.get -> GitVersion.VersionCalculation.VersioningMode?
-GitVersion.Configuration.BranchConfigurationBuilder
-GitVersion.Configuration.BranchConfigurationBuilder.Build() -> GitVersion.Configuration.BranchConfiguration!
 GitVersion.Configuration.ConfigurationConstants
 GitVersion.Configuration.ConfigurationException
 GitVersion.Configuration.ConfigurationException.ConfigurationException() -> void
@@ -225,8 +223,6 @@ GitVersion.Configuration.IgnoreConfiguration.Before.init -> void
 GitVersion.Configuration.IgnoreConfiguration.Shas.get -> System.Collections.Generic.HashSet<string!>!
 GitVersion.Configuration.IgnoreConfiguration.Shas.init -> void
 GitVersion.Configuration.IgnoreConfigurationExtensions
-GitVersion.Configuration.Init.EditConfigStep
-GitVersion.Configuration.Init.EditConfigStep.EditConfigStep(GitVersion.Logging.IConsole! console, GitVersion.IFileSystem! fileSystem, GitVersion.Logging.ILog! log, GitVersion.Configuration.Init.Wizard.IConfigInitStepFactory! stepFactory) -> void
 GitVersion.Configuration.Init.GitVersionInitModule
 GitVersion.Configuration.Init.GitVersionInitModule.GitVersionInitModule() -> void
 GitVersion.Configuration.Init.GitVersionInitModule.RegisterTypes(Microsoft.Extensions.DependencyInjection.IServiceCollection! services) -> void
@@ -939,10 +935,6 @@ GitVersion.WixInfo.WixInfo() -> void
 abstract GitVersion.Agents.BuildAgentBase.EnvironmentVariable.get -> string!
 abstract GitVersion.Agents.BuildAgentBase.GenerateSetParameterMessage(string! name, string? value) -> string![]!
 abstract GitVersion.Agents.BuildAgentBase.GenerateSetVersionMessage(GitVersion.OutputVariables.GitVersionVariables! variables) -> string?
-abstract GitVersion.Configuration.Init.Wizard.ConfigInitWizardStep.DefaultResult.get -> string?
-abstract GitVersion.Configuration.Init.Wizard.ConfigInitWizardStep.GetPrompt(GitVersion.Configuration.GitVersionConfiguration! configuration, string! workingDirectory) -> string!
-abstract GitVersion.Configuration.Init.Wizard.ConfigInitWizardStep.HandleResult(string? result, System.Collections.Generic.Queue<GitVersion.Configuration.Init.Wizard.ConfigInitWizardStep!>! steps, GitVersion.Configuration.GitVersionConfiguration! configuration, string! workingDirectory) -> GitVersion.Configuration.Init.StepResult!
-abstract GitVersion.GitVersionModule.RegisterTypes(Microsoft.Extensions.DependencyInjection.IServiceCollection! services) -> void
 abstract GitVersion.VersionCalculation.VersionStrategyBase.GetBaseVersions(GitVersion.Configuration.EffectiveBranchConfiguration! configuration) -> System.Collections.Generic.IEnumerable<GitVersion.VersionCalculation.BaseVersion!>!
 const GitVersion.Configuration.ConfigurationConstants.BranchNamePlaceholder = "{BranchName}" -> string!
 const GitVersion.Configuration.ConfigurationConstants.DefaultLabelPrefix = "[vV]?" -> string!
@@ -1011,7 +1003,6 @@ override GitVersion.VersionCalculation.VersionInBranchNameVersionStrategy.GetBas
 readonly GitVersion.Agents.BuildAgentBase.Log -> GitVersion.Logging.ILog!
 static GitVersion.BranchCommit.operator !=(GitVersion.BranchCommit left, GitVersion.BranchCommit right) -> bool
 static GitVersion.BranchCommit.operator ==(GitVersion.BranchCommit left, GitVersion.BranchCommit right) -> bool
-static GitVersion.Configuration.BranchConfigurationBuilder.New.get -> GitVersion.Configuration.BranchConfigurationBuilder!
 static GitVersion.Configuration.ConfigurationExtensions.FindGitDir(this string! path) -> (string! GitDirectory, string! WorkingTreeDirectory)?
 static GitVersion.Configuration.ConfigurationExtensions.GetBranchConfiguration(this GitVersion.Configuration.IGitVersionConfiguration! configuration, GitVersion.IBranch! branch) -> GitVersion.Configuration.IBranchConfiguration!
 static GitVersion.Configuration.ConfigurationExtensions.GetBranchConfiguration(this GitVersion.Configuration.IGitVersionConfiguration! configuration, GitVersion.ReferenceName! branchName) -> GitVersion.Configuration.IBranchConfiguration!
@@ -1144,23 +1135,5 @@ virtual GitVersion.Agents.BuildAgentBase.PreventFetch() -> bool
 virtual GitVersion.Agents.BuildAgentBase.ShouldCleanUpRemotes() -> bool
 virtual GitVersion.Agents.BuildAgentBase.WriteIntegration(System.Action<string?>! writer, GitVersion.OutputVariables.GitVersionVariables! variables, bool updateBuildNumber = true) -> void
 virtual GitVersion.Configuration.BranchConfiguration.Inherit(GitVersion.Configuration.IBranchConfiguration! configuration) -> GitVersion.Configuration.IBranchConfiguration!
-virtual GitVersion.Configuration.BranchConfigurationBuilder.WithCommitMessageIncrementing(GitVersion.VersionCalculation.CommitMessageIncrementMode? value) -> GitVersion.Configuration.BranchConfigurationBuilder!
-virtual GitVersion.Configuration.BranchConfigurationBuilder.WithConfiguration(GitVersion.Configuration.IBranchConfiguration! value) -> GitVersion.Configuration.BranchConfigurationBuilder!
-virtual GitVersion.Configuration.BranchConfigurationBuilder.WithIncrement(GitVersion.IncrementStrategy value) -> GitVersion.Configuration.BranchConfigurationBuilder!
-virtual GitVersion.Configuration.BranchConfigurationBuilder.WithIsMainline(bool? value) -> GitVersion.Configuration.BranchConfigurationBuilder!
-virtual GitVersion.Configuration.BranchConfigurationBuilder.WithIsReleaseBranch(bool? value) -> GitVersion.Configuration.BranchConfigurationBuilder!
-virtual GitVersion.Configuration.BranchConfigurationBuilder.WithIsSourceBranchFor(System.Collections.Generic.IEnumerable<string!>! values) -> GitVersion.Configuration.BranchConfigurationBuilder!
-virtual GitVersion.Configuration.BranchConfigurationBuilder.WithIsSourceBranchFor(params string![]! values) -> GitVersion.Configuration.BranchConfigurationBuilder!
-virtual GitVersion.Configuration.BranchConfigurationBuilder.WithLabel(string? value) -> GitVersion.Configuration.BranchConfigurationBuilder!
-virtual GitVersion.Configuration.BranchConfigurationBuilder.WithLabelNumberPattern(string? value) -> GitVersion.Configuration.BranchConfigurationBuilder!
-virtual GitVersion.Configuration.BranchConfigurationBuilder.WithPreReleaseWeight(int? value) -> GitVersion.Configuration.BranchConfigurationBuilder!
-virtual GitVersion.Configuration.BranchConfigurationBuilder.WithPreventIncrementOfMergedBranchVersion(bool? value) -> GitVersion.Configuration.BranchConfigurationBuilder!
-virtual GitVersion.Configuration.BranchConfigurationBuilder.WithRegularExpression(string? value) -> GitVersion.Configuration.BranchConfigurationBuilder!
-virtual GitVersion.Configuration.BranchConfigurationBuilder.WithSourceBranches(System.Collections.Generic.IEnumerable<string!>! values) -> GitVersion.Configuration.BranchConfigurationBuilder!
-virtual GitVersion.Configuration.BranchConfigurationBuilder.WithSourceBranches(params string![]! values) -> GitVersion.Configuration.BranchConfigurationBuilder!
-virtual GitVersion.Configuration.BranchConfigurationBuilder.WithTrackMergeMessage(bool? value) -> GitVersion.Configuration.BranchConfigurationBuilder!
-virtual GitVersion.Configuration.BranchConfigurationBuilder.WithTrackMergeTarget(bool? value) -> GitVersion.Configuration.BranchConfigurationBuilder!
-virtual GitVersion.Configuration.BranchConfigurationBuilder.WithTracksReleaseBranches(bool? value) -> GitVersion.Configuration.BranchConfigurationBuilder!
-virtual GitVersion.Configuration.BranchConfigurationBuilder.WithVersioningMode(GitVersion.VersionCalculation.VersioningMode? value) -> GitVersion.Configuration.BranchConfigurationBuilder!
 virtual GitVersion.VersionCalculation.EffectiveBranchConfigurationFinder.GetConfigurations(GitVersion.IBranch! branch, GitVersion.Configuration.IGitVersionConfiguration! configuration) -> System.Collections.Generic.IEnumerable<GitVersion.Configuration.EffectiveBranchConfiguration!>!
 virtual GitVersion.VersionCalculation.NextVersionCalculator.FindVersion() -> GitVersion.VersionCalculation.NextVersion!

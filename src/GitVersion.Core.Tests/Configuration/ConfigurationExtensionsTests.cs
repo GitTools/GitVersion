@@ -9,7 +9,7 @@ public class ConfigurationExtensionsTests : TestBase
     [Test]
     public void GetReleaseBranchConfigReturnsAllReleaseBranches()
     {
-        var configuration = new GitVersionConfiguration()
+        var configuration = new GitVersionConfiguration
         {
             Branches = new Dictionary<string, BranchConfiguration>
             {

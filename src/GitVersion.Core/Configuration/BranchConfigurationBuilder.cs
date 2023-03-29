@@ -2,7 +2,7 @@ using GitVersion.VersionCalculation;
 
 namespace GitVersion.Configuration;
 
-public class BranchConfigurationBuilder
+internal class BranchConfigurationBuilder
 {
     public static BranchConfigurationBuilder New => new();
 
@@ -148,7 +148,7 @@ public class BranchConfigurationBuilder
         return this;
     }
 
-    public BranchConfiguration Build() => new()
+    public IBranchConfiguration Build() => new BranchConfiguration
     {
         VersioningMode = versioningMode,
         Label = label,

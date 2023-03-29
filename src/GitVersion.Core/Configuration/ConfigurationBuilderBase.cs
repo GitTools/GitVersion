@@ -169,7 +169,7 @@ internal abstract class ConfigurationBuilderBase<TConfigurationBuilder> : IConfi
 
     public virtual TConfigurationBuilder WithIgnoreConfiguration(IIgnoreConfiguration value)
     {
-        this.ignore = (IgnoreConfiguration) value;
+        this.ignore = (IgnoreConfiguration)value;
         return (TConfigurationBuilder)this;
     }
 
@@ -346,7 +346,7 @@ internal abstract class ConfigurationBuilderBase<TConfigurationBuilder> : IConfi
         Dictionary<string, BranchConfiguration> branches = new();
         foreach (var (name, branchConfigurationBuilder) in this.branchConfigurationBuilders)
         {
-            branches.Add(name, branchConfigurationBuilder.Build());
+            branches.Add(name, (BranchConfiguration)branchConfigurationBuilder.Build());
         }
 
         IGitVersionConfiguration configuration = new GitVersionConfiguration
@@ -411,10 +411,10 @@ internal abstract class ConfigurationBuilderBase<TConfigurationBuilder> : IConfi
     private static void FinalizeBranchConfiguration(IGitVersionConfiguration configuration, string branchName,
         IBranchConfiguration branchConfiguration)
     {
-        var branches = configuration.Branches.ToDictionary(x => x.Key, x => (BranchConfiguration)x.Value);
+        var branches = configuration.Branches;
         foreach (var targetBranchName in branchConfiguration.IsSourceBranchFor)
         {
-            var targetBranchConfiguration = branches[targetBranchName];
+            var targetBranchConfiguration = (BranchConfiguration)branches[targetBranchName];
             targetBranchConfiguration.SourceBranches.Add(branchName);
         }
     }
