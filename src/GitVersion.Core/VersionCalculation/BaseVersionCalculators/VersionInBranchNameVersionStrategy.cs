@@ -9,7 +9,7 @@ namespace GitVersion.VersionCalculation;
 /// BaseVersionSource is the commit where the branch was branched from its parent.
 /// Does not increment.
 /// </summary>
-public class VersionInBranchNameVersionStrategy : VersionStrategyBase
+internal class VersionInBranchNameVersionStrategy : VersionStrategyBase
 {
     private readonly IRepositoryStore repositoryStore;
 

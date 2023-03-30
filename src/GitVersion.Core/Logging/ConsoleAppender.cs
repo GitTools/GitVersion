@@ -1,6 +1,6 @@
 namespace GitVersion.Logging;
 
-public class ConsoleAppender : ILogAppender
+internal class ConsoleAppender : ILogAppender
 {
     private readonly object locker;
     private readonly IDictionary<LogLevel, (ConsoleColor, ConsoleColor)> palettes;

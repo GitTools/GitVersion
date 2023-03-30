@@ -9,7 +9,7 @@ namespace GitVersion.VersionCalculation;
 /// BaseVersionSource is the tag's commit.
 /// Increments if the tag is not the current commit.
 /// </summary>
-public sealed class TaggedCommitVersionStrategy : VersionStrategyBase
+internal sealed class TaggedCommitVersionStrategy : VersionStrategyBase
 {
     private readonly IRepositoryStore repositoryStore;
 

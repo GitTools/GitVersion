@@ -4,7 +4,7 @@ using GitVersion.VersionCalculation;
 
 namespace GitVersion.Configuration;
 
-public record BranchConfiguration : IBranchConfiguration
+internal record BranchConfiguration : IBranchConfiguration
 {
     [JsonPropertyName("mode")]
     [JsonPropertyDescription("The versioning mode for this branch. Can be 'ContinuousDelivery', 'ContinuousDeployment', 'Mainline'.")]

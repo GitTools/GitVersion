@@ -3,7 +3,7 @@ using System.Text.RegularExpressions;
 
 namespace GitVersion.Logging;
 
-public sealed class Log : ILog
+internal sealed class Log : ILog
 {
     private IEnumerable<ILogAppender> appenders;
     private readonly Regex obscurePasswordRegex = new("(https?://)(.+)(:.+@)", RegexOptions.Compiled);

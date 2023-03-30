@@ -1,6 +1,6 @@
 namespace GitVersion.Logging;
 
-public class FileAppender : ILogAppender
+internal class FileAppender : ILogAppender
 {
     private readonly string filePath;
 

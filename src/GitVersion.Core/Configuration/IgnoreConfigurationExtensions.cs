@@ -3,7 +3,7 @@ using GitVersion.VersionCalculation;
 
 namespace GitVersion.Configuration;
 
-public static class IgnoreConfigurationExtensions
+internal static class IgnoreConfigurationExtensions
 {
     public static IEnumerable<IVersionFilter> ToFilters(this IIgnoreConfiguration source)
     {

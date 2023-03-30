@@ -5,7 +5,7 @@ using GitVersion.Extensions;
 
 namespace GitVersion.VersionCalculation;
 
-public class IncrementStrategyFinder : IIncrementStrategyFinder
+internal class IncrementStrategyFinder : IIncrementStrategyFinder
 {
     public const string DefaultMajorPattern = @"\+semver:\s?(breaking|major)";
     public const string DefaultMinorPattern = @"\+semver:\s?(feature|minor)";

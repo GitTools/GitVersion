@@ -3,7 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace GitVersion.Configuration.Init.Wizard;
 
-public class ConfigInitStepFactory : IConfigInitStepFactory
+internal class ConfigInitStepFactory : IConfigInitStepFactory
 {
     private readonly IServiceProvider sp;
 

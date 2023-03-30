@@ -5,7 +5,7 @@ using Microsoft.Extensions.Options;
 
 namespace GitVersion;
 
-public class GitVersionContextFactory : IGitVersionContextFactory
+internal class GitVersionContextFactory : IGitVersionContextFactory
 {
     private readonly IConfigurationProvider configurationProvider;
     private readonly IRepositoryStore repositoryStore;

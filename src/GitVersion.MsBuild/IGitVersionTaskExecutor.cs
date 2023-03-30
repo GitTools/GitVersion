@@ -2,7 +2,7 @@ using GitVersion.MsBuild.Tasks;
 
 namespace GitVersion.MsBuild;
 
-public interface IGitVersionTaskExecutor
+internal interface IGitVersionTaskExecutor
 {
     void GetVersion(GetVersion task);
     void UpdateAssemblyInfo(UpdateAssemblyInfo task);

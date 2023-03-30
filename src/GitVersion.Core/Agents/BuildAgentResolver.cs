@@ -3,7 +3,7 @@ using GitVersion.Logging;
 
 namespace GitVersion.Agents;
 
-public class BuildAgentResolver : IBuildAgentResolver
+internal class BuildAgentResolver : IBuildAgentResolver
 {
     private readonly IEnumerable<IBuildAgent> buildAgents;
     private readonly ILog log;

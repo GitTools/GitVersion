@@ -1,6 +1,6 @@
 namespace GitVersion.VersionCalculation.Caching;
 
-public interface IGitVersionCacheKeyFactory
+internal interface IGitVersionCacheKeyFactory
 {
     GitVersionCacheKey Create(IReadOnlyDictionary<object, object?>? overrideConfiguration);
 }

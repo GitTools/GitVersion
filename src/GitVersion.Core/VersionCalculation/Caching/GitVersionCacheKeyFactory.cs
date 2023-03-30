@@ -7,7 +7,7 @@ using Microsoft.Extensions.Options;
 
 namespace GitVersion.VersionCalculation.Caching;
 
-public class GitVersionCacheKeyFactory : IGitVersionCacheKeyFactory
+internal class GitVersionCacheKeyFactory : IGitVersionCacheKeyFactory
 {
     private readonly IFileSystem fileSystem;
     private readonly ILog log;

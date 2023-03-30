@@ -20,7 +20,7 @@ namespace GitVersion.VersionCalculation;
 /// Increments if the tag is not the current commit (same as base strategy).
 /// </para>
 /// </summary>
-public class TrackReleaseBranchesVersionStrategy : VersionStrategyBase
+internal class TrackReleaseBranchesVersionStrategy : VersionStrategyBase
 {
     private readonly VersionInBranchNameVersionStrategy releaseVersionStrategy;
 

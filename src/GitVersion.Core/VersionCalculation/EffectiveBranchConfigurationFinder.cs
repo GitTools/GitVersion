@@ -5,7 +5,7 @@ using GitVersion.Logging;
 
 namespace GitVersion.VersionCalculation;
 
-public class EffectiveBranchConfigurationFinder : IEffectiveBranchConfigurationFinder
+internal class EffectiveBranchConfigurationFinder : IEffectiveBranchConfigurationFinder
 {
     private readonly ILog log;
     private readonly IRepositoryStore repositoryStore;

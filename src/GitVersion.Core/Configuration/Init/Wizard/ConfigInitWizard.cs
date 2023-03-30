@@ -3,7 +3,7 @@ using GitVersion.Logging;
 
 namespace GitVersion.Configuration.Init.Wizard;
 
-public class ConfigInitWizard : IConfigInitWizard
+internal class ConfigInitWizard : IConfigInitWizard
 {
     private readonly IConsole console;
     private readonly IConfigInitStepFactory stepFactory;

@@ -8,7 +8,7 @@ using YamlDotNet.Core;
 
 namespace GitVersion.Configuration;
 
-public class ConfigurationProvider : IConfigurationProvider
+internal class ConfigurationProvider : IConfigurationProvider
 {
     private readonly IFileSystem fileSystem;
     private readonly ILog log;

@@ -1,6 +1,6 @@
 namespace GitVersion;
 
-public class Environment : IEnvironment
+internal class Environment : IEnvironment
 {
     public string? GetEnvironmentVariable(string variableName) => System.Environment.GetEnvironmentVariable(variableName);
 

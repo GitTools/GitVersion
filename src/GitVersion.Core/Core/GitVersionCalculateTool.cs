@@ -7,7 +7,7 @@ using Microsoft.Extensions.Options;
 
 namespace GitVersion;
 
-public class GitVersionCalculateTool : IGitVersionCalculateTool
+internal class GitVersionCalculateTool : IGitVersionCalculateTool
 {
     private readonly ILog log;
     private readonly IGitVersionCache gitVersionCache;

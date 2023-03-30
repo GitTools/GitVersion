@@ -1,6 +1,6 @@
 namespace GitVersion.Configuration.Init;
 
-public sealed class StepResult
+internal sealed class StepResult
 {
     private StepResult() { }
 

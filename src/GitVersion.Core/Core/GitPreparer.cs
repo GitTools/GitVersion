@@ -7,7 +7,7 @@ using Microsoft.Extensions.Options;
 
 namespace GitVersion;
 
-public class GitPreparer : IGitPreparer
+internal class GitPreparer : IGitPreparer
 {
     private readonly ILog log;
     private readonly IEnvironment environment;

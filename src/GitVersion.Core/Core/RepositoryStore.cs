@@ -6,7 +6,7 @@ using GitVersion.Logging;
 
 namespace GitVersion;
 
-public class RepositoryStore : IRepositoryStore
+internal class RepositoryStore : IRepositoryStore
 {
     private readonly ILog log;
     private readonly IGitRepository repository;

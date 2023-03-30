@@ -3,7 +3,7 @@ using GitVersion.Extensions;
 
 namespace GitVersion.VersionCalculation;
 
-public class ShaVersionFilter : IVersionFilter
+internal class ShaVersionFilter : IVersionFilter
 {
     private readonly IEnumerable<string> shas;
 

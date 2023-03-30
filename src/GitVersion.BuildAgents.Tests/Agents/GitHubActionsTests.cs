@@ -136,8 +136,8 @@ public class GitHubActionsTests : TestBase
         // Assert
         var expected = new List<string> { "Executing GenerateSetVersionMessage for 'GitHubActions'.", "", "Executing GenerateBuildLogOutput for 'GitHubActions'.", "Writing version variables to $GITHUB_ENV file for 'GitHubActions'." };
 
-        string.Join(System.Environment.NewLine, list)
-            .ShouldBe(string.Join(System.Environment.NewLine, expected));
+        string.Join(Environment.NewLine, list)
+            .ShouldBe(string.Join(Environment.NewLine, expected));
 
         var expectedFileContents = new List<string> { "GitVersion_Major=1.0.0" };
 

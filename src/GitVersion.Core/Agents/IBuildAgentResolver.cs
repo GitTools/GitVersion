@@ -1,6 +1,6 @@
 namespace GitVersion.Agents;
 
-public interface IBuildAgentResolver
+internal interface IBuildAgentResolver
 {
     ICurrentBuildAgent Resolve();
 }

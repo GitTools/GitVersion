@@ -6,7 +6,7 @@ using GitVersion.OutputVariables;
 
 namespace GitVersion.VersionCalculation;
 
-public class VariableProvider : IVariableProvider
+internal class VariableProvider : IVariableProvider
 {
     private readonly IEnvironment environment;
 

@@ -23,7 +23,7 @@ internal class MsBuildAppender : ILogAppender
 
     private void WriteLogEntry(LogLevel level, string str)
     {
-        var contents = $"{DateTime.Now:yyyy-MM-dd HH:mm:ss}\t\t{str}{System.Environment.NewLine}";
+        var contents = $"{DateTime.Now:yyyy-MM-dd HH:mm:ss}\t\t{str}{Environment.NewLine}";
         switch (level)
         {
             case LogLevel.Fatal:

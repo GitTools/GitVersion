@@ -8,7 +8,7 @@ namespace GitVersion.VersionCalculation;
 /// BaseVersionSource is null.
 /// Does not increment.
 /// </summary>
-public class ConfigNextVersionVersionStrategy : VersionStrategyBase
+internal class ConfigNextVersionVersionStrategy : VersionStrategyBase
 {
     public ConfigNextVersionVersionStrategy(Lazy<GitVersionContext> versionContext) : base(versionContext)
     {

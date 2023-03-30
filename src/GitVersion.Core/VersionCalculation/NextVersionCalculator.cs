@@ -6,7 +6,7 @@ using GitVersion.Logging;
 
 namespace GitVersion.VersionCalculation;
 
-public class NextVersionCalculator : INextVersionCalculator
+internal class NextVersionCalculator : INextVersionCalculator
 {
     private readonly ILog log;
     private readonly IMainlineVersionCalculator mainlineVersionCalculator;

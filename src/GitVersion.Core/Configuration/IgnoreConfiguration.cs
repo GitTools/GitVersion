@@ -2,7 +2,7 @@ using GitVersion.Attributes;
 
 namespace GitVersion.Configuration;
 
-public record IgnoreConfiguration : IIgnoreConfiguration
+internal record IgnoreConfiguration : IIgnoreConfiguration
 {
     [JsonPropertyName("commits-before")]
     [JsonPropertyDescription("Commits before this date will be ignored. Format: yyyy-MM-ddTHH:mm:ss.")]

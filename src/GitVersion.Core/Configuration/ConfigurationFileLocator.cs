@@ -5,7 +5,7 @@ using Microsoft.Extensions.Options;
 
 namespace GitVersion.Configuration;
 
-public class ConfigurationFileLocator : IConfigurationFileLocator
+internal class ConfigurationFileLocator : IConfigurationFileLocator
 {
     public const string DefaultFileName = "GitVersion.yml";
     public const string DefaultAlternativeFileName = "GitVersion.yaml";

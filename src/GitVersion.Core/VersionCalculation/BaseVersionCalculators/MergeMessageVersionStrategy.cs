@@ -11,7 +11,7 @@ namespace GitVersion.VersionCalculation;
 /// BaseVersionSource is the commit where the message was found.
 /// Increments if PreventIncrementOfMergedBranchVersion (from the branch configuration) is false.
 /// </summary>
-public class MergeMessageVersionStrategy : VersionStrategyBase
+internal class MergeMessageVersionStrategy : VersionStrategyBase
 {
     private readonly ILog log;
     private readonly IRepositoryStore repositoryStore;

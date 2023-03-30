@@ -3,7 +3,7 @@ using GitVersion.Extensions;
 
 namespace GitVersion.VersionCalculation;
 
-public class MinDateVersionFilter : IVersionFilter
+internal class MinDateVersionFilter : IVersionFilter
 {
     private readonly DateTimeOffset minimum;
 
