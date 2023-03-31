@@ -20,23 +20,28 @@ internal class VersionInBranchNameVersionStrategy : VersionStrategyBase
     {
         if (!configuration.Value.IsReleaseBranch) yield break;
 
-        if (configuration.Branch.Name.TryGetSemanticVersion(out var result, configuration.Value.VersionInBranchRegex,
-            configuration.Value.LabelPrefix, configuration.Value.SemanticVersionFormat))
+        foreach (var branch in new[] { Context.CurrentBranch, configuration.Branch })
         {
-            var commitBranchWasBranchedFrom = this.repositoryStore.FindCommitBranchWasBranchedFrom(
-                configuration.Branch, Context.Configuration
-            );
-
-            string? branchNameOverride = null;
-            if (Context.CurrentBranch.Name.Equals(configuration.Branch.Name)
-                || Context.Configuration.GetBranchConfiguration(Context.CurrentBranch.Name).Label is null)
+            if (branch.Name.TryGetSemanticVersion(out var result, configuration.Value.VersionInBranchRegex,
+                configuration.Value.LabelPrefix, configuration.Value.SemanticVersionFormat))
             {
-                branchNameOverride = result.Name;
-            }
+                var commitBranchWasBranchedFrom = this.repositoryStore.FindCommitBranchWasBranchedFrom(
+                    configuration.Branch, Context.Configuration
+                );
 
-            yield return new BaseVersion(
-                "Version in branch name", false, result.Value, commitBranchWasBranchedFrom.Commit, branchNameOverride
-            );
+                string? branchNameOverride = null;
+                if (Context.CurrentBranch.Name.Equals(branch.Name)
+                    || Context.Configuration.GetBranchConfiguration(Context.CurrentBranch.Name).Label is null)
+                {
+                    branchNameOverride = result.Name;
+                }
+
+                yield return new BaseVersion(
+                    "Version in branch name", false, result.Value, commitBranchWasBranchedFrom.Commit, branchNameOverride
+                );
+                yield break;
+            }
         }
+
     }
 }

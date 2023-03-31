@@ -40,12 +40,29 @@ public class OtherBranchScenarios : TestBase
         using var fixture = new EmptyRepositoryFixture();
 
         const string taggedVersion = "1.0.3";
-        fixture.Repository.MakeATaggedCommit(taggedVersion);
+        fixture.MakeATaggedCommit(taggedVersion);
         fixture.Repository.MakeCommits(5);
-        fixture.Repository.CreateBranch("release/2.0.0-LTS");
-        Commands.Checkout(fixture.Repository, "release/2.0.0-LTS");
+        fixture.BranchTo("release/2.0.0-LTS");
+        fixture.MakeACommit();
 
-        fixture.AssertFullSemver("2.0.0-LTS.1+0", configuration);
+        fixture.AssertFullSemver("2.0.0-LTS.1+1", configuration);
+    }
+
+    [Test]
+    public void CanTakeVersionFromHotfixBranch()
+    {
+        var configuration = GitFlowConfigurationBuilder.New
+            .WithBranch("hotfix", _ => _.WithLabel("{BranchName}"))
+            .Build();
+
+        using var fixture = new EmptyRepositoryFixture();
+
+        const string taggedVersion = "1.0.3";
+        fixture.MakeATaggedCommit(taggedVersion);
+        fixture.BranchTo("hotfix/1.0.5-LTS");
+        fixture.MakeACommit();
+
+        fixture.AssertFullSemver("1.0.5-LTS.1+1", configuration);
     }
 
     [Test]
