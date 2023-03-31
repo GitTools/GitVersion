@@ -43,6 +43,7 @@ The global configuration looks like this:
 assembly-versioning-scheme: MajorMinorPatch
 assembly-file-versioning-scheme: MajorMinorPatch
 label-prefix: '[vV]?'
+version-in-branch-pattern: '(?<version>[vV]?\d+(\.\d+)?(\.\d+)?).*'
 major-version-bump-message: '\+semver:\s?(breaking|major)'
 minor-version-bump-message: '\+semver:\s?(feature|minor)'
 patch-version-bump-message: '\+semver:\s?(fix|patch)'
@@ -258,9 +259,12 @@ and [tracks-release-branches](#tracks-release-branches).
 
 ### label-prefix
 
-A regex which is used to trim Git tags before processing (e.g., v1.0.0). Default
-is `[vV]`, although this is just for illustrative purposes as we do a IgnoreCase
-match and could be `v`.
+A regular expression which is used to trim Git tags before processing (e.g., v1.0.0). The default value is `[vV]`.
+
+### version-in-branch-pattern
+
+A regular expression which is used to determine the version number in the branch name or commit message (e.g., v1.0.0-LTS). 
+The default value is `(?<version>[vV]?\d+(\.\d+)?(\.\d+)?).*`.
 
 ### major-version-bump-message
 

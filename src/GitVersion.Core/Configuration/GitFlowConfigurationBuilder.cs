@@ -20,6 +20,7 @@ internal sealed class GitFlowConfigurationBuilder : ConfigurationBuilderBase<Git
             PatchVersionBumpMessage = IncrementStrategyFinder.DefaultPatchPattern,
             SemanticVersionFormat = SemanticVersionFormat.Strict,
             LabelPrefix = ConfigurationConstants.DefaultLabelPrefix,
+            VersionInBranchPattern = ConfigurationConstants.DefaultVersionInBranchPattern,
             LabelPreReleaseWeight = 60000,
             UpdateBuildNumber = true,
             VersioningMode = VersioningMode.ContinuousDelivery,
@@ -133,6 +134,7 @@ internal sealed class GitFlowConfigurationBuilder : ConfigurationBuilderBase<Git
                 HotfixBranch.Name
             },
             Label = "beta",
+            IsReleaseBranch = true,
             PreReleaseWeight = 30000
         });
 

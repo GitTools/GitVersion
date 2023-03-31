@@ -1,3 +1,4 @@
+using System.Text.RegularExpressions;
 using GitVersion.Extensions;
 
 namespace GitVersion.Configuration;
@@ -17,6 +18,10 @@ public interface IGitVersionConfiguration : IBranchConfiguration
     string? AssemblyFileVersioningFormat { get; }
 
     string? LabelPrefix { get; }
+
+    string? VersionInBranchPattern { get; }
+
+    Regex VersionInBranchRegex { get; }
 
     string? NextVersion { get; }
 

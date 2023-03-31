@@ -48,7 +48,9 @@ public class MergeMessage
                 PullRequestNumber = pullNumber;
             }
 
-            Version = ParseVersion(configuration.LabelPrefix, configuration.SemanticVersionFormat);
+            Version = ParseVersion(
+                configuration.VersionInBranchRegex, configuration.LabelPrefix, configuration.SemanticVersionFormat
+            )?.Value;
 
             break;
         }
@@ -62,22 +64,11 @@ public class MergeMessage
     public int? PullRequestNumber { get; }
     public SemanticVersion? Version { get; }
 
-    private SemanticVersion? ParseVersion(string? tagPrefix, SemanticVersionFormat versionFormat)
+    private (SemanticVersion Value, string? Name)? ParseVersion(
+        Regex versionPatternRegex, string? labelPrefix, SemanticVersionFormat format)
     {
-        if (tagPrefix is null || MergedBranch is null)
-            return null;
-        // Remove remotes and branch prefixes like release/ feature/ hotfix/ etc
-        var toMatch = Regex.Replace(MergedBranch.WithoutOrigin, @"^(\w+[-/])*", "", RegexOptions.IgnoreCase);
-        toMatch = Regex.Replace(toMatch, $"^{tagPrefix}", "");
-        // We don't match if the version is likely an ip (i.e starts with http://)
-        var versionMatch = new Regex(@"^(?<!://)\d+\.\d+(\.*\d+)*");
-        var version = versionMatch.Match(toMatch);
-
-        if (version.Success && SemanticVersion.TryParse(version.Value, tagPrefix, out var val, versionFormat))
-        {
-            return val;
-        }
-
+        if (MergedBranch?.TryGetSemanticVersion(out var result, versionPatternRegex, labelPrefix, format) == true)
+            return result;
         return null;
     }
 

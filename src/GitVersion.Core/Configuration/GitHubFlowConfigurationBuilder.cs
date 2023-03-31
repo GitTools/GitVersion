@@ -20,6 +20,7 @@ internal sealed class GitHubFlowConfigurationBuilder : ConfigurationBuilderBase<
             PatchVersionBumpMessage = IncrementStrategyFinder.DefaultPatchPattern,
             SemanticVersionFormat = SemanticVersionFormat.Strict,
             LabelPrefix = ConfigurationConstants.DefaultLabelPrefix,
+            VersionInBranchPattern = ConfigurationConstants.DefaultVersionInBranchPattern,
             LabelPreReleaseWeight = 60000,
             UpdateBuildNumber = true,
             VersioningMode = VersioningMode.ContinuousDelivery,

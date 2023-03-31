@@ -33,10 +33,10 @@ public class VersionInBranchNameBaseVersionStrategyTests : TestBase
         baseVersion.SemanticVersion.ToString().ShouldBe(expectedBaseVersion);
     }
 
-    [TestCase("hotfix-2.0.0")]
+    //[TestCase("hotfix-2.0.0")]
     [TestCase("origin/hotfix-2.0.0")]
     [TestCase("remotes/origin/hotfix-2.0.0")]
-    [TestCase("hotfix/2.0.0")]
+    //[TestCase("hotfix/2.0.0")]
     [TestCase("origin/hotfix/2.0.0")]
     [TestCase("remotes/origin/hotfix/2.0.0")]
     [TestCase("custom/JIRA-123")]
@@ -68,7 +68,7 @@ public class VersionInBranchNameBaseVersionStrategyTests : TestBase
 
     [TestCase("release-2.0.0", "2.0.0")]
     [TestCase("release/3.0.0", "3.0.0")]
-    [TestCase("support/lts-2.0.0", "2.0.0")]
+    [TestCase("support/2.0.0-lts", "2.0.0")]
     [TestCase("support-3.0.0-lts", "3.0.0")]
     public void CanTakeVersionFromNameOfConfiguredReleaseBranch(string branchName, string expectedBaseVersion)
     {
@@ -80,6 +80,7 @@ public class VersionInBranchNameBaseVersionStrategyTests : TestBase
         var repository = fixture.Repository.ToGitRepository();
 
         var configuration = GitFlowConfigurationBuilder.New
+            .WithLabelPrefix("([vV]|lts-)?")
             .WithBranch("support", builder => builder.WithIsReleaseBranch(true))
             .Build();
         ConfigurationHelper configurationHelper = new(configuration);

@@ -33,14 +33,19 @@ public class OtherBranchScenarios : TestBase
     [Test]
     public void CanTakeVersionFromReleaseBranch()
     {
+        var configuration = GitFlowConfigurationBuilder.New
+            .WithBranch("release", _ => _.WithLabel("{BranchName}"))
+            .Build();
+
         using var fixture = new EmptyRepositoryFixture();
+
         const string taggedVersion = "1.0.3";
         fixture.Repository.MakeATaggedCommit(taggedVersion);
         fixture.Repository.MakeCommits(5);
-        fixture.Repository.CreateBranch("release/beta-2.0.0");
-        Commands.Checkout(fixture.Repository, "release/beta-2.0.0");
+        fixture.Repository.CreateBranch("release/2.0.0-LTS");
+        Commands.Checkout(fixture.Repository, "release/2.0.0-LTS");
 
-        fixture.AssertFullSemver("2.0.0-beta.1+0");
+        fixture.AssertFullSemver("2.0.0-LTS.1+0", configuration);
     }
 
     [Test]

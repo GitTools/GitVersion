@@ -20,31 +20,23 @@ internal class VersionInBranchNameVersionStrategy : VersionStrategyBase
     {
         if (!configuration.Value.IsReleaseBranch) yield break;
 
-        var versionInBranch = GetVersionInBranch(
-            configuration.Branch.Name, configuration.Value.LabelPrefix, configuration.Value.SemanticVersionFormat
-        );
-        if (versionInBranch != null)
+        if (configuration.Branch.Name.TryGetSemanticVersion(out var result, configuration.Value.VersionInBranchRegex,
+            configuration.Value.LabelPrefix, configuration.Value.SemanticVersionFormat))
         {
             var commitBranchWasBranchedFrom = this.repositoryStore.FindCommitBranchWasBranchedFrom(
                 configuration.Branch, Context.Configuration
             );
-            var branchNameOverride = Context.CurrentBranch.Name.Friendly.RegexReplace("[-/]" + versionInBranch.Item1, string.Empty);
-            yield return new BaseVersion("Version in branch name", false, versionInBranch.Item2, commitBranchWasBranchedFrom.Commit, branchNameOverride);
-        }
-    }
 
-    private static Tuple<string, SemanticVersion>? GetVersionInBranch(
-        ReferenceName branchName, string? tagPrefixRegex, SemanticVersionFormat versionFormat)
-    {
-        var branchParts = branchName.WithoutOrigin.Split('/', '-');
-        foreach (var part in branchParts)
-        {
-            if (SemanticVersion.TryParse(part, tagPrefixRegex, out var semanticVersion, versionFormat))
+            string? branchNameOverride = null;
+            if (Context.CurrentBranch.Name.Equals(configuration.Branch.Name)
+                || Context.Configuration.GetBranchConfiguration(Context.CurrentBranch.Name).Label is null)
             {
-                return Tuple.Create(part, semanticVersion);
+                branchNameOverride = result.Name;
             }
-        }
 
-        return null;
+            yield return new BaseVersion(
+                "Version in branch name", false, result.Value, commitBranchWasBranchedFrom.Commit, branchNameOverride
+            );
+        }
     }
 }
