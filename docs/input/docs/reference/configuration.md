@@ -43,7 +43,7 @@ The global configuration looks like this:
 assembly-versioning-scheme: MajorMinorPatch
 assembly-file-versioning-scheme: MajorMinorPatch
 label-prefix: '[vV]?'
-version-in-branch-pattern: '(?<version>[vV]?\d+(\.\d+)?(\.\d+)?).*'
+version-in-branch-pattern: (?<version>[vV]?\d+(\.\d+)?(\.\d+)?).*
 major-version-bump-message: '\+semver:\s?(breaking|major)'
 minor-version-bump-message: '\+semver:\s?(feature|minor)'
 patch-version-bump-message: '\+semver:\s?(fix|patch)'
@@ -62,6 +62,7 @@ branches:
     track-merge-target: true
     regex: ^dev(elop)?(ment)?$
     source-branches: []
+    is-source-branch-for: []
     tracks-release-branches: true
     is-release-branch: false
     is-mainline: false
@@ -75,6 +76,7 @@ branches:
     source-branches:
     - develop
     - release
+    is-source-branch-for: []
     tracks-release-branches: false
     is-release-branch: false
     is-mainline: true
@@ -90,6 +92,7 @@ branches:
     - main
     - support
     - release
+    is-source-branch-for: []
     tracks-release-branches: false
     is-release-branch: true
     is-mainline: false
@@ -106,6 +109,7 @@ branches:
     - feature
     - support
     - hotfix
+    is-source-branch-for: []
     pre-release-weight: 30000
   pull-request:
     mode: ContinuousDelivery
@@ -120,6 +124,7 @@ branches:
     - feature
     - support
     - hotfix
+    is-source-branch-for: []
     pre-release-weight: 30000
   hotfix:
     mode: ContinuousDelivery
@@ -131,6 +136,8 @@ branches:
     - main
     - support
     - hotfix
+    is-source-branch-for: []
+    is-release-branch: true
     pre-release-weight: 30000
   support:
     label: ''
@@ -140,6 +147,7 @@ branches:
     regex: ^support[/-]
     source-branches:
     - main
+    is-source-branch-for: []
     tracks-release-branches: false
     is-release-branch: false
     is-mainline: true
@@ -157,6 +165,7 @@ branches:
     - pull-request
     - hotfix
     - support
+    is-source-branch-for: []
 ignore:
   sha: []
 mode: ContinuousDelivery
@@ -167,6 +176,8 @@ track-merge-target: false
 track-merge-message: true
 commit-message-incrementing: Enabled
 regex: ''
+source-branches: []
+is-source-branch-for: []
 tracks-release-branches: false
 is-release-branch: false
 is-mainline: false
@@ -259,12 +270,15 @@ and [tracks-release-branches](#tracks-release-branches).
 
 ### label-prefix
 
-A regular expression which is used to trim Git tags before processing (e.g., v1.0.0). The default value is `[vV]`.
+A regular expression which is used to trim Git tags before processing (e.g., 
+v1.0.0). The default value is `[vV]`.
 
 ### version-in-branch-pattern
 
-A regular expression which is used to determine the version number in the branch name or commit message (e.g., v1.0.0-LTS). 
-The default value is `(?<version>[vV]?\d+(\.\d+)?(\.\d+)?).*`.
+A regular expression which is used to determine the version number in the branch
+name or commit message (e.g., v1.0.0-LTS). This setting only applies on branches
+where the option `is-release-branch` is set to `true`. The default value is
+`(?<version>[vV]?\d+(\.\d+)?(\.\d+)?).*`.
 
 ### major-version-bump-message
 
