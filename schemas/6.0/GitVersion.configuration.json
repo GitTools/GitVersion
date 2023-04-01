@@ -161,6 +161,10 @@
       "description": "Whether to update the build number in the project file. Defaults to true.",
       "type": "boolean"
     },
+    "version-in-branch-pattern": {
+      "description": "A regular expression which is used to determine the version number in the branch name or commit message (e.g., v1.0.0-LTS). The default value is \u0027(?\u003Cversion\u003E[vV]?\\d\u002B(\\.\\d\u002B)?(\\.\\d\u002B)?).*\u0027.",
+      "type": "string"
+    },
     "mode": {
       "$ref": "#/$defs/Nullable\u006018"
     },
