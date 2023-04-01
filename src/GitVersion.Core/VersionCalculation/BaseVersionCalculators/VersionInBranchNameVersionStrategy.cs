@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using GitVersion.Common;
 using GitVersion.Configuration;
 using GitVersion.Extensions;
@@ -18,30 +19,38 @@ internal class VersionInBranchNameVersionStrategy : VersionStrategyBase
 
     public override IEnumerable<BaseVersion> GetBaseVersions(EffectiveBranchConfiguration configuration)
     {
-        if (!configuration.Value.IsReleaseBranch) yield break;
+        if (configuration.Value.IsReleaseBranch && TryGetBaseVersion(out var baseVersion, configuration))
+        {
+            yield return baseVersion;
+        }
+    }
 
+    private bool TryGetBaseVersion([NotNullWhen(true)] out BaseVersion? baseVersion, EffectiveBranchConfiguration configuration)
+    {
+        baseVersion = null;
+
+        Lazy<BranchCommit> commitBranchWasBranchedFrom = new(
+            () => this.repositoryStore.FindCommitBranchWasBranchedFrom(configuration.Branch, Context.Configuration)
+        );
         foreach (var branch in new[] { Context.CurrentBranch, configuration.Branch })
         {
             if (branch.Name.TryGetSemanticVersion(out var result, configuration.Value.VersionInBranchRegex,
                 configuration.Value.LabelPrefix, configuration.Value.SemanticVersionFormat))
             {
-                var commitBranchWasBranchedFrom = this.repositoryStore.FindCommitBranchWasBranchedFrom(
-                    configuration.Branch, Context.Configuration
-                );
-
                 string? branchNameOverride = null;
-                if (Context.CurrentBranch.Name.Equals(branch.Name)
-                    || Context.Configuration.GetBranchConfiguration(Context.CurrentBranch.Name).Label is null)
+                if (!result.Name.IsNullOrEmpty() && (Context.CurrentBranch.Name.Equals(branch.Name)
+                    || Context.Configuration.GetBranchConfiguration(Context.CurrentBranch.Name).Label is null))
                 {
                     branchNameOverride = result.Name;
                 }
 
-                yield return new BaseVersion(
-                    "Version in branch name", false, result.Value, commitBranchWasBranchedFrom.Commit, branchNameOverride
+                baseVersion = new BaseVersion(
+                    "Version in branch name", false, result.Value, commitBranchWasBranchedFrom.Value.Commit, branchNameOverride
                 );
-                yield break;
+                break;
             }
         }
 
+        return baseVersion != null;
     }
 }
