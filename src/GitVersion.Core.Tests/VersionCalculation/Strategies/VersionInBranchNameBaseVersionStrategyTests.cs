@@ -82,7 +82,6 @@ public class VersionInBranchNameBaseVersionStrategyTests : TestBase
         var repository = fixture.Repository.ToGitRepository();
 
         var configuration = GitFlowConfigurationBuilder.New
-            .WithLabelPrefix("([vV]|lts-)?")
             .WithBranch("support", builder => builder.WithIsReleaseBranch(true))
             .Build();
         ConfigurationHelper configurationHelper = new(configuration);
