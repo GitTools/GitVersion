@@ -557,7 +557,7 @@ GitVersion.OutputVariables.VersionVariablesJsonModel.WeightedPreReleaseNumber.ge
 GitVersion.OutputVariables.VersionVariablesJsonModel.WeightedPreReleaseNumber.set -> void
 GitVersion.OutputVariables.VersionVariablesJsonStringConverter
 GitVersion.OutputVariables.VersionVariablesJsonStringConverter.VersionVariablesJsonStringConverter() -> void
-GitVersion.ReferenceNameExtensions
+GitVersion.ReferenceName.TryGetSemanticVersion(out (GitVersion.SemanticVersion! Value, string? Name) result, System.Text.RegularExpressions.Regex! versionPatternRegex, string? labelPrefix, GitVersion.SemanticVersionFormat format) -> bool
 GitVersion.RefSpecDirection
 GitVersion.RefSpecDirection.Fetch = 0 -> GitVersion.RefSpecDirection
 GitVersion.RefSpecDirection.Push = 1 -> GitVersion.RefSpecDirection
@@ -887,7 +887,6 @@ static GitVersion.OutputVariables.VersionVariablesHelper.ToJsonString(this GitVe
 static GitVersion.ReferenceName.FromBranchName(string! branchName) -> GitVersion.ReferenceName!
 static GitVersion.ReferenceName.Parse(string! canonicalName) -> GitVersion.ReferenceName!
 static GitVersion.ReferenceName.TryParse(out GitVersion.ReferenceName? value, string! canonicalName) -> bool
-static GitVersion.ReferenceNameExtensions.TryGetSemanticVersion(this GitVersion.ReferenceName! source, out (GitVersion.SemanticVersion! Value, string? Name) result, System.Text.RegularExpressions.Regex! versionPatternRegex, string? labelPrefix, GitVersion.SemanticVersionFormat format) -> bool
 static GitVersion.SemanticVersion.Parse(string! version, string? tagPrefixRegex, GitVersion.SemanticVersionFormat versionFormat = GitVersion.SemanticVersionFormat.Strict) -> GitVersion.SemanticVersion!
 static GitVersion.SemanticVersion.TryParse(string! version, string? tagPrefixRegex, out GitVersion.SemanticVersion? semanticVersion, GitVersion.SemanticVersionFormat format = GitVersion.SemanticVersionFormat.Strict) -> bool
 static GitVersion.SemanticVersion.operator !=(GitVersion.SemanticVersion? v1, GitVersion.SemanticVersion? v2) -> bool

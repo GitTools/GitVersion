@@ -70,7 +70,7 @@ public sealed class SemanticVersionPreReleaseTag :
 
     public static SemanticVersionPreReleaseTag Parse(string? preReleaseTag)
     {
-        if (preReleaseTag.IsNullOrEmpty())
+        if (string.IsNullOrEmpty(preReleaseTag))
         {
             return new SemanticVersionPreReleaseTag();
         }
@@ -118,18 +118,17 @@ public sealed class SemanticVersionPreReleaseTag :
         if (formatProvider?.GetFormat(GetType()) is ICustomFormatter formatter)
             return formatter.Format(format, this, formatProvider);
 
-        if (format.IsNullOrEmpty())
+        if (string.IsNullOrEmpty(format))
             format = "t";
 
         format = format.ToLower();
 
         return format switch
         {
-            "t" => (Number.HasValue ? Name.IsNullOrEmpty() ? $"{Number}" : $"{Name}.{Number}" : Name ?? string.Empty),
+            "t" => (Number.HasValue ? string.IsNullOrEmpty(Name) ? $"{Number}" : $"{Name}.{Number}" : Name ?? string.Empty),
             _ => throw new FormatException($"Unknown format '{format}'.")
         };
     }
 
-    public bool HasTag() =>
-        !Name.IsNullOrEmpty() || (Number.HasValue && PromotedFromCommits != true);
+    public bool HasTag() => !string.IsNullOrEmpty(Name) || (Number.HasValue && PromotedFromCommits != true);
 }

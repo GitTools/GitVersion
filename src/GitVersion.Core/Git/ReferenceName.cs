@@ -1,4 +1,6 @@
 using System.Diagnostics.CodeAnalysis;
+using System.Diagnostics.Contracts;
+using System.Text.RegularExpressions;
 using GitVersion.Extensions;
 using GitVersion.Helpers;
 
@@ -75,6 +77,38 @@ public class ReferenceName : IEquatable<ReferenceName?>, IComparable<ReferenceNa
     public override bool Equals(object? obj) => Equals(obj as ReferenceName);
     public override int GetHashCode() => equalityHelper.GetHashCode(this);
     public override string ToString() => Friendly;
+
+    public bool TryGetSemanticVersion([NotNullWhen(true)] out (SemanticVersion Value, string? Name) result,
+        Regex versionPatternRegex, string? labelPrefix, SemanticVersionFormat format)
+    {
+        result = default;
+
+        Contract.Assume(versionPatternRegex.ToString().StartsWith("^"));
+
+        int length = 0;
+        foreach (var branchPart in WithoutOrigin.Split(GetBranchSeparator()))
+        {
+            if (string.IsNullOrEmpty(branchPart)) return false;
+
+            var match = versionPatternRegex.NotNull().Match(branchPart);
+            if (match.Success)
+            {
+                var versionPart = match.Groups["version"].Value;
+                if (SemanticVersion.TryParse(versionPart, labelPrefix, out var semanticVersion, format))
+                {
+                    length += versionPart.Length;
+                    var name = WithoutOrigin[length..].Trim('-');
+                    result = new(semanticVersion, name == string.Empty ? null : name);
+                    return true;
+                }
+            }
+            length += branchPart.Length + 1;
+        }
+
+        return false;
+    }
+
+    private char GetBranchSeparator() => WithoutOrigin.Contains('/') || !WithoutOrigin.Contains('-') ? '/' : '-';
 
     public bool EquivalentTo(string? name) =>
         Canonical.Equals(name, StringComparison.OrdinalIgnoreCase)
