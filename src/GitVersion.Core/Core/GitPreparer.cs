@@ -356,19 +356,19 @@ Please run `git {GitExtensions.CreateGitLogArgs(100)}` and submit it along with 
         }
     }
 
-    public void EnsureLocalBranchExistsForCurrentBranch(IRemote? remote, string? currentBranch)
+    public void EnsureLocalBranchExistsForCurrentBranch(IRemote remote, string? currentBranch)
     {
         remote.NotNull();
 
         if (currentBranch.IsNullOrEmpty()) return;
 
-        var isRef = currentBranch.Contains("refs");
-        var isBranch = currentBranch.Contains("refs/heads");
-        var localCanonicalName = !isRef
-            ? "refs/heads/" + currentBranch
-            : isBranch
+        var referencePrefix = "refs/";
+        var isLocalBranch = currentBranch.StartsWith(ReferenceName.LocalBranchPrefix);
+        var localCanonicalName = !currentBranch.StartsWith(referencePrefix)
+            ? ReferenceName.LocalBranchPrefix + currentBranch
+            : isLocalBranch
                 ? currentBranch
-                : currentBranch.Replace("refs/", "refs/heads/");
+                : ReferenceName.LocalBranchPrefix + currentBranch[referencePrefix.Length..];
 
         var repoTip = this.repository.Head.Tip;
 
@@ -387,14 +387,14 @@ Please run `git {GitExtensions.CreateGitLogArgs(100)}` and submit it along with 
             var referenceName = ReferenceName.Parse(localCanonicalName);
             if (this.repository.Branches.All(b => !b.Name.Equals(referenceName)))
             {
-                this.log.Info(isBranch
+                this.log.Info(isLocalBranch
                     ? $"Creating local branch {referenceName}"
                     : $"Creating local branch {referenceName} pointing at {repoTipId}");
                 this.repository.Refs.Add(localCanonicalName, repoTipId.Sha);
             }
             else
             {
-                this.log.Info(isBranch
+                this.log.Info(isLocalBranch
                     ? $"Updating local branch {referenceName} to point at {repoTipId}"
                     : $"Updating local branch {referenceName} to match ref {currentBranch}");
                 var localRef = this.repository.Refs[localCanonicalName];
