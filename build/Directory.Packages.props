@@ -1,4 +1,4 @@
-﻿<Project>
+<Project>
   <PropertyGroup>
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
   </PropertyGroup>
@@ -7,7 +7,7 @@
     <PackageVersion Include="Cake.Codecov" Version="1.0.1" />
     <PackageVersion Include="Cake.Coverlet" Version="3.0.4" />
     <PackageVersion Include="Cake.Frosting" Version="3.0.0" />
-    <PackageVersion Include="Cake.Http" Version="2.0.0" />
+    <PackageVersion Include="Cake.Http" Version="3.0.2" />
     <PackageVersion Include="Cake.Incubator" Version="8.0.0" />
     <PackageVersion Include="Cake.DotNetLocalTools.Module" Version="3.0.12" />
     <PackageVersion Include="Cake.Docker" Version="1.2.0" />
