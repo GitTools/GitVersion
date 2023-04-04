@@ -28,37 +28,39 @@ public class SemanticVersion : IFormattable, IComparable<SemanticVersion>, IEqua
 
     public SemanticVersionBuildMetaData BuildMetaData { get; init; }
 
-    public bool IsLabeledWith(string value) => PreReleaseTag.HasTag() && string.Equals(PreReleaseTag.Name, value, StringComparison.OrdinalIgnoreCase);
+    public bool IsLabeledWith(string value) => PreReleaseTag.HasTag() && PreReleaseTag.Name.IsEquivalentTo(value);
 
     public bool IsMatchForBranchSpecificLabel(string? value)
         => PreReleaseTag.Name == string.Empty || value is null || IsLabeledWith(value);
 
     public SemanticVersion(long major = 0, long minor = 0, long patch = 0)
     {
-        Major = major;
-        Minor = minor;
-        Patch = patch;
-        PreReleaseTag = new SemanticVersionPreReleaseTag();
-        BuildMetaData = new SemanticVersionBuildMetaData();
+        this.Major = major;
+        this.Minor = minor;
+        this.Patch = patch;
+        this.PreReleaseTag = new SemanticVersionPreReleaseTag();
+        this.BuildMetaData = new SemanticVersionBuildMetaData();
     }
 
     public SemanticVersion(SemanticVersion semanticVersion)
     {
         semanticVersion.NotNull();
 
-        Major = semanticVersion.Major;
-        Minor = semanticVersion.Minor;
-        Patch = semanticVersion.Patch;
+        this.Major = semanticVersion.Major;
+        this.Minor = semanticVersion.Minor;
+        this.Patch = semanticVersion.Patch;
 
-        PreReleaseTag = new SemanticVersionPreReleaseTag(semanticVersion.PreReleaseTag);
-        BuildMetaData = new SemanticVersionBuildMetaData(semanticVersion.BuildMetaData);
+        this.PreReleaseTag = new SemanticVersionPreReleaseTag(semanticVersion.PreReleaseTag);
+        this.BuildMetaData = new SemanticVersionBuildMetaData(semanticVersion.BuildMetaData);
     }
 
     public bool Equals(SemanticVersion? obj)
     {
         if (obj == null)
+        {
             return false;
-        return Major == obj.Major && Minor == obj.Minor && Patch == obj.Patch && PreReleaseTag == obj.PreReleaseTag && BuildMetaData == obj.BuildMetaData;
+        }
+        return this.Major == obj.Major && this.Minor == obj.Minor && this.Patch == obj.Patch && this.PreReleaseTag == obj.PreReleaseTag && this.BuildMetaData == obj.BuildMetaData;
     }
 
     public bool IsEmpty() => Equals(Empty);
@@ -66,9 +68,13 @@ public class SemanticVersion : IFormattable, IComparable<SemanticVersion>, IEqua
     public override bool Equals(object? obj)
     {
         if (obj is null)
+        {
             return false;
+        }
         if (ReferenceEquals(this, obj))
+        {
             return true;
+        }
         return obj.GetType() == GetType() && Equals((SemanticVersion)obj);
     }
 
@@ -76,11 +82,11 @@ public class SemanticVersion : IFormattable, IComparable<SemanticVersion>, IEqua
     {
         unchecked
         {
-            var hashCode = Major.GetHashCode();
-            hashCode = hashCode * 397 ^ Minor.GetHashCode();
-            hashCode = hashCode * 397 ^ Patch.GetHashCode();
-            hashCode = hashCode * 397 ^ PreReleaseTag.GetHashCode();
-            hashCode = hashCode * 397 ^ BuildMetaData.GetHashCode();
+            var hashCode = this.Major.GetHashCode();
+            hashCode = (hashCode * 397) ^ this.Minor.GetHashCode();
+            hashCode = (hashCode * 397) ^ this.Patch.GetHashCode();
+            hashCode = (hashCode * 397) ^ this.PreReleaseTag.GetHashCode();
+            hashCode = (hashCode * 397) ^ this.BuildMetaData.GetHashCode();
             return hashCode;
         }
     }
@@ -88,7 +94,9 @@ public class SemanticVersion : IFormattable, IComparable<SemanticVersion>, IEqua
     public static bool operator ==(SemanticVersion? v1, SemanticVersion? v2)
     {
         if (v1 is null)
+        {
             return v2 is null;
+        }
         return v1.Equals(v2);
     }
 
@@ -217,29 +225,39 @@ public class SemanticVersion : IFormattable, IComparable<SemanticVersion>, IEqua
     public int CompareTo(SemanticVersion? value, bool includePrerelease)
     {
         if (value == null)
+        {
             return 1;
-        if (Major != value.Major)
+        }
+        if (this.Major != value.Major)
         {
-            if (Major > value.Major)
+            if (this.Major > value.Major)
+            {
                 return 1;
+            }
             return -1;
         }
-        if (Minor != value.Minor)
+        if (this.Minor != value.Minor)
         {
-            if (Minor > value.Minor)
+            if (this.Minor > value.Minor)
+            {
                 return 1;
+            }
             return -1;
         }
-        if (Patch != value.Patch)
+        if (this.Patch != value.Patch)
         {
-            if (Patch > value.Patch)
+            if (this.Patch > value.Patch)
+            {
                 return 1;
+            }
             return -1;
         }
-        if (includePrerelease && PreReleaseTag != value.PreReleaseTag)
+        if (includePrerelease && this.PreReleaseTag != value.PreReleaseTag)
         {
-            if (PreReleaseTag > value.PreReleaseTag)
+            if (this.PreReleaseTag > value.PreReleaseTag)
+            {
                 return 1;
+            }
             return -1;
         }
 
@@ -259,7 +277,7 @@ public class SemanticVersion : IFormattable, IComparable<SemanticVersion>, IEqua
     /// </summary>
     public string ToString(string? format, IFormatProvider? formatProvider)
     {
-        if (string.IsNullOrEmpty(format))
+        if (format.IsNullOrEmpty())
             format = "s";
 
         if (formatProvider?.GetFormat(GetType()) is ICustomFormatter formatter)
@@ -270,22 +288,22 @@ public class SemanticVersion : IFormattable, IComparable<SemanticVersion>, IEqua
         switch (format)
         {
             case "j":
-                return $"{Major}.{Minor}.{Patch}";
+                return $"{this.Major}.{this.Minor}.{this.Patch}";
             case "s":
-                return PreReleaseTag.HasTag() ? $"{ToString("j")}-{PreReleaseTag}" : ToString("j");
+                return this.PreReleaseTag.HasTag() ? $"{ToString("j")}-{this.PreReleaseTag}" : ToString("j");
             case "t":
-                return PreReleaseTag.HasTag() ? $"{ToString("j")}-{PreReleaseTag.ToString("t")}" : ToString("j");
+                return this.PreReleaseTag.HasTag() ? $"{ToString("j")}-{this.PreReleaseTag.ToString("t")}" : ToString("j");
             case "f":
                 {
-                    var buildMetadata = BuildMetaData.ToString();
+                    var buildMetadata = this.BuildMetaData.ToString();
 
-                    return !string.IsNullOrEmpty(buildMetadata) ? $"{ToString("s")}+{buildMetadata}" : ToString("s");
+                    return !buildMetadata.IsNullOrEmpty() ? $"{ToString("s")}+{buildMetadata}" : ToString("s");
                 }
             case "i":
                 {
-                    var buildMetadata = BuildMetaData.ToString("f");
+                    var buildMetadata = this.BuildMetaData.ToString("f");
 
-                    return !string.IsNullOrEmpty(buildMetadata) ? $"{ToString("s")}+{buildMetadata}" : ToString("s");
+                    return !buildMetadata.IsNullOrEmpty() ? $"{ToString("s")}+{buildMetadata}" : ToString("s");
                 }
             default:
                 throw new FormatException($"Unknown format '{format}'.");
@@ -325,8 +343,10 @@ public class SemanticVersion : IFormattable, IComparable<SemanticVersion>, IEqua
         var preReleaseTagNumber = PreReleaseTag.Number;
 
         if (PreReleaseTag.HasTag())
+        {
             preReleaseTagNumber++;
-        else if (!string.IsNullOrEmpty(label))
+        }
+        else if (!label.IsNullOrEmpty())
         {
             preReleaseTagNumber = 1;
             preReleaseTagName = label;

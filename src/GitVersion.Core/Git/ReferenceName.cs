@@ -79,7 +79,9 @@ public class ReferenceName : IEquatable<ReferenceName?>, IComparable<ReferenceNa
     public override string ToString() => Friendly;
 
     public bool TryGetSemanticVersion([NotNullWhen(true)] out (SemanticVersion Value, string? Name) result,
-        Regex versionPatternRegex, string? labelPrefix, SemanticVersionFormat format)
+                                      Regex versionPatternRegex,
+                                      string? labelPrefix,
+                                      SemanticVersionFormat format)
     {
         result = default;
 

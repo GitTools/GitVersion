@@ -87,15 +87,15 @@ public class SemanticVersionBuildMetaData : IFormattable, IEquatable<SemanticVer
         if (formatProvider?.GetFormat(GetType()) is ICustomFormatter formatter)
             return formatter.Format(format, this, formatProvider);
 
-        if (string.IsNullOrEmpty(format))
+        if (format.IsNullOrEmpty())
             format = "b";
 
         format = format.ToLower();
         return format.ToLower() switch
         {
             "b" => $"{this.CommitsSinceTag}",
-            "s" => $"{this.CommitsSinceTag}{(string.IsNullOrEmpty(this.Sha) ? null : ".Sha." + this.Sha)}".TrimStart('.'),
-            "f" => $"{this.CommitsSinceTag}{(string.IsNullOrEmpty(this.Branch) ? null : ".Branch." + FormatMetaDataPart(this.Branch))}{(string.IsNullOrEmpty(this.Sha) ? null : ".Sha." + this.Sha)}{(string.IsNullOrEmpty(this.OtherMetaData) ? null : "." + FormatMetaDataPart(this.OtherMetaData))}".TrimStart('.'),
+            "s" => $"{this.CommitsSinceTag}{(this.Sha.IsNullOrEmpty() ? null : ".Sha." + this.Sha)}".TrimStart('.'),
+            "f" => $"{this.CommitsSinceTag}{(this.Branch.IsNullOrEmpty() ? null : ".Branch." + FormatMetaDataPart(this.Branch))}{(this.Sha.IsNullOrEmpty() ? null : ".Sha." + this.Sha)}{(this.OtherMetaData.IsNullOrEmpty() ? null : "." + FormatMetaDataPart(this.OtherMetaData))}".TrimStart('.'),
             _ => throw new FormatException($"Unknown format '{format}'.")
         };
     }
@@ -112,7 +112,7 @@ public class SemanticVersionBuildMetaData : IFormattable, IEquatable<SemanticVer
 
     public static SemanticVersionBuildMetaData Parse(string? buildMetaData)
     {
-        if (string.IsNullOrEmpty(buildMetaData))
+        if (buildMetaData.IsNullOrEmpty())
             return Empty;
 
         var parsed = ParseRegex.Match(buildMetaData);
@@ -135,7 +135,7 @@ public class SemanticVersionBuildMetaData : IFormattable, IEquatable<SemanticVer
             buildMetaDataSha = parsed.Groups["Sha"].Value;
 
         string? buildMetaDataOtherMetaData = null;
-        if (parsed.Groups["Other"].Success && !string.IsNullOrEmpty(parsed.Groups["Other"].Value))
+        if (parsed.Groups["Other"].Success && !parsed.Groups["Other"].Value.IsNullOrEmpty())
             buildMetaDataOtherMetaData = parsed.Groups["Other"].Value.TrimStart('.');
 
         return new()
@@ -150,7 +150,7 @@ public class SemanticVersionBuildMetaData : IFormattable, IEquatable<SemanticVer
 
     private static string FormatMetaDataPart(string value)
     {
-        if (!string.IsNullOrEmpty(value))
+        if (!value.IsNullOrEmpty())
             value = Regex.Replace(value, "[^0-9A-Za-z-.]", "-");
         return value;
     }
