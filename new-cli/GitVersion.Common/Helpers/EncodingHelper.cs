@@ -1,5 +1,3 @@
-using System.Text;
-
 namespace GitVersion.Helpers;
 
 public static class EncodingHelper

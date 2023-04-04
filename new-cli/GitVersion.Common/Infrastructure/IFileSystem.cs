@@ -1,5 +1,3 @@
-using System.Text;
-
 namespace GitVersion.Infrastructure;
 
 public interface IFileSystem

@@ -3,6 +3,7 @@
     <PackageReference Include="Polly" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\..\src\GitVersion.Core\Extensions\StringExtensions.cs" Link="Extensions\StringExtensions.cs" />
     <Compile Include="..\..\src\GitVersion.Core\Git\AuthenticationInfo.cs">
       <Link>Git\AuthenticationInfo.cs</Link>
     </Compile>
