@@ -1,6 +1,6 @@
 ---
 name: Documentation
-about: Describe this issue template's purpose here.
+about: Describe the missing/wrong information in the documentation.
 title: "[Docs]"
 labels: documentation
 assignees: ''
