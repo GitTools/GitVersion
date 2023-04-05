@@ -28,7 +28,7 @@ public class VersionInMergedBranchNameScenarios : TestBase
 
     [TestCase("release")]
     [TestCase("hotfix")]
-    public void DoesNotTakeVersionFromNameWhenItHasBeenAccidentalSpecifiedInBranch(string branch)
+    public void DoesNotTakeVersionFromBranchWithAccidentalVersion(string branch)
     {
         using var fixture = new EmptyRepositoryFixture("main");
 
