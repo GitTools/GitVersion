@@ -390,7 +390,6 @@ public class DevelopScenarios : TestBase
     public void WhenPreventIncrementOfMergedBranchVersionIsSetToFalseForDevelopCommitsSinceVersionSourceShouldNotGoDownWhenMergingHotfixToDevelop()
     {
         var configuration = GitFlowConfigurationBuilder.New
-            .WithVersioningMode(VersioningMode.ContinuousDeployment)
             .WithBranch("develop", builder => builder
                 .WithPreventIncrementOfMergedBranchVersion(false)
             )
@@ -413,7 +412,7 @@ public class DevelopScenarios : TestBase
         const string ReleaseBranch = "release/1.1.0";
         Commands.Checkout(fixture.Repository, fixture.Repository.CreateBranch(ReleaseBranch));
         fixture.Repository.MakeCommits(3);
-        fixture.AssertFullSemver("1.1.0-beta.3", configuration);
+        fixture.AssertFullSemver("1.1.0-beta.1+3", configuration);
 
         // Simulate a GitFlow release finish.
         fixture.Checkout(MainBranch);
@@ -460,23 +459,23 @@ public class DevelopScenarios : TestBase
         fixture.MakeACommit();
 
         // ✅ succeeds as expected
-        fixture.AssertFullSemver("0.0.1+1", configurationBuilder.Build());
+        fixture.AssertFullSemver("0.0.1-1", configurationBuilder.Build());
 
         configurationBuilder.WithNextVersion("1.0.0");
 
         // ✅ succeeds as expected
-        fixture.AssertFullSemver("1.0.0+1", configurationBuilder.Build());
+        fixture.AssertFullSemver("1.0.0-1", configurationBuilder.Build());
 
         fixture.MakeACommit();
         configurationBuilder.WithNextVersion(null);
 
         // ✅ succeeds as expected
-        fixture.AssertFullSemver("0.0.1+2", configurationBuilder.Build());
+        fixture.AssertFullSemver("0.0.1-2", configurationBuilder.Build());
 
         configurationBuilder.WithNextVersion("1.0.0");
 
         // ✅ succeeds as expected
-        fixture.AssertFullSemver("1.0.0+2", configurationBuilder.Build());
+        fixture.AssertFullSemver("1.0.0-2", configurationBuilder.Build());
     }
 
     /// <summary>
@@ -540,15 +539,13 @@ public class DevelopScenarios : TestBase
         // Merge from develop to main
         fixture.BranchTo("main");
 
-        // ❔ expected: "0.0.1+4"
-        // This behavior needs to be changed for the git flow workflow using the track-merge-message or track-merge-target options.
-        // [Bug] track-merge-changes produces unexpected result when combining hotfix and support branches #3052
-        fixture.AssertFullSemver("1.0.0+0", configurationBuilder.Build());
+        // ✅ succeeds as expected
+        fixture.AssertFullSemver("1.0.0-0", configurationBuilder.Build());
 
         configurationBuilder.WithNextVersion("1.0.0");
 
         // ✅ succeeds as expected
-        fixture.AssertFullSemver("1.0.0+0", configurationBuilder.Build());
+        fixture.AssertFullSemver("1.0.0-0", configurationBuilder.Build());
 
         // Mark this version as RTM
         fixture.ApplyTag("1.0.0");

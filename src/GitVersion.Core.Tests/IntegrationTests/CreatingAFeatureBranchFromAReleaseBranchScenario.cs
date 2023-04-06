@@ -27,7 +27,7 @@ public class CreatingAFeatureBranchFromAReleaseBranchScenario
         fixture.Repository.MakeACommit();
 
         // ✅ succeeds as expected
-        fixture.AssertFullSemver("0.0.1+1", configuration);
+        fixture.AssertFullSemver("0.0.1-1", configuration);
 
         fixture.BranchTo("release/1.0.0");
 
@@ -43,7 +43,7 @@ public class CreatingAFeatureBranchFromAReleaseBranchScenario
         fixture.MakeACommit();
 
         // ✅ succeeds as expected
-        fixture.AssertFullSemver("0.0.1+2", configuration);
+        fixture.AssertFullSemver("0.0.1-2", configuration);
 
         fixture.BranchTo("release/1.1.0");
         fixture.Checkout("release/1.0.0");
@@ -398,7 +398,7 @@ public class CreatingAFeatureBranchFromAReleaseBranchScenario
         fixture.Repository.MakeACommit();
 
         // ✅ succeeds as expected
-        fixture.AssertFullSemver("0.0.1+1", configuration);
+        fixture.AssertFullSemver("0.0.1-1", configuration);
 
         fixture.BranchTo("release/1.0.0");
 
@@ -463,7 +463,7 @@ public class CreatingAFeatureBranchFromAReleaseBranchScenario
         fixture.MakeACommit();
 
         // ✅ succeeds as expected
-        fixture.AssertFullSemver("0.0.1+1", configuration);
+        fixture.AssertFullSemver("0.0.1-1", configuration);
 
         fixture.BranchTo("develop");
 
@@ -507,12 +507,12 @@ public class CreatingAFeatureBranchFromAReleaseBranchScenario
 
         fixture.Repository.Branches.Remove("release/1.0.0");
 
-        // ❔ expected: "0.1.0+6" because the release has been canceled and should be treated like it was never existing
+        // ✅ succeeds as expected
         fixture.AssertFullSemver("1.1.0-alpha.4", configuration);
 
         fixture.MakeACommit();
 
-        // ❔ expected: "0.1.0+7" because the release has been canceled and should be treated like it was never existing
+        // ✅ succeeds as expected
         fixture.AssertFullSemver("1.1.0-alpha.5", configuration);
 
         fixture.Repository.DumpGraph();
@@ -541,7 +541,7 @@ public class CreatingAFeatureBranchFromAReleaseBranchScenario
         fixture.MakeACommit();
 
         // ✅ succeeds as expected
-        fixture.AssertFullSemver("0.0.1+1", configuration);
+        fixture.AssertFullSemver("0.0.1-1", configuration);
 
         fixture.BranchTo("develop");
 
@@ -581,8 +581,8 @@ public class CreatingAFeatureBranchFromAReleaseBranchScenario
         fixture.Checkout("main");
         fixture.MergeNoFF("release/1.0.0");
 
-        // ❔ expected: "0.0.1+4" because until the commit is not tagged it's a hotfix
-        fixture.AssertFullSemver("1.0.0+0", configuration);
+        // ✅ succeeds as expected
+        fixture.AssertFullSemver("1.0.0-0", configuration);
 
         fixture.ApplyTag("1.0.0");
 
@@ -601,7 +601,7 @@ public class CreatingAFeatureBranchFromAReleaseBranchScenario
 
         fixture.Repository.Branches.Remove("release/1.0.0");
 
-        // ❔ expected: "1.1.0-alpha.2" because only one commit and one merge has been pushed
+        // ✅ succeeds as expected
         fixture.AssertFullSemver("1.1.0-alpha.6", configuration);
 
         fixture.Repository.DumpGraph();
@@ -630,7 +630,7 @@ public class CreatingAFeatureBranchFromAReleaseBranchScenario
         fixture.MakeACommit();
 
         // ✅ succeeds as expected
-        fixture.AssertFullSemver("0.0.1+1", configuration);
+        fixture.AssertFullSemver("0.0.1-1", configuration);
 
         fixture.BranchTo("develop");
 
@@ -670,13 +670,13 @@ public class CreatingAFeatureBranchFromAReleaseBranchScenario
         fixture.Checkout("main");
         fixture.MergeNoFF("release/1.0.0");
 
-        // ❔ expected: "0.0.1+4" because until the commit is not tagged it's a hotfix
-        fixture.AssertFullSemver("1.0.0+0", configuration);
+        // ✅ succeeds as expected
+        fixture.AssertFullSemver("1.0.0-0", configuration);
 
         fixture.Repository.Branches.Remove("release/1.0.0");
 
-        // ❔ expected: "0.0.1+4" because until the commit is not tagged it's a hotfix
-        fixture.AssertFullSemver("1.0.0+0", configuration);
+        // ✅ succeeds as expected
+        fixture.AssertFullSemver("1.0.0-0", configuration);
 
         fixture.ApplyTag("1.0.0");
 

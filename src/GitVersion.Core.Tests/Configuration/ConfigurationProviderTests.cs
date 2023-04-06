@@ -4,6 +4,7 @@ using GitVersion.Core.Tests.Helpers;
 using GitVersion.Extensions;
 using GitVersion.Helpers;
 using GitVersion.Logging;
+using GitVersion.VersionCalculation;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
@@ -33,21 +34,26 @@ public class ConfigurationProviderTests : TestBase
     [Test]
     public void OverwritesDefaultsWithProvidedConfig()
     {
-        var defaultConfig = this.configurationProvider.ProvideForDirectory(this.repoPath);
+        var defaultConfiguration = this.configurationProvider.ProvideForDirectory(this.repoPath);
         const string text = @"
 next-version: 2.0.0
 branches:
     develop:
-        mode: ContinuousDeployment
+        increment: Major
+        mode: ContinuousDelivery
         label: dev";
         SetupConfigFileContent(text);
         var configuration = this.configurationProvider.ProvideForDirectory(this.repoPath);
 
         configuration.NextVersion.ShouldBe("2.0.0");
         configuration.Branches.ShouldNotBeNull();
-        configuration.Branches["develop"].Increment.ShouldBe(defaultConfig.Branches["develop"].Increment);
-        configuration.Branches["develop"].VersioningMode.ShouldBe(defaultConfig.Branches["develop"].VersioningMode);
-        configuration.Branches["develop"].Label.ShouldBe("dev");
+
+        var developConfiguration = configuration.Branches["develop"];
+        developConfiguration.Increment.ShouldBe(IncrementStrategy.Major);
+        developConfiguration.Increment.ShouldNotBe(defaultConfiguration.Branches["develop"].Increment);
+        developConfiguration.VersioningMode.ShouldBe(VersioningMode.ContinuousDelivery);
+        developConfiguration.VersioningMode.ShouldNotBe(defaultConfiguration.Branches["develop"].VersioningMode);
+        developConfiguration.Label.ShouldBe("dev");
     }
 
     [Test]

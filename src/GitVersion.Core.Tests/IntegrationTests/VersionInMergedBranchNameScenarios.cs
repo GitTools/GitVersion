@@ -38,7 +38,7 @@ public class VersionInMergedBranchNameScenarios : TestBase
         fixture.Checkout("main");
         fixture.MergeNoFF($"{branch}/downgrade-some-lib-to-3.2.1");
 
-        fixture.AssertFullSemver("1.0.1+2");
+        fixture.AssertFullSemver("1.0.1-2");
     }
 
     [Test]
@@ -64,7 +64,7 @@ public class VersionInMergedBranchNameScenarios : TestBase
 
         fixture.LocalRepositoryFixture.MergeNoFF("origin/release/2.0.0");
 
-        fixture.LocalRepositoryFixture.AssertFullSemver("2.0.0+0");
+        fixture.LocalRepositoryFixture.AssertFullSemver("2.0.0-0");
     }
 
     [Test]
@@ -78,7 +78,7 @@ public class VersionInMergedBranchNameScenarios : TestBase
 
         fixture.LocalRepositoryFixture.MergeNoFF("upstream/release/2.0.0");
 
-        fixture.LocalRepositoryFixture.AssertFullSemver("0.0.1+7");
+        fixture.LocalRepositoryFixture.AssertFullSemver("0.0.1-7");
     }
 }
 

@@ -35,7 +35,7 @@ public class VersionInCurrentBranchNameScenarios : TestBase
         using var fixture = new BaseGitFlowRepositoryFixture("1.0.0");
         fixture.BranchTo("support/2.0.0");
 
-        fixture.AssertFullSemver("2.0.0+1", configuration);
+        fixture.AssertFullSemver("2.0.0-1", configuration);
     }
 
     [Test]

@@ -13,7 +13,7 @@ public class MainlineDevelopmentMode : TestBase
         .WithBranch("develop", builder => builder.WithVersioningMode(VersioningMode.Mainline))
         .WithBranch("feature", builder => builder.WithVersioningMode(VersioningMode.Mainline))
         .WithBranch("support", builder => builder.WithVersioningMode(VersioningMode.Mainline))
-        .WithBranch("pull-request", builder => builder.WithVersioningMode(VersioningMode.Mainline));
+        .WithBranch("pull-request", builder => builder.WithVersioningMode(null));
 
     [Test]
     public void VerifyNonMainMainlineVersionIdenticalAsMain()

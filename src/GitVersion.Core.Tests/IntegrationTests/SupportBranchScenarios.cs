@@ -36,10 +36,10 @@ public class SupportBranchScenarios : TestBase
         fixture.AssertFullSemver("1.2.0-beta.1+1");
 
         // Create 1.2.0 release
-        fixture.Checkout("support/1.0.0");
-        fixture.MergeNoFF("release/1.2.0");
-        fixture.AssertFullSemver("1.2.0+0");
-        fixture.ApplyTag("1.2.0");
+        Commands.Checkout(fixture.Repository, "support/1.0.0");
+        fixture.Repository.MergeNoFF("release/1.2.0");
+        fixture.AssertFullSemver("1.2.0-0");
+        fixture.Repository.ApplyTag("1.2.0");
 
         // Create 1.2.1 hotfix
         fixture.BranchTo("hotfix/1.2.1");
@@ -47,7 +47,7 @@ public class SupportBranchScenarios : TestBase
         fixture.AssertFullSemver("1.2.1-beta.1+3");
         fixture.Checkout("support/1.0.0");
         fixture.MergeNoFF("hotfix/1.2.1");
-        fixture.AssertFullSemver("1.2.1+2");
+        fixture.AssertFullSemver("1.2.1-2");
     }
 
     [Test]
@@ -68,7 +68,7 @@ public class SupportBranchScenarios : TestBase
         fixture.Repository.MakeACommit();
         fixture.Repository.MakeACommit();
 
-        fixture.AssertFullSemver("1.3.1+2");
+        fixture.AssertFullSemver("1.3.1-2");
     }
 
     [Test]
@@ -79,13 +79,13 @@ public class SupportBranchScenarios : TestBase
         using var fixture = new EmptyRepositoryFixture();
 
         fixture.MakeACommit();
-        fixture.AssertFullSemver("0.0.1+1");
+        fixture.AssertFullSemver("0.0.1-1");
 
         fixture.ApplyTag("1.4.0-rc");
         fixture.MakeACommit();
         fixture.BranchTo("support/1");
 
-        fixture.AssertFullSemver("1.4.0+2", configuration);
+        fixture.AssertFullSemver("1.4.0-2", configuration);
     }
 
     [Test]
@@ -96,11 +96,11 @@ public class SupportBranchScenarios : TestBase
         using var fixture = new EmptyRepositoryFixture();
 
         fixture.MakeACommit();
-        fixture.AssertFullSemver("0.0.1+1", configuration);
+        fixture.AssertFullSemver("0.0.1-1", configuration);
 
         fixture.ApplyTag("1.4.0-rc");
         fixture.BranchTo("support/1");
 
-        fixture.AssertFullSemver("1.4.0+1", configuration);
+        fixture.AssertFullSemver("1.4.0-1", configuration);
     }
 }

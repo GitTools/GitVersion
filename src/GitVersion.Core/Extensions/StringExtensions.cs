@@ -104,4 +104,8 @@ public static class StringExtensions
     public static bool IsNullOrWhiteSpace([NotNullWhen(false)] this string? value) => string.IsNullOrWhiteSpace(value);
 
     public static bool IsEmpty([NotNullWhen(false)] this string? value) => string.Empty.Equals(value);
+
+    public static string WithPrefixIfNotNullOrEmpty(this string value, string prefix)
+        => string.IsNullOrEmpty(value) ? value : prefix + value;
+
 }

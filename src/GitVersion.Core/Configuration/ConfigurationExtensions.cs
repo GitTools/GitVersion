@@ -8,7 +8,7 @@ public static class ConfigurationExtensions
     public static EffectiveConfiguration GetEffectiveConfiguration(this IGitVersionConfiguration configuration, IBranch branch)
         => GetEffectiveConfiguration(configuration, branch.NotNull().Name);
 
-    private static EffectiveConfiguration GetEffectiveConfiguration(this IGitVersionConfiguration configuration, ReferenceName branchName)
+    public static EffectiveConfiguration GetEffectiveConfiguration(this IGitVersionConfiguration configuration, ReferenceName branchName)
     {
         IBranchConfiguration branchConfiguration = configuration.GetBranchConfiguration(branchName);
         return new EffectiveConfiguration(configuration, branchConfiguration);
@@ -73,9 +73,10 @@ public static class ConfigurationExtensions
             label = ConfigurationConstants.BranchNamePlaceholder;
         }
 
+        var value = branchNameOverride ?? branchName;
+
         if (label?.Contains(ConfigurationConstants.BranchNamePlaceholder) == true)
         {
-            var value = branchNameOverride ?? branchName;
             if (!configuration.BranchPrefixToTrim.IsNullOrWhiteSpace())
             {
                 var branchNameTrimmed = value?.RegexReplace(
@@ -87,6 +88,17 @@ public static class ConfigurationExtensions
             value = value?.RegexReplace("[^a-zA-Z0-9-]", "-");
 
             label = label.Replace(ConfigurationConstants.BranchNamePlaceholder, value);
+        }
+
+        // Evaluate tag number pattern and append to prerelease tag, preserving build metadata
+        if (!configuration.LabelNumberPattern.IsNullOrEmpty() && !value.IsNullOrEmpty() && label is not null)
+        {
+            var match = Regex.Match(value, configuration.LabelNumberPattern);
+            var numberGroup = match.Groups["number"];
+            if (numberGroup.Success)
+            {
+                label += numberGroup.Value;
+            }
         }
 
         return label;

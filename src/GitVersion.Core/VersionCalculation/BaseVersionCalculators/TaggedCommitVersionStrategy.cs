@@ -17,7 +17,7 @@ internal sealed class TaggedCommitVersionStrategy : VersionStrategyBase
         : base(versionContext) => this.repositoryStore = repositoryStore.NotNull();
 
     public override IEnumerable<BaseVersion> GetBaseVersions(EffectiveBranchConfiguration configuration)
-        => GetSemanticVersions(configuration).Select(element => CreateBaseVersion(configuration, element));
+        => GetSemanticVersions(configuration).Select(CreateBaseVersion);
 
     private IEnumerable<SemanticVersionWithTag> GetSemanticVersions(EffectiveBranchConfiguration configuration)
     {
@@ -81,22 +81,11 @@ internal sealed class TaggedCommitVersionStrategy : VersionStrategyBase
         }
     }
 
-    private BaseVersion CreateBaseVersion(EffectiveBranchConfiguration configuration, SemanticVersionWithTag semanticVersion)
+    private static BaseVersion CreateBaseVersion(SemanticVersionWithTag semanticVersion)
     {
         var tagCommit = semanticVersion.Tag.Commit;
-        var shouldUpdateVersion = tagCommit.Sha != Context.CurrentCommit?.Sha;
-
-        if (!shouldUpdateVersion && !configuration.Value.Label.IsNullOrEmpty() && !semanticVersion.Value.PreReleaseTag.HasTag())
-        {
-            return new BaseVersion(
-                $"Git tag '{semanticVersion.Tag.Name.Friendly}'", true, semanticVersion.Value, tagCommit, null
-            );
-        }
-        else
-        {
-            return new BaseVersion(
-                $"Git tag '{semanticVersion.Tag.Name.Friendly}'", shouldUpdateVersion, semanticVersion.Value, tagCommit, null
-            );
-        }
+        return new BaseVersion(
+             $"Git tag '{semanticVersion.Tag.Name.Friendly}'", true, semanticVersion.Value, tagCommit, null
+         );
     }
 }

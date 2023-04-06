@@ -23,7 +23,7 @@ internal sealed class GitFlowConfigurationBuilder : ConfigurationBuilderBase<Git
             VersionInBranchPattern = ConfigurationConstants.DefaultVersionInBranchPattern,
             LabelPreReleaseWeight = 60000,
             UpdateBuildNumber = true,
-            VersioningMode = VersioningMode.ContinuousDelivery,
+            VersioningMode = VersioningMode.ContinuousDeployment,
             RegularExpression = string.Empty,
             Label = ConfigurationConstants.BranchNamePlaceholder,
             Increment = IncrementStrategy.Inherit,
@@ -40,7 +40,6 @@ internal sealed class GitFlowConfigurationBuilder : ConfigurationBuilderBase<Git
         {
             Increment = IncrementStrategy.Minor,
             RegularExpression = DevelopBranch.RegexPattern,
-            VersioningMode = VersioningMode.ContinuousDeployment,
             SourceBranches = new HashSet<string>(),
             Label = "alpha",
             PreventIncrementOfMergedBranchVersion = false,
@@ -72,6 +71,7 @@ internal sealed class GitFlowConfigurationBuilder : ConfigurationBuilderBase<Git
         {
             Increment = IncrementStrategy.None,
             RegularExpression = ReleaseBranch.RegexPattern,
+            VersioningMode = VersioningMode.ContinuousDelivery,
             SourceBranches = new HashSet<string> {
                 DevelopBranch.Name,
                 MainBranch.Name,
@@ -108,7 +108,7 @@ internal sealed class GitFlowConfigurationBuilder : ConfigurationBuilderBase<Git
         {
             Increment = IncrementStrategy.Inherit,
             RegularExpression = PullRequestBranch.RegexPattern,
-            VersioningMode = VersioningMode.ContinuousDelivery,
+            VersioningMode = VersioningMode.ContinuousDeployment,
             SourceBranches = new HashSet<string> {
                 DevelopBranch.Name,
                 MainBranch.Name,

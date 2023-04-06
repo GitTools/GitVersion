@@ -16,7 +16,7 @@ public class AssemblyFileVersionTests : TestBase
     {
         var semVer = new SemanticVersion(major, minor, patch)
         {
-            PreReleaseTag = new SemanticVersionPreReleaseTag("Test", tag)
+            PreReleaseTag = new SemanticVersionPreReleaseTag("Test", tag, true)
         };
 
         var assemblyFileVersion = semVer.GetAssemblyFileVersion(assemblyFileVersioningScheme);

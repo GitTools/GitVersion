@@ -18,7 +18,7 @@ public class MainScenarios : TestBase
         using var fixture = new EmptyRepositoryFixture();
         fixture.Repository.MakeATaggedCommit("1.0.0");
         fixture.Repository.MakeCommits(2);
-        fixture.AssertFullSemver("1.0.1+2", configuaration);
+        fixture.AssertFullSemver("1.0.1-1+2", configuaration);
     }
 
     [Test]
@@ -45,7 +45,7 @@ public class MainScenarios : TestBase
         fixture.Repository.MakeACommit();
 
         // When
-        fixture.AssertFullSemver("0.0.1+3");
+        fixture.AssertFullSemver("0.0.1-3");
     }
 
     [Test]
@@ -59,7 +59,7 @@ public class MainScenarios : TestBase
         fixture.Repository.MakeACommit();
 
         // When
-        fixture.AssertFullSemver("0.0.1+3");
+        fixture.AssertFullSemver("0.0.1-3");
     }
 
     [Test]
@@ -76,7 +76,7 @@ public class MainScenarios : TestBase
         Commands.Checkout(fixture.Repository, commit);
 
         // When
-        fixture.AssertFullSemver("0.0.1+3", onlyTrackedBranches: false);
+        fixture.AssertFullSemver("0.0.1-3", onlyTrackedBranches: false);
     }
 
     [Test]
@@ -89,7 +89,7 @@ public class MainScenarios : TestBase
         fixture.Repository.MakeATaggedCommit(taggedVersion);
         fixture.Repository.MakeCommits(5);
 
-        fixture.AssertFullSemver("1.1.0+5", configuration);
+        fixture.AssertFullSemver("1.1.0-5", configuration);
     }
 
     [Test]
@@ -111,12 +111,12 @@ public class MainScenarios : TestBase
         const string taggedVersion = "1.0.3";
         fixture.Repository.MakeATaggedCommit(taggedVersion);
         fixture.Repository.MakeACommit();
-        fixture.AssertFullSemver("1.0.4+1");
+        fixture.AssertFullSemver("1.0.4-1");
 
         // I'm not sure if the postfix +1 is correct here...
         // but the next version configuration property is something for the user to manipulate the resulting version.
         var configuration = GitFlowConfigurationBuilder.New.WithNextVersion("1.1.0").Build();
-        fixture.AssertFullSemver("1.1.0+1", configuration);
+        fixture.AssertFullSemver("1.1.0-1", configuration);
     }
 
     [Test]
@@ -137,9 +137,9 @@ public class MainScenarios : TestBase
         const string taggedVersion = "1.0.3";
         fixture.Repository.MakeATaggedCommit(taggedVersion);
         fixture.Repository.MakeACommit();
-        fixture.AssertFullSemver("1.0.4+1");
+        fixture.AssertFullSemver("1.0.4-1");
         var configuration = GitFlowConfigurationBuilder.New.WithNextVersion("1.0.4").Build();
-        fixture.AssertFullSemver("1.0.4+1", configuration);
+        fixture.AssertFullSemver("1.0.4-1", configuration);
     }
 
     [Test]
@@ -150,7 +150,7 @@ public class MainScenarios : TestBase
         fixture.Repository.MakeATaggedCommit(taggedVersion);
         fixture.Repository.MakeCommits(5);
 
-        fixture.AssertFullSemver("1.0.4+5");
+        fixture.AssertFullSemver("1.0.4-5");
     }
 
     [Test]
@@ -172,7 +172,7 @@ public class MainScenarios : TestBase
         fixture.Repository.MakeCommits(5);
 
         var configuration = GitFlowConfigurationBuilder.New.WithNextVersion("1.0.0").Build();
-        fixture.AssertFullSemver("1.1.1+5", configuration);
+        fixture.AssertFullSemver("1.1.1-5", configuration);
     }
 
     [Test]
@@ -195,7 +195,7 @@ public class MainScenarios : TestBase
         fixture.Repository.MakeCommits(5);
 
         var configuration = GitFlowConfigurationBuilder.New.WithLabelPrefix("version-").Build();
-        fixture.AssertFullSemver("1.0.4+5", configuration);
+        fixture.AssertFullSemver("1.0.4-5", configuration);
     }
 
     [Test]
@@ -207,13 +207,13 @@ public class MainScenarios : TestBase
         fixture.Repository.MakeATaggedCommit(taggedVersion);
         fixture.Repository.MakeCommits(5);
 
-        fixture.AssertFullSemver("1.0.4+5", configuration);
+        fixture.AssertFullSemver("1.0.4-5", configuration);
 
         taggedVersion = "version-1.0.5";
         fixture.Repository.MakeATaggedCommit(taggedVersion);
         fixture.Repository.MakeCommits(5);
 
-        fixture.AssertFullSemver("1.0.6+5", configuration);
+        fixture.AssertFullSemver("1.0.6-5", configuration);
     }
 
     [Test]
@@ -225,12 +225,12 @@ public class MainScenarios : TestBase
         fixture.Repository.MakeATaggedCommit(taggedVersion);
         fixture.Repository.MakeCommits(5);
 
-        fixture.AssertFullSemver("0.0.1+6", configuration);
+        fixture.AssertFullSemver("0.0.1-6", configuration);
 
         taggedVersion = "bad/1.0.3";
         fixture.Repository.MakeATaggedCommit(taggedVersion);
 
-        fixture.AssertFullSemver("0.0.1+7", configuration);
+        fixture.AssertFullSemver("0.0.1-7", configuration);
     }
 
     [Test]
@@ -372,8 +372,8 @@ public class MainScenarios : TestBase
         fixture.AssertFullSemver("1.1.0-alpha.3", configurationBuilder.Build());
     }
 
-    [TestCase(true, "1.1.0+0")]
-    [TestCase(false, "1.0.1+4")]
+    [TestCase(true, "1.1.0-0")]
+    [TestCase(false, "1.0.1-4")]
     public void TrackMergeMessageShouldBeConsideredOnTheMainBranch(bool trackMergeMessage, string expectedSemanticVersion)
     {
         using EmptyRepositoryFixture fixture = new("main");
@@ -394,7 +394,7 @@ public class MainScenarios : TestBase
         fixture.MakeACommit();
 
         // ✅ succeeds as expected
-        fixture.AssertFullSemver("1.0.1+1", configuration);
+        fixture.AssertFullSemver("1.0.1-1", configuration);
 
         fixture.MergeNoFF("release/1.1.0");
 

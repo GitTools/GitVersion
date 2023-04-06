@@ -33,7 +33,7 @@ namespace GitVersion.Core.Tests.IntegrationTests
             fixture.AssertFullSemver("1.1.0-beta.1+1");
             fixture.Checkout(MainBranch);
             fixture.MergeNoFF(release1Branch);
-            fixture.AssertFullSemver("1.1.0+0");
+            fixture.AssertFullSemver("1.1.0-0");
             fixture.ApplyTag("1.1.0");
             fixture.AssertFullSemver("1.1.0");
             fixture.Checkout(developBranch);
@@ -56,7 +56,7 @@ namespace GitVersion.Core.Tests.IntegrationTests
             fixture.AssertFullSemver("1.2.0-beta.1+1");
             fixture.Checkout(MainBranch);
             fixture.MergeNoFF(release2Branch);
-            fixture.AssertFullSemver("1.2.0+0");
+            fixture.AssertFullSemver("1.2.0-0");
             fixture.ApplyTag("1.2.0");
             fixture.AssertFullSemver("1.2.0");
             fixture.Checkout(developBranch);
@@ -71,7 +71,7 @@ namespace GitVersion.Core.Tests.IntegrationTests
             fixture.AssertFullSemver("1.2.1-beta.1+1");
             fixture.Checkout(MainBranch);
             fixture.MergeNoFF(hotfixBranch);
-            fixture.AssertFullSemver("1.2.1+2");
+            fixture.AssertFullSemver("1.2.1-2");
             fixture.ApplyTag("1.2.1");
             fixture.AssertFullSemver("1.2.1");
             fixture.Checkout(developBranch);
