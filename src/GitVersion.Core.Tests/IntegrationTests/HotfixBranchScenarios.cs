@@ -60,7 +60,7 @@ public class HotfixBranchScenarios : TestBase
 
         // create hotfix branch
         Commands.Checkout(fixture.Repository, fixture.Repository.CreateBranch("hotfixes/1.1.1"));
-        fixture.AssertFullSemver("1.1.0"); // We are still on a tagged commit
+        fixture.AssertFullSemver("1.1.1+0");
         fixture.Repository.MakeACommit();
 
         fixture.AssertFullSemver("1.1.1-beta.1+1");
@@ -78,44 +78,44 @@ public class HotfixBranchScenarios : TestBase
             r.MakeATaggedCommit("2.0.0");
         });
         // Merge hotfix branch to support
-        Commands.Checkout(fixture.Repository, MainBranch);
+        fixture.Checkout(MainBranch);
         var tag = fixture.Repository.Tags.Single(t => t.FriendlyName == "1.1.0");
-        var supportBranch = fixture.Repository.CreateBranch("support-1.1", (LibGit2Sharp.Commit)tag.Target);
-        Commands.Checkout(fixture.Repository, supportBranch);
+        fixture.Repository.CreateBranch("support-1.1", (LibGit2Sharp.Commit)tag.Target);
+        fixture.Checkout("support-1.1");
         fixture.AssertFullSemver("1.1.0");
 
         // create hotfix branch
-        Commands.Checkout(fixture.Repository, fixture.Repository.CreateBranch("hotfix-1.1.1"));
-        fixture.AssertFullSemver("1.1.0"); // We are still on a tagged commit
-        fixture.Repository.MakeACommit();
+        fixture.BranchTo("hotfix-1.1.1");
+        fixture.AssertFullSemver("1.1.1+0");
+        fixture.MakeACommit();
 
         fixture.AssertFullSemver("1.1.1-beta.1+1");
-        fixture.Repository.MakeACommit();
+        fixture.MakeACommit();
         fixture.AssertFullSemver("1.1.1-beta.1+2");
 
         // Create feature branch off hotfix branch and complete
-        Commands.Checkout(fixture.Repository, fixture.Repository.CreateBranch("feature/fix"));
+        fixture.BranchTo("feature/fix");
         fixture.AssertFullSemver("1.1.1-fix.1+2");
-        fixture.Repository.MakeACommit();
+        fixture.MakeACommit();
         fixture.AssertFullSemver("1.1.1-fix.1+3");
 
         fixture.Repository.CreatePullRequestRef("feature/fix", "hotfix-1.1.1", prNumber: 8, normalise: true);
         fixture.AssertFullSemver("1.1.1-PullRequest8.4");
-        Commands.Checkout(fixture.Repository, "hotfix-1.1.1");
-        fixture.Repository.MergeNoFF("feature/fix", Generate.SignatureNow());
+        fixture.Checkout("hotfix-1.1.1");
+        fixture.MergeNoFF("feature/fix");
         fixture.AssertFullSemver("1.1.1-beta.1+4");
 
         // Merge hotfix into support branch to complete hotfix
-        Commands.Checkout(fixture.Repository, "support-1.1");
-        fixture.Repository.MergeNoFF("hotfix-1.1.1", Generate.SignatureNow());
+        fixture.Checkout("support-1.1");
+        fixture.MergeNoFF("hotfix-1.1.1");
         fixture.AssertFullSemver("1.1.1+5");
-        fixture.Repository.ApplyTag("1.1.1");
+        fixture.ApplyTag("1.1.1");
         fixture.AssertFullSemver("1.1.1");
 
         // Verify develop version
-        Commands.Checkout(fixture.Repository, "develop");
+        fixture.Checkout("develop");
         fixture.AssertFullSemver("2.1.0-alpha.1");
-        fixture.Repository.MergeNoFF("support-1.1", Generate.SignatureNow());
+        fixture.MergeNoFF("support-1.1");
         fixture.AssertFullSemver("2.1.0-alpha.7");
     }
 
@@ -167,7 +167,7 @@ public class HotfixBranchScenarios : TestBase
         fixture.Checkout(hotfix451);
         fixture.MergeNoFF(featureBranch); // commit 2
         fixture.Repository.Branches.Remove(featureBranch);
-        fixture.AssertFullSemver("4.5.1-beta.2", configuration);
+        fixture.AssertFullSemver("4.5.1-beta.3", configuration);
     }
 
     /// <summary>
@@ -217,7 +217,8 @@ public class HotfixBranchScenarios : TestBase
         fixture.MakeACommit("blabla"); // commit 1
         fixture.Checkout(hotfix451);
         fixture.MergeNoFF(featureBranch); // commit 2
-        fixture.AssertFullSemver("4.5.1-beta.2", configuration);
+
+        fixture.AssertFullSemver("4.5.1-beta.3", configuration);
     }
 
     [Test]

@@ -12,6 +12,7 @@ internal abstract class ConfigurationBuilderBase<TConfigurationBuilder> : IConfi
     private string? assemblyVersioningFormat;
     private string? assemblyFileVersioningFormat;
     private string? labelPrefix;
+    private string? versionInBranchPattern;
     private string? nextVersion;
     private string? majorVersionBumpMessage;
     private string? minorVersionBumpMessage;
@@ -128,6 +129,12 @@ internal abstract class ConfigurationBuilderBase<TConfigurationBuilder> : IConfi
     public virtual TConfigurationBuilder WithLabelPrefix(string? value)
     {
         this.labelPrefix = value;
+        return (TConfigurationBuilder)this;
+    }
+
+    public virtual TConfigurationBuilder WithVersionInBranchPattern(string? value)
+    {
+        this.versionInBranchPattern = value;
         return (TConfigurationBuilder)this;
     }
 
@@ -302,6 +309,7 @@ internal abstract class ConfigurationBuilderBase<TConfigurationBuilder> : IConfi
         WithAssemblyVersioningFormat(value.AssemblyVersioningFormat);
         WithAssemblyFileVersioningFormat(value.AssemblyFileVersioningFormat);
         WithLabelPrefix(value.LabelPrefix);
+        WithVersionInBranchPattern(value.VersionInBranchPattern);
         WithNextVersion(value.NextVersion);
         WithMajorVersionBumpMessage(value.MajorVersionBumpMessage);
         WithMinorVersionBumpMessage(value.MinorVersionBumpMessage);
@@ -357,6 +365,7 @@ internal abstract class ConfigurationBuilderBase<TConfigurationBuilder> : IConfi
             AssemblyVersioningFormat = this.assemblyVersioningFormat,
             AssemblyFileVersioningFormat = this.assemblyFileVersioningFormat,
             LabelPrefix = this.labelPrefix,
+            VersionInBranchPattern = this.versionInBranchPattern,
             NextVersion = this.nextVersion,
             MajorVersionBumpMessage = this.majorVersionBumpMessage,
             MinorVersionBumpMessage = this.minorVersionBumpMessage,

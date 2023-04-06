@@ -26,6 +26,21 @@ public class VersionInMergedBranchNameScenarios : TestBase
         fixture.AssertFullSemver("1.1.0-alpha.5");
     }
 
+    [TestCase("release")]
+    [TestCase("hotfix")]
+    public void DoesNotTakeVersionFromBranchWithAccidentalVersion(string branch)
+    {
+        using var fixture = new EmptyRepositoryFixture("main");
+
+        fixture.MakeATaggedCommit("1.0.0");
+        fixture.BranchTo($"{branch}/downgrade-some-lib-to-3.2.1");
+        fixture.MakeACommit();
+        fixture.Checkout("main");
+        fixture.MergeNoFF($"{branch}/downgrade-some-lib-to-3.2.1");
+
+        fixture.AssertFullSemver("1.0.1+2");
+    }
+
     [Test]
     public void TakesVersionFromNameOfBranchThatIsReleaseByConfig()
     {

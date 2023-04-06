@@ -3,6 +3,7 @@ namespace GitVersion.Configuration;
 internal static class ConfigurationConstants
 {
     public const string DefaultLabelPrefix = "[vV]?";
+    public const string DefaultVersionInBranchPattern = @"(?<version>[vV]?\d+(\.\d+)?(\.\d+)?).*";
     public const string BranchNamePlaceholder = "{BranchName}";
 
     public const string MainBranchKey = "main";

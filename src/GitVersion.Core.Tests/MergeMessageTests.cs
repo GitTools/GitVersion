@@ -111,11 +111,11 @@ public class MergeMessageTests : TestBase
 
     private static readonly object?[] BitBucketPullMergeMessages =
     {
-        new object?[] { "Merge pull request #1234 from feature/one from feature/two to dev", "feature/two", "dev", null, 1234  },
+        new object?[] { "Merge pull request #1234 from feature/one from feature/two to dev", "feature/two", "dev", null, 1234 },
         new object?[] { "Merge pull request #1234 in feature/one from feature/two to dev", "feature/two", "dev", null, 1234 },
-        new object?[] { "Merge pull request #1234 in v4.0.0 from v4.1.0 to dev", "v4.1.0", "dev", new SemanticVersion(4,1), 1234  },
-        new object?[] { "Merge pull request #1234 from origin/feature/one from origin/feature/4.2.0/two to dev", "origin/feature/4.2.0/two", "dev", new SemanticVersion(4,2), 1234  },
-        new object?[] { "Merge pull request #1234 in feature/4.1.0/one from feature/4.2.0/two to dev", "feature/4.2.0/two", "dev", new SemanticVersion(4,2), 1234  },
+        new object?[] { "Merge pull request #1234 in v4.0.0 from v4.1.0 to dev", "v4.1.0", "dev", new SemanticVersion(4,1), 1234 },
+        new object?[] { "Merge pull request #1234 from origin/feature/one from origin/feature/4.2.0/two to dev", "origin/feature/4.2.0/two", "dev", new SemanticVersion(4,2), 1234 },
+        new object?[] { "Merge pull request #1234 in feature/4.1.0/one from feature/4.2.0/two to dev", "feature/4.2.0/two", "dev", new SemanticVersion(4,2), 1234 },
         new object?[] { $"Merge pull request #1234 from feature/one from feature/two to {MainBranch}" , "feature/two", MainBranch, null, 1234 },
         new object?[] { "Merge pull request #1234 in V4.1.0 from V://10.10.10.10 to dev", "V://10.10.10.10", "dev", null, 1234 },
         //TODO: Investigate successful bitbucket merge messages that may be invalid

@@ -23,8 +23,10 @@
 *   Following root configuration properties have been removed:
     *   continuous-delivery-fallback-tag
 *   A new branch related property with name `track-merge-message` has been introduced. Consider we have a `main` branch and a `release/1.0.0` branch and merge changes from `release/1.0.0` to the main branch. In this scenario the merge message will be interpreted as a next version `1.0.0` when `track-merge-message` is set to `true` otherwise `0.0.1`.
-* The pre-release tags are only considered when they are matching with the label name of the branch. This has an effect on the way how the `CommitCountSource` will be determined.
-* The process of increasing the version with bump message when `CommitMessageIncrementing` is enabled and increment strategy is `None` has been changed.
+*   The pre-release tags are only considered when they are matching with the label name of the branch. This has an effect on the way how the `CommitCountSource` will be determined.
+*   The process of increasing the version with bump message when `CommitMessageIncrementing` is enabled and increment strategy is `None` has been changed.
+*   A new configuration property with name `version-in-branch-pattern` has been introduced. This setting only applies on branches where the option `is-release-branch` is set to `true`. Please notice that the branch name needs to be defined after the version number by default (instead of `support/lts-2.0.0` please name the branch like `support/2.0.0-lts`).
+*   The `is-release-branch` property of the `hotfix` branch setting has been changed from `false` to `true`. If present the hotfix number will be considered now by default.
 
 ## v5.0.0
 

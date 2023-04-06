@@ -16,6 +16,7 @@
 
     <ItemGroup>
         <Using Include="System.Collections"/>
+        <Using Include="System.Text"/>
     </ItemGroup>
 
 </Project>

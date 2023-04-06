@@ -134,6 +134,7 @@ GitVersion.Configuration.EffectiveConfiguration.TrackMergeTarget.get -> bool
 GitVersion.Configuration.EffectiveConfiguration.TracksReleaseBranches.get -> bool
 GitVersion.Configuration.EffectiveConfiguration.UpdateBuildNumber.get -> bool
 GitVersion.Configuration.EffectiveConfiguration.VersionFilters.get -> System.Collections.Generic.IEnumerable<GitVersion.VersionCalculation.IVersionFilter!>!
+GitVersion.Configuration.EffectiveConfiguration.VersionInBranchRegex.get -> System.Text.RegularExpressions.Regex!
 GitVersion.Configuration.EffectiveConfiguration.VersioningMode.get -> GitVersion.VersionCalculation.VersioningMode
 GitVersion.Configuration.IBranchConfiguration
 GitVersion.Configuration.IBranchConfiguration.CommitMessageIncrementing.get -> GitVersion.VersionCalculation.CommitMessageIncrementMode?
@@ -180,6 +181,8 @@ GitVersion.Configuration.IGitVersionConfiguration.NoBumpMessage.get -> string?
 GitVersion.Configuration.IGitVersionConfiguration.PatchVersionBumpMessage.get -> string?
 GitVersion.Configuration.IGitVersionConfiguration.SemanticVersionFormat.get -> GitVersion.SemanticVersionFormat
 GitVersion.Configuration.IGitVersionConfiguration.UpdateBuildNumber.get -> bool
+GitVersion.Configuration.IGitVersionConfiguration.VersionInBranchPattern.get -> string?
+GitVersion.Configuration.IGitVersionConfiguration.VersionInBranchRegex.get -> System.Text.RegularExpressions.Regex!
 GitVersion.Configuration.IGitVersionConfiguration.Workflow.get -> string?
 GitVersion.Configuration.IIgnoreConfiguration
 GitVersion.Configuration.IIgnoreConfiguration.Before.get -> System.DateTimeOffset?
@@ -554,6 +557,7 @@ GitVersion.OutputVariables.VersionVariablesJsonModel.WeightedPreReleaseNumber.ge
 GitVersion.OutputVariables.VersionVariablesJsonModel.WeightedPreReleaseNumber.set -> void
 GitVersion.OutputVariables.VersionVariablesJsonStringConverter
 GitVersion.OutputVariables.VersionVariablesJsonStringConverter.VersionVariablesJsonStringConverter() -> void
+GitVersion.ReferenceName.TryGetSemanticVersion(out (GitVersion.SemanticVersion! Value, string? Name) result, System.Text.RegularExpressions.Regex! versionPatternRegex, string? labelPrefix, GitVersion.SemanticVersionFormat format) -> bool
 GitVersion.RefSpecDirection
 GitVersion.RefSpecDirection.Fetch = 0 -> GitVersion.RefSpecDirection
 GitVersion.RefSpecDirection.Push = 1 -> GitVersion.RefSpecDirection

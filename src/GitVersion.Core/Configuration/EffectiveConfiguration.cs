@@ -1,3 +1,4 @@
+using System.Text.RegularExpressions;
 using GitVersion.Extensions;
 using GitVersion.VersionCalculation;
 
@@ -39,6 +40,7 @@ public class EffectiveConfiguration
         AssemblyFileVersioningFormat = configuration.AssemblyFileVersioningFormat;
         VersioningMode = branchConfiguration.VersioningMode.Value;
         LabelPrefix = configuration.LabelPrefix;
+        VersionInBranchRegex = configuration.VersionInBranchRegex;
         Label = branchConfiguration.Label;
         NextVersion = configuration.NextVersion;
         Increment = branchConfiguration.Increment;
@@ -136,6 +138,8 @@ public class EffectiveConfiguration
     ///     Git tag prefix
     /// </summary>
     public string? LabelPrefix { get; }
+
+    public Regex VersionInBranchRegex { get; }
 
     /// <summary>
     ///     Label to use when calculating SemVer

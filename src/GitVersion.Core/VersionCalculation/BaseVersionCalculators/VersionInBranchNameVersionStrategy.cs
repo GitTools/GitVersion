@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using GitVersion.Common;
 using GitVersion.Configuration;
 using GitVersion.Extensions;
@@ -18,33 +19,38 @@ internal class VersionInBranchNameVersionStrategy : VersionStrategyBase
 
     public override IEnumerable<BaseVersion> GetBaseVersions(EffectiveBranchConfiguration configuration)
     {
-        if (!configuration.Value.IsReleaseBranch) yield break;
-
-        var versionInBranch = GetVersionInBranch(
-            configuration.Branch.Name, configuration.Value.LabelPrefix, configuration.Value.SemanticVersionFormat
-        );
-        if (versionInBranch != null)
+        if (configuration.Value.IsReleaseBranch && TryGetBaseVersion(out var baseVersion, configuration))
         {
-            var commitBranchWasBranchedFrom = this.repositoryStore.FindCommitBranchWasBranchedFrom(
-                configuration.Branch, Context.Configuration
-            );
-            var branchNameOverride = Context.CurrentBranch.Name.Friendly.RegexReplace("[-/]" + versionInBranch.Item1, string.Empty);
-            yield return new BaseVersion("Version in branch name", false, versionInBranch.Item2, commitBranchWasBranchedFrom.Commit, branchNameOverride);
+            yield return baseVersion;
         }
     }
 
-    private static Tuple<string, SemanticVersion>? GetVersionInBranch(
-        ReferenceName branchName, string? tagPrefixRegex, SemanticVersionFormat versionFormat)
+    private bool TryGetBaseVersion([NotNullWhen(true)] out BaseVersion? baseVersion, EffectiveBranchConfiguration configuration)
     {
-        var branchParts = branchName.WithoutOrigin.Split('/', '-');
-        foreach (var part in branchParts)
+        baseVersion = null;
+
+        Lazy<BranchCommit> commitBranchWasBranchedFrom = new(
+            () => this.repositoryStore.FindCommitBranchWasBranchedFrom(configuration.Branch, Context.Configuration)
+        );
+        foreach (var branch in new[] { Context.CurrentBranch, configuration.Branch })
         {
-            if (SemanticVersion.TryParse(part, tagPrefixRegex, out var semanticVersion, versionFormat))
+            if (branch.Name.TryGetSemanticVersion(out var result, configuration.Value.VersionInBranchRegex,
+                configuration.Value.LabelPrefix, configuration.Value.SemanticVersionFormat))
             {
-                return Tuple.Create(part, semanticVersion);
+                string? branchNameOverride = null;
+                if (!result.Name.IsNullOrEmpty() && (Context.CurrentBranch.Name.Equals(branch.Name)
+                    || Context.Configuration.GetBranchConfiguration(Context.CurrentBranch.Name).Label is null))
+                {
+                    branchNameOverride = result.Name;
+                }
+
+                baseVersion = new BaseVersion(
+                    "Version in branch name", false, result.Value, commitBranchWasBranchedFrom.Value.Commit, branchNameOverride
+                );
+                break;
             }
         }
 
-        return null;
+        return baseVersion != null;
     }
 }

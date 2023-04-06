@@ -3,6 +3,7 @@
     <PackageReference Include="Polly" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\..\src\GitVersion.Core\Extensions\StringExtensions.cs" Link="Extensions\StringExtensions.cs" />
     <Compile Include="..\..\src\GitVersion.Core\Git\AuthenticationInfo.cs">
       <Link>Git\AuthenticationInfo.cs</Link>
     </Compile>
@@ -62,6 +63,24 @@
     </Compile>
     <Compile Include="..\..\src\GitVersion.Core\Git\RefSpecDirection.cs">
       <Link>Git\RefSpecDirection.cs</Link>
+    </Compile>
+    <Compile Include="..\..\src\GitVersion.Core\Git\SemanticVersion.cs">
+        <Link>Git\SemanticVersion.cs</Link>
+    </Compile>
+    <Compile Include="..\..\src\GitVersion.Core\Git\SemanticVersionBuildMetaData.cs">
+        <Link>Git\SemanticVersionBuildMetaData.cs</Link>
+    </Compile>
+    <Compile Include="..\..\src\GitVersion.Core\Git\SemanticVersionFormat.cs">
+        <Link>Git\SemanticVersionFormat.cs</Link>
+    </Compile>
+    <Compile Include="..\..\src\GitVersion.Core\Git\SemanticVersionPreReleaseTag.cs">
+        <Link>Git\SemanticVersionPreReleaseTag.cs</Link>
+    </Compile>
+    <Compile Include="..\..\src\GitVersion.Core\Git\VersionField.cs">
+        <Link>Git\VersionField.cs</Link>
+    </Compile>
+    <Compile Include="..\..\src\GitVersion.Core\Git\WarningException.cs">
+        <Link>Git\WarningException.cs</Link>
     </Compile>
   </ItemGroup>
 </Project>
