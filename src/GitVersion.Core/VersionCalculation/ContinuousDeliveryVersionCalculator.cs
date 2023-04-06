@@ -18,7 +18,7 @@ internal sealed class ContinuousDeliveryVersionCalculator : NonTrunkBasedVersion
             var preReleaseTag = nextVersion.IncrementedVersion.PreReleaseTag;
             if (!preReleaseTag.HasTag() || !preReleaseTag.Number.HasValue)
             {
-                throw new WarningException("Continues delivery deployment requires a pre-release tag.");
+                throw new WarningException("Continuous delivery requires a pre-release tag.");
             }
 
             return CalculateInternal(nextVersion);
