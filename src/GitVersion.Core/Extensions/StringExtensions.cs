@@ -107,5 +107,4 @@ public static class StringExtensions
 
     public static string WithPrefixIfNotNullOrEmpty(this string value, string prefix)
         => string.IsNullOrEmpty(value) ? value : prefix + value;
-
 }

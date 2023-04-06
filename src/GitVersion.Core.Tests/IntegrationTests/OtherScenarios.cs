@@ -136,11 +136,11 @@ public class OtherScenarios : TestBase
     {
         // * 9daa6ea 53 minutes ago  (HEAD -> develop)
         // | *   85536f2 55 minutes ago  (tag: 1.1.0, main)
-        // | |\  
-        // | |/  
-        // |/|   
+        // | |\
+        // | |/
+        // |/|
         // * | 4a5ef1a 56 minutes ago
-        // |/  
+        // |/
         // * c7f68af 58 minutes ago  (tag: 1.0.0)
 
         var configuration = GitFlowConfigurationBuilder.New
@@ -1046,7 +1046,7 @@ public class OtherScenarios : TestBase
         using var fixture = new EmptyRepositoryFixture("main");
         fixture.Repository.MakeCommits(5);
 
-        var variables = fixture.GetVersion(configuration);
+        var _ = fixture.GetVersion(configuration);
 
         fixture.AssertFullSemver("0.0.1-5", configuration);
     }
