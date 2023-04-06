@@ -13,10 +13,16 @@ internal sealed class ContinuousDeploymentVersionCalculator : NonTrunkBasedVersi
 
     public SemanticVersion Calculate(NextVersion nextVersion)
     {
-        using (this.log.IndentLog("Using continues deployment typology to calculate the incremented version!!"))
+        using (this.log.IndentLog("Using continuous deployment workflow to calculate the incremented version."))
         {
-            if (!nextVersion.Configuration.IsMainline || nextVersion.Configuration.Label is not null)
-                throw new WarningException("--PRE--CONDITION--FAILED--");
+            if (nextVersion.Configuration.Label is not null)
+            {
+                throw new WarningException("Continues deployment requires no pre-release tag.");
+            }
+            if (!nextVersion.Configuration.IsMainline)
+            {
+                throw new WarningException("Continues deployment only supported for mainline branches.");
+            }
 
             return CalculateInternal(nextVersion);
         }

@@ -13,11 +13,13 @@ internal sealed class ContinuousDeliveryVersionCalculator : NonTrunkBasedVersion
 
     public SemanticVersion Calculate(NextVersion nextVersion)
     {
-        using (this.log.IndentLog("Using continues delivery typology to calculate the incremented version!!"))
+        using (this.log.IndentLog("Using continuous delivery workflow to calculate the incremented version."))
         {
             var preReleaseTag = nextVersion.IncrementedVersion.PreReleaseTag;
             if (!preReleaseTag.HasTag() || !preReleaseTag.Number.HasValue)
-                throw new WarningException("--PRE--CONDITION--FAILED--");
+            {
+                throw new WarningException("Continues delivery deployment requires a pre-release tag.");
+            }
 
             return CalculateInternal(nextVersion);
         }
