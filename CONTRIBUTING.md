@@ -41,7 +41,7 @@ We are currently using NUnit, so just create a descriptive test method and attri
 
 ### 3. Create a configuration
 
-We use a builder pattern to create a configuration. You can use the `GitFlowConfigurationBuilder` to create a configuration for GitFlow.
+We use a builder pattern to create a configuration. You can use the `GitFlowConfigurationBuilder` or `GitHubConfigurationBuilder` or `EmptyConfigurationBuilder` to create a configuration builder.
 
 ```csharp
 var configurationBuilder = GitFlowConfigurationBuilder.New;
@@ -84,7 +84,7 @@ fixture.Repository.Checkout("feature-test");
 fixture.Repository.MakeACommit();
 fixture.Repository.MakeCommits(4);
 
-fixture.AssertFullSemver("1.0.1-test.1+5", configuration);
+fixture.AssertFullSemver("1.0.1-test.1-5", configuration);
 ```
 
 The last line is the most important. `AssertFullSemver` will run GitVersion and assert that the full SemVer it calculates is what you expect.
@@ -97,18 +97,18 @@ Even better include the fix, but a failing test is a great start
 
 We use Cake for our build and deployment process. The way the release process is setup is:
 
-1. We build releasable artifacts with GitHub Actions
-2. We create a milestone for the release if it's not already created. Our milestones are named using the semver.
-   For example `5.12.0` or `6.0.0-beta.2`
-3. We move all the closed issues and closed pull requests that are going to be included in the release to the milestone.
-4. We check that all the issues and pull requests that are going to be included in the release have a label assigned,
-   otherwise it will fail the release.
-5. We create a release in the GitHub UI, and create a tag and name it using the milestone name. For example `5.12.0` or `6.0.0-beta.2`
-6. We specify if the release is a pre-release or latest release in the GitHub UI.
-7. We publish the release.
-8. The GitHub Actions will create a GitHub release and publish the artifacts to NuGet, Chocolatey, Docker, Homebrew
-   and other distribution channels.
-9. The issues and pull requests will get updated with message specifying in which release it was included.
+1.  We build releasable artifacts with GitHub Actions
+2.  We create a milestone for the release if it's not already created. Our milestones are named using the semver.
+    For example `5.12.0` or `6.0.0-beta.2`
+3.  We move all the closed issues and closed pull requests that are going to be included in the release to the milestone.
+4.  We check that all the issues and pull requests that are going to be included in the release have a label assigned,
+    otherwise it will fail the release.
+5.  We create a release in the GitHub UI, and create a tag and name it using the milestone name. For example `5.12.0` or `6.0.0-beta.2`
+6.  We specify if the release is a pre-release or latest release in the GitHub UI.
+7.  We publish the release.
+8.  The GitHub Actions will create a GitHub release and publish the artifacts to NuGet, Chocolatey, Docker, Homebrew
+    and other distribution channels.
+9.  The issues and pull requests will get updated with message specifying in which release it was included.
 
 ## Code Style
 
