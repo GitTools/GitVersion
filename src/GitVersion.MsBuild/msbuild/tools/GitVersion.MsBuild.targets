@@ -5,6 +5,14 @@
     <UsingTask TaskName="WriteVersionInfoToBuildLog" AssemblyFile="$(GitVersionAssemblyFile)"/>
     <UsingTask TaskName="UpdateAssemblyInfo" AssemblyFile="$(GitVersionAssemblyFile)"/>
 
+    <PropertyGroup>
+        <GenerateGitVersionFiles>false</GenerateGitVersionFiles>
+        <GenerateGitVersionFiles Condition=" '$(Language)' == 'C#' Or '$(Language)' == 'F#' Or '$(Language)' == 'VB' ">true</GenerateGitVersionFiles>
+
+        <UpdateAssemblyInfo Condition=" '$(UpdateAssemblyInfo)' == 'true' And '$(GenerateGitVersionFiles)' == 'true' ">true</UpdateAssemblyInfo>
+        <GenerateGitVersionInformation Condition=" '$(GenerateGitVersionInformation)' == '' And '$(GenerateGitVersionFiles)' == 'true' ">true</GenerateGitVersionInformation>
+    </PropertyGroup>
+
     <Target Name="RunGitVersion" Condition="'$(DisableGitVersionTask)' == 'false'">
         <Exec Command="$(GitVersionFileExe) &quot;$(MSBuildProjectDirectory)&quot; $(GitVersion_ToolArgments)" />
     </Target>
