@@ -123,7 +123,7 @@ internal sealed record GitVersionConfiguration : BranchConfiguration, IGitVersio
 
     public override IBranchConfiguration Inherit(IBranchConfiguration configuration) => throw new NotSupportedException();
 
-    public override string ToString()
+    public string ToJsonString()
     {
         var stringBuilder = new StringBuilder();
         using var stream = new StringWriter(stringBuilder);

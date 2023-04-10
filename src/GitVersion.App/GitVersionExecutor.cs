@@ -143,11 +143,6 @@ internal class GitVersionExecutor : IGitVersionExecutor
             this.log.Info("Working directory: " + workingDirectory);
         }
 
-        if (gitVersionOptions.RepositoryInfo.TargetUrl.IsNullOrWhiteSpace())
-        {
-            this.configurationFileLocator.Verify(workingDirectory, this.repositoryInfo.ProjectRootDirectory);
-        }
-
         if (gitVersionOptions.Init)
         {
             this.configurationProvider.Init(workingDirectory);
@@ -157,8 +152,12 @@ internal class GitVersionExecutor : IGitVersionExecutor
 
         if (gitVersionOptions.ConfigurationInfo.ShowConfiguration)
         {
+            if (gitVersionOptions.RepositoryInfo.TargetUrl.IsNullOrWhiteSpace())
+            {
+                this.configurationFileLocator.Verify(workingDirectory, this.repositoryInfo.ProjectRootDirectory);
+            }
             var configuration = this.configurationProvider.Provide();
-            this.console.WriteLine(configuration.ToString());
+            this.console.WriteLine(configuration.ToJsonString());
             exitCode = 0;
             return true;
         }

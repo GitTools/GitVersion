@@ -180,6 +180,7 @@ GitVersion.Configuration.IGitVersionConfiguration.NextVersion.get -> string?
 GitVersion.Configuration.IGitVersionConfiguration.NoBumpMessage.get -> string?
 GitVersion.Configuration.IGitVersionConfiguration.PatchVersionBumpMessage.get -> string?
 GitVersion.Configuration.IGitVersionConfiguration.SemanticVersionFormat.get -> GitVersion.SemanticVersionFormat
+GitVersion.Configuration.IGitVersionConfiguration.ToJsonString() -> string!
 GitVersion.Configuration.IGitVersionConfiguration.UpdateBuildNumber.get -> bool
 GitVersion.Configuration.IGitVersionConfiguration.VersionInBranchPattern.get -> string?
 GitVersion.Configuration.IGitVersionConfiguration.VersionInBranchRegex.get -> System.Text.RegularExpressions.Regex!
