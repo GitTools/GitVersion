@@ -104,7 +104,8 @@ public class WriteVersionInfoTest : TestTaskBase
     {
         const string taskName = nameof(WriteVersionInfoToBuildLog);
 
-        using var result = ExecuteMsBuildExeInAzurePipeline(project => AddWriteVersionInfoToBuildLogTask(project, taskName, taskName));
+        using var result = ExecuteMsBuildExeInAzurePipeline(project =>
+            AddWriteVersionInfoToBuildLogTask(project, taskName, taskName));
 
         result.ProjectPath.ShouldNotBeNullOrWhiteSpace();
         result.MsBuild.Count.ShouldBeGreaterThan(0);

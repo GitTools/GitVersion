@@ -45,9 +45,7 @@ public interface IRepositoryStore
 
     IReadOnlyList<SemanticVersionWithTag> GetTaggedSemanticVersions(string? labelPrefix, SemanticVersionFormat format);
 
-    IReadOnlyList<SemanticVersionWithTag> GetTaggedSemanticVersionsOnBranch(
-        IBranch branch, string? labelPrefix, SemanticVersionFormat format
-    );
+    IReadOnlyList<SemanticVersionWithTag> GetTaggedSemanticVersionsOnBranch(IBranch branch, string? labelPrefix, SemanticVersionFormat format);
 
     bool IsCommitOnBranch(ICommit? baseVersionSource, IBranch branch, ICommit firstMatchingCommit);
 

@@ -29,11 +29,11 @@ public class TestTaskBase : TestBase
         return result;
     }
 
-    protected static MsBuildExeFixtureResult ExecuteMsBuildExe(Action<ProjectCreator> extendProject)
+    protected static MsBuildExeFixtureResult ExecuteMsBuildExe(Action<ProjectCreator> extendProject, string language = "C#")
     {
         var fixture = CreateLocalRepositoryFixture();
 
-        var msbuildFixture = new MsBuildExeFixture(fixture, fixture.RepositoryPath);
+        var msbuildFixture = new MsBuildExeFixture(fixture, fixture.RepositoryPath, language);
 
         msbuildFixture.CreateTestProject(extendProject);
 
@@ -51,7 +51,7 @@ public class TestTaskBase : TestBase
         var environmentVariables = new List<KeyValuePair<string, string?>>(env.ToArray());
         if (buildNumber != null)
         {
-            environmentVariables.Add(new KeyValuePair<string, string?>("BUILD_BUILDNUMBER", buildNumber));
+            environmentVariables.Add(new("BUILD_BUILDNUMBER", buildNumber));
         }
         msbuildFixture.WithEnv(environmentVariables.ToArray());
         if (configurationText != null)
@@ -81,11 +81,11 @@ public class TestTaskBase : TestBase
         return result;
     }
 
-    protected static MsBuildExeFixtureResult ExecuteMsBuildExeInAzurePipeline(Action<ProjectCreator> extendProject)
+    protected static MsBuildExeFixtureResult ExecuteMsBuildExeInAzurePipeline(Action<ProjectCreator> extendProject, string language = "C#")
     {
         var fixture = CreateRemoteRepositoryFixture();
 
-        var msbuildFixture = new MsBuildExeFixture(fixture, fixture.LocalRepositoryFixture.RepositoryPath);
+        var msbuildFixture = new MsBuildExeFixture(fixture, fixture.LocalRepositoryFixture.RepositoryPath, language);
 
         msbuildFixture.CreateTestProject(extendProject);
         msbuildFixture.WithEnv(env.ToArray());
@@ -118,7 +118,7 @@ public class TestTaskBase : TestBase
         fixture.Repository.MakeACommit();
         fixture.Repository.CreateBranch("develop");
 
-        Commands.Fetch(fixture.LocalRepositoryFixture.Repository, fixture.LocalRepositoryFixture.Repository.Network.Remotes.First().Name, Array.Empty<string>(), new FetchOptions(), null);
+        Commands.Fetch(fixture.LocalRepositoryFixture.Repository, fixture.LocalRepositoryFixture.Repository.Network.Remotes.First().Name, Array.Empty<string>(), new(), null);
         Commands.Checkout(fixture.LocalRepositoryFixture.Repository, fixture.Repository.Head.Tip);
         fixture.LocalRepositoryFixture.Repository.Branches.Remove(MainBranch);
         fixture.InitializeRepo();

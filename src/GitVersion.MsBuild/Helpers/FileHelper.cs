@@ -51,6 +51,14 @@ internal static class FileHelper
         _ => throw new ArgumentException($"Unknown language detected: '{language}'")
     };
 
+    public static string GetProjectExtension(string language) => language switch
+    {
+        "C#" => "csproj",
+        "F#" => "fsproj",
+        "VB" => "vbproj",
+        _ => throw new ArgumentException($"Unknown language detected: '{language}'")
+    };
+
     public static void CheckForInvalidFiles(IEnumerable<ITaskItem> compileFiles, string projectFile)
     {
         if (GetInvalidFiles(compileFiles, projectFile).FirstOrDefault() is { } invalidCompileFile)

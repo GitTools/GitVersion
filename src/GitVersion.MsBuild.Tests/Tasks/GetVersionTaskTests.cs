@@ -82,7 +82,8 @@ public class GetVersionTaskTests : TestTaskBase
     {
         const string taskName = nameof(GetVersion);
 
-        using var result = ExecuteMsBuildExeInAzurePipeline(project => AddGetVersionTask(project, taskName, taskName, outputProperty));
+        using var result = ExecuteMsBuildExeInAzurePipeline(project =>
+            AddGetVersionTask(project, taskName, taskName, outputProperty));
 
         result.ProjectPath.ShouldNotBeNullOrWhiteSpace();
         result.MsBuild.Count.ShouldBeGreaterThan(0);
