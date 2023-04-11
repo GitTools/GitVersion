@@ -8,7 +8,6 @@
 
     <ItemGroup>
         <PackageReference Include="FluentDateTime" />
-        <PackageReference Include="LibGit2Sharp.NativeBinaries" />
         <PackageReference Include="Microsoft.Extensions.Options" />
         <PackageReference Include="YamlDotNet" />
     </ItemGroup>

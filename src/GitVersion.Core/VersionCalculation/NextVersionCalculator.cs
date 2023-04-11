@@ -10,7 +10,6 @@ internal class NextVersionCalculator : INextVersionCalculator
 {
     private readonly ILog log;
     private readonly IMainlineVersionCalculator mainlineVersionCalculator;
-    private readonly ITrunkBasedVersionCalculator trunkBasedVersionCalculator;
     private readonly IContinuousDeploymentVersionCalculator continuousDeploymentVersionCalculator;
     private readonly IContinuousDeliveryVersionCalculator continuousDeliveryVersionCalculator;
     private readonly IManualDeploymentVersionCalculator manualDeploymentVersionCalculator;
@@ -24,7 +23,6 @@ internal class NextVersionCalculator : INextVersionCalculator
     public NextVersionCalculator(ILog log,
                                  Lazy<GitVersionContext> versionContext,
                                  IMainlineVersionCalculator mainlineVersionCalculator,
-                                 ITrunkBasedVersionCalculator trunkBasedVersionCalculator,
                                  IContinuousDeploymentVersionCalculator continuousDeploymentVersionCalculator,
                                  IContinuousDeliveryVersionCalculator continuousDeliveryVersionCalculator,
                                  IManualDeploymentVersionCalculator manualDeploymentVersionCalculator,
@@ -35,7 +33,6 @@ internal class NextVersionCalculator : INextVersionCalculator
         this.log = log.NotNull();
         this.versionContext = versionContext.NotNull();
         this.mainlineVersionCalculator = mainlineVersionCalculator.NotNull();
-        this.trunkBasedVersionCalculator = trunkBasedVersionCalculator.NotNull();
         this.continuousDeploymentVersionCalculator = continuousDeploymentVersionCalculator.NotNull();
         this.continuousDeliveryVersionCalculator = continuousDeliveryVersionCalculator.NotNull();
         this.manualDeploymentVersionCalculator = manualDeploymentVersionCalculator.NotNull();
