@@ -183,6 +183,11 @@ internal class GitPreparer : IGitPreparer
 
         EnsureHeadIsAttachedToBranch(currentBranchName, authentication);
         EnsureRepositoryHeadDuringNormalisation(nameof(EnsureHeadIsAttachedToBranch), expectedSha);
+
+        if (this.repository.IsShallow)
+        {
+            throw new WarningException("Repository is a shallow clone. Git repositories must be contain the full history.");
+        }
     }
 
     private void EnsureRepositoryHeadDuringNormalisation(string occasion, string? expectedSha)
