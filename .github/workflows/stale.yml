@@ -15,6 +15,7 @@ jobs:
     steps:
       - uses: actions/stale@v8
         with:
+          operations-per-run: 100
           # set 'stale' label
           stale-issue-label: stale
           # remove 'stale' label on update
