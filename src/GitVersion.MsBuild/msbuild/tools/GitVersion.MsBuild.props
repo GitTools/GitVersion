@@ -33,7 +33,7 @@
 
         <!-- Property that enables UpdateAssemblyInfo. -->
         <UpdateAssemblyInfo Condition=" '$(DisableGitVersionTask)' == 'true' ">false</UpdateAssemblyInfo>
-        <UpdateAssemblyInfo Condition=" '$(UpdateAssemblyInfo)' == '' ">true</UpdateAssemblyInfo>
+        <UpdateAssemblyInfo Condition=" '$(UpdateAssemblyInfo)' == '' And '$(GenerateGitVersionFiles)' == 'true' ">true</UpdateAssemblyInfo>
         <GenerateAssemblyFileVersionAttribute Condition=" '$(UpdateAssemblyInfo)' == 'true' ">false</GenerateAssemblyFileVersionAttribute>
         <GenerateAssemblyInformationalVersionAttribute Condition=" '$(UpdateAssemblyInfo)' == 'true' ">false</GenerateAssemblyInformationalVersionAttribute>
         <GenerateAssemblyVersionAttribute Condition=" '$(UpdateAssemblyInfo)' == 'true' ">false</GenerateAssemblyVersionAttribute>
@@ -48,7 +48,7 @@
           (The global property "_TargetAssemblyProjectName" is injected by XAML's above-mentioned task)
         -->
         <GenerateGitVersionInformation Condition=" '$(GenerateGitVersionInformation)' == '' And '$(_TargetAssemblyProjectName)' != '' ">false</GenerateGitVersionInformation>
-        <GenerateGitVersionInformation Condition=" '$(GenerateGitVersionInformation)' == '' ">true</GenerateGitVersionInformation>
+        <GenerateGitVersionInformation Condition=" '$(GenerateGitVersionInformation)' == '' And '$(GenerateGitVersionFiles)' == 'true' ">true</GenerateGitVersionInformation>
         <!--
           Compounding on the previous "GenerateTemporaryTargetAssembly" explanation, "UpdateAssemblyInfo" is
           also called in this temp-build. This results in a warning since we already updated assembly info.
