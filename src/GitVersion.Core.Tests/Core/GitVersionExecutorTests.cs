@@ -544,6 +544,27 @@ public class GitVersionExecutorTests : TestBase
         version.Sha.ShouldBe(commits.First().Sha);
     }
 
+    [Test]
+    public void CalculateVersionVariables_ShallowFetch_ThrowException()
+    {
+        // Setup
+        using var fixture = new RemoteRepositoryFixture();
+        fixture.LocalRepositoryFixture.MakeShallow();
+
+        using var worktreeFixture = new LocalRepositoryFixture(new Repository(fixture.LocalRepositoryFixture.RepositoryPath));
+        var gitVersionOptions = new GitVersionOptions { WorkingDirectory = worktreeFixture.RepositoryPath };
+
+        var environment = new TestEnvironment();
+        environment.SetEnvironmentVariable(AzurePipelines.EnvironmentVariableName, "true");
+
+        this.sp = GetServiceProvider(gitVersionOptions, environment: environment);
+        var sut = sp.GetRequiredService<IGitVersionCalculateTool>();
+
+        // Execute & Verify
+        var exception = Assert.Throws<WarningException>(() => sut.CalculateVersionVariables());
+        exception?.Message.ShouldBe("Repository is a shallow clone. Git repositories must contain the full history. See https://gitversion.net/docs/reference/requirements#unshallow for more info.");
+    }
+
     private IGitVersionCalculateTool GetGitVersionCalculator(GitVersionOptions gitVersionOptions, ILog? logger = null, IGitRepository? repository = null, IFileSystem? fs = null)
     {
         this.sp = GetServiceProvider(gitVersionOptions, logger, repository, fs);
