@@ -19,6 +19,7 @@ do
     shift
 done
 
+git config --global --add safe.directory '*'
 result=$(dotnet build $repoPath --source $nugetPath --source https://api.nuget.org/v3/index.json -p:GitVersionMsBuildVersion=$version -p:TargetFrameworks=$targetframework) # >/dev/null
 status=$?
 if test $status -eq 0

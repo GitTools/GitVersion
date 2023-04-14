@@ -15,5 +15,6 @@ FROM $REGISTRY/gittools/build-images:$DISTRO-runtime-$DOTNET_VERSION
 
 WORKDIR /tools
 COPY --from=installer /tools .
+RUN git config --global --add safe.directory '*'
 
 ENTRYPOINT ["/tools/dotnet-gitversion"]
