@@ -127,6 +127,15 @@ public abstract class RepositoryFixtureBase : IDisposable
         return new LocalRepositoryFixture(new Repository(localPath));
     }
 
+    /// <summary>
+    ///     Pulls with a depth of 1 and prunes all older commits, making the repository shallow.
+    /// </summary>
+    public void MakeShallow()
+    {
+        GitTestExtensions.ExecuteGitCmd($"-C {RepositoryPath} pull --depth 1");
+        GitTestExtensions.ExecuteGitCmd($"-C {RepositoryPath} gc --prune=all");
+    }
+
     public void Fetch(string remote, FetchOptions? options = null)
         => Commands.Fetch(Repository, remote, Array.Empty<string>(), options, null);
 }

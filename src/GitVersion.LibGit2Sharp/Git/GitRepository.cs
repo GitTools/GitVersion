@@ -20,6 +20,7 @@ internal sealed partial class GitRepository
     public string Path => RepositoryInstance.Info.Path;
     public string WorkingDirectory => RepositoryInstance.Info.WorkingDirectory;
     public bool IsHeadDetached => RepositoryInstance.Info.IsHeadDetached;
+    public bool IsShallow => RepositoryInstance.Info.IsShallow;
     public IBranch Head => new Branch(RepositoryInstance.Head);
     public ITagCollection Tags => new TagCollection(RepositoryInstance.Tags);
     public IReferenceCollection Refs => new ReferenceCollection(RepositoryInstance.Refs);

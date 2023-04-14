@@ -335,6 +335,7 @@ GitVersion.IGitRepository.FindMergeBase(GitVersion.ICommit! commit, GitVersion.I
 GitVersion.IGitRepository.GetNumberOfUncommittedChanges() -> int
 GitVersion.IGitRepository.Head.get -> GitVersion.IBranch!
 GitVersion.IGitRepository.IsHeadDetached.get -> bool
+GitVersion.IGitRepository.IsShallow.get -> bool
 GitVersion.IGitRepository.Path.get -> string!
 GitVersion.IGitRepository.Refs.get -> GitVersion.IReferenceCollection!
 GitVersion.IGitRepository.Remotes.get -> GitVersion.IRemoteCollection!

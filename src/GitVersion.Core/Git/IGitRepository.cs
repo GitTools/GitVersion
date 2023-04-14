@@ -5,6 +5,7 @@ public interface IGitRepository : IDisposable
     string Path { get; }
     string WorkingDirectory { get; }
     bool IsHeadDetached { get; }
+    bool IsShallow { get; }
     IBranch Head { get; }
     ITagCollection Tags { get; }
     IReferenceCollection Refs { get; }
