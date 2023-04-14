@@ -29,11 +29,13 @@ public class ArtifactsNativeTest : FrostingTask<BuildContext>
         {
             if (context.SkipImageForArtifacts(dockerImage)) continue;
 
-            var runtime = dockerImage.Architecture == Architecture.Amd64 ? "linux-x64" : "linux-arm64";
+            var runtime = "linux";
             if (dockerImage.Distro.StartsWith("alpine"))
             {
-                runtime = "linux-musl-x64";
+                runtime += "-musl";
             }
+            runtime += dockerImage.Architecture == Architecture.Amd64 ? "-x64" : "-arm64";
+
 
             var cmd = $"{rootPrefix}/scripts/test-native-tool.sh --version {version} --repoPath {rootPrefix}/repo --runtime {runtime}";
 

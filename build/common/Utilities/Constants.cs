@@ -18,7 +18,7 @@ public class Constants
 
     public static readonly Architecture[] ArchToBuild = { Architecture.Amd64, Architecture.Arm64 };
     public static readonly string[] VersionsToBuild = { Version60, Version70 };
-    public static readonly string[] DistrosToSkipForArtifacts = { Alpine316, Alpine317, Centos7, Ubuntu2204 };
+    public static readonly string[] DistrosToSkipForArtifacts = { Centos7 };
     public static readonly string[] DistrosToSkipForDocker = { Centos7 };
 
     public const string DockerBaseImageName = "gittools/build-images";
