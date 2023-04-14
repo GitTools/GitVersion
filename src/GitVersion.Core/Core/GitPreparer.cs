@@ -186,7 +186,7 @@ internal class GitPreparer : IGitPreparer
 
         if (this.repository.IsShallow)
         {
-            throw new WarningException("Repository is a shallow clone. Git repositories must be contain the full history.");
+            throw new WarningException("Repository is a shallow clone. Git repositories must contain the full history. See https://gitversion.net/docs/reference/requirements#unshallow for more info.");
         }
     }
 
