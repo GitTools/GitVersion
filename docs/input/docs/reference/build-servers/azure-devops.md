@@ -18,7 +18,7 @@ task into your TFS or Azure DevOps Pipeline instance.
 **Important**
 
 You must disable shallow fetch, either in the pipeline settings UI or by setting `fetchDepth: 0` in your `checkout` step;
-without it, Azure DevOps Pipelines will perform a shallow clone, which will cause GitVersion will display an error message.
+without it, Azure DevOps Pipelines will perform a shallow clone, which will cause GitVersion to display an error message.
 See [the Azure DevOps documentation](https://learn.microsoft.com/en-us/azure/devops/pipelines/yaml-schema/steps-checkout?view=azure-pipelines#shallow-fetch) for more information.
 :::
 
