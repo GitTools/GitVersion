@@ -16,6 +16,7 @@ do
     shift
 done
 
+git config --global --add safe.directory '*'
 result=$(tar -xvpf /native/gitversion-$runtime-$version.tar.gz -C /native) # >/dev/null
 status=$?
 if test $status -eq 0

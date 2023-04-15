@@ -48,6 +48,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "actions", "actions", "{A9B9
 		..\.github\actions\docker-test\action.yml = ..\.github\actions\docker-test\action.yml
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "scripts", "scripts", "{960DC223-117E-41DE-8A89-C85E3D69A8E8}"
+	ProjectSection(SolutionItems) = preProject
+		..\tests\scripts\test-global-tool.sh = ..\tests\scripts\test-global-tool.sh
+		..\tests\scripts\test-msbuild-task.sh = ..\tests\scripts\test-msbuild-task.sh
+		..\tests\scripts\test-native-tool.sh = ..\tests\scripts\test-native-tool.sh
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

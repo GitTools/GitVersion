@@ -16,6 +16,7 @@ do
     shift
 done
 
+git config --global --add safe.directory '*'
 result=$(dotnet tool install GitVersion.Tool --version $version --tool-path /tools --add-source $nugetPath) # >/dev/null
 status=$?
 if test $status -eq 0
