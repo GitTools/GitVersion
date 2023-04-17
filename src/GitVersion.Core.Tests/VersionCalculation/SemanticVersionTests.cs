@@ -23,9 +23,9 @@ public class SemanticVersionTests : TestBase
     [TestCase("1.2.3+4.Branch.Foo", 1, 2, 3, "", null, 4, "Foo", null, null, null, null, SemanticVersionFormat.Strict)]
     [TestCase("1.2.3+randomMetaData", 1, 2, 3, "", null, null, null, null, "randomMetaData", null, null, SemanticVersionFormat.Strict)]
     [TestCase("1.2.3-beta.1+4.Sha.12234.Othershiz", 1, 2, 3, "beta", 1, 4, null, "12234", "Othershiz", null, null, SemanticVersionFormat.Strict)]
-    [TestCase("1.2.3", 1, 2, 3, "", null, null, null, null, null, null, ConfigurationConstants.DefaultLabelPrefix, SemanticVersionFormat.Strict)]
-    [TestCase("v1.2.3", 1, 2, 3, "", null, null, null, null, null, "1.2.3", ConfigurationConstants.DefaultLabelPrefix, SemanticVersionFormat.Strict)]
-    [TestCase("V1.2.3", 1, 2, 3, "", null, null, null, null, null, "1.2.3", ConfigurationConstants.DefaultLabelPrefix, SemanticVersionFormat.Strict)]
+    [TestCase("1.2.3", 1, 2, 3, "", null, null, null, null, null, null, ConfigurationConstants.DefaultTagPrefix, SemanticVersionFormat.Strict)]
+    [TestCase("v1.2.3", 1, 2, 3, "", null, null, null, null, null, "1.2.3", ConfigurationConstants.DefaultTagPrefix, SemanticVersionFormat.Strict)]
+    [TestCase("V1.2.3", 1, 2, 3, "", null, null, null, null, null, "1.2.3", ConfigurationConstants.DefaultTagPrefix, SemanticVersionFormat.Strict)]
     [TestCase("version-1.2.3", 1, 2, 3, "", null, null, null, null, null, "1.2.3", "version-", SemanticVersionFormat.Strict)]
     [TestCase("1.0.0-develop-20201007113711", 1, 0, 0, "develop-20201007113711", null, null, null, null, null, "1.0.0-develop-20201007113711", null, SemanticVersionFormat.Strict)]
     [TestCase("20201007113711.658165168461351.64136516984163213-develop-20201007113711.98848747823+65416321321", 20201007113711, 658165168461351, 64136516984163213, "develop-20201007113711", 98848747823, 65416321321, null, null, null, "20201007113711.658165168461351.64136516984163213-develop-20201007113711.98848747823+65416321321", null, SemanticVersionFormat.Strict)]
@@ -63,7 +63,7 @@ public class SemanticVersionTests : TestBase
 
     [TestCase("someText")]
     [TestCase("some-T-ext")]
-    [TestCase("v.1.2.3", ConfigurationConstants.DefaultLabelPrefix)]
+    [TestCase("v.1.2.3", ConfigurationConstants.DefaultTagPrefix)]
     public void ValidateInvalidVersionParsing(string versionString, string? tagPrefixRegex = null) =>
         Assert.That(SemanticVersion.TryParse(versionString, tagPrefixRegex, out _), Is.False, "TryParse Result");
 

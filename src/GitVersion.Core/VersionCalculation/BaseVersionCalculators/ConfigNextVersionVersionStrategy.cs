@@ -20,7 +20,7 @@ internal class ConfigNextVersionVersionStrategy : VersionStrategyBase
         var nextVersion = contextConfiguration.NextVersion;
         if (!nextVersion.IsNullOrEmpty() && !Context.IsCurrentCommitTagged)
         {
-            var semanticVersion = SemanticVersion.Parse(nextVersion, contextConfiguration.LabelPrefix, contextConfiguration.SemanticVersionFormat);
+            var semanticVersion = SemanticVersion.Parse(nextVersion, contextConfiguration.TagPrefix, contextConfiguration.SemanticVersionFormat);
             yield return new BaseVersion("NextVersion in GitVersion configuration file", false, semanticVersion, null, null);
         }
     }

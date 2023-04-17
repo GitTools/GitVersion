@@ -35,7 +35,7 @@ internal class VersionInBranchNameVersionStrategy : VersionStrategyBase
         foreach (var branch in new[] { Context.CurrentBranch, configuration.Branch })
         {
             if (branch.Name.TryGetSemanticVersion(out var result, configuration.Value.VersionInBranchRegex,
-                configuration.Value.LabelPrefix, configuration.Value.SemanticVersionFormat))
+                configuration.Value.TagPrefix, configuration.Value.SemanticVersionFormat))
             {
                 string? branchNameOverride = null;
                 if (!result.Name.IsNullOrEmpty() && (Context.CurrentBranch.Name.Equals(branch.Name)

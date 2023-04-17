@@ -384,9 +384,9 @@ public class ArgumentParserTests : TestBase
 
     private static IEnumerable<TestCaseData> OverrideconfigWithInvalidOptionTestData()
     {
-        yield return new TestCaseData("label-prefix=sample=asdf")
+        yield return new TestCaseData("tag-prefix=sample=asdf")
         {
-            ExpectedResult = "Could not parse /overrideconfig option: label-prefix=sample=asdf. Ensure it is in format 'key=value'."
+            ExpectedResult = "Could not parse /overrideconfig option: tag-prefix=sample=asdf. Ensure it is in format 'key=value'."
         };
         yield return new TestCaseData("unknown-option=25")
         {
@@ -448,10 +448,10 @@ public class ArgumentParserTests : TestBase
             }
         );
         yield return new TestCaseData(
-            "label-prefix=sample",
+            "tag-prefix=sample",
             new GitVersionConfiguration
             {
-                LabelPrefix = "sample"
+                TagPrefix = "sample"
             }
         );
         yield return new TestCaseData(
@@ -497,10 +497,10 @@ public class ArgumentParserTests : TestBase
             }
         );
         yield return new TestCaseData(
-            "label-pre-release-weight=2",
+            "tag-pre-release-weight=2",
             new GitVersionConfiguration
             {
-                LabelPreReleaseWeight = 2
+                TagPreReleaseWeight = 2
             }
         );
         yield return new TestCaseData(
@@ -544,31 +544,31 @@ public class ArgumentParserTests : TestBase
     private static IEnumerable<TestCaseData> OverrideConfigWithMultipleOptionsTestData()
     {
         yield return new TestCaseData(
-            "/overrideconfig label-prefix=sample /overrideconfig assembly-versioning-scheme=MajorMinor",
+            "/overrideconfig tag-prefix=sample /overrideconfig assembly-versioning-scheme=MajorMinor",
             new GitVersionConfiguration
             {
-                LabelPrefix = "sample",
+                TagPrefix = "sample",
                 AssemblyVersioningScheme = AssemblyVersioningScheme.MajorMinor
             }
         );
         yield return new TestCaseData(
-            "/overrideconfig label-prefix=sample /overrideconfig assembly-versioning-format=\"{Major}.{Minor}.{Patch}.{env:CI_JOB_ID ?? 0}\"",
+            "/overrideconfig tag-prefix=sample /overrideconfig assembly-versioning-format=\"{Major}.{Minor}.{Patch}.{env:CI_JOB_ID ?? 0}\"",
             new GitVersionConfiguration
             {
-                LabelPrefix = "sample",
+                TagPrefix = "sample",
                 AssemblyVersioningFormat = "{Major}.{Minor}.{Patch}.{env:CI_JOB_ID ?? 0}"
             }
         );
         yield return new TestCaseData(
-            "/overrideconfig label-prefix=sample /overrideconfig assembly-versioning-format=\"{Major}.{Minor}.{Patch}.{env:CI_JOB_ID ?? 0}\" /overrideconfig update-build-number=true /overrideconfig assembly-versioning-scheme=MajorMinorPatchTag /overrideconfig mode=ContinuousDelivery /overrideconfig label-pre-release-weight=4",
+            "/overrideconfig tag-prefix=sample /overrideconfig assembly-versioning-format=\"{Major}.{Minor}.{Patch}.{env:CI_JOB_ID ?? 0}\" /overrideconfig update-build-number=true /overrideconfig assembly-versioning-scheme=MajorMinorPatchTag /overrideconfig mode=ContinuousDelivery /overrideconfig tag-pre-release-weight=4",
             new GitVersionConfiguration
             {
-                LabelPrefix = "sample",
+                TagPrefix = "sample",
                 AssemblyVersioningFormat = "{Major}.{Minor}.{Patch}.{env:CI_JOB_ID ?? 0}",
                 UpdateBuildNumber = true,
                 AssemblyVersioningScheme = AssemblyVersioningScheme.MajorMinorPatchTag,
                 VersioningMode = VersioningMode.ContinuousDelivery,
-                LabelPreReleaseWeight = 4
+                TagPreReleaseWeight = 4
             }
         );
     }

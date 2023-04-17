@@ -35,7 +35,7 @@ public class MergeMessageTests : TestBase
     {
         // Arrange
         const string message = "Updated some code.";
-        var conf = new GitVersionConfiguration { LabelPrefix = prefix };
+        var conf = new GitVersionConfiguration { TagPrefix = prefix };
 
         // Act
         var sut = new MergeMessage(message, conf);

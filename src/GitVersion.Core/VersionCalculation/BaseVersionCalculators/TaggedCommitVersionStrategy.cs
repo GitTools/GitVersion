@@ -28,7 +28,7 @@ internal sealed class TaggedCommitVersionStrategy : VersionStrategyBase
         var label = configuration.Value.GetBranchSpecificLabel(Context.CurrentBranch.Name, null);
 
         var semanticVersions = this.repositoryStore.GetTaggedSemanticVersions(
-            Context.Configuration.LabelPrefix, Context.Configuration.SemanticVersionFormat
+            Context.Configuration.TagPrefix, Context.Configuration.SemanticVersionFormat
         ).ToList();
         ILookup<string, SemanticVersionWithTag> semanticVersionsByCommit = semanticVersions.ToLookup(element => element.Tag.Commit.Id.Sha);
 

@@ -42,13 +42,13 @@ The global configuration looks like this:
 ```yaml
 assembly-versioning-scheme: MajorMinorPatch
 assembly-file-versioning-scheme: MajorMinorPatch
-label-prefix: '[vV]?'
+tag-prefix: '[vV]?'
 version-in-branch-pattern: (?<version>[vV]?\d+(\.\d+)?(\.\d+)?).*
 major-version-bump-message: '\+semver:\s?(breaking|major)'
 minor-version-bump-message: '\+semver:\s?(feature|minor)'
 patch-version-bump-message: '\+semver:\s?(fix|patch)'
 no-bump-message: '\+semver:\s?(none|skip)'
-label-pre-release-weight: 60000
+tag-pre-release-weight: 60000
 commit-date-format: yyyy-MM-dd
 merge-message-formats: {}
 update-build-number: true
@@ -268,9 +268,9 @@ for [increment](#increment),
 [prevent-increment-of-merged-branch-version](#prevent-increment-of-merged-branch-version)
 and [tracks-release-branches](#tracks-release-branches).
 
-### label-prefix
+### tag-prefix
 
-A regular expression which is used to trim Git tags before processing (e.g., 
+A regular expression which is used to trim Git tags before processing (e.g.,
 v1.0.0). The default value is `[vV]`.
 
 ### version-in-branch-pattern
@@ -307,7 +307,7 @@ none` and `+semver: skip`
 When a commit matches **both** the `no-bump-message` **and** any combination of
 the `version-bump-message`, `no-bump-message` takes precedence and no increment is applied.
 
-### label-pre-release-weight
+### tag-pre-release-weight
 
 The pre-release weight in case of tagged commits. If the value is not set in the
 configuration, a default weight of 60000 is used instead. If the

@@ -49,7 +49,7 @@ public class MergeMessage
             }
 
             Version = ParseVersion(
-                configuration.VersionInBranchRegex, configuration.LabelPrefix, configuration.SemanticVersionFormat
+                configuration.VersionInBranchRegex, configuration.TagPrefix, configuration.SemanticVersionFormat
             );
 
             break;
@@ -64,9 +64,9 @@ public class MergeMessage
     public int? PullRequestNumber { get; }
     public SemanticVersion? Version { get; }
 
-    private SemanticVersion? ParseVersion(Regex versionInBranchRegex, string? labelPrefix, SemanticVersionFormat format)
+    private SemanticVersion? ParseVersion(Regex versionInBranchRegex, string? tagPrefix, SemanticVersionFormat format)
     {
-        if (MergedBranch?.TryGetSemanticVersion(out var result, versionInBranchRegex, labelPrefix, format) == true)
+        if (MergedBranch?.TryGetSemanticVersion(out var result, versionInBranchRegex, tagPrefix, format) == true)
             return result.Value;
         return null;
     }

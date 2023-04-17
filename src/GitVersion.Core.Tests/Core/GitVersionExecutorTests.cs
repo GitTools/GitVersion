@@ -195,7 +195,7 @@ public class GitVersionExecutorTests : TestBase
 
         var cacheDirectoryTimestamp = this.fileSystem.GetLastDirectoryWrite(cacheDirectory);
 
-        var configuration = GitFlowConfigurationBuilder.New.WithLabelPrefix("prefix").Build();
+        var configuration = GitFlowConfigurationBuilder.New.WithTagPrefix("prefix").Build();
         var overrideConfiguration = new ConfigurationHelper(configuration).Dictionary;
 
         gitVersionOptions = new GitVersionOptions { WorkingDirectory = fixture.RepositoryPath, ConfigurationInfo = { OverrideConfiguration = overrideConfiguration } };
