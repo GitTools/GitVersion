@@ -70,7 +70,7 @@ jobs:
     with:
       runner: ubuntu-latest
       arch: ${{ matrix.arch }}
-    secrets: inherit
+      test_arm64_artifacts: false
 
   docker_linux_images:
     needs: [ build ]

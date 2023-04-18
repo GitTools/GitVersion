@@ -7,6 +7,10 @@ on:
       arch:
         required: true
         type: string
+      test_arm64_artifacts:
+        required: false
+        type: boolean
+        default: false
 
 env:
   DOTNET_INSTALL_DIR: "./.dotnet"
@@ -47,8 +51,13 @@ jobs:
       if: inputs.arch == 'arm64'
       uses: docker/setup-qemu-action@v2
     -
+      name: Echo
+      shell: pwsh
+      run: |
+          Write-Host "Test ARM64 Artifacts: ${{ inputs.test_arm64_artifacts }}"
+    -
       name: '[Test Artifacts]'
       shell: pwsh
       run: dotnet run/artifacts.dll --target=ArtifactsTest --arch ${{ inputs.arch }} --docker_dotnetversion=${{ matrix.targetFramework }} --docker_distro=${{ matrix.distro }}
       env:
-        TEST_ARM64_ARTIFACTS: ${{ secrets.TEST_ARM64_ARTIFACTS }}
+        TEST_ARM64_ARTIFACTS: ${{ inputs.test_arm64_artifacts }}
