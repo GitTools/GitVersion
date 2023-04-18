@@ -3,27 +3,27 @@ name: CI
 on:
   push:
     branches:
-    - main
-    - 'fix/*'
-    - 'feature/*'
-    - 'poc/*'
-    - 'support/*'
+      - main
+      - 'fix/*'
+      - 'feature/*'
+      - 'poc/*'
+      - 'support/*'
     paths:
-    - '**'
-    - '!docs/**'
-    - '!new-cli/**'
+      - '**'
+      - '!docs/**'
+      - '!new-cli/**'
 
   pull_request:
     branches:
-    - main
-    - 'support/*'
+      - main
+      - 'support/*'
     paths:
-    - '**'
-    - '!docs/**'
-    - '!new-cli/**'
+      - '**'
+      - '!docs/**'
+      - '!new-cli/**'
 
   repository_dispatch:
-    types: [release]
+    types: [ release ]
 
 env:
   DOTNET_ROLL_FORWARD_ON_NO_CANDIDATE_FX: 2
@@ -70,9 +70,10 @@ jobs:
     with:
       runner: ubuntu-latest
       arch: ${{ matrix.arch }}
+    secrets: inherit
 
   docker_linux_images:
-    needs:  [ build ]
+    needs: [ build ]
     name: Docker Images (${{ matrix.arch }})
     strategy:
       fail-fast: false
@@ -86,7 +87,7 @@ jobs:
     secrets: inherit
 
   docker_linux_manifests:
-    needs:  [ docker_linux_images ]
+    needs: [ docker_linux_images ]
     name: Docker Manifests
     uses: ./.github/workflows/_docker_manifests.yml
     secrets: inherit

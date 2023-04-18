@@ -50,3 +50,5 @@ jobs:
       name: '[Test Artifacts]'
       shell: pwsh
       run: dotnet run/artifacts.dll --target=ArtifactsTest --arch ${{ inputs.arch }} --docker_dotnetversion=${{ matrix.targetFramework }} --docker_distro=${{ matrix.distro }}
+      env:
+        TEST_ARM64_ARTIFACTS: ${{ secrets.TEST_ARM64_ARTIFACTS }}

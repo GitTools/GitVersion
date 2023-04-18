@@ -15,6 +15,11 @@ public class ArtifactsMsBuildCoreTest : FrostingTask<BuildContext>
         var shouldRun = true;
         shouldRun &= context.ShouldRun(context.IsDockerOnLinux, $"{nameof(ArtifactsMsBuildCoreTest)} works only on Docker on Linux agents.");
 
+        if (context.Architecture is Architecture.Arm64)
+        {
+            shouldRun &= context.ShouldRun(context.TestArm64Artifacts, $"{nameof(ArtifactsMsBuildCoreTest)} works only when TEST_ARM64_ARTIFACTS is enabled.");
+        }
+
         return shouldRun;
     }
 
