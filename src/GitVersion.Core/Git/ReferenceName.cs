@@ -80,7 +80,7 @@ public class ReferenceName : IEquatable<ReferenceName?>, IComparable<ReferenceNa
 
     public bool TryGetSemanticVersion([NotNullWhen(true)] out (SemanticVersion Value, string? Name) result,
                                       Regex versionPatternRegex,
-                                      string? labelPrefix,
+                                      string? tagPrefix,
                                       SemanticVersionFormat format)
     {
         result = default;
@@ -96,7 +96,7 @@ public class ReferenceName : IEquatable<ReferenceName?>, IComparable<ReferenceNa
             if (match.Success)
             {
                 var versionPart = match.Groups["version"].Value;
-                if (SemanticVersion.TryParse(versionPart, labelPrefix, out var semanticVersion, format))
+                if (SemanticVersion.TryParse(versionPart, tagPrefix, out var semanticVersion, format))
                 {
                     length += versionPart.Length;
                     var name = WithoutOrigin[length..].Trim('-');

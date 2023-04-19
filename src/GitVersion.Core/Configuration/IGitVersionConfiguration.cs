@@ -17,7 +17,7 @@ public interface IGitVersionConfiguration : IBranchConfiguration
 
     string? AssemblyFileVersioningFormat { get; }
 
-    string? LabelPrefix { get; }
+    string? TagPrefix { get; }
 
     string? VersionInBranchPattern { get; }
 
@@ -33,7 +33,7 @@ public interface IGitVersionConfiguration : IBranchConfiguration
 
     string? NoBumpMessage { get; }
 
-    int? LabelPreReleaseWeight { get; }
+    int? TagPreReleaseWeight { get; }
 
     string? CommitDateFormat { get; }
 

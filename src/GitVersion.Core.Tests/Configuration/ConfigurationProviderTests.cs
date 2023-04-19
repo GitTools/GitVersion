@@ -234,7 +234,7 @@ branches: {}";
         configuration.AssemblyInformationalFormat.ShouldBe(null);
         configuration.Branches["develop"].Label.ShouldBe("alpha");
         configuration.Branches["release"].Label.ShouldBe("beta");
-        configuration.LabelPrefix.ShouldBe(ConfigurationConstants.DefaultLabelPrefix);
+        configuration.TagPrefix.ShouldBe(ConfigurationConstants.DefaultTagPrefix);
         configuration.NextVersion.ShouldBe(null);
     }
 
@@ -352,12 +352,12 @@ branches:
     {
         const string text = @"
 next-version: 1.2.3
-label-prefix: custom-label-prefix-from-yml";
+tag-prefix: custom-tag-prefix-from-yml";
         SetupConfigFileContent(text);
 
         var expectedConfig = GitFlowConfigurationBuilder.New
             .WithNextVersion("1.2.3")
-            .WithLabelPrefix("custom-label-prefix-from-yml")
+            .WithTagPrefix("custom-tag-prefix-from-yml")
             .Build();
         var overridenConfig = this.configurationProvider.ProvideForDirectory(this.repoPath);
 
@@ -366,13 +366,13 @@ label-prefix: custom-label-prefix-from-yml";
         overridenConfig.AssemblyInformationalFormat.ShouldBe(expectedConfig.AssemblyInformationalFormat);
         overridenConfig.AssemblyVersioningFormat.ShouldBe(expectedConfig.AssemblyVersioningFormat);
         overridenConfig.AssemblyFileVersioningFormat.ShouldBe(expectedConfig.AssemblyFileVersioningFormat);
-        overridenConfig.LabelPrefix.ShouldBe(expectedConfig.LabelPrefix);
+        overridenConfig.TagPrefix.ShouldBe(expectedConfig.TagPrefix);
         overridenConfig.NextVersion.ShouldBe(expectedConfig.NextVersion);
         overridenConfig.MajorVersionBumpMessage.ShouldBe(expectedConfig.MajorVersionBumpMessage);
         overridenConfig.MinorVersionBumpMessage.ShouldBe(expectedConfig.MinorVersionBumpMessage);
         overridenConfig.PatchVersionBumpMessage.ShouldBe(expectedConfig.PatchVersionBumpMessage);
         overridenConfig.NoBumpMessage.ShouldBe(expectedConfig.NoBumpMessage);
-        overridenConfig.LabelPreReleaseWeight.ShouldBe(expectedConfig.LabelPreReleaseWeight);
+        overridenConfig.TagPreReleaseWeight.ShouldBe(expectedConfig.TagPreReleaseWeight);
         overridenConfig.CommitDateFormat.ShouldBe(expectedConfig.CommitDateFormat);
         overridenConfig.MergeMessageFormats.ShouldBe(expectedConfig.MergeMessageFormats);
         overridenConfig.UpdateBuildNumber.ShouldBe(expectedConfig.UpdateBuildNumber);
@@ -394,31 +394,31 @@ label-prefix: custom-label-prefix-from-yml";
         SetupConfigFileContent(text);
         var configuration = this.configurationProvider.ProvideForDirectory(this.repoPath);
 
-        configuration.LabelPrefix.ShouldBe(ConfigurationConstants.DefaultLabelPrefix);
+        configuration.TagPrefix.ShouldBe(ConfigurationConstants.DefaultTagPrefix);
     }
 
     [Test]
     public void ShouldUseTagPrefixFromConfigFileWhenProvided()
     {
-        const string text = "label-prefix: custom-label-prefix-from-yml";
+        const string text = "tag-prefix: custom-tag-prefix-from-yml";
         SetupConfigFileContent(text);
         var configuration = this.configurationProvider.ProvideForDirectory(this.repoPath);
 
-        configuration.LabelPrefix.ShouldBe("custom-label-prefix-from-yml");
+        configuration.TagPrefix.ShouldBe("custom-tag-prefix-from-yml");
     }
 
     [Test]
     public void ShouldOverrideTagPrefixWithOverrideConfigValue([Values] bool tagPrefixSetAtYmlFile)
     {
-        var text = tagPrefixSetAtYmlFile ? "label-prefix: custom-label-prefix-from-yml" : "";
+        var text = tagPrefixSetAtYmlFile ? "tag-prefix: custom-tag-prefix-from-yml" : "";
         SetupConfigFileContent(text);
         var overrideConfiguration = new Dictionary<object, object?>()
         {
-            { "label-prefix", "label-prefix-from-override-configuration" }
+            { "tag-prefix", "tag-prefix-from-override-configuration" }
         };
         var configuration = this.configurationProvider.ProvideForDirectory(this.repoPath, overrideConfiguration);
 
-        configuration.LabelPrefix.ShouldBe("label-prefix-from-override-configuration");
+        configuration.TagPrefix.ShouldBe("tag-prefix-from-override-configuration");
     }
 
     [Test]
@@ -433,13 +433,13 @@ label-prefix: custom-label-prefix-from-yml";
 
         var configuration = this.configurationProvider.ProvideForDirectory(this.repoPath, overrideConfiguration);
 
-        configuration.LabelPrefix.ShouldBe(ConfigurationConstants.DefaultLabelPrefix);
+        configuration.TagPrefix.ShouldBe(ConfigurationConstants.DefaultTagPrefix);
     }
 
     [Test]
     public void ShouldNotOverrideTagPrefixFromConfigFileWhenNotSetInOverrideConfig()
     {
-        const string text = "label-prefix: custom-label-prefix-from-yml";
+        const string text = "tag-prefix: custom-tag-prefix-from-yml";
         SetupConfigFileContent(text);
         var overrideConfiguration = new Dictionary<object, object?>()
         {
@@ -447,20 +447,20 @@ label-prefix: custom-label-prefix-from-yml";
         };
         var configuration = this.configurationProvider.ProvideForDirectory(this.repoPath, overrideConfiguration);
 
-        configuration.LabelPrefix.ShouldBe("custom-label-prefix-from-yml");
+        configuration.TagPrefix.ShouldBe("custom-tag-prefix-from-yml");
     }
 
     [Test]
     public void ShouldOverrideTagPrefixFromConfigFileWhenSetInOverrideConfig()
     {
-        const string text = "label-prefix: custom-label-prefix-from-yml";
+        const string text = "tag-prefix: custom-tag-prefix-from-yml";
         SetupConfigFileContent(text);
         var overrideConfiguration = new Dictionary<object, object?>()
         {
-            { "label-prefix", "custom-label-prefix-from-console" }
+            { "tag-prefix", "custom-tag-prefix-from-console" }
         };
         var configuration = this.configurationProvider.ProvideForDirectory(this.repoPath, overrideConfiguration);
 
-        configuration.LabelPrefix.ShouldBe("custom-label-prefix-from-console");
+        configuration.TagPrefix.ShouldBe("custom-tag-prefix-from-console");
     }
 }

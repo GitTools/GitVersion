@@ -30,8 +30,8 @@ public class EffectiveConfiguration
         if (!branchConfiguration.CommitMessageIncrementing.HasValue)
             throw new Exception("Configuration value for 'CommitMessageIncrementing' has no value. (this should not happen, please report an issue)");
 
-        if (!configuration.LabelPreReleaseWeight.HasValue)
-            throw new Exception("Configuration value for 'LabelPreReleaseWeight' has no value. (this should not happen, please report an issue)");
+        if (!configuration.TagPreReleaseWeight.HasValue)
+            throw new Exception("Configuration value for 'TagPreReleaseWeight' has no value. (this should not happen, please report an issue)");
 
         AssemblyVersioningScheme = configuration.AssemblyVersioningScheme.Value;
         AssemblyFileVersioningScheme = configuration.AssemblyFileVersioningScheme.Value;
@@ -39,7 +39,7 @@ public class EffectiveConfiguration
         AssemblyVersioningFormat = configuration.AssemblyVersioningFormat;
         AssemblyFileVersioningFormat = configuration.AssemblyFileVersioningFormat;
         VersioningMode = branchConfiguration.VersioningMode.Value;
-        LabelPrefix = configuration.LabelPrefix;
+        TagPrefix = configuration.TagPrefix;
         VersionInBranchRegex = configuration.VersionInBranchRegex;
         Label = branchConfiguration.Label;
         NextVersion = configuration.NextVersion;
@@ -62,7 +62,7 @@ public class EffectiveConfiguration
         UpdateBuildNumber = configuration.UpdateBuildNumber;
         SemanticVersionFormat = configuration.SemanticVersionFormat;
         PreReleaseWeight = branchConfiguration.PreReleaseWeight ?? 0;
-        LabelPreReleaseWeight = configuration.LabelPreReleaseWeight.Value;
+        TagPreReleaseWeight = configuration.TagPreReleaseWeight.Value;
     }
 
     protected EffectiveConfiguration(AssemblyVersioningScheme assemblyVersioningScheme,
@@ -71,7 +71,7 @@ public class EffectiveConfiguration
         string? assemblyVersioningFormat,
         string? assemblyFileVersioningFormat,
         VersioningMode versioningMode,
-        string? labelPrefix,
+        string? tagPrefix,
         string label,
         string? nextVersion,
         IncrementStrategy increment,
@@ -92,7 +92,7 @@ public class EffectiveConfiguration
         bool updateBuildNumber,
         SemanticVersionFormat semanticVersionFormat,
         int preReleaseWeight,
-        int labelPreReleaseWeight)
+        int tagPreReleaseWeight)
     {
         AssemblyVersioningScheme = assemblyVersioningScheme;
         AssemblyFileVersioningScheme = assemblyFileVersioningScheme;
@@ -100,7 +100,7 @@ public class EffectiveConfiguration
         AssemblyVersioningFormat = assemblyVersioningFormat;
         AssemblyFileVersioningFormat = assemblyFileVersioningFormat;
         VersioningMode = versioningMode;
-        LabelPrefix = labelPrefix;
+        TagPrefix = tagPrefix;
         Label = label;
         NextVersion = nextVersion;
         Increment = increment;
@@ -121,7 +121,7 @@ public class EffectiveConfiguration
         UpdateBuildNumber = updateBuildNumber;
         SemanticVersionFormat = semanticVersionFormat;
         PreReleaseWeight = preReleaseWeight;
-        LabelPreReleaseWeight = labelPreReleaseWeight;
+        TagPreReleaseWeight = tagPreReleaseWeight;
     }
 
     public bool TracksReleaseBranches { get; }
@@ -137,7 +137,7 @@ public class EffectiveConfiguration
     /// <summary>
     ///     Git tag prefix
     /// </summary>
-    public string? LabelPrefix { get; }
+    public string? TagPrefix { get; }
 
     public Regex VersionInBranchRegex { get; }
 
@@ -180,5 +180,5 @@ public class EffectiveConfiguration
 
     public int PreReleaseWeight { get; }
 
-    public int LabelPreReleaseWeight { get; }
+    public int TagPreReleaseWeight { get; }
 }

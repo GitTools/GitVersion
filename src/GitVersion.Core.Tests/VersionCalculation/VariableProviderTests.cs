@@ -97,7 +97,7 @@ public class VariableProviderTests : TestBase
             }
         };
 
-        var configuration = GitFlowConfigurationBuilder.New.WithLabelPreReleaseWeight(0).Build()
+        var configuration = GitFlowConfigurationBuilder.New.WithTagPreReleaseWeight(0).Build()
             .GetEffectiveConfiguration(ReferenceName.FromBranchName("develop"));
         var variables = this.variableProvider.GetVariablesFor(semanticVersion, configuration, null);
 
@@ -149,7 +149,7 @@ public class VariableProviderTests : TestBase
             }
         };
 
-        var configuration = GitFlowConfigurationBuilder.New.WithLabelPreReleaseWeight(0).Build()
+        var configuration = GitFlowConfigurationBuilder.New.WithTagPreReleaseWeight(0).Build()
             .GetEffectiveConfiguration(ReferenceName.FromBranchName("develop"));
         var variables = this.variableProvider.GetVariablesFor(semanticVersion, configuration, SemanticVersion.Empty);
 
@@ -224,7 +224,7 @@ public class VariableProviderTests : TestBase
             }
         };
 
-        var configuration = GitFlowConfigurationBuilder.New.WithLabelPreReleaseWeight(0).Build()
+        var configuration = GitFlowConfigurationBuilder.New.WithTagPreReleaseWeight(0).Build()
             .GetEffectiveConfiguration(ReferenceName.FromBranchName("develop"));
         var variables = this.variableProvider.GetVariablesFor(semanticVersion, configuration, null);
 
@@ -249,7 +249,7 @@ public class VariableProviderTests : TestBase
             }
         };
 
-        var configuration = GitFlowConfigurationBuilder.New.WithLabelPreReleaseWeight(0)
+        var configuration = GitFlowConfigurationBuilder.New.WithTagPreReleaseWeight(0)
             .WithAssemblyInformationalFormat("{Major}.{Minor}.{Patch}+{CommitsSinceVersionSource}.Branch.{BranchName}.Sha.{ShortSha}")
             .Build().GetEffectiveConfiguration(ReferenceName.FromBranchName("develop"));
         var variables = this.variableProvider.GetVariablesFor(semanticVersion, configuration, null);

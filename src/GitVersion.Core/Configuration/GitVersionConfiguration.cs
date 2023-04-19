@@ -31,9 +31,9 @@ internal sealed record GitVersionConfiguration : BranchConfiguration, IGitVersio
     [JsonPropertyDescription("Specifies the format of AssemblyFileVersion and overwrites the value of assembly-file-versioning-scheme.")]
     public string? AssemblyFileVersioningFormat { get; internal set; }
 
-    [JsonPropertyName("label-prefix")]
-    [JsonPropertyDescription($"A regular expression which is used to trim Git tags before processing. Defaults to {ConfigurationConstants.DefaultLabelPrefix}")]
-    public string? LabelPrefix { get; internal set; }
+    [JsonPropertyName("tag-prefix")]
+    [JsonPropertyDescription($"A regular expression which is used to trim Git tags before processing. Defaults to {ConfigurationConstants.DefaultTagPrefix}")]
+    public string? TagPrefix { get; internal set; }
 
     [JsonPropertyName("version-in-branch-pattern")]
     [JsonPropertyDescription($"A regular expression which is used to determine the version number in the branch name or commit message (e.g., v1.0.0-LTS). The default value is '{ConfigurationConstants.DefaultVersionInBranchPattern}'.")]
@@ -82,9 +82,9 @@ internal sealed record GitVersionConfiguration : BranchConfiguration, IGitVersio
     [JsonPropertyPattern(@"'\+semver:\s?(none|skip)'")]
     public string? NoBumpMessage { get; internal set; }
 
-    [JsonPropertyName("label-pre-release-weight")]
+    [JsonPropertyName("tag-pre-release-weight")]
     [JsonPropertyDescription("The pre-release weight in case of tagged commits. Defaults to 60000.")]
-    public int? LabelPreReleaseWeight { get; internal set; }
+    public int? TagPreReleaseWeight { get; internal set; }
 
     [JsonPropertyName("commit-date-format")]
     [JsonPropertyDescription("The format to use when calculating the commit date. Defaults to 'yyyy-MM-dd'.")]

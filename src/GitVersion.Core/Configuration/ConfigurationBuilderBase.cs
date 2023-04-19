@@ -11,14 +11,14 @@ internal abstract class ConfigurationBuilderBase<TConfigurationBuilder> : IConfi
     private string? assemblyInformationalFormat;
     private string? assemblyVersioningFormat;
     private string? assemblyFileVersioningFormat;
-    private string? labelPrefix;
+    private string? tagPrefix;
     private string? versionInBranchPattern;
     private string? nextVersion;
     private string? majorVersionBumpMessage;
     private string? minorVersionBumpMessage;
     private string? patchVersionBumpMessage;
     private string? noBumpMessage;
-    private int? labelPreReleaseWeight;
+    private int? tagPreReleaseWeight;
     private IgnoreConfiguration ignore;
     private string? commitDateFormat;
     private bool updateBuildNumber;
@@ -126,9 +126,9 @@ internal abstract class ConfigurationBuilderBase<TConfigurationBuilder> : IConfi
         return (TConfigurationBuilder)this;
     }
 
-    public virtual TConfigurationBuilder WithLabelPrefix(string? value)
+    public virtual TConfigurationBuilder WithTagPrefix(string? value)
     {
-        this.labelPrefix = value;
+        this.tagPrefix = value;
         return (TConfigurationBuilder)this;
     }
 
@@ -168,9 +168,9 @@ internal abstract class ConfigurationBuilderBase<TConfigurationBuilder> : IConfi
         return (TConfigurationBuilder)this;
     }
 
-    public virtual TConfigurationBuilder WithLabelPreReleaseWeight(int? value)
+    public virtual TConfigurationBuilder WithTagPreReleaseWeight(int? value)
     {
-        this.labelPreReleaseWeight = value;
+        this.tagPreReleaseWeight = value;
         return (TConfigurationBuilder)this;
     }
 
@@ -308,14 +308,14 @@ internal abstract class ConfigurationBuilderBase<TConfigurationBuilder> : IConfi
         WithAssemblyInformationalFormat(value.AssemblyInformationalFormat);
         WithAssemblyVersioningFormat(value.AssemblyVersioningFormat);
         WithAssemblyFileVersioningFormat(value.AssemblyFileVersioningFormat);
-        WithLabelPrefix(value.LabelPrefix);
+        WithTagPrefix(value.TagPrefix);
         WithVersionInBranchPattern(value.VersionInBranchPattern);
         WithNextVersion(value.NextVersion);
         WithMajorVersionBumpMessage(value.MajorVersionBumpMessage);
         WithMinorVersionBumpMessage(value.MinorVersionBumpMessage);
         WithPatchVersionBumpMessage(value.PatchVersionBumpMessage);
         WithNoBumpMessage(value.NoBumpMessage);
-        WithLabelPreReleaseWeight(value.LabelPreReleaseWeight);
+        WithTagPreReleaseWeight(value.TagPreReleaseWeight);
         WithIgnoreConfiguration(value.Ignore);
         WithCommitDateFormat(value.CommitDateFormat);
         WithUpdateBuildNumber(value.UpdateBuildNumber);
@@ -364,14 +364,14 @@ internal abstract class ConfigurationBuilderBase<TConfigurationBuilder> : IConfi
             AssemblyInformationalFormat = this.assemblyInformationalFormat,
             AssemblyVersioningFormat = this.assemblyVersioningFormat,
             AssemblyFileVersioningFormat = this.assemblyFileVersioningFormat,
-            LabelPrefix = this.labelPrefix,
+            TagPrefix = this.tagPrefix,
             VersionInBranchPattern = this.versionInBranchPattern,
             NextVersion = this.nextVersion,
             MajorVersionBumpMessage = this.majorVersionBumpMessage,
             MinorVersionBumpMessage = this.minorVersionBumpMessage,
             PatchVersionBumpMessage = this.patchVersionBumpMessage,
             NoBumpMessage = this.noBumpMessage,
-            LabelPreReleaseWeight = this.labelPreReleaseWeight,
+            TagPreReleaseWeight = this.tagPreReleaseWeight,
             Ignore = this.ignore,
             CommitDateFormat = this.commitDateFormat,
             UpdateBuildNumber = this.updateBuildNumber,

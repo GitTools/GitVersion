@@ -39,7 +39,7 @@ internal abstract class NonTrunkBasedVersionCalculatorBase
         ////
         // TODO: We need to consider somehow the IGitVersionConfiguration::Ignore property here!!
         var semanticVersionWithTag = this.repositoryStore.GetTaggedSemanticVersionsOnBranch(
-            nextVersion.Branch, Context.Configuration.LabelPrefix, Context.Configuration.SemanticVersionFormat
+            nextVersion.Branch, Context.Configuration.TagPrefix, Context.Configuration.SemanticVersionFormat
         ).FirstOrDefault(element => Context.CurrentCommit is null || element.Tag.Commit.When <= Context.CurrentCommit.When);
         //
 

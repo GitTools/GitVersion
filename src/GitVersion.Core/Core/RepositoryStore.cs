@@ -252,7 +252,7 @@ internal class RepositoryStore : IRepositoryStore
             .SelectMany(tag => GetCurrentCommitSemanticVersions(commit, tagPrefix, tag, format, handleDetachedBranch))
             .Max();
 
-    public IEnumerable<SemanticVersion> GetVersionTagsOnBranch(IBranch branch, string? labelPrefix, SemanticVersionFormat format)
+    public IEnumerable<SemanticVersion> GetVersionTagsOnBranch(IBranch branch, string? tagPrefix, SemanticVersionFormat format)
     {
         branch = branch.NotNull();
 
@@ -264,7 +264,7 @@ internal class RepositoryStore : IRepositoryStore
 
         using (this.log.IndentLog($"Getting version tags from branch '{branch.Name.Canonical}'."))
         {
-            var semanticVersions = GetTaggedSemanticVersions(labelPrefix, format);
+            var semanticVersions = GetTaggedSemanticVersions(tagPrefix, format);
             var tagsBySha = semanticVersions.Where(t => t.Tag.TargetSha != null).ToLookup(t => t.Tag.TargetSha, t => t);
 
             var versionTags = (branch.Commits?.SelectMany(c => tagsBySha[c.Sha].Select(t => t))
@@ -275,15 +275,15 @@ internal class RepositoryStore : IRepositoryStore
         }
     }
 
-    public IReadOnlyList<SemanticVersionWithTag> GetTaggedSemanticVersions(string? labelPrefix, SemanticVersionFormat format)
+    public IReadOnlyList<SemanticVersionWithTag> GetTaggedSemanticVersions(string? tagPrefix, SemanticVersionFormat format)
     {
         if (this.taggedSemanticVersionsCache != null)
         {
-            this.log.Debug($"Returning cached tagged semantic versions. LabelPrefix: {labelPrefix} and Format: {format}");
+            this.log.Debug($"Returning cached tagged semantic versions. TagPrefix: {tagPrefix} and Format: {format}");
             return this.taggedSemanticVersionsCache;
         }
 
-        using (this.log.IndentLog($"Getting tagged semantic versions. LabelPrefix: {labelPrefix} and Format: {format}"))
+        using (this.log.IndentLog($"Getting tagged semantic versions. TagPrefix: {tagPrefix} and Format: {format}"))
         {
             this.taggedSemanticVersionsCache = GetTaggedSemanticVersionsInternal().ToList();
             return this.taggedSemanticVersionsCache;
@@ -293,7 +293,7 @@ internal class RepositoryStore : IRepositoryStore
         {
             foreach (var tag in this.repository.Tags)
             {
-                if (SemanticVersion.TryParse(tag.Name.Friendly, labelPrefix, out var semanticVersion, format))
+                if (SemanticVersion.TryParse(tag.Name.Friendly, tagPrefix, out var semanticVersion, format))
                 {
                     yield return new SemanticVersionWithTag(semanticVersion, tag);
                 }
@@ -302,19 +302,19 @@ internal class RepositoryStore : IRepositoryStore
     }
 
     public IReadOnlyList<SemanticVersionWithTag> GetTaggedSemanticVersionsOnBranch(
-        IBranch branch, string? labelPrefix, SemanticVersionFormat format)
+        IBranch branch, string? tagPrefix, SemanticVersionFormat format)
     {
         branch = branch.NotNull();
 
         if (this.taggedSemanticVersionsOnBranchCache.TryGetValue(branch, out var onBranch))
         {
-            this.log.Debug($"Returning cached tagged semantic versions from '{branch.Name.Canonical}'. LabelPrefix: {labelPrefix} and Format: {format}");
+            this.log.Debug($"Returning cached tagged semantic versions from '{branch.Name.Canonical}'. TagPrefix: {tagPrefix} and Format: {format}");
             return onBranch;
         }
 
-        using (this.log.IndentLog($"Getting tagged semantic versions from '{branch.Name.Canonical}'.  LabelPrefix: {labelPrefix} and Format: {format}"))
+        using (this.log.IndentLog($"Getting tagged semantic versions from '{branch.Name.Canonical}'.  TagPrefix: {tagPrefix} and Format: {format}"))
         {
-            var semanticVersions = GetTaggedSemanticVersions(labelPrefix, format);
+            var semanticVersions = GetTaggedSemanticVersions(tagPrefix, format);
             var tagsBySha = semanticVersions.Where(t => t.Tag.TargetSha != null).ToLookup(t => t.Tag.TargetSha, t => t);
 
             var versionTags = (branch.Commits?.SelectMany(c => tagsBySha[c.Sha].Select(t => t))

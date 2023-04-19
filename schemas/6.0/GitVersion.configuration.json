@@ -83,17 +83,6 @@
     "label-number-pattern": {
       "$ref": "#/$defs/string1"
     },
-    "label-prefix": {
-      "description": "A regular expression which is used to trim Git tags before processing. Defaults to [vV]?",
-      "type": "string"
-    },
-    "label-pre-release-weight": {
-      "description": "The pre-release weight in case of tagged commits. Defaults to 60000.",
-      "type": [
-        "integer",
-        "null"
-      ]
-    },
     "major-version-bump-message": {
       "format": "regex",
       "pattern": "\u0027\\\u002Bsemver:\\s?(breaking|major)\u0027",
@@ -147,6 +136,17 @@
     },
     "source-branches": {
       "$ref": "#/$defs/array1"
+    },
+    "tag-prefix": {
+      "description": "A regular expression which is used to trim Git tags before processing. Defaults to [vV]?",
+      "type": "string"
+    },
+    "tag-pre-release-weight": {
+      "description": "The pre-release weight in case of tagged commits. Defaults to 60000.",
+      "type": [
+        "integer",
+        "null"
+      ]
     },
     "track-merge-message": {
       "$ref": "#/$defs/Nullable\u006015"
