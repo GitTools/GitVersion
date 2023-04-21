@@ -18,7 +18,7 @@
     <PackageVersion Include="Microsoft.Extensions.Options" Version="7.0.1" />
     <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.5.0" />
     <PackageVersion Include="Microsoft.Win32.Registry" Version="6.0.0-preview.5.21301.5" />
-    <PackageVersion Include="Mono.Cecil" Version="0.11.4" />
+    <PackageVersion Include="Mono.Cecil" Version="0.11.5" />
     <PackageVersion Include="Buildalyzer" Version="5.0.0" />
     <PackageVersion Include="coverlet.msbuild" Version="3.2.0" />
     <PackageVersion Include="MSBuild.ProjectCreation" Version="10.0.0" />
