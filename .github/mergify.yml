@@ -11,9 +11,6 @@ pull_request_rules:
       - '#commits-behind=0' # Only merge up to date pull requests
       - check-success=DotNet Format
       - check-success=Release
-      - check-success=Unit Test code (windows-latest, net6.0)
-      - check-success=Unit Test code (windows-latest, net6.0)
-      - check-success=Unit Test code (windows-latest, net6.0)
       - repository-full-name=GitTools/GitVersion # Don't auto-merge PRs in forks
     actions:
       merge:
