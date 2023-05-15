@@ -174,6 +174,36 @@ Merge in aaa/777 from release/2.2.0 to {MainBranch}
         sut.Version.ShouldBe(expectedVersion);
     }
 
+    private static readonly object?[] BitBucketCloudPullMergeMessages =
+    {
+        new object?[] { $@"Merged in release/2.301.0 (pull request #1789)
+
+Release/2.301.0
+
+Approved-by: John Doe", "release/2.301.0", null, new SemanticVersion(2, 301), 1789  }
+    };
+
+    [TestCaseSource(nameof(BitBucketCloudPullMergeMessages))]
+    public void ParsesBitBucketCloudPullMergeMessage(
+        string message,
+        string expectedMergedBranch,
+        string expectedTargetBranch,
+        SemanticVersion expectedVersion,
+        int? expectedPullRequestNumber)
+    {
+        // Act
+        var sut = new MergeMessage(message, this.configurationBuilder.Build());
+
+        // Assert
+        sut.FormatName.ShouldBe("BitBucketCloudPull");
+        sut.TargetBranch.ShouldBe(expectedTargetBranch);
+        sut.MergedBranch.ShouldNotBeNull();
+        sut.MergedBranch.Friendly.ShouldBe(expectedMergedBranch);
+        sut.IsMergedPullRequest.ShouldBeTrue();
+        sut.PullRequestNumber.ShouldBe(expectedPullRequestNumber);
+        sut.Version.ShouldBe(expectedVersion);
+    }
+
     private static readonly object?[] SmartGitMergeMessages =
     {
         new object?[] { "Finish feature/one", "feature/one", null, null },
