@@ -62,7 +62,7 @@
     "remark-lint-no-duplicate-headings": "^3.1.1",
     "remark-lint-no-emphasis-as-heading": "^3.1.1",
     "remark-lint-no-empty-sections": "^4.0.0",
-    "remark-lint-no-empty-url": "^3.1.1",
+    "remark-lint-no-empty-url": "^3.1.2",
     "remark-lint-no-file-name-articles": "^2.1.1",
     "remark-lint-no-file-name-consecutive-dashes": "^2.1.1",
     "remark-lint-no-file-name-irregular-characters": "^2.1.1",
