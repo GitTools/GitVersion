@@ -70,7 +70,7 @@
     "remark-lint-no-file-name-outer-dashes": "^2.1.1",
     "remark-lint-no-heading-content-indent": "^4.1.1",
     "remark-lint-no-heading-indent": "^4.1.1",
-    "remark-lint-no-heading-like-paragraph": "^3.1.1",
+    "remark-lint-no-heading-like-paragraph": "^3.1.2",
     "remark-lint-no-inline-padding": "^4.1.2",
     "remark-lint-no-literal-urls": "^3.1.1",
     "remark-lint-no-multiple-toplevel-headings": "^3.1.1",
