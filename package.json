@@ -59,7 +59,7 @@
     "remark-lint-no-consecutive-blank-lines": "^4.1.2",
     "remark-lint-no-dead-urls": "^1.1.0",
     "remark-lint-no-duplicate-definitions": "^3.1.1",
-    "remark-lint-no-duplicate-headings": "^3.1.1",
+    "remark-lint-no-duplicate-headings": "^3.1.2",
     "remark-lint-no-emphasis-as-heading": "^3.1.1",
     "remark-lint-no-empty-sections": "^4.0.0",
     "remark-lint-no-empty-url": "^3.1.2",
