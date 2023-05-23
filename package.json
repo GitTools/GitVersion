@@ -73,7 +73,7 @@
     "remark-lint-no-heading-like-paragraph": "^3.1.2",
     "remark-lint-no-inline-padding": "^4.1.2",
     "remark-lint-no-literal-urls": "^3.1.1",
-    "remark-lint-no-multiple-toplevel-headings": "^3.1.1",
+    "remark-lint-no-multiple-toplevel-headings": "^3.1.2",
     "remark-lint-no-reference-like-url": "^3.1.2",
     "remark-lint-no-repeat-punctuation": "^0.1.4",
     "remark-lint-no-shell-dollars": "^3.1.2",
