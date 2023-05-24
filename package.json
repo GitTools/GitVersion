@@ -84,7 +84,7 @@
     "remark-lint-ordered-list-marker-style": "^3.1.1",
     "remark-lint-ordered-list-marker-value": "^3.1.2",
     "remark-lint-rule-style": "^3.1.1",
-    "remark-lint-strong-marker": "^3.1.1",
+    "remark-lint-strong-marker": "^3.1.2",
     "remark-lint-table-cell-padding": "^4.1.3",
     "remark-lint-table-pipe-alignment": "^3.1.1",
     "remark-lint-table-pipes": "^4.1.1",
