@@ -34,7 +34,7 @@
     "remark-heading-gap": "^5.0.1",
     "remark-lint": "^9.1.1",
     "remark-lint-blockquote-indentation": "^3.1.2",
-    "remark-lint-checkbox-character-style": "^4.1.1",
+    "remark-lint-checkbox-character-style": "^4.1.2",
     "remark-lint-checkbox-content-indent": "^4.1.2",
     "remark-lint-code": "^2.0.0",
     "remark-lint-code-block-style": "^3.1.0",
