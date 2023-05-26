@@ -77,7 +77,7 @@
     "remark-lint-no-reference-like-url": "^3.1.2",
     "remark-lint-no-repeat-punctuation": "^0.1.4",
     "remark-lint-no-shell-dollars": "^3.1.2",
-    "remark-lint-no-shortcut-reference-image": "^3.1.1",
+    "remark-lint-no-shortcut-reference-image": "^3.1.2",
     "remark-lint-no-table-indentation": "^4.1.2",
     "remark-lint-no-tabs": "^3.1.2",
     "remark-lint-no-unused-definitions": "^3.1.2",
