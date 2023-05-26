@@ -32,7 +32,7 @@
     "remark-cli": "^11.0.0",
     "remark-frontmatter": "^4.0.1",
     "remark-heading-gap": "^5.0.1",
-    "remark-lint": "^9.1.1",
+    "remark-lint": "^9.1.2",
     "remark-lint-blockquote-indentation": "^3.1.2",
     "remark-lint-checkbox-character-style": "^4.1.2",
     "remark-lint-checkbox-content-indent": "^4.1.2",
