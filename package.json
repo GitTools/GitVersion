@@ -68,7 +68,7 @@
     "remark-lint-no-file-name-irregular-characters": "^2.1.2",
     "remark-lint-no-file-name-mixed-case": "^2.1.2",
     "remark-lint-no-file-name-outer-dashes": "^2.1.2",
-    "remark-lint-no-heading-content-indent": "^4.1.1",
+    "remark-lint-no-heading-content-indent": "^4.1.2",
     "remark-lint-no-heading-indent": "^4.1.2",
     "remark-lint-no-heading-like-paragraph": "^3.1.2",
     "remark-lint-no-inline-padding": "^4.1.2",
