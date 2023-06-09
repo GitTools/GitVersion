@@ -16,6 +16,7 @@ internal class IncrementStrategyFinder : IIncrementStrategyFinder
     private readonly Dictionary<string, VersionField?> commitIncrementCache = new();
     private readonly Dictionary<string, Dictionary<string, int>> headCommitsMapCache = new();
     private readonly Dictionary<string, ICommit[]> headCommitsCache = new();
+    private readonly Lazy<IReadOnlySet<string?>> tagsShaCache;
 
     private static readonly Regex DefaultMajorPatternRegex = new(DefaultMajorPattern, RegexOptions.Compiled | RegexOptions.IgnoreCase);
     private static readonly Regex DefaultMinorPatternRegex = new(DefaultMinorPattern, RegexOptions.Compiled | RegexOptions.IgnoreCase);
@@ -24,7 +25,11 @@ internal class IncrementStrategyFinder : IIncrementStrategyFinder
 
     private readonly IGitRepository repository;
 
-    public IncrementStrategyFinder(IGitRepository repository) => this.repository = repository.NotNull();
+    public IncrementStrategyFinder(IGitRepository repository)
+    {
+        this.repository = repository.NotNull();
+        this.tagsShaCache = new Lazy<IReadOnlySet<string?>>(ReadRepositoryTagsSha);
+    }
 
     public VersionField DetermineIncrementedField(ICommit? currentCommit, BaseVersion baseVersion, EffectiveConfiguration configuration)
     {
@@ -79,12 +84,10 @@ internal class IncrementStrategyFinder : IIncrementStrategyFinder
         }
 
         var commits = GetIntermediateCommits(baseCommit, currentCommit);
-
         // consider commit messages since latest tag only (see #3071)
-        var tags = new HashSet<string?>(repository.Tags.Select(t => t.TargetSha));
         commits = commits
             .Reverse()
-            .TakeWhile(x => !tags.Contains(x.Sha))
+            .TakeWhile(x => !this.tagsShaCache.Value.Contains(x.Sha))
             .Reverse();
 
         if (configuration.CommitMessageIncrementing == CommitMessageIncrementMode.MergeMessageOnly)
@@ -100,6 +103,8 @@ internal class IncrementStrategyFinder : IIncrementStrategyFinder
             commits: commits
         );
     }
+
+    private IReadOnlySet<string?> ReadRepositoryTagsSha() => repository.Tags.Select(t => t.TargetSha).ToHashSet();
 
     private static Regex TryGetRegexOrDefault(string? messageRegex, Regex defaultRegex) =>
         messageRegex == null
