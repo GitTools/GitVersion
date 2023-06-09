@@ -36,7 +36,7 @@ enter the following into a terminal:
 brew install gitversion
 ```
 
-Switches are available with `gitversion --help`. Even though the documentation
+Switches are available with `gitversion -h`. Even though the documentation
 uses a slash `/` for all switches, you need to use a dash `-` instead, since `/`
 is interpreted as a root path on POSIX based operating systems.
 
