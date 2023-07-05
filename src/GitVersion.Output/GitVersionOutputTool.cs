@@ -4,7 +4,6 @@ using GitVersion.Output.GitVersionInfo;
 using GitVersion.Output.OutputGenerator;
 using GitVersion.Output.WixUpdater;
 using GitVersion.OutputVariables;
-
 using Microsoft.Extensions.Options;
 
 namespace GitVersion;
@@ -23,7 +22,7 @@ internal class GitVersionOutputTool : IGitVersionOutputTool
         IGitVersionInfoGenerator gitVersionInfoGenerator, IAssemblyInfoFileUpdater assemblyInfoFileUpdater,
         IProjectFileUpdater projectFileUpdater)
     {
-        gitVersionOptions = options.Value.NotNull();
+        this.gitVersionOptions = options.Value.NotNull();
 
         this.outputGenerator = outputGenerator.NotNull();
 
@@ -35,9 +34,9 @@ internal class GitVersionOutputTool : IGitVersionOutputTool
 
     public void OutputVariables(GitVersionVariables variables, bool updateBuildNumber)
     {
-        using (outputGenerator)
+        using (this.outputGenerator)
         {
-            outputGenerator.Execute(variables, new OutputContext(gitVersionOptions.WorkingDirectory, gitVersionOptions.OutputFile, updateBuildNumber));
+            this.outputGenerator.Execute(variables, new OutputContext(gitVersionOptions.WorkingDirectory, gitVersionOptions.OutputFile, updateBuildNumber));
         }
     }
 
@@ -47,16 +46,16 @@ internal class GitVersionOutputTool : IGitVersionOutputTool
 
         if (gitVersionOptions.AssemblySettingsInfo.UpdateProjectFiles)
         {
-            using (projectFileUpdater)
+            using (this.projectFileUpdater)
             {
-                projectFileUpdater.Execute(variables, assemblyInfoContext);
+                this.projectFileUpdater.Execute(variables, assemblyInfoContext);
             }
         }
         else if (gitVersionOptions.AssemblySettingsInfo.UpdateAssemblyInfo)
         {
-            using (assemblyInfoFileUpdater)
+            using (this.assemblyInfoFileUpdater)
             {
-                assemblyInfoFileUpdater.Execute(variables, assemblyInfoContext);
+                this.assemblyInfoFileUpdater.Execute(variables, assemblyInfoContext);
             }
         }
     }
@@ -65,18 +64,18 @@ internal class GitVersionOutputTool : IGitVersionOutputTool
     {
         if (gitVersionOptions.WixInfo.UpdateWixVersionFile)
         {
-            using (wixVersionFileUpdater)
+            using (this.wixVersionFileUpdater)
             {
-                wixVersionFileUpdater.Execute(variables, new WixVersionContext(gitVersionOptions.WorkingDirectory));
+                this.wixVersionFileUpdater.Execute(variables, new WixVersionContext(gitVersionOptions.WorkingDirectory));
             }
         }
     }
 
     public void GenerateGitVersionInformation(GitVersionVariables variables, FileWriteInfo fileWriteInfo, string? targetNamespace = null)
     {
-        using (gitVersionInfoGenerator)
+        using (this.gitVersionInfoGenerator)
         {
-            gitVersionInfoGenerator.Execute(variables, new GitVersionInfoContext(gitVersionOptions.WorkingDirectory, fileWriteInfo.FileName, fileWriteInfo.FileExtension, targetNamespace));
+            this.gitVersionInfoGenerator.Execute(variables, new GitVersionInfoContext(gitVersionOptions.WorkingDirectory, fileWriteInfo.FileName, fileWriteInfo.FileExtension, targetNamespace));
         }
     }
 

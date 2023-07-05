@@ -2,8 +2,6 @@ using GitVersion.Extensions;
 using GitVersion.Helpers;
 using GitVersion.OutputVariables;
 
-using Polly.CircuitBreaker;
-
 namespace GitVersion.Output.GitVersionInfo;
 
 internal interface IGitVersionInfoGenerator : IVersionConverter<GitVersionInfoContext>
@@ -19,7 +17,7 @@ internal sealed class GitVersionInfoGenerator : IGitVersionInfoGenerator
     public GitVersionInfoGenerator(IFileSystem fileSystem)
     {
         this.fileSystem = fileSystem.NotNull();
-        templateManager = new TemplateManager(TemplateType.GitVersionInfo);
+        this.templateManager = new TemplateManager(TemplateType.GitVersionInfo);
     }
 
     public void Execute(GitVersionVariables variables, GitVersionInfoContext context)
@@ -37,8 +35,8 @@ internal sealed class GitVersionInfoGenerator : IGitVersionInfoGenerator
         }
 
         var fileExtension = Path.GetExtension(filePath);
-        var template = templateManager.GetTemplateFor(fileExtension);
-        var addFormat = templateManager.GetAddFormatFor(fileExtension);
+        var template = this.templateManager.GetTemplateFor(fileExtension);
+        var addFormat = this.templateManager.GetAddFormatFor(fileExtension);
         var targetNamespace = getTargetNamespace(fileExtension);
 
         if (string.IsNullOrWhiteSpace(template) || string.IsNullOrWhiteSpace(addFormat) || targetNamespace == targetNamespaceSentinelValue)
@@ -67,7 +65,7 @@ internal sealed class GitVersionInfoGenerator : IGitVersionInfoGenerator
 
         if (fileContents != originalFileContents)
         {
-            fileSystem.WriteAllText(filePath, fileContents);
+            this.fileSystem.WriteAllText(filePath, fileContents);
         }
 
         string getTargetNamespace(string fileExtension) => fileExtension switch

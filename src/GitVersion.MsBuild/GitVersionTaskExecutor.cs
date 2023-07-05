@@ -3,7 +3,6 @@ using GitVersion.Extensions;
 using GitVersion.Helpers;
 using GitVersion.MsBuild.Tasks;
 using GitVersion.OutputVariables;
-
 using Microsoft.Extensions.Options;
 
 namespace GitVersion.MsBuild;
@@ -49,7 +48,7 @@ internal class GitVersionTaskExecutor : IGitVersionTaskExecutor
         var fileWriteInfo = task.IntermediateOutputPath.GetFileWriteInfo(task.Language, task.ProjectFile, "AssemblyInfo");
         task.AssemblyInfoTempFilePath = PathHelper.Combine(fileWriteInfo.WorkingDirectory, fileWriteInfo.FileName);
 
-        var gitVersionOptions = this.options.Value;
+        var gitVersionOptions = options.Value;
         gitVersionOptions.WorkingDirectory = fileWriteInfo.WorkingDirectory;
         gitVersionOptions.AssemblySettingsInfo.UpdateAssemblyInfo = true;
         gitVersionOptions.AssemblySettingsInfo.EnsureAssemblyInfo = true;
@@ -73,24 +72,31 @@ internal class GitVersionTaskExecutor : IGitVersionTaskExecutor
 
         var gitVersionOptions = options.Value;
         gitVersionOptions.WorkingDirectory = fileWriteInfo.WorkingDirectory;
-        string? targetNamespace = null;
-        if (string.Equals(task.GenerateGitVersionInformationInUniqueNamespace, "true", StringComparison.OrdinalIgnoreCase))
-        {
-            targetNamespace = task.RootNamespace;
-            if (string.IsNullOrWhiteSpace(targetNamespace))
-            {
-                targetNamespace = Path.GetFileNameWithoutExtension(task.ProjectFile);
-            }
-        }
+        var targetNamespace = getTargetNamespace(task);
         gitVersionOutputTool.GenerateGitVersionInformation(versionVariables, fileWriteInfo, targetNamespace);
+
+        static string? getTargetNamespace(GenerateGitVersionInformation task)
+        {
+            string? targetNamespace = null;
+            if (string.Equals(task.GenerateGitVersionInformationInUniqueNamespace, "true", StringComparison.OrdinalIgnoreCase))
+            {
+                targetNamespace = task.RootNamespace;
+                if (string.IsNullOrWhiteSpace(targetNamespace))
+                {
+                    targetNamespace = Path.GetFileNameWithoutExtension(task.ProjectFile);
+                }
+            }
+
+            return targetNamespace;
+        }
     }
 
     public void WriteVersionInfoToBuildLog(WriteVersionInfoToBuildLog task)
     {
         var versionVariables = VersionVariablesHelper.FromFile(task.VersionFile, fileSystem);
 
-        var gitVersionOptions = this.options.Value;
-        var configuration = this.configurationProvider.Provide(gitVersionOptions.ConfigurationInfo.OverrideConfiguration);
+        var gitVersionOptions = options.Value;
+        var configuration = configurationProvider.Provide(gitVersionOptions.ConfigurationInfo.OverrideConfiguration);
 
         gitVersionOutputTool.OutputVariables(versionVariables, configuration.UpdateBuildNumber);
     }
