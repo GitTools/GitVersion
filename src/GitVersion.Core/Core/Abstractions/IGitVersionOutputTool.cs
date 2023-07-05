@@ -8,4 +8,6 @@ public interface IGitVersionOutputTool
     void UpdateAssemblyInfo(VersionVariables variables);
     void UpdateWixVersionFile(VersionVariables variables);
     void GenerateGitVersionInformation(VersionVariables variables, FileWriteInfo fileWriteInfo);
+    void GenerateGitVersionInformation(VersionVariables variables, FileWriteInfo fileWriteInfo, string? targetNamespace = null);
+
 }

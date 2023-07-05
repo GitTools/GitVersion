@@ -24,7 +24,7 @@ namespace System.Diagnostics.CodeAnalysis
 type ExcludeFromCodeCoverageAttribute() = inherit global.System.Attribute()
 #endif
 
-namespace global
+namespace {1}
 
 [<AbstractClass; Sealed>]
 [<global.System.Runtime.CompilerServices.CompilerGenerated>]

@@ -12,4 +12,5 @@ public sealed class FileWriteInfo
     public string WorkingDirectory { get; }
     public string FileName { get; }
     public string FileExtension { get; }
+
 }

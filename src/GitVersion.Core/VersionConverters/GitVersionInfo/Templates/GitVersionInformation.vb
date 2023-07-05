@@ -24,7 +24,7 @@ Namespace Global.System.Diagnostics.CodeAnalysis
 End Namespace
 #End If
 
-Namespace Global
+Namespace {1}
 
     <Global.System.Runtime.CompilerServices.CompilerGenerated()>
     <Global.System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage()>

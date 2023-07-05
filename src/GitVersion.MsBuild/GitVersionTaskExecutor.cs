@@ -44,7 +44,7 @@ public class GitVersionTaskExecutor : IGitVersionTaskExecutor
         var fileWriteInfo = task.IntermediateOutputPath.GetFileWriteInfo(task.Language, task.ProjectFile, "AssemblyInfo");
         task.AssemblyInfoTempFilePath = PathHelper.Combine(fileWriteInfo.WorkingDirectory, fileWriteInfo.FileName);
 
-        var gitVersionOptions = this.options.Value;
+        var gitVersionOptions = options.Value;
         gitVersionOptions.AssemblyInfo.UpdateAssemblyInfo = true;
         gitVersionOptions.AssemblyInfo.EnsureAssemblyInfo = true;
         gitVersionOptions.WorkingDirectory = fileWriteInfo.WorkingDirectory;
@@ -66,10 +66,18 @@ public class GitVersionTaskExecutor : IGitVersionTaskExecutor
         var fileWriteInfo = task.IntermediateOutputPath.GetFileWriteInfo(task.Language, task.ProjectFile, "GitVersionInformation");
         task.GitVersionInformationFilePath = PathHelper.Combine(fileWriteInfo.WorkingDirectory, fileWriteInfo.FileName);
 
-        var gitVersionOptions = this.options.Value;
+        var gitVersionOptions = options.Value;
         gitVersionOptions.WorkingDirectory = fileWriteInfo.WorkingDirectory;
-
-        gitVersionOutputTool.GenerateGitVersionInformation(versionVariables, fileWriteInfo);
+        string? targetNamespace = null;
+        if (string.Equals(task.GenerateGitVersionInformationInUniqueNamespace, "true", StringComparison.OrdinalIgnoreCase))
+        {
+            targetNamespace = task.RootNamespace;
+            if (string.IsNullOrWhiteSpace(targetNamespace))
+            {
+                targetNamespace = Path.GetFileNameWithoutExtension(task.ProjectFile);
+            }
+        }
+        gitVersionOutputTool.GenerateGitVersionInformation(versionVariables, fileWriteInfo, targetNamespace);
     }
 
     public void WriteVersionInfoToBuildLog(WriteVersionInfoToBuildLog task)

@@ -15,6 +15,7 @@ public abstract class GitVersionTaskBase : ITask
 
     public string VersionFile { get; set; }
 
+
     public TaskLoggingHelper Log { get; }
 
     public bool Execute() => OnExecute();

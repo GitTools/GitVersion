@@ -1,0 +1,4 @@
+GitVersion.MsBuild.Tasks.GenerateGitVersionInformation.GenerateGitVersionInformationInUniqueNamespace.get -> string?
+GitVersion.MsBuild.Tasks.GenerateGitVersionInformation.GenerateGitVersionInformationInUniqueNamespace.set -> void
+GitVersion.MsBuild.Tasks.GenerateGitVersionInformation.RootNamespace.get -> string!
+GitVersion.MsBuild.Tasks.GenerateGitVersionInformation.RootNamespace.set -> void

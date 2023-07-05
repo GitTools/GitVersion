@@ -31,6 +31,8 @@ public class GenerateGitVersionInformationTest : TestTaskBase
         fileContent.ShouldContain($@"{nameof(VersionVariables.FullSemVer)} = ""1.2.4+1""");
     }
 
+
+
     [Test]
     public void GenerateGitVersionInformationTaskShouldCreateFileInBuildServer()
     {
@@ -48,6 +50,52 @@ public class GenerateGitVersionInformationTest : TestTaskBase
         fileContent.ShouldContain($@"{nameof(VersionVariables.Patch)} = ""1""");
         fileContent.ShouldContain($@"{nameof(VersionVariables.MajorMinorPatch)} = ""1.0.1""");
         fileContent.ShouldContain($@"{nameof(VersionVariables.FullSemVer)} = ""1.0.1+1""");
+    }
+
+    [Test]
+    public void GenerateGitVersionInformationTaskShouldCreateFileWithUniqueNamespaceSetAndRootNamespaceUnSet()
+    {
+        var task = new GenerateGitVersionInformation();
+        task.ProjectFile = "App.Project.csproj";
+        task.GenerateGitVersionInformationInUniqueNamespace = "true";
+        using var result = ExecuteMsBuildTask(task);
+
+        result.Success.ShouldBe(true);
+        result.Errors.ShouldBe(0);
+        result.Task.GitVersionInformationFilePath.ShouldNotBeNull();
+
+        var fileContent = File.ReadAllText(result.Task.GitVersionInformationFilePath);
+        TestContext.WriteLine(fileContent);
+        fileContent.ShouldContain($@"{nameof(VersionVariables.Major)} = ""1""");
+        fileContent.ShouldContain($@"{nameof(VersionVariables.Minor)} = ""2""");
+        fileContent.ShouldContain($@"{nameof(VersionVariables.Patch)} = ""4""");
+        fileContent.ShouldContain($@"{nameof(VersionVariables.MajorMinorPatch)} = ""1.2.4""");
+        fileContent.ShouldContain($@"{nameof(VersionVariables.FullSemVer)} = ""1.2.4+1""");
+        fileContent.ShouldContain("namespace App.Project");
+    }
+
+    [Test]
+    public void GenerateGitVersionInformationTaskShouldCreateFileWithUniqueNamespaceSetAndRootNamespaceIsSet()
+    {
+        var task = new GenerateGitVersionInformation();
+        task.ProjectFile = "App.Project.csproj";
+        task.RootNamespace = "App.Project.RootNamespace";
+        task.GenerateGitVersionInformationInUniqueNamespace = "true";
+        using var result = ExecuteMsBuildTask(task);
+
+        result.Success.ShouldBe(true);
+        result.Errors.ShouldBe(0);
+        result.Task.GitVersionInformationFilePath.ShouldNotBeNull();
+
+        var fileContent = File.ReadAllText(result.Task.GitVersionInformationFilePath);
+        TestContext.WriteLine(fileContent);
+        fileContent.ShouldContain($@"{nameof(VersionVariables.Major)} = ""1""");
+        fileContent.ShouldContain($@"{nameof(VersionVariables.Minor)} = ""2""");
+        fileContent.ShouldContain($@"{nameof(VersionVariables.Patch)} = ""4""");
+        fileContent.ShouldContain($@"{nameof(VersionVariables.MajorMinorPatch)} = ""1.2.4""");
+        fileContent.ShouldContain($@"{nameof(VersionVariables.FullSemVer)} = ""1.2.4+1""");
+
+        fileContent.ShouldContain("namespace App.Project.RootNamespace");
     }
 
     [Test]
@@ -190,10 +238,66 @@ public class GenerateGitVersionInformationTest : TestTaskBase
         fileContent.ShouldContain($@"{nameof(VersionVariables.FullSemVer)} = ""1.0.1+1""");
     }
 
-    private static void AddGenerateGitVersionInformationTask(ProjectCreator project, string targetToRun, string taskName, string outputProperty, string intermediateOutputPath = "$(MSBuildProjectDirectory)")
+    [Test]
+    public void GenerateGitVersionInformationTaskShouldCreateFileWhenRunWithMsBuildAndUniqueNamespaceIsSpecifiedAndRootNamespaceIsNotSet()
+    {
+        const string taskName = nameof(GenerateGitVersionInformation);
+        const string outputProperty = nameof(GenerateGitVersionInformation.GitVersionInformationFilePath);
+        var randDir = Guid.NewGuid().ToString("N");
+
+        using var result = ExecuteMsBuildExeInAzurePipeline(project => AddGenerateGitVersionInformationTask(project, taskName, taskName, outputProperty, Path.Combine("$(MSBuildProjectDirectory)", randDir)).Property("GenerateGitVersionInformationInUniqueNamespace", "True"));
+
+        result.ProjectPath.ShouldNotBeNullOrWhiteSpace();
+        result.MsBuild.Count.ShouldBeGreaterThan(0);
+        result.MsBuild.OverallSuccess.ShouldBe(true);
+        result.MsBuild.ShouldAllBe(x => x.Succeeded);
+        result.Output.ShouldNotBeNullOrWhiteSpace();
+
+        var generatedFilePath = PathHelper.Combine(Path.GetDirectoryName(result.ProjectPath), randDir, "GitVersionInformation.g.cs");
+        result.Output.ShouldContain($"{outputProperty}: {generatedFilePath}");
+
+        var fileContent = File.ReadAllText(generatedFilePath);
+        fileContent.ShouldContain($@"{nameof(VersionVariables.Major)} = ""1""");
+        fileContent.ShouldContain($@"{nameof(VersionVariables.Minor)} = ""0""");
+        fileContent.ShouldContain($@"{nameof(VersionVariables.Patch)} = ""1""");
+        fileContent.ShouldContain($@"{nameof(VersionVariables.MajorMinorPatch)} = ""1.0.1""");
+        fileContent.ShouldContain($@"{nameof(VersionVariables.FullSemVer)} = ""1.0.1+1""");
+        fileContent.ShouldContain($@"namespace App");
+    }
+
+    [Test]
+    public void GenerateGitVersionInformationTaskShouldCreateFileWhenRunWithMsBuildAndUniqueNamespaceIsSpecifiedAndRootNamespaceIsSet()
+    {
+        const string taskName = nameof(GenerateGitVersionInformation);
+        const string outputProperty = nameof(GenerateGitVersionInformation.GitVersionInformationFilePath);
+        var randDir = Guid.NewGuid().ToString("N");
+
+        using var result = ExecuteMsBuildExe(project => AddGenerateGitVersionInformationTask(project, taskName, taskName, outputProperty, Path.Combine("$(MSBuildProjectDirectory)", randDir)).Property("GenerateGitVersionInformationInUniqueNamespace", "True").Property("RootNamespace", "Test.Root"));
+
+        result.ProjectPath.ShouldNotBeNullOrWhiteSpace();
+        result.MsBuild.Count.ShouldBeGreaterThan(0);
+        result.MsBuild.OverallSuccess.ShouldBe(true);
+        result.MsBuild.ShouldAllBe(x => x.Succeeded);
+        result.Output.ShouldNotBeNullOrWhiteSpace();
+
+        var generatedFilePath = PathHelper.Combine(Path.GetDirectoryName(result.ProjectPath), randDir, "GitVersionInformation.g.cs");
+        result.Output.ShouldContain($"{outputProperty}: {generatedFilePath}");
+
+        var fileContent = File.ReadAllText(generatedFilePath);
+        TestContext.WriteLine(fileContent);
+        fileContent.ShouldContain($@"{nameof(VersionVariables.Major)} = ""1""");
+        fileContent.ShouldContain($@"{nameof(VersionVariables.Minor)} = ""2""");
+        fileContent.ShouldContain($@"{nameof(VersionVariables.Patch)} = ""4""");
+        fileContent.ShouldContain($@"{nameof(VersionVariables.MajorMinorPatch)} = ""1.2.4""");
+        fileContent.ShouldContain($@"{nameof(VersionVariables.FullSemVer)} = ""1.2.4+1""");
+        fileContent.ShouldContain($@"namespace Test.Root");
+
+    }
+
+    private static ProjectCreator AddGenerateGitVersionInformationTask(ProjectCreator project, string targetToRun, string taskName, string outputProperty, string intermediateOutputPath = "$(MSBuildProjectDirectory)")
     {
         var assemblyFileLocation = typeof(GitVersionTaskBase).Assembly.Location;
-        project.UsingTaskAssemblyFile(taskName, assemblyFileLocation)
+        return project.UsingTaskAssemblyFile(taskName, assemblyFileLocation)
             .Property("GenerateAssemblyInfo", "false")
             .Target(targetToRun, beforeTargets: "CoreCompile;GetAssemblyVersion;GenerateNuspec")
             .Task(taskName, parameters: new Dictionary<string, string?>
@@ -202,7 +306,9 @@ public class GenerateGitVersionInformationTest : TestTaskBase
                 { "VersionFile", "$(MSBuildProjectDirectory)/gitversion.json" },
                 { "ProjectFile", "$(MSBuildProjectFullPath)" },
                 { "IntermediateOutputPath", intermediateOutputPath },
-                { "Language", "$(Language)" }
+                { "Language", "$(Language)" },
+                { "GenerateGitVersionInformationInUniqueNamespace", "$(GenerateGitVersionInformationInUniqueNamespace)" },
+                { "RootNamespace", "$(RootNamespace)" },
             })
             .TaskOutputProperty(outputProperty, outputProperty)
             .ItemGroup()
@@ -212,4 +318,6 @@ public class GenerateGitVersionInformationTest : TestTaskBase
             .Target(MsBuildExeFixture.OutputTarget, dependsOnTargets: targetToRun)
             .TaskMessage($"{outputProperty}: $({outputProperty})", MessageImportance.High);
     }
+
+
 }
